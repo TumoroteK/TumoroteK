@@ -1,0 +1,4 @@
+alter table PROD_DERIVE add CODE_LABO VARCHAR2(10);
+alter table BANQUE add ANNO_DERIVE VARCHAR2(200);
+/
+exit 0;

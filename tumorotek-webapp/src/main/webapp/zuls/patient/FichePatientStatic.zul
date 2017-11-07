@@ -1,0 +1,208 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<?component name="referents" macroURI="/zuls/patient/MedecinsReferents.zul" ?>
+<?component name="incaPopUps" macroURI="/zuls/patient/incaPopUpsPatient.zul" inline="true" ?>
+
+<window id="fwinPatientStatic" border="none" apply="fr.aphp.tumorotek.action.patient.FichePatientStatic">
+	<panel id="winPanel" title="${c:l('fichePatient.panel.title')}"
+	 	sclass="fichePanelv2" closable="true">
+		<panelchildren id="panelChildrenWithScroll" style="overflow-y:scroll">
+			<grid id="formGrid" fixedLayout="true" sclass="gridForm1" hflex="1">
+				<columns>
+					<column />
+					<column />
+					<column />
+					<column />
+				</columns>
+				<rows>
+					<!-- Nip patient -->
+					<row>
+						<label value="${c:l('Champ.Patient.Nip')}" sclass="formLabel"/>
+						<label id="nipLabel" value="@{fwinPatientStatic$composer.nipFormatted}" sclass="formValue" />
+						<label id="ndaFieldLabel" value="${c:l('prelevement.nda')}" sclass="formLabel" visible="false"/>
+					</row>
+					<row>
+					<!-- Nom -->
+						<label value="${c:l('Champ.Patient.Nom')}" sclass="formLabel" />
+						<label id="nomLabel" value="@{fwinPatientStatic$composer.nomFormatted}" sclass="formValue" />
+							
+					<!-- Nom naissance-->
+						<label value="${c:l('Champ.Patient.NomNaissance')}" sclass="formLabel" />
+						<label id="nomNaisLabel" value="@{fwinPatientStatic$composer.nomNaissanceFormatted}" sclass="formValue" />							
+					</row>					
+					<row>
+					<!-- Prenom -->
+						<label value="${c:l('Champ.Patient.Prenom')}" sclass="formLabel" />
+						<label id="prenomLabel" value="@{fwinPatientStatic$composer.prenomFormatted}" sclass="formValue" />
+					<!-- Sexe -->
+						<box orient="horizontal" >
+							<label value="${c:l('Champ.Patient.Sexe')}" sclass="formLabel" />
+							<image src="/images/icones/codif-export.png" visible="${sessionScope.catalogues['INCa'] != null}" 
+								tooltip="inca4" style="cursor: pointer" />
+						</box>
+						<label id="sexeLabel" value="@{fwinPatientStatic$composer.sexeFormatted}" sclass="formValue" />
+					</row>	
+					<row spans="1,3">
+					<!-- Date de naissance -->
+						<box orient="horizontal"  >
+							<label value="${c:l('Champ.Patient.DateNaissance')}" sclass="formLabel" />
+							<image src="/images/icones/codif-export.png" visible="${sessionScope.catalogues['INCa'] != null}" 
+								tooltip="inca3" style="cursor: pointer" />
+						</box>
+							<label id="dateNaisLabel"  value="@{fwinPatientStatic$composer.dateNaisFormatted}" sclass="formValue" />						
+							
+					</row>	
+					<row>
+				<!-- Pays de naissance -->
+						<label value="${c:l('Champ.Patient.PaysNaissance')}" sclass="formLabel" />
+						<label id="paysNaisLabel" value="@{fwinPatientStatic$composer.object.paysNaissance}" sclass="formValue" />
+					<!-- Ville de naissance -->
+						<label value="${c:l('Champ.Patient.VilleNaissance')}" sclass="formLabel" />
+						<label id="villeNaisLabel" value="@{fwinPatientStatic$composer.object.villeNaissance}" sclass="formValue" />
+					</row>
+					<row>
+				<!-- Etat patient -->
+						<box orient="horizontal">
+							<label value="${c:l('Champ.Patient.PatientEtat')}" sclass="formLabel" />
+							<image src="/images/icones/codif-export.png" visible="${sessionScope.catalogues['INCa'] != null}" 
+									tooltip="inca5" style="cursor: pointer" />
+						</box>
+						<label id="etatLabel" value="@{fwinPatientStatic$composer.etatFormatted}" sclass="formValue" />
+					<!-- Date de l'etat/décès -->
+						<box orient="horizontal" >
+							<label id="dateEtatDecesField" sclass="formLabel" value="${c:l('Champ.Patient.DateEtat')}" />
+							<image src="/images/icones/codif-export.png" visible="${sessionScope.catalogues['INCa'] != null}" 
+									tooltip="inca6" style="cursor: pointer" />
+						</box>
+						<label id="dateEtatDecesLabel" value="@{fwinPatientStatic$composer.dateEtatDecesFormatted}" sclass="formValue" />
+					</row>		
+					<!-- Referents -->
+					<group id="referentsGroup" label="@{fwinPatientStatic$composer.referentsGroupHeader}"
+						style="border-bottom-width : 0px;"/>
+					<row spans="4">
+						<div id="referentsDiv">
+							<referents id="referents"/>
+						</div>
+					</row>			
+					<!-- Maladies -->
+					<group id="maladiesGroup" label="@{fwinPatientStatic$composer.maladiesGroupHeader}"
+							style="border-bottom-width : 0px;"/>
+					<row spans="4">
+						<div id="malaDiv">
+						</div>
+					</row>
+					<row spans="4" >
+						<separator visible="@{fwinPatientStatic$composer.hasPrelevementsFromOtherMaladies}" />
+					</row>
+					<row spans="4">
+						<vbox visible="@{fwinPatientStatic$composer.hasPrelevementsFromOtherMaladies}" width="100%" hflex="1">
+							<label value="${c:l('patient.prelevements.horsMaladie')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					<row spans="4">
+						<listbox id="prelevementsFromOtherMaladiesBox" 
+								hflex="1"
+								fixedLayout="true"
+								span="true"
+								sizedByContent="false"
+								model="@{fwinPatientStatic$composer.prelevementsFromOtherMaladies}"
+								itemRenderer="${fwinPatientStatic$composer.prelevementsFromOtherMaladiesRenderer}"
+								sclass="listBox"
+								style="font-style: italic"
+								visible="@{fwinPatientStatic$composer.hasPrelevementsToShow}">
+								<listhead sizable="true">
+									<listheader width="50px" />
+									<listheader label="${c:l('prelevement.datePrelevementCourt')}" />
+									<listheader label="${c:l('general.code')}"   />
+									<listheader label="${c:l('Entite.Banque')}" />
+									<listheader label="${c:l('Champ.Prelevement.Nature')}" />
+									<listheader label="${c:l('general.type')}" />
+									<listheader label="${c:l('prelevement.etablissement')}"  />
+									<!-- <listheader label="${c:l('Champ.Echantillon.Organe')}" width="100px"/> -->
+									<!-- <listheader label="${c:l('general.diagnostic')}" width="100px"/> -->
+									<listheader label="${c:l('Champ.Prelevement.ConsentType')}" />
+									<listheader width="100px">
+										<vbox align="center" width="100%">
+											<label value="${c:l('prelevement.nbEchantillons')}" 
+												style="font-weight : bold;"/>
+											<label value="${c:l('prelevement.restants.total.stockes')}" 
+												style="font-weight : bold;"/>
+										</vbox>
+									</listheader>
+								</listhead>
+								<listitem self="@{each='currPrelevementFob'}" value="currPrelevementFob"/>
+							</listbox>
+					</row>
+				</rows>
+			</grid>
+		</panelchildren>
+		<toolbar height="100%" id="toolbar" align="end">
+			<hbox spacing="5">
+				<menubar sclass="menuBarV2" id="menuBar">
+					<menu label="${c:l('general.actions')}" image="/images/icones/small_action.png" 
+						width="36px" height="24px">
+						<menupopup>
+							<menuitem id="print" image="/images/icones/printer.png"
+								label="${c:l('general.print')}"/>
+							<menuitem id="historique" image="/images/icones/history.png" 
+								label="${c:l('general.historique')}"/>
+						</menupopup>
+					</menu>
+				</menubar>
+				<button id="addNew" label="${c:l('general.new')}" height="24px"
+					image="/images/icones/new.png" sclass="buttonv2" 
+					use="fr.aphp.tumorotek.component.TKDisablableButton"/>
+				<button id="edit" label="${c:l('general.edit')}" height="24px"
+					image="/images/icones/edit.png" sclass="buttonv2" disabled="true" 
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="delete" label="${c:l('general.delete')}" height="24px"
+					image="/images/icones/trash.png" sclass="buttonv2" disabled="true" 
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="addMaladie" label="${c:l('patient.ajouter.maladie')}" height="24px" 
+					image="/images/icones/virus.png" sclass="buttonv2" disabled="true" 
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="addPrelevement" label="${c:l('patient.ajouter.prelevement')}" height="24px" 
+					image="/images/icones/sample.png" sclass="buttonv2" disabled="true" 
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+			</hbox>
+		</toolbar>
+	</panel>
+	
+	<!-- include Catalogues popups -->
+	<incaPopUps />
+	
+</window>

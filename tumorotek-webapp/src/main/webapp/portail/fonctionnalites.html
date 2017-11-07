@@ -1,0 +1,257 @@
+<!--
+ * Copyright ou © ou Copr. Minist&egrave;re de la sant&eacute;, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant &agrave; la gestion de 
+ * l'activit&eacute; de biobanques. 
+ *
+ * Ce logiciel est r&eacute;gi par la licence CeCILL soumise au droit fran&ccedil;ais
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffus&eacute;e par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilit&eacute; au code source et des droits de   
+ * copie, de modification et de redistribution accord&eacute;s par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limit&eacute;e. 
+ * Pour les m&ecirc;mes raisons, seule une responsabilit&eacute; restreinte p&egrave;se sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * conc&eacute;dants successifs.
+ *
+ * A cet &eacute;gard  l'attention de l'utilisateur est attir&eacute;e sur les 
+ * risques associ&eacute;s au chargement,  &agrave; l'utilisation,  &agrave; la modification 
+ * et/ou au  d&eacute;veloppement et &agrave; la reproduction du logiciel par 
+ * l'utilisateur &eacute;tant donn&eacute; sa sp&eacute;cificit&eacute; de logiciel libre, qui peut 
+ * le rendre complexe &agrave; manipuler et qui le r&eacute;serve donc &agrave; des 	
+ * d&eacute;veloppeurs et des professionnels  avertis poss&eacute;dant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invit&eacute;s &agrave; charger  et  tester  l'ad&eacute;quation  du logiciel &agrave; leurs
+ * besoins dans des conditions permettant d'assurer la s&eacute;curit&eacute; de leurs
+ * syst&egrave;mes et ou de leurs donn&eacute;es et, plus g&eacute;n&eacute;ralement, &agrave; l'utiliser 
+ * et l'exploiter dans les m&ecirc;mes conditions de s&eacute;curit&eacute;. 
+ *	
+ * Le fait que vous puissiez acc&eacute;der &agrave; cet en-t&ecirc;te signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accept&eacute; les termes. 
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../css/portail.css">
+</head>
+<body>
+	<h4>Version 2.1.0 :</h4>
+	<ul>
+		<li>Les contrôles des doublons sont élevés au niveau Plateforme pour les entités Prelevement/Echantillon/ProdDerive/Cessions</li>
+		<li>Un profil d'authentification devient archivable et géré au niveau Plateforme</li>
+		<li>Facilitation de l'administration des authentification par ajouts de liens entre les onglets Comptes, Profils et Collections</li>
+		<li>Interfacage avec le lecteur code-barre 2D Thermofischer&reg;; enregistrement et mise à disposition des scans, permettant:
+			<ul>
+				<li>l'affichage du contenu d'une boite</li>
+				<li>la recherche d'une boite dans le système de stockage</li>
+				<li>l'automatisation des sélections des emplacements dans les opérations de stockage/déstockage/déplacement</li>  
+				<li>la validation du contenu d'une cession</li>
+			</ul>
+		</li>
+		<li>Interfacage avec les SGLs exposant une <i>vue</i> sur leur base de données (ex: MIPs&reg; DaVinci)</li>
+		<li>Onglet de calcul d'indicateurs comprenant:
+			<ul>
+				<li>une première librairie d'indicateurs (<b>ceux basés sur les indicateurs MERRI ne sont pas validés!</b>)</li>
+				<li>un module de gestion de tableaux d'indicateurs</li>
+				<li>un moteur de lancement des calculs</li>  
+				<li>un affichage des résultats exportable en fichier tabulé.</li> 
+			</ul>
+		</li>
+	</ul>
+	<h4>Version 2.0.13 :</h4>
+	<ul>
+		<li>Inclusion de la temp&eacute;rature de stockage dans toutes les fonctionalit&eacute;s de recherches</li>
+		<li>Recherche des th&eacute;saurus multiples, avec les conjonctions logiques ET et OU</li>
+		<li>Assistant d'affichage des consentements d&eacute;ja utilis&eacute;s pour un patient lors de la cr&eacute;ation/modification d'un pr&eacute;l&egrave;vement</li>
+		<li>Visualisation du statut de l'objet stock&eacute; dans la repr&eacute;sentation virtuelle du stockage</li>
+		<li>ActiveDirectory&reg;: authentification <i>SAMAccountName</i> avec expiration du compte TK associ&eacute;.</li>
+	</ul>
+	<h4>Version 2.0.12 :</h4>
+	<ul>
+		<li><span style="color: red">Correction du problème : <u>modification multiple + disparition raisons de non conformit&eacute;</u></span></li>
+		<li>Optimisation de la gestion des fichiers associ&eacute;s
+        	<ul>
+				<li>fichiers partag&eacute;s par plusieurs objets</li>
+				<li>modification multiple annotation fichier et CR anapath</li>
+				<li>recherche pr&eacute;sence/absence de fichier</li>
+        	</ul>
+        </li>
+		<li>Refonte du tableau de bord statistique
+        	<ul>
+				<li>S&eacute;lection des graphes</li>
+				<li>Optimisation des proc&eacute;dures de calcul</li>
+        	</ul>
+        </li>
+        <li>Authentification LDAP/ActiveDirectory&reg;</li>
+        <li>Suppressions multiples depuis une s&eacute;lection</li>
+        <li>Assouplissement du générateur de codes &eacute;chantillons/d&eacute;riv&eacute;s par choix du séparateur</li>
+        <li>Impl&eacute;mentation des sp&eacute;cifications du projet PELICAN</li>
+    </ul>
+	<h4>Version 2.0.11 :</h4>
+	<ul>
+        <li>Am&eacute;lioration du module d'impression d'&eacute;tiquettes
+        	<ul>
+				<li>Impression language Zebra&reg; ZPL</li>
+				<li>Ajustement du code-barre 128 dans l'impression générique</li> 
+        	</ul>
+        </li>
+        <li>Outil de fusion des &eacute;tablissements/services/collaborateurs</li>
+    </ul>
+	<h4>Version 2.0.10 :</h4>
+	<ul>
+		<li>Am&eacute;lioration de la tra&ccedil;abilit&eacute; des &eacute;v&egrave;nements de stockage
+			<ul>
+				<li>Epuisements/Destructions</li>
+				<li>Incidents</li>
+        		<li>Ajout du statut TRAITEMENT EN COURS</li>
+        		<li>Impact sur la qualit&eacute; du mat&eacute;riel</li>
+        	</ul>
+        </li>
+        <li>Am&eacute;lioration du module d'impression d'&eacute;tiquettes
+        	<ul>
+				<li>Choix de l'imprimante et du mod&egrave;le &agrave; l'impression</li>
+				<li>Erreur de d&eacute;passement de la zone d'impression</li>
+        		<li>QR code</li>
+        	</ul>
+        </li>
+        <li>Optimisations 
+        	<ul>
+        		<li>Exports</li>
+       			<li>Recherches complexes</li>
+        		<li>Interface graphique (mise &agrave; jour des librairies)</li>
+        	</ul>
+        </li>
+        <li>Perfectionnement de la gestion du partage des conteneurs de stockage</li>
+        <li>Possibilit&eacute; de c&eacute;der des d&eacute;riv&eacute;s par leur volume</li>
+        <li>Int&eacute;gration d'un flux d'identit&eacute;s patient HL7</li>
+        <li>Interfacage HL7 avec <a href="http://france.technidata-web.com">Apix Technidata&reg;</a> &amp; <a href="http://www.infologic-sante.fr/diamic-hospitaliere.php">DIAMIC Infologic-santé&reg;</a></li>
+		<li>Int&eacute;gration au Web SSO <a href="http://www.jasig.org/cas">CAS Jasig&reg;</a></li>
+		<li>Addition d'un outil de navigation entre les diff&eacute;rents onglets &agrave; partir d'une s&eacute;lection</li>
+		<li>Ajout d'une repr&eacute;sentation graphique des donn&eacute;es sous la forme d'un tableau de bord</li>
+    </ul>
+	<h4>Version 2.0.7 :</h4>
+	<ul>
+        <li>Application des recommendations s&eacute;curit&eacute; de la CNIL
+        	<ul>
+        		<li>Tracage des connections</li>
+       			<li>Pr&eacute;sentation de la derni&egrave;re connection r&eacute;ussie</li>
+        		<li>Expiration programm&eacute;e des mots de passe</li>
+        		<li>Blocage des connections simultan&eacute;es pour la m&ecirc;me compte</li>
+        	</ul>
+        </li>
+        <li>Recherche rapides par liste d'&eacute;l&eacute;ments sous la forme de colonne dans un fichier excel</li>
+       	<li>Mod&eacute;lisation du stockage en paillettes CryoBioSystem&reg;</li>
+    </ul>
+    <h4>Version 2.0.6 :</h4>
+	<ul>
+         <li>Modification de la taille des enceintes de stockage</li>
+         <li>Interfacage HL7 Serveur identit&eacute;s patient</li>
+    </ul>
+    <h4>Version 2.0.5 :</h4>
+	<ul>
+        <li>Gestion des mots de passe par cryptage</li>
+        <li>Changement d'un pr&eacute;l&egrave;vement de maladie</li>
+    </ul>
+	<h4>Version 2.0.4 :</h4>
+	<ul>
+        <li>Enregistrement des &eacute;v&egrave;nements de stockage</li>
+    </ul>
+	<h4>Version 2.0.3 :</h4>
+	<ul>
+        <li>gestion des non-conformit&eacute;s des &eacute;chantillons</li>
+        <li>gestion des non-conformit&eacute;s des produits d&eacute;riv&eacute;s</li>
+        <li>champ de conformit&eacute; dans le traitement du pr&eacute;l&egrave;vement</li>
+    </ul>
+	<h4>&eacute;volutions g&eacute;n&eacute;rales :</h4>
+    <ul>
+        <li>affichage simultan&eacute; d'une liste de r&eacute;sultats et de leur fiche d&eacute;taill&eacute;e</li>
+        <li>r&eacute;organisation des listes de r&eacute;sultats par ajout/suppression de colonnes</li>
+        <li>saisie des annotations simultan&eacute;e &agrave; la saisie des donn&eacute;es des formulaires</li>
+        <li>modifications multiples am&eacute;lior&eacute;es incluant les annotations</li>
+    </ul>
+    
+    <h4>Ajouts de niveaux :</h4>
+    <ul>
+        <li>Plateformes : regroupement de collections partageant les th&eacute;saurus et les tables d'annotations</li>
+        <li>Maladies : regroupement des pr&eacute;l&egrave;vements d'un patient par maladie</li>
+    </ul>
+    
+    <h4>Pr&eacute;l&egrave;vements :</h4>
+    <ul>
+        <li>cr&eacute;ation d'un pr&eacute;l&egrave;vement sans connaître forc&eacute;ment le patient</li>
+        <li>meilleure tra&ccedil;abilit&eacute; : pr&eacute;cision de la st&eacute;rilit&eacute; et du lieu de cong&eacute;lation</li>
+        <li>ajout du risque infectieux</li>
+    </ul>
+    
+    <h4>&eacute;chantillons :</h4>
+    <ul>
+        <li>cr&eacute;ation d'un &eacute;chantillon sans connaître forc&eacute;ment le pr&eacute;l&egrave;vement</li>
+        <li>possibilit&eacute; de modifier le code &eacute;chantillon propos&eacute;</li>
+        <li>ajout des champs mode de pr&eacute;paration, CR anapat et tumoral</li>
+        <li>possibilit&eacute; de pr&eacute;ciser le lieu de cong&eacute;lation</li>
+    </ul>
+    
+    <h4>Produits d&eacute;riv&eacute;s :</h4>
+    <ul>
+        <li>cr&eacute;ation de d&eacute;riv&eacute;s &agrave; partir d'un pr&eacute;l&egrave;vement, d'un &eacute;chantillon, d'un autre d&eacute;riv&eacute;, ou sans renseigner de parent</li>
+        <li>ajout des champs quantit&eacute; utilis&eacute;e et mode de pr&eacute;paration</li>
+    </ul>
+    
+    <h4>Cessions :</h4>
+    <ul>
+        <li>ajout d'objet &agrave; une cession depuis une liste de r&eacute;sultats</li>
+        <li>cessions de type sanitaire, recherche, destruction</li>
+        <li>des &eacute;chantillons ou d&eacute;riv&eacute;s peuvent &ecirc;tre enlev&eacute;s ou rajout&eacute;s tant que la cession a un statut « en attente »</li>
+        <li>saisie de contrats pouvant &ecirc;tre r&eacute;f&eacute;renc&eacute;s dans les cessions</li>
+    </ul>
+    
+    <h4>Stockage :</h4>
+    <ul>
+        <li>interface de stockage des &eacute;chantillons/d&eacute;riv&eacute;s am&eacute;lior&eacute;e</li>
+        <li>op&eacute;rations de d&eacute;placement, d&eacute;stockage d'objets, de groupes d'objets ou de boites stock&eacute;s</li>
+        <li>saisie d'incidents pour un cong&eacute;lateur</li>
+        <li>param&eacute;trage du format des boites et leurs num&eacute;rotations</li>
+        <li>attribution de couleurs aux cryotubes selon le type d’&eacute;chantillon</li>
+        <li>possibilit&eacute; de r&eacute;server une enceinte pour une collection</li>
+    </ul>
+    
+    <h4>Gestion des codes ADICAP et CIMO :</h4>
+    <ul>
+        <li>saisie de plusieurs codes organes et l&eacute;sionnels par &eacute;chantillon (codifications ADICAP, CIM, CIMO)</li>
+        <li>utilisation d'une fonctionnalit&eacute; de transcodage</li>
+        <li>enregistrement d'une codification personnelle r&eacute;-utilisable</li>
+    </ul>
+    
+    <h4>Gestion des items INCa :</h4>
+    <ul>
+        <li>items INCa pr&eacute;sents dans les tables d’annotations statiques INCa</li>
+        <li>fiche d’impression de tous les items INCa par &eacute;chantillon</li>
+        <li>g&eacute;n&eacute;ration du rapport d'activit&eacute; INCa</li>
+    </ul>
+    
+    <h4>&eacute;volutions sur les recherches :</h4>
+    <ul>
+        <li>recherche rapide permettant de rechercher un objet selon son code ou l’identit&eacute; du patient</li>
+        <li>recherche avanc&eacute;e : &eacute;quivalent de la recherche V1</li>
+        <li>recherche multicrit&egrave;re : cr&eacute;ation d'une requ&ecirc;te complexe en d&eacute;finissant tous les crit&egrave;res</li>
+    </ul>
+    
+    <h4>Administration du logiciel :</h4>
+    <ul>
+        <li>assignation de plusieurs tables d'annotations par collection, pour une entit&eacute;, avec un ordre d'apparition</li>
+        <li>saisie de mod&egrave;les de fiches d'impression param&eacute;trables</li>
+        <li>imports de donn&eacute;es flexible &agrave; partir de fichiers Excel</li>
+        <li>navigation dans l'arborescence des &eacute;tablissements, services, collaborateurs</li>
+        <li>mod&egrave;les d'&eacute;tiquettes param&eacute;trables</li>
+        <li>num&eacute;rotation automatique des pr&eacute;l&egrave;vements, &eacute;chantillons, d&eacute;riv&eacute;s et cessions par collection</li>
+        <li>saisie des droits et des diff&eacute;rents niveaux d'administration</li>
+        <li>possibilit&eacute; pour chaque utilisateur de modifier ses param&egrave;tres de connexion</li>
+        <li>fusion de patients pour supprimer les doublons</li>
+    </ul>
+</body>
+</html>

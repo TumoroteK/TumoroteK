@@ -1,0 +1,2418 @@
+/** 
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+ **/
+package fr.aphp.tumorotek.manager.impl.io.utils;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import fr.aphp.tumorotek.dao.coeur.prelevement.PrelevementDao;
+import fr.aphp.tumorotek.dao.qualite.NonConformiteDao;
+import fr.aphp.tumorotek.manager.coeur.prelevement.PrelevementManager;
+import fr.aphp.tumorotek.manager.io.utils.CorrespondanceIdManager;
+import fr.aphp.tumorotek.manager.io.utils.TraitementQueryManager;
+import fr.aphp.tumorotek.manager.qualite.ObjetNonConformeManager;
+import fr.aphp.tumorotek.manager.systeme.EntiteManager;
+import fr.aphp.tumorotek.model.coeur.ObjetStatut;
+import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
+import fr.aphp.tumorotek.model.contexte.Banque;
+
+
+import fr.aphp.tumorotek.manager.ConfigManager;
+
+import fr.aphp.tumorotek.model.contexte.Collaborateur;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.contexte.Service;
+import fr.aphp.tumorotek.model.qualite.ConformiteType;
+import fr.aphp.tumorotek.model.qualite.NonConformite;
+import fr.aphp.tumorotek.model.systeme.Entite;
+import fr.aphp.tumorotek.model.io.export.Champ;
+import fr.aphp.tumorotek.model.io.export.ChampEntite;
+import fr.aphp.tumorotek.model.io.export.Critere;
+
+public class TraitementQueryManagerImpl implements TraitementQueryManager {
+	
+	private Log log = LogFactory.getLog(TraitementQueryManagerImpl.class);
+
+	private EntityManagerFactory entityManagerFactory;
+	private PrelevementDao prelevementDao;
+	private PrelevementManager prelevementManager;
+	private NonConformiteDao nonConformiteDao;
+	private ObjetNonConformeManager objetNonConformeManager;
+	private EntiteManager entiteManager;
+	private CorrespondanceIdManager correspondanceIdManager;
+	
+	public void setEntityManagerFactory(EntityManagerFactory eFactory) {
+		this.entityManagerFactory = eFactory;
+	}
+
+	public void setPrelevementDao(PrelevementDao pDao) {
+		this.prelevementDao = pDao;
+	}
+
+	public void setPrelevementManager(PrelevementManager pM) {
+		this.prelevementManager = pM;
+	}
+
+	public void setNonConformiteDao(NonConformiteDao c) {
+		this.nonConformiteDao = c;
+	}
+
+	public void setObjetNonConformeManager(ObjetNonConformeManager o) {
+		this.objetNonConformeManager = o;
+	}
+
+	public void setEntiteManager(EntiteManager e) {
+		this.entiteManager = e;
+	}
+
+	public void setCorrespondanceIdManager(CorrespondanceIdManager cM) {
+		this.correspondanceIdManager = cM;
+	}
+
+	/**
+	 * Retourne les objets correspondant à un critère. Méthode utilisée
+	 * dans la recherche réalisée par Maxime.
+	 * @param critere Critere à exécuter.
+	 * @return Liste d'objets correspondant au critère.
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Object> findObjetByCritereManager(Critere critere,
+			List<Banque> banks, Object value, String jdbcDialect) {
+		List<Object> objets = null;
+
+		if (critere.getChamp() != null) {
+			StringBuffer sb = new StringBuffer("");
+			Champ champ = critere.getChamp();
+			if (champ.getChampAnnotation() != null) {
+				ChampAnnotation ca = champ.getChampAnnotation();
+				if (ca.getTableAnnotation() != null
+						&& ca.getTableAnnotation().getEntite() != null) {
+					String nomEntite = ca.getTableAnnotation().getEntite()
+							.getNom();
+					if (nomEntite != null) {
+						String nomEntiteMajFirst = nomEntite.replaceFirst(".",
+								(nomEntite.charAt(0) + "").toUpperCase());
+						String nomEntiteMinFirst = nomEntite.replaceFirst(".",
+								(nomEntite.charAt(0) + "").toLowerCase());
+						if (!critere.getOperateur().equals("is null")) {
+							sb.append("SELECT e From " + nomEntiteMajFirst
+									+ " as e, AnnotationValeur av"
+									+ " join av.champAnnotation as ca"
+									+ " WHERE" + " e." + nomEntiteMinFirst
+									+ "Id = av.objetId"
+									+ " and ca.champAnnotationId = "
+									+ ca.getChampAnnotationId()
+									+ " and ca.tableAnnotation.entite.nom = '"
+									+ nomEntiteMajFirst + "'");
+
+							if (ca.getDataType().getType().equals("num")) {
+								sb.append(" and av.alphanum ");
+								sb.append(critere.getOperateur());
+							} else if (ca.getDataType().getType()
+									.equals("alphanum")
+									|| ca.getDataType().getType()
+											.equals("date")) {
+								sb.append(" and av."
+										+ ca.getDataType().getType() + " "
+										+ critere.getOperateur());
+							} else if (ca.getDataType().getType()
+											.equals("datetime")) {
+								sb.append(" and av.date "
+										+ critere.getOperateur());
+							} else if (ca.getDataType().getType()
+									.equals("thesaurus")
+									|| ca.getDataType().getType()
+											.equals("thesaurusM")) {
+								if (!critere.getOperateur().equals("is null")) {
+									sb.append(" and av.item.label "
+											+ critere.getOperateur());
+								} else {
+									sb.append(" and av.item "
+											+ critere.getOperateur());
+								}
+							} else if (ca.getDataType().getType()
+									.equals("boolean")) {
+								sb.append(" and av.bool "
+										+ critere.getOperateur());
+							} else {
+								sb.append(" and av."
+										+ ca.getDataType().getType() + " "
+										+ critere.getOperateur());
+							}
+
+							if (ca.getDataType().getType().equals("num")) {
+								sb.append(" " + value);
+							} else {
+								sb.append(" :valeur");
+							}
+						} else { // is null champ annotation
+							sb.append("SELECT e From "
+									+ nomEntiteMajFirst
+									+ " as e WHERE"
+									+ " e."
+									+ nomEntiteMinFirst
+									+ "Id not in ("
+									+ "select av.objetId from AnnotationValeur av"
+									+ " join av.champAnnotation as ca"
+									+ " where ca.champAnnotationId = "
+									+ ca.getChampAnnotationId()
+									+ " and ca.tableAnnotation.entite.nom = '"
+									+ nomEntiteMajFirst + "')");
+						}
+
+						// si l'entité recherchée n'est pas un patient
+						// ou une maladie, on ajoute un critère sur
+						// la banque
+						if (!nomEntiteMajFirst.equals("Patient")
+								&& !nomEntiteMajFirst.equals("Maladie")) {
+							sb.append(" AND ");
+							sb.append("e.banque in (:list)");
+						}
+					}
+				}
+			} else if (champ.getChampEntite() != null) {
+				ChampEntite ce = critere.getChamp().getChampEntite();
+				if (ce != null && ce.getEntite() != null) {
+					String nomEntite = ce.getEntite().getNom();
+					if (nomEntite != null) {
+						String nomEntiteMajFirst = nomEntite.replaceFirst(".",
+								(nomEntite.charAt(0) + "").toUpperCase());
+						String nomChampMinFirst = ce.getNom().replaceFirst(".",
+								(ce.getNom().charAt(0) + "").toLowerCase());
+						Champ parent = champ.getChampParent();
+
+						while (parent != null
+								&& parent.getChampEntite() != null) {
+
+							ChampEntite ceParent = parent.getChampEntite();
+							String nomParent = ceParent.getNom().replaceFirst(
+									".",
+									(ceParent.getNom().charAt(0) + "")
+											.toLowerCase());
+							// On enlève le suffixe "Id"
+							if (nomParent.endsWith("Id")) {
+								nomParent = nomParent.substring(0,
+										nomParent.length() - 2);
+							}
+
+							if (!critere.getOperateur().equals("is null")) {
+								nomChampMinFirst = nomParent + "."
+										+ nomChampMinFirst;
+							} else {
+								nomChampMinFirst = nomParent;
+							}
+
+							// On change le nom de l'entiteMajFirst
+							String nomEntiteParent = ceParent.getEntite()
+									.getNom();
+							nomEntiteMajFirst = nomEntiteParent.replaceFirst(
+									".", (nomEntiteParent.charAt(0) + "")
+											.toUpperCase());
+
+							parent = parent.getChampParent();
+						}
+
+						// exception impliquant l'appel de méthodes de requêtes
+						
+						if (nomChampMinFirst.contains("etablissement")) {
+							// hack etablissement preleveur
+							if (!critere.getOperateur().equals("is null")) {
+								objets = new ArrayList<Object>();
+								objets.addAll(prelevementDao
+									.findByEtablissementNom((String) value, 
+																	banks));
+								return objets;
+							} else {
+								objets = new ArrayList<Object>();
+								objets.addAll(prelevementDao
+									.findByEtablissementVide(banks));
+								return objets;
+							}
+						} else if (nomChampMinFirst.equals("risques")) {
+							if (!critere.getOperateur().equals("is null")) {
+								sb.append("SELECT DISTINCT e From "
+										+ "Prelevement as e "
+										+ "JOIN e.risques r " + "WHERE r.nom "
+										+ critere.getOperateur());
+
+								sb.append(" :valeur");
+							} else {
+								sb.append("SELECT DISTINCT e From "
+										+ "Prelevement as e "
+										+ "LEFT JOIN e.risques r "
+										+ "WHERE r is null");
+							}
+						} else if (nomChampMinFirst.equals("ageAuPrelevement")) { 
+							objets = new ArrayList<Object>();
+							// hack age au prelevement
+							if (!critere.getOperateur().equals("is null")) {
+								List<Integer> ids = new ArrayList<Integer>();
+								if (critere.getOperateur().equals(">=")) {
+									ids.addAll(
+				findPrelevementsByAgePatientWithBanquesManager("=", 
+								(Integer) value, banks, jdbcDialect));
+									ids.addAll(
+				findPrelevementsByAgePatientWithBanquesManager(">", 
+								(Integer) value, banks, jdbcDialect));
+								} else if (critere.getOperateur().equals("<=")) {
+									ids.addAll(
+				findPrelevementsByAgePatientWithBanquesManager("=", 
+								(Integer) value, banks, jdbcDialect));
+									ids.addAll(
+				findPrelevementsByAgePatientWithBanquesManager(">", 
+									(Integer) value, banks, jdbcDialect));
+								} else {
+									ids.addAll(
+				findPrelevementsByAgePatientWithBanquesManager(critere.getOperateur(), 
+						(Integer) value, banks, jdbcDialect));
+								}
+								
+								if (!ids.isEmpty()) {
+									objets
+										.addAll(prelevementManager
+												.findByIdsInListManager(ids));
+								}
+							} 
+							return objets;
+							
+						} else if (nomChampMinFirst.equals("codeOrganes")
+								|| nomChampMinFirst.equals("codeMorphos")) {
+							if (!critere.getOperateur().equals("is null")) {
+								sb.append("SELECT DISTINCT e From "
+										+ "Echantillon as e "
+										+ "JOIN e.codesAssignes c "
+										+ "WHERE c.code "
+										+ critere.getOperateur());
+
+								sb.append(" :valeur");
+
+								if (nomChampMinFirst.equals("codeMorphos")) {
+									sb.append(" AND c.isMorpho = 1");
+								} else {
+									sb.append(" AND c.isOrgane = 1");
+								}
+							} else {
+								sb.append("SELECT DISTINCT e From "
+										+ "Echantillon as e "
+										+ "WHERE e not in ("
+										+ "select ca.echantillon "
+										+ "FROM CodeAssigne as ca");
+								if (nomChampMinFirst.equals("codeMorphos")) {
+									sb.append(" WHERE ca.isMorpho = 1)");
+								} else {
+									sb.append(" WHERE ca.isOrgane = 1)");
+								}
+							}
+						} else if (nomChampMinFirst.matches("conforme.*Raison")) {
+							appendNonConformitesSb(critere, sb, nomEntiteMajFirst);
+						} else if (nomChampMinFirst.matches("count.*")) {
+							sb.append("SELECT DISTINCT e From "
+									+ nomEntiteMajFirst + " as e "
+									+ "JOIN e.echantillons z "
+									+ "having count(z) "
+									+ critere.getOperateur());
+
+							if (!critere.getOperateur().equals("is null")) {
+								sb.append(" :valeur");
+							}
+						// since 2.0.13 temp stockage
+						} else if (nomChampMinFirst.equals("tempStock")) {
+							objets = new ArrayList<Object>();
+							objets.addAll(findTKStockableObjectsByTempStockWithBanquesManager(ce.getEntite(), 
+															value, critere.getOperateur(), banks, false));
+							return objets;
+						} else {
+							sb.append("SELECT DISTINCT e From "
+									+ nomEntiteMajFirst + " as e WHERE" + " e."
+									+ nomChampMinFirst + " "
+									+ critere.getOperateur());
+
+							if (!critere.getOperateur().equals("is null")) {
+								sb.append(" :valeur");
+							}
+						}
+								//+ critere.getValeur() + "'");
+						// si l'entité recherchée n'est pas un patient
+						// ou une maladie, on ajoute un critère sur
+						// la banque
+						if (!nomEntiteMajFirst.equals("Patient")
+							&& !nomEntiteMajFirst.equals("Maladie")
+							&& !nomChampMinFirst.contains("etablissement")
+							&& banks != null && !banks.isEmpty()) {
+							sb.append(" AND ");
+							sb.append("e.banque in (:list)");
+						}
+					}
+				}
+			} else {
+				throw new IllegalArgumentException();
+			}
+			/* On exécute la requête. */
+			log.info("findObjetByCritereManager : Exécution de la requête : \n"
+					+ sb.toString());
+			EntityManager em = entityManagerFactory.createEntityManager();
+			// si la liste n'est pas vide et que l'entité
+			Query query = em.createQuery(sb.toString());
+			// recherchée n'est pas un patient
+			if (sb.toString().contains("(:list)")) {
+				query.setParameter("list", banks);
+			}
+			if (sb.toString().contains(":valeur")) {
+				query.setParameter("valeur", value);
+			}
+			objets = (List<Object>) query.getResultList();
+			log.info("findObjetByCritereManager : requête terminée");
+		}
+
+		return objets;
+	}
+
+	private void appendNonConformitesSb(Critere critere, StringBuffer sb, 
+			String nomEntiteMajFirst) {
+		
+		String cNom = null;
+		Pattern p = Pattern.compile("Conforme(.*)\\.Raison");
+		Matcher m = p.matcher(critere.getChamp().getChampEntite().getNom());
+		boolean b = m.matches();
+		if (b && m.groupCount() > 0) {
+			cNom = m.group(1);
+		}
+		
+		if (!critere.getOperateur().equals("is null")) {
+			
+			sb.append("SELECT DISTINCT e From " + nomEntiteMajFirst
+					+ " as e, ObjetNonConforme r "
+					+ "WHERE  r.objetId = e." 
+					+ nomEntiteMajFirst.replaceFirst(
+							".", (nomEntiteMajFirst.charAt(0) + "")
+							.toLowerCase()) + "Id " 
+					+ "AND r.entite.entiteId = "
+						+ critere.getChamp().getChampEntite().getEntite().getEntiteId().toString()	
+					+ " AND r.nonConformite.conformiteType.conformiteType = '" + cNom + "'"
+					+ " AND r.nonConformite.conformiteType.entite.entiteId = " 
+							+ critere.getChamp().getChampEntite().getEntite().getEntiteId().toString()	
+					+ " AND r.nonConformite.nom "
+					+ critere.getOperateur());
+
+			sb.append(" :valeur");
+		} else {			
+			sb.append("SELECT DISTINCT e From " + nomEntiteMajFirst
+					+ " as e WHERE e."
+					+ nomEntiteMajFirst.replaceFirst(
+							".", (nomEntiteMajFirst.charAt(0) + "").toLowerCase()) + "Id " 
+					+ "NOT IN (SELECT r.objetId  FROM ObjetNonConforme r " 
+					+ "WHERE r.entite.entiteId = "
+						+ critere.getChamp().getChampEntite().getEntite().getEntiteId().toString()	
+					+ " AND r.nonConformite.conformiteType.conformiteType = '" + cNom + "'"
+					+ " AND r.nonConformite.conformiteType.entite.entiteId = " 
+							+ critere.getChamp().getChampEntite().getEntite().getEntiteId().toString()	
+					+ ")");
+		}
+	}
+
+	@Override
+	public List<Integer> findObjetByCriteresWithBanquesManager (
+			List<Critere> criteres, List<Banque> banques, List<Object> values) {
+		List<Integer> objets = null;
+
+		StringBuffer sql = new StringBuffer();
+		String nomEntiteMajFirst = "";
+		List<String> joins = new ArrayList<String>();
+		java.util.Hashtable<Champ, String> allParents = new java.util.Hashtable<Champ, String>();
+		List<String> wheres = new ArrayList<String>();
+		int cpt = 1;
+		int nbWhere = 1;
+		int nbBanquesInCriteres = 1;
+		int nbChampAnnotations = 0;
+		boolean withAnno = false;
+		for (int k = 0; k < criteres.size(); k++) {
+			Champ champ = criteres.get(k).getChamp();
+			if (champ.getChampAnnotation() != null) {
+				++nbChampAnnotations;
+				ChampAnnotation ca = champ.getChampAnnotation();
+				if (ca != null && ca.getTableAnnotation() != null
+						&& ca.getTableAnnotation().getEntite() != null) {
+					String nomEntite = ca.getTableAnnotation().getEntite()
+							.getNom();
+					if (nomEntite != null) {
+						withAnno = true;
+						nomEntiteMajFirst = nomEntite.replaceFirst(".",
+								(nomEntite.charAt(0) + "").toUpperCase());
+						String nomEntiteMinFirst = nomEntite.replaceFirst(".",
+								(nomEntite.charAt(0) + "").toLowerCase());
+
+						joins.add("join av" + nbChampAnnotations
+								+ ".champAnnotation as ca" + nbChampAnnotations
+								+ " ");
+
+						Champ parent = champ.getChampParent();
+
+						List<Champ> parents = new ArrayList<Champ>();
+						while (parent != null
+								&& parent.getChampEntite() != null) {
+							parents.add(0, parent);
+
+							ChampEntite ceParent = parent.getChampEntite();
+							String nomParent = ceParent.getNom().replaceFirst(
+									".",
+									(ceParent.getNom().charAt(0) + "")
+											.toLowerCase());
+							// On enlève le suffixe "Id"
+							if (nomParent.endsWith("Id")) {
+								nomParent = nomParent.substring(0,
+										nomParent.length() - 2);
+							}
+							String nomEntiteParent = ceParent.getEntite()
+									.getNom();
+							nomEntiteMajFirst = nomEntiteParent.replaceFirst(
+									".", (nomEntiteParent.charAt(0) + "")
+											.toUpperCase());
+
+							parent = parent.getChampParent();
+						}
+
+						String prefixe = "e";
+						for (int i = 0; i < parents.size(); i++) {
+							parent = parents.get(i);
+
+							if (!allParents.containsKey(parent)) {
+								allParents.put(parent, "p" + cpt);
+								ChampEntite ceParent = parent.getChampEntite();
+								String nomParent = ceParent
+										.getNom()
+										.replaceFirst(
+												".",
+												(ceParent.getNom().charAt(0) + "")
+														.toLowerCase());
+								// On enlève le suffixe "Id"
+								if (nomParent.endsWith("Id")) {
+									nomParent = nomParent.substring(0,
+											nomParent.length() - 2);
+								}
+
+								// Création des joins
+								StringBuffer join = new StringBuffer();
+								if (i == 0) {
+									join.append("JOIN e.");
+									join.append(nomParent);
+									join.append(" as p");
+									join.append(cpt);
+									join.append(" ");
+								} else {
+									join.append("JOIN p");
+									join.append(i);
+									join.append(".");
+									join.append(nomParent);
+									join.append(" as p");
+									join.append(cpt);
+									join.append(" ");
+								}
+								++cpt;
+								joins.add(join.toString());
+							}
+
+							if (i == parents.size() - 1) {
+								prefixe = allParents.get(parent);
+							}
+						}
+
+						String clause = "";
+						if (nbWhere == 1) {
+							clause = "WHERE ";
+						} else {
+							clause = " AND ";
+						}
+						// si des jointures ont été faites
+						StringBuffer where = new StringBuffer();
+						where.append(clause);
+
+						where.append("ca");
+						where.append(nbChampAnnotations);
+						where.append(".champAnnotationId = ");
+						where.append(ca.getChampAnnotationId());
+						where.append(" AND " + prefixe + "."
+								+ nomEntiteMinFirst + "Id = av"
+								+ nbChampAnnotations + ".objetId");
+
+						/*
+						 * where.append("e." + nomEntiteMinFirst +
+						 * "Id = av.objetId" +
+						 * " and ca.tableAnnotation.entite.nom = '" +
+						 * nomEntiteMajFirst + "'");
+						 */
+						if (ca.getDataType().getType().equals("alphanum")
+								|| ca.getDataType().getType().equals("date")) {
+							where.append(" and av" + nbChampAnnotations + "."
+									+ ca.getDataType().getType() + " "
+									+ criteres.get(k).getOperateur()
+									+ " :valeur");
+						} else if (ca.getDataType().getType().equals("datetime")) {		
+							if (((Calendar) values.get(k)).get(Calendar.HOUR_OF_DAY) == 0
+									&& ((Calendar) values.get(k)).get(Calendar.MINUTE) == 0
+									&& criteres.get(k).getOperateur().equals("=")) {
+								String[] calOps = new String[]{"year", "month", "day"};
+								for (String op : calOps) {
+									where.append(" and " + op + "(av" 
+											+ nbChampAnnotations + ".date) = ");
+									where.append( op + "(:valeur" + nbWhere + ")");
+									
+									// if (!op.equals("day")) {
+									//	where.append(" AND ");
+									//}
+								}		
+							} else {
+								where.append(" and av" + nbChampAnnotations + "."
+										+ "date "
+										+ criteres.get(k).getOperateur()
+										+ " :valeur");
+							}
+							
+						} else if (ca.getDataType().getType().equals("hyperlien")) {
+							where.append(" and " + nbChampAnnotations
+									+ ".alphanum " 
+									+ criteres.get(k).getOperateur()
+									+ " :valeur");
+						} else if (ca.getDataType().getType().equals("num")) {
+							where.append(
+									 " and cast(av" + nbChampAnnotations
+									+ ".alphanum as big_decimal) " 
+									+ criteres.get(k).getOperateur()
+									+ " :valeur");
+						} else if (ca.getDataType().getType()
+								.equals("thesaurus")
+								|| ca.getDataType().getType()
+										.equals("thesaurusM")) {
+							where.append(" and av" + nbChampAnnotations
+									+ ".item " + criteres.get(k).getOperateur()
+									+ " :valeur");
+						} else if (ca.getDataType().getType().equals("boolean")) {
+							where.append(" and av" + nbChampAnnotations
+									+ ".bool " + criteres.get(k).getOperateur()
+									+ " :valeur");
+						} else {
+							where.append(" and av" + nbChampAnnotations + "."
+									+ ca.getDataType().getType() + " "
+									+ criteres.get(k).getOperateur()
+									+ " :valeur");
+						}
+						if (!ca.getDataType().getType().equals("datetime") 		
+							|| ((Calendar) values.get(k)).get(Calendar.HOUR_OF_DAY) > 0
+							|| ((Calendar) values.get(k)).get(Calendar.MINUTE) > 0
+									|| !criteres.get(k).getOperateur().equals("=")) {
+							where.append(nbWhere);
+						}
+						wheres.add(where.toString());
+						++nbWhere;
+					}
+				}
+			} else if (champ.getChampEntite() != null) {
+				ChampEntite ce = champ.getChampEntite();
+				if (ce != null && ce.getEntite() != null) {
+					String nomEntite = ce.getEntite().getNom();
+					if (nomEntite != null) {
+						nomEntiteMajFirst = nomEntite.replaceFirst(".",
+								(nomEntite.charAt(0) + "").toUpperCase());
+						String nomChampMinFirst = ce.getNom().replaceFirst(".",
+								(ce.getNom().charAt(0) + "").toLowerCase());
+						if (nomChampMinFirst.endsWith("Id")) {
+							nomChampMinFirst = nomChampMinFirst.substring(0,
+									nomChampMinFirst.length() - 2);
+						} else if (nomChampMinFirst.endsWith("s") && ce.getQueryChamp() != null) {
+							// ne concerne donc que les champ entite Maladie.Collaborateurs .
+							nomChampMinFirst = "";
+						}
+						Champ parent = champ.getChampParent();
+
+						List<Champ> parents = new ArrayList<Champ>();
+						while (parent != null
+								&& parent.getChampEntite() != null) {
+							parents.add(0, parent);
+
+							ChampEntite ceParent = parent.getChampEntite();
+							String nomParent = ceParent.getNom().replaceFirst(
+									".",
+									(ceParent.getNom().charAt(0) + "")
+											.toLowerCase());
+							// On enlève le suffixe "Id"
+							if (nomParent.endsWith("Id")) {
+								nomParent = nomParent.substring(0,
+										nomParent.length() - 2);
+							}
+							String nomEntiteParent = ceParent.getEntite()
+									.getNom();
+							nomEntiteMajFirst = nomEntiteParent.replaceFirst(
+									".", (nomEntiteParent.charAt(0) + "")
+											.toUpperCase());
+
+							parent = parent.getChampParent();
+						}
+						// quand un parent est trouvé
+						// incrémente z pour pouvoir assigner 
+						// p + cpt au bon niveau de joins
+						String correspParent = "";
+						
+						String prefixe = "e";
+						
+						for (int i = 0; i < parents.size(); i++) {
+							parent = parents.get(i);
+							if (!allParents.containsKey(parent)) {
+								allParents.put(parent, "p" + cpt);
+								ChampEntite ceParent = parent.getChampEntite();
+								String nomParent = ceParent
+										.getNom()
+										.replaceFirst(
+												".",
+												(ceParent.getNom().charAt(0) + "")
+														.toLowerCase());
+								// On enlève le suffixe "Id"
+								if (nomParent.endsWith("Id")) {
+									nomParent = nomParent.substring(0,
+											nomParent.length() - 2);
+								}
+
+								// Création des joins
+								StringBuffer join = new StringBuffer();
+								if (i == 0) {
+									join.append("JOIN e.");
+									join.append(nomParent);
+									join.append(" as p");
+									join.append(cpt);
+									join.append(" ");
+									
+								} else {
+									//HERE A TESTER
+									if (!correspParent.equals("")) {
+										join.append("JOIN " + correspParent);
+										correspParent = "";
+									} else {
+										join.append("JOIN p");
+										join.append(cpt - 1);
+										
+									}
+									join.append(".");
+									join.append(nomParent);
+									join.append(" as p");
+									join.append(cpt);
+									join.append(" ");
+								}
+								++cpt;
+								joins.add(join.toString());
+							} else {
+								correspParent = allParents.get(parent);
+							}
+						}
+
+						String clause = "";
+						if (nbWhere == 1) {
+							clause = "WHERE ";
+						} else {
+							clause = " AND ";
+						}
+						
+						// si des jointures ont été faites
+						StringBuffer where = new StringBuffer();
+						where.append(clause);
+						
+						if (values.get(k) instanceof Calendar 
+								&& ((Calendar) values.get(k)).get(Calendar.HOUR_OF_DAY) == 0
+								&& ((Calendar) values.get(k)).get(Calendar.MINUTE) == 0
+								&& criteres.get(k).getOperateur().equals("=")) {
+							String[] calOps = new String[]{"year", "month", "day"};
+							for (String op : calOps) {
+								where.append(op + "(");
+								if (parents.size() > 0) {
+									prefixe = allParents
+											.get(parents.get(parents.size() - 1));
+									where.append(prefixe);
+								} else {
+									where.append("e");
+								}
+								where.append("." + nomChampMinFirst + ") "
+										+ criteres.get(k).getOperateur()
+										+ " " + op + "(:valeur"
+										+ nbWhere + ")");
+								if (!op.equals("day")) {
+									where.append(" AND ");
+								}
+							}		
+						} else {
+							if (parents.size() > 0) {
+								prefixe = allParents
+										.get(parents.get(parents.size() - 1));
+								where.append(prefixe);
+							} else {
+								where.append("e");
+							}
+							
+							if (!nomChampMinFirst.equals("")) {				
+								where.append("." + nomChampMinFirst + " "
+										+ criteres.get(k).getOperateur() + " :valeur"
+										+ nbWhere);
+							} else { 
+								where.append(" "
+										+ criteres.get(k).getOperateur() + " :valeur"
+										+ nbWhere);
+							}
+						}
+						// 2.0.10.2 Recherche patient implique 
+						// recherche sur jointure
+						if (parents.size() > 0 
+								&& nomEntiteMajFirst.equals("Patient")
+								&& !nomEntite.equals("Patient")
+								&& !nomEntite.equals("Maladie")
+								&& !parents.get(parents.size() - 1)
+										.getChampEntite().getNom()
+										.matches("Delegate.*")
+								&& !parents.get(parents.size() - 1)
+										.getChampEntite().getNom()
+										.equals("PatientMedecins")
+								&& !parents.get(parents.size() - 1)
+										.getChampEntite().getNom()
+										.equals("Collaborateurs")
+								&& !parents.get(parents.size() - 1)
+										.getChampEntite().getNom()
+										.equals("ServicePreleveurId")
+								&& !parents.get(parents.size() - 1)
+										.getChampEntite().getNom()
+										.equals("Risques")) {
+							 where.append(" AND ");
+							 prefixe = allParents
+									.get(parents.get(parents.size() - 1));
+							 where.append(prefixe);
+							 where.append(".banque in (:list");
+							 where.append(nbBanquesInCriteres);
+							 where.append(")");
+							 ++nbBanquesInCriteres;
+						}
+						wheres.add(where.toString());
+						++nbWhere;
+					}
+				}
+			}
+		}
+
+		// création de la requête
+		String idAttribut = "";
+		if (!nomEntiteMajFirst.equals("ProdDerive")) {
+			idAttribut = nomEntiteMajFirst.toLowerCase() + "Id";
+		} else {
+			idAttribut = "prodDeriveId";
+		}
+		sql.append("SELECT DISTINCT e.");
+		sql.append(idAttribut);
+		sql.append(" From " + nomEntiteMajFirst + " as e ");
+		if (withAnno) {
+			for (int i = 1; i <= nbChampAnnotations; i++) {
+				sql.append(", AnnotationValeur av");
+				sql.append(i);
+				sql.append(" ");
+			}
+
+		}
+		for (int j = 0; j < joins.size(); j++) {
+			sql.append(joins.get(j));
+		}
+		for (int j = 0; j < wheres.size(); j++) {
+			sql.append(wheres.get(j));
+		}
+		// si la liste n'est pas vide et que l'entité
+		// recherchée n'est pas un patient
+		if (banques != null && !banques.isEmpty()
+				&& !nomEntiteMajFirst.equals("Patient")) {
+			sql.append(" and e.banque in (:list)");
+		}
+
+		/* On exécute la requête. */
+		log.debug("findObjetByCritereManager : Exécution de la requête : \n"
+				+ sql.toString());
+
+		EntityManager em = entityManagerFactory.createEntityManager();
+		TypedQuery<Integer> query = em.createQuery(sql.toString(), Integer.class);
+		for (int i = 0; i < values.size(); i++) {
+			StringBuffer sb = new StringBuffer("valeur");
+			sb.append(i + 1);
+			query.setParameter(sb.toString(), values.get(i));
+		}
+
+		// si la liste n'est pas vide et que l'entité
+		// recherchée n'est pas un patient
+		if (sql.toString().contains("(:list)")) {
+			query.setParameter("list", banques);
+		}
+		for (int i = 1; i < nbBanquesInCriteres; i++) {
+			StringBuffer sb = new StringBuffer("list");
+			sb.append(i);
+			query.setParameter(sb.toString(), banques);
+		}
+		objets = query.getResultList();
+		log.debug("Fin de la requête");
+
+		return objets;
+	}
+
+	@Override
+	public List<Object> findObjetByCritereWithBanquesManager(Critere critere,
+			List<Banque> banques, Object value, boolean idSearch) {
+		List<Object> objets = new ArrayList<Object>();
+		if (!idSearch || (value instanceof Collection && value != null
+				&& !((Collection<?>) value).isEmpty())) {
+			if (critere.getChamp() != null) {
+				StringBuffer sb = new StringBuffer("");
+				Champ champ = critere.getChamp();
+				if (champ.getChampAnnotation() != null) {
+					ChampAnnotation ca = champ.getChampAnnotation();
+					if (ca != null && ca.getTableAnnotation() != null
+							&& ca.getTableAnnotation().getEntite() != null) {
+						String nomEntite = ca.getTableAnnotation().getEntite()
+								.getNom();
+						if (nomEntite != null) {
+							String nomEntiteMajFirst = nomEntite.replaceFirst(".",
+									(nomEntite.charAt(0) + "").toUpperCase());
+							String nomEntiteMinFirst = nomEntite.replaceFirst(".",
+									(nomEntite.charAt(0) + "").toLowerCase());
+							sb.append("SELECT e From " + nomEntiteMajFirst
+									+ " as e, AnnotationValeur av"
+									+ " join av.champAnnotation as ca" + " WHERE"
+									+ " e." + nomEntiteMinFirst + "Id = av.objetId"
+									+ " and ca.tableAnnotation.entite.nom = '"
+									+ nomEntiteMajFirst + "'");
+	
+							if (ca.getDataType().getType().equals("num")
+									|| ca.getDataType().getType()
+											.equals("hyperlien")) {
+								sb.append(" and av.alphanum "
+										+ critere.getOperateur() + " :valeur");
+							} else if (ca.getDataType().getType()
+									.equals("alphanum")
+									|| ca.getDataType().getType().equals("date")) {
+								sb.append(" and av." + ca.getDataType().getType()
+										+ " " + critere.getOperateur() + " :valeur");
+							} else if (ca.getDataType().getType().equals("datetime")) {
+								sb.append(" and av.date " 
+											+ critere.getOperateur() + " :valeur");
+							} else if (ca.getDataType().getType()
+									.equals("thesaurus")
+									|| ca.getDataType().getType()
+											.equals("thesaurusM")) {
+								sb.append(" and av.item " + critere.getOperateur()
+										+ " :valeur");
+							} else if (ca.getDataType().getType().equals("boolean")) {
+								sb.append(" and av.bool " + critere.getOperateur()
+										+ " :valeur");
+							} else {
+								sb.append(" and av." + ca.getDataType().getType()
+										+ " " + critere.getOperateur() + " :valeur");
+							}
+	
+							// si la liste n'est pas vide et que l'entité
+							// recherchée n'est pas un patient
+							if (banques != null && !banques.isEmpty()
+									&& !nomEntiteMajFirst.equals("Patient")) {
+								sb.append(" and e.banque in (:list)");
+							}
+						}
+					}
+				} else if (champ.getChampEntite() != null) {
+					ChampEntite ce = critere.getChamp().getChampEntite();
+					if (ce != null && ce.getEntite() != null) {
+						String nomEntite = ce.getEntite().getNom();
+						if (nomEntite != null) {
+							String nomEntiteMajFirst = nomEntite.replaceFirst(".",
+									(nomEntite.charAt(0) + "").toUpperCase());
+							String nomChampMinFirst = ce.getNom().replaceFirst(".",
+									(ce.getNom().charAt(0) + "").toLowerCase());
+							// recherche à partir des ids implique
+							// ne pas retirer le suffixe Id
+							if (nomChampMinFirst.endsWith("Id") && !idSearch) {
+								nomChampMinFirst = nomChampMinFirst.substring(0,
+										nomChampMinFirst.length() - 2);
+							}
+							Champ parent = champ.getChampParent();
+							List<String> joins = new ArrayList<String>();
+							List<Champ> parents = new ArrayList<Champ>();
+							while (parent != null
+									&& parent.getChampEntite() != null) {
+								parents.add(0, parent);
+	
+								ChampEntite ceParent = parent.getChampEntite();
+								String nomParent = ceParent.getNom().replaceFirst(
+										".",
+										(ceParent.getNom().charAt(0) + "")
+												.toLowerCase());
+								// On enlève le suffixe "Id"
+								if (nomParent.endsWith("Id")) {
+									nomParent = nomParent.substring(0,
+											nomParent.length() - 2);
+								}
+								String nomEntiteParent = ceParent.getEntite()
+										.getNom();
+								nomEntiteMajFirst = nomEntiteParent.replaceFirst(
+										".", (nomEntiteParent.charAt(0) + "")
+												.toUpperCase());
+	
+								parent = parent.getChampParent();
+							}
+	
+							for (int i = 0; i < parents.size(); i++) {
+								parent = parents.get(i);
+								ChampEntite ceParent = parent.getChampEntite();
+								String nomParent = ceParent.getNom().replaceFirst(
+										".",
+										(ceParent.getNom().charAt(0) + "")
+												.toLowerCase());
+								// On enlève le suffixe "Id"
+								if (nomParent.endsWith("Id")) {
+									nomParent = nomParent.substring(0,
+											nomParent.length() - 2);
+								}
+	
+								// Création des joins
+								StringBuffer join = new StringBuffer();
+								if (i == 0) {
+									join.append("JOIN e.");
+									join.append(nomParent);
+									join.append(" as p1 ");
+								} else {
+									join.append("JOIN p");
+									join.append(i);
+									join.append(".");
+									join.append(nomParent);
+									join.append(" as p");
+									join.append(i + 1);
+									join.append(" ");
+								}
+								joins.add(join.toString());
+							}
+							// création de la requête
+							sb.append("SELECT DISTINCT e"); 
+							if (idSearch) {
+								sb.append("." + nomEntiteMajFirst.replaceFirst(".",
+										(nomEntiteMajFirst.charAt(0) + "").toLowerCase()) 
+										+ "Id");
+							}
+							sb.append(" From " + nomEntiteMajFirst + " as e ");
+							for (int i = 0; i < joins.size(); i++) {
+								sb.append(joins.get(i));
+							}
+	
+							// si des jointures ont été faites
+							if (parents.size() > 0) {
+								sb.append("WHERE p");
+								sb.append(parents.size());
+							} else {
+								sb.append("WHERE e");
+							}
+							sb.append("." + nomChampMinFirst + " "
+									+ critere.getOperateur() + " :valeur");
+	
+							// si la liste n'est pas vide et que l'entité
+							// recherchée n'est pas un patient
+							if (banques != null && !banques.isEmpty()
+									&& !nomEntiteMajFirst.equals("Patient")) {
+								sb.append(" and e.banque in (:list)");
+							}
+						}
+					}
+				} else {
+					throw new IllegalArgumentException();
+				}
+				/* On exécute la requête. */
+				log.info("findObjetByCritereManager : Exécution de la requête : \n"
+						+ sb.toString());
+				EntityManager em = entityManagerFactory.createEntityManager();
+				TypedQuery<Object> query = em.createQuery(sb.toString(), Object.class).setParameter("valeur",
+						value);
+				// si la liste n'est pas vide et que l'entité
+				// recherchée n'est pas un patient
+				if (sb.toString().contains("(:list)")) {
+					query.setParameter("list", banques);
+				}
+	
+				objets = query.getResultList();
+			}
+		}
+		return objets;
+	}
+
+	@Override
+	public List<Integer> findObjetByCriteresWithBanquesDeriveVersionManager(
+			List<Critere> criteres, List<Banque> banques, List<Object> values,
+			boolean searchForDerives) {
+		List<Integer> objets = null;
+
+		StringBuffer sql = new StringBuffer();
+		String nomEntiteMajFirst = "";
+		List<String> joins = new ArrayList<String>();
+		java.util.Hashtable<Champ, String> allParents = new java.util.Hashtable<Champ, String>();
+		List<String> wheres = new ArrayList<String>();
+		Entite entiteTransformation = null;
+		int cpt = 1;
+		int nbWhere = 1;
+		// int nbBanquesInCriteres = 1;
+		for (int k = 0; k < criteres.size(); k++) {
+			if (criteres.get(k) != null) {
+				Champ champ = criteres.get(k).getChamp();
+				if (champ != null) {
+					if (champ.getChampEntite() != null) {
+						ChampEntite ce = champ.getChampEntite();
+						if (ce != null && ce.getEntite() != null) {
+							String nomEntite = ce.getEntite().getNom();
+							if (nomEntite != null) {
+								nomEntiteMajFirst = nomEntite.replaceFirst(".",
+										(nomEntite.charAt(0) + "").toUpperCase());
+								String nomChampMinFirst = ce.getNom().replaceFirst(
+										".",
+										(ce.getNom().charAt(0) + "").toLowerCase());
+								if (nomChampMinFirst.endsWith("Id")) {
+									nomChampMinFirst = nomChampMinFirst.substring(
+											0, nomChampMinFirst.length() - 2);
+								} else if (nomChampMinFirst.endsWith("s") && ce.getQueryChamp() != null) {
+									// ne concerne donc que les champ entite Maladie.Collaborateurs .
+									nomChampMinFirst = "";
+								}
+								Champ parent = champ.getChampParent();
+								List<Champ> parents = new ArrayList<Champ>();
+								while (parent != null
+										&& parent.getChampEntite() != null) {
+	
+									if (!parent.getChampEntite().getNom()
+											.contains("ProdDerives")) {
+										parents.add(0, parent);
+									} else {
+										entiteTransformation = parent
+												.getChampEntite().getEntite();
+									}
+	
+									ChampEntite ceParent = parent.getChampEntite();
+									String nomParent = ceParent
+											.getNom()
+											.replaceFirst(
+													".",
+													(ceParent.getNom().charAt(0) + "")
+															.toLowerCase());
+									// On enlève le suffixe "Id"
+									if (nomParent.endsWith("Id")) {
+										nomParent = nomParent.substring(0,
+												nomParent.length() - 2);
+									}
+									String nomEntiteParent = ceParent.getEntite()
+											.getNom();
+									nomEntiteMajFirst = nomEntiteParent
+											.replaceFirst(".", (nomEntiteParent
+													.charAt(0) + "").toUpperCase());
+	
+									parent = parent.getChampParent();
+								}
+								
+								// quand un parent est trouvé
+								// incrémente z pour pouvoir assigner 
+								// p + cpt au bon niveau de joins
+								String correspParent = "";
+	
+								for (int i = 0; i < parents.size(); i++) {
+									parent = parents.get(i);
+									if (!allParents.containsKey(parent)) {
+										allParents.put(parent, "p" + cpt);
+										ChampEntite ceParent = parent
+												.getChampEntite();
+										String nomParent = ceParent.getNom()
+												.replaceFirst(
+														".",
+														(ceParent.getNom()
+																.charAt(0) + "")
+																.toLowerCase());
+										// On enlève le suffixe "Id"
+										if (nomParent.endsWith("Id")) {
+											nomParent = nomParent.substring(0,
+													nomParent.length() - 2);
+										}
+	
+										// Création des joins
+										StringBuffer join = new StringBuffer();
+										if (i == 0) {
+											join.append("JOIN e.");
+											join.append(nomParent);
+											join.append(" as p1 ");
+										} else {
+											if (!correspParent.equals("")) {
+												join.append("JOIN " + correspParent);
+												correspParent = "";
+											} else {
+												join.append("JOIN p");
+												join.append(cpt - 1);
+											}
+											
+											join.append(".");
+											join.append(nomParent);
+											join.append(" as p");
+											join.append(cpt);
+											join.append(" ");
+											
+//											join.append(".");
+//											join.append(nomParent);
+//											join.append(" as p");
+//											join.append(i + 1);
+//											join.append(" ");
+										}
+										if (!join.toString().contains("prodDerive")) {
+											joins.add(join.toString());
+										}
+										++cpt;
+									} else {
+										correspParent = allParents.get(parent);
+									}
+								}
+								
+								// si des jointures ont été faites
+								String prefixe = "e";
+								StringBuffer where;
+									
+								if (values.get(k) instanceof Calendar 
+										&& ((Calendar) values.get(k)).get(Calendar.HOUR_OF_DAY) == 0
+										&& ((Calendar) values.get(k)).get(Calendar.MINUTE) == 0
+										&& criteres.get(k).getOperateur().equals("=")) {
+									String[] calOps = new String[]{"year", "month", "day"};
+									for (String op : calOps) {
+										where = new StringBuffer();
+										if (parents.size() > 0) {
+											if (searchForDerives) {
+												prefixe = allParents.get(parents
+														.get(parents.size() - 1));
+												where.append("AND " + op + "(");
+												where.append(prefixe);
+											} else {
+												where.append("AND " + op + "(prod");
+											}
+										} else {
+											if (searchForDerives) {
+												where.append("AND " + op + "(e");
+											} else {
+												where.append("AND " + op + "(prod");
+											}
+										}
+										
+										where.append("." + nomChampMinFirst + ") "
+												+ criteres.get(k).getOperateur()
+												+ " " + op + "(:valeur" + nbWhere + ") ");
+										wheres.add(where.toString());
+									}		
+									++nbWhere;
+								} else {
+									where = new StringBuffer();
+									if (parents.size() > 0) {
+										if (searchForDerives) {
+											prefixe = allParents.get(parents
+													.get(parents.size() - 1));
+											where.append("AND ");
+											where.append(prefixe);
+										} else {
+											where.append("AND prod");
+										}
+									} else {
+										if (searchForDerives) {
+											where.append("AND e");
+										} else {
+											where.append("AND prod");
+										}
+									}
+									
+									if (!nomChampMinFirst.equals("")) {				
+										where.append("." + nomChampMinFirst + " "
+												+ criteres.get(k).getOperateur()
+												+ " :valeur" + nbWhere + " ");
+									} else { 
+										where.append(" "
+												+ criteres.get(k).getOperateur() + " :valeur"
+												+ nbWhere  + " ");
+									}
+									wheres.add(where.toString());
+									++nbWhere;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		// création de la requête
+		if (searchForDerives) {
+			sql.append("SELECT DISTINCT prod.prodDeriveId "
+					+ "From ProdDerive as prod, ");
+			sql.append(entiteTransformation.getNom());
+			sql.append(" as e ");
+		} else {
+			sql.append("SELECT DISTINCT e.");
+			sql.append(nomEntiteMajFirst.toLowerCase() + "Id");
+			sql.append(" From " + nomEntiteMajFirst
+					+ " as e, ProdDerive as prod ");
+		}
+		StringBuffer where = new StringBuffer();
+		if (searchForDerives) {
+			String ent = entiteTransformation.getNom();
+			ent = ent.replace(ent.charAt(0) + "",
+					(ent.charAt(0) + "").toLowerCase());
+			where.append("WHERE prod.transformation.objetId = e." + ent + "Id");
+			where.append(" AND prod.transformation.entite " + "= :entite ");
+		} else {
+			String ent = entiteTransformation.getNom();
+			ent = ent.replace(ent.charAt(0) + "",
+					(ent.charAt(0) + "").toLowerCase());
+			where.append("WHERE prod.transformation.objetId = ");
+			if (joins.size() > 0) {
+				where.append("p" + joins.size());
+			} else {
+				where.append("e");
+			}
+			where.append("." + ent + "Id");
+			where.append(" AND prod.transformation.entite " + "= :entite ");
+		}
+		wheres.add(0, where.toString());
+
+		for (int j = 0; j < joins.size(); j++) {
+			sql.append(joins.get(j));
+		}
+		for (int j = 0; j < wheres.size(); j++) {
+			sql.append(wheres.get(j));
+		}
+		// si la liste n'est pas vide et que l'entité
+		// recherchée n'est pas un patient
+		sql.append(" and prod.banque in (:list)");
+		if (banques != null && !banques.isEmpty()
+				&& !nomEntiteMajFirst.equals("Patient")) {
+			if (!searchForDerives) {
+				sql.append(" and e.banque in (:list)");
+			}
+		}
+
+		/* On exécute la requête. */
+		log.info("findObjetByCritereManager : Exécution de la requête : \n"
+				+ sql.toString());
+		EntityManager em = entityManagerFactory.createEntityManager();
+		TypedQuery<Integer> query = em.createQuery(sql.toString(), Integer.class);
+		query.setParameter("entite", entiteTransformation);
+		for (int i = 0; i < values.size(); i++) {
+			StringBuffer sb = new StringBuffer("valeur");
+			sb.append(i + 1);
+			query.setParameter(sb.toString(), values.get(i));
+		}
+
+		// si la liste n'est pas vide et que l'entité
+		// recherchée n'est pas un patient
+		if (sql.toString().contains("(:list)")) {
+			query.setParameter("list", banques);
+		}
+
+		objets = query.getResultList();
+
+		return objets;
+	}
+
+	@Override
+	public List<Object> findObjetByCritereWithBanquesDeriveVersionManager(
+			Critere critere, List<Banque> banques, Object value,
+			boolean searchForDerives, boolean idSearch) {
+		List<Object> objets = new ArrayList<Object>();
+		Entite entiteTransformation = null;
+		if (!idSearch || (value instanceof Collection && value != null
+				&& !((Collection<?>) value).isEmpty())) {
+			if (critere.getChamp() != null) {
+				StringBuffer sb = new StringBuffer("");
+				Champ champ = critere.getChamp();
+				if (champ.getChampEntite() != null) {
+					ChampEntite ce = critere.getChamp().getChampEntite();
+					if (ce != null && ce.getEntite() != null) {
+						String nomEntite = ce.getEntite().getNom();
+						if (nomEntite != null) {
+							String nomEntiteMajFirst = nomEntite.replaceFirst(".",
+									(nomEntite.charAt(0) + "").toUpperCase());
+							String nomChampMinFirst = ce.getNom().replaceFirst(".",
+									(ce.getNom().charAt(0) + "").toLowerCase());
+							if (nomChampMinFirst.endsWith("Id") && !idSearch) {
+								nomChampMinFirst = nomChampMinFirst.substring(0,
+										nomChampMinFirst.length() - 2);
+							}
+							Champ parent = champ.getChampParent();
+							List<String> joins = new ArrayList<String>();
+							List<Champ> parents = new ArrayList<Champ>();
+							while (parent != null
+									&& parent.getChampEntite() != null) {
+								if (!parent.getChampEntite().getNom()
+										.contains("ProdDerives")) {
+									parents.add(0, parent);
+								} else {
+									entiteTransformation = parent.getChampEntite()
+											.getEntite();
+								}
+	
+								ChampEntite ceParent = parent.getChampEntite();
+								String nomParent = ceParent.getNom().replaceFirst(
+										".",
+										(ceParent.getNom().charAt(0) + "")
+												.toLowerCase());
+								// On enlève le suffixe "Id"
+								if (nomParent.endsWith("Id")) {
+									nomParent = nomParent.substring(0,
+											nomParent.length() - 2);
+								}
+								String nomEntiteParent = ceParent.getEntite()
+										.getNom();
+								nomEntiteMajFirst = nomEntiteParent.replaceFirst(
+										".", (nomEntiteParent.charAt(0) + "")
+												.toUpperCase());
+	
+								parent = parent.getChampParent();
+							}
+	
+							for (int i = 0; i < parents.size(); i++) {
+								parent = parents.get(i);
+								ChampEntite ceParent = parent.getChampEntite();
+								String nomParent = ceParent.getNom().replaceFirst(
+										".",
+										(ceParent.getNom().charAt(0) + "")
+												.toLowerCase());
+								// On enlève le suffixe "Id"
+								if (nomParent.endsWith("Id")) {
+									nomParent = nomParent.substring(0,
+											nomParent.length() - 2);
+								}
+	
+								// Création des joins
+								StringBuffer join = new StringBuffer();
+								if (i == 0) {
+									join.append("JOIN e.");
+									join.append(nomParent);
+									join.append(" as p1 ");
+								} else {
+									join.append("JOIN p");
+									join.append(i);
+									join.append(".");
+									join.append(nomParent);
+									join.append(" as p");
+									join.append(i + 1);
+									join.append(" ");
+								}
+								if (!join.toString().contains("prodDerive")) {
+									joins.add(join.toString());
+								}
+							}
+							// création de la requête
+							if (searchForDerives) {
+								if (idSearch) {
+									sb.append("SELECT DISTINCT prod.prodDeriveId ");
+								} else {
+									sb.append("SELECT DISTINCT prod ");
+								}
+								
+								sb.append("From ProdDerive as prod, ");
+								sb.append(entiteTransformation.getNom());
+								sb.append(" as e ");
+							} else {
+								sb.append("SELECT DISTINCT e"); 
+								if (idSearch) {
+									sb.append("." + nomEntiteMajFirst.replaceFirst(".",
+											(nomEntiteMajFirst.charAt(0) + "").toLowerCase()) 
+											+ "Id");
+								}
+								sb.append(" From " + nomEntiteMajFirst + " as e");
+								sb.append(", ProdDerive as prod ");
+							}
+							for (int i = 0; i < joins.size(); i++) {
+								sb.append(joins.get(i));
+							}
+	
+							if (searchForDerives) {
+								String ent = entiteTransformation.getNom();
+								ent = ent.replace(ent.charAt(0) + "",
+										(ent.charAt(0) + "").toLowerCase());
+								sb.append("WHERE prod.transformation.objetId = e."
+										+ ent + "Id");
+								sb.append(" AND prod.transformation.entite "
+										+ "= :entite ");
+							} else {
+								String ent = entiteTransformation.getNom();
+								ent = ent.replace(ent.charAt(0) + "",
+										(ent.charAt(0) + "").toLowerCase());
+								sb.append("WHERE prod.transformation.objetId = ");
+								if (joins.size() > 0) {
+									sb.append("p" + joins.size());
+								} else {
+									sb.append("e");
+								}
+								sb.append("." + ent + "Id");
+								sb.append(" AND prod.transformation.entite "
+										+ "= :entite ");
+							}
+							// si des jointures ont été faites
+							if (joins.size() > 0) {
+								if (searchForDerives) {
+									sb.append("AND p");
+									sb.append(parents.size());
+								} else {
+									sb.append("AND prod");
+								}
+							} else {
+								if (searchForDerives) {
+									sb.append("AND e");
+								} else {
+									sb.append("AND prod");
+								}
+							}
+							sb.append("." + nomChampMinFirst + " "
+									+ critere.getOperateur() + " :valeur");
+	
+							// si la liste n'est pas vide et que l'entité
+							// recherchée n'est pas un patient
+							if (banques != null && !banques.isEmpty()
+									&& !nomEntiteMajFirst.equals("Patient")) {
+								if (searchForDerives) {
+									sb.append(" and prod.banque in (:list)");
+								} else {
+									sb.append(" and e.banque in (:list)");
+								}
+							}
+						}
+					}
+				} else {
+					throw new IllegalArgumentException();
+				}
+				// On exécute la requête.
+				EntityManager em = entityManagerFactory.createEntityManager();
+				TypedQuery<Object> query = em.createQuery(sb.toString(), Object.class)
+						.setParameter("valeur", value);
+				query.setParameter("entite", entiteTransformation);
+				// si la liste n'est pas vide et que l'entité
+				// recherchée n'est pas un patient
+				if (sb.toString().contains("(:list)")) {
+					query.setParameter("list", banques);
+				}
+				objets = query.getResultList();
+			}
+		}
+		return objets;
+	}
+
+	@Override
+	public List<Integer> findObjetByCritereInListWithBanquesManager(
+			Critere critere, List<Banque> banques, List<Object> values, boolean cumulative) {
+		List<Integer> objets = null;
+		if (critere.getChamp() != null) {
+			String nomEntite = null;
+			String nomEntiteMajFirst = null;
+			// String nomEntiteMinFirst = null;
+			String nomChampMinFirst = null;
+			StringBuffer sb = new StringBuffer("");
+			Champ champ = critere.getChamp();
+			// init valeurs communes
+//			if (champ.getChampAnnotation() != null) {
+//				ChampAnnotation ca = champ.getChampAnnotation();
+//				if (ca != null && ca.getTableAnnotation() != null
+//						&& ca.getTableAnnotation().getEntite() != null) {
+//					nomEntite = ca.getTableAnnotation().getEntite()
+//							.getNom();
+//				}
+//			}
+			
+			// annotation type thesM uniquement
+			if (champ.getChampAnnotation() != null 
+				&& champ.getChampAnnotation().getDataType().getType().equals("thesaurusM")) {
+//				sb.append("SELECT DISTINCT e.");
+//				if (!nomEntiteMajFirst.equals("ProdDerive")) {
+//					sb.append(nomEntiteMajFirst.toLowerCase() + "Id");
+//				} else {
+//					sb.append("prodDeriveId");
+//				}
+//				
+//				sb.append(" From " + nomEntiteMajFirst
+//						+ " as e, AnnotationValeur av"
+//						+ " join av.champAnnotation as ca" + " WHERE"
+//						+ " e." + nomEntiteMinFirst + "Id = av.objetId"
+//						+ " and ca.tableAnnotation.entite.nom = '"
+//						+ nomEntiteMajFirst + "'");
+				
+				sb.append("SELECT DISTINCT av.objetId From AnnotationValeur av");
+				sb.append(" JOIN av.champAnnotation ca ");
+				sb.append(" WHERE ca.champAnnotationId = :champId ");
+//				+ nomEntiteMinFirst + "Id = av.objetId"
+//				+ " and ca.tableAnnotation.entite.nom = '"
+//				+ nomEntiteMajFirst + "'");
+				
+				if (!cumulative || values.isEmpty()) {
+					sb.append("AND av.item in (:valeurs)");
+				} else {
+					// first round val:1
+					sb.append("AND av.item = :val1");
+				}
+				
+				// banques restriction
+				if (banques != null) {
+					sb.append(" AND av.banque in (:list)");
+				}
+				
+				if (cumulative && !values.isEmpty()) {
+					String sbPart = sb.toString();					
+					for (int i = 2; i < values.size() + 1; i++) {						
+						sb.append(" AND av.objetId in ");
+						sb.append("(" + sbPart.replaceFirst(":val1", ":val" + i)
+								.replaceAll( " av", " av" + i)
+								+ ") ");
+					}
+				}				
+				
+//						+ critere.getOperateur() + " '"
+//						+ critere.getValeur() + "'");
+				
+//				if (ca.getDataType().getType().equals("num")) {
+//					sb.append(" and av.alphanum "
+//							+ critere.getOperateur() + " '"
+//							+ critere.getValeur() + "'");
+//				} else if (ca.getDataType().getType()
+//						.equals("alphanum")
+//						|| ca.getDataType().getType().equals("date")) {
+//					sb.append(" and av." + ca.getDataType().getType()
+//							+ " " + critere.getOperateur() + " '"
+//							+ critere.getValeur() + "'");
+//				} else if (ca.getDataType().getType().equals("datetime")) {
+//					sb.append(" and av.date "
+//							+ critere.getOperateur() + " '"
+//							+ critere.getValeur() + "'");
+//				} else if (ca.getDataType().getType()
+//						.equals("thesaurus")) {
+//					sb.append(" and av.item.valeur "
+//							+ critere.getOperateur() + " '"
+//							+ critere.getValeur() + "'");
+//				} else if (ca.getDataType().getType().equals("boolean")) {
+//					sb.append(" and av.bool " + critere.getOperateur()
+//							+ " " + critere.getValeur());
+//				} else {
+//					sb.append(" and av." + ca.getDataType().getType()
+//							+ " " + critere.getOperateur() + " "
+//							+ critere.getValeur());
+//				}
+//			}
+			} else if (champ.getChampEntite() != null) {
+				ChampEntite ce = critere.getChamp().getChampEntite();
+				if (ce != null && ce.getEntite() != null) {
+					nomEntite = ce.getEntite().getNom();
+					nomChampMinFirst = ce.getNom().replaceFirst(".",
+							(ce.getNom().charAt(0) + "").toLowerCase());
+					if (nomChampMinFirst.endsWith("Id")) {
+						nomChampMinFirst = nomChampMinFirst.substring(0,
+								nomChampMinFirst.length() - 2);
+					}
+				}
+				
+				nomEntiteMajFirst = nomEntite.replaceFirst(".",
+					(nomEntite.charAt(0) + "").toUpperCase());
+						
+				Champ parent = champ.getChampParent();
+				List<String> joins = new ArrayList<String>();
+				List<Champ> parents = new ArrayList<Champ>();
+				while (parent != null
+						&& parent.getChampEntite() != null) {
+					parents.add(0, parent);
+
+					ChampEntite ceParent = parent.getChampEntite();
+					String nomParent = ceParent.getNom().replaceFirst(
+							".",
+							(ceParent.getNom().charAt(0) + "")
+									.toLowerCase());
+					// On enlève le suffixe "Id"
+					if (nomParent.endsWith("Id")) {
+						nomParent = nomParent.substring(0,
+								nomParent.length() - 2);
+					}
+					String nomEntiteParent = ceParent.getEntite()
+							.getNom();
+					nomEntiteMajFirst = nomEntiteParent.replaceFirst(
+							".", (nomEntiteParent.charAt(0) + "")
+									.toUpperCase());
+
+					parent = parent.getChampParent();
+				}
+
+				for (int i = 0; i < parents.size(); i++) {
+					parent = parents.get(i);
+					ChampEntite ceParent = parent.getChampEntite();
+					String nomParent = ceParent.getNom().replaceFirst(
+							".",
+							(ceParent.getNom().charAt(0) + "")
+									.toLowerCase());
+					// On enlève le suffixe "Id"
+					if (nomParent.endsWith("Id")) {
+						nomParent = nomParent.substring(0,
+								nomParent.length() - 2);
+					}
+
+					// Création des joins
+					StringBuffer join = new StringBuffer();
+					if (i == 0) {
+						join.append("JOIN e.");
+						join.append(nomParent);
+						join.append(" as p1 ");
+					} else {
+						join.append("JOIN p");
+						join.append(i);
+						join.append(".");
+						join.append(nomParent);
+						join.append(" as p");
+						join.append(i + 1);
+						join.append(" ");
+					}
+					joins.add(join.toString());
+				}
+				// création de la requête
+				sb.append("SELECT DISTINCT e.");
+				if (!nomEntiteMajFirst.equals("ProdDerive")) {
+					sb.append(nomEntiteMajFirst.toLowerCase() + "Id");
+				} else {
+					sb.append("prodDeriveId");
+				}
+				sb.append(" From " + nomEntiteMajFirst + " as e ");
+				for (int i = 0; i < joins.size(); i++) {
+					sb.append(joins.get(i));
+				}
+
+				// si des jointures ont été faites
+				if (parents.size() > 0) {
+					sb.append("WHERE p");
+					sb.append(parents.size());
+				} else {
+					sb.append("WHERE e");
+				}
+				
+				if (!cumulative || values.isEmpty()) {
+					sb.append("." + nomChampMinFirst + " in (:valeurs)");
+				} else {
+					// first round val:1
+					sb.append("." + nomChampMinFirst + " = :val1");
+				}
+
+				// si la liste n'est pas vide et que l'entité
+				// recherchée n'est pas un patient
+				if (banques != null && !banques.isEmpty()
+						&& !nomEntiteMajFirst.equals("Patient")) {
+					sb.append(" and e.banque in (:list)");
+				}
+				
+				// cumulative par ajout select in (:val2) and in (:val3)
+				if (cumulative && !values.isEmpty()) {
+					String sbPart = sb.toString();
+					String joinCol = nomEntiteMajFirst.toLowerCase() + "Id";
+					
+					for (int i = 2; i < values.size() + 1; i++) {						
+						sb.append(" AND e." + joinCol + " in ");
+						sb.append("(" + sbPart.replaceFirst(":val1", ":val" + i) 
+								+ ") ");
+					}
+				}
+			} else {
+				throw new IllegalArgumentException();
+			}
+			/* On exécute la requête. */
+			log.info("findObjetByCritereManager : Exécution de la requête : \n"
+					+ sb.toString() + " avec les paramètres " + values);
+			EntityManager em = entityManagerFactory.createEntityManager();
+			TypedQuery<Integer> query = em.createQuery(sb.toString(), Integer.class);
+			if (!cumulative || values.isEmpty()) {
+				query.setParameter("valeurs", values);
+			} else {
+				for (int i = 0; i < values.size(); i++) {
+					query.setParameter("val" + (i+1), values.get(i));
+				}
+			}
+			
+			// si annotation 
+			if (sb.toString().contains(":champId")) {
+				query.setParameter("champId", champ.getChampAnnotation().getChampAnnotationId());
+			}
+			
+			// si la liste n'est pas vide et que l'entité
+			// recherchée n'est pas un patient
+			if (sb.toString().contains("(:list)")) {
+				query.setParameter("list", banques);
+			}
+
+			objets = query.getResultList();
+		}
+		return objets;
+	}
+
+	@Override
+	public List<Integer> findObjetByCritereOnCodesWithBanquesManager(
+			Critere critere, List<Banque> banques, List<String> codes,
+			List<String> libelles, String value, boolean isMorpho) {
+		List<Integer> objets = null;
+		if (critere.getChamp() != null) {
+			StringBuffer sb = new StringBuffer("");
+			Champ champ = critere.getChamp();
+			ChampEntite ce = critere.getChamp().getChampEntite();
+			if (ce != null && ce.getEntite() != null) {
+				String nomEntite = ce.getEntite().getNom();
+				if (nomEntite != null) {
+					String nomEntiteMajFirst = nomEntite.replaceFirst(".",
+							(nomEntite.charAt(0) + "").toUpperCase());
+					String nomChampMinFirst = ce.getNom().replaceFirst(".",
+							(ce.getNom().charAt(0) + "").toLowerCase());
+					if (nomChampMinFirst.endsWith("Id")) {
+						nomChampMinFirst = nomChampMinFirst.substring(0,
+								nomChampMinFirst.length() - 2);
+					}
+					Champ parent = champ.getChampParent();
+					List<String> joins = new ArrayList<String>();
+					List<Champ> parents = new ArrayList<Champ>();
+					while (parent != null && parent.getChampEntite() != null) {
+						parents.add(0, parent);
+
+						ChampEntite ceParent = parent.getChampEntite();
+						String nomParent = ceParent.getNom().replaceFirst(
+								".",
+								(ceParent.getNom().charAt(0) + "")
+										.toLowerCase());
+						// On enlève le suffixe "Id"
+						if (nomParent.endsWith("Id")) {
+							nomParent = nomParent.substring(0,
+									nomParent.length() - 2);
+						}
+						String nomEntiteParent = ceParent.getEntite().getNom();
+						nomEntiteMajFirst = nomEntiteParent.replaceFirst(".",
+								(nomEntiteParent.charAt(0) + "").toUpperCase());
+
+						parent = parent.getChampParent();
+					}
+
+					for (int i = 0; i < parents.size(); i++) {
+						parent = parents.get(i);
+						ChampEntite ceParent = parent.getChampEntite();
+						String nomParent = ceParent.getNom().replaceFirst(
+								".",
+								(ceParent.getNom().charAt(0) + "")
+										.toLowerCase());
+						// On enlève le suffixe "Id"
+						if (nomParent.endsWith("Id")) {
+							nomParent = nomParent.substring(0,
+									nomParent.length() - 2);
+						}
+
+						// Création des joins
+						StringBuffer join = new StringBuffer();
+						if (i == 0) {
+							join.append("JOIN e.");
+							join.append(nomParent);
+							join.append(" as p1 ");
+						} else {
+							join.append("JOIN p");
+							join.append(i);
+							join.append(".");
+							join.append(nomParent);
+							join.append(" as p");
+							join.append(i + 1);
+							join.append(" ");
+						}
+						joins.add(join.toString());
+					}
+					// création de la requête
+					sb.append("SELECT DISTINCT e.");
+					if (!nomEntiteMajFirst.equals("ProdDerive")) {
+						sb.append(nomEntiteMajFirst.toLowerCase() + "Id");
+					} else {
+						sb.append("prodDeriveId");
+					}
+					sb.append(" From " + nomEntiteMajFirst + " as e ");
+					for (int i = 0; i < joins.size(); i++) {
+						sb.append(joins.get(i));
+					}
+
+					// si des jointures ont été faites
+					String prefixe = "";
+					if (parents.size() > 0) {
+						prefixe = "p" + parents.size();
+					} else {
+						prefixe = "e";
+					}
+
+					sb.append("WHERE (");
+					if (codes != null && codes.size() > 0) {
+						sb.append(prefixe);
+						sb.append(".code in (:codes) OR ");
+					}
+					if (libelles != null && libelles.size() > 0) {
+						sb.append(prefixe);
+						sb.append(".libelle in (:libelles) OR ");
+					}
+					sb.append(prefixe);
+					sb.append(".code like :code OR ");
+					sb.append(prefixe);
+					sb.append(".libelle like :libelle) AND ");
+					sb.append(prefixe);
+					// sb.append(".isMorpho = :morpho ");
+					if (isMorpho) {
+						sb.append(".isMorpho = 1 ");
+					} else {
+						sb.append(".isOrgane = 1 ");
+					}
+
+					if (parents.size() > 1) {
+						sb.append(" AND p");
+						sb.append(parents.size() - 1);
+						sb.append(".banque in (:listEchans)");
+					}
+
+					// si la liste n'est pas vide et que l'entité
+					// recherchée n'est pas un patient
+					if (banques != null && !banques.isEmpty()
+							&& !nomEntiteMajFirst.equals("Patient")) {
+						sb.append(" and e.banque in (:list)");
+					}
+				}
+			}
+			/* On exécute la requête. */
+			log.info("findObjetByCritereManager : Exécution de la requête : \n"
+					+ sb.toString() + " avec les paramètres " + codes + ", "
+					+ libelles + ", " + value + " et " + isMorpho);
+			EntityManager em = entityManagerFactory.createEntityManager();
+			TypedQuery<Integer> query = em.createQuery(sb.toString(), Integer.class);
+			if (sb.toString().contains(":codes")) {
+				query.setParameter("codes", codes);
+			}
+			if (sb.toString().contains("libelles")) {
+				query.setParameter("libelles", libelles);
+			}
+			query.setParameter("code", value);
+			query.setParameter("libelle", value);
+			// query.setParameter("morpho", isMorpho);
+			// si la liste n'est pas vide et que l'entité
+			// recherchée n'est pas un patient
+			if (sb.toString().contains("(:list)")) {
+				query.setParameter("list", banques);
+			}
+			if (sb.toString().contains("(:listEchans)")) {
+				query.setParameter("listEchans", banques);
+			}
+
+			objets = query.getResultList();
+		}
+		return objets;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Integer> findPrelevementsByNbEchantillonsWithBanquesManager(
+			String operateur, Integer nb, List<Banque> banques) {
+
+		if (operateur != null && !operateur.equals("") && nb != null && nb >= 0
+				&& banques != null && banques.size() > 0) {
+			Long nbCasted = new Long(nb);
+
+			// construction de la requête
+			StringBuffer sb = new StringBuffer();
+			sb.append("SELECT distinct(p.prelevementId) "
+					+ "FROM Prelevement p ");
+			sb.append("WHERE (select count(e) From Echantillon e ");
+			sb.append("WHERE e.prelevement=p ");
+			sb.append("and e.quantite > 0) ");
+			sb.append(operateur);
+			sb.append(" :nb");
+			sb.append(" and p.banque in (:list)");
+
+			EntityManager em = entityManagerFactory.createEntityManager();
+			Query query = em.createQuery(sb.toString()).setParameter("nb",
+					nbCasted);
+			query.setParameter("list", banques);
+
+			return (List<Integer>) query.getResultList();
+
+		} else {
+			return new ArrayList<Integer>();
+		}
+
+	}
+
+	@Override
+	public List<Integer> findPrelevementsByMedecinsManager(
+			Collaborateur collab, List<Banque> banques) {
+
+		if (collab != null && banques != null && banques.size() > 0) {
+
+			// construction de la requête
+			StringBuffer sb = new StringBuffer();
+			sb.append("SELECT distinct(p.prelevementId) "
+					+ "FROM Prelevement p ");
+			sb.append("LEFT JOIN p.maladie.collaborateurs o ");
+			sb.append("LEFT JOIN p.maladie.patient.patientMedecins t ");
+			sb.append("WHERE (t.pk.collaborateur = :c " + "OR o = :c ) ");
+			sb.append("AND p.banque in (:list)");
+
+			EntityManager em = entityManagerFactory.createEntityManager();
+			TypedQuery<Integer> query = em.createQuery(sb.toString(), Integer.class)
+					.setParameter("c", collab);
+			query.setParameter("list", banques);
+
+			return query.getResultList();
+
+		} else {
+			return new ArrayList<Integer>();
+		}
+
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Integer> findPrelevementsByAgePatientWithBanquesManager(
+			String operateur, Integer age, List<Banque> banques, String dbms) {
+
+		if (operateur != null && !operateur.equals("") && age != null
+				&& age >= 0 && banques != null && banques.size() > 0
+				&& dbms != null) {
+			
+			// banque Ids
+			List<Integer> banqueIds = new ArrayList<Integer>();
+			for (Banque b : banques) {
+				banqueIds.add(b.getBanqueId());
+			}
+			
+			String addDateInf = " DATE_ADD(a.date_naissance, INTERVAL " 
+				+ age.toString() + " YEAR) ";
+			String addDateSup = " DATE_ADD(a.date_naissance, INTERVAL " 
+				+ new Integer(age + 1).toString() + " YEAR) ";
+			if (dbms.equalsIgnoreCase("oracle")) {
+				addDateInf = " add_months(a.date_naissance, " 
+					+ new Integer(age*12).toString() + ") ";
+				addDateSup = " add_months(a.date_naissance, " 
+					+ new Integer((age + 1)*12).toString() + ") ";
+			}
+			
+			// Double dateInf = Double.valueOf(age * 365);
+			// Integer dateSup = (age + 1) * 365;
+
+			// requête calculant la diff entre les 2 dates
+			// StringBuffer diffAge = new StringBuffer();
+			// diffAge.append("datediff(p.datePrelevement - pat.dateNaissance)");
+			
+			// construction de la requête
+			StringBuffer sb = new StringBuffer();
+			sb.append("SELECT distinct(p.prelevement_id) "
+					+ "FROM PRELEVEMENT p, PATIENT a, MALADIE m ");
+			sb.append("WHERE p.maladie_id = m.maladie_id ");
+			sb.append("AND m.patient_id = a.patient_id ");
+			sb.append("AND a.date_naissance is not null ");
+			sb.append("AND p.date_prelevement is not null ");
+			sb.append("AND (p.date_prelevement");
+			if (operateur.equals("=")) {
+				sb.append(" > ");
+				sb.append(addDateInf);
+				sb.append(" AND p.date_prelevement < ");
+				sb.append(addDateSup);
+			} else if (operateur.equals("!=")) {
+				sb.append(" < ");
+				sb.append(addDateInf);
+				sb.append(" OR p.date_prelevement > ");
+				sb.append(addDateSup);
+			} else if (operateur.equals(">")) {
+				sb.append(operateur);
+				sb.append(addDateSup); 
+			} else {
+				sb.append(operateur);
+				sb.append(addDateInf);
+			}
+			sb.append(")");
+			sb.append(" and p.banque_id in (:list)");
+
+			// if (operateur.equals("=")) {
+			// sb.append(diffAge.toString());
+			// sb.append(" >= :dateInf");
+			// sb.append(" AND ");
+			// sb.append(diffAge.toString());
+			// sb.append(" <= :dateSup");
+			// } else if (operateur.equals("<")) {
+			// sb.append(diffAge.toString());
+			// sb.append(" < :dateInf");
+			// } else if (operateur.equals(">")) {
+			// sb.append(diffAge.toString());
+			// sb.append(" >= :dateSup");
+			// }		
+
+			EntityManager em = entityManagerFactory.createEntityManager();
+
+			Query query = em.createNativeQuery(sb.toString());
+			
+//			if (sb.toString().contains("dateInf")) {
+//				query.setParameter("dateInf", dateInf);
+//			}
+//			if (sb.toString().contains("dateSup")) {
+//				query.setParameter("dateSup", dateSup);
+//			}
+			query.setParameter("list", banqueIds);
+
+			List<Integer> ids = new ArrayList<Integer>();
+			
+			for (Number num : (List<? extends Number>) query.getResultList()) {
+				if (num instanceof Integer) {
+					ids.add((Integer) num);
+				} else {
+					ids.add(Integer.valueOf(num.intValue()));
+				}
+			}
+		
+			
+			return ids;
+
+		} else {
+			return new ArrayList<Integer>();
+		}
+	}
+
+	@Override
+	public List<Integer> findObjetByCritereOnCodesWithBanquesDerivesVersionManager(
+			List<Banque> banques, List<String> codes, List<String> libelles,
+			String value, boolean isMorpho, Entite echanEntite) {
+		List<Integer> objets = new ArrayList<Integer>();
+		StringBuffer sb = new StringBuffer();
+		// création de la requête
+		sb.append("SELECT DISTINCT prod.prodDeriveId "
+				+ "From ProdDerive prod," + " Echantillon as e ");
+		sb.append("JOIN e.codesAssignes as p1 ");
+
+		sb.append("WHERE prod.transformation.objetId = e.echantillonId");
+		sb.append(" AND prod.transformation.entite " + "= :entite ");
+
+		sb.append("AND (");
+		if (codes != null && codes.size() > 0) {
+			sb.append("p1.code in (:codes) OR ");
+		}
+		if (libelles != null && libelles.size() > 0) {
+			sb.append("p1.libelle in (:libelles) OR ");
+		}
+		sb.append("p1.code like :code OR ");
+		sb.append("p1.libelle like :libelle) AND ");
+		// sb.append("p1.isMorpho = :morpho ");
+		if (isMorpho) {
+			sb.append("p1.isMorpho = 1 ");
+		} else {
+			sb.append("p1.isOrgane = 1 ");
+		}
+
+		// si la liste n'est pas vide et que l'entité
+		// recherchée n'est pas un patient
+		if (banques != null && !banques.isEmpty()) {
+			sb.append(" and e.banque in (:list)");
+		}
+		/* On exécute la requête. */
+		log.info("findObjetByCritereManager : Exécution de la requête : \n"
+				+ sb.toString() + " avec les paramètres " + codes + ", "
+				+ libelles + ", " + value + " et " + isMorpho);
+		EntityManager em = entityManagerFactory.createEntityManager();
+		TypedQuery<Integer> query = em.createQuery(sb.toString(), Integer.class);
+		if (sb.toString().contains(":codes")) {
+			query.setParameter("codes", codes);
+		}
+		if (sb.toString().contains("libelles")) {
+			query.setParameter("libelles", libelles);
+		}
+		query.setParameter("code", value);
+		query.setParameter("libelle", value);
+		// query.setParameter("morpho", isMorpho);
+		query.setParameter("entite", echanEntite);
+		// si la liste n'est pas vide et que l'entité
+		// recherchée n'est pas un patient
+		if (sb.toString().contains("(:list)")) {
+			query.setParameter("list", banques);
+		}
+
+		objets = query.getResultList();
+
+		return objets;
+	}
+
+	@Override
+	public List<Integer> findEchantillonsByRequeteBiocapManager(String dbms,
+			List<Banque> banques, List<Service> services, Calendar dateInf,
+			Calendar dateSup, Integer age, ObjetStatut statut) {
+		if (age != null && age >= 0 && banques != null && banques.size() > 0
+				&& services != null && dateInf != null
+				&& dateSup != null) {
+			Double dateAgeSup = age+.0;
+			// requête calculant la diff entre les 2 dates
+			StringBuffer diffAge = new StringBuffer();
+			if (dbms.contentEquals(ConfigManager.DB_MYSQL)) {
+				diffAge.append("datediff(p.datePrelevement,pat.dateNaissance)/365.25");
+			} else {
+				diffAge.append("trunc(p.datePrelevement - pat.dateNaissance)/365.25");
+			}
+			// construction de la requête
+			StringBuffer sb = new StringBuffer();
+			sb.append("SELECT distinct(e.echantillonId) "
+					+ "FROM Echantillon e ");
+			sb.append("join e.prelevement as p ");
+			sb.append("join p.maladie as m ");
+			sb.append("join m.patient as pat ");
+			sb.append("WHERE ");
+			sb.append("p.datePrelevement >= :dateInf ");
+			sb.append("AND p.datePrelevement <= :dateSup ");
+			sb.append("AND ");
+			sb.append(diffAge.toString());
+			sb.append(" < :dateSupAge ");
+			sb.append("AND p.banque in (:listBanques)");
+			// since 2.0.13
+			// si aucun services, alors recherche dans tous
+			if (!services.isEmpty()) {
+				Service empty = new Service();
+				if (services.contains(empty)) {
+					services.remove(empty);
+					if (!services.isEmpty()) {
+						sb.append(" AND (p.servicePreleveur is null OR p.servicePreleveur in (:listServices))");
+					} else {
+						sb.append(" AND p.servicePreleveur is null");
+					}
+				} else {
+					sb.append(" AND p.servicePreleveur in (:listServices)");
+				}
+			}
+			if (statut != null) {
+				sb.append(" AND e.objetStatut = :statut");
+			}
+
+			/* On exécute la requête. */
+			log.info("findEchantillonsByRequeteBiocap "
+					+ ": Exécution de la requête : \n" + sb.toString()
+					+ " avec les paramètres " + banques + ", " + services
+					+ ", " + dateInf.getTime() + ", " + dateSup.getTime()
+					+ "et " + age);
+			EntityManager em = entityManagerFactory.createEntityManager();
+			TypedQuery<Integer> query = em.createQuery(sb.toString(), Integer.class);
+			query.setParameter("dateInf", dateInf);
+			query.setParameter("dateSup", dateSup);
+			query.setParameter("dateSupAge", dateAgeSup);
+			query.setParameter("listBanques", banques);
+			if (!services.isEmpty()) {
+				query.setParameter("listServices", services);
+			}
+			if (statut != null) {
+				query.setParameter("statut", statut);
+			}
+
+			return query.getResultList();
+
+		} else {
+			return new ArrayList<Integer>();
+		}
+	}
+
+	@Override
+	public List<Integer> findObjetIdsFromNonConformiteNomManager(String nom, 
+			ConformiteType cType, Plateforme pf, List<Banque> banks) {
+		
+		List<Integer> ids = new ArrayList<Integer>();
+		
+		if (cType != null) {
+		
+			// récupération des non conformites
+			List<NonConformite> ncfs = null;
+			if (nom != null && !nom.equals("")) {
+				ncfs = nonConformiteDao
+					.findByTypePfAndNom(cType, pf, "%" + nom + "%");
+			}
+			
+			// récupération des ids
+			ids = objetNonConformeManager.findObjetIdsByNonConformitesManager(ncfs);
+			
+			// filtre des ids en fonction de la banque
+			ids = entiteManager.findIdsByEntiteAndIdAfterBanqueFiltreManager(cType.getEntite(), 
+					ids, banks);
+		}	
+		return ids;
+	}
+
+	@Override
+	public List<Integer> findFileUploadedManager(Champ fileChp, Entite targetE,
+			List<Banque> banques, boolean empty) {
+		List<Integer> ids = new ArrayList<Integer>();
+		
+		if (fileChp != null && targetE != null && banques != null && !banques.isEmpty()) {
+			
+			Entite fromE = null;
+			StringBuffer sb = new StringBuffer();
+			
+			// cr anapath
+			if (fileChp.getChampEntite() != null) {
+				if (fileChp.getChampEntite().getNom().equals("CrAnapath")) {
+					fromE = entiteManager.findByIdManager(3);
+					sb.append("SELECT distinct(e.echantillonId) "
+							+ "FROM Echantillon e ");
+					if (!empty) {
+						sb.append("WHERE e.crAnapath is not null ");
+					} else {
+						sb.append("WHERE e.crAnapath is null ");
+					}
+					sb.append("AND e.banque in (:listBanques)");
+				}
+			} else if (fileChp.getChampAnnotation() != null) {
+				fromE = fileChp.getChampAnnotation().getTableAnnotation().getEntite();
+				if (!empty) {
+					sb.append("SELECT distinct(a.objetId) "
+							+ "FROM AnnotationValeur a ");
+					sb.append("WHERE a.fichier is not null ");
+					sb.append("AND a.champAnnotation = :chpAnno ");
+					sb.append("AND a.banque in (:listBanques)");
+				} else {
+					String jpaKey = fromE.getNom().toLowerCase() + "Id";
+					sb.append("SELECT distinct(e." + jpaKey + ") FROM " 
+															+ fromE.getNom() + " e ");
+					if (fromE.getNom().equals("Patient")) {
+						sb.append("JOIN e.maladies m ");
+						sb.append("JOIN m.prelevements p ");
+					}
+					sb.append("WHERE e." + jpaKey + " not in (");
+					sb.append("SELECT distinct(a.objetId) "
+							+ "FROM AnnotationValeur a ");
+					sb.append("WHERE a.fichier is not null ");
+					sb.append("AND a.champAnnotation = :chpAnno ");
+					sb.append("AND a.banque in (:listBanques)");
+					sb.append(") ");
+					if (fromE.getNom().equals("Patient")) {
+						sb.append("AND p.banque in (:listBanques)");
+					} else {
+						sb.append("AND e.banque in (:listBanques)");
+					}
+				}
+			}
+			
+			// execution de la requete
+			EntityManager em = entityManagerFactory.createEntityManager();
+			TypedQuery<Integer> query = em.createQuery(sb.toString(), Integer.class);
+			query.setParameter("listBanques", banques);
+			if (fileChp.getChampAnnotation() != null) {
+				query.setParameter("chpAnno", fileChp.getChampAnnotation());
+			}
+			ids.addAll(query.getResultList());
+			
+			// correspondance si Entite target <> from
+			// si target = ProdDerive, rech descendante car obligatoirement 
+			// from > ProdDerive
+			if (!targetE.equals(fromE)) {
+				return correspondanceIdManager
+						.findTargetIdsFromIdsManager(ids, fromE, targetE, banques, true);
+			}	
+		}
+		
+		
+		return ids;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<? extends Object> findTKStockableObjectsByTempStockWithBanquesManager(
+			Entite ent, Object temp, String op, List<Banque> banques, boolean fetchIds) {
+
+		if (ent != null && op != null && !op.equals("") 
+								&& banques != null && banques.size() > 0) {
+			
+			// banque Ids
+			List<Integer> banqueIds = new ArrayList<Integer>();
+			for (Banque b : banques) {
+				banqueIds.add(b.getBanqueId());
+			}
+			
+			// construction de la requête
+			StringBuffer sb = new StringBuffer();
+			
+			String queryCol = !fetchIds ? "e" : ent.getNom().replaceFirst(".",
+					(ent.getNom().charAt(0) + "").toLowerCase()) + "Id";
+			
+			if (!op.equals("is null")) {
+				sb.append("SELECT DISTINCT " + queryCol + " From "
+						+ ent.getNom() + " as e "
+						+ "WHERE get_conteneur(e.emplacement.emplacementId) "
+						+ "in (select c.conteneurId from Conteneur c " 
+							+ "where c.temp "
+							+ op);
+
+				sb.append(" :valeur)");
+			} else {
+				sb.append("SELECT DISTINCT " + queryCol + " From "
+						+ ent.getNom() + " as e "
+						+ "WHERE (e.emplacement is null OR "
+						+ "get_conteneur(e.emplacement.emplacementId) in "
+						+ "(select c.conteneurId from Conteneur c " 
+							+ "where c.temp is null))");
+			}
+			sb.append(" AND ");
+			sb.append("e.banque.banqueId in (:list)");
+			
+			EntityManager em = entityManagerFactory.createEntityManager();
+
+			Query query = em.createQuery(sb.toString());
+			if (sb.toString().contains(":valeur")) {
+				query.setParameter("valeur", temp);
+			}
+			query.setParameter("list", banqueIds);
+			
+			List<Object> objs = query.getResultList();
+
+			if (fetchIds) {
+				List<Integer> ids = new ArrayList<Integer>();
+				
+				for (Object num : objs) {
+					if (num instanceof Integer) {
+						ids.add((Integer) num);
+					} else {
+						ids.add(Integer.valueOf(((Number) num).intValue()));
+					}
+				}
+				return ids;
+			}
+				
+			return objs;
+
+		} else {
+			return new ArrayList<Object>();
+		}
+		
+	}
+	
+
+
+}

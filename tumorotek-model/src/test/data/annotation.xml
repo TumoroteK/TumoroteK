@@ -1,0 +1,506 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+	<!-- Package Annotation -->
+	<table name="TABLE_ANNOTATION">
+		<column>TABLE_ANNOTATION_ID</column>
+		<column>NOM</column>
+		<column>DESCRIPTION</column>
+		<column>INCA</column>
+		<column>ENTITE_ID</column>
+		<row>
+			<value>1</value>
+			<value>TABLE_PAT1</value>
+			<null />
+			<value>false</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>2</value>
+			<value>TABLE_PREL1</value>
+			<null />
+			<value>false</value>
+			<value>2</value>
+		</row>
+		<row>
+			<value>3</value>
+			<value>INCA_ECHAN1</value>
+			<value>Catalogue INca 2010</value>
+			<value>true</value>
+			<value>3</value>
+		</row>
+		<row>
+			<value>4</value>
+			<value>TABLE_ECHAN1</value>
+			<null />
+			<value>false</value>
+			<value>3</value>
+		</row>
+		<row>
+			<value>5</value>
+			<value>TABLE_ECHAN2</value>
+			<null />
+			<value>false</value>
+			<value>3</value>
+		</row>
+		<row>
+			<value>6</value>
+			<value>TABLE_DERIVE1</value>
+			<null />
+			<value>false</value>
+			<value>8</value>
+		</row>
+	</table>
+	<table name="TABLE_ANNOTATION_BANQUE">
+		<column>TABLE_ANNOTATION_ID</column>
+		<column>BANQUE_ID</column>
+		<column>ORDRE</column>
+		<row>
+			<value>1</value>
+			<value>1</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>2</value>
+			<value>1</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>3</value>
+			<value>1</value>
+			<value>3</value>
+		</row>
+		<row>
+			<value>4</value>
+			<value>1</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>5</value>
+			<value>1</value>
+			<value>2</value>
+		</row>
+		<row>
+			<value>6</value>
+			<value>1</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>3</value>
+			<value>2</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>3</value>
+			<value>3</value>
+			<value>1</value>
+		</row>
+	</table>
+	<table name="CHAMP_ANNOTATION">
+		<column>CHAMP_ANNOTATION_ID</column>
+		<column>NOM</column>
+		<column>DATA_TYPE_ID</column>
+		<column>TABLE_ANNOTATION_ID</column>
+		<column>COMBINE</column>
+		<column>ORDRE</column>
+		<row>
+			<value>1</value>
+			<value>Alphanum1</value>
+			<value>1</value>
+			<value>1</value>
+			<value>false</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>2</value>
+			<value>Alphanum2</value>
+			<value>1</value>
+			<value>2</value>
+			<value>true</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>3</value>
+			<value>Bool1</value>
+			<value>2</value>
+			<value>2</value>
+			<null />
+			<value>2</value>
+		</row>
+		<row>
+			<value>4</value>
+			<value>Bool2</value>
+			<value>2</value>
+			<value>3</value>
+			<null />
+			<value>1</value>
+		</row>
+		<row>
+			<value>5</value>
+			<value>Date1</value>
+			<value>3</value>
+			<value>3</value>
+			<null />
+			<value>2</value>
+		</row>
+		<row>
+			<value>6</value>
+			<value>Date2</value>
+			<value>3</value>
+			<value>4</value>
+			<null />
+			<value>1</value>
+		</row>
+		<row>
+			<value>7</value>
+			<value>Num1</value>
+			<value>5</value>
+			<value>3</value>
+			<null />
+			<value>3</value>
+		</row>
+		<row>
+			<value>8</value>
+			<value>Num2</value>
+			<value>5</value>
+			<value>4</value>
+			<value>true</value>
+			<value>2</value>
+		</row>
+		<row>
+			<value>9</value>
+			<value>Texte1</value>
+			<value>6</value>
+			<value>3</value>
+			<null />
+			<value>5</value>
+		</row>
+		<row>
+			<value>10</value>
+			<value>Texte2</value>
+			<value>6</value>
+			<value>5</value>
+			<null />
+			<value>1</value>
+		</row>
+		<row>
+			<value>11</value>
+			<value>Thes1</value>
+			<value>7</value>
+			<value>3</value>
+			<value>false</value>
+			<value>6</value>
+		</row>
+		<row>
+			<value>12</value>
+			<value>Thes2</value>
+			<value>7</value>
+			<value>5</value>
+			<value>true</value>
+			<value>2</value>
+		</row>
+		<row>
+			<value>13</value>
+			<value>File1</value>
+			<value>8</value>
+			<value>1</value>
+			<null />
+			<value>2</value>
+		</row>
+		<row>
+			<value>14</value>
+			<value>File2</value>
+			<value>8</value>
+			<value>5</value>
+			<null />
+			<value>2</value>
+		</row>
+		<row>
+			<value>15</value>
+			<value>Link1</value>
+			<value>9</value>
+			<value>2</value>
+			<null />
+			<value>4</value>
+		</row>
+		<row>
+			<value>16</value>
+			<value>Link2</value>
+			<value>9</value>
+			<value>4</value>
+			<null />
+			<value>5</value>
+		</row>
+	</table>
+	<table name="ITEM">
+		<column>ITEM_ID</column>
+		<column>LABEL</column>
+		<column>VALEUR</column>
+		<column>CHAMP_ANNOTATION_ID</column>
+		<row>
+			<value>1</value>
+			<value>item1-1</value>
+			<value>value1</value>
+			<value>11</value>
+		</row>
+		<row>
+			<value>2</value>
+			<value>item2-1</value>
+			<null />
+			<value>11</value>
+		</row>
+		<row>
+			<value>3</value>
+			<value>item3-1</value>
+			<value>value3</value>
+			<value>11</value>
+		</row>
+		<row>
+			<value>4</value>
+			<value>item1-2</value>
+			<null />
+			<value>12</value>
+		</row>
+		<row>
+			<value>5</value>
+			<value>item2-2</value>
+			<value>value4</value>
+			<value>12</value>
+		</row>
+		<row>
+			<value>6</value>
+			<value>item3-2</value>
+			<value>value5</value>
+			<value>12</value>
+		</row>
+	</table>
+	<table name="ANNOTATION_DEFAUT">
+		<column>ANNOTATION_DEFAUT_ID</column>
+		<column>CHAMP_ANNOTATION_ID</column>
+		<column>ALPHANUM</column>
+		<column>BOOL</column>
+		<column>DATE</column>
+		<column>TEXTE</column>
+		<column>ITEM_ID</column>
+		<column>OBLIGATOIRE</column>
+		<row>
+			<value>1</value>
+			<value>1</value>
+			<value>AlphanumDefaut1</value>
+			<null />
+			<null />
+			<null />
+			<null />
+			<value>false</value>
+		</row>
+		<row>
+			<value>2</value>
+			<value>3</value>
+			<null />
+			<value>true</value>
+			<null />
+			<null />
+			<null />
+			<value>false</value>
+		</row>
+		<row>
+			<value>3</value>
+			<value>5</value>
+			<null />
+			<null />
+			<null />
+			<null />
+			<null />
+			<value>true</value>
+		</row>
+		<row>
+			<value>4</value>
+			<value>7</value>
+			<value>DefautNum1</value>
+			<null />
+			<null />
+			<null />
+			<null />
+			<value>true</value>
+		</row>
+		<row>
+			<value>5</value>
+			<value>9</value>
+			<null />
+			<null />
+			<null />
+			<value>DefaultTexte1</value>
+			<null />
+			<value>false</value>
+		</row>
+		<row>
+			<value>6</value>
+			<value>11</value>
+			<null />
+			<null />
+			<null />
+			<null />
+			<value>1</value>
+			<value>false</value>
+		</row>
+		<row>
+			<value>7</value>
+			<value>11</value>
+			<null />
+			<null />
+			<null />
+			<null />
+			<value>3</value>
+			<value>false</value>
+		</row>
+		<row>
+			<value>8</value>
+			<value>12</value>
+			<null />
+			<null />
+			<null />
+			<null />
+			<null />
+			<value>true</value>
+		</row>
+		<row>
+			<value>9</value>
+			<value>13</value>
+			<value>File1</value>
+			<null />
+			<null />
+			<null />
+			<null />
+			<value>false</value>
+		</row>
+		<row>
+			<value>10</value>
+			<value>15</value>
+			<value>Link1</value>
+			<null />
+			<null />
+			<null />
+			<null />
+			<value>false</value>
+		</row>
+	</table>
+	<table name="ANNOTATION_VALEUR">
+		<column>ANNOTATION_VALEUR_ID</column>
+		<column>CHAMP_ANNOTATION_ID</column>
+		<column>OBJET_ID</column>
+		<column>ALPHANUM</column>
+		<column>BOOL</column>
+		<column>DATE</column>
+		<column>TEXTE</column>
+		<column>ITEM_ID</column>
+		<row>
+			<value>1</value>
+			<value>1</value>
+			<value>1</value>
+			<value>AlphanumValue1</value>
+			<null />
+			<null />
+			<null />
+			<null />
+		</row>
+		<row>
+			<value>2</value>
+			<value>1</value>
+			<value>2</value>
+			<value>AlphanumValue2</value>
+			<null />
+			<null />
+			<null />
+			<null />
+		</row>
+		<row>
+			<value>3</value>
+			<value>1</value>
+			<value>3</value>
+			<value>AlphanumValue3</value>
+			<null />
+			<null />
+			<null />
+			<null />
+		</row>
+		<row>
+			<value>4</value>
+			<value>4</value>
+			<value>1</value>
+			<null />
+			<value>true</value>
+			<null />
+			<null />
+			<null />
+		</row>
+		<row>
+			<value>5</value>
+			<value>5</value>
+			<value>1</value>
+			<null />
+			<null />
+			<value>2002-12-12 10:00:00</value>
+			<null />
+			<null />
+		</row>
+		<row>
+			<value>6</value>
+			<value>5</value>
+			<value>2</value>
+			<null />
+			<null />
+			<value>2004-12-14 14:00:00</value>
+			<null />
+			<null />
+		</row>
+		<row>
+			<value>7</value>
+			<value>9</value>
+			<value>1</value>
+			<null />
+			<null />
+			<null />
+			<value>textVal1</value>
+			<null />
+		</row>
+		<row>
+			<value>8</value>
+			<value>12</value>
+			<value>1</value>
+			<null />
+			<null />
+			<null />
+			<null />
+			<value>1</value>
+		</row>
+		<row>
+			<value>9</value>
+			<value>12</value>
+			<value>1</value>
+			<null />
+			<null />
+			<null />
+			<null />
+			<value>2</value>
+		</row>
+		<row>
+			<value>10</value>
+			<value>14</value>
+			<value>1</value>
+			<value>pathToFile</value>
+			<null />
+			<null />
+			<null />
+			<null />
+		</row>
+		<row>
+			<value>11</value>
+			<value>15</value>
+			<value>1</value>
+			<value>http://google.com</value>
+			<null />
+			<null />
+			<null />
+			<null />
+		</row>
+	</table>
+</dataset>

@@ -1,0 +1,65 @@
+<zk>
+	<style>
+		.chartpop div.z-popup-content {
+			padding: 1px;
+		}
+	</style>
+	<hlayout style="border: 1px solid grey; border-radius: 15px; padding: 5px">
+		<div id="chartDiv" onMouseOver='buttonsPop.open(self,"overlap_before")'>
+			<chart id="chart" 
+					paneColor="#ffffff"
+					bgColor="#ffffff" 
+					fgAlpha="192"
+					showLegend="false"
+				/>
+		</div>
+				
+		<vlayout id="toolBox" visible="false" vflex="1" width="450px">
+			<listbox id="categoriesList"	
+	             checkmark="true" 
+	             multiple="true" 
+	             mold="paging"
+	             autopaging="true"
+	             span="true"
+	             sizedByContent="true"
+	             vflex="1">   
+	
+	            <listhead>
+	            	<listheader width="30px"/>
+	                <listheader label="${c:l('charts.tkcharts.categorie')}" />
+	                <listheader id="valueHeader" />
+	                <listheader id="nonStockHeader" visible="false"/>
+	                <listheader align="left" width="30px"/>
+	            </listhead>
+	            
+		        <template name="model" var="item" status="s">
+	                <listitem>
+	               		<listcell />
+	               		<listcell label="${each.category}" /> 
+	               		<listcell label="${each.value}" />
+	               		<listcell label="${each.nonStockValue}" visible="${not empty each.nonStockValue}"/>
+	               		<listcell>
+	               			<div width="15px" height="15px" style="background-color: ${each.hexColor}; border-radius: 5px;" />
+	               		</listcell>
+	                </listitem>   
+	                    
+		        </template>
+	         </listbox>
+	         
+	         <button id="data" label="${c:l('charts.tkcharts.update')}"  />
+	         
+	    </vlayout>
+	    
+	</hlayout>
+	<popup sclass="chartpop" id="buttonsPop" width="60px" >
+        <div>
+        	<vlayout>
+				<button id="switchType" image="/images/chart/pie.png" />
+		  		<button id="zoom" image="/images/chart/viewmag+.png" />	
+		  		<button id="excel" image="/images/chart/download.png" />		
+			</vlayout>
+        </div>
+    </popup>
+</zk>
+	
+	

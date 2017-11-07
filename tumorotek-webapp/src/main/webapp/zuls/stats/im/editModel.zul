@@ -1,0 +1,205 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+
+<zk>
+	<style src="/css/stats/stats.css" />
+	<style src="/css/stats/chart.css" />
+	<style src="/css/font-awesome-4.6.1/css/font-awesome.min.css" />
+	
+	<window id="win" 
+		apply="org.zkoss.bind.BindComposer" hflex="1" vflex="1"
+		viewModel="@id('vm') @init('fr.aphp.tumorotek.action.stats.im.viewmodel.EditModelVM')">
+		<borderlayout hflex="1" vflex="1">
+		
+			<north size="75%" autoscroll="true" splittable="true" collapsible="true">
+				
+				<borderlayout hflex="1"  height="75%" >
+					<north >
+						<hlayout hflex="1" vflex="1" valign="middle" sclass="z-valign-middle" 
+							spacing="5px" style="margin: 3px; padding: 5px 0px 15px 0px; text-align: center; background: #fafafa; border-radius: 5px">						
+							<listbox model="@load(vm.existingSModels)" mold="select"
+									selectedItem="@bind(vm.selectedExistingModel)"
+									onSelect="@command('onChangeSelectedExistingModel')">
+								<template name="model">
+									<listitem value="@bind(each)">
+										<listcell label="@bind(each.nom)" />
+									</listitem>
+								</template>
+							</listbox>
+							<div sclass="appLink" style="background: #5CB85C"
+								onClick="@command('onNewModel')">
+								<span class="fa fa-plus-square fa-1x">
+									<label value="${c:l('stats.smodel.create.new')}" 
+												sclass="appLabel" style="color: #FFFFFF" />
+								</span>
+							</div>
+							<div sclass="appLink" style="background: #D9534F"
+								onClick="@command('onDeleteModel')">
+								<span class="fa fa-trash fa-1x">
+									<label value="${c:l('stats.smodel.delete.delete')}" 
+											sclass="appLabel" style="color: #FFFFFF" />
+								</span>
+							</div>
+						</hlayout>
+					</north>
+					
+					<west title="${c:l('stats.smodel.create.form')}" size="20%" splittable="true">							
+						<div hflex="1" vflex="1" height="100%"
+						style="margin: 5px; padding: 25px 25px; text-align: left; background: #fafafa; border-radius: 5px; overflow-y: auto">
+							<!-- consult mode -->
+							<div id="sModelDetailsDiv" visible="@load(not vm.inEdition)">
+								<vlayout>
+									<label value="${c:l('Champ.SModele.Nom')}"  sclass="formLabel" />
+									<div sclass="z-valign-middle" style="background: #FFFFFF; border-radius: 5px; padding: 5px; min-height: 20px" hflex="1" >
+										<label value="@load(vm.selectedExistingModel.nom)" sclass="formValue" />
+									</div>
+									<separator orient="horizontal" />
+									<label value="${c:l('Champ.SModele.Description')}" sclass="formLabel" />
+									<div sclass="z-valign-middle" style="background: #FFFFFF; border-radius: 5px; padding: 5px; min-height: 50px" hflex="1" >
+										<label value="@load(vm.selectedExistingModel.description)" sclass="formValue" multiline="true" maxlength="25" />
+									</div>
+									<label value="${c:l('Champ.SModele.Subdivision')}" sclass="formLabel" />
+									<div sclass="z-valign-middle" style="background: #FFFFFF; border-radius: 5px; padding: 5px; min-height: 20px" hflex="1" >
+										<label value="@load(c:l(c:cat('Subdivision.',vm.selectedExistingModel.subdivision.nom)))" sclass="formValue" />
+									</div>
+									<div sclass="appLink" style="background: #9999ff; text-align: center"
+										onClick="@command('onEditModel')" visible="@load(vm.selectedExistingModel ne null)">
+										<span class="fa fa-pencil fa-1x">
+											<label value="${c:l('general.edit')}" 
+													sclass="appLabel" style="color: #FFFFFF" />
+										</span>
+									</div>
+								</vlayout>
+							</div>
+							
+							<div id="modelFormDiv" visible="@load(vm.inEdition)"
+								form="@id('fx') @load(vm.selectedExistingModel) @save(vm.selectedExistingModel, before='onSaveModel')">
+								<!-- @validator('fr.aphp.tumorotek.action.stats.im.viewmodel.FormValidator')" -->
+								<vlayout>
+									<label value="${c:l('Champ.SModele.Nom')}" sclass="formLabel" />
+									<textbox id="name" value="@bind(fx.nom)" style="border-radius: 5px; padding: 5px; min-height: 20px" 
+										hflex="1" constraint="no empty, /.+[a-zA-Z0-9]+/" />
+										<label class="error"
+											value="@load(vmsgs['nom'])"
+											style="color: red; font-style: oblique;" />
+										<separator orient="horizontal" />
+										<label value="${c:l('Champ.SModele.Description')}" sclass="formLabel"  />
+									<textbox rows="2" value="@bind(fx.description)" style="border-radius: 5px; padding: 5px; min-height: 50px" hflex="1" maxlength="25"/>
+										<label class="error"
+											value="@load(vmsgs['description'])"
+											style="color: red; font-style: oblique;" />
+									<label value="${c:l('Champ.SModele.Subdivision')}" sclass="formLabel" />
+									<listbox id="listboxsubdiv" model="@load(vm.subdivisions)" mold="select"
+											selectedItem="@load(fx.subdivision) @save(vm.selectedSubdivision, before='onChangeSubdivision')"
+											onSelect="@command('onChangeSubdivision', item=self.selectedItem.value)">
+										<template name="model">
+											<listitem value="@load(each)">
+												<listcell label="@load(c:l(c:cat('Subdivision.',each.nom)))" />
+											</listitem>
+										</template>
+									</listbox>
+									<hlayout hflex="1" style="text-align: center">				
+										<div hflex="1" sclass="appLink" style="background: #5CB85C; text-align: center"
+											onClick="@command('onSaveModel')">
+											<span class="fa fa-floppy-o fa-lg">
+												<label value="${c:l('general.validate')}" 
+														sclass="appLabel" style="color: #FFFFFF" />
+											</span>
+										</div>
+										<div hflex="1" sclass="appLink" style="background: #FD9B0F; text-align: center"
+											onClick="@command('onCancelModel')">
+											<span class="fa fa-undo fa-lg">
+												<label value="${c:l('general.cancel')}" 
+														sclass="appLabel" style="color: #FFFFFF" />
+											</span>
+										</div>	
+									</hlayout>
+								</vlayout>
+							</div>
+						</div>
+					</west>
+					<center title="${c:l('Entite.Indicateur.pluriel')}">
+						<div hflex="1" vflex="1">
+							<listbox id="listbox" model="${vm.indicateursModel}" hflex="1" vflex="1"
+								multiple="true" checkmark="true"
+								onMouseOut="@command('onMouseOutIndicateurList')"
+								onCheckSelectAll="@command('onSelectAllIndicateurs')">
+								<listhead visible="@load(vm.inEdition)">
+									<listheader id="indicHeader" label="${c:l('general.selectAll')}" />
+								</listhead>
+								<template name="model">
+									<listitem checkable="@load(vm.inEdition)"
+										onMouseOver="@command('OnMouseOverIndicateurList', target=self , item=self.value)"
+										onClick="@command('onSelectIndicateur', item=self.value)">
+										<listcell label="${c:l(c:cat('Indicateur.',each.nom))}" />
+									</listitem>
+								</template>
+							</listbox>
+							<popup id="msgPopup">
+								<label id="msg"></label>
+								</popup>
+						</div>
+					</center>
+					<east title="${c:l('Entite.Banque.pluriel')}" size="40%" splittable="true">
+	
+							<listbox id="banquesBox" hflex="1" vflex="1"
+								model="${vm.banquesModel}" multiple="true"
+								checkmark="true"
+								onSelect="@command('onSelectBanque')">
+								<listhead visible="@load(vm.inEdition)">
+									<listheader label="${c:l('general.selectAll')}" />
+								</listhead>
+								<template name="model">
+									<listitem  checkable="@load(vm.inEdition)">
+										<listcell label="${each.nom}" style="${each.archive eq 'true' ? 'font-style: italic; color: #7F7F7F' : ''}" />
+									</listitem>
+								</template>
+							</listbox>
+					</east>
+				</borderlayout>	
+			</north>		
+			<center title="${c:l('stats.grid.apercu')}">
+				<borderlayout>
+					<north vflex="1" hflex="min" size="100%">
+						<div vflex="1" id="gridzul" style="align=bottom;"/>
+					</north>
+
+				</borderlayout>
+			</center>
+		</borderlayout>
+	</window>
+</zk>

@@ -1,0 +1,538 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<window id="fwinEnceinte" border="none" apply="fr.aphp.tumorotek.action.stockage.FicheEnceinte">
+	<panel collapsible="false" title="${c:l('enceinte.fiche.titre')}"
+	 id="winPanel" sclass="fichePanelv2">
+		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
+			<grid fixedLayout="true" sclass="gridForm1">
+				<columns>
+					<column width="100px"/>
+					<column/>
+					<column width="100px"/>
+					<column/>
+				</columns>
+				<rows>
+					<!-- Nom + alias -->
+					<row id="rowNomAlias">
+						<hbox>
+							<label value="${c:l('enceinte.nom')}" sclass="formLabel"/>
+							<label id="nomRequired" value="*" sclass="requiredMark"
+									visible="false"/>
+						</hbox>
+						<div>
+							<label id="nomLabel" 
+								value="@{fwinEnceinte$composer.object.nom}" sclass="formValue" />
+								
+							<textbox id="nomBox" value="@{fwinEnceinte$composer.object.nom,
+			        								 save-when='validateC.onClick, createC.onClick'
+			        								 load-after='editC.onClick, createC.onClick'}" 
+								width="100px" 
+								constraint="${fwinEnceinte$composer.enceinteNomConstraint}"
+								visible="false"
+							/>
+						</div>
+						
+						<hbox>
+							<label value="${c:l('enceinte.alias')}" sclass="formLabel"/>
+						</hbox>
+						<div>
+							<label id="aliasLabel" 
+								value="@{fwinEnceinte$composer.object.alias}" sclass="formValue" />
+								
+							<textbox id="aliasBox" value="@{fwinEnceinte$composer.object.alias,
+			        								 save-when='validateC.onClick, createC.onClick'
+			        								 load-after='editC.onClick, createC.onClick'}" 
+								width="100px" 
+								constraint="@{fwinEnceinte$composer.nomNullconstraint}"
+								visible="false"
+							/>
+						</div>
+					</row>
+					
+					<!-- Type -->
+					<row spans="1,3" id="rowType">
+						<hbox>
+							<label value="${c:l('enceinte.enceinteType')}" sclass="formLabel"/>
+							<label id="typeRequired" value="*" sclass="requiredMark"
+									visible="false"/>
+						</hbox>
+						<div>
+							<label id="typeLabel" 
+								value="@{fwinEnceinte$composer.object.enceinteType.type}" sclass="formValue" />
+								
+							<listbox id="enceinteTypeBox" mold="select" rows="1"
+							model="@{fwinEnceinte$composer.types 
+							load-after='editC.onClick, createC.onClick'}"
+							selectedItem="@{fwinEnceinte$composer.selectedEnceinteType}"
+							visible="false">
+								<listitem self="@{each='type'}" value="@{type}">			
+									<listcell label="@{type.type}" />
+								</listitem>
+							</listbox>
+						</div>
+					</row>
+					
+					<!-- NbPlaces -->
+					<row id="rowNbPlaces">
+						<hbox>
+							<label value="${c:l('enceinte.nbPlaces')}" sclass="formLabel"/>
+							<label id="nbPlacesRequired" value="*" sclass="requiredMark"
+									visible="false"/>
+						</hbox>
+						<div>
+							<label id="nbPlacesLabel" 
+								value="@{fwinEnceinte$composer.object.nbPlaces}" sclass="formValue" />
+								
+							<intbox width="50px" id="nbPlacesBox"
+								value="@{fwinEnceinte$composer.object.nbPlaces,
+								save-when='validateC.onClick, createC.onClick, createEnceintesButton.onClick'}"
+								visible="false"
+								constraint="no zero, no negative, no empty"
+							/>
+						</div>
+						
+						<label value="${c:l('enceinte.couleur')}" sclass="formLabel"/>		
+						<div>
+							<!-- <label id="couleurEnceinteLabel" 
+								value="_____"
+								sclass="@{fwinEnceinte$composer.object.couleur.couleurMinCase}" />-->
+							<image id="couleurEnceinteImg"
+								src="@{fwinEnceinte$composer.couleurSrc}"/>
+							<listbox id="couleurEnceinteBox"  mold="select" rows="1"
+								itemRenderer="@{fwinEnceinte$composer.couleurRenderer}"
+								visible="false">
+								<listitem self="@{each='col'}" value="@{col}" />
+							</listbox>
+						</div>
+					</row>
+					
+					<!-- Entité reservée -->
+					<row spans="4" id="entiteReserveeRow" visible="false">
+						<div align="center">
+							<label id="entiteReserveeLabel" 
+								value="@{fwinEnceinte$composer.entiteReservee}" 
+								sclass="formValue" 
+								style="font-style:italic"
+							/>
+						</div>
+					</row>
+					
+					<!-- Entite -->
+					<row spans="2,2" id="rowEntiteEdit" visible="false">
+						<label value="${c:l('enceinte.edit.entite')}" sclass="formLabel"/>
+						<div>
+							<listbox id="entiteBox" mold="select" rows="1"
+							model="@{fwinEnceinte$composer.entites 
+							load-after='editC.onClick, createC.onClick'}"
+							selectedItem="@{fwinEnceinte$composer.selectedEntite}"
+							visible="false">
+								<listitem self="@{each='entiteEnceinte'}" value="@{entiteEnceinte}">			
+									<listcell label="@{entiteEnceinte.nom}" />
+								</listitem>
+							</listbox>
+						</div>
+					</row>
+					
+					<!-- Banques réservées -->
+					<row spans="4" id="banquesReserveesRow" visible="false">
+						<div align="center">
+							<label id="banquesReserveesLabel" 
+								value="@{fwinEnceinte$composer.banquesReservees}" 
+								sclass="formValue" 
+								style="font-style:italic"
+							/>
+						</div>
+					</row>
+					
+					<!-- Nouvelle enceinte -->
+					<row spans="4" id="rowNewEnceinte" visible="false">
+						<div align="center">
+							<label
+								value="${c:l('enceinte.new')}" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+						</div>
+					</row>
+					
+					<!-- Mode déplacement : départ -->
+					<row spans="4" id="rowEmplacementTitle1" visible="false">
+						<vbox>
+							<label value="${c:l('enceinte.deplacement.emplacement.actuel.titre')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					
+					<!-- Adresse départ -->
+					<row spans="1,3" id="rowAdresseActuelle" visible="false">
+						<label value="${c:l('enceinte.deplacement.adresse')}" sclass="formLabel"/>
+						<label value="@{fwinEnceinte$composer.adresseActuelle,
+							load-after='deplacer.onClick'}" sclass="formValue"/>
+					</row>
+					
+					<!-- Position départ -->
+					<row spans="1,3" id="rowPositionActuelle" visible="false">
+						<label value="${c:l('enceinte.deplacement.position')}" sclass="formLabel"/>
+						<label value="@{fwinEnceinte$composer.object.position}" sclass="formValue"/>
+					</row>
+					
+					<row id="rowNomDepart" spans="1,3" visible="false">
+						<hbox>
+							<label value="${c:l('enceinte.nom')}" sclass="formLabel"/>
+							<label value="*" sclass="requiredMark"/>
+						</hbox>
+						
+						<textbox id="nomDepartBox" value="@{fwinEnceinte$composer.object.nom,
+		        								 save-when='validateDeplacement.onClick'
+		        								 load-after='deplacer.onClick'}" 
+							width="100px" 
+							constraint="${fwinEnceinte$composer.enceinteNomConstraint}"
+						/>
+					</row>
+					
+					<!-- Mode déplacement : arrivée -->
+					<row spans="4" id="rowEmplacementTitle2" visible="false">
+						<vbox>
+							<label value="${c:l('enceinte.deplacement.emplacement.destination.titre')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					
+					<!-- Adresse arrivée -->
+					<row spans="1,3" id="rowAdresseDestination" visible="false">
+						<label value="${c:l('enceinte.deplacement.adresse')}" sclass="formLabel"/>
+						<label id="adresseDestinationLabel" 
+							value="@{fwinEnceinte$composer.adresseDestination
+							load-after='deplacer.onClick'}" 
+							sclass="formValue"/>
+					</row>
+					
+					<!-- Position arrivée -->
+					<row spans="1,3" id="rowPositionDestination" visible="false">
+						<label value="${c:l('enceinte.deplacement.position')}" sclass="formLabel"/>
+						<label id="positionDestinationLabel" 
+							value="@{fwinEnceinte$composer.positionDestination
+							load-after='deplacer.onClick'}" 
+						sclass="formValue"/>
+					</row>
+					
+					<!-- Contenu actuel -->
+					<row spans="1,3" id="rowContenuDestination" visible="false">
+						<label value="${c:l('enceinte.deplacement.contenu')}" sclass="formLabel"/>
+						<label id="contenuDestinationLabel" 
+							value="@{fwinEnceinte$composer.contenuDestination
+							load-after='deplacer.onClick'}" 
+							sclass="formValue"/>
+					</row>
+					
+					<row id="rowNomDestination" spans="1,3" visible="false">
+						<hbox>
+							<label value="${c:l('enceinte.nom')}" sclass="formLabel"/>
+							<label value="*" sclass="requiredMark"/>
+						</hbox>
+						
+						<textbox id="nomDestinationBox" 
+							value="@{fwinEnceinte$composer.enceinteDestination.enceinte.nom,
+		        				 save-when='validateDeplacement.onClick'
+		        				 load-after='deplacer.onClick'}" 
+							width="100px" 
+						/>
+					</row>
+					
+					<!-- Erreur destination -->
+					<row spans="4" id="rowErreurDestination" visible="false">
+						<div align="center">
+							<label
+								value="${c:l('enceinte.deplacement.emplacement.destination.incorrect')}" 
+								sclass="formErrorValue"
+							/>
+						</div>
+					</row>
+					
+					<!-- Mode création -->
+					<row spans="4" align="center" id="createEnceintes">
+						<hbox>
+							<button id="createEnceintesButton" 
+								label="${c:l('conteneur.creer.subdivisions')}" 
+								style="color : #003399;" height="24px"
+								image="/images/icones/add_echantillons.png" sclass="buttonv2"/>
+						</hbox>
+					</row>
+					
+					<!-- enceintes filles -->
+					<row spans="4" id="rowCreateTitle1" visible="false">
+						<vbox>
+							<label value="${c:l('conteneur.caracteristiques.enceintes')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					<row id="rowEnceintesEdit" visible="false" spans="4">
+						<div align="center">
+							<grid id="enceintesListEdit"
+								fixedLayout="true"
+								span="true"
+								height="100%"
+								sclass="gridListStyle"
+								model="@{fwinEnceinte$composer.decoratedEnceintes}"
+								visible="false"
+								vflex="min"
+								hflex="min"
+								>
+								<columns sizable="true">
+									<column width="25px"/>
+									<column label="${c:l('conteneur.enceintes.type')}" />
+									<column label="${c:l('conteneur.enceintes.prefixe')}" width="100px"/>
+									<column label="${c:l('conteneur.enceintes.quantite')}" width="100px"/>
+									<column label="${c:l('conteneur.enceintes.premiere.position')}" width="100px"/>
+								</columns>
+								<rows>
+									<row self="@{each='enceinteEdit'}" align="center">
+										<label value="@{enceinteEdit.nbNiveau}"/>
+										<div>
+											<listbox id="enceintesTypeBox" mold="select" rows="1"
+												visible="@{enceinteEdit.visibleEnceinte}"
+												model="@{fwinEnceinte$composer.childEnceintesTypes 
+												load-after='createEnceintesButton.onClick'}">
+												<listitem self="@{each='enceinteType'}" 
+													value="@{enceinteType}">			
+													<listcell label="@{enceinteType.type}" />
+												</listitem>
+											</listbox>
+											<label value="${c:l('conteneur.enceinte.type.boite')}" 
+												sclass="formValue" visible="@{enceinteEdit.isTerminale}"/>
+										</div>
+										<textbox value="@{enceinteEdit.enceinte.nom,
+	        								 save-when='createC.onClick, self.onBlur, validateC.onClick'
+	        								 load-after='createEnceintesButton.onClick, enceintesTypeBox.onSelect'}" 
+											width="70px" 
+											constraint="${fwinEnceinte$composer.enceinteNomConstraint}"
+										/>
+										<intbox width="50px" id="nbPlacesEachEnceinteBox"
+											value="@{enceinteEdit.nbPlaces,
+											save-when='createC.onClick, self.onBlur, validateC.onClick'}"
+											visible="false"
+											constraint="no zero, no negative, no empty"
+											disabled="@{enceinteEdit.disabled}"
+											
+										/>
+										<intbox width="50px" id="positionEachEnceinteBox"
+											value="@{enceinteEdit.firstPosition,
+											save-when='createC.onClick, self.onBlur, validateC.onClick'}"
+											constraint="no zero, no negative"
+										/>
+									</row>
+								</rows>
+							</grid>
+						</div>
+					</row>
+					
+					<!-- Terminale -->
+					<row spans="4" id="rowCreateTitle2" visible="false">
+						<vbox>
+							<label value="${c:l('conteneur.caracteristiques.terminales')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					
+					<!-- Type -->
+					<row spans="1,3" id="rowTerminaleType" visible="false">
+						<label value="${c:l('terminale.terminaleType')}" sclass="formLabel"/>
+						<div>
+							<listbox id="typesTerminaleBox" mold="select" rows="1"
+							model="@{fwinEnceinte$composer.terminaleTypes 
+							load-after='createEnceintesButton.onClick'}"
+							selectedItem="@{fwinEnceinte$composer.selectedTerminaleType}"
+							visible="false"
+							>
+								<listitem self="@{each='terminaleTypeCont'}" value="@{terminaleTypeCont}">			
+									<listcell label="@{terminaleTypeCont.type}" />
+								</listitem>
+							</listbox>
+						</div>
+					</row>
+					
+					<!-- NbPlaces -->
+					<row id="rowNbPlacesTerminale" visible="false">
+						<label value="${c:l('terminale.nbPlaces')}" sclass="formLabel"/>
+						<div>
+							<label id="nbTerminalePlacesLabel" 
+								value="@{fwinEnceinte$composer.selectedTerminaleType.nbPlaces,
+								load-after='typesTerminaleBox.onSelect'}" 
+								sclass="formValue" />
+						</div>
+						
+						<label value="${c:l('terminale.dimensions')}" sclass="formLabel"/>
+						<div>
+							<label id="dimensionsLabel" 
+								value="@{fwinEnceinte$composer.dimensions,
+								load-after='typesTerminaleBox.onSelect'}" 
+								sclass="formValue" />
+						</div>
+					</row>
+					
+					<!-- Numérotation -->
+					<row spans="1,3" id="rowTerminaleNumerotation" visible="false">
+						<label value="${c:l('terminale.numerotation')}" sclass="formLabel"/>
+						<div>
+							<listbox id="numerotationsBox" mold="select" rows="1"
+							model="@{fwinEnceinte$composer.numerotations 
+							load-after='createEnceintesButton.onClick'}"
+							selectedItem="@{fwinEnceinte$composer.selectedTerminaleNumerotation}"
+							visible="false"
+							>
+								<listitem self="@{each='terminaleNumCont'}" value="@{terminaleNumCont}">			
+									<listcell label="@{terminaleNumCont}" />
+								</listitem>
+							</listbox>
+						</div>
+					</row>
+					
+					<row spans="4">
+						<separator/>
+					</row>
+					<group id="groupIncidents" label="@{fwinEnceinte$composer.incidentsGroupHeader}"/>
+					<row spans="4">
+						<vbox align="center" hflex="1">
+							<grid id="incidentsList" mold="paging" pageSize="5"
+								fixedLayout="true" 
+								hflex="1"
+								span="true"
+								sclass="gridListStyle"
+								model="@{fwinEnceinte$composer.incidentsDecorated}"
+								>
+								<columns sizable="true">
+									<column label="${c:l('incident.nom')}" />
+									<column label="${c:l('incident.date')}" />
+									<column label="${c:l('incident.description')}" />
+								</columns>
+								<rows>
+									<row self="@{each='incident'}">
+										<label value="@{incident.nom}"/>
+										<label value="@{incident.dateFormatted}"/>
+										<label value="@{incident.description}"/>
+									</row>
+								</rows>
+							</grid>
+							
+							<grid id="incidentsListEdit" mold="paging" pageSize="5"
+								fixedLayout="true" 
+								hflex="1"
+								span="true"
+								sclass="gridListStyle"
+								model="@{fwinEnceinte$composer.incidents}"
+								>
+								<columns sizable="true">
+									<column label="${c:l('incident.nom')}" />
+									<column label="${c:l('incident.date')}" />
+									<column label="${c:l('incident.description')}" />
+									<column width="25px"/>
+								</columns>
+								<rows>
+									<row self="@{each='incidentEdit'}">
+										<textbox value="@{incidentEdit.nom,
+	        								 save-when='createC.onClick, self.onBlur'
+	        								 load-after='editC.onClick'}" 
+											width="150px" 
+											constraint="@{fwinEnceinte$composer.incidentConstraint}"
+										/>
+										<datebox value="@{incidentEdit.date,
+			        						save-when='validateC.onClick,self.onBlur'}" 
+			        						format="${c:l('validation.date.format')}"
+			        						cols="15" lenient="false"/>
+										<textbox value="@{incidentEdit.description,
+	        								 save-when='validateC.onClick, self.onBlur'
+	        								 load-after='editC.onClick'}" 
+											width="190px" rows="2" 
+										/>
+										<div align="center">
+											<image width="12px" height="12px" id="deleteIncident"
+												src="/images/icones/small_delete.png"
+												style="cursor:pointer"/>
+										</div>
+									</row>
+								</rows>
+							</grid>
+						</vbox>
+					</row>
+				</rows>
+			</grid>
+		</panelchildren>
+		<toolbar height="30px" id="toolbarEchan" align="end">
+			<hbox spacing="5">
+				<menubar sclass="menuBarV2" id="menuBar">
+					<menu label="${c:l('general.actions')}" image="/images/icones/small_action.png" 
+						width="36px" height="24px">
+						<menupopup>
+							<menuitem id="addIncidentItem" image="/images/icones/addIncident.png" 
+								label="${c:l('conteneur.add.incident')}"/>
+							<menuitem id="taille" image="/images/icones/enceinte.png" 
+								label="${c:l('enceinte.taille.edit')}"/>
+							<menuitem id="numerotation" image="/images/icones/terminale.png" 
+								label="${c:l('terminale.numerotation.edit')}"/>
+							<menuitem id="historique" image="/images/icones/history.png" 
+								label="${c:l('general.historique')}"/>
+						</menupopup>
+					</menu>
+				</menubar>
+				<button id="addNewC" label="${c:l('general.new')}" height="24px" visible="true"
+					image="/images/icones/addEnceinte.png" sclass="buttonv2"
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="deplacer" label="${c:l('enceinte.action.deplacer')}" height="24px" visible="true"
+					image="/images/icones/deplacerEnceinte.png" sclass="buttonv2" 
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="editC" label="${c:l('general.edit')}" height="24px" visible="true"
+					image="/images/icones/edit.png" sclass="buttonv2"
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="deleteC" label="${c:l('general.delete')}" height="24px" visible="true"
+					image="/images/icones/trash.png" sclass="buttonv2"
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="validateC" label="${c:l('general.validate')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="revertC" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="createC" label="${c:l('general.create')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="cancelC" label="${c:l('general.cancel')}"  height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="validateDeplacement"  disabled="true" label="${c:l('general.validate')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="revertDeplacement" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+			</hbox>
+		</toolbar>
+	</panel>
+</window>

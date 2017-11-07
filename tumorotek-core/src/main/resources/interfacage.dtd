@@ -1,0 +1,42 @@
+<!ELEMENT Interfacage (Logiciel, Configuration, Bloc+)>
+<!ELEMENT Logiciel (Nom, Editeur, Version)>
+<!ELEMENT Nom (#PCDATA)>
+<!ELEMENT Editeur (#PCDATA)>
+<!ELEMENT Version (#PCDATA)>
+<!ELEMENT Configuration (SeparateurChamps, SeparateurComposants, SeparateurSousComposants,
+BlocLibreKey, NumeroDossier, DateDossier, OperationDossier)>
+<!ELEMENT NumeroDossier (BlocValue, Key)>
+<!ELEMENT DateDossier (BlocValue, Key)>
+<!ELEMENT OperationDossier (BlocValue, Key)>
+<!ELEMENT SeparateurChamps (#PCDATA)>
+<!ELEMENT SeparateurComposants (#PCDATA)>
+<!ELEMENT SeparateurSousComposants (#PCDATA)>
+<!ELEMENT BlocLibreKey (#PCDATA)>
+<!ELEMENT Bloc (Mapping+)>
+<!ELEMENT Mapping (Tk, Source)>
+<!ELEMENT Tk (ChampEntite?, Annotation?, Entite)>
+<!ELEMENT ChampEntite (#PCDATA)>
+<!ELEMENT Annotation (#PCDATA)>
+<!ELEMENT Entite (#PCDATA)>
+<!ELEMENT Source (Key,  Fonctions?, Modifier?)>
+<!ELEMENT BlocValue (#PCDATA)>
+<!ELEMENT Key (#PCDATA)>
+<!ELEMENT Modifier (Service, Formule, MappingThes+)?>
+<!ELEMENT Service (#PCDATA)>
+<!ELEMENT Formule (#PCDATA)>
+<!ELEMENT MappingThes (SourceThes, TkThes)>
+<!ELEMENT Fonctions (Fonction+)?>
+<!ELEMENT Fonction (#PCDATA)>
+<!ELEMENT TkThes (#PCDATA)>
+<!ELEMENT SourceThes (#PCDATA)>
+
+<!ATTLIST Entite nom CDATA #REQUIRED>
+<!ATTLIST Entite idChamp CDATA #REQUIRED>
+<!ATTLIST Annotation nom CDATA #REQUIRED>
+<!ATTLIST Annotation idChamp CDATA #REQUIRED>
+<!ATTLIST ChampEntite nom CDATA #REQUIRED>
+<!ATTLIST ChampEntite idChamp CDATA #REQUIRED>
+<!ATTLIST Logiciel func (SIP|SGL) #REQUIRED>
+<!ATTLIST Bloc nom CDATA #REQUIRED>
+<!ATTLIST Modifier nom (Thesaurus|Autre) #REQUIRED>
+<!ATTLIST Fonction nom CDATA #REQUIRED>

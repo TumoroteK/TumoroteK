@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:camel="http://camel.apache.org/schema/spring"
+      xsi:schemaLocation="
+      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+	<!-- global GILDA error handling -->
+	<errorHandler id="sipErrorHandler" xmlns="http://camel.apache.org/schema/spring"
+		useOriginalMessage="true" type="DeadLetterChannel" deadLetterUri="{{sip.deadLetter}}" >
+<!--     	<redeliveryPolicy maximumRedeliveries="0" logHandled="true" asyncDelayedRedelivery="false" /> -->
+	</errorHandler>
+
+    <routeContext id="sip-routes" xmlns="http://camel.apache.org/schema/spring"> 
+   
+    	<route id="sip1" autoStartup="{{sip.startup}}" startupOrder="1">
+	   		
+	   		<from uri="{{sip.startpoint}}" />
+	   		<onException useOriginalMessage="true">
+		        <exception>java.lang.Exception</exception>
+		        <handled><constant>true</constant></handled>
+		        <log logName="fr.aphp.tumorotek.interfacage.sip.dead" message="Error handling file: ${file:name}" />
+		        <to uri="bean:exceptionLogProcessor" />
+				<to uri="{{sip.deadLetter}}" />
+		    </onException>
+	   
+	   		<choice>
+	   			<when>
+	   				<simple>${file:ext} == 'dat'</simple>
+	   				<convertBodyTo type="fr.aphp.tumorotek.interfacage.jaxb.gilda.GildaMessage" />
+	   				<to uri="direct:gilda-handle" />
+	   			</when>
+	   			<when>
+	   				<simple>${file:ext} == 'hl7'</simple>
+	   				<choice>
+		   				<when>
+	                		<simple>${properties:sip.convert} == 'ISO-8859-1'</simple>
+	                		<convertBodyTo type="java.lang.String" charset="ISO-8859-1" />
+	            		</when>   				
+	            		<otherwise>
+	            			<convertBodyTo type="java.lang.String" />
+	            		</otherwise>
+	            	</choice>
+	   				<unmarshal ref="myHl7"   />
+	   				<to uri="direct:sip-handle" />
+	   			</when>
+	   			<when>
+	   				<simple>${file:ext} == 'HL7'</simple>
+	   				<choice>
+		   				<when>
+	                		<simple>${properties:sip.convert} == 'ISO-8859-1'</simple>
+	                		<convertBodyTo type="java.lang.String" charset="ISO-8859-1" />
+	            		</when>   				
+	            		<otherwise>
+	            			<convertBodyTo type="java.lang.String" />
+	            		</otherwise>
+	            	</choice>
+	   				<unmarshal ref="myHl7"   />
+	   				<to uri="direct:sip-handle" />
+	   			</when>
+	   			<when>
+	   				<simple>${file:ext} == 'xml'</simple>
+	   				<unmarshal>
+      					<jaxb prettyPrint="true" contextPath="fr.aphp.tumorotek.interfacage.jaxb.hprim"/>
+    				</unmarshal>
+	   				<convertBodyTo type="fr.aphp.tumorotek.interfacage.jaxb.hprim.HprimMessage" />
+	   				<to uri="direct:hprim-handle" />
+	   			</when>
+	   			<otherwise>
+	   				<stop />
+	   			</otherwise>
+	   		</choice>
+	   	</route>
+	   	
+	   	<route id="gilda" autoStartup="{{sip.gilda.startup}}" startupOrder="2">
+	   		
+	   		<from uri="direct:gilda-handle" />
+	   		<onException useOriginalMessage="true">
+		        <exception>java.lang.Exception</exception>
+		        <handled><constant>true</constant></handled>
+		        <log logName="fr.aphp.tumorotek.interfacage.sip.dead" message="Error handling file: ${file:name}" />
+		        <to uri="bean:exceptionLogProcessor" />
+				<to uri="{{sip.deadLetter}}" />
+		    </onException>
+   		
+	   		<choice>
+	   			<when>
+	   				<simple>${in.body.entete.codeEvt} == 'CID'</simple>
+	   				<to uri="bean:patientHandler?method=handleCreation" />
+	   			</when>
+	   			<when>
+	   				<simple>${in.body.entete.codeEvt} == 'MID'</simple>
+	   				<to uri="bean:patientHandler?method=handleModification" />
+	   			</when>
+	   			<when>
+	   				<simple>${in.body.entete.codeEvt} == 'FID'</simple>
+	   				<to uri="bean:patientHandler?method=handleFusion" />
+	   			</when>
+	   			<otherwise>
+	   				<to uri="{{sip.deadLetter}}" />
+	   			</otherwise>
+	   		</choice>
+	   	</route>
+	   	
+	   	<route id="sip2" autoStartup="{{sip.hl7.startup}}" startupOrder="3">
+	   		
+	   		<from uri="direct:sip-handle" />
+	   		<onException useOriginalMessage="true">
+		        <exception>java.lang.Exception</exception>
+		        <handled><constant>true</constant></handled>
+		        <log logName="fr.aphp.tumorotek.interfacage.sip.dead" message="Error handling file: ${file:name}" />
+		        <to uri="bean:exceptionLogProcessor" />
+				<to uri="{{sip.deadLetter}}" />
+		    </onException>
+   		
+	   		<choice>
+	   			<when>
+	   				<simple>${in.header.CamelHL7TriggerEvent} == 'A01'</simple>
+	   				<to uri="bean:patientHandler?method=handleCreation" />
+	   			</when>
+	   			<when>
+	   				<simple>${in.header.CamelHL7TriggerEvent} == 'A02'</simple>
+	   				<to uri="bean:patientHandler?method=handleCreation" />
+	   			</when>
+	   			<when>
+	   				<simple>${in.header.CamelHL7TriggerEvent} == 'A04'</simple>
+	   				<to uri="bean:patientHandler?method=handleCreation" />
+	   			</when>
+	   			<when>
+	   				<simple>${in.header.CamelHL7TriggerEvent} == 'A05'</simple>
+	   				<to uri="bean:patientHandler?method=handleCreation" />
+	   			</when>
+	   			<when>
+	   				<simple>${in.header.CamelHL7TriggerEvent} == 'Z99'</simple>
+	   				<to uri="bean:patientHandler?method=handleCreation" />
+	   			</when>
+	   			<when>
+	   				<simple>${in.header.CamelHL7TriggerEvent} == 'A28'</simple>
+	   				<to uri="bean:patientHandler?method=handleCreation" />
+	   			</when>
+	   			<when>
+	   				<simple>${in.header.CamelHL7TriggerEvent} == 'A08'</simple>
+	   				<to uri="bean:patientHandler?method=handleModification" />
+	   			</when>
+	   			<when>
+	   				<simple>${in.header.CamelHL7TriggerEvent} == 'A31'</simple>
+	   				<to uri="bean:patientHandler?method=handleModification" />
+	   			</when>
+	   			<when>
+	   				<simple>${in.header.CamelHL7TriggerEvent} == 'A40'</simple>
+	   				<to uri="bean:patientHandler?method=handleFusion" />
+	   			</when>
+	   			<otherwise>
+	   				<stop />
+	   			</otherwise>
+	   		</choice>
+	   	</route>
+	   	
+	   	<route id="hprim" autoStartup="{{sip.hprim.startup}}" startupOrder="4">
+	   		
+	   		<from uri="direct:hprim-handle" />
+	   		<onException useOriginalMessage="true">
+		        <exception>java.lang.Exception</exception>
+		        <handled><constant>true</constant></handled>
+		        <log logName="fr.aphp.tumorotek.interfacage.sip.dead" message="Error handling file: ${file:name}" />
+		        <to uri="bean:exceptionLogProcessor" />
+				<to uri="{{sip.deadLetter}}" />
+		    </onException>
+   		
+	   		<choice>
+	   			<when>
+	   				<simple>${in.body.action} == 'création'</simple>
+	   				<to uri="bean:patientHandler?method=handleCreation" />
+	   			</when>
+	   			<when>
+	   				<simple>${in.body.action} == 'modification'</simple>
+	   				<to uri="bean:patientHandler?method=handleModification" />
+	   			</when>
+	   			<when>
+	   				<simple>${in.body.action} == 'fusion'</simple>
+	   				<to uri="bean:patientHandler?method=handleFusion" />
+	   			</when>
+	   			<otherwise>
+	   				<!-- <to uri="{{sip.deadLetter}}" /> -->
+	   			</otherwise>
+	   		</choice>
+	   	</route>
+    </routeContext>
+</beans>

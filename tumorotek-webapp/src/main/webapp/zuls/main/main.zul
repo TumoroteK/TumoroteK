@@ -1,0 +1,334 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+
+<?page id="tk" title="${c:l('app.name')}" contentType="text/html;charset=UTF-8" ?>
+<zk>
+<?link rel="shortcut icon" type="image/x-icon" href="/images/icones/logo-fav.ico" ?>
+<?component name="collaborations" macroURI="/zuls/contexte/Collaborations.zul" ?>
+<?component name="patient" macroURI="/zuls/patient/Patient.zul" ?>
+<?component name="maladiePanel" macroURI="/zuls/patient/FicheMaladie.zul" ?>
+<?component name="maladieSeroPanel" macroURI="/zuls/patient/serotk/FicheMaladieSero.zul" ?>
+<?component name="prodDerive" macroURI="/zuls/prodderive/ProdDerive.zul" ?>
+<?component name="echantillon" macroURI="/zuls/echantillon/Echantillon.zul" ?>
+<?component name="administration" macroURI="/zuls/administration/Administration.zul" ?>
+<?component name="export" macroURI="/zuls/io/Export.zul" ?>
+<?component name="saisieOperateurCritere" macroURI="/zuls/io/FicheSaisieOperateurCritere.zul" ?>
+<?component name="cession" macroURI="/zuls/cession/Cession.zul" ?>
+<?component name="contrat" macroURI="/zuls/cession/Contrat.zul" ?>
+<?component name="prelevement" macroURI="/zuls/prelevement/Prelevement.zul"?>
+<?component name="stockage" macroURI="/zuls/stockage/Stockage.zul"?>
+<?component name="annoComp" macroURI="/zuls/annotation/AnnotationComponent.zul" ?>
+<?component name="defautComp" macroURI="/zuls/administration/DefautComponent.zul" ?>
+<?component name="itemComp" macroURI="/zuls/administration/ItemComponent.zul" ?>
+<?component name="modificationMultipleTextbox" macroURI="/zuls/modification_multiple/ModificationMultipleTextbox.zul" ?>
+<?component name="modificationMultipleListbox" macroURI="/zuls/modification_multiple/ModificationMultipleListbox.zul" ?>
+<?component name="modificationMultipleCombobox" macroURI="/zuls/modification_multiple/ModificationMultipleCombobox.zul" ?>
+<?component name="modificationMultipleDatebox" macroURI="/zuls/modification_multiple/ModificationMultipleDatebox.zul" ?>
+<?component name="modificationMultipleQuantification" macroURI="/zuls/modification_multiple/ModificationMultipleQuantification.zul" ?>
+<?component name="modificationMultipleCheckbox" macroURI="/zuls/modification_multiple/ModificationMultipleCheckbox.zul" ?>
+<?component name="modificationMultipleDoublebox" macroURI="/zuls/modification_multiple/ModificationMultipleDoublebox.zul" ?>
+<?component name="modificationMultipleMultiListbox" macroURI="/zuls/modification_multiple/ModificationMultipleMultiListbox.zul" ?>
+<?component name="modificationMultipleModal" macroURI="/zuls/modification_multiple/ModificationMultipleModal.zul" ?>
+<?component name="modificationMultipleCodeAssigne" macroURI="/zuls/modification_multiple/ModificationMultipleCodeAssigne.zul" ?>
+<?component name="modificationMultipleFile" macroURI="/zuls/modification_multiple/ModificationMultipleFile.zul" ?>
+<?component name="modificationMultipleNonConformites" macroURI="/zuls/modification_multiple/ModificationMultipleNonConformites.zul" ?>
+<?component name="codesModale" macroURI="/zuls/code/Codes.zul" ?>
+<?component name="champImpression" macroURI="/zuls/impression/FicheChampImpression.zul" ?>
+<?component name="ficheTemplateModale" macroURI="/zuls/impression/FicheTemplateModale.zul"?>
+<?component name="ficheRechercheAvanceePatient" macroURI="/zuls/recherche/FicheRechercheAvanceePatient.zul"?>
+<?component name="ficheRechercheAvanceePrelevement" macroURI="/zuls/recherche/FicheRechercheAvanceePrelevement.zul"?>
+<?component name="ficheRechercheAvanceePrelevementSero" macroURI="/zuls/recherche/serotk/FicheRechercheAvanceePrelevementSero.zul"?>
+<?component name="ficheRechercheAvanceeEchantillon" macroURI="/zuls/recherche/FicheRechercheAvanceeEchantillon.zul"?>
+<?component name="ficheRechercheAvanceeProdDerive" macroURI="/zuls/recherche/FicheRechercheAvanceeProdDerive.zul"?>
+<?component name="ficheRechercheAvanceeCession" macroURI="/zuls/recherche/FicheRechercheAvanceeCession.zul"?>
+<?component name="ficheRechercheINCa" macroURI="/zuls/recherche/FicheRechercheINCa.zul"?>
+<?component name="ficheChampThesaurus" macroURI="/zuls/thesaurus/FicheChampThesaurus.zul"?>
+<?component name="ficheHistoriqueModale" macroURI="/zuls/historique/FicheHistoriqueModale.zul"?>
+<?component name="ficheSelectPatientModale" macroURI="/zuls/prelevement/SelectPatientModale.zul" ?>
+<?component name="ficheSelectDossierExterneModale" macroURI="/zuls/interfacage/SelectDossierExterneModale.zul" ?>
+<?component name="importDossierExterneModale" macroURI="/zuls/interfacage/ImportDossierExterneModale.zul" ?>
+<?component name="ficheBonLivraisonModale" macroURI="/zuls/impression/FicheBonLivraisonModale.zul"?>
+<?component name="deleteModale" macroURI="/zuls/main/DeleteModale.zul"?>
+<?component name="resultatsModale" macroURI="/zuls/recherche/ResultatsModale.zul"?>
+<?component name="exportModale" macroURI="/zuls/recherche/ExportModale.zul"?>
+<?component name="ficheHeadersModale" macroURI="/zuls/impression/FicheHeadersModale.zul"?>
+<?component name="resultatsImportModale" macroURI="/zuls/imports/ResultatsImportModale.zul"?>
+<?component name="changeBanqueModale" macroURI="/zuls/prelevement/ChangeBanqueModale.zul" ?>
+<?component name="ficheImprimanteModale" macroURI="/zuls/imprimante/FicheImprimanteModale.zul" ?>
+<?component name="ficheModeleModale" macroURI="/zuls/imprimante/FicheModeleModale.zul" ?>
+<?component name="ficheModeleDynModale" macroURI="/zuls/imprimante/FicheModeleDynModale.zul" ?>
+<?component name="ficheLigneEtiquetteModale" macroURI="/zuls/imprimante/FicheLigneEtiquetteModale.zul" ?>
+<?component name="champsAffichageModale" macroURI="/zuls/io/ChampsAffichageModale.zul"?>
+<?component name="addCritereModale" macroURI="/zuls/io/AddCritereModale.zul"?>
+<?component name="setCriteresValuesModale" macroURI="/zuls/io/SetCriteresValuesModale.zul"?>
+<?component name="retourModale" macroURI="/zuls/cession/retour/FicheRetour.zul" ?>
+<?component name="listeRetoursModale" macroURI="/zuls/cession/retour/ListeRetour.zul" ?>
+<?component name="doublonPatientModale" macroURI="/zuls/prelevement/DoublonPatientModale.zul" ?>
+<?component name="ficheUtilisateurModale" macroURI="/zuls/utilisateur/FicheUtilisateurModale.zul" ?>
+<?component name="showEchantillonsModale" macroURI="/zuls/prelevement/ShowEchantillonsModale.zul" ?>
+<?component name="affectationCollectionsModale" macroURI="/zuls/imprimante/AffectationCollectionsModale.zul"?>
+<?component name="fusionModale" macroURI="/zuls/outils/FicheFusionModale.zul"?>
+<?component name="accueil" macroURI="/zuls/main/Accueil.zul"?>
+<?component name="rechercheBiocapModale" macroURI="/zuls/recherche/FicheRechercheBiocapModale.zul"?>
+<?component name="changeMaladieModale" macroURI="/zuls/prelevement/ChangeMaladieModale.zul" ?>
+<?component name="changeNumerotationModale" macroURI="/zuls/stockage/ChangeNumerotationModale.zul" ?>
+<?component name="fichePasswordModale" macroURI="/zuls/utilisateur/FichePasswordModale.zul"?>
+<?component name="ficheChangeTailleEnceinteModale" macroURI="/zuls/stockage/ChangeTailleEnceinteModale.zul"?>
+<?component name="ficheAddIncidentModale" macroURI="/zuls/stockage/FicheAddIncident.zul"?>
+<?component name="progressBar" macroURI="/zuls/component/ProgressBar.zul"?>
+<?component name="calendarbox" macroURI="/zuls/component/CalendarBox.zul" class="fr.aphp.tumorotek.component.CalendarBox" ?>
+<?component name="dateRetourCompleteModale" macroURI="/zuls/cession/DateRetourComplete.zul"?>
+
+
+	<!-- <script type="text/javascript">
+		zk.afterMount(function () {
+	        zk.beforeUnload(function() {
+				if(jq.confirm('With listener') == true) {
+					event.stop({propagation: true, dom: true});
+				} else {
+					console.log(2);
+				}
+	        });
+        });
+	</script> -->
+
+<!--<style src="/css/form.css.dsp" />-->
+<!--<style src="/css/tumo.css.dsp" />-->
+
+<style src="/css/font-awesome-4.6.1/css/font-awesome.min.css" />
+<style src="/css/newstyle.css.dsp" />
+
+
+<!-- <html><![CDATA[
+       	<style>
+       		div.z-grid.gridListStyle div.z-grid-body {
+				overflow-y: hidden;
+				padding-bottom: 13px;
+			}
+       	</style>
+       	<script type="text/javascript">
+       		function noBack(){window.history.forward()}
+       		noBack();
+       		window.onload=noBack;
+       		window.onpageshow=function(evt){if(evt.persisted)noBack()}
+       		window.onunload=function(){void(0)}
+       		
+       	window.onbeforeunload = confirmExit;
+       	  function confirmExit()
+       	  {
+       	    return "You have attempted to leave this page.  If you have made any changes to the fields without clicking the Save button, your changes will be lost.  Are you sure you want to exit this page?";
+       	  }
+       	</script> 
+	]]>
+	
+</html> -->
+
+<window id="mainWin" border="none" position="center" width="100%" height="100%" 
+	apply="fr.aphp.tumorotek.action.MainWindow">
+		
+	<box align="center" pack="center" id="mainHbox" orient="horizontal" hflex="1">
+		<window id="mainWinRight" border="none" 
+		contentStyle="background-color: #FFFFFF;"/>
+		<box id="mainCenterVbox" orient="vertical">
+			<window id="main" border="none" style="align:center;">
+				<borderlayout  sclass="mainBorderLayout"
+					id="mainBorderLayout">
+				<north height="75px" id="northTopBanniere" sclass="northBanniere">
+	<hbox pack="stretch" width="100%" hflex="1" align="end" sclass="boxBanniere">
+		<hbox  pack="start" style="float:left">
+				<box orient="horizontal" style="margin-left: 90px; margin-bottom: 10px">
+					<div sclass="imageLogo" align="middle"
+						width="197px" height="32px"/>
+				</box>
+		</hbox>
+	    <hbox pack="end" style="float:right; margin-top: 10px" hflex="1">
+	    	<vbox align="right" style="margin-right: 5px">
+				<hlayout style="z-valign-middle">
+						<button label="${c:l('general.logout')}"
+							href="/j_spring_security_logout"
+							sclass="buttonv2"
+							id="buttonLogout"
+							style="font-weight: bold;"
+							image="/images/icones/exit.png"/>
+					
+					<button id="editUser"
+							image="/images/icones/kuser.png" 
+							sclass="buttonv2"/>
+						
+					<div style="padding: 2px; float: none">
+						<style>
+							.scanSwitch {
+								padding: 2px; 
+								margin: 0; 
+								border-style : solid; 
+								border-width: 1px; 
+								// border-color: #99b3ff;
+								// border-color: #337ab7;
+								border-color: #ffffff;
+								// border-radius: 2px 2px 2px 2px;
+								cursor: pointer;
+								display: inline-block;
+ 								border-radius: 50px;
+  								box-shadow: 0px 0px 2px #888;
+							}
+							
+							.on {
+								//background-color: #99b3ff; 
+								background-color: #D9534F;
+								// color: #666699;
+								color: #FFFFFF;
+								
+							}
+							
+							.off {
+								//background-color: #337ab7;
+								background-color: #5CB85C; 
+								color: #FFFFFF;
+							}
+							
+							.fa-1x {
+								font-size: 1em !important;
+							}						
+						</style>
+						<div id="scanButtonDiv" sclass="scanSwitch off" height="20px" width="20px" 
+							align="center"
+							tooltiptext="${c:l('scan.button.swith.on')}" forward="onClick=onSwitchScanButton">
+							<span class="fa fa-qrcode fa-1x" />
+							<timer id="scanTimer" delay="2000" repeats="true" running="false" />
+						</div>					
+					</div>
+				</hlayout>
+			
+				<hlayout>
+					<label value="${c:l('general.banque')}" sclass="formLabel"/>
+					<listbox use="fr.aphp.tumorotek.webapp.general.MainBanquesListBox"
+						id="mainBanquesListBox" mold="select" rows="1"
+						model="@{mainWin$composer.banques}"
+						selectedItem="@{mainWin$composer.selectedBanque}">
+						<listitem self="@{each='mainBanque'}" value="@{mainBanque}">			
+							<listcell label="@{mainBanque.nom}" />
+						</listitem>
+					</listbox>
+				</hlayout>
+			</vbox>
+		  </hbox>
+            </hbox>
+</north>
+					<center border="none" id="mainCenterBorderLayout" style="cellspacing:0;">
+						<tabbox id="mainTabbox" style="align:center;" sclass="mainTabBox"
+						use="fr.aphp.tumorotek.webapp.general.MainTabbox" vflex="1">
+							<tabs>
+								<tab label="${c:l('general.accueil')}" style="text-align:center"
+									id="accueilTab"/>
+								<tab label="${c:l('general.patient')}" style="text-align:center"
+									id="patientTab"/>
+								<tab label="${c:l('general.prelevement')}" style="text-align:center"
+									id="prelevementTab"/>
+								<tab label="${c:l('general.echantillon')}" style="text-align:center"
+									id="echantillonTab"/>
+								<tab label="${c:l('general.derive')}" style="text-align:center"
+									id="deriveTab"/>
+								<tab label="${c:l('general.cession')}" style="text-align:center"
+									id="cessionTab"/>
+								<tab label="${c:l('general.stockage')}" style="text-align:center"
+									id="stockageTab"/>
+								<tab label="${c:l('general.recherche')}" style="text-align:center"
+									id="rechercheTab"/>
+								<tab label="${c:l('general.administration')}" style="text-align:center"
+									id="administrationTab"/>
+								<tab label="${c:l('general.statistiques')}" style="text-align:center"
+									id="statTab" visible="true" disabled="false"/>
+							</tabs>
+							<tabpanels>
+								<tabpanel id="accueilPanel">
+									<!-- <accueil /> -->
+								</tabpanel>
+								<tabpanel id="patientPanel">
+									<!--<patient id="patientMacro" /> -->
+								</tabpanel>
+								<tabpanel id="prelevementPanel">
+									<!-- <prelevement id="prelevementMacro"/> -->
+								</tabpanel>
+								<tabpanel id="echantillonPanel">
+<!--									 <echantillon id="echantillonMacro"/> -->
+								</tabpanel>
+								<tabpanel id="derivePanel">
+<!--									 <prodDerive id="prodDeriveMacro"/> -->
+								</tabpanel>
+								<tabpanel id="cessionPanel">
+<!--									 <cession id="cessionMacro"/> -->
+								</tabpanel>
+								<tabpanel id="stockagePanel">
+									<!-- <stockage id="stockageMacro"/> -->
+								</tabpanel>
+								<tabpanel id="recherchePanel">
+									<!-- <export id="exportMacro"/>		-->							
+								</tabpanel>
+								<tabpanel id="administrationPanel">
+									<!-- <administration id="administrationMacro"/> -->
+								</tabpanel>
+								<tabpanel id="statPanel" />
+							</tabpanels>
+						</tabbox>
+					</center>
+					<!-- style="background-image: url(${c:encodeURL('~./myZkTheme/img/zul/wnd/panel-hm.png')}); -->
+					<south border="none" height="25px" sclass="southWindow">
+<!--						<div align="center" style="font-weight: bold;">-->
+<!--						<hbox width="700px" align="center">-->
+<!--							<label style="font-weight: bold;">Administration</label>-->
+<!--							<label style="font-weight: bold;">Documentation</label>-->
+<!--							<label style="font-weight: bold;">WikiTumo</label>-->
+<!--							<label style="font-weight: bold;">A propos</label>-->
+<!--							<label style="font-weight: bold;">Contact</label>-->
+<!--						</hbox>-->
+<!--						</div>-->
+						<div align="center" style="font-weight: bold;" width="100%">
+						<hbox  align="center">
+							<label style="font-weight: bold;" id="copyrigthsLabel"
+								value="@{mainWin$composer.version}" />
+						</hbox>
+						</div>
+					</south>
+				</borderlayout>
+			</window>
+			<window id="mainWinBottom" contentStyle="background-color: #FFFFFF;"
+			width="900px"/>
+		</box>
+		<window id="mainWinLeft" contentStyle="background-color: #FFFFFF;"/>
+	</box>
+</window>
+</zk>

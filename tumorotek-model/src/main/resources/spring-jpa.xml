@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <beans xmlns="http://www.springframework.org/schema/beans"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns:tx="http://www.springframework.org/schema/tx"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+
+ <!-- couche de persistance JPA -->
+	 <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+	     <property name="dataSource" ref="dataSource" />
+	     <property name="persistenceUnitName" value="simple-jpa" />
+	     <property name="jpaVendorAdapter">
+	        <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">          
+	           	<property name="showSql" value="false"/>
+<!--	           	<property name="databasePlatform" value="org.hibernate.dialect.MySQLDialect" /> -->
+<!--				<property name="databasePlatform" value="org.hibernate.dialect.OracleDialect" /> -->
+				<property name="databasePlatform">
+ 					<bean class="org.springframework.jndi.JndiObjectFactoryBean">
+						<property name="jndiName" value="java:comp/env/jdbc/dialect" />
+						<property name="defaultObject" value="org.hibernate.dialect.MySQLDialect" />
+					</bean>
+ 				</property>		
+			</bean>
+	     </property>     
+	 </bean>
+
+<!-- 	<bean id="dataSource" -->
+<!--	 	class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">	     -->
+<!--	 	<property name="driverClass" value="com.mysql.jdbc.Driver" />-->
+<!-- 		<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/tumo2test"/>-->
+<!--		<property name="user" value="root" />-->
+<!--	 	<property name="password" value="root" /> -->
+<!--		<property name="driverClass" value="oracle.jdbc.OracleDriver" /> -->
+<!--		<property name="jdbcUrl" value="jdbc:oracle:thin:@host:1521:xe"/> -->
+<!--	 	<property name="user" value="HR" />-->
+<!--	 	<property name="password" value="hr" />-->
+<!--	 	<property name="initialPoolSize" value="3" />-->
+<!--	 	<property name="minPoolSize" value="3" />-->
+<!--		<property name="maxPoolSize" value="10" />-->
+<!--		<property name="automaticTestTable" value="c3p0test" />-->
+<!--		<property name="acquireIncrement" value="1" />-->
+<!--		<property name="maxStatements" value="0" />-->
+<!--		<property name="numHelperThreads" value="5" />-->
+<!--	</bean>-->
+	
+<!--	<bean id="resourceBundleSip" class="fr.aphp.tumorotek.model.bundles.ResourceBundleSipImpl">-->
+<!--		 <property name="sipPath" value="/opt/apache-tomcat-6.0.18/conf/Catalina/localhost/sip/"/>-->
+<!--	</bean>-->
+<!--	-->
+<!--	<bean id="resourceBundleMbio" class="fr.aphp.tumorotek.model.bundles.ResourceBundleMbioImpl">-->
+<!--		 <property name="mbioPath" value="/opt/apache-tomcat-6.0.18/conf/Catalina/localhost/mbio/"/>-->
+<!--	</bean>-->
+<!--	-->
+<!--	<bean id="resourceBundleTumo" class="fr.aphp.tumorotek.model.bundles.ResourceBundleTumoImpl">-->
+<!--		 <property name="tumoPropertiesPath" value="/opt/apache-tomcat-6.0.18/conf/Catalina/localhost/"/>-->
+<!--	</bean>-->
+
+	 <bean id="dataSource"
+	 	class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">	     
+	 	<property name="driverClass">
+	 		<bean class="org.springframework.jndi.JndiObjectFactoryBean">
+				<property name="jndiName" value="java:comp/env/jdbc/driverClass" />
+				<property name="defaultObject" value="com.mysql.jdbc.Driver" />
+			</bean>
+	 	</property>
+ 		<property name="jdbcUrl">
+ 			<bean class="org.springframework.jndi.JndiObjectFactoryBean">
+				<property name="jndiName" value="java:comp/env/jdbc/url" />
+				<property name="defaultObject" value="jdbc:mysql://localhost:3306/testtumo2" />
+			</bean>			
+ 		</property> 
+	 	<property name="user">
+	 		<bean class="org.springframework.jndi.JndiObjectFactoryBean">
+				<property name="jndiName" value="java:comp/env/jdbc/user" />
+				<property name="defaultObject" value="root" />
+			</bean>
+	 	</property>
+	 	<property name="password">
+	 		<bean class="org.springframework.jndi.JndiObjectFactoryBean">
+				<property name="jndiName" value="java:comp/env/jdbc/password" />
+				<property name="defaultObject" value="root" />
+			</bean>
+	 	</property>
+	 	<property name="initialPoolSize" value="3" />
+	 	<property name="minPoolSize" value="3" />
+		<property name="maxPoolSize" value="10" />
+		<property name="automaticTestTable" value="c3p0test" />
+		<property name="acquireIncrement" value="1" />
+		<property name="maxStatements" value="0" />
+		<property name="numHelperThreads" value="5" />
+		<property name="maxIdleTime" value="5000" />
+		<property name="maxConnectionAge" value="5000" />
+		<property name="idleConnectionTestPeriod" value="500" />
+		<!-- <property name="debugUnreturnedConnectionStackTraces" value="true" /> -->
+		<!-- <property name="unreturnedConnectionTimeout" value="60" /> -->
+		
+ 	 </bean>
+
+	<bean id="resourceBundleSip" class="fr.aphp.tumorotek.model.bundles.ResourceBundleSipImpl">
+		 <property name="sipPath">
+				<bean class="org.springframework.jndi.JndiObjectFactoryBean">
+					<property name="jndiName" value="java:comp/env/tk/tkSipSystem" />
+					<!--<property name="defaultObject" value="${catalina.base}/conf/Catalina/localhost/sip/" />-->
+					<property name="defaultObject" value="src/test/resources/tomcat/conf/Catalina/localhost/sip/" />
+				</bean>
+		 </property>
+	</bean>
+
+	<bean id="resourceBundleMbio" class="fr.aphp.tumorotek.model.bundles.ResourceBundleMbioImpl">
+		 <property name="mbioPath">
+				<bean class="org.springframework.jndi.JndiObjectFactoryBean">
+					<property name="jndiName" value="java:comp/env/tk/tkMbioSystem" />
+					<!--<property name="defaultObject" value="${catalina.base}/conf/Catalina/localhost/mbio/" />-->
+					<property name="defaultObject" value="src/test/resources/tomcat/conf/Catalina/localhost/mbio/" />
+				</bean>
+		 </property>
+	</bean>
+	<bean id="resourceBundleTumo" class="fr.aphp.tumorotek.model.bundles.ResourceBundleTumoImpl">
+		 <property name="tumoPropertiesPath">
+				<bean class="org.springframework.jndi.JndiObjectFactoryBean">
+					<property name="jndiName" value="java:comp/env/tk/tkTumoPropertiesSystem" />
+					<!--<property name="defaultObject" value="${catalina.base}/conf/Catalina/localhost/" />-->
+					<property name="defaultObject" value="src/test/resources/tomcat/conf/Catalina/localhost/" />
+				</bean>
+		 </property>
+	</bean>
+
+<!--  le gestionnaire de transactions... utilisé dans les tests par AbstractDaoTest -->
+	<bean id="txManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+</beans>

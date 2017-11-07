@@ -1,0 +1,239 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<window id="fwinDeplacerEmplacements" border="none" apply="fr.aphp.tumorotek.action.stockage.FicheDeplacerEmplacements">
+	<panel collapsible="false" title="${c:l('deplacer.emplacement.fiche.title')}"
+	 id="winPanel" sclass="fichePanelv2">
+		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
+			<grid fixedLayout="true" sclass="gridForm1">
+				<columns>
+					<column width="100px"/>
+					<column/>
+					<column width="100px"/>
+					<column/>
+				</columns>
+				<rows>
+					<!-- Titre sélection -->
+					<row spans="4" id="rowSelectionTitle" visible="true">
+						<vbox>
+							<label value="${c:l('deplacer.emplacement.selection.title')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					
+					<!-- Titre deplacement -->
+					<row spans="4" id="rowDeplacementTitle" visible="true">
+						<vbox>
+							<label value="${c:l('deplacer.emplacement.deplacement.title')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					
+					<!-- Titre stockage -->
+					<row spans="4" id="rowStockageTitle" visible="true">
+						<vbox>
+							<label value="${c:l('deplacer.emplacement.stockage.title')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					
+					<!-- Titre destockage -->
+					<row spans="4" id="rowDestockageTitle" visible="true">
+						<vbox>
+							<label value="${c:l('deplacer.emplacement.destockage.title')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					
+					<!-- Nom -->
+					<row id="rowNomAlias" spans="4">
+						<div align="center">
+							<hbox>
+							<label value="${c:l('deplacer.emplacement.boite')}" sclass="formLabel"/>
+							<separator width="5px"/>
+							<label id="nomLabel" 
+								value="@{fwinDeplacerEmplacements$composer.terminale.nom}" 
+								sclass="formValue" />
+							</hbox>
+						</div>
+					</row>
+					
+					<!-- Mauvaise entité -->
+					<row spans="4" id="entiteReserveeRow" visible="false">
+						<div align="center">
+							<label id="entiteReserveeLabel" 
+								value="@{fwinDeplacerEmplacements$composer.entiteReservee}" 
+								sclass="formErrorValue" 
+							/>
+						</div>
+					</row>
+					
+					<!-- Modélisation de la boite -->
+					<row spans="4" id="rowViewBoite">
+						<div align="center" id="modeleBoite"/>
+					</row>
+					
+					<!-- Mauvaise terminale -->
+					<row spans="4" id="badTerminaleRow" visible="false">
+						<div align="center">
+							<label id="badTerminaleLabel" 
+								value="@{fwinDeplacerEmplacements$composer.badTerminaleError}" 
+								sclass="formValue" 
+								style="font-style:italic"
+							/>
+						</div>
+					</row>
+					
+					<!-- Historique des déplacements -->
+					<row spans="4" id="rowHistoriqueTitle" visible="true">
+						<vbox>
+							<separator height="20px"/>
+							<label value="${c:l('deplacer.emplacement.liste.title')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					<row spans="4" id="selectElementRow" visible="false">
+						<div>
+							<label value="${c:l('deplacer.emplacement.select.element')}" sclass="formLabel"/>
+							<label value="  "/>
+							<listbox id="elementsBox" mold="select" rows="1"
+								model="@{fwinDeplacerEmplacements$composer.deplacementsRestants, 
+								load-after='validateSelection.onClick'}"
+								selectedItem="@{fwinDeplacerEmplacements$composer.selectedEmplacement}"
+								>
+								<listitem self="@{each='emplacementDeco'}" value="@{emplacementDeco}">			
+									<listcell label="@{emplacementDeco.code}" />
+								</listitem>
+							</listbox>
+						</div>
+					</row>
+					<row spans="4" id="selectCoordonneeRow">
+						<div>
+							<label value="${c:l('deplacer.emplacement.saisir.coordonnee')}" 
+								sclass="formLabel"/>
+							<label value="${c:l('deplacer.emplacement.coordonnee.ligne')}" 
+								sclass="formLabel"/>
+							<listbox id="lignesBox" mold="select" rows="1"
+								model="@{fwinDeplacerEmplacements$composer.lignes}"
+								>
+								<listitem self="@{each='ligne'}" value="@{ligne}">			
+									<listcell label="@{ligne}" />
+								</listitem>
+							</listbox>
+							<label value=" - "/>
+							<label value="${c:l('deplacer.emplacement.coordonnee.colonne')}" 
+								sclass="formLabel"/>
+							<listbox id="colonnesBox" mold="select" rows="1"
+								model="@{fwinDeplacerEmplacements$composer.colonnes, 
+								load-after='lignesBox.onSelect'}"
+								>
+								<listitem self="@{each='colonne'}" value="@{colonne}">			
+									<listcell label="@{colonne}" />
+								</listitem>
+							</listbox>
+							<label value="  "/>
+							<button id="selectCoordonnee" 
+								label="${c:l('deplacer.emplacement.selectionner.coordonnee')}" 
+								height="24px"
+								image="/images/icones/select.png" sclass="buttonv2"/>
+						</div>
+					</row>
+					<row spans="4" id="rowHistorique" visible="true">
+						<div align="center">
+							<grid fixedLayout="true" sclass="gridListStyle"
+								id="gridHistorique" 
+								width="98%"
+								model="@{fwinDeplacerEmplacements$composer.deplacements}">
+								<columns sizable="true">
+									<column label="${c:l('terminale.historique.code')}"/>
+									<column label="${c:l('terminale.historique.type')}"/>
+									<column label="${c:l('terminale.historique.oldAdresse')}" id="oldAdresseColonne"/>
+									<column width="30px" align="center" id="flecheColonne"/>
+									<column label="${c:l('terminale.historique.newAdresse')}" id="newAdresseColonne"/>
+									<column width="25px" align="center"/>
+								</columns>
+								<rows>
+									<row self="@{each='currDeplacement'}">
+										<label value="@{currDeplacement.code}"/>
+										<label value="@{currDeplacement.emplacement.entite.nom}"/>
+										<label value="@{currDeplacement.adrl}"/>
+										<image src="/images/icones/next.png" height="15px"/>
+										<label value="@{currDeplacement.adrlDestination}"/>
+										<div align="center">
+											<image width="12px" height="12px" 
+												id="deleteDeplacement"
+												src="/images/icones/small_delete.png"
+												style="cursor:pointer"/>
+										</div>
+									</row>
+								</rows>
+							</grid>
+						</div>
+					</row>
+					<!-- Aucun élément -->
+					<row spans="4" id="listErrorRow" visible="false">
+						<div align="center">
+							<label id="listErrorLabel" 
+								value="${c:l('deplacer.emplacement.list.error')}" 
+								sclass="formErrorValue" 
+								style="font-style:italic"
+							/>
+						</div>
+					</row>
+				</rows>
+			</grid>
+		</panelchildren>
+		<toolbar height="30px" id="toolbarEchan" align="end">
+			<hbox spacing="5" align="center">
+				<button id="validateSelection" label="${c:l('general.validate.selection')}" height="24px" visible="false"
+					image="/images/icones/next.png" sclass="buttonv2"/>
+				<button id="cancelSelection" label="${c:l('general.cancel')}"  height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="validateDeplacement" label="${c:l('general.create')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="cancelDeplacement" label="${c:l('general.cancel')}"  height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="validateStockage" label="${c:l('general.create')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="cancelStockage" label="${c:l('general.cancel')}"  height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="validateDestockage" label="${c:l('general.create')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="cancelDestockage" label="${c:l('general.cancel')}"  height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+			</hbox>
+		</toolbar>
+	</panel>
+</window>

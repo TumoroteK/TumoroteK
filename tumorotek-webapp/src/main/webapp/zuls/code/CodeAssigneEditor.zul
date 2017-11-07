@@ -1,0 +1,107 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<div id="codesAssitGridDiv" apply="fr.aphp.tumorotek.action.code.CodeAssigneEditableGrid">
+	<vbox hflex="1">
+		<grid id="objGrid"
+			fixedLayout="true" 		
+			span="true"
+			sizedByContent="false"				
+			sclass="gridListStyle"
+			model="@{codesAssitGridDiv$composer.objs}"
+			hflex="1">
+			<columns>
+				<column label="${c:l('code.code')}" width="150px"/>
+				<column label="${c:l('code.libelle')}" />
+				<column id="expCol" label="${c:l('general.export')}" width="70px"/>
+				<column width="30px" />
+				<column width="30px" />
+				<column width="30px" />
+				<column width="30px" />
+			</columns>
+			<rows id="rows">
+				<row self="@{each='deco'}" value="@{deco}" height="10px">
+					<!-- Code -->
+					<div id="codeDiv">
+						<textbox id="codeBox" cols="15" value="@{deco.code}" visible="@{deco.edition}" 
+								constraint="${codesAssitGridDiv$composer.codeConstraint}" /> 
+						<label value="@{deco.code}" visible="@{deco.statique}" />
+					</div>
+					<!-- libelle -->
+					<div id="libelleDiv">
+						<textbox id="libelleBox" cols="80" value="@{deco.libelle}" visible="@{deco.edition}" 
+								constraint="${codesAssitGridDiv$composer.libelleConstraint}" /> 
+						<label value="@{deco.libelle}" visible="@{deco.statique}" />
+					</div>
+					<!-- Export -->
+					<div>
+						<radio id="exportBoxEachCode" checked="@{deco.export}" visible="@{deco.statique}" />
+					</div>
+					<div id="upObj" width="12px" height="12px" 
+						sclass="upArrow"  visible="@{deco.statique}"/>
+					<div id="downObj" width="12px" height="12px" 
+						sclass="downArrow" visible="@{deco.statique}"/>
+					<div id="editDiv" align="center">
+						<div id="editObj" width="12px" height="12px" 
+							sclass="gridEdit"  visible="@{deco.statique}"/>
+						<div width="12px" height="12px" id="validateObj"
+							sclass="gridValidate"  visible="@{deco.edition}"/>
+					</div>
+					<div align="center">
+						<div width="12px" height="12px" id="deleteObj"
+							sclass="gridDelete"  visible="@{deco.statique}"/>
+						<div width="12px" height="12px" id="revertObj"
+							sclass="gridCancel"  visible="@{deco.edition}"/>
+					</div>
+					
+				</row>
+			</rows>
+		</grid>
+		<box orient="horizontal" pack="center" style="background-color: #e2e9fe" height="25px" width="100%">
+			<hbox id="favBox">
+				<label value="${c:l('TableCodage.FAVORIS')}" />
+				<combobox id="bookmarksBox" readonly="true" />
+				<image id="addFromBookmarks" src="/images/icones/small_add.png" style="cursor:pointer" />
+			</hbox>
+			<button id="addEmptyCode" label="${c:l('code.new')}" height="24px"
+				image="/images/icones/newcode.png" sclass="buttonv2" />
+			<button id="codesAssistantButton" height="24px"
+				label="${c:l('codes.aideSaisie')}"
+				image="/images/icones/codeassist.png"
+				sclass="buttonv2" />
+		</box>
+	</vbox>
+</div>
+	

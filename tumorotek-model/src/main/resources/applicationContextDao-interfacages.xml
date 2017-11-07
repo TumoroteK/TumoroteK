@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<import resource="applicationContextInterceptor.xml" />
+	<import resource="spring-jpa-interfacages.xml" />
+
+	<bean id="abstractDaoTargetInterfacages" class="fr.aphp.tumorotek.dao.impl.GenericDaoJpaImpl"
+		abstract="true">
+		<property name="entityManagerFactory">
+			<ref bean="entityManagerFactoryInterfacages" />
+		</property>
+	</bean>
+
+	<bean id="logicielDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.interfacage.LogicielDao
+			</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTargetInterfacages">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.interfacage.Logiciel
+					</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="emetteurDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.interfacage.EmetteurDao
+			</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTargetInterfacages">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.interfacage.Emetteur
+					</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="dossierExterneDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.interfacage.DossierExterneDao
+			</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTargetInterfacages">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.interfacage.DossierExterne
+					</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="blocExterneDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.interfacage.BlocExterneDao
+			</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTargetInterfacages">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.interfacage.BlocExterne
+					</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="valeurExterneDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.interfacage.ValeurExterneDao
+			</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTargetInterfacages">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.interfacage.ValeurExterne
+					</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="patientSipDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.interfacage.PatientSipDao
+			</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTargetInterfacages">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.interfacage.PatientSip
+					</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="recepteurDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.interfacage.RecepteurDao
+			</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTargetInterfacages">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.interfacage.Recepteur
+					</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="scanDeviceDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.interfacage.scan.ScanDeviceDao
+			</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTargetInterfacages">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.interfacage.scan.ScanDevice</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="scanTerminaleDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.interfacage.scan.ScanTerminaleDao
+			</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTargetInterfacages">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.interfacage.scan.ScanTerminale</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+	
+</beans>

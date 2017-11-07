@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<evenementsPatients acquittementAttendu="non">
+	<enteteMessage modeTraitement="réel">
+		<identifiantMessage>23783</identifiantMessage>
+		<dateHeureProduction>2011-09-09T13:31:58</dateHeureProduction>
+		<emetteur>
+			<agents>
+				<agent categorie="système">
+					<code>DI48SW</code>
+				</agent>
+				<agent categorie="application">
+					<code>GEMA</code>
+				</agent>
+			</agents>
+		</emetteur>
+		<destinataire>
+			<agents>
+				<agent categorie="application">
+					<code>Archivage_Gema2Xml</code>
+				</agent>
+			</agents>
+		</destinataire>
+	</enteteMessage>
+	<evenementPatient>
+		<venuePatient action="création">
+			<patient confidentiel="non" anonyme="non">
+				<identifiant>
+					<emetteur etat="permanent" portee="local" referent="oui">
+						<valeur>9018961</valeur>
+					</emetteur>
+				</identifiant>
+				<personnePhysique sexe="M" informationQualifiee="oui">
+					<nomUsuel>NOMTEST</nomUsuel>
+					<nomNaissance>PATROTEST</nomNaissance>
+					<prenoms>
+						<prenom>ALAIN</prenom>
+					</prenoms>
+					<adresses>
+						<adresse>
+							<ligne>2 RUE DU LAC                                      </ligne>
+							<ligne>
+							</ligne>
+							<ville>LYON                                              </ville>
+							<pays>100</pays>
+							<codePostal>69003</codePostal>
+						</adresse>
+					</adresses>
+					<dateNaissance>
+						<date>1975-05-02</date>
+					</dateNaissance>
+					<lieuNaissance>
+						<ville>ESTAING</ville>
+						<pays>100</pays>
+						<codePostal>65400</codePostal>
+					</lieuNaissance>
+					<nationalite>100</nationalite>
+				</personnePhysique>
+			</patient>
+			<venue etat="encours" indicateurParcoursSoinsVenue="" confidentiel="non" prive="non">
+				<identifiant>
+					<emetteur>
+						<valeur>531604772</valeur>
+						<lienIdentifiantParente parent="mr">
+						</lienIdentifiantParente>
+					</emetteur>
+				</identifiant>
+				<natureVenueHprim valeur="cslt">
+					<code>CE</code>
+					<dictionnaire>HCL_NatVen</dictionnaire>
+				</natureVenueHprim>
+				<entree typeEntree="directe">
+					<dateHeureOptionnelle>
+						<date>2011-09-09</date>
+						<heure>13:30:00</heure>
+					</dateHeureOptionnelle>
+					<modeEntree valeur="01">
+					</modeEntree>
+					<uniteFonctionnelleResponsable>
+						<code>21551</code>
+					</uniteFonctionnelleResponsable>
+				</entree>
+				<sortie>
+					<dateHeureOptionnelle>
+						<date>2011-09-10</date>
+						<heure>23:59:00</heure>
+					</dateHeureOptionnelle>
+					<modeSortieHprim valeur="04" />
+				</sortie>
+			</venue>
+		</venuePatient>
+	</evenementPatient>
+</evenementsPatients>

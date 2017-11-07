@@ -1,0 +1,226 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <!-- ====== -->
+    <!-- Parent -->
+    <!-- ====== -->
+    <parent>
+        <groupId>fr.aphp.tumorotek</groupId>
+        <artifactId>tumorotek-parent</artifactId>
+        <version>2.1.1-SNAPSHOT</version>
+    </parent>
+    <!-- ====== -->
+    <!-- Module -->
+    <!-- ====== -->
+    <artifactId>tumorotek-install</artifactId>
+    <packaging>bundle</packaging>
+    <name>APHP :: TumoroteK :: Install</name>
+    <description>Assemblage pour l'installation de l'application TumoroteK</description>
+    <url>https://github.com/TumoroteK/TumoroteK</url>
+    <!-- ========== -->
+    <!-- Proprietes -->
+    <!-- ========== -->
+    <properties>
+        <!--<flux>tumo</flux>-->
+
+        <!-- Timestamp (utilisé dans la fiche version par exemple) -->
+        <timestamp>${maven.build.timestamp}</timestamp>
+        <maven.build.timestamp.format>dd/MM/yyyy</maven.build.timestamp.format>
+    </properties>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.9</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>index</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <!-- ============== -->
+    <!-- Plugins Commun -->
+    <!-- ============== -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
+            </plugin>
+            <!-- to generate the MANIFEST-FILE of the bundle -->
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <version>3.3.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Import-Package>*</Import-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.6</version>
+                <configuration>
+                    <locales>fr</locales>
+                </configuration>
+                <!--<dependencies>
+                    <dependency>&lt;!&ndash; add support for dav &ndash;&gt;
+                        <groupId>org.apache.maven.wagon</groupId>
+                        <artifactId>wagon-webdav-jackrabbit</artifactId>
+                        <version>3.0.0</version>
+                    </dependency>
+                </dependencies>-->
+                <executions>
+                    <execution>
+                        <id>site-install</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>site</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.2</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/src/site/markdown</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/src/assembly/install</directory>
+                                    <include>*.md</include>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-resources-sh</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/site</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/src/assembly/install</directory>
+                                    <include>*.pdf</include>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <!--<execution>
+                        <id>copy-resources-war</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/site</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${parent.basedir}/tumorotek-webapp/target</directory>
+                                    <include>*.war</include>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>-->
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <phase>process-resources</phase>
+                        <configuration>
+                            <target>
+                                <copy file="${basedir}/src/site/markdown/note-version.md" tofile="${basedir}/src/site/markdown/index.md" />
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/assembly/assembly.xml</descriptor>
+                    </descriptors>
+                    <!--<finalName>${project.artifactId}-${project.version}</finalName>-->
+                    <appendAssemblyId>false</appendAssemblyId>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.github</groupId>
+                <artifactId>site-maven-plugin</artifactId>
+                <version>0.12</version>
+                <configuration>
+                    <message>Creating site for ${project.version}</message>
+                    <server>github-tumorotek</server>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>site</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <!--<distributionManagement>
+        &lt;!&ndash;<site>
+            <id>olympe</id>
+            <url>
+                dav:http://sap-nexus.sap.aphp.fr:8081/nexus/content/sites/olympe/interfaces/${flux}/${project.version}
+            </url>
+        </site>&ndash;&gt;
+        <repository>
+            <id>github</id>
+            <url>${project.url}</url>
+        </repository>
+    </distributionManagement>-->
+    <!--<distributionManagement>
+        <repository>
+            <id>internal.repo</id>
+            <name>Temporary Staging Repository</name>
+            <url>file://${project.build.directory}/mvn-repo</url>
+        </repository>
+    </distributionManagement>-->
+</project>

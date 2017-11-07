@@ -1,0 +1,212 @@
+<!--
+	* Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+    * dsi-projet.tk@aphp.fr
+	* 
+	* Ce logiciel est un programme informatique servant à la gestion de 
+	* l'activité de biobanques. 
+	*
+	* Ce logiciel est régi par la licence CeCILL soumise au droit français
+	* et respectant les principes de diffusion des logiciels libres. Vous 
+	* pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+	* conditions de la licence CeCILL telle que diffusée par le CEA, le 
+	* CNRS et l'INRIA sur le site "http://www.cecill.info". 
+	* En contrepartie de l'accessibilité au code source et des droits de   
+	* copie, de modification et de redistribution accordés par cette 
+	* licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+	* Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+	* l'auteur du programme, le titulaire des droits patrimoniaux et les 
+	* concédants successifs.
+	*
+	* A cet égard  l'attention de l'utilisateur est attirée sur les 
+	* risques associés au chargement,  à l'utilisation,  à la modification 
+	* et/ou au  développement et à la reproduction du logiciel par 
+	* l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+	* le rendre complexe à manipuler et qui le réserve donc à des 	
+	* développeurs et des professionnels  avertis possédant  des 
+	* connaissances  informatiques approfondies.  Les utilisateurs sont 
+	* donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+	* besoins dmans des conditions permettant d'assurer la sécurité de leurs
+	* systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+	* et l'exploiter dans les mêmes conditions de sécurité. 
+	*	
+	* Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+	* avez pris connaissance de la licence CeCILL, et que vous en avez 
+	* accepté les termes. 
+-->
+<?component name="calendarbox" macroURI="/zuls/component/CalendarBox.zul" class="fr.aphp.tumorotek.component.CalendarBox" ?>
+
+<!-- Groupe dérivé -->
+<groupbox id="groupProdDerives" open="false">
+	<caption image="/images/icones/history.png"
+		label="${c:l('recherche.avancee.informations.prodDerive')}" />
+	<vlayout fulfill="groupProdDerives.onOpen" hflex="1">						
+		<!-- code et type -->
+		<hlayout sclass="z-valign-middle" style="margin: 5px" hflex="1">
+			<label hflex="min"
+				value="${c:l('Champ.ProdDerive.Code')}" sclass="formLabel" />
+			<div hflex="1" align="left" style="margin: 0 10px 0 10px">
+				<textbox id="codeProdDeriveBox"
+					hflex="1">
+					<custom-attributes
+						attribut="Code" entite="ProdDerive" />
+				</textbox>
+			</div>
+
+			<label hflex="min"
+				value="${c:l('Champ.ProdDerive.ProdType')}"
+				sclass="formLabel" />
+			<div hflex="1" align="left" style="margin: 0 10px 0 10px">
+				<listbox id="typeProdDeriveBox"
+					mold="select" hflex="1"
+					model="@{fwinRechercheAvanceePrelevement$composer.prodDeriveTypes}">
+					<listitem
+						self="@{each='prodDeriveType'}" value="prodDeriveType">
+						<listcell
+							label="@{prodDeriveType.type}" />
+					</listitem>
+					<custom-attributes
+						attribut="ProdTypeId" entite="ProdDerive" />
+				</listbox>
+			</div>
+		</hlayout>
+		<!--  code labo -->
+		<hlayout sclass="z-valign-middle" style="margin: 5px" hflex="1">
+			<label hflex="min"
+				value="${c:l('Champ.ProdDerive.CodeLabo')}" sclass="formLabel" />
+			<div hflex="2" align="left" style="margin: 0 10px 0 10px">
+				<textbox id="codeLaboProdDeriveBox"
+					hflex="2">
+					<custom-attributes
+						attribut="CodeLabo" entite="ProdDerive" />
+				</textbox>
+			</div>
+		</hlayout>
+		<!-- qualité et statut -->
+		<hlayout sclass="z-valign-middle" style="margin: 5px" hflex="1">
+			<label hflex="min"
+				value="${c:l('Champ.ProdDerive.ProdQualite')}"
+				sclass="formLabel" />
+			<div hflex="1" align="left" style="margin: 0 10px 0 10px">
+				<listbox id="qualiteProdDeriveBox"
+					mold="select" hflex="1"
+					model="@{fwinRechercheAvanceePrelevement$composer.deriveQualites}">
+					<listitem
+						self="@{each='deriveQualite'}" value="deriveQualite">
+						<listcell
+							label="@{deriveQualite.prodQualite}" />
+					</listitem>
+					<custom-attributes
+						attribut="ProdQualiteId" entite="ProdDerive" />
+				</listbox>
+			</div>
+
+			<label hflex="min"
+				value="${c:l('Champ.ProdDerive.ObjetStatut')}"
+				sclass="formLabel" />
+			<div hflex="1" align="left" style="margin: 0 10px 0 10px">
+				<listbox id="statutProdDeriveBox"
+					mold="select" hflex="1"
+					model="@{fwinRechercheAvanceePrelevement$composer.objetStatuts}"
+					itemRenderer="fr.aphp.tumorotek.decorator.StatutItemRenderer">
+					<custom-attributes
+						attribut="ObjetStatutId" entite="ProdDerive" />
+				</listbox>
+			</div>
+		</hlayout>
+		<!-- Quantité et volume -->
+		<hlayout sclass="z-valign-middle" style="margin: 5px" hflex="1">
+			<label hflex="min"
+				value="${c:l('Champ.ProdDerive.Volume')}" sclass="formLabel" />
+			<hlayout hflex="1" style="margin: 0 10px 0 10px">
+				<listbox
+					id="operateursVolumeDerivesBox" mold="select"
+					model="@{fwinRechercheAvanceePrelevement$composer.operateursDecimaux}">
+					<listitem
+						self="@{each='opVolDerive'}" value="opVolDerive">
+						<listcell
+							label="@{opVolDerive}" />
+					</listitem>
+				</listbox>
+				<decimalbox id="volumeDeriveBox"
+					width="75px" locale="en" 
+					format="##0.###" scale="3">
+					<custom-attributes
+						attribut="Volume" entite="ProdDerive" />
+				</decimalbox>
+			</hlayout>
+
+			<label hflex="min"
+				value="${c:l('Champ.ProdDerive.Quantite')}"
+				sclass="formLabel" />
+			<hlayout hflex="1" style="margin: 0 10px 0 10px">				
+				<listbox
+					id="operateursQuantiteDeriveBox" mold="select" 
+					model="@{fwinRechercheAvanceePrelevement$composer.operateursDecimaux}">
+					<listitem
+						self="@{each='opQteDerive'}" value="opQteDerive">
+						<listcell
+							label="@{opQteDerive}" />
+					</listitem>
+				</listbox>
+				<decimalbox format="##0.###" scale="3"
+					id="quantiteDeriveBox" width="75px" locale="en">
+					<custom-attributes
+						attribut="Quantite" entite="ProdDerive" />
+				</decimalbox>
+			</hlayout>
+		</hlayout>
+		<!-- Non conformites -->
+		<hlayout sclass="z-valign-middle" style="margin: 5px" hflex="1">
+			<label hflex="min" value="${c:l('Champ.ProdDerive.ConformeTraitement')}"
+				sclass="formLabel" />
+			<div hflex="1" align="left" style="margin: 0 10px 0 10px">
+				<listbox 
+					id="conformeDeriveTraitementBoolBox" mold="select">
+					<listitem label="" />
+					<listitem value="true" label="${c:l('annotation.boolean.oui')}" />
+					<listitem value="false" label="${c:l('annotation.boolean.non')}" />										
+					<custom-attributes
+						attribut="ConformeTraitement" entite="ProdDerive" />
+				</listbox>
+			</div>
+			
+			<label hflex="min" value="${c:l('Champ.ProdDerive.ConformeTraitement.Raison')}"
+				sclass="formLabel" />
+			<hlayout hflex="2" align="left" style="margin: 0 10px 0 10px">
+				<textbox id="nonConformitesDeriveTraitementBox" hflex="1" />
+				<listbox id="nonConformitesDeriveTraitementBoxHelper" mold="select" hflex="1"
+					model="@{fwinRechercheAvanceePrelevement$composer.nCderiveTraitement}">
+					<listitem self="@{each='nc'}" value="nc">
+						<listcell label="@{nc.nom}" />
+					</listitem>
+				</listbox>
+			</hlayout>
+		</hlayout>
+		<hlayout sclass="z-valign-middle" style="margin: 5px" hflex="1">
+			<label hflex="min" value="${c:l('Champ.ProdDerive.ConformeCession')}"
+				sclass="formLabel" />
+			<div hflex="1" align="left" style="margin: 0 10px 0 10px">
+				<listbox 
+					id="conformeDeriveCessionBoolBox" mold="select">
+					<listitem label="" />
+					<listitem value="true" label="${c:l('annotation.boolean.oui')}" />
+					<listitem value="false" label="${c:l('annotation.boolean.non')}" />										
+					<custom-attributes
+						attribut="ConformeCession" entite="ProdDerive" />
+				</listbox>
+			</div>
+			
+			<label hflex="min" value="${c:l('Champ.ProdDerive.ConformeCession.Raison')}"
+				sclass="formLabel" />
+			<hlayout hflex="2" align="left" style="margin: 0 10px 0 10px">
+				<textbox id="nonConformitesDeriveCessionBox" hflex="1" />
+				<listbox id="nonConformitesDeriveCessionBoxHelper" mold="select" hflex="1"
+					model="@{fwinRechercheAvanceePrelevement$composer.nCderiveCession}">
+					<listitem self="@{each='nc'}" value="nc">
+						<listcell label="@{nc.nom}" />
+					</listitem>
+				</listbox>
+			</hlayout>
+		</hlayout>						
+	</vlayout>
+</groupbox>

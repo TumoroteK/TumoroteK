@@ -1,0 +1,198 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<zk>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" name="ficheUtilisateurModale" root="../"?>
+
+<window id="fwinUtilisateurModale" border="none" apply="fr.aphp.tumorotek.action.utilisateur.FicheUtilisateurModale">
+	<panel collapsible="false" sclass="fichePanelv2" id="winPanel" closable="false">
+		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
+			<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvt">
+				<columns>
+					<column width="250px"/>
+					<column/>
+				</columns>
+				<rows>
+					<row spans="2">
+							<separator/>
+					</row>
+					<row spans="2">
+						<vbox width="100%">
+							<label value="${c:l('utilisateur.modale.subtitle')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					<!-- Login -->
+					<row>
+						<label value="${c:l('utilisateur.login')}" sclass="formLabel"/>
+						<label id="loginLabel" 
+								value="@{fwinUtilisateurModale$composer.user.login}" 
+								sclass="formValue" 
+						/>
+					</row>
+					<!-- Password -->
+					<row>
+						<label value="${c:l('utilisateur.password')}" sclass="formLabel"/>
+						<label id="passwordLabel" 
+							value="-" 
+							sclass="formValue"
+						/>
+					</row>
+					<!-- EMAIL -->
+					<row>
+						<hbox>
+							<label value="${c:l('utilisateur.email')}" sclass="formLabel"/>
+						</hbox>
+						<div>
+							<label id="emailLabel" 
+								value="@{fwinUtilisateurModale$composer.user.email}" 
+								sclass="formValue" 
+							/>
+							
+							<textbox id="emailBox" value="@{fwinUtilisateurModale$composer.user.email,
+			        				save-when='validateC.onClick, createC.onClick'
+			        				load-after='editC.onClick, createC.onClick'}" 
+								width="200px" 
+								constraint="@{fwinUtilisateur$composer.emailConstraint}"
+								visible="false"
+							/>
+						</div>
+					</row>
+					<!-- Collaborateur -->
+					<row>
+						<label value="${c:l('utilisateur.collaborateur')}" sclass="formLabel"/>
+						<label id="collaborateurLabel" 
+							value="@{fwinUtilisateurModale$composer.user.collaborateur.nomAndPrenom}" 
+							sclass="formLink"/>
+							
+					</row>
+					<row>
+					<!-- Date de création -->
+						<label value="${c:l('utilisateur.date.creation')}" sclass="formLabel"/>
+						<label id="dateCreationLabel" 
+							value="@{fwinUtilisateurModale$composer.dateCreationFormated}"
+							sclass="formValue"
+						/>
+					</row>
+					<row>
+					<!-- Date de désactivation -->
+						<label value="${c:l('utilisateur.timeout')}" sclass="formLabel"/>
+						<label id="timeoutLabel" 
+							value="@{fwinUtilisateurModale$composer.timeoutFormated}"
+							sclass="formValue"
+						/>
+					</row>
+					<row spans="2">
+						<!-- Date de désactivation help -->
+						<label value="@{fwinUtilisateurModale$composer.timeoutLabelFormated}" 
+							sclass="formValueItalics"/>
+					</row>
+					
+					<!-- Roles -->
+					<row spans="2">
+						<separator/>
+					</row>
+					<group id="groupRoles" label="${c:l('utilisateur.roles')}"/>
+					
+					<!-- superadmin -->
+					<row>
+						<label value="${c:l('utilisateur.super')}" sclass="formLabel"/>
+						<div>
+							<label id="superLabel" 
+								value="@{fwinUtilisateurModale$composer.superFormated}" 
+								sclass="formValue" />
+						</div>
+					</row>
+					
+					<!-- Pfs -->
+					<row id="rowPfsAdmin">
+						<label value="${c:l('utilisateur.plateformes')}" sclass="formLabel"/>
+						<div>
+							<label id="plateformesLabel" 
+								value="@{fwinUtilisateurModale$composer.plateformesFormated}" 
+								sclass="formValue" />
+						</div>
+					</row>
+					
+					<row spans="2" id="rowGridRoles">
+						<grid id="rolesGrid"
+							fixedLayout="true" 
+							height="100%"
+							width="470px"
+							sclass="gridListStyle"
+							model="@{fwinUtilisateurModale$composer.profilUtilisateurs}"
+							mold="paging"
+							pageSize="10"
+							>
+							<columns sizable="true" >
+								<column label="${c:l('utilisateur.banque')}" width="235px"/>
+								<column label="${c:l('utilisateur.profil')}" width="235px"/>
+							</columns>
+							<rows>
+								<row self="@{each='currRole'}">
+									<label value="@{currRole.banque.nom}"/>
+									<label value="@{currRole.profil.nom}"/>
+								</row>
+							</rows>
+						</grid>
+					</row>
+				</rows>
+			</grid>
+		</panelchildren>
+		<toolbar height="30px" id="toolbarEchan" align="end">
+			<hbox spacing="5">
+				<button id="addNewC" label="${c:l('general.new')}" height="24px" visible="false"
+					image="/images/icones/new.png" sclass="buttonv2"/>
+				<button id="editC" label="${c:l('general.edit')}" height="24px" visible="true"
+					image="/images/icones/edit.png" sclass="buttonv2"/>
+				<button id="editPassword" label="${c:l('general.edit.password')}" height="24px" visible="true"
+					image="/images/icones/locked.png" sclass="buttonv2"/>
+				<button id="deleteC" label="${c:l('general.delete')}" height="24px" visible="false"
+					image="/images/icones/trash.png" sclass="buttonv2"/>
+				<button id="validateC" label="${c:l('general.validate')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="revertC" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="createC" label="${c:l('general.create')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="cancelC" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="close" label="${c:l('general.close')}" height="24px" visible="true"
+					image="/images/icones/delete.png" sclass="buttonv2"/>
+			</hbox>
+		</toolbar>
+	</panel>
+</window>
+</zk>

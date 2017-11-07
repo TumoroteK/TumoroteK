@@ -1,0 +1,150 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<?page title="Execution Recherche Page" contentType="text/html;charset=UTF-8"?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<zk>
+
+<window id="winExecutionRecherche" border="none" apply="fr.aphp.tumorotek.action.io.ExecutionRechercheController">
+	<panel collapsible="false" title="${c:l('execution.recherche.title')}"
+	 sclass="fichePanelv2" id="winPanel">
+		<panelchildren id="panelChildrenWithScroll"  style="overflow-y:scroll">
+			<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvt">
+				<columns>
+					<column/>
+				</columns>
+				<rows>
+					<row>
+						<box orient="horizontal">
+							<label value="${c:l('execution.recherche.liste')}"
+								sclass="formLabel"/>
+							<separator width="30px"/>
+							<listbox id="recherchesBox" mold="select" rows="1"
+								width="200px"
+								model="@{winExecutionRecherche$composer.recherches}"
+								selectedItem="@{winExecutionRecherche$composer.selectedRecherche}" >
+								<listitem self="@{each='rech'}" value="@{rech}">			
+									<listcell label="@{rech.intitule}" />
+								</listitem>
+							</listbox>
+							<separator width="30px"/>
+							<button id="launchSearch" label="${c:l('execution.recherche.launch')}" 
+								height="24px"
+								image="/images/icones/action.png" sclass="buttonv2"/>
+						</box>
+					</row>
+					<row>
+						<separator/>
+					</row>
+					<row >
+						<vbox width="100%">
+							<label value="${c:l('execution.recherche.results.title')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					<row hflex="1">
+						<vlayout hflex="1" width="100%">
+							<grid id="listObjets" fixedLayout="true" 
+								sclass="gridListStyle"
+								span="true"
+								sizedByContent="true"
+								hflex="1" />
+							<paging id="resPaging" detailed="true"/>
+						</vlayout>
+					</row>
+					<!-- <row align="center">
+						<box orient="horizontal">
+						<menubar id="menuBar">
+							<menu label="${c:l('general.actions')}" image="/images/icones/small_action.png" 
+								width="36px" height="24px">
+								<menupopup>
+									<menuitem id="showPatients" image="/images/icones/selectall.png"
+										label="${c:l('execution.recherche.afficher.patients')}"/>
+									<menuitem id="showPrelevements" image="/images/icones/selectall.png"
+										label="${c:l('execution.recherche.afficher.prelevements')}"/>
+									<menuitem id="showEchantillons" image="/images/icones/selectall.png"
+										label="${c:l('execution.recherche.afficher.echantillons')}"/>
+									<menuitem id="showProdDerives" image="/images/icones/selectall.png"
+										label="${c:l('execution.recherche.afficher.prodDerives')}"/>
+								</menupopup>
+							</menu>
+						</menubar>
+						<button id="exportExcel" label="${c:l('recherche.button.exportExcel')}" 
+								height="24px"
+								image="/images/icones/export.png" sclass="buttonv2"/>
+						</box>
+					</row>-->
+				</rows>
+			</grid>
+		</panelchildren>
+		<toolbar height="100%" id="toolbarRecherche" align="start">
+			<hbox spacing="5" align="center">
+				<menubar id="menuBar" sclass="menuBarV2">
+					<menu label="${c:l('general.actions')}" image="/images/icones/small_action.png" 
+						width="36px" height="24px">
+						<menupopup>
+							<menuitem id="showPatients" image="/images/icones/selectall.png"
+								label="${c:l('execution.recherche.afficher.patients')}"/>
+							<menuitem id="showPrelevements" image="/images/icones/selectall.png"
+								label="${c:l('execution.recherche.afficher.prelevements')}"/>
+							<menuitem id="showEchantillons" image="/images/icones/selectall.png"
+								label="${c:l('execution.recherche.afficher.echantillons')}"/>
+							<menuitem id="showProdDerives" image="/images/icones/selectall.png"
+								label="${c:l('execution.recherche.afficher.prodDerives')}"/>
+						</menupopup>
+					</menu>
+				</menubar>
+				<menubar sclass="menuBarV2" id="menuExportBar">
+					<menu label="${c:l('general.actions.exporter')}" image="/images/icones/export.png" 
+						width="36px" height="24px">
+						<menupopup>
+							<menuitem id="exportItem" image="/images/icones/export.png" 
+								label="${c:l('recherche.button.exportExcel')}" sclass="exports"/>
+							<menuitem id="exportItemINCa" image="/images/icones/catalogues/inca_tk.png" 
+								label="${c:l('catalogue.exporter.INCa')}" sclass="exports"/>
+							<menuitem id="exportItemTVGSO" image="/images/icones/catalogues/tvgso.gif" 
+								label="${c:l('catalogue.exporter.TVGSO')}" sclass="exports"/>
+							<menuitem id="exportItemTVGSOcsv" image="/images/icones/catalogues/tvgso.gif" 
+								label="${c:l('catalogue.exporter.TVGSOcsv')}" sclass="exports"/>
+							<menuitem id="exportItemBIOCAP" image="/images/icones/catalogues/biocap.gif" 
+								label="${c:l('catalogue.exporter.BIOCAP')}" sclass="exports"/>
+						</menupopup>
+					</menu>
+				</menubar>
+			</hbox>
+		</toolbar>
+	</panel>
+</window>
+</zk>

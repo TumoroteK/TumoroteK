@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MESPAT    def="MessagePatient">
+<ENTETE    def="Entete">
+	<CDEVT  def="Code evenement">MID</CDEVT>
+	<NOEVT  def="Numero evenement">201119999</NOEVT>
+	<DAMSG  def="Date message">14032011124623</DAMSG>
+	<TYMSG  def="Type de message">02</TYMSG>
+</ENTETE>
+<ID     def="Message identite du patient">
+<NOIP   def="Numero identification permanent">888888888</NOIP>
+<NMMAL   def="Nom usuel"/
+<NMPATR  def="Nom patronymique">MAUGUIN</NMPATR>
+<NMPMAL  def="Prenom">JOSIANE</NMPMAL>
+<DANAIS  def="Date de naissance">10071934</DANAIS>
+<CDDNIN  def="Indicateur date naissance incertaine"></CDDNIN>
+<CDSEXM  def="Sexe">F</CDSEXM>
+<NOCONA  def="Code INSEE de la commune de naissance">28055</NOCONA>
+<CDPONA  def="Code postal de la commune de naissance">28210</CDPONA>
+<LBLONA  def="Libelle de la commune de naissance">LE BOULLAY THIERRY</LBLONA>
+<CDPNAT  def="Code du pays de naissance">100</CDPNAT>
+<CDNAT  def="Code de la nationalite">100</CDNAT>
+<CDSIFA  def="Code de la situation familiale">M</CDSIFA>
+<NOTLDO  def="Num telephone du domicile">01.34.78.37.27</NOTLDO>
+<NOTLPR  def="Num telephone professionnel"></NOTLPR>
+<CDCGSP  def="Code categorie socio-professionnelle"></CDCGSP>
+<CDMORT  def="Indicateur patient decede">N</CDMORT>
+<INPROV  def="Indicateur identite provisoire">N</INPROV>
+<ADR	  def="Adresses principale et secondaire">
+<ADR1	  def="Adresse principale">
+	<COIDPA	def="Complement identite"></COIDPA>
+	<COADPA	def="Complement adresse"></COADPA>
+	<ADREPA	def="Adresse (num et rue)">7 RUE DE LA SERGENTERIE</ADREPA>
+	<LBCOPA	def="Libelle de la commune">BREVAL</LBCOPA>
+	<NOCOPA	def="Code INSEE de la commune">78107</NOCOPA>
+	<CDPOPA	def="Code postal de la commune">78980</CDPOPA>
+	<LIACPA	def="Ligne acheminement">BREVAL</LIACPA>
+</ADR1>
+<ADR2	def="Adresse secondaire">
+	<COIDPA def="Complement identite"></COIDPA>
+	<COADPA def="Complement adresse"></COADPA>
+	<ADREPA def="Adresse (num et rue)"></ADREPA>
+	<LBCOPA def="Libelle de la commune"></LBCOPA>
+	<NOCOPA def="Code INSEE de la commune"></NOCOPA>
+	<CDPOPA def="Code postal de la commune"></CDPOPA>
+	<LIACPA def="Ligne acheminement"></LIACPA>
+</ADR2>
+</ADR>
+</ID>
+<FID     def="Message fusion"/>
+<DA    def="Message dossier administratif"/>
+<VN      def="Message venue"/>
+<RV     def="Rendez vous"/>
+</MESPAT>

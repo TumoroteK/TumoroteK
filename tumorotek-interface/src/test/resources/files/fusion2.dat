@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MESPAT    def="MessagePatient">
+<ENTETE    def="Entete">
+	<CDEVT  def="Code evenement">FID</CDEVT>
+	<NOEVT  def="Numero evenement">12312345</NOEVT>
+	<DAMSG  def="Date message">02052011115148</DAMSG>
+	<TYMSG  def="Type de message">80</TYMSG>
+</ENTETE>
+<ID     def="Message identite du patient">
+<NOIP   def="Numero identification permanent">2911021610</NOIP>
+<NMMAL   def="Nom usuel">REBILLON</NMMAL>
+<NMPATR  def="Nom patronymique"></NMPATR>
+<NMPMAL  def="Prenom">ISABELLE</NMPMAL>
+<DANAIS  def="Date de naissance">06061965</DANAIS>
+<CDDNIN  def="Indicateur date naissance incertaine"></CDDNIN>
+<CDSEXM  def="Sexe">F</CDSEXM>
+<NOCONA  def="Code INSEE de la commune de naissance"></NOCONA>
+<CDPONA  def="Code postal de la commune de naissance"></CDPONA>
+<LBLONA  def="Libelle de la commune de naissance"></LBLONA>
+<CDPNAT  def="Code du pays de naissance"></CDPNAT>
+<CDNAT  def="Code de la nationalite"></CDNAT>
+<CDSIFA  def="Code de la situation familiale"></CDSIFA>
+<NOTLDO  def="Num telephone du domicile">01.43.38.02.68</NOTLDO>
+<NOTLPR  def="Num telephone professionnel"></NOTLPR>
+<CDCGSP  def="Code categorie socio-professionnelle"></CDCGSP>
+<CDMORT  def="Indicateur patient decede">N</CDMORT>
+<INPROV  def="Indicateur identite provisoire">N</INPROV>
+<ADR	  def="Adresses principale et secondaire">
+<ADR1	  def="Adresse principale">
+	<COIDPA	def="Complement identite"></COIDPA>
+	<COADPA	def="Complement adresse"></COADPA>
+	<ADREPA	def="Adresse (num et rue)">47 BVD DE BELLEVILLE</ADREPA>
+	<LBCOPA	def="Libelle de la commune">PARIS 11</LBCOPA>
+	<NOCOPA	def="Code INSEE de la commune">75111</NOCOPA>
+	<CDPOPA	def="Code postal de la commune">75011</CDPOPA>
+	<LIACPA	def="Ligne acheminement">PARIS</LIACPA>
+</ADR1>
+<ADR2	def="Adresse secondaire">
+	<COIDPA def="Complement identite"></COIDPA>
+	<COADPA def="Complement adresse"></COADPA>
+	<ADREPA def="Adresse (num et rue)"></ADREPA>
+	<LBCOPA def="Libelle de la commune"></LBCOPA>
+	<NOCOPA def="Code INSEE de la commune"></NOCOPA>
+	<CDPOPA def="Code postal de la commune"></CDPOPA>
+	<LIACPA def="Ligne acheminement"></LIACPA>
+</ADR2>
+</ADR>
+</ID>
+<FID    def="Message fusion identite">
+<NOIP   def="NIP passif">030303</NOIP>
+<NMMAL  def="Nom usuel patient passif">INEXISTANT</NMMAL>
+<NMPMAL  def="Prenom patient passif">JEAN</NMPMAL>
+<DANAIS  def="Date de naissance patient passif">01012001</DANAIS>
+<CDSEXM  def="Sexe patient passif">M</CDSEXM>
+<NOIPFU   def="NIP patient actif">040404</NOIPFU>
+<NMMALA  def="Nom usuel patient actif">ACREER</NMMALA>
+<CDSEXMA  def="Sexe patient actif">F</CDSEXMA>
+<NMPMALA  def="Prenom patient actif">JOSETTE</NMPMALA>
+<DANAISA  def="Date de naissance patient actif">06071965</DANAISA>
+</FID>
+<DA    def="Message dossier administratif"/>
+<VN      def="Message venue"/>
+<RV     def="Rendez vous"/>
+</MESPAT>

@@ -1,0 +1,186 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<window id="winFicheAffichage" border="none"
+	apply="fr.aphp.tumorotek.action.io.FicheAffichage">
+	<panel collapsible="false" title="${c:l('ficheAffichage.panel.title')}"
+	 sclass="fichePanelv2" id="winPanel">
+	 <panelchildren id="panelChildrenWithScroll" style="overflow-y:auto">
+	<grid fixedLayout="true" sclass="gridForm1" id="gridForm">
+		<columns>
+			<column width="150px" />
+			<column />
+			<column width="150px" />
+			<column />
+		</columns>
+		<rows>
+			<row>
+				<div>
+					<label value="${c:l('affichage.intitule')}"
+						sclass="formLabel" />
+					<label id="intituleRequired" value="*"
+						sclass="requiredMark" visible="false" />
+				</div>
+				<div>
+					<label id="intituleLabel"
+						value="@{winFicheAffichage$composer.object.intitule}"
+						sclass="formValue" />
+
+					<textbox id="intituleBox"
+						value="@{winFicheAffichage$composer.object.intitule,
+			        			save-when='validateC.onClick, createC.onClick'
+			        			load-after='editC.onClick, createC.onClick'}"
+						constraint="@{winFicheAffichage$composer.intituleConstraint}" 
+							visible="false" 
+						width="150px"/>
+				</div>
+				<div>
+					<label value="${c:l('affichage.nbLignes')}"
+						sclass="formLabel" />
+					<label id="nbLignesRequired" value="*"
+						sclass="requiredMark" visible="false" />
+				</div>
+				<div>
+					<label id="nbLignesLabel"
+						value="@{winFicheAffichage$composer.object.nbLignes}"
+						sclass="formValue" />
+
+					<intbox id="nbLignesBox" width="100px"
+						value="@{winFicheAffichage$composer.object.nbLignes,
+			        			save-when='validateC.onClick, createC.onClick'
+			        			load-after='editC.onClick, createC.onClick'}"
+						constraint="no negative, no zero, no empty" visible="false"/>
+				</div>
+			</row>
+			<row spans="4">
+				<separator/>
+			</row>
+			<row spans="4">
+				<vbox width="100%">
+					<label value="${c:l('affichage.liste.colonnes')}" sclass="formSubTitle"/>
+					<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+				</vbox>
+			</row>
+			<row spans="4">
+				<div>
+				<grid id="resultatsBoxStatic"
+					fixedLayout="true" 
+					width="550px"
+					sclass="gridListStyle"
+					model="@{winFicheAffichage$composer.resultats}"
+					>
+					<columns>
+						<column label="${c:l('resultat.nomColonne')}" width="250px"/>
+						<column label="${c:l('resultat.champ')}" width="250px"/>
+					</columns>
+					<rows>
+						<row self="@{each='resultatStatic'}" value="resultatStatic" height="20px">
+							<label value="@{resultatStatic.resultat.nomColonne}" />
+							<label value="@{resultatStatic.champ}" />
+						</row>
+					</rows>
+				</grid>
+				<grid id="resultatsBox"
+					fixedLayout="true" 
+					width="590px"
+					sclass="gridListStyle"
+					visible="false">
+					<columns>
+						<column label="${c:l('resultat.nomColonne')}" width="250px"/>
+						<column label="${c:l('resultat.champ')}" width="250px"/>
+						<column id="upColumn" width="30px" />
+						<column id="downColumn" width="30px" />
+						<column id="deleteColumn" width="30px" />
+					</columns>
+					<rows>
+						<row id="colonneRow" self="@{each='resultat'}" value="resultat" height="20px">
+							<div>
+								<label id="colonneLabel" value="@{resultat.resultat.nomColonne}" 
+									visible="@{resultat.visibleLabel}"/>
+								<textbox id="colonneBox"  cols="25"
+									value="@{resultat.resultat.nomColonne,
+		        						save-when='validateC.onClick, createC.onClick, self.onBlur'}"
+		        					constraint="@{winFicheAffichage$composer.nomColonneConstraint}"
+		        					visible="@{resultat.visibleTextbox}"
+		        				/>
+	        				</div>
+							<label value="@{resultat.champ}" />
+							<div id="upArrowDiv" width="12px" height="12px"
+								sclass="upArrow" style="cursor:pointer"/>
+							<div id="downArrowDiv" width="12px" height="12px"
+								sclass="downArrow" style="cursor:pointer"/>
+							<div align="center">
+								<image id="removeImg" width="12px"
+									height="12px" src="/images/icones/small_delete.png"
+									style="cursor:pointer" />
+							</div>
+						</row>
+					</rows>
+				</grid>
+				</div>
+			</row>
+		</rows>
+	</grid>
+	</panelchildren>
+	<toolbar height="30px" id="toolbarRequete" align="end">
+		<hbox spacing="5" align="center">
+			<button id="addChamp" label="${c:l('affichage.add.colonnes')}"
+				height="24px" visible="false"
+				image="/images/icones/item.png" sclass="buttonv2" />
+			<button id="addNewC" label="${c:l('general.new')}"
+				height="24px" visible="true"
+				image="/images/icones/new.png" sclass="buttonv2" />
+			<button id="editC" label="${c:l('general.edit')}"
+				height="24px" visible="true"
+				image="/images/icones/edit.png" sclass="buttonv2" />
+			<button id="deleteC" label="${c:l('general.delete')}"
+				height="24px" visible="true"
+				image="/images/icones/trash.png" sclass="buttonv2" />
+			<button id="validateC" label="${c:l('general.validate')}"
+				height="24px" visible="false"
+				image="/images/icones/save.png" sclass="buttonv2" />
+			<button id="revertC" label="${c:l('general.cancel')}"
+				height="24px" visible="false"
+				image="/images/icones/cancel.png" sclass="buttonv2" />
+			<button id="createC" label="${c:l('general.create')}"
+				height="24px" visible="false"
+				image="/images/icones/save.png" sclass="buttonv2" />
+			<button id="cancelC" label="${c:l('general.cancel')}"
+				height="24px" visible="false"
+				image="/images/icones/cancel.png" sclass="buttonv2" />
+		</hbox>
+	</toolbar>
+	</panel>
+</window>

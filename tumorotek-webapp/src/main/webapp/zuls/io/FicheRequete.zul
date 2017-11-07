@@ -1,0 +1,170 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<window id="winFicheRequete" border="none"
+	apply="fr.aphp.tumorotek.action.io.FicheRequete">
+	<panel collapsible="false" title="${c:l('ficheRequete.panel.title')}"
+	 sclass="fichePanelv2" id="winPanel">
+	 <panelchildren id="panelChildrenWithScroll" style="overflow-y:auto">
+		<grid fixedLayout="true" sclass="gridForm1" id="gridForm">
+			<columns>
+				<column width="150px" />
+				<column />
+			</columns>
+			<rows>
+				<row>
+					<div width="100px">
+						<label value="${c:l('requete.intitule')}"
+							sclass="formLabel" />
+						<label id="intituleRequired" value="*"
+							sclass="requiredMark" visible="false" />
+					</div>
+					<div>
+						<label id="intituleLabel"
+							value="@{winFicheRequete$composer.object.intitule}"
+							sclass="formValue" />
+
+						<textbox id="intituleBox"
+							value="@{winFicheRequete$composer.object.intitule,
+			        			save-when='validateC.onClick, createC.onClick'
+			        			load-after='editC.onClick, createC.onClick'}"
+							width="250px" constraint="${winFicheRequete$composer.constr}"
+							visible="false" />
+					</div>
+				</row>
+				
+				<row spans="2">
+					<separator/>
+				</row>
+				<row spans="2">
+					<vbox width="100%">
+						<label value="${c:l('ficheRequete.subtitle.1')}" sclass="formSubTitle"/>
+						<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+					</vbox>
+				</row>
+				<row spans="2">
+					<grid id="exportNodesGrid"
+						span="true" 
+						visible="true" fixedLayout="true"
+						sclass="gridListStyle" style="overflow-y:auto"
+						>
+						<columns sizable="true">
+							<column label="${c:l('critere.tree.infos')}" />
+							<column id="returnCritereCol" label="" width="25px" />
+						</columns>
+						<rows>
+							<row self="@{each='exportNode'}"
+								value="exportNode">
+								<hbox>
+									<separator
+										width="@{exportNode.width}" />
+									<label
+										value="@{exportNode.toString}" 
+										sclass="@{exportNode.sclass}"/>
+								</hbox>
+								<div align="center">
+									<image width="12px" height="12px"
+										id="returnCritere" src="/images/icones/small_delete.png"
+										style="cursor:pointer" />
+								</div>
+							</row>
+						</rows>
+					</grid>
+				</row>
+				
+				<row spans="2">
+					<separator/>
+				</row>
+				<row spans="2" id="rowTemporaire" visible="false">
+					<vbox width="100%">
+						<label value="${c:l('ficheRequete.subtitle.2')}" sclass="formSubTitle"/>
+						<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+					</vbox>
+				</row>
+				<row spans="2" valign="start">
+					<grid id="criteresGrid" visible="false" width="500px"
+						fixedLayout="true" 
+						sclass="gridListStyle" style="overflow-y:auto"
+						model="@{winFicheRequete$composer.criteresModel}">
+						<columns sizable="true">
+							<column label="${c:l('requete.listeCriteresTemp')}" 
+								width="475px"/>
+							<column label="" width="25px" />
+						</columns>
+						<rows>
+							<row self="@{each='critere'}" value="critere">
+								<label value="@{critere.label}" />
+								<div align="center">
+									<image width="12px" height="12px"
+										id="putCritere" src="/images/icones/small_general_new.png"
+										style="cursor:pointer" />
+								</div>
+							</row>
+						</rows>
+					</grid>
+				</row>
+			</rows>
+		</grid>
+	</panelchildren>
+	<toolbar height="30px" id="toolbarRequete" align="end">
+		<hbox spacing="5" align="center">
+			<button id="addCritereButton" label="${c:l('requete.ajout.critere')}"
+				height="24px" visible="false"
+				image="/images/icones/item.png" sclass="buttonv2" />
+			<button id="addNewC" label="${c:l('general.new')}"
+				height="24px" visible="true"
+				image="/images/icones/new.png" sclass="buttonv2" />
+			<button id="editC" label="${c:l('general.edit')}"
+				height="24px" visible="true"
+				image="/images/icones/edit.png" sclass="buttonv2" />
+			<button id="deleteC" label="${c:l('general.delete')}"
+				height="24px" visible="true"
+				image="/images/icones/trash.png" sclass="buttonv2" />
+			<button id="validateC" label="${c:l('general.validate')}"
+				height="24px" visible="false"
+				image="/images/icones/save.png" sclass="buttonv2" />
+			<button id="revertC" label="${c:l('general.cancel')}"
+				height="24px" visible="false"
+				image="/images/icones/cancel.png" sclass="buttonv2" />
+			<button id="createC" label="${c:l('general.create')}"
+				height="24px" visible="false"
+				image="/images/icones/save.png" sclass="buttonv2" />
+			<button id="cancelC" label="${c:l('general.cancel')}"
+				height="24px" visible="false"
+				image="/images/icones/cancel.png" sclass="buttonv2" />
+		</hbox>
+	</toolbar>
+	</panel>
+</window>

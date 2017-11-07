@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ConfigurationInterfacage>
+	<BoiteFtp nom="Boite Apix">
+		<Configuration>
+			<SeparateurChamps>|</SeparateurChamps>
+			<SeparateurComposants>~</SeparateurComposants>
+			<SeparateurSousComposants>^</SeparateurSousComposants>
+			<BlocLibreKey>OBX</BlocLibreKey>
+			<NumeroDossier>
+				<BlocValue>H</BlocValue>
+				<Key>2</Key>
+			</NumeroDossier>
+			<DateDossier>
+				<BlocValue>H</BlocValue>
+				<Key>13</Key>
+			</DateDossier>
+			<OperationDossier>
+				<BlocValue>H</BlocValue>
+				<Key>6</Key>
+			</OperationDossier>
+		</Configuration>
+		<Emetteur>
+			<Bloc>H</Bloc>
+			<Emplacement>3</Emplacement>
+		</Emetteur>
+		<Service>
+			<Bloc>H</Bloc>
+			<Emplacement>4.1</Emplacement>
+		</Service>
+<!-- 		<MappingXml> -->
+<!-- 			<EmetteurId>2</EmetteurId> -->
+<!-- 			<XML>interfacage_anapath.xml</XML> -->
+<!-- 		</MappingXml> -->
+		<MappingXml>
+<!-- 			<EmetteurId>3</EmetteurId> -->
+			<XML>interfacage_anapath.xml</XML>
+		</MappingXml>
+	</BoiteFtp>
+	<BoiteFtp nom="Boite Erreur">
+		<Configuration>
+			<SeparateurChamps>|</SeparateurChamps>
+			<SeparateurComposants>~</SeparateurComposants>
+			<SeparateurSousComposants>^</SeparateurSousComposants>
+			<NumeroDossier>
+				<BlocValue>H</BlocValue>
+				<Key>2</Key>
+			</NumeroDossier>
+			<DateDossier>
+				<BlocValue>H</BlocValue>
+				<Key>13</Key>
+			</DateDossier>
+			<OperationDossier>
+				<BlocValue>H</BlocValue>
+				<Key>6</Key>
+			</OperationDossier>
+		</Configuration>
+		<Emetteur>
+			<Bloc>H</Bloc>
+			<Emplacement>3</Emplacement>
+		</Emetteur>
+		<Service>
+			<Bloc>H</Bloc>
+			<Emplacement>1</Emplacement>
+		</Service>
+		<MappingXml>
+			<EmetteurId>2</EmetteurId>
+			<XML></XML>
+		</MappingXml>
+		<MappingXml>
+<!-- 			<EmetteurId>3</EmetteurId> -->
+			<XML>interfacage_hemato.xml</XML>
+		</MappingXml>
+	</BoiteFtp>
+</ConfigurationInterfacage>

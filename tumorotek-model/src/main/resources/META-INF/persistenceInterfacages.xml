@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <persistence version="1.0" xmlns="http://java.sun.com/xml/ns/persistence"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+   http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">    
+   
+    <persistence-unit name="pInterfacages">
+        <class>fr.aphp.tumorotek.model.interfacage.BlocExterne</class>
+        <class>fr.aphp.tumorotek.model.interfacage.DossierExterne</class>
+        <class>fr.aphp.tumorotek.model.interfacage.Emetteur</class>
+        <class>fr.aphp.tumorotek.model.interfacage.Logiciel</class>
+        <class>fr.aphp.tumorotek.model.interfacage.PatientSip</class>
+        <class>fr.aphp.tumorotek.model.interfacage.ValeurExterne</class>
+        <class>fr.aphp.tumorotek.model.interfacage.PatientSipSejour</class>
+        <class>fr.aphp.tumorotek.model.interfacage.Recepteur</class>
+        
+        <exclude-unlisted-classes/>
+
+    </persistence-unit>    
+</persistence>
+

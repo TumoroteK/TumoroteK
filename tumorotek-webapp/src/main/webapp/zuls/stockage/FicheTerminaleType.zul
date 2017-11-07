@@ -1,0 +1,277 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<window id="fwinTerminaleType" border="none" apply="fr.aphp.tumorotek.action.stockage.FicheTerminaleType">
+	<panel collapsible="false" title="${c:l('terminaleType.fiche.title')}"
+	 sclass="fichePanelv2" id="winPanel">
+		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
+			<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvt">
+				<columns>
+					<column width="150px"/>
+					<column/>
+					<column width="150px"/>
+					<column/>
+				</columns>
+				<rows>
+					<row spans="4" visible="false" id="warningPlateformes">
+						<vbox>
+							<label
+								value="${c:l('general.objet.multi.pfs.warning')}"
+								sclass="requiredMark"/>
+							<separator/>
+						</vbox>
+					</row>
+					<!-- NOM -->
+					<row spans="1,3">
+						<hbox>
+							<label value="${c:l('terminaleType.type')}" sclass="formLabel"/>
+							<label id="nomRequired" value="*" sclass="requiredMark"
+												 visible="false"/>
+						</hbox>
+						<div>
+							<label id="nomLabel" 
+								value="@{fwinTerminaleType$composer.terminaleType.type}" 
+								sclass="formValue" 
+							/>
+							
+							<textbox id="nomBox" 
+								value="@{fwinTerminaleType$composer.terminaleType.type,
+			        				save-when='validateC.onClick, createC.onClick, 
+			        					definirNbLignes.onClick, previsualiser.onClick'
+			        				load-after='editC.onClick, createC.onClick'}" 
+								width="150px" 
+								constraint="${fwinTerminaleType$composer.nomConstraint}"
+								 visible="false"
+							/>
+						</div>
+					</row>
+					
+					<!-- Hauteur + Longueur -->
+					<row id="rowStaticTaille">
+						<hbox>
+							<label value="${c:l('terminaleType.longueur')}" sclass="formLabel"/>
+						</hbox>
+						<div>
+							<label id="longeurLabel" 
+								value="@{fwinTerminaleType$composer.longueurFormated}" 
+								sclass="formValue" 
+							/>
+						</div>
+					
+						<hbox>
+							<label value="${c:l('terminaleType.hauteur')}" sclass="formLabel"/>
+						</hbox>
+						<div>
+							<label id="hauteurLabel" 
+								value="@{fwinTerminaleType$composer.hauteurFormated}" 
+								sclass="formValue" 
+							/>
+						</div>
+					</row>
+					
+					<!-- NB Places -->
+					<row spans="1,3" id="rowStaticNbPlaces">
+						<hbox>
+							<label value="${c:l('terminaleType.nbPlaces')}" sclass="formLabel"/>
+						</hbox>
+						<div>
+							<label id="nbPlacesLabel" 
+								value="@{fwinTerminaleType$composer.terminaleType.nbPlaces}" 
+								sclass="formValue" 
+							/>
+						</div>
+					</row>
+					
+					<!-- Début de la numérotation -->
+					<row spans="4">
+						<hbox>
+							<label id="numerotationLabelStatic"
+								value="@{fwinTerminaleType$composer.debutNumerotationFormated}"
+								sclass="formValue"/>
+							<div>
+								<label id="numerotationLabelEdit"
+									value="${c:l('terminaleType.numerotation.edit')}" sclass="formLabel"
+									visible="false"/>
+								<checkbox id="numerotationBox" visible="false"/>
+							</div>
+						</hbox>
+					</row>
+					
+					<!-- Format -->
+					<row spans="4" id="rowFormatTitle" visible="false">
+						<vbox width="100%">
+							<label value="${c:l('terminaleType.creation.format.title')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					<!-- Style de la boite à définir -->
+					<row spans="4" id="rowStyleBoite" visible="false">
+						<radiogroup>
+						<vbox>
+							<box orient="horizontal" pack="center">
+								<radio id="radioBoiteRectangulaire"/>
+								<label value="${c:l('terminaleType.creation.style.rectangulaire')}"
+										sclass="formLabel"/>
+							</box>
+							<box orient="horizontal" pack="center">
+								<radio id="radioBoiteComplexe"/>
+								<label value="${c:l('terminaleType.creation.style.triangulaire')}" 
+									sclass="formLabel"/>
+							</box>
+						</vbox>
+						</radiogroup>
+					</row>
+					<!-- Hauteur + Longueur -->
+					<row id="rowEditTaille" visible="false">
+						<hbox>
+							<label value="${c:l('terminaleType.longueur')}" sclass="formLabel"/>
+						</hbox>
+						<div>
+							<intbox id="longueurBox"
+								value="@{fwinTerminaleType$composer.longueurValue,
+			        				save-when='createC.onClick, previsualiser.onClick'
+			        				load-after='addNewC.onClick'}" 
+								width="50px" 
+								constraint="no empty, no zero, no negative"/>
+						</div>
+					
+						<hbox>
+							<label value="${c:l('terminaleType.hauteur')}" sclass="formLabel"/>
+						</hbox>
+						<div>
+							<intbox id="hauteurBox"
+								value="@{fwinTerminaleType$composer.hauteurValue,
+			        				save-when='createC.onClick, previsualiser.onClick'
+			        				load-after='addNewC.onClick'}" 
+								width="50px" 
+								constraint="no empty, no zero, no negative"/>
+						</div>
+					</row>
+					<!-- nb lignes -->
+					<row id="rowEditNbLignes" visible="false" spans="1,3">
+						<hbox>
+							<label value="${c:l('terminaleType.creation.nb.lignes')}" sclass="formLabel"/>
+						</hbox>
+						<div>
+							<intbox id="nbLignesBox"
+								value="@{fwinTerminaleType$composer.nbLignesValue,
+			        				save-when='definirNbLignes.onClick, previsualiser.onClick,
+			        					createC.onClick'
+			        				load-after='addNewC.onClick'}" 
+								width="50px" 
+								constraint="no empty, no zero, no negative"/>
+								
+								<button id="definirNbLignes" 
+									label="${c:l('terminaleType.creation.definir.lignes')}" 
+									height="24px"
+									image="/images/icones/edit.png" sclass="buttonv2"/>
+						</div>
+					</row>
+					<!-- Def des lignes -->
+					<row id="rowDefinitionLignes" visible="false" spans="4"
+						height="100%">
+						<grid id="lignesGrid"
+							fixedLayout="true"		
+							width="400px"
+							sclass="gridListStyle"
+							model="@{fwinTerminaleType$composer.lignesBoite
+			        			load-after='definirNbLignes.onClick'}"
+							style="overflow-y:scroll">
+							<columns sizable="true" >
+								<column width="300px"/>
+								<column width="70px" align="center"/>
+							</columns>
+							<rows>
+								<row self="@{each='lignes'}">
+									<label value="@{lignes.nom}"
+										sclass="formLabel"
+									/>
+									<intbox value="@{lignes.nbEmplacements,
+					        				load-after='definirNbLignes.onClick',
+					        				save-when='previsualiser.onClick, createC.onClick'}" 
+										width="50px" 
+										constraint="no empty, no zero, no negative"/>
+								</row>
+							</rows>
+						</grid>
+					</row>
+					
+					<!-- Pré-Visualisation -->
+					<row spans="4">
+						<separator/>
+					</row>
+					<row spans="4" id="rowPrevisualiser" visible="false">
+						<div align="center">
+							<button id="previsualiser" label="${c:l('terminaleType.creation.previsualiser')}" 
+								height="24px"
+								image="/images/icones/search.png" sclass="buttonv2"/>
+						</div>
+					</row>
+					
+					<!-- Visualisation -->
+					<row spans="4">
+						<separator/>
+					</row>
+					<group id="groupVisualisation" 
+						label="${c:l('terminaleType.visualisation.boite')}"/>
+					<row spans="4">
+						<separator/>
+					</row>
+					<row spans="4" id="rowViewBoite">
+						<div hflex="1" style="overflow: auto" align="center" id="modeleBoite"/>
+					</row>
+				</rows>
+			</grid>
+		</panelchildren>
+		<toolbar height="30px" id="toolbarEchan" align="end">
+			<hbox spacing="5" align="center">
+				<button id="addNewC" label="${c:l('general.new')}" height="24px" visible="true"
+					image="/images/icones/new.png" sclass="buttonv2"/>
+				<button id="editC" label="${c:l('general.edit')}" height="24px" visible="true"
+					image="/images/icones/edit.png" sclass="buttonv2"/>
+				<button id="deleteC" label="${c:l('general.delete')}" height="24px" visible="true"
+					image="/images/icones/trash.png" sclass="buttonv2"/>
+				<button id="validateC" label="${c:l('general.validate')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="revertC" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="createC" label="${c:l('general.create')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="cancelC" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+			</hbox>
+		</toolbar>
+	</panel>
+</window>

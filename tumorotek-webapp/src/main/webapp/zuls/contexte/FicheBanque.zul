@@ -1,0 +1,430 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<?component name="annoTables" macroURI="/zuls/contexte/AnnoTablesAssociees.zul" ?>
+
+<window id="fwinBanque" border="none" apply="fr.aphp.tumorotek.action.contexte.FicheBanque">
+	<panel collapsible="false" closable="true" title="${c:l('ficheBanque.title')}" sclass="fichePanelv2" id="winPanel">
+		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
+			<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvt">
+				<columns>
+					<column width="150px"/>
+					<column/>
+					<column width="150px"/>
+					<column/>
+				</columns>
+				<rows>
+					<!-- Nom -->
+					<row spans="1,3">
+						<hbox>
+							<label value="${c:l('Champ.Banque.Nom')}" sclass="formLabel"/>
+							<label id="nomRequired" value="*" sclass="requiredMark"
+												visible="false"/>
+						</hbox>
+						<div>
+							<label id="nomLabel" 
+								value="@{fwinBanque$composer.banque.nom}" 
+								sclass="formValue" 
+							/>
+							
+							<textbox id="nomBox" value="@{fwinBanque$composer.banque.nom,
+			        								 save-when='validateC.onClick, createC.onClick'
+			        								 load-after='editC.onClick, createC.onClick'}" 
+								width="200px" 
+								constraint="${fwinBanque$composer.banqueNomConstraint}"
+								visible="false"
+							/>
+						</div>
+					</row>
+					<!-- Identification -->
+					<row spans="1,3">
+						<label value="${c:l('Champ.Banque.Identification')}" sclass="formLabel"/>
+						<div>
+							<label id="idLabel" 
+								value="@{fwinBanque$composer.banque.identification}" 
+								sclass="formValue" 
+							/>
+							
+							<textbox id="idBox" value="@{fwinBanque$composer.banque.identification,
+			        								 save-when='validateC.onClick, createC.onClick'
+			        								 load-after='editC.onClick, createC.onClick'}" 
+								width="200px" 
+								constraint="${fwinBanque$composer.identificationConstraint}"
+								visible="false"
+							/>
+						</div>
+					</row>
+					<!-- Archive -->
+					<row spans="1,3" style="background-color: #fafafa; border-radius: 5px">
+						<label value="${c:l('Champ.Banque.Archive')}" sclass="formLabel"/>
+						<div>
+							<label id="archiveLabel" 
+								value="@{fwinBanque$composer.archiveFormatted}" 
+								sclass="formValue" 
+							/>
+							
+							<checkbox id="archiveBox" checked="@{fwinBanque$composer.banque.archive,
+			        								 save-when='validateC.onClick, createC.onClick'
+			        								 load-after='editC.onClick, createC.onClick'}" 
+								visible="false"
+							/>
+						</div>
+					</row>
+					<!-- Description -->
+					<row spans="1,3">
+						<label value="${c:l('Champ.Banque.Description')}" sclass="formLabel"/>
+						<div>
+							<label id="descrLabel" 
+								value="@{fwinBanque$composer.banque.description}" 
+								sclass="formValue" 
+							/>
+							<textbox id="descrBox" value="@{fwinBanque$composer.banque.description,
+			        								 save-when='validateC.onClick, createC.onClick'
+			        								 load-after='editC.onClick, createC.onClick'}" 
+								width="400px" rows="3"
+								visible="false"
+								constraint="@{fwinContrat$composer.descrConstraint}"
+							/>
+						</div>
+					</row>
+					<!-- Service propriétaire -->
+					<row spans="1,3">
+						<label value="${c:l('Champ.Banque.Proprietaire')}" sclass="formLabel"/>
+						
+						<div>
+							<label id="proprioLabel" 
+								value="@{fwinBanque$composer.serviceProprietaireFormated}"
+								sclass="@{fwinBanque$composer.sClassService}" />
+							
+<!--							<listbox id="proprioBox" mold="select" rows="1" visible="false"-->
+<!--									width="250px"-->
+<!--									itemRenderer="@{fwinBanque$composer.serviceRenderer}">-->
+<!--								<listitem self="@{each='service'}" value="@{service}"/>			-->
+<!--							</listbox>-->
+								<combobox id="proprioBox" 
+				 					autodrop="true" width="250px" >
+				 					<comboitem self="@{each=attrValue}" label="@{attrValue}"/>
+				 				</combobox>
+						</div>
+					</row>
+					<!-- Responsable -->
+					<row spans="1,3">
+						<label value="${c:l('Champ.Banque.Collaborateur')}" sclass="formLabel"/>				
+						<div>
+							<label id="respLabel" 
+								value="@{fwinBanque$composer.banque.collaborateur.nomAndPrenom}"
+								sclass="@{fwinBanque$composer.sClassCollaborateur}"
+							/>
+							<div id="respBoxDiv" visible="false">
+			 					<combobox id="collabBox" 
+				 					autodrop="true" width="150px">
+				 					<comboitem self="@{each=attrValue}" label="@{attrValue}"/>
+				 				</combobox>
+			 					<space/>
+								<label id="operateurAideSaisie" style="font-weight:bold;"
+									value="${c:l('collaborateur.aideSaisie')}"
+									sclass="formLink"
+								/>
+							</div>
+						</div>
+					</row>
+					<!-- Contact -->
+					<row spans="1,3">
+						<label value="${c:l('Champ.Banque.Contact')}" sclass="formLabel"/>				
+						<div>
+							<label id="contactLabel" 
+								value="@{fwinBanque$composer.banque.contact.nomAndPrenom}"
+								sclass="@{fwinBanque$composer.sClassContact}"
+							/>
+							<div id="contactBoxDiv" visible="false">
+			 					<combobox id="contactBox" 
+				 					autodrop="true" width="150px">
+				 					<comboitem self="@{each=attrValue}" label="@{attrValue}"/>
+				 				</combobox>
+							</div>
+						</div>
+					</row>
+					<!-- Maladie -->
+					<row>
+						<label value="${c:l('Champ.Banque.DefMaladies')}" sclass="formLabel"/>				
+						<div>
+							<label id="defMaladieLabel" 
+								value="@{fwinBanque$composer.defMaladieFormatted}" sclass="formValue" />
+							<checkbox id="defMaladieBox" 
+								checked="@{fwinBanque$composer.banque.defMaladies,
+			        					save-when='validateC.onClick, createC.onClick'
+			        					 load-after='editC.onClick, createC.onClick'}" 
+								visible="false" />
+						</div>
+					</row>
+					<row id="maladieRow">
+						<label id="defautMaladieCodeLabel" value="${c:l('Champ.Banque.MaladieCodeDefaut')}" 
+																					sclass="formLabel"/>	
+						<div>
+							<label id="defautCodeLabel"
+								value="@{fwinBanque$composer.banque.defautMaladieCode}" sclass="formValue" />
+							<textbox id="defautCodeBox" width="50px" 
+								value="@{fwinBanque$composer.banque.defautMaladieCode,
+			        				 save-when='validateC.onClick, createC.onClick'
+			        				load-after='editC.onClick, createC.onClick'}" 								
+								constraint="${fwinBanque$composer.codeMaladieConstraint}"
+								visible="false"
+							/>
+						</div>
+					
+						<label id="defautMaladieLabel" value="${c:l('Champ.Banque.MaladieDefaut')}" 
+																					sclass="formLabel"/>	
+						<div>
+							<label id="defautLibLabel"
+								value="@{fwinBanque$composer.banque.defautMaladie}" sclass="formValue" />
+							<textbox id="defautLibBox" width="300px" 
+								value="@{fwinBanque$composer.banque.defautMaladie,
+			        				 save-when='validateC.onClick, createC.onClick'
+			        				load-after='editC.onClick, createC.onClick'}" 								
+								constraint="${fwinBanque$composer.descrConstraint}"
+								visible="false"
+							/>
+						</div>
+					</row>
+					<!-- AutoriseCrossPatient -->
+					<row spans="3,1">
+						<label value="${c:l('Champ.Banque.AutoriseCrossPatient')}" sclass="formLabel"/>				
+						<div>
+							<label id="autoCrossLabel" 
+								value="@{fwinBanque$composer.autoCrossFormatted}" sclass="formValue" />
+							<checkbox id="autoCrossBox" 
+								checked="@{fwinBanque$composer.banque.autoriseCrossPatient,
+			        					save-when='validateC.onClick, createC.onClick'
+			        					 load-after='editC.onClick, createC.onClick'}" 
+								visible="false" />
+						</div>
+					</row>
+					<group id="groupContexte" label="${c:l('ficheBanque.contexte.contexteCatalogues')}" open="true" />
+					<!-- Contexte -->
+					<row>
+						<hbox>
+							<label value="${c:l('Champ.Banque.Contexte')}" sclass="formLabel"/>
+							<label id="contexteRequired" value="*" sclass="requiredMark"
+												visible="false"/>
+						</hbox>
+						<div>
+							<label id="contexteLabel" 
+								value="@{fwinBanque$composer.contexte}" sclass="formValue" />
+							<listbox id="contexteBox" mold="select" rows="1"
+								model="@{fwinBanque$composer.contextes, 
+												load-after='editC.onClick, addNewC.onClick'}"
+								selectedItem="@{fwinBanque$composer.selectedContexte}"
+								itemRenderer="${fwinBanque$composer.contexteRenderer}"
+								visible="false">
+								<listitem self="@{each='contexte'}" value="contexte" />
+							</listbox>
+						</div>
+						<label value="${c:l('ficheBanque.contexte.catalogues')}" sclass="formLabel"/>	
+						<div>
+							<grid fixedLayout="true" id="gridCatalogues"
+								model="@{fwinBanque$composer.selectedCatalogues}"
+									sclass="gridForm1"
+								rowRenderer="${fwinBanque$composer.catalogueRenderer}">
+								<columns>
+										<column />
+								</columns>
+								<rows>
+									<row self="@{each='catalogue'}" value="catalogue" />
+								</rows>
+							</grid>
+							<grid fixedLayout="true" id="cataloguesBox"
+								model="@{fwinBanque$composer.catalogues, load-after='contexteBox.onSelect'}"
+									sclass="gridForm1"
+								rowRenderer="${fwinBanque$composer.catalogueRenderer}">
+								<columns>
+										<column id="selboxCheckboxColumn" width="30px" />
+										<column />
+								</columns>
+								<rows id="catRows">
+									<row self="@{each='catalogue'}" value="catalogue" />
+								</rows>
+							</grid>
+						</div>
+					</row>
+					<group label="${c:l('ficheBanque.utilisateurs')}" id="groupProfilUtilisateurs">
+						<hlayout sclass="z-valign-middle">
+							<checkbox id="utilisateursArchiveBox" checked="true"/>
+							<label value="${c:l('utilisateur.afficher.actifs')}" style="font-style: italic; font-weight: normal" />
+						</hlayout>
+					</group>
+					<row spans="4">
+						<grid fixedLayout="true"  id="gridProfilUtilisateur"
+							model="@{fwinBanque$composer.profilUtilisateurs, load-after='utilisateursArchiveBox.onCheck'}"
+							rowRenderer="@{fwinBanque$composer.profilUtilisateurRowRenderer}"
+							sclass="gridForm1">
+							<columns>
+								<column />
+								<column />
+							</columns>
+							<rows>
+								<row self="@{each='profilU'}" value="profilU">
+								</row>
+							</rows>
+						</grid>
+					</row>
+					<!-- Annotations -->
+					<row spans="4">
+						<separator/>
+					</row>
+					<group id="groupAnnotations" label="${c:l('ficheBanque.contexte.tablesAnnos')}" open="false" />
+					<row spans="4" id="rowGridAnnotations" valign="start">
+						<box orient="horizontal" hflex="1">
+							<box id="tablesPat" orient="vertical" pack="start">
+								<label value="${c:l('Entite.Patient')}" sclass="formLabel" />
+								<annoTables id="tablesPatSorter" />
+							</box>
+							<vbox id="tablesPrel">
+								<label value="${c:l('Entite.Prelevement')}" sclass="formLabel" />
+								<annoTables id="tablesPrelSorter" />
+							</vbox>
+							<vbox id="tablesEchan">
+								<label value="${c:l('Entite.Echantillon')}" sclass="formLabel" />
+								<annoTables id="tablesEchanSorter" />
+							</vbox>
+							<vbox id="tablesDerive">
+								<label value="${c:l('Entite.ProdDerive')}" sclass="formLabel" />
+								<annoTables id="tablesDeriveSorter" />
+							</vbox>
+							<vbox id="tablesCess">
+								<label value="${c:l('Entite.Cession')}" sclass="formLabel" />
+								<annoTables id="tablesCessSorter" />
+							</vbox>
+						</box>
+					</row>
+					<!-- Conteneurs -->
+					<row spans="4">
+						<separator/>
+					</row>
+					<group id="groupConteneurs" open="false" />
+					<row spans="4" id="rowGridConteneurs">
+						<div id="conteneursAssocies" />
+					</row>
+					<!-- Codifications -->
+					<row spans="4">
+						<separator/>
+					</row>
+					<group id="groupCodifications" open="false" />
+					<row spans="4" id="rowGridCodifications">
+						<div id="codificationsAssociees" />
+					</row>
+					<!-- Couleurs -->
+					<row spans="4">
+						<separator/>
+					</row>
+					<group id="groupCouleurs" label="${c:l('ficheBanque.couleursStockage')}"/>
+					<row spans="1,3">
+						<label value="${c:l('Entite.Echantillon')}" sclass="formLabel"/>		
+						<div>
+							<label id="couleurEchanLabel" 
+								value="___"
+								sclass="@{fwinBanque$composer.banque.echantillonCouleur.couleurMinCase}" />
+							
+							<listbox id="couleurEchanBox"  mold="select" rows="1"
+								itemRenderer="@{fwinBanque$composer.couleurRenderer}"
+								visible="false" hflex="min">
+								<listitem self="@{each='col'}" value="@{col}" />
+							</listbox>
+						</div>
+					</row>
+					<row spans="1,3">
+						<label value="${c:l('general.types')}" sclass="formLabel"/>	
+						<window id="coulTypesEchanWin"/>
+					</row>
+					<row spans="4">
+						<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+					</row>
+					<row spans="1,3">
+						<label value="${c:l('Entite.ProdDerive')}" sclass="formLabel"/>		
+						<div>
+							<label id="couleurDeriveLabel" 
+								value="___"
+								 sclass="@{fwinBanque$composer.banque.prodDeriveCouleur.couleurMinCase}" />
+							
+							<listbox id="couleurDeriveBox" mold="select" rows="1"
+								itemRenderer="@{fwinBanque$composer.couleurRenderer}"
+								visible="false">
+								<listitem self="@{each='col'}" value="@{col}" />
+							</listbox>
+						</div>
+					</row>
+					<row spans="1,3">
+						<label value="${c:l('general.types')}" sclass="formLabel"/>		
+						<window id="coulTypesDeriveWin" />
+					</row>
+					
+					
+				
+				</rows>
+			</grid>
+		</panelchildren>
+		<toolbar height="30px" id="toolbarEchan" align="end">
+			<hbox spacing="5">
+				<menubar sclass="menuBarV2" id="menuBar">
+					<menu label="${c:l('general.actions')}" image="/images/icones/small_action.png" 
+						width="36px" height="24px">
+						<menupopup>
+							<menuitem id="print" image="/images/icones/printer.png" 
+								label="${c:l('general.print')}"/>
+							<menuitem id="historique" image="/images/icones/history.png" 
+								label="${c:l('general.historique')}"/>
+						</menupopup>
+					</menu>
+				</menubar>
+				<button id="addNewC" label="${c:l('general.new')}" height="24px" visible="true"
+					image="/images/icones/addBank.png" sclass="buttonv2"
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="editC" label="${c:l('general.edit')}" height="24px" visible="true"
+					image="/images/icones/edit.png" sclass="buttonv2"
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="deleteC" disabled="true" label="${c:l('general.delete')}" height="24px" visible="true"
+					image="/images/icones/trash.png" sclass="buttonv2"
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="validateC" label="${c:l('general.validate')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="revertC" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="createC" label="${c:l('general.create')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="cancelC" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+			</hbox>
+		</toolbar>
+	</panel>
+</window>

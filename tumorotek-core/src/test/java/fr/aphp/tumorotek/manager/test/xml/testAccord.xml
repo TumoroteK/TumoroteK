@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AccordTransfert>
+  <Page>
+    <Titre>Accord de transfert</Titre>
+    <Tableau>
+      <BlocPrincipal>
+        <NomBloc>Destinataire</NomBloc>
+        <LigneAccord>
+          <CoupleAccordValeur>
+            <NomValeur>Nom organisation</NomValeur>
+            <Valeurs>
+              <Valeur>Hopital Bichat</Valeur>
+              <Valeur>12 rue de billancourt - 75019 PARIS</Valeur>
+            </Valeurs>
+          </CoupleAccordValeur>
+        </LigneAccord>
+        <LigneAccord>
+          <CoupleAccordValeur>
+            <NomValeur>Responsable</NomValeur>
+            <Valeurs>
+              <Valeur>Dr GREGORY</Valeur>
+            </Valeurs>
+          </CoupleAccordValeur>
+        </LigneAccord>
+        <LigneAccord>
+          <CoupleAccordValeur>
+            <NomValeur>Téléphone</NomValeur>
+            <Valeurs>
+              <Valeur>0143568975</Valeur>
+              <Valeur>mail@mail.fr</Valeur>
+            </Valeurs>
+          </CoupleAccordValeur>
+        </LigneAccord>
+      </BlocPrincipal>
+      <BlocPrincipal>
+        <NomBloc>Expéditeur</NomBloc>
+        <LigneAccord>
+          <CoupleAccordValeur>
+            <NomValeur>Nom organisation</NomValeur>
+            <Valeurs>
+              <Valeur>Hopital Saint Louis</Valeur>
+              <Valeur>1 rue Claude Vellefeaux - 75010 PARIS</Valeur>
+            </Valeurs>
+          </CoupleAccordValeur>
+        </LigneAccord>
+        <LigneAccord>
+          <CoupleAccordValeur>
+            <NomValeur>Responsable</NomValeur>
+            <Valeurs>
+              <Valeur>Dr VENTADOUR</Valeur>
+            </Valeurs>
+          </CoupleAccordValeur>
+        </LigneAccord>
+        <LigneAccord>
+          <CoupleAccordValeur>
+            <NomValeur>Téléphone</NomValeur>
+            <Valeurs>
+              <Valeur>0143487965</Valeur>
+              <Valeur>mail@mail.fr</Valeur>
+            </Valeurs>
+          </CoupleAccordValeur>
+        </LigneAccord>
+      </BlocPrincipal>
+      <BlocPrincipal>
+        <NomBloc>Matériel biologique</NomBloc>
+        <LigneAccord>
+          <CoupleAccordValeur>
+            <NomValeur>Nature</NomValeur>
+            <Valeurs>
+              <Valeur>CELLULES</Valeur>
+            </Valeurs>
+          </CoupleAccordValeur>
+        </LigneAccord>
+        <LigneAccord>
+          <CoupleAccordValeur>
+            <NomValeur>Quantité</NomValeur>
+            <Valeurs>
+              <Valeur>10ml</Valeur>
+            </Valeurs>
+          </CoupleAccordValeur>
+        </LigneAccord>
+        <LigneAccord>
+          <CoupleAccordValeur>
+            <NomValeur>Date</NomValeur>
+            <Valeurs>
+              <Valeur>15/11/2010</Valeur>
+            </Valeurs>
+          </CoupleAccordValeur>
+        </LigneAccord>
+        <LigneAccord>
+          <CoupleAccordValeur>
+            <NomValeur>Contenant</NomValeur>
+            <Valeurs>
+              <Valeur>TUBE</Valeur>
+            </Valeurs>
+          </CoupleAccordValeur>
+        </LigneAccord>
+        <LigneAccord>
+          <CoupleAccordValeur>
+            <NomValeur>Transport</NomValeur>
+            <Valeurs>
+              <Valeur>Réfrigéré</Valeur>
+            </Valeurs>
+          </CoupleAccordValeur>
+        </LigneAccord>
+        <LigneAccord>
+          <CoupleAccordValeur>
+            <NomValeur>Traçabilité</NomValeur>
+            <Valeurs>
+              <Valeur>Suivi constant</Valeur>
+            </Valeurs>
+          </CoupleAccordValeur>
+        </LigneAccord>
+        <LigneAccord>
+          <CoupleAccordValeur>
+            <NomValeur>Informations</NomValeur>
+            <Valeurs>
+              <Valeur>Non communiquées</Valeur>
+            </Valeurs>
+          </CoupleAccordValeur>
+        </LigneAccord>
+      </BlocPrincipal>
+    </Tableau>
+    <Signatures>
+      <Entete>
+        <Titre1>EXPEDITEUR</Titre1>
+        <Titre2>DESTINATAIRE</Titre2>
+      </Entete>
+      <ListeSignature>
+        <ValeursSignatures>
+          <Valeur1>Nom du responsable</Valeur1>
+          <Valeur2>Nom du responsable</Valeur2>
+        </ValeursSignatures>
+      </ListeSignature>
+      <ListeSignature>
+        <ValeursSignatures>
+          <Valeur1>Signature pour accord</Valeur1>
+          <Valeur2>Signature pour accord</Valeur2>
+        </ValeursSignatures>
+      </ListeSignature>
+      <ListeSignature>
+        <ValeursSignatures>
+          <Valeur1>Date</Valeur1>
+          <Valeur2>Date</Valeur2>
+        </ValeursSignatures>
+      </ListeSignature>
+    </Signatures>
+  </Page>
+  <BasDePage>bas</BasDePage>
+  <HautDePage>haut</HautDePage>
+  <Page>
+    <Titre>Accord de transfert</Titre>
+    <Tableau>
+      <BlocPrincipal>
+        <NomBloc>Destinataire</NomBloc>
+        <LigneAccord>
+          <CoupleAccordValeur>
+            <NomValeur>Nom organisation</NomValeur>
+            <Valeurs>
+              <Valeur>Hopital Bichat</Valeur>
+              <Valeur>12 rue de billancourt - 75019 PARIS</Valeur>
+            </Valeurs>
+          </CoupleAccordValeur>
+        </LigneAccord>
+        <LigneAccord>
+          <CoupleAccordValeur>
+            <NomValeur>Responsable</NomValeur>
+            <Valeurs>
+              <Valeur>Dr GREGORY</Valeur>
+            </Valeurs>
+          </CoupleAccordValeur>
+        </LigneAccord>
+        <LigneAccord>
+          <CoupleAccordValeur>
+            <NomValeur>Téléphone</NomValeur>
+            <Valeurs>
+              <Valeur>0143568975</Valeur>
+              <Valeur>mail@mail.fr</Valeur>
+            </Valeurs>
+          </CoupleAccordValeur>
+        </LigneAccord>
+      </BlocPrincipal>
+      <BlocPrincipal>
+        <NomBloc>Expéditeur</NomBloc>
+        <LigneAccord>
+          <CoupleAccordValeur>
+            <NomValeur>Nom organisation</NomValeur>
+            <Valeurs>
+              <Valeur>Hopital Saint Louis</Valeur>
+              <Valeur>1 rue Claude Vellefeaux - 75010 PARIS</Valeur>
+            </Valeurs>
+          </CoupleAccordValeur>
+        </LigneAccord>
+        <LigneAccord>
+          <CoupleAccordValeur>
+            <NomValeur>Responsable</NomValeur>
+            <Valeurs>
+              <Valeur>Dr VENTADOUR</Valeur>
+            </Valeurs>
+          </CoupleAccordValeur>
+        </LigneAccord>
+        <LigneAccord>
+          <CoupleAccordValeur>
+            <NomValeur>Téléphone</NomValeur>
+            <Valeurs>
+              <Valeur>0143487965</Valeur>
+              <Valeur>mail@mail.fr</Valeur>
+            </Valeurs>
+          </CoupleAccordValeur>
+        </LigneAccord>
+      </BlocPrincipal>
+      <BlocPrincipal>
+        <NomBloc>Matériel biologique</NomBloc>
+        <LigneAccord>
+          <CoupleAccordValeur>
+            <NomValeur>Nature</NomValeur>
+            <Valeurs>
+              <Valeur>CELLULES</Valeur>
+            </Valeurs>
+          </CoupleAccordValeur>
+        </LigneAccord>
+        <LigneAccord>
+          <CoupleAccordValeur>
+            <NomValeur>Quantité</NomValeur>
+            <Valeurs>
+              <Valeur>10ml</Valeur>
+            </Valeurs>
+          </CoupleAccordValeur>
+        </LigneAccord>
+        <LigneAccord>
+          <CoupleAccordValeur>
+            <NomValeur>Date</NomValeur>
+            <Valeurs>
+              <Valeur>15/11/2010</Valeur>
+            </Valeurs>
+          </CoupleAccordValeur>
+        </LigneAccord>
+        <LigneAccord>
+          <CoupleAccordValeur>
+            <NomValeur>Contenant</NomValeur>
+            <Valeurs>
+              <Valeur>TUBE</Valeur>
+            </Valeurs>
+          </CoupleAccordValeur>
+        </LigneAccord>
+        <LigneAccord>
+          <CoupleAccordValeur>
+            <NomValeur>Transport</NomValeur>
+            <Valeurs>
+              <Valeur>Réfrigéré</Valeur>
+            </Valeurs>
+          </CoupleAccordValeur>
+        </LigneAccord>
+        <LigneAccord>
+          <CoupleAccordValeur>
+            <NomValeur>Traçabilité</NomValeur>
+            <Valeurs>
+              <Valeur>Suivi constant</Valeur>
+            </Valeurs>
+          </CoupleAccordValeur>
+        </LigneAccord>
+        <LigneAccord>
+          <CoupleAccordValeur>
+            <NomValeur>Informations</NomValeur>
+            <Valeurs>
+              <Valeur>Non communiquées</Valeur>
+            </Valeurs>
+          </CoupleAccordValeur>
+        </LigneAccord>
+      </BlocPrincipal>
+    </Tableau>
+    <Signatures>
+      <Entete>
+        <Titre1>EXPEDITEUR</Titre1>
+        <Titre2>DESTINATAIRE</Titre2>
+      </Entete>
+      <ListeSignature>
+        <ValeursSignatures>
+          <Valeur1>Nom du responsable</Valeur1>
+          <Valeur2>Nom du responsable</Valeur2>
+        </ValeursSignatures>
+      </ListeSignature>
+      <ListeSignature>
+        <ValeursSignatures>
+          <Valeur1>Signature pour accord</Valeur1>
+          <Valeur2>Signature pour accord</Valeur2>
+        </ValeursSignatures>
+      </ListeSignature>
+      <ListeSignature>
+        <ValeursSignatures>
+          <Valeur1>Date</Valeur1>
+          <Valeur2>Date</Valeur2>
+        </ValeursSignatures>
+      </ListeSignature>
+    </Signatures>
+  </Page>
+</AccordTransfert>
+

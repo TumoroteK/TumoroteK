@@ -1,0 +1,11 @@
+<!ELEMENT ConfigurationInterfacage (BoiteFtp+)>
+<!ELEMENT BoiteFtp (Emetteur, Service, MappingXml+)>
+<!ELEMENT Emetteur (Bloc, Emplacement)>
+<!ELEMENT Service (Bloc, Emplacement)>
+<!ELEMENT Bloc (#PCDATA)>
+<!ELEMENT Emplacement (#PCDATA)>
+<!ELEMENT MappingXml (EmetteurId, XML)>
+<!ELEMENT EmetteurId (#PCDATA)>
+<!ELEMENT XML (#PCDATA)>
+
+<!ATTLIST BoiteFtp nom CDATA #REQUIRED>

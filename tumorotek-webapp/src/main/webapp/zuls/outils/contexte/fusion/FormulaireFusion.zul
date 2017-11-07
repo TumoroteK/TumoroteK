@@ -1,0 +1,121 @@
+<!--
+	* Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+	* dsi-projet.tk@aphp.fr
+	* 
+	* Ce logiciel est un programme informatique servant à la gestion de 
+	* l'activité de biobanques. 
+	*
+	* Ce logiciel est régi par la licence CeCILL soumise au droit français
+	* et respectant les principes de diffusion des logiciels libres. Vous 
+	* pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+	* conditions de la licence CeCILL telle que diffusée par le CEA, le 
+	* CNRS et l'INRIA sur le site "http://www.cecill.info". 
+	* En contrepartie de l'accessibilité au code source et des droits de   
+	* copie, de modification et de redistribution accordés par cette 
+	* licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+	* Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+	* l'auteur du programme, le titulaire des droits patrimoniaux et les 
+	* concédants successifs.
+	*
+	* A cet égard  l'attention de l'utilisateur est attirée sur les 
+	* risques associés au chargement,  à l'utilisation,  à la modification 
+	* et/ou au  développement et à la reproduction du logiciel par 
+	* l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+	* le rendre complexe à manipuler et qui le réserve donc à des 	
+	* développeurs et des professionnels  avertis possédant  des 
+	* connaissances  informatiques approfondies.  Les utilisateurs sont 
+	* donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+	* besoins dans des conditions permettant d'assurer la sécurité de leurs
+	* systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+	* et l'exploiter dans les mêmes conditions de sécurité. 
+	*	
+	* Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+	* avez pris connaissance de la licence CeCILL, et que vous en avez 
+	* accepté les termes. 
+-->
+
+<?page title="new page title" contentType="text/html;charset=UTF-8"?>
+<zk>
+
+	<window id="affichageFusion" apply="org.zkoss.bind.BindComposer"
+		mode="modal" position="center,top"
+		title="${c:l('general.fusion')}"
+		viewModel="@id('vm') @init('fr.aphp.tumorotek.action.outils.contexte.fusion.FormulaireFusionVM')"
+		height="100%" width="1000px" closable="true">
+		<borderlayout height="100%">
+			<north>
+				<grid sclass="gridForm1">
+					<columns>
+						<column />
+						<column value="${c:l('fusion.garder')}" style="font-size:28; color:BLUE" />
+						<column value="${c:l('fusion.pas.garder')}" style="font-size:28; color:RED" />
+					</columns>
+					<rows>
+						<row>
+							<label value="${c:l('fusion.id')}" />
+							<label value="@load(vm.idASelected)" style="color:BLUE" />
+							<label value="@load(vm.idBSelected)" style="color:RED" />
+						</row>
+						<row>
+							<label value="${c:l('Champ.Patient.Nom')}" />
+							<label value="@load(vm.nomA)" style="color:BLUE" />
+							<label value="@load(vm.nomB)" style="color:RED" />
+						</row>
+						<row>
+							<label value="@load(vm.nomChamp1)" />
+							<label value="@load(vm.champ1A)" style="color:BLUE" />
+							<label value="@load(vm.champ1B)" style="color:RED" />
+						</row>
+						<row>
+							<label value="@load(vm.nomChamp2)" />
+							<label value="@load(vm.champ2A)" style="color:BLUE" />
+							<label value="@load(vm.champ2B)" style="color:RED" />
+						</row>
+						<row>
+							<label value="@load(vm.nomChamp3)" />
+							<label value="@load(vm.champ3A)" style="color:BLUE" />
+							<label value="@load(vm.champ3B)" style="color:RED" />
+						</row>
+						<row>
+							<label value="${c:l('OperationType.Creation')}" />
+							<label value="@load(vm.dateCreationA)" style="color:BLUE" />					
+							<label value="@load(vm.dateCreationB)" style="color:RED" />					
+						</row>
+						<row>
+							<label value="${c:l('historique.utilisateur')}"/>
+							<label value="@bind(vm.operateurCreationA)" style="color:BLUE" />	
+							<label value="@bind(vm.operateurCreationB)" style="color:RED" />	
+						</row>
+						<row spans="3">
+							<div align="center" hflex="1">
+								<button id="switchEntityButton" onClick="@command('switchEntities')" image="/images//double-fleches.jpg" />
+							</div>
+						</row>
+					</rows>
+				</grid>		
+			</north>
+			<center>		
+				<div align="center" >
+					<vlayout>
+						<chart id="mybarchart" width="750px" height="200px"
+					        fgAlpha="255" paneColor="#ffffff" bgColor="#ffffff" type="bar"
+					        threeD="false" orient="horizontal" engine="@load(vm.engine1)"
+					        model="@load(vm.model)" />				    
+						<chart id="mybarchart2" width="750px" height="200px"
+					        fgAlpha="255" paneColor="#ffffff" bgColor="#ffffff" type="bar"
+					        threeD="false" orient="horizontal" engine="@load(vm.engine2)"
+					        model="@load(vm.model2)" /> 			
+					</vlayout>
+				</div>
+			</center>
+			<south>
+				<div align="center">
+					<button label="${c:l('fusion.fusion')}" onClick="@command('fusion')" />
+								
+					<button label="${c:l('general.close')}" onClick="@command('close')" />
+				</div>
+			</south>
+
+		</borderlayout>
+	</window>
+</zk>

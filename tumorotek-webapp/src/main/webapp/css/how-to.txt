@@ -1,0 +1,26 @@
+CREATION D'UN NOUVEAU THEME :
+-----------------------------
+
+1) copier le contenu du répertoire /images/themes/blue/ dans un nouveau 
+répertoire (ex : /images/themes/red).
+
+2) modifier toutes les images de ce répertoire pour leur donner la couleur
+du thème souhaité.
+
+3) copier/coller les fichiers form.css.dsp et tumo.css.dsp et les renommer
+pour qu'il commence par le couleur du nouveau thème (ex : red_form.css.dsp et
+red_tumo.css.dsp).
+
+4) dans le nouveau fichier form.css.dsp remplacer la couleur du texte et des 
+liens (pour le thème bleu : #003399) par la couleur voulue.
+
+5) dans le nouveau fichier tumo.css.dsp, remplacer l'ancien chemin vers les images
+par le nouveau (ex : remplacer /themes/blue/ par /themes/red/).
+
+6) dans le nouveau fichier tumo.css.dsp, remplacer les couleurs suivantes par
+celles souhaitées :
+	- bleu foncé (les groupes...) : #00227c
+	- bleu des liens : #003399
+	- bleu header des listes : #1E62BB
+	- arrière plan des tabbox : #74A5E8
+	- footer de TK : #1756aa

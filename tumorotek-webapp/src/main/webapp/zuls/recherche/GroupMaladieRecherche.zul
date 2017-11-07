@@ -1,0 +1,142 @@
+<!--
+	* Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+    * dsi-projet.tk@aphp.fr
+	* 
+	* Ce logiciel est un programme informatique servant à la gestion de 
+	* l'activité de biobanques. 
+	*
+	* Ce logiciel est régi par la licence CeCILL soumise au droit français
+	* et respectant les principes de diffusion des logiciels libres. Vous 
+	* pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+	* conditions de la licence CeCILL telle que diffusée par le CEA, le 
+	* CNRS et l'INRIA sur le site "http://www.cecill.info". 
+	* En contrepartie de l'accessibilité au code source et des droits de   
+	* copie, de modification et de redistribution accordés par cette 
+	* licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+	* Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+	* l'auteur du programme, le titulaire des droits patrimoniaux et les 
+	* concédants successifs.
+	*
+	* A cet égard  l'attention de l'utilisateur est attirée sur les 
+	* risques associés au chargement,  à l'utilisation,  à la modification 
+	* et/ou au  développement et à la reproduction du logiciel par 
+	* l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+	* le rendre complexe à manipuler et qui le réserve donc à des 	
+	* développeurs et des professionnels  avertis possédant  des 
+	* connaissances  informatiques approfondies.  Les utilisateurs sont 
+	* donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+	* besoins dmans des conditions permettant d'assurer la sécurité de leurs
+	* systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+	* et l'exploiter dans les mêmes conditions de sécurité. 
+	*	
+	* Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+	* avez pris connaissance de la licence CeCILL, et que vous en avez 
+	* accepté les termes. 
+-->
+<!-- Groupe maladie -->
+<groupbox id="groupMaladies" open="false">
+	<caption image="/images/icones/history.png"
+		label="${c:l('recherche.avancee.informations.maladie')}" />
+	<vlayout fulfill="groupMaladies.onOpen" hflex="1">						
+		<!-- Libellé et code -->
+		<hlayout sclass="z-valign-middle" style="margin: 5px" hflex="1">
+			<label hflex="1"
+				value="${c:l('Champ.Maladie.Libelle')}" sclass="formLabel" />
+			<div hflex="1" align="left" style="margin: 0 10px 0 10px">	
+				<textbox id="libelleMaladieBox"
+					hflex="1">
+					<custom-attributes
+						attribut="Libelle" entite="Maladie" />
+				</textbox>
+			</div>
+
+			<label hflex="min"
+				value="${c:l('Champ.Maladie.Code')}" sclass="formLabel" />
+			<div hflex="1" align="left" style="margin: 0 10px 0 10px">
+				<textbox id="codeMaladieBox"
+					hflex="1">
+					<custom-attributes
+						attribut="Code" entite="Maladie" />
+				</textbox>
+			</div>
+		</hlayout>
+		<!-- Dates -->
+		<hlayout sclass="z-valign-middle" style="margin: 5px" hflex="1">
+			<label hflex="min"
+				value="${c:l('Champ.Maladie.DateDebut')}" sclass="formLabel" />
+			<halyout hflex="1" align="left" style="margin: 0 10px 0 10px">
+				<listbox
+					id="operateursDateDebutBox" mold="select" layouts="1"
+					model="@{fwinRechercheAvanceePrelevement$composer.operateursDates}">
+					<listitem
+						self="@{each='opDateDebut'}" value="opDateDebut">
+						<listcell
+							label="@{opDateDebut}" />
+					</listitem>
+				</listbox>
+				<datebox
+					id="dateDebutMaladie1Box"
+					format="${c:l('validation.date.format.simple')}"
+					cols="8">
+					<custom-attributes
+						attribut="DateDebut" entite="Maladie" />
+				</datebox>
+				<label
+					value="${c:l('general.selectlist.and')}"
+					sclass="formLabel" />
+				<datebox
+					id="dateDebutMaladie2Box"
+					format="${c:l('validation.date.format.simple')}" cols="8"
+					style="align:right;">
+					<custom-attributes
+						attribut="DateDebut" entite="Maladie" />
+				</datebox>
+			</halyout>
+
+			<label hflex="min"
+				value="${c:l('Champ.Maladie.DateDiagnostic')}"
+				sclass="formLabel" />
+			<hlayout hflex="1" align="left" style="margin: 0 10px 0 10px">
+				<listbox
+					id="operateursDateDiagBox" mold="select" layouts="1"
+					model="@{fwinRechercheAvanceePrelevement$composer.operateursDates}">
+					<listitem
+						self="@{each='opDateDiag'}" value="opDateDiag">
+						<listcell
+							label="@{opDateDiag}" />
+					</listitem>
+				</listbox>
+				<datebox
+					id="dateDiagnosticMaladie1Box"
+					format="${c:l('validation.date.format.simple')}"
+					cols="8">
+					<custom-attributes
+						attribut="DateDiagnostic" entite="Maladie" />
+				</datebox>
+				<label
+					value="${c:l('general.selectlist.and')}"
+					sclass="formLabel" />
+				<datebox
+					id="dateDiagnosticMaladie2Box"
+					format="${c:l('validation.date.format.simple')}" cols="8"
+					style="align:right;">
+					<custom-attributes
+						attribut="DateDiagnostic" entite="Maladie" />
+				</datebox>
+			</hlayout>
+		</hlayout>
+		<!-- Médecins maladie-->
+		<hlayout sclass="z-valign-middle" style="margin: 5px" hflex="1">
+			<label hflex="min"
+				value="${c:l('patient.medecins')}" sclass="formLabel" />
+			<div hflex="2" align="left" style="margin: 0 10px 0 10px">
+				<combobox id="medecinsMaPatBox" autodrop="true" hflex="2"
+					model="@{fwinRechercheAvanceePrelevement$composer.collaborateurs}">
+					<comboitem self="@{each=attrValue}" label="@{attrValue.nomAndPrenom}"/>
+					<custom-attributes
+						attribut="Collaborateurs" entite="Maladie" />
+				</combobox>
+			</div>
+		</hlayout>
+	</vlayout>
+</groupbox>

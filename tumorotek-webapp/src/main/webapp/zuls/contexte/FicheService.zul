@@ -1,0 +1,398 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<window id="fwinService" border="none" apply="fr.aphp.tumorotek.action.contexte.FicheService">
+<style src="/css/tumo.css"/>
+	<panel collapsible="false" title="${c:l('ficheService.panel.title')}"
+	 id="winPanel" sclass="fichePanelv2" closable="true">
+		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
+			<grid fixedLayout="true" sclass="gridForm1">
+				<columns>
+					<column width="150px"/>
+					<column/>
+					<column width="100px"/>
+					<column/>
+				</columns>
+				<rows>
+					<!-- Etablissement -->
+					<row spans="1,3">
+						<hbox>
+							<label value="${c:l('service.etablissement')}" sclass="formLabel"/>
+							<label id="etabRequired" value="*" sclass="requiredMark"
+											visible="false"/>
+						</hbox>
+						<div>
+							<label id="etablissementLabel" 
+								value="@{fwinService$composer.service.etablissement.nom}" 
+								sclass="formValue" />
+								
+							<listbox id="etabsBox" mold="select" rows="1"
+							model="@{fwinService$composer.etablissements, 
+							load-after='editC.onClick, createC.onClick'}"
+							selectedItem="@{fwinService$composer.selectedEtablissement}"
+							visible="false">
+								<listitem self="@{each='etablissement'}" value="etablissement">			
+									<listcell label="@{etablissement.nom}" />
+								</listitem>
+							</listbox>
+						</div>
+					</row>
+					<!-- Nom -->
+					<row spans="1,3">
+						<hbox>
+							<label value="${c:l('service.nom')}" sclass="formLabel"/>
+							<label id="nomRequired" value="*" sclass="requiredMark"
+										visible="false"/>
+						</hbox>
+						<div>
+							<label id="nomLabel" 
+								value="@{fwinService$composer.service.nom}" sclass="formValue" />
+							
+							<textbox id="nomBox" value="@{fwinService$composer.service.nom,
+			        								 save-when='validateC.onClick, createC.onClick'
+			        								 load-after='editC.onClick, createC.onClick'}" 
+							width="250px" 
+							constraint="${fwinService$composer.nomConstraint}"
+							visible="false"/>
+						</div>
+					</row>
+					
+					<!-- Archive -->
+					<row spans="1,3">
+						<label value="${c:l('service.archive')}" sclass="formLabel"/>
+						<div>
+							<label id="archiveLabel" 
+								value="@{fwinService$composer.archiveFormated}" 
+								sclass="formValue" />
+								
+							<checkbox id="archiveBox" visible="false"/>
+						</div>
+					</row>
+					
+					<!-- Coordonnées -->
+					<row spans="4">
+						<separator/>
+					</row>
+					<group label="${c:l('coordonnee.group.infos')}" id="groupCoordonneesCollab"/>
+					<!-- Adresse -->
+					<row spans="1,3">
+						<label value="${c:l('coordonnee.adresse')}" sclass="formLabel"/>
+						<div>
+							<label id="adresseLabel" 
+								value="@{fwinService$composer.service.coordonnee.adresse}" 
+								sclass="formValue" />
+							
+							<textbox id="adresseBox" value="@{fwinService$composer.coordonnee.adresse,
+			        			save-when='validateC.onClick, createC.onClick'
+			        			load-after='editC.onClick, createC.onClick, etabsBox.onSelect'}" 
+								width="250px" 
+								constraint="${fwinService$composer.addrConstraint}"
+								visible="false"
+								rows="2"
+							/>
+						</div>
+					</row>
+					<!-- Code Postal -->
+					<row spans="1,3">
+						<label value="${c:l('coordonnee.cp')}" sclass="formLabel"/>
+						<div>
+							<label id="cpLabel" 
+								value="@{fwinService$composer.service.coordonnee.cp}" 
+								sclass="formValue" />
+								
+							<textbox id="cpBox" value="@{fwinService$composer.coordonnee.cp,
+			        			save-when='validateC.onClick, createC.onClick'
+			        			load-after='editC.onClick, createC.onClick, etabsBox.onSelect'}" 
+								width="150px" 
+								constraint="${fwinService$composer.cpConstraint}"
+								visible="false"
+							/>
+						</div>
+					</row>
+					<!-- Ville -->
+					<row spans="1,3">
+						<label value="${c:l('coordonnee.ville')}" sclass="formLabel"/>
+						<div>
+							<label id="villeLabel" 
+								value="@{fwinService$composer.service.coordonnee.ville}" 
+								sclass="formValue" />
+							
+							<textbox id="villeBox" value="@{fwinService$composer.coordonnee.ville,
+			        			save-when='validateC.onClick, createC.onClick'
+			        			load-after='editC.onClick, createC.onClick, etabsBox.onSelect'}" 
+								width="150px" 
+								constraint="${fwinService$composer.villePaysConstraint}"
+								visible="false"
+							/>
+						</div>
+					</row>
+					<!-- Pays -->
+					<row spans="1,3">
+						<label value="${c:l('coordonnee.pays')}" sclass="formLabel"/>
+						<div>
+							<label id="paysLabel" 
+								value="@{fwinService$composer.service.coordonnee.pays}" 
+								sclass="formValue" />
+								
+							<textbox id="paysBox" value="@{fwinService$composer.coordonnee.pays,
+			        			save-when='validateC.onClick, createC.onClick'
+			        			load-after='editC.onClick, createC.onClick, etabsBox.onSelect'}" 
+								width="150px" 
+								constraint="${fwinService$composer.villePaysConstraint}"
+								visible="false"
+							/>
+						</div>
+					</row>
+					<!-- Tel-->
+					<row spans="1,3">
+						<label value="${c:l('coordonnee.telephone')}" sclass="formLabel"/>
+						<div>
+							<label id="telLabel" 
+								value="@{fwinService$composer.service.coordonnee.tel}" 
+								sclass="formValue" />
+							
+							<textbox id="telBox" value="@{fwinService$composer.coordonnee.tel,
+			        			save-when='validateC.onClick, createC.onClick'
+			        			load-after='editC.onClick, createC.onClick, etabsBox.onSelect'}" 
+								width="150px" 
+								constraint="${fwinService$composer.telFaxConstraint}"
+								visible="false"
+							/>
+						</div>
+					</row>
+					<!-- Fax-->
+					<row spans="1,3">
+						<label value="${c:l('coordonnee.fax')}" sclass="formLabel"/>
+						<div>
+							<label id="faxLabel" 
+								value="@{fwinService$composer.service.coordonnee.fax}" 
+								sclass="formValue" />
+								
+							<textbox id="faxBox" value="@{fwinService$composer.coordonnee.fax,
+			        			save-when='validateC.onClick, createC.onClick'
+			        			load-after='editC.onClick, createC.onClick, etabsBox.onSelect'}" 
+								width="150px" 
+								constraint="${fwinService$composer.telFaxConstraint}"
+								visible="false"
+							/>
+						</div>
+					</row>
+					<!-- Mail -->
+					<row spans="1,3">
+						<label value="${c:l('coordonnee.mail')}" sclass="formLabel"/>
+						<div>
+							<label id="mailLabel" 
+								value="@{fwinService$composer.service.coordonnee.mail}" 
+								sclass="formValue" />
+								
+							<textbox id="mailBox" value="@{fwinService$composer.coordonnee.mail,
+			        			save-when='validateC.onClick, createC.onClick'
+			        			load-after='editC.onClick, createC.onClick, etabsBox.onSelect'}" 
+								width="250px" 
+								constraint="${fwinService$composer.emailConstraint}"
+								visible="false"
+							/>
+						</div>
+					</row>
+					<!-- Collaborateurs -->
+					<row spans="4">
+						<separator/>
+					</row>
+					<group label="@{fwinService$composer.collabsActifsGroupHeader}" 
+						id="groupCollabsActifsService"/>
+					<row spans="4">
+						<grid id="collabsActifsList" mold="paging" pageSize="5"
+							fixedLayout="true"		
+							hflex="1"
+							span="true"
+							sizedByContent="true"
+							sclass="gridListStyle"
+							model="@{fwinService$composer.collaborateursActifs}">
+							<columns menupopup="auto" sizable="true" width="100%">
+								<column label="${c:l('collaborateur.titre')}" visible="false" width="100px"/>
+								<column label="${c:l('collaborateur.nom')}" />
+								<column label="${c:l('collaborateur.prenom')}" />
+								<column label="${c:l('collaborateur.etablissement')}" visible="false" width="100px"/>
+								<column label="${c:l('collaborateur.specialite')}" />
+							</columns>
+							<rows>
+								<row self="@{each='collabActif'}">
+									<label value="@{collabActif.titre.titre}"/>
+									<label value="@{collabActif.nom}" sclass="formLink"
+										id="collabActifNom"/>
+									<label value="@{collabActif.prenom}"/>
+									<label value="@{collabActif.etablissement.nom}"/>
+									<label value="@{collabActif.specialite.nom}"/>
+								</row>
+							</rows>
+						</grid>
+					</row>
+					
+					<group label="@{fwinService$composer.collabsInactifsGroupHeader}" 
+						id="groupCollabsInactifsService"/>
+					<row spans="4">
+						<grid id="collabsInactifsList" mold="paging" pageSize="5"
+							fixedLayout="true" 
+							hflex="1"
+							span="true"
+							sizedByContent="true"
+							sclass="gridListStyle"
+							model="@{fwinService$composer.collaborateursInactifs}"
+							>
+							<columns menupopup="auto" sizable="true" width="100%">
+								<column
+									label="${c:l('collaborateur.titre')}" width="100px"
+									visible="false" />
+								<column
+									label="${c:l('collaborateur.nom')}" />
+								<column
+									label="${c:l('collaborateur.prenom')}" />
+								<column
+									label="${c:l('collaborateur.etablissement')}" width="100px"
+									visible="false" />
+								<column
+									label="${c:l('collaborateur.specialite')}" />
+							</columns>
+							<rows>
+								<row self="@{each='collabInactif'}">
+									<label value="@{collabInactif.titre.titre}"/>
+									<label value="@{collabInactif.nom}" sclass="formLink"
+										id="collabInactifNom"/>
+									<label value="@{collabInactif.prenom}"/>
+									<label value="@{collabInactif.etablissement.nom}"/>
+									<label value="@{collabInactif.specialite.nom}"/>
+								</row>
+							</rows>
+						</grid>
+					</row>
+					
+					<group label="${c:l('service.collaborateurs')}" 
+						id="groupCollabsEditService"/>
+					
+					<!-- Gestion collabs -->
+					<row spans="4" id="rowCollabsTitle" visible="false">
+						<vbox>
+							<label value="${c:l('service.ajout.collaborateurs')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					<row id="rowAddCollab" visible="false" spans="1,3">
+						<label value="${c:l('collaborateur.nom')}" sclass="formLabel"/>
+						
+						<div>
+							<combobox id="addCollabBox" 
+								buttonVisible="false"
+								autocomplete="false"
+				 				autodrop="true" width="220px">
+				 					<comboitem self="@{each=attrValue}" label="@{attrValue}"/>
+				 			</combobox>
+							<button id="addCollaborateur" label="${c:l('general.add.collaborateur.existant')}" 
+								style="color : #003399;" height="24px"
+								image="/images/icones/addCollaborateur.png" sclass="buttonv2"
+							/>
+						</div>
+					</row>
+					
+					<row spans="4">
+						<grid id="collabsListEdit" mold="paging" pageSize="5"
+							fixedLayout="true" 
+							hflex="1"
+							span="true"
+							sizedByContent="true"
+							sclass="gridListStyle"
+							model="@{fwinService$composer.collaborateursEdit}"
+							visible="false">
+							<columns menupopup="auto" sizable="true">
+								<column label="${c:l('collaborateur.titre')}" width="100px" visible="false"/>
+								<column label="${c:l('collaborateur.nom')}" />
+								<column label="${c:l('collaborateur.prenom')}" />
+								<column label="${c:l('collaborateur.etablissement')}" width="100px" visible="false"/>
+								<column label="${c:l('collaborateur.specialite')}" />
+								<column label="${c:l('collaborateur.archive')}" />
+								<column width="40px"/>
+							</columns>
+							<rows>
+								<row self="@{each='collabEdit'}">
+									<label value="@{collabEdit.titre.titre}"/>
+									<label value="@{collabEdit.nom}"/>
+									<label value="@{collabEdit.prenom}"/>
+									<label value="@{collabEdit.etablissement.nom}"/>
+									<label value="@{collabEdit.specialite.nom}"/>
+									<label value="@{collab.archive}"/>
+									<div align="center">
+										<image width="12px" height="12px" id="deleteCollab"
+											src="/images/icones/small_delete.png"
+											style="cursor:pointer"/>
+									</div>
+								</row>
+							</rows>
+						</grid>
+					</row>
+				</rows>
+			</grid>
+		</panelchildren>
+		<toolbar height="30px" id="toolbarEchan" align="end">
+			<hbox spacing="5">
+				<menubar sclass="menuBarV2" id="menuBar">
+					<menu label="${c:l('general.actions')}" image="/images/icones/small_action.png" 
+						width="36px" height="24px">
+						<menupopup>
+							<menuitem id="print" image="/images/icones/printer.png" 
+								label="${c:l('general.print')}"/>
+							<menuitem id="historique" image="/images/icones/history.png" 
+								label="${c:l('general.historique')}"/>
+						</menupopup>
+					</menu>
+				</menubar>
+				<button id="addNewC" label="${c:l('general.new')}" height="24px" visible="true"
+					image="/images/icones/new.png" sclass="buttonv2"/>
+				<button id="editC" label="${c:l('general.edit')}" height="24px" visible="true"
+					image="/images/icones/edit.png" sclass="buttonv2"/>
+				<button id="deleteC" disabled="true" label="${c:l('general.delete')}" height="24px" visible="true"
+					image="/images/icones/trash.png" sclass="buttonv2"/>
+				<button id="validateC" label="${c:l('general.validate')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="revertC" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="createC" label="${c:l('general.create')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="cancelC" label="${c:l('general.cancel')}"  height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="newCollaborateur" label="${c:l('general.create.collaborateur')}" height="24px" visible="true"
+					image="/images/icones/addCollaborateur.png" sclass="buttonv2"/>
+			</hbox>
+		</toolbar>
+	</panel>
+</window>

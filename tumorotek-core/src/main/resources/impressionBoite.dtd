@@ -1,0 +1,31 @@
+<!ELEMENT ImpressionBoite (PageBoite+, HautDePage, BasDePage)>
+<!ELEMENT PageBoite (Titre, Boite+)>
+<!ELEMENT Titre (#PCDATA)>
+<!ELEMENT Boite (TitreIntermediaire, TitreModelisation, TitreInstruction, Modelisation, Instructions, ListeElements)>
+<!ELEMENT TitreIntermediaire (#PCDATA)>
+<!ELEMENT HautDePage (#PCDATA)>
+<!ELEMENT BasDePage (#PCDATA)>
+
+<!ELEMENT TitreModelisation (#PCDATA)>
+<!ELEMENT TitreInstruction (#PCDATA)>
+<!ELEMENT Modelisation (TitreBoite, Separateur, LigneCoordonnees, LigneBoite*, LegendeVide, LegendePris, LegendeSelectionne)>
+<!ELEMENT TitreBoite (#PCDATA)>
+<!ELEMENT Separateur (#PCDATA)>
+<!ELEMENT LigneCoordonnees (Coordonnee*)>
+<!ELEMENT LigneBoite (Coordonnee, Emplacement*)>
+<!ELEMENT Emplacement (EmpLibre, EmpOccupe, EmpSelectionne)>
+<!ELEMENT EmpLibre (#PCDATA)>
+<!ELEMENT EmpOccupe (#PCDATA)>
+<!ELEMENT EmpSelectionne (#PCDATA)>
+<!ELEMENT LegendeVide (#PCDATA)>
+<!ELEMENT LegendePris (#PCDATA)>
+<!ELEMENT LegendeSelectionne (#PCDATA)>
+
+<!ELEMENT Instructions (Instruction*)>
+<!ELEMENT Instruction (#PCDATA)>
+
+<!ELEMENT ListeElements (TitreListe, Element*)>
+<!ELEMENT TitreListe (#PCDATA)>
+<!ELEMENT Element (#PCDATA)>
+
+<!ELEMENT Coordonnee (#PCDATA)>

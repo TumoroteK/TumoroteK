@@ -1,0 +1,44 @@
+<project name="TumoroteK">
+    <bannerLeft>
+        <name>TumoroteK</name>
+        <src>images/logo_tumo.png</src>
+        <href>https://tumorotek.github.io/tumorotek</href>
+    </bannerLeft>
+    <!--<bannerRight>
+        <name>AP-HP</name>
+    </bannerRight>-->
+    <publishDate position="right"/>
+    <skin>
+        <groupId>org.apache.maven.skins</groupId>
+        <artifactId>maven-fluido-skin</artifactId>
+        <version>1.6</version>
+    </skin>
+    <body>
+        <head>
+            <![CDATA[<script src="https://use.fontawesome.com/cc50386fe4.js"></script>]]>
+            <![CDATA[<script>
+                window.onload=()=>{
+                    document.querySelectorAll('[title="Dossier d\'installation"]')[0].href = "${project.url}/releases/download/${parent.version}/${project.artifactId}-${parent.version}.zip";
+                };
+            </script>]]>
+        </head>
+        <menu name="TumoroteK">
+            <item name="Notes de version" href="note-version.html" />
+            <item name="Manuel d'utilisation" href="TumoroteK-Manuel.pdf" />
+        </menu>
+        <menu name="Procédures">
+            <item name="Installation" href="installation-readme.html" />
+            <item name="Mise à jour" href="mise-a-jour-readme.html" />
+        </menu>
+        <menu name="Ressources">
+            <item name="Dossier d'installation" href=""/>
+            <item name="Dossier d'exploitation" href="TumoroteK-DossierExploitation.pdf"/>
+        </menu>
+        <!--<menu name="Developpeurs">
+            <item name="Guide" href="developpeurs.html"/>
+        </menu>-->
+    </body>
+    <poweredBy>
+        <logo name="AP-HP" href="http://www.aphp.fr" img="images/aphp-new.png"/>
+    </poweredBy>
+</project>

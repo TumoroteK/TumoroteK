@@ -1,0 +1,182 @@
+<!--
+	* Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+    * dsi-projet.tk@aphp.fr
+	* 
+	* Ce logiciel est un programme informatique servant à la gestion de 
+	* l'activité de biobanques. 
+	*
+	* Ce logiciel est régi par la licence CeCILL soumise au droit français
+	* et respectant les principes de diffusion des logiciels libres. Vous 
+	* pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+	* conditions de la licence CeCILL telle que diffusée par le CEA, le 
+	* CNRS et l'INRIA sur le site "http://www.cecill.info". 
+	* En contrepartie de l'accessibilité au code source et des droits de   
+	* copie, de modification et de redistribution accordés par cette 
+	* licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+	* Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+	* l'auteur du programme, le titulaire des droits patrimoniaux et les 
+	* concédants successifs.
+	*
+	* A cet égard  l'attention de l'utilisateur est attirée sur les 
+	* risques associés au chargement,  à l'utilisation,  à la modification 
+	* et/ou au  développement et à la reproduction du logiciel par 
+	* l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+	* le rendre complexe à manipuler et qui le réserve donc à des 	
+	* développeurs et des professionnels  avertis possédant  des 
+	* connaissances  informatiques approfondies.  Les utilisateurs sont 
+	* donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+	* besoins dmans des conditions permettant d'assurer la sécurité de leurs
+	* systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+	* et l'exploiter dans les mêmes conditions de sécurité. 
+	*	
+	* Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+	* avez pris connaissance de la licence CeCILL, et que vous en avez 
+	* accepté les termes. 
+-->
+<!-- Groupe patient -->
+<groupbox id="groupPatients" open="false">
+	<caption image="/images/icones/history.png"
+		label="${c:l('recherche.avancee.informations.patient')}" />
+	<vlayout fulfill="groupPatients.onOpen" hflex="1">
+		<!-- N° Patient et N° dossier -->
+		<hlayout sclass="z-valign-middle" style="margin: 5px" hflex="1">
+			<label hflex="min"
+				value="${c:l('Champ.Patient.Nip')}" sclass="formLabel" />
+			<div hflex="1" align="left" style="margin: 0 10px 0 10px">
+				<textbox id="nipPatientBox"
+					hflex="1"
+					disabled="@{fwinRechercheAvanceePrelevement$composer.anonyme}">
+					<custom-attributes
+						attribut="Nip" entite="Patient" />
+				</textbox>
+			</div>
+		
+			<label hflex="min"
+				value="${c:l('Champ.Prelevement.PatientNda')}"
+				sclass="formLabel" />
+			<div hflex="1" align="left" style="margin: 0 10px 0 10px">
+				<textbox id="ndaPatientBox"
+					hflex="1"
+					disabled="@{fwinRechercheAvanceePrelevement$composer.anonyme}">
+					<custom-attributes
+						attribut="PatientNda" entite="Prelevement" />
+				</textbox>
+			</div>
+		</hlayout>
+		<!-- Nom Patient et Nom patronymique -->
+		<hlayout sclass="z-valign-middle" style="margin: 5px">
+			<label hflex="min"
+				value="${c:l('Champ.Patient.Nom')}" sclass="formLabel" />
+			<div hflex="1" align="left" style="margin: 0 10px 0 10px">
+				<textbox id="nomPatientBox"
+					hflex="1"
+					disabled="@{fwinRechercheAvanceePrelevement$composer.anonyme}">
+					<custom-attributes
+						attribut="Nom" entite="Patient" />
+				</textbox>
+			</div>
+		
+			<label hflex="min"
+				value="${c:l('Champ.Patient.NomNaissance')}"
+				sclass="formLabel" />
+			<div hflex="1" align="left" style="margin: 0 10px 0 10px">
+				<textbox id="nomNaissancePatientBox"
+					hflex="1"
+					disabled="@{fwinRechercheAvanceePrelevement$composer.anonyme}">
+					<custom-attributes
+						attribut="NomNaissance" entite="Patient" />
+				</textbox>
+			</div>
+		</hlayout>
+		<!-- Prénom Patient -->
+		<hlayout sclass="z-valign-middle" style="margin: 5px">
+			<label hflex="min"
+				value="${c:l('Champ.Patient.Prenom')}" sclass="formLabel" />
+			<div hflex="2" align="left" style="margin: 0 10px 0 10px">
+				<textbox id="prenomPatientBox" hflex="1">
+					<custom-attributes
+						attribut="Prenom" entite="Patient" />
+				</textbox>
+			</div>
+			<div hflex="2" />
+		</hlayout>
+		<!-- Date naissance et sexe -->
+		<hlayout sclass="z-valign-middle" style="margin: 5px">
+			<label hflex="min"
+				value="${c:l('Champ.Patient.DateNaissance')}"
+				sclass="formLabel" />
+			<hlayout sclass="z-valign-middle" hflex="2" style="margin: 0 10px 0 10px">
+				<listbox
+					id="operateursDateNaissanceBox" mold="select" rows="1"
+					disabled="@{fwinRechercheAvanceePrelevement$composer.anonyme}">
+					<listitem value="=" label="="/>
+					<listitem value=">" label=">" />
+					<listitem value="inf" label="inf" />
+					<listitem value="[.;]" label="[..]" />		
+				</listbox>
+				<datebox
+					id="dateNaissance1Box"
+					format="${c:l('validation.date.format.simple')}"
+					cols="8"
+					disabled="@{fwinRechercheAvanceePrelevement$composer.anonyme}">
+					<custom-attributes
+						attribut="DateNaissance" entite="Patient" />
+				</datebox>
+				<label
+					value="${c:l('general.selectlist.and')}"
+					sclass="formLabel" />
+				<datebox
+					id="dateNaissance2Box"
+					format="${c:l('validation.date.format.simple')}" cols="8"
+					style="align:right;"
+					disabled="@{fwinRechercheAvanceePrelevement$composer.anonyme}">
+					<custom-attributes
+						attribut="DateNaissance" entite="Patient" />
+				</datebox>
+			</hlayout>
+		
+			<label hflex="min"
+				value="${c:l('Champ.Patient.Sexe')}" sclass="formLabel" />
+			<hlayout hflex="2" spacing="10px" style="margin: 0 10px 0 10px">
+				<hlayout sclass="z-valign-middle">
+					<checkbox id="sexeFBox">
+						<custom-attributes
+							sexe="F" />
+					</checkbox>
+					<label
+						value="${c:l('patient.sexe.femme')}" sclass="formLabel" />
+				</hlayout>
+				<hlayout sclass="z-valign-middle">
+					<checkbox id="sexehlayout">
+						<custom-attributes
+							sexe="M" />
+					</checkbox>
+					<label
+						value="${c:l('patient.sexe.homme')}" sclass="formLabel" />
+				</hlayout>
+				<hlayout sclass="z-valign-middle">
+					<checkbox id="sexeIndBox">
+						<custom-attributes
+							sexe="Ind" />
+					</checkbox>
+					<label
+						value="${c:l('patient.sexe.indetermine')}"
+						sclass="formLabel" />
+				</hlayout>
+			</hlayout>
+		</hlayout>
+	<!-- Médecins -->
+		<hlayout sclass="z-valign-middle" style="margin: 5px">
+			<label hflex="min" value="${c:l('patient.medecins')}" sclass="formLabel" />
+			<div hflex="2" align="left" style="margin: 0 10px 0 10px">
+				<combobox id="medecinsPatBox" autodrop="true" hflex="1" 
+					model="@{fwinRechercheAvanceePrelevement$composer.collaborateurs, load-after='groupPatients.onOpen'}">
+					<comboitem self="@{each=attrValue}" label="@{attrValue.nomAndPrenom}"/>
+					<custom-attributes
+						attribut="Pk.collaborateur" entite="PatientMedecin" />
+				</combobox>
+			</div>
+			<div hflex="1" />
+		</hlayout>
+	</vlayout>
+</groupbox>

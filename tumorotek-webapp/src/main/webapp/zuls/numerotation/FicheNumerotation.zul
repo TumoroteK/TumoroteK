@@ -1,0 +1,247 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<window id="fwinNumerotation" border="none" apply="fr.aphp.tumorotek.action.numerotation.FicheNumerotation">
+	<panel collapsible="false" title="${c:l('numerotation.fiche.title')}"
+	 sclass="fichePanelv2" id="winPanel">
+		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
+			<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvt">
+				<columns>
+					<column width="150px"/>
+					<column width="200px"/>
+					<column/>
+				</columns>
+				<rows>
+					<!-- BANQUE -->
+					<row spans="1,2">
+						<hbox>
+							<label value="${c:l('numerotation.banque')}" sclass="formLabel"/>
+							<label id="collectionRequired" value="*" sclass="requiredMark"
+												 visible="false"/>
+						</hbox>
+						<div>
+							<label id="collectionLabel" 
+								value="@{fwinNumerotation$composer.numerotation.banque.nom}" 
+								sclass="formValue" 
+							/>
+							
+							<listbox id="collectionBox" mold="select" rows="1"
+							model="@{fwinNumerotation$composer.banques}"
+							selectedItem="@{fwinNumerotation$composer.selectedBanque}"
+							visible="false"
+							width="250px">
+								<listitem self="@{each='banqueNumerotation'}" value="@{banqueNumerotation}">			
+									<listcell label="@{banqueNumerotation.nom}" />
+								</listitem>
+							</listbox>
+						</div>
+					</row>
+					<!-- ENTITE -->
+					<row spans="1,2">
+						<hbox>
+							<label value="${c:l('numerotation.entite')}" sclass="formLabel"/>
+							<label id="entiteRequired" value="*" sclass="requiredMark"
+												 visible="false"/>
+						</hbox>
+						<div>
+							<label id="entiteLabel" 
+								value="@{fwinNumerotation$composer.numerotation.entite.nom}" 
+								sclass="formValue" 
+							/>
+							
+							<listbox id="entitesBox" mold="select" rows="1"
+							visible="false"
+							width="250px">
+								<listitem self="@{each='entiteNumerotation'}" value="@{entiteNumerotation}">			
+									<listcell label="@{entiteNumerotation.nom}" />
+								</listitem>
+							</listbox>
+						</div>
+					</row>
+					
+					<row spans="3">
+						<vbox width="100%">
+							<separator/>
+							<label value="${c:l('numerotation.code.composition.title')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					<!-- CODE -->
+					<row>
+						<label value="${c:l('numerotation.code.genere')}" sclass="formLabel"/>
+						<hlayout>
+							<label id="codeLabel" 
+								value="@{fwinNumerotation$composer.numerotation.codeFormula}" 
+								sclass="formValue" 
+							/>
+							<textbox id="codePrefixeNumerotation" 
+								value="@{fwinNumerotation$composer.codePrefixe,
+			        			save-when='validateC.onClick, createC.onClick'}"
+								width="50px" 
+								constraint="${fwinNumerotation$composer.codeConstraint}"
+								visible="false"/>
+							<label id="xxxLabel" 
+								value="XXX" 
+								sclass="formValue" 
+								visible="false"
+							/>
+							<textbox id="codeSuffixeNumerotation" 
+								value="@{fwinNumerotation$composer.codeSuffixe,
+			        			save-when='validateC.onClick, createC.onClick'}"
+								width="50px" 
+								constraint="${fwinNumerotation$composer.codeConstraint}"
+								visible="false"/>
+						</hlayout>
+						<div>
+							<label id="codeHelpLabel" 
+								value="${c:l('numerotation.help.code.static')}" 
+								sclass="formArchiveValue" 
+							/>
+							<label id="codeHelpEditLabel" 
+								value="${c:l('numerotation.help.code.edit')}" 
+								sclass="formArchiveValue" 
+							/>
+						</div>
+					</row>
+					<!-- START_INCREMENT -->
+					<row>
+						<hbox>
+							<label value="${c:l('numerotation.startIncrement')}" sclass="formLabel"/>
+							<label id="startRequired" value="*" sclass="requiredMark"
+												 visible="false"/>
+						</hbox>
+						<div>
+							<label id="startLabel" 
+								value="@{fwinNumerotation$composer.numerotation.startIncrement}" 
+								sclass="formValue" 
+							/>
+							<intbox id="startBox"
+								value="@{fwinNumerotation$composer.numerotation.startIncrement,
+			        				save-when='createC.onClick'}"
+								constraint="no negative, no empty"
+								width="75px"
+								visible="false"
+							/>
+						</div>
+						<label id="startHelpLabel" 
+								value="${c:l('numerotation.help.start')}" 
+								sclass="formArchiveValue" 
+						/>
+					</row>
+					<!-- CURRENT_INCREMENT -->
+					<row>
+						<hbox>
+							<label value="${c:l('numerotation.currentIncrement')}" sclass="formLabel"/>
+							<label id="currentRequired" value="*" sclass="requiredMark"
+												 visible="false"/>
+						</hbox>
+						<div>
+							<label id="currentLabel" 
+								value="@{fwinNumerotation$composer.numerotation.currentIncrement}" 
+								sclass="formValue" 
+							/>
+							<intbox id="currentBox"
+								value="@{fwinNumerotation$composer.numerotation.currentIncrement,
+			        				save-when='validateC.onClick'}"
+								constraint="no negative, no empty"
+								width="75px"
+								visible="false"
+							/>
+						</div>
+						<label id="currentHelpLabel" 
+								value="${c:l('numerotation.help.current')}" 
+								sclass="formArchiveValue" 
+						/>
+					</row>
+					<!-- NB_CHIFFRES -->
+					<row>
+						<label value="${c:l('numerotation.nbChiffres')}" sclass="formLabel"/>
+						<div>
+							<label id="nbChiffresLabel" 
+								value="@{fwinNumerotation$composer.numerotation.nbChiffres}" 
+								sclass="formValue" 
+							/>
+							<intbox id="nbChiffresBox"
+								value="@{fwinNumerotation$composer.numerotation.nbChiffres,
+			        				save-when='validateC.onClick, createC.onClick'}"
+								constraint="no negative"
+								width="75px"
+								visible="false"
+							/>
+						</div>
+						<label id="nbChiffresHelpLabel" 
+								value="${c:l('numerotation.help.nbChiffres')}" 
+								sclass="formArchiveValue" 
+						/>
+					</row>
+					<!-- ZERO_FILL -->
+					<row>
+						<label value="${c:l('numerotation.zeroFill')}" sclass="formLabel"/>
+						<div>
+							<label id="zeroFillLabel" 
+								value="@{fwinNumerotation$composer.zeroFillFormated}" 
+								sclass="formValue" 
+							/>
+							
+							<checkbox id="zeroFillBox"  visible="false"/>
+						</div>
+						<label id="zeroFillHelpLabel" 
+								value="${c:l('numerotation.help.zeroFill')}" 
+								sclass="formArchiveValue" 
+						/>
+					</row>
+				</rows>
+			</grid>
+		</panelchildren>
+		<toolbar height="30px" id="toolbarEchan" align="end">
+			<hbox spacing="5" align="center">
+				<button id="addNewC" label="${c:l('general.new')}" height="24px" visible="true"
+					image="/images/icones/new.png" sclass="buttonv2"/>
+				<button id="editC" label="${c:l('general.edit')}" height="24px" visible="true"
+					image="/images/icones/edit.png" sclass="buttonv2"/>
+				<button id="deleteC" label="${c:l('general.delete')}" height="24px" visible="true"
+					image="/images/icones/trash.png" sclass="buttonv2"/>
+				<button id="validateC" label="${c:l('general.validate')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="revertC" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="createC" label="${c:l('general.create')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="cancelC" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+			</hbox>
+		</toolbar>
+	</panel>
+</window>

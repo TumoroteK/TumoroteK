@@ -1,0 +1,308 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<window id="fwinImportTemplate" border="none" apply="fr.aphp.tumorotek.action.imports.FicheImportTemplate">
+	<panel collapsible="false" title="@{fwinImportTemplate$composer.title}"
+	 sclass="fichePanelv2" id="winPanel">
+		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
+			<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvt">
+				<columns>
+					<column width="150px"/>
+					<column/>
+				</columns>
+				<rows>
+					<!-- NOM -->
+					<row>
+						<hbox>
+							<label value="${c:l('importTemplate.nom')}" 
+								sclass="formLabel"/>
+							<label id="nomRequired" value="*" sclass="requiredMark"
+												 visible="false"/>
+						</hbox>
+						<div>
+							<label id="nomLabel" 
+								value="@{fwinImportTemplate$composer.importTemplate.nom}" 
+								sclass="formValue" 
+							/>
+							
+							<textbox id="nomBox" 
+								value="@{fwinImportTemplate$composer.importTemplate.nom,
+			        				save-when='validateC.onClick, createC.onClick'
+			        				load-after='editC.onClick, createC.onClick'}" 
+								width="250px" 
+								constraint="${fwinImportTemplate$composer.nomConstraint}"
+								visible="false"
+							/>
+						</div>
+					</row>
+					<!-- Modification -->
+					<row visible="false">
+						<div />
+						<!-- visible="@{fwinImportTemplate$composer.nonSubderive}"> -->
+						<hlayout>
+							<checkbox id="updateTemplateCheckbox" visible="false"
+								checked="@{fwinImportTemplate$composer.importTemplate.isUpdate}"/>
+							<label id="updateTemplateLabel" sclass="formValueItalics" 
+								value="${c:l('importTemplate.is.update')}" 
+								visible="@{fwinImportTemplate$composer.updateTemplateLabelVisible}" />
+						</hlayout>
+					</row>
+					<!-- Subderive -->
+					<row visible="@{fwinImportTemplate$composer.subderive}">
+						<label value="${c:l('importTemplate.subderive.entite.parent')}" 
+							sclass="formLabel"/>
+						<div>
+							<listbox id="subderiveParentListbox" 
+								mold="select" rows="1"
+								model="@{fwinImportTemplate$composer.subderiveParentEntites, 
+												load-after='editC.onClick, addNewC.onClick'}"
+								visible="false"
+								itemRenderer="${fwinImportTemplate$composer.entiteRenderer}"
+								selectedItem="@{fwinImportTemplate$composer.importTemplate.deriveParentEntite}">
+								<listitem self="@{each='entite'}" value="entite" />
+							</listbox>
+							<label id="subderiveParentLabel" sclass="formValue" 
+								value="@{fwinImportTemplate$composer.deriveParentEntiteNom}" />
+						</div>
+					</row>
+					<!-- Banque -->
+					<row>
+						<label value="${c:l('importTemplate.banque')}" 
+							sclass="formLabel"/>
+						<label id="banqueLabel" 
+							value="@{fwinImportTemplate$composer.importTemplate.banque.nom}" 
+							sclass="formValue" 
+						/>
+					</row>
+					<!-- Description -->
+					<row>
+						<hbox>
+							<label value="${c:l('importTemplate.description')}" 
+								sclass="formLabel"/>
+						</hbox>
+						<div>
+							<label id="descriptionLabel" 
+								value="@{fwinImportTemplate$composer.importTemplate.description}" 
+								sclass="formValue" 
+							/>
+							
+							<textbox id="descriptionBox" 
+								value="@{fwinImportTemplate$composer.importTemplate.description,
+			        				save-when='validateC.onClick, createC.onClick'
+			        				load-after='editC.onClick, createC.onClick'}" 
+								width="400px"
+								rows="3"
+								constraint="${fwinImportTemplate$composer.descriptionConstraint}"
+								visible="false"
+							/>
+						</div>
+					</row>
+					<!-- Entites -->
+					<row spans="2">
+						<separator />
+					</row>
+					<group id="groupEntites"/>
+					<row spans="2">
+						<div id="entitesAssocieesImport" />
+					</row>
+					<!-- Colonnes -->
+					<row spans="2">
+						<separator/>
+					</row>
+					<group id="groupColonnes" label="${c:l('importTemplate.colonnes.title')}"/>
+					<row spans="2" id="helpAddColumnRow">
+						<label value="${c:l('importTemplate.add.column.help')}" 
+								sclass="formValueItalics"/>
+					</row>
+					<row spans="2" id="rowAddChamp" visible="false">
+						<box orient="horizontal"><div>
+							<!-- entités -->
+							<label value="${c:l('importTemplate.entite')}" 
+								sclass="formLabel"/>
+								
+							<listbox id="entitesBox" mold="select" rows="1"
+							model="@{fwinImportTemplate$composer.entitesAssociees 
+							load-after='editC.onClick, createC.onClick'}"
+							selectedItem="@{fwinImportTemplate$composer.selectedEntite}"
+							width="150px">
+								<listitem self="@{each='entiteAssociee'}" value="@{entiteAssociee}">			
+									<listcell label="@{entiteAssociee.label}" />
+								</listitem>
+							</listbox>
+							
+							<space width="30px"/>
+							
+							<!-- champs -->
+							<label value="${c:l('importTemplate.champ')}" sclass="formLabel"/>
+							
+							<listbox id="champsBox" mold="select" rows="1"
+							width="150px">
+								<listitem self="@{each='champ'}" value="@{champ}">			
+									<listcell label="@{champ.nom}" />
+								</listitem>
+							</listbox>
+							
+							<space width="30px"/>
+							
+							<button id="addChamp" height="24px" 
+								image="/images/icones/new2.png" sclass="buttonv2"/>
+						</div></box>
+					</row>
+					<row spans="2">
+						<vlayout hflex="1" width="100%">
+						<grid id="colonnesGrid"
+							fixedLayout="true"
+							hflex="1" 
+							span="true"
+							sclass="gridListStyle"
+							model="@{fwinImportTemplate$composer.importColonnes}"
+							rowRenderer="@{fwinImportTemplate$composer.colonnesRenderer}">
+							<columns>
+								<column label="${c:l('importColonne.nom')}" />
+								<column label="${c:l('importColonne.champ')}" />
+								<column label="${c:l('importColonne.format')}" />
+								<column label="${c:l('importColonne.entite')}"  />
+								<column label="${c:l('importColonne.obligatoire')}"  />
+							</columns>
+							<rows>
+								<row self="@{each='currColonne'}" value="currColonne"/>
+							</rows>
+						</grid>
+						
+						<grid id="colonnesGridEdit"
+							fixedLayout="true" 
+							hflex="1"
+							span="true"
+							sclass="gridListStyle"
+							model="@{fwinImportTemplate$composer.importColonnesDecorator
+								load-after='addChamp.onClick'}"
+							visible="false">
+							<columns>
+								<column label="${c:l('importColonne.nom')}" />
+								<column label="${c:l('importColonne.champ')}" />
+								<column label="${c:l('importColonne.format')}" />
+								<column label="${c:l('importColonne.entite')}" />
+								<column id="upColumn" width="30px" />
+								<column id="downColumn" width="30px" />
+								<column id="deleteColumn" width="30px" />
+							</columns>
+							<rows>
+								<row id="colonneRow" self="@{each='colonneEdit'}" value="@{colonneEdit}" height="20px">
+									<textbox id="nomColonneBox" cols="20"
+											value="@{colonneEdit.colonne.nom,
+			        							save-when='validateC.onClick, createC.onClick, self.onBlur'}" 
+											constraint="${fwinImportTemplate$composer.nomConstraint}" 
+											disabled="@{colonneEdit.disableEditLabel}" />
+									<label value="@{colonneEdit.champ}" />
+									<label value="@{colonneEdit.format}" /> 
+									<html content="@{colonneEdit.entite}" /> 
+									<div id="upChamp" width="12px" height="12px" 
+										sclass="upArrow"
+										style="cursor:pointer" 
+										visible="@{colonneEdit.canMove}" />
+									<div id="downChamp" width="12px" height="12px" 
+										sclass="downArrow"
+										style="cursor:pointer" 
+										visible="@{colonneEdit.canMove}" />
+									<div align="center">
+										<div width="12px" height="12px" id="deleteChamp"
+											sclass="gridDelete"
+											style="cursor:pointer"
+											visible="@{colonneEdit.canDelete}" />
+									</div>
+								</row>
+							</rows>
+						</grid>
+						</vlayout>
+					</row>
+					
+					<!-- Historique -->
+					<row spans="2">
+						<separator/>
+					</row>
+					<group id="groupHistorique" label="${c:l('importHistorique.title')}"/>
+					<row spans="2">
+						<grid id="historiquesGrid" mold="paging" pageSize="10"
+							fixedLayout="true" 
+							hflex="1"
+							span="true"
+							sizedByContent="true"
+							sclass="gridListStyle"
+							model="@{fwinImportTemplate$composer.historiques}"
+							rowRenderer="@{fwinImportTemplate$composer.historiquesRenderer}">
+							<columns sizable="true">
+								<column label="${c:l('importHistorique.date')}" width="130px"/>
+								<column label="${c:l('importHistorique.utilisateur')}" />
+								<column label="${c:l('importHistorique.nb.patients')}" />
+								<column label="${c:l('importHistorique.nb.prelevements')}" />
+								<column label="${c:l('importHistorique.nb.echantillons')}" />
+								<column label="${c:l('importHistorique.nb.prodDerives')}" />
+							</columns>
+							<rows>
+								<row self="@{each='currHistorique'}" value="currHistorique"/>
+							</rows>
+						</grid>
+					</row>
+				</rows>
+			</grid>
+		</panelchildren>
+		<toolbar height="30px" id="toolbarEchan" align="end">
+			<hbox spacing="5" align="center">
+				<button id="importer" label="${c:l('importTemplate.execute.import')}" height="24px" visible="true"
+					image="/images/icones/fileimport.png" sclass="buttonv2"/>
+				<button id="exporterHeader" label="${c:l('importTemplate.export.header')}" height="24px" visible="true"
+					image="/images/icones/export.png" sclass="buttonv2"/>
+				<button id="addNewC" label="${c:l('general.new')}" height="24px" visible="true"
+					image="/images/icones/new.png" sclass="buttonv2"/>
+				<button id="addNewSubderiveC" label="${c:l('importTemplate.new.subderive')}" height="24px" visible="true"
+						image="/images/icones/new.png" sclass="buttonv2"/>
+				<button id="editC" label="${c:l('general.edit')}" height="24px" visible="true"
+					image="/images/icones/edit.png" sclass="buttonv2"/>
+				<button id="deleteC" label="${c:l('general.delete')}" height="24px" visible="true"
+					image="/images/icones/trash.png" sclass="buttonv2"/>
+				<button id="validateC" label="${c:l('general.validate')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="revertC" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="createC" label="${c:l('general.create')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="cancelC" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+					<menubar sclass="menuBarV2" id="menuBarEchantillons">
+			</menubar>
+			</hbox>
+		</toolbar>
+	</panel>
+</window>

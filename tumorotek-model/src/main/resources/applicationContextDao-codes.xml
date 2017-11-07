@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<import resource="applicationContextInterceptor.xml" />
+	<import resource="spring-jpa-codes.xml" />
+
+	<bean id="abstractDaoTargetCodes" class="fr.aphp.tumorotek.dao.impl.GenericDaoJpaImpl"
+		abstract="true">
+		<property name="entityManagerFactory">
+			<ref bean="entityManagerFactoryCodes" />
+		</property>
+	</bean>
+
+	<bean id="adicapDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.code.AdicapDao
+			</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTargetCodes">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.code.Adicap
+					</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="adicapGroupeDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.code.AdicapGroupeDao
+			</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTargetCodes">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.code.AdicapGroupe
+					</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="cimoMorphoDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.code.CimoMorphoDao
+			</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTargetCodes">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.code.CimoMorpho
+					</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="cimMasterDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.code.CimMasterDao
+			</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTargetCodes">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.code.CimMaster
+					</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="cimLibelleDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.code.CimLibelleDao
+			</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTargetCodes">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.code.CimLibelle
+					</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+
+</beans>
