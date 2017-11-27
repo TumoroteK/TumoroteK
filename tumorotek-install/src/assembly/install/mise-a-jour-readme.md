@@ -2,21 +2,27 @@
 
 #### Mise à jour de TumoroteK version ${parent.version}  
 
-**<span class="fa fa-exclamation-triangle" aria-hidden="true"></span> Mise à jour depuis la version précédente**
+**<span class="fa fa-exclamation-triangle" aria-hidden="true"></span> Mise à jour depuis la version précédente : 2.1**
 
 ***
 
-##### Renommage du fichier tumo2.properties
-Sur le serveur Tomcat, dans le dossier `/conf/Catalina/localhost`, dupliquer le fichier `tumo2.propeties`.  
-Renommer la copie en :  
+#### Mise à jour automatique
+Ajouter dans \<TOMCAT\>/conf/server.xml :  
 
-    tumorotek.properties
-        
-##### Renommage du fichier tumo2.xml
-Sur le serveur Tomcat, dans le dossier `/conf/Catalina/localhost`, dupliquer le fichier `tumo2.xml`.  
-Renommer la copie en :  
-   
-    ${webapp.packaging.finalName}.xml
-
-##### Déploiement de la nouvelle version de TumoroteK  
-Sur le serveur Tomcat, dans le dossier `/webapps`, déposer l'archive `${webapp.packaging.finalName}.war`
+    <GlobalNamingResources>
+        ...
+            <Resource name="jdbc/TumoroteK" 
+                  global="jdbc/TumoroteK" 
+                  auth="Container" 
+                  type="javax.sql.DataSource" 
+                  driverClassName="com.mysql.jdbc.Driver" 
+                  url="jdbc:mysql://localhost:3306/tumorotek" 
+                  username="tumo" 
+                  password="tumo" 
+                  
+                  maxActive="100" 
+                  maxIdle="20" 
+                  minIdle="5" 
+                  maxWait="10000"/>
+          ...
+      </GlobalNamingResources>

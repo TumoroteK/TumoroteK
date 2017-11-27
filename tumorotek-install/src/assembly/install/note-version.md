@@ -1,6 +1,13 @@
 #### Notes de version
 
-##### Version ${parent.version}  
+##### Version ${parent.version} - Publiée le ${timestamp}
+- YouTrack [TKB-1](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-1) : La recherche ne fonctionne pas sur les ID de cession  
+- YouTrack [TKB-2](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-2) : La recherche de date dans les annotations sur les dérivés ne fonctionne pas  
+- YouTrack [TK-47](https://tumorotek.myjetbrains.com/youtrack/issue/TK-47) : Erreurs sur les propriétés d'internationalisation  
+
+***
+
+##### Version 2.1.1  
 25/01/2017  
 Interfacage robot IRELEC: ajout emetteur fichier tabulé (package: storageRobot) + paramétrage Camel.  
 13/02/2017  

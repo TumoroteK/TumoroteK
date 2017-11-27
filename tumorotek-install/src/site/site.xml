@@ -2,7 +2,7 @@
     <bannerLeft>
         <name>TumoroteK</name>
         <src>images/logo_tumo.png</src>
-        <href>https://tumorotek.github.io/tumorotek</href>
+        <href>https://tumorotek.github.io/TumoroteK</href>
     </bannerLeft>
     <!--<bannerRight>
         <name>AP-HP</name>
@@ -15,13 +15,18 @@
     </skin>
     <body>
         <head>
+            <![CDATA[<link rel="icon" href="images/favicon.ico">]]>
             <![CDATA[<script src="https://use.fontawesome.com/cc50386fe4.js"></script>]]>
             <![CDATA[<script>
-                window.onload=()=>{
-                    document.querySelectorAll('[title="Dossier d\'installation"]')[0].href = "${project.url}/releases/download/${parent.version}/${project.artifactId}-${parent.version}.zip";
+                window.onload = function() {
+                    document.querySelectorAll('[title="GitHub"]')[0].href = "${project.url}";
+                    document.querySelectorAll('[title="Dossier d\'installation"]')[0].href = "${project.url}/releases/download/v${parent.version}/${project.artifactId}-${parent.version}.zip";
                 };
             </script>]]>
         </head>
+        <links>
+            <item name="GitHub" href="https://github.com/TumoroteK/TumoroteK" img="images/GitHub-Mark-32px.png" width="20px"/>
+        </links>
         <menu name="TumoroteK">
             <item name="Notes de version" href="note-version.html" />
             <item name="Manuel d'utilisation" href="TumoroteK-Manuel.pdf" />
@@ -33,6 +38,7 @@
         <menu name="Ressources">
             <item name="Dossier d'installation" href=""/>
             <item name="Dossier d'exploitation" href="TumoroteK-DossierExploitation.pdf"/>
+            <item name="Dossier sur les interfaçages avec des SGL" href="TumoroteK-InterfaçagesSGL.pdf"/>
         </menu>
         <!--<menu name="Developpeurs">
             <item name="Guide" href="developpeurs.html"/>

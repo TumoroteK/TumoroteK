@@ -135,9 +135,4 @@
     </beans:constructor-arg>
     <beans:property name="filterProcessesUrl" value="/j_spring_cas_security_logout"/>
   </beans:bean>
-
 </beans:beans>
-
-
-	
-		

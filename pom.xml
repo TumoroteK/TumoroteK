@@ -9,8 +9,8 @@
 
     <properties>
         <webapp.name>tumorotek</webapp.name>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <webapp.packaging.finalName>${webapp.name}##${project.version}</webapp.packaging.finalName>
     </properties>

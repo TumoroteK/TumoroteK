@@ -20,8 +20,6 @@
     <!-- Proprietes -->
     <!-- ========== -->
     <properties>
-        <!--<flux>tumo</flux>-->
-
         <!-- Timestamp (utilisé dans la fiche version par exemple) -->
         <timestamp>${maven.build.timestamp}</timestamp>
         <maven.build.timestamp.format>dd/MM/yyyy</maven.build.timestamp.format>
@@ -43,6 +41,15 @@
             </plugin>
         </plugins>
     </reporting>
+
+    <!--<dependencies>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            &lt;!&ndash; Replace with the version of the MySQL driver you want to use &ndash;&gt;
+            <version>5.1.44</version>
+        </dependency>
+    </dependencies>-->
 
     <!-- ============== -->
     <!-- Plugins Commun -->
@@ -74,13 +81,6 @@
                 <configuration>
                     <locales>fr</locales>
                 </configuration>
-                <!--<dependencies>
-                    <dependency>&lt;!&ndash; add support for dav &ndash;&gt;
-                        <groupId>org.apache.maven.wagon</groupId>
-                        <artifactId>wagon-webdav-jackrabbit</artifactId>
-                        <version>3.0.0</version>
-                    </dependency>
-                </dependencies>-->
                 <executions>
                     <execution>
                         <id>site-install</id>
@@ -129,23 +129,6 @@
                             </resources>
                         </configuration>
                     </execution>
-                    <!--<execution>
-                        <id>copy-resources-war</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${basedir}/target/site</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${parent.basedir}/tumorotek-webapp/target</directory>
-                                    <include>*.war</include>
-                                    <filtering>false</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>-->
                 </executions>
             </plugin>
             <plugin>
@@ -173,7 +156,6 @@
                     <descriptors>
                         <descriptor>src/assembly/assembly.xml</descriptor>
                     </descriptors>
-                    <!--<finalName>${project.artifactId}-${project.version}</finalName>-->
                     <appendAssemblyId>false</appendAssemblyId>
                 </configuration>
                 <executions>
@@ -202,25 +184,27 @@
                     </execution>
                 </executions>
             </plugin>
+            <!--<plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>3.5.3</version>
+                <configuration>
+                    <changeLogFile>src/main/resources/liquibase/db.changelog.xml</changeLogFile>
+                    <driver>com.mysql.jdbc.Driver</driver>
+                    <url>jdbc:mysql://localhost:3306/tumo2?characterEncoding=UTF-8&amp;rewriteBatchedStatements=true</url>
+                    <username>root</username>
+                    <password>root</password>
+                    <propertyFile>src/main/resources/liquibase/liquibase.properties</propertyFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>update</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>-->
         </plugins>
     </build>
-    <!--<distributionManagement>
-        &lt;!&ndash;<site>
-            <id>olympe</id>
-            <url>
-                dav:http://sap-nexus.sap.aphp.fr:8081/nexus/content/sites/olympe/interfaces/${flux}/${project.version}
-            </url>
-        </site>&ndash;&gt;
-        <repository>
-            <id>github</id>
-            <url>${project.url}</url>
-        </repository>
-    </distributionManagement>-->
-    <!--<distributionManagement>
-        <repository>
-            <id>internal.repo</id>
-            <name>Temporary Staging Repository</name>
-            <url>file://${project.build.directory}/mvn-repo</url>
-        </repository>
-    </distributionManagement>-->
 </project>

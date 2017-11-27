@@ -35,20 +35,18 @@
  **/
 package fr.aphp.tumorotek.dao.impl;
 
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.List;
-
+import fr.aphp.tumorotek.dao.FinderExecutor;
+import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.orm.jpa.JpaCallback;
+import org.springframework.orm.jpa.support.JpaDaoSupport;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.orm.jpa.support.JpaDaoSupport;
-import org.springframework.orm.jpa.JpaCallback;
-import fr.aphp.tumorotek.dao.FinderExecutor;
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * 
@@ -60,7 +58,7 @@ import fr.aphp.tumorotek.dao.GenericDaoJpa;
  * @version 09/09/2009
  * 
  */
-public class GenericDaoJpaImpl <T, PK extends Serializable> 
+public class GenericDaoJpaImpl <T, PK extends Serializable>
 	extends JpaDaoSupport implements GenericDaoJpa<T, PK>, FinderExecutor  {
 	
 	private static Log log = LogFactory.getLog(GenericDaoJpa.class);

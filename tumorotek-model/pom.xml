@@ -24,6 +24,7 @@
    	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     	<org.hibernate.version>3.6.10.Final</org.hibernate.version>
     	<spring.version>3.2.4.RELEASE</spring.version>
+	   <skip-test>false</skip-test>
 	</properties>
 
   <dependencies>
@@ -335,7 +336,7 @@
 	        
 	        <!-- common configurations -->
 	        <configuration>
-				<!--<skip>true</skip>-->
+				<skip>${skip-test}</skip>
 	          <driver>org.gjt.mm.mysql.Driver</driver>
 	          <url>jdbc:mysql://localhost/testtumo2?sessionVariables=FOREIGN_KEY_CHECKS=0&amp;useUnicode=true&amp;characterEncoding=UTF-8</url>
 	          <username>root</username>
@@ -417,7 +418,7 @@
 	
 	       <!-- common configuration shared by all executions -->
 	       <configuration>
-			   <!--<skip>true</skip>-->
+			   <skip>${skip-test}</skip>
 	          <driver>org.gjt.mm.mysql.Driver</driver>
 	          <url>jdbc:mysql://localhost/testtumo2?sessionVariables=FOREIGN_KEY_CHECKS=0&amp;useUnicode=true&amp;characterEncoding=UTF-8</url>
 	          <username>root</username>

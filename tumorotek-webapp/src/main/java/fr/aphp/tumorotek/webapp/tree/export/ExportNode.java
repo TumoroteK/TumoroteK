@@ -35,15 +35,6 @@
  **/
 package fr.aphp.tumorotek.webapp.tree.export;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import fr.aphp.tumorotek.model.cession.Cession;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
@@ -52,6 +43,15 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.export.Critere;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Classe abstraite représentant un noeud d'un arbre RequeteModel.
@@ -584,18 +584,34 @@ public abstract class ExportNode {
 					return critereAlphanumValue;
 				} else if (cn.getCritere().getChamp().getChampAnnotation()
 						.getDataType().getType().matches("date.*")) {
-					if (isCalendar(cn.getCritere().getChamp()
-							.getChampEntite())) {
-						Calendar cal = Calendar.getInstance();
-						if (critereDateValue != null) {
-							cal.setTime(critereDateValue);
-						} else {
-							cal = null;
-						}
-						return cal;
-					} else {
-						return critereDateValue;
-					}
+				   
+				 //FIXME (FIXED) incident TK-13: cn.getCritere().getChamp().getChampEntite() Forcément null puisque le premier test ligne 521 : cn.getCritere().getChamp().getChampEntite() != null
+//					if (isCalendar(cn.getCritere().getChamp().getChampEntite())) {
+//						Calendar cal = Calendar.getInstance();
+//						if (critereDateValue != null) {
+//							cal.setTime(critereDateValue);
+//						} else {
+//							cal = null;
+//						}
+//						return cal;
+//					} else {
+//						return critereDateValue;
+//					}
+				   
+				   //[TK-13 FIX]: on récupère directement les valeurs envoyées, pas besoin de passer par isCalendar()
+               if (null != critereDateValue || null != critereCalendarValue) {
+                  Calendar cal = Calendar.getInstance();
+                  if (critereDateValue != null) {
+                     cal.setTime(critereDateValue);
+                  } else {
+                     cal = critereCalendarValue;
+                  }
+                  return cal;
+               } else {
+                  return critereDateValue;
+               }
+             //[/TKB-2 FIX]
+               
 				} else if (cn.getCritere().getChamp().getChampAnnotation()
 						.getDataType().getType().equals("boolean")) {
 					return critereBooleanValue;
@@ -648,5 +664,46 @@ public abstract class ExportNode {
 		
 		return isCalendar;
 	}
+
+	/*public boolean isCalendar(ChampAnnotation champAnnotation) {
+		boolean isCalendar = false;
+
+		Object obj = null;
+		if (champAnnotation.getEntite().getNom().equals("Patient")) {
+			obj = new Patient();
+		} else if (champAnnotation.getEntite().getNom().equals("Maladie")) {
+			obj = new Maladie();
+		} else if (champAnnotation.getEntite().getNom().equals("Prelevement")) {
+			obj = new Prelevement();
+		} else if (champAnnotation.getEntite().getNom().equals("Echantillon")) {
+			obj = new Echantillon();
+		} else if (champAnnotation.getEntite().getNom().equals("ProdDerive")) {
+			obj = new ProdDerive();
+		} else if (champAnnotation.getEntite().getNom().equals("Cession")) {
+			obj = new Cession();
+		}
+
+		String nomChamp = champAnnotation.getNom()
+			.replaceFirst(".",
+				(champAnnotation.getNom().charAt(0) + "")
+					.toLowerCase());
+		try {
+			String type = PropertyUtils
+				.getPropertyDescriptor(obj, nomChamp)
+				.getPropertyType().getSimpleName();
+
+			if (type != null && type.equals("Calendar")) {
+				isCalendar = true;
+			}
+		} catch (IllegalAccessException e) {
+			log.error(e);
+		} catch (InvocationTargetException e) {
+			log.error(e);
+		} catch (NoSuchMethodException e) {
+			log.error(e);
+		}
+
+		return isCalendar;
+	}*/
 	
 }

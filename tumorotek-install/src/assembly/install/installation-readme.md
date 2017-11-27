@@ -39,35 +39,35 @@ sous Unix, dans la variable `CATALINA_OPTS`, par l'intermédiaire du script de d
         mysql -u root -p tumo2interfacages --default-character-set=utf8 < tumo2interfacages_FK.sql
         mysql -u root -p tumo2interfacages --default-character-set=utf8 < live_scans.sql
 
-3. Base de données de PRODUCTION : **tumo2**
+3. Base de données de PRODUCTION : **tumorotek**
 
-        mysql> create database tumo2 default character set utf8;
+        mysql> create database tumorotek default character set utf8;
     
     Injection du contenu en ligne de commande
     
-        mysql -u root -p tumo2 --default-character-set=utf8 < dumpTumo210x.sql
+        mysql -u root -p tumorotek --default-character-set=utf8 < tumorotek-init.sql
     
     > MySQL est sensible à la casse du noms des tables sous Linux, le script `renametables.sql` renomme toutes les tables en majuscules
     
     Création du compte SuperAdministrateur s'il n'existe pas encore en base (par défaut **login :** ADMIN_TUMO, **mdp :** tk4[teAm])
     
-        mysql> insert into tumo2.UTILISATEUR (utilisateur_id, login, password, archive, timeout, super) values (1, 'ADMIN_TUMO', md5('tk4[teAm]'), 0, null, 1);
+        mysql> insert into tumorotek.UTILISATEUR (utilisateur_id, login, password, archive, timeout, super) values (1, 'ADMIN_TUMO', md5('tk4[teAm]'), 0, null, 1);
 
 4. Recommandé : création d'un utilisateur dédié à l'application TumoroteK
     
         mysql> create user tumo@'localhost' identified by 'tumo';
         mysql> GRANT ALL PRIVILEGES ON tumo2codes.* TO tumo@'localhost';
         mysql> GRANT ALL PRIVILEGES ON tumo2interfacages.* TO tumo@'localhost';
-        mysql> GRANT ALL PRIVILEGES ON tumo2.* TO tumo@'localhost';
+        mysql> GRANT ALL PRIVILEGES ON tumorotek.* TO tumo@'localhost';
     
     Injection des procédures stockées (à partir du sous-dossier mysql)
     
-        mysql -u tumo -p tumo2 --default-character-set=utf8 < export_mysql.sql
-        mysql -u tumo -p tumo2 --default-character-set=utf8 < export_INCA.sql
-        mysql -u tumo -p tumo2 --default-character-set=utf8 < export_BIOCAP.sql
-        mysql -u tumo -p tumo2 --default-character-set=utf8 < export_TGVSO.sql
-        mysql -u tumo -p tumo2 --default-character-set=utf8 < charts.sql
-        mysql -u tumo -p tumo2 --default-character-set=utf8 < getBoite.sql
+        mysql -u tumo -p tumorotek --default-character-set=utf8 < export_mysql.sql
+        mysql -u tumo -p tumorotek --default-character-set=utf8 < export_INCA.sql
+        mysql -u tumo -p tumorotek --default-character-set=utf8 < export_BIOCAP.sql
+        mysql -u tumo -p tumorotek --default-character-set=utf8 < export_TGVSO.sql
+        mysql -u tumo -p tumorotek --default-character-set=utf8 < charts.sql
+        mysql -u tumo -p tumorotek --default-character-set=utf8 < getBoite.sql
     
     Si les procédures sont créées en tant que root... 
     
@@ -96,9 +96,9 @@ sous Unix, dans la variable `CATALINA_OPTS`, par l'intermédiaire du script de d
 - Arrêter l'application `${webapp.name}` dans l'interface Manager du Tomcat `http://<SERVEUR>:8080/manager/html`
 - Edition des variables d'environnement JNDI dans le fichier `<PATH_TOMCAT>/conf/Catalina/localhost/${webapp.packaging.finalName}.xml` :
 
-1. Paramètres de connexion JDBC à la base de PRODUCTION **tumo2** :
+1. Paramètres de connexion JDBC à la base de PRODUCTION **tumorotek** :
 
-        <Environment name="/jdbc/url" ... value="jdbc:mysql://localhost:3306/tumo2?characterEncoding=UTF-8&amp;rewriteBatchedStatements=true" ... />
+        <Environment name="/jdbc/url" ... value="jdbc:mysql://localhost:3306/tumorotek?characterEncoding=UTF-8&amp;rewriteBatchedStatements=true" ... />
         <Environment name="/jdbc/user" ... value="tumo" .../>
         <Environment name="/jdbc/password" ... value="tumo" .../>
 

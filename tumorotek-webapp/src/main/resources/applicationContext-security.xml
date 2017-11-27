@@ -221,9 +221,4 @@
 		class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler">
    		<beans:property name="redirectStrategy" ref="customSuccessRedirStrategy" />
 	</beans:bean>
-	
 </beans:beans>
-
-
-	
-	
