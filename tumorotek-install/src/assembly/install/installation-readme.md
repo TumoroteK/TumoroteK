@@ -68,6 +68,7 @@ sous Unix, dans la variable `CATALINA_OPTS`, par l'intermédiaire du script de d
         mysql -u tumo -p tumorotek --default-character-set=utf8 < export_TGVSO.sql
         mysql -u tumo -p tumorotek --default-character-set=utf8 < charts.sql
         mysql -u tumo -p tumorotek --default-character-set=utf8 < getBoite.sql
+        mysql -u tumo -p tumorotek --default-character-set=utf8 < indicateurs.sql
     
     Si les procédures sont créées en tant que root... 
     

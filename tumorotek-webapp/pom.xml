@@ -1,7 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+		http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>fr.aphp.tumorotek</groupId>
         <artifactId>tumorotek-parent</artifactId>
@@ -21,20 +23,20 @@
 
     <build>
         <finalName>${webapp.packaging.finalName}</finalName>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>license-maven-plugin</artifactId>
-                    <version>1.0-beta-2</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+<!--         <pluginManagement> -->
+<!--             <plugins> -->
+<!--                 <plugin> -->
+<!--                     <groupId>org.codehaus.mojo</groupId> -->
+<!--                     <artifactId>license-maven-plugin</artifactId> -->
+<!--                     <version>1.0-beta-2</version> -->
+<!--                 </plugin> -->
+<!--             </plugins> -->
+<!--         </pluginManagement> -->
 
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.7.0</version>
                 <configuration>
                     <verbose>true</verbose>
                     <fork>true</fork>
@@ -214,11 +216,11 @@
             -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=11.2.0 -Dpackaging=jar
         -->
         <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc14</artifactId>
-            <version>10.2.0.4.0</version>
-            <scope>provided</scope>
-        </dependency>
+		 	<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>11.2.0</version>
+			<scope>provided</scope>
+	  	</dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
