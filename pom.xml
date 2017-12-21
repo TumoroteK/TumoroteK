@@ -9,8 +9,8 @@
 
     <properties>
         <webapp.name>tumorotek</webapp.name>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <webapp.packaging.finalName>${webapp.name}##${project.version}</webapp.packaging.finalName>
     </properties>
@@ -29,6 +29,13 @@
             <artifactId>junit</artifactId>
             <version>4.8.2</version>
             <scope>test</scope>
+        </dependency>
+        <!-- ORACLE -->
+        <dependency>
+            <groupId>oracle</groupId>
+            <artifactId>ojdbc6</artifactId>
+            <version>11.2.0.4</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

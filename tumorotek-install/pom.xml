@@ -12,7 +12,7 @@
     <!-- Module -->
     <!-- ====== -->
     <artifactId>tumorotek-install</artifactId>
-    <packaging>bundle</packaging>
+    <packaging>pom</packaging>
     <name>APHP :: TumoroteK :: Install</name>
     <description>Assemblage pour l'installation de l'application TumoroteK</description>
     <url>https://github.com/TumoroteK/TumoroteK</url>
@@ -42,15 +42,6 @@
         </plugins>
     </reporting>
 
-    <!--<dependencies>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            &lt;!&ndash; Replace with the version of the MySQL driver you want to use &ndash;&gt;
-            <version>5.1.44</version>
-        </dependency>
-    </dependencies>-->
-
     <!-- ============== -->
     <!-- Plugins Commun -->
     <!-- ============== -->
@@ -75,6 +66,20 @@
                 </configuration>
             </plugin>
             <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>src/site/markdown</directory>
+                            <includes>
+                                <include>**/*</include>
+                            </includes>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.6</version>
@@ -84,7 +89,7 @@
                 <executions>
                     <execution>
                         <id>site-install</id>
-                        <phase>install</phase>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>site</goal>
                         </goals>
@@ -150,6 +155,32 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.0.2</version>
+                <executions>
+                    <execution>
+                        <id>copy-war</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>${project.parent.groupId}</groupId>
+                                    <artifactId>tumorotek-webapp</artifactId>
+                                    <version>${project.parent.version}</version>
+                                    <type>war</type>
+                                    <destFileName>${webapp.packaging.finalName}.war</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
@@ -177,7 +208,8 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <phase>deploy</phase>
+                        <!-- test avant deploy-->
+                        <phase>site-deploy</phase>
                         <goals>
                             <goal>site</goal>
                         </goals>

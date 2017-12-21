@@ -16,7 +16,7 @@
 	<![CDATA[
 		void show(Iframe report)throws Exception{  
 			String pdfPath = Sessions.getCurrent().getWebApp()
-					.getRealPath("/zuls/doc/TK_userguide.pdf");
+					.getRealPath("/zuls/doc/TumoroteK-Manuel.pdf");
 			File f = new File(pdfPath);
 			byte[] buffer = new byte[ (int) f.length() ]; 
 			FileInputStream fs = new FileInputStream(f);

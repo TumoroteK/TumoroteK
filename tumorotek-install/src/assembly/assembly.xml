@@ -19,8 +19,8 @@
          <!--<filtered>true</filtered>-->
       </fileSet>
       <fileSet>
-         <outputDirectory>localhost</outputDirectory>
          <directory>src/assembly/localhost</directory>
+         <outputDirectory>localhost</outputDirectory>
          <excludes>
             <exclude>context-MySQL.xml</exclude>
             <exclude>context-Oracle.xml</exclude>
@@ -31,6 +31,10 @@
          <fileMode>0550</fileMode>
          <lineEnding>unix</lineEnding>-->
          <!--<filtered>true</filtered>-->
+      </fileSet>
+      <fileSet>
+         <directory>${build.directory}/site</directory>
+         <outputDirectory>README</outputDirectory>
       </fileSet>
       <!--<fileSet>
          <outputDirectory>transco</outputDirectory>
@@ -64,6 +68,12 @@
          <source>src/assembly/localhost/context-MySQL.xml</source>
          <outputDirectory>localhost</outputDirectory>
          <destName>${webapp.packaging.finalName}.xml</destName>
+         <filtered>true</filtered>
+      </file>
+      <file>
+         <source>${project.build.directory}/${webapp.packaging.finalName}.war</source>
+         <outputDirectory>./</outputDirectory>
+         <destName>${webapp.packaging.finalName}.war</destName>
       </file>
    </files>
 </assembly>

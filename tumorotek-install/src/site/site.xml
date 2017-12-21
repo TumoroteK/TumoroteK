@@ -20,7 +20,7 @@
             <![CDATA[<script>
                 window.onload = function() {
                     document.querySelectorAll('[title="GitHub"]')[0].href = "${project.url}";
-                    document.querySelectorAll('[title="Dossier d\'installation"]')[0].href = "${project.url}/releases/download/v${parent.version}/${project.artifactId}-${parent.version}.zip";
+                    document.querySelectorAll('[title="Dossier d\'installation"]')[0].href = "${project.url}/releases/download/v${project.parent.version}/${project.artifactId}-${project.parent.version}.zip";
                 };
             </script>]]>
         </head>

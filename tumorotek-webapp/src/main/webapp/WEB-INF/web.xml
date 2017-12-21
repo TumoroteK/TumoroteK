@@ -241,10 +241,10 @@
         <param-value>true</param-value>
     </context-param>
 
-    <context-param>
+    <!--<context-param>
         <param-name>liquibase.contexts</param-name>
-        <param-value>PROD</param-value>
-    </context-param>
+        <param-value>${project.parent.version}</param-value>
+    </context-param>-->
 
     <listener>
         <listener-class>liquibase.integration.servlet.LiquibaseServletListener</listener-class>

@@ -35,22 +35,15 @@
  **/
 package fr.aphp.tumorotek.manager.impl.stats;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Calendar;
-import java.util.Date;
-
-import javax.sql.DataSource;
-
-import oracle.jdbc.internal.OracleTypes;
-
-import org.springframework.jdbc.datasource.DataSourceUtils;
-
 import fr.aphp.tumorotek.manager.stats.GraphesModeleManager;
 import fr.aphp.tumorotek.model.stats.GraphesModele;
+import oracle.jdbc.internal.OracleTypes;
+import org.springframework.jdbc.datasource.DataSourceUtils;
+
+import javax.sql.DataSource;
+import java.sql.*;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * date: 19/12/2013

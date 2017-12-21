@@ -67,7 +67,7 @@
  		<property name="jdbcUrl">
  			<bean class="org.springframework.jndi.JndiObjectFactoryBean">
 				<property name="jndiName" value="java:comp/env/jdbc/url" />
-				<property name="defaultObject" value="jdbc:mysql://localhost:3306/testtumo2" />
+				<property name="defaultObject" value="jdbc:mysql://localhost:3306/test_tumorotek" />
 			</bean>			
  		</property> 
 	 	<property name="user">

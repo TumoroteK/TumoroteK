@@ -770,7 +770,7 @@ INSERT INTO `CHAMP_ENTITE` VALUES (1, 'PatientId', 5, 0, 1, '0', 1, 0, NULL), (2
   (21, 'PrelevementId', 5, 0, 1, '0', 2, 0, NULL), (22, 'BanqueId', 5, 0, 0, '0', 2, 0, NULL),
   (23, 'Code', 1, 0, 0, NULL, 2, 1, NULL), (24, 'NatureId', 5, 0, 0, '0', 2, 1, 111),
   (25, 'MaladieId', 5, 1, 0, NULL, 2, 0, NULL), (26, 'ConsentTypeId', 5, 0, 0, NULL, 2, 1, 113),
-  (27, 'ConsentDate', 3, 1, 0, NULL, 2, 1, NULL), (28, 'PreleveurId', 5, 1, 0, NULL, 2, 1, 199),
+  (27, 'ConsentDate', 11, 1, 0, NULL, 2, 1, NULL), (28, 'PreleveurId', 5, 1, 0, NULL, 2, 1, 199),
   (29, 'ServicePreleveurId', 5, 1, 0, NULL, 2, 1, 194), (30, 'DatePrelevement', 3, 1, 0, NULL, 2, 1, NULL),
   (31, 'PrelevementTypeId', 5, 1, 0, NULL, 2, 1, 116), (32, 'ConditTypeId', 5, 1, 0, NULL, 2, 1, 144),
   (33, 'ConditMilieuId', 5, 1, 0, NULL, 2, 1, 118), (34, 'ConditNbr', 5, 1, 0, NULL, 2, 1, NULL),

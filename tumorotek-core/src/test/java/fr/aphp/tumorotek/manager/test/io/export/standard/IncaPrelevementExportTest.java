@@ -35,15 +35,6 @@
  **/
 package fr.aphp.tumorotek.manager.test.io.export.standard;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.manager.impl.io.export.standard.ItemException;
 import fr.aphp.tumorotek.manager.io.export.standard.IncaPrelevementExport;
@@ -54,6 +45,15 @@ import fr.aphp.tumorotek.model.coeur.prelevement.PrelevementType;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Etablissement;
 import fr.aphp.tumorotek.model.contexte.Service;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class IncaPrelevementExportTest extends AbstractManagerTest {
 	
@@ -199,7 +199,7 @@ public class IncaPrelevementExportTest extends AbstractManagerTest {
 		Class.forName("com.mysql.jdbc.Driver");
 		Connection con = DriverManager
 		.getConnection("jdbc:mysql://localhost:3306/" 
-					+ "testtumo2?characterEncoding=UTF-8", "root", "root");
+					+ "test_tumorotek?characterEncoding=UTF-8", "root", "root");
 		Echantillon e = new Echantillon();
 		e.setEchantillonId(1);
 		assertTrue(incaPrelevementExport
@@ -221,7 +221,7 @@ public class IncaPrelevementExportTest extends AbstractManagerTest {
 		Class.forName("com.mysql.jdbc.Driver");
 		Connection con = DriverManager
 		.getConnection("jdbc:mysql://localhost:3306/" 
-					+ "testtumo2?characterEncoding=UTF-8", "root", "root");
+					+ "test_tumorotek?characterEncoding=UTF-8", "root", "root");
 		Echantillon e = new Echantillon();
 		e.setEchantillonId(1);
 		assertTrue(incaPrelevementExport.getTypeLesionnel(con, e, "A")

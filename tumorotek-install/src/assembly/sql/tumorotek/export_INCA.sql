@@ -246,38 +246,38 @@ BEGIN
 			
 		-- teste la presence dans la table ADICAP
 		IF tableId = 1 THEN
-			SET inTable = (SELECT count(code) FROM tumo2codes.ADICAP WHERE code = cd);
+			SET inTable = (SELECT count(code) FROM tumorotek_codes.ADICAP WHERE code = cd);
 			IF inTable = 1 THEN 
 				RETURN cd;
 			ELSE
 				-- tente le transcodage
 				IF isorg = 1 THEN
-					SET transcode = (SELECT a.code FROM tumo2codes.CIM_MASTER m 
-						JOIN tumo2codes.ADICAPCIM_TOPO t ON t.sid = m.sid 
-						JOIN tumo2codes.ADICAP a ON a.adicap_id = t.adicap_id WHERE m.code = cd limit 0,1);
+					SET transcode = (SELECT a.code FROM tumorotek_codes.CIM_MASTER m
+						JOIN tumorotek_codes.ADICAPCIM_TOPO t ON t.sid = m.sid
+						JOIN tumorotek_codes.ADICAP a ON a.adicap_id = t.adicap_id WHERE m.code = cd limit 0,1);
 				ELSE 
-					SET transcode = (SELECT a.code FROM tumo2codes.CIMO_MORPHO m 
-						JOIN tumo2codes.ADICAPCIMO_MORPHO t ON t.cimo_morpho_id = m.cimo_morpho_id 
-						JOIN tumo2codes.ADICAP a ON a.adicap_id = t.adicap_id WHERE m.code = cd limit 0,1);
+					SET transcode = (SELECT a.code FROM tumorotek_codes.CIMO_MORPHO m
+						JOIN tumorotek_codes.ADICAPCIMO_MORPHO t ON t.cimo_morpho_id = m.cimo_morpho_id
+						JOIN tumorotek_codes.ADICAP a ON a.adicap_id = t.adicap_id WHERE m.code = cd limit 0,1);
 				END IF;
 			END IF;
 		ELSEIF tableId = 2 THEN
-			SET inTable = (SELECT count(code) FROM tumo2codes.CIM_MASTER WHERE code = cd);
+			SET inTable = (SELECT count(code) FROM tumorotek_codes.CIM_MASTER WHERE code = cd);
 			IF inTable = 1 THEN 
 				RETURN cd;
 			ELSE
-				SET transcode = (SELECT m.code FROM tumo2codes.CIM_MASTER m 
-						JOIN tumo2codes.ADICAPCIM_TOPO t ON t.sid = m.sid 
-						JOIN tumo2codes.ADICAP a ON a.adicap_id = t.adicap_id WHERE a.code = cd limit 0,1);
+				SET transcode = (SELECT m.code FROM tumorotek_codes.CIM_MASTER m
+						JOIN tumorotek_codes.ADICAPCIM_TOPO t ON t.sid = m.sid
+						JOIN tumorotek_codes.ADICAP a ON a.adicap_id = t.adicap_id WHERE a.code = cd limit 0,1);
 			END IF;
 		ELSEIF tableId = 3 THEN
-			SET inTable = (SELECT count(code) FROM tumo2codes.CIMO_MORPHO WHERE code = cd);
+			SET inTable = (SELECT count(code) FROM tumorotek_codes.CIMO_MORPHO WHERE code = cd);
 			IF inTable = 1 THEN 
 				RETURN cd;
 			ELSE
-				SET transcode = (SELECT m.code FROM tumo2codes.CIMO_MORPHO m 
-						JOIN tumo2codes.ADICAPCIMO_MORPHO t ON t.cimo_morpho_id = m.cimo_morpho_id 
-						JOIN tumo2codes.ADICAP a ON a.adicap_id = t.adicap_id WHERE a.code = cd limit 0,1);
+				SET transcode = (SELECT m.code FROM tumorotek_codes.CIMO_MORPHO m
+						JOIN tumorotek_codes.ADICAPCIMO_MORPHO t ON t.cimo_morpho_id = m.cimo_morpho_id
+						JOIN tumorotek_codes.ADICAP a ON a.adicap_id = t.adicap_id WHERE a.code = cd limit 0,1);
 			END IF;
 		END IF;		
 	ELSE

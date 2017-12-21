@@ -1,13 +1,12 @@
-![TumoroteK version ${project.version}](https://img.shields.io/badge/TumoroteK-${project.version}-brightgreen.svg "TumoroteK version ${project.version}")
+![TumoroteK version ${project.parent.version}](https://img.shields.io/badge/TumoroteK-${project.parent.version}-brightgreen.svg "TumoroteK version ${project.parent.version}")
 
-#### Installation de TumoroteK version ${parent.version}
+#### Installation de TumoroteK version ${project.parent.version}
 
 ##### Voir le document d'exploitation détaillant l'architecture de l'environnement applicatif
 
 ***
 
 ##### Installation de l'environnement applicatif :
-
 - MySQL v5  
 > Paramétrage éventuel : modifier le path du dossier contenant les données dans la variable `datadir` du fichier *`my.cnf`*.
 - JAVA JSE 1.7 Oracle distribution
@@ -19,33 +18,36 @@ sous Unix, dans la variable `CATALINA_OPTS`, par l'intermédiaire du script de d
 
 ***
 
+##### Télécharger puis dézipper le package d'installation :
+[Dossier d'installation](${project.url}/releases/download/v${project.parent.version}/${project.artifactId}-${project.parent.version}.zip)
+
+
 ##### Mise en place des bases de données UTF-8 :
+1. Base de données 'statiques' contenant les codifications médicales : **tumorotek_codes**
 
-1. Base de données 'statiques' contenant les codifications médicales : **tumo2codes**
+        mysql> create database tumorotek_codes default character set utf8;
+    
+    Injection du contenu en ligne de commande (depuis le dossier */sql*)
+    
+        mysql -u root -p tumorotek_codes --default-character-set=utf8 < tumorotek_codes\tumorotek_codes-init.sql
 
-        mysql> create database tumo2codes default character set utf8;
-    
-    Injection du contenu en ligne de commande
-    
-        mysql -u root -p tumo2codes --default-character-set=utf8 < dumpTumo2Codes.sql
+2. Base de données 'temporaires' recevant les données transmises par les interfacages : **tumorotek_interfacages**
 
-2. Base de données 'temporaires' recevant les données transmises par les interfacages : **tumo2interfacages**
-
-        mysql> create database tumo2interfacages default character set utf8;
+        mysql> create database tumorotek_interfacages default character set utf8;
     
-    Injection du contenu en ligne de commande (à partir du sous-dossier mysql)
+    Injection du contenu en ligne de commande (depuis le dossier */sql*)
     
-        mysql -u root -p tumo2interfacages --default-character-set=utf8 < tumo2interfacages.sql
-        mysql -u root -p tumo2interfacages --default-character-set=utf8 < tumo2interfacages_FK.sql
-        mysql -u root -p tumo2interfacages --default-character-set=utf8 < live_scans.sql
+        mysql -u root -p tumorotek_interfacages --default-character-set=utf8 < tumorotek_interfacages\tumorotek_interfacages-init.sql
+        mysql -u root -p tumorotek_interfacages --default-character-set=utf8 < tumorotek_interfacages\tumorotek_interfacages_FK.sql
+        mysql -u root -p tumorotek_interfacages --default-character-set=utf8 < tumorotek_interfacages\live_scans.sql
 
 3. Base de données de PRODUCTION : **tumorotek**
 
         mysql> create database tumorotek default character set utf8;
     
-    Injection du contenu en ligne de commande
+    Injection du contenu en ligne de commande (depuis le dossier */sql*)
     
-        mysql -u root -p tumorotek --default-character-set=utf8 < tumorotek-init.sql
+        mysql -u root -p tumorotek --default-character-set=utf8 < tumorotek\tumorotek-init.sql
     
     > MySQL est sensible à la casse du noms des tables sous Linux, le script `renametables.sql` renomme toutes les tables en majuscules
     
@@ -56,19 +58,19 @@ sous Unix, dans la variable `CATALINA_OPTS`, par l'intermédiaire du script de d
 4. Recommandé : création d'un utilisateur dédié à l'application TumoroteK
     
         mysql> create user tumo@'localhost' identified by 'tumo';
-        mysql> GRANT ALL PRIVILEGES ON tumo2codes.* TO tumo@'localhost';
-        mysql> GRANT ALL PRIVILEGES ON tumo2interfacages.* TO tumo@'localhost';
+        mysql> GRANT ALL PRIVILEGES ON tumorotek_codes.* TO tumo@'localhost';
+        mysql> GRANT ALL PRIVILEGES ON tumorotek_interfacages.* TO tumo@'localhost';
         mysql> GRANT ALL PRIVILEGES ON tumorotek.* TO tumo@'localhost';
     
-    Injection des procédures stockées (à partir du sous-dossier mysql)
+    Injection des procédures stockées (depuis le dossier */sql*)
     
-        mysql -u tumo -p tumorotek --default-character-set=utf8 < export_mysql.sql
-        mysql -u tumo -p tumorotek --default-character-set=utf8 < export_INCA.sql
-        mysql -u tumo -p tumorotek --default-character-set=utf8 < export_BIOCAP.sql
-        mysql -u tumo -p tumorotek --default-character-set=utf8 < export_TGVSO.sql
-        mysql -u tumo -p tumorotek --default-character-set=utf8 < charts.sql
-        mysql -u tumo -p tumorotek --default-character-set=utf8 < getBoite.sql
-        mysql -u tumo -p tumorotek --default-character-set=utf8 < indicateurs.sql
+        mysql -u tumo -p tumorotek --default-character-set=utf8 < tumorotek\export_mysql.sql
+        mysql -u tumo -p tumorotek --default-character-set=utf8 < tumorotek\export_INCA.sql
+        mysql -u tumo -p tumorotek --default-character-set=utf8 < tumorotek\export_BIOCAP.sql
+        mysql -u tumo -p tumorotek --default-character-set=utf8 < tumorotek\export_TGVSO.sql
+        mysql -u tumo -p tumorotek --default-character-set=utf8 < tumorotek\charts.sql
+        mysql -u tumo -p tumorotek --default-character-set=utf8 < tumorotek\getBoite.sql
+        mysql -u tumo -p tumorotek --default-character-set=utf8 < tumorotek\indicateurs.sql
     
     Si les procédures sont créées en tant que root... 
     
@@ -83,17 +85,35 @@ sous Unix, dans la variable `CATALINA_OPTS`, par l'intermédiaire du script de d
 ***
 
 ##### Déploiement de l'application TumoroteK
+- Arrêter le service Apache Tomcat  
+- Ajouter dans `<PATH_TOMCAT>/conf/server.xml`, la partie `<Resource ... />` :  
 
-- Arrêter le service Apache Tomcat
+        <GlobalNamingResources>
+            ...
+                <Resource name="jdbc/TumoroteK" 
+                      global="jdbc/TumoroteK" 
+                      auth="Container" 
+                      type="javax.sql.DataSource" 
+                      driverClassName="com.mysql.jdbc.Driver" 
+                      url="jdbc:mysql://localhost:3306/tumorotek" 
+                      username="tumo" 
+                      password="tumo" 
+                      
+                      maxTotal="100" 
+                      maxIdle="20" 
+                      minIdle="5" 
+                      maxWaitMillis="-1"/>
+              ...
+          </GlobalNamingResources>
+
 - Déplacer la web archive `${webapp.packaging.finalName}.war` dans le dossier `<PATH_TOMCAT>/webapps`
-- Dézipper l'archive `${project.artifactId}-${parent.version}.zip` puis déplacer le contenu du dossier `localhost` dans le dossier `<PATH_TOMCAT>/conf/Catalina/localhost`  
+- Déplacer le contenu du dossier `localhost` dans le dossier `<PATH_TOMCAT>/conf/Catalina/localhost`  
 - Démarrer le service Apache Tomcat
 - Vérifier le bon déploiement de l'application `${webapp.name}` dans l'interface Manager du Tomcat `http://<SERVEUR>:8080/manager/html`
 
 ***
 
 ##### Configuration de l'application TumoroteK
-
 - Arrêter l'application `${webapp.name}` dans l'interface Manager du Tomcat `http://<SERVEUR>:8080/manager/html`
 - Edition des variables d'environnement JNDI dans le fichier `<PATH_TOMCAT>/conf/Catalina/localhost/${webapp.packaging.finalName}.xml` :
 
@@ -109,9 +129,9 @@ lecteur/dossier que le `datadir` mysql
 
         <Environment name="/tk/tkFileSystem" ... value="D://data/TK/" ... />
 
-3. Paramètres de connexion JDBC à la base de codifications médicales **tumo2codes**
+3. Paramètres de connexion JDBC à la base de codifications médicales **tumorotek_codes**
     
-        <Environment name="/codes/jdbc/url" ... value="jdbc:mysql://localhost:3306/tumo2codes?characterEncoding=UTF-8" ... />
+        <Environment name="/codes/jdbc/url" ... value="jdbc:mysql://localhost:3306/tumorotek_codes?characterEncoding=UTF-8" ... />
         <Environment name="/codes/jdbc/user" ... value="tumo" ... />
         <Environment name="/codes/jdbc/password" ... value="tumo" ... />
 
@@ -135,7 +155,7 @@ lecteur/dossier que le `datadir` mysql
 
 5. Paramètres de connexion JDBC à la base interfaces
     
-        <Environment name="/interfacages/jdbc/url" ... value="jdbc:mysql://localhost:3306/tumo2interfacages?characterEncoding=UTF-8" ... />
+        <Environment name="/interfacages/jdbc/url" ... value="jdbc:mysql://localhost:3306/tumorotek_interfacages?characterEncoding=UTF-8" ... />
         <Environment name="/interfacages/jdbc/user" ... value="tumo" ... />
         <Environment name="/interfacages/jdbc/password" ... value="tumo" ... />
 
@@ -155,16 +175,15 @@ lecteur/dossier que le `datadir` mysql
         <Environment name="/activedirectory/domain" ... value="<DOMAINE>" ... />  
         <Environment name="/activedirectory/url" ... value="ldap://<HOST>:<PORT>/" ... />  
 
-7. Niveaux de logs log4j
+7. Niveaux de logs Log4j
     
-    Se référer à la documentation log4j pour l'édition du fichier `<TOMCAT_PATH>/webapps/${webapp.name}/WEB-INF/classes/log4j.properties`
+    Se référer à la documentation Log4j pour l'édition du fichier `<TOMCAT_PATH>/webapps/${webapp.name}/WEB-INF/classes/log4j.properties`
     
     - Démarrer l'application `${webapp.name}` dans l'interface Manager du Tomcat `http://<SERVEUR>:8080/manager/html`
 
 ***
 
 ##### Connexion Super Administrateur TK
-
 - **URL** : http://localhost:8080/${webapp.name}  
 - **login** : ADMIN_TUMO  
 - **pass** : tk4\[teAm]
@@ -172,7 +191,6 @@ lecteur/dossier que le `datadir` mysql
 ***
 
 ##### Premiers paramétrages applicatifs (consulter le manuel utilisateur accessible depuis la page d'accueil) :
-
 - Onglet **Administration** > **Collaborations** : créer l'environnement médical (Hôpital, Service, Collaborateurs) responsable de la biobanque
 - Onglet **Administration** > **Comptes** : les comptes des utilisateurs du personnel de la biobanque  
 > Il est recommandé de confier à un des utilisateurs les droits d'Administration de la Plateforme dans l'onglet **Administration** > **Plateforme** afin que cet 
