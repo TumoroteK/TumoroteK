@@ -1,9 +1,10 @@
 #### Notes de version
 
-##### Version ${parent.version} - Publiée le ${timestamp}
+##### Version ${project.version} - Publiée le ${timestamp}
 - YouTrack [TKB-1](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-1) : La recherche ne fonctionne pas sur les ID de cession  
 - YouTrack [TKB-2](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-2) : La recherche de date dans les annotations sur les dérivés ne fonctionne pas  
 - YouTrack [TK-47](https://tumorotek.myjetbrains.com/youtrack/issue/TK-47) : Erreurs sur les propriétés d'internationalisation  
+- YouTrack [TK-68](https://tumorotek.myjetbrains.com/youtrack/issue/TK-68) : \[TK-DIAMIC] Erreur lors de la création d'un UDM Q05: Unsolicited display update message quand on est au mois de Janvier
 
 ***
 

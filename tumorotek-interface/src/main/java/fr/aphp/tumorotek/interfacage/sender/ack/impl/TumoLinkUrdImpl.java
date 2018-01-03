@@ -35,15 +35,6 @@
  **/
 package fr.aphp.tumorotek.interfacage.sender.ack.impl;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.List;
-
-import org.apache.camel.ProducerTemplate;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.v24.datatype.XCN;
 import ca.uhn.hl7v2.model.v24.message.UDM_Q05;
@@ -54,6 +45,14 @@ import fr.aphp.tumorotek.interfacage.sender.ack.TumoLinkUrd;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.interfacage.Recepteur;
+import org.apache.camel.ProducerTemplate;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.List;
 
 public class TumoLinkUrdImpl implements TumoLinkUrd {
 	
@@ -101,7 +100,7 @@ public class TumoLinkUrdImpl implements TumoLinkUrd {
 		Calendar now = Calendar.getInstance();
 		mshSegment.getMsh7_DateTimeOfMessage()
 		.getTimeOfAnEvent().setDateMinutePrecision(now.get(Calendar.YEAR), 
-										now.get(Calendar.MONTH), 
+										now.get(Calendar.MONTH) + 1,
 										now.get(Calendar.DAY_OF_MONTH),
 										now.get(Calendar.HOUR), 
 										now.get(Calendar.MINUTE));
@@ -113,7 +112,7 @@ public class TumoLinkUrdImpl implements TumoLinkUrd {
 		URD urdSegment = udm.getURD();
 		urdSegment.getUrd1_RUDateTime().getTimeOfAnEvent()
 			.setDateMinutePrecision(now.get(Calendar.YEAR), 
-				now.get(Calendar.MONTH), 
+				now.get(Calendar.MONTH) + 1,
 				now.get(Calendar.DAY_OF_MONTH),
 				now.get(Calendar.HOUR), 
 				now.get(Calendar.MINUTE));
