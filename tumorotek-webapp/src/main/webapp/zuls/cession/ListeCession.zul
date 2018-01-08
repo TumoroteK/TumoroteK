@@ -162,7 +162,7 @@ sclass="panelv2">
 								image="/images/icones/export.png"
 								label="${c:l('general.actions.exporterAdv')}" disabled="true" />
 						<menuitem id="deleteItem" image="/images/icones/delete.png"
-								label="${c:l('general.delete')}" disabled="true" />
+								label="${c:l('general.delete')}" disabled="true" visible="false"/>
 					</menupopup>
 				</menu>
 			</menubar>
