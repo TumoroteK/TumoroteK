@@ -1,6 +1,12 @@
 #### Notes de version
 
 ##### Version ${project.version} - Publiée le ${timestamp}
+- YouTrack [TKB-3](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-3) : La suppression d'une cession depuis la liste de ces dernières bloque les échantillons concernés dans le statut RESERVE
+- YouTrack [TK-64](https://tumorotek.myjetbrains.com/youtrack/issue/TK-64) : Les annotations de cession ne se déverrouillent pas quand on fait une nouvelle cession  
+
+***
+
+##### Version 2.1.2 - Publiée le 02/01/2018
 - YouTrack [TKB-1](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-1) : La recherche ne fonctionne pas sur les ID de cession  
 - YouTrack [TKB-2](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-2) : La recherche de date dans les annotations sur les dérivés ne fonctionne pas  
 - YouTrack [TK-47](https://tumorotek.myjetbrains.com/youtrack/issue/TK-47) : Erreurs sur les propriétés d'internationalisation  

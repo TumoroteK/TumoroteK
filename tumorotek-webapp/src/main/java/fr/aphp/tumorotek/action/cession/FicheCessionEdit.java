@@ -509,7 +509,8 @@ public class FicheCessionEdit extends AbstractFicheEditController {
 			List<ProdDerive> derivesACeder,
 			Terminale terminale) {
 		// init de tous les nouveaux objets
-		setNewObject();
+		// TK-64 : Les annotations de cession ne se déverrouillent pas quand on fait une nouvelle cession
+		//setNewObject();
 		this.terminaleDestockage = terminale;
 		
 		// Initialisation du mode (listes, valeurs...)

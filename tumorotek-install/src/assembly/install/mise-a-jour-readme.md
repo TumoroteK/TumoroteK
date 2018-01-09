@@ -2,7 +2,8 @@
 
 #### Mise à jour de TumoroteK version ${project.parent.version}  
 
-**<span class="fa fa-exclamation-triangle" aria-hidden="true"></span> Mise à jour depuis la version précédente : 2.1.1**
+**<span class="fa fa-exclamation-triangle" aria-hidden="true"></span> Utiliser ce README uniquement pour passer de la version 2.1.1 vers 2.1.3.**  
+**Si le README de la mise à jour de la 2.1.2 a déjà été passé, il faut effectuer seulement les étapes B.1, B.3, B.4, B.5 et B.7.**
 
 ***
 
