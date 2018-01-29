@@ -4,7 +4,6 @@
     <Environment name="/jdbc/url" type="java.lang.String" value="jdbc:mysql://localhost:3306/tumorotek?characterEncoding=UTF-8&amp;rewriteBatchedStatements=true" override="false"/>
     <Environment name="/jdbc/user" type="java.lang.String" value="root" override="false"/>
     <Environment name="/jdbc/password" type="java.lang.String" value="root" override="false"/>
-    <ResourceLink name="jdbc/TumoroteK-1" global="jdbc/TumoroteK" auth="Container" type="javax.sql.DataSource"/>
     <Environment name="/tk/tkFileSystem" type="java.lang.String" value="/home/mathieu/TKtest/" override="false"/>
     <Environment name="/codes/jdbc/dialect" type="java.lang.String" value="org.hibernate.dialect.MySQLDialect" override="false"/>
     <Environment name="/codes/jdbc/driverClass" type="java.lang.String" value="com.mysql.jdbc.Driver" override="false"/>
@@ -27,8 +26,4 @@
     <Environment name="/activedirectory/url" type="java.lang.String" value="ldap://domaine.fr:389/dc=domaine,dc=fr" override="false"/>
     <Environment name="/ldap/userDn" type="java.lang.String" value="cn=admin,ou=Groupes et user applicatifs,dc=sls,dc=aphp,dc=fr" override="false"/>
     <Environment name="/ldap/userPass" type="java.lang.String" value="******" override="false"/>
-    <context-param>
-        <param-name>liquibase.contexts</param-name>
-        <param-value>${project.parent.version}</param-value>
-    </context-param>
 </Context>

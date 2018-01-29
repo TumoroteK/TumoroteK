@@ -318,8 +318,7 @@
 <!--						</div>-->
 						<div align="center" style="font-weight: bold;" width="100%">
 						<hbox  align="center">
-							<label style="font-weight: bold;" id="copyrigthsLabel"
-								value="@{mainWin$composer.version}" />
+							<label style="font-weight: bold;" id="copyrightLabel" value="${c:l('copyright')}" />
 						</hbox>
 						</div>
 					</south>

@@ -35,10 +35,12 @@
  **/
 package fr.aphp.tumorotek.action.io;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.io.export.Champ;
+import fr.aphp.tumorotek.webapp.tree.TumoTreeModel;
+import fr.aphp.tumorotek.webapp.tree.export.ChampNode;
+import fr.aphp.tumorotek.webapp.tree.export.ChampTreeItemRenderer;
+import fr.aphp.tumorotek.webapp.tree.export.ChampsRootNode;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
@@ -48,12 +50,10 @@ import org.zkoss.zul.Panel;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treeitem;
 
-import fr.aphp.tumorotek.model.contexte.Banque;
-import fr.aphp.tumorotek.model.io.export.Champ;
-import fr.aphp.tumorotek.webapp.tree.TumoTreeModel;
-import fr.aphp.tumorotek.webapp.tree.export.ChampNode;
-import fr.aphp.tumorotek.webapp.tree.export.ChampTreeItemRenderer;
-import fr.aphp.tumorotek.webapp.tree.export.ChampsRootNode;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Dessine la fiche modale permettant à l'utilisateur de choisir
@@ -65,135 +65,140 @@ import fr.aphp.tumorotek.webapp.tree.export.ChampsRootNode;
  *
  */
 public class FicheChampsAffichageModale extends GenericForwardComposer<Component> {
+   private static final long serialVersionUID = 4714314507345963886L;
 
-	private static final long serialVersionUID = 4714314507345963886L;
-	
-	private Panel winPanel;
-	private Tree champsAffichageTree;
-	private Component parent;
-	private Banque banque;
-	
-	/**
-	 * Variables pour l'arbre.
-	 */
-	private TumoTreeModel ttm;
-	private ChampTreeItemRenderer ctr = new ChampTreeItemRenderer();
-	
-	private List<Champ> oldSelectedChamps = new ArrayList<Champ>();
-	private AnnotateDataBinder binder;
-	
-	@Override
-	public void doAfterCompose(Component comp) throws Exception {
-		super.doAfterCompose(comp);
-		
-		binder = new AnnotateDataBinder(comp);	
-		binder.loadComponent(comp);
-		
-		if (winPanel != null) {
-			winPanel.setHeight("465px");
-		}
-	}
-	
-	public void init(List<Champ> oldSelected, Component p,
-			Banque b) {
-		oldSelectedChamps = oldSelected;
-		parent = p;
-		banque = b;
-		// Init du noeud root de l'arbre
-		ChampsRootNode root = new ChampsRootNode();
-		root.setOldSelectedChamps(oldSelectedChamps);
-		root.setBanque(banque);
-		root.readChildren();
-		
-		// Init de l'arbre et de son affichage
-		ttm = new TumoTreeModel(root);
-		ttm.setMultiple(true);
-		
-		binder.loadComponent(champsAffichageTree);
-	}
-	
-	public void onClick$cancel() {
-		// fermeture de la fenêtre
-		Events.postEvent(new Event("onClose", self.getRoot()));
-	}
-	
-	public void onClick$select() {
-		
-		List<Champ> chps = new ArrayList<Champ>();
-		
-		int[][] ints = ttm.getSelectionPaths();
-		Arrays.sort(ints, new Comparator<int[]>() {
+   private Panel winPanel;
+
+   private Tree champsAffichageTree;
+
+   private Component parent;
+
+   private Banque banque;
+
+   /**
+    * Variables pour l'arbre.
+    */
+   private TumoTreeModel ttm;
+
+   private ChampTreeItemRenderer ctr = new ChampTreeItemRenderer();
+
+   private List<Champ> oldSelectedChamps = new ArrayList<Champ>();
+
+   private AnnotateDataBinder binder;
+
+   @Override
+   public void doAfterCompose(Component comp) throws Exception{
+      super.doAfterCompose(comp);
+
+      binder = new AnnotateDataBinder(comp);
+      binder.loadComponent(comp);
+
+      if(winPanel != null){
+         winPanel.setHeight("465px");
+      }
+   }
+
+   public void init(List<Champ> oldSelected, Component p, Banque b){
+      oldSelectedChamps = oldSelected;
+      parent = p;
+      banque = b;
+      // Init du noeud root de l'arbre
+      ChampsRootNode root = new ChampsRootNode();
+      root.setOldSelectedChamps(oldSelectedChamps);
+      root.setBanque(banque);
+      root.readChildren();
+
+      // Init de l'arbre et de son affichage
+      ttm = new TumoTreeModel(root);
+      ttm.setMultiple(true);
+
+      binder.loadComponent(champsAffichageTree);
+   }
+
+   public void onClick$cancel(){
+      // fermeture de la fenêtre
+      Events.postEvent(new Event("onClose", self.getRoot()));
+   }
+
+   public void onClick$select(){
+
+      List<Champ> chps = new ArrayList<Champ>();
+
+      int[][] ints = ttm.getSelectionPaths();
+      if(null != ints){
+         Arrays.sort(ints, new Comparator<int[]>()
+         {
             @Override
-            public int compare(final int[] o1, final int[] o2) {
-                if (o1[0] == o2[0]) {
-                	return new Integer(o1[1]).compareTo(new Integer(o2[1]));
-                }
-            	return new Integer(o1[0]).compareTo(new Integer(o2[0]));
+            public int compare(final int[] o1, final int[] o2){
+               if(o1[0] == o2[0]){
+                  return new Integer(o1[1]).compareTo(new Integer(o2[1]));
+               }
+               return new Integer(o1[0]).compareTo(new Integer(o2[0]));
             }
-        });
-		
-		Treeitem it;
-		for (int i = 0; i < ints.length; i++) {
-			it = champsAffichageTree.renderItemByPath(ints[i]);
-			if (it.getValue().getClass()
-					.getSimpleName().equals("ChampNode")) {
-				chps.add(((ChampNode) it.getValue()).getChamp());
-			}
-		}
-		// on récupère les noeuds sélectionnés
-		// Iterator<Treeitem> it = champsAffichageTree
-		//	.getSelectedItems().iterator();
-				
-		// while (it.hasNext()) {
-		//	Treeitem item = it.next();
-		//	if (item.getValue().getClass()
-		//			.getSimpleName().equals("ChampNode")) {
-		//		chps.add(0, ((ChampNode) item.getValue()).getChamp());
-		//	}
-		// }
-		
-		Events.postEvent("onGetChamps", getParent(), chps);	
-		// fermeture de la fenêtre
-		Events.postEvent(new Event("onClose", self.getRoot()));
-	}
+         });
 
-	public TumoTreeModel getTtm() {
-		return ttm;
-	}
+         Treeitem it;
+         for(int i = 0; i < ints.length; i++){
+            it = champsAffichageTree.renderItemByPath(ints[i]);
+            if(it.getValue().getClass().getSimpleName().equals("ChampNode")){
+               chps.add(((ChampNode) it.getValue()).getChamp());
+            }
+         }
+         // on récupère les noeuds sélectionnés
+         // Iterator<Treeitem> it = champsAffichageTree
+         //	.getSelectedItems().iterator();
 
-	public void setTtm(TumoTreeModel t) {
-		this.ttm = t;
-	}
+         // while (it.hasNext()) {
+         //	Treeitem item = it.next();
+         //	if (item.getValue().getClass()
+         //			.getSimpleName().equals("ChampNode")) {
+         //		chps.add(0, ((ChampNode) item.getValue()).getChamp());
+         //	}
+         // }
 
-	public ChampTreeItemRenderer getCtr() {
-		return ctr;
-	}
+         Events.postEvent("onGetChamps", getParent(), chps);
+      }
+      // fermeture de la fenêtre
+      Events.postEvent(new Event("onClose", self.getRoot()));
+   }
 
-	public void setCtr(ChampTreeItemRenderer c) {
-		this.ctr = c;
-	}
+   public TumoTreeModel getTtm(){
+      return ttm;
+   }
 
-	public List<Champ> getOldSelectedChamps() {
-		return oldSelectedChamps;
-	}
+   public void setTtm(TumoTreeModel t){
+      this.ttm = t;
+   }
 
-	public void setOldSelectedChamps(List<Champ> oldSelected) {
-		this.oldSelectedChamps = oldSelected;
-	}
+   public ChampTreeItemRenderer getCtr(){
+      return ctr;
+   }
 
-	public Component getParent() {
-		return parent;
-	}
+   public void setCtr(ChampTreeItemRenderer c){
+      this.ctr = c;
+   }
 
-	public void setParent(Component p) {
-		this.parent = p;
-	}
+   public List<Champ> getOldSelectedChamps(){
+      return oldSelectedChamps;
+   }
 
-	public Banque getBanque() {
-		return banque;
-	}
+   public void setOldSelectedChamps(List<Champ> oldSelected){
+      this.oldSelectedChamps = oldSelected;
+   }
 
-	public void setBanque(Banque b) {
-		this.banque = b;
-	}
+   public Component getParent(){
+      return parent;
+   }
+
+   public void setParent(Component p){
+      this.parent = p;
+   }
+
+   public Banque getBanque(){
+      return banque;
+   }
+
+   public void setBanque(Banque b){
+      this.banque = b;
+   }
 }

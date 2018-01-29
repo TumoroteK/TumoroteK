@@ -46,8 +46,8 @@
             	style="margin-bottom:10px" title="${c:l('accueil.panel.fonctionnalités')}"
             	maximizable="true" sclass="portalPanel">
                 <panelchildren>
-                    <iframe width="100%" height="100%"
-                        src="/portail/fonctionnalites.html"/>
+                    <iframe width="100%" height="100%" src="/portail/fonctionnalites.html"/>
+					<!--<iframe width="100%" height="100%" src="https://tumorotek.github.io/TumoroteK/note-version.html"/>-->
                 </panelchildren>
             </panel>
             <panel id="licencePanel" vflex="1" border="normal" 
@@ -68,25 +68,21 @@
 	                	<vbox pack="center" align="center" vflex="1" hflex="1">
 	               			<image src="/images/portail/logo-tk.png" />
 	           				<hlayout style="margin: 5px">
-	           					<label sclass="formLabel" 
-	           						value="${c:l('accueil.principal.site')}"/>
+	           					<label sclass="formLabel" value="${c:l('accueil.principal.site')}"/>
 	           					<separator width="10px"/>
 	           					<label id="nomSiteLabel" value="@{winAccueil$composer.nomSite}"/>
 	           				</hlayout>
 	           				<hlayout style="margin: 5px">
-	           					<label sclass="formLabel" 
-	           						value="${c:l('accueil.principal.version')}"/>
+	           					<label sclass="formLabel" value="${c:l('accueil.principal.version')}"/>
 	           					<separator width="10px"/>
-	           					<label id="versionLabel" value="@{winAccueil$composer.version}"/>
+	           					<label id="versionLabel" value="${c:l('app.version')}"/>
 	           				</hlayout>
 	           				<hlayout style="margin: 5px">
-	           					<label sclass="formLabel" 
-	           						value="${c:l('accueil.principal.install')}"/>
+	           					<label sclass="formLabel" value="${c:l('accueil.principal.install')}"/>
 	           					<separator width="10px"/>
 	           					<label id="lastInstallationLabel" value="@{winAccueil$composer.lastInstallation}"/>
 	           				</hlayout>
-	             			<label sclass="formLabel" 
-	             						value="${c:l('accueil.principal.rights')}"/>
+	             			<label sclass="formLabel" value="${c:l('accueil.principal.rights')}"/>
 	             			<hlayout>
 	             				<div class="mns" width="160px" height="100px" onClick='Executions.getCurrent().sendRedirect("http://www.sante.gouv.fr","_new");'/>
 	             				<div class="zkpow" width="100px" height="100px" onClick='Executions.getCurrent().sendRedirect("http://www.zkoss.org","_new");'/>

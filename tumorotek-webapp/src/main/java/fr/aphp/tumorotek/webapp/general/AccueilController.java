@@ -67,22 +67,6 @@ public class AccueilController extends AbstractObjectTabController {
 	}
 	
 	/**
-	 * Retourne le numéro de version de l'application.
-	 * @return
-	 */
-	public String getVersion() {
-		// affichage du numéro de version
-		Version version = ManagerLocator.getVersionManager()
-			.findByCurrentVersionManager();
-		if (version != null) {
-			return version.getVersion();
-		} else {
-			return ObjectTypesFormatters.getLabel(
-					"copyrigths", new String[]{"!mettre à jour!"});
-		}
-	}
-	
-	/**
 	 * Retourne la date de la dernière installation réalisée.
 	 * @return
 	 */

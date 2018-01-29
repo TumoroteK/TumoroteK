@@ -82,7 +82,6 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.Textbox;
-
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.constraints.ConstAlphanum;
 import fr.aphp.tumorotek.action.constraints.ConstDateLimit;
@@ -524,9 +523,9 @@ public class AnnotationComponent extends GenericForwardComposer<Component> {
 	 * champ booleen.
 	 */
 	private void setAnnotationValeurBool() {
-			
+		Clients.clearWrongValue((Listbox) box);
 		findSelectedBool(true);
-		
+		((Listbox) box).clearSelection();
 		if (this.valeurs != null && this.valeurs.size() > 0) {
 			// recupere la valeur et assigne dans selectedItem ou selectedItems
 			annoValue.setValue(((Listitem) this.selectedItem).getLabel());
@@ -540,14 +539,11 @@ public class AnnotationComponent extends GenericForwardComposer<Component> {
 		}
 	}
 
-	
 	/** Prepare l'objet AnnotationValeur pour le type booleen.
 	 * @param valeur AnnotationValeur
 	 * @return boolean skipCreate si la valeur est inchangée
 	 */
-	private boolean prepareAnnotationValeurBooleen(AnnotationValeur 
-																valeur) {
-		
+	private boolean prepareAnnotationValeurBooleen(AnnotationValeur valeur) {
 		Boolean newVal = null;
 		
 		// attribue newVal, newVals et unkonwExisting
@@ -555,10 +551,10 @@ public class AnnotationComponent extends GenericForwardComposer<Component> {
 			newVal = ((Boolean) ((Listbox) box)
 					.getSelectedItem().getValue());
 		} else {
-			// selectionne le OUI par defaut
 			if (getIsObligatoire()
 					&& this.defauts.get(0).getBool() == null) {
-				newVal = (Boolean) ((Listitem) listitems.get(0)).getValue();
+				throw new WrongValueException(box, 
+						Labels.getLabel("anno.thes.empty"));
 			}
 		}	
 		

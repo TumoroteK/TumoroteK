@@ -35,58 +35,22 @@
  **/
 package fr.aphp.tumorotek.action.impression;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.WrongValueException;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Button;
-import org.zkoss.zul.Checkbox;
-import org.zkoss.zul.Filedownload;
-import org.zkoss.zul.Grid;
-import org.zkoss.zul.Group;
-import org.zkoss.zul.Label;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Row;
-import org.zkoss.zul.Textbox;
-
+import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.cession.retour.RetourDecorator;
 import fr.aphp.tumorotek.action.constraints.ConstWord;
 import fr.aphp.tumorotek.action.controller.AbstractImpressionController;
-import fr.aphp.tumorotek.action.ManagerLocator;
-import fr.aphp.tumorotek.decorator.BlocImpressionDecorator;
-import fr.aphp.tumorotek.decorator.BlocImpressionRowRenderer;
-import fr.aphp.tumorotek.decorator.CederObjetDecorator;
 import fr.aphp.tumorotek.action.echantillon.EchantillonRowRenderer;
-import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
-import fr.aphp.tumorotek.decorator.factory.CederObjetDecoratorFactory;
 import fr.aphp.tumorotek.action.patient.FicheMaladie;
 import fr.aphp.tumorotek.action.patient.FichePatientStatic;
 import fr.aphp.tumorotek.action.patient.PatientUtils;
 import fr.aphp.tumorotek.action.prodderive.ProdDeriveRowRenderer;
 import fr.aphp.tumorotek.action.utils.PrelevementUtils;
-import fr.aphp.tumorotek.manager.impl.xml.CoupleSimpleValeur;
-import fr.aphp.tumorotek.manager.impl.xml.CoupleValeur;
-import fr.aphp.tumorotek.manager.impl.xml.EnteteListe;
-import fr.aphp.tumorotek.manager.impl.xml.LigneDeuxColonnesParagraphe;
-import fr.aphp.tumorotek.manager.impl.xml.LigneListe;
-import fr.aphp.tumorotek.manager.impl.xml.LigneParagraphe;
-import fr.aphp.tumorotek.manager.impl.xml.LigneSimpleParagraphe;
-import fr.aphp.tumorotek.manager.impl.xml.ListeElement;
-import fr.aphp.tumorotek.manager.impl.xml.Paragraphe;
-import fr.aphp.tumorotek.manager.impl.xml.SousParagraphe;
+import fr.aphp.tumorotek.decorator.BlocImpressionDecorator;
+import fr.aphp.tumorotek.decorator.BlocImpressionRowRenderer;
+import fr.aphp.tumorotek.decorator.CederObjetDecorator;
+import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.decorator.factory.CederObjetDecoratorFactory;
+import fr.aphp.tumorotek.manager.impl.xml.*;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.cession.Cession;
@@ -115,6 +79,21 @@ import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.stockage.Emplacement;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.*;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.Calendar;
 
 public class FicheTemplateModale extends AbstractImpressionController {
 	
@@ -419,7 +398,9 @@ public class FicheTemplateModale extends AbstractImpressionController {
 	
 	public void initFicheModale(Object obj, Boolean ano, 
 			Boolean canHisto) {
-		if (obj.getClass().getSimpleName().equals("FichePatientStatic")) {
+	   // [YouTrack] TK-62
+		//if (obj.getClass().getSimpleName().equals("FichePatientStatic")) {
+	   if (obj instanceof FichePatientStatic) {
 			fichePatient = (FichePatientStatic) obj;
 			this.objectToPrint = fichePatient.getObject();
 		} else {

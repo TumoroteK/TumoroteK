@@ -35,9 +35,9 @@
  **/
 package fr.aphp.tumorotek.manager.systeme;
 
-import java.util.List;
-
 import fr.aphp.tumorotek.model.systeme.Version;
+
+import java.util.List;
 
 /**
  * 
@@ -75,5 +75,6 @@ public interface VersionManager {
 	 * @return Version courante.
 	 */
 	Version findByCurrentVersionManager();
-	
+
+	void createObjectManager(Version version);
 }

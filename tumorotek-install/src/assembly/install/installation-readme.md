@@ -86,26 +86,6 @@ sous Unix, dans la variable `CATALINA_OPTS`, par l'intermédiaire du script de d
 
 ##### Déploiement de l'application TumoroteK
 - Arrêter le service Apache Tomcat  
-- Ajouter dans `<PATH_TOMCAT>/conf/server.xml`, la partie `<Resource ... />` :  
-
-        <GlobalNamingResources>
-            ...
-                <Resource name="jdbc/TumoroteK" 
-                      global="jdbc/TumoroteK" 
-                      auth="Container" 
-                      type="javax.sql.DataSource" 
-                      driverClassName="com.mysql.jdbc.Driver" 
-                      url="jdbc:mysql://localhost:3306/tumorotek" 
-                      username="tumo" 
-                      password="tumo" 
-                      
-                      maxTotal="100" 
-                      maxIdle="20" 
-                      minIdle="5" 
-                      maxWaitMillis="-1"/>
-              ...
-          </GlobalNamingResources>
-
 - Déplacer la web archive `${webapp.packaging.finalName}.war` dans le dossier `<PATH_TOMCAT>/webapps`
 - Déplacer le contenu du dossier `localhost` dans le dossier `<PATH_TOMCAT>/conf/Catalina/localhost`  
 - Démarrer le service Apache Tomcat

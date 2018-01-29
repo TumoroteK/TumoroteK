@@ -1148,19 +1148,6 @@ public class MainWindow extends GenericForwardComposer<Component> {
 		}
 	}
 
-	public String getVersion() {
-		// affichage du numéro de version
-		Version version = ManagerLocator.getVersionManager()
-				.findByCurrentVersionManager();
-		if (version != null) {
-			return ObjectTypesFormatters.getLabel("copyrigths",
-					new String[] { version.getVersion() });
-		} else {
-			return ObjectTypesFormatters.getLabel("copyrigths",
-					new String[] {"!mettre à jour!"});
-		}
-	}
-
 	public void onClickEditUser(Event event) {
 		openFicheUtilisateurWindow();
 	}

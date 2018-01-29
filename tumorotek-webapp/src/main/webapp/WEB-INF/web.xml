@@ -222,31 +222,4 @@
         <exception-type>java.lang.Throwable</exception-type>
         <location>/error.zul</location>
     </error-page>
-
-    <!-- ====================================================== -->
-    <!--                      LIQUIBASE                         -->
-    <!-- ====================================================== -->
-    <context-param>
-        <param-name>liquibase.changelog</param-name>
-        <param-value>liquibase/db.changelog.xml</param-value>
-    </context-param>
-
-    <context-param>
-        <param-name>liquibase.datasource</param-name>
-        <param-value>java:comp/env/jdbc/TumoroteK-1</param-value>
-    </context-param>
-
-    <context-param>
-        <param-name>liquibase.onerror.fail</param-name>
-        <param-value>true</param-value>
-    </context-param>
-
-    <!--<context-param>
-        <param-name>liquibase.contexts</param-name>
-        <param-value>${project.parent.version}</param-value>
-    </context-param>-->
-
-    <listener>
-        <listener-class>liquibase.integration.servlet.LiquibaseServletListener</listener-class>
-    </listener>
 </web-app>

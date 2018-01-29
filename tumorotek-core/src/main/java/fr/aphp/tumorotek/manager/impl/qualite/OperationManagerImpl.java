@@ -447,7 +447,7 @@ public class OperationManagerImpl implements OperationManager {
 		List<Operation> operations = new ArrayList<Operation>();
 		
 		if (date1 != null || operationType != null 
-				|| users != null) {
+				|| (users != null && !users.isEmpty())) {
 			StringBuffer sql = new StringBuffer();
 			sql.append("SELECT DISTINCT o FROM Operation o WHERE ");
 		

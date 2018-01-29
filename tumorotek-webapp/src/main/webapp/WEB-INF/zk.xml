@@ -1,184 +1,180 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <zk>
-
-	<!-- Turn on the following if you want to use the trendy mold as default
-		for all buttons.
-	-->
-	<library-property>
-		<name>org.zkoss.zul.Button.mold</name>
-		<value>trendy</value>
-	</library-property>
-	
-	<library-property>
-	    <name>org.zkoss.zul.theme.fontSizeM</name>
-	    <value>12px</value>
-	</library-property>
-	<library-property>
-	    <name>org.zkoss.zul.theme.fontSizeS</name>
-	    <value>10px</value>
-	</library-property>
-	<library-property>
-	    <name>org.zkoss.zul.theme.fontSizeXS</name>
-	    <value>9px</value>
-	</library-property>
-	
-	<library-property>
-         <name>org.zkoss.theme.preferred</name>
-         <value>breeze</value>
-    </library-property>
-    
+    <!-- Turn on the following if you want to use the trendy mold as default
+        for all buttons.
+    -->
     <library-property>
-         <name>org.zkoss.zkmax.ui.comet.async.disabled</name>
-         <value>true</value>
+        <name>org.zkoss.zul.Button.mold</name>
+        <value>trendy</value>
     </library-property>
-    
-	<desktop-config>
-	     <theme-provider-class>
-	     	fr.aphp.tumorotek.webapp.themes.CacheableThemeProvider
-	     </theme-provider-class>
-	</desktop-config>
 
-	
+    <library-property>
+        <name>org.zkoss.zul.theme.fontSizeM</name>
+        <value>12px</value>
+    </library-property>
+    <library-property>
+        <name>org.zkoss.zul.theme.fontSizeS</name>
+        <value>10px</value>
+    </library-property>
+    <library-property>
+        <name>org.zkoss.zul.theme.fontSizeXS</name>
+        <value>9px</value>
+    </library-property>
 
-	<!-- ====================================================== -->
-	<!--          running a zk application in a CLUSTER         -->
-	<!-- ====================================================== -->
-	<system-config>
-		<!-- <ui-factory-class>
-			org.zkoss.zk.ui.http.SerializableUiFactory
-		</ui-factory-class> -->
-		<disable-event-thread>false</disable-event-thread>
-		<label-location>/WEB-INF/internationalization/zk-label.properties</label-location>
-		<label-location>/WEB-INF/internationalization/export.properties</label-location>
-		<label-location>/WEB-INF/internationalization/imprimante.properties</label-location>
-		<label-location>/WEB-INF/internationalization/errors.properties</label-location>
-		<label-location>/WEB-INF/internationalization/documentation.properties</label-location>
-		<label-location>/WEB-INF/internationalization/cession.properties</label-location>
-		<label-location>/WEB-INF/internationalization/retours.properties</label-location>
-		<label-location>/WEB-INF/internationalization/stockage.properties</label-location>
-		<label-location>/WEB-INF/internationalization/contexte.properties</label-location>
-		<label-location>/WEB-INF/internationalization/historique.properties</label-location>
-		<label-location>/WEB-INF/internationalization/stats.properties</label-location>
-		<label-location>/WEB-INF/internationalization/import.properties</label-location>
-		<label-location>/WEB-INF/internationalization/outils.properties</label-location>
-		<label-location>/WEB-INF/internationalization/recherche.properties</label-location>
-		<label-location>/WEB-INF/internationalization/utilisateur.properties</label-location>
-		<label-location>/WEB-INF/internationalization/interfacages.properties</label-location>
-		
-<!-- 		<label-location>file:///home/mathieu/animotek_fr.properties</label-location> -->
-		
-		<label-location>/WEB-INF/internationalization/tooltips/tooltip.properties</label-location>
-    	<label-location>/WEB-INF/internationalization/tooltips/patient.properties</label-location>
-    	<label-location>/WEB-INF/internationalization/tooltips/prelevement.properties</label-location>
-    	<label-location>/WEB-INF/internationalization/tooltips/echantillon.properties</label-location>
-		
-	</system-config>
-	
-	<!-- ====================================================== -->
-	<!--   Zk Provider                                          -->
-	<!-- ====================================================== -->
-	
-<!--	<richlet>-->
-<!--		<richlet-name>ZKMonitor</richlet-name>-->
-<!--		<richlet-class>cz.datalite.zkspring.monitor.ZKMonitorRichlet</richlet-class>-->
-<!--	</richlet>-->
-<!---->
-<!--	<richlet-mapping>-->
-<!--		<richlet-name>ZKMonitor</richlet-name>-->
-<!--		<url-pattern>/ZKMonitor</url-pattern>-->
-<!--	</richlet-mapping>-->
-<!--	-->
-<!--	 <listener>-->
-<!--       <description>ZK performance monitor</description>-->
-<!--        <listener-class>cz.datalite.zkspring.monitor.ZKPerformanceMeter</listener-class>-->
-<!--     </listener>-->
-     
-     <listener>
-		<description>Called when the session terminates</description>
-		<listener-class>TKSessionCleanup</listener-class>
-	</listener> 
-	
-	<listener>
-		<description>Called when the desktop terminates</description>
-		<listener-class>fr.aphp.tumorotek.action.TKDesktopCleanup</listener-class>
-	</listener>
-	
-<!--     <listener> -->
-<!--         <description>Monitor the statistic</description> -->
-<!--         <listener-class>org.zkoss.zk.ui.util.Statistic</listener-class> -->
-<!--     </listener> -->
-<!--     <listener> -->
-<!--               <description>ZK performance monitor</description> -->
-<!--               <listener-class>org.zkoss.performance.monitor.PerformanceMeter</listener-class> -->
-<!--     </listener>	 -->
+    <library-property>
+        <name>org.zkoss.theme.preferred</name>
+        <value>breeze</value>
+    </library-property>
 
-	<!-- ====================================================== -->
-	<!--                 Device configurations                  -->
-	<!--          1. Type of server push                        -->
-	<!--          2. Page for showing the Session timeout       -->
-	<!-- ====================================================== -->
-	<device-config>
-		<device-type>ajax</device-type>
-			<timeout-uri>/login/login.zul</timeout-uri>
-			<!-- <timeout-uri>https://localhost:8443/cas/logout</timeout-uri> -->
-	</device-config>
+    <library-property>
+        <name>org.zkoss.zkmax.ui.comet.async.disabled</name>
+        <value>true</value>
+    </library-property>
 
-	<!-- ====================================================== -->
-	<!--         Listener to make sure servlet thread           -->
-	<!--            and ZK event thread got the same            -->
-	<!--                  ThreadLocal values.                   -->
-	<!-- ====================================================== -->
-	<listener>
-		<description>ThreadLocal Synchronization Listener
-		</description>
-		<listener-class>org.zkoss.zkplus.util.ThreadLocalListener
-		</listener-class>
-	</listener>
+    <desktop-config>
+        <theme-provider-class>
+            fr.aphp.tumorotek.webapp.themes.CacheableThemeProvider
+        </theme-provider-class>
+    </desktop-config>
 
-	<!-- ====================================================== -->
-	<!--         Besides that, you have to specify what         -->
-	<!--         ThreadLocal variables you want to sync.        -->
-	<!--   1. Spring  RequestContextHolder                      -->
-	<!--   2. Spring  ThreadLocalSecurityContextHolderStrategy  -->
-	<!-- ====================================================== -->
-	<preference>
-		<name>ThreadLocal</name>
-		<value>
-			org.springframework.security.core.context.ThreadLocalSecurityContextHolderStrategy=contextHolder;
-			org.springframework.web.context.request.RequestContextHolder=requestAttributesHolder,inheritableRequestAttributesHolder;
-		</value>
-	</preference>
 
-	<!-- ====================================================== -->
-	<!--                Path to the own error page              -->
-	<!-- ====================================================== -->
-	<error-page>
-		<exception-type>java.lang.Throwable</exception-type>
-		<location>/error.zul</location>
-	</error-page>
+    <!-- ====================================================== -->
+    <!--          running a zk application in a CLUSTER         -->
+    <!-- ====================================================== -->
+    <system-config>
+        <!-- <ui-factory-class>
+            org.zkoss.zk.ui.http.SerializableUiFactory
+        </ui-factory-class> -->
+        <disable-event-thread>false</disable-event-thread>
+        <label-location>/WEB-INF/internationalization/zk-label.properties</label-location>
+        <label-location>/WEB-INF/internationalization/export.properties</label-location>
+        <label-location>/WEB-INF/internationalization/imprimante.properties</label-location>
+        <label-location>/WEB-INF/internationalization/errors.properties</label-location>
+        <label-location>/WEB-INF/internationalization/documentation.properties</label-location>
+        <label-location>/WEB-INF/internationalization/cession.properties</label-location>
+        <label-location>/WEB-INF/internationalization/retours.properties</label-location>
+        <label-location>/WEB-INF/internationalization/stockage.properties</label-location>
+        <label-location>/WEB-INF/internationalization/contexte.properties</label-location>
+        <label-location>/WEB-INF/internationalization/historique.properties</label-location>
+        <label-location>/WEB-INF/internationalization/stats.properties</label-location>
+        <label-location>/WEB-INF/internationalization/import.properties</label-location>
+        <label-location>/WEB-INF/internationalization/outils.properties</label-location>
+        <label-location>/WEB-INF/internationalization/recherche.properties</label-location>
+        <label-location>/WEB-INF/internationalization/utilisateur.properties</label-location>
+        <label-location>/WEB-INF/internationalization/interfacages.properties</label-location>
 
-	<!-- ====================================================== -->
-	<!--          Path to the character set and sizes           -->
-	<!--                Zkoss configuration file                -->
-	<!--         Custom components are declared here            -->
-	<!-- ====================================================== -->
-<!--	<language-config>-->
-<!--		<addon-uri>/WEB-INF/lang-addon.xml-->
-<!--		</addon-uri>-->
-<!--	</language-config>-->
+        <!-- 		<label-location>file:///home/mathieu/animotek_fr.properties</label-location> -->
 
-	<!-- ====================================================== -->
-	<!--   Maximal count of desktops which a session can hold   -->
-	<!-- ====================================================== -->
-	<session-config>
-		<max-desktops-per-session>15</max-desktops-per-session>
-		<timer-keep-alive>true</timer-keep-alive>
-	</session-config>
-	
-	<library-property>
-    <name>org.zkoss.zul.borderlayout.animation.disabled</name>
-    <value>true</value>
-</library-property>
+        <label-location>/WEB-INF/internationalization/tooltips/tooltip.properties</label-location>
+        <label-location>/WEB-INF/internationalization/tooltips/patient.properties</label-location>
+        <label-location>/WEB-INF/internationalization/tooltips/prelevement.properties</label-location>
+        <label-location>/WEB-INF/internationalization/tooltips/echantillon.properties</label-location>
 
+    </system-config>
+
+    <!-- ====================================================== -->
+    <!--   Zk Provider                                          -->
+    <!-- ====================================================== -->
+
+    <!--	<richlet>-->
+    <!--		<richlet-name>ZKMonitor</richlet-name>-->
+    <!--		<richlet-class>cz.datalite.zkspring.monitor.ZKMonitorRichlet</richlet-class>-->
+    <!--	</richlet>-->
+    <!---->
+    <!--	<richlet-mapping>-->
+    <!--		<richlet-name>ZKMonitor</richlet-name>-->
+    <!--		<url-pattern>/ZKMonitor</url-pattern>-->
+    <!--	</richlet-mapping>-->
+    <!--	-->
+    <!--	 <listener>-->
+    <!--       <description>ZK performance monitor</description>-->
+    <!--        <listener-class>cz.datalite.zkspring.monitor.ZKPerformanceMeter</listener-class>-->
+    <!--     </listener>-->
+
+    <listener>
+        <description>Called when the session terminates</description>
+        <listener-class>TKSessionCleanup</listener-class>
+    </listener>
+
+    <listener>
+        <description>Called when the desktop terminates</description>
+        <listener-class>fr.aphp.tumorotek.action.TKDesktopCleanup</listener-class>
+    </listener>
+
+    <!--     <listener> -->
+    <!--         <description>Monitor the statistic</description> -->
+    <!--         <listener-class>org.zkoss.zk.ui.util.Statistic</listener-class> -->
+    <!--     </listener> -->
+    <!--     <listener> -->
+    <!--               <description>ZK performance monitor</description> -->
+    <!--               <listener-class>org.zkoss.performance.monitor.PerformanceMeter</listener-class> -->
+    <!--     </listener>	 -->
+
+    <!-- ====================================================== -->
+    <!--                 Device configurations                  -->
+    <!--          1. Type of server push                        -->
+    <!--          2. Page for showing the Session timeout       -->
+    <!-- ====================================================== -->
+    <device-config>
+        <device-type>ajax</device-type>
+        <timeout-uri>/login/login.zul</timeout-uri>
+        <!-- <timeout-uri>https://localhost:8443/cas/logout</timeout-uri> -->
+    </device-config>
+
+    <!-- ====================================================== -->
+    <!--         Listener to make sure servlet thread           -->
+    <!--            and ZK event thread got the same            -->
+    <!--                  ThreadLocal values.                   -->
+    <!-- ====================================================== -->
+    <listener>
+        <description>ThreadLocal Synchronization Listener
+        </description>
+        <listener-class>org.zkoss.zkplus.util.ThreadLocalListener
+        </listener-class>
+    </listener>
+
+    <!-- ====================================================== -->
+    <!--         Besides that, you have to specify what         -->
+    <!--         ThreadLocal variables you want to sync.        -->
+    <!--   1. Spring  RequestContextHolder                      -->
+    <!--   2. Spring  ThreadLocalSecurityContextHolderStrategy  -->
+    <!-- ====================================================== -->
+    <preference>
+        <name>ThreadLocal</name>
+        <value>
+            org.springframework.security.core.context.ThreadLocalSecurityContextHolderStrategy=contextHolder;
+            org.springframework.web.context.request.RequestContextHolder=requestAttributesHolder,inheritableRequestAttributesHolder;
+        </value>
+    </preference>
+
+    <!-- ====================================================== -->
+    <!--                Path to the own error page              -->
+    <!-- ====================================================== -->
+    <error-page>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/error.zul</location>
+    </error-page>
+
+    <!-- ====================================================== -->
+    <!--          Path to the character set and sizes           -->
+    <!--                Zkoss configuration file                -->
+    <!--         Custom components are declared here            -->
+    <!-- ====================================================== -->
+    <!--<language-config>
+        <addon-uri>/WEB-INF/lang-addon.xml</addon-uri>
+    </language-config>-->
+
+    <!-- ====================================================== -->
+    <!--   Maximal count of desktops which a session can hold   -->
+    <!-- ====================================================== -->
+    <session-config>
+        <max-desktops-per-session>15</max-desktops-per-session>
+        <timer-keep-alive>true</timer-keep-alive>
+    </session-config>
+
+    <library-property>
+        <name>org.zkoss.zul.borderlayout.animation.disabled</name>
+        <value>true</value>
+    </library-property>
 </zk>

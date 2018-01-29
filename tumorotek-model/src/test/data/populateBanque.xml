@@ -12020,7 +12020,7 @@
 	<table name="VERSION">
 		<column>VERSION_ID</column>
 		<column>VERSION</column>
-		<column>DATE_</column>
+		<column>DATE</column>
 		<column>NOM_SITE</column>
 		<row>
 			<value>1</value>

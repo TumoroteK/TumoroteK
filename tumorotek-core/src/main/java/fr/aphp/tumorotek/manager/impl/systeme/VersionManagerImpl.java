@@ -35,14 +35,13 @@
  **/
 package fr.aphp.tumorotek.manager.impl.systeme;
 
-import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import fr.aphp.tumorotek.dao.systeme.VersionDao;
 import fr.aphp.tumorotek.manager.systeme.VersionManager;
 import fr.aphp.tumorotek.model.systeme.Version;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.util.List;
 
 /**
  * 
@@ -85,13 +84,17 @@ public class VersionManagerImpl implements VersionManager {
 	@Override
 	public Version findByCurrentVersionManager() {
 		log.debug("Recherche de la version courante");
-		List<Version> versions = versionDao
-			.findByDateAntiChronologique();
+		List<Version> versions = versionDao.findByDateAntiChronologique();
 		
 		if (versions.size() > 0) {
 			return versions.get(0);
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	public void createObjectManager(Version version) {
+		versionDao.createObject(version);
 	}
 }
