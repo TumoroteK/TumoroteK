@@ -1,0 +1,259 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<window id="fwinTableAnnotation" border="none" apply="fr.aphp.tumorotek.action.administration.annotations.FicheTableAnnotation">
+	<panel collapsible="false" title="${c:l('annotation.table.fiche.title')}"
+		 sclass="fichePanelv2" id="winPanel" closable="true">
+		<panelchildren id="panelChildrenWithScroll" style="overflow-y:scroll">
+			<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvt">
+				<columns>
+					<column width="300px"/>
+					<column width="100%"/>
+				</columns>
+				<rows>
+					<!-- Entite -->
+					<row>
+						<label value="${c:l('annotation.table.entite')}" sclass="formLabel"/>
+						<div>
+							<label id="entiteLabel" 
+								value="@{fwinTableAnnotation$composer.entiteTableNom load-after='deleteC.onClick, cancelC.onClick'}" 
+								sclass="formValue"/>
+							<listbox id="entiteBox" mold="select" rows="1"
+								model="@{fwinTableAnnotation$composer.entites, 
+												load-after='editC.onClick, addNewC.onClick'}"
+								selectedItem="@{fwinTableAnnotation$composer.selectedEntite}"
+								visible="false"
+								itemRenderer="${fwinTableAnnotation$composer.entiteRenderer}">
+								<listitem self="@{each='entite'}" value="entite" />
+							</listbox>
+						</div>
+					</row>
+					
+					<!-- Nom -->
+					<row>
+						<hbox>
+							<label value="${c:l('annotation.table.nom')}" sclass="formLabel"/>
+							<label id="nomRequired" value="*" sclass="requiredMark" visible="false"/>
+						</hbox>
+						<div>
+							<label id="nomLabel" 
+								value="@{fwinTableAnnotation$composer.table.nom load-after='deleteC.onClick'}" 
+								sclass="formValue" 
+							/>
+							
+							<textbox id="nomBox" value="@{fwinTableAnnotation$composer.table.nom,
+			        								 save-when='validateC.onClick, createC.onClick'
+			        								 load-after='editC.onClick, addNewC.onClick'}" 
+								width="200px" 
+								constraint="${fwinTableAnnotation$composer.nomConstraint}"
+								visible="false"
+							/>
+						</div>
+					</row>
+					
+					<!-- Description -->
+					<row>
+						<label value="${c:l('annotation.table.description')}" sclass="formLabel"/>
+						<div>
+							<label id="descriptionLabel" 
+								value="@{fwinTableAnnotation$composer.table.description load-after='deleteC.onClick'}" 
+								sclass="formValue" 
+								multiline="true"/>
+							<textbox id="descriptionBox" 
+								value="@{fwinTableAnnotation$composer.table.description,
+			        					save-when='validateC.onClick, createC.onClick'
+			        					load-after='editC.onClick, addNewC.onClick'}" 
+								width="300px"
+								rows="3" 
+								visible="false"
+								constraint="${fwinTableAnnotation$composer.descrConstraint}"/>
+						</div>
+					</row>
+					<!-- Annotation Inline display -->
+					<row>
+						<label value="${c:l('annotation.table.inlineDisplay')}" sclass="formLabel"/>
+						<div>
+							<label id="inlineDisplayLabel"
+								   value="@{fwinTableAnnotation$composer.table.inlineDisplay}" sclass="formValue"/>
+							<checkbox id="inlineDisplayCheckbox"
+									  checked="@{fwinTableAnnotation$composer.table.inlineDisplay,
+			        					save-when='validateC.onClick, createC.onClick'
+			        					load-after='editC.onClick, createC.onClick'}"
+									  visible="false"/>
+						</div>
+					</row>
+					
+					<!-- Banques -->
+					<row spans="2">
+						<separator />
+					</row>
+					<group id="groupBanques" open="false" />
+					<row spans="2" id="rowGridBanques">
+						<div id="banquesAssociees" />
+					</row>
+					<!-- Champs Annotation -->
+					<group open="true" />
+					<row spans="2">
+						<vbox>
+							<label value="${c:l('annotation.table.champs')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					<row spans="2">
+						<grid id="champsGrid"
+							hflex="1"
+							fixedLayout="true" 
+							sclass="gridListStyle"
+							model="@{fwinTableAnnotation$composer.champs load-after='addNewC.onClick, deleteC.onClick'}"
+							visible="true"
+							span="true">
+							<columns sizable="true">
+								<column label="${c:l('annotation.champ.nom')}" />
+								<column label="${c:l('general.type')}" />
+								<column label="${c:l('annotation.champ.defaut')}" />
+								<column label="${c:l('annotation.champ.obligatoire')}"
+									width="50px"/>
+								<column label="${c:l('annotation.champ.combine')}"
+									/>
+								<column id="upColumn" width="25px" visible="false" />
+								<column id="downColumn" width="25px" visible="false" />
+								<column id="editColumn" width="25px" visible="false" />
+								<column id="deleteColumn" width="25px" visible="false" />
+							</columns>
+							<rows id="rows">
+								<row id="champRow" self="@{each='champ'}" value="@{champ}" height="20px">
+									<!-- Nom -->
+									<div id="nomChampDiv">
+										<textbox id="nameBoxEachChamp" cols="20"
+											value="@{champ.nom}" visible="@{champ.editionNoCatalogue}" 
+											constraint="${fwinTableAnnotation$composer.nomChampConstraint}" /> 
+										<label value="@{champ.nom}" visible="@{champ.statiqueCatalogue}" />
+									</div>
+									<!-- Type -->
+									<div>
+										<listbox id="typeBoxEachChamp" mold="select" rows="1"
+											model="@{fwinTableAnnotation$composer.types}" visible="@{champ.creation}"
+											itemRenderer="${fwinTableAnnotation$composer.typeRenderer}"
+											selectedItem="@{fwinTableAnnotation$composer.selectedDataType}" >											
+											<listitem self="@{each='type'}" value="@{type}" />
+										</listbox>
+										<label value="@{champ.dataType}" visible="@{champ.noCreation}" />
+									</div>
+									<!-- Defaut -->
+									<div id="defautDiv">
+										<image id="addDefaut" src="/images/icones/small_add.png" visible="@{champ.addDefautDisplay load-after='typeBoxEachChamp.onSelect, defautDiv.onUpdateDefautDiv'}" style="cursor:pointer" />
+										<label id="detailsLabel" value="@{champ.defautsFormatted}" pre="true" sclass="@{champ.detailsDisplay load-after='typeBoxEachChamp.onSelect, defautDiv.onUpdateDefautDiv'}" />
+										<image id="editDefaut" src="/images/icones/small_edit.png" visible="@{champ.defautEraserDisplay load-after='typeBoxEachChamp.onSelect'}" style="cursor:pointer" />
+										<!-- <image id="deleteDefaut" src="/images/icones/eraser.png" visible="@{champ.defautEraserDisplay load-after='typeBoxEachChamp.onSelect'}" style="cursor:pointer" /> -->
+									</div>
+									<!-- Obligatoire -->
+									<div>
+										<checkbox id="obligatoireBoxEachChamp" checked="@{champ.obligatoire save-when='validateChamp.onClick'}" visible="@{champ.isObligeableEdition}" />
+										<label value="${c:l('general.checkbox.false')}" style="font-style: italic" visible="@{champ.isNotObligeable}" />
+										<label value="@{champ.obligatoireFormatted}" visible="@{champ.isObligeableStatique}" />
+									</div>
+									<!-- Combine -->
+									<div>
+										<checkbox id="combineBoxEachChamp" checked="@{champ.combine save-when='validateChamp.onClick'}" visible="@{champ.isCombinableEdition}" />
+										<label value="${c:l('general.checkbox.false')}" style="font-style: italic" visible="@{champ.isNotCombinable}" />
+										<label value="@{champ.combineFormatted}" visible="@{champ.isCombinableStatique}" />
+									</div>
+									<div id="upChamp" width="12px" height="12px" 
+										sclass="upArrow" 
+										visible="@{champ.statiqueNoCatalogue}"/>
+									<div id="downChamp" width="12px" height="12px" 
+										sclass="downArrow" 										
+										visible="@{champ.statiqueNoCatalogue}"/>
+									<div id="editDiv" align="center">
+										<div id="editChamp" width="12px" height="12px" 
+											sclass="gridEdit"  
+											visible="@{champ.statique}"/>
+										<div width="12px" height="12px" id="validateChamp"
+											sclass="gridValidate" 
+ 											visible="@{champ.edition}"/>
+									</div>
+									<div align="center">
+										<div width="12px" height="12px" id="deleteChamp"
+											sclass="gridDelete" 
+ 											visible="@{champ.statiqueNoCatalogue}"/>
+										<div width="12px" height="12px" id="revertChamp"
+											sclass="gridCancel"  
+ 											visible="@{champ.edition}"/>
+									</div>
+								</row>
+							</rows>
+						</grid>
+					</row>
+					<row spans="4">
+						<separator/>
+					</row>
+				</rows>
+			</grid>
+		</panelchildren>
+		<toolbar height="30px" id="toolbarEchan" align="end">
+			<hbox spacing="5">
+				<menubar sclass="menuBarV2" id="menuBar">
+					<menu label="${c:l('general.actions')}" image="/images/icones/small_action.png" 
+						width="36px" height="24px">
+						<menupopup>
+							<menuitem id="historique" image="/images/icones/history.png" 
+								label="${c:l('general.historique')}"/>
+						</menupopup>
+					</menu>
+				</menubar>
+				<button id="addNewC" label="${c:l('general.new')}" height="24px" visible="true"
+					image="/images/icones/new.png" sclass="buttonv2"
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="editC" label="${c:l('general.edit')}" height="24px" visible="true"
+					image="/images/icones/edit.png" sclass="buttonv2"
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="addChamp" label="${c:l('annotation.table.addChamp')}" height="24px" visible="false"
+					image="/images/icones/addChampAnno.png" sclass="buttonv2"
+					use="fr.aphp.tumorotek.component.TKDisablableButton"  />
+				<button id="deleteC" disabled="false" label="${c:l('general.delete')}" height="24px" visible="true"
+					image="/images/icones/trash.png" sclass="buttonv2"
+					use="fr.aphp.tumorotek.component.TKDisablableButton"  />
+				<button id="validateC" label="${c:l('general.validate')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="revertC" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="createC" label="${c:l('general.create')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="cancelC" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+			</hbox>
+		</toolbar>
+	</panel>
+</window>

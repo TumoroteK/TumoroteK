@@ -1,0 +1,108 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<?component name="incaPopUps" macroURI="/zuls/patient/incaPopUpsPatient.zul" inline="true" ?>
+
+<!-- <window id="winResume" hflex="1" apply="fr.aphp.tumorotek.action.patient.ResumePatient"> -->
+<!--	<grid fixedLayout="true" sclass="gridForm1" span="true" width="100%"> -->
+<!--		<columns> -->
+<!--			<column width="150px"/> -->
+<!--			<column /> -->
+<!--			<column width="150px" /> -->
+<!--			<column /> -->
+<!--		</columns> -->
+<!--		<rows> -->
+<!--			<!-- Nip patient -->
+			<row>
+				<label value="${c:l('Champ.Patient.Nip')}" sclass="formLabel"/>
+				<label id="nipLabel" sclass="formValue" />
+				<!-- nda patient -->
+				<label value="${c:l('Champ.Prelevement.PatientNda')}" sclass="formLabel" />
+				<div>
+					<label id="ndaLabel" sclass="formValue" />
+					<textbox id="ndaBox"  
+						width="100px" 
+						visible="false"/>
+				</div>
+			</row>
+			<row>
+			<!-- Nom -->
+				<label value="${c:l('Champ.Patient.Nom')}" sclass="formLabel" />
+				<label id="linkPatientLabel" sclass="formLink" />
+			<!-- Prenom -->
+				<label value="${c:l('Champ.Patient.Prenom')}" sclass="formLabel" />
+				<label id="prenomLabel" sclass="formValue" />
+			</row>
+			<row>
+			<!-- Date de naissance -->
+				<box orient="horizontal" widths=",50%" pack="center" >
+					<label value="${c:l('Champ.Patient.DateNaissance')}" sclass="formLabel" />
+					<image src="/images/icones/codif-export.png" visible="${sessionScope.catalogues['INCa'] != null}" 
+						tooltip="inca3" style="cursor: pointer" />
+				</box>
+				<label id="dateNaisLabel" sclass="formValue" />
+			<!-- Sexe -->
+				<box orient="horizontal" widths=",50%" pack="center" >
+					<label value="${c:l('Champ.Patient.Sexe')}" sclass="formLabel" />
+					<image src="/images/icones/codif-export.png" visible="${sessionScope.catalogues['INCa'] != null}" 
+								tooltip="inca4" style="cursor: pointer" />
+					</box>
+				<label id="sexeLabel" sclass="formValue" />
+			</row>					
+			<!-- Maladie -->
+			<row spans="4" id="linkMaladie" style="border-top-style: solid; 
+													border-top-color: #6ca1e6; 
+													border-top-width: 1px">
+				<separator/>
+			</row>
+			<row>
+			<!-- Libelle -->
+				<label value="${c:l('Champ.Maladie.Libelle')}" sclass="formLabel"/>
+				<label id="linkMaladieLabel" sclass="formLink" />
+			<!-- Code -->
+				<box orient="horizontal" widths=",50%" pack="center" >
+					<label value="${c:l('Champ.Maladie.Code')}" sclass="formLabel" />
+					<image src="/images/icones/codif-export.png" visible="${sessionScope.catalogues['INCa'] != null}" 
+						tooltip="inca7" style="cursor: pointer" />
+					</box>
+				<label id="codeDiagLabel" sclass="formValue" />
+			</row>
+<!--	</rows> -->
+<!--	</grid> -->
+	
+<!-- include Catalogues popups -->
+<!-- <incaPopUps /> -->
+	
+<!-- </window> -->

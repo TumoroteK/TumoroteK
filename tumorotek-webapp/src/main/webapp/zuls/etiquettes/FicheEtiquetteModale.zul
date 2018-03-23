@@ -1,0 +1,189 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<?page title="Etiquettes Page" contentType="text/html;charset=UTF-8"?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<zk>
+<!-- <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" name="ficheEtiquetteModale" ?> -->
+
+<window id="fwinEtiquetteModale" 
+		width="420px" height="auto" border="normal" minimizable="false"
+        mode="modal" maximizable="false" closable="true"
+        action="hide: slideUp" apply="org.zkoss.bind.BindComposer"
+		 viewModel="@id('vm') @init('fr.aphp.tumorotek.action.etiquettes.FicheEtiquetteModale')">
+	<panel collapsible="false" sclass="fichePanelv2" id="winPanel">
+		<panelchildren style="overflow-y:auto" id="panelChildrenWithScroll">
+			<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvt">
+				<columns>
+					<column width="200px"/>
+					<column/>
+				</columns>
+				<rows>
+					<!-- Choix -->
+					<row spans="2">
+							<vbox>
+								<hlayout style="z-valign-middle">
+									<checkbox id="copiesCheckbox" checked="false" 
+										onCheck="@command('switchCopies')" />
+									<label value="${c:l('etiquette.modale.choix.copies')}"
+											sclass="formValue"/>
+								</hlayout>
+								<hlayout style="z-valign-middle">
+									<checkbox id="listeCheckbox" checked="true"
+										 onCheck="@command('switchListeInc')" />
+									<label value="${c:l('etiquette.modale.choix.liste')}" 
+											sclass="formValue"/>
+								</hlayout>
+							</vbox>
+					</row>
+					<row spans="2">
+						<separator/>
+					</row>
+					<row spans="2">
+						<vbox>
+							<label value="${c:l('etiquette.modale.subTitle')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					<!-- Nombre de copies -->
+					<row id="nbCopiesRow" visible="@load(vm.copies)">
+						<label value="${c:l('etiquette.nb.copies')}" sclass="formLabel"/>
+						
+						<intbox id="copiesBox" 
+							value="@bind(vm.nbrCopies)" 
+							width="50px" 
+							constraint="no negative, no zero, no empty"/>
+					</row>
+					<!-- Code prelevement -->
+					<row>
+						<label value="${c:l('etiquette.code.prelevement')}" sclass="formLabel"/>
+							
+						<textbox id="codeBox" 
+							value="@bind(vm.codePrelevement)" 
+							width="150px" 
+							constraint="@bind(vm.nomConstraint)"
+						/>
+					</row>
+					<!-- Numéro de tube -->
+					<row id="tubeCopieRow" visible="@load(!vm.listeInc)">
+						<label value="${c:l('etiquette.numero.tube')}" sclass="formLabel"/>
+							
+						<textbox id="numeroTubeBox" 
+							value="@bind(vm.numeroTube)" 
+							width="150px" 
+							constraint="@bind(vm.nomConstraint)"
+						/>
+					</row>
+					<!-- Numéro de tube bis -->
+					<row id="tubeListeRow" visible="@load(vm.listeInc)">
+						<hbox>
+							<label value="${c:l('etiquette.numero.tube')}" sclass="formLabel"/>
+							<label value="*" sclass="requiredMark"/>
+						</hbox>
+						<hlayout>
+							<combobox id="separatorBox" autodrop="true" 
+							 cols="5" model="@load(vm.separators)" 
+							 value="@bind(vm.separator)">
+			                    <template name="model">
+			                        <comboitem label="@load(each)" />
+			                    </template>
+                			</combobox>
+							<intbox id="premierNumeroBox"
+									value="@bind(vm.premierNumeroTube)"
+									width="30px"/>
+								
+							<label value="${c:l('ficheMultiEchantillons.a')}" sclass="formLabel"/>
+							
+							<intbox id="dernierNumeroBox"
+								value="@bind(vm.dernierNumeroTube)"
+								width="30px"/>
+						</hlayout>
+					</row>
+					<!-- Type -->
+					<row>
+						<label value="${c:l('etiquette.type')}" sclass="formLabel"/>
+							
+						<textbox id="typeBox" 
+							value="@bind(vm.type)"
+							width="150px" 
+							constraint="@bind(vm.nomConstraint)"
+						/>
+					</row>
+					<!-- Patient -->
+					<row>
+						<label value="${c:l('etiquette.patient')}" sclass="formLabel"/>
+							
+						<textbox id="patientBox" 
+							value="@bind(vm.patient)"
+							width="150px" 
+							constraint="@bind(vm.nomConstraint)"
+						/>
+					</row>
+					<!-- Date congélation -->
+					<row>
+						<label value="${c:l('etiquette.date.congelation')}" sclass="formLabel"/>
+							
+						<textbox id="dateBox" 
+							value="@bind(vm.dateCongelation)" 
+							width="150px" 
+							constraint="@bind(vm.nomConstraint)"
+						/>
+					</row>
+					<!-- Quantité -->
+					<row>
+						<label value="${c:l('etiquette.quantité')}" sclass="formLabel"/>
+							
+						<textbox id="quantiteBox" 
+							value="@bind(vm.quantite)" 
+							width="150px" 
+							constraint="@bind(vm.nomConstraint)"
+						/>
+					</row>
+				</rows>
+			</grid>
+		</panelchildren>
+		<toolbar height="30px" id="toolbarEchan" align="end">
+			<hbox spacing="5" align="center">
+				<button id="cancel" label="${c:l('general.cancel')}" 
+						onClick="@command('cancel')"
+						height="26px" image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="print" label="${c:l('general.print')}" height="26px" 
+					onClick="@command('print')"
+					image="/images/icones/printer.png" sclass="buttonv2"/>
+			</hbox>
+		</toolbar>
+	</panel>
+</window>
+</zk>

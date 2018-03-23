@@ -1,0 +1,65 @@
+body{
+    font-family: 'Open Sans';
+}
+
+h4 {
+    /*font-size: 18px;*/
+    color: white;
+    background-color: #0063af;
+    padding: 7px 3px 7px 10px;
+    margin-top: 0;
+}
+
+.section hr {
+    border: 2px solid #d23d0a;
+    margin-bottom: 0;
+}
+
+blockquote {
+    /*border-left: 4px solid #dddddd;
+    padding: 0 15px;*/
+    border-left: 4px solid #dddddd;
+    color: #777777;
+}
+
+blockquote p {
+    font-size: initial;
+}
+
+.section p {
+    margin: 15px 0;
+}
+
+pre.prettyprint {
+    background-color: #f8f8f8;
+    border: 1px solid #cccccc;
+    font-size: 13px;
+    line-height: 19px;
+    overflow: auto;
+    padding: 5px 10px;
+    border-radius: 3px;
+    margin: 15px 0;
+}
+
+.table {
+    width: initial;
+}
+
+h4 > a {
+    position: absolute;
+    right: 30px;
+}
+h4 > a > span{
+    color: white;
+}
+h4 > a > span.fa-lg{
+    vertical-align: -5%;
+}
+
+#banner{
+    padding-bottom: 20px;
+}
+
+span.fa-exclamation-triangle{
+    color: red;
+}

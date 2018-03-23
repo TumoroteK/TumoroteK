@@ -1,0 +1,24 @@
+<!ELEMENT Impression (Page+, HautDePage, BasDePage)>
+<!ELEMENT Page (Titre, Paragraphe+, Liste*)>
+<!ELEMENT Titre (#PCDATA)>
+<!ELEMENT Paragraphe (TitreParagraphe, Inconnu, LigneParagraphe+, SousParagraphe*, Liste*)>
+
+<!ELEMENT HautDePage (#PCDATA)>
+<!ELEMENT BasDePage (#PCDATA)>
+<!ELEMENT TitreParagraphe (#PCDATA)>
+<!ELEMENT SousParagraphe (TitreSousParagraphe, Inconnu, LigneParagraphe+, Liste*)>
+<!ELEMENT TitreSousParagraphe (#PCDATA)>
+<!ELEMENT LigneParagraphe (CoupleValeurs+)>
+<!ELEMENT CoupleValeurs (NomValeur, Valeur, ValeurAnonyme)>
+<!ELEMENT NomValeur (#PCDATA)>
+<!ELEMENT Valeur (#PCDATA)>
+<!ELEMENT ValeurAnonyme (#PCDATA)>
+<!ELEMENT Inconnu (#PCDATA)>
+
+<!ELEMENT Liste (TitreParagraphe, Colonnes, EnteteListe, LigneListe*)>
+<!ELEMENT Colonnes (Colonne+)>
+<!ELEMENT Colonne (#PCDATA)>
+<!ELEMENT EnteteListe (NomColonne+)>
+<!ELEMENT NomColonne (#PCDATA)>
+<!ELEMENT LigneListe (Cellule+)>
+<!ELEMENT Cellule (#PCDATA)>

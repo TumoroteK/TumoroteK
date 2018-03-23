@@ -1,0 +1,124 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<?link rel="stylesheet" type="text/css" href="../css/tree.css.dsp"?>
+<window id="lwinStockages" border="none" apply="fr.aphp.tumorotek.action.stockage.ListeStockages">
+	<panel border="none" collapsible="true" id="listPanel" sclass="panelv2">
+		<panelchildren id="panelChildrenWithScroll">
+			<grid id="mainGridContext" fixedLayout="true" sclass="gridForm1" visible="true">
+				<columns>
+					<column/>
+				</columns>
+				<rows>
+					<row>
+						<tree id="mainTreeContext" rows="5" 
+							model="@{lwinStockages$composer.ttm}" 
+							treeitemRenderer="@{lwinStockages$composer.ctr}"
+							zclass="z-dottree"
+							visible="true">
+							<treechildren>
+								<treeitem id="treeItem"/>
+							</treechildren>
+						</tree>
+					</row>
+				</rows>
+			</grid>
+		</panelchildren>
+		<toolbar height="30px" id="lToolbarCollaborations" align="start">
+			<hlayout sclass="z-valign-middle" spacing="5px" style="padding-left: 5px">
+				<menubar sclass="menuBarV2" id="menuBar">
+					<menu label="${c:l('general.actions')}" image="/images/icones/small_action.png" 
+						width="36px" height="24px">
+						<menupopup>
+							<menuitem id="etiquettes" image="/images/icones/printer.png" 
+								label="${c:l('general.actions.print.etiquette')}"/>
+							<menuitem id="addNewConteneur" image="/images/icones/addConteneur.png" 
+								label="${c:l('general.new.conteneur')}"/>
+						</menupopup>
+					</menu>
+				</menubar>
+				<button id="hideCompleteButton" label="${c:l('stockage.liste.hideComplete')}" height="24px" visible="false"
+					image="/images/icones/addEnceinte.png" sclass="buttonv2"
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<div style="float: none">
+					<style>
+						.searchBox {
+							padding: 2px 5px 2px 5px; 
+							margin: 0; 
+							// border-style : solid; 
+							// border-width: 2px; 
+							// background-color: #1756aa; 
+							background-color: #ccccff; 
+							// color: #FFFFFF;
+							color: #1756aa;
+							// border-color: #ffffff;
+							border-radius: 5px 5px 5px 5px;
+							cursor: pointer;
+						}
+						
+						.fa-15x {
+							font-size: 1.5em !important;
+						}						
+					</style>
+					<div sclass="searchBox">
+						<hlayout sclass="z-valign-middle" spacing="5px">
+							<textbox mold="rounded" id="findTerminaleBox" width="100px" forward="onOK=onClick$findTerminaleBoxButton" />
+							<div id="findTerminaleBoxButton" height="20px" width="20px" class="fa fa-search-plus fa-15x" />
+						</hlayout>
+					</div>
+				</div>
+				<div style="float: none">
+					<style>
+						.resetBox {
+							padding: 2px 2px 2px 2px; 
+							margin: 0; 
+							color: #1756aa;
+							border-radius: 5px 5px 5px 5px;
+							cursor: pointer;
+						}
+						
+						.fa-rx {
+							font-size: 2em !important;
+						}						
+					</style>
+					<div sclass="resetBox" id="resetTree" height="24px" width="24px" align="center"
+						tooltiptext="${c:l('general.refresh')}">
+						<span id="spanFa" class="fa fa-refresh fa-rx" />
+					</div>
+				</div>
+			</hlayout>
+		</toolbar>
+	</panel>
+</window>

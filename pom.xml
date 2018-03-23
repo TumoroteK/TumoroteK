@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>fr.aphp.tumorotek</groupId>
+    <artifactId>tumorotek-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>2.2.0-beta-2-SNAPSHOT</version>
+    <name>APHP :: TumoroteK</name>
+
+
+    <properties>
+        <webapp.name>tumorotek</webapp.name>
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <org.hibernate.version>3.6.10.Final</org.hibernate.version>
+        <spring.version>3.2.4.RELEASE</spring.version>
+        <webapp.packaging.finalName>${webapp.name}##${project.version}</webapp.packaging.finalName>
+    </properties>
+
+    <modules>
+        <module>tumorotek-test</module>
+        <module>tumorotek-model</module>
+        <module>tumorotek-core</module>
+        <module>tumorotek-interface</module>
+        <module>tumorotek-webapp</module>
+        <module>tumorotek-install</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.6</version>
+            </dependency>
+            <!-- ORACLE -->
+            <dependency>
+                <groupId>oracle</groupId>
+                <artifactId>ojdbc6</artifactId>
+                <version>11.2.0.4</version>
+                <scope>provided</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <!-- Ne deploie pas les sites des modules -->
+                    <!--<goals>deploy</goals> -->
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

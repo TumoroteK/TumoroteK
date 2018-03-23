@@ -1,0 +1,73 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+
+<window id="fwinChooseSheetWindow" width="400px" height="auto" 
+		border="@load(vm.border)" minimizable="false" closable="true"
+		title="@load(vm.winTitle)"
+        apply="org.zkoss.bind.BindComposer"
+		 viewModel="@id('vm') @init('fr.aphp.tumorotek.action.imports.ChooseSheetWindow')">
+	<panel collapsible="false"  id="winPanel" closable="false">
+			<panelchildren id="panelChildrenWithScroll" >
+				<hlayout style="margin: 10px" hflex="1">
+					<div width="64px" height="64px" style="margin: 5px; background: url(${c:encodeURL('/images/kmultiple.png')})"/> 
+					<vlayout hflex="1">
+						<label sclass="formValue" value="@load(vm.mainLabel)" />
+						<listbox id="sheetBox" mold="select" rows="1"
+							model="@load(vm.sheets)"
+							selectedItem="@bind(vm.selectedSheet)">
+							<template name="model">
+	      						<listitem disabled="@bind(each.disabled)">
+						            <listcell label="@bind(each.nameAndSize)" />
+	    						</listitem>
+							</template>
+						</listbox>
+						
+						<hlayout id="buttonsLayout" hflex="1">
+							<div align="center" hflex="1">
+								<button id="cancel" label="${c:l('general.cancel')}" 
+										onClick="@command('close')"
+										height="26px" image="/images/icones/cancel.png" sclass="buttonv2" />
+								<button id="importSheet" 
+									onClick="@command('importSheet')"
+									height="26px" image="/images/icones/validate.png" sclass="buttonv2"
+									label="${c:l('general.validate')}" />
+							</div>
+						</hlayout>
+					</vlayout>
+				</hlayout>
+			</panelchildren>
+		</panel>
+	</window>

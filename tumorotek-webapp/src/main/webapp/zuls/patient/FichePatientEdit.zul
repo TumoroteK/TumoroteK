@@ -1,0 +1,198 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<?component name="referents" macroURI="/zuls/patient/MedecinsReferents.zul" ?>
+<?component name="incaPopUps" macroURI="/zuls/patient/incaPopUpsPatient.zul" inline="true" ?>
+<?component name="ficheAnnotationInline" macroURI="/zuls/annotation/FicheAnnotationInline.zul" ?>
+
+<window id="fwinPatientEdit" border="none" apply="fr.aphp.tumorotek.action.patient.FichePatientEdit">
+	<panel id="winPanel" title="${c:l('fichePatient.panel.title')}"
+	 	sclass="fichePanelv2" closable="true">
+		<panelchildren id="panelChildrenWithScroll">
+			<grid id="formGrid" fixedLayout="true" sclass="gridForm1"
+				hflex="1">
+				<columns>
+					<column />
+					<column />
+					<column  />
+					<column />
+				</columns>
+				<rows>
+					<!-- Nip patient -->
+					<row>
+						<label value="${c:l('Champ.Patient.Nip')}" sclass="formLabel"/>
+						<textbox id="nipBox" 
+							value="@{fwinPatientEdit$composer.object.nip save-when='validate.onClick, create.onClick'}" 
+							width="100px" 
+							constraint="@{fwinPatientEdit$composer.codeNullConstraint}" />
+						<label id="ndaFieldLabel" value="${c:l('Champ.Prelevement.PatientNda')}"
+												 sclass="formLabel" visible="false"/>
+						<textbox id="ndaBox" width="100px" visible="false"
+									constraint="@{fwinPatient$composer.codeNullConstraint}" />
+					</row>
+					<row>
+					<!-- Nom -->
+						<hbox>
+							<label value="${c:l('Champ.Patient.Nom')}" sclass="formLabel" />
+							<label id="nomRequired" value="*" sclass="requiredMark" />
+						</hbox>
+						<textbox id="nomBox" value="@{fwinPatientEdit$composer.object.nom, save-when='validate.onClick, create.onClick'}" 
+							width="100px" 
+							constraint="@{fwinPatientEdit$composer.nomConstraint}" />
+							
+					<!-- Nom naissance-->
+						<label value="${c:l('Champ.Patient.NomNaissance')}" sclass="formLabel" />
+							<textbox id="nomNaisBox" value="@{fwinPatientEdit$composer.object.nomNaissance,
+			        								 save-when='validate.onClick, create.onClick'}" 
+							width="100px" 
+							constraint="@{fwinPatientEdit$composer.nomNullConstraint}" />
+					</row>					
+					<row>
+					<!-- Prenom -->
+						<hbox>
+							<label value="${c:l('Champ.Patient.Prenom')}" sclass="formLabel" />
+							<label id="prenomRequired" value="*" sclass="requiredMark" />
+						</hbox>
+							<textbox id="prenomBox" value="@{fwinPatientEdit$composer.object.prenom,
+		        								 save-when='validate.onClick, create.onClick'}"
+						width="100px" 
+						constraint="@{fwinPatientEdit$composer.nomConstraint}" />
+					<!-- Sexe -->
+						<hbox>
+							<box orient="horizontal" pack="center" >
+							<label value="${c:l('Champ.Patient.Sexe')}" sclass="incaLabel" />
+							<image src="/images/icones/codif-export.png" visible="${sessionScope.catalogues['INCa'] != null}" 
+								tooltip="inca4" style="cursor: pointer" />
+						</box>
+							<label id="sexeRequired" value="*" sclass="requiredMark" />
+						</hbox>
+						<listbox id="sexeBox" mold="select" rows="1"
+							model="@{fwinPatientEdit$composer.sexes}"
+							selectedItem="@{fwinPatientEdit$composer.selectedSexe}">	
+							<listitem self="@{each='sex'}" value="@{sex.code}">			
+								<listcell label="@{sex.label}"/>
+							</listitem>
+						</listbox>
+					</row>	
+					<row spans="1,3">
+					<!-- Date de naissance -->
+						<hbox>
+							<box orient="horizontal" pack="center" >
+								<label value="${c:l('Champ.Patient.DateNaissance')}" sclass="incaLabel" />
+								<image src="/images/icones/codif-export.png" visible="${sessionScope.catalogues['INCa'] != null}" 
+								tooltip="inca3" style="cursor: pointer" />
+							</box>
+							<label id="dateNaissanceRequired" value="*" sclass="requiredMark" />
+						</hbox>
+						<datebox id="dateNaisBox" format="${c:l('validation.date.format.simple')}" 
+							value="@{fwinPatientEdit$composer.object.dateNaissance,
+							save-when='validate.onClick, create.onClick'}" 
+							constraint="no empty" lenient="false"/>
+					</row>	
+					<row>
+				<!-- Pays de naissance -->
+						<label value="${c:l('Champ.Patient.PaysNaissance')}" sclass="formLabel" />
+						<textbox id="paysNaisBox" value="@{fwinPatientEdit$composer.object.paysNaissance,
+		        								 save-when='validate.onClick, create.onClick'}" 
+						width="100px" 
+						constraint="@{fwinPatientEdit$composer.villePaysConstraint}" />
+					<!-- Ville de naissance -->
+						<label value="${c:l('Champ.Patient.VilleNaissance')}" sclass="formLabel" />
+						<textbox id="villeNaisBox" value="@{fwinPatientEdit$composer.object.villeNaissance,
+			        								 save-when='validate.onClick, create.onClick'}" 
+							width="100px" 
+							constraint="@{fwinPatientEdit$composer.villePaysConstraint}" />
+					</row>
+					<row>
+				<!-- Etat patient -->
+						<hbox>
+							<box orient="horizontal" pack="center" >
+							<label value="${c:l('Champ.Patient.PatientEtat')}" sclass="incaLabel" />
+							<image src="/images/icones/codif-export.png" visible="${sessionScope.catalogues['INCa'] != null}" 
+									tooltip="inca5" style="cursor: pointer" />
+						</box>
+							<label id="etatRequired" value="*" sclass="requiredMark" />
+						</hbox>
+						<listbox id="etatBox" mold="select" rows="1" multiple="false"
+							model="@{fwinPatientEdit$composer.etats load-after='sexeBox.onSelect'}"
+							selectedItem="@{fwinPatientEdit$composer.selectedEtat}">	
+							<listitem self="@{each='etat'}" value="etat.code">			
+								<listcell label="@{etat.label}"/>
+							</listitem>
+						</listbox>
+					<!-- Date de l'etat/décès -->
+						<box orient="horizontal" pack="center" >
+							<label id="dateEtatDecesField" sclass="incaLabel" value="${c:l('Champ.Patient.DateEtat')}" />
+							<image src="/images/icones/codif-export.png" visible="${sessionScope.catalogues['INCa'] != null}" 
+									tooltip="inca6" style="cursor: pointer" />
+						</box>
+						<datebox id="dateEtatDecesBox" format="${c:l('validation.date.format.simple')}" 
+							value="@{fwinPatientEdit$composer.dateEtatDeces,
+								save-when='validate.onClick, create.onClick'}" lenient="false"/>
+					</row>
+					<!-- Annotation inline -->
+					<row spans="4" style="background-color: blue">
+						<ficheAnnotationInline id="ficheTissuInlineAnnoPatient" hflex="1"/>
+					</row>
+					<!-- Referents -->
+					<group id="referentsGroup" 
+						label="@{fwinPatientEdit$composer.referentsGroupHeader load-after='onRefreshHeader'}"
+						style="border-bottom-width : 0px;"/>
+					<row spans="4">
+						<div id="referentsDiv">
+							<referents id="referents" />
+						</div>
+					</row>			
+				</rows>
+			</grid>
+		</panelchildren>
+		<toolbar height="100%" id="toolbar" align="end">
+			<hbox spacing="5">
+				<button id="validate" label="${c:l('general.validate')}" height="24px"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="revert" label="${c:l('general.cancel')}" height="24px"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="create" label="${c:l('general.create')}" height="24px"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="cancel" label="${c:l('general.cancel')}"  height="24px"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+			</hbox>
+		</toolbar>
+	</panel>
+	
+	<!-- include Catalogues popups -->
+	<incaPopUps />
+		
+</window>

@@ -1,0 +1,29 @@
+<Context>
+    <Environment name="/jdbc/dialect" type="java.lang.String" value="org.hibernate.dialect.MySQLDialect" override="false"/>
+    <Environment name="/jdbc/driverClass" type="java.lang.String" value="com.mysql.jdbc.Driver" override="false"/>
+    <Environment name="/jdbc/url" type="java.lang.String" value="jdbc:mysql://localhost:3306/tumorotek?characterEncoding=UTF-8&amp;rewriteBatchedStatements=true" override="false"/>
+    <Environment name="/jdbc/user" type="java.lang.String" value="tumo" override="false"/>
+    <Environment name="/jdbc/password" type="java.lang.String" value="tumo" override="false"/>
+    <Environment name="/tk/tkFileSystem" type="java.lang.String" value="/home/mathieu/TKtest/" override="false"/>
+    <Environment name="/codes/jdbc/dialect" type="java.lang.String" value="org.hibernate.dialect.MySQLDialect" override="false"/>
+    <Environment name="/codes/jdbc/driverClass" type="java.lang.String" value="com.mysql.jdbc.Driver" override="false"/>
+    <Environment name="/codes/jdbc/url" type="java.lang.String" value="jdbc:mysql://localhost:3306/tumorotek_codes?characterEncoding=UTF-8" override="false"/>
+    <Environment name="/codes/jdbc/user" type="java.lang.String" value="tumo" override="false"/>
+    <Environment name="/codes/jdbc/password" type="java.lang.String" value="tumo" override="false"/>
+    <Environment name="/tk/tkTumoPropertiesSystem" override="false" type="java.lang.String" value="${catalina.base}/conf/Catalina/localhost/"/>
+    <Environment name="/tk/tkSipSystem" override="false" type="java.lang.String" value="${catalina.base}/conf/Catalina/localhost/sip/"/>
+    <Environment name="/tk/tkMbioSystem" type="java.lang.String" value="${catalina.base}/conf/Catalina/localhost/mbio/" override="false"/>
+    <Environment name="/interfacages/jdbc/dialect" type="java.lang.String" value="org.hibernate.dialect.MySQLDialect" override="false"/>
+    <Environment name="/interfacages/jdbc/driverClass" type="java.lang.String" value="com.mysql.jdbc.Driver" override="false"/>
+    <Environment name="/interfacages/jdbc/url" type="java.lang.String" value="jdbc:mysql://localhost:3306/tumorotek_interfacages?characterEncoding=UTF-8" override="false"/>
+    <Environment name="/interfacages/jdbc/user" type="java.lang.String" value="tumo" override="false"/>
+    <Environment name="/interfacages/jdbc/password" type="java.lang.String" value="tumo" override="false"/>
+    <Environment name="/interfacage/maxSipTableSize" type="java.lang.Integer" value="3000" override="false"/>
+    <Environment name="/interfacage/maxSglTableSize" type="java.lang.Integer" value="2000" override="false"/>
+    <Environment name="/interfacage/conf/location" type="java.lang.String" value="${catalina.base}/conf/Catalina/localhost/camel/" override="false"/>
+    <Environment name="/ldap/url" type="java.lang.String" value="ldap://127.0.0.1:389/dc=sls,dc=aphp,dc=fr" override="false"/>
+    <Environment name="/activedirectory/domain" type="java.lang.String" value="domaine.fr" override="false"/>
+    <Environment name="/activedirectory/url" type="java.lang.String" value="ldap://domaine.fr:389/dc=domaine,dc=fr" override="false"/>
+    <Environment name="/ldap/userDn" type="java.lang.String" value="cn=admin,ou=Groupes et user applicatifs,dc=sls,dc=aphp,dc=fr" override="false"/>
+    <Environment name="/ldap/userPass" type="java.lang.String" value="******" override="false"/>
+</Context>

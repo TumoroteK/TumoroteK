@@ -1,0 +1,100 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+
+<zk>
+	<!-- <style src="/css/font-awesome-4.6.1/css/font-awesome.min.css" /> -->
+	
+	<window id="selectScanModale" width="500px" height="auto" border="normal" 
+        mode="modal" title="@load(c:cat3(c:l('scan.device.name'),': ', vm.device.name))" closable="true"
+        action="hide: slideUp"
+		apply="org.zkoss.bind.BindComposer" 
+		viewModel="@id('vm') @init('fr.aphp.tumorotek.action.interfacage.scan.SelectScanModaleVM')">
+		<panel collapsible="false"  id="winPanel" >
+			<panelchildren id="panelChildrenWithScroll" >
+				<hlayout>
+				 <!-- style="background: url(${c:encodeURL('/images/arts/print.png')})"> -->
+					<div width="30px"/>
+						<vlayout>
+							<div height="300px" style="border-radius: 5px 5px 5px 5px; padding: 5px; background-color: #FFFFFF; overflow-y: scroll">
+								<listbox id="listbox" model="@load(vm.scansModel)" hflex="1" vflex="1" 
+									multiple="false" checkmark="true" style="padding: 2px 15px 2px 2px">
+									<!-- <listhead visible="@load(vm.inEdition)"> -->
+									<!--	<listheader id="indicHeader" label="${c:l('general.selectAll')}" /> -->
+									<!-- </listhead> -->
+									<template name="model">
+										<listitem>
+											<listcell label="@load(each.name)" />
+											<listcell label="@load(each.dateScan.time) @converter('formatedDate', format='dd/MM/yyyy HH:mm')" />
+											<listcell label="${each.nbTubesStored}" />
+										</listitem>
+									</template>
+								</listbox>
+							</div>
+							<hlayout sclass="z-valign-middle">
+								<checkbox id="deleteOnSelBox" checked="@bind(vm.deleteOnSelect)" />
+								<label value="${c:l('scan.delete.on.select')}" sclass="formValueItalics" />
+							</hlayout>
+							<!-- button bar -->
+							<hlayout height="40px" hflex="1" style="text-align: center">
+								<div sclass="buttonBsDiv orange"
+									onClick="@command('onDeleteSelectedScan')">
+									<span class="fa fa-plus-trash-o fa-1x">
+										<label value="${c:l('general.delete')}" 
+												sclass="buttonLabel" />
+									</span>
+								</div>
+								<div sclass="buttonBsDiv red"
+									onClick="@command('onDeleteSelectedAllScans')">
+									<span class="fa fa-trash fa-1x">
+										<label value="${c:l('general.deleteAll')}" 
+												sclass="buttonLabel" />
+									</span>
+								</div>
+								<div sclass="buttonBsDiv green" onClick="@command('onSelectScan')">
+									<span class="fa fa-mouse-pointer fa-1x">
+										<label value="${c:l('general.select')}" 
+												sclass="buttonLabel" />
+									</span>
+								</div>
+							</hlayout>
+						</vlayout>
+					<div/>
+				</hlayout>
+			</panelchildren>
+		</panel>
+	</window>
+</zk>

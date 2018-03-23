@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MESPAT    def="MessagePatient">
+<ENTETE    def="Entete">
+	<CDEVT  def="Code evenement">FID</CDEVT>
+	<NOEVT  def="Numero evenement">2468</NOEVT>
+	<DAMSG  def="Date message">02052011115148</DAMSG>
+	<TYMSG  def="Type de message">80</TYMSG>
+</ENTETE>
+<ID />
+<FID    def="Message fusion identite">
+<NOIP   def="NIP passif">060606</NOIP>
+<NMMAL  def="Nom usuel patient passif">INEXISTANT</NMMAL>
+<NMPMAL  def="Prenom patient passif">JEAN</NMPMAL>
+<DANAIS  def="Date de naissance patient passif">01012001</DANAIS>
+<CDSEXM  def="Sexe patient passif">M</CDSEXM>
+<NOIPFU   def="NIP patient actif">070707</NOIPFU>
+<NMMALA  def="Nom usuel patient actif">ACREER</NMMALA>
+<CDSEXMA  def="Sexe patient actif">F</CDSEXMA>
+<NMPMALA  def="Prenom patient actif">JOSETTE</NMPMALA>
+<DANAISA  def="Date de naissance patient actif">06071965</DANAISA>
+</FID>
+<DA    def="Message dossier administratif"/>
+<VN      def="Message venue"/>
+<RV     def="Rendez vous"/>
+</MESPAT>

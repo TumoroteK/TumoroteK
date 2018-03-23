@@ -1,0 +1,137 @@
+<?page title="new page title" contentType="text/html;charset=UTF-8"?>
+
+<zk xmlns:h="http://www.w3.org/1999/xhtml">
+	<zscript>
+	String zulToLoad = "";
+	String createReportZul = "/zuls/stats/im/createReport.zul";
+	String createModeleZul = "/zuls/stats/im/createModele.zul";
+	<!--String createStmtZul = "/zuls/stats/im/createStmt.zul";-->
+	String listeModeleZul = "/zuls/stats/im/editListModele.zul";
+	String incaReportZul = "/zuls/report/inca/IncaReport.zul";
+	String chartsZul = "/zuls/stats/charts.zul";
+</zscript>
+
+
+
+
+
+
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+	<window id="win" border="none" width="100%" height="100%"
+		apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('fr.aphp.tumorotek.action.stats.StatController')">
+		<style>
+			.z-notification .z-notification-cl, .z-notification
+			.z-notification-cnt{ width:300px;height:100px; } .z-popup
+			.z-popup-cnt { color: #000000;} .z-popup .z-popup-cm {
+			background: #74A5E8; }
+
+			.navbox { position: relative; float: left; }
+
+			ul.nav { list-style: none; display: block; width: 200px;
+			position: relative; top: 10px; left: -5px; padding: 10px 0
+			60px 0; background:
+			url(${c:encodeURL('/images/stats_menu/shadow.png')})
+			no-repeat; -webkit-background-size: 50% 100%; 
+			-moz-background-size: 50% 100%;
+			background-size: 50% 100%;}
+
+			li { margin: 5px 0 0 0; }
+
+			ul.nav li a { 
+			-webkit-transition: all 0.3s ease-out;
+			-moz-transition: all 0.3s ease-out;
+			transition: all 0.3s ease-out;
+			background: #D5F5FF !important
+			url(${c:encodeURL('/images/stats_menu/border.png')})
+			no-repeat; color: #67a5cd; padding: 7px 15px 7px 15px;
+			border-top-right-radius:10px;
+			-moz-border-radius-topright:10px;
+			-moz-border-radius-bottomright: 10px;
+			-webkit-border-top-right-radius: 10px;
+			-webkit-border-bottom-right-radius: 10px; width: 100px;
+			border-bottom-right-radius: 10px;
+			border-top-right-radius: 10px;
+			display: block; text-decoration: none; 
+			-moz-box-shadow: 2px 2px 4px #888;
+			box-shadow: 2px 2px 4px #888;}
+
+			ul.nav li a:hover { background: #D5F5FF
+			url(${c:encodeURL('/images/stats_menu/border.png')})
+			no-repeat; color: #174867; padding: 7px 15px 7px 30px; }
+
+		</style>
+		
+		<!--
+		<borderlayout height="100%" hflex="1">
+			<west size="50%" zindex="1" border="none">
+			<vlayout>
+				<div vflex="1" style="padding: 50px 100px;" width="50%" height="50%">
+					<button id="btn1" image="/images/chart1_1.png"
+						orient="vertical" dir="reverse"
+						onClick="@command('onLoadPage', target=incaReportZul)"
+						style="cursor: pointer;" width="50%" height="50%"/>
+				</div>
+			
+					<div vflex="1" style="padding: 50px 100px;" width="50%" height="50%">
+						<hlayout>
+							<button id="btn2" image="/images/chart2.png"
+								orient="vertical" dir="reverse" style="cursor: pointer;" width="50%" height="50%"/>
+	
+							<div id="menu" class="navbox"
+								fulfill="btn2.onMouseOver">
+								<h:ul class="nav">
+									<h:li>
+										<a onClick="@command('onLoadPage', target=createReportZul)"
+											label="${c:l('stats.controller.report')}" />
+									</h:li>
+									<h:li>
+										<a
+											onClick="@command('onLoadPage', target=createModeleZul)"
+											label="${c:l('stats.controller.smodel.create')}" />
+											
+									</h:li>
+									<h:li>
+										<a
+											onClick="@command('onLoadPage', target=listeModeleZul)"
+											label="${c:l('stats.controller.smodel.edit')}" />
+									</h:li>
+							
+								</h:ul>
+							</div>
+						</hlayout>
+					</div>
+					
+					<div vflex="1" style="padding: 50px 100px;" width="50%" height="50%">
+						<hlayout>
+							<button id="btn3" image="/images/chart2.png"
+								orient="vertical" dir="reverse" style="cursor: pointer;" width="50%" height="50%"/>
+	
+							<div id="menu2" class="navbox"
+								fulfill="btn3.onMouseOver">
+								<h:ul class="nav">
+									<h:li>
+										<a onClick="@command('onLoadPage', target=chartsZul)"
+											label="${c:l('stats.charts')}" />
+									</h:li>
+					
+								</h:ul>
+							</div>
+						</hlayout>
+					</div>
+									</vlayout>
+
+					</west>
+							<center border="none"  zindex="1">
+				
+			</center>
+			-->
+			<!--
+			<east id="east" title="${c:l('stats.controller.indicateurs')}" size="100%"
+			 	border="none" collapsible="true" zindex="2" 
+			 	open="false">
+			 	<include id="inner" mode="instant" />   src="/zuls/stats/charts.zul" /> 
+			</east>-->
+		<!--</borderlayout>->>
+	</window>
+</zk>

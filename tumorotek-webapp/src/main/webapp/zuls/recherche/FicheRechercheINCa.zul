@@ -1,0 +1,410 @@
+<!--
+	* Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+    * dsi-projet.tk@aphp.fr
+	* 
+	* Ce logiciel est un programme informatique servant à la gestion de 
+	* l'activité de biobanques. 
+	*
+	* Ce logiciel est régi par la licence CeCILL soumise au droit français
+	* et respectant les principes de diffusion des logiciels libres. Vous 
+	* pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+	* conditions de la licence CeCILL telle que diffusée par le CEA, le 
+	* CNRS et l'INRIA sur le site "http://www.cecill.info". 
+	* En contrepartie de l'accessibilité au code source et des droits de   
+	* copie, de modification et de redistribution accordés par cette 
+	* licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+	* Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+	* l'auteur du programme, le titulaire des droits patrimoniaux et les 
+	* concédants successifs.
+	*
+	* A cet égard  l'attention de l'utilisateur est attirée sur les 
+	* risques associés au chargement,  à l'utilisation,  à la modification 
+	* et/ou au  développement et à la reproduction du logiciel par 
+	* l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+	* le rendre complexe à manipuler et qui le réserve donc à des 	
+	* développeurs et des professionnels  avertis possédant  des 
+	* connaissances  informatiques approfondies.  Les utilisateurs sont 
+	* donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+	* besoins dans des conditions permettant d'assurer la sécurité de leurs
+	* systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+	* et l'exploiter dans les mêmes conditions de sécurité. 
+	*	
+	* Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+	* avez pris connaissance de la licence CeCILL, et que vous en avez 
+	* accepté les termes. 
+-->
+<?page title="Recherche INCa" contentType="text/html;charset=UTF-8"?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?component name="calendarbox" macroURI="/zuls/component/CalendarBox.zul" class="fr.aphp.tumorotek.component.CalendarBox" ?>
+
+
+<zk>
+	<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" name="ficheRechercheINCa" root="../"?>
+
+	<window id="fwinRechercheINCa" border="none"
+		apply="fr.aphp.tumorotek.action.recherche.FicheRechercheINCa"
+		style="background-color : #000000">
+		<panel collapsible="false" sclass="fichePanelv2"
+			id="winPanel">
+			<panelchildren id="panelChildrenWithScroll">
+				<borderlayout>
+					<west sclass="tabBorderLayout" id="panelSearchHistorique" title="Historique"
+						size="24%" splittable="true" collapsible="true" open="false" vflex="1">
+						<groupbox width="190px" open="true">
+							<caption image="/images/icones/history.png"
+								label="${c:l('recherche.avancee.historique')}" />
+							<listbox id="searchHistoryListbox" 
+								model="@{fwinRechercheINCa$composer.itemSearchHistoryListbox}"
+								hflex="1"
+								style="border-top-width: 0px; border-left-width: 0px; border-right-width: 0px; border-bottom-width: 0px;"
+								 multiple="false">
+								<listitem id="itemSearchHistory"
+									self="@{each='history'}" value="@{history}"
+									tooltiptext="@{history.info}">
+									<listcell id="test"
+										label="@{history.info}" />
+								</listitem>
+							</listbox>
+						</groupbox>
+					</west>
+					<center autoscroll="true">
+						<grid fixedLayout="true" sclass="gridForm1"
+							id="gridFormPrlvt" style="background-color : #000000">
+							<columns>
+								<column width="150px" />
+								<column />
+								<column width="150px" />
+								<column />
+							</columns>
+							<rows id="rechercheRows">
+								<!-- Groupe Patient -->
+								<group id="groupPatients"
+									label="${c:l('recherche.inca.items.patient')}" />
+								<!-- Date de naissance & sexe -->
+								<row>
+									<label
+										value="${c:l('recherche.inca.item.3')}" sclass="formLabel" />
+									<vbox>
+										<hbox>
+											<div>
+												<listbox
+													id="operateursDateNaissanceBox" mold="select" rows="1"
+													model="@{fwinRechercheINCa$composer.operateursDates}">
+													<listitem
+														self="@{each='opDateNaiss'}" value="opDateNaiss">
+														<listcell
+															label="@{opDateNaiss}" />
+													</listitem>
+												</listbox>
+												<datebox
+													id="dateNaissance1Box"
+													format="${c:l('validation.date.format.simple')}"
+													cols="8">
+													<custom-attributes
+														attribut="DateNaissance" entite="Patient" />
+												</datebox>
+											</div>
+										</hbox>
+										<hbox width="100%">
+											<div align="right">
+												<label
+													value="${c:l('general.selectlist.and')}"
+													sclass="formLabel" />
+												<datebox
+													id="dateNaissance2Box"
+													format="${c:l('validation.date.format.simple')}" cols="8"
+													style="align:right;">
+													<custom-attributes
+														attribut="DateNaissance" entite="Patient" />
+												</datebox>
+											</div>
+										</hbox>
+									</vbox>
+
+									<label
+										value="${c:l('recherche.inca.item.4')}" sclass="formLabel" />
+									<listbox id="sexesBox" mold="select"
+										rows="1" model="@{fwinRechercheINCa$composer.sexes}"
+										style="width:150px;">
+										<listitem self="@{each='sexe'}"
+											value="sexe">
+											<listcell label="@{sexe}" />
+										</listitem>
+										<custom-attributes
+											attribut="Sexe" entite="Patient" />
+									</listbox>
+								</row>
+								<!-- Etat et date -->
+								<row>
+									<label
+										value="${c:l('recherche.inca.item.5')}" sclass="formLabel" />
+									<listbox id="etatsBox" mold="select"
+										rows="1" model="@{fwinRechercheINCa$composer.etats}"
+										style="width:150px;">
+										<listitem self="@{each='etat'}"
+											value="etat">
+											<listcell label="@{etat}" />
+										</listitem>
+										<custom-attributes
+											attribut="PatientEtat" entite="Patient" />
+									</listbox>
+
+									<label
+										value="${c:l('recherche.inca.item.6')}" sclass="formLabel" />
+									<vbox>
+										<hbox>
+											<div>
+												<listbox
+													id="operateursDateEtatBox" mold="select" rows="1"
+													model="@{fwinRechercheINCa$composer.operateursDates}">
+													<listitem
+														self="@{each='opDateEtat'}" value="opDateEtat">
+														<listcell
+															label="@{opDateEtat}" />
+													</listitem>
+												</listbox>
+												<datebox
+													id="dateEtat1Box"
+													format="${c:l('validation.date.format.simple')}"
+													cols="8">
+													<custom-attributes
+														attribut="DateEtat" entite="Patient" />
+												</datebox>
+											</div>
+										</hbox>
+										<hbox width="100%">
+											<div align="right">
+												<label
+													value="${c:l('general.selectlist.and')}"
+													sclass="formLabel" />
+												<datebox
+													id="dateEtat2Box"
+													format="${c:l('validation.date.format.simple')}" cols="8"
+													style="align:right;">
+													<custom-attributes
+														attribut="DateEtat" entite="Patient" />
+												</datebox>
+											</div>
+										</hbox>
+									</vbox>
+								</row>
+
+								<!-- Groupe Maladie -->
+								<group id="groupMaladies"
+									label="${c:l('recherche.inca.items.maladie')}" />
+								<!-- Code et date diagnostic -->
+								<row>
+									<label
+										value="${c:l('recherche.inca.item.7')}" sclass="formLabel" />
+									<textbox id="codeMaladieBox"
+										width="150px">
+										<custom-attributes
+											attribut="Code" entite="Maladie" />
+									</textbox>
+
+									<label
+										value="${c:l('recherche.inca.item.8')}" sclass="formLabel" />
+									<vbox>
+										<hbox>
+											<div>
+												<listbox
+													id="operateursDateDiagBox" mold="select" rows="1"
+													model="@{fwinRechercheINCa$composer.operateursDates}">
+													<listitem
+														self="@{each='opDateDiag'}" value="opDateDiag">
+														<listcell
+															label="@{opDateDiag}" />
+													</listitem>
+												</listbox>
+												<datebox
+													id="dateDiagnosticMaladie1Box"
+													format="${c:l('validation.date.format.simple')}"
+													cols="8">
+													<custom-attributes
+														attribut="DateDiagnostic" entite="Maladie" />
+												</datebox>
+											</div>
+										</hbox>
+										<hbox width="100%">
+											<div align="right">
+												<label
+													value="${c:l('general.selectlist.and')}"
+													sclass="formLabel" />
+												<datebox
+													id="dateDiagnosticMaladie2Box"
+													format="${c:l('validation.date.format.simple')}" cols="8"
+													style="align:right;">
+													<custom-attributes
+														attribut="DateDiagnostic" entite="Maladie" />
+												</datebox>
+											</div>
+										</hbox>
+									</vbox>
+								</row>
+								<!-- Groupe Prélèvement -->
+								<group id="groupPrelevements"
+									label="${c:l('recherche.inca.items.prelevement')}" />
+								<!-- Date prlvt et type de prlvt -->
+								<row>
+									<label
+										value="${c:l('recherche.inca.item.15')}" sclass="formLabel" />
+									<vlayout hflex="1">
+										<hlayout hflex="1">
+											<listbox
+												id="operateursDatePrlvtBox" mold="select" rows="1"
+												model="@{fwinRechercheINCa$composer.operateursDates}">
+												<listitem
+													self="@{each='opDatePrlvt'}" value="opDatePrlvt">
+													<listcell
+														label="@{opDatePrlvt}" />
+												</listitem>
+											</listbox>
+											<calendarbox
+												id="datePrelevement1Box"
+												format="${c:l('validation.date.format')}" cols="8">
+												<custom-attributes
+													attribut="DatePrelevement" entite="Prelevement" />
+											</calendarbox>
+										</hlayout>
+										<hlayout hflex="1">
+											<label
+												value="${c:l('general.selectlist.and')}"
+												sclass="formLabel" />
+											<calendarbox
+												id="datePrelevement2Box"
+												format="${c:l('validation.date.format')}" cols="8"
+												style="align:right;">
+												<custom-attributes
+													attribut="DatePrelevement" entite="Prelevement" />
+											</calendarbox>
+										</hlayout>
+									</vlayout>
+
+									<label
+										value="${c:l('recherche.inca.item.16')}" sclass="formLabel" />
+									<listbox id="typePrlvtBox"
+										mold="select" rows="1"
+										model="@{fwinRechercheINCa$composer.typePrlvts}"
+										style="width:150px;">
+										<listitem
+											self="@{each='typePrlvt'}" value="typePrlvt">
+											<listcell
+												label="@{typePrlvt.type}" />
+										</listitem>
+										<custom-attributes
+											attribut="PrelevementTypeId" entite="Prelevement" />
+									</listbox>
+								</row>
+								<!-- Groupe Echantillon -->
+								<group id="groupEchantillons"
+									label="${c:l('recherche.inca.items.echantillon')}" />
+								<!-- Organe + Code lésionel -->
+								<row>
+									<label
+										value="${c:l('recherche.inca.item.18.20')}"
+										sclass="formLabel" />
+									<textbox id="codeOrganeBox"
+										width="150px">
+										<custom-attributes
+											attribut="Code" entite="CodeOrgane" />
+									</textbox>
+
+									<label
+										value="${c:l('recherche.inca.item.19.21')}"
+										sclass="formLabel" />
+									<textbox id="codeLesionnelBox"
+										width="150px">
+										<custom-attributes
+											attribut="Code" entite="CodeMorpho" />
+									</textbox>
+								</row>
+								<!-- tumoral et type -->
+								<row>
+									<label
+										value="${c:l('recherche.inca.item.27.39')}"
+										sclass="formLabel" />
+									<listbox id="tumoralEchantillonBox"
+										mold="select" rows="1"
+										model="@{fwinRechercheINCa$composer.tumoraux}"
+										style="width:150px;">
+										<listitem
+											self="@{each='tumoral'}" value="tumoral">
+											<listcell
+												label="@{tumoral}" />
+										</listitem>
+										<custom-attributes
+											attribut="Tumoral" entite="Echantillon" />
+									</listbox>
+
+									<label
+										value="${c:l('recherche.inca.item.29.41')}"
+										sclass="formLabel" />
+									<listbox id="typeEchantillonBox"
+										mold="select" rows="1"
+										model="@{fwinRechercheINCa$composer.echantillonTypes}"
+										style="width:150px;">
+										<listitem
+											self="@{each='echantillonType'}" value="echantillonType">
+											<listcell
+												label="@{echantillonType.type}" />
+										</listitem>
+										<custom-attributes
+											attribut="EchantillonTypeId" entite="Echantillon" />
+									</listbox>
+								</row>
+								<!-- Quantité et Unité -->
+								<row>
+									<label
+										value="${c:l('recherche.inca.item.33.45')}"
+										sclass="formLabel" />
+									<div>
+										<listbox
+											id="operateursQuantiteEchantillonBox" mold="select" rows="1"
+											model="@{fwinRechercheINCa$composer.operateursDecimaux}">
+											<listitem
+												self="@{each='opQteEchan'}" value="opQteEchan">
+												<listcell
+													label="@{opQteEchan}" />
+											</listitem>
+										</listbox>
+										<decimalbox
+											id="quantiteEchantillonBox" width="75px" locale="en">
+											<custom-attributes
+												attribut="Quantite" entite="Echantillon" />
+										</decimalbox>
+									</div>
+
+									<label
+										value="${c:l('recherche.inca.item.34.46')}"
+										sclass="formLabel" />
+									<listbox id="uniteEchantillonBox"
+										mold="select" rows="1"
+										model="@{fwinRechercheINCa$composer.unites}"
+										style="width:150px;">
+										<listitem self="@{each='unite'}"
+											value="unite">
+											<listcell
+												label="@{unite.unite}" />
+										</listitem>
+										<custom-attributes
+											attribut="QuantiteUniteId" entite="Echantillon" />
+									</listbox>
+								</row>
+							</rows>
+						</grid>
+					</center>
+				</borderlayout>
+			</panelchildren>
+			<toolbar height="30px" id="toolbarEchan" align="end">
+				<hbox spacing="5" align="center">
+					<button id="find" label="${c:l('general.find')}"
+						height="24px" visible="true" image="/images/icones/find.png"
+						sclass="buttonv2" />
+				</hbox>
+			</toolbar>
+		</panel>
+	</window>
+	<popup id="codesInfos" width="300px" tooltiptext="">
+        <html content="${c:l('tooltip.recherche.codes')}"/>
+    </popup>
+</zk>

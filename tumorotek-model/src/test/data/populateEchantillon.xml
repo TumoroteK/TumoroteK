@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<dataset>
+	<table name="GROUPEMENT">
+		<column>GROUPEMENT_ID</column>
+		<column>CRITERE1_ID</column>
+		<column>CRITERE2_ID</column>
+		<column>CONDITION</column>
+		<column>PARENT_ID</column>
+		<row>
+			<value>1</value>
+			<value>1</value>
+			<null />
+			<value>2</value>
+			<null />
+		</row>
+		<row>
+			<value>2</value>
+			<null />
+			<null />
+			<value>1</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>3</value>
+			<value>2</value>
+			<value>3</value>
+			<value>2</value>
+			<value>2</value>
+		</row>
+		<row>
+			<value>4</value>
+			<value>1</value>
+			<value>4</value>
+			<value>3</value>
+			<value>2</value>
+		</row>
+	</table>
+	<table name="REQUETE">
+		<column>REQUETE_ID</column>
+		<column>INTITULE</column>
+		<column>CREATEUR_ID</column>
+		<column>GROUPEMENT_RACINE_ID</column>
+		<row>
+			<value>1</value>
+			<value>Tous les échantillons de moins de 6 mois</value>
+			<value>2</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>2</value>
+			<value>Les 10 dernières cessions</value>
+			<value>1</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>3</value>
+			<value>Les échantillons de Richard Coeur de Lion</value>
+			<value>5</value>
+			<value>2</value>
+		</row>
+		<row>
+			<value>4</value>
+			<value>Tous les produits dérivés de l'échantillon 0006.3</value>
+			<value>4</value>
+			<value>2</value>
+		</row>
+	</table>
+</dataset>

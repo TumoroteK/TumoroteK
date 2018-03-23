@@ -1,0 +1,131 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<?component name="calendarbox" macroURI="/zuls/component/CalendarBox.zul" class="fr.aphp.tumorotek.component.CalendarBox" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+
+<zk>
+<window id="fwinDateRetourComplete" width="500px" height="auto" border="normal" minimizable="false"
+        maximizable="false" closable="false" sizable="true" mode="modal"
+        action="hide: slideUp" 
+        apply="fr.aphp.tumorotek.action.cession.DateRetourCompleteModale"
+       	title="${c:l('liste.tkstockableobject.completeRetour')}" >
+        <panel collapsible="false"  id="winPanel" closable="true" vflex="1">
+		<panelchildren id="panelChildrenWithScroll" style="margin: 5px" >
+			<vlayout vflex="1" hflex="1" spacing="10px" >
+				<hlayout sclass="z-valign-middle" spacing="10px" >
+					<image id="warnImg" src="/images/icones/big_warning.png" />
+					<html style="font-size: 13px;" content="${c:l('retour.incomplete.modale.info')}" sclass="formValue" hflex="1" />
+				</hlayout>
+				<vlayout id="incompEchansRetourLayout" vflex="1" hflex="1">
+					<hlayout>
+						<label value="${c:l('Entite.Echantillon.pluriel')}" sclass="formValue"/>
+						[<label value="${c:l('general.details')}" tooltip="echansRetoursDetails" 
+												sclass="formValueItalics"  style="cursor: help" />]
+					</hlayout>
+					<image src="/images/pixelble.gif" style="background-repeat: repeat-x;" hflex="1" />
+					<hlayout sclass="z-valign-middle" style="margin: 10px">
+						<label value="${c:l('Champ.Retour.DateRetour')}" sclass="formLabel"/>
+						<calendarbox id="dateRetourEchansCalBox" constraint="no empty" />
+					</hlayout>
+				</vlayout>
+				<vlayout id="incompDerivesRetourLayout" vflex="1" hflex="1" >
+					<hlayout>
+						<label value="${c:l('Entite.ProdDerive.pluriel')}" sclass="formValue"/>
+						[<label value="${c:l('general.details')}" tooltip="derivesRetoursDetails" 
+												sclass="formValueItalics"  style="cursor: help" />]
+					</hlayout>
+					<image src="/images/pixelble.gif" style="background-repeat: repeat-x;" hflex="1" />
+					<hlayout  sclass="z-valign-middle" style="margin: 10px">
+						<label value="${c:l('Champ.Retour.DateRetour')}" sclass="formLabel"/>
+						<calendarbox id="dateRetourDerivesCalBox" constraint="no empty" />
+					</hlayout>
+				</vlayout>
+			</vlayout>
+		</panelchildren>
+		<toolbar height="30px" align="end">
+			<button id="cancel" label="${c:l('general.cancel')}" height="24px" 
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+			<button id="validate" label="${c:l('general.validate')}" height="24px" 
+					image="/images/icones/validate.png" sclass="buttonv2"/>
+		</toolbar>
+	</panel>
+	<popup id="echansRetoursDetails" width="300px" hflex="1" tooltiptext="">
+		<listbox id="echansRetoursDetailsList"	
+	             checkmark="false" 
+	             mold="paging"
+	             pageSize="5"
+	             span="true"
+	             sizedByContent="true"
+	             vflex="1">   
+	            <listhead>
+	                <listheader label="${c:l('general.code')}" />
+	                <listheader label="${c:l('Champ.Retour.DateRetour')}" />
+	            </listhead>
+	            
+		        <template name="model">
+	                <listitem>
+	               		<listcell label="${each.key}" /> 
+	               		<listcell label="${each.value}" />
+	                </listitem>   
+		        </template>
+		</listbox>
+	</popup>
+	<popup id="derivesRetoursDetails" width="300px" hflex="1" tooltiptext="">
+		<listbox id="derivesRetoursDetailsList"	
+	             checkmark="false" 
+	             mold="paging"
+	             pageSize="5"
+	             span="true"
+	             sizedByContent="true"
+	             vflex="1">   
+	            <listhead>
+	                <listheader label="${c:l('general.code')}" />
+	                <listheader label="${c:l('Champ.Retour.DateRetour')}" />
+	            </listhead>
+	            
+		        <template name="model">
+	                <listitem>
+	               		<listcell label="${each.key}" /> 
+	               		<listcell label="${each.value}" />
+	                </listitem>   
+		        </template>
+		</listbox>
+	</popup>
+</window>
+
+</zk>
+
+	

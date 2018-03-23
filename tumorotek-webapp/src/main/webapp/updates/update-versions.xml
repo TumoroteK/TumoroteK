@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+
+<updates>
+	<version nom="2.0 beta 1">
+		<update-file>2.0_beta1/updateDB_b1_DDL.sql</update-file>
+		<update-file>2.0_beta1/updateDB_b1.sql</update-file>
+	</version>
+	<version nom="2.0 beta 2">
+		<update-file>2.0_beta2/updateDB_b2_DDL.sql</update-file>
+		<update-file>2.0_beta2/updateDB_b2.sql</update-file>
+	</version>
+	<version nom="2.0 beta 3">
+		<update-file>2.0_beta3/updateDB_b3_DDL.sql</update-file>
+		<update-file>2.0_beta3/updateDB_b3.sql</update-file>
+	</version>
+	<version nom="2.0 beta 4">
+		<update-file>2.0_beta4/updateDB_b4_DDL.sql</update-file>
+		<update-file>2.0_beta4/updateDB_b4.sql</update-file>
+	</version>
+	<version nom="2.0.1">
+		<update-file>2.0.1/updateDB_201_DDL.sql</update-file>
+		<update-file>2.0.1/updateDB_201.sql</update-file>
+	</version>
+	<version nom="2.0.2">
+		<update-file>2.0.2/updateDB_202_DDL.sql</update-file>
+		<update-file>2.0.2/updateDB_202.sql</update-file>
+	</version>
+	<version nom="2.0.3">
+		<update-file>2.0.3/updateDB_203_DDL.sql</update-file>
+		<update-file>2.0.3/updateDB_203.sql</update-file>
+	</version>
+	<version nom="2.0.4">
+		<update-file>2.0.4/updateDB_204_DDL.sql</update-file>
+		<update-file>2.0.4/updateDB_204.sql</update-file>
+	</version>
+	<version nom="2.0.5">
+		<update-file>2.0.5/updateDB_205.sql</update-file>
+	</version>
+	<version nom="2.0.6">
+		<update-file>2.0.6/updateDB_206_DDL.sql</update-file>
+		<update-file>2.0.6/updateDB_206.sql</update-file>
+	</version>
+	<version nom="2.0.7">
+		<update-file>2.0.7/updateDB_207_DDL.sql</update-file>
+		<update-file>2.0.7/updateDB_207.sql</update-file>
+	</version>
+	<version nom="2.0.8">
+		<update-file>2.0.8/updateDB_208_DDL.sql</update-file>
+		<!-- <update-file>2.0.8/updateDB_208.sql</update-file> -->
+	</version>
+	<version nom="2.0.9">
+		<update-file>2.0.9/updateDB_209_DDL.sql</update-file>
+		<update-file>2.0.9/updateDB_209.sql</update-file>
+	</version>
+	<version nom="2.0.10">
+		<update-file>2.0.10/updateDB_210_DDL.sql</update-file>
+		<update-file>2.0.10/updateDB_210.sql</update-file>
+	</version>
+	<version nom="2.0.11">
+		<update-file>2.0.11/updateDB_211_DDL.sql</update-file>
+		<!-- <update-file>2.0.11/updateDB_211.sql</update-file> -->
+	</version>
+</updates>

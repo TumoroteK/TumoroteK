@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<formulaires version="1.0">
+	<formulaire>
+		<identifiant>NNNNNNNNNN</identifiant>
+		<patient>
+			<ipp>PPPPPPPP</ipp>
+		</patient>
+		<venue>
+			<nda></nda>
+		</venue>
+		<dateValeur>
+			<date>DDDD-DD-DD</date>
+			<heure>HH:MI</heure>
+		</dateValeur>
+		<codForm>XX </codForm>
+		<rubriques>
+			<rubrique>
+				<codRub>LST_TYPPRELVT1</codRub>
+				<valeurs>
+					<valeur>TYP </valeur>
+				</valeurs>
+			</rubrique>
+			<rubrique>
+				<codRub>DAT_PRLVT_TUMO2</codRub>
+				<valeurs>
+					<valeur>TTTT-TT-TT</valeur>
+				</valeurs>
+			</rubrique>
+			<rubrique>
+				<codRub>TXT_NAT_PRLVT3</codRub>
+				<valeurs>
+					<valeur> nature_prlvt </valeur>
+				</valeurs>
+			</rubrique>
+			<rubrique>
+				<codRub>NUM_NB_ECHANT4</codRub>
+				<valeurs>
+					<valeur> Y </valeur>
+				</valeurs>
+			</rubrique>
+		</rubriques>
+	</formulaire>
+</formulaires>
+
+<!-- Identifiant prélèvement = ID pas informatif aux utilisateurs -->
+<!-- update si modifications nb echantillons -->
+<!-- batch import -->
+<!-- Nature TIS OR LIQ / Banque ou -->

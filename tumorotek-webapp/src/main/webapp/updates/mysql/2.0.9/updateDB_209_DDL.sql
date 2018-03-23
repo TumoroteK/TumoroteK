@@ -1,0 +1,21 @@
+-- augmentation taille thesaurus
+alter table CESSION_EXAMEN modify EXAMEN varchar(200) not null;
+alter table CONDIT_MILIEU modify MILIEU varchar(200) not null;
+alter table MODE_PREPA modify NOM varchar(200) not null;
+alter table MODE_PREPA_DERIVE modify NOM varchar(200) not null;
+alter table DESTRUCTION_MOTIF modify MOTIF varchar(200) not null;
+alter table NATURE modify NATURE varchar(200) not null;
+alter table NON_CONFORMITE modify NOM varchar(200) not null;
+alter table PROTOCOLE modify NOM varchar(200) not null;
+alter table ECHAN_QUALITE modify ECHAN_QUALITE varchar(200) not null;
+alter table PROD_QUALITE modify PROD_QUALITE varchar(200) not null;
+alter table RISQUE modify NOM varchar(200) not null;
+alter table SPECIALITE modify NOM varchar(200) not null;
+alter table CONSENT_TYPE modify TYPE varchar(200) not null;
+alter table ECHANTILLON_TYPE modify TYPE varchar(200) not null;
+alter table ENCEINTE_TYPE modify TYPE varchar(200) not null;
+alter table CONDIT_TYPE modify TYPE varchar(200) not null;
+alter table CONTENEUR_TYPE modify TYPE varchar(200) not null;
+alter table PRELEVEMENT_TYPE modify TYPE varchar(200) not null;
+alter table PROD_TYPE modify TYPE varchar(200) not null;
+alter table PROTOCOLE_TYPE modify TYPE varchar(200) not null;

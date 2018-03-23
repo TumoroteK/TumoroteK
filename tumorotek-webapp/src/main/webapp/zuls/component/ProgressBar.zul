@@ -1,0 +1,18 @@
+<zk>
+	<panel collapsible="false" sclass="fichePanelv2" id="progressPanel"
+		apply="fr.aphp.tumorotek.component.ProgressBarComponent" width="350px">
+		<caption>
+			<div align="left">
+				<hlayout >
+					<label id="curr_step" value="0" />%
+					<progressmeter id="progressBar" value="0" width="240px" />
+					<div id="cancel" sclass="gridDelete" width="13px" height="13px" />
+				</hlayout>	
+				<label id="curr_"  style="background: green" />
+				<label id="total_" value=""/> 
+				<label id="type_" value="init"/>
+				<label id="errmes" visible="false" style="color: red; font-weight: bold" />
+			</div>
+		</caption>
+	</panel>
+</zk>

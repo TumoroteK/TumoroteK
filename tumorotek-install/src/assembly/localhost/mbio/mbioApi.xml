@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mbioConfig PUBLIC "-//Modul-Bio//DTD API Configuration 1.0//EN"
+"mbioApi.dtd">
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  Configuration  file  for MBioAPI                                     -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<mbioConfig>
+	<printers>
+		<printer id="1">
+			<licence>0DDDDD</licence>
+			<ipAddress>....</ipAddress>
+			<port>9100</port>
+			<queue>raw</queue>
+		</printer>
+	</printers>
+	<labels>
+		<label id="1">
+			<zplTemplate>standard.zpl</zplTemplate>
+			<parameters>
+				<param>
+					<name>1</name>
+					<value>1</value>
+				</param>
+				<param>
+					<name>2</name>
+					<value>2</value>
+				</param>
+				<param>
+					<name>3</name>
+					<value>3</value>
+				</param>
+				<param>
+					<name>4</name>
+					<value>4</value>
+				</param>
+				<param>
+					<name>5</name>
+					<value>5</value>
+				</param>
+				<param>
+					<name>6</name>
+					<value>6</value>
+				</param>
+			</parameters>
+		</label>
+	</labels>
+</mbioConfig>

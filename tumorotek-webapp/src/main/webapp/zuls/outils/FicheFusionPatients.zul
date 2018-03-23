@@ -1,0 +1,335 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<window id="fwinFusionPatients" border="none" apply="fr.aphp.tumorotek.action.outils.FicheFusionPatients">
+	<panel collapsible="false" title="${c:l('outil.fusion.patients')}"
+	 sclass="fichePanelv2" id="winPanel">
+		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
+			<grid id="gridValeurs" fixedLayout="true" sclass="gridForm1">
+				<columns>
+					<column/>
+					<column width="30px"/>
+					<column/>
+				</columns>
+				<rows>
+					<row spans="3">
+						<html content="${c:l('fusion.patients.help.1')}" sclass="formValue" />
+					</row>
+					<row spans="3">
+						<html content="${c:l('fusion.patients.help.2')}" sclass="formValue" />
+					</row>
+					<row spans="3">
+						<separator/>
+					</row>
+					<row spans="3" align="center">
+						<html content="${c:l('fusion.patients.help.3')}" 
+							sclass="formErrorValue" style="font-weight : bold;"/>
+					</row>
+					
+					<row spans="3">
+						<separator/>
+					</row>
+					<row spans="3">
+						<vbox>
+							<label value="${c:l('fusion.patients.select.title')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					
+					<row id="findPatientRow">
+						<box orient="horizontal" pack="center">
+							<label value="${c:l('fusion.patients.select')}" sclass="formLabel" />
+							<textbox id="nomFirstBox" />
+				 			<image id="searchFirstPatient" 
+				 				src="/images/icones/player_play.png"
+				 				style="cursor:pointer;"/>
+				 			<separator width="5px"/>
+							<image id="deleteFirstPatient" 
+					 			src="/images/icones/small_delete12.png"
+					 			style="cursor:pointer;" align="bottom"/>
+						</box>
+						
+						<label/>
+						
+						<box orient="horizontal" pack="center">
+							<label value="${c:l('fusion.patients.select')}" sclass="formLabel" />
+							<textbox id="nomSecondBox" />
+				 			<image id="searchSecondPatient" 
+				 				src="/images/icones/player_play.png"
+				 				style="cursor:pointer;"/>
+				 			<separator width="5px"/>
+							<image id="deleteSecondPatient" 
+					 			src="/images/icones/small_delete12.png"
+					 			style="cursor:pointer;" align="bottom"/>
+						</box>
+					</row>
+					
+					<row spans="3">
+						<separator/>
+					</row>
+					
+					<row>
+						<vbox style="background-color:#90ee90;border-style:solid;border-width:1px;border-color:#003399;" width="100%">
+							<separator height="2px"/>
+							<box orient="horizontal">
+								<separator width="5px"/>
+								<label value="${c:l('fusion.patient.conserver.title')}" 
+									sclass="formBlueLabel" style="text-decoration:underline;"/>
+							</box>
+							<!-- Nip -->
+							<hbox>
+								<separator width="5px"/>
+								<div width="125px">
+									<label value="${c:l('Champ.Patient.Nip')}" sclass="formLabel"/>
+								</div>
+								<label value="@{fwinFusionPatients$composer.patientAConserver.nip,
+									load-after='fwinFusionPatients.onGetFirstPatientFromSelection,
+									deleteFirstPatient.onClick, fusionButton.onClick'}" sclass="formValue" />
+							</hbox>
+							<!-- Nom -->
+							<hbox>
+								<separator width="5px"/>
+								<div width="125px">
+									<label value="${c:l('Champ.Patient.Nom')}" sclass="formLabel"/>
+								</div>
+								<label value="@{fwinFusionPatients$composer.patientAConserver.nom,
+									load-after='fwinFusionPatients.onGetFirstPatientFromSelection,
+									deleteFirstPatient.onClick, fusionButton.onClick'}" sclass="formValue" />
+							</hbox>
+							<!-- Nom patronymique -->
+							<hbox>
+								<separator width="5px"/>
+								<div width="125px">
+									<label value="${c:l('Champ.Patient.NomNaissance')}" sclass="formLabel"/>
+								</div>
+								<label value="@{fwinFusionPatients$composer.patientAConserver.nomNaissance,
+									load-after='fwinFusionPatients.onGetFirstPatientFromSelection,
+									deleteFirstPatient.onClick, fusionButton.onClick'}" sclass="formValue" />
+							</hbox>
+							<!-- Prénom -->
+							<hbox>
+								<separator width="5px"/>
+								<div width="125px">
+									<label value="${c:l('Champ.Patient.Prenom')}" sclass="formLabel"/>
+								</div>
+								<label value="@{fwinFusionPatients$composer.patientAConserver.prenom,
+									load-after='fwinFusionPatients.onGetFirstPatientFromSelection,
+									deleteFirstPatient.onClick, fusionButton.onClick'}" sclass="formValue" />
+							</hbox>
+							<!-- Sexe -->
+							<hbox>
+								<separator width="5px"/>
+								<div width="125px">
+									<label value="${c:l('Champ.Patient.Sexe')}" sclass="formLabel"/>
+								</div>
+								<label value="@{fwinFusionPatients$composer.patientAConserver.sexe,
+									load-after='fwinFusionPatients.onGetFirstPatientFromSelection,
+									deleteFirstPatient.onClick, fusionButton.onClick'}" sclass="formValue" />
+							</hbox>
+							<!-- Date naissance -->
+							<hbox>
+								<separator width="5px"/>
+								<div width="125px">
+									<label value="${c:l('Champ.Patient.DateNaissance')}" 
+										sclass="formLabel"/>
+								</div>
+								<label value="@{fwinFusionPatients$composer.patientAConserverDateNaissanceFormated,
+									load-after='fwinFusionPatients.onGetFirstPatientFromSelection,
+									deleteFirstPatient.onClick, fusionButton.onClick'}" sclass="formValue" />
+							</hbox>
+							<!-- Médecins -->
+							<hbox>
+								<separator width="5px"/>
+								<div width="125px">
+									<label value="${c:l('patient.medecins')}" 
+										sclass="formLabel"/>
+								</div>
+								<div id="patientAConserverMedecinsDiv"/>
+							</hbox>
+							<!-- Maladies -->
+							<hbox>
+								<separator width="5px"/>
+								<div width="125px">
+									<label value="${c:l('patient.maladies')}" 
+										sclass="formLabel"/>
+								</div>
+								<div id="patientAConserverMaladiesDiv"/>
+							</hbox>
+							<!-- Prelevements -->
+							<hbox>
+								<separator width="5px"/>
+								<div width="125px">
+									<label value="${c:l('ficheMaladie.prelevements')}" 
+										sclass="formLabel"/>
+								</div>
+								<div id="patientAConserverPrelevementsDiv"/>
+							</hbox>
+							<separator height="2px"/>
+						</vbox>
+						<label/>
+						<vbox style="background-color:#fddfa9;border-style:solid;border-width:1px;border-color:#003399;" width="100%">
+							<separator height="2px"/>
+							<hbox>
+								<separator width="5px"/>
+								<label value="${c:l('fusion.patient.supprimer.title')}" 
+									sclass="formBlueLabel" style="text-decoration : underline;"/>
+							</hbox>
+							<!-- Nip -->
+							<hbox>
+								<separator width="5px"/>
+								<div width="125px">
+									<label value="${c:l('Champ.Patient.Nip')}" sclass="formLabel"/>
+								</div>
+								<label value="@{fwinFusionPatients$composer.patientASupprimer.nip,
+									load-after='fwinFusionPatients.onGetSecondPatientFromSelection,
+									deleteSecondPatient.onClick, fusionButton.onClick'}" sclass="formValue" />
+							</hbox>
+							<!-- Nom -->
+							<hbox>
+								<separator width="5px"/>
+								<div width="125px">
+									<label value="${c:l('Champ.Patient.Nom')}" sclass="formLabel"/>
+								</div>
+								<label value="@{fwinFusionPatients$composer.patientASupprimer.nom,
+									load-after='fwinFusionPatients.onGetSecondPatientFromSelection,
+									deleteSecondPatient.onClick, fusionButton.onClick'}" sclass="formValue" />
+							</hbox>
+							<!-- Nom patronymique -->
+							<hbox>
+								<separator width="5px"/>
+								<div width="125px">
+									<label value="${c:l('Champ.Patient.NomNaissance')}" sclass="formLabel"/>
+								</div>
+								<label value="@{fwinFusionPatients$composer.patientASupprimer.nomNaissance,
+									load-after='fwinFusionPatients.onGetSecondPatientFromSelection,
+									deleteSecondPatient.onClick, fusionButton.onClick'}" sclass="formValue" />
+							</hbox>
+							<!-- Prénom -->
+							<hbox>
+								<separator width="5px"/>
+								<div width="125px">
+									<label value="${c:l('Champ.Patient.Prenom')}" sclass="formLabel"/>
+								</div>
+								<label value="@{fwinFusionPatients$composer.patientASupprimer.prenom,
+									load-after='fwinFusionPatients.onGetSecondPatientFromSelection,
+									deleteSecondPatient.onClick, fusionButton.onClick'}" sclass="formValue" />
+							</hbox>
+							<!-- Sexe -->
+							<hbox>
+								<separator width="5px"/>
+								<div width="125px">
+									<label value="${c:l('Champ.Patient.Sexe')}" sclass="formLabel"/>
+								</div>
+								<label value="@{fwinFusionPatients$composer.patientASupprimer.sexe,
+									load-after='fwinFusionPatients.onGetSecondPatientFromSelection,
+									deleteSecondPatient.onClick, fusionButton.onClick'}" sclass="formValue" />
+							</hbox>
+							<!-- Date naissance -->
+							<hbox>
+								<separator width="5px"/>
+								<div width="125px">
+									<label value="${c:l('Champ.Patient.DateNaissance')}" sclass="formLabel"/>
+								</div>
+								<label value="@{fwinFusionPatients$composer.patientASupprimerDateNaissanceFormated,
+									load-after='fwinFusionPatients.onGetSecondPatientFromSelection,
+									deleteSecondPatient.onClick, fusionButton.onClick'}" sclass="formValue" />
+							</hbox>
+							<!-- Médecins -->
+							<hbox>
+								<separator width="5px"/>
+								<div width="125px">
+									<label value="${c:l('patient.medecins')}" 
+										sclass="formLabel"/>
+								</div>
+								<div id="patientASupprimerMedecinsDiv"/>
+							</hbox>
+							<!-- Maladies -->
+							<hbox>
+								<separator width="5px"/>
+								<div width="125px">
+									<label value="${c:l('patient.maladies')}" 
+										sclass="formLabel"/>
+								</div>
+								<div id="patientASupprimerMaladiesDiv"/>
+							</hbox>
+							<!-- Prelevements -->
+							<hbox>
+								<separator width="5px"/>
+								<div width="125px">
+									<label value="${c:l('ficheMaladie.prelevements')}" 
+										sclass="formLabel"/>
+								</div>
+								<div id="patientASupprimerPrelevementsDiv"/>
+							</hbox>
+							<separator height="2px"/>
+						</vbox>
+					</row>
+					
+					<row spans="3">
+						<separator/>
+					</row>
+					
+					<!-- Bouton -->
+					<row spans="3" align="center">
+						<button label="${c:l('fusion.button.label')}"
+							sclass="buttonv2"
+							id="fusionButton"
+							style="font-weight: bold;"
+							image="/images/icones/fusion_patients.png"
+							disabled="true"/>
+					</row>
+				</rows>
+			</grid>
+		</panelchildren>
+		<toolbar height="30px" id="toolbarEchan" align="end">
+			<hbox spacing="5" align="center">
+				<button id="addNewC" label="${c:l('general.new')}" height="24px" visible="false"
+					image="/images/icones/new.png" sclass="buttonv2"/>
+				<button id="editC" label="${c:l('general.edit')}" height="24px" visible="false"
+					image="/images/icones/edit.png" sclass="buttonv2"/>
+				<button id="deleteC" label="${c:l('general.delete')}" height="24px" visible="false"
+					image="/images/icones/trash.png" sclass="buttonv2"/>
+				<button id="validateC" label="${c:l('general.validate')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="revertC" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="createC" label="${c:l('general.create')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="cancelC" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+			</hbox>
+		</toolbar>
+	</panel>
+</window>

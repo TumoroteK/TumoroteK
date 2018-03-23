@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<MESPAT    def="MessagePatient">
+<ENTETE    def="Entete">
+	<CDEVT  def="Code evenement">MID</CDEVT>
+	<NOEVT  def="Numero evenement">1666</NOEVT>
+	<DAMSG  def="Date message">14032011134907</DAMSG>
+	<TYMSG  def="Type de message">01</TYMSG>
+</ENTETE>
+<ID     def="Message identite du patient">
+<NOIP   def="Numero identification permanent">121212</NOIP>
+<NMMAL   def="Nom usuel">GAGA</NMMAL>
+<NMPATR  def="Nom patronymique">RAMIREZ</NMPATR>
+<NMPMAL  def="Prenom">LADY</NMPMAL>
+<DANAIS  def="Date de naissance">05041995</DANAIS>
+<CDDNIN  def="Indicateur date naissance incertaine"></CDDNIN>
+<CDSEXM  def="Sexe">F</CDSEXM>
+<NOCONA  def="Code INSEE de la commune de naissance"></NOCONA>
+<CDPONA  def="Code postal de la commune de naissance"></CDPONA>
+<LBLONA  def="Libelle de la commune de naissance"></LBLONA>
+<CDPNAT  def="Code du pays de naissance"></CDPNAT>
+<CDNAT  def="Code de la nationalite"></CDNAT>
+<CDSIFA  def="Code de la situation familiale"></CDSIFA>
+<NOTLDO  def="Num telephone du domicile"></NOTLDO>
+<NOTLPR  def="Num telephone professionnel">01.42.55.99.71</NOTLPR>
+<CDCGSP  def="Code categorie socio-professionnelle"></CDCGSP>
+<CDMORT  def="Indicateur patient decede"></CDMORT>
+<INPROV  def="Indicateur identite provisoire">O</INPROV>
+<ADR	  def="Adresses principale et secondaire">
+<ADR1	  def="Adresse principale">
+	<COIDPA	def="Complement identite"></COIDPA>
+	<COADPA	def="Complement adresse"></COADPA>
+	<ADREPA	def="Adresse (num et rue)">35 RUE DE LA COTE D OR</ADREPA>
+	<LBCOPA	def="Libelle de la commune">PARIS 18</LBCOPA>
+	<NOCOPA	def="Code INSEE de la commune">75118</NOCOPA>
+	<CDPOPA	def="Code postal de la commune">75018</CDPOPA>
+	<LIACPA	def="Ligne acheminement">PARIS</LIACPA>
+</ADR1>
+<ADR2	def="Adresse secondaire">
+	<COIDPA def="Complement identite"></COIDPA>
+	<COADPA def="Complement adresse"></COADPA>
+	<ADREPA def="Adresse (num et rue)"></ADREPA>
+	<LBCOPA def="Libelle de la commune"></LBCOPA>
+	<NOCOPA def="Code INSEE de la commune"></NOCOPA>
+	<CDPOPA def="Code postal de la commune"></CDPOPA>
+	<LIACPA def="Ligne acheminement"></LIACPA>
+</ADR2>
+</ADR>
+</ID>
+<FID     def="Message fusion"/>
+<DA    def="Message dossier administratif"/>
+<VN      def="Message venue"/>
+<RV     def="Rendez vous"/>
+</MESPAT>

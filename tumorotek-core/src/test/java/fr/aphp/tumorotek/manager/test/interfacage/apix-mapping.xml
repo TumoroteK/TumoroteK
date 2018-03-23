@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<Interfacage>
+	<Logiciel func="SIP">
+		<Nom>APIX</Nom>
+		<Editeur>TECHNIDATA</Editeur>
+		<Version>7.21.0</Version>
+	</Logiciel>
+	<Configuration>
+		<SeparateurChamps>|</SeparateurChamps>
+		<SeparateurComposants>^</SeparateurComposants>
+		<SeparateurSousComposants>~</SeparateurSousComposants>
+		<BlocLibreKey>OBX</BlocLibreKey>
+		<NumeroDossier>
+			<BlocValue>ORC</BlocValue>
+			<Key>4</Key>
+		</NumeroDossier>
+		<DateDossier>
+			<BlocValue>MSH</BlocValue>
+			<Key>6</Key>
+		</DateDossier>
+		<OperationDossier>
+			<BlocValue>ORC</BlocValue>
+			<Key>5</Key>
+		</OperationDossier>
+	</Configuration>
+	<Bloc nom="PID">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Nip" idChamp="2"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>3.1</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Nom" idChamp="3"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>5.1</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Prenom" idChamp="5"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>5.2</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Sexe" idChamp="6"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>8</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="DateNaissance" idChamp="7"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>7</Key>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<Bloc nom="ORC">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Code" idChamp="23"></ChampEntite>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>4</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="DatePrelevement" idChamp="30"></ChampEntite>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>7</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="ServicePreleveurId" idChamp="29"></ChampEntite>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>12.2</Key>
+				<Modifier nom="Thesaurus">
+					<MappingThes>
+						<SourceThes>SERVICE DE PATHOLOGIE</SourceThes>
+						<TkThes>114</TkThes>
+					</MappingThes>
+				</Modifier>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<Bloc nom="SPM">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="NatureId" idChamp="24"></ChampEntite>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>4.1</Key>
+				<Modifier nom="Thesaurus">
+					<MappingThes>
+						<SourceThes>WDC_CCM</SourceThes>
+						<TkThes>TISSU FIXE</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>Prelevement Sanguin</SourceThes>
+						<TkThes>SANG</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>Liquide d'Ascite</SourceThes>
+						<TkThes>LIQUIDE D'ASCITE</TkThes>
+					</MappingThes>
+				</Modifier>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<Bloc nom="SPM_OBX1">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="CodeMorphos" idChamp="230"></ChampEntite>
+				<Entite nom="Echantillon" idChamp="3"></Entite>
+			</Tk>
+			<Source>
+				<Key>5.1</Key>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<!-- Annotations prelevement vers champs TK -->
+	<BlocLibre nom="Date Prelevement recu">
+		<Source>
+			<Key>3.2</Key>
+		</Source>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="DateArrivee" idChamp="38"></ChampEntite>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>5</Key>
+			</Source>
+		</Mapping>
+	</BlocLibre>
+	<!-- Annotations prelevement -->
+	<!-- <BlocLibre nom="Date de Prelevement Recu"> -->
+	<!-- <Source> -->
+	<!-- <Key>3</Key> -->
+	<!-- </Source> -->
+	<!-- <Mapping> -->
+	<!-- <Tk> -->
+	<!-- <Annotation nom="Date prelevement recu" idChamp="35"></Annotation> -->
+	<!-- <Entite nom="Prelevement" idChamp="2"></Entite> -->
+	<!-- </Tk> -->
+	<!-- <Source> -->
+	<!-- <Key>5</Key> -->
+	<!-- </Source> -->
+	<!-- </Mapping> -->
+	<!-- </BlocLibre> -->
+	<BlocLibre nom="Ref du prel histo a Ambroise Pare">
+		<Source>
+			<Key>3.2</Key>
+		</Source>
+		<Mapping>
+			<Tk>
+				<Annotation nom="Ref du prel histo a Ambroise Pare"
+					idChamp="2"></Annotation>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>5</Key>
+			</Source>
+		</Mapping>
+	</BlocLibre>
+	<BlocLibre nom="Diagnostic histologique">
+		<Source>
+			<Key>3.2</Key>
+		</Source>
+		<Mapping>
+			<Tk>
+				<Annotation nom="Diagnostic histologique" idChamp="3"></Annotation>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>5</Key>
+				<Modifier nom="Thesaurus">
+					<MappingThes>
+						<SourceThes>DIfficile</SourceThes>
+						<TkThes>Difficile</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>ErdheimC</SourceThes>
+						<TkThes>ErdheimC</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>LCH</SourceThes>
+						<TkThes>LCH</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>MixteLCHErdheimC</SourceThes>
+						<TkThes>MixteLCHErdheimC</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>RosaiD</SourceThes>
+						<TkThes>RosaiD</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>XanthoDissem</SourceThes>
+						<TkThes>XanthoDissem</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>XanthoLocal</SourceThes>
+						<TkThes>XanthoLocal</TkThes>
+					</MappingThes>
+				</Modifier>
+			</Source>
+		</Mapping>
+	</BlocLibre>
+	<BlocLibre nom="Diagn_clinique">
+		<Source>
+			<Key>3.2</Key>
+		</Source>
+		<Mapping>
+			<Tk>
+				<Annotation nom="Diagn_clinique" idChamp="15"></Annotation>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>5</Key>
+				<Modifier nom="Thesaurus">
+					<MappingThes>
+						<SourceThes>Difficile</SourceThes>
+						<TkThes>Difficile</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>ErdheimC</SourceThes>
+						<TkThes>ErdheimC</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>LCH</SourceThes>
+						<TkThes>LCH</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>MixteLCHErdheimC</SourceThes>
+						<TkThes>MixteLCHErdheimC</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>RosaiD</SourceThes>
+						<TkThes>RosaiD</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>XanthoDissem</SourceThes>
+						<TkThes>XanthoDissem</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>XanthoLocal</SourceThes>
+						<TkThes>XanthoLocal</TkThes>
+					</MappingThes>
+				</Modifier>
+			</Source>
+		</Mapping>
+	</BlocLibre>
+	<BlocLibre nom="Commentaires1">
+		<Source>
+			<Key>3.2</Key>
+		</Source>
+		<Mapping>
+			<Tk>
+				<Annotation nom="Commentaires1" idChamp="27"></Annotation>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>5</Key>
+			</Source>
+		</Mapping>
+	</BlocLibre>
+
+	<!-- Annotations echantillon -->
+	<BlocLibre nom="Pourcent_histio">
+		<Source>
+			<Key>3.2</Key>
+		</Source>
+		<Mapping>
+			<Tk>
+				<Annotation nom="Pourcent_histio" idChamp="4"></Annotation>
+				<Entite nom="Echantillon" idChamp="3"></Entite>
+			</Tk>
+			<Source>
+				<Key>5</Key>
+			</Source>
+		</Mapping>
+	</BlocLibre>
+	<BlocLibre nom="IHC CD1a">
+		<Source>
+			<Key>3.2</Key>
+		</Source>
+		<Mapping>
+			<Tk>
+				<Annotation nom="IHC CD1a" idChamp="5"></Annotation>
+				<Entite nom="Echantillon" idChamp="3"></Entite>
+			</Tk>
+			<Source>
+				<Key>5</Key>
+				<Modifier nom="Thesaurus">
+					<MappingThes>
+						<SourceThes>PosAPare</SourceThes>
+						<TkThes>PosAPare</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>PosAilleurs</SourceThes>
+						<TkThes>PosAilleurs</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>NegAPare</SourceThes>
+						<TkThes>NegAPare</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>NegAilleurs</SourceThes>
+						<TkThes>NegAilleurs</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>NA</SourceThes>
+						<TkThes>NA</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>NI</SourceThes>
+						<TkThes>NI</TkThes>
+					</MappingThes>
+				</Modifier>
+			</Source>
+		</Mapping>
+	</BlocLibre>
+	<BlocLibre nom="IHC PS100">
+		<Source>
+			<Key>3.2</Key>
+		</Source>
+		<Mapping>
+			<Tk>
+				<Annotation nom="IHC PS100" idChamp="7"></Annotation>
+				<Entite nom="Echantillon" idChamp="3"></Entite>
+			</Tk>
+			<Source>
+				<Key>5</Key>
+				<Modifier nom="Thesaurus">
+					<MappingThes>
+						<SourceThes>PosAPare</SourceThes>
+						<TkThes>PosAPare</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>PosAilleurs</SourceThes>
+						<TkThes>PosAilleurs</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>NegAPare</SourceThes>
+						<TkThes>NegAPare</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>NegAilleurs</SourceThes>
+						<TkThes>NegAilleurs</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>NA</SourceThes>
+						<TkThes>NA</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>NI</SourceThes>
+						<TkThes>NI</TkThes>
+					</MappingThes>
+				</Modifier>
+			</Source>
+		</Mapping>
+	</BlocLibre>
+	<BlocLibre nom="CD8">
+		<Source>
+			<Key>3.1</Key>
+		</Source>
+		<Mapping>
+			<Tk>
+				<Annotation nom="CD8" idChamp="21"></Annotation>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>5</Key>
+				<Modifier nom="Thesaurus">
+					<MappingThes>
+						<SourceThes>PosAPare</SourceThes>
+						<TkThes>PosAPare</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>PosAilleurs</SourceThes>
+						<TkThes>PosAilleurs</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>NegAPare</SourceThes>
+						<TkThes>NegAPare</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>NegAilleurs</SourceThes>
+						<TkThes>NegAilleurs</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>NA</SourceThes>
+						<TkThes>NA</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>NI</SourceThes>
+						<TkThes>NI</TkThes>
+					</MappingThes>
+				</Modifier>
+			</Source>
+		</Mapping>
+	</BlocLibre>
+	*
+	<BlocLibre nom="IHC Facteur XIII">
+		<Source>
+			<Key>3.2</Key>
+		</Source>
+		<Mapping>
+			<Tk>
+				<Annotation nom="IHC Facteur XIII" idChamp="9"></Annotation>
+				<Entite nom="Echantillon" idChamp="3"></Entite>
+			</Tk>
+			<Source>
+				<Key>5</Key>
+				<Modifier nom="Thesaurus">
+					<MappingThes>
+						<SourceThes>PosAPare</SourceThes>
+						<TkThes>PosAPare</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>PosAilleurs</SourceThes>
+						<TkThes>PosAilleurs</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>NegAPare</SourceThes>
+						<TkThes>NegAPare</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>NegAilleurs</SourceThes>
+						<TkThes>NegAilleurs</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>NA</SourceThes>
+						<TkThes>NA</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>NI</SourceThes>
+						<TkThes>NI</TkThes>
+					</MappingThes>
+				</Modifier>
+			</Source>
+		</Mapping>
+	</BlocLibre>
+	<BlocLibre nom="Commentaires2">
+		<Source>
+			<Key>3.2</Key>
+		</Source>
+		<Mapping>
+			<Tk>
+				<Annotation nom="Commentaires2" idChamp="45"></Annotation>
+				<Entite nom="Echantillon" idChamp="3"></Entite>
+			</Tk>
+			<Source>
+				<Key>5</Key>
+			</Source>
+		</Mapping>
+	</BlocLibre>
+
+	<BlocLibre nom="Localisation du Prelevement">
+		<Source>
+			<Key>3.2</Key>
+		</Source>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="CodeOrganes" idChamp="30"></ChampEntite>
+				<Entite nom="Echantillon" idChamp="3"></Entite>
+			</Tk>
+			<Source>
+				<Key>5</Key>
+				<Modifier nom="Thesaurus">
+					<MappingThes>
+						<SourceThes>Os</SourceThes>
+						<TkThes>LO</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>Poumon</SourceThes>
+						<TkThes>RP</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>Ganglion</SourceThes>
+						<TkThes>Ganglion</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>Peau</SourceThes>
+						<TkThes>Peau</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>TissusMou</SourceThes>
+						<TkThes>TissusMou</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>Autre</SourceThes>
+						<TkThes>Autre</TkThes>
+					</MappingThes>
+				</Modifier>
+			</Source>
+		</Mapping>
+	</BlocLibre>
+
+</Interfacage>
+
+
+

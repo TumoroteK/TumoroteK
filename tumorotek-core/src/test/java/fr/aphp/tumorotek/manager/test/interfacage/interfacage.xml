@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<Interfacage>
+	<Logiciel func="SIP">
+		<Nom>APIX</Nom>
+		<Editeur>TECHNIDATA</Editeur>
+		<Version>1.0</Version>
+	</Logiciel>
+	<Configuration>
+		<SeparateurChamps>|</SeparateurChamps>
+		<SeparateurComposants>~</SeparateurComposants>
+		<SeparateurSousComposants>^</SeparateurSousComposants>
+		<BlocLibreKey>OBX</BlocLibreKey>
+		<NumeroDossier>
+			<BlocValue>H</BlocValue>
+			<Key>2</Key>
+		</NumeroDossier>
+		<DateDossier>
+			<BlocValue>H</BlocValue>
+			<Key>13</Key>
+		</DateDossier>
+		<OperationDossier>
+			<BlocValue>H</BlocValue>
+			<Key>6</Key>
+		</OperationDossier>
+	</Configuration>
+	<Bloc nom="P">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Nom" idChamp="3"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>5.1</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Prenom" idChamp="5"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>5.2</Key>
+				<Fonctions>
+					<Fonction nom="stringToUpperCase" />
+				</Fonctions>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Sexe" idChamp="6"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>8</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<Annotation nom="Alphanum1" idChamp="1"></Annotation>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>9.1</Key>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<Bloc nom="OBR">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Code" idChamp="23"></ChampEntite>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>3.2</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="DatePrelevement" idChamp="30"></ChampEntite>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>6</Key>
+				<Modifier nom="Autre" />
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Quantite" idChamp="40"></ChampEntite>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>18</Key>
+				<Fonctions>
+					<Fonction nom="replaceCommaByDot" />
+				</Fonctions>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="NatureId" idChamp="24"></ChampEntite>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>4</Key>
+				<Fonctions>
+					<Fonction nom="stringToLowerCase" />
+					<Fonction nom="stringToUpperCase" />
+				</Fonctions>
+				<Modifier nom="Thesaurus">
+					<MappingThes>
+						<SourceThes>TISSU TUMORAL</SourceThes>
+						<TkThes>TISSU</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>Prélèvement Sanguin</SourceThes>
+						<TkThes>SANG</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>LIQUIDE D'ASCITE</SourceThes>
+						<TkThes>LIQUIDE D'ASCITE</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<TkThes>Test vide</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>Test vide 2</SourceThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes></SourceThes>
+						<TkThes>Test vide 3</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>Test vide 4</SourceThes>
+						<TkThes></TkThes>
+					</MappingThes>
+				</Modifier>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="ServicePreleveurId" idChamp="29"></ChampEntite>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>8</Key>
+				<Modifier nom="Thesaurus">
+					<MappingThes>
+						<SourceThes>B0</SourceThes>
+						<TkThes>1</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>B1</SourceThes>
+						<TkThes>2</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>B2</SourceThes>
+						<TkThes>3</TkThes>
+					</MappingThes>
+				</Modifier>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<Bloc nom="OBR_OBX1">
+		<Mapping>
+			<Tk>
+				<Annotation nom="Alphanum2" idChamp="2"></Annotation>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>3</Key>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<Bloc nom="OBR_OBX2">
+		<Mapping>
+			<Tk>
+				<Annotation nom="Bool1" idChamp="3"></Annotation>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>6</Key>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<Bloc nom="OBR_OBX3">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="CRanapath" idChamp="255"></ChampEntite>
+				<Entite nom="Echantillon" idChamp="3"></Entite>
+			</Tk>
+			<Source>
+				<Key>5.1</Key>
+				<Modifier nom="Fichier">
+					<Path>src/test/java/fr/aphp/tumorotek/manager/test/interfacage/</Path>
+				</Modifier>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<Bloc nom="SPM_OBX1">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="CodeMorphos" idChamp="230"></ChampEntite>
+				<Entite nom="Echantillon" idChamp="3"></Entite>
+			</Tk>
+			<Source>
+				<Key>5.1</Key>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<Bloc nom="SPM_OBX2">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="CodeMorphos" idChamp="230"></ChampEntite>
+				<Entite nom="Echantillon" idChamp="3"></Entite>
+			</Tk>
+			<Source>
+				<Key>5.1</Key>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<Bloc nom="SPM_OBX3">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="CodeMorphos" idChamp="230"></ChampEntite>
+				<Entite nom="Echantillon" idChamp="3"></Entite>
+			</Tk>
+			<Source>
+				<Key>5.1</Key>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<BlocLibre nom="Biol Mol RER (microsatellites)">
+		<Source>
+			<Key>3</Key>
+		</Source>
+		<Mapping>
+			<Tk>
+				<Annotation nom="Link1" idChamp="15"></Annotation>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>5</Key>
+				<Fonctions>
+					<Fonction nom="stringToLowerCase" />
+				</Fonctions>
+			</Source>
+		</Mapping>
+	</BlocLibre>
+	<BlocLibre nom="Envahissement Veineux extramural">
+		<Source>
+			<Key>3</Key>
+		</Source>
+		<Mapping>
+			<Tk>
+				<Annotation nom="Bool2" idChamp="4"></Annotation>
+				<Entite nom="Echantillon" idChamp="3"></Entite>
+			</Tk>
+			<Source>
+				<Key>5</Key>
+				<Modifier nom="Thesaurus">
+					<MappingThes>
+						<SourceThes>oui</SourceThes>
+						<TkThes>1</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>non</SourceThes>
+						<TkThes>0</TkThes>
+					</MappingThes>
+				</Modifier>
+			</Source>
+		</Mapping>
+	</BlocLibre>
+	<BlocLibre nom="Engainet_nerveux">
+		<Source>
+			<Key>3</Key>
+		</Source>
+		<Mapping>
+			<Tk>
+				<Annotation nom="Bool2" idChamp="7"></Annotation>
+				<Entite nom="Echantillon" idChamp="3"></Entite>
+			</Tk>
+			<Source>
+				<Key>6</Key>
+				<Modifier nom="Thesaurus">
+					<MappingThes>
+						<SourceThes>oui</SourceThes>
+						<TkThes>1</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>non</SourceThes>
+						<TkThes>0</TkThes>
+					</MappingThes>
+				</Modifier>
+			</Source>
+		</Mapping>
+	</BlocLibre>
+</Interfacage>

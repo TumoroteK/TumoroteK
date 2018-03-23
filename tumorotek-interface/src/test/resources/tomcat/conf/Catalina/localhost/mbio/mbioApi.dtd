@@ -1,0 +1,18 @@
+
+<!ELEMENT mbioConfig (printers,labels)>
+	<!ELEMENT printers (printer+)>
+		<!ELEMENT printer (licence,ipAddress,port,queue)>
+		<!ATTLIST printer id CDATA #REQUIRED>
+			<!ELEMENT licence (#PCDATA)>
+			<!ELEMENT ipAddress (#PCDATA)>
+			<!ELEMENT port (#PCDATA)>
+			<!ELEMENT queue (#PCDATA)>
+	<!ELEMENT labels (label+)>
+		<!ELEMENT label (zplTemplate,parameters)>
+		<!ATTLIST label id CDATA #REQUIRED>
+			<!ELEMENT zplTemplate (#PCDATA)>
+			<!ELEMENT parameters (param+)>
+				<!ELEMENT param (name,value)>
+					<!ELEMENT name (#PCDATA)>
+					<!ELEMENT value (#PCDATA)>
+					

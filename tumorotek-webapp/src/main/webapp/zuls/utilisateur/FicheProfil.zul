@@ -1,0 +1,628 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<window id="fwinProfil" border="none" apply="fr.aphp.tumorotek.action.utilisateur.FicheProfil">
+	<panel collapsible="false" title="${c:l('fiche.profil.titre')}"
+	 sclass="fichePanelv2" id="winPanel">
+		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
+			<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvt">
+				<columns>
+					<column width="150px"/>
+					<column/>
+				</columns>
+				<rows>
+					<!-- NOM -->
+					<row>
+						<hbox>
+							<label value="${c:l('profil.nom')}" sclass="formLabel"/>
+							<label id="nomRequired" value="*" sclass="requiredMark"
+												 visible="false"/>
+						</hbox>
+						<div>
+							<label id="nomLabel" 
+								value="@{fwinProfil$composer.profil.nom}" 
+								sclass="formValue" 
+							/>
+							
+							<textbox id="nomBox" value="@{fwinProfil$composer.profil.nom,
+			        				save-when='validateC.onClick, createC.onClick'
+			        				load-after='editC.onClick, createC.onClick'}" 
+								width="250px" 
+								constraint="${fwinProfil$composer.nomConstraint}"
+								 visible="false"
+							/>
+						</div>
+					</row>
+					
+					<!-- Archive -->
+					<row style="background-color: #fafafa; border-radius: 5px">
+						<label value="${c:l('profil.archive')}" sclass="formLabel"/>
+						<div>
+							<label id="archiveLabel" 
+								value="@{fwinProfil$composer.archiveFormated}" 
+								sclass="formValue" />
+								
+							<checkbox id="archiveBox" visible="false" checked="@{fwinProfil$composer.profil.archive}"  />
+						</div>
+					</row>
+					
+					<!-- Anonyme -->
+					<row>
+						<label value="${c:l('profil.anonyme')}" sclass="formLabel"/>
+						<div>
+							<label id="anonymeLabel" 
+								value="@{fwinProfil$composer.anonymeFormated}" 
+								sclass="formValue" />
+								
+							<checkbox id="anonymeBox"  visible="false"/>
+						</div>
+					</row>
+					
+					<!-- Accès à l'administration -->
+					<row>
+						<label value="${c:l('profil.accesAdministration')}" sclass="formLabel"/>
+						<div>
+							<label id="accesAdministrationLabel" 
+								value="@{fwinProfil$composer.accesAdministrationFormated}" 
+								sclass="formValue" />
+								
+							<checkbox id="accesAdministrationBox"  visible="false"/>
+						</div>
+					</row>
+					
+					<!-- Droits -->
+					<row spans="2">
+						<separator/>
+					</row>
+					<group id="groupDroits" label="${c:l('profil.droits')}"/>
+					<row spans="2" id="rowGridDroits">
+						<grid id="droitsGrid"
+							fixedLayout="true" 
+							height="100%"
+							sclass="gridListStyle"
+							hflex="1"
+							span="true">
+							<columns>
+								<column width="100px" align="center"/>
+								<column label="${c:l('profil.droit.consultation')}" width="90px" style="text-align:center;"/>
+								<column label="${c:l('profil.droit.creation')}" width="90px" align="center"/>
+								<column label="${c:l('profil.droit.modification')}" width="90px" align="center"/>
+								<column label="${c:l('profil.droit.suppression')}" width="90px"/>
+								<column label="${c:l('profil.droit.modifmultiple')}" width="90px"/>
+								<column label="${c:l('profil.droit.annotation')}" width="90px"/>
+							</columns>
+							<rows>
+								<!-- Patient -->
+								<row align="center">
+									<label value="${c:l('profil.droit.patient')}" 
+										sclass="formLabel" />
+									<div>
+										<label sclass="formValue"
+											id="consultationPatientLabel" visible="false">
+											<custom-attributes operation="Consultation" entite="Patient"/>
+										</label>
+										<checkbox id="consultationPatientBox" disabled="true"
+											forward="onCheck=onCheckItem(this)">
+											<custom-attributes operation="Consultation" entite="Patient"/>
+										</checkbox>
+									</div>
+									<div>
+										<label sclass="formValue"
+											id="creationPatientLabel" visible="false">
+											<custom-attributes operation="Creation" entite="Patient"/>
+										</label>
+										<checkbox id="creationPatientBox" disabled="true">
+											<custom-attributes operation="Creation" entite="Patient"/>
+										</checkbox>
+									</div>
+									<div>
+										<label sclass="formValue"
+											id="modificationPatientLabel" visible="false">
+											<custom-attributes operation="Modification" entite="Patient"/>
+										</label>
+										<checkbox id="modificationPatientBox" disabled="true">
+											<custom-attributes operation="Modification" entite="Patient"/>
+										</checkbox>
+									</div>
+									<div>
+										<label sclass="formValue"
+											id="suppressionPatientLabel" visible="false">
+											<custom-attributes operation="Archivage" entite="Patient"/>
+										</label>
+										<checkbox id="suppressionPatientBox" disabled="true">
+											<custom-attributes operation="Archivage" entite="Patient"/>
+										</checkbox>
+									</div>
+									<div>
+										<checkbox id="modifMultipliePatientBox" disabled="true">
+											<custom-attributes operation="ModifMultiple" entite="Patient"/>
+										</checkbox>
+									</div>
+									<div>
+										<checkbox id="annotationPatientBox" disabled="true">
+											<custom-attributes operation="Annotation" entite="Patient"/>
+										</checkbox>
+									</div>
+								</row>
+								
+								<!-- Prelevement -->
+								<row align="center">
+									<label value="${c:l('profil.droit.prelevement')}" 
+										sclass="formLabel" />
+									<div>
+										<label sclass="formValue"
+											id="consultationPrelevementLabel" visible="false">
+											<custom-attributes operation="Consultation" entite="Prelevement"/>
+										</label>
+										<checkbox id="consultationPrelevementBox" disabled="true"
+											forward="onCheck=onCheckItem(this)">
+											<custom-attributes operation="Consultation" entite="Prelevement"/>
+										</checkbox>
+									</div>
+									<div>
+										<label sclass="formValue"
+											id="creationPrelevementLabel" visible="false">
+											<custom-attributes operation="Creation" entite="Prelevement"/>
+										</label>
+										<checkbox id="creationPrelevementBox" disabled="true">
+											<custom-attributes operation="Creation" entite="Prelevement"/>
+										</checkbox>
+									</div>
+									<div>
+										<label sclass="formValue"
+											id="modificationPrelevementLabel" visible="false">
+											<custom-attributes operation="Modification" entite="Prelevement"/>
+										</label>
+										<checkbox id="modificationPrelevementBox" disabled="true">
+											<custom-attributes operation="Modification" entite="Prelevement"/>
+										</checkbox>
+									</div>
+									<div>
+										<label sclass="formValue"
+											id="suppressionPrelevementLabel" visible="false">
+											<custom-attributes operation="Archivage" entite="Prelevement"/>
+										</label>
+										<checkbox id="suppressionPrelevementBox" disabled="true">
+											<custom-attributes operation="Archivage" entite="Prelevement"/>
+										</checkbox>
+									</div>
+									<div>
+										<checkbox id="modifMultipliePrelevementBox" disabled="true">
+											<custom-attributes operation="ModifMultiple" entite="Prelevement"/>
+										</checkbox>
+									</div>
+									<div>
+										<checkbox id="annotationPrelevementBox" disabled="true">
+											<custom-attributes operation="Annotation" entite="Prelevement"/>
+										</checkbox>
+									</div>
+								</row>
+								
+								<!-- Echantillon -->
+								<row align="center">
+									<label value="${c:l('profil.droit.echantillon')}" 
+										sclass="formLabel" />
+									<div>
+										<label sclass="formValue"
+											id="consultationEchantillonLabel" visible="false">
+											<custom-attributes operation="Consultation" entite="Echantillon"/>
+										</label>
+										<checkbox id="consultationEchantillonBox" disabled="true"
+											forward="onCheck=onCheckItem(this)">
+											<custom-attributes operation="Consultation" entite="Echantillon"/>
+										</checkbox>
+									</div>
+									<div>
+										<label sclass="formValue"
+											id="creationEchantillonLabel" visible="false">
+											<custom-attributes operation="Creation" entite="Echantillon"/>
+										</label>
+										<checkbox id="creationEchantillonBox" disabled="true">
+											<custom-attributes operation="Creation" entite="Echantillon"/>
+										</checkbox>
+									</div>
+									<div>
+										<label sclass="formValue"
+											id="modificationEchantillonLabel" visible="false">
+											<custom-attributes operation="Modification" entite="Echantillon"/>
+										</label>
+										<checkbox id="modificationEchantillonBox" disabled="true">
+											<custom-attributes operation="Modification" entite="Echantillon"/>
+										</checkbox>
+									</div>
+									<div>
+										<label sclass="formValue"
+											id="suppressionEchantillonLabel" visible="false">
+											<custom-attributes operation="Archivage" entite="Echantillon"/>
+										</label>
+										<checkbox id="suppressionEchantillonBox" disabled="true">
+											<custom-attributes operation="Archivage" entite="Echantillon"/>
+										</checkbox>
+									</div>
+									<div>
+										<checkbox id="modifMultiplieEchantillonBox" disabled="true">
+											<custom-attributes operation="ModifMultiple" entite="Echantillon"/>
+										</checkbox>
+									</div>
+									<div>
+										<checkbox id="annotationEchantillonBox" disabled="true">
+											<custom-attributes operation="Annotation" entite="Echantillon"/>
+										</checkbox>
+									</div>
+								</row>
+								
+								<!-- ProdDerive -->
+								<row align="center">
+									<label value="${c:l('profil.droit.prodDerive')}" 
+										sclass="formLabel" />
+									<div>
+										<label sclass="formValue"
+											id="consultationProdDeriveLabel" visible="false">
+											<custom-attributes operation="Consultation" entite="ProdDerive"/>
+										</label>
+										<checkbox id="consultationProdDeriveBox" disabled="true"
+											forward="onCheck=onCheckItem(this)">
+											<custom-attributes operation="Consultation" entite="ProdDerive"/>
+										</checkbox>
+									</div>
+									<div>
+										<label sclass="formValue"
+											id="creationProdDeriveLabel" visible="false">
+											<custom-attributes operation="Creation" entite="ProdDerive"/>
+										</label>
+										<checkbox id="creationProdDeriveBox" disabled="true">
+											<custom-attributes operation="Creation" entite="ProdDerive"/>
+										</checkbox>
+									</div>
+									<div>
+										<label sclass="formValue"
+											id="modificationProdDeriveLabel" visible="false">
+											<custom-attributes operation="Modification" entite="ProdDerive"/>
+										</label>
+										<checkbox id="modificationProdDeriveBox" disabled="true">
+											<custom-attributes operation="Modification" entite="ProdDerive"/>
+										</checkbox>
+									</div>
+									<div>
+										<label sclass="formValue"
+											id="suppressionProdDeriveLabel" visible="false">
+											<custom-attributes operation="Archivage" entite="ProdDerive"/>
+										</label>
+										<checkbox id="suppressionProdDeriveBox" disabled="true">
+											<custom-attributes operation="Archivage" entite="ProdDerive"/>
+										</checkbox>
+									</div>
+									<div>
+										<checkbox id="modifMultiplieProdDeriveBox" disabled="true">
+											<custom-attributes operation="ModifMultiple" entite="ProdDerive"/>
+										</checkbox>
+									</div>
+									<div>
+										<checkbox id="annotationProdDeriveBox" disabled="true">
+											<custom-attributes operation="Annotation" entite="ProdDerive"/>
+										</checkbox>
+									</div>
+								</row>
+								
+								<!-- Cession -->
+								<row align="center">
+									<label value="${c:l('profil.droit.cession')}" 
+										sclass="formLabel" />
+									<div>
+										<label sclass="formValue"
+											id="consultationCessionLabel" visible="false">
+											<custom-attributes operation="Consultation" entite="Cession"/>
+										</label>
+										<checkbox id="consultationCessionBox" disabled="true"
+											forward="onCheck=onCheckItem(this)">
+											<custom-attributes operation="Consultation" entite="Cession"/>
+										</checkbox>
+									</div>
+									<div>
+										<label sclass="formValue"
+											id="creationCessionLabel" visible="false">
+											<custom-attributes operation="Creation" entite="Cession"/>
+										</label>
+										<checkbox id="creationCessionBox" disabled="true">
+											<custom-attributes operation="Creation" entite="Cession"/>
+										</checkbox>
+									</div>
+									<div>
+										<label sclass="formValue"
+											id="modificationCessionLabel" visible="false">
+											<custom-attributes operation="Modification" entite="Cession"/>
+										</label>
+										<checkbox id="modificationCessionBox" disabled="true">
+											<custom-attributes operation="Modification" entite="Cession"/>
+										</checkbox>
+									</div>
+									<div>
+										<label sclass="formValue"
+											id="suppressionCessionLabel" visible="false">
+											<custom-attributes operation="Archivage" entite="Cession"/>
+										</label>
+										<checkbox id="suppressionCessionBox" disabled="true">
+											<custom-attributes operation="Archivage" entite="Cession"/>
+										</checkbox>
+									</div>
+									<div>
+										<checkbox id="modifMultiplieCessionBox" disabled="true">
+											<custom-attributes operation="ModifMultiple" entite="Cession"/>
+										</checkbox>
+									</div>
+									<div>
+										<checkbox id="annotationCessionBox" disabled="true">
+											<custom-attributes operation="Annotation" entite="Cession"/>
+										</checkbox>
+									</div>
+								</row>
+								
+								<!-- Stockage -->
+								<row align="center">
+									<label value="${c:l('profil.droit.stockage')}" 
+										sclass="formLabel" />
+									<div>
+										<label sclass="formValue"
+											id="consultationStockageLabel" visible="false">
+											<custom-attributes operation="Consultation" entite="Stockage"/>
+										</label>
+										<checkbox id="consultationStockageBox" disabled="true"
+											forward="onCheck=onCheckItem(this)">
+											<custom-attributes operation="Consultation" entite="Stockage"/>
+										</checkbox>
+									</div>
+									<div>
+										<label sclass="formValue"
+											id="creationStockageLabel" visible="false">
+											<custom-attributes operation="Creation" entite="Stockage"/>
+										</label>
+										<checkbox id="creationStockageBox" disabled="true">
+											<custom-attributes operation="Creation" entite="Stockage"/>
+										</checkbox>
+									</div>
+									<div>
+										<label sclass="formValue"
+											id="modificationStockageLabel" visible="false">
+											<custom-attributes operation="Modification" entite="Stockage"/>
+										</label>
+										<checkbox id="modificationStockageBox" disabled="true">
+											<custom-attributes operation="Modification" entite="Stockage"/>
+										</checkbox>
+									</div>
+									<div>
+										<label sclass="formValue"
+											id="suppressionStockageLabel" visible="false">
+											<custom-attributes operation="Archivage" entite="Stockage"/>
+										</label>
+										<checkbox id="suppressionStockageBox" disabled="true">
+											<custom-attributes operation="Archivage" entite="Stockage"/>
+										</checkbox>
+									</div>
+									<div></div>
+									<div></div>
+								</row>
+								
+								<!-- Collaborateur -->
+								<row align="center">
+									<label value="${c:l('profil.droit.collaborateur')}" 
+										sclass="formLabel" />
+									<div>
+										<label sclass="formValue"
+											id="consultationCollaborateurLabel" visible="false">
+											<custom-attributes operation="Consultation" entite="Collaborateur"/>
+										</label>
+										<checkbox id="consultationCollaborateurBox" disabled="true"
+											forward="onCheck=onCheckItem(this)">
+											<custom-attributes operation="Consultation" entite="Collaborateur"/>
+										</checkbox>
+									</div>
+									<div>
+										<label sclass="formValue"
+											id="creationCollaborateurLabel" visible="false">
+											<custom-attributes operation="Creation" entite="Collaborateur"/>
+										</label>
+										<checkbox id="creationCollaborateurBox" disabled="true">
+											<custom-attributes operation="Creation" entite="Collaborateur"/>
+										</checkbox>
+									</div>
+									<div>
+										<label sclass="formValue"
+											id="modificationCollaborateurLabel" visible="false">
+											<custom-attributes operation="Modification" entite="Collaborateur"/>
+										</label>
+										<checkbox id="modificationCollaborateurBox" disabled="true">
+											<custom-attributes operation="Modification" entite="Collaborateur"/>
+										</checkbox>
+									</div>
+									<div>
+										<label sclass="formValue"
+											id="suppressionCollaborateurLabel" visible="false">
+											<custom-attributes operation="Archivage" entite="Collaborateur"/>
+										</label>
+										<checkbox id="suppressionCollaborateurBox" disabled="true">
+											<custom-attributes operation="Archivage" entite="Collaborateur"/>
+										</checkbox>
+									</div>
+									<div></div>
+									<div></div>
+								</row>
+								
+								<!-- Requete -->
+								<row align="center">
+									<label value="${c:l('profil.droit.requete')}" 
+										sclass="formLabel" />
+									<div>
+										<label sclass="formValue"
+											id="consultationRequeteLabel" visible="false">
+											<custom-attributes operation="Consultation" entite="Requete"/>
+										</label>
+										<checkbox id="consultationRequeteBox" disabled="true"
+											forward="onCheck=onCheckItem(this)">
+											<custom-attributes operation="Consultation" entite="Requete"/>
+										</checkbox>
+									</div>
+									<div>
+										<label sclass="formValue"
+											id="creationRequeteLabel" visible="false">
+											<custom-attributes operation="Creation" entite="Requete"/>
+										</label>
+										<checkbox id="creationRequeteBox" disabled="true">
+											<custom-attributes operation="Creation" entite="Requete"/>
+										</checkbox>
+									</div>
+									<div>
+										<label sclass="formValue"
+											id="modificationRequeteLabel"  visible="false">
+											<custom-attributes operation="Modification" entite="Requete"/>
+										</label>
+										<checkbox id="modificationRequeteBox" disabled="true">
+											<custom-attributes operation="Modification" entite="Requete"/>
+										</checkbox>
+									</div>
+									<div>
+										<label sclass="formValue"
+											id="suppressionRequeteLabel"  visible="false">
+											<custom-attributes operation="Archivage" entite="Requete"/>
+										</label>
+										<checkbox id="suppressionRequeteBox" disabled="true">
+											<custom-attributes operation="Archivage" entite="Requete"/>
+										</checkbox>
+									</div>
+									<div></div>
+									<div></div>
+								</row>
+							</rows>
+						</grid>
+					</row>
+					
+					<row spans="2" visible="false" id="rowCocher">
+						<hbox>
+							<label id="cocherTous" sclass="formLink"
+								value="${c:l('profil.droit.cocher.tous')}"/>
+							<label value="  -  " sclass="formValue"/>
+							<label id="decocherTous" sclass="formLink"
+								value="${c:l('profil.droit.decocher.tous')}"/>
+						</hbox>
+					</row>
+					
+					<!-- Import -->
+					<row>
+						<label value="${c:l('general.import')}" sclass="formLabel"/>
+						<label id="importLabel" 
+							value="@{fwinProfil$composer.importFormated}" 
+							sclass="formValue" />		
+					</row>
+					<row spans="2">
+						<label value="${c:l('profil.import.restriction.rules')}" sclass="formValueItalics"  style="font-size: 11px"/>
+					</row>
+					
+					<!-- Export -->
+					<row>
+						<label value="${c:l('general.export')}" sclass="formLabel"/>
+						<div>
+							<label id="exportLabel" 
+								value="@{fwinProfil$composer.selectedExport}" 
+								sclass="formValue" />
+							
+							<listbox id="exportListBox" mold="select" rows="1"
+								selectedItem="@{fwinProfil$composer.selectedExport 
+									save-when='createC.onClick, validateC.onClick'}"
+								visible="false" >											
+								<listitem label="${c:l('profil.droit.export.non')}" 
+									value="${c:l('profil.droit.export.non')}"/>
+								<listitem label="${c:l('profil.droit.export.anonyme')}" 
+									value="${c:l('profil.droit.export.anonyme')}"/>
+								<listitem label="${c:l('profil.droit.export.nominatif')}" 
+									value="${c:l('profil.droit.export.nominatif')}"/>
+							</listbox>
+							<label value="${c:l('profil.droit.export.attention')}" 
+								sclass="formValueItalics"
+								visible="false"
+								id="exportAttentionLabel"/>
+						</div>
+					</row>
+					<group label="${c:l('ficheBanque.utilisateurs')}" id="groupProfilUtilisateurs">
+						<hlayout sclass="z-valign-middle">
+							<checkbox id="utilisateursArchiveBox" checked="true"/>
+							<label value="${c:l('utilisateur.afficher.actifs')}" style="font-style: italic; font-weight: normal" />
+						</hlayout>
+					</group>
+					<row spans="2">
+						<grid fixedLayout="true"  id="gridProfilUtilisateur"
+							model="@{fwinProfil$composer.profilUtilisateurs, load-after='utilisateursArchiveBox.onCheck'}"
+							rowRenderer="@{fwinProfil$composer.profilUtilisateurRowRenderer}"
+							sclass="gridForm1">
+							<columns>
+								<column />
+								<column />
+							</columns>
+							<rows>
+								<row self="@{each='profilU'}" value="profilU">
+								</row>
+							</rows>
+						</grid>
+					</row>
+				</rows>
+			</grid>
+		</panelchildren>
+		<toolbar height="30px" id="toolbarEchan" align="end">
+			<hbox spacing="5">
+				<menubar sclass="menuBarV2" id="menuBar">
+					<menu label="${c:l('general.actions')}" image="/images/icones/small_action.png" 
+						width="36px" height="24px">
+						<menupopup>
+							<menuitem id="historique" image="/images/icones/history.png" 
+								label="${c:l('general.historique')}"/>
+						</menupopup>
+					</menu>
+				</menubar>
+				<button id="addNewC" label="${c:l('general.new')}" height="24px" visible="true"
+					image="/images/icones/new.png" sclass="buttonv2"/>
+				<button id="editC" label="${c:l('general.edit')}" height="24px" visible="true"
+					image="/images/icones/edit.png" sclass="buttonv2"/>
+				<button id="deleteC" label="${c:l('general.delete')}" height="24px" visible="true"
+					image="/images/icones/trash.png" sclass="buttonv2"/>
+				<button id="validateC" label="${c:l('general.validate')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="revertC" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="createC" label="${c:l('general.create')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="cancelC" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+			</hbox>
+		</toolbar>
+	</panel>
+</window>

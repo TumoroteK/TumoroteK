@@ -1,0 +1,165 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+
+<?page title="Resultats modale" contentType="text/html;charset=UTF-8"?>
+<zk>
+	<window id="fwinResultatsModale" border="none" 
+		apply="fr.aphp.tumorotek.action.recherche.ResultatsModale" >
+		<panel collapsible="false" sclass="fichePanelv2" id="winPanel">
+			<panelchildren id="panelChildrenWithScroll">
+				<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvt">
+					<columns>
+						<column width="40px" />
+						<column  />
+					</columns>
+					<rows>
+						<!-- Message -->
+						<row>
+							<image id="warnImg" src="/images/icones/big_warning.png"/>
+							<label id="warnLabel" value="${c:l('message.research.too.many.results')}" sclass="formLabel"/>
+						</row>
+						<!-- Nb résults -->
+						<row spans="2">
+							<box orient="horizontal">
+								<label id="resultsLabel" 
+									value="${c:l('recherche.avancee.nb.resultats')}" 
+									sclass="formLabel"/>
+								<space/>
+								<label id="nbLabel" 
+									value="@{fwinResultatsModale$composer.nbResults}" 
+									sclass="formValue"/>
+							</box>
+						</row>
+						<!-- Message -->
+						<row>
+							<checkbox id="exportBox"/>
+							<label id="exportLabel" 
+								value="${c:l('recherche.avancee.export.xls')}" 
+								sclass="formValue"/>
+						</row>
+		
+						<!-- Buttons -->
+						<row spans="2" align="center">
+							<hlayout spacing="5px" height="30px">
+								<button id="afficher" label="${c:l('general.actions.afficher')}"
+									height="20px" image="/images/icones/find.png" sclass="buttonv2"/>
+								<menubar id="actions" sclass="menuBarV2" >
+									<menu label="${c:l('general.actions')}"
+										height="24px" image="/images/icones/small_action.png">
+										<menupopup>
+											<menuitem id="afficherItem" label="${c:l('general.actions.afficher')}"
+												height="20px" image="/images/icones/find.png" sclass="exports"/>
+											<menuitem id="newCessionItem" image="/images/icones/cederObjet.png"
+												label="${c:l('general.actions.add.new.cessions')}" />
+											<menuitem id="deleteItem" image="/images/icones/delete.png"
+												label="${c:l('general.delete')}" />
+										</menupopup>
+									</menu>
+								</menubar>
+								<button id="select" label="${c:l('general.select')}" visible="false"
+									height="24px" image="/images/icones/select.png" sclass="buttonv2"/>
+								<button id="exporter" label="${c:l('general.actions.exporter')}" visible="false"
+									height="24px" image="/images/icones/export.png" sclass="buttonv2"/>
+								<menubar id="menuExportBar" visible="false" sclass="menuBarV2" >
+									<menu label="${c:l('general.actions.exporter')}" image="/images/icones/small_export.png" 
+										height="24px" width="36px">
+										<menupopup>
+											<menuitem id="exportItem" image="/images/icones/export.png" 
+												label="${c:l('general.actions.exporter')}" sclass="exports"/>
+											<menuitem id="exportItemAdv"
+												image="/images/icones/export.png" sclass="exports"
+												label="${c:l('general.actions.exporterAdv')}" />
+											<menuitem id="exportItemINCa" image="/images/icones/catalogues/inca_tk.png"
+												label="${c:l('catalogue.exporter.INCa')}" sclass="exports"
+												visible="false" />
+											<menuitem id="exportItemTVGSO" image="/images/icones/catalogues/tvgso.gif" 
+												label="${c:l('catalogue.exporter.TVGSO')}" sclass="exports"
+												visible="false" />
+											<menuitem id="exportItemTVGSOcsv" image="/images/icones/catalogues/tvgso.gif" 
+												label="${c:l('catalogue.exporter.TVGSOcsv')}" sclass="exports"
+												visible="false" />
+											<menuitem id="exportItemBIOCAP" image="/images/icones/catalogues/biocap.gif" 
+												label="${c:l('catalogue.exporter.BIOCAP')}" sclass="exports"
+												visible="false" />
+											<menuitem id="exportItemBIOBANQUES" image="/images/icones/catalogues/biocap.gif" 
+												label="${c:l('catalogue.exporter.BIOBANQUES')}" sclass="exports"
+												visible="false"/>
+										</menupopup>
+									</menu>
+								</menubar>
+								<menubar sclass="menuBarV2" id="menuBar">
+									<menu label="${c:l('general.tree.objs')}"
+										image="/images/icones/objTree.png" width="36px"
+										height="24px">
+										<menupopup>
+											<menuitem id="patientsItem"
+												image="/images/icones/patient.png"
+												label="${c:l('Entite.Patient.pluriel')}"
+												 />
+											<menuitem id="prelevementsItem"
+												image="/images/icones/prelevement.png"
+												label="${c:l('Entite.Prelevement.pluriel')}" 
+												/>
+											<menuitem id="echantillonsItem"
+												image="/images/icones/echantillon.png"
+												label="${c:l('Entite.Echantillon.pluriel')}" 
+												/>
+											<menuitem id="derivesItem"
+												image="/images/icones/derive.png"
+												label="${c:l('Entite.ProdDerive.pluriel')}" 
+												/>
+											<menuitem id="derivesAscItem"
+												image="/images/icones/derive.png"
+												label="${c:l('general.tree.derives.asc')}" 
+											 	/>
+											<menuitem id="cessionsItem"
+												image="/images/icones/cederObjet.png"
+												label="${c:l('Entite.Cession.pluriel')}" 
+												 />
+										</menupopup>
+									</menu>
+								</menubar>
+								<button id="cancel" label="${c:l('general.cancel')}" 
+									height="24px" image="/images/icones/cancel.png" sclass="buttonv2"/>
+							</hlayout>
+						</row>
+					</rows>
+				</grid>
+			</panelchildren>
+		</panel>
+	</window>
+</zk>

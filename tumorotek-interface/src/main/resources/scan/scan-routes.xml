@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:camel="http://camel.apache.org/schema/spring"
+      xsi:schemaLocation="
+      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+      
+	<errorHandler id="scanErrorHandler" xmlns="http://camel.apache.org/schema/spring"
+		useOriginalMessage="true" type="DeadLetterChannel" deadLetterUri="{{scan.deadLetter}}" >
+	</errorHandler>
+  
+  	<routeContext id="scan-routes" xmlns="http://camel.apache.org/schema/spring"> 
+  		<route autoStartup="{{scan.vmate.startup}}">
+  			<from uri="{{scan.vmate.startpoint}}"/>
+  			<onException useOriginalMessage="true">
+		        <exception>java.lang.Exception</exception>
+		        <handled><constant>true</constant></handled>
+		        <log logName="fr.aphp.tumorotek.interfacage.scan.dead" message="Error handling file: ${file:name}" />
+		        <to uri="bean:exceptionLogProcessor" />
+				<to uri="{{scan.deadLetter}}" />
+		    </onException>
+  			<to uri="bean:excelVMateParser?method=handleVMateScan"/>
+  		</route>
+  	</routeContext>
+  		
+  	<bean name="excelVMateParser" class="fr.aphp.tumorotek.interfacage.scan.ExcelVMateParser">
+  		<property name="scanTerminaleManager" ref="scanTerminaleManager" /> 
+  	</bean>
+</beans>

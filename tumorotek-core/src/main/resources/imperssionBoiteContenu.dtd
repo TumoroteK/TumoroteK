@@ -1,0 +1,22 @@
+<!ELEMENT ImpressionContenu (PageContenuBoite+)>
+<!ELEMENT PageContenuBoite (Titre, Contenu+)>
+<!ELEMENT Titre (#PCDATA)>
+<!ELEMENT Contenu (ListeParents, Modelisation, ListeNombres)>
+
+<!ELEMENT Modelisation (LigneCoordonnees, LigneBoite*)>
+<!ELEMENT LigneCoordonnees (Coordonnee*)>
+<!ELEMENT LigneBoite (Coordonnee, Emplacement*)>
+<!ELEMENT Emplacement (EmpLibre, EmpOccupe)>
+<!ELEMENT EmpLibre (Position, NomEmplacement)>
+<!ELEMENT EmpOccupe (Position, NomEmplacement, AdrImage)>
+<!ELEMENT Position (#PCDATA)>
+<!ELEMENT NomEmplacement (#PCDATA)>
+<!ELEMENT AdrImage (#PCDATA)>
+
+<!ELEMENT ListeParents (Parent*)>
+<!ELEMENT Parent (#PCDATA)>
+
+<!ELEMENT ListeNombres (Nombre*)>
+<!ELEMENT Nombre (#PCDATA)>
+
+<!ELEMENT Coordonnee (#PCDATA)>

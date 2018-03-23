@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Spring namespace-based configuration -->
+
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	       http://www.springframework.org/schema/aop   
+		   http://www.springframework.org/schema/aop/spring-aop-3.0.xsd                        
+           http://www.springframework.org/schema/security
+           http://www.springframework.org/schema/security/spring-security-3.0.xsd">
+
+	<!-- ====================================================== -->
+	<!--      For catching the @Secured annotation methods      -->
+	<!--                we use our own mechanism.               -->
+	<!--      Look in GFCBaseCtrl.java onEvent() method.        -->
+	<!-- ====================================================== -->
+	
+	<beans:bean id="portalConfigLocation" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<beans:property name="jndiName" value="java:comp/env/tk/tkTumoPropertiesSystem" />
+		<beans:property name="defaultObject" value="${catalina.base}/conf/Catalina/localhost/" />
+	</beans:bean>
+	
+	
+	<beans:bean name="propertyPlaceholder" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+           <beans:property name="locations">
+               <beans:value>#{'file:'+portalConfigLocation+'portal.properties'}</beans:value>
+           </beans:property>
+    </beans:bean>
+
+
+	<!-- Enable the @Secured annotation to secure service layer methods -->
+	<global-method-security secured-annotations="disabled" />
+	
+	<http entry-point-ref="casEntryPoint">
+		<custom-filter position="CAS_FILTER" ref="casFilter" />		
+
+		<!-- ====================================================== -->
+		<!--       If we have our own LoginPage. So we must         -->
+		<!--         tell Spring the name and the place.            -->
+		<!--          In our case we take the same page             -->
+		<!--         for a error message by a failure.              -->
+		<!--      Further the page after a successfully login.      -->
+		<!-- ====================================================== -->
+<!-- 		<form-login  -->
+<!-- 			always-use-default-target="true" -->
+<!-- 			default-target-url="/login/SelectBanque.zul" /> -->
+			
+		<logout logout-success-url="http://${HOSTNAME}:8080/${PORTALNAME}/common/logout.zul"/>
+    	<custom-filter ref="requestSingleLogoutFilter" before="LOGOUT_FILTER"/>
+    	<custom-filter ref="singleLogoutFilter" before="CAS_FILTER"/>
+
+		<intercept-url pattern="/**" access="IS_AUTHENTICATED_REMEMBERED" />
+		<intercept-url pattern="/services/**" filters="none" />
+		
+
+		<!-- ====================================================== -->
+		<!--                 Per user one session !!                -->
+		<!--               In DEMO mode we set it to 5              -->
+		<!-- 													    -->
+		<!-- En ajoutant cette ligne, le nouvel utilisateur sera    -->
+		<!-- bloqué à la connexion, sinon il éjectera l'autre user  -->
+		<!--error-if-maximum-exceeded="true"                        -->
+		<!-- ====================================================== -->
+		<session-management> 
+	        <concurrency-control max-sessions="1" 
+	        	error-if-maximum-exceeded="true" />
+	    </session-management>
+
+	</http>
+	
+	<beans:bean id="customUserDetailsService" class="fr.aphp.tumorotek.action.MyUserDetailsService">
+		<beans:property name="dataSource" ref="dataSource" />
+	</beans:bean>
+	
+	<beans:bean id="tumoCasAuthenticationSuccessHandler" 
+		class="fr.aphp.tumorotek.action.cas.TumoCasAuthenticationSuccessHandler" />
+	
+	<beans:bean id="casFilter"
+     		 class="org.springframework.security.cas.web.CasAuthenticationFilter">
+     	<beans:property name="authenticationManager" ref="authenticationManager"/>
+     	<beans:property name="filterProcessesUrl" value="/j_spring_cas_security_check" />
+  		
+  		<beans:property name="authenticationFailureHandler">
+  			<beans:bean class="org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler">
+				<beans:property name="defaultFailureUrl" value="http://${HOSTNAME}:8080/${PORTALNAME}/common/error.zul"/>
+			</beans:bean>
+		</beans:property>
+		<beans:property name="authenticationSuccessHandler" ref="tumoCasAuthenticationSuccessHandler" />
+<!-- 			<beans:bean class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler"> -->
+<!-- 				<beans:property name="defaultTargetUrl" value="/login/SelectBanque.zul"/> -->
+<!-- 			</beans:bean> -->
+<!-- 		</beans:property> -->
+	</beans:bean>
+
+	<beans:bean id="casEntryPoint"
+    	class="org.springframework.security.cas.web.CasAuthenticationEntryPoint">
+  		<beans:property name="loginUrl" value="https://${HOSTNAME}:8443/cas/login"/>
+  		<beans:property name="serviceProperties" ref="serviceProperties"/>
+	</beans:bean>
+	
+	<beans:bean id="serviceProperties" class="org.springframework.security.cas.ServiceProperties">
+    	<beans:property name="service" value="http://${HOSTNAME}:8080/${TK_APPNAME}/j_spring_cas_security_check"/>
+    	<beans:property name="sendRenew" value="false"/>
+  	</beans:bean>
+  	
+  	<authentication-manager alias="authenticationManager">
+    	<authentication-provider ref="casAuthenticationProvider" />
+  	</authentication-manager>
+
+  <beans:bean id="casAuthenticationProvider"
+      class="org.springframework.security.cas.authentication.CasAuthenticationProvider">
+    <beans:property name="userDetailsService" ref="customUserDetailsService"/>
+    <beans:property name="serviceProperties" ref="serviceProperties" />
+    <beans:property name="ticketValidator">
+      <beans:bean class="org.jasig.cas.client.validation.Cas20ServiceTicketValidator">
+        	<beans:constructor-arg index="0" value="https://${HOSTNAME}:8443/cas" />
+      </beans:bean>
+    </beans:property>
+    <beans:property name="key" value="an_id_for_this_auth_provider_only"/>
+  </beans:bean>
+  
+
+  <!-- This filter handles a Single Logout Request from the CAS Server -->
+  <beans:bean id="singleLogoutFilter" class="org.jasig.cas.client.session.SingleSignOutFilter"/>
+  <!-- This filter redirects to the CAS Server to signal Single Logout should be performed -->
+  <beans:bean id="requestSingleLogoutFilter"
+        class="org.springframework.security.web.authentication.logout.LogoutFilter">
+    <beans:constructor-arg value="https://${HOSTNAME}:8443/cas/logout"/>
+    <beans:constructor-arg>
+      <beans:bean class=
+          "org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler"/>
+    </beans:constructor-arg>
+    <beans:property name="filterProcessesUrl" value="/j_spring_cas_security_logout"/>
+  </beans:bean>
+</beans:beans>

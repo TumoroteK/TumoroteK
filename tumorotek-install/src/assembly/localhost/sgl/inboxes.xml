@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ConfigurationInterfacage>
+	<BoiteFtp nom="DIAMIC">
+		<Configuration>
+			<SeparateurChamps>|</SeparateurChamps>
+			<SeparateurComposants>^</SeparateurComposants>
+			<SeparateurSousComposants>~</SeparateurSousComposants>
+			<NumeroDossier>
+				<BlocValue>SPM</BlocValue>
+				<Key>4.1</Key>
+			</NumeroDossier>
+			<DateDossier>
+				<BlocValue>MSH</BlocValue>
+				<Key>6</Key>
+			</DateDossier>
+			<OperationDossier>
+				<BlocValue>ORC</BlocValue>
+				<Key>5</Key>
+			</OperationDossier>
+		</Configuration>
+		<Emetteur>
+			<Bloc>MSH</Bloc>
+			<Emplacement>2</Emplacement>
+		</Emetteur>
+		<Service>
+			<Bloc>ORC</Bloc>
+			<Emplacement>21.1</Emplacement>
+		</Service>
+		<MappingXml>
+			<EmetteurId>4</EmetteurId>
+			<XML>/home/mathieu/tomcat/conf/Catalina/localhost/sgl/diamic-mapping.xml</XML>
+		</MappingXml>
+	</BoiteFtp>
+</ConfigurationInterfacage>

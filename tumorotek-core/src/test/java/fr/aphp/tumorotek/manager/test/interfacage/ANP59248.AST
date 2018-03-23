@@ -1,0 +1,39 @@
+H|~^\&|ANP59248|Apix Anapath|ANAP~ANAP||ORU|||UF000~SIH||P|H2.1 |20070503160500|BLA~TEST1^TEST2~RGC
+P|1|1493053993~~~~^93285~~~|||TESTN3~Testp3||19410904|M|Autre~|^TISSU^SANG^^~AUTRE
+OBR|1||~GE00592767|Tissu Tumoral|R|20070420153000|20070420000000|B0||~MT~Marianne TOUBLANC~Docteur||||20070420000000||Dr BOUBLIL Veronique||11,54||||||ANAP|F|||
+OBX|1|TX|ANTERIORITE||GE00516022 GE00592767 
+OBX|2|TX|TEXTE||Resultat Anapath Numero : GE00592767|1|||||F|||||
+OBX|3|ST|||apix_addfile.txt~txt|||||||||||
+SPM|1|||WXZ_CSAM^CHIR SIMPLE AVEC MARGE||||||||||||||||Y||||FROZ
+OBX|1|ST|~ADICAP||GHLOJ7F4||||||F
+OBX|2|ST|~ADICAP||GHOTJMF4||||||F
+L|1||1|6
+OBX|1|ST|^Hémodialyse||||||||||||<CR> 
+OBX|2|NM|BLOC_IHC||l||||||F
+OBX|3|NM|BLOC_NT||d||||||F
+OBX|4|NM|BLOC_TMA||i||||||F
+OBX|5|NM|Biol Mol RER (microsatellites)||MSI high||||||F
+OBX|6|NM|Tumor Budding (bourgeonnement)||non~||||||F
+OBX|7|NM|Congelation||oui primitif||||||F
+OBX|8|NM|Envahissement Veineux extramural||oui||||||F
+OBX|9|NM|Engainet_nerveux||non||||||F
+OBX|10|NM|Exerese elargie car extension tumorale||oui foie||||||F
+OBX|11|NM|Immunohisto MMR||perte MLH1 et PMS2||||||F
+OBX|12|NM|Inflammation au front tumoral||RAS||||||F
+OBX|13|NM|Longueur de la piece operatoire (cm)||25||||||F
+OBX|14|NM|M||1||||||F
+OBX|15|NM|Marge circonferentielle (mm)||-1||||||F
+OBX|16|NM|N||1c||||||F
+OBX|17|NM|Nb d'adenomes associes||2||||||F
+OBX|18|NM|Nombre ggl examines||33||||||F
+OBX|19|NM|Nombre de ggl positifs||0||||||F
+OBX|20|NM|Perforation & occlusion||non||||||F
+OBX|21|NM|Pourcentage colloide muqueux||<10%||||||F
+OBX|22|NM|Prelevement||piece operatoire||||||F
+OBX|23|NM|Nature de la resection chirurgicale||Hemicolect D||||||F
+OBX|24|NM|R||0||||||F
+OBX|25|NM|Reaction crohn-like||1||||||F
+OBX|26|NM|Siege de la Tumeur||colon D||||||F
+OBX|27|NM|T||4b||||||F
+OBX|28|NM|Taille tumorale maximale (cm)||6||||||F
+OBX|29|NM|Ttt_preop||non||||||F

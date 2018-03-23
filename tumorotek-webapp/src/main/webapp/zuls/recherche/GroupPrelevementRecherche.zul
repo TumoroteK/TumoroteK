@@ -1,0 +1,252 @@
+<!--
+	* Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+    * dsi-projet.tk@aphp.fr
+	* 
+	* Ce logiciel est un programme informatique servant à la gestion de 
+	* l'activité de biobanques. 
+	*
+	* Ce logiciel est régi par la licence CeCILL soumise au droit français
+	* et respectant les principes de diffusion des logiciels libres. Vous 
+	* pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+	* conditions de la licence CeCILL telle que diffusée par le CEA, le 
+	* CNRS et l'INRIA sur le site "http://www.cecill.info". 
+	* En contrepartie de l'accessibilité au code source et des droits de   
+	* copie, de modification et de redistribution accordés par cette 
+	* licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+	* Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+	* l'auteur du programme, le titulaire des droits patrimoniaux et les 
+	* concédants successifs.
+	*
+	* A cet égard  l'attention de l'utilisateur est attirée sur les 
+	* risques associés au chargement,  à l'utilisation,  à la modification 
+	* et/ou au  développement et à la reproduction du logiciel par 
+	* l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+	* le rendre complexe à manipuler et qui le réserve donc à des 	
+	* développeurs et des professionnels  avertis possédant  des 
+	* connaissances  informatiques approfondies.  Les utilisateurs sont 
+	* donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+	* besoins dmans des conditions permettant d'assurer la sécurité de leurs
+	* systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+	* et l'exploiter dans les mêmes conditions de sécurité. 
+	*	
+	* Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+	* avez pris connaissance de la licence CeCILL, et que vous en avez 
+	* accepté les termes. 
+-->
+<?component name="calendarbox" macroURI="/zuls/component/CalendarBox.zul" class="fr.aphp.tumorotek.component.CalendarBox" ?>
+
+<!-- Groupe prélèvement -->
+<groupbox id="groupPrelevements" open="false">
+	<caption image="/images/icones/history.png"
+		label="${c:l('recherche.avancee.informations.prelevement')}" />
+	<vlayout fulfill="groupPrelevements.onOpen" hflex="1">						
+		<!-- code et nature -->
+		<hlayout sclass="z-valign-middle" style="margin: 5px" hflex="1">
+			<label hflex="min"
+				value="${c:l('Champ.Prelevement.Code')}" sclass="formLabel" />
+			<div hflex="1" align="left" style="margin: 0 10px 0 10px">
+				<textbox id="codePrelevementBox"
+					hflex="1">
+					<custom-attributes
+						attribut="Code" entite="Prelevement" />
+				</textbox>
+			</div>
+
+			<label hflex="min"
+				value="${c:l('Champ.Prelevement.Nature')}" sclass="formLabel" />
+			<div hflex="1" align="left" style="margin: 0 10px 0 10px">
+				<listbox id="naturePrelevementBox"
+					mold="select" hlayouts="1"
+					model="@{fwinRechercheAvanceePrelevement$composer.natures}">
+					<listitem
+						self="@{each='nature'}" value="nature">
+						<listcell
+							label="@{nature.nature}" />
+					</listitem>
+					<custom-attributes
+						attribut="NatureId" entite="Prelevement" />
+				</listbox>
+			</div>
+		</hlayout>
+		<!-- Date prlvt et type de consentement -->
+		<hlayout sclass="z-valign-middle" style="margin: 5px" hflex="1">
+			<label hflex="min"
+				value="${c:l('Champ.Prelevement.DatePrelevement')}"
+				sclass="formLabel" />
+			<hlayout hflex="1" style="margin: 0 10px 0 10px">
+				<listbox
+					id="operateursDatePrlvtBox" mold="select" hlayouts="1"
+					model="@{fwinRechercheAvanceePrelevement$composer.operateursDates}">
+					<listitem
+						self="@{each='opDatePrlvt'}" value="opDatePrlvt">
+						<listcell
+							label="@{opDatePrlvt}" />
+					</listitem>
+				</listbox>
+				<calendarbox
+					id="datePrelevement1Box"
+					format="${c:l('validation.date.format')}" cols="8">
+					<custom-attributes
+						attribut="DatePrelevement" entite="Prelevement" />
+				</calendarbox>
+				<label
+					value="${c:l('general.selectlist.and')}"
+					sclass="formLabel" />
+				<calendarbox
+					id="datePrelevement2Box"
+					format="${c:l('validation.date.format')}" cols="8"
+					style="align:right;">
+					<custom-attributes
+						attribut="DatePrelevement" entite="Prelevement" />
+				</calendarbox>
+			</hlayout>
+
+			<label hflex="min"
+				value="${c:l('Champ.Prelevement.ConsentType')}"
+				sclass="formLabel" />
+			<div hflex="1" align="left" style="margin: 0 10px 0 10px">
+				<listbox id="statutJuridiqueBox"
+					mold="select" hflex="1"
+					model="@{fwinRechercheAvanceePrelevement$composer.consentTypes}">
+					<listitem
+						self="@{each='consentType'}" value="consentType">
+						<listcell
+							label="@{consentType.type}" />
+					</listitem>
+					<custom-attributes
+						attribut="ConsentTypeId" entite="Prelevement" />
+				</listbox>
+			</div>
+		</hlayout>
+		<!-- Etablissement -->
+		<hlayout sclass="z-valign-middle" style="margin: 5px" hflex="1">
+			<label hflex="min"
+				value="${c:l('prelevement.etablissement')}"
+				sclass="formLabel" />
+			<div hflex="2" align="left" style="margin: 0 10px 0 10px">
+				<listbox
+					id="etablissementPreleveurBox" mold="select" hflex="2"
+					model="@{fwinRechercheAvanceePrelevement$composer.etablissements}">
+					<listitem
+						self="@{each='etabPrlvt'}" value="etabPrlvt">
+						<listcell
+							label="@{etabPrlvt.nom}" />
+					</listitem>
+					<custom-attributes
+						attribut="EtablissementId" entite="Service" />
+				</listbox>
+			</div>
+		</hlayout>
+		<!-- Service -->
+		<hlayout sclass="z-valign-middle" style="margin: 5px" hflex="1">
+			<label hflex="min"
+				value="${c:l('Champ.Prelevement.ServicePreleveur')}"
+				sclass="formLabel" />
+			<div hflex="2" align="left" style="margin: 0 10px 0 10px">
+				<listbox id="servicePreleveurBox"
+					mold="select" hflex="2"
+					model="@{fwinRechercheAvanceePrelevement$composer.services}">
+					<listitem
+						self="@{each='servicePrlvt'}" value="servicePrlvt">
+						<listcell
+							label="@{servicePrlvt.nom}" />
+					</listitem>
+					<custom-attributes
+						attribut="ServicePreleveurId" entite="Prelevement" />
+				</listbox>
+			</div>
+		</hlayout>
+		<!-- code labo  -->
+		<hlayout sclass="z-valign-middle" style="margin: 5px" hflex="1">
+			<label hflex="min"
+				value="${c:l('Champ.Prelevement.NumeroLabo')}"
+				sclass="formLabel" />
+			<div hflex="1" align="left" style="margin: 0 10px 0 10px">
+				<textbox id="codeLaboPrelevementBox"
+					width="150px">
+					<custom-attributes
+						attribut="NumeroLabo" entite="Prelevement" />
+				</textbox>
+			</div>
+		</hlayout>
+		<!-- nb echantillons + age au prélèvement -->
+		<hlayout sclass="z-valign-middle" style="margin: 5px" hflex="1">
+			<label hflex="min"
+				value="${c:l('recherche.avancee.nb.echantillons')}"
+				sclass="formLabel" />
+			<hlayout hflex="1" style="margin: 0 10px 0 10px">
+				<listbox
+					id="operateursNbEchantillonBox" mold="select"
+					model="@{fwinRechercheAvanceePrelevement$composer.operateursDecimaux}">
+					<listitem
+						self="@{each='opNbEchan'}" value="opNbEchan">
+						<listcell
+							label="@{opNbEchan}" />
+					</listitem>
+				</listbox>
+				<intbox id="nbEchantillonBox"
+					width="75px" />
+			</hlayout>
+
+			<label hflex="min"
+				value="${c:l('recherche.avancee.age.prlvt')}"
+				sclass="formLabel" />
+			<halayout hflex="1" style="margin: 0 10px 0 10px">
+				<listbox
+					id="operateursAgePrlvtBox" mold="select"
+					model="@{fwinRechercheAvanceePrelevement$composer.operateursDecimaux}">
+					<listitem
+						self="@{each='opAgePrlvt'}" value="opAgePrlvt">
+						<listcell
+							label="@{opAgePrlvt}" />
+					</listitem>
+				</listbox>
+				<intbox id="agePrlvtBox"
+					width="75px" />
+			</hlayout>
+		</hlayout>
+		<!-- Risques -->
+		<hlayout sclass="z-valign-middle" style="margin: 5px" hflex="1">
+			<label hflex="min"
+				value="${c:l('Champ.Prelevement.Risques')}"
+				sclass="formLabel" />
+			<div hflex="2" align="left" style="margin: 0 10px 0 10px">
+				<textbox id="risquesBox"
+					hflex="2">
+					<custom-attributes
+						attribut="Nom" entite="Risque" />
+				</textbox>
+			</div>
+		</hlayout>
+		<!-- Non conformite -->
+		<hlayout sclass="z-valign-middle" style="margin: 5px" hflex="1">
+			<label hflex="min" value="${c:l('Champ.Prelevement.ConformeArrivee')}"
+				sclass="formLabel" />
+			<div hflex="1" align="left" style="margin: 0 10px 0 10px">
+				<listbox 
+					id="conformeBoolBox" mold="select">
+					<listitem label="" />
+					<listitem value="true" label="${c:l('annotation.boolean.oui')}" />
+					<listitem value="false" label="${c:l('annotation.boolean.non')}" />										
+					<custom-attributes
+						attribut="ConformeArrivee" entite="Prelevement" />
+				</listbox>
+			</div>
+			
+			<label hflex="min" value="${c:l('Champ.Prelevement.ConformeArrivee.Raison')}"
+				sclass="formLabel" />
+			<halyout hflex="1" align="left" style="margin: 0 10px 0 10px">
+				<textbox id="nonConformitesArriveeBox">
+					<custom-attributes
+						attribut="NonConformitesArrivee" entite="Prelevement" />
+				</textbox>
+				<listbox id="nonConformitesArriveeBoxHelper" mold="select" hflex="1"
+					model="@{fwinRechercheAvanceePrelevement$composer.nCarrivee}">
+					<listitem self="@{each='nc'}" value="nc">
+						<listcell label="@{nc.nom}" />
+					</listitem>
+				</listbox>
+			</hlayout>
+		</hlayout>
+	</vlayout>
+</groupbox>

@@ -1,0 +1,13 @@
+I*APPLI/COM*1992*CCITT*________________
+FUNCTION:RECEIVE
+LA-ID:&tumglsls                           
+REQ-ID:00000                   
+SERVICE:EMAIL
+USERINFO:34236713        
+FILELIST:/icar/aurep/ac914sls/appli/tumglsls/in/recus/prv01641.dat(VOID,STD)                                                                                                                                                                                             
+ADDRESS:&tumglsls,Primary,No,NoNotify,NoReport                                                                                                                                                                                                                         
+ORIGINATOR:&gldifsls,Originator                           
+PRIORITY:0
+ERROR:0000/Success                                                                        
+STATUS:+
+RCVTIME:11-03-14-12:45

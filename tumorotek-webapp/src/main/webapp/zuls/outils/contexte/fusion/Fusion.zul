@@ -1,0 +1,111 @@
+<!--
+	* Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+	* dsi-projet.tk@aphp.fr
+	* 
+	* Ce logiciel est un programme informatique servant à la gestion de 
+	* l'activité de biobanques. 
+	*
+	* Ce logiciel est régi par la licence CeCILL soumise au droit français
+	* et respectant les principes de diffusion des logiciels libres. Vous 
+	* pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+	* conditions de la licence CeCILL telle que diffusée par le CEA, le 
+	* CNRS et l'INRIA sur le site "http://www.cecill.info". 
+	* En contrepartie de l'accessibilité au code source et des droits de   
+	* copie, de modification et de redistribution accordés par cette 
+	* licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+	* Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+	* l'auteur du programme, le titulaire des droits patrimoniaux et les 
+	* concédants successifs.
+	*
+	* A cet égard  l'attention de l'utilisateur est attirée sur les 
+	* risques associés au chargement,  à l'utilisation,  à la modification 
+	* et/ou au  développement et à la reproduction du logiciel par 
+	* l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+	* le rendre complexe à manipuler et qui le réserve donc à des 	
+	* développeurs et des professionnels  avertis possédant  des 
+	* connaissances  informatiques approfondies.  Les utilisateurs sont 
+	* donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+	* besoins dans des conditions permettant d'assurer la sécurité de leurs
+	* systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+	* et l'exploiter dans les mêmes conditions de sécurité. 
+	*	
+	* Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+	* avez pris connaissance de la licence CeCILL, et que vous en avez 
+	* accepté les termes. 
+-->
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+
+<zk>
+	<window id="winContexteFusion" apply="org.zkoss.bind.BindComposer"
+		viewModel="@id('vm') @init('fr.aphp.tumorotek.action.outils.contexte.fusion.FusionVM')">
+		<panel collapsible="false" title="${c:l('fusion.outil.titre')}" 
+							 sclass="fichePanelv2" id="winPanel" height="100%">
+			<panelchildren id="panelChildrenWithScroll"  style="overflow-y: scroll">
+				<vlayout>
+					<div align="center" vflex="min">
+						<vlayout>
+							<radiogroup id="choixEntiteFusion"
+									selectedItem="@save(vm.entiteRecherche, before='launchResearch')">
+								<radio id="chooseCollaborateur" value="Collaborateur"
+									label="${c:l('Entite.Collaborateur')}" selected="true" />
+								<radio id="chooseService" value="Service" 
+									label="${c:l('Entite.Service')}" />
+								<radio id="chooseEtablissement" value="Etablissement"
+									label="${c:l('Entite.Etablissement')}" />
+							</radiogroup>
+							
+							<hlayout>
+								<vlayout>
+									<label value="${c:l('fusion.rechercher.slide')}" />
+									<hlayout>
+										<slider id="slider"
+										curpos="@bind(vm.tauxSimilitude)"  onScroll="@command('setMin')"/>
+										<label value="@bind(vm.tauxSimilitude)"/>
+									</hlayout>
+									<label value="${c:l('fusion.rechercher.slide.taux.warning')}"
+									style="font-size:28; color:RED"/>
+								</vlayout>
+								<vlayout>
+									<label value="${c:l('fusion.rechercher')}"/>
+									<textbox value="@save(vm.rechValue, before='launchResearch')" />
+									<label value="${c:l('fusion.rechercher.champ.vide')}" />
+									<button id="launchSearchButton" label="${c:l('general.recherche')}"
+										onClick="@command('launchResearch')" />
+								</vlayout>
+							</hlayout>
+						</vlayout>
+					</div>
+					<div align="center" height="100%" vflex="max">
+						<listbox id="list" model="@load(vm.duoModel)"
+							selectedItem="@bind(vm.duoSelectedEntites)" hflex="1" vflex="1">
+							<custom-attributes org.zkoss.zul.listbox.autoSort="true"/>
+							<listhead >
+								<listheader label="select" visible="false" width="10px" />
+								<listheader hflex="1" sort="auto(infoEntiteA)" />
+								<listheader hflex="1" sort="auto(infoEntiteB)"/>
+								<listheader 
+									width="40px" sort="auto(taux)" onCreate="self.sort(false)"/>
+								<listheader  width="30px"/>	
+							</listhead>
+		
+							<template name="model">
+								<listitem onClick="@command('onClicked')">
+									<listcell> <checkbox/> </listcell>
+									<listcell label="${each.infoEntiteA}" />
+									<listcell label="${each.infoEntiteB}" />
+									<listcell label="${each.taux}" />
+									<listcell >
+										<image src="/images/icones/small_delete.png"  
+											style="cursor: pointer"
+											onClick="@command('onDeleted', toRemove=each)"/>
+									</listcell>
+								</listitem>
+							</template>
+						</listbox>
+					</div>
+				</vlayout>
+			</panelchildren>
+			<toolbar height="30px" id="toolbarEchan" align="end" />
+		</panel>
+	</window>
+</zk>

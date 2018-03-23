@@ -1,0 +1,511 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<zk >
+<style>
+	.rowViewBoite, .rowViewBoite .z-overflow-hidden, .rowViewBoite .z-row-inner {
+		overflow: visible;
+	}
+	
+	.z-row-over.rowViewBoite > td.z-row-inner, tr.z-row-over > .z-cell {
+		background-image: none;
+	}
+}
+</style>
+<script type="text/javascript" src="/scripts/notify.min.js" />
+<script>
+	function notifyEmplacement(text, div, classN){
+	 	jq(div).notify(text, 
+ 		 { position:"top", className:classN, autoHide: false, clickToHide: true }
+		); 
+		jq('.notifyjs-hidable').unbind('click');
+		jq('.notifyjs-hidable').bind('click', 
+  			function(){$(this).data('notifyjs').show(false)});
+    	}
+</script>
+<window id="fwinTerminale" border="none" apply="fr.aphp.tumorotek.action.stockage.FicheTerminale" xmlns:w="client">
+	<panel collapsible="false" title="${c:l('terminale.fiche.titre')}"
+	 id="winPanel" sclass="fichePanelv2">
+		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
+			<grid fixedLayout="true" span="true" class="gridForm1" width="100%">
+				<columns>
+					<column width="150px"/>
+					<column/>
+					<column width="100px"/>
+					<column/>
+				</columns>
+				<rows>
+					<!-- Nom + alias -->
+					<row id="rowNomAlias">
+						<hbox>
+							<label value="${c:l('terminale.nom')}" sclass="formLabel"/>
+							<label id="nomRequired" value="*" sclass="requiredMark"
+									visible="false"/>
+						</hbox>
+						<div>
+							<label id="nomLabel" 
+								value="@{fwinTerminale$composer.object.nom}" sclass="formValue" />
+							
+							<textbox id="nomBox" value="@{fwinTerminale$composer.object.nom,
+			        								 save-when='validateC.onClick, createC.onClick'
+			        								 load-after='editC.onClick, createC.onClick'}" 
+								width="100px" 
+								constraint="${fwinTerminale$composer.terminaleNomConstraint}"
+								visible="false"
+							/>
+						</div>
+						
+						<hbox>
+							<label value="${c:l('terminale.alias')}" sclass="formLabel"/>
+						</hbox>
+						<div>
+							<label id="aliasLabel" 
+								value="@{fwinTerminale$composer.object.alias}" sclass="formValue" />
+								
+							<textbox id="aliasBox" value="@{fwinTerminale$composer.object.alias,
+			        								 save-when='validateC.onClick, createC.onClick'
+			        								 load-after='editC.onClick, createC.onClick'}" 
+								width="100px" 
+								constraint="@{fwinTerminale$composer.nomNullConstraint}"
+								visible="false"
+							/>
+						</div>
+					</row>
+					
+					<!-- Type -->
+					<row spans="1,3" id="rowType">
+						<label value="${c:l('terminale.terminaleType')}" sclass="formLabel"/>
+						<div>
+							<label id="typeLabel" 
+								value="@{fwinTerminale$composer.selectedTerminaleType.type}" sclass="formValue" />
+								
+							<listbox id="typesBox" mold="select" rows="1"
+							model="@{fwinTerminale$composer.types 
+							load-after='editC.onClick, createC.onClick'}"
+							selectedItem="@{fwinTerminale$composer.selectedTerminaleType}"
+							visible="false">
+								<listitem self="@{each='terminaleType'}" value="@{terminaleType}">			
+									<listcell label="@{terminaleType.type}" />
+								</listitem>
+							</listbox>
+						</div>
+					</row>
+					
+					<!-- Numérotation -->
+					<row spans="1,3" id="rowNumerotation">
+						<label value="${c:l('terminale.numerotation')}" sclass="formLabel"/>
+						<div>
+							<listbox id="numerotationsBox" mold="select" rows="1"
+							model="@{fwinTerminale$composer.numerotations 
+							load-after='editC.onClick, createC.onClick'}"
+							selectedItem="@{fwinTerminale$composer.selectedTerminaleNumerotation}"
+							>
+								<listitem self="@{each='terminaleNum'}" value="@{terminaleNum}">			
+									<listcell label="@{terminaleNum}" />
+								</listitem>
+							</listbox>
+						</div>
+					</row>
+					
+					<!-- NbPlaces -->
+					<row id="rowNbPlaces">
+						<label value="${c:l('terminale.nbPlaces')}" sclass="formLabel"/>
+						<div>
+							<label id="nbPlacesLabel" 
+								value="@{fwinTerminale$composer.selectedTerminaleType.nbPlaces,
+								load-after='typesBox.onSelect'}" 
+								sclass="formValue" />
+						</div>
+						
+						<label value="${c:l('terminale.dimensions')}" sclass="formLabel"/>
+						<div>
+							<label id="dimensionsLabel" 
+								value="@{fwinTerminale$composer.dimensions,
+								load-after='typesBox.onSelect'}" 
+								sclass="formValue" />
+						</div>
+					</row>
+					
+					<!-- Couleur -->
+					<row spans="1,3">
+						<label value="${c:l('terminale.couleur')}" sclass="formLabel"/>		
+						<div>
+							<image id="couleurTerminaleImg"
+								src="@{fwinTerminale$composer.couleurSrc}"/>
+							<listbox id="couleurTerminaleBox"  mold="select" rows="1"
+								itemRenderer="@{fwinTerminale$composer.couleurRenderer}"
+								visible="false">
+								<listitem self="@{each='col'}" value="@{col}" />
+							</listbox>
+						</div>
+					</row>
+					
+					<!-- Entite -->
+					<row spans="2,2" id="rowEntiteEdit" visible="false">
+						<label value="${c:l('terminale.edit.entite')}" sclass="formLabel"/>
+						<div>
+							<listbox id="entiteBox" mold="select" rows="1"
+							model="@{fwinTerminale$composer.entites 
+							load-after='editC.onClick, createC.onClick'}"
+							selectedItem="@{fwinTerminale$composer.selectedEntite}"
+							visible="false">
+								<listitem self="@{each='entiteTerminale'}" value="@{entiteTerminale}">			
+									<listcell label="@{entiteTerminale.nom}" />
+								</listitem>
+							</listbox>
+						</div>
+					</row>
+					
+					<!-- Banques -->
+					<row spans="2,2" id="rowBanqueEdit" visible="false">
+						<label value="${c:l('terminale.edit.banque')}" sclass="formLabel"/>
+						<div>
+							<listbox id="banqueBox" mold="select" rows="1"
+							model="@{fwinTerminale$composer.banques 
+							load-after='editC.onClick, createC.onClick'}"
+							selectedItem="@{fwinTerminale$composer.selectedBanque}"
+							visible="false">
+								<listitem self="@{each='banqueTerminale'}" value="@{banqueTerminale}">			
+									<listcell label="@{banqueTerminale.nom}" />
+								</listitem>
+							</listbox>
+						</div>
+					</row>
+					
+					<row spans="4">
+						<vbox>
+							<separator height="30px"/>
+						</vbox>
+					</row>
+					
+					<!-- Modification du contenu -->
+					<row spans="4" id="rowContenuInfo1" visible="false">
+						<div align="center">
+							<label 
+								value="${c:l('termianle.contenu.info')}" 
+								sclass="formValue" 
+								style="font-style:italic"
+							/>
+						</div>
+					</row>
+					
+					<row spans="4" id="rowViewBoite" sclass="rowViewBoite">
+						<div hflex="1" align="center" id="modeleBoite" />
+					</row>
+					
+					<!-- Mode déplacement : départ -->
+					<row spans="4" id="rowEmplacementTitle1" visible="false">
+						<vbox>
+							<label value="${c:l('terminale.deplacement.emplacement.actuel.titre')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					
+					<!-- Adresse départ -->
+					<row spans="1,3" id="rowAdresseActuelle" visible="false">
+						<label value="${c:l('terminale.deplacement.adresse')}" sclass="formLabel"/>
+						<label value="@{fwinTerminale$composer.adresseActuelle,
+						load-after='deplacer.onClick'}" sclass="formValue"/>
+					</row>
+					
+					<!-- Position départ -->
+					<row spans="1,3" id="rowPositionActuelle" visible="false">
+						<label value="${c:l('terminale.deplacement.position')}" sclass="formLabel"/>
+						<label value="@{fwinTerminale$composer.object.position}" sclass="formValue"/>
+					</row>
+					
+					<row id="rowNomDepart" spans="1,3" visible="false">
+						<hbox>
+							<label value="${c:l('terminale.nom')}" sclass="formLabel"/>
+							<label value="*" sclass="requiredMark"/>
+						</hbox>
+						
+						<textbox id="nomDepartBox" value="@{fwinTerminale$composer.object.nom,
+		        								 save-when='validateDeplacement.onClick'
+		        								 load-after='deplacer.onClick'}" 
+							width="100px" 
+							constraint="${fwinTerminale$composer.terminaleNomConstraint}"
+						/>
+					</row>
+					
+					<!-- Mode déplacement : arrivée -->
+					<row spans="4" id="rowEmplacementTitle2" visible="false">
+						<vbox>
+							<label value="${c:l('terminale.deplacement.emplacement.destination.titre')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					
+					<!-- Adresse arrivée -->
+					<row spans="1,3" id="rowAdresseDestination" visible="false">
+						<label value="${c:l('terminale.deplacement.adresse')}" sclass="formLabel"/>
+						<label id="adresseDestinationLabel" 
+							value="@{fwinTerminale$composer.adresseDestination 
+							load-after='deplacer.onClick'}" 
+							sclass="formValue"/>
+					</row>
+					
+					<!-- Position arrivée -->
+					<row spans="1,3" id="rowPositionDestination" visible="false">
+						<label value="${c:l('terminale.deplacement.position')}" sclass="formLabel"/>
+						<label id="positionDestinationLabel" 
+							value="@{fwinTerminale$composer.positionDestination 
+							load-after='deplacer.onClick'}" 
+						sclass="formValue"/>
+					</row>
+					
+					<!-- Contenu actuel -->
+					<row spans="1,3" id="rowContenuDestination" visible="false">
+						<label value="${c:l('terminale.deplacement.contenu')}" sclass="formLabel"/>
+						<label id="contenuDestinationLabel" 
+							value="@{fwinTerminale$composer.contenuDestination  
+							load-after='deplacer.onClick'}" 
+							sclass="formValue"/>
+					</row>
+					
+					<row id="rowNomDestination" spans="1,3" visible="false">
+						<hbox>
+							<label value="${c:l('terminale.nom')}" sclass="formLabel"/>
+							<label value="*" sclass="requiredMark"/>
+						</hbox>
+						
+						<textbox id="nomDestinationBox" 
+							value="@{fwinTerminale$composer.terminaleDestination.terminale.nom,
+		        				 save-when='validateDeplacement.onClick'
+		        				 load-after='deplacer.onClick'}" 
+							width="100px" 
+						/>
+					</row>
+					
+					<!-- Erreur destination -->
+					<row spans="4" id="rowErreurDestination" visible="false">
+						<div align="center">
+							<label
+								value="${c:l('terminale.deplacement.emplacement.destination.incorrect')}" 
+								sclass="formErrorValue"
+							/>
+						</div>
+					</row>
+					
+					<!-- Nouvelle terminale -->
+					<row spans="4" id="rowNewTerminale" visible="false">
+						<div align="center">
+							<label
+								value="${c:l('terminale.new')}" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+						</div>
+					</row>
+					
+					<!-- Entité reservée -->
+					<row spans="4" id="entiteReserveeRow" visible="false">
+						<div align="center">
+							<label id="entiteReserveeLabel" 
+								value="@{fwinTerminale$composer.entiteReservee}" 
+								sclass="formValue" 
+								style="font-style:italic"
+							/>
+						</div>
+					</row>
+					
+					<!-- Banques réservées -->
+					<row spans="4" id="banqueReserveeRow" visible="false">
+						<div align="center">
+							<label id="banqueReserveeLabel" 
+								value="@{fwinTerminale$composer.banqueReservee}" 
+								sclass="formValue" 
+								style="font-style:italic"
+							/>
+						</div>
+					</row>
+					
+					<row spans="4" id="rowHistoriqueTitle" visible="false">
+						<vbox>
+							<label value="${c:l('terminale.historique.title')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					<row spans="4" id="rowHistorique" visible="false" align="center">
+						<grid sclass="gridListStyle"
+							fixedLayout="true"
+							id="gridHistorique" 
+							width="520px">
+							<columns sizable="true">
+								<column label="${c:l('terminale.historique.code')}" width="150px"/>
+								<column label="${c:l('terminale.historique.oldAdresse')}" width="160px"/>
+								<column width="30px" align="center"/>
+								<column label="${c:l('terminale.historique.newAdresse')}" width="160px"/>
+							</columns>
+							<rows>
+							</rows>
+						</grid>
+					</row>
+					<row spans="4">
+						<separator/>
+					</row>
+					<group id="groupIncidents" label="@{fwinTerminale$composer.incidentsGroupHeader}"/>
+					<row spans="4">
+						<vbox align="center" hflex="1">
+							<grid id="incidentsList" mold="paging" pageSize="5"
+								fixedLayout="true" 
+								hflex="1"
+								span="true"
+								sclass="gridListStyle"
+								model="@{fwinTerminale$composer.incidentsDecorated}"
+								>
+								<columns sizable="true">
+									<column label="${c:l('incident.nom')}" />
+									<column label="${c:l('incident.date')}" />
+									<column label="${c:l('incident.description')}" />
+								</columns>
+								<rows>
+									<row self="@{each='incident'}">
+										<label value="@{incident.nom}"/>
+										<label value="@{incident.dateFormatted}"/>
+										<label value="@{incident.description}"/>
+									</row>
+								</rows>
+							</grid>
+							
+							<grid id="incidentsListEdit" mold="paging" pageSize="5"
+								fixedLayout="true" 
+								hflex="1"
+								span="true"
+								sclass="gridListStyle"
+								model="@{fwinTerminale$composer.incidents}"
+								>
+								<columns sizable="true">
+									<column label="${c:l('incident.nom')}" />
+									<column label="${c:l('incident.date')}" />
+									<column label="${c:l('incident.description')}" />
+									<column width="25px"/>
+								</columns>
+								<rows>
+									<row self="@{each='incidentEdit'}">
+										<textbox value="@{incidentEdit.nom,
+	        								 save-when='createC.onClick, self.onBlur'
+	        								 load-after='editC.onClick'}" 
+											width="150px" 
+											constraint="@{fwinTerminale$composer.incidentConstraint}"
+										/>
+										<datebox value="@{incidentEdit.date,
+			        						save-when='validateC.onClick,self.onBlur'}" 
+			        						format="${c:l('validation.date.format')}"
+			        						cols="15" lenient="false"/>
+										<textbox value="@{incidentEdit.description,
+	        								 save-when='validateC.onClick, self.onBlur'
+	        								 load-after='editC.onClick'}" 
+											width="190px" rows="2" 
+										/>
+										<div align="center">
+											<image width="12px" height="12px" id="deleteIncident"
+												src="/images/icones/small_delete.png"
+												style="cursor:pointer"/>
+										</div>
+									</row>
+								</rows>
+							</grid>
+						</vbox>
+					</row>
+				</rows>
+			</grid>
+		</panelchildren>
+		<toolbar height="30px" id="toolbarEchan" align="end">
+			<hbox spacing="5">
+				<button id="addNewC" label="${c:l('general.new')}" height="24px" visible="false"
+					image="/images/icones/addTerminale.png" sclass="buttonv2"/>
+				<menubar sclass="menuBarV2" id="menuBar">
+					<menu label="${c:l('general.actions')}" image="/images/icones/small_action.png" 
+						height="24px">
+						<menupopup>
+							<menuitem id="addIncidentItem" image="/images/icones/addIncident.png" 
+								label="${c:l('conteneur.add.incident')}"/>
+							<menuitem id="print" image="/images/icones/printer.png" 
+								label="${c:l('general.print')}"/>
+							<menuitem id="historique" image="/images/icones/history.png" 
+								label="${c:l('general.historique')}"/>
+						</menupopup>
+					</menu>
+				</menubar>
+				<menubar sclass="menuBarV2" id="menuBarSelectionsTerminale">
+					<menu label="${c:l('general.selections')}" image="/images/icones/select.png"
+						width="36px" height="24px">
+						<menupopup>
+							<menuitem id="afficherEchantillons" image="/images/icones/selectAllEchantillons.png" label="${c:l('terminale.action.select.echantillons')}"/>
+							<menuitem id="afficherDerives" image="/images/icones/selectAllProdDerives.png" label="${c:l('terminale.action.select.prodDerive')}"/>
+						</menupopup>
+					</menu>
+				</menubar>
+				<menubar sclass="menuBarV2" id="menuBarActionsTerminale">
+					<menu label="${c:l('general.mouvements')}" image="/images/icones/small_utilities.png"
+						width="36px" height="24px">
+						<menupopup>
+							<menuitem id="deplacer" image="/images/icones/deplacerTerminale.png" label="${c:l('terminale.action.deplacer')}"/>
+							<menuitem id="contenu" image="/images/icones/terminale.png" label="${c:l('terminale.action.contenu')}"/>
+							<menuitem id="deplacerEmplacements" image="/images/icones/deplacerEchans.png" label="${c:l('terminale.action.deplacer.emplacements')}"/>
+							<menuitem id="destockerEmplacements" image="/images/icones/destockElements.png" label="${c:l('terminale.action.destockage.emplacements')}"/>
+						</menupopup>
+					</menu>
+				</menubar>
+				<button id="editC" label="${c:l('general.edit')}" height="24px" visible="true"
+					image="/images/icones/edit.png" sclass="buttonv2"
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="deleteC" label="${c:l('general.delete')}" height="24px" visible="true"
+					image="/images/icones/trash.png" sclass="buttonv2"
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="validateC" label="${c:l('general.validate')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="revertC" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="createC" label="${c:l('general.create')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="cancelC" label="${c:l('general.cancel')}"  height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="validateDeplacement" label="${c:l('general.validate')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2" disabled="true"
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="revertDeplacement" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="validateContenu" label="${c:l('general.validate')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="revertContenu" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+			</hbox>
+		</toolbar>
+	</panel>
+</window>
+</zk>

@@ -1,0 +1,19 @@
+<!ELEMENT Document (Page+)>
+<!ELEMENT Page (TitreDocument, Paragraphe+, Liste*)>
+<!ELEMENT TitreDocument (#PCDATA)>
+<!ELEMENT Paragraphe (TitreParagraphe, LigneParagraphe+, SousParagraphe*)>
+
+<!ELEMENT TitreParagraphe (#PCDATA)>
+<!ELEMENT SousParagraphe (TitreSousParagraphe, LigneParagraphe+)>
+<!ELEMENT TitreSousParagraphe (#PCDATA)>
+<!ELEMENT LigneParagraphe (CoupleValeurs+)>
+<!ELEMENT CoupleValeurs (NomValeur, Valeur)>
+<!ELEMENT NomValeur (#PCDATA)>
+<!ELEMENT Valeur (#PCDATA)>
+
+<!ELEMENT Liste (TitreListe, EnteteListe, LigneListe*)>
+<!ELEMENT TitreListe (#PCDATA)>
+<!ELEMENT EnteteListe (NomColonne+)>
+<!ELEMENT NomColonne (#PCDATA)>
+<!ELEMENT LigneListe (Cellule+)>
+<!ELEMENT Cellule (#PCDATA)>

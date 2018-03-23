@@ -1,0 +1,186 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<zk>
+<window id="lwinCollaborations" border="none" apply="fr.aphp.tumorotek.action.contexte.ListeCollaborations"
+	vflex="1">
+<panel title="${c:l('general.recherche.rapide')}" collapsible="true"
+	sclass="panelv2" id="searchPanel" open="false">
+	<panelchildren>
+		<vbox>
+			<radiogroup id="criteresRadioGroup">
+				<vbox>
+					<box orient="horizontal" pack="center">
+						<div width="20px"/>
+						<div width="150px">
+							<label value="${c:l('collaborations.search.type')}"
+								sclass="formLabel"/>
+						</div>
+						<listbox id="typeSearchBox" mold="select" rows="1"
+							visible="true" width="150px">
+								<listitem label="${c:l('collaborations.search.collaborateur')}" selected="true"/>
+								<listitem label="${c:l('collaborations.search.etablissement')}"/>
+								<listitem label="${c:l('collaborations.search.service')}"/>
+						</listbox>
+						<div width="15px"/>
+					</box>
+					<!-- nom collaborateur -->
+					<box id="rowCollabNom" visible="true" orient="horizontal" pack="center">
+						<radio id="nomCollab"/>
+						<div width="150px">
+							<label value="${c:l('collaborateur.nom')}" sclass="formLabel"/>
+						</div>
+						<textbox id="nomBoxCollab" 
+							value="@{lwinCollaborations$composer.searchNomCollab}" 
+							width="150px" 
+							forward="onOK=onPressEnterKey()"
+						/>
+					</box>
+					<!-- nom etablissement -->
+					<box id="rowEtabNom" visible="false" orient="horizontal" pack="center">
+						<radio id="nomEtab"/>
+						<div width="150px">
+							<label value="${c:l('etablissement.nom')}" sclass="formLabel"/>
+						</div>
+						<textbox id="nomBoxEtab" 
+							value="@{lwinCollaborations$composer.searchNomEtab}" 
+							width="150px" 
+							forward="onOK=onPressEnterKey()"
+						/>
+					</box>
+					<!-- finess etablissement -->
+					<box id="rowEtabVille" visible="false" orient="horizontal" pack="center">
+						<radio id="villeEtab"/>
+						<div width="150px">
+							<label value="${c:l('coordonnee.ville')}" sclass="formLabel"/>
+						</div>
+						<textbox id="villeBoxEtab" 
+							value="@{lwinCollaborations$composer.searchVilleEtab}" 
+							width="150px" 
+							forward="onOK=onPressEnterKey()"
+						/>
+					</box>
+					<!-- nom service -->
+					<box id="rowServiceNom" visible="false" orient="horizontal" pack="center">
+						<radio id="nomService"/>
+						<div width="150px">
+							<label value="${c:l('service.nom')}" sclass="formLabel"/>
+						</div>
+						<textbox id="nomBoxService" 
+							value="@{lwinCollaborations$composer.searchNomService}" 
+							width="150px" 
+							forward="onOK=onPressEnterKey()"
+						/>
+					</box>
+				</vbox>
+			</radiogroup>
+			<button id="find" label="${c:l('general.find')}" height="24px" visible="true"
+							image="/images/icones/search.png" sclass="buttonv2"/>
+		</vbox>
+	</panelchildren>
+</panel>
+<panel border="none" collapsible="true" id="listPanel" sclass="panelv2" vflex="1">
+	<panelchildren  id="panelChildrenWithScroll">
+		<grid id="mainGridContext" fixedLayout="true" sclass="gridForm1" visible="true"
+			hflex="1" vflex="1">
+			<columns>
+				<column/>
+			</columns>
+			<rows>
+				<row>
+					<tree id="mainTreeContext" 
+						model="@{lwinCollaborations$composer.ttm}" 
+						treeitemRenderer="${lwinCollaborations$composer.ctr}"
+						zclass="z-filetree"
+						height="100%"
+						visible="true"
+						mold="paging"
+						pageSize="30"
+						hflex="1">
+						<treechildren>
+							<treeitem id="treeItem"/>
+						</treechildren>
+					</tree>
+				</row>
+				<group label="@{lwinCollaborations$composer.collabsIsolesGroupHeader}" 
+					id="groupCollabsIsoles"
+				/>
+				<row>
+					<listbox id="collabsIsolesBox" rows="5"
+						model="@{lwinCollaborations$composer.collabsWithoutService}"
+						mold="paging"
+						pageSize="5"
+						sclass="listBox"
+						hflex="1">
+						<listhead sizable="true">
+							<listheader label="${c:l('collaborateur.nom')}"
+							/>
+							<listheader label="${c:l('collaborateur.prenom')}"
+							/>
+							<listheader />
+						</listhead>
+						<listitem self="@{each='collabIsole'}" value="@{collabIsole}">			
+							<listcell label="@{collabIsole.nom}"/>
+							<listcell label="@{collabIsole.prenom}" />
+							<listcell>
+								<label value="Inactif" visible="@{collabIsole.archive}"/>
+							</listcell>
+						</listitem>
+					</listbox>
+				</row>
+			</rows>
+		</grid>
+	</panelchildren>
+	<toolbar height="30px" id="lToolbarCollaborations" align="start">
+		<hbox spacing="5">
+			<button id="selectItem" label="${c:l('general.select')}" height="24px" visible="false"
+				image="/images/icones/select.png" sclass="buttonv2"/>
+			<button id="refresh" label="${c:l('general.refresh')}" height="24px" visible="true"
+				image="/images/icones/refresh.png" sclass="buttonv2"/>
+			<menubar sclass="menuBarV2" id="menuBarCollaborations">
+				<menu label="Création" image="/images/icones/small_general_new.png" height="24px">
+					<menupopup>
+						<menuitem id="newEtabItem" image="/images/icones/addEtablissement.png" label="Nouvel Etablissement"/>
+						<menuitem id="newServiceItem" image="/images/icones/addService.png" label="Nouveau Service"/>
+						<menuitem id="newCollabItem" image="/images/icones/addCollaborateur.png" label="Nouveau Collaborateur"/>
+					</menupopup>
+				</menu>
+			</menubar>
+		</hbox>
+	</toolbar>
+</panel>
+
+</window>
+</zk>

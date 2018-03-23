@@ -1,0 +1,602 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<?component name="calendarbox" macroURI="/zuls/component/CalendarBox.zul" class="fr.aphp.tumorotek.component.CalendarBox" ?>
+
+<window id="fwinMultiProdDerive" border="none" apply="fr.aphp.tumorotek.action.prodderive.FicheMultiProdDerive"
+	xmlns:h="http://www.w3.org/1999/xhtml">
+	<panel collapsible="false" title="${c:l('ficheMultiProdDerive.title')}"
+	 id="winPanel" sclass="fichePanelv2" closable="true">
+		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
+			<grid fixedLayout="true" id="formGrid" sclass="gridForm1">
+				<columns>
+					<column width="150px"/>
+					<column/>
+					<column width="150px"/>
+					<column/>
+				</columns>
+				<rows>
+					<row id="row1PrlvtDerive">
+					<!-- Code du prélèvement -->
+						<label value="${c:l('ficheProdDerive.prelevement.code')}" 
+							sclass="formLabel"/>
+						<label id="codePrlvtLabelDerive" 
+							value="@{fwinMultiProdDerive$composer.parentPrlvt.code}"
+							sclass="formValue"
+						/>
+							
+						<!-- Type du prélèvement -->
+						<label value="${c:l('Champ.Prelevement.Nature')}" 
+							sclass="formLabel"/>
+						<label id="typePrlvtLabelDerive" 
+							value="@{fwinMultiProdDerive$composer.parentPrlvt.nature.nature}"
+							sclass="formValue"
+						/>
+					</row>
+					<row id="row2PrlvtDerive" spans="1,3">
+						<!-- quantite du prélèvement -->
+						<label value="${c:l('Champ.Prelevement.Quantite')}" 
+							sclass="formLabel"/>
+						<hbox>
+							<label 
+								value="@{fwinMultiProdDerive$composer.parentPrlvt.quantite}"
+								sclass="formValue"
+							/>
+							
+							<label 
+								value="@{fwinMultiProdDerive$composer.parentPrlvt.quantiteUnite.unite}"
+								sclass="formValue"
+							/>
+						</hbox>
+					</row>
+					
+					<row id="row1EchanDerive">
+					<!-- Code de l'échantillon -->
+						<label value="${c:l('ficheProdDerive.echantillon.code')}" 
+							sclass="formLabel"/>
+						<label id="codeEchanLabelDerive" 
+							value="@{fwinMultiProdDerive$composer.parentEchantillon.code}"
+							sclass="formValue"
+						/>
+							
+						<!-- Type de l'échantillon -->
+						<label value="${c:l('ficheProdDerive.echantillon.type')}" 
+							sclass="formLabel"/>
+						<label id="typeEchanLabelDerive" 
+							value="@{fwinMultiProdDerive$composer.parentEchantillon.echantillonType.type}"
+							sclass="formValue"
+						/>
+					</row>
+					<row id="row2EchanDerive" spans="1,3">
+						<!-- quantite de l'échantillon -->
+						<label value="${c:l('Champ.Echantillon.Quantite')}" 
+							sclass="formLabel"/>
+						<hbox>
+							<label 
+								value="@{fwinMultiProdDerive$composer.parentEchantillon.quantite}"
+								sclass="formValue"
+							/>
+							<label 
+								value="@{fwinMultiProdDerive$composer.parentEchantillon.quantiteUnite.unite}"
+								sclass="formValue"
+							/>
+						</hbox>
+					</row>
+					
+					<row id="row1DeriveDerive">
+					<!-- Code du produit dérivé -->
+						<label value="${c:l('ficheProdDerive.prodderive.code')}" 
+							sclass="formLabel"/>
+						<label id="codeDeriveLabelDerive" 
+							value="@{fwinMultiProdDerive$composer.parentProdDerive.code}"
+							sclass="formValue"
+						/>
+							
+					<!-- Type du produit dérivé -->
+						<label value="${c:l('ficheProdDerive.prodderive.type')}" 
+							sclass="formLabel"/>
+						<label id="typeDeriveLabelDerive" 
+							value="@{fwinMultiProdDerive$composer.parentProdDerive.prodType.type}"
+							sclass="formValue"
+						/>
+					</row>
+					<row id="row2DeriveDerive" spans="1,3">
+						<!-- quantite du produit dérivé -->
+						<label value="${c:l('Champ.ProdDerive.Quantite')}" 
+							sclass="formLabel"/>
+						<hbox>
+							<label 
+								value="@{fwinMultiProdDerive$composer.parentProdDerive.quantite}"
+								sclass="formValue"
+							/>
+							
+							<label 
+								value="@{fwinMultiProdDerive$composer.parentProdDerive.quantiteUnite.unite}"
+								sclass="formValue"
+							/>
+						</hbox>
+					</row>
+					
+					<!-- Selection du parent -->
+					<row id="selectParentRowDerive">
+						<!-- Type du parent -->
+						<label id="typeParentLabelDerive"
+							value="${c:l('ficheProdDerive.selectParent.type')}" 
+							sclass="formLabel"
+							/>
+						
+						<listbox id="typesParentBoxDerive" mold="select" rows="1"
+							model="@{fwinMultiProdDerive$composer.listParentTypes}"
+							selectedItem="@{fwinMultiProdDerive$composer.selectedParent}"
+							>
+							<listitem self="@{each='typeParentDerive'}" value="typeParentDerive">			
+								<listcell label="@{typeParentDerive}" />
+							</listitem>
+						</listbox>
+						
+						<!-- Code du parent -->
+						<hbox>
+							<label id="codeParentLabelDerive"
+							value="${c:l('ficheProdDerive.selectParent.code')}" 
+							sclass="formLabel" />
+							<label id="requiredCodeParentDerive" value="*" sclass="requiredMark" />
+						</hbox>
+							
+						<combobox id="codesParentBoxDerive" 
+							buttonVisible="false"
+							autocomplete="false"
+		 					constraint="@{fwinMultiProdDerive$composer.cttCodeParent}"
+		 					autodrop="true" width="150px">
+		 						<comboitem self="@{each=codeParentDerive}" label="@{codeParentDerive}"/>
+		 				</combobox>
+					</row>
+					
+					<row spans="4" id="rowTransformation1">
+						<vbox>
+							<label value="${c:l('ficheProdDerive.transformation.title')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					<!-- Date de transformation -->
+					<row id="rowTransformation2">
+						<label value="${c:l('ficheProdDerive.transformation.date')}" 
+						sclass="formLabel"/>	
+												
+						<calendarbox id="dateTransfoCalBox" value="@{fwinProdDeriveEdit$composer.object.dateTransformation,
+			        			save-when='validate.onClick, create.onClick, self.onBlur'}" />
+							
+						<!-- Quantité utilisé dans la transformation -->
+						<label value="${c:l('ficheProdDerive.transformation.quantité')}" sclass="formLabel"/>
+
+						<div>
+							<decimalbox id="transfoQuantiteBoxDerive"
+								width="50px"
+								value="@{fwinMultiProdDerive$composer.transformation.quantite, 
+									save-when='validate.onClick, create.onClick, addProdDerives.onClick'}"
+								constraint="@{fwinMultiProdDerive$composer.cttQuantiteTransfo}"
+								format="##0.###" scale="3"
+								locale="en"
+							/>
+							
+							<label id="transfoQuantiteUnitesBoxDerive"
+								value="@{fwinMultiProdDerive$composer.selectedTransfoQuantiteUnite.unite
+								load-after='codesParentBoxDerive.onSelect'}"
+								sclass="formValue"/>
+						</div>
+					</row>
+					<row spans="4" id="transformationInconnueLabel" visible="false">
+						<label value="${c:l('ficheProdDerive.transformation.inconnue')}"
+								sclass="formValue"
+								style="font-style:italic" />
+					</row>
+					
+					<row spans="4">
+						<separator/>
+					</row>
+					<group label="${c:l('ficheMultiProdDerive.group')}" id="groupInfosCompDerive"/>
+					<row spans="1,3">
+						<label/>
+						<button id="changeNumerotation" 
+							label="${c:l('ficheMultiEchantillons.numerotation.changer')}"
+							height="24px"
+							style="font-style:italic;font-size:8;"
+							image="/images/icones/smallNumber.png" sclass="buttonv2"/>
+					</row>
+					<row spans="1,3">
+						<!-- Code du Produit dérivé -->
+						<hbox>
+							<label value="${c:l('Champ.ProdDerive.Code')}" sclass="formLabel"/>
+							<label id="requiredCodeDerive" value="*" sclass="requiredMark"
+								/>
+						</hbox>
+						<hlayout sclass="z-valign-middle">
+							<textbox id="codePrefixeLabelDerive" 
+								value="@{fwinMultiProdDerive$composer.codePrefixe,
+			        			save-when='validate.onClick, create.onClick, addProdDerives.onClick'
+			        			load-after='codesParentBoxDerive.onSelect, numerotation.onClick'}" 
+								width="150px" mold="rounded"
+								constraint="${fwinMultiProdDerive$composer.codePrefixNullableConstraint}"
+							/>
+							
+							<combobox id="separatorBox" autodrop="true" value="." 
+							 	 cols="3" mold="rounded" 
+							 	 constraint="${fwinMultiProdDerive$composer.codePrefixNullableConstraint}">
+							 	<comboitem label="." />
+			                    <comboitem label="-" />
+			                    <comboitem label="_" />
+                			</combobox>
+							
+							<!-- <label id="pointLabelDerive" value="." -->
+							<!--	style="font-weight:bold;" -->
+							<!--	sclass="formValue" -->
+							<!-- /> -->
+							
+							<intbox id="premierCodeBoxDerive"
+								value="@{fwinMultiProdDerive$composer.premierCode,
+								save-when='addProdDerives.onClick',
+								load-after='addProdDerives.onClick'}"
+								constraint="@{fwinMultiProdDerive$composer.cttPremierCode}"
+								width="40px" mold="rounded" />
+								
+							<textbox id="premiereLettreBoxDerive" 
+								value="@{fwinMultiProdDerive$composer.premiereLettre,
+			        			save-when='addProdDerives.onClick'
+			        			load-after='addProdDerives.onClick, numerotation.onClick'}" 
+								width="30px" 
+								constraint="@{fwinMultiProdDerive$composer.cttPremiereLettre}"
+								visible="false" mold="rounded"/>
+							
+							<label value="${c:l('ficheMultiProdDerive.a')}" sclass="formLabel"/>
+							
+							<intbox id="dernierCodeBoxDerive"
+								value="@{fwinMultiProdDerive$composer.dernierCode,
+								save-when='addProdDerives.onClick',
+								load-after='addProdDerives.onClick'}"
+								constraint="@{fwinMultiProdDerive$composer.cttDernierCode}"
+								width="40px" mold="rounded" />
+								
+							<textbox id="derniereLettreBoxDerive" 
+								value="@{fwinMultiProdDerive$composer.derniereLettre,
+			        			save-when='addProdDerives.onClick'
+			        			load-after='addProdDerives.onClick, numerotation.onClick'}" 
+								width="30px" 
+								constraint="@{fwinMultiProdDerive$composer.cttDerniereLettre}"
+								visible="false" mold="rounded"/>
+							
+							<button id="numerotation"
+								image="/images/icones/numerotation.png" sclass="buttonv2"
+								visible="false"/>
+							
+							<separator width="10px"/>
+							<box orient="horizontal" pack="center"
+								id="choixNumerotation" visible="false">
+								<label value="(" sclass="formLabel"/>
+								<radiogroup orient="horizontal">
+									<box orient="horizontal" pack="center">
+										<radio id="numNombres" checked="true"/>
+										<label value="${c:l('ficheMultiEchantillons.numerotation.nombres')}" 
+										sclass="formValue"/>
+									
+										<radio id="numLettres"/>
+										<label value="${c:l('ficheMultiEchantillons.numerotation.lettres')}" 
+										sclass="formValue"/>
+									</box>
+								</radiogroup>
+								<label value=")" sclass="formLabel"/>
+							</box>
+								
+						</hlayout>
+					</row>
+					
+					<row spans="1,3">
+						<!-- Type du Produit dérivé -->
+						<hbox>
+							<label value="${c:l('Champ.ProdDerive.ProdType')}" sclass="formLabel" />
+							<label id="requiredTypeDerive" value="*" sclass="requiredMark" />
+						</hbox>
+						<div>							
+							<listbox id="typesBoxDerive" mold="select" rows="1"
+								model="@{fwinMultiProdDerive$composer.types}"
+								selectedItem="@{fwinMultiProdDerive$composer.selectedType load-after='addProdDerives.onClick'}"
+								>
+								<listitem self="@{each='typeMultiDerive'}" value="@{typeMultiDerive}">			
+									<listcell label="@{typeMultiDerive.type}" />
+								</listitem>
+							</listbox>
+						</div>
+					</row>
+					
+					<!-- Code Labo -->
+					<row spans="1,3">
+						<label value="${c:l('Champ.ProdDerive.CodeLabo')}" sclass="formLabel"/>
+						<div>
+							<textbox id="codeLaboBoxDerive" 
+								value="@{fwinMultiProdDerive$composer.prodDerive.codeLabo,
+			        			save-when='validate.onClick, create.onClick, 
+			        				addProdDerives.onClick, self.onBlur'}" 
+								width="206px" 
+								constraint="${fwinProdDeriveEdit$composer.codeNullConstraint}" />
+						</div>
+					</row>
+					<row>
+						<!-- Volume du produit dérivé -->
+						<label value="${c:l('Champ.ProdDerive.VolumeInit')}" sclass="formLabel"/>
+						<div>
+							<decimalbox id="volumeInitBoxDerive" 					
+								constraint="@{fwinProdDeriveEdit$composer.cttVolumeInit}"
+								width="50px"
+								value="@{fwinMultiProdDerive$composer.prodDerive.volumeInit,
+								save-when='validate.onClick, create.onClick, 
+									addProdDerives.onClick, self.onBlur'
+								load-after='self.onBlur'}"
+								format="##0.###" scale="3"
+								locale="en"		
+							/>
+								
+							<listbox id="volumeUnitesBoxDerive" mold="select" rows="1"
+								model="@{fwinMultiProdDerive$composer.volumeUnites 
+								load-after='quantiteUnitesBoxDerive.onSelect, 
+									concentrationUnitesBoxDerive.onSelect'}"
+								selectedItem="@{fwinMultiProdDerive$composer.selectedVolumeUnite load-after='addProdDerives.onClick'}"
+								>
+									<listitem self="@{each='volumeUniteMultiDerive'}" value="@{volumeUniteMultiDerive}">			
+										<listcell label="@{volumeUniteMultiDerive.unite}" />
+									</listitem>
+							</listbox>
+						</div>
+						
+						<!-- Concentration du produit dérivé -->
+						<label value="${c:l('Champ.ProdDerive.Conc')}" 
+						sclass="formLabel"/>
+						<div>
+							<decimalbox id="concentrationBoxDerive" constraint="no negative"
+								width="50px"
+								value="@{fwinMultiProdDerive$composer.prodDerive.conc, 
+								save-when='validate.onClick, create.onClick, addProdDerives.onClick,
+									concentrationBoxDerive.onBlur'
+								load-after='self.onBlur'}"
+								format="##0.###" scale="3"
+								locale="en"	
+							/>
+								
+							<listbox id="concentrationUnitesBoxDerive" mold="select" rows="1"
+								model="@{fwinMultiProdDerive$composer.concUnites 
+								load-after='volumeUnitesBoxDerive.onSelect, quantiteUnitesBoxDerive.onSelect'}"
+								selectedItem="@{fwinMultiProdDerive$composer.selectedConcUnite load-after='addProdDerives.onClick'}"
+								>
+									<listitem self="@{each='concentrationUniteMultiDerive'}" value="@{concentrationUniteMultiDerive}">			
+										<listcell label="@{concentrationUniteMultiDerive.unite}" />
+									</listitem>
+							</listbox>
+						</div>
+					</row>
+					<!-- Quantité de produit dérivé -->
+					<row spans="1,3">
+						<label value="${c:l('Champ.ProdDerive.QuantiteInit')}" sclass="formLabel"/>
+						<div>
+							<decimalbox id="quantiteInitBoxDerive" 
+								constraint="@{fwinMultiProdDerive$composer.cttQuantiteInit}"
+								width="50px"
+								value="@{fwinMultiProdDerive$composer.prodDerive.quantiteInit,
+								save-when='validate.onClick, create.onClick, addProdDerives.onClick, 
+									quantiteInitBoxDerive.onBlur',
+								load-after='volumeInitBoxDerive.onBlur, concentrationBoxDerive.onBlur,
+									self.onBlur'}"
+								format="##0.###" scale="3"
+								locale="en"
+							/>
+								
+							<listbox id="quantiteUnitesBoxDerive" mold="select" rows="1"
+								model="@{fwinMultiProdDerive$composer.quantiteUnites 
+								load-after='volumeUnitesBoxDerive.onSelect, 
+									concentrationUnitesBoxDerive.onSelect'}"
+								selectedItem="@{fwinMultiProdDerive$composer.selectedQuantiteUnite load-after='addProdDerives.onClick'}"
+								>
+								<listitem self="@{each='quantiteUniteMultiDerive'}" value="@{quantiteUniteMultiDerive}">			
+									<listcell label="@{quantiteUniteMultiDerive.unite}" />
+								</listitem>
+							</listbox>
+						</div>
+					</row>
+					<row>
+						<!-- Date de stockage -->
+						<hbox>
+						<label value="${c:l('Champ.ProdDerive.DateStock')}" sclass="formLabel"/>
+						<!-- <label value="*" sclass="requiredMark"/> -->
+						</hbox>
+						<calendarbox id="dateStockCalBox" value="@{fwinProdDeriveEdit$composer.object.dateStock,
+			        			save-when='validate.onClick, create.onClick, self.onBlur'}" /> 
+			        	<!--	constraint="no empty" /> -->
+						
+						<!-- Qualité du produit dérivé -->
+						<label value="${c:l('Champ.ProdDerive.ProdQualite')}" sclass="formLabel"/>
+						<div>
+							<label id="qualiteLabelDerive" 
+								value="@{fwinMultiProdDerive$composer.prodDerive.prodQualite.prodQualite}"
+								sclass="formValue"
+							/>
+							
+							<listbox id="qualitesBoxDerive" mold="select" rows="1"
+								model="@{fwinMultiProdDerive$composer.qualites}"
+								selectedItem="@{fwinMultiProdDerive$composer.selectedQualite load-after='addProdDerives.onClick'}"
+								>
+								<listitem self="@{each='qualiteMultiDerive'}" value="@{qualiteMultiDerive}">			
+									<listcell label="@{qualiteMultiDerive.prodQualite}" />
+								</listitem>
+							</listbox>
+						</div>
+					</row>
+					<row spans="1,3">
+						<!-- Opérateur du produit dérivé -->
+						<label value="${c:l('Champ.ProdDerive.Collaborateur')}" sclass="formLabel"/>
+						<div>
+			 				<combobox id="collabBoxDerive" 
+				 				autodrop="true" width="189px"
+				 				>
+				 					<comboitem self="@{each=attrMultiValue}" label="@{attrMultiValue}"/>
+				 			</combobox>
+			 				<space/>
+							<label id="operateurAideSaisieDerive" style="font-weight:bold;"
+								value="${c:l('collaborateur.aideSaisie')}"
+								sclass="formLink"
+							/>
+						</div>
+					</row>
+					<!-- Préparation -->
+					<row spans="1,3">
+						<label value="${c:l('Champ.ProdDerive.ModePrepaDerive')}" sclass="formLabel"/>
+							
+						<listbox id="modePrepaBoxDerive" mold="select" rows="1"
+						model="@{fwinMultiProdDerive$composer.modePrepaDerives}"
+						selectedItem="@{fwinMultiProdDerive$composer.selectedModePrepaDerive load-after='addProdDerives.onClick'}"
+						>
+							<listitem self="@{each='modePrepaMultiDerive'}" value="@{modePrepaMultiDerive}">			
+								<listcell label="@{modePrepaMultiDerive.nom}" />
+							</listitem>
+						</listbox>
+					</row>
+					<!-- Conforme au traitement -->
+					<row spans="1,3">
+						<label id="conformeTraitementLabel" value="${c:l('Champ.ProdDerive.ConformeTraitement')}" sclass="formLabel" />
+						<hlayout sclass="z-valign-middle">
+							<checkbox id="conformeTraitementBoxOui"/>
+							<label value="${c:l('general.checkbox.true')}" sclass="formLabel"/>
+							<checkbox id="conformeTraitementBoxNon"/>
+							<label value="${c:l('general.checkbox.false')}" sclass="formLabel"/>
+							<div id="conformeTraitementBox" visible="false">
+								<space width="10px"/>
+								<listbox id="nonConformitesTraitementBox" mold="select" multiple="true" rows="3" 
+									model="@{fwinMultiProdDerive$composer.nonConformitesTraitement}"
+									selectedItems="@{fwinMultiProdDerive$composer.selectedNonConformitesTraitementItem}"
+									>
+									<listitem self="@{each='nonConformiteMultiSelTraitPD'}" value="nonConformiteMultiSelTraitPD">
+										<listcell label="@{nonConformiteMultiSelTraitPD.nom}"/>
+									</listitem>	
+								</listbox>
+							</div>
+						</hlayout>
+					</row>
+					<!-- Conforme a la cession -->
+					<row spans="1,3">
+						<label id="conformeCessionLabel" value="${c:l('Champ.ProdDerive.ConformeCession')}" sclass="formLabel" />
+						<hlayout sclass="z-valign-middle">
+							<checkbox id="conformeCessionBoxOui"/>
+							<label value="${c:l('general.checkbox.true')}" sclass="formLabel"/>
+							<checkbox id="conformeCessionBoxNon"/>
+							<label value="${c:l('general.checkbox.false')}" sclass="formLabel"/>
+							<div id="conformeCessionBox" visible="false">
+								<space width="10px"/>
+								<listbox id="nonConformitesCessionBox" mold="select" multiple="true" rows="3" 
+									model="@{fwinMultiProdDerive$composer.nonConformitesCession}"
+									selectedItems="@{fwinMultiProdDerive$composer.selectedNonConformitesCessionItem}"
+									>
+									<listitem self="@{each='nonConformiteMultiSelCessPD'}" value="nonConformiteMultiSelCessPD">
+										<listcell label="@{nonConformiteMultiSelCessPD.nom}"/>
+									</listitem>	
+								</listbox>
+							</div>
+						</hlayout>
+					</row>
+					
+					<group/>
+					<row spans="4">
+						<separator/>
+					</row>
+					<row spans="4" align="center">
+						<hbox>
+							<button id="addProdDerives" label="${c:l('ficheMultiProdDerive.add')}" 
+								style="font-weight: bold;" height="24px"
+								image="/images/icones/add_echantillons.png" sclass="buttonv2"/>
+						</hbox>
+					</row>
+					
+					<row spans="4" align="center">
+						<vbox width="100%" align="center" hflex="1">
+							<grid id="derivesList"
+								fixedLayout="true" 
+								width="100%"
+								span="true"
+								hflex="1"
+								sclass="gridListStyle"
+								model="@{fwinMultiProdDerive$composer.prodDerivesDecorated}"
+								rowRenderer="@{fwinMultiProdDerive$composer.deriveDecoRenderer}"
+								>
+								<columns sizable="true" width="100%">
+								<column width="60px" align="center"/>
+								<column label="${c:l('general.code')}" />
+								<column label="${c:l('Champ.ProdDerive.CodeLabo')}" />
+								<column label="${c:l('Champ.ProdDerive.ProdType')}"/>
+								<column label="${c:l('Champ.ProdDerive.Volume')}"/>
+								<column label="${c:l('Champ.ProdDerive.Conc')}" />
+								<column label="${c:l('Champ.ProdDerive.Quantite')}"/>
+								<column label="${c:l('Champ.ProdDerive.Emplacement')}"/>
+								<column label="${c:l('Champ.ProdDerive.ObjetStatut')}"/>
+								<column width="35px"/>
+							</columns>
+							<rows id="rows">
+								<row self="@{each='currNewDerive'}" value="@{currNewDerive}" />
+							</rows>
+							
+							</grid>
+							<div align="center">
+								<!-- <label id="stockageDerives"
+									value="${c:l('general.stockage.manuel')}" 
+									sclass="formLabel"/>-->
+								<button id="stockageDerives" 
+									label="${c:l('general.stockage.manuel')}" 
+									height="24px" disabled="true"
+									image="/images/icones/terminale.png" 
+									sclass="buttonv2"
+									style="font-weight: bold;"/>
+							</div>
+						</vbox>
+					</row>
+				</rows>
+			</grid>
+		</panelchildren>
+		<toolbar height="100%" id="toolbarFicheDerive" align="end">
+			<hbox spacing="5">
+				<button id="validate" label="${c:l('general.validate')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="revert" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="create" label="${c:l('general.create')}" height="24px"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="cancel" label="${c:l('general.cancel')}" height="24px"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+			</hbox>
+		</toolbar>
+	</panel>
+</window>

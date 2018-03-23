@@ -1,0 +1,437 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<window id="fwinContrat" border="none" apply="fr.aphp.tumorotek.action.cession.FicheContrat">
+	<panel collapsible="false" title="${c:l('contrat.panel.title')}"
+	 sclass="fichePanelv2" id="winPanel" closable="true">
+		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
+			<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvt">
+				<columns>
+					<column width="150px"/>
+					<column/>
+					<column width="150px"/>
+					<column/>
+				</columns>
+				<rows>
+					<!-- Numéro -->
+					<row spans="1,3">
+						<hbox>
+							<label value="${c:l('contrat.reference')}" sclass="formLabel"/>
+							<label id="numeroRequired" value="*" sclass="requiredMark"
+												visible="false"/>
+						</hbox>
+						<div>
+							<label id="numeroLabel" 
+								value="@{fwinContrat$composer.contrat.numero}" 
+								sclass="formValue" 
+							/>
+							
+							<textbox id="numeroBox" value="@{fwinContrat$composer.contrat.numero,
+			        								 save-when='validateC.onClick, createC.onClick'
+			        								 load-after='editC.onClick, createC.onClick'}" 
+								width="200px" 
+								constraint="${fwinContrat$composer.numeroConstraint}"
+								visible="false"
+							/>
+						</div>
+					</row>
+					
+					<!-- Projet -->
+					<row spans="4">
+						<separator/>
+					</row>
+					<group id="groupProjetContrat" label="${c:l('contrat.group.projet')}"/>
+					<!-- Date demande + Date validation -->
+					<row>
+						<label value="${c:l('contrat.dateDemande.cession')}" 
+							sclass="formLabel"/>
+						<div>
+							<label id="dateDemandeCessionLabel" 
+								value="@{fwinContrat$composer.dateDemandeCessionFormated}" 
+								sclass="formValue" 
+							/>
+							
+							<datebox id="dateDemandeCessionBox" format="${c:l('validation.date.format.simple')}" 
+								value="@{fwinContrat$composer.contrat.dateDemandeCession,
+								save-when='validateC.onClick, createC.onClick'}"
+								visible="false"
+								cols="15" lenient="false"
+								constraint="${fwinContrat$composer.dateConstraint}"
+							/>
+						</div>
+						
+						<label value="${c:l('contrat.dateValidation')}" 
+							sclass="formLabel"/>
+						<div>
+							<label id="dateValidationLabel" 
+								value="@{fwinContrat$composer.dateValidationFormated}" 
+								sclass="formValue" 
+							/>
+							
+							<datebox id="dateValidationBox" format="${c:l('validation.date.format.simple')}" 
+								value="@{fwinContrat$composer.contrat.dateValidation,
+								save-when='validateC.onClick, createC.onClick'}"
+								visible="false"
+								cols="15" lenient="false"
+								constraint="${fwinContrat$composer.dateConstraint}"
+							/>
+						</div>
+					</row>
+					
+					<!-- Titre -->
+					<row spans="1,3">
+						<label value="${c:l('contrat.titreProjet')}" sclass="formLabel"/>
+						<div>
+							<label id="titreLabel" 
+								value="@{fwinContrat$composer.contrat.titreProjet}" 
+								sclass="formValue" 
+							/>
+							
+							<textbox id="titreBox" 
+								value="@{fwinContrat$composer.contrat.titreProjet,
+			        			save-when='validateC.onClick, createC.onClick'
+			        			load-after='editC.onClick, createC.onClick'}" 
+								width="200px" 
+								constraint="@{fwinContrat$composer.titreProjetConstraint}"
+								visible="false"
+							/>
+						</div>
+					</row>
+					
+					<!-- Type -->
+					<row spans="1,3">
+						<hbox>
+							<label value="${c:l('contrat.protocoleType')}" sclass="formLabel"/>
+						</hbox>
+						<div>
+							<label id="typeLabel" 
+								value="@{fwinContrat$composer.contrat.protocoleType.type}" 
+								sclass="formValue" 
+							/>
+							
+							<listbox id="typesBox" mold="select" rows="1"
+								model="@{fwinContrat$composer.types, 
+								load-after='editC.onClick, createC.onClick'}"
+								selectedItem="@{fwinContrat$composer.selectedType}"
+								visible="false">
+								<listitem self="@{each='type'}" value="type">			
+									<listcell label="@{type.type}" />
+								</listitem>
+							</listbox>
+						</div>
+					</row>
+					<!-- Description -->
+					<row spans="1,3">
+						<label value="${c:l('contrat.description')}" sclass="formLabel"/>
+						<div>
+							<label id="descriptionLabel" 
+								value="@{fwinContrat$composer.contrat.description}" 
+								sclass="formValue" 
+								multiline="true"
+							/>
+							
+							<textbox id="descriptionBox" 
+								value="@{fwinContrat$composer.contrat.description,
+			        			save-when='validateC.onClick, createC.onClick'
+			        			load-after='editC.onClick, createC.onClick'}" 
+								width="400px" 
+								rows="3"
+								constraint="@{fwinContrat$composer.descrConstraint}"
+								visible="false"
+							/>
+						</div>
+					</row>
+					
+					<row spans="1,3">
+						<!-- établissement -->
+						<div>
+							<label value="${c:l('contrat.etablissement')}" sclass="formLabel"/>
+						</div>
+						<div>
+							<label id="etabLabelContrat" 
+								value="@{fwinContrat$composer.contrat.etablissement.nom}"
+								sclass="formValue"
+							/>
+							
+							<combobox id="etabsBoxContrat" visible="false"
+			 					autodrop="true" width="250px">
+			 					<comboitem self="@{each=attrValue}" label="@{attrValue}"/>
+			 				</combobox>
+						</div>						
+					</row>
+					<row spans="1,3">
+						<!-- service -->
+						<label value="${c:l('contrat.service')}" sclass="formLabel"/>
+						
+						<div>
+							<label id="serviceLabelContrat" 
+								value="@{fwinContrat$composer.contrat.service.nom}"
+								sclass="@{fwinContrat$composer.sClassService}"
+							/>
+							
+							<div id="servicesBoxDiv" visible="false">
+								<combobox id="servicesBoxContrat"
+				 					autodrop="true" width="250px">
+				 					<comboitem self="@{each=attrValue}" label="@{attrValue}"/>
+				 				</combobox>
+			 					<label id="serviceAideSaisie" style="font-weight:bold;"
+									value="${c:l('collaborateur.aideSaisie')}"
+									sclass="formLink"
+								/>
+			 				</div>
+						</div>
+					</row>
+					<row spans="1,3">
+						<!-- Opérateur -->
+						<label value="${c:l('contrat.collaborateur')}" sclass="formLabel"/>
+						
+						<div>
+							<label id="operateurLabelContrat" 
+								value="@{fwinContrat$composer.contrat.collaborateur.nomAndPrenom}"
+								sclass="@{fwinContrat$composer.sClassCollaborateur}"
+							/>
+							
+							<div id="operateursBoxDiv" visible="false">
+			 					<combobox id="operateursBoxContrat"
+				 					autodrop="true" width="250px">
+				 					<comboitem self="@{each=attrValue}" label="@{attrValue}"/>
+				 				</combobox>
+			 					<label id="operateurAideSaisie" style="font-weight:bold;"
+									value="${c:l('collaborateur.aideSaisie')}"
+									sclass="formLink"
+								/>
+			 				</div>
+						</div>
+					</row>
+					
+					<!-- Contrat -->
+					<row spans="4">
+						<separator/>
+					</row>
+					<group id="groupContrat" label="${c:l('contrat.group.contrat')}"/>
+					<!-- Date demande redaction + envoi -->
+					<row>
+						<label value="${c:l('contrat.dateDemande.redaction')}" 
+							sclass="formLabel"/>
+						<div>
+							<label id="dateDemandeRedactionLabel" 
+								value="@{fwinContrat$composer.dateDemandeRedactionFormated}" 
+								sclass="formValue" 
+							/>
+							
+							<datebox id="dateDemandeRedactionBox" format="${c:l('validation.date.format.simple')}" 
+								value="@{fwinContrat$composer.contrat.dateDemandeRedaction,
+								save-when='validateC.onClick, createC.onClick'}"
+								visible="false"
+								cols="15" lenient="false"
+								constraint="${fwinContrat$composer.dateConstraint}"
+							/>
+						</div>
+						
+						<label value="${c:l('contrat.dateEnvoi')}" 
+							sclass="formLabel"/>
+						<div>
+							<label id="dateEnvoiLabel" 
+								value="@{fwinContrat$composer.dateEnvoiFormated}" 
+								sclass="formValue" 
+							/>
+							
+							<datebox id="dateEnvoiBox" format="${c:l('validation.date.format.simple')}" 
+								value="@{fwinContrat$composer.contrat.dateEnvoiContrat,
+								save-when='validateC.onClick, createC.onClick'}"
+								visible="false"
+								cols="15" lenient="false"
+								constraint="${fwinContrat$composer.dateConstraint}"
+							/>
+						</div>
+					</row>
+					
+					<!-- Date signature -->
+					<row spans="1,3">
+						<label value="${c:l('contrat.dateSignature')}" 
+							sclass="formLabel"/>
+						<div>
+							<label id="dateSignatureLabel" 
+								value="@{fwinContrat$composer.dateSignatureFormated}" 
+								sclass="formValue" 
+							/>
+							
+							<datebox id="dateSignatureBox" format="${c:l('validation.date.format.simple')}" 
+								value="@{fwinContrat$composer.contrat.dateSignature,
+								save-when='validateC.onClick, createC.onClick'}"
+								visible="false"
+								cols="15" lenient="false"
+								constraint="${fwinContrat$composer.dateConstraint}"
+							/>
+						</div>
+					</row>
+					
+					<!-- Montant -->
+					<row spans="1,3">
+						<label value="${c:l('contrat.montant')}" 
+							sclass="formLabel"/>
+						<div>
+							<label id="montantLabel" 
+								value="@{fwinContrat$composer.contrat.montant}" 
+								sclass="formValue" 
+							/>
+							
+							<decimalbox id="montantBox" 
+								value="@{fwinContrat$composer.contrat.montant,
+								save-when='validateC.onClick, createC.onClick'}"
+								visible="false"
+								width="100px"
+								locale="en"
+							/>
+							
+							<label value="€" 
+								sclass="formValue" 
+							/>
+						</div>
+					</row>
+					
+					<!-- Cessions -->
+					<row spans="4">
+						<separator/>
+					</row>
+					<group id="groupCessionsContrat" label="@{fwinContrat$composer.cessionsGroupHeader}"/>
+					<row spans="4" id="rowGridCessions" align="center">
+						<vbox align="center" hflex="1">
+						<grid id="cessionsGrid" mold="paging" pageSize="10"
+							fixedLayout="true" 
+							height="100%"
+							hflex="1"
+							sclass="gridListStyle"
+							span="true"
+							sizedByContent="true"
+							model="@{fwinContrat$composer.cessions}"
+							rowRenderer="@{fwinContrat$composer.cessionRenderer}">
+							<columns menupopup="auto" sizable="true">
+								<column align="center" width="20px"/> <!-- validated content -->
+								<column label="${c:l('Champ.Cession.Numero')}" />
+								<column label="${c:l('Champ.Cession.CessionType.Type')}" />
+								<column label="${c:l('Entite.Banque')}" />
+								<column label="${c:l('echantillons.nb')}" />
+								<column label="${c:l('derives.nb')}" />
+								<column label="${c:l('Champ.Cession.DemandeDate')}" />
+								<column label="${c:l('cessions.date.cession')}" />
+								<column label="${c:l('Champ.Cession.Demandeur')}" width="80px"
+									visible="false"/>
+								<column label="${c:l('cessions.titre.etude')}" width="80px"
+									visible="false"/>
+								<column label="${c:l('Champ.Cession.CessionStatut')}" />
+								<column label="${c:l('Champ.Cession.CessionType')}" width="80px"
+									visible="false"/>
+								<column label="${c:l('cessions.etat')}" width="80px" visible="false"/>
+								<column label="${c:l('Champ.Cession.Contrat')}" width="80px" visible="false"/>
+								<column label="${c:l('Champ.Cession.Executant')}" width="80px" visible="false"/>
+							</columns>
+							
+						</grid>
+						<button id="selectAllCessionsButton" sclass="buttonv2" label="${c:l('general.selectAll')}"  
+								height="24px" visible="@{fwinContrat$composer.cessionsListSizeSupOne}"
+								image="/images/icones/selectall.png" forward="onClick=onSelectAllCessions(all)" />
+						</vbox>
+					</row>
+					
+					<!-- Nb échantillons -->
+					<row spans="4" id="rowNbEchantillons">
+						<label id="nbEchantillonsLabel" sclass="formValueItalics"/>
+					</row>
+					
+					<!-- Nb dérivés -->
+					<row spans="4" id="rowNbProdDerives">
+						<label id="nbProdDerivesLabel" sclass="formValueItalics"/>
+					</row>
+					
+					<!-- Délais -->
+					<row spans="4">
+						<separator/>
+					</row>
+					<group id="groupDelaisContrat" label="${c:l('contrat.group.delais')}"/>
+					<!-- Délai validation -->
+					<row spans="4" id="rowDelaiValidation">
+						<label id="delaiValidationLabel" sclass="formValueItalics"/>
+					</row>
+					<!-- Délai d'envoi -->
+					<row spans="4" id="rowDelaiEnvoi">
+						<label id="delaiEnvoiLabel" sclass="formValueItalics"/>
+					</row>
+					<!-- Délai de signature -->
+					<row spans="4" id="rowDelaiSignature">
+						<label id="delaiSignatureLabel" sclass="formValueItalics"/>
+					</row>
+					
+					<!-- Délai global -->
+					<row spans="4" id="rowDelaiGlobal">
+						<label id="delaiGlobalLabel" sclass="formValueItalics"/>
+					</row>
+				</rows>
+			</grid>
+		</panelchildren>
+		<toolbar height="30px" id="toolbarEchan" align="end">
+			<hbox spacing="5">
+				<menubar sclass="menuBarV2" id="menuBar">
+					<menu label="${c:l('general.actions')}" image="/images/icones/small_action.png" 
+						width="36px" height="24px">
+						<menupopup>
+							<menuitem id="print" image="/images/icones/printer.png" 
+								label="${c:l('general.print')}"/>
+							<menuitem id="historique" image="/images/icones/history.png" 
+								label="${c:l('general.historique')}"/>
+						</menupopup>
+					</menu>
+				</menubar>
+				<button id="addNewC" label="${c:l('general.new')}" height="24px" visible="true"
+					image="/images/icones/new.png" sclass="buttonv2"
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="editC" label="${c:l('general.edit')}" height="24px" visible="true"
+					image="/images/icones/edit.png" sclass="buttonv2"
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="deleteC" disabled="true" label="${c:l('general.delete')}" height="24px" visible="true"
+					image="/images/icones/trash.png" sclass="buttonv2"
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="validateC" label="${c:l('general.validate')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="revertC" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="createC" label="${c:l('general.create')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="cancelC" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+			</hbox>
+		</toolbar>
+	</panel>
+</window>

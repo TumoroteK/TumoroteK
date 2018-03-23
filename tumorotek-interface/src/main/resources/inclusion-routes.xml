@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:camel="http://camel.apache.org/schema/spring"
+      xsi:schemaLocation="http://www.springframework.org/schema/beans 
+      http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://camel.apache.org/schema/spring 
+      http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+	<!-- global error handling -->
+	<errorHandler id="inclusionErrorHandler" xmlns="http://camel.apache.org/schema/spring"
+		useOriginalMessage="true" type="DeadLetterChannel" deadLetterUri="{{inclusion.deadLetter}}" >
+<!--     	<redeliveryPolicy maximumRedeliveries="0" logHandled="true" asyncDelayedRedelivery="false" /> -->
+	</errorHandler>
+
+    <routeContext id="inclusionContext" xmlns="http://camel.apache.org/schema/spring"> 
+   
+    	<route id="inclusion" autoStartup="{{inclusion.startup}}">
+	   		
+	   		<from uri="{{inclusion.startpoint}}"/>
+	   		<onException useOriginalMessage="true">
+		        <exception>java.lang.Exception</exception>
+		        <handled><constant>false</constant></handled>
+		        <log logName="fr.aphp.tumorotek.interfacage.inclusion.dead" message="Error handling file: ${file:name}" />
+		        <to uri="bean:exceptionLogProcessor" />
+				<to uri="{{inclusion.deadLetter}}" />
+		    </onException>
+		    
+			<unmarshal>
+      			<jaxb prettyPrint="true" contextPath="fr.aphp.tumorotek.interfacage.jaxb.inclusion"/>
+    		</unmarshal>
+		    <to uri="bean:inclusionProcessor" />
+		    <convertBodyTo type="fr.aphp.tumorotek.interfacage.jaxb.inclusion.CreateResponse" />
+		
+		</route>
+	   
+
+    </routeContext>
+</beans>

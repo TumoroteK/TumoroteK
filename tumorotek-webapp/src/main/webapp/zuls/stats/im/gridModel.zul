@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<zk xmlns="http://www.zkoss.org/2005/zul">
+	<grid id="gridView" model="@load(vm.rows)" vflex="1" hflex="1" width="100%" 
+		sizedByContent="true"
+	style="border: 1px solid">
+		<frozen style="background: #DFDED8;" columns="2">
+			<div style="padding: 0 10px;" />
+		</frozen>
+		<columns sizable="true">
+			<column sclass="header" label="${c:l('Entite.Banque')}"  sort="auto" hflex="min" />
+			<column id="colSubdivision" sclass="header"
+				label="${c:l('Champ.SModele.Subdivision')}" visible="@load(vm.isSubdivised)" >
+			</column>
+			<column forEach="${vm.gridIndicateurs}" label="${c:l(c:cat('Indicateur.',each.nom))}" hflex="1"
+				draggable="@load(vm.inEdition)" droppable="@load(vm.inEdition)" align="center"			
+				onDrop="@command('changeGridIndicateurOrder', dropEvt = event, indic = event.dragged.attributes.item)"
+				style="cursor: pointer;" >
+				<custom-attributes item="${each}"/> 
+			</column>
+		</columns>
+		<template name="model">
+			<row>
+				<cell sclass="collection"
+					rowspan="${each.rowspan}"
+					if="${each.firstSubdivForBanque}">
+					<label value="${each.banque.nom}" />
+				</cell>
+				<cell sclass="subdivision">
+					<label value="${each.subDivNom}" />
+				</cell>
+				<cell forEach="${each.values}" align="center" visible="@load(!vm.percentDisplay)">
+					 <label value="${each}"  />
+				</cell>
+				<cell forEach="${each.valuesPourcentage}" align="center" visible="@load(vm.percentDisplay)">
+					 <label value="${each}"  />
+				</cell>
+			</row>
+		</template>
+	</grid>
+</zk>

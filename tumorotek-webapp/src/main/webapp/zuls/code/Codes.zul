@@ -1,0 +1,233 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<?page title="Codes" contentType="text/html;charset=UTF-8"?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<zk>
+<?component name="codeTreeComp" macroURI="/zuls/code/CodeTreeComponent.zul"?>
+
+<style src="/css/form.css" />
+<style src="/css/tumo.css"/> 
+
+<window id="winCodes" border="none" apply="fr.aphp.tumorotek.action.code.CodesController" >
+	<borderlayout id="mainBorder" sclass="tabBorderLayout">
+		<north height="75px">
+			<grid id="formGrid" fixedLayout="true" sclass="gridForm1">
+				<columns>
+					<column width="150px" />
+					<column />
+				</columns>
+				<rows>
+					<!-- Codification listBox -->
+					<row>
+						<label value="${c:l('code.codification')}" sclass="formLabel"/>
+						<listbox id="codifBox" mold="select" rows="1"
+							model="@{winCodes$composer.tableCodages}"
+							selectedItem="@{winCodes$composer.selectedTableCodage}"
+							itemRenderer="${winCodes$composer.codageRenderer}"	
+						/>
+					</row>
+					<row>
+						<label value="${c:l('general.recherche')}" sclass="formLabel"/>
+						<hbox >
+							<textbox id="codeOrLibelleBox" value="@{winCodes$composer.codeOrLibelle}" 
+									width="100px" forward="onOK=onPressEnterKey()" />
+							<checkbox id="exactMatchBox" label="${c:l('general.exactMatch')}" 
+								checked="@{winCodes$composer.exactMatch}" 
+								forward="onOK=onPressEnterKey()" />
+							<button id="find" label="${c:l('general.find')}" height="24px"
+								image="/images/icones/search.png" sclass="buttonv2" />
+						</hbox>
+					</row>
+				</rows>
+			</grid>
+		</north>
+		<center autoscroll="true">
+			<hbox id="resHBox" width="100%">
+			</hbox>
+		</center>
+		<south height="152px" splittable="true">
+			<div>
+				<columnlayout>
+					<columnchildren width="25%">
+						<panel title="Selection" border="normal" sclass="fichePanelv2">
+							<panelchildren>
+								<grid fixedLayout="true" sclass="gridForm1" height="90px">
+									<columns>
+										<column width="100px" />
+										<column />
+									</columns>
+									<rows>
+										<row>
+											<label id="currLabel" value="${c:l('code.code')}" sclass="formLabel"/>
+											<div>
+												<label id="currLabelValue1" value="@{winCodes$composer.currValue1}" sclass="formValue" />
+												<textbox id="codeBox" value="@{winCodes$composer.currCode.code, load-after='newCodeButton.onClick, editButton.onClick' save-when='validate.onClick'}" 
+													width="100px" constraint="${winCodes$composer.codeConstraint}" visible="false"/>
+												<textbox id="dosNomBox" value="@{winCodes$composer.currDossier.nom, load-after='newDossierButton.onClick, editButton.onClick' save-when='validateDos.onClick'}" 
+													width="100px" constraint="${winCodes$composer.codeConstraint}" visible="false"/>
+											</div>
+										</row>
+										<row>
+											<label id="currLabel2" value="${c:l('code.libelle')}" sclass="formLabel"/>
+											<div>	
+												<label id="currLabelValue2" value="@{winCodes$composer.currValue2}" sclass="formValue" />
+												<textbox id="libelleBox" value="@{winCodes$composer.currCode.libelle, load-after='newCodeButton.onClick, editButton.onClick' save-when='validate.onClick'}" 
+													width="150px" constraint="${winCodes$composer.libelleConstraint}" visible="false"/>
+												<textbox id="dosDescrBox" value="@{winCodes$composer.currDossier.description, load-after='newDossierButton.onClick, editButton.onClick' save-when='validateDos.onClick'}" 
+													width="100px" constraint="${winCodes$composer.libelleConstraint}" visible="false"/>
+											</div>
+										</row>
+										<row spans="2">
+											<div align="center" width="100%">
+												<button id="validate" label="${c:l('general.validate')}" height="24px"
+													image="/images/icones/save.png" sclass="buttonv2" visible="false" />
+												<button id="validateDos" label="${c:l('general.validate')}" height="24px"
+													image="/images/icones/save.png" sclass="buttonv2" visible="false" />
+												<button id="cancel" label="${c:l('general.cancel')}" height="24px"
+													image="/images/icones/cancel.png" sclass="buttonv2" visible="false" />
+											</div>
+										</row>
+									</rows>
+								</grid>								
+							</panelchildren>
+							<toolbar id="menubar" width="100%">
+								<hbox>
+									<menubar sclass="menuBarV2">
+										<menu label="${c:l('general.new')}" image="/images/icones/small_newCodeAndFolder.png">
+											<menupopup>
+												<menuitem id="newCodeButton" image="/images/icones/small_newcode.png"
+													label="${c:l('code.new')}"
+													disabled="true"/>
+												<menuitem id="newDossierButton" image="/images/icones/small_newFolder.png"
+													label="${c:l('code.dossier.new')}"
+													disabled="true"/>
+											</menupopup>
+										</menu>
+									</menubar>
+									<menubar sclass="menuBarV2">
+										<menu label="${c:l('general.actions')}" image="/images/icones/small_action.png">
+											<menupopup>
+												<menuitem id="editButton" image="/images/icones/small_edit.png"
+													label="${c:l('general.edit')}"
+													disabled="true"/>
+												<menuitem id="deleteButton" image="/images/icones/small_delete.png"
+													label="${c:l('general.delete')}"
+													disabled="true"/>
+												<menuitem id="addToListButton" image="/images/icones/small_add.png"
+													label="${c:l('general.addToSelection')}"
+													disabled="true"/>
+												<menuitem id="transcodeButton" label="${c:l('code.transcode')}"
+													image="/images/icones/transcode.png" disabled="true" />
+											</menupopup>
+										</menu>
+									</menubar>
+								</hbox>
+							</toolbar>
+						</panel>
+					</columnchildren>
+					<columnchildren width="37%">
+						<panel id="transPanel" sclass="fichePanelv2"
+							title="@{winCodes$composer.transCodesLabel load-after='winCodes.onCreate, transCodesRows.onClickDeleteCode, addSelectedToTranscodeButton.onClick, cancel.onClick'}" 
+									border="normal">
+							<panelchildren>
+								<grid id="transGrid" 
+									height="90px"
+									fixedLayout="true" 			
+									sclass="gridForm1"
+									model="@{winCodes$composer.transCodes, load-after='transCodesRows.onClickDeleteCode, addSelectedToTranscodeButton.onClick, cancel.onClick'}"
+									rowRenderer="${winCodes$composer.transCodesRenderer}">
+									<columns>
+										<column id="transboxCheckboxColumn" width="30px" />
+										<column width="100px"/>
+										<column />
+										<column id="transCodesDeleteColumn" width="25px" visible="false"/>
+									</columns>
+									<rows id="transCodesRows">
+										<row self="@{each='code'}" value="code"/>
+									</rows>
+								</grid>
+							</panelchildren>
+							<toolbar width="100%">
+								<button id="addTranscodeToSelectedButton" label="${c:l('general.addToSelection')}" sclass="buttonv2" 
+									image="/images/icones/addToSelection.png" height="24px" disabled="true" />
+							</toolbar>
+						</panel>
+					</columnchildren>
+					<columnchildren width="38%">
+						<panel id="selPanel" title="@{winCodes$composer.selectedCodesLabel 
+								load-after='winCodes.onCreate, addToListButton.onClick, selCodesRows.onClickDeleteCode, 
+											selCodesRows.onClickUpCode, selCodesRows.onClickDownCode, addTranscodeToSelectedButton.onClick'}" 
+								border="normal" sclass="fichePanelv2">
+							<panelchildren>
+								<grid id="selGrid" 
+									height="90px"
+									fixedLayout="true" 			
+									sclass="gridForm1"
+									model="@{winCodes$composer.selectedCodes 
+										load-after='addToListButton.onClick, selCodesRows.onClickDeleteCode, selCodesRows.onClickUpCode, 
+													selCodesRows.onClickDownCode, addTranscodeToSelectedButton.onClick, validate.onClick, cancel.onClick, find.onClick'}"
+									rowRenderer="${winCodes$composer.selCodesRenderer}">
+									<columns>
+										<column id="selboxCheckboxColumn" width="30px" />
+										<column width="100px"/>
+										<column />
+										<column width="25px"/>
+										<column width="25px"/>
+										<column width="25px"/>
+									</columns>
+									<rows id="selCodesRows">
+										<row self="@{each='code'}" value="code"/>
+									</rows>
+								</grid>
+							</panelchildren>
+							<toolbar width="100%" >
+								<hbox height="24px">
+									<button id="addSelectedToTranscodeButton" label="${c:l('code.transcode.add')}" sclass="buttonv2"
+										image="/images/icones/newtranscode.png" height="24px" disabled="true" visible="false" />
+									<button id="addSelectedToBookmarksButton" label="${c:l('code.bookmark.add')}" sclass="buttonv2"
+										image="/images/icones/bookmark.png" height="24px" disabled="true" visible="false" />
+									<button id="returnSelCodesButton" label="${c:l('general.selection.return')}" sclass="buttonv2"
+										image="/images/icones/validate.png" height="24px" disabled="true" />
+								</hbox>
+							</toolbar>
+						</panel>
+					</columnchildren>
+				</columnlayout>
+			</div>				
+		</south>
+	</borderlayout>
+</window>
+</zk>

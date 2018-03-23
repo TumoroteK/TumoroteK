@@ -1,0 +1,24 @@
+<!ELEMENT AccordTransfert (Page+, HautDePage, BasDePage)>
+<!ELEMENT Page (Titre, Tableau, Signatures*)>
+<!ELEMENT Titre (#PCDATA)>
+<!ELEMENT Tableau (BlocPrincipal+)>
+
+<!ELEMENT HautDePage (#PCDATA)>
+<!ELEMENT BasDePage (#PCDATA)>
+<!ELEMENT BlocPrincipal (NomBloc, LigneAccord*)>
+<!ELEMENT NomBloc (#PCDATA)>
+<!ELEMENT LigneAccord (CoupleAccordValeur+)>
+<!ELEMENT CoupleAccordValeur (NomValeur, Valeurs)>
+<!ELEMENT NomValeur (#PCDATA)>
+<!ELEMENT Valeurs (Valeur)>
+<!ELEMENT Valeur (#PCDATA)>
+
+<!ELEMENT Signatures (Entete, ListeSignature*)>
+<!ELEMENT Entete (Titre1, Titre2)>
+<!ELEMENT Titre1 (#PCDATA)>
+<!ELEMENT Titre2 (#PCDATA)>
+<!ELEMENT ListeSignature (ValeursSignatures+)>
+
+<!ELEMENT ValeursSignatures (Valeur1, Valeur2)>
+<!ELEMENT Valeur1 (#PCDATA)>
+<!ELEMENT Valeur2 (#PCDATA)>

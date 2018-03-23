@@ -1,0 +1,200 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<window id="fwinModifMultiProdDerive" border="none" apply="fr.aphp.tumorotek.action.prodderive.FicheModifMultiProdDerive"
+	xmlns:h="http://www.w3.org/1999/xhtml">
+	<panel collapsible="false" title="${c:l('ficheProdDerive.panel.title')}"
+	 	id="winPanel" sclass="fichePanelv2" closable="true">
+		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
+			<grid fixedLayout="true" id="gridFormProdDerive" sclass="gridForm1">
+				<columns>
+					<column width="200px"/>
+					<column/>
+				</columns>
+				<rows>
+					<row spans="2">
+						<vbox width="100%">
+							<label value="${c:l('ficheProdDerive.informations')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>	
+					<row>
+						<!-- Type du Produit dérivé -->
+						<hbox>
+							<label value="${c:l('Champ.ProdDerive.ProdType')}" sclass="formLabel"/>
+						</hbox>
+						<div>					
+							<label id="typeLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="typeMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>
+					<!-- Code Labo -->
+					<row>
+						<label value="${c:l('Champ.ProdDerive.CodeLabo')}" sclass="formLabel"/>
+						<div>
+							<label id="codeLaboLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="codeLaboMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>
+					<row spans="2">
+						<separator/>
+					</row>
+					<group label="${c:l('ficheProdDerive.infosComp')}" id="groupInfosCompDerive"/>
+					<row>
+						<!-- Volume du produit dérivé -->
+						<label value="${c:l('Champ.ProdDerive.VolumeInit')}" sclass="formLabel"/>
+						<div>
+							<label id="volumeLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic" />
+							<label id="volumeMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>
+					<row>
+						<!-- Concentration du produit dérivé -->
+						<label value="${c:l('Champ.ProdDerive.Conc')}" 
+						sclass="formLabel"/>
+						<div>						
+							<label id="concentrationLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="concentrationMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>
+					<!-- Quantité de produit dérivé -->
+					<row>
+						<label value="${c:l('Champ.ProdDerive.QuantiteInit')}" sclass="formLabel"/>
+						<div>
+							<label id="quantiteLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="quantiteMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>
+					<row>
+						<!-- Date de stockage -->
+						<label value="${c:l('Champ.ProdDerive.DateStock')}" sclass="formLabel"/>
+						<div>	
+							<label id="dateStockageLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="dateStockageMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>
+					<row>	
+						<!-- Qualité du produit dérivé -->
+						<label value="${c:l('Champ.ProdDerive.ProdQualite')}" sclass="formLabel"/>
+						<div>
+							<label id="qualiteLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="qualiteMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>
+					<row>
+						<!-- Opérateur du produit dérivé -->
+						<label value="${c:l('Champ.ProdDerive.Collaborateur')}" sclass="formLabel"/>
+						<div>
+							<label id="collaborateurLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic" />
+							<label id="collaborateurMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>
+					<row spans="1,3">	
+					<!-- Conforme après traitement -->
+						<label id="nonconformeTraitementLabel" value="${c:l('Champ.ProdDerive.ConformeTraitement')}" sclass="formLabel" />
+						<div>
+							<label id="nonConformeTraitementLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="nonConformeTraitementMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>
+					<row spans="1,3">	
+					<!-- Conforme à la cession -->
+						<label id="nonconformeCessionLabel" value="${c:l('Champ.ProdDerive.ConformeCession')}" sclass="formLabel" />
+						<div>
+							<label id="nonConformeCessionLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="nonConformeCessionMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>
+				</rows>
+			</grid>
+		</panelchildren>
+		<toolbar height="100%" id="toolbarFicheDerive" align="end">
+			<hbox spacing="5" align="center">
+				<button id="validateModifMultiple" label="${c:l('general.validate')}" height="24px"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="revert" label="${c:l('general.cancel')}" height="24px"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+			</hbox>
+		</toolbar>
+	</panel>
+</window>

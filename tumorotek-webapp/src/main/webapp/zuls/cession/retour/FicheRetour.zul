@@ -1,0 +1,217 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<?component name="calendarbox" macroURI="/zuls/component/CalendarBox.zul" class="fr.aphp.tumorotek.component.CalendarBox" ?>
+
+<window id="fwinRetour" border="none" apply="fr.aphp.tumorotek.action.cession.retour.FicheRetour">
+	<panel collapsible="false" title="${c:l('ficheRetour.title')}"
+	 	sclass="fichePanelv2" id="winPanel" closable="false" vflex="1">
+		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
+			<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvt">
+				<columns>
+					<column width="120px"/>
+					<column width="180px"/>
+					<column width="120px"/>
+					<column width="180px"/>
+				</columns>
+				<rows>
+					<row height="50px">
+						<label value="${c:l('general.code')}" sclass="formLabel" />
+						<label id="codeObjetLabel" value="@{fwinRetour$composer.codeObjet}" sclass="formValue" />
+						<label id="entiteOperationLabel" value="@{fwinRetour$composer.entiteOperation}" sclass="formLabel" />
+						<label id="entiteCodeLabel" value="@{fwinRetour$composer.entiteCode}" sclass="formValue" />
+					</row>
+					<row spans="4">
+						<vbox width="100%">
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+							<separator/>
+						</vbox>
+					</row>
+					<!-- Date de sortie -->
+					<row>
+						<hbox>
+							<label value="${c:l('Champ.Retour.DateSortie')}" sclass="formLabel"/>
+							<label id="dateSortieRequired" value="*" sclass="requiredMark" visible="false" />
+						</hbox>
+						<div>
+							<label id="dateSortieLabel" 
+								value="@{fwinRetour$composer.dateSortieFormatted}"
+								sclass="formValue" />
+							<calendarbox id="dateSortieCalBox" value="@{fwinRetour$composer.object.dateSortie,
+			        				save-when='validateC.onClick, createC.onClick, self.onBlur'}" visible="false" />
+						</div>
+						<hbox>
+							<label value="${c:l('Champ.Retour.DateRetour')}" sclass="formLabel"/>
+							<label id="dateRetourRequired" value="*" sclass="requiredMark" visible="false" />
+						</hbox>
+						<div>
+							<label id="dateRetourLabel" 
+									value="@{fwinRetour$composer.dateRetourFormatted}"
+									sclass="formValue" />
+							<calendarbox id="dateRetourCalBox" value="@{fwinRetour$composer.object.dateRetour,
+			        				save-when='validateC.onClick, createC.onClick, self.onBlur'}" visible="false" />
+						</div>
+					</row>
+					<row>
+						<hbox>
+							<label value="${c:l('Champ.Retour.TempMoyenne')}" sclass="formLabel"/>
+							<label id="tempMoyenneRequired" value="*" sclass="requiredMark" visible="false" />
+						</hbox>
+						<box orient="horizontal" pack="center">
+							<label id="tempMoyenneLabel" 
+								value="@{fwinRetour$composer.object.tempMoyenne}"
+								sclass="formValue" />
+							<decimalbox id="tempMoyenneBox" width="50px"
+								value="@{fwinRetour$composer.object.tempMoyenne,
+									save-when='validateC.onClick, createC.onClick'}"
+								visible="false"
+								format="##0.###"
+								locale="en"
+								constraint="no empty" />
+							<separator/>
+							<label value="°C" sclass="formLabel"/>
+							<separator/>
+							<listbox id="temperatureListBox" mold="select" rows="1"
+								model="@{fwinRetour$composer.temperatures}"
+								selectedItem="@{fwinRetour$composer.selectedTemperature}"
+								visible="false">
+								<listitem self="@{each='temp'}" value="@{temp}">			
+									<listcell label="@{temp.temperature}" />
+								</listitem>
+							</listbox>
+						</box>
+						<label value="${c:l('general.sterile')}" sclass="formLabel"/>
+						<div>
+							<label id="sterileLabel" 
+								value="@{fwinRetour$composer.sterileFormatted}"
+								sclass="formValue" />
+							<checkbox id="sterileBox" checked="@{fwinRetour$composer.object.sterile, save-when='validateC.onClick, createC.onClick'}" visible="false" />
+						</div>
+					</row>
+					<row spans="1,3">
+						<div></div>
+						<hlayout sclass="z-valign-middle">
+							<div width="19px" height="19px" sclass="impact" visible="@{fwinRetour$composer.dotVisible}" />
+							<checkbox id="impactBox" checked="@{fwinRetour$composer.object.impact, save-when='validateC.onClick, createC.onClick'}" visible="false" />
+							<label id="impactLabel" 
+								value="@{fwinRetour$composer.impactFormatted}"
+								sclass="@{fwinRetour$composer.impactClass}"/>
+						</hlayout>
+					</row>
+					<row spans="1,3">
+						<label value="${c:l('Champ.Retour.Collaborateur')}" sclass="formLabel"/>						
+						<div>
+							<label id="collaborateurLabel" 
+								value="@{fwinRetour$composer.object.collaborateur.nomAndPrenom}"
+								sclass="@{fwinRetour$composer.sClassCollaborateur}" />			
+							<combobox id="collaborateurBox" autodrop="true" width="200px" readonly="false"
+								model="@{fwinRetour$composer.collaborateurs}"
+								selectedItem="@{fwinRetour$composer.selectedCollaborateur, save-when='validateC.onClick, createC.onClick'}"
+								visible="false">
+								<comboitem self="@{each='currentValue'}" 
+										value="@{currentValue}" 
+										label="@{currentValue.nomAndPrenom}" />
+							</combobox>		
+						</div>
+					</row>
+					<row spans="1,3">
+						<label value="${c:l('Champ.Retour.Observations')}" sclass="formLabel"/>						
+						<div>
+							<label id="observationsLabel" 
+								value="@{fwinRetour$composer.object.observations}" 
+								sclass="formValue" />			
+							<textbox id="observationsBox" width="300px" 
+								value="@{fwinRetour$composer.object.observations, save-when='validateC.onClick, createC.onClick'}"
+								visible="false"
+								constraint="@{fwinRetour$composer.obsConstraint}" />
+						</div>
+					</row>
+					<row spans="1,3" id="rowEmplacement">
+						<label value="${c:l('Champ.Echantillon.Emplacement')}" sclass="formLabel"/>						
+						<div>
+							<label id="emplacementLabel" 
+								value="@{fwinRetour$composer.object.oldEmplacementAdrl}" 
+								sclass="formValue" />			
+							<textbox id="emplacementBox" width="300px" disabled="true"
+								value="@{fwinRetour$composer.oldEmplacementAdrl}"
+								visible="false" />
+						</div>
+					</row>
+					<row id="rowSelectionTitle" spans="4" visible="false">
+						<vbox width="100%">
+							<label value="${c:l('retour.select.objects')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					<row id="rowSelection" spans="4" visible="false" align="center">
+						<vbox hflex="1" align="center">
+							<hbox>
+								<label id="cocherTous" sclass="formLink"
+									value="${c:l('profil.droit.cocher.tous')}"/>
+								<label value="  -  " sclass="formValue"/>
+								<label id="decocherTous" sclass="formLink"
+									value="${c:l('profil.droit.decocher.tous')}"/>
+						
+							</hbox>
+						
+							<listbox id="objectsBox" multiple="true" 
+								width="250px" checkmark="true" rows="5"
+								emptyMessage="test">
+								<!-- model="@{fwinRetour$composer.objects}" -->
+								<!-- selectedItems="@{fwinRetour$composer.selectedObjectsItem}" -->
+								
+								<listitem self="@{each='obj'}" value="obj">
+									<listcell label="@{obj.code}"/>
+								</listitem>	
+							</listbox>
+						</vbox>
+					</row>
+				</rows>
+			</grid>
+		</panelchildren>
+		<toolbar align="end" height="30px">
+			<hlayout spacing="5" vflex="1" height="30px">
+				<button id="validateC" label="${c:l('general.validate')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="revertC" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="createC" label="${c:l('general.create')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="cancelC" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+			</hlayout>
+		</toolbar>
+	</panel>
+</window>

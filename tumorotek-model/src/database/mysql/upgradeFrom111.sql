@@ -1,0 +1,1 @@
+alter table BANQUE add column ANNO_DERIVE varchar(200);

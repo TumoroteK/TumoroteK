@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+	<changeSet id="1" author="ABO" context="*, 2.1.4, 2.2.0-beta-1, 2.2.0-beta-2-SNAPSHOT">
+		<tagDatabase tag="${project.parent.version}" />
+	</changeSet>
+	<changeSet id="2" author="ABO" runAlways="false" context="*, 2.1.4, 2.2.0-beta-1, 2.2.0-beta-2-SNAPSHOT">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<tableExists tableName="CLE_IMPRESSION" />
+			</not>
+		</preConditions>
+		<comment>[YouTrack] TK-61 Pouvoir créer un modèle de document DOCx contenant des placeholders (clé) correspondants des champs et les remplacer par leur valeur à l'impression.
+        </comment>
+		<createTable tableName="CLE_IMPRESSION">
+			<column name="CLE_ID" type="INT">
+				<constraints nullable="false" />
+			</column>
+			<column name="CLE_NOM" type="VARCHAR(100)">
+				<constraints nullable="false" />
+			</column>
+			<column name="CHAMP_ID" type="INT"></column>
+			<column name="TEMPLATE_ID" type="INT"></column>
+		</createTable>
+
+		<addPrimaryKey tableName="CLE_IMPRESSION" columnNames="CLE_ID" />
+		<addForeignKeyConstraint constraintName="FK_CHAMP_ID"
+			referencedTableName="CHAMP" baseColumnNames="CHAMP_ID" baseTableName="CLE_IMPRESSION"
+			referencedColumnNames="CHAMP_ID" />
+		<addForeignKeyConstraint constraintName="FK_TEMPLATE_ID"
+			referencedTableName="TEMPLATE" baseColumnNames="TEMPLATE_ID"
+			baseTableName="CLE_IMPRESSION" referencedColumnNames="TEMPLATE_ID" />
+	</changeSet>
+	<changeSet id="3" author="ABO" runAlways="false" context="*, 2.1.4, 2.2.0-beta-1, 2.2.0-beta-2-SNAPSHOT">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<columnExists tableName="TEMPLATE" columnName="TYPE" />
+				<columnExists tableName="TEMPLATE" columnName="FICHIER" />
+			</not>
+		</preConditions>
+		<comment>[YouTrack] TK-61 Pouvoir créer un modèle de document DOCx contenant des placeholders (clé) correspondants des champs et les remplacer par leur valeur à l'impression.
+        </comment>
+		<addColumn tableName="TEMPLATE">
+			<column name="TYPE" type="VARCHAR(100)">
+				<constraints nullable="false" />
+			</column>
+			<column name="FICHIER" type="VARCHAR(100)">
+			</column>
+		</addColumn>
+	</changeSet>
+	<changeSet id="4" author="JDI" runAlways="false" context="*, 2.1.4, 2.2.0-beta-1, 2.2.0-beta-2-SNAPSHOT">
+		<preConditions onFail="MARK_RAN">
+			<not>
+				<columnExists tableName="TABLE_ANNOTATION" columnName="INLINE_DISPLAY" />
+				<!--<columnExists tableName="TEMPLATE" columnName="FICHIER" />-->
+			</not>
+		</preConditions>
+		<comment>[YouTrack] TK-44 Faire apparaître les champs de type annotation dans les écrans principaux
+		</comment>
+		<addColumn tableName="TABLE_ANNOTATION">
+			<column name="INLINE_DISPLAY" type="BOOLEAN" defaultValueBoolean="false">
+			</column>
+		</addColumn>
+	</changeSet>
+</databaseChangeLog>

@@ -1,0 +1,240 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<window id="fwinPlateforme" border="none" apply="fr.aphp.tumorotek.action.contexte.FichePlateforme">
+	<panel collapsible="false" title="${c:l('fiche.plateforme.titre')}"
+	 sclass="fichePanelv2" id="winPanel">
+		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
+			<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvt">
+				<columns>
+					<column width="150px"/>
+					<column/>
+				</columns>
+				<rows>
+					<!-- NOM -->
+					<row>
+						<hbox>
+							<label value="${c:l('Champ.Plateforme.Nom')}" sclass="formLabel"/>
+							<label id="nomRequired" value="*" sclass="requiredMark"
+												 visible="false"/>
+						</hbox>
+						<div>
+							<label id="nomLabel" 
+								value="@{fwinPlateforme$composer.plateforme.nom}" 
+								sclass="formValue" 
+							/>
+							
+							<textbox id="nomBox" value="@{fwinPlateforme$composer.plateforme.nom,
+			        				save-when='validateC.onClick, createC.onClick'
+			        				load-after='editC.onClick, createC.onClick'}" 
+								width="150px" 
+								constraint="${fwinPlateforme$composer.nomConstraint}"
+								visible="false"
+							/>
+						</div>
+					</row>
+					<!-- ALIAS -->
+					<row>
+						<label value="${c:l('Champ.Plateforme.Alias')}" sclass="formLabel"/>
+						<div>
+							<label id="aliasLabel" 
+								value="@{fwinPlateforme$composer.plateforme.alias}" 
+								sclass="formValue" 
+							/>
+							
+							<textbox id="aliasBox" value="@{fwinPlateforme$composer.plateforme.alias,
+			        				save-when='validateC.onClick, createC.onClick'
+			        				load-after='editC.onClick, createC.onClick'}" 
+								width="50px" 
+								constraint="${fwinPlateforme$composer.aliasConstraint}"
+								visible="false"
+							/>
+						</div>
+					</row>
+					<!-- Responsable -->
+					<row>
+						<label value="${c:l('Champ.Plateforme.Collaborateur')}" sclass="formLabel"/>				
+						<div>
+							<label id="respLabel" 
+								value="@{fwinPlateforme$composer.plateforme.collaborateur.nomAndPrenom}"
+								sclass="@{fwinPlateforme$composer.sClassCollaborateur}"
+							/>
+							<div id="respBoxDiv" visible="false">
+			 					<combobox id="collabBox" 
+				 					autodrop="true" width="150px">
+				 					<comboitem self="@{each=attrValue}" label="@{attrValue}"/>
+				 				</combobox>
+			 					<space/>
+								<label id="collabAideSaisie" style="font-weight:bold;"
+									value="${c:l('collaborateur.aideSaisie')}"
+									sclass="formLink"
+								/>
+							</div>
+						</div>
+					</row>
+					
+					<!-- Admins -->
+					<row spans="2">
+						<separator/>
+					</row>
+					<group id="groupAdmins" label="${c:l('plateforme.admins.title')}"/>
+					<row spans="2" id="rowGridAdmins">
+						<grid id="adminsGrid"
+							fixedLayout="true" 
+							span="true"
+							sclass="gridListStyle"
+							model="@{fwinPlateforme$composer.administrateurs}"
+							hflex="1"
+							>
+							<columns sizable="true" >
+								<column label="${c:l('utilisateur.login')}" width="150px"/>
+								<column label="${c:l('utilisateur.email')}" width="150px"/>
+								<column label="${c:l('utilisateur.collaborateur.small')}" width="170px"/>
+								<column id="deleteAdminColumn" visible="false" width="30px"/>
+							</columns>
+							<rows>
+								<row self="@{each='currAdmin'}">
+									<label value="@{currAdmin.login}" id="adminLogin"
+										sclass="formLink"/>
+									<label value="@{currAdmin.email}"/>
+									<label value="@{currAdmin.collaborateur.nomAndPrenom}"/>
+									<div align="center">
+										<image width="12px" height="12px" id="deleteAdmin"
+											src="/images/icones/small_delete.png"
+											style="cursor:pointer"/>
+									</div>
+								</row>
+							</rows>
+						</grid>
+					</row>
+					<!-- Ajout role -->
+					<row spans="2" id="rowAddAdminTitle" visible="false">
+						<vbox>
+							<label value="${c:l('plateforme.add.admin.title')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					<row id="rowAddAdmin" visible="false">
+						<label value="${c:l('plateforme.select.user')}" sclass="formLabel"/>
+						<hbox>
+							<div style="vertical-align:middle;">
+								<listbox id="usersBox" mold="select" rows="1"
+									model="@{fwinPlateforme$composer.users, 
+									load-after='editC.onClick, createC.onClick'}"
+									selectedItem="@{fwinPlateforme$composer.selectedUser}"
+									width="150px">
+									<listitem self="@{each='us'}" value="us">			
+										<listcell label="@{us.login}" />
+									</listitem>
+								</listbox>
+							</div>
+							<div>
+							<button label="${c:l('plateforme.add.admin')}"  
+								height="24px" id="addAdminButton"
+								image="/images/icones/new.png" sclass="buttonv2"/>
+							</div>
+						</hbox>
+					</row>
+					
+					<!-- Collections -->
+					<row spans="2">
+						<separator/>
+					</row>
+					<group id="groupBanques" label="${c:l('plateforme.banques.title')}"/>
+					<row spans="2">
+						<grid id="banquesGrid"
+							fixedLayout="true" 
+							span="true"
+							sclass="gridListStyle"
+							model="@{fwinPlateforme$composer.banques}"
+							hflex="1">
+							<columns sizable="true">
+								<column label="${c:l('Champ.Banque.Nom')}" width="170px"/>
+								<column label="${c:l('Champ.Banque.Proprietaire')}" width="165px"/>
+								<column label="${c:l('Champ.Banque.Collaborateur')}" width="165px"/>
+							</columns>
+							    <template name="model">
+								<row>
+									<label value="${each.nom}" forward="onClick=onClick$banqueNom(${each})"
+										sclass="${each.archive eq 'false' ? 'formLink' : 'formLinkArchive'}"/>
+									<label value="${each.proprietaire.nom}" />
+									<label value="${each.collaborateur.nomAndPrenom}"/>
+								</row>
+								</template>
+						</grid>
+					</row>
+					
+					<!-- Conteneurs -->
+					<row spans="2">
+						<separator/>
+					</row>
+					<group id="groupConteneurs" open="false" />
+					<row spans="2" id="rowGridConteneurs">
+						<div id="conteneursAssocies" />
+					</row>
+				</rows>
+			</grid>
+		</panelchildren>
+		<toolbar height="30px" id="toolbarEchan" align="end">
+			<hbox spacing="5">
+				<menubar sclass="menuBarV2" id="menuBar">
+					<menu label="${c:l('general.actions')}" image="/images/icones/small_action.png" 
+						width="36px" height="24px">
+						<menupopup>
+							<menuitem id="print" image="/images/icones/printer.png" 
+								label="${c:l('general.print')}"/>
+							<menuitem id="historique" image="/images/icones/history.png" 
+								label="${c:l('general.historique')}"/>
+						</menupopup>
+					</menu>
+				</menubar>
+				<button id="addNewC" label="${c:l('general.new')}" height="24px" visible="false"
+					image="/images/icones/new.png" sclass="buttonv2"/>
+				<button id="editC" label="${c:l('general.edit')}" height="24px" visible="true"
+					image="/images/icones/edit.png" sclass="buttonv2"/>
+				<button id="deleteC" label="${c:l('general.delete')}" height="24px" visible="false"
+					image="/images/icones/trash.png" sclass="buttonv2"/>
+				<button id="validateC" label="${c:l('general.validate')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="revertC" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="createC" label="${c:l('general.create')}" height="24px" visible="false"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="cancelC" label="${c:l('general.cancel')}" height="24px" visible="false"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+			</hbox>
+		</toolbar>
+	</panel>
+</window>

@@ -1,0 +1,513 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<window id="fwinCessionStatic" border="none" apply="fr.aphp.tumorotek.action.cession.FicheCessionStatic">
+	<panel collapsible="false" title="${c:l('ficheCession.panel.title')}"
+	 sclass="fichePanelv2" id="winPanel" closable="true">
+		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
+			<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvt">
+				<columns>
+					<column width="150px"/>
+					<column/>
+					<column width="150px"/>
+					<column/>
+				</columns>
+				<rows>
+					<row>
+						<!-- Numéro de cession -->
+						<label value="${c:l('Champ.Cession.Numero')}" sclass="formLabel"/>
+						<label id="numeroLabel" 
+							value="@{fwinCessionStatic$composer.cession.numero}" 
+							sclass="formValue" 
+						/>
+						
+						<!-- Type de cession -->
+						<label value="${c:l('Champ.Cession.CessionType')}" sclass="formLabel"/>
+						<label id="cessionTypeLabel" 
+							value="@{fwinCessionStatic$composer.cessionType}" 
+							sclass="formValue" 
+						/>
+					</row>
+					
+					<row spans="2">
+						<separator/>
+					</row>
+					<!-- Echantillons -->
+					<group label="@{fwinCessionStatic$composer.echantillonsGroupHeader}" 
+						id="groupEchantillons" open="false" />
+					<row spans="4">
+						<vbox align="center" width="100%" hflex="1">
+						<!-- Echantillons en mode consultation -->
+						<grid id="echantillonsList" mold="paging"
+							hflex="1"
+							sizedByContent="true" 
+							span="true"
+							sclass="gridListStyle"
+							>
+							<columns sizable="true">
+								<column />
+								<column label="${c:l('cederObjet.code')}" />
+								<column label="${c:l('cederObjet.type')}" />
+								<column label="${c:l('prelevement.patient')}" />
+								<column >
+									<vbox>
+										<label value="${c:l('cederObjet.statut')}" 
+											style="font-weight : bold;"/>
+										<label value="${c:l('cederObjet.juridique')}" 
+											style="font-weight : bold;"/>
+									</vbox>
+								</column>
+								<column>
+									<vbox>
+										<label value="${c:l('cederObjet.quantite')}" 
+											style="font-weight : bold;"/>
+										<label value="${c:l('cederObjet.demandee')}" 
+											style="font-weight : bold;"/>
+									</vbox>
+								</column>
+								<column>
+									<vbox>
+										<label value="${c:l('cederObjet.quantite')}" 
+											style="font-weight : bold;"/>
+										<label value="${c:l('cederObjet.restante')}" 
+											style="font-weight : bold;"/>
+									</vbox>
+								</column>
+								<column label="${c:l('cederObjet.unite')}" />
+								<column label="${c:l('Champ.Echantillon.Emplacement')}" />
+								<column>
+									<vbox>
+										<label value="${c:l('general.nb')}" 
+											style="font-weight : bold;"/>
+										<label value="${c:l('cederObjet.sorties')}" 
+											style="font-weight : bold;"/>
+									</vbox>
+								</column>
+							</columns>
+							<rows>
+								<row self="@{each='echanCede'}" sclass="@{echanCede.rowCheckedStyleClass}">
+									<hlayout>
+										<div width="18px" height="18px" visible="@{echanCede.impactVisible}"
+											sclass="impact" tooltiptext="${c:l('Champ.Retour.Impact')}"/>
+										<div width="18px" height="18px" visible="@{echanCede.prelC}"
+											sclass="conformeArrivee" tooltiptext="${c:l('tooltip.conforme.arrivee')}"/>
+										<div width="18px" height="18px" visible="@{echanCede.prelNC}"
+											sclass="nonConformeArrivee" tooltiptext="@{echanCede.prelNcfs}"/>
+										<div width="18px" height="18px" visible="@{echanCede.tKObjTraitementC}"
+											sclass="conformeTraitement" tooltiptext="${c:l('tooltip.conforme.traitement')}"/>
+										<div width="18px" height="18px" visible="@{echanCede.tKObjTraitementNC}"
+											sclass="nonConformeTraitement" tooltiptext="@{echanCede.tKObjTraitementNcfs}"/>
+										<div width="18px" height="18px" visible="@{echanCede.tKObjCessionC}"
+											sclass="conformeCession" tooltiptext="${c:l('tooltip.conforme.cession')}"/>
+										<div width="18px" height="18px" visible="@{echanCede.tKObjCessionNC}"
+											sclass="nonConformeCession" tooltiptext="@{echanCede.tKObjCessionNcfs}" />
+									</hlayout>
+									
+									<label id="codeEchantillonCede" 
+										value="@{echanCede.echantillonCode}"
+										sclass="formLink">
+									</label>
+									<label value="@{echanCede.echantillonType}"/>
+									<label value="@{echanCede.nomPatient}"/>
+									<label value="@{echanCede.statutJuridique}"/>
+									<label value="@{echanCede.cederQuantite}"/>
+									<label value="@{echanCede.quantiteRestante}"/>
+									<label value="@{echanCede.cederQuantiteUnite}"/>
+									<label value="@{echanCede.emplacementAdrl}"/>
+									<label value="@{echanCede.nbSorties}"/>
+								</row>
+							</rows>
+						</grid>
+						<paging id="echansPaging" detailed="true"/>
+						<button id="selectAllechantillonsButton" sclass="buttonv2" label="${c:l('general.selectAll')}"  
+								height="24px" visible="@{fwinCessionStatic$composer.echantillonsListSizeSupOne}"
+								image="/images/icones/selectall.png" forward="onClick=onSelectAllEchantillons(all)" />
+						</vbox>
+					</row>
+					
+					<!-- Dérivés -->
+					<group label="@{fwinCessionStatic$composer.derivesGroupHeader}" 
+						id="groupProdDerives" open="false" />
+					<row spans="4">
+						<!-- Dérivés en mode consultation -->
+						<vbox align="center" width="100%" hflex="1">
+						<grid id="derivesList" mold="paging"
+							hflex="1"
+							sizedByContent="true" 
+							span="true"
+							sclass="gridListStyle"
+							>
+							<columns sizable="true" width="100%">
+								<column />
+								<column label="${c:l('cederObjet.code')}" />
+								<column label="${c:l('cederObjet.type')}" />
+								<column label="${c:l('prelevement.patient')}" />
+								<column >
+									<vbox>
+										<label value="${c:l('cederObjet.statut')}" 
+											style="font-weight : bold;"/>
+										<label value="${c:l('cederObjet.juridique')}" 
+											style="font-weight : bold;"/>
+									</vbox>
+								</column>
+								<column >
+									<vbox>
+										<label value="${c:l('cederObjet.quantite')}" 
+											style="font-weight : bold;"/>
+										<label value="${c:l('cederObjet.demandee')}" 
+											style="font-weight : bold;"/>
+									</vbox>
+								</column>
+								<column >
+									<vbox>
+										<label value="${c:l('cederObjet.quantite')}" 
+											style="font-weight : bold;"/>
+										<label value="${c:l('cederObjet.restante')}" 
+											style="font-weight : bold;"/>
+									</vbox>
+								</column>
+								<column label="${c:l('cederObjet.unite')}" />
+								<column label="${c:l('Champ.ProdDerive.Emplacement')}"/>
+								<column>
+									<vbox>
+										<label value="${c:l('general.nb')}" 
+											style="font-weight : bold;"/>
+										<label value="${c:l('cederObjet.sorties')}" 
+											style="font-weight : bold;"/>
+									</vbox>
+								</column>
+							</columns>
+							<rows>
+								<row self="@{each='deriveCede'}" sclass="@{deriveCede.rowCheckedStyleClass}">
+									<hlayout>
+										<div width="18px" height="18px" visible="@{deriveCede.impactVisible}"
+											sclass="impact" tooltiptext="${c:l('Champ.Retour.Impact')}"/>
+										<div width="18px" height="18px" visible="@{deriveCede.prelC}"
+											sclass="conformeArrivee" tooltiptext="${c:l('tooltip.conforme.arrivee')}"/>
+										<div width="18px" height="18px" visible="@{deriveCede.prelNC}"
+											sclass="nonConformeArrivee" tooltiptext="@{deriveCede.prelNcfs}"/>
+										<div width="18px" height="18px" visible="@{deriveCede.tKObjTraitementC}"
+											sclass="conformeTraitement" tooltiptext="${c:l('tooltip.conforme.traitement')}"/>
+										<div width="18px" height="18px" visible="@{deriveCede.tKObjTraitementNC}"
+											sclass="nonConformeTraitement" tooltiptext="@{deriveCede.tKObjTraitementNcfs}"/>
+										<div width="18px" height="18px" visible="@{deriveCede.tKObjCessionC}"
+											sclass="conformeCession" tooltiptext="${c:l('tooltip.conforme.cession')}"/>
+										<div width="18px" height="18px" visible="@{deriveCede.tKObjCessionNC}"
+											sclass="nonConformeCession" tooltiptext="@{deriveCede.tKObjCessionNcfs}"/>
+									</hlayout>
+									
+									<label id="codeProdDeriveCede" 
+										value="@{deriveCede.prodDeriveCode}"
+										sclass="formLink"
+									/>
+									<label value="@{deriveCede.prodDeriveType}"/>
+									<label value="@{deriveCede.nomPatient}"/>
+									<label value="@{deriveCede.statutJuridique}"/>
+									<label value="@{deriveCede.cederQuantite}"/>
+									<label value="@{deriveCede.quantiteRestante}"/>
+									<label value="@{deriveCede.cederQuantiteUnite}"/>
+									<label value="@{deriveCede.emplacementAdrl}"/>
+									<label value="@{deriveCede.nbSorties}"/>
+								</row>
+							</rows>
+						</grid>
+						<paging id="derivesPaging" detailed="true"/>
+						<button id="selectAllderivesButton" sclass="buttonv2" label="${c:l('general.selectAll')}"  
+								height="24px" visible="@{fwinCessionStatic$composer.prodDerivesListSizeSupOne}"
+								image="/images/icones/selectall.png" forward="onClick=onSelectAllDerives(all)" />
+						</vbox>
+					</row>
+					
+					<group/>
+					<!-- Séparateur -->
+					<row spans="4">
+						<separator/>
+					</row>
+										
+					<row spans="4">
+						<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"
+						width="100%"/>
+					</row>
+					<row spans="4">
+						<separator/>
+					</row>
+					
+					<row>
+						<!-- Demandeur -->
+						<label value="${c:l('Champ.Cession.Demandeur')}" sclass="formLabel"/>
+						<label id="demandeurLabel" 
+							value="@{fwinCessionStatic$composer.cession.demandeur.nomAndPrenom}" 
+							sclass="@{fwinCessionStatic$composer.sClassDemandeur}" 
+						/>
+						
+						<!-- Date demande -->
+						<label value="${c:l('Champ.Cession.DemandeDate')}" sclass="formLabel"/>
+						<label id="dateDemandeLabel" 
+							value="@{fwinCessionStatic$composer.dateDemandeFormated}" 
+							sclass="formValue" 
+						/>
+					</row>
+					
+					<row spans="4">
+						<separator/>
+					</row>
+					
+					<row spans="1,3" id="rowSanitaire" visible="false">
+						<!-- Examen -->
+						<label value="${c:l('Champ.Cession.CessionExamen')}" sclass="formLabel"/>
+						<label id="cessionExamenLabel" 
+							value="@{fwinCessionStatic$composer.cession.cessionExamen.examen}" 
+							sclass="formValue" 
+						/>
+					</row>
+					
+					<row spans="1,3" id="rowRecherche1" visible="false">
+						<!-- Contrat -->
+						<label value="${c:l('Champ.Cession.Contrat')}" sclass="formLabel"/>
+						<label id="contratLabel" 
+							value="@{fwinCessionStatic$composer.cession.contrat.numero}" 
+							sclass="formLink"
+						/>
+					</row>
+					
+					<row spans="1,3" id="rowRecherche2" visible="false">
+						<!-- Protocole -->
+						<label value="${c:l('Champ.Cession.EtudeTitre')}" sclass="formLabel"/>
+						<label id="etudeTitreLabel" 
+							value="@{fwinCessionStatic$composer.cession.etudeTitre}" 
+							sclass="formValue" 
+						/>
+					</row>
+					
+					<row id="rowDestruction" visible="false">
+						<!-- Motif destruction -->
+						<label value="${c:l('Champ.Cession.DestructionMotif')}" sclass="formLabel"/>
+						<label id="destrcutionMotifLabel" 
+							value="@{fwinCessionStatic$composer.cession.destructionMotif.motif}" 
+							sclass="formValue" 
+						/>
+						
+						<!-- Date destruction -->
+						<label value="${c:l('Champ.Cession.DestructionDate')}" sclass="formLabel"/>
+						<label id="dateDestructionLabel" 
+							value="@{fwinCessionStatic$composer.dateDestructionFormated}" 
+							sclass="formValue" 
+						/>
+					</row>
+					
+					<row spans="4">
+						<separator/>
+					</row>
+					
+					<row spans="1,3" id="rowDescription">
+						<!-- Description -->
+						<label value="${c:l('Champ.Cession.Description')}" sclass="formLabel"/>
+						<label id="descriptionLabel" 
+							value="@{fwinCessionStatic$composer.cession.description}" 
+							sclass="formValue" 
+						/>
+					</row>
+					
+					<row spans="1,3" id="rowEtablissement">
+						<!-- Etablissement -->
+						<label value="${c:l('cession.etablissement')}" sclass="formLabel"/>
+						<label id="etablissementLabel" 
+							value="@{fwinCessionStatic$composer.etablissement}" 
+							sclass="@{fwinCessionStatic$composer.sClassEtablissement}" 
+						/>
+					</row>
+					
+					<row spans="1,3" id="rowService">
+						<!-- Service -->
+						<label value="${c:l('Champ.Cession.ServiceDest')}" sclass="formLabel"/>
+						<label id="serviceLabel" 
+							value="@{fwinCessionStatic$composer.cession.serviceDest.nom}" 
+							sclass="@{fwinCessionStatic$composer.sClassServiceDest}" 
+						/>
+					</row>
+					
+					<row spans="1,3" id="rowDestinataire">
+						<!-- Destinataire -->
+						<label value="${c:l('Champ.Cession.Destinataire')}" sclass="formLabel"/>
+						<label id="destinataireLabel" 
+							value="@{fwinCessionStatic$composer.cession.destinataire.nomAndPrenom}" 
+							sclass="@{fwinCessionStatic$composer.sClassDestinataire}" 
+						/>
+					</row>
+					
+					<!-- Séparateur -->
+					<row spans="4" id="rowSeparator1">
+						<separator/>
+					</row>
+					<row spans="4" id="rowLine1">
+						<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"
+						width="100%"/>
+					</row>
+					<row spans="4" id="rowSeparator3">
+						<separator/>
+					</row>
+					
+					<row id="rowDateAndStatut">
+						<!-- Date de validation -->
+						<label value="${c:l('Champ.Cession.ValidationDate')}" sclass="formLabel"/>
+						<label id="dateValidationLabel" 
+							value="@{fwinCessionStatic$composer.dateValidationFormated}" 
+							sclass="formValue" 
+						/>
+						
+						<!-- Statut -->
+						<label value="${c:l('Champ.Cession.CessionStatut')}" sclass="formLabel"/>
+						<label id="cessionStatutLabel" 
+							value="@{fwinCessionStatic$composer.cessionStatut}" 
+							sclass="formValue" 
+						/>
+					</row>
+					
+					<row id="rowStatutDestruction" spans="1,3" visible="false">
+						<!-- Statut -->
+						<label value="${c:l('Champ.Cession.CessionStatut')}" sclass="formLabel"/>
+						<label id="cessionStatutDestructionLabel" 
+							value="@{fwinCessionStatic$composer.cession.cessionStatut.statut}" 
+							sclass="formValue" 
+						/>
+					</row>
+					
+					<!-- Séparateur -->
+					<row spans="4">
+						<separator/>
+					</row>
+					<row spans="4" id="rowLine2">
+						<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"
+						width="100%"/>
+					</row>
+					<row spans="4" id="rowSeparator2">
+						<separator/>
+					</row>
+					
+					<row id="rowExecutant" spans="1,3">
+						<!-- Exécutant -->
+						<label value="${c:l('Champ.Cession.Executant')}" sclass="formLabel"/>
+						<label id="executantLabel" 
+							value="@{fwinCessionStatic$composer.cession.executant.nomAndPrenom}" 
+							sclass="@{fwinCessionStatic$composer.sClassExecutant}" 
+						/>
+					</row>
+					
+					<row id="rowDates">
+						<!-- Date de départ -->
+						<label value="${c:l('Champ.Cession.DepartDate')}" sclass="formLabel"/>
+						<label id="dateDepartLabel" 
+							value="@{fwinCessionStatic$composer.dateDepartFormated}" 
+							sclass="formValue" 
+						/>
+						
+						<!-- Date d'arrivée -->
+						<label value="${c:l('Champ.Cession.ArriveeDate')}" sclass="formLabel"/>
+						<label id="dateArriveeLabel" 
+							value="@{fwinCessionStatic$composer.dateArriveeFormated}" 
+							sclass="formValue" 
+						/>
+					</row>
+					
+					<row id="rowTransporteurAndTemp">
+						<!-- Transporteur -->
+						<label value="${c:l('Champ.Cession.Transporteur')}" sclass="formLabel"/>
+						<label id="transporteurLabel" 
+							value="@{fwinCessionStatic$composer.cession.transporteur.nom}" 
+							sclass="formValue" 
+						/>
+						
+						<!-- Température -->
+						<label value="${c:l('Champ.Cession.Temperature')}" sclass="formLabel"/>
+						<div>
+							<hbox>
+								<label id="temperatureLabel" 
+									value="@{fwinCessionStatic$composer.cession.temperature}" 
+									sclass="formValue" 
+								/>
+								
+								<label 
+									value="°C"
+									sclass="formValue"
+								/>
+							</hbox>
+						</div>
+					</row>
+					
+					<row spans="1,3">
+						<!-- Observations -->
+						<label value="${c:l('Champ.Cession.Observations')}" sclass="formLabel"/>
+						<label id="observationsLabel" 
+							value="@{fwinCessionStatic$composer.cession.observations}" 
+							sclass="formValue" 
+						/>
+					</row>
+				</rows>
+			</grid>
+		</panelchildren>
+		<toolbar height="100%" id="toolbarEchan" align="end">
+			<hbox spacing="5">
+				<menubar sclass="menuBarV2" id="menuBar">
+					<menu label="${c:l('general.actions')}" image="/images/icones/small_action.png" 
+						width="36px" height="24px">
+						<menupopup>
+							<menuitem id="printCessionPlan" image="/images/icones/terminale.png"
+								label="${c:l('impression.boite.title.destockage')}"/>
+							<menuitem id="exporterEchantillons" image="/images/icones/export.png"
+								label="${c:l('cession.exporter.echantillons')}"/>
+							<menuitem id="exporterDerives" image="/images/icones/export.png"
+								label="${c:l('cession.exporter.derives')}"/>
+							<menuitem id="printAccord" image="/images/icones/printerAccord.png"
+								label="${c:l('general.print.accord')}"/>
+							<menuitem id="print" image="/images/icones/printer.png"
+								label="${c:l('general.print')}"/>
+							<menuitem id="historique" image="/images/icones/history.png" 
+								label="${c:l('general.historique')}"/>
+						</menupopup>
+					</menu>
+				</menubar>
+				<button id="addNew" label="${c:l('general.new')}" height="24px"
+					image="/images/icones/new.png" sclass="buttonv2"
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="edit" label="${c:l('general.edit')}" height="24px"
+					image="/images/icones/edit.png" sclass="buttonv2"
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="delete" disabled="true" label="${c:l('general.delete')}" height="24px"
+					image="/images/icones/trash.png" sclass="buttonv2"
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+			</hbox>
+		</toolbar>
+	</panel>
+</window>

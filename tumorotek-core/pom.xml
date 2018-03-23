@@ -1,0 +1,380 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>fr.aphp.tumorotek</groupId>
+        <artifactId>tumorotek-parent</artifactId>
+        <version>2.2.0-beta-2-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>tumorotek-core</artifactId>
+    <name>APHP :: TumoroteK :: Core</name>
+
+    <dependencies>
+        <!-- Testing -->
+        <dependency>
+            <groupId>fr.aphp.tumorotek</groupId>
+            <artifactId>tumorotek-test</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>fr.aphp.tumorotek</groupId>
+            <artifactId>tumorotek-model</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.8.3</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-validator</groupId>
+            <artifactId>commons-validator</artifactId>
+            <version>1.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.medsea.mimeutil</groupId>
+            <artifactId>mime-util</artifactId>
+            <version>2.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.jdom</groupId>
+            <artifactId>jdom</artifactId>
+            <version>1.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>fop</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.excalibur.containerkit</groupId>
+            <artifactId>excalibur-logger</artifactId>
+            <version>2.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.9</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.barbecue</groupId>
+            <artifactId>barbecue</artifactId>
+            <version>1.5-beta1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+            <version>2.7.1</version>
+        </dependency>
+        <!-- ORACLE -->
+        <dependency>
+            <groupId>oracle</groupId>
+            <artifactId>ojdbc6</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.18.1</version>
+                <configuration>
+                    <includes>
+                        <include>**/ObjetStatutManagerTest.java</include>
+                        <include>**/EchantillonTypeManagerTest.java</include>
+                        <include>**/EchanQualiteManagerTest.java</include>
+                        <include>**/EchantillonManagerTest.java</include>
+                        <include>**/ModePrepaManagerTest.java</include>
+
+                        <!-- Package systeme -->
+                        <include>**/FichierManagerTest.java</include>
+                        <include>**/EntiteManagerTest.java</include>
+                        <include>**/NumerotationManagerTest.java</include>
+                        <include>**/VersionManagerTest.java</include>
+
+                        <!-- Package coeur.cession -->
+                        <include>**/CederObjetManagerTest.java</include>
+                        <include>**/CessionManagerTest.java</include>
+                        <include>**/CessionExamenManagerTest.java</include>
+                        <include>**/CessionStatutManagerTest.java</include>
+                        <include>**/CessionTypeManagerTest.java</include>
+                        <include>**/DestructionMotifManagerTest.java</include>
+                        <include>**/ContratManagerTest.java</include>
+                        <include>**/ProtocoleTypeManagerTest.java</include>
+                        <include>**/RetourManagerTest.java</include>
+
+                        <!-- Package coeur.patient -->
+                        <include>**/LienFamilialManagerTest.java</include>
+                        <include>**/MaladieManagerTest.java</include>
+                        <include>**/PatientManagerTest.java</include>
+                        <include>**/PatientLienManagerTest.java</include>
+                        <include>**/PatientMedecinManagerTest.java</include>
+
+                        <!-- Package coeur.prelevement -->
+                        <include>**/ConditTypeManagerTest.java</include>
+                        <include>**/ConditMilieuManagerTest.java</include>
+                        <include>**/ConsentTypeManagerTest.java</include>
+                        <include>**/NatureManagerTest.java</include>
+                        <include>**/PrelevementTypeManagerTest.java</include>
+                        <include>**/RisqueManagerTest.java</include>
+                        <include>**/LaboInterManagerTest.java</include>
+                        <include>**/PrelevementManagerTest.java</include>
+
+                        <!-- Classes de Test du package coeur.prodderive -->
+                        <include>**/ProdDeriveManagerTest.java</include>
+                        <include>**/TransformationManagerTest.java</include>
+                        <include>**/ModePrepaDeriveManagerTest.java</include>
+                        <include>**/ProdQualiteManagerTest.java</include>
+                        <include>**/ProdTypeManagerTest.java</include>
+
+                        <!-- Classes de Test du package coeur.annotation -->
+                        <include>**/TableAnnotationManagerTest.java</include>
+                        <include>**/ChampAnnotationManagerTest.java</include>
+                        <include>**/AnnotationValeurManagerTest.java</include>
+                        <include>**/CatalogueManagerTest.java</include>
+                        <include>**/DataTypeManagerTest.java</include>
+
+                        <!-- Classes de Test du package contexte -->
+                        <include>**/BanqueManagerTest.java</include>
+                        <include>**/ContexteManagerTest.java</include>
+                        <include>**/CategorieManagerTest.java</include>
+                        <include>**/CollaborateurManagerTest.java</include>
+                        <include>**/CoordonneeManagerTest.java</include>
+                        <include>**/EtablissementManagerTest.java</include>
+                        <include>**/PlateformeManagerTest.java</include>
+                        <include>**/ServiceManagerTest.java</include>
+                        <include>**/SpecialiteManagerTest.java</include>
+                        <include>**/TitreManagerTest.java</include>
+                        <include>**/TransporteurManagerTest.java</include>
+
+                        <!-- Classes de Test du package systeme -->
+                        <include>**/UniteManagerTest.java</include>
+                        <include>**/CouleurManagerTest.java</include>
+                        <include>**/CouleurEntiteTypeManagerTest.java</include>
+                        <include>**/TemperatureManagerTest.java</include>
+
+                        <!-- Classes de Test du package stockage -->
+                        <include>**/EmplacementManagerTest.java</include>
+
+                        <!-- Classes de Test du package utilisateur -->
+                        <include>**/DroitObjetManagerTest.java</include>
+                        <include>**/ProfilManagerTest.java</include>
+                        <include>**/ProfilUtilisateurManagerTest.java</include>
+                        <include>**/ReservationManagerTest.java</include>
+                        <include>**/UtilisateurManagerTest.java</include>
+
+                        <!-- Package qualite -->
+                        <include>**/OperationManagerTest.java</include>
+                        <include>**/OperationTypeManagerTest.java</include>
+                        <include>**/ConformiteTypeManagerTest.java</include>
+                        <include>**/NonConformiteManagerTest.java</include>
+                        <include>**/ObjetNonConformeManagerTest.java</include>
+
+                        <!-- Package IO -->
+                        <!-- Classes de Test du package export -->
+                        <include>**/TraitementRequeteManagerTest.java</include>
+                        <include>**/AffichageManagerTest.java</include>
+                        <include>**/CombinaisonManagerTest.java</include>
+                        <include>**/CritereManagerTest.java</include>
+                        <include>**/GroupementManagerTest.java</include>
+                        <include>**/RequeteManagerTest.java</include>
+                        <include>**/ResultatManagerTest.java</include>
+                        <include>**/RechercheManagerTest.java</include>
+                        <!-- Classes de Test du package export utils -->
+                        <include>**/CorrespondanceManagerTest.java</include>
+                        <include>**/TraitementRequeteManagerTest.java</include>
+
+                        <!-- Package stockage -->
+                        <include>**/ConteneurTypeManagerTest.java</include>
+                        <include>**/ConteneurManagerTest.java</include>
+                        <include>**/EmplacementManagerTest.java</include>
+                        <include>**/EnceinteManagerTest.java</include>
+                        <include>**/EnceinteTypeManagerTest.java</include>
+                        <include>**/IncidentManagerTest.java</include>
+                        <include>**/TerminaleManagerTest.java</include>
+                        <include>**/TerminaleNumerotationManagerTest.java</include>
+                        <include>**/TerminaleTypeManagerTest.java</include>
+
+                        <!-- Package Utils -->
+                        <include>**/UtilsTest.java</include>
+
+                        <!-- Package code -->
+                        <include>**/AdicapManagerTest.java</include>
+                        <include>**/CimoMorphoManagerTest.java</include>
+                        <include>**/CimMasterManagerTest.java</include>
+                        <include>**/CodeDossierManagerTest.java</include>
+                        <include>**/CodeUtilisateurManagerTest.java</include>
+                        <include>**/CodeAssigneManagerTest.java</include>
+                        <include>**/TableCodageManagerTest.java</include>
+                        <include>**/CodeSelectManagerTest.java</include>
+
+                        <!-- Package impression -->
+                        <include>**/BlocImpressionManagerTest.java</include>
+                        <include>**/BlocImpressionTemplateManagerTest.java</include>
+                        <include>**/ChampEntiteBlocManagerTest.java</include>
+                        <include>**/ChampImprimeManagerTest.java</include>
+                        <include>**/TableAnnotationTemplateManagerTest.java</include>
+                        <include>**/TemplateManagerTest.java</include>
+                        <include>**/XmlUtilsTest.java</include>
+
+                        <!-- Package imprimante -->
+                        <include>**/ImprimanteManagerTest.java</include>
+                        <include>**/ImprimanteApiManagerTest.java</include>
+                        <include>**/ModeleManagerTest.java</include>
+                        <include>**/LigneEtiquetteManagerTest.java</include>
+                        <include>**/ChampLigneEtiquetteManagerTest.java</include>
+                        <include>**/ModeleTypeManagerTest.java</include>
+                        <include>**/AffectationImprimanteManagerTest.java</include>
+
+                        <!-- Package export -->
+                        <include>**/ExportUtilsTest.java</include>
+
+                        <!-- Package report -->
+                        <include>**/IncaReportManagerTest.java</include>
+
+                        <!-- Package import -->
+                        <include>**/ImportColonneManagerTest.java</include>
+                        <include>**/ImportTemplateManagerTest.java</include>
+                        <!-- TODO : Faire en sorte qu'ImportManagerTest.java fonctionne en
+                            maven test - JDI -->
+                        <!--<include>**/ImportManagerTest.java</include> -->
+                        <include>**/ImportHistoriqueManagerTest.java</include>
+                        <include>**/ImportDerivesManagerTest.java</include>
+
+                        <!-- Package etiquettes -->
+                        <!-- TODO : Mocker les imprimantes pour les tests si possible - JDI -->
+                        <!--<include>**/TumoBarcodePrinterTest.java</include> -->
+                        <include>**/TumoPrinterUtilsManagerTest.java</include>
+
+                        <!-- Package interfacage -->
+                        <include>**/PatientSipManagerTest.java</include>
+                        <include>**/ValeurExterneManagerTest.java</include>
+                        <include>**/BlocExterneManagerTest.java</include>
+                        <include>**/DossierExterneManagerTest.java</include>
+                        <include>**/EmetteurManagerTest.java</include>
+                        <include>**/RecepteurManagerTest.java</include>
+                        <include>**/LogicielManagerTest.java</include>
+                        <include>**/InjectionManagerTest.java</include>
+                        <include>**/InterfacageParsingUtilsManagerTest.java</include>
+                        <include>**/ConsultationIntfManagerTest.java</include>
+
+                        <!-- Package dto -->
+                        <include>**/EchantillonDTOManagerTest.java</include>
+
+                        <!-- Package stats -->
+                        <!-- <include>**/IndicateurManagerTest.java</include> -->
+                        <!-- <include>**/SModeleManagerTest.java</include> -->
+                    </includes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>dashboard-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>1.1.1</version>
+                <configuration>
+                    <xmlOutput>true</xmlOutput>
+                    <effort>Max</effort>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jdepend-maven-plugin</artifactId>
+                <version>2.0-beta-2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.4.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.1.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <configLocation>src/main/resources/check_style.xml</configLocation>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <configuration>
+                    <formats>
+                        <format>html</format>
+                    </formats>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <rulesets>
+                        <ruleset>/rulesets/basic.xml</ruleset>
+                        <ruleset>/rulesets/imports.xml</ruleset>
+                        <ruleset>/rulesets/unusedcode.xml</ruleset>
+                        <ruleset>/rulesets/finalizers.xml</ruleset>
+                    </rulesets>
+                    <targetJdk>${compileSource}</targetJdk>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+</project>

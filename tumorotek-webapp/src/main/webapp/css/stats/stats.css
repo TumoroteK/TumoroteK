@@ -1,0 +1,186 @@
+div.percent {
+	background: #ffc34d; 
+	padding: 1px; 
+	border-color: #faebcc;
+}
+
+div.percent:hover {
+	background: #ffc34d; 
+	padding: 1px; 
+	border-color: #faebcc;
+	border-width: 1px;
+}
+
+div.percentSwitch {
+	background: #9494b8; 
+	padding: 1px; 
+	border-color: #7575a3;
+}
+
+div.percentSwitch:hover {
+	background: #9494b8; 
+	padding: 1px; 
+	border-color: #7575a3;
+	border-width: 1px;
+}
+
+tr.z-listbox-odd {
+	background-color: transparent;
+}
+
+div.z-listcell-cnt {
+	color: #00264d;
+}
+
+.z-listitem-seld div.z-listcell-cnt {
+	color: #003399;
+}
+
+th.header {
+	background: #DDEEFB repeat-x 0 0 !important;
+	text-align: center; 
+	color: #144BA1 !important;
+	font-weight: bold !important;
+}
+td.last, th.last {
+	border-right-width: 0px !important;
+}
+td.statement, td.collection, td.subdivision {
+	text-align: center; 
+	color: #043554;
+}
+td.collection {
+	background: #fafafa !important;
+	font-weight: bold !important;
+	font-size: 12px;
+}
+
+td.statement {
+	background: #F2DFBA !important;
+}
+
+td.subdivision {
+	font-style: italic;
+}
+
+<!-- Notification , Popup -->
+
+.z-notification .z-notification-cl, .z-notification
+			.z-notification-cnt{ width:300px;height:100px; } 
+
+.z-popup .z-popup-cnt {color: #000000;}
+
+.z-popup .z-popup-cm {
+	background: #74A5E8;
+}
+
+# .z-borderlayout {
+#    background-color: #D0F0FF;
+# }
+
+.z-east-colpsd, .z-west-colpsd, .z-south-colpsd, .z-north-colpsd {
+    background-color:#E4F8FF;
+}
+.z-borderlayout-icon, .z-north-splt, .z-south-splt, .z-east-splt, .z-west-splt {
+    opacity: .6;
+    filter: alpha(opacity=60);
+}
+
+.subdivision .z-label {
+	font-size: 9px;
+	font-weight: bold;
+}
+
+.collection .z-label {
+	font-weight: bold;
+	font-size: 10px;
+	text-align: center; 
+}
+
+.error {
+	color: red !important;
+	font-weight: bold !important;
+	font-style: italic;
+}
+
+<!-- Menu -->
+ul#menu_horizontal {
+width : 600px;
+height : 30px;
+margin : 2em 0 0 0;
+padding : 0;
+background-color : #f4f9fd;
+border : 1px dashed black;
+list-style-type : none;
+}
+  
+ul#menu_horizontal li {
+padding : 0 0.5em; 
+line-height : 30px;
+}
+  
+ul#menu_horizontal li.bouton_gauche {
+float : left;
+border-right : 1px dashed black;
+}
+  
+ul#menu_horizontal li.bouton_droite {
+float : right;
+border-left : 1px dashed black;
+}
+  
+ul#menu_horizontal a {
+color : black;
+text-decoration : none;
+padding : 0 0.5em;
+font :  0.8em "Trebuchet MS";
+}
+  
+ul#menu_horizontal a:hover { text-decoration : underline; }
+  
+ul#menu_horizontal a img {
+border : none;
+padding :  0 0.3em;
+}
+
+.btndiv .z-button-cr,.btndiv .z-button-cl,.btndiv
+			.z-button-bl,.btndiv .z-button-bm,.btndiv .z-button-br,.btndiv .z-button-tl,.btndiv .z-button-tm,.btndiv
+			.z-button-tr {
+	background-image: none;
+}
+
+.btndiv .z-button-cm {
+	background: transparent url('') no-repeat 0 0;
+}
+
+.btndiv table {
+	width: 100%;
+	height: 100%;
+}
+
+.myGreen {
+	width: 110px;
+	height: 39px;
+	height: 37px\9;
+}
+
+.myGreen
+.z-button-cm {
+	height: 31px;
+	color: black;
+}
+
+.z-button-focus
+			.z-button-cm {
+	background-position: 0 -62px
+}
+
+.z-button-over
+			.z-button-cm {
+	background-position: 0 -31px
+}
+
+.z-button-clk
+			.z-button-cm {
+	background-position: 0 -93px
+}

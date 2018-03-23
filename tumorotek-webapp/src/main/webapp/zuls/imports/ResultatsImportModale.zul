@@ -1,0 +1,131 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+
+<?page title="Resultats import modale" contentType="text/html;charset=UTF-8"?>
+<zk>
+	<window id="fwinResultatsImportModale" border="none" apply="fr.aphp.tumorotek.action.imports.ResultatsImportModale">
+		<vlayout height="100%" width="100%">
+			<hlayout valign="middle">
+				<image id="leftArrow" src="/images/1leftarrow.png" visible="false" 
+					style="cursor: pointer"/>
+				<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvt"
+					hflex="1">
+					<columns>
+						<column  width="40px"/>
+						<column  />
+					</columns>
+					<rows>
+						<!-- Message Ok -->
+						<row id="okTitleRow">
+							<image id="okImg" src="/images/icones/big_ok.png"/>
+							<html id="okLabel" sclass="formLabel"/>
+						</row>
+						<!-- Message Error -->
+						<row id="warningTitleRow">
+							<image id="warnImg" src="/images/icones/big_warning.png"/>
+							<html id="warnLabel" sclass="formLabel"/>
+						</row>
+						
+						<row><separator/></row>
+						<row spans="2">
+							<vbox width="100%">
+								<label id="detailsLabel" value="${c:l('importTemplate.statistiques')}" sclass="formSubTitle"/>
+								<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+							</vbox>
+						</row>
+						<row spans="2" id="okStatsPresentationRow">
+							<html id="okStatsLabel" sclass="formValue"/>
+						</row>
+						<row spans="2" id="okStatsRow" align="center">
+							<grid id="historiquesGrid"
+								fixedLayout="true" 
+								height="100%"
+								hflex="1"
+								sclass="gridListStyle">
+								<columns>
+									<column width="150px"/>
+									<column width="50px" align="center"/>
+								</columns>
+								<rows>
+									<row>
+										<label value="${c:l('importHistorique.nb.patients')}" 
+											sclass="formLabel"/>
+										<label id="nbPatientsLabel" 
+											sclass="formValue" />
+									</row>
+									<row>
+										<label value="${c:l('importHistorique.nb.prelevements')}" 
+											sclass="formLabel"/>
+										<label id="nbPrelevementsLabel" 
+											sclass="formValue" />
+									</row>
+									<row>
+										<label value="${c:l('importHistorique.nb.echantillons')}" 
+											sclass="formLabel"/>
+										<label id="nbEchantillonsLabel" 
+											sclass="formValue" />
+									</row>
+									<row>
+										<label value="${c:l('importHistorique.nb.prodDerives')}" 
+											sclass="formLabel"/>
+										<label id="nbDerivesLabel" sclass="formValue" />
+									</row>
+								</rows>
+							</grid>
+						</row>
+						<row spans="2" id="warnStatsRow">
+							<label id="warnStatsLabel" 
+								sclass="formValue"/>
+						</row>
+						<row spans="2" id="warnHelpRow">
+							<label value="${c:l('importTemplate.dl.correctif')}" 
+								sclass="formErrorValue" id="warnHelpLabel"/>
+						</row>
+						<row spans="2" id="warnDlRow" align="center">
+							<button id="dlFile" label="${c:l('importTemplate.dl.correctif.button')}" 
+								height="24px"
+								image="/images/icones/export.png" sclass="buttonv2" />
+						</row>
+					</rows>
+				</grid>
+				<image id="rightArrow" src="/images/1rightarrow.png" visible="false" 
+					style="cursor: pointer"/>
+			</hlayout>
+			<div style="border-top: 1px solid grey" id="chooseSheetRow" vflex="1"/>
+		</vlayout>
+	</window>
+</zk>
