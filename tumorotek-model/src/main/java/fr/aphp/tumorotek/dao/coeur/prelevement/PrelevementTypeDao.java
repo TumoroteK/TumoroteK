@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.PrelevementType;
  * @version 2.0
  *
  */
-public interface PrelevementTypeDao extends GenericDaoJpa<PrelevementType, Integer>, TKThesaurusDao
+public interface PrelevementTypeDao extends GenericDaoJpa<PrelevementType, Integer>, TKThesaurusDao<PrelevementType>
 {
 
    /**

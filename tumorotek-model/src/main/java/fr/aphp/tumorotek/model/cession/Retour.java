@@ -135,9 +135,8 @@ public class Retour implements TKdataObject, Serializable
       if(entite != null && dateSortie != null){
          return "{" + entite.getNom() + ":" + objetId + " "
             + new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(dateSortie.getTime()) + "}";
-      }else{
-         return "{Empty Retour}";
       }
+      return "{Empty Retour}";
    }
 
    @Id
@@ -169,9 +168,8 @@ public class Retour implements TKdataObject, Serializable
          final Calendar cal = Calendar.getInstance();
          cal.setTime(dateSortie.getTime());
          return cal;
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void setDateSortie(final Calendar cal){
@@ -190,9 +188,8 @@ public class Retour implements TKdataObject, Serializable
          final Calendar cal = Calendar.getInstance();
          cal.setTime(dateRetour.getTime());
          return cal;
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void setDateRetour(final Calendar cal){

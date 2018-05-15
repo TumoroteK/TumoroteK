@@ -37,7 +37,6 @@
 
 <window id="fwinProdDeriveEditBTO" border="none" apply="fr.aphp.tumorotek.action.prodderive.bto.FicheProdDeriveEditBTO"
 	xmlns:h="http://www.w3.org/1999/xhtml">
-	<label value="BTO"></label>
 	<panel collapsible="false" title="${c:l('ficheProdDerive.panel.title')}"
 	 id="winPanel" sclass="fichePanelv2" closable="true">
 		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">

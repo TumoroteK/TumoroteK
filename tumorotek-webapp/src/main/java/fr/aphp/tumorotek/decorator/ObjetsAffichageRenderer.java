@@ -41,14 +41,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.zkoss.zul.Grid;
-import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Row;
-import org.zkoss.zul.Rows;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.io.ResultatRow;
@@ -1379,143 +1376,143 @@ public class ObjetsAffichageRenderer
       lbox.setRowRenderer(renderer);
    }
 
-   private void loadGridRows(final Grid lbox){
-      if(lbox.getRows() != null){
-         lbox.getRows().setParent(null);
-      }
-      final Rows rows = new Rows();
-      rows.setParent(lbox);
-      final List<Resultat> resultats = new ArrayList<>();
-      resultats.addAll(affichage.getResultats());
-      // On trie les résultats par position
-      if(resultats.size() > 1){
-         for(int i = 1; i < resultats.size(); i++){
-            for(int j = i - 1; j >= 0; j--){
-               if(resultats.get(j + 1).getPosition() < resultats.get(j).getPosition()){
-                  final Resultat temp = resultats.get(j + 1);
-                  resultats.set(j + 1, resultats.get(j));
-                  resultats.set(j, temp);
-               }
-            }
-         }
-      }
-
-      // On itère la matrice affichable
-      final Iterator<List<Object>> itRow = matriceAffichable.iterator();
-      final Iterator<List<Object>> itRowObjet = matriceObjets.iterator();
-      while(itRow.hasNext()){
-         final Row row = new Row();
-         row.setParent(rows);
-         final List<Object> rowAffichable = itRow.next();
-         final List<Object> rowObjet = itRowObjet.next();
-         final Iterator<Object> itCell = rowAffichable.iterator();
-         final Iterator<Resultat> itRes = resultats.iterator();
-         while(itCell.hasNext()){
-            final Object o = itCell.next();
-            final Resultat res = itRes.next();
-            if(o != null){
-               // Si la chaine est vide, on met un -
-               String s = o.toString();
-               if(s.trim().equals("")){
-                  s = "-";
-               }
-               final Label label = new Label();
-               label.setValue(s);
-               label.setParent(row);
-               // On regarde dans le champ du resultat si c'est un entiteId
-               if(res != null && res.getChamp() != null){
-                  if(res.getChamp() != null){
-                     if(res.getChamp().getChampEntite() != null){
-                        final Entite entite = res.getChamp().getChampEntite().getEntite();
-                        final String nomChampEntite = res.getChamp().getChampEntite().getNom();
-                        if(entite.getNom().equals("Patient") && nomChampEntite.equals("Nip")){
-                           Patient recup = null;
-                           final Iterator<Object> itObj = rowObjet.iterator();
-                           while(itObj.hasNext()){
-                              final Object temp = itObj.next();
-                              if(temp instanceof Patient){
-                                 recup = (Patient) temp;
-                                 label.addForward(null, label.getParent().getParent().getParent().getParent().getParent()
-                                    .getParent().getParent().getParent().getParent(), "onClickPatientNip", recup);
-                                 label.setClass("formLink");
-                                 break;
-                              }
-                           }
-                        }else if(entite.getNom().equals("Maladie") && nomChampEntite.equals("Code")){
-                           Maladie recup = null;
-                           final Iterator<Object> itObj = rowObjet.iterator();
-                           while(itObj.hasNext()){
-                              final Object temp = itObj.next();
-                              if(temp instanceof Maladie){
-                                 recup = (Maladie) temp;
-                                 label.addForward(null, label.getParent().getParent().getParent().getParent().getParent()
-                                    .getParent().getParent().getParent().getParent(), "onClickMaladieCode", recup);
-                                 label.setClass("formLink");
-                                 break;
-                              }
-                           }
-                        }else if(entite.getNom().equals("Prelevement") && nomChampEntite.equals("Code")){
-                           Prelevement recup = null;
-                           final Iterator<Object> itObj = rowObjet.iterator();
-                           while(itObj.hasNext()){
-                              final Object temp = itObj.next();
-                              if(temp instanceof Prelevement){
-                                 recup = (Prelevement) temp;
-                                 label.addForward(null, label.getParent().getParent().getParent().getParent().getParent()
-                                    .getParent().getParent().getParent().getParent(), "onClickPrelevementCode", recup);
-                                 label.setClass("formLink");
-                                 break;
-                              }
-                           }
-                        }else if(entite.getNom().equals("Echantillon") && nomChampEntite.equals("Code")){
-                           Echantillon recup = null;
-                           final Iterator<Object> itObj = rowObjet.iterator();
-                           while(itObj.hasNext()){
-                              final Object temp = itObj.next();
-                              if(temp instanceof Echantillon){
-                                 recup = (Echantillon) temp;
-                                 label.addForward(null, label.getParent().getParent().getParent().getParent().getParent()
-                                    .getParent().getParent().getParent().getParent(), "onClickEchantillonCode", recup);
-                                 label.setClass("formLink");
-                                 break;
-                              }
-                           }
-                        }else if(entite.getNom().equals("ProdDerive") && nomChampEntite.equals("Code")){
-                           ProdDerive recup = null;
-                           final Iterator<Object> itObj = rowObjet.iterator();
-                           while(itObj.hasNext()){
-                              final Object temp = itObj.next();
-                              if(temp instanceof ProdDerive){
-                                 recup = (ProdDerive) temp;
-                                 label.addForward(null, label.getParent().getParent().getParent().getParent().getParent()
-                                    .getParent().getParent().getParent().getParent(), "onClickProdDeriveCode", recup);
-                                 label.setClass("formLink");
-                                 break;
-                              }
-                           }
-                        }else if(entite.getNom().equals("Cession") && nomChampEntite.equals("Numero")){
-                           Cession recup = null;
-                           final Iterator<Object> itObj = rowObjet.iterator();
-                           while(itObj.hasNext()){
-                              final Object temp = itObj.next();
-                              if(temp instanceof Cession){
-                                 recup = (Cession) temp;
-                                 label.addForward(null, label.getParent().getParent().getParent().getParent().getParent()
-                                    .getParent().getParent().getParent().getParent(), "onClickCessionNumero", recup);
-                                 label.setClass("formLink");
-                                 break;
-                              }
-                           }
-                        }
-                     }
-                  }
-               }
-            }else{
-               new Label("-").setParent(row);
-            }
-         }
-      }
-   }
+//   private void loadGridRows(final Grid lbox){
+//      if(lbox.getRows() != null){
+//         lbox.getRows().setParent(null);
+//      }
+//      final Rows rows = new Rows();
+//      rows.setParent(lbox);
+//      final List<Resultat> resultats = new ArrayList<>();
+//      resultats.addAll(affichage.getResultats());
+//      // On trie les résultats par position
+//      if(resultats.size() > 1){
+//         for(int i = 1; i < resultats.size(); i++){
+//            for(int j = i - 1; j >= 0; j--){
+//               if(resultats.get(j + 1).getPosition() < resultats.get(j).getPosition()){
+//                  final Resultat temp = resultats.get(j + 1);
+//                  resultats.set(j + 1, resultats.get(j));
+//                  resultats.set(j, temp);
+//               }
+//            }
+//         }
+//      }
+//
+//      // On itère la matrice affichable
+//      final Iterator<List<Object>> itRow = matriceAffichable.iterator();
+//      final Iterator<List<Object>> itRowObjet = matriceObjets.iterator();
+//      while(itRow.hasNext()){
+//         final Row row = new Row();
+//         row.setParent(rows);
+//         final List<Object> rowAffichable = itRow.next();
+//         final List<Object> rowObjet = itRowObjet.next();
+//         final Iterator<Object> itCell = rowAffichable.iterator();
+//         final Iterator<Resultat> itRes = resultats.iterator();
+//         while(itCell.hasNext()){
+//            final Object o = itCell.next();
+//            final Resultat res = itRes.next();
+//            if(o != null){
+//               // Si la chaine est vide, on met un -
+//               String s = o.toString();
+//               if(s.trim().equals("")){
+//                  s = "-";
+//               }
+//               final Label label = new Label();
+//               label.setValue(s);
+//               label.setParent(row);
+//               // On regarde dans le champ du resultat si c'est un entiteId
+//               if(res != null && res.getChamp() != null){
+//                  if(res.getChamp() != null){
+//                     if(res.getChamp().getChampEntite() != null){
+//                        final Entite entite = res.getChamp().getChampEntite().getEntite();
+//                        final String nomChampEntite = res.getChamp().getChampEntite().getNom();
+//                        if(entite.getNom().equals("Patient") && nomChampEntite.equals("Nip")){
+//                           Patient recup = null;
+//                           final Iterator<Object> itObj = rowObjet.iterator();
+//                           while(itObj.hasNext()){
+//                              final Object temp = itObj.next();
+//                              if(temp instanceof Patient){
+//                                 recup = (Patient) temp;
+//                                 label.addForward(null, label.getParent().getParent().getParent().getParent().getParent()
+//                                    .getParent().getParent().getParent().getParent(), "onClickPatientNip", recup);
+//                                 label.setClass("formLink");
+//                                 break;
+//                              }
+//                           }
+//                        }else if(entite.getNom().equals("Maladie") && nomChampEntite.equals("Code")){
+//                           Maladie recup = null;
+//                           final Iterator<Object> itObj = rowObjet.iterator();
+//                           while(itObj.hasNext()){
+//                              final Object temp = itObj.next();
+//                              if(temp instanceof Maladie){
+//                                 recup = (Maladie) temp;
+//                                 label.addForward(null, label.getParent().getParent().getParent().getParent().getParent()
+//                                    .getParent().getParent().getParent().getParent(), "onClickMaladieCode", recup);
+//                                 label.setClass("formLink");
+//                                 break;
+//                              }
+//                           }
+//                        }else if(entite.getNom().equals("Prelevement") && nomChampEntite.equals("Code")){
+//                           Prelevement recup = null;
+//                           final Iterator<Object> itObj = rowObjet.iterator();
+//                           while(itObj.hasNext()){
+//                              final Object temp = itObj.next();
+//                              if(temp instanceof Prelevement){
+//                                 recup = (Prelevement) temp;
+//                                 label.addForward(null, label.getParent().getParent().getParent().getParent().getParent()
+//                                    .getParent().getParent().getParent().getParent(), "onClickPrelevementCode", recup);
+//                                 label.setClass("formLink");
+//                                 break;
+//                              }
+//                           }
+//                        }else if(entite.getNom().equals("Echantillon") && nomChampEntite.equals("Code")){
+//                           Echantillon recup = null;
+//                           final Iterator<Object> itObj = rowObjet.iterator();
+//                           while(itObj.hasNext()){
+//                              final Object temp = itObj.next();
+//                              if(temp instanceof Echantillon){
+//                                 recup = (Echantillon) temp;
+//                                 label.addForward(null, label.getParent().getParent().getParent().getParent().getParent()
+//                                    .getParent().getParent().getParent().getParent(), "onClickEchantillonCode", recup);
+//                                 label.setClass("formLink");
+//                                 break;
+//                              }
+//                           }
+//                        }else if(entite.getNom().equals("ProdDerive") && nomChampEntite.equals("Code")){
+//                           ProdDerive recup = null;
+//                           final Iterator<Object> itObj = rowObjet.iterator();
+//                           while(itObj.hasNext()){
+//                              final Object temp = itObj.next();
+//                              if(temp instanceof ProdDerive){
+//                                 recup = (ProdDerive) temp;
+//                                 label.addForward(null, label.getParent().getParent().getParent().getParent().getParent()
+//                                    .getParent().getParent().getParent().getParent(), "onClickProdDeriveCode", recup);
+//                                 label.setClass("formLink");
+//                                 break;
+//                              }
+//                           }
+//                        }else if(entite.getNom().equals("Cession") && nomChampEntite.equals("Numero")){
+//                           Cession recup = null;
+//                           final Iterator<Object> itObj = rowObjet.iterator();
+//                           while(itObj.hasNext()){
+//                              final Object temp = itObj.next();
+//                              if(temp instanceof Cession){
+//                                 recup = (Cession) temp;
+//                                 label.addForward(null, label.getParent().getParent().getParent().getParent().getParent()
+//                                    .getParent().getParent().getParent().getParent(), "onClickCessionNumero", recup);
+//                                 label.setClass("formLink");
+//                                 break;
+//                              }
+//                           }
+//                        }
+//                     }
+//                  }
+//               }
+//            }else{
+//               new Label("-").setParent(row);
+//            }
+//         }
+//      }
+//   }
 
    public String getChampAnnotationValeur(final TKAnnotableObject obj, final ChampAnnotation ca){
       final List<AnnotationValeur> avs = ManagerLocator.getAnnotationValeurManager().findByChampAndObjetManager(ca, obj);

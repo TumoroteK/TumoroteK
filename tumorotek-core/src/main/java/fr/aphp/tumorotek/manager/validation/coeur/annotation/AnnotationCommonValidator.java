@@ -72,36 +72,6 @@ public class AnnotationCommonValidator implements Validator
 
       final AnnotationCommon anno = (AnnotationCommon) obj;
 
-      //		// valide le contenu
-      //		DataType dtype = anno.getChampAnnotation().getDataType();
-      //		
-      //		if ("alphanum".equals(dtype.getType()) 
-      //				|| "num".equals(dtype.getType())
-      //				|| "fichier".equals(dtype.getType()) 
-      //				|| "hyperlien".equals(dtype.getType())) {
-      //			if (anno.getAlphanum() == null) {
-      //				errs.rejectValue("alphanum", "anno.alphanum.empty");
-      //			}
-      //		} else if ("boolean".equals(dtype.getType())) {
-      //			if (anno.getBool() == null) {
-      //				errs.rejectValue("bool", "anno.bool.empty");
-      //			}
-      //		} else if ("date".equals(dtype.getType())) {
-      //			if (anno.getDate() == null) {
-      //				errs.rejectValue("date", "anno.date.empty");
-      //			}
-      //		} else if ("texte".equals(dtype.getType())) {
-      //			if (anno.getTexte() == null) {
-      //				errs.rejectValue("texte", "anno.texte.empty");
-      //			}
-      //		} else if (dtype.getType().matches("thesaurusM?")) {
-      //			if (anno.getItem() == null) {
-      //				errs.rejectValue("item", "anno.item.empty");
-      //			}
-      //		} else {
-      //			errs.reject("anno.dataType.inconnu");
-      //		}
-
       //alphanum valide
       if(anno.getAlphanum() != null){
          ValidationUtils.rejectIfEmptyOrWhitespace(errs, "alphanum", "anno.alphanum.empty");

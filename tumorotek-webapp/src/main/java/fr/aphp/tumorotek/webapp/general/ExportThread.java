@@ -489,7 +489,8 @@ public class ExportThread extends Thread
             ((BufferedWriter) wb).flush();
             downloadExportFileCsv(bouf, sb.toString(), desktop);
             ((BufferedWriter) wb).close();
-            bouf.close();
+            if(null != bouf)
+               bouf.close();
          }
 
          Executions.deactivate(desktop);

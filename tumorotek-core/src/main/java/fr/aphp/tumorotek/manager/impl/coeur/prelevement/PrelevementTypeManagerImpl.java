@@ -48,7 +48,6 @@ import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.prelevement.PrelevementTypeValidator;
-import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.coeur.prelevement.PrelevementType;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 
@@ -87,19 +86,18 @@ public class PrelevementTypeManagerImpl implements PrelevementTypeManager
    }
 
    @Override
-   public void createObjectManager(final Object obj){
+   public void createObjectManager(final PrelevementType obj){
 
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
-      if(((TKThesaurusObject) obj).getPlateforme() == null){
+      if(obj.getPlateforme() == null){
          throw new RequiredObjectIsNullException("PrelevementType", "creation", "Plateforme");
-      }else{
-         ((TKThesaurusObject) obj).setPlateforme(plateformeDao.mergeObject(((TKThesaurusObject) obj).getPlateforme()));
       }
+      obj.setPlateforme(plateformeDao.mergeObject(obj.getPlateforme()));
 
       BeanValidator.validateObject(obj, new Validator[] {prelevementTypeValidator});
       if(!findDoublonManager(obj)){
-         prelevementTypeDao.createObject((PrelevementType) obj);
+         prelevementTypeDao.createObject(obj);
          log.info("Enregistrement objet PrelevementType " + obj.toString());
       }else{
          log.warn("Doublon lors creation objet PrelevementType " + obj.toString());
@@ -108,22 +106,16 @@ public class PrelevementTypeManagerImpl implements PrelevementTypeManager
    }
 
    @Override
-   public void updateObjectManager(final Object obj){
+   public void updateObjectManager(final PrelevementType obj){
       BeanValidator.validateObject(obj, new Validator[] {prelevementTypeValidator});
       if(!findDoublonManager(obj)){
-         prelevementTypeDao.updateObject((PrelevementType) obj);
+         prelevementTypeDao.updateObject(obj);
          log.info("Modification objet PrelevementType " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet PrelevementType " + obj.toString());
          throw new DoublonFoundException("PrelevementType", "modification");
       }
    }
-
-   //	@Override
-   //	public List<PrelevementType> findAllObjectsManager() {
-   //		log.info("Recherche totalite des PrelevementType");
-   //		return prelevementTypeDao.findByOrder();
-   //	}
 
    @Override
    public List<PrelevementType> findByTypeLikeManager(String type, final boolean exactMatch){
@@ -135,38 +127,30 @@ public class PrelevementTypeManagerImpl implements PrelevementTypeManager
    }
 
    @Override
-   public void removeObjectManager(final Object obj){
+   public void removeObjectManager(final PrelevementType obj){
       if(obj != null){
-         //if (!isUsedObjectManager(obj)) {
-         prelevementTypeDao.removeObject(((PrelevementType) obj).getPrelevementTypeId());
+         prelevementTypeDao.removeObject(obj.getPrelevementTypeId());
          log.info("Suppression objet PrelevementType " + obj.toString());
-         //			} else {
-         //				log.warn("Suppression objet PrelevementType " + obj.toString()
-         //						+ " impossible car est reference (par Prelevement)");
-         //				throw new ObjectUsedException();
-         //			}
       }else{
          log.warn("Suppression d'un PrelevementType null");
       }
    }
 
    @Override
-   public boolean findDoublonManager(final Object o){
+   public boolean findDoublonManager(final PrelevementType o){
       if(o != null){
-         final PrelevementType type = (PrelevementType) o;
+         final PrelevementType type = o;
          if(type.getPrelevementTypeId() == null){
             return prelevementTypeDao.findAll().contains(type);
-         }else{
-            return prelevementTypeDao.findByExcludedId(type.getPrelevementTypeId()).contains(type);
          }
-      }else{
-         return false;
+         return prelevementTypeDao.findByExcludedId(type.getPrelevementTypeId()).contains(type);
       }
+      return false;
    }
 
    @Override
-   public boolean isUsedObjectManager(final Object o){
-      final PrelevementType prelevementType = prelevementTypeDao.mergeObject((PrelevementType) o);
+   public boolean isUsedObjectManager(final PrelevementType o){
+      final PrelevementType prelevementType = prelevementTypeDao.mergeObject(o);
       return prelevementType.getPrelevements().size() > 0;
    }
 
@@ -177,12 +161,12 @@ public class PrelevementTypeManagerImpl implements PrelevementTypeManager
    }
 
    @Override
-   public List<? extends TKThesaurusObject> findByOrderManager(final Plateforme pf){
+   public List<PrelevementType> findByOrderManager(final Plateforme pf){
       return prelevementTypeDao.findByOrder(pf);
    }
 
    @Override
-   public TKThesaurusObject findByIdManager(final Integer id){
+   public PrelevementType findByIdManager(final Integer id){
       return prelevementTypeDao.findById(id);
    }
 

@@ -37,7 +37,6 @@ package fr.aphp.tumorotek.webapp.general;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.event.ClientInfoEvent;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Tabpanel;
 
@@ -109,42 +108,41 @@ public class MainTabbox extends Tabbox
       final Tabpanel item = getSelectedPanel();
       this.getDesktop().setBookmark(item.getId());
 
-      // sélection du panel PATIENT
-      if(item != null && item.getId().equals("patientPanel")){
-         getMainWindow().createMacroComponent("/zuls/patient/Patient.zul", "winPatient", item);
-      }else if(item != null && item.getId().equals("prelevementPanel")){
-         // sélection du panel PRELEVEMENT
-         getMainWindow().createMacroComponent("/zuls/prelevement/Prelevement.zul", "winPrelevement", item);
-      }else if(item != null && item.getId().equals("echantillonPanel")){
-         // sélection du panel ECHANTILLON
-         getMainWindow().createMacroComponent("/zuls/echantillon/Echantillon.zul", "winEchantillon", item);
-      }else if(item != null && item.getId().equals("derivePanel")){
-         // sélection du panel PRODDERIVE
-         getMainWindow().createMacroComponent("/zuls/prodderive/ProdDerive.zul", "winProdDerive", item);
-      }else if(item != null && item.getId().equals("cessionPanel")){
-         // sélection du panel CESSION
-         getMainWindow().createMacroComponent("/zuls/cession/Cession.zul", "winCession", item);
-      }else if(item != null && item.getId().equals("stockagePanel")){
-         // sélection du panel STOCKAGE
-         getMainWindow().createMacroComponent("/zuls/stockage/Stockage.zul", "winStockages", item);
-      }else if(item != null && item.getId().equals("recherchePanel")){
-         // sélection du panel RECHERCHE
-         /*getMainWindow().createMacroComponent(
-         	"/zuls/io/Export.zul",
-         	"winExport",
-         	item);*/
-         getMainWindow().createMacroComponent("/zuls/io/RechercheComplexe.zul", "winRechercheComplexe", item);
-      }else if(item != null && item.getId().equals("administrationPanel")){
-         // sélection du panel ADMINISTRATION
-         getMainWindow().createMacroComponent("/zuls/administration/Administration.zul", "winAdministration", item);
-      }else if(item != null && item.getId().equals("accueilPanel")){
-         // sélection du panel ACCUEIL
-         getMainWindow().createMacroComponent("/zuls/main/Accueil.zul", "winAccueil", item);
-      }else if(item != null && item.getId().equals("statPanel")){
-         // sélection du panel ACCUEIL
-         getMainWindow().createMacroComponent(
-            //"/zuls/stats/stats.zul",
-            "/zuls/stats/charts.zul", "winStats", item);
+      switch(item.getId()){
+         case "patientPanel":// sélection du panel PATIENT
+            getMainWindow().createMacroComponent("/zuls/patient/Patient.zul", "winPatient", item);
+            break;
+         case "prelevementPanel":// sélection du panel PRELEVEMENT
+            getMainWindow().createMacroComponent("/zuls/prelevement/Prelevement.zul", "winPrelevement", item);
+            break;
+         case "echantillonPanel":// sélection du panel ECHANTILLON
+            getMainWindow().createMacroComponent("/zuls/echantillon/Echantillon.zul", "winEchantillon", item);
+            break;
+         case "derivePanel":// sélection du panel PRODDERIVE
+            getMainWindow().createMacroComponent("/zuls/prodderive/ProdDerive.zul", "winProdDerive", item);
+            break;
+         case "cessionPanel":// sélection du panel CESSION
+            getMainWindow().createMacroComponent("/zuls/cession/Cession.zul", "winCession", item);
+            break;
+         case "stockagePanel":// sélection du panel STOCKAGE
+            getMainWindow().createMacroComponent("/zuls/stockage/Stockage.zul", "winStockages", item);
+            break;
+         case "recherchePanel":// sélection du panel RECHERCHE
+            getMainWindow().createMacroComponent("/zuls/io/RechercheComplexe.zul", "winRechercheComplexe", item);
+            break;
+         case "administrationPanel":// sélection du panel ADMINISTRATION
+            getMainWindow().createMacroComponent("/zuls/administration/Administration.zul", "winAdministration", item);
+            break;
+         case "accueilPanel":// sélection du panel ACCUEIL
+            getMainWindow().createMacroComponent("/zuls/main/Accueil.zul", "winAccueil", item);
+            break;
+         case "statPanel":// sélection du panel ACCUEIL
+            getMainWindow().createMacroComponent(
+               //"/zuls/stats/stats.zul",
+               "/zuls/stats/charts.zul", "winStats", item);
+            break;
+         default:
+            break;
       }
    }
 
@@ -152,7 +150,7 @@ public class MainTabbox extends Tabbox
       return (MainWindow) this.getPage().getFellow("mainWin").getAttributeOrFellow("mainWin$composer", true);
    }
 
-   public void onClientInfo(final ClientInfoEvent event){
+   public void onClientInfo(){
       final Tabpanel item = (Tabpanel) this.getFellow("prelevementPanel");
       item.setHeight(getMainWindow().getPanelHeight() + "px");
    }

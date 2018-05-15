@@ -65,6 +65,7 @@ import fr.aphp.tumorotek.action.modification.multiple.ModificationMultipleCodeAs
 import fr.aphp.tumorotek.action.modification.multiple.ModificationMultipleCombobox;
 import fr.aphp.tumorotek.action.modification.multiple.ModificationMultipleDatebox;
 import fr.aphp.tumorotek.action.modification.multiple.ModificationMultipleDoublebox;
+import fr.aphp.tumorotek.action.modification.multiple.ModificationMultipleDuree;
 import fr.aphp.tumorotek.action.modification.multiple.ModificationMultipleFile;
 import fr.aphp.tumorotek.action.modification.multiple.ModificationMultipleListbox;
 import fr.aphp.tumorotek.action.modification.multiple.ModificationMultipleModal;
@@ -207,25 +208,26 @@ public abstract class AbstractFicheController extends AbstractController
     * @param page dans laquelle inclure la modale
     * @param pathToPage Chemin vers la page qui demande une modif.
     * @param methodToCall Méthode à appeler
+    * @param typeModal type de la modale
     * @param objs Liste des objets à modifier
     * @param label Code pour label du champ dans .properties 
     * internationalisation.
-    * @param entiteToEdit Nom de l'entité à modifier. 
     * @param champToEdit Champ de l'entité à modifier.
     * @param allValuesThesaurus Toutes les valeurs possibles que
     * peut prendre le champ à modifier.
-    * @param champNameThesaurus Nom du champ pour l'affichage des
+    * @param champThesaurus Nom du champ pour l'affichage des
     * valeurs du thésaurus.
-    * @param ent nom de l'entite a afficher dans l'intitulé
-    * @param Constraint à appliquer
-    * @param Boolean isCombined true si champAnnotation combine
-    * @param Boolean true si formatage upperCase onBlur pour textbox
-    * @param isObligatoire true si chp annotation obligatoire
+    * @param entiteNom nom de l'entite a afficher dans l'intitulé
+    * @param constr Constraint à appliquer
+    * @param isCombined true si champAnnotation combine
+    * @param upperCaseOnBlur true si formatage upperCase onBlur pour textbox
+    * @param isOblig true si chp annotation obligatoire
     */
    public void openModificationMultipleWindow(final Page page, final String pathToPage, final String methodToCall,
-      final String typeModal, final List<? extends Object> objs, final String label, final String champToEdit,
-      final List<Object> allValuesThesaurus, final String champThesaurus, final String entiteNom, final Constraint constr,
-      final Boolean isCombined, final Boolean upperCaseOnBlur, final Boolean isOblig){
+      final String typeModal /*TODO Pourquoi ne pas utiliser un Enum ou les classes ? */, final List<? extends Object> objs,
+      final String label, final String champToEdit, final List<Object> allValuesThesaurus, final String champThesaurus,
+      final String entiteNom, final Constraint constr, final Boolean isCombined, final Boolean upperCaseOnBlur,
+      final Boolean isOblig){
       if(!isBlockModal()){
 
          setBlockModal(true);
@@ -243,83 +245,88 @@ public abstract class AbstractFicheController extends AbstractController
          win.setHeight("230px");
          win.setClosable(true);
 
-         if(typeModal.equals("Textbox")){
-            //final HtmlMacroComponent ua =
-            populateModificationMultipleTextbox(win, page, pathToPage, methodToCall, objs, label, champToEdit, entiteNom, constr,
-               isCombined, false, upperCaseOnBlur);
+         HtmlMacroComponent ua;
+         switch(typeModal){
+            case "Textbox":
+               populateModificationMultipleTextbox(win, page, pathToPage, methodToCall, objs, label, champToEdit, entiteNom,
+                  constr, isCombined, false, upperCaseOnBlur);
+               break;
+            case "Listbox":
+               populateModificationMultipleListbox(win, page, pathToPage, methodToCall, objs, label, champToEdit,
+                  allValuesThesaurus, champThesaurus, entiteNom, constr, isCombined, isOblig);
+               break;
+            case "Combobox":
+               populateModificationMultipleCombobox(win, page, pathToPage, methodToCall, objs, label, champToEdit,
+                  allValuesThesaurus, champThesaurus, entiteNom, constr, isCombined, isOblig);
+               break;
+            case "Datebox":
+               ua = populateModificationMultipleDatebox(win, page, pathToPage, methodToCall, objs, label, champToEdit, entiteNom,
+                  constr, isCombined);
 
-         }else if(typeModal.equals("Listbox")){
-            //final HtmlMacroComponent ua =
-            populateModificationMultipleListbox(win, page, pathToPage, methodToCall, objs, label, champToEdit, allValuesThesaurus,
-               champThesaurus, entiteNom, constr, isCombined, isOblig);
+               ((ModificationMultipleDatebox) ua.getFellow("winModificationMultipleDatebox")
+                  .getAttributeOrFellow("winModificationMultipleDatebox$composer", true)).setCalendar(false);
+               break;
+            case "Calendarbox":
+               ua = populateModificationMultipleDatebox(win, page, pathToPage, methodToCall, objs, label, champToEdit, entiteNom,
+                  constr, isCombined);
 
-         }else if(typeModal.equals("Combobox")){
-            //final HtmlMacroComponent ua =
-            populateModificationMultipleCombobox(win, page, pathToPage, methodToCall, objs, label, champToEdit,
-               allValuesThesaurus, champThesaurus, entiteNom, constr, isCombined, isOblig);
+               ((ModificationMultipleDatebox) ua.getFellow("winModificationMultipleDatebox")
+                  .getAttributeOrFellow("winModificationMultipleDatebox$composer", true)).setCalendar(true);
+               break;
+            case "Quantification":
+               populateModificationMultipleQuantification(win, page, pathToPage, methodToCall, objs, label, champToEdit,
+                  allValuesThesaurus, champThesaurus);
+               break;
+            case "Checkbox":
+               populateModificationMultipleCheckbox(win, page, pathToPage, methodToCall, objs, label, champToEdit, entiteNom,
+                  constr);
+               break;
+            case "Doublebox":
+               populateModificationMultipleDoublebox(win, page, pathToPage, methodToCall, objs, label, champToEdit, entiteNom,
+                  constr, isCombined);
+               break;
+            case "Intbox":
+               ua = populateModificationMultipleDoublebox(win, page, pathToPage, methodToCall, objs, label, champToEdit,
+                  entiteNom, constr, isCombined);
 
-         }else if(typeModal.equals("Datebox")){
-            final HtmlMacroComponent ua = populateModificationMultipleDatebox(win, page, pathToPage, methodToCall, objs, label,
-               champToEdit, entiteNom, constr, isCombined);
+               ((ModificationMultipleDoublebox) ua.getFellow("winModificationMultipleDoublebox")
+                  .getAttributeOrFellow("winModificationMultipleDoublebox$composer", true)).setInteger(true);
+               break;
+            case "Floatbox":
+               ua = populateModificationMultipleDoublebox(win, page, pathToPage, methodToCall, objs, label, champToEdit,
+                  entiteNom, constr, isCombined);
 
-            ((ModificationMultipleDatebox) ua.getFellow("winModificationMultipleDatebox")
-               .getAttributeOrFellow("winModificationMultipleDatebox$composer", true)).setCalendar(false);
-
-         }else if(typeModal.equals("Calendarbox")){
-            final HtmlMacroComponent ua = populateModificationMultipleDatebox(win, page, pathToPage, methodToCall, objs, label,
-               champToEdit, entiteNom, constr, isCombined);
-
-            ((ModificationMultipleDatebox) ua.getFellow("winModificationMultipleDatebox")
-               .getAttributeOrFellow("winModificationMultipleDatebox$composer", true)).setCalendar(true);
-
-         }else if(typeModal.equals("Quantification")){
-            //final HtmlMacroComponent ua =
-            populateModificationMultipleQuantification(win, page, pathToPage, methodToCall, objs, label, champToEdit,
-               allValuesThesaurus, champThesaurus, entiteNom, null);
-
-         }else if(typeModal.equals("Checkbox")){
-            //final HtmlMacroComponent ua = 
-            populateModificationMultipleCheckbox(win, page, pathToPage, methodToCall, objs, label, champToEdit, entiteNom,
-               constr);
-
-         }else if(typeModal.equals("Doublebox")){
-            //final HtmlMacroComponent ua =
-            populateModificationMultipleDoublebox(win, page, pathToPage, methodToCall, objs, label, champToEdit, entiteNom,
-               constr, isCombined);
-         }else if(typeModal.equals("Intbox")){
-            final HtmlMacroComponent ua = populateModificationMultipleDoublebox(win, page, pathToPage, methodToCall, objs, label,
-               champToEdit, entiteNom, constr, isCombined);
-
-            ((ModificationMultipleDoublebox) ua.getFellow("winModificationMultipleDoublebox")
-               .getAttributeOrFellow("winModificationMultipleDoublebox$composer", true)).setInteger(true);
-         }else if(typeModal.equals("Floatbox")){
-            final HtmlMacroComponent ua = populateModificationMultipleDoublebox(win, page, pathToPage, methodToCall, objs, label,
-               champToEdit, entiteNom, constr, isCombined);
-
-            ((ModificationMultipleDoublebox) ua.getFellow("winModificationMultipleDoublebox")
-               .getAttributeOrFellow("winModificationMultipleDoublebox$composer", true)).setFloat(true);
-         }else if(typeModal.equals("BigTextbox")){
-            //final HtmlMacroComponent ua =
-            populateModificationMultipleTextbox(win, page, pathToPage, methodToCall, objs, label, champToEdit, entiteNom, constr,
-               isCombined, true, upperCaseOnBlur);
-         }else if(typeModal.equals("MultiListbox")){
-            //final HtmlMacroComponent ua =
-            populateModificationMultipleMultiListbox(win, page, pathToPage, methodToCall, objs, label, champToEdit,
-               allValuesThesaurus, champThesaurus, entiteNom, constr, isCombined, isOblig);
-         }else if(typeModal.equals("Modal")){
-            //final HtmlMacroComponent ua =
-            populateModificationMultipleModal(win, page, pathToPage, methodToCall, objs, label, champToEdit, entiteNom, constr,
-               isCombined);
-         }else if(typeModal.equals("CodesBox")){
-            populateModificationMultipleCodeAssigne(win, page, pathToPage, methodToCall, objs, label, champToEdit);
-
-         }else if(typeModal.equals("Filebox")){
-            populateModificationMultipleFile(win, page, pathToPage, methodToCall, objs, label, champToEdit, entiteNom);
-
-         }else if(typeModal.equals("Conformitebox")){
-            populateModificationMultipleNonConformites(win, page, pathToPage, methodToCall, objs, label, champToEdit,
-               allValuesThesaurus, champThesaurus, entiteNom);
-
+               ((ModificationMultipleDoublebox) ua.getFellow("winModificationMultipleDoublebox")
+                  .getAttributeOrFellow("winModificationMultipleDoublebox$composer", true)).setFloat(true);
+               break;
+            case "BigTextbox":
+               populateModificationMultipleTextbox(win, page, pathToPage, methodToCall, objs, label, champToEdit, entiteNom,
+                  constr, isCombined, true, upperCaseOnBlur);
+               break;
+            case "MultiListbox":
+               populateModificationMultipleMultiListbox(win, page, pathToPage, methodToCall, objs, label, champToEdit,
+                  allValuesThesaurus, champThesaurus, entiteNom, constr, isCombined, isOblig);
+               break;
+            case "Modal":
+               populateModificationMultipleModal(win, page, pathToPage, methodToCall, objs, label, champToEdit, entiteNom, constr,
+                  isCombined);
+               break;
+            case "CodesBox":
+               populateModificationMultipleCodeAssigne(win, page, pathToPage, methodToCall, objs, label, champToEdit);
+               break;
+            case "Filebox":
+               populateModificationMultipleFile(win, page, pathToPage, methodToCall, objs, label, champToEdit, entiteNom);
+               break;
+            case "Conformitebox":
+               populateModificationMultipleNonConformites(win, page, pathToPage, methodToCall, objs, label, champToEdit,
+                  allValuesThesaurus, champThesaurus, entiteNom);
+               break;
+            case "DureeBox":
+               populateModificationMultipleDuree(win, page, pathToPage, methodToCall, objs, label, champToEdit, entiteNom, constr,
+                  isCombined, isOblig);
+               break;
+            default:
+               break;
          }
 
          // ua.setVisible(false);
@@ -537,8 +544,7 @@ public abstract class AbstractFicheController extends AbstractController
     */
    private static HtmlMacroComponent populateModificationMultipleQuantification(final Window win, final Page page,
       final String pathToPage, final String methodToCall, final List<? extends Object> objs, final String label,
-      final String champToEdit, final List<Object> allValuesThesaurus, final String champThesaurus, final String entiteNom,
-      final Constraint constr){
+      final String champToEdit, final List<Object> allValuesThesaurus, final String champThesaurus){
       // HtmlMacroComponent contenu dans la fenêtre : il correspond
       // au composant de la modif multiple.
       HtmlMacroComponent ua;
@@ -550,7 +556,7 @@ public abstract class AbstractFicheController extends AbstractController
 
       ((ModificationMultipleQuantification) ua.getFellow("winModificationMultipleQuantification")
          .getAttributeOrFellow("winModificationMultipleQuantification$composer", true)).init(pathToPage, methodToCall, objs,
-            label, champToEdit, allValuesThesaurus, champThesaurus, entiteNom, constr, null);
+            label, champToEdit, allValuesThesaurus, champThesaurus);
 
       return ua;
    }
@@ -946,6 +952,43 @@ public abstract class AbstractFicheController extends AbstractController
 
       ((FicheChampThesaurus) ua.getFellow("fwinChampThesaurus").getAttributeOrFellow("fwinChampThesaurus$composer", true))
          .init(path, value, cons, cons2, titlePage, createMode);
+
+      return ua;
+   }
+
+   /**
+    * Méthode appelée pour créer le composant contenant la modification
+    * multiple d'un Textbox.
+    * @param win Window contenant le composant.
+    * @param page Page contenant la définition du composant.
+    * @param pathToPage Chemin vers la page qui demande une modif.
+    * @param methodToCall Méthode à appeler
+    * @param objs Liste des objets à modifier
+    * @param label Code pour label du champ dans .properties 
+    * internationalisation.
+    * @param entiteToEdit Nom de l'entité à modifier. 
+    * @param champToEdit Champ de l'entité à modifier.
+    * @param ent nom de l'entite a afficher dans l'intitulé
+    * @param Constraint à appliquer
+    * @param Boolean true si champAnnotation combine
+    * @param Boolean true si champAnnotation Texte
+    * @param Boolean true si formatage upperCase onBlur
+    */
+   private static HtmlMacroComponent populateModificationMultipleDuree(final Window win, final Page page, final String pathToPage,
+      final String methodToCall, final List<? extends Object> objs, final String label, final String champToEdit,
+      final String entiteNom, final Constraint constr, final Boolean isCombined, final Boolean isOblig){
+      // HtmlMacroComponent contenu dans la fenêtre : il correspond
+      // au composant de la modif multiple.
+      HtmlMacroComponent ua;
+      ua = (HtmlMacroComponent) page.getComponentDefinition("modificationMultipleDuree", false).newInstance(page, null);
+      ua.setParent(win);
+      ua.setId("openModificationMultipleDuree");
+      ua.applyProperties();
+      ua.afterCompose();
+
+      ((ModificationMultipleDuree) ua.getFellow("winModificationMultipleDuree")
+         .getAttributeOrFellow("winModificationMultipleDuree$composer", true)).init(pathToPage, methodToCall, objs, label,
+            champToEdit, entiteNom, constr, isCombined, isOblig);
 
       return ua;
    }

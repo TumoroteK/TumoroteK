@@ -107,7 +107,6 @@ public class FichePrelevementEditSero extends FichePrelevementEdit
       delegate = (PrelevementSero) getObject().getDelegate();
       if(delegate == null){
          delegate = new PrelevementSero();
-         delegate.setContexte(SessionUtils.getSelectedBanques(sessionScope).get(0).getContexte());
       }
    }
 
@@ -116,7 +115,7 @@ public class FichePrelevementEditSero extends FichePrelevementEdit
    public void initLists(){
       super.initLists();
       protocoles.addAll(
-         (List<Protocole>) ManagerLocator.getProtocoleManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
+         ManagerLocator.getProtocoleManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
    }
 
    private Set<Protocole> findSelectedProtocoles(){
@@ -167,8 +166,8 @@ public class FichePrelevementEditSero extends FichePrelevementEdit
       delegate.getProtocoles().addAll(findSelectedProtocoles());
       if(delegate.isEmpty()){
          getObject().setDelegate(null);
-      }else if(delegate.getPrelevement() == null){ //create
-         delegate.setPrelevement(getObject());
+      }else if(delegate.getDelegator() == null){ //create
+         delegate.setDelegator(getObject());
          getObject().setDelegate(delegate);
       }
    }

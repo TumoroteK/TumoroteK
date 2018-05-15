@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.coeur.echantillon.EchanQualite;
  * @version 2.0
  *
  */
-public interface EchanQualiteDao extends GenericDaoJpa<EchanQualite, Integer>, TKThesaurusDao
+public interface EchanQualiteDao extends GenericDaoJpa<EchanQualite, Integer>, TKThesaurusDao<EchanQualite>
 {
 
    /**

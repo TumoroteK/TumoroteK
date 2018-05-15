@@ -1886,3 +1886,11 @@ border-bottom-color: ${errorColor};
 .z-notification-error .z-notification-pointer-d {
 border-top-color: ${errorColor};
 }
+
+div.square{
+float: left;
+width: 20px;
+height: 20px;
+border: 1px solid rgba(0, 0, 0, .2);
+margin-right: 10px;
+}

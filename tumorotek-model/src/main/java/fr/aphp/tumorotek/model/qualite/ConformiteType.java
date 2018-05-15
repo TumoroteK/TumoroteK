@@ -163,9 +163,8 @@ public class ConformiteType implements java.io.Serializable
    public String toString(){
       if(this.conformiteType != null){
          return "{" + this.conformiteType + "}";
-      }else{
-         return "{Empty ConformiteType}";
       }
+      return "{Empty ConformiteType}";
    }
 
 }

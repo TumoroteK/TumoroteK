@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.code.CimMaster;
  * @version 2.0
  *
  */
-public interface CimMasterManager extends CodeCommonManager
+public interface CimMasterManager extends CodeCommonManager<CimMaster>
 {
 
    /**

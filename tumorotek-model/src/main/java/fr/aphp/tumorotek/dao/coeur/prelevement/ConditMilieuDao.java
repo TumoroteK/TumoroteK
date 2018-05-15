@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.ConditMilieu;
  * @version 2.0
  *
  */
-public interface ConditMilieuDao extends GenericDaoJpa<ConditMilieu, Integer>, TKThesaurusDao
+public interface ConditMilieuDao extends GenericDaoJpa<ConditMilieu, Integer>, TKThesaurusDao<ConditMilieu>
 {
 
    /**

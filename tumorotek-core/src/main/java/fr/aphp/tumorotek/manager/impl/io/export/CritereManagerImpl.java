@@ -146,30 +146,29 @@ public class CritereManagerImpl implements CritereManager
       if(critere == null){
          log.warn("Objet obligatoire Critere manquant lors " + "de la copie d'un objet Critere");
          throw new RequiredObjectIsNullException("Critere", "copie", "Critere");
-      }else{
-         if(critere.getChamp() != null){
-            Champ champ = null;
-            //On copie le champ
-            champ = champManager.copyChampManager(critere.getChamp());
-            /*if (critere.getChamp().getChampAnnotation() != null) {
-            	champ = new Champ(critere.getChamp()
-            			.getChampAnnotation());
-            	champManager.createObjectManager(champ, champ
-            		.getChampParent());
-            } else {
-            	champ = new Champ(critere.getChamp()
-            			.getChampEntite());
-            	champManager.createObjectManager(champ, champ
-            		.getChampParent());
-            }*/
-            temp = new Critere(champ, critere.getOperateur(), critere.getValeur());
-         }else if(critere.getCombinaison() != null){
-            final Combinaison combinaison = combinaisonManager.copyCombinaisonManager(critere.getCombinaison());
-            temp = new Critere(combinaison, critere.getOperateur(), critere.getValeur());
-         }
-         BeanValidator.validateObject(critere, new Validator[] {critereValidator});
-         critereDao.createObject(temp);
       }
+      if(critere.getChamp() != null){
+         Champ champ = null;
+         //On copie le champ
+         champ = champManager.copyChampManager(critere.getChamp());
+         /*if (critere.getChamp().getChampAnnotation() != null) {
+         	champ = new Champ(critere.getChamp()
+         			.getChampAnnotation());
+         	champManager.createObjectManager(champ, champ
+         		.getChampParent());
+         } else {
+         	champ = new Champ(critere.getChamp()
+         			.getChampEntite());
+         	champManager.createObjectManager(champ, champ
+         		.getChampParent());
+         }*/
+         temp = new Critere(champ, critere.getOperateur(), critere.getValeur());
+      }else if(critere.getCombinaison() != null){
+         final Combinaison combinaison = combinaisonManager.copyCombinaisonManager(critere.getCombinaison());
+         temp = new Critere(combinaison, critere.getOperateur(), critere.getValeur());
+      }
+      BeanValidator.validateObject(critere, new Validator[] {critereValidator});
+      critereDao.createObject(temp);
       return temp;
    }
 

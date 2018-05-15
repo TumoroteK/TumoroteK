@@ -62,57 +62,53 @@ public class CimMasterManagerTest extends AbstractManagerTest4
    @Autowired
    private CimMasterManager cimMasterManager;
 
-   
    @Test
    public void testFindAllObjectsManager(){
-      final List<CimMaster> cims = (List<CimMaster>) cimMasterManager.findAllObjectsManager();
+      final List<CimMaster> cims = cimMasterManager.findAllObjectsManager();
       assertTrue(cims.size() == 19178);
    }
 
-   
    @Test
    public void testFindByCodeLikeManager(){
       //teste une recherche exactMatch
-      List<CimMaster> cims = (List<CimMaster>) cimMasterManager.findByCodeLikeManager("B00", true);
+      List<CimMaster> cims = cimMasterManager.findByCodeLikeManager("B00", true);
       assertTrue(cims.size() == 1);
       //teste une recherche non exactMatch
-      cims = (List<CimMaster>) cimMasterManager.findByCodeLikeManager("B00", false);
+      cims = cimMasterManager.findByCodeLikeManager("B00", false);
       assertTrue(cims.size() == 11);
       //teste une recherche infructueuse
-      cims = (List<CimMaster>) cimMasterManager.findByCodeLikeManager("LUX", true);
+      cims = cimMasterManager.findByCodeLikeManager("LUX", true);
       assertTrue(cims.size() == 0);
       //null recherche
-      cims = (List<CimMaster>) cimMasterManager.findByCodeLikeManager(null, false);
+      cims = cimMasterManager.findByCodeLikeManager(null, false);
       assertTrue(cims.size() == 0);
    }
 
-   
    @Test
    public void testFindByLibelleLikeManager(){
       //teste une recherche exactMatch
-      List<CimMaster> cims = (List<CimMaster>) cimMasterManager.findByLibelleLikeManager("choléra", true);
+      List<CimMaster> cims = cimMasterManager.findByLibelleLikeManager("choléra", true);
       assertTrue(cims.size() == 1);
       assertTrue(cims.get(0).getCode().equals("A00"));
       //teste une recherche non exactMatch
-      cims = (List<CimMaster>) cimMasterManager.findByLibelleLikeManager("choléra", false);
+      cims = cimMasterManager.findByLibelleLikeManager("choléra", false);
       assertTrue(cims.size() == 6);
       //teste une recherche infructueuse
-      cims = (List<CimMaster>) cimMasterManager.findByLibelleLikeManager("LUXTEST", false);
+      cims = cimMasterManager.findByLibelleLikeManager("LUXTEST", false);
       assertTrue(cims.size() == 0);
       //null recherche
-      cims = (List<CimMaster>) cimMasterManager.findByLibelleLikeManager(null, false);
+      cims = cimMasterManager.findByLibelleLikeManager(null, false);
       assertTrue(cims.size() == 0);
    }
 
-   
    @Test
    public void testFindByCimParentManager(){
-      CimMaster parent = (CimMaster) cimMasterManager.findByCodeLikeManager("A00", true).get(0);
+      CimMaster parent = cimMasterManager.findByCodeLikeManager("A00", true).get(0);
       List<CimMaster> cims = cimMasterManager.findByCimParentManager(parent);
       assertTrue(cims.size() == 3);
-      final List<CimMaster> cims2 = (List<CimMaster>) cimMasterManager.findByCodeLikeManager("A00.", false);
+      final List<CimMaster> cims2 = cimMasterManager.findByCodeLikeManager("A00.", false);
       assertTrue(cims.equals(cims2));
-      parent = (CimMaster) cimMasterManager.findByCodeLikeManager("(A00-A09)", true).get(0);
+      parent = cimMasterManager.findByCodeLikeManager("(A00-A09)", true).get(0);
       cims = cimMasterManager.findByCimParentManager(parent);
       assertTrue(cims.size() == 10);
       cims = cimMasterManager.findByCimParentManager(null);
@@ -121,23 +117,23 @@ public class CimMasterManagerTest extends AbstractManagerTest4
 
    @Test
    public void testGetAdicapsManager(){
-      CimMaster a = (CimMaster) cimMasterManager.findByCodeLikeManager("C00.9", true).get(0);
+      CimMaster a = cimMasterManager.findByCodeLikeManager("C00.9", true).get(0);
       assertTrue(cimMasterManager.getAdicapsManager(a).size() == 4);
-      a = (CimMaster) cimMasterManager.findByCodeLikeManager("A00.1", false).get(0);
+      a = cimMasterManager.findByCodeLikeManager("A00.1", false).get(0);
       assertTrue(cimMasterManager.getAdicapsManager(a).size() == 0);
    }
 
    @Test
    public void testFindChildrenCodesManager(){
-      CimMaster a = (CimMaster) cimMasterManager.findByCodeLikeManager("(A00-A09)", true).get(0);
+      CimMaster a = cimMasterManager.findByCodeLikeManager("(A00-A09)", true).get(0);
       List<CimMaster> codes = cimMasterManager.findChildrenCodesManager(a);
       assertTrue(codes.size() == 69);
 
-      a = (CimMaster) cimMasterManager.findByCodeLikeManager("M00.0", true).get(0);
+      a = cimMasterManager.findByCodeLikeManager("M00.0", true).get(0);
       codes = cimMasterManager.findChildrenCodesManager(a);
       assertTrue(codes.size() == 11);
 
-      a = (CimMaster) cimMasterManager.findByCodeLikeManager("M00.07", true).get(0);
+      a = cimMasterManager.findByCodeLikeManager("M00.07", true).get(0);
       codes = cimMasterManager.findChildrenCodesManager(a);
       assertTrue(codes.size() == 1 && codes.get(0).equals(a));
 

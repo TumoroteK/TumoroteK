@@ -132,9 +132,8 @@ public class CoordonneeManagerImpl implements CoordonneeManager
          final Set<Collaborateur> collabs = coordonnee.getCollaborateurs();
          collabs.size();
          return collabs;
-      }else{
-         return new HashSet<>();
       }
+      return new HashSet<>();
    }
 
    /**
@@ -150,15 +149,11 @@ public class CoordonneeManagerImpl implements CoordonneeManager
       if(collaborateur != null && coordonnee != null){
          if(coordonnee.getCoordonneeId() == null){
             return coordonneeDao.findByCollaborateurId(collaborateur.getCollaborateurId()).contains(coordonnee);
-         }else{
-            return coordonneeDao
-               .findByCollaborateurIdAndExcludedId(collaborateur.getCollaborateurId(), coordonnee.getCoordonneeId())
-               .contains(coordonnee);
          }
-      }else{
-         return false;
+         return coordonneeDao.findByCollaborateurIdAndExcludedId(collaborateur.getCollaborateurId(), coordonnee.getCoordonneeId())
+            .contains(coordonnee);
       }
-
+      return false;
    }
 
    /**

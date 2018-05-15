@@ -405,24 +405,6 @@ public class FicheMaladie extends AbstractFicheCombineController
    }
 
    @Override
-   public Map<Entite, List<Integer>> getChildrenObjectsIds(final List<Integer> ids){
-
-      final Map<Entite, List<Integer>> children = new HashMap<>();
-
-      // prelevement
-      final Entite prelevmentEntite = ManagerLocator.getEntiteManager().findByNomManager("Prelevement").get(0);
-
-      final List<Integer> prels = new ArrayList<>();
-      for(final Prelevement prelevement : ManagerLocator.getMaladieManager().getPrelevementsManager(maladie)){
-         prels.add(prelevement.getPrelevementId());
-      }
-
-      children.put(prelevmentEntite, prels);
-
-      return children;
-   }
-
-   @Override
    public boolean prepareDeleteObject(){
       final boolean isUsed = ManagerLocator.getMaladieManager().isUsedObjectManager(getObject());
       setCascadable(false);
@@ -602,7 +584,6 @@ public class FicheMaladie extends AbstractFicheCombineController
       }
    }
 
-   
    @Override
    public void switchToStaticMode(){
       super.switchToStaticMode(this.maladie.equals(new Maladie()));
@@ -671,9 +652,8 @@ public class FicheMaladie extends AbstractFicheCombineController
    public String getMaladieLibelle(){
       if(!this.maladie.getSystemeDefaut()){
          return this.maladie.getLibelle() + " (" + String.valueOf(getTotPrelevementsCount()) + ")";
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getPrelevementsGroupLabel(){
@@ -699,9 +679,8 @@ public class FicheMaladie extends AbstractFicheCombineController
    public boolean getPrelevementsListSizeSupOne(){
       if(getDroitsConsultation().containsKey("Prelevement") && getDroitsConsultation().get("Prelevement")){
          return this.prelevements.size() > 1;
-      }else{
-         return false;
       }
+      return false;
    }
 
    public boolean getHasPrelevements(){
@@ -725,7 +704,7 @@ public class FicheMaladie extends AbstractFicheCombineController
     * codeDiagBox. Cette valeur sera mise en majuscules et une recherche 
     * automatique du libelle correspondant est lancée.
     */
-   public void onBlur$codeDiagBox(final Event e){
+   public void onBlur$codeDiagBox(){
 
       if(!codeDiagBox.getValue().equals("")){
          Clients.showBusy(libelleRow, Labels.getLabel("libelle.recherche.encours"));
@@ -734,7 +713,7 @@ public class FicheMaladie extends AbstractFicheCombineController
       codeDiagBox.setValue(codeDiagBox.getValue().toUpperCase().trim());
    }
 
-   public void onLaterFindLibelle(final Event e){
+   public void onLaterFindLibelle(){
 
       final Set<CodeCommon> codes = new HashSet<>();
       CodeUtils.findCodesInAllTables(codeDiagBox.getValue(), true, true, codes, true,
@@ -924,7 +903,7 @@ public class FicheMaladie extends AbstractFicheCombineController
    /**
     * Forward Event. 
     */
-   public void onSelectAllPrelevements(final Event e){
+   public void onSelectAllPrelevements(){
       onClickPrelevementCode(null);
    }
 

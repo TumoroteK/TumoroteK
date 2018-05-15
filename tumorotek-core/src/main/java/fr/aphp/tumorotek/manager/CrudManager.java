@@ -35,7 +35,15 @@
  **/
 package fr.aphp.tumorotek.manager;
 
-public interface CrudManager
+/**
+ * 
+ * @author 
+ * @since 2.0
+ * @version 2.2
+ *
+ * @param <T> est l'objet à persister
+ */
+public interface CrudManager<T extends Object>
 {
 
    /**
@@ -43,13 +51,13 @@ public interface CrudManager
     * @param obj Nouvelle instance de l'objet à créer.
     //* @throws ValidationException generee par validation AOP
     */
-   void createObjectManager(Object obj);
+   void createObjectManager(T obj);
 
    /**
     * Sauvegarde les modifications apportées à un objet persistant.
     * @param objet Objet à mettre à jour dans la base.
     */
-   void updateObjectManager(Object obj);
+   void updateObjectManager(T obj);
 
    /**
     * Cherche les doublons en se basant sur la methode equals()
@@ -57,13 +65,13 @@ public interface CrudManager
     * @param objet Object dont on cherche la presence dans la base
     * @return true/false
     */
-   boolean findDoublonManager(Object o);
+   boolean findDoublonManager(T o);
 
    /**
     * Supprime un objet de la base de données.
     * @param objet Objet à supprimer de la base de données.
     */
-   void removeObjectManager(Object obj);
+   void removeObjectManager(T obj);
 
    /**
     * Verifie avant la suppression que d'autres objets ne referencent
@@ -71,5 +79,5 @@ public interface CrudManager
     * @param obj Objet a supprimer de la base de donnees.
     * @return true/false
     */
-   boolean isUsedObjectManager(Object obj);
+   boolean isUsedObjectManager(T obj);
 }

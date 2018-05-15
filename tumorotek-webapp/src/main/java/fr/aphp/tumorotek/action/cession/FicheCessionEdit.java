@@ -581,14 +581,13 @@ public class FicheCessionEdit extends AbstractFicheEditController
 
       initEchansModel(0);
       initDerivesModel(0);
-
    }
 
    /**
     * Méthode pour l'initialisation du mode d'édition : récupération du contenu
     * des listes déroulantes (types, qualités...).
     */
-   
+
    public void initEditableMode(){
       // init des types. Si la cession n'a pas de type, c'est le type
       // RECHERCHE qui sera sélectionné au départ
@@ -608,8 +607,7 @@ public class FicheCessionEdit extends AbstractFicheEditController
          typesBox.setSelectedIndex(types.indexOf(this.selectedCessionType));
       }
       // init des examens
-      examens = (List<CessionExamen>) ManagerLocator.getCessionExamenManager()
-         .findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      examens = ManagerLocator.getCessionExamenManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       examens.add(0, null);
       selectedCessionExamen = this.cession.getCessionExamen();
 
@@ -618,19 +616,19 @@ public class FicheCessionEdit extends AbstractFicheEditController
       selectedContrat = this.cession.getContrat();
 
       contratsNoms = new ArrayList<>();
-      for(int i = 0; i < contrats.size(); i++){
-         final StringBuffer sb = new StringBuffer();
-         sb.append(contrats.get(i).getNumero());
-         if(contrats.get(i).getTitreProjet() != null && !contrats.get(i).getTitreProjet().equals("")){
+      for(Contrat contrat : contrats){
+         final StringBuilder sb = new StringBuilder();
+         sb.append(contrat.getNumero());
+         if(contrat.getTitreProjet() != null && !contrat.getTitreProjet().equals("")){
             sb.append(" (");
-            sb.append(contrats.get(i).getTitreProjet());
+            sb.append(contrat.getTitreProjet());
             sb.append(")");
          }
          contratsNoms.add(sb.toString());
       }
       contratsComboBox.setModel(new CustomSimpleListModel(contratsNoms));
       if(selectedContrat != null){
-         final StringBuffer sb = new StringBuffer();
+         final StringBuilder sb = new StringBuilder();
          sb.append(selectedContrat.getNumero());
          if(selectedContrat.getTitreProjet() != null && !selectedContrat.getTitreProjet().equals("")){
             sb.append(" (");
@@ -646,8 +644,7 @@ public class FicheCessionEdit extends AbstractFicheEditController
       selectedTransporteur = this.cession.getTransporteur();
 
       // init des motifs
-      motifs = (List<DestructionMotif>) ManagerLocator.getDestructionMotifManager()
-         .findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      motifs = ManagerLocator.getDestructionMotifManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       motifs.add(0, null);
       selectedDestructionMotif = this.cession.getDestructionMotif();
 
@@ -658,8 +655,8 @@ public class FicheCessionEdit extends AbstractFicheEditController
       // init des collaborateurs
       nomsAndPrenoms = new ArrayList<>();
       collaborateurs = ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager();
-      for(int i = 0; i < collaborateurs.size(); i++){
-         nomsAndPrenoms.add(collaborateurs.get(i).getNomAndPrenom());
+      for(Collaborateur collaborateur : collaborateurs){
+         nomsAndPrenoms.add(collaborateur.getNomAndPrenom());
       }
 
       if(this.cession.getDemandeur() != null && !collaborateurs.contains(this.cession.getDemandeur())){
@@ -873,14 +870,14 @@ public class FicheCessionEdit extends AbstractFicheEditController
          // on place tous les objets cédés dans une seule liste
          final List<CederObjet> objetsCedes = new ArrayList<>();
          echantillonsCedes.clear();
-         for(int i = 0; i < echantillonsCedesDecores.size(); i++){
-            objetsCedes.add(echantillonsCedesDecores.get(i).getCederObjet());
-            echantillonsCedes.add(echantillonsCedesDecores.get(i).getCederObjet());
+         for(CederObjetDecorator echantillonsCedesDecore : echantillonsCedesDecores){
+            objetsCedes.add(echantillonsCedesDecore.getCederObjet());
+            echantillonsCedes.add(echantillonsCedesDecore.getCederObjet());
          }
          derivesCedes.clear();
-         for(int i = 0; i < derivesCedesDecores.size(); i++){
-            objetsCedes.add(derivesCedesDecores.get(i).getCederObjet());
-            derivesCedes.add(derivesCedesDecores.get(i).getCederObjet());
+         for(CederObjetDecorator derivesCedesDecore : derivesCedesDecores){
+            objetsCedes.add(derivesCedesDecore.getCederObjet());
+            derivesCedes.add(derivesCedesDecore.getCederObjet());
          }
 
          cession.setCessionStatut(getSelectedCessionStatut());
@@ -976,14 +973,14 @@ public class FicheCessionEdit extends AbstractFicheEditController
          // on place tous les objets cédés dans une seule liste
          final List<CederObjet> objetsCedes = new ArrayList<>();
          echantillonsCedes.clear();
-         for(int i = 0; i < echantillonsCedesDecores.size(); i++){
-            objetsCedes.add(echantillonsCedesDecores.get(i).getCederObjet());
-            echantillonsCedes.add(echantillonsCedesDecores.get(i).getCederObjet());
+         for(CederObjetDecorator echantillonsCedesDecore : echantillonsCedesDecores){
+            objetsCedes.add(echantillonsCedesDecore.getCederObjet());
+            echantillonsCedes.add(echantillonsCedesDecore.getCederObjet());
          }
          derivesCedes.clear();
-         for(int i = 0; i < derivesCedesDecores.size(); i++){
-            objetsCedes.add(derivesCedesDecores.get(i).getCederObjet());
-            derivesCedes.add(derivesCedesDecores.get(i).getCederObjet());
+         for(CederObjetDecorator derivesCedesDecore : derivesCedesDecores){
+            objetsCedes.add(derivesCedesDecore.getCederObjet());
+            derivesCedes.add(derivesCedesDecore.getCederObjet());
          }
 
          cession.setCessionStatut(selectedCessionStatut);
@@ -1179,7 +1176,7 @@ public class FicheCessionEdit extends AbstractFicheEditController
     * cession.
     *
     * @return liste des children mis à jour.
-    * @version 2.1.1
+    * @since 2.1.1
     */
    private List<TKdataObject> revertCessedObjects(){
       final List<TKdataObject> children = new ArrayList<>();
@@ -1268,9 +1265,8 @@ public class FicheCessionEdit extends AbstractFicheEditController
    public Date getDepartDateProxy(){
       if(cession != null && cession.getDepartDate() != null){
          return cession.getDepartDate().getTime();
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void setDepartDateProxy(final Date date){
@@ -1282,9 +1278,8 @@ public class FicheCessionEdit extends AbstractFicheEditController
    public Date getArriveeDateProxy(){
       if(cession != null && cession.getArriveeDate() != null){
          return cession.getArriveeDate().getTime();
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void setArriveeDateProxy(final Date date){
@@ -1296,9 +1291,8 @@ public class FicheCessionEdit extends AbstractFicheEditController
    public Date getDestructionDateProxy(){
       if(cession != null && cession.getDestructionDate() != null){
          return cession.getDestructionDate().getTime();
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void setDestructionDateProxy(final Date date){
@@ -1317,28 +1311,9 @@ public class FicheCessionEdit extends AbstractFicheEditController
       if(getMainWindow().isFullfilledComponent("echantillonPanel", "winEchantillon")){
          return ((EchantillonController) getMainWindow().getMainTabbox().getTabpanels().getFellow("echantillonPanel")
             .getFellow("winEchantillon").getAttributeOrFellow("winEchantillon$composer", true));
-      }else{
-         return null;
       }
+      return null;
    }
-
-   /**
-    * Retourne le controller de la fiche d'un produit dérivé.
-    * @param event
-    * @return
-    */
-   //	private ProdDeriveController getProdDeriveController() {
-   //		if (getMainWindow()
-   //				.isFullfilledComponent("derivePanel", "winProdDerive")) {
-   //			return ((ProdDeriveController) getMainWindow()
-   //				.getMainTabbox().getTabpanels()
-   //				.getFellow("derivePanel")
-   //				.getFellow("winProdDerive")
-   //				.getAttributeOrFellow("winProdDerive$composer", true));
-   //		} else {
-   //			return null;
-   //		}
-   //	}
 
    /**
     * Retourne le controller de la fiche d'un produit dérivé.
@@ -1349,9 +1324,8 @@ public class FicheCessionEdit extends AbstractFicheEditController
       if(getMainWindow().isFullfilledComponent("stockagePanel", "winStockages")){
          return ((StockageController) getMainWindow().getMainTabbox().getTabpanels().getFellow("stockagePanel")
             .getFellow("winStockages").getAttributeOrFellow("winStockages$composer", true));
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -1430,7 +1404,7 @@ public class FicheCessionEdit extends AbstractFicheEditController
       displayObjectData(deco.getEchantillon());
    }
 
-   public void onSelectAllEchantillons(final Event e){
+   public void onSelectAllEchantillons(){
       final List<CederObjetDecorator> decos = cedeObjFactory.decorateListe(echantillonsCedes);
       displayObjectsListData(new ArrayList<TKAnnotableObject>(cedeObjFactory.undecorateListe(decos)));
    }
@@ -1441,7 +1415,7 @@ public class FicheCessionEdit extends AbstractFicheEditController
       displayObjectData(deco.getProdDerive());
    }
 
-   public void onSelectAllDerives(final Event e){
+   public void onSelectAllDerives(){
       final List<CederObjetDecorator> decos = cedeObjFactory.decorateListe(derivesCedes);
       displayObjectsListData(new ArrayList<TKAnnotableObject>(cedeObjFactory.undecorateListe(decos)));
    }
@@ -1768,7 +1742,7 @@ public class FicheCessionEdit extends AbstractFicheEditController
     *
     * @param e Event contenant la liste des échantillons à céder
     */
-   
+
    public void onGetEchantillonsFromSelection(final Event e){
       final List<Echantillon> echansACeder = (List<Echantillon>) e.getData();
       // si une liste d'objets à céder est passée en paramètre
@@ -1904,7 +1878,7 @@ public class FicheCessionEdit extends AbstractFicheEditController
     *
     * @param e Event contenant la liste des dérivés à céder
     */
-   
+
    public void onGetDerivesFromSelection(final Event e){
       final List<ProdDerive> derivesACeder = (List<ProdDerive>) e.getData();
       // si une liste d'objets à céder est passée en paramètre
@@ -3017,18 +2991,16 @@ public class FicheCessionEdit extends AbstractFicheEditController
       if(getDroitsConsultation().containsKey("Echantillon") && getDroitsConsultation().get("Echantillon")
          && this.cession.getCessionStatut() != null && !this.cession.getCessionStatut().getStatut().equals("EN ATTENTE")){
          return this.echantillonsCedes.size() > 1;
-      }else{
-         return false;
       }
+      return false;
    }
 
    public boolean getProdDerivesListSizeSupOne(){
       if(getDroitsConsultation().containsKey("ProdDerive") && getDroitsConsultation().get("ProdDerive")
          && this.cession.getCessionStatut() != null && this.cession.getCessionStatut().getStatut().equals("EN ATTENTE")){
          return this.derivesCedes.size() > 1;
-      }else{
-         return false;
       }
+      return false;
    }
 
    public List<CederObjet> getEchantillonsCedes(){
@@ -3055,9 +3027,8 @@ public class FicheCessionEdit extends AbstractFicheEditController
    public String getDateDemandeFormated(){
       if(this.cession != null){
          return ObjectTypesFormatters.dateRenderer2(this.cession.getDemandeDate());
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getEchantillonsGroupHeader(){
@@ -3212,9 +3183,8 @@ public class FicheCessionEdit extends AbstractFicheEditController
    public String getDateValidationFormated(){
       if(this.cession != null){
          return ObjectTypesFormatters.dateRenderer2(this.cession.getValidationDate());
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -3225,9 +3195,8 @@ public class FicheCessionEdit extends AbstractFicheEditController
    public String getDateDemandeContratFormated(){
       if(this.selectedContrat != null){
          return ObjectTypesFormatters.dateRenderer2(this.selectedContrat.getDateDemandeCession());
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -3238,9 +3207,8 @@ public class FicheCessionEdit extends AbstractFicheEditController
    public String getDateSignatureContratFormated(){
       if(this.selectedContrat != null){
          return ObjectTypesFormatters.dateRenderer2(this.selectedContrat.getDateSignature());
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -3251,9 +3219,8 @@ public class FicheCessionEdit extends AbstractFicheEditController
    public String getDateValidationContratFormated(){
       if(this.selectedContrat != null){
          return ObjectTypesFormatters.dateRenderer2(this.selectedContrat.getDateValidation());
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -3284,7 +3251,7 @@ public class FicheCessionEdit extends AbstractFicheEditController
                // la qté demandée doit être inférieure à la quantité
                // restante
                if(qteDemandee > deco.getQuantiteMax()){
-                  final StringBuffer sb = new StringBuffer();
+                  final StringBuilder sb = new StringBuilder();
                   sb.append(Labels.getLabel("cession.error.ceder.quantite.invalid"));
                   sb.append(" ");
                   sb.append(deco.getQuantiteMax());
@@ -3319,41 +3286,36 @@ public class FicheCessionEdit extends AbstractFicheEditController
    public String getSClassDemandeur(){
       if(this.cession != null){
          return ObjectTypesFormatters.sClassCollaborateur(this.cession.getDemandeur());
-      }else{
-         return "";
       }
+      return "";
    }
 
    public String getSClassDestinataire(){
       if(this.cession != null){
          return ObjectTypesFormatters.sClassCollaborateur(this.cession.getDestinataire());
-      }else{
-         return "";
       }
+      return "";
    }
 
    public String getSClassExecutant(){
       if(this.cession != null){
          return ObjectTypesFormatters.sClassCollaborateur(this.cession.getExecutant());
-      }else{
-         return "";
       }
+      return "";
    }
 
    public String getSClassServiceDest(){
       if(this.cession != null){
          return ObjectTypesFormatters.sClassService(this.cession.getServiceDest());
-      }else{
-         return "";
       }
+      return "";
    }
 
    public String getSClassCollaborateurHelp(){
       if(this.selectedContrat != null){
          return ObjectTypesFormatters.sClassCollaborateur(this.selectedContrat.getCollaborateur());
-      }else{
-         return "";
       }
+      return "";
    }
 
    public void setVisibleRow(final Row row, final boolean visible){
@@ -3577,6 +3539,8 @@ public class FicheCessionEdit extends AbstractFicheEditController
             this.descriptionHelpLabel.setVisible(false);
             this.dateValidationHelpLabel.setVisible(false);
             this.titreEtudeHelpLabel.setVisible(false);
+            break;
+         default:
             break;
       }
    }

@@ -77,19 +77,18 @@ public class ChampDecorator implements Comparable<Object>
          nomEntite = this.champ.getChampAnnotation().getTableAnnotation().getEntite().getNom();
          nomChamp = this.champ.getChampAnnotation().getNom();
          return Labels.getLabel("Entite." + nomEntite) + " - " + nomChamp;
-      }else{
-         final StringBuffer nom = new StringBuffer();
-         if(this.champ.getChampParent() == null){
-            nom.append(this.champ.getChampEntite().getEntite().getNom());
-            nom.append(" - ");
-            nom.append(getLabelForChampEntite(this.champ.getChampEntite()));
-         }else{
-            nom.append(this.champ.getChampParent().getChampEntite().getEntite().getNom());
-            nom.append(" - ");
-            nom.append(getLabelForChampEntite(this.champ.getChampParent().getChampEntite()));
-         }
-         return nom.toString();
       }
+      final StringBuffer nom = new StringBuffer();
+      if(this.champ.getChampParent() == null){
+         nom.append(this.champ.getChampEntite().getEntite().getNom());
+         nom.append(" - ");
+         nom.append(getLabelForChampEntite(this.champ.getChampEntite()));
+      }else{
+         nom.append(this.champ.getChampParent().getChampEntite().getEntite().getNom());
+         nom.append(" - ");
+         nom.append(getLabelForChampEntite(this.champ.getChampParent().getChampEntite()));
+      }
+      return nom.toString();
    }
 
    public String getLabelForChampEntite(final ChampEntite c){
@@ -112,11 +111,12 @@ public class ChampDecorator implements Comparable<Object>
    }
 
    public String getLabel(){
-      if(champ.getChampAnnotation() != null){
-         return champ.nom();
-      }else{
-         return Labels.getLabel("Champ." + champ.toString());
+      String label = null;
+      label = Labels.getLabel("Champ." + champ.toString());
+      if(null == label || "".equals(label)){
+         label = champ.nom();
       }
+      return label;
    }
 
    /**

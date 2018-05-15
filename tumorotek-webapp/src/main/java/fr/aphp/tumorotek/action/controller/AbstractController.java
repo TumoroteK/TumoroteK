@@ -140,9 +140,14 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.webapp.general.DeleteModale;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
+/**
+ * 
+ * @author 
+ * @since
+ */
 public abstract class AbstractController extends GenericForwardComposer<Component>
 {
-
+   //TODO  JavaDoc
    protected static Log log = LogFactory.getLog(AbstractController.class);
 
    private static final long serialVersionUID = -3799945305452822008L;
@@ -217,7 +222,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
     * @param nomOperation
     *            Type d'operation du bouton.
     */
-   
+
    public boolean drawActionOnOneButton(final String nomEntite, final String nomOperation){
       Boolean admin = false;
       if(sessionScope.containsKey("Admin")){
@@ -227,19 +232,18 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
       // si l'utilisateur est admin => bouton cliquable
       if(admin){
          return true;
-      }else{
-         // on extrait l'OperationType de la base
-         final OperationType operation = ManagerLocator.getOperationTypeManager().findByNomLikeManager(nomOperation, true).get(0);
+      }
+      // on extrait l'OperationType de la base
+      final OperationType operation = ManagerLocator.getOperationTypeManager().findByNomLikeManager(nomOperation, true).get(0);
 
-         Hashtable<String, List<OperationType>> droits = new Hashtable<>();
+      Hashtable<String, List<OperationType>> droits = new Hashtable<>();
 
-         if(sessionScope.containsKey("Droits")){
-            // on extrait les droits de l'utilisateur
-            droits = (Hashtable<String, List<OperationType>>) sessionScope.get("Droits");
+      if(sessionScope.containsKey("Droits")){
+         // on extrait les droits de l'utilisateur
+         droits = (Hashtable<String, List<OperationType>>) sessionScope.get("Droits");
 
-            final List<OperationType> ops = droits.get(nomEntite);
-            return (ops.contains(operation));
-         }
+         final List<OperationType> ops = droits.get(nomEntite);
+         return (ops.contains(operation));
       }
       return false;
    }
@@ -253,7 +257,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
     * @param nomOperation
     *            Type d'operation du bouton.
     */
-   
+
    public boolean getDroitOnAction(final String nomEntite, final String nomOperation){
       Boolean admin = false;
       if(sessionScope.containsKey("Admin")){
@@ -263,22 +267,20 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
       // si l'utilisateur est admin => bouton cliquable
       if(admin){
          return true;
-      }else{
-         // on extrait l'OperationType de la base
-         final OperationType opeation = ManagerLocator.getOperationTypeManager().findByNomLikeManager(nomOperation, true).get(0);
-
-         Hashtable<String, List<OperationType>> droits = new Hashtable<>();
-
-         if(sessionScope.containsKey("Droits")){
-            // on extrait les droits de l'utilisateur
-            droits = (Hashtable<String, List<OperationType>>) sessionScope.get("Droits");
-
-            final List<OperationType> ops = droits.get(nomEntite);
-            return ops.contains(opeation);
-         }else{
-            return false;
-         }
       }
+      // on extrait l'OperationType de la base
+      final OperationType opeation = ManagerLocator.getOperationTypeManager().findByNomLikeManager(nomOperation, true).get(0);
+
+      Hashtable<String, List<OperationType>> droits = new Hashtable<>();
+
+      if(sessionScope.containsKey("Droits")){
+         // on extrait les droits de l'utilisateur
+         droits = (Hashtable<String, List<OperationType>>) sessionScope.get("Droits");
+
+         final List<OperationType> ops = droits.get(nomEntite);
+         return ops.contains(opeation);
+      }
+      return false;
 
    }
 
@@ -614,40 +616,39 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
     * @throws WrongValueException 
     */
    public static String handleExceptionMessage(final Exception ex) throws WrongValueException{
-      String message = Labels.getLabel("validation.exception.inconnu");
+      StringBuilder message = new StringBuilder(Labels.getLabel("validation.exception.inconnu"));
       if(ex instanceof ValidationException){
-         message = Labels.getLabel("validation.error");
-         message = message + "\n";
+         message = new StringBuilder(Labels.getLabel("validation.error"));
+         message.append("\n");
          final Iterator<Errors> errs = (((ValidationException) ex).getErrors()).iterator();
          String errCode;
          while(errs.hasNext()){
             errCode = errs.next().getFieldError().getCode();
             if(Labels.getLabel(errCode) != null){
-               message = message + Labels.getLabel(errCode);
+               message.append(Labels.getLabel(errCode));
             }else{
-               message = message + "TK erreur label: " + errCode;
+               message.append("TK erreur label: ").append(errCode);
             }
 
-            message = message + "\n";
+            message.append("\n");
          }
       }else if(ex instanceof EmplacementDoublonFoundException){
          return ObjectTypesFormatters.getLabel(ex.getMessage(),
             new String[] {((EmplacementDoublonFoundException) ex).getTerminale().getNom(),
                (((EmplacementDoublonFoundException) ex).getPosition()).toString()});
       }else if(ex instanceof DoublonFoundException){
-         message = ObjectTypesFormatters.getLabel("validation.doublon",
-            new String[] {((DoublonFoundException) ex).getEntite(), ((DoublonFoundException) ex).getOperation()});
+         message = new StringBuilder(ObjectTypesFormatters.getLabel("validation.doublon",
+            new String[] {((DoublonFoundException) ex).getEntite(), ((DoublonFoundException) ex).getOperation()}));
       }else if(ex instanceof RequiredObjectIsNullException){
          message =
-            ObjectTypesFormatters
-               .getLabel("validation.requiredObject",
-                  new String[] {((RequiredObjectIsNullException) ex).getEntite(),
-                     ((RequiredObjectIsNullException) ex).getRequiredObject(),
-                     ((RequiredObjectIsNullException) ex).getOperation()});
+            new StringBuilder(ObjectTypesFormatters.getLabel("validation.requiredObject",
+               new String[] {((RequiredObjectIsNullException) ex).getEntite(),
+                  ((RequiredObjectIsNullException) ex).getRequiredObject(),
+                  ((RequiredObjectIsNullException) ex).getOperation()}));
       }else if(ex instanceof ObjectUsedException){
-         message = Labels.getLabel(((ObjectUsedException) ex).getKey());
+         message = new StringBuilder(Labels.getLabel(((ObjectUsedException) ex).getKey()));
       }else if(ex instanceof ObjectReferencedException){
-         message = Labels.getLabel(((ObjectReferencedException) ex).getKey());
+         message = new StringBuilder(Labels.getLabel(((ObjectReferencedException) ex).getKey()));
       }else if(ex instanceof WrongValueException){
          // try {
          throw (WrongValueException) ex;
@@ -655,22 +656,22 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
          //	log.error(e);
          //}
       }else if(ex instanceof PrinterException){
-         message = Labels.getLabel("validation.erreur.impression");
+         message = new StringBuilder(Labels.getLabel("validation.erreur.impression"));
          if(ex instanceof StringEtiquetteOverSizeException){
-            message = message + "\n" + Labels.getLabel("etiquette.overwidth.error");
+            message.append("\n").append(Labels.getLabel("etiquette.overwidth.error"));
          }else{
-            message = message + "\n" + Labels.getLabel("validation.erreur.imprimante.non.detectee");
+            message.append("\n").append(Labels.getLabel("validation.erreur.imprimante.non.detectee"));
          }
-         message = message + ex.getMessage();
+         message.append(ex.getMessage());
 
       }else if(ex instanceof DataIntegrityViolationException){
-         message = Labels.getLabel("error.data.invalid.usage");
+         message = new StringBuilder(Labels.getLabel("error.data.invalid.usage"));
          if(((DataIntegrityViolationException) ex).getRootCause() != null
             && ((DataIntegrityViolationException) ex).getRootCause().getMessage() != null){
             return message + "\n" + ((DataIntegrityViolationException) ex).getRootCause().getMessage();
          }
       }else if(ex instanceof CancelFromModalException){
-         message = Labels.getLabel("general.action.cancelled");
+         message = new StringBuilder(Labels.getLabel("general.action.cancelled"));
       }else if(ex instanceof DeriveBatchSaveException){
          return handleExceptionMessage(((DeriveBatchSaveException) ex).getTargetExeption());
       }else if(ex instanceof ExistingAnnotationValuesException){
@@ -678,17 +679,17 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
             new String[] {((ExistingAnnotationValuesException) ex).getBanque().getNom(),
                ((ExistingAnnotationValuesException) ex).getTable().getNom()});
       }else if(ex instanceof TransformationQuantiteOverDemandException){
-         message = ObjectTypesFormatters.getLabel(ex.getMessage(),
+         message = new StringBuilder(ObjectTypesFormatters.getLabel(ex.getMessage(),
             new String[] {((TransformationQuantiteOverDemandException) ex).getQteDemandee().toString(),
-               ((TransformationQuantiteOverDemandException) ex).getQteRestante().toString()});
+               ((TransformationQuantiteOverDemandException) ex).getQteRestante().toString()}));
       }else{
-         message = Labels.getLabel(ex.getMessage());
+         message = new StringBuilder(Labels.getLabel(ex.getMessage()));
          log.error(ex);
          ex.printStackTrace();
       }
       // aucun message n'a pu être généré -> exception inattendue
       if(message == null){
-         message = ex.getClass().getSimpleName() + " : " + ex.getMessage();
+         message = new StringBuilder(ex.getClass().getSimpleName() + " : " + ex.getMessage());
          log.error(ex);
          ex.printStackTrace();
       }
@@ -696,9 +697,9 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
       // si l'exception possède des infos sur l'objet qui l'a
       // généré, on écrit ces informations dans le message
       if(ex instanceof TKException){
-         if(message.contains("{1}")){
-            message = ObjectTypesFormatters.getLabel(ex.getMessage(),
-               new String[] {((TKException) ex).getIdentificationObjetException()});
+         if(message.toString().contains("{1}")){
+            message = new StringBuilder(ObjectTypesFormatters.getLabel(ex.getMessage(),
+               new String[] {((TKException) ex).getIdentificationObjetException()}));
          }else if(((TKException) ex).getEntiteObjetException() != null
             && ((TKException) ex).getIdentificationObjetException() != null){
             final StringBuffer sb = new StringBuffer();
@@ -707,11 +708,12 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
             sb.append(((TKException) ex).getIdentificationObjetException());
             sb.append(". ");
 
-            message = sb.toString() + (Labels.getLabel(ex.getMessage()) != null ? Labels.getLabel(ex.getMessage()) : message);
+            message = new StringBuilder(sb.toString()
+               + (Labels.getLabel(ex.getMessage()) != null ? Labels.getLabel(ex.getMessage()) : message.toString()));
          }
       }
 
-      return message;
+      return message.toString();
    }
 
    /**
@@ -923,57 +925,34 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
          // si sa valeur est égale a 0 => epuisé
          if(tkobj.getQuantite().equals(zero)){
             return epuise;
+         }
+         if(tkobj.getObjetStatut() != null && !tkobj.getObjetStatut().getStatut().equals("EPUISE")
+            && !tkobj.getObjetStatut().getStatut().equals("RESERVE") && !tkobj.getObjetStatut().getStatut().equals("DETRUIT")){
+            return tkobj.getObjetStatut();
+         }else if(tkobj.getEmplacement() != null){
+            return stocke;
          }else{
-            if(tkobj.getObjetStatut() != null && !tkobj.getObjetStatut().getStatut().equals("EPUISE")
-               && !tkobj.getObjetStatut().getStatut().equals("RESERVE") && !tkobj.getObjetStatut().getStatut().equals("DETRUIT")){
-               return tkobj.getObjetStatut();
-            }else if(tkobj.getEmplacement() != null){
-               return stocke;
-            }else{
-               return nonStocke;
-            }
-            //					if (tkobj.getObjetStatut() != null
-            //							&& tkobj.getObjetStatut().getStatut()
-            //									.equals("EPUISE")) {
-            //						return nonStocke;
-            //					} else if (tkobj.getObjetStatut() != null
-            //							&& tkobj.getObjetStatut().equals(encours)) {
-            //						return encours;
-            //					} else {
-            //						return stocke;
-            //					}
+            return nonStocke;
          }
 
       }else if(tkobj instanceof ProdDerive && ((ProdDerive) tkobj).getVolume() != null){
          // si sa valeur est égale a 0 => epuisé
          if(((ProdDerive) tkobj).getVolume().equals(zero)){
             return epuise;
-         }else{
-            if(tkobj.getObjetStatut() != null && !tkobj.getObjetStatut().getStatut().equals("EPUISE")
-               && !tkobj.getObjetStatut().getStatut().equals("RESERVE") && !tkobj.getObjetStatut().getStatut().equals("DETRUIT")){
-               return tkobj.getObjetStatut();
-            }else if(tkobj.getEmplacement() != null){
-               return stocke;
-            }else{
-               return nonStocke;
-            }
-            //					if (((ProdDerive) tkobj).getObjetStatut() != null
-            //							&& ((ProdDerive) tkobj).getObjetStatut().getStatut()
-            //									.equals("EPUISE")) {
-            //						return nonStocke;
-            //					} else if (tkobj.getObjetStatut() != null
-            //							&& tkobj.getObjetStatut().equals(encours)) {
-            //						return encours;
-            //					} else {
-            //						return stocke;
-            //					}
          }
-      }else{
-         if(tkobj.getEmplacement() != null){
+         if(tkobj.getObjetStatut() != null && !tkobj.getObjetStatut().getStatut().equals("EPUISE")
+            && !tkobj.getObjetStatut().getStatut().equals("RESERVE") && !tkobj.getObjetStatut().getStatut().equals("DETRUIT")){
+            return tkobj.getObjetStatut();
+         }else if(tkobj.getEmplacement() != null){
             return stocke;
          }else{
             return nonStocke;
          }
+      }else{
+         if(tkobj.getEmplacement() != null){
+            return stocke;
+         }
+         return nonStocke;
       }
       //			else {
       //				return stocke;
@@ -1557,9 +1536,8 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
       if(getMainWindow().isFullfilledComponent("echantillonPanel", "winEchantillon")){
          return ((EchantillonController) getMainWindow().getMainTabbox().getTabpanels().getFellow("echantillonPanel")
             .getFellow("winEchantillon").getAttributeOrFellow("winEchantillon$composer", true));
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -1572,9 +1550,8 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
       if(getMainWindow().isFullfilledComponent("derivePanel", "winProdDerive")){
          return ((ProdDeriveController) getMainWindow().getMainTabbox().getTabpanels().getFellow("derivePanel")
             .getFellow("winProdDerive").getAttributeOrFellow("winProdDerive$composer", true));
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -2044,9 +2021,9 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
       Set<Plateforme> pfs = new HashSet<>();
       if(user.isSuperAdmin()){
          return true;
-      }else{
-         pfs = ManagerLocator.getUtilisateurManager().getPlateformesManager(user);
       }
+
+      pfs = ManagerLocator.getUtilisateurManager().getPlateformesManager(user);
       if(pfs.contains(banque.getPlateforme())){
          acces = true;
       }else{
@@ -2192,6 +2169,8 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
             break;
          case "Cession":
             controller = CessionController.backToMe(getMainWindow(), page);
+            break;
+         default:
             break;
       }
 

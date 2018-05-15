@@ -154,7 +154,7 @@ public class FicheEtiquetteDynModale extends FicheEtiquetteModale
                }
 
                if(champs.size() > 0){
-                  formateChampsForLigne(lignes.get(i), row, row).setParent(row);
+                  formateChampsForLigne(lignes.get(i)).setParent(row);
                }else{
                   final Label label = new Label(Labels.getLabel("etiquette.texte.libre"));
                   label.setSclass("formValue");
@@ -190,7 +190,7 @@ public class FicheEtiquetteDynModale extends FicheEtiquetteModale
       }
    }
 
-   public Component formateChampsForLigne(final LigneEtiquette ligne, final Row row, final Component parent){
+   public Component formateChampsForLigne(final LigneEtiquette ligne){
       final List<String> valuesEchans = new ArrayList<>();
       final List<String> valuesDerives = new ArrayList<>();
       final List<ChampLigneEtiquette> champs = ManagerLocator.getChampLigneEtiquetteManager().findByLigneEtiquetteManager(ligne);
@@ -268,38 +268,14 @@ public class FicheEtiquetteDynModale extends FicheEtiquetteModale
             labelAndLinkBox.appendChild(champsLabel);
             labelAndLinkBox.appendChild(moreLabel);
             return labelAndLinkBox;
-         }else{
-            return champsLabel;
          }
-      }else{
-         return new Label();
+         return champsLabel;
       }
+      return new Label();
    }
 
    @Override
    public void onOK(){}
-
-   //	public void onCheck$copiesRadio() {
-   //		nbCopiesRow.setVisible(true);
-   //		tubeListeRow.setVisible(false);
-   //		for (int i = 0; i < labels.size(); i++) {
-   //			labels.get(i).setVisible(true);
-   //		}
-   //		for (int i = 0; i < checkboxes.size(); i++) {
-   //			checkboxes.get(i).setVisible(false);
-   //		}
-   //	}
-   //
-   //	public void onCheck$listeRadio() {
-   //		nbCopiesRow.setVisible(false);
-   //		tubeListeRow.setVisible(true);
-   //		for (int i = 0; i < labels.size(); i++) {
-   //			labels.get(i).setVisible(false);
-   //		}
-   //		for (int i = 0; i < checkboxes.size(); i++) {
-   //			checkboxes.get(i).setVisible(true);
-   //		}
-   //	}
 
    @Override
    public List<LigneEtiquette> createListeEtiquette(final String inc){

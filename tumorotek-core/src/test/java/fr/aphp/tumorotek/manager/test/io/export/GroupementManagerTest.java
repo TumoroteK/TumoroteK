@@ -271,21 +271,18 @@ public class GroupementManagerTest extends AbstractManagerTest4
          assertTrue(groupement.getOperateur().equals(operateur));
       }else{
          assertFalse(oldOperateur != null);
-         assertTrue(operateur == null);
       }
       if(groupement.getCritere1() != null){
          assertFalse(groupement.getCritere1().equals(oldCritere1));
          assertTrue(groupement.getCritere1().equals(critere1));
       }else{
          assertFalse(oldCritere1 != null);
-         assertTrue(critere1 == null);
       }
       if(groupement.getCritere2() != null){
          assertFalse(groupement.getCritere2().equals(oldCritere2));
          assertTrue(groupement.getCritere2().equals(critere2));
       }else{
          assertFalse(oldCritere2 != null);
-         assertTrue(critere2 == null);
       }
       if(groupement.getParent() != null){
          assertFalse(groupement.getParent().equals(oldParent));

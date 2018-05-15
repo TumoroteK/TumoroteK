@@ -49,6 +49,7 @@ import org.zkoss.zul.Panel;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treeitem;
 
+import fr.aphp.tumorotek.model.coeur.annotation.DataType;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.io.export.Champ;
 import fr.aphp.tumorotek.webapp.tree.TumoTreeModel;
@@ -100,21 +101,73 @@ public class FicheChampsAffichageModale extends GenericForwardComposer<Component
       }
    }
 
-   public void init(final List<Champ> oldSelected, final Component p, final Banque b, final Boolean selectionMultiple){
-      oldSelectedChamps = oldSelected;
-      parent = p;
-      banque = b;
-      // Init du noeud root de l'arbre
+   /**
+    * 
+    * @param oldSelectedChamps oldSelected anciens champs sélectionnés qui ne seront pas affichés
+    * @param parent composent parent
+    * @param banque banque
+    * @param selectionMultiple activer la sélection multiple
+    */
+   public void init(final List<Champ> oldSelectedChamps, final Component parent, final Banque banque, final Boolean selectionMultiple){
+      this.oldSelectedChamps = oldSelectedChamps;
+      this.parent = parent;
+      this.banque = banque;
+
+      // Init de l'arbre et de son affichage
+      ttm = new TumoTreeModel(initRoot());
+      ttm.setMultiple(selectionMultiple);
+
+      binder.loadComponent(champsAffichageTree);
+   }
+   
+   /**
+    * @param oldSelectedChamps anciens champs sélectionnés qui ne seront pas affichés
+    * @param parent composent parent
+    * @param banque Banque
+    * @param selectionMultiple activer la sélection multiple
+    * @param dataTypeList liste des datatypes à afficher
+    * @param excludeIds exclure les champs numériques représentant un id
+    */
+   public void init(final List<Champ> oldSelectedChamps, final Component parent, final Banque banque, final Boolean selectionMultiple, List<DataType> dataTypeList, Boolean excludeIds){
+      this.oldSelectedChamps = oldSelectedChamps;
+      this.parent = parent;
+      this.banque = banque;
+
+      // Init de l'arbre et de son affichage
+      ttm = new TumoTreeModel(initRoot(dataTypeList, excludeIds));
+      ttm.setMultiple(selectionMultiple);
+
+      binder.loadComponent(champsAffichageTree);
+   }
+   
+   /**
+    * Init du noeud root de l'arbre
+    */
+   private ChampsRootNode initRoot(){
+   // Init du noeud root de l'arbre
       final ChampsRootNode root = new ChampsRootNode();
       root.setOldSelectedChamps(oldSelectedChamps);
       root.setBanque(banque);
       root.readChildren();
-
-      // Init de l'arbre et de son affichage
-      ttm = new TumoTreeModel(root);
-      ttm.setMultiple(selectionMultiple);
-
-      binder.loadComponent(champsAffichageTree);
+      
+      return root;
+   }
+   
+   /**
+    * Init du noeud root de l'arbre
+    * @param dataTypeList liste des datatypes à afficher
+    * @param excludeIds exclure les champs numériques représentant un id
+    */
+   private ChampsRootNode initRoot(final List<DataType> dataTypeList, final Boolean excludeIds){
+   // Init du noeud root de l'arbre
+      final ChampsRootNode root = new ChampsRootNode();
+      root.setOldSelectedChamps(oldSelectedChamps);
+      root.setBanque(banque);
+      root.setDataTypeList(dataTypeList);
+      root.setExcludeIds(excludeIds);
+      root.readChildren();
+      
+      return root;
    }
 
    public void onClick$cancel(){
@@ -146,20 +199,8 @@ public class FicheChampsAffichageModale extends GenericForwardComposer<Component
                chps.add(((ChampNode) it.getValue()).getChamp());
             }
          }
-         // on récupère les noeuds sélectionnés
-         // Iterator<Treeitem> it = champsAffichageTree
-         //	.getSelectedItems().iterator();
-
-         // while (it.hasNext()) {
-         //	Treeitem item = it.next();
-         //	if (item.getValue().getClass()
-         //			.getSimpleName().equals("ChampNode")) {
-         //		chps.add(0, ((ChampNode) item.getValue()).getChamp());
-         //	}
-         // }
-
-         Events.postEvent("onGetChamps", getParent(), chps);
       }
+      Events.postEvent("onGetChamps", getParent(), chps);
       // fermeture de la fenêtre
       Events.postEvent(new Event("onClose", self.getRoot()));
    }

@@ -49,7 +49,6 @@ import fr.aphp.tumorotek.manager.exception.ObjectUsedException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.prelevement.ConsentTypeValidator;
-import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.coeur.prelevement.ConsentType;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 
@@ -88,19 +87,18 @@ public class ConsentTypeManagerImpl implements ConsentTypeManager
    }
 
    @Override
-   public void createObjectManager(final Object obj){
+   public void createObjectManager(final ConsentType obj){
 
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
-      if(((TKThesaurusObject) obj).getPlateforme() == null){
+      if(obj.getPlateforme() == null){
          throw new RequiredObjectIsNullException("ConsentType", "creation", "Plateforme");
-      }else{
-         ((TKThesaurusObject) obj).setPlateforme(plateformeDao.mergeObject(((TKThesaurusObject) obj).getPlateforme()));
       }
+      obj.setPlateforme(plateformeDao.mergeObject(obj.getPlateforme()));
 
       BeanValidator.validateObject(obj, new Validator[] {consentTypeValidator});
       if(!findDoublonManager(obj)){
-         consentTypeDao.createObject((ConsentType) obj);
+         consentTypeDao.createObject(obj);
          log.info("Enregistrement objet ConsentType " + obj.toString());
       }else{
          log.warn("Doublon lors creation objet ConsentType " + obj.toString());
@@ -109,22 +107,16 @@ public class ConsentTypeManagerImpl implements ConsentTypeManager
    }
 
    @Override
-   public void updateObjectManager(final Object obj){
+   public void updateObjectManager(final ConsentType obj){
       BeanValidator.validateObject(obj, new Validator[] {consentTypeValidator});
       if(!findDoublonManager(obj)){
-         consentTypeDao.updateObject((ConsentType) obj);
+         consentTypeDao.updateObject(obj);
          log.info("Modification objet ConsentType " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet ConsentType " + obj.toString());
          throw new DoublonFoundException("ConsentType", "modification");
       }
    }
-
-   //	@Override
-   //	public List<ConsentType> findAllObjectsManager() {
-   //		log.info("Recherche totalite des ConsentType");
-   //		return consentTypeDao.findByOrder();
-   //	}
 
    @Override
    public List<ConsentType> findByTypeLikeManager(String type, final boolean exactMatch){
@@ -136,10 +128,10 @@ public class ConsentTypeManagerImpl implements ConsentTypeManager
    }
 
    @Override
-   public void removeObjectManager(final Object obj){
+   public void removeObjectManager(final ConsentType obj){
       if(obj != null){
          if(!isUsedObjectManager(obj)){
-            consentTypeDao.removeObject(((ConsentType) obj).getConsentTypeId());
+            consentTypeDao.removeObject(obj.getConsentTypeId());
             log.info("Suppression objet ConsentType " + obj.toString());
          }else{
             log.warn("Suppression objet ConsentType " + obj.toString() + " impossible car est reference (par Prelevement)");
@@ -151,32 +143,30 @@ public class ConsentTypeManagerImpl implements ConsentTypeManager
    }
 
    @Override
-   public boolean findDoublonManager(final Object o){
+   public boolean findDoublonManager(final ConsentType o){
       if(o != null){
-         final ConsentType type = (ConsentType) o;
+         final ConsentType type = o;
          if(type.getConsentTypeId() == null){
             return consentTypeDao.findAll().contains(type);
-         }else{
-            return consentTypeDao.findByExcludedId(type.getConsentTypeId()).contains(type);
          }
-      }else{
-         return false;
+         return consentTypeDao.findByExcludedId(type.getConsentTypeId()).contains(type);
       }
+      return false;
    }
 
    @Override
-   public boolean isUsedObjectManager(final Object o){
-      final ConsentType consentType = consentTypeDao.mergeObject((ConsentType) o);
+   public boolean isUsedObjectManager(final ConsentType o){
+      final ConsentType consentType = consentTypeDao.mergeObject(o);
       return consentType.getPrelevements().size() > 0;
    }
 
    @Override
-   public List<? extends TKThesaurusObject> findByOrderManager(final Plateforme pf){
+   public List<ConsentType> findByOrderManager(final Plateforme pf){
       return consentTypeDao.findByOrder(pf);
    }
 
    @Override
-   public TKThesaurusObject findByIdManager(final Integer id){
+   public ConsentType findByIdManager(final Integer id){
       return consentTypeDao.findById(id);
    }
 

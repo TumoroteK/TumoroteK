@@ -158,50 +158,42 @@ public class Critere
                      if(test.champ == null){
                         if(this.combinaison == null){
                            return (test.combinaison == null);
-                        }else{
-                           return (this.combinaison.equals(test.combinaison));
                         }
-                     }else{
-                        return false;
+                        return (this.combinaison.equals(test.combinaison));
                      }
+                     return false;
                   }else if(this.champ.equals(test.champ)){
                      if(this.combinaison == null){
                         return (test.combinaison == null);
-                     }else{
-                        return (this.combinaison.equals(test.combinaison));
                      }
+                     return (this.combinaison.equals(test.combinaison));
                   }else{
                      return false;
                   }
-               }else{
-                  return false;
                }
+               return false;
             }else if(this.valeur.equals(test.valeur)){
                if(this.champ == null){
                   if(test.champ == null){
                      if(this.combinaison == null){
                         return (test.combinaison == null);
-                     }else{
-                        return (this.combinaison.equals(test.combinaison));
                      }
-                  }else{
-                     return false;
+                     return (this.combinaison.equals(test.combinaison));
                   }
+                  return false;
                }else if(this.champ.equals(test.champ)){
                   if(this.combinaison == null){
                      return (test.combinaison == null);
-                  }else{
-                     return (this.combinaison.equals(test.combinaison));
                   }
+                  return (this.combinaison.equals(test.combinaison));
                }else{
                   return false;
                }
             }else{
                return false;
             }
-         }else{
-            return false;
          }
+         return false;
       }else if(this.operateur.equals(test.operateur)){
          if(this.valeur == null){
             if(test.valeur == null){
@@ -209,41 +201,34 @@ public class Critere
                   if(test.champ == null){
                      if(this.combinaison == null){
                         return (test.combinaison == null);
-                     }else{
-                        return (this.combinaison.equals(test.combinaison));
                      }
-                  }else{
-                     return false;
+                     return (this.combinaison.equals(test.combinaison));
                   }
+                  return false;
                }else if(this.champ.equals(test.champ)){
                   if(this.combinaison == null){
                      return (test.combinaison == null);
-                  }else{
-                     return (this.combinaison.equals(test.combinaison));
                   }
+                  return (this.combinaison.equals(test.combinaison));
                }else{
                   return false;
                }
-            }else{
-               return false;
             }
+            return false;
          }else if(this.valeur.equals(test.valeur)){
             if(this.champ == null){
                if(test.champ == null){
                   if(this.combinaison == null){
                      return (test.combinaison == null);
-                  }else{
-                     return (this.combinaison.equals(test.combinaison));
                   }
-               }else{
-                  return false;
+                  return (this.combinaison.equals(test.combinaison));
                }
+               return false;
             }else if(this.champ.equals(test.champ)){
                if(this.combinaison == null){
                   return (test.combinaison == null);
-               }else{
-                  return (this.combinaison.equals(test.combinaison));
                }
+               return (this.combinaison.equals(test.combinaison));
             }else{
                return false;
             }

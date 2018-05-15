@@ -496,7 +496,7 @@ public class FicheEtablissement extends AbstractFicheCombineController
     * Méthode appelée après la saisie d'une valeur dans le champ
     * villeBox. Cette valeur sera mise en majuscules.
     */
-   public void onBlur$villeBox(final Event event){
+   public void onBlur$villeBox(){
       villeBox.setValue(villeBox.getValue().toUpperCase().trim());
    }
 
@@ -504,7 +504,7 @@ public class FicheEtablissement extends AbstractFicheCombineController
     * Méthode appelée après la saisie d'une valeur dans le champ
     * paysBox. Cette valeur sera mise en majuscules.
     */
-   public void onBlur$paysBox(final Event event){
+   public void onBlur$paysBox(){
       paysBox.setValue(paysBox.getValue().toUpperCase().trim());
    }
 
@@ -882,9 +882,8 @@ public class FicheEtablissement extends AbstractFicheCombineController
 
       if(etablissement != null){
          return ObjectTypesFormatters.booleanLitteralFormatter(this.etablissement.isLocal());
-      }else{
-         return "";
       }
+      return "";
    }
 
    /**
@@ -895,9 +894,8 @@ public class FicheEtablissement extends AbstractFicheCombineController
 
       if(this.etablissement != null){
          return ObjectTypesFormatters.booleanLitteralFormatter(this.etablissement.getArchive());
-      }else{
-         return "";
       }
+      return "";
    }
 
    public String getMode(){
@@ -948,8 +946,7 @@ public class FicheEtablissement extends AbstractFicheCombineController
    public String getDeleteWaitLabel(){
       if(isFantomable()){
          return Labels.getLabel("deletion.general.wait");
-      }else{
-         return Labels.getLabel("archivage.general.wait");
       }
+      return Labels.getLabel("archivage.general.wait");
    }
 }

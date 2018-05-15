@@ -95,9 +95,8 @@ public class ChampLigneEtiquetteManagerImpl implements ChampLigneEtiquetteManage
       if(ligneEtiquette != null){
          log.debug("Recherche de tous les ChampLigneEtiquettes " + "d'une LigneEtiquette.");
          return champLigneEtiquetteDao.findByLigneEtiquette(ligneEtiquette);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
@@ -106,9 +105,8 @@ public class ChampLigneEtiquetteManagerImpl implements ChampLigneEtiquetteManage
       if(ligneEtiquette != null && entite != null){
          log.debug("Recherche de tous les ChampLigneEtiquettes " + "d'une LigneEtiquette et d'une Entite.");
          return champLigneEtiquetteDao.findByLigneEtiquetteAndEntite(ligneEtiquette, entite);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override

@@ -36,10 +36,12 @@
 package fr.aphp.tumorotek.webapp.tree.export;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
+import fr.aphp.tumorotek.model.coeur.annotation.DataType;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.io.export.Champ;
@@ -61,6 +63,14 @@ public class EntiteNode extends TumoTreeNode
 
    private Entite entite;
    private List<Champ> oldSelectedChamps = new ArrayList<>();
+   /**
+    * Liste des dataTypes à afficher
+    */
+   private List<DataType> dataTypeList;
+   /**
+    * Exclure les champs numérique de type Id
+    */
+   private Boolean excludeIds;
    private Banque banque;
 
    public EntiteNode(final Entite e){
@@ -76,15 +86,23 @@ public class EntiteNode extends TumoTreeNode
    }
 
    /**
-    * Recherche tous les services de l'établissement et crée un 
-    * ServiceNode pour chacun.
+    * Recherche tous les champsEntites et champsAnnotations d'une entite node
     */
    @Override
    public void readChildren(){
       children = new ArrayList<>();
-
+      List<ChampEntite> champsEntite = new ArrayList<>();
       // On récupère les champs pouvant etre affichés
-      final List<ChampEntite> champsEntite = ManagerLocator.getChampEntiteManager().findByEntiteAndImportManager(entite, true);
+      if(null == dataTypeList){
+         champsEntite = ManagerLocator.getChampEntiteManager().findByEntiteAndImportManager(entite, true);
+      }else if(!dataTypeList.isEmpty()){
+         if(excludeIds){
+         champsEntite =
+            ManagerLocator.getChampEntiteManager().findByEntiteAndImportManagerAndDatatype(entite, true, dataTypeList, excludeIds);
+         }else{
+            ManagerLocator.getChampEntiteManager().findByEntiteAndImportManagerAndDatatype(entite, true, dataTypeList);
+         }
+      }
 
       addVirtualChampEntite(champsEntite);
       //Collections.sort(champsEntite);
@@ -105,7 +123,20 @@ public class EntiteNode extends TumoTreeNode
       final List<TableAnnotation> tas = ManagerLocator.getTableAnnotationManager().findByEntiteAndBanqueManager(entite, banque);
       final List<ChampAnnotation> champsAnnotations = new ArrayList<>();
       for(int i = 0; i < tas.size(); i++){
-         champsAnnotations.addAll(ManagerLocator.getChampAnnotationManager().findByTableManager(tas.get(i)));
+         if(null == dataTypeList){
+            champsAnnotations.addAll(ManagerLocator.getChampAnnotationManager().findByTableManager(tas.get(i)));
+         }else if(!dataTypeList.isEmpty()){
+            champsAnnotations
+            .addAll(ManagerLocator.getChampAnnotationManager().findByTableAndDataTypeManager(tas.get(i), dataTypeList));
+            
+            DataType calcule = ManagerLocator.getDataTypeManager().findByTypeManager("calcule");
+            List<ChampAnnotation> champAnnoCalculeList = ManagerLocator.getChampAnnotationManager().findByTableAndDataTypeManager(tas.get(i), Arrays.asList(calcule));
+            for(ChampAnnotation champAnnoCalcule : champAnnoCalculeList){
+               if(dataTypeList.contains(champAnnoCalcule.getChampCalcule().getDataType())){
+                  champsAnnotations.add(champAnnoCalcule);
+               }
+            }
+         }
       }
       for(int i = 0; i < champsAnnotations.size(); i++){
          final Champ chp = new Champ();
@@ -120,6 +151,7 @@ public class EntiteNode extends TumoTreeNode
    }
 
    /**
+    * ??
     * Ajoute des champs d'entite virtuels en fonction de 
     * l'entite.
     * @param champsEntite
@@ -127,11 +159,22 @@ public class EntiteNode extends TumoTreeNode
    private void addVirtualChampEntite(final List<ChampEntite> champsEntite){
       if(entite.getNom().equals("Prelevement")){
          // Etablissement preleveur
-         champsEntite.add(6, ManagerLocator.getChampEntiteManager().findByIdManager(193));
+         ChampEntite ce = ManagerLocator.getChampEntiteManager().findByIdManager(193); //TODO Ids en dur ?!
+         if((null == excludeIds || !excludeIds) && (null == dataTypeList || (null != dataTypeList && dataTypeList.contains(ce.getDataType())))){
+            champsEntite.add(ManagerLocator.getChampEntiteManager().findByIdManager(193)); //TODO Ids en dur ?!
+         }
       }else if(entite.getNom().equals("Echantillon")){
-         champsEntite.add(5, ManagerLocator.getChampEntiteManager().findByIdManager(265));
+         //TempStock
+         ChampEntite ce = ManagerLocator.getChampEntiteManager().findByIdManager(265); //TODO Ids en dur ?!
+         if(null == dataTypeList || (null != dataTypeList && dataTypeList.contains(ce.getDataType()))){
+            champsEntite.add(ManagerLocator.getChampEntiteManager().findByIdManager(265)); //TODO Ids en dur ?!
+         }
       }else if(entite.getNom().equals("ProdDerive")){
-         champsEntite.add(10, ManagerLocator.getChampEntiteManager().findByIdManager(266));
+         //TempStock
+         ChampEntite ce = ManagerLocator.getChampEntiteManager().findByIdManager(266); //TODO Ids en dur ?! 
+         if(null == dataTypeList || (null != dataTypeList && dataTypeList.contains(ce.getDataType()))){
+            champsEntite.add(ManagerLocator.getChampEntiteManager().findByIdManager(266)); //TODO Ids en dur ?! 
+         }
       }
    }
 
@@ -183,6 +226,22 @@ public class EntiteNode extends TumoTreeNode
       this.oldSelectedChamps = oldSelected;
    }
 
+   /**
+    * Liste des dataTypes à afficher
+    * @return Liste des dataTypes à afficher
+    */
+   public List<DataType> getDataTypeList(){
+      return dataTypeList;
+   }
+
+   /**
+    * Liste des dataTypes à afficher
+    * @param dataTypeList Liste des dataTypes à afficher
+    */
+   public void setDataTypeList(final List<DataType> dataTypeList){
+      this.dataTypeList = dataTypeList;
+   }
+
    public Banque getBanque(){
       return banque;
    }
@@ -190,5 +249,23 @@ public class EntiteNode extends TumoTreeNode
    public void setBanque(final Banque b){
       this.banque = b;
    }
+
+   /**
+    * Exclure les champs numérique de type Id
+    * @return Exclure les champs numérique de type Id
+    */
+   public Boolean getExcludeIds(){
+      return excludeIds;
+   }
+
+   /**
+    * Exclure les champs numérique de type Id
+    * @param excludeIds Exclure les champs numérique de type Id
+    */
+   public void setExcludeIds(Boolean excludeIds){
+      this.excludeIds = excludeIds;
+   }
+   
+   
 
 }

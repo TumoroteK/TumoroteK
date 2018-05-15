@@ -121,10 +121,10 @@ public class OperationDaoTest extends AbstractDaoTest
     */
    public void testFindByExcludedId(){
       List<Operation> ops = operationDao.findByExcludedId(1);
-      assertTrue(ops.size() == 18);
+      assertEquals(18, ops.size());
 
       ops = operationDao.findByExcludedId(30);
-      assertTrue(ops.size() == 19);
+      assertEquals(19, ops.size());
    }
 
    /**

@@ -48,7 +48,6 @@ import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.stockage.ConteneurTypeManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.stockage.ConteneurTypeValidator;
-import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.stockage.ConteneurType;
 
@@ -91,43 +90,35 @@ public class ConteneurTypeManagerImpl implements ConteneurTypeManager
       return conteneurTypeDao.findById(conteneurTypeId);
    }
 
-   //	@Override
-   //	public List<ConteneurType> findAllObjectsManager() {
-   //		return conteneurTypeDao.findByOrder();
-   //	}
-
    @Override
-   public boolean findDoublonManager(final Object o){
+   public boolean findDoublonManager(final ConteneurType o){
       if(o != null){
-         final ConteneurType type = (ConteneurType) o;
+         final ConteneurType type = o;
          if(type.getConteneurTypeId() == null){
             return conteneurTypeDao.findAll().contains(type);
-         }else{
-            return conteneurTypeDao.findByExcludedId(type.getConteneurTypeId()).contains(type);
          }
-      }else{
-         return false;
+         return conteneurTypeDao.findByExcludedId(type.getConteneurTypeId()).contains(type);
       }
+      return false;
    }
 
    @Override
-   public boolean isUsedObjectManager(final Object obj){
-      final ConteneurType type = conteneurTypeDao.mergeObject((ConteneurType) obj);
+   public boolean isUsedObjectManager(final ConteneurType obj){
+      final ConteneurType type = conteneurTypeDao.mergeObject(obj);
       return type.getConteneurs().size() > 0;
    }
 
    @Override
-   public void createObjectManager(final Object obj){
+   public void createObjectManager(final ConteneurType obj){
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
-      if(((TKThesaurusObject) obj).getPlateforme() == null){
+      if(obj.getPlateforme() == null){
          throw new RequiredObjectIsNullException("Nature", "creation", "Plateforme");
-      }else{
-         ((TKThesaurusObject) obj).setPlateforme(plateformeDao.mergeObject(((TKThesaurusObject) obj).getPlateforme()));
       }
+         obj.setPlateforme(plateformeDao.mergeObject(obj.getPlateforme()));
       BeanValidator.validateObject(obj, new Validator[] {conteneurTypeValidator});
       if(!findDoublonManager(obj)){
-         conteneurTypeDao.createObject((ConteneurType) obj);
+         conteneurTypeDao.createObject(obj);
          log.info("Enregistrement objet ConteneurType " + obj.toString());
       }else{
          log.warn("Doublon lors creation objet ConteneurType " + obj.toString());
@@ -136,10 +127,10 @@ public class ConteneurTypeManagerImpl implements ConteneurTypeManager
    }
 
    @Override
-   public void updateObjectManager(final Object obj){
+   public void updateObjectManager(final ConteneurType obj){
       BeanValidator.validateObject(obj, new Validator[] {conteneurTypeValidator});
       if(!findDoublonManager(obj)){
-         conteneurTypeDao.updateObject((ConteneurType) obj);
+         conteneurTypeDao.updateObject(obj);
          log.info("Modification objet ConteneurType " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet ConteneurType " + obj.toString());
@@ -148,25 +139,17 @@ public class ConteneurTypeManagerImpl implements ConteneurTypeManager
    }
 
    @Override
-   public void removeObjectManager(final Object obj){
+   public void removeObjectManager(final ConteneurType obj){
       if(obj != null){
-         //			if (!isUsedObjectManager(obj)) {
-         conteneurTypeDao.removeObject(((ConteneurType) obj).getConteneurTypeId());
+         conteneurTypeDao.removeObject(obj.getConteneurTypeId());
          log.info("Suppression objet ConteneurType " + obj.toString());
-         //			} else {
-         //				log.warn("Suppression objet ConteneurType " 
-         //						+ obj.toString()
-         //						+ " impossible car est reference " 
-         //						+ "(par Conteneur)");
-         //				throw new ObjectUsedException();
-         //			}
       }else{
          log.warn("Suppression d'un ConteneurType null");
       }
    }
 
    @Override
-   public List<? extends TKThesaurusObject> findByOrderManager(final Plateforme pf){
+   public List<ConteneurType> findByOrderManager(final Plateforme pf){
       return conteneurTypeDao.findByOrder(pf);
    }
 }

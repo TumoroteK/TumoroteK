@@ -579,7 +579,9 @@ public class FicheImportTemplate extends AbstractFicheCombineController
                tmp.add(new Champ(ces.get(i)));
             }
             for(int i = 0; i < cas.size(); i++){
-               tmp.add(new Champ(cas.get(i)));
+               if(!"calcule".equals(cas.get(i).getDataType().getType())){
+                  tmp.add(new Champ(cas.get(i)));
+               }
             }
 
             for(int i = 0; i < importColonnesDecorator.size(); i++){
@@ -1108,43 +1110,40 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       if(medias != null && medias.length > 0){
          BufferedInputStream fileInputStream = new BufferedInputStream(medias[0].getStreamData());
 
-         if(fileInputStream != null){
-
-            try{
-               uploadedWb = WorkbookFactory.create(fileInputStream);
-               final List<Sheet> sheets = new ArrayList<>();
-               for(int i = 0; i < uploadedWb.getNumberOfSheets(); i++){
-                  if(uploadedWb.getSheetAt(i).getLastRowNum() > 0){
-                     sheets.add(uploadedWb.getSheetAt(i));
-                  }
+         try{
+            uploadedWb = WorkbookFactory.create(fileInputStream);
+            final List<Sheet> sheets = new ArrayList<>();
+            for(int i = 0; i < uploadedWb.getNumberOfSheets(); i++){
+               if(uploadedWb.getSheetAt(i).getLastRowNum() > 0){
+                  sheets.add(uploadedWb.getSheetAt(i));
                }
+            }
 
-               if(sheets.size() > 1){
-                  // choose sheets modale
-                  final HashMap<String, Object> map = new HashMap<>();
-                  map.put("sheets", sheets);
-                  map.put("parent", self);
+            if(sheets.size() > 1){
+               // choose sheets modale
+               final HashMap<String, Object> map = new HashMap<>();
+               map.put("sheets", sheets);
+               map.put("parent", self);
 
-                  final Window dialog = (Window) Executions.createComponents("/zuls/imports/ChooseSheetWindow.zul", self, map);
-                  dialog.doModal();
-               }else{ // sheet = 1
-                  Clients.showBusy(Labels.getLabel("importTemplate.wait.import"));
-                  Events.echoEvent("onLaterImport", self, null);
-               }
-            }catch(final IOException ex){
-               log.error(ex);
-               ex.printStackTrace();
-               Clients.clearBusy();
-            }catch(final InvalidFormatException ev){
-               ev.printStackTrace();
-               Clients.clearBusy();
-            }finally{
-               if(fileInputStream != null){
-                  try{
-                     fileInputStream.close();
-                  }catch(final Exception e){
-                     fileInputStream = null;
-                  }
+               final Window dialog = (Window) Executions.createComponents("/zuls/imports/ChooseSheetWindow.zul", self, map);
+               dialog.doModal();
+            }else{ // sheet = 1
+               Clients.showBusy(Labels.getLabel("importTemplate.wait.import"));
+               Events.echoEvent("onLaterImport", self, null);
+            }
+         }catch(final IOException ex){
+            log.error(ex);
+            ex.printStackTrace();
+            Clients.clearBusy();
+         }catch(final InvalidFormatException ev){
+            ev.printStackTrace();
+            Clients.clearBusy();
+         }finally{
+            if(fileInputStream != null){
+               try{
+                  fileInputStream.close();
+               }catch(final Exception e){
+                  fileInputStream = null;
                }
             }
          }
@@ -1244,12 +1243,10 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       }catch(final IOException e){
          log.error(e);
       }finally{
-         if(out != null){
-            try{
-               out.close();
-            }catch(final Exception e){
-               out = null;
-            }
+         try{
+            out.close();
+         }catch(final Exception e){
+            out = null;
          }
       }
    }
@@ -1508,8 +1505,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
    public String getTitle(){
       if(!isSubderive){
          return Labels.getLabel("importTemplate.fiche.title");
-      }else{
-         return Labels.getLabel("importTemplate.subderive.fiche.title");
       }
+      return Labels.getLabel("importTemplate.subderive.fiche.title");
    }
 }

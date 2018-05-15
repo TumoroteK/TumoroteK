@@ -181,9 +181,8 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
    public boolean findDoublonManager(final CodeUtilisateur code){
       if(code.getCodeUtilisateurId() == null){
          return codeUtilisateurDao.findAll().contains(code);
-      }else{
-         return codeUtilisateurDao.findByExcludedId(code.getCodeUtilisateurId()).contains(code);
       }
+      return codeUtilisateurDao.findByExcludedId(code.getCodeUtilisateurId()).contains(code);
    }
 
    @Override

@@ -68,7 +68,7 @@ import fr.aphp.tumorotek.model.contexte.Contexte;
 @Table(name = "MALADIE_DELEGATE")
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "CONTEXTE_ID", discriminatorType = DiscriminatorType.INTEGER, length = 1)
-public class MaladieDelegate extends TKDelegateObject
+public class MaladieDelegate extends TKDelegateObject<Maladie>
 {
 
    private Integer maladieDelegateId;
@@ -99,27 +99,25 @@ public class MaladieDelegate extends TKDelegateObject
       this.maladie = maladie;
    }
 
-   @Override
    @ManyToOne
    @JoinColumn(name = "CONTEXTE_ID", nullable = false)
    public Contexte getContexte(){
       return contexte;
    }
 
-   @Override
    public void setContexte(final Contexte contexte){
       this.contexte = contexte;
    }
 
    @Transient
    @Override
-   public Object getDelegator(){
+   public Maladie getDelegator(){
       return getMaladie();
    }
 
    @Override
-   public void setDelegator(final Object obj){
-      setMaladie((Maladie) obj);
+   public void setDelegator(final Maladie obj){
+      setMaladie(obj);
    }
 
    @Transient

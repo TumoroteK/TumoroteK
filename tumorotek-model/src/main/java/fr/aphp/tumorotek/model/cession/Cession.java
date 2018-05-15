@@ -52,6 +52,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -60,6 +61,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.GenericGenerator;
 
 import fr.aphp.tumorotek.model.TKAnnotableObject;
+import fr.aphp.tumorotek.model.cession.delegate.AbstractCessionDelegate;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Service;
@@ -139,6 +141,8 @@ public class Cession implements TKAnnotableObject, Serializable
    private Boolean archive = false;
    // @since 2.1
    private Calendar lastScanCheckDate;
+   /** @since 2.2.0 */
+   private AbstractCessionDelegate delegate;
 
    private Banque banque;
    private CessionType cessionType;
@@ -184,9 +188,8 @@ public class Cession implements TKAnnotableObject, Serializable
    public Date getDemandeDate(){
       if(demandeDate != null){
          return new Date(demandeDate.getTime());
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void setDemandeDate(final Date date){
@@ -221,9 +224,8 @@ public class Cession implements TKAnnotableObject, Serializable
    public Date getValidationDate(){
       if(validationDate != null){
          return new Date(validationDate.getTime());
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void setValidationDate(final Date date){
@@ -241,9 +243,8 @@ public class Cession implements TKAnnotableObject, Serializable
          final Calendar cal = Calendar.getInstance();
          cal.setTime(departDate.getTime());
          return cal;
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void setDepartDate(final Calendar cal){
@@ -262,9 +263,8 @@ public class Cession implements TKAnnotableObject, Serializable
          final Calendar cal = Calendar.getInstance();
          cal.setTime(arriveeDate.getTime());
          return cal;
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void setArriveeDate(final Calendar cal){
@@ -301,9 +301,8 @@ public class Cession implements TKAnnotableObject, Serializable
          final Calendar cal = Calendar.getInstance();
          cal.setTime(destructionDate.getTime());
          return cal;
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void setDestructionDate(final Calendar cal){
@@ -463,6 +462,15 @@ public class Cession implements TKAnnotableObject, Serializable
       this.cederObjets = cederObjs;
    }
 
+   @OneToOne(mappedBy = "delegator", cascade = CascadeType.MERGE, orphanRemoval = true)
+   public AbstractCessionDelegate getDelegate(){
+      return delegate;
+   }
+
+   public void setDelegate(AbstractCessionDelegate delegate){
+      this.delegate = delegate;
+   }
+
    /**
     * 2 cessions sont considérées comme égales si elles ont le même
     * numéro et la même banque.
@@ -483,18 +491,15 @@ public class Cession implements TKAnnotableObject, Serializable
          if(test.numero == null){
             if(this.banque == null){
                return (test.banque == null);
-            }else{
-               return (this.banque.equals(test.banque));
             }
-         }else{
-            return false;
+            return (this.banque.equals(test.banque));
          }
+         return false;
       }else if(this.banque == null){
          if(test.banque == null){
             return (this.numero.equals(test.numero));
-         }else{
-            return false;
          }
+         return false;
       }else{
          return (this.numero.equals(test.numero) && this.banque.equals(test.banque));
       }
@@ -532,9 +537,8 @@ public class Cession implements TKAnnotableObject, Serializable
    public String toString(){
       if(this.numero != null){
          return "{" + this.numero + "}";
-      }else{
-         return "{Empty Cession}";
       }
+      return "{Empty Cession}";
    }
 
    @Override
@@ -566,6 +570,7 @@ public class Cession implements TKAnnotableObject, Serializable
       clone.setEtatIncomplet(this.getEtatIncomplet());
       clone.setArchive(this.getArchive());
       clone.setLastScanCheckDate(this.getLastScanCheckDate());
+      clone.setDelegate(this.getDelegate());
 
       return clone;
 
@@ -593,9 +598,8 @@ public class Cession implements TKAnnotableObject, Serializable
          final Calendar cal = Calendar.getInstance();
          cal.setTime(lastScanCheckDate.getTime());
          return cal;
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void setLastScanCheckDate(final Calendar cal){

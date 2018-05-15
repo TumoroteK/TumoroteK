@@ -52,7 +52,7 @@ import fr.aphp.tumorotek.model.code.CimoMorpho;
  * @version 2.0
  *
  */
-public interface AdicapManager extends CodeCommonManager
+public interface AdicapManager extends CodeCommonManager<Adicap>
 {
 
    /**

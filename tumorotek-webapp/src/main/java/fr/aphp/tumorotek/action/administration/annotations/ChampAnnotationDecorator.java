@@ -49,9 +49,11 @@ import fr.aphp.tumorotek.component.SmallObjDecorator;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationDefaut;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
+import fr.aphp.tumorotek.model.coeur.annotation.ChampCalcule;
 import fr.aphp.tumorotek.model.coeur.annotation.DataType;
 import fr.aphp.tumorotek.model.coeur.annotation.Item;
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.utils.Duree;
 
 /**
  * Classe 'Decorateur' qui decore Champannotation pour
@@ -84,6 +86,8 @@ public class ChampAnnotationDecorator extends SmallObjDecorator
 
    private Banque currentBanque = null;
 
+   private ChampCalcule champCalcule;
+
    @Override
    public ChampAnnotationDecorator clone(){
       final ChampAnnotationDecorator clone = new ChampAnnotationDecorator(getChamp(), currentBanque, getCatalogueChp());
@@ -107,6 +111,10 @@ public class ChampAnnotationDecorator extends SmallObjDecorator
 
          this.items = new ArrayList<>(ManagerLocator.getChampAnnotationManager().getItemsManager(chp, currentBanque));
 
+      }
+      if(isChampCalcule()){
+         defautsContainsEmptyFirst(ManagerLocator.getChampAnnotationManager().getAnnotationDefautsManager(chp), this.defauts);
+         this.champCalcule = ManagerLocator.getChampAnnotationManager().getChampCalculeManager(chp);
       }else{
          //type alphanum par defaut
          this.defauts.addAll(ManagerLocator.getChampAnnotationManager().getAnnotationDefautsManager(chp));
@@ -140,6 +148,14 @@ public class ChampAnnotationDecorator extends SmallObjDecorator
 
    public ChampAnnotation getChamp(){
       return this.champ;
+   }
+
+   public ChampCalcule getChampCalcule(){
+      return champCalcule;
+   }
+
+   public void setChampCalcule(ChampCalcule champCalcule){
+      this.champCalcule = champCalcule;
    }
 
    @Override
@@ -218,7 +234,7 @@ public class ChampAnnotationDecorator extends SmallObjDecorator
 
    public boolean getIsObligeable(){
       if(this.champ != null && this.champ.getDataType() != null){
-         return (!"fichier".equals(this.champ.getDataType().getType()));
+         return (!"fichier".equals(this.champ.getDataType().getType()) && !"calcule".equals(this.champ.getDataType().getType()));
       }
       return !catalogueChp;
    }
@@ -261,7 +277,7 @@ public class ChampAnnotationDecorator extends SmallObjDecorator
 
    public boolean getIsCombinable(){
       if(this.champ != null && this.champ.getDataType() != null){
-         return (!"fichier".equals(this.champ.getDataType().getType()) && !"boolean".equals(this.champ.getDataType().getType()));
+         return (!"fichier".equals(this.champ.getDataType().getType()) && !"boolean".equals(this.champ.getDataType().getType()) && !"calcule".equals(this.champ.getDataType().getType()));
       }
       return !catalogueChp;
    }
@@ -297,7 +313,8 @@ public class ChampAnnotationDecorator extends SmallObjDecorator
     * @return true si visible false sinon
     */
    public Boolean getDefautEraserDisplay(){
-      return (!isThesaurus() && !isThesaurusM() && !this.defaut.isEmpty() || !this.items.isEmpty()) && !getStatique();
+      return ((!isThesaurus() && !isThesaurusM() && !this.defaut.isEmpty() || !this.items.isEmpty())
+         || (("calcule".equals(this.champ.getDataType().getType()) && this.champCalcule != null))) && !getStatique();
    }
 
    /**
@@ -318,7 +335,7 @@ public class ChampAnnotationDecorator extends SmallObjDecorator
     * @return true si visible false sinon
     */
    public Boolean getAddDefautDisplay(){
-      return (this.defaut.isEmpty() && this.items.isEmpty()) && !getStatique();
+      return ((this.defaut.isEmpty() && this.items.isEmpty() && null == this.champCalcule)) && !getStatique();
    }
 
    /**
@@ -341,6 +358,10 @@ public class ChampAnnotationDecorator extends SmallObjDecorator
             return ObjectTypesFormatters.renderItems(this.items, this.defauts);
          }
          return Labels.getLabel("general.details");
+      }else if(isChampCalcule()){
+         return ObjectTypesFormatters.renderChampCalcule(this.champCalcule);
+      }else if(isDuree() && null != this.defaut.getAlphanum()){
+         return ObjectTypesFormatters.formatDuree(new Duree(new Long(this.defaut.getAlphanum()), Duree.SECONDE));
       }
       return null;
    }
@@ -391,6 +412,10 @@ public class ChampAnnotationDecorator extends SmallObjDecorator
       return ("num".equals(this.champ.getDataType().getType()));
    }
 
+   public boolean isDuree(){
+      return ("duree".equals(this.champ.getDataType().getType()));
+   }
+
    public boolean isTexte(){
       return ("texte".equals(this.champ.getDataType().getType()));
    }
@@ -405,6 +430,10 @@ public class ChampAnnotationDecorator extends SmallObjDecorator
 
    public boolean isHyperlien(){
       return (this.champ.getDataType().getType().matches("hyperlien"));
+   }
+
+   public boolean isChampCalcule(){
+      return this.champ.getDataType().getType().matches("calcule");
    }
 
    public Banque getCurrentBanque(){

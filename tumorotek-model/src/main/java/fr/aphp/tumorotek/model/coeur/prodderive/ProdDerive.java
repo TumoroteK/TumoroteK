@@ -59,6 +59,7 @@ import org.hibernate.annotations.GenericGenerator;
 import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
+import fr.aphp.tumorotek.model.coeur.prodderive.delegate.AbstractProdDeriveDelegate;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.stockage.Emplacement;
@@ -192,6 +193,8 @@ public class ProdDerive implements TKStockableObject, Serializable
    private Transformation transformation;
    private ModePrepaDerive modePrepaDerive;
 
+   private AbstractProdDeriveDelegate delegate;
+
    public ProdDerive(){
       super();
    }
@@ -263,9 +266,8 @@ public class ProdDerive implements TKStockableObject, Serializable
          final Calendar cal = Calendar.getInstance();
          cal.setTime(dateStock.getTime());
          return cal;
-      }else{
-         return null;
       }
+      return null;
    }
 
    @Override
@@ -305,9 +307,8 @@ public class ProdDerive implements TKStockableObject, Serializable
          final Calendar cal = Calendar.getInstance();
          cal.setTime(dateTransformation.getTime());
          return cal;
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void setDateTransformation(final Calendar cal){
@@ -487,6 +488,21 @@ public class ProdDerive implements TKStockableObject, Serializable
    }
 
    /**
+    * @return the delegate
+    */
+   @OneToOne(mappedBy = "delegator", cascade = CascadeType.MERGE, orphanRemoval = true)
+   public AbstractProdDeriveDelegate getDelegate(){
+      return delegate;
+   }
+
+   /**
+    * @param delegate the delegate to set
+    */
+   public void setDelegate(AbstractProdDeriveDelegate delegate){
+      this.delegate = delegate;
+   }
+
+   /**
     * 2 produits dérivés sont considérés comme égaux s'ils ont le même code
     * et la même banque.
     * @param obj est le produit dérivé à tester.
@@ -538,9 +554,8 @@ public class ProdDerive implements TKStockableObject, Serializable
    public String toString(){
       if(this.code != null){
          return "{" + this.code + "}";
-      }else{
-         return "{Empty ProdDerive}";
       }
+      return "{Empty ProdDerive}";
    }
 
    @Override
@@ -573,6 +588,7 @@ public class ProdDerive implements TKStockableObject, Serializable
       clone.setArchive(this.getArchive());
       clone.setConformeTraitement(this.getConformeTraitement());
       clone.setConformeCession(this.getConformeCession());
+      clone.setDelegate(this.getDelegate());
 
       return clone;
    }

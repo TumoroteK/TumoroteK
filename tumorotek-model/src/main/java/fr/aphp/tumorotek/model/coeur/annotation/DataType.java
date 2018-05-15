@@ -51,7 +51,9 @@ import javax.persistence.Table;
 import org.hibernate.annotations.GenericGenerator;
 
 /**
- * Objet persistant mappant la table DATA_TYPE.
+ * Objet persistant mappant la table DATA_TYPE.<br>
+ * TODO Pourquoi ne pas simplement utiliser un ENUM, plutôt que de faire des appels en base non pertinents ? De plus ces datatype ne sont absolument pas modifiables.
+ * Cela éviterai également les erreurs lors des tests equals (cf. "text" vs "texte") + on connaitrait exactement les types disponibles et utilisés.
  *
  * Date: 09/09/2009
  *
@@ -61,7 +63,8 @@ import org.hibernate.annotations.GenericGenerator;
  */
 @Entity
 @Table(name = "DATA_TYPE")
-@NamedQueries(value = {@NamedQuery(name = "DataType.findByType", query = "SELECT d FROM DataType d WHERE d.type = ?1")})
+@NamedQueries(value = {@NamedQuery(name = "DataType.findByType", query = "SELECT d FROM DataType d WHERE d.type = ?1"),
+   @NamedQuery(name = "DataType.findByTypes", query = "SELECT d FROM DataType d WHERE d.type in ?1")})
 public class DataType implements Serializable
 {
 
@@ -111,9 +114,8 @@ public class DataType implements Serializable
    public String toString(){
       if(this.type != null){
          return "{" + this.type + "}";
-      }else{
-         return "{Empty DataType}";
       }
+      return "{Empty DataType}";
    }
 
    /**

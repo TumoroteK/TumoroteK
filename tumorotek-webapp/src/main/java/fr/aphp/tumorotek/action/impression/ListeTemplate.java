@@ -143,32 +143,6 @@ public class ListeTemplate extends AbstractListeController2
       }
    }
 
-   //	
-   //	@Override
-   //	public void addToObjectList(Object newObj) {
-   //		// L'objet inséré est un clone de celui du formulaire
-   //		// afin d'éviter des effets de bord lors de la modif
-   //		// du formulaire
-   //		Template newTemplate = ((Template) newObj).clone();
-   //		this.listObjects.add(newTemplate);
-   //		
-   //		// update de la liste
-   //		getBinder().loadAttribute(
-   //				self.getFellow("objectsListGrid"), "model");
-   //		
-   //		// on récupère toutes les lignes de la grille et on
-   //		// sélectionne celle du nouvel objet
-   //		Rows rows = objectsListGrid.getRows();
-   //		List<Component> comps = rows.getChildren();
-   //		selectRow((Row) comps.get(
-   //				this.listObjects.indexOf(newTemplate)), newTemplate);
-   //		
-   //		// on affiche la page sur laquelle se trouve l'objet
-   //		objectsListGrid.getPaginal().setActivePage(
-   //				getPageNumberForObject(getcurrentObject));
-   //		// log.debug("liste: nouvel objet ajoute: " + newTemplate.toString());
-   //	}	
-
    public void onClick$viewObject(final Event event){
       // déselection de la ligne courante
       deselectRow();

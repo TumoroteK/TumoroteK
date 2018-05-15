@@ -607,10 +607,13 @@ public class ObjetNonConformeManagerTest extends AbstractManagerTest4
       }catch(final Exception e){
          e.printStackTrace();
       }finally{
-         stmt.close();
-         rs.close();
+         if(null != stmt)
+            stmt.close();
+         if(null != rs)
+            rs.close();
+         if(null != conn)
+            conn.close();
          suite.closePs();
-         conn.close();
       }
    }
 

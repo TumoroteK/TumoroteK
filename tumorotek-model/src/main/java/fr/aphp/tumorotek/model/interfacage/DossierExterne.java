@@ -127,9 +127,8 @@ public class DossierExterne implements java.io.Serializable
          final Calendar cal = Calendar.getInstance();
          cal.setTime(dateOperation.getTime());
          return cal;
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void setDateOperation(final Calendar cal){
@@ -211,9 +210,8 @@ public class DossierExterne implements java.io.Serializable
    public String toString(){
       if(this.identificationDossier != null){
          return "{" + this.identificationDossier + ", " + emetteur.getIdentification() + "(Emetteur)}";
-      }else{
-         return "{Empty DossierExterne}";
       }
+      return "{Empty DossierExterne}";
    }
 
 }

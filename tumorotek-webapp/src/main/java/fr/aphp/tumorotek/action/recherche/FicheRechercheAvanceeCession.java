@@ -38,7 +38,7 @@ package fr.aphp.tumorotek.action.recherche;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.collections.ListUtils;
+import org.apache.commons.collections4.ListUtils;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -137,7 +137,7 @@ public class FicheRechercheAvanceeCession extends AbstractFicheRechercheAvancee
     * @param ano
     *            True si la recherche est anonyme.
     */
-   
+
    public void initRechercheAvancee(final Entite entite, final String path, final AbstractListeController2 listeController){
       this.entiteToSearch = entite;
       this.pathToRespond = path;
@@ -153,11 +153,9 @@ public class FicheRechercheAvanceeCession extends AbstractFicheRechercheAvancee
       demandeurs.add(0, null);
       contrats = ManagerLocator.getContratManager().findAllObjectsByPlateformeManager(SessionUtils.getPlateforme(sessionScope));
       contrats.add(0, null);
-      cessionExamens = (List<CessionExamen>) ManagerLocator.getCessionExamenManager()
-         .findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      cessionExamens = ManagerLocator.getCessionExamenManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       cessionExamens.add(0, null);
-      destructions = (List<DestructionMotif>) ManagerLocator.getDestructionMotifManager()
-         .findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      destructions = ManagerLocator.getDestructionMotifManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       destructions.add(0, null);
       operateursDates = new ArrayList<>();
       operateursDates.add("=");
@@ -211,7 +209,7 @@ public class FicheRechercheAvanceeCession extends AbstractFicheRechercheAvancee
    /**
     * Exécution de la requête.
     */
-   
+
    public void onLaterFind(){
       oneValueEntered = false;
       resultats = new ArrayList<>();

@@ -54,12 +54,7 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import fr.aphp.tumorotek.dao.qualite.FantomeDao;
-import fr.aphp.tumorotek.dao.qualite.OperationTypeDao;
 import fr.aphp.tumorotek.interfacage.jaxb.gilda.GildaMessage;
-import fr.aphp.tumorotek.manager.coeur.patient.PatientManager;
-import fr.aphp.tumorotek.manager.interfacage.PatientSipManager;
-import fr.aphp.tumorotek.manager.qualite.OperationManager;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:test-camel-config.xml", "classpath:applicationContextManagerBase.xml",
@@ -75,16 +70,16 @@ public class Test
    @Autowired
    private CamelContext camelContext;
 
-   @Autowired
-   private PatientSipManager patientSipManager;
-   @Autowired
-   private PatientManager patientManager;
-   @Autowired
-   private OperationManager operationManager;
-   @Autowired
-   private FantomeDao fantomeDao;
-   @Autowired
-   private OperationTypeDao operationTypeDao;
+//   @Autowired
+//   private PatientSipManager patientSipManager;
+//   @Autowired
+//   private PatientManager patientManager;
+//   @Autowired
+//   private OperationManager operationManager;
+//   @Autowired
+//   private FantomeDao fantomeDao;
+//   @Autowired
+//   private OperationTypeDao operationTypeDao;
 
    private MockEndpoint mockBeans;
    private MockEndpoint mockHandle;

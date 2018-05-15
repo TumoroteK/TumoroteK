@@ -39,10 +39,14 @@ import fr.aphp.tumorotek.action.echantillon.ListeEchantillon;
 
 /**
  * Héritage de la classe {@link ListeEchantillon} pour le contexte BTO
+ * 
+ * @author
  * @since 2.2.0
  * @version 2.2.0
  */
 public class ListeEchantillonBTO extends ListeEchantillon
 {
+
+   private static final long serialVersionUID = -1526060153505488300L;
 
 }

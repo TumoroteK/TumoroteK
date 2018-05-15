@@ -761,9 +761,8 @@ public class FicheLigneEtiquetteModale extends AbstractFicheCombineController
    public String getChampsTitle(){
       if(codeRadio.isChecked()){
          return Labels.getLabel("fiche.ligne.etiquette.champs.title.codeBarres");
-      }else{
-         return Labels.getLabel("fiche.ligne.etiquette.champs.title.texte");
       }
+      return Labels.getLabel("fiche.ligne.etiquette.champs.title.texte");
    }
 
    public ConstWord getEnteteConstraint(){

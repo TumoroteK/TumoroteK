@@ -42,7 +42,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.collections.ListUtils;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
@@ -823,7 +823,7 @@ public class FicheBanque extends AbstractFicheCombineController
       final List<TableAnnotation> tabsCess = TableAnnotationDecorator.undecorateListe(getTablesCessSorterController().getObjs());
 
       // suppr catalogue
-      
+
       final List<Catalogue> supprCatalogues =
          ListUtils.removeAll(ManagerLocator.getCatalogueManager().findByAssignedBanqueManager(banque), selectedCatalogues);
 
@@ -847,7 +847,7 @@ public class FicheBanque extends AbstractFicheCombineController
 
       // ajout catalogues
       tabs.clear();
-      
+
       final List<Catalogue> newCatalogues =
          ListUtils.removeAll(selectedCatalogues, ManagerLocator.getCatalogueManager().findByAssignedBanqueManager(banque));
       tabs.addAll(ManagerLocator.getTableAnnotationManager().findByCataloguesManager(newCatalogues));
@@ -1744,33 +1744,29 @@ public class FicheBanque extends AbstractFicheCombineController
    public String getContexte(){
       if(selectedContexte != null){
          return Labels.getLabel("Contexte." + selectedContexte.getNom());
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getSClassCollaborateur(){
       if(this.banque != null){
          return ObjectTypesFormatters.sClassCollaborateur(this.banque.getCollaborateur());
-      }else{
-         return "";
       }
+      return "";
    }
 
    public String getSClassContact(){
       if(this.banque != null){
          return ObjectTypesFormatters.sClassCollaborateur(this.banque.getContact());
-      }else{
-         return "";
       }
+      return "";
    }
 
    public String getSClassService(){
       if(this.banque != null){
          return ObjectTypesFormatters.sClassService(this.banque.getProprietaire());
-      }else{
-         return "";
       }
+      return "";
    }
 
    /**
@@ -1780,74 +1776,55 @@ public class FicheBanque extends AbstractFicheCombineController
    public String getArchiveFormatted(){
       if(this.banque != null){
          return ObjectTypesFormatters.booleanLitteralFormatter(this.banque.getArchive());
-      }else{
-         return "";
       }
+      return "";
    }
 
    public String getDefMaladieFormatted(){
       if(this.banque != null){
          return ObjectTypesFormatters.booleanLitteralFormatter(this.banque.getDefMaladies());
-      }else{
-         return "";
       }
+      return "";
    }
 
    public String getAutoCrossFormatted(){
       if(this.banque != null){
          return ObjectTypesFormatters.booleanLitteralFormatter(this.banque.getAutoriseCrossPatient());
-      }else{
-         return "";
       }
+      return "";
    }
 
    public String getStyleCouleurEchan(){
       if(this.banque != null && this.banque.getEchantillonCouleur() != null){
          return "color: " + this.banque.getEchantillonCouleur().getHexa();
-      }else{
-         return "";
       }
+      return "";
    }
 
    public String getStyleCouleurDerive(){
       if(this.banque != null){
          return "color: " + this.banque.getProdDeriveCouleur().getHexa();
-      }else{
-         return "";
       }
+      return "";
    }
 
    public String getEchantillonCouleur(){
       if(banque != null && banque.getEchantillonCouleur() != null){
          return Labels.getLabel("Couleur." + banque.getEchantillonCouleur().getCouleur());
-      }else{
-         return null;
       }
+         return null;
    }
 
    public String getProdDeriveCouleur(){
       if(banque != null && banque.getProdDeriveCouleur() != null){
          return Labels.getLabel("Couleur." + banque.getProdDeriveCouleur().getCouleur());
-      }else{
-         return null;
       }
+         return null;
    }
 
    /*************************************************************************/
    /************************** CONTEXTE *************************************/
    /*************************************************************************/
-   //	public void onCheck$cataBox(Event event) {
-   //		Catalogue cata = (Catalogue) AbstractListeController2
-   //								.getBindingData((ForwardEvent) event, false);
-   //		
-   //		// ajoute a la liste si check
-   //		if (((Checkbox) ((ForwardEvent) event).getOrigin()
-   //											.getTarget()).isChecked()) {
-   //			selectedCatalogues.add(cata);
-   //		} else {
-   //			selectedCatalogues.remove(cata);
-   //		}
-   //	}
    public void onSelect$contexteBox(){
       // validation
       if(selectedContexte != null && selectedContexte.getContexteId() != null){
@@ -1901,7 +1878,7 @@ public class FicheBanque extends AbstractFicheCombineController
     */
    public void updateConteneurs(){
       if(this.banque != null && this.banque.getBanqueId() != null){
-         getConteneursAssocies().setObjects(ManagerLocator.getConteneurManager().findByBanqueWithOrderManager(banque));
+         getConteneursAssocies().setObjects(ConteneurDecorator.decorateListe(ManagerLocator.getConteneurManager().findByBanqueWithOrderManager(banque), banque.getPlateforme()));
       }
    }
 
@@ -2167,7 +2144,7 @@ public class FicheBanque extends AbstractFicheCombineController
     * codeDiagBox. Cette valeur sera mise en majuscules et une recherche
     * automatique du libelle correspondant est lancée.
     */
-   public void onBlur$defautCodeBox(final Event e){
+   public void onBlur$defautCodeBox(){
 
       if(!defautCodeBox.getValue().equals("")){
          Clients.showBusy(maladieRow, Labels.getLabel("libelle.recherche.encours"));
@@ -2176,7 +2153,7 @@ public class FicheBanque extends AbstractFicheCombineController
       defautCodeBox.setValue(defautCodeBox.getValue().toUpperCase().trim());
    }
 
-   public void onLaterFindLibelle(final Event e){
+   public void onLaterFindLibelle(){
 
       final Set<CodeCommon> codes = new HashSet<>();
       CodeUtils.findCodesInAllTables(defautCodeBox.getValue(), true, true, codes, true,
@@ -2192,7 +2169,7 @@ public class FicheBanque extends AbstractFicheCombineController
    /**
     * @since 2.1
     */
-   public void onCheck$utilisateursArchiveBox(final Event e){
+   public void onCheck$utilisateursArchiveBox(){
       profilUtilisateurs.clear();
       // display non-archived users only
       if(banque != null && banque.getBanqueId() != null){

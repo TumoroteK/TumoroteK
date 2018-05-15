@@ -101,11 +101,11 @@ public class ProtocoleManagerTest extends AbstractManagerTest4
    public void testIsUsedObject(){
       //Enregistrement est reference
       final Plateforme pf1 = plateformeDao.findById(1);
-      final Protocole tysa = (Protocole) protocoleManager.findByOrderManager(pf1).get(0);
+      final Protocole tysa = protocoleManager.findByOrderManager(pf1).get(0);
       assertTrue(protocoleManager.isUsedObjectManager(tysa));
       //Enregistrement n'est pas reference
       final Plateforme pf2 = plateformeDao.findById(2);
-      final Protocole edmus = (Protocole) protocoleManager.findByOrderManager(pf2).get(0);
+      final Protocole edmus = protocoleManager.findByOrderManager(pf2).get(0);
       assertFalse(protocoleManager.isUsedObjectManager(edmus));
    }
 
@@ -176,10 +176,10 @@ public class ProtocoleManagerTest extends AbstractManagerTest4
    private void updateObjectManagerTest(){
       //Modification d'un enregistrement
       final Plateforme pf1 = plateformeDao.findById(1);
-      final Protocole p1 = (Protocole) protocoleManager.findByOrderManager(pf1).get(0);
+      final Protocole p1 = protocoleManager.findByOrderManager(pf1).get(0);
       p1.setNom("Melbase+234");
       protocoleManager.updateObjectManager(p1);
-      assertTrue(((Protocole) protocoleManager.findByOrderManager(pf1).get(0)).getNom().equals("Melbase+234"));
+      assertTrue(protocoleManager.findByOrderManager(pf1).get(0).getNom().equals("Melbase+234"));
       //Modification en un doublon engendrant une exception
       Boolean catched = false;
       try{
@@ -203,7 +203,7 @@ public class ProtocoleManagerTest extends AbstractManagerTest4
             }
          }catch(final ValidationException e){
             //verifie que l'enregistrement n'a pas ete modifie
-            assertTrue(((Protocole) protocoleManager.findByOrderManager(pf1).get(0)).getNom().equals("Melbase+234"));
+            assertTrue(protocoleManager.findByOrderManager(pf1).get(0).getNom().equals("Melbase+234"));
          }
       }
    }
@@ -214,7 +214,7 @@ public class ProtocoleManagerTest extends AbstractManagerTest4
    private void removeObjectManagerTest(){
       //Suppression de l'enregistrement precedemment insere
       final Plateforme pf1 = plateformeDao.findById(1);
-      final Protocole p1 = (Protocole) protocoleManager.findByOrderManager(pf1).get(0);
+      final Protocole p1 = protocoleManager.findByOrderManager(pf1).get(0);
       protocoleManager.removeObjectManager(p1);
       assertTrue(protocoleManager.findAllObjectsManager().size() == 3);
       //Suppression engrendrant une exception

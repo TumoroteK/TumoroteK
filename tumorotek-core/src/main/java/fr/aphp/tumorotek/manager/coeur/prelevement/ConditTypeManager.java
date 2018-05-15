@@ -56,7 +56,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.ConditType;
  * @version 2.0
  *
  */
-public interface ConditTypeManager extends TKThesaurusManager
+public interface ConditTypeManager extends TKThesaurusManager<ConditType>
 {
 
    /**

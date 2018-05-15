@@ -66,6 +66,7 @@ import fr.aphp.tumorotek.model.code.CodeAssigne;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationDefaut;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
+import fr.aphp.tumorotek.model.coeur.annotation.ChampCalcule;
 import fr.aphp.tumorotek.model.coeur.annotation.Item;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
@@ -73,8 +74,11 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Etablissement;
 import fr.aphp.tumorotek.model.contexte.Protocole;
 import fr.aphp.tumorotek.model.contexte.Service;
+import fr.aphp.tumorotek.model.io.export.Champ;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
+import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.systeme.Fichier;
+import fr.aphp.tumorotek.model.utils.Duree;
 
 /**
  * Classe utilitaire regroupant les methodes statiques permettant le formatage
@@ -118,23 +122,22 @@ public final class ObjectTypesFormatters
       if(b != null){
          if(b.booleanValue()){
             return Labels.getLabel("general.checkbox.true");
-         }else{
-            return Labels.getLabel("general.checkbox.false");
          }
+         return Labels.getLabel("general.checkbox.false");
       }
       return "-";
    }
 
    /**
-    * Formatte le double. Enlève le trailing .0 si le double est
+    * Formatte une valeur numérique. Enlève le trailing .0 si le numérique est
     * un entier.
-    * @param d double
+    * @param o double
     * @return double formaté
     */
-   public static String doubleLitteralFormatter2(final Double d){
-      if(d != null){
-         String s = Double.toString(d);
-         s = s.replaceAll("\\.0$", "");
+   public static String numericFormatter(final Object o){
+      if(o != null && o instanceof Number){
+         String s = o.toString();
+         s = s.replaceAll("\\.0+$", "");
          return s;
       }
       return null;
@@ -154,9 +157,8 @@ public final class ObjectTypesFormatters
       if(a != null){
          final double p = Math.pow(10.0, n);
          return (float) (Math.floor((a * p) + 0.5) / p);
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -230,9 +232,8 @@ public final class ObjectTypesFormatters
             return df.format(((Calendar) date).getTime());
          }
          return df.format(date);
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -245,12 +246,10 @@ public final class ObjectTypesFormatters
       if(collab != null){
          if(collab.getArchive() != null && collab.getArchive()){
             return "formArchiveValue";
-         }else{
-            return "formValue";
          }
-      }else{
          return "formValue";
       }
+      return "formValue";
    }
 
    /**
@@ -263,12 +262,10 @@ public final class ObjectTypesFormatters
       if(serv != null){
          if(serv.getArchive()){
             return "formArchiveValue";
-         }else{
-            return "formValue";
          }
-      }else{
          return "formValue";
       }
+      return "formValue";
    }
 
    /**
@@ -281,12 +278,10 @@ public final class ObjectTypesFormatters
       if(etab != null){
          if(etab.getArchive()){
             return "formArchiveValue";
-         }else{
-            return "formValue";
          }
-      }else{
          return "formValue";
       }
+      return "formValue";
    }
 
    /**
@@ -499,18 +494,18 @@ public final class ObjectTypesFormatters
       final Object obj = ManagerLocator.getAnnotationValeurManager().getValueForAnnotationValeur(valeur);
 
       if(obj != null){
-         if(obj.getClass().getSimpleName().equals("String")){
-            result = (String) obj;
-         }else if(obj.getClass().getSimpleName().equals("Date")){
+         if(String.class.isInstance(obj)){
+            result = String.class.cast(obj);
+         }else if(Date.class.isInstance(obj)){
             result = ObjectTypesFormatters.dateRenderer2(obj);
-         }else if(obj.getClass().getSimpleName().contains("Calendar")){
+         }else if(Calendar.class.isInstance(obj)){
             result = ObjectTypesFormatters.dateRenderer2(obj);
-         }else if(obj.getClass().getSimpleName().equals("Boolean")){
+         }else if(Boolean.class.isInstance(obj)){
             result = ObjectTypesFormatters.booleanLitteralFormatter((Boolean) obj);
-         }else if(obj.getClass().getSimpleName().equals("Item")){
-            result = ((Item) obj).getLabel();
-         }else if(obj.getClass().getSimpleName().equals("Fichier")){
-            result = ((Fichier) obj).getNom();
+         }else if(Item.class.isInstance(obj)){
+            result = Item.class.cast(obj).getLabel();
+         }else if(Fichier.class.isInstance(obj)){
+            result = Fichier.class.cast(obj).getNom();
          }
       }
       return result;
@@ -543,10 +538,7 @@ public final class ObjectTypesFormatters
             }catch(final NumberFormatException e){
                nbMoisMdp = null;
             }
-         }else{
-            nbMoisMdp = null;
          }
-      }else{
          nbMoisMdp = null;
       }
 
@@ -583,6 +575,151 @@ public final class ObjectTypesFormatters
          resultat = sb.toString();
       }
       return resultat;
+   }
+
+   /**
+    * Retourne une durée (temps en secondes) formatté en Années Mois Jours Heures Minutes.
+    * @param duree secondes.
+    * @return Délai en Années Mois Jours Heures Minutes.
+    */
+   public static String formatDuree(final Duree duree){
+      Duree dureeDecompte = new Duree(duree.getTemps(Duree.MILLISECONDE), Duree.MILLISECONDE);
+      Long annees = dureeDecompte.getTemps(Duree.ANNEE);
+      dureeDecompte.addTemps(-annees, Duree.ANNEE);
+      Long mois = dureeDecompte.getTemps(Duree.MOIS);
+      dureeDecompte.addTemps(-mois, Duree.MOIS);
+      Long jours = dureeDecompte.getTemps(Duree.JOUR);
+      dureeDecompte.addTemps(-jours, Duree.JOUR);
+      Long heures = dureeDecompte.getTemps(Duree.HEURE);
+      dureeDecompte.addTemps(-heures, Duree.HEURE);
+      Long minutes = dureeDecompte.getTemps(Duree.MINUTE);
+
+      final StringBuffer sb = new StringBuffer();
+      // Flag pour savoir d'où commence le formattage et ne pas avoir de "trous"
+
+      if(annees > 0){
+         if(annees == 1){
+            sb.append(annees + " " + Labels.getLabel("date.annee") + " ");
+         }else{
+            sb.append(annees + " " + Labels.getLabel("date.annees") + " ");
+         }
+      }
+
+      if(mois > 0){
+         if(mois == 1){
+            sb.append(mois + " " + Labels.getLabel("date.mois") + " ");
+         }else{
+            sb.append(mois + " " + Labels.getLabel("date.months") + " ");
+         }
+      }
+
+      if(jours > 0){
+         if(jours == 1){
+            sb.append(jours + " " + Labels.getLabel("date.jour") + " ");
+         }else{
+            sb.append(jours + " " + Labels.getLabel("date.jours") + " ");
+         }
+      }
+
+      if(heures > 0){
+         if(heures == 1){
+            sb.append(heures + " " + Labels.getLabel("date.heure") + " ");
+         }else{
+            sb.append(heures + " " + Labels.getLabel("date.heures") + " ");
+         }
+      }
+
+      if(minutes > 0){
+         if(minutes == 1){
+            sb.append(minutes + " " + Labels.getLabel("date.minute") + " ");
+         }else{
+            sb.append(minutes + " " + Labels.getLabel("date.minutes") + " ");
+         }
+      }
+
+      return sb.toString();
+   }
+
+   /**
+    * Formatte un champCalculé pour l'affichage (label)
+    * @param champCalcule
+    * @return label du champCalculé
+    */
+   public static String renderChampCalcule(ChampCalcule champCalcule){
+      StringBuffer sb = new StringBuffer();
+      if(null != champCalcule && null != champCalcule.getChamp1()){
+         sb.append("[" + formatChampLabel(champCalcule.getChamp1(), true, "-") + "]");
+         sb.append(" " + champCalcule.getOperateur() + " ");
+
+         if(null != champCalcule.getChamp2()){
+            sb.append("[" + formatChampLabel(champCalcule.getChamp2(), true, "-") + "]");
+         }else if("date".equals(champCalcule.getDataType().getType()) || "datetime".equals(champCalcule.getDataType().getType())
+            || "duree".equals(champCalcule.getDataType().getType())){
+            Duree duree = new Duree(new Long(champCalcule.getValeur()), Duree.SECONDE);
+            sb.append(formatDuree(duree));
+         }else{
+            sb.append(champCalcule.getValeur());
+         }
+      }
+
+      return sb.toString();
+   }
+
+   /**
+    * Retourne un label formaté avec internationalisation
+    * @param entite entité
+    * @return label formaté
+    */
+   public static String formatEntiteLabel(Entite entite){
+      String entiteNom = entite.getNom();
+      String entiteLabel = Labels.getLabel("Entite." + entiteNom);
+
+      if(null == entiteLabel || "".equals(entiteLabel)){
+         return entiteNom;
+      }
+
+      return entiteLabel;
+   }
+
+   /**
+    * Retourne un label formaté avec internationalisation
+    * @param champ champ à formatter
+    * @param withEntityName précéder le label du champ avec son entité ?
+    * @param separator
+    * @return Label formatté
+    */
+   public static String formatChampLabel(Champ champ, Boolean withEntityName, String separator){
+      String labelChamp = formatChampLabel(champ);
+      if(withEntityName){
+         String labelEntite = formatEntiteLabel(champ.entite());
+         if(null != separator){
+            labelChamp = labelEntite + separator + labelChamp;
+         }else{
+            labelChamp = labelEntite + labelChamp;
+         }
+      }
+      return labelChamp;
+   }
+
+   /**
+    * Retourne un label formaté avec internationalisation
+    * @param champ champ à formatter
+    * @return Label formatté
+    */
+   public static String formatChampLabel(Champ champ){
+      String labelChamp = null;
+      String champNom = champ.nom();
+      if(null != champ.getChampEntite() && champNom.endsWith("Id")){
+         // si le nom du champ finit par "Id", on le retire
+         champNom = champ.nom().substring(0, champNom.length() - 2);
+      }
+      String entiteNom = champ.entite().getNom();
+      labelChamp = Labels.getLabel("Champ." + entiteNom + "." + champNom);
+
+      if(null == labelChamp || "".equals(labelChamp)){
+         labelChamp = champ.nom();
+      }
+      return labelChamp;
    }
 
    /**
@@ -693,10 +830,12 @@ public final class ObjectTypesFormatters
    public static String formatObject(final Object o){
       if(o instanceof String){
          return (String) o;
-      }else if(o instanceof Integer){
+      }else if(o instanceof Integer || o instanceof Long){
          return String.valueOf(o);
       }else if(o instanceof Float){
          return doubleLitteralFormatter(new Double((Float) o));
+      }else if(o instanceof Double){
+         return doubleLitteralFormatter((Double) o);
       }else if(o instanceof Boolean){
          return booleanLitteralFormatter((Boolean) o);
       }else if(o instanceof Date){

@@ -49,7 +49,7 @@ import fr.aphp.tumorotek.model.code.CimoMorpho;
  * @version 2.0
  *
  */
-public interface CimoMorphoManager extends CodeCommonManager
+public interface CimoMorphoManager extends CodeCommonManager<CimoMorpho>
 {
 
    /**

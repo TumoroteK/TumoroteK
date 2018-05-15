@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ModePrepaDerive;
  * @version 2.0
  *
  */
-public interface ModePrepaDeriveDao extends GenericDaoJpa<ModePrepaDerive, Integer>, TKThesaurusDao
+public interface ModePrepaDeriveDao extends GenericDaoJpa<ModePrepaDerive, Integer>, TKThesaurusDao<ModePrepaDerive>
 {
 
    /**

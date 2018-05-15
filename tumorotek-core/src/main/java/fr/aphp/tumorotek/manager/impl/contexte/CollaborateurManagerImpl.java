@@ -45,7 +45,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
 
-import fr.aphp.tumorotek.dao.coeur.patient.PatientDao;
 import fr.aphp.tumorotek.dao.coeur.patient.PatientMedecinDao;
 import fr.aphp.tumorotek.dao.contexte.CollaborateurDao;
 import fr.aphp.tumorotek.dao.contexte.CoordonneeDao;
@@ -54,10 +53,8 @@ import fr.aphp.tumorotek.dao.contexte.ServiceDao;
 import fr.aphp.tumorotek.dao.contexte.SpecialiteDao;
 import fr.aphp.tumorotek.dao.contexte.TitreDao;
 import fr.aphp.tumorotek.dao.qualite.OperationTypeDao;
-import fr.aphp.tumorotek.manager.coeur.patient.PatientManager;
 import fr.aphp.tumorotek.manager.context.CollaborateurManager;
 import fr.aphp.tumorotek.manager.context.CoordonneeManager;
-import fr.aphp.tumorotek.manager.context.ServiceManager;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.ObjectReferencedException;
 import fr.aphp.tumorotek.manager.impl.coeur.CreateOrUpdateUtilities;
@@ -134,8 +131,6 @@ public class CollaborateurManagerImpl implements CollaborateurManager
       this.serviceDao = sDao;
    }
 
-   public void setServiceManager(final ServiceManager serviceManager){}
-
    public void setCoordonneeDao(final CoordonneeDao cDao){
       this.coordonneeDao = cDao;
    }
@@ -159,10 +154,6 @@ public class CollaborateurManagerImpl implements CollaborateurManager
    public void setOperationTypeDao(final OperationTypeDao oDao){
       this.operationTypeDao = oDao;
    }
-
-   public void setPatientManager(final PatientManager patientManager){}
-
-   public void setPatientDao(final PatientDao patientDao){}
 
    public void setPatientMedecinDao(final PatientMedecinDao pDao){
       this.patientMedecinDao = pDao;
@@ -230,9 +221,8 @@ public class CollaborateurManagerImpl implements CollaborateurManager
    public Long findCountByEtablissementManager(final Etablissement etal){
       if(etal != null){
          return collaborateurDao.findCountByEtablissement(etal).get(0);
-      }else{
-         return new Long(0);
       }
+      return new Long(0);
    }
 
    /**
@@ -248,18 +238,16 @@ public class CollaborateurManagerImpl implements CollaborateurManager
          final Set<Service> services = collaborateur.getServices();
          services.size();
          return services;
-      }else{
-         return new HashSet<>();
       }
+      return new HashSet<>();
    }
 
    @Override
    public List<Collaborateur> findByServicesAndArchiveManager(final Service service, final boolean archive){
       if(service != null && service.getServiceId() != null){
          return collaborateurDao.findByServiceIdArchiveWithOrder(service.getServiceId(), archive);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    /**
@@ -297,9 +285,8 @@ public class CollaborateurManagerImpl implements CollaborateurManager
             nom = nom + "%";
          }
          return collaborateurDao.findByNom(nom);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
@@ -308,9 +295,8 @@ public class CollaborateurManagerImpl implements CollaborateurManager
       if(nom != null){
          nom = "%" + nom + "%";
          return collaborateurDao.findByNom(nom);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    /**
@@ -329,9 +315,8 @@ public class CollaborateurManagerImpl implements CollaborateurManager
             prenom = prenom + "%";
          }
          return collaborateurDao.findByPrenom(prenom);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    /**
@@ -345,10 +330,8 @@ public class CollaborateurManagerImpl implements CollaborateurManager
 
       if(specialite != null){
          return collaborateurDao.findBySpecialite(specialite);
-      }else{
-         return new ArrayList<>();
       }
-
+      return new ArrayList<>();
    }
 
    /**
@@ -360,9 +343,8 @@ public class CollaborateurManagerImpl implements CollaborateurManager
    public Boolean findDoublonManager(final Collaborateur collaborateur){
       if(collaborateur.getCollaborateurId() == null){
          return collaborateurDao.findAll().contains(collaborateur);
-      }else{
-         return collaborateurDao.findByExcludedId(collaborateur.getCollaborateurId()).contains(collaborateur);
       }
+      return collaborateurDao.findByExcludedId(collaborateur.getCollaborateurId()).contains(collaborateur);
    }
 
    @Override
@@ -402,69 +384,57 @@ public class CollaborateurManagerImpl implements CollaborateurManager
       if(findDoublonManager(collaborateur)){
          log.warn("Doublon lors de la creation de l'objet Collaborateur : " + collaborateur.toString());
          throw new DoublonFoundException("Collaborateur", "creation");
-      }else{
-         // on vérifie la validité du collab
-         BeanValidator.validateObject(collaborateur, new Validator[] {collaborateurValidator});
-
-         // si le collab a des coordonnées
-         if(coordonnees != null){
-            collaborateur.setCoordonnees(new HashSet<Coordonnee>());
-
-            // on vérifie qu'il n'y a pas de doublons dans la liste
-            if(coordonneeManager.findDoublonInListManager(coordonnees)){
-               log.warn("Doublon dans la liste des coordonnées");
-               throw new DoublonFoundException("Coordonnee", "creation");
-            }else{
-               // pour chaque coordonnée
-               for(int i = 0; i < coordonnees.size(); i++){
-                  final Coordonnee coordonnee = coordonnees.get(i);
-                  // validation de la coordonnée
-                  BeanValidator.validateObject(coordonnee, new Validator[] {coordonneeValidator});
-
-                  // on récupère la liste des collabs de la coord
-                  List<Collaborateur> collabs;
-                  if(coordonnee.getCoordonneeId() != null && coordonnee.getCollaborateurs() != null){
-                     collabs = new ArrayList<>();
-                     final Iterator<Collaborateur> it = coordonneeManager.getCollaborateursManager(coordonnee).iterator();
-                     while(it.hasNext()){
-                        collabs.add(it.next());
-                     }
-                  }else{
-                     collabs = null;
-                  }
-
-                  // si nouvelle coord => creation
-                  // sinon => update
-                  if(coordonnee.getCoordonneeId() == null){
-                     coordonneeManager.createObjectManager(coordonnee, collabs);
-                  }else{
-                     coordonneeManager.updateObjectManager(coordonnee, collabs, true);
-                  }
-
-                  /*collaborateur.getCoordonnees()
-                  	.add(coordonneeDao
-                  	.mergeObject(coordonnees.get(i)));*/
-               }
-            }
-         }
-         // else {
-         //	collaborateur.setCoordonnees(null);
-         // }
-
-         collaborateurDao.createObject(collaborateur);
-
-         updateServicesAndCoordonnees(collaborateur, services, coordonnees);
-         /*if (services != null) {
-         	updateServices(collaborateur, services);
-         }*/
-         log.info("Enregistrement de l'objet Collaborateur : " + collaborateur.toString());
-
-         //Enregistrement de l'operation associee
-         final Operation creationOp = new Operation();
-         creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0),
-            collaborateur);
       }
+      // on vérifie la validité du collab
+      BeanValidator.validateObject(collaborateur, new Validator[] {collaborateurValidator});
+
+      // si le collab a des coordonnées
+      if(coordonnees != null){
+         collaborateur.setCoordonnees(new HashSet<Coordonnee>());
+
+         // on vérifie qu'il n'y a pas de doublons dans la liste
+         if(coordonneeManager.findDoublonInListManager(coordonnees)){
+            log.warn("Doublon dans la liste des coordonnées");
+            throw new DoublonFoundException("Coordonnee", "creation");
+         }
+         // pour chaque coordonnée
+         for(int i = 0; i < coordonnees.size(); i++){
+            final Coordonnee coordonnee = coordonnees.get(i);
+            // validation de la coordonnée
+            BeanValidator.validateObject(coordonnee, new Validator[] {coordonneeValidator});
+
+            // on récupère la liste des collabs de la coord
+            List<Collaborateur> collabs;
+            if(coordonnee.getCoordonneeId() != null && coordonnee.getCollaborateurs() != null){
+               collabs = new ArrayList<>();
+               final Iterator<Collaborateur> it = coordonneeManager.getCollaborateursManager(coordonnee).iterator();
+               while(it.hasNext()){
+                  collabs.add(it.next());
+               }
+            }else{
+               collabs = null;
+            }
+
+            // si nouvelle coord => creation
+            // sinon => update
+            if(coordonnee.getCoordonneeId() == null){
+               coordonneeManager.createObjectManager(coordonnee, collabs);
+            }else{
+               coordonneeManager.updateObjectManager(coordonnee, collabs, true);
+            }
+
+         }
+      }
+
+      collaborateurDao.createObject(collaborateur);
+
+      updateServicesAndCoordonnees(collaborateur, services, coordonnees);
+      log.info("Enregistrement de l'objet Collaborateur : " + collaborateur.toString());
+
+      //Enregistrement de l'operation associee
+      final Operation creationOp = new Operation();
+      creationOp.setDate(Utils.getCurrentSystemCalendar());
+      operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), collaborateur);
    }
 
    /**
@@ -487,71 +457,63 @@ public class CollaborateurManagerImpl implements CollaborateurManager
       if(findDoublonManager(collaborateur)){
          log.warn("Doublon lors de la modification de l'objet " + "Collaborateur : " + collaborateur.toString());
          throw new DoublonFoundException("Collaborateur", "modification");
-      }else{
-         // on vérifie la validité du collab
-         if(doValidation){
-            BeanValidator.validateObject(collaborateur, new Validator[] {collaborateurValidator});
+      }
+      // on vérifie la validité du collab
+      if(doValidation){
+         BeanValidator.validateObject(collaborateur, new Validator[] {collaborateurValidator});
+      }
+
+      // si le collab a des coordonnées
+      if(coordonnees != null){
+
+         // on vérifie qu'il n'y a pas de doublons dans la liste
+         if(coordonneeManager.findDoublonInListManager(coordonnees)){
+            log.warn("Doublon dans la liste des coordonnées");
+            throw new DoublonFoundException("Coordonnee", "modification");
          }
+         // pour chaque coordonnée
+         for(int i = 0; i < coordonnees.size(); i++){
+            final Coordonnee coordonnee = coordonnees.get(i);
+            // validation de la coordonnée
+            if(doValidation){
+               BeanValidator.validateObject(coordonnee, new Validator[] {coordonneeValidator});
+            }
 
-         // si le collab a des coordonnées
-         if(coordonnees != null){
+            // on récupère la liste des collabs de la coord
+            List<Collaborateur> collabs;
 
-            // on vérifie qu'il n'y a pas de doublons dans la liste
-            if(coordonneeManager.findDoublonInListManager(coordonnees)){
-               log.warn("Doublon dans la liste des coordonnées");
-               throw new DoublonFoundException("Coordonnee", "modification");
-            }else{
-               // pour chaque coordonnée
-               for(int i = 0; i < coordonnees.size(); i++){
-                  final Coordonnee coordonnee = coordonnees.get(i);
-                  // validation de la coordonnée
-                  if(doValidation){
-                     BeanValidator.validateObject(coordonnee, new Validator[] {coordonneeValidator});
-                  }
+            if(coordonnee.getCoordonneeId() != null && coordonnee.getCollaborateurs() != null){
 
-                  // on récupère la liste des collabs de la coord
-                  List<Collaborateur> collabs;
-
-                  if(coordonnee.getCoordonneeId() != null && coordonnee.getCollaborateurs() != null){
-
-                     collabs = new ArrayList<>();
-                     final Iterator<Collaborateur> it = coordonneeManager.getCollaborateursManager(coordonnee).iterator();
-                     while(it.hasNext()){
-                        collabs.add(it.next());
-                     }
-                  }else{
-                     collabs = null;
-                  }
-
-                  // si nouvelle coord => creation
-                  // sinon => update
-                  if(coordonnee.getCoordonneeId() == null){
-                     coordonneeManager.createObjectManager(coordonnee, collabs);
-                  }else{
-                     coordonneeManager.updateObjectManager(coordonnee, collabs, doValidation);
-                  }
+               collabs = new ArrayList<>();
+               final Iterator<Collaborateur> it = coordonneeManager.getCollaborateursManager(coordonnee).iterator();
+               while(it.hasNext()){
+                  collabs.add(it.next());
                }
+            }else{
+               collabs = null;
+            }
+
+            // si nouvelle coord => creation
+            // sinon => update
+            if(coordonnee.getCoordonneeId() == null){
+               coordonneeManager.createObjectManager(coordonnee, collabs);
+            }else{
+               coordonneeManager.updateObjectManager(coordonnee, collabs, doValidation);
             }
          }
-         // else {
-         //	collaborateur.setCoordonnees(null);
-         // }
-
-         collaborateurDao.updateObject(collaborateur);
-
-         updateServicesAndCoordonnees(collaborateur, services, coordonnees);
-         /*if (services != null) {
-         	updateServices(collaborateur, services);
-         }*/
-
-         log.info("Enregistrement de l'objet Collaborateur : " + collaborateur.toString());
-
-         //Enregistrement de l'operation associee
-         final Operation creationOp = new Operation();
-         creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
-            collaborateur);
       }
+
+      collaborateurDao.updateObject(collaborateur);
+
+      updateServicesAndCoordonnees(collaborateur, services, coordonnees);
+
+      log.info("Enregistrement de l'objet Collaborateur : " + collaborateur.toString());
+
+      //Enregistrement de l'operation associee
+      final Operation creationOp = new Operation();
+      creationOp.setDate(Utils.getCurrentSystemCalendar());
+      operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
+         collaborateur);
    }
 
    @Override
@@ -749,9 +711,8 @@ public class CollaborateurManagerImpl implements CollaborateurManager
    public void removeObjectCascadeManager(Collaborateur collab, final Service service, final String comments,
       final Utilisateur user){
 
-      log.info("Suppression en cascade Collaborateur " + collab.toString());
-
       if(collab != null){
+         log.info("Suppression en cascade Collaborateur " + collab.toString());
          collab = collaborateurDao.mergeObject(collab);
          if(service != null){
             collab.getServices().remove(service);
@@ -789,18 +750,16 @@ public class CollaborateurManagerImpl implements CollaborateurManager
       if(ville != null){
          //ville = "%" + ville + "%";
          return collaborateurDao.findByVille(ville);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
    public Long findCountByServicedIdManager(final Service serv){
       if(serv != null){
          return collaborateurDao.findCountByServiceId(serv.getServiceId()).get(0);
-      }else{
-         return new Long(0);
       }
+      return new Long(0);
    }
 
    @Override

@@ -158,8 +158,7 @@ public class ChampImprimePK implements Serializable
       if(this.template != null && this.champEntite != null && this.blocImpression != null){
          return "{" + template.toString() + " (Template), " + champEntite.toString() + " (ChampEntite), "
             + blocImpression.toString() + " (BlocImpression)}";
-      }else{
-         return "{Empty ChampImprimePK}";
       }
+      return "{Empty ChampImprimePK}";
    }
 }

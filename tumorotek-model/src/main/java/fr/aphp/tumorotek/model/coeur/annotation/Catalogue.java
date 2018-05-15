@@ -192,8 +192,7 @@ public class Catalogue implements Serializable
    public String toString(){
       if(this.nom != null){
          return "{" + this.nom + "}";
-      }else{
-         return "{Empty Catalogue}";
       }
+      return "{Empty Catalogue}";
    }
 }

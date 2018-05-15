@@ -60,6 +60,38 @@ h4 > a > span.fa-lg{
     padding-bottom: 20px;
 }
 
-span.fa-exclamation-triangle{
+svg.fa-exclamation-triangle{
     color: red;
+}
+
+.badge {
+    display: inline-block;
+    padding: .25em .4em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25rem;
+}
+
+.badge-annotation-champ-calcule {
+    color: #4da400;
+    background-color: #e6f6cf;
+}
+
+.badge-impression-doc {
+    color: #dc5766;
+    background-color: #fce5f1;
+}
+
+.badge-prelevement {
+    color: #b45f06;
+    background-color: #ffee9c;
+}
+
+.badge-statistiques {
+    color: #b45f06;
+    background-color: #f7e9c1;
 }

@@ -520,6 +520,7 @@ public class InjectionManagerImpl implements InjectionManager
       }
    }
 
+   //TODO Refactorer
    @Override
    public ResultatInjection injectDossierManager(final DossierExterne dossier, final Banque banque){
       ResultatInjection resultat = null;

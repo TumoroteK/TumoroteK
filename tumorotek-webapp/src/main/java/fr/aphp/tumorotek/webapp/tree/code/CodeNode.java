@@ -177,9 +177,8 @@ public class CodeNode extends TumoTreeNode
       if(code != null){
          if(code.getLibelle() != null){
             return code.getCode() + " - " + code.getLibelle();
-         }else{
-            return code.getCode();
          }
+         return code.getCode();
       }else if(adicapGroupe != null){
          return adicapGroupe.getNom();
       }else if(dossier != null){

@@ -49,7 +49,7 @@ import fr.aphp.tumorotek.component.OneToManyComponent;
 import fr.aphp.tumorotek.model.code.TableCodage;
 import fr.aphp.tumorotek.model.contexte.BanqueTableCodage;
 
-public class CodificationsAssociees extends OneToManyComponent
+public class CodificationsAssociees extends OneToManyComponent<BanqueTableCodage>
 {
 
    private static final long serialVersionUID = 1L;
@@ -77,22 +77,26 @@ public class CodificationsAssociees extends OneToManyComponent
 
    
    @Override
-   public void setObjects(final List<? extends Object> objs){
-      this.objects = (List<BanqueTableCodage>) objs;
+   public void setObjects(final List<BanqueTableCodage> objs){
+      this.objects = objs;
       updateComponent();
    }
 
    @Override
-   public void addToListObjects(final Object obj){
+   public void addToListObjects(final BanqueTableCodage obj){
+      getObjects().add(obj);
+   }
+   
+   public void addToListObjects(final TableCodage obj){
       final BanqueTableCodage btc = new BanqueTableCodage();
-      btc.setTableCodage((TableCodage) obj);
+      btc.setTableCodage(obj);
       Boolean value = false;
       if(codeOrLibelleBox.getSelectedItem() != null){
          value = codeOrLibelleBox.getSelectedItem().getValue().equals("libelle");
       }
       btc.setLibelleExport(value);
 
-      getObjects().add(btc);
+      addToListObjects(btc);
    }
 
    @Override
@@ -111,7 +115,7 @@ public class CodificationsAssociees extends OneToManyComponent
    }
 
    @Override
-   public List<? extends Object> findObjectsAddable(){
+   public List<TableCodage> findObjectsAddable(){
       // TableCodages ajoutables
       final List<TableCodage> tabs = ManagerLocator.getTableCodageManager().findAllObjectsManager();
       tabs.remove(ManagerLocator.getTableCodageManager().findByNomManager("FAVORIS").get(0));

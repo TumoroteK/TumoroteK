@@ -35,20 +35,9 @@
  **/
 package fr.aphp.tumorotek.manager.test.stockage;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,11 +54,7 @@ import fr.aphp.tumorotek.dao.systeme.EntiteDao;
 import fr.aphp.tumorotek.dao.utilisateur.UtilisateurDao;
 import fr.aphp.tumorotek.manager.coeur.cession.RetourManager;
 import fr.aphp.tumorotek.manager.exception.ObjectUsedException;
-import fr.aphp.tumorotek.manager.stockage.ConteneurManager;
-import fr.aphp.tumorotek.manager.stockage.EmplacementManager;
-import fr.aphp.tumorotek.manager.stockage.EnceinteManager;
-import fr.aphp.tumorotek.manager.stockage.IncidentManager;
-import fr.aphp.tumorotek.manager.stockage.TerminaleManager;
+import fr.aphp.tumorotek.manager.stockage.*;
 import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
 import fr.aphp.tumorotek.model.TKFantomableObject;
 import fr.aphp.tumorotek.model.cession.Retour;
@@ -78,17 +63,10 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.qualite.Operation;
-import fr.aphp.tumorotek.model.stockage.Conteneur;
-import fr.aphp.tumorotek.model.stockage.ConteneurPlateforme;
-import fr.aphp.tumorotek.model.stockage.ConteneurType;
-import fr.aphp.tumorotek.model.stockage.Emplacement;
-import fr.aphp.tumorotek.model.stockage.Enceinte;
-import fr.aphp.tumorotek.model.stockage.EnceinteType;
-import fr.aphp.tumorotek.model.stockage.Incident;
-import fr.aphp.tumorotek.model.stockage.Terminale;
-import fr.aphp.tumorotek.model.stockage.TerminaleNumerotation;
-import fr.aphp.tumorotek.model.stockage.TerminaleType;
+import fr.aphp.tumorotek.model.stockage.*;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+
+import static org.junit.Assert.*;
 
 /**
  *
@@ -141,7 +119,7 @@ public class ConteneurManagerTest extends AbstractManagerTest4
    public void testFindById(){
       Conteneur c = conteneurManager.findByIdManager(1);
       assertNotNull(c);
-      assertTrue(c.getNom().equals("Congélateur 1"));
+      assertEquals("Congélateur 1", c.getNom());
 
       c = conteneurManager.findByIdManager(4);
       assertNotNull(c);
@@ -156,7 +134,7 @@ public class ConteneurManagerTest extends AbstractManagerTest4
    @Test
    public void testFindAll(){
       final List<Conteneur> list = conteneurManager.findAllObjectsManager();
-      assertTrue(list.size() == 4);
+      assertEquals(4, list.size());
    }
 
    /**
@@ -166,19 +144,19 @@ public class ConteneurManagerTest extends AbstractManagerTest4
    public void testFindByBanqueWithOrderManager(){
       final Banque b1 = banqueDao.findById(1);
       List<Conteneur> list = conteneurManager.findByBanqueWithOrderManager(b1);
-      assertTrue(list.size() == 3);
-      assertTrue(list.get(0).getNom().equals("Congélateur 1"));
+      assertEquals(3, list.size());
+      assertEquals("Congélateur 1", list.get(0).getNom());
 
       final Banque b2 = banqueDao.findById(2);
       list = conteneurManager.findByBanqueWithOrderManager(b2);
-      assertTrue(list.size() == 4);
+      assertEquals(4, list.size());
 
       final Banque newB = new Banque();
       list = conteneurManager.findByBanqueWithOrderManager(newB);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       list = conteneurManager.findByBanqueWithOrderManager(null);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
    }
 
    /**
@@ -188,22 +166,22 @@ public class ConteneurManagerTest extends AbstractManagerTest4
    public void testFindByBanqueAndCodeManager(){
       final Banque b1 = banqueDao.findById(1);
       List<Conteneur> list = conteneurManager.findByBanqueAndCodeManager(b1, "CC1");
-      assertTrue(list.size() == 1);
-      assertTrue(list.get(0).getNom().equals("Congélateur 1"));
+      assertEquals(1, list.size());
+      assertEquals("Congélateur 1", list.get(0).getNom());
 
       list = conteneurManager.findByBanqueAndCodeManager(b1, "dcsc");
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       final Banque b2 = banqueDao.findById(2);
       list = conteneurManager.findByBanqueAndCodeManager(b2, "CC1");
-      assertTrue(list.size() == 1);
+      assertEquals(1, list.size());
 
       final Banque newB = new Banque();
       list = conteneurManager.findByBanqueAndCodeManager(newB, "CC1");
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       list = conteneurManager.findByBanqueAndCodeManager(null, "CC1");
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
    }
 
    /**
@@ -217,21 +195,21 @@ public class ConteneurManagerTest extends AbstractManagerTest4
       banques.add(b1);
       banques.add(b2);
       List<Conteneur> list = conteneurManager.findByBanquesWithOrderManager(banques);
-      assertTrue(list.size() == 4);
-      assertTrue(list.get(0).getNom().equals("Congélateur 1"));
+      assertEquals(4, list.size());
+      assertEquals("Congélateur 1", list.get(0).getNom());
 
       banques = new ArrayList<>();
       banques.add(b1);
       banques.add(new Banque());
       banques.add(null);
       list = conteneurManager.findByBanquesWithOrderManager(banques);
-      assertTrue(list.size() == 3);
+      assertEquals(3, list.size());
 
       list = conteneurManager.findByBanquesWithOrderManager(new ArrayList<Banque>());
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       list = conteneurManager.findByBanquesWithOrderManager(null);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
    }
 
    /**
@@ -241,19 +219,19 @@ public class ConteneurManagerTest extends AbstractManagerTest4
    public void testFindByPlateformeWithOrderManager(){
       final Plateforme p1 = plateformeDao.findById(1);
       List<Conteneur> list = conteneurManager.findByPlateformeOrigWithOrderManager(p1);
-      assertTrue(list.size() == 3);
-      assertTrue(list.get(0).getCode().equals("CC1"));
+      assertEquals(3, list.size());
+      assertEquals("CC1", list.get(0).getCode());
 
       final Plateforme p3 = plateformeDao.findById(3);
       list = conteneurManager.findByPlateformeOrigWithOrderManager(p3);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       final Plateforme newP = new Plateforme();
       list = conteneurManager.findByPlateformeOrigWithOrderManager(newP);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       list = conteneurManager.findByPlateformeOrigWithOrderManager(null);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
    }
 
    /**
@@ -264,18 +242,18 @@ public class ConteneurManagerTest extends AbstractManagerTest4
 
       final Conteneur c1 = conteneurManager.findByIdManager(1);
       Set<Banque> set = conteneurManager.getBanquesManager(c1);
-      assertTrue(set.size() == 4);
+      assertEquals(4, set.size());
 
       final Conteneur c2 = conteneurManager.findByIdManager(2);
       set = conteneurManager.getBanquesManager(c2);
-      assertTrue(set.size() == 2);
+      assertEquals(2, set.size());
 
       final Conteneur newC = new Conteneur();
       set = conteneurManager.getBanquesManager(newC);
-      assertTrue(set.size() == 0);
+      assertEquals(0, set.size());
 
       set = conteneurManager.getBanquesManager(null);
-      assertTrue(set.size() == 0);
+      assertEquals(0, set.size());
    }
 
    /**
@@ -286,18 +264,18 @@ public class ConteneurManagerTest extends AbstractManagerTest4
 
       final Conteneur c1 = conteneurManager.findByIdManager(1);
       Set<Enceinte> set = conteneurManager.getEnceintesManager(c1);
-      assertTrue(set.size() == 2);
+      assertEquals(2, set.size());
 
       final Conteneur c2 = conteneurManager.findByIdManager(2);
       set = conteneurManager.getEnceintesManager(c2);
-      assertTrue(set.size() == 0);
+      assertEquals(0, set.size());
 
       final Conteneur newC = new Conteneur();
       set = conteneurManager.getEnceintesManager(newC);
-      assertTrue(set.size() == 0);
+      assertEquals(0, set.size());
 
       set = conteneurManager.getEnceintesManager(null);
-      assertTrue(set.size() == 0);
+      assertEquals(0, set.size());
    }
 
    /**
@@ -308,18 +286,18 @@ public class ConteneurManagerTest extends AbstractManagerTest4
 
       final Conteneur c1 = conteneurManager.findByIdManager(1);
       List<Terminale> list = conteneurManager.getAllTerminalesInArborescenceManager(c1);
-      assertTrue(list.size() == 6);
+      assertEquals(6, list.size());
 
       final Conteneur c2 = conteneurManager.findByIdManager(2);
       list = conteneurManager.getAllTerminalesInArborescenceManager(c2);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       final Conteneur newC = new Conteneur();
       list = conteneurManager.getAllTerminalesInArborescenceManager(newC);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       list = conteneurManager.getAllTerminalesInArborescenceManager(null);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
    }
 
    /**
@@ -330,22 +308,22 @@ public class ConteneurManagerTest extends AbstractManagerTest4
 
       final Conteneur c1 = conteneurManager.findByIdManager(1);
       Set<Incident> set = conteneurManager.getIncidentsManager(c1);
-      assertTrue(set.size() == 2);
+      assertEquals(2, set.size());
 
       final Conteneur c2 = conteneurManager.findByIdManager(2);
       set = conteneurManager.getIncidentsManager(c2);
-      assertTrue(set.size() == 1);
+      assertEquals(1, set.size());
 
       final Conteneur c3 = conteneurManager.findByIdManager(3);
       set = conteneurManager.getIncidentsManager(c3);
-      assertTrue(set.size() == 0);
+      assertEquals(0, set.size());
 
       final Conteneur newC = new Conteneur();
       set = conteneurManager.getIncidentsManager(newC);
-      assertTrue(set.size() == 0);
+      assertEquals(0, set.size());
 
       set = conteneurManager.getIncidentsManager(null);
-      assertTrue(set.size() == 0);
+      assertEquals(0, set.size());
    }
 
    /**
@@ -356,18 +334,18 @@ public class ConteneurManagerTest extends AbstractManagerTest4
 
       final Conteneur c1 = conteneurManager.findByIdManager(1);
       Set<ConteneurPlateforme> set = conteneurManager.getConteneurPlateformesManager(c1);
-      assertTrue(set.size() == 2);
+      assertEquals(2, set.size());
 
       final Conteneur c2 = conteneurManager.findByIdManager(2);
       set = conteneurManager.getConteneurPlateformesManager(c2);
-      assertTrue(set.size() == 1);
+      assertEquals(1, set.size());
 
       final Conteneur newC = new Conteneur();
       set = conteneurManager.getConteneurPlateformesManager(newC);
-      assertTrue(set.size() == 0);
+      assertEquals(0, set.size());
 
       set = conteneurManager.getConteneurPlateformesManager(null);
-      assertTrue(set.size() == 0);
+      assertEquals(0, set.size());
    }
 
    /**
@@ -497,7 +475,7 @@ public class ConteneurManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 4);
+      assertEquals(4, conteneurManager.findAllObjectsManager().size());
 
       // on test l'insertion d'un doublon
       c1.setCode("CC1");
@@ -511,7 +489,7 @@ public class ConteneurManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 4);
+      assertEquals(4, conteneurManager.findAllObjectsManager().size());
 
       // Test de la validation lors de la création
       c1.setNom("CR1");
@@ -520,7 +498,7 @@ public class ConteneurManagerTest extends AbstractManagerTest4
       }catch(final ParseException e){
          e.printStackTrace();
       }
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 4);
+      assertEquals(4, conteneurManager.findAllObjectsManager().size());
 
       // On test une insertion valide avec les assos non obligatoires à null
       c1.setCode("CR");
@@ -532,23 +510,23 @@ public class ConteneurManagerTest extends AbstractManagerTest4
       c1.setDescription("DESC");
       c1.setArchive(false);
       conteneurManager.createObjectManager(c1, null, serv, null, null, u, plateformeDao.findById(1));
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 5);
-      assertTrue(getOperationManager().findByObjectManager(c1).size() == 1);
+      assertEquals(5, conteneurManager.findAllObjectsManager().size());
+      assertEquals(1, getOperationManager().findByObjectManager(c1).size());
       final int id = c1.getConteneurId();
       // Vérification
       final Conteneur cTest = conteneurManager.findByIdManager(id);
       assertNotNull(cTest);
       assertNotNull(cTest.getService());
       assertNull(cTest.getConteneurType());
-      assertTrue(cTest.getNbrEnc() == 3);
-      assertTrue(cTest.getNbrNiv() == 3);
-      assertTrue(cTest.getNom().equals("Congel"));
-      assertTrue(cTest.getCode().equals("CR"));
-      assertTrue(cTest.getPiece().equals("PIECE"));
-      assertTrue(cTest.getDescription().equals("DESC"));
-      assertTrue(conteneurManager.getBanquesManager(cTest).size() == 0);
-      assertTrue(conteneurManager.getConteneurPlateformesManager(cTest).size() == 0);
-      assertTrue(cTest.getPlateformeOrig().getPlateformeId() == 1);
+      assertEquals(3, (int) cTest.getNbrEnc());
+      assertEquals(3, (int) cTest.getNbrNiv());
+      assertEquals("Congel", cTest.getNom());
+      assertEquals("CR", cTest.getCode());
+      assertEquals("PIECE", cTest.getPiece());
+      assertEquals("DESC", cTest.getDescription());
+      assertEquals(0, conteneurManager.getBanquesManager(cTest).size());
+      assertEquals(0, conteneurManager.getConteneurPlateformesManager(cTest).size());
+      assertEquals(1, (int) cTest.getPlateformeOrig().getPlateformeId());
 
       // On test une insertion valide avec les assos non obligatoires
       final Conteneur c2 = new Conteneur();
@@ -558,24 +536,24 @@ public class ConteneurManagerTest extends AbstractManagerTest4
       pfs.add(pf1);
       pfs.add(pf2);
       conteneurManager.createObjectManager(c2, type, serv, banks, pfs, u, plateformeDao.findById(2));
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 6);
-      assertTrue(getOperationManager().findByObjectManager(c2).size() == 1);
+      assertEquals(6, conteneurManager.findAllObjectsManager().size());
+      assertEquals(1, getOperationManager().findByObjectManager(c2).size());
       final int id2 = c2.getConteneurId();
       // Vérification
       final Conteneur cTest2 = conteneurManager.findByIdManager(id2);
       assertNotNull(cTest2);
       assertNotNull(cTest2.getService());
       assertNotNull(cTest2.getConteneurType());
-      assertTrue(cTest2.getCode().equals("CD"));
-      assertTrue(conteneurManager.getBanquesManager(cTest2).size() == 2);
-      assertTrue(conteneurManager.getConteneurPlateformesManager(cTest2).size() == 2);
+      assertEquals("CD", cTest2.getCode());
+      assertEquals(2, conteneurManager.getBanquesManager(cTest2).size());
+      assertEquals(2, conteneurManager.getConteneurPlateformesManager(cTest2).size());
 
       // Suppression
       conteneurManager.removeObjectManager(cTest, null, u);
       conteneurManager.removeObjectManager(cTest2, null, u);
-      assertTrue(getOperationManager().findByObjectManager(cTest).size() == 0);
-      assertTrue(getOperationManager().findByObjectManager(cTest2).size() == 0);
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 4);
+      assertEquals(0, getOperationManager().findByObjectManager(cTest).size());
+      assertEquals(0, getOperationManager().findByObjectManager(cTest2).size());
+      assertEquals(4, conteneurManager.findAllObjectsManager().size());
 
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.add(cTest);
@@ -605,7 +583,7 @@ public class ConteneurManagerTest extends AbstractManagerTest4
       c.setCode("CR");
       c.setNom("TEST UP");
       conteneurManager.createObjectManager(c, null, serv, null, null, u, pf1);
-      assertTrue(getOperationManager().findByObjectManager(c).size() == 1);
+      assertEquals(1, getOperationManager().findByObjectManager(c).size());
       assertEquals(5, conteneurManager.findAllObjectsManager().size());
       final Integer id = c.getConteneurId();
 
@@ -621,7 +599,7 @@ public class ConteneurManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 5);
+      assertEquals(5, conteneurManager.findAllObjectsManager().size());
 
       // on test l'update d'un doublon
       cUp1.setCode("CC1");
@@ -635,7 +613,7 @@ public class ConteneurManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 5);
+      assertEquals(5, conteneurManager.findAllObjectsManager().size());
 
       // Test de la validation lors de l'update
       cUp1.setNom("CR1");
@@ -644,7 +622,7 @@ public class ConteneurManagerTest extends AbstractManagerTest4
       }catch(final ParseException e){
          e.printStackTrace();
       }
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 5);
+      assertEquals(5, conteneurManager.findAllObjectsManager().size());
 
       // on teste un doublon sur les incidents
       cUp1.setCode("CR1");
@@ -682,22 +660,22 @@ public class ConteneurManagerTest extends AbstractManagerTest4
       pfs.add(pf1);
       pfs.add(pf2);
       conteneurManager.updateObjectManager(cUp1, null, serv, banks, pfs, incs, u);
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 5);
-      assertTrue(getOperationManager().findByObjectManager(cUp1).size() == 2);
+      assertEquals(5, conteneurManager.findAllObjectsManager().size());
+      assertEquals(2, getOperationManager().findByObjectManager(cUp1).size());
       // Vérification
       final Conteneur cTest = conteneurManager.findByIdManager(id);
       assertNotNull(cTest);
       assertNotNull(cTest.getService());
       assertNull(cTest.getConteneurType());
-      assertTrue(cTest.getNbrEnc() == 3);
-      assertTrue(cTest.getNbrNiv() == 3);
-      assertTrue(cTest.getNom().equals("Congel"));
-      assertTrue(cTest.getCode().equals("CR1"));
-      assertTrue(cTest.getPiece().equals("PIECE"));
-      assertTrue(cTest.getDescription().equals("DESC"));
-      assertTrue(conteneurManager.getBanquesManager(cTest).size() == 2);
-      assertTrue(conteneurManager.getConteneurPlateformesManager(cTest).size() == 2);
-      assertTrue(conteneurManager.getIncidentsManager(cTest).size() == 1);
+      assertEquals(3, (int) cTest.getNbrEnc());
+      assertEquals(3, (int) cTest.getNbrNiv());
+      assertEquals("Congel", cTest.getNom());
+      assertEquals("CR1", cTest.getCode());
+      assertEquals("PIECE", cTest.getPiece());
+      assertEquals("DESC", cTest.getDescription());
+      assertEquals(2, conteneurManager.getBanquesManager(cTest).size());
+      assertEquals(2, conteneurManager.getConteneurPlateformesManager(cTest).size());
+      assertEquals(1, conteneurManager.getIncidentsManager(cTest).size());
 
       // On test un update valide avec les assos non obligatoires
       final Conteneur cUp2 = conteneurManager.findByIdManager(id);
@@ -706,24 +684,24 @@ public class ConteneurManagerTest extends AbstractManagerTest4
       banks.add(bank3);
       pfs = new ArrayList<>();
       conteneurManager.updateObjectManager(cUp2, type, serv, banks, pfs, null, u);
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 5);
-      assertTrue(getOperationManager().findByObjectManager(cUp2).size() == 3);
+      assertEquals(5, conteneurManager.findAllObjectsManager().size());
+      assertEquals(3, getOperationManager().findByObjectManager(cUp2).size());
       // Vérification
       final Conteneur cTest2 = conteneurManager.findByIdManager(id);
       assertNotNull(cTest2);
       assertNotNull(cTest2.getService());
       assertNotNull(cTest2.getConteneurType());
-      assertTrue(cTest2.getCode().equals("CD"));
-      assertTrue(conteneurManager.getBanquesManager(cTest2).size() == 1);
-      assertTrue(conteneurManager.getConteneurPlateformesManager(cTest2).size() == 0);
+      assertEquals("CD", cTest2.getCode());
+      assertEquals(1, conteneurManager.getBanquesManager(cTest2).size());
+      assertEquals(0, conteneurManager.getConteneurPlateformesManager(cTest2).size());
       final Iterator<Banque> it = conteneurManager.getBanquesManager(cTest2).iterator();
-      assertTrue(it.next().getNom().equals("BANQUE3"));
+      assertEquals("BANQUE3", it.next().getNom());
 
       // Suppression
       conteneurManager.removeObjectManager(cTest2, null, u);
-      assertTrue(getOperationManager().findByObjectManager(cTest2).size() == 0);
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 4);
-      assertTrue(incidentManager.findAllObjectsManager().size() == 5);
+      assertEquals(0, getOperationManager().findByObjectManager(cTest2).size());
+      assertEquals(4, conteneurManager.findAllObjectsManager().size());
+      assertEquals(5, incidentManager.findAllObjectsManager().size());
 
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.add(cTest2);
@@ -751,7 +729,7 @@ public class ConteneurManagerTest extends AbstractManagerTest4
          }
       }
       assertTrue(catched);
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 4);
+      assertEquals(4, conteneurManager.findAllObjectsManager().size());
 
       // création d'un nouveau conteneur pour tester la délétion
       final ConteneurType type = conteneurTypeDao.findById(1);
@@ -813,26 +791,26 @@ public class ConteneurManagerTest extends AbstractManagerTest4
          e.printStackTrace();
       }
 
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 5);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 33);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 96);
+      assertEquals(5, conteneurManager.findAllObjectsManager().size());
+      assertEquals(33, enceinteManager.findAllObjectsManager().size());
+      assertEquals(96, terminaleManager.findAllObjectsManager().size());
 
       final List<Enceinte> encs = enceinteManager.findAllEnceinteByConteneurManager(c);
-      assertTrue(encs.size() == 26);
+      assertEquals(26, encs.size());
 
       final List<Terminale> terminales = new ArrayList<>();
       final Iterator<Enceinte> encIt = encs.iterator();
       while(encIt.hasNext()){
          terminales.addAll(terminaleManager.findByEnceinteWithOrderManager(encIt.next()));
       }
-      assertTrue(terminales.size() == 90);
+      assertEquals(90, terminales.size());
 
       // suppression du conteneur
       final Conteneur cTest = conteneurManager.findByIdManager(c.getConteneurId());
       conteneurManager.removeObjectManager(cTest, null, u);
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 4);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
+      assertEquals(4, conteneurManager.findAllObjectsManager().size());
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
+      assertEquals(6, terminaleManager.findAllObjectsManager().size());
 
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.add(cTest);
@@ -1128,9 +1106,9 @@ public class ConteneurManagerTest extends AbstractManagerTest4
       }catch(final Exception e){
          e.printStackTrace();
       }
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 4);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
+      assertEquals(4, conteneurManager.findAllObjectsManager().size());
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
+      assertEquals(6, terminaleManager.findAllObjectsManager().size());
 
       // test avec exception sur le conteneur
       c.setService(null);
@@ -1145,9 +1123,9 @@ public class ConteneurManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 4);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
+      assertEquals(4, conteneurManager.findAllObjectsManager().size());
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
+      assertEquals(6, terminaleManager.findAllObjectsManager().size());
       c.setService(serv);
 
       // test avec excpetion sur la derniere enceinte
@@ -1162,9 +1140,9 @@ public class ConteneurManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 4);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
+      assertEquals(4, conteneurManager.findAllObjectsManager().size());
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
+      assertEquals(6, terminaleManager.findAllObjectsManager().size());
       e3.setEnceinteType(eType3);
 
       // test avec excpetion sur la terminale
@@ -1180,9 +1158,9 @@ public class ConteneurManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 4);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
+      assertEquals(4, conteneurManager.findAllObjectsManager().size());
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
+      assertEquals(6, terminaleManager.findAllObjectsManager().size());
       term.setTerminaleType(tType);
 
       try{
@@ -1192,29 +1170,29 @@ public class ConteneurManagerTest extends AbstractManagerTest4
          e.printStackTrace();
       }
 
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 5);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 33);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 96);
+      assertEquals(5, conteneurManager.findAllObjectsManager().size());
+      assertEquals(33, enceinteManager.findAllObjectsManager().size());
+      assertEquals(96, terminaleManager.findAllObjectsManager().size());
 
       Conteneur cTest = conteneurManager.findByIdManager(c.getConteneurId());
-      assertTrue(cTest.getCode().equals("C2"));
-      assertTrue(conteneurManager.getEnceintesManager(cTest).size() == 2);
+      assertEquals("C2", cTest.getCode());
+      assertEquals(2, conteneurManager.getEnceintesManager(cTest).size());
 
       final Enceinte eTest1 = conteneurManager.getEnceintesManager(cTest).iterator().next();
-      assertTrue(eTest1.getNom().equals("R10"));
-      assertTrue(enceinteManager.getEnceintesManager(eTest1).size() == 3);
+      assertEquals("R11", eTest1.getNom());
+      assertEquals(3, enceinteManager.getEnceintesManager(eTest1).size());
 
       final Enceinte eTest2 = enceinteManager.getEnceintesManager(eTest1).iterator().next();
-      assertTrue(eTest2.getNom().equals("T1"));
-      assertTrue(enceinteManager.getEnceintesManager(eTest2).size() == 3);
+      assertEquals("T1", eTest2.getNom());
+      assertEquals(3, enceinteManager.getEnceintesManager(eTest2).size());
 
       final Enceinte eTest3 = enceinteManager.getEnceintesManager(eTest2).iterator().next();
-      assertTrue(eTest3.getNom().equals("C25"));
-      assertTrue(enceinteManager.getEnceintesManager(eTest3).size() == 0);
-      assertTrue(enceinteManager.getTerminalesManager(eTest3).size() == 5);
+      assertEquals("C25", eTest3.getNom());
+      assertEquals(0, enceinteManager.getEnceintesManager(eTest3).size());
+      assertEquals(5, enceinteManager.getTerminalesManager(eTest3).size());
 
       final Terminale tTest = enceinteManager.getTerminalesManager(eTest3).iterator().next();
-      assertTrue(tTest.getNom().equals("BT1"));
+      assertEquals("BT1", tTest.getNom());
 
       // ajoute emplacement pour casser cascade
       final Emplacement emp = new Emplacement();
@@ -1231,19 +1209,19 @@ public class ConteneurManagerTest extends AbstractManagerTest4
          conteneurManager.removeObjectManager(cTest, null, u);
       }catch(final ObjectUsedException oe){
          catched = true;
-         assertTrue(oe.getKey().equals("conteneur.deletion.isUsed"));
+         assertEquals("conteneur.deletion.isUsed", oe.getKey());
          assertFalse(oe.isCascadable());
       }
       assertTrue(catched);
 
       final List<Enceinte> encs = enceinteManager.findAllEnceinteByConteneurManager(c);
-      assertTrue(encs.size() == 26);
+      assertEquals(26, encs.size());
       final List<Terminale> terminales = new ArrayList<>();
       final Iterator<Enceinte> encIt = encs.iterator();
       while(encIt.hasNext()){
          terminales.addAll(terminaleManager.findByEnceinteWithOrderManager(encIt.next()));
       }
-      assertTrue(terminales.size() == 90);
+      assertEquals(90, terminales.size());
 
       // si emplacement vide mais associé à évènement de stockage -> archivage
       emp.setObjetId(null);
@@ -1259,11 +1237,11 @@ public class ConteneurManagerTest extends AbstractManagerTest4
 
       retourManager.createOrUpdateObjectManager(r, ec2, emp, null, null, null, null, u, "creation");
 
-      assertTrue(retourManager.getRetoursForObjectManager(ec2).size() == 1);
+      assertEquals(1, retourManager.getRetoursForObjectManager(ec2).size());
 
       conteneurManager.removeObjectManager(cTest, null, u);
       // vérifie archivage du seul conteneur
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 5);
+      assertEquals(5, conteneurManager.findAllObjectsManager().size());
       cTest = conteneurManager.findByIdManager(c.getConteneurId());
       assertTrue(cTest.getArchive());
       assertTrue(conteneurManager.getEnceintesManager(cTest).isEmpty());
@@ -1275,9 +1253,9 @@ public class ConteneurManagerTest extends AbstractManagerTest4
 
       conteneurManager.removeObjectManager(cTest, null, u);
 
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 4);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
+      assertEquals(4, conteneurManager.findAllObjectsManager().size());
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
+      assertEquals(6, terminaleManager.findAllObjectsManager().size());
 
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.add(cTest);
@@ -1360,44 +1338,43 @@ public class ConteneurManagerTest extends AbstractManagerTest4
       }
 
       assertEquals(5, conteneurManager.findAllObjectsManager().size());
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 33);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 96);
+      assertEquals(33, enceinteManager.findAllObjectsManager().size());
+      assertEquals(96, terminaleManager.findAllObjectsManager().size());
 
       final Conteneur cTest = conteneurManager.findByIdManager(c.getConteneurId());
-      assertTrue(cTest.getCode().equals("C2"));
-      assertTrue(conteneurManager.getEnceintesManager(cTest).size() == 2);
+      assertEquals("C2", cTest.getCode());
+      assertEquals(2, conteneurManager.getEnceintesManager(cTest).size());
 
       final Enceinte eTest1 = conteneurManager.getEnceintesManager(cTest).iterator().next();
-      assertTrue(eTest1.getNom().equals("R10"));
-      assertTrue(enceinteManager.getEnceintesManager(eTest1).size() == 3);
+      assertEquals("R11", eTest1.getNom());
+      assertEquals(3, enceinteManager.getEnceintesManager(eTest1).size());
 
       final Enceinte eTest2 = enceinteManager.getEnceintesManager(eTest1).iterator().next();
-      assertTrue(eTest2.getNom().equals("T1"));
-      assertTrue(enceinteManager.getEnceintesManager(eTest2).size() == 3);
+      assertEquals("T1", eTest2.getNom());
+      assertEquals(3, enceinteManager.getEnceintesManager(eTest2).size());
 
       final Enceinte eTest3 = enceinteManager.getEnceintesManager(eTest2).iterator().next();
-      assertTrue(eTest3.getNom().equals("C25"));
-      assertTrue(enceinteManager.getEnceintesManager(eTest3).size() == 0);
-      assertTrue(enceinteManager.getTerminalesManager(eTest3).size() == 5);
+      assertEquals("C25", eTest3.getNom());
+      assertEquals(0, enceinteManager.getEnceintesManager(eTest3).size());
+      assertEquals(5, enceinteManager.getTerminalesManager(eTest3).size());
 
       final Terminale tTest = enceinteManager.getTerminalesManager(eTest3).iterator().next();
-      assertTrue(tTest.getNom().equals("TRANSPARENT1"));
+      assertEquals("TRANSPARENT1", tTest.getNom());
 
       final List<Enceinte> encs = enceinteManager.findAllEnceinteByConteneurManager(c);
-      assertTrue(encs.size() == 26);
+      assertEquals(26, encs.size());
 
       final List<Terminale> terminales = new ArrayList<>();
-      final Iterator<Enceinte> encIt = encs.iterator();
-      while(encIt.hasNext()){
-         terminales.addAll(terminaleManager.findByEnceinteWithOrderManager(encIt.next()));
+      for(Enceinte enc : encs){
+         terminales.addAll(terminaleManager.findByEnceinteWithOrderManager(enc));
       }
-      assertTrue(terminales.size() == 90);
+      assertEquals(90, terminales.size());
 
       conteneurManager.removeObjectManager(cTest, null, u);
 
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 4);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
+      assertEquals(4, conteneurManager.findAllObjectsManager().size());
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
+      assertEquals(6, terminaleManager.findAllObjectsManager().size());
 
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.add(cTest);
@@ -1411,7 +1388,7 @@ public class ConteneurManagerTest extends AbstractManagerTest4
       Conteneur c = conteneurManager.findByIdManager(1);
       List<Enceinte> enceintes;
       enceintes = conteneurManager.getContainingEnceinteManager(c);
-      assertTrue(enceintes.size() == 7);
+      assertEquals(7, enceintes.size());
 
       c = null;
       enceintes = conteneurManager.getContainingEnceinteManager(c);
@@ -1423,19 +1400,19 @@ public class ConteneurManagerTest extends AbstractManagerTest4
       final Utilisateur u = utilisateurDao.findById(1);
       final Conteneur c = conteneurManager.findByIdManager(1);
       final Set<Banque> banksC = conteneurManager.getBanquesManager(c);
-      assertTrue(banksC.size() == 4);
+      assertEquals(4, banksC.size());
       final Enceinte e5 = enceinteManager.findByIdManager(5);
       final Set<Banque> banske5 = enceinteManager.getBanquesManager(e5);
-      assertTrue(banske5.size() == 2);
+      assertEquals(2, banske5.size());
       final Enceinte e7 = enceinteManager.findByIdManager(7);
       final Set<Banque> banske7 = enceinteManager.getBanquesManager(e7);
-      assertTrue(banske7.size() == 1);
+      assertEquals(1, banske7.size());
       final Banque b = banqueDao.findById(2);
 
       conteneurManager.removeBanqueFromContAndEncManager(c, b);
-      assertTrue(conteneurManager.getBanquesManager(c).size() == 3);
-      assertTrue(enceinteManager.getBanquesManager(e5).size() == 1);
-      assertTrue(enceinteManager.getBanquesManager(e7).size() == 0);
+      assertEquals(3, conteneurManager.getBanquesManager(c).size());
+      assertEquals(1, enceinteManager.getBanquesManager(e5).size());
+      assertEquals(0, enceinteManager.getBanquesManager(e7).size());
 
       // remise en place 
       conteneurManager.updateObjectManager(c, c.getConteneurType(), c.getService(), new ArrayList<>(banksC), null, null, u);
@@ -1444,20 +1421,20 @@ public class ConteneurManagerTest extends AbstractManagerTest4
       enceinteManager.updateObjectManager(e7, e7.getEnceinteType(), e7.getConteneur(), e7.getEnceintePere(), e7.getEntite(),
          new ArrayList<>(banske7), null, null, u, null);
 
-      assertTrue(conteneurManager.getBanquesManager(c).size() == 4);
-      assertTrue(enceinteManager.getBanquesManager(e5).size() == 2);
-      assertTrue(enceinteManager.getBanquesManager(e7).size() == 1);
+      assertEquals(4, conteneurManager.getBanquesManager(c).size());
+      assertEquals(2, enceinteManager.getBanquesManager(e5).size());
+      assertEquals(1, enceinteManager.getBanquesManager(e7).size());
       List<Operation> ops = getOperationManager().findByObjectManager(c);
-      for(int i = 0; i < ops.size(); i++){
-         getOperationManager().removeObjectManager(ops.get(i));
+      for(Operation op2 : ops){
+         getOperationManager().removeObjectManager(op2);
       }
       ops = getOperationManager().findByObjectManager(e5);
-      for(int i = 0; i < ops.size(); i++){
-         getOperationManager().removeObjectManager(ops.get(i));
+      for(Operation op1 : ops){
+         getOperationManager().removeObjectManager(op1);
       }
       ops = getOperationManager().findByObjectManager(e7);
-      for(int i = 0; i < ops.size(); i++){
-         getOperationManager().removeObjectManager(ops.get(i));
+      for(Operation op : ops){
+         getOperationManager().removeObjectManager(op);
       }
       assertEquals(19, getOperationManager().findAllObjectsManager().size());
    }
@@ -1474,7 +1451,7 @@ public class ConteneurManagerTest extends AbstractManagerTest4
    @Test
    public void testFindByPartageManager(){
       List<Conteneur> conts = conteneurManager.findByPartageManager(plateformeDao.findById(1), true);
-      assertTrue(conts.size() == 1);
+      assertEquals(1, conts.size());
       conts = conteneurManager.findByPartageManager(null, true);
       assertTrue(conts.isEmpty());
       conts = conteneurManager.findByPartageManager(plateformeDao.findById(1), null);
@@ -1483,8 +1460,8 @@ public class ConteneurManagerTest extends AbstractManagerTest4
 
    @Test
    public void testFindTempForEmplacementIdManager(){
-      assertTrue(conteneurManager.findTempForEmplacementManager(emplacementManager.findByIdManager(2)).equals(new Float(-75.0)));
-      assertTrue(conteneurManager.findTempForEmplacementManager(emplacementManager.findByIdManager(5)).equals(new Float(-75.0)));
+      assertEquals(conteneurManager.findTempForEmplacementManager(emplacementManager.findByIdManager(2)), new Float(-75.0));
+      assertEquals(conteneurManager.findTempForEmplacementManager(emplacementManager.findByIdManager(5)), new Float(-75.0));
       assertNull(conteneurManager.findTempForEmplacementManager(emplacementManager.findByIdManager(11)));
       assertNull(conteneurManager.findTempForEmplacementManager(null));
    }

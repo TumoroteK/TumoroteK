@@ -42,7 +42,6 @@ import org.springframework.test.annotation.Rollback;
 import fr.aphp.tumorotek.dao.coeur.prelevement.RisqueDao;
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
-import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
@@ -105,7 +104,7 @@ public class RisqueDaoTest extends AbstractDaoTest
 
    public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
-      List<TKThesaurusObject> list = risqueDao.findByOrder(pf);
+      List<Risque> list = risqueDao.findByOrder(pf);
       assertTrue(list.size() == 2);
       assertTrue(list.get(0).getNom().equals("GRIPPE A"));
       pf = plateformeDao.findById(2);

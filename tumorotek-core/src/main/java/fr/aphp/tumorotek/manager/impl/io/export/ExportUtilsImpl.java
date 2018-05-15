@@ -50,7 +50,7 @@ import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 
 import fr.aphp.tumorotek.dao.qualite.OperationTypeDao;
 import fr.aphp.tumorotek.manager.code.CodeAssigneManager;
@@ -86,7 +86,7 @@ import fr.aphp.tumorotek.utils.Utils;
 
 public class ExportUtilsImpl implements ExportUtils
 {
-
+   //TODO JavaDoc
    // private Log log = LogFactory.getLog(ExportUtils.class);
 
    private MaladieManager maladieManager;
@@ -179,23 +179,23 @@ public class ExportUtilsImpl implements ExportUtils
 
       if(value != null){
          if(value instanceof Integer){
-            cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+            cell.setCellType(CellType.NUMERIC);
             cell.setCellValue((Integer) value);
          }else if(value instanceof Float){
-            cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+            cell.setCellType(CellType.NUMERIC);
             cell.setCellValue((Float) value);
          }else if(value instanceof Double){
-            cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+            cell.setCellType(CellType.NUMERIC);
             cell.setCellValue((Double) value);
          }else if(value instanceof Boolean){
-            cell.setCellType(Cell.CELL_TYPE_BOOLEAN);
+            cell.setCellType(CellType.BOOLEAN);
             cell.setCellValue((Boolean) value);
          }else{ // String
-            cell.setCellType(Cell.CELL_TYPE_STRING);
+            cell.setCellType(CellType.STRING);
             cell.setCellValue(new HSSFRichTextString((String) value));
          }
       }else{
-         cell.setCellType(Cell.CELL_TYPE_BLANK);
+         cell.setCellType(CellType.BLANK);
          cell.setCellValue(new HSSFRichTextString());
       }
       return indCell;
@@ -205,7 +205,7 @@ public class ExportUtilsImpl implements ExportUtils
    public int addDateCell(int indCell, final HSSFRow row, final Object value, final HSSFWorkbook wb){
       final HSSFCell cell = row.createCell((short) indCell);
       ++indCell;
-      cell.setCellType(Cell.CELL_TYPE_STRING);
+      cell.setCellType(CellType.STRING);
       if(value != null){
          if(value instanceof Date){
             cell.setCellStyle(wb.getCellStyleAt(CELLSTYLEDATESHORT));
@@ -220,7 +220,7 @@ public class ExportUtilsImpl implements ExportUtils
             }
          }
       }else{
-         cell.setCellType(Cell.CELL_TYPE_BLANK);
+         cell.setCellType(CellType.BLANK);
          cell.setCellValue(new HSSFRichTextString());
       }
       return indCell;
@@ -1138,9 +1138,8 @@ public class ExportUtilsImpl implements ExportUtils
             return df.format(((Calendar) date).getTime());
          }
          return df.format(date);
-      }else{
-         return null;
       }
+      return null;
    }
 
    @Override
@@ -1148,9 +1147,8 @@ public class ExportUtilsImpl implements ExportUtils
       if(b != null){
          if(b.booleanValue()){
             return "Oui";
-         }else{
-            return "Non";
          }
+         return "Non";
       }
       return null;
    }

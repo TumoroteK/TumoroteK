@@ -212,7 +212,7 @@ public class Affichage implements TKdataObject, Comparable<Affichage>
    }
 
    public void exporterVersFichierTabule(){
-      // TODO reste à faire
+      // TODO reste à faire ???
    }
 
    /**
@@ -235,18 +235,15 @@ public class Affichage implements TKdataObject, Comparable<Affichage>
          if(test.createur == null){
             if(this.intitule == null){
                return (test.intitule == null);
-            }else{
-               return (this.intitule.equals(test.intitule));
             }
-         }else{
-            return false;
+            return (this.intitule.equals(test.intitule));
          }
+         return false;
       }else if(this.createur.equals(test.createur)){
          if(this.intitule == null){
             return (test.intitule == null);
-         }else{
-            return this.intitule.equals(test.intitule);
          }
+         return this.intitule.equals(test.intitule);
       }else{
          return false;
       }
@@ -284,9 +281,8 @@ public class Affichage implements TKdataObject, Comparable<Affichage>
    public String toString(){
       if(this.intitule != null){
          return "{" + this.intitule + "}";
-      }else{
-         return "{Empty Affichage}";
       }
+      return "{Empty Affichage}";
    }
 
    @Override

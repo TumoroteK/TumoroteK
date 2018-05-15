@@ -177,9 +177,8 @@ public class ConteneurType implements Serializable, TKThesaurusObject
    public String toString(){
       if(this.type != null){
          return "{" + this.type + "}";
-      }else{
-         return "{Empty ConteneurType}";
       }
+      return "{Empty ConteneurType}";
    }
 
    @Override

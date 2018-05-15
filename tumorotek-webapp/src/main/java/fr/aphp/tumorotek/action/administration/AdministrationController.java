@@ -336,11 +336,9 @@ public class AdministrationController extends AbstractObjectTabController
       if(self.getFellow("adminTabbox").getFellow("utilisateursPanel").getFellowIfAny("utilisateursMacro") != null){
          return (UtilisateurController) self.getFellow("adminTabbox").getFellow("utilisateursPanel")
             .getFellow("utilisateursMacro").getFellow("winUtilisateur").getAttributeOrFellow("winUtilisateur$composer", true);
-      }else{
-         return (UtilisateurController) self.getFellow("adminTabbox").getFellow("utilisateursPanel").getFellow("winUtilisateur")
-            .getAttributeOrFellow("winUtilisateur$composer", true);
       }
-
+      return (UtilisateurController) self.getFellow("adminTabbox").getFellow("utilisateursPanel").getFellow("winUtilisateur")
+         .getAttributeOrFellow("winUtilisateur$composer", true);
    }
 
    /**

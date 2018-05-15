@@ -68,6 +68,7 @@ import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.code.CodeAssigne;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
+import fr.aphp.tumorotek.model.coeur.echantillon.delegate.AbstractEchantillonDelegate;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
@@ -87,9 +88,8 @@ import fr.aphp.tumorotek.model.utils.Utils;
  *
  */
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-//@DiscriminatorColumn(name = "DTYPE", discriminatorType = DiscriminatorType.STRING) @DiscriminatorOptions(force=true)
 @Table(name = "ECHANTILLON")
+@Inheritance(strategy = InheritanceType.JOINED)
 @NamedQueries(value = {@NamedQuery(name = "Echantillon.findByCode", query = "SELECT e FROM Echantillon e WHERE e.code like ?1"),
    @NamedQuery(name = "Echantillon.findByCodeWithBanque",
       query = "SELECT e FROM Echantillon e WHERE e.code like ?1 " + "AND e.banque = ?2"),
@@ -210,19 +210,14 @@ public class Echantillon implements TKStockableObject, Serializable, TKFileSetta
    private EchanQualite echanQualite;
    private ModePrepa modePrepa;
    private Unite quantiteUnite;
-   //private Unite volumeUnite;
    private Collaborateur collaborateur;
    private Emplacement emplacement;
    private Fichier crAnapath;
    private Reservation reservation;
    private EchantillonType echantillonType;
    private Prelevement prelevement;
-   //private CodeAssigne codeOrganeExport;
-   //private CodeAssigne codeLesExport;
-
-   //private Set<CodeAssigne> codeOrganes = new HashSet<CodeAssigne>();
-   //private Set<CodeAssigne> codeMorphos = new HashSet<CodeAssigne>();
    private Set<CodeAssigne> codesAssignes = new HashSet<>();
+   private AbstractEchantillonDelegate delegate;
 
    // stream utilise pour enregistre Cr anapath
    private InputStream anapathStream;
@@ -232,7 +227,6 @@ public class Echantillon implements TKStockableObject, Serializable, TKFileSetta
    @Id
    @Column(name = "ECHANTILLON_ID", unique = true, nullable = false)
    @GeneratedValue(generator = "autoincrement")
-   // @GenericGenerator(name = "autoincrement", strategy = "increment")
    @GenericGenerator(name = "autoincrement", strategy = "native",
       parameters = {@Parameter(name = "sequence", value = "echantillonSeq")})
    public Integer getEchantillonId(){
@@ -262,9 +256,8 @@ public class Echantillon implements TKStockableObject, Serializable, TKFileSetta
          final Calendar cal = Calendar.getInstance();
          cal.setTime(dateStock.getTime());
          return cal;
-      }else{
-         return null;
       }
+      return null;
    }
 
    @Override
@@ -296,18 +289,6 @@ public class Echantillon implements TKStockableObject, Serializable, TKFileSetta
    public void setQuantiteInit(final Float quant){
       this.quantiteInit = Utils.floor(quant, 3);
    }
-
-   /*
-    * @Column(name = "VOLUME", nullable = true) public Float getVolume() { return
-    * this.volume; }
-    *
-    * public void setVolume(Float vol) { this.volume = vol; }
-    *
-    * @Column(name = "VOLUME_INIT", nullable = true) public Float getVolumeInit() {
-    * return this.volumeInit; }
-    *
-    * public void setVolumeInit(Float volumeI) { this.volumeInit = volumeI; }
-    */
 
    @Column(name = "DELAI_CGL", nullable = true, precision = 9, scale = 2)
    public Float getDelaiCgl(){
@@ -439,21 +420,6 @@ public class Echantillon implements TKStockableObject, Serializable, TKFileSetta
       this.quantiteUnite = qUnite;
    }
 
-   /*@ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE })
-   @JoinColumn(name = "VOLUME_UNITE_ID", nullable = true)
-   public Unite getVolumeUnite() {
-   	return this.volumeUnite;
-   }
-   
-   /*
-    * @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE })
-    *
-    * @JoinColumn(name = "VOLUME_UNITE_ID", nullable = true) public Unite
-    * getVolumeUnite() { return this.volumeUnite; }
-    *
-    * public void setVolumeUnite(Unite vUnite) { this.volumeUnite = vUnite; }
-    */
-
    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "COLLABORATEUR_ID", nullable = true)
    public Collaborateur getCollaborateur(){
@@ -516,46 +482,6 @@ public class Echantillon implements TKStockableObject, Serializable, TKFileSetta
       this.prelevement = prelev;
    }
 
-   //	@OneToOne
-   //	@JoinColumn(name = "CODE_ORGANE_EXPORT_ID", nullable = true) 
-   //	public CodeAssigne getCodeOrganeExport() {
-   //		return codeOrganeExport;
-   //	}
-   //
-   //	public void setCodeOrganeExport(CodeAssigne cOExport) {
-   //		this.codeOrganeExport = cOExport;
-   //	}
-   //	
-   //	@OneToOne
-   //	@JoinColumn(name = "CODE_LES_EXPORT_ID", nullable = true) 
-   //	public CodeAssigne getCodeLesExport() {
-   //		return codeLesExport;
-   //	}
-   //
-   //	public void setCodeLesExport(CodeAssigne cLExport) {
-   //		this.codeLesExport = cLExport;
-   //	}
-
-   //	//@Transient
-   //	@OneToMany(mappedBy = "echantillon")
-   //	public Set<CodeAssigne> getCodeOrganes() {
-   //		return this.codeOrganes;
-   //	}
-   //
-   //	public void setCodeOrganes(Set<CodeAssigne> codeAss) {
-   //		this.codeOrganes = codeAss;
-   //	}
-   //	
-   //	//@Transient
-   //	@OneToMany(mappedBy = "echantillon")
-   //	public Set<CodeAssigne> getCodeMorphos() {
-   //		return codeMorphos;
-   //	}
-   //
-   //	public void setCodeMorphos(Set<CodeAssigne> cms) {
-   //		this.codeMorphos = cms;
-   //	}
-
    @OneToMany(mappedBy = "echantillon")
    public Set<CodeAssigne> getCodesAssignes(){
       return codesAssignes;
@@ -563,6 +489,15 @@ public class Echantillon implements TKStockableObject, Serializable, TKFileSetta
 
    public void setCodesAssignes(final Set<CodeAssigne> cs){
       this.codesAssignes = cs;
+   }
+
+   @OneToOne(mappedBy = "delegator", cascade = CascadeType.MERGE, orphanRemoval = true)
+   public AbstractEchantillonDelegate getDelegate(){
+      return delegate;
+   }
+
+   public void setDelegate(AbstractEchantillonDelegate delegate){
+      this.delegate = delegate;
    }
 
    /**
@@ -585,18 +520,15 @@ public class Echantillon implements TKStockableObject, Serializable, TKFileSetta
          if(test.code == null){
             if(this.banque == null){
                return (test.banque == null);
-            }else{
-               return (this.banque.equals(test.banque));
             }
-         }else{
-            return false;
+            return (this.banque.equals(test.banque));
          }
+         return false;
       }else if(this.banque == null){
          if(test.banque == null){
             return (this.code.equals(test.code));
-         }else{
-            return false;
          }
+         return false;
       }else{
          return (this.code.equals(test.code) && this.banque.equals(test.banque));
       }
@@ -634,9 +566,8 @@ public class Echantillon implements TKStockableObject, Serializable, TKFileSetta
    public String toString(){
       if(this.code != null){
          return "{" + this.code + "}";
-      }else{
-         return "{Empty Echantillon}";
       }
+      return "{Empty Echantillon}";
    }
 
    @Override
@@ -675,6 +606,7 @@ public class Echantillon implements TKStockableObject, Serializable, TKFileSetta
       // clone.setCodeLesExport(this.getCodeLesExport());
       clone.setCodesAssignes(getCodesAssignes());
       clone.setAnapathStream(getAnapathStream());
+      clone.setDelegate(this.getDelegate());
       return clone;
    }
 

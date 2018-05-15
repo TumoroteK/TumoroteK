@@ -162,8 +162,7 @@ public class AffectationImprimantePK implements Serializable
       if(this.imprimante != null && this.utilisateur != null && this.banque != null){
          return "{" + utilisateur.toString() + " (Utilisateur), " + banque.toString() + " (Banque), " + imprimante.toString()
             + " (Imprimante)}";
-      }else{
-         return "{Empty AffectationImprimantePK}";
       }
+      return "{Empty AffectationImprimantePK}";
    }
 }

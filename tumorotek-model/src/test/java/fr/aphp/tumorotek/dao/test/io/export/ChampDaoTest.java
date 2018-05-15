@@ -65,7 +65,6 @@ public class ChampDaoTest extends AbstractDaoTest
    /** Bean Dao. */
    private ChampDao champDao;
    private ChampEntiteDao champEntiteDao;
-   //TODO Créer ChampAnnotationDao
    private ChampAnnotationDao champAnnotationDao;
 
    /** Constructeur. */

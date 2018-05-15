@@ -121,9 +121,22 @@ public class ProdDeriveController extends AbstractObjectTabController
 
    @Override
    public FicheProdDeriveStatic getFicheStatic(){
-      return ((FicheProdDeriveStatic) self.getFellow("divProdDeriveStatic")
-         //.getFellow("ficheProdDerive")
-         .getFellow("fwinProdDeriveStatic").getAttributeOrFellow("fwinProdDeriveStatic$composer", true));
+      if(BTO.equals(getCurrentContexte())){
+         return ((FicheProdDeriveStatic) self.getFellow("divProdDeriveStatic").getFellow("fwinProdDeriveStaticBTO")
+            .getAttributeOrFellow("fwinProdDeriveStaticBTO$composer", true));
+      }
+      return ((FicheProdDeriveStatic) self.getFellow("divProdDeriveStatic").getFellow("fwinProdDeriveStatic")
+         .getAttributeOrFellow("fwinProdDeriveStatic$composer", true));
+   }
+
+   @Override
+   public void populateFicheStatic(){
+      if(BTO.equals(getCurrentContexte())){
+         setStaticZulPath("/zuls/prodderive/bto/FicheProdDeriveStaticBTO.zul");
+      }else{
+         setStaticZulPath("/zuls/prodderive/FicheProdDeriveStatic.zul");
+      }
+      super.populateFicheStatic();
    }
 
    @Override
@@ -134,10 +147,9 @@ public class ProdDeriveController extends AbstractObjectTabController
       if(!BTO.equals(getCurrentContexte())){
          return ((FicheProdDeriveEdit) self.getFellow("divProdDeriveEdit").getFellow("fwinProdDeriveEdit")
             .getAttributeOrFellow("fwinProdDeriveEdit$composer", true));
-      }else{
-         return ((FicheProdDeriveEdit) self.getFellow("divProdDeriveEdit").getFellow("fwinProdDeriveEditBTO")
-            .getAttributeOrFellow("fwinProdDeriveEditBTO$composer", true));
       }
+      return ((FicheProdDeriveEdit) self.getFellow("divProdDeriveEdit").getFellow("fwinProdDeriveEditBTO")
+         .getAttributeOrFellow("fwinProdDeriveEditBTO$composer", true));
    }
 
    public FicheMultiProdDerive getMultiFicheEdit(){
@@ -148,9 +160,8 @@ public class ProdDeriveController extends AbstractObjectTabController
    public boolean hasMultiFicheEdit(){
       if(self.getFellow("divProdDeriveEdit").getFellowIfAny("fwinMultiProdDerive") != null){
          return true;
-      }else{
-         return false;
       }
+      return false;
    }
 
    @Override
@@ -170,9 +181,8 @@ public class ProdDeriveController extends AbstractObjectTabController
       if(self.getFellowIfAny("ficheAnnoProdDerive") != null){
          return ((FicheAnnotation) self.getFellow("ficheAnnoProdDerive").getFellow("fwinAnnotation")
             .getAttributeOrFellow("fwinAnnotation$composer", true));
-      }else{
-         return null;
       }
+      return null;
    }
 
    @Override
@@ -319,9 +329,8 @@ public class ProdDeriveController extends AbstractObjectTabController
       if(getMainWindow().isFullfilledComponent("echantillonPanel", "winEchantillon")){
          return (EchantillonController) getMainWindow().getMainTabbox().getTabpanels().getFellow("echantillonPanel")
             .getFellow("winEchantillon").getAttributeOrFellow("winEchantillon$composer", true);
-      }else{
-         return null;
       }
+      return null;
    }
 
    @Override

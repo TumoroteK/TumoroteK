@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.manager.io;
 
 import java.util.List;
 
+import fr.aphp.tumorotek.model.coeur.annotation.DataType;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.systeme.Entite;
 
@@ -44,14 +45,13 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 	 *
 	 * Interface pour le manager du bean de domaine ChampEntite.
 	 * Interface créée le 29/01/10.
-	 *
 	 * @author Maxime GOUSSEAU
 	 * @version 2.0
 	 *
 	 */
 public interface ChampEntiteManager
 {
-
+   
    /**
     * Recherche un ChampEntite dont l'identifiant est passé en paramètre.
     * @param id Identifiant du ChampEntite que l'on recherche.
@@ -92,6 +92,27 @@ public interface ChampEntiteManager
    List<ChampEntite> findByEntiteAndImportManager(Entite entite, Boolean canImport);
 
    /**
+    * Renvoie les ChampEntites importables (ou non), selon les datatypes, pour
+    * une entité.
+    * @param entite
+    * @param canImport
+    * @param dataTypeList liste des datatype souhaités
+    * @return Liste de ChampEntites.
+    */
+   List<ChampEntite> findByEntiteAndImportManagerAndDatatype(Entite entite, Boolean canImport, List<DataType> dataTypeList);
+
+   /**
+    * Renvoie les ChampEntites importables (ou non), selon les datatypes, pour
+    * une entité.
+    * @param entite
+    * @param canImport
+    * @param dataTypeList liste des datatype souhaités
+    * @param excludeIds exclu les champs numériques représentant un id
+    * @return Liste de ChampEntites.
+    */
+   List<ChampEntite> findByEntiteAndImportManagerAndDatatype(final Entite entite, final Boolean canImport, final List<DataType> dataTypeList, final Boolean excludeIds);
+   
+   /**
     * Renvoie les ChampEntites importables, nullable (ou non) pour
     * une entité.
     * @param entite
@@ -100,4 +121,13 @@ public interface ChampEntiteManager
     * @return Liste de ChampEntites.
     */
    List<ChampEntite> findByEntiteImportAndIsNullableManager(Entite entite, Boolean canImport, Boolean isNullable);
+   
+   /**
+    * Renvoie la valeur (en String) du champEntite pour l'objet.
+    * @param champ ChampEntite à extraire.
+    * @param obj Objet.
+    * @param boolean format String
+    * @return Valeur du champ (en String).
+    */
+   Object getValueForObjectManager(final ChampEntite champ, final Object obj, final boolean prettyFormat);
 }

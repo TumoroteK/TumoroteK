@@ -180,7 +180,7 @@ public class IncaEchantillonExportTest extends AbstractManagerTest
    }
 
    public void testGetControles() throws ClassNotFoundException, SQLException{
-      Class.forName("com.mysql.jdbc.Driver");
+      Class.forName("com.mysql.cj.jdbc.Driver");
       final Connection con =
          DriverManager.getConnection("jdbc:mysql://localhost:3306/" + "toul?characterEncoding=UTF-8", "root", "root");
       final Echantillon e = new Echantillon();
@@ -204,7 +204,7 @@ public class IncaEchantillonExportTest extends AbstractManagerTest
    }
 
    public void testGetPourcentage() throws ClassNotFoundException, SQLException{
-      Class.forName("com.mysql.jdbc.Driver");
+      Class.forName("com.mysql.cj.jdbc.Driver");
       final Connection con =
          DriverManager.getConnection("jdbc:mysql://localhost:3306/" + "toul?characterEncoding=UTF-8", "root", "root");
       final Echantillon e = new Echantillon();
@@ -240,7 +240,7 @@ public class IncaEchantillonExportTest extends AbstractManagerTest
    }
 
    public void testGetProdTypeAssocie() throws ClassNotFoundException, SQLException{
-      Class.forName("com.mysql.jdbc.Driver");
+      Class.forName("com.mysql.cj.jdbc.Driver");
       final Connection con =
          DriverManager.getConnection("jdbc:mysql://localhost:3306/" + "toul?characterEncoding=UTF-8", "root", "root");
       final Echantillon e = new Echantillon();
@@ -269,7 +269,7 @@ public class IncaEchantillonExportTest extends AbstractManagerTest
    }
 
    public void testGetADNconstitutionnel() throws ClassNotFoundException, SQLException{
-      Class.forName("com.mysql.jdbc.Driver");
+      Class.forName("com.mysql.cj.jdbc.Driver");
       final Connection con =
          DriverManager.getConnection("jdbc:mysql://localhost:3306/" + "toul?characterEncoding=UTF-8", "root", "root");
       final Echantillon e = new Echantillon();

@@ -35,6 +35,7 @@
  **/
 package fr.aphp.tumorotek.manager.test.coeur.annotation;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -180,12 +181,12 @@ public class ChampAnnotationManagerTest extends AbstractManagerTest4
    public void testGetItemsManager(){
       ChampAnnotation chp = champAnnotationManager.findByNomLikeManager("Thes1", true).get(0);
       final Banque b1 = banqueDao.findById(1);
-      assertTrue(champAnnotationManager.getItemsManager(chp, b1).size() == 2);
-      assertTrue(champAnnotationManager.getItemsManager(chp, null).size() == 0);
+      assertEquals(2, champAnnotationManager.getItemsManager(chp, b1).size());
+      assertEquals(0, champAnnotationManager.getItemsManager(chp, null).size());
       final Banque b4 = banqueDao.findById(4);
-      assertTrue(champAnnotationManager.getItemsManager(chp, b4).size() == 1);
+      assertEquals(1, champAnnotationManager.getItemsManager(chp, b4).size());
       chp = new ChampAnnotation();
-      assertTrue(champAnnotationManager.getItemsManager(chp, null).size() == 0);
+      assertEquals(0, champAnnotationManager.getItemsManager(chp, null).size());
    }
 
    @Test
@@ -207,7 +208,6 @@ public class ChampAnnotationManagerTest extends AbstractManagerTest4
 
    /**
     * Teste la methode createObjectManager. 
-    * @throws ParseException 
     */
    private void createObjectManagerTest(){
 
@@ -337,7 +337,6 @@ public class ChampAnnotationManagerTest extends AbstractManagerTest4
 
    /**
     * Teste la methode updateObjectManager. 
-    * @throws ParseException 
     */
    private void updateDefautsObjectManagerTest(){
       final ChampAnnotation c = champAnnotationManager.findByNomLikeManager("CHAMP_TEST", false).get(0);
@@ -400,7 +399,6 @@ public class ChampAnnotationManagerTest extends AbstractManagerTest4
 
    /**
     * Teste la methode updateObjectManager. 
-    * @throws ParseException 
     */
    private void updateItemsObjectManagerTest(){
       final ChampAnnotation c = champAnnotationManager.findByNomLikeManager("NEWCHAMP", false).get(0);

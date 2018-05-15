@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.cession.ProtocoleType;
  * @version 2.0
  *
  */
-public interface ProtocoleTypeDao extends GenericDaoJpa<ProtocoleType, Integer>, TKThesaurusDao
+public interface ProtocoleTypeDao extends GenericDaoJpa<ProtocoleType, Integer>, TKThesaurusDao<ProtocoleType>
 {
 
    /**

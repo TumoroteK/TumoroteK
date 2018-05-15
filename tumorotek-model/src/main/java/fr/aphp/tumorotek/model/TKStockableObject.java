@@ -100,6 +100,7 @@ public interface TKStockableObject extends TKAnnotableObject
 
       private boolean compareId = true;
 
+      //TODO pourquoi toujours à true et non utiliser "c" ?
       public CodeComparator(final boolean c){
          compareId = true;
       }
@@ -108,16 +109,8 @@ public interface TKStockableObject extends TKAnnotableObject
       public int compare(final TKStockableObject p1, final TKStockableObject p2){
          if(compareId && p1.listableObjectId() != null){
             return p1.listableObjectId().compareTo(p2.listableObjectId());
-         }else{
-            return compareAfterDot(p1.getCode(), p2.getCode());
          }
-         //			if (p1.getCode().contains(".") && p2.getCode().contains(".")
-         //				|| p1.listableObjectId() == null) {
-         //				return compareAfterDot(p1.getCode(), p2.getCode());	
-         //			} else {
-         //				return p1.listableObjectId().compareTo(p2.listableObjectId());
-         //			}
-
+         return compareAfterDot(p1.getCode(), p2.getCode());
       }
 
       private int compareAfterDot(final String s1, final String s2){
@@ -127,9 +120,8 @@ public interface TKStockableObject extends TKAnnotableObject
             }catch(final NumberFormatException ne){
                return compareAfterDot(s1.substring(s1.indexOf(".") + 1), s2.substring(s2.indexOf(".") + 1));
             }
-         }else{
-            return s1.compareTo(s2);
          }
+         return s1.compareTo(s2);
       }
    }
 }

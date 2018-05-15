@@ -107,7 +107,7 @@ public class FicheAnnotation extends AbstractFicheController
    private final List<AnnotationValeur> valeursToDelete = new ArrayList<>();
 
    // modification multiple
-   protected List<? extends TKAnnotableObject> multiObjs;
+   protected List<TKAnnotableObject> multiObjs;
    protected Boolean isMultipleMode = false;
 
    protected int tableNum = 0;
@@ -173,7 +173,7 @@ public class FicheAnnotation extends AbstractFicheController
       return valeursToDelete;
    }
 
-   public void setMultiObjs(final List<? extends TKAnnotableObject> mObjs){
+   public void setMultiObjs(final List<TKAnnotableObject> mObjs){
       this.multiObjs = mObjs;
    }
 
@@ -271,7 +271,7 @@ public class FicheAnnotation extends AbstractFicheController
           *
           * @since 2.2.0
           */
-         if(tables.size() == 1 && !cumulative && !tables.get(0).isInlineDisplay()){
+         if(null != annoTable && tables.size() == 1 && !cumulative && !tables.get(0).isInlineDisplay()){
             annoTable.setOpen(true);
          }
       }
@@ -357,7 +357,7 @@ public class FicheAnnotation extends AbstractFicheController
       // passe la liste d'objets en modification multiple
       if(multi){
          ((AnnotationComponent) ua.getFellow("annoDiv").getAttributeOrFellow("annoDiv$composer", true))
-            .setMultiObjs((List<TKAnnotableObject>) this.multiObjs);
+            .setMultiObjs(this.multiObjs);
       }
 
       return ua;
@@ -481,20 +481,8 @@ public class FicheAnnotation extends AbstractFicheController
             }
          }
 
-         //			ManagerLocator.getAnnotationValeurManager()
-         //				.createAnnotationValeurListManager(this.valeursToCreate, 
-         //						this.obj, getCurrentBanque(), u, "creation");
-         //			ManagerLocator.getAnnotationValeurManager()
-         //			.createAnnotationValeurListManager(this.valeursToUpdate, this.obj, 
-         //								getCurrentBanque(), u, "modification");
-
          clearValeursLists(true);
          tellComponentsToUpdate();
-         //		} catch (RuntimeException ve) {
-         //			// gere toute exception renvoyee par le systeme pour pouvoir
-         //			// reiterer la tentative d'enregistrement
-         //			tellComponentsToRevert();
-         //			// throw ve;
          for(final File f : filesToDelete){
             f.delete();
          }
@@ -569,15 +557,6 @@ public class FicheAnnotation extends AbstractFicheController
 
    /*************** Event listeners. ******************/
 
-   //	public void onClick$edit() {
-   //		collapseAllGroups();		
-   //		Events.echoEvent("onLaterEdit", self, null);
-   //	}
-   //	
-   //	public void onLaterEdit() {
-   //		switchToStaticOrEditMode(false);
-   //		openCollapsedGroups();
-   //	}
    public void onClick$edit(){
       switchToStaticOrEditMode(false, true);
    }
@@ -588,6 +567,7 @@ public class FicheAnnotation extends AbstractFicheController
     * si ce dernier est en cours de création.
     */
    public void onClick$validate(){
+      validateComponents();
       if(this.obj.listableObjectId() != null){
          recordModifications();
          switchToStaticOrEditMode(true, true);
@@ -670,7 +650,7 @@ public class FicheAnnotation extends AbstractFicheController
     * des droits de l'utilisateur.
     * @param nomEntite Entite (ex.:ProdDerive).
     */
-   
+
    public void drawActionsButtons(final String nomEntite){
       Boolean admin = false;
       if(sessionScope.containsKey("Admin")){
@@ -685,14 +665,19 @@ public class FicheAnnotation extends AbstractFicheController
          final OperationType modification =
             ManagerLocator.getOperationTypeManager().findByNomLikeManager("Annotation", true).get(0);
 
-         Hashtable<String, List<OperationType>> droits = new Hashtable<>();
+         Hashtable<?, ?> droits = new Hashtable<>();
 
          if(sessionScope.containsKey("Droits")){
             // on extrait les droits de l'utilisateur
-            droits = (Hashtable<String, List<OperationType>>) sessionScope.get("Droits");
-
-            final List<OperationType> ops = droits.get(nomEntite);
-            setCanEdit(ops.contains(modification));
+            if(sessionScope.get("Droits") instanceof Hashtable){
+               //Hashtable<String, List<OperationType>>
+               droits = (Hashtable<?, ?>) sessionScope.get("Droits");
+               if(droits.get(nomEntite) instanceof List){
+                  //List<OperationType>
+                  final List<?> ops = (List<?>)droits.get(nomEntite);
+                  setCanEdit(ops.contains(modification));
+               }
+            }
          }
       }
    }

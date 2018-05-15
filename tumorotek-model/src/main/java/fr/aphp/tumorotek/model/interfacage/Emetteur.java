@@ -190,9 +190,8 @@ public class Emetteur implements java.io.Serializable
    public String toString(){
       if(this.identification != null){
          return "{" + this.identification + ", " + logiciel.getNom() + "(Logiciel)}";
-      }else{
-         return "{Empty Emetteur}";
       }
+      return "{Empty Emetteur}";
    }
 
 }

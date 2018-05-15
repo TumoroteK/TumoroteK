@@ -67,13 +67,13 @@ public class ContexteManagerTest extends AbstractManagerTest4
    public void testFindByManager(){
       final List<Contexte> list = contexteManager.findByOrderManager();
       assertTrue(list.size() == 2);
-      assertTrue(list.get(0).getNom().equals("CONT1"));
-      assertTrue(list.get(1).getNom().equals("CONT2"));
+      assertTrue(list.get(0).getNom().equals("DEFAUT"));
+      assertTrue(list.get(1).getNom().equals("SEROLOGIE"));
    }
 
    @Test
    public void testFindByNomManager(){
-      List<Contexte> contextes = contexteManager.findByNomManager("CONT1");
+      List<Contexte> contextes = contexteManager.findByNomManager("DEFAUT");
       assertTrue(contextes.size() == 1);
       contextes = contexteManager.findByNomManager("CAT5");
       assertTrue(contextes.size() == 0);
@@ -83,7 +83,7 @@ public class ContexteManagerTest extends AbstractManagerTest4
 
    @Test
    public void testGetCataloguesManager(){
-      final Contexte c = contexteManager.findByNomManager("CONT1").get(0);
+      final Contexte c = contexteManager.findByNomManager("DEFAUT").get(0);
       Set<Catalogue> catas = contexteManager.getCataloguesManager(c);
       assertTrue(catas.size() == 4);
       catas = contexteManager.getCataloguesManager(null);

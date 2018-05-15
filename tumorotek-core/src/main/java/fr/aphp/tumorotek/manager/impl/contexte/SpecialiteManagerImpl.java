@@ -114,36 +114,33 @@ public class SpecialiteManagerImpl implements SpecialiteManager
             nom = nom + "%";
          }
          return specialiteDao.findByNom(nom);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
-   public boolean findDoublonManager(final Object o){
+   public boolean findDoublonManager(final Specialite o){
       if(o != null){
-         final Specialite spe = (Specialite) o;
+         final Specialite spe = o;
          if(spe.getSpecialiteId() == null){
             return specialiteDao.findAll().contains(spe);
-         }else{
-            return specialiteDao.findByExcludedId(spe.getSpecialiteId()).contains(spe);
          }
-      }else{
-         return false;
+         return specialiteDao.findByExcludedId(spe.getSpecialiteId()).contains(spe);
       }
+      return false;
    }
 
    @Override
-   public boolean isUsedObjectManager(final Object obj){
-      final Specialite spe = specialiteDao.mergeObject((Specialite) obj);
+   public boolean isUsedObjectManager(final Specialite obj){
+      final Specialite spe = specialiteDao.mergeObject(obj);
       return spe.getCollaborateurs().size() > 0;
    }
 
    @Override
-   public void createObjectManager(final Object obj){
+   public void createObjectManager(final Specialite obj){
       BeanValidator.validateObject(obj, new Validator[] {specialiteValidator});
       if(!findDoublonManager(obj)){
-         specialiteDao.createObject((Specialite) obj);
+         specialiteDao.createObject(obj);
          log.info("Enregistrement objet Specialite " + obj.toString());
       }else{
          log.warn("Doublon lors creation objet Specialite " + obj.toString());
@@ -152,10 +149,10 @@ public class SpecialiteManagerImpl implements SpecialiteManager
    }
 
    @Override
-   public void updateObjectManager(final Object obj){
+   public void updateObjectManager(final Specialite obj){
       BeanValidator.validateObject(obj, new Validator[] {specialiteValidator});
       if(!findDoublonManager(obj)){
-         specialiteDao.updateObject((Specialite) obj);
+         specialiteDao.updateObject(obj);
          log.info("Modification objet Specialite " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet Specialite " + obj.toString());
@@ -164,18 +161,10 @@ public class SpecialiteManagerImpl implements SpecialiteManager
    }
 
    @Override
-   public void removeObjectManager(final Object obj){
+   public void removeObjectManager(final Specialite obj){
       if(obj != null){
-         //			if (!isUsedObjectManager(obj)) {
-         specialiteDao.removeObject(((Specialite) obj).getSpecialiteId());
+         specialiteDao.removeObject(obj.getSpecialiteId());
          log.info("Suppression objet Specialite " + obj.toString());
-         //			} else {
-         //				log.warn("Suppression objet Specialite " 
-         //						+ obj.toString()
-         //						+ " impossible car est reference " 
-         //						+ "(par Collaborateur)");
-         //				throw new ObjectUsedException();
-         //			}
       }else{
          log.warn("Suppression d'une Specialite null");
       }

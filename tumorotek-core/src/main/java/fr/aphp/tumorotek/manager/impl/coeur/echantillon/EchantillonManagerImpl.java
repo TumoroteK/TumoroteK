@@ -54,7 +54,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -62,6 +62,7 @@ import org.springframework.validation.Validator;
 import fr.aphp.tumorotek.dao.coeur.ObjetStatutDao;
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchanQualiteDao;
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonDao;
+import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonDelegateDao;
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonTypeDao;
 import fr.aphp.tumorotek.dao.coeur.echantillon.ModePrepaDao;
 import fr.aphp.tumorotek.dao.coeur.prelevement.PrelevementDao;
@@ -94,6 +95,7 @@ import fr.aphp.tumorotek.manager.stockage.EmplacementManager;
 import fr.aphp.tumorotek.manager.systeme.FichierManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.model.TKStockableObject;
+import fr.aphp.tumorotek.model.TKValidableObject;
 import fr.aphp.tumorotek.model.cession.CederObjet;
 import fr.aphp.tumorotek.model.cession.Retour;
 import fr.aphp.tumorotek.model.code.CodeAssigne;
@@ -134,6 +136,7 @@ public class EchantillonManagerImpl implements EchantillonManager
    private final Log log = LogFactory.getLog(EchantillonManager.class);
 
    private EchantillonDao echantillonDao;
+   private EchantillonDelegateDao delegateDao;
    private TransformationManager transformationManager;
    private TransformationDao transformationDao;
    private BanqueDao banqueDao;
@@ -272,6 +275,13 @@ public class EchantillonManagerImpl implements EchantillonManager
 
    public void setObjetNonConformeManager(final ObjetNonConformeManager oM){
       this.objetNonConformeManager = oM;
+   }
+
+   /**
+    * @param delegateDao the delegateDao to set
+    */
+   public void setDelegateDao(EchantillonDelegateDao delegateDao){
+      this.delegateDao = delegateDao;
    }
 
    @Override
@@ -539,10 +549,8 @@ public class EchantillonManagerImpl implements EchantillonManager
     */
    @Override
    public Boolean findDoublonManager(final Echantillon echantillon){
-      // Banque banque = echantillon.getBanque();
       final List<Echantillon> dbls = echantillonDao.findByCodeInPlateforme(echantillon.getCode(),
          echantillon.getBanque() != null ? echantillon.getBanque().getPlateforme() : null);
-      // .findByCodeWithBanque(echantillon.getCode(), banque);
 
       if(!dbls.isEmpty()){
          if(echantillon.getEchantillonId() == null){
@@ -687,34 +695,10 @@ public class EchantillonManagerImpl implements EchantillonManager
       final List<Echantillon> liste = new ArrayList<>();
       if(banques != null && banques.size() > 0 && nbResults > 0){
          log.debug("Recherche des " + nbResults + " derniers Echantillons " + "enregistres.");
-         /*liste = findByLastOperationType(operationTypeDao
-         		.findByNom("Creation").get(0), banques, nbResults);*/
-         //			EntityManager em = entityManagerFactory.createEntityManager();
-         //			Query query = em.createQuery("SELECT e " 
-         //					+ "FROM Echantillon e " 
-         //					+ "WHERE e.banque in (:banque) " 
-         //					+ "ORDER BY e.echantillonId DESC");
-         //			query.setParameter("banque", banques);
-         //			query.setMaxResults(nbResults);
-         //			
-         //			List<Echantillon> res = query.getResultList();
-         //			for (int i = 0; i < res.size(); i++) {
-         //				liste.add(0, res.get(i));
-         //			}
          final EntityManager em = entityManagerFactory.createEntityManager();
          final TypedQuery<Echantillon> query =
             em.createQuery("SELECT e " + "FROM Echantillon e " + "WHERE e.banque in (:banque) " + "ORDER BY e.echantillonId DESC",
                Echantillon.class);
-         //			Query query = em.createQuery("SELECT e " 
-         //					+ "FROM Echantillon e, Operation o " 
-         //					+ "WHERE o.objetId = e.echantillonId " 
-         //					+ "AND o.entite = :entite " 
-         //					+ "AND o.operationType = :oType " 
-         //					+ "AND e.banque in (:banque) " 
-         //					+ "ORDER BY o.date DESC");
-         //			query.setParameter("entite", entiteDao.findByNom("Echantillon"));
-         //			query.setParameter("oType", operationTypeDao
-         //												.findByNom("Creation").get(0));
          query.setParameter("banque", banques);
          query.setFirstResult(0);
          query.setMaxResults(nbResults);
@@ -724,42 +708,6 @@ public class EchantillonManagerImpl implements EchantillonManager
       return liste;
 
    }
-
-   //	/**
-   //	 * Récupère une liste d'échantillons en fonction de leur banques et d'un
-   //	 * type d'opération. Cette liste est ordonnée par la date de l'opération.
-   //	 * Sa taille maximale est fixée par un paramètre.
-   //	 * @param oType Type de l'opération.
-   //	 * @param banque liste de Banques des échantillons.
-   //	 * @param nbResults Nombre max d'échantillons souhaités.
-   //	 * @return Liste de Echantillons.
-   //	 */
-   //	
-   //	private List<Echantillon> findByLastOperationType(OperationType oType, 
-   //			List<Banque> banques, int nbResults) {
-   //		
-   //		List<Echantillon> echantillons = new ArrayList<Echantillon>();
-   //		
-   //		if (banques.size() > 0) {
-   //			EntityManager em = entityManagerFactory.createEntityManager();
-   //			Query query = em.createQuery("SELECT e " 
-   //					+ "FROM Echantillon e, Operation o " 
-   //					+ "WHERE o.objetId = e.echantillonId " 
-   //					+ "AND o.entite = :entite " 
-   //					+ "AND o.operationType = :oType " 
-   //					+ "AND e.banque in (:banque) " 
-   //					+ "ORDER BY o.date DESC 1");
-   //			query.setParameter("entite", entiteDao.findByNom("Echantillon"));
-   //			query.setParameter("oType", oType);
-   //			query.setParameter("banque", banques);
-   //			query.setMaxResults(nbResults);
-   //			
-   //			echantillons.addAll(query.getResultList());
-   //		}
-   //		
-   //		return echantillons;
-   //		
-   //	}
 
    @Override
    public void createObjectManager(final Echantillon echantillon, final Banque banque, final Prelevement prelevement,
@@ -771,7 +719,7 @@ public class EchantillonManagerImpl implements EchantillonManager
       // On vérifie que la banque n'est pas null. Si c'est le cas on envoie
       // une exception
       if(banque == null){
-         log.warn("Objet obligatoire Banque manquant lors de la creation " + "d'un objet Echantillon");
+         log.warn("Objet obligatoire Banque manquant lors de la creation d'un objet Echantillon");
          throw new RequiredObjectIsNullException("Echantillon", "creation", "Banque");
       }
 
@@ -780,7 +728,7 @@ public class EchantillonManagerImpl implements EchantillonManager
       // On vérifie que le type n'est pas null. Si c'est le cas 
       // on envoie une exception
       if(type == null){
-         log.warn("Objet obligatoire EchantillonType manquant lors " + "de la creation " + "d'un objet Echantillon");
+         log.warn("Objet obligatoire EchantillonType manquant lors de la creation d'un objet Echantillon");
          throw new RequiredObjectIsNullException("Echantillon", "creation", "EchantillonType");
       }
 
@@ -791,7 +739,7 @@ public class EchantillonManagerImpl implements EchantillonManager
       if(statut != null){
          echantillon.setObjetStatut(objetStatutDao.mergeObject(statut));
       }else if(echantillon.getObjetStatut() == null){
-         log.warn("Objet obligatoire ObjetStatut manquant lors " + "de la creation " + "d'un objet Echantillon");
+         log.warn("Objet obligatoire ObjetStatut manquant lors de la creation d'un objet Echantillon");
          throw new RequiredObjectIsNullException("Echantillon", "creation", "ObjetStatut");
       }
 
@@ -842,17 +790,6 @@ public class EchantillonManagerImpl implements EchantillonManager
             BeanValidator.validateObject(echantillon, new Validator[] {echantillonValidator});
          }
 
-         // cr anapath
-         //				if (anapath != null && anapath.getFichierId() == null) {
-         //					anapath.setEchantillon(echantillon);
-         //					if (anapath.getPath() == null) {
-         //						anapath.setPath(writeCrAnapathFilePath(baseDir,
-         //														banque, anapath.getNom()));
-         //					}
-         //					fichierManager.createObjectManager(anapath, anapathStream);	
-         //					echantillon.setCrAnapath(anapath);
-         //				}
-
          echantillonDao.createObject(echantillon);
          log.info("Enregistrement de l'objet Echantillon : " + echantillon.toString());
 
@@ -898,24 +835,6 @@ public class EchantillonManagerImpl implements EchantillonManager
             if(echantillon.getEchantillonId() != null){
                echantillon.setEchantillonId(null);
             }
-            //					// supprime un cr enregistré en cas d'erreur
-            //					if (anapath != null) {
-            //						// fichierManager.removeObjectManager(anapath);
-            //						if (anapathStream != null && anapath.getPath() != null) {
-            //							new File(anapath.getPath()).delete();
-            //							try {
-            //								anapathStream.reset();
-            //							} catch (IOException e) {
-            //								log.error(e);
-            //							}
-            //						}
-            //						anapath = anapath.clone();
-            //						anapath.setFichierId(null);	
-            //						if (anapath.getPath() != null) {
-            //							anapath.setPath(anapath.getPath()
-            //								.substring(0, anapath.getPath().lastIndexOf("_")));
-            //						}
-            //					}
          }
          throw (re);
       }
@@ -1043,21 +962,10 @@ public class EchantillonManagerImpl implements EchantillonManager
             echantillon.setConformeCession(false);
          }
 
-         // Statement stmt = null;
-         // PreparedStatement pstmt = null;
-         // PreparedStatement pstmtOp = null;
-         // ResultSet rs = null;
-
          try{
             if(doValidation){
                BeanValidator.validateObject(echantillon, new Validator[] {echantillonValidator});
             }
-
-            // stmt = DataSourceUtils.getConnection(dataSource)
-            //		.createStatement();
-            // rs = stmt.executeQuery("select max(echantillon_id) + 1 from ECHANTILLON");
-            // rs.first();
-            // echanId = rs.getInt(1);
 
             // increment maxId
             jdbcSuite.incrementMaxEchantillonId();
@@ -1070,19 +978,6 @@ public class EchantillonManagerImpl implements EchantillonManager
                empId = echantillon.getEmplacement().getEmplacementId();
             }
 
-            //				String sql = "insert into ECHANTILLON (ECHANTILLON_ID, " 
-            //						+ "BANQUE_ID, ECHANTILLON_TYPE_ID, OBJET_STATUT_ID, "
-            //						+ "PRELEVEMENT_ID, COLLABORATEUR_ID, QUANTITE_UNITE_ID, "
-            //						+ "ECHAN_QUALITE_ID, MODE_PREPA_ID, EMPLACEMENT_ID, "
-            //						+ "CODE, DATE_STOCK, QUANTITE, QUANTITE_INIT, "
-            //						+ "LATERALITE, DELAI_CGL, "
-            //						+ "TUMORAL, STERILE, "
-            //						+ "CONFORME_TRAITEMENT, CONFORME_CESSION, "
-            //						+ "ETAT_INCOMPLET, ARCHIVE) "
-            //						+ "values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-            //				
-            //				pstmt = DataSourceUtils.getConnection(dataSource)
-            //						.prepareStatement(sql);
             jdbcSuite.getPstmt().setInt(1, jdbcSuite.getMaxEchantillonId());
             jdbcSuite.getPstmt().setInt(2, banqueId);
             jdbcSuite.getPstmt().setInt(3, typeId);
@@ -1166,25 +1061,13 @@ public class EchantillonManagerImpl implements EchantillonManager
             jdbcSuite.getPstmt().setBoolean(21, false);
             jdbcSuite.getPstmt().setBoolean(22, false);
 
-            // pstmt.executeUpdate();
             jdbcSuite.getPstmt().addBatch();
-
-            // Operation
-            //				String sql2 = "insert into OPERATION (UTILISATEUR_ID, " 
-            //						+ "OBJET_ID, ENTITE_ID, OPERATION_TYPE_ID, "
-            //						+ "DATE_, V1)"m
-            //						+ "values (?,?,?,?,?,?)";		
-            //				pstmtOp = DataSourceUtils.getConnection(dataSource)
-            //						.prepareStatement(sql2);
-
             jdbcSuite.getPstmtOp().setInt(1, utilId);
             jdbcSuite.getPstmtOp().setInt(2, jdbcSuite.getMaxEchantillonId());
             jdbcSuite.getPstmtOp().setInt(3, 3);
             jdbcSuite.getPstmtOp().setInt(4, 3);
             jdbcSuite.getPstmtOp().setTimestamp(5, new java.sql.Timestamp(Utils.getCurrentSystemCalendar().getTimeInMillis()));
             jdbcSuite.getPstmtOp().setBoolean(6, false);
-
-            // pstmtOp.execute();
             jdbcSuite.getPstmtOp().addBatch();
 
             echantillon.setEchantillonId(jdbcSuite.getMaxEchantillonId());
@@ -1202,22 +1085,12 @@ public class EchantillonManagerImpl implements EchantillonManager
                jdbcSuite.getPstmtOp().setTimestamp(5, new java.sql.Timestamp(Utils.getCurrentSystemCalendar().getTimeInMillis()));
                jdbcSuite.getPstmtOp().setBoolean(6, false);
 
-               //pstmtOp.execute();
                jdbcSuite.getPstmtOp().addBatch();
             }
 
             // no confs
             if(noconfsTrait != null){
-               // rs2 = stmt.executeQuery("select max(objet_non_conforme_id)"
-               //		+ " from OBJET_NON_CONFORME");
-               // rs2.first();
-               // Integer maxNcId = rs2.getInt(1)
                objetNonConformeManager.prepareListJDBCManager(jdbcSuite, echantillon, noconfsTrait);
-
-               // rs2 = stmt.executeQuery("select max(objet_non_conforme_id)"
-               //		+ " from OBJET_NON_CONFORME");
-               // rs2.first();
-               // Integer maxNcId = rs2.getInt(1)
                objetNonConformeManager.prepareListJDBCManager(jdbcSuite, echantillon, noconfsCess);
             }
 
@@ -1228,58 +1101,8 @@ public class EchantillonManagerImpl implements EchantillonManager
             echantillon.setEchantillonId(null);
 
          }catch(final Exception e){
-            // en cas d'erreur lors enregistrement d'un code ou annotation
-            // le rollback se fera mais echantillon aura un id assigne
-            // qui déclenchera une TransientException si on essaie 
-            // d'enregistrer a nouveau.
-            //				if (!isImport) {
-            //					if (echantillon.getEchantillonId() != null) {
-            //						echantillon.setEchantillonId(null);
-            //					}
-            //					// supprime un cr enregistré en cas d'erreur
-            //					if (anapath != null) {
-            //						fichierManager.removeObjectManager(anapath, true);
-            //						anapath.setFichierId(null);	
-            //						if (anapathStream != null) {
-            //							try {
-            //								anapathStream.reset();
-            //							} catch (IOException e) {
-            //								log.error(e);
-            //							}
-            //						}
-            //					}
-            //				}
             jdbcSuite.setMaxEchantillonId(echanId);
             throw (e);
-            //			} catch (Exception e) {
-            //				if (stmt != null) {
-            //					try { stmt.close(); 
-            //					} catch (Exception ex) { stmt = null; }
-            //				}
-            //				if (pstmt != null) {
-            //					try { pstmt.close(); 
-            //					} catch (Exception ex) { pstmt = null; }
-            //				}
-            //				if (pstmtOp != null) {
-            //					try { pstmtOp.close(); 
-            //					} catch (Exception ex) { pstmtOp = null; }
-            //				}
-            //				e.printStackTrace();
-            // rollback create operation
-            //				throw e;
-         }finally{
-            //				if (pstmt != null) {
-            //					try { pstmt.close(); 
-            //					} catch (Exception e) { pstmt = null; }
-            //				}
-            //				if (pstmtOp != null) {
-            //					try { pstmtOp.close(); 
-            //					} catch (Exception e) { pstmtOp = null; }
-            //				}
-            //				if (rs != null) {
-            //					try { rs.close(); 
-            //					} catch (Exception e) { rs = null; }
-            //				}
          }
          return jdbcSuite.getMaxEchantillonId();
       }
@@ -1327,10 +1150,9 @@ public class EchantillonManagerImpl implements EchantillonManager
       final List<AnnotationValeur> listAnnoToDelete, final List<File> filesCreated, final List<File> filesToDelete,
       final Utilisateur utilisateur, final boolean doValidation, final List<OperationType> operations, final String baseDir){
 
-      // Fichier removeAnapath = null;
-      // Fichier newAnapath = null;
-      // Fichier oldAnapath = null;
-      // Fichier updateAnapath = null;
+      if(echantillon.getDelegate() != null){
+         echantillon.setDelegate(delegateDao.mergeObject(echantillon.getDelegate()));
+      }
 
       // On vérifie que la banque n'est pas null. Si c'est le cas on envoie
       // une exception
@@ -1397,41 +1219,11 @@ public class EchantillonManagerImpl implements EchantillonManager
          log.warn("Doublon lors de la modif de l'objet Echantillon : " + echantillon.toString());
          throw new DoublonFoundException("Echantillon", "modification", echantillon.getCode(), null);
       }
-      // String newFileCreatedPath = null;
-      // File oldFile = null;
+
       try{
          if(doValidation){
             BeanValidator.validateObject(echantillon, new Validator[] {echantillonValidator});
          }
-
-         //				if (anapath != null) {
-         //					anapath.setEchantillon(echantillon);
-         //					// oldAnapath = echantillon.getCrAnapath();
-         //					// creation nouveau fichier
-         //					if (anapath.getFichierId() == null) {
-         //						if (anapathStream != null) {
-         //							if (anapath.getPath() == null) {
-         //								anapath.setPath(writeCrAnapathFilePath(baseDir, 
-         //														banque, anapath.getNom()));
-         //							}
-         //							fichierManager.createObjectManager(anapath, anapathStream);
-         //						}
-         //					} else { // update fichier
-         //						if (anapathStream != null && echantillon.getCrAnapath() != null) {
-         //							oldFile = new File(echantillon.getCrAnapath().getPath());
-         //						}
-         //						anapath = fichierManager.updateObjectManager(anapath, anapathStream);
-         //					}
-         //					echantillon.setCrAnapath(anapath);
-         //					
-         //					// enrgst du path pour supprimer fichier en cas de rollback
-         //					if (anapathStream != null) {
-         //						newFileCreatedPath = anapath.getPath();
-         //					}
-         //				} else {
-         //					removeAnapath = echantillon.getCrAnapath();
-         //					echantillon.setCrAnapath(null);	
-         //				}
 
          echantillonDao.updateObject(echantillon);
          log.info("Modification de l'objet Echantillon : " + echantillon.toString());
@@ -1457,8 +1249,6 @@ public class EchantillonManagerImpl implements EchantillonManager
          if(codesToDelete != null){
             for(int i = 0; i < codesToDelete.size(); i++){
                codeAssigneManager.removeObjectManager(codesToDelete.get(i));
-               //						echantillon.getCodesAssignes()
-               //							.remove(codesToDelete.get(i));
             }
          }
 
@@ -1471,26 +1261,6 @@ public class EchantillonManagerImpl implements EchantillonManager
                // never accessible
             }
          }
-
-         // applique update pas de nouveau cr enregistré
-         //				if (updateAnapath != null) {
-         //					// applique update simple si non ou contenu change
-         //					if (anapathStream != null 
-         //						|| (echantillon.getCrAnapath() != null 
-         //							&& !updateAnapath.getNom()
-         //								.equals(echantillon.getCrAnapath().getNom()))) {
-         //						fichierManager
-         //							.updateObjectManager(updateAnapath, anapathStream);
-         //						echantillon.setCrAnapath(updateAnapath);
-         //					}
-         //				}
-         //				
-         //				// remove anapath si nullify
-         //				if (removeAnapath != null && !fichierManager
-         //						.isUsedObjectManager(removeAnapath)) {
-         //					fichierManager
-         //						.removeObjectManager(removeAnapath, true);
-         //				}
 
          // Annotations
          // suppr les annotations
@@ -1514,11 +1284,6 @@ public class EchantillonManagerImpl implements EchantillonManager
                operationTypeDao.findByNom("Annotation").get(0), utilisateur);
          }
 
-         // suppression fichier en dernier dans la transaction
-         //				if (removeAnapath != null) {
-         //					fichierManager.removeObjectManager(removeAnapath);
-         //				}
-
          if(filesToDelete != null){
             for(final File f : filesToDelete){
                f.delete();
@@ -1533,40 +1298,6 @@ public class EchantillonManagerImpl implements EchantillonManager
          }else{
             log.warn("Rollback création fichier n'a pas pu être réalisée");
          }
-         // rollback la creation d'un fichier en cas d'erreur
-         // supprime un cr enregistré en cas d'erreur
-         //				if (anapath != null) {
-         //					// fichierManager.removeObjectManager(anapath);
-         //					if (newFileCreatedPath != null) {
-         //						new File(newFileCreatedPath).delete();
-         //						try {
-         //							anapathStream.reset();
-         //						} catch (IOException e) {
-         //							log.error(e);
-         //						}
-         //						
-         //						// recree le vieux fichier si il a ete supprime
-         //						if (oldFile != null && !oldFile.exists()) {
-         //							try {
-         //								oldFile.createNewFile();
-         //							} catch (IOException e) {
-         //								log.error(e);
-         //							}
-         //						}
-         //					}
-         //					
-         //					
-         ////					if (oldAnapath != null) {
-         ////						echantillon.setCrAnapath(oldAnapath);
-         ////					}
-         //					
-         //					anapath = anapath.clone();
-         //					anapath.setFichierId(null);	
-         //					if (anapath.getPath() != null) {
-         //						anapath.setPath(anapath.getPath()
-         //							.substring(0, anapath.getPath().lastIndexOf("_")));
-         //					}				
-         //				}
 
          throw (re);
       }
@@ -1607,7 +1338,6 @@ public class EchantillonManagerImpl implements EchantillonManager
          // rollback la creation d'un fichier en cas d'erreur
          // supprime un cr enregistré en cas d'erreur
          if(anapath != null){
-            // fichierManager.removeObjectManager(anapath);
             if(anapathStream != null){
 
                try{
@@ -1617,10 +1347,6 @@ public class EchantillonManagerImpl implements EchantillonManager
                }
 
             }
-
-            //				if (oldAnapath != null) {
-            //					echantillon.setCrAnapath(oldAnapath);
-            //				}
 
             anapath = anapath.clone();
             anapath.setFichierId(null);
@@ -1658,9 +1384,6 @@ public class EchantillonManagerImpl implements EchantillonManager
 
             echantillonDao.removeObject(echantillon.getEchantillonId());
             log.info("Suppression de l'objet Echantillon : " + echantillon.toString());
-
-            //echantillon.setCodeLesExport(null);
-            //echantillon.setCodeOrganeExport(null);
 
             //Supprime operations associees
             CreateOrUpdateUtilities.removeAssociateOperations(echantillon, operationManager, comments, user);
@@ -1862,7 +1585,17 @@ public class EchantillonManagerImpl implements EchantillonManager
             prodDeriveManager.switchBanqueCascadeManager(derivesIt.next(), bank, doValidation, u, filesToDelete);
          }
 
+         //Suppression du délégué si la banque de destination n'est pas dans le même contexte que la banque d'origine
+         if(!bank.getContexte().equals(echan.getBanque().getContexte())){
+            echan.setDelegate(null);
+         }
+         //Si la banque de destination est dans le même contexte que la banque d'origine, on garde le délégué mais on supprime la validation le cas échéant
+         else if(echan.getDelegate() instanceof TKValidableObject) {
+            ((TKValidableObject)echan.getDelegate()).setDetailValidation(null);
+         }
+
          echan.setBanque(bank);
+
          if(findDoublonManager(echan)){
             throw new DoublonFoundException("Echantillon", "switchBanque", echan.getCode(), null);
          }
@@ -1957,14 +1690,9 @@ public class EchantillonManagerImpl implements EchantillonManager
                ((TKException) e).setIdentificationObjetException(echan.getCode());
             }
 
-            //            if(filesCreated != null){
             for(final File f : filesCreated){
-               // fichierManager.removeObjectManager(fichier);
                f.delete();
             }
-            //            }else{
-            //               log.warn("Rollback création fichier n'a pas pu être réalisée");
-            //            }
 
             throw e;
          }
@@ -1997,18 +1725,13 @@ public class EchantillonManagerImpl implements EchantillonManager
                filesCreated, filesToDelete);
          }
 
-         //         if(filesToDelete != null){
          for(final File f : filesToDelete){
             f.delete();
          }
-         //         }
       }catch(final RuntimeException e){
-         //         if(filesCreated != null){
          for(final File f : filesCreated){
-            // fichierManager.removeObjectManager(fichier);
             f.delete();
          }
-         //         }
 
          throw e;
       }
@@ -2131,7 +1854,6 @@ public class EchantillonManagerImpl implements EchantillonManager
    @Override
    public List<Integer> findByCodeInListManager(final List<String> criteres, final List<Banque> banques,
       final List<String> notfounds){
-      // , List<String> notfounds) {
       if(criteres != null && banques != null && notfounds != null && criteres.size() > 0 && banques.size() > 0){
          final List<Object[]> res = echantillonDao.findByCodeInListWithBanque(criteres, banques);
          final List<Integer> idFounds = new ArrayList<>();
@@ -2157,88 +1879,6 @@ public class EchantillonManagerImpl implements EchantillonManager
       }
       return new ArrayList<>();
    }
-
-   //	@Override
-   //	public String extractValueForChampManager(Echantillon echantillon,
-   //			Champ champ) {
-   //		if (echantillon != null && champ != null) {
-   //			String value = null;
-   //			if (champ.getChampEntite() != null) {
-   //				if (champ.getChampEntite().getEntite()
-   //						.getNom().equals("Patient")) {
-   //					// on récupère le patient
-   //					Prelevement prlvt = getPrelevementManager(echantillon);
-   //					Patient patient = null;
-   //					if (prlvt != null && prlvt.getMaladie() != null) {
-   //						patient = prlvt.getMaladie().getPatient();
-   //					}
-   //					value = champManager.getValueForObjectManager(
-   //							champ, patient);
-   //				} else if (champ.getChampEntite().getEntite()
-   //						.getNom().equals("Maladie")) {
-   //					// on récupère la maladie
-   //					Prelevement prlvt = getPrelevementManager(echantillon);
-   //					Maladie maladie = null;
-   //					if (prlvt != null) {
-   //						maladie = prlvt.getMaladie();
-   //					}
-   //					value = champManager.getValueForObjectManager(
-   //							champ, maladie);
-   //				} else if (champ.getChampEntite().getEntite()
-   //						.getNom().equals("Prelevement")) {
-   //					// on récupère le prelevement
-   //					Prelevement prlvt = getPrelevementManager(echantillon);
-   //					value = champManager.getValueForObjectManager(
-   //							champ, prlvt);
-   //				} else if (champ.getChampEntite().getEntite()
-   //						.getNom().equals("Echantillon")) {
-   //					// si c'est l'emplacement à extraire
-   //					if (champ.getChampEntite()
-   //							.getNom().equals("EmplacementId")) {
-   //						value = getEmplacementAdrlManager(echantillon);
-   //					} else if (champ.getChampEntite()
-   //							.getNom().equals("CodeOrganes")) {
-   //						// si ce sont les codes organes à extraire
-   //						List<String> codes = codeAssigneManager
-   //							.formatCodesAsStringsManager(
-   //								codeAssigneManager
-   //								.findCodesOrganeByEchantillonManager(
-   //									echantillon));
-   //						StringBuffer sb = new StringBuffer();
-   //						for (int k = 0; k < codes.size(); k++) {
-   //							sb.append(codes.get(k));
-   //							if (k + 1 < codes.size()) {
-   //								sb.append(", ");
-   //							}
-   //						}
-   //						value = sb.toString();
-   //					} else if (champ.getChampEntite()
-   //							.getNom().equals("CodeMorphos")) {
-   //						// si ce sont les codes morphos à extraire
-   //						List<String> codes = codeAssigneManager
-   //							.formatCodesAsStringsManager(
-   //								codeAssigneManager
-   //								.findCodesMorphoByEchantillonManager(
-   //									echantillon));
-   //						StringBuffer sb = new StringBuffer();
-   //						for (int k = 0; k < codes.size(); k++) {
-   //							sb.append(codes.get(k));
-   //							if (k + 1 < codes.size()) {
-   //								sb.append(", ");
-   //							}
-   //						}
-   //						value = sb.toString();
-   //					} else {
-   //						value = champManager.getValueForObjectManager(
-   //							champ, echantillon);
-   //					}
-   //				}
-   //			}
-   //			return value;
-   //		} else {
-   //			return null;
-   //		}
-   //	}	
 
    @Override
    public void updateObjectWithNonConformitesManager(final Echantillon echantillon, final Banque banque,
@@ -2318,15 +1958,6 @@ public class EchantillonManagerImpl implements EchantillonManager
    public void removeListFromIdsManager(final List<Integer> ids, final String comment, final Utilisateur u){
       if(ids != null){
          final List<File> filesToDelete = new ArrayList<>();
-         //			List<Echantillon> toDelete = findByIdsInListManager(ids);
-         //			int i = 0;
-         //			for (Echantillon ech : toDelete) {
-         //				removeObjectCascadeManager(ech, comment, u, filesToDelete);
-         //				i++;
-         //				if (i % 100 == 0) {
-         //					System.out.println(i);
-         //				} 
-         //			}
          Echantillon e;
          for(final Integer id : ids){
             e = findByIdManager(id);
@@ -2334,11 +1965,9 @@ public class EchantillonManagerImpl implements EchantillonManager
                removeObjectCascadeManager(e, comment, u, filesToDelete);
             }
          }
-         //         if(filesToDelete != null){
          for(final File f : filesToDelete){
             f.delete();
          }
-         //         }
       }
    }
 

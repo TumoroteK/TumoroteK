@@ -49,6 +49,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -56,6 +57,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.GenericGenerator;
 
 import fr.aphp.tumorotek.model.TKAnnotableObject;
+import fr.aphp.tumorotek.model.coeur.patient.delegate.AbstractPatientDelegate;
 import fr.aphp.tumorotek.model.contexte.Banque;
 
 /**
@@ -155,8 +157,7 @@ public class Patient extends Object implements TKAnnotableObject, Serializable
    private Date dateDeces;
    private Boolean etatIncomplet;
    private Boolean archive = false;
-   //Groupe sanguin passé en annotation
-   //	private String groupeSanguin;
+   private AbstractPatientDelegate delegate;
 
    private Set<PatientLien> patientLiens = new HashSet<>();
    private Set<PatientLien> patientLiens2 = new HashSet<>();
@@ -342,6 +343,15 @@ public class Patient extends Object implements TKAnnotableObject, Serializable
       this.archive = arch;
    }
 
+   @OneToOne(mappedBy="delegator", cascade=CascadeType.MERGE, orphanRemoval=true)
+   public AbstractPatientDelegate getDelegate(){
+      return delegate;
+   }
+
+   public void setDelegate(AbstractPatientDelegate delegate){
+      this.delegate = delegate;
+   }
+
    @OneToMany(mappedBy = "pk.patient1", cascade = {CascadeType.ALL})
    public Set<PatientLien> getPatientLiens(){
       return patientLiens;
@@ -462,10 +472,8 @@ public class Patient extends Object implements TKAnnotableObject, Serializable
       clone.setDateDeces(this.dateDeces);
       clone.setEtatIncomplet(this.etatIncomplet);
       clone.setArchive(this.archive);
-      //Groupe sanguin passé en annotation
-      //		clone.setGroupeSanguin(this.groupeSanguin);
-
       clone.setMaladies(this.maladies);
+      clone.setDelegate(this.delegate);
       return clone;
    }
 

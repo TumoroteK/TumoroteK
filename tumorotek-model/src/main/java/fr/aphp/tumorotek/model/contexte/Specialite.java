@@ -77,16 +77,6 @@ public class Specialite implements java.io.Serializable
    /** Constructeur par défaut. */
    public Specialite(){}
 
-   //	/**
-   //	 * Constructeur avec paramètres.
-   //	 * @param id est la clé primaire.
-   //	 * @param n est le nom de la spécialité.
-   //	 */
-   //	public Specialite(Integer id, String n) {
-   //		this.specialiteId = id;
-   //		this.nom = n;
-   //	}
-
    @Id
    @Column(name = "SPECIALITE_ID", unique = true, nullable = false)
    @GeneratedValue(generator = "autoincrement")

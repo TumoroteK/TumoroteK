@@ -88,12 +88,10 @@ public class INCaEchantillonExportImpl implements IncaEchantillonExport
       if(echantillon.getTumoral() != null){
          if(echantillon.getTumoral()){
             return "O";
-         }else{
-            return "N";
          }
-      }else{
-         throw new ItemException(2, "Tumoral/non tumoral manquant");
+         return "N";
       }
+      throw new ItemException(2, "Tumoral/non tumoral manquant");
    }
 
    @Override
@@ -141,9 +139,8 @@ public class INCaEchantillonExportImpl implements IncaEchantillonExport
          }else{
             return "9";
          }
-      }else{
-         throw new ItemException(2, "Mode préparation manquant");
       }
+      throw new ItemException(2, "Mode préparation manquant");
    }
 
    @Override
@@ -198,15 +195,13 @@ public class INCaEchantillonExportImpl implements IncaEchantillonExport
          try{
             if(Float.valueOf(pourcentage) >= 0 && Float.valueOf(pourcentage) <= 100){
                return pourcentage;
-            }else{
-               throw new ItemException(3, "Valeur inattendue " + pourcentage);
             }
+            throw new ItemException(3, "Valeur inattendue " + pourcentage);
          }catch(final Exception e){
             throw new ItemException(3, "Valeur inattendue " + pourcentage);
          }
-      }else{
-         throw new ItemException(2, "Pourcentage cellules tumorales manquant");
       }
+      throw new ItemException(2, "Pourcentage cellules tumorales manquant");
    }
 
    @Override
@@ -260,9 +255,8 @@ public class INCaEchantillonExportImpl implements IncaEchantillonExport
 
       if(res){
          return "O";
-      }else{
-         return "N";
       }
+      return "N";
    }
 
    @Override

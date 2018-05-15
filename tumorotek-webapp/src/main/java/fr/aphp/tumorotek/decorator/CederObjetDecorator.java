@@ -183,9 +183,8 @@ public class CederObjetDecorator
    public TKStockableObject getTKobj(){
       if(getEchantillon() != null){
          return getEchantillon();
-      }else{
-         return getProdDerive();
       }
+      return getProdDerive();
 
    }
 
@@ -212,9 +211,8 @@ public class CederObjetDecorator
             sb.append(this.cederObjet.getQuantiteUnite().getUnite());
          }
          return sb.toString();
-      }else{
-         return "-";
       }
+      return "-";
    }
 
    public void setQuantiteRestante(final Float quantite){
@@ -224,17 +222,15 @@ public class CederObjetDecorator
    public String getNumeroCession(){
       if(this.cederObjet != null){
          return this.cederObjet.getCession().getNumero();
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getDateDemandeCessionFormatted(){
       if(this.cederObjet != null && this.cederObjet.getCession() != null){
          return ObjectTypesFormatters.dateRenderer2(this.cederObjet.getCession().getDemandeDate());
-      }else{
-         return "-";
       }
+      return "-";
    }
 
    public String getDateValidationCessionFormatted(){
@@ -246,17 +242,15 @@ public class CederObjetDecorator
             value = ObjectTypesFormatters.dateRenderer2(this.cederObjet.getCession().getValidationDate());
          }
          return value;
-      }else{
-         return "-";
       }
+      return "-";
    }
 
    public String getCessionDemandeur(){
       if(this.cederObjet != null && this.cederObjet.getCession() != null && this.cederObjet.getCession().getDemandeur() != null){
          return this.cederObjet.getCession().getDemandeur().getNom();
-      }else{
-         return "-";
       }
+      return "-";
    }
 
    public String getCessionDestinataire(){
@@ -272,18 +266,16 @@ public class CederObjetDecorator
             }
          }
          return value;
-      }else{
-         return "-";
       }
+      return "-";
    }
 
    public String getCessionType(){
       if(this.cederObjet != null && this.cederObjet.getCession() != null
          && this.cederObjet.getCession().getCessionType() != null){
          return Labels.getLabel("cession.type." + this.cederObjet.getCession().getCessionType().getType().toLowerCase());
-      }else{
-         return "-";
       }
+      return "-";
    }
 
    public String getCessionEtude(){
@@ -303,18 +295,16 @@ public class CederObjetDecorator
             }
          }
          return value;
-      }else{
-         return "-";
       }
+      return "-";
    }
 
    public String getCessionStatut(){
       if(this.cederObjet != null && this.cederObjet.getCession() != null
          && this.cederObjet.getCession().getCessionStatut() != null){
          return ObjectTypesFormatters.ILNObjectStatut(this.cederObjet.getCession().getCessionStatut());
-      }else{
-         return "-";
       }
+      return "-";
    }
 
    public String getQuantiteDemandeeFormatted(){
@@ -332,9 +322,8 @@ public class CederObjetDecorator
          }
 
          return sb.toString();
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getQuantiteCedeeFormatted(){
@@ -344,84 +333,71 @@ public class CederObjetDecorator
 
             if(this.cederObjet.getCession().getCessionStatut().getStatut().equals("VALIDEE")){
                return getQuantiteDemandeeFormatted();
-            }else{
-               if(this.cederObjet.getQuantiteUnite() != null){
-                  return "0.0 " + this.cederObjet.getQuantiteUnite().getUnite();
-               }else{
-                  return "0.0";
-               }
             }
-
-         }else{
-            return null;
+            if(this.cederObjet.getQuantiteUnite() != null){
+               return "0.0 " + this.cederObjet.getQuantiteUnite().getUnite();
+            }
+            return "0.0";
          }
-      }else{
          return null;
       }
+      return null;
    }
 
    public String getEchantillonCode(){
       if(this.echantillon != null){
          return this.echantillon.getCode();
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getProdDeriveCode(){
       if(this.prodDerive != null){
          return this.prodDerive.getCode();
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getEchantillonType(){
       if(this.echantillon != null && this.echantillon.getEchantillonType() != null){
          return this.echantillon.getEchantillonType().getType();
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getProdDeriveType(){
       if(this.prodDerive != null && this.prodDerive.getProdType() != null){
          return this.prodDerive.getProdType().getType();
-      }else{
-         return null;
       }
+      return null;
    }
 
    public Float getEchantillonQuantite(){
       if(this.echantillon != null){
          return this.echantillon.getQuantite();
-      }else{
-         return null;
       }
+      return null;
    }
 
    public Float getProdDeriveQuantite(){
       if(this.prodDerive != null){
          return this.prodDerive.getQuantite();
-      }else{
-         return null;
       }
+      return null;
    }
 
    public Float getProdDeriveVolume(){
       if(this.prodDerive != null){
          return this.prodDerive.getVolume();
-      }else{
-         return null;
       }
+      return null;
    }
 
    public Float getCederQuantite(){
       if(this.cederObjet != null){
          return this.cederObjet.getQuantite();
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getCederQuantiteWithUnite(){
@@ -435,9 +411,8 @@ public class CederObjetDecorator
             sb.append(this.cederObjet.getQuantiteUnite().getUnite());
          }
          return sb.toString();
-      }else{
-         return "-";
       }
+      return "-";
    }
 
    /**
@@ -465,9 +440,8 @@ public class CederObjetDecorator
    public String getCederQuantiteUnite(){
       if(this.cederObjet != null && this.cederObjet.getQuantiteUnite() != null){
          return this.cederObjet.getQuantiteUnite().getUnite();
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -503,9 +477,8 @@ public class CederObjetDecorator
 
       if(prlvt != null){
          return prlvt.getConsentType().getType();
-      }else{
-         return "";
       }
+      return "";
    }
 
    public String getNomPatient(){
@@ -519,12 +492,10 @@ public class CederObjetDecorator
 
          if(prlvt != null){
             return PrelevementUtils.getPatientNomAndPrenom(prlvt);
-         }else{
-            return null;
          }
-      }else{
-         return "-";
+         return null;
       }
+      return "-";
    }
 
    public String getEmplacementAdrl(){

@@ -140,7 +140,7 @@ public abstract class AbstractListGridVM
 
    /**
     * Met à jour tous les objets de la data grid
-    * @param Map dataMap (peut être nulle)
+    * @param dataMap Map (peut être nulle)
     */
    public void initDataGrid(final Map<Indicateur, ArrayList<ValueToExport>> dataMap){
 
@@ -229,7 +229,7 @@ public abstract class AbstractListGridVM
       getSubdivMap().clear();
 
       if(getGridSubdivision() != null){
-         TKThesaurusManager manager = null;
+         TKThesaurusManager<?> manager = null;
          if(getGridSubdivision().getChampEntite().getEntite().getNom().equals("Nature")){
             manager = ManagerLocator.getNatureManager();
          }else if(getGridSubdivision().getChampEntite().getEntite().getNom().equals("PrelevementType")){
@@ -241,30 +241,7 @@ public abstract class AbstractListGridVM
          }
 
          // si c'est un thes de non conformité
-         if(manager == null){
-            //				if (typeThesaurus.equals("NonConformiteArrivee")) {
-            //					listValeurs = ManagerLocator.getNonConformiteManager()
-            //							.findByPlateformeEntiteAndTypeStringManager(
-            //									getCurrentPlateforme(), "Arrivee", 
-            //									null);
-            //				} else if (typeThesaurus.equals("NonConformiteTraitementEchan")) {
-            //					listValeurs = ManagerLocator.getNonConformiteManager()
-            //							.findByPlateformeEntiteAndTypeStringManager(
-            //									getCurrentPlateforme(), "Traitement", null);
-            //				} else if (typeThesaurus.equals("NonConformiteCessionEchan")) {
-            //					listValeurs = ManagerLocator.getNonConformiteManager()
-            //							.findByPlateformeEntiteAndTypeStringManager(
-            //									getCurrentPlateforme(), "Cession", null);
-            //				} else if (typeThesaurus.equals("NonConformiteTraitementDerive")) {
-            //					listValeurs = ManagerLocator.getNonConformiteManager()
-            //							.findByPlateformeEntiteAndTypeStringManager(
-            //									getCurrentPlateforme(), "TraitementDerive", null);
-            //				} else if (typeThesaurus.equals("NonConformiteCession")) {
-            //					listValeurs = ManagerLocator.getNonConformiteManager()
-            //							.findByPlateformeEntiteAndTypeStringManager(
-            //									getCurrentPlateforme(), "Cession", null);
-            //				}
-         }else if(manager instanceof TKThesaurusManager){
+         if(manager != null){
             for(final TKThesaurusObject thObj : manager.findByOrderManager(SessionUtils.getCurrentPlateforme())){
                getSubdivMap().put(thObj.getId(), thObj.getNom());
             }
@@ -273,7 +250,7 @@ public abstract class AbstractListGridVM
    }
 
    public TKThesaurusObject getTKObj(final String typeThesaurus, final Integer id){
-      TKThesaurusManager thesManager = null;
+      TKThesaurusManager<?> thesManager = null;
       if(typeThesaurus.equals("Nature")){
          thesManager = ManagerLocator.getNatureManager();
       }else if(typeThesaurus.equals("PrelevementType")){

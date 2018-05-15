@@ -49,7 +49,7 @@ import fr.aphp.tumorotek.model.contexte.Categorie;
  * @version 2.0
  *
  */
-public interface CategorieManager extends CrudManager
+public interface CategorieManager extends CrudManager<Categorie>
 {
 
    /**

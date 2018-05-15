@@ -1,10 +1,10 @@
 /**
  * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
  * dsi-projet.tk@aphp.fr
- *
+ * <p>
  * Ce logiciel est un programme informatique servant à la gestion de
  * l'activité de biobanques.
- *
+ * <p>
  * Ce logiciel est régi par la licence CeCILL soumise au droit français
  * et respectant les principes de diffusion des logiciels libres. Vous
  * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
@@ -16,7 +16,7 @@
  * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
  * l'auteur du programme, le titulaire des droits patrimoniaux et les
  * concédants successifs.
- *
+ * <p>
  * A cet égard  l'attention de l'utilisateur est attirée sur les
  * risques associés au chargement,  à l'utilisation,  à la modification
  * et/ou au  développement et à la reproduction du logiciel par
@@ -28,7 +28,7 @@
  * besoins dans des conditions permettant d'assurer la sécurité de leurs
  * systèmes et ou de leurs données et, plus généralement, à l'utiliser
  * et l'exploiter dans les mêmes conditions de sécurité.
- *
+ * <p>
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
@@ -47,13 +47,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.MDC;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
-import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
-import org.springframework.security.authentication.encoding.PasswordEncoder;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -65,25 +62,22 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
  *
  * @author pierre Ventadour
  * Créée le 07/06/2010.
- *
+ * @version 2.2.0
  */
-public class MyUserDetailsService implements UserDetailsService
-{
+public class MyUserDetailsService implements UserDetailsService {
 
    private final Log log = LogFactory.getLog(MyUserDetailsService.class);
 
    private DataSource dataSource;
 
-   @SuppressWarnings("deprecation")
    @Override
    public UserDetails loadUserByUsername(final String username){
-      final String sql = "select * from UTILISATEUR where login like :username " + "and archive = 0";
-      final MapSqlParameterSource source = new MapSqlParameterSource();
-      source.addValue("username", username);
-      final SimpleJdbcTemplate sjt = new SimpleJdbcTemplate(getDataSource());
+      final String sql = "select * from UTILISATEUR where login like ? and archive = 0";
+      final JdbcTemplate jdbcTemplate = new JdbcTemplate();
+      jdbcTemplate.setDataSource(getDataSource());
       User user;
       try{
-         user = sjt.queryForObject(sql, new UserMapper(), source);
+         user = jdbcTemplate.queryForObject(sql, new String[]{username}, new UserMapper());
       }catch(final DataAccessException e){
          log.info("La tentative de connection " + username + " a échoué " + "car les paramètres de connection sont invalides");
          throw new UsernameNotFoundException("authentication error");
@@ -95,9 +89,9 @@ public class MyUserDetailsService implements UserDetailsService
 
    private Collection<? extends GrantedAuthority> getAuthorities(final boolean isAdmin){
       final List<GrantedAuthority> authList = new ArrayList<>(2);
-      authList.add(new GrantedAuthorityImpl("ROLE_USER"));
+      authList.add(new SimpleGrantedAuthority("ROLE_USER"));
       if(isAdmin){
-         authList.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
+         authList.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
       }
       return authList;
    }
@@ -110,20 +104,15 @@ public class MyUserDetailsService implements UserDetailsService
       return dataSource;
    }
 
-   private class UserMapper implements ParameterizedRowMapper<User>
-   {
-
-      @SuppressWarnings("deprecation")
-      @Override
+   private class UserMapper implements RowMapper<User> {
       public User mapRow(final ResultSet rs, final int arg1) throws SQLException{
          return new User(rs.getString("login"), rs.getString("password"), true, true, true, true, getAuthorities(false));
       }
-
    }
 
-   public static String getEncodedPassword(final String key){
+   /*public static String getEncodedPassword(final String key){
       final PasswordEncoder encoder = new Md5PasswordEncoder();
       final String pwd = encoder.encodePassword(key, null);
       return pwd;
-   }
+   }*/
 }

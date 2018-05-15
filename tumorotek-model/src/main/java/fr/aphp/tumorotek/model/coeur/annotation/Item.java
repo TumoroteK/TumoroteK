@@ -224,9 +224,8 @@ public class Item implements Serializable
    public String toString(){
       if(this.champAnnotation != null && this.label != null){
          return "{Thesaurus Item: " + this.champAnnotation.getNom() + "." + this.label + "}";
-      }else{
-         return "{Empty Item}";
       }
+      return "{Empty Item}";
    }
 
    /**

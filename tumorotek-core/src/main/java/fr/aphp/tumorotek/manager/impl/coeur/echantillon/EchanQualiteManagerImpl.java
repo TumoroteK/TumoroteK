@@ -50,7 +50,6 @@ import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.echantillon.EchanQualiteValidator;
-import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.coeur.echantillon.EchanQualite;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
@@ -137,30 +136,27 @@ public class EchanQualiteManagerImpl implements EchanQualiteManager
             qualite = qualite + "%";
          }
          return echanQualiteDao.findByQualite(qualite);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
-   public boolean findDoublonManager(final Object obj){
+   public boolean findDoublonManager(final EchanQualite obj){
 
-      final EchanQualite qualite = (EchanQualite) obj;
+      final EchanQualite qualite = obj;
 
       if(qualite != null){
          if(qualite.getEchanQualiteId() == null){
             return echanQualiteDao.findAll().contains(qualite);
-         }else{
-            return echanQualiteDao.findByExcludedId(qualite.getEchanQualiteId()).contains(qualite);
          }
-      }else{
-         return false;
+         return echanQualiteDao.findByExcludedId(qualite.getEchanQualiteId()).contains(qualite);
       }
+      return false;
    }
 
    @Override
-   public boolean isUsedObjectManager(final Object obj){
-      final EchanQualite qualite = (EchanQualite) obj;
+   public boolean isUsedObjectManager(final EchanQualite obj){
+      final EchanQualite qualite = obj;
 
       final List<Echantillon> list = echantillonDao.findByEchanQualite(qualite);
 
@@ -168,55 +164,44 @@ public class EchanQualiteManagerImpl implements EchanQualiteManager
    }
 
    @Override
-   public void createObjectManager(final Object obj){
-      final EchanQualite qualite = (EchanQualite) obj;
+   public void createObjectManager(final EchanQualite obj){
+      final EchanQualite qualite = obj;
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(qualite.getPlateforme() == null){
          throw new RequiredObjectIsNullException("EchanQualite", "creation", "Plateforme");
-      }else{
-         qualite.setPlateforme(plateformeDao.mergeObject(qualite.getPlateforme()));
       }
+      qualite.setPlateforme(plateformeDao.mergeObject(qualite.getPlateforme()));
 
       if(findDoublonManager(qualite)){
          log.warn("Doublon lors de la creation de l'objet EchanQualite : " + qualite.toString());
          throw new DoublonFoundException("EchanQualite", "creation");
-      }else{
-         BeanValidator.validateObject(qualite, new Validator[] {echanQualiteValidator});
-         echanQualiteDao.createObject(qualite);
-         log.info("Enregistrement de l'objet EchanQualite : " + qualite.toString());
       }
+      BeanValidator.validateObject(qualite, new Validator[] {echanQualiteValidator});
+      echanQualiteDao.createObject(qualite);
+      log.info("Enregistrement de l'objet EchanQualite : " + qualite.toString());
    }
 
    @Override
-   public void updateObjectManager(final Object obj){
-      final EchanQualite qualite = (EchanQualite) obj;
+   public void updateObjectManager(final EchanQualite obj){
+      final EchanQualite qualite = obj;
       if(findDoublonManager(qualite)){
          log.warn("Doublon lors de la modification de l'objet " + "EchanQualite : " + qualite.toString());
          throw new DoublonFoundException("EchanQualite", "modification");
-      }else{
-         BeanValidator.validateObject(qualite, new Validator[] {echanQualiteValidator});
-         echanQualiteDao.updateObject(qualite);
-         log.info("Modification de l'objet EchanQualite : " + qualite.toString());
       }
+      BeanValidator.validateObject(qualite, new Validator[] {echanQualiteValidator});
+      echanQualiteDao.updateObject(qualite);
+      log.info("Modification de l'objet EchanQualite : " + qualite.toString());
    }
 
    @Override
-   public void removeObjectManager(final Object obj){
-      final EchanQualite qualite = (EchanQualite) obj;
-      //		if (isUsedObjectManager(qualite)) {
-      //			log.warn("Objet utilisé lors de la suppression de l'objet " 
-      //					+ "EchanQualite : " + qualite.toString());
-      //			throw new ObjectUsedException("EchanQualite", "suppression");
-      //		} else {
+   public void removeObjectManager(final EchanQualite obj){
+      final EchanQualite qualite = obj;
       echanQualiteDao.removeObject(qualite.getEchanQualiteId());
-      //			log.info("Suppression de l'objet EchanQualite : " 
-      //					+ qualite.toString());
-      //		}
    }
 
    @Override
-   public List<? extends TKThesaurusObject> findByOrderManager(final Plateforme pf){
+   public List<EchanQualite> findByOrderManager(final Plateforme pf){
       return echanQualiteDao.findByOrder(pf);
    }
 }

@@ -196,50 +196,42 @@ public class Recherche implements TKdataObject, Comparable<Recherche>
                      if(this.createur.equals(r.getCreateur())){
                         if(this.requete != null){
                            return this.requete.equals(r.getRequete());
-                        }else{
-                           return (r.getRequete() == null);
                         }
-                     }else{
-                        return false;
+                        return (r.getRequete() == null);
                      }
+                     return false;
                   }else if(r.getCreateur() == null){
                      if(this.requete != null){
                         return this.requete.equals(r.getRequete());
-                     }else{
-                        return (r.getRequete() == null);
                      }
+                     return (r.getRequete() == null);
                   }else{
                      return false;
                   }
-               }else{
-                  return false;
                }
+               return false;
             }else if(r.getAffichage() == null){
                if(this.createur != null){
                   if(this.createur.equals(r.getCreateur())){
                      if(this.requete != null){
                         return this.requete.equals(r.getRequete());
-                     }else{
-                        return (r.getRequete() == null);
                      }
-                  }else{
-                     return false;
+                     return (r.getRequete() == null);
                   }
+                  return false;
                }else if(r.getCreateur() == null){
                   if(this.requete != null){
                      return this.requete.equals(r.getRequete());
-                  }else{
-                     return (r.getRequete() == null);
                   }
+                  return (r.getRequete() == null);
                }else{
                   return false;
                }
             }else{
                return false;
             }
-         }else{
-            return false;
          }
+         return false;
       }else if(r.getIntitule() == null){
          if(this.affichage != null){
             if(this.affichage.equals(r.getAffichage())){
@@ -247,41 +239,34 @@ public class Recherche implements TKdataObject, Comparable<Recherche>
                   if(this.createur.equals(r.getCreateur())){
                      if(this.requete != null){
                         return this.requete.equals(r.getRequete());
-                     }else{
-                        return (r.getRequete() == null);
                      }
-                  }else{
-                     return false;
+                     return (r.getRequete() == null);
                   }
+                  return false;
                }else if(r.getCreateur() == null){
                   if(this.requete != null){
                      return this.requete.equals(r.getRequete());
-                  }else{
-                     return (r.getRequete() == null);
                   }
+                  return (r.getRequete() == null);
                }else{
                   return false;
                }
-            }else{
-               return false;
             }
+            return false;
          }else if(r.getAffichage() == null){
             if(this.createur != null){
                if(this.createur.equals(r.getCreateur())){
                   if(this.requete != null){
                      return this.requete.equals(r.getRequete());
-                  }else{
-                     return (r.getRequete() == null);
                   }
-               }else{
-                  return false;
+                  return (r.getRequete() == null);
                }
+               return false;
             }else if(r.getCreateur() == null){
                if(this.requete != null){
                   return this.requete.equals(r.getRequete());
-               }else{
-                  return (r.getRequete() == null);
                }
+               return (r.getRequete() == null);
             }else{
                return false;
             }
@@ -336,9 +321,8 @@ public class Recherche implements TKdataObject, Comparable<Recherche>
    public String toString(){
       if(this.intitule != null){
          return this.intitule;
-      }else{
-         return "{Empty Recherche}";
       }
+      return "{Empty Recherche}";
    }
 
    @Override

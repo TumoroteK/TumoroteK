@@ -50,10 +50,10 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  * @version 2.0
  *
  */
-public interface TKThesaurusManager extends CrudManager
+public interface TKThesaurusManager<T extends TKThesaurusObject> extends CrudManager<T>
 {
 
-   List<? extends TKThesaurusObject> findByOrderManager(Plateforme pf);
+   List<T> findByOrderManager(Plateforme pf);
 
-   TKThesaurusObject findByIdManager(Integer id);
+   T findByIdManager(Integer id);
 }

@@ -74,6 +74,7 @@ import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.decorator.ResultatDecorator;
 import fr.aphp.tumorotek.manager.xml.XmlUtils;
 import fr.aphp.tumorotek.model.TKdataObject;
+import fr.aphp.tumorotek.model.coeur.annotation.DataType;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.io.export.Affichage;
 import fr.aphp.tumorotek.model.io.export.Champ;
@@ -618,12 +619,12 @@ public class FicheAffichage extends AbstractFicheCombineController
     * à afficher.
     * @param e
     */
-   
    public void onGetChamps(final Event e){
       if(e.getData() != null){
 
          // pour chaque champ
-         for(final Champ currChamp : (List<Champ>) e.getData()){
+         for(final Object currChampObj : (List<?>) e.getData()){
+            Champ currChamp = Champ.class.cast(currChampObj);
             Champ sousChampTmp = null;
 
             if(currChamp.getChampEntite() != null && currChamp.getChampEntite().getQueryChamp() != null){
@@ -654,59 +655,139 @@ public class FicheAffichage extends AbstractFicheCombineController
    }
 
    /**
+    * Nouvelle fenêtre pour la FicheChampsAffichageModale
+    * @param page page où ouvrir la fenêtre
+    * @return
+    */
+   private Window createWindowForFicheChampsAffichageModale(Page page){
+      // nouvelle fenêtre
+      final Window win = new Window();
+      win.setVisible(false);
+      win.setId("champsAffichageWindow");
+      win.setPage(page);
+      win.setMaximizable(true);
+      win.setSizable(true);
+      win.setTitle(Labels.getLabel("champs.affichage.modale.title"));
+      win.setBorder("normal");
+      win.setWidth("500px");
+      final int height = 510;
+      win.setHeight(String.valueOf(height) + "px");
+      win.setClosable(true);
+
+      return win;
+   }
+
+   /**
+    * Nouveau composant pour la FicheChampsAffichageModale
+    * @param win fenêtre où inclure le composant
+    * @param page page où inclure le composant ?
+    * @return composant  HTML
+    */
+   private HtmlMacroComponent createComponentForChampsAffichageModale(Window win, Page page){
+      final HtmlMacroComponent ua;
+      ua = (HtmlMacroComponent) page.getComponentDefinition("champsAffichageModale", false).newInstance(page, null);
+      ua.setParent(win);
+      ua.setId("champsAffichageModaleComponent");
+      ua.applyProperties();
+      ua.afterCompose();
+      ua.setVisible(false);
+
+      return ua;
+   }
+
+   /**
+    * Timer avant affichage de la FicheChampsAffichageModale ??
+    * @param win fenêtre 
+    * @param ua composant
+    */
+   private void setTimerForChampsAffichageModale(final Window win, final HtmlMacroComponent ua){
+      final Timer timer = new Timer();
+      timer.setDelay(500);
+      timer.setRepeats(false);
+      timer.addForward("onTimer", timer.getParent(), "onTimed");
+      win.appendChild(timer);
+      timer.start();
+
+      win.addEventListener("onTimed", new EventListener<Event>()
+      {
+         @Override
+         public void onEvent(final Event event) throws Exception{
+            //progress.detach();
+            ua.setVisible(true);
+         }
+      });
+
+   }
+
+   /**
+    * Retourne la fiche... comment ?
+    * @param ua composant où est la fiche
+    * @return
+    */
+   private FicheChampsAffichageModale getFicheChampAffichageModale(HtmlMacroComponent ua){
+      return ((FicheChampsAffichageModale) ua.getFellow("fwinChampsAffichageModale")
+         .getAttributeOrFellow("fwinChampsAffichageModale$composer", true));
+   }
+
+   /**
     * PopUp window appelée permettant la sélection des champs à afficher.
     * @param page dans laquelle inclure la modale
     * @param parent composent parent auquel rattaché la modale
-    * @param oldSelected Liste des champs déjà sélectionnés.
+    * @param oldSelectedChamps Liste des champs déjà sélectionnés.
     * @param selectionMultiple activer/desactiver la selection multiple
     * @bank Banque sur laquelle effectuer la recherche
     */
-   public void openChampsAffichageWindow(final Page page, final Component parent, final List<Champ> oldSelected,
-      final Banque bank, final Boolean selectionMultiple){
+   public void openChampsAffichageWindow(final Page page, final Component parent, final List<Champ> oldSelectedChamps,
+      final Banque banque, final Boolean selectionMultiple){
       if(!isBlockModal()){
 
          setBlockModal(true);
 
-         // nouvelle fenêtre
-         final Window win = new Window();
-         win.setVisible(false);
-         win.setId("champsAffichageWindow");
-         win.setPage(page);
-         win.setMaximizable(true);
-         win.setSizable(true);
-         win.setTitle(Labels.getLabel("champs.affichage.modale.title"));
-         win.setBorder("normal");
-         win.setWidth("500px");
-         final int height = 510;
-         win.setHeight(String.valueOf(height) + "px");
-         win.setClosable(true);
+         Window win = createWindowForFicheChampsAffichageModale(page);
 
-         final HtmlMacroComponent ua;
-         ua = (HtmlMacroComponent) page.getComponentDefinition("champsAffichageModale", false).newInstance(page, null);
-         ua.setParent(win);
-         ua.setId("champsAffichageModaleComponent");
-         ua.applyProperties();
-         ua.afterCompose();
+         final HtmlMacroComponent ua = createComponentForChampsAffichageModale(win, page);
 
-         ((FicheChampsAffichageModale) ua.getFellow("fwinChampsAffichageModale")
-            .getAttributeOrFellow("fwinChampsAffichageModale$composer", true)).init(oldSelected, parent, bank, selectionMultiple);
-         ua.setVisible(false);
+         setTimerForChampsAffichageModale(win, ua);
 
-         win.addEventListener("onTimed", new EventListener<Event>()
-         {
-            @Override
-            public void onEvent(final Event event) throws Exception{
-               //progress.detach();
-               ua.setVisible(true);
-            }
-         });
+         FicheChampsAffichageModale ficheChampsAffichageModale = getFicheChampAffichageModale(ua);
 
-         final Timer timer = new Timer();
-         timer.setDelay(500);
-         timer.setRepeats(false);
-         timer.addForward("onTimer", timer.getParent(), "onTimed");
-         win.appendChild(timer);
-         timer.start();
+         ficheChampsAffichageModale.init(oldSelectedChamps, parent, banque, selectionMultiple);
+
+         try{
+            win.onModal();
+            setBlockModal(false);
+
+         }catch(final SuspendNotAllowedException e){
+            log.error(e);
+         }
+      }
+   }
+
+   /**
+    * PopUp window appelée permettant la sélection des champs à afficher, selon les datatypes voulus
+    * @param page dans laquelle inclure la modale
+    * @param parent composent parent auquel rattaché la modale
+    * @param oldSelectedChamps Liste des champs déjà sélectionnés.
+    * @param banque banque ou rechercher les champs
+    * @param selectionMultiple activer/desactiver la selection multiple
+    * @param dataTypeList liste des datatypes souhaités
+    * @param excludeIds exclure les champs numérique de type Id
+    */
+   public void openChampsAffichageWindow(final Page page, final Component parent, final List<Champ> oldSelectedChamps,
+      final Banque banque, final Boolean selectionMultiple, List<DataType> dataTypeList, Boolean excludeIds){
+      if(!isBlockModal()){
+
+         setBlockModal(true);
+
+         Window win = createWindowForFicheChampsAffichageModale(page);
+
+         final HtmlMacroComponent ua = createComponentForChampsAffichageModale(win, page);
+
+         setTimerForChampsAffichageModale(win, ua);
+
+         FicheChampsAffichageModale ficheChampsAffichageModale = getFicheChampAffichageModale(ua);
+
+         ficheChampsAffichageModale.init(oldSelectedChamps, parent, banque, selectionMultiple, dataTypeList, excludeIds);
 
          try{
             win.onModal();
@@ -734,19 +815,6 @@ public class FicheAffichage extends AbstractFicheCombineController
       return ((ListeAffichages) self.getParent().getParent().getParent().getParent().getFellow("listeRegion")
          .getFellow("listeAffichages").getFellow("lwinAffichages").getAttributeOrFellow("lwinAffichages$composer", true));
    }
-
-   //	private FicheRecherche getFicheRecherche() {
-   //		return ((FicheRecherche) self.getParent().getParent().getParent()
-   //				.getParent().getParent().getParent().getParent()
-   //				.getFellow("panelRecherche")
-   //				.getFellow("rechercheMacro")
-   //				.getFellow("winRecherche")
-   //				.getFellow("mainBorder")
-   //				.getFellow("ficheRegion")
-   //				.getFellow("ficheRecherche")
-   //				.getFellow("winFicheRecherche").
-   //				getAttributeOrFellow("winFicheRecherche$composer", true));
-   //	}
 
    /**
     * Ouvre ou ferme la liste d'Affichages.

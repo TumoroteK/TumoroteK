@@ -49,7 +49,7 @@ import fr.aphp.tumorotek.model.cession.ProtocoleType;
  * @version 2.0
  *
  */
-public interface ProtocoleTypeManager extends TKThesaurusManager
+public interface ProtocoleTypeManager extends TKThesaurusManager<ProtocoleType>
 {
 
    /**

@@ -159,9 +159,8 @@ public class ObjetStatut implements java.io.Serializable
       final ObjetStatut test = (ObjetStatut) obj;
       if(this.statut == null){
          return (test.statut == null);
-      }else{
-         return (this.statut.equals(test.statut));
       }
+      return (this.statut.equals(test.statut));
    }
 
    /**
@@ -191,9 +190,8 @@ public class ObjetStatut implements java.io.Serializable
    public String toString(){
       if(this.statut != null){
          return "{" + this.statut + "}";
-      }else{
-         return "{Empty ObjetStatut}";
       }
+      return "{Empty ObjetStatut}";
    }
 
 }

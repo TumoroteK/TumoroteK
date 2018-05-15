@@ -48,7 +48,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.collections.ListUtils;
+import org.apache.commons.collections4.ListUtils;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Path;
@@ -189,7 +189,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
     * Exécute les requêtes avec des critères sur les champs des annotations.
     * @since 2.0.10 application des opérateurs numériques aux champs annotation type numérique
     */
-   
+
    public void executeQueriesForAnnotations(){
 
       RechercheCompValues rcv;
@@ -353,15 +353,13 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
     * 
     * @param resultats
     *            Liste de résultats actuellement trouvés.
-    * @param first
-    *            True si c'est la 1ère requête que l'on exécute.
     * @param critere
     *            Critère de la requête.
     * @param value
     *            Valeur du critère.
     * @return La liste de résultats mise à jour.
     */
-   public void executeSimpleQuery(final boolean firstQuery, final Critere critere, final Object value){
+   private void executeSimpleQuery(final Critere critere, final Object value){
       criteresStandards.add(critere);
       valeursStandards.add(value);
    }
@@ -395,7 +393,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
          final Critere critere = createCritereForQuery(current, parent1, "like");
 
          // exécution de la requête
-         executeSimpleQuery(firstQuery, critere, value);
+         executeSimpleQuery(critere, value);
       }else{
          // requête spéciale pour les dérivés
          prepareAndExecuteQueyForDerives(firstQuery, value, "like", parent1, parent2, current);
@@ -427,7 +425,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
     *            de l'objet lui même.
     * @return
     */
-   
+
    public void executeSimpleQueryForListbox(final Listbox current, final Champ parent1, final Champ parent2,
       final boolean firstQuery, final String prop){
 
@@ -457,7 +455,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
          // création du critère
          final Critere critere = createCritereForQuery(current, parent1, "=");
          // exécution de lam2 requête
-         executeSimpleQuery(firstQuery, critere, obj);
+         executeSimpleQuery(critere, obj);
       }else{
          // requête spéciale pour les dérivés
          prepareAndExecuteQueyForDerives(firstQuery, obj, "=", parent1, parent2, current);
@@ -517,7 +515,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
          // création du critère
          final Critere critere = createCritereForQuery(current, parent1, "=");
          // exécution de la requête
-         executeSimpleQuery(firstQuery, critere, obj);
+         executeSimpleQuery(critere, obj);
       }else{
          // requête spéciale pour les dérivés
          prepareAndExecuteQueyForDerives(firstQuery, obj, "=", parent1, parent2, current);
@@ -553,7 +551,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
          // création du critère
          final Critere critere = createCritereForQuery(current, parent1, "=");
          // exécution de la requête
-         executeSimpleQuery(firstQuery, critere, value);
+         executeSimpleQuery(critere, value);
       }else{
          // requête spéciale pour les dérivés
          prepareAndExecuteQueyForDerives(firstQuery, value, "=", parent1, parent2, current);
@@ -598,7 +596,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
          // création du critère
          final Critere critere = createCritereForQuery(current, parent1, operateur);
          // exécution de la requête
-         executeSimpleQuery(firstQuery, critere, obj);
+         executeSimpleQuery(critere, obj);
       }else{
          // requête spéciale pour les dérivés
          prepareAndExecuteQueyForDerives(firstQuery, obj, operateur, parent1, parent2, current);
@@ -637,7 +635,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
          // création du critère
          final Critere critere = createCritereForQuery(current, parent1, operateur);
          // exécution de la requête
-         executeSimpleQuery(firstQuery, critere, obj);
+         executeSimpleQuery(critere, obj);
       }else{
          // requête spéciale pour les dérivés
          prepareAndExecuteQueyForDerives(firstQuery, obj, operateur, parent1, parent2, current);
@@ -684,7 +682,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
          // création du critère
          final Critere critere = createCritereForQuery(current, parent1, operateur);
          // exécution de la requête
-         executeSimpleQuery(firstQuery, critere, val);
+         executeSimpleQuery(critere, val);
       }else{
          // requête spéciale pour les dérivés
          prepareAndExecuteQueyForDerives(firstQuery, val, operateur, parent1, parent2, current);
@@ -730,7 +728,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
          // création du critère
          final Critere critere = createCritereForQuery(current, parent1, operateur);
          // exécution de la requête
-         executeSimpleQuery(firstQuery, critere, obj);
+         executeSimpleQuery(critere, obj);
       }else{
          // requête spéciale pour les dérivés
          prepareAndExecuteQueyForDerives(firstQuery, obj, operateur, parent1, parent2, current);
@@ -776,7 +774,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
          // création du critère
          final Critere critere = createCritereForQuery(current, parent1, operateur);
          // exécution de la requête
-         executeSimpleQuery(firstQuery, critere, value);
+         executeSimpleQuery(critere, value);
       }else{
          // requête spéciale pour les dérivés
          prepareAndExecuteQueyForDerives(firstQuery, value, operateur, parent1, parent2, current);
@@ -814,7 +812,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
          final Critere critere = createCritereForQuery(current, parent1, "=");
 
          // exécution de la requête
-         executeSimpleQuery(firstQuery, critere, value);
+         executeSimpleQuery(critere, value);
       }else{
          // requête spéciale pour les dérivés
          prepareAndExecuteQueyForDerives(firstQuery, value, "=", parent1, parent2, current);
@@ -887,7 +885,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
          final Critere critere = createCritereForQuery(current, null, "like");
 
          // exécution de la requête
-         executeSimpleQuery(firstQuery, critere, value);
+         executeSimpleQuery(critere, value);
       }
 
       // ajout du composant à l'historique
@@ -907,7 +905,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
     *            True si c'est la 1ère requête que l'on exécute.
     * @return
     */
-   
+
    public void executeDeriveQueryForListbox(final Listbox current, final boolean firstQuery){
 
       Object obj = null;
@@ -939,7 +937,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
          // création du critère
          final Critere critere = createCritereForQuery(current, null, "=");
          // exécution de la requête
-         executeSimpleQuery(firstQuery, critere, obj);
+         executeSimpleQuery(critere, obj);
       }
 
       // ajout du composant à l'historique
@@ -1041,7 +1039,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
          // création du critère
          final Critere critere = createCritereForQuery(current, null, operateur);
          // exécution de la requête
-         executeSimpleQuery(firstQuery, critere, obj);
+         executeSimpleQuery(critere, obj);
       }
 
       // ajout du composant à l'historique
@@ -1068,7 +1066,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
     *            Valeur du critère.
     * @return La liste de résultats mise à jour.
     */
-   public void executeSimpleQueryForDerives(final boolean firstQuery, final Critere critere1, final Critere critere2,
+   public void executeSimpleQueryForDerives(final boolean firstQuery/*TODO non utilisé*/, final Critere critere1, final Critere critere2,
       final Object value){
       criteresDerives1.add(critere1);
       criteresDerives2.add(critere2);
@@ -1158,7 +1156,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
     * Evenement relayant la sélection d'un trop grand nombre de 
     * résultats (envoyé depuis ResultatsModale)
     */
-   public void onDoSelect(final Event e){
+   public void onDoSelect(){
       Clients.showBusy(Labels.getLabel("cession.select.wait"));
       Events.echoEvent("onLaterCessionSelect", self, null);
    }
@@ -1173,7 +1171,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
       Events.postEvent(new Event("onClose", self.getRoot()));
    }
 
-   public void onDoBatchDelete(final Event e){
+   public void onDoBatchDelete(){
       // fermeture de la fenêtre
       Events.postEvent(new Event("onClose", self.getRoot()));
 
@@ -1189,7 +1187,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
     * Evenement relayant l'envoi vers une nouvelle cession 
     * d'un trop grand nombre de résultats (envoyé depuis ResultatsModale)
     */
-   public void onDoNewCession(final Event e){
+   public void onDoNewCession(){
       Clients.showBusy(Labels.getLabel("cession.select.wait"));
       Events.echoEvent("onLaterNewCession", self, null);
    }
@@ -1414,24 +1412,37 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
       if(champ != null){
          final DataType dtype = champ.getDataType();
 
-         if("alphanum".equals(dtype.getType()) || "hyperlien".equals(dtype.getType())){
-            box = createTextbox(champ);
-         }else if("boolean".equals(dtype.getType())){
-            box = createCheckbox(champ);
-         }else if("date".equals(dtype.getType())){
-            box = createDatebox(champ);
-         }else if("datetime".equals(dtype.getType())){
-            box = createCalendarbox(champ);
-         }else if("num".equals(dtype.getType())){
-            box = createDoublebox(champ);
-         }else if("texte".equals(dtype.getType())){
-            box = createTextboxForText(champ);
-         }else if(dtype.getType().matches("thesaurus")){
-            box = createThesaurusBox(champ, false);
-         }else if(dtype.getType().matches("thesaurusM")){
-            box = createThesaurusBox(champ, true);
-         }else if("fichier".equals(dtype.getType())){
-            box = createFilebox(champ);
+         //TODO ChampCalcule ? Champ Duréé ?
+         switch(dtype.getType()){
+            case "alphanum":
+            case "hyperlien":
+               box = createTextbox(champ);
+               break;
+            case "boolean":
+               box = createCheckbox(champ);
+               break;
+            case "date":
+               box = createDatebox(champ);
+               break;
+            case "datetime":
+               box = createCalendarbox(champ);
+               break;
+            case "num" :
+               box = createDoublebox(champ);
+               break;
+            case "texte":
+               box = createTextboxForText(champ);
+            case "thesaurus":
+               box = createThesaurusBox(champ, false);
+               break;
+            case "thesaurusM":
+               box = createThesaurusBox(champ, true);
+               break;
+            case "fichier":
+               box = createFilebox(champ);
+               break;
+            default:
+               break;
          }
 
          // div -> contient box + opérateurs
@@ -1840,7 +1851,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
     * entite name.
     * 
     */
-   
+
    protected void createSearchHistoryListbox(final String entiteNom){
       if(sessionScope.containsKey("SearchHistorySession")){
          searchHistoryList = (LinkedList<SearchHistory>) sessionScope.get("SearchHistorySession");
@@ -1865,27 +1876,6 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
    protected void createSearchHistory(final String entiteNom){
 
       searchHistory = new SearchHistory();
-      //		List<Component[]> listSearchHistoryComponents = null;
-
-      //		if (this.entiteToSearch.getNom().equals("Cession")) {
-      //			listSearchHistoryComponents = Arrays.asList(objCessionComponents,
-      //					objOperateurs);
-      //		} else {
-      //
-      //			listSearchHistoryComponents = Arrays
-      //					.asList(objPatientComponents,
-      //							objMaladieComponents,
-      //							objPrelevementComponents,
-      //							objEchantillonComponents,
-      //							objOperateurs,
-      //							objProdDeriveComponents,
-      //							objPrelevementContextComponents != null ? objPrelevementContextComponents
-      //									: new Component[0]); // si l'obj est non nul
-      //															// on l'utilise
-      //															// sinon on insère
-      //															// un array vide
-      //		}		
-
       // save component
       //searchHistory.setComponents(listSearchHistoryComponents);
       searchHistory.getListSearchHistoryComponent().addAll(getUsedComponents());
@@ -1952,7 +1942,6 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 
    }
 
-   
    private void putSearchHistoryValues(final SearchHistory sH){
 
       // tous les composants à renseigner ou effacer à partir de l'historique

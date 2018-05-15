@@ -181,9 +181,8 @@ public class ProfilUtilisateur implements Serializable, Comparable<ProfilUtilisa
    public String toString(){
       if(this.pk != null){
          return "{" + this.pk.toString() + "}";
-      }else{
-         return "{Empty ProfilUtilisateur}";
       }
+      return "{Empty ProfilUtilisateur}";
    }
 
    /**

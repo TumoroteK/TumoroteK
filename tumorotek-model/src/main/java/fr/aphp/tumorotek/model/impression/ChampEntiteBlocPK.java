@@ -140,9 +140,8 @@ public class ChampEntiteBlocPK implements Serializable
    public String toString(){
       if(this.champEntite != null && this.blocImpression != null){
          return "{" + champEntite.toString() + " (ChampEntite), " + blocImpression.toString() + " (BlocImpression)}";
-      }else{
-         return "{Empty ChampEntiteBlocPK}";
       }
+      return "{Empty ChampEntiteBlocPK}";
    }
 
 }

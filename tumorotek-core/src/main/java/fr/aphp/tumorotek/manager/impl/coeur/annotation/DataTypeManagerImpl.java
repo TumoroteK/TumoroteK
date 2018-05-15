@@ -39,6 +39,7 @@ import java.util.List;
 
 import fr.aphp.tumorotek.dao.annotation.DataTypeDao;
 import fr.aphp.tumorotek.manager.coeur.annotation.DataTypeManager;
+import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.model.coeur.annotation.DataType;
 
 /**
@@ -62,5 +63,22 @@ public class DataTypeManagerImpl implements DataTypeManager
    @Override
    public List<DataType> findAllObjectsManager(){
       return dataTypeDao.findAll();
+   }
+
+   @Override
+   public DataType findByTypeManager(final String type){
+      List<DataType> dataTypeList = dataTypeDao.findByType(type);
+      DataType dataType = null;
+      if(dataTypeList.size() == 1){
+         dataType = dataTypeList.get(0);
+      }else if(dataTypeList.size() > 1){
+         throw new TKException("Le DataType " + type + " n'es pas unique");
+      }
+      return dataType;
+   }
+
+   @Override
+   public List<DataType> findByTypesManager(List<String> typeList){
+      return dataTypeDao.findByTypes(typeList);
    }
 }

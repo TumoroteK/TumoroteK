@@ -36,7 +36,6 @@
 package fr.aphp.tumorotek.model.coeur.prelevement.delegate;
 
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -51,8 +50,7 @@ import javax.persistence.Transient;
  */
 @Entity
 @Table(name = "PRELEVEMENT_XENO")
-@DiscriminatorValue("2")
-public class PrelevementXeno extends PrelevementDelegate
+public class PrelevementXeno extends AbstractPrelevementDelegate
 {
 
    private String souris;

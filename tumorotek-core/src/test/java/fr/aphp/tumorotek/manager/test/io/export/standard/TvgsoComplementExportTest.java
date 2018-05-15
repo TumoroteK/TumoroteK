@@ -81,7 +81,7 @@ public class TvgsoComplementExportTest extends AbstractManagerTest
    }
 
    public void testGetDonneesClinBase() throws ClassNotFoundException, SQLException{
-      Class.forName("com.mysql.jdbc.Driver");
+      Class.forName("com.mysql.cj.jdbc.Driver");
       final Connection con =
          DriverManager.getConnection("jdbc:mysql://localhost:3306/" + "toul?characterEncoding=UTF-8", "root", "root");
       final Prelevement p = new Prelevement();
@@ -96,7 +96,7 @@ public class TvgsoComplementExportTest extends AbstractManagerTest
    }
 
    public void testGetInclusionTherap() throws ClassNotFoundException, SQLException{
-      Class.forName("com.mysql.jdbc.Driver");
+      Class.forName("com.mysql.cj.jdbc.Driver");
       final Connection con =
          DriverManager.getConnection("jdbc:mysql://localhost:3306/" + "toul?characterEncoding=UTF-8", "root", "root");
       final Prelevement p = new Prelevement();
@@ -115,7 +115,7 @@ public class TvgsoComplementExportTest extends AbstractManagerTest
    }
 
    public void testGetNomProtocoleTherap() throws ClassNotFoundException, SQLException{
-      Class.forName("com.mysql.jdbc.Driver");
+      Class.forName("com.mysql.cj.jdbc.Driver");
       final Connection con =
          DriverManager.getConnection("jdbc:mysql://localhost:3306/" + "toul?characterEncoding=UTF-8", "root", "root");
       final Prelevement p = new Prelevement();
@@ -134,7 +134,7 @@ public class TvgsoComplementExportTest extends AbstractManagerTest
    }
 
    public void testGetAnomalieGenomiqueDescr() throws ClassNotFoundException, SQLException{
-      Class.forName("com.mysql.jdbc.Driver");
+      Class.forName("com.mysql.cj.jdbc.Driver");
       final Connection con =
          DriverManager.getConnection("jdbc:mysql://localhost:3306/" + "toul?characterEncoding=UTF-8", "root", "root");
       final Patient p = new Patient();
@@ -174,7 +174,7 @@ public class TvgsoComplementExportTest extends AbstractManagerTest
    }
 
    public void testGetInclusionProtocoleRech() throws ClassNotFoundException, SQLException{
-      Class.forName("com.mysql.jdbc.Driver");
+      Class.forName("com.mysql.cj.jdbc.Driver");
       final Connection con =
          DriverManager.getConnection("jdbc:mysql://localhost:3306/" + "toul?characterEncoding=UTF-8", "root", "root");
       final Echantillon e = new Echantillon();
@@ -189,7 +189,7 @@ public class TvgsoComplementExportTest extends AbstractManagerTest
    }
 
    public void testGetNomProtocoleRech() throws ClassNotFoundException, SQLException{
-      Class.forName("com.mysql.jdbc.Driver");
+      Class.forName("com.mysql.cj.jdbc.Driver");
       final Connection con =
          DriverManager.getConnection("jdbc:mysql://localhost:3306/" + "toul?characterEncoding=UTF-8", "root", "root");
       final Echantillon e = new Echantillon();
@@ -204,7 +204,7 @@ public class TvgsoComplementExportTest extends AbstractManagerTest
    }
 
    public void testGetChampSpecCancer() throws ClassNotFoundException, SQLException{
-      Class.forName("com.mysql.jdbc.Driver");
+      Class.forName("com.mysql.cj.jdbc.Driver");
       final Connection con =
          DriverManager.getConnection("jdbc:mysql://localhost:3306/" + "toul?characterEncoding=UTF-8", "root", "root");
       final Patient p = new Patient();

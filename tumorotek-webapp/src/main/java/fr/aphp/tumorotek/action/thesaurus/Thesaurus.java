@@ -95,4 +95,9 @@ public class Thesaurus implements TKdataObject
       return (this.nom == test.nom || (this.nom != null && this.nom.equals(test.nom)));
    }
 
+   @Override
+   public int hashCode(){
+      return super.hashCode();
+   }
+
 }

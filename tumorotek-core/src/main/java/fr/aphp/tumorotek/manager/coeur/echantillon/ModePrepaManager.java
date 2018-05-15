@@ -49,7 +49,7 @@ import fr.aphp.tumorotek.model.coeur.echantillon.ModePrepa;
  * @version 2.0
  *
  */
-public interface ModePrepaManager extends TKThesaurusManager
+public interface ModePrepaManager extends TKThesaurusManager<ModePrepa>
 {
 
    /**

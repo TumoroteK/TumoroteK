@@ -56,7 +56,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.ConditMilieu;
  * @version 2.0
  *
  */
-public interface ConditMilieuManager extends TKThesaurusManager
+public interface ConditMilieuManager extends TKThesaurusManager<ConditMilieu>
 {
 
    /**

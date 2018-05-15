@@ -41,7 +41,7 @@ import java.util.List;
 
 import javax.naming.NamingException;
 
-import org.apache.commons.collections.ListUtils;
+import org.apache.commons.collections4.ListUtils;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -309,7 +309,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
     * @param ano
     *            True si la recherche est anonyme.
     */
-   
+
    public void initRechercheAvancee(final Entite entite, final String path, final boolean ano,
       final AbstractListeController2 listeController){
       this.entiteToSearch = entite;
@@ -331,10 +331,9 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
       }
 
       // init des listes
-      natures = (List<Nature>) ManagerLocator.getNatureManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      natures = ManagerLocator.getNatureManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       natures.add(0, null);
-      consentTypes =
-         (List<ConsentType>) ManagerLocator.getConsentTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      consentTypes = ManagerLocator.getConsentTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       consentTypes.add(0, null);
       services = ManagerLocator.getServiceManager().findAllObjectsWithOrderManager();
       services.add(0, null);
@@ -342,22 +341,17 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
       etablissements.add(0, null);
       collaborateurs = ManagerLocator.getCollaborateurManager().findAllObjectsWithOrderManager();
       collaborateurs.add(0, null);
-      echantillonTypes = (List<EchantillonType>) ManagerLocator.getEchantillonTypeManager()
-         .findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      echantillonTypes = ManagerLocator.getEchantillonTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       echantillonTypes.add(0, null);
-      echanQualites = (List<EchanQualite>) ManagerLocator.getEchanQualiteManager()
-         .findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      echanQualites = ManagerLocator.getEchanQualiteManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       echanQualites.add(0, null);
       objetStatuts = ManagerLocator.getObjetStatutManager().findAllObjectsManager();
       objetStatuts.add(0, null);
-      prodDeriveTypes =
-         (List<ProdType>) ManagerLocator.getProdTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      prodDeriveTypes = ManagerLocator.getProdTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       prodDeriveTypes.add(0, null);
-      deriveQualites =
-         (List<ProdQualite>) ManagerLocator.getProdQualiteManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      deriveQualites = ManagerLocator.getProdQualiteManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       deriveQualites.add(0, null);
-      modePrepas =
-         (List<ModePrepa>) ManagerLocator.getModePrepaManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      modePrepas = ManagerLocator.getModePrepaManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       modePrepas.add(0, null);
 
       nCarrivee = ManagerLocator.getNonConformiteManager().findByPlateformeEntiteAndTypeStringManager(
@@ -387,12 +381,10 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
 
       // since 2.0.13
       risquesModel = new ListModelList<>();
-      risquesModel
-         .addAll((List<Risque>) ManagerLocator.getRisqueManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
+      risquesModel.addAll(ManagerLocator.getRisqueManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
 
       if(SessionUtils.isSeroContexte(sessionScope)){
-         protocoles.addAll(
-            (List<Protocole>) ManagerLocator.getProtocoleManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
+         protocoles.addAll(ManagerLocator.getProtocoleManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
          protocoles.add(0, null);
       }
 
@@ -589,7 +581,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
    /**
     * Exécution de la requête.
     */
-   
+
    public void onLaterFind(){
 
       // si aucune valeur n'a été saisie dans aucun des champs, on
@@ -1636,7 +1628,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
     *            Nombre d'échantillons.
     * @return La liste de résultats mise à jour.
     */
-   
+
    public void executeNbEchantillonsQuery(final boolean firstQuery, final String operateur, final Integer nbEchantillons){
 
       // on récupère la ou les banques sélectionnée(s)
@@ -1670,7 +1662,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
     *            Age du patient.
     * @return La liste de résultats mise à jour.
     */
-   
+
    public void executeAgeAuPrelevementQuery(final boolean firstQuery, final String operateur, final Integer age){
 
       // on récupère la ou les banques sélectionnée(s)
@@ -1703,7 +1695,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
     *            .
     * @return La liste de résultats mise à jour.
     */
-   
+
    public void executePrelevementsByMedecinQuery(final boolean firstQuery, final Collaborateur collab){
 
       // on récupère la ou les banques sélectionnée(s)
@@ -1733,7 +1725,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
     * @param noconf nonconformité
     * @param searchForDerive si recherche sur derive
     */
-   
+
    public void executeObjetByNonConformite(final Textbox current, final boolean firstQuery, final ConformiteType cType,
       final String cNom, final Champ p1, final Champ p2, final boolean searchForDerive){
 
@@ -1802,7 +1794,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
     *            Nombre d'échantillons.
     * @return La liste de résultats mise à jour.
     */
-   
+
    public void executeCodesQuery(final Textbox current, final Champ parent1, final boolean firstQuery,
       final String entiteInEchantillon, final String entiteFinale, final boolean isMorpho){
 
@@ -1883,7 +1875,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
     * @since 2.0.13	       .
     * @return La liste de résultats mise à jour.
     */
-   
+
    public void executeTempStockQuery(final boolean firstQuery, final Decimalbox current, final String op, final Entite ent){
 
       // on récupère la ou les banques sélectionnée(s)

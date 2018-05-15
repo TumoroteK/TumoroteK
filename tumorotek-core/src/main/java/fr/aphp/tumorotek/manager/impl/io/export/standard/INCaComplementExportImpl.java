@@ -193,9 +193,8 @@ public class INCaComplementExportImpl implements IncaComplementExport
       if(echantillon.getEchanQualite() != null){
          if(!echantillon.getEchanQualite().getEchanQualite().matches("[Aa][Uu][Cc][Uu][Nn]")){
             return "O";
-         }else{
-            return "N";
          }
+         return "N";
       }
       return "";
    }
@@ -272,8 +271,7 @@ public class INCaComplementExportImpl implements IncaComplementExport
             out.add("");
          }
          return out;
-      }else{
-         throw new ItemException(2, "Contact non specifie pour la banque " + banque.getNom());
       }
+      throw new ItemException(2, "Contact non specifie pour la banque " + banque.getNom());
    }
 }

@@ -1159,9 +1159,8 @@ public class FicheProfil extends AbstractFicheCombineController
 
       if(this.profil != null){
          return ObjectTypesFormatters.booleanLitteralFormatter(this.profil.getAnonyme());
-      }else{
-         return "";
       }
+      return "";
    }
 
    /**
@@ -1172,9 +1171,8 @@ public class FicheProfil extends AbstractFicheCombineController
 
       if(this.profil != null){
          return ObjectTypesFormatters.booleanLitteralFormatter(this.profil.getAccesAdministration());
-      }else{
-         return "";
       }
+      return "";
    }
 
    /**
@@ -1196,19 +1194,6 @@ public class FicheProfil extends AbstractFicheCombineController
       }
 
       return ObjectTypesFormatters.booleanLitteralFormatter(canImport);
-
-      //		boolean canImport = false;	
-      //		if (this.profil != null && this.profil.getProfilId() != null) {
-      //			if (this.profil.getAdmin() != null
-      //					&& this.profil.getAdmin()) {
-      //				canImport = this.profil.getAdmin();
-      //			}
-      //			
-      //			return ObjectTypesFormatters
-      //				.booleanLitteralFormatter(canImport);
-      //		} else {
-      //			return "";
-      //		}
    }
 
    /**
@@ -1220,15 +1205,13 @@ public class FicheProfil extends AbstractFicheCombineController
       if(this.profil != null && this.profil.getProfilId() != null){
          if(this.profil.getAdmin() != null && this.profil.getAdmin()){
             return ObjectTypesFormatters.booleanLitteralFormatter(true);
-         }else{
-            final OperationType exportOp = operationTypes.get("Export");
-            final List<DroitObjet> list = ManagerLocator.getDroitObjetManager().findByProfilOperationManager(profil, exportOp);
-
-            return ObjectTypesFormatters.booleanLitteralFormatter(list.size() == 6);
          }
-      }else{
-         return "";
+         final OperationType exportOp = operationTypes.get("Export");
+         final List<DroitObjet> list = ManagerLocator.getDroitObjetManager().findByProfilOperationManager(profil, exportOp);
+
+         return ObjectTypesFormatters.booleanLitteralFormatter(list.size() == 6);
       }
+      return "";
    }
 
    public java.util.Hashtable<String, Entite> getEntites(){
@@ -1297,9 +1280,8 @@ public class FicheProfil extends AbstractFicheCombineController
 
       if(this.profil != null){
          return ObjectTypesFormatters.booleanLitteralFormatter(this.profil.isArchive());
-      }else{
-         return "";
       }
+      return "";
    }
 
    public List<ProfilUtilisateur> getProfilUtilisateurs(){
@@ -1313,7 +1295,7 @@ public class FicheProfil extends AbstractFicheCombineController
    /**
     * @since 2.1
     */
-   public void onCheck$utilisateursArchiveBox(final Event e){
+   public void onCheck$utilisateursArchiveBox(){
       profilUtilisateurs.clear();
       // display non-archived users only
       if(profil != null && profil.getProfilId() != null){

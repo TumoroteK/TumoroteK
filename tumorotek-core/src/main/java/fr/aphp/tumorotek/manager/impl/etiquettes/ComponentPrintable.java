@@ -120,7 +120,7 @@ public class ComponentPrintable implements Printable
          if(!isQRCode){
             paint(g2d, lignes, abscisse, ordonnee);
          }else{
-            paintQRCode(g2d, lignes, abscisse, ordonnee);
+            paintQRCode(g2d, lignes);
          }
       }catch(final Exception e){
          getComponentPrinter().setRuntimeException(e);
@@ -194,43 +194,45 @@ public class ComponentPrintable implements Printable
                }
             }
 
-            // la variable width est en 1/72 par inchs. La valeur
-            // résolution contient le nombre de pixels contenus
-            // dans 1 inch. Donc, pour connaitre la width
-            // max de l'image en pixels :
-            // int maxWidth = (width / 72) * 80;
-            // height1 = 56/4 = 14
-            final int height = imageBarcode.getHeight(componentToBePrinted) / dH;
-            int width = imageBarcode.getWidth(componentToBePrinted) / dW;
+            if(null != imageBarcode && null != barcode){
+               // la variable width est en 1/72 par inchs. La valeur
+               // résolution contient le nombre de pixels contenus
+               // dans 1 inch. Donc, pour connaitre la width
+               // max de l'image en pixels :
+               // int maxWidth = (width / 72) * 80;
+               // height1 = 56/4 = 14
+               final int height = imageBarcode.getHeight(componentToBePrinted) / dH;
+               int width = imageBarcode.getWidth(componentToBePrinted) / dW;
 
-            if(width > maxWidth){
-               // throw new StringEtiquetteOverSizeException(BARCODE + "\n"
-               // + "code :" + codeObject + "\n");
-               // float divid = width / (float) maxWidth;
-               // height = Math.round(height /= divid);
-               barcode.setBarWidth(1);
-               // width = Math.round(width /= divid) - 1;
-               width = maxWidth - 2;
+               if(width > maxWidth){
+                  // throw new StringEtiquetteOverSizeException(BARCODE + "\n"
+                  // + "code :" + codeObject + "\n");
+                  // float divid = width / (float) maxWidth;
+                  // height = Math.round(height /= divid);
+                  barcode.setBarWidth(1);
+                  // width = Math.round(width /= divid) - 1;
+                  width = maxWidth - 2;
 
-               //					File bcImg = File.createTempFile("bc-", ".png");
-               //			        bcImg.deleteOnExit();
-               //			        FileOutputStream fos = new FileOutputStream(bcImg);
-               //			        BarcodeImageHandler.writePNG(barcode, fos);
+                  //					File bcImg = File.createTempFile("bc-", ".png");
+                  //			        bcImg.deleteOnExit();
+                  //			        FileOutputStream fos = new FileOutputStream(bcImg);
+                  //			        BarcodeImageHandler.writePNG(barcode, fos);
 
-               // BufferedImage resized = 
-               // 	Scalr.resize(imageBarcode, Scalr.Method.ULTRA_QUALITY, 
-               //			Scalr.Mode.FIT_TO_WIDTH,
-               //			width, new BufferedImageOp[]{});
+                  // BufferedImage resized = 
+                  // 	Scalr.resize(imageBarcode, Scalr.Method.ULTRA_QUALITY, 
+                  //			Scalr.Mode.FIT_TO_WIDTH,
+                  //			width, new BufferedImageOp[]{});
 
-               // on dessine le code-barres
-               g2d.drawImage(BarcodeImageHandler.getImage(barcode), x0, y0, width, height, null);
-               // imageBarcode.flush();
+                  // on dessine le code-barres
+                  g2d.drawImage(BarcodeImageHandler.getImage(barcode), x0, y0, width, height, null);
+                  // imageBarcode.flush();
 
-            }else{
-               // on dessine le code-barres
-               g2d.drawImage(imageBarcode, x0, y0, width, height, null);
+               }else{
+                  // on dessine le code-barres
+                  g2d.drawImage(imageBarcode, x0, y0, width, height, null);
+               }
+               y0 = y0 + height;
             }
-            y0 = y0 + height;
          }else{
             int style = 0;
             int size = 4;
@@ -281,8 +283,7 @@ public class ComponentPrintable implements Printable
       }
    }
 
-   public void paintQRCode(final Graphics g, final List<LigneEtiquette> l, final int x0, final int y0)
-      throws StringEtiquetteOverSizeException{
+   public void paintQRCode(final Graphics g, final List<LigneEtiquette> l) throws StringEtiquetteOverSizeException{
       final Graphics2D graphics = (Graphics2D) g;
       final StringBuffer sb = new StringBuffer();
 

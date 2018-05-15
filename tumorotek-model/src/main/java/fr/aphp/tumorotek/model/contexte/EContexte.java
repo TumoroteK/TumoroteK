@@ -15,6 +15,15 @@ public enum EContexte
       this.libelle = libelle;
    }
 
+   public String getNom(){
+      return nom;
+   }
+
+
+   public String getLibelle(){
+      return libelle;
+   }
+
    @Override
    public String toString(){
       return nom;

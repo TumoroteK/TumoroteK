@@ -83,26 +83,23 @@ public class EmetteurManagerImpl implements EmetteurManager
       log.debug("Recherche de tous les Emetteurs d'un logiciel");
       if(logiciel != null){
          return emetteurDao.findByLogiciel(logiciel);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
    public List<Emetteur> findByIdinListManager(final List<Integer> emetteurIds){
       if(emetteurIds != null && emetteurIds.size() > 0){
          return emetteurDao.findByIdInList(emetteurIds);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
    public List<Emetteur> findByIdentificationAndServiceManager(final String identification, final String service){
       if(identification != null && service != null){
          return emetteurDao.findByIdentificationAndService(identification, service);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 }

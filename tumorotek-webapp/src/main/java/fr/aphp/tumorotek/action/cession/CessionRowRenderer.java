@@ -171,9 +171,8 @@ public class CessionRowRenderer extends TKSelectObjectRenderer
       final Calendar date = ManagerLocator.getOperationManager().findDateCreationManager(cession);
       if(date != null){
          return ObjectTypesFormatters.dateRenderer2(date);
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void drawNbEchantillons(final Cession cession, final Row row){
@@ -261,12 +260,10 @@ public class CessionRowRenderer extends TKSelectObjectRenderer
       if(cession.getEtatIncomplet() != null){
          if(cession.getEtatIncomplet()){
             return Labels.getLabel("cession.statut.incomplete");
-         }else{
-            return Labels.getLabel("cession.statut.complete");
          }
-      }else{
-         return null;
+         return Labels.getLabel("cession.statut.complete");
       }
+      return null;
    }
 
    public String getEtude(final Cession cession){
@@ -276,21 +273,17 @@ public class CessionRowRenderer extends TKSelectObjectRenderer
          }else if(cession.getCessionType().getType().toUpperCase().equals("SANITAIRE")){
             if(cession.getCessionExamen() != null){
                return cession.getCessionExamen().getExamen();
-            }else{
-               return null;
             }
+            return null;
          }else if(cession.getCessionType().getType().toUpperCase().equals("DESTRUCTION")){
             if(cession.getDestructionMotif() != null){
                return cession.getDestructionMotif().getMotif();
-            }else{
-               return null;
             }
-         }else{
             return null;
          }
-      }else{
          return null;
       }
+      return null;
    }
 
    public boolean isAccessible(){

@@ -85,8 +85,7 @@ public class ChampEntiteBlocManagerImpl implements ChampEntiteBlocManager
 
       if(bloc != null){
          return champEntiteBlocDao.findByBlocImpression(bloc);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 }

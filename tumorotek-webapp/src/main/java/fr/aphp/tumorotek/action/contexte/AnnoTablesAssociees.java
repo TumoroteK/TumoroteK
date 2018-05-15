@@ -51,7 +51,7 @@ import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
-public class AnnoTablesAssociees extends OneToManyComponent
+public class AnnoTablesAssociees extends OneToManyComponent<TableAnnotation>
 {
 
    private static final long serialVersionUID = 1L;
@@ -84,14 +84,14 @@ public class AnnoTablesAssociees extends OneToManyComponent
 
    
    @Override
-   public void setObjects(final List<? extends Object> objs){
-      this.objects = (List<TableAnnotation>) objs;
+   public void setObjects(final List<TableAnnotation> objs){
+      this.objects = objs;
       updateComponent();
    }
 
    @Override
-   public void addToListObjects(final Object obj){
-      getObjects().add((TableAnnotation) obj);
+   public void addToListObjects(final TableAnnotation obj){
+      getObjects().add(obj);
    }
 
    @Override
@@ -144,7 +144,7 @@ public class AnnoTablesAssociees extends OneToManyComponent
    }
 
    @Override
-   public List<? extends Object> findObjectsAddable(){
+   public List<TableAnnotation> findObjectsAddable(){
       // TableAnnotations ajoutables
       final List<TableAnnotation> tabs = ManagerLocator.getTableAnnotationManager().findByEntiteAndPlateformeManager(getEntite(),
          SessionUtils.getPlateforme(sessionScope));

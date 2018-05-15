@@ -81,7 +81,6 @@ public class AffichageController extends AbstractObjectTabController
    /**
     * Recupere le controller du composant representant la liste des
     * affichages.
-    * @param event Event
     * @return liste ListeAffichages
     */
    public ListeAffichages getListeAffichages(){

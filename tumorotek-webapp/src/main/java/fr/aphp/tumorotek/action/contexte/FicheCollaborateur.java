@@ -1255,9 +1255,8 @@ public class FicheCollaborateur extends AbstractFicheCombineController
 
       if(this.collaborateur != null){
          return ObjectTypesFormatters.booleanLitteralFormatter(this.collaborateur.getArchive());
-      }else{
-         return "";
       }
+      return "";
    }
 
    public String getServiceNom(){
@@ -1311,8 +1310,7 @@ public class FicheCollaborateur extends AbstractFicheCombineController
    public String getDeleteWaitLabel(){
       if(isFantomable()){
          return Labels.getLabel("deletion.general.wait");
-      }else{
-         return Labels.getLabel("archivage.general.wait");
       }
+      return Labels.getLabel("archivage.general.wait");
    }
 }

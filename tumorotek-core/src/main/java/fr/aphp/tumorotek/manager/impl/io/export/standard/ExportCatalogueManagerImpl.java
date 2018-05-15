@@ -236,9 +236,8 @@ public class ExportCatalogueManagerImpl implements ExportCatalogueManager
             if(item == null || item.equals("")){
                if(defaut == null){
                   throw new ItemException(2, errorMessage);
-               }else{
-                  return defaut;
                }
+               return defaut;
             }
          }
          if(regexp != null && item != null){
@@ -301,9 +300,8 @@ public class ExportCatalogueManagerImpl implements ExportCatalogueManager
             if(item == null){
                if(defaut == null){
                   throw new ItemException(2, errorMessage);
-               }else{
-                  return defaut;
                }
+               return defaut;
             }
          }
          if(item != null){

@@ -187,9 +187,8 @@ public class ContratManagerImpl implements ContratManager
       log.debug("Recherche de tous les Contrats d'une plateforme");
       if(plateforme != null){
          return contratDao.findByPlateforme(plateforme);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    /**
@@ -201,9 +200,8 @@ public class ContratManagerImpl implements ContratManager
    public List<Cession> getCessionsManager(final Contrat contrat){
       if(contrat != null){
          return cessionDao.findByContrat(contrat);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    /**
@@ -223,10 +221,8 @@ public class ContratManagerImpl implements ContratManager
             numero = numero + "%";
          }
          return contratDao.findByNumero(numero);
-      }else{
-         return new ArrayList<>();
       }
-
+      return new ArrayList<>();
    }
 
    /**
@@ -239,12 +235,10 @@ public class ContratManagerImpl implements ContratManager
       if(contrat != null){
          if(contrat.getContratId() == null){
             return contratDao.findAll().contains(contrat);
-         }else{
-            return contratDao.findByExcludedId(contrat.getContratId()).contains(contrat);
          }
-      }else{
-         return false;
+         return contratDao.findByExcludedId(contrat.getContratId()).contains(contrat);
       }
+      return false;
    }
 
    /**
@@ -257,9 +251,8 @@ public class ContratManagerImpl implements ContratManager
    public Boolean isUsedObjectManager(final Contrat contrat){
       if(contrat != null){
          return (getCessionsManager(contrat).size() > 0);
-      }else{
-         return false;
       }
+      return false;
    }
 
    /**
@@ -291,20 +284,19 @@ public class ContratManagerImpl implements ContratManager
       if(findDoublonManager(contrat)){
          log.warn("Doublon lors de la creation de l'objet Contrat : " + contrat.toString());
          throw new DoublonFoundException("Contrat", "creation");
-      }else{
-
-         // validation du Contrat
-         BeanValidator.validateObject(contrat, new Validator[] {contratValidator});
-
-         contratDao.createObject(contrat);
-
-         log.info("Enregistrement de l'objet Contrat : " + contrat.toString());
-
-         //Enregistrement de l'operation associee
-         final Operation creationOp = new Operation();
-         creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), contrat);
       }
+
+      // validation du Contrat
+      BeanValidator.validateObject(contrat, new Validator[] {contratValidator});
+
+      contratDao.createObject(contrat);
+
+      log.info("Enregistrement de l'objet Contrat : " + contrat.toString());
+
+      //Enregistrement de l'operation associee
+      final Operation creationOp = new Operation();
+      creationOp.setDate(Utils.getCurrentSystemCalendar());
+      operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), contrat);
    }
 
    /**
@@ -336,21 +328,18 @@ public class ContratManagerImpl implements ContratManager
       if(findDoublonManager(contrat)){
          log.warn("Doublon lors de la modification de l'objet Contrat : " + contrat.toString());
          throw new DoublonFoundException("Contrat", "modification");
-      }else{
-
-         // validation du Contrat
-         BeanValidator.validateObject(contrat, new Validator[] {contratValidator});
-
-         contratDao.updateObject(contrat);
-
-         log.info("Modification de l'objet Contrat : " + contrat.toString());
-
-         //Enregistrement de l'operation associee
-         final Operation creationOp = new Operation();
-         creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
-            contrat);
       }
+      // validation du Contrat
+      BeanValidator.validateObject(contrat, new Validator[] {contratValidator});
+
+      contratDao.updateObject(contrat);
+
+      log.info("Modification de l'objet Contrat : " + contrat.toString());
+
+      //Enregistrement de l'operation associee
+      final Operation creationOp = new Operation();
+      creationOp.setDate(Utils.getCurrentSystemCalendar());
+      operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0), contrat);
    }
 
    @Override
@@ -359,14 +348,13 @@ public class ContratManagerImpl implements ContratManager
          if(isUsedObjectManager(contrat)){
             log.warn("Objet utilisé lors de la suppression de l'objet " + "Contrat : " + contrat.toString());
             throw new ObjectUsedException("contrat.deletion.isReferenced", false);
-         }else{
-
-            //Supprime operations associes
-            CreateOrUpdateUtilities.removeAssociateOperations(contrat, operationManager, comments, u);
-
-            contratDao.removeObject(contrat.getContratId());
-            log.info("Suppression de l'objet Contrat : " + contrat.toString());
          }
+
+         //Supprime operations associes
+         CreateOrUpdateUtilities.removeAssociateOperations(contrat, operationManager, comments, u);
+
+         contratDao.removeObject(contrat.getContratId());
+         log.info("Suppression de l'objet Contrat : " + contrat.toString());
       }else{
          log.warn("Suppression d'un Contrat null");
       }

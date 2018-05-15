@@ -719,7 +719,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       final StringBuffer adrImage = new StringBuffer();
       adrImage.append("/images/icones/catalogues/INCA_Logo.jpg");
       ManagerLocator.getXmlUtils().addHautDePage(root, hautPageInca, true,
-         ((HttpServletRequest) Executions.getCurrent().getNativeRequest()).getRealPath(adrImage.toString()));
+         ((HttpServletRequest) Executions.getCurrent().getNativeRequest()).getServletContext().getRealPath(adrImage.toString()));
 
       nbItemsINCaRemplis = 0;
       nbItemsINCaTotaux = 0;
@@ -1776,7 +1776,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
    /**
     * Forward Event. 
     */
-   public void onSelectAllDerives(final Event e){
+   public void onSelectAllDerives(){
       onClickProdDeriveCode(null);
    }
 
@@ -1793,7 +1793,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       displayObjectData(deco.getCederObjet().getCession());
    }
 
-   public void onSelectAllCessions(final Event e){
+   public void onSelectAllCessions(){
       final List<Cession> cessions = new ArrayList<>();
       for(int i = 0; i < cedesDecorated.size(); i++){
          final Cession cess = cedesDecorated.get(i).getCederObjet().getCession();

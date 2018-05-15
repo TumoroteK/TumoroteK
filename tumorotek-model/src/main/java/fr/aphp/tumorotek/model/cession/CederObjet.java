@@ -208,9 +208,8 @@ public class CederObjet implements Serializable
    public String toString(){
       if(this.pk != null){
          return "{" + this.pk.toString() + "}";
-      }else{
-         return "{Empty CederObjet}";
       }
+      return "{Empty CederObjet}";
    }
 
    /**

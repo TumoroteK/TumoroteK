@@ -49,7 +49,7 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ProdQualite;
  * @version 2.0
  *
  */
-public interface ProdQualiteManager extends TKThesaurusManager
+public interface ProdQualiteManager extends TKThesaurusManager<ProdQualite>
 {
 
    /**

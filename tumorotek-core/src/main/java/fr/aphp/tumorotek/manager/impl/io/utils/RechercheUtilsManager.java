@@ -42,7 +42,8 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * Date: 11/03/2013
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.10
+ * @version 2.2.0
+ * @since 2.0.10
  * @update 13/03/2018
  *
  */
@@ -155,22 +156,60 @@ public class RechercheUtilsManager
     */
    public static List<Object> getListeObjetsCorrespondants(final Object objetInitial, final Champ champ,
       final String reservedEntite){
-      Entite entite = null;
       final List<Object> liste = new ArrayList<>();
       if(champ.getChampEntite() != null){
-         entite = champ.getChampEntite().getEntite();
-         // On récupère l'entité parente s'il y en a !
-         Champ parent = champ.getChampParent();
-         while(parent != null){
-            entite = parent.getChampEntite().getEntite();
-            parent = parent.getChampParent();
-         }
+         liste.addAll(getListeObjetsCorrespondants(objetInitial, champ.getChampEntite(), champ.getChampParent(), reservedEntite));
       }else if(champ.getChampAnnotation() != null){
-         entite = champ.getChampAnnotation().getTableAnnotation().getEntite();
+         liste.addAll(getListeObjetsCorrespondants(objetInitial, champ.getChampAnnotation(), reservedEntite));
       }
 
-      if(entite != null){
-         liste.addAll(getListeObjetsCorrespondants(objetInitial, entite, reservedEntite));
+      return liste;
+   }
+
+   /**
+    * Retourne la liste des objets liés à un objet passé en paramètre en fonction d'un champ recherché
+    * @param objetInitial objet initial
+    * @param champEntite le champ recherché
+    * @param reservedEntite entité reservée ???
+    * @return liste des objets liés à un objet initial
+    */
+   public static List<Object> getListeObjetsCorrespondants(final Object objetInitial, final ChampEntite champEntite,
+      final Champ champParent, final String reservedEntite){
+      Entite entite = null;
+      final List<Object> liste = new ArrayList<>();
+      if(champEntite != null){
+         entite = champEntite.getEntite();
+         // On récupère l'entité parente s'il y en a !
+         Champ parent = champParent;
+         while(parent != null){
+            entite = champParent.getChampEntite().getEntite();
+            parent = parent.getChampParent();
+         }
+
+         if(entite != null){
+            liste.addAll(getListeObjetsCorrespondants(objetInitial, entite, reservedEntite));
+         }
+      }
+
+      return liste;
+   }
+
+   /**
+    * Retourne la liste des objets liés à un objet passé en paramètre en fonction d'un champ recherché
+    * @param objetInitial objet initial
+    * @param champAnnotation le champ recherché
+    * @param reservedEntite entité reservée ???
+    * @return liste des objets liés à un objet initial
+    */
+   public static List<Object> getListeObjetsCorrespondants(final Object objetInitial, final ChampAnnotation champAnnotation,
+      final String reservedEntite){
+      Entite entite = null;
+      final List<Object> liste = new ArrayList<>();
+      if(champAnnotation != null){
+         entite = champAnnotation.getTableAnnotation().getEntite();
+         if(entite != null){
+            liste.addAll(getListeObjetsCorrespondants(objetInitial, entite, reservedEntite));
+         }
       }
 
       return liste;
@@ -200,31 +239,6 @@ public class RechercheUtilsManager
       }
       return liste;
    }
-
-   //   /**
-   //    ** TODO Refactoring de la fonction, mais n'inclue pas la variable "previous"...
-   //    * Retourne la liste des objets liés à un objet passé en paramètre
-   //    * @param objetInitial objet initial
-   //    * @param affichage affichage de la recherche
-   //    * @param reservedEntite entité reservée ???
-   //    * @return liste des objets liés à un objet initial
-   //    */
-   //   public static List<Object> getListeObjetsCorrespondants(final Object objetInitial, final Affichage affichage,
-   //      final String reservedEntite){
-   //      final List<Object> liste = new ArrayList<>();
-   //      /* On itère la liste des résultats de l'affichage. */
-   //      final Iterator<Resultat> itRes = affichage.getResultats().iterator();
-   //      while(itRes.hasNext()){
-   //         final Resultat res = itRes.next();
-   //         /* On récupère l'entité depuis le champ du Resultat. */
-   //         if(res != null){
-   //            if(res.getChamp() != null){
-   //               liste.addAll(getListeObjetsCorrespondants(objetInitial, res.getChamp(), reservedEntite));
-   //            }
-   //         }
-   //      }
-   //      return liste;
-   //   }
 
    /**
    * Retourne la liste des objets liés à un objet passé en paramètre
@@ -315,16 +329,32 @@ public class RechercheUtilsManager
     * @param ca champAnnotation
     * @return valeur du champAnnotation de l'objet correspondant
     */
-   private static String getChampAnnotationValeur(final TKAnnotableObject obj, final ChampAnnotation ca){
+   private static Object getChampAnnotationValeur(final TKAnnotableObject obj, final ChampAnnotation ca, boolean prettyFormat){
       final List<AnnotationValeur> avs = annotationValeurManager.findByChampAndObjetManager(ca, obj);
-      final StringBuffer sb = new StringBuffer();
-      for(int j = 0; j < avs.size(); j++){
-         sb.append(avs.get(j).formateAnnotationValeur());
-         if(j + 1 < avs.size()){
-            sb.append(";");
+      Object res = null;
+      if(!avs.isEmpty()){
+         if(prettyFormat){
+            final StringBuffer sb = new StringBuffer();
+            for(int j = 0; j < avs.size(); j++){
+               sb.append(avs.get(j).formateAnnotationValeur());
+               if(j + 1 < avs.size()){
+                  sb.append(";");
+               }
+            }
+            res = sb.toString();
+         }else{
+            if(1 == avs.size()){
+               res = avs.get(0).getValeur();
+            }else{
+               List<Object> lo = new ArrayList<>();
+               for(AnnotationValeur annoVal : avs){
+                  lo.add(annoVal.getValeur());
+               }
+               res = lo;
+            }
          }
       }
-      return sb.toString();
+      return res;
    }
 
    /**
@@ -358,6 +388,26 @@ public class RechercheUtilsManager
    }
 
    /**
+    * Retourne la valeur d'un champ recherché dans une liste d'objets
+    * @param champAnnotation le champ a rechercher
+    * @param listeObjets la liste d'objets dans laquelle recherche le champ
+    * @return la valeur du champ
+    */
+   public static Object getChampValueFromObjectList(final ChampAnnotation champAnnotation, final List<Object> listeObjets){
+      Entite entite = null;
+      Champ parent = null;
+      Object value = null;
+      if(champAnnotation != null){
+         entite = champAnnotation.getTableAnnotation().getEntite();
+         if(null != entite){
+            value = getChampValueFromEntite(entite, champAnnotation, parent, listeObjets);
+         }
+      }
+
+      return value;
+   }
+
+   /**
     * Retourne la valeur d'un champ pour une entité Patient recherchée dans une liste d'objets
     * @param chp champ à récupérer
     * @param listeObjets liste des objets dans laquelle recherchée l'entité Patient et le champ
@@ -367,6 +417,21 @@ public class RechercheUtilsManager
       final Patient recup = getObjectFromList(listeObjets, Patient.class);
       if(null != recup){
          return getChampValueFromPatient(recup, chp);
+      }
+
+      return null;
+   }
+
+   /**
+    * Retourne la valeur d'un champ pour une entité Patient recherchée dans une liste d'objets
+    * @param chp champ à récupérer
+    * @param listeObjets liste des objets dans laquelle recherchée l'entité Patient et le champ
+    * @return la valeur du champ pour l'entité patient
+    */
+   public static Object getChampValueFromPatient(final ChampAnnotation chp, final List<Object> listeObjets, final Boolean prettyFormat){
+      final Patient recup = getObjectFromList(listeObjets, Patient.class);
+      if(null != recup){
+         return getChampValueFromPatient(recup, chp, prettyFormat);
       }
 
       return null;
@@ -383,8 +448,21 @@ public class RechercheUtilsManager
          if(chp.getChampEntite() != null){
             return getChampValueForObject(chp, pat, false);
          }else if(chp.getChampAnnotation() != null){
-            return getChampAnnotationValeur(pat, chp.getChampAnnotation());
+            return getChampValueFromPatient(pat, chp.getChampAnnotation(), true);
          }
+      }
+      return null;
+   }
+
+   /**
+    * Retourne la valeur d'un champ d'un objet Patient
+    * @param pat objet patient
+    * @param chp champ à récupérer
+    * @return la valeur du champ pour l'entité patient
+    */
+   public static Object getChampValueFromPatient(final Patient pat, final ChampAnnotation chp, final Boolean prettyFormat){
+      if(pat != null && chp != null){
+         return getChampAnnotationValeur(pat, chp, prettyFormat);
       }
       return null;
    }
@@ -468,8 +546,22 @@ public class RechercheUtilsManager
                return getChampValueForObject(parent, prel, false);
             }
          }else if(chp.getChampAnnotation() != null){
-            return getChampAnnotationValeur(prel, chp.getChampAnnotation());
+            return getChampValueFromPrelevement(prel, chp.getChampAnnotation(), parent, true);
          }
+      }
+      return null;
+   }
+
+   /**
+    * Retourne la valeur d'un champ prelevement à partir d'un champ
+    * @param prel prelevement
+    * @param chp champ recherché
+    * @param parent champ parent
+    * @return valeur du champ maladie
+    */
+   public static Object getChampValueFromPrelevement(final Prelevement prel, final ChampAnnotation chp, final Champ parent, final Boolean prettyFormat){
+      if(prel != null && chp != null){
+         return getChampAnnotationValeur(prel, chp, prettyFormat);
       }
       return null;
    }
@@ -485,6 +577,22 @@ public class RechercheUtilsManager
       final Prelevement recup = getObjectFromList(listeObjets, Prelevement.class);
       if(null != recup){
          return getChampValueFromPrelevement(recup, chp, parent);
+      }
+      return null;
+   }
+
+   /**
+    * Retourne la valeur d'un champ prelevement à partir d'une liste d'objets
+    * @param chp champ recherché
+    * @param parent champ parent
+    * @param listeObjets liste d'objets où rechercher l'objet maladie
+    * @return valeur du champ maladie
+    */
+   public static Object getChampValueFromPrelevement(final ChampAnnotation chp, final Champ parent,
+      final List<Object> listeObjets, final Boolean prettyFormat){
+      final Prelevement recup = getObjectFromList(listeObjets, Prelevement.class);
+      if(null != recup){
+         return getChampValueFromPrelevement(recup, chp, parent, prettyFormat);
       }
       return null;
    }
@@ -566,8 +674,23 @@ public class RechercheUtilsManager
                return getChampValueForObject(parent, echanDeco.getEchantillon(), false);
             }
          }else if(chp.getChampAnnotation() != null){
-            return getChampAnnotationValeur(echanDeco.getEchantillon(), chp.getChampAnnotation());
+            return getChampValueFromEchantillon(echanDeco, chp.getChampAnnotation(), parent, true);
          }
+      }
+      return null;
+   }
+
+   /**
+    * Retourne la valeur d'un champ echantillon à partir d'un champ
+    * @param echanDeco echantillon
+    * @param chp champ recherché
+    * @param parent champ parent
+    * @return valeur du champ echantillon
+    */
+   public static Object getChampValueFromEchantillon(final EchantillonDTO echanDeco, final ChampAnnotation chp,
+      final Champ parent, final Boolean prettyFormat){
+      if(echanDeco.getEchantillon() != null && chp != null){
+         return getChampAnnotationValeur(echanDeco.getEchantillon(), chp, prettyFormat);
       }
       return null;
    }
@@ -588,38 +711,22 @@ public class RechercheUtilsManager
       return null;
    }
 
-   //   /**
-   //    * Retourne la valeur d'un champ produit dérivé à partir d'un champ
-   //    * @param prodDeco produit dérivé
-   //    * @param chp champ recherché
-   //    * @param parent champ parent
-   //    * @return valeur du champ produit dérivé
-   //    */
-   //   public static String getChampValueFromDerive(final ProdDeriveDecorator2 prodDeco, final Champ chp, final Champ parent){
-   //      if(prodDeco.getProdDerive() != null && chp != null){
-   //         if(chp.getChampEntite() != null){
-   //            if(parent == null){
-   //               if(chp.getChampEntite().getNom().equals("EmplacementId")){
-   //                  return prodDeco.getEmplacementAdrl();
-   //                  // since 2.0.13 temp stock
-   //               }else if(chp.getChampEntite().getNom().equals("TempStock")){
-   //                  return prodDeco.getTempStock();
-   //               }else{
-   //                  return getChampValueForObject(chp, prodDeco.getProdDerive(), false);
-   //               }
-   //            }
-   //            if(parent.getChampEntite().getNom().matches("Conforme.*Raison")){
-   //               return formatNonConformites(prodDeco.getProdDerive(), parent.getChampEntite());
-   //            }
-   //
-   //            return getChampValueForObject(parent, prodDeco.getProdDerive(), false);
-   //
-   //         }else if(chp.getChampAnnotation() != null){
-   //            return getChampAnnotationValeur(prodDeco.getProdDerive(), chp.getChampAnnotation());
-   //         }
-   //      }
-   //      return null;
-   //   }
+   /**
+    * Retourne la valeur d'un champ echantillon à partir d'une liste d'objets
+    * @param chp champ recherché
+    * @param parent champ parent
+    * @param listeObjets liste d'objets où rechercher l'objet echantillon
+    * @return valeur du champ echantillon
+    */
+   public static Object getChampValueFromEchantillon(final ChampAnnotation chp, final Champ parent,
+      final List<Object> listeObjets, final Boolean prettyFormat){
+      final Echantillon recup = getObjectFromList(listeObjets, Echantillon.class);
+      if(null != recup){
+         final EchantillonDTO echDeco = new EchantillonDTO(recup);
+         return getChampValueFromEchantillon(echDeco, chp, parent, prettyFormat);
+      }
+      return null;
+   }
 
    /**
     * Retourne la valeur d'un champ produit dérivé à partir d'un champ
@@ -653,28 +760,25 @@ public class RechercheUtilsManager
             return getChampValueForObject(parent, prodDerive, false);
 
          }else if(chp.getChampAnnotation() != null){
-            return getChampAnnotationValeur(prodDerive, chp.getChampAnnotation());
+            return getChampValueFromDerive(prodDerive, chp.getChampAnnotation(), parent, true);
          }
       }
       return null;
    }
 
-   //   /**
-   //    * Retourne la valeur d'un champ produit dérivé à partir d'une liste d'objets
-   //    * @param chp champ recherché
-   //    * @param parent champ parent
-   //    * @param listeObjets liste d'objets où rechercher l'objet echantillon
-   //    * @return valeur du champ produit dérivé
-   //    */
-   //   public static String getChampValueFromDerive(final Champ chp, final Champ parent, final List<Object> listeObjets){
-   //      final ProdDerive recup = getObjectFromList(listeObjets, ProdDerive.class);
-   //      if(null != recup){
-   //         final ProdDeriveDecorator2 prodDeco = new ProdDeriveDecorator2(recup);
-   //         return getChampValueFromDerive(prodDeco, chp, parent);
-   //      }
-   //
-   //      return null;
-   //   }
+   /**
+    * Retourne la valeur d'un champ produit dérivé à partir d'un champ
+    * @param prodDerive produit dérivé
+    * @param chp champ recherché
+    * @param parent champ parent
+    * @return valeur du champ produit dérivé
+    */
+   public static Object getChampValueFromDerive(final ProdDerive prodDerive, final ChampAnnotation chp, final Champ parent, final Boolean prettyFormat){
+      if(prodDerive != null && chp != null){
+         return getChampAnnotationValeur(prodDerive, chp, prettyFormat);
+      }
+      return null;
+   }
 
    /**
     * Retourne la valeur d'un champ produit dérivé à partir d'une liste d'objets
@@ -692,6 +796,22 @@ public class RechercheUtilsManager
       return null;
    }
 
+   /**
+    * Retourne la valeur d'un champ produit dérivé à partir d'une liste d'objets
+    * @param chp champ recherché
+    * @param parent champ parent
+    * @param listeObjets liste d'objets où rechercher l'objet echantillon
+    * @return valeur du champ produit dérivé
+    */
+   public static Object getChampValueFromDerive(final ChampAnnotation chp, final Champ parent, final List<Object> listeObjets, final Boolean prettyFormat){
+      final ProdDerive recup = getObjectFromList(listeObjets, ProdDerive.class);
+      if(null != recup){
+         return getChampValueFromDerive(recup, chp, parent, prettyFormat);
+      }
+
+      return null;
+   }
+
    public static Object getChampValueFromCession(final Cession cession, final Champ chp, final Champ parent){
       if(cession != null && chp != null){
          if(chp.getChampEntite() != null){
@@ -702,8 +822,15 @@ public class RechercheUtilsManager
             return getChampValueForObject(parent, cession, false);
 
          }else if(chp.getChampAnnotation() != null){
-            return getChampAnnotationValeur(cession, chp.getChampAnnotation());
+            return getChampValueFromCession(cession, chp.getChampAnnotation(), true);
          }
+      }
+      return null;
+   }
+
+   public static Object getChampValueFromCession(final Cession cession, final ChampAnnotation chp, final Boolean prettyFormat){
+      if(cession != null && chp != null){
+         return getChampAnnotationValeur(cession, chp, prettyFormat);
       }
       return null;
    }
@@ -712,6 +839,15 @@ public class RechercheUtilsManager
       final Cession recup = getObjectFromList(listeObjets, Cession.class);
       if(null != recup){
          return getChampValueFromCession(recup, chp, parent);
+      }
+
+      return null;
+   }
+
+   public static Object getChampValueFromCession(final ChampAnnotation chp, final List<Object> listeObjets, final Boolean prettyFormat){
+      final Cession recup = getObjectFromList(listeObjets, Cession.class);
+      if(null != recup){
+         return getChampValueFromCession(recup, chp, prettyFormat);
       }
 
       return null;
@@ -728,19 +864,65 @@ public class RechercheUtilsManager
    public static Object getChampValueFromEntite(final Entite entite, final Champ chp, final Champ parent,
       final List<Object> listeObjets){
       Object value = null;
-      if(entite.getNom().equals("Patient")){
-         value = getChampValueFromPatient(chp, listeObjets);
-      }else if(entite.getNom().equals("Maladie")){
-         value = getChampValueFromMaladie(chp, parent, listeObjets);
-      }else if(entite.getNom().equals("Prelevement") || entite.getNom().equals("Service")){
-         value = getChampValueFromPrelevement(chp, parent, listeObjets);
-      }else if(entite.getNom().equals("Echantillon")){
-         value = getChampValueFromEchantillon(chp, parent, listeObjets);
-      }else if(entite.getNom().equals("ProdDerive")){
-         value = getChampValueFromDerive(chp, parent, listeObjets);
-      }else if(entite.getNom().equals("Cession")){
-         value = getChampValueFromCession(chp, parent, listeObjets);
+      switch(entite.getNom()){
+         case "Patient":
+            value = getChampValueFromPatient(chp, listeObjets);
+            break;
+         case "Maladie":
+            value = getChampValueFromMaladie(chp, parent, listeObjets);
+            break;
+         case "Prelevement":
+         case "Service":
+            value = getChampValueFromPrelevement(chp, parent, listeObjets);
+            break;
+         case "Echantillon":
+            value = getChampValueFromEchantillon(chp, parent, listeObjets);
+            break;
+         case "ProdDerive":
+            value = getChampValueFromDerive(chp, parent, listeObjets);
+            break;
+         case "Cession":
+            value = getChampValueFromCession(chp, parent, listeObjets);
+            break;
+         default:
+            break;
       }
+
+      return value;
+   }
+
+   /**
+    * Retourne la valeur d'un champ d'une entité recherchée dans une liste d'objet
+    * @param entite objet entite
+    * @param chp champ à récupérer
+    * @param parent champ parent du champ a récupérer
+    * @param listeObjets liste d'objets à partire de laquelle récuperer l'entité puis la valeur du champ
+    * @return la valeur du champ pour l'entité patient
+    */
+   public static Object getChampValueFromEntite(final Entite entite, final ChampAnnotation chp, final Champ parent,
+      final List<Object> listeObjets){
+      Object value = null;
+      switch(entite.getNom()){
+         case "Patient":
+            value = getChampValueFromPatient(chp, listeObjets, false);
+            break;
+         case "Prelevement":
+         case "Service":
+            value = getChampValueFromPrelevement(chp, parent, listeObjets, false);
+            break;
+         case "Echantillon":
+            value = getChampValueFromEchantillon(chp, parent, listeObjets, false);
+            break;
+         case "ProdDerive":
+            value = getChampValueFromDerive(chp, parent, listeObjets, false);
+            break;
+         case "Cession":
+            value = getChampValueFromCession(chp, listeObjets, false);
+            break;
+         default:
+            break;
+      }
+
       return value;
    }
 

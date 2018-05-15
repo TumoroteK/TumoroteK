@@ -213,9 +213,8 @@ public class CodeDossier implements Serializable
    public String toString(){
       if(this.nom != null){
          return "{CodeDossier: " + this.nom + "}";
-      }else{
-         return "{Empty CodeDossier}";
       }
+      return "{Empty CodeDossier}";
    }
 
    @Override

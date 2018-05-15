@@ -525,9 +525,8 @@ public class FicheNumerotation extends AbstractFicheCombineController
    public String getZeroFillFormated(){
       if(this.numerotation != null){
          return ObjectTypesFormatters.booleanLitteralFormatter(this.numerotation.getZeroFill());
-      }else{
-         return "";
       }
+      return "";
    }
 
    /**

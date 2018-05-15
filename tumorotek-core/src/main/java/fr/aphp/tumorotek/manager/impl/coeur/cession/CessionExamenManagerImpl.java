@@ -49,7 +49,6 @@ import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.cession.CessionExamenValidator;
-import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.cession.CessionExamen;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 
@@ -98,15 +97,6 @@ public class CessionExamenManagerImpl implements CessionExamenManager
       return cessionExamenDao.findById(cessionExamenId);
    }
 
-   //	/**
-   //	 * Recherche tous les CessionExamens présents dans la base.
-   //	 * @return Liste de CessionExamens.
-   //	 */
-   //	@Override
-   //	public List<CessionExamen> findAllObjectsManager() {
-   //		return cessionExamenDao.findByOrder();
-   //	}
-
    /**
     * Recherche tous les CessionExamen dont l'examen commence
     * comme celui passé en paramètre.
@@ -124,43 +114,39 @@ public class CessionExamenManagerImpl implements CessionExamenManager
             examen = examen + "%";
          }
          return cessionExamenDao.findByExamen(examen);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
-   public boolean findDoublonManager(final Object o){
+   public boolean findDoublonManager(final CessionExamen o){
       if(o != null){
-         final CessionExamen examen = (CessionExamen) o;
+         final CessionExamen examen = o;
          if(examen.getCessionExamenId() == null){
             return cessionExamenDao.findAll().contains(examen);
-         }else{
-            return cessionExamenDao.findByExcludedId(examen.getCessionExamenId()).contains(examen);
          }
-      }else{
-         return false;
+         return cessionExamenDao.findByExcludedId(examen.getCessionExamenId()).contains(examen);
       }
+      return false;
    }
 
    @Override
-   public boolean isUsedObjectManager(final Object obj){
-      final CessionExamen examen = cessionExamenDao.mergeObject((CessionExamen) obj);
+   public boolean isUsedObjectManager(final CessionExamen obj){
+      final CessionExamen examen = cessionExamenDao.mergeObject(obj);
       return examen.getCessions().size() > 0;
    }
 
    @Override
-   public void createObjectManager(final Object obj){
+   public void createObjectManager(final CessionExamen obj){
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
-      if(((CessionExamen) obj).getPlateforme() == null){
+      if(obj.getPlateforme() == null){
          throw new RequiredObjectIsNullException("CessionExamen", "creation", "Plateforme");
-      }else{
-         ((CessionExamen) obj).setPlateforme(plateformeDao.mergeObject(((CessionExamen) obj).getPlateforme()));
       }
+      obj.setPlateforme(plateformeDao.mergeObject(obj.getPlateforme()));
       BeanValidator.validateObject(obj, new Validator[] {cessionExamenValidator});
       if(!findDoublonManager(obj)){
-         cessionExamenDao.createObject((CessionExamen) obj);
+         cessionExamenDao.createObject(obj);
          log.debug("Enregistrement objet CessionExamen " + obj.toString());
       }else{
          log.warn("Doublon lors creation objet CessionExamen " + obj.toString());
@@ -169,10 +155,10 @@ public class CessionExamenManagerImpl implements CessionExamenManager
    }
 
    @Override
-   public void updateObjectManager(final Object obj){
+   public void updateObjectManager(final CessionExamen obj){
       BeanValidator.validateObject(obj, new Validator[] {cessionExamenValidator});
       if(!findDoublonManager(obj)){
-         cessionExamenDao.updateObject((CessionExamen) obj);
+         cessionExamenDao.updateObject(obj);
          log.debug("Modification objet CessionExamen " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet CessionExamen " + obj.toString());
@@ -181,24 +167,17 @@ public class CessionExamenManagerImpl implements CessionExamenManager
    }
 
    @Override
-   public void removeObjectManager(final Object obj){
+   public void removeObjectManager(final CessionExamen obj){
       if(obj != null){
-         //			if (!isUsedObjectManager(obj)) {
-         cessionExamenDao.removeObject(((CessionExamen) obj).getCessionExamenId());
+         cessionExamenDao.removeObject(obj.getCessionExamenId());
          log.debug("Suppression objet CessionExamen " + obj.toString());
-         //			} else {
-         //				log.warn("Suppression objet CessionExamen " 
-         //						+ obj.toString()
-         //						+ " impossible car est reference (par cession)");
-         //				throw new ObjectUsedException();
-         //			}
       }else{
          log.warn("Suppression d'une CessionExamen null");
       }
    }
 
    @Override
-   public List<? extends TKThesaurusObject> findByOrderManager(final Plateforme pf){
+   public List<CessionExamen> findByOrderManager(final Plateforme pf){
       return cessionExamenDao.findByOrder(pf);
    }
 }

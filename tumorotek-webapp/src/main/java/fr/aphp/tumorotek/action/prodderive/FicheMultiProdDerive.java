@@ -103,10 +103,7 @@ import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
-import fr.aphp.tumorotek.model.coeur.prodderive.ModePrepaDerive;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
-import fr.aphp.tumorotek.model.coeur.prodderive.ProdQualite;
-import fr.aphp.tumorotek.model.coeur.prodderive.ProdType;
 import fr.aphp.tumorotek.model.coeur.prodderive.Transformation;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.interfacage.scan.ScanTerminale;
@@ -328,7 +325,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    }
 
    @Override
-   public void createNewObject(){
+   public void createNewObject(){ //TODO Refactorer
 
       final DefaultTransactionDefinition def = new DefaultTransactionDefinition();
       def.setName("updatePrelAndEchansTx");
@@ -374,7 +371,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
                transfoRetour = rets.get(0);
             }
 
-            if(statut.getStatut().equals("EPUISE")){
+            if(null != statut && statut.getStatut().equals("EPUISE")){
                if(transfoRetour == null){
                   transfoRetour = new Retour();
                   transfoRetour.setDateSortie(dateS);
@@ -553,19 +550,6 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
       // enregistrement des emplacements
       ManagerLocator.getEmplacementManager().saveMultiEmplacementsManager(emplsFinaux);
-
-      //		} catch (ValidationException ve) {
-      //			errorMsg.add("- Erreur lors de la validation.");
-      //		} catch (InvalidPositionException ipose) {
-      //			errorMsg.add("- Erreur sur la " 
-      //					+ "position d'un emplacement.");
-      //		} catch (RequiredObjectIsNullException re) {
-      //			errorMsg.add("- Objet manquant lors du stockage.");
-      //		} catch (EntiteObjectIdNotExistException nee) {
-      //			errorMsg.add("- Objet à stocker inexistant.");
-      //		} catch (DoublonFoundException de) {
-      //			errorMsg.add("- Erreur sur l'emplacement de stockage.");
-      //		}
 
       // on va MAJ chaque dérivé : son statut et son
       // emplacement
@@ -764,7 +748,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
     * sauvegardés) et ajoutés à la liste.
     * @param Event : clic sur le lien addProdDerives.
     */
-   public void onClick$addProdDerives(final Event event){
+   public void onClick$addProdDerives(){ //TODO Refactorer
       try{
          onBlur$dateStockCalBox();
          onBlur$dateTransfoCalBox();
@@ -1053,7 +1037,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
     * dérivés.
     * @param e Event contenant les emplacements.
     */
-   
+
    public void onGetResultsFromStockage(final Event e){
       // les emplacements sont contenus dans une hashtable mappant
       // un dérivé avec son emplacement
@@ -1166,10 +1150,10 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
     * des listes déroulantes (types, qualités...).
     */
    @Override
-   
+
    public void initEditableMode(){
 
-      setTypes((List<ProdType>) ManagerLocator.getProdTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
+      setTypes(ManagerLocator.getProdTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
       getTypes().add(0, null);
       setSelectedType(getTypes().get(0));
 
@@ -1186,12 +1170,11 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       setConcUnites(ManagerLocator.getUniteManager().findByTypeLikeManager("concentration", true));
       getConcUnites().add(0, null);
 
-      setQualites(
-         (List<ProdQualite>) ManagerLocator.getProdQualiteManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
+      setQualites(ManagerLocator.getProdQualiteManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
       getQualites().add(0, null);
 
-      setModePrepaDerives((List<ModePrepaDerive>) ManagerLocator.getModePrepaDeriveManager()
-         .findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
+      setModePrepaDerives(
+         ManagerLocator.getModePrepaDeriveManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
       getModePrepaDerives().add(0, null);
 
       // init des collaborateurs
@@ -1449,42 +1432,40 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
                   // si le dernier code est < au premier
                   if(dernierCode < premierCode){
                      throw new WrongValueException(comp, Labels.getLabel("ficheMultiProdDerive.error.premier.code.superieur"));
-                  }else{
+                  }
 
-                     // sinon on enlève toutes les erreurs affichées
-                     Integer tmp = dernierCode;
-                     Clients.clearWrongValue(dernierCodeBoxDerive);
-                     dernierCodeBoxDerive.setConstraint("");
-                     dernierCodeBoxDerive.setValue(tmp);
-                     dernierCodeBoxDerive.setConstraint(cttDernierCode);
+                  // sinon on enlève toutes les erreurs affichées
+                  Integer tmp = dernierCode;
+                  Clients.clearWrongValue(dernierCodeBoxDerive);
+                  dernierCodeBoxDerive.setConstraint("");
+                  dernierCodeBoxDerive.setValue(tmp);
+                  dernierCodeBoxDerive.setConstraint(cttDernierCode);
 
-                     final List<String> doublons = findDoublons(premierCode, dernierCode);
-                     // si des doublons existent pour les valeurs saisies
-                     if(doublons.size() > 0){
-                        final StringBuffer sb = new StringBuffer();
-                        if(doublons.size() == 1){
-                           sb.append(Labels.getLabel("ficheMultiProdDerive.error.un.prodDerive" + ".existant"));
-                           sb.append(doublons.get(0));
-                        }else{
-                           sb.append(Labels.getLabel("ficheMultiProdDerive.error.plus.prodDerive" + ".existant"));
-                           for(int i = 0; i < doublons.size(); i++){
-                              sb.append(doublons.get(i));
-                              if(i + 1 < doublons.size()){
-                                 sb.append(", ");
-                              }
+                  final List<String> doublons = findDoublons(premierCode, dernierCode);
+                  // si des doublons existent pour les valeurs saisies
+                  if(doublons.size() > 0){
+                     final StringBuffer sb = new StringBuffer();
+                     if(doublons.size() == 1){
+                        sb.append(Labels.getLabel("ficheMultiProdDerive.error.un.prodDerive" + ".existant"));
+                        sb.append(doublons.get(0));
+                     }else{
+                        sb.append(Labels.getLabel("ficheMultiProdDerive.error.plus.prodDerive" + ".existant"));
+                        for(int i = 0; i < doublons.size(); i++){
+                           sb.append(doublons.get(i));
+                           if(i + 1 < doublons.size()){
+                              sb.append(", ");
                            }
                         }
-                        sb.append(Labels.getLabel("ficheMultiProdDerive.error.prodDerive" + ".existant.saisie"));
-                        throw new WrongValueException(comp, sb.toString());
-                     }else{
-                        // sinon on enlève toutes les erreurs affichées
-                        tmp = dernierCode;
-                        Clients.clearWrongValue(dernierCodeBoxDerive);
-                        dernierCodeBoxDerive.setConstraint("");
-                        dernierCodeBoxDerive.setValue(tmp);
-                        dernierCodeBoxDerive.setConstraint(cttDernierCode);
                      }
+                     sb.append(Labels.getLabel("ficheMultiProdDerive.error.prodDerive" + ".existant.saisie"));
+                     throw new WrongValueException(comp, sb.toString());
                   }
+                  // sinon on enlève toutes les erreurs affichées
+                  tmp = dernierCode;
+                  Clients.clearWrongValue(dernierCodeBoxDerive);
+                  dernierCodeBoxDerive.setConstraint("");
+                  dernierCodeBoxDerive.setValue(tmp);
+                  dernierCodeBoxDerive.setConstraint(cttDernierCode);
                }else{
                   // sinon on enlève toutes les erreurs affichées
                   final Integer tmp = dernierCode;
@@ -1550,42 +1531,40 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
                   if(dernierCode < premierCode){
                      throw new WrongValueException(comp,
                         Labels.getLabel("ficheMultiProdDerive.error.premier.code" + ".superieur"));
-                  }else{
+                  }
 
-                     // sinon on enlève toutes les erreurs affichées
-                     Integer tmp = premierCode;
-                     Clients.clearWrongValue(premierCodeBoxDerive);
-                     premierCodeBoxDerive.setConstraint("");
-                     premierCodeBoxDerive.setValue(tmp);
-                     premierCodeBoxDerive.setConstraint(cttPremierCode);
+                  // sinon on enlève toutes les erreurs affichées
+                  Integer tmp = premierCode;
+                  Clients.clearWrongValue(premierCodeBoxDerive);
+                  premierCodeBoxDerive.setConstraint("");
+                  premierCodeBoxDerive.setValue(tmp);
+                  premierCodeBoxDerive.setConstraint(cttPremierCode);
 
-                     final List<String> doublons = findDoublons(premierCode, dernierCode);
-                     // si des doublons existent pour les valeurs saisies
-                     if(doublons.size() > 0){
-                        final StringBuffer sb = new StringBuffer();
-                        if(doublons.size() == 1){
-                           sb.append(Labels.getLabel("ficheMultiProdDerive.error.un" + ".prodDerive.existant"));
-                           sb.append(doublons.get(0));
-                        }else{
-                           sb.append(Labels.getLabel("ficheMultiProdDerive.error.plus." + "prodDerive.existant"));
-                           for(int i = 0; i < doublons.size(); i++){
-                              sb.append(doublons.get(i));
-                              if(i + 1 < doublons.size()){
-                                 sb.append(", ");
-                              }
+                  final List<String> doublons = findDoublons(premierCode, dernierCode);
+                  // si des doublons existent pour les valeurs saisies
+                  if(doublons.size() > 0){
+                     final StringBuffer sb = new StringBuffer();
+                     if(doublons.size() == 1){
+                        sb.append(Labels.getLabel("ficheMultiProdDerive.error.un" + ".prodDerive.existant"));
+                        sb.append(doublons.get(0));
+                     }else{
+                        sb.append(Labels.getLabel("ficheMultiProdDerive.error.plus." + "prodDerive.existant"));
+                        for(int i = 0; i < doublons.size(); i++){
+                           sb.append(doublons.get(i));
+                           if(i + 1 < doublons.size()){
+                              sb.append(", ");
                            }
                         }
-                        sb.append(Labels.getLabel("ficheMultiProdDerive.error.prodDerive" + ".existant.saisie"));
-                        throw new WrongValueException(comp, sb.toString());
-                     }else{
-                        // sinon on enlève toutes les erreurs affichées
-                        tmp = premierCode;
-                        Clients.clearWrongValue(premierCodeBoxDerive);
-                        premierCodeBoxDerive.setConstraint("");
-                        premierCodeBoxDerive.setValue(tmp);
-                        premierCodeBoxDerive.setConstraint(cttPremierCode);
                      }
+                     sb.append(Labels.getLabel("ficheMultiProdDerive.error.prodDerive" + ".existant.saisie"));
+                     throw new WrongValueException(comp, sb.toString());
                   }
+                  // sinon on enlève toutes les erreurs affichées
+                  tmp = premierCode;
+                  Clients.clearWrongValue(premierCodeBoxDerive);
+                  premierCodeBoxDerive.setConstraint("");
+                  premierCodeBoxDerive.setValue(tmp);
+                  premierCodeBoxDerive.setConstraint(cttPremierCode);
                }else{
                   // sinon on enlève toutes les erreurs affichées
                   final Integer tmp = premierCode;
@@ -1648,43 +1627,41 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
                   if(lettres.indexOf(derniereLettre.toUpperCase()) < lettres.indexOf(premiereLettre.toUpperCase())){
                      throw new WrongValueException(comp,
                         "La première lettre saisie ne " + "peut pas être alphabétiquement " + "après la dernière.");
-                  }else{
+                  }
 
-                     // sinon on enlève toutes les erreurs affichées
-                     String tmp = derniereLettre;
-                     Clients.clearWrongValue(derniereLettreBoxDerive);
-                     derniereLettreBoxDerive.setConstraint("");
-                     derniereLettreBoxDerive.setValue(tmp);
-                     derniereLettreBoxDerive.setConstraint(cttDerniereLettre);
+                  // sinon on enlève toutes les erreurs affichées
+                  String tmp = derniereLettre;
+                  Clients.clearWrongValue(derniereLettreBoxDerive);
+                  derniereLettreBoxDerive.setConstraint("");
+                  derniereLettreBoxDerive.setValue(tmp);
+                  derniereLettreBoxDerive.setConstraint(cttDerniereLettre);
 
-                     final List<String> doublons =
-                        findDoublonsForLetters(premiereLettre.toUpperCase(), derniereLettre.toUpperCase());
-                     // si des doublons existent pour les valeurs saisies
-                     if(doublons.size() > 0){
-                        final StringBuffer sb = new StringBuffer();
-                        if(doublons.size() == 1){
-                           sb.append("Echantillon déjà enregistré " + "pour la lettre : {");
-                           sb.append(doublons.get(0));
-                        }else{
-                           sb.append("Echantillons déjà enregistrés " + "pour les lettres : {");
-                           for(int i = 0; i < doublons.size(); i++){
-                              sb.append(doublons.get(i));
-                              if(i + 1 < doublons.size()){
-                                 sb.append(", ");
-                              }
+                  final List<String> doublons =
+                     findDoublonsForLetters(premiereLettre.toUpperCase(), derniereLettre.toUpperCase());
+                  // si des doublons existent pour les valeurs saisies
+                  if(doublons.size() > 0){
+                     final StringBuffer sb = new StringBuffer();
+                     if(doublons.size() == 1){
+                        sb.append("Echantillon déjà enregistré " + "pour la lettre : {");
+                        sb.append(doublons.get(0));
+                     }else{
+                        sb.append("Echantillons déjà enregistrés " + "pour les lettres : {");
+                        for(int i = 0; i < doublons.size(); i++){
+                           sb.append(doublons.get(i));
+                           if(i + 1 < doublons.size()){
+                              sb.append(", ");
                            }
                         }
-                        sb.append("}. Veuillez modifier les lettres saisies.");
-                        throw new WrongValueException(comp, sb.toString());
-                     }else{
-                        // sinon on enlève toutes les erreurs affichées
-                        tmp = derniereLettre;
-                        Clients.clearWrongValue(derniereLettreBoxDerive);
-                        derniereLettreBoxDerive.setConstraint("");
-                        derniereLettreBoxDerive.setValue(tmp);
-                        derniereLettreBoxDerive.setConstraint(cttDerniereLettre);
                      }
+                     sb.append("}. Veuillez modifier les lettres saisies.");
+                     throw new WrongValueException(comp, sb.toString());
                   }
+                  // sinon on enlève toutes les erreurs affichées
+                  tmp = derniereLettre;
+                  Clients.clearWrongValue(derniereLettreBoxDerive);
+                  derniereLettreBoxDerive.setConstraint("");
+                  derniereLettreBoxDerive.setValue(tmp);
+                  derniereLettreBoxDerive.setConstraint(cttDerniereLettre);
                }else{
                   // sinon on enlève toutes les erreurs affichées
                   final String tmp = derniereLettre;
@@ -1756,42 +1733,40 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
                      || lettres.indexOf(derniereLettre.toUpperCase()) < lettres.indexOf(premiereLettre.toUpperCase())){
                      throw new WrongValueException(comp,
                         "La première lettre saisie ne " + "peut pas être alphabétiquement " + "après la dernière.");
-                  }else{
-                     // sinon on enlève toutes les erreurs affichées
-                     String tmp = premiereLettre;
-                     Clients.clearWrongValue(premiereLettreBoxDerive);
-                     premiereLettreBoxDerive.setConstraint("");
-                     premiereLettreBoxDerive.setValue(tmp);
-                     premiereLettreBoxDerive.setConstraint(cttPremiereLettre);
+                  }
+                  // sinon on enlève toutes les erreurs affichées
+                  String tmp = premiereLettre;
+                  Clients.clearWrongValue(premiereLettreBoxDerive);
+                  premiereLettreBoxDerive.setConstraint("");
+                  premiereLettreBoxDerive.setValue(tmp);
+                  premiereLettreBoxDerive.setConstraint(cttPremiereLettre);
 
-                     final List<String> doublons =
-                        findDoublonsForLetters(premiereLettre.toUpperCase(), derniereLettre.toUpperCase());
-                     // si des doublons existent pour les valeurs saisies
-                     if(doublons.size() > 0){
-                        final StringBuffer sb = new StringBuffer();
-                        if(doublons.size() == 1){
-                           sb.append("Echantillon déjà enregistré " + "pour la lettre : {");
-                           sb.append(doublons.get(0));
-                        }else{
-                           sb.append("Echantillons déjà enregistrés " + "pour les lettres : {");
-                           for(int i = 0; i < doublons.size(); i++){
-                              sb.append(doublons.get(i));
-                              if(i + 1 < doublons.size()){
-                                 sb.append(", ");
-                              }
+                  final List<String> doublons =
+                     findDoublonsForLetters(premiereLettre.toUpperCase(), derniereLettre.toUpperCase());
+                  // si des doublons existent pour les valeurs saisies
+                  if(doublons.size() > 0){
+                     final StringBuffer sb = new StringBuffer();
+                     if(doublons.size() == 1){
+                        sb.append("Echantillon déjà enregistré " + "pour la lettre : {");
+                        sb.append(doublons.get(0));
+                     }else{
+                        sb.append("Echantillons déjà enregistrés " + "pour les lettres : {");
+                        for(int i = 0; i < doublons.size(); i++){
+                           sb.append(doublons.get(i));
+                           if(i + 1 < doublons.size()){
+                              sb.append(", ");
                            }
                         }
-                        sb.append("}. Veuillez modifier les lettres saisies.");
-                        throw new WrongValueException(comp, sb.toString());
-                     }else{
-                        // sinon on enlève toutes les erreurs affichées
-                        tmp = premiereLettre;
-                        Clients.clearWrongValue(premiereLettreBoxDerive);
-                        premiereLettreBoxDerive.setConstraint("");
-                        premiereLettreBoxDerive.setValue(tmp);
-                        premiereLettreBoxDerive.setConstraint(cttPremiereLettre);
                      }
+                     sb.append("}. Veuillez modifier les lettres saisies.");
+                     throw new WrongValueException(comp, sb.toString());
                   }
+                  // sinon on enlève toutes les erreurs affichées
+                  tmp = premiereLettre;
+                  Clients.clearWrongValue(premiereLettreBoxDerive);
+                  premiereLettreBoxDerive.setConstraint("");
+                  premiereLettreBoxDerive.setValue(tmp);
+                  premiereLettreBoxDerive.setConstraint(cttPremiereLettre);
                }else{
                   // sinon on enlève toutes les erreurs affichées
                   final String tmp = premiereLettre;
@@ -1957,66 +1932,6 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    }
 
    /**
-    * Sélection d'un code parent.
-    * @param event Event : sélection dans la combobox codesParentBoxDerive.
-    * @throws Exception
-    */
-   /*public void onSelect$codesParentBoxDerive(Event event) throws Exception {
-   	if (codesParentBoxDerive.getSelectedItem() != null) {
-   		setCodePrefixe(codesParentBoxDerive.getSelectedItem().getLabel());
-   		setCodeParent(getCodePrefixe());
-   		// si le parent est un prlvt
-   		if (getTypeParent().equals("Prelevement")) {
-   			setParentObject(ManagerLocator.getPrelevementManager()
-   				.findByCodeOrNumLaboLikeWithBanqueManager(
-   						getCodeParent(), getBanque(), true).get(0));
-   			
-   			// l'unité de la transformation sera celle du parent
-   			setSelectedTransfoQuantiteUnite(((Prelevement) 
-   									getParentObject()).getQuantiteUnite());
-   			
-   			// on récupère la quantité et le volume disponible
-   			setQuantiteMax(((Prelevement) getParentObject()).getQuantite());
-   			// si le parent est un échantillon
-   		} else if (getTypeParent().equals("Echantillon")) {
-   			setParentObject(ManagerLocator.getEchantillonManager()
-   				.findByCodeLikeWithBanqueManager(
-   						getCodeParent(), getBanque(), true).get(0));
-   			
-   			// l'unité de la transformation sera celle du parent
-   			setSelectedTransfoQuantiteUnite(((Echantillon) 
-   									getParentObject()).getQuantiteUnite());
-   			
-   			// on récupère la quantité et le volume disponible
-   			setQuantiteMax(((Echantillon) getParentObject()).getQuantite());
-   			// si le parent est un dérivé
-   		} else if (getTypeParent().equals("ProdDerive")) {
-   			setParentObject(ManagerLocator.getProdDeriveManager()
-   				.findByCodeOrLaboWithBanqueManager(
-   						getCodeParent(), getBanque(), true).get(0));
-   			
-   			// l'unité de la transformation sera celle du parent
-   			setSelectedTransfoQuantiteUnite(((ProdDerive) 
-   									getParentObject()).getQuantiteUnite());
-   			
-   			// on récupère la quantité et le volume disponible
-   			setQuantiteMax(((ProdDerive) getParentObject()).getQuantite());
-   		}
-   	} 
-   }*/
-
-   /**
-    * Mise à jour de la variable codeTmp à chaque modification
-    * de l'utilisateur.
-    * @param event Event : modification dans la combobox codesParentBoxDerive.
-    * @throws Exception
-    */
-   /*public void onChanging$codesParentBoxDerive(InputEvent event) 
-   throws Exception {
-   	codeTmp = event.getValue();
-   }*/
-
-   /**
     * Mise à jour de la valeur sélectionnée dans la combobox lorsque
     * l'utilisateur clique à l'extérieur de celle-ci.
     * @param event Event : clique à l'extérieur de la combobox 
@@ -2085,6 +2000,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       }
 
       // en fonction du type, on recherche les codes disponibles
+      //TODO Chercher en fonction des cessions de type traitement
       if(!tmp.equals(getTypeParent())){
          setTypeParent(tmp);
          if(getTypeParent().equals("Echantillon")){
@@ -2195,89 +2111,6 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       }
    }
 
-   //	/**
-   //	 * Contrainte vérifiant que la quantite de transformation n'est 
-   //	 * pas inférieure à 0 et n'est pas supérieure à celle du parent.
-   //	 * @author Pierre Ventadour.
-   //	 *
-   //	 */
-   //	public class ConstQuantiteTransformation implements Constraint {
-   //		/**
-   //		 * Méthode de validation du champ quantiteInitBox.
-   //		 */
-   //		public void validate(Component comp, Object value) {
-   //			BigDecimal quantiteTransfoValue = (BigDecimal) value;
-   //			if (quantiteTransfoValue != null) {
-   //				setQuantiteTransformation(quantiteTransfoValue.floatValue());
-   //				
-   //				if (getQuantiteTransformation() < 0) {
-   //					throw new WrongValueException(comp,
-   //					Labels.getLabel("ficheMultiProdDerive.error.code.negatif"));
-   //				} else {
-   //					// sinon on enlève toutes les erreurs affichées
-   //					BigDecimal decimal = 
-   //						new BigDecimal(getQuantiteTransformation());
-   //					transfoQuantiteBoxDerive.Clients.clearWrongValue();
-   //					transfoQuantiteBoxDerive.setConstraint("");
-   //					transfoQuantiteBoxDerive.setValue(decimal);
-   //					transfoQuantiteBoxDerive
-   //						.setConstraint(cttQuantiteTransfo);
-   //					
-   //					if (getQuantiteMax() != null
-   //							&& getQuantiteTransformation() > getQuantiteMax()) {
-   //						
-   //						StringBuffer sb = new StringBuffer();
-   //						sb.append(Labels.getLabel(
-   //								"ficheProdDerive.error.quantite.transfo"));
-   //						sb.append(" ");
-   //						
-   //						if (getTypeParent().equals("Prelevement")) {
-   //							sb.append(" ");
-   //							sb.append(Labels.getLabel(
-   //								"ficheProdDerive.error.parent.prelevement"));
-   //							sb.append(" ");
-   //							sb.append(getQuantiteMax());
-   //							sb.append(((Prelevement) getParentObject())
-   //									.getQuantiteUnite().getUnite());
-   //							sb.append(".");
-   //						} else if (getTypeParent().equals("Echantillon")) {
-   //							sb.append(" ");
-   //							sb.append(Labels.getLabel(
-   //								"ficheProdDerive.error.parent.echantillon"));
-   //							sb.append(" ");
-   //							sb.append(getQuantiteMax());
-   //							sb.append(((Echantillon) getParentObject())
-   //											.getQuantiteUnite().getUnite());
-   //							sb.append(".");
-   //						} else if (getTypeParent().equals("ProdDerive")) {
-   //							sb.append(" ");
-   //							sb.append(Labels.getLabel(
-   //									"ficheProdDerive.error.parent.derive"));
-   //							sb.append(" ");
-   //							sb.append(getQuantiteMax());
-   //							sb.append(((ProdDerive) getParentObject())
-   //											.getQuantiteUnite().getUnite());
-   //							sb.append(".");
-   //						}
-   //						
-   //						throw new WrongValueException(
-   //								comp, sb.toString());
-   //					} else {
-   //						// sinon on enlève toutes les erreurs affichées
-   //						decimal = new BigDecimal(getQuantiteTransformation());
-   //						transfoQuantiteBoxDerive.Clients.clearWrongValue();
-   //						transfoQuantiteBoxDerive.setConstraint("");
-   //						transfoQuantiteBoxDerive.setValue(decimal);
-   //						transfoQuantiteBoxDerive
-   //							.setConstraint(cttQuantiteTransfo);
-   //					}
-   //				}
-   //			}
-   //		}
-   //	}
-   //	private Constraint cttQuantiteTransfo = new ConstQuantiteTransformation();
-   //	
-   //	
 
    private Constraint cttQuantiteInit = new ConstQuantiteInit();
 
@@ -2311,32 +2144,22 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
             // la quantiteInit doit être positive
             if(getQuantiteInit() < 0){
                throw new WrongValueException(comp, Labels.getLabel("validation.negative.value"));
-            }else{
+            }
 
-               // la quantité init doit respecter la formule :
-               // qteInit = volInit * concentration
-               if(getProdDerive().getVolumeInit() != null && getProdDerive().getConc() != null){
+            // la quantité init doit respecter la formule :
+            // qteInit = volInit * concentration
+            if(getProdDerive().getVolumeInit() != null && getProdDerive().getConc() != null){
 
-                  Float res = getProdDerive().getVolumeInit() * getProdDerive().getConc();
+               Float res = getProdDerive().getVolumeInit() * getProdDerive().getConc();
 
-                  res = ObjectTypesFormatters.floor(res, 3);
-                  if(!getQuantiteInit().equals(res)){
-                     throw new WrongValueException(comp, Labels.getLabel("validation.invalid.formule" + ".quantite.init"));
-                  }
+               res = ObjectTypesFormatters.floor(res, 3);
+               if(!getQuantiteInit().equals(res)){
+                  throw new WrongValueException(comp, Labels.getLabel("validation.invalid.formule" + ".quantite.init"));
                }
             }
          }
       }
    }
-
-   //
-   //	public Constraint getCttQuantiteTransfo() {
-   //		return cttQuantiteTransfo;
-   //	}
-   //
-   //	public void setCttQuantiteTransfo(Constraint ctt) {
-   //		this.cttQuantiteTransfo = ctt;
-   //	}
 
    /**
     * Applique la validation sur la date.
@@ -2351,7 +2174,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          final Calendar calValue = Calendar.getInstance();
          if(box.getValue() != null){
             calValue.setTime(box.getValue());
-            if(calValue != null && !calValue.equals("")){
+            if(!calValue.equals("")){
                if(calValue.get(Calendar.YEAR) > 9999){
                   badDateFormat = true;
                }
@@ -2379,7 +2202,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          final Calendar calValue = Calendar.getInstance();
          if(box.getValue() != null){
             calValue.setTime(box.getValue());
-            if(calValue != null && !calValue.equals("")){
+            if(!calValue.equals("")){
                if(calValue.get(Calendar.YEAR) > 9999){
                   badDateFormat = true;
                }
@@ -2393,58 +2216,6 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          throw new WrongValueException(dateStockCalBox, Labels.getLabel("validation.invalid.date"));
       }
    }
-
-   //	@Override
-   //	protected void validateCoherenceDate(Component comp, Object value) {
-   //		Date dateValue = (Date) value;		
-   //		Errors errs = null;
-   //		String field = "";
-   //				
-   //		if (dateValue == null || dateValue.equals("")) { 
-   //			((Datebox) comp).clearErrorMessage(true);
-   //			((Datebox) comp).setValue(null);
-   //		} else {		
-   //			// date transformation
-   //			if (comp.getId().equals("dateTransfoBoxDerive")) {
-   //				field = "dateTransformation";
-   //				if (getProdDerive().getProdDeriveId() == null
-   //						&& (!parentPrlvt.equals(new Prelevement())
-   //						|| !parentEchantillon.equals(new Echantillon())
-   //							|| !parentProdDerive.equals(new ProdDerive()))) {
-   //					transformation
-   //						.setEntite(findEntiteAndSetObjetIdForTransformation());
-   //					getProdDerive().setTransformation(transformation);
-   //				}
-   //				getProdDerive().setDateTransformation(dateValue);
-   //					
-   //				errs = ManagerLocator.getProdDeriveValidator()
-   //								.checkDateTransfoCoherence(getProdDerive());
-   //			}
-   //			
-   //			// date stockage
-   //			if (comp.getId().equals("dateBoxDerive")) {
-   //				field = "dateStock";
-   //				if (getProdDerive().getProdDeriveId() == null
-   //						&& (!parentPrlvt.equals(new Prelevement())
-   //						|| !parentEchantillon.equals(new Echantillon())
-   //							|| !parentProdDerive.equals(new ProdDerive()))) {
-   //					transformation
-   //						.setEntite(findEntiteAndSetObjetIdForTransformation());
-   //					getProdDerive().setTransformation(transformation);
-   //				}
-   //				getProdDerive().setDateStock(dateValue);
-   //					
-   //				errs = ManagerLocator.getProdDeriveValidator()
-   //								.checkDateStockCoherence(getProdDerive());
-   //			}
-   //			
-   //			if (errs != null && errs.hasErrors()) {
-   //				
-   //				throw new WrongValueException(
-   //					comp, handleErrors(errs, field));
-   //			}			
-   //		} 
-   //	}
 
    /***********************************************************/
    /*****************  CONC VOL QTE ***************************/
@@ -2491,9 +2262,8 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       if(getSelectedType() == null){
          Clients.scrollIntoView(typesBoxDerive);
          throw new WrongValueException(typesBoxDerive, Labels.getLabel("ficheProdDerive.error.type"));
-      }else{
-         Clients.clearWrongValue(typesBoxDerive);
       }
+      Clients.clearWrongValue(typesBoxDerive);
    }
 
    /**

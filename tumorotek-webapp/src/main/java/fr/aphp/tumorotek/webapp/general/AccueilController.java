@@ -84,9 +84,8 @@ public class AccueilController extends AbstractObjectTabController
       final Version version = ManagerLocator.getVersionManager().findByCurrentVersionManager();
       if(version != null){
          return ObjectTypesFormatters.dateRenderer2(version.getDate());
-      }else{
-         return "-";
       }
+      return "-";
    }
 
    /**
@@ -98,9 +97,8 @@ public class AccueilController extends AbstractObjectTabController
       final Version version = ManagerLocator.getVersionManager().findByCurrentVersionManager();
       if(version != null){
          return version.getNomSite();
-      }else{
-         return "-";
       }
+      return "-";
    }
 
    /**
@@ -124,9 +122,8 @@ public class AccueilController extends AbstractObjectTabController
 
       if(sb.toString().length() > 0){
          return sb.toString();
-      }else{
-         return "-";
       }
+      return "-";
    }
 
    @Override

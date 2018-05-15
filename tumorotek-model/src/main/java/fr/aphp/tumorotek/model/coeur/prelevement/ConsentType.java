@@ -89,9 +89,8 @@ public class ConsentType implements Serializable, TKThesaurusObject, Comparable<
    public String toString(){
       if(this.type != null){
          return "{" + this.type + "}";
-      }else{
-         return "{Empty ConsentType}";
       }
+      return "{Empty ConsentType}";
    }
 
    @Id

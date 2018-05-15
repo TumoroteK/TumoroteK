@@ -88,7 +88,7 @@ public class RechercheUtils
             if(res != null){
                if(res.getChamp() != null){
                   final String champValueTmp = ObjectTypesFormatters.formatObject(RechercheUtilsManager.getChampValueFromObjectList(res.getChamp(), listeObjets));
-                  if(null != champValueTmp){
+                  if(!"".equals(champValueTmp)){
                      champValue = champValueTmp;
                   }
                }

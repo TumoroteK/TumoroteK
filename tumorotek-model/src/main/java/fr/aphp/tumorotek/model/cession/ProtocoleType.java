@@ -182,9 +182,8 @@ public class ProtocoleType implements Serializable, TKThesaurusObject
    public String toString(){
       if(this.type != null){
          return "{" + this.type + "}";
-      }else{
-         return "{Empty ProtocoleType}";
       }
+      return "{Empty ProtocoleType}";
    }
 
    @Override

@@ -79,9 +79,8 @@ public class CouleurManagerImpl implements CouleurManager
             couleur = couleur + "%";
          }
          return couleurDao.findByCouleur(couleur);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override

@@ -57,7 +57,6 @@ public class CollaborateurNode extends TumoTreeNode
 
    @Override
    public void readChildren(){
-      // TODO Auto-generated method stub
 
    }
 

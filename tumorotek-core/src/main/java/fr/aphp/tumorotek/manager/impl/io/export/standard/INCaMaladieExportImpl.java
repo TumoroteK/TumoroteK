@@ -104,15 +104,14 @@ public class INCaMaladieExportImpl implements IncaMaladieExport
                   + " AND CHAMP_ANNOTATION.TABLE_ANNOTATION_ID=" + "TABLE_ANNOTATION.TABLE_ANNOTATION_ID "
                   + "AND TABLE_ANNOTATION.ENTITE_ID=2",
                errorMessage, true, "(.+) : .+", null);
-         }else{
-            return ExportCatalogueManagerImpl.fetchItemAsString(con,
-               "SELECT ANNOTATION_VALEUR.TEXTE FROM ANNOTATION_VALEUR, " + "CHAMP_ANNOTATION, TABLE_ANNOTATION"
-                  + " WHERE ANNOTATION_VALEUR.OBJET_ID=" + prelevement.getPrelevementId().toString()
-                  + " AND CHAMP_ANNOTATION.NOM like '007%' AND " + "CHAMP_ANNOTATION.CHAMP_ANNOTATION_ID="
-                  + "ANNOTATION_VALEUR.CHAMP_ANNOTATION_ID" + " AND CHAMP_ANNOTATION.TABLE_ANNOTATION_ID="
-                  + "TABLE_ANNOTATION.TABLE_ANNOTATION_ID " + "AND TABLE_ANNOTATION.ENTITE_ID=2",
-               errorMessage, true, "(.+) : .+", null);
          }
+         return ExportCatalogueManagerImpl.fetchItemAsString(con,
+            "SELECT ANNOTATION_VALEUR.TEXTE FROM ANNOTATION_VALEUR, " + "CHAMP_ANNOTATION, TABLE_ANNOTATION"
+               + " WHERE ANNOTATION_VALEUR.OBJET_ID=" + prelevement.getPrelevementId().toString()
+               + " AND CHAMP_ANNOTATION.NOM like '007%' AND " + "CHAMP_ANNOTATION.CHAMP_ANNOTATION_ID="
+               + "ANNOTATION_VALEUR.CHAMP_ANNOTATION_ID" + " AND CHAMP_ANNOTATION.TABLE_ANNOTATION_ID="
+               + "TABLE_ANNOTATION.TABLE_ANNOTATION_ID " + "AND TABLE_ANNOTATION.ENTITE_ID=2",
+            errorMessage, true, "(.+) : .+", null);
       }
 
       if(diag.equals("")){

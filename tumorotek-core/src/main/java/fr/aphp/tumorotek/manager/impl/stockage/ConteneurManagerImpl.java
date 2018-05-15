@@ -167,18 +167,16 @@ public class ConteneurManagerImpl implements ConteneurManager
       log.debug("Recherche de tous les conteneurs d'une banque");
       if(banque != null && banque.getBanqueId() != null){
          return conteneurDao.findByBanqueIdWithOrder(banque.getBanqueId());
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
    public List<Conteneur> findByBanqueAndCodeManager(final Banque banque, final String code){
       if(banque != null && banque.getBanqueId() != null && code != null){
          return conteneurDao.findByBanqueIdAndCode(banque.getBanqueId(), code);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
@@ -199,18 +197,16 @@ public class ConteneurManagerImpl implements ConteneurManager
             }
          }
          return coList;
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
    public List<Conteneur> findByPlateformeOrigWithOrderManager(final Plateforme plateforme){
       if(plateforme != null && plateforme.getPlateformeId() != null){
          return conteneurDao.findByPlateformeOrigWithOrder(plateforme);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
@@ -222,29 +218,17 @@ public class ConteneurManagerImpl implements ConteneurManager
          banques.size();
 
          return banques;
-      }else{
-         return new HashSet<>();
       }
+      return new HashSet<>();
    }
 
    @Override
    public Set<Enceinte> getEnceintesManager(final Conteneur conteneur){
-      //		if (conteneur != null && conteneur.getConteneurId() != null) {
-      //			log.debug("Recherche de toutes les enceintes d'un conteneur");
-      //			conteneur = conteneurDao.mergeObject(conteneur);
-      //			Set<Enceinte> enceintes = conteneur.getEnceintes();
-      //			enceintes.size();
-      //			
-      //			return enceintes;
-      //		} else {
-      //			return new HashSet<Enceinte>();
-      //		}
       if(conteneur != null){
          if(conteneur.getConteneurId() != null){
             return new HashSet<>(enceinteManager.findByConteneurWithOrderManager(conteneur));
-         }else{
-            return conteneur.getEnceintes();
          }
+         return conteneur.getEnceintes();
       }
       return new HashSet<>();
    }
@@ -271,9 +255,8 @@ public class ConteneurManagerImpl implements ConteneurManager
          incidents.size();
 
          return incidents;
-      }else{
-         return new HashSet<>();
       }
+      return new HashSet<>();
    }
 
    @Override
@@ -284,9 +267,8 @@ public class ConteneurManagerImpl implements ConteneurManager
          plateformes.size();
 
          return plateformes;
-      }else{
-         return new HashSet<>();
       }
+      return new HashSet<>();
    }
 
    @Override
@@ -304,9 +286,8 @@ public class ConteneurManagerImpl implements ConteneurManager
             }
          }
          return conteneurs.contains(conteneur);
-      }else{
-         return false;
       }
+      return false;
    }
 
    @Override
@@ -351,23 +332,22 @@ public class ConteneurManagerImpl implements ConteneurManager
       if(findDoublonManager(conteneur, banques)){
          log.warn("Doublon lors de la creation de l'objet Conteneur : " + conteneur.toString());
          throw new DoublonFoundException("Conteneur", "creation");
-      }else{
-
-         // validation du Contrat
-         BeanValidator.validateObject(conteneur, new Validator[] {conteneurValidator});
-
-         conteneur.setArchive(false);
-         conteneurDao.createObject(conteneur);
-
-         updateBanquesAndPlateformes(conteneur, banques, plateformes);
-
-         log.info("Enregistrement de l'objet Conteneur : " + conteneur.toString());
-
-         //Enregistrement de l'operation associee
-         final Operation creationOp = new Operation();
-         creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), conteneur);
       }
+
+      // validation du Contrat
+      BeanValidator.validateObject(conteneur, new Validator[] {conteneurValidator});
+
+      conteneur.setArchive(false);
+      conteneurDao.createObject(conteneur);
+
+      updateBanquesAndPlateformes(conteneur, banques, plateformes);
+
+      log.info("Enregistrement de l'objet Conteneur : " + conteneur.toString());
+
+      //Enregistrement de l'operation associee
+      final Operation creationOp = new Operation();
+      creationOp.setDate(Utils.getCurrentSystemCalendar());
+      operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), conteneur);
    }
 
    @Override
@@ -391,20 +371,19 @@ public class ConteneurManagerImpl implements ConteneurManager
          if(incidentManager.findDoublonInListManager(incidents)){
             log.warn("Doublon dans la liste des incidents");
             throw new DoublonFoundException("Incident", "modification");
-         }else{
-            // pour chaque coordonnée
-            for(int i = 0; i < incidents.size(); i++){
-               final Incident incident = incidents.get(i);
-               // validation de la coordonnée
-               BeanValidator.validateObject(incident, new Validator[] {incidentValidator});
+         }
+         // pour chaque coordonnée
+         for(int i = 0; i < incidents.size(); i++){
+            final Incident incident = incidents.get(i);
+            // validation de la coordonnée
+            BeanValidator.validateObject(incident, new Validator[] {incidentValidator});
 
-               // si nouvel incident => creation
-               // sinon => update
-               if(incident.getIncidentId() == null){
-                  incidentManager.createObjectManager(incident, conteneur, null, null);
-               }else{
-                  incidentManager.updateObjectManager(incident, conteneur, null, null);
-               }
+            // si nouvel incident => creation
+            // sinon => update
+            if(incident.getIncidentId() == null){
+               incidentManager.createObjectManager(incident, conteneur, null, null);
+            }else{
+               incidentManager.updateObjectManager(incident, conteneur, null, null);
             }
          }
       }
@@ -413,23 +392,20 @@ public class ConteneurManagerImpl implements ConteneurManager
       if(findDoublonManager(conteneur, banques)){
          log.warn("Doublon lors de la modification de l'objet Conteneur : " + conteneur.toString());
          throw new DoublonFoundException("Conteneur", "modification");
-      }else{
-
-         // validation du Contrat
-         BeanValidator.validateObject(conteneur, new Validator[] {conteneurValidator});
-
-         conteneurDao.updateObject(conteneur);
-
-         updateBanquesAndPlateformes(conteneur, banques, plateformes);
-
-         log.info("Modification de l'objet Conteneur : " + conteneur.toString());
-
-         //Enregistrement de l'operation associee
-         final Operation creationOp = new Operation();
-         creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
-            conteneur);
       }
+      // validation du Contrat
+      BeanValidator.validateObject(conteneur, new Validator[] {conteneurValidator});
+
+      conteneurDao.updateObject(conteneur);
+
+      updateBanquesAndPlateformes(conteneur, banques, plateformes);
+
+      log.info("Modification de l'objet Conteneur : " + conteneur.toString());
+
+      //Enregistrement de l'operation associee
+      final Operation creationOp = new Operation();
+      creationOp.setDate(Utils.getCurrentSystemCalendar());
+      operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0), conteneur);
    }
 
    @Override
@@ -438,34 +414,33 @@ public class ConteneurManagerImpl implements ConteneurManager
          if(isUsedObjectManager(conteneur)){
             log.warn("Objet utilisé lors de la suppression de l'objet " + "Conteneur : " + conteneur.toString());
             throw new ObjectUsedException("conteneur.deletion.isUsed", false);
-         }else{
-            // suppression manytomany
-            final Iterator<Banque> it = getBanquesManager(conteneur).iterator();
-            Banque bank;
-            while(it.hasNext()){
-               bank = banqueDao.mergeObject(it.next());
-               bank.getConteneurs().remove(conteneur);
-            }
+         }
+         // suppression manytomany
+         final Iterator<Banque> it = getBanquesManager(conteneur).iterator();
+         Banque bank;
+         while(it.hasNext()){
+            bank = banqueDao.mergeObject(it.next());
+            bank.getConteneurs().remove(conteneur);
+         }
 
-            final Iterator<Enceinte> itE = getEnceintesManager(conteneur).iterator();
-            while(itE.hasNext()){
-               final Enceinte tmp = itE.next();
-               enceinteManager.removeObjectManager(tmp, comments, user);
-            }
+         final Iterator<Enceinte> itE = getEnceintesManager(conteneur).iterator();
+         while(itE.hasNext()){
+            final Enceinte tmp = itE.next();
+            enceinteManager.removeObjectManager(tmp, comments, user);
+         }
 
-            // suppression conteneur vide ssi évènements de stockage
-            if(!hasRetoursManager(conteneur)){
-               conteneurDao.removeObject(conteneur.getConteneurId());
+         // suppression conteneur vide ssi évènements de stockage
+         if(!hasRetoursManager(conteneur)){
+            conteneurDao.removeObject(conteneur.getConteneurId());
 
-               //Supprime operations associes
-               CreateOrUpdateUtilities.removeAssociateOperations(conteneur, operationManager, comments, user);
+            //Supprime operations associes
+            CreateOrUpdateUtilities.removeAssociateOperations(conteneur, operationManager, comments, user);
 
-               log.info("Suppression de l'objet Conteneur : " + conteneur.toString());
-            }else{// archivage sinon
-               conteneur.setArchive(true);
-               conteneurDao.mergeObject(conteneur);
-               log.info("Archivage automatique de l'objet Conteneur : " + conteneur.toString());
-            }
+            log.info("Suppression de l'objet Conteneur : " + conteneur.toString());
+         }else{// archivage sinon
+            conteneur.setArchive(true);
+            conteneurDao.mergeObject(conteneur);
+            log.info("Archivage automatique de l'objet Conteneur : " + conteneur.toString());
          }
       }else{
          log.warn("Suppression d'un Conteneur null");
@@ -653,9 +628,8 @@ public class ConteneurManagerImpl implements ConteneurManager
    public List<Enceinte> getContainingEnceinteManager(final Conteneur conteneur){
       if(conteneur != null){
          return getChildrenEnceinteRecursive(getEnceintesManager(conteneur), new ArrayList<Enceinte>());
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    /**

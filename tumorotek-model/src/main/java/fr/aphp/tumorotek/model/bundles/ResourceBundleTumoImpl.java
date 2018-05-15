@@ -42,15 +42,19 @@ public class ResourceBundleTumoImpl implements ResourceBundleTumo
             }catch(final IOException e){
                log.error(e);
             }finally{
-               try{
-                  reader.close();
-               }catch(final IOException e){
-                  reader = null;
+               if(null != reader){
+                  try{
+                     reader.close();
+                  }catch(final IOException e){
+                     reader = null;
+                  }
                }
-               try{
-                  fis.close();
-               }catch(final IOException e){
-                  fis = null;
+               if(null != fis){
+                  try{
+                     fis.close();
+                  }catch(final IOException e){
+                     fis = null;
+                  }
                }
             }
          }else{
@@ -81,15 +85,19 @@ public class ResourceBundleTumoImpl implements ResourceBundleTumo
             }catch(final IOException e){
                log.error(e);
             }finally{
-               try{
-                  reader.close();
-               }catch(final IOException e){
-                  reader = null;
+               if(null != reader){
+                  try{
+                     reader.close();
+                  }catch(final IOException e){
+                     reader = null;
+                  }
                }
-               try{
-                  fis.close();
-               }catch(final IOException e){
-                  fis = null;
+               if(null != fis){
+                  try{
+                     fis.close();
+                  }catch(final IOException e){
+                     fis = null;
+                  }
                }
             }
          }

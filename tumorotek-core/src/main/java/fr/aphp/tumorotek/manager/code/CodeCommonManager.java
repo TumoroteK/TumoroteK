@@ -47,14 +47,14 @@ import fr.aphp.tumorotek.model.code.CodeCommon;
  * @version 2.0
  *
  */
-public interface CodeCommonManager
+public interface CodeCommonManager<T extends CodeCommon>
 {
 
    /**
     * Recherche toutes les instances de codes présentes dans la codification.
     * @return List contenant les codes.
     */
-   List<? extends CodeCommon> findAllObjectsManager();
+   List<T> findAllObjectsManager();
 
    /**
     * Recherche les codes dont le code est like celui passé
@@ -63,7 +63,7 @@ public interface CodeCommonManager
     * @param boolean exactMatch
     * @return Liste de codes.
     */
-   List<? extends CodeCommon> findByCodeLikeManager(String code, boolean exactMatch);
+   List<T> findByCodeLikeManager(String code, boolean exactMatch);
 
    /**
     * Recherche les codes dont le libellé est like celui passé en
@@ -72,6 +72,6 @@ public interface CodeCommonManager
     * @param boolean exactMatch
     * @return une liste de codes.
     */
-   List<? extends CodeCommon> findByLibelleLikeManager(String libelle, boolean exactMatch);
+   List<T> findByLibelleLikeManager(String libelle, boolean exactMatch);
 
 }

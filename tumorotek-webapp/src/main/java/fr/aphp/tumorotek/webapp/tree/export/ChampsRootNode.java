@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
+import fr.aphp.tumorotek.model.coeur.annotation.DataType;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.io.export.Champ;
 import fr.aphp.tumorotek.webapp.tree.TumoTreeNode;
@@ -57,6 +58,14 @@ public class ChampsRootNode extends TumoTreeNode
 {
 
    private List<Champ> oldSelectedChamps = new ArrayList<>();
+   /**
+    * Liste des dataTypes à afficher
+    */
+   private List<DataType> dataTypeList;
+   /**
+    * Exclure les champs numérique de type Id
+    */
+   private Boolean excludeIds;
    private Banque banque;
 
    /**
@@ -72,31 +81,43 @@ public class ChampsRootNode extends TumoTreeNode
     */
    @Override
    public void readChildren(){
-      // les noeuds de départ sont les entités Patient, Maladie, 
+      // les noeuds de départ sont les entités Patient, Maladie,
       // Prelevement, Echantillon, ProdDerive, Cession.
       children = new ArrayList<>();
       EntiteNode node = new EntiteNode(ManagerLocator.getEntiteManager().findByNomManager("Patient").get(0));
       node.setOldSelectedChamps(oldSelectedChamps);
+      node.setDataTypeList(dataTypeList);
+      node.setExcludeIds(excludeIds);
       node.setBanque(banque);
       children.add(node);
       node = new EntiteNode(ManagerLocator.getEntiteManager().findByNomManager("Maladie").get(0));
       node.setOldSelectedChamps(oldSelectedChamps);
+      node.setDataTypeList(dataTypeList);
+      node.setExcludeIds(excludeIds);
       node.setBanque(banque);
       children.add(node);
       node = new EntiteNode(ManagerLocator.getEntiteManager().findByNomManager("Prelevement").get(0));
       node.setOldSelectedChamps(oldSelectedChamps);
+      node.setDataTypeList(dataTypeList);
+      node.setExcludeIds(excludeIds);
       node.setBanque(banque);
       children.add(node);
       node = new EntiteNode(ManagerLocator.getEntiteManager().findByNomManager("Echantillon").get(0));
       node.setOldSelectedChamps(oldSelectedChamps);
+      node.setDataTypeList(dataTypeList);
+      node.setExcludeIds(excludeIds);
       node.setBanque(banque);
       children.add(node);
       node = new EntiteNode(ManagerLocator.getEntiteManager().findByNomManager("ProdDerive").get(0));
       node.setOldSelectedChamps(oldSelectedChamps);
+      node.setDataTypeList(dataTypeList);
+      node.setExcludeIds(excludeIds);
       node.setBanque(banque);
       children.add(node);
       node = new EntiteNode(ManagerLocator.getEntiteManager().findByNomManager("Cession").get(0));
       node.setOldSelectedChamps(oldSelectedChamps);
+      node.setDataTypeList(dataTypeList);
+      node.setExcludeIds(excludeIds);
       node.setBanque(banque);
       children.add(node);
    }
@@ -109,12 +130,44 @@ public class ChampsRootNode extends TumoTreeNode
       this.oldSelectedChamps = oldSelected;
    }
 
+   /**
+    * Liste des dataTypes à afficher
+    * @return Liste des dataTypes à afficher
+    */
+   public List<DataType> getDataTypeList(){
+      return dataTypeList;
+   }
+
+   /**
+    * Liste des dataTypes à afficher
+    * @param dataTypeList Liste des dataTypes à afficher
+    */
+   public void setDataTypeList(final List<DataType> dataTypeList){
+      this.dataTypeList = dataTypeList;
+   }
+
    public Banque getBanque(){
       return banque;
    }
 
    public void setBanque(final Banque b){
       this.banque = b;
+   }
+
+   /**
+    * Exclure les champs numérique de type Id
+    * @return Exclure les champs numérique de type Id
+    */
+   public Boolean getExcludeIds(){
+      return excludeIds;
+   }
+
+   /**
+    * Exclure les champs numérique de type Id
+    * @param excludeIds Exclure les champs numérique de type Id
+    */
+   public void setExcludeIds(final Boolean excludeIds){
+      this.excludeIds = excludeIds;
    }
 
 }

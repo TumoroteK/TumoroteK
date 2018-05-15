@@ -165,6 +165,8 @@ public class FusionVM
                lsA.addAll(ManagerLocator.getEtablissementManager().findByNomLikeManager(rechValue, false));
             }
             break;
+         default:
+            break;
       }
 
       // si recherche sans criteres
@@ -239,6 +241,8 @@ public class FusionVM
                      }
                   }
                }
+               break;
+            default:
                break;
          }
       }

@@ -50,7 +50,6 @@ import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.prodderive.ProdQualiteValidator;
-import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdQualite;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
@@ -137,28 +136,25 @@ public class ProdQualiteManagerImpl implements ProdQualiteManager
             qualite = qualite + "%";
          }
          return prodQualiteDao.findByProdQualite(qualite);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
-   public boolean findDoublonManager(final Object obj){
-      final ProdQualite qualite = (ProdQualite) obj;
+   public boolean findDoublonManager(final ProdQualite obj){
+      final ProdQualite qualite = obj;
       if(qualite != null){
          if(qualite.getProdQualiteId() == null){
             return prodQualiteDao.findAll().contains(qualite);
-         }else{
-            return prodQualiteDao.findByExcludedId(qualite.getProdQualiteId()).contains(qualite);
          }
-      }else{
-         return false;
+         return prodQualiteDao.findByExcludedId(qualite.getProdQualiteId()).contains(qualite);
       }
+      return false;
    }
 
    @Override
-   public boolean isUsedObjectManager(final Object obj){
-      final ProdQualite qualite = (ProdQualite) obj;
+   public boolean isUsedObjectManager(final ProdQualite obj){
+      final ProdQualite qualite = obj;
 
       final List<ProdDerive> list = prodDeriveDao.findByProdQualite(qualite);
 
@@ -166,54 +162,45 @@ public class ProdQualiteManagerImpl implements ProdQualiteManager
    }
 
    @Override
-   public void createObjectManager(final Object obj){
-      final ProdQualite qualite = (ProdQualite) obj;
+   public void createObjectManager(final ProdQualite obj){
+      final ProdQualite qualite = obj;
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(qualite.getPlateforme() == null){
          throw new RequiredObjectIsNullException("ProdQualite", "creation", "Plateforme");
-      }else{
-         qualite.setPlateforme(plateformeDao.mergeObject(qualite.getPlateforme()));
       }
+      qualite.setPlateforme(plateformeDao.mergeObject(qualite.getPlateforme()));
 
       if(findDoublonManager(qualite)){
          log.warn("Doublon lors de la creation de l'objet ProdQualite : " + qualite.toString());
          throw new DoublonFoundException("ProdQualite", "creation");
-      }else{
-         BeanValidator.validateObject(qualite, new Validator[] {prodQualiteValidator});
-         prodQualiteDao.createObject(qualite);
-         log.info("Enregistrement de l'objet ProdQualite : " + qualite.toString());
       }
+      BeanValidator.validateObject(qualite, new Validator[] {prodQualiteValidator});
+      prodQualiteDao.createObject(qualite);
+      log.info("Enregistrement de l'objet ProdQualite : " + qualite.toString());
    }
 
    @Override
-   public void updateObjectManager(final Object obj){
-      final ProdQualite qualite = (ProdQualite) obj;
+   public void updateObjectManager(final ProdQualite obj){
+      final ProdQualite qualite = obj;
       if(findDoublonManager(qualite)){
          log.warn("Doublon lors de la modification de l'objet " + "ProdQualite : " + qualite.toString());
          throw new DoublonFoundException("ProdQualite", "modification");
-      }else{
+      }
          BeanValidator.validateObject(qualite, new Validator[] {prodQualiteValidator});
          prodQualiteDao.updateObject(qualite);
          log.info("Modification de l'objet ProdQualite : " + qualite.toString());
-      }
    }
 
    @Override
-   public void removeObjectManager(final Object obj){
-      final ProdQualite qualite = (ProdQualite) obj;
-      //		if (isUsedObjectManager(qualite)) {
-      //			log.warn("Objet utilisé lors de la suppresion de l'objet " 
-      //					+ "ProdQualite : " + qualite.toString());
-      //			throw new ObjectUsedException("ProdQualite", "suppression");
-      //		} else {
+   public void removeObjectManager(final ProdQualite obj){
+      final ProdQualite qualite = obj;
       prodQualiteDao.removeObject(qualite.getProdQualiteId());
       log.info("Suppression de l'objet ProdQualite : " + qualite.toString());
-      //		}
    }
 
    @Override
-   public List<? extends TKThesaurusObject> findByOrderManager(final Plateforme pf){
+   public List<ProdQualite> findByOrderManager(final Plateforme pf){
       return prodQualiteDao.findByOrder(pf);
    }
 }

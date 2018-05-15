@@ -95,9 +95,8 @@ public class ConsultationIntf implements Serializable
    public String toString(){
       if(this.emetteurIdent != null && this.utilisateur != null){
          return "{" + this.emetteurIdent + this.identification + ": " + this.utilisateur.getLogin() + " }";
-      }else{
-         return "{Empty Consultation}";
       }
+      return "{Empty Consultation}";
    }
 
    @Id
@@ -119,9 +118,8 @@ public class ConsultationIntf implements Serializable
          final Calendar cal = Calendar.getInstance();
          cal.setTime(date.getTime());
          return cal;
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void setDate(final Calendar d){

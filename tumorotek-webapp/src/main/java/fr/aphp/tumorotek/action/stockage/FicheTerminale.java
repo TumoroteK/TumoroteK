@@ -1072,8 +1072,8 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
             //				}
 
             // ouverture de la modale
-            openRetourFormModale(null, true, null, null, new ArrayList<>(emplForRetours.keySet()),
-               emplForRetours, null, null, null, null, Labels.getLabel("ficheRetour.deplacement"), null);
+            openRetourFormModale(null, true, null, null, new ArrayList<>(emplForRetours.keySet()), emplForRetours, null, null,
+               null, null, Labels.getLabel("ficheRetour.deplacement"), null);
          }
       }
    }
@@ -1870,17 +1870,15 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
    public String getValueAbscisse(final Integer num){
       if(terminale.getTerminaleNumerotation().getColonne().equals("CAR")){
          return Utils.createListChars(num, null, new ArrayList<String>()).get(num - 1);
-      }else{
-         return String.valueOf(num);
       }
+      return String.valueOf(num);
    }
 
    public String getValueOrdonnee(final Integer num){
       if(terminale.getTerminaleNumerotation().getLigne().equals("CAR")){
          return Utils.createListChars(num, null, new ArrayList<String>()).get(num - 1);
-      }else{
-         return String.valueOf(num);
       }
+      return String.valueOf(num);
    }
 
    /**
@@ -2190,30 +2188,28 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
          ManagerLocator.getXmlUtils().addBoiteContenu(page, boite, adrImages.toString(), echantillonsTypesCouleurs,
             echantillonCouleur, prodDerivesTypesCouleurs, prodDeriveCouleur);
 
-         if(doc != null){
-            // Transformation du document en fichier
-            byte[] dl = null;
-            try{
-               dl = ManagerLocator.getXmlUtils().creerContenuHtml(doc);
-            }catch(final Exception e){
-               log.error(e);
-            }
+         // Transformation du document en fichier
+         byte[] dl = null;
+         try{
+            dl = ManagerLocator.getXmlUtils().creerContenuHtml(doc);
+         }catch(final Exception e){
+            log.error(e);
+         }
 
-            // envoie du fichier à imprimer à l'utilisateur
-            if(dl != null){
-               // si c'est au format html, on va ouvrir une nouvelle
-               // fenêtre
-               try{
-                  sessionScope.put("File", dl);
-                  execution.sendRedirect("/impression", "_blank");
-               }catch(final Exception e){
-                  if(sessionScope.containsKey("File")){
-                     sessionScope.remove("File");
-                     dl = null;
-                  }
+         // envoie du fichier à imprimer à l'utilisateur
+         if(dl != null){
+            // si c'est au format html, on va ouvrir une nouvelle
+            // fenêtre
+            try{
+               sessionScope.put("File", dl);
+               execution.sendRedirect("/impression", "_blank");
+            }catch(final Exception e){
+               if(sessionScope.containsKey("File")){
+                  sessionScope.remove("File");
+                  dl = null;
                }
-               dl = null;
             }
+            dl = null;
          }
       }
    }

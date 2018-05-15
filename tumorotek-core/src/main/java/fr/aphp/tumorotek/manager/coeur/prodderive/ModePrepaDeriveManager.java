@@ -49,7 +49,7 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ModePrepaDerive;
  * @version 2.0
  *
  */
-public interface ModePrepaDeriveManager extends TKThesaurusManager
+public interface ModePrepaDeriveManager extends TKThesaurusManager<ModePrepaDerive>
 {
 
    /**

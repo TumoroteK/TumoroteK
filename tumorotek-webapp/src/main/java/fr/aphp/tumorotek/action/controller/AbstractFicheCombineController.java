@@ -482,10 +482,6 @@ public abstract class AbstractFicheCombineController extends AbstractFicheContro
       }
    }
 
-   public Map<Entite, List<Integer>> getChildrenObjectsIds(final List<Integer> ids){
-      return null;
-   }
-
    /*************************************************************************/
    /************************** ABSTRACTS ************************************/
    /*************************************************************************/

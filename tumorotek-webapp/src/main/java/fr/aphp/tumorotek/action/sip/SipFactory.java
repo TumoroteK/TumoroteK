@@ -59,10 +59,6 @@ public class SipFactory
 
       if(SIP_DIRECT.equalsIgnoreCase(sipModule)){
          sip = new PatientServeurIdentite(identificationPlateforme);
-      }else if(SIP_IDEOPASS.equalsIgnoreCase(sipModule)){
-         sip = null;
-      }else{
-         sip = null;
       }
 
       return sip;

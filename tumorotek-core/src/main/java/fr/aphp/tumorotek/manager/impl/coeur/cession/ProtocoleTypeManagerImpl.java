@@ -49,7 +49,6 @@ import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.cession.ProtocoleTypeValidator;
-import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.cession.ProtocoleType;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 
@@ -124,44 +123,39 @@ public class ProtocoleTypeManagerImpl implements ProtocoleTypeManager
             type = type + "%";
          }
          return protocoleTypeDao.findByType(type);
-      }else{
-         return new ArrayList<>();
       }
-
+      return new ArrayList<>();
    }
 
    @Override
-   public boolean findDoublonManager(final Object o){
+   public boolean findDoublonManager(final ProtocoleType o){
       if(o != null){
-         final ProtocoleType type = (ProtocoleType) o;
+         final ProtocoleType type = o;
          if(type.getProtocoleTypeId() == null){
             return protocoleTypeDao.findAll().contains(type);
-         }else{
-            return protocoleTypeDao.findByExcludedId(type.getProtocoleTypeId()).contains(type);
          }
-      }else{
-         return false;
+         return protocoleTypeDao.findByExcludedId(type.getProtocoleTypeId()).contains(type);
       }
+      return false;
    }
 
    @Override
-   public boolean isUsedObjectManager(final Object obj){
-      final ProtocoleType type = protocoleTypeDao.mergeObject((ProtocoleType) obj);
+   public boolean isUsedObjectManager(final ProtocoleType obj){
+      final ProtocoleType type = protocoleTypeDao.mergeObject(obj);
       return type.getContrats().size() > 0;
    }
 
    @Override
-   public void createObjectManager(final Object obj){
+   public void createObjectManager(final ProtocoleType obj){
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
-      if(((ProtocoleType) obj).getPlateforme() == null){
+      if(obj.getPlateforme() == null){
          throw new RequiredObjectIsNullException("ProtocoleType", "creation", "Plateforme");
-      }else{
-         ((ProtocoleType) obj).setPlateforme(plateformeDao.mergeObject(((ProtocoleType) obj).getPlateforme()));
       }
+      obj.setPlateforme(plateformeDao.mergeObject(obj.getPlateforme()));
       BeanValidator.validateObject(obj, new Validator[] {protocoleTypeValidator});
       if(!findDoublonManager(obj)){
-         protocoleTypeDao.createObject((ProtocoleType) obj);
+         protocoleTypeDao.createObject(obj);
          log.info("Enregistrement objet ProtocoleType " + obj.toString());
       }else{
          log.warn("Doublon lors creation objet ProtocoleType " + obj.toString());
@@ -170,10 +164,10 @@ public class ProtocoleTypeManagerImpl implements ProtocoleTypeManager
    }
 
    @Override
-   public void updateObjectManager(final Object obj){
+   public void updateObjectManager(final ProtocoleType obj){
       BeanValidator.validateObject(obj, new Validator[] {protocoleTypeValidator});
       if(!findDoublonManager(obj)){
-         protocoleTypeDao.updateObject((ProtocoleType) obj);
+         protocoleTypeDao.updateObject(obj);
          log.info("Modification objet ProtocoleType " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet ProtocoleType " + obj.toString());
@@ -182,24 +176,17 @@ public class ProtocoleTypeManagerImpl implements ProtocoleTypeManager
    }
 
    @Override
-   public void removeObjectManager(final Object obj){
+   public void removeObjectManager(final ProtocoleType obj){
       if(obj != null){
-         //			if (!isUsedObjectManager(obj)) {
-         protocoleTypeDao.removeObject(((ProtocoleType) obj).getProtocoleTypeId());
+         protocoleTypeDao.removeObject(obj.getProtocoleTypeId());
          log.info("Suppression objet ProtocoleType " + obj.toString());
-         //			} else {
-         //				log.warn("Suppression objet ProtocoleType " 
-         //						+ obj.toString()
-         //						+ " impossible car est reference (par Contrat)");
-         //				throw new ObjectUsedException();
-         //			}
       }else{
          log.warn("Suppression d'un ProtocoleType null");
       }
    }
 
    @Override
-   public List<? extends TKThesaurusObject> findByOrderManager(final Plateforme pf){
+   public List<ProtocoleType> findByOrderManager(final Plateforme pf){
       return protocoleTypeDao.findByOrder(pf);
    }
 }

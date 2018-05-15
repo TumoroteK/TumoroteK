@@ -182,7 +182,7 @@ public class SelectDossierExterneModale extends AbstractFicheCombineController
       selectedDossierExterne = null;
    }
 
-   public void onSelect$dossiersBox(final Event event){
+   public void onSelect$dossiersBox(){
       deselectRow();
 
       selectRow(dossiersBox.getSelectedItem(), selectedDossierExterne);
@@ -245,11 +245,9 @@ public class SelectDossierExterneModale extends AbstractFicheCombineController
 
             // si le chemin d'accès à la page est correcte
             if(Path.getComponent(path) != null){
-               if(resultat != null){
-                  // on envoie un event à cette page avec
-                  // le patient sélectionné
-                  Events.postEvent(new Event("onGetInjectionDossierExterneDone", Path.getComponent(path), resultat));
-               }
+               // on envoie un event à cette page avec
+               // le patient sélectionné
+               Events.postEvent(new Event("onGetInjectionDossierExterneDone", Path.getComponent(path), resultat));
             }
 
             // fermeture de la fenêtre
@@ -272,7 +270,7 @@ public class SelectDossierExterneModale extends AbstractFicheCombineController
          // ferme wait message
          Clients.clearBusy();
          // mode édition du prlvt
-         openImportDossierExterneWindow(page, path, prelevement, selectedDossierExterne);
+         openImportDossierExterneWindow(page, path);
       }
    }
 
@@ -281,8 +279,7 @@ public class SelectDossierExterneModale extends AbstractFicheCombineController
     * pour voir recherché les dossiers existants pour l'interfacage
     * avec d'autres logiciels.
     */
-   public void openImportDossierExterneWindow(final Page page, final String p, final Prelevement prlvt,
-      final DossierExterne dossier){
+   public void openImportDossierExterneWindow(final Page page, final String p){
       if(!isBlockModal()){
 
          setBlockModal(true);

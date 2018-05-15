@@ -336,7 +336,7 @@ public class ChartData
       }
 
       final List<String> cKeys = new ArrayList<>();
-      if(grM != null && pfs != null && !pfs.isEmpty()){
+      if(grM != null && !pfs.isEmpty()){
          cKeys.addAll(grM.getCountsMap().keySet());
          for(final String pfKey : cKeys){
             if(!pfNamesRestrict.contains(pfKey)){

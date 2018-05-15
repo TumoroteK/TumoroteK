@@ -198,8 +198,7 @@ public class FicheModeleDynModale extends AbstractFicheCombineController
       // list des lignes à créer
       ligneEtiquettes = new ArrayList<>();
       // hashtable contenant les champs à créer pour chaque ligne
-      final Hashtable<LigneEtiquette, List<ChampLigneEtiquette>> champsForLignes =
-         new Hashtable<>();
+      final Hashtable<LigneEtiquette, List<ChampLigneEtiquette>> champsForLignes = new Hashtable<>();
       // pour chaque decorator de ligne, on va ajouter la ligne à la
       // liste et ses champs à la hashtable
       for(int i = 0; i < ligneEtiquettesDeco.size(); i++){
@@ -252,11 +251,9 @@ public class FicheModeleDynModale extends AbstractFicheCombineController
       // list des lignes à créer
       ligneEtiquettes = new ArrayList<>();
       // hashtable contenant les champs à créer pour chaque ligne
-      final Hashtable<LigneEtiquette, List<ChampLigneEtiquette>> champsForLignes =
-         new Hashtable<>();
+      final Hashtable<LigneEtiquette, List<ChampLigneEtiquette>> champsForLignes = new Hashtable<>();
       // hashtable contenant les champs à supprimer pour chaque ligne
-      final Hashtable<LigneEtiquette, List<ChampLigneEtiquette>> champsToRemoveForLignes =
-         new Hashtable<>();
+      final Hashtable<LigneEtiquette, List<ChampLigneEtiquette>> champsToRemoveForLignes = new Hashtable<>();
       // pour chaque decorator de ligne, on va ajouter la ligne à la
       // liste et ses champs à la hashtable
       for(int i = 0; i < ligneEtiquettesDeco.size(); i++){
@@ -390,9 +387,8 @@ public class FicheModeleDynModale extends AbstractFicheCombineController
    public void onSelect$modeleTypesBox(){
       if(selectedModeleType == null){
          throw new WrongValueException(modeleTypesBox, Labels.getLabel("fiche.modele.error.modeleType"));
-      }else{
-         Clients.clearWrongValue(modeleTypesBox);
       }
+      Clients.clearWrongValue(modeleTypesBox);
    }
 
    /**

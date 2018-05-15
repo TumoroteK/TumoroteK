@@ -493,12 +493,6 @@ public abstract class AbstractModificationMultipleComponent extends AbstractCont
                if(isCombined && (eraseCombine.isChecked())){
                   newValue = "system.tk.unknownExistingValue";
                }
-               //					else if (!multiListBox.isDisabled()) {
-               //						// prend la valeur de la liste
-               //						newValue = selectedValue;
-               //					} else {
-               //						newValue = null;
-               //					}
             }
          }
       }else{ // mode unique

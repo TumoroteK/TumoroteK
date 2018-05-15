@@ -90,30 +90,28 @@ public class TerminaleTypeManagerImpl implements TerminaleTypeManager
    }
 
    @Override
-   public boolean findDoublonManager(final Object o){
+   public boolean findDoublonManager(final TerminaleType o){
       if(o != null){
-         final TerminaleType type = (TerminaleType) o;
+         final TerminaleType type = o;
          if(type.getTerminaleTypeId() == null){
             return terminaleTypeDao.findAll().contains(type);
-         }else{
-            return terminaleTypeDao.findByExcludedId(type.getTerminaleTypeId()).contains(type);
          }
-      }else{
-         return false;
+         return terminaleTypeDao.findByExcludedId(type.getTerminaleTypeId()).contains(type);
       }
+      return false;
    }
 
    @Override
-   public boolean isUsedObjectManager(final Object obj){
-      final TerminaleType type = terminaleTypeDao.mergeObject((TerminaleType) obj);
+   public boolean isUsedObjectManager(final TerminaleType obj){
+      final TerminaleType type = terminaleTypeDao.mergeObject(obj);
       return type.getTerminales().size() > 0;
    }
 
    @Override
-   public void createObjectManager(final Object obj){
+   public void createObjectManager(final TerminaleType obj){
       BeanValidator.validateObject(obj, new Validator[] {terminaleTypeValidator});
       if(!findDoublonManager(obj)){
-         terminaleTypeDao.createObject((TerminaleType) obj);
+         terminaleTypeDao.createObject(obj);
          log.info("Enregistrement objet TerminaleType " + obj.toString());
       }else{
          log.warn("Doublon lors creation objet TerminaleType " + obj.toString());
@@ -122,10 +120,10 @@ public class TerminaleTypeManagerImpl implements TerminaleTypeManager
    }
 
    @Override
-   public void updateObjectManager(final Object obj){
+   public void updateObjectManager(final TerminaleType obj){
       BeanValidator.validateObject(obj, new Validator[] {terminaleTypeValidator});
       if(!findDoublonManager(obj)){
-         terminaleTypeDao.updateObject((TerminaleType) obj);
+         terminaleTypeDao.updateObject(obj);
          log.info("Modification objet TerminaleType " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet TerminaleType " + obj.toString());
@@ -134,10 +132,10 @@ public class TerminaleTypeManagerImpl implements TerminaleTypeManager
    }
 
    @Override
-   public void removeObjectManager(final Object obj){
+   public void removeObjectManager(final TerminaleType obj){
       if(obj != null){
          if(!isUsedObjectManager(obj)){
-            terminaleTypeDao.removeObject(((TerminaleType) obj).getTerminaleTypeId());
+            terminaleTypeDao.removeObject(obj.getTerminaleTypeId());
             log.info("Suppression objet TerminaleType " + obj.toString());
          }else{
             log.warn("Suppression objet TerminaleType " + obj.toString() + " impossible car est reference (par Terminale)");
@@ -152,8 +150,7 @@ public class TerminaleTypeManagerImpl implements TerminaleTypeManager
    public List<TerminaleType> findByTypeManager(final String type){
       if(type != null){
          return terminaleTypeDao.findByType(type);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 }

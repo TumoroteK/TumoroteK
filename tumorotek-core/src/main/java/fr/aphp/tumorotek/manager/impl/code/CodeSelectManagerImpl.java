@@ -144,9 +144,8 @@ public class CodeSelectManagerImpl implements CodeSelectManager
    public boolean findDoublonManager(final CodeSelect code){
       if(code.getCodeSelectId() == null){
          return codeSelectDao.findAll().contains(code);
-      }else{
-         return codeSelectDao.findByExcludedId(code.getCodeSelectId()).contains(code);
       }
+      return codeSelectDao.findByExcludedId(code.getCodeSelectId()).contains(code);
    }
 
    @Override

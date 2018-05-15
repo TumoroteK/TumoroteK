@@ -42,7 +42,7 @@ import fr.aphp.tumorotek.dao.TKThesaurusDao;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.stockage.EnceinteType;
 
-public interface EnceinteTypeDao extends GenericDaoJpa<EnceinteType, Integer>, TKThesaurusDao
+public interface EnceinteTypeDao extends GenericDaoJpa<EnceinteType, Integer>, TKThesaurusDao<EnceinteType>
 {
 
    /**

@@ -237,12 +237,10 @@ public class ResultatManagerImpl implements ResultatManager
          throw new RequiredObjectIsNullException("Resultat", "modification", "Champ");
       }
       final Champ oldChamp = resultat.getChamp();
-      if(champ != null){
-         if(champ.getChampId() != null){
-            champ = champDao.mergeObject(champ);
-         }else{
-            champManager.createObjectManager(champ, champ.getChampParent());
-         }
+      if(champ.getChampId() != null){
+         champ = champDao.mergeObject(champ);
+      }else{
+         champManager.createObjectManager(champ, champ.getChampParent());
       }
       resultat.setChamp(champ);
       if(affichage.getAffichageId() != null){
@@ -273,15 +271,14 @@ public class ResultatManagerImpl implements ResultatManager
       //On vérifie que le resultat est en BDD
       if(findByIdManager(resultat.getResultatId()) == null){
          throw new SearchedObjectIdNotExistException("Resultat", resultat.getResultatId());
-      }else{
-         final Champ oldChamp = resultat.getChamp();
+      }
+      final Champ oldChamp = resultat.getChamp();
 
-         resultatDao.removeObject(resultat.getResultatId());
+      resultatDao.removeObject(resultat.getResultatId());
 
-         //On supprime le champ
-         if(oldChamp != null){
-            champManager.removeObjectManager(oldChamp);
-         }
+      //On supprime le champ
+      if(oldChamp != null){
+         champManager.removeObjectManager(oldChamp);
       }
    }
 

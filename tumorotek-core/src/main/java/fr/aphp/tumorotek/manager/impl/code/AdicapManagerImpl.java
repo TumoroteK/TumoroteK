@@ -50,7 +50,6 @@ import fr.aphp.tumorotek.model.code.Adicap;
 import fr.aphp.tumorotek.model.code.AdicapGroupe;
 import fr.aphp.tumorotek.model.code.CimMaster;
 import fr.aphp.tumorotek.model.code.CimoMorpho;
-import fr.aphp.tumorotek.model.code.CodeCommon;
 
 /**
  *
@@ -78,12 +77,12 @@ public class AdicapManagerImpl implements AdicapManager
    }
 
    @Override
-   public List<? extends CodeCommon> findAllObjectsManager(){
+   public List<Adicap> findAllObjectsManager(){
       return adicapDao.findAll();
    }
 
    @Override
-   public List<? extends CodeCommon> findByCodeLikeManager(String code, final boolean exactMatch){
+   public List<Adicap> findByCodeLikeManager(String code, final boolean exactMatch){
       if(!exactMatch){
          code = "%" + code + "%";
       }
@@ -103,7 +102,7 @@ public class AdicapManagerImpl implements AdicapManager
    }
 
    @Override
-   public List<? extends CodeCommon> findByLibelleLikeManager(String libelle, final boolean exactMatch){
+   public List<Adicap> findByLibelleLikeManager(String libelle, final boolean exactMatch){
       if(!exactMatch){
          libelle = "%" + libelle + "%";
       }

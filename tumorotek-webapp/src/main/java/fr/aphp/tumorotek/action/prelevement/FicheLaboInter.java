@@ -453,9 +453,8 @@ public class FicheLaboInter extends AbstractFicheEditController
    public TKdataObject getParentObject(){
       if(this.maladie != null){
          return this.maladie.getPatient();
-      }else{
-         return null;
       }
+      return null;
    }
 
    @Override

@@ -355,9 +355,8 @@ public class Conteneur implements TKdataObject, TKFantomableObject, Serializable
    public String toString(){
       if(this.code != null){
          return "{" + this.code + "}";
-      }else{
-         return "{Empty Conteneur}";
       }
+      return "{Empty Conteneur}";
    }
 
    /**

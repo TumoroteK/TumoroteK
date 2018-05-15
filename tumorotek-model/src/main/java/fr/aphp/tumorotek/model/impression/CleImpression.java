@@ -53,75 +53,122 @@ import fr.aphp.tumorotek.model.io.export.Champ;
 
 /**
  *
- * Objet persistant mappant la table BLOC_IMPRESSION.
- * Classe créée le 21/07/2010.
+ * Objet persistant mappant la table CLE_IMPRESSION.
+ * Une cleImpression est associée à un Champ.
+ * Utilisée pour remplacer le nom de la clé par la valeur du champ, dans du texte ou un document.
+ * 
+ * Classe créée le 16/01/2018.
  *
- * @author Pierre Ventadour.
- * @version 2.0
+ * @author Answald Bournique
+ * @version 2.2
  *
  */
 @Entity
 @Table(name = "CLE_IMPRESSION")
 @NamedQueries(value = {@NamedQuery(name = "CleImpression.findByName", query = "SELECT c FROM CleImpression c WHERE c.nom = ?1"),
-   @NamedQuery(name = "CleImpression.findByTemplate", query = "SELECT c FROM CleImpression c WHERE c.template = ?1"),
+//   @NamedQuery(name = "CleImpression.findByTemplate", query = "SELECT c FROM CleImpression c WHERE c.template = ?1"),
    @NamedQuery(name = "CleImpression.findByChamp", query = "SELECT c FROM CleImpression c WHERE c.champ = ?1")})
 public class CleImpression implements Serializable
 {
 
    private static final long serialVersionUID = -401351001870593573L;
 
+   /**
+    * Id de la clé
+    */
    private Integer cleId;
 
+   /**
+    * Nom de la clé
+    */
    private String nom;
 
+   /**
+    * Champ associé à la clé
+    */
    private Champ champ;
 
-   private Template template;
+   /**
+    * Template associé
+    */
+//   private Template template;
 
    public CleImpression(){
 
    }
 
+   /**
+    * Id de la clé
+    * @return Id de la clé
+    */
    @Id
-   @Column(name = "CLE_ID", unique = true, nullable = false)
+   @Column(name = "CLE_IMPRESSION_ID", unique = true, nullable = false)
    @GeneratedValue(generator = "autoincrement")
    @GenericGenerator(name = "autoincrement", strategy = "increment")
    public Integer getCleId(){
       return cleId;
    }
 
+   /**
+    * Id de la clé 
+    * @param id Id de la clé
+    */
    public void setCleId(final Integer id){
       this.cleId = id;
    }
 
-   @Column(name = "CLE_NOM", nullable = false)
+   /**
+    * Nom de la clé
+    * @return Nom de la clé
+    */
+   @Column(name = "NOM", nullable = false)
    public String getNom(){
       return nom;
    }
 
-   public void setNom(final String n){
-      this.nom = n;
+   /**
+    * Nom de la clé
+    * @param nom Nom de la clé
+    */
+   public void setNom(final String nom){
+      this.nom = nom;
    }
 
+   /**
+    * Champ associé
+    * @return Champ associé
+    */
    @ManyToOne
    @JoinColumn(name = "CHAMP_ID")
    public Champ getChamp(){
       return champ;
    }
 
-   public void setChamp(final Champ sousEnt){
-      this.champ = sousEnt;
+   /**
+    * Champ associé
+    * @param champ Champ associé
+    */
+   public void setChamp(final Champ champ){
+      this.champ = champ;
    }
 
-   @ManyToOne(targetEntity = Template.class)
-   @JoinColumn(name = "TEMPLATE_ID")
-   public Template getTemplate(){
-      return template;
-   }
+   /**
+    * Template associé
+    * @return Template associé
+    */
+//   @ManyToOne(targetEntity = Template.class)
+//   @JoinColumn(name = "TEMPLATE_ID")
+//   public Template getTemplate(){
+//      return template;
+//   }
 
-   public void setTemplate(final Template template){
-      this.template = template;
-   }
+   /**
+    * Template associé
+    * @param template Template associé
+    */
+//   public void setTemplate(final Template template){
+//      this.template = template;
+//   }
 
    @Override
    public String toString(){
@@ -135,7 +182,7 @@ public class CleImpression implements Serializable
       result = prime * result + ((champ == null) ? 0 : champ.hashCode());
       result = prime * result + ((cleId == null) ? 0 : cleId.hashCode());
       result = prime * result + ((nom == null) ? 0 : nom.hashCode());
-      result = prime * result + ((template == null) ? 0 : template.hashCode());
+//      result = prime * result + ((template == null) ? 0 : template.hashCode());
       return result;
    }
 
@@ -165,13 +212,13 @@ public class CleImpression implements Serializable
       }else if(!nom.equals(other.nom)){
          return false;
       }
-      if(template == null){
-         if(other.template != null){
-            return false;
-         }
-      }else if(!template.equals(other.template)){
-         return false;
-      }
+//      if(template == null){
+//         if(other.template != null){
+//            return false;
+//         }
+//      }else if(!template.equals(other.template)){
+//         return false;
+//      }
       return true;
    }
 

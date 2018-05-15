@@ -326,9 +326,8 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    public TKdataObject getParentObject(){
       if(this.maladie != null){
          return this.maladie.getPatient();
-      }else{
-         return null;
       }
+      return null;
    }
 
    @Override
@@ -412,8 +411,8 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
             SessionUtils.getLoggedUser(sessionScope), filesToDelete);
       }else{
          // ajoute labos inters pour cascade remove
-         getObject().setLaboInters(
-            new HashSet<>(ManagerLocator.getPrelevementManager().getLaboIntersWithOrderManager(this.prelevement)));
+         getObject()
+            .setLaboInters(new HashSet<>(ManagerLocator.getPrelevementManager().getLaboIntersWithOrderManager(this.prelevement)));
          ManagerLocator.getPrelevementManager().removeObjectCascadeManager(getObject(), comments,
             SessionUtils.getLoggedUser(sessionScope), filesToDelete);
       }
@@ -458,9 +457,8 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    public String getDatePrelevementFormated(){
       if(this.prelevement != null){
          return ObjectTypesFormatters.dateRenderer2(this.prelevement.getDatePrelevement());
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -470,9 +468,8 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    public String getDateConsentementFormated(){
       if(this.prelevement != null){
          return ObjectTypesFormatters.dateRenderer2(this.prelevement.getConsentDate());
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -482,9 +479,8 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    public String getDateDepartFormated(){
       if(this.prelevement != null){
          return ObjectTypesFormatters.dateRenderer2(this.prelevement.getDateDepart());
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -537,25 +533,22 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    public String getSClassPreleveur(){
       if(this.prelevement != null){
          return ObjectTypesFormatters.sClassCollaborateur(this.prelevement.getPreleveur());
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getSClassOperateur(){
       if(this.prelevement != null){
          return ObjectTypesFormatters.sClassCollaborateur(this.prelevement.getOperateur());
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getSClassService(){
       if(this.prelevement != null){
          return ObjectTypesFormatters.sClassService(this.prelevement.getServicePreleveur());
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getEtablissementFormated(){
@@ -586,9 +579,8 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    public String getDateArriveeFormated(){
       if(this.prelevement != null){
          return ObjectTypesFormatters.dateRenderer2(this.prelevement.getDateArrivee());
-      }else{
-         return null;
       }
+      return null;
    }
 
    private void drawRisquesFormatted(){
@@ -632,9 +624,8 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    public boolean getEchantillonsListSizeSupOne(){
       if(getDroitsConsultation().containsKey("Echantillon") && getDroitsConsultation().get("Echantillon")){
          return this.echantillons.size() > 1;
-      }else{
-         return false;
       }
+      return false;
    }
 
    /**
@@ -643,9 +634,8 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    public boolean getDerivesListSizeSupOne(){
       if(getDroitsConsultation().containsKey("ProdDerive") && getDroitsConsultation().get("ProdDerive")){
          return this.derives.size() > 1;
-      }else{
-         return false;
       }
+      return false;
    }
 
    /**
@@ -712,8 +702,8 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
          final Echantillon echan = (Echantillon) event.getData();
          tabController.switchToFicheStaticMode(echan);
       }else{
-         tabController.getListe().setListObjects(
-            new ArrayList<>(ManagerLocator.getPrelevementManager().getEchantillonsManager(prelevement)));
+         tabController.getListe()
+            .setListObjects(new ArrayList<>(ManagerLocator.getPrelevementManager().getEchantillonsManager(prelevement)));
          tabController.getListe().setCurrentObject(null);
          tabController.clearStaticFiche();
          tabController.getListe().getBinder().loadAttribute(tabController.getListe().getObjectsListGrid(), "model");
@@ -725,7 +715,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    /**
     * Forward Event. 
     */
-   public void onSelectAllEchantillons(final Event e){
+   public void onSelectAllEchantillons(){
       onClickEchantillonCode(null);
    }
 
@@ -754,7 +744,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    /**
     * Forward Event. 
     */
-   public void onSelectAllDerives(final Event e){
+   public void onSelectAllDerives(){
       onClickProdDeriveCode(null);
    }
 
@@ -1124,6 +1114,10 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       this.canChangeMaladie = canMaladie;
    }
 
+   public Prelevement getPrelevement(){
+      return this.prelevement;
+   }
+
    /**
     * Rend le div dossier_inbox de la fiche visible si des
     * dossiers sont en attente pour ce prélèvement.
@@ -1178,7 +1172,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
     * Maj des différentes fiches après update du prélèvement depuis
     * un interfacage.
     */
-   
+
    public void onGetPrelevementUpdatedFromInterfacage(final Event e){
       if(e.getData() != null){
          setObject((TKdataObject) e.getData());
@@ -1220,9 +1214,8 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       if(self.getFellow("ficheTissuInlineAnnoPrelevement") != null){
          return ((FicheAnnotationInline) self.getFellow("ficheTissuInlineAnnoPrelevement").getFellow("fwinAnnotationInline")
             .getAttributeOrFellow("fwinAnnotationInline$composer", true));
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**

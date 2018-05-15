@@ -123,10 +123,8 @@ public class CessionType implements Serializable
       final CessionType test = (CessionType) obj;
       if(this.type == null){
          return (test.type == null);
-      }else{
-         return (this.type.equals(test.type));
       }
-
+      return (this.type.equals(test.type));
    }
 
    /**
@@ -154,9 +152,8 @@ public class CessionType implements Serializable
    public String toString(){
       if(this.type != null){
          return "{" + this.type + "}";
-      }else{
-         return "{Empty CessionType}";
       }
+      return "{Empty CessionType}";
    }
 
 }

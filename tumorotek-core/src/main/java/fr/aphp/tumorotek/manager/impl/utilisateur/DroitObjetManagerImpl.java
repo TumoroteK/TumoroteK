@@ -108,27 +108,24 @@ public class DroitObjetManagerImpl implements DroitObjetManager
    public List<DroitObjet> findByExcludedPKManager(final DroitObjetPK pk){
       if(pk != null){
          return droitObjetDao.findByExcludedPK(pk);
-      }else{
-         return droitObjetDao.findAll();
       }
+      return droitObjetDao.findAll();
    }
 
    @Override
    public List<DroitObjet> findByProfilManager(final Profil profil){
       if(profil != null){
          return droitObjetDao.findByProfil(profil);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
    public List<DroitObjet> findByProfilEntiteManager(final Profil profil, final Entite entite){
       if(profil != null && entite != null){
          return droitObjetDao.findByProfilEntite(profil, entite);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
@@ -153,9 +150,8 @@ public class DroitObjetManagerImpl implements DroitObjetManager
    public List<DroitObjet> findByProfilOperationManager(final Profil profil, final OperationType type){
       if(profil != null && type != null){
          return droitObjetDao.findByProfilOperation(profil, type);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override

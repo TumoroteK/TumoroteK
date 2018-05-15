@@ -70,9 +70,8 @@ public class INCaPrelevementExportImpl implements IncaPrelevementExport
       }
       if(finess != null){
          return finess;
-      }else{
-         throw new ItemException(2, "FINESS manquant pour le centre de stockage");
       }
+      throw new ItemException(2, "FINESS manquant pour le centre de stockage");
    }
 
    @Override
@@ -84,9 +83,8 @@ public class INCaPrelevementExportImpl implements IncaPrelevementExport
    public String getDatePrelevement(final Prelevement prelevement, final DateFormat df){
       if(prelevement.getDatePrelevement() != null){
          return df.format(prelevement.getDatePrelevement().getTime());
-      }else{
-         throw new ItemException(2, "Date prelevement manquante");
       }
+      throw new ItemException(2, "Date prelevement manquante");
    }
 
    @Override
@@ -98,9 +96,8 @@ public class INCaPrelevementExportImpl implements IncaPrelevementExport
          final boolean b = m.matches();
          if(!b){
             throw new ItemException(3, "Valeur inattendue " + prelevement.getPrelevementType().getType());
-         }else{
-            type = m.group(1);
          }
+         type = m.group(1);
       }
       if(type == null){
          throw new ItemException(2, "Type prelevement manquant");
@@ -143,13 +140,11 @@ public class INCaPrelevementExportImpl implements IncaPrelevementExport
                + " AND CODE_ASSIGNE.IS_ORGANE=1" + " AND CODE_ASSIGNE.TABLE_CODAGE_ID=" + codifId
                + " ORDER BY CODE_ASSIGNE.EXPORT DESC," + "CODE_ASSIGNE.CODE_ASSIGNE_ID",
             "code organe manquant", true, null, null);
-      }else{
-         return ExportCatalogueManagerImpl.fetchItemAsString(con,
-            "SELECT CODE FROM CODE_ASSIGNE " + "WHERE CODE_ASSIGNE.ECHANTILLON_ID=" + echan.getEchantillonId().toString()
-               + " AND CODE_ASSIGNE.IS_ORGANE=1" + " ORDER BY CODE_ASSIGNE.EXPORT DESC, " + "CODE_ASSIGNE.CODE_ASSIGNE_ID",
-            "code organe manquant", true, null, null);
       }
-
+      return ExportCatalogueManagerImpl.fetchItemAsString(con,
+         "SELECT CODE FROM CODE_ASSIGNE " + "WHERE CODE_ASSIGNE.ECHANTILLON_ID=" + echan.getEchantillonId().toString()
+            + " AND CODE_ASSIGNE.IS_ORGANE=1" + " ORDER BY CODE_ASSIGNE.EXPORT DESC, " + "CODE_ASSIGNE.CODE_ASSIGNE_ID",
+         "code organe manquant", true, null, null);
    }
 
    @Override
@@ -164,14 +159,12 @@ public class INCaPrelevementExportImpl implements IncaPrelevementExport
                + echan.getEchantillonId().toString() + " AND CODE_ASSIGNE.IS_MORPHO=1" + " AND CODE_ASSIGNE.TABLE_CODAGE_ID="
                + codifId + " ORDER BY CODE_ASSIGNE.EXPORT DESC, " + "CODE_ASSIGNE.CODE_ASSIGNE_ID",
             "Type lesionnel manquant", true, null, null);
-      }else{
-         return ExportCatalogueManagerImpl.fetchItemAsString(con,
-            "SELECT CODE_ASSIGNE.CODE FROM CODE_ASSIGNE " + "WHERE CODE_ASSIGNE.ECHANTILLON_ID="
-               + echan.getEchantillonId().toString() + " AND CODE_ASSIGNE.IS_MORPHO=1" + " ORDER BY CODE_ASSIGNE.EXPORT DESC, "
-               + "CODE_ASSIGNE.CODE_ASSIGNE_ID",
-            "Type lesionnel manquant", true, null, null);
       }
-
+      return ExportCatalogueManagerImpl.fetchItemAsString(con,
+         "SELECT CODE_ASSIGNE.CODE FROM CODE_ASSIGNE " + "WHERE CODE_ASSIGNE.ECHANTILLON_ID="
+            + echan.getEchantillonId().toString() + " AND CODE_ASSIGNE.IS_MORPHO=1" + " ORDER BY CODE_ASSIGNE.EXPORT DESC, "
+            + "CODE_ASSIGNE.CODE_ASSIGNE_ID",
+         "Type lesionnel manquant", true, null, null);
    }
 
    @Override
@@ -210,9 +203,8 @@ public class INCaPrelevementExportImpl implements IncaPrelevementExport
          "pT manquante", true, "([a-zA-Z0-9]*):?\\s?.*", null);
       if(res.length() > 3){
          return res.substring(0, 3);
-      }else{
-         return res;
       }
+      return res;
    }
 
    @Override
@@ -227,9 +219,8 @@ public class INCaPrelevementExportImpl implements IncaPrelevementExport
          "pN manquant", true, "([a-zA-Z0-9]*):?\\s?.*", null);
       if(res.length() > 3){
          return res.substring(0, 3);
-      }else{
-         return res;
       }
+      return res;
    }
 
    @Override
@@ -245,8 +236,7 @@ public class INCaPrelevementExportImpl implements IncaPrelevementExport
 
       if(res.length() > 3){
          return res.substring(0, 3);
-      }else{
-         return res;
       }
+      return res;
    }
 }

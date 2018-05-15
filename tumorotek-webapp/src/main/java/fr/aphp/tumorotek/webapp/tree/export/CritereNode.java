@@ -96,4 +96,9 @@ public class CritereNode extends ExportNode
       return null;
    }
 
+   @Override
+   public int hashCode(){
+      return super.hashCode();
+   }
+
 }

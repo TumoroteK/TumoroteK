@@ -200,7 +200,6 @@ public class PrelevementRowRenderer extends TKSelectObjectRenderer
          new Label().setParent(row);
       }
       new Label(ObjectTypesFormatters.dateRenderer2(prel.getDatePrelevement())).setParent(row);
-      new Label(ObjectTypesFormatters.dateRenderer2(prel.getDatePeremption())).setParent(row);
       if(prel.getNature() != null){
          new Label(prel.getNature().getNature()).setParent(row);
       }else{

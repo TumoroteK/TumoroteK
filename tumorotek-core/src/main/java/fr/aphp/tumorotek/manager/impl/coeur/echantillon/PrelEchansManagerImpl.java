@@ -62,7 +62,6 @@ import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
-import fr.aphp.tumorotek.model.coeur.prelevement.LaboInter;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.qualite.OperationType;

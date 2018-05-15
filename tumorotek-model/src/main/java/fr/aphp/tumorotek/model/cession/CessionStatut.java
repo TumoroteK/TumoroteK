@@ -124,9 +124,8 @@ public class CessionStatut implements Serializable
       final CessionStatut test = (CessionStatut) obj;
       if(this.statut == null){
          return (test.statut == null);
-      }else{
-         return (this.statut.equals(test.statut));
       }
+      return (this.statut.equals(test.statut));
    }
 
    /**
@@ -154,8 +153,7 @@ public class CessionStatut implements Serializable
    public String toString(){
       if(this.statut != null){
          return "{" + this.statut + "}";
-      }else{
-         return "{Empty CessionStatut}";
       }
+      return "{Empty CessionStatut}";
    }
 }

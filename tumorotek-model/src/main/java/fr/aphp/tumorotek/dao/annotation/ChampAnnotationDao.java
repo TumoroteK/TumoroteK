@@ -75,6 +75,15 @@ public interface ChampAnnotationDao extends GenericDaoJpa<ChampAnnotation, Integ
     * @return Liste de ChampAnnotation.
     */
    List<ChampAnnotation> findByTable(TableAnnotation table);
+   
+   /**
+    * Recherche les champs dont la table et les datatypes sont passés en paramètre.
+    * Les champs retournés sont triés par leur ordre.
+    * @param table TableAnnotation à laquelle les champs appartiennent.
+    * @param dataTypeList liste de datatypes souhaités
+    * @return Liste de ChampAnnotation.
+    */
+   List<ChampAnnotation> findByTableAndDataType(TableAnnotation table, List<DataType> dataTypeList);
 
    /**
     * Recherche tous les champs sauf celui dont l'id est passé 

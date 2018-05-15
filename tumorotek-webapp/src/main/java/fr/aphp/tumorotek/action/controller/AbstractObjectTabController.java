@@ -116,24 +116,12 @@ public abstract class AbstractObjectTabController extends AbstractController
 
    private boolean isStaticEditMode = true;
 
-   //protected boolean banqueOrgane;
-
-   /*public boolean isBanqueOrgane() {
-   	return banqueOrgane;
-   }*/
-
-   /*public void setBanqueOrgane(boolean banqueOrgane) {
-   	this.banqueOrgane = banqueOrgane;
-   }*/
-
    private final List<AbstractObjectTabController> referencingObjectControllers = new ArrayList<>();
    private final List<AbstractObjectTabController> referencedObjectControllers = new ArrayList<>();
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
-
-      //banqueOrgane=SessionUtils.isBanqueOrganeContexte(sessionScope);
 
       if(mainBorder != null){
          mainBorder.setHeight(getMainWindow().getPanelHeight() + "px");

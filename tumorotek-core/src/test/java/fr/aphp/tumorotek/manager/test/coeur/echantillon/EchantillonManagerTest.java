@@ -35,31 +35,23 @@
  **/
 package fr.aphp.tumorotek.manager.test.coeur.echantillon;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.io.FileUtils;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
@@ -89,11 +81,7 @@ import fr.aphp.tumorotek.manager.coeur.ObjetStatutManager;
 import fr.aphp.tumorotek.manager.coeur.annotation.AnnotationValeurManager;
 import fr.aphp.tumorotek.manager.coeur.cession.CederObjetManager;
 import fr.aphp.tumorotek.manager.coeur.cession.RetourManager;
-import fr.aphp.tumorotek.manager.coeur.echantillon.EchanQualiteManager;
-import fr.aphp.tumorotek.manager.coeur.echantillon.EchantillonManager;
-import fr.aphp.tumorotek.manager.coeur.echantillon.EchantillonTypeManager;
-import fr.aphp.tumorotek.manager.coeur.echantillon.EchantillonValidator;
-import fr.aphp.tumorotek.manager.coeur.echantillon.ModePrepaManager;
+import fr.aphp.tumorotek.manager.coeur.echantillon.*;
 import fr.aphp.tumorotek.manager.coeur.prodderive.ProdDeriveManager;
 import fr.aphp.tumorotek.manager.coeur.prodderive.TransformationManager;
 import fr.aphp.tumorotek.manager.context.BanqueManager;
@@ -139,16 +127,14 @@ import fr.aphp.tumorotek.model.io.export.Champ;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
 import fr.aphp.tumorotek.model.qualite.Operation;
 import fr.aphp.tumorotek.model.qualite.OperationType;
-import fr.aphp.tumorotek.model.stockage.Conteneur;
-import fr.aphp.tumorotek.model.stockage.Emplacement;
-import fr.aphp.tumorotek.model.stockage.Enceinte;
-import fr.aphp.tumorotek.model.stockage.EnceinteType;
-import fr.aphp.tumorotek.model.stockage.Terminale;
+import fr.aphp.tumorotek.model.stockage.*;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.systeme.Fichier;
 import fr.aphp.tumorotek.model.systeme.Unite;
 import fr.aphp.tumorotek.model.utilisateur.Reservation;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+
+import static org.junit.Assert.*;
 
 /**
  *
@@ -247,6 +233,9 @@ public class EchantillonManagerTest extends AbstractManagerTest4
    private PlateformeDao plateformeDao;
 
    public EchantillonManagerTest(){}
+
+   @Rule
+   public TemporaryFolder testFolder = new TemporaryFolder();
 
    @Test
    public void testFindById(){
@@ -2889,7 +2878,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
    }
 
    @Test
-   public void testUpdateMultipleObjectsManager() throws ParseException{
+   public void testUpdateMultipleObjectsManager() throws ParseException, IOException{
       final Banque b1 = banqueManager.findByIdManager(1);
       final Utilisateur utilisateur = utilisateurDao.findById(1);
       final Prelevement p1 = prelevementDao.findById(1);
@@ -2919,8 +2908,13 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       final int totEchans = echantillonManager.findAllObjectsManager().size();
 
       // creation architecture fichiers
-      new File("/tmp/" + "pt_" + b1.getPlateforme().getPlateformeId() + "/" + "coll_" + b1.getBanqueId() + "/cr_anapath/")
-         .mkdirs();
+      File targetFolder = new File("target");
+      File file = new File("target", "/tmp/" + "pt_" + b1.getPlateforme().getPlateformeId() + "/" + "coll_" + b1.getBanqueId() + "/cr_anapath/");
+      if(file.exists()){
+         FileUtils.deleteDirectory(file);
+      }
+      String pathFile = targetFolder.getAbsolutePath().replace("\\", "/");
+      file.mkdirs();
 
       final Fichier cr1 = new Fichier();
       cr1.setNom("cr1");
@@ -2979,22 +2973,22 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       final List<File> filesToDelete = new ArrayList<>();
 
       echantillonManager.createObjectWithCrAnapathManager(echan1, b1, p1, c, statut, null, eT, codes, null, eQual, prepa, cr1,
-         bais1, filesCreated, null, null, utilisateur, false, "/tmp/", false);
+         bais1, filesCreated, null, null, utilisateur, false, pathFile + "/tmp/", false);
       echan2.setDelaiCgl(new Float(15));
       cOrg1.setExport(false);
       cOrg2.setExport(true);
       echantillonManager.createObjectWithCrAnapathManager(echan2, b1, p1, c, statut, null, eT, codes, null, eQual, prepa, cr2,
-         bais2, filesCreated, null, null, utilisateur, false, "/tmp/", false);
+         bais2, filesCreated, null, null, utilisateur, false, pathFile + "/tmp/", false);
       echantillonManager.createObjectWithCrAnapathManager(echan3, b1, p1, c, statut, null, eT, null, null, eQual, prepa, null,
-         null, filesCreated, null, null, utilisateur, false, "/tmp/", false);
+         null, filesCreated, null, null, utilisateur, false, pathFile + "/tmp/", false);
 
       assertTrue(filesCreated.size() == 2);
-      assertTrue(new File("/tmp/pt_1/coll_1/cr_anapath").listFiles().length == 2);
+      assertTrue(new File("target", "/tmp/pt_1/coll_1/cr_anapath").listFiles().length == 2);
       filesCreated.clear();
 
       for(int i = 0; i < listAnnots.size(); i++){
          annotationValeurManager.createOrUpdateObjectManager(listAnnots.get(i), listAnnots.get(i).getChampAnnotation(),
-            echans.get(i), b1, null, utilisateur, "creation", "/tmp/", filesCreated, filesToDelete);
+            echans.get(i), b1, null, utilisateur, "creation", pathFile + "/tmp/", filesCreated, filesToDelete);
       }
 
       final int id1 = echan1.getEchantillonId();
@@ -3012,7 +3006,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       assertTrue(new File(eUp1.getCrAnapath().getPath()).length() == 3);
       assertTrue(eUp2.getCrAnapath().getNom().equals("cr2"));
       assertTrue(new File(eUp2.getCrAnapath().getPath()).length() == 4);
-      assertTrue(new File("/tmp/pt_1/coll_1/cr_anapath").listFiles().length == 2);
+      assertTrue(new File("target", "/tmp/pt_1/coll_1/cr_anapath").listFiles().length == 2);
 
       assertTrue(objetNonConformeDao.findByObjetAndEntite(id1, entiteDao.findById(3)).isEmpty());
       assertTrue(objetNonConformeDao.findByObjetAndEntite(id2, entiteDao.findById(3)).isEmpty());
@@ -3085,7 +3079,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       //		-> ok. Ecrase par nouveau fichier
 
       echantillonManager.updateMultipleObjectsManager(list, null, codes, toDeletes, eUp1.getCrAnapath(), null, null, listAnnots,
-         listDelete, ncfsTrait, ncfsCess, utilisateur, "/tmp/");
+         listDelete, ncfsTrait, ncfsCess, utilisateur, pathFile + "/tmp/");
       assertTrue(codeAssigneManager.findAllObjectsManager().size() == 11);
       assertTrue(fichierManager.findAllObjectsManager().size() == totFichier + 3);
       assertTrue(annotationValeurManager.findAllObjectsManager().size() == 15);
@@ -3124,7 +3118,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       assertTrue(eTest2.getCrAnapath().getNom().equals("cr1"));
       assertTrue(eTest3.getCrAnapath().getNom().equals("cr1"));
       assertTrue(new File(eTest1.getCrAnapath().getPath()).length() == 3);
-      assertTrue(new File("/tmp/pt_1/coll_1/cr_anapath").listFiles().length == 1);
+      assertTrue(new File("target", "/tmp/pt_1/coll_1/cr_anapath").listFiles().length == 1);
 
       assertTrue(getOperationManager().findByObjectManager(eTest1).size() == 2);
       assertTrue(getOperationManager().findByObjectManager(eTest1).get(1).getOperationType().getNom().equals("ModifMultiple"));
@@ -3254,7 +3248,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       //alpha1.setAnnotationValeurId(null);
       alpha5.setAlphanum("8888");
       echantillonManager.updateMultipleObjectsManager(list, null, null, null, null, null, false, listAnnots, listDelete, null,
-         null, utilisateur, "/tmp/");
+         null, utilisateur, pathFile + "/tmp/");
       eTest1 = echantillonManager.findByCodeLikeManager("NEW", true).get(0);
       eTest2 = echantillonManager.findByCodeLikeManager("e2", true).get(0);
       eTest3 = echantillonManager.findByCodeLikeManager("e3", true).get(0);
@@ -3274,7 +3268,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       final String tmp4 = "CR3456789";
       final ByteArrayInputStream bais4 = new ByteArrayInputStream(tmp4.getBytes());
       echantillonManager.updateMultipleObjectsManager(list, null, null, null, cr4, bais4, false, null, null, null, null,
-         utilisateur, "/tmp/");
+         utilisateur, pathFile + "/tmp/");
       assertTrue(fichierManager.findAllObjectsManager().size() == totFichier + 3);
       eTest1 = echantillonManager.findByCodeLikeManager("NEW", true).get(0);
       eTest2 = echantillonManager.findByCodeLikeManager("e2", true).get(0);
@@ -3289,7 +3283,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       assertTrue(eTest2.getCrAnapath().getNom().equals("cr4"));
       assertTrue(eTest3.getCrAnapath().getNom().equals("cr4"));
       assertTrue(new File(eTest1.getCrAnapath().getPath()).length() == 9);
-      assertTrue(new File("/tmp/pt_1/coll_1/cr_anapath").listFiles().length == 1);
+      assertTrue(new File("target", "/tmp/pt_1/coll_1/cr_anapath").listFiles().length == 1);
 
       final String oldPath = eTest1.getCrAnapath().getPath();
 
@@ -3301,7 +3295,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       cr4 = eTest2.getCrAnapath();
       cr4.setNom("cr5");
       echantillonManager.updateMultipleObjectsManager(list, list, null, null, cr4, null, null, null, null, null, null,
-         utilisateur, "/tmp/");
+         utilisateur, pathFile + "/tmp/");
       assertTrue(fichierManager.findAllObjectsManager().size() == totFichier + 3);
       eTest1 = echantillonManager.findByCodeLikeManager("NEW", true).get(0);
       eTest2 = echantillonManager.findByCodeLikeManager("e2", true).get(0);
@@ -3317,12 +3311,12 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       assertTrue(eTest2.getCrAnapath().getNom().equals("cr5"));
       assertTrue(eTest3.getCrAnapath().getNom().equals("cr5"));
       assertTrue(new File(eTest1.getCrAnapath().getPath()).length() == 9);
-      assertTrue(new File("/tmp/pt_1/coll_1/cr_anapath").listFiles().length == 1);
+      assertTrue(new File("target", "/tmp/pt_1/coll_1/cr_anapath").listFiles().length == 1);
 
       // delete cr anapath pour 2 echans
       list.remove(eTest3);
       echantillonManager.updateMultipleObjectsManager(list, list, null, null, null, null, true, null, null, null, null,
-         utilisateur, "/tmp/");
+         utilisateur, pathFile + "/tmp/");
       assertTrue(fichierManager.findAllObjectsManager().size() == totFichier + 1);
       eTest1 = echantillonManager.findByCodeLikeManager("NEW", true).get(0);
       eTest2 = echantillonManager.findByCodeLikeManager("e2", true).get(0);
@@ -3333,7 +3327,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       assertTrue(eTest3.getCrAnapath().getPath().equals(oldPath));
       assertTrue(eTest3.getCrAnapath().getNom().equals("cr5"));
       assertTrue(new File(eTest3.getCrAnapath().getPath()).length() == 9);
-      assertTrue(new File("/tmp/pt_1/coll_1/cr_anapath").listFiles().length == 1);
+      assertTrue(new File("target", "/tmp/pt_1/coll_1/cr_anapath").listFiles().length == 1);
 
       // restaure un fichier pour les 3
       final Fichier cr6 = new Fichier();
@@ -3348,7 +3342,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       list.add(eTest2);
       list.add(eTest3);
       echantillonManager.updateMultipleObjectsManager(list, null, null, null, cr6, bais6, false, null, null, null, null,
-         utilisateur, "/tmp/");
+         utilisateur, pathFile + "/tmp/");
       assertTrue(fichierManager.findAllObjectsManager().size() == totFichier + 3);
       eTest1 = echantillonManager.findByCodeLikeManager("NEW", true).get(0);
       eTest2 = echantillonManager.findByCodeLikeManager("e2", true).get(0);
@@ -3364,11 +3358,11 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       assertTrue(eTest2.getCrAnapath().getNom().equals("cr6"));
       assertTrue(eTest3.getCrAnapath().getNom().equals("cr6"));
       assertTrue(new File(eTest1.getCrAnapath().getPath()).length() == 3);
-      assertTrue(new File("/tmp/pt_1/coll_1/cr_anapath").listFiles().length == 1);
+      assertTrue(new File("target", "/tmp/pt_1/coll_1/cr_anapath").listFiles().length == 1);
 
       // suppr cr anapath pour tous
       echantillonManager.updateMultipleObjectsManager(list, null, null, null, null, null, true, null, null, null, null,
-         utilisateur, "/tmp/");
+         utilisateur, pathFile + "/tmp/");
       assertTrue(fichierManager.findAllObjectsManager().size() == totFichier);
       eTest1 = echantillonManager.findByCodeLikeManager("NEW", true).get(0);
       eTest2 = echantillonManager.findByCodeLikeManager("e2", true).get(0);
@@ -3376,7 +3370,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       assertNull(eTest1.getCrAnapath());
       assertNull(eTest2.getCrAnapath());
       assertNull(eTest3.getCrAnapath());
-      assertTrue(new File("/tmp/pt_1/coll_1/cr_anapath").listFiles().length == 0);
+      assertTrue(new File("target", "/tmp/pt_1/coll_1/cr_anapath").listFiles().length == 0);
 
       assertTrue(objetNonConformeDao.findByObjetAndEntite(id1, entiteDao.findById(3)).size() == 2);
       assertTrue(objetNonConformeDao.findByObjetAndEntite(id2, entiteDao.findById(3)).size() == 2);
@@ -3393,7 +3387,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       assertTrue(codeAssigneManager.findAllObjectsManager().size() == 5);
       assertTrue(fichierManager.findAllObjectsManager().size() == totFichier);
       assertTrue(objetNonConformeDao.findAll().size() == 6);
-      assertTrue(new File("/tmp/pt_1/coll_1/cr_anapath").listFiles().length == 0);
+      assertTrue(new File("target", "/tmp/pt_1/coll_1/cr_anapath").listFiles().length == 0);
 
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.addAll(list);
@@ -4233,9 +4227,12 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       }catch(final CannotGetJdbcConnectionException e){
          e.printStackTrace();
       }finally{
-         stmt.close();
-         rs.close();
-         conn.close();
+         if(null != stmt)
+            stmt.close();
+         if(null != rs)
+            rs.close();
+         if(null != conn)
+            conn.close();
          jdbcSuite.closePs();
       }
    }

@@ -84,8 +84,7 @@ public class BlocImpressionManagerImpl implements BlocImpressionManager
 
       if(entite != null){
          return blocImpressionDao.findByEntite(entite);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 }

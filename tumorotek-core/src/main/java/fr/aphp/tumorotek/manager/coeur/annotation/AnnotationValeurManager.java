@@ -62,11 +62,15 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * 	- Supprimer une valeur
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.12
- *
+ * @version 2.2.0
+ * @since 2.0.12
  */
 public interface AnnotationValeurManager
 {
+
+   void createObject(AnnotationValeur annoVal);
+
+   void updateObject(AnnotationValeur annoVal);
 
    /**
     * Persiste une instance afin de l'enregistrer dans la base de données.
@@ -144,6 +148,17 @@ public interface AnnotationValeurManager
     * @return Liste de AnnotationValeur.
     */
    List<AnnotationValeur> findByChampAndObjetManager(ChampAnnotation champ, TKAnnotableObject obj);
+
+   /**
+    * Recherche toutes les valeurs spécifiée pour un champs  et
+    * pour un objet passés en parametres (spécifique pour l'export afin de récupérer les annotationValeur de champsCalcule enregistrées exprès, si discardCalcule = false)
+    * @param champ ChampAnnotation
+    * @param obj Objet
+    * @param discardCalcule si true, ne pas calculer mais chercher une valeur enregistrée en base (annotationValeur)
+    * @return Liste de AnnotationValeur.
+    * @since 2.2.0
+    */
+   List<AnnotationValeur> findByChampAndObjetManager(ChampAnnotation champ, TKAnnotableObject obj, Boolean discardCalcule);
 
    /**
     * Recherche toutes les valeurs pour les champs appartenant à la table et

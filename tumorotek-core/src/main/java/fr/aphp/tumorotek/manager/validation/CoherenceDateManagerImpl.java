@@ -143,27 +143,25 @@ public class CoherenceDateManagerImpl implements CoherenceDateManager
                }else{
                   final List<LaboInter> list = new ArrayList<>(laboInterDao.findByPrelevementWithOrder(prels.get(i)));
 
-                  if(list != null){
-                     int ordre;
-                     // utilisation de precedent 
-                     // car aucune certitude 
-                     // sur l'ordre
-                     // des labos dans le set
-                     int precedent = list.size() + 1;
-                     LaboInter labo = null;
-                     for(int j = 0; j < list.size(); j++){
-                        labo = list.get(j);
-                        ordre = labo.getOrdre();
-                        if(ordre < precedent){
-                           if(labo.getDateArrivee() != null){
-                              ref = labo.getDateArrivee();
-                              precedent = ordre;
-                              code = "date.validation" + ".supDateDateArriveeUnLaboInter";
-                           }else if(labo.getDateDepart() != null){
-                              ref = labo.getDateDepart();
-                              precedent = ordre;
-                              code = "date.validation" + ".supDateDateDepartUnLaboInter";
-                           }
+                  int ordre;
+                  // utilisation de precedent 
+                  // car aucune certitude 
+                  // sur l'ordre
+                  // des labos dans le set
+                  int precedent = list.size() + 1;
+                  LaboInter labo = null;
+                  for(int j = 0; j < list.size(); j++){
+                     labo = list.get(j);
+                     ordre = labo.getOrdre();
+                     if(ordre < precedent){
+                        if(labo.getDateArrivee() != null){
+                           ref = labo.getDateArrivee();
+                           precedent = ordre;
+                           code = "date.validation" + ".supDateDateArriveeUnLaboInter";
+                        }else if(labo.getDateDepart() != null){
+                           ref = labo.getDateDepart();
+                           precedent = ordre;
+                           code = "date.validation" + ".supDateDateDepartUnLaboInter";
                         }
                      }
                   }
@@ -366,7 +364,7 @@ public class CoherenceDateManagerImpl implements CoherenceDateManager
    /* (non-Javadoc)
     * @see fr.aphp.tumorotek.manager.validation.CoherenceDateManager#findPostRefDateInLabosManager(java.util.List)
     */
-   
+
    @Override
    public Object[] findPostRefDateInLabosManager(final List<LaboInter> labos){
       final Object[] dateAndCode = new Object[] {null, null};

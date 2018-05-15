@@ -48,12 +48,13 @@ import org.zkoss.zul.Messagebox;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.controller.AbstractListeController2;
 import fr.aphp.tumorotek.component.OneToManyComponent;
+import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.stockage.ConteneurPlateforme;
 import fr.aphp.tumorotek.model.stockage.ConteneurPlateformePK;
 
-public class PlateformesAssociees extends OneToManyComponent
+public class PlateformesAssociees extends OneToManyComponent<ConteneurPlateforme>
 {
 
    private static final long serialVersionUID = 1L;
@@ -74,17 +75,21 @@ public class PlateformesAssociees extends OneToManyComponent
 
    
    @Override
-   public void setObjects(final List<? extends Object> objs){
-      this.objects = (List<ConteneurPlateforme>) objs;
+   public void setObjects(final List<ConteneurPlateforme> objs){
+      this.objects = objs;
       updateComponent();
    }
 
    @Override
-   public void addToListObjects(final Object obj){
+   public void addToListObjects(final ConteneurPlateforme obj){
+      getObjects().add(obj);
+   }
+   
+   public void addToListObjects(final TKdataObject obj){
       final ConteneurPlateforme cp = new ConteneurPlateforme();
       final ConteneurPlateformePK cpk = new ConteneurPlateformePK(getConteneur(), (Plateforme) obj);
       cp.setPk(cpk);
-      getObjects().add(cp);
+      addToListObjects(cp);
    }
 
    @Override

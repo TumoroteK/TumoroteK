@@ -43,12 +43,19 @@
 		<column>LIBELLE</column>
 		<row>
 			<value>1</value>
-			<value>CONT1</value>
+			<value>DEFAUT</value>
+            <value>Anatomopathologie</value>
 		</row>
 		<row>
 			<value>2</value>
-			<value>CONT2</value>
+			<value>SEROLOGIE</value>
+            <value>Sérologie</value>
 		</row>
+        <!--<row>
+            <value>3</value>
+            <value>BTO</value>
+            <value>Banque de tissus osseux</value>
+        </row>-->
 	</table>
 	<table name="COORDONNEE">
 		<column>COORDONNEE_ID</column>
@@ -2037,7 +2044,6 @@
 		<column>CONFORME_ARRIVEE</column>
 		<column>ETAT_INCOMPLET</column>
 		<column>ARCHIVE</column>
-        <column>DATE_PEREMPTION</column>
 		<row>
 			<value>1</value>
 			<value>1</value>
@@ -2246,23 +2252,18 @@
 	<table name="PRELEVEMENT_DELEGATE">
 		<column>PRELEVEMENT_DELEGATE_ID</column>
 		<column>PRELEVEMENT_ID</column>
-		<column>CONTEXTE_ID</column>
 		<row>
-			<value>1</value>
 			<value>1</value>
 			<value>1</value>
 		</row>
 		<row>
 			<value>2</value>
 			<value>4</value>
-			<value>1</value>
 		</row>
 		<row>
 			<value>3</value>
 			<value>3</value>
-			<value>2</value>
 		</row>
-	
 	</table>
 	
 	<table name="PRELEVEMENT_SERO">
@@ -4020,6 +4021,14 @@
 		<row>
 			<value>11</value>
 			<value>date</value>
+		</row>
+		<row>
+			<value>12</value>
+			<value>calcule</value>
+		</row>
+		<row>
+			<value>13</value>
+			<value>duree</value>
 		</row>
 	</table>
 	<table name="CHAMP_ENTITE">
@@ -12231,103 +12240,4 @@
 			<value>DIAMIC</value>
 		</row>
 	</table>
-	
-<!-- 	</table> -->
-	<!--  UI TABLES -->
-	
-<!-- 	<table name="UI_REQUETE"> -->
-<!-- 	    <column>UI_REQUETE_ID</column> -->
-<!-- 	    <column>NOM</column> -->
-<!-- 	    <column>UTILISATEUR_ID</column> -->
-<!-- 	    <column>ENTITE_ID</column> -->
-<!--  		<column>ORDRE</column> -->
-<!-- 		<row> -->
-<!-- 		    <value>1</value> -->
-<!-- 		    <value>REQ1</value> -->
-<!-- 		    <value>1</value> -->
-<!-- 		    <value>2</value> -->
-<!-- 		    <value>1</value> -->
-<!-- 		</row> -->
-<!-- 		<row> -->
-<!-- 		    <value>2</value> -->
-<!-- 		    <value>REQ2</value> -->
-<!-- 		    <value>1</value> -->
-<!-- 		    <value>2</value> -->
-<!-- 		    <value>2</value> -->
-<!-- 		</row> -->
-<!-- 		<row> -->
-<!-- 		    <value>3</value> -->
-<!-- 		    <value>REQ3</value> -->
-<!-- 		    <value>1</value> -->
-<!-- 		    <value>2</value> -->
-<!-- 		    <value>3</value> -->
-<!-- 		</row> -->
-<!-- 		<row> -->
-<!-- 		    <value>4</value> -->
-<!-- 		    <value>REQADMIN</value> -->
-<!-- 		    <value>5</value> -->
-<!-- 		    <value>3</value> -->
-<!-- 		    <value>1</value> -->
-<!-- 		</row> -->
-<!-- 	</table> -->
-<!-- 	<table name="UI_COMP_VALUE"> -->
-<!-- 		<column>UI_COMP_VALUE_ID</column> -->
-<!--   		<column>UI_REQUETE_ID</column> -->
-<!-- 	 	<column>ID_COMPONENT</column> -->
-<!-- 	 	<column>COMPONENT_CLASS</column> -->
-<!-- 	 	<column>INDEX_VALUE</column> -->
-<!-- 		<column>TEXT_VALUE</column> -->
-<!-- 		<column>CHECK_VALUE</column> -->
-<!-- 		<column>CALENDAR_VALUE</column> -->
-<!-- 		<row> -->
-<!-- 		    <value>1</value> -->
-<!-- 		    <value>1</value> -->
-<!-- 			<value>codePrelevementBox</value> -->
-<!-- 			<value>textbox</value> -->
-<!-- 			<null /> -->
-<!-- 			<value>PREL1</value> -->
-<!-- 			<null /> -->
-<!-- 			<null /> -->
-<!-- 		</row> -->
-<!-- 		<row> -->
-<!-- 		    <value>2</value> -->
-<!-- 		    <value>2</value> -->
-<!-- 			<value>natutePrelevementBox</value> -->
-<!-- 			<value>listtbox</value> -->
-<!-- 			<value>3</value> -->
-<!-- 			<null /> -->
-<!-- 			<null /> -->
-<!-- 			<null /> -->
-<!-- 		</row> -->
-<!-- 		<row> -->
-<!-- 		    <value>3</value> -->
-<!-- 		    <value>3</value> -->
-<!-- 			<value>datePrelevement1Box</value> -->
-<!-- 			<value>calendarbox</value> -->
-<!-- 			<null /> -->
-<!-- 			<null /> -->
-<!-- 			<null /> -->
-<!-- 			<value>2010-06-09 12:15:00</value> -->
-<!-- 		</row> -->
-<!-- 		<row> -->
-<!-- 		    <value>4</value> -->
-<!-- 		    <value>3</value> -->
-<!-- 			<value>operateursDatePrlvtBox</value> -->
-<!-- 			<value>listbox</value> -->
-<!-- 			<value>3</value> -->
-<!-- 			<null /> -->
-<!-- 			<null /> -->
-<!-- 			<null /> -->
-<!-- 		</row> -->
-<!-- 		<row> -->
-<!-- 		    <value>5</value> -->
-<!-- 		    <value>3</value> -->
-<!-- 			<value>sexeFBox</value> -->
-<!-- 			<value>checkbox</value> -->
-<!-- 			<null /> -->
-<!-- 			<null /> -->
-<!-- 			<value>1</value> -->
-<!-- 			<null /> -->
-<!-- 		</row> -->
-<!-- 	</table> -->
 </dataset>

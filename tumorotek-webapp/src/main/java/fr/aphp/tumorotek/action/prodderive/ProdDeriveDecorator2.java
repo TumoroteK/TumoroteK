@@ -97,25 +97,22 @@ public class ProdDeriveDecorator2
    public String getCode(){
       if(this.prodDerive.getCode() != null){
          return this.prodDerive.getCode();
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getBanque(){
       if(this.prodDerive.getBanque() != null){
          return this.prodDerive.getBanque().getNom();
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getCodeLabo(){
       if(this.prodDerive.getCodeLabo() != null){
          return this.prodDerive.getCodeLabo();
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -126,9 +123,8 @@ public class ProdDeriveDecorator2
       if(transformation != null){
          // on récupère le type du parent (prlvt, echan, prodderive)
          return transformation.getEntite().getNom();
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -152,25 +148,22 @@ public class ProdDeriveDecorator2
          }else{
             return null;
          }
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getDateStock(){
       if(this.prodDerive.getDateStock() != null){
          return ObjectTypesFormatters.dateRenderer2(this.prodDerive.getDateStock());
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getType(){
       if(this.prodDerive.getProdType() != null){
          return this.prodDerive.getProdType().getType();
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -307,9 +300,8 @@ public class ProdDeriveDecorator2
       final Calendar date = ManagerLocator.getOperationManager().findDateCreationManager(this.prodDerive);
       if(date != null){
          return ObjectTypesFormatters.dateRenderer2(date);
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getCollaborateurNomAndPrenom(){
@@ -331,9 +323,8 @@ public class ProdDeriveDecorator2
    public String getEmplacementAdrl(){
       if(this.prodDerive != null && this.prodDerive.getProdDeriveId() != null){
          return ManagerLocator.getProdDeriveManager().getEmplacementAdrlManager(prodDerive);
-      }else{
-         return "";
       }
+      return "";
    }
 
    public String getEmplacementAdrlinMulti(){
@@ -349,9 +340,8 @@ public class ProdDeriveDecorator2
    public String getQualite(){
       if(this.prodDerive.getProdQualite() != null){
          return this.prodDerive.getProdQualite().getProdQualite();
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getTransformation(){
@@ -370,9 +360,8 @@ public class ProdDeriveDecorator2
             sb.append(this.prodDerive.getTransformation().getQuantiteUnite());
          }
          return sb.toString();
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -398,33 +387,28 @@ public class ProdDeriveDecorator2
          }
 
          return sb.toString();
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getEtatIncomplet(){
       if(this.prodDerive.getEtatIncomplet() != null){
          if(this.prodDerive.getEtatIncomplet().booleanValue() == true){
             return "oui";
-         }else{
-            return "non";
          }
-      }else{
-         return null;
+         return "non";
       }
+      return null;
    }
 
    public String getArchive(){
       if(this.prodDerive.getArchive() != null){
          if(this.prodDerive.getArchive().booleanValue()){
             return "oui";
-         }else{
-            return "non";
          }
-      }else{
-         return null;
+         return "non";
       }
+      return null;
    }
 
    /**

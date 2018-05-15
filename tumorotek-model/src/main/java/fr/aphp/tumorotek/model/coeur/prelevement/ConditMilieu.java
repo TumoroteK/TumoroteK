@@ -91,9 +91,8 @@ public class ConditMilieu implements Serializable, TKThesaurusObject
    public String toString(){
       if(this.milieu != null){
          return "{" + this.milieu + "}";
-      }else{
-         return "{Empty ConditMilieu}";
       }
+      return "{Empty ConditMilieu}";
    }
 
    @Id

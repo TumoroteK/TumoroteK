@@ -81,9 +81,8 @@ public class ContratDecorator implements TKdataObject
    public String getDemandeur(){
       if(this.contrat.getCollaborateur() != null){
          return this.contrat.getCollaborateur().getNomAndPrenom();
-      }else{
-         return "";
       }
+      return "";
    }
 
    public String getDateValidation(){
@@ -101,9 +100,8 @@ public class ContratDecorator implements TKdataObject
    public Integer getNbCessions(){
       if(this.contrat.getContratId() != null){
          return ManagerLocator.getContratManager().getCessionsManager(contrat).size();
-      }else{
-         return 0;
       }
+      return 0;
    }
 
    /**

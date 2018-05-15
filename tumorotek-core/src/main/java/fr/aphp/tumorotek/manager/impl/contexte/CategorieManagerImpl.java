@@ -115,36 +115,33 @@ public class CategorieManagerImpl implements CategorieManager
             nom = nom + "%";
          }
          return categorieDao.findByNom(nom);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
-   public boolean findDoublonManager(final Object o){
+   public boolean findDoublonManager(final Categorie o){
       if(o != null){
-         final Categorie cat = (Categorie) o;
+         final Categorie cat = o;
          if(cat.getCategorieId() == null){
             return categorieDao.findAll().contains(cat);
-         }else{
-            return categorieDao.findByExcludedId(cat.getCategorieId()).contains(cat);
          }
-      }else{
-         return false;
+            return categorieDao.findByExcludedId(cat.getCategorieId()).contains(cat);
       }
+         return false;
    }
 
    @Override
-   public boolean isUsedObjectManager(final Object obj){
-      final Categorie cat = categorieDao.mergeObject((Categorie) obj);
+   public boolean isUsedObjectManager(final Categorie obj){
+      final Categorie cat = categorieDao.mergeObject(obj);
       return cat.getEtablissements().size() > 0;
    }
 
    @Override
-   public void createObjectManager(final Object obj){
+   public void createObjectManager(final Categorie obj){
       BeanValidator.validateObject(obj, new Validator[] {categorieValidator});
       if(!findDoublonManager(obj)){
-         categorieDao.createObject((Categorie) obj);
+         categorieDao.createObject(obj);
          log.info("Enregistrement objet Categorie " + obj.toString());
       }else{
          log.warn("Doublon lors creation objet Categorie " + obj.toString());
@@ -153,10 +150,10 @@ public class CategorieManagerImpl implements CategorieManager
    }
 
    @Override
-   public void updateObjectManager(final Object obj){
+   public void updateObjectManager(final Categorie obj){
       BeanValidator.validateObject(obj, new Validator[] {categorieValidator});
       if(!findDoublonManager(obj)){
-         categorieDao.updateObject((Categorie) obj);
+         categorieDao.updateObject(obj);
          log.info("Modification objet Categorie " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet Categorie " + obj.toString());
@@ -165,18 +162,10 @@ public class CategorieManagerImpl implements CategorieManager
    }
 
    @Override
-   public void removeObjectManager(final Object obj){
+   public void removeObjectManager(final Categorie obj){
       if(obj != null){
-         //			if (!isUsedObjectManager(obj)) {
-         categorieDao.removeObject(((Categorie) obj).getCategorieId());
+         categorieDao.removeObject(obj.getCategorieId());
          log.info("Suppression objet Categorie " + obj.toString());
-         //			} else {
-         //				log.warn("Suppression objet Categorie " 
-         //						+ obj.toString()
-         //						+ " impossible car est reference " 
-         //						+ "(par Etablissement)");
-         //				throw new ObjectUsedException();
-         //			}
       }else{
          log.warn("Suppression d'une Categorie null");
       }

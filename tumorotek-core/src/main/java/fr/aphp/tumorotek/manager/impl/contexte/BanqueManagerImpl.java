@@ -44,7 +44,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -292,9 +292,8 @@ public class BanqueManagerImpl implements BanqueManager
          prlvts.size();
 
          return prlvts;
-      }else{
-         return new HashSet<>();
       }
+      return new HashSet<>();
    }
 
    /**
@@ -310,9 +309,8 @@ public class BanqueManagerImpl implements BanqueManager
          echans.size();
 
          return echans;
-      }else{
-         return new HashSet<>();
       }
+      return new HashSet<>();
    }
 
    /**
@@ -328,9 +326,8 @@ public class BanqueManagerImpl implements BanqueManager
          derives.size();
 
          return derives;
-      }else{
-         return new HashSet<>();
       }
+      return new HashSet<>();
    }
 
    /**
@@ -349,22 +346,9 @@ public class BanqueManagerImpl implements BanqueManager
             services.add(itor.next().getService());
          }
          return services;
-      }else{
-         return new HashSet<>();
       }
+      return new HashSet<>();
    }
-
-   //	@Override
-   //	public Set<TableCodage> getTablesCodageManager(Banque banque) {
-   //		if (banque != null) {
-   //			banque = banqueDao.mergeObject(banque);
-   //			Set<TableCodage> tables = banque.getTablesCodage();
-   //			tables.size();		
-   //			return tables;
-   //		} else {
-   //			return new HashSet<TableCodage>();
-   //		}
-   //	}
 
    @Override
    public Set<Conteneur> getConteneursManager(Banque banque){
@@ -373,9 +357,8 @@ public class BanqueManagerImpl implements BanqueManager
          final Set<Conteneur> conts = banque.getConteneurs();
          conts.size();
          return conts;
-      }else{
-         return new HashSet<>();
       }
+      return new HashSet<>();
    }
 
    @Override
@@ -387,12 +370,11 @@ public class BanqueManagerImpl implements BanqueManager
    public List<Banque> findByPlateformeAndArchiveManager(final Plateforme pf, final Boolean archive){
       if(archive != null){
          return banqueDao.findByPlateformeAndArchive(pf, archive);
-      }else{
-         final List<Banque> banks = banqueDao.findByPlateformeAndArchive(pf, false);
-         banks.addAll(banqueDao.findByPlateformeAndArchive(pf, true));
-         Collections.sort(banks);
-         return banks;
       }
+      final List<Banque> banks = banqueDao.findByPlateformeAndArchive(pf, false);
+      banks.addAll(banqueDao.findByPlateformeAndArchive(pf, true));
+      Collections.sort(banks);
+      return banks;
    }
 
    @Override
@@ -401,10 +383,9 @@ public class BanqueManagerImpl implements BanqueManager
          final Set<Banque> banks = new HashSet<>(banqueDao.findByEntiteConsultByUtilisateur(usr, entite, pf));
          banks.addAll(banqueDao.findByUtilisateurIsAdmin(usr, pf));
          return new ArrayList<>(banks);
-      }else{ // since 2.0.13
-         // archive = false since 2.1
-         return banqueDao.findByPlateformeAndArchive(pf, false);
-      }
+      } // since 2.0.13
+        // archive = false since 2.1
+      return banqueDao.findByPlateformeAndArchive(pf, false);
    }
 
    @Override
@@ -413,10 +394,9 @@ public class BanqueManagerImpl implements BanqueManager
          final List<Banque> banks = new ArrayList<>(banqueDao.findByEntiteModifByUtilisateur(usr, entite, pf));
          banks.addAll(banqueDao.findByUtilisateurIsAdmin(usr, pf));
          return new ArrayList<>(banks);
-      }else{ // since 2.0.13
-         // archive = false since 2.1
-         return banqueDao.findByPlateformeAndArchive(pf, false);
-      }
+      } // since 2.0.13
+        // archive = false since 2.1
+      return banqueDao.findByPlateformeAndArchive(pf, false);
    }
 
    @Override
@@ -439,18 +419,16 @@ public class BanqueManagerImpl implements BanqueManager
    public List<Banque> findByUtilisateurAndPFManager(final Utilisateur usr, final Plateforme pf){
       if(usr != null && pf != null){
          return banqueDao.findByUtilisateurAndPF(usr, pf);
-      }else{
-         return new ArrayList<>();
       }
+         return new ArrayList<>();
    }
 
    @Override
    public boolean findDoublonManager(final Banque banque){
       if(banque.getBanqueId() == null){
          return banqueDao.findByNom(banque.getNom()).contains(banque);
-      }else{
-         return banqueDao.findByExcludedId(banque.getBanqueId()).contains(banque);
       }
+         return banqueDao.findByExcludedId(banque.getBanqueId()).contains(banque);
    }
 
    @Override
@@ -920,9 +898,8 @@ public class BanqueManagerImpl implements BanqueManager
          //Set<Imprimante> imps = banque.getImprimantes();
          //imps.size();		
          return new HashSet<>();
-      }else{
-         return new HashSet<>();
       }
+         return new HashSet<>();
    }
 
    @Override
@@ -972,7 +949,6 @@ public class BanqueManagerImpl implements BanqueManager
       }
    }
 
-   
    @Override
    public List<Banque> findBanqueForSwitchManager(final Prelevement p, final Utilisateur u){
 

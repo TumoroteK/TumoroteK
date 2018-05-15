@@ -106,10 +106,8 @@ public class CessionTypeManagerImpl implements CessionTypeManager
             type = type + "%";
          }
          return cessionTypeDao.findByType(type);
-      }else{
-         return new ArrayList<>();
       }
-
+      return new ArrayList<>();
    }
 
 }

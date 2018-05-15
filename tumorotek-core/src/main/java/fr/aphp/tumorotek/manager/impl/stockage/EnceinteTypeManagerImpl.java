@@ -105,37 +105,34 @@ public class EnceinteTypeManagerImpl implements EnceinteTypeManager
    }
 
    @Override
-   public boolean findDoublonManager(final Object o){
+   public boolean findDoublonManager(final EnceinteType o){
       if(o != null){
-         final EnceinteType type = (EnceinteType) o;
+         final EnceinteType type = o;
          if(type.getEnceinteTypeId() == null){
             return enceinteTypeDao.findAll().contains(type);
-         }else{
-            return enceinteTypeDao.findByExcludedId(type.getEnceinteTypeId()).contains(type);
          }
-      }else{
-         return false;
+         return enceinteTypeDao.findByExcludedId(type.getEnceinteTypeId()).contains(type);
       }
+      return false;
    }
 
    @Override
-   public boolean isUsedObjectManager(final Object obj){
-      final EnceinteType type = enceinteTypeDao.mergeObject((EnceinteType) obj);
+   public boolean isUsedObjectManager(final EnceinteType obj){
+      final EnceinteType type = enceinteTypeDao.mergeObject(obj);
       return type.getEnceintes().size() > 0;
    }
 
    @Override
-   public void createObjectManager(final Object obj){
+   public void createObjectManager(final EnceinteType obj){
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
-      if(((TKThesaurusObject) obj).getPlateforme() == null){
+      if(obj.getPlateforme() == null){
          throw new RequiredObjectIsNullException("Nature", "creation", "Plateforme");
-      }else{
-         ((TKThesaurusObject) obj).setPlateforme(plateformeDao.mergeObject(((TKThesaurusObject) obj).getPlateforme()));
       }
+      obj.setPlateforme(plateformeDao.mergeObject(((TKThesaurusObject) obj).getPlateforme()));
       BeanValidator.validateObject(obj, new Validator[] {enceinteTypeValidator});
       if(!findDoublonManager(obj)){
-         enceinteTypeDao.createObject((EnceinteType) obj);
+         enceinteTypeDao.createObject(obj);
          log.info("Enregistrement objet EnceinteType " + obj.toString());
       }else{
          log.warn("Doublon lors creation objet EnceinteType " + obj.toString());
@@ -144,10 +141,10 @@ public class EnceinteTypeManagerImpl implements EnceinteTypeManager
    }
 
    @Override
-   public void updateObjectManager(final Object obj){
+   public void updateObjectManager(final EnceinteType obj){
       BeanValidator.validateObject(obj, new Validator[] {enceinteTypeValidator});
       if(!findDoublonManager(obj)){
-         enceinteTypeDao.updateObject((EnceinteType) obj);
+         enceinteTypeDao.updateObject(obj);
          log.info("Modification objet EnceinteType " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet EnceinteType " + obj.toString());
@@ -156,10 +153,10 @@ public class EnceinteTypeManagerImpl implements EnceinteTypeManager
    }
 
    @Override
-   public void removeObjectManager(final Object obj){
+   public void removeObjectManager(final EnceinteType obj){
       if(obj != null){
          if(!isUsedObjectManager(obj)){
-            enceinteTypeDao.removeObject(((EnceinteType) obj).getEnceinteTypeId());
+            enceinteTypeDao.removeObject(obj.getEnceinteTypeId());
             log.info("Suppression objet EnceinteType " + obj.toString());
          }else{
             log.warn("Suppression objet EnceinteType " + obj.toString() + " impossible car est reference " + "(par Enceinte)");
@@ -171,7 +168,7 @@ public class EnceinteTypeManagerImpl implements EnceinteTypeManager
    }
 
    @Override
-   public List<? extends TKThesaurusObject> findByOrderManager(final Plateforme pf){
+   public List<EnceinteType> findByOrderManager(final Plateforme pf){
       return enceinteTypeDao.findByOrder(pf);
    }
 
@@ -179,8 +176,7 @@ public class EnceinteTypeManagerImpl implements EnceinteTypeManager
    public List<EnceinteType> findByTypeManager(final String type, final Plateforme pf){
       if(type != null && pf != null){
          return enceinteTypeDao.findByTypeAndPf(type, pf);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 }

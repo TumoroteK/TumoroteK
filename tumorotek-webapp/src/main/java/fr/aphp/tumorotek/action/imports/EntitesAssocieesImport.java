@@ -57,7 +57,7 @@ import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
  * @version 2.0.13.2
  * @author Mathieu BARTHELEMY
  */
-public class EntitesAssocieesImport extends OneToManyComponent
+public class EntitesAssocieesImport extends OneToManyComponent<EntiteDecorator>
 {
 
    private static final long serialVersionUID = -8965931524670323917L;
@@ -78,8 +78,8 @@ public class EntitesAssocieesImport extends OneToManyComponent
 
    
    @Override
-   public void setObjects(final List<? extends Object> objs){
-      this.objects = (List<EntiteDecorator>) objs;
+   public void setObjects(final List<EntiteDecorator> objs){
+      this.objects = objs;
       updateComponent();
    }
 
@@ -96,8 +96,8 @@ public class EntitesAssocieesImport extends OneToManyComponent
    }
 
    @Override
-   public void addToListObjects(final Object obj){
-      getObjects().add((EntiteDecorator) obj);
+   public void addToListObjects(final EntiteDecorator obj){
+      getObjects().add(obj);
 
       if(Path.getComponent(pathToRespond) != null){
          Events.postEvent(new Event("onGetAddedObject", Path.getComponent(pathToRespond), obj));
@@ -199,10 +199,10 @@ public class EntitesAssocieesImport extends OneToManyComponent
    @Override
    public void onClick$addSelObj(){
       if(objectsBox.getSelectedIndex() > -1){
-         addToListObjects(objectsBox.getModel().getElementAt(objectsBox.getSelectedIndex()));
+         addToListObjects((EntiteDecorator) objectsBox.getModel().getElementAt(objectsBox.getSelectedIndex()));
       }else{ // selectionne le premier de la liste
          if(objectsBox.getItemCount() > 0){
-            addToListObjects(objectsBox.getModel().getElementAt(0));
+            addToListObjects((EntiteDecorator) objectsBox.getModel().getElementAt(0));
          }
       }
 

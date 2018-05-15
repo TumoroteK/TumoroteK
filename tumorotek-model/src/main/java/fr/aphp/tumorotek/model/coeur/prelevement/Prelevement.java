@@ -66,7 +66,7 @@ import org.hibernate.annotations.GenericGenerator;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
-import fr.aphp.tumorotek.model.coeur.prelevement.delegate.PrelevementDelegate;
+import fr.aphp.tumorotek.model.coeur.prelevement.delegate.AbstractPrelevementDelegate;
 import fr.aphp.tumorotek.model.coeur.prelevement.delegate.PrelevementSero;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
@@ -190,7 +190,6 @@ public class Prelevement implements TKAnnotableObject, Serializable
    private String code;
    private Date consentDate;
    private Calendar datePrelevement;
-   private Calendar datePeremption;
    private Integer conditNbr;
    private Calendar dateDepart;
    private Float transportTemp;
@@ -220,12 +219,12 @@ public class Prelevement implements TKAnnotableObject, Serializable
    //private Unite volumeUnite;
    private ConsentType consentType;
    private Maladie maladie;
-
+   
    private Set<LaboInter> laboInters = new HashSet<>();
    private Set<Echantillon> echantillons = new HashSet<>();
    private Set<Risque> risques = new HashSet<>();
 
-   private PrelevementDelegate delegate;
+   private AbstractPrelevementDelegate delegate;
 
    public Prelevement(){}
 
@@ -294,27 +293,6 @@ public class Prelevement implements TKAnnotableObject, Serializable
          this.datePrelevement.setTime(cal.getTime());
       }else{
          this.datePrelevement = null;
-      }
-   }
-
-   @Temporal(TemporalType.TIMESTAMP)
-   @Column(name = "DATE_PEREMPTION", nullable = true)
-   public Calendar getDatePeremption(){
-      if(datePeremption != null){
-         final Calendar cal = Calendar.getInstance();
-         cal.setTime(datePeremption.getTime());
-         return cal;
-      }else{
-         return null;
-      }
-   }
-
-   public void setDatePeremption(final Calendar cal){
-      if(cal != null){
-         this.datePeremption = Calendar.getInstance();
-         this.datePeremption.setTime(cal.getTime());
-      }else{
-         this.datePeremption = null;
       }
    }
 
@@ -600,7 +578,7 @@ public class Prelevement implements TKAnnotableObject, Serializable
       this.maladie = m;
    }
 
-   @OneToMany(mappedBy = "prelevement", cascade = {CascadeType.REMOVE})
+   @OneToMany(mappedBy = "prelevement", cascade = {CascadeType.REMOVE}, fetch=FetchType.EAGER)
    public Set<LaboInter> getLaboInters(){
       return this.laboInters;
    }
@@ -689,7 +667,6 @@ public class Prelevement implements TKAnnotableObject, Serializable
       clone.setPreleveur(this.getPreleveur());
       clone.setServicePreleveur(this.getServicePreleveur());
       clone.setDatePrelevement(this.getDatePrelevement());
-      clone.setDatePeremption(this.getDatePeremption());
       clone.setPrelevementType(this.getPrelevementType());
       clone.setConditType(this.getConditType());
       clone.setConditMilieu(this.getConditMilieu());
@@ -711,9 +688,7 @@ public class Prelevement implements TKAnnotableObject, Serializable
       clone.setConformeArrivee(this.getConformeArrivee());
       clone.setEtatIncomplet(this.getEtatIncomplet());
       clone.setArchive(this.getArchive());
-
       clone.setRisques(getRisques());
-
       clone.setDelegate(getDelegate());
 
       return clone;
@@ -735,45 +710,15 @@ public class Prelevement implements TKAnnotableObject, Serializable
       return code;
    }
 
-   @OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "prelevement",
-      targetEntity = PrelevementDelegate.class, fetch = FetchType.EAGER)
-   public PrelevementDelegate getDelegate(){
+   @OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "delegator",
+      targetEntity = AbstractPrelevementDelegate.class)
+   public AbstractPrelevementDelegate getDelegate(){
       return delegate;
    }
 
-   public void setDelegate(final PrelevementDelegate del){
+   public void setDelegate(final AbstractPrelevementDelegate del){
       this.delegate = del;
    }
-
-   //	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true,
-   //			mappedBy = "prelevement", targetEntity = PrelevementDelegate.class, 
-   //			fetch = FetchType.EAGER)
-   //	public PrelevementSero getPrelevementSero() {
-   //		if (delegate instanceof PrelevementSero) {
-   //			return (PrelevementSero) delegate;
-   //		} else {
-   //			return null;
-   //		}
-   //	}
-   //	
-   //	public void setPrelevementSero(PrelevementDelegate del) {
-   //		this.delegate = del;
-   //	}
-   //	
-   //	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true,
-   //			mappedBy = "prelevement", targetEntity = PrelevementDelegate.class, 
-   //			fetch = FetchType.EAGER)
-   //	public PrelevementXeno getPrelevementXeno() {
-   //		if (delegate instanceof PrelevementXeno) {
-   //			return (PrelevementXeno) delegate;
-   //		} else {
-   //			return null;
-   //		}
-   //	}
-   //	
-   //	public void setPrelevementXeno(PrelevementDelegate del) {
-   //		this.delegate = del;
-   //	}
 
    @Transient
    public PrelevementSero getPrelevementSero(){

@@ -63,7 +63,7 @@ import fr.aphp.tumorotek.action.controller.AbstractListeController2;
  * @author Mathieu BARTHELEMY
  * @version 2.0
  */
-public abstract class OneToManyComponent extends AbstractController
+public abstract class OneToManyComponent<T extends Object> extends AbstractController
 {
 
    private static final long serialVersionUID = 8722970657499733752L;
@@ -209,9 +209,9 @@ public abstract class OneToManyComponent extends AbstractController
    /************************** ABSTRACT**************************************/
    /*************************************************************************/
 
-   public abstract List<? extends Object> getObjects();
+   public abstract List<T> getObjects();
 
-   public abstract void setObjects(List<? extends Object> objs);
+   public abstract void setObjects(List<T> objs);
 
    /**
     * Renvoie la valeur d'entete affichee dans le Label du groupe Parent. 
@@ -231,7 +231,7 @@ public abstract class OneToManyComponent extends AbstractController
     */
    public abstract List<? extends Object> findObjectsAddable();
 
-   public abstract void addToListObjects(Object obj);
+   public abstract void addToListObjects(T obj);
 
    public abstract void removeFromListObjects(Object obj);
 

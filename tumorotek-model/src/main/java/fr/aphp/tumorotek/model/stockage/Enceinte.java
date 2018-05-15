@@ -359,9 +359,8 @@ public class Enceinte implements TKdataObject, TKFantomableObject, Serializable
    public String toString(){
       if(this.nom != null){
          return "{" + this.nom + "}";
-      }else{
-         return "{Empty Enceinte}";
       }
+      return "{Empty Enceinte}";
    }
 
    /**

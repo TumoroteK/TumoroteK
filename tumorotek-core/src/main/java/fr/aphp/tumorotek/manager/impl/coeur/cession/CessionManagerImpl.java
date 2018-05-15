@@ -56,6 +56,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.cession.CessionDao;
+import fr.aphp.tumorotek.dao.cession.CessionDelegateDao;
 import fr.aphp.tumorotek.dao.cession.CessionExamenDao;
 import fr.aphp.tumorotek.dao.cession.CessionStatutDao;
 import fr.aphp.tumorotek.dao.cession.CessionTypeDao;
@@ -118,6 +119,7 @@ public class CessionManagerImpl implements CessionManager
    private CessionStatutDao cessionStatutDao;
    private TransporteurDao transporteurDao;
    private DestructionMotifDao destructionMotifDao;
+   private CessionDelegateDao cessionDelegateDao;
    private CederObjetManager cederObjetManager;
    private OperationTypeDao operationTypeDao;
    private OperationManager operationManager;
@@ -164,6 +166,10 @@ public class CessionManagerImpl implements CessionManager
 
    public void setDestructionMotifDao(final DestructionMotifDao dDao){
       this.destructionMotifDao = dDao;
+   }
+
+   public void setCessionDelegateDao(CessionDelegateDao cessionDelegateDao){
+      this.cessionDelegateDao = cessionDelegateDao;
    }
 
    public void setCederObjetManager(final CederObjetManager cManager){
@@ -231,8 +237,8 @@ public class CessionManagerImpl implements CessionManager
       if(banques != null && banques.size() > 0){
          return cessionDao.findByBanquesAllIds(banques);
       }
-         return new ArrayList<>();
-      }
+      return new ArrayList<>();
+   }
 
    /**
     * Recherche une liste de Cessions dont le numéro est égal à
@@ -249,8 +255,8 @@ public class CessionManagerImpl implements CessionManager
          }
          return cessionDao.findByNumero(numero);
       }
-         return new ArrayList<>();
-      }
+      return new ArrayList<>();
+   }
 
    @Override
    public List<Integer> findByNumeroWithBanqueReturnIdsManager(String numero, final List<Banque> banques,
@@ -262,8 +268,8 @@ public class CessionManagerImpl implements CessionManager
          }
          return cessionDao.findByNumeroWithBanqueReturnIds(numero, banques);
       }
-         return new ArrayList<>();
-      }
+      return new ArrayList<>();
+   }
 
    @Override
    public List<Integer> findByStatutWithBanquesReturnIdsManager(final String statut, final List<Banque> banques){
@@ -271,8 +277,8 @@ public class CessionManagerImpl implements CessionManager
       if(statut != null && banques != null){
          return cessionDao.findByCessionStatutAndBanqueReturnIds(statut, banques);
       }
-         return new ArrayList<>();
-      }
+      return new ArrayList<>();
+   }
 
    @Override
    public List<Integer> findByEtatIncompletWithBanquesReturnIdsManager(final boolean incomplet, final List<Banque> banques){
@@ -292,8 +298,8 @@ public class CessionManagerImpl implements CessionManager
       if(banque != null){
          return cessionDao.findByBanqueSelectNumero(banque);
       }
-         return new ArrayList<>();
-      }
+      return new ArrayList<>();
+   }
 
    /**
     * Renvoie tous les CederObjets d'une cession.
@@ -310,8 +316,8 @@ public class CessionManagerImpl implements CessionManager
 
          return ceders;
       }
-         return new HashSet<>();
-      }
+      return new HashSet<>();
+   }
 
    @Override
    public Boolean findDoublonManager(final Cession cession){
@@ -323,13 +329,13 @@ public class CessionManagerImpl implements CessionManager
             if(cession.getCessionId() == null){
                return true;
             }
-               for(final Cession d : dbls){
-                  if(!d.getCessionId().equals(cession.getCessionId())){
-                     return true;
-                  }
+            for(final Cession d : dbls){
+               if(!d.getCessionId().equals(cession.getCessionId())){
+                  return true;
                }
             }
          }
+      }
       return false;
 
       //			if (cession.getCessionId() == null) {
@@ -358,8 +364,8 @@ public class CessionManagerImpl implements CessionManager
          size = size + cession.getRetours().size();
          return (size > 0);
       }
-         return false;
-      }
+      return false;
+   }
 
    @Override
    public List<Integer> findAfterDateCreationReturnIdsManager(final Calendar date, final List<Banque> banques){
@@ -404,7 +410,7 @@ public class CessionManagerImpl implements CessionManager
     * @param banque Banque à laquelle appartient la cessions.
     * @return List de Cessions.
     */
-   
+
    private List<Cession> findByOperationTypeAndDate(final OperationType oType, final Calendar date, final Banque banque){
       final EntityManager em = entityManagerFactory.createEntityManager();
       final TypedQuery<Integer> opQuery = em.createQuery("SELECT DISTINCT o.objetId FROM "
@@ -476,7 +482,7 @@ public class CessionManagerImpl implements CessionManager
     * @param nbResults Nombre de résultats souhaités.
     * @return Liste de Cessions.
     */
-   
+
    @Override
    public List<Cession> findLastCreationManager(final List<Banque> banques, final int nbResults){
 
@@ -585,7 +591,6 @@ public class CessionManagerImpl implements CessionManager
     * Merge et assigne tous les objects associes non obligatoires à 
     * à la cession (sauf partie Contrat, sujette à la validation).
     * @param cession
-    * @param banque TODO Jamais utilisé ?
     * @param cessionExamen
     * @param destinataire
     * @param servDest
@@ -595,10 +600,11 @@ public class CessionManagerImpl implements CessionManager
     * @param destructionMotif
     * @param contrat
     */
-   private void mergeNonRequiredObjects(final Cession cession, /*final Banque banque,*/ final CessionExamen cessionExamen,
+   private void mergeNonRequiredObjects(final Cession cession, final CessionExamen cessionExamen,
       final Collaborateur destinataire, final Service servDest, final Collaborateur demandeur, final Collaborateur executant,
       final Transporteur transporteur, final DestructionMotif destructionMotif, final Contrat contrat){
 
+      cession.setDelegate( cessionDelegateDao.mergeObject( cession.getDelegate() ) );
       cession.setCessionExamen(cessionExamenDao.mergeObject(cessionExamen));
       cession.setDestinataire(collaborateurDao.mergeObject(destinataire));
       cession.setServiceDest(serviceDao.mergeObject(servDest));
@@ -625,62 +631,62 @@ public class CessionManagerImpl implements CessionManager
       if(findDoublonManager(cession)){
          throw new DoublonFoundException("Cession", "creation", cession.getNumero(), null);
       }
-         try{
-            // validation du Contrat
-            BeanValidator.validateObject(cession, new Validator[] {cessionValidator});
+      try{
+         // validation du Contrat
+         BeanValidator.validateObject(cession, new Validator[] {cessionValidator});
 
-            if(cederObjets != null){
-               for(int i = 0; i < cederObjets.size(); i++){
-                  final CederObjet obj = cederObjets.get(i);
+         if(cederObjets != null){
+            for(int i = 0; i < cederObjets.size(); i++){
+               final CederObjet obj = cederObjets.get(i);
 
-                  cederObjetManager.validateObjectManager(obj, cession, obj.getEntite(), obj.getQuantiteUnite(), "creation");
-               }
+               cederObjetManager.validateObjectManager(obj, cession, obj.getEntite(), obj.getQuantiteUnite(), "creation");
             }
+         }
 
          mergeNonRequiredObjects(cession, /*banque,*/ cessionExamen, destinataire, servDest, demandeur, executant, transporteur,
-               destructionMotif, contrat);
+            destructionMotif, contrat);
 
-            cessionDao.createObject(cession);
-            log.info("Enregistrement objet Cession " + cession.toString());
+         cessionDao.createObject(cession);
+         log.info("Enregistrement objet Cession " + cession.toString());
 
-            //Enregistrement de l'operation associee
-            final Operation creationOp = new Operation();
-            creationOp.setDate(Utils.getCurrentSystemCalendar());
-            operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), cession);
+         //Enregistrement de l'operation associee
+         final Operation creationOp = new Operation();
+         creationOp.setDate(Utils.getCurrentSystemCalendar());
+         operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), cession);
 
-            // enregistrements des cederobjets
-            if(cederObjets != null){
-               for(int i = 0; i < cederObjets.size(); i++){
-                  final CederObjet obj = cederObjets.get(i);
-                  cederObjetManager.createObjectManager(obj, cession, obj.getEntite(), obj.getQuantiteUnite());
-               }
+         // enregistrements des cederobjets
+         if(cederObjets != null){
+            for(int i = 0; i < cederObjets.size(); i++){
+               final CederObjet obj = cederObjets.get(i);
+               cederObjetManager.createObjectManager(obj, cession, obj.getEntite(), obj.getQuantiteUnite());
             }
-
-            // cree les annotations, null operation pour
-            // laisser la possibilité création/modification au sein 
-            // de la liste
-            if(listAnnoToCreateOrUpdate != null){
-               annotationValeurManager.createAnnotationValeurListManager(listAnnoToCreateOrUpdate, cession, utilisateur, null,
-                  baseDir, filesCreated, null);
-            }
-         }catch(final RuntimeException re){
-            if(filesCreated != null){
-               for(final File f : filesCreated){
-                  f.delete();
-               }
-            }else{
-               log.warn("Rollback création fichier n'a pas pu être réalisée");
-            }
-            // en cas d'erreur lors enregistrement annotation
-            // le rollback se fera mais echantillon aura un id assigne
-            // qui déclenchera une TransientException si on essaie 
-            // d'enregistrer a nouveau.
-            if(cession.getCessionId() != null){
-               cession.setCessionId(null);
-            }
-            throw (re);
          }
+
+         // cree les annotations, null operation pour
+         // laisser la possibilité création/modification au sein 
+         // de la liste
+         if(listAnnoToCreateOrUpdate != null){
+            annotationValeurManager.createAnnotationValeurListManager(listAnnoToCreateOrUpdate, cession, utilisateur, null,
+               baseDir, filesCreated, null);
+         }
+      }catch(final RuntimeException re){
+         if(filesCreated != null){
+            for(final File f : filesCreated){
+               f.delete();
+            }
+         }else{
+            log.warn("Rollback création fichier n'a pas pu être réalisée");
+         }
+         // en cas d'erreur lors enregistrement annotation
+         // le rollback se fera mais echantillon aura un id assigne
+         // qui déclenchera une TransientException si on essaie 
+         // d'enregistrer a nouveau.
+         if(cession.getCessionId() != null){
+            cession.setCessionId(null);
+         }
+         throw (re);
       }
+   }
 
    @Override
    public void updateObjectManager(final Cession cession, final Banque banque, final CessionType cessionType,
@@ -699,100 +705,93 @@ public class CessionManagerImpl implements CessionManager
          throw new DoublonFoundException("Cession", "modification", cession.getNumero(), null);
       }
 
-         try{
-            // validation du Contrat
-            BeanValidator.validateObject(cession, new Validator[] {cessionValidator});
+      try{
+         // validation du Contrat
+         BeanValidator.validateObject(cession, new Validator[] {cessionValidator});
 
-            if(cederObjets != null){
-               for(int i = 0; i < cederObjets.size(); i++){
-                  final CederObjet obj = cederObjets.get(i);
+         if(cederObjets != null){
+            for(final CederObjet obj : cederObjets){
+               cederObjetManager.validateObjectManager(obj, cession, obj.getEntite(), obj.getQuantiteUnite(), "modification");
+            }
+         }
 
-                  cederObjetManager.validateObjectManager(obj, cession, obj.getEntite(), obj.getQuantiteUnite(), "modification");
+         mergeNonRequiredObjects(cession, /*banque,*/ cessionExamen, destinataire, servDest, demandeur, executant, transporteur,
+            destructionMotif, contrat);
+
+         cessionDao.updateObject(cession);
+         log.info("Modification objet Cession " + cession.toString());
+
+         //Enregistrement de l'operation associee
+         final Operation creationOp = new Operation();
+         creationOp.setDate(Utils.getCurrentSystemCalendar());
+         operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
+            cession);
+
+         // enregistrements des cederobjets
+         if(cederObjets != null){
+            for(final CederObjet obj : cederObjets){
+               if(cederObjetManager.findByIdManager(obj.getPk()) == null){
+                  cederObjetManager.createObjectManager(obj, cession, obj.getEntite(), obj.getQuantiteUnite());
+               }else{
+                  cederObjetManager.updateObjectManager(obj, cession, obj.getEntite(), obj.getQuantiteUnite());
                }
             }
 
-         mergeNonRequiredObjects(cession, /*banque,*/ cessionExamen, destinataire, servDest, demandeur, executant, transporteur,
-               destructionMotif, contrat);
-
-            cessionDao.updateObject(cession);
-            log.info("Modification objet Cession " + cession.toString());
-
-            //Enregistrement de l'operation associee
-            final Operation creationOp = new Operation();
-            creationOp.setDate(Utils.getCurrentSystemCalendar());
-            operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
-               cession);
-
-            // enregistrements des cederobjets
-            if(cederObjets != null){
-               for(int i = 0; i < cederObjets.size(); i++){
-                  final CederObjet obj = cederObjets.get(i);
-                  if(cederObjetManager.findByIdManager(obj.getPk()) == null){
-                     cederObjetManager.createObjectManager(obj, cession, obj.getEntite(), obj.getQuantiteUnite());
-                  }else{
-                     cederObjetManager.updateObjectManager(obj, cession, obj.getEntite(), obj.getQuantiteUnite());
-                  }
-               }
-
-               // suppression des anciens CederObjet qui n'existent
-               // plus
-               final Set<CederObjet> oldCedes = getCederObjetsManager(cession);
-               final Iterator<CederObjet> it = oldCedes.iterator();
-               while(it.hasNext()){
-                  final CederObjet tmp = it.next();
-                  if(!cederObjets.contains(tmp)){
-                     cederObjetManager.removeObjectManager(tmp);
-                  }
-               }
-            }else{
-               // suppression des anciens CederObjets qui n'existent
-               // plus
-               final Set<CederObjet> oldCedes = getCederObjetsManager(cession);
-               final Iterator<CederObjet> it = oldCedes.iterator();
-               while(it.hasNext()){
-                  final CederObjet tmp = it.next();
+            // suppression des anciens CederObjet qui n'existent
+            // plus
+            final Set<CederObjet> oldCedes = getCederObjetsManager(cession);
+            for(CederObjet tmp : oldCedes){
+               if(!cederObjets.contains(tmp)){
                   cederObjetManager.removeObjectManager(tmp);
                }
             }
-            // Annotations
-            // suppr les annotations
-            if(listAnnoToDelete != null){
-               annotationValeurManager.removeAnnotationValeurListManager(listAnnoToDelete, filesToDelete);
+         }else{
+            // suppression des anciens CederObjets qui n'existent
+            // plus
+            final Set<CederObjet> oldCedes = getCederObjetsManager(cession);
+            for(CederObjet tmp : oldCedes){
+               cederObjetManager.removeObjectManager(tmp);
             }
-
-            // update les annotations, null operation pour
-            // laisser la possibilité création/modification au sein 
-            // de la liste
-            if(listAnnoToCreateOrUpdate != null){
-               annotationValeurManager.createAnnotationValeurListManager(listAnnoToCreateOrUpdate, cession, utilisateur, null,
-                  baseDir, filesCreated, filesToDelete);
-            }
-            // enregistre operation associee annotation 
-            // si il y a eu des deletes et pas d'updates
-            if((listAnnoToCreateOrUpdate == null || listAnnoToCreateOrUpdate.isEmpty())
-               && (listAnnoToDelete != null && !listAnnoToDelete.isEmpty())){
-               CreateOrUpdateUtilities.createAssociateOperation(cession, operationManager,
-                  operationTypeDao.findByNom("Annotation").get(0), utilisateur);
-            }
-
-            if(filesToDelete != null){
-               for(final File f : filesToDelete){
-                  f.delete();
-               }
-            }
-
-         }catch(final RuntimeException re){
-            // rollback au besoin...
-            if(filesCreated != null){
-               for(final File f : filesCreated){
-                  f.delete();
-               }
-            }else{
-               log.warn("Rollback création fichier n'a pas pu être réalisée");
-            }
-            throw (re);
          }
+         // Annotations
+         // suppr les annotations
+         if(listAnnoToDelete != null){
+            annotationValeurManager.removeAnnotationValeurListManager(listAnnoToDelete, filesToDelete);
+         }
+
+         // update les annotations, null operation pour
+         // laisser la possibilité création/modification au sein 
+         // de la liste
+         if(listAnnoToCreateOrUpdate != null){
+            annotationValeurManager.createAnnotationValeurListManager(listAnnoToCreateOrUpdate, cession, utilisateur, null,
+               baseDir, filesCreated, filesToDelete);
+         }
+         // enregistre operation associee annotation 
+         // si il y a eu des deletes et pas d'updates
+         if((listAnnoToCreateOrUpdate == null || listAnnoToCreateOrUpdate.isEmpty())
+            && (listAnnoToDelete != null && !listAnnoToDelete.isEmpty())){
+            CreateOrUpdateUtilities.createAssociateOperation(cession, operationManager,
+               operationTypeDao.findByNom("Annotation").get(0), utilisateur);
+         }
+
+         if(filesToDelete != null){
+            for(final File f : filesToDelete){
+               f.delete();
+            }
+         }
+
+      }catch(final RuntimeException re){
+         // rollback au besoin...
+         if(filesCreated != null){
+            for(final File f : filesCreated){
+               f.delete();
+            }
+         }else{
+            log.warn("Rollback création fichier n'a pas pu être réalisée");
+         }
+         throw (re);
       }
+   }
 
    @Override
    public void removeObjectManager(final Cession cession, final String comments, final Utilisateur usr,
@@ -827,11 +826,11 @@ public class CessionManagerImpl implements CessionManager
       if(ids != null && ids.size() > 0){
          return cessionDao.findByIdInList(ids);
       }
-         return new ArrayList<>();
-      }
+      return new ArrayList<>();
+   }
 
    @Override
-   
+
    public Map<String, Number> getTypesAndCountsManager(final Cession cession){
 
       final Map<String, Number> out = new HashMap<>();
@@ -875,24 +874,24 @@ public class CessionManagerImpl implements CessionManager
       if(colla != null){
          return cessionDao.findCountByDemandeur(colla).get(0);
       }
-         return new Long(0);
-      }
+      return new Long(0);
+   }
 
    @Override
    public Long findCountByDestinataireManager(final Collaborateur colla){
       if(colla != null){
          return cessionDao.findCountByDestinataire(colla).get(0);
       }
-         return new Long(0);
-      }
+      return new Long(0);
+   }
 
    @Override
    public Long findCountByExecutantManager(final Collaborateur colla){
       if(colla != null){
          return cessionDao.findCountByExecutant(colla).get(0);
       }
-         return new Long(0);
-      }
+      return new Long(0);
+   }
 
    @Override
    public void removeListFromIdsManager(final List<Integer> ids, final String comment, final Utilisateur u){
@@ -906,12 +905,12 @@ public class CessionManagerImpl implements CessionManager
             }
          }
          //         if(filesToDelete != null){
-            for(final File f : filesToDelete){
-               f.delete();
-            }
-         //         }
+         for(final File f : filesToDelete){
+            f.delete();
          }
+         //         }
       }
+   }
 
    @Override
    public List<Cession> findByNumeroInPlateformeManager(final String numero, final Plateforme pf){

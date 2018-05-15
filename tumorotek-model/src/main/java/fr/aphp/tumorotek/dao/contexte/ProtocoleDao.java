@@ -39,8 +39,6 @@ import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
 import fr.aphp.tumorotek.dao.TKThesaurusDao;
-import fr.aphp.tumorotek.model.TKThesaurusObject;
-import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.contexte.Protocole;
 
 /**
@@ -52,7 +50,7 @@ import fr.aphp.tumorotek.model.contexte.Protocole;
  * @version 2.0.6
  *
  */
-public interface ProtocoleDao extends GenericDaoJpa<Protocole, Integer>, TKThesaurusDao
+public interface ProtocoleDao extends GenericDaoJpa<Protocole, Integer>, TKThesaurusDao<Protocole>
 {
 
    /**
@@ -69,8 +67,5 @@ public interface ProtocoleDao extends GenericDaoJpa<Protocole, Integer>, TKThesa
     * @return Liste de Protoccoles.
     */
    List<Protocole> findByExcludedId(Integer id);
-
-   @Override
-   List<TKThesaurusObject> findByOrder(Plateforme pf);
 
 }

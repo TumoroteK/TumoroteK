@@ -637,17 +637,15 @@ public class FicheFusionPatients extends AbstractFicheCombineController
    public String getPatientAConserverDateNaissanceFormated(){
       if(patientAConserver != null){
          return ObjectTypesFormatters.dateRenderer2(this.patientAConserver.getDateNaissance());
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getPatientASupprimerDateNaissanceFormated(){
       if(patientASupprimer != null){
          return ObjectTypesFormatters.dateRenderer2(this.patientASupprimer.getDateNaissance());
-      }else{
-         return null;
       }
+      return null;
    }
 
    public Patient getPatientAConserver(){

@@ -35,24 +35,19 @@
  **/
 package fr.aphp.tumorotek.manager.impl.io.export;
 
-import java.lang.reflect.InvocationTargetException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import fr.aphp.tumorotek.dao.io.export.ChampDao;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.exception.SearchedObjectIdNotExistException;
+import fr.aphp.tumorotek.manager.io.ChampEntiteManager;
 import fr.aphp.tumorotek.manager.io.export.ChampManager;
 import fr.aphp.tumorotek.manager.io.export.GroupementManager;
 import fr.aphp.tumorotek.model.io.export.Champ;
-import fr.aphp.tumorotek.model.systeme.Fichier;
 
 /**
  *
@@ -70,7 +65,9 @@ public class ChampManagerImpl implements ChampManager
 
    /** Bean Dao ChampDao. */
    private ChampDao champDao = null;
-
+   
+   private ChampEntiteManager champEntiteManager;
+   
    public ChampManagerImpl(){
       super();
    }
@@ -100,16 +97,34 @@ public class ChampManagerImpl implements ChampManager
          throw new RequiredObjectIsNullException("Champ", "création", "Champ");
       }
       // On enregsitre d'abord son parent
-      if(parent != null){
-         if(parent.getChampId() != null){
-            parent = champDao.mergeObject(parent);
-         }else{
-            createObjectManager(parent, parent.getChampParent());
-         }
+      if(null != parent){
+         createObjectManager(parent);
       }
+
       champ.setChampParent(parent);
       champDao.createObject(champ);
    }
+
+   /**
+    * Créé un Champ en BDD.
+    * 
+    * @param champ Champ à créer.
+    */
+   @Override
+   public void createObjectManager(final Champ champ){
+      // On vérifie que le groupement n'est pas nul
+      if(champ == null){
+         log.warn("Objet obligatoire Champ manquant lors " + "de la création d'un objet Champ");
+         throw new RequiredObjectIsNullException("Champ", "création", "Champ");
+      }
+      // On enregsitre d'abord son parent
+      if(null != champ.getChampParent()){
+         createObjectManager(champ.getChampParent());
+      }
+
+      champDao.createObject(champ);
+   }
+
 
    /**
     * Met à jour un Champ en BDD.
@@ -127,19 +142,46 @@ public class ChampManagerImpl implements ChampManager
          throw new RequiredObjectIsNullException("Champ", "modification", "Champ");
       }
       //On met à jour le parent d'abord
-      if(parent != null){
-         if(parent.getChampId() != null){
-            parent = champDao.mergeObject(parent);
-         }else{
-            //On supprime le parent précédent
-            if(null != champ.getChampParent() && null != champ.getChampParent().getChampId()){
-               removeObjectManager(champ.getChampParent());
-            }
-            createObjectManager(parent, parent.getChampParent());
-         }
-      }
+      Champ oldChampParent = champDao.findById(champ.getChampId()).getChampParent();
+      updateParent(parent, oldChampParent);
+
       champ.setChampParent(parent);
       champDao.updateObject(champ);
+   }
+
+   /**
+    * Met à jour un Champ en BDD.
+    * 
+    * @param champ Champ à mettre à jour.
+    */
+   @Override
+   public void updateObjectManager(final Champ champ){
+      //On vérifie que le groupement n'est pas nul
+      if(champ == null){
+         log.warn("Objet obligatoire Champ manquant lors " + "de la modification d'un objet Champ");
+         throw new RequiredObjectIsNullException("Champ", "modification", "Champ");
+      }
+      //On met à jour le parent d'abord
+      Champ oldChampParent = champDao.findById(champ.getChampId()).getChampParent();
+      updateParent(champ.getChampParent(), oldChampParent);
+
+      champDao.updateObject(champ);
+   }
+
+   /**
+    * Met à jour un champ parent associé au champ
+    * @param newChampParent l'ancien champ
+    * @param oldChampParent le nouveau champ
+    */
+   private void updateParent(Champ newChampParent, Champ oldChampParent){
+      if(null == newChampParent && null != oldChampParent){ // Suppression du champ
+         removeObjectManager(oldChampParent);
+      }else if(null != newChampParent && null == oldChampParent){ // Nouveau champ
+         createObjectManager(newChampParent, newChampParent.getChampParent());
+      }else if(null != newChampParent && null != oldChampParent){ // Mise à jour Champ
+         newChampParent.setChampId(oldChampParent.getChampId());
+         updateObjectManager(newChampParent, newChampParent.getChampParent());
+      }
    }
 
    /**
@@ -158,18 +200,14 @@ public class ChampManagerImpl implements ChampManager
       // On vérifie que le champ est en BDD
       if(findByIdManager(champ.getChampId()) == null){
          throw new SearchedObjectIdNotExistException("Champ", champ.getChampId());
-      }else{
-         // On supprime d'abord son parent
-         Champ champParent = champ.getChampParent();
-         while(champParent != null){
-            final Champ grandParent = champParent.getChampParent();
-            champDao.removeObject(champParent.getChampId());
-            champParent = grandParent;
-         }
-
-         // On supprime le champ
-         champDao.removeObject(champ.getChampId());
       }
+      // On supprime d'abord son parent
+      if(null != champ.getChampParent()){
+         removeObjectManager(champ.getChampParent());
+      }
+
+      // On supprime le champ
+      champDao.removeObject(champ.getChampId());
    }
 
    /**
@@ -247,123 +285,23 @@ public class ChampManagerImpl implements ChampManager
 
    @Override
    public Object getValueForObjectManager(final Champ champ, final Object obj, final boolean prettyFormat){
+      /*
+       * TODO Cette fonction ne traite que les champsEntite...
+       * TODO Creer une methode getValueForObjectManager dans dans ChampAnnotationManager afin de l'utiliser ici 
+       * --> FIXME Faire cela entraine une dépendance cyclique: >ChampManager -> ChampAnnotationManager -> ChampCalculeManager -> ChampManager<
+       */
       Object res = null;
       if(champ != null && obj != null){
-         String value = null;
          // si le champ est bien un champ interne à TK
-         if(champ.getChampEntite() != null){
-            // on formate le nom du champ
-            String nomChamp =
-               champ.getChampEntite().getNom().replaceFirst(".", (champ.getChampEntite().getNom().charAt(0) + "").toLowerCase());
-            if(nomChamp.endsWith("Id")){
-               nomChamp = nomChamp.substring(0, nomChamp.length() - 2);
-            }
-
-            // on vérifie que l'objet a bien ce champ
-            if(PropertyUtils.isReadable(obj, nomChamp)){
-               try{
-                  // extraction de la valeur
-                  res = PropertyUtils.getProperty(obj, nomChamp);
-               }catch(final IllegalAccessException e){
-                  log.error(e);
-               }catch(final InvocationTargetException e){
-                  log.error(e);
-               }catch(final NoSuchMethodException e){
-                  log.error(e);
-               }
-               // si la valeur retournée n'est pas null
-               if(res != null){
-                  // si le champ à extraire n'est pas un thésaurus
-                  if(champ.getChampEntite().getQueryChamp() == null){
-                     // on va formater la valeur de retour pour
-                     // obtenir un String
-                     String type = null;
-                     try{
-                        type = PropertyUtils.getPropertyDescriptor(obj, nomChamp).getPropertyType().getSimpleName();
-                     }catch(final IllegalAccessException e){
-                        log.error(e);
-                     }catch(final InvocationTargetException e){
-                        log.error(e);
-                     }catch(final NoSuchMethodException e){
-                        log.error(e);
-                     }
-                     if(type != null && prettyFormat){
-                        // set d'un string
-                        if(type.equals("String")){
-                           value = res.toString();
-                        }else if(type.equals("Integer")){
-                           // si l'attibut est un integer, on caste
-                           // la valeur issue de l'objet
-                           final Integer tmp = (Integer) res;
-                           value = String.valueOf(tmp);
-                        }else if(type.equals("Float")){
-                           // si l'attibut est un float, on caste
-                           // la valeur issue de l'objet
-                           final Float tmp = (Float) res;
-                           value = String.valueOf(tmp);
-                        }else if(type.equals("Boolean")){
-                           // si l'attibut est un boolean, on caste
-                           // la valeur issue de l'objet
-                           final Boolean tmp = (Boolean) res;
-                           if(tmp){
-                              value = "Oui";
-                           }else{
-                              value = "Non";
-                           }
-                        }else if(type.equals("Date")){
-                           // si l'attibut est une date, on caste
-                           // la valeur issue de l'objet
-                           final Date date = (Date) res;
-                           final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                           value = sdf.format(date);
-                        }else if(type.equals("Calendar")){
-                           // si l'attibut est un calendar, on caste
-                           // la valeur issue de l'objet
-                           final Calendar tmp = (Calendar) res;
-                           SimpleDateFormat sdf = null;
-                           if(tmp.get(Calendar.HOUR_OF_DAY) > 0 || tmp.get(Calendar.MINUTE) > 0 || tmp.get(Calendar.SECOND) > 0){
-                              sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-                           }else{
-                              sdf = new SimpleDateFormat("dd/MM/yyyy");
-                           }
-                           value = sdf.format(tmp.getTime());
-                        }else if(type.equals("Fichier")){
-                           value = ((Fichier) res).getNom();
-                        }
-                        return value;
-                     }
-                  }else{
-                     // sinon, la variable res contient l'objet du
-                     // thésaurus associé à l'objet. On va alors
-                     // extraire la valeur sous forme de string
-
-                     // on formate le nom du champ de thesaurus
-                     String nomChampThes = champ.getChampEntite().getQueryChamp().getNom().replaceFirst(".",
-                        (champ.getChampEntite().getQueryChamp().getNom().charAt(0) + "").toLowerCase());
-                     if(nomChampThes.endsWith("Id")){
-                        nomChampThes = nomChampThes.substring(0, nomChampThes.length() - 2);
-                     }
-
-                     // on vérifie que l'objet a bien ce champ
-                     if(PropertyUtils.isReadable(res, nomChampThes)){
-                        Object resThes = null;
-                        try{
-                           // extraction de la valeur
-                           resThes = PropertyUtils.getProperty(res, nomChampThes);
-                        }catch(final IllegalAccessException e){
-                           log.error(e);
-                        }catch(final InvocationTargetException e){
-                           log.error(e);
-                        }catch(final NoSuchMethodException e){
-                           log.error(e);
-                        }
-                        return resThes.toString();
-                     }
-                  }
-               }
-            }
+         if(null != champ.getChampEntite()){
+            res = champEntiteManager.getValueForObjectManager(champ.getChampEntite(), obj, prettyFormat);
          }
       }
       return res;
    }
+
+   public void setChampEntiteManager(ChampEntiteManager champEntiteManager){
+      this.champEntiteManager = champEntiteManager;
+   }
+
 }

@@ -46,13 +46,14 @@ import org.zkoss.zul.Listbox;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.component.OneToManyComponent;
 import fr.aphp.tumorotek.decorator.CouleurItemRenderer;
+import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.coeur.echantillon.EchantillonType;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdType;
 import fr.aphp.tumorotek.model.systeme.Couleur;
 import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
-public class CoulTypesAssociees extends OneToManyComponent
+public class CoulTypesAssociees extends OneToManyComponent<CouleurEntiteType>
 {
 
    private static final long serialVersionUID = 1L;
@@ -98,15 +99,18 @@ public class CoulTypesAssociees extends OneToManyComponent
       return this.objects;
    }
 
-   
    @Override
-   public void setObjects(final List<? extends Object> objs){
-      this.objects = (List<CouleurEntiteType>) objs;
+   public void setObjects(final List<CouleurEntiteType> objs){
+      this.objects = objs;
       updateComponent();
    }
 
    @Override
-   public void addToListObjects(final Object obj){
+   public void addToListObjects(final CouleurEntiteType obj){
+      addToListObjects(obj);
+   }
+   
+   public void addToListObjects(final TKThesaurusObject obj){
       final CouleurEntiteType cet = new CouleurEntiteType();
       if(isEchantillonTyped){
          cet.setEchantillonType((EchantillonType) obj);
@@ -119,7 +123,7 @@ public class CoulTypesAssociees extends OneToManyComponent
       }
       cet.setCouleur(selected);
 
-      getObjects().add(cet);
+      addToListObjects(cet);
    }
 
    @Override
@@ -132,26 +136,24 @@ public class CoulTypesAssociees extends OneToManyComponent
       return null;
    }
 
-   
    @Override
    public List<? extends Object> findObjectsAddable(){
       if(isEchantillonTyped){
-         final List<EchantillonType> echanTypes = (List<EchantillonType>) ManagerLocator.getEchantillonTypeManager()
-            .findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+         final List<EchantillonType> echanTypes =
+            ManagerLocator.getEchantillonTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
          // retire les types deja assignés
          for(int i = 0; i < getObjects().size(); i++){
             echanTypes.remove(getObjects().get(i).getEchantillonType());
          }
          return echanTypes;
-      }else{
-         final List<ProdType> prodTypes =
-            (List<ProdType>) ManagerLocator.getProdTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
-         // retire les types deja assignés
-         for(int i = 0; i < getObjects().size(); i++){
-            prodTypes.remove(getObjects().get(i).getProdType());
-         }
-         return prodTypes;
       }
+      final List<ProdType> prodTypes =
+         ManagerLocator.getProdTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      // retire les types deja assignés
+      for(int i = 0; i < getObjects().size(); i++){
+         prodTypes.remove(getObjects().get(i).getProdType());
+      }
+      return prodTypes;
    }
 
    @Override

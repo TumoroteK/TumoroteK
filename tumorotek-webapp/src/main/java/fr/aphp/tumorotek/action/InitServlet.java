@@ -72,7 +72,7 @@ import liquibase.resource.ClassLoaderResourceAccessor;
  * Date: 09/08/2011
  *
  * @author Mathieu BARTHELEMY
- * @version 2.1.4
+ * @version 2.2.0
  * @since 2.0
  */
 public class InitServlet extends HttpServlet
@@ -155,7 +155,8 @@ public class InitServlet extends HttpServlet
                }
             }
             // Liquibase mettra à jour en fonction des versions précédemment installées.
-            liquibase.update(contexts);
+            //liquibase.update(contexts);
+            liquibase.update("*");
 
             // Pour faire un rollback
             //liquibase.rollback("2.1.4-SNAPSHOT", contexts);
@@ -188,14 +189,11 @@ public class InitServlet extends HttpServlet
       }catch(DatabaseException | SQLException | NamingException e){
          log.error(e.toString());
       }
-      try{
-         new Liquibase("liquibase/db.changelog-master.xml", new ClassLoaderResourceAccessor(), database);
 
-         // Pour faire un rollback
-         //liquibase.rollback("2.1.4-SNAPSHOT", "*");
-      }catch(final LiquibaseException e){
-         log.error(e.toString());
-      }
+      new Liquibase("liquibase/db.changelog-master.xml", new ClassLoaderResourceAccessor(), database);
+
+      // Pour faire un rollback
+      //liquibase.rollback("2.1.4-SNAPSHOT", "*");
    }
 
    @Override

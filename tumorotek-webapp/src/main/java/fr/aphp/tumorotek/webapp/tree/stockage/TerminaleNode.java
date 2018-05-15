@@ -94,7 +94,6 @@ public class TerminaleNode extends TumoTreeNode
    }
 
    public boolean isNotFull(){
-      System.out.println(ManagerLocator.getTerminaleManager().getNumberEmplacementsLibresManager(terminale));
       return ManagerLocator.getTerminaleManager().getNumberEmplacementsLibresManager(terminale) > 0;
    }
 

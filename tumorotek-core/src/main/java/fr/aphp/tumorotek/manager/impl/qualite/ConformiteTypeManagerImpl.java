@@ -83,9 +83,8 @@ public class ConformiteTypeManagerImpl implements ConformiteTypeManager
       log.debug("Recherche de tous les ConformiteTypes par type");
       if(type != null){
          return conformiteTypeDao.findByEntiteAndType(type, e);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
 }

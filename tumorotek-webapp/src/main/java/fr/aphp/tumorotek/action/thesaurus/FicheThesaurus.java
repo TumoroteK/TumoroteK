@@ -96,7 +96,7 @@ public class FicheThesaurus extends AbstractFicheCombineController
    private Thesaurus typeThesaurus;
    private boolean isAdmin = false;
    private ThesaurusRowRenderer listValeursRenderer = new ThesaurusRowRenderer();
-   private CrudManager thesManager;
+   private CrudManager<? extends Object> thesManager;
    private List<? extends Object> listValeurs = new ArrayList<>();
 
    @Override
@@ -250,7 +250,7 @@ public class FicheThesaurus extends AbstractFicheCombineController
                SessionUtils.getPlateforme(sessionScope), "Cession", ManagerLocator.getEntiteManager().findByIdManager(8));
          }
       }else if(thesManager instanceof TKThesaurusManager){
-         listValeurs = ((TKThesaurusManager) thesManager).findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+         listValeurs = ((TKThesaurusManager<?>) thesManager).findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       }else{
          if(typeThesaurus.getNom().equals("Specialite")){
             listValeurs = ((SpecialiteManager) thesManager).findAllObjectsManager();
@@ -377,13 +377,16 @@ public class FicheThesaurus extends AbstractFicheCombineController
 
    private boolean isUsedValeur(final Object value){
       if(value.getClass().getSimpleName().equals("Specialite")){
-         return ManagerLocator.getSpecialiteManager().isUsedObjectManager(value);
+         return ManagerLocator.getSpecialiteManager().isUsedObjectManager((Specialite) value);
       }else if(value.getClass().getSimpleName().equals("Categorie")){
-         return ManagerLocator.getCategorieManager().isUsedObjectManager(value);
+         return ManagerLocator.getCategorieManager().isUsedObjectManager((Categorie) value);
       }else if(value.getClass().getSimpleName().equals("NonConformite")){
          return ManagerLocator.getNonConformiteManager().isUsedObjectManager((NonConformite) value);
       }else{
-         return thesManager.isUsedObjectManager(value);
+         if(thesManager instanceof TKThesaurusManager){
+            return ((TKThesaurusManager<TKThesaurusObject>) thesManager).isUsedObjectManager((TKThesaurusObject) value);
+         }
+         return ((CrudManager<Object>) thesManager).isUsedObjectManager(value);
       }
    }
 
@@ -420,7 +423,11 @@ public class FicheThesaurus extends AbstractFicheCombineController
             try{
                if(thesManager != null){
                   // suppression
-                  thesManager.removeObjectManager(value);
+                  if(thesManager instanceof TKThesaurusManager){
+                     ((TKThesaurusManager<TKThesaurusObject>) thesManager).removeObjectManager((TKThesaurusObject) value);
+                  }else{
+                     ((CrudManager<Object>) thesManager).removeObjectManager(value);
+                  }
                }else{
                   if(typeThesaurus.getNom().contains("NonConformite")){
                      ManagerLocator.getNonConformiteManager().removeObjectManager((NonConformite) value);

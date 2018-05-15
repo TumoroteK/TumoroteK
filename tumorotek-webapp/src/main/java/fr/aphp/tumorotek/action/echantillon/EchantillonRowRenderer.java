@@ -247,9 +247,8 @@ public class EchantillonRowRenderer extends TKSelectObjectRenderer
    public String getEmplacementAdrl(final Echantillon echantillon){
       if(echantillon != null && echantillon.getEchantillonId() != null){
          return ManagerLocator.getEchantillonManager().getEmplacementAdrlManager(echantillon);
-      }else{
-         return "-";
       }
+      return "-";
    }
 
    public String getDelaiCgl(final Echantillon echantillon){
@@ -299,9 +298,8 @@ public class EchantillonRowRenderer extends TKSelectObjectRenderer
       final Calendar date = ManagerLocator.getOperationManager().findDateCreationManager(echantillon);
       if(date != null){
          return ObjectTypesFormatters.dateRenderer2(date);
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -414,9 +412,8 @@ public class EchantillonRowRenderer extends TKSelectObjectRenderer
 
       if(prlvt != null){
          return PrelevementUtils.getPatientNomAndPrenom(prlvt);
-      }else{
-         return "";
       }
+      return "";
    }
 
    public boolean isEmbedded(){

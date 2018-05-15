@@ -49,7 +49,7 @@ import fr.aphp.tumorotek.model.coeur.echantillon.EchanQualite;
  * @version 2.0
  *
  */
-public interface EchanQualiteManager extends TKThesaurusManager
+public interface EchanQualiteManager extends TKThesaurusManager<EchanQualite>
 {
 
    /**

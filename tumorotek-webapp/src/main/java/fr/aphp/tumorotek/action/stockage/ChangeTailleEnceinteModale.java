@@ -58,13 +58,12 @@ public class ChangeTailleEnceinteModale extends GenericForwardComposer<Component
       if(nbPlaces < nbPlacesOcc){
          throw new WrongValueException(nbPlacesBox, ObjectTypesFormatters.getLabel("enceinte.taille.exception",
             new String[] {enceinte.getNom(), String.valueOf(nbPlacesOcc)}));
+      }
+      if(nbPlaces != enceinte.getNbPlaces()){
+         Clients.showBusy(null);
+         Events.echoEvent("onLaterUpdate", self, null);
       }else{
-         if(nbPlaces != enceinte.getNbPlaces()){
-            Clients.showBusy(null);
-            Events.echoEvent("onLaterUpdate", self, null);
-         }else{
-            Events.postEvent(new Event("onClose", self.getRoot()));
-         }
+         Events.postEvent(new Event("onClose", self.getRoot()));
       }
 
    }

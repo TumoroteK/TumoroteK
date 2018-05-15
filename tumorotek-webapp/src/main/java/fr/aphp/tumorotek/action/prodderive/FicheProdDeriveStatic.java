@@ -525,9 +525,8 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
    public String getDatePrelevementFormated(){
       if(getParentPrlvt() != null){
          return ObjectTypesFormatters.dateRenderer2(getParentPrlvt().getDatePrelevement());
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -538,12 +537,10 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
       if(getParentEchantillon() != null){
          if(isAnonyme()){
             return null;
-         }else{
-            return ManagerLocator.getEchantillonManager().getEmplacementAdrlManager(getParentEchantillon());
          }
-      }else{
-         return null;
+         return ManagerLocator.getEchantillonManager().getEmplacementAdrlManager(getParentEchantillon());
       }
+      return null;
    }
 
    /**
@@ -569,9 +566,8 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
             }
          }
          return sb.toString();
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -582,12 +578,10 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
       if(getParentProdDerive() != null){
          if(isAnonyme()){
             return null;
-         }else{
-            return ManagerLocator.getProdDeriveManager().getEmplacementAdrlManager(getParentProdDerive());
          }
-      }else{
-         return null;
+         return ManagerLocator.getProdDeriveManager().getEmplacementAdrlManager(getParentProdDerive());
       }
+      return null;
    }
 
    /**
@@ -597,9 +591,8 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
    public String getDateCongelationFormated(){
       if(this.prodDerive != null){
          return ObjectTypesFormatters.dateRenderer2(this.prodDerive.getDateStock());
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -609,33 +602,29 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
    public String getDateTransformationFormated(){
       if(this.prodDerive != null){
          return ObjectTypesFormatters.dateRenderer2(this.prodDerive.getDateTransformation());
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getSClassOperateur(){
       if(this.prodDerive != null){
          return ObjectTypesFormatters.sClassCollaborateur(this.prodDerive.getCollaborateur());
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getSClassCession(){
       if(getDroitsConsultation().get("Cession")){
          return "formLink";
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getSClassStockage(){
       if(isCanStockage()){
          return "formLink";
-      }else{
-         return "formValue";
       }
+      return "formValue";
    }
 
    /*************************************************************************/
@@ -647,9 +636,8 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
    public boolean getDerivesListSizeSupOne(){
       if(getDroitsConsultation().containsKey("ProdDerive") && getDroitsConsultation().get("ProdDerive")){
          return this.derives.size() > 1;
-      }else{
-         return false;
       }
+      return false;
    }
 
    /**
@@ -658,9 +646,8 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
    public boolean getCessionsListSizeSupOne(){
       if(getDroitsConsultation().containsKey("Cession") && getDroitsConsultation().get("Cession")){
          return this.cedesDecorated.size() > 1;
-      }else{
-         return false;
       }
+      return false;
    }
 
    /**
@@ -758,7 +745,7 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
    /**
     * Forward Event. 
     */
-   public void onSelectAllDerives(final Event e){
+   public void onSelectAllDerives(){
       onClickProdDeriveCode(null);
    }
 
@@ -775,7 +762,7 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
       displayObjectData(deco.getCederObjet().getCession());
    }
 
-   public void onSelectAllCessions(final Event e){
+   public void onSelectAllCessions(){
       final List<Cession> cessions = new ArrayList<>();
       for(int i = 0; i < cedesDecorated.size(); i++){
          final Cession cess = cedesDecorated.get(i).getCederObjet().getCession();
@@ -808,18 +795,17 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
          Prelevement prlvt = null;
          if(prodDerive.getProdDeriveId() != null){
             prlvt = ManagerLocator.getProdDeriveManager().getPrelevementParent(prodDerive);
-         }
-         final Maladie maladie = prlvt.getMaladie();
-         Patient patient = null;
-         if(maladie != null && maladie.getPatient() != null){
-            patient = maladie.getPatient();
-         }
+            final Maladie maladie = prlvt.getMaladie();
+            Patient patient = null;
+            if(maladie != null && maladie.getPatient() != null){
+               patient = maladie.getPatient();
+            }
 
-         if(patient != null){
-            final PatientController tabController = (PatientController) PatientController.backToMe(getMainWindow(), page);
-            tabController.switchToFicheStaticMode(patient);
+            if(patient != null){
+               final PatientController tabController = (PatientController) PatientController.backToMe(getMainWindow(), page);
+               tabController.switchToFicheStaticMode(patient);
+            }
          }
-
       }
    }
 
@@ -856,13 +842,6 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
          emplacementLabelDerive.removeForward("onClick", self, "onClickObjectEmplacementFromFiche");
       }
 
-      //		List<String> entites = new ArrayList<String>();
-      //		entites.add("Patient");
-      //		entites.add("Prelevement");
-      //		entites.add("Echantillon");
-      //		entites.add("Cession");
-      //		setDroitsConsultation(drawConsultationLinks(entites));
-
       super.applyDroitsOnFiche();
       addDerive.setDisabled(!canCreateDerive);
       prodDeriveRenderer.setAnonyme(isAnonyme());
@@ -874,25 +853,22 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
    public Prelevement getParentPrlvt(){
       if(getParentObject() instanceof Prelevement){
          return (Prelevement) getParentObject();
-      }else{
-         return null;
       }
+      return null;
    }
 
    public Echantillon getParentEchantillon(){
       if(getParentObject() instanceof Echantillon){
          return (Echantillon) getParentObject();
-      }else{
-         return null;
       }
+      return null;
    }
 
    public ProdDerive getParentProdDerive(){
       if(getParentObject() instanceof ProdDerive){
          return (ProdDerive) getParentObject();
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getTypeParent(){
@@ -947,10 +923,9 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
       if(isAnonyme()){
          makeLabelAnonyme(emplacementLabelDerive, false);
          return getAnonymeString();
-      }else{
-         emplacementLabelDerive.setSclass("formValue");
-         return emplacementAdrl;
       }
+      emplacementLabelDerive.setSclass("formValue");
+      return emplacementAdrl;
    }
 
    public String getTemperatureFormated(){
@@ -1049,9 +1024,8 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
       }
       if(prlvt != null){
          return PrelevementUtils.getPatientNomAndPrenom(prlvt);
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -1106,6 +1080,20 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
 
    public String getObjetStatut(){
       return ObjectTypesFormatters.ILNObjectStatut(getObject().getObjetStatut());
+   }
+
+   /**
+    * @return the prodDerive
+    */
+   public ProdDerive getProdDerive(){
+      return prodDerive;
+   }
+
+   /**
+    * @param prodDerive the prodDerive to set
+    */
+   public void setProdDerive(ProdDerive prodDerive){
+      this.prodDerive = prodDerive;
    }
 
    /**

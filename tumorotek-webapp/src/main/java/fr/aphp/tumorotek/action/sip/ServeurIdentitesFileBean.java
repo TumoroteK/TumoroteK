@@ -39,6 +39,8 @@ import java.io.Serializable;
 
 public class ServeurIdentitesFileBean implements Serializable
 {
+   private static final long serialVersionUID = -1944513535946572185L;
+   
    /* declaration des variables locales */
    private String dbms;
    private String host;

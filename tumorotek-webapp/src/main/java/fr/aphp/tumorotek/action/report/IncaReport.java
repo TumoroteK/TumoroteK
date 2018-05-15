@@ -49,8 +49,8 @@ import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.Region;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Events;
@@ -143,7 +143,6 @@ public class IncaReport extends AbstractFicheController
       return cimsRequested;
    }
 
-   
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
@@ -151,11 +150,9 @@ public class IncaReport extends AbstractFicheController
       banques =
          ManagerLocator.getUtilisateurManager().getAvailableBanquesAsAdminManager(SessionUtils.getLoggedUser(sessionScope));
 
-      natures = (List<Nature>) ManagerLocator.getNatureManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
-      echanTypes = (List<EchantillonType>) ManagerLocator.getEchantillonTypeManager()
-         .findByOrderManager(SessionUtils.getPlateforme(sessionScope));
-      consents =
-         (List<ConsentType>) ManagerLocator.getConsentTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      natures = ManagerLocator.getNatureManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      echanTypes = ManagerLocator.getEchantillonTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      consents = ManagerLocator.getConsentTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       etabs = ManagerLocator.getEtablissementManager().findAllObjectsManager();
 
       getCodesCimController().setIsOrg(false);
@@ -229,7 +226,7 @@ public class IncaReport extends AbstractFicheController
     * @param report int spécifiant quel rapport doit être dessiné.
     * @return HSSFWorkbook le fichier excel
     */
-   
+
    private HSSFWorkbook createIncaReportWorkBook(final int report){
 
       HSSFWorkbook wb = null;
@@ -286,7 +283,7 @@ public class IncaReport extends AbstractFicheController
     * @param wb
     * @param banks
     */
-   
+
    private void drawOneSheetReport1(final HSSFWorkbook wb, final List<Banque> banks){
 
       if(banks != null && !banks.isEmpty()){
@@ -306,7 +303,7 @@ public class IncaReport extends AbstractFicheController
          }
 
          // cellule vide
-         headersRow.createCell((short) 0);
+         headersRow.createCell(0);
          final List<Date> dates = createDateHeaders(d1box.getValue(), d2box.getValue(), intervBox.getValue());
          HSSFCell cell;
          //HSSFCellStyle style;
@@ -316,7 +313,7 @@ public class IncaReport extends AbstractFicheController
          final DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
 
          for(int i = 0; i < dates.size(); i++){
-            cell = headersRow.createCell((short) (i + 1));
+            cell = headersRow.createCell((i + 1));
             cell.setCellValue(new HSSFRichTextString(format.format(dates.get(i))));
             //cell.setCellStyle(style);
          }
@@ -326,9 +323,9 @@ public class IncaReport extends AbstractFicheController
          cal1.setTime(d1box.getValue());
          final Calendar cal2 = Calendar.getInstance();
          cal2.setTime(d2box.getValue());
-         final List<Etablissement> selEtabs = (List<Etablissement>) getSelectedFromListbox(etabsBox);
-         final List<ConsentType> cTypes = (List<ConsentType>) getSelectedFromListbox(consentsBox);
-         final List<ConsentType> infoTypes = (List<ConsentType>) getSelectedFromListbox(infosBox);
+         final List<Etablissement> selEtabs = getSelectedFromListbox(etabsBox);
+         final List<ConsentType> cTypes = getSelectedFromListbox(consentsBox);
+         final List<ConsentType> infoTypes = getSelectedFromListbox(infosBox);
 
          List<Long> counts;
          // Patient
@@ -388,9 +385,8 @@ public class IncaReport extends AbstractFicheController
       }
    }
 
-   
-   private List<? extends Object> getSelectedFromListbox(final Listbox box){
-      final List<Object> objs = new ArrayList<>();
+   private <T> List<T> getSelectedFromListbox(final Listbox box){
+      final List<T> objs = new ArrayList<>();
       Iterator<Listitem> listIt;
       if(box.getSelectedItems() != null){
          listIt = box.getSelectedItems().iterator();
@@ -441,7 +437,7 @@ public class IncaReport extends AbstractFicheController
     * @param wb
     * @param banks
     */
-   
+
    private void drawOneSheetReport2(final HSSFWorkbook wb, final List<Banque> banks){
 
       if(banks != null && !banks.isEmpty()){
@@ -464,27 +460,27 @@ public class IncaReport extends AbstractFicheController
          cal2.setTime(d2Orgbox.getValue());
 
          final HSSFRow dateRow = sheet.createRow(0);
-         dateRow.createCell((short) 0);
-         cell = dateRow.createCell((short) 1);
+         dateRow.createCell(0);
+         cell = dateRow.createCell(1);
          final HSSFCellStyle cellStyle = wb.createCellStyle();
          cellStyle.setAlignment(CellStyle.ALIGN_CENTER);
          cell.setCellStyle(cellStyle);
 
          final DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
          cell.setCellValue(new HSSFRichTextString(format.format(cal1.getTime()) + " - " + format.format(cal2.getTime())));
-         final Region reg = new Region(0, (short) 1, 0, (short) 7);
+         final CellRangeAddress reg = new CellRangeAddress(0, (short) 1, 0, (short) 7);
          sheet.addMergedRegion(reg);
 
          // ajout des entêtes
          final HSSFRow headersRow = sheet.createRow(1);
 
          // cellule vide
-         headersRow.createCell((short) 0);
+         headersRow.createCell(0);
          final String[] headersKey = new String[] {"inca.report2.nbTot", "inca.report2.nbColl", "inca.report2.sainAssoc",
             "inca.report2.sangAssoc", "inca.report2.consentEclaires", "inca.report2.donneesAsso"};
 
          for(int i = 0; i < headersKey.length; i++){
-            cell = headersRow.createCell((short) (i + 1));
+            cell = headersRow.createCell((i + 1));
             cell.setCellValue(new HSSFRichTextString(Labels.getLabel(headersKey[i])));
          }
 
@@ -495,11 +491,11 @@ public class IncaReport extends AbstractFicheController
          List<EchantillonType> sangTypesAss = new ArrayList<>();
          List<ConsentType> consentAss = new ArrayList<>();
 
-         sainNatsAss = (List<Nature>) getSelectedFromListbox(naturesSainBox);
-         sainTypesAss = (List<EchantillonType>) getSelectedFromListbox(echanTypeSainBox);
-         sangNatsAss = (List<Nature>) getSelectedFromListbox(naturesSangBox);
-         sangTypesAss = (List<EchantillonType>) getSelectedFromListbox(echanTypeSangBox);
-         consentAss = (List<ConsentType>) getSelectedFromListbox(consentsOrgBox);
+         sainNatsAss = getSelectedFromListbox(naturesSainBox);
+         sainTypesAss = getSelectedFromListbox(echanTypeSainBox);
+         sangNatsAss = getSelectedFromListbox(naturesSangBox);
+         sangTypesAss = getSelectedFromListbox(echanTypeSangBox);
+         consentAss = getSelectedFromListbox(consentsOrgBox);
 
          // codes CIM
          getCimsRequested().clear();
@@ -539,14 +535,14 @@ public class IncaReport extends AbstractFicheController
     */
    private void drawOneReportRow(final HSSFRow row, final String key, final boolean il3, final List<Long> counts){
       if(il3){
-         row.createCell((short) 0).setCellValue(new HSSFRichTextString(Labels.getLabel(key)));
+         row.createCell(0).setCellValue(new HSSFRichTextString(Labels.getLabel(key)));
       }else{
-         row.createCell((short) 0).setCellValue(new HSSFRichTextString(key));
+         row.createCell(0).setCellValue(new HSSFRichTextString(key));
       }
       if(counts != null){
          HSSFCell cell;
          for(int i = 0; i < counts.size(); i++){
-            cell = row.createCell((short) (i + 1));
+            cell = row.createCell((i + 1));
             if(counts.get(i) != null){
                cell.setCellValue(counts.get(i));
             }

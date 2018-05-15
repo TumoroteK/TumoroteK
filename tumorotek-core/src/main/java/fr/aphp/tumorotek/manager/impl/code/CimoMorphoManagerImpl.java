@@ -47,7 +47,6 @@ import fr.aphp.tumorotek.dao.code.CimoMorphoDao;
 import fr.aphp.tumorotek.manager.code.CimoMorphoManager;
 import fr.aphp.tumorotek.model.code.Adicap;
 import fr.aphp.tumorotek.model.code.CimoMorpho;
-import fr.aphp.tumorotek.model.code.CodeCommon;
 
 /**
  *
@@ -70,7 +69,7 @@ public class CimoMorphoManagerImpl implements CimoMorphoManager
    }
 
    @Override
-   public List<? extends CodeCommon> findAllObjectsManager(){
+   public List<CimoMorpho> findAllObjectsManager(){
       return cimoMorphoDao.findAll();
    }
 
@@ -79,7 +78,7 @@ public class CimoMorphoManagerImpl implements CimoMorphoManager
     * Parcours egalement le champ CIM_REF qui represente l'equivalent en 
     * code CIM_MASTER.
     */
-   public List<? extends CodeCommon> findByCodeLikeManager(String code, final boolean exactMatch){
+   public List<CimoMorpho> findByCodeLikeManager(String code, final boolean exactMatch){
       if(!exactMatch){
          code = "%" + code + "%";
       }
@@ -91,7 +90,7 @@ public class CimoMorphoManagerImpl implements CimoMorphoManager
    }
 
    @Override
-   public List<? extends CodeCommon> findByLibelleLikeManager(String libelle, final boolean exactMatch){
+   public List<CimoMorpho> findByLibelleLikeManager(String libelle, final boolean exactMatch){
       if(!exactMatch){
          libelle = "%" + libelle + "%";
       }

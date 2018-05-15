@@ -293,9 +293,8 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
    public String getNomPatient(){
       if(this.prelevement != null){
          return PrelevementUtils.getPatientNomAndPrenom(prelevement);
-      }else{
-         return null;
       }
+      return null;
    }
 
    @Override
@@ -493,7 +492,6 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
    }
 
-   
    @Override
    public boolean onLaterUpdate(){
 
@@ -594,17 +592,9 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
     * Retourne les non conformites sélectionnées.
     * @return
     */
-   
+
    public List<NonConformite> findSelectedNonConformitesTraitement(){
       final List<NonConformite> ncf = new ArrayList<>();
-      //		Iterator<Listitem> its = nonConformitesTraitementBox
-      //			.getSelectedItems()
-      //			.iterator();
-      //		while (its.hasNext()) {
-      //			ncf.add(nonConformitesTraitement.get(
-      //					nonConformitesTraitementBox
-      //					.getItems().indexOf(its.next())));
-      //		}
       ncf.addAll(((Selectable<NonConformite>) nonConformitesTraitementBox.getModel()).getSelection());
       return ncf;
    }
@@ -613,17 +603,9 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
     * Retourne les non conformites sélectionnées.
     * @return
     */
-   
+
    public List<NonConformite> findSelectedNonConformitesCession(){
       final List<NonConformite> ncf = new ArrayList<>();
-      //		Iterator<Listitem> its = nonConformitesCessionBox
-      //			.getSelectedItems()
-      //			.iterator();
-      //		while (its.hasNext()) {
-      //			ncf.add(nonConformitesCession.get(
-      //					nonConformitesCessionBox
-      //					.getItems().indexOf(its.next())));
-      //		}
       ncf.addAll(((Selectable<NonConformite>) nonConformitesCessionBox.getModel()).getSelection());
       return ncf;
    }
@@ -663,14 +645,6 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
       this.codePrefixe = prefixe;
    }
 
-   //	public String getCodeSuffixe() {
-   //		return codeSuffixe;
-   //	}
-   //
-   //	public void setCodeSuffixe(String suffixe) {
-   //		this.codeSuffixe = suffixe;
-   //	}
-
    /**
     * Formate la date de prélèvement.
     * @return Date du prélèvement formatée.
@@ -678,9 +652,8 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
    public String getDatePrelevementFormated(){
       if(getParentObject() != null){
          return ObjectTypesFormatters.dateRenderer2(getParentObject().getDatePrelevement());
-      }else{
-         return null;
       }
+      return null;
    }
 
    /*************************************************************************/
@@ -1012,26 +985,14 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
     * Méthode pour l'initialisation du mode d'édition : récupération du contenu
     * des listes déroulantes (types, qualités...).
     */
-   
+
    public void initEditableMode(){
       quantite = null;
       quantiteInit = null;
 
       codePrefixe = this.echantillon.getCode();
 
-      // le suffixe du code correspond à la dernière partie
-      //		if (echantillon.getCode() != null) {
-      //			codePrefixe = this.echantillon.getCode();
-      //			codePrefixe = this.echantillon.getCode().substring(0,
-      //					this.echantillon.getCode().lastIndexOf("."));
-      //			codeSuffixe = echantillon.getCode().
-      //			substring(echantillon.getCode().lastIndexOf(".") + 1);
-      //		} else {
-      //			codeSuffixe = "";
-      //		}
-
-      types = ((List<EchantillonType>) ManagerLocator.getEchantillonTypeManager()
-         .findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
+      types = ManagerLocator.getEchantillonTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       types.add(0, null);
       if(echantillon.getEchantillonType() != null){
          selectedType = echantillon.getEchantillonType();
@@ -1070,13 +1031,11 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
          selectedCollaborateur = null;
       }
 
-      qualites = (List<EchanQualite>) ManagerLocator.getEchanQualiteManager()
-         .findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      qualites = ManagerLocator.getEchanQualiteManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       qualites.add(0, null);
       selectedQualite = echantillon.getEchanQualite();
 
-      prepas =
-         (List<ModePrepa>) ManagerLocator.getModePrepaManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      prepas = ManagerLocator.getModePrepaManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       prepas.add(0, null);
       selectedPrepa = echantillon.getModePrepa();
 
@@ -1162,7 +1121,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
     * Select les non conformites dans la dropdown list.
     * @param risks liste à selectionner
     */
-   
+
    public void selectNonConformites(){
       final List<NonConformite> ncfTrait = new ArrayList<>();
       final List<NonConformite> ncfCess = new ArrayList<>();
@@ -1179,27 +1138,8 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
          }
       }
 
-      //		selectedNonConformitesTraitementItem.clear();
-      //		selectedNonConformitesCessionItem.clear();
-
-      //		for (int i = 0; i < ncfTrait.size(); i++) {
-      //			if (nonConformitesTraitement.indexOf(ncfTrait.get(i)) >= 0) {
-      //				selectedNonConformitesTraitementItem
-      //					.add(nonConformitesTraitementBox
-      //						.getItemAtIndex(nonConformitesTraitement
-      //								.indexOf(ncfTrait.get(i))));
-      //			}
-      //		}
       ((Selectable<NonConformite>) nonConformitesTraitementBox.getModel()).setSelection(ncfTrait);
       ((Selectable<NonConformite>) nonConformitesCessionBox.getModel()).setSelection(ncfCess);
-      //		for (int i = 0; i < ncfCess.size(); i++) {
-      //			if (nonConformitesCession.indexOf(ncfCess.get(i)) >= 0) {
-      //				selectedNonConformitesCessionItem
-      //					.add(nonConformitesCessionBox
-      //						.getItemAtIndex(nonConformitesCession
-      //								.indexOf(ncfCess.get(i))));
-      //			}
-      //		}
 
       getBinder().loadAttribute(nonConformitesTraitementBox, "selectedItems");
       getBinder().loadAttribute(nonConformitesCessionBox, "selectedItems");
@@ -1368,9 +1308,8 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
       if(isAnonyme){
          return "-";
-      }else{
-         return emplacementAdrl;
       }
+      return emplacementAdrl;
    }
 
    public String getTemperatureFormated(){
@@ -1492,14 +1431,13 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
                if(quantite > quantiteInit){
                   throw new WrongValueException(comp,
                      "La quantité actuelle ne peut pas être " + "supérieure à la quantité initiale.");
-               }else{
-                  // sinon on enlève toutes les erreurs affichées
-                  final BigDecimal decimal = new BigDecimal(quantiteInit);
-                  Clients.clearWrongValue(quantiteInitBoxEchan);
-                  quantiteInitBoxEchan.setConstraint("");
-                  quantiteInitBoxEchan.setValue(decimal);
-                  quantiteInitBoxEchan.setConstraint(cttQuantiteInit);
                }
+               // sinon on enlève toutes les erreurs affichées
+               final BigDecimal decimal = new BigDecimal(quantiteInit);
+               Clients.clearWrongValue(quantiteInitBoxEchan);
+               quantiteInitBoxEchan.setConstraint("");
+               quantiteInitBoxEchan.setValue(decimal);
+               quantiteInitBoxEchan.setConstraint(cttQuantiteInit);
             }else{
                // si aucune quantiteInit n'est saisie, on enlève les
                // erreurs
@@ -1552,21 +1490,20 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
             // la quantiteInit doit être positive
             if(quantiteInit < 0){
                throw new WrongValueException(comp, Labels.getLabel("validation.negative.value"));
-            }else{
+            }
 
-               // si l'échantillon avait deja une valeur de quantite et de
-               // quantiteInit
-               if(getCopy().getQuantite() != null && getCopy().getQuantiteInit() != null){
+            // si l'échantillon avait deja une valeur de quantite et de
+            // quantiteInit
+            if(getCopy().getQuantite() != null && getCopy().getQuantiteInit() != null){
 
-                  final Float diff = quantiteInitValue.floatValue() - getCopy().getQuantiteInit();
-                  final Float restant = getCopy().getQuantite() + diff;
-                  final Float zero = new Float(0.0);
-                  // si la Quantite restante est négative
-                  if(restant < zero){
-                     // on calcule la quantiteInit minimale autorisée
-                     final Float min = getCopy().getQuantiteInit() - getCopy().getQuantite();
-                     throw new WrongValueException(comp, Labels.getLabel("validation.invalid.quantite.init") + " " + min);
-                  }
+               final Float diff = quantiteInitValue.floatValue() - getCopy().getQuantiteInit();
+               final Float restant = getCopy().getQuantite() + diff;
+               final Float zero = new Float(0.0);
+               // si la Quantite restante est négative
+               if(restant < zero){
+                  // on calcule la quantiteInit minimale autorisée
+                  final Float min = getCopy().getQuantiteInit() - getCopy().getQuantite();
+                  throw new WrongValueException(comp, Labels.getLabel("validation.invalid.quantite.init") + " " + min);
                }
             }
          }
@@ -1609,14 +1546,6 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
       }
    }
 
-   //	public void onBlur$heureBox() {
-   //		if (heureBox.getValue() == null) {
-   //			calculDelaiCgl();
-   //		} else {
-   //			setHeureDelai(heureBox.getValue());
-   //		}
-   //	}
-
    /**
     * Applique la validation sur la sterilite.
     */
@@ -1629,9 +1558,8 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
       if(getSelectedType() == null){
          Clients.scrollIntoView(typesBoxEchan);
          throw new WrongValueException(typesBoxEchan, Labels.getLabel("ficheEchantillon.error.type"));
-      }else{
-         Clients.clearWrongValue(typesBoxEchan);
       }
+      Clients.clearWrongValue(typesBoxEchan);
    }
 
    @Override
@@ -1648,8 +1576,8 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
             field = "dateStock";
             if(getParentObject() != null){
                if(getLaboInters() == null){ // edit simple
-                  getParentObject().setLaboInters(new HashSet<>(
-                     ManagerLocator.getPrelevementManager().getLaboIntersWithOrderManager(getParentObject())));
+                  getParentObject().setLaboInters(
+                     new HashSet<>(ManagerLocator.getPrelevementManager().getLaboIntersWithOrderManager(getParentObject())));
                }else{ // creation ou update dans procedure
                   getParentObject().setLaboInters(new HashSet<>(getLaboInters()));
                }
@@ -1744,16 +1672,6 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
          setCodesToCreateOrEdit(new ArrayList<CodeAssigne>());
       }
 
-      // organes
-      //		for (int i = 0; i < getCodesOrganeController().getObjs().size(); i++) {
-      //			// trouve l'export
-      //			if (((CodeAssigneDecorator) 
-      //					getCodesOrganeController().getObjs().get(i)).getExport()) {
-      //				setCodeOrganeToExport((CodeAssigne) 
-      //						getCodesOrganeController().getObjs().get(i).getObj());
-      //				break;
-      //			}
-      //		}
       // prepare la liste de CodeAssigne a passer
       Iterator<SmallObjDecorator> it = getCodesOrganeController().getObjs().iterator();
       CodeAssigneDecorator next;
@@ -1764,30 +1682,6 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
          getCodesToCreateOrEdit().add((CodeAssigne) next.getObj());
       }
 
-      // verifie le changement d'ordre
-      // organes
-      //		for (int i = 0; i < getCodesOrganeController().getObjs().size(); i++) {
-      //			if (((CodeAssigneDecorator) getCodesOrganeController()
-      //											.getObjs().get(i)).ordreChanged()) {
-      //				if (!getCodesOrgsToCreateOrEdit().contains((CodeAssigne) 
-      //						getCodesOrganeController().getObjs().get(i).getObj())) {
-      //					getCodesOrganeController().getObjs().get(i).syncOrdre();
-      //					getCodesOrgsToCreateOrEdit().add((CodeAssigne) 
-      //						getCodesOrganeController().getObjs().get(i).getObj());
-      //				}
-      //			}
-      //		}
-
-      // morphos
-      //		for (int i = 0; i < getCodesMorphoController().getObjs().size(); i++) {
-      //			// trouve l'export
-      //			if (((CodeAssigneDecorator) 
-      //					getCodesMorphoController().getObjs().get(i)).getExport()) {
-      //				setCodeLesToExport((CodeAssigne) 
-      //						getCodesMorphoController().getObjs().get(i).getObj());
-      //				break;
-      //			}
-      //		}
       // prepare la liste de CodeAssigne a passer
       it = getCodesMorphoController().getObjs().iterator();
       while(it.hasNext()){
@@ -1796,27 +1690,10 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
          getCodesToCreateOrEdit().add((CodeAssigne) next.getObj());
       }
 
-      // verifie le changement d'ordre
-      // organes
-      //		for (int i = 0; i < getCodesMorphoController().getObjs().size(); i++) {
-      //			if (((CodeAssigneDecorator) getCodesMorphoController()
-      //										.getObjs().get(i)).ordreChanged()) {
-      //				if (!getCodesLesToCreateOrEdit().contains((CodeAssigne) 
-      //						getCodesMorphoController().getObjs().get(i).getObj())) {
-      //					getCodesMorphoController().getObjs().get(i).syncOrdre();
-      //					getCodesLesToCreateOrEdit().add((CodeAssigne) 
-      //						getCodesMorphoController().getObjs().get(i).getObj());
-      //				}
-      //			}
-      //		}
-
       // passe à null les listes si vides
       if(getCodesToCreateOrEdit().isEmpty()){
          setCodesToCreateOrEdit(null);
       }
-      //		if (getCodesLesToCreateOrEdit().isEmpty()) {
-      //			setCodesLesToCreateOrEdit(null);
-      //		}
 
       // codesAssigneToDelete
       it = getCodesOrganeController().getObjToDelete().iterator();
@@ -1931,9 +1808,8 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
    public PrelevementController getPrelevementController(){
       if(!getObjectTabController().getReferencingObjectControllers().isEmpty()){
          return (PrelevementController) getObjectTabController().getReferencingObjectControllers().get(0);
-      }else{
-         return null;
       }
+      return null;
    }
 
    public List<NonConformite> getNonConformitesTraitement(){

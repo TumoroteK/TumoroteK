@@ -49,11 +49,10 @@ import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.controller.AbstractListeController2;
 import fr.aphp.tumorotek.action.stockage.StockageController;
 import fr.aphp.tumorotek.component.OneToManyComponent;
-import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
-public class ConteneursAssocies extends OneToManyComponent
+public class ConteneursAssocies extends OneToManyComponent<ConteneurDecorator>
 {
 
    private static final long serialVersionUID = 1L;
@@ -75,8 +74,8 @@ public class ConteneursAssocies extends OneToManyComponent
 
    
    @Override
-   public void setObjects(final List<? extends Object> objs){
-      this.objects = (List<ConteneurDecorator>) objs;
+   public void setObjects(final List<ConteneurDecorator> objs){
+      this.objects = objs;
       updateComponent();
    }
 
@@ -89,8 +88,8 @@ public class ConteneursAssocies extends OneToManyComponent
    }
 
    @Override
-   public void addToListObjects(final Object obj){
-      getObjects().add((ConteneurDecorator) obj);
+   public void addToListObjects(final ConteneurDecorator obj){
+      getObjects().add(obj);
    }
 
    @Override
@@ -129,7 +128,7 @@ public class ConteneursAssocies extends OneToManyComponent
    }
 
    @Override
-   public List<? extends Object> findObjectsAddable(){
+   public List<ConteneurDecorator> findObjectsAddable(){
       // conteneurs ajoutables
       final List<ConteneurDecorator> conts = new ArrayList<>();
 

@@ -301,9 +301,8 @@ public class Entite implements Serializable
       final Entite test = (Entite) obj;
       if(this.nom == null){
          return (test.nom == null);
-      }else{
-         return (this.nom.equals(test.nom));
       }
+      return (this.nom.equals(test.nom));
    }
 
    /**
@@ -331,8 +330,7 @@ public class Entite implements Serializable
    public String toString(){
       if(this.nom != null){
          return "{" + this.nom + "}";
-      }else{
-         return "{Empty Entite}";
       }
+      return "{Empty Entite}";
    }
 }

@@ -77,8 +77,12 @@ import fr.aphp.tumorotek.model.systeme.Entite;
       query = "SELECT c FROM ChampEntite c " + "WHERE c.entite = ?1 " + "AND c.canImport = ?2 " + "AND c.nullable = ?3"),
    @NamedQuery(name = "ChampEntite.findByEntiteAndNom",
       query = "SELECT c FROM ChampEntite c " + "WHERE c.entite = ?1 AND c.nom = ?2"),
-   @NamedQuery(name = "ChampEntite.findByImportTemplateAndEntite", query = "SELECT c.champEntite FROM ImportColonne i "
-      + "JOIN i.champ c WHERE i.importTemplate = ?1 " + "AND c.champEntite.entite = ?2")})
+   @NamedQuery(name = "ChampEntite.findByImportTemplateAndEntite",
+      query = "SELECT c.champEntite FROM ImportColonne i " + "JOIN i.champ c WHERE i.importTemplate = ?1 "
+         + "AND c.champEntite.entite = ?2"),
+   @NamedQuery(name = "ChampEntite.findByEntiteAndImportAndDataType",
+      query = "SELECT c FROM ChampEntite c " + "WHERE c.entite = ?1 " + "AND c.canImport = ?2 " + "AND c.dataType in ?3")})
+
 public class ChampEntite implements Comparable<ChampEntite>
 {
 
@@ -257,18 +261,15 @@ public class ChampEntite implements Comparable<ChampEntite>
          if(test.entite == null){
             if(this.nom == null){
                return test.nom == null;
-            }else{
-               return this.nom.equals(test.nom);
             }
-         }else{
-            return false;
+            return this.nom.equals(test.nom);
          }
+         return false;
       }else if(this.entite.equals(test.entite)){
          if(this.nom == null){
             return test.nom == null;
-         }else{
-            return this.nom.equals(test.nom);
          }
+         return this.nom.equals(test.nom);
       }else{
          return false;
       }
@@ -306,9 +307,8 @@ public class ChampEntite implements Comparable<ChampEntite>
    public String toString(){
       if(this.nom != null){
          return "{" + this.nom + "}";
-      }else{
-         return "{Empty ChampEntite}";
       }
+      return "{Empty ChampEntite}";
    }
 
    @Override

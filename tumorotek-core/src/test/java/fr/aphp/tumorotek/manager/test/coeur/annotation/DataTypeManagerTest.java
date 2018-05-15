@@ -66,6 +66,6 @@ public class DataTypeManagerTest extends AbstractManagerTest4
    @Test
    public void testFindAllObjectsManager(){
       final List<DataType> dts = dataTypeManager.findAllObjectsManager();
-      assertTrue(dts.size() == 10);
+      assertTrue(dts.size() == 12);
    }
 }

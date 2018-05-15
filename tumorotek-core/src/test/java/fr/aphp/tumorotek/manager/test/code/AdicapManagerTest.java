@@ -68,7 +68,7 @@ public class AdicapManagerTest extends AbstractManagerTest4
    @Test
    public void testFindAllObjectsManager(){
       
-      final List<Adicap> ads = (List<Adicap>) adicapManager.findAllObjectsManager();
+      final List<Adicap> ads = adicapManager.findAllObjectsManager();
       //assertEquals(8907, ads.size());
       assertEquals(8906, ads.size()); // JDI : ce que j'ai en base, est-ce grave?
    }
@@ -77,16 +77,16 @@ public class AdicapManagerTest extends AbstractManagerTest4
    @Test
    public void testFindByCodeLikeManager(){
       //teste une recherche exactMatch
-      List<Adicap> ads = (List<Adicap>) adicapManager.findByCodeLikeManager("N", true);
+      List<Adicap> ads = adicapManager.findByCodeLikeManager("N", true);
       assertTrue(ads.size() == 1);
       //teste une recherche non exactMatch
-      ads = (List<Adicap>) adicapManager.findByCodeLikeManager("N", false);
+      ads = adicapManager.findByCodeLikeManager("N", false);
       assertTrue(ads.size() == 728);
       //teste une recherche infructueuse
-      ads = (List<Adicap>) adicapManager.findByCodeLikeManager("LUX", true);
+      ads = adicapManager.findByCodeLikeManager("LUX", true);
       assertTrue(ads.size() == 0);
       //null recherche
-      ads = (List<Adicap>) adicapManager.findByCodeLikeManager(null, false);
+      ads = adicapManager.findByCodeLikeManager(null, false);
       assertTrue(ads.size() == 0);
    }
 
@@ -94,16 +94,16 @@ public class AdicapManagerTest extends AbstractManagerTest4
    @Test
    public void testFindByLibelleLikeManager(){
       //teste une recherche exactMatch
-      List<Adicap> ads = (List<Adicap>) adicapManager.findByLibelleLikeManager("NEZ", true);
+      List<Adicap> ads = adicapManager.findByLibelleLikeManager("NEZ", true);
       assertTrue(ads.size() == 1);
       //teste une recherche non exactMatch
-      ads = (List<Adicap>) adicapManager.findByLibelleLikeManager("NEZ", false);
+      ads = adicapManager.findByLibelleLikeManager("NEZ", false);
       assertTrue(ads.size() == 11);
       //teste une recherche infructueuse
-      ads = (List<Adicap>) adicapManager.findByLibelleLikeManager("INCUBUS", false);
+      ads = adicapManager.findByLibelleLikeManager("INCUBUS", false);
       assertTrue(ads.size() == 0);
       //null recherche
-      ads = (List<Adicap>) adicapManager.findByLibelleLikeManager(null, true);
+      ads = adicapManager.findByLibelleLikeManager(null, true);
       assertTrue(ads.size() == 0);
    }
 
@@ -115,17 +115,17 @@ public class AdicapManagerTest extends AbstractManagerTest4
 
    @Test
    public void testFindByAdicapParentManager(){
-      Adicap parent = (Adicap) adicapManager.findByCodeLikeManager("AC", true).get(0);
+      Adicap parent = adicapManager.findByCodeLikeManager("AC", true).get(0);
       List<Adicap> ads = adicapManager.findByAdicapParentManager(parent, true);
       assertTrue(ads.size() == 10);
       ads = adicapManager.findByAdicapParentManager(parent, false);
       assertTrue(ads.size() == 3);
 
-      parent = (Adicap) adicapManager.findByCodeLikeManager("AP", true).get(0);
+      parent = adicapManager.findByCodeLikeManager("AP", true).get(0);
       ads = adicapManager.findByAdicapParentManager(parent, false);
       assertTrue(ads.size() == 0);
 
-      parent = (Adicap) adicapManager.findByCodeLikeManager("0N72", true).get(0);
+      parent = adicapManager.findByCodeLikeManager("0N72", true).get(0);
       ads = adicapManager.findByAdicapParentManager(parent, null);
       assertTrue(ads.size() == 0);
       //null recherche
@@ -157,17 +157,17 @@ public class AdicapManagerTest extends AbstractManagerTest4
 
    @Test
    public void testGetCimoMorphosManager(){
-      Adicap a = (Adicap) adicapManager.findByCodeLikeManager("5311", true).get(0);
+      Adicap a = adicapManager.findByCodeLikeManager("5311", true).get(0);
       assertTrue(adicapManager.getCimoMorphosManager(a).size() == 1);
-      a = (Adicap) adicapManager.findByCodeLikeManager("N", true).get(0);
+      a = adicapManager.findByCodeLikeManager("N", true).get(0);
       assertTrue(adicapManager.getCimoMorphosManager(a).size() == 0);
    }
 
    @Test
    public void testGetCimMastersManager(){
-      Adicap a = (Adicap) adicapManager.findByCodeLikeManager("BV", true).get(0);
+      Adicap a = adicapManager.findByCodeLikeManager("BV", true).get(0);
       assertTrue(adicapManager.getCimMastersManager(a).size() == 1);
-      a = (Adicap) adicapManager.findByCodeLikeManager("N", true).get(0);
+      a = adicapManager.findByCodeLikeManager("N", true).get(0);
       assertTrue(adicapManager.getCimMastersManager(a).size() == 0);
    }
 
@@ -181,11 +181,11 @@ public class AdicapManagerTest extends AbstractManagerTest4
 
    @Test
    public void testFindChildrenCodesManager(){
-      Adicap a = (Adicap) adicapManager.findByCodeLikeManager("EZ", true).get(0);
+      Adicap a = adicapManager.findByCodeLikeManager("EZ", true).get(0);
       List<Adicap> codes = adicapManager.findChildrenCodesManager(a, null, "%");
       assertTrue(codes.size() == 86);
 
-      a = (Adicap) adicapManager.findByCodeLikeManager("EH", true).get(0);
+      a = adicapManager.findByCodeLikeManager("EH", true).get(0);
       codes = adicapManager.findChildrenCodesManager(a, null, "%");
       assertTrue(codes.size() == 9);
 
@@ -198,7 +198,7 @@ public class AdicapManagerTest extends AbstractManagerTest4
       codes = adicapManager.findChildrenCodesManager(a, null, "EH273");
       assertTrue(codes.size() == 1);
 
-      a = (Adicap) adicapManager.findByCodeLikeManager("EH!LP", true).get(0);
+      a = adicapManager.findByCodeLikeManager("EH!LP", true).get(0);
       codes = adicapManager.findChildrenCodesManager(a, null, "%");
       assertTrue(codes.size() == 1);
 

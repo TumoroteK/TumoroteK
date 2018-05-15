@@ -207,6 +207,10 @@ public class ListeStockages extends AbstractController
 
    public void onClick$hideCompleteButton(){
       hideCompleteTerminales = !hideCompleteTerminales;
+      searchPaths.clear();
+      setSelectedConteneur(null);
+      setSelectedDestinationItem(null);
+      setSelectedEnceinte(null);
       updateAllConteneurs(false);
    }
 
@@ -928,10 +932,11 @@ public class ListeStockages extends AbstractController
          final TerminaleNode node = new TerminaleNode(terminale, null);
 
          selectedItem = mainTreeContext.renderItemByPath(ttm.getPath(node));
-         currentObject = selectedItem.getValue();
-         mainTreeContext.setSelectedItem(selectedItem);
-
-         selectForDeplaceEmplacement();
+         if(null != selectedItem){
+            currentObject = selectedItem.getValue();
+            mainTreeContext.setSelectedItem(selectedItem);
+            selectForDeplaceEmplacement();
+         }
       }
    }
 
@@ -1131,7 +1136,9 @@ public class ListeStockages extends AbstractController
 
          // color results;
          for(final int[] path : searchPaths){
-            colorateRowInLightBlue(mainTreeContext.renderItemByPath(path).getTreerow());
+            if(null != path){
+               colorateRowInLightBlue(mainTreeContext.renderItemByPath(path).getTreerow());
+            }
          }
       }else{ // notification
          Clients.showNotification(
@@ -1148,7 +1155,9 @@ public class ListeStockages extends AbstractController
    private void cleanRowsColor(){
       // color results;
       for(final int[] path : searchPaths){
-         unColorateRow(mainTreeContext.renderItemByPath(path).getTreerow());
+         if(path != null){
+            unColorateRow(mainTreeContext.renderItemByPath(path).getTreerow());
+         }
       }
       searchPaths.clear();
    }

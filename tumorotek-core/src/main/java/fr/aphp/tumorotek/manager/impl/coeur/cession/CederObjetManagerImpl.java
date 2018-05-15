@@ -167,9 +167,8 @@ public class CederObjetManagerImpl implements CederObjetManager
    public List<CederObjet> findByExcludedPKManager(final CederObjetPK pk){
       if(pk != null){
          return cederObjetDao.findByExcludedPK(pk);
-      }else{
-         return cederObjetDao.findAll();
       }
+      return cederObjetDao.findAll();
    }
 
    /**
@@ -184,9 +183,8 @@ public class CederObjetManagerImpl implements CederObjetManager
          log.debug("Recherche CederObjet par entité : " + entite.toString());
          // recherche par entité
          return cederObjetDao.findByEntite(entite);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    /**
@@ -238,9 +236,8 @@ public class CederObjetManagerImpl implements CederObjetManager
          }else{
             return new ArrayList<>();
          }
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    /**
@@ -266,9 +263,8 @@ public class CederObjetManagerImpl implements CederObjetManager
 
          return cessions;
 
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    /**
@@ -282,9 +278,8 @@ public class CederObjetManagerImpl implements CederObjetManager
    public List<CederObjet> findByCessionEntiteManager(final Cession cession, final Entite entite){
       if(cession != null && entite != null){
          return cederObjetDao.findByCessionEntite(cession, entite);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    /**
@@ -298,9 +293,8 @@ public class CederObjetManagerImpl implements CederObjetManager
       if(cession != null){
          final Entite entite = entiteDao.findByNom("Echantillon").get(0);
          return cederObjetDao.findByCessionEntite(cession, entite);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    /**
@@ -314,9 +308,8 @@ public class CederObjetManagerImpl implements CederObjetManager
       if(cession != null){
          final Entite entite = entiteDao.findByNom("ProdDerive").get(0);
          return cederObjetDao.findByCessionEntite(cession, entite);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    /**
@@ -328,9 +321,8 @@ public class CederObjetManagerImpl implements CederObjetManager
    public Boolean findDoublonManager(final CederObjet cederObjet){
       if(cederObjet != null){
          return cederObjetDao.findByObjetId(cederObjet.getObjetId()).contains(cederObjet);
-      }else{
-         return false;
       }
+      return false;
    }
 
    /**
@@ -343,12 +335,10 @@ public class CederObjetManagerImpl implements CederObjetManager
       if(cederObjet != null && cederObjet.getPk() != null){
          if(!cederObjet.getEntite().getNom().equals("Echantillon") && !cederObjet.getEntite().getNom().equals("ProdDerive")){
             return false;
-         }else{
-            return (entiteManager.findObjectByEntiteAndIdManager(cederObjet.getEntite(), cederObjet.getObjetId()) != null);
          }
-      }else{
-         return false;
+         return (entiteManager.findObjectByEntiteAndIdManager(cederObjet.getEntite(), cederObjet.getObjetId()) != null);
       }
+      return false;
    }
 
    /**

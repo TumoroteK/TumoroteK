@@ -48,7 +48,6 @@ import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.prelevement.ConditTypeValidator;
-import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.coeur.prelevement.ConditType;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 
@@ -87,19 +86,18 @@ public class ConditTypeManagerImpl implements ConditTypeManager
    }
 
    @Override
-   public void createObjectManager(final Object obj){
+   public void createObjectManager(final ConditType obj){
 
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
-      if(((TKThesaurusObject) obj).getPlateforme() == null){
+      if(obj.getPlateforme() == null){
          throw new RequiredObjectIsNullException("ConditType", "creation", "Plateforme");
-      }else{
-         ((TKThesaurusObject) obj).setPlateforme(plateformeDao.mergeObject(((TKThesaurusObject) obj).getPlateforme()));
       }
+      obj.setPlateforme(plateformeDao.mergeObject(obj.getPlateforme()));
 
       BeanValidator.validateObject(obj, new Validator[] {conditTypeValidator});
       if(!findDoublonManager(obj)){
-         conditTypeDao.createObject((ConditType) obj);
+         conditTypeDao.createObject(obj);
          log.info("Enregistrement objet ConditType " + obj.toString());
       }else{
          log.warn("Doublon lors creation objet ConditType " + obj.toString());
@@ -108,22 +106,16 @@ public class ConditTypeManagerImpl implements ConditTypeManager
    }
 
    @Override
-   public void updateObjectManager(final Object obj){
+   public void updateObjectManager(final ConditType obj){
       BeanValidator.validateObject(obj, new Validator[] {conditTypeValidator});
       if(!findDoublonManager(obj)){
-         conditTypeDao.updateObject((ConditType) obj);
+         conditTypeDao.updateObject(obj);
          log.info("Modification objet ConditType " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet ConditType " + obj.toString());
          throw new DoublonFoundException("ConditType", "modification");
       }
    }
-
-   //	@Override
-   //	public List<ConditType> findAllObjectsManager() {
-   //		log.info("Recherche totalite des ConditType");
-   //		return conditTypeDao.findByOrder();
-   //	}
 
    @Override
    public List<ConditType> findByTypeLikeManager(String type, final boolean exactMatch){
@@ -135,48 +127,40 @@ public class ConditTypeManagerImpl implements ConditTypeManager
    }
 
    @Override
-   public void removeObjectManager(final Object obj){
+   public void removeObjectManager(final ConditType obj){
       if(obj != null){
-         //			if (!isUsedObjectManager(obj)) {
-         conditTypeDao.removeObject(((ConditType) obj).getConditTypeId());
+         conditTypeDao.removeObject(obj.getConditTypeId());
          log.info("Suppression objet ConditType " + obj.toString());
-         //			} else {
-         //				log.warn("Suppression objet ConditType " + obj.toString()
-         //						+ " impossible car est reference (par Prelevement)");
-         //				throw new ObjectUsedException();
-         //			}
       }else{
          log.warn("Suppression d'un ConditType null");
       }
    }
 
    @Override
-   public boolean findDoublonManager(final Object o){
+   public boolean findDoublonManager(final ConditType o){
       if(o != null){
-         final ConditType type = (ConditType) o;
+         final ConditType type = o;
          if(type.getConditTypeId() == null){
             return conditTypeDao.findAll().contains(type);
-         }else{
-            return conditTypeDao.findByExcludedId(type.getConditTypeId()).contains(type);
          }
-      }else{
-         return false;
+         return conditTypeDao.findByExcludedId(type.getConditTypeId()).contains(type);
       }
+      return false;
    }
 
    @Override
-   public boolean isUsedObjectManager(final Object o){
-      final ConditType conditType = conditTypeDao.mergeObject((ConditType) o);
+   public boolean isUsedObjectManager(final ConditType o){
+      final ConditType conditType = conditTypeDao.mergeObject(o);
       return conditType.getPrelevements().size() > 0;
    }
 
    @Override
-   public List<? extends TKThesaurusObject> findByOrderManager(final Plateforme pf){
+   public List<ConditType> findByOrderManager(final Plateforme pf){
       return conditTypeDao.findByOrder(pf);
    }
 
    @Override
-   public TKThesaurusObject findByIdManager(final Integer id){
+   public ConditType findByIdManager(final Integer id){
       return conditTypeDao.findById(id);
    }
 

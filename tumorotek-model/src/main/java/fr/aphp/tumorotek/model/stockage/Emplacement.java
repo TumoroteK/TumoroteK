@@ -270,9 +270,8 @@ public class Emplacement implements Serializable
    public String toString(){
       if(this.position != null && this.terminale != null){
          return "{" + this.position + " " + this.terminale.toString() + "}";
-      }else{
-         return "{Empty Emplacement}";
       }
+      return "{Empty Emplacement}";
    }
 
    /**

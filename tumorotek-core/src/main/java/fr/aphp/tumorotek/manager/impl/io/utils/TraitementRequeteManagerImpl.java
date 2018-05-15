@@ -40,7 +40,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.collections.ListUtils;
+import org.apache.commons.collections4.ListUtils;
 
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.io.export.CritereManager;
@@ -1280,9 +1280,9 @@ public class TraitementRequeteManagerImpl implements TraitementRequeteManager
             }
             /* On récupère les entités au plus bas. */
             if(listeResultante != null && listeResultante.size() > 0
-               && !listeResultante.get(0).getClass().getSimpleName().equals(entiteBasse) && !entiteBasse.equals("Cession")){
+               && !listeResultante.get(0).getClass().getSimpleName().equals(entiteBasse) && null != entiteBasse && !entiteBasse.equals("Cession")){
                listeResultante = correspondanceManager.recupereEntitesViaDAutres(listeResultante, entiteBasse);
-               if(liste1 != null && liste1.size() > 0 && liste1.get(0).getClass().getSimpleName().equals(entiteBasse)){
+               if(liste1.size() > 0 && liste1.get(0).getClass().getSimpleName().equals(entiteBasse)){
                   listeResultante = fusionnerListesManager(liste1, listeResultante);
                }else if(liste2 != null && liste2.size() > 0 && liste2.get(0).getClass().getSimpleName().equals(entiteBasse)){
                   listeResultante = fusionnerListesManager(liste2, listeResultante);

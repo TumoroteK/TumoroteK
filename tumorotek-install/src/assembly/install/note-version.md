@@ -2,11 +2,13 @@
 
 ##### Version ${project.version} - Publiée le ${timestamp}
 ###### Nouveautés
-- YouTrack [TKB-4](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-4) : Amélioration de la signification : congélation à l'arrivé à la biothèque
-- YouTrack [TK-61] (https://tumorotek.myjetbrains.com/youtrack/issue/TK-61) : Pouvoir créer un modèle de document DOCx contenant des placeholders (clé) correspondants des champs et les remplacer par leur valeur à l'impression.
+- YouTrack [TKB-4](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-4) : <span class="badge badge-prelevement">Prélèvement</span> Amélioration de la signification : congélation à l'arrivé à la biothèque
+- YouTrack [TK-61](https://tumorotek.myjetbrains.com/youtrack/issue/TK-61) : <span class="badge badge-impression-doc">Impression (modèle DOC)</span> Pouvoir créer un modèle de document DOCx contenant des placeholders (clé) correspondants des champs et les remplacer par leur valeur à l'impression.
+- YouTrack [TK-98](https://tumorotek.myjetbrains.com/youtrack/issue/TK-98) : <span class="badge badge-annotation-champ-calcule">Annotation (Champ calculé)</span> Mise en place des champs calculés.
+- YouTrack [TK-110](https://tumorotek.myjetbrains.com/youtrack/issue/TK-110) : <span class="badge badge-statistiques">Statistiques</span> Amélioration de la partie Statistiques/Indicateurs
 
 ###### Corrections
-
+- YouTrack [TK-111](https://tumorotek.myjetbrains.com/youtrack/issue/TK-111) : <span class="badge badge-statistiques">Statistiques</span> Modifier le libellé DGOS... en Totaux des prélèvements
 
 ***
 

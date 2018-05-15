@@ -49,7 +49,7 @@ import fr.aphp.tumorotek.model.cession.CessionExamen;
  * @version 2.0
  *
  */
-public interface CessionExamenManager extends TKThesaurusManager
+public interface CessionExamenManager extends TKThesaurusManager<CessionExamen>
 {
 
    /**

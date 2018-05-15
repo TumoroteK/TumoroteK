@@ -108,9 +108,8 @@ public class CodeBrowserComponent extends GenericForwardComposer<Component>
    public CodeNode getTreeSelectedValue(){
       if(mainTreeContext.getSelectedItem() != null){
          return (CodeNode) mainTreeContext.getSelectedItem().getValue();
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -304,7 +303,6 @@ public class CodeBrowserComponent extends GenericForwardComposer<Component>
             if(isParent){
                mainTreeContext.renderItem(currentItem, selectedNode);
             }else{
-               //TODO 
                renderer.render(currentItem, selectedNode, 0);
             }
          }catch(final Exception e){

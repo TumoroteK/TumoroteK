@@ -144,9 +144,8 @@ public class CimLibelle implements Serializable
       final CimLibelle test = (CimLibelle) obj;
       if(this.lid != null){
          return this.lid.equals(test.lid);
-      }else{ //impossible
-         return false;
-      }
+      } //impossible
+      return false;
    }
 
    /**

@@ -93,7 +93,6 @@ public class XmlUtilsTest extends AbstractManagerTest
    /** Bean. */
    private EchantillonManager echantillonManager;
    private TerminaleManager terminaleManager;
-   //TODO Pas utilisé ?
    private EmetteurDao emetteurDao;
 
    public XmlUtilsTest(){
@@ -744,7 +743,6 @@ public class XmlUtilsTest extends AbstractManagerTest
          }
          fo.close();
       }catch(final IOException e){
-         // TODO Auto-generated catch block
          e.printStackTrace();
       }catch(final Exception e){
          e.printStackTrace();
@@ -773,7 +771,6 @@ public class XmlUtilsTest extends AbstractManagerTest
          }
          fw.close();
       }catch(final IOException e){
-         // TODO Auto-generated catch block
          e.printStackTrace();
       }catch(final Exception e){
          e.printStackTrace();
@@ -980,6 +977,7 @@ public class XmlUtilsTest extends AbstractManagerTest
    public void testCreateXMLFileBoite(){
       final Document doc = creerDocumentBoite();
 
+      //FIXME Fichier crée dans le dossier src ? Commité inutilement ?
       final String folder = "src/test/java/fr/aphp/tumorotek/manager/test/xml/";
       final String file = "testBoite.xml";
       xmlUtils.createXMLFile(doc, folder, file);
@@ -1012,7 +1010,6 @@ public class XmlUtilsTest extends AbstractManagerTest
          }
          fw.close();
       }catch(final IOException e){
-         // TODO Auto-generated catch block
          e.printStackTrace();
       }catch(final Exception e){
          e.printStackTrace();
@@ -1225,6 +1222,7 @@ public class XmlUtilsTest extends AbstractManagerTest
    public void testCreateXMLFileContenu(){
       final Document doc = creerDocumentContenu();
 
+      //FIXME Fichier crée dans le dossier src ? Commité inutilement ?
       final String folder = "src/test/java/fr/aphp/tumorotek/manager/test/xml/";
       final String file = "testContenu.xml";
       xmlUtils.createXMLFile(doc, folder, file);
@@ -1612,7 +1610,6 @@ public class XmlUtilsTest extends AbstractManagerTest
          }
          fo.close();
       }catch(final IOException e){
-         // TODO Auto-generated catch block
          e.printStackTrace();
       }catch(final Exception e){
          e.printStackTrace();

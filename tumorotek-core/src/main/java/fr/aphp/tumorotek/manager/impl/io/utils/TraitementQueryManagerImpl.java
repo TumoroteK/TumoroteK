@@ -119,7 +119,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
     * @return Liste d'objets correspondant au critère.
     */
    @Override
-   
+
    public List<Object> findObjetByCritereManager(final Critere critere, final List<Banque> banks, final Object value,
       final String jdbcDialect){
       List<Object> objets = null;
@@ -220,9 +220,9 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                         objets.addAll(prelevementDao.findByEtablissementNom((String) value, banks));
                         return objets;
                      }
-                        objets = new ArrayList<>();
-                        objets.addAll(prelevementDao.findByEtablissementVide(banks));
-                        return objets;
+                     objets = new ArrayList<>();
+                     objets.addAll(prelevementDao.findByEtablissementVide(banks));
+                     return objets;
                   }else if(nomChampMinFirst.equals("risques")){
                      if(!critere.getOperateur().equals("is null")){
                         sb.append("SELECT DISTINCT e From " + "Prelevement as e " + "JOIN e.risques r " + "WHERE r.nom "
@@ -719,7 +719,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
    public List<Object> findObjetByCritereWithBanquesManager(final Critere critere, final List<Banque> banques, final Object value,
       final boolean idSearch){
       List<Object> objets = new ArrayList<>();
-      if(!idSearch || (value instanceof Collection && value != null && !((Collection<?>) value).isEmpty())){
+      if(!idSearch || (value != null && value instanceof Collection && !((Collection<?>) value).isEmpty())){
          if(critere.getChamp() != null){
             final StringBuffer sb = new StringBuffer("");
             final Champ champ = critere.getChamp();
@@ -1099,7 +1099,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
       final Object value, final boolean searchForDerives, final boolean idSearch){
       List<Object> objets = new ArrayList<>();
       Entite entiteTransformation = null;
-      if(!idSearch || (value instanceof Collection && value != null && !((Collection<?>) value).isEmpty())){
+      if(!idSearch || (value != null && value instanceof Collection && !((Collection<?>) value).isEmpty())){
          if(critere.getChamp() != null){
             final StringBuffer sb = new StringBuffer("");
             final Champ champ = critere.getChamp();
@@ -1641,7 +1641,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
          return query.getResultList();
 
       }
-         return new ArrayList<>();
+      return new ArrayList<>();
 
    }
 
@@ -1665,7 +1665,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
          return query.getResultList();
 
       }
-         return new ArrayList<>();
+      return new ArrayList<>();
 
    }
 
@@ -1763,8 +1763,8 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
          return ids;
 
       }
-         return new ArrayList<>();
-      }
+      return new ArrayList<>();
+   }
 
    @Override
    public List<Integer> findObjetByCritereOnCodesWithBanquesDerivesVersionManager(final List<Banque> banques,
@@ -1890,8 +1890,8 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
          return query.getResultList();
 
       }
-         return new ArrayList<>();
-      }
+      return new ArrayList<>();
+   }
 
    @Override
    public List<Integer> findObjetIdsFromNonConformiteNomManager(final String nom, final ConformiteType cType, final Plateforme pf,
@@ -2043,10 +2043,8 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
 
          return objs;
 
-      }else{
-         return new ArrayList<>();
       }
-
+      return new ArrayList<>();
    }
 
 }

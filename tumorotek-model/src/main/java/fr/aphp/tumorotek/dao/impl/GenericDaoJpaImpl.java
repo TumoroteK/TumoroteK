@@ -189,7 +189,6 @@ public class GenericDaoJpaImpl<T, PK extends Serializable> extends JpaDaoSupport
     * @return tous les objets d'une table.
     */
    @Override
-   
    public List<T> findAll(){
       
       final List<T> list = getJpaTemplate().find("select p from " + type.getSimpleName() + " p");
@@ -216,9 +215,7 @@ public class GenericDaoJpaImpl<T, PK extends Serializable> extends JpaDaoSupport
       		return query.getResultList();
       	}
       });*/
-
       return list;
-
    }
 
    /**

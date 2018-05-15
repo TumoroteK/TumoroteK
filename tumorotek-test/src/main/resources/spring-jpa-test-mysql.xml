@@ -10,10 +10,10 @@
 
 	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
 		destroy-method="close">
-		<property name="driverClass" value="com.mysql.jdbc.Driver" />
-		<property name="jdbcUrl" value="jdbc:mysql://10.172.147.51:3306/tumorotek_bto_test" />
-		<property name="user" value="atmkdev1" />
-		<property name="password" value="atmkdev1" />
+		<property name="driverClass" value="com.mysql.cj.jdbc.Driver" />
+		<property name="jdbcUrl" value="jdbc:mysql://${test.database.host}:3306/${test.database.tumorotek.name}?serverTimezone=Europe/Paris" />
+		<property name="user" value="${test.database.username}" />
+		<property name="password" value="${test.database.password}" />
 		<property name="initialPoolSize" value="3" />
 		<property name="minPoolSize" value="3" />
 		<property name="maxPoolSize" value="10" />
@@ -24,7 +24,6 @@
 		<property name="maxIdleTime" value="5000" />
 		<property name="maxConnectionAge" value="5000" />
 		<property name="idleConnectionTestPeriod" value="500" />
-
 	</bean>
 
 	<!-- couche de persistance JPA -->

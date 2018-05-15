@@ -349,9 +349,8 @@ public class CodeAssigneEditableGrid extends SmallObjsEditableGrid
    public Integer getLastObjectOrdre(){
       if(getObjs().isEmpty()){
          return new Integer(0);
-      }else{
-         return getObjs().get(getObjs().size() - 1).getOrdre();
       }
+      return getObjs().get(getObjs().size() - 1).getOrdre();
    }
 
    /*************************************************************/
@@ -572,7 +571,7 @@ public class CodeAssigneEditableGrid extends SmallObjsEditableGrid
     * à la liste existante.
     * @param event
     */
-   
+
    public void onGetCodesFromAssist(final Event event){
       if(event.getData() != null){
          final List<CodeCommon> res = (List<CodeCommon>) event.getData();

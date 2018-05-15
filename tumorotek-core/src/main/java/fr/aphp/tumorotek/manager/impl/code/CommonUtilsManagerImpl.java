@@ -40,7 +40,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -111,16 +111,15 @@ public class CommonUtilsManagerImpl implements CommonUtilsManager
             sb.append(codeId);
 
             final EntityManager em = entityManagerFactoryCodes.createEntityManager();
-            final Query query = em.createQuery(sb.toString());
+            final TypedQuery<CodeCommon> query = em.createQuery(sb.toString(), CodeCommon.class);
             results.addAll(query.getResultList());
          }
       }
 
       if(results.size() > 0){
          return results.get(0);
-      }else{
-         return null;
       }
+         return null;
    }
 
    @Override

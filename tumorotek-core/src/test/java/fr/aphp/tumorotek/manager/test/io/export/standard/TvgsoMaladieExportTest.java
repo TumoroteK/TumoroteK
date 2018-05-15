@@ -73,7 +73,7 @@ public class TvgsoMaladieExportTest extends AbstractManagerTest
 
    public void testGetDiagnosticPrincipal() throws SQLException, ClassNotFoundException{
 
-      Class.forName("com.mysql.jdbc.Driver");
+      Class.forName("com.mysql.cj.jdbc.Driver");
       final Connection con =
          DriverManager.getConnection("jdbc:mysql://localhost:3306/" + "toul?characterEncoding=UTF-8", "root", "root");
       final Prelevement prel = new Prelevement();

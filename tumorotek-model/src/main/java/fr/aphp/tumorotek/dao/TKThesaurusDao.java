@@ -47,9 +47,11 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  *
  * @author Mathieu BARTHELEMY
  * @version 2.0
+ * 
+ * @param <T> est l'objet de type TKThesaurusObject
  *
  */
-public interface TKThesaurusDao
+public interface TKThesaurusDao<T extends TKThesaurusObject>
 {
 
    /**
@@ -58,5 +60,5 @@ public interface TKThesaurusDao
     * @param plateforme
     * @return Liste ordonnée des éléments de thesaurus.
     */
-   List<? extends TKThesaurusObject> findByOrder(Plateforme pf);
+   List<T> findByOrder(Plateforme pf);
 }

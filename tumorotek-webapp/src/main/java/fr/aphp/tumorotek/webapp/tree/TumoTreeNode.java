@@ -71,10 +71,11 @@ public abstract class TumoTreeNode
     * Méthode remplissant la liste children.
     */
    public abstract void readChildren();
-
+   
    public ArrayList<TumoTreeNode> getChildren(){
       return children;
    }
+   
 
    /**
     * Renvoie un enfant du noeud.

@@ -330,7 +330,7 @@ public class IncaReportManagerImpl implements IncaReportManager
                         && echantillonDao.findAssociateEchansOfType(next.getMaladie(), sangEchanTypes, banks, next).size() > 0)){
                      totSangs++;
                   }
-                  if(countConsents && consents.contains(next.getConsentType())){
+                  if(countConsents && null != consents && consents.contains(next.getConsentType())){
                      totConsents++;
                   }
                }

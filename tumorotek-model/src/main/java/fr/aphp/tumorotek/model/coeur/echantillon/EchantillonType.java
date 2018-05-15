@@ -224,9 +224,8 @@ public class EchantillonType implements java.io.Serializable, TKThesaurusObject
    public String toString(){
       if(this.type != null){
          return "{" + this.type + "}";
-      }else{
-         return "{Empty EchantillonType}";
       }
+      return "{Empty EchantillonType}";
    }
 
    @Override

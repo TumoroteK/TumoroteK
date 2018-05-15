@@ -190,9 +190,8 @@ public class CessionExamen implements Serializable, TKThesaurusObject
    public String toString(){
       if(this.examen != null){
          return "{" + this.examen + "}";
-      }else{
-         return "{Empty CessionExamen}";
       }
+      return "{Empty CessionExamen}";
    }
 
    @Override

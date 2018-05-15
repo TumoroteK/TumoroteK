@@ -45,7 +45,6 @@ import org.springframework.validation.ValidationUtils;
 import fr.aphp.tumorotek.manager.coeur.prelevement.PrelevementValidator;
 import fr.aphp.tumorotek.manager.validation.CoherenceDateManager;
 import fr.aphp.tumorotek.manager.validation.ValidationUtilities;
-import fr.aphp.tumorotek.model.coeur.prelevement.LaboInter;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.utils.Utils;
 

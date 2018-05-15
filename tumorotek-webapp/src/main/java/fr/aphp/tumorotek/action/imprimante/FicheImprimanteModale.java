@@ -252,31 +252,28 @@ public class FicheImprimanteModale extends AbstractFicheCombineController
    public void onSelect$imprimanteApisBox(){
       if(selectedImprimanteApi == null){
          throw new WrongValueException(imprimanteApisBox, Labels.getLabel("fiche.imprimante.error.imprimanteApi"));
-      }else{
-         Clients.clearWrongValue(imprimanteApisBox);
+      }
+      Clients.clearWrongValue(imprimanteApisBox);
 
-         if(selectedImprimanteApi.getNom().equals("mbio")){
-            rowMbioPrinter.setVisible(true);
-         }else{
-            rowMbioPrinter.setVisible(false);
-         }
+      if(selectedImprimanteApi.getNom().equals("mbio")){
+         rowMbioPrinter.setVisible(true);
+      }else{
+         rowMbioPrinter.setVisible(false);
       }
    }
 
    public void onSelect$imprimantesBox(){
       if(selectedImprimante == null){
          throw new WrongValueException(imprimantesBox, Labels.getLabel("fiche.imprimante.error.imprimante"));
-      }else{
-         Clients.clearWrongValue(imprimantesBox);
       }
+      Clients.clearWrongValue(imprimantesBox);
    }
 
    public void onSelect$orientationsBox(){
       if(selectedOrientation == null){
          throw new WrongValueException(orientationsBox, Labels.getLabel("fiche.imprimante.error.orientation"));
-      }else{
-         Clients.clearWrongValue(orientationsBox);
       }
+      Clients.clearWrongValue(orientationsBox);
    }
 
    @Override

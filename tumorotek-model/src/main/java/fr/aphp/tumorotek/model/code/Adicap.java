@@ -216,9 +216,8 @@ public class Adicap implements CodeCommon, Serializable
       if(this.getAdicapId() != null){
          // utilisation get car Adicap$$EnhancerByCGLIB proxy
          return this.getAdicapId().equals(test.getAdicapId());
-      }else{ //impossible
-         return false;
       }
+      return false;
    }
 
    /**

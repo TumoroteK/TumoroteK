@@ -89,9 +89,8 @@ public class ConditType implements Serializable, TKThesaurusObject
    public String toString(){
       if(this.type != null){
          return "{" + this.type + "}";
-      }else{
-         return "{Empty ConditType}";
       }
+      return "{Empty ConditType}";
    }
 
    @Id

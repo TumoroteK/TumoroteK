@@ -99,17 +99,16 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
       ResourceBundle res = null;
       if(ManagerLocator.getResourceBundleTumo().doesResourceBundleExists("tumorotek.properties")){
          res = ManagerLocator.getResourceBundleTumo().getResourceBundle("tumorotek.properties");
-      }
       // on récupère la propriété définissant les interfaçages
-      String connexion = null;
-      if(res.containsKey("CONNEXION_CRF")){
-         connexion = res.getString("CONNEXION_CRF");
+         String connexion = null;
+         if(res.containsKey("CONNEXION_CRF")){
+            connexion = res.getString("CONNEXION_CRF");
+         }
+         if(connexion != null && connexion.equals("true")){
+            // extraction des interfaçages
+            active = true;
+         }
       }
-      if(connexion != null && connexion.equals("true")){
-         // extraction des interfaçages
-         active = true;
-      }
-
       return active;
    }
 
@@ -289,7 +288,6 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
          try{
             date = sdf.parse(dateNaissance);
          }catch(final ParseException e){
-            date = null;
          }
       }
       pat.setDateNaissance(date);

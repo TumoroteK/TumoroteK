@@ -155,9 +155,8 @@ public class CimoMorpho implements CodeCommon, Serializable
       if(this.getCimoMorphoId() != null){
          // utilisation get car CimoMoprho$$EnhancerByCGLIB proxy
          return this.getCimoMorphoId().equals(test.getCimoMorphoId());
-      }else{ //impossible
-         return false;
-      }
+      } //impossible
+      return false;
    }
 
    /**

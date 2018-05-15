@@ -344,8 +344,7 @@ public class FicheModifMultiEchantillon extends AbstractFicheModifMultiControlle
          try{
             anapathStream.close();
          }catch(IOException e){
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error(e);
    }
       }
    }
@@ -362,34 +361,6 @@ public class FicheModifMultiEchantillon extends AbstractFicheModifMultiControlle
          "Champ.Echantillon.EchantillonType.Type", "echantillonType", (List<Object>) types, "type", null, null, false, null,
          true);
    }
-
-   //	
-   //	public void onClick$quantiteMultiLabel() {	
-   //		
-   //		List<Unite> quantiteUnites = ManagerLocator.getUniteManager()
-   //			.findByTypeLikeManager("masse", true);
-   //		quantiteUnites.addAll(ManagerLocator.getUniteManager()
-   //			.findByTypeLikeManager("discret", true));
-   //		quantiteUnites.addAll(ManagerLocator.getUniteManager()
-   //			.findByTypeLikeManager("volume", true));
-   //		
-   //		List < ? extends Object> units = quantiteUnites;
-   //		
-   //		openModificationMultipleWindow(page, 
-   //				Path.getPath(self),
-   //				"onGetChangeOnChamp",
-   //				"Quantification", 
-   //				getObjsToEdit(), 
-   //				"Champ.Echantillon.Quantite", 
-   //				"quantite",
-   //				(List<Object>) units,
-   //				"unite",
-   //				null, 
-   //				null,
-   //				false,
-   //				null,
-   //				false);
-   //	}
 
    public void onClick$quantiteInitMultiLabel(){
 

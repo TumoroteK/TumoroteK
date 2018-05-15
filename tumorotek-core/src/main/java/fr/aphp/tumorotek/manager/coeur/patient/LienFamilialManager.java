@@ -65,7 +65,7 @@ import fr.aphp.tumorotek.model.coeur.patient.LienFamilial;
  * @version 2.0
  *
  */
-public interface LienFamilialManager extends CrudManager
+public interface LienFamilialManager extends CrudManager<LienFamilial>
 {
 
    /**

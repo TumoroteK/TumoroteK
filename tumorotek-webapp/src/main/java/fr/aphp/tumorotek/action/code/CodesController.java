@@ -577,12 +577,10 @@ public class CodesController extends AbstractController
       if(isModal){ // ne transcode que pour les codifs associées à la banque
          return ManagerLocator.getTableCodageManager().transcodeManager(currCode, getTablesForBanques(),
             SessionUtils.getSelectedBanques(applicationScope));
-      }else{ // administration -> transcode sur toutes les tables 
-         return ManagerLocator.getTableCodageManager().transcodeManager(currCode,
-            ManagerLocator.getTableCodageManager().findAllObjectsManager(),
-            ManagerLocator.getBanqueManager().findByUtilisateurIsAdminManager(SessionUtils.getLoggedUser(sessionScope),
-               SessionUtils.getPlateforme(sessionScope)));
-      }
+      } // administration -> transcode sur toutes les tables 
+      return ManagerLocator.getTableCodageManager().transcodeManager(currCode,
+         ManagerLocator.getTableCodageManager().findAllObjectsManager(), ManagerLocator.getBanqueManager()
+            .findByUtilisateurIsAdminManager(SessionUtils.getLoggedUser(sessionScope), SessionUtils.getPlateforme(sessionScope)));
    }
 
    /**

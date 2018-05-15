@@ -317,17 +317,9 @@ public class FichePatientStatic extends AbstractFicheStaticController
 
    public String getDateNaisFormatted(){
       if(isAnonyme()){
-         //makeLabelAnonyme(dateNaisLabel, false);
          return getAnonymeString();
-      }else{
-         return ObjectTypesFormatters.dateRenderer2(this.patient.getDateNaissance());
       }
-      //		if (this.patient.getDateNaissance() != null) {
-      //			Calendar c = Calendar.getInstance();
-      //			c.setTime(this.patient.getDateNaissance());
-      //			return String.valueOf(c.get(Calendar.YEAR));
-      //		}
-      //		return null;
+      return ObjectTypesFormatters.dateRenderer2(this.patient.getDateNaissance());
    }
 
    public String getSexeFormatted(){
@@ -446,7 +438,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
       disableToolBar(false);
    }
 
-   public void onMaladieEdit(final Event e){
+   public void onMaladieEdit(){
       //gele la toolbar
       disableToolBar(true);
    }
@@ -480,7 +472,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
          /** Mis en commentaire car l'ouverture de la maladie
           * provoque un bug d'affichage sur les petits écrans :
           * les onglets disparaissent. */
-         if(i == 1){ // 1 seule maladie
+         if(null != ua && i == 1){ // 1 seule maladie
             ((FicheMaladie) ua.getFellow("fwinMaladie").getAttributeOrFellow("fwinMaladie$composer", true)).openAll();
          }
          this.lastPanelId = i;
@@ -672,9 +664,8 @@ public class FichePatientStatic extends AbstractFicheStaticController
    public String getPrelevementsFromOtherMaladiesListSize(){
       if(this.prelevementsFromOtherMaladies.size() < 5 && this.prelevementsFromOtherMaladies.size() > 0){
          return String.valueOf(this.prelevementsFromOtherMaladies.size());
-      }else{
-         return "5";
       }
+      return "5";
    }
 
    /*************************************************************************/
@@ -746,10 +737,9 @@ public class FichePatientStatic extends AbstractFicheStaticController
       if(isAnonyme()){
          makeLabelAnonyme(nipLabel, false);
          return getAnonymeString();
-      }else{
-         nipLabel.setSclass("formValue");
-         return this.getObject().getNip();
       }
+      nipLabel.setSclass("formValue");
+      return this.getObject().getNip();
    }
 
    /**
@@ -761,10 +751,9 @@ public class FichePatientStatic extends AbstractFicheStaticController
       if(isAnonyme()){
          makeLabelAnonyme(nomLabel, false);
          return getAnonymeString();
-      }else{
-         nomLabel.setSclass("formValue");
-         return this.getObject().getNom();
       }
+      nomLabel.setSclass("formValue");
+      return this.getObject().getNom();
    }
 
    /**
@@ -777,10 +766,9 @@ public class FichePatientStatic extends AbstractFicheStaticController
       if(isAnonyme()){
          makeLabelAnonyme(nomNaisLabel, false);
          return getAnonymeString();
-      }else{
-         nomNaisLabel.setSclass("formValue");
-         return this.getObject().getNomNaissance();
       }
+      nomNaisLabel.setSclass("formValue");
+      return this.getObject().getNomNaissance();
    }
 
    /**
@@ -792,10 +780,9 @@ public class FichePatientStatic extends AbstractFicheStaticController
       if(isAnonyme()){
          makeLabelAnonyme(prenomLabel, false);
          return getAnonymeString();
-      }else{
-         prenomLabel.setSclass("formValue");
-         return this.getObject().getPrenom();
       }
+      prenomLabel.setSclass("formValue");
+      return this.getObject().getPrenom();
    }
 
    /**
@@ -811,9 +798,8 @@ public class FichePatientStatic extends AbstractFicheStaticController
       if(self.getFellow("ficheTissuInlineAnnoPatient") != null){
          return ((FicheAnnotationInline) self.getFellow("ficheTissuInlineAnnoPatient").getFellow("fwinAnnotationInline")
             .getAttributeOrFellow("fwinAnnotationInline$composer", true));
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -839,4 +825,9 @@ public class FichePatientStatic extends AbstractFicheStaticController
          getFicheAnnotationInline().setObjectTabController(getObjectTabController());
       }
    }
+
+   public Patient getPatient(){
+      return this.patient;
+   }
+
 }

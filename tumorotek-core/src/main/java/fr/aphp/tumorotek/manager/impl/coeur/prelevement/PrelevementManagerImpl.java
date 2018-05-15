@@ -62,6 +62,7 @@ import fr.aphp.tumorotek.dao.coeur.prelevement.ConditTypeDao;
 import fr.aphp.tumorotek.dao.coeur.prelevement.ConsentTypeDao;
 import fr.aphp.tumorotek.dao.coeur.prelevement.NatureDao;
 import fr.aphp.tumorotek.dao.coeur.prelevement.PrelevementDao;
+import fr.aphp.tumorotek.dao.coeur.prelevement.PrelevementDelegateDao;
 import fr.aphp.tumorotek.dao.coeur.prelevement.PrelevementTypeDao;
 import fr.aphp.tumorotek.dao.coeur.prodderive.TransformationDao;
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
@@ -93,6 +94,7 @@ import fr.aphp.tumorotek.manager.qualite.ObjetNonConformeManager;
 import fr.aphp.tumorotek.manager.qualite.OperationManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
+import fr.aphp.tumorotek.model.TKValidableObject;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
@@ -166,6 +168,7 @@ public class PrelevementManagerImpl implements PrelevementManager
    private CederObjetManager cederObjetManager;
    private DossierExterneDao dossierExterneDao;
    private ObjetNonConformeManager objetNonConformeManager;
+   private PrelevementDelegateDao prelevementDelegateDao;
 
    public PrelevementManagerImpl(){}
 
@@ -326,8 +329,8 @@ public class PrelevementManagerImpl implements PrelevementManager
 
          // Doublon
          if(!findDoublonManager(prelevement)){
-            mergeNonRequiredObjects(prelevement, /*maladie,*/ preleveur, servicePreleveur, prelevementType, conditType, conditMilieu,
-               transporteur, operateur, quantiteUnite);
+            mergeNonRequiredObjects(prelevement, /*maladie,*/ preleveur, servicePreleveur, prelevementType, conditType,
+               conditMilieu, transporteur, operateur, quantiteUnite);
 
             prelevementDao.createObject(prelevement);
             log.info("Enregistrement objet Prelevement " + prelevement.toString());
@@ -424,76 +427,76 @@ public class PrelevementManagerImpl implements PrelevementManager
          throw new DoublonFoundException("Prelevement", "modification", prelevement.getCode(), null);
       }
 
-         try{
+      try{
          mergeNonRequiredObjects(prelevement, /*maladie,*/ preleveur, servicePreleveur, prelevementType, conditType, conditMilieu,
-               transporteur, operateur, quantiteUnite);
+            transporteur, operateur, quantiteUnite);
 
-            if(cascadeNonSterile != null){ // cascade non sterile condition
-               log.info("Applique la cascade de sterilite" + " depuis le prelevement " + prelevement.toString());
-               if(laboInters != null // aucune modif labos
-                  && laboInters.size() > 0){
-                  cascadeNonSterileManager(prelevement, laboInters, cascadeNonSterile, true);
-               }else{
-                  cascadeNonSterileManager(prelevement, new ArrayList<>(getLaboIntersWithOrderManager(prelevement)),
-                     cascadeNonSterile, true);
-               }
-            }
-
-            prelevementDao.updateObject(prelevement);
-            log.info("Modification objet Prelevement " + prelevement.toString());
-            // Enregistrement de l'operation associee
-            final Operation creationOp = new Operation();
-            creationOp.setDate(Utils.getCurrentSystemCalendar());
-            if(!multiple){
-               operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
-                  prelevement);
+         if(cascadeNonSterile != null){ // cascade non sterile condition
+            log.info("Applique la cascade de sterilite" + " depuis le prelevement " + prelevement.toString());
+            if(laboInters != null // aucune modif labos
+               && laboInters.size() > 0){
+               cascadeNonSterileManager(prelevement, laboInters, cascadeNonSterile, true);
             }else{
-               operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("ModifMultiple").get(0),
-                  prelevement);
+               cascadeNonSterileManager(prelevement, new ArrayList<>(getLaboIntersWithOrderManager(prelevement)),
+                  cascadeNonSterile, true);
             }
-
-            updateLaboInters(laboInters, prelevement);
-
-            // Annotations
-            // suppr les annotations
-            if(listAnnoToDelete != null){
-               annotationValeurManager.removeAnnotationValeurListManager(listAnnoToDelete, filesToDelete);
-            }
-
-            // update les annotations, null operation pour
-            // laisser la possibilité création/modification au sein
-            // de la liste
-            if(listAnnoToCreateOrUpdate != null){
-               annotationValeurManager.createAnnotationValeurListManager(listAnnoToCreateOrUpdate, prelevement, utilisateur, null,
-                  baseDir, filesCreated, filesToDelete);
-            }
-
-            // enregistre operation associee annotation
-            // si il y a eu des deletes et pas d'updates
-            if((listAnnoToCreateOrUpdate == null || listAnnoToCreateOrUpdate.isEmpty())
-               && (listAnnoToDelete != null && !listAnnoToDelete.isEmpty())){
-               CreateOrUpdateUtilities.createAssociateOperation(prelevement, operationManager,
-                  operationTypeDao.findByNom("Annotation").get(0), utilisateur);
-            }
-
-            if(filesToDelete != null){
-               for(final File f : filesToDelete){
-                  f.delete();
-               }
-            }
-
-         }catch(final RuntimeException re){
-            // rollback au besoin...
-            if(filesCreated != null){
-               for(final File f : filesCreated){
-                  f.delete();
-               }
-            }else{
-               log.warn("Rollback création fichier n'a pas pu être réalisée");
-            }
-            throw (re);
          }
+
+         prelevementDao.updateObject(prelevement);
+         log.info("Modification objet Prelevement " + prelevement.toString());
+         // Enregistrement de l'operation associee
+         final Operation creationOp = new Operation();
+         creationOp.setDate(Utils.getCurrentSystemCalendar());
+         if(!multiple){
+            operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
+               prelevement);
+         }else{
+            operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("ModifMultiple").get(0),
+               prelevement);
+         }
+
+         updateLaboInters(laboInters, prelevement);
+
+         // Annotations
+         // suppr les annotations
+         if(listAnnoToDelete != null){
+            annotationValeurManager.removeAnnotationValeurListManager(listAnnoToDelete, filesToDelete);
+         }
+
+         // update les annotations, null operation pour
+         // laisser la possibilité création/modification au sein
+         // de la liste
+         if(listAnnoToCreateOrUpdate != null){
+            annotationValeurManager.createAnnotationValeurListManager(listAnnoToCreateOrUpdate, prelevement, utilisateur, null,
+               baseDir, filesCreated, filesToDelete);
+         }
+
+         // enregistre operation associee annotation
+         // si il y a eu des deletes et pas d'updates
+         if((listAnnoToCreateOrUpdate == null || listAnnoToCreateOrUpdate.isEmpty())
+            && (listAnnoToDelete != null && !listAnnoToDelete.isEmpty())){
+            CreateOrUpdateUtilities.createAssociateOperation(prelevement, operationManager,
+               operationTypeDao.findByNom("Annotation").get(0), utilisateur);
+         }
+
+         if(filesToDelete != null){
+            for(final File f : filesToDelete){
+               f.delete();
+            }
+         }
+
+      }catch(final RuntimeException re){
+         // rollback au besoin...
+         if(filesCreated != null){
+            for(final File f : filesCreated){
+               f.delete();
+            }
+         }else{
+            log.warn("Rollback création fichier n'a pas pu être réalisée");
+         }
+         throw (re);
       }
+   }
 
    @Override
    public boolean findDoublonManager(final Prelevement prelevement){
@@ -506,12 +509,12 @@ public class PrelevementManagerImpl implements PrelevementManager
          if(prelevement.getPrelevementId() == null){
             return true;
          }
-            for(final Prelevement d : dbls){
-               if(!d.getPrelevementId().equals(prelevement.getPrelevementId())){
-                  return true;
-               }
+         for(final Prelevement d : dbls){
+            if(!d.getPrelevementId().equals(prelevement.getPrelevementId())){
+               return true;
             }
          }
+      }
       return false;
    }
 
@@ -610,7 +613,7 @@ public class PrelevementManagerImpl implements PrelevementManager
     *            Banque à laquelle appartient le prlvt.
     * @return List de Prelevement
     */
-   
+
    private List<Prelevement> findByOperationTypeAndDate(final OperationType oType, final Calendar date, final Banque banque){
       final EntityManager em = entityManagerFactory.createEntityManager();
       final TypedQuery<Integer> opQuery = em.createQuery("SELECT DISTINCT o.objetId FROM "
@@ -652,7 +655,7 @@ public class PrelevementManagerImpl implements PrelevementManager
     *            Banque à laquelle appartient le prlvt.
     * @return List de Prelevement
     */
-   
+
    private List<Integer> findByOperationTypeAndDateReturnIds(final OperationType oType, final Calendar date, final Banque banque){
       final EntityManager em = entityManagerFactory.createEntityManager();
       final TypedQuery<Integer> opQuery = em.createQuery("SELECT DISTINCT o.objetId FROM "
@@ -770,8 +773,8 @@ public class PrelevementManagerImpl implements PrelevementManager
          log.debug("Recherche Prelevement par code: " + code + " exactMatch " + String.valueOf(exactMatch));
          return prelevementDao.findByCodeOrNumLaboWithBanque(code, banque);
       }
-         return new ArrayList<>();
-      }
+      return new ArrayList<>();
+   }
 
    @Override
    public List<Integer> findByCodeOrNumLaboLikeBothSideWithBanqueReturnIdsManager(String code, final List<Banque> banques,
@@ -848,24 +851,24 @@ public class PrelevementManagerImpl implements PrelevementManager
       if(colla != null){
          return prelevementDao.findCountCreatedByCollaborateur(colla).get(0);
       }
-         return new Long(0);
-      }
+      return new Long(0);
+   }
 
    @Override
    public Long findCountByPreleveurManager(final Collaborateur colla){
       if(colla != null){
          return prelevementDao.findCountByPreleveur(colla).get(0);
       }
-         return new Long(0);
-      }
+      return new Long(0);
+   }
 
    @Override
    public Long findCountByServiceManager(final Service serv){
       if(serv != null){
          return prelevementDao.findCountByService(serv).get(0);
       }
-         return new Long(0);
-      }
+      return new Long(0);
+   }
 
    /**
     * Recherche la liste des codes utilisés par les prélèvements liés à la
@@ -920,8 +923,8 @@ public class PrelevementManagerImpl implements PrelevementManager
          echans.size();
          return echans;
       }
-         return new HashSet<>();
-      }
+      return new HashSet<>();
+   }
 
    /**
     * Recherche une liste de labo inters dont le prélèvement est passé en
@@ -941,8 +944,8 @@ public class PrelevementManagerImpl implements PrelevementManager
          labos.size();
          return labos;
       }
-         return new HashSet<>();
-      }
+      return new HashSet<>();
+   }
 
    /**
     * Recherche une liste de labo inters dont le prélèvement est passé en
@@ -957,8 +960,8 @@ public class PrelevementManagerImpl implements PrelevementManager
       if(prelevement != null){
          return laboInterManager.findByPrelevementWithOrder(prelevement);
       }
-         return new ArrayList<>();
-      }
+      return new ArrayList<>();
+   }
 
    /**
     * Recherche une liste de dérivés dont le prélèvement est passé en
@@ -990,8 +993,12 @@ public class PrelevementManagerImpl implements PrelevementManager
 
          return derives;
       }
-         return new ArrayList<>();
-      }
+      return new ArrayList<>();
+   }
+
+   public void setPrelevementDelegateDao(PrelevementDelegateDao prelevementDelegateDao){
+      this.prelevementDelegateDao = prelevementDelegateDao;
+   }
 
    @Override
    public void removeObjectManager(final Prelevement prelevement, final String comments, final Utilisateur u,
@@ -1156,6 +1163,7 @@ public class PrelevementManagerImpl implements PrelevementManager
       final Service servicePreleveur, final PrelevementType prelevementType, final ConditType conditType,
       final ConditMilieu conditMilieu, final Transporteur transporteur, final Collaborateur operateur, final Unite quantiteUnite){
 
+      prelevement.setDelegate(prelevementDelegateDao.mergeObject(prelevement.getDelegate()));
       prelevement.setPrelevementType(prelevementTypeDao.mergeObject(prelevementType));
       prelevement.setPreleveur(collaborateurDao.mergeObject(preleveur));
       prelevement.setServicePreleveur(serviceDao.mergeObject(servicePreleveur));
@@ -1238,8 +1246,8 @@ public class PrelevementManagerImpl implements PrelevementManager
       if(banques != null && banques.size() > 0){
          return prelevementDao.findByBanquesAllIds(banques);
       }
-         return new ArrayList<>();
-      }
+      return new ArrayList<>();
+   }
 
    @Override
    public List<Prelevement> findByPatientManager(final Patient pat){
@@ -1266,16 +1274,16 @@ public class PrelevementManagerImpl implements PrelevementManager
       if(criteres != null && banques != null && criteres.size() > 0 && banques.size() > 0){
          return prelevementDao.findByCodeOrNumLaboInListWithBanque(criteres, banques);
       }
-         return new ArrayList<>();
-      }
+      return new ArrayList<>();
+   }
 
    @Override
    public List<Integer> findByPatientNomOrNipInListManager(final List<String> criteres, final List<Banque> banks){
       if(criteres != null && banks != null && criteres.size() > 0 && banks.size() > 0){
          return prelevementDao.findByPatientNomOrNipInList(criteres, banks);
       }
-         return new ArrayList<>();
-      }
+      return new ArrayList<>();
+   }
 
    @Override
    public List<Prelevement> findByNdaLikeManager(final String nda){
@@ -1406,11 +1414,11 @@ public class PrelevementManagerImpl implements PrelevementManager
       }
 
       //      if(filesToDelete != null){
-         for(final File f : filesToDelete){
-            f.delete();
-         }
-      //      }
+      for(final File f : filesToDelete){
+         f.delete();
       }
+      //      }
+   }
 
    @Override
    public void switchBanqueCascadeManager(Prelevement prel, final Banque bank, final boolean doValidation, final Utilisateur u,
@@ -1428,7 +1436,18 @@ public class PrelevementManagerImpl implements PrelevementManager
             prodDeriveManager.switchBanqueCascadeManager(derivesIt.next(), bank, doValidation, u, filesToDelete);
          }
 
+         //Suppression du délégué si la banque de destination n'est pas dans le même contexte que la banque d'origine
+         if(!bank.getContexte().equals(prel.getBanque().getContexte())){
+            prel.setDelegate(null);
+         }
+         //Si la banque de destination est dans le même contexte que la banque d'origine, on garde le délégué mais on supprime la validation le cas échéant
+         else if(prel.getDelegate() instanceof TKValidableObject) {
+            ((TKValidableObject)prel.getDelegate()).setDetailValidation(null);
+         }
+
          prel.setBanque(bank);
+
+         //Si le délégué présente des informations de validation, on 
 
          if(doValidation && findDoublonManager(prel)){
             log.warn("Doublon lors creation objet Prelevement " + prel.toString());
@@ -1533,18 +1552,18 @@ public class PrelevementManagerImpl implements PrelevementManager
          }
 
          //         if(filesToDelete != null){
-            for(final File f : filesToDelete){
-               f.delete();
-            }
+         for(final File f : filesToDelete){
+            f.delete();
+         }
          //         }
       }catch(final RuntimeException e){
          //         if(filesCreated != null){
-            for(final File f : filesCreated){
-               f.delete();
-            }
-         //         }
+         for(final File f : filesCreated){
+            f.delete();
          }
+         //         }
       }
+   }
 
    @Override
    public void switchMaladieManager(Prelevement prel, final Maladie maladie, final Utilisateur usr){
@@ -1660,12 +1679,12 @@ public class PrelevementManagerImpl implements PrelevementManager
             }
          }
          //         if(filesToDelete != null){
-            for(final File f : filesToDelete){
-               f.delete();
-            }
-         //         }
+         for(final File f : filesToDelete){
+            f.delete();
          }
+         //         }
       }
+   }
 
    @Override
    public List<Prelevement> findByPatientAndAuthorisationsManager(final Patient pat, final Plateforme pf,

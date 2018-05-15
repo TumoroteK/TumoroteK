@@ -168,21 +168,17 @@ public class Champ implements Comparable<Champ>
          if(test.champAnnotation == null){
             if(this.champEntite == null){
                return test.champEntite == null;
-            }else{
-               return this.champEntite.equals(test.champEntite);
             }
-         }else{
-            return false;
+            return this.champEntite.equals(test.champEntite);
          }
+         return false;
       }else if(this.champAnnotation.equals(test.champAnnotation)){
          if(this.champEntite == null){
             return test.champEntite == null;
-         }else{
-            return this.champEntite.equals(test.champEntite);
          }
-      }else{
-         return false;
+         return this.champEntite.equals(test.champEntite);
       }
+      return false;
    }
 
    /**
@@ -226,9 +222,8 @@ public class Champ implements Comparable<Champ>
             final String champParentNom =
                this.champParent.getChampEntite().getNom().substring(0, this.champParent.getChampEntite().getNom().length() - 2);
             return this.champParent.getChampEntite().getEntite().getNom() + "." + champParentNom + "." + champEntiteNom;
-         }else{
-            return this.getChampEntite().getEntite().getNom() + "." + champEntiteNom;
          }
+         return this.getChampEntite().getEntite().getNom() + "." + champEntiteNom;
       }
       return "{Empty Champ}";
    }

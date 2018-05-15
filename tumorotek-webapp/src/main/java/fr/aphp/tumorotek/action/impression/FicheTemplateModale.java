@@ -38,8 +38,10 @@ package fr.aphp.tumorotek.action.impression;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -75,8 +77,10 @@ import fr.aphp.tumorotek.action.utils.PrelevementUtils;
 import fr.aphp.tumorotek.decorator.BlocImpressionDecorator;
 import fr.aphp.tumorotek.decorator.BlocImpressionRowRenderer;
 import fr.aphp.tumorotek.decorator.CederObjetDecorator;
+import fr.aphp.tumorotek.decorator.CleImpressionDecorator;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.decorator.factory.CederObjetDecoratorFactory;
+import fr.aphp.tumorotek.manager.impl.io.utils.RechercheUtilsManager;
 import fr.aphp.tumorotek.manager.impl.xml.CoupleSimpleValeur;
 import fr.aphp.tumorotek.manager.impl.xml.CoupleValeur;
 import fr.aphp.tumorotek.manager.impl.xml.EnteteListe;
@@ -106,6 +110,7 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.impression.BlocImpression;
 import fr.aphp.tumorotek.model.impression.BlocImpressionTemplate;
+import fr.aphp.tumorotek.model.impression.CleImpression;
 import fr.aphp.tumorotek.model.impression.ETemplateType;
 import fr.aphp.tumorotek.model.impression.TableAnnotationTemplate;
 import fr.aphp.tumorotek.model.impression.Template;
@@ -117,6 +122,12 @@ import fr.aphp.tumorotek.model.stockage.Emplacement;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
+/**
+ * Controlleur de la fiche template d'impression dans l'application
+ * 
+ * @author 
+ * @version 2.2
+ */
 public class FicheTemplateModale extends AbstractImpressionController
 {
 
@@ -125,6 +136,8 @@ public class FicheTemplateModale extends AbstractImpressionController
    private static final long serialVersionUID = -8743924081789346031L;
 
    private Group groupContenu;
+
+   private Group groupClesChamps;
 
    private Listbox formatsBox;
 
@@ -149,6 +162,8 @@ public class FicheTemplateModale extends AbstractImpressionController
    private Label piedPageLabel;
 
    private Grid contenuStaticGrid;
+
+   private Grid cleImpressionStaticGrid;
 
    private Row descriptionRow;
 
@@ -206,6 +221,8 @@ public class FicheTemplateModale extends AbstractImpressionController
    private BlocImpressionRowRenderer blocImpressionRenderer = new BlocImpressionRowRenderer(false);
 
    private BlocImpressionRowRenderer blocImpressionRendererEdit = new BlocImpressionRowRenderer(true);
+
+   private List<CleImpressionDecorator> cleImpressionDecoratorList = new ArrayList<>();
 
    @Override
    public TKdataObject getObject(){
@@ -304,57 +321,6 @@ public class FicheTemplateModale extends AbstractImpressionController
       getBinder().loadAll();
    }
 
-   /**
-    * Pour les templates de type Document Word
-    */
-   //   public void generateKeyDoc(){
-   //      //List<Champ> champs = ManagerLocator.getChampManager().findAllObjectsManager();
-   //      List<CleImpression> cles = ManagerLocator.getCleManager().findAllObjectsManager();
-   //
-   //      List<BlocImpressionTemplate> temps = ManagerLocator.getBlocImpressionTemplateManager().findByTemplateManager(template);
-   //
-   //      List<TableAnnotationTemplate> tables = ManagerLocator.getTableAnnotationTemplateManager().findByTemplateManager(template);
-   //
-   //      int i = 0;
-   //      int j = 0;
-   //      // on parcourt les 2 listes en entier
-   //      while(i < temps.size() || j < tables.size()){
-   //         BlocImpressionTemplate bloc = null;
-   //         TableAnnotationTemplate anno = null;
-   //         if(i < temps.size()){
-   //            bloc = temps.get(i);
-   //         }
-   //         if(j < tables.size()){
-   //            anno = tables.get(j);
-   //         }
-   //
-   //         // si on arrive a extraire un bloc et une annotation
-   //         if(bloc != null && anno != null){
-   //            // on ajoute à la liste finale celui qui a le +
-   //            // petit ordre
-   //            if(anno.getOrdre() < bloc.getOrdre()){
-   //               BlocImpressionDecorator deco = new BlocImpressionDecorator(null, anno.getTableAnnotation(), template);
-   //               blocImpressionsDecorated.add(deco);
-   //               ++j;
-   //            }else{
-   //               BlocImpressionDecorator deco = new BlocImpressionDecorator(bloc.getBlocImpression(), null, template);
-   //               blocImpressionsDecorated.add(deco);
-   //               ++i;
-   //            }
-   //         }else if(bloc != null){
-   //            // s'il ne reste que des blocs
-   //            BlocImpressionDecorator deco = new BlocImpressionDecorator(bloc.getBlocImpression(), null, template);
-   //            blocImpressionsDecorated.add(deco);
-   //            ++i;
-   //         }else if(anno != null){
-   //            // s'il ne reste que des annotations
-   //            BlocImpressionDecorator deco = new BlocImpressionDecorator(null, anno.getTableAnnotation(), template);
-   //            blocImpressionsDecorated.add(deco);
-   //            ++j;
-   //         }
-   //      }
-   //   }
-
    @Override
    public void setNewObject(){
       setObject(new Template());
@@ -387,7 +353,7 @@ public class FicheTemplateModale extends AbstractImpressionController
    public void switchToCreateMode(){
       super.switchToCreateMode();
 
-      //TODO 7007168 Pour l'instant création à la volée de modèle BLOC uniquement
+      //TODO Pour l'instant création à la volée de modèle BLOC uniquement
       this.template.setType(ETemplateType.BLOC);
       this.formatsRow.setVisible(true);
       this.enteteRow.setVisible(true);
@@ -396,7 +362,10 @@ public class FicheTemplateModale extends AbstractImpressionController
 
       this.blocImpressionsDecorated = new ArrayList<>();
 
-      contenuEditGrid.setVisible(false);
+      this.contenuEditGrid.setVisible(false);
+
+      this.groupClesChamps.setVisible(false);
+      this.cleImpressionStaticGrid.setVisible(false);
    }
 
    @Override
@@ -410,6 +379,9 @@ public class FicheTemplateModale extends AbstractImpressionController
          rowHistorique.setVisible(true);
          groupContenu.setVisible(true);
          contenuStaticRow.setVisible(true);
+         groupClesChamps.setVisible(false);
+         cleImpressionStaticGrid.setVisible(false);
+         nomFile = selectedEntite.getNom().toLowerCase() + ".pdf";
       }else if(ETemplateType.DOC == selectedTemplate.getType()){
          formatsRow.setVisible(false);
          enteteRow.setVisible(false);
@@ -417,6 +389,23 @@ public class FicheTemplateModale extends AbstractImpressionController
          groupContenu.setVisible(false);
          rowHistorique.setVisible(false);
          contenuStaticRow.setVisible(false);
+         groupClesChamps.setVisible(true);
+         cleImpressionStaticGrid.setVisible(true);
+         
+         String fileExtension = TemplateUtils.getFileExtension(template);
+         nomFile = template.getNom() + "_" + objectToPrint.toString() + fileExtension;
+
+         cleImpressionDecoratorList = new ArrayList<>();
+         final List<CleImpression> cles = template.getCleImpressionList();
+         final List<Object> objects = RechercheUtilsManager.getListeObjetsCorrespondants(objectToPrint, cles, null);
+         final Map<String, String> cleValeurMap = new HashMap<>();
+         TemplateUtils.loadClesValues(objects, cleValeurMap, cles);
+         for(CleImpression cle : cles){
+            CleImpressionDecorator cleImprDeco = new CleImpressionDecorator(cle);
+            cleImprDeco.setValue(cleValeurMap.get(cle.getNom()));
+            cleImpressionDecoratorList.add(cleImprDeco);
+         }
+         Events.echoEvent("onListChange", this.cleImpressionStaticGrid, null);
       }
    }
 
@@ -504,7 +493,9 @@ public class FicheTemplateModale extends AbstractImpressionController
       newOne.setNom(Labels.getLabel("template.new"));
       templates.add(newOne);
       selectedTemplate = templates.get(0);
-
+      rowHistorique.setVisible(canHistorique);
+      nomFile = selectedEntite.getNom().toLowerCase() + ".pdf";
+      
       if(selectedTemplate.getTemplateId() != null){
          setObject(selectedTemplate);
          switchToStaticMode();
@@ -513,9 +504,6 @@ public class FicheTemplateModale extends AbstractImpressionController
          defineAllBlocImpressions();
       }
 
-      rowHistorique.setVisible(canHistorique);
-
-      nomFile = selectedEntite.getNom().toLowerCase() + ".pdf";
       formats.add("PDF");
       formats.add("HTML");
       selectedFormat = formats.get(0);
@@ -529,7 +517,21 @@ public class FicheTemplateModale extends AbstractImpressionController
    public void onClick$print(){
       if(ETemplateType.BLOC == template.getType()){
          if(!checksBlocValid()){
-            throw new WrongValueException(print, Labels.getLabel("impression.error"));
+            throw new WrongValueException(print, Labels.getLabel("impression.bloc.empty"));
+         }
+      }else if(ETemplateType.DOC == template.getType()){
+         for(CleImpressionDecorator cleImprDeco : cleImpressionDecoratorList){
+            if(null == cleImprDeco.getCleImpression().getChamp()){
+               throw new WrongValueException(print, "La clé " + cleImprDeco.getCleImpression().getNom() + " n'a pas de champ renseigné");
+//               Messagebox.show("La clé " + cleImprDeco.getCleImpression().getNom() + " n'a pas de champ renseigné");
+//               return;
+            }else if(null == cleImprDeco.getValue() || "".equals(cleImprDeco.getValue())){
+               throw new WrongValueException(print, "Le champ " + cleImprDeco.getCleImpression().getChamp() + " correspondant à la clé "
+                + cleImprDeco.getCleImpression().getNom() + " n'est pas renseigné");
+//               Messagebox.show("Le champ " + cleImprDeco.getCleImpression().getChamp() + " correspondant à la clé "
+//                  + cleImprDeco.getCleImpression().getNom() + " n'est pas renseigné");
+//               return;
+            }
          }
       }
 
@@ -550,7 +552,7 @@ public class FicheTemplateModale extends AbstractImpressionController
    public void onLaterPrint(){
       byte[] dl = null;
       if(ETemplateType.DOC == this.template.getType()){
-         TemplateUtils.replaceKeysInDocumentTemplateAndDownload(template, objectToPrint);
+         TemplateUtils.replaceKeysInDocumentTemplateAndDownload(template, objectToPrint, nomFile+TemplateUtils.getFileExtension(template));
       }else if(ETemplateType.BLOC == this.template.getType()){
 
          // création du document XML contenant les données à imprimer
@@ -3260,4 +3262,13 @@ public class FicheTemplateModale extends AbstractImpressionController
 
    @Override
    public void setParentObject(final TKdataObject obj){}
+
+   public List<CleImpressionDecorator> getCleImpressionDecoratorList(){
+      return cleImpressionDecoratorList;
+   }
+
+   public void setCleImpressionDecoratorList(List<CleImpressionDecorator> cleImpressionDecoratorList){
+      this.cleImpressionDecoratorList = cleImpressionDecoratorList;
+   }
+
 }

@@ -48,7 +48,6 @@ import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.prelevement.ConditMilieuValidator;
-import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.coeur.prelevement.ConditMilieu;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 
@@ -87,19 +86,18 @@ public class ConditMilieuManagerImpl implements ConditMilieuManager
    }
 
    @Override
-   public void createObjectManager(final Object obj){
+   public void createObjectManager(final ConditMilieu obj){
 
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
-      if(((TKThesaurusObject) obj).getPlateforme() == null){
+      if(obj.getPlateforme() == null){
          throw new RequiredObjectIsNullException("ConditMilieu", "creation", "Plateforme");
-      }else{
-         ((TKThesaurusObject) obj).setPlateforme(plateformeDao.mergeObject(((TKThesaurusObject) obj).getPlateforme()));
       }
+      obj.setPlateforme(plateformeDao.mergeObject(obj.getPlateforme()));
 
       BeanValidator.validateObject(obj, new Validator[] {conditMilieuValidator});
       if(!findDoublonManager(obj)){
-         conditMilieuDao.createObject((ConditMilieu) obj);
+         conditMilieuDao.createObject(obj);
          log.info("Enregistrement objet ConditMilieu " + obj.toString());
       }else{
          log.warn("Doublon lors creation objet ConditMilieu " + obj.toString());
@@ -108,10 +106,10 @@ public class ConditMilieuManagerImpl implements ConditMilieuManager
    }
 
    @Override
-   public void updateObjectManager(final Object obj){
+   public void updateObjectManager(final ConditMilieu obj){
       BeanValidator.validateObject(obj, new Validator[] {conditMilieuValidator});
       if(!findDoublonManager(obj)){
-         conditMilieuDao.updateObject((ConditMilieu) obj);
+         conditMilieuDao.updateObject(obj);
          log.info("Modification objet ConditMilieu " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet ConditMilieu " + obj.toString());
@@ -135,48 +133,40 @@ public class ConditMilieuManagerImpl implements ConditMilieuManager
    }
 
    @Override
-   public void removeObjectManager(final Object obj){
+   public void removeObjectManager(final ConditMilieu obj){
       if(obj != null){
-         //			if (!isUsedObjectManager(obj)) {
-         conditMilieuDao.removeObject(((ConditMilieu) obj).getConditMilieuId());
+         conditMilieuDao.removeObject(obj.getConditMilieuId());
          log.info("Suppression objet ConditMilieu " + obj.toString());
-         //			} else {
-         //				log.warn("Suppression objet ConditMilieu " + obj.toString()
-         //						+ " impossible car est reference (par Prelevement)");
-         //				throw new ObjectUsedException();
-         //			}
       }else{
          log.warn("Suppression d'un ConditMilieu null");
       }
    }
 
    @Override
-   public boolean findDoublonManager(final Object o){
+   public boolean findDoublonManager(final ConditMilieu o){
       if(o != null){
-         final ConditMilieu milieu = (ConditMilieu) o;
+         final ConditMilieu milieu = o;
          if(milieu.getConditMilieuId() == null){
             return conditMilieuDao.findAll().contains(milieu);
-         }else{
-            return conditMilieuDao.findByExcludedId(milieu.getConditMilieuId()).contains(milieu);
          }
-      }else{
-         return false;
+         return conditMilieuDao.findByExcludedId(milieu.getConditMilieuId()).contains(milieu);
       }
+      return false;
    }
 
    @Override
-   public boolean isUsedObjectManager(final Object o){
-      final ConditMilieu conditMilieu = conditMilieuDao.mergeObject((ConditMilieu) o);
+   public boolean isUsedObjectManager(final ConditMilieu o){
+      final ConditMilieu conditMilieu = conditMilieuDao.mergeObject(o);
       return conditMilieu.getPrelevements().size() > 0;
    }
 
    @Override
-   public List<? extends TKThesaurusObject> findByOrderManager(final Plateforme pf){
+   public List<ConditMilieu> findByOrderManager(final Plateforme pf){
       return conditMilieuDao.findByOrder(pf);
    }
 
    @Override
-   public TKThesaurusObject findByIdManager(final Integer id){
+   public ConditMilieu findByIdManager(final Integer id){
       return conditMilieuDao.findById(id);
    }
 

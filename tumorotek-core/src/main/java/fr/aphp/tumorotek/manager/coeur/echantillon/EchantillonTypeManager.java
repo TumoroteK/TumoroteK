@@ -51,7 +51,7 @@ import fr.aphp.tumorotek.model.coeur.echantillon.EchantillonType;
  * @version 2.0
  *
  */
-public interface EchantillonTypeManager extends TKThesaurusManager
+public interface EchantillonTypeManager extends TKThesaurusManager<EchantillonType>
 {
 
    /**

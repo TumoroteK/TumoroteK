@@ -136,9 +136,8 @@ public class Contrat implements TKdataObject, TKFantomableObject, Serializable
    public Date getDateDemandeCession(){
       if(dateDemandeCession != null){
          return new Date(dateDemandeCession.getTime());
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void setDateDemandeCession(final Date date){
@@ -153,9 +152,8 @@ public class Contrat implements TKdataObject, TKFantomableObject, Serializable
    public Date getDateValidation(){
       if(dateValidation != null){
          return new Date(dateValidation.getTime());
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void setDateValidation(final Date date){
@@ -170,9 +168,8 @@ public class Contrat implements TKdataObject, TKFantomableObject, Serializable
    public Date getDateDemandeRedaction(){
       if(dateDemandeRedaction != null){
          return new Date(dateDemandeRedaction.getTime());
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void setDateDemandeRedaction(final Date date){
@@ -187,9 +184,8 @@ public class Contrat implements TKdataObject, TKFantomableObject, Serializable
    public Date getDateEnvoiContrat(){
       if(dateEnvoiContrat != null){
          return new Date(dateEnvoiContrat.getTime());
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void setDateEnvoiContrat(final Date date){
@@ -204,9 +200,8 @@ public class Contrat implements TKdataObject, TKFantomableObject, Serializable
    public Date getDateSignature(){
       if(dateSignature != null){
          return new Date(dateSignature.getTime());
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void setDateSignature(final Date date){
@@ -352,9 +347,8 @@ public class Contrat implements TKdataObject, TKFantomableObject, Serializable
    public String toString(){
       if(this.numero != null && this.plateforme != null){
          return "{" + this.numero + ", " + plateforme.getNom() + "(Plateforme)}";
-      }else{
-         return "{Empty Contrat}";
       }
+      return "{Empty Contrat}";
    }
 
    /**

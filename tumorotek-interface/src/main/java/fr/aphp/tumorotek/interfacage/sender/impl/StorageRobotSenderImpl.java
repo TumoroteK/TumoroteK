@@ -216,7 +216,7 @@ public class StorageRobotSenderImpl implements StorageRobotSender
 
       final String propFileName = "storage_robot.properties";
 
-      if(camelConfigLocation != null && propFileName != null){
+      if(camelConfigLocation != null){
          final File file = new File(camelConfigLocation + propFileName);
          FileInputStream fis = null;
          InputStreamReader reader = null;
@@ -237,15 +237,19 @@ public class StorageRobotSenderImpl implements StorageRobotSender
             }catch(final IOException e){
                e.printStackTrace();
             }finally{
-               try{
-                  reader.close();
-               }catch(final IOException e){
-                  reader = null;
+               if(null != reader){
+                  try{
+                     reader.close();
+                  }catch(final IOException e){
+                     reader = null;
+                  }
                }
-               try{
-                  fis.close();
-               }catch(final IOException e){
-                  fis = null;
+               if(null != fis){
+                  try{
+                     fis.close();
+                  }catch(final IOException e){
+                     fis = null;
+                  }
                }
             }
          }else{

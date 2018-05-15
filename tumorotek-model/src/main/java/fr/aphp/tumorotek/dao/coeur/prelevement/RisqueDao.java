@@ -39,9 +39,7 @@ import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
 import fr.aphp.tumorotek.dao.TKThesaurusDao;
-import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
-import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
  *
@@ -52,7 +50,7 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  * @version 2.0
  *
  */
-public interface RisqueDao extends GenericDaoJpa<Risque, Integer>, TKThesaurusDao
+public interface RisqueDao extends GenericDaoJpa<Risque, Integer>, TKThesaurusDao<Risque>
 {
 
    /**
@@ -68,9 +66,6 @@ public interface RisqueDao extends GenericDaoJpa<Risque, Integer>, TKThesaurusDa
     * @return Liste de risques.
     */
    List<Risque> findByInfectieux(Boolean inf);
-
-   @Override
-   List<TKThesaurusObject> findByOrder(Plateforme pf);
 
    /**
     * Recherche tous les Risques sauf celui dont

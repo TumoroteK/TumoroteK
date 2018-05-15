@@ -1,0 +1,63 @@
+<?page title="Résultat de la validation" contentType="text/html;charset=UTF-8"?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+
+<zk>
+<window id="fwinResultatValidationModale" border="none"
+	apply="fr.aphp.tumorotek.action.validation.ResultatValidationModale">
+	<panel collapsible="false" sclass="fichePanelv2" id="winPanel"
+		style="overflow-y:scroll">
+		<panelchildren id="panelChildrenWithScroll">
+
+			<div id="headerDiv" style="margin-bottom: 10px;">
+				<label id="validationMessage"/>
+			</div>
+
+			<div id="validationResultDiv" style="margin-bottom: 10px;">
+				<grid id="causesGrid" rowRenderer="${fwinResultatValidationModale$composer.resultatCausesRenderer}">
+					<auxhead sclass="category-center">
+			            <auxheader label="${c:l('validation.popup.invalide.causes')}" colspan="4"/>
+			        </auxhead>
+			        <columns>
+			        	<column label="${c:l('validation.popup.entite.label')}"/>
+			        	<column label="${c:l('validation.popup.champ.label')}"/>
+			        	<column label="${c:l('validation.popup.condition.label')}"/>
+			        	<column label="${c:l('validation.popup.valeur.label')}"/>
+			        </columns>
+					<rows>
+						<row self="@{each='cause'}" value="@{cause}" />
+					</rows>
+				</grid>
+	
+				<grid id="anomaliesGrid" rowRenderer="${fwinResultatValidationModale$composer.resultatAnomaliesRenderer}">
+					<auxhead sclass="category-center">
+			            <auxheader label="${c:l('validation.popup.anomalie.causes')}" colspan="4"/>
+			        </auxhead>
+			        <columns>
+			        	<column label="${c:l('validation.popup.entite.label')}"/>
+			        	<column label="${c:l('validation.popup.champ.label')}"/>
+			        	<column label="${c:l('validation.popup.anomalie.label')}"/>
+			        </columns>
+					<rows>
+						<row self="@{each='anomalie'}" value="@{anomalie}" />
+					</rows>
+				</grid>
+			</div>
+			
+			<div id="validationCommentDiv" style="margin-bottom: 10px;">
+				<label id="validationCommentLabel" value="Commentaire"/>
+				<textbox id="validationComment" style="width: 100%;" rows="5" maxlength="250"/>
+			</div>
+
+			<toolbar height="100%" id="lToolbarEchan" align="end">
+				<hbox spacing="5" align="center">
+					<button id="validate"
+						label="${c:l('general.validate')}" height="24px"
+						image="/images/icones/validate.png" sclass="buttonv2" />
+					<button id="close" label="${c:l('general.close')}"
+						height="24px" image="/images/icones/cancel.png" sclass="buttonv2" />
+				</hbox>
+			</toolbar>
+		</panelchildren>
+	</panel>
+</window>
+</zk>

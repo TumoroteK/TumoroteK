@@ -521,17 +521,16 @@ public class FichePlateforme extends AbstractFicheCombineController
       if(administrateurs.size() < 3){
          if(selectedUser == null){
             throw new WrongValueException(usersBox, Labels.getLabel("plateforme.add.null.user.error"));
-         }else{
-            if(!administrateurs.contains(selectedUser)){
-               administrateurs.add(selectedUser);
+         }
+         if(!administrateurs.contains(selectedUser)){
+            administrateurs.add(selectedUser);
 
-               users.remove(selectedUser);
-               selectedUser = null;
+            users.remove(selectedUser);
+            selectedUser = null;
 
-               // maj des composants
-               getBinder().loadComponent(adminsGrid);
-               getBinder().loadComponent(usersBox);
-            }
+            // maj des composants
+            getBinder().loadComponent(adminsGrid);
+            getBinder().loadComponent(usersBox);
          }
       }else{
          throw new WrongValueException(addAdminButton, Labels.getLabel("plateforme.error.max.admin"));
@@ -927,9 +926,8 @@ public class FichePlateforme extends AbstractFicheCombineController
    public String getSClassCollaborateur(){
       if(this.plateforme != null){
          return ObjectTypesFormatters.sClassCollaborateur(this.plateforme.getCollaborateur());
-      }else{
-         return "";
       }
+      return "";
    }
 
    public List<String> getNomsAndPrenoms(){

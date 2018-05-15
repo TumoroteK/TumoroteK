@@ -125,7 +125,7 @@ public class AffectationRowRenderer implements RowRenderer<Object>
             }
          }
          // on affiche une listbox
-         final ListModel<String> l = new ListModelList<String>(impsString);
+         final ListModel<String> l = new ListModelList<>(impsString);
          liImprimantes.setMold("select");
          liImprimantes.setRows(1);
          liImprimantes.setModel(l);
@@ -160,7 +160,7 @@ public class AffectationRowRenderer implements RowRenderer<Object>
             }
          }
          // on affiche une listbox
-         final ListModel<String> l = new ListModelList<String>(modsString);
+         final ListModel<String> l = new ListModelList<>(modsString);
          liModeles.setMold("select");
          liModeles.setRows(1);
          liModeles.setModel(l);

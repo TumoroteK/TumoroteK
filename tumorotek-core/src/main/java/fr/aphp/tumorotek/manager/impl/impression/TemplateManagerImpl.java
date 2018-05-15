@@ -51,7 +51,7 @@ import fr.aphp.tumorotek.manager.impression.BlocImpressionTemplateManager;
 import fr.aphp.tumorotek.manager.impression.ChampImprimeManager;
 import fr.aphp.tumorotek.manager.impression.TableAnnotationTemplateManager;
 import fr.aphp.tumorotek.manager.impression.TemplateManager;
-import fr.aphp.tumorotek.manager.io.export.CleManager;
+import fr.aphp.tumorotek.manager.io.export.CleImpressionManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.impression.TemplateValidator;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -86,7 +86,7 @@ public class TemplateManagerImpl implements TemplateManager
    private ChampImprimeManager champImprimeManager;
 
    /** Bean Manager. */
-   private CleManager cleManager;
+   private CleImpressionManager cleImpressionManager;
 
    /** Bean Manager. */
    private TableAnnotationTemplateManager tableAnnotationTemplateManager;
@@ -115,12 +115,12 @@ public class TemplateManagerImpl implements TemplateManager
       this.champImprimeManager = cManager;
    }
 
-   public CleManager getCleManager(){
-      return cleManager;
+   public CleImpressionManager getCleImpressionManager(){
+      return cleImpressionManager;
    }
 
-   public void setCleManager(final CleManager cleManager){
-      this.cleManager = cleManager;
+   public void setCleImpressionManager(final CleImpressionManager cleManager){
+      this.cleImpressionManager = cleManager;
    }
 
    public void setTableAnnotationTemplateManager(final TableAnnotationTemplateManager tManager){
@@ -143,9 +143,8 @@ public class TemplateManagerImpl implements TemplateManager
       log.debug("Recherche de tous les templates d'une banque.");
       if(banque != null){
          return templateDao.findByBanque(banque);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
@@ -153,9 +152,8 @@ public class TemplateManagerImpl implements TemplateManager
       log.debug("Recherche de tous les templates d'une banque pour " + "une entité.");
       if(banque != null && entite != null){
          return templateDao.findByBanqueEntite(banque, entite);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
@@ -163,12 +161,10 @@ public class TemplateManagerImpl implements TemplateManager
       if(template != null){
          if(template.getTemplateId() == null){
             return templateDao.findByBanque(template.getBanque()).contains(template);
-         }else{
-            return templateDao.findByExcludedId(template.getBanque(), template.getTemplateId()).contains(template);
          }
-      }else{
-         return false;
+         return templateDao.findByExcludedId(template.getBanque(), template.getTemplateId()).contains(template);
       }
+      return false;
    }
 
    @Override
@@ -290,13 +286,15 @@ public class TemplateManagerImpl implements TemplateManager
             }
          }
 
-         //TODO 7007168 Validation des CleImpression ?
+         if(null != cles){
+            template.setCleImpressionList(cles);
+         }
 
          templateDao.createObject(template);
          log.info("Enregistrement objet Template " + template.toString());
 
          // enregistrements des associations
-         updateAssociations(template, blocs, blocs, champs, champs, annotations, annotations, cles, cles);
+         updateAssociations(template, blocs, blocs, champs, champs, annotations, annotations, cles);
 
       }else{
          log.warn("Doublon lors creation objet Template " + template.toString());
@@ -376,8 +374,7 @@ public class TemplateManagerImpl implements TemplateManager
    public void updateObjectManager(final Template template, final Banque banque, final Entite entite,
       final List<BlocImpressionTemplate> blocs, final List<BlocImpressionTemplate> blocsToCreate, final List<ChampImprime> champs,
       final List<ChampImprime> champsToCreate, final List<TableAnnotationTemplate> annotations,
-      final List<TableAnnotationTemplate> annotationsToCreate, final List<CleImpression> cles,
-      final List<CleImpression> clesToCreate){
+      final List<TableAnnotationTemplate> annotationsToCreate, final List<CleImpression> cles){
 
       // banque required
       if(banque != null){
@@ -428,14 +425,16 @@ public class TemplateManagerImpl implements TemplateManager
             }
          }
 
-         //TODO 7007168 Validation cleImmpression ?
+         if(null != cles){
+            updateClesImpression(cles);
+            template.setCleImpressionList(cles);
+         }
 
          templateDao.updateObject(template);
          log.info("Enregistrement objet Template " + template.toString());
 
          // enregistrements des associations
-         updateAssociations(template, blocs, blocsToCreate, champs, champsToCreate, annotations, annotationsToCreate, cles,
-            clesToCreate);
+         updateAssociations(template, blocs, blocsToCreate, champs, champsToCreate, annotations, annotationsToCreate);
 
       }else{
          log.warn("Doublon lors creation objet Template " + template.toString());
@@ -465,11 +464,11 @@ public class TemplateManagerImpl implements TemplateManager
             tableAnnotationTemplateManager.removeObjectManager(tables.get(i));
          }
 
-         // suppression des CleImpression
-         final List<CleImpression> clesImpression = cleManager.findByTemplateManager(template);
-         for(int i = 0; i < clesImpression.size(); i++){
-            cleManager.removeObjectManager(clesImpression.get(i));
-         }
+         //         // suppression des CleImpression
+         //         final List<CleImpression> clesImpression = cleManager.findByTemplateManager(template);
+         //         for(int i = 0; i < clesImpression.size(); i++){
+         //            cleManager.removeObjectManager(clesImpression.get(i));
+         //         }
 
          templateDao.removeObject(template.getTemplateId());
          log.info("Suppression de l'objet Template : " + template.toString());
@@ -598,51 +597,30 @@ public class TemplateManagerImpl implements TemplateManager
 
    }
 
+   private void updateClesImpression(final List<CleImpression> cles){
+      //Gestion des CleImpression
+      if(cles != null){
+         // enregistrements
+         for(CleImpression cle : cles){
+            if(null != cle.getCleId()){
+               cleImpressionManager.updateObjectManager(cle);
+            }else{
+               cleImpressionManager.createObjectManager(cle);
+            }
+         }
+      }
+   }
+
    public void updateAssociations(final Template template, final List<BlocImpressionTemplate> blocs,
       final List<BlocImpressionTemplate> blocsToCreate, final List<ChampImprime> champsImprime,
       final List<ChampImprime> champsToCreate, final List<TableAnnotationTemplate> annotations,
-      final List<TableAnnotationTemplate> annoToCreate, final List<CleImpression> cles, final List<CleImpression> clesToCreate){
+      final List<TableAnnotationTemplate> annoToCreate, final List<CleImpression> cles){
+      //    final Template temp = templateDao.mergeObject(template);
+
+      updateClesImpression(cles);
+      //       template.setCleImpressionList(cles);
+
       updateAssociations(template, blocs, blocsToCreate, champsImprime, champsToCreate, annotations, annoToCreate);
-
-      final Template temp = templateDao.mergeObject(template);
-
-      //Gestion des CleImpression
-      // gestion des ChampImprimes
-      List<CleImpression> oldCles = new ArrayList<>();
-      final List<CleImpression> clesToRemove = new ArrayList<>();
-      if(cles != null){
-         oldCles = cleManager.findByTemplateManager(temp);
-         for(int i = 0; i < oldCles.size(); i++){
-            if(!cles.contains(oldCles.get(i))){
-               clesToRemove.add(oldCles.get(i));
-            }
-         }
-
-         for(int i = 0; i < clesToRemove.size(); i++){
-            cleManager.removeObjectManager(clesToRemove.get(i));
-         }
-
-         if(clesToCreate != null){
-            // enregistrements
-            for(int i = 0; i < clesToCreate.size(); i++){
-               final CleImpression obj = clesToCreate.get(i);
-               cleManager.createObjectManager(obj);
-            }
-
-            // update
-            for(int i = 0; i < cles.size(); i++){
-               if(!clesToCreate.contains(cles.get(i))){
-                  cleManager.updateObjectManager(cles.get(i));
-               }
-            }
-         }else{
-            // update
-            for(int i = 0; i < cles.size(); i++){
-               cleManager.updateObjectManager(cles.get(i));
-            }
-         }
-
-      }
 
    }
 

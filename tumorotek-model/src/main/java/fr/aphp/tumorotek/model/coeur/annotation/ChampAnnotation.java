@@ -49,6 +49,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -96,7 +97,9 @@ import fr.aphp.tumorotek.model.io.export.Champ;
    @NamedQuery(name = "ChampAnnotation.findResultatsByChampAnnotation",
       query = "SELECT r FROM Resultat r WHERE " + "r.champ.champAnnotation = ?1"),
    @NamedQuery(name = "ChampAnnotation.findByImportTemplateAndEntite", query = "SELECT c.champAnnotation FROM ImportColonne i "
-      + "JOIN i.champ c WHERE i.importTemplate = ?1 " + "AND c.champAnnotation.tableAnnotation.entite = ?2")})
+      + "JOIN i.champ c WHERE i.importTemplate = ?1 " + "AND c.champAnnotation.tableAnnotation.entite = ?2"),
+   @NamedQuery(name = "ChampAnnotation.findByTableAndDataType",
+   query = "SELECT c FROM ChampAnnotation c " + "WHERE c.tableAnnotation = ?1 AND c.dataType in ?2 ORDER BY c.ordre")})
 public class ChampAnnotation implements TKFantomableObject, Serializable
 {
 
@@ -109,6 +112,7 @@ public class ChampAnnotation implements TKFantomableObject, Serializable
    private DataType dataType;
    private Boolean edit = true;
    private TableAnnotation tableAnnotation;
+   private ChampCalcule champCalcule;
 
    private Set<AnnotationDefaut> annotationDefauts = new HashSet<>();
    private Set<Item> items = new HashSet<>();
@@ -184,6 +188,15 @@ public class ChampAnnotation implements TKFantomableObject, Serializable
 
    public void setTableAnnotation(final TableAnnotation table){
       this.tableAnnotation = table;
+   }
+
+   @OneToOne(mappedBy = "champAnnotation", cascade = {CascadeType.REMOVE})
+   public ChampCalcule getChampCalcule(){
+      return this.champCalcule;
+   }
+
+   public void setChampCalcule(ChampCalcule champCalcule){
+      this.champCalcule = champCalcule;
    }
 
    @OneToMany(mappedBy = "champAnnotation", cascade = {CascadeType.REMOVE})
@@ -278,6 +291,7 @@ public class ChampAnnotation implements TKFantomableObject, Serializable
       if(this.tableAnnotation != null && this.nom != null){
          return "{ChampAnnotation: " + this.tableAnnotation.getNom() + "." + this.nom + "}";
       }
+      
       return "{Empty ChampAnnotation}";
    }
 
@@ -298,6 +312,7 @@ public class ChampAnnotation implements TKFantomableObject, Serializable
       clone.setAnnotationDefauts(this.annotationDefauts);
       clone.setAnnotationValeurs(this.annotationValeurs);
       clone.setItems(this.items);
+      clone.setChampCalcule(this.champCalcule);
       return clone;
    }
 

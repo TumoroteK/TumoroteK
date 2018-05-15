@@ -35,12 +35,14 @@
  **/
 package fr.aphp.tumorotek.action.impression;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.zkoss.util.media.Media;
 import org.zkoss.util.resource.Labels;
@@ -70,6 +72,8 @@ import fr.aphp.tumorotek.action.controller.AbstractListeController2;
 import fr.aphp.tumorotek.action.io.FicheAffichage;
 import fr.aphp.tumorotek.decorator.BlocImpressionDecorator;
 import fr.aphp.tumorotek.decorator.BlocImpressionRowRenderer;
+import fr.aphp.tumorotek.decorator.CleImpressionDecorator;
+import fr.aphp.tumorotek.decorator.EntiteDecorator;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
@@ -85,6 +89,12 @@ import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
+/**
+ * Controlleur de la fiche template d'impression dans l'Administration
+ * @author 
+ * @since
+ * @version 2.2
+ */
 public class FicheTemplate extends AbstractImpressionController
 {
 
@@ -94,6 +104,12 @@ public class FicheTemplate extends AbstractImpressionController
 
    private Media uploadedMedia;
 
+   private static final List<String> FORMATS_AUTORISES = Arrays.asList(".docx", ".doc");
+
+   private Button defineBlocs;
+
+   private Label fichierLabel;
+
    // Définition des groupes d'affichages
 
    /**
@@ -102,9 +118,8 @@ public class FicheTemplate extends AbstractImpressionController
    private Group groupContenu;
 
    /**
-    * Groupe contenant la liste des couples cles champs
+    * Groupe les listes (tableaux) des couples CleImpression-Champ
     */
-
    private Group groupClesChamps;
 
    // Manipulation des lignes pour l'affichage / masquage
@@ -144,8 +159,14 @@ public class FicheTemplate extends AbstractImpressionController
 
    private Grid contenuStaticGrid;
 
+   /**
+    * Tableau des CleImpression affiché en mode édition
+    */
    private Grid cleImpressionEditGrid;
 
+   /**
+    * Tableau des CleImpression affiché en mode lecture
+    */
    private Grid cleImpressionStaticGrid;
 
    //  Editable components : mode d'édition ou de création.
@@ -170,6 +191,9 @@ public class FicheTemplate extends AbstractImpressionController
 
    private Listbox entitesBox;
 
+   //FIXME Entite Cession non prise en charge pour l'impression de clés, besoin de l'ajouter/l'enlever selon le type de template
+   private EntiteDecorator entiteCession;
+
    /**
     *  Objets Principaux.
     */
@@ -182,11 +206,18 @@ public class FicheTemplate extends AbstractImpressionController
 
    private String selectedType;
 
-   private List<Entite> entites = new ArrayList<>();
+   private List<EntiteDecorator> entites = new ArrayList<>();
 
    private Entite selectedEntite;
 
+   /**
+    * Liste des CleImpression présentes dans le document du Template
+    */
    private List<CleImpression> cleImpressionList = new ArrayList<>();
+   /**
+    * Liste des décorateur de cleImpression (affichage)
+    */
+   private List<CleImpressionDecorator> cleImpressionDecoratorList = new ArrayList<>();
 
    /**
    * Liste des champs à afficher pour le résultat de la recherche
@@ -209,7 +240,7 @@ public class FicheTemplate extends AbstractImpressionController
          groupClesChamps, cleImpressionStaticGrid, contenuStaticGrid, groupContenu});
 
       setObjBoxsComponents(new Component[] {nomBox, typesBox, descriptionBox, enteteBox, piedPageBox, cleImpressionEditGrid,
-         defineBlocsRow, entitesBox, contenuEditGrid, uploadFichierBtn});
+         defineBlocsRow, entitesBox, contenuEditGrid, uploadFichierBtn, messageInfoUploadBtn});
 
       setRequiredMarks(new Component[] {nomRequired, typeRequired, entiteRequired});
 
@@ -234,14 +265,16 @@ public class FicheTemplate extends AbstractImpressionController
       types.add(null);
       types.addAll(ETemplateType.getTypeList());
       selectedType = types.get(0);
+      uploadedMedia = null;
       // init des entités
       entites = new ArrayList<>();
-      entites.add(ManagerLocator.getEntiteManager().findByNomManager("Patient").get(0));
-      entites.add(ManagerLocator.getEntiteManager().findByNomManager("Prelevement").get(0));
-      entites.add(ManagerLocator.getEntiteManager().findByNomManager("Echantillon").get(0));
-      entites.add(ManagerLocator.getEntiteManager().findByNomManager("ProdDerive").get(0));
-      entites.add(ManagerLocator.getEntiteManager().findByNomManager("Cession").get(0));
-      selectedEntite = entites.get(0);
+      entites.add(new EntiteDecorator(ManagerLocator.getEntiteManager().findByNomManager("Patient").get(0)));
+      entites.add(new EntiteDecorator(ManagerLocator.getEntiteManager().findByNomManager("Prelevement").get(0)));
+      entites.add(new EntiteDecorator(ManagerLocator.getEntiteManager().findByNomManager("Echantillon").get(0)));
+      entites.add(new EntiteDecorator(ManagerLocator.getEntiteManager().findByNomManager("ProdDerive").get(0)));
+      entiteCession = new EntiteDecorator(ManagerLocator.getEntiteManager().findByNomManager("Cession").get(0));
+      entites.add(entiteCession);
+      selectedEntite = entites.get(0).getEntite();
    }
 
    @Override
@@ -315,10 +348,12 @@ public class FicheTemplate extends AbstractImpressionController
 
    /**
     * Génère la liste des CleImpression
+    * @since 2.2
     */
-   public void generateListeCles(){
-      final List<CleImpression> cleImpressionList = ManagerLocator.getCleManager().findByTemplateManager(this.template);
+   public void generateListeClesImpression(){
+      final List<CleImpression> cleImpressionList = this.template.getCleImpressionList();
       this.cleImpressionList = cleImpressionList;
+      this.cleImpressionDecoratorList = CleImpressionDecorator.decorateList(cleImpressionList);
    }
 
    @Override
@@ -336,12 +371,6 @@ public class FicheTemplate extends AbstractImpressionController
     * Evenement lors de la selection du type de template
     */
    public void onSelect$typesBox(){
-      // Obliger de 'sauvegarder' les champs au cas où ils soient renseignés avant, sinon ils se perdent
-      this.template.setNom(nomBox.getText());
-      this.template.setEntite(selectedEntite);
-      this.template.setDescription(descriptionBox.getText());
-      this.template.setEnTete(enteteBox.getText());
-      this.template.setPiedPage(piedPageBox.getText());
       if(null != selectedType){
          this.template.setType(ETemplateType.valueOf(selectedType));
          if(ETemplateType.BLOC == this.template.getType()){
@@ -351,15 +380,25 @@ public class FicheTemplate extends AbstractImpressionController
             defineBlocsRow.setVisible(true);
             groupClesChamps.setVisible(false);
             cleImpressionEditGrid.setVisible(false);
+            //FIXME Cession Pris en charge pour les blocs mais pas pour les Docs
+            if(!entites.contains(entiteCession)){
+               entites.add(entiteCession);
+            }
          }else if(ETemplateType.DOC == this.template.getType()){
+            this.template.setEnTete("");
+            this.template.setPiedPage("");
             enTeteRow.setVisible(false);
             piedPageRow.setVisible(false);
             fichierRow.setVisible(true);
-            messageInfoUploadBtn.setValue(Labels.getLabel("template.messages.fichier"));
+            messageInfoUploadBtn.setValue(Labels.getLabel("template.messages.fichier") + " " + FORMATS_AUTORISES);
             groupContenu.setVisible(false);
             defineBlocsRow.setVisible(false);
             groupClesChamps.setVisible(true);
             cleImpressionEditGrid.setVisible(true);
+            //FIXME Cession Pris en charge pour les blocs mais pas pour les Docs
+            if(entites.contains(entiteCession)){
+               entites.remove(entiteCession);
+            }
          }
       }else{
          enTeteRow.setVisible(false);
@@ -371,106 +410,54 @@ public class FicheTemplate extends AbstractImpressionController
          groupClesChamps.setVisible(false);
          cleImpressionEditGrid.setVisible(false);
       }
-   }
 
-   //   /**
-   //    * TODO faire de cette méthode une action générale accessible à plusieurs endroits ?
-   //    * PopUp window appelée permettant la sélection des champs à associer à une clé.
-   //    * @param page dans laquelle inclure la modale
-   //    * @param oldSelected Liste des champs déjà sélectionnés.
-   //    * @bank Banque sur laquelle effectuer la recherche
-   //    */
-   //   public void openChampsAffichageWindow(Page page, List<Champ> oldSelected, Banque bank){
-   //      if(!isBlockModal()){
-   //
-   //         setBlockModal(true);
-   //
-   //         // nouvelle fenêtre
-   //         final Window win = new Window();
-   //         win.setVisible(false);
-   //         win.setId("champsAffichageWindow");
-   //         win.setPage(page);
-   //         win.setMaximizable(true);
-   //         win.setSizable(true);
-   //         win.setTitle(Labels.getLabel("champs.affichage.modale.title"));
-   //         win.setBorder("normal");
-   //         win.setWidth("500px");
-   //         int height = 510;
-   //         win.setHeight(String.valueOf(height) + "px");
-   //         win.setClosable(true);
-   //
-   //         final HtmlMacroComponent ua;
-   //         ua = (HtmlMacroComponent) page.getComponentDefinition("champsAffichageModale", false).newInstance(page, null);
-   //         ua.setParent(win);
-   //         ua.setId("champsAffichageModaleComponent");
-   //         ua.applyProperties();
-   //         ua.afterCompose();
-   //
-   //         ((FicheChampsAffichageModale) ua.getFellow("fwinChampsAffichageModale")
-   //            .getAttributeOrFellow("fwinChampsAffichageModale$composer", true)).init(oldSelected, self, bank);
-   //         ua.setVisible(false);
-   //
-   //         ((FicheChampsAffichageModale) ua.getFellow("fwinChampsAffichageModale")
-   //            .getAttributeOrFellow("fwinChampsAffichageModale$composer", true)).getTtm().setMultiple(false);
-   //
-   //         win.addEventListener("onTimed", new EventListener<Event>()
-   //         {
-   //            public void onEvent(Event event) throws Exception{
-   //               //progress.detach();
-   //               ua.setVisible(true);
-   //            }
-   //         });
-   //
-   //         Timer timer = new Timer();
-   //         timer.setDelay(500);
-   //         timer.setRepeats(false);
-   //         timer.addForward("onTimer", timer.getParent(), "onTimed");
-   //         win.appendChild(timer);
-   //         timer.start();
-   //
-   //         try{
-   //            win.onModal();
-   //            setBlockModal(false);
-   //
-   //         }catch(SuspendNotAllowedException e){
-   //            log.error(e);
-   //         }
-   //      }
-   //   }
+      // Obligé de 'sauvegarder' les champs au cas où ils soient renseignés avant, sinon ils se perdent (remise à zéro des box)
+      this.template.setNom(nomBox.getText());
+      this.template.setEntite(selectedEntite);
+      this.template.setDescription(descriptionBox.getText());
+   }
 
    /**
     * Méthode appelée une fois que l'utilisateur a choisi les champs
     * à afficher.
     * @param e
+    * @since 2.2
     */
    public void onGetChamps(final Event e){
-      this.selectedChamp = null;
       if(e.getData() != null){
-         final Champ currChamp = Champ.class.cast(List.class.cast(e.getData()).get(0));
-         Champ sousChampTmp = null;
+         final List<?> champList = List.class.cast(e.getData());
+         if(!champList.isEmpty()){
+            final Champ currChamp = Champ.class.cast(List.class.cast(e.getData()).get(0));
+            Champ sousChampTmp = null;
 
-         if(currChamp.getChampEntite() != null && currChamp.getChampEntite().getQueryChamp() != null){
-            sousChampTmp = new Champ(currChamp.getChampEntite().getQueryChamp());
-            sousChampTmp.setChampParent(currChamp);
-         }
+            if(currChamp.getChampEntite() != null && currChamp.getChampEntite().getQueryChamp() != null){
+               sousChampTmp = new Champ(currChamp.getChampEntite().getQueryChamp());
+               sousChampTmp.setChampParent(currChamp);
+            }
 
-         if(sousChampTmp != null){
-            this.selectedChamp = sousChampTmp;
+            if(sousChampTmp != null){
+               this.selectedChamp = sousChampTmp;
+            }else{
+               this.selectedChamp = currChamp;
+            }
          }else{
-            this.selectedChamp = currChamp;
+            this.selectedChamp = null;
          }
-
       }
    }
 
    /**
     * Click sur l'édition d'une cleImpression permet de choisir/modifier
-    * le champ à lié à une clé
+    * le champ à lier à cette clé
     * @param event Clic sur une image d'édition
+    * @since 2.2
     */
    public void onClick$editImg(final Event event){
       // on récupère la cleImpression que l'utilisateur veut éditer
-      final CleImpression cleToEdit = (CleImpression) AbstractListeController2.getBindingData((ForwardEvent) event, false);
+      final CleImpressionDecorator cleDecoToEdit =
+         (CleImpressionDecorator) AbstractListeController2.getBindingData((ForwardEvent) event, false);
+      final CleImpression cleToEdit = cleDecoToEdit.getCleImpression();
+      this.selectedChamp = cleToEdit.getChamp();
       new FicheAffichage().openChampsAffichageWindow(page, self, new ArrayList<Champ>(),
          SessionUtils.getSelectedBanques(sessionScope).get(0), false);
       //      openChampsAffichageWindow(page, new ArrayList<Champ>(), SessionUtils.getSelectedBanques(sessionScope).get(0));
@@ -481,16 +468,16 @@ public class FicheTemplate extends AbstractImpressionController
          if(null != cleToEdit.getChamp() && null != cleToEdit.getChamp().getChampId()){
             selectedChamp.setChampId(cleToEdit.getChamp().getChampId());
          }
-         cleToEdit.setChamp(selectedChamp);
-         // Evenement envoyé à la liste des clefs pour rafraichissement des valeurs
-         Events.echoEvent("onListChange", cleImpressionEditGrid, null);
       }
-
+      cleToEdit.setChamp(selectedChamp);
+      // Evenement envoyé à la liste des clefs pour rafraichissement des valeurs
+      Events.echoEvent("onListChange", cleImpressionEditGrid, null);
    }
 
    /**
     * Evenement click bouton upload fichier : Cherche les clé [[CLE]] dans le fichier
     * puis les affiche pour que l'utilisateur leur associe un champ
+    * @since 2.2
     */
    public void onClick$uploadFichierBtn(){
 
@@ -499,75 +486,110 @@ public class FicheTemplate extends AbstractImpressionController
       typeRequired.setVisible(false);
       typeLabel.setVisible(true);
 
-      messageInfoUploadBtn.setValue(Labels.getLabel("template.messages.fichier"));
+      messageInfoUploadBtn.setValue(Labels.getLabel("template.messages.fichier") + " " + FORMATS_AUTORISES);
 
-      try{
-         uploadedMedia = Fileupload.get();
+      /*
+       * TODO N'afficher que les formats pris en charge dans la boite de dialogue de sélection du fichier
+      * --> Pas possible sous ZK 7
+      */
+      Media newUploadedMedia = Fileupload.get();
 
-         if(uploadedMedia == null){
-            return;
-         }
-
-         // Récupération de l'extension et du nom du fichier
-         final String fileStr = uploadedMedia.getName();
-         final String fileExtension = fileStr.substring(fileStr.lastIndexOf("."));
-
-         // Traitement d'un docx
-         if(".docx".equals(fileExtension)){
-            final XWPFDocument document = new XWPFDocument(uploadedMedia.getStreamData());
-
-            //Extraction des clefs du document
-
-            // Regex pour rechercher les clés sous forme: [[CLE]]
-            //TODO 7007168 permettre à l'utilisateur d'utiliser un pattern différent ?
-            final Pattern clePattern = Pattern.compile("\\[{2}(.*?)\\]{2}");
-            final List<String> clesDocListe =
-               new ArrayList<>(TemplateUtils.extractStringsInFileFromPattern(document, clePattern));
-
-            // Création de cleImpressions et ajout au template
-            final List<CleImpression> newCleImpressionList = new ArrayList<>();
-            if(null != this.cleImpressionList && this.cleImpressionList.size() > 0){
-               //Pour une modification, récupérer les clés déjà existantes/renseignées
-               for(final String cleStr : clesDocListe){
-                  Boolean keyFound = false;
-                  for(final CleImpression oldCleImpr : this.cleImpressionList){
-                     if(oldCleImpr.getNom().equals(cleStr)){
-                        newCleImpressionList.add(oldCleImpr);
-                        keyFound = true;
-                        break;
-                     }
-                  }
-                  if(!keyFound){
-                     final CleImpression cleImpr = new CleImpression();
-                     cleImpr.setNom(cleStr);
-                     cleImpr.setTemplate(this.template);
-                     newCleImpressionList.add(cleImpr);
-                  }
-               }
-            }else{
-               //Pour une création ou si l'ancien template ne contenait pas de clef, récupérer les clés déjà existantes/renseignées
-               for(final String cleStr : clesDocListe){
-                  final CleImpression cleImpr = new CleImpression();
-                  cleImpr.setNom(cleStr);
-                  cleImpr.setTemplate(this.template);
-                  newCleImpressionList.add(cleImpr);
-               }
-
-            }
-
-            this.cleImpressionList = newCleImpressionList;
-
-            messageInfoUploadBtn.setValue("");
-         }else{
-            // Pas d'autres traitements possible pour le moment
-            messageInfoUploadBtn.setValue("Le fichier doit être un .docx");
-            messageInfoUploadBtn.setStyle("{color:red}");
-            return;
-         }
-
-      }catch(final Exception e){
-         log.error(e);
+      if(newUploadedMedia == null){
+         return;
       }
+
+      // Récupération de l'extension et du nom du fichier
+      final String fileStr = newUploadedMedia.getName();
+      final String fileExtension = TemplateUtils.getFileExtension(fileStr);
+
+      if(!FORMATS_AUTORISES.contains(fileExtension)){
+         throw new WrongValueException(uploadFichierBtn,
+            Labels.getLabel("template.messages.fichier.erreur.extension") + " " + FORMATS_AUTORISES);
+      }
+
+      uploadedMedia = newUploadedMedia;
+      fichierLabel.setVisible(true);
+      fichierLabel.setValue(fileStr);
+
+      traitementFichierUpload(fileExtension);
+
+   }
+
+   /**
+    * Traitement du fichier uploader pour template DOC
+    * @param fileExtension extension du fichier
+    * @since 2.2
+    */
+   private void traitementFichierUpload(String fileExtension){
+      List<String> clesDocListe = null;
+      switch(fileExtension){
+         case ".docx":
+            try{
+               XWPFDocument document = new XWPFDocument(uploadedMedia.getStreamData());
+               //Extraction des clefs du document
+               clesDocListe = new ArrayList<>(TemplateUtils.extractStringsInFileFromPattern(document));
+            }catch(IOException e){
+               log.error(e);
+            }
+            break;
+         case ".doc":
+            try{
+               HWPFDocument document = new HWPFDocument(uploadedMedia.getStreamData());
+               //Extraction des clefs du document
+               clesDocListe = new ArrayList<>(TemplateUtils.extractStringsInFileFromPattern(document));
+            }catch(Exception e){
+               log.error(e);
+            }
+            break;
+         default:
+            break;
+      }
+
+      createClesImpression(clesDocListe);
+   }
+
+   /**
+    * Creation de clés d'impression à partir d'une liste de noms (String)
+    * @param clesDocListe liste des noms de clés
+    * @since 2.2
+    */
+   private void createClesImpression(List<String> clesDocListe){
+      // Création de cleImpressions et ajout au template
+      final List<CleImpression> newCleImpressionList = new ArrayList<>();
+
+      for(final String cleStr : clesDocListe){
+         CleImpression cleImpr = new CleImpression();
+         cleImpr.setNom(cleStr);
+         
+         
+         Boolean keyFound = false;
+         //Itération sur les anciennes clés d'impression du template
+         for(final CleImpression oldCleImpr : this.cleImpressionList){
+            if(oldCleImpr.getNom().equals(cleStr)){
+               cleImpr = oldCleImpr;
+               keyFound = true;
+               break;
+            }
+         }
+         
+         if(!keyFound && !newCleImpressionList.contains(cleImpr)){
+            //Recherche en base si cette clé existe
+            CleImpression cleImpressionBase = ManagerLocator.getCleImpressionManager().findByNameManager(cleStr);
+            if(null != cleImpressionBase){
+               cleImpr = cleImpressionBase;
+            }
+         }
+
+         if(!newCleImpressionList.contains(cleImpr)){
+            newCleImpressionList.add(cleImpr);
+         }
+      }
+
+      this.cleImpressionList = newCleImpressionList;
+      //Ajout des décorators
+      this.cleImpressionDecoratorList = CleImpressionDecorator.decorateList(this.cleImpressionList);
+
+      messageInfoUploadBtn.setValue(Labels.getLabel("template.messages.fichier") + " " + FORMATS_AUTORISES);
    }
 
    @Override
@@ -585,7 +607,10 @@ public class FicheTemplate extends AbstractImpressionController
 
       if(ETemplateType.BLOC == this.template.getType()){
          if(!checksBlocValid()){
-            throw new WrongValueException(createC, Labels.getLabel("impression.error"));
+            if(this.defineBlocsRow.isVisible()){
+               throw new WrongValueException(this.defineBlocs, Labels.getLabel("impression.bloc.empty"));
+            }
+            throw new WrongValueException(this.contenuEditGrid, Labels.getLabel("impression.bloc.empty"));
          }
       }else if(ETemplateType.DOC == this.template.getType()){
          this.template.setEnTete("");
@@ -598,6 +623,16 @@ public class FicheTemplate extends AbstractImpressionController
             // Enregistrement du modèle dans le FS
             TemplateUtils.saveDocTemplate(uploadedMedia, template);
          }
+         if(null == template.getFichier()){
+            throw new WrongValueException(uploadFichierBtn, Labels.getLabel("impression.fichier.empty"));
+         }
+      }
+
+      if(null == selectedType){
+         throw new WrongValueException(typesBox, Labels.getLabel("impression.type.empty"));
+      }
+      if(null == selectedEntite){
+         throw new WrongValueException(entitesBox, Labels.getLabel("impression.entite.empty"));
       }
 
       Clients.clearWrongValue(createC);
@@ -691,7 +726,10 @@ public class FicheTemplate extends AbstractImpressionController
    public void onClick$validateC(){
       if(ETemplateType.BLOC == this.template.getType()){
          if(!checksBlocValid()){
-            throw new WrongValueException(createC, Labels.getLabel("impression.error"));
+            if(this.defineBlocsRow.isVisible()){
+               throw new WrongValueException(this.defineBlocs, Labels.getLabel("impression.bloc.empty"));
+            }
+            throw new WrongValueException(this.contenuEditGrid, Labels.getLabel("impression.bloc.empty"));
          }
       }else if(ETemplateType.DOC == this.template.getType()){
          this.template.setEnTete("");
@@ -699,7 +737,7 @@ public class FicheTemplate extends AbstractImpressionController
          this.template.setBlocImpressionTemplates(null);
          this.template.setChampImprimes(null);
          this.template.setTableAnnotationTemplates(null);
-
+         this.template.setCleImpressionList(null);
          //Supprimer/Remplacer l'ancien modèle si modification
          if(null != uploadedMedia){
             if(null != template.getFichier()){
@@ -707,6 +745,10 @@ public class FicheTemplate extends AbstractImpressionController
             }
             // Enregistrement du modèle dans le FS
             TemplateUtils.saveDocTemplate(uploadedMedia, template);
+         }
+         
+         if(null == template.getFichier()){
+            throw new WrongValueException(uploadFichierBtn, Labels.getLabel("impression.fichier.empty"));
          }
       }
 
@@ -806,9 +848,6 @@ public class FicheTemplate extends AbstractImpressionController
       final List<ChampImprime> champsOld = ManagerLocator.getChampImprimeManager().findByTemplateManager(template);
       final List<TableAnnotationTemplate> tablesOld =
          ManagerLocator.getTableAnnotationTemplateManager().findByTemplateManager(template);
-      final List<CleImpression> cles = new ArrayList<>();
-      final List<CleImpression> clesToCreate = new ArrayList<>();
-      final List<CleImpression> clesOld = ManagerLocator.getCleManager().findByTemplateManager(template);
 
       int ordre = 0;
       // pour chaque bloc
@@ -863,18 +902,9 @@ public class FicheTemplate extends AbstractImpressionController
          }
       }
 
-      //Gestion des cles Impression
-      for(final CleImpression cle : cleImpressionList){
-         if(clesOld.contains(cle)){
-            cles.add(cle);
-         }else{
-            clesToCreate.add(cle);
-         }
-      }
-
       // create de l'objet
       ManagerLocator.getTemplateManager().updateObjectManager(template, SessionUtils.getSelectedBanques(sessionScope).get(0),
-         selectedEntite, blocs, blocsToCreate, champs, champsToCreate, tables, tablesToCreate, cles, clesToCreate);
+         selectedEntite, blocs, blocsToCreate, champs, champsToCreate, tables, tablesToCreate, cleImpressionList);
    }
 
    /* Methode comportementales */
@@ -885,6 +915,7 @@ public class FicheTemplate extends AbstractImpressionController
    public void switchToCreateMode(){
       this.blocImpressionsDecorated = new ArrayList<>();
       this.cleImpressionList = new ArrayList<>();
+      this.cleImpressionDecoratorList = new ArrayList<>();
 
       super.switchToCreateMode();
       initEditableMode();
@@ -916,14 +947,16 @@ public class FicheTemplate extends AbstractImpressionController
       typesBox.setVisible(false);
       typeLabel.setVisible(true);
 
+      uploadedMedia = null;
+      
       if(ETemplateType.BLOC == this.template.getType()){
          groupContenu.setVisible(true);
          cleImpressionEditGrid.setVisible(false);
       }else if(ETemplateType.DOC == this.template.getType()){
          if(null == this.template.getFichier() || "".equals(this.template.getFichier())){
-            messageInfoUploadBtn.setValue(Labels.getLabel("template.messages.fichier"));
+            messageInfoUploadBtn.setValue(Labels.getLabel("template.messages.fichier") + " " + FORMATS_AUTORISES);
          }else{
-            messageInfoUploadBtn.setValue(Labels.getLabel("template.messages.modifier.fichier"));
+            messageInfoUploadBtn.setValue(Labels.getLabel("template.messages.fichier.modifier") + " " + FORMATS_AUTORISES);
          }
          groupClesChamps.setVisible(true);
          contenuEditGrid.setVisible(false);
@@ -977,7 +1010,7 @@ public class FicheTemplate extends AbstractImpressionController
             cleImpressionStaticGrid.setVisible(false);
             generateListeBlocs();
          }else if(ETemplateType.DOC == this.template.getType()){
-            messageInfoUploadBtn.setValue("");
+            messageInfoUploadBtn.setValue(Labels.getLabel("template.messages.fichier") + " " + FORMATS_AUTORISES);
             uploadFichierBtn.setVisible(false);
             fichierRow.setVisible(true);
             enTeteRow.setVisible(false);
@@ -985,7 +1018,7 @@ public class FicheTemplate extends AbstractImpressionController
             defineBlocsRow.setVisible(false);
             groupContenu.setVisible(false);
             contenuStaticGrid.setVisible(false);
-            generateListeCles();
+            generateListeClesImpression();
          }
       }
 
@@ -993,7 +1026,7 @@ public class FicheTemplate extends AbstractImpressionController
 
    @Override
    public void setFocusOnElement(){
-      nomBox.setFocus(true);
+      typesBox.setFocus(true);
    }
 
    @Override
@@ -1002,6 +1035,8 @@ public class FicheTemplate extends AbstractImpressionController
    @Override
    public void clearData(){
       blocImpressionsDecorated = new ArrayList<>();
+      cleImpressionDecoratorList = new ArrayList<>();
+      cleImpressionList = new ArrayList<>();
       clearConstraints();
       super.clearData();
    }
@@ -1082,11 +1117,23 @@ public class FicheTemplate extends AbstractImpressionController
       return blocImpressionRenderer;
    }
 
-   public ListModel<Entite> getEntites(){
+   /**
+    * Retourne le label del'entité lié au template, internationalisée
+    * @return label del'entité lié au template, internationalisée
+    */
+   public String getEntite(){
+      String label = null;
+      if(null != this.template && null != this.template.getEntite()){
+         label = new EntiteDecorator(this.template.getEntite()).getLabel();
+      }
+      return label;
+   }
+
+   public ListModel<EntiteDecorator> getEntites(){
       return new ListModelList<>(entites, true);
    }
 
-   public void setEntites(final List<Entite> e){
+   public void setEntites(final List<EntiteDecorator> e){
       this.entites = e;
    }
 
@@ -1106,12 +1153,21 @@ public class FicheTemplate extends AbstractImpressionController
       this.selectedType = selected;
    }
 
-   public Entite getSelectedEntite(){
-      return selectedEntite;
+   public EntiteDecorator getSelectedEntite(){
+      for(EntiteDecorator entiteDeco : entites){
+         if(entiteDeco.getEntite() == selectedEntite){
+            return entiteDeco;
+         }
+      }
+      return null;
    }
 
    public void setSelectedEntite(final Entite selected){
       this.selectedEntite = selected;
+   }
+
+   public void setSelectedEntite(final EntiteDecorator selected){
+      this.selectedEntite = selected.getEntite();
    }
 
    public BlocImpressionRowRenderer getBlocImpressionRendererEdit(){
@@ -1157,6 +1213,10 @@ public class FicheTemplate extends AbstractImpressionController
 
    public List<CleImpression> getCleImpressionList(){
       return cleImpressionList;
+   }
+
+   public List<CleImpressionDecorator> getCleImpressionDecoratorList(){
+      return cleImpressionDecoratorList;
    }
 
    public void setCleImpressionList(final List<CleImpression> cleImpressionList){

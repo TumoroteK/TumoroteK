@@ -35,14 +35,7 @@
  **/
 package fr.aphp.tumorotek.action.cession;
 
-import static fr.aphp.tumorotek.model.contexte.EContexte.BTO;
-import static fr.aphp.tumorotek.webapp.general.SessionUtils.getCurrentContexte;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Page;
@@ -74,6 +67,9 @@ import fr.aphp.tumorotek.model.interfacage.scan.ScanTerminale;
 import fr.aphp.tumorotek.model.stockage.Terminale;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
+
+import static fr.aphp.tumorotek.model.contexte.EContexte.BTO;
+import static fr.aphp.tumorotek.webapp.general.SessionUtils.getCurrentContexte;
 
 /**
  * Controller de l'onglet Cession.
@@ -128,11 +124,10 @@ public class CessionController extends AbstractObjectTabController
          return ((FicheCessionStaticBTO) this.self
             //.getFellow("ficheCession")
             .getFellow("fwinCessionStaticBTO").getAttributeOrFellow("fwinCessionStaticBTO$composer", true));
-      }else{
-         return ((FicheCessionStatic) this.self
-            //.getFellow("ficheCession")
-            .getFellow("fwinCessionStatic").getAttributeOrFellow("fwinCessionStatic$composer", true));
       }
+      return ((FicheCessionStatic) this.self
+         //.getFellow("ficheCession")
+         .getFellow("fwinCessionStatic").getAttributeOrFellow("fwinCessionStatic$composer", true));
    }
 
    @Override
@@ -140,10 +135,9 @@ public class CessionController extends AbstractObjectTabController
       if(BTO.equals(getCurrentContexte())){
          return ((FicheCessionEditBTO) self.getFellow("divCessionEdit").getFellow("fwinCessionEditBTO")
             .getAttributeOrFellow("fwinCessionEditBTO$composer", true));
-      }else{
-         return ((FicheCessionEdit) self.getFellow("divCessionEdit").getFellow("fwinCessionEdit")
-            .getAttributeOrFellow("fwinCessionEdit$composer", true));
       }
+      return ((FicheCessionEdit) self.getFellow("divCessionEdit").getFellow("fwinCessionEdit")
+         .getAttributeOrFellow("fwinCessionEdit$composer", true));
    }
 
    @Override
@@ -151,10 +145,9 @@ public class CessionController extends AbstractObjectTabController
       if(BTO.equals(getCurrentContexte())){
          return ((ListeCessionBTO) self.getFellow("listeCessionBTO").getFellow("lwinCessionBTO")
             .getAttributeOrFellow("lwinCessionBTO$composer", true));
-      }else{
-         return ((ListeCession) self.getFellow("listeCession").getFellow("lwinCession")
-            .getAttributeOrFellow("lwinCession$composer", true));
       }
+      return ((ListeCession) self.getFellow("listeCession").getFellow("lwinCession").getAttributeOrFellow("lwinCession$composer",
+         true));
    }
 
    @Override
@@ -167,9 +160,8 @@ public class CessionController extends AbstractObjectTabController
       if(self.getFellowIfAny("ficheAnnoCession") != null){
          return ((FicheAnnotation) self.getFellow("ficheAnnoCession").getFellow("fwinAnnotation")
             .getAttributeOrFellow("fwinAnnotation$composer", true));
-      }else{
-         return null;
       }
+      return null;
    }
 
    @Override
@@ -256,7 +248,7 @@ public class CessionController extends AbstractObjectTabController
     * Met à jour la fiche contrat lors d'une modification
     * ou suppression de cession.
     *
-    * @param Contrat cont
+    * @param cont
     */
    public void updateContrat(final Contrat cont){
       if(cont != null){
@@ -270,7 +262,6 @@ public class CessionController extends AbstractObjectTabController
                   .getFellow("winAdministration").getAttributeOrFellow("winAdministration$composer", true)).getContratController()
                      .getListe().updateObjectGridListFromOtherPage(cont, true);
             }
-
          }
       }
    }
@@ -314,7 +305,7 @@ public class CessionController extends AbstractObjectTabController
     * Gère un scan full-rack barcode 2D au niveau de l'onglet cession:
     * - si mode fiche statique ET cession validée: check!
     *
-    * @param ScanTerminale
+    * @param sT
     * @since 2.1
     */
    @Override

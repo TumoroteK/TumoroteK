@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.cession.CessionExamen;
  * @version 2.0
  *
  */
-public interface CessionExamenDao extends GenericDaoJpa<CessionExamen, Integer>, TKThesaurusDao
+public interface CessionExamenDao extends GenericDaoJpa<CessionExamen, Integer>, TKThesaurusDao<CessionExamen>
 {
 
    /**

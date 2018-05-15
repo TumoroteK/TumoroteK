@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.stockage.EnceinteType;
  * @version 2.0
  *
  */
-public interface EnceinteTypeManager extends TKThesaurusManager
+public interface EnceinteTypeManager extends TKThesaurusManager<EnceinteType>
 {
 
    /**

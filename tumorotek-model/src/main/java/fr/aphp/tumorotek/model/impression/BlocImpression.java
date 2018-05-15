@@ -194,18 +194,15 @@ public class BlocImpression implements Serializable
          if(test.nom == null){
             if(this.entite == null){
                return (test.entite == null);
-            }else{
-               return (this.entite.equals(test.entite));
             }
-         }else{
-            return false;
+            return (this.entite.equals(test.entite));
          }
+         return false;
       }else if(this.entite == null){
          if(test.entite == null){
             return (this.nom.equals(test.nom));
-         }else{
-            return false;
          }
+         return false;
       }else{
          return (this.nom.equals(test.nom) && this.entite.equals(test.entite));
       }
@@ -243,9 +240,8 @@ public class BlocImpression implements Serializable
    public String toString(){
       if(this.nom != null){
          return "{" + this.nom + "}";
-      }else{
-         return "{Empty BlocImpression}";
       }
+      return "{Empty BlocImpression}";
    }
 
    /**

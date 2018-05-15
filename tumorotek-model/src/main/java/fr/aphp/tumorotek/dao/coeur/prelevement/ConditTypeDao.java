@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.ConditType;
  * @version 2.0
  *
  */
-public interface ConditTypeDao extends GenericDaoJpa<ConditType, Integer>, TKThesaurusDao
+public interface ConditTypeDao extends GenericDaoJpa<ConditType, Integer>, TKThesaurusDao<ConditType>
 {
 
    /**

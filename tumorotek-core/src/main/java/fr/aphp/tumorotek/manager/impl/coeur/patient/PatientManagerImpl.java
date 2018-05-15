@@ -58,6 +58,7 @@ import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.coeur.patient.MaladieDao;
 import fr.aphp.tumorotek.dao.coeur.patient.PatientDao;
+import fr.aphp.tumorotek.dao.coeur.patient.PatientDelegateDao;
 import fr.aphp.tumorotek.dao.coeur.patient.PatientLienDao;
 import fr.aphp.tumorotek.dao.coeur.patient.PatientMedecinDao;
 import fr.aphp.tumorotek.dao.coeur.prelevement.PrelevementDao;
@@ -117,6 +118,7 @@ public class PatientManagerImpl implements PatientManager
    private PrelevementDao prelevementDao;
    private AnnotationValeurManager annotationValeurManager;
    private ImportHistoriqueManager importHistoriqueManager;
+   private PatientDelegateDao patientDelegateDao;
 
    public PatientManagerImpl(){}
 
@@ -191,94 +193,101 @@ public class PatientManagerImpl implements PatientManager
             log.warn("Doublon lors " + operation + " objet Patient " + patient.toString());
             throw new DoublonFoundException("Patient", operation, patient.getNip(), null);
          }
-            if((operation.equals("creation") || operation.equals("modification")) || operation.equals("modifMulti")
-               || operation.equals("synchronisation") || operation.equals("fusion")){
+         if((operation.equals("creation") || operation.equals("modification")) || operation.equals("modifMulti")
+            || operation.equals("synchronisation") || operation.equals("fusion") || operation.equals("validation") || operation.equals("invalidation")){
 
-               OperationType oType;
+            OperationType oType;
 
-               if(operation.equals("creation")){
-                  patientDao.createObject(patient);
-                  log.info("Enregistrement objet Patient " + patient.toString());
+            if(operation.equals("creation")){
+               patientDao.createObject(patient);
+               log.info("Enregistrement objet Patient " + patient.toString());
 
-                  oType = operationTypeDao.findByNom("Creation").get(0);
-               }else{
-                  patientDao.updateObject(patient);
-                  log.info("Modification objet Patient " + patient.toString());
+               oType = operationTypeDao.findByNom("Creation").get(0);
+            }else{
 
-                  if(operation.equals("modification")){
-                     oType = operationTypeDao.findByNom("Modification").get(0);
-                  }else if(operation.equals("synchronisation")){
-                     oType = operationTypeDao.findByNom("Synchronisation").get(0);
-                  }else if(operation.equals("modifMulti")){
-                     oType = operationTypeDao.findByNom("ModifMultiple").get(0);
-                  }else{ // fusion
-                     oType = operationTypeDao.findByNom("Fusion").get(0);
-                  }
+               patient.setDelegate(patientDelegateDao.mergeObject(patient.getDelegate()));
 
+               patientDao.updateObject(patient);
+               log.info("Modification objet Patient " + patient.toString());
+
+               if(operation.equals("modification")){
+                  oType = operationTypeDao.findByNom("Modification").get(0);
+               }else if(operation.equals("synchronisation")){
+                  oType = operationTypeDao.findByNom("Synchronisation").get(0);
+               }else if(operation.equals("modifMulti")){
+                  oType = operationTypeDao.findByNom("ModifMultiple").get(0);
+               }else if(operation.equals("validation")){
+                  oType = operationTypeDao.findByNom("ValidationEntite").get(0);
+               }else if(operation.equals("invalidation")){
+                  oType = operationTypeDao.findByNom("InvalidationEntite").get(0);
+               }else{ // fusion
+                  oType = operationTypeDao.findByNom("Fusion").get(0);
                }
 
-               CreateOrUpdateUtilities.createAssociateOperation(patient, operationManager, oType, utilisateur);
+            }
 
-               // ajout association vers maladies
-               if(maladies != null){
-                  updateMaladies(patient, maladies);
-               }
-               // ajout association vers collaborateurs
-               if(medecins != null){
-                  updateMedecins(patient, medecins);
-               }
-               // ajout association vers liens familiaux
-               if(patientLiens != null){
-                  updateLiens(patient, patientLiens);
+            CreateOrUpdateUtilities.createAssociateOperation(patient, operationManager, oType, utilisateur);
+
+            // ajout association vers maladies
+            if(maladies != null){
+               updateMaladies(patient, maladies);
+            }
+            // ajout association vers collaborateurs
+            if(medecins != null){
+               updateMedecins(patient, medecins);
+            }
+            // ajout association vers liens familiaux
+            if(patientLiens != null){
+               updateLiens(patient, patientLiens);
+            }
+
+            try{
+               // Annotations
+               // suppr les annotations
+               if(listAnnoToDelete != null){
+                  annotationValeurManager.removeAnnotationValeurListManager(listAnnoToDelete, filesToDelete);
                }
 
-               try{
-                  // Annotations
-                  // suppr les annotations
-                  if(listAnnoToDelete != null){
-                     annotationValeurManager.removeAnnotationValeurListManager(listAnnoToDelete, filesToDelete);
-                  }
-
-                  // update les annotations, null operation pour
-                  // laisser la possibilité création/modification au sein 
-                  // de la liste
-                  if(listAnnoToCreateOrUpdate != null){
+               // update les annotations, null operation pour
+               // laisser la possibilité création/modification au sein 
+               // de la liste
+               if(listAnnoToCreateOrUpdate != null){
                   annotationValeurManager.createAnnotationValeurListManager(listAnnoToCreateOrUpdate, patient, utilisateur, null,
                      baseDir, filesCreated, filesToDelete);
+               }
+               // enregistre operation associee annotation 
+               // si il y a eu des deletes et pas d'updates
+               if((listAnnoToCreateOrUpdate == null || listAnnoToCreateOrUpdate.isEmpty())
+                  && (listAnnoToDelete != null && !listAnnoToDelete.isEmpty())){
+                  CreateOrUpdateUtilities.createAssociateOperation(patient, operationManager,
+                     operationTypeDao.findByNom("Annotation").get(0), utilisateur);
+               }
+               if(filesToDelete != null){
+                  for(final File f : filesToDelete){
+                     f.delete();
                   }
-                  // enregistre operation associee annotation 
-                  // si il y a eu des deletes et pas d'updates
-                  if((listAnnoToCreateOrUpdate == null || listAnnoToCreateOrUpdate.isEmpty())
-                     && (listAnnoToDelete != null && !listAnnoToDelete.isEmpty())){
-                     CreateOrUpdateUtilities.createAssociateOperation(patient, operationManager,
-                        operationTypeDao.findByNom("Annotation").get(0), utilisateur);
-                  }
-                  if(filesToDelete != null){
-                     for(final File f : filesToDelete){
-                        f.delete();
-                     }
-                  }
-
-               }catch(final RuntimeException re){
-                  // rollback au besoin...
-                  if(filesCreated != null){
-                     for(final File f : filesCreated){
-                        f.delete();
-                     }
-                  }else{
-                     log.warn("Rollback création fichier n'a pas pu être réalisée");
-                  }
-                  if(operation.equals("creation") && !isImport){
-                     patient.setPatientId(null);
-                  }
-                  throw re;
                }
 
-            }else{
-               throw new IllegalArgumentException("Operation must match " + "'creation/modification/synchronisation' values");
+            }catch(final RuntimeException re){
+               // rollback au besoin...
+               if(filesCreated != null){
+                  for(final File f : filesCreated){
+                     f.delete();
+                  }
+               }else{
+                  log.warn("Rollback création fichier n'a pas pu être réalisée");
+               }
+               if(operation.equals("creation") && !isImport){
+                  patient.setPatientId(null);
+               }
+               throw re;
             }
+
+         }else{
+            throw new IllegalArgumentException("Operation must match " + "'creation/modification/synchronisation/fusion/validation/invalidation' values");
          }
       }
+   }
 
    @Override
    public Patient findByIdManager(final Integer id){
@@ -300,12 +309,12 @@ public class PatientManagerImpl implements PatientManager
       if(doublon){
          return doublon;
       }
-         if(patient.getPatientId() == null){
-            return patientDao.findByNip(patient.getNip()).size() > 0;
+      if(patient.getPatientId() == null){
+         return patientDao.findByNip(patient.getNip()).size() > 0;
       }
 
-            return patientDao.findByNipWithExcludedId(patient.getNip(), patient.getPatientId()).size() > 0;
-         }
+      return patientDao.findByNipWithExcludedId(patient.getNip(), patient.getPatientId()).size() > 0;
+   }
 
    @Override
    public Patient getExistingPatientManager(final Patient pat){
@@ -320,15 +329,6 @@ public class PatientManagerImpl implements PatientManager
 
          patients.clear();
 
-         //recherche par nip
-         // fonction appelée lors Import en modification 
-         // donc pas pertinent de faire recherche par NIP!
-         // patients.addAll(patientDao.findByNip(pat.getNip()));
-
-         // renvoie patient si contenu dans la liste
-         // if (patients.isEmpty()) {
-         //	return patients.get(0);
-         // } 
       }
       return null;
    }
@@ -351,8 +351,8 @@ public class PatientManagerImpl implements PatientManager
       if(banques != null && banques.size() > 0){
          return patientDao.findByAllIdsWithBanques(banques);
       }
-         return new ArrayList<>();
-      }
+      return new ArrayList<>();
+   }
 
    @Override
    public List<Patient> findByNomLikeManager(String nom, final boolean exactMatch){
@@ -404,8 +404,8 @@ public class PatientManagerImpl implements PatientManager
       if(banques != null && banques.size() > 0){
          return patientDao.findByNomReturnIds(nom, banques);
       }
-         return new ArrayList<>();
-      }
+      return new ArrayList<>();
+   }
 
    /**
     * Recherche toutes les patients dont le nip est egal
@@ -423,8 +423,8 @@ public class PatientManagerImpl implements PatientManager
       if(banques != null && banques.size() > 0){
          return patientDao.findByNipReturnIds(nip, banques);
       }
-         return new ArrayList<>();
-      }
+      return new ArrayList<>();
+   }
 
    @Override
    public List<Integer> findAfterDateCreationReturnIdsManager(final Calendar date, final List<Banque> banques){
@@ -733,7 +733,7 @@ public class PatientManagerImpl implements PatientManager
     * @param date
     * @return List de Patient
     */
-   
+
    private List<Patient> findByOperationTypeAndDate(final OperationType oType, final Calendar date){
       final EntityManager em = entityManagerFactory.createEntityManager();
       final TypedQuery<Integer> opQuery = em.createQuery("SELECT DISTINCT o.objetId FROM "
@@ -766,7 +766,7 @@ public class PatientManagerImpl implements PatientManager
     * @param date
     * @return List de Patient
     */
-   
+
    private List<Integer> findByOperationTypeAndDateWithBanquesReturnIds(final OperationType oType, final Calendar date,
       final List<Banque> banques){
       final EntityManager em = entityManagerFactory.createEntityManager();
@@ -806,8 +806,6 @@ public class PatientManagerImpl implements PatientManager
       final List<Patient> liste = new ArrayList<>();
       if(banques != null && banques.size() > 0 && nbResults > 0){
          log.debug("Recherche des " + nbResults + " derniers Patients " + "enregistres.");
-         // liste = findByLastOperationType(operationTypeDao
-         //		.findByNom("Creation").get(0), banques, nbResults);
          final EntityManager em = entityManagerFactory.createEntityManager();
          final TypedQuery<Patient> query = em.createQuery("SELECT distinct p " + "FROM Patient p " + "JOIN p.maladies m "
             + "JOIN m.prelevements prlvts " + "WHERE prlvts.banque in (:banques) " + "ORDER BY p.patientId DESC", Patient.class);
@@ -821,45 +819,6 @@ public class PatientManagerImpl implements PatientManager
       return liste;
 
    }
-
-   //	/**
-   //	 * Récupère une liste de Patients en fonction d'un type d'opération. 
-   //	 * Cette liste est ordonnée par la date de l'opération.
-   //	 * Sa taille maximale est fixée par un paramètre.
-   //	 * @param oType Type de l'opération.
-   //	 * @param nbResults Nombre max de Patients souhaités.
-   //	 * @return Liste de Patients.
-   //	 */
-   //	
-   //	private List<Patient> findByLastOperationType(OperationType oType,
-   //			List<Banque> banques,
-   //			int nbResults) {
-   //
-   //		EntityManager em = entityManagerFactory.createEntityManager();
-   //		Query query = em.createQuery("SELECT DISTINCT p, o.date " 
-   //				+ "FROM Patient p, Operation o " 
-   //				+ "JOIN p.maladies m " 
-   //				+ "JOIN m.prelevements prlvts "
-   //				+ "WHERE o.objetId = p.patientId " 
-   //				+ "AND o.entite = :entite " 
-   //				+ "AND o.operationType = :oType "
-   //				+ "AND prlvts.banque IN (:banques) "
-   //				+ "ORDER BY o.date DESC");
-   //		query.setParameter("entite", entiteDao.findByNom("Patient"));
-   //		query.setParameter("oType", oType);
-   //		query.setParameter("banques", banques);
-   //		query.setMaxResults(nbResults);
-   //
-   //		List<Patient> patients = new ArrayList<Patient>();
-   //		Iterator<Object[]> resIt = query.getResultList().iterator();
-   //		while (resIt.hasNext()) {
-   //			patients.add((Patient) resIt.next()[0]);
-   //		}
-   //
-   //		//List<Patient> patients = query.getResultList();
-   //
-   //		return patients;		
-   //	}
 
    @Override
    public Long getTotMaladiesCountManager(final Patient p){
@@ -942,8 +901,8 @@ public class PatientManagerImpl implements PatientManager
       if(ids != null && ids.size() > 0){
          return patientDao.findByIdInList(ids);
       }
-         return new ArrayList<>();
-      }
+      return new ArrayList<>();
+   }
 
    @Override
    public List<Field> isSynchronizedPatientManager(final PatientSip sip, final Patient inBase){
@@ -1036,13 +995,6 @@ public class PatientManagerImpl implements PatientManager
             if(champsValeurs.containsKey(valeursPassives.get(i).getChampAnnotation())){
                // si cette valeur est pour la même collection : 
                // on va supprimer cette annotation
-               // if (valeursPassives.get(i).getBanque().equals(
-               // 		champsValeurs.get(valeursPassives.get(i)
-               //				.getChampAnnotation()).getBanque())) {
-               //	valeursASupprimer.add(valeursPassives.get(i));
-               // } else {
-               //	valeursAConserver.add(valeursPassives.get(i));
-               // }
                valeursASupprimer.add(valeursPassives.get(i));
             }else{
                valeursAConserver.add(valeursPassives.get(i));
@@ -1083,7 +1035,6 @@ public class PatientManagerImpl implements PatientManager
          // fantomization (oh le beau mot) du passif
          for(int i = 0; i < malsToRemove.size(); i++){
             maladieManager.removeObjectManager(malsToRemove.get(i), comments, u);
-            //passif.getMaladies().remove(malsToRemove.get(i));
          }
 
          // remove patient et objets associes
@@ -1095,9 +1046,6 @@ public class PatientManagerImpl implements PatientManager
          CreateOrUpdateUtilities.removeAssociateImportations(passif, importHistoriqueManager);
 
          //Supprime annotations associes
-         /*annotationValeurManager
-         	.removeAnnotationValeurListManager(annotationValeurManager
-         			.findByObjectManager(passif));*/
          final List<File> filesToDelete = new ArrayList<>();
          annotationValeurManager.removeAnnotationValeurListManager(valeursASupprimer, filesToDelete);
          for(final File f : filesToDelete){
@@ -1111,24 +1059,24 @@ public class PatientManagerImpl implements PatientManager
       if(criteres != null && criteres.size() > 0 && banques != null && banques.size() > 0){
          return patientDao.findByNipInList(criteres, banques);
       }
-         return new ArrayList<>();
-      }
+      return new ArrayList<>();
+   }
 
    @Override
    public List<Integer> findByNomInListManager(final List<String> criteres, final List<Banque> banques){
       if(criteres != null && criteres.size() > 0 && banques != null && banques.size() > 0){
          return patientDao.findByNomInList(criteres, banques);
       }
-         return new ArrayList<>();
-      }
+      return new ArrayList<>();
+   }
 
    @Override
    public Long findCountByReferentManager(final Collaborateur colla){
       if(colla != null){
          return patientDao.findCountByReferent(colla).get(0);
       }
-         return new Long(0);
-      }
+      return new Long(0);
+   }
 
    @Override
    public void removeListFromIdsManager(final List<Integer> ids, final String comment, final Utilisateur u){
@@ -1141,11 +1089,13 @@ public class PatientManagerImpl implements PatientManager
                removeObjectManager(p, comment, u, filesToDelete);
             }
          }
-         //         if(filesToDelete != null){
-            for(final File f : filesToDelete){
-               f.delete();
-            }
-         //         }
+         for(final File f : filesToDelete){
+            f.delete();
          }
       }
    }
+
+   public void setPatientDelegateDao(PatientDelegateDao patientDelegateDao){
+      this.patientDelegateDao = patientDelegateDao;
+   }
+}

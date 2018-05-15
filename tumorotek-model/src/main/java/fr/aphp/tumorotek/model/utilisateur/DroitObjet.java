@@ -169,9 +169,8 @@ public class DroitObjet implements Serializable
    public String toString(){
       if(this.pk != null){
          return "{" + this.pk.toString() + "}";
-      }else{
-         return "{Empty DroitObjet}";
       }
+      return "{Empty DroitObjet}";
    }
 
    /**

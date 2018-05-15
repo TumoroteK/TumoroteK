@@ -124,9 +124,8 @@ public class SModeleManagerImpl implements SModeleManager
    public List<SModele> findByPlateformeManager(final Plateforme plateforme){
       if(plateforme != null){
          return sModeleDao.findByPlateforme(plateforme);
-      }else{
-         return NO_LIST;
       }
+      return NO_LIST;
    }
 
    @Override
@@ -137,9 +136,8 @@ public class SModeleManagerImpl implements SModeleManager
          final Set<Banque> banques = im.getBanques();
          banques.isEmpty();
          return banques;
-      }else{
-         return new HashSet<>();
       }
+      return new HashSet<>();
    }
 
    @Override
@@ -147,12 +145,10 @@ public class SModeleManagerImpl implements SModeleManager
       if(modele != null){
          if(modele.getSmodeleId() == null){
             return sModeleDao.findAll().contains(modele);
-         }else{
-            return sModeleDao.findByExcludedId(modele.getSmodeleId()).contains(modele);
          }
-      }else{
-         return false;
+         return sModeleDao.findByExcludedId(modele.getSmodeleId()).contains(modele);
       }
+      return false;
    }
 
    @Override
@@ -296,43 +292,40 @@ public class SModeleManagerImpl implements SModeleManager
    public SModele updateBanquesAssociation(final List<Banque> banques, SModele model){
       if(banques != null){
          model = sModeleDao.mergeObject(model);
-         if(banques != null){
-            final Iterator<Banque> it = model.getBanques().iterator();
-            final List<Banque> banquesToRemove = new ArrayList<>();
-            // on parcourt les Banques qui sont actuellement associés
-            // au modele
-            while(it.hasNext()){
-               final Banque tmp = it.next();
-               // si une Banque n'est pas dans la nouvelle liste, on
-               // la conserve afin de la retirer par la suite
-               if(!banques.contains(tmp)){
-                  banquesToRemove.add(tmp);
-               }
+         final Iterator<Banque> it = model.getBanques().iterator();
+         final List<Banque> banquesToRemove = new ArrayList<>();
+         // on parcourt les Banques qui sont actuellement associés
+         // au modele
+         while(it.hasNext()){
+            final Banque tmp = it.next();
+            // si une Banque n'est pas dans la nouvelle liste, on
+            // la conserve afin de la retirer par la suite
+            if(!banques.contains(tmp)){
+               banquesToRemove.add(tmp);
             }
+         }
 
-            // on parcourt la liste des Banques à retirer de
-            // l'association
-            for(int i = 0; i < banquesToRemove.size(); i++){
-               final Banque bank = banqueDao.mergeObject(banquesToRemove.get(i));
-               // on retire la Banque de chaque coté de l'association
-               model.getBanques().remove(bank);
-               bank.getSModeles().remove(model);
+         // on parcourt la liste des Banques à retirer de
+         // l'association
+         for(int i = 0; i < banquesToRemove.size(); i++){
+            final Banque bank = banqueDao.mergeObject(banquesToRemove.get(i));
+            // on retire la Banque de chaque coté de l'association
+            model.getBanques().remove(bank);
+            bank.getSModeles().remove(model);
 
-               log.debug("Suppression de l'association entre le " + "modele : " + model.toString() + " et la banque : "
-                  + bank.toString());
-            }
+            log.debug(
+               "Suppression de l'association entre le " + "modele : " + model.toString() + " et la banque : " + bank.toString());
+         }
 
-            // on parcourt la nouvelle liste de banques
-            for(final Banque b : banques){
-               // si une banque n'était pas associée au modele
-               if(!model.getBanques().contains(b)){
-                  // on ajoute la Banque des deux cotés de l'association
-                  model.getBanques().add(banqueDao.mergeObject(b));
-                  banqueDao.mergeObject(b).getSModeles().add(model);
+         // on parcourt la nouvelle liste de banques
+         for(final Banque b : banques){
+            // si une banque n'était pas associée au modele
+            if(!model.getBanques().contains(b)){
+               // on ajoute la Banque des deux cotés de l'association
+               model.getBanques().add(banqueDao.mergeObject(b));
+               banqueDao.mergeObject(b).getSModeles().add(model);
 
-                  log.debug(
-                     "Ajout de l'association entre le " + "Modele : " + model.toString() + " et la banque : " + b.toString());
-               }
+               log.debug("Ajout de l'association entre le " + "Modele : " + model.toString() + " et la banque : " + b.toString());
             }
          }
       }
@@ -368,9 +361,8 @@ public class SModeleManagerImpl implements SModeleManager
       if(!subs.isEmpty()){
          if(subs.size() == 1){
             return subs.get(0);
-         }else{
-            throw new RuntimeException("stats.modele.indicateurs.toomany.subdivisions");
          }
+         throw new RuntimeException("stats.modele.indicateurs.toomany.subdivisions");
       }
       return null;
    }

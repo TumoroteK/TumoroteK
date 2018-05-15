@@ -50,7 +50,6 @@ import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.echantillon.ModePrepaValidator;
-import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.echantillon.ModePrepa;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
@@ -137,89 +136,74 @@ public class ModePrepaManagerImpl implements ModePrepaManager
             mode = mode + "%";
          }
          return modePrepaDao.findByNom(mode);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
-   public boolean findDoublonManager(final Object obj){
-      final ModePrepa mode = (ModePrepa) obj;
+   public boolean findDoublonManager(final ModePrepa obj){
+      final ModePrepa mode = obj;
       if(mode != null){
          if(mode.getModePrepaId() == null){
             return modePrepaDao.findAll().contains(mode);
-         }else{
-            return modePrepaDao.findByExcludedId(mode.getModePrepaId()).contains(mode);
          }
-      }else{
-         return false;
+         return modePrepaDao.findByExcludedId(mode.getModePrepaId()).contains(mode);
       }
+      return false;
    }
 
    @Override
-   public boolean isUsedObjectManager(final Object obj){
-      final ModePrepa mode = (ModePrepa) obj;
+   public boolean isUsedObjectManager(final ModePrepa obj){
+      final ModePrepa mode = obj;
       final List<Echantillon> echans = echantillonDao.findByModePrepa(mode);
 
       return (echans.size() > 0);
    }
 
    @Override
-   public void createObjectManager(final Object obj){
+   public void createObjectManager(final ModePrepa obj){
 
-      final ModePrepa mode = (ModePrepa) obj;
+      final ModePrepa mode = obj;
 
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(mode.getPlateforme() == null){
          throw new RequiredObjectIsNullException("ModePrepa", "creation", "Plateforme");
-      }else{
-         mode.setPlateforme(plateformeDao.mergeObject(mode.getPlateforme()));
       }
+         mode.setPlateforme(plateformeDao.mergeObject(mode.getPlateforme()));
 
       if(findDoublonManager(mode)){
          log.warn("Doublon lors de la creation de l'objet ModePrepa : " + mode.toString());
          throw new DoublonFoundException("ModePrepa", "creation");
-      }else{
+      }
          BeanValidator.validateObject(mode, new Validator[] {modePrepaValidator});
          modePrepaDao.createObject(mode);
          log.info("Enregistrement de l'objet ModePrepa : " + mode.toString());
-      }
    }
 
    @Override
-   public void updateObjectManager(final Object obj){
+   public void updateObjectManager(final ModePrepa obj){
 
-      final ModePrepa mode = (ModePrepa) obj;
+      final ModePrepa mode = obj;
 
       if(findDoublonManager(mode)){
          log.warn("Doublon lors de la modification de l'objet ModePrepa : " + mode.toString());
          throw new DoublonFoundException("ModePrepa", "modification");
-      }else{
+      }
          BeanValidator.validateObject(mode, new Validator[] {modePrepaValidator});
          modePrepaDao.updateObject(mode);
          log.info("Modification de l'objet ModePrepa : " + mode.toString());
-      }
    }
 
    @Override
-   public void removeObjectManager(final Object obj){
+   public void removeObjectManager(final ModePrepa obj){
 
-      final ModePrepa mode = (ModePrepa) obj;
-
-      //		if (isUsedObjectManager(mode)) {
-      //			log.warn("Objet utilisé lors de la suppression de l'objet " 
-      //					+ "ModePrepa : " + mode.toString());
-      //			throw new ObjectUsedException("ModePrepa", "suppression");
-      //		} else {
+      final ModePrepa mode = obj;
       modePrepaDao.removeObject(mode.getModePrepaId());
-      //			log.info("Suppression de l'objet ModePrepa : " 
-      //					+ mode.toString());
-      //		}
    }
 
    @Override
-   public List<? extends TKThesaurusObject> findByOrderManager(final Plateforme pf){
+   public List<ModePrepa> findByOrderManager(final Plateforme pf){
       return modePrepaDao.findByOrder(pf);
    }
 }

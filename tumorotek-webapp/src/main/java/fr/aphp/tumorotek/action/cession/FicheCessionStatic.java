@@ -384,9 +384,8 @@ public class FicheCessionStatic extends AbstractFicheStaticController
    public String getDateValidationFormated(){
       if(this.cession != null){
          return ObjectTypesFormatters.dateRenderer2(this.cession.getValidationDate());
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -397,9 +396,8 @@ public class FicheCessionStatic extends AbstractFicheStaticController
    public String getDateDepartFormated(){
       if(this.cession != null){
          return ObjectTypesFormatters.dateRenderer2(this.cession.getDepartDate());
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -410,9 +408,8 @@ public class FicheCessionStatic extends AbstractFicheStaticController
    public String getDateArriveeFormated(){
       if(this.cession != null){
          return ObjectTypesFormatters.dateRenderer2(this.cession.getArriveeDate());
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -423,59 +420,52 @@ public class FicheCessionStatic extends AbstractFicheStaticController
    public String getDateDestructionFormated(){
       if(this.cession != null){
          return ObjectTypesFormatters.dateRenderer2(this.cession.getDestructionDate());
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getEtablissement(){
       if(this.cession != null && this.cession.getServiceDest() != null
          && this.cession.getServiceDest().getEtablissement() != null){
          return this.cession.getServiceDest().getEtablissement().getNom();
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getSClassEtablissement(){
       if(this.cession != null && this.cession.getServiceDest() != null
          && this.cession.getServiceDest().getEtablissement() != null){
          return ObjectTypesFormatters.sClassEtablissement(this.cession.getServiceDest().getEtablissement());
-      }else{
-         return "";
       }
+      return "";
    }
 
    public String getSClassDemandeur(){
       if(this.cession != null){
          return ObjectTypesFormatters.sClassCollaborateur(this.cession.getDemandeur());
-      }else{
-         return "";
       }
+      return "";
    }
 
    public String getSClassDestinataire(){
       if(this.cession != null){
          return ObjectTypesFormatters.sClassCollaborateur(this.cession.getDestinataire());
-      }else{
-         return "";
       }
+      return "";
    }
 
    public String getSClassExecutant(){
       if(this.cession != null){
          return ObjectTypesFormatters.sClassCollaborateur(this.cession.getExecutant());
-      }else{
-         return "";
       }
+      return "";
    }
 
    public String getSClassServiceDest(){
       if(this.cession != null){
          return ObjectTypesFormatters.sClassService(this.cession.getServiceDest());
-      }else{
-         return "";
       }
+      return "";
    }
 
    /**
@@ -486,9 +476,8 @@ public class FicheCessionStatic extends AbstractFicheStaticController
    public String getDateDemandeFormated(){
       if(this.cession != null){
          return ObjectTypesFormatters.dateRenderer2(this.cession.getDemandeDate());
-      }else{
-         return null;
       }
+      return null;
    }
 
    /*************************************************************************/
@@ -629,7 +618,7 @@ public class FicheCessionStatic extends AbstractFicheStaticController
       displayObjectData(deco.getEchantillon());
    }
 
-   public void onSelectAllEchantillons(final Event e){
+   public void onSelectAllEchantillons(){
       final List<CederObjetDecorator> decos = cdEchansFactory.decorateListe(echantillonsCedes);
       displayObjectsListData(new ArrayList<TKAnnotableObject>(cdEchansFactory.undecorateListe(decos)));
    }
@@ -640,7 +629,7 @@ public class FicheCessionStatic extends AbstractFicheStaticController
       displayObjectData(deco.getProdDerive());
    }
 
-   public void onSelectAllDerives(final Event e){
+   public void onSelectAllDerives(){
       final List<CederObjetDecorator> decos = cdDerivesFactory.decorateListe(derivesCedes);
       displayObjectsListData(new ArrayList<TKAnnotableObject>(cdDerivesFactory.undecorateListe(decos)));
    }
@@ -689,14 +678,6 @@ public class FicheCessionStatic extends AbstractFicheStaticController
       }
    }
 
-   /*
-    * public void onClick$print() { StringBuffer sb = new StringBuffer();
-    * sb.append(Labels.getLabel("impression.print.cession")); sb.append(" ");
-    * sb.append(this.cession.getNumero());
-    * 
-    * openImpressionWindow(page, cession, sb.toString(), isAnonyme()); }
-    */
-
    /**
     * Clic sur le bouton exporterEchantillons.
     */
@@ -739,7 +720,7 @@ public class FicheCessionStatic extends AbstractFicheStaticController
     * @throws IllegalAccessException
     * @throws InstantiationException
     */
-   
+
    public void onLaterExportEchantillon() throws ClassNotFoundException, NoSuchMethodException, SecurityException,
       InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
       // List<Echantillon> echans = new ArrayList<Echantillon>();
@@ -793,7 +774,7 @@ public class FicheCessionStatic extends AbstractFicheStaticController
     * @throws IllegalAccessException
     * @throws InstantiationException
     */
-   
+
    public void onLaterExportDerives() throws ClassNotFoundException, NoSuchMethodException, SecurityException,
       InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 
@@ -1076,9 +1057,8 @@ public class FicheCessionStatic extends AbstractFicheStaticController
    public String getCessionType(){
       if(cession != null && cession.getCessionType() != null){
          return Labels.getLabel("cession.type." + cession.getCessionType().getType().toLowerCase());
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getCessionStatut(){

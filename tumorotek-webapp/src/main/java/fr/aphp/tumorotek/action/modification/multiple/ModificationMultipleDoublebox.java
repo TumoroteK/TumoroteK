@@ -94,7 +94,7 @@ public class ModificationMultipleDoublebox extends AbstractModificationMultipleC
    @Override
    public Object formatValue(final Object obj){
       if(obj instanceof String){
-         if(getIsCombined() && obj != null && obj.equals("system.tk.unknownExistingValue")){
+         if(getIsCombined() && obj.equals("system.tk.unknownExistingValue")){
             return obj;
          }
          if(isInteger){
@@ -104,9 +104,8 @@ public class ModificationMultipleDoublebox extends AbstractModificationMultipleC
          }else{
             return new BigDecimal((String) obj);
          }
-      }else{
-         return obj;
       }
+      return obj;
    }
 
    @Override
@@ -123,12 +122,10 @@ public class ModificationMultipleDoublebox extends AbstractModificationMultipleC
                return String.valueOf(ObjectTypesFormatters.floor((Float) obj, 3));
             }
             return ObjectTypesFormatters.doubleLitteralFormatter(((BigDecimal) obj).doubleValue());
-         }else{
-            return (String) obj;
          }
-      }else{
-         return null;
+         return (String) obj;
       }
+      return null;
 
    }
 

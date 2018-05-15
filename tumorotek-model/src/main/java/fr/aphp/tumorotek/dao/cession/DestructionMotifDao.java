@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.cession.DestructionMotif;
  * @version 2.0
  *
  */
-public interface DestructionMotifDao extends GenericDaoJpa<DestructionMotif, Integer>, TKThesaurusDao
+public interface DestructionMotifDao extends GenericDaoJpa<DestructionMotif, Integer>, TKThesaurusDao<DestructionMotif>
 {
 
    /**

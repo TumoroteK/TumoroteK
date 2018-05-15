@@ -49,7 +49,7 @@ import fr.aphp.tumorotek.model.contexte.Specialite;
  * @version 2.0
  *
  */
-public interface SpecialiteManager extends CrudManager
+public interface SpecialiteManager extends CrudManager<Specialite>
 {
 
    /**

@@ -172,9 +172,8 @@ public class ChampImprime implements Serializable
    public String toString(){
       if(this.pk != null){
          return "{" + this.pk.toString() + "}";
-      }else{
-         return "{Empty ChampImprime}";
       }
+      return "{Empty ChampImprime}";
    }
 
    /**

@@ -39,7 +39,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -61,8 +60,7 @@ import fr.aphp.tumorotek.model.contexte.Protocole;
  */
 @Entity
 @Table(name = "PRELEVEMENT_SERO")
-@DiscriminatorValue("1")
-public class PrelevementSero extends PrelevementDelegate
+public class PrelevementSero extends AbstractPrelevementDelegate
 {
 
    private String libelle;

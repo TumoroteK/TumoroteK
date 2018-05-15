@@ -139,41 +139,34 @@ public class Combinaison
                if(test.champ1 == null){
                   if(this.champ2 == null){
                      return (test.champ2 == null);
-                  }else{
-                     return (this.champ2.equals(test.champ2));
                   }
-               }else{
-                  return false;
+                  return (this.champ2.equals(test.champ2));
                }
+               return false;
             }else if(this.champ1.equals(test.champ1)){
                if(test.champ2 == null){
                   return (this.champ2 == null);
-               }else{
-                  return (this.champ2.equals(test.champ2));
                }
+               return (this.champ2.equals(test.champ2));
             }else{
                return false;
             }
-         }else{
-            return false;
          }
+         return false;
       }else if(this.operateur.equals(test.operateur)){
          if(this.champ1 == null){
             if(test.champ1 == null){
                if(this.champ2 == null){
                   return (test.champ2 == null);
-               }else{
-                  return (this.champ2.equals(test.champ2));
                }
-            }else{
-               return false;
+               return (this.champ2.equals(test.champ2));
             }
+            return false;
          }else if(this.champ1.equals(test.champ1)){
             if(test.champ2 == null){
                return (this.champ2 == null);
-            }else{
-               return (this.champ2.equals(test.champ2));
             }
+            return (this.champ2.equals(test.champ2));
          }else{
             return false;
          }

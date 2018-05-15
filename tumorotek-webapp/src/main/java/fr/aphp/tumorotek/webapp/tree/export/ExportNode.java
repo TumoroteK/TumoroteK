@@ -328,33 +328,28 @@ public abstract class ExportNode
          final CritereNode cn = (CritereNode) this;
          if(cn.getCritere().getOperateur().equals("is null")){
             return false;
-         }else{
-            if(cn.getCritere().getChamp().getChampEntite() != null){
-               if(cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("alphanum")
-                  || cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("texte")
-                  || cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("thesaurus")
-                  || cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("hyperlien")
-                  || cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("thesaurusM")){
-                  return true;
-               }else{
-                  return false;
-               }
-            }else{
-               if(cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("alphanum")
-                  || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("texte")
-                  || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("thesaurus")
-                  || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("hyperlien")
-                  || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("thesaurusM")
-                  || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("num")){
-                  return true;
-               }else{
-                  return false;
-               }
-            }
          }
-      }else{
+         if(cn.getCritere().getChamp().getChampEntite() != null){
+            if(cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("alphanum")
+               || cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("texte")
+               || cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("thesaurus")
+               || cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("hyperlien")
+               || cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("thesaurusM")){
+               return true;
+            }
+            return false;
+         }
+         if(cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("alphanum")
+            || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("texte")
+            || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("thesaurus")
+            || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("hyperlien")
+            || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("thesaurusM")
+            || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("num")){
+            return true;
+         }
          return false;
       }
+      return false;
    }
 
    /**
@@ -367,24 +362,19 @@ public abstract class ExportNode
          final CritereNode cn = (CritereNode) this;
          if(cn.getCritere().getOperateur().equals("is null")){
             return false;
-         }else{
-            if(cn.getCritere().getChamp().getChampEntite() != null){
-               if(cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("date")){
-                  return true;
-               }else{
-                  return false;
-               }
-            }else{
-               if(cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("date")){
-                  return true;
-               }else{
-                  return false;
-               }
-            }
          }
-      }else{
+         if(cn.getCritere().getChamp().getChampEntite() != null){
+            if(cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("date")){
+               return true;
+            }
+            return false;
+         }
+         if(cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("date")){
+            return true;
+         }
          return false;
       }
+      return false;
    }
 
    /**
@@ -397,24 +387,19 @@ public abstract class ExportNode
          final CritereNode cn = (CritereNode) this;
          if(cn.getCritere().getOperateur().equals("is null")){
             return false;
-         }else{
-            if(cn.getCritere().getChamp().getChampEntite() != null){
-               if(cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("datetime")){
-                  return true;
-               }else{
-                  return false;
-               }
-            }else{
-               if(cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("datetime")){
-                  return true;
-               }else{
-                  return false;
-               }
-            }
          }
-      }else{
+         if(cn.getCritere().getChamp().getChampEntite() != null){
+            if(cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("datetime")){
+               return true;
+            }
+            return false;
+         }
+         if(cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("datetime")){
+            return true;
+         }
          return false;
       }
+      return false;
    }
 
    /**
@@ -427,24 +412,19 @@ public abstract class ExportNode
          final CritereNode cn = (CritereNode) this;
          if(cn.getCritere().getOperateur().equals("is null")){
             return false;
-         }else{
-            if(cn.getCritere().getChamp().getChampEntite() != null){
-               if(cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("boolean")){
-                  return true;
-               }else{
-                  return false;
-               }
-            }else{
-               if(cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("boolean")){
-                  return true;
-               }else{
-                  return false;
-               }
-            }
          }
-      }else{
+         if(cn.getCritere().getChamp().getChampEntite() != null){
+            if(cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("boolean")){
+               return true;
+            }
+            return false;
+         }
+         if(cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("boolean")){
+            return true;
+         }
          return false;
       }
+      return false;
    }
 
    /**
@@ -457,20 +437,16 @@ public abstract class ExportNode
          final CritereNode cn = (CritereNode) this;
          if(cn.getCritere().getOperateur().equals("is null")){
             return false;
-         }else{
-            if(cn.getCritere().getChamp().getChampEntite() != null){
-               if(cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("num")){
-                  return true;
-               }else{
-                  return false;
-               }
-            }else{
-               return false;
-            }
          }
-      }else{
+         if(cn.getCritere().getChamp().getChampEntite() != null){
+            if(cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("num")){
+               return true;
+            }
+            return false;
+         }
          return false;
       }
+      return false;
    }
 
    /**
@@ -482,12 +458,10 @@ public abstract class ExportNode
          final CritereNode cn = (CritereNode) this;
          if(cn.getCritere().getOperateur().equals("is null")){
             return true;
-         }else{
-            return false;
          }
-      }else{
          return false;
       }
+      return false;
    }
 
    /**
@@ -513,9 +487,8 @@ public abstract class ExportNode
                }
                if(cn.getCritere().getChamp().getChampEntite().getNom().equals("AgeAuPrelevement")){
                   return new Integer(critereNumValue.intValue());
-               }else{
-                  return critereNumValue;
                }
+               return critereNumValue;
             }else if(cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("datetime")){
                return critereCalendarValue;
             }else if(cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("date")){
@@ -527,60 +500,40 @@ public abstract class ExportNode
                      cal = null;
                   }
                   return cal;
-               }else{
-                  return critereDateValue;
                }
+               return critereDateValue;
             }else if(cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("boolean")){
                return critereBooleanValue;
             }else{
                return null;
             }
-         }else{
-            if(cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("alphanum")
-               || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("texte")
-               || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("thesaurus")
-               || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("hyperlien")
-               || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("thesaurusM")
-               || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("num")){
-               return critereAlphanumValue;
-            }else if(cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().matches("date.*")){
-
-               //FIXME (FIXED) incident TK-13: cn.getCritere().getChamp().getChampEntite() Forcément null puisque le premier test ligne 521 : cn.getCritere().getChamp().getChampEntite() != null
-               //					if (isCalendar(cn.getCritere().getChamp().getChampEntite())) {
-               //						Calendar cal = Calendar.getInstance();
-               //						if (critereDateValue != null) {
-               //							cal.setTime(critereDateValue);
-               //						} else {
-               //							cal = null;
-               //						}
-               //						return cal;
-               //					} else {
-               //						return critereDateValue;
-               //					}
-
-               //[TK-13 FIX]: on récupère directement les valeurs envoyées, pas besoin de passer par isCalendar()
-               if(null != critereDateValue || null != critereCalendarValue){
-                  Calendar cal = Calendar.getInstance();
-                  if(critereDateValue != null){
-                     cal.setTime(critereDateValue);
-                  }else{
-                     cal = critereCalendarValue;
-                  }
-                  return cal;
-               }else{
-                  return critereDateValue;
-               }
-               //[/TKB-2 FIX]
-
-            }else if(cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("boolean")){
-               return critereBooleanValue;
-            }else{
-               return null;
-            }
          }
-      }else{
+         if(cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("alphanum")
+            || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("texte")
+            || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("thesaurus")
+            || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("hyperlien")
+            || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("thesaurusM")
+            || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("num")){
+            return critereAlphanumValue;
+         }else if(cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().matches("date.*")){
+            if(null != critereDateValue || null != critereCalendarValue){
+               Calendar cal = Calendar.getInstance();
+               if(critereDateValue != null){
+                  cal.setTime(critereDateValue);
+               }else{
+                  cal = critereCalendarValue;
+               }
+               return cal;
+            }
+            return critereDateValue;
+            //[/TKB-2 FIX]
+
+         }else if(cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("boolean")){
+            return critereBooleanValue;
+         }
          return null;
       }
+      return null;
    }
 
    public boolean isCalendar(final ChampEntite ce){
@@ -619,45 +572,8 @@ public abstract class ExportNode
       return isCalendar;
    }
 
-   /*public boolean isCalendar(ChampAnnotation champAnnotation) {
-   	boolean isCalendar = false;
-   
-   	Object obj = null;
-   	if (champAnnotation.getEntite().getNom().equals("Patient")) {
-   		obj = new Patient();
-   	} else if (champAnnotation.getEntite().getNom().equals("Maladie")) {
-   		obj = new Maladie();
-   	} else if (champAnnotation.getEntite().getNom().equals("Prelevement")) {
-   		obj = new Prelevement();
-   	} else if (champAnnotation.getEntite().getNom().equals("Echantillon")) {
-   		obj = new Echantillon();
-   	} else if (champAnnotation.getEntite().getNom().equals("ProdDerive")) {
-   		obj = new ProdDerive();
-   	} else if (champAnnotation.getEntite().getNom().equals("Cession")) {
-   		obj = new Cession();
-   	}
-   
-   	String nomChamp = champAnnotation.getNom()
-   		.replaceFirst(".",
-   			(champAnnotation.getNom().charAt(0) + "")
-   				.toLowerCase());
-   	try {
-   		String type = PropertyUtils
-   			.getPropertyDescriptor(obj, nomChamp)
-   			.getPropertyType().getSimpleName();
-   
-   		if (type != null && type.equals("Calendar")) {
-   			isCalendar = true;
-   		}
-   	} catch (IllegalAccessException e) {
-   		log.error(e);
-   	} catch (InvocationTargetException e) {
-   		log.error(e);
-   	} catch (NoSuchMethodException e) {
-   		log.error(e);
-   	}
-   
-   	return isCalendar;
-   }*/
-
+   @Override
+   public int hashCode(){
+      return super.hashCode();
+   }
 }

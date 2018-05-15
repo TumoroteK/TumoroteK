@@ -191,9 +191,8 @@ public class EnceinteType implements Serializable, TKThesaurusObject
    public String toString(){
       if(this.type != null){
          return "{" + this.type + "}";
-      }else{
-         return "{Empty EnceinteType}";
       }
+      return "{Empty EnceinteType}";
    }
 
    @Override

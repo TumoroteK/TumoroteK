@@ -106,27 +106,24 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
    public List<CouleurEntiteType> findAllObjectsByBanqueManager(final Banque banque){
       if(banque != null && banque.getBanqueId() != null){
          return couleurEntiteTypeDao.findByBanque(banque);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
    public List<CouleurEntiteType> findAllCouleursForEchanTypeByBanqueManager(final Banque banque){
       if(banque != null && banque.getBanqueId() != null){
          return couleurEntiteTypeDao.findByBanqueAllEchanType(banque);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
    public List<CouleurEntiteType> findAllCouleursForProdTypeByBanqueManager(final Banque banque){
       if(banque != null && banque.getBanqueId() != null){
          return couleurEntiteTypeDao.findByBanqueAllProdType(banque);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
@@ -134,12 +131,10 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
       if(couleurEntiteType != null){
          if(couleurEntiteType.getCouleurEntiteTypeId() == null){
             return couleurEntiteTypeDao.findAll().contains(couleurEntiteType);
-         }else{
-            return couleurEntiteTypeDao.findByExcludedId(couleurEntiteType.getCouleurEntiteTypeId()).contains(couleurEntiteType);
          }
-      }else{
-         return false;
+         return couleurEntiteTypeDao.findByExcludedId(couleurEntiteType.getCouleurEntiteTypeId()).contains(couleurEntiteType);
       }
+      return false;
    }
 
    @Override
@@ -178,12 +173,11 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
       if(findDoublonManager(couleurEntiteType)){
          log.warn("Doublon lors de la creation de l'objet " + "CouleurEntiteType : " + couleurEntiteType.toString());
          throw new DoublonFoundException("CouleurEntiteType", "creation");
-      }else{
-
-         couleurEntiteTypeDao.createObject(couleurEntiteType);
-
-         log.info("Enregistrement de l'objet CouleurEntiteType : " + couleurEntiteType.toString());
       }
+
+      couleurEntiteTypeDao.createObject(couleurEntiteType);
+
+      log.info("Enregistrement de l'objet CouleurEntiteType : " + couleurEntiteType.toString());
    }
 
    @Override
@@ -221,12 +215,11 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
       if(findDoublonManager(couleurEntiteType)){
          log.warn("Doublon lors de la modification de l'objet " + "CouleurEntiteType : " + couleurEntiteType.toString());
          throw new DoublonFoundException("CouleurEntiteType", "modification");
-      }else{
-
-         couleurEntiteTypeDao.updateObject(couleurEntiteType);
-
-         log.info("Enregistrement de l'objet CouleurEntiteType : " + couleurEntiteType.toString());
       }
+
+      couleurEntiteTypeDao.updateObject(couleurEntiteType);
+
+      log.info("Enregistrement de l'objet CouleurEntiteType : " + couleurEntiteType.toString());
    }
 
    @Override

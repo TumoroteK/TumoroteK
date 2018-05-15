@@ -35,7 +35,7 @@
  **/
 package fr.aphp.tumorotek.model;
 
-import fr.aphp.tumorotek.model.contexte.Contexte;
+import fr.aphp.tumorotek.model.coeur.prelevement.delegate.AbstractPrelevementDelegate;
 
 /**
  * Interface representant les Entite systeme qui sont
@@ -48,16 +48,12 @@ import fr.aphp.tumorotek.model.contexte.Contexte;
  * @author Mathieu BARTHELEMY
  * @version 2.0
  */
-public abstract class TKDelegateObject
+public abstract class TKDelegateObject<T>
 {
 
-   public abstract Object getDelegator();
+   public abstract T getDelegator();
 
-   public abstract void setDelegator(Object obj);
-
-   public abstract Contexte getContexte();
-
-   public abstract void setContexte(Contexte con);
+   public abstract void setDelegator(T obj);
 
    /**
     * Renvoie true si le delegate est vide et doit être 
@@ -70,52 +66,34 @@ public abstract class TKDelegateObject
    @Override
    public String toString(){
       if(getDelegator() != null){
-         return getDelegator().toString() + "." + getContexte().getNom();
-      }else{
-         return "{Empty delegate}";
+         return getDelegator().toString() + "." + this.getClass().getSimpleName();
       }
-
+      return "{Empty delegate}";
    }
 
-   /**
-    * 2 objets sont considérés comme égaux s'ils ont le delegator.
-    * @param obj est l'objet à tester.
-    * @return true si les objets sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
-
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-
-      if(getDelegator() != null){
-         return getDelegator().equals(((TKDelegateObject) obj).getDelegator());
-      }else{
-         return (((TKDelegateObject) obj).getDelegator() == null);
-      }
-   }
-
-   /**
-    * Le hashcode est calculé sur le delegator.
-    * @return la valeur du hashcode.
-    */
    @Override
    public int hashCode(){
+      final int prime = 31;
+      int result = super.hashCode();
+      result = prime * result + ((getDelegator() == null) ? 0 : getDelegator().hashCode());
+      return result;
+   }
 
-      int hash = 7;
-      int hashDelegator = 0;
-
-      if(getDelegator() != null){
-         hashDelegator = getDelegator().hashCode();
-      }
-
-      hash = 31 * hash + hashDelegator;
-
-      return hash;
+   @Override
+   public boolean equals(Object obj){
+      if(this == obj)
+         return true;
+      if(!super.equals(obj))
+         return false;
+      if(getClass() != obj.getClass())
+         return false;
+      AbstractPrelevementDelegate other = (AbstractPrelevementDelegate) obj;
+      if(getDelegator() == null){
+         if(other.getDelegator() != null)
+            return false;
+      }else if(!getDelegator().equals(other.getDelegator()))
+         return false;
+      return true;
    }
 
 }

@@ -119,7 +119,6 @@ public class ListeCession extends AbstractListeController2
       return listObjects;
    }
 
-   
    @Override
    public void setListObjects(final List<? extends TKdataObject> objs){
       this.listObjects = (List<Cession>) objs;
@@ -146,7 +145,6 @@ public class ListeCession extends AbstractListeController2
       return selectedObjects;
    }
 
-   
    @Override
    public void setSelectedObjects(final List<? extends TKdataObject> objs){
       this.selectedObjects = (List<Cession>) objs;
@@ -272,32 +270,14 @@ public class ListeCession extends AbstractListeController2
    public List<? extends TKdataObject> extractObjectsFromIds(final List<Integer> ids){
       if(ids != null && ids.size() > 0){
          return ManagerLocator.getCessionManager().findByIdsInListManager(ids);
-      }else{
-         return new ArrayList<Cession>();
       }
+      return new ArrayList<Cession>();
    }
 
    @Override
    public void onClick$addNew(final Event event){
       getObjectTabController().switchToCreateMode(null, null, null);
    }
-
-   //	public void onClickNumeroCession(Event event) {
-   //		// déselection de la ligne courante
-   //		deselectRow();
-   //		
-   //		// sélection de la nouvelle ligne
-   //		selectRow(getRow((ForwardEvent) event), event.getData());
-   //		
-   //		// on passe en mode fiche & liste
-   //		getCessionController().switchToFicheAndListeMode();
-   //		
-   //		// on envoie l'échantillon à la fiche
-   //		Cession edit = ((Cession) currentObject).clone();
-   //		getCessionController().getFicheStatic().setCession(edit);
-   //		log.debug("liste: obj selectionne passe a afficher/modifier: " 
-   //				+ edit.toString());
-   //	}
 
    /**
     * Méthode appelée pour ouvrir la page de recherche avancée.
@@ -309,27 +289,6 @@ public class ListeCession extends AbstractListeController2
 
       openRechercheAvanceeCessionWindow(page, sb.toString(), entite, Path.getPath(self));
    }
-
-   //	/**
-   //	 * Méthode appelée par la fenêtre FicheRechercheAvancee quand
-   //	 * l'utilisateur fait une recherche.
-   //	 * @param e Event contenant les résultats de la recherche.
-   //	 */
-   //	
-   //	public void onGetObjectFromResearch(Event e) {
-   //		
-   //		// si des cessions sont renvoyés
-   //		if (e.getData() != null) {
-   //			listObjects = new ArrayList<Cession>();
-   //			clearSelection();
-   //			setListObjects((List<? extends Object>) e.getData());
-   //			setCurrentRow(null);
-   //			setCurrentObject(null);
-   //			getObjectTabController().clearStaticFiche();
-   //			getObjectTabController().switchToOnlyListeMode();
-   //			getBinder().loadComponent(objectsListGrid);
-   //		}
-   //	}
 
    /*************************************************************************/
    /************************** DROITS ***************************************/

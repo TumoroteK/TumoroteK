@@ -200,9 +200,8 @@ public class CouleurEntiteType implements Serializable
    public String toString(){
       if(this.couleur != null && this.banque != null){
          return "{" + this.couleur + ", " + this.banque + ", " + this.echantillonType + ", " + this.prodType + "}";
-      }else{
-         return "{Empty CouleurEntiteType}";
       }
+      return "{Empty CouleurEntiteType}";
    }
 
    /**

@@ -46,7 +46,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -207,13 +207,13 @@ public class LargeCessionManagerImpl implements LargeCessionManager
 
          final EntityManager em = entityManagerFactory.createEntityManager();
 
-         Query query = null;
+         TypedQuery<String> query = null;
          if(entiteId == 3){ // echantillon
             query = em.createQuery("SELECT e.code " + "FROM Echantillon e " + "WHERE e.echantillonId in (:ids) "
-               + "AND e.objetStatut.statut not like 'STOCKE'" + "ORDER BY e.code");
+               + "AND e.objetStatut.statut not like 'STOCKE'" + "ORDER BY e.code", String.class);
          }else if(entiteId == 8){ // derive
             query = em.createQuery("SELECT p.code " + "FROM ProdDerive p " + "WHERE p.prodDeriveId in (:ids) "
-               + "AND p.objetStatut.statut not like 'STOCKE'" + "ORDER BY p.code");
+               + "AND p.objetStatut.statut not like 'STOCKE'" + "ORDER BY p.code", String.class);
          }
 
          if(query != null){
@@ -238,13 +238,13 @@ public class LargeCessionManagerImpl implements LargeCessionManager
          final Calendar cal = Calendar.getInstance();
          cal.setTime(dateCession);
 
-         Query query = null;
+         TypedQuery<String> query = null;
          if(entiteId == 3){ // echantillon
             query = em.createQuery("SELECT e.code " + "FROM Echantillon e " + "WHERE e.echantillonId in (:ids) "
-               + "AND e.dateStock > :dateCession " + "ORDER BY e.code");
+               + "AND e.dateStock > :dateCession " + "ORDER BY e.code", String.class);
          }else if(entiteId == 8){ // derive
             query = em.createQuery("SELECT p.code " + "FROM ProdDerive p " + "WHERE p.prodDeriveId in (:ids) "
-               + "AND p.dateStock > :dateCession " + "ORDER BY p.code");
+               + "AND p.dateStock > :dateCession " + "ORDER BY p.code", String.class);
          }
 
          if(query != null){
@@ -270,15 +270,15 @@ public class LargeCessionManagerImpl implements LargeCessionManager
          final Calendar cal = Calendar.getInstance();
          cal.setTime(dateCession);
 
-         Query query = null;
+         TypedQuery<String> query = null;
          if(entiteId == 3){ // echantillon
             query = em.createQuery("SELECT distinct e.code " + "FROM Echantillon e, Retour r "
                + "WHERE  e.echantillonId = r.objetId " + "AND e.echantillonId in (:ids) " + "AND r.entite.entiteId = 3 "
-               + "AND r.dateRetour > :dateCession " + "ORDER BY e.code");
+               + "AND r.dateRetour > :dateCession " + "ORDER BY e.code", String.class);
          }else if(entiteId == 8){ // derive
             query = em.createQuery("SELECT distinct p.code " + "FROM ProdDerive p, Retour r "
                + "WHERE p.prodDeriveId = r.objetId " + "AND p.prodDeriveId in (:ids) " + "AND r.entite.entiteId = 8 "
-               + "AND r.dateRetour > :dateCession " + "ORDER BY p.code");
+               + "AND r.dateRetour > :dateCession " + "ORDER BY p.code", String.class);
          }
 
          if(query != null){

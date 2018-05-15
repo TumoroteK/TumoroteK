@@ -41,7 +41,7 @@ import fr.aphp.tumorotek.dao.GenericDaoJpa;
 import fr.aphp.tumorotek.dao.TKThesaurusDao;
 import fr.aphp.tumorotek.model.stockage.ConteneurType;
 
-public interface ConteneurTypeDao extends GenericDaoJpa<ConteneurType, Integer>, TKThesaurusDao
+public interface ConteneurTypeDao extends GenericDaoJpa<ConteneurType, Integer>, TKThesaurusDao<ConteneurType>
 {
 
    /**

@@ -149,7 +149,6 @@ public class ListeProdDerive extends AbstractListeController2
       return listObjects;
    }
 
-   
    @Override
    public void setListObjects(final List<? extends TKdataObject> objs){
       clearSelection();
@@ -178,7 +177,6 @@ public class ListeProdDerive extends AbstractListeController2
       return selectedObjects;
    }
 
-   
    @Override
    public void setSelectedObjects(final List<? extends TKdataObject> objs){
       this.selectedObjects = (List<ProdDerive>) objs;
@@ -327,9 +325,8 @@ public class ListeProdDerive extends AbstractListeController2
    public List<? extends TKdataObject> extractObjectsFromIds(final List<Integer> ids){
       if(ids != null && ids.size() > 0){
          return ManagerLocator.getProdDeriveManager().findByIdsInListManager(ids);
-      }else{
-         return new ArrayList<ProdDerive>();
       }
+      return new ArrayList<ProdDerive>();
    }
 
    /**
@@ -503,91 +500,6 @@ public class ListeProdDerive extends AbstractListeController2
       stockageItem.setDisabled(true);
       super.clearSelection();
    }
-
-   //	/**
-   //	 * Impression des étiquettes.
-   //	 */
-   //	public void onClick$etiquetteItem() {
-   //		// on récupère les imprimantes associées au compte
-   //		// pour la banque courante
-   //		List<AffectationImprimante> imprimantes = ManagerLocator
-   //			.getAffectationImprimanteManager()
-   //			.findByBanqueUtilisateurManager(SessionUtils
-   //					.getSelectedBanques(sessionScope).get(0), 
-   //					SessionUtils.getLoggedUser(sessionScope));
-   //		
-   //		Imprimante imp = null;
-   //		if (imprimantes.size() > 0) {
-   //			imp = imprimantes.get(0).getImprimante();
-   //		}
-   //		Modele mod = null;
-   //		if (imprimantes.size() > 0) {
-   //			mod = imprimantes.get(0).getModele();
-   //		}
-   //		if (imp != null) {
-   //			// si on utilise l'API tumo
-   //			if (imp.getImprimanteApi().getNom().equals("tumo")) {
-   //				try {            
-   //					int completed = 0;
-   //					
-   //					completed = ManagerLocator.getTumoBarcodePrinter()
-   //						.printDerive(
-   //							getSelectedObjects(), 1, imp, mod);
-   //					
-   //					if (completed != 1) {
-   //						if (completed == -1) {
-   //							Messagebox.show(ObjectTypesFormatters
-   //									.getLabel("validation.erreur" 
-   //									+ ".imprimante.non.detectee", 
-   //									new String[] {imp.getNom()}), 
-   //							"Error", Messagebox.OK, Messagebox.ERROR);
-   //						} else {
-   //							Messagebox.show(Labels
-   //							.getLabel("validation.erreur.impression"), 
-   //							"Error", Messagebox.OK, Messagebox.ERROR);
-   //						}
-   //					} else {
-   //						Messagebox.show(Labels
-   //								.getLabel("general.impression.ok"), 
-   //								"OK", Messagebox.OK, 
-   //								Messagebox.INFORMATION);
-   //					}
-   //				} catch (RuntimeException re) {
-   //					Messagebox.show(handleExceptionMessage(re), 
-   //							"Error", Messagebox.OK, Messagebox.ERROR);	
-   //		    	} catch (Exception e) {
-   //		    		StringBuffer sb = new StringBuffer();
-   //		    		sb.append(Labels
-   //								.getLabel("validation.erreur.impression"));
-   //		    		sb.append(" ");
-   //		    		sb.append(e.getMessage());
-   //		    		Messagebox.show(sb.toString(), 
-   //							"Error", Messagebox.OK, Messagebox.ERROR);
-   //		    	}
-   //			} else if (imp.getImprimanteApi().getNom().equals("mbio")) {
-   //				// si on utilise l'API mbio
-   //				MBioFileProperties mBioFile = 
-   //					new MBioFileProperties(imp.getMbioPrinter());
-   //				
-   //				MBioBarcodePrinter printer = new MBioBarcodePrinter(
-   //						mBioFile, 
-   //						mBioFile.getConfDir());
-   //				int completed = 0;
-   //				completed = printer.printDerive(getSelectedObjects(), 1);
-   //				
-   //				if (completed != 1) {
-   //					Messagebox.show(Labels
-   //							.getLabel("validation.erreur.impression"), 
-   //							"Error", Messagebox.OK, Messagebox.ERROR);
-   //				} else {
-   //					Messagebox.show(Labels
-   //							.getLabel("general.impression.ok"), 
-   //							"OK", Messagebox.OK, 
-   //							Messagebox.INFORMATION);
-   //				}
-   //			}
-   //		}
-   //	}
 
    public ProdDerivesNbDerivesComparator getComparatorDerivesAsc(){
       return comparatorDerivesAsc;

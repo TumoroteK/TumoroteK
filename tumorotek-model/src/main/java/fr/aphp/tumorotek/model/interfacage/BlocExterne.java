@@ -174,9 +174,8 @@ public class BlocExterne implements java.io.Serializable
       if(this.entiteId != null && this.ordre != null){
          return "{" + this.ordre + ", " + this.entiteId + "(Entite) " + dossierExterne.getIdentificationDossier()
             + "(DossierExterne)}";
-      }else{
-         return "{Empty BlocExterne}";
       }
+      return "{Empty BlocExterne}";
    }
 
    @Transient

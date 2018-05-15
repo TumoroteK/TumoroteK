@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.coeur.echantillon.EchantillonType;
  * @version 2.0
  *
  */
-public interface EchantillonTypeDao extends GenericDaoJpa<EchantillonType, Integer>, TKThesaurusDao
+public interface EchantillonTypeDao extends GenericDaoJpa<EchantillonType, Integer>, TKThesaurusDao<EchantillonType>
 {
 
    /**

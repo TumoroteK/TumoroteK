@@ -33,6 +33,7 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez 
  * accepté les termes. 
 -->
+<?component name="ficheAnnotationInline" macroURI="/zuls/annotation/FicheAnnotationInline.zul" ?>
 
 <window id="fwinPrelevementStatic" border="none" apply="fr.aphp.tumorotek.action.prelevement.serotk.FichePrelevementStaticSero">
 	<panel collapsible="false" title="${c:l('fichePrelevement.panel.title')}"
@@ -78,6 +79,10 @@
 						<!-- SeroTK Protocole -->
 						<label value="${c:l('Champ.Prelevement.Protocole')}" sclass="formLabel"/>	
 						<vbox id="protocolesBox" />
+					</row>
+					<!-- Annotation inline -->
+					<row spans="4" style="background-color: blue">
+						<ficheAnnotationInline id="ficheTissuInlineAnnoPrelevement" hflex="1" />
 					</row>
 					<row spans="4">
 						<separator/>

@@ -49,7 +49,6 @@ import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.cession.DestructionMotifValidator;
-import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.cession.DestructionMotif;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 
@@ -125,44 +124,39 @@ public class DestructionMotifManagerImpl implements DestructionMotifManager
             motif = motif + "%";
          }
          return destructionMotifDao.findByMotif(motif);
-      }else{
-         return new ArrayList<>();
       }
-
+      return new ArrayList<>();
    }
 
    @Override
-   public boolean findDoublonManager(final Object o){
+   public boolean findDoublonManager(final DestructionMotif o){
       if(o != null){
-         final DestructionMotif motif = (DestructionMotif) o;
+         final DestructionMotif motif = o;
          if(motif.getDestructionMotifId() == null){
             return destructionMotifDao.findAll().contains(motif);
-         }else{
-            return destructionMotifDao.findByExcludedId(motif.getDestructionMotifId()).contains(motif);
          }
-      }else{
-         return false;
+         return destructionMotifDao.findByExcludedId(motif.getDestructionMotifId()).contains(motif);
       }
+      return false;
    }
 
    @Override
-   public boolean isUsedObjectManager(final Object obj){
-      final DestructionMotif motif = destructionMotifDao.mergeObject((DestructionMotif) obj);
+   public boolean isUsedObjectManager(final DestructionMotif obj){
+      final DestructionMotif motif = destructionMotifDao.mergeObject(obj);
       return motif.getCessions().size() > 0;
    }
 
    @Override
-   public void createObjectManager(final Object obj){
+   public void createObjectManager(final DestructionMotif obj){
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
-      if(((DestructionMotif) obj).getPlateforme() == null){
+      if(obj.getPlateforme() == null){
          throw new RequiredObjectIsNullException("DestructionMotif", "creation", "Plateforme");
-      }else{
-         ((DestructionMotif) obj).setPlateforme(plateformeDao.mergeObject(((DestructionMotif) obj).getPlateforme()));
       }
+      obj.setPlateforme(plateformeDao.mergeObject(obj.getPlateforme()));
       BeanValidator.validateObject(obj, new Validator[] {destructionMotifValidator});
       if(!findDoublonManager(obj)){
-         destructionMotifDao.createObject((DestructionMotif) obj);
+         destructionMotifDao.createObject(obj);
          log.info("Enregistrement objet DestructionMotif " + obj.toString());
       }else{
          log.warn("Doublon lors creation objet DestructionMotif " + obj.toString());
@@ -171,10 +165,10 @@ public class DestructionMotifManagerImpl implements DestructionMotifManager
    }
 
    @Override
-   public void updateObjectManager(final Object obj){
+   public void updateObjectManager(final DestructionMotif obj){
       BeanValidator.validateObject(obj, new Validator[] {destructionMotifValidator});
       if(!findDoublonManager(obj)){
-         destructionMotifDao.updateObject((DestructionMotif) obj);
+         destructionMotifDao.updateObject(obj);
          log.info("Modification objet DestructionMotif " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet DestructionMotif " + obj.toString());
@@ -183,24 +177,17 @@ public class DestructionMotifManagerImpl implements DestructionMotifManager
    }
 
    @Override
-   public void removeObjectManager(final Object obj){
+   public void removeObjectManager(final DestructionMotif obj){
       if(obj != null){
-         //			if (!isUsedObjectManager(obj)) {
-         destructionMotifDao.removeObject(((DestructionMotif) obj).getDestructionMotifId());
+         destructionMotifDao.removeObject(obj.getDestructionMotifId());
          log.info("Suppression objet DestructionMotif " + obj.toString());
-         //			} else {
-         //				log.warn("Suppression objet DestructionMotif " 
-         //						+ obj.toString()
-         //						+ " impossible car est reference (par Cession)");
-         //				throw new ObjectUsedException();
-         //			}
       }else{
          log.warn("Suppression d'un DestructionMotif null");
       }
    }
 
    @Override
-   public List<? extends TKThesaurusObject> findByOrderManager(final Plateforme pf){
+   public List<DestructionMotif> findByOrderManager(final Plateforme pf){
       return destructionMotifDao.findByOrder(pf);
    }
 }

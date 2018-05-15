@@ -49,7 +49,7 @@
 					<column/>
 				</columns>
 				<rows>
-					<row>				
+					<row>
 						<!-- Code du prélèvement -->
 						<box orient="horizontal" widths=",50%" pack="center" >
 							<label value="${c:l('Champ.Prelevement.IdGreffon')}" sclass="formLabel" />
@@ -90,6 +90,29 @@
 					<row spans="4">
 						<separator/>
 					</row>
+					
+					<!-- Validation -->
+					<group label="${c:l('validation.group.label')}" id="validationGroup" />
+					<row id="validationData">
+						<label id="validationLabel" value="${c:l('validation.champ.validation')}" sclass="formLabel"/>
+						<div>
+							<div id="validationStatus" sclass="square" />
+							<label id="consultValidation" value="${c:l('validation.lien.resultat')}"/>
+						</div>
+					</row>
+					<row>
+						<label id="validationValideurLabel" value="${c:l('validation.champ.valideur')}" sclass="formLabel"/>
+						<label id="validationValideur" value="@{fwinPrelevementStaticBTO$composer.valideur}" sclass="formValue"/>
+						<label id="validationDateLabel" value="${c:l('validation.champ.dateValidation')}" sclass="formLabel"/>
+						<label id="validationDate" value="@{fwinPrelevementStaticBTO$composer.dateValidationFormatee}" sclass="formValue"/>
+					</row>
+					<row spans="1,3">
+						<label id="validationCommentaireLabel" value="${c:l('validation.champ.commentaire')}" sclass="formLabel"/>
+						<div>
+							<label id="validationCommentaire" multiline="true" value="@{fwinPrelevementStaticBTO$composer.object.delegate.detailValidation.commentaireValidation}" sclass="formValue"/>
+						</div>
+					</row>
+					
 					<!-- Resume patient -->
 					<group label="${c:l('prelevement.donneur')}" id="groupPatient" />
 					<row>
@@ -167,19 +190,6 @@
 							value="@{fwinPrelevementStaticBTO$composer.object.prelevementType.type}"
 							sclass="formValue" visible="false"
 						/>
-					</row>
-					<row>
-						<!-- date du peremption -->
-						<box orient="horizontal" widths=",50%" pack="center" >
-							<label value="${c:l('Champ.Prelevement.DatePeremption')}" sclass="formLabel"/>
-						
-						</box>
-						<label id="dateLabelPeremp" 
-							value="@{fwinPrelevementStaticBTO$composer.datePeremptionFormated}"
-							sclass="formValue"
-						/>
-						
-						
 					</row>
 					<row visible="false">		
 						<!-- Sterile -->
@@ -669,6 +679,13 @@
 				<button id="delete" disabled="true" label="${c:l('general.delete')}" height="24px"
 					image="/images/icones/trash.png" sclass="buttonv2"
 					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="validate" label="${c:l('general.validate')}" height="24px"
+					image="/images/icones/validate.png" sclass="buttonv2"
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="invalidate" label="${c:l('general.invalidate')}" height="24px"
+					image="/images/icones/delete.png" sclass="buttonv2"
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+					
 				<menubar sclass="menuBarV2" id="menuBarAddChildren">
 					<menu label="${c:l('fichePrelevement.add.children')}" image="/images/icones/small_general_new.png" 
 						height="24px">

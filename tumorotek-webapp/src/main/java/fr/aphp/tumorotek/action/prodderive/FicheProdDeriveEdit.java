@@ -73,6 +73,9 @@ import fr.aphp.tumorotek.action.echantillon.EchantillonController;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.manager.coeur.prodderive.ModePrepaDeriveManager;
+import fr.aphp.tumorotek.manager.coeur.prodderive.ProdQualiteManager;
+import fr.aphp.tumorotek.manager.coeur.prodderive.ProdTypeManager;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
@@ -172,9 +175,6 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    private final Transformation copyTransformation = new Transformation();
 
    // Objets pour le parent
-   //	private Prelevement parentPrlvt = new Prelevement();
-   //	private Echantillon parentEchantillon = new Echantillon();
-   //	private ProdDerive parentProdDerive = new ProdDerive();
    private String typeParent = null;
    private Emplacement oldEmplacement = null;
 
@@ -246,15 +246,6 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          this.row3DeriveDerive, this.row4DeriveDerive});
       // liste de composants pour la transformation
       setObjLabelsTransformation(new Component[] {this.rowTransformation1, this.rowTransformation2,});
-
-      //		for (int i = 0; i < getObjLabelsPrlvtParent().length; i++) {
-      //			getObjLabelsPrlvtParent()[i].setVisible(false);
-      //			getObjLabelsEchanParent()[i].setVisible(false);
-      //			getObjLabelsDeriveParent()[i].setVisible(false);
-      //		}
-      //		for (int i = 0; i < objLabelsTransformation.length; i++) {
-      //			objLabelsTransformation[i].setVisible(true);
-      //		}
    }
 
    @Override
@@ -304,7 +295,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    }
 
    @Override
-   public TKdataObject getObject(){
+   public ProdDerive getObject(){
       return this.prodDerive;
    }
 
@@ -733,7 +724,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
     * Méthode pour l'initialisation du mode d'édition : récupération du contenu
     * des listes déroulantes (types, qualités...).
     */
-   
+
    public void initEditableMode(){
       //		volume = null;
       //		volumeInit = null;
@@ -787,7 +778,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          }
       }
 
-      types = (List<ProdType>) ManagerLocator.getProdTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      types = ManagerLocator.getManager(ProdTypeManager.class).findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       if(this.prodDerive.getProdType() != null){
          selectedType = this.prodDerive.getProdType();
       }else if(!types.isEmpty()){
@@ -810,13 +801,12 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       concUnites.add(0, null);
       selectedConcUnite = this.prodDerive.getConcUnite();
 
-      qualites =
-         (List<ProdQualite>) ManagerLocator.getProdQualiteManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      qualites = ManagerLocator.getManager(ProdQualiteManager.class).findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       qualites.add(0, null);
       selectedQualite = this.prodDerive.getProdQualite();
 
-      modePrepaDerives = (List<ModePrepaDerive>) ManagerLocator.getModePrepaDeriveManager()
-         .findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      modePrepaDerives =
+         ManagerLocator.getManager(ModePrepaDeriveManager.class).findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       modePrepaDerives.add(0, null);
       selectedModePrepaDerive = this.prodDerive.getModePrepaDerive();
 
@@ -1282,9 +1272,8 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    public String getDatePrelevementFormated(){
       if(getParentObject() != null && getParentObject() instanceof Prelevement){
          return ObjectTypesFormatters.dateRenderer2(((Prelevement) getParentObject()).getDatePrelevement());
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -1294,9 +1283,8 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    public String getDateEchantillonFormated(){
       if(getParentObject() != null && getParentObject() instanceof Echantillon){
          return ObjectTypesFormatters.dateRenderer2(((Echantillon) getParentObject()).getDateStock());
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -1306,17 +1294,15 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    public String getDateProdDeriveFormated(){
       if(getParentObject() != null && getParentObject() instanceof ProdDerive){
          return ObjectTypesFormatters.dateRenderer2(((ProdDerive) getParentObject()).getDateStock());
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getSClassOperateur(){
       if(this.prodDerive != null){
          return ObjectTypesFormatters.sClassCollaborateur(this.prodDerive.getCollaborateur());
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -1407,7 +1393,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
     * Select les non conformites dans la dropdown list.
     * @param risks liste à selectionner
     */
-   
+
    public void selectNonConformites(){
       final List<NonConformite> ncfTrait = new ArrayList<>();
       final List<NonConformite> ncfCess = new ArrayList<>();
@@ -1503,25 +1489,22 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    public Prelevement getParentPrlvt(){
       if(getParentObject() instanceof Prelevement){
          return (Prelevement) getParentObject();
-      }else{
-         return new Prelevement();
       }
+      return new Prelevement();
    }
 
    public Echantillon getParentEchantillon(){
       if(getParentObject() instanceof Echantillon){
          return (Echantillon) getParentObject();
-      }else{
-         return new Echantillon();
       }
+      return new Echantillon();
    }
 
    public ProdDerive getParentProdDerive(){
       if(getParentObject() instanceof ProdDerive){
          return (ProdDerive) getParentObject();
-      }else{
-         return new ProdDerive();
       }
+      return new ProdDerive();
    }
 
    public Component[] getObjLabelsPrlvtParent(){
@@ -1896,14 +1879,13 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
                // si le volume est supérieur au volumeInit
                if(volume > volumeInit){
                   throw new WrongValueException(comp, "Le volume actuel ne peut " + "pas être supérieur au " + "volume initial.");
-               }else{
-                  // sinon on enlève toutes les erreurs affichées
-                  final BigDecimal decimal = new BigDecimal(volumeInit);
-                  Clients.clearWrongValue(volumeInitBoxDerive);
-                  volumeInitBoxDerive.setConstraint("");
-                  volumeInitBoxDerive.setValue(decimal);
-                  volumeInitBoxDerive.setConstraint(cttVolumeInit);
                }
+               // sinon on enlève toutes les erreurs affichées
+               final BigDecimal decimal = new BigDecimal(volumeInit);
+               Clients.clearWrongValue(volumeInitBoxDerive);
+               volumeInitBoxDerive.setConstraint("");
+               volumeInitBoxDerive.setValue(decimal);
+               volumeInitBoxDerive.setConstraint(cttVolumeInit);
             }else{
                // si aucun volumeInit n'est saisie, on enlève les
                // erreurs
@@ -1956,21 +1938,20 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
             // le volumeInit doit être positif
             if(volumeInit < 0){
                throw new WrongValueException(comp, Labels.getLabel("validation.negative.value"));
-            }else{
+            }
 
-               // si l'échantillon avait deja une valeur de volume et de
-               // volumeInit
-               if(getCopy().getVolume() != null && getCopy().getVolumeInit() != null){
+            // si l'échantillon avait deja une valeur de volume et de
+            // volumeInit
+            if(getCopy().getVolume() != null && getCopy().getVolumeInit() != null){
 
-                  final Float diff = volumeInitValue.floatValue() - getCopy().getVolumeInit();
-                  final Float restant = getCopy().getVolume() + diff;
-                  final Float zero = new Float(0.0);
-                  // si le volume restant est négatif
-                  if(restant < zero){
-                     // on calcule le volumeInit minimal autorisé
-                     final Float min = getCopy().getVolumeInit() - getCopy().getVolume();
-                     throw new WrongValueException(comp, Labels.getLabel("validation.invalid.volume.init") + " " + min);
-                  }
+               final Float diff = volumeInitValue.floatValue() - getCopy().getVolumeInit();
+               final Float restant = getCopy().getVolume() + diff;
+               final Float zero = new Float(0.0);
+               // si le volume restant est négatif
+               if(restant < zero){
+                  // on calcule le volumeInit minimal autorisé
+                  final Float min = getCopy().getVolumeInit() - getCopy().getVolume();
+                  throw new WrongValueException(comp, Labels.getLabel("validation.invalid.volume.init") + " " + min);
                }
             }
          }
@@ -2021,14 +2002,13 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
                if(quantite > quantiteInit){
                   throw new WrongValueException(comp,
                      "La quantité actuelle ne peut pas " + "être supérieure à la quantité initiale.");
-               }else{
-                  // sinon on enlève toutes les erreurs affichées
-                  final BigDecimal decimal = new BigDecimal(quantiteInit);
-                  Clients.clearWrongValue(quantiteInitBoxDerive);
-                  quantiteInitBoxDerive.setConstraint("");
-                  quantiteInitBoxDerive.setValue(decimal);
-                  quantiteInitBoxDerive.setConstraint(cttQuantiteInit);
                }
+               // sinon on enlève toutes les erreurs affichées
+               final BigDecimal decimal = new BigDecimal(quantiteInit);
+               Clients.clearWrongValue(quantiteInitBoxDerive);
+               quantiteInitBoxDerive.setConstraint("");
+               quantiteInitBoxDerive.setValue(decimal);
+               quantiteInitBoxDerive.setConstraint(cttQuantiteInit);
             }else{
                // si aucune quantiteInit n'est saisie, on enlève les
                // erreurs
@@ -2081,32 +2061,30 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
             // la quantiteInit doit être positive
             if(quantiteInit < 0){
                throw new WrongValueException(comp, Labels.getLabel("validation.negative.value"));
-            }else{
+            }
 
-               // si l'échantillon avait deja une valeur de quantite et de
-               // quantiteInit
-               if(getCopy().getQuantite() != null && getCopy().getQuantiteInit() != null){
+            // si l'échantillon avait deja une valeur de quantite et de
+            // quantiteInit
+            if(getCopy().getQuantite() != null && getCopy().getQuantiteInit() != null){
 
-                  final Float diff = quantiteInitValue.floatValue() - getCopy().getQuantiteInit();
-                  final Float restant = getCopy().getQuantite() + diff;
-                  final Float zero = new Float(0.0);
-                  // si la Quantite restante est négative
-                  if(restant < zero){
-                     // on calcule la quantiteInit minimale autorisée
-                     final Float min = getCopy().getQuantiteInit() - getCopy().getQuantite();
-                     throw new WrongValueException(comp, Labels.getLabel("validation.invalid.quantite.init") + " " + min);
-                  }else{
-                     // la quantité init doit respecter la formule :
-                     // qteInit = volInit * concentration
-                     if(prodDerive.getVolumeInit() != null && prodDerive.getConc() != null){
+               final Float diff = quantiteInitValue.floatValue() - getCopy().getQuantiteInit();
+               final Float restant = getCopy().getQuantite() + diff;
+               final Float zero = new Float(0.0);
+               // si la Quantite restante est négative
+               if(restant < zero){
+                  // on calcule la quantiteInit minimale autorisée
+                  final Float min = getCopy().getQuantiteInit() - getCopy().getQuantite();
+                  throw new WrongValueException(comp, Labels.getLabel("validation.invalid.quantite.init") + " " + min);
+               }
+               // la quantité init doit respecter la formule :
+               // qteInit = volInit * concentration
+               if(prodDerive.getVolumeInit() != null && prodDerive.getConc() != null){
 
-                        Float res = prodDerive.getVolumeInit() * prodDerive.getConc();
-                        res = ObjectTypesFormatters.floor(res, 3);
+                  Float res = prodDerive.getVolumeInit() * prodDerive.getConc();
+                  res = ObjectTypesFormatters.floor(res, 3);
 
-                        if(!quantiteInit.equals(res)){
-                           throw new WrongValueException(comp, Labels.getLabel("validation.invalid.formule" + ".quantite.init"));
-                        }
-                     }
+                  if(!quantiteInit.equals(res)){
+                     throw new WrongValueException(comp, Labels.getLabel("validation.invalid.formule" + ".quantite.init"));
                   }
                }
             }
@@ -2133,264 +2111,46 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
             if(quantiteTransformation < 0){
                throw new WrongValueException(comp, "Seul les nombres positifs sont acceptés.");
-            }else{
-               // sinon on enlève toutes les erreurs affichées
-               BigDecimal decimal = new BigDecimal(quantiteTransformation);
-               Clients.clearWrongValue(transfoQuantiteBoxDerive);
-               transfoQuantiteBoxDerive.setConstraint("");
-               transfoQuantiteBoxDerive.setValue(decimal);
-               transfoQuantiteBoxDerive.setConstraint(cttQuantiteTransfo);
-
-               if(quantiteMax != null && quantiteTransformation > quantiteMax){
-                  final StringBuffer sb = new StringBuffer();
-                  sb.append("La quantité utilisée ne peut dépasser " + "celle disponible dans ");
-
-                  if(typeParent.equals("Prelevement")){
-                     sb.append("le prélèvement parent : ");
-                     sb.append(quantiteMax);
-                     sb.append(((Prelevement) getParentObject()).getQuantiteUnite().getUnite());
-                     sb.append(".");
-                  }else if(typeParent.equals("Echantillon")){
-                     sb.append("l'échantillon parent : ");
-                     sb.append(quantiteMax);
-                     sb.append(((Echantillon) getParentObject()).getQuantiteUnite().getUnite());
-                     sb.append(".");
-                  }else if(typeParent.equals("ProdDerive")){
-                     sb.append("le produit dérivé parent : ");
-                     sb.append(quantiteMax);
-                     sb.append(((ProdDerive) getParentObject()).getQuantiteUnite().getUnite());
-                     sb.append(".");
-                  }
-
-                  throw new WrongValueException(comp, sb.toString());
-               }else{
-                  // sinon on enlève toutes les erreurs affichées
-                  decimal = new BigDecimal(quantiteTransformation);
-                  Clients.clearWrongValue(transfoQuantiteBoxDerive);
-                  transfoQuantiteBoxDerive.setConstraint("");
-                  transfoQuantiteBoxDerive.setValue(decimal);
-                  transfoQuantiteBoxDerive.setConstraint(cttQuantiteTransfo);
-               }
             }
+            // sinon on enlève toutes les erreurs affichées
+            BigDecimal decimal = new BigDecimal(quantiteTransformation);
+            Clients.clearWrongValue(transfoQuantiteBoxDerive);
+            transfoQuantiteBoxDerive.setConstraint("");
+            transfoQuantiteBoxDerive.setValue(decimal);
+            transfoQuantiteBoxDerive.setConstraint(cttQuantiteTransfo);
+
+            if(quantiteMax != null && quantiteTransformation > quantiteMax){
+               final StringBuffer sb = new StringBuffer();
+               sb.append("La quantité utilisée ne peut dépasser " + "celle disponible dans ");
+
+               if(typeParent.equals("Prelevement")){
+                  sb.append("le prélèvement parent : ");
+                  sb.append(quantiteMax);
+                  sb.append(((Prelevement) getParentObject()).getQuantiteUnite().getUnite());
+                  sb.append(".");
+               }else if(typeParent.equals("Echantillon")){
+                  sb.append("l'échantillon parent : ");
+                  sb.append(quantiteMax);
+                  sb.append(((Echantillon) getParentObject()).getQuantiteUnite().getUnite());
+                  sb.append(".");
+               }else if(typeParent.equals("ProdDerive")){
+                  sb.append("le produit dérivé parent : ");
+                  sb.append(quantiteMax);
+                  sb.append(((ProdDerive) getParentObject()).getQuantiteUnite().getUnite());
+                  sb.append(".");
+               }
+
+               throw new WrongValueException(comp, sb.toString());
+            }
+            // sinon on enlève toutes les erreurs affichées
+            decimal = new BigDecimal(quantiteTransformation);
+            Clients.clearWrongValue(transfoQuantiteBoxDerive);
+            transfoQuantiteBoxDerive.setConstraint("");
+            transfoQuantiteBoxDerive.setValue(decimal);
+            transfoQuantiteBoxDerive.setConstraint(cttQuantiteTransfo);
          }
       }
    }
-
-   //	/**
-   //	 * Contrainte vérifiant que le volume de transformation n'est 
-   //	 * pas inférieur à 0 et n'est pas supérieur à celui du parent.
-   //	 * @author Pierre Ventadour.
-   //	 *
-   //	 */
-   //	public class ConstVolumeTransformation implements Constraint {
-   //		/**
-   //		 * Méthode de validation du champ quantiteInitBox.
-   //		 */
-   //		public void validate(Component comp, Object value) {
-   //			BigDecimal volumeTransfoValue = (BigDecimal) value;
-   //			if (volumeTransfoValue != null) {
-   //				volumeTransformation = volumeTransfoValue.floatValue();
-   //				
-   //				if (volumeTransformation < 0) {
-   //					throw new WrongValueException(
-   //					comp, "Seul les nombres positifs sont acceptés.");
-   //				} else {
-   //					// sinon on enlève toutes les erreurs affichées
-   //					BigDecimal decimal = 
-   //						new BigDecimal(volumeTransformation);
-   //					transfoVolumeBoxDerive.Clients.clearWrongValue();
-   //					transfoVolumeBoxDerive.setConstraint("");
-   //					transfoVolumeBoxDerive.setValue(decimal);
-   //					transfoVolumeBoxDerive
-   //						.setConstraint(cttVolumeTransfo);
-   //					
-   //					if (volumeMax != null
-   //							&& volumeTransformation > volumeMax) {
-   //						
-   //						StringBuffer sb = new StringBuffer();
-   //						sb.append("Le volume utilisé ne peut dépasser " 
-   //								+ "celui disponible dans ");
-   //						
-   //						if (typeParent.equals("Prelevement")) {
-   //							sb.append("le prélèvement parent : ");
-   //							sb.append(volumeMax);
-   //							sb.append(parentPrlvt.getVolumeUnite()
-   //									.getUnite());
-   //							sb.append(".");
-   //						} else if (typeParent.equals("Echantillon")) {
-   //							sb.append("l'échantillon parent : ");
-   //							sb.append(volumeMax);
-   //							sb.append(parentEchantillon.getVolumeUnite()
-   //									.getUnite());
-   //							sb.append(".");
-   //						} else if (typeParent.equals("ProdDerive")) {
-   //							sb.append("le produit dérivé parent : ");
-   //							sb.append(volumeMax);
-   //							sb.append(parentProdDerive.getVolumeUnite()
-   //									.getUnite());
-   //							sb.append(".");
-   //						}
-   //						
-   //						throw new WrongValueException(
-   //								comp, sb.toString());
-   //						
-   //					} else {
-   //						// sinon on enlève toutes les erreurs affichées
-   //						decimal = new BigDecimal(volumeTransformation);
-   //						transfoVolumeBoxDerive.Clients.clearWrongValue();
-   //						transfoVolumeBoxDerive.setConstraint("");
-   //						transfoVolumeBoxDerive.setValue(decimal);
-   //						transfoVolumeBoxDerive
-   //							.setConstraint(cttVolumeTransfo);
-   //					}
-   //				}
-   //			}
-   //		}
-   //	}
-   //	private Constraint cttVolumeTransfo = new ConstVolumeTransformation();
-   //	
-   //	/**
-   //	 * Contrainte vérifiant que la date de congélation n'est pas 
-   //	 * supérieure à la date de transformation.
-   //	 * @author Pierre Ventadour.
-   //	 *
-   //	 */
-   //	public class ConstDateCongelation implements Constraint {
-   //		/**
-   //		 * Méthode de validation du champ dateBox.
-   //		 */
-   //		public void validate(Component comp, Object value) {
-   //			// on récupère la valeur dans dateBox
-   //			dateCongelation = (Date) value;
-   //			// Si la date de transformation est null (1ère édition
-   //			// de la page) on va récupérer la valeur du champ 
-   //			// dateTransfoBox
-   //			if (dateTransformation == null) { 
-   //				// on enlève la contrainte de dateTransfoBox pour
-   //				// pouvoir récupérer sa valeur
-   //				dateTransfoBoxDerive.setConstraint("");
-   //				dateTransfoBoxDerive.clearErrorMessage();
-   //				dateTransformation = dateTransfoBoxDerive.getValue();
-   //				// on remet la contrainte
-   //				dateTransfoBoxDerive.setConstraint(cttDateTransformation);
-   //			}
-   //			
-   //			// si une valeur est saisie dans le champ dateBox
-   //			if (dateCongelation != null) {
-   //				// si une valeur est saisie dans le champ dateTransfoBox
-   //				if (dateTransformation != null) {
-   //					// si la dateCongelation est supérieure à la 
-   //					// dateTransformation
-   //					if (dateCongelation.before(dateTransformation)) {
-   //						throw new WrongValueException(
-   //						comp, "La date de transformation ne peut pas "
-   //						+ "être plus récente que la date de congélation.");
-   //					} else {
-   //						// sinon on enlève toutes les erreurs affichées
-   //						dateTransfoBoxDerive.Clients.clearWrongValue();
-   //						dateTransfoBoxDerive.setConstraint("");
-   //						dateTransfoBoxDerive.setValue(dateTransformation);
-   //						dateTransfoBoxDerive.setConstraint(
-   //								cttDateTransformation);
-   //					}
-   //				} else {
-   //					// si aucune dateTransformation n'est saisie, on enlève les
-   //					// erreurs
-   //					dateTransfoBoxDerive.Clients.clearWrongValue();
-   //					dateTransfoBoxDerive.setConstraint("");
-   //					dateTransfoBoxDerive.setValue(null);
-   //					dateTransfoBoxDerive.setConstraint(cttDateTransformation);
-   //				}
-   //			} else {
-   //				// si aucune dateCongelation n'est saisie, on enlève les
-   //				// erreurs
-   //				dateCongelation = null;
-   //				if (dateTransformation != null) {
-   //					dateTransfoBoxDerive.Clients.clearWrongValue();
-   //					dateTransfoBoxDerive.setConstraint("");
-   //					dateTransfoBoxDerive.setValue(dateTransformation);
-   //					dateTransfoBoxDerive.setConstraint(cttDateTransformation);
-   //				} else {
-   //					dateTransfoBoxDerive.Clients.clearWrongValue();
-   //					dateTransfoBoxDerive.setConstraint("");
-   //					dateTransfoBoxDerive.setValue(null);
-   //					dateTransfoBoxDerive.setConstraint(cttDateTransformation);
-   //				}
-   //			}
-   //		}
-   //	}
-   //	private Constraint cttDateCongelation = new ConstDateCongelation();
-
-   //	/**
-   //	 * Contrainte vérifiant que la date de congélation n'est pas 
-   //	 * supérieure à la date de transformation.
-   //	 * @author Pierre Ventadour.
-   //	 *
-   //	 */
-   //	public class ConstDateTransformation implements Constraint {
-   //		/**
-   //		 * Méthode de validation du champ dateTransfoBox.
-   //		 */
-   //		public void validate(Component comp, Object value) {
-   //			// on récupère la valeur dans dateTransfoBox
-   //			dateTransformation = (Date) value;
-   //			// Si la date de congélation est null (1ère édition
-   //			// de la page) on va récupérer la valeur du champ 
-   //			// dateBox
-   //			if (dateCongelation == null) { 
-   //				// on enlève la contrainte de dateTransfoBox pour
-   //				// pouvoir récupérer sa valeur
-   //				dateBoxDerive.setConstraint("");
-   //				dateBoxDerive.clearErrorMessage();
-   //				dateCongelation = dateBoxDerive.getValue();
-   //				// on remet la contrainte
-   //				dateBoxDerive.setConstraint(cttDateCongelation);
-   //			}
-   //			
-   //			// si une valeur est saisie dans le champ dateTransfoBox
-   //			if (dateTransformation != null) {
-   //				// si une valeur est saisie dans le champ dateBox
-   //				if (dateCongelation != null) {
-   //					// si la dateCongelation est supérieure à la 
-   //					// dateTransformation
-   //					if (dateCongelation.before(dateTransformation)) {
-   //						throw new WrongValueException(
-   //						comp, "La date de transformation ne peut "
-   //						+ "pas être plus récente que la date de congélation.");
-   //					} else {
-   //						// sinon on enlève toutes les erreurs affichées
-   //						dateBoxDerive.Clients.clearWrongValue();
-   //						dateBoxDerive.setConstraint("");
-   //						dateBoxDerive.setValue(dateCongelation);
-   //						dateBoxDerive.setConstraint(cttDateCongelation);
-   //					}
-   //				} else {
-   //					// si aucune dateTransformation n'est saisie, on enlève les
-   //					// erreurs
-   //					dateBoxDerive.Clients.clearWrongValue();
-   //					dateBoxDerive.setConstraint("");
-   //					dateBoxDerive.setValue(null);
-   //					dateBoxDerive.setConstraint(cttDateCongelation);
-   //				}
-   //			} else {
-   //				// si aucune dateCongelation n'est saisie, on enlève les
-   //				// erreurs
-   //				dateTransformation = null;
-   //				if (dateCongelation != null) {
-   //					dateBoxDerive.Clients.clearWrongValue();
-   //					dateBoxDerive.setConstraint("");
-   //					dateBoxDerive.setValue(dateCongelation);
-   //					dateBoxDerive.setConstraint(cttDateCongelation);
-   //				} else {
-   //					dateBoxDerive.Clients.clearWrongValue();
-   //					dateBoxDerive.setConstraint("");
-   //					dateBoxDerive.setValue(null);
-   //					dateBoxDerive.setConstraint(cttDateCongelation);
-   //				}
-   //			}
-   //		}
-   //	}
-   //	private Constraint cttDateTransformation = new ConstDateTransformation();
 
    public ConstCode getCodePrefixConstraint(){
       return ProdDeriveConstraints.getCodePrefixConstraint();
@@ -2537,9 +2297,8 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
       if(isAnonyme){
          return "-";
-      }else{
-         return emplacementAdrl;
       }
+      return emplacementAdrl;
    }
 
    public void setEmplacementAdrl(final String eAdrl){
@@ -2563,10 +2322,9 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       return ObjectTypesFormatters.formatTemperature(temp);
    }
 
-   
    public void initModificationMultipleMode(){
 
-      types = (List<ProdType>) ManagerLocator.getProdTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      types = ManagerLocator.getManager(ProdTypeManager.class).findByOrderManager(SessionUtils.getPlateforme(sessionScope));
 
       // on récupère les unités de quantité
       quantiteUnites = ManagerLocator.getUniteManager().findByTypeLikeManager("masse", true);
@@ -2582,7 +2340,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       concUnites.add(0, null);
 
       qualites =
-         (List<ProdQualite>) ManagerLocator.getProdQualiteManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+         ManagerLocator.getManager(ProdQualiteManager.class).findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       qualites.add(0, null);
 
       // init des collaborateurs
@@ -2683,6 +2441,6 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    }
 
    public String getObjetStatut(){
-      return ObjectTypesFormatters.ILNObjectStatut(((ProdDerive) getObject()).getObjetStatut());
+      return ObjectTypesFormatters.ILNObjectStatut(getObject().getObjetStatut());
    }
 }

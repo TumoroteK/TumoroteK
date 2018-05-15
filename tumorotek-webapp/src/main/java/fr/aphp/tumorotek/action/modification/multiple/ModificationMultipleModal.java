@@ -75,9 +75,8 @@ public class ModificationMultipleModal extends AbstractModificationMultipleCompo
    public String getCurrentValue(){
       if(getStringValues().size() > 0){
          return getStringValues().get(0);
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void onClick$oneValueModalLink(){

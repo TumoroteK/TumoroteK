@@ -35,11 +35,6 @@
  **/
 package fr.aphp.tumorotek.manager.test.io.imports;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -75,17 +70,8 @@ import fr.aphp.tumorotek.manager.coeur.patient.PatientManager;
 import fr.aphp.tumorotek.manager.coeur.prelevement.PrelevementManager;
 import fr.aphp.tumorotek.manager.coeur.prodderive.ProdDeriveManager;
 import fr.aphp.tumorotek.manager.coeur.prodderive.TransformationManager;
-import fr.aphp.tumorotek.manager.exception.DeriveImportParentNotFoundException;
-import fr.aphp.tumorotek.manager.exception.ErrorsInImportException;
-import fr.aphp.tumorotek.manager.exception.ObjectStatutException;
-import fr.aphp.tumorotek.manager.exception.TransformationQuantiteOverDemandException;
-import fr.aphp.tumorotek.manager.exception.UsedPositionException;
-import fr.aphp.tumorotek.manager.exception.WrongImportValueException;
-import fr.aphp.tumorotek.manager.io.imports.ImportColonneManager;
-import fr.aphp.tumorotek.manager.io.imports.ImportError;
-import fr.aphp.tumorotek.manager.io.imports.ImportHistoriqueManager;
-import fr.aphp.tumorotek.manager.io.imports.ImportManager;
-import fr.aphp.tumorotek.manager.io.imports.ImportTemplateManager;
+import fr.aphp.tumorotek.manager.exception.*;
+import fr.aphp.tumorotek.manager.io.imports.*;
 import fr.aphp.tumorotek.manager.stockage.EmplacementManager;
 import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
 import fr.aphp.tumorotek.manager.validation.exception.ValidationException;
@@ -107,6 +93,8 @@ import fr.aphp.tumorotek.model.qualite.Operation;
 import fr.aphp.tumorotek.model.stockage.Emplacement;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+
+import static org.junit.Assert.*;
 
 public class ImportDerivesManagerTest extends AbstractManagerTest4
 {
@@ -169,12 +157,12 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       final Utilisateur u = utilisateurDao.findById(1);
       ImportHistorique ih = null;
 
-      final File file = new File("src/test/java/fr/aphp/tumorotek/manager/" + "test/io/imports/importDerivesBatches.xls");
+      final File file = new File("src/test/java/fr/aphp/tumorotek/manager/test/io/imports/importDerivesBatches.xls");
 
       template.setIsUpdate(false);
 
       List<ImportError> errors = new ArrayList<>();
-      try(FileInputStream fis = new FileInputStream(file);){
+      try(FileInputStream fis = new FileInputStream(file)){
          ih = importManager.importFileManager(template, u, fis);
       }catch(final FileNotFoundException e){
          e.printStackTrace();
@@ -265,7 +253,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       final ImportTemplate template = importTemplateManager.findByIdManager(1);
       final Utilisateur u = utilisateurDao.findById(1);
 
-      final File file = new File("src/test/java/fr/aphp/tumorotek/manager/" + "test/io/imports/importDerivesBatches.xls");
+      final File file = new File("src/test/java/fr/aphp/tumorotek/manager/test/io/imports/importDerivesBatches.xls");
 
       List<ImportError> errors = new ArrayList<>();
       try(FileInputStream fis = new FileInputStream(file);){
@@ -321,7 +309,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       final Integer totOncf = objetNonConformeDao.findAll().size();
       final Integer totAnno = annotationValeurManager.findAllObjectsManager().size();
 
-      final File file = new File("src/test/java/fr/aphp/tumorotek/manager/" + "test/io/imports/importSubDerives.xls");
+      final File file = new File("src/test/java/fr/aphp/tumorotek/manager/test/io/imports/importSubDerives.xls");
 
       List<ImportError> errors = new ArrayList<>();
       try(FileInputStream fis = new FileInputStream(file);){

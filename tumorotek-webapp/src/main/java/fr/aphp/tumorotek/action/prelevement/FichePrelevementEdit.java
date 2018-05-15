@@ -321,24 +321,20 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
    public void initLists(){
 
-      natures = (List<Nature>) ManagerLocator.getNatureManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      natures = ManagerLocator.getNatureManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       natures.add(0, null);
       selectedNature = natures.get(0);
 
-      modes = (List<PrelevementType>) ManagerLocator.getPrelevementTypeManager()
-         .findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      modes = ManagerLocator.getPrelevementTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       modes.add(0, null);
 
-      conditTypes =
-         (List<ConditType>) ManagerLocator.getConditTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      conditTypes = ManagerLocator.getConditTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       conditTypes.add(0, null);
 
-      conditMilieus = (List<ConditMilieu>) ManagerLocator.getConditMilieuManager()
-         .findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      conditMilieus = ManagerLocator.getConditMilieuManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       conditMilieus.add(0, null);
 
-      consentTypes =
-         (List<ConsentType>) ManagerLocator.getConsentTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      consentTypes = ManagerLocator.getConsentTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       if(consentTypes.size() > 1){
          consentTypes.add(0, null);
       }
@@ -346,8 +342,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          selectedConsentType = consentTypes.get(0);
       }
 
-      risques
-         .addAll((List<Risque>) ManagerLocator.getRisqueManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
+      risques.addAll(ManagerLocator.getRisqueManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
 
       //initCollabrorations();
       dateConsentBoxChanged = false;
@@ -560,9 +555,8 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    public TKdataObject getParentObject(){
       if(this.maladie != null){
          return this.maladie.getPatient();
-      }else{
-         return null;
       }
+      return null;
    }
 
    @Override
@@ -1208,18 +1202,16 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       if(selectedNature == null){
          Clients.scrollIntoView(naturesBoxPrlvt);
          throw new WrongValueException(naturesBoxPrlvt, Labels.getLabel("fichePrelevement.error.nature"));
-      }else{
-         Clients.clearWrongValue(naturesBoxPrlvt);
       }
+      Clients.clearWrongValue(naturesBoxPrlvt);
    }
 
    public void onSelect$consentTypesBoxPrlvt(){
       if(selectedConsentType == null){
          Clients.scrollIntoView(consentTypesBoxPrlvt);
          throw new WrongValueException(consentTypesBoxPrlvt, Labels.getLabel("fichePrelevement.error.consenType"));
-      }else{
-         Clients.clearWrongValue(consentTypesBoxPrlvt);
       }
+      Clients.clearWrongValue(consentTypesBoxPrlvt);
    }
 
    /**
@@ -1834,9 +1826,8 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       if(self.getFellowIfAny("ficheTissuInlineAnnoPrelevement") != null){
          return ((FicheAnnotationInline) self.getFellow("ficheTissuInlineAnnoPrelevement").getFellow("fwinAnnotationInline")
             .getAttributeOrFellow("fwinAnnotationInline$composer", true));
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**

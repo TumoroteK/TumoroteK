@@ -33,60 +33,40 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez 
  * accepté les termes. 
 -->
-<?component name="tkchart" macroURI="/zuls/stats/tkchart.zul" class="fr.aphp.tumorotek.action.stats.charts.TKChart"?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
-<zk>
+
+<?component name="tkchart" macroURI="/zuls/stats/tkchart.zul" class="fr.aphp.tumorotek.action.stats.charts.TKChart"?>
 <?component name="configuration" macroURI="/zuls/stats/im/configuration.zul" ?>
-<?component name="editmdl" macroURI="/zuls/stats/im/editModel.zul" ?>
-<?component name="creatrprt" macroURI="/zuls/stats/im/createReport.zul" ?>
+<?component name="createModel" macroURI="/zuls/stats/im/createModel.zul" ?>
+<?component name="editModel" macroURI="/zuls/stats/im/editModel.zul" ?>
 <?component name="statistique" macroURI="/zuls/stats/im/statistique.zul" ?>
 
-	<style src="/css/stats/chart.css" />
-	
-	<style>
-		div.z-tree-body, div.z-dottree-body, div.z-filetree-body, div.z-vfiletree-body {
-			background: #f6f8fe;
-			overflow-y: scroll;
-		}
-		div.z-treefooter-cnt, div.z-treecell-cnt, div.z-treecol-cnt {
-			color : #003399;
-			font-family: Verdana, Arial, Helvetica, sans-serif;
-		}
-	</style>
-	
-		<tabbox id="statTabbox" orient="vertical" height="900px" sclass="vertTabBox" >
-		<tabs width="50px">
-			<tab image="/images/sta.png"/>
-			<tab image="/images/int.png"/>
-			</tabs>
-		<tabpanels>
-			
-			<tabpanel id="configurationPanel" hflex="1" vflex="1" >
-				<configuration id="configurationMacro" hflex="1" vflex="1" />
-			</tabpanel>
- 
-
-		<tabpanel>
-				<tabbox id="statBox"
-					mold="accordion" width="100%" height="807px"  >
-					<tabs>
-					
-						<tab label="${c:l('charts.action.creer.modele')}" />
-						<tab label="${c:l('charts.action.utiliser.modele')}"  selected="true"/>
-					</tabs>
-					<tabpanels>
-						<tabpanel id="xx" hflex="1" vflex="1">
-							<editmdl id="editModelMacro" hflex="1" vflex="1" />
-						</tabpanel>
-						
-						<tabpanel id="yy" hflex="1" vflex="1">
-							<creatrprt id="createReportMacro" hflex="1" vflex="1" />
-						</tabpanel>
-					
-					</tabpanels>
-				</tabbox>
-			</tabpanel>
-		</tabpanels>
-	</tabbox>
-
-</zk>
+<window id="winCharts" border="none" apply="fr.aphp.tumorotek.action.stats.ChartsController">
+    <tabbox id="statTabbox" orient="vertical" sclass="vertTabBox">
+        <tabs>
+            <tab image="/images/sta.png"/>
+            <tab image="/images/int.png"/>
+        </tabs>
+        <tabpanels>
+            <tabpanel id="configurationPanel" hflex="1" vflex="1">
+                <configuration id="configurationMacro" hflex="1" vflex="1"/>
+            </tabpanel>
+            <tabpanel hflex="1" vflex="1">
+                <tabbox id="statBox" mold="accordion" sclass="tabAcc">
+                    <tabs>
+                        <tab label="${c:l('charts.action.creer.modele')}"/>
+                        <tab label="${c:l('charts.action.utiliser.modele')}" selected="true"/>
+                    </tabs>
+                    <tabpanels>
+                        <tabpanel id="xx" hflex="1" vflex="1">
+                            <createModel id="createModelMacro" hflex="1" vflex="1"/>
+                        </tabpanel>
+                        <tabpanel id="yy" hflex="1" vflex="1">
+                            <editModel id="editModelMacro" hflex="1" vflex="1"/>
+                        </tabpanel>
+                    </tabpanels>
+                </tabbox>
+            </tabpanel>
+        </tabpanels>
+    </tabbox>
+</window>

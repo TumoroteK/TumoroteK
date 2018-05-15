@@ -85,7 +85,6 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
       return conf;
    }
 
-   
    @Override
    public Emetteur extractEmetteurFromFileToInjectInTk(final String fileXml, final String file, final String boiteFtp)
       throws IOException{
@@ -97,58 +96,60 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
          final SAXBuilder sxb = new SAXBuilder();
          Document document = null;
          try{
-            //On crée un nouveau document JDOM avec en 
+            //On crée un nouveau document JDOM avec en
             // argument le fichier XML
             document = sxb.build(new File(fileXml));
+
+            // On initialise un nouvel élément racine avec
+            // l'élément racine du document.
+            final Element racine = document.getRootElement();
+            // on récupère toutes les boites ftp que l'on va parcourir
+            final List<?> boites = racine.getChildren("BoiteFtp");
+            for(int i = 0; i < boites.size(); i++){
+               final Element boite = (Element) boites.get(i);
+               // on va traiter la boite correspondant à celle passée
+               // en paramètre
+               if(boite.getAttributeValue("nom").equals(boiteFtp)){
+                  // init de la config pour parser le message
+                  final ConfigurationParsing config = initConfigurationParsing(boite);
+
+                  // EXTRACTION DE L'EMETTEUR
+                  // extraction du bloc
+                  String bloc = boite.getChild("Emetteur").getChildText("Bloc");
+                  // extraction de l'emplacement
+                  String emplacement = boite.getChild("Emetteur").getChildText("Emplacement");
+
+                  String emetteur = null;
+                  if(bloc != null && emplacement != null){
+                     final Hashtable<String, List<String>> contenu = parseFileToInjectInTk(config, file);
+                     emetteur = getValueFromBlocAndEmplacement(contenu, config, bloc, emplacement);
+                  }
+
+                  // EXTRACTION DU SERVICE
+                  // extraction du bloc
+                  bloc = boite.getChild("Service").getChildText("Bloc");
+                  // extraction de l'emplacement
+                  emplacement = boite.getChild("Service").getChildText("Emplacement");
+
+                  String service = null;
+                  if(bloc != null && emplacement != null){
+                     final Hashtable<String, List<String>> contenu = parseFileToInjectInTk(config, file);
+                     service = getValueFromBlocAndEmplacement(contenu, config, bloc, emplacement);
+                  }
+
+                  // recherche de l'emetteur en fct de son nom
+                  // et de son service
+                  final List<Emetteur> emts = emetteurManager.findByIdentificationAndServiceManager(emetteur, service);
+
+                  if(emts.size() == 1){
+                     emetteurObj = emts.get(0);
+                  }
+               }
+            }
          }catch(final Exception e){
             e.printStackTrace();
          }
 
-         // On initialise un nouvel élément racine avec 
-         // l'élément racine du document.
-         final Element racine = document.getRootElement();
-         // on récupère toutes les boites ftp que l'on va parcourir
-         final List<Element> boites = racine.getChildren("BoiteFtp");
-         for(int i = 0; i < boites.size(); i++){
-            // on va traiter la boite correspondant à celle passée
-            // en paramètre
-            if(boites.get(i).getAttributeValue("nom").equals(boiteFtp)){
-               // init de la config pour parser le message
-               final ConfigurationParsing config = initConfigurationParsing(boites.get(i));
-
-               // EXTRACTION DE L'EMETTEUR
-               // extraction du bloc
-               String bloc = boites.get(i).getChild("Emetteur").getChildText("Bloc");
-               // extraction de l'emplacement
-               String emplacement = boites.get(i).getChild("Emetteur").getChildText("Emplacement");
-
-               String emetteur = null;
-               if(bloc != null && emplacement != null){
-                  final Hashtable<String, List<String>> contenu = parseFileToInjectInTk(config, file);
-                  emetteur = getValueFromBlocAndEmplacement(contenu, config, bloc, emplacement);
-               }
-
-               // EXTRACTION DU SERVICE
-               // extraction du bloc
-               bloc = boites.get(i).getChild("Service").getChildText("Bloc");
-               // extraction de l'emplacement
-               emplacement = boites.get(i).getChild("Service").getChildText("Emplacement");
-
-               String service = null;
-               if(bloc != null && emplacement != null){
-                  final Hashtable<String, List<String>> contenu = parseFileToInjectInTk(config, file);
-                  service = getValueFromBlocAndEmplacement(contenu, config, bloc, emplacement);
-               }
-
-               // recherche de l'emetteur en fct de son nom
-               // et de son service
-               final List<Emetteur> emts = emetteurManager.findByIdentificationAndServiceManager(emetteur, service);
-
-               if(emts.size() == 1){
-                  emetteurObj = emts.get(0);
-               }
-            }
-         }
       }else{
          if(file == null){
             log.warn("extractEmetteurFromFileToInjectInTk : " + "Le fichier à injecter dans TK est NULL");
@@ -163,7 +164,6 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
       return emetteurObj;
    }
 
-   
    @Override
    public String extractXMLFIleFromFileToInjectInTk(final String fileXml, final String file, final String boiteFtp)
       throws IOException{
@@ -175,35 +175,36 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
          final SAXBuilder sxb = new SAXBuilder();
          Document document = null;
          try{
-            //On crée un nouveau document JDOM avec en 
+            //On crée un nouveau document JDOM avec en
             // argument le fichier XML
             document = sxb.build(new File(fileXml));
+
+            // On initialise un nouvel élément racine avec
+            // l'élément racine du document.
+            final Element racine = document.getRootElement();
+            // on récupère toutes les boites ftp que l'on va parcourir
+            final List<?> boites = racine.getChildren("BoiteFtp");
+            for(int i = 0; i < boites.size(); i++){
+               // on va traiter la boite correspondant à celle passée
+               // en paramètre
+               if(((Element) boites.get(i)).getAttributeValue("nom").equals(boiteFtp)){
+                  final List<?> mappings = ((Element) boites.get(i)).getChildren("MappingXml");
+                  // pour chaque mapping
+                  for(int j = 0; j < mappings.size(); j++){
+                     // on recherche l'emetteur correspondant
+                     // à celui passé en params
+                     //             String id = mappings.get(j).getChildText("EmetteurId");
+                     //             if (emetteur.getEmetteurId()
+                     //                   .equals(Integer.parseInt(id))) {
+                     xml = ((Element) mappings.get(j)).getChildText("XML");
+                     //             }
+                  }
+               }
+            }
          }catch(final Exception e){
             e.printStackTrace();
          }
 
-         // On initialise un nouvel élément racine avec 
-         // l'élément racine du document.
-         final Element racine = document.getRootElement();
-         // on récupère toutes les boites ftp que l'on va parcourir
-         final List<Element> boites = racine.getChildren("BoiteFtp");
-         for(int i = 0; i < boites.size(); i++){
-            // on va traiter la boite correspondant à celle passée
-            // en paramètre
-            if(boites.get(i).getAttributeValue("nom").equals(boiteFtp)){
-               final List<Element> mappings = boites.get(i).getChildren("MappingXml");
-               // pour chaque mapping
-               for(int j = 0; j < mappings.size(); j++){
-                  // on recherche l'emetteur correspondant
-                  // à celui passé en params
-                  //					String id = mappings.get(j).getChildText("EmetteurId");
-                  //					if (emetteur.getEmetteurId()
-                  //							.equals(Integer.parseInt(id))) {
-                  xml = mappings.get(j).getChildText("XML");
-                  //					}
-               }
-            }
-         }
       }else{
          if(file == null){
             log.warn("extractXMLFIleFromFileToInjectInTk : " + "Le fichier à injecter dans TK est NULL");
@@ -274,7 +275,7 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
                      }else{
                         // si la clé est un OBX, on va créer
                         // une clé basée sur l'élt parent de
-                        // cet OBX (pusiqu'il peut y en avoir 
+                        // cet OBX (pusiqu'il peut y en avoir
                         // plusieurs
                         final StringBuffer sb = new StringBuffer();
                         sb.append(currentKey);
@@ -376,7 +377,6 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
       return blocsLibres;
    }
 
-   
    @Override
    public Hashtable<String, String> extractMappingValuesForThesaurs(final Element element){
       final Hashtable<String, String> mappings = new Hashtable<>();
@@ -384,19 +384,20 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
       if(element != null && element.getName().equals("Modifier") && element.getAttribute("nom").getValue().equals("Thesaurus")){
 
          // on extrait les mappings
-         final List<Element> mappingThes = element.getChildren("MappingThes");
+         final List<?> mappingThes = element.getChildren("MappingThes");
          for(int i = 0; i < mappingThes.size(); i++){
             String source = null;
             String tk = null;
+            final Element thes = (Element) mappingThes.get(i);
             // on extrait chaque mapping pour le mettre dans la
             // hashtable
-            if(mappingThes.get(i).getChild("SourceThes") != null && mappingThes.get(i).getChild("SourceThes").getText() != null
-               && !mappingThes.get(i).getChild("SourceThes").getText().equals("")){
-               source = mappingThes.get(i).getChild("SourceThes").getText();
+            if(thes.getChild("SourceThes") != null && thes.getChild("SourceThes").getText() != null
+               && !thes.getChild("SourceThes").getText().equals("")){
+               source = thes.getChild("SourceThes").getText();
             }
-            if(mappingThes.get(i).getChild("TkThes") != null && mappingThes.get(i).getChild("TkThes").getText() != null
-               && !mappingThes.get(i).getChild("TkThes").getText().equals("")){
-               tk = mappingThes.get(i).getChild("TkThes").getText();
+            if(thes.getChild("TkThes") != null && thes.getChild("TkThes").getText() != null
+               && !thes.getChild("TkThes").getText().equals("")){
+               tk = thes.getChild("TkThes").getText();
             }
 
             if(source != null && tk != null){
@@ -528,7 +529,7 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
                niv1 = tmp.toString();
             }
 
-            // on sépare la valeur en fct du séparateur 
+            // on sépare la valeur en fct du séparateur
             // de composants
             final List<String> niv2s = new ArrayList<>();
             if(niv1.contains(conf.getSeparateurComposants())){
@@ -564,8 +565,8 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
                      niv2 = niv2.replace(sb11.toString(), sb22.toString());
                   }
 
-                  // si la ligne commence par un séparateur, 
-                  // on rajoute  un espace pour que cette élément 
+                  // si la ligne commence par un séparateur,
+                  // on rajoute  un espace pour que cette élément
                   // soit pris en compte
                   if(niv2.startsWith(conf.getSeparateurSousComposants())){
                      final StringBuffer tmp = new StringBuffer(" ");
@@ -573,8 +574,8 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
                      niv2 = tmp.toString();
                   }
 
-                  // si la ligne se termine par un séparateur, 
-                  // on rajoute un espace pour que cette élément 
+                  // si la ligne se termine par un séparateur,
+                  // on rajoute un espace pour que cette élément
                   // soit pris en compte
                   if(niv2.endsWith(conf.getSeparateurSousComposants())){
                      final StringBuffer tmp = new StringBuffer(niv2);
@@ -582,7 +583,7 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
                      niv2 = tmp.toString();
                   }
 
-                  // on sépare la valeur en fct du séparateur 
+                  // on sépare la valeur en fct du séparateur
                   // de composants
                   final List<String> niv3s = new ArrayList<>();
                   if(niv2.contains(conf.getSeparateurSousComposants())){
@@ -740,241 +741,248 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
       return value;
    }
 
-   
    @Override
    public DossierExterne parseInterfacageXmlFile(final String xmlFile, final String message, final Emetteur emetteur,
-      final boolean delFile, final int max) throws Exception{
+      final boolean delFile, final int max) throws Exception{ //TODO Refactorer
       // On crée une instance de SAXBuilder
+      DossierExterne dossierExterne = null;
       final SAXBuilder sxb = new SAXBuilder();
       Document document = null;
       try{
-         //On crée un nouveau document JDOM avec en 
+         //On crée un nouveau document JDOM avec en
          // argument le fichier XML
          document = sxb.build(new File(xmlFile));
+
+         // liste des fichiers associés à supprimer
+         // après traitement du message
+         final List<File> relatedFiles = new ArrayList<>();
+
+         // On initialise un nouvel élément racine avec
+         // l'élément racine du document.
+         final Element racine = document.getRootElement();
+
+         // on init la configuration du parsing
+         final ConfigurationParsing config = initConfigurationParsing(racine);
+
+         // on parse le message pour le transformer en hashtable
+         final Hashtable<String, List<String>> contenu = parseFileToInjectInTk(config, message);
+
+         // on parse le message pour récupérer tous les blocs libres
+         final List<String> contenuLibre = parseFileToExtractBlocsLibres(config, message);
+
+         // inits
+         final List<BlocExterne> blocExternes = new ArrayList<>();
+         final Hashtable<BlocExterne, List<ValeurExterne>> valeurExternes = new Hashtable<>();
+         final Hashtable<Integer, BlocExterne> entitesBlocs = new Hashtable<>();
+
+         // init du dossier externe
+         dossierExterne = initNewDossierExterne(config, contenu, racine);
+         dossierExterne.setEmetteur(emetteur);
+
+         int ordreBloc = 1;
+         // on récupère tous les blocs
+         final List<?> blocs = racine.getChildren("Bloc");
+         for(int i = 0; i < blocs.size(); i++){
+            final Element bloc = (Element) blocs.get(i);
+            final List<?> mappings = bloc.getChildren("Mapping");
+            // pour chaque Mapping
+            for(int j = 0; j < mappings.size(); j++){
+               final Element mapping = (Element) mappings.get(j);
+               final Element tkElt = mapping.getChild("Tk");
+               final Element entiteElt = tkElt.getChild("Entite");
+               final Integer entite = entiteElt.getAttribute("idChamp").getIntValue();
+
+               BlocExterne blocCurrent = null;
+               if(entitesBlocs.containsKey(entite)){
+                  blocCurrent = entitesBlocs.get(entite);
+               }else{
+                  // création d'un nouveau bloc
+                  blocCurrent = new BlocExterne();
+                  blocCurrent.setDossierExterne(dossierExterne);
+                  blocCurrent.setEntiteId(entite);
+                  blocCurrent.setOrdre(ordreBloc);
+                  ++ordreBloc;
+                  entitesBlocs.put(entite, blocCurrent);
+                  blocExternes.add(blocCurrent);
+                  valeurExternes.put(blocCurrent, new ArrayList<ValeurExterne>());
+               }
+
+               // création de la valeur externe
+               final ValeurExterne valeur = new ValeurExterne();
+               valeur.setBlocExterne(blocCurrent);
+               if(tkElt.getChild("ChampEntite") != null){
+                  valeur.setChampEntiteId(tkElt.getChild("ChampEntite").getAttribute("idChamp").getIntValue());
+               }else{
+                  valeur.setChampAnnotationId(tkElt.getChild("Annotation").getAttribute("idChamp").getIntValue());
+               }
+
+               final Element sourceElt = mapping.getChild("Source");
+               // extraction de la valeur dans le fichier
+               String value =
+                  getValueFromBlocAndEmplacement(contenu, config, bloc.getAttributeValue("nom"), sourceElt.getChildText("Key"));
+               byte[] file = null;
+
+               // on regarde si des fonctions de formatage sont
+               // demandées
+               if(sourceElt.getChild("Fonctions") != null){
+                  final List<?> fonctions = sourceElt.getChild("Fonctions").getChildren("Fonction");
+                  for(int k = 0; k < fonctions.size(); k++){
+                     final Element fonction = (Element) fonctions.get(k);
+                     if(fonction.getAttribute("nom") != null){
+                        value = formateValueUsingFunction(fonction.getAttributeValue("nom"), value);
+                     }
+                  }
+               }
+
+               // on regarde si un mapping existe entre une valeur du
+               // fichier et une valeur de TK
+               if(sourceElt.getChild("Modifier") != null){
+                  if(sourceElt.getChild("Modifier").getAttribute("nom").getValue().equals("Thesaurus")){
+                     // si c'est la cas, on extrait ces mappings
+                     final Hashtable<String, String> mappingValues =
+                        extractMappingValuesForThesaurs(sourceElt.getChild("Modifier"));
+
+                     if(value != null && mappingValues.containsKey(value)){
+                        value = mappingValues.get(value);
+                     }
+                  }else if(sourceElt.getChild("Modifier").getAttribute("nom").getValue().equals("Fichier")){
+                     final File f = new File(sourceElt.getChild("Modifier").getChild("Path").getValue() + value);
+                     if(f.exists()){
+                        file = FileUtils.readFileToByteArray(f);
+                        relatedFiles.add(f);
+                     }else{
+                        log.error("hl7.file.path.empty: " + sourceElt.getChild("Modifier").getChild("Path").getValue() + value);
+                        value = null;
+                     }
+
+                  }
+               }
+
+               // on n'ajoute la valeur que si elle n'est pas Null
+               if(value != null){
+                  valeur.setValeur(value);
+                  valeur.setContenu(file);
+                  // insertion de la valeur dans la liste d'éléments
+                  final List<ValeurExterne> vals = valeurExternes.get(blocCurrent);
+                  vals.add(valeur);
+                  valeurExternes.remove(blocCurrent);
+                  valeurExternes.put(blocCurrent, vals);
+               }else{
+                  log.info("La valeur du bloc '" + bloc.getAttributeValue("nom") + "' à l'emplacement '"
+                     + sourceElt.getChildText("Key") + "' est NULL");
+               }
+            }
+         }
+
+         // on récupère tous les blocs libres
+         final List<?> blocsLibres = racine.getChildren("BlocLibre");
+         for(int i = 0; i < blocsLibres.size(); i++){
+            final Element blocLibre = (Element) blocsLibres.get(i);
+            final List<?> mappings = blocLibre.getChildren("Mapping");
+            final Element sourceBloc = blocLibre.getChild("Source");
+            final Element keyBloc = sourceBloc.getChild("Key");
+            // pour chaque Mapping
+            for(int j = 0; j < mappings.size(); j++){
+               final Element mapping = (Element) mappings.get(j);
+               final Element tkElt = mapping.getChild("Tk");
+               final Element entiteElt = tkElt.getChild("Entite");
+               final Integer entite = entiteElt.getAttribute("idChamp").getIntValue();
+
+               BlocExterne blocCurrent = null;
+               if(entitesBlocs.containsKey(entite)){
+                  blocCurrent = entitesBlocs.get(entite);
+               }else{
+                  // création d'un nouveau bloc
+                  blocCurrent = new BlocExterne();
+                  blocCurrent.setDossierExterne(dossierExterne);
+                  blocCurrent.setEntiteId(entite);
+                  blocCurrent.setOrdre(ordreBloc);
+                  ++ordreBloc;
+                  entitesBlocs.put(entite, blocCurrent);
+                  blocExternes.add(blocCurrent);
+                  valeurExternes.put(blocCurrent, new ArrayList<ValeurExterne>());
+               }
+
+               // création de la valeur externe
+               final ValeurExterne valeur = new ValeurExterne();
+               valeur.setBlocExterne(blocCurrent);
+               if(tkElt.getChild("ChampEntite") != null){
+                  valeur.setChampEntiteId(tkElt.getChild("ChampEntite").getAttribute("idChamp").getIntValue());
+               }else{
+                  valeur.setChampAnnotationId(tkElt.getChild("Annotation").getAttribute("idChamp").getIntValue());
+               }
+
+               final Element sourceElt = mapping.getChild("Source");
+               // extraction de la valeur dans le fichier
+               String value = getValueFromBlocLibre(contenuLibre, config, blocLibre.getAttributeValue("nom"), keyBloc.getText(),
+                  sourceElt.getChildText("Key"));
+
+               byte[] file = null;
+
+               // on regarde si des fonctions de formatage sont
+               // demandées
+               if(sourceElt.getChild("Fonctions") != null){
+                  final List<?> fonctions = sourceElt.getChild("Fonctions").getChildren("Fonction");
+                  for(int k = 0; k < fonctions.size(); k++){
+                     final Element fonction = (Element) fonctions.get(k);
+                     if(fonction.getAttribute("nom") != null){
+                        value = formateValueUsingFunction(fonction.getAttributeValue("nom"), value);
+                     }
+                  }
+               }
+
+               // on regarde si un mapping existe entre une valeur du
+               // fichier et une valeur de TK
+               if(sourceElt.getChild("Modifier") != null && value != null){
+                  if(sourceElt.getChild("Modifier").getAttribute("nom").getValue().equals("Thesaurus")){
+                     // si c'est la cas, on extrait ces mappings
+                     final Hashtable<String, String> mappingValues =
+                        extractMappingValuesForThesaurs(sourceElt.getChild("Modifier"));
+
+                     if(mappingValues.containsKey(value)){
+                        value = mappingValues.get(value);
+                     }
+                  }else if(sourceElt.getChild("Modifier").getAttribute("nom").getValue().equals("Fichier")){
+                     final File f = new File(sourceElt.getChild("Modifier").getChild("Path").getValue() + value);
+                     if(f.exists()){
+                        file = FileUtils.readFileToByteArray(f);
+                        relatedFiles.add(f);
+                     }else{
+                        log.error("hl7.file.path.empty: " + sourceElt.getChild("Modifier").getChild("Path").getValue() + value);
+                        value = null;
+                     }
+                  }
+               }
+
+               // on n'ajoute la valeur que si elle n'est pas Null
+               if(value != null){
+                  valeur.setValeur(value);
+                  valeur.setContenu(file);
+                  // insertion de la valeur dans la liste d'éléments
+                  final List<ValeurExterne> vals = valeurExternes.get(blocCurrent);
+                  vals.add(valeur);
+                  valeurExternes.remove(blocCurrent);
+                  valeurExternes.put(blocCurrent, vals);
+               }else{
+                  log.info("La valeur du bloc libre '" + blocLibre.getAttributeValue("nom") + "' à l'emplacement '"
+                     + sourceElt.getChildText("Key") + "' est NULL");
+               }
+            }
+         }
+
+         // enregistrement du dossier externe
+         dossierExterneManager.createObjectManager(dossierExterne, emetteur, blocExternes, valeurExternes, max);
+
+         // supprimes les fichiers associés si tout s'est bien passé
+         if(delFile){
+            for(final File file : relatedFiles){
+               log.info("deletion du fichier: " + file.getName());
+               file.delete();
+            }
+         }
       }catch(final Exception e){
          log.error(e);
       }
-
-      // liste des fichiers associés à supprimer
-      // après traitement du message
-      final List<File> relatedFiles = new ArrayList<>();
-
-      // On initialise un nouvel élément racine avec 
-      // l'élément racine du document.
-      final Element racine = document.getRootElement();
-
-      // on init la configuration du parsing
-      final ConfigurationParsing config = initConfigurationParsing(racine);
-
-      // on parse le message pour le transformer en hashtable
-      final Hashtable<String, List<String>> contenu = parseFileToInjectInTk(config, message);
-
-      // on parse le message pour récupérer tous les blocs libres
-      final List<String> contenuLibre = parseFileToExtractBlocsLibres(config, message);
-
-      // inits
-      final List<BlocExterne> blocExternes = new ArrayList<>();
-      final Hashtable<BlocExterne, List<ValeurExterne>> valeurExternes = new Hashtable<>();
-      final Hashtable<Integer, BlocExterne> entitesBlocs = new Hashtable<>();
-
-      // init du dossier externe
-      final DossierExterne dossierExterne = initNewDossierExterne(config, contenu, racine);
-      dossierExterne.setEmetteur(emetteur);
-
-      int ordreBloc = 1;
-      // on récupère tous les blocs
-      final List<Element> blocs = racine.getChildren("Bloc");
-      for(int i = 0; i < blocs.size(); i++){
-         final List<Element> mappings = blocs.get(i).getChildren("Mapping");
-         // pour chaque Mapping
-         for(int j = 0; j < mappings.size(); j++){
-            final Element tkElt = mappings.get(j).getChild("Tk");
-            final Element entiteElt = tkElt.getChild("Entite");
-            final Integer entite = entiteElt.getAttribute("idChamp").getIntValue();
-
-            BlocExterne blocCurrent = null;
-            if(entitesBlocs.containsKey(entite)){
-               blocCurrent = entitesBlocs.get(entite);
-            }else{
-               // création d'un nouveau bloc
-               blocCurrent = new BlocExterne();
-               blocCurrent.setDossierExterne(dossierExterne);
-               blocCurrent.setEntiteId(entite);
-               blocCurrent.setOrdre(ordreBloc);
-               ++ordreBloc;
-               entitesBlocs.put(entite, blocCurrent);
-               blocExternes.add(blocCurrent);
-               valeurExternes.put(blocCurrent, new ArrayList<ValeurExterne>());
-            }
-
-            // création de la valeur externe
-            final ValeurExterne valeur = new ValeurExterne();
-            valeur.setBlocExterne(blocCurrent);
-            if(tkElt.getChild("ChampEntite") != null){
-               valeur.setChampEntiteId(tkElt.getChild("ChampEntite").getAttribute("idChamp").getIntValue());
-            }else{
-               valeur.setChampAnnotationId(tkElt.getChild("Annotation").getAttribute("idChamp").getIntValue());
-            }
-
-            final Element sourceElt = mappings.get(j).getChild("Source");
-            // extraction de la valeur dans le fichier
-            String value = getValueFromBlocAndEmplacement(contenu, config, blocs.get(i).getAttributeValue("nom"),
-               sourceElt.getChildText("Key"));
-            byte[] file = null;
-
-            // on regarde si des fonctions de formatage sont
-            // demandées
-            if(sourceElt.getChild("Fonctions") != null){
-               final List<Element> fonctions = sourceElt.getChild("Fonctions").getChildren("Fonction");
-               for(int k = 0; k < fonctions.size(); k++){
-                  if(fonctions.get(k).getAttribute("nom") != null){
-                     value = formateValueUsingFunction(fonctions.get(k).getAttributeValue("nom"), value);
-                  }
-               }
-            }
-
-            // on regarde si un mapping existe entre une valeur du
-            // fichier et une valeur de TK
-            if(sourceElt.getChild("Modifier") != null){
-               if(sourceElt.getChild("Modifier").getAttribute("nom").getValue().equals("Thesaurus")){
-                  // si c'est la cas, on extrait ces mappings
-                  final Hashtable<String, String> mappingValues = extractMappingValuesForThesaurs(sourceElt.getChild("Modifier"));
-
-                  if(value != null && mappingValues.containsKey(value)){
-                     value = mappingValues.get(value);
-                  }
-               }else if(sourceElt.getChild("Modifier").getAttribute("nom").getValue().equals("Fichier")){
-                  final File f = new File(sourceElt.getChild("Modifier").getChild("Path").getValue() + value);
-                  if(f.exists()){
-                     file = FileUtils.readFileToByteArray(f);
-                     relatedFiles.add(f);
-                  }else{
-                     log.error("hl7.file.path.empty: " + sourceElt.getChild("Modifier").getChild("Path").getValue() + value);
-                     value = null;
-                  }
-
-               }
-            }
-
-            // on n'ajoute la valeur que si elle n'est pas Null
-            if(value != null){
-               valeur.setValeur(value);
-               valeur.setContenu(file);
-               // insertion de la valeur dans la liste d'éléments
-               final List<ValeurExterne> vals = valeurExternes.get(blocCurrent);
-               vals.add(valeur);
-               valeurExternes.remove(blocCurrent);
-               valeurExternes.put(blocCurrent, vals);
-            }else{
-               log.info("La valeur du bloc '" + blocs.get(i).getAttributeValue("nom") + "' à l'emplacement '"
-                  + sourceElt.getChildText("Key") + "' est NULL");
-            }
-         }
-      }
-
-      // on récupère tous les blocs libres
-      final List<Element> blocsLibres = racine.getChildren("BlocLibre");
-      for(int i = 0; i < blocsLibres.size(); i++){
-         final List<Element> mappings = blocsLibres.get(i).getChildren("Mapping");
-         final Element sourceBloc = blocsLibres.get(i).getChild("Source");
-         final Element keyBloc = sourceBloc.getChild("Key");
-         // pour chaque Mapping
-         for(int j = 0; j < mappings.size(); j++){
-            final Element tkElt = mappings.get(j).getChild("Tk");
-            final Element entiteElt = tkElt.getChild("Entite");
-            final Integer entite = entiteElt.getAttribute("idChamp").getIntValue();
-
-            BlocExterne blocCurrent = null;
-            if(entitesBlocs.containsKey(entite)){
-               blocCurrent = entitesBlocs.get(entite);
-            }else{
-               // création d'un nouveau bloc
-               blocCurrent = new BlocExterne();
-               blocCurrent.setDossierExterne(dossierExterne);
-               blocCurrent.setEntiteId(entite);
-               blocCurrent.setOrdre(ordreBloc);
-               ++ordreBloc;
-               entitesBlocs.put(entite, blocCurrent);
-               blocExternes.add(blocCurrent);
-               valeurExternes.put(blocCurrent, new ArrayList<ValeurExterne>());
-            }
-
-            // création de la valeur externe
-            final ValeurExterne valeur = new ValeurExterne();
-            valeur.setBlocExterne(blocCurrent);
-            if(tkElt.getChild("ChampEntite") != null){
-               valeur.setChampEntiteId(tkElt.getChild("ChampEntite").getAttribute("idChamp").getIntValue());
-            }else{
-               valeur.setChampAnnotationId(tkElt.getChild("Annotation").getAttribute("idChamp").getIntValue());
-            }
-
-            final Element sourceElt = mappings.get(j).getChild("Source");
-            // extraction de la valeur dans le fichier
-            String value = getValueFromBlocLibre(contenuLibre, config, blocsLibres.get(i).getAttributeValue("nom"),
-               keyBloc.getText(), sourceElt.getChildText("Key"));
-
-            byte[] file = null;
-
-            // on regarde si des fonctions de formatage sont
-            // demandées
-            if(sourceElt.getChild("Fonctions") != null){
-               final List<Element> fonctions = sourceElt.getChild("Fonctions").getChildren("Fonction");
-               for(int k = 0; k < fonctions.size(); k++){
-                  if(fonctions.get(k).getAttribute("nom") != null){
-                     value = formateValueUsingFunction(fonctions.get(k).getAttributeValue("nom"), value);
-                  }
-               }
-            }
-
-            // on regarde si un mapping existe entre une valeur du
-            // fichier et une valeur de TK
-            if(sourceElt.getChild("Modifier") != null && value != null){
-               if(sourceElt.getChild("Modifier").getAttribute("nom").getValue().equals("Thesaurus")){
-                  // si c'est la cas, on extrait ces mappings
-                  final Hashtable<String, String> mappingValues = extractMappingValuesForThesaurs(sourceElt.getChild("Modifier"));
-
-                  if(value != null && mappingValues.containsKey(value)){
-                     value = mappingValues.get(value);
-                  }
-               }else if(sourceElt.getChild("Modifier").getAttribute("nom").getValue().equals("Fichier")){
-                  final File f = new File(sourceElt.getChild("Modifier").getChild("Path").getValue() + value);
-                  if(f.exists()){
-                     file = FileUtils.readFileToByteArray(f);
-                     relatedFiles.add(f);
-                  }else{
-                     log.error("hl7.file.path.empty: " + sourceElt.getChild("Modifier").getChild("Path").getValue() + value);
-                     value = null;
-                  }
-               }
-            }
-
-            // on n'ajoute la valeur que si elle n'est pas Null
-            if(value != null){
-               valeur.setValeur(value);
-               valeur.setContenu(file);
-               // insertion de la valeur dans la liste d'éléments
-               final List<ValeurExterne> vals = valeurExternes.get(blocCurrent);
-               vals.add(valeur);
-               valeurExternes.remove(blocCurrent);
-               valeurExternes.put(blocCurrent, vals);
-            }else{
-               log.info("La valeur du bloc libre '" + blocsLibres.get(i).getAttributeValue("nom") + "' à l'emplacement '"
-                  + sourceElt.getChildText("Key") + "' est NULL");
-            }
-         }
-      }
-
-      // enregistrement du dossier externe
-      dossierExterneManager.createObjectManager(dossierExterne, emetteur, blocExternes, valeurExternes, max);
-
-      // supprimes les fichiers associés si tout s'est bien passé
-      if(delFile){
-         for(final File file : relatedFiles){
-            log.info("deletion du fichier: " + file.getName());
-            file.delete();
-         }
-      }
-
       return dossierExterne;
    }
 

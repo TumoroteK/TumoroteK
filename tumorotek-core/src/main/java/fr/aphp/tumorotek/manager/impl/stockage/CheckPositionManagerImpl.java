@@ -82,9 +82,8 @@ public class CheckPositionManagerImpl implements CheckPositionManager
          }
 
          return (terms.size() == 0 && encs.size() == 0);
-      }else{
-         return false;
       }
+      return false;
 
    }
 
@@ -103,8 +102,7 @@ public class CheckPositionManagerImpl implements CheckPositionManager
          }
 
          return (encs.size() == 0);
-      }else{
-         return false;
       }
+      return false;
    }
 }

@@ -108,9 +108,8 @@ public class BlocExterneManagerImpl implements BlocExterneManager
       log.debug("Recherche de tous les BlocExternes pour un dossier");
       if(dossierExterne != null){
          return blocExterneDao.findByDossierExterne(dossierExterne);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
@@ -118,27 +117,24 @@ public class BlocExterneManagerImpl implements BlocExterneManager
       log.debug("Recherche de tous les BlocExternes pour un dossier " + "et une entité");
       if(dossierExterne != null && entite != null){
          return blocExterneDao.findByDossierExterneAndEntite(dossierExterne, entite.getEntiteId());
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
    public Entite getEntiteManager(final BlocExterne blocExterne){
       if(blocExterne != null && blocExterne.getEntiteId() != null){
          return entiteDao.findById(blocExterne.getEntiteId());
-      }else{
-         return null;
       }
+      return null;
    }
 
    @Override
    public boolean findDoublonManager(final BlocExterne blocExterne){
       if(blocExterne != null){
          return blocExterneDao.findByDossierExterne(blocExterne.getDossierExterne()).contains(blocExterne);
-      }else{
-         return false;
       }
+      return false;
    }
 
    @Override

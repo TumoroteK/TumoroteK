@@ -35,8 +35,6 @@
  **/
 package fr.aphp.tumorotek.interfacage.sgl.view.test;
 
-import static org.junit.Assert.assertTrue;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -48,6 +46,8 @@ import fr.aphp.tumorotek.model.interfacage.BlocExterne;
 import fr.aphp.tumorotek.model.interfacage.DossierExterne;
 import fr.aphp.tumorotek.model.interfacage.Emetteur;
 import fr.aphp.tumorotek.model.interfacage.Logiciel;
+
+import static org.junit.Assert.assertTrue;
 
 // TODO : Test à corriger pour être lancé avec maven test - JDI
 //@RunWith(SpringJUnit4ClassRunner.class)
@@ -74,7 +74,7 @@ public class TestViewQuery
       eT.setIdentification("DVC TEST");
       eT.setLogiciel(log);
 
-      //		Class.forName("com.mysql.jdbc.Driver");
+      //		Class.forName("com.mysql.cj.jdbc.Driver");
 
       //		boolean catched = false;
       //		try {

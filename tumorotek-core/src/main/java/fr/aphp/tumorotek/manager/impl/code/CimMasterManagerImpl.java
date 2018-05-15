@@ -42,7 +42,7 @@ import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
@@ -52,7 +52,6 @@ import fr.aphp.tumorotek.dao.code.CimMasterDao;
 import fr.aphp.tumorotek.manager.code.CimMasterManager;
 import fr.aphp.tumorotek.model.code.Adicap;
 import fr.aphp.tumorotek.model.code.CimMaster;
-import fr.aphp.tumorotek.model.code.CodeCommon;
 
 /**
  *
@@ -80,12 +79,12 @@ public class CimMasterManagerImpl implements CimMasterManager
    }
 
    @Override
-   public List<? extends CodeCommon> findAllObjectsManager(){
+   public List<CimMaster> findAllObjectsManager(){
       return cimMasterDao.findAll();
    }
 
    @Override
-   public List<? extends CodeCommon> findByCodeLikeManager(String code, final boolean exactMatch){
+   public List<CimMaster> findByCodeLikeManager(String code, final boolean exactMatch){
       if(!exactMatch){
          code = "%" + code + "%";
       }
@@ -94,7 +93,7 @@ public class CimMasterManagerImpl implements CimMasterManager
    }
 
    @Override
-   public List<? extends CodeCommon> findByLibelleLikeManager(String libelle, final boolean exactMatch){
+   public List<CimMaster> findByLibelleLikeManager(String libelle, final boolean exactMatch){
       if(!exactMatch){
          libelle = "%" + libelle + "%";
       }
@@ -127,7 +126,7 @@ public class CimMasterManagerImpl implements CimMasterManager
                sb.append(parent.getLevel() + 1);
 
                final EntityManager em = entityManagerFactory.createEntityManager();
-               final Query query = em.createQuery(sb.toString());
+               final TypedQuery<CimMaster> query = em.createQuery(sb.toString(), CimMaster.class);
                cims = query.getResultList();
             }catch(final Exception e){
                log.error("level cimMaster introuvable par PropertyUtils");

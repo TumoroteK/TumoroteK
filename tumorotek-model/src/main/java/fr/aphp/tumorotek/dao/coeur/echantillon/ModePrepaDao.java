@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.coeur.echantillon.ModePrepa;
  * @version 2.0
  *
  */
-public interface ModePrepaDao extends GenericDaoJpa<ModePrepa, Integer>, TKThesaurusDao
+public interface ModePrepaDao extends GenericDaoJpa<ModePrepa, Integer>, TKThesaurusDao<ModePrepa>
 {
 
    /**

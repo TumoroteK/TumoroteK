@@ -117,17 +117,15 @@ public class EchantillonDTO
    public String getBanque(){
       if(this.echantillon.getBanque() != null){
          return this.echantillon.getBanque().getNom();
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getPrelevement(){
       if(this.echantillon.getPrelevement() != null){
          return this.echantillon.getPrelevement().getCode();
-      }else{
-         return null;
       }
+      return null;
    }
 
    public Calendar getDateStockage(){
@@ -141,9 +139,8 @@ public class EchantillonDTO
    public String getType(){
       if(this.echantillon.getEchantillonType() != null){
          return this.echantillon.getEchantillonType().getType();
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -310,97 +307,62 @@ public class EchantillonDTO
    public String getDelaiDeCongelation(){
       if(this.echantillon.getDelaiCgl() != null){
          return this.echantillon.getDelaiCgl().toString();
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getQualite(){
       if(this.echantillon.getEchanQualite() != null){
          return this.echantillon.getEchanQualite().getEchanQualite();
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getTumoral(){
       if(this.echantillon.getTumoral() != null){
          if(this.echantillon.getTumoral().booleanValue()){
             return "oui";
-         }else{
-            return "non";
          }
-      }else{
-         return null;
+         return "non";
       }
+      return null;
    }
 
    public String getModeDePreparation(){
       if(this.echantillon.getModePrepa() != null){
          return this.echantillon.getModePrepa().getNom();
-      }else{
-         return null;
       }
+      return null;
    }
 
    public String getSterile(){
       if(this.echantillon.getSterile() != null){
          if(this.echantillon.getSterile().booleanValue()){
             return "oui";
-         }else{
-            return "non";
          }
-      }else{
-         return null;
+         return "non";
       }
+      return null;
    }
-
-   //	public String getReservation() {
-   //		if (this.echantillon.getReservation() != null) {
-   //			StringBuffer sb = new StringBuffer();
-   //			if (this.echantillon.getReservation().getDebut() != null) {
-   //				sb.append(ObjectTypesFormatters
-   //					.dateRenderer2(this.echantillon.getReservation()
-   //															.getDebut()));
-   //			} else {
-   //				sb.append("-");
-   //			}
-   //			
-   //			if (this.echantillon.getReservation().getFin() != null) {
-   //				sb.append(" ");
-   //				sb.append(ObjectTypesFormatters
-   //					.dateRenderer2(this.echantillon.getReservation()
-   //															.getFin()));
-   //			}
-   //			
-   //			return sb.toString();
-   //		} else {
-   //			return null;
-   //		}
-   //	}
 
    public String getEtatIncomplet(){
       if(this.echantillon.getEtatIncomplet() != null){
          if(this.echantillon.getEtatIncomplet().booleanValue()){
             return "oui";
-         }else{
-            return "non";
          }
-      }else{
-         return null;
+         return "non";
       }
+      return null;
    }
 
    public String getArchive(){
       if(this.echantillon.getArchive() != null){
          if(this.echantillon.getArchive().booleanValue()){
             return "oui";
-         }else{
-            return "non";
          }
-      }else{
-         return null;
+         return "non";
       }
+      return null;
    }
 
    @Override

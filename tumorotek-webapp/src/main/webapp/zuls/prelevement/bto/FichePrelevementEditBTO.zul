@@ -217,14 +217,6 @@
 			        			save-when='validate.onClick, create.onClick, next.onClick, self.onBlur'}">
 
                         </calendarbox>
-
-                        <!-- date du peremption -->
-                        <box orient="horizontal" widths=",50%" pack="center">
-                            <label value="${c:l('Champ.Prelevement.DatePeremption')}" sclass="incaLabel"/>
-                        </box>
-                        <calendarbox id="datePeremptionCalBox" value="@{fwinPrelevementEditBTO$composer.object.datePeremption,
-			        			save-when='validate.onClick, create.onClick, next.onClick, self.onBlur'}"/>
-
                     </row>
                     <row visible="false">
                         <!-- constraint="no empty" -->

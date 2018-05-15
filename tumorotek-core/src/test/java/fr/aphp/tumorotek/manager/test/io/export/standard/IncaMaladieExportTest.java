@@ -76,7 +76,7 @@ public class IncaMaladieExportTest extends AbstractManagerTest
 
    public void testGetDiagnosticPrincipal() throws SQLException, ClassNotFoundException{
 
-      Class.forName("com.mysql.jdbc.Driver");
+      Class.forName("com.mysql.cj.jdbc.Driver");
       final Connection con =
          DriverManager.getConnection("jdbc:mysql://localhost:3306/" + "toul?characterEncoding=UTF-8", "root", "root");
       final Prelevement prel = new Prelevement();
@@ -146,7 +146,7 @@ public class IncaMaladieExportTest extends AbstractManagerTest
 
    public void testGetDateDiag() throws SQLException, ClassNotFoundException, ParseException{
 
-      Class.forName("com.mysql.jdbc.Driver");
+      Class.forName("com.mysql.cj.jdbc.Driver");
       final Connection con =
          DriverManager.getConnection("jdbc:mysql://localhost:3306/" + "toul?characterEncoding=UTF-8", "root", "root");
       final Prelevement prel = new Prelevement();
@@ -176,7 +176,7 @@ public class IncaMaladieExportTest extends AbstractManagerTest
 
    public void testGetVersionCTNM() throws SQLException, ClassNotFoundException{
 
-      Class.forName("com.mysql.jdbc.Driver");
+      Class.forName("com.mysql.cj.jdbc.Driver");
       final Connection con =
          DriverManager.getConnection("jdbc:mysql://localhost:3306/" + "toul?characterEncoding=UTF-8", "root", "root");
       final Prelevement prel = new Prelevement();
@@ -192,7 +192,7 @@ public class IncaMaladieExportTest extends AbstractManagerTest
 
    public void testGetTailleTumeur() throws SQLException, ClassNotFoundException{
 
-      Class.forName("com.mysql.jdbc.Driver");
+      Class.forName("com.mysql.cj.jdbc.Driver");
       final Connection con =
          DriverManager.getConnection("jdbc:mysql://localhost:3306/" + "toul?characterEncoding=UTF-8", "root", "root");
       final Prelevement prel = new Prelevement();
@@ -208,7 +208,7 @@ public class IncaMaladieExportTest extends AbstractManagerTest
 
    public void testGetEnvahGangR() throws SQLException, ClassNotFoundException{
 
-      Class.forName("com.mysql.jdbc.Driver");
+      Class.forName("com.mysql.cj.jdbc.Driver");
       final Connection con =
          DriverManager.getConnection("jdbc:mysql://localhost:3306/" + "toul?characterEncoding=UTF-8", "root", "root");
       final Prelevement prel = new Prelevement();
@@ -224,7 +224,7 @@ public class IncaMaladieExportTest extends AbstractManagerTest
 
    public void testGetExtMetastatique() throws SQLException, ClassNotFoundException{
 
-      Class.forName("com.mysql.jdbc.Driver");
+      Class.forName("com.mysql.cj.jdbc.Driver");
       final Connection con =
          DriverManager.getConnection("jdbc:mysql://localhost:3306/" + "toul?characterEncoding=UTF-8", "root", "root");
       final Prelevement prel = new Prelevement();

@@ -64,7 +64,7 @@ public class CimoMorphoManagerTest extends AbstractManagerTest4
    
    @Test
    public void testFindAllObjectsManager(){
-      final List<CimoMorpho> cims = (List<CimoMorpho>) cimoMorphoManager.findAllObjectsManager();
+      final List<CimoMorpho> cims = cimoMorphoManager.findAllObjectsManager();
       assertTrue(cims.size() == 1161);
    }
 
@@ -72,23 +72,23 @@ public class CimoMorphoManagerTest extends AbstractManagerTest4
    @Test
    public void testFindByCodeLikeManager(){
       //teste une recherche exactMatch
-      List<CimoMorpho> cimos = (List<CimoMorpho>) cimoMorphoManager.findByCodeLikeManager("D0-20150", true);
+      List<CimoMorpho> cimos = cimoMorphoManager.findByCodeLikeManager("D0-20150", true);
       assertTrue(cimos.size() == 1);
       //teste une recherche non exactMatch
-      cimos = (List<CimoMorpho>) cimoMorphoManager.findByCodeLikeManager("D0", false);
+      cimos = cimoMorphoManager.findByCodeLikeManager("D0", false);
       assertTrue(cimos.size() == 6);
       //teste une recherche CIMREF
-      cimos = (List<CimoMorpho>) cimoMorphoManager.findByCodeLikeManager("C5", false);
+      cimos = cimoMorphoManager.findByCodeLikeManager("C5", false);
       assertTrue(cimos.size() == 87);
       // teste une recherche CIMREF -> verifie que le resultat ne 
       // contient pas de doublons
-      cimos = (List<CimoMorpho>) cimoMorphoManager.findByCodeLikeManager("50", false);
+      cimos = cimoMorphoManager.findByCodeLikeManager("50", false);
       assertTrue(cimos.size() == 110);
       //teste une recherche infructueuse
-      cimos = (List<CimoMorpho>) cimoMorphoManager.findByCodeLikeManager("LUX", true);
+      cimos = cimoMorphoManager.findByCodeLikeManager("LUX", true);
       assertTrue(cimos.size() == 0);
       //null recherche
-      cimos = (List<CimoMorpho>) cimoMorphoManager.findByCodeLikeManager(null, false);
+      cimos = cimoMorphoManager.findByCodeLikeManager(null, false);
       assertTrue(cimos.size() == 0);
    }
 
@@ -96,24 +96,24 @@ public class CimoMorphoManagerTest extends AbstractManagerTest4
    @Test
    public void testFindByLibelleLikeManager(){
       //teste une recherche exactMatch
-      List<CimoMorpho> cimos = (List<CimoMorpho>) cimoMorphoManager.findByLibelleLikeManager("FIBROMATOSE", true);
+      List<CimoMorpho> cimos = cimoMorphoManager.findByLibelleLikeManager("FIBROMATOSE", true);
       assertTrue(cimos.size() == 1);
       //teste une recherche non exactMatch
-      cimos = (List<CimoMorpho>) cimoMorphoManager.findByLibelleLikeManager("FIBROMATOSE", false);
+      cimos = cimoMorphoManager.findByLibelleLikeManager("FIBROMATOSE", false);
       assertTrue(cimos.size() == 7);
       //teste une recherche infructueuse
-      cimos = (List<CimoMorpho>) cimoMorphoManager.findByLibelleLikeManager("CULLUM", false);
+      cimos = cimoMorphoManager.findByLibelleLikeManager("CULLUM", false);
       assertTrue(cimos.size() == 0);
       //null recherche
-      cimos = (List<CimoMorpho>) cimoMorphoManager.findByLibelleLikeManager(null, true);
+      cimos = cimoMorphoManager.findByLibelleLikeManager(null, true);
       assertTrue(cimos.size() == 0);
    }
 
    @Test
    public void testGetAdicapsManager(){
-      CimoMorpho a = (CimoMorpho) cimoMorphoManager.findByCodeLikeManager("M-8005/0", true).get(0);
+      CimoMorpho a = cimoMorphoManager.findByCodeLikeManager("M-8005/0", true).get(0);
       assertTrue(cimoMorphoManager.getAdicapsManager(a).size() == 2);
-      a = (CimoMorpho) cimoMorphoManager.findByLibelleLikeManager("Keasbey", false).get(0);
+      a = cimoMorphoManager.findByLibelleLikeManager("Keasbey", false).get(0);
       assertTrue(cimoMorphoManager.getAdicapsManager(a).size() == 0);
    }
 }

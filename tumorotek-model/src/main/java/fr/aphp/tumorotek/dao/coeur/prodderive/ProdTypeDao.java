@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ProdType;
  * @version 2.0
  *
  */
-public interface ProdTypeDao extends GenericDaoJpa<ProdType, Integer>, TKThesaurusDao
+public interface ProdTypeDao extends GenericDaoJpa<ProdType, Integer>, TKThesaurusDao<ProdType>
 {
 
    /**

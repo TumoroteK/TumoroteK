@@ -75,7 +75,12 @@ public class EntiteDecorator
    }
 
    public String getLabel(){
-      return Labels.getLabel("Entite." + entite.getNom());
+      String label = null;
+      label = Labels.getLabel("Entite." + entite.getNom());
+      if(null == label || "".equals(label)){
+         label = getNom();
+      }
+      return label;
    }
 
    /**

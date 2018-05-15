@@ -210,9 +210,8 @@ public class ChampLigneEtiquette implements Serializable
       if(this.ligneEtiquette != null && this.ordre != null && this.champ != null && this.entite != null){
          return "{" + this.ordre + ", " + this.ligneEtiquette.getOrdre() + "(LigneEtiquette) " + this.entite.getNom()
             + "(Entite)}";
-      }else{
-         return "{Empty ChampLigneEtiquette}";
       }
+      return "{Empty ChampLigneEtiquette}";
    }
 
    @Override

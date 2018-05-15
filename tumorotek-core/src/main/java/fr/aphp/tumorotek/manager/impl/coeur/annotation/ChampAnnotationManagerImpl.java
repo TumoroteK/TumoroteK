@@ -47,6 +47,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -61,6 +62,7 @@ import fr.aphp.tumorotek.dao.annotation.TableAnnotationDao;
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.qualite.OperationTypeDao;
 import fr.aphp.tumorotek.manager.coeur.annotation.ChampAnnotationManager;
+import fr.aphp.tumorotek.manager.coeur.annotation.ChampCalculeManager;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.impl.coeur.CreateOrUpdateUtilities;
@@ -72,6 +74,7 @@ import fr.aphp.tumorotek.manager.validation.coeur.annotation.ItemValidator;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationDefaut;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
+import fr.aphp.tumorotek.model.coeur.annotation.ChampCalcule;
 import fr.aphp.tumorotek.model.coeur.annotation.DataType;
 import fr.aphp.tumorotek.model.coeur.annotation.Item;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
@@ -113,6 +116,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
    private AnnotationCommonValidator annotationCommonValidator;
    private TableAnnotationDao tableAnnotationDao;
    private BanqueDao banqueDao;
+   private ChampCalculeManager champCalculeManager;
 
    /** Bean Dao EntityManagerFactory. */
    private EntityManagerFactory entityManagerFactory;
@@ -181,6 +185,10 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
       this.banqueDao = bDao;
    }
 
+   public void setChampCalculeManager(final ChampCalculeManager ccMgr){
+      this.champCalculeManager = ccMgr;
+   }
+
    @Override
    public List<ChampAnnotation> findByNomManager(final String nom){
       return champAnnotationDao.findByNom(nom);
@@ -200,7 +208,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
       /* On exécute la requête. */
       log.debug("findAnnotationValeurByChampAnnotationManager : " + "Exécution de la requête : \n" + sb.toString());
       final EntityManager em = entityManagerFactory.createEntityManager();
-      final Query query = em.createQuery(sb.toString());
+      final TypedQuery<AnnotationValeur> query = em.createQuery(sb.toString(), AnnotationValeur.class);
       objets = query.getResultList();
       return objets;
    }
@@ -214,7 +222,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
       /* On exécute la requête. */
       log.debug("findChampAnnotationByEntiteManager : " + "Exécution de la requête : \n" + sb.toString());
       final EntityManager em = entityManagerFactory.createEntityManager();
-      final Query query = em.createQuery(sb.toString());
+      final TypedQuery<ChampAnnotation> query = em.createQuery(sb.toString(), ChampAnnotation.class);
       objets = query.getResultList();
       return objets;
    }
@@ -296,6 +304,12 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
    }
 
    @Override
+   public List<ChampAnnotation> findByTableAndDataTypeManager(final TableAnnotation table, final List<DataType> dataTypeList){
+      log.debug("Recherche des ChampAnnotation par Table et par Datatype");
+      return champAnnotationDao.findByTableAndDataType(table, dataTypeList);
+   }
+
+   @Override
    public boolean findDoublonManager(final ChampAnnotation champ){
       if(champ.getChampAnnotationId() == null){
          return champAnnotationDao.findAll().contains(champ);
@@ -342,6 +356,16 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
          }
       }
       return items;
+   }
+
+   @Override
+   public ChampCalcule getChampCalculeManager(final ChampAnnotation chpAnno){
+      ChampCalcule champCalcule = null;
+      if(chpAnno.getChampAnnotationId() != null){
+         final ChampAnnotation champAnnotation = champAnnotationDao.mergeObject(chpAnno);
+         champCalcule = champCalculeManager.findByChampAnnotationManager(champAnnotation);
+      }
+      return champCalcule;
    }
 
    @Override
@@ -412,19 +436,23 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
    }
 
    @Override
-   public void removeObjectManager(final ChampAnnotation champ, final String comments, final Utilisateur user,
+   public void removeObjectManager(final ChampAnnotation champAnnotation, final String comments, final Utilisateur user,
       final String baseDir){
-      if(champ != null){
+      if(champAnnotation != null){
          // supprime le dossier si annotation fichier
-         if(champ.getDataType().getType().equals("fichier")){
-            createOrDeleteFileDirectoryManager(baseDir, champ, true, getBanquesFromTableManager(champ));
+         if(champAnnotation.getDataType().getType().equals("fichier")){
+            createOrDeleteFileDirectoryManager(baseDir, champAnnotation, true, getBanquesFromTableManager(champAnnotation));
          }
 
-         champAnnotationDao.removeObject(champ.getChampAnnotationId());
-         log.info("Suppression objet ChampAnnotation " + champ.toString());
+         if(null != champAnnotation.getChampCalcule()){
+            champCalculeManager.removeObjectManager(champAnnotation.getChampCalcule());
+         }
+
+         champAnnotationDao.removeObject(champAnnotation.getChampAnnotationId());
+         log.info("Suppression objet ChampAnnotation " + champAnnotation.toString());
 
          //Supprime operations associes
-         CreateOrUpdateUtilities.removeAssociateOperations(champ, operationManager, comments, user);
+         CreateOrUpdateUtilities.removeAssociateOperations(champAnnotation, operationManager, comments, user);
 
       }else{
          log.warn("Suppression d'un ChampAnnotation null");
@@ -597,15 +625,31 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
       champAnno.setAnnotationDefauts(defs);
    }
 
+   /**
+    * Misa à jour du champCalcule
+    * @param champAnno
+    * @param champCalcule
+    */
+   private void updateChampCalcule(final ChampAnnotation champAnno, final ChampCalcule champCalcule){
+      final ChampCalcule oldChampCalcule = getChampCalculeManager(champAnno);
+      if(null != oldChampCalcule){
+         if(oldChampCalcule.getChampCalculeId() != champCalcule.getChampCalculeId()){
+            champCalculeManager.removeObjectManager(oldChampCalcule);
+            champCalculeManager.createObjectManager(champCalcule);
+         }else{
+            champCalculeManager.updateObjectManager(champCalcule);
+         }
+      }else{
+         champCalculeManager.createObjectManager(champCalcule);
+      }
+   }
+
    @Override
    public void createOrDeleteFileDirectoryManager(final String baseDir, final ChampAnnotation chp, final boolean delete,
       final List<Banque> banques){
       if(chp.getChampAnnotationId() != null){
-         //ChampAnnotation chp = champAnnotationDao.mergeObject(champ);
          String path;
          Banque bank;
-         //			Set<Banque> banks = tableAnnotationManager
-         //						.getBanquesManager(chp.getTableAnnotation());
          final Iterator<Banque> it = banques.iterator();
          while(it.hasNext()){
             bank = it.next();
@@ -627,10 +671,6 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
                }
                // supprime le dossier
                new File(path).delete();
-               //					tableAnnotationManager
-               //						.getChampAnnotationsManager(chp.getTableAnnotation())
-               //										.remove(chp);
-               //					getAllChampsFromTableManager(chp).remove(chp);
             }
          }
       }
@@ -694,6 +734,17 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
       }else{
          log.warn("Doublon lors " + operation + " objet ChampAnnotation " + champ.toString());
          throw new DoublonFoundException("ChampAnnotation", operation);
+      }
+   }
+
+   @Override
+   public void createOrUpdateObjectManager(final ChampAnnotation champ, final TableAnnotation table, final DataType dataType,
+      final List<Item> items, final List<AnnotationDefaut> defauts, final ChampCalcule champCalcule,
+      final Utilisateur utilisateur, final Banque banque, final String operation, final String baseDir){
+      createOrUpdateObjectManager(champ, table, dataType, items, defauts, utilisateur, banque, operation, baseDir);
+
+      if(champCalcule != null){
+         updateChampCalcule(champ, champCalcule);
       }
    }
 

@@ -333,7 +333,6 @@ public class FicheRetour extends AbstractFicheCombineController
    @Override
    public void setParentObject(final TKdataObject obj){}
 
-   
    public void switchToCreateMode(final String obs){
 
       super.switchToCreateMode();
@@ -643,34 +642,20 @@ public class FicheRetour extends AbstractFicheCombineController
     * Retourne les échantillons sélectionnées.
     * @return
     */
-   
+
    private List<TKStockableObject> findSelectedObjList(){
       if(getObjects().size() <= 100){
          final List<TKStockableObject> list = new ArrayList<>();
-         //			Iterator<Listitem> its = objectsBox.getSelectedItems().iterator();
-         //			while (its.hasNext()) {
-         //				list.add(getObjects().get(
-         //						objectsBox.getItems().indexOf(its.next())));
-         //			}
-         //			return list;
          list.addAll(((Selectable<TKStockableObject>) objectsBox.getModel()).getSelection());
          return list;
-      }else{
-         return getObjects();
       }
+      return getObjects();
    }
 
-   
    public void onClick$cocherTous(){
-      //		for (int i = 0; i < objectsBox.getItems().size(); i++) {
-      //			selectedObjectsItem.add((Listitem) 
-      //					objectsBox.getItems().get(i));
-      //		}
       ((Selectable<TKStockableObject>) objectsBox.getModel()).setSelection(objects);
-      //		objectsBox.setSelectedItems(selectedObjectsItem);
    }
 
-   
    public void onClick$decocherTous(){
       //		selectedObjectsItem = new HashSet<Listitem>();
       //		getBinder().loadComponent(objectsBox);
@@ -748,12 +733,10 @@ public class FicheRetour extends AbstractFicheCombineController
       if(entiteOperation != null){
          if(!entiteOperation.getNom().equals("Emplacement")){
             return entiteOperation.getNom();
-         }else{
-            return Labels.getLabel("ficheRetour.deplacement");
          }
-      }else{
-         return null;
+         return Labels.getLabel("ficheRetour.deplacement");
       }
+      return null;
    }
 
    public String getEntiteCode(){
@@ -900,9 +883,8 @@ public class FicheRetour extends AbstractFicheCombineController
    public String getImpactFormatted(){
       if((retour != null && retour.getImpact() != null && retour.getImpact()) || impactBox.isVisible()){
          return Labels.getLabel("Champ.Retour.Impact");
-      }else{
-         return Labels.getLabel("Champ.Retour.Impact.neg");
       }
+      return Labels.getLabel("Champ.Retour.Impact.neg");
    }
 
    public String getImpactClass(){

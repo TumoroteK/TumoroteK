@@ -240,9 +240,8 @@ public class CimMaster implements CodeCommon, Serializable
       if(this.getSid() != null){
          // utilisation get car CimMaster$$EnhancerByCGLIB proxy
          return this.getSid().equals(test.getSid());
-      }else{ //impossible
-         return false;
-      }
+      } //impossible
+      return false;
    }
 
    /**

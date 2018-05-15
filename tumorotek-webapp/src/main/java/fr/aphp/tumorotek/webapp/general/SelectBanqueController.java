@@ -176,7 +176,7 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
             // on récupère la propriété définissant si on doit sauver
             // les connexions
             String lastCxValue = "";
-            if(res.containsKey("SAUVER_CONNEXION_TK") && res.getString("SAUVER_CONNEXION_TK") != null
+            if(null != res && res.containsKey("SAUVER_CONNEXION_TK") && res.getString("SAUVER_CONNEXION_TK") != null
                && res.getString("SAUVER_CONNEXION_TK").equals("true")){
                // last connection
                final Operation lastCx = ManagerLocator.getOperationManager().findLastByUtilisateurAndTypeManager(
@@ -208,7 +208,7 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
 
             // si le mdp expire dans moins de 30 jours, on va afficher 
             // un warning
-            if(nbJours != null && nbJours < 31 && nbJours > 0){
+            if(nbJours < 31 && nbJours > 0){
                labelMdpWarning
                   .setContent(ObjectTypesFormatters.getLabel("login.compte.warning", new String[] {String.valueOf(nbJours)}));
                rowMdpWarning.setVisible(true);

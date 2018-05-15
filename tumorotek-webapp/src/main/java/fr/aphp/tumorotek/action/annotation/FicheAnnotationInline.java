@@ -361,7 +361,7 @@ public class FicheAnnotationInline extends FicheAnnotation
       // passe la liste d'objets en modification multiple
       if(multi){
          ((AnnotationComponent) ua.getFellow("annoDiv").getAttributeOrFellow("annoDiv$composer", true))
-            .setMultiObjs((List<TKAnnotableObject>) this.multiObjs);
+            .setMultiObjs(this.multiObjs);
       }
 
       return ua;

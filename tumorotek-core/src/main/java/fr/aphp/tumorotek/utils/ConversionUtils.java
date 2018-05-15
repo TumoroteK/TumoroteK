@@ -218,6 +218,10 @@ public abstract class ConversionUtils
          res = Boolean.valueOf((String) objet);
       }
 
+      if(res == null){
+         throw new TKException("Conversion " + objet.getClass() + " en Boolean");
+      }
+      
       return res;
 
    }

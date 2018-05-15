@@ -88,14 +88,14 @@ public class ContexteDaoTest extends AbstractDaoTest
    public void testFindByOrder(){
       final List<Contexte> list = contexteDao.findByOrder();
       assertTrue(list.size() == 2);
-      assertTrue(list.get(0).getNom().equals("CONT1"));
+      assertTrue(list.get(0).getNom().equals("DEFAUT"));
    }
 
    /**
     * Test l'appel de la méthode findByNom().
     */
    public void testFindByNom(){
-      List<Contexte> contextes = contexteDao.findByNom("CONT1");
+      List<Contexte> contextes = contexteDao.findByNom("DEFAUT");
       assertTrue(contextes.size() == 1);
       contextes = contexteDao.findByNom("CAT5");
       assertTrue(contextes.size() == 0);

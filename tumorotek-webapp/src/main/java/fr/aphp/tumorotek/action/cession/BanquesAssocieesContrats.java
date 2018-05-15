@@ -49,7 +49,7 @@ import fr.aphp.tumorotek.component.OneToManyComponent;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
-public class BanquesAssocieesContrats extends OneToManyComponent
+public class BanquesAssocieesContrats extends OneToManyComponent<Banque>
 {
 
    private static final long serialVersionUID = 1L;
@@ -69,8 +69,8 @@ public class BanquesAssocieesContrats extends OneToManyComponent
 
    
    @Override
-   public void setObjects(final List<? extends Object> objs){
-      this.objects = (List<Banque>) objs;
+   public void setObjects(final List<Banque> objs){
+      this.objects = objs;
       updateComponent();
    }
 
@@ -87,8 +87,8 @@ public class BanquesAssocieesContrats extends OneToManyComponent
    }
 
    @Override
-   public void addToListObjects(final Object obj){
-      getObjects().add((Banque) obj);
+   public void addToListObjects(final Banque obj){
+      getObjects().add(obj);
    }
 
    @Override
@@ -107,7 +107,7 @@ public class BanquesAssocieesContrats extends OneToManyComponent
    }
 
    @Override
-   public List<? extends Object> findObjectsAddable(){
+   public List<Banque> findObjectsAddable(){
       // Banques ajoutables
       final List<Banque> banks = ManagerLocator.getBanqueManager()
          .findByUtilisateurIsAdminManager(SessionUtils.getLoggedUser(sessionScope), SessionUtils.getPlateforme(sessionScope));

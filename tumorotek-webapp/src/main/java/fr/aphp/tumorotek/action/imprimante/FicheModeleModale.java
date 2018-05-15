@@ -310,9 +310,8 @@ public class FicheModeleModale extends AbstractFicheCombineController
    public void onSelect$modeleTypesBox(){
       if(selectedModeleType == null){
          throw new WrongValueException(modeleTypesBox, Labels.getLabel("fiche.modele.error.modeleType"));
-      }else{
-         Clients.clearWrongValue(modeleTypesBox);
       }
+      Clients.clearWrongValue(modeleTypesBox);
    }
 
    public void onClick$testImpression(){

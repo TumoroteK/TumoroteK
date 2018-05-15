@@ -55,7 +55,7 @@ import fr.aphp.tumorotek.model.contexte.Protocole;
  * @version 2.0.6
  *
  */
-public interface ProtocoleManager extends TKThesaurusManager
+public interface ProtocoleManager extends TKThesaurusManager<Protocole>
 {
 
    /**

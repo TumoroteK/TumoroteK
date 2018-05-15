@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.dao.io.export;
 import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import fr.aphp.tumorotek.model.coeur.annotation.DataType;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
 import fr.aphp.tumorotek.model.systeme.Entite;
@@ -79,6 +80,17 @@ public interface ChampEntiteDao extends GenericDaoJpa<ChampEntite, Integer>
     * @return Liste de ChampEntités.
     */
    List<ChampEntite> findByEntiteAndImport(Entite entite, Boolean canImport);
+   
+   /**
+    * Recherche les champs importables (ou non) dont l'entité est
+    * passée en paramètre et dont le datatype correspond à la liste
+    * Les champs retournés sont triés par leur ordre.
+    * @param entite Entité à laquelle les champs appartiennent.
+    * @param canImport True ou false.
+    * @param dataTypeList liste des datatypes souhaités
+    * @return Liste de ChampEntités.
+    */
+   List<ChampEntite> findByEntiteAndImportAndDataType(Entite entite, Boolean canImport, List<DataType> dataTypeList);
 
    /**
     * Recherche les champs importables (ou non) dont l'entité est

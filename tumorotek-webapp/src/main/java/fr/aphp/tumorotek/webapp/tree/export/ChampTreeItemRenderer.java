@@ -35,7 +35,6 @@
  **/
 package fr.aphp.tumorotek.webapp.tree.export;
 
-import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Label;
@@ -44,7 +43,7 @@ import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
 
-import fr.aphp.tumorotek.model.io.export.ChampEntite;
+import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 
 /**
  * Classe gérant l'affichage des informations dans un arbre de type
@@ -78,7 +77,7 @@ public class ChampTreeItemRenderer implements TreeitemRenderer<Object>
       // si le noeud est une entité
       if(data instanceof EntiteNode){
          final EntiteNode node = (EntiteNode) data;
-         nom = node.getEntite().getNom();
+         nom = ObjectTypesFormatters.formatEntiteLabel(node.getEntite());
 
          final Label nomLabel = new Label();
          nomLabel.setValue(nom);
@@ -88,11 +87,7 @@ public class ChampTreeItemRenderer implements TreeitemRenderer<Object>
          item.setCheckable(false);
       }else if(data instanceof ChampNode){
          final ChampNode node = (ChampNode) data;
-         if(node.getChamp().getChampEntite() != null){
-            nom = getLabelForChampEntite(node.getChamp().getChampEntite());
-         }else if(node.getChamp().getChampAnnotation() != null){
-            nom = node.getChamp().getChampAnnotation().getNom();
-         }
+         nom = ObjectTypesFormatters.formatChampLabel(node.getChamp());
 
          final Label nomLabel = new Label();
          nomLabel.setValue(nom);
@@ -118,29 +113,4 @@ public class ChampTreeItemRenderer implements TreeitemRenderer<Object>
          }
       });
    }
-
-   /**
-    * Méthode permettant d'afficher le nom d'un champ.
-    * @param c
-    * @return
-    */
-   public String getLabelForChampEntite(final ChampEntite c){
-      final StringBuffer iProperty = new StringBuffer();
-      iProperty.append("Champ.");
-      iProperty.append(c.getEntite().getNom());
-      iProperty.append(".");
-
-      String champOk = "";
-      // si le nom du champ finit par "Id", on le retire
-      if(c.getNom().endsWith("Id")){
-         champOk = c.getNom().substring(0, c.getNom().length() - 2);
-      }else{
-         champOk = c.getNom();
-      }
-      iProperty.append(champOk);
-
-      // on ajoute la valeur du champ
-      return Labels.getLabel(iProperty.toString());
-   }
-
 }

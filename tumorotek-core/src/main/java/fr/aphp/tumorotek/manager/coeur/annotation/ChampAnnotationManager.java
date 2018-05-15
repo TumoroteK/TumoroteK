@@ -41,6 +41,7 @@ import java.util.Set;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationDefaut;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
+import fr.aphp.tumorotek.model.coeur.annotation.ChampCalcule;
 import fr.aphp.tumorotek.model.coeur.annotation.DataType;
 import fr.aphp.tumorotek.model.coeur.annotation.Item;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
@@ -60,6 +61,9 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  */
 public interface ChampAnnotationManager
 {
+
+   //TODO Creer et Utiliser methode getValueForObjectManager(ChampAnnotation, Object)
+   //--> FIXME Faire cela entraine une dépendance cyclique: >ChampManager -> ChampAnnotationManager -> ChampCalculeManager -> ChampManager<
 
    /**
     * Recherche un ChampAnnotation dont l'identifiant est passé en paramètre.
@@ -84,6 +88,15 @@ public interface ChampAnnotationManager
     * @return Liste de ChampAnnotation.
     */
    List<ChampAnnotation> findByTableManager(TableAnnotation table);
+
+   /**
+    * Recherche les champs en fonction de la table et des datatype passés en paramètre.
+    * Les champs retournés sont triés par leur ordre.
+    * @param table TableAnnotation à laquelle les champs appartiennent.
+    * @param dataTypeList liste des datatypes
+    * @return Liste de ChampAnnotation.
+    */
+   List<ChampAnnotation> findByTableAndDataTypeManager(TableAnnotation table, List<DataType> dataTypeList);
 
    /**
     * Récupère la valeur d'un champAnnotation d'une entité.
@@ -115,14 +128,28 @@ public interface ChampAnnotationManager
     * @param dataType
     * @param items liste de Items
     * @param defauts liste d'annotation defaut
-    * @param valsAttendu TODO
     * @param operation String creation / modification
     * @param base directory pour créer le dossier sytème associé.
     * @apram banque Banque courante (pour les items de champs de catalogue)
     */
    void createOrUpdateObjectManager(ChampAnnotation champ, TableAnnotation table, DataType dataType, List<Item> items,
-      List<AnnotationDefaut> defauts, Utilisateur utilisateur, Banque banque,
-      String operation, String baseDir);
+      List<AnnotationDefaut> defauts, Utilisateur utilisateur, Banque banque, String operation, String baseDir);
+
+   /**
+    * Persiste une instance afin de l'enregistrer dans la base de données.
+    * @param champ ChampAnnotation à creer
+    * @param table TableAnnotation
+    * @param dataType
+    * @param items liste de Items
+    * @param defauts liste d'annotation defaut
+    * @param champCalcule Champ Calculé
+    * @apram banque Banque courante (pour les items de champs de catalogue)
+    * @param operation String creation / modification
+    * @param base directory pour créer le dossier sytème associé.
+    */
+   void createOrUpdateObjectManager(ChampAnnotation champ, TableAnnotation table, DataType dataType, List<Item> items,
+      List<AnnotationDefaut> defauts, ChampCalcule champCalcule, Utilisateur utilisateur, Banque banque, String operation,
+      String baseDir);
 
    /**
     * Cherche les doublons en se basant sur la methode equals()
@@ -164,6 +191,13 @@ public interface ChampAnnotationManager
     * @return Liste de Item.
     */
    Set<Item> getItemsManager(ChampAnnotation champ, Banque banque);
+
+   /**
+    * Recherche le champ calculé lié au champ passé en paramètre
+    * @param champ champs pour lequel on recherche le champ calculé
+    * @return champ calculé
+    */
+   ChampCalcule getChampCalculeManager(ChampAnnotation champ);
 
    /**
     * Recherche toutes les instances de ChampAnnotation présentes dans la base.

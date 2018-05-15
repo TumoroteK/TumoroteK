@@ -59,7 +59,7 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  * @version 2.0
  *
  */
-public interface RisqueManager extends TKThesaurusManager
+public interface RisqueManager extends TKThesaurusManager<Risque>
 {
 
    /**

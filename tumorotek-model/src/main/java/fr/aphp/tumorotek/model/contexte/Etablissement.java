@@ -259,9 +259,8 @@ public class Etablissement implements TKdataObject, TKFantomableObject, java.io.
    public String toString(){
       if(this.nom != null){
          return "{" + this.nom + "}";
-      }else{
-         return "{Empty Etablissement}";
       }
+      return "{Empty Etablissement}";
    }
 
    /**

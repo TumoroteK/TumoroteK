@@ -69,6 +69,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
@@ -79,8 +80,6 @@ import org.springframework.jdbc.datasource.DataSourceUtils;
 
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonDao;
 import fr.aphp.tumorotek.dao.coeur.patient.MaladieDao;
-import fr.aphp.tumorotek.dao.coeur.patient.PatientDao;
-import fr.aphp.tumorotek.dao.coeur.prelevement.PrelevementDao;
 import fr.aphp.tumorotek.dao.coeur.prodderive.ProdDeriveDao;
 import fr.aphp.tumorotek.dao.io.export.ChampEntiteDao;
 import fr.aphp.tumorotek.manager.coeur.ObjetStatutManager;
@@ -230,10 +229,6 @@ public class ImportManagerImpl implements ImportManager
       this.objetStatutManager = oManager;
    }
 
-   public void setPrelevementDao(final PrelevementDao pDao){}
-
-   public void setPatientDao(final PatientDao pDao){}
-
    public void setMaladieDao(final MaladieDao mDao){
       this.maladieDao = mDao;
    }
@@ -269,34 +264,36 @@ public class ImportManagerImpl implements ImportManager
    @Override
    public String getCellContent(final Cell cell, final boolean isDate, final FormulaEvaluator evaluator){
       String o = "";
-      int type;
+      CellType type;
 
       if(cell != null){
-         type = cell.getCellType();
+         type = cell.getCellTypeEnum();
          CellValue cellValue = null;
-         if(type == Cell.CELL_TYPE_FORMULA){
+         if(type == CellType.FORMULA){
             if(evaluator != null){
                cellValue = evaluator.evaluate(cell);
             }else{
                throw new FormulaException(cell.getCellFormula().toString());
             }
             if(cellValue != null){
-               type = cellValue.getCellType();
+               type = cellValue.getCellTypeEnum();
             }else{
-               type = Cell.CELL_TYPE_BLANK;
+               type = CellType.BLANK;
             }
          }else{
-            type = cell.getCellType();
+            type = cell.getCellTypeEnum();
          }
 
-         if(type == Cell.CELL_TYPE_STRING){
+         if(type == CellType.STRING){
             o = cellValue == null ? cell.getStringCellValue().trim() : cellValue.getStringValue();
          }else{
             //o = null;
             if(isDate){
                final Date dt = cell.getDateCellValue();
                if(dt != null){
-                  if(dt.getHours() > 0 && dt.getMinutes() > 0){
+                  final Calendar cal = Calendar.getInstance();
+                  cal.setTime(dt);
+                  if(cal.get(Calendar.HOUR_OF_DAY) > 0 && cal.get(Calendar.MINUTE) > 0){
                      final DateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.FRANCE);
                      o = sdf.format(dt);
                   }else{
@@ -306,7 +303,7 @@ public class ImportManagerImpl implements ImportManager
                }else{
                   o = null;
                }
-            }else if(type == Cell.CELL_TYPE_NUMERIC){
+            }else if(type == CellType.NUMERIC){
                final double db = cellValue == null ? cell.getNumericCellValue() : cellValue.getNumberValue();
                final long lg = (long) db;
 
@@ -315,14 +312,14 @@ public class ImportManagerImpl implements ImportManager
                }else{
                   o = String.valueOf(db);
                }
-            }else if(type == Cell.CELL_TYPE_BOOLEAN){
+            }else if(type == CellType.BOOLEAN){
                final Boolean value = cellValue == null ? cell.getBooleanCellValue() : cellValue.getBooleanValue();
-                  if(value){
-                     o = "1";
-                  }else{
-                     o = "0";
-                  }
-                  o = null;
+               if(value){
+                  o = "1";
+               }else{
+                  o = "0";
+               }
+               o = null;
             }else{
                o = null;
             }
@@ -544,8 +541,7 @@ public class ImportManagerImpl implements ImportManager
    @Override
    public Hashtable<ChampAnnotation, Hashtable<String, Object>>
       generateAnnotationsThesaurusHashtable(final ImportTemplate importTemplate){
-      final Hashtable<ChampAnnotation, Hashtable<String, Object>> thesaurus =
-         new Hashtable<>();
+      final Hashtable<ChampAnnotation, Hashtable<String, Object>> thesaurus = new Hashtable<>();
 
       if(importTemplate != null){
          // on extrait toutes les colonnes du template
@@ -692,7 +688,8 @@ public class ImportManagerImpl implements ImportManager
          if(value.getClass().getSimpleName().equals("String")){
             final DataType dt = annotation.getDataType();
 
-            if(dt.getType().equals("alphanum") || dt.getType().equals("num") || dt.getType().equals("hyperlien")){
+            if(dt.getType().equals("alphanum") || dt.getType().equals("num") || dt.getType().equals("hyperlien")
+               || dt.getType().equals("duree")){
                annoValeur.setAlphanum((String) value);
             }else if(dt.getType().equals("boolean")){
                // si l'attibut est un boolean, on caste
@@ -813,8 +810,8 @@ public class ImportManagerImpl implements ImportManager
                if(empl == null){
                   throw new WrongImportValueException(colonne, "Emplacement");
                }
-                  value = empl;
-               }
+               value = empl;
+            }
          }else{
             value = null;
          }
@@ -1149,10 +1146,6 @@ public class ImportManagerImpl implements ImportManager
          if(properties.getColonnesForEntites().containsKey(duo.getEntite())){
             colonnes = properties.getColonnesForEntites().get(duo.getEntite());
             // pour chaque colonne, on set la valeur
-            /**************************************/
-            // List<AnnotationValeur> annotations = 
-            ///	new ArrayList<AnnotationValeur>();
-            /*************************************/
             for(int i = 0; i < colonnes.size(); i++){
                // si la colonne correspond à un attribut
                // de l'objet
@@ -1169,24 +1162,12 @@ public class ImportManagerImpl implements ImportManager
                   duo.getFirstAnnoValsMap().put(colonnes.get(i).getChamp().getChampAnnotation(), avs);
                }
             }
-            /********************************/
-            //				if (annotations.size() > 0) {
-            //					// on met la liste d'annotations dans la hashtable
-            //					properties.getAnnotationsEntite().put(entiteManager
-            //							.findByNomManager("Patient").get(0), annotations);
-            //				}
-            /********************************/
          }
          // on regarde si le patient existe deja en base
          if(patientManager.findDoublonManager(patient)){
 
             final Patient existingPat = patientManager.getExistingPatientManager(patient);
 
-            // for (int i = 0; i < liste.size(); i++) {
-            //	existingPat = liste.get(i);
-            //					if (!existingPat.getClass().getSimpleName().equals("Patient")) {
-            //						existingPat = patientDao.mergeObject(liste.get(i));
-            //					}
             if(patient.equals(existingPat)){
                patient = existingPat;
             }
@@ -1262,8 +1243,6 @@ public class ImportManagerImpl implements ImportManager
          // on récupère les colonnes liées au prlvt
          if(properties.getColonnesForEntites().containsKey(duo.getEntite())){
             colonnes = properties.getColonnesForEntites().get(duo.getEntite());
-            // List<AnnotationValeur> annotations = 
-            //	new ArrayList<AnnotationValeur>();
             // pour chaque colonne, on set la valeur
             for(int i = 0; i < colonnes.size(); i++){
                // si la colonne correspond à un attribut
@@ -1297,11 +1276,6 @@ public class ImportManagerImpl implements ImportManager
                   duo.getFirstAnnoValsMap().put(colonnes.get(i).getChamp().getChampAnnotation(), avs);
                }
             }
-            // if (annotations.size() > 0) {
-            // on met la liste d'annotations dans la hashtable
-            //	properties.getAnnotationsEntite().put(e, 
-            //			annotations);
-            //}
 
             // on regarde si le prlvt existe deja en base
             if(prelevementManager.findDoublonManager(prlvt)){
@@ -1313,9 +1287,6 @@ public class ImportManagerImpl implements ImportManager
 
                for(int i = 0; i < prlvts.size(); i++){
                   existingPrel = prlvts.get(i);
-                  //						if (!prlvts.get(i).getClass().getSimpleName().equals("Prelevement")) {
-                  //							existingPrel = prelevementDao.mergeObject(prlvts.get(i));
-                  //						}
                }
                // update en modification -> creation du duo
                duo.setSecondObj(existingPrel);
@@ -1583,24 +1554,6 @@ public class ImportManagerImpl implements ImportManager
                      }
                   }
 
-                  // parent = prlvt;
-
-                  // on récupère les annotations à créer
-                  // s'il en existe
-
-                  //	Entite ePrlvt = entiteManager
-                  //		.findByNomManager("Prelevement").get(0);
-                  //						if (properties.getAnnotationsEntite()
-                  //								.containsKey(ePrlvt) 
-                  //							&& properties.getAnnotationsEntite()
-                  //											.get(ePrlvt) != null) {
-                  //							avs.addAll(properties.getAnnotationsEntite().get(ePrlvt));
-                  //							for (AnnotationValeur av : avs) {
-                  //								if (!av.isEmpty()) {
-                  //									toUpdate.add(av);
-                  //								}
-                  //							}
-                  //						}
                   if(prlvt != null){
                      toUpdate.addAll(prlvtDuo.getFirstAnnoVals());
 
@@ -1618,13 +1571,6 @@ public class ImportManagerImpl implements ImportManager
                            prlvt.getOperateur(), prlvt.getQuantiteUnite(), null, !toUpdate.isEmpty() ? toUpdate : null,
                            utilisateur, true, null, true, ncfsPrelevement != null ? ncfsPrelevement.get(prlvt) : null);
                      }else{ // update Objet
-
-                        // // on recherche les annotations à supprimer (celle maj)
-                        // for (AnnotationValeur av : avs) {
-                        //	toDelete.addAll(annotationValeurManager
-                        //		.findByChampAndObjetManager(av
-                        //				.getChampAnnotation(), prlvt));
-                        //}
 
                         toDelete.addAll(prlvtDuo.getSecondAnnoVals());
 
@@ -1746,42 +1692,6 @@ public class ImportManagerImpl implements ImportManager
       }
    }
 
-   //	@Override
-   //	public void saveDerivesRowManager(Row row, List<Object> objects, 
-   //			List<Importation> importations,
-   //			Utilisateur utilisateur,
-   //			ImportProperties properties, 
-   //			EchantillonJdbcSuite jdbcSuite, 
-   //			List<DerivesImportBatches> derivesBatches,
-   //			Float trsfQte, String obs, 
-   //			Calendar dateSortie) {
-   //		if (objects != null) {
-   //			try {
-   //				TKAnnotableObject parent = null;
-   //				for (int i = 0; i < objects.size(); i++) {
-   //					if (objects.get(i).getClass()
-   //							.getSimpleName().equals("ProdDerive")) {			
-   //						if (((ProdDerive) objects.get(i)).getProdDeriveId() != null && parent == null) { // dérivé parent
-   //						// pb si import modif derive derivant echantillon par exemple !!!
-   //							parent = (ProdDerive) objects.get(i);
-   //						} else if (((ProdDerive) objects.get(i)).getProdDeriveId() == null) {
-   //							addToDeriveBatchesManager(row, (ProdDerive) objects.get(i), derivesBatches, 
-   //									parent, trsfQte, dateSortie, obs,
-   //									properties);
-   //						}
-   //					} else {
-   //						parent = (TKAnnotableObject) objects.get(i);
-   //					}				
-   //				}
-   //			} catch (Exception e) {
-   //				// rollback create operation
-   //				throw new RuntimeException(e);
-   //			} finally {
-   //							
-   //			}
-   //		}
-   //	}
-   //	
    @Override
    public void addToDeriveBatchesManager(final Row row, final ProdDerive derive, final List<DerivesImportBatches> batches,
       final TKAnnotableObject parent, final Float transfoQte, final Calendar dateSortie, final String observations,
@@ -1812,11 +1722,6 @@ public class ImportManagerImpl implements ImportManager
                throw new UsedPositionException("ProdDerive", "Import", empl.getPosition());
             }
          }
-         //			else {
-         //				// s'il n'existait pas on le crée
-         //				emplacementManager.createObjectManager(
-         //						empl, empl.getTerminale(), null);
-         //			}
       }
       // si aucun statut n'a été donné, on met
       // le statut à stocké
@@ -1888,7 +1793,7 @@ public class ImportManagerImpl implements ImportManager
             }catch(final DeriveBatchSaveException re){
                final ProdDerive deriveError = re.getDeriveInError();
 
-               if(deriveError != null){
+               if(null != currBatch && deriveError != null){
                   final ImportError error = new ImportError();
                   error.setException(re.getTargetExeption());
                   error.setRow(currBatch.getImportRow().get(deriveError));
@@ -1902,179 +1807,18 @@ public class ImportManagerImpl implements ImportManager
       }
    }
 
-   //	@Override
-   //	public ImportHistorique importFileManager(
-   //			ImportTemplate importTemplate,
-   //			Utilisateur utilisateur,
-   //			HSSFWorkbook wb) {
-   //		ImportProperties properties = new ImportProperties();
-   //		properties.setBanque(importTemplate.getBanque());
-   //		List<ImportError> errors = new ArrayList<ImportError>();
-   //		ImportHistorique historique = new ImportHistorique();
-   //		historique.setImportTemplate(importTemplate);
-   //		historique.setUtilisateur(utilisateur);
-   //		historique.setDate(Calendar.getInstance());
-   //		List<Importation> importations = new ArrayList<Importation>();
-   //		
-   //		//HSSFWorkbook wb;	
-   //		HSSFSheet sheet;
-   //		Iterator<Row> rit;
-   //		HSSFRow row = null;
-   //		
-   //		ncfsPrelevement = null;							
-   //		ncfsEchanTrait = null;
-   //		ncfsEchanCess = null;
-   //		ncfsDeriveTrait = null;
-   //		ncfsDeriveCess = null;
-   //		
-   //		// ouvre fichier xls
-   //		try {
-   //			//wb = new HSSFWorkbook(fis);
-   //			sheet = wb.getSheetAt(0);
-   //			// on se positionne sur la première ligne
-   //			rit = sheet.rowIterator();
-   //			row = (HSSFRow) rit.next();
-   //		
-   //			// init de toutes les hashtables
-   //			properties.setColonnesHeaders(
-   //					initColumnsHeadersManager(row));
-   //			properties.setColonnesForEntites(initImportColonnesManager(
-   //					properties.getColonnesHeaders(), importTemplate));
-   //			properties.setThesaurusValues(generateThesaurusHashtable(
-   //					importTemplate));
-   //			properties.setAnnotationThesaurusValues(
-   //					generateAnnotationsThesaurusHashtable(importTemplate));
-   //			
-   //			
-   //			Entite ePatient = entiteManager.findByNomManager("Patient").get(0);
-   //			Entite eMaladie = entiteManager.findByNomManager("Maladie").get(0);
-   //			Entite ePrlvt = entiteManager
-   //				.findByNomManager("Prelevement").get(0);
-   //			Entite eEchan = entiteManager
-   //				.findByNomManager("Echantillon").get(0);
-   //			Entite eDerive = entiteManager
-   //				.findByNomManager("ProdDerive").get(0);
-   //			
-   //			List<Object> objectsToSave = new ArrayList<Object>();
-   //			
-   //			while (rit.hasNext()) {
-   //				row = (HSSFRow) rit.next();
-   //				properties.setAnnotationsEntite(
-   //						new Hashtable<Entite, List<AnnotationValeur>>());
-   //				// List<Object> objectsToSave = new ArrayList<Object>();
-   //				objectsToSave.clear();
-   //				Patient patient = null;
-   //				Maladie maladie = null;
-   //				Prelevement prlvt = null;
-   //				Echantillon echantillon = null;
-   //				ProdDerive derive = null;
-   //				try {		
-   //					// teste si la row is empty
-   //					if (!isEmptyRow(row)) {
-   //						if (properties.getColonnesForEntites()
-   //								.containsKey(ePatient)) {
-   //							patient = setAllPropertiesForPatient(row, properties);
-   //							objectsToSave.add(patient);
-   //						}
-   //						if (properties.getColonnesForEntites()
-   //								.containsKey(eMaladie)) {
-   //							maladie = setAllPropertiesForMaladie(
-   //									row, properties, patient);
-   //							objectsToSave.add(maladie);
-   //						}
-   //						if (properties.getColonnesForEntites()
-   //								.containsKey(ePrlvt)) {
-   //							prlvt = setAllPropertiesForPrelevement(
-   //									row, properties, maladie);
-   //							objectsToSave.add(prlvt);
-   //						}
-   //						if (properties.getColonnesForEntites()
-   //								.containsKey(eEchan)) {
-   //							echantillon = setAllPropertiesForEchantillon(
-   //									row, properties, prlvt);
-   //							objectsToSave.add(echantillon);
-   //						}
-   //						if (properties.getColonnesForEntites()
-   //								.containsKey(eDerive)) {
-   //							derive = setAllPropertiesForProdDerive(row, properties);
-   //							objectsToSave.add(derive);
-   //						}
-   //					} else { // row empty
-   //						ImportError error = new ImportError();
-   //						error.setException(new EmptyRowImportException());
-   //						error.setRow(row);
-   //						error.setNbRow(row.getRowNum());
-   //						// errors.add(error);
-   //					}
-   //				} catch (WrongImportValueException wve) {
-   //					ImportError error = new ImportError();
-   //					error.setException(wve);
-   //					error.setRow(row);
-   //					error.setNbRow(row.getRowNum());
-   //					errors.add(error);
-   //					objectsToSave = new ArrayList<Object>();
-   //				}
-   //				try {
-   //					if (objectsToSave.size() > 0) {
-   //						saveObjectsManager(objectsToSave, 
-   //								importations,
-   //								utilisateur, properties);
-   //					}
-   //				} catch (RuntimeException re) {
-   //					ImportError error = new ImportError();
-   //					error.setException(re);
-   //					error.setRow(row);
-   //					error.setNbRow(row.getRowNum());
-   //					errors.add(error);
-   //				}
-   //				
-   //				if (row.getRowNum() % 100 == 0) {
-   //					System.out.println(row.getRowNum() + " " + Calendar.getInstance().get(Calendar.MINUTE) 
-   //							+ ":" + Calendar.getInstance().get(Calendar.SECOND));
-   //				}
-   //			}
-   //			
-   //			if (errors.isEmpty()) {
-   //				importHistoriqueManager.createObjectManager(
-   //						historique, importTemplate, utilisateur, importations);
-   //			}
-   //		} catch (BadFileFormatException bdfe) {
-   //			ImportError error = new ImportError();
-   //			error.setException(bdfe);
-   //			error.setRow(row);
-   //			error.setNbRow(row.getRowNum());
-   //			errors.add(error);
-   //		} catch (HeaderException he) {
-   //			ImportError error = new ImportError();
-   //			error.setException(he);
-   //			errors.add(error);
-   //		} catch (Exception e) {
-   //			e.printStackTrace();
-   //			ImportError error = new ImportError();
-   //			error.setException(new BadFileFormatException());
-   //			errors.add(error);
-   //		}
-   //		
-   //		if (!errors.isEmpty()) {
-   //			throw new ErrorsInImportException(errors);
-   //		}
-   //		
-   //		return historique;
-   //	}
-
    @Override
    public List<String> extractListOfStringFromExcelFile(final InputStream fis, final boolean fixNulls){
 
       final List<String> res = new ArrayList<>();
 
-      Workbook wb;
       Sheet sheet;
       Iterator<Row> rit;
       Row row = null;
 
       // ouvre fichier xls
-      try{
-         wb = WorkbookFactory.create(fis);
+      try( Workbook wb = WorkbookFactory.create(fis);){
+
          sheet = wb.getSheetAt(0);
          // on se positionne sur la première ligne
          rit = sheet.rowIterator();
@@ -2091,7 +1835,6 @@ public class ImportManagerImpl implements ImportManager
       }catch(final Exception e){
          e.printStackTrace();
       }
-
       return res;
    }
 
@@ -2103,7 +1846,7 @@ public class ImportManagerImpl implements ImportManager
    private boolean isEmptyRow(final Row row){
       final boolean res = true;
       for(int i = 0; i < row.getLastCellNum(); i++){
-         if(row.getCell(i) != null && row.getCell(i).getCellType() != Cell.CELL_TYPE_BLANK){
+         if(row.getCell(i) != null && row.getCell(i).getCellTypeEnum() != CellType.BLANK){
             return false;
          }
       }
@@ -2114,18 +1857,17 @@ public class ImportManagerImpl implements ImportManager
    @Override
    public ImportHistorique importFileManager(final ImportTemplate importTemplate, final Utilisateur utilisateur,
       final InputStream is){
-      Workbook wb = null;
       //SXSSFWorkbook wb = null;
-      try{
-         wb = WorkbookFactory.create(is);
+      try( Workbook wb = WorkbookFactory.create(is);){
          //wb = new SXSSFWorkbook( new XSSFWorkbook(is), 100);
+         return importFileManager(importTemplate, utilisateur, wb.getSheetAt(0));
       }catch(final IOException e){
          e.printStackTrace();
       }catch(final InvalidFormatException e){
          e.printStackTrace();
       }
-
-      return importFileManager(importTemplate, utilisateur, wb.getSheetAt(0));
+      
+      return null;
    }
 
    @Override
@@ -2155,7 +1897,7 @@ public class ImportManagerImpl implements ImportManager
 
    @Override
    public ImportHistorique importFileManager(final ImportTemplate importTemplate, final Utilisateur utilisateur,
-      final Sheet sheet){
+      final Sheet sheet){ //TODO Refactorer
       final ImportProperties properties = new ImportProperties();
       properties.setBanque(importTemplate.getBanque());
       final List<ImportError> errors = new ArrayList<>();
@@ -2307,13 +2049,7 @@ public class ImportManagerImpl implements ImportManager
                      derive = setAllPropertiesForProdDerive(row, properties);
                      objectsToSave.add(derive);
                   }
-               } // else { // row empty
-                 //	ImportError error = new ImportError();
-                 //	error.setException(new EmptyRowImportException());
-                 //	error.setRow(row);
-                 //	error.setNbRow(row.getRowNum());
-                 // errors.add(error);
-                 //}
+               } 
             }catch(final WrongImportValueException wve){
                final ImportError error = new ImportError();
                error.setException(wve);
@@ -2326,9 +2062,6 @@ public class ImportManagerImpl implements ImportManager
                if(objectsToSave.size() > 0){
 
                   saveObjectsRowManager(row, objectsToSave, importations, utilisateur, properties, jdbcSuite, derivesBatches);
-                  //	curr2 = Calendar.getInstance().getTimeInMillis();
-                  //	System.out.println(curr2 - curr);
-                  //	curr = curr2;
                }
             }catch(final RuntimeException re){
                re.printStackTrace();
@@ -2387,9 +2120,8 @@ public class ImportManagerImpl implements ImportManager
             try{
                rs.close();
             }catch(SQLException e){
-               // TODO Auto-generated catch block
                rs = null;
-               e.printStackTrace();
+               log.error(e);
             }
          }
          if(stmt != null){
@@ -2420,7 +2152,7 @@ public class ImportManagerImpl implements ImportManager
 
    @Override
    public ImportHistorique importSubDeriveFileManager(final ImportTemplate importTemplate, final Utilisateur utilisateur,
-      final Sheet sheet, final String retourTransfoEpuisement){
+      final Sheet sheet, final String retourTransfoEpuisement){ //TODO Refactorer
       final ImportProperties properties = new ImportProperties();
       properties.setBanque(importTemplate.getBanque());
       final List<ImportError> errors = new ArrayList<>();
@@ -2458,11 +2190,6 @@ public class ImportManagerImpl implements ImportManager
          icTrQte.setChamp(new Champ(champEntiteDao.findById(239)));
          icTrQte.setImportTemplate(importTemplate);
          properties.getSubDerivesCols().add(icTrQte);
-         //	ImportColonne icTrQteUnite = new ImportColonne();
-         //	icTrQteUnite.setNom("Quantite transf Unite");
-         //	icTrQteUnite.setOrdre(0);
-         //	icTrQteUnite.setChamp(new Champ(champEntiteDao.findById(240)));
-         //	properties.getSubDerivesCols().add(icTrQteUnite);
          final ImportColonne icDs = new ImportColonne();
          icDs.setNom("evt.date");
          icDs.setOrdre(0);
@@ -2511,30 +2238,6 @@ public class ImportManagerImpl implements ImportManager
                            throw new WrongImportValueException(properties.getSubDerivesCols().get(1), "Float");
                         }
                      }
-                     //							// col3 = transfo unite
-                     //							cellContent = getCellContent(row.getCell(2), false, properties.getEvaluator());
-                     //							if (cellContent != null && !cellContent.trim().equals("")) {
-                     //								try {
-                     //									transfoQuantiteUnite = uniteDao.findByUnite(cellContent).get(0);
-                     //									
-                     //									// verif unite correpond
-                     //									Unite parentUnite = null;
-                     //									if (parentDerive instanceof TKStockableObject) {
-                     //										parentUnite = ((TKStockableObject) parentDerive).getQuantiteUnite();
-                     //									} else {
-                     //										parentUnite = ((Prelevement) parentDerive).getQuantiteUnite();
-                     //									}
-                     //									// may throw NullPointer
-                     //									if (!transfoQuantiteUnite.equals(parentUnite)) {
-                     //										throw new WrongImportValueException(
-                     //												properties.getSubDerivesCols().get(2), "Unite"); 
-                     //									}
-                     //								} catch (Exception n) {
-                     //									throw new WrongImportValueException(
-                     //											properties.getSubDerivesCols().get(2), "Unite");
-                     //								} 
-                     //							}
-                     // col3 = dateSortie retour automatique
                      cellContent = getCellContent(row.getCell(2), true, properties.getEvaluator());
                      if(cellContent != null && !cellContent.trim().equals("")){
                         try{
@@ -2555,13 +2258,7 @@ public class ImportManagerImpl implements ImportManager
                      addToDeriveBatchesManager(row, childDerive, derivesBatches, parentDerive, transfoQuantite, dateSortie,
                         retourTransfoEpuisement, properties);
                   }
-               } // else { // row empty
-                 //	ImportError error = new ImportError();
-                 //	error.setException(new EmptyRowImportException());
-                 //	error.setRow(row);
-                 //	error.setNbRow(row.getRowNum());
-                 // errors.add(error);
-                 //}
+               }
             }catch(final RuntimeException wve){
                final ImportError error = new ImportError();
                error.setException(wve);
@@ -2571,25 +2268,6 @@ public class ImportManagerImpl implements ImportManager
                objectsToSave.clear();
             }
 
-            //				try {
-            //					if (objectsToSave.size() > 0) {
-            //						saveDerivesRowManager(row, objectsToSave, 
-            //								importations, utilisateur, properties, null,
-            //								derivesBatches, 
-            //								transfoQuantite, transfoQuantiteUnite, retourTransfoEpuisement, dateSortie);
-            //					}
-            //				} catch (RuntimeException re) {
-            //					re.printStackTrace();
-            //					ImportError error = new ImportError();
-            //					error.setException(re);
-            //					error.setRow(row);
-            //					error.setNbRow(row.getRowNum());
-            //					errors.add(error);
-            //				}
-            //				if (errors.isEmpty() && jdbcSuite != null && (i % 500 == 0) ) {
-            //					jdbcSuite.executeBatches();
-            //					jdbcSuite.clearBatches();
-            //				}
          }
 
          // enregistrement des batches de derives peuplés après lecture de 

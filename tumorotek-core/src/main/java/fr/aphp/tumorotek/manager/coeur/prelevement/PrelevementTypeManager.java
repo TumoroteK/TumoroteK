@@ -57,7 +57,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.PrelevementType;
  * @version 2.0
  *
  */
-public interface PrelevementTypeManager extends TKThesaurusManager
+public interface PrelevementTypeManager extends TKThesaurusManager<PrelevementType>
 {
 
    /**

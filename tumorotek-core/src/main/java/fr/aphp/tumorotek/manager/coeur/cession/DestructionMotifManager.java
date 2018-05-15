@@ -49,7 +49,7 @@ import fr.aphp.tumorotek.model.cession.DestructionMotif;
  * @version 2.0
  *
  */
-public interface DestructionMotifManager extends TKThesaurusManager
+public interface DestructionMotifManager extends TKThesaurusManager<DestructionMotif>
 {
 
    /**

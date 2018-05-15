@@ -44,13 +44,12 @@ import fr.aphp.tumorotek.dao.coeur.prelevement.ConsentTypeDao;
 import fr.aphp.tumorotek.dao.coeur.prelevement.NatureDao;
 import fr.aphp.tumorotek.dao.coeur.prelevement.PrelevementDao;
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
-import fr.aphp.tumorotek.dao.contexte.ContexteDao;
 import fr.aphp.tumorotek.dao.contexte.ProtocoleDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
 import fr.aphp.tumorotek.model.coeur.prelevement.ConsentType;
 import fr.aphp.tumorotek.model.coeur.prelevement.Nature;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
-import fr.aphp.tumorotek.model.coeur.prelevement.delegate.PrelevementDelegate;
+import fr.aphp.tumorotek.model.coeur.prelevement.delegate.AbstractPrelevementDelegate;
 import fr.aphp.tumorotek.model.coeur.prelevement.delegate.PrelevementSero;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Categorie;
@@ -72,7 +71,6 @@ public class PrelevementDelegateDaoTest extends AbstractDaoTest
    private PrelevementDao prelevementDao;
    private BanqueDao banqueDao;
    private ConsentTypeDao consentTypeDao;
-   private ContexteDao contexteDao;
    private ProtocoleDao protocoleDao;
 
    public void setPrelevementDao(final PrelevementDao pDao){
@@ -85,10 +83,6 @@ public class PrelevementDelegateDaoTest extends AbstractDaoTest
 
    public void setConsentTypeDao(final ConsentTypeDao ctDao){
       this.consentTypeDao = ctDao;
-   }
-
-   public void setContexteDao(final ContexteDao ceDao){
-      this.contexteDao = ceDao;
    }
 
    public void setProtocoleDao(final ProtocoleDao pDao){
@@ -108,10 +102,8 @@ public class PrelevementDelegateDaoTest extends AbstractDaoTest
     * Test l'appel de la méthode toString().
     */
    public void testToString(){
-      PrelevementDelegate p1 = prelevementDao.findById(1).getPrelevementSero();
-      assertTrue(p1.toString().equals("{PRLVT1}.CONT1"));
-      p1 = new PrelevementDelegate();
-      assertTrue(p1.toString().equals("{Empty delegate}"));
+      AbstractPrelevementDelegate p1 = prelevementDao.findById(1).getPrelevementSero();
+      assertTrue(p1.toString().equals("{PRLVT1}." + PrelevementSero.class.getSimpleName()));
    }
 
    /**
@@ -137,8 +129,7 @@ public class PrelevementDelegateDaoTest extends AbstractDaoTest
       ps1.setLibelle("SERO1");
       List<Protocole> protos = protocoleDao.findAll();
       ps1.setProtocoles(new HashSet<>(protos));
-      ps1.setContexte(contexteDao.findById(1));
-      ps1.setPrelevement(p);
+      ps1.setDelegator(p);
       p.setDelegate(ps1);
 
       // Test de l'insertion
@@ -196,23 +187,23 @@ public class PrelevementDelegateDaoTest extends AbstractDaoTest
     * la table transcodeUtilisateur.
     */
    public void testEqualsAndHashCode(){
-      final PrelevementDelegate p1 = new PrelevementDelegate();
-      final PrelevementDelegate p2 = new PrelevementDelegate();
+      final AbstractPrelevementDelegate p1 = new PrelevementSero();
+      final AbstractPrelevementDelegate p2 = new PrelevementSero();
       assertFalse(p1.equals(null));
       assertNotNull(p2);
       assertTrue(p1.equals(p2));
-      assertTrue(p1.equals(p2));
+      assertTrue(p2.equals(p1));
       assertTrue(p1.hashCode() == p2.hashCode());
 
-      p1.setPrelevement(prelevementDao.findById(1));
+      p1.setDelegator(prelevementDao.findById(1));
       assertFalse(p1.equals(p2));
       assertFalse(p2.equals(p1));
       assertTrue(p1.hashCode() != p2.hashCode());
-      p2.setPrelevement(prelevementDao.findById(2));
+      p2.setDelegator(prelevementDao.findById(2));
       assertFalse(p1.equals(p2));
       assertFalse(p2.equals(p1));
       assertTrue(p1.hashCode() != p2.hashCode());
-      p1.setPrelevement(prelevementDao.findById(2));
+      p1.setDelegator(prelevementDao.findById(2));
       assertTrue(p1.equals(p2));
       assertTrue(p2.equals(p1));
       assertTrue(p1.hashCode() == p2.hashCode());

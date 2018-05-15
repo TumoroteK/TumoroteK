@@ -42,6 +42,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -72,7 +73,8 @@ import fr.aphp.tumorotek.model.systeme.Fichier;
  * Date: 15/09/2009
  *
  * @author Mathieu Barthelemy
- * @version 2.0
+ * @version 2.2.0
+ * @since 2.0
  *
  */
 @Entity
@@ -168,9 +170,8 @@ public class AnnotationValeur extends AnnotationCommon implements Serializable, 
          final Calendar cal = Calendar.getInstance();
          cal.setTime(date.getTime());
          return cal;
-      }else{
-         return null;
       }
+      return null;
    }
 
    @Override
@@ -396,9 +397,8 @@ public class AnnotationValeur extends AnnotationCommon implements Serializable, 
             log.error(e);
             return null;
          }
-      }else{
-         return null;
       }
+      return null;
 
    }
 
@@ -414,9 +414,8 @@ public class AnnotationValeur extends AnnotationCommon implements Serializable, 
       }else if(this.bool != null){
          if(this.bool){
             return "Oui";
-         }else{
-            return "Non";
          }
+         return "Non";
       }else if(this.item != null){
          value = this.item.getLabel();
       }else if(this.fichier != null){ // @since version 2.1 TEST???
@@ -429,29 +428,92 @@ public class AnnotationValeur extends AnnotationCommon implements Serializable, 
    /**
     * Renvoie l'objet valeur en fonction du data type du champ.
     * @return Object type String, Boolean, Double, Date
+    * @since 2.0
     */
    @Transient
    public Object getValeur(){
-      if(champAnnotation.getDataType().getType().equals("alphanum")){
-         return getAlphanum();
-      }else if(champAnnotation.getDataType().getType().equals("boolean")){
-         return getBool();
-      }else if(champAnnotation.getDataType().getType().matches("date.*")){
-         return getDate();
-      }else if(champAnnotation.getDataType().getType().equals("num")){
-         return Double.parseDouble(getAlphanum());
-      }else if(champAnnotation.getDataType().getType().equals("texte")){
-         return getTexte();
-      }else if(champAnnotation.getDataType().getType().equals("thesaurus")){
-         return getItem().getLabel();
-      }else if(champAnnotation.getDataType().getType().equals("fichier")){
-         return getFichier().getNom();
-      }else if(champAnnotation.getDataType().getType().equals("hyperlien")){
-         return getAlphanum();
-      }else if(champAnnotation.getDataType().getType().equals("thesaurusM")){
-         return getItem().getLabel();
+      Object valeur = null;
+      if(null != champAnnotation && null != champAnnotation.getDataType()){
+         valeur = getValeur(champAnnotation.getDataType());
       }
-      return null;
+      return valeur;
+   }
+   
+   /**
+    * Renvoie l'objet valeur en fonction du data type du champ.
+    * @param dataType datatype du champ
+    * @return Object type String, Boolean, Double, Date
+    * @since 2.2.0
+    */
+   @Transient
+   private Object getValeur(DataType dataType){
+      Object valeur = null;
+      switch(dataType.getType()){
+         case "alphanum":
+         case "hyperlien":
+            valeur = getAlphanum();
+            break;
+         case "num":
+            valeur = Double.parseDouble(getAlphanum());
+            break;
+         case "boolean":
+            valeur = getBool();
+            break;
+         case "date":
+         case "datetime":
+            valeur = getDate();
+            break;
+         case "texte":
+            valeur = getTexte();
+            break;
+         case "thesaurus":
+         case "thesaurusM":
+            valeur = getItem().getLabel(); //TODO Pourquoi on retourne un string et non l'Item ? le string est retourné avec formateAnnotationValeur()
+            break;
+         case "fichier":
+            valeur = getFichier().getNom(); // TODO Pourquoi on retourne un string et non le fichier ? le string est retourné avec formateAnnotationValeur().
+            break;
+         case "duree":
+            valeur = Long.parseLong(getAlphanum());
+            break;
+         case "calcule":
+            getValeur(this.getChampAnnotation().getChampCalcule().getDataType());
+            break;
+         default:
+            break;
+      }
+      return valeur;
+   }
+   
+   /**
+    * Assigne la valeur selon le type d'objet passé en paramètre et selon le datatype si renseigné
+    * @param valeur valeur
+    */
+   @Transient
+   public void setValeur(Object valeur){
+      if(valeur instanceof String){
+         if(null != this.getChampAnnotation() && null != this.getChampAnnotation().getDataType()){
+            if("texte".equals(this.getChampAnnotation().getDataType().getType())){
+               this.setTexte(valeur.toString());
+            }
+         }else{
+            this.setAlphanum(valeur.toString());
+         }
+      }else if(valeur instanceof Number){
+         this.setAlphanum(valeur.toString());
+      }else if(valeur instanceof Date){
+         Calendar cal = Calendar.getInstance();
+         cal.setTime((Date) valeur);
+         this.setDate(cal);
+      }else if(valeur instanceof Calendar){
+         this.setDate((Calendar) valeur);
+      }else if(valeur instanceof Boolean){
+         this.setBool((Boolean) valeur);
+      }else if(valeur instanceof Fichier){
+         this.setFichier((Fichier) valeur);
+      }else if(valeur instanceof Item){
+         this.setItem((Item) valeur);
+      }
    }
 
    @Transient

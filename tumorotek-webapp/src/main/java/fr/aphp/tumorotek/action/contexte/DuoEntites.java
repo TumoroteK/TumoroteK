@@ -151,4 +151,9 @@ public class DuoEntites
          || (this.idEntiteA == test.idEntiteB && this.idEntiteB == test.idEntiteA);
    }
 
+   @Override
+   public int hashCode(){
+      return super.hashCode();
+   }
+
 }

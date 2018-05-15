@@ -487,7 +487,7 @@ public class FicheTransporteur extends AbstractFicheCombineController
     * Méthode appelée après la saisie d'une valeur dans le champ
     * nomBox. Cette valeur sera mise en majuscules.
     */
-   public void onBlur$nomBox(final Event event){
+   public void onBlur$nomBox(){
       nomBox.setValue(nomBox.getValue().toUpperCase().trim());
    }
 
@@ -495,7 +495,7 @@ public class FicheTransporteur extends AbstractFicheCombineController
     * Méthode appelée après la saisie d'une valeur dans le champ
     * paysBox. Cette valeur sera mise en majuscules.
     */
-   public void onBlur$paysBox(final Event event){
+   public void onBlur$paysBox(){
       paysBox.setValue(paysBox.getValue().toUpperCase().trim());
    }
 
@@ -503,7 +503,7 @@ public class FicheTransporteur extends AbstractFicheCombineController
     * Méthode appelée après la saisie d'une valeur dans le champ
     * villeBox. Cette valeur sera mise en majuscules.
     */
-   public void onBlur$villeBox(final Event event){
+   public void onBlur$villeBox(){
       villeBox.setValue(villeBox.getValue().toUpperCase().trim());
    }
 
@@ -574,9 +574,8 @@ public class FicheTransporteur extends AbstractFicheCombineController
    public String getDeleteWaitLabel(){
       if(isFantomable()){
          return Labels.getLabel("deletion.general.wait");
-      }else{
-         return Labels.getLabel("archivage.general.wait");
       }
+      return Labels.getLabel("archivage.general.wait");
    }
 
    /**
@@ -587,9 +586,8 @@ public class FicheTransporteur extends AbstractFicheCombineController
 
       if(this.transporteur != null){
          return ObjectTypesFormatters.booleanLitteralFormatter(this.transporteur.getArchive());
-      }else{
-         return "";
       }
+      return "";
    }
 
 }

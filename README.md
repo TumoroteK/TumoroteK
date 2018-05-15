@@ -1,6 +1,9 @@
-# TumoroteK
+![TumoroteK](tumorotek-webapp/src/main/webapp/images/logo_tumo.png "Logo de TumoroteK")
 
 Logiciel de gestion des collections de prélèvements biologiques
+
+:heavy_exclamation_mark: Dans la prochaine beta, 
+le système d'**annotation inline** sera supprimé car il ne fonctionne pas comme désiré.
 
 ## Commencer
 
@@ -19,33 +22,19 @@ Ensuite ajouter cette dépendance avec Maven :
     mvn install:install-file -Dfile=D:/Downloads/ojdbc6.jar -DgroupId=oracle -DartifactId=ojdbc6 -Dversion=11.2.0.4 -Dpackaging=jar
 
 ### Pour compiler le projet et générer une archive déposable sur le Tomcat
-Désactiver les tests dans le [pom.xml](tumorotek-model/pom.xml), la propriété `skip-test` mettre à true :
-
-    <properties>
-        ...
-        <skip-test>true</skip-test>
-    </properties>
-
-Ensuite faire :
+Exécuter la commande Maven :
 
     mvn install
     
 L'archive est disponible dans `tumorotek-webapp/target`
 
 #### Pour lancer les tests
-Vérifier que dans le [pom.xml](tumorotek-model/pom.xml), la propriété `skip-test` est à false :
-
-    <properties>
-        ...
-        <skip-test>false</skip-test>
-    </properties>
-
-De plus, vérifier que les bases de données de test sont accessibles :
+Vérifier que les bases de données de test sont accessibles :
 - test_tumorotek
 - test_tumorotek_codes
 - test_tumorotek_interfacages
     
-Ensuite faire :
+Ensuite exécuter la commande Maven :
 
     mvn test
 

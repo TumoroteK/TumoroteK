@@ -259,13 +259,13 @@ public class FichierManagerImpl implements FichierManager
                filesCreated.add(new File(path));
             }
          }else{
-            log.info("Fichier existe déja path: " + path);
+            log.info("Fichier existe déjà path: " + path);
          }
       }catch(final FileNotFoundException fe){
-         log.error("Annotation fichier: " + "Erreur survenue dans la creation du fichier au chemin " + "specifie: " + path);
+         log.error("Annotation fichier: Erreur survenue dans la creation du fichier au chemin specifie: " + path);
          throw new RuntimeException(fe);
       }catch(final java.io.IOException e){
-         log.error("Annotation fichier: " + "Erreur survenue dans l'ecriture fichier");
+         log.error("Annotation fichier: Erreur survenue dans l'ecriture fichier");
          throw new RuntimeException(e);
       }finally{
          try{
@@ -290,8 +290,8 @@ public class FichierManagerImpl implements FichierManager
    }
 
    private String getMimeType(final InputStream instr){
-      if(MimeUtil.getMimeDetector("eu.medsea.mimeutil.detector" + ".MagicMimeMimeDetector") == null){
-         MimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector" + ".MagicMimeMimeDetector");
+      if(MimeUtil.getMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector") == null){
+         MimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
       }
       final Collection<?> mimeTypes = MimeUtil.getMimeTypes(instr);
       return mimeTypes.toString();

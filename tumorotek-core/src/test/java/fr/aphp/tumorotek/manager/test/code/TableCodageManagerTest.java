@@ -112,13 +112,13 @@ public class TableCodageManagerTest extends AbstractManagerTest4
       final CodeCommon a1 = commonUtilsManager.findCodeByTableCodageAndIdManager(4, t1);
       assertNotNull(a1);
       assertTrue(a1.getClass().getSimpleName().equals("Adicap"));
-      assertTrue(((Adicap) a1).getCode().equals("E"));
+      assertTrue((a1).getCode().equals("E"));
 
       t1 = tableCodageManager.findByNomManager("CIM_MASTER").get(0);
       final CodeCommon c1 = commonUtilsManager.findCodeByTableCodageAndIdManager(7, t1);
       assertNotNull(c1);
       assertTrue(c1.getClass().getSimpleName().equals("CimMaster"));
-      assertTrue(((CimMaster) c1).getCode().equals("A01"));
+      assertTrue((c1).getCode().equals("A01"));
 
       t1 = tableCodageManager.findByNomManager("CIMO_MORPHO").get(0);
       final CodeCommon c2 = commonUtilsManager.findCodeByTableCodageAndIdManager(29, t1);
@@ -171,7 +171,7 @@ public class TableCodageManagerTest extends AbstractManagerTest4
 
       List<CodeCommon> transcodes;
 
-      Adicap a = (Adicap) adicapManager.findByCodeLikeManager("OR!TE", true).get(0);
+      Adicap a = adicapManager.findByCodeLikeManager("OR!TE", true).get(0);
       transcodes = tableCodageManager.transcodeManager(a, tables, banks);
       assertTrue(transcodes.size() == 0);
 
@@ -180,13 +180,13 @@ public class TableCodageManagerTest extends AbstractManagerTest4
       assertTrue(transcodes.size() == 1);
       assertTrue(transcodes.get(0).getCode().equals("C30.1"));
 
-      a = (Adicap) adicapManager.findByCodeLikeManager("E0G8", true).get(0);
+      a = adicapManager.findByCodeLikeManager("E0G8", true).get(0);
       transcodes = tableCodageManager.transcodeManager(a, tables, banks);
       assertTrue(transcodes.size() == 1);
       assertTrue(transcodes.get(0).getCode().equals("M-75530"));
 
       tables.add(user);
-      a = (Adicap) adicapManager.findByCodeLikeManager("F", true).get(0);
+      a = adicapManager.findByCodeLikeManager("F", true).get(0);
       transcodes = tableCodageManager.transcodeManager(a, tables, banks);
       assertTrue(transcodes.size() == 0);
       banks.add(banqueDao.findById(1));
@@ -195,25 +195,25 @@ public class TableCodageManagerTest extends AbstractManagerTest4
       assertTrue(transcodes.get(0).getCode().equals("code2"));
 
       tables.add(adicap);
-      CimMaster cm = (CimMaster) cimMasterManager.findByCodeLikeManager("C02.9", true).get(0);
+      CimMaster cm = cimMasterManager.findByCodeLikeManager("C02.9", true).get(0);
       transcodes = tableCodageManager.transcodeManager(cm, tables, banks);
       assertTrue(transcodes.size() == 4);
 
-      cm = (CimMaster) cimMasterManager.findByCodeLikeManager("A01.4", true).get(0);
+      cm = cimMasterManager.findByCodeLikeManager("A01.4", true).get(0);
       transcodes = tableCodageManager.transcodeManager(cm, tables, banks);
       assertTrue(transcodes.size() == 1);
       assertTrue(transcodes.get(0).getCode().equals("code2"));
 
       // null bank
-      cm = (CimMaster) cimMasterManager.findByCodeLikeManager("A01.4", true).get(0);
+      cm = cimMasterManager.findByCodeLikeManager("A01.4", true).get(0);
       transcodes = tableCodageManager.transcodeManager(cm, tables, null);
       assertTrue(transcodes.size() == 0);
 
-      CimoMorpho co = (CimoMorpho) cimoMorphoManager.findByCodeLikeManager("M-8031/3", true).get(0);
+      CimoMorpho co = cimoMorphoManager.findByCodeLikeManager("M-8031/3", true).get(0);
       transcodes = tableCodageManager.transcodeManager(co, tables, null);
       assertTrue(transcodes.size() == 2);
 
-      co = (CimoMorpho) cimoMorphoManager.findByCodeLikeManager("D0-20150", true).get(0);
+      co = cimoMorphoManager.findByCodeLikeManager("D0-20150", true).get(0);
       transcodes = tableCodageManager.transcodeManager(co, tables, banks);
       assertTrue(transcodes.size() == 2);
       assertTrue(transcodes.get(0).getCode().equals("H0V2"));
@@ -233,7 +233,7 @@ public class TableCodageManagerTest extends AbstractManagerTest4
       transcodes = tableCodageManager.transcodeManager(cu, tables, banks);
       assertTrue(transcodes.isEmpty());
 
-      cm = (CimMaster) cimMasterManager.findByCodeLikeManager("C02.9", true).get(0);
+      cm = cimMasterManager.findByCodeLikeManager("C02.9", true).get(0);
       transcodes = tableCodageManager.transcodeManager(cm, tables, banks);
       assertTrue(transcodes.size() == 0);
    }

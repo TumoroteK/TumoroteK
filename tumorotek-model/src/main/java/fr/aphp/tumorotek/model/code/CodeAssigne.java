@@ -294,9 +294,8 @@ public class CodeAssigne implements CodeCommon, Serializable
          }else{
             return "{CodeDiag: " + this.code + "}";
          }
-      }else{
-         return "{Empty CodeAssigne}";
       }
+      return "{Empty CodeAssigne}";
    }
 
    @Override

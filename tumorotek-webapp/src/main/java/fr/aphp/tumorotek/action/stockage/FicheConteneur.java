@@ -78,7 +78,6 @@ import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
-import fr.aphp.tumorotek.model.stockage.ConteneurPlateforme;
 import fr.aphp.tumorotek.model.stockage.ConteneurType;
 import fr.aphp.tumorotek.model.stockage.Enceinte;
 import fr.aphp.tumorotek.model.stockage.EnceinteType;
@@ -246,8 +245,8 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
             banques.add(it.next());
          }
 
-         getPlateformesAssociees().setObjects(
-            new ArrayList<>(ManagerLocator.getConteneurManager().getConteneurPlateformesManager(conteneur)));
+         getPlateformesAssociees()
+            .setObjects(new ArrayList<>(ManagerLocator.getConteneurManager().getConteneurPlateformesManager(conteneur)));
          getPlateformesAssociees().setConteneur(conteneur);
 
          enceinteRenderer = new EnceinteRowRenderer();
@@ -480,10 +479,9 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
 
       if(!arborescenceCreee){
          throw new WrongValueException(createC, Labels.getLabel("conteneur.error.arborescence"));
-      }else{
-         Clients.showBusy(Labels.getLabel("conteneur.creation.encours"));
-         Events.echoEvent("onLaterCreate", self, null);
       }
+      Clients.showBusy(Labels.getLabel("conteneur.creation.encours"));
+      Events.echoEvent("onLaterCreate", self, null);
    }
 
    @Override
@@ -512,65 +510,64 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
 
       if(this.conteneur.getNbrNiv() < 2){
          throw new WrongValueException(nbNivBox, Labels.getLabel("conteneur.nbrNiv.illegal"));
-      }else{
-         arborescenceCreee = true;
-         if(checkPaillettes.isChecked()){
-            sizePaillettes = new Integer((String) paillettesSizeBox.getSelectedItem().getValue());
-         }
-
-         for(int i = 0; i < objCreateComponents.length; i++){
-            objCreateComponents[i].setVisible(false);
-         }
-
-         for(int i = 0; i < objArborescenceComponents.length; i++){
-            objArborescenceComponents[i].setVisible(true);
-         }
-
-         // on affiche la définition des boites en fct du type
-         // de conteneur à créer (à pailletes ou non)
-         if(sizePaillettes != null){
-            rowTerminaleType.setVisible(false);
-            rowNbPlacesTerminale.setVisible(false);
-            rowTerminaleNumerotation.setVisible(false);
-         }else{
-            rowPaillettes.setVisible(false);
-            rowNomBoitesPaillettes.setVisible(false);
-         }
-
-         nbrNivLabel.setVisible(true);
-
-         for(int i = 0; i < this.conteneur.getNbrNiv(); i++){
-            final Enceinte tmp = new Enceinte();
-            final EnceinteDecorator deco = new EnceinteDecorator(tmp);
-            tmp.setEnceinteType(selectedEnceinteType);
-            deco.setNbNiveau(i + 1);
-
-            if(i + 1 < this.conteneur.getNbrNiv()){
-               tmp.setNom(selectedEnceinteType.getPrefixe());
-               deco.setIsTerminale(false);
-            }
-
-            if(i + 2 >= this.conteneur.getNbrNiv() && sizePaillettes != null){
-               tmp.setEnceinteType(ManagerLocator.getEnceinteTypeManager()
-                  .findByTypeManager("GOBELET MARGUERITE", SessionUtils.getPlateforme(sessionScope)).get(0));
-               deco.getEnceinte().setNom("MAR");
-               deco.setSizeVisoGobeletMarguerite(sizePaillettes);
-            }
-
-            if(i + 1 >= this.conteneur.getNbrNiv()){
-               deco.getEnceinte().setNom("BT");
-               deco.setIsTerminale(true);
-            }
-            decoratedEnceintes.add(deco);
-
-         }
-
-         final ListModel<EnceinteDecorator> list = new ListModelList<>(decoratedEnceintes);
-         enceintesListEdit.setModel(list);
-
-         terminale = new Terminale();
-         terminale.setNom("BT");
       }
+      arborescenceCreee = true;
+      if(checkPaillettes.isChecked()){
+         sizePaillettes = new Integer((String) paillettesSizeBox.getSelectedItem().getValue());
+      }
+
+      for(int i = 0; i < objCreateComponents.length; i++){
+         objCreateComponents[i].setVisible(false);
+      }
+
+      for(int i = 0; i < objArborescenceComponents.length; i++){
+         objArborescenceComponents[i].setVisible(true);
+      }
+
+      // on affiche la définition des boites en fct du type
+      // de conteneur à créer (à pailletes ou non)
+      if(sizePaillettes != null){
+         rowTerminaleType.setVisible(false);
+         rowNbPlacesTerminale.setVisible(false);
+         rowTerminaleNumerotation.setVisible(false);
+      }else{
+         rowPaillettes.setVisible(false);
+         rowNomBoitesPaillettes.setVisible(false);
+      }
+
+      nbrNivLabel.setVisible(true);
+
+      for(int i = 0; i < this.conteneur.getNbrNiv(); i++){
+         final Enceinte tmp = new Enceinte();
+         final EnceinteDecorator deco = new EnceinteDecorator(tmp);
+         tmp.setEnceinteType(selectedEnceinteType);
+         deco.setNbNiveau(i + 1);
+
+         if(i + 1 < this.conteneur.getNbrNiv()){
+            tmp.setNom(selectedEnceinteType.getPrefixe());
+            deco.setIsTerminale(false);
+         }
+
+         if(i + 2 >= this.conteneur.getNbrNiv() && sizePaillettes != null){
+            tmp.setEnceinteType(ManagerLocator.getEnceinteTypeManager()
+               .findByTypeManager("GOBELET MARGUERITE", SessionUtils.getPlateforme(sessionScope)).get(0));
+            deco.getEnceinte().setNom("MAR");
+            deco.setSizeVisoGobeletMarguerite(sizePaillettes);
+         }
+
+         if(i + 1 >= this.conteneur.getNbrNiv()){
+            deco.getEnceinte().setNom("BT");
+            deco.setIsTerminale(true);
+         }
+         decoratedEnceintes.add(deco);
+
+      }
+
+      final ListModel<EnceinteDecorator> list = new ListModelList<>(decoratedEnceintes);
+      enceintesListEdit.setModel(list);
+
+      terminale = new Terminale();
+      terminale.setNom("BT");
    }
 
    /**
@@ -956,10 +953,10 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
     * Méthode pour l'initialisation du mode d'édition : récupération du contenu
     * des listes déroulantes (types, qualités...).
     */
-   
+
    public void initEditableMode(){
 
-      types = (List<ConteneurType>) ManagerLocator.getConteneurTypeManager()
+      types = ManagerLocator.getConteneurTypeManager()
          .findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       types.add(0, null);
       selectedConteneurType = this.conteneur.getConteneurType();
@@ -995,7 +992,7 @@ public class FicheConteneur extends AbstractFicheCombineStockageController
     * Méthode pour l'initialisation du mode de création : récupération 
     * du contenu des listes déroulantes (types, qualités...).
     */
-   
+
    public void initCreateMode(){
 
       selectedEnceinteType = null;

@@ -46,12 +46,10 @@ import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import fr.aphp.tumorotek.interfacage.jaxb.hm.Dme;
 import fr.aphp.tumorotek.interfacage.jaxb.hm.Formulaire;
 import fr.aphp.tumorotek.interfacage.jaxb.hm.Rubrique;
-import fr.aphp.tumorotek.manager.coeur.prelevement.PrelevementManager;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Nature;
@@ -60,8 +58,8 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 public class DmeTest
 {
 
-   @Autowired
-   private PrelevementManager prelevementManager;
+//   @Autowired
+//   private PrelevementManager prelevementManager;
 
    @Test
    public void testDmeMarshaller() throws JAXBException{

@@ -52,6 +52,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 
 import fr.aphp.tumorotek.manager.interfacage.scan.ScanTerminaleManager;
@@ -85,8 +86,7 @@ public class ExcelVMateParser
       String terminaleName = null;
       Date dateScan = null;
       final DateFormat df = new SimpleDateFormat("YYYYMMDD HH:mm:ss");
-      try{
-         final HSSFWorkbook workbook = new HSSFWorkbook(body);
+      try(final HSSFWorkbook workbook = new HSSFWorkbook(body);){
          final HSSFSheet sheet = workbook.getSheetAt(0);
          boolean headersFound = false;
          int colNum;
@@ -112,24 +112,24 @@ public class ExcelVMateParser
                // terminale name
                if(terminaleName == null){
                   cell = row.getCell(colsPosition.get("RackID").intValue());
-                  cell.setCellType(Cell.CELL_TYPE_STRING);
+                  cell.setCellType(CellType.STRING);
                   terminaleName = cell.getStringCellValue();
                }
                // date scan
                if(dateScan == null){
                   String parsedDate;
                   cell = row.getCell(colsPosition.get("Date").intValue());
-                  cell.setCellType(Cell.CELL_TYPE_STRING);
+                  cell.setCellType(CellType.STRING);
                   parsedDate = cell.getStringCellValue();
                   cell = row.getCell(colsPosition.get("Time").intValue());
-                  cell.setCellType(Cell.CELL_TYPE_STRING);
+                  cell.setCellType(CellType.STRING);
                   dateScan = df.parse(parsedDate + " " + cell.getStringCellValue());
                }
 
                // scanTube
                final ScanTube tube = new ScanTube();
                cell = row.getCell(colsPosition.get("TubeCode").intValue());
-               cell.setCellType(Cell.CELL_TYPE_STRING);
+               cell.setCellType(CellType.STRING);
                tube.setCode(cell.getStringCellValue());
                // code || No Tube -> null
                if(tube.getCode().equals("No Tube")){
@@ -137,15 +137,15 @@ public class ExcelVMateParser
                }
                // cell
                cell = row.getCell(colsPosition.get("LocationCell").intValue());
-               cell.setCellType(Cell.CELL_TYPE_STRING);
+               cell.setCellType(CellType.STRING);
                tube.setCell(cell.getStringCellValue());
                // row
                cell = row.getCell(colsPosition.get("LocationRow").intValue());
-               cell.setCellType(Cell.CELL_TYPE_STRING);
+               cell.setCellType(CellType.STRING);
                tube.setRow(cell.getStringCellValue());
                // col
                cell = row.getCell(colsPosition.get("LocationColumn").intValue());
-               cell.setCellType(Cell.CELL_TYPE_STRING);
+               cell.setCellType(CellType.STRING);
                tube.setCol(cell.getStringCellValue());
 
                if(tube.getRow() != previousRow){

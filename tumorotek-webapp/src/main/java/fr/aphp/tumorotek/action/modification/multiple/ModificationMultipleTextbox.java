@@ -107,10 +107,10 @@ public class ModificationMultipleTextbox extends AbstractModificationMultipleCom
    @Override
    public String formatLocalObject(final Object obj){
       // verifie la presence annotation combine
-      if(getIsCombined() && obj != null && ((String) obj).equals("system.tk.unknownExistingValue")){
-         return Labels.getLabel("system.tk.unknownExistingValue");
-      }
       if(obj != null){
+         if(getIsCombined() && ((String) obj).equals("system.tk.unknownExistingValue")){
+            return Labels.getLabel("system.tk.unknownExistingValue");
+         }
          return obj.toString();
       }
       return null;

@@ -90,31 +90,28 @@ public class ModificationMultipleDatebox extends AbstractModificationMultipleCom
    public Object getNewValue(){
       if(super.getNewValue() == null || super.getNewValue() instanceof Date){
          return super.getNewValue();
-      }else{
-         return ((Calendar) super.getNewValue()).getTime();
       }
+      return ((Calendar) super.getNewValue()).getTime();
    }
 
    @Override
    public Object extractValueFromEraserBox(){
       if(eraseMultiDatebox.getValue() == null || !isCalendar){
          return eraseMultiDatebox.getValue();
-      }else{
-         final Calendar cal = Calendar.getInstance();
-         cal.setTime(eraseMultiDatebox.getValue());
-         return cal;
       }
+      final Calendar cal = Calendar.getInstance();
+      cal.setTime(eraseMultiDatebox.getValue());
+      return cal;
    }
 
    @Override
    public Object extractValueFromMultiBox(){
       if(multiDatebox.getValue() == null || !isCalendar){
          return multiDatebox.getValue();
-      }else{
-         final Calendar cal = Calendar.getInstance();
-         cal.setTime(multiDatebox.getValue());
-         return cal;
       }
+      final Calendar cal = Calendar.getInstance();
+      cal.setTime(multiDatebox.getValue());
+      return cal;
    }
 
    @Override

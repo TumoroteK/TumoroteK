@@ -187,9 +187,8 @@ public class NonConformite implements java.io.Serializable
       if(this.nom != null){
          return "{" + this.nom + ", " + conformiteType.getConformiteType() + "(ConformiteType), " + plateforme.getNom()
             + "(Plateforme)}";
-      }else{
-         return "{Empty NonConformite}";
       }
+      return "{Empty NonConformite}";
    }
 
    @Override

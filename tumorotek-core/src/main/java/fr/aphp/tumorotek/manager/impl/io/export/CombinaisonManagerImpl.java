@@ -125,20 +125,19 @@ public class CombinaisonManagerImpl implements CombinaisonManager
       if(combinaison == null){
          log.warn("Objet obligatoire Combinaison manquant lors " + "de la copie d'un objet Combinaison");
          throw new RequiredObjectIsNullException("Combinaison", "copie", "Combinaison");
-      }else{
-         //On copie le champ1
-         Champ champ1 = null;
-         if(combinaison.getChamp1() != null){
-            champ1 = champManager.copyChampManager(combinaison.getChamp1());
-         }
-         Champ champ2 = null;
-         //On copie le champ2
-         if(combinaison.getChamp2() != null){
-            champ2 = champManager.copyChampManager(combinaison.getChamp2());
-         }
-         temp = new Combinaison(champ1, combinaison.getOperateur(), champ2);
-         createObjectManager(temp, temp.getChamp1(), temp.getChamp2());
       }
+      //On copie le champ1
+      Champ champ1 = null;
+      if(combinaison.getChamp1() != null){
+         champ1 = champManager.copyChampManager(combinaison.getChamp1());
+      }
+      Champ champ2 = null;
+      //On copie le champ2
+      if(combinaison.getChamp2() != null){
+         champ2 = champManager.copyChampManager(combinaison.getChamp2());
+      }
+      temp = new Combinaison(champ1, combinaison.getOperateur(), champ2);
+      createObjectManager(temp, temp.getChamp1(), temp.getChamp2());
       return temp;
    }
 

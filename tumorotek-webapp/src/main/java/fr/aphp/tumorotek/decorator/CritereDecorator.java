@@ -82,9 +82,8 @@ public class CritereDecorator
       if(this.critere.getChamp() != null && op != null && this.critere.getValeur() != null){
 
          return new ChampDecorator(critere.getChamp()).getLabelLong() + " " + op + " " + critere.getValeur();
-      }else{
-         return new CombinaisonDecorator(critere.getCombinaison()).getLabel() + " " + op + " " + critere.getValeur();
       }
+      return new CombinaisonDecorator(critere.getCombinaison()).getLabel() + " " + op + " " + critere.getValeur();
    }
 
    /**

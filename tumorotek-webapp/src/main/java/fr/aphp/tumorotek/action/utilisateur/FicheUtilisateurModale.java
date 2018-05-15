@@ -353,9 +353,8 @@ public class FicheUtilisateurModale extends AbstractFicheCombineController
 
       if(this.user != null){
          return ObjectTypesFormatters.booleanLitteralFormatter(this.user.isSuperAdmin());
-      }else{
-         return "";
       }
+      return "";
    }
 
    /**
@@ -369,12 +368,10 @@ public class FicheUtilisateurModale extends AbstractFicheCombineController
 
          if(date != null){
             return ObjectTypesFormatters.dateRenderer2(date);
-         }else{
-            return null;
          }
-      }else{
          return null;
       }
+      return null;
    }
 
    /**
@@ -384,9 +381,8 @@ public class FicheUtilisateurModale extends AbstractFicheCombineController
    public String getTimeoutFormated(){
       if(this.user != null){
          return ObjectTypesFormatters.dateRenderer2(this.user.getTimeOut());
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**

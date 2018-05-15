@@ -132,9 +132,8 @@ public class AnnotationDefaut extends AnnotationCommon implements Serializable
          final Calendar cal = Calendar.getInstance();
          cal.setTime(date.getTime());
          return cal;
-      }else{
-         return null;
       }
+      return null;
    }
 
    @Override

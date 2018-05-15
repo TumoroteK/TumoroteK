@@ -112,9 +112,8 @@ public class DossierExterneManagerImpl implements DossierExterneManager
       log.debug("Recherche de tous les DossierExternes d'un emetteur");
       if(emetteur != null){
          return dossierExterneDao.findByEmetteur(emetteur);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
@@ -122,9 +121,8 @@ public class DossierExterneManagerImpl implements DossierExterneManager
       log.debug("Recherche de tous les DossierExternes d'un emetteur " + "pour un numéro donné");
       if(emetteur != null && numero != null){
          return dossierExterneDao.findByEmetteurAndIdentification(emetteur, numero);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
@@ -144,18 +142,16 @@ public class DossierExterneManagerImpl implements DossierExterneManager
       log.debug("Recherche de tous les DossierExternes pour un numéro");
       if(numero != null){
          return dossierExterneDao.findByIdentification(numero);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
    public boolean findDoublonManager(final DossierExterne dossierExterne){
       if(dossierExterne != null){
          return dossierExterneDao.findByEmetteur(dossierExterne.getEmetteur()).contains(dossierExterne);
-      }else{
-         return false;
       }
+      return false;
    }
 
    @Override

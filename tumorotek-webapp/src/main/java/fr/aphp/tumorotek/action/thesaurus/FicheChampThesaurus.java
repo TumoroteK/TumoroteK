@@ -51,6 +51,7 @@ import org.zkoss.zul.Textbox;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
+import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.cession.CessionExamen;
 import fr.aphp.tumorotek.model.cession.DestructionMotif;
@@ -347,9 +348,9 @@ public class FicheChampThesaurus extends AbstractFicheCombineController
    public void saveNautre(){
       ((Nature) valeurThesaurus).setNature(newValue);
       if(creationMode){
-         ManagerLocator.getNatureManager().createObjectManager(valeurThesaurus);
+         ManagerLocator.getNatureManager().createObjectManager((Nature) valeurThesaurus);
       }else{
-         ManagerLocator.getNatureManager().updateObjectManager(valeurThesaurus);
+         ManagerLocator.getNatureManager().updateObjectManager((Nature) valeurThesaurus);
       }
    }
 
@@ -360,9 +361,9 @@ public class FicheChampThesaurus extends AbstractFicheCombineController
    public void savePrelevementType(){
       ((PrelevementType) valeurThesaurus).setType(newValue);
       if(creationMode){
-         ManagerLocator.getPrelevementTypeManager().createObjectManager(valeurThesaurus);
+         ManagerLocator.getPrelevementTypeManager().createObjectManager((PrelevementType) valeurThesaurus);
       }else{
-         ManagerLocator.getPrelevementTypeManager().updateObjectManager(valeurThesaurus);
+         ManagerLocator.getPrelevementTypeManager().updateObjectManager((PrelevementType) valeurThesaurus);
       }
    }
 
@@ -373,9 +374,9 @@ public class FicheChampThesaurus extends AbstractFicheCombineController
    public void saveEchantillonType(){
       ((EchantillonType) valeurThesaurus).setType(newValue);
       if(creationMode){
-         ManagerLocator.getEchantillonTypeManager().createObjectManager(valeurThesaurus);
+         ManagerLocator.getEchantillonTypeManager().createObjectManager((EchantillonType) valeurThesaurus);
       }else{
-         ManagerLocator.getEchantillonTypeManager().updateObjectManager(valeurThesaurus);
+         ManagerLocator.getEchantillonTypeManager().updateObjectManager((EchantillonType) valeurThesaurus);
       }
    }
 
@@ -386,9 +387,9 @@ public class FicheChampThesaurus extends AbstractFicheCombineController
    public void saveEchanQualite(){
       ((EchanQualite) valeurThesaurus).setEchanQualite(newValue);
       if(creationMode){
-         ManagerLocator.getEchanQualiteManager().createObjectManager(valeurThesaurus);
+         ManagerLocator.getEchanQualiteManager().createObjectManager((EchanQualite) valeurThesaurus);
       }else{
-         ManagerLocator.getEchanQualiteManager().updateObjectManager(valeurThesaurus);
+         ManagerLocator.getEchanQualiteManager().updateObjectManager((EchanQualite) valeurThesaurus);
       }
    }
 
@@ -399,9 +400,9 @@ public class FicheChampThesaurus extends AbstractFicheCombineController
    public void saveProdType(){
       ((ProdType) valeurThesaurus).setType(newValue);
       if(creationMode){
-         ManagerLocator.getProdTypeManager().createObjectManager(valeurThesaurus);
+         ManagerLocator.getProdTypeManager().createObjectManager((ProdType) valeurThesaurus);
       }else{
-         ManagerLocator.getProdTypeManager().updateObjectManager(valeurThesaurus);
+         ManagerLocator.getProdTypeManager().updateObjectManager((ProdType) valeurThesaurus);
       }
    }
 
@@ -412,9 +413,9 @@ public class FicheChampThesaurus extends AbstractFicheCombineController
    public void saveProdQualite(){
       ((ProdQualite) valeurThesaurus).setProdQualite(newValue);
       if(creationMode){
-         ManagerLocator.getProdQualiteManager().createObjectManager(valeurThesaurus);
+         ManagerLocator.getProdQualiteManager().createObjectManager((ProdQualite) valeurThesaurus);
       }else{
-         ManagerLocator.getProdQualiteManager().updateObjectManager(valeurThesaurus);
+         ManagerLocator.getProdQualiteManager().updateObjectManager((ProdQualite) valeurThesaurus);
       }
    }
 
@@ -425,9 +426,9 @@ public class FicheChampThesaurus extends AbstractFicheCombineController
    public void saveConditMilieu(){
       ((ConditMilieu) valeurThesaurus).setMilieu(newValue);
       if(creationMode){
-         ManagerLocator.getConditMilieuManager().createObjectManager(valeurThesaurus);
+         ManagerLocator.getConditMilieuManager().createObjectManager((ConditMilieu) valeurThesaurus);
       }else{
-         ManagerLocator.getConditMilieuManager().updateObjectManager(valeurThesaurus);
+         ManagerLocator.getConditMilieuManager().updateObjectManager((ConditMilieu) valeurThesaurus);
       }
    }
 
@@ -438,9 +439,9 @@ public class FicheChampThesaurus extends AbstractFicheCombineController
    public void saveConditType(){
       ((ConditType) valeurThesaurus).setType(newValue);
       if(creationMode){
-         ManagerLocator.getConditTypeManager().createObjectManager(valeurThesaurus);
+         ManagerLocator.getConditTypeManager().createObjectManager((ConditType) valeurThesaurus);
       }else{
-         ManagerLocator.getConditTypeManager().updateObjectManager(valeurThesaurus);
+         ManagerLocator.getConditTypeManager().updateObjectManager((ConditType) valeurThesaurus);
       }
    }
 
@@ -451,9 +452,9 @@ public class FicheChampThesaurus extends AbstractFicheCombineController
    public void saveConsentType(){
       ((ConsentType) valeurThesaurus).setType(newValue);
       if(creationMode){
-         ManagerLocator.getConsentTypeManager().createObjectManager(valeurThesaurus);
+         ManagerLocator.getConsentTypeManager().createObjectManager((ConsentType) valeurThesaurus);
       }else{
-         ManagerLocator.getConsentTypeManager().updateObjectManager(valeurThesaurus);
+         ManagerLocator.getConsentTypeManager().updateObjectManager((ConsentType) valeurThesaurus);
       }
    }
 
@@ -464,9 +465,9 @@ public class FicheChampThesaurus extends AbstractFicheCombineController
    public void saveModePrepa(){
       ((ModePrepa) valeurThesaurus).setNom(newValue);
       if(creationMode){
-         ManagerLocator.getModePrepaManager().createObjectManager(valeurThesaurus);
+         ManagerLocator.getModePrepaManager().createObjectManager((ModePrepa) valeurThesaurus);
       }else{
-         ManagerLocator.getModePrepaManager().updateObjectManager(valeurThesaurus);
+         ManagerLocator.getModePrepaManager().updateObjectManager((ModePrepa) valeurThesaurus);
       }
    }
 
@@ -477,9 +478,9 @@ public class FicheChampThesaurus extends AbstractFicheCombineController
    public void saveModePrepaDerive(){
       ((ModePrepaDerive) valeurThesaurus).setNom(newValue);
       if(creationMode){
-         ManagerLocator.getModePrepaDeriveManager().createObjectManager(valeurThesaurus);
+         ManagerLocator.getModePrepaDeriveManager().createObjectManager((ModePrepaDerive) valeurThesaurus);
       }else{
-         ManagerLocator.getModePrepaDeriveManager().updateObjectManager(valeurThesaurus);
+         ManagerLocator.getModePrepaDeriveManager().updateObjectManager((ModePrepaDerive) valeurThesaurus);
       }
    }
 
@@ -490,9 +491,9 @@ public class FicheChampThesaurus extends AbstractFicheCombineController
    public void saveCessionExamen(){
       ((CessionExamen) valeurThesaurus).setExamen(newValue);
       if(creationMode){
-         ManagerLocator.getCessionExamenManager().createObjectManager(valeurThesaurus);
+         ManagerLocator.getCessionExamenManager().createObjectManager((CessionExamen) valeurThesaurus);
       }else{
-         ManagerLocator.getCessionExamenManager().updateObjectManager(valeurThesaurus);
+         ManagerLocator.getCessionExamenManager().updateObjectManager((CessionExamen) valeurThesaurus);
       }
    }
 
@@ -503,9 +504,9 @@ public class FicheChampThesaurus extends AbstractFicheCombineController
    public void saveDestructionMotif(){
       ((DestructionMotif) valeurThesaurus).setMotif(newValue);
       if(creationMode){
-         ManagerLocator.getDestructionMotifManager().createObjectManager(valeurThesaurus);
+         ManagerLocator.getDestructionMotifManager().createObjectManager((DestructionMotif) valeurThesaurus);
       }else{
-         ManagerLocator.getDestructionMotifManager().updateObjectManager(valeurThesaurus);
+         ManagerLocator.getDestructionMotifManager().updateObjectManager((DestructionMotif) valeurThesaurus);
       }
    }
 
@@ -516,9 +517,9 @@ public class FicheChampThesaurus extends AbstractFicheCombineController
    public void saveProtocoleType(){
       ((ProtocoleType) valeurThesaurus).setType(newValue);
       if(creationMode){
-         ManagerLocator.getProtocoleTypeManager().createObjectManager(valeurThesaurus);
+         ManagerLocator.getProtocoleTypeManager().createObjectManager((ProtocoleType) valeurThesaurus);
       }else{
-         ManagerLocator.getProtocoleTypeManager().updateObjectManager(valeurThesaurus);
+         ManagerLocator.getProtocoleTypeManager().updateObjectManager((ProtocoleType) valeurThesaurus);
       }
    }
 
@@ -529,9 +530,9 @@ public class FicheChampThesaurus extends AbstractFicheCombineController
    public void saveCategorie(){
       ((Categorie) valeurThesaurus).setNom(newValue);
       if(creationMode){
-         ManagerLocator.getCategorieManager().createObjectManager(valeurThesaurus);
+         ManagerLocator.getCategorieManager().createObjectManager((Categorie) valeurThesaurus);
       }else{
-         ManagerLocator.getCategorieManager().updateObjectManager(valeurThesaurus);
+         ManagerLocator.getCategorieManager().updateObjectManager((Categorie) valeurThesaurus);
       }
    }
 
@@ -542,9 +543,9 @@ public class FicheChampThesaurus extends AbstractFicheCombineController
    public void saveSpecialite(){
       ((Specialite) valeurThesaurus).setNom(newValue);
       if(creationMode){
-         ManagerLocator.getSpecialiteManager().createObjectManager(valeurThesaurus);
+         ManagerLocator.getSpecialiteManager().createObjectManager((Specialite) valeurThesaurus);
       }else{
-         ManagerLocator.getSpecialiteManager().updateObjectManager(valeurThesaurus);
+         ManagerLocator.getSpecialiteManager().updateObjectManager((Specialite) valeurThesaurus);
       }
    }
 
@@ -555,9 +556,9 @@ public class FicheChampThesaurus extends AbstractFicheCombineController
    public void saveConteneurType(){
       ((ConteneurType) valeurThesaurus).setType(newValue);
       if(creationMode){
-         ManagerLocator.getConteneurTypeManager().createObjectManager(valeurThesaurus);
+         ManagerLocator.getConteneurTypeManager().createObjectManager((ConteneurType) valeurThesaurus);
       }else{
-         ManagerLocator.getConteneurTypeManager().updateObjectManager(valeurThesaurus);
+         ManagerLocator.getConteneurTypeManager().updateObjectManager((ConteneurType) valeurThesaurus);
       }
    }
 
@@ -569,9 +570,9 @@ public class FicheChampThesaurus extends AbstractFicheCombineController
       ((Risque) valeurThesaurus).setNom(newValue);
       ((Risque) valeurThesaurus).setInfectieux(valueCheckbox.isChecked());
       if(creationMode){
-         ManagerLocator.getRisqueManager().createObjectManager(valeurThesaurus);
+         ManagerLocator.getRisqueManager().createObjectManager((Risque) valeurThesaurus);
       }else{
-         ManagerLocator.getRisqueManager().updateObjectManager(valeurThesaurus);
+         ManagerLocator.getRisqueManager().updateObjectManager((Risque) valeurThesaurus);
       }
    }
 
@@ -583,9 +584,9 @@ public class FicheChampThesaurus extends AbstractFicheCombineController
       ((EnceinteType) valeurThesaurus).setType(newValue);
       ((EnceinteType) valeurThesaurus).setPrefixe(newSecondValue);
       if(creationMode){
-         ManagerLocator.getEnceinteTypeManager().createObjectManager(valeurThesaurus);
+         ManagerLocator.getEnceinteTypeManager().createObjectManager((EnceinteType) valeurThesaurus);
       }else{
-         ManagerLocator.getEnceinteTypeManager().updateObjectManager(valeurThesaurus);
+         ManagerLocator.getEnceinteTypeManager().updateObjectManager((EnceinteType) valeurThesaurus);
       }
    }
 
@@ -609,9 +610,9 @@ public class FicheChampThesaurus extends AbstractFicheCombineController
    public void saveProtocole(){
       ((Protocole) valeurThesaurus).setNom(newValue);
       if(creationMode){
-         ManagerLocator.getProtocoleManager().createObjectManager(valeurThesaurus);
+         ManagerLocator.getProtocoleManager().createObjectManager((Protocole) valeurThesaurus);
       }else{
-         ManagerLocator.getProtocoleManager().updateObjectManager(valeurThesaurus);
+         ManagerLocator.getProtocoleManager().updateObjectManager((Protocole) valeurThesaurus);
       }
    }
 
@@ -672,7 +673,7 @@ public class FicheChampThesaurus extends AbstractFicheCombineController
       return valeurThesaurus;
    }
 
-   public void setValeurThesaurus(final Object valeurTh){
+   public void setValeurThesaurus(final TKThesaurusObject valeurTh){
       this.valeurThesaurus = valeurTh;
    }
 

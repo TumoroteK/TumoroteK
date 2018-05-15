@@ -84,9 +84,8 @@ public class ConsultationIntfManagerImpl implements ConsultationIntfManager
       // si pas utilisateur -> recherche uniquement par emetteur
       if(u == null){
          return consultationIntfDao.findByEmetteurInDates(e, date1, date2);
-      }else{
-         return consultationIntfDao.findByUtilisateurEmetteurInDates(u, e, date1, date2);
       }
+      return consultationIntfDao.findByUtilisateurEmetteurInDates(u, e, date1, date2);
    }
 
    @Override

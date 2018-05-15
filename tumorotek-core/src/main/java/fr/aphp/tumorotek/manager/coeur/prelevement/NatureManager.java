@@ -56,7 +56,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Nature;
  * @version 2.0
  *
  */
-public interface NatureManager extends TKThesaurusManager
+public interface NatureManager extends TKThesaurusManager<Nature>
 {
 
    /**

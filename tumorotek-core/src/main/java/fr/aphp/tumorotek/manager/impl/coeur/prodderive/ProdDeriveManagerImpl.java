@@ -50,7 +50,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -94,6 +94,7 @@ import fr.aphp.tumorotek.manager.systeme.EntiteManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKStockableObject;
+import fr.aphp.tumorotek.model.TKValidableObject;
 import fr.aphp.tumorotek.model.cession.CederObjet;
 import fr.aphp.tumorotek.model.cession.Retour;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
@@ -1526,7 +1527,17 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
             switchBanqueCascadeManager(derivesIt.next(), bank, doValidation, u, filesToDelete);
          }
 
+         //Suppression du délégué si la banque de destination n'est pas dans le même contexte que la banque d'origine
+         if(!bank.getContexte().equals(derive.getBanque().getContexte())){
+            derive.setDelegate(null);
+         }
+         //Si la banque de destination est dans le même contexte que la banque d'origine, on garde le délégué mais on supprime la validation le cas échéant
+         else if(derive.getDelegate() instanceof TKValidableObject) {
+            ((TKValidableObject)derive.getDelegate()).setDetailValidation(null);
+         }
+
          derive.setBanque(bank);
+
          if(findDoublonManager(derive)){
             throw new DoublonFoundException("ProdDerive", "switchBanque", derive.getCode(), null);
          }
@@ -1909,8 +1920,8 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
                      ((TKStockableObject) parent).getQuantite());
                }
             } // else {
-              //	((TKStockableObject) parent).setQuantite(qteMax);
-              //}
+            //	((TKStockableObject) parent).setQuantite(qteMax);
+            //}
 
             // maj du volume si derive
             if(parent instanceof ProdDerive){
@@ -1944,8 +1955,8 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
                throw new TransformationQuantiteOverDemandException(tf.getQuantite(), ((Prelevement) parent).getQuantite());
             }
          } // else {
-           //	((Prelevement) parent).setQuantite(((Prelevement) parent).getQuantite());
-           //}
+         //	((Prelevement) parent).setQuantite(((Prelevement) parent).getQuantite());
+         //}
       }
       return null;
    }

@@ -49,7 +49,7 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ProdType;
  * @version 2.0
  *
  */
-public interface ProdTypeManager extends TKThesaurusManager
+public interface ProdTypeManager extends TKThesaurusManager<ProdType>
 {
 
    /**

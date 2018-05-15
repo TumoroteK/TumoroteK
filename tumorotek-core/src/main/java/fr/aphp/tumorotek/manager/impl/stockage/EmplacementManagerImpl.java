@@ -187,18 +187,16 @@ public class EmplacementManagerImpl implements EmplacementManager
       log.debug("Recherche de tous les emplacements vides " + "ou non d'une terminale");
       if(terminale != null){
          return emplacementDao.findByTerminaleAndVide(terminale, vide);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
    public List<Emplacement> findByTerminaleAndPosition(final Terminale terminale, final Integer position){
       if(terminale != null && position != null){
          return emplacementDao.findByTerminaleAndPosition(terminale, position);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
@@ -206,9 +204,8 @@ public class EmplacementManagerImpl implements EmplacementManager
       log.debug("Recherche de tous les emplacements d'une terminale");
       if(terminale != null){
          return emplacementDao.findByTerminaleWithOrder(terminale);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
@@ -337,9 +334,8 @@ public class EmplacementManagerImpl implements EmplacementManager
 
          return !(emplacement.getEchantillons().size() == 0 && emplacement.getProdDerives().size() == 0);
 
-      }else{
-         return false;
       }
+      return false;
    }
 
    @Override
@@ -737,43 +733,40 @@ public class EmplacementManagerImpl implements EmplacementManager
          if(adrlPos.matches("\\d+") || terminale.getTerminaleNumerotation().getLigne().equals("POS")){
             if(Integer.valueOf(adrlPos) <= terminale.getTerminaleType().getNbPlaces()){
                return Integer.valueOf(adrlPos);
-            }else{
-               return 0;
             }
-         }else{
-            Integer numLigne;
-            Integer numColonne;
-            final String[] adrlPosLigneCol = adrlPos.split("-");
-
-            // numLigne
-            if(terminale.getTerminaleNumerotation().getLigne().equals("NUM")){
-               numLigne = Integer.valueOf(adrlPosLigneCol[0]);
-            }else{
-               if(terminale.getTerminaleType().getScheme() == null){
-                  numLigne = Utils.createListChars(terminale.getTerminaleType().getHauteur(), null, new ArrayList<String>())
-                     .indexOf(adrlPosLigneCol[0]) + 1;
-               }else{
-                  numLigne = Utils
-                     .createListChars(terminale.getTerminaleType().getScheme().split(";").length, null, new ArrayList<String>())
-                     .indexOf(adrlPosLigneCol[0]) + 1;
-               }
-            }
-            // numCol
-            if(terminale.getTerminaleNumerotation().getColonne().equals("NUM")){
-               numColonne = Integer.valueOf(adrlPosLigneCol[1]);
-            }else{
-               if(terminale.getTerminaleType().getScheme() == null){
-                  numColonne = Utils.createListChars(terminale.getTerminaleType().getLongueur(), null, new ArrayList<String>())
-                     .indexOf(adrlPosLigneCol[1]) + 1;
-               }else{
-                  numColonne =
-                     Utils.createListChars(Integer.parseInt(terminale.getTerminaleType().getScheme().split(";")[numLigne]), null,
-                        new ArrayList<String>()).indexOf(adrlPosLigneCol[1]) + 1;
-               }
-            }
-
-            return getPositionByCoordonnees(terminale, numLigne, numColonne);
+            return 0;
          }
+         Integer numLigne;
+         Integer numColonne;
+         final String[] adrlPosLigneCol = adrlPos.split("-");
+
+         // numLigne
+         if(terminale.getTerminaleNumerotation().getLigne().equals("NUM")){
+            numLigne = Integer.valueOf(adrlPosLigneCol[0]);
+         }else{
+            if(terminale.getTerminaleType().getScheme() == null){
+               numLigne = Utils.createListChars(terminale.getTerminaleType().getHauteur(), null, new ArrayList<String>())
+                  .indexOf(adrlPosLigneCol[0]) + 1;
+            }else{
+               numLigne =
+                  Utils.createListChars(terminale.getTerminaleType().getScheme().split(";").length, null, new ArrayList<String>())
+                     .indexOf(adrlPosLigneCol[0]) + 1;
+            }
+         }
+         // numCol
+         if(terminale.getTerminaleNumerotation().getColonne().equals("NUM")){
+            numColonne = Integer.valueOf(adrlPosLigneCol[1]);
+         }else{
+            if(terminale.getTerminaleType().getScheme() == null){
+               numColonne = Utils.createListChars(terminale.getTerminaleType().getLongueur(), null, new ArrayList<String>())
+                  .indexOf(adrlPosLigneCol[1]) + 1;
+            }else{
+               numColonne = Utils.createListChars(Integer.parseInt(terminale.getTerminaleType().getScheme().split(";")[numLigne]),
+                  null, new ArrayList<String>()).indexOf(adrlPosLigneCol[1]) + 1;
+            }
+         }
+
+         return getPositionByCoordonnees(terminale, numLigne, numColonne);
       }
       return null;
    }
@@ -844,18 +837,15 @@ public class EmplacementManagerImpl implements EmplacementManager
          dbe.setTerminale(emplacement.getTerminale());
          dbe.setPosition(emplacement.getPosition());
          throw dbe;
-      }else{
-
-         // validation du Contrat
-         BeanValidator.validateObject(emplacement, new Validator[] {emplacementValidator});
-
-         emplacement.setVide(emplacement.getObjetId() == null);
-
-         emplacementDao.createObject(emplacement);
-
-         log.info("Enregistrement de l'objet Emplacement : " + emplacement.toString());
       }
+      // validation du Contrat
+      BeanValidator.validateObject(emplacement, new Validator[] {emplacementValidator});
 
+      emplacement.setVide(emplacement.getObjetId() == null);
+
+      emplacementDao.createObject(emplacement);
+
+      log.info("Enregistrement de l'objet Emplacement : " + emplacement.toString());
    }
 
    @Override
@@ -895,18 +885,15 @@ public class EmplacementManagerImpl implements EmplacementManager
          dbe.setTerminale(emplacement.getTerminale());
          dbe.setPosition(emplacement.getPosition());
          throw dbe;
-      }else{
-
-         // validation du Contrat
-         BeanValidator.validateObject(emplacement, new Validator[] {emplacementValidator});
-
-         emplacement.setVide(emplacement.getObjetId() == null);
-
-         emplacementDao.updateObject(emplacement);
-
-         log.info("Modification de l'objet Emplacement : " + emplacement.toString());
       }
+      // validation du Contrat
+      BeanValidator.validateObject(emplacement, new Validator[] {emplacementValidator});
 
+      emplacement.setVide(emplacement.getObjetId() == null);
+
+      emplacementDao.updateObject(emplacement);
+
+      log.info("Modification de l'objet Emplacement : " + emplacement.toString());
    }
 
    @Override
@@ -915,11 +902,9 @@ public class EmplacementManagerImpl implements EmplacementManager
          if(isUsedObjectManager(emplacement)){
             log.warn("Objet utilisé lors de la suppression de l'objet " + "Emplacement : " + emplacement.toString());
             throw new ObjectUsedException("Emplacement", "suppression");
-         }else{
-
-            emplacementDao.removeObject(emplacement.getEmplacementId());
-            log.info("Suppression de l'objet Emplacement : " + emplacement.toString());
          }
+         emplacementDao.removeObject(emplacement.getEmplacementId());
+         log.info("Suppression de l'objet Emplacement : " + emplacement.toString());
       }else{
          log.warn("Suppression d'un Emplacement null");
       }
@@ -1113,7 +1098,7 @@ public class EmplacementManagerImpl implements EmplacementManager
          }
       }
 
-      if(entiteNom != null){
+      if(null != entiteNom && null != empl){
          if(entiteNom.equals("Echantillon")){
             objs.addAll(echantillonDao.findByEmplacement(empl.getTerminale(), empl.getPosition()));
          }else if(entiteNom.equals("ProdDerive")){

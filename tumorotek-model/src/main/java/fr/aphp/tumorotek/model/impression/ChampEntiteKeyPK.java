@@ -140,9 +140,8 @@ public class ChampEntiteKeyPK implements Serializable
    public String toString(){
       if(this.champEntite != null && this.cleImpression != null){
          return "{" + champEntite.toString() + " (ChampEntite), " + cleImpression.toString() + " (BlocImpression)}";
-      }else{
-         return "{Empty ChampEntiteBlocPK}";
       }
+      return "{Empty ChampEntiteBlocPK}";
    }
 
 }

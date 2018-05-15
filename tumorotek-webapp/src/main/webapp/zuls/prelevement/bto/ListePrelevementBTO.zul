@@ -64,9 +64,6 @@
 					<column
 						label="${c:l('prelevement.datePrelevementCourt')}"
 						sort="auto(datePrelevement)" />
-					<column
-						label="${c:l('Champ.Prelevement.DatePeremption')}"
-						 />	
 					<column 
 						label="${c:l('Champ.Prelevement.Nature.Nature')}"
 						sort="auto(nature.nature)" />

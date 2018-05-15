@@ -10,6 +10,8 @@ import fr.aphp.tumorotek.action.cession.FicheCessionEdit;
  */
 public class FicheCessionEditBTO extends FicheCessionEdit
 {
+   private static final long serialVersionUID = -7446487227441441892L;
+   
    private Div arriveeDate;
    private Row rowDemandeur;
 
@@ -95,6 +97,8 @@ public class FicheCessionEditBTO extends FicheCessionEdit
          case "IMPLANTATION":
             switchToImplantationMode();
             arriveeDate.setVisible(false);
+            break;
+         default:
             break;
       }
    }

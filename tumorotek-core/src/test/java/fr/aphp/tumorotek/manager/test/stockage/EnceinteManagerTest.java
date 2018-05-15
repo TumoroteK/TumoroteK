@@ -35,12 +35,6 @@
  **/
 package fr.aphp.tumorotek.manager.test.stockage;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -62,25 +56,17 @@ import fr.aphp.tumorotek.dao.utilisateur.UtilisateurDao;
 import fr.aphp.tumorotek.manager.exception.EnceinteSizeException;
 import fr.aphp.tumorotek.manager.exception.ObjectUsedException;
 import fr.aphp.tumorotek.manager.qualite.OperationTypeManager;
-import fr.aphp.tumorotek.manager.stockage.CheckPositionManager;
-import fr.aphp.tumorotek.manager.stockage.ConteneurManager;
-import fr.aphp.tumorotek.manager.stockage.EnceinteManager;
-import fr.aphp.tumorotek.manager.stockage.IncidentManager;
-import fr.aphp.tumorotek.manager.stockage.TerminaleManager;
+import fr.aphp.tumorotek.manager.stockage.*;
 import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
 import fr.aphp.tumorotek.model.TKFantomableObject;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.qualite.Operation;
 import fr.aphp.tumorotek.model.qualite.OperationType;
-import fr.aphp.tumorotek.model.stockage.Conteneur;
-import fr.aphp.tumorotek.model.stockage.Enceinte;
-import fr.aphp.tumorotek.model.stockage.EnceinteType;
-import fr.aphp.tumorotek.model.stockage.Incident;
-import fr.aphp.tumorotek.model.stockage.Terminale;
-import fr.aphp.tumorotek.model.stockage.TerminaleNumerotation;
-import fr.aphp.tumorotek.model.stockage.TerminaleType;
+import fr.aphp.tumorotek.model.stockage.*;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+
+import static org.junit.Assert.*;
 
 /**
  *
@@ -129,7 +115,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
    public void testFindById(){
       Enceinte e = enceinteManager.findByIdManager(1);
       assertNotNull(e);
-      assertTrue(e.getNom().equals("R1"));
+      assertEquals("R1", e.getNom());
 
       e = enceinteManager.findByIdManager(5);
       assertNotNull(e);
@@ -144,7 +130,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
    @Test
    public void testFindAll(){
       final List<Enceinte> list = enceinteManager.findAllObjectsManager();
-      assertTrue(list.size() == 7);
+      assertEquals(7, list.size());
    }
 
    /**
@@ -155,14 +141,14 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       final Conteneur c1 = conteneurDao.findById(1);
       List<Enceinte> list = enceinteManager.findByConteneurWithOrderManager(c1);
       assertEquals(2, list.size());
-      assertTrue(list.get(0).getNom().equals("R1"));
+      assertEquals("R1", list.get(0).getNom());
 
       final Conteneur c2 = conteneurDao.findById(2);
       list = enceinteManager.findByConteneurWithOrderManager(c2);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       list = enceinteManager.findByConteneurWithOrderManager(null);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
    }
 
    /**
@@ -172,19 +158,19 @@ public class EnceinteManagerTest extends AbstractManagerTest4
    public void testFindByEnceintePereWithOrderManager(){
       final Enceinte e1 = enceinteManager.findByIdManager(1);
       List<Enceinte> list = enceinteManager.findByEnceintePereWithOrderManager(e1);
-      assertTrue(list.size() == 3);
-      assertTrue(list.get(0).getNom().equals("T1"));
+      assertEquals(3, list.size());
+      assertEquals("T1", list.get(0).getNom());
 
       final Enceinte e2 = enceinteManager.findByIdManager(2);
       list = enceinteManager.findByEnceintePereWithOrderManager(e2);
-      assertTrue(list.size() == 2);
+      assertEquals(2, list.size());
 
       final Enceinte e3 = enceinteManager.findByIdManager(3);
       list = enceinteManager.findByEnceintePereWithOrderManager(e3);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       list = enceinteManager.findByEnceintePereWithOrderManager(null);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
    }
 
    /**
@@ -194,21 +180,21 @@ public class EnceinteManagerTest extends AbstractManagerTest4
    public void testFindByConteneurAndNomManager(){
       final Conteneur c1 = conteneurDao.findById(1);
       List<Enceinte> list = enceinteManager.findByConteneurAndNomManager(c1, "R1");
-      assertTrue(list.size() == 1);
-      assertTrue(list.get(0).getNom().equals("R1"));
+      assertEquals(1, list.size());
+      assertEquals("R1", list.get(0).getNom());
 
       list = enceinteManager.findByConteneurAndNomManager(c1, "Rqsdqsd1");
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       final Conteneur c2 = conteneurDao.findById(2);
       list = enceinteManager.findByConteneurAndNomManager(c2, "R1");
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       list = enceinteManager.findByConteneurAndNomManager(null, "R1");
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       list = enceinteManager.findByConteneurAndNomManager(c1, null);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
    }
 
    /**
@@ -218,21 +204,21 @@ public class EnceinteManagerTest extends AbstractManagerTest4
    public void testFindByEnceintePereAndNomManager(){
       final Enceinte e1 = enceinteManager.findByIdManager(1);
       List<Enceinte> list = enceinteManager.findByEnceintePereAndNomManager(e1, "T1");
-      assertTrue(list.size() == 1);
-      assertTrue(list.get(0).getNom().equals("T1"));
+      assertEquals(1, list.size());
+      assertEquals("T1", list.get(0).getNom());
 
       list = enceinteManager.findByEnceintePereAndNomManager(e1, "jhq");
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       final Enceinte e3 = enceinteManager.findByIdManager(3);
       list = enceinteManager.findByEnceintePereAndNomManager(e3, "T1");
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       list = enceinteManager.findByEnceintePereAndNomManager(null, "T1");
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       list = enceinteManager.findByEnceintePereAndNomManager(e1, null);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
    }
 
    /**
@@ -242,20 +228,20 @@ public class EnceinteManagerTest extends AbstractManagerTest4
    public void testUsedNomsExceptOneManager(){
       final Enceinte e1 = enceinteManager.findByIdManager(1);
       List<String> list = enceinteManager.usedNomsExceptOneManager(e1);
-      assertTrue(list.size() == 1);
-      assertTrue(list.get(0).equals("R2"));
+      assertEquals(1, list.size());
+      assertEquals("R2", list.get(0));
 
       final Enceinte e2 = enceinteManager.findByIdManager(2);
       list = enceinteManager.usedNomsExceptOneManager(e2);
-      assertTrue(list.size() == 1);
+      assertEquals(1, list.size());
 
       final Enceinte e3 = enceinteManager.findByIdManager(3);
       list = enceinteManager.usedNomsExceptOneManager(e3);
-      assertTrue(list.size() == 2);
-      assertTrue(list.get(0).equals("T2"));
+      assertEquals(2, list.size());
+      assertEquals("T2", list.get(0));
 
       list = enceinteManager.usedNomsExceptOneManager(null);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
    }
 
    /**
@@ -266,22 +252,22 @@ public class EnceinteManagerTest extends AbstractManagerTest4
 
       final Enceinte e5 = enceinteManager.findByIdManager(5);
       Set<Banque> set = enceinteManager.getBanquesManager(e5);
-      assertTrue(set.size() == 2);
+      assertEquals(2, set.size());
 
       final Enceinte e7 = enceinteManager.findByIdManager(7);
       set = enceinteManager.getBanquesManager(e7);
-      assertTrue(set.size() == 1);
+      assertEquals(1, set.size());
 
       final Enceinte e3 = enceinteManager.findByIdManager(3);
       set = enceinteManager.getBanquesManager(e3);
-      assertTrue(set.size() == 0);
+      assertEquals(0, set.size());
 
       final Enceinte newE = new Enceinte();
       set = enceinteManager.getBanquesManager(newE);
-      assertTrue(set.size() == 0);
+      assertEquals(0, set.size());
 
       set = enceinteManager.getBanquesManager(null);
-      assertTrue(set.size() == 0);
+      assertEquals(0, set.size());
    }
 
    /**
@@ -292,24 +278,24 @@ public class EnceinteManagerTest extends AbstractManagerTest4
 
       final Enceinte e1 = enceinteManager.findByIdManager(1);
       Set<Enceinte> set = enceinteManager.getEnceintesManager(e1);
-      assertTrue(set.size() == 3);
+      assertEquals(3, set.size());
       final Iterator<Enceinte> it = set.iterator();
-      assertTrue(it.next().getPosition() == 1);
+      assertEquals(1, (int) it.next().getPosition());
 
       final Enceinte e2 = enceinteManager.findByIdManager(2);
       set = enceinteManager.getEnceintesManager(e2);
-      assertTrue(set.size() == 2);
+      assertEquals(2, set.size());
 
       final Enceinte e3 = enceinteManager.findByIdManager(3);
       set = enceinteManager.getEnceintesManager(e3);
-      assertTrue(set.size() == 0);
+      assertEquals(0, set.size());
 
       final Enceinte newE = new Enceinte();
       set = enceinteManager.getEnceintesManager(newE);
-      assertTrue(set.size() == 0);
+      assertEquals(0, set.size());
 
       set = enceinteManager.getEnceintesManager(null);
-      assertTrue(set.size() == 0);
+      assertEquals(0, set.size());
    }
 
    /**
@@ -320,24 +306,24 @@ public class EnceinteManagerTest extends AbstractManagerTest4
 
       final Enceinte e3 = enceinteManager.findByIdManager(3);
       Set<Terminale> set = enceinteManager.getTerminalesManager(e3);
-      assertTrue(set.size() == 3);
+      assertEquals(3, set.size());
       final Iterator<Terminale> it = set.iterator();
-      assertTrue(it.next().getNom().equals("BT1"));
+      assertEquals("BT1", it.next().getNom());
 
       final Enceinte e7 = enceinteManager.findByIdManager(7);
       set = enceinteManager.getTerminalesManager(e7);
-      assertTrue(set.size() == 1);
+      assertEquals(1, set.size());
 
       final Enceinte e4 = enceinteManager.findByIdManager(4);
       set = enceinteManager.getTerminalesManager(e4);
-      assertTrue(set.size() == 0);
+      assertEquals(0, set.size());
 
       final Enceinte newE = new Enceinte();
       set = enceinteManager.getTerminalesManager(newE);
-      assertTrue(set.size() == 0);
+      assertEquals(0, set.size());
 
       set = enceinteManager.getTerminalesManager(null);
-      assertTrue(set.size() == 0);
+      assertEquals(0, set.size());
    }
 
    /**
@@ -348,31 +334,31 @@ public class EnceinteManagerTest extends AbstractManagerTest4
 
       final Enceinte e3 = enceinteManager.findByIdManager(3);
       List<Terminale> list = enceinteManager.getAllTerminalesInArborescenceManager(e3);
-      assertTrue(list.size() == 3);
-      assertTrue(list.get(0).getNom().equals("BT1"));
+      assertEquals(3, list.size());
+      assertEquals("BT1", list.get(0).getNom());
 
       final Enceinte e7 = enceinteManager.findByIdManager(7);
       list = enceinteManager.getAllTerminalesInArborescenceManager(e7);
-      assertTrue(list.size() == 1);
+      assertEquals(1, list.size());
 
       final Enceinte e4 = enceinteManager.findByIdManager(4);
       list = enceinteManager.getAllTerminalesInArborescenceManager(e4);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       final Enceinte e1 = enceinteManager.findByIdManager(1);
       list = enceinteManager.getAllTerminalesInArborescenceManager(e1);
-      assertTrue(list.size() == 4);
+      assertEquals(4, list.size());
 
       final Enceinte e2 = enceinteManager.findByIdManager(2);
       list = enceinteManager.getAllTerminalesInArborescenceManager(e2);
-      assertTrue(list.size() == 2);
+      assertEquals(2, list.size());
 
       final Enceinte newE = new Enceinte();
       list = enceinteManager.getAllTerminalesInArborescenceManager(newE);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       list = enceinteManager.getAllTerminalesInArborescenceManager(null);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
    }
 
    /**
@@ -523,21 +509,21 @@ public class EnceinteManagerTest extends AbstractManagerTest4
    @Test
    public void testGetLevelEnceinte(){
       final Enceinte e1 = enceinteManager.findByIdManager(1);
-      assertTrue(enceinteManager.getLevelEnceinte(e1) == 1);
+      assertEquals(1, (int) enceinteManager.getLevelEnceinte(e1));
 
       final Enceinte e2 = enceinteManager.findByIdManager(2);
-      assertTrue(enceinteManager.getLevelEnceinte(e2) == 1);
+      assertEquals(1, (int) enceinteManager.getLevelEnceinte(e2));
 
       final Enceinte e3 = enceinteManager.findByIdManager(3);
-      assertTrue(enceinteManager.getLevelEnceinte(e3) == 2);
+      assertEquals(2, (int) enceinteManager.getLevelEnceinte(e3));
 
       final Enceinte e6 = enceinteManager.findByIdManager(6);
-      assertTrue(enceinteManager.getLevelEnceinte(e6) == 2);
+      assertEquals(2, (int) enceinteManager.getLevelEnceinte(e6));
 
       final Enceinte eNew = new Enceinte();
-      assertTrue(enceinteManager.getLevelEnceinte(eNew) == 1);
+      assertEquals(1, (int) enceinteManager.getLevelEnceinte(eNew));
 
-      assertTrue(enceinteManager.getLevelEnceinte(null) == 0);
+      assertEquals(0, (int) enceinteManager.getLevelEnceinte(null));
    }
 
    /**
@@ -548,78 +534,78 @@ public class EnceinteManagerTest extends AbstractManagerTest4
 
       final Enceinte e1 = enceinteManager.findByIdManager(1);
       Long nb = enceinteManager.getNumberEmplacementsLibres(e1);
-      assertTrue(nb == 397);
+      assertEquals(397, (long) nb);
 
       final Enceinte e2 = enceinteManager.findByIdManager(2);
       nb = enceinteManager.getNumberEmplacementsLibres(e2);
-      assertTrue(nb == 148);
+      assertEquals(148, (long) nb);
 
       final Enceinte e3 = enceinteManager.findByIdManager(3);
       nb = enceinteManager.getNumberEmplacementsLibres(e3);
-      assertTrue(nb == 297);
+      assertEquals(297, (long) nb);
 
       final Enceinte e4 = enceinteManager.findByIdManager(4);
       nb = enceinteManager.getNumberEmplacementsLibres(e4);
-      assertTrue(nb == 0);
+      assertEquals(0, (long) nb);
 
       final Enceinte newE = new Enceinte();
       nb = enceinteManager.getNumberEmplacementsLibres(newE);
-      assertTrue(nb == 0);
+      assertEquals(0, (long) nb);
 
       nb = enceinteManager.getNumberEmplacementsLibres(null);
-      assertTrue(nb == 0);
+      assertEquals(0, (long) nb);
    }
 
    @Test
    public void testGetNumberEmplacements(){
       final Enceinte e1 = enceinteManager.findByIdManager(1);
       Long nb = enceinteManager.getNbEmplacementsLibresByPS(e1);
-      assertTrue(nb == 397);
+      assertEquals(397, (long) nb);
 
       final Enceinte e2 = enceinteManager.findByIdManager(2);
       nb = enceinteManager.getNbEmplacementsLibresByPS(e2);
-      assertTrue(nb == 148);
+      assertEquals(148, (long) nb);
 
       final Enceinte e3 = enceinteManager.findByIdManager(3);
       nb = enceinteManager.getNbEmplacementsLibresByPS(e3);
-      assertTrue(nb == 297);
+      assertEquals(297, (long) nb);
 
       final Enceinte e4 = enceinteManager.findByIdManager(4);
       nb = enceinteManager.getNbEmplacementsLibresByPS(e4);
-      assertTrue(nb == 0);
+      assertEquals(0, (long) nb);
 
       final Enceinte newE = new Enceinte();
       nb = enceinteManager.getNbEmplacementsLibresByPS(newE);
-      assertTrue(nb == 0);
+      assertEquals(0, (long) nb);
 
       nb = enceinteManager.getNbEmplacementsLibresByPS(null);
-      assertTrue(nb == 0);
+      assertEquals(0, (long) nb);
    }
 
    @Test
    public void testGetNumberEmplacementsOccupes(){
       final Enceinte e1 = enceinteManager.findByIdManager(1);
       Long nb = enceinteManager.getNbEmplacementsOccupesByPS(e1);
-      assertTrue(nb == 3);
+      assertEquals(3, (long) nb);
 
       final Enceinte e2 = enceinteManager.findByIdManager(2);
       nb = enceinteManager.getNbEmplacementsOccupesByPS(e2);
-      assertTrue(nb == 0);
+      assertEquals(0, (long) nb);
 
       final Enceinte e3 = enceinteManager.findByIdManager(3);
       nb = enceinteManager.getNbEmplacementsOccupesByPS(e3);
-      assertTrue(nb == 3);
+      assertEquals(3, (long) nb);
 
       final Enceinte e4 = enceinteManager.findByIdManager(4);
       nb = enceinteManager.getNbEmplacementsOccupesByPS(e4);
-      assertTrue(nb == 0);
+      assertEquals(0, (long) nb);
 
       final Enceinte newE = new Enceinte();
       nb = enceinteManager.getNbEmplacementsOccupesByPS(newE);
-      assertTrue(nb == 0);
+      assertEquals(0, (long) nb);
 
       nb = enceinteManager.getNbEmplacementsOccupesByPS(null);
-      assertTrue(nb == 0);
+      assertEquals(0, (long) nb);
    }
 
    @Test
@@ -627,35 +613,35 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       final Enceinte e1 = enceinteManager.findByIdManager(1);
       List<Integer> list = new ArrayList<>();
       list = enceinteManager.getObjetIdsByEntiteByPS(e1, entiteDao.findById(3));
-      assertTrue(list.size() == 1);
+      assertEquals(1, list.size());
 
       list = enceinteManager.getObjetIdsByEntiteByPS(e1, entiteDao.findById(8));
-      assertTrue(list.size() == 2);
+      assertEquals(2, list.size());
 
       final Enceinte e2 = enceinteManager.findByIdManager(2);
       list = enceinteManager.getObjetIdsByEntiteByPS(e2, entiteDao.findById(3));
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       final Enceinte e3 = enceinteManager.findByIdManager(3);
       list = enceinteManager.getObjetIdsByEntiteByPS(e3, entiteDao.findById(3));
-      assertTrue(list.size() == 1);
+      assertEquals(1, list.size());
 
       final Enceinte e4 = enceinteManager.findByIdManager(4);
       list = enceinteManager.getObjetIdsByEntiteByPS(e4, entiteDao.findById(3));
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       final Enceinte newE = new Enceinte();
       list = enceinteManager.getObjetIdsByEntiteByPS(newE, entiteDao.findById(3));
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       list = enceinteManager.getObjetIdsByEntiteByPS(null, entiteDao.findById(3));
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       list = enceinteManager.getObjetIdsByEntiteByPS(e3, new Entite());
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       list = enceinteManager.getObjetIdsByEntiteByPS(e3, null);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
    }
 
    /**
@@ -665,26 +651,26 @@ public class EnceinteManagerTest extends AbstractManagerTest4
    public void testGetAdrlManager(){
       final Enceinte e1 = enceinteManager.findByIdManager(1);
       String path = enceinteManager.getAdrlManager(e1);
-      assertTrue(path.equals("CC1"));
+      assertEquals("CC1", path);
 
       final Enceinte e2 = enceinteManager.findByIdManager(2);
       path = enceinteManager.getAdrlManager(e2);
-      assertTrue(path.equals("CC1"));
+      assertEquals("CC1", path);
 
       final Enceinte e3 = enceinteManager.findByIdManager(3);
       path = enceinteManager.getAdrlManager(e3);
-      assertTrue(path.equals("CC1.R1"));
+      assertEquals("CC1.R1", path);
 
       final Enceinte e4 = enceinteManager.findByIdManager(4);
       path = enceinteManager.getAdrlManager(e4);
-      assertTrue(path.equals("CC1.R1"));
+      assertEquals("CC1.R1", path);
 
       final Enceinte newE = new Enceinte();
       path = enceinteManager.getAdrlManager(newE);
-      assertTrue(path.equals(""));
+      assertEquals("", path);
 
       path = enceinteManager.getAdrlManager(null);
-      assertTrue(path.equals(""));
+      assertEquals("", path);
    }
 
    /**
@@ -694,26 +680,26 @@ public class EnceinteManagerTest extends AbstractManagerTest4
    public void testGetConteneurManager(){
       final Enceinte e1 = enceinteManager.findByIdManager(1);
       Conteneur cont = enceinteManager.getConteneurManager(e1);
-      assertTrue(cont.getConteneurId() == 1);
+      assertEquals(1, (int) cont.getConteneurId());
 
       final Enceinte e2 = enceinteManager.findByIdManager(2);
       cont = enceinteManager.getConteneurManager(e2);
-      assertTrue(cont.getConteneurId() == 1);
+      assertEquals(1, (int) cont.getConteneurId());
 
       final Enceinte e3 = enceinteManager.findByIdManager(3);
       cont = enceinteManager.getConteneurManager(e3);
-      assertTrue(cont.getConteneurId() == 1);
+      assertEquals(1, (int) cont.getConteneurId());
 
       final Enceinte e4 = enceinteManager.findByIdManager(4);
       cont = enceinteManager.getConteneurManager(e4);
-      assertTrue(cont.getConteneurId() == 1);
+      assertEquals(1, (int) cont.getConteneurId());
 
       final Enceinte newE = new Enceinte();
       cont = enceinteManager.getConteneurManager(newE);
-      assertTrue(cont == null);
+      assertNull(cont);
 
       cont = enceinteManager.getConteneurManager(null);
-      assertTrue(cont == null);
+      assertNull(cont);
    }
 
    /**
@@ -900,7 +886,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       // on test l'insertion avec d'un conteneur et d'une enceintePere
       // nulls
@@ -913,7 +899,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       // on test l'insertion d'un doublon dans un conteneur
       e1.setNom("R1");
@@ -926,7 +912,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       // on test l'insertion d'un doublon dans une enceinte
       e1.setNom("T1");
@@ -939,7 +925,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       // on test la validation de la position dans un conteneur
       e1.setNom("T10");
@@ -953,7 +939,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       // on test la validation de la position dans une enceinte
       e1.setNom("R10");
@@ -966,7 +952,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       // on vérifie que la position est libre dans un conteneur
       e1.setNom("T10");
@@ -980,7 +966,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       // on vérifie que la position est libre dans une enceinte
       e1.setNom("R10");
@@ -994,7 +980,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       // Test de la validation lors de la création
       e1.setNom("T3");
@@ -1004,7 +990,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }catch(final ParseException e){
          e.printStackTrace();
       }
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       // on test l'insertion avec incoherence sur banque
       final Conteneur c4 = conteneurDao.findById(4);
@@ -1019,7 +1005,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       // On test une insertion valide dans un conteneur avec les 
       // assos non obligatoires à null
@@ -1028,8 +1014,8 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       e1.setAlias("ALIAS");
       e1.setNbPlaces(6);
       enceinteManager.createObjectManager(e1, type, cont, null, null, null, null, u);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 8);
-      assertTrue(getOperationManager().findByObjectManager(e1).size() == 1);
+      assertEquals(8, enceinteManager.findAllObjectsManager().size());
+      assertEquals(1, getOperationManager().findByObjectManager(e1).size());
       final int id = e1.getEnceinteId();
       // Vérification
       final Enceinte eTest = enceinteManager.findByIdManager(id);
@@ -1037,11 +1023,11 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       assertNotNull(eTest.getConteneur());
       assertNotNull(eTest.getEnceinteType());
       assertNull(eTest.getEnceintePere());
-      assertTrue(eTest.getPosition() == 3);
-      assertTrue(eTest.getNom().equals("R3"));
-      assertTrue(eTest.getAlias().equals("ALIAS"));
-      assertTrue(eTest.getNbPlaces() == 6);
-      assertTrue(enceinteManager.getBanquesManager(eTest).size() == 0);
+      assertEquals(3, (int) eTest.getPosition());
+      assertEquals("R3", eTest.getNom());
+      assertEquals("ALIAS", eTest.getAlias());
+      assertEquals(6, (int) eTest.getNbPlaces());
+      assertEquals(0, enceinteManager.getBanquesManager(eTest).size());
 
       // On test une insertion valide dans une enceinte avec 
       // toutes les assos
@@ -1052,8 +1038,8 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       e2.setNbPlaces(5);
 
       enceinteManager.createObjectManager(e2, type, null, enc, ent, banks, couleurDao.findById(7), u);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 9);
-      assertTrue(getOperationManager().findByObjectManager(e2).size() == 1);
+      assertEquals(9, enceinteManager.findAllObjectsManager().size());
+      assertEquals(1, getOperationManager().findByObjectManager(e2).size());
       final int id2 = e2.getEnceinteId();
       // Vérification
       final Enceinte eTest2 = enceinteManager.findByIdManager(id2);
@@ -1063,18 +1049,18 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       assertNotNull(eTest2.getEntite());
       assertNotNull(eTest2.getCouleur());
       assertNull(eTest2.getConteneur());
-      assertTrue(eTest2.getPosition() == 3);
-      assertTrue(eTest2.getNom().equals("T3"));
-      assertTrue(eTest2.getAlias().equals("ALIAS3"));
-      assertTrue(eTest2.getNbPlaces() == 5);
-      assertTrue(enceinteManager.getBanquesManager(eTest2).size() == 2);
+      assertEquals(3, (int) eTest2.getPosition());
+      assertEquals("T3", eTest2.getNom());
+      assertEquals("ALIAS3", eTest2.getAlias());
+      assertEquals(5, (int) eTest2.getNbPlaces());
+      assertEquals(2, enceinteManager.getBanquesManager(eTest2).size());
 
       // Suppression
       enceinteManager.removeObjectManager(eTest, null, u);
       enceinteManager.removeObjectManager(eTest2, null, u);
-      assertTrue(getOperationManager().findByObjectManager(eTest).size() == 0);
-      assertTrue(getOperationManager().findByObjectManager(eTest2).size() == 0);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(0, getOperationManager().findByObjectManager(eTest).size());
+      assertEquals(0, getOperationManager().findByObjectManager(eTest2).size());
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.add(eTest);
@@ -1105,8 +1091,8 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       en.setNom("TEST3");
       en.setPosition(3);
       enceinteManager.createObjectManager(en, type, null, enc, null, null, null, u);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 8);
-      assertTrue(getOperationManager().findByObjectManager(en).size() == 1);
+      assertEquals(8, enceinteManager.findAllObjectsManager().size());
+      assertEquals(1, getOperationManager().findByObjectManager(en).size());
       final Integer id = en.getEnceinteId();
 
       final Enceinte eUp1 = enceinteManager.findByIdManager(id);
@@ -1121,7 +1107,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 8);
+      assertEquals(8, enceinteManager.findAllObjectsManager().size());
 
       // on test l'update avec d'un conteneur et d'une enceintePere
       // non nulls
@@ -1134,7 +1120,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 8);
+      assertEquals(8, enceinteManager.findAllObjectsManager().size());
 
       // on test l'update avec d'un conteneur et d'une enceintePere
       // nulls
@@ -1147,7 +1133,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 8);
+      assertEquals(8, enceinteManager.findAllObjectsManager().size());
 
       // on test l'update d'un doublon dans un conteneur
       eUp1.setNom("R1");
@@ -1160,7 +1146,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 8);
+      assertEquals(8, enceinteManager.findAllObjectsManager().size());
 
       // on test l'update d'un doublon dans une enceinte
       eUp1.setNom("T1");
@@ -1173,7 +1159,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 8);
+      assertEquals(8, enceinteManager.findAllObjectsManager().size());
 
       // on test la validation de la position dans un conteneur
       eUp1.setNom("T10");
@@ -1187,7 +1173,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 8);
+      assertEquals(8, enceinteManager.findAllObjectsManager().size());
 
       // on test la validation de la position dans une enceinte
       eUp1.setNom("R10");
@@ -1200,7 +1186,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 8);
+      assertEquals(8, enceinteManager.findAllObjectsManager().size());
 
       // on vérifie que la position est libre dans un conteneur
       eUp1.setNom("T10");
@@ -1214,7 +1200,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 8);
+      assertEquals(8, enceinteManager.findAllObjectsManager().size());
 
       // on vérifie que la position est libre dans une enceinte
       eUp1.setNom("R10");
@@ -1228,7 +1214,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 8);
+      assertEquals(8, enceinteManager.findAllObjectsManager().size());
 
       // Test de la validation lors de l'update
       eUp1.setNom("T3");
@@ -1238,7 +1224,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }catch(final ParseException e){
          e.printStackTrace();
       }
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 8);
+      assertEquals(8, enceinteManager.findAllObjectsManager().size());
 
       // on test la modification avec incoherence sur banque
       final Conteneur c4 = conteneurDao.findById(4);
@@ -1253,7 +1239,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 8);
+      assertEquals(8, enceinteManager.findAllObjectsManager().size());
 
       // on test la modification avec incident incoherent
       final List<Incident> incs = new ArrayList<>();
@@ -1280,31 +1266,31 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 8);
-      assertTrue(incidentManager.findAllObjectsManager().size() == 5);
+      assertEquals(8, enceinteManager.findAllObjectsManager().size());
+      assertEquals(5, incidentManager.findAllObjectsManager().size());
 
       incs.remove(1);
 
       // On test un update valide dans un conteneur avec les 
       // assos non obligatoires à null
       enceinteManager.updateObjectManager(eUp1, type, cont, null, null, banks, null, incs, u, null);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 8);
-      assertTrue(getOperationManager().findByObjectManager(eUp1).size() == 2);
+      assertEquals(8, enceinteManager.findAllObjectsManager().size());
+      assertEquals(2, getOperationManager().findByObjectManager(eUp1).size());
       // Vérification
       final Enceinte eTest = enceinteManager.findByIdManager(id);
       assertNotNull(eTest);
       assertNotNull(eTest.getConteneur());
       assertNotNull(eTest.getEnceinteType());
       assertNull(eTest.getEnceintePere());
-      assertTrue(eTest.getPosition() == 3);
-      assertTrue(eTest.getNom().equals("R3"));
-      assertTrue(eTest.getAlias().equals("ALIAS3"));
-      assertTrue(eTest.getNbPlaces() == 6);
-      assertTrue(enceinteManager.getBanquesManager(eTest).size() == 2);
+      assertEquals(3, (int) eTest.getPosition());
+      assertEquals("R3", eTest.getNom());
+      assertEquals("ALIAS3", eTest.getAlias());
+      assertEquals(6, (int) eTest.getNbPlaces());
+      assertEquals(2, enceinteManager.getBanquesManager(eTest).size());
 
       inc1 = incidentManager.findByEnceinteManager(eTest).get(0);
-      assertTrue(inc1.getNom().equals("TEST"));
-      assertTrue(inc1.getDescription() == null);
+      assertEquals("TEST", inc1.getNom());
+      assertNull(inc1.getDescription());
 
       // On test un update valide dans une enceinte avec 
       // toutes les assos
@@ -1324,7 +1310,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       incs.add(inc1);
 
       enceinteManager.updateObjectManager(eUp2, type, null, enc, ent, banks, couleurDao.findById(5), incs, u, opTypes);
-      assertTrue(getOperationManager().findByObjectManager(eUp2).size() == 5);
+      assertEquals(5, getOperationManager().findByObjectManager(eUp2).size());
       // Vérification
       final Enceinte eTest2 = enceinteManager.findByIdManager(id);
       assertNotNull(eTest2);
@@ -1333,23 +1319,23 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       assertNotNull(eTest2.getEntite());
       assertNotNull(eTest2.getCouleur());
       assertNull(eTest2.getConteneur());
-      assertTrue(eTest2.getPosition() == 3);
-      assertTrue(eTest2.getNom().equals("T3"));
-      assertTrue(eTest2.getAlias().equals("ALIAS3"));
-      assertTrue(eTest2.getNbPlaces() == 5);
-      assertTrue(enceinteManager.getBanquesManager(eTest2).size() == 1);
+      assertEquals(3, (int) eTest2.getPosition());
+      assertEquals("T3", eTest2.getNom());
+      assertEquals("ALIAS3", eTest2.getAlias());
+      assertEquals(5, (int) eTest2.getNbPlaces());
+      assertEquals(1, enceinteManager.getBanquesManager(eTest2).size());
       final Iterator<Banque> it = enceinteManager.getBanquesManager(eTest2).iterator();
-      assertTrue(it.next().getNom().equals("BANQUE3"));
+      assertEquals("BANQUE3", it.next().getNom());
 
       inc1 = incidentManager.findByEnceinteManager(eTest2).get(0);
-      assertTrue(inc1.getNom().equals("TEST"));
-      assertTrue(inc1.getDescription().equals("incident pour enceinte update"));
+      assertEquals("TEST", inc1.getNom());
+      assertEquals("incident pour enceinte update", inc1.getDescription());
 
       // Suppression
       enceinteManager.removeObjectManager(eTest2, null, u);
-      assertTrue(getOperationManager().findByObjectManager(eTest2).size() == 0);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
-      assertTrue(incidentManager.findAllObjectsManager().size() == 5);
+      assertEquals(0, getOperationManager().findByObjectManager(eTest2).size());
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
+      assertEquals(5, incidentManager.findAllObjectsManager().size());
 
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.add(eTest2);
@@ -1363,7 +1349,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       final Utilisateur u = utilisateurDao.findById(1);
       // test de la suppression d'un objet null
       enceinteManager.removeObjectManager(null, null, null);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       // test de la suppression d'un objet utilisé
       final Enceinte e1 = enceinteManager.findByIdManager(1);
@@ -1372,12 +1358,12 @@ public class EnceinteManagerTest extends AbstractManagerTest4
          enceinteManager.removeObjectManager(e1, null, u);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ObjectUsedException")){
-            assertTrue(((ObjectUsedException) e).getKey().equals("enceinte.deletion.isUsed"));
+            assertEquals("enceinte.deletion.isUsed", ((ObjectUsedException) e).getKey());
             catched = true;
          }
       }
       assertTrue(catched);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       // creation d'une 1ère enceinte
       final Enceinte newE = new Enceinte();
@@ -1392,7 +1378,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       newE.setNbPlaces(5);
       newE.setPosition(1);
       enceinteManager.createObjectManager(newE, type, cont, null, null, banks, null, u);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 8);
+      assertEquals(8, enceinteManager.findAllObjectsManager().size());
       final Integer id = newE.getEnceinteId();
 
       // création de 5 enceintes pour celle-ci
@@ -1402,7 +1388,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       newE2.setNbPlaces(5);
       newE2.setEnceinteType(type);
       final List<Enceinte> encs = enceinteManager.createMultiObjetcsForEnceinteManager(supE, newE2, 5, null, u);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 13);
+      assertEquals(13, enceinteManager.findAllObjectsManager().size());
 
       // création de 5 terminales pour la 1ère enceinte
       final TerminaleType tType = terminaleTypeDao.findById(1);
@@ -1413,7 +1399,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       newTs.setNom("BT");
       newTs.setAlias("ALIAS");
       terminaleManager.createMultiObjetcsManager(encs.get(0), newTs, 5, null, u);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 11);
+      assertEquals(11, terminaleManager.findAllObjectsManager().size());
 
       final List<Enceinte> enceintes = enceinteManager.findByEnceintePereWithOrderManager(supE);
 
@@ -1423,8 +1409,8 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
 
       enceinteManager.removeObjectManager(supE, null, u);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
+      assertEquals(6, terminaleManager.findAllObjectsManager().size());
 
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.add(supE);
@@ -1633,7 +1619,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
 
       // Test de la création avec l'enceinte à null
       enceinteManager.createMultiObjetcsForConteneurManager(cont2, null, 2, null, u);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       Boolean catched = false;
       // on test la création avec le conteneur nulle
@@ -1646,7 +1632,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       // on test la création avec un nombre trop grand
       try{
@@ -1658,7 +1644,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       // on test la création avec un nombre null
       try{
@@ -1666,7 +1652,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }catch(final Exception e){
          e.printStackTrace();
       }
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       // on test la création avec un nombre négatif
       try{
@@ -1674,7 +1660,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }catch(final Exception e){
          e.printStackTrace();
       }
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       // on test la génération d'une exception
       try{
@@ -1686,51 +1672,51 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       // on teste une création multiple valide avec la premiere position
       // à 125
       final List<Enceinte> list = enceinteManager.createMultiObjetcsForConteneurManager(cont2, newEs, 2, 125, u);
-      assertTrue(list.size() == 2);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 9);
+      assertEquals(2, list.size());
+      assertEquals(9, enceinteManager.findAllObjectsManager().size());
       assertNotNull(list.get(0));
       assertNotNull(list.get(0).getConteneur());
       assertNull(list.get(0).getEnceintePere());
       assertNotNull(list.get(0).getEnceinteType());
       assertNotNull(list.get(0).getEntite());
-      assertTrue(list.get(0).getPosition() == 1);
-      assertTrue(list.get(0).getAlias().equals("ALIAS1"));
-      assertTrue(list.get(0).getNbPlaces() == 5);
+      assertEquals(1, (int) list.get(0).getPosition());
+      assertEquals("ALIAS1", list.get(0).getAlias());
+      assertEquals(5, (int) list.get(0).getNbPlaces());
       assertFalse(list.get(0).getArchive());
-      assertTrue(list.get(0).getNom().equals("R125"));
-      assertTrue(list.get(1).getNom().equals("R126"));
+      assertEquals("R125", list.get(0).getNom());
+      assertEquals("R126", list.get(1).getNom());
 
       for(int i = 0; i < list.size(); i++){
          enceinteManager.removeObjectManager(list.get(i), null, u);
       }
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       // on teste une création multiple valide avec la premiere position
       // à null
       final List<Enceinte> list2 = enceinteManager.createMultiObjetcsForConteneurManager(cont2, newEs, 2, null, u);
-      assertTrue(list2.size() == 2);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 9);
+      assertEquals(2, list2.size());
+      assertEquals(9, enceinteManager.findAllObjectsManager().size());
       assertNotNull(list2.get(0));
       assertNotNull(list2.get(0).getConteneur());
       assertNull(list2.get(0).getEnceintePere());
       assertNotNull(list2.get(0).getEnceinteType());
       assertNotNull(list2.get(0).getEntite());
-      assertTrue(list2.get(0).getPosition() == 1);
-      assertTrue(list2.get(0).getAlias().equals("ALIAS1"));
-      assertTrue(list2.get(0).getNbPlaces() == 5);
+      assertEquals(1, (int) list2.get(0).getPosition());
+      assertEquals("ALIAS1", list2.get(0).getAlias());
+      assertEquals(5, (int) list2.get(0).getNbPlaces());
       assertFalse(list2.get(0).getArchive());
-      assertTrue(list2.get(0).getNom().equals("R1"));
-      assertTrue(list2.get(1).getNom().equals("R2"));
+      assertEquals("R1", list2.get(0).getNom());
+      assertEquals("R2", list2.get(1).getNom());
 
       for(int i = 0; i < list2.size(); i++){
          enceinteManager.removeObjectManager(list2.get(i), null, u);
       }
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.addAll(list);
@@ -1758,7 +1744,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
 
       // Test de la création avec l'enceinte à null
       enceinteManager.createMultiObjetcsForEnceinteManager(e4, null, 2, null, u);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       Boolean catched = false;
       // on test la création avec le conteneur nulle
@@ -1771,7 +1757,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       // on test la création avec un nombre trop grand
       try{
@@ -1783,7 +1769,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       // on test la création avec un nombre null
       try{
@@ -1791,7 +1777,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }catch(final Exception e){
          e.printStackTrace();
       }
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       // on test la création avec un nombre négatif
       try{
@@ -1799,7 +1785,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }catch(final Exception e){
          e.printStackTrace();
       }
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       // on test la génération d'une exception
       try{
@@ -1811,51 +1797,51 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       // on teste une création multiple valide avec la 1re pos à 58
       final List<Enceinte> list = enceinteManager.createMultiObjetcsForEnceinteManager(e4, newEs, 5, 58, u);
-      assertTrue(list.size() == 5);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 12);
+      assertEquals(5, list.size());
+      assertEquals(12, enceinteManager.findAllObjectsManager().size());
       assertNotNull(list.get(0));
       assertNotNull(list.get(0).getEnceintePere());
       assertNull(list.get(0).getConteneur());
       assertNotNull(list.get(0).getEnceinteType());
       assertNotNull(list.get(0).getEntite());
-      assertTrue(list.get(0).getPosition() == 1);
-      assertTrue(list.get(0).getAlias().equals("ALIAS1"));
-      assertTrue(list.get(0).getNbPlaces() == 5);
+      assertEquals(1, (int) list.get(0).getPosition());
+      assertEquals("ALIAS1", list.get(0).getAlias());
+      assertEquals(5, (int) list.get(0).getNbPlaces());
       assertFalse(list.get(0).getArchive());
-      assertTrue(list.get(0).getNom().equals("T58"));
-      assertTrue(list.get(1).getNom().equals("T59"));
-      assertTrue(list.get(4).getNom().equals("T62"));
+      assertEquals("T58", list.get(0).getNom());
+      assertEquals("T59", list.get(1).getNom());
+      assertEquals("T62", list.get(4).getNom());
 
       for(int i = 0; i < list.size(); i++){
          enceinteManager.removeObjectManager(list.get(i), null, u);
       }
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       // on teste une création multiple valide avec la 1re pos à null
       final List<Enceinte> list2 = enceinteManager.createMultiObjetcsForEnceinteManager(e4, newEs, 5, null, u);
-      assertTrue(list2.size() == 5);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 12);
+      assertEquals(5, list2.size());
+      assertEquals(12, enceinteManager.findAllObjectsManager().size());
       assertNotNull(list2.get(0));
       assertNotNull(list2.get(0).getEnceintePere());
       assertNull(list2.get(0).getConteneur());
       assertNotNull(list2.get(0).getEnceinteType());
       assertNotNull(list2.get(0).getEntite());
-      assertTrue(list2.get(0).getPosition() == 1);
-      assertTrue(list2.get(0).getAlias().equals("ALIAS1"));
-      assertTrue(list2.get(0).getNbPlaces() == 5);
+      assertEquals(1, (int) list2.get(0).getPosition());
+      assertEquals("ALIAS1", list2.get(0).getAlias());
+      assertEquals(5, (int) list2.get(0).getNbPlaces());
       assertFalse(list2.get(0).getArchive());
-      assertTrue(list2.get(0).getNom().equals("T1"));
-      assertTrue(list2.get(1).getNom().equals("T2"));
-      assertTrue(list2.get(4).getNom().equals("T5"));
+      assertEquals("T1", list2.get(0).getNom());
+      assertEquals("T2", list2.get(1).getNom());
+      assertEquals("T5", list2.get(4).getNom());
 
       for(int i = 0; i < list2.size(); i++){
          enceinteManager.removeObjectManager(list2.get(i), null, u);
       }
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.addAll(list);
@@ -1886,32 +1872,32 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       final Integer pos7 = e7.getPosition();
 
       enceinteManager.echangerDeuxEnceintesManager(e3, null, u);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
       Enceinte eTest3 = enceinteManager.findByIdManager(3);
-      assertTrue(eTest3.getConteneur() == null);
-      assertTrue(eTest3.getEnceintePere().equals(ep3));
-      assertTrue(eTest3.getPosition().equals(pos3));
+      assertNull(eTest3.getConteneur());
+      assertEquals(eTest3.getEnceintePere(), ep3);
+      assertEquals(eTest3.getPosition(), pos3);
 
       enceinteManager.echangerDeuxEnceintesManager(e3, new Enceinte(), u);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
       eTest3 = enceinteManager.findByIdManager(3);
-      assertTrue(eTest3.getConteneur() == null);
-      assertTrue(eTest3.getEnceintePere().equals(ep3));
-      assertTrue(eTest3.getPosition().equals(pos3));
+      assertNull(eTest3.getConteneur());
+      assertEquals(eTest3.getEnceintePere(), ep3);
+      assertEquals(eTest3.getPosition(), pos3);
 
       enceinteManager.echangerDeuxEnceintesManager(null, e3, u);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
       eTest3 = enceinteManager.findByIdManager(3);
-      assertTrue(eTest3.getConteneur() == null);
-      assertTrue(eTest3.getEnceintePere().equals(ep3));
-      assertTrue(eTest3.getPosition().equals(pos3));
+      assertNull(eTest3.getConteneur());
+      assertEquals(eTest3.getEnceintePere(), ep3);
+      assertEquals(eTest3.getPosition(), pos3);
 
       enceinteManager.echangerDeuxEnceintesManager(new Enceinte(), e3, u);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
       eTest3 = enceinteManager.findByIdManager(3);
-      assertTrue(eTest3.getConteneur() == null);
-      assertTrue(eTest3.getEnceintePere().equals(ep3));
-      assertTrue(eTest3.getPosition().equals(pos3));
+      assertNull(eTest3.getConteneur());
+      assertEquals(eTest3.getEnceintePere(), ep3);
+      assertEquals(eTest3.getPosition(), pos3);
 
       // on teste les doublons
       e3.setConteneur(c7);
@@ -1949,15 +1935,15 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       e6.setPosition(pos3);
       enceinteManager.echangerDeuxEnceintesManager(e3, e6, u);
       eTest3 = enceinteManager.findByIdManager(3);
-      assertTrue(eTest3.getConteneur() == null);
-      assertTrue(eTest3.getEnceintePere().equals(ep6));
-      assertTrue(eTest3.getPosition().equals(pos6));
+      assertNull(eTest3.getConteneur());
+      assertEquals(eTest3.getEnceintePere(), ep6);
+      assertEquals(eTest3.getPosition(), pos6);
       Enceinte eTest6 = enceinteManager.findByIdManager(6);
-      assertTrue(eTest6.getConteneur() == null);
-      assertTrue(eTest6.getEnceintePere().equals(ep3));
-      assertTrue(eTest6.getPosition().equals(pos3));
-      assertTrue(getOperationManager().findByObjectManager(eTest3).size() == 1);
-      assertTrue(getOperationManager().findByObjectManager(eTest6).size() == 1);
+      assertNull(eTest6.getConteneur());
+      assertEquals(eTest6.getEnceintePere(), ep3);
+      assertEquals(eTest6.getPosition(), pos3);
+      assertEquals(1, getOperationManager().findByObjectManager(eTest3).size());
+      assertEquals(1, getOperationManager().findByObjectManager(eTest6).size());
 
       // on refait l'échange dans l'autre sens
       e3.setConteneur(c3);
@@ -1968,15 +1954,15 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       e6.setPosition(pos6);
       enceinteManager.echangerDeuxEnceintesManager(e3, e6, u);
       eTest3 = enceinteManager.findByIdManager(3);
-      assertTrue(eTest3.getConteneur() == null);
-      assertTrue(eTest3.getEnceintePere().equals(ep3));
-      assertTrue(eTest3.getPosition().equals(pos3));
+      assertNull(eTest3.getConteneur());
+      assertEquals(eTest3.getEnceintePere(), ep3);
+      assertEquals(eTest3.getPosition(), pos3);
       eTest6 = enceinteManager.findByIdManager(6);
-      assertTrue(eTest6.getConteneur() == null);
-      assertTrue(eTest6.getEnceintePere().equals(ep6));
-      assertTrue(eTest6.getPosition().equals(pos6));
-      assertTrue(getOperationManager().findByObjectManager(eTest3).size() == 2);
-      assertTrue(getOperationManager().findByObjectManager(eTest6).size() == 2);
+      assertNull(eTest6.getConteneur());
+      assertEquals(eTest6.getEnceintePere(), ep6);
+      assertEquals(eTest6.getPosition(), pos6);
+      assertEquals(2, getOperationManager().findByObjectManager(eTest3).size());
+      assertEquals(2, getOperationManager().findByObjectManager(eTest6).size());
 
       // on teste l'échange de 2 enceintes cote a cote
       final Enceinte e4 = enceinteManager.findByIdManager(4);
@@ -1992,13 +1978,13 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       e4.setPosition(pos3);
       enceinteManager.echangerDeuxEnceintesManager(e3, e4, u);
       eTest3 = enceinteManager.findByIdManager(3);
-      assertTrue(eTest3.getConteneur() == null);
-      assertTrue(eTest3.getEnceintePere().equals(ep4));
-      assertTrue(eTest3.getPosition().equals(pos4));
+      assertNull(eTest3.getConteneur());
+      assertEquals(eTest3.getEnceintePere(), ep4);
+      assertEquals(eTest3.getPosition(), pos4);
       Enceinte eTest4 = enceinteManager.findByIdManager(4);
-      assertTrue(eTest4.getConteneur() == null);
-      assertTrue(eTest4.getEnceintePere().equals(ep3));
-      assertTrue(eTest4.getPosition().equals(pos3));
+      assertNull(eTest4.getConteneur());
+      assertEquals(eTest4.getEnceintePere(), ep3);
+      assertEquals(eTest4.getPosition(), pos3);
 
       // on refait l'échange dans l'autre sens
       e3.setConteneur(c3);
@@ -2009,13 +1995,13 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       e4.setPosition(pos4);
       enceinteManager.echangerDeuxEnceintesManager(e3, e4, u);
       eTest3 = enceinteManager.findByIdManager(3);
-      assertTrue(eTest3.getConteneur() == null);
-      assertTrue(eTest3.getEnceintePere().equals(ep3));
-      assertTrue(eTest3.getPosition().equals(pos3));
+      assertNull(eTest3.getConteneur());
+      assertEquals(eTest3.getEnceintePere(), ep3);
+      assertEquals(eTest3.getPosition(), pos3);
       eTest4 = enceinteManager.findByIdManager(4);
-      assertTrue(eTest4.getConteneur() == null);
-      assertTrue(eTest4.getEnceintePere().equals(ep4));
-      assertTrue(eTest4.getPosition().equals(pos4));
+      assertNull(eTest4.getConteneur());
+      assertEquals(eTest4.getEnceintePere(), ep4);
+      assertEquals(eTest4.getPosition(), pos4);
 
       List<Operation> ops = getOperationManager().findByObjectManager(eTest3);
       for(int i = 0; i < ops.size(); i++){
@@ -2029,7 +2015,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       for(int i = 0; i < ops.size(); i++){
          getOperationManager().removeObjectManager(ops.get(i));
       }
-      assertTrue(getOperationManager().findAllObjectsManager().size() == 19);
+      assertEquals(19, getOperationManager().findAllObjectsManager().size());
    }
 
    /**
@@ -2082,8 +2068,8 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }catch(final Exception e){
          e.printStackTrace();
       }
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
+      assertEquals(6, terminaleManager.findAllObjectsManager().size());
 
       // test avec exception sur l'enceinte
       boolean catched = false;
@@ -2096,8 +2082,8 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
+      assertEquals(6, terminaleManager.findAllObjectsManager().size());
       e1.setConteneur(null);
 
       // test avec excpetion sur la terminale
@@ -2112,8 +2098,8 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
+      assertEquals(6, terminaleManager.findAllObjectsManager().size());
       term.setTerminaleType(tType);
 
       try{
@@ -2122,21 +2108,21 @@ public class EnceinteManagerTest extends AbstractManagerTest4
          e.printStackTrace();
       }
 
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 8);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 11);
+      assertEquals(8, enceinteManager.findAllObjectsManager().size());
+      assertEquals(11, terminaleManager.findAllObjectsManager().size());
 
       final Set<Enceinte> eTests = enceinteManager.getEnceintesManager(eParent);
-      assertTrue(eTests.size() == 1);
+      assertEquals(1, eTests.size());
 
       final Terminale tTest = enceinteManager.getTerminalesManager(e1).iterator().next();
-      assertTrue(tTest.getNom().equals("BT10"));
+      assertEquals("BT10", tTest.getNom());
 
       final List<Terminale> terms = terminaleManager.findByEnceinteWithOrderManager(e1);
 
       enceinteManager.removeObjectManager(e1, null, u);
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 4);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
+      assertEquals(4, conteneurManager.findAllObjectsManager().size());
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
+      assertEquals(6, terminaleManager.findAllObjectsManager().size());
 
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.add(e1);
@@ -2213,8 +2199,8 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }catch(final Exception e){
          e.printStackTrace();
       }
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
+      assertEquals(6, terminaleManager.findAllObjectsManager().size());
 
       // test avec exception sur l'enceinte
       boolean catched = false;
@@ -2227,8 +2213,8 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
+      assertEquals(6, terminaleManager.findAllObjectsManager().size());
       e1.setEnceintePere(null);
 
       // test avec excpetion sur la derniere enceinte
@@ -2242,9 +2228,9 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 4);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
+      assertEquals(4, conteneurManager.findAllObjectsManager().size());
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
+      assertEquals(6, terminaleManager.findAllObjectsManager().size());
       e3.setEnceinteType(eType3);
 
       // test avec excpetion sur la terminale
@@ -2259,8 +2245,8 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
+      assertEquals(6, terminaleManager.findAllObjectsManager().size());
       term.setTerminaleType(tType);
 
       // creation valide
@@ -2270,24 +2256,24 @@ public class EnceinteManagerTest extends AbstractManagerTest4
          e.printStackTrace();
       }
 
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 16);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 36);
+      assertEquals(16, enceinteManager.findAllObjectsManager().size());
+      assertEquals(36, terminaleManager.findAllObjectsManager().size());
 
       final Enceinte eTest1 = conteneurManager.getEnceintesManager(c).iterator().next();
-      assertTrue(eTest1.getNom().equals("R"));
-      assertTrue(enceinteManager.getEnceintesManager(eTest1).size() == 2);
+      assertEquals("R", eTest1.getNom());
+      assertEquals(2, enceinteManager.getEnceintesManager(eTest1).size());
 
       final Enceinte eTest2 = enceinteManager.getEnceintesManager(eTest1).iterator().next();
-      assertTrue(eTest2.getNom().equals("T10"));
-      assertTrue(enceinteManager.getEnceintesManager(eTest2).size() == 3);
+      assertEquals("T10", eTest2.getNom());
+      assertEquals(3, enceinteManager.getEnceintesManager(eTest2).size());
 
       final Enceinte eTest3 = enceinteManager.getEnceintesManager(eTest2).iterator().next();
-      assertTrue(eTest3.getNom().equals("C1"));
-      assertTrue(enceinteManager.getEnceintesManager(eTest3).size() == 0);
-      assertTrue(enceinteManager.getTerminalesManager(eTest3).size() == 5);
+      assertEquals("C1", eTest3.getNom());
+      assertEquals(0, enceinteManager.getEnceintesManager(eTest3).size());
+      assertEquals(5, enceinteManager.getTerminalesManager(eTest3).size());
 
       final Terminale tTest = enceinteManager.getTerminalesManager(eTest3).iterator().next();
-      assertTrue(tTest.getNom().equals("BT25"));
+      assertEquals("BT25", tTest.getNom());
 
       final List<Enceinte> dep = new ArrayList<>();
       dep.add(e1);
@@ -2300,9 +2286,9 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
 
       enceinteManager.removeObjectManager(e1, null, u);
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 4);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
+      assertEquals(4, conteneurManager.findAllObjectsManager().size());
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
+      assertEquals(6, terminaleManager.findAllObjectsManager().size());
 
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.add(e1);
@@ -2383,8 +2369,8 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }catch(final Exception exp){
          exp.printStackTrace();
       }
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 8);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
+      assertEquals(8, enceinteManager.findAllObjectsManager().size());
+      assertEquals(6, terminaleManager.findAllObjectsManager().size());
 
       // test avec exception sur l'enceinte
       boolean catched = false;
@@ -2397,8 +2383,8 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 8);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
+      assertEquals(8, enceinteManager.findAllObjectsManager().size());
+      assertEquals(6, terminaleManager.findAllObjectsManager().size());
       eUp.setEnceintePere(null);
 
       // test avec excpetion sur la derniere enceinte
@@ -2412,9 +2398,9 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 4);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 8);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
+      assertEquals(4, conteneurManager.findAllObjectsManager().size());
+      assertEquals(8, enceinteManager.findAllObjectsManager().size());
+      assertEquals(6, terminaleManager.findAllObjectsManager().size());
       e3.setEnceinteType(eType3);
 
       // test avec excpetion sur la terminale
@@ -2429,8 +2415,8 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 8);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
+      assertEquals(8, enceinteManager.findAllObjectsManager().size());
+      assertEquals(6, terminaleManager.findAllObjectsManager().size());
       term.setTerminaleType(tType);
 
       // creation valide
@@ -2440,25 +2426,25 @@ public class EnceinteManagerTest extends AbstractManagerTest4
          exp.printStackTrace();
       }
 
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 16);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 36);
+      assertEquals(16, enceinteManager.findAllObjectsManager().size());
+      assertEquals(36, terminaleManager.findAllObjectsManager().size());
 
       final Enceinte eTest1 = conteneurManager.getEnceintesManager(c).iterator().next();
-      assertTrue(eTest1.getNom().equals("RUP1"));
+      assertEquals("RUP1", eTest1.getNom());
       assertNotNull(eTest1.getCouleur());
-      assertTrue(enceinteManager.getEnceintesManager(eTest1).size() == 2);
+      assertEquals(2, enceinteManager.getEnceintesManager(eTest1).size());
 
       final Enceinte eTest2 = enceinteManager.getEnceintesManager(eTest1).iterator().next();
-      assertTrue(eTest2.getNom().equals("T10"));
-      assertTrue(enceinteManager.getEnceintesManager(eTest2).size() == 3);
+      assertEquals("T10", eTest2.getNom());
+      assertEquals(3, enceinteManager.getEnceintesManager(eTest2).size());
 
       final Enceinte eTest3 = enceinteManager.getEnceintesManager(eTest2).iterator().next();
-      assertTrue(eTest3.getNom().equals("C1"));
-      assertTrue(enceinteManager.getEnceintesManager(eTest3).size() == 0);
-      assertTrue(enceinteManager.getTerminalesManager(eTest3).size() == 5);
+      assertEquals("C1", eTest3.getNom());
+      assertEquals(0, enceinteManager.getEnceintesManager(eTest3).size());
+      assertEquals(5, enceinteManager.getTerminalesManager(eTest3).size());
 
       final Terminale tTest = enceinteManager.getTerminalesManager(eTest3).iterator().next();
-      assertTrue(tTest.getNom().equals("BT25"));
+      assertEquals("BT25", tTest.getNom());
 
       final List<Enceinte> dep = new ArrayList<>();
       dep.add(eUp);
@@ -2471,9 +2457,9 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       }
 
       enceinteManager.removeObjectManager(eUp, null, u);
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 4);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
-      assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
+      assertEquals(4, conteneurManager.findAllObjectsManager().size());
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
+      assertEquals(6, terminaleManager.findAllObjectsManager().size());
 
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.add(eUp);
@@ -2485,9 +2471,9 @@ public class EnceinteManagerTest extends AbstractManagerTest4
    @Test
    public void getConteneurParentManager(){
       final Enceinte e5 = enceinteManager.findByIdManager(6);
-      assertTrue(enceinteManager.getConteneurParent(e5).equals(conteneurDao.findById(1)));
+      assertEquals(enceinteManager.getConteneurParent(e5), conteneurDao.findById(1));
       final Enceinte e1 = enceinteManager.findByIdManager(1);
-      assertTrue(enceinteManager.getConteneurParent(e1).equals(conteneurDao.findById(1)));
+      assertEquals(enceinteManager.getConteneurParent(e1), conteneurDao.findById(1));
       final Enceinte enull = new Enceinte();
       assertNull(enceinteManager.getConteneurParent(enull));
    }
@@ -2512,8 +2498,8 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       e1.setNbPlaces(5);
 
       enceinteManager.createObjectManager(e1, type, null, enc, ent, banks, null, u);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 8);
-      assertTrue(getOperationManager().findByObjectManager(e1).size() == 1);
+      assertEquals(8, enceinteManager.findAllObjectsManager().size());
+      assertEquals(1, getOperationManager().findByObjectManager(e1).size());
       final int id1 = e1.getEnceinteId();
       // Vérification
       final Enceinte eTest1 = enceinteManager.findByIdManager(id1);
@@ -2522,26 +2508,26 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       assertNotNull(eTest1.getEnceinteType());
       assertNotNull(eTest1.getEntite());
       assertNull(eTest1.getConteneur());
-      assertTrue(eTest1.getPosition() == 3);
-      assertTrue(eTest1.getNom().equals("T3"));
-      assertTrue(eTest1.getAlias().equals("ALIAS3"));
-      assertTrue(eTest1.getNbPlaces() == 5);
-      assertTrue(enceinteManager.getBanquesManager(eTest1).size() == 2);
+      assertEquals(3, (int) eTest1.getPosition());
+      assertEquals("T3", eTest1.getNom());
+      assertEquals("ALIAS3", eTest1.getAlias());
+      assertEquals(5, (int) eTest1.getNbPlaces());
+      assertEquals(2, enceinteManager.getBanquesManager(eTest1).size());
 
       // update de la taille
       final Enceinte up = enceinteManager.findByIdManager(id1);
       Enceinte eTest2 = enceinteManager.updateTailleEnceinteManager(up, 5, u);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 8);
-      assertTrue(getOperationManager().findByObjectManager(eTest2).size() == 2);
-      assertTrue(eTest2.getNbPlaces() == 10);
-      assertTrue(eTest2.getEnceintePere().equals(eTest1.getEnceintePere()));
-      assertTrue(eTest2.getEnceinteType().equals(eTest1.getEnceinteType()));
-      assertTrue(eTest2.getEntite().equals(eTest1.getEntite()));
+      assertEquals(8, enceinteManager.findAllObjectsManager().size());
+      assertEquals(2, getOperationManager().findByObjectManager(eTest2).size());
+      assertEquals(10, (int) eTest2.getNbPlaces());
+      assertEquals(eTest2.getEnceintePere(), eTest1.getEnceintePere());
+      assertEquals(eTest2.getEnceinteType(), eTest1.getEnceinteType());
+      assertEquals(eTest2.getEntite(), eTest1.getEntite());
       assertNull(eTest2.getConteneur());
-      assertTrue(eTest2.getPosition().equals(eTest1.getPosition()));
-      assertTrue(eTest2.getNom().equals(eTest1.getNom()));
-      assertTrue(eTest2.getAlias().equals(eTest1.getAlias()));
-      assertTrue(enceinteManager.getBanquesManager(eTest2).size() == 2);
+      assertEquals(eTest2.getPosition(), eTest1.getPosition());
+      assertEquals(eTest2.getNom(), eTest1.getNom());
+      assertEquals(eTest2.getAlias(), eTest1.getAlias());
+      assertEquals(2, enceinteManager.getBanquesManager(eTest2).size());
 
       // enceintes filles
       final Enceinte e2 = new Enceinte();
@@ -2568,7 +2554,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
 
       enceinteManager.createObjectManager(e4, type, null, eTest2, ent, banks, null, u);
 
-      assertTrue(enceinteManager.getEnceintesManager(eTest2).size() == 3);
+      assertEquals(3, enceinteManager.getEnceintesManager(eTest2).size());
 
       // pas besoin de repositionner les enceintes
       enceinteManager.updateTailleEnceinteManager(eTest2, -2, u);
@@ -2577,14 +2563,14 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       int i = 1;
       for(final Enceinte ec : enceintes){
          if(i == 1){
-            assertTrue(ec.getNom().equals("T3-1"));
-            assertTrue(ec.getPosition() == 1);
+            assertEquals("T3-1", ec.getNom());
+            assertEquals(1, (int) ec.getPosition());
          }else if(i == 2){
-            assertTrue(ec.getNom().equals("T3-4"));
-            assertTrue(ec.getPosition() == 4);
+            assertEquals("T3-4", ec.getNom());
+            assertEquals(4, (int) ec.getPosition());
          }else if(i == 3){
-            assertTrue(ec.getNom().equals("T3-8"));
-            assertTrue(ec.getPosition() == 8);
+            assertEquals("T3-8", ec.getNom());
+            assertEquals(8, (int) ec.getPosition());
          }
          i++;
       }
@@ -2597,14 +2583,14 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       i = 1;
       for(final Enceinte ec : enceintes){
          if(i == 1){
-            assertTrue(ec.getNom().equals("T3-1"));
-            assertTrue(ec.getPosition() == 1);
+            assertEquals("T3-1", ec.getNom());
+            assertEquals(1, (int) ec.getPosition());
          }else if(i == 2){
-            assertTrue(ec.getNom().equals("T3-4"));
-            assertTrue(ec.getPosition() == 2);
+            assertEquals("T3-4", ec.getNom());
+            assertEquals(2, (int) ec.getPosition());
          }else if(i == 3){
-            assertTrue(ec.getNom().equals("T3-8"));
-            assertTrue(ec.getPosition() == 3);
+            assertEquals("T3-8", ec.getNom());
+            assertEquals(3, (int) ec.getPosition());
          }
          i++;
       }
@@ -2612,34 +2598,34 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       // mauv;ais paramétrage
       Enceinte bad = enceinteManager.findByIdManager(id1);
       enceinteManager.updateTailleEnceinteManager(null, 5, u);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 11);
-      assertTrue(getOperationManager().findByObjectManager(bad).size() == 4);
+      assertEquals(11, enceinteManager.findAllObjectsManager().size());
+      assertEquals(4, getOperationManager().findByObjectManager(bad).size());
       bad = enceinteManager.findByIdManager(id1);
-      assertTrue(bad.getNbPlaces() == 4);
+      assertEquals(4, (int) bad.getNbPlaces());
 
       bad = enceinteManager.findByIdManager(id1);
       bad = enceinteManager.updateTailleEnceinteManager(bad, null, u);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 11);
-      assertTrue(getOperationManager().findByObjectManager(bad).size() == 4);
-      assertTrue(bad.getNbPlaces() == 4);
+      assertEquals(11, enceinteManager.findAllObjectsManager().size());
+      assertEquals(4, getOperationManager().findByObjectManager(bad).size());
+      assertEquals(4, (int) bad.getNbPlaces());
 
       bad = enceinteManager.findByIdManager(id1);
       bad = enceinteManager.updateTailleEnceinteManager(bad, 5, null);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 11);
-      assertTrue(getOperationManager().findByObjectManager(bad).size() == 4);
-      assertTrue(bad.getNbPlaces() == 4);
+      assertEquals(11, enceinteManager.findAllObjectsManager().size());
+      assertEquals(4, getOperationManager().findByObjectManager(bad).size());
+      assertEquals(4, (int) bad.getNbPlaces());
 
       bad = enceinteManager.findByIdManager(id1);
       bad = enceinteManager.updateTailleEnceinteManager(bad, 0, u);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 11);
-      assertTrue(getOperationManager().findByObjectManager(bad).size() == 4);
-      assertTrue(bad.getNbPlaces() == 4);
+      assertEquals(11, enceinteManager.findAllObjectsManager().size());
+      assertEquals(4, getOperationManager().findByObjectManager(bad).size());
+      assertEquals(4, (int) bad.getNbPlaces());
 
       bad = enceinteManager.findByIdManager(id1);
       bad = enceinteManager.updateTailleEnceinteManager(bad, -1, u);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 11);
-      assertTrue(getOperationManager().findByObjectManager(bad).size() == 5);
-      assertTrue(bad.getNbPlaces() == 3);
+      assertEquals(11, enceinteManager.findAllObjectsManager().size());
+      assertEquals(5, getOperationManager().findByObjectManager(bad).size());
+      assertEquals(3, (int) bad.getNbPlaces());
 
       // < 0
       boolean catched = false;
@@ -2647,8 +2633,8 @@ public class EnceinteManagerTest extends AbstractManagerTest4
          enceinteManager.updateTailleEnceinteManager(bad, -4, u);
       }catch(final EnceinteSizeException e){
          catched = true;
-         assertTrue(e.getEnceinte().equals(bad));
-         assertTrue(e.getNbPlaces().equals(3));
+         assertEquals(e.getEnceinte(), bad);
+         assertEquals(3, (int) e.getNbPlaces());
       }
       assertTrue(catched);
 
@@ -2659,8 +2645,8 @@ public class EnceinteManagerTest extends AbstractManagerTest4
          enceinteManager.updateTailleEnceinteManager(e1, -4, u);
       }catch(final EnceinteSizeException e){
          catched = true;
-         assertTrue(e.getEnceinte().equals(e1));
-         assertTrue(e.getNbPlaces().equals(4));
+         assertEquals(e.getEnceinte(), e1);
+         assertEquals(4, (int) e.getNbPlaces());
       }
       assertTrue(catched);
 
@@ -2671,8 +2657,8 @@ public class EnceinteManagerTest extends AbstractManagerTest4
          enceinteManager.updateTailleEnceinteManager(e1, -5, u);
       }catch(final EnceinteSizeException e){
          catched = true;
-         assertTrue(e.getEnceinte().equals(e1));
-         assertTrue(e.getNbPlaces().equals(1));
+         assertEquals(e.getEnceinte(), e1);
+         assertEquals(1, (int) e.getNbPlaces());
       }
       assertTrue(catched);
 
@@ -2681,7 +2667,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       final Integer idEct1 = ect1.getEnceinteId();
       enceinteManager.updateTailleEnceinteManager(ect1, 5, u);
       ect1 = enceinteManager.findByIdManager(idEct1);
-      assertTrue(ect1.getNbPlaces() == 10);
+      assertEquals(10, (int) ect1.getNbPlaces());
 
       // terminales filles
       final Terminale t1 = new Terminale();
@@ -2704,7 +2690,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
 
       terminaleManager.createObjectManager(t3, ect1, typeT, null, null, num, null, u);
 
-      assertTrue(enceinteManager.getTerminalesManager(ect1).size() == 3);
+      assertEquals(3, enceinteManager.getTerminalesManager(ect1).size());
 
       // pas besoin de repositionner les terminales
       enceinteManager.updateTailleEnceinteManager(ect1, -1, u);
@@ -2713,14 +2699,14 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       i = 1;
       for(final Terminale tm : terminales){
          if(i == 1){
-            assertTrue(tm.getNom().equals("BT1-1"));
-            assertTrue(tm.getPosition() == 3);
+            assertEquals("BT1-1", tm.getNom());
+            assertEquals(3, (int) tm.getPosition());
          }else if(i == 2){
-            assertTrue(tm.getNom().equals("BT2-6"));
-            assertTrue(tm.getPosition() == 6);
+            assertEquals("BT2-6", tm.getNom());
+            assertEquals(6, (int) tm.getPosition());
          }else if(i == 3){
-            assertTrue(tm.getNom().equals("BT3-9"));
-            assertTrue(tm.getPosition() == 9);
+            assertEquals("BT3-9", tm.getNom());
+            assertEquals(9, (int) tm.getPosition());
          }
          i++;
       }
@@ -2733,14 +2719,14 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       i = 1;
       for(final Terminale tm : terminales){
          if(i == 1){
-            assertTrue(tm.getNom().equals("BT1-1"));
-            assertTrue(tm.getPosition() == 1);
+            assertEquals("BT1-1", tm.getNom());
+            assertEquals(1, (int) tm.getPosition());
          }else if(i == 2){
-            assertTrue(tm.getNom().equals("BT2-6"));
-            assertTrue(tm.getPosition() == 2);
+            assertEquals("BT2-6", tm.getNom());
+            assertEquals(2, (int) tm.getPosition());
          }else if(i == 3){
-            assertTrue(tm.getNom().equals("BT3-9"));
-            assertTrue(tm.getPosition() == 3);
+            assertEquals("BT3-9", tm.getNom());
+            assertEquals(3, (int) tm.getPosition());
          }
          i++;
       }
@@ -2749,8 +2735,8 @@ public class EnceinteManagerTest extends AbstractManagerTest4
 
       enceinteManager.removeObjectManager(eTest2, null, u);
 
-      assertTrue(getOperationManager().findByObjectManager(eTest2).size() == 0);
-      assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
+      assertEquals(0, getOperationManager().findByObjectManager(eTest2).size());
+      assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.add(eTest2);

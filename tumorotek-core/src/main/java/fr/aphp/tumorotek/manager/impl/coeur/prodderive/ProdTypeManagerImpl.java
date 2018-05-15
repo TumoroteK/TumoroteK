@@ -51,7 +51,6 @@ import fr.aphp.tumorotek.manager.exception.ObjectUsedException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.prodderive.ProdTypeValidator;
-import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdType;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
@@ -138,28 +137,25 @@ public class ProdTypeManagerImpl implements ProdTypeManager
             type = type + "%";
          }
          return prodTypeDao.findByType(type);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
-   public boolean findDoublonManager(final Object obj){
-      final ProdType type = (ProdType) obj;
+   public boolean findDoublonManager(final ProdType obj){
+      final ProdType type = obj;
       if(type != null){
          if(type.getProdTypeId() == null){
             return prodTypeDao.findAll().contains(type);
-         }else{
-            return prodTypeDao.findByExcludedId(type.getProdTypeId()).contains(type);
          }
-      }else{
-         return false;
+         return prodTypeDao.findByExcludedId(type.getProdTypeId()).contains(type);
       }
+      return false;
    }
 
    @Override
-   public boolean isUsedObjectManager(final Object obj){
-      final ProdType type = (ProdType) obj;
+   public boolean isUsedObjectManager(final ProdType obj){
+      final ProdType type = obj;
 
       final List<ProdDerive> list = prodDeriveDao.findByProdType(type);
 
@@ -167,53 +163,49 @@ public class ProdTypeManagerImpl implements ProdTypeManager
    }
 
    @Override
-   public void createObjectManager(final Object obj){
-      final ProdType type = (ProdType) obj;
+   public void createObjectManager(final ProdType obj){
+      final ProdType type = obj;
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(type.getPlateforme() == null){
          throw new RequiredObjectIsNullException("ProdType", "creation", "Plateforme");
-      }else{
-         type.setPlateforme(plateformeDao.mergeObject(type.getPlateforme()));
       }
+      type.setPlateforme(plateformeDao.mergeObject(type.getPlateforme()));
 
       if(findDoublonManager(type)){
          log.warn("Doublon lors de la creation de l'objet ProdType : " + type.toString());
          throw new DoublonFoundException("ProdType", "creation");
-      }else{
-         BeanValidator.validateObject(type, new Validator[] {prodTypeValidator});
-         prodTypeDao.createObject(type);
-         log.info("Enregistrement de l'objet ProdType : " + type.toString());
       }
+      BeanValidator.validateObject(type, new Validator[] {prodTypeValidator});
+      prodTypeDao.createObject(type);
+      log.info("Enregistrement de l'objet ProdType : " + type.toString());
    }
 
    @Override
-   public void updateObjectManager(final Object obj){
-      final ProdType type = (ProdType) obj;
+   public void updateObjectManager(final ProdType obj){
+      final ProdType type = obj;
       if(findDoublonManager(type)){
          log.warn("Doublon lors de la modification de l'objet ProdType : " + type.toString());
          throw new DoublonFoundException("ProdType", "modification");
-      }else{
-         BeanValidator.validateObject(type, new Validator[] {prodTypeValidator});
-         prodTypeDao.updateObject(type);
-         log.info("Modification de l'objet ProdType : " + type.toString());
       }
+      BeanValidator.validateObject(type, new Validator[] {prodTypeValidator});
+      prodTypeDao.updateObject(type);
+      log.info("Modification de l'objet ProdType : " + type.toString());
    }
 
    @Override
-   public void removeObjectManager(final Object obj){
-      final ProdType type = (ProdType) obj;
+   public void removeObjectManager(final ProdType obj){
+      final ProdType type = obj;
       if(isUsedObjectManager(type)){
          log.warn("Objet utilisé lors de la suppression de l'objet " + "ProdType : " + type.toString());
          throw new ObjectUsedException("ProdType", "suppression");
-      }else{
+      }
          prodTypeDao.removeObject(type.getProdTypeId());
          log.info("Suppression de l'objet ProdType : " + type.toString());
-      }
    }
 
    @Override
-   public List<? extends TKThesaurusObject> findByOrderManager(final Plateforme pf){
+   public List<ProdType> findByOrderManager(final Plateforme pf){
       return prodTypeDao.findByOrder(pf);
    }
 }

@@ -156,9 +156,8 @@ public class CederObjetPK implements Serializable
    public String toString(){
       if(this.entite != null && this.cession != null && this.objetId != null){
          return "{" + cession.toString() + " (Cession), " + entite.toString() + " (Entite), " + objetId + " (ObjetId)}";
-      }else{
-         return "{Empty CederObjetPK}";
       }
+      return "{Empty CederObjetPK}";
    }
 
 }

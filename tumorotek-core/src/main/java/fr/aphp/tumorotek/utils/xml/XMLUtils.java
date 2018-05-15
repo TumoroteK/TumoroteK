@@ -6,7 +6,6 @@ import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.Statement;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -32,7 +31,6 @@ public class XMLUtils
    public static InputStream resultSetToXML(final ResultSet rs)
       throws ParserConfigurationException, TransformerConfigurationException, TransformerException{
 
-      final Statement stmt = null;
       Document doc = null;
       try{
          final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -65,9 +63,6 @@ public class XMLUtils
          try{
             if(con != null){
                con.close();
-            }
-            if(stmt != null){
-               stmt.close();
             }
             if(rs != null){
                rs.close();

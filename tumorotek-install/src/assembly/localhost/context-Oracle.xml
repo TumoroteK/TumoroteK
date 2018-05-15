@@ -16,7 +16,7 @@
     <Environment name="/tk/tkSipSystem" override="false" type="java.lang.String" value="${catalina.base}/conf/Catalina/localhost/sip/"/>
     <Environment name="/tk/tkMbioSystem" type="java.lang.String" value="${catalina.base}/conf/Catalina/localhost/mbio/" override="false"/>
     <Environment name="/interfacages/jdbc/dialect" type="java.lang.String" value="org.hibernate.dialect.MySQLDialect" override="false"/>
-    <Environment name="/interfacages/jdbc/driverClass" type="java.lang.String" value="com.mysql.jdbc.Driver" override="false"/>
+    <Environment name="/interfacages/jdbc/driverClass" type="java.lang.String" value="com.mysql.cj.jdbc.Driver" override="false"/>
     <Environment name="/interfacages/jdbc/url" type="java.lang.String" value="jdbc:mysql://localhost:3306/tumorotek_interfacages?characterEncoding=UTF-8" override="false"/>
     <Environment name="/interfacages/jdbc/user" type="java.lang.String" value="TUMO" override="false"/>
     <Environment name="/interfacages/jdbc/password" type="java.lang.String" value="TUMO" override="false"/>

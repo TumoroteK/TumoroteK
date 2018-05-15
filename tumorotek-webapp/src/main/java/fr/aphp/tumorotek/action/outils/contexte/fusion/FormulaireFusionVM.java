@@ -159,6 +159,143 @@ public class FormulaireFusionVM
       initData(idBSelected, idASelected);
    }
 
+   private void initDataCollaborateur(final int id1, final int id2){
+      this.cA = ManagerLocator.getCollaborateurManager().findByIdManager(id1);
+      this.cB = ManagerLocator.getCollaborateurManager().findByIdManager(id2);
+
+      this.nomA = cA.getNom();
+      this.nomB = cB.getNom();
+      setNomChamp1(Labels.getLabel("Champ.Patient.Prenom"));
+      this.champ1A = cA.getPrenom();
+      this.champ1B = cB.getPrenom();
+
+      setNomChamp2(Labels.getLabel("Champ.Collaborateur.Etablissement"));
+      this.champ2A = cA.getEtablissement() != null ? cA.getEtablissement().getNom() : "";
+      this.champ2B = cB.getEtablissement() != null ? cB.getEtablissement().getNom() : "";
+
+      setNomChamp3(Labels.getLabel("Champ.Collaborateur.Services"));
+
+      this.champ3A = "";
+      for(final Service s : ManagerLocator.getCollaborateurManager().getServicesManager(cA)){
+         if(champ3A == ""){
+            this.champ3A = this.champ3A + s.getNom();
+         }else{
+            this.champ3A = this.champ3A + ", " + s.getNom();
+         }
+      }
+      this.champ3B = "";
+      for(final Service s : ManagerLocator.getCollaborateurManager().getServicesManager(cB)){
+         if(champ3B == ""){
+            this.champ3B = this.champ3B + s.getNom();
+         }else{
+            this.champ3B = this.champ3B + ", " + s.getNom();
+         }
+      }
+
+      cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()),
+         Labels.getLabel("fusion.collaborateur.nb.echantillons.operes"),
+         ManagerLocator.getEchantillonManager().findCountByOperateurManager(cA));
+      cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()),
+         Labels.getLabel("fusion.collaborateur.nb.prelevements.preleves"),
+         ManagerLocator.getPrelevementManager().findCountByPreleveurManager(cA));
+      cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()),
+         Labels.getLabel("fusion.collaborateur.nb.prodderives.operes"),
+         ManagerLocator.getProdDeriveManager().findCountByOperateurManager(cA));
+      cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()),
+         Labels.getLabel("fusion.collaborateur.nb.maladies.referent"),
+         ManagerLocator.getMaladieManager().findCountByReferentManager(cA));
+      cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()),
+         Labels.getLabel("fusion.collaborateur.nb.patients.referent"),
+         ManagerLocator.getPatientManager().findCountByReferentManager(cA));
+      cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()),
+         Labels.getLabel("fusion.collaborateur.nb.cessions.demandees"),
+         ManagerLocator.getCessionManager().findCountByDemandeurManager(cA));
+      cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()),
+         Labels.getLabel("fusion.collaborateur.nb.cessions.executees"),
+         ManagerLocator.getCessionManager().findCountByExecutantManager(cA));
+      cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()),
+         Labels.getLabel("fusion.collaborateur.nb.cessions.destinees"),
+         ManagerLocator.getCessionManager().findCountByDestinataireManager(cA));
+
+      cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()),
+         Labels.getLabel("fusion.collaborateur.nb.echantillons.operes"),
+         ManagerLocator.getEchantillonManager().findCountByOperateurManager(cB));
+      cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()),
+         Labels.getLabel("fusion.collaborateur.nb.prelevements.preleves"),
+         ManagerLocator.getPrelevementManager().findCountByPreleveurManager(cB));
+      cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()),
+         Labels.getLabel("fusion.collaborateur.nb.prodderives.operes"),
+         ManagerLocator.getProdDeriveManager().findCountByOperateurManager(cB));
+      cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()),
+         Labels.getLabel("fusion.collaborateur.nb.maladies.referent"),
+         ManagerLocator.getMaladieManager().findCountByReferentManager(cB));
+      cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()),
+         Labels.getLabel("fusion.collaborateur.nb.patients.referent"),
+         ManagerLocator.getPatientManager().findCountByReferentManager(cB));
+      cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()),
+         Labels.getLabel("fusion.collaborateur.nb.cessions.demandees"),
+         ManagerLocator.getCessionManager().findCountByDemandeurManager(cB));
+      cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()),
+         Labels.getLabel("fusion.collaborateur.nb.cessions.executees"),
+         ManagerLocator.getCessionManager().findCountByExecutantManager(cB));
+      cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()),
+         Labels.getLabel("fusion.collaborateur.nb.cessions.destinees"),
+         ManagerLocator.getCessionManager().findCountByDestinataireManager(cB));
+
+      fillGenericData(cA, cB);
+   }
+   
+   private void initDataService(final int id1, final int id2){
+      this.sA = ManagerLocator.getServiceManager().findByIdManager(id1);
+      this.sB = ManagerLocator.getServiceManager().findByIdManager(id2);
+
+      this.nomA = sA.getNom();
+      this.nomB = sB.getNom();
+      setNomChamp1(Labels.getLabel("Champ.Collaborateur.Etablissement"));
+      this.champ1A = sA.getEtablissement().getNom();
+      this.champ1B = sB.getEtablissement().getNom();
+
+      cdf.addValueTo1((sA.getNom() + " " + getIdASelectedString()),
+         Labels.getLabel("fusion.service.nb.collaborateurs.affectes"),
+         ManagerLocator.getCollaborateurManager().findCountByServicedIdManager(sA));
+      cdf.addValueTo1((sA.getNom() + " " + getIdASelectedString()),
+         Labels.getLabel("fusion.service.nb.prelevements.affectes"),
+         ManagerLocator.getPrelevementManager().findCountByServiceManager(sA));
+
+      cdf.addValueTo2((sB.getNom() + " " + getIdBSelectedString()),
+         Labels.getLabel("fusion.service.nb.collaborateurs.affectes"),
+         ManagerLocator.getCollaborateurManager().findCountByServicedIdManager(sB));
+      cdf.addValueTo2((sB.getNom() + " " + getIdBSelectedString()),
+         Labels.getLabel("fusion.service.nb.prelevements.affectes"),
+         ManagerLocator.getPrelevementManager().findCountByServiceManager(sB));
+
+      fillGenericData(sA, sB);
+   }
+   
+   private void initDataEtablissement(final int id1, final int id2){
+      this.eA = ManagerLocator.getEtablissementManager().findByIdManager(id1);
+      this.eB = ManagerLocator.getEtablissementManager().findByIdManager(id2);
+
+      this.nomA = eA.getNom();
+      this.nomB = eB.getNom();
+
+      cdf.addValueTo1((eA.getNom() + " " + getIdASelectedString()),
+         Labels.getLabel("fusion.etablissement.nb.services.lies"),
+         ManagerLocator.getServiceManager().findCountByEtablissementIdManager(eA));
+      cdf.addValueTo1((eA.getNom() + " " + getIdASelectedString()),
+         Labels.getLabel("fusion.etablissement.nb.collaborateurs.lies"),
+         ManagerLocator.getCollaborateurManager().findCountByEtablissementManager(eA));
+
+      cdf.addValueTo2((eB.getNom() + " " + getIdBSelectedString()),
+         Labels.getLabel("fusion.etablissement.nb.services.lies"),
+         ManagerLocator.getServiceManager().findCountByEtablissementIdManager(eB));
+      cdf.addValueTo2((eB.getNom() + " " + getIdBSelectedString()),
+         Labels.getLabel("fusion.etablissement.nb.collaborateurs.lies"),
+         ManagerLocator.getCollaborateurManager().findCountByEtablissementManager(eB));
+
+      fillGenericData(eA, eB);
+   }
+   
    public void initData(final int id1, final int id2){
       cdf.emptyIt();
 
@@ -167,189 +304,15 @@ public class FormulaireFusionVM
 
       switch(entiteRecherche){
          case ("Collaborateur"):
-            this.cA = ManagerLocator.getCollaborateurManager().findByIdManager(id1);
-            this.cB = ManagerLocator.getCollaborateurManager().findByIdManager(id2);
-
-            this.nomA = cA.getNom();
-            this.nomB = cB.getNom();
-            setNomChamp1(Labels.getLabel("Champ.Patient.Prenom"));
-            this.champ1A = cA.getPrenom();
-            this.champ1B = cB.getPrenom();
-
-            setNomChamp2(Labels.getLabel("Champ.Collaborateur.Etablissement"));
-            this.champ2A = cA.getEtablissement() != null ? cA.getEtablissement().getNom() : "";
-            this.champ2B = cB.getEtablissement() != null ? cB.getEtablissement().getNom() : "";
-
-            setNomChamp3(Labels.getLabel("Champ.Collaborateur.Services"));
-
-            this.champ3A = "";
-            for(final Service s : ManagerLocator.getCollaborateurManager().getServicesManager(cA)){
-               if(champ3A == ""){
-                  this.champ3A = this.champ3A + s.getNom();
-               }else{
-                  this.champ3A = this.champ3A + ", " + s.getNom();
-               }
-            }
-            this.champ3B = "";
-            for(final Service s : ManagerLocator.getCollaborateurManager().getServicesManager(cB)){
-               if(champ3B == ""){
-                  this.champ3B = this.champ3B + s.getNom();
-               }else{
-                  this.champ3B = this.champ3B + ", " + s.getNom();
-               }
-            }
-
-            cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()),
-               Labels.getLabel("fusion.collaborateur.nb.echantillons.operes"),
-               ManagerLocator.getEchantillonManager().findCountByOperateurManager(cA));
-            cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()),
-               Labels.getLabel("fusion.collaborateur.nb.prelevements.preleves"),
-               ManagerLocator.getPrelevementManager().findCountByPreleveurManager(cA));
-            cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()),
-               Labels.getLabel("fusion.collaborateur.nb.prodderives.operes"),
-               ManagerLocator.getProdDeriveManager().findCountByOperateurManager(cA));
-            cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()),
-               Labels.getLabel("fusion.collaborateur.nb.maladies.referent"),
-               ManagerLocator.getMaladieManager().findCountByReferentManager(cA));
-            cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()),
-               Labels.getLabel("fusion.collaborateur.nb.patients.referent"),
-               ManagerLocator.getPatientManager().findCountByReferentManager(cA));
-            cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()),
-               Labels.getLabel("fusion.collaborateur.nb.cessions.demandees"),
-               ManagerLocator.getCessionManager().findCountByDemandeurManager(cA));
-            cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()),
-               Labels.getLabel("fusion.collaborateur.nb.cessions.executees"),
-               ManagerLocator.getCessionManager().findCountByExecutantManager(cA));
-            cdf.addValueTo1((cA.getNom() + " " + getIdASelectedString()),
-               Labels.getLabel("fusion.collaborateur.nb.cessions.destinees"),
-               ManagerLocator.getCessionManager().findCountByDestinataireManager(cA));
-
-            cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()),
-               Labels.getLabel("fusion.collaborateur.nb.echantillons.operes"),
-               ManagerLocator.getEchantillonManager().findCountByOperateurManager(cB));
-            cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()),
-               Labels.getLabel("fusion.collaborateur.nb.prelevements.preleves"),
-               ManagerLocator.getPrelevementManager().findCountByPreleveurManager(cB));
-            cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()),
-               Labels.getLabel("fusion.collaborateur.nb.prodderives.operes"),
-               ManagerLocator.getProdDeriveManager().findCountByOperateurManager(cB));
-            cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()),
-               Labels.getLabel("fusion.collaborateur.nb.maladies.referent"),
-               ManagerLocator.getMaladieManager().findCountByReferentManager(cB));
-            cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()),
-               Labels.getLabel("fusion.collaborateur.nb.patients.referent"),
-               ManagerLocator.getPatientManager().findCountByReferentManager(cB));
-            cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()),
-               Labels.getLabel("fusion.collaborateur.nb.cessions.demandees"),
-               ManagerLocator.getCessionManager().findCountByDemandeurManager(cB));
-            cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()),
-               Labels.getLabel("fusion.collaborateur.nb.cessions.executees"),
-               ManagerLocator.getCessionManager().findCountByExecutantManager(cB));
-            cdf.addValueTo2((cB.getNom() + " " + getIdBSelectedString()),
-               Labels.getLabel("fusion.collaborateur.nb.cessions.destinees"),
-               ManagerLocator.getCessionManager().findCountByDestinataireManager(cB));
-
-            /*
-             * this.nomInfoChartChamp1="nb d'echantillons crees";
-             * 
-             * this.infoChartChamp1A =
-             * ManagerLocator.getEchantillonManager().findCountByCollaborateur
-             * (cA); this.infoChartChamp2A =
-             * ManagerLocator.getEchantillonManager
-             * ().findCountByCollaborateur(cB);
-             */
-            fillGenericData(cA, cB);
-            /*
-             * Calendar dateA =
-             * ManagerLocator.getOperationManager().findDateCreationManager(cA);
-             * Calendar dateB =
-             * ManagerLocator.getOperationManager().findDateCreationManager(cB);
-             * 
-             * if (dateA != null) { this.dateCreationA =
-             * ObjectTypesFormatters.dateRenderer2(dateA);
-             * this.operateurCreationA =
-             * ManagerLocator.getOperationManager().findOperationCreationManager
-             * (cA).getUtilisateur().toString(); } else{ this.dateCreationA =
-             * "Non disponible"; this.operateurCreationA = "Non disponible"; }
-             * 
-             * if (dateB != null) { this.dateCreationB =
-             * ObjectTypesFormatters.dateRenderer2(dateB);
-             * this.operateurCreationB =
-             * ManagerLocator.getOperationManager().findOperationCreationManager
-             * (cB).getUtilisateur().toString(); } else{ this.dateCreationB =
-             * "Non disponible"; this.operateurCreationB = "Non disponible"; }
-             */break;
-
-         case ("Service"):
-            this.sA = ManagerLocator.getServiceManager().findByIdManager(id1);
-            this.sB = ManagerLocator.getServiceManager().findByIdManager(id2);
-
-            this.nomA = sA.getNom();
-            this.nomB = sB.getNom();
-            setNomChamp1(Labels.getLabel("Champ.Collaborateur.Etablissement"));
-            this.champ1A = sA.getEtablissement().getNom();
-            this.champ1B = sB.getEtablissement().getNom();
-
-            cdf.addValueTo1((sA.getNom() + " " + getIdASelectedString()),
-               Labels.getLabel("fusion.service.nb.collaborateurs.affectes"),
-               ManagerLocator.getCollaborateurManager().findCountByServicedIdManager(sA));
-            cdf.addValueTo1((sA.getNom() + " " + getIdASelectedString()),
-               Labels.getLabel("fusion.service.nb.prelevements.affectes"),
-               ManagerLocator.getPrelevementManager().findCountByServiceManager(sA));
-
-            cdf.addValueTo2((sB.getNom() + " " + getIdBSelectedString()),
-               Labels.getLabel("fusion.service.nb.collaborateurs.affectes"),
-               ManagerLocator.getCollaborateurManager().findCountByServicedIdManager(sB));
-            cdf.addValueTo2((sB.getNom() + " " + getIdBSelectedString()),
-               Labels.getLabel("fusion.service.nb.prelevements.affectes"),
-               ManagerLocator.getPrelevementManager().findCountByServiceManager(sB));
-
-            /*
-             * this.nomInfoChartChamp1="nb de collaboratteurs affectés";
-             * this.infoChartChamp1A =
-             * ManagerLocator.getCollaborateurManager().findCountByServicedIdManager
-             * (sA); this.infoChartChamp1B =
-             * ManagerLocator.getCollaborateurManager
-             * ().findCountByServicedIdManager(sB);
-             */
-
-            fillGenericData(sA, sB);
-
+            initDataCollaborateur(id1, id2);
             break;
-
+         case ("Service"):
+            initDataService(id1, id2);
+            break;
          case ("Etablissement"):
-
-            this.eA = ManagerLocator.getEtablissementManager().findByIdManager(id1);
-            this.eB = ManagerLocator.getEtablissementManager().findByIdManager(id2);
-
-            this.nomA = eA.getNom();
-            this.nomB = eB.getNom();
-
-            cdf.addValueTo1((eA.getNom() + " " + getIdASelectedString()),
-               Labels.getLabel("fusion.etablissement.nb.services.lies"),
-               ManagerLocator.getServiceManager().findCountByEtablissementIdManager(eA));
-            cdf.addValueTo1((eA.getNom() + " " + getIdASelectedString()),
-               Labels.getLabel("fusion.etablissement.nb.collaborateurs.lies"),
-               ManagerLocator.getCollaborateurManager().findCountByEtablissementManager(eA));
-
-            cdf.addValueTo2((eB.getNom() + " " + getIdBSelectedString()),
-               Labels.getLabel("fusion.etablissement.nb.services.lies"),
-               ManagerLocator.getServiceManager().findCountByEtablissementIdManager(eB));
-            cdf.addValueTo2((eB.getNom() + " " + getIdBSelectedString()),
-               Labels.getLabel("fusion.etablissement.nb.collaborateurs.lies"),
-               ManagerLocator.getCollaborateurManager().findCountByEtablissementManager(eB));
-
-            /*
-             * this.nomInfoChartChamp1="nb de services"; this.infoChartChamp1A =
-             * ManagerLocator
-             * .getServiceManager().findCountByEtablissementIdManager(eA);
-             * this.infoChartChamp1B =
-             * ManagerLocator.getServiceManager().findCountByEtablissementIdManager
-             * (eB);
-             */
-
-            fillGenericData(eA, eB);
-
+            initDataEtablissement(id1, id2);
+            break;
+         default:
             break;
       }
    }

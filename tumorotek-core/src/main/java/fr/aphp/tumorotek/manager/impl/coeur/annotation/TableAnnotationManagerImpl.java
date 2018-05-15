@@ -67,6 +67,7 @@ import fr.aphp.tumorotek.model.coeur.annotation.AnnotationDefaut;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.annotation.Catalogue;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
+import fr.aphp.tumorotek.model.coeur.annotation.ChampCalcule;
 import fr.aphp.tumorotek.model.coeur.annotation.Item;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotationBanque;
@@ -256,8 +257,8 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
       if(table.getTableAnnotationId() == null){
          return tableAnnotationDao.findAll().contains(table);
       }
-      return tableAnnotationDao.findByExcludedId(table.getTableAnnotationId()).contains(table);
-   }
+         return tableAnnotationDao.findByExcludedId(table.getTableAnnotationId()).contains(table);
+      }
 
    @Override
    public Set<Banque> getBanquesManager(final TableAnnotation tab){
@@ -315,62 +316,6 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
       }
    }
 
-   //	@Override
-   //	public void moveTableOrderUpDownManager(TableAnnotation table, 
-   //												Banque banque, boolean up) {
-   //
-   //		Set<TableAnnotationBanque> tabs = table.getTableAnnotationBanques();
-   //		
-   //		TableAnnotationBanque tabPrev = null;
-   //		TableAnnotationBanque tab = null;
-   //		TableAnnotationBanque tabNext = null;
-   //		
-   //		List<TableAnnotationBanque> tabsList = 
-   //					new ArrayList<TableAnnotationBanque>(tabs);
-   //				
-   //		int i = 0;
-   //		while (i < tabsList.size()) {
-   //			tabPrev = tab;
-   //			tab = tabsList.get(i);
-   //			if (tab.getPk()
-   //					.equals(new TableAnnotationBanquePK(banque, table))) {
-   //				if (i + 1 < tabsList.size()) {
-   //					tabNext = tabsList.get(i + 1);
-   //				}
-   //				break;
-   //			}
-   //			i++;
-   //		}
-   //		
-   //		// TableAnnotationBanque correspondante
-   //		int newOrdre;
-   //		if (up) {
-   //			if (tabPrev != null) {
-   //				
-   //				newOrdre = tabPrev.getOrdre();
-   //				
-   //				// assigne l'ordre a la table n-1
-   //				tabPrev.setOrdre(tab.getOrdre());
-   //				
-   //				// assigne le newOrdre a la table n
-   //				tab.setOrdre(newOrdre);
-   //			}
-   //		} else {
-   //			if (tabNext != null) {
-   //				
-   //				newOrdre = tabNext.getOrdre();
-   //				
-   //				// assigne l'ordre a la table n-1
-   //				tabNext.setOrdre(tab.getOrdre());
-   //				
-   //				// assigne le newOrdre a la table n
-   //				tab.setOrdre(newOrdre);
-   //			}
-   //		}
-   //		tabs = new HashSet<TableAnnotationBanque>();
-   //		tabs.addAll(tabsList);
-   //		table.setTableAnnotationBanques(tabs);
-   //	}
 
    /**
     * Cette méthode met à jour les associations entre une table et
@@ -511,6 +456,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
             operation = "creation";
             List<Item> its = null;
             List<AnnotationDefaut> defs = null;
+            ChampCalcule cc = null;
             // si un champ en modification
             if(champs.get(i).getChampAnnotationId() != null){
                operation = "modification";
@@ -528,8 +474,13 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
                defs.addAll(champs.get(i).getAnnotationDefauts());
                champs.get(i).setAnnotationDefauts(new HashSet<AnnotationDefaut>());
             }
+            
+            if(null != champs.get(i).getChampCalcule()){
+               cc = champs.get(i).getChampCalcule();
+               champs.get(i).setChampCalcule(null);
+            }
 
-            champAnnotationManager.createOrUpdateObjectManager(champs.get(i), table, null, its, defs, usr, current, operation,
+            champAnnotationManager.createOrUpdateObjectManager(champs.get(i), table, null, its, defs, cc, usr, current, operation,
                baseDir);
 
             if(operation.equals("creation")){

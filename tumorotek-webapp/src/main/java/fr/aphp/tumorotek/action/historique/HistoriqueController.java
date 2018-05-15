@@ -182,7 +182,7 @@ public class HistoriqueController extends AbstractObjectTabController
       // on récupère la propriété définissant si on doit sauver
       // et afficher les connexions
       String save = null;
-      if(res.containsKey("SAUVER_CONNEXION_TK")){
+      if(null != res && res.containsKey("SAUVER_CONNEXION_TK")){
          save = res.getString("SAUVER_CONNEXION_TK");
       }
       if(save != null && save.equals("true")){

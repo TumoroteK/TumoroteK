@@ -40,8 +40,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.hibernate.Hibernate;
-
 import fr.aphp.tumorotek.manager.coeur.cession.CederObjetManager;
 import fr.aphp.tumorotek.manager.coeur.cession.CessionManager;
 import fr.aphp.tumorotek.manager.coeur.echantillon.EchantillonManager;
@@ -122,127 +120,185 @@ public class CorrespondanceManagerImpl implements CorrespondanceManager
       final List<Object> retours = new ArrayList<>();
       if(sources != null){
          if(sources.size() > 0){
-            if(sources.get(0).getClass().getSimpleName().equals("Patient")){
-               if(cible.equals("Maladie")){
-                  retours.addAll(findMaladieByPatients(sources));
-               }else if(cible.equals("Prelevement")){
-                  retours.addAll(findPrelevementByPatients(sources));
-               }else if(cible.equals("Echantillon")){
-                  retours.addAll(findEchantillonByPatients(sources));
-               }else if(cible.equals("ProdDerive")){
-                  retours.addAll(findProdDeriveByPatients(sources));
-               }else if(cible.equals("CederObjet")){
-                  retours.addAll(findCederObjetByPatients(sources));
-               }else if(cible.equals("Cession")){
-                  retours.addAll(findCessionByPatients(sources));
-               }else{
+            String entiteSource = sources.get(0).getClass().getSimpleName();
+
+            switch(entiteSource){
+               case "Patient":
+                  switch(cible){
+                     case "Maladie":
+                        retours.addAll(findMaladieByPatients(sources));
+                        break;
+                     case "Prelevement":
+                        retours.addAll(findPrelevementByPatients(sources));
+                        break;
+                     case "Echantillon":
+                        retours.addAll(findEchantillonByPatients(sources));
+                        break;
+                     case "ProdDerive":
+                        retours.addAll(findProdDeriveByPatients(sources));
+                        break;
+                     case "CederObjet":
+                        retours.addAll(findCederObjetByPatients(sources));
+                        break;
+                     case "Cession":
+                        retours.addAll(findCessionByPatients(sources));
+                        break;
+                     default:
+                        throw new IllegalArgumentException();
+                  }
+                  break;
+               case "Maladie":
+                  switch(cible){
+                     case "Patient":
+                        retours.addAll(findPatientByMaladies(sources));
+                        break;
+                     case "Prelevement":
+                        retours.addAll(findPrelevementByMaladies(sources));
+                        break;
+                     case "Echantillon":
+                        retours.addAll(findEchantillonByMaladies(sources));
+                        break;
+                     case "ProdDerive":
+                        retours.addAll(findProdDeriveByMaladies(sources));
+                        break;
+                     case "CederObjet":
+                        retours.addAll(findCederObjetByMaladies(sources));
+                        break;
+                     case "Cession":
+                        retours.addAll(findCessionByMaladies(sources));
+                        break;
+                     default:
+                        throw new IllegalArgumentException();
+                  }
+                  break;
+               case "Prelevement":
+                  switch(cible){
+                     case "Patient":
+                        retours.addAll(findPatientByPrelevements(sources));
+                        break;
+                     case "Maladie":
+                        retours.addAll(findMaladieByPrelevements(sources));
+                        break;
+                     case "Echantillon":
+                        retours.addAll(findEchantillonByPrelevements(sources));
+                        break;
+                     case "ProdDerive":
+                        retours.addAll(findProdDeriveByPrelevements(sources));
+                        break;
+                     case "CederObjet":
+                        retours.addAll(findCederObjetByPrelevements(sources));
+                        break;
+                     case "Cession":
+                        retours.addAll(findCessionByPrelevements(sources));
+                        break;
+                     default:
+                        throw new IllegalArgumentException();
+                  }
+                  break;
+               case "Echantillon":
+                  switch(cible){
+                     case "Patient":
+                        retours.addAll(findPatientByEchantillons(sources));
+                        break;
+                     case "Maladie":
+                        retours.addAll(findMaladieByEchantillons(sources));
+                        break;
+                     case "Prelevement":
+                        retours.addAll(findPrelevementByEchantillons(sources));
+                        break;
+                     case "ProdDerive":
+                        retours.addAll(findProdDeriveByEchantillons(sources));
+                        break;
+                     case "CederObjet":
+                        retours.addAll(findCederObjetByEchantillons(sources));
+                        break;
+                     case "Cession":
+                        retours.addAll(findCessionByEchantillons(sources));
+                        break;
+                     default:
+                        throw new IllegalArgumentException();
+                  }
+                  break;
+               case "ProdDerive":
+                  switch(cible){
+                     case "Patient":
+                        retours.addAll(findPatientByProdDerives(sources));
+                        break;
+                     case "Maladie":
+                        retours.addAll(findMaladieByProdDerives(sources));
+                        break;
+                     case "Prelevement":
+                        retours.addAll(findPrelevementByProdDerives(sources));
+                        break;
+                     case "Echantillon":
+                        retours.addAll(findEchantillonByProdDerives(sources));
+                        break;
+                     case "ProdDerive": // Un ProdDerive peut en dériver d'autres.
+                        retours.addAll(findProdDeriveEnfantByProdDerives(sources));
+                        break;
+                     case "CederObjet":
+                        retours.addAll(findCederObjetByProdDerives(sources));
+                        break;
+                     case "Cession":
+                        retours.addAll(findCessionByProdDerives(sources));
+                        break;
+                     default:
+                        throw new IllegalArgumentException();
+                  }
+                  break;
+               case "Cession":
+                  switch(cible){
+                     case "Patient":
+                        retours.addAll(findPatientByCessions(sources));
+                        break;
+                     case "Maladie":
+                        retours.addAll(findMaladieByCessions(sources));
+                        break;
+                     case "Prelevement":
+                        retours.addAll(findPrelevementByCessions(sources));
+                        break;
+                     case "Echantillon":
+                        retours.addAll(findEchantillonByCessions(sources));
+                        break;
+                     case "ProdDerive":
+                        retours.addAll(findProdDeriveByCessions(sources));
+                        break;
+                     case "CederObjet":
+                        retours.addAll(findCederObjetByCessions(sources));
+                        break;
+                     default:
+                        throw new IllegalArgumentException();
+                  }
+                  break;
+               case "CederObjet":
+                  switch(cible){
+                     case "Patient":
+                        retours.addAll(findPatientByCederObjets(sources));
+                        break;
+                     case "Maladie":
+                        retours.addAll(findMaladieByCederObjets(sources));
+                        break;
+                     case "Prelevement":
+                        retours.addAll(findPrelevementByCederObjets(sources));
+                        break;
+                     case "Echantillon":
+                        retours.addAll(findEchantillonByCederObjets(sources));
+                        break;
+                     case "ProdDerive":
+                        retours.addAll(findProdDeriveByCederObjets(sources));
+                        break;
+                     case "Cession":
+                        retours.addAll(findCessionByCederObjets(sources));
+                        break;
+                     case "CederObjet":
+                        retours.addAll(sources);
+                        break;
+                     default:
+                        throw new IllegalArgumentException();
+                  }
+                  break;
+               default:
                   throw new IllegalArgumentException();
-               }
-            }else if(sources.get(0).getClass().getSimpleName().equals("Maladie")){
-               if(cible.equals("Patient")){
-                  retours.addAll(findPatientByMaladies(sources));
-               }else if(cible.equals("Prelevement")){
-                  retours.addAll(findPrelevementByMaladies(sources));
-               }else if(cible.equals("Echantillon")){
-                  retours.addAll(findEchantillonByMaladies(sources));
-               }else if(cible.equals("ProdDerive")){
-                  retours.addAll(findProdDeriveByMaladies(sources));
-               }else if(cible.equals("CederObjet")){
-                  retours.addAll(findCederObjetByMaladies(sources));
-               }else if(cible.equals("Cession")){
-                  retours.addAll(findCessionByMaladies(sources));
-               }else{
-                  throw new IllegalArgumentException();
-               }
-               // 2.0.10.3 Hibernate getClass car lazy loading Echantillon.getPrelevement
-               // -> class.getName = proxy (prelevement.javassist)
-            }else if(Hibernate.getClass(sources.get(0)).getSimpleName().equals("Prelevement")){
-               if(cible.equals("Patient")){
-                  retours.addAll(findPatientByPrelevements(sources));
-               }else if(cible.equals("Maladie")){
-                  retours.addAll(findMaladieByPrelevements(sources));
-               }else if(cible.equals("Echantillon")){
-                  retours.addAll(findEchantillonByPrelevements(sources));
-               }else if(cible.equals("ProdDerive")){
-                  retours.addAll(findProdDeriveByPrelevements(sources));
-               }else if(cible.equals("CederObjet")){
-                  retours.addAll(findCederObjetByPrelevements(sources));
-               }else if(cible.equals("Cession")){
-                  retours.addAll(findCessionByPrelevements(sources));
-               }else{
-                  throw new IllegalArgumentException();
-               }
-            }else if(sources.get(0).getClass().getSimpleName().equals("Echantillon")){
-               if(cible.equals("Patient")){
-                  retours.addAll(findPatientByEchantillons(sources));
-               }else if(cible.equals("Maladie")){
-                  retours.addAll(findMaladieByEchantillons(sources));
-               }else if(cible.equals("Prelevement")){
-                  retours.addAll(findPrelevementByEchantillons(sources));
-               }else if(cible.equals("ProdDerive")){
-                  retours.addAll(findProdDeriveByEchantillons(sources));
-               }else if(cible.equals("CederObjet")){
-                  retours.addAll(findCederObjetByEchantillons(sources));
-               }else if(cible.equals("Cession")){
-                  retours.addAll(findCessionByEchantillons(sources));
-               }else{
-                  throw new IllegalArgumentException();
-               }
-            }else if(sources.get(0).getClass().getSimpleName().equals("ProdDerive")){
-               if(cible.equals("Patient")){
-                  retours.addAll(findPatientByProdDerives(sources));
-               }else if(cible.equals("Maladie")){
-                  retours.addAll(findMaladieByProdDerives(sources));
-               }else if(cible.equals("Prelevement")){
-                  retours.addAll(findPrelevementByProdDerives(sources));
-               }else if(cible.equals("Echantillon")){
-                  retours.addAll(findEchantillonByProdDerives(sources));
-               }else if(cible.equals("ProdDerive")){
-                  // Un ProdDerive peut en dériver d'autres.
-                  retours.addAll(findProdDeriveEnfantByProdDerives(sources));
-               }else if(cible.equals("CederObjet")){
-                  retours.addAll(findCederObjetByProdDerives(sources));
-               }else if(cible.equals("Cession")){
-                  retours.addAll(findCessionByProdDerives(sources));
-               }else{
-                  throw new IllegalArgumentException();
-               }
-            }else if(sources.get(0).getClass().getSimpleName().equals("Cession")){
-               if(cible.equals("Patient")){
-                  retours.addAll(findPatientByCessions(sources));
-               }else if(cible.equals("Maladie")){
-                  retours.addAll(findMaladieByCessions(sources));
-               }else if(cible.equals("Prelevement")){
-                  retours.addAll(findPrelevementByCessions(sources));
-               }else if(cible.equals("Echantillon")){
-                  retours.addAll(findEchantillonByCessions(sources));
-               }else if(cible.equals("ProdDerive")){
-                  retours.addAll(findProdDeriveByCessions(sources));
-               }else if(cible.equals("CederObjet")){
-                  retours.addAll(findCederObjetByCessions(sources));
-               }else{
-                  throw new IllegalArgumentException();
-               }
-            }else if(sources.get(0).getClass().getSimpleName().equals("CederObjet")){
-               if(cible.equals("Patient")){
-                  retours.addAll(findPatientByCederObjets(sources));
-               }else if(cible.equals("Maladie")){
-                  retours.addAll(findMaladieByCederObjets(sources));
-               }else if(cible.equals("Prelevement")){
-                  retours.addAll(findPrelevementByCederObjets(sources));
-               }else if(cible.equals("Echantillon")){
-                  retours.addAll(findEchantillonByCederObjets(sources));
-               }else if(cible.equals("ProdDerive")){
-                  retours.addAll(findProdDeriveByCederObjets(sources));
-               }else if(cible.equals("Cession")){
-                  retours.addAll(findCessionByCederObjets(sources));
-               }else if(cible.equals("CederObjet")){
-                  retours.addAll(sources);
-               }else{
-                  throw new IllegalArgumentException();
-               }
-            }else{
-               throw new IllegalArgumentException();
             }
          }
       }

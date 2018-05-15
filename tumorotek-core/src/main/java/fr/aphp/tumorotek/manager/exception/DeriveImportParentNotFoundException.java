@@ -75,9 +75,8 @@ public class DeriveImportParentNotFoundException extends WrongImportValueExcepti
    public String getMessage(){
       if(getValeurAttendue() == null){
          return "import.subderive.error.parent.empty";
-      }else{
-         return "import.subderive.error.parent.notfound";
       }
+      return "import.subderive.error.parent.notfound";
    }
 
 }

@@ -54,7 +54,6 @@ import fr.aphp.tumorotek.manager.TKThesaurusManager;
 import fr.aphp.tumorotek.manager.context.CategorieManager;
 import fr.aphp.tumorotek.manager.context.SpecialiteManager;
 import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
-import fr.aphp.tumorotek.model.coeur.annotation.Catalogue;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
@@ -86,7 +85,7 @@ public final class SessionUtils
 
    private final static String MYSQL_DB = "mysql";
    private final static String ORACLE_DB = "oracle";
-   private final static String seroContextName = "Serotek";
+   private final static String seroContextName = "SEROLOGIE";
    private final static String banqueOrganeContextName = "CONT3";
 
    /**
@@ -250,10 +249,6 @@ public final class SessionUtils
       return passwordDB;
    }
 
-   public static Boolean isINCaCollection(final Map<?, ?> sessionScp){
-      return sessionScp.containsKey("catalogues") && ((Map<String, Catalogue>) sessionScp.get("catalogues")).containsKey("INCa");
-   }
-
    /**
     * Renvoie la liste d'emetteurs définis comme interfacages.
     * 
@@ -332,7 +327,7 @@ public final class SessionUtils
       return (Plateforme) Sessions.getCurrent().getAttribute("Plateforme");
    }
 
-   public static Enum<EContexte> getCurrentContexte(){
+   public static EContexte getCurrentContexte(){
       EContexte contexte = EContexte.DEFAUT;
       if(null != Sessions.getCurrent().getAttribute("Banque")){
          contexte = EContexte.valueOf(((Banque) Sessions.getCurrent().getAttribute("Banque")).getContexte().getNom());
@@ -365,7 +360,7 @@ public final class SessionUtils
     * @param reset
     *            si manager change
     */
-   private static CrudManager thesManager = null;
+   private static CrudManager<?> thesManager = null;
 
    public static List<? extends Object> getThesaurusListeValeurs(final String typeThesaurus){
       List<? extends Object> listValeurs = new ArrayList<>();
@@ -431,7 +426,7 @@ public final class SessionUtils
                .findByPlateformeEntiteAndTypeStringManager(getCurrentPlateforme(), "Cession", null);
          }
       }else if(thesManager instanceof TKThesaurusManager){
-         listValeurs = ((TKThesaurusManager) thesManager).findByOrderManager(getCurrentPlateforme());
+         listValeurs = ((TKThesaurusManager<?>) thesManager).findByOrderManager(getCurrentPlateforme());
       }else{
          if(typeThesaurus.equals("Specialite")){
             listValeurs = ((SpecialiteManager) thesManager).findAllObjectsManager();

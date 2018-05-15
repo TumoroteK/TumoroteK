@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Nature;
  * @version 2.0
  *
  */
-public interface NatureDao extends GenericDaoJpa<Nature, Integer>, TKThesaurusDao
+public interface NatureDao extends GenericDaoJpa<Nature, Integer>, TKThesaurusDao<Nature>
 {
 
    /**

@@ -739,7 +739,7 @@ public class FicheUtilisateur extends AbstractFicheCombineController
     * l'utilisateur.
     * @version 2.1
     */
-   
+
    public void onClick$addRoleButton(){
 
       // if no profile defined in PF -> warning
@@ -959,7 +959,7 @@ public class FicheUtilisateur extends AbstractFicheCombineController
    /**
     * Affiche la fiche d'un medecin referent.
     */
-   public void onClick$collaborateurLabel(final Event event){
+   public void onClick$collaborateurLabel(){
       if(getDroitsConsultation().get("Collaborateur") && this.user.getCollaborateur() != null){
 
          // ouvre la modale
@@ -1009,7 +1009,7 @@ public class FicheUtilisateur extends AbstractFicheCombineController
     * affectation.
     * @param event
     */
-   
+
    public void onClickValidateAffectation(final ForwardEvent event){
       // on récupère les donneés : la listbox contenant les imprimantes,
       // celle contenant es modèles et le decorator d'affectation
@@ -1213,9 +1213,8 @@ public class FicheUtilisateur extends AbstractFicheCombineController
 
       if(this.user != null){
          return ObjectTypesFormatters.booleanLitteralFormatter(this.user.isArchive());
-      }else{
-         return "";
       }
+      return "";
    }
 
    /**
@@ -1226,9 +1225,8 @@ public class FicheUtilisateur extends AbstractFicheCombineController
 
       if(this.user != null){
          return ObjectTypesFormatters.booleanLitteralFormatter(this.user.isSuperAdmin());
-      }else{
-         return "";
       }
+      return "";
    }
 
    /**
@@ -1242,12 +1240,10 @@ public class FicheUtilisateur extends AbstractFicheCombineController
 
          if(date != null){
             return ObjectTypesFormatters.dateRenderer2(date);
-         }else{
-            return null;
          }
-      }else{
          return null;
       }
+      return null;
    }
 
    /**
@@ -1257,9 +1253,8 @@ public class FicheUtilisateur extends AbstractFicheCombineController
    public String getTimeoutFormated(){
       if(this.user != null){
          return ObjectTypesFormatters.dateRenderer2(this.user.getTimeOut());
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -1279,9 +1274,8 @@ public class FicheUtilisateur extends AbstractFicheCombineController
    public String getSClassOperateur(){
       if(this.user != null){
          return ObjectTypesFormatters.sClassCollaborateur(this.user.getCollaborateur());
-      }else{
-         return null;
       }
+      return null;
    }
 
    public List<Plateforme> getPlateformes(){
@@ -1436,9 +1430,8 @@ public class FicheUtilisateur extends AbstractFicheCombineController
    public String getDeleteWaitLabel(){
       if(!isCascadable()){
          return Labels.getLabel("deletion.general.wait");
-      }else{
-         return Labels.getLabel("archivage.general.wait");
       }
+      return Labels.getLabel("archivage.general.wait");
    }
 
    public List<AffectationDecorator> getAffectationDecorators(){
@@ -1499,7 +1492,7 @@ public class FicheUtilisateur extends AbstractFicheCombineController
    /**
     * @since 2.1
     */
-   public void onCheck$banquesArchiveBox(final Event e){
+   public void onCheck$banquesArchiveBox(){
       profilUtilisateurs.clear();
       // display non-archived users only
       if(user != null && user.getUtilisateurId() != null){

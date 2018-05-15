@@ -156,9 +156,8 @@ public class DroitObjetPK implements Serializable
    public String toString(){
       if(this.entite != null && this.profil != null && this.operationType != null){
          return "{" + profil.toString() + " (Profil), " + entite.toString() + " (Entite), " + operationType + " (OperationType)}";
-      }else{
-         return "{Empty DroitObjetPK}";
       }
+      return "{Empty DroitObjetPK}";
    }
 
 }

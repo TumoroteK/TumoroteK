@@ -49,6 +49,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -212,7 +214,9 @@ public class Template extends Object implements TKdataObject, Serializable
       this.champImprimes = champIs;
    }
 
-   @OneToMany(mappedBy = "template", fetch = FetchType.LAZY)
+   @ManyToMany(targetEntity = CleImpression.class, fetch = FetchType.EAGER)
+   @JoinTable(name = "CLE_IMPRESSION_TEMPLATE", joinColumns = @JoinColumn(name = "TEMPLATE_ID"),
+   inverseJoinColumns = @JoinColumn(name = "CLE_IMPRESSION_ID"))
    public List<CleImpression> getCleImpressionList(){
       return cleImpressionList;
    }
@@ -265,18 +269,15 @@ public class Template extends Object implements TKdataObject, Serializable
             if(test.nom == null){
                if(this.banque == null){
                   return (test.banque == null);
-               }else{
-                  return (this.banque.equals(test.banque));
                }
-            }else{
-               return false;
+               return (this.banque.equals(test.banque));
             }
+            return false;
          }else if(this.banque == null){
             if(test.banque == null){
                return (this.nom.equals(test.nom));
-            }else{
-               return false;
             }
+            return false;
          }else{
             return (this.nom.equals(test.nom) && this.banque.equals(test.banque));
          }
@@ -332,6 +333,7 @@ public class Template extends Object implements TKdataObject, Serializable
       clone.setFichier(this.fichier);
       clone.setEnTete(this.enTete);
       clone.setPiedPage(this.piedPage);
+      clone.setCleImpressionList(this.cleImpressionList);
 
       return clone;
    }

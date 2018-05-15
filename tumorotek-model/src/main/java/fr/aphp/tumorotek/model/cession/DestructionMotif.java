@@ -180,9 +180,8 @@ public class DestructionMotif implements Serializable, TKThesaurusObject
    public String toString(){
       if(this.motif != null){
          return "{" + this.motif + "}";
-      }else{
-         return "{Empty DestructionMotif}";
       }
+      return "{Empty DestructionMotif}";
    }
 
    @Override

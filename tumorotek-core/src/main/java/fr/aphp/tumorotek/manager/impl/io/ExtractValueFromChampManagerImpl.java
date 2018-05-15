@@ -153,9 +153,8 @@ public class ExtractValueFromChampManagerImpl implements ExtractValueFromChampMa
             }
          }
          return value;
-      }else{
-         return null;
       }
+      return null;
    }
 
    @Override
@@ -208,8 +207,7 @@ public class ExtractValueFromChampManagerImpl implements ExtractValueFromChampMa
             }
          }
          return value;
-      }else{
-         return null;
       }
+      return null;
    }
 }

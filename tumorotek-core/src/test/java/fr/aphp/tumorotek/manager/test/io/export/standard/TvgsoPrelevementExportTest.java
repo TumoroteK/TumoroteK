@@ -80,7 +80,7 @@ public class TvgsoPrelevementExportTest extends AbstractManagerTest
 
    public void testGetCentreStockage() throws SQLException, ClassNotFoundException{
 
-      Class.forName("com.mysql.jdbc.Driver");
+      Class.forName("com.mysql.cj.jdbc.Driver");
       final Connection con =
          DriverManager.getConnection("jdbc:mysql://localhost:3306/" + "toul?characterEncoding=UTF-8", "root", "root");
       final Echantillon echan = new Echantillon();
@@ -180,7 +180,7 @@ public class TvgsoPrelevementExportTest extends AbstractManagerTest
 
    public void testGetCodeOrgane() throws ClassNotFoundException, SQLException{
 
-      Class.forName("com.mysql.jdbc.Driver");
+      Class.forName("com.mysql.cj.jdbc.Driver");
       final Connection con =
          DriverManager.getConnection("jdbc:mysql://localhost:3306/" + "toul?characterEncoding=UTF-8", "root", "root");
       final Echantillon e = new Echantillon();
@@ -195,7 +195,7 @@ public class TvgsoPrelevementExportTest extends AbstractManagerTest
    }
 
    public void getTypeLesionnel() throws ClassNotFoundException, SQLException{
-      Class.forName("com.mysql.jdbc.Driver");
+      Class.forName("com.mysql.cj.jdbc.Driver");
       final Connection con =
          DriverManager.getConnection("jdbc:mysql://localhost:3306/" + "toul?characterEncoding=UTF-8", "root", "root");
       final Echantillon e = new Echantillon();
@@ -211,7 +211,7 @@ public class TvgsoPrelevementExportTest extends AbstractManagerTest
    }
 
    public void testGetVersionPTNM() throws ClassNotFoundException, SQLException{
-      Class.forName("com.mysql.jdbc.Driver");
+      Class.forName("com.mysql.cj.jdbc.Driver");
       final Connection con =
          DriverManager.getConnection("jdbc:mysql://localhost:3306/" + "toul?characterEncoding=UTF-8", "root", "root");
       final Prelevement p = new Prelevement();
@@ -226,7 +226,7 @@ public class TvgsoPrelevementExportTest extends AbstractManagerTest
    }
 
    public void testGetTailleTumeurPT() throws ClassNotFoundException, SQLException{
-      Class.forName("com.mysql.jdbc.Driver");
+      Class.forName("com.mysql.cj.jdbc.Driver");
       final Connection con =
          DriverManager.getConnection("jdbc:mysql://localhost:3306/" + "toul?characterEncoding=UTF-8", "root", "root");
       final Prelevement p = new Prelevement();
@@ -243,7 +243,7 @@ public class TvgsoPrelevementExportTest extends AbstractManagerTest
    }
 
    public void testGetEnvGangPN() throws ClassNotFoundException, SQLException{
-      Class.forName("com.mysql.jdbc.Driver");
+      Class.forName("com.mysql.cj.jdbc.Driver");
       final Connection con =
          DriverManager.getConnection("jdbc:mysql://localhost:3306/" + "toul?characterEncoding=UTF-8", "root", "root");
       final Prelevement p = new Prelevement();
@@ -260,7 +260,7 @@ public class TvgsoPrelevementExportTest extends AbstractManagerTest
    }
 
    public void testGetExtMeta() throws ClassNotFoundException, SQLException{
-      Class.forName("com.mysql.jdbc.Driver");
+      Class.forName("com.mysql.cj.jdbc.Driver");
       final Connection con =
          DriverManager.getConnection("jdbc:mysql://localhost:3306/" + "toul?characterEncoding=UTF-8", "root", "root");
       final Prelevement p = new Prelevement();

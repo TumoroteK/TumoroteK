@@ -111,9 +111,8 @@ public class EntiteManagerImpl implements EntiteManager
       log.debug("Recherche Entite par " + nom);
       if(nom != null){
          return entiteDao.findByNom(nom);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override

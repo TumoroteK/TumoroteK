@@ -129,9 +129,8 @@ public class Couleur implements Serializable
    public String getCouleurMinCase(){
       if(getCouleur() != null){
          return getCouleur().toLowerCase();
-      }else{
-         return null;
       }
+      return null;
    }
 
    @Column(name = "ORDRE_VISOTUBE", nullable = true)

@@ -106,10 +106,8 @@ public class CessionStatutManagerImpl implements CessionStatutManager
             statut = statut + "%";
          }
          return cessionStatutDao.findByStatut(statut);
-      }else{
-         return new ArrayList<>();
       }
-
+      return new ArrayList<>();
    }
 
 }

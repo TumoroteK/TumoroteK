@@ -138,9 +138,8 @@ public class BlocImpressionTemplatePK implements Serializable
    public String toString(){
       if(this.template != null && this.blocImpression != null){
          return "{" + template.toString() + " (Template), " + blocImpression.toString() + " (BlocImpression)}";
-      }else{
-         return "{Empty BlocImpressionTemplatePK}";
       }
+      return "{Empty BlocImpressionTemplatePK}";
    }
 
 }

@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ProdQualite;
  * @version 2.0
  *
  */
-public interface ProdQualiteDao extends GenericDaoJpa<ProdQualite, Integer>, TKThesaurusDao
+public interface ProdQualiteDao extends GenericDaoJpa<ProdQualite, Integer>, TKThesaurusDao<ProdQualite>
 {
 
    /**

@@ -49,7 +49,6 @@ import fr.aphp.tumorotek.manager.exception.ObjectUsedException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.prelevement.NatureValidator;
-import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.coeur.prelevement.Nature;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 
@@ -88,19 +87,18 @@ public class NatureManagerImpl implements NatureManager
    }
 
    @Override
-   public void createObjectManager(final Object obj){
+   public void createObjectManager(final Nature obj){
 
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
-      if(((TKThesaurusObject) obj).getPlateforme() == null){
+      if(obj.getPlateforme() == null){
          throw new RequiredObjectIsNullException("Nature", "creation", "Plateforme");
-      }else{
-         ((TKThesaurusObject) obj).setPlateforme(plateformeDao.mergeObject(((TKThesaurusObject) obj).getPlateforme()));
       }
+      obj.setPlateforme(plateformeDao.mergeObject(obj.getPlateforme()));
 
       BeanValidator.validateObject(obj, new Validator[] {natureValidator});
       if(!findDoublonManager(obj)){
-         natureDao.createObject((Nature) obj);
+         natureDao.createObject(obj);
          log.info("Enregistrement objet Nature " + obj.toString());
       }else{
          log.warn("Doublon lors creation objet Nature " + obj.toString());
@@ -109,22 +107,16 @@ public class NatureManagerImpl implements NatureManager
    }
 
    @Override
-   public void updateObjectManager(final Object obj){
+   public void updateObjectManager(final Nature obj){
       BeanValidator.validateObject(obj, new Validator[] {natureValidator});
       if(!findDoublonManager(obj)){
-         natureDao.updateObject((Nature) obj);
+         natureDao.updateObject(obj);
          log.info("Modification objet Nature " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet Nature " + obj.toString());
          throw new DoublonFoundException("Nature", "modification");
       }
    }
-
-   //	@Override
-   //	public List<Nature> findAllObjectsManager() {
-   //		log.info("Recherche totalite des Nature");
-   //		return natureDao.findByOrder();
-   //	}
 
    @Override
    public List<Nature> findByNatureLikeManager(String nature, final boolean exactMatch){
@@ -136,10 +128,10 @@ public class NatureManagerImpl implements NatureManager
    }
 
    @Override
-   public void removeObjectManager(final Object obj){
+   public void removeObjectManager(final Nature obj){
       if(obj != null){
          if(!isUsedObjectManager(obj)){
-            natureDao.removeObject(((Nature) obj).getNatureId());
+            natureDao.removeObject(obj.getNatureId());
             log.info("Suppression objet Nature " + obj.toString());
          }else{
             log.warn("Suppression objet Nature " + obj.toString() + " impossible car est reference (par Prelevement)");
@@ -151,32 +143,30 @@ public class NatureManagerImpl implements NatureManager
    }
 
    @Override
-   public boolean isUsedObjectManager(final Object o){
-      final Nature nature = natureDao.mergeObject((Nature) o);
+   public boolean isUsedObjectManager(final Nature o){
+      final Nature nature = natureDao.mergeObject(o);
       return nature.getPrelevements().size() > 0;
    }
 
    @Override
-   public boolean findDoublonManager(final Object o){
+   public boolean findDoublonManager(final Nature o){
       if(o != null){
-         final Nature nature = (Nature) o;
+         final Nature nature = o;
          if(nature.getNatureId() == null){
             return natureDao.findAll().contains(nature);
-         }else{
-            return natureDao.findByExcludedId(nature.getNatureId()).contains(nature);
          }
-      }else{
-         return false;
+         return natureDao.findByExcludedId(nature.getNatureId()).contains(nature);
       }
+      return false;
    }
 
    @Override
-   public List<? extends TKThesaurusObject> findByOrderManager(final Plateforme pf){
+   public List<Nature> findByOrderManager(final Plateforme pf){
       return natureDao.findByOrder(pf);
    }
 
    @Override
-   public TKThesaurusObject findByIdManager(final Integer id){
+   public Nature findByIdManager(final Integer id){
       return natureDao.findById(id);
    }
 }

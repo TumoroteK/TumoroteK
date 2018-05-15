@@ -1549,7 +1549,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
     * échantillons.
     * @param e Event contenant les emplacements.
     */
-   
+
    public void onGetResultsFromStockage(final Event e){
       // les emplacements sont contenus dans une hashtable mappant
       // un échantillon avec son emplacement
@@ -1643,7 +1643,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
     * Cette méthode va vider le formulaire une fois que l'utilisateur
     * aura cliqué sur le bouton addEchantillons.
     */
-   
+
    public void clearForm(final boolean setParentStatic){
       setEchantillon(new Echantillon());
 
@@ -2029,42 +2029,40 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                   // si le dernier code est < au premier
                   if(dernierCode < premierCode){
                      throw new WrongValueException(comp, "Le premier code saisi ne peut pas être " + "supérieur au dernier.");
-                  }else{
+                  }
 
-                     // sinon on enlève toutes les erreurs affichées
-                     Integer tmp = dernierCode;
-                     Clients.clearWrongValue(dernierCodeBoxEchan);
-                     dernierCodeBoxEchan.setConstraint("");
-                     dernierCodeBoxEchan.setValue(tmp);
-                     dernierCodeBoxEchan.setConstraint(cttDernierCode);
+                  // sinon on enlève toutes les erreurs affichées
+                  Integer tmp = dernierCode;
+                  Clients.clearWrongValue(dernierCodeBoxEchan);
+                  dernierCodeBoxEchan.setConstraint("");
+                  dernierCodeBoxEchan.setValue(tmp);
+                  dernierCodeBoxEchan.setConstraint(cttDernierCode);
 
-                     final List<String> doublons = findDoublons(premierCode, dernierCode);
-                     // si des doublons existent pour les valeurs saisies
-                     if(doublons.size() > 0){
-                        final StringBuffer sb = new StringBuffer();
-                        if(doublons.size() == 1){
-                           sb.append("Echantillon déjà enregistré " + "pour le numéro : {");
-                           sb.append(doublons.get(0));
-                        }else{
-                           sb.append("Echantillons déjà enregistrés " + "pour les numéros : {");
-                           for(int i = 0; i < doublons.size(); i++){
-                              sb.append(doublons.get(i));
-                              if(i + 1 < doublons.size()){
-                                 sb.append(", ");
-                              }
+                  final List<String> doublons = findDoublons(premierCode, dernierCode);
+                  // si des doublons existent pour les valeurs saisies
+                  if(doublons.size() > 0){
+                     final StringBuffer sb = new StringBuffer();
+                     if(doublons.size() == 1){
+                        sb.append("Echantillon déjà enregistré " + "pour le numéro : {");
+                        sb.append(doublons.get(0));
+                     }else{
+                        sb.append("Echantillons déjà enregistrés " + "pour les numéros : {");
+                        for(int i = 0; i < doublons.size(); i++){
+                           sb.append(doublons.get(i));
+                           if(i + 1 < doublons.size()){
+                              sb.append(", ");
                            }
                         }
-                        sb.append("}. Veuillez modifier les numéros saisis.");
-                        throw new WrongValueException(comp, sb.toString());
-                     }else{
-                        // sinon on enlève toutes les erreurs affichées
-                        tmp = dernierCode;
-                        Clients.clearWrongValue(dernierCodeBoxEchan);
-                        dernierCodeBoxEchan.setConstraint("");
-                        dernierCodeBoxEchan.setValue(tmp);
-                        dernierCodeBoxEchan.setConstraint(cttDernierCode);
                      }
+                     sb.append("}. Veuillez modifier les numéros saisis.");
+                     throw new WrongValueException(comp, sb.toString());
                   }
+                  // sinon on enlève toutes les erreurs affichées
+                  tmp = dernierCode;
+                  Clients.clearWrongValue(dernierCodeBoxEchan);
+                  dernierCodeBoxEchan.setConstraint("");
+                  dernierCodeBoxEchan.setValue(tmp);
+                  dernierCodeBoxEchan.setConstraint(cttDernierCode);
                }else{
                   // sinon on enlève toutes les erreurs affichées
                   final Integer tmp = dernierCode;
@@ -2131,42 +2129,40 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                   // si le dernier code est < au premier
                   if(dernierCode < premierCode){
                      throw new WrongValueException(comp, "Le premier code saisi ne peut pas être " + "supérieur au dernier.");
-                  }else{
+                  }
 
-                     // sinon on enlève toutes les erreurs affichées
-                     Integer tmp = premierCode;
-                     Clients.clearWrongValue(premierCodeBoxEchan);
-                     premierCodeBoxEchan.setConstraint("");
-                     premierCodeBoxEchan.setValue(tmp);
-                     premierCodeBoxEchan.setConstraint(cttPremierCode);
+                  // sinon on enlève toutes les erreurs affichées
+                  Integer tmp = premierCode;
+                  Clients.clearWrongValue(premierCodeBoxEchan);
+                  premierCodeBoxEchan.setConstraint("");
+                  premierCodeBoxEchan.setValue(tmp);
+                  premierCodeBoxEchan.setConstraint(cttPremierCode);
 
-                     final List<String> doublons = findDoublons(premierCode, dernierCode);
-                     // si des doublons existent pour les valeurs saisies
-                     if(doublons.size() > 0){
-                        final StringBuffer sb = new StringBuffer();
-                        if(doublons.size() == 1){
-                           sb.append("Echantillon déjà enregistré " + "pour le numéro : {");
-                           sb.append(doublons.get(0));
-                        }else{
-                           sb.append("Echantillons déjà enregistrés " + "pour les numéros : {");
-                           for(int i = 0; i < doublons.size(); i++){
-                              sb.append(doublons.get(i));
-                              if(i + 1 < doublons.size()){
-                                 sb.append(", ");
-                              }
+                  final List<String> doublons = findDoublons(premierCode, dernierCode);
+                  // si des doublons existent pour les valeurs saisies
+                  if(doublons.size() > 0){
+                     final StringBuffer sb = new StringBuffer();
+                     if(doublons.size() == 1){
+                        sb.append("Echantillon déjà enregistré " + "pour le numéro : {");
+                        sb.append(doublons.get(0));
+                     }else{
+                        sb.append("Echantillons déjà enregistrés " + "pour les numéros : {");
+                        for(int i = 0; i < doublons.size(); i++){
+                           sb.append(doublons.get(i));
+                           if(i + 1 < doublons.size()){
+                              sb.append(", ");
                            }
                         }
-                        sb.append("}. Veuillez modifier les numéros saisis.");
-                        throw new WrongValueException(comp, sb.toString());
-                     }else{
-                        // sinon on enlève toutes les erreurs affichées
-                        tmp = premierCode;
-                        Clients.clearWrongValue(premierCodeBoxEchan);
-                        premierCodeBoxEchan.setConstraint("");
-                        premierCodeBoxEchan.setValue(tmp);
-                        premierCodeBoxEchan.setConstraint(cttPremierCode);
                      }
+                     sb.append("}. Veuillez modifier les numéros saisis.");
+                     throw new WrongValueException(comp, sb.toString());
                   }
+                  // sinon on enlève toutes les erreurs affichées
+                  tmp = premierCode;
+                  Clients.clearWrongValue(premierCodeBoxEchan);
+                  premierCodeBoxEchan.setConstraint("");
+                  premierCodeBoxEchan.setValue(tmp);
+                  premierCodeBoxEchan.setConstraint(cttPremierCode);
                }else{
                   // sinon on enlève toutes les erreurs affichées
                   final Integer tmp = premierCode;
@@ -2236,43 +2232,41 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                   if(lettres.indexOf(derniereLettre.toUpperCase()) < lettres.indexOf(premiereLettre.toUpperCase())){
                      throw new WrongValueException(comp,
                         "La première lettre saisie ne " + "peut pas être alphabétiquement " + "après la dernière.");
-                  }else{
+                  }
 
-                     // sinon on enlève toutes les erreurs affichées
-                     String tmp = derniereLettre;
-                     Clients.clearWrongValue(derniereLettreBoxEchan);
-                     derniereLettreBoxEchan.setConstraint("");
-                     derniereLettreBoxEchan.setValue(tmp);
-                     derniereLettreBoxEchan.setConstraint(cttDerniereLettre);
+                  // sinon on enlève toutes les erreurs affichées
+                  String tmp = derniereLettre;
+                  Clients.clearWrongValue(derniereLettreBoxEchan);
+                  derniereLettreBoxEchan.setConstraint("");
+                  derniereLettreBoxEchan.setValue(tmp);
+                  derniereLettreBoxEchan.setConstraint(cttDerniereLettre);
 
-                     final List<String> doublons =
-                        findDoublonsForLetters(premiereLettre.toUpperCase(), derniereLettre.toUpperCase());
-                     // si des doublons existent pour les valeurs saisies
-                     if(doublons.size() > 0){
-                        final StringBuffer sb = new StringBuffer();
-                        if(doublons.size() == 1){
-                           sb.append("Echantillon déjà enregistré " + "pour la lettre : {");
-                           sb.append(doublons.get(0));
-                        }else{
-                           sb.append("Echantillons déjà enregistrés " + "pour les lettres : {");
-                           for(int i = 0; i < doublons.size(); i++){
-                              sb.append(doublons.get(i));
-                              if(i + 1 < doublons.size()){
-                                 sb.append(", ");
-                              }
+                  final List<String> doublons =
+                     findDoublonsForLetters(premiereLettre.toUpperCase(), derniereLettre.toUpperCase());
+                  // si des doublons existent pour les valeurs saisies
+                  if(doublons.size() > 0){
+                     final StringBuffer sb = new StringBuffer();
+                     if(doublons.size() == 1){
+                        sb.append("Echantillon déjà enregistré " + "pour la lettre : {");
+                        sb.append(doublons.get(0));
+                     }else{
+                        sb.append("Echantillons déjà enregistrés " + "pour les lettres : {");
+                        for(int i = 0; i < doublons.size(); i++){
+                           sb.append(doublons.get(i));
+                           if(i + 1 < doublons.size()){
+                              sb.append(", ");
                            }
                         }
-                        sb.append("}. Veuillez modifier les lettres saisies.");
-                        throw new WrongValueException(comp, sb.toString());
-                     }else{
-                        // sinon on enlève toutes les erreurs affichées
-                        tmp = derniereLettre;
-                        Clients.clearWrongValue(derniereLettreBoxEchan);
-                        derniereLettreBoxEchan.setConstraint("");
-                        derniereLettreBoxEchan.setValue(tmp);
-                        derniereLettreBoxEchan.setConstraint(cttDerniereLettre);
                      }
+                     sb.append("}. Veuillez modifier les lettres saisies.");
+                     throw new WrongValueException(comp, sb.toString());
                   }
+                  // sinon on enlève toutes les erreurs affichées
+                  tmp = derniereLettre;
+                  Clients.clearWrongValue(derniereLettreBoxEchan);
+                  derniereLettreBoxEchan.setConstraint("");
+                  derniereLettreBoxEchan.setValue(tmp);
+                  derniereLettreBoxEchan.setConstraint(cttDerniereLettre);
                }else{
                   // sinon on enlève toutes les erreurs affichées
                   final String tmp = derniereLettre;
@@ -2344,42 +2338,40 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                      || lettres.indexOf(derniereLettre.toUpperCase()) < lettres.indexOf(premiereLettre.toUpperCase())){
                      throw new WrongValueException(comp,
                         "La première lettre saisie ne " + "peut pas être alphabétiquement " + "après la dernière.");
-                  }else{
-                     // sinon on enlève toutes les erreurs affichées
-                     String tmp = premiereLettre;
-                     Clients.clearWrongValue(premiereLettreBoxEchan);
-                     premiereLettreBoxEchan.setConstraint("");
-                     premiereLettreBoxEchan.setValue(tmp);
-                     premiereLettreBoxEchan.setConstraint(cttPremiereLettre);
+                  }
+                  // sinon on enlève toutes les erreurs affichées
+                  String tmp = premiereLettre;
+                  Clients.clearWrongValue(premiereLettreBoxEchan);
+                  premiereLettreBoxEchan.setConstraint("");
+                  premiereLettreBoxEchan.setValue(tmp);
+                  premiereLettreBoxEchan.setConstraint(cttPremiereLettre);
 
-                     final List<String> doublons =
-                        findDoublonsForLetters(premiereLettre.toUpperCase(), derniereLettre.toUpperCase());
-                     // si des doublons existent pour les valeurs saisies
-                     if(doublons.size() > 0){
-                        final StringBuffer sb = new StringBuffer();
-                        if(doublons.size() == 1){
-                           sb.append("Echantillon déjà enregistré " + "pour la lettre : {");
-                           sb.append(doublons.get(0));
-                        }else{
-                           sb.append("Echantillons déjà enregistrés " + "pour les lettres : {");
-                           for(int i = 0; i < doublons.size(); i++){
-                              sb.append(doublons.get(i));
-                              if(i + 1 < doublons.size()){
-                                 sb.append(", ");
-                              }
+                  final List<String> doublons =
+                     findDoublonsForLetters(premiereLettre.toUpperCase(), derniereLettre.toUpperCase());
+                  // si des doublons existent pour les valeurs saisies
+                  if(doublons.size() > 0){
+                     final StringBuffer sb = new StringBuffer();
+                     if(doublons.size() == 1){
+                        sb.append("Echantillon déjà enregistré " + "pour la lettre : {");
+                        sb.append(doublons.get(0));
+                     }else{
+                        sb.append("Echantillons déjà enregistrés " + "pour les lettres : {");
+                        for(int i = 0; i < doublons.size(); i++){
+                           sb.append(doublons.get(i));
+                           if(i + 1 < doublons.size()){
+                              sb.append(", ");
                            }
                         }
-                        sb.append("}. Veuillez modifier les lettres saisies.");
-                        throw new WrongValueException(comp, sb.toString());
-                     }else{
-                        // sinon on enlève toutes les erreurs affichées
-                        tmp = premiereLettre;
-                        Clients.clearWrongValue(premiereLettreBoxEchan);
-                        premiereLettreBoxEchan.setConstraint("");
-                        premiereLettreBoxEchan.setValue(tmp);
-                        premiereLettreBoxEchan.setConstraint(cttPremiereLettre);
                      }
+                     sb.append("}. Veuillez modifier les lettres saisies.");
+                     throw new WrongValueException(comp, sb.toString());
                   }
+                  // sinon on enlève toutes les erreurs affichées
+                  tmp = premiereLettre;
+                  Clients.clearWrongValue(premiereLettreBoxEchan);
+                  premiereLettreBoxEchan.setConstraint("");
+                  premiereLettreBoxEchan.setValue(tmp);
+                  premiereLettreBoxEchan.setConstraint(cttPremiereLettre);
                }else{
                   // sinon on enlève toutes les erreurs affichées
                   final String tmp = premiereLettre;
@@ -2451,8 +2443,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
             if(getLaboInters() != null && !getLaboInters().isEmpty()){
                prel.setLaboInters(new HashSet<>(getLaboInters()));
             }else if(prel.getPrelevementId() != null){
-               prel.setLaboInters(
-                  new HashSet<>(ManagerLocator.getPrelevementManager().getLaboIntersWithOrderManager(prel)));
+               prel.setLaboInters(new HashSet<>(ManagerLocator.getPrelevementManager().getLaboIntersWithOrderManager(prel)));
             }
             testEchan.setPrelevement(prel);
 
@@ -2768,7 +2759,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
          final Calendar calValue = Calendar.getInstance();
          if(box.getValue() != null){
             calValue.setTime(box.getValue());
-            if(calValue != null && !calValue.equals("")){
+            if(!calValue.equals("")){
                if(calValue.get(Calendar.YEAR) > 9999){
                   badDateFormat = true;
                }

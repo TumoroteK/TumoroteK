@@ -117,4 +117,9 @@ public class FileBatch
       return ((this.champ == test.champ || (this.champ != null && this.champ.equals(test.champ)))
          && (this.stream == test.stream || (this.stream != null && this.stream.equals(test.stream))));
    }
+
+   @Override
+   public int hashCode(){
+      return super.hashCode();
+   }
 }

@@ -256,9 +256,8 @@ public class CodeUtilisateur implements CodeCommon, Serializable
    public String toString(){
       if(this.code != null){
          return "{CodeUtilisateur: " + this.code + "}";
-      }else{
-         return "{Empty CodeUtilisateur}";
       }
+      return "{Empty CodeUtilisateur}";
    }
 
    @Override

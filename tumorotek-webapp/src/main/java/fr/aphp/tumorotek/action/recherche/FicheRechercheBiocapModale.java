@@ -178,9 +178,8 @@ public class FicheRechercheBiocapModale
       public int compareGroup(final Service s1, final Service s2){
          if(s1.getEtablissement().getNom().equals(s2.getEtablissement().getNom())){
             return 0;
-         }else{
-            return 1;
          }
+         return 1;
       }
    }
 

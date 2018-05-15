@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.ConsentType;
  * @version 2.0
  *
  */
-public interface ConsentTypeDao extends GenericDaoJpa<ConsentType, Integer>, TKThesaurusDao
+public interface ConsentTypeDao extends GenericDaoJpa<ConsentType, Integer>, TKThesaurusDao<ConsentType>
 {
 
    /**

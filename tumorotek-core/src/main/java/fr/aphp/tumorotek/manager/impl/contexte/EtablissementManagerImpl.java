@@ -222,9 +222,8 @@ public class EtablissementManagerImpl implements EtablissementManager
             nom = nom + "%";
          }
          return etablissementDao.findByNom(nom);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
@@ -234,9 +233,8 @@ public class EtablissementManagerImpl implements EtablissementManager
       if(nom != null){
          nom = "%" + nom + "%";
          return etablissementDao.findByNom(nom);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
@@ -246,9 +244,8 @@ public class EtablissementManagerImpl implements EtablissementManager
       if(ville != null){
          ville = "%" + ville + "%";
          return etablissementDao.findByVille(ville);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    /**
@@ -270,10 +267,8 @@ public class EtablissementManagerImpl implements EtablissementManager
             finess = finess + "%";
          }
          return etablissementDao.findByFiness(finess);
-      }else{
-         return new ArrayList<>();
       }
-
+      return new ArrayList<>();
    }
 
    /**
@@ -303,9 +298,8 @@ public class EtablissementManagerImpl implements EtablissementManager
    public List<Service> getServicesWithOrderManager(final Etablissement etablissement){
       if(etablissement != null){
          return serviceDao.findByEtablissementWithOrder(etablissement);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    /**
@@ -319,9 +313,8 @@ public class EtablissementManagerImpl implements EtablissementManager
    public List<Service> getActiveServicesWithOrderManager(final Etablissement etablissement){
       if(etablissement != null){
          return serviceDao.findByEtablissementArchiveWithOrder(etablissement, false);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    /**
@@ -351,9 +344,8 @@ public class EtablissementManagerImpl implements EtablissementManager
    public List<Collaborateur> getCollaborateursWithOrderManager(final Etablissement etablissement){
       if(etablissement != null){
          return collaborateurDao.findByEtablissementWithOrder(etablissement);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    /**
@@ -368,9 +360,8 @@ public class EtablissementManagerImpl implements EtablissementManager
    public List<Collaborateur> getActiveCollaborateursWithOrderManager(final Etablissement etablissement){
       if(etablissement != null){
          return collaborateurDao.findByEtablissementArchiveWithOrder(etablissement, false);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    /**
@@ -384,9 +375,8 @@ public class EtablissementManagerImpl implements EtablissementManager
    public Boolean findDoublonManager(final Etablissement etablissement){
       if(etablissement.getEtablissementId() == null){
          return etablissementDao.findAll().contains(etablissement);
-      }else{
-         return etablissementDao.findByExcludedId(etablissement.getEtablissementId()).contains(etablissement);
       }
+      return etablissementDao.findByExcludedId(etablissement.getEtablissementId()).contains(etablissement);
    }
 
    /**
@@ -406,34 +396,32 @@ public class EtablissementManagerImpl implements EtablissementManager
       if(findDoublonManager(etablissement)){
          log.warn("Doublon lors de la creation de l'objet Etablissement : " + etablissement.toString());
          throw new DoublonFoundException("Etablissement", "creation");
-      }else{
-
-         BeanValidator.validateObject(etablissement, new Validator[] {etablissementValidator});
-
-         if(coordonnee != null){
-            BeanValidator.validateObject(coordonnee, new Validator[] {coordonneeValidator});
-            if(coordonnee.getCoordonneeId() == null){
-               coordonneeManager.createObjectManager(coordonnee, null);
-            }else{
-               coordonneeManager.updateObjectManager(coordonnee, null, true);
-            }
-         }
-         // else {
-         //	etablissement.setCoordonnee(null);
-         //}
-
-         etablissement.setCoordonnee(coordonneeDao.mergeObject(coordonnee));
-         etablissement.setCategorie(categorieDao.mergeObject(categorie));
-
-         etablissementDao.createObject(etablissement);
-         log.info("Enregistrement de l'objet Etablissement : " + etablissement.toString());
-
-         // Enregistrement de l'operation associee
-         final Operation creationOp = new Operation();
-         creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0),
-            etablissement);
       }
+
+      BeanValidator.validateObject(etablissement, new Validator[] {etablissementValidator});
+
+      if(coordonnee != null){
+         BeanValidator.validateObject(coordonnee, new Validator[] {coordonneeValidator});
+         if(coordonnee.getCoordonneeId() == null){
+            coordonneeManager.createObjectManager(coordonnee, null);
+         }else{
+            coordonneeManager.updateObjectManager(coordonnee, null, true);
+         }
+      }
+      // else {
+      //	etablissement.setCoordonnee(null);
+      //}
+
+      etablissement.setCoordonnee(coordonneeDao.mergeObject(coordonnee));
+      etablissement.setCategorie(categorieDao.mergeObject(categorie));
+
+      etablissementDao.createObject(etablissement);
+      log.info("Enregistrement de l'objet Etablissement : " + etablissement.toString());
+
+      // Enregistrement de l'operation associee
+      final Operation creationOp = new Operation();
+      creationOp.setDate(Utils.getCurrentSystemCalendar());
+      operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), etablissement);
 
    }
 
@@ -454,37 +442,36 @@ public class EtablissementManagerImpl implements EtablissementManager
       if(findDoublonManager(etablissement)){
          log.warn("Doublon lors de la modif de l'objet Etablissement : " + etablissement.toString());
          throw new DoublonFoundException("Etablissement", "modification");
-      }else{
-
-         BeanValidator.validateObject(etablissement, new Validator[] {etablissementValidator});
-
-         if(coordonnee != null){
-            BeanValidator.validateObject(coordonnee, new Validator[] {coordonneeValidator});
-            if(coordonnee.getCoordonneeId() == null){
-               coordonneeManager.createObjectManager(coordonnee, null);
-            }else{
-               coordonneeManager.updateObjectManager(coordonnee, null, true);
-            }
-         }
-
-         etablissement.setCoordonnee(coordonneeDao.mergeObject(coordonnee));
-         etablissement.setCategorie(categorieDao.mergeObject(categorie));
-
-         etablissementDao.updateObject(etablissement);
-         log.info("Modification de l'objet Etablissement : " + etablissement.toString());
-
-         if(cascadeArchive){
-            archiveServices(etablissement, utilisateur);
-            archiveCollaborateurs(etablissement, collaborateurManager.findByEtablissementNoServiceManager(etablissement),
-               utilisateur);
-         }
-
-         // Enregistrement de l'operation associee
-         final Operation creationOp = new Operation();
-         creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
-            etablissement);
       }
+
+      BeanValidator.validateObject(etablissement, new Validator[] {etablissementValidator});
+
+      if(coordonnee != null){
+         BeanValidator.validateObject(coordonnee, new Validator[] {coordonneeValidator});
+         if(coordonnee.getCoordonneeId() == null){
+            coordonneeManager.createObjectManager(coordonnee, null);
+         }else{
+            coordonneeManager.updateObjectManager(coordonnee, null, true);
+         }
+      }
+
+      etablissement.setCoordonnee(coordonneeDao.mergeObject(coordonnee));
+      etablissement.setCategorie(categorieDao.mergeObject(categorie));
+
+      etablissementDao.updateObject(etablissement);
+      log.info("Modification de l'objet Etablissement : " + etablissement.toString());
+
+      if(cascadeArchive){
+         archiveServices(etablissement, utilisateur);
+         archiveCollaborateurs(etablissement, collaborateurManager.findByEtablissementNoServiceManager(etablissement),
+            utilisateur);
+      }
+
+      // Enregistrement de l'operation associee
+      final Operation creationOp = new Operation();
+      creationOp.setDate(Utils.getCurrentSystemCalendar());
+      operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
+         etablissement);
 
    }
 
@@ -543,10 +530,9 @@ public class EtablissementManagerImpl implements EtablissementManager
             if(!isReferencedObjectManager(etablissement)){
                log.warn("Objet utilisé lors de la suppression de l'objet " + "Etablissement : " + etablissement.toString());
                throw new ObjectUsedException("etablissement.deletion." + "isUsedCascade", true);
-            }else{
-               log.warn("Objet référencé lors de la suppression " + "de l'objet Etablissement : " + etablissement.toString());
-               throw new ObjectReferencedException("etablissement" + ".deletion.isReferencedCascade", true);
             }
+            log.warn("Objet référencé lors de la suppression " + "de l'objet Etablissement : " + etablissement.toString());
+            throw new ObjectReferencedException("etablissement" + ".deletion.isReferencedCascade", true);
          }
       }
    }

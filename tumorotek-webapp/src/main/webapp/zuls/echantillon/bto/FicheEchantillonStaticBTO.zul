@@ -66,6 +66,29 @@
 					<row spans="4">
 						<separator/>
 					</row>
+					
+					<!-- Validation -->
+					<group label="${c:l('validation.group.label')}" id="validationGroup" />
+					<row id="validationData">
+						<label id="validationLabel" value="${c:l('validation.champ.validation')}" sclass="formLabel"/>
+						<div>
+							<div id="validationStatus" sclass="square" />
+							<label id="consultValidation" value="${c:l('validation.lien.resultat')}"/>
+						</div>
+					</row>
+					<row>
+						<label id="validationValideurLabel" value="${c:l('validation.champ.valideur')}" sclass="formLabel"/>
+						<label id="validationValideur" value="@{fwinEchantillonStaticBTO$composer.valideur}" sclass="formValue"/>
+						<label id="validationDateLabel" value="${c:l('validation.champ.dateValidation')}" sclass="formLabel"/>
+						<label id="validationDate" value="@{fwinEchantillonStaticBTO$composer.dateValidationFormatee}" sclass="formValue"/>
+					</row>
+					<row spans="1,3">
+						<label id="validationCommentaireLabel" value="${c:l('validation.champ.commentaire')}" sclass="formLabel"/>
+						<div>
+							<label id="validationCommentaire" multiline="true" value="@{fwinEchantillonStaticBTO$composer.object.delegate.detailValidation.commentaireValidation}" sclass="formValue"/>
+						</div>
+					</row>
+					
 					<!-- Infos prélèvement  -->
 					<group label="${c:l('ficheEchantillon.prelevement.titre')}" id="groupPrlvt"/>	
 					<row spans="4" id="row1PrlvtEchan" visible="false">
@@ -379,8 +402,6 @@
 								label="${c:l('general.print.INCa')}" />
 							<menuitem id="print" image="/images/icones/printer.png"
 								label="${c:l('general.print')}"/>
-<!--							<menuitem id="retours" image="/images/icones/retour.png" -->
-<!--								label="${c:l('general.retours')}"/> -->
 							<menuitem id="historique" image="/images/icones/history.png" 
 								label="${c:l('general.historique')}"/>
 						</menupopup>
@@ -394,6 +415,12 @@
 					use="fr.aphp.tumorotek.component.TKDisablableButton" />
 				<button id="delete" label="${c:l('general.delete')}" height="24px"
 					image="/images/icones/trash.png" sclass="buttonv2"
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="validate" label="${c:l('general.validate')}" height="24px"
+					image="/images/icones/validate.png" sclass="buttonv2"
+					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="invalidate" label="${c:l('general.invalidate')}" height="24px"
+					image="/images/icones/delete.png" sclass="buttonv2"
 					use="fr.aphp.tumorotek.component.TKDisablableButton" />
 				<button id="addDerive" label="${c:l('general.add.derive')}" height="24px"
 					image="/images/icones/addDerive.png" sclass="buttonv2"

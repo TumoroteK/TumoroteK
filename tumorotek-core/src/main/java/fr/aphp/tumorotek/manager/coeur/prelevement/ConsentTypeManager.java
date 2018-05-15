@@ -56,7 +56,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.ConsentType;
  * @version 2.0
  *
  */
-public interface ConsentTypeManager extends TKThesaurusManager
+public interface ConsentTypeManager extends TKThesaurusManager<ConsentType>
 {
 
    /**

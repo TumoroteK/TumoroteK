@@ -47,7 +47,7 @@ import fr.aphp.tumorotek.model.stockage.ConteneurType;
  * @version 2.0
  *
  */
-public interface ConteneurTypeManager extends TKThesaurusManager
+public interface ConteneurTypeManager extends TKThesaurusManager<ConteneurType>
 {
 
    /**

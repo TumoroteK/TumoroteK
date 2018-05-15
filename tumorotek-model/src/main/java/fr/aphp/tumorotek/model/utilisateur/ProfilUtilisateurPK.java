@@ -158,8 +158,7 @@ public class ProfilUtilisateurPK implements Serializable
       if(this.profil != null && this.utilisateur != null && this.banque != null){
          return "{" + profil.toString() + " (Profil), " + utilisateur.toString() + " (Utilisateur), " + banque.toString()
             + " (Banque)}";
-      }else{
-         return "{Empty ProfilUtilisateurPK}";
       }
+      return "{Empty ProfilUtilisateurPK}";
    }
 }

@@ -194,9 +194,8 @@ public class EchanQualite implements java.io.Serializable, TKThesaurusObject
    public String toString(){
       if(this.echanQualite != null){
          return "{" + this.echanQualite + "}";
-      }else{
-         return "{Empty EchanQualite}";
       }
+      return "{Empty EchanQualite}";
    }
 
    @Override

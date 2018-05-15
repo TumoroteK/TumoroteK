@@ -37,7 +37,6 @@ package fr.aphp.tumorotek.manager.impl.qualite;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -48,6 +47,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
@@ -352,36 +352,32 @@ public class OperationManagerImpl implements OperationManager
    public List<Operation> findByDateOperationManager(final Calendar date){
       if(date != null){
          return operationDao.findByDate(date);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
    public List<Operation> findAfterDateOperationManager(final Calendar date){
       if(date != null){
          return operationDao.findByAfterDate(date);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
    public List<Operation> findBeforeDateOperationManager(final Calendar date){
       if(date != null){
          return operationDao.findByBeforeDate(date);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
    public List<Operation> findBetweenDatesOperationManager(final Calendar date1, final Calendar date2){
       if(date1 != null && date2 != null){
          return operationDao.findByBetweenDates(date1, date2);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
@@ -411,7 +407,6 @@ public class OperationManagerImpl implements OperationManager
       }
    }
 
-   
    @Override
    public List<Operation> findByMultiCriteresManager(final String operateurDate1, final Calendar date1,
       final String operateurDate2, final Calendar date2, final OperationType operationType, final List<Utilisateur> users,
@@ -463,7 +458,7 @@ public class OperationManagerImpl implements OperationManager
          }
 
          final EntityManager em = entityManagerFactory.createEntityManager();
-         final Query query = em.createQuery(sql.toString());
+         final TypedQuery<Operation> query = em.createQuery(sql.toString(), Operation.class);
          log.debug("Recherche des opérations par multi-critères.");
          log.debug(sql.toString());
          if(sql.toString().contains("date1")){
@@ -521,7 +516,7 @@ public class OperationManagerImpl implements OperationManager
       final Entite e){
       if(u != null && oT != null && e != null && cal != null && objsId != null && !objsId.isEmpty()){
          PreparedStatement pst = null;
-         Connection conn = null;
+//         Connection conn = null;
          try{
             // conn = DataSourceUtils.getConnection(dataSource);
             // Calendar curr = Utils.getCurrentSystemCalendar();
@@ -552,13 +547,13 @@ public class OperationManagerImpl implements OperationManager
                   pst = null;
                }
             }
-            if(conn != null){
-               try{
-                  conn.close();
-               }catch(final SQLException qe){}finally{
-                  conn = null;
-               }
-            }
+//            if(conn != null){
+//               try{
+//                  conn.close();
+//               }catch(final SQLException qe){}finally{
+//                  conn = null;
+//               }
+//            }
          }
       }else{
          throw new NullPointerException();

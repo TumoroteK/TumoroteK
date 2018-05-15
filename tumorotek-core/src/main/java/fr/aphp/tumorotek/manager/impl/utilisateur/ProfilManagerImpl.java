@@ -123,12 +123,10 @@ public class ProfilManagerImpl implements ProfilManager
       if(profil != null){
          if(profil.getProfilId() == null){
             return profilDao.findByNom(profil.getNom()).contains(profil);
-         }else{
-            return profilDao.findByExcludedId(profil.getProfilId()).contains(profil);
          }
-      }else{
-         return false;
+         return profilDao.findByExcludedId(profil.getProfilId()).contains(profil);
       }
+      return false;
    }
 
    @Override
@@ -136,9 +134,8 @@ public class ProfilManagerImpl implements ProfilManager
       if(profil != null && profil.getProfilId() != null){
          profil = profilDao.mergeObject(profil);
          return (profilUtilisateurManager.findByProfilManager(profil, null).size() > 0);
-      }else{
-         return false;
       }
+      return false;
    }
 
    @Override
@@ -250,26 +247,25 @@ public class ProfilManagerImpl implements ProfilManager
          if(isUsedObjectManager(profil)){
             log.warn("Objet utilisé lors de la suppression de l'objet " + "Profil : " + profil.toString());
             throw new ObjectUsedException("deletion.profil.isUsed", false);
-         }else{
-            // suppression des DroitsObjets
-            final List<DroitObjet> objets = droitObjetManager.findByProfilManager(profil);
-            for(int i = 0; i < objets.size(); i++){
-               droitObjetManager.removeObjectManager(objets.get(i));
-            }
+         }
+         // suppression des DroitsObjets
+         final List<DroitObjet> objets = droitObjetManager.findByProfilManager(profil);
+         for(int i = 0; i < objets.size(); i++){
+            droitObjetManager.removeObjectManager(objets.get(i));
+         }
 
-            final List<ProfilUtilisateur> profils = profilUtilisateurManager.findByProfilManager(profil, null);
-            for(int i = 0; i < profils.size(); i++){
-               profilUtilisateurManager.removeObjectManager(profils.get(i));
-            }
+         final List<ProfilUtilisateur> profils = profilUtilisateurManager.findByProfilManager(profil, null);
+         for(int i = 0; i < profils.size(); i++){
+            profilUtilisateurManager.removeObjectManager(profils.get(i));
+         }
 
-            profilDao.removeObject(profil.getProfilId());
-            log.info("Suppression de l'objet Profil : " + profil.toString());
+         profilDao.removeObject(profil.getProfilId());
+         log.info("Suppression de l'objet Profil : " + profil.toString());
 
-            //Supprime operations associes
-            final List<Operation> ops = operationManager.findByObjectManager(profil);
-            for(int i = 0; i < ops.size(); i++){
-               operationManager.removeObjectManager(ops.get(i));
-            }
+         //Supprime operations associes
+         final List<Operation> ops = operationManager.findByObjectManager(profil);
+         for(int i = 0; i < ops.size(); i++){
+            operationManager.removeObjectManager(ops.get(i));
          }
       }else{
          log.warn("Suppression d'une Profil null");
@@ -280,12 +276,11 @@ public class ProfilManagerImpl implements ProfilManager
    public List<Profil> findByPlateformeAndArchiveManager(final Plateforme pf, final Boolean archive){
       if(archive != null){
          return profilDao.findByPlateformeAndArchive(pf, archive);
-      }else{
-         final List<Profil> prfs = profilDao.findByPlateformeAndArchive(pf, false);
-         prfs.addAll(profilDao.findByPlateformeAndArchive(pf, true));
-         Collections.sort(prfs);
-         return prfs;
       }
+      final List<Profil> prfs = profilDao.findByPlateformeAndArchive(pf, false);
+      prfs.addAll(profilDao.findByPlateformeAndArchive(pf, true));
+      Collections.sort(prfs);
+      return prfs;
    }
 
 }

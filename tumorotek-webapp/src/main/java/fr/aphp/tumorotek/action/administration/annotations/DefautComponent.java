@@ -49,6 +49,7 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -72,7 +73,9 @@ import fr.aphp.tumorotek.action.constraints.ConstAlphanum;
 import fr.aphp.tumorotek.action.constraints.ConstHyperlien;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationDefaut;
+import fr.aphp.tumorotek.model.coeur.annotation.ChampCalcule;
 import fr.aphp.tumorotek.model.coeur.annotation.Item;
+import fr.aphp.tumorotek.model.utils.Duree;
 
 /**
  * MacroComponent dessinant les composant editables permettant à
@@ -98,9 +101,14 @@ public class DefautComponent extends HtmlMacroComponent
    private Column editCol;
    private Column deleteCol;
 
+   private ChampCalcule champCalculeCopy;
+
+   //   private Champ selectedChamp;
+
    private final List<Item> itemsCopy = new ArrayList<>();
    private Set<AnnotationDefaut> defauts = new LinkedHashSet<>();
    private List<Listitem> boolsItem;
+   //   private List<DataType> allowedDataTypeList = new ArrayList<>();
 
    // flag blockModal utilise pour ouverture modale item
    private boolean blockModal = false;
@@ -119,21 +127,249 @@ public class DefautComponent extends HtmlMacroComponent
 
       drawDefautEditablesComponents();
 
-      // Events listeners
+      addEventListeners();
+   }
+
+   /**
+    * Dessine les composants editables permettant de renseigner les valeurs 
+    * par défaut en fonction du type de ChampAnnotation.
+    */
+   private void drawDefautEditablesComponents(){
+      if(this.chpDeco.isAlphanum()){
+         box = drawAlphanumBox();
+      }else if(this.chpDeco.isBoolean()){
+         box = createBoolBox();
+      }else if(this.chpDeco.isDate()){
+         box = drawDateBox();
+      }else if(this.chpDeco.isDatetime()){
+         box = drawDatetimeBox();
+      }else if(this.chpDeco.isNum()){
+         box = drawNumBox();
+      }else if(this.chpDeco.isDuree()){
+         box = drawDureeBox();
+      }else if(this.chpDeco.isTexte()){
+         box = drawTextBox();
+      }else if(this.chpDeco.isThesaurus()){
+         box = drawItemGrid();
+      }else if(this.chpDeco.isChampCalcule()){
+         box = drawChampCalculeGrid();
+      }else if(this.chpDeco.isHyperlien()){
+         box = drawHyperlienBox();
+      }
+
+      defauts.clear();
+      defauts.addAll(chpDeco.getDefauts());
+
+      getFirstChild().getFellow("defautBoxDiv").appendChild(box);
+   }
+
+   /**
+    * Dessine la Textbox pour un Champ alphanumérique
+    * @return Textbox pour un Champ alphanumérique
+    */
+   private Textbox drawAlphanumBox(){
+      Textbox textbox = new Textbox();
+      textbox.setHflex("1");
+      // ((Textbox) box).setCols(15);
+      final ConstAlphanum constr = new ConstAlphanum();
+      constr.setNullable(true);
+      textbox.setConstraint(constr);
+      if(chpDeco.getDefauts().iterator().next().getAlphanum() != null){
+         textbox.setValue(chpDeco.getDefauts().iterator().next().getAlphanum());
+      }
+      return textbox;
+   }
+
+   /**
+    * Dessine la DecimalBox pour un Champ numérique
+    * @return DecimalBox pour un Champ numérique
+    */
+   private Decimalbox drawNumBox(){
+      Decimalbox decimalbox = new Decimalbox();
+      decimalbox.setHflex("1");
+      decimalbox.setFormat("0.###");
+      decimalbox.setLocale("en");
+      decimalbox.setScale(3);
+      if(chpDeco.getDefauts().iterator().next().getAlphanum() != null){
+         decimalbox.setValue(new BigDecimal(chpDeco.getDefauts().iterator().next().getAlphanum()));
+      }
+      return decimalbox;
+   }
+
+   /**
+    * Dessine la Textbox pour un Champ texte
+    * @return la Textbox pour un Champ texte
+    */
+   private Textbox drawTextBox(){
+      Textbox textbox = new Textbox();
+      textbox.setRows(3);
+      textbox.setHflex("1");
+      if(chpDeco.getDefauts().iterator().next().getTexte() != null){
+         textbox.setValue(chpDeco.getDefauts().iterator().next().getTexte());
+      }
+
+      return textbox;
+   }
+
+   /**
+    * Dessine la Datebox pour un Champ date
+    * @return la Datebox pour un Champ date
+    */
+   private Datebox drawDateBox(){
+      Datebox datebox = new Datebox();
+      datebox.setFormat(Labels.getLabel("validation.date.format.simple"));
+      datebox.setWidth("200px");
+      if(chpDeco.getDefauts().iterator().next().getDate() != null){
+         datebox.setValue(chpDeco.getDefauts().iterator().next().getDate().getTime());
+      }
+
+      return datebox;
+   }
+
+   /**
+    * Dessine la Textbox pour un Champ hyperlien
+    * @return Textbox pour un Champ hyperlien
+    */
+   private Textbox drawHyperlienBox(){
+      Textbox textbox = new Textbox();
+      textbox.setHflex("1");
+      final ConstHyperlien constr = new ConstHyperlien();
+      constr.setNullable(true);
+      textbox.setConstraint(constr);
+      if(chpDeco.getDefauts().iterator().next().getAlphanum() != null){
+         textbox.setValue(chpDeco.getDefauts().iterator().next().getAlphanum());
+      }
+
+      return textbox;
+   }
+
+   /**
+    * Dessine la CalendarBox pour un Champ datetime
+    * @return la CalendarBox pour un Champ datetime
+    */
+   private CalendarBox drawDatetimeBox(){
+      CalendarBox calendarbox = null;
+      Component component =
+         getPage().getComponentDefinition("calendarbox", false).newInstance(getPage(), "fr.aphp.tumorotek.component.CalendarBox");
+      if(CalendarBox.class.isInstance(component)){
+         calendarbox = CalendarBox.class.cast(component);
+         //box.setId("defautMacroComponent");
+         calendarbox.applyProperties();
+         calendarbox.afterCompose();
+         // ((Datebox) box).setWidth("200px");
+         if(chpDeco.getDefauts().iterator().next().getDate() != null){
+            calendarbox.setValue(chpDeco.getDefauts().iterator().next().getDate());
+         }
+      }
+
+      return calendarbox;
+   }
+
+   /**
+    * Dessine le DureeComponent pour un Champ Duree
+    * @return DureeComponent Div pour un Champ Duree
+    * @since 2.2.0
+    */
+   private DureeComponent drawDureeBox(){
+      final DureeComponent dureebox = new DureeComponent();
+      dureebox.setWidth("400px");
+      // Remplissage des champs si modification et si valeur existante
+      String valeurDefaut = chpDeco.getDefauts().iterator().next().getAlphanum();
+      if(null != valeurDefaut && !"".equals(valeurDefaut)){
+         dureebox.setDuree(new Duree(new Long(valeurDefaut), Duree.SECONDE));
+      }
+      
+      // Event listener permettant d'enregistrer la durée à la validation
       getFirstChild().getFellow("validateButton").addEventListener("onClick", new EventListener<Event>()
       {
          @Override
          public void onEvent(final Event event) throws Exception{
-            recordAnnotationDefaut();
+            Duree duree = dureebox.getDuree();
+            Long secondes = duree.getTemps(Duree.SECONDE);
+            defauts.iterator().next().setAlphanum(secondes.toString());
          }
       });
-      getFirstChild().getFellow("cancelButton").addEventListener("onClick", new EventListener<Event>()
+      return dureebox;
+   }
+
+   /**
+    * Dessine la Grid listant les items. 
+    * L'élément Rows gere les evenements renvoyes depuis les images
+    * boutons delete-edit.
+    * La Grid utilise pour model la deep copy de la liste items.
+    * @return la Grid
+    */
+   private Grid drawItemGrid(){
+      final Grid itemGrid = new Grid();
+      itemGrid.setHflex("1");
+      itemGrid.setSclass("gridListStyle");
+      itemGrid.setMold("paging");
+      itemGrid.setPageSize(20);
+      itemGrid.setSizedByContent(true);
+      itemGrid.setSpan(true);
+      //Columns
+      final Columns cols = new Columns();
+      itemGrid.appendChild(cols);
+      final Column labelCol = new Column();
+      //labelCol.setWidth("250px");
+      labelCol.setLabel(Labels.getLabel("annotation.item.label"));
+      cols.appendChild(labelCol);
+      final Column valCol = new Column();
+      //valCol.setWidth("250px");
+      valCol.setLabel(Labels.getLabel("annotation.item.valeur"));
+      cols.appendChild(valCol);
+      final Column defautCol = new Column();
+      defautCol.setLabel(Labels.getLabel("annotation.item.defaut"));
+      // defautCol.setWidth("60px");
+      cols.appendChild(defautCol);
+      editCol = new Column();
+      // editCol.setWidth("10px");
+      cols.appendChild(editCol);
+      deleteCol = new Column();
+      // deleteCol.setWidth("10px");
+      cols.appendChild(deleteCol);
+      //Rows recoit les event listeners
+      final Rows rows = new Rows();
+      itemGrid.appendChild(rows);
+      //Model
+      //copy la liste items
+      itemsCopy.clear();
+      final List<Item> its = new ArrayList<>(chpDeco.getItems());
+      for(int i = 0; i < its.size(); i++){
+         itemsCopy.add(i, its.get(i).clone());
+      }
+
+      final ListModel<Item> model = new ListModelList<>(itemsCopy);
+      itemGrid.setModel(model);
+      //Renderer
+      final AnnoItemRowRenderer renderer = new AnnoItemRowRenderer();
+      renderer.setDefauts(defauts);
+      itemGrid.setRowRenderer(renderer);
+
+      // Ajout des events listeners pour les actions
+      rows.addEventListener("onClickUpdateItem", new EventListener<Event>()
       {
          @Override
          public void onEvent(final Event event) throws Exception{
-            cancelAnnotationDefaut();
+            openItemModale((Item) event.getData(), false);
          }
       });
+      rows.addEventListener("onClickDeleteItem", new EventListener<Event>()
+      {
+         @Override
+         public void onEvent(final Event event) throws Exception{
+            deleteItemFromList((Item) event.getData());
+         }
+      });
+      // affiche le bouton addItem et le rend fonctionnel
+      getFirstChild().getFellow("addItemButton").addEventListener("onClick", new EventListener<Event>()
+      {
+         @Override
+         public void onEvent(final Event event) throws Exception{
+            openItemModale(new Item(), true);
+         }
+      });
+      getFirstChild().getFellow("addItemButton").setVisible(true);
 
       this.addEventListener("onAddItem", new EventListener<Event>()
       {
@@ -167,176 +403,120 @@ public class DefautComponent extends HtmlMacroComponent
          }
       });
 
-      // affiche le bouton addItem et le rend fonctionnel si thesaurus
-      if(chpDeco.isThesaurus()){
-         getFirstChild().getFellow("addItemButton").addEventListener("onClick", new EventListener<Event>()
-         {
-            @Override
-            public void onEvent(final Event event) throws Exception{
-               openItemModale(new Item(), true);
-            }
-         });
-         getFirstChild().getFellow("addItemButton").setVisible(true);
-      }
-   }
-
-   /**
-    * Dessine les composants editables permettant de renseigner les valeurs 
-    * par défaut en fonction du type de ChampAnnotation.
-    */
-   private void drawDefautEditablesComponents(){
-      if(this.chpDeco.isAlphanum()){
-         box = new Textbox();
-         ((Textbox) box).setHflex("1");
-         // ((Textbox) box).setCols(15);
-         final ConstAlphanum constr = new ConstAlphanum();
-         constr.setNullable(true);
-         ((Textbox) box).setConstraint(constr);
-         if(chpDeco.getDefauts().iterator().next().getAlphanum() != null){
-            ((Textbox) box).setValue(chpDeco.getDefauts().iterator().next().getAlphanum());
-         }
-      }else if(this.chpDeco.isBoolean()){
-         createBoolbox();
-         if(chpDeco.getDefauts().iterator().next().getBool() != null){
-            if(chpDeco.getDefauts().iterator().next().getBool()){
-               ((Listbox) box).setSelectedItem(boolsItem.get(1));
-            }else{
-               ((Listbox) box).setSelectedItem(boolsItem.get(2));
-            }
-         }else{
-            ((Listbox) box).setSelectedItem(boolsItem.get(0));
-         }
-      }else if(this.chpDeco.isDate()){
-         box = new Datebox();
-         ((Datebox) box).setFormat(Labels.getLabel("validation.date.format.simple"));
-         ((Datebox) box).setWidth("200px");
-         if(chpDeco.getDefauts().iterator().next().getDate() != null){
-            ((Datebox) box).setValue(chpDeco.getDefauts().iterator().next().getDate().getTime());
-         }
-      }else if(this.chpDeco.isDatetime()){
-         box = getPage().getComponentDefinition("calendarbox", false).newInstance(getPage(),
-            "fr.aphp.tumorotek.component.CalendarBox");
-
-         //box.setId("defautMacroComponent");
-         box.applyProperties();
-         ((CalendarBox) box).afterCompose();
-         // ((Datebox) box).setWidth("200px");
-         if(chpDeco.getDefauts().iterator().next().getDate() != null){
-            ((CalendarBox) box).setValue(chpDeco.getDefauts().iterator().next().getDate());
-         }
-      }else if(this.chpDeco.isNum()){
-         box = new Decimalbox();
-         ((Decimalbox) box).setHflex("1");
-         ((Decimalbox) box).setFormat("0.###");
-         ((Decimalbox) box).setLocale("en");
-         ((Decimalbox) box).setScale(3);
-         if(chpDeco.getDefauts().iterator().next().getAlphanum() != null){
-            ((Decimalbox) box).setValue(new BigDecimal(chpDeco.getDefauts().iterator().next().getAlphanum()));
-         }
-      }else if(this.chpDeco.isTexte()){
-         box = new Textbox();
-         ((Textbox) box).setRows(3);
-         ((Textbox) box).setHflex("1");
-         if(chpDeco.getDefauts().iterator().next().getTexte() != null){
-            ((Textbox) box).setValue(chpDeco.getDefauts().iterator().next().getTexte());
-         }
-      }else if(this.chpDeco.isThesaurus()){
-         box = drawItemGrid();
-      }else if(this.chpDeco.isHyperlien()){
-         box = new Textbox();
-         ((Textbox) box).setHflex("1");
-         final ConstHyperlien constr = new ConstHyperlien();
-         constr.setNullable(true);
-         ((Textbox) box).setConstraint(constr);
-         if(chpDeco.getDefauts().iterator().next().getAlphanum() != null){
-            ((Textbox) box).setValue(chpDeco.getDefauts().iterator().next().getAlphanum());
-         }
-      }
-
-      defauts.clear();
-      defauts.addAll(chpDeco.getDefauts());
-
-      getFirstChild().getFellow("defautBoxDiv").appendChild(box);
-   }
-
-   /**
-    * Dessine la grid listant les items. 
-    * L'élément Rows gere les evenements renvoyes depuis les images
-    * boutons delete-edit.
-    * La grid utilise pour model la deep copy de la liste items.
-    * @return la Grid
-    */
-   private Component drawItemGrid(){
-      final Grid itemGrid = new Grid();
-      itemGrid.setHflex("1");
-      itemGrid.setSclass("gridListStyle");
-      itemGrid.setMold("paging");
-      itemGrid.setPageSize(20);
-      itemGrid.setSizedByContent(true);
-      itemGrid.setSpan(true);
-      //Columns
-      final Columns cols = new Columns();
-      itemGrid.appendChild(cols);
-      final Column labelCol = new Column();
-      //labelCol.setWidth("250px");
-      labelCol.setLabel(Labels.getLabel("annotation.item.label"));
-      cols.appendChild(labelCol);
-      final Column valCol = new Column();
-      //valCol.setWidth("250px");
-      valCol.setLabel(Labels.getLabel("annotation.item.valeur"));
-      cols.appendChild(valCol);
-      final Column defautCol = new Column();
-      defautCol.setLabel(Labels.getLabel("annotation.item.defaut"));
-      // defautCol.setWidth("60px");
-      cols.appendChild(defautCol);
-      editCol = new Column();
-      // editCol.setWidth("10px");
-      cols.appendChild(editCol);
-      deleteCol = new Column();
-      // deleteCol.setWidth("10px");
-      cols.appendChild(deleteCol);
-      //Rows recoit les event listeners
-      final Rows rows = new Rows();
-      rows.addEventListener("onClickUpdateItem", new EventListener<Event>()
-      {
-         @Override
-         public void onEvent(final Event event) throws Exception{
-            openItemModale((Item) event.getData(), false);
-         }
-      });
-      rows.addEventListener("onClickDeleteItem", new EventListener<Event>()
-      {
-         @Override
-         public void onEvent(final Event event) throws Exception{
-            deleteItemFromList((Item) event.getData());
-         }
-      });
-      itemGrid.appendChild(rows);
-      //Model
-      //copy la liste items
-      itemsCopy.clear();
-      final List<Item> its = new ArrayList<>(chpDeco.getItems());
-      for(int i = 0; i < its.size(); i++){
-         itemsCopy.add(i, its.get(i).clone());
-      }
-      //		// copy la liste defauts
-      //		defautsCopy.clear();
-      //		Iterator<AnnotationDefaut> itor = chpDeco.getDefauts().iterator();
-      //		while (itor.hasNext()) {
-      //			AnnotationDefaut def = itor.next();
-      //			//if (def.isEmpty()) {
-      //			defautsCopy.add(def.clone());
-      //			//}
-      //		}
-
-      final ListModel<Item> model = new ListModelList<>(itemsCopy);
-      itemGrid.setModel(model);
-      //Renderer
-      final AnnoItemRowRenderer renderer = new AnnoItemRowRenderer();
-      renderer.setDefauts(defauts);
-      itemGrid.setRowRenderer(renderer);
-
       return itemGrid;
+   }
+
+   /**
+    * Déssine la Listbox pour un Champ boolean
+    * @return la Listbox pour un Champ boolean
+    */
+   private Listbox createBoolBox(){
+      Listitem listIt = null;
+
+      Listbox listbox = new Listbox();
+      listbox.setMold("select");
+
+      boolsItem = new ArrayList<>();
+
+      listIt = new Listitem();
+      listIt.setLabel("");
+      listbox.appendChild(listIt);
+      boolsItem.add(listIt);
+
+      // OUI
+      final Boolean oui = new Boolean(true);
+      listIt = new Listitem();
+      listIt.setLabel(Labels.getLabel("annotation.boolean.oui"));
+      listIt.setValue(oui);
+      listbox.appendChild(listIt);
+      boolsItem.add(listIt);
+
+      // NON
+      final Boolean non = new Boolean(false);
+      listIt = new Listitem();
+      listIt.setLabel(Labels.getLabel("annotation.boolean.non"));
+      listIt.setValue(non);
+      listbox.appendChild(listIt);
+      boolsItem.add(listIt);
+
+      listbox.setSelectedItem(boolsItem.get(0));
+
+      if(chpDeco.getDefauts().iterator().next().getBool() != null){
+         if(chpDeco.getDefauts().iterator().next().getBool()){
+            listbox.setSelectedItem(boolsItem.get(1));
+         }else{
+            listbox.setSelectedItem(boolsItem.get(2));
+         }
+      }else{
+         listbox.setSelectedItem(boolsItem.get(0));
+      }
+
+      return listbox;
+   }
+
+   /**
+    * Dessine la Grid pour l'édition d'un ChampCalcule
+    * @return ChampCalculeComponent Grid pour ChampCalcule
+    * @since 2.2.0
+    */
+   private ChampCalculeComponent drawChampCalculeGrid(){
+      champCalculeCopy = chpDeco.getChampCalcule();
+      final ChampCalculeComponent champCalculeGrid = new ChampCalculeComponent();
+      champCalculeGrid.setBanque(this.chpDeco.getCurrentBanque());
+      if(null != champCalculeCopy){
+         champCalculeGrid.setChampCalcule(champCalculeCopy.clone());
+      }else{ // Nouveau champCalcule
+         champCalculeCopy = new ChampCalcule();
+         champCalculeCopy.setChampAnnotation(chpDeco.getChamp());
+         champCalculeGrid.setChampCalcule(champCalculeCopy);
+      }
+
+      // Event listener permettant de récupérer le champCalculer à la validation
+      getFirstChild().getFellow("validateButton").addEventListener("onClick", new EventListener<Event>()
+      {
+         @Override
+         public void onEvent(final Event event) throws Exception{
+            // Validation de la saisie du champ Calculé
+            ChampCalcule champCalcule = champCalculeGrid.getChampCalcule();
+            if(null == champCalcule){
+               throw new WrongValueException(box, Labels.getLabel("anno.champ1.empty"));
+            }else if(null == champCalcule.getChamp1()){
+               throw new WrongValueException(box, Labels.getLabel("anno.champCalcule.champ1.empty"));
+            }
+            else if(null == champCalcule.getOperateur()){
+               throw new WrongValueException(box, Labels.getLabel("anno.champCalcule.operateur.empty"));
+            }else if(null == champCalcule.getChamp2()){
+               if(null == champCalcule.getValeur()){
+                  throw new WrongValueException(box, Labels.getLabel("anno.champCalcule.champ2orValue.empty"));
+               }
+            }
+            
+            champCalculeCopy = champCalcule;
+         }
+      });
+
+      return champCalculeGrid;
+   }
+
+   /**
+    * Ajoute des listeners aux boutons valider et annuler
+    */
+   private void addEventListeners(){
+      // Events listeners
+      getFirstChild().getFellow("validateButton").addEventListener("onClick", new EventListener<Event>()
+      {
+         @Override
+         public void onEvent(final Event event) throws Exception{
+            recordAnnotationDefaut();
+         }
+      });
+      getFirstChild().getFellow("cancelButton").addEventListener("onClick", new EventListener<Event>()
+      {
+         @Override
+         public void onEvent(final Event event) throws Exception{
+            cancelAnnotationDefaut();
+         }
+      });
    }
 
    /**
@@ -407,6 +587,15 @@ public class DefautComponent extends HtmlMacroComponent
          }
       }else if(this.chpDeco.isThesaurus()){
          chpDeco.setItems(itemsCopy);
+      }else if(this.chpDeco.isChampCalcule()){
+         chpDeco.setChampCalcule(champCalculeCopy);
+      }else if(this.chpDeco.isDuree()){
+         if(null != DureeComponent.class.cast(box).getDuree()
+            && 0 != DureeComponent.class.cast(box).getDuree().getTemps(Duree.SECONDE)){
+            defauts.iterator().next().setAlphanum(DureeComponent.class.cast(box).getDuree().getTemps(Duree.SECONDE).toString());
+         }else{
+            defauts.iterator().next().setAlphanum(null);
+         }
       }
       chpDeco.setDefauts(defauts);
    }
@@ -616,35 +805,4 @@ public class DefautComponent extends HtmlMacroComponent
       this.defauts = defs;
    }
 
-   private void createBoolbox(){
-      Listitem listIt = null;
-
-      box = new Listbox();
-      box.setMold("select");
-
-      boolsItem = new ArrayList<>();
-
-      listIt = new Listitem();
-      listIt.setLabel("");
-      box.appendChild(listIt);
-      boolsItem.add(listIt);
-
-      // OUI
-      final Boolean oui = new Boolean(true);
-      listIt = new Listitem();
-      listIt.setLabel(Labels.getLabel("annotation.boolean.oui"));
-      listIt.setValue(oui);
-      box.appendChild(listIt);
-      boolsItem.add(listIt);
-
-      // NON
-      final Boolean non = new Boolean(false);
-      listIt = new Listitem();
-      listIt.setLabel(Labels.getLabel("annotation.boolean.non"));
-      listIt.setValue(non);
-      box.appendChild(listIt);
-      boolsItem.add(listIt);
-
-      ((Listbox) box).setSelectedItem(boolsItem.get(0));
-   }
 }

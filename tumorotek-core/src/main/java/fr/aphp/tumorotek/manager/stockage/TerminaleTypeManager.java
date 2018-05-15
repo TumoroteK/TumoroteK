@@ -49,7 +49,7 @@ import fr.aphp.tumorotek.model.stockage.TerminaleType;
  * @version 2.0
  *
  */
-public interface TerminaleTypeManager extends CrudManager
+public interface TerminaleTypeManager extends CrudManager<TerminaleType>
 {
 
    /**

@@ -210,18 +210,16 @@ public class RechercheManagerImpl implements RechercheManager
       }
       if(findByIdManager(recherche.getRechercheId()) == null){
          throw new SearchedObjectIdNotExistException("Recherche", recherche.getRechercheId());
-      }else{
-         // on modifie l'intitule
-         recherche.setIntitule(intitule);
-         // On met a jour la recherche
-         if(findDoublonManager(recherche)){
-            log.warn("Doublon lors de la modification de l'objet " + "Recherche : " + recherche.toString());
-            throw new DoublonFoundException("Recherche", "modification");
-         }else{
-            BeanValidator.validateObject(recherche, new Validator[] {rechercheValidator});
-            rechercheDao.updateObject(recherche);
-         }
       }
+      // on modifie l'intitule
+      recherche.setIntitule(intitule);
+      // On met a jour la recherche
+      if(findDoublonManager(recherche)){
+         log.warn("Doublon lors de la modification de l'objet " + "Recherche : " + recherche.toString());
+         throw new DoublonFoundException("Recherche", "modification");
+      }
+      BeanValidator.validateObject(recherche, new Validator[] {rechercheValidator});
+      rechercheDao.updateObject(recherche);
    }
 
    /**
@@ -430,20 +428,19 @@ public class RechercheManagerImpl implements RechercheManager
       // On vérifie que la recherche est en BDD
       if(findByIdManager(recherche.getRechercheId()) == null){
          throw new SearchedObjectIdNotExistException("Recherche", recherche.getRechercheId());
-      }else{
-         // suppression de la recherche dans la liste
-         final Iterator<Recherche> it = recherches.iterator();
-         while(it.hasNext()){
-            final Recherche temp = it.next();
-            if(temp.getRechercheId().equals(recherche.getRechercheId())){
-               recherches.remove(temp);
-               break;
-            }
-         }
-
-         // On supprime la recherche
-         rechercheDao.removeObject(recherche.getRechercheId());
       }
+      // suppression de la recherche dans la liste
+      final Iterator<Recherche> it = recherches.iterator();
+      while(it.hasNext()){
+         final Recherche temp = it.next();
+         if(temp.getRechercheId().equals(recherche.getRechercheId())){
+            recherches.remove(temp);
+            break;
+         }
+      }
+
+      // On supprime la recherche
+      rechercheDao.removeObject(recherche.getRechercheId());
    }
 
    /**
@@ -484,9 +481,8 @@ public class RechercheManagerImpl implements RechercheManager
    public List<Recherche> findByIntituleAndUtilisateurManager(final String intitule, final Utilisateur util){
       if(intitule != null && util != null){
          return rechercheDao.findByIntituleUtilisateur(intitule, util);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    /**
@@ -533,9 +529,8 @@ public class RechercheManagerImpl implements RechercheManager
          final List<Banque> banques = recherche.getBanques();
          banques.size();
          return banques;
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    /**
@@ -554,10 +549,8 @@ public class RechercheManagerImpl implements RechercheManager
       }
       if(recherche.getRechercheId() == null){
          return rechercheDao.findAll().contains(recherche);
-      }else{
-         return rechercheDao.findByExcludedId(recherche.getRechercheId()).contains(recherche);
       }
-
+      return rechercheDao.findByExcludedId(recherche.getRechercheId()).contains(recherche);
    }
 
    /**
@@ -578,41 +571,35 @@ public class RechercheManagerImpl implements RechercheManager
             if(r.getAffichage() == null){
                if(r.getRequete() == null){
                   return (copie.getRequete() == null);
-               }else{
-                  return requeteManager.isCopyManager(r.getRequete(), copie.getRequete());
                }
+               return requeteManager.isCopyManager(r.getRequete(), copie.getRequete());
             }else if(affichageManager.isCopyManager(r.getAffichage(), copie.getAffichage())){
                if(r.getRequete() == null){
                   return (copie.getRequete() == null);
-               }else{
-                  return requeteManager.isCopyManager(r.getRequete(), copie.getRequete());
                }
+               return requeteManager.isCopyManager(r.getRequete(), copie.getRequete());
             }else{
                return false;
             }
-         }else{
-            return false;
          }
+         return false;
       }else{
          if(r.getIntitule().equals(copie.getIntitule())){
             if(r.getAffichage() == null){
                if(r.getRequete() == null){
                   return (copie.getRequete() == null);
-               }else{
-                  return requeteManager.isCopyManager(r.getRequete(), copie.getRequete());
                }
+               return requeteManager.isCopyManager(r.getRequete(), copie.getRequete());
             }else if(affichageManager.isCopyManager(r.getAffichage(), copie.getAffichage())){
                if(r.getRequete() == null){
                   return (copie.getRequete() == null);
-               }else{
-                  return requeteManager.isCopyManager(r.getRequete(), copie.getRequete());
                }
+               return requeteManager.isCopyManager(r.getRequete(), copie.getRequete());
             }else{
                return false;
             }
-         }else{
-            return false;
          }
+         return false;
       }
    }
 
@@ -675,9 +662,8 @@ public class RechercheManagerImpl implements RechercheManager
    public List<Recherche> findByBanqueManager(final Banque banque){
       if(banque != null && banque.getBanqueId() != null){
          return rechercheDao.findByBanqueId(banque.getBanqueId());
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
@@ -693,9 +679,8 @@ public class RechercheManagerImpl implements RechercheManager
 
       if(bksIds.size() > 0){
          return rechercheDao.findByBanqueIdinList(bksIds);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
 }

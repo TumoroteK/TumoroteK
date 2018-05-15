@@ -48,7 +48,6 @@ import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.contexte.ProtocoleValidator;
-import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.contexte.Protocole;
 
@@ -87,18 +86,17 @@ public class ProtocoleManagerImpl implements ProtocoleManager
    }
 
    @Override
-   public void createObjectManager(final Object obj){
+   public void createObjectManager(final Protocole obj){
 
-      final Protocole pt = (Protocole) obj;
+      final Protocole pt = obj;
 
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(pt.getPlateforme() == null){
          log.warn("Objet obligatoire Plateforme " + "manquant lors de la creation " + "d'un objet Protocole");
          throw new RequiredObjectIsNullException("Protocole", "creation", "Plateforme");
-      }else{
-         pt.setPlateforme(plateformeDao.mergeObject(pt.getPlateforme()));
       }
+      pt.setPlateforme(plateformeDao.mergeObject(pt.getPlateforme()));
 
       BeanValidator.validateObject(pt, new Validator[] {protocoleValidator});
       if(!findDoublonManager(pt)){
@@ -111,10 +109,10 @@ public class ProtocoleManagerImpl implements ProtocoleManager
    }
 
    @Override
-   public void updateObjectManager(final Object obj){
+   public void updateObjectManager(final Protocole obj){
       BeanValidator.validateObject(obj, new Validator[] {protocoleValidator});
       if(!findDoublonManager(obj)){
-         protocoleDao.updateObject((Protocole) obj);
+         protocoleDao.updateObject(obj);
          log.info("Modification objet Protocole " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet Protocole " + obj.toString());
@@ -128,49 +126,40 @@ public class ProtocoleManagerImpl implements ProtocoleManager
    }
 
    @Override
-   public void removeObjectManager(final Object obj){
+   public void removeObjectManager(final Protocole obj){
       if(obj != null){
-         //			if (!isUsedObjectManager(obj)) {
-         protocoleDao.removeObject(((Protocole) obj).getProtocoleId());
+         protocoleDao.removeObject(obj.getProtocoleId());
          log.info("Suppression objet Protocole " + obj.toString());
-         //			} else {
-         //				log.warn("Suppression objet Risque " + obj.toString()
-         //						+ " impossible car est reference (par Prelevement)");
-         //				throw new ObjectUsedException("thesaurus.deletion.isUsed", 
-         //																	false);
-         //			}
       }else{
          log.warn("Suppression d'un Protocole null");
       }
    }
 
    @Override
-   public boolean findDoublonManager(final Object o){
+   public boolean findDoublonManager(final Protocole o){
       if(o != null){
-         final Protocole pt = (Protocole) o;
+         final Protocole pt = o;
          if(pt.getProtocoleId() == null){
             return protocoleDao.findAll().contains(pt);
-         }else{
-            return protocoleDao.findByExcludedId(pt.getProtocoleId()).contains(pt);
          }
-      }else{
-         return false;
+         return protocoleDao.findByExcludedId(pt.getProtocoleId()).contains(pt);
       }
+      return false;
    }
 
    @Override
-   public boolean isUsedObjectManager(final Object o){
-      final Protocole pt = protocoleDao.mergeObject((Protocole) o);
+   public boolean isUsedObjectManager(final Protocole o){
+      final Protocole pt = protocoleDao.mergeObject(o);
       return pt.getPrelevements().size() > 0;
    }
 
    @Override
-   public List<TKThesaurusObject> findByOrderManager(final Plateforme pf){
+   public List<Protocole> findByOrderManager(final Plateforme pf){
       return protocoleDao.findByOrder(pf);
    }
 
    @Override
-   public TKThesaurusObject findByIdManager(final Integer id){
+   public Protocole findByIdManager(final Integer id){
       return null;
    }
 }

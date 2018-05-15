@@ -53,6 +53,7 @@ import fr.aphp.tumorotek.manager.coeur.ObjetStatutManager;
 import fr.aphp.tumorotek.manager.coeur.annotation.AnnotationValeurManager;
 import fr.aphp.tumorotek.manager.coeur.annotation.CatalogueManager;
 import fr.aphp.tumorotek.manager.coeur.annotation.ChampAnnotationManager;
+import fr.aphp.tumorotek.manager.coeur.annotation.ChampCalculeManager;
 import fr.aphp.tumorotek.manager.coeur.annotation.DataTypeManager;
 import fr.aphp.tumorotek.manager.coeur.annotation.TableAnnotationManager;
 import fr.aphp.tumorotek.manager.coeur.cession.CederObjetManager;
@@ -128,7 +129,7 @@ import fr.aphp.tumorotek.manager.interfacage.scan.ScanTerminaleManager;
 import fr.aphp.tumorotek.manager.io.ChampEntiteManager;
 import fr.aphp.tumorotek.manager.io.export.AffichageManager;
 import fr.aphp.tumorotek.manager.io.export.ChampManager;
-import fr.aphp.tumorotek.manager.io.export.CleManager;
+import fr.aphp.tumorotek.manager.io.export.CleImpressionManager;
 import fr.aphp.tumorotek.manager.io.export.CritereManager;
 import fr.aphp.tumorotek.manager.io.export.ExportUtils;
 import fr.aphp.tumorotek.manager.io.export.GroupementManager;
@@ -176,6 +177,11 @@ import fr.aphp.tumorotek.manager.utilisateur.ProfilManager;
 import fr.aphp.tumorotek.manager.utilisateur.ProfilUtilisateurManager;
 import fr.aphp.tumorotek.manager.utilisateur.UtilisateurManager;
 import fr.aphp.tumorotek.manager.validation.coeur.cession.retour.RetourValidator;
+import fr.aphp.tumorotek.manager.validation.workflow.ActionManager;
+import fr.aphp.tumorotek.manager.validation.workflow.CritereValidationManager;
+import fr.aphp.tumorotek.manager.validation.workflow.NiveauValidationManager;
+import fr.aphp.tumorotek.manager.validation.workflow.ValidateurManager;
+import fr.aphp.tumorotek.manager.validation.workflow.ValidationManager;
 import fr.aphp.tumorotek.manager.xml.XmlUtils;
 import fr.aphp.tumorotek.model.bundles.ResourceBundleMbio;
 import fr.aphp.tumorotek.model.bundles.ResourceBundleSip;
@@ -193,6 +199,11 @@ public final class ManagerLocator
     * Constructeur
     */
    private ManagerLocator(){}
+
+   //TODO Utiliser ce générique plutôt que de déclarer les manager à chaque fois c.f: supprimer tous les autres
+   public static <T> T getManager(Class<T> clazz){
+      return ContextLoader.getCurrentWebApplicationContext().getBean(clazz);
+   }
 
    public static JpaTransactionManager getTxManager(){
       return (JpaTransactionManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("txManager");
@@ -403,8 +414,12 @@ public final class ManagerLocator
       return (ChampManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("champManager");
    }
 
-   public static CleManager getCleManager(){
-      return (CleManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("cleManager");
+   public static ChampCalculeManager getChampCalculeManager(){
+      return (ChampCalculeManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("champCalculeManager");
+   }
+
+   public static CleImpressionManager getCleImpressionManager(){
+      return (CleImpressionManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("cleImpressionManager");
    }
 
    public static RechercheManager getRechercheManager(){
@@ -820,5 +835,27 @@ public final class ManagerLocator
    /********************* DTO Managers *************************/
    public static EchantillonDTOManager getEchantillonDTOManager(){
       return (EchantillonDTOManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("echantillonDTOManager");
+   }
+
+   /********************* Validation Managers *************************/
+   public static CritereValidationManager getCritereValidationManager(){
+      return (CritereValidationManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("critereValidationManager");
+   }
+
+   public static ValidationManager getEntiteValidationManager(){
+      return (fr.aphp.tumorotek.manager.validation.workflow.ValidationManager) (ContextLoader.getCurrentWebApplicationContext())
+         .getBean("entiteValidationManager");
+   }
+
+   public static NiveauValidationManager getNiveauValidationManager(){
+      return (NiveauValidationManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("niveauValidationManager");
+   }
+
+   public static ValidateurManager getValidateurManager(){
+      return (ValidateurManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("validateurManager");
+   }
+
+   public static ActionManager getActionManager(){
+      return (ActionManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("actionManager");
    }
 }

@@ -42,7 +42,7 @@ import org.zkoss.zk.ui.sys.IdGenerator;
 
 public class DemoIdGenerator implements IdGenerator
 {
-   public String nextComponentUuid(final Desktop desktop, final Component comp){
+   public String nextComponentUuid(final Desktop desktop/*, final Component comp*/){
       int i = Integer.parseInt(desktop.getAttribute("Id_Num").toString());
       i++;// Start from 1
       desktop.setAttribute("Id_Num", String.valueOf(i));
@@ -65,7 +65,6 @@ public class DemoIdGenerator implements IdGenerator
 
    @Override
    public String nextComponentUuid(final Desktop arg0, final Component arg1, final ComponentInfo arg2){
-      // TODO Auto-generated method stub
       return null;
    }
 

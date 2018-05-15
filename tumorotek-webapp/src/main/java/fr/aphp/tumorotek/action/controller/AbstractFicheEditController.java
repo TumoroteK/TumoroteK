@@ -138,20 +138,10 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
    public void setIsCreate(final boolean b){
       this.isCreate = b;
    }
-   //protected boolean banqueOrgane;
-
-   /*public boolean isBanqueOrgane() {
-   	return banqueOrgane;
-   }*/
-
-   /*public void setBanqueOrgane(boolean BanqueOrgane) {
-   	this.banqueOrgane = BanqueOrgane;
-   }*/
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
-      //banqueOrgane=SessionUtils.isBanqueOrganeContexte(sessionScope);
 
       if(winPanel != null){
          winPanel.setHeight(getMainWindow().getPanelHeight() - 2 + "px");
@@ -397,7 +387,6 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
     * @return true si aucune exception
     * @version 2.1
     */
-
    public boolean onLaterUpdate(){
 
       try{
@@ -542,7 +531,6 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
     * @param nomOperation Type d'operation du bouton.
     */
    @Override
-
    public boolean getDroitOnAction(final String nomEntite, final String nomOperation){
       Boolean admin = false;
       if(sessionScope.containsKey("Admin")){

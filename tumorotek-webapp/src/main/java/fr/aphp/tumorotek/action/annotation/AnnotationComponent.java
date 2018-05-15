@@ -82,8 +82,10 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.impl.XulElement;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
+import fr.aphp.tumorotek.action.administration.annotations.DureeComponent;
 import fr.aphp.tumorotek.action.constraints.ConstAlphanum;
 import fr.aphp.tumorotek.action.constraints.ConstDateLimit;
 import fr.aphp.tumorotek.action.constraints.ConstFilename;
@@ -101,6 +103,7 @@ import fr.aphp.tumorotek.model.coeur.annotation.DataType;
 import fr.aphp.tumorotek.model.coeur.annotation.Item;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.systeme.Fichier;
+import fr.aphp.tumorotek.model.utils.Duree;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -172,8 +175,8 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
 
    private final List<AnnotationValeur> valeursToCreateOrUpdate = new ArrayList<>();
    private final List<AnnotationValeur> valeursToDelete = new ArrayList<>();
-   private ChampAnnotation champ = null;
-   private List<? extends Object> listitems;
+   private ChampAnnotation champAnnotation = null;
+   private List<XulElement> listitems;
    private Object selectedItem = null;
    private final Set<Listitem> selectedItems = new HashSet<>();
    private List<AnnotationDefaut> defauts = null;
@@ -185,7 +188,9 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
    // modification multiple
    private List<TKAnnotableObject> multiObjs;
    private Label annoMultiLabel;
+   // ??
    private String multiComponentType;
+   // ??
    private String champToEdit;
    private final List<Object> allItems = new ArrayList<>();
    private String itemProp = null;
@@ -199,14 +204,14 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
     * @param multi si Annotation en modif multiple.
     */
    public void setChamp(final ChampAnnotation c, final boolean multi){
-      this.champ = c;
-      annoLabel.setValue(champ.getNom());
+      this.champAnnotation = c;
+      annoLabel.setValue(champAnnotation.getNom());
 
-      this.isCombined = !(this.champ.getCombine() == null || !this.champ.getCombine());
+      this.isCombined = !(this.champAnnotation.getCombine() == null || !this.champAnnotation.getCombine());
 
       // valeurs par defaut
       this.defauts =
-         new ArrayList<>(ManagerLocator.getChampAnnotationManager().getAnnotationDefautsManager(this.champ));
+         new ArrayList<>(ManagerLocator.getChampAnnotationManager().getAnnotationDefautsManager(this.champAnnotation));
       this.hasDefaut = defauts.size() > 0;
 
       if(!multi){
@@ -217,7 +222,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
    }
 
    public ChampAnnotation getChamp(){
-      return champ;
+      return champAnnotation;
    }
 
    public void setColClass(final String c){
@@ -277,63 +282,91 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
     * Affiche le composant en mode static ou editable.
     */
    public void switchToStaticOrEditMode(final boolean isStatic){
-      annoValue.setVisible(isStatic);
-      annoBox.setVisible(!isStatic);
-      if(colClass != null){
-         if(isStatic){
-            annoLabel.setSclass("formLabel");
-         }else{
-            annoLabel.setSclass(colClass);
+      // Les champs calculés ne sont pas éditables
+      if(!"calcule".equals(this.champAnnotation.getDataType().getType())){
+         annoValue.setVisible(isStatic);
+         annoBox.setVisible(!isStatic);
+         if(colClass != null){
+            if(isStatic){
+               annoLabel.setSclass("formLabel");
+            }else{
+               annoLabel.setSclass(colClass);
+            }
          }
       }
    }
 
    /*************** Event listeners. ******************/
-
+   /**
+    * Lors du cochage de la checkBox (champ combiné), le champ n'est plus grisé pour le remplir.
+    * Si elle n'est pas cochée, le champs est grisé et sa valeur est mise à null
+    */
    public void onCheck$combineBox(){
-      if("alphanum".equals(this.champ.getDataType().getType()) || "hyperlien".equals(this.champ.getDataType().getType())){
-         ((Textbox) box).setDisabled(!combineBox.isChecked());
-         if(!combineBox.isChecked()){
-            ((Textbox) box).setValue(null);
-         }
-      }else if("date".equals(this.champ.getDataType().getType())){
-         ((Datebox) box).setDisabled(!combineBox.isChecked());
-         if(!combineBox.isChecked()){
-            detachAnReattachDatebox(); //dateBox null
-         }
-      }else if("datetime".equals(this.champ.getDataType().getType())){
-         ((CalendarBox) box).setDisabled(!combineBox.isChecked());
-         if(!combineBox.isChecked()){
-            ((CalendarBox) box).setValue(null); //dateBox null
-         }
-      }else if("num".equals(this.champ.getDataType().getType())){
-         ((Decimalbox) box).setDisabled(!combineBox.isChecked());
-         if(!combineBox.isChecked()){
-            ((Decimalbox) box).setRawValue(null);
-         }
-      }else if("texte".equals(this.champ.getDataType().getType())){
-         ((Textbox) box).setDisabled(!combineBox.isChecked());
-         if(!combineBox.isChecked()){
-            ((Textbox) box).setValue(null);
-         }
-      }else if(this.champ.getDataType().getType().matches("thesaurus.?")){
-         // multiple ou non
-         if(!"thesaurusM".equals(this.champ.getDataType().getType())){
-            ((Combobox) box).setDisabled(!combineBox.isChecked());
+      String dataType = this.champAnnotation.getDataType().getType();
+      switch(dataType){
+         default:
+            break;
+         case "alphanum":
+            checkTextbox();
+            break;
+         case "date":
+            Datebox.class.cast(box).setDisabled(!combineBox.isChecked());
             if(!combineBox.isChecked()){
-               ((Combobox) box).setSelectedItem(null);
+               detachAnReattachDatebox(); //dateBox null
             }
-         }else{
+            break;
+         case "datetime":
+            CalendarBox.class.cast(box).setDisabled(!combineBox.isChecked());
+            if(!combineBox.isChecked()){
+               CalendarBox.class.cast(box).setValue(null); //dateBox null
+            }
+            break;
+         case "num":
+            Decimalbox.class.cast(box).setDisabled(!combineBox.isChecked());
+            if(!combineBox.isChecked()){
+               Decimalbox.class.cast(box).setRawValue(null);
+            }
+            break;
+         case "texte":
+            checkTextbox();
+            break;
+         case "thesaurus":
+            Combobox.class.cast(box).setDisabled(!combineBox.isChecked());
+            if(!combineBox.isChecked()){
+               Combobox.class.cast(box).setSelectedItem(null);
+            }
+            break;
+         case "thesaurusM":
             toggleDisabledListbox(!combineBox.isChecked());
             if(!combineBox.isChecked()){
                this.selectedItems.clear();
                updateListboxSelection();
             }
-         }
-      }else if("hyperlien".equals(this.champ.getDataType().getType())){
-         setAnnotationValeurHyperlien();
-      }else if("fichier".equals(this.champ.getDataType().getType())){
-         setAnnotationValeurFichier();
+            break;
+         case "fichier":
+            setAnnotationValeurFichier();
+            break;
+         case "hyperlien":
+            checkTextbox();
+            setAnnotationValeurHyperlien();
+            break;
+         case "duree":
+            DureeComponent.class.cast(box).setDisabled(!combineBox.isChecked());
+            if(!combineBox.isChecked()){
+               DureeComponent.class.cast(box).setDuree(null);
+            }
+            break;
+      }
+   }
+
+   /**
+    * Lors du cochage de la checkBox (champ combiné), le champ n'est plus grisé pour le remplir.
+    * Si elle n'est pas cochée, le champs est grisé et sa valeur est mise à null
+    */
+   private void checkTextbox(){
+      Textbox.class.cast(box).setDisabled(!combineBox.isChecked());
+      if(!combineBox.isChecked()){
+         Textbox.class.cast(box).setValue(null);
       }
    }
 
@@ -341,8 +374,8 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
     * Rafraichit le contenu selectionné de la listbox.
     */
    private void updateListboxSelection(){
-      ((Listbox) box).clearSelection();
-      ((Listbox) box).setSelectedItems(this.selectedItems);
+      Listbox.class.cast(box).clearSelection();
+      Listbox.class.cast(box).setSelectedItems(this.selectedItems);
    }
 
    /**
@@ -350,7 +383,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
     */
    private void toggleDisabledListbox(final boolean disable){
       for(int i = 0; i < this.listitems.size(); i++){
-         ((Listitem) this.listitems.get(i)).setDisabled(disable);
+         Listitem.class.cast(this.listitems.get(i)).setDisabled(disable);
       }
    }
 
@@ -370,37 +403,66 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
     * type, valeur par defaut, combine.
     */
    private void drawEmptyComponent(){
-      if(this.champ != null){
-         final DataType dtype = this.champ.getDataType();
+      if(this.champAnnotation != null){
+         drawEmptyComponent(this.champAnnotation.getDataType());
+      }
+   }
 
-         if("alphanum".equals(dtype.getType()) || "hyperlien".equals(dtype.getType())){
+   /**
+    * Dessine le composant avec tous ses elements en fonction des
+    * informations contenues dans ChampAnnotation: son
+    * type, valeur par defaut, combine.
+    * 
+    * @param dataType dataType
+    */
+   private void drawEmptyComponent(DataType dataType){
+      switch(dataType.getType()){
+         default:
+            break;
+         case "alphanum":
             createTextbox();
-         }else if("boolean".equals(dtype.getType())){
-            createBoolbox();
-         }else if("date".equals(dtype.getType())){
-            createDatebox();
-         }else if("datetime".equals(dtype.getType())){
-            createCalendarbox();
-         }else if("num".equals(dtype.getType())){
-            createDoublebox();
-         }else if("texte".equals(dtype.getType())){
+            break;
+         case "hyperlien":
+            createTextbox();
+            break;
+         case "texte":
             createTextboxForText();
-         }else if("thesaurus".equals(dtype.getType())){
+            break;
+         case "boolean":
+            createBoolbox();
+            break;
+         case "date":
+            createDatebox();
+            break;
+         case "datetime":
+            createCalendarbox();
+            break;
+         case "num":
+            createDoublebox();
+            break;
+         case "thesaurus":
             createThesaurusBox();
-         }else if("thesaurusM".equals(dtype.getType())){
+            break;
+         case "thesaurusM":
             createThesaurusMBox();
-         }else if("fichier".equals(dtype.getType())){
+            break;
+         case "fichier":
             createFilebox();
-         }
+            break;
+         case "calcule":
+            drawEmptyComponent(this.champAnnotation.getChampCalcule().getDataType());
+            break;
+         case "duree":
+            createDureeBox();
+            break;
+      }
 
-         // ajoute le composant formulaire adequat à la vue
-         // annoBox.insertBefore(box, delete);
-         annoBox.appendChild(box);
+      // ajoute le composant formulaire adequat à la vue
+      annoBox.appendChild(box);
 
-         // affiche ou non le combinebox
-         if(this.champ.getCombine() != null && this.champ.getCombine()){
-            combineBox.setVisible(true);
-         }
+      // affiche ou non le combinebox
+      if(this.champAnnotation.getCombine() != null && this.champAnnotation.getCombine()){
+         combineBox.setVisible(true);
       }
    }
 
@@ -409,32 +471,134 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
     * du data type du champ annotation.
     */
    public void setAnnotationValeur(){
-      if(this.champ != null){
-         if("alphanum".equals(this.champ.getDataType().getType())){
-            setAnnotationValeurAlphanum();
-         }else if("boolean".equals(this.champ.getDataType().getType())){
-            setAnnotationValeurBool();
-         }else if("date".equals(this.champ.getDataType().getType())){
-            setAnnotationValeurDate();
-         }else if("datetime".equals(this.champ.getDataType().getType())){
-            setAnnotationValeurDatetime();
-         }else if("num".equals(this.champ.getDataType().getType())){
-            setAnnotationValeurNum();
-         }else if("texte".equals(this.champ.getDataType().getType())){
-            setAnnotationValeurTexte();
-         }else if("thesaurus".equals(this.champ.getDataType().getType())){
-            setAnnotationValeurThesaurus();
-         }else if("thesaurusM".equals(this.champ.getDataType().getType())){
-            setAnnotationValeurThesaurusM();
-         }else if("hyperlien".equals(this.champ.getDataType().getType())){
-            setAnnotationValeurHyperlien();
-         }else if("fichier".equals(this.champ.getDataType().getType())){
-            setAnnotationValeurFichier();
-         }
-         // visibilité de delete
-         // delete.setVisible((this.valeurs != null
-         //								&& this.valeurs.size() > 0));
+      if(this.champAnnotation != null){
+         setAnnotationValeur(this.champAnnotation.getDataType());
       }
+   }
+
+   /**
+    * Méthode d'entrée appelant la methode setter adéquate en fonction
+    * du data type du champ annotation.
+    * 
+    * @param dataType champAnnotation
+    */
+   public void setAnnotationValeur(DataType dataType){
+      switch(dataType.getType()){
+         default:
+            break;
+         case "alphanum":
+            setAnnotationValeurAlphanum();
+            break;
+         case "hyperlien":
+            setAnnotationValeurHyperlien();
+            break;
+         case "texte":
+            setAnnotationValeurTexte();
+            break;
+         case "boolean":
+            setAnnotationValeurBool();
+            break;
+         case "date":
+            setAnnotationValeurDate();
+            break;
+         case "datetime":
+            setAnnotationValeurDatetime();
+            break;
+         case "num":
+            setAnnotationValeurNum();
+            break;
+         case "thesaurus":
+            setAnnotationValeurThesaurus();
+            break;
+         case "thesaurusM":
+            setAnnotationValeurThesaurusM();
+            break;
+         case "fichier":
+            setAnnotationValeurFichier();
+            break;
+         case "calcule":
+            setAnnotationValeur(this.champAnnotation.getChampCalcule().getDataType());
+            break;
+         case "duree":
+            setAnnotationValeurDuree();
+            break;
+      }
+   }
+
+   /**
+    * Récupère et affiche la durée formattée dans les composants static (lecture) et edit (edition)
+    */
+   private void setAnnotationValeurDuree(){
+      Duree duree = null;
+      String newAnnoValue = null;
+      // Récupération de la valeur ou de la valeur par défaut pour l'édition
+      if(!this.valeurs.isEmpty() && null != valeurs.get(0).getAlphanum() && !"".equals(valeurs.get(0).getAlphanum())){
+         newAnnoValue = valeurs.get(0).getAlphanum();
+      }else if(!defauts.isEmpty() && null != defauts.get(0).getAlphanum()){
+         Long secondes = new Long(defauts.get(0).getAlphanum());
+         duree = new Duree(secondes, Duree.SECONDE);
+      }
+
+      if(isCombined){
+         if("system.tk.unknownExistingValue".equals(newAnnoValue)){
+            newAnnoValue = Labels.getLabel(newAnnoValue);
+            annoValue.setStyle("font-style: italic");
+            combineBox.setChecked(true);
+            DureeComponent.class.cast(box).setDisabled(false);
+         }else if(null != newAnnoValue){
+            Long secondes = new Long(newAnnoValue);
+            duree = new Duree(secondes, Duree.SECONDE);
+            newAnnoValue = ObjectTypesFormatters.formatDuree(duree);
+            annoValue.setStyle("font-style: normal");
+            combineBox.setChecked(false);
+         }else{
+            combineBox.setChecked(false);
+            DureeComponent.class.cast(box).setDisabled(true);
+         }
+      }else if(null != newAnnoValue){
+         Long secondes = new Long(newAnnoValue);
+         duree = new Duree(secondes, Duree.SECONDE);
+         newAnnoValue = ObjectTypesFormatters.formatDuree(duree);
+      }
+
+      DureeComponent.class.cast(box).setDuree(duree);
+      annoValue.setValue(newAnnoValue);
+   }
+
+   /**
+    * Enregistre la durée dans l'annotationValeur après la saisie pour enregistrement
+    * @param oldAnnoValeur l'annotationValeur avant modification
+    * @return si l'annotationValeur doit être enregistrée (nouvelle valeur différente)
+    */
+   private Boolean prepareAnnotationValeurDuree(AnnotationValeur oldAnnoValeur){
+      Duree duree = null;
+      String newVal = null;
+      
+      duree = DureeComponent.class.cast(box).getDuree();
+      
+      // Vérifie si le champ est obligatoire et renseigné
+      if(getIsObligatoire() && (duree == null
+         || duree.getTemps(Duree.SECONDE) == 0)){
+         throw new WrongValueException(box, Labels.getLabel("anno.duree.empty"));
+      }
+      
+      if(0 != duree.getTemps(Duree.SECONDE)){
+         newVal = duree.getTemps(Duree.SECONDE).toString();
+      }else if(isCombined && combineBox.isChecked()){
+         newVal = "system.tk.unknownExistingValue";
+      }
+
+      // skip create si la valeur est inchangée
+      if(this.valeurs != null && this.valeurs.size() > 0){
+         if(this.valeurs.get(0).getAnnotationValeurId() != null && (this.valeurs.get(0).getAlphanum() == newVal
+            || (this.valeurs.get(0).getAlphanum() != null && this.valeurs.get(0).getAlphanum().equals(newVal)))){
+            log.debug("Annotation alphanum " + champAnnotation.toString() + " inchangée");
+            return true;
+         }
+      }
+
+      oldAnnoValeur.setAlphanum(newVal);
+      return false;
    }
 
    /**
@@ -506,7 +670,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
       if(this.valeurs != null && this.valeurs.size() > 0){
          if(this.valeurs.get(0).getAnnotationValeurId() != null && (this.valeurs.get(0).getAlphanum() == newVal
             || (this.valeurs.get(0).getAlphanum() != null && this.valeurs.get(0).getAlphanum().equals(newVal)))){
-            log.debug("Annotation alphanum " + champ.toString() + " inchangée");
+            log.debug("Annotation alphanum " + champAnnotation.toString() + " inchangée");
             return true;
          }
       }
@@ -558,7 +722,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
       if(this.valeurs != null && this.valeurs.size() > 0){
          if(this.valeurs.get(0).getAnnotationValeurId() != null && (this.valeurs.get(0).getBool() == newVal
             || (this.valeurs.get(0).getBool() != null && this.valeurs.get(0).getBool().equals(newVal)))){
-            log.debug("Annotation thesaurus " + champ.toString() + " inchangée");
+            log.debug("Annotation thesaurus " + champAnnotation.toString() + " inchangée");
             return true;
          }else if(newVal == null){ // suppression valeur existante
             this.valeursToDelete.add(this.valeurs.get(0).clone());
@@ -709,12 +873,12 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
             if(this.valeurs.get(0).getAlphanum() == null && this.valeurs.get(0).getAnnotationValeurId() != null
                && (this.valeurs.get(0).getDate() == newVal || (this.valeurs.get(0).getDate() != null && newVal != null
                   && this.valeurs.get(0).getDate().compareTo(newVal) == 0))){
-               log.debug("Annotation date " + champ.toString() + " inchangée");
+               log.debug("Annotation date " + champAnnotation.toString() + " inchangée");
                return true;
             }
          }else if(this.valeurs.get(0).getAlphanum() != null){
             // unknownExisting inchangee
-            log.debug("Annotation date system.tk.unknownExistingValue " + champ.toString() + " inchangée");
+            log.debug("Annotation date system.tk.unknownExistingValue " + champAnnotation.toString() + " inchangée");
             return true;
          }
       }
@@ -749,12 +913,12 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
             if(this.valeurs.get(0).getAlphanum() == null && this.valeurs.get(0).getAnnotationValeurId() != null
                && (this.valeurs.get(0).getDate() == newVal || (this.valeurs.get(0).getDate() != null && newVal != null
                   && this.valeurs.get(0).getDate().compareTo(newVal) == 0))){
-               log.debug("Annotation date " + champ.toString() + " inchangée");
+               log.debug("Annotation date " + champAnnotation.toString() + " inchangée");
                return true;
             }
          }else if(this.valeurs.get(0).getAlphanum() != null){
             // unknownExisting inchangee
-            log.debug("Annotation date system.tk.unknownExistingValue " + champ.toString() + " inchangée");
+            log.debug("Annotation date system.tk.unknownExistingValue " + champAnnotation.toString() + " inchangée");
             return true;
          }
       }
@@ -780,8 +944,8 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
             if(!"system.tk.unknownExistingValue".equals(numV)){
                if(numV != null){
                   doubleV = new BigDecimal(numV);
+                  annoValue.setValue(ObjectTypesFormatters.doubleLitteralFormatter(doubleV.doubleValue()));
                }
-               annoValue.setValue(ObjectTypesFormatters.doubleLitteralFormatter(doubleV.doubleValue()));
                annoValue.setStyle("font-style: normal");
                ((Decimalbox) box).setValue(doubleV);
                combineBox.setChecked(false);
@@ -795,8 +959,9 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
          }else{
             if(numV != null){
                doubleV = new BigDecimal(numV);
+               annoValue.setValue(ObjectTypesFormatters.doubleLitteralFormatter(doubleV.doubleValue()));
             }
-            annoValue.setValue(ObjectTypesFormatters.doubleLitteralFormatter(doubleV.doubleValue()));
+            annoValue.setValue(null);
             ((Decimalbox) box).setValue(doubleV);
          }
       }else{
@@ -845,7 +1010,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
          if(this.valeurs.get(0).getAlphanum() == null && this.valeurs.get(0).getAnnotationValeurId() != null
             && (this.valeurs.get(0).getAlphanum() == newVal
                || (this.valeurs.get(0).getAlphanum() != null && this.valeurs.get(0).getAlphanum().equals(newVal)))){
-            log.debug("Annotation numerique " + champ.toString() + " inchangée");
+            log.debug("Annotation numerique " + champAnnotation.toString() + " inchangée");
             return true;
          }
       }
@@ -926,12 +1091,12 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
             if(this.valeurs.get(0).getAlphanum() == null && this.valeurs.get(0).getAnnotationValeurId() != null
                && (this.valeurs.get(0).getTexte() == newVal
                   || (this.valeurs.get(0).getTexte() != null && this.valeurs.get(0).getTexte().equals(newVal)))){
-               log.debug("Annotation texte " + champ.toString() + " inchangée");
+               log.debug("Annotation texte " + champAnnotation.toString() + " inchangée");
                return true;
             }
          }else if(this.valeurs.get(0).getAlphanum() != null){
             // unknownExisting inchangee
-            log.debug("Annotation date system.tk.unknownExistingValue " + champ.toString() + " inchangée");
+            log.debug("Annotation date system.tk.unknownExistingValue " + champAnnotation.toString() + " inchangée");
             return true;
          }
       }
@@ -1022,7 +1187,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
             if(this.valeurs.get(0).getAlphanum() == null && this.valeurs.get(0).getAnnotationValeurId() != null
                && (this.valeurs.get(0).getItem() == newVal
                   || (this.valeurs.get(0).getItem() != null && this.valeurs.get(0).getItem().equals(newVal)))){
-               log.debug("Annotation thesaurus " + champ.toString() + " inchangée");
+               log.debug("Annotation thesaurus " + champAnnotation.toString() + " inchangée");
                return true;
             }else if(newVal == null){ // suppression valeur existante
                this.valeursToDelete.add(this.valeurs.get(0).clone());
@@ -1031,7 +1196,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
             }
          }else if(this.valeurs.get(0).getAlphanum() != null){
             // unknownExisting inchangee
-            log.debug("Annotation thesaurus system.tk.unknownExistingValue " + champ.toString() + " inchangée");
+            log.debug("Annotation thesaurus system.tk.unknownExistingValue " + champAnnotation.toString() + " inchangée");
             return true;
          }
       }
@@ -1073,7 +1238,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
                annoValue.setStyle("font-style: italic");
                combineBox.setChecked(true);
                // multiple ou non
-               if(!"thesaurusM".equals(this.champ.getDataType().getType())){
+               if(!"thesaurusM".equals(this.champAnnotation.getDataType().getType())){
                   ((Listbox) box).setSelectedItem(null);
                }else{
                   ((Listbox) box).clearSelection();
@@ -1138,12 +1303,12 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
             // pas de valeur en plus des anciennes
             valsChanged = (valsChanged || this.valeurs.size() != newVals.size());
             if(!valsChanged){
-               log.debug("Annotation thesaurus multiple" + champ.toString() + " inchangée");
+               log.debug("Annotation thesaurus multiple" + champAnnotation.toString() + " inchangée");
                return true;
             }
          }else if(this.valeurs.get(0).getAlphanum() != null){
             // unknownExisting inchangee
-            log.debug("Annotation thesaurus system.tk.unknownExistingValue " + champ.toString() + " inchangée");
+            log.debug("Annotation thesaurus system.tk.unknownExistingValue " + champAnnotation.toString() + " inchangée");
             return true;
          }
       }
@@ -1191,7 +1356,6 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
     */
    private void setAnnotationValeurFichier(){
 
-      deleteTempFile();
       String fichierV = null;
 
       // recupere la valeur
@@ -1215,14 +1379,6 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
                }catch(final Exception e){
                   e.printStackTrace();
                }
-               // fis = new FileInputStream(valeurs.get(0).getFichier()
-               //			.getPath());
-               // Filedownload.save(valeurs.get(0).getFichier()
-               //						.getPath(),
-               //	+ "_" + valeurs.get(0).getFichier()
-               //								.getFichierId()),
-               //		valeurs.get(0).getFichier().getMimeType(),
-               //		valeurs.get(0).getFichier().getNom());
             }
          });
       }else{
@@ -1254,7 +1410,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
             || (this.valeurs.get(0).getFichier().getNom() != null && this.valeurs.get(0).getFichier().getNom().equals(newVal)))
             // && temp == null) {
             && stream == null){
-            log.debug("Annotation fichier " + champ.toString() + " inchangée");
+            log.debug("Annotation fichier " + champAnnotation.toString() + " inchangée");
             return true;
          }
       }
@@ -1262,14 +1418,6 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
       // prepare les objets pour la creation de la valeur de fichier
       if(newVal != null){
          fichier.setNom(newVal);
-         //			try {
-         //				 if (temp != null) {
-         //					stream = new BufferedInputStream(new FileInputStream(temp));
-         //				}
-         //			} catch (FileNotFoundException e) {
-         //				log.error("fichier temporaire " 
-         //						+ temp.getAbsolutePath() + " inexistant");
-         //			}
       }else{ // supprime le fichier
          if(this.valeurs != null && this.valeurs.size() > 0){
             this.valeursToDelete.add(valeurs.get(0));
@@ -1279,6 +1427,67 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
          return true;
       }
       return false;
+   }
+
+   /**
+    * Prepare l'objet AnnotationValeur
+    *
+    * @param valeur AnnotationValeur
+    * @return boolean skipCreate si la valeur est inchangée
+    */
+   private Boolean prepareAnnotationValeur(AnnotationValeur valeur){
+      Boolean skipCreate = false;
+      String dataType = this.champAnnotation.getDataType().getType();
+
+      switch(dataType){
+         default:
+            break;
+         case "alphanum":
+            skipCreate = prepareAnnotationValeurAlphanumOrHyperlien(valeur);
+            break;
+         case "hyperlien":
+            skipCreate = prepareAnnotationValeurAlphanumOrHyperlien(valeur);
+            break;
+         case "texte":
+            skipCreate = prepareAnnotationValeurTexte(valeur);
+            break;
+         case "boolean":
+            skipCreate = prepareAnnotationValeurBooleen(valeur);
+            break;
+         case "date":
+            skipCreate = prepareAnnotationValeurDate(valeur);
+            break;
+         case "datetime":
+            skipCreate = prepareAnnotationValeurCalendar(valeur);
+            break;
+         case "num":
+            skipCreate = prepareAnnotationValeurNum(valeur);
+            break;
+         case "thesaurus":
+            skipCreate = prepareAnnotationValeurThesaurus(valeur);
+            break;
+         case "thesaurusM":
+            // met a jour les valeurs si elles ont changé
+            skipCreate = prepareAnnotationValeurThesaurusM(valeur);
+            if(!skipCreate){ // les valeurs ont changé
+               skipCreate = createValeursThesaurusMultiple();
+            }
+            break;
+         case "fichier":
+            skipCreate = prepareAnnotationValeurFichier();
+            valeur.setFichier(fichier);
+            valeur.setStream(stream);
+            break;
+         case "calcule":
+            //La valeur du calcul des champs calculés n'est pas stockée en base
+            skipCreate = true;
+            break;
+         case "duree":
+            skipCreate = prepareAnnotationValeurDuree(valeur);
+            break;
+      }
+
+      return skipCreate;
    }
 
    /**
@@ -1296,18 +1505,14 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
          AnnotationValeur valeur = null;
          boolean isCreation = true;
 
-         // flag utile si thesaurus multiple car operations create/update
-         // sont faites dans la boucle
-         boolean skipCreate = false;
-
          // verifie si une valeur est assignée et doit être modifiée
          // forcement creation si thesaurus multiple
          if(this.valeurs != null && this.valeurs.size() > 0 && !forceNew
-            && !this.champ.getDataType().getType().equals("thesaurusM")){
+            && !this.champAnnotation.getDataType().getType().equals("thesaurusM")){
             valeur = this.valeurs.get(0);
             isCreation = false;
          }else{ // creation nouvelle valeur
-            if(this.champ.getDataType().getType().equals("boolean") && this.valeurs != null && this.valeurs.size() > 0){
+            if(this.champAnnotation.getDataType().getType().equals("boolean") && this.valeurs != null && this.valeurs.size() > 0){
                // c'est la valeur boolInit qui est modifiée
                valeur = this.valeurs.get(0);
                isCreation = false;
@@ -1317,61 +1522,21 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
             }
          }
 
-         if("alphanum".equals(this.champ.getDataType().getType()) || "hyperlien".equals(this.champ.getDataType().getType())){
-            skipCreate = prepareAnnotationValeurAlphanumOrHyperlien(valeur);
-         }else if("boolean".equals(this.champ.getDataType().getType())){
-            skipCreate = prepareAnnotationValeurBooleen(valeur);
-         }else if("date".equals(this.champ.getDataType().getType())){
-            skipCreate = prepareAnnotationValeurDate(valeur);
-         }else if("datetime".equals(this.champ.getDataType().getType())){
-            skipCreate = prepareAnnotationValeurCalendar(valeur);
-         }else if("num".equals(this.champ.getDataType().getType())){
-            skipCreate = prepareAnnotationValeurNum(valeur);
-         }else if("texte".equals(this.champ.getDataType().getType())){
-            skipCreate = prepareAnnotationValeurTexte(valeur);
-         }else if("thesaurus".equals(this.champ.getDataType().getType())){
-            skipCreate = prepareAnnotationValeurThesaurus(valeur);
-         }else if("thesaurusM".equals(this.champ.getDataType().getType())){
-            // met a jour les valeurs si elles ont changé
-            skipCreate = prepareAnnotationValeurThesaurusM(valeur);
-            if(!skipCreate){ // les valeurs ont changé
-               skipCreate = createValeursThesaurusMultiple();
-            }
-         }else if("fichier".equals(this.champ.getDataType().getType())){
-            skipCreate = prepareAnnotationValeurFichier();
-            valeur.setFichier(fichier);
-            valeur.setStream(stream);
-         }
+         // flag utile si thesaurus multiple car operations create/update
+         // sont faites dans la boucle
+         Boolean skipCreate = prepareAnnotationValeur(valeur);
 
          if(!skipCreate){
             if(!valeur.isEmpty()){
-               valeur.setChampAnnotation(this.champ);
-               // enregistre la creation/modification
-               //			ManagerLocator.getAnnotationValeurManager()
-               //				.createOrUpdateObjectManager(valeur, this.champ, tkobj,
-               //								((MainWindow) page.getFellow("mainWin")
-               //									.getAttributeOrFellow("mainWin$composer", true))
-               //										.getSelectedBanque(),
-               //										fichier,
-               //										u, operation);
-
-               // this.valeurs.clear();
+               valeur.setChampAnnotation(this.champAnnotation);
                // passe la valeur dans la liste d'affichage et
                // dans la bonne liste
                if(isCreation){
                   this.valeurs.add(valeur);
                }
-               //				this.valeursToCreate.add(valeur);
-               //			} else {
-               //				this.valeursToUpdate.add(valeur);
-               //			}
                if(!this.valeursToCreateOrUpdate.contains(valeur)){
                   this.valeursToCreateOrUpdate.add(valeur);
                }
-
-               //					if ("fichier".equals(this.champ.getDataType().getType())) {
-               //						stream = null;
-               //					}
             }else{
                this.valeurs.clear();
                this.valeursToDelete.add(valeur.clone());
@@ -1416,34 +1581,37 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
          if(null != getFicheAnnotation() && null != getFicheAnnotation().getObject()
             && ("Patient".equals(getFicheAnnotation().getObject().entiteNom())
                || "Prelevement".equals(getFicheAnnotation().getObject().entiteNom())
-               || "Echantillon".equals(getFicheAnnotation().getObject().entiteNom()))){
+               || "Echantillon".equals(getFicheAnnotation().getObject().entiteNom())
+               || "Cession".equals(getFicheAnnotation().getObject().entiteNom()))){
             if(getFicheAnnotation().getObject().getBanque() != null){
                return getFicheAnnotation().getObject().getBanque();
-            }else{
-               return getFicheAnnotation().getBankUsedToDrawChamps();
             }
-         }else{
-            /**
-             * ANNOTATION INLINE - Bêta
-             *
-             * @since 2.2.0
-             */
-            if(null != getFicheAnnotationInline().getObject().getBanque()){
-               return getFicheAnnotationInline().getObject().getBanque();
-            }else{
-               return getFicheAnnotationInline().getBankUsedToDrawChamps();
-            }
+            return getFicheAnnotation().getBankUsedToDrawChamps();
          }
-      }else{
          /**
           * ANNOTATION INLINE - Bêta
           *
           * @since 2.2.0
           */
-         //return (Banque) annoGroup.getAttribute("bank");
-         return (Banque) tableComponent.getAttribute("bank");
-         /** END **/
+         if(null != getFicheAnnotationInline() && null != getFicheAnnotationInline().getObject()
+            && ("Patient".equals(getFicheAnnotationInline().getObject().entiteNom())
+            || "Prelevement".equals(getFicheAnnotationInline().getObject().entiteNom())
+            || "Echantillon".equals(getFicheAnnotationInline().getObject().entiteNom())
+            || "Cession".equals(getFicheAnnotation().getObject().entiteNom()))){
+            if(null != getFicheAnnotationInline().getObject().getBanque()){
+               return getFicheAnnotationInline().getObject().getBanque();
+            }
+            return getFicheAnnotationInline().getBankUsedToDrawChamps();
+         }
       }
+      /**
+       * ANNOTATION INLINE - Bêta
+       *
+       * @since 2.2.0
+       */
+      //return (Banque) annoGroup.getAttribute("bank");
+      return (Banque) tableComponent.getAttribute("bank");
+      /** END **/
    }
 
    /**
@@ -1466,12 +1634,6 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
     */
    private boolean createValeursThesaurusMultiple(){
 
-      // supprimme les anciennes valeurs
-      //		for (int i = 0; i < this.valeurs.size(); i++) {
-      //			ManagerLocator.getAnnotationValeurManager()
-      //							.removeObjectManager(this.valeurs.get(i));
-      //			
-      //		}
       this.valeursToDelete.addAll(this.valeurs);
       this.valeurs.clear();
 
@@ -1483,14 +1645,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
             valeur = new AnnotationValeur();
             valeur.setItem(listIts.next());
             valeur.setBanque(getBanqueForValeur(false));
-            valeur.setChampAnnotation(this.champ);
-            //				ManagerLocator.getAnnotationValeurManager()
-            //					.createOrUpdateObjectManager(valeur, this.champ, 
-            //							getFicheAnnotation().getObj(), 
-            //								((MainWindow) page.getFellow("mainWin")
-            //									.getAttributeOrFellow("mainWin$composer", true))
-            //									.getSelectedBanque(), null,
-            //									user, "creation");
+            valeur.setChampAnnotation(this.champAnnotation);
             this.valeurs.add(valeur);
             // thesaurus multiple implique creation
             this.valeursToCreateOrUpdate.add(valeur);
@@ -1500,23 +1655,8 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
          setAnnotationValeurThesaurusM();
 
          return true;
-      }else{ //system.tk.unknownExistingValue
-         return false;
       }
-      //		} else { //system.tk.unknownExistingValue
-      //			
-      //			AnnotationValeur valeur = new AnnotationValeur();
-      //			valeur.setAlphanum("system.tk.unknownExistingValue");
-      //			valeur.setChampAnnotation(this.champ);
-      //			ManagerLocator.getAnnotationValeurManager()
-      //				.createOrUpdateObjectManager(valeur, this.champ, 
-      //					getFicheAnnotation().getObj(), 
-      //						((MainWindow) page.getFellow("mainWin")
-      //							.getAttributeOrFellow("mainWin$composer", true))
-      //							.getSelectedBanque(), null,
-      //							user, "creation");
-      //			this.valeurs.add(valeur);
-      //		}
+      return false;
    }
 
    /**
@@ -1729,19 +1869,34 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
    }
 
    /**
+    * Dessine la box Duree avec contrainte et valeur par défaut.
+    */
+   private void createDureeBox(){
+      DureeComponent dureeBox = new DureeComponent();
+
+      if(isCombined){
+         dureeBox.setDisabled(true);
+      }
+
+      this.box = dureeBox;
+   }
+
+   /**
     * Dessine la TextBox avec contrainte et valeur par défaut.
     */
    private void createTextbox(){
-      box = new Textbox();
+      Textbox textbox = new Textbox();
       // ((Textbox) box).setCols(15);
-      box.setHflex("1");
+      textbox.setHflex("1");
 
       initConstraintAlphanum();
-      ((Textbox) box).setConstraint(this.boxConstr);
+      textbox.setConstraint(this.boxConstr);
 
       if(isCombined){
-         ((Textbox) box).setDisabled(true);
+         textbox.setDisabled(true);
       }
+
+      this.box = textbox;
    }
 
    /**
@@ -1750,9 +1905,9 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
     */
    private void initConstraintAlphanum(){
       // applique contrainte format
-      if("alphanum".equals(this.champ.getDataType().getType())){
+      if("alphanum".equals(this.champAnnotation.getDataType().getType())){
          this.boxConstr = new ConstAlphanum();
-      }else if("hyperlien".equals(this.champ.getDataType().getType())){
+      }else if("hyperlien".equals(this.champAnnotation.getDataType().getType())){
          this.boxConstr = new ConstHyperlien();
       }
 
@@ -1767,27 +1922,27 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
     * de formulaire de type booleen.
     * Si non obligatoire, ajoute une ligne vide.
     */
-   
+
    private void createBoolbox(){
       Listitem listIt = null;
 
       box = new Listbox();
       box.setMold("select");
 
-      listitems = new ArrayList<Listitem>();
+      listitems = new ArrayList<>();
 
       // valeur par defaut ou non
       if(!getIsObligatoire()){
          listIt = new Listitem();
          listIt.setLabel("");
-         ((List<Listitem>) this.listitems).add(listIt);
+         this.listitems.add(listIt);
          box.appendChild(listIt);
       }
 
       // OUI
       final Boolean oui = new Boolean(true);
       listIt = new Listitem();
-      ((List<Listitem>) this.listitems).add(listIt);
+      this.listitems.add(listIt);
       listIt.setLabel(Labels.getLabel("annotation.boolean.oui"));
       listIt.setValue(oui);
       box.appendChild(listIt);
@@ -1795,7 +1950,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
       // NON
       final Boolean non = new Boolean(false);
       listIt = new Listitem();
-      ((List<Listitem>) this.listitems).add(listIt);
+      this.listitems.add(listIt);
       listIt.setLabel(Labels.getLabel("annotation.boolean.non"));
       listIt.setValue(non);
       box.appendChild(listIt);
@@ -1864,9 +2019,9 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
    /**
     * Dessine le thesaurus simple sous la forme d'un Listbox..
     */
-   
+
    private void createThesaurusBox(){
-      final Set<Item> its = ManagerLocator.getChampAnnotationManager().getItemsManager(this.champ,
+      final Set<Item> its = ManagerLocator.getChampAnnotationManager().getItemsManager(this.champAnnotation,
          SessionUtils.getSelectedBanques(sessionScope).get(0));
       // Items si thesaurus
       Iterator<Item> itemItor = null;
@@ -1886,7 +2041,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
       // ((Combobox) box).setWidth("150px");
       box.setHflex("1");
 
-      listitems = new ArrayList<Comboitem>();
+      listitems = new ArrayList<>();
 
       // ajoute items au thesaurus
       if(itemItor != null){
@@ -1896,14 +2051,14 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
          if(!getIsObligatoire()){
             comboIt = new Comboitem();
             comboIt.setLabel("");
-            ((ArrayList<Comboitem>) this.listitems).add(comboIt);
+            this.listitems.add(comboIt);
             comboIt.setAttribute("tkItem", null);
             box.appendChild(comboIt);
          }
          while(itemItor.hasNext()){
             it = itemItor.next();
             comboIt = new Comboitem();
-            ((ArrayList<Comboitem>) this.listitems).add(comboIt);
+            this.listitems.add(comboIt);
             comboIt.setLabel(it.getLabel());
             comboIt.setValue(it.getValeur());
             // ajoute l'item en attr
@@ -1923,9 +2078,9 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
    /**
     * Dessine le thesaurus multiple sous la forme d'un Listbox..
     */
-   
+
    private void createThesaurusMBox(){
-      final Set<Item> its = ManagerLocator.getChampAnnotationManager().getItemsManager(this.champ,
+      final Set<Item> its = ManagerLocator.getChampAnnotationManager().getItemsManager(this.champAnnotation,
          SessionUtils.getSelectedBanques(sessionScope).get(0));
       // Items si thesaurus
       Iterator<Item> itemItor = null;
@@ -1947,7 +2102,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
 
       // ((Listbox) box).setFixedLayout(false);
 
-      listitems = new ArrayList<Listitem>();
+      listitems = new ArrayList<>();
 
       // ajoute items au thesaurus
       if(itemItor != null){
@@ -1962,9 +2117,8 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
                   public void onEvent(final Event event) throws Exception{
                      if(((Listbox) box).getSelectedItems().size() == 0){
                         throw new WrongValueException(box, Labels.getLabel("anno.thes.empty"));
-                     }else{
-                        Clients.clearWrongValue((box));
                      }
+                     Clients.clearWrongValue((box));
                   }
                });
                break;
@@ -1973,7 +2127,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
          while(itemItor.hasNext()){
             it = itemItor.next();
             listIt = new Listitem();
-            ((List<Listitem>) this.listitems).add(listIt);
+            this.listitems.add(listIt);
             listIt.setLabel(it.getLabel());
             listIt.setValue(it.getValeur());
             // ajoute l'item en attr
@@ -2009,6 +2163,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
       box.setHflex("1");
       ((Hbox) box).setPack("start");
       ((Hbox) box).setAlign("start");
+
       fileNameBox = new Textbox();
       fileNameBox.setCols(15);
       box.appendChild(fileNameBox);
@@ -2088,23 +2243,6 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
     */
    private void handleUploadFile(final Media file) throws Exception{
       if(file != null){
-         // cree un fichier temporaire en attendant la validation
-         //			 String path = Utils
-         //				.writeAnnoFilePath(SessionUtils.getSystemBaseDir(), 
-         //						SessionUtils
-         //							.getSelectedBanques(sessionScope).get(0),
-         //									this.champ, 
-         //									getFicheAnnotation().getObject())
-         //				+ "_tmp";
-         //			
-         //			// cree le fichier temporaire
-         //			 if (ManagerLocator.getFichierManager()
-         //						.storeFile(file.getStreamData(), path)) {
-         //				temp = new File(path);
-         //			} else {
-         //				throw new Exception(ObjectTypesFormatters
-         //						.getLabel("error.file.creation", new String[]{path}));
-         //			}
 
          // log.debug("creation fichier temporaire " + temp.getAbsolutePath());
          if(stream != null){
@@ -2117,22 +2255,6 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
          // showDeleteAndFileNameBox(temp != null);
          showDeleteAndFileNameBox(true);
       }
-   }
-
-   public void deleteTempFile(){
-      //		if (temp != null) {
-      //			temp.delete();
-      //			log.debug("nettoyage fichier temporaire " + temp.getAbsolutePath());
-      //			temp = null;			
-      //		}
-      //		if (stream != null) {
-      //			try {
-      //				stream.close();
-      //			} catch (IOException e) {
-      //				e.printStackTrace();
-      //			}
-      //			stream = null;
-      //		}
    }
 
    public void clearValeurLists(){
@@ -2174,26 +2296,6 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
       }
    }
 
-   //	/**
-   //	 * Supprime l'annotation de la base de données.
-   //	 * Nullifying.
-   //	 */
-   //	public void onClick$delete(Event event) {
-   //		
-   //		for (int i = 0; i < this.valeurs.size(); i++) {
-   //			this.valeursToDelete.add(this.valeurs.get(i).clone());
-   //		}
-   //		this.valeurs.clear();
-   //		setAnnotationValeur();
-   //			
-   //		if ("fichier".equals(this.champ.getDataType().getType())) {
-   //			deleteTempFile();
-   //			//fileNameBox.setValue(null);
-   //			//showDeleteAndFileNameBox(false);
-   //			//fichier = new Fichier();
-   //		}		
-   //	}
-
    /********************* Modification multiple *******************/
 
    /**
@@ -2209,9 +2311,9 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
       // cree la liste de Valeurs
       for(int i = 0; i < objs.size(); i++){
          final List<AnnotationValeur> vals =
-            ManagerLocator.getAnnotationValeurManager().findByChampAndObjetManager(this.champ, objs.get(i));
+            ManagerLocator.getAnnotationValeurManager().findByChampAndObjetManager(this.champAnnotation, objs.get(i));
          if(vals.size() > 0){
-            if(!this.champ.getDataType().getType().equals("thesaurusM")){
+            if(!this.champAnnotation.getDataType().getType().equals("thesaurusM")){
                this.annoMultiValeurs.addAll(vals);
             }else{
                this.annoMultiValeurs.add(vals);
@@ -2219,9 +2321,9 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
          }else{ // ajoute une empty valeurs pour l'objet
             final AnnotationValeur empty = new AnnotationValeur();
             empty.setObjetId(objs.get(i).listableObjectId());
-            empty.setChampAnnotation(champ);
+            empty.setChampAnnotation(champAnnotation);
             empty.setBanque(getBanqueForValeur(true));
-            if(!this.champ.getDataType().getType().equals("thesaurusM")){
+            if(!this.champAnnotation.getDataType().getType().equals("thesaurusM")){
                this.annoMultiValeurs.add(empty);
             }else{
                vals.add(empty);
@@ -2240,178 +2342,344 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
     * composant de modification multiple.
     */
    private void drawAnnotModifMultiple(){
+      String dataType = this.champAnnotation.getDataType().getType();
       annoMultiLabel = new Label();
-      // if (!"fichier".equals(this.champ.getDataType().getType())) {
-      annoMultiLabel.setValue(Labels.getLabel("general.edit.modification.multiple"));
-      annoMultiLabel.setSclass("formLink");
-      // } else {
-      //	annoMultiLabel.setValue("-");
-      //}
-      // Row row = new Row();
-      // row.setSpans("3");
-      // annoMultiLabel.setParent(row);
       mainBox.appendChild(annoMultiLabel);
-      //mainBox.getRows().appendChild(row);
+      if("calcule".equals(dataType)){
+         annoMultiLabel.setValue(Labels.getLabel("general.edit.modification.multiple.champCalcule"));
+      }else{
+         annoMultiLabel.setValue(Labels.getLabel("general.edit.modification.multiple"));
+         annoMultiLabel.setSclass("formLink");
 
-      this.allItems.clear();
-      // prepare les arguments a passer a la modale en fonction
-      // du type du champ.
-      if(this.champ.getDataType().getType().equals("alphanum") || this.champ.getDataType().getType().equals("hyperlien")){
-         this.multiComponentType = "Textbox";
-         this.champToEdit = "alphanum";
-         initConstraintAlphanum();
-      }else if(this.champ.getDataType().getType().equals("boolean")){
-         this.multiComponentType = "Listbox";
-         this.allItems.add(new Boolean(true));
-         this.allItems.add(new Boolean(false));
-         this.champToEdit = "bool";
-      }else if(this.champ.getDataType().getType().equals("datetime")){
-         this.multiComponentType = "Calendarbox";
-         this.champToEdit = "date";
-         initConstraintDate();
-      }else if(this.champ.getDataType().getType().equals("date")){
-         this.multiComponentType = "Datebox";
-         this.champToEdit = "date";
-         initConstraintDate();
-      }else if(this.champ.getDataType().getType().equals("num")){
-         this.multiComponentType = "Doublebox";
-         this.champToEdit = "alphanum";
-         initConstraintNum();
-      }else if(this.champ.getDataType().getType().equals("texte")){
-         this.multiComponentType = "BigTextbox";
-         this.champToEdit = "texte";
-         initConstraintTexte();
-      }else if(this.champ.getDataType().getType().matches("thesaurus.?")){
-         this.champToEdit = "item";
-         this.allItems.addAll(ManagerLocator.getChampAnnotationManager().getItemsManager(this.champ,
-            SessionUtils.getSelectedBanques(sessionScope).get(0)));
-         this.itemProp = "label";
-         if(this.champ.getDataType().getType().equals("thesaurus")){
-            this.multiComponentType = "Combobox";
-         }else{
-            this.multiComponentType = "MultiListbox";
+         this.allItems.clear();
+         // prepare les arguments a passer a la modale en fonction
+         // du type du champ.
+
+         switch(dataType){
+            default:
+               break;
+            case "alphanum":
+               this.multiComponentType = "Textbox";
+               this.champToEdit = "alphanum";
+               initConstraintAlphanum();
+               break;
+            case "hyperlien":
+               this.multiComponentType = "Textbox";
+               this.champToEdit = "alphanum";
+               initConstraintAlphanum();
+               break;
+            case "texte":
+               this.multiComponentType = "BigTextbox";
+               this.champToEdit = "texte";
+               initConstraintTexte();
+               break;
+            case "boolean":
+               this.multiComponentType = "Listbox";
+               this.allItems.add(new Boolean(true));
+               this.allItems.add(new Boolean(false));
+               this.champToEdit = "bool";
+               break;
+            case "date":
+               this.multiComponentType = "Datebox";
+               this.champToEdit = "date";
+               initConstraintDate();
+               break;
+            case "datetime":
+               this.multiComponentType = "Calendarbox";
+               this.champToEdit = "date";
+               initConstraintDate();
+               break;
+            case "num":
+               this.multiComponentType = "Doublebox";
+               this.champToEdit = "alphanum";
+               initConstraintNum();
+               break;
+            case "thesaurus":
+               this.champToEdit = "item";
+               this.allItems.addAll(ManagerLocator.getChampAnnotationManager().getItemsManager(this.champAnnotation,
+                  SessionUtils.getSelectedBanques(sessionScope).get(0)));
+               this.itemProp = "label";
+               this.multiComponentType = "Combobox";
+               break;
+            case "thesaurusM":
+               this.champToEdit = "item";
+               this.allItems.addAll(ManagerLocator.getChampAnnotationManager().getItemsManager(this.champAnnotation,
+                  SessionUtils.getSelectedBanques(sessionScope).get(0)));
+               this.itemProp = "label";
+               this.multiComponentType = "MultiListbox";
+               break;
+            case "fichier":
+               this.multiComponentType = "Filebox";
+               this.champToEdit = "fichier";
+               break;
+            case "duree":
+               this.multiComponentType = "DureeBox";
+               this.champToEdit = "alphanum";
+               break;
          }
-      }else if(this.champ.getDataType().getType().equals("fichier")){
-         this.multiComponentType = "Filebox";
-         this.champToEdit = "fichier";
-         // initConstraintAlphanum();
-      }
 
-      if(!annoMultiLabel.getValue().equals("-")){
-         annoMultiLabel.addEventListener("onClick", new EventListener<Event>()
-         {
-            @Override
-            public void onEvent(final Event event) throws Exception{
-               getFicheAnnotation().openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnAnnot",
-                  multiComponentType, annoMultiValeurs, champ.getNom(), champToEdit, allItems, itemProp,
-                  champ.getTableAnnotation().getEntite().getNom(), boxConstr, isCombined, null,
-                  (!champToEdit.equals("bool") && getIsObligatoire()));
-            }
-         });
+         if(!annoMultiLabel.getValue().equals("-")){
+            annoMultiLabel.addEventListener("onClick", new EventListener<Event>()
+            {
+               @Override
+               public void onEvent(final Event event) throws Exception{
+                  getFicheAnnotation().openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnAnnot",
+                     multiComponentType, annoMultiValeurs, champAnnotation.getNom(), champToEdit, allItems, itemProp,
+                     champAnnotation.getTableAnnotation().getEntite().getNom(), boxConstr, isCombined, null,
+                     (!champToEdit.equals("bool") && getIsObligatoire()));
+               }
+            });
+         }
       }
    }
 
    /**
-    * Event retourne par la validation de la modification multiple.
-    *
-    * @param event
+    * ???
+    * @param value
+    * @param its
+    * @return
     */
-   
-   public void onGetChangeOnAnnot(final Event event){
+   private String getProperty(){
+      String property = null;
+      switch(this.champAnnotation.getDataType().getType()){
+         default:
+            break;
+         case "alphanum":
+            property = "alphanum";
+            break;
+         case "hyperlien":
+            property = "alphanum";
+            break;
+         case "texte":
+            property = "texte";
+            break;
+         case "boolean":
+            property = "bool";
+            break;
+         case "date":
+            property = "date";
+            break;
+         case "datetime":
+            break;
+         case "num":
+            property = "alphanum";
+            break;
+         case "thesaurus":
+            property = "item";
+            break;
+         case "thesaurusM":
+            property = "multiThes";
+            break;
+         case "fichier":
+            property = "fichier";
+            break;
+         case "calcule":
+            break;
+         case "duree":
+            property = "alphanum";
+            break;
+      }
+      return property;
+   }
 
+   private void formatValue(String property, SimpleChampValue value, Set<?> its){
+      switch(property){
+         default:
+            break;
+         case "alphanum":
+            if(value.getValue() != null && value.getValue() instanceof BigDecimal){
+               value.setValue(ObjectTypesFormatters.doubleLitteralFormatter(((BigDecimal) value.getValue()).doubleValue()));
+            }
+            break;
+         case "multiThes":
+            its.clear();
+            if(value.getValue() != null){
+               if(!value.getValue().equals("system.tk.unknownExistingValue")){
+                  Object champValue = value.getValue();
+                  if(Set.class.isInstance(champValue)){
+                     its = Set.class.cast(champValue);
+                  }
+               }
+            }else if(hasDefaut){
+               // recupere list Item depuis defauts
+               its = extractItemsFromDefauts(defauts);
+               final StringBuilder bld = new StringBuilder();
+               final Iterator<?> objsIt = its.iterator();
+               while(objsIt.hasNext()){
+                  Item item = Item.class.cast(objsIt.next());
+                  bld.append(item.getLabel());
+                  // connecteur ' - '
+                  if(objsIt.hasNext()){
+                     bld.append(" - ");
+                  }
+               }
+               value.setPrintValue(bld.toString());
+            }
+            break;
+      }
+   }
+
+   /**
+    * ??
+    * @param value
+    */
+   private void creerAnnotationFichier(SimpleChampValue value){
+      // créé annotation fichier
+      if(value.getValue() == null){ // delete ttes valeurs
+         for(int i = 0; i < this.annoMultiValeurs.size(); i++){
+            this.valeursToDelete.add((AnnotationValeur) this.annoMultiValeurs.get(i));
+         }
+      }else{
+         final FilePack pck = (FilePack) value.getValue();
+         // stream -> // delete ttes valeurs pour reecrire autres
+         if(pck.getStream() != null){
+            for(int i = 0; i < this.annoMultiValeurs.size(); i++){
+               this.valeursToDelete.add((AnnotationValeur) this.annoMultiValeurs.get(i));
+            }
+
+            final AnnotationValeur val = new AnnotationValeur();
+            val.setChampAnnotation(this.champAnnotation);
+            val.setBanque(getBanqueForValeur(false));
+            val.setFichier(pck.getFile());
+            val.setStream(pck.getStream());
+            this.valeursToCreateOrUpdate.add(val);
+         }else{ // maj valeurs
+            AnnotationValeur fileVal;
+            for(int i = 0; i < this.annoMultiValeurs.size(); i++){
+               fileVal = (AnnotationValeur) this.annoMultiValeurs.get(i);
+
+               // complète la valeur vide pour les objets qui n'en avaient pas
+               if(fileVal.getFichier() == null){
+                  fileVal.setFichier(pck.getFile().cloneNoId());
+                  this.valeursToCreateOrUpdate.add(fileVal);
+               }else{
+                  // modification nom fichier uniquement
+                  if(pck.getFile().getPath().equals(fileVal.getFichier().getPath())){
+                     if(!fileVal.getFichier().getNom().equals(pck.getFile().getNom())){
+                        fileVal.getFichier().setNom(pck.getFile().getNom());
+                        this.valeursToCreateOrUpdate.add(fileVal);
+                     }
+                  }else{ // path est different -> implique suppression + recreation
+                     this.valeursToDelete.add(fileVal);
+                     final AnnotationValeur val = new AnnotationValeur();
+                     val.setChampAnnotation(this.champAnnotation);
+                     val.setBanque(getBanqueForValeur(false));
+                     val.setObjetId(fileVal.getObjetId());
+                     val.setFichier(pck.getFile().cloneNoId());
+                     this.valeursToCreateOrUpdate.add(val);
+                  }
+               }
+            }
+         }
+      }
+
+   }
+
+   /**
+    * ??
+    * @param its
+    * @param setUnknowExistingValue
+    */
+   private void creerAnnotationMultiThesaurus(Set<?> its, boolean setUnknowExistingValue){
+      for(Object obj : this.annoMultiValeurs){
+         if(List.class.isInstance(obj)){
+            List<?> annoValeurLisr = List.class.cast(obj);
+            List<AnnotationValeur> toDelete = new ArrayList<>();
+            for(Object o : annoValeurLisr){
+               if(AnnotationValeur.class.isInstance(o)){
+                  toDelete.add(AnnotationValeur.class.cast(o));
+               }
+            }
+            this.valeursToDelete.addAll(toDelete);
+         }
+      }
+      // recree les valeurs pour chaque objet
+      AnnotationValeur val;
+      if(!setUnknowExistingValue){
+         Iterator<?> itsIt;
+         for(int j = 0; j < this.multiObjs.size(); j++){
+            itsIt = its.iterator();
+            while(itsIt.hasNext()){
+               val = new AnnotationValeur();
+               val.setChampAnnotation(this.champAnnotation);
+               val.setBanque(getBanqueForValeur(true));
+               val.setObjetId(this.multiObjs.get(j).listableObjectId());
+               val.setItem(Item.class.cast(itsIt.next()));
+               this.valeursToCreateOrUpdate.add(val);
+            }
+         }
+      }else{
+         for(int j = 0; j < this.multiObjs.size(); j++){
+            val = new AnnotationValeur();
+            val.setChampAnnotation(this.champAnnotation);
+            val.setBanque(getBanqueForValeur(true));
+            val.setObjetId(this.multiObjs.get(j).listableObjectId());
+            val.setAlphanum("system.tk.unknownExistingValue");
+            this.valeursToCreateOrUpdate.add(val);
+         }
+      }
+   }
+
+   /**
+    * ??
+    * @param property
+    * @param value
+    * @param setUnknowExistingValue
+    */
+   private void creerAnnotation(String property, SimpleChampValue value, Boolean setUnknowExistingValue){
+      for(int i = 0; i < this.annoMultiValeurs.size(); i++){
+         AnnotationValeur cloneVal = ((AnnotationValeur) this.annoMultiValeurs.get(i)).clone();
+         try{
+            if(isCombined){ // nettoie par defaut
+               PropertyUtils.setSimpleProperty(cloneVal, "alphanum", null);
+            }
+            if(!setUnknowExistingValue){
+               PropertyUtils.setSimpleProperty(cloneVal, property, value.getValue());
+            }else{
+               PropertyUtils.setSimpleProperty(cloneVal, property, null);
+               PropertyUtils.setSimpleProperty(cloneVal, "alphanum", value.getValue());
+            }
+         }catch(final Exception e){
+            log.error(e);
+         }
+         addValeursIntoActionLists(cloneVal);
+      }
+   }
+
+   /**
+    * ??
+    * @param valueFormatted
+    */
+   private void dessinerValeur(String valueFormatted){
+      // dessine la valeur
+      final StringBuffer sb = new StringBuffer();
+      sb.append("[");
+      if(valueFormatted != null){
+         sb.append(valueFormatted);
+      }else{
+         sb.append(" ");
+      }
+      sb.append("]");
+      sb.append(" - ");
+      annoValue.setValue(sb.toString());
+      annoValue.setVisible(true);
+   }
+
+   /**
+    * Traitement de modifications multiples d'annotations
+    * @param event retourne par la validation de la modification multiple.
+    */
+
+   public void onGetChangeOnAnnot(final Event event){
       this.valeursToCreateOrUpdate.clear();
       this.valeursToDelete.clear();
 
-      String property = null;
       final SimpleChampValue value = (SimpleChampValue) event.getData();
-      String valueFormatted = null;
-      AnnotationValeur cloneVal;
-      Set<Item> its = new HashSet<>();
-      if(this.champ.getDataType().getType().equals("alphanum") || this.champ.getDataType().getType().equals("hyperlien")){
-         property = "alphanum";
-         // defaut
-         //			if (value.getValue() == null && hasDefaut) {
-         //				value.setValue(defauts.get(0).getAlphanum());
-         //				value.setPrintValue(defauts.get(0).getAlphanum());
-         //			}
-      }else if(this.champ.getDataType().getType().equals("boolean")){
-         property = "bool";
-         // defaut
-         //			if (value.getValue() == null && hasDefaut) {
-         //				value.setValue(defauts.get(0).getBool());
-         //			}
-      }else if(this.champ.getDataType().getType().matches("date.*")){
-         property = "date";
-         // defaut
-         //			if (value.getValue() == null && hasDefaut) {
-         //				value.setValue(defauts.get(0).getDate());
-         //			}
-      }else if(this.champ.getDataType().getType().equals("num")){
-         property = "alphanum";
-         if(value.getValue() != null && value.getValue() instanceof BigDecimal){
-            value.setValue(ObjectTypesFormatters.doubleLitteralFormatter(((BigDecimal) value.getValue()).doubleValue()));
-         }
-         //			else {
-         //				valueFormatted = (String) value;
-         //			}
-         // defaut
-         //			if (value.getValue() == null && hasDefaut) {
-         //				value.setValue(defauts.get(0).getAlphanum());
-         //			}
-      }else if(this.champ.getDataType().getType().equals("texte")){
-         property = "texte";
-         // defaut
-         //			if (value.getValue() == null && hasDefaut) {
-         //				value.setValue(defauts.get(0).getTexte());
-         //			}
-      }else if(this.champ.getDataType().getType().equals("thesaurus")){
-         property = "item";
-         //			if (value != null 
-         //						&& !value.equals("system.tk.unknownExistingValue")) {
-         //				valueFormatted = ((Item) value).getLabel();
-         //			} else {
-         //				valueFormatted = (String) value;
-         //			}
-         // defaut
-         //			if (value.getValue() == null && hasDefaut) {
-         //				value.setValue(defauts.get(0).getItem());
-         //			}
-      }else if(this.champ.getDataType().getType().equals("thesaurusM")){
-         property = "multiThes";
-         its.clear();
-         if(value.getValue() != null){
-            if(!value.getValue().equals("system.tk.unknownExistingValue")){
-               its = ((Set<Item>) value.getValue());
-               //					valueFormatted = "";
-               //					int i;
-               //					for (i = 0; i < (its.size() - 1); i++) {
-               //						valueFormatted = valueFormatted 
-               //												+ its.get(i).getLabel() + " ";
-               //					}
-               //					valueFormatted = valueFormatted + its.get(i).getLabel();
-               //				} // else {
-               //					valueFormatted = (String) value;
-            }
-         }else if(hasDefaut){
-            // recupere list Item depuis defauts
-            its = extractItemsFromDefauts(defauts);
-            final StringBuilder bld = new StringBuilder();
-            final Iterator<Item> objsIt = its.iterator();
-            while(objsIt.hasNext()){
-               bld.append(objsIt.next().getLabel());
-               // connecteur ' - '
-               if(objsIt.hasNext()){
-                  bld.append(" - ");
-               }
-            }
-            value.setPrintValue(bld.toString());
-         }
-      }else if(this.champ.getDataType().getType().equals("fichier")){
-         property = "fichier";
-      }
+      Set<?> its = new HashSet<>();
+      String property = getProperty();
+      formatValue(property, value, its);
 
-      valueFormatted = value.getPrintValue();
-
+      String valueFormatted = value.getPrintValue();
       boolean setUnknowExistingValue = false;
 
       if(value.getValue() != null && value.getValue().equals("system.tk.unknownExistingValue")){
@@ -2426,136 +2694,15 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
          value.setValue(c);
       }
 
-      if(!property.equals("multiThes") && !property.equals("fichier")){
-         for(int i = 0; i < this.annoMultiValeurs.size(); i++){
-            cloneVal = ((AnnotationValeur) this.annoMultiValeurs.get(i)).clone();
-            //cloneVal.setAlphanum((String) value);
-            try{
-               if(isCombined){ // nettoie par defaut
-                  PropertyUtils.setSimpleProperty(cloneVal, "alphanum", null);
-               }
-               if(!setUnknowExistingValue){
-                  PropertyUtils.setSimpleProperty(cloneVal, property, value.getValue());
-               }else{
-                  PropertyUtils.setSimpleProperty(cloneVal, property, null);
-                  PropertyUtils.setSimpleProperty(cloneVal, "alphanum", value.getValue());
-               }
-            }catch(final Exception e){
-               log.error(e);
-            }
-            addValeursIntoActionLists(cloneVal);
-         }
-      }else{ // detruit toutes les valeurs existantes pour reecrire
-         if(property.equals("multiThes")){
-
-            for(int i = 0; i < this.annoMultiValeurs.size(); i++){
-               this.valeursToDelete.addAll((List<AnnotationValeur>) this.annoMultiValeurs.get(i));
-            }
-            // recree les valeurs pour chaque objet
-            AnnotationValeur val;
-            if(!setUnknowExistingValue){
-               Iterator<Item> itsIt;
-               for(int j = 0; j < this.multiObjs.size(); j++){
-                  itsIt = its.iterator();
-                  while(itsIt.hasNext()){
-                     val = new AnnotationValeur();
-                     val.setChampAnnotation(this.champ);
-                     val.setBanque(getBanqueForValeur(true));
-                     val.setObjetId(this.multiObjs.get(j).listableObjectId());
-                     val.setItem(itsIt.next());
-                     this.valeursToCreateOrUpdate.add(val);
-                  }
-               }
-            }else{
-               for(int j = 0; j < this.multiObjs.size(); j++){
-                  val = new AnnotationValeur();
-                  val.setChampAnnotation(this.champ);
-                  val.setBanque(getBanqueForValeur(true));
-                  val.setObjetId(this.multiObjs.get(j).listableObjectId());
-                  val.setAlphanum("system.tk.unknownExistingValue");
-                  this.valeursToCreateOrUpdate.add(val);
-               }
-            }
-         }else{ // créé annotation fichier
-            if(value.getValue() == null){ // delete ttes valeurs
-               for(int i = 0; i < this.annoMultiValeurs.size(); i++){
-                  this.valeursToDelete.add((AnnotationValeur) this.annoMultiValeurs.get(i));
-               }
-            }else{
-               final FilePack pck = (FilePack) value.getValue();
-               // stream -> // delete ttes valeurs pour reecrire autres
-               if(pck.getStream() != null){
-                  for(int i = 0; i < this.annoMultiValeurs.size(); i++){
-                     this.valeursToDelete.add((AnnotationValeur) this.annoMultiValeurs.get(i));
-                  }
-
-                  final AnnotationValeur val = new AnnotationValeur();
-                  val.setChampAnnotation(this.champ);
-                  val.setBanque(getBanqueForValeur(false));
-                  val.setFichier(pck.getFile());
-                  val.setStream(pck.getStream());
-                  this.valeursToCreateOrUpdate.add(val);
-               }else{ // maj valeurs
-                  AnnotationValeur fileVal;
-                  for(int i = 0; i < this.annoMultiValeurs.size(); i++){
-                     fileVal = (AnnotationValeur) this.annoMultiValeurs.get(i);
-
-                     // complète la valeur vide pour les objets qui n'en avaient pas
-                     if(fileVal.getFichier() == null){
-                        fileVal.setFichier(pck.getFile().cloneNoId());
-                        this.valeursToCreateOrUpdate.add(fileVal);
-                     }else{
-                        // modification nom fichier uniquement
-                        if(pck.getFile().getPath().equals(fileVal.getFichier().getPath())){
-                           if(!fileVal.getFichier().getNom().equals(pck.getFile().getNom())){
-                              fileVal.getFichier().setNom(pck.getFile().getNom());
-                              this.valeursToCreateOrUpdate.add(fileVal);
-                           }
-                        }else{ // path est different -> implique suppression + recreation
-                           this.valeursToDelete.add(fileVal);
-                           final AnnotationValeur val = new AnnotationValeur();
-                           val.setChampAnnotation(this.champ);
-                           val.setBanque(getBanqueForValeur(false));
-                           val.setObjetId(fileVal.getObjetId());
-                           val.setFichier(pck.getFile().cloneNoId());
-                           this.valeursToCreateOrUpdate.add(val);
-                        }
-                     }
-                  }
-               }
-
-               // ajoute une valeur aux objets qui n'en avaient pas
-               //					multiObjsLoop: for (int j = 0; j < this.multiObjs.size(); j++) {
-               //						for (int i = 0; i < this.annoMultiValeurs.size(); i++) {
-               //							if (((AnnotationValeur) 
-               //								this.annoMultiValeurs.get(i)).getObjetId().equals(multiObjs.get(j).listableObjectId())) {
-               //								continue multiObjsLoop; 
-               //							}
-               //						}
-               //						AnnotationValeur val = new AnnotationValeur();
-               //						val.setChampAnnotation(this.champ);
-               //						val.setBanque(getBanqueForValeur(true));
-               //						val.setObjetId(this.multiObjs.get(j).listableObjectId());
-               //						val.setFichier(pck.getFile().cloneNoId());
-               //						this.valeursToCreateOrUpdate.add(val);
-               //					} // end multiObjsLoop
-
-            }
-         }
-      }
-
-      // dessine la valeur
-      final StringBuffer sb = new StringBuffer();
-      sb.append("[");
-      if(valueFormatted != null){
-         sb.append(valueFormatted);
+      if("multiThes".equals(property)){
+         creerAnnotationMultiThesaurus(its, setUnknowExistingValue);
+      }else if("fichier".equals(property)){
+         creerAnnotationFichier(value);
       }else{
-         sb.append(" ");
+         creerAnnotation(property, value, setUnknowExistingValue);
       }
-      sb.append("]");
-      sb.append(" - ");
-      annoValue.setValue(sb.toString());
-      annoValue.setVisible(true);
+
+      dessinerValeur(valueFormatted);
    }
 
    /**
@@ -2638,27 +2785,50 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
    public void validateComponent(){
 
       try{
-         if("alphanum".equals(this.champ.getDataType().getType()) || "hyperlien".equals(this.champ.getDataType().getType())){
-            ((Textbox) box).getValue();
-         }else if("boolean".equals(this.champ.getDataType().getType())){
-            //
-         }else if("datetime".equals(this.champ.getDataType().getType())){
-            ((CalendarBox) box).getValue();
-         }else if("date".equals(this.champ.getDataType().getType())){
-            ((Datebox) box).getValue();
-         }else if("num".equals(this.champ.getDataType().getType())){
-            ((Decimalbox) box).getValue();
-         }else if("texte".equals(this.champ.getDataType().getType())){
-            ((Textbox) box).getValue();
-         }else if("thesaurus".equals(this.champ.getDataType().getType())){
-            if(getIsObligatoire() && selectedItem == null && ((Combobox) box).getSelectedItem() == null){
-               throw new WrongValueException(box, Labels.getLabel("anno.thes.empty"));
-            }
-         }else if("thesaurusM".equals(this.champ.getDataType().getType())){
-            if(getIsObligatoire() && ((Listbox) box).getSelectedItems().size() > 0){
-               throw new WrongValueException(box, Labels.getLabel("anno.thes.empty"));
-            }
-         }else if("fichier".equals(this.champ.getDataType().getType())){}
+         switch(this.champAnnotation.getDataType().getType()){
+            default:
+               break;
+            case "alphanum":
+               Textbox.class.cast(box).getValue();
+               break;
+            case "hyperlien":
+               Textbox.class.cast(box).getValue();
+               break;
+            case "texte":
+               Textbox.class.cast(box).getValue();
+               break;
+            case "boolean":
+               break;
+            case "date":
+               Datebox.class.cast(box).getValue();
+               break;
+            case "datetime":
+               CalendarBox.class.cast(box).getValue();
+               break;
+            case "num":
+               Decimalbox.class.cast(box).getValue();
+               break;
+            case "thesaurus":
+               if(getIsObligatoire() && selectedItem == null && Combobox.class.cast(box).getSelectedItem() == null){
+                  throw new WrongValueException(box, Labels.getLabel("anno.thes.empty"));
+               }
+               break;
+            case "thesaurusM":
+               if(getIsObligatoire() && Listbox.class.cast(box).getSelectedItems() == null){
+                  throw new WrongValueException(box, Labels.getLabel("anno.thes.empty"));
+               }
+               break;
+            case "fichier":
+               break;
+            case "calcule":
+               break;
+            case "duree":
+               if(getIsObligatoire() && (DureeComponent.class.cast(box).getDuree() == null
+                  || DureeComponent.class.cast(box).getDuree().getTemps(Duree.SECONDE) == 0)){
+                  throw new WrongValueException(box, Labels.getLabel("anno.duree.empty"));
+               }
+               break;
+         }
 
       }catch(final WrongValueException ve){
          /**

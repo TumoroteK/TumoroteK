@@ -143,7 +143,7 @@ public class ResumePatient
     * Assigne les valeurs aux labels représentant les informations
     * de la maladie. Cette méthode est le point d'entrée des informations
     * dans la fiche résumé patient à partir de la fiche prélèvement.
-    * @param maladie
+    * @param mal
     */
    public void setMaladie(final Maladie mal){
       this.maladie = mal;
@@ -182,7 +182,7 @@ public class ResumePatient
    /**
     * Assigne les valeurs aux labels représentant les informations
     * du nda du associé au patient. 
-    * @param maladie
+    * @param prel
     */
    public void setPrelevement(final Prelevement prel){
       this.prelevement = prel;
@@ -347,7 +347,7 @@ public class ResumePatient
 
    /**
     * Affiche la fiche d'un patient.
-    * @param boolean ouvre le panel de la maladie également.
+    * @param opensMaladie ouvre le panel de la maladie également.
     */
    public void showPatientPanel(final boolean opensMaladie){
       // on récupère les panels
@@ -367,7 +367,7 @@ public class ResumePatient
             ((PatientController) panel.getFellow("winPatient").getAttributeOrFellow("winPatient$composer", true));
 
          // si on arrive à récupérer le panel échantillon et son controller
-         if(panel != null && tabController != null){
+         if(tabController != null){
             tabController.switchToFicheStaticMode(this.maladie.getPatient());
             panels.setSelectedPanel(panel);
             if(opensMaladie){ //ouvre le panel maladie directement

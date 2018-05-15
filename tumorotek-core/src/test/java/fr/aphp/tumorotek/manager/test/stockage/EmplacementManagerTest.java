@@ -35,12 +35,6 @@
  **/
 package fr.aphp.tumorotek.manager.test.stockage;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +65,8 @@ import fr.aphp.tumorotek.model.stockage.Emplacement;
 import fr.aphp.tumorotek.model.stockage.Terminale;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+
+import static org.junit.Assert.*;
 
 /**
  *
@@ -109,7 +105,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
    public void testFindById(){
       Emplacement e = emplacementManager.findByIdManager(1);
       assertNotNull(e);
-      assertTrue(e.getAdrl().equals("CC1.R1.T1.BT1.A-A"));
+      assertEquals("CC1.R1.T1.BT1.A-A", e.getAdrl());
 
       e = emplacementManager.findByIdManager(5);
       assertNotNull(e);
@@ -136,21 +132,21 @@ public class EmplacementManagerTest extends AbstractManagerTest4
 
       List<Emplacement> list = emplacementManager.findByTerminaleAndVideManager(t1, true);
       assertEquals(2, list.size());
-      assertTrue(list.get(0).getAdrl().equals("CC1.R1.T1.BT1.A-J"));
+      assertEquals("CC1.R1.T1.BT1.A-J", list.get(0).getAdrl());
 
       list = emplacementManager.findByTerminaleAndVideManager(t1, false);
-      assertTrue(list.size() == 3);
-      assertTrue(list.get(0).getAdrl().equals("CC1.R1.T1.BT1.A-A"));
+      assertEquals(3, list.size());
+      assertEquals("CC1.R1.T1.BT1.A-A", list.get(0).getAdrl());
 
       final Terminale t2 = terminaleDao.findById(3);
       list = emplacementManager.findByTerminaleAndVideManager(t2, true);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       list = emplacementManager.findByTerminaleAndVideManager(t2, false);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       list = emplacementManager.findByTerminaleAndVideManager(null, true);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
    }
 
    /**
@@ -162,19 +158,19 @@ public class EmplacementManagerTest extends AbstractManagerTest4
 
       List<Emplacement> list = emplacementManager.findByTerminaleWithOrder(t1);
       assertEquals(5, list.size());
-      assertTrue(list.get(0).getAdrl().equals("CC1.R1.T1.BT1.A-A"));
+      assertEquals("CC1.R1.T1.BT1.A-A", list.get(0).getAdrl());
 
       final Terminale t2 = terminaleDao.findById(6);
       list = emplacementManager.findByTerminaleWithOrder(t2);
-      assertTrue(list.size() == 2);
-      assertTrue(list.get(0).getAdrl().equals("CC1.R2.T6.BT1.A-1"));
+      assertEquals(2, list.size());
+      assertEquals("CC1.R2.T6.BT1.A-1", list.get(0).getAdrl());
 
       final Terminale t3 = terminaleDao.findById(3);
       list = emplacementManager.findByTerminaleWithOrder(t3);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       list = emplacementManager.findByTerminaleWithOrder(null);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
    }
 
    /**
@@ -185,17 +181,17 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       final Terminale t1 = terminaleDao.findById(1);
 
       List<Emplacement> list = emplacementManager.findByTerminaleAndPosition(t1, 1);
-      assertTrue(list.size() == 1);
+      assertEquals(1, list.size());
 
       final Terminale t2 = terminaleDao.findById(2);
       list = emplacementManager.findByTerminaleAndPosition(t2, 1);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       list = emplacementManager.findByTerminaleAndPosition(t1, null);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
 
       list = emplacementManager.findByTerminaleAndPosition(null, 1);
-      assertTrue(list.size() == 0);
+      assertEquals(0, list.size());
    }
 
    /**
@@ -205,13 +201,13 @@ public class EmplacementManagerTest extends AbstractManagerTest4
    public void testFindByEmplacementAdrlManager(){
       final Banque b1 = banqueDao.findById(1);
       Emplacement empl = emplacementManager.findByEmplacementAdrlManager("CC1.R1.T1.BT1.A-A", b1);
-      assertTrue(empl.getEmplacementId() == 1);
-      assertTrue(emplacementManager.findByEmplacementAdrlManager("CC1.R1.T1.BT1.1", b1).getEmplacementId() == 1);
+      assertEquals(1, (int) empl.getEmplacementId());
+      assertEquals(1, (int) emplacementManager.findByEmplacementAdrlManager("CC1.R1.T1.BT1.1", b1).getEmplacementId());
       assertNull(emplacementManager.findByEmplacementAdrlManager("CC1.R1.T1.BT1.A-1", b1));
 
       empl = emplacementManager.findByEmplacementAdrlManager("CC1.R1.T1.BT1.A-J", b1);
-      assertTrue(empl.getEmplacementId() == 4);
-      assertTrue(emplacementManager.findByEmplacementAdrlManager("CC1.R1.T1.BT1.10", b1).getEmplacementId() == 4);
+      assertEquals(4, (int) empl.getEmplacementId());
+      assertEquals(4, (int) emplacementManager.findByEmplacementAdrlManager("CC1.R1.T1.BT1.10", b1).getEmplacementId());
 
       // out of bounds
       assertNull(emplacementManager.findByEmplacementAdrlManager("CC1.R1.T1.BT1.A-K", b1));
@@ -225,11 +221,11 @@ public class EmplacementManagerTest extends AbstractManagerTest4
 
       // autre numerotation
       empl = emplacementManager.findByEmplacementAdrlManager("CC1.R2.T6.BT1.A-2", b1);
-      assertTrue(empl.getEmplacementId() == 7);
-      assertTrue(emplacementManager.findByEmplacementAdrlManager("CC1.R2.T6.BT1.2", b1).getEmplacementId() == 7);
+      assertEquals(7, (int) empl.getEmplacementId());
+      assertEquals(7, (int) emplacementManager.findByEmplacementAdrlManager("CC1.R2.T6.BT1.2", b1).getEmplacementId());
       empl = emplacementManager.findByEmplacementAdrlManager("CC1.R2.T6.BT1.A-1", b1);
-      assertTrue(empl.getEmplacementId() == 6);
-      assertTrue(emplacementManager.findByEmplacementAdrlManager("CC1.R2.T6.BT1.1", b1).getEmplacementId() == 6);
+      assertEquals(6, (int) empl.getEmplacementId());
+      assertEquals(6, (int) emplacementManager.findByEmplacementAdrlManager("CC1.R2.T6.BT1.1", b1).getEmplacementId());
 
       // out of bounds
       assertNull(emplacementManager.findByEmplacementAdrlManager("CC1.R2.T6.BT1.K-2", b1));
@@ -299,7 +295,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       final Conteneur cTest2 = conteneurManager.findByIdManager(c2.getConteneurId());
       assertNotNull(cTest2);
       conteneurManager.removeObjectManager(cTest2, null, utilisateurDao.findById(1));
-      assertTrue(conteneurManager.findAllObjectsManager().size() == 4);
+      assertEquals(4, conteneurManager.findAllObjectsManager().size());
 
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.add(cTest2);
@@ -342,96 +338,96 @@ public class EmplacementManagerTest extends AbstractManagerTest4
    public void testGetNumerotationByPositionAndTerminaleManager(){
       final Terminale t1 = terminaleDao.findById(1);
       String num = emplacementManager.getNumerotationByPositionAndTerminaleManager(1, t1);
-      assertTrue(num.equals("A-A"));
+      assertEquals("A-A", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(5, t1);
-      assertTrue(num.equals("A-E"));
+      assertEquals("A-E", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(10, t1);
-      assertTrue(num.equals("A-J"));
+      assertEquals("A-J", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(11, t1);
-      assertTrue(num.equals("B-A"));
+      assertEquals("B-A", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(20, t1);
-      assertTrue(num.equals("B-J"));
+      assertEquals("B-J", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(23, t1);
-      assertTrue(num.equals("C-C"));
+      assertEquals("C-C", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(59, t1);
-      assertTrue(num.equals("F-I"));
+      assertEquals("F-I", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(100, t1);
-      assertTrue(num.equals("J-J"));
+      assertEquals("J-J", num);
 
       final Terminale t2 = terminaleDao.findById(2);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(1, t2);
-      assertTrue(num.equals("1"));
+      assertEquals("1", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(5, t2);
-      assertTrue(num.equals("5"));
+      assertEquals("5", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(10, t2);
-      assertTrue(num.equals("10"));
+      assertEquals("10", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(11, t2);
-      assertTrue(num.equals("11"));
+      assertEquals("11", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(20, t2);
-      assertTrue(num.equals("20"));
+      assertEquals("20", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(23, t2);
-      assertTrue(num.equals("23"));
+      assertEquals("23", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(59, t2);
-      assertTrue(num.equals("59"));
+      assertEquals("59", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(100, t2);
-      assertTrue(num.equals("100"));
+      assertEquals("100", num);
 
       final Terminale t4 = terminaleDao.findById(4);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(1, t4);
-      assertTrue(num.equals("1-1"));
+      assertEquals("1-1", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(5, t4);
-      assertTrue(num.equals("1-5"));
+      assertEquals("1-5", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(10, t4);
-      assertTrue(num.equals("1-10"));
+      assertEquals("1-10", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(11, t4);
-      assertTrue(num.equals("2-1"));
+      assertEquals("2-1", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(23, t4);
-      assertTrue(num.equals("3-3"));
+      assertEquals("3-3", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(59, t4);
-      assertTrue(num.equals("6-9"));
+      assertEquals("6-9", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(100, t4);
-      assertTrue(num.equals("10-10"));
+      assertEquals("10-10", num);
 
       final Terminale t5 = terminaleDao.findById(5);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(1, t5);
-      assertTrue(num.equals("1-A"));
+      assertEquals("1-A", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(5, t5);
-      assertTrue(num.equals("2-C"));
+      assertEquals("2-C", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(10, t5);
-      assertTrue(num.equals("4-A"));
+      assertEquals("4-A", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(11, t5);
-      assertTrue(num.equals("4-B"));
+      assertEquals("4-B", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(23, t5);
-      assertTrue(num.equals("6-C"));
+      assertEquals("6-C", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(59, t5);
-      assertTrue(num.equals("10-E"));
+      assertEquals("10-E", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(67, t5);
-      assertTrue(num.equals("11-D"));
+      assertEquals("11-D", num);
 
       final Terminale t6 = terminaleDao.findById(6);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(1, t6);
-      assertTrue(num.equals("A-1"));
+      assertEquals("A-1", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(5, t6);
-      assertTrue(num.equals("A-5"));
+      assertEquals("A-5", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(10, t6);
-      assertTrue(num.equals("B-1"));
+      assertEquals("B-1", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(11, t6);
-      assertTrue(num.equals("B-2"));
+      assertEquals("B-2", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(23, t6);
-      assertTrue(num.equals("C-5"));
+      assertEquals("C-5", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(59, t6);
-      assertTrue(num.equals("G-5"));
+      assertEquals("G-5", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(81, t6);
-      assertTrue(num.equals("I-9"));
+      assertEquals("I-9", num);
 
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(0, t1);
-      assertTrue(num.equals(""));
+      assertEquals("", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(155, t1);
-      assertTrue(num.equals(""));
+      assertEquals("", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(15, null);
-      assertTrue(num.equals(""));
+      assertEquals("", num);
       num = emplacementManager.getNumerotationByPositionAndTerminaleManager(15, new Terminale());
-      assertTrue(num.equals(""));
+      assertEquals("", num);
    }
 
    /**
@@ -441,86 +437,86 @@ public class EmplacementManagerTest extends AbstractManagerTest4
    public void testGetPositionByCoordonnees(){
       final Terminale t1 = terminaleDao.findById(1);
       Integer pos = emplacementManager.getPositionByCoordonnees(t1, 1, 1);
-      assertTrue(pos.equals(1));
+      assertEquals(1, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t1, 1, 5);
-      assertTrue(pos.equals(5));
+      assertEquals(5, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t1, 1, 10);
-      assertTrue(pos.equals(10));
+      assertEquals(10, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t1, 2, 1);
-      assertTrue(pos.equals(11));
+      assertEquals(11, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t1, 3, 3);
-      assertTrue(pos.equals(23));
+      assertEquals(23, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t1, 6, 9);
-      assertTrue(pos.equals(59));
+      assertEquals(59, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t1, 10, 10);
-      assertTrue(pos.equals(100));
+      assertEquals(100, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t1, 11, 10);
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t1, 10, 11);
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t1, 11, 11);
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
 
       final Terminale t5 = terminaleDao.findById(5);
       pos = emplacementManager.getPositionByCoordonnees(t5, 1, 1);
-      assertTrue(pos.equals(1));
+      assertEquals(1, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t5, 2, 3);
-      assertTrue(pos.equals(5));
+      assertEquals(5, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t5, 4, 1);
-      assertTrue(pos.equals(10));
+      assertEquals(10, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t5, 4, 2);
-      assertTrue(pos.equals(11));
+      assertEquals(11, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t5, 6, 3);
-      assertTrue(pos.equals(23));
+      assertEquals(23, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t5, 10, 5);
-      assertTrue(pos.equals(59));
+      assertEquals(59, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t5, 12, 4);
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t5, 5, 7);
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t5, 1, 3);
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t5, 8, 10);
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t5, 12, 15);
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
 
       final Terminale t6 = terminaleDao.findById(6);
       pos = emplacementManager.getPositionByCoordonnees(t6, 1, 1);
-      assertTrue(pos.equals(1));
+      assertEquals(1, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t6, 1, 5);
-      assertTrue(pos.equals(5));
+      assertEquals(5, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t6, 1, 9);
-      assertTrue(pos.equals(9));
+      assertEquals(9, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t6, 2, 1);
-      assertTrue(pos.equals(10));
+      assertEquals(10, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t6, 3, 5);
-      assertTrue(pos.equals(23));
+      assertEquals(23, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t6, 7, 5);
-      assertTrue(pos.equals(59));
+      assertEquals(59, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t6, 9, 9);
-      assertTrue(pos.equals(81));
+      assertEquals(81, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t6, 10, 9);
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t6, 9, 10);
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t6, 10, 10);
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
 
       pos = emplacementManager.getPositionByCoordonnees(null, 1, 1);
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(new Terminale(), 1, 1);
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t1, null, 1);
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t1, 0, 1);
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t1, 1, null);
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(t1, 1, 0);
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
       pos = emplacementManager.getPositionByCoordonnees(null, null, null);
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
    }
 
    @Test
@@ -529,22 +525,22 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       // CAR-CAR carré 10-10
       final Terminale t1 = terminaleDao.findById(1);
       Integer pos = emplacementManager.getPositionByAdrl(t1, "A-A");
-      assertTrue(pos.equals(1));
+      assertEquals(1, (int) pos);
       pos = emplacementManager.getPositionByAdrl(t1, "E-F");
-      assertTrue(pos.equals(46));
+      assertEquals(46, (int) pos);
       pos = emplacementManager.getPositionByAdrl(t1, "J-J");
-      assertTrue(pos.equals(100));
+      assertEquals(100, (int) pos);
       // out 
       pos = emplacementManager.getPositionByAdrl(t1, "K-B");
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
       pos = emplacementManager.getPositionByAdrl(t1, "A-Y");
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
       // incoh
       pos = emplacementManager.getPositionByAdrl(t1, "A-10");
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
       // pos		
       pos = emplacementManager.getPositionByAdrl(t1, "10");
-      assertTrue(pos.equals(10));
+      assertEquals(10, (int) pos);
       boolean catched = false;
       try{
          pos = emplacementManager.getPositionByAdrl(t1, "A");
@@ -556,14 +552,14 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       // POS carré 10-10
       final Terminale t2 = terminaleDao.findById(2);
       pos = emplacementManager.getPositionByAdrl(t2, "1");
-      assertTrue(pos.equals(1));
+      assertEquals(1, (int) pos);
       pos = emplacementManager.getPositionByAdrl(t2, "42");
-      assertTrue(pos.equals(42));
+      assertEquals(42, (int) pos);
       pos = emplacementManager.getPositionByAdrl(t2, "99");
-      assertTrue(pos.equals(99));
+      assertEquals(99, (int) pos);
       // out 
       pos = emplacementManager.getPositionByAdrl(t2, "112");
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
       catched = false;
       try{
          pos = emplacementManager.getPositionByAdrl(t2, "A");
@@ -589,19 +585,19 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       // NUM-NUM carré 10-10
       final Terminale t4 = terminaleDao.findById(4);
       pos = emplacementManager.getPositionByAdrl(t4, "1-1");
-      assertTrue(pos.equals(1));
+      assertEquals(1, (int) pos);
       pos = emplacementManager.getPositionByAdrl(t4, "5-6");
-      assertTrue(pos.equals(46));
+      assertEquals(46, (int) pos);
       pos = emplacementManager.getPositionByAdrl(t4, "10-10");
-      assertTrue(pos.equals(100));
+      assertEquals(100, (int) pos);
       // out 
       pos = emplacementManager.getPositionByAdrl(t4, "11-2");
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
       pos = emplacementManager.getPositionByAdrl(t4, "1-22");
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
       // pos		
       pos = emplacementManager.getPositionByAdrl(t4, "44");
-      assertTrue(pos.equals(44));
+      assertEquals(44, (int) pos);
       catched = false;
       try{
          pos = emplacementManager.getPositionByAdrl(t4, "A-10");
@@ -620,23 +616,23 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       // CAR-NUM carré 9-9
       final Terminale t6 = terminaleDao.findById(6);
       pos = emplacementManager.getPositionByAdrl(t6, "B-2");
-      assertTrue(pos.equals(11));
+      assertEquals(11, (int) pos);
       pos = emplacementManager.getPositionByAdrl(t6, "F-9");
-      assertTrue(pos.equals(54));
+      assertEquals(54, (int) pos);
       pos = emplacementManager.getPositionByAdrl(t6, "I-9");
-      assertTrue(pos.equals(81));
+      assertEquals(81, (int) pos);
       pos = emplacementManager.getPositionByAdrl(t6, "I-10");
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
       pos = emplacementManager.getPositionByAdrl(t6, "M-1");
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
       pos = emplacementManager.getPositionByAdrl(t6, "2-2");
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
       // pos		
       pos = emplacementManager.getPositionByAdrl(t6, "12");
-      assertTrue(pos.equals(12));
+      assertEquals(12, (int) pos);
       // pos out
       pos = emplacementManager.getPositionByAdrl(t6, "100");
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
       catched = false;
       try{
          pos = emplacementManager.getPositionByAdrl(t6, "A-A");
@@ -655,22 +651,22 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       // NUM-CAR triangle 67
       final Terminale t5 = terminaleDao.findById(5);
       pos = emplacementManager.getPositionByAdrl(t5, "2-C");
-      assertTrue(pos.equals(5));
+      assertEquals(5, (int) pos);
       pos = emplacementManager.getPositionByAdrl(t5, "6-B");
-      assertTrue(pos.equals(22));
+      assertEquals(22, (int) pos);
       pos = emplacementManager.getPositionByAdrl(t5, "10-I");
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
       pos = emplacementManager.getPositionByAdrl(t5, "2-10");
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
       // out
       pos = emplacementManager.getPositionByAdrl(t5, "2-I");
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
       // pos		
       pos = emplacementManager.getPositionByAdrl(t5, "24");
-      assertTrue(pos.equals(24));
+      assertEquals(24, (int) pos);
       // pos out
       pos = emplacementManager.getPositionByAdrl(t5, "100");
-      assertTrue(pos.equals(0));
+      assertEquals(0, (int) pos);
 
       catched = false;
       try{
@@ -755,7 +751,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       final Emplacement e1 = emplacementManager.findByIdManager(1);
       Conteneur cont1 = emplacementManager.getConteneurManager(e1);
       assertNotNull(cont1);
-      assertTrue(cont1.getCode().equals("CC1"));
+      assertEquals("CC1", cont1.getCode());
 
       final Emplacement newE = new Emplacement();
       assertNull(emplacementManager.getConteneurManager(newE));
@@ -764,7 +760,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       newE.setTerminale(t1);
       cont1 = emplacementManager.getConteneurManager(newE);
       assertNotNull(cont1);
-      assertTrue(cont1.getCode().equals("CC1"));
+      assertEquals("CC1", cont1.getCode());
 
       assertNull(emplacementManager.getConteneurManager(null));
 
@@ -779,16 +775,16 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       final Terminale t1 = terminaleDao.findById(1);
       String adrl = emplacementManager.getTerminaleAdrlManager(t1);
       assertNotNull(adrl);
-      assertTrue(adrl.equals("CC1.R1.T1.BT1"));
+      assertEquals("CC1.R1.T1.BT1", adrl);
 
       final Terminale t2 = terminaleDao.findById(6);
       adrl = emplacementManager.getTerminaleAdrlManager(t2);
       assertNotNull(adrl);
-      assertTrue(adrl.equals("CC1.R2.T6.BT1"));
+      assertEquals("CC1.R2.T6.BT1", adrl);
 
       adrl = emplacementManager.getTerminaleAdrlManager(null);
       assertNotNull(adrl);
-      assertTrue(adrl.equals(""));
+      assertEquals("", adrl);
 
    }
 
@@ -801,47 +797,47 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       final Emplacement e1 = emplacementManager.findByIdManager(1);
       String adrl = emplacementManager.getAdrlManager(e1, false);
       assertNotNull(adrl);
-      assertTrue(adrl.equals("CC1.R1.T1.BT1.A-A"));
+      assertEquals("CC1.R1.T1.BT1.A-A", adrl);
 
       adrl = emplacementManager.getAdrlManager(e1, true);
       assertNotNull(adrl);
-      assertTrue(adrl.equals("CC1.1.1.1.1"));
+      assertEquals("CC1.1.1.1.1", adrl);
 
       final Emplacement newE = new Emplacement();
       adrl = emplacementManager.getAdrlManager(newE, false);
       assertNotNull(adrl);
-      assertTrue(adrl.equals(""));
+      assertEquals("", adrl);
 
       adrl = emplacementManager.getAdrlManager(newE, true);
       assertNotNull(adrl);
-      assertTrue(adrl.equals(""));
+      assertEquals("", adrl);
 
       final Terminale t1 = terminaleDao.findById(1);
       newE.setTerminale(t1);
       adrl = emplacementManager.getAdrlManager(newE, false);
       assertNotNull(adrl);
-      assertTrue(adrl.equals(""));
+      assertEquals("", adrl);
 
       adrl = emplacementManager.getAdrlManager(newE, true);
       assertNotNull(adrl);
-      assertTrue(adrl.equals(""));
+      assertEquals("", adrl);
 
       newE.setPosition(15);
       adrl = emplacementManager.getAdrlManager(newE, false);
       assertNotNull(adrl);
-      assertTrue(adrl.equals("CC1.R1.T1.BT1.B-E"));
+      assertEquals("CC1.R1.T1.BT1.B-E", adrl);
 
       adrl = emplacementManager.getAdrlManager(newE, true);
       assertNotNull(adrl);
-      assertTrue(adrl.equals("CC1.R1.T1.BT1.B-E"));
+      assertEquals("CC1.R1.T1.BT1.B-E", adrl);
 
       adrl = emplacementManager.getAdrlManager(null, false);
       assertNotNull(adrl);
-      assertTrue(adrl.equals(""));
+      assertEquals("", adrl);
 
       adrl = emplacementManager.getAdrlManager(null, true);
       assertNotNull(adrl);
-      assertTrue(adrl.equals(""));
+      assertEquals("", adrl);
    }
 
    @Test
@@ -860,25 +856,25 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       emplList.add(e3);
       emplList.add(e5);
       results = emplacementManager.getNomsForEmplacementsManager(emplList);
-      assertTrue(results.size() == 4);
-      assertTrue(results.get(0).equals("PTRA.1.1"));
-      assertTrue(results.get(2).equals("PTRA.2"));
-      assertTrue(results.get(3).equals(""));
+      assertEquals(4, results.size());
+      assertEquals("PTRA.1.1", results.get(0));
+      assertEquals("PTRA.2", results.get(2));
+      assertEquals("", results.get(3));
 
       emplList = new ArrayList<>();
       emplList.add(e6);
       emplList.add(e5);
       results = emplacementManager.getNomsForEmplacementsManager(emplList);
-      assertTrue(results.size() == 2);
-      assertTrue(results.get(0).equals(""));
+      assertEquals(2, results.size());
+      assertEquals("", results.get(0));
 
       emplList.add(new Emplacement());
       results = emplacementManager.getNomsForEmplacementsManager(emplList);
-      assertTrue(results.size() == 3);
-      assertTrue(results.get(0).equals(""));
+      assertEquals(3, results.size());
+      assertEquals("", results.get(0));
 
       results = emplacementManager.getNomsForEmplacementsManager(null);
-      assertTrue(results.size() == 0);
+      assertEquals(0, results.size());
 
    }
 
@@ -898,25 +894,25 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       emplList.add(e3);
       emplList.add(e5);
       results = emplacementManager.getTypesForEmplacementsManager(emplList);
-      assertTrue(results.size() == 4);
-      assertTrue(results.get(0).equals("ADN"));
-      assertTrue(results.get(2).equals("CELLULES"));
-      assertTrue(results.get(3).equals(""));
+      assertEquals(4, results.size());
+      assertEquals("ADN", results.get(0));
+      assertEquals("CELLULES", results.get(2));
+      assertEquals("", results.get(3));
 
       emplList = new ArrayList<>();
       emplList.add(e6);
       emplList.add(e5);
       results = emplacementManager.getTypesForEmplacementsManager(emplList);
-      assertTrue(results.size() == 2);
-      assertTrue(results.get(0).equals(""));
+      assertEquals(2, results.size());
+      assertEquals("", results.get(0));
 
       emplList.add(new Emplacement());
       results = emplacementManager.getTypesForEmplacementsManager(emplList);
-      assertTrue(results.size() == 3);
-      assertTrue(results.get(0).equals(""));
+      assertEquals(3, results.size());
+      assertEquals("", results.get(0));
 
       results = emplacementManager.getTypesForEmplacementsManager(null);
-      assertTrue(results.size() == 0);
+      assertEquals(0, results.size());
 
    }
 
@@ -958,14 +954,14 @@ public class EmplacementManagerTest extends AbstractManagerTest4
          emplacementManager.createObjectManager(emp1, term, null);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("EmplacementDoublonFoundException")){
-            assertTrue(((EmplacementDoublonFoundException) e).getTerminale().equals(term));
-            assertTrue(((EmplacementDoublonFoundException) e).getPosition().equals(1));
+            assertEquals(((EmplacementDoublonFoundException) e).getTerminale(), term);
+            assertEquals(1, (int) ((EmplacementDoublonFoundException) e).getPosition());
             catched = true;
          }
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
 
       // on test la validation de la position
       emp1.setPosition(155);
@@ -978,7 +974,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
 
       // on test la validation du couple entite/objetId
       emp1.setPosition(55);
@@ -993,7 +989,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
 
       emp1.setEntite(null);
       emp1.setObjetId(null);
@@ -1003,7 +999,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       }catch(final ParseException e){
          e.printStackTrace();
       }
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
 
       // On test une insertion valide avec les assos non obligatoires à null
       emp1.setTerminale(term);
@@ -1012,15 +1008,15 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       emp1.setObjetId(null);
       emp1.setAdrl("ADRL");
       emplacementManager.createObjectManager(emp1, term, null);
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 8);
+      assertEquals(8, emplacementManager.findAllObjectsManager().size());
       final int id = emp1.getEmplacementId();
       // Vérification
       final Emplacement eTest = emplacementManager.findByIdManager(id);
       assertNotNull(eTest);
       assertNotNull(eTest.getTerminale());
-      assertTrue(eTest.getPosition() == 55);
+      assertEquals(55, (int) eTest.getPosition());
       assertTrue(eTest.getVide());
-      assertTrue(eTest.getAdrl().equals("ADRL"));
+      assertEquals("ADRL", eTest.getAdrl());
 
       // On test une insertion valide avec toutes les assos
       final Emplacement emp2 = new Emplacement();
@@ -1031,22 +1027,22 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       emp2.setEntite(ent);
       emp2.setAdrl("ADRL");
       emplacementManager.createObjectManager(emp2, term, ent);
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 9);
+      assertEquals(9, emplacementManager.findAllObjectsManager().size());
       final int id2 = emp2.getEmplacementId();
       // Vérification
       final Emplacement eTest2 = emplacementManager.findByIdManager(id2);
       assertNotNull(eTest2);
       assertNotNull(eTest2.getTerminale());
       assertNotNull(eTest2.getEntite());
-      assertTrue(eTest2.getPosition() == 56);
-      assertTrue(eTest2.getObjetId() == 3);
+      assertEquals(56, (int) eTest2.getPosition());
+      assertEquals(3, (int) eTest2.getObjetId());
       assertFalse(eTest2.getVide());
-      assertTrue(eTest2.getAdrl().equals("ADRL"));
+      assertEquals("ADRL", eTest2.getAdrl());
 
       // Suppression
       emplacementManager.removeObjectManager(eTest);
       emplacementManager.removeObjectManager(eTest2);
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
    }
 
    private void updateObjectManagerTest() throws ParseException{
@@ -1071,7 +1067,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 8);
+      assertEquals(8, emplacementManager.findAllObjectsManager().size());
 
       // on test l'update d'un doublon
       empUp1.setPosition(1);
@@ -1084,7 +1080,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 8);
+      assertEquals(8, emplacementManager.findAllObjectsManager().size());
 
       // on test la validation de la position
       empUp1.setPosition(102);
@@ -1097,7 +1093,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 8);
+      assertEquals(8, emplacementManager.findAllObjectsManager().size());
 
       // on test la validation du couple entite/objetId
       empUp1.setPosition(75);
@@ -1112,7 +1108,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 8);
+      assertEquals(8, emplacementManager.findAllObjectsManager().size());
 
       empUp1.setEntite(null);
       empUp1.setObjetId(null);
@@ -1122,7 +1118,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       }catch(final ParseException e){
          e.printStackTrace();
       }
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 8);
+      assertEquals(8, emplacementManager.findAllObjectsManager().size());
 
       // On test un update valide avec les assos non obligatoires à null
       empUp1.setTerminale(term);
@@ -1130,14 +1126,14 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       empUp1.setObjetId(null);
       empUp1.setAdrl("ADRL");
       emplacementManager.updateObjectManager(empUp1, term, null);
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 8);
+      assertEquals(8, emplacementManager.findAllObjectsManager().size());
       // Vérification
       final Emplacement eTest = emplacementManager.findByIdManager(id1);
       assertNotNull(eTest);
       assertNotNull(eTest.getTerminale());
-      assertTrue(eTest.getPosition() == 75);
+      assertEquals(75, (int) eTest.getPosition());
       assertTrue(eTest.getVide());
-      assertTrue(eTest.getAdrl().equals("ADRL"));
+      assertEquals("ADRL", eTest.getAdrl());
 
       // On test une insertion valide avec toutes les assos
       final Emplacement empUp2 = emplacementManager.findByIdManager(id1);
@@ -1148,26 +1144,26 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       empUp2.setEntite(ent);
       empUp2.setAdrl("ADRL");
       emplacementManager.updateObjectManager(empUp2, term, ent);
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 8);
+      assertEquals(8, emplacementManager.findAllObjectsManager().size());
       // Vérification
       final Emplacement eTest2 = emplacementManager.findByIdManager(id1);
       assertNotNull(eTest2);
       assertNotNull(eTest2.getTerminale());
       assertNotNull(eTest2.getEntite());
-      assertTrue(eTest2.getPosition() == 76);
-      assertTrue(eTest2.getObjetId() == 1);
+      assertEquals(76, (int) eTest2.getPosition());
+      assertEquals(1, (int) eTest2.getObjetId());
       assertFalse(eTest2.getVide());
-      assertTrue(eTest2.getAdrl().equals("ADRL"));
+      assertEquals("ADRL", eTest2.getAdrl());
 
       // Suppression
       emplacementManager.removeObjectManager(eTest);
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
    }
 
    private void removeObjectManagerTest(){
       // test de la suppression d'un objet null
       emplacementManager.removeObjectManager(null);
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
 
       // test de la suppression d'un objet utilisé
       final Emplacement emp1 = emplacementManager.findByIdManager(1);
@@ -1180,7 +1176,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
          }
       }
       assertTrue(catched);
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
    }
 
    /**
@@ -1214,7 +1210,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
 
       // on test la création avec un nombre null
       try{
@@ -1222,7 +1218,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       }catch(final Exception e){
          e.printStackTrace();
       }
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
 
       // on test la création avec un nombre négatif
       try{
@@ -1230,7 +1226,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       }catch(final Exception e){
          e.printStackTrace();
       }
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
 
       // on test la création multiple avec des doublons
       try{
@@ -1242,25 +1238,25 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
 
       // on teste une création multiple valide
       final List<Emplacement> list = emplacementManager.createMultiObjetcsManager(t2, 10);
-      assertTrue(list.size() == 10);
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 17);
+      assertEquals(10, list.size());
+      assertEquals(17, emplacementManager.findAllObjectsManager().size());
       assertNotNull(list.get(0));
       assertNotNull(list.get(0).getTerminale());
       assertNull(list.get(0).getEntite());
-      assertTrue(list.get(0).getPosition() == 1);
+      assertEquals(1, (int) list.get(0).getPosition());
       assertNull(list.get(0).getObjetId());
       assertTrue(list.get(0).getVide());
-      assertTrue(list.get(0).getAdrl().equals("CC1.R1.T1.BT2.1"));
+      assertEquals("CC1.R1.T1.BT2.1", list.get(0).getAdrl());
       assertNull(list.get(0).getAdrp());
 
       for(int i = 0; i < list.size(); i++){
          emplacementManager.removeObjectManager(list.get(i));
       }
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
    }
 
    /**
@@ -1354,12 +1350,12 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       // on fait des tests avec une liste mal remplie
       emplacementManager.deplacerMultiEmplacementsManager(null, u);
       assertEquals(7, emplacementManager.findAllObjectsManager().size());
-      assertTrue(getOperationManager().findAllObjectsManager().size() == 19);
+      assertEquals(19, getOperationManager().findAllObjectsManager().size());
 
       List<Emplacement> list = new ArrayList<>();
       emplacementManager.deplacerMultiEmplacementsManager(list, u);
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 7);
-      assertTrue(getOperationManager().findAllObjectsManager().size() == 19);
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
+      assertEquals(19, getOperationManager().findAllObjectsManager().size());
 
       list.add(new Emplacement());
       list.add(null);
@@ -1370,8 +1366,8 @@ public class EmplacementManagerTest extends AbstractManagerTest4
          catched = true;
       }
       assertTrue(catched);
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 7);
-      assertTrue(getOperationManager().findAllObjectsManager().size() == 19);
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
+      assertEquals(19, getOperationManager().findAllObjectsManager().size());
 
       // on teste avec une nouvelle position invalide
       list = new ArrayList<>();
@@ -1387,10 +1383,10 @@ public class EmplacementManagerTest extends AbstractManagerTest4
          }
       }
       assertTrue(catched);
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 7);
-      assertTrue(getOperationManager().findAllObjectsManager().size() == 19);
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
+      assertEquals(19, getOperationManager().findAllObjectsManager().size());
       Emplacement e1Test = emplacementManager.findByIdManager(1);
-      assertTrue(e1Test.getPosition().equals(1));
+      assertEquals(1, (int) e1Test.getPosition());
 
       // on fait un test valide
       e1 = emplacementManager.findByIdManager(1);
@@ -1407,20 +1403,20 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       list.add(e2);
       list.add(e3);
       emplacementManager.deplacerMultiEmplacementsManager(list, u);
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
       e1Test = emplacementManager.findByIdManager(1);
-      assertTrue(e1Test.getPosition().equals(pos2));
+      assertEquals(e1Test.getPosition(), pos2);
       Emplacement e2Test = emplacementManager.findByIdManager(2);
-      assertTrue(e2Test.getPosition().equals(pos1));
+      assertEquals(e2Test.getPosition(), pos1);
       Emplacement e3Test = emplacementManager.findByIdManager(3);
-      assertTrue(e3Test.getPosition().equals(25));
-      assertTrue(getOperationManager().findAllObjectsManager().size() == 22);
+      assertEquals(25, (int) e3Test.getPosition());
+      assertEquals(22, getOperationManager().findAllObjectsManager().size());
       final Object o1 = entiteManager.findObjectByEntiteAndIdManager(e1.getEntite(), e1.getObjetId());
-      assertTrue(getOperationManager().findByObjectManager(o1).size() == 3);
+      assertEquals(3, getOperationManager().findByObjectManager(o1).size());
       final Object o2 = entiteManager.findObjectByEntiteAndIdManager(e2.getEntite(), e2.getObjetId());
-      assertTrue(getOperationManager().findByObjectManager(o2).size() == 2);
+      assertEquals(2, getOperationManager().findByObjectManager(o2).size());
       final Object o3 = entiteManager.findObjectByEntiteAndIdManager(e3.getEntite(), e3.getObjetId());
-      assertTrue(getOperationManager().findByObjectManager(o3).size() == 2);
+      assertEquals(2, getOperationManager().findByObjectManager(o3).size());
 
       // on revert le test
       e1.setPosition(pos1);
@@ -1431,21 +1427,21 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       list.add(e2);
       list.add(e3);
       emplacementManager.deplacerMultiEmplacementsManager(list, u);
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
       e1Test = emplacementManager.findByIdManager(1);
-      assertTrue(e1Test.getPosition().equals(pos1));
+      assertEquals(e1Test.getPosition(), pos1);
       e2Test = emplacementManager.findByIdManager(2);
-      assertTrue(e2Test.getPosition().equals(pos2));
+      assertEquals(e2Test.getPosition(), pos2);
       e3Test = emplacementManager.findByIdManager(3);
-      assertTrue(e3Test.getPosition().equals(pos3));
-      assertTrue(getOperationManager().findAllObjectsManager().size() == 25);
+      assertEquals(e3Test.getPosition(), pos3);
+      assertEquals(25, getOperationManager().findAllObjectsManager().size());
 
       // supression des opérations créées
       final List<Operation> ops = getOperationManager().findByUtilisateurManager(u);
       for(int i = 0; i < ops.size(); i++){
          getOperationManager().removeObjectManager(ops.get(i));
       }
-      assertTrue(getOperationManager().findAllObjectsManager().size() == 19);
+      assertEquals(19, getOperationManager().findAllObjectsManager().size());
    }
 
    /**
@@ -1491,7 +1487,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
 
       // on test la validation du couple entite/objetId
       eError.setPosition(55);
@@ -1506,7 +1502,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
       eError.setEntite(null);
       eError.setObjetId(null);
 
@@ -1521,7 +1517,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
 
       eError.setPosition(55);
       eError.setAdrl("%$*g¤d");
@@ -1531,7 +1527,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       }catch(final ValidationException ve){
          catched = true;
       }
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
    }
 
    /**
@@ -1568,7 +1564,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       catched = false;
       assertEquals(7, emplacementManager.findAllObjectsManager().size());
       Emplacement eTest4 = emplacementManager.findByIdManager(4);
-      assertTrue(eTest4.getPosition().equals(10));
+      assertEquals(10, (int) eTest4.getPosition());
 
       eNew.setTerminale(t);
       eNew.setEntite(entite);
@@ -1576,21 +1572,21 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       eNew.setPosition(20);
       eNew.setVide(false);
       emplacementManager.saveMultiEmplacementsManager(liste);
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 8);
+      assertEquals(8, emplacementManager.findAllObjectsManager().size());
       eTest4 = emplacementManager.findByIdManager(4);
-      assertTrue(eTest4.getPosition().equals(15));
+      assertEquals(15, (int) eTest4.getPosition());
 
       final Integer idEmp = eNew.getEmplacementId();
       final Emplacement eTestNew = emplacementManager.findByIdManager(idEmp);
-      assertTrue(eTestNew.getPosition().equals(20));
+      assertEquals(20, (int) eTestNew.getPosition());
 
       eTest4.setPosition(10);
       emplacementManager.updateObjectManager(eTest4, eTest4.getTerminale(), eTest4.getEntite());
       eTest4 = emplacementManager.findByIdManager(4);
-      assertTrue(eTest4.getPosition().equals(10));
+      assertEquals(10, (int) eTest4.getPosition());
 
       emplacementManager.removeObjectManager(eTestNew);
-      assertTrue(emplacementManager.findAllObjectsManager().size() == 7);
+      assertEquals(7, emplacementManager.findAllObjectsManager().size());
    }
 
 }

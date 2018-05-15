@@ -78,9 +78,8 @@ public class Fantome
    public String toString(){
       if(this.nom != null){
          return "{Fantome : " + this.nom + "}";
-      }else{
-         return "{Empty Operation}";
       }
+      return "{Empty Operation}";
    }
 
    @Id

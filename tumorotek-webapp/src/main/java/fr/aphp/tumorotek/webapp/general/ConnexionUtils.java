@@ -45,7 +45,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.zkoss.util.resource.Labels;
@@ -70,13 +70,12 @@ import fr.aphp.tumorotek.utils.Utils;
  */
 public final class ConnexionUtils
 {
-
    /**
     * Cree la table de catalogues passée en variable de session
     * qui sera utilisée lors de l'affichage des tooltips.
-    * @param banque
+    * @param banques
+    * @param sess
     */
-   
    public static void setSessionCatalogues(final List<Banque> banques, final Map<String, Object> sess){
 
       final Map<String, Catalogue> catsMap = new HashMap<>();
@@ -215,7 +214,7 @@ public final class ConnexionUtils
       // EMETTEURS
       // on récupère la propriété définissant les interfaçages entrant
       String interfacages = null;
-      if(res.containsKey("INTERFACAGES")){
+      if(null != res && res.containsKey("INTERFACAGES")){
          interfacages = res.getString("INTERFACAGES");
       }
       Hashtable<Integer, List<Integer>> hashInterfacages = null;
@@ -240,7 +239,7 @@ public final class ConnexionUtils
       // on récupère la propriété définissant les interfaçages sortant
       interfacages = null;
       hashInterfacages = null;
-      if(res.containsKey("INTERFACAGES_OUT")){
+      if(null != res && res.containsKey("INTERFACAGES_OUT")){
          interfacages = res.getString("INTERFACAGES_OUT");
       }
       if(interfacages != null && !interfacages.equals("") && !interfacages.equals("false")){
@@ -280,9 +279,8 @@ public final class ConnexionUtils
 
       if(list.size() > 0){
          return list.get(0);
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**

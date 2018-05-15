@@ -76,7 +76,8 @@ public class CataloguesRowRenderer implements RowRenderer<Catalogue>
          // checkbox
          final Checkbox checkCat = new Checkbox();
          checkCat.addForward("onCheck", row.getParent(), "onCheckCatalogue", catalogue);
-         checkCat.setChecked(((List<Catalogue>) row.getParent().getAttribute("checkedCatalogues")).contains(data));
+         //List<Catalogue>
+         checkCat.setChecked(((List<?>) row.getParent().getAttribute("checkedCatalogues")).contains(data));
          final List<Catalogue> cats = new ArrayList<>();
          cats.add(catalogue);
          // checkCat.setDisabled(!ManagerLocator.getTableAnnotationManager()

@@ -186,9 +186,8 @@ public class Protocole implements java.io.Serializable, TKThesaurusObject
    public String toString(){
       if(this.nom != null){
          return "{" + this.nom + "}";
-      }else{
-         return "{Empty Protocole}";
       }
+      return "{Empty Protocole}";
    }
 
    @Override

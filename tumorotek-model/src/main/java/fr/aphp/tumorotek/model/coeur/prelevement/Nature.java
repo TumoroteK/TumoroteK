@@ -88,9 +88,8 @@ public class Nature implements Serializable, TKThesaurusObject
    public String toString(){
       if(this.nature != null){
          return "{" + this.nature + "}";
-      }else{
-         return "{Empty Nature}";
       }
+      return "{Empty Nature}";
    }
 
    @Id

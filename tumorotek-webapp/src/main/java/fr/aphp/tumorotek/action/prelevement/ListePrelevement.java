@@ -125,6 +125,11 @@ public class ListePrelevement extends AbstractListeController2
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
 
+      // recoit le renderer en argument
+      if(arg != null && arg.containsKey("renderer")){
+         setListObjectsRenderer((TKSelectObjectRenderer) arg.get("renderer"));
+      }
+      
       nbEchantillonsColumn.setSortAscending(comparatorAsc);
       nbEchantillonsColumn.setSortDescending(comparatorDesc);
 
@@ -133,7 +138,6 @@ public class ListePrelevement extends AbstractListeController2
       listObjectsRenderer.setEmetteurs(SessionUtils.getEmetteursInterfacages(sessionScope));
    }
 
-   @Override
    public void setListObjectsRenderer(final TKSelectObjectRenderer listObjectsRenderer){
       this.listObjectsRenderer = (PrelevementRowRenderer) listObjectsRenderer;
    }

@@ -152,9 +152,8 @@ public class AdicapGroupe implements Serializable
       final AdicapGroupe test = (AdicapGroupe) obj;
       if(this.adicapGroupeId != null){
          return this.adicapGroupeId.equals(test.adicapGroupeId);
-      }else{ //impossible
-         return false;
       }
+      return false;
    }
 
    /**

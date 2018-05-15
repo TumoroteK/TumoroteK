@@ -171,8 +171,7 @@ public class FicheDeplacerEmplacements extends FicheTerminale
    private List<EmplacementDecorator> emplacementDepart = new ArrayList<>();
    private List<EmplacementDecorator> emplacementReserves = new ArrayList<>();
    private EmplacementDecorator selectedEmplacement;
-   private Hashtable<EmplacementDecorator, EmplacementDecorator> emplacementsDestDep =
-      new Hashtable<>();
+   private Hashtable<EmplacementDecorator, EmplacementDecorator> emplacementsDestDep = new Hashtable<>();
    private List<Echantillon> echantillons = new ArrayList<>();
    private List<ProdDerive> derives = new ArrayList<>();
    // private HashMap<TKStockableObject, Emplacement> emplForRetours = 
@@ -302,7 +301,7 @@ public class FicheDeplacerEmplacements extends FicheTerminale
    /**
     * Change mode de la fiche en mode deplacement.
     */
-   public void switchToDeplacerMode(final Map<ScanTube, TKStockableObject> mismatches){
+   public void switchToDeplacerMode(){
       // mode déplacement
       selectionMode = false;
       deplacementMode = true;
@@ -354,28 +353,6 @@ public class FicheDeplacerEmplacements extends FicheTerminale
 
       getBinder().loadComponent(self);
 
-      // @since 2.1
-      // selectionne directement les emplacements à déplacer
-      //		if (mismatches != null) {
-      //			Div img;
-      //			Emplacement empl;
-      //			List<TKStockableObject> tkExistObjs = new ArrayList<TKStockableObject>();
-      //			for (ScanTube tube : mismatches.keySet()) {
-      //				tkExistObjs.clear();
-      //				tkExistObjs.addAll(ManagerLocator.getEchantillonManager()
-      //						.findByCodeInPlateformeManager(tube.getCode(), SessionUtils.getCurrentPlateforme()));
-      //				tkExistObjs.addAll(ManagerLocator.getProdDeriveManager()
-      //						.findByCodeInPlateformeManager(tube.getCode(), SessionUtils.getCurrentPlateforme()));
-      //				if (tkExistObjs.size() == 1) { // ssi un seul code trouvé
-      //					img = (EmplacementDiv) getImagesEmplacements().get(getEmplacementDecos()
-      //							.indexOf(new EmplacementDecorator(empl)));
-      //					setSelectedEmplacement(getEmplacementDecos().get(getEmplacementDecos()
-      //							.indexOf(new EmplacementDecorator(empl))));
-      //					handleImage(img);	
-      //				}
-      //							
-      //			}		
-      //		}
    }
 
    /**
@@ -580,9 +557,8 @@ public class FicheDeplacerEmplacements extends FicheTerminale
    public void onClick$validateSelection(){
       if(deplacements.size() < 1){
          throw new WrongValueException(validateSelection, Labels.getLabel("deplacer.emplacement.selection.error"));
-      }else{
-         switchToDeplacerMode(null);
       }
+         switchToDeplacerMode();
    }
 
    /**
@@ -886,8 +862,8 @@ public class FicheDeplacerEmplacements extends FicheTerminale
                null, ManagerLocator.getOperationTypeManager().findByNomLikeManager("creation", true).get(0))){
 
                // ouverture de la modale
-               openRetourFormModale(null, true, null, null, new ArrayList<>(getEmplForRetours().keySet()),
-                  getEmplForRetours(), null, null, null, null, Labels.getLabel("ficheRetour.deplacement"), null);
+               openRetourFormModale(null, true, null, null, new ArrayList<>(getEmplForRetours().keySet()), getEmplForRetours(),
+                  null, null, null, null, Labels.getLabel("ficheRetour.deplacement"), null);
             }
          }
 
@@ -927,29 +903,6 @@ public class FicheDeplacerEmplacements extends FicheTerminale
          ManagerLocator.getEmplacementManager().deplacerMultiEmplacementsManager(emplacementsFinaux,
             SessionUtils.getLoggedUser(sessionScope));
 
-         //		} catch (ValidationException ve) {
-         //			errorMsg.add("- Erreur lors de la validation.");
-         //		} catch (InvalidPositionException ipose) {
-         //			errorMsg.add("- Erreur sur la " 
-         //					+ "position d'un emplacement.");
-         //		}
-         //		
-         //		// s'il y a des erreurs, on fait apparaître une fenêtre contenant
-         //		// la liste de celles-ci
-         //		if (errorMsg.size() > 0) {
-         //			// ferme wait message
-         //			Clients.clearBusy();
-         //			
-         //			StringBuffer sb = new StringBuffer();
-         //			for (int i = 0; i < errorMsg.size(); i++) {
-         //				sb.append(errorMsg.get(i));
-         //				if (i < errorMsg.size() - 1) {
-         //					sb.append("\n");
-         //				}
-         //			}
-         //			Messagebox.show(sb.toString(), "Error", 
-         //					Messagebox.OK, Messagebox.ERROR);
-         //		} else {			
          // pour chaque emplacement, on maj l'objet contenu
          for(int i = 0; i < emplacementsFinaux.size(); i++){
             final Emplacement empl = emplacementsFinaux.get(i);
@@ -984,30 +937,28 @@ public class FicheDeplacerEmplacements extends FicheTerminale
             ManagerLocator.getXmlUtils().addBoite(page, listeBoitesArrivee.get(i), adrImages.toString());
          }
 
-         if(doc != null){
-            // Transformation du document en fichier
-            byte[] dl = null;
-            try{
-               dl = ManagerLocator.getXmlUtils().creerBoiteHtml(doc);
-            }catch(final Exception e){
-               log.error(e);
-            }
+         // Transformation du document en fichier
+         byte[] dl = null;
+         try{
+            dl = ManagerLocator.getXmlUtils().creerBoiteHtml(doc);
+         }catch(final Exception e){
+            log.error(e);
+         }
 
-            // envoie du fichier à imprimer à l'utilisateur
-            if(dl != null){
-               // si c'est au format html, on va ouvrir une nouvelle
-               // fenêtre
-               try{
-                  sessionScope.put("File", dl);
-                  execution.sendRedirect("/impression", "_blank");
-               }catch(final Exception e){
-                  if(sessionScope.containsKey("File")){
-                     sessionScope.remove("File");
-                     dl = null;
-                  }
+         // envoie du fichier à imprimer à l'utilisateur
+         if(dl != null){
+            // si c'est au format html, on va ouvrir une nouvelle
+            // fenêtre
+            try{
+               sessionScope.put("File", dl);
+               execution.sendRedirect("/impression", "_blank");
+            }catch(final Exception e){
+               if(sessionScope.containsKey("File")){
+                  sessionScope.remove("File");
+                  dl = null;
                }
-               dl = null;
             }
+            dl = null;
          }
       }catch(final Exception e){
          // ferme wait message
@@ -1616,18 +1567,16 @@ public class FicheDeplacerEmplacements extends FicheTerminale
    public String getValueAbscisse(final Integer num){
       if(terminale.getTerminaleNumerotation().getColonne().equals("CAR")){
          return Utils.createListChars(num, null, new ArrayList<String>()).get(num - 1);
-      }else{
-         return String.valueOf(num);
       }
+      return String.valueOf(num);
    }
 
    @Override
    public String getValueOrdonnee(final Integer num){
       if(terminale.getTerminaleNumerotation().getLigne().equals("CAR")){
          return Utils.createListChars(num, null, new ArrayList<String>()).get(num - 1);
-      }else{
-         return String.valueOf(num);
       }
+      return String.valueOf(num);
    }
 
    /**
@@ -2245,15 +2194,6 @@ public class FicheDeplacerEmplacements extends FicheTerminale
    }
 
    /**
-    * Méthode qui permet d'afficher la page d'impression des déplacements.
-    */
-   public void createHtmlToPrint(final List<BoiteImpression> listeBoitesDepart, final List<BoiteImpression> listeBoitesArrivee){
-
-      //Document doc = null;
-
-   }
-
-   /**
     * Méthode qui va créer la liste des boites de départ des déplacements.
     * @return
     */
@@ -2525,10 +2465,10 @@ public class FicheDeplacerEmplacements extends FicheTerminale
                   // ajout de l'élément à la liste des éléments
                   // a extraire
                   final List<String> elements = new ArrayList<>();
-                  if(typeEntite.equals("Echantillon")){
+                  if(null != echan && typeEntite.equals("Echantillon")){
                      elements.add(ObjectTypesFormatters.getLabel("impression.boite.numero.echantillon",
                         new String[] {"1", echan.getCode()}));
-                  }else{
+                  }else if(null != derive){
                      elements.add(ObjectTypesFormatters.getLabel("impression.boite.numero.prodDerive",
                         new String[] {"1", derive.getCode()}));
                   }
@@ -2550,10 +2490,10 @@ public class FicheDeplacerEmplacements extends FicheTerminale
                   // éléments à extraire
                   final Integer pos = bi.getPositions().size() + 1;
                   bi.getPositions().add(empl.getPosition());
-                  if(typeEntite.equals("Echantillon")){
+                  if(null != echan && typeEntite.equals("Echantillon")){
                      bi.getElements().add(ObjectTypesFormatters.getLabel("impression.boite.numero.echantillon",
                         new String[] {pos.toString(), echan.getCode()}));
-                  }else{
+                  }else if(null != derive){
                      bi.getElements().add(ObjectTypesFormatters.getLabel("impression.boite.numero.prodDerive",
                         new String[] {pos.toString(), derive.getCode()}));
                   }

@@ -198,9 +198,8 @@ public class CodeDossierManagerImpl implements CodeDossierManager
    public boolean findDoublonManager(final CodeDossier dos){
       if(dos.getCodeDossierId() == null){
          return codeDossierDao.findAll().contains(dos);
-      }else{
-         return codeDossierDao.findByExcludedId(dos.getCodeDossierId()).contains(dos);
       }
+      return codeDossierDao.findByExcludedId(dos.getCodeDossierId()).contains(dos);
    }
 
    @Override

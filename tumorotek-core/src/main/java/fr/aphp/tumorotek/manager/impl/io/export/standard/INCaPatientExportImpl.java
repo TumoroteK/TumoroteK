@@ -60,18 +60,16 @@ public class INCaPatientExportImpl implements IncaPatientExport
    public String getPatientId(final Patient pat){
       if(pat.getPatientId() != null){
          return pat.getPatientId().toString();
-      }else{
-         throw new ItemException(2, "Identifiant patient obligatoire manquant");
       }
+      throw new ItemException(2, "Identifiant patient obligatoire manquant");
    }
 
    @Override
    public String getDateNaissance(final Patient pat, final DateFormat df){
       if(pat.getDateNaissance() != null){
          return df.format(pat.getDateNaissance());
-      }else{
-         throw new ItemException(2, "Date de naissance manquante");
       }
+      throw new ItemException(2, "Date de naissance manquante");
    }
 
    @Override
@@ -79,9 +77,8 @@ public class INCaPatientExportImpl implements IncaPatientExport
 
       if(pat.getSexe() != null && pat.getSexe().matches("M|F")){
          return pat.getSexe();
-      }else{
-         return "I";
       }
+      return "I";
    }
 
    @Override

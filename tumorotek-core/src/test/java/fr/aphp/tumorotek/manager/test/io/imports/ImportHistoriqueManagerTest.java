@@ -183,7 +183,7 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest
     */
    public void testFindAll(){
       final List<ImportHistorique> list = importHistoriqueManager.findAllObjectsManager();
-      assertTrue(list.size() == 3);
+      assertEquals(3, list.size());
    }
 
    /**
@@ -436,7 +436,7 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest
       cal.setTime(date);
       pat.setDateNaissance(cal.getTime());
       patientManager.createOrUpdateObjectManager(pat, null, null, null, null, null, null, null, u, "creation", null, false);
-      assertTrue(patientManager.findAllObjectsManager().size() == 6);
+      assertEquals(6, patientManager.findAllObjectsManager().size());
       final Importation i1 = new Importation();
       i1.setImportHistorique(ih1);
       i1.setEntite(e1);
@@ -448,7 +448,7 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest
       prlvt.setCode("TMP");
       prelevementManager.createObjectManager(prlvt, banque, nature, null, consentType, null, null, null, null, null, null, null,
          null, null, null, null, u, false, null, false);
-      assertTrue(prelevementManager.findAllObjectsManager().size() == 6);
+      assertEquals(6, prelevementManager.findAllObjectsManager().size());
       final Importation i2 = new Importation();
       i2.setImportHistorique(ih1);
       i2.setEntite(e2);
@@ -460,7 +460,7 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest
       echan.setCode("RRRRRR");
       echantillonManager.createObjectManager(echan, banque, null, null, objetStatutDao.findById(4), null, eType, null, null, null,
          null, null, null, null, u, false, null, false);
-      assertTrue(echantillonManager.findAllObjectsManager().size() == 5);
+      assertEquals(5, echantillonManager.findAllObjectsManager().size());
       final Importation i3 = new Importation();
       i3.setImportHistorique(ih1);
       i3.setEntite(e3);
@@ -472,7 +472,7 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest
       derive.setCode("jhosbj");
       prodDeriveManager.createObjectManager(derive, banque, pType, objetStatutDao.findById(4), null, null, null, null, null, null,
          null, null, null, null, null, u, false, null, false);
-      assertTrue(prodDeriveManager.findAllObjectsManager().size() == 5);
+      assertEquals(5, prodDeriveManager.findAllObjectsManager().size());
       final Importation i4 = new Importation();
       i4.setImportHistorique(ih1);
       i4.setEntite(e8);
@@ -481,7 +481,7 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest
 
       // Historique
       importHistoriqueManager.createObjectManager(ih1, it1, u, importations);
-      assertTrue(importationDao.findAll().size() == 6);
+      assertEquals(6, importationDao.findAll().size());
 
       // Suppression
       patientManager.removeObjectManager(pat, null, u, null);
@@ -489,11 +489,11 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest
       echantillonManager.removeObjectManager(echan, null, u, null);
       prodDeriveManager.removeObjectManager(derive, null, u, null);
 
-      assertTrue(patientManager.findAllObjectsManager().size() == 5);
-      assertTrue(prelevementManager.findAllObjectsManager().size() == 5);
-      assertTrue(echantillonManager.findAllObjectsManager().size() == 4);
-      assertTrue(prodDeriveManager.findAllObjectsManager().size() == 4);
-      assertTrue(importationDao.findAll().size() == 2);
+      assertEquals(5, patientManager.findAllObjectsManager().size());
+      assertEquals(5, prelevementManager.findAllObjectsManager().size());
+      assertEquals(4, echantillonManager.findAllObjectsManager().size());
+      assertEquals(4, prodDeriveManager.findAllObjectsManager().size());
+      assertEquals(2, importationDao.findAll().size());
 
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.add(pat);
@@ -503,7 +503,7 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest
       cleanUpFantomes(fs);
 
       importHistoriqueManager.removeObjectManager(ih1);
-      assertTrue(importHistoriqueManager.findAllObjectsManager().size() == 3);
+      assertEquals(3, importHistoriqueManager.findAllObjectsManager().size());
    }
 
    public void testFindPrelevementByImportHistoriqueManager(){

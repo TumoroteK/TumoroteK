@@ -39,7 +39,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -53,7 +53,6 @@ import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.prelevement.RisqueValidator;
-import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
@@ -98,18 +97,17 @@ public class RisqueManagerImpl implements RisqueManager
    }
 
    @Override
-   public void createObjectManager(final Object obj){
+   public void createObjectManager(final Risque obj){
 
-      final Risque rs = (Risque) obj;
+      final Risque rs = obj;
 
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(rs.getPlateforme() == null){
          log.warn("Objet obligatoire Plateforme " + "manquant lors de la creation " + "d'un objet Risque");
          throw new RequiredObjectIsNullException("Risque", "creation", "Plateforme");
-      }else{
-         rs.setPlateforme(plateformeDao.mergeObject(rs.getPlateforme()));
       }
+      rs.setPlateforme(plateformeDao.mergeObject(rs.getPlateforme()));
 
       BeanValidator.validateObject(rs, new Validator[] {risqueValidator});
       if(!findDoublonManager(rs)){
@@ -122,10 +120,10 @@ public class RisqueManagerImpl implements RisqueManager
    }
 
    @Override
-   public void updateObjectManager(final Object obj){
+   public void updateObjectManager(final Risque obj){
       BeanValidator.validateObject(obj, new Validator[] {risqueValidator});
       if(!findDoublonManager(obj)){
-         risqueDao.updateObject((Risque) obj);
+         risqueDao.updateObject(obj);
          log.info("Modification objet Risque " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet Risque " + obj.toString());
@@ -155,44 +153,35 @@ public class RisqueManagerImpl implements RisqueManager
    }
 
    @Override
-   public void removeObjectManager(final Object obj){
+   public void removeObjectManager(final Risque obj){
       if(obj != null){
-         //			if (!isUsedObjectManager(obj)) {
-         risqueDao.removeObject(((Risque) obj).getRisqueId());
+         risqueDao.removeObject(obj.getRisqueId());
          log.info("Suppression objet Risque " + obj.toString());
-         //			} else {
-         //				log.warn("Suppression objet Risque " + obj.toString()
-         //						+ " impossible car est reference (par Prelevement)");
-         //				throw new ObjectUsedException("thesaurus.deletion.isUsed", 
-         //																	false);
-         //			}
       }else{
          log.warn("Suppression d'un Risque null");
       }
    }
 
    @Override
-   public boolean findDoublonManager(final Object o){
+   public boolean findDoublonManager(final Risque o){
       if(o != null){
-         final Risque risque = (Risque) o;
+         final Risque risque = o;
          if(risque.getRisqueId() == null){
             return risqueDao.findAll().contains(risque);
-         }else{
-            return risqueDao.findByExcludedId(risque.getRisqueId()).contains(risque);
          }
-      }else{
-         return false;
+         return risqueDao.findByExcludedId(risque.getRisqueId()).contains(risque);
       }
+      return false;
    }
 
    @Override
-   public boolean isUsedObjectManager(final Object o){
-      final Risque risque = risqueDao.mergeObject((Risque) o);
+   public boolean isUsedObjectManager(final Risque o){
+      final Risque risque = risqueDao.mergeObject(o);
       return risque.getPrelevements().size() > 0;
    }
 
    @Override
-   public List<TKThesaurusObject> findByOrderManager(final Plateforme pf){
+   public List<Risque> findByOrderManager(final Plateforme pf){
       return risqueDao.findByOrder(pf);
    }
 
@@ -206,13 +195,11 @@ public class RisqueManagerImpl implements RisqueManager
          final String q =
             "SELECT r FROM Risque r JOIN r.prelevements p " + " WHERE p.banque.plateforme = ? " + "AND p.maladie.patient = ?";
 
-         //EntityManager em = entityManagerFactory.createEntityManager();
          final EntityManager em = SharedEntityManagerCreator.createSharedEntityManager(entityManagerFactory);
-         final Query query = em.createQuery(q);
+         final TypedQuery<Risque> query = em.createQuery(q, Risque.class);
          query.setParameter(1, plateforme);
          query.setParameter(2, pat);
 
-         
          final List<Risque> results = query.getResultList();
          if(results.size() > 0){
             return results;
@@ -222,7 +209,7 @@ public class RisqueManagerImpl implements RisqueManager
    }
 
    @Override
-   public TKThesaurusObject findByIdManager(final Integer id){
+   public Risque findByIdManager(final Integer id){
       return risqueDao.findById(id);
    }
 }

@@ -272,9 +272,8 @@ public class Transformation implements Serializable
    public String toString(){
       if(this.entite != null && this.objetId != null){
          return "{" + this.objetId + ", " + this.entite.toString() + "(Entite)}";
-      }else{
-         return "{Empty transformation}";
       }
+      return "{Empty transformation}";
    }
 
    /**

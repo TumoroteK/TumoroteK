@@ -2,7 +2,6 @@ package fr.aphp.tumorotek.action.prelevement.bto;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 
@@ -14,7 +13,6 @@ import fr.aphp.tumorotek.action.patient.FicheMaladie;
 import fr.aphp.tumorotek.action.patient.FichePatientEdit;
 import fr.aphp.tumorotek.action.prelevement.FichePrelevementEdit;
 import fr.aphp.tumorotek.action.prelevement.ReferenceurPatient;
-import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.model.coeur.prelevement.LaboInter;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Transporteur;
@@ -22,19 +20,15 @@ import fr.aphp.tumorotek.model.systeme.Unite;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
- * TODO Javadoc
+ * Controller gérant la fiche en édition d'un prélèvement du contexte BTO.
+ *
+ * @author 
+ * @since 2.2
+ * @version 2.2
  */
 public class FichePrelevementEditBTO extends FichePrelevementEdit
 {
    private static final long serialVersionUID = 1L;
-
-   protected CalendarBox datePeremptionCalBox;
-
-   @Override
-   public void doAfterCompose(final Component comp) throws Exception{
-      super.doAfterCompose(comp);
-      datePeremptionCalBox.setDisabled(true);
-   }
 
    @Override
    public void initLists(){
@@ -150,47 +144,6 @@ public class FichePrelevementEditBTO extends FichePrelevementEdit
             }
          }
       }
-   }
-
-   /**
-    * Calcul automaticuament la date de péremption, 5 ans après la date de prélèvement
-    */
-   private void autoDatePeremption(){
-      final Calendar c = Calendar.getInstance();
-
-      if(null != datePrelCalBox.getValue()){
-         c.setTime(datePrelCalBox.getValue().getTime());
-         c.add(Calendar.YEAR, 5);
-
-         datePeremptionCalBox.setValue(c);
-         this.prelevement.setDatePeremption(datePeremptionCalBox.getValue());
-      }
-   }
-
-   /**
-    * à la sortie du champs Date de Prélèvement on calcul la date de péremption 5 ans après
-    */
-   @Override
-   public void onBlur$datePrelCalBox(){
-      super.onBlur$datePrelCalBox();
-      this.autoDatePeremption();
-   }
-
-   /**
-    * Lors du click sur la date de prélèvement, on défini la date de péremption 5 ans après
-    */
-   public void onClick$datePrelCalBox(){
-      this.autoDatePeremption();
-   }
-
-   /**
-    * Lorsque l'utilisateur sors du champs Date de Peremption
-    */
-   public void onBlur$datePeremptionCalBox(){
-      if(null != datePeremptionCalBox && null != datePeremptionCalBox.getValue()){
-         this.prelevement.setDatePeremption(datePeremptionCalBox.getValue());
-      }
-
    }
 
 }

@@ -1134,7 +1134,7 @@ public class FicheEnceinte extends AbstractFicheCombineStockageController
    
    public void initEditableMode(){
 
-      types = (List<EnceinteType>) ManagerLocator.getEnceinteTypeManager()
+      types = ManagerLocator.getEnceinteTypeManager()
          .findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       if(this.enceinte.getEnceinteType() != null){
          selectedEnceinteType = this.enceinte.getEnceinteType();

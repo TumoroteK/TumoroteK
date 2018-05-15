@@ -40,9 +40,10 @@ import java.io.InputStream;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -53,6 +54,7 @@ import fr.aphp.tumorotek.dao.annotation.TableAnnotationDao;
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.qualite.OperationTypeDao;
 import fr.aphp.tumorotek.manager.coeur.annotation.AnnotationValeurManager;
+import fr.aphp.tumorotek.manager.coeur.annotation.ChampCalculeManager;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.impl.coeur.CreateOrUpdateUtilities;
@@ -95,6 +97,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
    private FichierManager fichierManager;
    private EntiteManager entiteManager;
    private TableAnnotationDao tableAnnotationDao;
+   private ChampCalculeManager champCalculeManager;
 
    public AnnotationValeurManagerImpl(){}
 
@@ -134,13 +137,27 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
       this.tableAnnotationDao = tDao;
    }
 
+   public void setChampCalculeManager(final ChampCalculeManager champCalculeManager){
+      this.champCalculeManager = champCalculeManager;
+   }
+
+   @Override
+   public void createObject(AnnotationValeur annoVal){
+      annotationValeurDao.createObject(annoVal);
+   }
+
+   @Override
+   public void updateObject(AnnotationValeur annoVal){
+      annotationValeurDao.updateObject(annoVal);
+   }
+
    @Override
    public void createOrUpdateObjectManager(final AnnotationValeur valeur, final ChampAnnotation champ,
       final TKAnnotableObject obj, final Banque banque, final Fichier fichier, final Utilisateur utilisateur,
       final String operation, final String baseDir, final List<File> filesCreated, final List<File> filesToDelete){
 
       if(operation == null){
-         throw new NullPointerException("operation cannot be " + "set to null for createorUpdateMethod");
+         throw new NullPointerException("operation cannot be set to null for createorUpdateMethod");
       }
 
       if(fichier != null && valeur.getAnnotationValeurId() == null){
@@ -155,14 +172,6 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
 
             try{
                if(operation.equals("creation")){
-                  //						if (valeur.getFichier() != null) {
-                  //							valeur.getFichier().setPath(Utils
-                  //								.writeAnnoFilePath(baseDir, valeur.getBanque(), 
-                  //											valeur.getChampAnnotation(), obj));
-                  //							fichierManager
-                  //								.createObjectManager(valeur.getFichier(), 
-                  //											valeur.getStream(), filesCreated);
-                  //						}
 
                   annotationValeurDao.createObject(valeur);
                   log.info("Enregistrement objet AnnotationValeur " + valeur.toString());
@@ -171,11 +180,6 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
                      operationTypeDao.findByNom("Creation").get(0), utilisateur);
 
                }else{
-                  //						if (valeur.getFichier() != null) {
-                  //							fichierManager
-                  //								.updateObjectManager(valeur.getFichier(), 
-                  //									valeur.getStream(), filesCreated, filesToDelete);
-                  //						}
 
                   annotationValeurDao.updateObject(valeur);
                   log.info("Modification objet AnnotationValeur " + valeur.toString());
@@ -188,12 +192,6 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
                      Utils.writeAnnoFilePath(baseDir, valeur.getBanque(), valeur.getChampAnnotation(), fichier), filesCreated,
                      filesToDelete);
                   annotationValeurDao.updateObject(valeur);
-
-                  //						if (filesToDelete != null) {
-                  //							for (File f : filesToDelete) {
-                  //								f.delete();
-                  //							}
-                  //						}
                }
 
             }catch(final RuntimeException re){
@@ -228,9 +226,9 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
       String annotOperation = operation;
       final List<AnnotationValeur> valeursCreatedUpdated = new ArrayList<>();
       if(valeurs != null){
-         AnnotationValeur clone = null;
-         for(int i = 0; i < valeurs.size(); i++){
-            clone = valeurs.get(i).clone();
+         AnnotationValeur clone;
+         for(AnnotationValeur valeur : valeurs){
+            clone = valeur.clone();
             if(operation == null){
                if(clone.getAnnotationValeurId() != null){
                   annotOperation = "modification";
@@ -245,7 +243,6 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
             createOrUpdateObjectManager(clone, null, obj, null, clone.getFichier(), utilisateur, annotOperation, baseDir,
                filesCreated, filesToDelete);
             valeursCreatedUpdated.add(clone);
-
          }
          // operation associée
          if(!valeurs.isEmpty() && obj != null){
@@ -253,12 +250,6 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
                operationTypeDao.findByNom("Annotation").get(0), utilisateur);
          }
       }
-
-      //		if (filesToDelete != null) {
-      //			for (File f : filesToDelete) {
-      //				f.delete();
-      //			}
-      //		}
 
       return valeursCreatedUpdated;
    }
@@ -268,34 +259,8 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
       final TKAnnotableObject obj, final Utilisateur utilisateur) throws SQLException{
 
       if(valeurs != null){
-         // Statement stmt = null;
-         //PreparedStatement pstmtAnno = null;
-         //PreparedStatement pstmtOp = null;
-         //			ResultSet rs2 = null;
          final Integer maxAnnoId = jdbcSuite.getMaxAnnotationValeurId();
          try{
-            // stmt = DataSourceUtils.getConnection(dataSource)
-            //		.createStatement();
-            //				rs2 = stmt.executeQuery("select max(annotation_valeur_id)"
-            //						+ " from ANNOTATION_VALEUR");
-            //				rs2.first();
-            //				maxAnnoId = rs2.getInt(1);
-
-            //				String sql = "insert into ANNOTATION_VALEUR (ANNOTATION_VALEUR_ID, " 
-            //						+ "CHAMP_ANNOTATION_ID, OBJET_ID, BANQUE_ID, "
-            //						+ "ALPHANUM, BOOL, ANNO_DATE, "
-            //						+ "TEXTE, ITEM_ID) "
-            //						+ "values (?,?,?,?,?,?,?,?,?)";
-            //				
-            //				pstmtAnno = DataSourceUtils.getConnection(dataSource)
-            //						.prepareStatement(sql);
-            //				
-            //				String sql2 = "insert into OPERATION (UTILISATEUR_ID, " 
-            //						+ "OBJET_ID, ENTITE_ID, OPERATION_TYPE_ID, "
-            //						+ "DATE_, V1)"
-            //						+ "values (?,?,?,?,?,?)";		
-            //				pstmtOp = DataSourceUtils.getConnection(dataSource)
-            //						.prepareStatement(sql2);
 
             for(final AnnotationValeur av : valeurs){
 
@@ -341,32 +306,12 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
                   throwDoublonException();
                }
             }
-            // pstmtAnno.executeBatch();
-            // pstmtOp.executeBatch();
 
          }catch(final Exception e){
             e.printStackTrace();
-            // rollback create operation
             jdbcSuite.setMaxAnnotationValeurId(maxAnnoId);
             throw e;
-         }finally{
-            //				if (stmt != null) {
-            //					try { stmt.close(); 
-            //					} catch (Exception e) { stmt = null; }
-            //				}
-            //				if (pstmtAnno != null) {
-            //					try { pstmtAnno.close(); 
-            //					} catch (Exception e) { pstmtAnno = null; }
-            //				}
-            //				if (pstmtOp != null) {
-            //					try { pstmtOp.close(); 
-            //					} catch (Exception e) { pstmtOp = null; }
-            //				}
-            //				if (rs2 != null) {
-            //					try { rs2.close(); 
-            //					} catch (Exception e) { rs2 = null; }
-            //				}
-         }
+         }finally{}
       }
 
    }
@@ -386,7 +331,31 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
       log.debug("Recherche des AnnotationValeur par champ et Objet");
       List<AnnotationValeur> valeurs = new ArrayList<>();
       if(obj != null && champ != null && obj.getClass().getSimpleName().equals(champ.getTableAnnotation().getEntite().getNom())){
-         valeurs = annotationValeurDao.findByChampAndObjetId(champ, obj.listableObjectId());
+         if("calcule".equals(champ.getDataType().getType())){
+            AnnotationValeur av = new AnnotationValeur();
+            Object valeur = champCalculeManager.getValueForObjectManager(champ.getChampCalcule(), obj);
+            if(null != valeur){
+               av.setValeur(valeur);
+            }
+            valeurs.add(av);
+         }else{
+            valeurs = annotationValeurDao.findByChampAndObjetId(champ, obj.listableObjectId());
+         }
+      }
+      return valeurs;
+   }
+
+   @Override
+   public List<AnnotationValeur> findByChampAndObjetManager(final ChampAnnotation champ, final TKAnnotableObject obj,
+      Boolean discardCalcule){
+      log.debug("Recherche des AnnotationValeur par champ et Objet");
+      List<AnnotationValeur> valeurs = new ArrayList<>();
+      if(obj != null && champ != null && obj.getClass().getSimpleName().equals(champ.getTableAnnotation().getEntite().getNom())){
+         if(!discardCalcule){
+            findByChampAndObjetManager(champ, obj);
+         }else{
+            valeurs = annotationValeurDao.findByChampAndObjetId(champ, obj.listableObjectId());
+         }
       }
       return valeurs;
    }
@@ -412,10 +381,9 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
    public boolean findDoublonManager(final AnnotationValeur valeur){
       if(valeur.getAnnotationValeurId() == null){
          return annotationValeurDao.findByChampAndObjetId(valeur.getChampAnnotation(), valeur.getObjetId()).contains(valeur);
-      }else{
-         return annotationValeurDao
-            .findByExcludedId(valeur.getChampAnnotation(), valeur.getObjetId(), valeur.getAnnotationValeurId()).contains(valeur);
       }
+      return annotationValeurDao
+         .findByExcludedId(valeur.getChampAnnotation(), valeur.getObjetId(), valeur.getAnnotationValeurId()).contains(valeur);
    }
 
    /**
@@ -423,7 +391,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
     * sont non nulls et lance la validation via le Validator.
     * @param valeur
     * @param champ champAnnotation
-    * @param objetId
+    * @param obj
     * @param banque
     * @param fichier
     * @param operation demandant la verification
@@ -435,7 +403,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
          // merge dataType object
          valeur.setChampAnnotation(champAnnotationDao.mergeObject(champ));
       }else if(valeur.getChampAnnotation() == null){
-         log.warn("Objet obligatoire ChampAnnotation manquant" + " lors de la " + operation + " de valeur annotation");
+         log.warn("Objet obligatoire ChampAnnotation manquant lors de la " + operation + " de valeur annotation");
          throw new RequiredObjectIsNullException("AnnotationValeur", operation, "ChampAnnotation");
       }
 
@@ -443,7 +411,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
       if(obj != null){
          valeur.setObjetId(obj.listableObjectId());
       }else if(valeur.getObjetId() == null){
-         log.warn("Objet obligatoire objetId manquant" + " lors de la " + operation + " de valeur annotation");
+         log.warn("Objet obligatoire objetId manquant lors de la " + operation + " de valeur annotation");
          throw new RequiredObjectIsNullException("AnnotationValeur", operation, "TKAnnotableObject");
       }
 
@@ -451,7 +419,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
       if(banque != null){
          valeur.setBanque(banqueDao.mergeObject(banque));
       }else if(valeur.getBanque() == null){
-         log.warn("Objet obligatoire Banqie manquant" + " lors de la " + operation + " de valeur annotation");
+         log.warn("Objet obligatoire Banque manquant lors de la " + operation + " de valeur annotation");
          throw new RequiredObjectIsNullException("AnnotationValeur", operation, "Banque");
       }
 
@@ -459,7 +427,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
       if(obj != null
          && !obj.getClass().getSimpleName().equals(valeur.getChampAnnotation().getTableAnnotation().getEntite().getNom())){
          log.warn("Incoherence obj et table annotation sur entite");
-         throw new RuntimeException("Incoherence entre entite objet et " + "table annotation");
+         throw new RuntimeException("Incoherence entre entite objet et table annotation");
       }
 
       //		if (fichier != null) {
@@ -491,37 +459,51 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
    @Override
    public void removeAnnotationValeurListManager(final List<AnnotationValeur> valeurs, final List<File> filesToDelete){
       if(valeurs != null){
-         for(int i = 0; i < valeurs.size(); i++){
-            removeObjectManager(valeurs.get(i), filesToDelete);
+         for(AnnotationValeur valeur : valeurs){
+            removeObjectManager(valeur, filesToDelete);
          }
-
       }
    }
 
    @Override
    public Object getValueForAnnotationValeur(final AnnotationValeur valeur){
-
       Object obj = null;
-
       if(valeur != null && valeur.getChampAnnotation() != null){
-         if(valeur.getChampAnnotation().getDataType().getType().equals("alphanum")){
-            obj = valeur.getAlphanum();
-         }else if(valeur.getChampAnnotation().getDataType().getType().equals("boolean")){
-            obj = valeur.getBool();
-         }else if(valeur.getChampAnnotation().getDataType().getType().matches("date.*")){
-            obj = valeur.getDate();
-         }else if(valeur.getChampAnnotation().getDataType().getType().equals("num")){
-            obj = valeur.getAlphanum();
-         }else if(valeur.getChampAnnotation().getDataType().getType().equals("texte")){
-            obj = valeur.getTexte();
-         }else if(valeur.getChampAnnotation().getDataType().getType().equals("thesaurus")){
-            obj = valeur.getItem();
-         }else if(valeur.getChampAnnotation().getDataType().getType().equals("fichier")){
-            obj = valeur.getFichier();
-         }else if(valeur.getChampAnnotation().getDataType().getType().equals("hyperlien")){
-            obj = valeur.getAlphanum();
-         }else if(valeur.getChampAnnotation().getDataType().getType().equals("thesaurusM")){
-            obj = valeur.getItem();
+         String dataType = valeur.getChampAnnotation().getDataType().getType();
+         switch(dataType){
+            default:
+               break;
+            case "alphanum":
+               obj = valeur.getAlphanum();
+               break;
+            case "boolean":
+               obj = valeur.getBool();
+               ;
+               break;
+            case "date":
+               obj = valeur.getDate();
+               break;
+            case "datetime":
+               obj = valeur.getDate();
+               break;
+            case "num":
+               obj = valeur.getAlphanum();
+               break;
+            case "texte":
+               obj = valeur.getTexte();
+               break;
+            case "thesaurus":
+               obj = valeur.getItem();
+               break;
+            case "thesaurusM":
+               obj = valeur.getItem();
+               break;
+            case "fichier":
+               obj = valeur.getFichier();
+               break;
+            case "hyperlien":
+               obj = valeur.getAlphanum();
+               break;
          }
       }
 
@@ -533,12 +515,11 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
       return annotationValeurDao.findById(annotationValeurId);
    }
 
-   
    @Override
    public void switchBanqueManager(final TKAnnotableObject obj, final Banque bank, final List<File> filesToDelete){
       if(bank != null && obj != null){
 
-         final List<TableAnnotation> sharedByBanques = (List<TableAnnotation>) CollectionUtils.intersection(
+         final Collection<?> sharedByBanques = CollectionUtils.intersection(
             tableAnnotationDao.findByEntiteAndBanque(entiteManager.findByNomManager(obj.entiteNom()).get(0), obj.getBanque()),
             tableAnnotationDao.findByEntiteAndBanque(entiteManager.findByNomManager(obj.entiteNom()).get(0), bank));
 

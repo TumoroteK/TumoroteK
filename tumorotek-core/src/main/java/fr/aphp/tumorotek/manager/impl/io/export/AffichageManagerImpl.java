@@ -160,19 +160,17 @@ public class AffichageManagerImpl implements AffichageManager
       }
       if(findByIdManager(affichage.getAffichageId()) == null){
          throw new SearchedObjectIdNotExistException("Affichage", affichage.getAffichageId());
-      }else{
-         //on modifie l'intitule de l'affichage
-         affichage.setIntitule(intitule);
-         //On met a jour l'affichage
-         if(findDoublonManager(affichage)){
-            log.warn("Doublon lors de la modification de l'objet " + "Affichage : " + affichage.toString());
-            throw new DoublonFoundException("Affichage", "modification");
-         }else{
-            BeanValidator.validateObject(affichage, new Validator[] {affichageValidator});
-            affichageDao.updateObject(affichage);
-            log.info("Modification de l'objet Affichage : " + affichage.toString());
-         }
       }
+      //on modifie l'intitule de l'affichage
+      affichage.setIntitule(intitule);
+      //On met a jour l'affichage
+      if(findDoublonManager(affichage)){
+         log.warn("Doublon lors de la modification de l'objet " + "Affichage : " + affichage.toString());
+         throw new DoublonFoundException("Affichage", "modification");
+      }
+      BeanValidator.validateObject(affichage, new Validator[] {affichageValidator});
+      affichageDao.updateObject(affichage);
+      log.info("Modification de l'objet Affichage : " + affichage.toString());
    }
 
    /**
@@ -208,19 +206,18 @@ public class AffichageManagerImpl implements AffichageManager
       if(findDoublonManager(a)){
          log.warn("Doublon lors de la modification de l'objet " + "Affichage : " + a.toString());
          throw new DoublonFoundException("Affichage", "modification");
-      }else{
-         final Iterator<Resultat> itR = resultatDao.findByAffichage(affichage).iterator();
-         final ArrayList<Resultat> resultats = new ArrayList<>();
-         while(itR.hasNext()){
-            resultats.add(resultatManager.copyResultatManager(itR.next(), a));
-         }
-         a.setResultats(resultats);
-
-         createObjectManager(a, a.getResultats(), a.getCreateur(), a.getBanque());
-         // ajout de la requete dans la liste
-         affichages.add(a);
-         log.info("Enregistrement de l'objet Affichage : " + a.toString());
       }
+      final Iterator<Resultat> itR = resultatDao.findByAffichage(affichage).iterator();
+      final ArrayList<Resultat> resultats = new ArrayList<>();
+      while(itR.hasNext()){
+         resultats.add(resultatManager.copyResultatManager(itR.next(), a));
+      }
+      a.setResultats(resultats);
+
+      createObjectManager(a, a.getResultats(), a.getCreateur(), a.getBanque());
+      // ajout de la requete dans la liste
+      affichages.add(a);
+      log.info("Enregistrement de l'objet Affichage : " + a.toString());
 
       return a;
    }
@@ -257,18 +254,17 @@ public class AffichageManagerImpl implements AffichageManager
       if(findDoublonManager(affichage)){
          log.warn("Doublon lors de la creation de l'objet Affichage : " + affichage.toString());
          throw new DoublonFoundException("Affichage", "creation");
-      }else{
-         BeanValidator.validateObject(affichage, new Validator[] {affichageValidator});
-         affichageDao.createObject(affichage);
-
-         if(resultats != null){
-            updateResultatsManager(affichage, resultats, null);
-         }
-
-         // ajout de la requete dans la liste
-         affichages.add(affichage);
-         log.info("Enregistrement de l'objet Affichage : " + affichage.toString());
       }
+      BeanValidator.validateObject(affichage, new Validator[] {affichageValidator});
+      affichageDao.createObject(affichage);
+
+      if(resultats != null){
+         updateResultatsManager(affichage, resultats, null);
+      }
+
+      // ajout de la requete dans la liste
+      affichages.add(affichage);
+      log.info("Enregistrement de l'objet Affichage : " + affichage.toString());
    }
 
    /**
@@ -285,32 +281,29 @@ public class AffichageManagerImpl implements AffichageManager
       }
       if(findByIdManager(affichage.getAffichageId()) == null){
          throw new SearchedObjectIdNotExistException("Affichage", affichage.getAffichageId());
-      }else{
-         //On met à jour l'affichage
-         if(findDoublonManager(affichage)){
-            log.warn("Doublon lors de la modification de l'objet " + "Affichage : " + affichage.toString());
-            throw new DoublonFoundException("Affichage", "modification");
-         }else{
-            BeanValidator.validateObject(affichage, new Validator[] {affichageValidator});
-            affichageDao.updateObject(affichage);
-
-            if(resultats != null){
-               updateResultatsManager(affichage, resultats, resultatsToRemove);
-            }
-
-            log.info("Modification de l'objet Affichage : " + affichage.toString());
-
-         }
       }
+      //On met à jour l'affichage
+      if(findDoublonManager(affichage)){
+         log.warn("Doublon lors de la modification de l'objet " + "Affichage : " + affichage.toString());
+         throw new DoublonFoundException("Affichage", "modification");
+      }
+      BeanValidator.validateObject(affichage, new Validator[] {affichageValidator});
+      affichageDao.updateObject(affichage);
+
+      if(resultats != null){
+         updateResultatsManager(affichage, resultats, resultatsToRemove);
+      }
+
+      log.info("Modification de l'objet Affichage : " + affichage.toString());
+
    }
 
    @Override
    public Boolean isUsedObjectManager(final Affichage affichage){
       if(affichage != null && affichage.getAffichageId() != null){
          return (rechercheDao.findByAffichage(affichage).size() > 0);
-      }else{
-         return false;
       }
+      return false;
    }
 
    /*private void updateResultatsAffichage(Affichage affichage,
@@ -356,29 +349,27 @@ public class AffichageManagerImpl implements AffichageManager
       //On vérifie que l'affichage est en BDD
       if(findByIdManager(affichage.getAffichageId()) == null){
          throw new SearchedObjectIdNotExistException("Affichage", affichage.getAffichageId());
-      }else{
-         if(isUsedObjectManager(affichage)){
-            log.warn("Objet utilisé lors de la suppression de l'objet " + "Affichage : " + affichage.toString());
-            throw new ObjectUsedException("Affichage", "suppression");
-         }else{
-            //suppression de l'affichage dans la liste
-            final Iterator<Affichage> it = affichages.iterator();
-            while(it.hasNext()){
-               final Affichage temp = it.next();
-               if(temp.getAffichageId().equals(affichage.getAffichageId())){
-                  affichages.remove(temp);
-                  break;
-               }
-            }
-            //suppression de l'affichage en BDD
-            //updateObjectManager(affichage, new ArrayList<Resultat>());
-            final List<Resultat> res = resultatManager.findByAffichageManager(affichage);
-            for(int i = 0; i < res.size(); i++){
-               resultatManager.removeObjectManager(res.get(i));
-            }
-            affichageDao.removeObject(affichage.getAffichageId());
+      }
+      if(isUsedObjectManager(affichage)){
+         log.warn("Objet utilisé lors de la suppression de l'objet " + "Affichage : " + affichage.toString());
+         throw new ObjectUsedException("Affichage", "suppression");
+      }
+      //suppression de l'affichage dans la liste
+      final Iterator<Affichage> it = affichages.iterator();
+      while(it.hasNext()){
+         final Affichage temp = it.next();
+         if(temp.getAffichageId().equals(affichage.getAffichageId())){
+            affichages.remove(temp);
+            break;
          }
       }
+      //suppression de l'affichage en BDD
+      //updateObjectManager(affichage, new ArrayList<Resultat>());
+      final List<Resultat> res = resultatManager.findByAffichageManager(affichage);
+      for(int i = 0; i < res.size(); i++){
+         resultatManager.removeObjectManager(res.get(i));
+      }
+      affichageDao.removeObject(affichage.getAffichageId());
    }
 
    /**
@@ -482,9 +473,8 @@ public class AffichageManagerImpl implements AffichageManager
    public List<Affichage> findByIntituleAndUtilisateurManager(final String intitule, final Utilisateur util){
       if(intitule != null && util != null){
          return affichageDao.findByIntituleUtilisateur(intitule, util);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    /**
@@ -495,8 +485,8 @@ public class AffichageManagerImpl implements AffichageManager
     */
    @Override
    public void moveResultatManager(final Affichage affichage, final Resultat resultat, final int nouvellePosition){
-      affichage.setResultats(resultatManager.findByAffichageManager(affichage));
       if(affichage != null){
+         affichage.setResultats(resultatManager.findByAffichageManager(affichage));
          //On récupère le résultat dans l'affichage
          Resultat res = null;
          for(int i = 0; i < affichage.getResultats().size(); i++){
@@ -527,9 +517,8 @@ public class AffichageManagerImpl implements AffichageManager
       }
       if(affichage.getAffichageId() == null){
          return affichageDao.findAll().contains(affichage);
-      }else{
-         return affichageDao.findByExcludedId(affichage.getAffichageId()).contains(affichage);
       }
+      return affichageDao.findByExcludedId(affichage.getAffichageId()).contains(affichage);
 
    }
 
@@ -564,9 +553,8 @@ public class AffichageManagerImpl implements AffichageManager
                }
             }
             return true;
-         }else{
-            return false;
          }
+         return false;
       }else{
          return false;
       }
@@ -672,17 +660,15 @@ public class AffichageManagerImpl implements AffichageManager
    public List<Affichage> findByBanqueManager(final Banque banque){
       if(banque != null){
          return affichageDao.findByBanque(banque);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
    public List<Affichage> findByBanqueInLIstManager(final List<Banque> banques){
       if(banques != null && banques.size() > 0){
          return affichageDao.findByBanqueInList(banques);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 }

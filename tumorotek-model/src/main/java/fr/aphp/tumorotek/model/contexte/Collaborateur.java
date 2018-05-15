@@ -478,9 +478,8 @@ public class Collaborateur implements TKdataObject, TKFantomableObject, java.io.
    public String toString(){
       if(this.nom != null){
          return "{" + this.nom + "}";
-      }else{
-         return "{Empty Collaborateur}";
       }
+      return "{Empty Collaborateur}";
    }
 
    /**

@@ -129,9 +129,8 @@ public class CorrespondanceIdManagerImpl implements CorrespondanceIdManager
          }else if(target.getNom().equals("ProdDerive")){
             if(desc == null || desc){ // DESC par défaut
                return findDerivesDescFromDerivesIds(ids, em, banks, totDerives);
-            }else{
-               return findDerivesAscFromDerivesIds(ids, em, banks, totDerives);
             }
+            return findDerivesAscFromDerivesIds(ids, em, banks, totDerives);
          }else if(target.getNom().equals("Patient")){
             totDerives.addAll(ids);
             // Obtention prelevements
@@ -267,9 +266,8 @@ public class CorrespondanceIdManagerImpl implements CorrespondanceIdManager
       if(!res.isEmpty()){
          tots.addAll(res);
          return findDerivesAscFromDerivesIds(res, em, banks, tots);
-      }else{
-         return tots;
       }
+      return tots;
    }
 
    private List<Integer> findDerivesDescFromDerivesIds(final List<Integer> ids, final EntityManager em, final List<Banque> banks,
@@ -282,9 +280,8 @@ public class CorrespondanceIdManagerImpl implements CorrespondanceIdManager
       if(!res.isEmpty()){
          tots.addAll(res);
          return findDerivesDescFromDerivesIds(res, em, banks, tots);
-      }else{
-         return tots;
       }
+      return tots;
    }
 
    /***************** Cession - Echantillon *******************************/

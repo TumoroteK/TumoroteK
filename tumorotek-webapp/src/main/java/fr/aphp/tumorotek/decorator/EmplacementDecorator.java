@@ -183,9 +183,8 @@ public class EmplacementDecorator
    public String toString(){
       if(this.emplacement != null){
          return this.emplacement.toString();
-      }else{
-         return "{Empty Emplacement}";
       }
+      return "{Empty Emplacement}";
    }
 
    public String getAdrl(){

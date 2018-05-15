@@ -42,39 +42,41 @@ import fr.aphp.tumorotek.action.ManagerLocator;
 public abstract class LoadPropertiesInitTumoFile
 {
    /* declaration des noms des variables dans le fichier */
-   private static final String LANGUE = "LANGUE";
-   private static final String DBMS = "DBMS";
-   private static final String HOST = "HOST";
-   private static final String PORT = "PORT";
-   private static final String DRIVER = "DRIVER";
-   private static final String DATABASE = "DATABASE";
-   private static final String LOGIN = "LOGIN";
-   private static final String PASSWORD = "PASSWORD";
-   private static final String CONNECTIONS_INIT = "CONNECTIONS_INIT";
-   private static final String CONNECTIONS_MAX = "CONNECTIONS_MAX";
+   //TODO Pourquoi autant de paramètres privés non utilisés ??
+//   private static final String LANGUE = "LANGUE";
+//   private static final String DBMS = "DBMS";
+//   private static final String HOST = "HOST";
+//   private static final String PORT = "PORT";
+//   private static final String DRIVER = "DRIVER";
+//   private static final String DATABASE = "DATABASE";
+//   private static final String LOGIN = "LOGIN";
+//   private static final String PASSWORD = "PASSWORD";
+//   private static final String CONNECTIONS_INIT = "CONNECTIONS_INIT";
+//   private static final String CONNECTIONS_MAX = "CONNECTIONS_MAX";
    private static final String MAX_PATIENTS = "MAX_PATIENTS";
    private static final String LONGUEUR_NIP = "LONGUEUR_NIP";
-   private static final String NUMEROTATION_AUTO = "NUMEROTATION_AUTO";
-   private static final String DELAI_OUT = "DELAI_OUT";
-   private static final String RECH_MAX_LIGNES = "RECH_MAX_LIGNES";
-   private static final String CODES_BARRES = "CODES_BARRES";
+//   private static final String NUMEROTATION_AUTO = "NUMEROTATION_AUTO";
+//   private static final String DELAI_OUT = "DELAI_OUT";
+//   private static final String RECH_MAX_LIGNES = "RECH_MAX_LIGNES";
+//   private static final String CODES_BARRES = "CODES_BARRES";
    private static final String SIP = "SIP";
 
    /* accesseurs */
    /* getters */
    public static InitTumoFileBean getInitTumoFileBean(){
+      InitTumoFileBean initTumoFileBean = null;
       ResourceBundle res = null;
       if(ManagerLocator.getResourceBundleTumo().doesResourceBundleExists("tumorotek.properties")){
          res = ManagerLocator.getResourceBundleTumo().getResourceBundle("tumorotek.properties");
-      }
-
+         
       // lecture des proprietes du fichier de ressources
-      final int maxPatients = Integer.parseInt(res.getString(MAX_PATIENTS));
-      final int longueurNip = Integer.parseInt(res.getString(LONGUEUR_NIP));
-      final String sip = res.getString(SIP);
-
+         final int maxPatients = Integer.parseInt(res.getString(MAX_PATIENTS));
+         final int longueurNip = Integer.parseInt(res.getString(LONGUEUR_NIP));
+         final String sip = res.getString(SIP);
+         
       // creation du bean de memorisation des proprietes
-      final InitTumoFileBean initTumoFileBean = new InitTumoFileBean(maxPatients, longueurNip, sip);
+         initTumoFileBean = new InitTumoFileBean(maxPatients, longueurNip, sip);
+      }
 
       return initTumoFileBean;
    }

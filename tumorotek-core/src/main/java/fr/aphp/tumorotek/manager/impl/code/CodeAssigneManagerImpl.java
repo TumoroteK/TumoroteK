@@ -161,9 +161,8 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
    public boolean findDoublonManager(final CodeAssigne code){
       if(code.getCodeAssigneId() == null){
          return codeAssigneDao.findByCodeAndEchantillon(code.getCode(), code.getEchantillon()).contains(code);
-      }else{
-         return codeAssigneDao.findByExcludedId(code.getCodeAssigneId(), code.getCode(), code.getEchantillon()).contains(code);
       }
+      return codeAssigneDao.findByExcludedId(code.getCodeAssigneId(), code.getCode(), code.getEchantillon()).contains(code);
    }
 
    @Override

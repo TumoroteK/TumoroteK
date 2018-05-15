@@ -97,8 +97,7 @@ public class ModificationMultipleQuantification extends AbstractModificationMult
    private boolean modifPossible = true;
 
    public void init(final String pathToPage, final String methodToCall, final List<? extends Object> objs, final String label,
-      final String champToEdit, final List<Object> allValuesThesaurus, final String champNameThesaurus, final String entiteNom,
-      final Constraint constrn, final Boolean isComined){
+      final String champToEdit, final List<Object> allValuesThesaurus, final String champNameThesaurus){
       setPath(pathToPage);
       setMethode(methodToCall);
       getListObjets().clear();
@@ -406,7 +405,6 @@ public class ModificationMultipleQuantification extends AbstractModificationMult
       this.selectedUnite = sU;
    }
 
-   
    @Override
    public String formatLocalObject(final Object obj){
       if(obj != null && ((List<Object>) obj).get(0) != null){

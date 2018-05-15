@@ -38,7 +38,7 @@ package fr.aphp.tumorotek.action.recherche;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.collections.ListUtils;
+import org.apache.commons.collections4.ListUtils;
 import org.springframework.beans.factory.support.ManagedList;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -160,7 +160,7 @@ public class FicheRechercheINCa extends AbstractFicheRechercheAvancee
     * @param path
     *            Path pour renvoyer les résultats.
     */
-   
+
    public void initRechercheAvancee(final Entite entite, final String path, final AbstractListeController2 listeController){
       this.entiteToSearch = entite;
       this.pathToRespond = path;
@@ -182,11 +182,9 @@ public class FicheRechercheINCa extends AbstractFicheRechercheAvancee
       operateursDecimaux.add("=");
       operateursDecimaux.add("<");
       operateursDecimaux.add(">");
-      typePrlvts = (List<PrelevementType>) ManagerLocator.getPrelevementTypeManager()
-         .findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      typePrlvts = ManagerLocator.getPrelevementTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       typePrlvts.add(0, null);
-      echantillonTypes = (List<EchantillonType>) ManagerLocator.getEchantillonTypeManager()
-         .findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+      echantillonTypes = ManagerLocator.getEchantillonTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       echantillonTypes.add(0, null);
       tumoraux = new ArrayList<>();
       tumoraux.add(null);
@@ -289,7 +287,7 @@ public class FicheRechercheINCa extends AbstractFicheRechercheAvancee
    /**
     * Exécution de la requête.
     */
-   
+
    public void onLaterFind(){
       oneValueEntered = false;
       resultats = new ArrayList<>();
@@ -661,12 +659,12 @@ public class FicheRechercheINCa extends AbstractFicheRechercheAvancee
                if(current.getId().equals("codeOrganeBox")){
 
                   // execution de la requête
-                  executeCodesQuery(current, parentToQueryEchantillon, oneValueEntered, "CodesAssignes", "CodeOrgane", false);
+                  executeCodesQuery(current, parentToQueryEchantillon, "CodesAssignes", "CodeOrgane", false);
 
                }else if(current.getId().equals("codeLesionnelBox")){
 
                   // execution de la requête
-                  executeCodesQuery(current, parentToQueryEchantillon, oneValueEntered, "CodesAssignes", "CodeOrgane", true);
+                  executeCodesQuery(current, parentToQueryEchantillon, "CodesAssignes", "CodeOrgane", true);
 
                }else{
                   // exécution de la requête
@@ -802,8 +800,8 @@ public class FicheRechercheINCa extends AbstractFicheRechercheAvancee
     *            Nombre d'échantillons.
     * @return La liste de résultats mise à jour.
     */
-   
-   public void executeCodesQuery(final Textbox current, final Champ parent1, final boolean firstQuery,
+
+   public void executeCodesQuery(final Textbox current, final Champ parent1,
       final String entiteInEchantillon, final String entiteFinale, final boolean isMorpho){
 
       // on récupère la ou les banques sélectionnée(s)

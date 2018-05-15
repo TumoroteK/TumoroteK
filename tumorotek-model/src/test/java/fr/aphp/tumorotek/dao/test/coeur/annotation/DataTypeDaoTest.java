@@ -91,7 +91,7 @@ public class DataTypeDaoTest extends AbstractDaoTest
       assertTrue(dataTypes.size() == 1);
       dataTypes = dataTypeDao.findByType("boolean");
       assertTrue(dataTypes.size() == 1);
-      dataTypes = dataTypeDao.findByType(null);
+      dataTypes = dataTypeDao.findByTypes(null);
       assertTrue(dataTypes.size() == 0);
    }
 

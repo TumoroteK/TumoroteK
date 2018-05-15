@@ -74,15 +74,10 @@ public class FichePatientEditBTO extends FichePatientEdit
    @Override
    public List<LabelCodeItem> getEtats(){
       if(this.selectedSexe == null || !("F".equals(this.selectedSexe.getCode()))){
-
          final List<LabelCodeItem> l = PatientUtils.getEtats();
          return remove(l);
-
-      }else{
-
-         final List<LabelCodeItem> l = PatientUtils.getEtats();
-         return remove(l);
-
       }
+      final List<LabelCodeItem> l = PatientUtils.getEtats();
+      return remove(l);
    }
 }

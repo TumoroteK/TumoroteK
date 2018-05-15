@@ -48,6 +48,7 @@ import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -81,6 +82,7 @@ import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationDefaut;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
+import fr.aphp.tumorotek.model.coeur.annotation.ChampCalcule;
 import fr.aphp.tumorotek.model.coeur.annotation.DataType;
 import fr.aphp.tumorotek.model.coeur.annotation.Item;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
@@ -878,9 +880,6 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
                champsToCreateOrEdit.remove(this.currentChampEdited);
             }
 
-            //ListModel list = new ListModelList(champs);
-            //champsGrid.setModel(list);
-
             // si le champ existait dans la BDD on l'ajoute à la
             // liste des champs à supprimer (il ne sera délété que
             // lors de la sauvegarde finale)
@@ -948,11 +947,17 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
     * @param event
     */
    public void onClick$validateChamp(final Event event){
-      // lance constraint nom champ
-      ((Textbox) ((Row) AbstractListeController2.getBindingData((ForwardEvent) event, true)).getFirstChild().getFirstChild())
-         .getValue();
+      Row row = (Row) AbstractListeController2.getBindingData((ForwardEvent) event, true);
+      //Validation saisie ChampCalcule
+      if("calcule".equals(this.currentChampEdited.getChamp().getDataType().getType())){
+         ChampCalcule champCalcule = this.currentChampEdited.getChampCalcule();
+         if(null == champCalcule || null == champCalcule.getChamp1()){
+            throw new WrongValueException(row, Labels.getLabel("anno.champCalcule.empty"));
+         }
+      }
 
-      // this.currentChampEdited.setDataType(this.selectedDataType);
+      // lance constraint nom champ
+      ((Textbox) row.getFirstChild().getFirstChild()).getValue();
       // re-init la liste
       this.selectedDataType = this.types.get(0);
       this.selectedBooleanValue = this.booleanValue.get(0);
@@ -1029,7 +1034,6 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
       openAnnotationDefautModal(event, this.currentChampEdited, self, false);
    }
 
-
    /**
     * Ouvre la modale en lui spécifiant le decorateur ChampAnnotation qui
     * contient la liste de valeurs par défaut et items
@@ -1051,7 +1055,7 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
          win.setVisible(false);
          win.setId("defautModal");
          win.setPage(page);
-         win.setPosition("center");
+         win.setPosition("center, center");
          win.setMaximizable(true);
          win.setSizable(true);
          win.setTitle(Labels.getLabel("annotation.champ.defaut"));
@@ -1079,6 +1083,7 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
             public void onEvent(final Event event) throws Exception{
                ua.setVisible(true);
                setBlockModal(false);
+               win.setPosition("center");
             }
          });
          final Timer timer = new Timer();
@@ -1089,6 +1094,7 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
          timer.start();
          try{
             win.onModal();
+            win.setPosition("center");
          }catch(final SuspendNotAllowedException e){
             log.error(e);
          }
@@ -1176,19 +1182,26 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
          ((Div) ((Row) AbstractListeController2.getBindingData((ForwardEvent) event, true)).getChildren().get(2));
 
       defautDiv.setVisible(true);
+      combiBox.setVisible(true);
+      combiBox.getNextSibling().setVisible(false);
+      combiBox.setChecked(false);
+      obligBox.setVisible(true);
+      obligBox.getNextSibling().setVisible(false);
+      obligBox.setChecked(false);
       // affiche le label non italic et efface checkbox
-      if(this.selectedDataType.getType().equals("fichier") || this.selectedDataType.getType().equals("boolean")){
+      if(this.selectedDataType.getType().equals("fichier") || this.selectedDataType.getType().equals("boolean")
+         || this.selectedDataType.getType().equals("calcule")){
          combiBox.getNextSibling().setVisible(true);
          combiBox.setVisible(false);
-         combiBox.setChecked(false);
          this.currentChampEdited.setCombine(null);
          // fichier annotation ne peut être obigatoire
-         if(this.selectedDataType.getType().equals("fichier")){
+         if(this.selectedDataType.getType().equals("fichier") || this.selectedDataType.getType().equals("calcule")){
+            this.currentChampEdited.setObligatoire(false);
             obligBox.getNextSibling().setVisible(true);
             obligBox.setVisible(false);
-            obligBox.setChecked(false);
-            this.currentChampEdited.setObligatoire(false);
-            defautDiv.setVisible(false);
+            if(this.selectedDataType.getType().equals("fichier")){
+               defautDiv.setVisible(false);
+            }
          }
       }
    }
@@ -1201,10 +1214,10 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
     */
    private List<ChampAnnotation> prepareChamps(){
       final List<ChampAnnotation> chps = new ArrayList<>();
-      ChampAnnotation chp;
+      ChampAnnotation chpAnno;
       for(int i = 0; i < champsToCreateOrEdit.size(); i++){
-         chp = champsToCreateOrEdit.get(i).getChamp();
-         chps.add(chp);
+         chpAnno = champsToCreateOrEdit.get(i).getChamp();
+         chps.add(chpAnno);
 
          final Iterator<AnnotationDefaut> itor = champsToCreateOrEdit.get(i).getDefauts().iterator();
 
@@ -1220,14 +1233,17 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
             }
          }
 
-         chp.setAnnotationDefauts(defs);
+         chpAnno.setAnnotationDefauts(defs);
 
          final Set<Item> its = new LinkedHashSet<>();
 
          if(!champsToCreateOrEdit.get(i).getItems().isEmpty()){
             its.addAll(champsToCreateOrEdit.get(i).getItems());
          }
-         chp.setItems(its);
+         chpAnno.setItems(its);
+
+         final ChampCalcule cc = champsToCreateOrEdit.get(i).getChampCalcule();
+         chpAnno.setChampCalcule(cc);
 
       }
       return chps;
@@ -1251,6 +1267,10 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
             final List<Item> its = new ArrayList<>();
             its.addAll(chps.get(i).getItems());
             champsToCreateOrEdit.get(i).setItems(its);
+         }
+         if(null != chps.get(i).getChampCalcule()){
+            final ChampCalcule cc = chps.get(i).getChampCalcule();
+            champsToCreateOrEdit.get(i).setChampCalcule(cc);
          }
 
       }

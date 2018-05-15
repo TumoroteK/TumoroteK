@@ -39,15 +39,16 @@ import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
 import fr.aphp.tumorotek.model.impression.CleImpression;
+import fr.aphp.tumorotek.model.impression.Template;
 import fr.aphp.tumorotek.model.io.export.Champ;
 
 /**
  *
- * Interface pour le DAO du bean de domaine BlocImpression.
- * Interface créée le 22/07/2010.
+ * Interface pour le DAO du bean de domaine CleImpression.
+ * Classe créée le 16/01/2018.
  *
- * @author Pierre Ventadour
- * @version 2.0
+ * @author Answald Bournique
+ * @version 2.2
  *
  */
 public interface CleImpressionDao extends GenericDaoJpa<CleImpression, Integer>
@@ -61,10 +62,17 @@ public interface CleImpressionDao extends GenericDaoJpa<CleImpression, Integer>
    List<CleImpression> findByName(String nom);
 
    /**
-    * Recherche les CleImpressions dont le champ est égale au paramètre.
+    * Recherche les CleImpressions dont le champ est égal au paramètre.
     * @param champ champ de la clé recherchée.
     * @return une liste de CleImpressions.
     */
    List<CleImpression> findByChamp(Champ champ);
+
+   /**
+    * Recherche les CleImpressions dont le template est égale au paramètre.
+    * @param template template de la clé recherchée.
+    * @return une liste de CleImpressions.
+    */
+   List<CleImpression> findByTemplate(Template template);
 
 }

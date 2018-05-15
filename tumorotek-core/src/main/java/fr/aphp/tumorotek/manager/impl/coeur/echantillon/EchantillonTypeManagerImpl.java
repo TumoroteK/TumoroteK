@@ -52,7 +52,6 @@ import fr.aphp.tumorotek.manager.exception.ObjectUsedException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.echantillon.EchantillonTypeValidator;
-import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.echantillon.EchantillonType;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
@@ -134,9 +133,8 @@ public class EchantillonTypeManagerImpl implements EchantillonTypeManager
 
       if(types.size() == 0){
          return null;
-      }else{
-         return types.get(0);
       }
+         return types.get(0);
    }
 
    /**
@@ -168,84 +166,77 @@ public class EchantillonTypeManagerImpl implements EchantillonTypeManager
             type = type + "%";
          }
          return echantillonTypeDao.findByType(type);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
-   public boolean findDoublonManager(final Object obj){
-      final EchantillonType type = (EchantillonType) obj;
+   public boolean findDoublonManager(final EchantillonType obj){
+      final EchantillonType type = obj;
       if(type != null){
          if(type.getEchantillonTypeId() == null){
             return echantillonTypeDao.findAll().contains(type);
-         }else{
-            return echantillonTypeDao.findByExcludedId(type.getEchantillonTypeId()).contains(type);
          }
-      }else{
-         return false;
+         return echantillonTypeDao.findByExcludedId(type.getEchantillonTypeId()).contains(type);
       }
+      return false;
    }
 
    @Override
-   public boolean isUsedObjectManager(final Object obj){
-      final List<Echantillon> echans = echantillonDao.findByEchantillonType((EchantillonType) obj);
+   public boolean isUsedObjectManager(final EchantillonType obj){
+      final List<Echantillon> echans = echantillonDao.findByEchantillonType(obj);
 
       return (echans.size() > 0);
    }
 
    @Override
-   public void createObjectManager(final Object obj){
+   public void createObjectManager(final EchantillonType obj){
 
-      final EchantillonType type = (EchantillonType) obj;
+      final EchantillonType type = obj;
 
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(type.getPlateforme() == null){
          throw new RequiredObjectIsNullException("EchantillonType", "creation", "Plateforme");
-      }else{
-         type.setPlateforme(plateformeDao.mergeObject(type.getPlateforme()));
       }
+      type.setPlateforme(plateformeDao.mergeObject(type.getPlateforme()));
 
       if(findDoublonManager(type)){
          log.warn("Doublon lors de la creation de l'objet " + "EchantillonType : " + type.toString());
          throw new DoublonFoundException("EchantillonType", "creation");
-      }else{
-         BeanValidator.validateObject(type, new Validator[] {echantillonTypeValidator});
-         echantillonTypeDao.createObject(type);
-         log.info("Enregistrement de l'objet EchantillonType : " + type.toString());
       }
+      BeanValidator.validateObject(type, new Validator[] {echantillonTypeValidator});
+      echantillonTypeDao.createObject(type);
+      log.info("Enregistrement de l'objet EchantillonType : " + type.toString());
    }
 
    @Override
-   public void updateObjectManager(final Object obj){
+   public void updateObjectManager(final EchantillonType obj){
 
-      final EchantillonType type = (EchantillonType) obj;
+      final EchantillonType type = obj;
 
       if(findDoublonManager(type)){
          log.warn("Doublon lors de la modification de l'objet " + "EchantillonType : " + type.toString());
          throw new DoublonFoundException("EchantillonType", "modification");
-      }else{
-         BeanValidator.validateObject(type, new Validator[] {echantillonTypeValidator});
-         echantillonTypeDao.updateObject(type);
-         log.info("Modification de l'objet EchantillonType : " + type.toString());
       }
+      BeanValidator.validateObject(type, new Validator[] {echantillonTypeValidator});
+      echantillonTypeDao.updateObject(type);
+      log.info("Modification de l'objet EchantillonType : " + type.toString());
    }
 
    @Override
-   public void removeObjectManager(final Object obj){
-      final EchantillonType type = (EchantillonType) obj;
+   public void removeObjectManager(final EchantillonType obj){
+      final EchantillonType type = obj;
       if(isUsedObjectManager(type)){
          log.warn("Objet utilisé lors de la suppression de l'objet " + "EchantillonType : " + type.toString());
          throw new ObjectUsedException("EchantillonType", "suppression");
-      }else{
-         echantillonTypeDao.removeObject(type.getEchantillonTypeId());
-         log.info("Suppression de l'objet EchantillonType : " + type.toString());
       }
+      echantillonTypeDao.removeObject(type.getEchantillonTypeId());
+      log.info("Suppression de l'objet EchantillonType : " + type.toString());
    }
 
    @Override
-   public List<? extends TKThesaurusObject> findByOrderManager(final Plateforme pf){
+   public List<EchantillonType> findByOrderManager(final Plateforme pf){
       return echantillonTypeDao.findByOrder(pf);
    }
 }

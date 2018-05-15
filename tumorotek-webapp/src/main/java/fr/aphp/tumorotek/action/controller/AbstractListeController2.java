@@ -41,6 +41,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Hashtable;
@@ -90,9 +91,12 @@ import fr.aphp.tumorotek.action.recherche.FicheRechercheINCa;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.decorator.TKSelectObjectRenderer;
 import fr.aphp.tumorotek.manager.ConfigManager;
+import fr.aphp.tumorotek.manager.impl.io.utils.RechercheUtilsManager;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
+import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
+import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.imprimante.AffectationImprimante;
@@ -103,13 +107,13 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 import fr.aphp.tumorotek.webapp.general.export.Export;
 
 /**
- * ??
- * TODO JAVADOC
- *
+ * @author
+ * @version 2.2.0
+ * @since 2.x.x
  */
 public abstract class AbstractListeController2 extends AbstractController
 {
-
+   //TODO JavaDoc
    private static final long serialVersionUID = -7175263022919263339L;
 
    // Row actuellement sélectionnée.
@@ -308,11 +312,6 @@ public abstract class AbstractListeController2 extends AbstractController
    public void doAfterCompose(final Component comp) throws Exception{
 
       super.doAfterCompose(comp);
-
-      // recoit le renderer en argument
-      if(arg != null && arg.containsKey("renderer")){
-         setListObjectsRenderer((TKSelectObjectRenderer) arg.get("renderer"));
-      }
 
       // reference liste selectedObjects dans le renderer
       if(getListObjectsRenderer() != null){
@@ -803,7 +802,7 @@ public abstract class AbstractListeController2 extends AbstractController
     * Evenement relayant l'envoi vers une nouvelle cession
     * d'un trop grand nombre de résultats (envoyé depuis ResultatsModale)
     */
-   public void onDoNewCession(final Event e){
+   public void onDoNewCession(){
       Clients.showBusy(Labels.getLabel("cession.select.wait"));
       Events.echoEvent("onLaterNewCession", self, null);
    }
@@ -822,7 +821,7 @@ public abstract class AbstractListeController2 extends AbstractController
     *
     * @param Event contenant les résultats de la recherche.
     */
-   
+
    public void onGetObjectFromResearch(final Event e){
 
       // si des patients sont renvoyés
@@ -883,6 +882,10 @@ public abstract class AbstractListeController2 extends AbstractController
       }
    }
 
+   /**
+    * 
+    * @param csv
+    */
    public void onDoExportTVGSO(final boolean csv){}
 
    public void onDoExportINCa(){}
@@ -896,7 +899,7 @@ public abstract class AbstractListeController2 extends AbstractController
     * vide
     * @param fromSelection
     */
-   
+
    public void onLaterExport(final boolean fromSelection){
       if(fromSelection){
          getResultatsIds().clear();
@@ -914,6 +917,8 @@ public abstract class AbstractListeController2 extends AbstractController
          }else{
             setRestrictedTableIds(new ArrayList<Integer>());
          }
+
+         enregistrerValeursChampsCalculesPourExport();
 
          final Class<?> exportThread = Class.forName(SessionUtils.getDatabasePathClass());
          final Constructor<?> constr = exportThread.getConstructor(Desktop.class, int.class, List.class, List.class,
@@ -934,6 +939,79 @@ public abstract class AbstractListeController2 extends AbstractController
          getRestrictedTableIds().clear();
       }catch(final Exception e){
          e.printStackTrace();
+      }
+   }
+
+   /**
+    * Enregistrement des résultats de champs calculés pour pouvoir être exportés
+    * @since 2.2.0
+    */
+   private void enregistrerValeursChampsCalculesPourExport(){
+
+      //FIXME Grosse moulinette... Autre moyen ?
+      // Récupération de l'entité
+      List<Entite> entiteList = ManagerLocator.getEntiteManager().findByNomManager(this.getEntiteNom());
+      if(!entiteList.isEmpty()){
+         Entite entite = entiteList.get(0);
+         // Itération sur la liste d'ids d'objets sélectionnés
+         for(Integer id : getResultatsIds()){
+            // Récupération de l'objet en base
+            Object tkObjet = ManagerLocator.getEntiteManager().findObjectByEntiteAndIdManager(entite, id);
+            // Itération sur les tables d'annotations
+            for(Integer tbid : getRestrictedTableIds()){
+               final TableAnnotation tb = ManagerLocator.getTableAnnotationManager().findByIdManager(tbid);
+               // Récupération des champs d'annotation de type calculé
+               List<ChampAnnotation> champAnnoList = ManagerLocator.getChampAnnotationManager().findByTableAndDataTypeManager(tb,
+                  Arrays.asList(ManagerLocator.getDataTypeManager().findByTypeManager("calcule")));
+               for(ChampAnnotation champAnno : champAnnoList){
+                  if(null != champAnno.getChampCalcule()){
+                     // Récupération des objets liés à l'objet sélectionné pour le champ calculé
+                     List<Object> listeObjets = new ArrayList<>();
+                     listeObjets.addAll(RechercheUtilsManager.getListeObjetsCorrespondants(tkObjet, champAnno, null));
+                     // Récupération de la valeur du champ d'annotation
+                     //                     Object value = RechercheUtilsManager.getChampValueFromObjectList(champAnno, lo);
+                     Object valeurChampCalcule = null;
+                     Integer idObjetLie = null;
+                     TKAnnotableObject tkObjLie = null;
+                     // Récupération de l'objet lié contenant l'annotation
+                     for(Object obj : listeObjets){
+                        String champAnnoEntite = champAnno.getTableAnnotation().getEntite().getNom();
+                        tkObjLie = (TKAnnotableObject) obj;
+                        if(null != tkObjLie){
+                           String tkObjEntite = tkObjLie.entiteNom();
+                           if(champAnnoEntite.equals(tkObjEntite)){
+                              idObjetLie = tkObjLie.listableObjectId();
+                              // Récupération de la valeur du champ calculé sur l'objet lié
+                              valeurChampCalcule = ManagerLocator.getChampCalculeManager()
+                                 .getValueForObjectManager(champAnno.getChampCalcule(), tkObjLie);
+                              if(null != valeurChampCalcule && !"".equals(valeurChampCalcule.toString())){
+                                 // Récupération de l'annotationValeur correspondante si existante
+                                 List<AnnotationValeur> annoValList = ManagerLocator.getAnnotationValeurManager()
+                                    .findByChampAndObjetManager(champAnno, tkObjLie, true);
+                                 if(!annoValList.isEmpty()){ // MAJ
+                                    AnnotationValeur annoVal = annoValList.get(0);
+                                    annoVal.setValeur(valeurChampCalcule);
+                                    //FIXME Obligé de setter les valeurs en Alphanum sinon pas lu par l'export...
+                                    annoVal.setAlphanum(ObjectTypesFormatters.formatObject(valeurChampCalcule));
+                                    ManagerLocator.getAnnotationValeurManager().updateObject(annoVal);
+                                 }else{ // Création
+                                    AnnotationValeur annoVal = new AnnotationValeur();
+                                    annoVal.setBanque(SessionUtils.getCurrentBanque(sessionScope));
+                                    annoVal.setChampAnnotation(champAnno);
+                                    annoVal.setObjetId(idObjetLie);
+                                    annoVal.setValeur(valeurChampCalcule);
+                                    //FIXME Obligé de setter les valeurs en Alphanum sinon pas lu par l'export...
+                                    annoVal.setAlphanum(ObjectTypesFormatters.formatObject(valeurChampCalcule));
+                                    ManagerLocator.getAnnotationValeurManager().createObject(annoVal);
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
       }
    }
 
@@ -1022,13 +1100,6 @@ public abstract class AbstractListeController2 extends AbstractController
       updateListResultsLabel(getListObjects().size());
 
    }
-
-   /**
-    * Supprime une liste d'objets a la liste d'affichage.
-    *
-    * @param objet
-    */
-   public void removeObjectsListAndUpdateList(final List<? extends TKdataObject> objs){}
 
    /**
     * Met à jour la liste des objets.
@@ -1311,7 +1382,7 @@ public abstract class AbstractListeController2 extends AbstractController
     * directement depuis le listeController (recherche rapide).
     * @param Event
     */
-   public void onDoBatchDelete(final Event e){
+   public void onDoBatchDelete(){
       final List<Integer> ids = new ArrayList<>();
       ids.addAll(getResultatsIds());
       Events.echoEvent("onDeleteIdsFromModaleEvent", self, ids);
@@ -1402,8 +1473,6 @@ public abstract class AbstractListeController2 extends AbstractController
    public abstract void removeFromSelectedObjects(TKdataObject obj);
 
    public abstract TKSelectObjectRenderer getListObjectsRenderer();
-
-   public void setListObjectsRenderer(final TKSelectObjectRenderer renderer){};
 
    /**
     * Copy la selection dans la liste d'objets courants.
@@ -1636,7 +1705,7 @@ public abstract class AbstractListeController2 extends AbstractController
    /**
     * Attribues les droits de creation et de modification multiples.
     */
-   
+
    public void drawActionsButtons(){
       Boolean admin = false;
       if(sessionScope.containsKey("Admin")){
@@ -1991,7 +2060,7 @@ public abstract class AbstractListeController2 extends AbstractController
     * @param controller
     *            parent ayant demandé la délétion.
     */
-   
+
    public void openExportWindow(final Page page, final String entite, final List<?> objs, final List<Banque> banques,
       final boolean isExportAnonyme, final Utilisateur user){
       if(!isBlockModal()){
@@ -2109,7 +2178,7 @@ public abstract class AbstractListeController2 extends AbstractController
    /**
     * Impression des étiquettes pour les TKStockableObject
     */
-   
+
    public void onClick$etiquetteItem(){
 
       AffectationImprimante affectation = null;
@@ -2124,7 +2193,6 @@ public abstract class AbstractListeController2 extends AbstractController
          (List<? extends TKStockableObject>) getSelectedObjects(), affectation, null);
    }
 
-   
    public void onDeleteIdsFromModaleEvent(final Event e){
       getResultatsIds().clear();
       if(e.getData() != null && e.getData() instanceof List){
@@ -2247,7 +2315,7 @@ public abstract class AbstractListeController2 extends AbstractController
     * Ouvre une warning modale si un objet est en statut
     * @since 2.0.10
     */
-   
+
    public void onClick$retourItem(){
 
       if(!getObjStatutIncompatibleForRetour(getSelectedObjects(), null)){
@@ -2274,7 +2342,7 @@ public abstract class AbstractListeController2 extends AbstractController
     * des évènements de stockage incomplets
     * @since 2.0.10
     */
-   
+
    public void onClick$incompRetoursItem(){
       openDateRetourModale(this, (List<TKStockableObject>) getSelectedObjects());
    }
@@ -2304,7 +2372,6 @@ public abstract class AbstractListeController2 extends AbstractController
       getObjectTabController().postIdsToOtherEntiteTab(eNom, resIds);
    }
 
-   
    private List<Integer> getSelectedIds(final boolean fromSelection){
       final List<Integer> ids = new ArrayList<>();
       if(fromSelection){
@@ -2313,7 +2380,6 @@ public abstract class AbstractListeController2 extends AbstractController
       return ids;
    }
 
-   
    public void onClick$patientsItem(final Event e){
       if(e.getData() != null && !((List<Integer>) e.getData()).isEmpty()){
          postTargetObjectsIds("Patient", null, (List<Integer>) e.getData());
@@ -2322,7 +2388,6 @@ public abstract class AbstractListeController2 extends AbstractController
       }
    }
 
-   
    public void onClick$prelevementsItem(final Event e){
       if(e.getData() != null && !((List<Integer>) e.getData()).isEmpty()){
          postTargetObjectsIds("Prelevement", null, (List<Integer>) e.getData());
@@ -2331,7 +2396,6 @@ public abstract class AbstractListeController2 extends AbstractController
       }
    }
 
-   
    public void onClick$echantillonsItem(final Event e){
       if(e.getData() != null && !((List<Integer>) e.getData()).isEmpty()){
          postTargetObjectsIds("Echantillon", null, (List<Integer>) e.getData());
@@ -2340,7 +2404,6 @@ public abstract class AbstractListeController2 extends AbstractController
       }
    }
 
-   
    public void onClick$derivesItem(final Event e){
       if(e.getData() != null && !((List<Integer>) e.getData()).isEmpty()){
          postTargetObjectsIds("ProdDerive", true, (List<Integer>) e.getData());
@@ -2349,7 +2412,6 @@ public abstract class AbstractListeController2 extends AbstractController
       }
    }
 
-   
    public void onClick$derivesAscItem(final Event e){
       if(e.getData() != null && !((List<Integer>) e.getData()).isEmpty()){
          postTargetObjectsIds("ProdDerive", false, (List<Integer>) e.getData());
@@ -2358,7 +2420,6 @@ public abstract class AbstractListeController2 extends AbstractController
       }
    }
 
-   
    public void onClick$cessionsItem(final Event e){
       if(e.getData() != null && !((List<Integer>) e.getData()).isEmpty()){
          postTargetObjectsIds("Cession", null, (List<Integer>) e.getData());

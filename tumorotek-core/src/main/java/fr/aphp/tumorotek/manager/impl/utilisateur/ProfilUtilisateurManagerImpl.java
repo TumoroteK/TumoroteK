@@ -109,75 +109,65 @@ public class ProfilUtilisateurManagerImpl implements ProfilUtilisateurManager
    public List<ProfilUtilisateur> findByExcludedPKManager(final ProfilUtilisateurPK pk){
       if(pk != null){
          return profilUtilisateurDao.findByExcludedPK(pk);
-      }else{
-         return profilUtilisateurDao.findAll();
       }
+      return profilUtilisateurDao.findAll();
    }
 
    @Override
    public List<ProfilUtilisateur> findByProfilManager(final Profil profil, final Boolean archive){
       if(archive != null){
          return profilUtilisateurDao.findByProfil(profil, archive);
-      }else{
-         final List<ProfilUtilisateur> pU = profilUtilisateurDao.findByProfil(profil, false);
-         pU.addAll(profilUtilisateurDao.findByProfil(profil, true));
-         Collections.sort(pU);
-         return pU;
       }
+      final List<ProfilUtilisateur> pU = profilUtilisateurDao.findByProfil(profil, false);
+      pU.addAll(profilUtilisateurDao.findByProfil(profil, true));
+      Collections.sort(pU);
+      return pU;
    }
 
    @Override
    public List<ProfilUtilisateur> findByBanqueManager(final Banque banque, final Boolean archive){
       if(archive != null){
          return profilUtilisateurDao.findByBanque(banque, archive);
-      }else{
-         final List<ProfilUtilisateur> pU = profilUtilisateurDao.findByBanque(banque, false);
-         pU.addAll(profilUtilisateurDao.findByBanque(banque, true));
-         Collections.sort(pU);
-         return pU;
       }
-
+      final List<ProfilUtilisateur> pU = profilUtilisateurDao.findByBanque(banque, false);
+      pU.addAll(profilUtilisateurDao.findByBanque(banque, true));
+      Collections.sort(pU);
+      return pU;
    }
 
    @Override
    public List<ProfilUtilisateur> findByUtilisateurManager(final Utilisateur utilisateur, final Boolean archive){
       if(archive != null){
          return profilUtilisateurDao.findByUtilisateur(utilisateur, archive);
-      }else{
-         final List<ProfilUtilisateur> pU = profilUtilisateurDao.findByUtilisateur(utilisateur, false);
-         pU.addAll(profilUtilisateurDao.findByUtilisateur(utilisateur, true));
-         Collections.sort(pU);
-         return pU;
       }
+      final List<ProfilUtilisateur> pU = profilUtilisateurDao.findByUtilisateur(utilisateur, false);
+      pU.addAll(profilUtilisateurDao.findByUtilisateur(utilisateur, true));
+      Collections.sort(pU);
+      return pU;
    }
 
    @Override
    public List<ProfilUtilisateur> findByBanqueProfilManager(final Banque banque, final Profil profil){
       if(profil != null && banque != null){
          return profilUtilisateurDao.findByBanqueProfil(banque, profil);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
    public List<ProfilUtilisateur> findByUtilisateurBanqueManager(final Utilisateur utilisateur, final Banque banque){
       if(utilisateur != null && banque != null){
          return profilUtilisateurDao.findByUtilisateurBanque(utilisateur, banque);
-      }else{
-         return new ArrayList<>();
       }
+      return new ArrayList<>();
    }
 
    @Override
    public List<ProfilUtilisateur> findByUtilisateurProfilManager(final Utilisateur utilisateur, final Profil profil){
-      if(profil != null && profil != null){
-         return profilUtilisateurDao.findByUtilisateurProfil(
-
-            utilisateur, profil);
-      }else{
-         return new ArrayList<>();
+      if(profil != null && utilisateur != null){
+         return profilUtilisateurDao.findByUtilisateurProfil(utilisateur, profil);
       }
+      return new ArrayList<>();
    }
 
    @Override

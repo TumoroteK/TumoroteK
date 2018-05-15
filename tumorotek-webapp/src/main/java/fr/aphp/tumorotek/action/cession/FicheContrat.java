@@ -679,11 +679,10 @@ public class FicheContrat extends AbstractFicheCombineController
     * Méthode pour l'initialisation du mode d'édition : récupération du contenu
     * des listes déroulantes (types, qualités...).
     */
-   
+
    public void initEditableMode(){
       if(types.isEmpty()){
-         types.addAll((List<ProtocoleType>) ManagerLocator.getProtocoleTypeManager()
-            .findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
+         types.addAll(ManagerLocator.getProtocoleTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
       }
 
       initCollaborations();
@@ -1462,17 +1461,15 @@ public class FicheContrat extends AbstractFicheCombineController
    public String getSClassCollaborateur(){
       if(this.contrat != null){
          return ObjectTypesFormatters.sClassCollaborateur(this.contrat.getCollaborateur());
-      }else{
-         return "";
       }
+      return "";
    }
 
    public String getSClassService(){
       if(this.contrat != null){
          return ObjectTypesFormatters.sClassService(this.contrat.getService());
-      }else{
-         return "";
       }
+      return "";
    }
 
    /**
@@ -1482,9 +1479,8 @@ public class FicheContrat extends AbstractFicheCombineController
    public String getDateDemandeCessionFormated(){
       if(this.contrat != null){
          return ObjectTypesFormatters.dateRenderer2(this.contrat.getDateDemandeCession());
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -1494,9 +1490,8 @@ public class FicheContrat extends AbstractFicheCombineController
    public String getDateValidationFormated(){
       if(this.contrat != null){
          return ObjectTypesFormatters.dateRenderer2(this.contrat.getDateValidation());
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -1506,9 +1501,8 @@ public class FicheContrat extends AbstractFicheCombineController
    public String getDateDemandeRedactionFormated(){
       if(this.contrat != null){
          return ObjectTypesFormatters.dateRenderer2(this.contrat.getDateDemandeRedaction());
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -1518,9 +1512,8 @@ public class FicheContrat extends AbstractFicheCombineController
    public String getDateEnvoiFormated(){
       if(this.contrat != null){
          return ObjectTypesFormatters.dateRenderer2(this.contrat.getDateEnvoiContrat());
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -1530,9 +1523,8 @@ public class FicheContrat extends AbstractFicheCombineController
    public String getDateSignatureFormated(){
       if(this.contrat != null){
          return ObjectTypesFormatters.dateRenderer2(this.contrat.getDateSignature());
-      }else{
-         return null;
       }
+      return null;
    }
 
    public List<Etablissement> getEtablissements(){
