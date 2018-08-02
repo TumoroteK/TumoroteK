@@ -70,11 +70,13 @@
 					</row>
 					<row spans="4">						
 						<!-- Congelation au prélèvement -->
+						<div id="divCongDepart" >
 						<hbox pack="center">
 							<label id="congDepartLabel" value="${c:l('Champ.Prelevement.CongDepart')}" sclass="formLabel" />
 							<checkbox id="congDepartBox" checked="@{fwinLaboInter$composer.object.congDepart,
 			        			save-when='validate.onClick, create.onClick, next.onClick, self.onBlur'}"/>
 						</hbox>	
+						</div>
 					</row>
 					<!-- Départ du site préleveur -->
 					<row spans="4">
@@ -368,7 +370,7 @@
 							/>
 						</div>
 					</row>
-					<row spans="1,3">
+					<row spans="1,3" id="rowQuantite">
 						<!-- Quantité -->
 						<label value="${c:l('Champ.Prelevement.Quantite')}" sclass="formLabel"/>
 						
@@ -391,13 +393,15 @@
 							</listbox>
 						</div>
 					</row>
-					<row spans="4">						
+					<row spans="4">
+					<div id="divCongArrivee">
 						<!-- Congelation à la biothèque -->
 						<hbox pack="center">
 							<label id="congArriveeLabel" value="${c:l('Champ.Prelevement.CongArrivee')}" sclass="formLabel" />
 							<checkbox id="congArriveeBox" checked="@{fwinLaboInter$composer.object.congArrivee,
 			        			save-when='validate.onClick, create.onClick, next.onClick, self.onBlur'}" />
 						</hbox>
+					</div>
 					</row>
 					<row spans="1,3">
 						<!-- Conforme à l'arrivée -->

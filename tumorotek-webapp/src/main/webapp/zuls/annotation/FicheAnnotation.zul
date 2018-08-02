@@ -38,7 +38,8 @@
 		<panelchildren id="children" style="overflow-y:scroll">
 			<grid id="annoGrid" fixedLayout="true" sclass="annoGrid"  hflex="1">
 				<columns>
-					<column hflex="1"></column>
+					<column hflex="1">
+					</column>
 				</columns>
 				<rows id="annoRows">
 				</rows>

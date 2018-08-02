@@ -1,204 +1,203 @@
-<!--
- * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
- * dsi-projet.tk@aphp.fr
- * 
- * Ce logiciel est un programme informatique servant à la gestion de 
- * l'activité de biobanques. 
- *
- * Ce logiciel est régi par la licence CeCILL soumise au droit français
- * et respectant les principes de diffusion des logiciels libres. Vous 
- * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
- * conditions de la licence CeCILL telle que diffusée par le CEA, le 
- * CNRS et l'INRIA sur le site "http://www.cecill.info". 
- * En contrepartie de l'accessibilité au code source et des droits de   
- * copie, de modification et de redistribution accordés par cette 
- * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
- * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
- * l'auteur du programme, le titulaire des droits patrimoniaux et les 
- * concédants successifs.
- *
- * A cet égard  l'attention de l'utilisateur est attirée sur les 
- * risques associés au chargement,  à l'utilisation,  à la modification 
- * et/ou au  développement et à la reproduction du logiciel par 
- * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
- * le rendre complexe à manipuler et qui le réserve donc à des 	
- * développeurs et des professionnels  avertis possédant  des 
- * connaissances  informatiques approfondies.  Les utilisateurs sont 
- * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
- * besoins dans des conditions permettant d'assurer la sécurité de leurs
- * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
- * et l'exploiter dans les mêmes conditions de sécurité. 
- *	
- * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
- * avez pris connaissance de la licence CeCILL, et que vous en avez 
- * accepté les termes. 
--->
+<!-- * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011) * dsi-projet.tk@aphp.fr * * Ce logiciel est un programme informatique servant à la gestion de * l'activité de biobanques. * * Ce logiciel est régi par la licence CeCILL soumise au droit français * et respectant les principes de diffusion des logiciels libres. Vous * pouvez utiliser, modifier et/ou redistribuer ce programme sous les * conditions de la licence CeCILL telle que diffusée par le CEA, le * CNRS et l'INRIA sur le site "http://www.cecill.info". * En contrepartie de l'accessibilité au code source et des droits de * copie, de modification et de redistribution accordés par cette * licence, il n'est offert aux utilisateurs qu'une garantie limitée. * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur * l'auteur du programme, le titulaire des droits patrimoniaux et les * concédants successifs. * * A cet égard l'attention de l'utilisateur est attirée sur les * risques associés au chargement, à 
+	l'utilisation, à la modification * et/ou au développement et à la reproduction du logiciel par * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut * le rendre complexe à manipuler et qui le réserve donc à des * développeurs et des professionnels avertis possédant des * connaissances informatiques approfondies. Les utilisateurs sont * donc invités à charger et tester l'adéquation du logiciel à leurs * besoins dans des conditions permettant d'assurer la sécurité de leurs * systèmes et ou de leurs données et, plus généralement, à l'utiliser * et l'exploiter dans les mêmes conditions de sécurité. * * Le fait que vous puissiez accéder à cet en-tête signifie que vous * avez pris connaissance de la licence CeCILL, et que vous en avez * accepté les termes. -->
 <window id="fwinTemplate" border="none" apply="fr.aphp.tumorotek.action.impression.FicheTemplate">
-	<panel collapsible="false" title="${c:l('fiche.template.titre')}"
-	 sclass="fichePanelv2" id="winPanel">
+	<panel collapsible="false" title="${c:l('fiche.template.titre')}" sclass="fichePanelv2" id="winPanel">
 		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
 			<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvt">
 				<columns>
-					<column width="200px"/>
-					<column/>
+					<column width="200px" />
+					<column />
 				</columns>
 				<rows>
+					<!-- Type -->
+					<row>
+						<hbox>
+							<label value="${c:l('template.type')}" sclass="formLabel" />
+							<label id="typeRequired" value="*" sclass="requiredMark" visible="false" />
+						</hbox>
+						<div>
+							<label id="typeLabel" value="@{fwinTemplate$composer.object.type}" sclass="formValue" />
+
+							<listbox id="typesBox" mold="select" rows="1" model="@{fwinTemplate$composer.types 
+								load-after='editC.onClick, createC.onClick'}" selectedItem="@{fwinTemplate$composer.selectedType}" visible="false">
+								<listitem self="@{each='type'}" value="@{type}">
+									<listcell label="@{type}" />
+								</listitem>
+							</listbox>
+						</div>
+					</row>
 					<!-- Nom -->
 					<row>
 						<hbox>
-							<label value="${c:l('template.nom')}" sclass="formLabel"/>
-							<label id="nomRequired" value="*" sclass="requiredMark"
-												visible="false"/>
+							<label value="${c:l('template.nom')}" sclass="formLabel" />
+							<label id="nomRequired" value="*" sclass="requiredMark" visible="false" />
 						</hbox>
 						<div>
-							<label id="nomLabel" 
-								value="@{fwinTemplate$composer.object.nom}" 
-								sclass="formValue" 
-							/>
-							
+							<label id="nomLabel" value="@{fwinTemplate$composer.object.nom}" sclass="formValue" />
+
 							<textbox id="nomBox" value="@{fwinTemplate$composer.object.nom,
 			        				save-when='validateC.onClick, createC.onClick'
-			        				load-after='editC.onClick, createC.onClick'}" 
-								width="200px" 
-								constraint="${fwinTemplate$composer.nomConstraint}"
-								visible="false"
-							/>
+			        				load-after='editC.onClick, createC.onClick'}" width="200px" constraint="${fwinTemplate$composer.nomConstraint}" visible="false" />
 						</div>
 					</row>
 					<!-- Entité -->
 					<row>
 						<hbox>
-							<label value="${c:l('template.entite')}" sclass="formLabel"/>
-							<label id="entiteRequired" value="*" sclass="requiredMark"
-												visible="false"/>
+							<label value="${c:l('template.entite')}" sclass="formLabel" />
+							<label id="entiteRequired" value="*" sclass="requiredMark" visible="false" />
 						</hbox>
 						<div>
-							<label id="entiteLabel" 
-								value="@{fwinTemplate$composer.object.entite.nom
-								load-after='defineBlocs.onClick'}" 
-								sclass="formValue" 
-							/>
-							
-							<listbox id="entitesBox" mold="select" rows="1"
-								model="@{fwinTemplate$composer.entites 
-								load-after='editC.onClick, createC.onClick'}"
-								selectedItem="@{fwinTemplate$composer.selectedEntite}"
-								visible="false">
-								<listitem self="@{each='temEntite'}" value="@{temEntite}">			
-									<listcell label="@{temEntite.nom}" />
+							<label id="entiteLabel" value="@{fwinTemplate$composer.entite
+								load-after='defineBlocs.onClick'}" sclass="formValue" />
+
+							<listbox id="entitesBox" mold="select" rows="1" model="@{fwinTemplate$composer.entites 
+								load-after='editC.onClick, createC.onClick, typesBox.onSelect, typesBox.onChange'}" selectedItem="@{fwinTemplate$composer.selectedEntite}" visible="false">
+								<listitem self="@{each='temEntite'}" value="@{temEntite}">
+									<listcell label="@{temEntite.label}" />
 								</listitem>
 							</listbox>
 						</div>
 					</row>
 					<!-- Description -->
 					<row>
-						<label value="${c:l('template.description')}" sclass="formLabel"/>
+						<label value="${c:l('template.description')}" sclass="formLabel" />
 						<div>
-							<label id="descriptionLabel" 
-								value="@{fwinTemplate$composer.object.description}" 
-								sclass="formValue" 
-							/>
-							
-							<textbox id="descriptionBox" 
-								value="@{fwinTemplate$composer.object.description,
+							<label id="descriptionLabel" value="@{fwinTemplate$composer.object.description}" sclass="formValue" />
+
+							<textbox id="descriptionBox" value="@{fwinTemplate$composer.object.description,
 			        				save-when='validateC.onClick, createC.onClick'
-			        				load-after='editC.onClick, createC.onClick'}" 
-								width="400px" 
-								rows="3"
-								constraint="@{fwinTemplate$composer.descConstraint}"
-								visible="false"
-							/>
+			        				load-after='editC.onClick, createC.onClick'}" width="400px" rows="3" constraint="@{fwinTemplate$composer.descConstraint}" visible="false" />
 						</div>
 					</row>
-					<!-- Entete -->
-					<row>
-						<label value="${c:l('template.enTete')}" sclass="formLabel"/>
+
+					<!-- ## PARTIE CONCERNANT LE TYPE DOC ## -->
+
+					<!-- Fichier -->
+					<row id="fichierRow" visible="false">
+						<label value="${c:l('template.fichier')}" sclass="formLabel" />
 						<div>
-							<label id="enteteLabel" 
-								value="@{fwinTemplate$composer.object.enTete}" 
-								sclass="formValue" 
-							/>
-							
-							<textbox id="enteteBox" 
-								value="@{fwinTemplate$composer.object.enTete,
+							<label id="fichierLabel" value="@{fwinTemplate$composer.object.fichier}" sclass="formValue" />
+							<space />
+							<button id="uploadFichierBtn" label="${c:l('impression.ajouter.fichier')}" visible="false" />
+							<separator />
+							<label id="messageInfoUploadBtn" />
+						</div>
+					</row>
+
+					<!-- Contenu -->
+					<row spans="2">
+						<separator />
+					</row>
+
+					<!-- Titre de l'onglet pour l'affichage des couples clés - champs -->
+					<group id="groupClesChamps" label="${c:l('template.clesChamps')}" visible="false" />
+					<!-- Liste des couples clés - champs -->
+					<row spans="4">
+						<div>
+							<grid id="cleImpressionStaticGrid" fixedLayout="true" sclass="gridListStyle" model="@{fwinTemplate$composer.cleImpressionDecoratorList}">
+								<columns>
+									<column label="${c:l('cle.nom')}" width="250px" />
+									<column label="${c:l('cle.champ.entite.nom')}" width="250px" />
+									<column label="${c:l('cle.champ')}" width="250px" />
+								</columns>
+								<rows>
+									<row self="@{each='cleImpressionStatic'}" value="cleImpressionStatic" height="20px">
+										<label value="@{cleImpressionStatic.nom}" />
+										<label value="@{cleImpressionStatic.entiteLabel}" />
+										<label value="@{cleImpressionStatic.champLabel}" />
+									</row>
+								</rows>
+							</grid>
+						</div>
+					</row>
+					<row spans="4">
+						<div>
+							<grid id="cleImpressionEditGrid" fixedLayout="true" sclass="gridListStyle" model="@{fwinTemplate$composer.cleImpressionDecoratorList 
+								load-after='editC.onClick, uploadFichierBtn.onClick, self.onListChange'
+								save-when='validateC.onClick, createC.onClick, self.onBlur'}" visible="false">
+								<columns>
+									<column label="${c:l('cle.nom')}" width="250px" />
+									<column label="${c:l('cle.champ.entite.nom')}" width="250px" />
+									<column label="${c:l('cle.champ')}" width="250px" />
+									<column label="" width="50px" />
+								</columns>
+								<rows>
+									<row self="@{each='cleImpressionStatic' load-after='editC.onClick, uploadFichierBtn.onClick, self.onListChange'}" value="cleImpressionStatic" height="20px">
+										<label value="@{cleImpressionStatic.nom}" />
+										<label value="@{cleImpressionStatic.entiteLabel}" />
+										<label value="@{cleImpressionStatic.champLabel}" />
+										<div align="center">
+											<image id="editImg" width="12px" height="12px" src="/images/icones/small_edit.png" style="cursor:pointer" />
+										</div>
+									</row>
+								</rows>
+							</grid>
+						</div>
+					</row>
+
+
+					<!-- ## PARTIE CONCERNANT LE TYPE BLOC ## -->
+
+					<!-- Entete -->
+					<row id="enTeteRow" visible="false">
+						<label value="${c:l('template.enTete')}" sclass="formLabel" />
+						<div>
+							<label id="enteteLabel" value="@{fwinTemplate$composer.object.enTete}" sclass="formValue" />
+
+							<textbox id="enteteBox" value="@{fwinTemplate$composer.object.enTete,
 			        				save-when='validateC.onClick, createC.onClick'
-			        				load-after='editC.onClick, createC.onClick'}" 
-								width="200px" 
-								constraint="@{fwinTemplate$composer.nomNullConstraint}"
-								visible="false"
-							/>
+			        				load-after='editC.onClick, createC.onClick'}" width="200px" constraint="@{fwinTemplate$composer.nomNullConstraint}" visible="false" />
 						</div>
 					</row>
 					<!-- Pied de page -->
-					<row>
-						<label value="${c:l('template.piedPage')}" sclass="formLabel"/>
+					<row id="piedPageRow" visible="false">
+						<label value="${c:l('template.piedPage')}" sclass="formLabel" />
 						<div>
-							<label id="piedPageLabel" 
-								value="@{fwinTemplate$composer.object.piedPage}" 
-								sclass="formValue" 
-							/>
-							
-							<textbox id="piedPageBox" 
-								value="@{fwinTemplate$composer.object.piedPage,
+							<label id="piedPageLabel" value="@{fwinTemplate$composer.object.piedPage}" sclass="formValue" />
+
+							<textbox id="piedPageBox" value="@{fwinTemplate$composer.object.piedPage,
 			        				save-when='validateC.onClick, createC.onClick'
-			        				load-after='editC.onClick, createC.onClick'}" 
-								width="200px" 
-								constraint="@{fwinTemplate$composer.nomNullConstraint}"
-								visible="false"
-							/>
+			        				load-after='editC.onClick, createC.onClick'}" width="200px" constraint="@{fwinTemplate$composer.nomNullConstraint}" visible="false" />
 						</div>
 					</row>
-					
+
 					<!-- Contenu -->
 					<row spans="2">
-						<separator/>
+						<separator />
 					</row>
-					
+
+					<!-- Permet l'ajout (+) de blocs d'impression -->
 					<row spans="2" align="center" id="defineBlocsRow" visible="false">
 						<hbox>
-							<button id="defineBlocs" label="${c:l('template.define.blocs')}" 
-								style="color : #003399;" height="24px"
-								image="/images/icones/add_echantillons.png" sclass="buttonv2"
-								/>
+							<button id="defineBlocs" label="${c:l('template.define.blocs')}" style="color : #003399;" height="24px" image="/images/icones/add_echantillons.png" sclass="buttonv2" />
 						</hbox>
 					</row>
-					
-					<group id="groupContenu" label="${c:l('template.contenu')}"/>
+
+					<!-- Titre de l'onglet pour l'affichage des paragraphes à imprimer -->
+					<group id="groupContenu" label="${c:l('template.contenu')}" visible="false" />
+
+					<!-- Affichage des blocs d'impression (lecture) -->
 					<row spans="2">
-						<grid id="contenuStaticGrid"
-							fixedLayout="true" 
-							sclass="gridListStyle"
-							model="@{fwinTemplate$composer.blocImpressionsDecorated}"
-							rowRenderer="@{fwinTemplate$composer.blocImpressionRenderer}"
-							>
-							<columns sizable="true" >
-								<column width="40px"/>
-								<column label="${c:l('template.blocImpression')}" width="500px"/>
+						<grid id="contenuStaticGrid" fixedLayout="true" sclass="gridListStyle" model="@{fwinTemplate$composer.blocImpressionsDecorated}" rowRenderer="@{fwinTemplate$composer.blocImpressionRenderer}">
+							<columns sizable="true">
+								<column width="40px" />
+								<column label="${c:l('template.blocImpression')}" width="500px" />
 							</columns>
 							<rows>
 								<row self="@{each='currBloc'}" value="currBloc" />
 							</rows>
 						</grid>
 					</row>
+					<!-- Affichage des blocs d'impression (edition) -->
 					<row spans="2">
-						<grid id="contenuEditGrid"
-							fixedLayout="true" 
-							width="575px"
-							sclass="gridListStyle"
-							model="@{fwinTemplate$composer.blocImpressionsDecorated
-								load-after='defineBlocs.onClick'}"
-							rowRenderer="@{fwinTemplate$composer.blocImpressionRendererEdit}"
-							visible="false">
-							<columns sizable="true" >
-								<column width="40px"/>
-								<column label="${c:l('template.blocImpression')}"
-									width="400px"/>
-								<column label="${c:l('template.print.bloc')}" width="75px"
-									align="center"/>
-								<column width="30px"
-									align="center"/>
-								<column width="30px"
-									align="center"/>
+						<grid id="contenuEditGrid" fixedLayout="true" width="575px" sclass="gridListStyle" model="@{fwinTemplate$composer.blocImpressionsDecorated
+								load-after='defineBlocs.onClick'}" rowRenderer="@{fwinTemplate$composer.blocImpressionRendererEdit}" visible="false">
+							<columns sizable="true">
+								<column width="40px" />
+								<column label="${c:l('template.blocImpression')}" width="400px" />
+								<column label="${c:l('template.print.bloc')}" width="75px" align="center" />
+								<column width="30px" align="center" />
+								<column width="30px" align="center" />
 							</columns>
 							<rows>
 								<row self="@{each='currBloc'}" value="currBloc" />
@@ -208,29 +207,16 @@
 				</rows>
 			</grid>
 		</panelchildren>
+
 		<toolbar height="30px" id="toolbarEchan" align="end">
 			<hbox spacing="5" align="center">
-				<button id="addNewC" label="${c:l('general.new')}" height="24px"
-					image="/images/icones/new.png" sclass="buttonv2"
-					use="fr.aphp.tumorotek.component.TKDisablableButton" />
-				<button id="editC" label="${c:l('general.edit')}" height="24px"
-					image="/images/icones/edit.png" sclass="buttonv2"
-					use="fr.aphp.tumorotek.component.TKDisablableButton" />
-				<button id="deleteC" label="${c:l('general.delete')}" height="24px"
-					image="/images/icones/trash.png" sclass="buttonv2"
-					use="fr.aphp.tumorotek.component.TKDisablableButton" />
-				<button id="validateC" label="${c:l('general.validate')}" height="24px" visible="false"
-					image="/images/icones/save.png" sclass="buttonv2"
-					use="fr.aphp.tumorotek.component.TKDisablableButton" />
-				<button id="revertC" label="${c:l('general.cancel')}" height="24px" visible="false"
-					image="/images/icones/cancel.png" sclass="buttonv2"
-					use="fr.aphp.tumorotek.component.TKDisablableButton" />
-				<button id="createC" label="${c:l('general.create')}" height="24px" visible="false"
-					image="/images/icones/save.png" sclass="buttonv2"
-					use="fr.aphp.tumorotek.component.TKDisablableButton" />
-				<button id="cancelC" label="${c:l('general.cancel')}" height="24px" visible="false"
-					image="/images/icones/cancel.png" sclass="buttonv2"
-					use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="addNewC" label="${c:l('general.new')}" height="24px" image="/images/icones/new.png" sclass="buttonv2" use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="editC" label="${c:l('general.edit')}" height="24px" image="/images/icones/edit.png" sclass="buttonv2" use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="deleteC" label="${c:l('general.delete')}" height="24px" image="/images/icones/trash.png" sclass="buttonv2" use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="validateC" label="${c:l('general.validate')}" height="24px" visible="false" image="/images/icones/save.png" sclass="buttonv2" use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="revertC" label="${c:l('general.cancel')}" height="24px" visible="false" image="/images/icones/cancel.png" sclass="buttonv2" use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="createC" label="${c:l('general.create')}" height="24px" visible="false" image="/images/icones/save.png" sclass="buttonv2" use="fr.aphp.tumorotek.component.TKDisablableButton" />
+				<button id="cancelC" label="${c:l('general.cancel')}" height="24px" visible="false" image="/images/icones/cancel.png" sclass="buttonv2" use="fr.aphp.tumorotek.component.TKDisablableButton" />
 			</hbox>
 		</toolbar>
 	</panel>

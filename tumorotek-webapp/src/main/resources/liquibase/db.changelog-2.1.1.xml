@@ -4,10 +4,7 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-    <changeSet id="1" author="JDI" context="*, 2.1.1, 2.1.2, 2.1.3, 2.1.4">
-        <tagDatabase tag="${project.parent.version}"/>
-    </changeSet>
-    <changeSet id="2" author="JDI" runAlways="false" context="*, 2.1.1, 2.1.2, 2.1.3, 2.1.4">
+    <changeSet id="1" author="JDI" runAlways="false" context="*, 2.1.1, 2.1.2, 2.1.3, 2.1.4">
         <comment>[YouTrack] TKB-1 : La recherche ne fonctionne pas sur les ID de cession</comment>
         <update tableName="CHAMP_ENTITE">
             <column name="DATA_TYPE_ID" value="6"/>
@@ -20,7 +17,7 @@
             </update>
         </rollback>
     </changeSet>
-    <changeSet id="3" author="ABO" runAlways="false" context="*, 2.1.1, 2.1.2, 2.1.3, 2.1.4">
+    <changeSet id="2" author="ABO" runAlways="false" context="*, 2.1.1, 2.1.2, 2.1.3, 2.1.4">
         <comment>[YouTrack] TK-48 : Erreur quand on veut faire une recherche complexe sur la date du consentement
             juridique
         </comment>
@@ -34,5 +31,8 @@
                 <where>CHAMP_ENTITE_ID = '27' AND NOM = 'ConsentDate'</where>
             </update>
         </rollback>
+    </changeSet>
+    <changeSet id="3" author="JDI" context="*, 2.1.1, 2.1.2, 2.1.3, 2.1.4">
+        <tagDatabase tag="${project.parent.version}"/>
     </changeSet>
 </databaseChangeLog>

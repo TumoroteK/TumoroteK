@@ -1,37 +1,37 @@
-/** 
+/**
  * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
  * dsi-projet.tk@aphp.fr
- * 
- * Ce logiciel est un programme informatique servant à la gestion de 
- * l'activité de biobanques. 
+ *
+ * Ce logiciel est un programme informatique servant à la gestion de
+ * l'activité de biobanques.
  *
  * Ce logiciel est régi par la licence CeCILL soumise au droit français
- * et respectant les principes de diffusion des logiciels libres. Vous 
- * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
- * conditions de la licence CeCILL telle que diffusée par le CEA, le 
- * CNRS et l'INRIA sur le site "http://www.cecill.info". 
- * En contrepartie de l'accessibilité au code source et des droits de   
- * copie, de modification et de redistribution accordés par cette 
- * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
- * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
- * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * et respectant les principes de diffusion des logiciels libres. Vous
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le
+ * CNRS et l'INRIA sur le site "http://www.cecill.info".
+ * En contrepartie de l'accessibilité au code source et des droits de
+ * copie, de modification et de redistribution accordés par cette
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée.
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les
  * concédants successifs.
  *
- * A cet égard  l'attention de l'utilisateur est attirée sur les 
- * risques associés au chargement,  à l'utilisation,  à la modification 
- * et/ou au  développement et à la reproduction du logiciel par 
- * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
- * le rendre complexe à manipuler et qui le réserve donc à des 	
- * développeurs et des professionnels  avertis possédant  des 
- * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * A cet égard  l'attention de l'utilisateur est attirée sur les
+ * risques associés au chargement,  à l'utilisation,  à la modification
+ * et/ou au  développement et à la reproduction du logiciel par
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut
+ * le rendre complexe à manipuler et qui le réserve donc à des
+ * développeurs et des professionnels  avertis possédant  des
+ * connaissances  informatiques approfondies.  Les utilisateurs sont
  * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
  * besoins dans des conditions permettant d'assurer la sécurité de leurs
- * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
- * et l'exploiter dans les mêmes conditions de sécurité. 
- *	
- * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
- * avez pris connaissance de la licence CeCILL, et que vous en avez 
- * accepté les termes. 
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser
+ * et l'exploiter dans les mêmes conditions de sécurité.
+ *
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous
+ * avez pris connaissance de la licence CeCILL, et que vous en avez
+ * accepté les termes.
  **/
 package fr.aphp.tumorotek.dao.test.code;
 
@@ -46,167 +46,166 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Categorie;
 
 /**
- * 
+ *
  * Classe de test pour le DAO TableCodesDao et le bean du domaine TableCodes.
  * Classe de test créée le 08/09/09.
- * 
+ *
  * @author Pierre Ventadour.
  * @version 2.0
  *
  */
-public class TableCodageDaoTest extends AbstractDaoTest {
+public class TableCodageDaoTest extends AbstractDaoTest
+{
 
-	/** Bean Dao. */
-	private TableCodageDao tableCodageDao;
-	
-	/** Valeur du nom pour la maj. */
-	private String updatedNom = "Table maj";
+   /** Bean Dao. */
+   private TableCodageDao tableCodageDao;
 
-	/**
-	 * Constructeur.
-	 */
-	public TableCodageDaoTest() {
-	}
-	
-	/**
-	 * Setter du bean Dao.
-	 * @param tDao est le bean Dao.
-	 */
-	public void setTableCodageDao(TableCodageDao tDao) {
-		this.tableCodageDao = tDao;
-	}
-	
-	/**
-	 * Test l'appel de la méthode findAll().
-	 */
-	public void testReadAlltableCodes() {
-		List<TableCodage> tables = tableCodageDao.findAll();
-		assertTrue(tables.size() == 5);
-	}
-	
-	/**
-	 * Test l'appel de la méthode findByNom().
-	 */
-	public void testFindByNom() {
-		List<TableCodage> tables = tableCodageDao.findByNom("ADICAP");
-		assertTrue(tables.size() == 1);
-		tables = tableCodageDao.findByNom("TEST");
-		assertTrue(tables.size() == 0);
-	}
-	
-//	/**
-//	 * Test l'appel de la méthode findByDoublon().
-//	 */
-//	public void testFindByDoublon() {
-//		List<TableCodage> tables = tableCodageDao.findByDoublon("CIM_MASTER");
-//		assertTrue(tables.size() == 1);
-//		tables = tableCodageDao.findByDoublon("CIMO");
-//		assertTrue(tables.size() == 0);
-//	}
-		
-	/**
-	 * Test l'insertion, la mise à jour et la suppression d'une TableCodage.
-	 * @throws Exception lance une exception en cas de problème lors du CRUD.
-	 */
-	@Rollback(false)
-	public void testCrud() throws Exception {
-		TableCodage t = new TableCodage();
-		
-		t.setNom("CIMO");
-		// Test de l'insertion
-		tableCodageDao.createObject(t);
-		assertEquals(new Integer(6), t.getTableCodageId());
-		
-		// Test de la mise à jour
-		TableCodage t2 = tableCodageDao.findById(new Integer(6));
-		assertNotNull(t2);
-		assertTrue(t2.getNom().equals("CIMO"));
-		t2.setNom(updatedNom);
-		tableCodageDao.updateObject(t2);
-		assertTrue(tableCodageDao.findById(new Integer(6)).getNom()
-				.equals(updatedNom));
-		
-		// Test de la délétion
-		tableCodageDao.removeObject(new Integer(6));
-		assertNull(tableCodageDao.findById(new Integer(6)));
-		
-	}
-	
-	/**
-	 * Test de la méthode surchargée "equals".
-	 */
-	public void testEquals() {
-		String nom = "Table1";
-		String nom2 = "Table2";
-		TableCodage t1 = new TableCodage();
-		TableCodage t2 = new TableCodage();
-		
-		// L'objet 1 n'est pas égal à null
-		assertFalse(t1.equals(null));
-		// L'objet 1 est égale à lui même
-		assertTrue(t1.equals(t1));
-		
-		/*null --> Ids ne pouvant etre nuls car table systemes*/
-		assertFalse(t1.equals(t2));
-		assertFalse(t2.equals(t1));
-		
-		/*Id*/
-		t2.setNom(nom);
-		assertFalse(t1.equals(t2));
-		assertFalse(t2.equals(t1));
-		t1.setNom(nom2);
-		assertFalse(t1.equals(t2));
-		assertFalse(t2.equals(t1));
-		t1.setNom(nom);
-		assertTrue(t1.equals(t2));
-		assertTrue(t2.equals(t1));
-		
-		Categorie c = new Categorie();
-		assertFalse(t1.equals(c));
-		
-		Banque b = new Banque();
-		assertFalse(t1.equals(b));
-		
-	}
-	
-	/**
-	 * Test de la méthode surchargée "hashcode".
-	 */
-	public void testHashCode() {
-		String nom = "Table";
-		TableCodage t1 = new TableCodage();
-		t1.setNom(nom);
-		TableCodage t2 = new TableCodage();
-		t2.setNom(nom);
-		TableCodage t3 = new TableCodage();
-		t3.setNom(null);
-		assertTrue(t3.hashCode() > 0);
-		
-		int hash = t1.hashCode();
-		// 2 objets égaux ont le même hashcode
-		assertTrue(t1.hashCode() == t2.hashCode());
-		// un même objet garde le même hashcode dans le temps
-		assertTrue(hash == t1.hashCode());
-		assertTrue(hash == t1.hashCode());
-		assertTrue(hash == t1.hashCode());
-		assertTrue(hash == t1.hashCode());	
-	}
-	
-	public void testClone() {
-		TableCodage t1 = tableCodageDao.findById(1);
-		t1.setVersion("12"); // pour eviter null
-		TableCodage clone = t1.clone();
-		assertTrue(t1.equals(clone));
-		assertTrue(clone.getTableCodageId().equals(t1.getTableCodageId()));
-		assertTrue(clone.getNom().equals(t1.getNom()));
-		assertTrue(clone.getVersion().equals(t1.getVersion()));
-		assertTrue(clone.getCodeAssignes().equals(t1.getCodeAssignes()));
-		assertTrue(clone.getCodeSelects().equals(t1.getCodeSelects()));		
-	}
-	
-	public void testToString() {
-		TableCodage t1 = tableCodageDao.findById(1);
-		assertTrue(t1.toString().equals("{TableCodage: ADICAP}"));
-	}
-	
+   /** Valeur du nom pour la maj. */
+   private final String updatedNom = "Table maj";
+
+   /**
+    * Constructeur.
+    */
+   public TableCodageDaoTest(){}
+
+   /**
+    * Setter du bean Dao.
+    * @param tDao est le bean Dao.
+    */
+   public void setTableCodageDao(final TableCodageDao tDao){
+      this.tableCodageDao = tDao;
+   }
+
+   /**
+    * Test l'appel de la méthode findAll().
+    */
+   public void testReadAlltableCodes(){
+      final List<TableCodage> tables = tableCodageDao.findAll();
+      assertTrue(tables.size() == 5);
+   }
+
+   /**
+    * Test l'appel de la méthode findByNom().
+    */
+   public void testFindByNom(){
+      List<TableCodage> tables = tableCodageDao.findByNom("ADICAP");
+      assertTrue(tables.size() == 1);
+      tables = tableCodageDao.findByNom("TEST");
+      assertTrue(tables.size() == 0);
+   }
+
+   //	/**
+   //	 * Test l'appel de la méthode findByDoublon().
+   //	 */
+   //	public void testFindByDoublon() {
+   //		List<TableCodage> tables = tableCodageDao.findByDoublon("CIM_MASTER");
+   //		assertTrue(tables.size() == 1);
+   //		tables = tableCodageDao.findByDoublon("CIMO");
+   //		assertTrue(tables.size() == 0);
+   //	}
+
+   /**
+    * Test l'insertion, la mise à jour et la suppression d'une TableCodage.
+    * @throws Exception lance une exception en cas de problème lors du CRUD.
+    */
+   @Rollback(false)
+   public void testCrud() throws Exception{
+      final TableCodage t = new TableCodage();
+
+      t.setNom("CIMO");
+      // Test de l'insertion
+      tableCodageDao.createObject(t);
+      assertEquals(new Integer(6), t.getTableCodageId());
+
+      // Test de la mise à jour
+      final TableCodage t2 = tableCodageDao.findById(new Integer(6));
+      assertNotNull(t2);
+      assertTrue(t2.getNom().equals("CIMO"));
+      t2.setNom(updatedNom);
+      tableCodageDao.updateObject(t2);
+      assertTrue(tableCodageDao.findById(new Integer(6)).getNom().equals(updatedNom));
+
+      // Test de la délétion
+      tableCodageDao.removeObject(new Integer(6));
+      assertNull(tableCodageDao.findById(new Integer(6)));
+
+   }
+
+   /**
+    * Test de la méthode surchargée "equals".
+    */
+   public void testEquals(){
+      final String nom = "Table1";
+      final String nom2 = "Table2";
+      final TableCodage t1 = new TableCodage();
+      final TableCodage t2 = new TableCodage();
+
+      // L'objet 1 n'est pas égal à null
+      assertFalse(t1.equals(null));
+      // L'objet 1 est égale à lui même
+      assertTrue(t1.equals(t1));
+
+      /*null --> Ids ne pouvant etre nuls car table systemes*/
+      assertFalse(t1.equals(t2));
+      assertFalse(t2.equals(t1));
+
+      /*Id*/
+      t2.setNom(nom);
+      assertFalse(t1.equals(t2));
+      assertFalse(t2.equals(t1));
+      t1.setNom(nom2);
+      assertFalse(t1.equals(t2));
+      assertFalse(t2.equals(t1));
+      t1.setNom(nom);
+      assertTrue(t1.equals(t2));
+      assertTrue(t2.equals(t1));
+
+      final Categorie c = new Categorie();
+      assertFalse(t1.equals(c));
+
+      final Banque b = new Banque();
+      assertFalse(t1.equals(b));
+
+   }
+
+   /**
+    * Test de la méthode surchargée "hashcode".
+    */
+   public void testHashCode(){
+      final String nom = "Table";
+      final TableCodage t1 = new TableCodage();
+      t1.setNom(nom);
+      final TableCodage t2 = new TableCodage();
+      t2.setNom(nom);
+      final TableCodage t3 = new TableCodage();
+      t3.setNom(null);
+      assertTrue(t3.hashCode() > 0);
+
+      final int hash = t1.hashCode();
+      // 2 objets égaux ont le même hashcode
+      assertTrue(t1.hashCode() == t2.hashCode());
+      // un même objet garde le même hashcode dans le temps
+      assertTrue(hash == t1.hashCode());
+      assertTrue(hash == t1.hashCode());
+      assertTrue(hash == t1.hashCode());
+      assertTrue(hash == t1.hashCode());
+   }
+
+   public void testClone(){
+      final TableCodage t1 = tableCodageDao.findById(1);
+      t1.setVersion("12"); // pour eviter null
+      final TableCodage clone = t1.clone();
+      assertTrue(t1.equals(clone));
+      assertTrue(clone.getTableCodageId().equals(t1.getTableCodageId()));
+      assertTrue(clone.getNom().equals(t1.getNom()));
+      assertTrue(clone.getVersion().equals(t1.getVersion()));
+      assertTrue(clone.getCodeAssignes().equals(t1.getCodeAssignes()));
+      assertTrue(clone.getCodeSelects().equals(t1.getCodeSelects()));
+   }
+
+   public void testToString(){
+      final TableCodage t1 = tableCodageDao.findById(1);
+      assertTrue(t1.toString().equals("{TableCodage: ADICAP}"));
+   }
+
 }

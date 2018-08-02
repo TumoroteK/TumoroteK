@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
 <Interfacage>
 	<Logiciel func="SIP">
 		<Nom>APIX</Nom>
@@ -140,8 +141,8 @@
 				<Key>5.1</Key>
 			</Source>
 		</Mapping>
-	</Bloc>	
-	<!--  Annotations prelevement vers champs TK-->
+	</Bloc>
+	<!-- Annotations prelevement vers champs TK -->
 	<BlocLibre nom="Date Prelevement recu">
 		<Source>
 			<Key>3.2</Key>
@@ -156,28 +157,29 @@
 			</Source>
 		</Mapping>
 	</BlocLibre>
-	<!--  Annotations prelevement -->
-<!-- 	<BlocLibre nom="Date de Prelevement Recu"> -->
-<!-- 		<Source> -->
-<!-- 			<Key>3</Key> -->
-<!-- 		</Source> -->
-<!-- 		<Mapping> -->
-<!-- 			<Tk> -->
-<!-- 				<Annotation nom="Date prelevement recu" idChamp="35"></Annotation> -->
-<!-- 				<Entite nom="Prelevement" idChamp="2"></Entite> -->
-<!-- 			</Tk> -->
-<!-- 			<Source> -->
-<!-- 				<Key>5</Key> -->
-<!-- 			</Source> -->
-<!-- 		</Mapping> -->
-<!-- 	</BlocLibre> -->
+	<!-- Annotations prelevement -->
+	<!-- <BlocLibre nom="Date de Prelevement Recu"> -->
+	<!-- <Source> -->
+	<!-- <Key>3</Key> -->
+	<!-- </Source> -->
+	<!-- <Mapping> -->
+	<!-- <Tk> -->
+	<!-- <Annotation nom="Date prelevement recu" idChamp="35"></Annotation> -->
+	<!-- <Entite nom="Prelevement" idChamp="2"></Entite> -->
+	<!-- </Tk> -->
+	<!-- <Source> -->
+	<!-- <Key>5</Key> -->
+	<!-- </Source> -->
+	<!-- </Mapping> -->
+	<!-- </BlocLibre> -->
 	<BlocLibre nom="Ref du prel histo a Ambroise Pare">
 		<Source>
 			<Key>3.2</Key>
 		</Source>
 		<Mapping>
 			<Tk>
-				<Annotation nom="Ref du prel histo a Ambroise Pare" idChamp="2"></Annotation>
+				<Annotation nom="Ref du prel histo a Ambroise Pare"
+					idChamp="2"></Annotation>
 				<Entite nom="Prelevement" idChamp="2"></Entite>
 			</Tk>
 			<Source>
@@ -272,7 +274,7 @@
 				</Modifier>
 			</Source>
 		</Mapping>
-	</BlocLibre>	
+	</BlocLibre>
 	<BlocLibre nom="Commentaires1">
 		<Source>
 			<Key>3.2</Key>
@@ -287,8 +289,8 @@
 			</Source>
 		</Mapping>
 	</BlocLibre>
-	
-	<!--  Annotations echantillon -->
+
+	<!-- Annotations echantillon -->
 	<BlocLibre nom="Pourcent_histio">
 		<Source>
 			<Key>3.2</Key>
@@ -335,7 +337,7 @@
 						<SourceThes>NA</SourceThes>
 						<TkThes>NA</TkThes>
 					</MappingThes>
-						<MappingThes>
+					<MappingThes>
 						<SourceThes>NI</SourceThes>
 						<TkThes>NI</TkThes>
 					</MappingThes>
@@ -375,7 +377,7 @@
 						<SourceThes>NA</SourceThes>
 						<TkThes>NA</TkThes>
 					</MappingThes>
-						<MappingThes>
+					<MappingThes>
 						<SourceThes>NI</SourceThes>
 						<TkThes>NI</TkThes>
 					</MappingThes>
@@ -415,14 +417,15 @@
 						<SourceThes>NA</SourceThes>
 						<TkThes>NA</TkThes>
 					</MappingThes>
-						<MappingThes>
+					<MappingThes>
 						<SourceThes>NI</SourceThes>
 						<TkThes>NI</TkThes>
 					</MappingThes>
 				</Modifier>
 			</Source>
 		</Mapping>
-	</BlocLibre>*
+	</BlocLibre>
+	*
 	<BlocLibre nom="IHC Facteur XIII">
 		<Source>
 			<Key>3.2</Key>
@@ -455,14 +458,14 @@
 						<SourceThes>NA</SourceThes>
 						<TkThes>NA</TkThes>
 					</MappingThes>
-						<MappingThes>
+					<MappingThes>
 						<SourceThes>NI</SourceThes>
 						<TkThes>NI</TkThes>
 					</MappingThes>
 				</Modifier>
 			</Source>
 		</Mapping>
-	</BlocLibre>	
+	</BlocLibre>
 	<BlocLibre nom="Commentaires2">
 		<Source>
 			<Key>3.2</Key>
@@ -477,7 +480,7 @@
 			</Source>
 		</Mapping>
 	</BlocLibre>
-	
+
 	<BlocLibre nom="Localisation du Prelevement">
 		<Source>
 			<Key>3.2</Key>
@@ -517,8 +520,8 @@
 				</Modifier>
 			</Source>
 		</Mapping>
-	</BlocLibre>	
-	
+	</BlocLibre>
+
 </Interfacage>
 
 

@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/beans 
 		http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<import resource="applicationContextInterceptor.xml" />
-	<import resource="spring-jpa-codes.xml" />
 
 	<bean id="abstractDaoTargetCodes" class="fr.aphp.tumorotek.dao.impl.GenericDaoJpaImpl"
 		abstract="true">
@@ -28,7 +27,7 @@
 			</bean>
 		</property>
 	</bean>
-	
+
 	<bean id="adicapGroupeDao" parent="abstractDao">
 		<property name="proxyInterfaces">
 			<value>fr.aphp.tumorotek.dao.code.AdicapGroupeDao

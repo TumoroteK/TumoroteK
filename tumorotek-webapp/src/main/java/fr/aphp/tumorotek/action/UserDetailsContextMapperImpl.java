@@ -12,29 +12,31 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.ldap.userdetails.UserDetailsContextMapper;
 
-public class UserDetailsContextMapperImpl implements UserDetailsContextMapper, Serializable {
-    
-	private static final long serialVersionUID = 3962976258168853954L;
+public class UserDetailsContextMapperImpl implements UserDetailsContextMapper, Serializable
+{
 
-    @Override
-    public UserDetails mapUserFromContext(DirContextOperations ctx, String username, Collection<? extends GrantedAuthority> authority) {
+   private static final long serialVersionUID = 3962976258168853954L;
 
-        List<GrantedAuthority> mappedAuthorities = new ArrayList<GrantedAuthority>();
+   @Override
+   public UserDetails mapUserFromContext(final DirContextOperations ctx, final String username,
+      final Collection<? extends GrantedAuthority> authority){
 
-        mappedAuthorities.add(new GrantedAuthority(){
-            private static final long serialVersionUID = 4356967414267942910L;
+      final List<GrantedAuthority> mappedAuthorities = new ArrayList<>();
 
-            @Override
-            public String getAuthority() {
-                return "ROLE_USER";
-            } 
+      mappedAuthorities.add(new GrantedAuthority()
+      {
+         private static final long serialVersionUID = 4356967414267942910L;
 
-        });
-        
-        return new User(username, "", true, true, true, true, mappedAuthorities);
-    }
+         @Override
+         public String getAuthority(){
+            return "ROLE_USER";
+         }
 
-    @Override
-    public void mapUserToContext(UserDetails arg0, DirContextAdapter arg1) {
-    }
+      });
+
+      return new User(username, "", true, true, true, true, mappedAuthorities);
+   }
+
+   @Override
+   public void mapUserToContext(final UserDetails arg0, final DirContextAdapter arg1){}
 }

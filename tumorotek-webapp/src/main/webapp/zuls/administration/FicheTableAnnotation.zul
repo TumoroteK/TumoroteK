@@ -49,9 +49,7 @@
 						<div>
 							<label id="entiteLabel" 
 								value="@{fwinTableAnnotation$composer.entiteTableNom load-after='deleteC.onClick, cancelC.onClick'}" 
-								sclass="formValue" 
-							/>
-							
+								sclass="formValue"/>
 							<listbox id="entiteBox" mold="select" rows="1"
 								model="@{fwinTableAnnotation$composer.entites, 
 												load-after='editC.onClick, addNewC.onClick'}"
@@ -92,9 +90,7 @@
 							<label id="descriptionLabel" 
 								value="@{fwinTableAnnotation$composer.table.description load-after='deleteC.onClick'}" 
 								sclass="formValue" 
-								multiline="true"
-							/>
-							
+								multiline="true"/>
 							<textbox id="descriptionBox" 
 								value="@{fwinTableAnnotation$composer.table.description,
 			        					save-when='validateC.onClick, createC.onClick'
@@ -102,8 +98,20 @@
 								width="300px"
 								rows="3" 
 								visible="false"
-								constraint="${fwinTableAnnotation$composer.descrConstraint}"
-							/>
+								constraint="${fwinTableAnnotation$composer.descrConstraint}"/>
+						</div>
+					</row>
+					<!-- Annotation Inline display -->
+					<row>
+						<label value="${c:l('annotation.table.inlineDisplay')}" sclass="formLabel"/>
+						<div>
+							<label id="inlineDisplayLabel"
+								   value="@{fwinTableAnnotation$composer.table.inlineDisplay}" sclass="formValue"/>
+							<checkbox id="inlineDisplayCheckbox"
+									  checked="@{fwinTableAnnotation$composer.table.inlineDisplay,
+			        					save-when='validateC.onClick, createC.onClick'
+			        					load-after='editC.onClick, createC.onClick'}"
+									  visible="false"/>
 						</div>
 					</row>
 					
@@ -138,7 +146,7 @@
 								<column label="${c:l('annotation.champ.obligatoire')}"
 									width="50px"/>
 								<column label="${c:l('annotation.champ.combine')}"
-									width="50px"/>
+									/>
 								<column id="upColumn" width="25px" visible="false" />
 								<column id="downColumn" width="25px" visible="false" />
 								<column id="editColumn" width="25px" visible="false" />

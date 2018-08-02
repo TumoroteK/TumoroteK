@@ -1,15 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context" xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<import resource="applicationContextInterceptor.xml" />
-	<import resource="spring-jpa.xml" />	
 	<import resource="applicationContextDao-ui.xml" />
 
-	<bean id="abstractDaoTarget" class="fr.aphp.tumorotek.dao.impl.GenericDaoJpaImpl"
-		abstract="true">
+	<bean id="abstractDaoTarget" class="fr.aphp.tumorotek.dao.impl.GenericDaoJpaImpl" abstract="true">
 		<property name="entityManagerFactory">
 			<ref bean="entityManagerFactory" />
 		</property>
@@ -463,7 +458,7 @@
 			</bean>
 		</property>
 	</bean>
-
+	
 	<!-- Package coeur.patient -->
 
 	<bean id="patientDao" parent="abstractDao">
@@ -1061,6 +1056,21 @@
 		</property>
 	</bean>
 
+	<bean id="champCalculeDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.annotation.ChampCalculeDao
+			</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTarget">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.coeur.annotation.ChampCalcule
+					</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+
 	<bean id="annotationDefautDao" parent="abstractDao">
 		<property name="proxyInterfaces">
 			<value>fr.aphp.tumorotek.dao.annotation.AnnotationDefautDao
@@ -1244,7 +1254,7 @@
 			</bean>
 		</property>
 	</bean>
-	
+
 	<bean id="conteneurPlateformeDao" parent="abstractDao">
 		<property name="proxyInterfaces">
 			<value>fr.aphp.tumorotek.dao.stockage.ConteneurPlateformeDao
@@ -1441,6 +1451,21 @@
 	</bean>
 
 	<!-- Package Impression -->
+
+<bean id="cleImpressionDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.impression.CleImpressionDao
+			</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTarget">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.impression.CleImpression
+					</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
 
 	<bean id="blocImpressionDao" parent="abstractDao">
 		<property name="proxyInterfaces">
@@ -1744,7 +1769,7 @@
 			</bean>
 		</property>
 	</bean>
-	
+
 	<bean id="consultationIntfDao" parent="abstractDao">
 		<property name="proxyInterfaces">
 			<value>fr.aphp.tumorotek.dao.interfacage.ConsultationIntfDao
@@ -1773,9 +1798,23 @@
 			</bean>
 		</property>
 	</bean>
+	
+	<bean id="diagnosticDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.contexte.DiagnosticDao
+			</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTarget">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.contexte.Diagnostic</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
 
 	<!-- MODULE STATISTIQUE -->
-	
+
 	<bean id="indicateurDao" parent="abstractDao">
 		<property name="proxyInterfaces">
 			<value>fr.aphp.tumorotek.dao.stats.IndicateurDao
@@ -1805,7 +1844,7 @@
 			</bean>
 		</property>
 	</bean>
-	
+
 	<bean id="sModeleIndicateurDao" parent="abstractDao">
 		<property name="proxyInterfaces">
 			<value>fr.aphp.tumorotek.dao.stats.SModeleIndicateurDao
@@ -1820,7 +1859,7 @@
 			</bean>
 		</property>
 	</bean>
-	
+
 	<bean id="subdivisionDao" parent="abstractDao">
 		<property name="proxyInterfaces">
 			<value>fr.aphp.tumorotek.dao.stats.SubdivisionDao
@@ -1835,4 +1874,138 @@
 			</bean>
 		</property>
 	</bean>
+	
+	<!-- Validation -->
+
+	<bean id="critereValidationDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.validation.CritereValidationDao</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTarget">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.validation.CritereValidation</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="entiteValidationDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.validation.ValidationDao</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTarget">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.validation.Validation</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="niveauValidationDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.validation.NiveauValidationDao</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTarget">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.validation.NiveauValidation</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="actionDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.validation.ActionDao</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTarget">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.validation.Action</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="patientDelegateDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.coeur.patient.PatientDelegateDao</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTarget">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.coeur.patient.delegate.AbstractPatientDelegate</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="prelevementDelegateDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.coeur.prelevement.PrelevementDelegateDao</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTarget">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.coeur.prelevement.delegate.AbstractPrelevementDelegate</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="echantillonDelegateDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonDelegateDao</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTarget">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.coeur.echantillon.delegate.AbstractEchantillonDelegate</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="prodDeriveDelegateDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.coeur.prodderive.ProdDeriveDelegateDao</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTarget">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.coeur.prodderive.delegate.AbstractProdDeriveDelegate</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="cessionDelegateDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.cession.CessionDelegateDao</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTarget">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.cession.delegate.AbstractCessionDelegate</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+	
+	<!-- Champs délégués -->
+	<bean id="champDelegueDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.io.export.ChampDelegueDao</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTarget">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.io.export.ChampDelegue</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+	
 </beans>

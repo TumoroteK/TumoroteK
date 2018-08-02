@@ -7,8 +7,9 @@ package fr.aphp.tumorotek.model.bundles;
  * @author Pierre Ventadour.
  *
  */
-public interface ResourceBundleMbio {
+public interface ResourceBundleMbio
+{
 
-	String getMbioConfDirectory();
-	
+   String getMbioConfDirectory();
+
 }

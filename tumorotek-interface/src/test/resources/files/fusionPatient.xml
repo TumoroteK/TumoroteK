@@ -1,4 +1,5 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
 <evenementsPatients acquittementAttendu="non">
 	<enteteMessage modeTraitement="réel">
 		<identifiantMessage>121212</identifiantMessage>
@@ -22,42 +23,42 @@
 		</destinataire>
 	</enteteMessage>
 	<evenementPatient>
-		 <fusionPatient action="fusion">
-		   <patient>
-		     <identifiant>
-		      <emetteur etat="permanent" portee="local" referent="non">
-			<valeur>0080</valeur>
-		      </emetteur>
-		     </identifiant>
-		     <personnePhysique sexe="M">
-		       <nomUsuel>Doe</nomUsuel>
-		       <prenoms>
-			 <prenom>John</prenom>
-		       </prenoms>
-		       <dateNaissance>
-			 <date>1985-09-25</date>
-		       </dateNaissance>
-		     </personnePhysique>
-		   </patient>
-		   <patientElimine>
-		     <identifiant>
-		      <emetteur etat="permanent" portee="local" referent="non">
-			<valeur>0001</valeur>
-		      </emetteur>
-		      <recepteur etat="permanent" portee="local" referent="non">
-			<valeur>1001</valeur>
-		      </recepteur>
-		     </identifiant>
-		     <personnePhysique sexe="F">
-		       <nomUsuel>Doe2</nomUsuel>
-		       <prenoms>
-			 <prenom>Johnasse</prenom>
-		       </prenoms>
-		       <dateNaissance>
-			 <date>1960-03-11</date>
-		       </dateNaissance>
-		     </personnePhysique>
-		   </patientElimine>
-		 </fusionPatient>
+		<fusionPatient action="fusion">
+			<patient>
+				<identifiant>
+					<emetteur etat="permanent" portee="local" referent="non">
+						<valeur>0080</valeur>
+					</emetteur>
+				</identifiant>
+				<personnePhysique sexe="M">
+					<nomUsuel>Doe</nomUsuel>
+					<prenoms>
+						<prenom>John</prenom>
+					</prenoms>
+					<dateNaissance>
+						<date>1985-09-25</date>
+					</dateNaissance>
+				</personnePhysique>
+			</patient>
+			<patientElimine>
+				<identifiant>
+					<emetteur etat="permanent" portee="local" referent="non">
+						<valeur>0001</valeur>
+					</emetteur>
+					<recepteur etat="permanent" portee="local" referent="non">
+						<valeur>1001</valeur>
+					</recepteur>
+				</identifiant>
+				<personnePhysique sexe="F">
+					<nomUsuel>Doe2</nomUsuel>
+					<prenoms>
+						<prenom>Johnasse</prenom>
+					</prenoms>
+					<dateNaissance>
+						<date>1960-03-11</date>
+					</dateNaissance>
+				</personnePhysique>
+			</patientElimine>
+		</fusionPatient>
 	</evenementPatient>
 </evenementsPatients>

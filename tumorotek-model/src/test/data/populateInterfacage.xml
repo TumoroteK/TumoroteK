@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
 <dataset>
 	<!-- Package interfacage -->
 	<table name="PATIENT_SIP">
@@ -20,17 +21,17 @@
 			<value>1</value>
 			<value>12345</value>
 			<value>FROMSIP1</value>
-			<null/>
+			<null />
 			<value>Jean</value>
 			<value>M</value>
 			<value>1975-12-25</value>
 			<value>Paris</value>
 			<value>FRANCE</value>
 			<value>V</value>
-			<null/>
-			<null/>
+			<null />
+			<null />
 			<value>2011-04-30 17:10:00</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>2</value>
@@ -43,8 +44,8 @@
 			<null />
 			<null />
 			<value>V</value>
-			<null/>
-			<null/>
+			<null />
+			<null />
 			<value>2011-04-30 18:10:00</value>
 			<value>2011-04-31 06:06:06</value>
 		</row>
@@ -59,13 +60,13 @@
 			<null />
 			<null />
 			<value>Inconnu</value>
-			<null/>
-			<null/>
+			<null />
+			<null />
 			<value>2011-04-30 17:17:17</value>
 			<value>2011-04-31 07:07:07</value>
 		</row>
 	</table>
-	
+
 	<table name="PATIENT_SIP_SEJOUR">
 		<column>PATIENT_SIP_SEJOUR_ID</column>
 		<column>NUMERO</column>
@@ -96,7 +97,7 @@
 			<value>3</value>
 		</row>
 	</table>
-	
+
 	<table name="LOGICIEL">
 		<column>LOGICIEL_ID</column>
 		<column>NOM</column>
@@ -132,21 +133,24 @@
 			<value>3</value>
 			<value>Glims Hémato</value>
 			<value>Service Hématologie - Saint-Louis</value>
-			<value>SGL Glims pour le service d'Hématologie de l'Hôpital Saint-Louis</value>
+			<value>SGL Glims pour le service d'Hématologie de l'Hôpital
+				Saint-Louis</value>
 		</row>
 		<row>
 			<value>2</value>
 			<value>1</value>
 			<value>Apix Anapath</value>
 			<value>ANAP</value>
-			<value>SGL APIX pour le service d'Anatomo-Patholgie de l'Hôpital Saint-Louis</value>
+			<value>SGL APIX pour le service d'Anatomo-Patholgie de l'Hôpital
+				Saint-Louis</value>
 		</row>
 		<row>
 			<value>3</value>
 			<value>1</value>
 			<value>Apix Hémato</value>
 			<value>HEMATO</value>
-			<value>SGL APIX pour le service d'Hématologie de l'Hôpital Saint-Louis</value>
+			<value>SGL APIX pour le service d'Hématologie de l'Hôpital
+				Saint-Louis</value>
 		</row>
 	</table>
 	<table name="DOSSIER_EXTERNE">
@@ -293,27 +297,27 @@
 			<value>1</value>
 			<value>HOUSE</value>
 			<value>3</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>2</value>
 			<value>1</value>
 			<value>GREGORY</value>
 			<value>5</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>3</value>
 			<value>1</value>
 			<value>M</value>
 			<value>6</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>4</value>
 			<value>1</value>
 			<value>ANNO</value>
-			<null/>
+			<null />
 			<value>1</value>
 		</row>
 		<row>
@@ -321,552 +325,552 @@
 			<value>2</value>
 			<value>20110816102930</value>
 			<value>30</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>6</value>
 			<value>2</value>
 			<value>PRLVT_TEST</value>
 			<value>23</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>7</value>
 			<value>2</value>
 			<value>SANG</value>
 			<value>24</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>8</value>
 			<value>5</value>
 			<value>1245380054</value>
 			<value>2</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>9</value>
 			<value>5</value>
 			<value>COBAIN</value>
 			<value>3</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>10</value>
 			<value>5</value>
 			<value>NIRVANA</value>
 			<value>4</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>11</value>
 			<value>5</value>
 			<value>KURT</value>
 			<value>5</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>12</value>
 			<value>5</value>
 			<value>M</value>
 			<value>6</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>13</value>
 			<value>5</value>
 			<value>19670220000000</value>
 			<value>7</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>14</value>
 			<value>5</value>
 			<value>USA</value>
 			<value>9</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>15</value>
 			<value>5</value>
 			<value>SEATTLE</value>
 			<value>8</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>16</value>
 			<value>5</value>
 			<value>D</value>
 			<value>10</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>17</value>
 			<value>5</value>
 			<value>19940405000000</value>
 			<value>12</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>18</value>
 			<value>5</value>
 			<value>20100805000000</value>
 			<value>11</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>19</value>
 			<value>6</value>
 			<value>Addiction Héroine</value>
 			<value>17</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>20</value>
 			<value>6</value>
 			<value>ADH</value>
 			<value>18</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>21</value>
 			<value>6</value>
 			<value>19860725000000</value>
 			<value>20</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>22</value>
 			<value>6</value>
 			<value>19901113000000</value>
 			<value>19</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>23</value>
 			<value>7</value>
 			<value>X459GCT</value>
 			<value>23</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>24</value>
 			<value>7</value>
 			<value>SANG</value>
 			<value>24</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>25</value>
 			<value>7</value>
 			<value>TH112489200</value>
 			<value>45</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>26</value>
 			<value>7</value>
 			<value>NDA127896</value>
 			<value>44</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>27</value>
 			<value>7</value>
 			<value>19900110124500</value>
 			<value>30</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>28</value>
 			<value>7</value>
 			<value>PONCTION</value>
 			<value>31</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>29</value>
 			<value>7</value>
 			<value>0</value>
 			<value>47</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>30</value>
 			<value>7</value>
 			<value>TUBE</value>
 			<value>32</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>31</value>
 			<value>7</value>
 			<value>SEC</value>
 			<value>33</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>32</value>
 			<value>7</value>
 			<value>1</value>
 			<value>34</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>33</value>
 			<value>7</value>
 			<value>DECEDE</value>
 			<value>26</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>34</value>
 			<value>7</value>
 			<value>19940406000000</value>
 			<value>27</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>35</value>
 			<value>7</value>
 			<value>19900110130000</value>
 			<value>35</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>36</value>
 			<value>7</value>
 			<value>19900110131000</value>
 			<value>38</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>37</value>
 			<value>7</value>
 			<value>HOPITAL ST LOUIS - ANAPATH</value>
 			<value>36</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>38</value>
 			<value>7</value>
 			<value>-40</value>
 			<value>37</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>39</value>
 			<value>7</value>
 			<value>10</value>
 			<value>40</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>40</value>
 			<value>7</value>
 			<value>mg</value>
 			<value>41</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>41</value>
 			<value>7</value>
 			<value>0</value>
 			<value>242</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>42</value>
 			<value>7</value>
 			<value>1</value>
 			<value>29</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>43</value>
 			<value>7</value>
 			<value>2</value>
 			<value>28</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>44</value>
 			<value>7</value>
 			<value>1</value>
 			<value>39</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>45</value>
 			<value>10</value>
 			<value>1245380054BB</value>
 			<value>2</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>46</value>
 			<value>10</value>
 			<value>COBAIN</value>
 			<value>3</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>47</value>
 			<value>10</value>
-			<null/>
+			<null />
 			<value>4</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>48</value>
 			<value>10</value>
 			<value>KURT</value>
 			<value>5</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>49</value>
 			<value>10</value>
 			<value>M</value>
 			<value>6</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>50</value>
 			<value>10</value>
 			<value>19670220000000</value>
 			<value>7</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>51</value>
 			<value>10</value>
 			<value>USA</value>
 			<value>9</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>52</value>
 			<value>10</value>
 			<value>SEATTLE</value>
 			<value>8</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>53</value>
 			<value>10</value>
 			<value>D</value>
 			<value>10</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>54</value>
 			<value>10</value>
 			<value>19940405000000</value>
 			<value>12</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>55</value>
 			<value>10</value>
 			<value>20100805000000</value>
 			<value>11</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>56</value>
 			<value>11</value>
 			<value>Addiction Héroine</value>
 			<value>17</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>57</value>
 			<value>11</value>
 			<value>ADH BIS</value>
 			<value>18</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>58</value>
 			<value>11</value>
 			<value>19860725000000</value>
 			<value>20</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>59</value>
 			<value>11</value>
 			<value>19901213000000</value>
 			<value>19</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>60</value>
 			<value>12</value>
 			<value>X459GCT</value>
 			<value>23</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>61</value>
 			<value>12</value>
 			<value>SANG</value>
 			<value>24</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>62</value>
 			<value>12</value>
 			<value>TH112489200</value>
 			<value>45</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>63</value>
 			<value>12</value>
 			<value>NDA127896 BI</value>
 			<value>44</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>64</value>
 			<value>12</value>
 			<value>19900110124500</value>
 			<value>30</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>65</value>
 			<value>12</value>
 			<value>PONCTION</value>
 			<value>31</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>66</value>
 			<value>12</value>
 			<value>1</value>
 			<value>47</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>67</value>
 			<value>12</value>
 			<value>TUBE</value>
 			<value>32</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>68</value>
 			<value>12</value>
 			<value>SEC</value>
 			<value>33</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>69</value>
 			<value>12</value>
 			<value>5</value>
 			<value>34</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>70</value>
 			<value>12</value>
 			<value>EN ATTENTE</value>
 			<value>26</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>71</value>
 			<value>12</value>
 			<value>19940406000000</value>
 			<value>27</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>72</value>
 			<value>12</value>
 			<value>19900110130000</value>
 			<value>35</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>73</value>
 			<value>12</value>
 			<value>19900110131000</value>
 			<value>38</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>74</value>
 			<value>12</value>
 			<value>HOPITAL ST LOUIS - ANAPATH</value>
 			<value>36</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>75</value>
 			<value>12</value>
 			<value>-40</value>
 			<value>37</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>76</value>
 			<value>12</value>
 			<value>10</value>
 			<value>40</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>77</value>
 			<value>12</value>
 			<value>mg</value>
 			<value>41</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>78</value>
 			<value>12</value>
 			<value>0</value>
 			<value>242</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>79</value>
 			<value>12</value>
 			<value>1</value>
 			<value>29</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>80</value>
 			<value>12</value>
 			<value>2</value>
 			<value>28</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>81</value>
 			<value>12</value>
 			<value>1</value>
 			<value>39</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>82</value>
 			<value>12</value>
 			<value>Valeur</value>
-			<null/>
+			<null />
 			<value>2</value>
 		</row>
 		<row>
 			<value>83</value>
 			<value>12</value>
 			<value>1</value>
-			<null/>
+			<null />
 			<value>3</value>
 		</row>
 		<row>
@@ -874,69 +878,69 @@
 			<value>13</value>
 			<value>GHLOJ7F4;GHOTJMF4</value>
 			<value>230</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>85</value>
 			<value>7</value>
 			<value>Alpha</value>
-			<null/>
+			<null />
 			<value>2</value>
 		</row>
 		<row>
 			<value>86</value>
 			<value>7</value>
 			<value>3: métastase</value>
-			<null/>
+			<null />
 			<value>31</value>
 		</row>
 		<row>
 			<value>87</value>
 			<value>10</value>
 			<value>Patient Test</value>
-			<null/>
+			<null />
 			<value>1</value>
 		</row>
 		<row>
 			<value>88</value>
 			<value>10</value>
 			<value>3 : maladie intercurrente</value>
-			<null/>
+			<null />
 			<value>26</value>
 		</row>
 		<row>
 			<value>89</value>
 			<value>12</value>
 			<value>2: récidive</value>
-			<null/>
+			<null />
 			<value>31</value>
 		</row>
 		<row>
 			<value>90</value>
 			<value>13</value>
 			<value>Bloc paraffine miroir</value>
-			<null/>
+			<null />
 			<value>40</value>
 		</row>
 		<row>
 			<value>91</value>
 			<value>13</value>
 			<value>55</value>
-			<null/>
+			<null />
 			<value>41</value>
 		</row>
 		<row>
 			<value>92</value>
 			<value>13</value>
 			<value>19900110130000</value>
-			<null/>
+			<null />
 			<value>5</value>
 		</row>
 		<row>
 			<value>93</value>
 			<value>13</value>
 			<value>Nouveau texte de test</value>
-			<null/>
+			<null />
 			<value>9</value>
 		</row>
 		<row>
@@ -944,7 +948,7 @@
 			<value>13</value>
 			<value>AC!AP;CC!CI;PP-PLACENTA</value>
 			<value>229</value>
-			<null/>
+			<null />
 		</row>
 	</table>
 	<table name="RECEPTEUR">
@@ -968,7 +972,7 @@
 			<value>1</value>
 		</row>
 	</table>
-	<!--  Package scan -->
+	<!-- Package scan -->
 	<table name="SCAN_DEVICE">
 		<column>SCAN_DEVICE_ID</column>
 		<column>NAME</column>

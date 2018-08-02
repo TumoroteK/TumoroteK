@@ -1,23 +1,45 @@
 #### Notes de version
 
 ##### Version ${project.version} - Publiée le ${timestamp}
+###### Nouveautés
+- YouTrack [TKB-4](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-4) : <span class="badge badge-prelevement">Prélèvement</span> Amélioration de la signification : congélation à l'arrivé à la biothèque
+- YouTrack [TK-61](https://tumorotek.myjetbrains.com/youtrack/issue/TK-61) : <span class="badge badge-impression-doc">Impression (modèle DOC)</span> Pouvoir créer un modèle de document DOCx contenant des placeholders (clé) correspondants des champs et les remplacer par leur valeur à l'impression.
+- YouTrack [TK-98](https://tumorotek.myjetbrains.com/youtrack/issue/TK-98) : <span class="badge badge-annotation-champ-calcule">Annotation (Champ calculé)</span> Mise en place des champs calculés.
+- YouTrack [TK-110](https://tumorotek.myjetbrains.com/youtrack/issue/TK-110) : <span class="badge badge-statistiques">Statistiques</span> Amélioration de la partie Statistiques/Indicateurs
+- YouTrack [TK-160](https://tumorotek.myjetbrains.com/youtrack/issue/TK-160) : <span class="badge badge-cession">Cession</span> Cessions de type Traitement permettant un retour d'objets cédés sous forme de produits dérivés
+- YouTrack [TK-172](https://tumorotek.myjetbrains.com/youtrack/issue/TK-172) : Afficher les actions du super utilisateur dans l'historique
+- YouTrack [TK-196](https://tumorotek.myjetbrains.com/youtrack/issue/TK-196) : Implémentation du contexte Sérologie
+
+###### Corrections
+- YouTrack [TK-111](https://tumorotek.myjetbrains.com/youtrack/issue/TK-111) : <span class="badge badge-statistiques">Statistiques</span> Modifier le libellé DGOS... en Totaux des prélèvements
+- YouTrack [TK-155](https://tumorotek.myjetbrains.com/youtrack/issue/TK-155) : Correction de la fonctionalité de déplacement de prélèvement/échantillon/dérivé de collection afin de mettre à jour les liens vers les fichiers associés
+- YouTrack [TK-159](https://tumorotek.myjetbrains.com/youtrack/issue/TK-159) : Suppression de l'erreur au remplissage d'un composant datebox au format d/M/yy.
+
+***
+
+##### Version 2.1.4 - Publiée le 29/01/2018
+###### Nouveautés
+- YouTrack [TK-78](https://tumorotek.myjetbrains.com/youtrack/issue/TK-78) : Amélioration de Liquibase pour faciliter la mise à jour de la base de données
+
+###### Corrections
 - YouTrack [TK-58](https://tumorotek.myjetbrains.com/youtrack/issue/TK-58) : \[ANNOTATIONS] Les annotations boolean OBLIGATOIRES sans valeur par défaut se mettent quand même à TRUE à l'enregistrement.
 - YouTrack [TK-62](https://tumorotek.myjetbrains.com/youtrack/issue/TK-62) : \[Impression] BUG Impression Patient
 - YouTrack [TK-74](https://tumorotek.myjetbrains.com/youtrack/issue/TK-74) : \[RECHERCHE] Affichage: NullPointer à l'ajout de colonnes si pas de sélections de champs.
 - YouTrack [TK-76](https://tumorotek.myjetbrains.com/youtrack/issue/TK-76) : \[LABELS] Label manquant pour Echantillon Température de Stockage
-- YouTrack [TK-78](https://tumorotek.myjetbrains.com/youtrack/issue/TK-78) : Amélioration de Liquibase pour faciliter la mise à jour de la base de données
 - YouTrack [TK-79](https://tumorotek.myjetbrains.com/youtrack/issue/TK-79) : \[STOCKAGE] Création d'un service à partir de la fiche de conteneur (aide à la saisie) si pas d'établissement -> IndexOutOfBounds
 - YouTrack [TK-83](https://tumorotek.myjetbrains.com/youtrack/issue/TK-83) : \[HISTORIQUE] Erreur si aucune date renseignée
 
 ***
 
 ##### Version 2.1.3 - Publiée le 09/01/2018
+###### Corrections
 - YouTrack [TKB-3](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-3) : La suppression d'une cession depuis la liste de ces dernières bloque les échantillons concernés dans le statut RESERVE
 - YouTrack [TK-64](https://tumorotek.myjetbrains.com/youtrack/issue/TK-64) : Les annotations de cession ne se déverrouillent pas quand on fait une nouvelle cession  
 
 ***
 
 ##### Version 2.1.2 - Publiée le 02/01/2018
+###### Corrections
 - YouTrack [TKB-1](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-1) : La recherche ne fonctionne pas sur les ID de cession  
 - YouTrack [TKB-2](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-2) : La recherche de date dans les annotations sur les dérivés ne fonctionne pas  
 - YouTrack [TK-47](https://tumorotek.myjetbrains.com/youtrack/issue/TK-47) : Erreurs sur les propriétés d'internationalisation  

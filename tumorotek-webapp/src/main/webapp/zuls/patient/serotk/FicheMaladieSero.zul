@@ -89,15 +89,15 @@
 							</hlayout>
 						</div>
 						<!-- SeroTK Diagnostic -->
-						<label id="diagSeroFormLabel" value="${c:l('Champ.Maladie.Diagnostic')}" sclass="formLabel" />
+						<label id="diagSeroFormLabel" value="${c:l('Champ.Maladie.SEROLOGIE.Diagnostic')}" sclass="formLabel" />
 						<div>
 							<label id="diagSeroLabel" visible="true"
-								value="@{fwinMaladie$composer.diagnosticFormatted}" sclass="formValue" />
+								value="@{fwinMaladie$composer.maladie.delegate.diagnostic.nom}" sclass="formValue" />
 							<listbox id="diagSeroBox" mold="select" rows="1" visible="false"
 								model="@{fwinMaladie$composer.diagnostics}"
 								selectedItem="@{fwinMaladie$composer.selectedDiag}">	
-								<listitem self="@{each='diag'}" value="@{diag.code}">			
-									<listcell label="@{diag.label}"/>
+								<listitem self="@{each='diag'}" value="@{diag}">			
+									<listcell label="@{diag.nom}"/>
 								</listitem>
 							</listbox>
 						</div>
@@ -169,7 +169,7 @@
 									<listheader label="${c:l('Champ.Prelevement.Nature')}"
 									width="100px"/>
 									<listheader label="${c:l('general.type')}" width="100px"/>
-									<listheader label="${c:l('Champ.Prelevement.Protocole')}"
+									<listheader label="${c:l('Champ.Prelevement.SEROLOGIE.Protocoles')}"
 									width="100px"/>
 									<listheader label="${c:l('Champ.Prelevement.ConsentType')}"
 									width="100px"/>
@@ -252,6 +252,8 @@
 					<button id="addNewC" />
 					<button id="deleteC" />
 				</div>
+				<button id="historique" image="/images/icones/history.png" 
+						label="${c:l('general.historique')}" visible="false" sclass="buttonv2" />
 			</hlayout>	
 		</toolbar>
 	</panel>

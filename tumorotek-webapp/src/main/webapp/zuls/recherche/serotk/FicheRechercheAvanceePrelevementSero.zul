@@ -1,536 +1,523 @@
 <!--
- * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
- * dsi-projet.tk@aphp.fr
- * 
- * Ce logiciel est un programme informatique servant à la gestion de 
- * l'activité de biobanques. 
- *
- * Ce logiciel est régi par la licence CeCILL soumise au droit français
- * et respectant les principes de diffusion des logiciels libres. Vous 
- * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
- * conditions de la licence CeCILL telle que diffusée par le CEA, le 
- * CNRS et l'INRIA sur le site "http://www.cecill.info". 
- * En contrepartie de l'accessibilité au code source et des droits de   
- * copie, de modification et de redistribution accordés par cette 
- * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
- * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
- * l'auteur du programme, le titulaire des droits patrimoniaux et les 
- * concédants successifs.
- *
- * A cet égard  l'attention de l'utilisateur est attirée sur les 
- * risques associés au chargement,  à l'utilisation,  à la modification 
- * et/ou au  développement et à la reproduction du logiciel par 
- * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
- * le rendre complexe à manipuler et qui le réserve donc à des 	
- * développeurs et des professionnels  avertis possédant  des 
- * connaissances  informatiques approfondies.  Les utilisateurs sont 
- * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
- * besoins dans des conditions permettant d'assurer la sécurité de leurs
- * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
- * et l'exploiter dans les mêmes conditions de sécurité. 
- *	
- * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
- * avez pris connaissance de la licence CeCILL, et que vous en avez 
- * accepté les termes. 
+	* Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+	* dsi-projet.tk@aphp.fr
+	* 
+	* Ce logiciel est un programme informatique servant à la gestion de 
+	* l'activité de biobanques. 
+	*
+	* Ce logiciel est régi par la licence CeCILL soumise au droit français
+	* et respectant les principes de diffusion des logiciels libres. Vous 
+	* pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+	* conditions de la licence CeCILL telle que diffusée par le CEA, le 
+	* CNRS et l'INRIA sur le site "http://www.cecill.info". 
+	* En contrepartie de l'accessibilité au code source et des droits de   
+	* copie, de modification et de redistribution accordés par cette 
+	* licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+	* Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+	* l'auteur du programme, le titulaire des droits patrimoniaux et les 
+	* concédants successifs.
+	*
+	* A cet égard  l'attention de l'utilisateur est attirée sur les 
+	* risques associés au chargement,  à l'utilisation,  à la modification 
+	* et/ou au  développement et à la reproduction du logiciel par 
+	* l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+	* le rendre complexe à manipuler et qui le réserve donc à des 	
+	* développeurs et des professionnels  avertis possédant  des 
+	* connaissances  informatiques approfondies.  Les utilisateurs sont 
+	* donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+	* besoins dans des conditions permettant d'assurer la sécurité de leurs
+	* systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+	* et l'exploiter dans les mêmes conditions de sécurité. 
+	*	
+	* Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+	* avez pris connaissance de la licence CeCILL, et que vous en avez 
+	* accepté les termes. 
 -->
 <?page title="Recherche avancee" contentType="text/html;charset=UTF-8"?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <zk>
-<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" name="ficheRechercheAvanceePrelevement" root="../"?>
+	<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" name="ficheRechercheAvanceePrelevement" root="../"?>
 
-<window id="fwinRechercheAvanceePrelevementSero" border="none" apply="fr.aphp.tumorotek.action.recherche.FicheRechercheAvancee">
-	<panel collapsible="false" sclass="fichePanelv2" id="winPanel">
-		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
-			<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvt">
-				<columns>
-					<column width="150px"/>
-					<column/>
-					<column width="150px"/>
-					<column/>
-				</columns>
-				<rows id="rechercheRows">
-					<!-- Groupe prélèvement -->
-					<group id="groupPrelevements" label="${c:l('recherche.avancee.informations.prelevement')}"/>
-					<!-- code et nature -->
-					<row>
-						<label value="${c:l('Champ.Prelevement.Code')}" sclass="formLabel"/>
-						<textbox id="codePrelevementBox" width="150px">
-							<custom-attributes attribut="Code" entite="Prelevement"/>
-						</textbox>
-						
-						<label value="${c:l('Champ.Prelevement.Nature')}" sclass="formLabel"/>
-						<listbox id="natutePrelevementBox" mold="select" rows="1"
-							model="@{fwinRechercheAvanceePrelevementSero$composer.natures}">
-							<listitem self="@{each='nature'}" value="nature">			
-								<listcell label="@{nature.nature}" />
-							</listitem>
-							<custom-attributes attribut="NatureId" entite="Prelevement"/>
-						</listbox>
-					</row>
-					<!-- Date prlvt et type de consentement -->
-					<row>
-						<label value="${c:l('Champ.Prelevement.DatePrelevement')}" sclass="formLabel"/>
-						<vbox>
-							<hbox>
-								<div>
-									<listbox id="operateursDatePrlvtBox" mold="select" rows="1"
-										model="@{fwinRechercheAvanceePrelevementSero$composer.operateursDates}">
-										<listitem self="@{each='opDatePrlvt'}" value="opDatePrlvt">			
-											<listcell label="@{opDatePrlvt}" />
+	<window id="fwinRechercheAvanceePrelevementSero" border="none" apply="fr.aphp.tumorotek.action.recherche.serotk.FicheRechercheAvanceeSero">
+		<panel collapsible="false" sclass="fichePanelv2" id="winPanel">
+			<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
+				<borderlayout id="bLayout">
+					<west sclass="tabBorderLayout" id="panelSearchHistorique" title="${c:l('recherche.avancee.historique')}" size="24%" splittable="true" collapsible="true" open="false" vflex="1">
+						<groupbox width="98%" open="true">
+							<caption image="/images/icones/history.png" />
+							<listbox id="searchHistoryListbox" model="@{fwinRechercheAvanceePrelevementSero$composer.itemSearchHistoryListbox}" hflex="1" style="border-top-width: 0px; border-left-width: 0px; border-right-width: 0px; border-bottom-width: 0px;" multiple="false">
+								<listitem id="itemSearchHistory" self="@{each='history'}" value="@{history}" tooltiptext="@{history.info}">
+									<listcell id="test" label="@{history.info}" />
+								</listitem>
+							</listbox>
+						</groupbox>
+					</west>
+					<center autoscroll="true">
+						<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvt">
+							<columns>
+								<column width="150px" />
+								<column />
+								<column width="150px" />
+								<column />
+							</columns>
+							<rows id="rechercheRows">
+								<!-- Groupe prélèvement -->
+								<group id="groupPrelevements" label="${c:l('recherche.avancee.informations.prelevement')}" />
+								<!-- code et nature -->
+								<row>
+									<label value="${c:l('Champ.Prelevement.Code')}" sclass="formLabel" />
+									<textbox id="codePrelevementBox" width="150px">
+										<custom-attributes attribut="Code" entite="Prelevement" />
+									</textbox>
+
+									<label value="${c:l('Champ.Prelevement.Nature')}" sclass="formLabel" />
+									<listbox id="natutePrelevementBox" mold="select" rows="1" model="@{fwinRechercheAvanceePrelevementSero$composer.natures}">
+										<listitem self="@{each='nature'}" value="nature">
+											<listcell label="@{nature.nature}" />
 										</listitem>
+										<custom-attributes attribut="NatureId" entite="Prelevement" />
 									</listbox>
-									<datebox id="datePrelevement1Box" format="${c:l('validation.date.format')}" 
-										cols="8">
-										<custom-attributes attribut="DatePrelevement" entite="Prelevement"/>
-									</datebox>
-								</div>
-							</hbox>
-							<hbox width="100%">
-								<div align="right">
-									<label value="${c:l('general.selectlist.and')}" sclass="formLabel"/>
-									<datebox id="datePrelevement2Box" format="${c:l('validation.date.format')}" 
-										cols="8" style="align:right;">
-										<custom-attributes attribut="DatePrelevement" entite="Prelevement"/>
-									</datebox>
-								</div>
-							</hbox>
-						</vbox>
-						
-						<label value="${c:l('Champ.Prelevement.ConsentType')}" sclass="formLabel"/>
-						<listbox id="statutJuridiqueBox" mold="select" rows="1"
-							model="@{fwinRechercheAvanceePrelevementSero$composer.consentTypes}">
-							<listitem self="@{each='consentType'}" value="consentType">			
-								<listcell label="@{consentType.type}" />
-							</listitem>
-							<custom-attributes attribut="ConsentTypeId" entite="Prelevement"/>
-						</listbox>
-					</row>
-					<!-- Etablissement -->
-					<row spans="1,3">
-						<label value="${c:l('prelevement.etablissement')}" sclass="formLabel"/>
-						<listbox id="etablissementPreleveurBox" mold="select" rows="1"
-							model="@{fwinRechercheAvanceePrelevementSero$composer.etablissements}">
-							<listitem self="@{each='etabPrlvt'}" value="etabPrlvt">			
-								<listcell label="@{etabPrlvt.nom}" />
-							</listitem>
-							<custom-attributes attribut="EtablissementId" entite="Service"/>
-						</listbox>
-					</row>
-					<!-- Service -->
-					<row spans="1,3">
-						<label value="${c:l('Champ.Prelevement.ServicePreleveur')}" sclass="formLabel"/>
-						<listbox id="servicePreleveurBox" mold="select" rows="1"
-							model="@{fwinRechercheAvanceePrelevementSero$composer.services}">
-							<listitem self="@{each='servicePrlvt'}" value="servicePrlvt">			
-								<listcell label="@{servicePrlvt.nom}" />
-							</listitem>
-							<custom-attributes attribut="ServicePreleveurId" entite="Prelevement"/>
-						</listbox>
-					</row>
-					<!-- code labo  -->
-					<row spans="1,3">
-						<label value="${c:l('Champ.Prelevement.NumeroLabo')}" sclass="formLabel"/>
-						<textbox id="codeLaboPrelevementBox" width="150px">
-							<custom-attributes attribut="NumeroLabo" entite="Prelevement"/>
-						</textbox>
-					</row>
-					<!-- nb echantillons + age au prélèvement -->
-					<row id="rowSupPrelevements">
-						<label value="${c:l('recherche.avancee.nb.echantillons')}" sclass="formLabel"/>
-						<div>
-							<listbox id="operateursNbEchantillonBox" mold="select" rows="1"
-								model="@{fwinRechercheAvanceePrelevementSero$composer.operateursDecimaux}">
-								<listitem self="@{each='opNbEchan'}" value="opNbEchan">			
-									<listcell label="@{opNbEchan}" />
-								</listitem>
-							</listbox>
-							<intbox id="nbEchantillonBox" width="75px"/>
-						</div>
-						
-						<label value="${c:l('recherche.avancee.age.prlvt')}" sclass="formLabel"/>
-						<div>
-							<listbox id="operateursAgePrlvtBox" mold="select" rows="1"
-								model="@{fwinRechercheAvanceePrelevementSero$composer.operateursDecimaux}">
-								<listitem self="@{each='opAgePrlvt'}" value="opAgePrlvt">			
-									<listcell label="@{opAgePrlvt}" />
-								</listitem>
-							</listbox>
-							<intbox id="agePrlvtBox" width="75px"/>
-						</div>
-					</row>
-					<!-- Risques -->
-					<row spans="1, 3">
-						<label value="${c:l('Champ.Prelevement.Risques')}" sclass="formLabel"/>
-						<textbox id="risquesBox" width="150px">
-							<custom-attributes attribut="Nom" entite="Risque"/>
-						</textbox>
-					</row>
-					
-					<!-- SeroTK -->
-					<row>
-						<label value="${c:l('Champ.Prelevement.Protocole')}" sclass="formLabel"/>
-						<listbox id="protocolesBox" mold="select" rows="1"
-							model="@{fwinRechercheAvanceePrelevementSero$composer.protocoles}">
-							<listitem self="@{each='protocole'}" value="protocole">			
-								<listcell label="@{protocole.nom}" />
-							</listitem>
-							<custom-attributes attribut="Nom" entite="Protocole"/>
-						</listbox>	
-						<label value="${c:l('Champ.Prelevement.ComplementDiag')}" sclass="formLabel"/>
-						<textbox id="diagCompBox" width="150px">
-							<custom-attributes attribut="Libelle" entite="Delegate"/>
-						</textbox>
-					</row>
-					
-					<!-- Groupe patient -->
-					<group id="groupPatients" label="${c:l('recherche.avancee.informations.patient')}"/>
-					<!-- N° Patient et N° dossier -->
-					<row>
-						<label value="${c:l('Champ.Patient.Nip')}" sclass="formLabel"/>
-						<textbox id="nipPatientBox" width="150px">
-							<custom-attributes attribut="Nip" entite="Patient"/>
-						</textbox>
-						
-						<label value="${c:l('Champ.Prelevement.PatientNda')}" sclass="formLabel"/>
-						<textbox id="ndaPatientBox" width="150px">
-							<custom-attributes attribut="PatientNda" entite="Prelevement"/>
-						</textbox>
-					</row>
-					<!-- Nom Patient et Nom patronymique -->
-					<row>
-						<label value="${c:l('Champ.Patient.Nom')}" sclass="formLabel"/>
-						<textbox id="nomPatientBox" width="150px">
-							<custom-attributes attribut="Nom" entite="Patient"/>
-						</textbox>
-						
-						<label value="${c:l('Champ.Patient.NomNaissance')}" sclass="formLabel"/>
-						<textbox id="nomNaissancePatientBox" width="150px">
-							<custom-attributes attribut="NomNaissance" entite="Patient"/>
-						</textbox>
-					</row>
-					<!-- Prénom Patient -->
-					<row spans="1,3">
-						<label value="${c:l('Champ.Patient.Prenom')}" sclass="formLabel"/>
-						<textbox id="prenomPatientBox" width="150px">
-							<custom-attributes attribut="Prenom" entite="Patient"/>
-						</textbox>
-					</row>
-					<!-- Date naissance et sexe -->
-					<row>
-						<label value="${c:l('Champ.Patient.DateNaissance')}" sclass="formLabel"/>
-						<vbox>
-							<hbox>
-								<div>
-									<listbox id="operateursDateNaissanceBox" mold="select" rows="1"
-										model="@{fwinRechercheAvanceePrelevementSero$composer.operateursDates}">
-										<listitem self="@{each='opDateNaiss'}" value="opDateNaiss">			
-											<listcell label="@{opDateNaiss}" />
+								</row>
+								<!-- Date prlvt et type de consentement -->
+								<row>
+									<label value="${c:l('Champ.Prelevement.DatePrelevement')}" sclass="formLabel" />
+									<vbox>
+										<hbox>
+											<div>
+												<listbox id="operateursDatePrlvtBox" mold="select" rows="1" model="@{fwinRechercheAvanceePrelevementSero$composer.operateursDates}">
+													<listitem self="@{each='opDatePrlvt'}" value="opDatePrlvt">
+														<listcell label="@{opDatePrlvt}" />
+													</listitem>
+												</listbox>
+												<datebox id="datePrelevement1Box" format="${c:l('validation.date.format')}" cols="8">
+													<custom-attributes attribut="DatePrelevement" entite="Prelevement" />
+												</datebox>
+											</div>
+										</hbox>
+										<hbox width="100%">
+											<div align="right">
+												<label value="${c:l('general.selectlist.and')}" sclass="formLabel" />
+												<datebox id="datePrelevement2Box" format="${c:l('validation.date.format')}" cols="8" style="align:right;">
+													<custom-attributes attribut="DatePrelevement" entite="Prelevement" />
+												</datebox>
+											</div>
+										</hbox>
+									</vbox>
+
+									<label value="${c:l('Champ.Prelevement.ConsentType')}" sclass="formLabel" />
+									<listbox id="statutJuridiqueBox" mold="select" rows="1" model="@{fwinRechercheAvanceePrelevementSero$composer.consentTypes}">
+										<listitem self="@{each='consentType'}" value="consentType">
+											<listcell label="@{consentType.type}" />
 										</listitem>
+										<custom-attributes attribut="ConsentTypeId" entite="Prelevement" />
 									</listbox>
-									<datebox id="dateNaissance1Box" format="${c:l('validation.date.format.simple')}" 
-										cols="8">
-										<custom-attributes attribut="DateNaissance" entite="Patient"/>
-									</datebox>
-								</div>
-							</hbox>
-							<hbox width="100%">
-								<div align="right">
-									<label value="${c:l('general.selectlist.and')}" sclass="formLabel"/>
-									<datebox id="dateNaissance2Box" format="${c:l('validation.date.format.simple')}" 
-										cols="8" style="align:right;">
-										<custom-attributes attribut="DateNaissance" entite="Patient"/>
-									</datebox>
-								</div>
-							</hbox>
-						</vbox>
-						
-						<label value="${c:l('Champ.Patient.Sexe')}" sclass="formLabel"/>
-						<hbox>
-							<div>
-								<checkbox id="sexeFBox">
-									<custom-attributes sexe="F"/>
-								</checkbox>
-								<label value="${c:l('patient.sexe.femme')}" sclass="formLabel"/>
-							</div>
-							<separator width="10px"/>
-							<div>
-								<checkbox id="sexeHBox">
-									<custom-attributes sexe="M"/>
-								</checkbox>
-								<label value="${c:l('patient.sexe.homme')}" sclass="formLabel"/>
-							</div>
-							<separator width="10px"/>
-							<div>
-								<checkbox id="sexeIndBox">
-									<custom-attributes sexe="Ind"/>
-								</checkbox>
-								<label value="${c:l('patient.sexe.indetermine')}" sclass="formLabel"/>
-							</div>
-						</hbox>
-					</row>
-					<!-- Médecins hidden -->
-					<row spans="1, 3" visible="false">
-						<listbox id="medecinsBox" mold="select" rows="1">
-						</listbox>
-					</row>
-					
-					<!-- Groupe maladie -->
-					<group id="groupMaladies" label="${c:l('recherche.avancee.informations.maladie')}"/>
-					<!-- Libellé et code -->
-					<row>
-						<label value="${c:l('Champ.Maladie.Libelle')}" sclass="formLabel"/>
-						<textbox id="libelleMaladieBox" width="150px">
-							<custom-attributes attribut="Libelle" entite="Maladie"/>
-						</textbox>
-						
-						<label value="${c:l('Champ.Maladie.Code')}" sclass="formLabel"/>
-						<textbox id="codeMaladieBox" width="150px">
-							<custom-attributes attribut="Code" entite="Maladie"/>
-						</textbox>
-					</row>
-					<!-- Dates -->
-					<row>
-						<label value="${c:l('Champ.Maladie.DateDebut')}" sclass="formLabel"/>
-						<vbox>
-							<hbox>
-								<div>
-									<listbox id="operateursDateDebutBox" mold="select" rows="1"
-										model="@{fwinRechercheAvanceePrelevementSero$composer.operateursDates}">
-										<listitem self="@{each='opDateDebut'}" value="opDateDebut">			
-											<listcell label="@{opDateDebut}" />
+								</row>
+								<!-- Etablissement -->
+								<row spans="1,3">
+									<label value="${c:l('prelevement.etablissement')}" sclass="formLabel" />
+									<listbox id="etablissementPreleveurBox" mold="select" rows="1" model="@{fwinRechercheAvanceePrelevementSero$composer.etablissements}">
+										<listitem self="@{each='etabPrlvt'}" value="etabPrlvt">
+											<listcell label="@{etabPrlvt.nom}" />
 										</listitem>
+										<custom-attributes attribut="EtablissementId" entite="Service" />
 									</listbox>
-									<datebox id="dateDebutMaladie1Box" format="${c:l('validation.date.format.simple')}" 
-										cols="8">
-										<custom-attributes attribut="DateDebut" entite="Maladie"/>
-									</datebox>
-								</div>
-							</hbox>
-							<hbox width="100%">
-								<div align="right">
-									<label value="${c:l('general.selectlist.and')}" sclass="formLabel"/>
-									<datebox id="dateDebutMaladie2Box" format="${c:l('validation.date.format.simple')}" 
-										cols="8" style="align:right;">
-										<custom-attributes attribut="DateDebut" entite="Maladie"/>
-									</datebox>
-								</div>
-							</hbox>
-						</vbox>
-						
-						<label value="${c:l('Champ.Maladie.DateDiagnostic')}" sclass="formLabel"/>
-						<vbox>
-							<hbox>
-								<div>
-									<listbox id="operateursDateDiagBox" mold="select" rows="1"
-										model="@{fwinRechercheAvanceePrelevementSero$composer.operateursDates}">
-										<listitem self="@{each='opDateDiag'}" value="opDateDiag">			
-											<listcell label="@{opDateDiag}" />
+								</row>
+								<!-- Service -->
+								<row spans="1,3">
+									<label value="${c:l('Champ.Prelevement.ServicePreleveur')}" sclass="formLabel" />
+									<listbox id="servicePreleveurBox" mold="select" rows="1" model="@{fwinRechercheAvanceePrelevementSero$composer.services}">
+										<listitem self="@{each='servicePrlvt'}" value="servicePrlvt">
+											<listcell label="@{servicePrlvt.nom}" />
 										</listitem>
+										<custom-attributes attribut="ServicePreleveurId" entite="Prelevement" />
 									</listbox>
-									<datebox id="dateDiagnosticMaladie1Box" format="${c:l('validation.date.format.simple')}" 
-										cols="8">
-										<custom-attributes attribut="DateDiagnostic" entite="Maladie"/>
-									</datebox>
-								</div>
-							</hbox>
-							<hbox width="100%">
-								<div align="right">
-									<label value="${c:l('general.selectlist.and')}" sclass="formLabel"/>
-									<datebox id="dateDiagnosticMaladie2Box" format="${c:l('validation.date.format.simple')}" 
-										cols="8" style="align:right;">
-										<custom-attributes attribut="DateDiagnostic" entite="Maladie"/>
-									</datebox>
-								</div>
-							</hbox>
-						</vbox>
-					</row>
-					<!-- Médecins patient et maladie-->
-					<row spans="1, 3">
-						<label value="${c:l('patient.medecins')}" sclass="formLabel"/>
-						<listbox id="medecinsMaPatBox" mold="select" rows="1"
-							model="@{fwinRechercheAvanceePrelevementSero$composer.collaborateurs}">
-							<listitem self="@{each='medecin'}" value="medecin">			
-								<listcell label="@{medecin.nomAndPrenom}" />
-							</listitem>
-							<custom-attributes attribut="CollaborateurId" entite="Collaborateur"/>
-						</listbox>
-					</row>
-					
-					<!-- Groupe échantillon -->
-					<group id="groupEchantillons" label="${c:l('recherche.avancee.informations.echantillon')}"/>
-					<!-- code et nature -->
-					<row>
-						<label value="${c:l('Champ.Echantillon.Code')}" sclass="formLabel"/>
-						<textbox id="codeEchantillonBox" width="150px">
-							<custom-attributes attribut="Code" entite="Echantillon"/>
-						</textbox>
-						
-						<label value="${c:l('Champ.Echantillon.EchantillonType')}" sclass="formLabel"/>
-						<listbox id="typeEchantillonBox" mold="select" rows="1"
-							model="@{fwinRechercheAvanceePrelevementSero$composer.echantillonTypes}">
-							<listitem self="@{each='echantillonType'}" value="echantillonType">			
-								<listcell label="@{echantillonType.type}" />
-							</listitem>
-							<custom-attributes attribut="EchantillonTypeId" entite="Echantillon"/>
-						</listbox>
-					</row>
-					<!-- Quantité et délai cgl -->
-					<row>
-						<label value="${c:l('Champ.Echantillon.Quantite')}" sclass="formLabel"/>
-						<div>
-							<listbox id="operateursQuantiteEchantillonBox" mold="select" rows="1"
-								model="@{fwinRechercheAvanceePrelevementSero$composer.operateursDecimaux}">
-								<listitem self="@{each='opQteEchan'}" value="opQteEchan">			
-									<listcell label="@{opQteEchan}" />
-								</listitem>
-							</listbox>
-							<decimalbox id="quantiteEchantillonBox" width="75px"
-								locale="en">
-								<custom-attributes attribut="Quantite" entite="Echantillon"/>
-							</decimalbox>
-						</div>
-						
-						<label value="${c:l('Champ.Echantillon.DelaiCgl')}" sclass="formLabel"/>
-						<div>
-							<listbox id="operateursDelaiCglEchantillonBox" mold="select" rows="1"
-								model="@{fwinRechercheAvanceePrelevementSero$composer.operateursDecimaux}">
-								<listitem self="@{each='opDelaiEchan'}" value="opDelaiEchan">			
-									<listcell label="@{opDelaiEchan}" />
-								</listitem>
-							</listbox>
-							<decimalbox id="delaiCglEchantillonBox" width="75px"
-								locale="en">
-								<custom-attributes attribut="DelaiCgl" entite="Echantillon"/>
-							</decimalbox>
-							<label value=" min" sclass="formLabel"/>
-						</div>
-					</row>
-					<!-- Code lésionel -->
-					<row spans="1,3">
-						<label value="${c:l('Champ.Echantillon.CodeAssigne')}" sclass="formLabel"/>
-						<textbox id="codeLesionnelBox" width="150px">
-							<custom-attributes attribut="Code" entite="CodeMorpho"/>
-						</textbox>
-					</row>
-					<!-- Organe -->
-					<row spans="1,3">
-						<label value="${c:l('Champ.Echantillon.Organe')}" sclass="formLabel"/>
-						<textbox id="codeOrganeBox" width="150px">
-							<custom-attributes attribut="Code" entite="CodeOrgane"/>
-						</textbox>
-					</row>
-					<!-- qualité et statut -->
-					<row>
-						<label value="${c:l('Champ.Echantillon.EchanQualite')}" sclass="formLabel"/>
-						<listbox id="qualiteEchantillonBox" mold="select" rows="1"
-							model="@{fwinRechercheAvanceePrelevementSero$composer.echanQualites}">
-							<listitem self="@{each='qualite'}" value="qualite">			
-								<listcell label="@{qualite.echanQualite}" />
-							</listitem>
-							<custom-attributes attribut="EchanQualiteId" entite="Echantillon"/>
-						</listbox>
-						
-						<label value="${c:l('Champ.Echantillon.ObjetStatut')}" sclass="formLabel"/>
-						<listbox id="statutEchantillonBox" mold="select" rows="1"
-							model="@{fwinRechercheAvanceePrelevementSero$composer.objetStatuts}">
-							<listitem self="@{each='objetStatut'}" value="objetStatut">			
-								<listcell label="@{objetStatut.statut}" />
-							</listitem>
-							<custom-attributes attribut="ObjetStatutId" entite="Echantillon"/>
-						</listbox>
-					</row>
-					<!-- mode prépa -->
-					<row spans="1,3">
-						<label value="${c:l('Champ.Echantillon.ModePrepa')}" sclass="formLabel"/>
-						<listbox id="modePreparationEchantillonBox" mold="select" rows="1"
-							model="@{fwinRechercheAvanceePrelevementSero$composer.modePrepas}">
-							<listitem self="@{each='mode'}" value="mode">			
-								<listcell label="@{mode.nom}" />
-							</listitem>
-							<custom-attributes attribut="ModePrepaId" entite="Echantillon"/>
-						</listbox>
-					</row>
-					
-					<!-- Groupe dérivé -->
-					<group id="groupProdDerives" label="${c:l('recherche.avancee.informations.prodDerive')}" open="false"/>
-					<!-- code et type -->
-					<row>
-						<label value="${c:l('Champ.ProdDerive.Code')}" sclass="formLabel"/>
-						<textbox id="codeProdDeriveBox" width="150px">
-							<custom-attributes attribut="Code" entite="ProdDerive"/>
-						</textbox>
-						
-						<label value="${c:l('Champ.ProdDerive.ProdType')}" sclass="formLabel"/>
-						<listbox id="typeProdDeriveBox" mold="select" rows="1"
-							model="@{fwinRechercheAvanceePrelevementSero$composer.prodDeriveTypes}">
-							<listitem self="@{each='prodDeriveType'}" value="prodDeriveType">			
-								<listcell label="@{prodDeriveType.type}" />
-							</listitem>
-							<custom-attributes attribut="ProdTypeId" entite="ProdDerive"/>
-						</listbox>
-					</row>
-					<!-- qualité et statut -->
-					<row>
-						<label value="${c:l('Champ.ProdDerive.ProdQualite')}" sclass="formLabel"/>
-						<listbox id="qualiteProdDeriveBox" mold="select" rows="1"
-							model="@{fwinRechercheAvanceePrelevementSero$composer.deriveQualites}">
-							<listitem self="@{each='deriveQualite'}" value="deriveQualite">			
-								<listcell label="@{deriveQualite.prodQualite}" />
-							</listitem>
-							<custom-attributes attribut="ProdQualiteId" entite="ProdDerive"/>
-						</listbox>
-						
-						<label value="${c:l('Champ.ProdDerive.ObjetStatut')}" sclass="formLabel"/>
-						<listbox id="statutProdDeriveBox" mold="select" rows="1"
-							model="@{fwinRechercheAvanceePrelevementSero$composer.objetStatuts}">
-							<listitem self="@{each='objetStatutDerive'}" value="objetStatutDerive">			
-								<listcell label="@{objetStatutDerive.statut}" />
-							</listitem>
-							<custom-attributes attribut="ObjetStatutId" entite="ProdDerive"/>
-						</listbox>
-					</row>
-					<!-- Quantité et volume -->
-					<row>
-						<label value="${c:l('Champ.ProdDerive.Volume')}" sclass="formLabel"/>
-						<div>
-							<listbox id="operateursVolumeDerivesBox" mold="select" rows="1"
-								model="@{fwinRechercheAvanceePrelevementSero$composer.operateursDecimaux}">
-								<listitem self="@{each='opVolDerive'}" value="opVolDerive">			
-									<listcell label="@{opVolDerive}" />
-								</listitem>
-							</listbox>
-							<decimalbox id="volumeDeriveBox" width="75px"
-								locale="en">
-								<custom-attributes attribut="Volume" entite="ProdDerive"/>
-							</decimalbox>
-						</div>
-						
-						<label value="${c:l('Champ.ProdDerive.Quantite')}" sclass="formLabel"/>
-						<div>
-							<listbox id="operateursQuantiteDeriveBox" mold="select" rows="1"
-								model="@{fwinRechercheAvanceePrelevementSero$composer.operateursDecimaux}">
-								<listitem self="@{each='opQteDerive'}" value="opQteDerive">			
-									<listcell label="@{opQteDerive}" />
-								</listitem>
-							</listbox>
-							<decimalbox id="quantiteDeriveBox" width="75px"
-								locale="en">
-								<custom-attributes attribut="Quantite" entite="ProdDerive"/>
-							</decimalbox>
-						</div>
-					</row>
-					
-					<!-- Groupe annotations -->
-					<group id="groupAnnotations" open="false"/>
-				</rows>
-			</grid>
-		</panelchildren>
-		<toolbar height="30px" id="toolbarEchan" align="end">
-			<hbox spacing="5" align="center">
-				<button id="find" label="${c:l('general.find')}" height="24px" visible="true"
-					image="/images/icones/find.png" sclass="buttonv2" />
-			</hbox>
-		</toolbar>
-	</panel>
-</window>
+								</row>
+								<!-- code labo  -->
+								<row spans="1,3">
+									<label value="${c:l('Champ.Prelevement.NumeroLabo')}" sclass="formLabel" />
+									<textbox id="codeLaboPrelevementBox" width="150px">
+										<custom-attributes attribut="NumeroLabo" entite="Prelevement" />
+									</textbox>
+								</row>
+								<!-- nb echantillons + age au prélèvement -->
+								<row id="rowSupPrelevements">
+									<label value="${c:l('recherche.avancee.nb.echantillons')}" sclass="formLabel" />
+									<div>
+										<listbox id="operateursNbEchantillonBox" mold="select" rows="1" model="@{fwinRechercheAvanceePrelevementSero$composer.operateursDecimaux}">
+											<listitem self="@{each='opNbEchan'}" value="opNbEchan">
+												<listcell label="@{opNbEchan}" />
+											</listitem>
+										</listbox>
+										<intbox id="nbEchantillonBox" width="75px" />
+									</div>
+
+									<label value="${c:l('recherche.avancee.age.prlvt')}" sclass="formLabel" />
+									<div>
+										<listbox id="operateursAgePrlvtBox" mold="select" rows="1" model="@{fwinRechercheAvanceePrelevementSero$composer.operateursDecimaux}">
+											<listitem self="@{each='opAgePrlvt'}" value="opAgePrlvt">
+												<listcell label="@{opAgePrlvt}" />
+											</listitem>
+										</listbox>
+										<intbox id="agePrlvtBox" width="75px" />
+									</div>
+								</row>
+								<!-- Risques -->
+								<row spans="1, 3">
+									<label value="${c:l('Champ.Prelevement.Risques')}" sclass="formLabel" />
+									<textbox id="risquesBox" width="150px">
+										<custom-attributes attribut="Nom" entite="Risque" />
+									</textbox>
+								</row>
+
+								<!-- SeroTK -->
+								<row>
+									<label value="${c:l('Champ.Prelevement.SEROLOGIE.Protocoles')}" sclass="formLabel" />
+									<listbox id="protocolesBox" mold="select" rows="1" model="@{fwinRechercheAvanceePrelevementSero$composer.protocoles}">
+										<listitem self="@{each='protocole'}" value="protocole">
+											<listcell label="@{protocole.nom}" />
+										</listitem>
+										<custom-attributes attribut="Nom" entite="Protocole" />
+									</listbox>
+									<label value="${c:l('Champ.Prelevement.SEROLOGIE.Libelle')}" sclass="formLabel" />
+									<textbox id="diagCompBox" width="150px">
+										<custom-attributes champDelegue="Libelle" entite="Prelevement" />
+									</textbox>
+								</row>
+
+								<!-- Groupe patient -->
+								<group id="groupPatients" label="${c:l('recherche.avancee.informations.patient')}" />
+								<!-- N° Patient et N° dossier -->
+								<row>
+									<label value="${c:l('Champ.Patient.Nip')}" sclass="formLabel" />
+									<textbox id="nipPatientBox" width="150px">
+										<custom-attributes attribut="Nip" entite="Patient" />
+									</textbox>
+
+									<label value="${c:l('Champ.Prelevement.PatientNda')}" sclass="formLabel" />
+									<textbox id="ndaPatientBox" width="150px">
+										<custom-attributes attribut="PatientNda" entite="Prelevement" />
+									</textbox>
+								</row>
+								<!-- Nom Patient et Nom patronymique -->
+								<row>
+									<label value="${c:l('Champ.Patient.Nom')}" sclass="formLabel" />
+									<textbox id="nomPatientBox" width="150px">
+										<custom-attributes attribut="Nom" entite="Patient" />
+									</textbox>
+
+									<label value="${c:l('Champ.Patient.NomNaissance')}" sclass="formLabel" />
+									<textbox id="nomNaissancePatientBox" width="150px">
+										<custom-attributes attribut="NomNaissance" entite="Patient" />
+									</textbox>
+								</row>
+								<!-- Prénom Patient -->
+								<row spans="1,3">
+									<label value="${c:l('Champ.Patient.Prenom')}" sclass="formLabel" />
+									<textbox id="prenomPatientBox" width="150px">
+										<custom-attributes attribut="Prenom" entite="Patient" />
+									</textbox>
+								</row>
+								<!-- Date naissance et sexe -->
+								<row>
+									<label value="${c:l('Champ.Patient.DateNaissance')}" sclass="formLabel" />
+									<vbox>
+										<hbox>
+											<div>
+												<listbox id="operateursDateNaissanceBox" mold="select" rows="1" model="@{fwinRechercheAvanceePrelevementSero$composer.operateursDates}">
+													<listitem self="@{each='opDateNaiss'}" value="opDateNaiss">
+														<listcell label="@{opDateNaiss}" />
+													</listitem>
+												</listbox>
+												<datebox id="dateNaissance1Box" format="${c:l('validation.date.format.simple')}" cols="8">
+													<custom-attributes attribut="DateNaissance" entite="Patient" />
+												</datebox>
+											</div>
+										</hbox>
+										<hbox width="100%">
+											<div align="right">
+												<label value="${c:l('general.selectlist.and')}" sclass="formLabel" />
+												<datebox id="dateNaissance2Box" format="${c:l('validation.date.format.simple')}" cols="8" style="align:right;">
+													<custom-attributes attribut="DateNaissance" entite="Patient" />
+												</datebox>
+											</div>
+										</hbox>
+									</vbox>
+
+									<label value="${c:l('Champ.Patient.Sexe')}" sclass="formLabel" />
+									<hbox>
+										<div>
+											<checkbox id="sexeFBox">
+												<custom-attributes sexe="F" />
+											</checkbox>
+											<label value="${c:l('patient.sexe.femme')}" sclass="formLabel" />
+										</div>
+										<separator width="10px" />
+										<div>
+											<checkbox id="sexeHBox">
+												<custom-attributes sexe="M" />
+											</checkbox>
+											<label value="${c:l('patient.sexe.homme')}" sclass="formLabel" />
+										</div>
+										<separator width="10px" />
+										<div>
+											<checkbox id="sexeIndBox">
+												<custom-attributes sexe="Ind" />
+											</checkbox>
+											<label value="${c:l('patient.sexe.indetermine')}" sclass="formLabel" />
+										</div>
+									</hbox>
+								</row>
+								<!-- Médecins hidden -->
+								<row spans="1, 3" visible="false">
+									<listbox id="medecinsBox" mold="select" rows="1"></listbox>
+								</row>
+
+								<!-- Groupe maladie -->
+								<group id="groupMaladies" label="${c:l('recherche.avancee.informations.maladie')}" />
+								<!-- Libellé et code -->
+								<row>
+									<label value="${c:l('Champ.Maladie.Libelle')}" sclass="formLabel" />
+									<textbox id="libelleMaladieBox" width="150px">
+										<custom-attributes attribut="Libelle" entite="Maladie" />
+									</textbox>
+								</row>
+								<row>
+									<label value="${c:l('Champ.Maladie.Code')}" sclass="formLabel" />
+									<textbox id="codeMaladieBox" width="150px">
+										<custom-attributes attribut="Code" entite="Maladie" />
+									</textbox>
+									
+									<!-- SeroTK -->
+									<label value="${c:l('Champ.Maladie.SEROLOGIE.Diagnostic')}" sclass="formLabel" />
+									<listbox id="diagSeroBox" mold="select" rows="1" model="@{fwinRechercheAvanceePrelevementSero$composer.diagnostics}">
+										<listitem self="@{each='diagnostic'}" value="diagnostic">
+											<listcell label="@{diagnostic.nom}" />
+										</listitem>
+										<custom-attributes attribut="Nom" entite="Diagnostic" />
+									</listbox>
+								</row>
+								<!-- Dates -->
+								<row>
+									<label value="${c:l('Champ.Maladie.DateDebut')}" sclass="formLabel" />
+									<vbox>
+										<hbox>
+											<div>
+												<listbox id="operateursDateDebutBox" mold="select" rows="1" model="@{fwinRechercheAvanceePrelevementSero$composer.operateursDates}">
+													<listitem self="@{each='opDateDebut'}" value="opDateDebut">
+														<listcell label="@{opDateDebut}" />
+													</listitem>
+												</listbox>
+												<datebox id="dateDebutMaladie1Box" format="${c:l('validation.date.format.simple')}" cols="8">
+													<custom-attributes attribut="DateDebut" entite="Maladie" />
+												</datebox>
+											</div>
+										</hbox>
+										<hbox width="100%">
+											<div align="right">
+												<label value="${c:l('general.selectlist.and')}" sclass="formLabel" />
+												<datebox id="dateDebutMaladie2Box" format="${c:l('validation.date.format.simple')}" cols="8" style="align:right;">
+													<custom-attributes attribut="DateDebut" entite="Maladie" />
+												</datebox>
+											</div>
+										</hbox>
+									</vbox>
+
+									<label value="${c:l('Champ.Maladie.DateDiagnostic')}" sclass="formLabel" />
+									<vbox>
+										<hbox>
+											<div>
+												<listbox id="operateursDateDiagBox" mold="select" rows="1" model="@{fwinRechercheAvanceePrelevementSero$composer.operateursDates}">
+													<listitem self="@{each='opDateDiag'}" value="opDateDiag">
+														<listcell label="@{opDateDiag}" />
+													</listitem>
+												</listbox>
+												<datebox id="dateDiagnosticMaladie1Box" format="${c:l('validation.date.format.simple')}" cols="8">
+													<custom-attributes attribut="DateDiagnostic" entite="Maladie" />
+												</datebox>
+											</div>
+										</hbox>
+										<hbox width="100%">
+											<div align="right">
+												<label value="${c:l('general.selectlist.and')}" sclass="formLabel" />
+												<datebox id="dateDiagnosticMaladie2Box" format="${c:l('validation.date.format.simple')}" cols="8" style="align:right;">
+													<custom-attributes attribut="DateDiagnostic" entite="Maladie" />
+												</datebox>
+											</div>
+										</hbox>
+									</vbox>
+								</row>
+								<!-- Médecins patient et maladie-->
+								<row spans="1, 3">
+									<label value="${c:l('patient.medecins')}" sclass="formLabel" />
+									<listbox id="medecinsMaPatBox" mold="select" rows="1" model="@{fwinRechercheAvanceePrelevementSero$composer.collaborateurs}">
+										<listitem self="@{each='medecin'}" value="medecin">
+											<listcell label="@{medecin.nomAndPrenom}" />
+										</listitem>
+										<custom-attributes attribut="CollaborateurId" entite="Collaborateur" />
+									</listbox>
+								</row>
+
+								<!-- Groupe échantillon -->
+								<group id="groupEchantillons" label="${c:l('recherche.avancee.informations.echantillon')}" />
+								<!-- code et nature -->
+								<row>
+									<label value="${c:l('Champ.Echantillon.Code')}" sclass="formLabel" />
+									<textbox id="codeEchantillonBox" width="150px">
+										<custom-attributes attribut="Code" entite="Echantillon" />
+									</textbox>
+
+									<label value="${c:l('Champ.Echantillon.EchantillonType')}" sclass="formLabel" />
+									<listbox id="typeEchantillonBox" mold="select" rows="1" model="@{fwinRechercheAvanceePrelevementSero$composer.echantillonTypes}">
+										<listitem self="@{each='echantillonType'}" value="echantillonType">
+											<listcell label="@{echantillonType.type}" />
+										</listitem>
+										<custom-attributes attribut="EchantillonTypeId" entite="Echantillon" />
+									</listbox>
+								</row>
+								<!-- Quantité et délai cgl -->
+								<row>
+									<label value="${c:l('Champ.Echantillon.Quantite')}" sclass="formLabel" />
+									<div>
+										<listbox id="operateursQuantiteEchantillonBox" mold="select" rows="1" model="@{fwinRechercheAvanceePrelevementSero$composer.operateursDecimaux}">
+											<listitem self="@{each='opQteEchan'}" value="opQteEchan">
+												<listcell label="@{opQteEchan}" />
+											</listitem>
+										</listbox>
+										<decimalbox id="quantiteEchantillonBox" width="75px" locale="en">
+											<custom-attributes attribut="Quantite" entite="Echantillon" />
+										</decimalbox>
+									</div>
+
+									<label value="${c:l('Champ.Echantillon.DelaiCgl')}" sclass="formLabel" />
+									<div>
+										<listbox id="operateursDelaiCglEchantillonBox" mold="select" rows="1" model="@{fwinRechercheAvanceePrelevementSero$composer.operateursDecimaux}">
+											<listitem self="@{each='opDelaiEchan'}" value="opDelaiEchan">
+												<listcell label="@{opDelaiEchan}" />
+											</listitem>
+										</listbox>
+										<decimalbox id="delaiCglEchantillonBox" width="75px" locale="en">
+											<custom-attributes attribut="DelaiCgl" entite="Echantillon" />
+										</decimalbox>
+										<label value=" min" sclass="formLabel" />
+									</div>
+								</row>
+								<!-- Code lésionel -->
+								<row spans="1,3">
+									<label value="${c:l('Champ.Echantillon.CodeAssigne')}" sclass="formLabel" />
+									<textbox id="codeLesionnelBox" width="150px">
+										<custom-attributes attribut="Code" entite="CodeMorpho" />
+									</textbox>
+								</row>
+								<!-- Organe -->
+								<row spans="1,3">
+									<label value="${c:l('Champ.Echantillon.Organe')}" sclass="formLabel" />
+									<textbox id="codeOrganeBox" width="150px">
+										<custom-attributes attribut="Code" entite="CodeOrgane" />
+									</textbox>
+								</row>
+								<!-- qualité et statut -->
+								<row>
+									<label value="${c:l('Champ.Echantillon.EchanQualite')}" sclass="formLabel" />
+									<listbox id="qualiteEchantillonBox" mold="select" rows="1" model="@{fwinRechercheAvanceePrelevementSero$composer.echanQualites}">
+										<listitem self="@{each='qualite'}" value="qualite">
+											<listcell label="@{qualite.echanQualite}" />
+										</listitem>
+										<custom-attributes attribut="EchanQualiteId" entite="Echantillon" />
+									</listbox>
+
+									<label value="${c:l('Champ.Echantillon.ObjetStatut')}" sclass="formLabel" />
+									<listbox id="statutEchantillonBox" mold="select" rows="1" model="@{fwinRechercheAvanceePrelevementSero$composer.objetStatuts}">
+										<listitem self="@{each='objetStatut'}" value="objetStatut">
+											<listcell label="@{objetStatut.statut}" />
+										</listitem>
+										<custom-attributes attribut="ObjetStatutId" entite="Echantillon" />
+									</listbox>
+								</row>
+								<!-- mode prépa -->
+								<row spans="1,3">
+									<label value="${c:l('Champ.Echantillon.ModePrepa')}" sclass="formLabel" />
+									<listbox id="modePreparationEchantillonBox" mold="select" rows="1" model="@{fwinRechercheAvanceePrelevementSero$composer.modePrepas}">
+										<listitem self="@{each='mode'}" value="mode">
+											<listcell label="@{mode.nom}" />
+										</listitem>
+										<custom-attributes attribut="ModePrepaId" entite="Echantillon" />
+									</listbox>
+								</row>
+
+								<!-- Groupe dérivé -->
+								<group id="groupProdDerives" label="${c:l('recherche.avancee.informations.prodDerive')}" open="false" />
+								<!-- code et type -->
+								<row>
+									<label value="${c:l('Champ.ProdDerive.Code')}" sclass="formLabel" />
+									<textbox id="codeProdDeriveBox" width="150px">
+										<custom-attributes attribut="Code" entite="ProdDerive" />
+									</textbox>
+
+									<label value="${c:l('Champ.ProdDerive.ProdType')}" sclass="formLabel" />
+									<listbox id="typeProdDeriveBox" mold="select" rows="1" model="@{fwinRechercheAvanceePrelevementSero$composer.prodDeriveTypes}">
+										<listitem self="@{each='prodDeriveType'}" value="prodDeriveType">
+											<listcell label="@{prodDeriveType.type}" />
+										</listitem>
+										<custom-attributes attribut="ProdTypeId" entite="ProdDerive" />
+									</listbox>
+								</row>
+								<!-- qualité et statut -->
+								<row>
+									<label value="${c:l('Champ.ProdDerive.ProdQualite')}" sclass="formLabel" />
+									<listbox id="qualiteProdDeriveBox" mold="select" rows="1" model="@{fwinRechercheAvanceePrelevementSero$composer.deriveQualites}">
+										<listitem self="@{each='deriveQualite'}" value="deriveQualite">
+											<listcell label="@{deriveQualite.prodQualite}" />
+										</listitem>
+										<custom-attributes attribut="ProdQualiteId" entite="ProdDerive" />
+									</listbox>
+
+									<label value="${c:l('Champ.ProdDerive.ObjetStatut')}" sclass="formLabel" />
+									<listbox id="statutProdDeriveBox" mold="select" rows="1" model="@{fwinRechercheAvanceePrelevementSero$composer.objetStatuts}">
+										<listitem self="@{each='objetStatutDerive'}" value="objetStatutDerive">
+											<listcell label="@{objetStatutDerive.statut}" />
+										</listitem>
+										<custom-attributes attribut="ObjetStatutId" entite="ProdDerive" />
+									</listbox>
+								</row>
+								<!-- Quantité et volume -->
+								<row>
+									<label value="${c:l('Champ.ProdDerive.Volume')}" sclass="formLabel" />
+									<div>
+										<listbox id="operateursVolumeDerivesBox" mold="select" rows="1" model="@{fwinRechercheAvanceePrelevementSero$composer.operateursDecimaux}">
+											<listitem self="@{each='opVolDerive'}" value="opVolDerive">
+												<listcell label="@{opVolDerive}" />
+											</listitem>
+										</listbox>
+										<decimalbox id="volumeDeriveBox" width="75px" locale="en">
+											<custom-attributes attribut="Volume" entite="ProdDerive" />
+										</decimalbox>
+									</div>
+
+									<label value="${c:l('Champ.ProdDerive.Quantite')}" sclass="formLabel" />
+									<div>
+										<listbox id="operateursQuantiteDeriveBox" mold="select" rows="1" model="@{fwinRechercheAvanceePrelevementSero$composer.operateursDecimaux}">
+											<listitem self="@{each='opQteDerive'}" value="opQteDerive">
+												<listcell label="@{opQteDerive}" />
+											</listitem>
+										</listbox>
+										<decimalbox id="quantiteDeriveBox" width="75px" locale="en">
+											<custom-attributes attribut="Quantite" entite="ProdDerive" />
+										</decimalbox>
+									</div>
+								</row>
+
+								<!-- Groupe annotations -->
+								<group id="groupAnnotations" open="false" />
+							</rows>
+						</grid>
+					</center>
+				</borderlayout>
+			</panelchildren>
+			<toolbar height="30px" id="toolbarEchan" align="end">
+				<hbox spacing="5" align="center">
+					<button id="find" label="${c:l('general.find')}" height="24px" visible="true" image="/images/icones/find.png" sclass="buttonv2" />
+				</hbox>
+			</toolbar>
+		</panel>
+	</window>
 </zk>

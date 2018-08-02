@@ -1,0 +1,790 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<?component name="calendarbox" macroURI="/zuls/component/CalendarBox.zul" class="fr.aphp.tumorotek.component.CalendarBox" ?>
+
+<window id="fwinCessionEditBTO" border="none" apply="fr.aphp.tumorotek.action.cession.bto.FicheCessionEditBTO">
+	<panel collapsible="false" title="${c:l('ficheCession.panel.title')}"
+	 sclass="fichePanelv2" id="winPanel" closable="true">
+		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
+			<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvt">
+				<columns>
+					<column width="150px"/>
+					<column/>
+					<column width="150px"/>
+					<column/>
+				</columns>
+				<rows>
+					<row>
+						<!-- Numéro de cession -->
+						<hbox>
+							<label value="${c:l('Champ.Cession.Numero')}" sclass="formLabel"/>
+							<label id="numeroRequired" value="*" sclass="requiredMark"/>
+						</hbox>
+						<hlayout sclass="z-valign-middle">
+							<textbox id="numeroBox" 
+								value="@{fwinCessionEditBTO$composer.cession.numero,
+									save-when='validate.onClick, create.onClick, self.onBlur'
+									load-after='numerotation.onClick'}" 
+								width="200px" 
+								constraint="${fwinCessionEditBTO$composer.numeroConstraint}"
+							/>
+							
+							<button id="numerotation"
+								image="/images/icones/numerotation.png" sclass="buttonv2"
+								visible="false"/>
+						</hlayout>
+						
+						<!-- Type de cession -->
+						<hbox>
+							<label value="${c:l('Champ.Cession.CessionType')}" sclass="formLabel"/>
+							<label id="typeRequired" value="*" sclass="requiredMark"/>
+						</hbox>
+
+						<listbox id="typesBox" mold="select" rows="1">
+							<listitem self="@{each='type'}" value="type">			
+								<listcell label="@{type.type}" />
+							</listitem>
+						</listbox>
+					</row>
+					
+					<row spans="2">
+						<separator/>
+					</row>
+					<!-- Echantillons -->
+					<group label="@{fwinCessionEditBTO$composer.echantillonsGroupHeader}"
+						id="groupEchantillons"/>
+					<row spans="4">
+						<vbox align="center" hflex="1" width="100%">
+						<div id="cederEchantillonsHbox" visible="false" style="valign:top;">
+							<label value="${c:l('cession.ceder.echantillon.code')}" 
+								sclass="formLabel"/>
+							
+							<listbox id="banquesEchantillonsBox" mold="select" rows="1">
+								<listitem self="@{each='banque'}" value="banque">			
+									<listcell label="@{banque.nom}" />
+								</listitem>
+							</listbox>
+							
+							<combobox id="echantillonsBox" 
+								buttonVisible="false"
+				 				autodrop="true" width="150px">
+				 					<comboitem self="@{each=echantillonCode}" 
+				 					label="@{echantillonCode}"/>
+				 			</combobox>
+				 			
+				 			<button id="cederEchantillonsButton" sclass="buttonv2" 
+				 				label="${c:l('cession.ceder.echantillon')}"  
+								height="24px"
+								image="/images/icones/cederObjet.png" />
+			 			</div>
+			 			<label id="lastEchantillonsLabel" sclass="formErrorValue" visible="false"
+			 				value="${c:l('cession.warning.last.echantillon')}"/>
+			 			<label id="echantillonsNonStockesLabel" sclass="formErrorValue" 
+			 				visible="false"
+			 				value="${c:l('cession.echantillons.non.stocke')}"/>
+						<!-- Echantillons en mode edition -->
+						<grid id="echantillonsList" mold="paging"
+							hflex="1"
+							sizedByContent="true" 
+							span="true"
+							sclass="gridListStyle"
+							>
+							<columns sizable="true" width="100%">
+								<column />
+								<column label="${c:l('cederObjet.code')}" />
+								<column label="${c:l('cederObjet.type')}" />
+								<column label="${c:l('prelevement.patient')}" />
+								<column >
+									<vbox>
+										<label value="${c:l('cederObjet.statut')}" 
+											style="font-weight : bold;"/>
+										<label value="${c:l('cederObjet.juridique')}" 
+											style="font-weight : bold;"/>
+									</vbox>
+								</column>
+								<column id="echanQteColBox" visible="true" >
+									<vbox>
+										<label value="${c:l('cederObjet.quantite')}" 
+											style="font-weight : bold;"/>
+										<label value="${c:l('cederObjet.demandee')}" 
+											style="font-weight : bold;"/>
+									</vbox>
+								</column>
+								<column id="echanQteCol" visible="false">
+									<vbox>
+										<label value="${c:l('cederObjet.quantite')}" 
+											style="font-weight : bold;"/>
+										<label value="${c:l('cederObjet.demandee')}" 
+											style="font-weight : bold;"/>
+									</vbox>
+								</column>
+								<column >
+									<vbox>
+										<label value="${c:l('cederObjet.quantite')}" 
+											style="font-weight : bold;"/>
+										<label value="${c:l('cederObjet.restante')}" 
+											style="font-weight : bold;"/>
+									</vbox>
+								</column>
+								<column label="${c:l('cederObjet.unite')}" />
+								<column label="${c:l('Champ.Echantillon.Emplacement')}" />
+								<column>
+									<vbox>
+										<label value="${c:l('general.nb')}" 
+											style="font-weight : bold;"/>
+										<label value="${c:l('cederObjet.sorties')}" 
+											style="font-weight : bold;"/>
+									</vbox>
+								</column>
+								<column id="echanDeleteCol" width="18px"/>
+							</columns>
+							<rows>
+								<row self="@{each='echanCedeEdit'}">
+									<hlayout>
+										<div width="18px" height="18px" visible="@{echanCedeEdit.impactVisible}"
+											sclass="impact" tooltiptext="${c:l('Champ.Retour.Impact')}"/>
+										<div width="18px" height="18px" visible="@{echanCedeEdit.prelC}"
+											sclass="conformeArrivee" tooltiptext="${c:l('tooltip.conforme.arrivee')}"/>
+										<div width="18px" height="18px" visible="@{echanCedeEdit.prelNC}"
+											sclass="nonConformeArrivee" tooltiptext="@{echanCedeEdit.prelNcfs}"/>
+										<div width="18px" height="18px" visible="@{echanCedeEdit.tKObjTraitementC}"
+											sclass="conformeTraitement" tooltiptext="${c:l('tooltip.conforme.traitement')}"/>
+										<div width="18px" height="18px" visible="@{echanCedeEdit.tKObjTraitementNC}"
+											sclass="nonConformeTraitement" tooltiptext="@{echanCedeEdit.tKObjTraitementNcfs}"/>
+										<div width="18px" height="18px" visible="@{echanCedeEdit.tKObjCessionC}"
+											sclass="conformeCession" tooltiptext="${c:l('tooltip.conforme.cession')}"/>
+										<div width="18px" height="18px" visible="@{echanCedeEdit.tKObjCessionNC}"
+											sclass="nonConformeCession" tooltiptext="@{echanCedeEdit.tKObjCessionNcfs}"/>	
+									</hlayout>
+									<label value="@{echanCedeEdit.echantillonCode}" 
+										id = "codeEchantillonCede"/>
+									<label value="@{echanCedeEdit.echantillonType}"/>
+									<label value="@{echanCedeEdit.nomPatient}"/>
+									<label value="@{echanCedeEdit.statutJuridique}"/>
+									<!-- Quantité a céder -->
+									<div align="center">
+										<decimalbox id="echantillonQuantiteBox"
+											width="50px"
+											value="@{echanCedeEdit.cederObjet.quantite,
+											save-when='validate.onClick, create.onClick,
+											self.onBlur'}"
+											visible="@{echanCedeEdit.quantiteEdition}"
+											constraint="@{fwinCessionEditBTO$composer.cttQuantiteDemandee}"
+											format="#,##0.###" scale="3"
+											locale="en"
+										/>
+										<label value="@{echanCedeEdit.cederQuantite}"
+											visible="@{echanCedeEdit.quantiteVisualisation}"/>
+									</div>
+									<label value="@{echanCedeEdit.cederQuantite}" />
+									<label value="@{echanCedeEdit.quantiteRestante, 
+										load-after='echantillonQuantiteBox.onBlur'}"/>
+									<label value="@{echanCedeEdit.cederQuantiteUnite}"/>
+									<label value="@{echanCedeEdit.emplacementAdrl}"/>
+									<label value="@{echanCedeEdit.nbSorties}"/>
+									<!-- Suppression -->
+									<div align="center">
+										<image width="12px" height="12px" id="deleteEchan"
+											src="/images/icones/small_delete.png"
+											style="cursor:pointer"/>
+									</div>
+								</row>
+							</rows>
+						</grid>
+						<paging id="echansPaging" detailed="true"/>
+						<label value="${c:l('cession.ceder.multi.echantillon')}" 
+							sclass="formLink" id="cederMultiEchantillonsLabel"/>							
+						</vbox>
+					</row>
+					
+					<!-- Dérivés -->
+					<group label="@{fwinCessionEditBTO$composer.derivesGroupHeader}"
+						id="groupProdDerives"/>
+					<row spans="4">
+						<!-- Dérivés en mode edition -->
+						<vbox align="center" hflex="1">
+						<div id="cederDerivesHbox" visible="false" style="valign:top;">
+							<label value="${c:l('cession.ceder.prodDerive.code')}" 
+								sclass="formLabel"/>
+								
+							<listbox id="banquesProdDerivesBox" mold="select" rows="1">
+								<listitem self="@{each='banque'}" value="banque">			
+									<listcell label="@{banque.nom}" />
+								</listitem>
+							</listbox>
+							
+							<combobox id="derivesBox" 
+								buttonVisible="false"
+				 				autodrop="true" width="150px">
+				 					<comboitem self="@{each=deriveCode}" 
+				 					label="@{deriveCode}"/>
+				 			</combobox>
+				 			
+				 			<button id="cederDerivesButton" sclass="buttonv2" 
+				 				label="${c:l('cession.ceder.prodDerive')}"  
+								height="24px"
+								image="/images/icones/cederObjet.png" />
+			 			</div>
+			 			<label id="prodDerivesNonStockesLabel" sclass="formErrorValue" 
+			 				visible="false"
+			 				value="${c:l('cession.prodDerives.non.stocke')}"/>
+						<grid id="derivesList" mold="paging" 
+							span="true"
+							hflex="1"
+							sizedByContent="true"
+							sclass="gridListStyle"
+							>
+							<columns sizable="true" width="100%">
+								<column />
+								<column label="${c:l('cederObjet.code')}"/>
+								<column label="${c:l('cederObjet.type')}"/>
+								<column label="${c:l('prelevement.patient')}"/>
+								<column>
+									<vbox>
+										<label value="${c:l('cederObjet.statut')}" 
+											style="font-weight : bold;"/>
+										<label value="${c:l('cederObjet.juridique')}" 
+											style="font-weight : bold;"/>
+									</vbox>
+								</column>
+								<column id="deriveQteColBox" visible="true">
+									<vbox>
+										<label value="${c:l('cederObjet.quantite')}" 
+											style="font-weight : bold;"/>
+										<label value="${c:l('cederObjet.demandee')}" 
+											style="font-weight : bold;"/>
+									</vbox>
+								</column>
+								<column id="deriveQteCol" visible="false">
+									<vbox>
+										<label value="${c:l('cederObjet.quantite')}" 
+											style="font-weight : bold;"/>
+										<label value="${c:l('cederObjet.demandee')}" 
+											style="font-weight : bold;"/>
+									</vbox>
+								</column>
+								<column>
+									<vbox>
+										<label value="${c:l('cederObjet.quantite')}" 
+											style="font-weight : bold;"/>
+										<label value="${c:l('cederObjet.restante')}" 
+											style="font-weight : bold;"/>
+									</vbox>
+								</column>
+								<column id="deriveQteUniteCol" label="${c:l('cederObjet.unite')}"/>
+								<column id="deriveQteUniteColBox" label="${c:l('cederObjet.unite')}"/>
+								<column label="${c:l('Champ.ProdDerive.Emplacement')}"/>
+								<column>
+									<vbox>
+										<label value="${c:l('general.nb')}" 
+											style="font-weight : bold;"/>
+										<label value="${c:l('cederObjet.sorties')}" 
+											style="font-weight : bold;"/>
+									</vbox>
+								</column>
+								<column id="deriveDeleteCol" width="18px"/>
+							</columns>
+							<rows>
+								<row self="@{each='deriveCedeEdit'}">
+									<hlayout>
+										<div width="18px" height="18px" visible="@{deriveCedeEdit.impactVisible}"
+											sclass="impact" tooltiptext="${c:l('Champ.Retour.Impact')}"/>
+										<div width="18px" height="18px" visible="@{deriveCedeEdit.prelC}"
+											sclass="conformeArrivee" tooltiptext="${c:l('tooltip.conforme.arrivee')}"/>
+										<div width="18px" height="18px" visible="@{deriveCedeEdit.prelNC}"
+											sclass="nonConformeArrivee" tooltiptext="@{deriveCedeEdit.prelNcfs}"/>
+										<div width="18px" height="18px" visible="@{deriveCedeEdit.tKObjTraitementC}"
+											sclass="conformeTraitement" tooltiptext="${c:l('tooltip.conforme.traitement')}"/>
+										<div width="18px" height="18px" visible="@{deriveCedeEdit.tKObjTraitementNC}"
+											sclass="nonConformeTraitement" tooltiptext="@{deriveCedeEdit.tKObjTraitementNcfs}"/>
+										<div width="18px" height="18px" visible="@{deriveCedeEdit.tKObjCessionC}"
+											sclass="conformeCession" tooltiptext="${c:l('tooltip.conforme.cession')}"/>
+										<div width="18px" height="18px" visible="@{deriveCedeEdit.tKObjCessionNC}"
+											sclass="nonConformeCession" tooltiptext="@{deriveCedeEdit.tKObjCessionNcfs}"/>
+									
+									</hlayout>
+									<label id="codeProdDeriveCede" value="@{deriveCedeEdit.prodDeriveCode}"/>
+									<label value="@{deriveCedeEdit.prodDeriveType}"/>
+									<label value="@{deriveCedeEdit.nomPatient}"/>
+									<label value="@{deriveCedeEdit.statutJuridique}"/>
+									<!-- Quantité a céder -->
+									<div align="center">
+										<decimalbox id="deriveQuantiteBox"
+											width="50px"
+											value="@{deriveCedeEdit.cederObjet.quantite,
+											save-when='validate.onClick, create.onClick,
+											self.onBlur'
+											load-after='deriveUnitesBox.onSelect'}"
+											visible="@{deriveCedeEdit.quantiteEdition}"
+											constraint="@{fwinCessionEditBTO$composer.cttQuantiteDemandee}"
+											format="#,##0.###" scale="3"
+											locale="en"
+										/>
+										<label value="@{deriveCedeEdit.cederQuantite}"
+											visible="@{deriveCedeEdit.quantiteVisualisation}"/>
+									</div>
+									<label value="@{deriveCedeEdit.cederQuantite}" />
+									<label value="@{deriveCedeEdit.quantiteRestante, 
+										load-after='deriveQuantiteBox.onBlur, 
+											deriveUnitesBox.onSelect'}"/>
+									<label value="@{deriveCedeEdit.cederQuantiteUnite}" />
+									<div>
+										<listbox id="deriveUnitesBox"
+											mold="select"
+											model="@{deriveCedeEdit.unites}"
+											selectedItem="@{deriveCedeEdit.selectedUnite}"
+											visible="@{deriveCedeEdit.quantiteEdition}">
+											<listitem self="@{each='unite'}" value="unite">			
+												<listcell label="@{unite.unite}" />
+											</listitem>
+										</listbox>
+									</div>
+									<label value="@{deriveCedeEdit.emplacementAdrl}"/>
+									<label value="@{deriveCedeEdit.nbSorties}"/>
+									<!-- Suppression -->
+									<div align="center">
+										<image width="12px" height="12px" id="deleteDerive"
+											src="/images/icones/small_delete.png"
+											style="cursor:pointer"/>
+									</div>
+								</row>
+							</rows>
+						</grid>
+						<paging id="derivesPaging" detailed="true"/>
+						<label value="${c:l('cession.ceder.multi.prodDerive')}" 
+							sclass="formLink" id="cederMultiProdDerivesLabel"/>
+						</vbox>
+					</row>
+					
+					<group/>
+					<!-- Séparateur -->
+					<row spans="4">
+						<separator/>
+					</row>
+					
+					<row spans="4">
+						<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"
+						width="100%"/>
+					</row>
+					<row spans="4">
+						<separator/>
+					</row>
+					
+					
+					<row id="rowDemandeur">
+						<!-- Demandeur -->
+						
+						<label value="${c:l('Champ.Cession.Demandeur')}" sclass="formLabel"/>
+						<div>
+							<hbox>
+								<vbox>
+								<combobox id="demandeurBox" 
+					 				autodrop="true" width="200px">
+					 					<comboitem self="@{each=demandeurValue}" 
+					 					label="@{demandeurValue}"/>
+					 			</combobox>
+					 			<label id="demandeurHelpLabel" 
+									value="@{fwinCessionEditBTO$composer.selectedContrat.collaborateur.nomAndPrenom,
+									load-after='contratsComboBox.onSelect,
+										contratsComboBox.onBulr'}" 
+									sclass="@{fwinCessionEditBTO$composer.sClassCollaborateurHelp,
+									load-after='contratsComboBox.onSelect,
+										contratsComboBox.onBulr'}" 
+									style="font-style:italic"
+								/>
+								</vbox>
+				 			</hbox>
+						</div>
+					
+					</row>
+					<row id="rowDateDemande">
+						
+					<!-- Date demande -->
+						<label value="${c:l('Champ.Cession.ReceptionDate')}" sclass="formLabel"/>
+						<datebox id="dateDemandeBox" format="${c:l('validation.date.format.simple')}" 
+							value="@{fwinCessionEditBTO$composer.cession.demandeDate,
+							save-when='validate.onClick, create.onClick'
+							load-after='remplissageAuto.onClick'}"
+							cols="15" lenient="false"
+						/>
+					</row>
+					
+					<row spans="4">
+						<separator/>
+					</row>
+					
+					<row spans="1,3" id="rowSanitaire">
+						<!-- Examen -->
+						<label value="${c:l('Champ.Cession.CessionExamen')}" sclass="formLabel"/>
+						<listbox id="examensBox" mold="select" rows="1"
+							model="@{fwinCessionEditBTO$composer.examens}"
+							selectedItem="@{fwinCessionEditBTO$composer.selectedCessionExamen}"
+						>
+							<listitem self="@{each='examen'}" value="examen">			
+								<listcell label="@{examen.examen}" />
+							</listitem>
+						</listbox>
+					</row>
+					
+					<row spans="1,3" id="rowRecherche1">
+						<!-- Contrat -->
+						<label value="${c:l('Champ.Cession.Contrat')}" sclass="formLabel"
+						id="contratLabel"/>
+						<div id="contratBox">
+							<hbox>
+								<!-- <listbox id="contratsBox" mold="select" rows="1"
+									model="@{fwinCessionEditBTO$composer.contrats}"
+									selectedItem="@{fwinCessionEditBTO$composer.selectedContrat}">
+									<listitem self="@{each='contrat'}" value="contrat">			
+										<listcell label="@{contrat.numero}" />
+									</listitem>
+								</listbox>-->
+								<combobox id="contratsComboBox" mold="rounded" 
+					 				autodrop="true" width="200px" >
+					 					<comboitem self="@{each=contratValue}" 
+					 					label="@{contratValue}"/>
+					 			</combobox>
+								<button id="remplissageAuto" label="${c:l('general.saisie.auto')}" 
+									height="24px"
+									image="/images/icones/edit.png" 
+									sclass="buttonv2"
+								/>
+							</hbox>
+						</div>
+					</row>
+					
+					<row spans="1,3" id="rowRecherche2">
+						<!-- Protocole -->
+						<label value="${c:l('Champ.Cession.EtudeTitre')}" sclass="formLabel"/>
+						<div>
+							<hbox>
+								<textbox id="etudeTitreBox" value="@{fwinCessionEditBTO$composer.cession.etudeTitre,
+	    								 save-when='validate.onClick, create.onClick, self.onBlur',
+	    								 load-after='remplissageAuto.onClick'}" 
+									width="300px" 
+									constraint="@{fwinCessionEditBTO$composer.titreEtudeConstraint}"
+								/>
+								<label id="titreEtudeHelpLabel" 
+									value="@{fwinCessionEditBTO$composer.selectedContrat.titreProjet,
+									load-after='contratsComboBox.onSelect,
+										contratsComboBox.onBulr'}" 
+									sclass="formValue" 
+									style="font-style:italic"
+								/>
+							</hbox>
+						</div>
+					</row>
+					
+					<row id="rowDestruction">
+						<!-- Motif destruction -->
+						<label value="${c:l('Champ.Cession.DestructionMotif')}" sclass="formLabel"/>
+						<listbox id="motifsBox" mold="select" rows="1"
+							model="@{fwinCessionEditBTO$composer.motifs}"
+							selectedItem="@{fwinCessionEditBTO$composer.selectedDestructionMotif}"
+						>
+							<listitem self="@{each='motif'}" value="motif">			
+								<listcell label="@{motif.motif}" />
+							</listitem>
+						</listbox>
+						
+						<!-- Date destruction -->
+						<label value="${c:l('Champ.Cession.DestructionDate')}" sclass="formLabel"/>
+						<calendarbox id="dateDestructionCalBox" value="@{fwinCessionEditBTO$composer.object.destructionDate,
+			        			save-when='validate.onClick, create.onClick'}" />
+					</row>
+					
+					<row spans="4">
+						<separator/>
+					</row>
+					
+					<row spans="1,3" id="rowDescription">
+						<!-- Description -->
+						<label value="${c:l('Champ.Cession.Description')}" sclass="formLabel"/>
+						<hbox>
+							<textbox id="descriptionBox" value="@{fwinCessionEditBTO$composer.cession.description,
+			        					save-when='validate.onClick, create.onClick, self.onBlur',
+	    								 load-after='remplissageAuto.onClick'}" 
+								width="400px" 
+								rows="3"
+								constraint="@{fwinCessionEditBTO$composer.cessionDescrConstraint}"
+							/>
+							<label id="descriptionHelpLabel" 
+									value="@{fwinCessionEditBTO$composer.selectedContrat.description,
+									load-after='contratsComboBox.onSelect,
+										contratsComboBox.onBulr'}" 
+									sclass="formValue" 
+									style="font-style:italic"
+								/>
+						</hbox>
+					</row>
+					
+					<row spans="1,3" id="rowEtablissement">
+						<!-- établissement -->
+						<label value="${c:l('cession.etablissement')}" sclass="formLabel"/>
+						
+						<listbox id="etabsBoxCession" mold="select" rows="1"
+						model="@{fwinCessionEditBTO$composer.etablissements}"
+						selectedItem="@{fwinCessionEditBTO$composer.selectedEtablissement}"
+						visible="false"
+						width="250px">
+							<listitem self="@{each='etablissementCession'}" value="@{etablissementCession}">			
+								<listcell label="@{etablissementCession.nom}" />
+							</listitem>
+						</listbox>
+					</row>
+					<row spans="1,3" id="rowService">
+						<!-- service dest -->
+						<label value="${c:l('Champ.Cession.ServiceDest')}" sclass="formLabel"/>
+						
+						<listbox id="servicesBoxCession" mold="select" rows="1"
+						visible="false"
+						width="250px">
+							<listitem self="@{each='serviceDest'}" value="@{serviceDest}">			
+								<listcell label="@{serviceDest.nom}" />
+							</listitem>
+						</listbox>
+					</row>
+					<row spans="1,3" id="rowDestinataire">
+						<!-- destinataire -->
+						<label value="${c:l('Champ.Cession.Chir.Greffeur')}" sclass="formLabel"/>
+						
+						<listbox id="destinataireBoxCession" mold="select" rows="1"
+						visible="false"
+						width="250px">
+							<listitem self="@{each='destinataire'}" value="@{destinataire}">			
+								<listcell label="@{destinataire.nomAndPrenom}" />
+							</listitem>
+						</listbox>
+					</row>
+					
+					<!-- <row spans="1,3" id="rowDestinataire">
+						<label value="${c:l('Champ.Cession.Destinataire')}" sclass="formLabel"/>
+						<combobox id="destinataireBox" 
+			 				autodrop="true" width="200px">
+			 					<comboitem self="@{each=destinataireValue}" 
+			 					label="@{destinataireValue}"/>
+			 			</combobox>
+					</row>
+					
+					<row spans="1,3" id="rowService">
+						<label value="${c:l('Champ.Cession.ServiceDest')}" sclass="formLabel"/>
+						<combobox id="serviceBox" 
+			 				autodrop="true" width="200px">
+			 					<comboitem self="@{each=serviceValue}" 
+			 					label="@{serviceValue}"/>
+		 				</combobox>
+					</row>-->
+					
+					<!-- Séparateur -->
+					<row spans="4" id="rowSeparator1">
+						<separator/>
+					</row>
+					<row spans="4" id="rowLine1">
+						<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"
+						width="100%"/>
+					</row>
+					<row spans="4" id="rowSeparator3">
+						<separator/>
+					</row>
+					
+					<row id="rowDateAndStatut">
+						<!-- Date de validation -->
+						<label value="${c:l('Champ.Cession.ValidationDate')}" sclass="formLabel"/>
+						<div>
+							<hbox>
+								<datebox id="dateValidationBox" format="${c:l('validation.date.format.simple')}" 
+									value="@{fwinCessionEditBTO$composer.cession.validationDate,
+									save-when='validate.onClick, create.onClick',
+									load-after='remplissageAuto.onClick'}"
+									cols="15" lenient="false"
+								/>
+								<label id="dateValidationHelpLabel" 
+									value="@{fwinCessionEditBTO$composer.dateValidationContratFormated,
+									load-after='contratsComboBox.onSelect,
+										contratsComboBox.onBulr'}" 
+									sclass="formValue" 
+									style="font-style:italic"
+								/>
+							</hbox>
+						</div>
+						
+						<!-- Statut -->
+						<hbox>
+							<label value="${c:l('Champ.Cession.CessionStatut')}" sclass="formLabel"/>
+							<label id="statutRequired" value="*" sclass="requiredMark"/>
+						</hbox>
+						<div>
+							<label id="cessionStatutLabel" 
+								value="@{fwinCessionEditBTO$composer.cessionStatut}"
+								sclass="formValue" 
+							/>
+							
+							<listbox id="statutsBox" mold="select" rows="1">
+								<listitem self="@{each='statut'}" value="statut">			
+									<listcell label="@{statut.statut}" />
+								</listitem>
+							</listbox>
+						</div>
+					</row>
+					
+					<row id="rowStatutDestruction" spans="1,3">
+						<!-- Statut -->
+						<hbox>
+							<label value="${c:l('Champ.Cession.CessionStatut')}" sclass="formLabel"/>
+							<label id="statutRequired2" value="*" sclass="requiredMark"/>
+						</hbox>
+						<div>
+							<label id="cessionStatutDestructionLabel" 
+								value="@{fwinCessionEditBTO$composer.cession.cessionStatut.statut}"
+								sclass="formValue" 
+							/>
+							
+							<listbox id="statutsBox2" mold="select" rows="1">
+								<listitem self="@{each='statut2'}" value="statut2">			
+									<listcell label="@{statut2.statut}" />
+								</listitem>
+							</listbox>
+						</div>
+					</row>
+					
+					<!-- Séparateur -->
+					<row spans="4">
+						<separator/>
+					</row>
+					<row spans="4" id="rowLine2">
+						<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"
+						width="100%"/>
+					</row>
+					<row spans="4" id="rowSeparator2">
+						<separator/>
+					</row>
+					
+					<row id="rowExecutant" spans="1,3">
+						<!-- Exécutant -->
+						<hbox>
+						<label value="${c:l('Champ.Cession.Pers.Resp.Distribution')}" sclass="formLabel"/>
+						<label value="*" sclass="requiredMark"/>
+						</hbox>
+						<div>
+						
+						<combobox id="executantBox" 
+			 				autodrop="true" width="200px">
+			 					<comboitem self="@{each=executantValue}" 
+			 					label="@{executantValue}"/>
+			 				<attribute name="onCreate">
+                   self.setConstraint("no empty");
+          </attribute>	
+			 			</combobox>
+			 			</div>
+					</row>
+					
+					<row id="rowDates">
+						<!-- Date de départ -->
+						<label value="${c:l('cessions.date.DateEnvoi')}" sclass="formLabel"/>
+						<calendarbox id="dateDepartCalBox" value="@{fwinCessionEditBTO$composer.object.departDate,
+			        			save-when='validate.onClick, create.onClick'}" />
+						
+						<!-- Date d'arrivée -->
+						<div id="arriveeDate">
+						<label value="${c:l('Champ.Cession.ArriveeDate')}" sclass="formLabel"/>
+						<calendarbox id="dateArriveeCalBox" value="@{fwinCessionEditBTO$composer.object.arriveeDate,
+			        			save-when='validate.onClick, create.onClick'}" />
+			        	</div>
+					</row>
+					
+					<row id="rowTransporteurAndTemp">
+						<!-- Transporteur -->
+						<label value="${c:l('Champ.Cession.Transporteur')}" sclass="formLabel"/>
+						<listbox id="transporteursBox" mold="select" rows="1"
+							model="@{fwinCessionEditBTO$composer.transporteurs}"
+							selectedItem="@{fwinCessionEditBTO$composer.selectedTransporteur}">
+							<listitem self="@{each='transporteur'}" value="transporteur">			
+								<listcell label="@{transporteur.nom}" />
+							</listitem>
+						</listbox>
+						
+						<!-- Température -->
+						<label value="${c:l('Champ.Cession.Temperature')}" sclass="formLabel"/>
+						<div>
+							<box orient="horizontal" pack="center">
+								<decimalbox id="temperatureBox"
+									width="50px"
+									value="@{fwinCessionEditBTO$composer.cession.temperature,
+										load-after='temperatureListBox.onSelect',
+										save-when='validate.onClick, create.onClick, self.onBlur'}"
+									locale="en"
+								/>
+								<separator/>
+								<label value="°C" sclass="formLabel"/>
+								<separator/>
+								<listbox id="temperatureListBox" mold="select" rows="1"
+									model="@{fwinCessionEditBTO$composer.temperatures}"
+									selectedItem="@{fwinCessionEditBTO$composer.selectedTemperature}">
+									<listitem self="@{each='temp'}" value="@{temp}">			
+										<listcell label="@{temp.temperature}" />
+									</listitem>
+								</listbox>
+							</box>
+						</div>
+					</row>
+					
+					<row spans="1,3">
+						<!-- Observations -->
+						<label value="${c:l('Champ.Cession.Indication.Greffe')}" sclass="formLabel"/>
+						<textbox id="observationsBox" value="@{fwinCessionEditBTO$composer.cession.observations,
+		        								 save-when='validate.onClick, create.onClick, self.onBlur'}" 
+							width="400px" 
+							rows="3"
+							constraint="@{fwinCessionEditBTO$composer.cessionDescrConstraint}"
+						/>
+					</row>
+				</rows>
+			</grid>
+		</panelchildren>
+		<toolbar height="100%" id="toolbarEchan" align="end">
+			<hbox spacing="5">
+				<button id="validate" label="${c:l('general.validate')}" height="24px"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="revert" label="${c:l('general.cancel')}" height="24px"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+				<button id="create" label="${c:l('general.createAndQuit')}" height="24px"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="cancel" label="${c:l('general.cancel')}" height="24px"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+			</hbox>
+		</toolbar>
+	</panel>
+</window>

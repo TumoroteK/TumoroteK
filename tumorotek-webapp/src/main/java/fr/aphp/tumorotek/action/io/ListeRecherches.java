@@ -1,37 +1,37 @@
-/** 
+/**
  * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
  * dsi-projet.tk@aphp.fr
- * 
- * Ce logiciel est un programme informatique servant à la gestion de 
- * l'activité de biobanques. 
+ *
+ * Ce logiciel est un programme informatique servant à la gestion de
+ * l'activité de biobanques.
  *
  * Ce logiciel est régi par la licence CeCILL soumise au droit français
- * et respectant les principes de diffusion des logiciels libres. Vous 
- * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
- * conditions de la licence CeCILL telle que diffusée par le CEA, le 
- * CNRS et l'INRIA sur le site "http://www.cecill.info". 
- * En contrepartie de l'accessibilité au code source et des droits de   
- * copie, de modification et de redistribution accordés par cette 
- * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
- * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
- * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * et respectant les principes de diffusion des logiciels libres. Vous
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le
+ * CNRS et l'INRIA sur le site "http://www.cecill.info".
+ * En contrepartie de l'accessibilité au code source et des droits de
+ * copie, de modification et de redistribution accordés par cette
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée.
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les
  * concédants successifs.
  *
- * A cet égard  l'attention de l'utilisateur est attirée sur les 
- * risques associés au chargement,  à l'utilisation,  à la modification 
- * et/ou au  développement et à la reproduction du logiciel par 
- * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
- * le rendre complexe à manipuler et qui le réserve donc à des 	
- * développeurs et des professionnels  avertis possédant  des 
- * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * A cet égard  l'attention de l'utilisateur est attirée sur les
+ * risques associés au chargement,  à l'utilisation,  à la modification
+ * et/ou au  développement et à la reproduction du logiciel par
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut
+ * le rendre complexe à manipuler et qui le réserve donc à des
+ * développeurs et des professionnels  avertis possédant  des
+ * connaissances  informatiques approfondies.  Les utilisateurs sont
  * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
  * besoins dans des conditions permettant d'assurer la sécurité de leurs
- * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
- * et l'exploiter dans les mêmes conditions de sécurité. 
- *	
- * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
- * avez pris connaissance de la licence CeCILL, et que vous en avez 
- * accepté les termes. 
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser
+ * et l'exploiter dans les mêmes conditions de sécurité.
+ *
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous
+ * avez pris connaissance de la licence CeCILL, et que vous en avez
+ * accepté les termes.
  **/
 package fr.aphp.tumorotek.action.io;
 
@@ -51,178 +51,167 @@ import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.io.export.Recherche;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
-public class ListeRecherches extends AbstractListeController2 {
-	
-	private static final long serialVersionUID = 1L;	
-	
-	private List<Recherche> listObjects = new ArrayList<Recherche>();
+public class ListeRecherches extends AbstractListeController2
+{
 
-	@Override
-	public void doAfterCompose(Component comp) throws Exception {
-		super.doAfterCompose(comp);
-		
-		listPanel.setHeight(getMainWindow().getListPanelHeight() 
-				+ 35 + "px");
-		//objectsListGrid.setHeight(getMainWindow().getListPanelHeight() 
-		//		+ 38 + "px");
-		//listPanel.setHeight("100%");
-		// listObjects = (List<Recherche>) ManagerLocator.getRechercheManager()
-		//		.findByBanqueManager(
-		//		SessionUtils.getCurrentBanque(sessionScope));
-		// Collections.sort(listObjects);
-	}
-	
-	@Override
-	public void addToListObjects(TKdataObject obj, Integer pos) {
-		if (pos != null) { 
-			getListObjects().add(pos.intValue(), (Recherche) obj);
-		} else {
-			getListObjects().add((Recherche) obj);
-		}
-	}
-	
-	@Override
-	public void removeObjectFromList(TKdataObject obj) {
-		getListObjects().remove((Recherche) obj);
-	}
+   private static final long serialVersionUID = 1L;
 
-	@Override
-	public void initObjectsBox() {
-		// TODO gérer liste des utilisateurs
-		List<Recherche> rechs = ManagerLocator.getRechercheManager()
-				.findByBanqueInLIstManager(
-				SessionUtils.getSelectedBanques(sessionScope));
-		Collections.sort(rechs);
-		listObjects = rechs;
-		setCurrentRow(null);
-		setCurrentObject(null);
-	
-		getBinder().loadAttribute(
-				self.getFellow("objectsListGrid"), "model");
-	}
+   private List<Recherche> listObjects = new ArrayList<>();
 
-	public AbstractFicheCombineController getFiche() {
-		return ((FicheRecherche) self.getParent().getParent().getParent()
-				.getFellow("ficheRegion")
-				.getFellow("ficheRecherche")
-				.getFellow("winFicheRecherche").
-				getAttributeOrFellow("winFicheRecherche$composer", true));
-	}
-	
-	public void onClick$viewObject(Event event) {
-		// déselection de la ligne courante
-		deselectRow();
-		
-		selectRowAndDisplayObject(getRow((ForwardEvent) event), 
-				(TKdataObject) AbstractListeController2.getBindingData((ForwardEvent) event, 
-						false));
-	}
+   @Override
+   public void doAfterCompose(final Component comp) throws Exception{
+      super.doAfterCompose(comp);
 
-	@Override
-	public void onClickObject(Event event) {	
-		// déselection de la ligne courante
-		deselectRow();
-		
-		// sélection de la nouvelle ligne
-		selectRow(getRow((ForwardEvent) event), (TKdataObject) event.getData());
-		
-		// on passe en mode fiche & liste
-		getObjectTabController().switchToFicheAndListeMode();
-		
-		// on envoie l'échantillon à la fiche
-		Recherche edit = ((Recherche) getCurrentObject()).clone();
-		getFiche().setObject(edit);
-		getFiche().switchToStaticMode();
-	}
-	
-	@Override
-	public void updateMultiObjectsGridListFromOtherPage(List<TKdataObject> objects) {
-		for (int i = 0; i < objects.size(); i++) {
-			Object obj = objects.get(i);
-			updateObjectGridListFromOtherPage(obj, false);
-		}
-	}
-	
-	/**
-	 * Mets à jour l'objet sélectionné de la liste.
-	 * @param objet
-	 */
-	public void updateCurrentObject() {
-		// on vérifie que la liste a bien un objet sélectionné
-		if (getCurrentObject() != null) {
-			// on passe en mode fiche & liste
-			getObjectTabController().switchToFicheAndListeMode();
-			
-			// on envoie l'échantillon à la fiche
-			Recherche edit = ((Recherche) getCurrentObject()).clone();
-			getFiche().setObject(edit);
-			getFiche().switchToStaticMode();
-		}
-	}
+      listPanel.setHeight(getMainWindow().getListPanelHeight() + 35 + "px");
+      //objectsListGrid.setHeight(getMainWindow().getListPanelHeight() 
+      //		+ 38 + "px");
+      //listPanel.setHeight("100%");
+      // listObjects = (List<Recherche>) ManagerLocator.getRechercheManager()
+      //		.findByBanqueManager(
+      //		SessionUtils.getCurrentBanque(sessionScope));
+      // Collections.sort(listObjects);
+   }
 
-	/**
-	 * Efface le contenu de la liste.
-	 */
-	@Override
-	public void clearList() {
-		listObjects.clear();
-		
-		getBinder().loadAttribute(objectsListGrid, "model");
-	}
-	
-	@Override
-	public void addToSelectedObjects(TKdataObject objj) {		
-	}
+   @Override
+   public void addToListObjects(final TKdataObject obj, final Integer pos){
+      if(pos != null){
+         getListObjects().add(pos.intValue(), (Recherche) obj);
+      }else{
+         getListObjects().add((Recherche) obj);
+      }
+   }
 
-	@Override
-	public List<Integer> doFindObjects() {
-		return null;
-	}
+   @Override
+   public void removeObjectFromList(final TKdataObject obj){
+      getListObjects().remove(obj);
+   }
 
-	@Override
-	public List< Recherche> getListObjects() {
-		return this.listObjects;
-	}
+   @Override
+   public void initObjectsBox(){
+      // TODO gérer liste des utilisateurs
+      final List<Recherche> rechs =
+         ManagerLocator.getRechercheManager().findByBanqueInLIstManager(SessionUtils.getSelectedBanques(sessionScope));
+      Collections.sort(rechs);
+      listObjects = rechs;
+      setCurrentRow(null);
+      setCurrentObject(null);
 
-	@Override
-	public TKSelectObjectRenderer getListObjectsRenderer() {
-		return null;
-	}
+      getBinder().loadAttribute(self.getFellow("objectsListGrid"), "model");
+   }
 
-	@Override
-	public List< ? extends Object> getSelectedObjects() {
-		return null;
-	}
+   public AbstractFicheCombineController getFiche(){
+      return ((FicheRecherche) self.getParent().getParent().getParent().getFellow("ficheRegion").getFellow("ficheRecherche")
+         .getFellow("winFicheRecherche").getAttributeOrFellow("winFicheRecherche$composer", true));
+   }
 
-	@Override
-	public void passListToSelected() {		
-	}
+   public void onClick$viewObject(final Event event){
+      // déselection de la ligne courante
+      deselectRow();
 
-	@Override
-	public void passSelectedToList() {		
-	}
+      selectRowAndDisplayObject(getRow((ForwardEvent) event),
+         (TKdataObject) AbstractListeController2.getBindingData((ForwardEvent) event, false));
+   }
 
-	@Override
-	public void removeFromSelectedObjects(TKdataObject obj) {		
-	}
+   @Override
+   public void onClickObject(final Event event){
+      // déselection de la ligne courante
+      deselectRow();
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void setListObjects(List< ? extends TKdataObject> objs) {
-		this.listObjects = (List<Recherche>) objs;
-	}
+      // sélection de la nouvelle ligne
+      selectRow(getRow((ForwardEvent) event), (TKdataObject) event.getData());
 
-	@Override
-	public void setSelectedObjects(List< ? extends TKdataObject> objs) {
-	}
+      // on passe en mode fiche & liste
+      getObjectTabController().switchToFicheAndListeMode();
 
-	@Override
-	public List<? extends TKdataObject> extractObjectsFromIds(List<Integer> ids) {
-		return null;
-	}
-	
-	@Override
-	public List<? extends TKdataObject> extractLastObjectsCreated() {
-		return null;
-	}
+      // on envoie l'échantillon à la fiche
+      final Recherche edit = ((Recherche) getCurrentObject()).clone();
+      getFiche().setObject(edit);
+      getFiche().switchToStaticMode();
+   }
+
+   @Override
+   public void updateMultiObjectsGridListFromOtherPage(final List<TKdataObject> objects){
+      for(int i = 0; i < objects.size(); i++){
+         final Object obj = objects.get(i);
+         updateObjectGridListFromOtherPage(obj, false);
+      }
+   }
+
+   /**
+    * Mets à jour l'objet sélectionné de la liste.
+    * @param objet
+    */
+   public void updateCurrentObject(){
+      // on vérifie que la liste a bien un objet sélectionné
+      if(getCurrentObject() != null){
+         // on passe en mode fiche & liste
+         getObjectTabController().switchToFicheAndListeMode();
+
+         // on envoie l'échantillon à la fiche
+         final Recherche edit = ((Recherche) getCurrentObject()).clone();
+         getFiche().setObject(edit);
+         getFiche().switchToStaticMode();
+      }
+   }
+
+   /**
+    * Efface le contenu de la liste.
+    */
+   @Override
+   public void clearList(){
+      listObjects.clear();
+
+      getBinder().loadAttribute(objectsListGrid, "model");
+   }
+
+   @Override
+   public void addToSelectedObjects(final TKdataObject objj){}
+
+   @Override
+   public List<Integer> doFindObjects(){
+      return null;
+   }
+
+   @Override
+   public List<Recherche> getListObjects(){
+      return this.listObjects;
+   }
+
+   @Override
+   public TKSelectObjectRenderer<? extends TKdataObject> getListObjectsRenderer(){
+      return null;
+   }
+
+   @Override
+   public List<? extends Object> getSelectedObjects(){
+      return null;
+   }
+
+   @Override
+   public void passListToSelected(){}
+
+   @Override
+   public void passSelectedToList(){}
+
+   @Override
+   public void removeFromSelectedObjects(final TKdataObject obj){}
+
+   
+   @Override
+   public void setListObjects(final List<? extends TKdataObject> objs){
+      this.listObjects = (List<Recherche>) objs;
+   }
+
+   @Override
+   public void setSelectedObjects(final List<? extends TKdataObject> objs){}
+
+   @Override
+   public List<? extends TKdataObject> extractObjectsFromIds(final List<Integer> ids){
+      return null;
+   }
+
+   @Override
+   public List<? extends TKdataObject> extractLastObjectsCreated(){
+      return null;
+   }
 }

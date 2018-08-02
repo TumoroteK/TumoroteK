@@ -34,6 +34,7 @@
  * accepté les termes. 
 -->
 <?component name="incaPopUps" macroURI="/zuls/prelevement/incaPopUpsPrelevement.zul" inline="true" ?>
+<?component name="ficheAnnotationInline" macroURI="/zuls/annotation/FicheAnnotationInline.zul" ?>
 
 <window id="fwinPrelevementStatic" border="none" apply="fr.aphp.tumorotek.action.prelevement.FichePrelevementStatic">
 	<panel collapsible="false" title="${c:l('fichePrelevement.panel.title')}"
@@ -136,9 +137,6 @@
 							</box>
 						<label id="codeDiagLabel" sclass="formValue" />
 					</row>
-					<!--  <row spans="4" > -->
-					<!--	<div id="refPatientDiv" hflex="1" /> -->
-					<!--  </row> -->
 					<group label="${c:l('bloc.prelevement.informations.prelevement')}" id="groupPrlvt" />
 					<row>
 						<!-- date du prélèvement -->
@@ -253,6 +251,10 @@
 							value="@{fwinPrelevementStatic$composer.dateConsentementFormated}"
 							sclass="formValue"
 						/>
+					</row>
+					<!-- Annotation inline -->
+					<row spans="4" style="background-color: blue">
+						<ficheAnnotationInline id="ficheTissuInlineAnnoPrelevement" hflex="1" />
 					</row>
 				</rows>
 			</grid>

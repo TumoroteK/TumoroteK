@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:camel="http://camel.apache.org/schema/spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring 
+       http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+    <camelContext trace="false" xmlns="http://camel.apache.org/schema/spring">  
+    	<template id="camelTemplate"/>  
+    	<routeContextRef ref="sip-routes"/>
+    	<routeContextRef ref="sgl-routes"/>
+    	<routeContextRef ref="sender-routes"/>
+    	<routeContextRef ref="scan-routes"/>
+    </camelContext>
+    	
+	<bean id="patientHandler" class="fr.aphp.tumorotek.interfacage.PatientHandler">
+<!--		<property name="maxSipTableSize"> -->
+<!--			<bean class="org.springframework.jndi.JndiObjectFactoryBean">-->
+<!--				<property name="jndiName" value="java:comp/env/interfacage/maxSipTableSize" />-->
+<!--			</bean>-->
+<!-- 		</property> -->
+		<property name="patientSipManager" ref="patientSipManager" />
+		<property name="patientManager" ref="patientManager" />
+		<property name="utilisateurManager" ref="utilisateurManager" />
+	</bean>
+	
+	<bean id="sglHandler" class="fr.aphp.tumorotek.interfacage.sgl.SglHandler">
+		<property name="interfacageParsingUtils" ref="interfacageParsingUtils" />
+		<property name="resourceBundleTumo" ref="resourceBundleTumo" />
+		<property name="myHl7" ref="myHl7" />
+	</bean>
+	
+	<!-- Processors -->	
+	<bean id="exceptionLogProcessor" class="fr.aphp.tumorotek.interfacage.processor.ExceptionLogProcessor" />
+	
+	<bean id="properties" class="org.apache.camel.component.properties.PropertiesComponent">
+		<property name="locations">
+			<list>
+				<value>#{'file:'+camelConfigLocation+'sip.properties'}</value>
+ 				<value>#{'file:'+camelConfigLocation+'startups.properties'}</value>
+ 				<value>#{'file:'+camelConfigLocation+'sgl.properties'}</value>
+ 				<value>#{'file:'+camelConfigLocation+'inclusion.properties'}</value>
+ 				<value>#{'file:'+camelConfigLocation+'ack.properties'}</value>
+ 				<value>#{'file:'+camelConfigLocation+'scan.properties'}</value>
+ 				<value>#{'file:'+camelConfigLocation+'davinci.properties'}</value>
+ 				<value>#{'file:'+camelConfigLocation+'storage_robot.properties'}</value>
+ 			</list>
+    	</property>
+	</bean>
+	
+	<bean name="propertyPlaceholder" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+           <property name="locations">
+               <value>#{'file:'+portalConfigLocation+'portal.properties'}</value>
+           </property>
+    </bean>
+    
+    <bean id="maxSglTableBean" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName" value="java:comp/env/interfacage/maxSglTableSize" />
+		<property name="defaultObject" value="2000" />
+	</bean>
+	
+	
+	<bean id="myHl7" class="org.apache.camel.component.hl7.HL7DataFormat">
+		<property name="validate" value="false" />
+	</bean>
+	
+	<bean id="tumoLinkUrd" class="fr.aphp.tumorotek.interfacage.sender.ack.impl.TumoLinkUrdImpl">
+		<property name="camelTemplate" ref="camelTemplate"/> 
+	</bean>
+	
+	<bean id="hmMessageSender" class="fr.aphp.tumorotek.interfacage.sender.ack.impl.HmMessageSenderImpl">
+		<property name="camelTemplate" ref="camelTemplate"/> 
+		<property name="echantillonManager" ref="echantillonManager" />
+		<property name="recepteurManager" ref="recepteurManager" />
+	</bean>
+	
+	<!--  Storage Robot since v2.1 -->
+	<bean id="storageRobotSender" class="fr.aphp.tumorotek.interfacage.sender.impl.StorageRobotSenderImpl">
+		<property name="emplacementManager" ref="emplacementManager"/>
+		<property name="camelTemplate" ref="camelTemplate"/> 
+		<property name="camelConfigLocation" ref="camelConfigLocation" />
+	</bean>
+	
+	<bean id="senderFactory" class="fr.aphp.tumorotek.interfacage.sender.impl.SenderFactoryImpl">
+		<property name="hmMessageSender" ref="hmMessageSender"/> 
+		<property name="tumoLinkUrd" ref="tumoLinkUrd" />
+		<property name="storageRobotSender" ref="storageRobotSender" />
+	</bean>
+	
+	<!--  SGL view since v2.1 -->
+	<bean id="daVinciViewHandler" class="fr.aphp.tumorotek.interfacage.sgl.view.impl.DaVinciViewHandler">
+		<property name="camelConfigLocation" ref="camelConfigLocation" />
+	</bean>
+	
+	<bean id="viewHandlerFactory" class="fr.aphp.tumorotek.interfacage.sgl.view.impl.ViewHandlerFactoryImpl">
+		<property name="daVinciViewHandler" ref="daVinciViewHandler"/> 
+	</bean>
+</beans>

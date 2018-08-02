@@ -18,147 +18,137 @@ import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
-public class FichePasswordModale extends GenericForwardComposer {
+public class FichePasswordModale extends GenericForwardComposer<Component>
+{
 
-	private static final long serialVersionUID = -2054096107955103379L;
-	
-	private Component parent;
-	private Utilisateur utilisateur;
-	private String oldPassword;
-	private String newPassword;
-	private String confirmationPassword;
-	
-	private Textbox ancienPasswordBox;
-	private Textbox confirmPasswordBox;
-	private Row rowOldPassword;
-	
-	private boolean isAdminPF = false;
-	
-	@Override
-	public void doAfterCompose(Component comp) throws Exception {
-		super.doAfterCompose(comp);
-		AnnotateDataBinder binder = new AnnotateDataBinder(comp);	
-		binder.loadComponent(comp);
-	}
-	
-	public void initModale(Component comp, Utilisateur user) {
-		parent = comp;
-		utilisateur = user;
-		
-		if (sessionScope.containsKey("AdminPF")) {
-			isAdminPF = (Boolean) sessionScope.get("AdminPF");
-			rowOldPassword.setVisible(false);
-		}
-	}
-	
-	public void onOK() {
-		onClick$validate();
-	}
-	
-	public void onClick$validate() {
-		if (!isAdminPF) {
-			// vérification de l'ancien mdp
-			if (!ObjectTypesFormatters.getEncodedPassword(oldPassword)
-					.equals(this.utilisateur.getPassword())) {
-				throw new WrongValueException(
-						ancienPasswordBox, 
-						Labels.getLabel("utilisateur.bad.old.password"));
-			}
-		}
-		// vérification de la confirmation du mdp
-		if (!confirmationPassword.equals(newPassword)) {
-			throw new WrongValueException(
-				confirmPasswordBox, 
-				Labels.getLabel("utilisateur.bad.password"));
-		}
-		
-		if (!ObjectTypesFormatters.getEncodedPassword(newPassword).equals(
-				utilisateur.getPassword())) {
-			Clients.showBusy(Labels.getLabel(
-					"utilisateur.creation.encours"));
-			Events.echoEvent("onLaterUpdate", self, null);
-		} else {
-			Messagebox.show(Labels.getLabel("utilisateur.same.password"), 
-					"Error", Messagebox.OK, Messagebox.ERROR);
-		}
-	}
-	
-	public void onLaterUpdate() {
-		try {
-			// sauvegarde
-			ManagerLocator.getUtilisateurManager().updatePasswordManager(
-					utilisateur, 
-					ObjectTypesFormatters.getEncodedPassword(newPassword),
-					ObjectTypesFormatters.getNbMoisMdp(),
-					SessionUtils.getLoggedUser(sessionScope));
-			// ferme wait message
-			Clients.clearBusy();
-			// envoie de l'utilisateur modifié
-			Events.postEvent("onGetPasswordUpdated", 
-					getParent(), utilisateur);		
-			// fermeture de la fenêtre
-			Events.postEvent(new Event("onClose", self.getRoot()));
-		} catch (RuntimeException re) {
-			// ferme wait message
-			Clients.clearBusy();
-		}
-	}
-	
-	public void onClick$cancel() {
-		// fermeture de la fenêtre
-		Events.postEvent(new Event("onClose", self.getRoot()));
-	}
-	
-	public ConstPassword getPasswordConstraint() {
-		return UtilisateurConstraints.getPasswordConstraint();
-	}
+   private static final long serialVersionUID = -2054096107955103379L;
 
-	public Component getParent() {
-		return parent;
-	}
+   private Component parent;
+   private Utilisateur utilisateur;
+   private String oldPassword;
+   private String newPassword;
+   private String confirmationPassword;
 
-	public void setParent(Component p) {
-		this.parent = p;
-	}
+   private Textbox ancienPasswordBox;
+   private Textbox confirmPasswordBox;
+   private Row rowOldPassword;
 
-	public Utilisateur getUtilisateur() {
-		return utilisateur;
-	}
+   private boolean isAdminPF = false;
 
-	public void setUtilisateur(Utilisateur u) {
-		this.utilisateur = u;
-	}
+   @Override
+   public void doAfterCompose(final Component comp) throws Exception{
+      super.doAfterCompose(comp);
+      final AnnotateDataBinder binder = new AnnotateDataBinder(comp);
+      binder.loadComponent(comp);
+   }
 
-	public String getOldPassword() {
-		return oldPassword;
-	}
+   public void initModale(final Component comp, final Utilisateur user){
+      parent = comp;
+      utilisateur = user;
 
-	public void setOldPassword(String pwd) {
-		this.oldPassword = pwd;
-	}
+      if(sessionScope.containsKey("AdminPF")){
+         isAdminPF = (Boolean) sessionScope.get("AdminPF");
+         rowOldPassword.setVisible(false);
+      }
+   }
 
-	public String getNewPassword() {
-		return newPassword;
-	}
+   public void onOK(){
+      onClick$validate();
+   }
 
-	public void setNewPassword(String pwd) {
-		this.newPassword = pwd;
-	}
+   public void onClick$validate(){
+      if(!isAdminPF){
+         // vérification de l'ancien mdp
+         if(!ObjectTypesFormatters.getEncodedPassword(oldPassword).equals(this.utilisateur.getPassword())){
+            throw new WrongValueException(ancienPasswordBox, Labels.getLabel("utilisateur.bad.old.password"));
+         }
+      }
+      // vérification de la confirmation du mdp
+      if(!confirmationPassword.equals(newPassword)){
+         throw new WrongValueException(confirmPasswordBox, Labels.getLabel("utilisateur.bad.password"));
+      }
 
-	public String getConfirmationPassword() {
-		return confirmationPassword;
-	}
+      if(!ObjectTypesFormatters.getEncodedPassword(newPassword).equals(utilisateur.getPassword())){
+         Clients.showBusy(Labels.getLabel("utilisateur.creation.encours"));
+         Events.echoEvent("onLaterUpdate", self, null);
+      }else{
+         Messagebox.show(Labels.getLabel("utilisateur.same.password"), "Error", Messagebox.OK, Messagebox.ERROR);
+      }
+   }
 
-	public void setConfirmationPassword(String pwd) {
-		this.confirmationPassword = pwd;
-	}
+   public void onLaterUpdate(){
+      try{
+         // sauvegarde
+         ManagerLocator.getUtilisateurManager().updatePasswordManager(utilisateur,
+            ObjectTypesFormatters.getEncodedPassword(newPassword), ObjectTypesFormatters.getNbMoisMdp(),
+            SessionUtils.getLoggedUser(sessionScope));
+         // ferme wait message
+         Clients.clearBusy();
+         // envoie de l'utilisateur modifié
+         Events.postEvent("onGetPasswordUpdated", getParent(), utilisateur);
+         // fermeture de la fenêtre
+         Events.postEvent(new Event("onClose", self.getRoot()));
+      }catch(final RuntimeException re){
+         // ferme wait message
+         Clients.clearBusy();
+      }
+   }
 
-	public boolean isAdminPF() {
-		return isAdminPF;
-	}
+   public void onClick$cancel(){
+      // fermeture de la fenêtre
+      Events.postEvent(new Event("onClose", self.getRoot()));
+   }
 
-	public void setAdminPF(boolean isA) {
-		this.isAdminPF = isA;
-	}
+   public ConstPassword getPasswordConstraint(){
+      return UtilisateurConstraints.getPasswordConstraint();
+   }
+
+   public Component getParent(){
+      return parent;
+   }
+
+   public void setParent(final Component p){
+      this.parent = p;
+   }
+
+   public Utilisateur getUtilisateur(){
+      return utilisateur;
+   }
+
+   public void setUtilisateur(final Utilisateur u){
+      this.utilisateur = u;
+   }
+
+   public String getOldPassword(){
+      return oldPassword;
+   }
+
+   public void setOldPassword(final String pwd){
+      this.oldPassword = pwd;
+   }
+
+   public String getNewPassword(){
+      return newPassword;
+   }
+
+   public void setNewPassword(final String pwd){
+      this.newPassword = pwd;
+   }
+
+   public String getConfirmationPassword(){
+      return confirmationPassword;
+   }
+
+   public void setConfirmationPassword(final String pwd){
+      this.confirmationPassword = pwd;
+   }
+
+   public boolean isAdminPF(){
+      return isAdminPF;
+   }
+
+   public void setAdminPF(final boolean isA){
+      this.isAdminPF = isA;
+   }
 
 }

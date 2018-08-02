@@ -1,0 +1,688 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="1" author="ABO" context="*, 2.1.5, 2.1.5-SNAPSHOT">
+        <tagDatabase tag="${project.parent.version}"/>
+    </changeSet>
+    <changeSet id="2" author="ABO" runAlways="false" context="*, 2.1.5, 2.1.5-SNAPSHOT">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="CLE_IMPRESSION"/>
+            </not>
+        </preConditions>
+        <comment>[YouTrack] TK-61 Pouvoir créer un modèle de document DOCx contenant des placeholders (clé) correspondants des champs et les remplacer
+            par leur valeur à l'impression.
+        </comment>
+        <createTable tableName="CLE_IMPRESSION">
+            <column name="CLE_IMPRESSION_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NOM" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CHAMP_ID" type="INT"/>
+            <!-- <column name="TEMPLATE_ID" type="INT"></column> -->
+        </createTable>
+
+        <addPrimaryKey tableName="CLE_IMPRESSION" columnNames="CLE_IMPRESSION_ID"/>
+        <addForeignKeyConstraint constraintName="FK_CHAMP_ID" referencedTableName="CHAMP" baseColumnNames="CHAMP_ID" baseTableName="CLE_IMPRESSION"
+                                 referencedColumnNames="CHAMP_ID"/>
+        <!-- <addForeignKeyConstraint constraintName="FK_TEMPLATE_ID" referencedTableName="TEMPLATE" baseColumnNames="TEMPLATE_ID" baseTableName="CLE_IMPRESSION" referencedColumnNames="TEMPLATE_ID" /> -->
+    </changeSet>
+    <changeSet id="3" author="ABO" runAlways="false" context="*, 2.1.5, 2.1.5-SNAPSHOT">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="TEMPLATE" columnName="TYPE"/>
+                <columnExists tableName="TEMPLATE" columnName="FICHIER"/>
+            </not>
+        </preConditions>
+        <comment>[YouTrack] TK-61 Pouvoir créer un modèle de document DOCx contenant des placeholders (clé) correspondants des champs et les remplacer
+            par leur valeur à l'impression.
+        </comment>
+        <addColumn tableName="TEMPLATE">
+            <column name="TYPE" type="VARCHAR(100)" value="BLOC">
+                <constraints nullable="false"/>
+            </column>
+            <column name="FICHIER" type="VARCHAR(100)">
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="4" author="ABO" runAlways="false" context="*, 2.1.5, 2.1.5-SNAPSHOT">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="CLE_IMPRESSION_TEMPLATE"/>
+            </not>
+        </preConditions>
+        <comment>[YouTrack] TK-61 Pouvoir créer un modèle de document DOCx contenant des placeholders (clé) correspondants des champs et les remplacer
+            par leur valeur à l'impression.
+        </comment>
+        <createTable tableName="CLE_IMPRESSION_TEMPLATE">
+            <column name="CLE_IMPRESSION_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TEMPLATE_ID" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="CLE_IMPRESSION_TEMPLATE_CLE_IMPRESSION_FK" referencedTableName="CLE_IMPRESSION"
+                                 baseTableName="CLE_IMPRESSION_TEMPLATE" referencedColumnNames="CLE_IMPRESSION_ID"
+                                 baseColumnNames="CLE_IMPRESSION_ID"/>
+        <addForeignKeyConstraint constraintName="CLE_IMPRESSION_TEMPLATE_TEMPLATE_FK" referencedTableName="TEMPLATE"
+                                 baseTableName="CLE_IMPRESSION_TEMPLATE" referencedColumnNames="TEMPLATE_ID" baseColumnNames="TEMPLATE_ID"/>
+    </changeSet>
+    <changeSet id="5" author="JDI" runAlways="false" context="*, 2.2.0-beta-1, 2.2.0-beta-2-SNAPSHOT">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="TABLE_ANNOTATION" columnName="INLINE_DISPLAY"/>
+            </not>
+        </preConditions>
+        <comment>[YouTrack] TK-44 Faire apparaître les champs de type annotation dans les écrans principaux
+        </comment>
+        <addColumn tableName="TABLE_ANNOTATION">
+            <column name="INLINE_DISPLAY" type="BOOLEAN" defaultValueBoolean="false">
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="6" author="ABO" runAlways="false" context="*, 2.2.0-beta-1, 2.2.0-beta-2-SNAPSHOT">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(1) FROM DATA_TYPE
+                WHERE TYPE = 'calcule'
+            </sqlCheck>
+        </preConditions>
+        <comment>[YouTrack] TK-98 Mise en place des champs calculés.</comment>
+        <insert tableName="DATA_TYPE">
+            <column name="TYPE" value="calcule"/>
+            <column name="DATA_TYPE_ID" value="12"/>
+        </insert>
+    </changeSet>
+    <changeSet id="7" author="ABO" runAlways="false" context="*, 2.2.0-beta-1, 2.2.0-beta-2-SNAPSHOT">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="CHAMP_CALCULE"/>
+            </not>
+        </preConditions>
+        <comment>[YouTrack] TK-98 Mise en place des champs calculés.</comment>
+        <createTable tableName="CHAMP_CALCULE">
+            <column name="CHAMP_CALCULE_ID" type="INT"/>
+            <column name="CHAMP_ANNOTATION_ID" type="INT"/>
+            <column name="CHAMP1_ID" type="INT"/>
+            <column name="OPERATEUR" type="VARCHAR(10)"/>
+            <column name="CHAMP2_ID" type="INT"/>
+            <column name="VALEUR" type="VARCHAR(100)"/>
+            <column name="DATA_TYPE_ID" type="INT"/>
+        </createTable>
+        <addPrimaryKey tableName="CHAMP_CALCULE" columnNames="CHAMP_CALCULE_ID"/>
+        <addForeignKeyConstraint constraintName="FK_CHAMP_ANNOTATION_ID" baseTableName="CHAMP_CALCULE" baseColumnNames="CHAMP_ANNOTATION_ID"
+                                 referencedTableName="CHAMP_ANNOTATION" referencedColumnNames="CHAMP_ANNOTATION_ID"/>
+        <addForeignKeyConstraint constraintName="FK_CHAMP1_ID" baseTableName="CHAMP_CALCULE" baseColumnNames="CHAMP1_ID" referencedTableName="CHAMP"
+                                 referencedColumnNames="CHAMP_ID"/>
+        <addForeignKeyConstraint constraintName="FK_CHAMP2_ID" baseTableName="CHAMP_CALCULE" baseColumnNames="CHAMP2_ID" referencedTableName="CHAMP"
+                                 referencedColumnNames="CHAMP_ID"/>
+        <addForeignKeyConstraint constraintName="FK_DATA_TYPE_ID" baseTableName="CHAMP_CALCULE" baseColumnNames="DATA_TYPE_ID"
+                                 referencedTableName="DATA_TYPE" referencedColumnNames="DATA_TYPE_ID"/>
+
+    </changeSet>
+    <changeSet id="8" author="ABO" runAlways="false" context="*, 2.2.0-beta-1, 2.2.0-beta-2-SNAPSHOT">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(1) FROM DATA_TYPE
+                WHERE TYPE = 'duree'
+            </sqlCheck>
+        </preConditions>
+        <comment>Ajout d'un champ annotation de type durée</comment>
+        <insert tableName="DATA_TYPE">
+            <column name="TYPE" value="duree"/>
+            <column name="DATA_TYPE_ID" value="13"/>
+        </insert>
+    </changeSet>
+    <changeSet id="9" author="JDI" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="ACTION"/>
+                <columnExists tableName="ACTION" columnName="ACTION_ID"/>
+                <columnExists tableName="ACTION" columnName="ACTION_NOM"/>
+            </and>
+        </preConditions>
+        <comment>Certaines bases peuvent déjà avoir une table ACTION qui n'est plus utilisée aujourd'hui dans les nouvelles vesions de TumoroteK
+        </comment>
+        <dropTable tableName="ACTION"/>
+    </changeSet>
+    <changeSet id="10" author="GCH" runAlways="false" context="*, 2.2.0-beta-1, 2.2.0-beta-2-SNAPSHOT">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="NIVEAU_VALIDATION"/>
+            </not>
+        </preConditions>
+        <comment>[YouTrack] TK-28 Mécanisme de validation</comment>
+        <createTable tableName="NIVEAU_VALIDATION">
+            <column name="NIVEAU_VALIDATION_ID" type="INT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="LIBELLE" type="VARCHAR(200)"/>
+            <column name="COULEUR" type="VARCHAR(45)"/>
+            <column name="CLE_MESSAGE" type="VARCHAR(200)"/>
+            <column name="CRITICITE" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="11" author="GCH" runAlways="false" context="*, 2.2.0-beta-1, 2.2.0-beta-2-SNAPSHOT">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <and>
+                    <tableExists tableName="VALIDATION"/>
+                </and>
+            </not>
+        </preConditions>
+        <comment>[YouTrack] TK-28 Mécanisme de validation</comment>
+        <createTable tableName="VALIDATION">
+            <column name="VALIDATION_ID" type="INT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="LIBELLE" type="VARCHAR(200)"/>
+            <column name="OPERATEUR" type="VARCHAR(4)"/>
+            <column name="NIVEAU_VALIDATION_ID" type="INT">
+                <constraints foreignKeyName="FK_VALIDATION_NIVEAU_VALIDATION_ID" referencedTableName="NIVEAU_VALIDATION"
+                             referencedColumnNames="NIVEAU_VALIDATION_ID"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="12" author="GCH" runAlways="false" context="*, 2.2.0-beta-1, 2.2.0-beta-2-SNAPSHOT">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <and>
+                    <tableExists tableName="CRITERE_VALIDATION"/>
+                </and>
+            </not>
+        </preConditions>
+        <comment>[YouTrack] TK-28 Mécanisme de validation</comment>
+        <createTable tableName="CRITERE_VALIDATION">
+            <column name="CRITERE_VALIDATION_ID" type="INT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CHAMP_ID" type="INT">
+                <constraints nullable="false" foreignKeyName="FK_CRITERE_VALIDATION_CHAMP_ID" referencedTableName="CHAMP"
+                             referencedColumnNames="CHAMP_ID"/>
+            </column>
+            <column name="OPERATEUR" type="VARCHAR(45)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="VALEUR_REF" type="VARCHAR(200)"/>
+            <column name="CHAMP_REF_ID" type="INT">
+                <constraints foreignKeyName="FK_CRITERE_VALIDATION_CHAMP_REF_ID" referencedTableName="CHAMP" referencedColumnNames="CHAMP_ID"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="13" author="GCH" runAlways="false" context="*, 2.2.0-beta-1, 2.2.0-beta-2-SNAPSHOT">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <and>
+                    <tableExists tableName="VALIDATION_CRITERE_VALIDATION"/>
+                </and>
+            </not>
+        </preConditions>
+        <comment>[YouTrack] TK-28 Mécanisme de validation</comment>
+        <createTable tableName="VALIDATION_CRITERE_VALIDATION">
+            <column name="VALIDATION_ID" type="INT">
+                <constraints nullable="false" foreignKeyName="FK_VALIDATION_CRITERE_VALIDATION_VALIDATION_ID" referencedTableName="VALIDATION"
+                             referencedColumnNames="VALIDATION_ID"/>
+            </column>
+            <column name="CRITERE_VALIDATION_ID" type="INT">
+                <constraints nullable="false" foreignKeyName="FK_VALIDATION_CRITERE_VALIDATION_CRITERE_VALIDATION_ID"
+                             referencedTableName="CRITERE_VALIDATION" referencedColumnNames="CRITERE_VALIDATION_ID"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="14" author="GCH" runAlways="false" context="*, 2.2.0-beta-1, 2.2.0-beta-2-SNAPSHOT">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <and>
+                    <tableExists tableName="SOUS_VALIDATION"/>
+                </and>
+            </not>
+        </preConditions>
+        <comment>[YouTrack] TK-28 Mécanisme de validation</comment>
+        <createTable tableName="SOUS_VALIDATION">
+            <column name="VALIDATION_ID" type="INT">
+                <constraints nullable="false" foreignKeyName="FK_SOUS_VALIDATION_VALIDATION_ID" referencedTableName="VALIDATION"
+                             referencedColumnNames="VALIDATION_ID"/>
+            </column>
+            <column name="SOUS_VALIDATION_ID" type="INT">
+                <constraints nullable="false" foreignKeyName="FK_SOUS_VALIDATION_SOUS_VALIDATION_ID" referencedTableName="VALIDATION"
+                             referencedColumnNames="VALIDATION_ID"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="15" author="GCH" runAlways="false" context="*, 2.2.0-beta-1, 2.2.0-beta-2-SNAPSHOT">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <and>
+                    <tableExists tableName="ACTION"/>
+                </and>
+            </not>
+        </preConditions>
+        <comment>[YouTrack] TK-28 Mécanisme de validation</comment>
+        <createTable tableName="ACTION">
+            <column name="ACTION_ID" type="INT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="ENTITE_ID" type="INT">
+                <constraints nullable="false" foreignKeyName="FK_ACTION_ENTITE_ID" referencedTableName="ENTITE" referencedColumnNames="ENTITE_ID"/>
+            </column>
+            <column name="TYPE_ACTION" type="VARCHAR(45)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="LIBELLE" type="VARCHAR(200)"/>
+        </createTable>
+        <addUniqueConstraint columnNames="ENTITE_ID, TYPE_ACTION" tableName="ACTION"/>
+    </changeSet>
+    <changeSet id="16" author="GCH" runAlways="false" context="*, 2.2.0-beta-1, 2.2.0-beta-2-SNAPSHOT">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <and>
+                    <tableExists tableName="ACTION_VALIDATION"/>
+                </and>
+            </not>
+        </preConditions>
+        <comment>[YouTrack] TK-28 Mécanisme de validation</comment>
+        <createTable tableName="ACTION_VALIDATION">
+            <column name="ACTION_ID" type="INT">
+                <constraints nullable="false" foreignKeyName="ACTION_VALIDATION_ACTION_ID" referencedTableName="ACTION"
+                             referencedColumnNames="ACTION_ID"/>
+            </column>
+            <column name="VALIDATION_ID" type="INT">
+                <constraints nullable="false" foreignKeyName="ACTION_VALIDATION_VALIDATION_ID" referencedTableName="VALIDATION"
+                             referencedColumnNames="VALIDATION_ID"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="17" author="GCH" runAlways="false" context="*, 2.2.0-beta-1, 2.2.0-beta-2-SNAPSHOT">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <and>
+                    <tableExists tableName="DETAIL_VALIDATION"/>
+                </and>
+            </not>
+        </preConditions>
+        <comment>[YouTrack] TK-28 Mécanisme de validation</comment>
+        <createTable tableName="DETAIL_VALIDATION">
+            <column name="DETAIL_VALIDATION_ID" type="INT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="UTILISATEUR_ID" type="INT">
+                <constraints nullable="false" foreignKeyName="FK_DETAIL_VALIDATION_UTILISATEUR_ID" referencedTableName="UTILISATEUR"
+                             referencedColumnNames="UTILISATEUR_ID"/>
+            </column>
+            <column name="NIVEAU_VALIDATION_ID" type="INT">
+                <constraints nullable="false" foreignKeyName="FK_DETAIL_VALIDATION_NIVEAU_VALIDATION_ID" referencedTableName="NIVEAU_VALIDATION"
+                             referencedColumnNames="NIVEAU_VALIDATION_ID"/>
+            </column>
+            <column name="DATE_VALIDATION" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COMMENTAIRE_VALIDATION" type="VARCHAR(250)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="18" author="GCH" runAlways="false" context="*, 2.2.0-beta-1, 2.2.0-beta-2-SNAPSHOT">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <columnExists tableName="PRELEVEMENT_DELEGATE" columnName="CONTEXTE_ID"/>
+                <not>
+                    <tableExists tableName="PRELEVEMENT_BTO"/>
+                    <tableExists tableName="CESSION_DELEGATE"/>
+                    <tableExists tableName="CESSION_BTO"/>
+                    <tableExists tableName="ECHANTILLON_DELEGATE"/>
+                    <tableExists tableName="ECHANTILLON_BTO"/>
+                    <tableExists tableName="PATIENT_DELEGATE"/>
+                    <tableExists tableName="PATIENT_BTO"/>
+                    <tableExists tableName="PROD_DERIVE_DELEGATE"/>
+                    <tableExists tableName="PROD_DERIVE_BTO"/>
+                </not>
+            </and>
+        </preConditions>
+        <comment>Contexte BTO</comment>
+        <dropForeignKeyConstraint baseTableName="PRELEVEMENT_DELEGATE" constraintName="FK_PREL_DEL_CONTEXTE_ID"/>
+        <dropColumn tableName="PRELEVEMENT_DELEGATE" columnName="CONTEXTE_ID"/>
+        <createTable tableName="PRELEVEMENT_BTO">
+            <column name="PRELEVEMENT_DELEGATE_ID" type="INT">
+                <constraints nullable="false" unique="true" foreignKeyName="FK_PRELEVEMENT_BTO_PRELEVEMENT_DELEGATE_ID"
+                             referencedTableName="PRELEVEMENT_DELEGATE" referencedColumnNames="PRELEVEMENT_DELEGATE_ID"/>
+            </column>
+            <column name="DETAIL_VALIDATION_ID" type="INT">
+                <constraints foreignKeyName="FK_PRELEVEMENT_BTO_DETAIL_VALIDATION_ID" referencedTableName="DETAIL_VALIDATION"
+                             referencedColumnNames="DETAIL_VALIDATION_ID"/>
+            </column>
+        </createTable>
+        <createTable tableName="CESSION_DELEGATE">
+            <column name="CESSION_DELEGATE_ID" type="INT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="CESSION_ID" type="INT">
+                <constraints unique="true" nullable="false" foreignKeyName="FK_CESSION_DELEGATE_CESSION_ID" referencedTableName="CESSION"
+                             referencedColumnNames="CESSION_ID"/>
+            </column>
+        </createTable>
+        <createTable tableName="CESSION_BTO">
+            <column name="CESSION_DELEGATE_ID" type="INT">
+                <constraints nullable="false" unique="true" foreignKeyName="FK_CESSION_BTO_CESSION_DELEGATE_ID" referencedTableName="CESSION_DELEGATE"
+                             referencedColumnNames="CESSION_DELEGATE_ID"/>
+            </column>
+            <column name="DETAIL_VALIDATION_ID" type="INT">
+                <constraints foreignKeyName="FK_CESSION_BTO_DETAIL_VALIDATION_ID" referencedTableName="DETAIL_VALIDATION"
+                             referencedColumnNames="DETAIL_VALIDATION_ID"/>
+            </column>
+        </createTable>
+        <createTable tableName="ECHANTILLON_DELEGATE">
+            <column name="ECHANTILLON_DELEGATE_ID" type="INT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="ECHANTILLON_ID" type="INT">
+                <constraints nullable="false" unique="true" foreignKeyName="FK_ECHANTILLON_DELEGATE_ECHANTILLON_ID" referencedTableName="ECHANTILLON"
+                             referencedColumnNames="ECHANTILLON_ID"/>
+            </column>
+        </createTable>
+        <createTable tableName="ECHANTILLON_BTO">
+            <column name="ECHANTILLON_DELEGATE_ID" type="INT">
+                <constraints nullable="false" unique="true" foreignKeyName="FK_ECHANTILLON_BTO_ECHANTILLON_DELEGATE_ID"
+                             referencedTableName="ECHANTILLON_DELEGATE" referencedColumnNames="ECHANTILLON_DELEGATE_ID"/>
+            </column>
+            <column name="DETAIL_VALIDATION_ID" type="INT">
+                <constraints foreignKeyName="FK_ECHANTILLON_BTO_DETAIL_VALIDATION_ID" referencedTableName="DETAIL_VALIDATION"
+                             referencedColumnNames="DETAIL_VALIDATION_ID"/>
+            </column>
+        </createTable>
+        <createTable tableName="PATIENT_DELEGATE">
+            <column name="PATIENT_DELEGATE_ID" type="INT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="PATIENT_ID" type="INT">
+                <constraints nullable="false" unique="true" foreignKeyName="FK_PATIENT_DELEGATE_PATIENT_ID" referencedTableName="PATIENT"
+                             referencedColumnNames="PATIENT_ID"/>
+            </column>
+        </createTable>
+        <createTable tableName="PATIENT_BTO">
+            <column name="PATIENT_DELEGATE_ID" type="INT">
+                <constraints nullable="false" unique="true" foreignKeyName="FK_PATIENT_BTO_PATIENT_DELEGATE_ID" referencedTableName="PATIENT_DELEGATE"
+                             referencedColumnNames="PATIENT_DELEGATE_ID"/>
+            </column>
+            <column name="DETAIL_VALIDATION_ID" type="INT">
+                <constraints foreignKeyName="FK_PATIENT_BTO_DETAIL_VALIDATION_ID" referencedTableName="DETAIL_VALIDATION"
+                             referencedColumnNames="DETAIL_VALIDATION_ID"/>
+            </column>
+        </createTable>
+        <createTable tableName="PROD_DERIVE_DELEGATE">
+            <column name="PROD_DERIVE_DELEGATE_ID" type="INT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="PROD_DERIVE_ID" type="INT">
+                <constraints nullable="false" unique="true" foreignKeyName="FK_PROD_DERIVE_DELEGATE_PROD_DERIVE_ID" referencedTableName="PROD_DERIVE"
+                             referencedColumnNames="PROD_DERIVE_ID"/>
+            </column>
+        </createTable>
+        <createTable tableName="PROD_DERIVE_BTO">
+            <column name="PROD_DERIVE_DELEGATE_ID" type="INT">
+                <constraints nullable="false" unique="true" foreignKeyName="FK_PROD_DERIVE_BTO_PROD_DERIVE_DELEGATE_ID"
+                             referencedTableName="PROD_DERIVE_DELEGATE" referencedColumnNames="PROD_DERIVE_DELEGATE_ID"/>
+            </column>
+            <column name="DETAIL_VALIDATION_ID" type="INT">
+                <constraints foreignKeyName="FK_PROD_DERIVE_BTO_DETAIL_VALIDATION_ID" referencedTableName="DETAIL_VALIDATION"
+                             referencedColumnNames="DETAIL_VALIDATION_ID"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="19" author="ABO" runAlways="false" context="*, 2.2.0-beta-1, 2.2.0-beta-2-SNAPSHOT">
+        <comment>Augmentation de la taille de colonne NOM de la table TABLE_ANNOTATION</comment>
+        <modifyDataType tableName="TABLE_ANNOTATION" columnName="NOM" newDataType="VARCHAR(100)"/>
+        <update tableName="TABLE_ANNOTATION">
+            <column name="NOM" value="Sécurisation bactériologique"/>
+            <where>NOM LIKE 'Sécurisation bactériologi'</where>
+        </update>
+        <update tableName="TABLE_ANNOTATION">
+            <column name="NOM" value="Distribution et Implantation"/>
+            <where>NOM LIKE 'Distribution et Implantat'</where>
+        </update>
+    </changeSet>
+    <changeSet id="20" author="JDI" runAlways="false" context="*, 2.2.0-beta-1, 2.2.0-beta-2-SNAPSHOT">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="CONTEXTE" columnName="LIBELLE"/>
+            </not>
+        </preConditions>
+        <comment>Modification de la table CONTEXTE</comment>
+        <addColumn tableName="CONTEXTE">
+            <column name="LIBELLE" type="VARCHAR(50)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="21" author="JDI" runAlways="false" context="*, 2.2.0-beta-1, 2.2.0-beta-2-SNAPSHOT">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <columnExists tableName="CONTEXTE" columnName="LIBELLE"/>
+            </and>
+        </preConditions>
+        <comment>Modification de la table CONTEXTE</comment>
+        <update tableName="CONTEXTE">
+            <column name="NOM" value="DEFAUT"/>
+            <column name="LIBELLE" value="Anatomopathologie"/>
+            <where>NOM = 'anatomopathologie' OR NOM = 'CONT1'</where>
+        </update>
+        <update tableName="CONTEXTE">
+            <column name="NOM" value="SEROLOGIE"/>
+            <column name="LIBELLE" value="Sérologie"/>
+            <where>NOM = 'serologie' OR NOM = 'CONT2'</where>
+        </update>
+        <update tableName="CONTEXTE">
+            <column name="LIBELLE" value="Banque de tissus osseux"/>
+            <where>NOM = 'BTO'</where>
+        </update>
+    </changeSet>
+    <changeSet id="22" author="ABO" runAlways="false" context="*">
+        <comment>Augmentation de la taille de la colonne PATH de la table FICHIER</comment>
+        <modifyDataType tableName="FICHIER" columnName="PATH" newDataType="VARCHAR(250)"/>
+    </changeSet>
+    <changeSet id="23" author="ABO" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(1) FROM CESSION_TYPE
+                WHERE TYPE = 'Traitement'
+            </sqlCheck>
+        </preConditions>
+        <comment>[YouTrack] TK-160 [Cession] Cessions de type Traitement</comment>
+        <insert tableName="CESSION_TYPE">
+            <column name="CESSION_TYPE_ID" value="5"/>
+            <column name="TYPE" value="Traitement"/>
+        </insert>
+    </changeSet>
+    <changeSet id="24" author="ABO" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="CEDER_OBJET_PROD_DERIVE"/>
+            </not>
+        </preConditions>
+        <comment>[YouTrack] TK-160 [Cession] Cessions de type Traitement</comment>
+        <createTable tableName="CEDER_OBJET_PROD_DERIVE">
+            <column name="CESSION_ID" type="INT(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="OBJET_ID" type="INT(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ENTITE_ID" type="INT(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PROD_DERIVE_ID" type="INT(10)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint constraintName="CEDER_OBJET_PROD_DERIVE_CEDER_OBJET_FK" referencedTableName="CEDER_OBJET"
+                                 referencedColumnNames="CESSION_ID, OBJET_ID, ENTITE_ID" baseTableName="CEDER_OBJET_PROD_DERIVE"
+                                 baseColumnNames="CESSION_ID, OBJET_ID, ENTITE_ID"/>
+        <addForeignKeyConstraint constraintName="CEDER_OBJET_PROD_DERIVE_PROD_DERIVE_FK" referencedTableName="PROD_DERIVE"
+                                 referencedColumnNames="PROD_DERIVE_ID" baseTableName="CEDER_OBJET_PROD_DERIVE" baseColumnNames="PROD_DERIVE_ID"/>
+    </changeSet>
+    <changeSet id="25" author="ABO" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="CEDER_OBJET" columnName="STATUT"/>
+            </not>
+        </preConditions>
+        <comment>[YouTrack] TK-160 [Cession] Cessions de type Traitement</comment>
+        <addColumn tableName="CEDER_OBJET">
+            <column name="STATUT" type="VARCHAR(20)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet id="26" author="ABO" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="DIAGNOSTIC"/>
+            </not>
+        </preConditions>
+        <comment>Contexte SEROTK - THESAURUS DIAGNOSTIC</comment>
+        <createTable tableName="DIAGNOSTIC">
+            <column name="DIAGNOSTIC_ID" type="INT(3)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="NOM" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRIPTION" type="TEXT"/>
+            <column name="PLATEFORME_ID" type="INT(10)"/>
+        </createTable>
+        <sql>INSERT INTO DIAGNOSTIC
+            VALUES (1, 'CERTAIN', NULL, 1),
+            (2, 'PROBABLE', NULL, 1),
+            (3, 'SUSPECTE', NULL, 1);
+        </sql>
+        <addForeignKeyConstraint constraintName="FK_DIAGNOSTIC_PLATEFORME_ID" referencedTableName="PLATEFORME" referencedColumnNames="PLATEFORME_ID"
+                                 baseTableName="DIAGNOSTIC" baseColumnNames="PLATEFORME_ID"/>
+    </changeSet>
+    <changeSet id="27" author="ABO" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="MALADIE_SERO" columnName="DIAGNOSTIC_ID" />
+            </not>
+        </preConditions>
+        <comment>Contexte SEROTK - THESAURUS DIAGNOSTIC</comment>
+        <dropTable tableName="MALADIE_SERO"/>
+        <createTable tableName="MALADIE_SERO">
+            <column name="MALADIE_DELEGATE_ID" type="INT(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DIAGNOSTIC_ID" type="INT(10)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addPrimaryKey constraintName="PK_MALADIE_SERO" tableName="MALADIE_SERO" columnNames="MALADIE_DELEGATE_ID, DIAGNOSTIC_ID"/>
+        <addForeignKeyConstraint constraintName="FK_MAL_SERO_MAL_DEL_ID" baseTableName="MALADIE_SERO" baseColumnNames="MALADIE_DELEGATE_ID"
+                                 referencedTableName="MALADIE_DELEGATE" referencedColumnNames="MALADIE_DELEGATE_ID"/>
+        <addForeignKeyConstraint constraintName="FK_MAL_SERO_DIAG_ID" referencedTableName="DIAGNOSTIC" referencedColumnNames="DIAGNOSTIC_ID"
+                                 baseTableName="MALADIE_SERO" baseColumnNames="DIAGNOSTIC_ID"/>
+    </changeSet>
+    <changeSet id="28" author="ABO" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <sqlCheck expectedResult="0">SELECT COUNT(1) FROM CATALOGUE_CONTEXTE
+                    WHERE CATALOGUE_ID = 1
+                    AND CONTEXTE_ID in (SELECT CONTEXTE_ID FROM CONTEXTE WHERE NOM like '%serologie%');
+                </sqlCheck>
+            </not>
+        </preConditions>
+        <sql>DELETE FROM CATALOGUE_CONTEXTE
+            WHERE CATALOGUE_ID = 1
+            AND CONTEXTE_ID in (SELECT CONTEXTE_ID FROM CONTEXTE WHERE NOM like '%serologie%');
+        </sql>
+        <comment>Contexte SEROTK - Suppression catalogue Inca</comment>
+    </changeSet>
+    <changeSet id="29" author="GCH" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT count(ce.nom) FROM CHAMP_ENTITE ce JOIN ENTITE e ON e.ENTITE_ID = ce.ENTITE_ID WHERE e.NOM='Nature'
+                AND ce.NOM='Nom'
+            </sqlCheck>
+        </preConditions>
+        <comment>Refonte thésaurus</comment>
+        <update tableName="CHAMP_ENTITE">
+            <column name="NOM" value="Nom"/>
+            <where>(NOM = 'Nature' AND ENTITE_ID = (SELECT ENTITE_ID FROM ENTITE WHERE NOM = 'Nature')) OR
+                (NOM = 'Type' AND ENTITE_ID = (SELECT ENTITE_ID FROM ENTITE WHERE NOM = 'PrelevementType')) OR
+                (NOM = 'Type' AND ENTITE_ID = (SELECT ENTITE_ID FROM ENTITE WHERE NOM = 'EchantillonType')) OR
+                (NOM = 'EchanQualite' AND ENTITE_ID = (SELECT ENTITE_ID FROM ENTITE WHERE NOM = 'EchanQualite')) OR
+                (NOM = 'Type' AND ENTITE_ID = (SELECT ENTITE_ID FROM ENTITE WHERE NOM = 'ProdType')) OR
+                (NOM = 'ProdQualite' AND ENTITE_ID = (SELECT ENTITE_ID FROM ENTITE WHERE NOM = 'ProdQualite')) OR
+                (NOM = 'Type' AND ENTITE_ID = (SELECT ENTITE_ID FROM ENTITE WHERE NOM = 'ConditType')) OR
+                (NOM = 'Milieu' AND ENTITE_ID = (SELECT ENTITE_ID FROM ENTITE WHERE NOM = 'ConditMilieu')) OR
+                (NOM = 'Type' AND ENTITE_ID = (SELECT ENTITE_ID FROM ENTITE WHERE NOM = 'ConsentType')) OR
+                (NOM = 'Examen' AND ENTITE_ID = (SELECT ENTITE_ID FROM ENTITE WHERE NOM = 'CessionExamen')) OR
+                (NOM = 'Motif' AND ENTITE_ID = (SELECT ENTITE_ID FROM ENTITE
+                WHERE NOM = 'DestructionMotif'))
+            </where>
+        </update>
+    </changeSet>
+    <changeSet id="30" author="GCH" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="CHAMP_DELEGUE"/>
+            </not>
+        </preConditions>
+        <comment>Mise en place des champs délégués</comment>
+        <createTable tableName="CHAMP_DELEGUE">
+            <column name="CHAMP_DELEGUE_ID" type="INT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="NOM" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DATA_TYPE_ID" type="INT">
+                <constraints nullable="false" foreignKeyName="FK_CHAMP_DELEGUE_DATA_TYPE_ID" referencedTableName="DATA_TYPE"
+                             referencedColumnNames="DATA_TYPE_ID"/>
+            </column>
+            <column name="ENTITE_ID" type="INT">
+                <constraints nullable="false" foreignKeyName="FK_CHAMP_DELEGUE_ENTITE_ID" referencedTableName="ENTITE"
+                             referencedColumnNames="ENTITE_ID"/>
+            </column>
+            <column name="CONTEXTE" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addUniqueConstraint columnNames="NOM, ENTITE_ID, CONTEXTE" tableName="CHAMP_DELEGUE"/>
+        <addColumn tableName="CHAMP">
+            <column name="CHAMP_DELEGUE_ID" type="INT">
+                <constraints foreignKeyName="FK_CHAMP_CHAMP_DELEGUE_ID" referencedTableName="CHAMP_DELEGUE" referencedColumnNames="CHAMP_DELEGUE_ID"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="31" author="ABO" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(1) FROM ENTITE
+                WHERE NOM = 'Diagnostic'
+            </sqlCheck>
+        </preConditions>
+        <comment>Contexte SEROTK - Champs entités</comment>
+        <sql>INSERT INTO ENTITE
+            VALUES (65, 'Diagnostic', 1, 0);
+
+            INSERT INTO CHAMP_ENTITE
+            VALUES
+            (267, 'Nom', 1, 0, 1, NULL, 17, 1, NULL),
+            (268, 'Nom', 1, 0, 1, NULL, 65, 1, NULL);
+
+            INSERT INTO CHAMP_DELEGUE
+            VALUES
+            (1, 'Libelle', 1, 2, 'SEROLOGIE'),
+            (2, 'Protocoles', 10, 2, 'SEROLOGIE'),
+            (3, 'Diagnostic', 10, 7, 'SEROLOGIE');
+        </sql>
+    </changeSet>
+    <changeSet id="32" author="GCH" runOnChange="true" context="*">
+        <comment>Création des procédures stockées d'export pour le contexte sérothèque</comment>
+        <sql>DROP PROCEDURE IF EXISTS create_tmp_patient_sero_table;</sql>
+        <createProcedure encoding="utf8" path="liquibase/sql/create_tmp_patient_sero_table.sql"/>
+
+        <sql>DROP PROCEDURE IF EXISTS create_tmp_prelevement_sero_table;</sql>
+        <createProcedure encoding="utf8" path="liquibase/sql/create_tmp_prelevement_sero_table.sql"/>
+
+        <sql>DROP PROCEDURE IF EXISTS fill_tmp_table_patient_sero;</sql>
+        <createProcedure encoding="utf8" path="liquibase/sql/fill_tmp_table_patient_sero.sql"/>
+
+        <sql>DROP PROCEDURE IF EXISTS fill_tmp_table_prel_sero;</sql>
+        <createProcedure encoding="utf8" path="liquibase/sql/fill_tmp_table_prel_sero.sql"/>
+    </changeSet>
+</databaseChangeLog>

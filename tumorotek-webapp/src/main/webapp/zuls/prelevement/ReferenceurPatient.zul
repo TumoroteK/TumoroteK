@@ -66,7 +66,7 @@
 						<listheader label="${c:l('Champ.Patient.Prenom')}"/>
 						<listheader label="${c:l('Champ.Patient.Sexe')}" width="50px"/>
 						<listheader label="${c:l('Champ.Patient.DateNaissance')}"/>
-						<listheader label="${c:l('patient.medecins')}"/>
+						<listheader id= "listMedcinRef" label="${c:l('patient.medecins')}"/>
 					</listhead>
 					<listitem self="@{each='currPatient'}" value="currPatient"/>
 				</listbox>

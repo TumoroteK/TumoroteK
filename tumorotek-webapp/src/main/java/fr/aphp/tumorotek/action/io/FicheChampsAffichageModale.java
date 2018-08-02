@@ -1,46 +1,45 @@
-/** 
+/**
  * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
  * dsi-projet.tk@aphp.fr
- * 
- * Ce logiciel est un programme informatique servant à la gestion de 
- * l'activité de biobanques. 
+ *
+ * Ce logiciel est un programme informatique servant à la gestion de
+ * l'activité de biobanques.
  *
  * Ce logiciel est régi par la licence CeCILL soumise au droit français
- * et respectant les principes de diffusion des logiciels libres. Vous 
- * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
- * conditions de la licence CeCILL telle que diffusée par le CEA, le 
- * CNRS et l'INRIA sur le site "http://www.cecill.info". 
- * En contrepartie de l'accessibilité au code source et des droits de   
- * copie, de modification et de redistribution accordés par cette 
- * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
- * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
- * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * et respectant les principes de diffusion des logiciels libres. Vous
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le
+ * CNRS et l'INRIA sur le site "http://www.cecill.info".
+ * En contrepartie de l'accessibilité au code source et des droits de
+ * copie, de modification et de redistribution accordés par cette
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée.
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les
  * concédants successifs.
  *
- * A cet égard  l'attention de l'utilisateur est attirée sur les 
- * risques associés au chargement,  à l'utilisation,  à la modification 
- * et/ou au  développement et à la reproduction du logiciel par 
- * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
- * le rendre complexe à manipuler et qui le réserve donc à des 	
- * développeurs et des professionnels  avertis possédant  des 
- * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * A cet égard  l'attention de l'utilisateur est attirée sur les
+ * risques associés au chargement,  à l'utilisation,  à la modification
+ * et/ou au  développement et à la reproduction du logiciel par
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut
+ * le rendre complexe à manipuler et qui le réserve donc à des
+ * développeurs et des professionnels  avertis possédant  des
+ * connaissances  informatiques approfondies.  Les utilisateurs sont
  * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
  * besoins dans des conditions permettant d'assurer la sécurité de leurs
- * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
- * et l'exploiter dans les mêmes conditions de sécurité. 
- *	
- * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
- * avez pris connaissance de la licence CeCILL, et que vous en avez 
- * accepté les termes. 
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser
+ * et l'exploiter dans les mêmes conditions de sécurité.
+ *
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous
+ * avez pris connaissance de la licence CeCILL, et que vous en avez
+ * accepté les termes.
  **/
 package fr.aphp.tumorotek.action.io;
 
-import fr.aphp.tumorotek.model.contexte.Banque;
-import fr.aphp.tumorotek.model.io.export.Champ;
-import fr.aphp.tumorotek.webapp.tree.TumoTreeModel;
-import fr.aphp.tumorotek.webapp.tree.export.ChampNode;
-import fr.aphp.tumorotek.webapp.tree.export.ChampTreeItemRenderer;
-import fr.aphp.tumorotek.webapp.tree.export.ChampsRootNode;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
@@ -50,21 +49,25 @@ import org.zkoss.zul.Panel;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treeitem;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import fr.aphp.tumorotek.model.coeur.annotation.DataType;
+import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.io.export.Champ;
+import fr.aphp.tumorotek.webapp.tree.TumoTreeModel;
+import fr.aphp.tumorotek.webapp.tree.export.ChampNode;
+import fr.aphp.tumorotek.webapp.tree.export.ChampTreeItemRenderer;
+import fr.aphp.tumorotek.webapp.tree.export.ChampsRootNode;
 
 /**
  * Dessine la fiche modale permettant à l'utilisateur de choisir
  * les champs qu'il souhaite afficher.
  * Date: 07/04/2011.
- * 
+ *
  * @author Pierre VENTADOUR
  * @version 2.0
  *
  */
-public class FicheChampsAffichageModale extends GenericForwardComposer<Component> {
+public class FicheChampsAffichageModale extends GenericForwardComposer<Component>
+{
    private static final long serialVersionUID = 4714314507345963886L;
 
    private Panel winPanel;
@@ -82,12 +85,12 @@ public class FicheChampsAffichageModale extends GenericForwardComposer<Component
 
    private ChampTreeItemRenderer ctr = new ChampTreeItemRenderer();
 
-   private List<Champ> oldSelectedChamps = new ArrayList<Champ>();
+   private List<Champ> oldSelectedChamps = new ArrayList<>();
 
    private AnnotateDataBinder binder;
 
    @Override
-   public void doAfterCompose(Component comp) throws Exception{
+   public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
 
       binder = new AnnotateDataBinder(comp);
@@ -98,21 +101,73 @@ public class FicheChampsAffichageModale extends GenericForwardComposer<Component
       }
    }
 
-   public void init(List<Champ> oldSelected, Component p, Banque b){
-      oldSelectedChamps = oldSelected;
-      parent = p;
-      banque = b;
-      // Init du noeud root de l'arbre
-      ChampsRootNode root = new ChampsRootNode();
+   /**
+    * 
+    * @param oldSelectedChamps oldSelected anciens champs sélectionnés qui ne seront pas affichés
+    * @param parent composent parent
+    * @param banque banque
+    * @param selectionMultiple activer la sélection multiple
+    */
+   public void init(final List<Champ> oldSelectedChamps, final Component parent, final Banque banque, final Boolean selectionMultiple){
+      this.oldSelectedChamps = oldSelectedChamps;
+      this.parent = parent;
+      this.banque = banque;
+
+      // Init de l'arbre et de son affichage
+      ttm = new TumoTreeModel(initRoot());
+      ttm.setMultiple(selectionMultiple);
+
+      binder.loadComponent(champsAffichageTree);
+   }
+   
+   /**
+    * @param oldSelectedChamps anciens champs sélectionnés qui ne seront pas affichés
+    * @param parent composent parent
+    * @param banque Banque
+    * @param selectionMultiple activer la sélection multiple
+    * @param dataTypeList liste des datatypes à afficher
+    * @param excludeIds exclure les champs numériques représentant un id
+    */
+   public void init(final List<Champ> oldSelectedChamps, final Component parent, final Banque banque, final Boolean selectionMultiple, List<DataType> dataTypeList, Boolean excludeIds){
+      this.oldSelectedChamps = oldSelectedChamps;
+      this.parent = parent;
+      this.banque = banque;
+
+      // Init de l'arbre et de son affichage
+      ttm = new TumoTreeModel(initRoot(dataTypeList, excludeIds));
+      ttm.setMultiple(selectionMultiple);
+
+      binder.loadComponent(champsAffichageTree);
+   }
+   
+   /**
+    * Init du noeud root de l'arbre
+    */
+   private ChampsRootNode initRoot(){
+   // Init du noeud root de l'arbre
+      final ChampsRootNode root = new ChampsRootNode();
       root.setOldSelectedChamps(oldSelectedChamps);
       root.setBanque(banque);
       root.readChildren();
-
-      // Init de l'arbre et de son affichage
-      ttm = new TumoTreeModel(root);
-      ttm.setMultiple(true);
-
-      binder.loadComponent(champsAffichageTree);
+      
+      return root;
+   }
+   
+   /**
+    * Init du noeud root de l'arbre
+    * @param dataTypeList liste des datatypes à afficher
+    * @param excludeIds exclure les champs numériques représentant un id
+    */
+   private ChampsRootNode initRoot(final List<DataType> dataTypeList, final Boolean excludeIds){
+   // Init du noeud root de l'arbre
+      final ChampsRootNode root = new ChampsRootNode();
+      root.setOldSelectedChamps(oldSelectedChamps);
+      root.setBanque(banque);
+      root.setDataTypeList(dataTypeList);
+      root.setExcludeIds(excludeIds);
+      root.readChildren();
+      
+      return root;
    }
 
    public void onClick$cancel(){
@@ -122,9 +177,9 @@ public class FicheChampsAffichageModale extends GenericForwardComposer<Component
 
    public void onClick$select(){
 
-      List<Champ> chps = new ArrayList<Champ>();
+      final List<Champ> chps = new ArrayList<>();
 
-      int[][] ints = ttm.getSelectionPaths();
+      final int[][] ints = ttm.getSelectionPaths();
       if(null != ints){
          Arrays.sort(ints, new Comparator<int[]>()
          {
@@ -144,20 +199,8 @@ public class FicheChampsAffichageModale extends GenericForwardComposer<Component
                chps.add(((ChampNode) it.getValue()).getChamp());
             }
          }
-         // on récupère les noeuds sélectionnés
-         // Iterator<Treeitem> it = champsAffichageTree
-         //	.getSelectedItems().iterator();
-
-         // while (it.hasNext()) {
-         //	Treeitem item = it.next();
-         //	if (item.getValue().getClass()
-         //			.getSimpleName().equals("ChampNode")) {
-         //		chps.add(0, ((ChampNode) item.getValue()).getChamp());
-         //	}
-         // }
-
-         Events.postEvent("onGetChamps", getParent(), chps);
       }
+      Events.postEvent("onGetChamps", getParent(), chps);
       // fermeture de la fenêtre
       Events.postEvent(new Event("onClose", self.getRoot()));
    }
@@ -166,7 +209,7 @@ public class FicheChampsAffichageModale extends GenericForwardComposer<Component
       return ttm;
    }
 
-   public void setTtm(TumoTreeModel t){
+   public void setTtm(final TumoTreeModel t){
       this.ttm = t;
    }
 
@@ -174,7 +217,7 @@ public class FicheChampsAffichageModale extends GenericForwardComposer<Component
       return ctr;
    }
 
-   public void setCtr(ChampTreeItemRenderer c){
+   public void setCtr(final ChampTreeItemRenderer c){
       this.ctr = c;
    }
 
@@ -182,7 +225,7 @@ public class FicheChampsAffichageModale extends GenericForwardComposer<Component
       return oldSelectedChamps;
    }
 
-   public void setOldSelectedChamps(List<Champ> oldSelected){
+   public void setOldSelectedChamps(final List<Champ> oldSelected){
       this.oldSelectedChamps = oldSelected;
    }
 
@@ -190,7 +233,7 @@ public class FicheChampsAffichageModale extends GenericForwardComposer<Component
       return parent;
    }
 
-   public void setParent(Component p){
+   public void setParent(final Component p){
       this.parent = p;
    }
 
@@ -198,7 +241,7 @@ public class FicheChampsAffichageModale extends GenericForwardComposer<Component
       return banque;
    }
 
-   public void setBanque(Banque b){
+   public void setBanque(final Banque b){
       this.banque = b;
    }
 }

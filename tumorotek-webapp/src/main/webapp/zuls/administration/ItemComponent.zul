@@ -34,7 +34,7 @@
  * accepté les termes. 
 -->
 <div id="ItemDiv" >
-	<hlayout sclass="z-valign-middle" hflex="1">	
+	<hlayout sclass="z-valign-middle" hflex="1">
 		<hlayout sclass="z-valign-middle" hflex="1">
 			<label value="${c:l('annotation.item.label')}" sclass="formLabel" 
 				style="padding: 5px"/>

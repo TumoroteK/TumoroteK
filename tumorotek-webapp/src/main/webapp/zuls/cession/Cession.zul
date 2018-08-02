@@ -36,6 +36,8 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 
 <?component name="listeCession" macroURI="/zuls/cession/ListeCession.zul"?>
+<?component name="listeCessionBTO" macroURI="/zuls/cession/bto/ListeCessionBTO.zul"?>
+
 <?component name="ficheCession" macroURI="/zuls/cession/FicheCessionStatic.zul"?>
 <?component name="ficheAnnotation" macroURI="/zuls/annotation/FicheAnnotation.zul" ?>
 
@@ -45,7 +47,11 @@
 		<west title="${c:l('general.recherche')}" size="30%"
 		border="normal" splittable="true" collapsible="true" id="listeRegion"
 		>
-			<listeCession id="listeCession"  hflex="1"/>
+		<div>
+			<listeCession visible="false"   id="listeCession"  hflex="1"/>
+			<listeCessionBTO visible="false"   id="listeCessionBTO"  hflex="1"/>
+		</div>	
+		
 		</west>
 		<center id="ficheRegion">
 			<div>

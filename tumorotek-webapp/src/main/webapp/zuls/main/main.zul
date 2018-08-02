@@ -41,7 +41,6 @@
 <?component name="collaborations" macroURI="/zuls/contexte/Collaborations.zul" ?>
 <?component name="patient" macroURI="/zuls/patient/Patient.zul" ?>
 <?component name="maladiePanel" macroURI="/zuls/patient/FicheMaladie.zul" ?>
-<?component name="maladieSeroPanel" macroURI="/zuls/patient/serotk/FicheMaladieSero.zul" ?>
 <?component name="prodDerive" macroURI="/zuls/prodderive/ProdDerive.zul" ?>
 <?component name="echantillon" macroURI="/zuls/echantillon/Echantillon.zul" ?>
 <?component name="administration" macroURI="/zuls/administration/Administration.zul" ?>
@@ -71,7 +70,6 @@
 <?component name="ficheTemplateModale" macroURI="/zuls/impression/FicheTemplateModale.zul"?>
 <?component name="ficheRechercheAvanceePatient" macroURI="/zuls/recherche/FicheRechercheAvanceePatient.zul"?>
 <?component name="ficheRechercheAvanceePrelevement" macroURI="/zuls/recherche/FicheRechercheAvanceePrelevement.zul"?>
-<?component name="ficheRechercheAvanceePrelevementSero" macroURI="/zuls/recherche/serotk/FicheRechercheAvanceePrelevementSero.zul"?>
 <?component name="ficheRechercheAvanceeEchantillon" macroURI="/zuls/recherche/FicheRechercheAvanceeEchantillon.zul"?>
 <?component name="ficheRechercheAvanceeProdDerive" macroURI="/zuls/recherche/FicheRechercheAvanceeProdDerive.zul"?>
 <?component name="ficheRechercheAvanceeCession" macroURI="/zuls/recherche/FicheRechercheAvanceeCession.zul"?>
@@ -112,7 +110,12 @@
 <?component name="progressBar" macroURI="/zuls/component/ProgressBar.zul"?>
 <?component name="calendarbox" macroURI="/zuls/component/CalendarBox.zul" class="fr.aphp.tumorotek.component.CalendarBox" ?>
 <?component name="dateRetourCompleteModale" macroURI="/zuls/cession/DateRetourComplete.zul"?>
-
+<!-- SeroTK -->
+<?component name="maladieSeroPanel" macroURI="/zuls/patient/serotk/FicheMaladieSero.zul" ?>
+<?component name="ficheRechercheAvanceePatientSero" macroURI="/zuls/recherche/serotk/FicheRechercheAvanceePatientSero.zul"?>
+<?component name="ficheRechercheAvanceePrelevementSero" macroURI="/zuls/recherche/serotk/FicheRechercheAvanceePrelevementSero.zul"?>
+<?component name="ficheRechercheAvanceeEchantillonSero" macroURI="/zuls/recherche/serotk/FicheRechercheAvanceeEchantillonSero.zul"?>
+<?component name="ficheRechercheAvanceeProdDeriveSero" macroURI="/zuls/recherche/serotk/FicheRechercheAvanceeProdDeriveSero.zul"?>
 
 	<!-- <script type="text/javascript">
 		zk.afterMount(function () {

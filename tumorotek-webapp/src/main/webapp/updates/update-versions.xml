@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
 
 <updates>
 	<version nom="2.0 beta 1">
@@ -46,7 +47,7 @@
 	</version>
 	<version nom="2.0.8">
 		<update-file>2.0.8/updateDB_208_DDL.sql</update-file>
-<!-- 		<update-file>2.0.8/updateDB_208.sql</update-file> -->
+		<!-- <update-file>2.0.8/updateDB_208.sql</update-file> -->
 	</version>
 	<version nom="2.0.9">
 		<update-file>2.0.9/updateDB_209_DDL.sql</update-file>

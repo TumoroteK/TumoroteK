@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
 <ConfigurationInterfacage>
 	<BoiteFtp nom="Boite Apix">
 		<Configuration>
@@ -27,12 +28,12 @@
 			<Bloc>H</Bloc>
 			<Emplacement>4.1</Emplacement>
 		</Service>
-<!-- 		<MappingXml> -->
-<!-- 			<EmetteurId>2</EmetteurId> -->
-<!-- 			<XML>interfacage_anapath.xml</XML> -->
-<!-- 		</MappingXml> -->
+		<!-- <MappingXml> -->
+		<!-- <EmetteurId>2</EmetteurId> -->
+		<!-- <XML>interfacage_anapath.xml</XML> -->
+		<!-- </MappingXml> -->
 		<MappingXml>
-<!-- 			<EmetteurId>3</EmetteurId> -->
+			<!-- <EmetteurId>3</EmetteurId> -->
 			<XML>interfacage_anapath.xml</XML>
 		</MappingXml>
 	</BoiteFtp>
@@ -67,7 +68,7 @@
 			<XML></XML>
 		</MappingXml>
 		<MappingXml>
-<!-- 			<EmetteurId>3</EmetteurId> -->
+			<!-- <EmetteurId>3</EmetteurId> -->
 			<XML>interfacage_hemato.xml</XML>
 		</MappingXml>
 	</BoiteFtp>

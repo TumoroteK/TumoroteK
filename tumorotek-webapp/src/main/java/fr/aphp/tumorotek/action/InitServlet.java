@@ -35,21 +35,13 @@
  **/
 package fr.aphp.tumorotek.action;
 
-import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
-import fr.aphp.tumorotek.model.contexte.Banque;
-import fr.aphp.tumorotek.model.contexte.Plateforme;
-import fr.aphp.tumorotek.model.systeme.Version;
-import liquibase.Contexts;
-import liquibase.Liquibase;
-import liquibase.database.Database;
-import liquibase.database.DatabaseFactory;
-import liquibase.database.jvm.JdbcConnection;
-import liquibase.exception.DatabaseException;
-import liquibase.exception.LiquibaseException;
-import liquibase.resource.ClassLoaderResourceAccessor;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -57,11 +49,22 @@ import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.sql.DataSource;
-import java.io.File;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
+import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.systeme.Version;
+import liquibase.Liquibase;
+import liquibase.database.Database;
+import liquibase.database.DatabaseFactory;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.DatabaseException;
+import liquibase.exception.LiquibaseException;
+import liquibase.resource.ClassLoaderResourceAccessor;
 
 /**
  * Servlet first load at startup.
@@ -69,57 +72,56 @@ import java.util.List;
  * Date: 09/08/2011
  *
  * @author Mathieu BARTHELEMY
- * @version 2.1.4
+ * @version 2.2.0
  * @since 2.0
  */
-public class InitServlet extends HttpServlet {
+public class InitServlet extends HttpServlet
+{
    private static final long serialVersionUID = 1L;
-   private Log log = LogFactory.getLog(InitServlet.class);
+   private final Log log = LogFactory.getLog(InitServlet.class);
 
    @Override
-   public void init() throws ServletException {
+   public void init() throws ServletException{
       super.init();
 
-      try {
+      try{
          log.info("----- TumoroteK startup routines -----");
-         Context context = new InitialContext();
-         String baseDir = (String) context.lookup("java:comp/env/tk/tkFileSystem");
-
-         // Fait un update de la table version pour être en conformité avec le nouveau système de Liquibase
-         // à terme cette fonction sera bien destinée à faire le rollback
-         rollback(context);
+         final Context context = new InitialContext();
+         final Path baseDir = Paths.get((String) context.lookup("java:comp/env/tk/tkFileSystem"));
 
          // updates
          performUpdates(context);
 
          // file system
-         if (baseDir != null) {
-            File f = new File(baseDir);
+         if(baseDir != null){
+            final File f = new File(baseDir.toUri());
             // crée le base directory au besoin
-            if (f.exists() && f.isDirectory() && f.list().length == 0) {
+            if(f.exists() && f.isDirectory() && f.list().length == 0){
                log.info("----- Mise en place du base directory TumoroteK -----");
-               List<Plateforme> pfs = ManagerLocator.getPlateformeManager().findAllObjectsManager();
-               String pfDir;
-               List<Banque> banks = new ArrayList<Banque>();
-               for (int i = 0; i < pfs.size(); i++) {
-                  pfDir = "pt_" + pfs.get(i).getPlateformeId() + "/";
-                  banks.addAll(ManagerLocator.getBanqueManager().findByPlateformeAndArchiveManager(pfs.get(i), null));
-                  for (int j = 0; j < banks.size(); j++) {
-                     new File(baseDir + pfDir + "coll_" + banks.get(j).getBanqueId() + "/cr_anapath").mkdirs();
-                     new File(baseDir + pfDir + "coll_" + banks.get(j).getBanqueId() + "/anno").mkdirs();
-                     log.info("base directory de la collection " + banks.get(j).getNom() + " généré");
+               final List<Plateforme> pfs = ManagerLocator.getPlateformeManager().findAllObjectsManager();
+               Path pfDir;
+               final List<Banque> banks = new ArrayList<>();
+               for(Plateforme pf : pfs){
+                  pfDir = Paths.get("pt_" + pf.getPlateformeId());
+                  banks.addAll(ManagerLocator.getBanqueManager().findByPlateformeAndArchiveManager(pf, null));
+                  for(Banque bank : banks){
+                     Path crAnapathPath = Paths.get(baseDir.toString(), pfDir.toString(), "coll_" + bank.getBanqueId(), "cr_anapath");
+                     Path annoPath = Paths.get(baseDir.toString(), pfDir.toString(), "coll_" + bank.getBanqueId(), "anno");
+                     new File(crAnapathPath.toUri()).mkdirs();
+                     new File(annoPath.toUri()).mkdirs();
+                     log.info("base directory de la collection " + bank.getNom() + " généré");
                   }
                   banks.clear();
                }
             }
          }
-      } catch (NamingException ex) {
+      }catch(final NamingException ex){
          log.error(ex);
       }
    }
 
-   public DataSource dataSource(Context context) throws NamingException {
-      DriverManagerDataSource dataSource = new DriverManagerDataSource();
+   public DataSource dataSource(final Context context) throws NamingException{
+      final DriverManagerDataSource dataSource = new DriverManagerDataSource();
       dataSource.setDriverClassName((String) context.lookup("java:comp/env/jdbc/driverClass"));
       dataSource.setUrl((String) context.lookup("java:comp/env/jdbc/url"));
       dataSource.setUsername((String) context.lookup("java:comp/env/jdbc/user"));
@@ -132,73 +134,72 @@ public class InitServlet extends HttpServlet {
     *
     * @param context qui correspond entre autres aux variables définies dans tumorotek##xxx.xml
     */
-   public void performUpdates(Context context) {
+   public void performUpdates(final Context context){
       log.info("----- Recherche des mises à jours database -----");
-      Version currentVersion = ManagerLocator.getVersionManager().findByCurrentVersionManager();
-      List<Version> allVersions = ManagerLocator.getVersionManager().findAllObjectsManager();
-      String nextVersion = ObjectTypesFormatters.getLabel("app.version", new String[]{});
-      if (null != currentVersion) {
+      final Version currentVersion = ManagerLocator.getVersionManager().findByCurrentVersionManager();
+      //final List<Version> allVersions = ManagerLocator.getVersionManager().findAllObjectsManager();
+      final String nextVersion = ObjectTypesFormatters.getLabel("app.version", new String[] {});
+      //if(null != currentVersion){
          Database database = null;
-         try {
-            database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(dataSource(context).getConnection()));
-         } catch (DatabaseException | SQLException | NamingException e) {
+         try{
+            database = DatabaseFactory.getInstance()
+               .findCorrectDatabaseImplementation(new JdbcConnection(dataSource(context).getConnection()));
+         }catch(DatabaseException | SQLException | NamingException e){
             log.error(e.toString());
          }
-         try {
-            Liquibase liquibase = new Liquibase("liquibase/db.changelog-master.xml", new ClassLoaderResourceAccessor(), database);
-            Contexts contexts = new Contexts();
-            for (Version version : allVersions) {
-               if (null != version.getVersion()) {
+         try{
+            final Liquibase liquibase =
+               new Liquibase("liquibase/db.changelog-master.xml", new ClassLoaderResourceAccessor(), database);
+            /*final Contexts contexts = new Contexts();
+            for(final Version version : allVersions){
+               if(null != version.getVersion()){
                   contexts.add(version.getVersion());
                }
-            }
+            }*/
             // Liquibase mettra à jour en fonction des versions précédemment installées.
-            liquibase.update(contexts);
+            //liquibase.update(contexts);
+            liquibase.update("*");
 
             // Pour faire un rollback
             //liquibase.rollback("2.1.4-SNAPSHOT", contexts);
-         } catch (LiquibaseException e) {
+         }catch(final LiquibaseException e){
             log.error(e.toString());
          }
-      }
+      //}
 
       // Enregistre la version qui vient d'être installée
       if(null != currentVersion && !currentVersion.getVersion().equals(nextVersion)){
-         Version version = new Version();
+         final Version version = new Version();
          version.setVersion(nextVersion);
          version.setNomSite(currentVersion.getNomSite());
          version.setDate(new Date());
          ManagerLocator.getVersionManager().createObjectManager(version);
       }else if(null == currentVersion){
-         Version version = new Version();
+         final Version version = new Version();
          version.setVersion(nextVersion);
          version.setDate(new Date());
          ManagerLocator.getVersionManager().createObjectManager(version);
       }
    }
 
-   public void rollback(Context context) {
+   public void rollback(final Context context){
       log.info("----- Rollback -----");
       Database database = null;
-      try {
-         database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(dataSource(context).getConnection()));
-      } catch (DatabaseException | SQLException | NamingException e) {
+      try{
+         database = DatabaseFactory.getInstance()
+            .findCorrectDatabaseImplementation(new JdbcConnection(dataSource(context).getConnection()));
+      }catch(DatabaseException | SQLException | NamingException e){
          log.error(e.toString());
       }
-      try {
-         Liquibase liquibase = new Liquibase("liquibase/db.changelog-master.xml", new ClassLoaderResourceAccessor(), database);
 
-         liquibase.update("2.1.3");
+      new Liquibase("liquibase/db.changelog-master.xml", new ClassLoaderResourceAccessor(), database);
 
-         // Pour faire un rollback
-         //liquibase.rollback("2.1.4-SNAPSHOT", "*");
-      } catch (LiquibaseException e) {
-         log.error(e.toString());
-      }
+      // Pour faire un rollback
+      //liquibase.rollback("2.1.4-SNAPSHOT", "*");
    }
 
    @Override
-   public void destroy() {
+   public void destroy(){
       super.destroy();
    }
 }

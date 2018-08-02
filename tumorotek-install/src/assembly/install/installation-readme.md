@@ -1,18 +1,20 @@
-![TumoroteK version ${project.parent.version}](https://img.shields.io/badge/TumoroteK-${project.parent.version}-brightgreen.svg "TumoroteK version ${project.parent.version}")
-
 #### Installation de TumoroteK version ${project.parent.version}
+![TumoroteK version ${project.parent.version}](https://img.shields.io/badge/TumoroteK-${project.parent.version}-brightgreen.svg "TumoroteK version ${project.parent.version}")
+![Java version 8](https://img.shields.io/badge/Java->=_8-blue.svg "Java version 8")
+![Apache Tomcat version 7](https://img.shields.io/badge/Apache_Tomcat->=_7-yellow.svg "Apache Tomcat version 7")
 
 ##### Voir le document d'exploitation détaillant l'architecture de l'environnement applicatif
 
 ***
 
 ##### Installation de l'environnement applicatif :
-- MySQL v5  
+- MySQL ou MariaDB  
 > Paramétrage éventuel : modifier le path du dossier contenant les données dans la variable `datadir` du fichier *`my.cnf`*.
-- JAVA JSE 1.7 Oracle distribution
-- Apache Tomcat 7 
-- Paramétrage obligatoire : ajouter les variables de démarrage JAVA `-Duser.language=en -XX:MaxPermSize=256m`  
-- Paramétrage conseillé : ajouter les variables de démarrage JAVA `-Xms512m -Xmx1024m`  
+
+- Java 8 minimum
+- Apache Tomcat 7 minimum
+- Paramétrage obligatoire : ajouter les variables de démarrage Java `-Duser.language=en -XX:MaxPermSize=256m`  
+- Paramétrage conseillé : ajouter les variables de démarrage Java `-Xms512m -Xmx1024m`  
 (ces paramétrages sont renseignés directement sous Windows dans l'utilitaire `configureTomcat`, 
 sous Unix, dans la variable `CATALINA_OPTS`, par l'intermédiaire du script de démarrage `/etc/init.d/tomcat.sh` par exemple)
 
@@ -31,7 +33,7 @@ sous Unix, dans la variable `CATALINA_OPTS`, par l'intermédiaire du script de d
     
         mysql -u root -p tumorotek_codes --default-character-set=utf8 < tumorotek_codes\tumorotek_codes-init.sql
 
-2. Base de données 'temporaires' recevant les données transmises par les interfacages : **tumorotek_interfacages**
+2. Base de données 'temporaires' recevant les données transmises par les interfaçages : **tumorotek_interfacages**
 
         mysql> create database tumorotek_interfacages default character set utf8;
     
@@ -49,8 +51,6 @@ sous Unix, dans la variable `CATALINA_OPTS`, par l'intermédiaire du script de d
     
         mysql -u root -p tumorotek --default-character-set=utf8 < tumorotek\tumorotek-init.sql
     
-    > MySQL est sensible à la casse du noms des tables sous Linux, le script `renametables.sql` renomme toutes les tables en majuscules
-    
     Création du compte SuperAdministrateur s'il n'existe pas encore en base (par défaut **login :** ADMIN_TUMO, **mdp :** tk4[teAm])
     
         mysql> insert into tumorotek.UTILISATEUR (utilisateur_id, login, password, archive, timeout, super) values (1, 'ADMIN_TUMO', md5('tk4[teAm]'), 0, null, 1);
@@ -64,13 +64,18 @@ sous Unix, dans la variable `CATALINA_OPTS`, par l'intermédiaire du script de d
     
     Injection des procédures stockées (depuis le dossier */sql*)
     
-        mysql -u tumo -p tumorotek --default-character-set=utf8 < tumorotek\export_mysql.sql
-        mysql -u tumo -p tumorotek --default-character-set=utf8 < tumorotek\export_INCA.sql
-        mysql -u tumo -p tumorotek --default-character-set=utf8 < tumorotek\export_BIOCAP.sql
-        mysql -u tumo -p tumorotek --default-character-set=utf8 < tumorotek\export_TGVSO.sql
         mysql -u tumo -p tumorotek --default-character-set=utf8 < tumorotek\charts.sql
+        mysql -u tumo -p tumorotek --default-character-set=utf8 < tumorotek\export_biobanques.sql
+        mysql -u tumo -p tumorotek --default-character-set=utf8 < tumorotek\export_BIOCAP.sql
+        mysql -u tumo -p tumorotek --default-character-set=utf8 < tumorotek\export_INCA.sql
+        mysql -u tumo -p tumorotek --default-character-set=utf8 < tumorotek\export_mysql.sql
+        mysql -u tumo -p tumorotek --default-character-set=utf8 < tumorotek\export_TGVSO.sql
         mysql -u tumo -p tumorotek --default-character-set=utf8 < tumorotek\getBoite.sql
         mysql -u tumo -p tumorotek --default-character-set=utf8 < tumorotek\indicateurs.sql
+        mysql -u tumo -p tumorotek --default-character-set=utf8 < tumorotek\createSTATStables.sql
+    
+        -- Si vous voulez le contexte de banque de tissus osseux :
+        mysql -u tumo -p tumorotek --default-character-set=utf8 < tumorotek\add-bto-context.sql
     
     Si les procédures sont créées en tant que root... 
     
@@ -104,8 +109,8 @@ sous Unix, dans la variable `CATALINA_OPTS`, par l'intermédiaire du script de d
         <Environment name="/jdbc/password" ... value="tumo" .../>
 
 2. Paramètrage du dossier racine des fichiers associés aux données  
-> Il est recommandé pour faciliter les sauvegardes de placer ce dossier dans le même 
-lecteur/dossier que le `datadir` mysql
+    > Il est recommandé pour faciliter les sauvegardes de placer ce dossier dans le même 
+    lecteur/dossier que le `datadir` mysql
 
         <Environment name="/tk/tkFileSystem" ... value="D://data/TK/" ... />
 
@@ -142,22 +147,22 @@ lecteur/dossier que le `datadir` mysql
 6. LDAP / ActiveDirectory
     
     > L'authentification par annuaire implique l'édition du bloc `<authentication-manager>` dans le fichier 
-    `<TOMCAT_PATH>/webapps/${webapp.name}/WEB-INF/classes/applicationContext-security.xml` afin de commenter/décommenter 
+    `<TOMCAT_PATH>/webapps/${webapp.packaging.finalName}/WEB-INF/classes/applicationContext-security.xml` afin de commenter/décommenter 
     les différents systèmes d'authentifications, qui seront consultés selon leur ordre dans ce bloc de 
     configuration
     
     - LDAP
     
-        <Environment name="/ldap/url" ... value="ldap://127.0.0.1:389/dc=sls,dc=aphp,dc=fr" ... />
+            <Environment name="/ldap/url" ... value="ldap://127.0.0.1:389/dc=sls,dc=aphp,dc=fr" ... />
         
     - ActiveDirectory
     
-        <Environment name="/activedirectory/domain" ... value="<DOMAINE>" ... />  
-        <Environment name="/activedirectory/url" ... value="ldap://<HOST>:<PORT>/" ... />  
+            <Environment name="/activedirectory/domain" ... value="<DOMAINE>" ... />  
+            <Environment name="/activedirectory/url" ... value="ldap://<HOST>:<PORT>/" ... />  
 
 7. Niveaux de logs Log4j
     
-    Se référer à la documentation Log4j pour l'édition du fichier `<TOMCAT_PATH>/webapps/${webapp.name}/WEB-INF/classes/log4j.properties`
+    Se référer à la documentation Log4j pour l'édition du fichier `<TOMCAT_PATH>/webapps/${webapp.packaging.finalName}/WEB-INF/classes/log4j.properties`
     
     - Démarrer l'application `${webapp.name}` dans l'interface Manager du Tomcat `http://<SERVEUR>:8080/manager/html`
 
@@ -170,11 +175,12 @@ lecteur/dossier que le `datadir` mysql
 
 ***
 
-##### Premiers paramétrages applicatifs (consulter le manuel utilisateur accessible depuis la page d'accueil) :
+##### Premiers paramétrages applicatifs (consulter [le manuel utilisateur](TumoroteK-Manuel.pdf)) :
 - Onglet **Administration** > **Collaborations** : créer l'environnement médical (Hôpital, Service, Collaborateurs) responsable de la biobanque
 - Onglet **Administration** > **Comptes** : les comptes des utilisateurs du personnel de la biobanque  
 > Il est recommandé de confier à un des utilisateurs les droits d'Administration de la Plateforme dans l'onglet **Administration** > **Plateforme** afin que cet 
-utilisateur deviennent l'utilisateur 'référent' pour la biobanque. 
+utilisateur deviennent l'utilisateur 'référent' pour la biobanque.  
 Cet utilisateur pourra alors compléter la configuration selon l'activité spécifique de la biobanque 
 (collections, thésaurus, conteneurs de stockage, annotations, autres comptes, profils, modèles d'impressions etc...) 
+
 - Onglet **Administration** > **Collection** : créer éventuellement une première collection de travail en attribuant des profils sur la collection aux utilisateurs non administrateurs de plateforme.

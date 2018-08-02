@@ -1,4 +1,5 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
 <evenementsPatients acquittementAttendu="non">
 	<enteteMessage modeTraitement="réel">
 		<identifiantMessage>23783</identifiantMessage>
@@ -23,13 +24,20 @@
 	</enteteMessage>
 	<evenementPatient>
 		<venuePatient action="création">
-			<patient confidentiel="non" anonyme="non">
+			<patient
+				confidentiel="non"
+				anonyme="non">
 				<identifiant>
-					<emetteur etat="permanent" portee="local" referent="oui">
+					<emetteur
+						etat="permanent"
+						portee="local"
+						referent="oui">
 						<valeur>9018961</valeur>
 					</emetteur>
 				</identifiant>
-				<personnePhysique sexe="M" informationQualifiee="oui">
+				<personnePhysique
+					sexe="M"
+					informationQualifiee="oui">
 					<nomUsuel>NOMTEST</nomUsuel>
 					<nomNaissance>PATROTEST</nomNaissance>
 					<prenoms>
@@ -56,7 +64,11 @@
 					<nationalite>100</nationalite>
 				</personnePhysique>
 			</patient>
-			<venue etat="encours" indicateurParcoursSoinsVenue="" confidentiel="non" prive="non">
+			<venue
+				etat="encours"
+				indicateurParcoursSoinsVenue=""
+				confidentiel="non"
+				prive="non">
 				<identifiant>
 					<emetteur>
 						<valeur>531604772</valeur>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+
+	<!-- couche de persistance JPA -->
+	<bean id="entityManagerFactoryInterfacages"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSourceInterfacages" />
+		<property name="persistenceUnitName" value="pInterfacages" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+				<property name="showSql" value="false" />
+				<property name="generateDdl" value="false" />
+				<property name="databasePlatform" value="org.hibernate.dialect.MySQLDialect" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="dataSourceInterfacages" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="com.mysql.cj.jdbc.Driver" />
+		<property name="jdbcUrl" value="jdbc:mysql://${test.database.host}:3306/${test.database.tumorotek_interfacages.name}?serverTimezone=Europe/Paris" />
+		<property name="user" value="${test.database.username}" />
+		<property name="password" value="${test.database.password}" />
+		<property name="initialPoolSize" value="3" />
+		<property name="minPoolSize" value="3" />
+		<property name="maxPoolSize" value="10" />
+		<property name="automaticTestTable" value="c3p0test" />
+		<property name="acquireIncrement" value="1" />
+		<property name="maxStatements" value="0" />
+		<property name="numHelperThreads" value="5" />
+		<property name="maxIdleTime" value="5000" />
+		<property name="maxConnectionAge" value="5000" />
+		<property name="idleConnectionTestPeriod" value="500" />
+	</bean>
+
+	<!-- le gestionnaire de transactions... utilisé dans les tests par AbstractDaoTest -->
+	<bean id="transactionManagerInterfacages" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactoryInterfacages" />
+	</bean>
+</beans>

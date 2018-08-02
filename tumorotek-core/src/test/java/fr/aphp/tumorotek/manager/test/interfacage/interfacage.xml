@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
 <Interfacage>
 	<Logiciel func="SIP">
 		<Nom>APIX</Nom>
@@ -41,7 +42,7 @@
 			<Source>
 				<Key>5.2</Key>
 				<Fonctions>
-					<Fonction nom="stringToUpperCase"/>
+					<Fonction nom="stringToUpperCase" />
 				</Fonctions>
 			</Source>
 		</Mapping>
@@ -81,7 +82,7 @@
 			</Tk>
 			<Source>
 				<Key>6</Key>
-				<Modifier nom="Autre"/>
+				<Modifier nom="Autre" />
 			</Source>
 		</Mapping>
 		<Mapping>
@@ -92,7 +93,7 @@
 			<Source>
 				<Key>18</Key>
 				<Fonctions>
-					<Fonction nom="replaceCommaByDot"/>
+					<Fonction nom="replaceCommaByDot" />
 				</Fonctions>
 			</Source>
 		</Mapping>
@@ -104,8 +105,8 @@
 			<Source>
 				<Key>4</Key>
 				<Fonctions>
-					<Fonction nom="stringToLowerCase"/>
-					<Fonction nom="stringToUpperCase"/>
+					<Fonction nom="stringToLowerCase" />
+					<Fonction nom="stringToUpperCase" />
 				</Fonctions>
 				<Modifier nom="Thesaurus">
 					<MappingThes>
@@ -242,7 +243,7 @@
 			<Source>
 				<Key>5</Key>
 				<Fonctions>
-					<Fonction nom="stringToLowerCase"/>
+					<Fonction nom="stringToLowerCase" />
 				</Fonctions>
 			</Source>
 		</Mapping>

@@ -1,39 +1,43 @@
-/** 
+/**
  * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
  * dsi-projet.tk@aphp.fr
- * 
- * Ce logiciel est un programme informatique servant à la gestion de 
- * l'activité de biobanques. 
+ *
+ * Ce logiciel est un programme informatique servant à la gestion de
+ * l'activité de biobanques.
  *
  * Ce logiciel est régi par la licence CeCILL soumise au droit français
- * et respectant les principes de diffusion des logiciels libres. Vous 
- * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
- * conditions de la licence CeCILL telle que diffusée par le CEA, le 
- * CNRS et l'INRIA sur le site "http://www.cecill.info". 
- * En contrepartie de l'accessibilité au code source et des droits de   
- * copie, de modification et de redistribution accordés par cette 
- * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
- * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
- * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * et respectant les principes de diffusion des logiciels libres. Vous
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le
+ * CNRS et l'INRIA sur le site "http://www.cecill.info".
+ * En contrepartie de l'accessibilité au code source et des droits de
+ * copie, de modification et de redistribution accordés par cette
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée.
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les
  * concédants successifs.
  *
- * A cet égard  l'attention de l'utilisateur est attirée sur les 
- * risques associés au chargement,  à l'utilisation,  à la modification 
- * et/ou au  développement et à la reproduction du logiciel par 
- * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
- * le rendre complexe à manipuler et qui le réserve donc à des 	
- * développeurs et des professionnels  avertis possédant  des 
- * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * A cet égard  l'attention de l'utilisateur est attirée sur les
+ * risques associés au chargement,  à l'utilisation,  à la modification
+ * et/ou au  développement et à la reproduction du logiciel par
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut
+ * le rendre complexe à manipuler et qui le réserve donc à des
+ * développeurs et des professionnels  avertis possédant  des
+ * connaissances  informatiques approfondies.  Les utilisateurs sont
  * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
  * besoins dans des conditions permettant d'assurer la sécurité de leurs
- * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
- * et l'exploiter dans les mêmes conditions de sécurité. 
- *	
- * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
- * avez pris connaissance de la licence CeCILL, et que vous en avez 
- * accepté les termes. 
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser
+ * et l'exploiter dans les mêmes conditions de sécurité.
+ *
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous
+ * avez pris connaissance de la licence CeCILL, et que vous en avez
+ * accepté les termes.
  **/
 package fr.aphp.tumorotek.dto;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 import fr.aphp.tumorotek.model.code.CodeAssigne;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
@@ -41,10 +45,6 @@ import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 
 /**
  * Classe 'Decorateur' qui reprend les attributs d'Echantillon.
@@ -66,484 +66,440 @@ import java.util.List;
  * @author Mathieu BARTHELEMY
  *
  */
-public class EchantillonDTO {
-	
-	private boolean isNew;
-	private Echantillon echantillon;
-	private Boolean checkedEchantillon;
-	private String adrlTmp;
-	
-	private List<AnnotationValeur> valeursToCreateOrUpdate;
-	private List<CodeAssigne> codesOrgsToCreateOrEdit  = 
-									new ArrayList<CodeAssigne>();
-	private List<CodeAssigne> codesLesToCreateOrEdit = 
-									new ArrayList<CodeAssigne>();
-	private CodeAssigne codeOrganeToExport;
-	private CodeAssigne codeLesToExport;
-	private List<NonConformite> nonConformiteTraitements = 
-		new ArrayList<NonConformite>();
-	private List<NonConformite> nonConformiteCessions = 
-		new ArrayList<NonConformite>();
-	
-	private Integer nbDerives = 0;
-	private Integer nbCessions = 0;
-	private Calendar dateCreation;
-	private String emplacementAdrl;
-	private Float tempStock;
-	
-	public EchantillonDTO(Echantillon newEchan) {
-		this.echantillon = newEchan;
-		isNew = (this.echantillon.getEchantillonId() == null);
-		this.checkedEchantillon = false;
-		
-	//	if (this.echantillon.getEchantillonId() != null) {
-	//		setCodesOrgsToCreateOrEdit(codeAssigneManager()
-	//				.findCodesOrganeByEchantillonManager(this.echantillon));
-	//		
-	//		setCodesLesToCreateOrEdit(codeAssigneManager()
-	//				.findCodesMorphoByEchantillonManager(this.echantillon));
-	//	}
-	}
+public class EchantillonDTO
+{
 
-	public Echantillon getEchantillon() {
-		return echantillon;
-	}
+   private final boolean isNew;
+   private Echantillon echantillon;
+   private Boolean checkedEchantillon;
+   private String adrlTmp;
 
-	public void setEchantillon(Echantillon echan) {
-		this.echantillon = echan;
-	}
-	
-	public String getCode() {
-		return this.echantillon.getCode();
-	}
-	
-	public String getBanque() {		
-		if (this.echantillon.getBanque() != null) {
-			return this.echantillon.getBanque().getNom();
-		} else {
-			return null;
-		}
-	}
-	
-	public String getPrelevement() {		
-		if (this.echantillon.getPrelevement() != null) {
-			return this.echantillon.getPrelevement().getCode();
-		} else {
-			return null;
-		}
-	}
-	
-	public Calendar getDateStockage() {
-		return this.echantillon.getDateStock();
-	}
-	
-	public String getAdicapOrgane() {
-		return null;
-	}
-	
-	public String getType() {
-		if (this.echantillon.getEchantillonType() != null) {
-			return this.echantillon.getEchantillonType().getType();
-		} else {
-			return null;
-		}
-	}
-	
-	/**
-	 * Concatène la quantité et son unité.
-	 * @return String.
-	 */
-	public String getQuantite() {
-		StringBuffer sb = new StringBuffer();
-		if (this.echantillon.getQuantite() != null) {
-			sb.append(floor(this.echantillon.getQuantite(), 4));
-		} else {
-			sb.append("-");
-		}
-		
-		sb.append(" / ");
-		
-		if (this.echantillon.getQuantiteInit() != null) {
-			sb.append(floor(this.echantillon.getQuantiteInit(), 4));
-		} else {
-			sb.append("-");
-		}
-		
-		if (this.echantillon.getQuantiteUnite() != null) {
-			sb.append(" ");
-			sb.append(this.echantillon.getQuantiteUnite().getUnite());
-		}
-		
-		return sb.toString();
-	}
-	
-	/**
-	 * Concatène la quantité initiale et son unité.
-	 * @return String.
-	 */
-	public String getQuantiteInitiale() {
-		StringBuffer sb = new StringBuffer();
-		if (this.echantillon.getQuantiteInit() != null) {
-			sb.append(this.echantillon.getQuantiteInit());
-		} else {
-			sb.append("-");
-		}
-		
-		if (this.echantillon.getQuantiteUnite() != null) {
-			sb.append(" ");
-			sb.append(this.echantillon.getQuantiteUnite().getUnite());
-		}
-		
-		return sb.toString();
-	}
-	public String getOnlyQuantiteInit() {
+   private List<AnnotationValeur> valeursToCreateOrUpdate;
+   private List<CodeAssigne> codesOrgsToCreateOrEdit = new ArrayList<>();
+   private List<CodeAssigne> codesLesToCreateOrEdit = new ArrayList<>();
+   private CodeAssigne codeOrganeToExport;
+   private CodeAssigne codeLesToExport;
+   private List<NonConformite> nonConformiteTraitements = new ArrayList<>();
+   private List<NonConformite> nonConformiteCessions = new ArrayList<>();
 
-		StringBuffer sb = new StringBuffer();
-		if (this.echantillon.getQuantiteInit() != null) {
-			sb.append(this.echantillon.getQuantiteInit());
-		} else {
-			sb.append("-");
-		}
-		
-		if (this.echantillon.getQuantiteUnite() != null) {
-			sb.append(" ");
-			sb.append(this.echantillon.getQuantiteUnite().getUnite());
-		}
-		
-		return sb.toString();
-	}
-	
-	public ObjetStatut getStatut() {
-		return this.echantillon.getObjetStatut();
+   private Integer nbDerives = 0;
+   private Integer nbCessions = 0;
+   private Calendar dateCreation;
+   private String emplacementAdrl;
+   private Float tempStock;
 
-	}
-	
-	public Integer getNbDerives() {
-		return nbDerives;
-	}
-	
-	public Integer getNbCessions() {
-		return nbCessions;
-	}
+   public EchantillonDTO(final Echantillon newEchan){
+      this.echantillon = newEchan;
+      isNew = (this.echantillon.getEchantillonId() == null);
+      this.checkedEchantillon = false;
 
-	public boolean isNew() {
-		return isNew;
-	}
-	
-	/**
-	 * Récupère la date de création système de l'échantillon.
-	 * @return Date de création.
-	 */
-	public Calendar getDateCreation() {
-		return dateCreation;
-		// Calendar date = ManagerLocator.getOperationManager()
-		// 	.findDateCreationManager(this.echantillon);
-		// if (dateCreation != null) {
-		//	return ObjectTypesFormatters.dateRenderer2(date);
-		// } else {
-		//	return null;
-		// }
-	}
-	
-	public String getCollaborateurNomAndPrenom() {
-		StringBuffer sb = new StringBuffer();
-		Collaborateur collaborateur = this.echantillon.getCollaborateur();
-		if (collaborateur != null) {
-			if (collaborateur.getNom() != null 
-					&& collaborateur.getPrenom() != null) {
-				sb.append(collaborateur.getNom());
-				sb.append(" ");
-				sb.append(collaborateur.getPrenom());
-			} else if (collaborateur.getNom() != null) {
-				sb.append(collaborateur.getNom());
-			} else if (collaborateur.getPrenom() != null) {
-				sb.append(collaborateur.getPrenom());
-			}
-		}
-		return sb.toString();
-	}
-	
-	public String getEmplacementAdrl() {
-		// if (echantillon != null && echantillon.getEchantillonId() != null) {
-		//	return ManagerLocator.getEchantillonManager()
-		//		.getEmplacementAdrlManager(echantillon);
-		// } else {
-		//	return "";
-		// }
-		return emplacementAdrl;
-	}
-	
-	/**
-	 * @since 2.0.13
-	 * @version 2.1.1
-	 * @return température de stockage
-	 */
-	public String getTempStock() {
-	//	if (echantillon != null) {
-	//		Float temp = ManagerLocator.getConteneurManager()
-	//				.findTempForEmplacementManager(echantillon.getEmplacement());
-	//		if (temp != null) {
-	//			return temp.toString();
-	//		}
-	//	}
-	//	return null;
-		if (tempStock != null) {
-			return tempStock.toString();
-		}
-		return null;
-	}
-	
-	public String getEmplacementAdrlinMulti() {
-		if (adrlTmp != null) {
-			return adrlTmp;
-		} else if (echantillon != null 
-				&& echantillon.getEchantillonId() != null) {
-//			return ManagerLocator.getEchantillonManager()
-//				.getEmplacementAdrlManager(echantillon);
-			return emplacementAdrl;
-		} else {
-			return null;
-		}
-	}
-	
-	public String getLateralite() {
-		//return this.echantillon.getLateralite();
-		return null;
-	}
-	
-	public String getDelaiDeCongelation() {
-		if (this.echantillon.getDelaiCgl() != null) {
-			return this.echantillon.getDelaiCgl().toString();
-		} else {
-			return null;
-		}
-	}
-	
-	public String getQualite() {
-		if (this.echantillon.getEchanQualite() != null) {
-			return this.echantillon.getEchanQualite().getEchanQualite();
-		} else {
-			return null;
-		}
-	}
-	
-	public String getTumoral() {
-		if (this.echantillon.getTumoral() != null) {
-			if (this.echantillon.getTumoral().booleanValue()) {
-				return "oui";
-			} else {
-				return "non";
-			}
-		} else {
-			return null;
-		}
-	}
-	
-	public String getModeDePreparation() {
-		if (this.echantillon.getModePrepa() != null) {
-			return this.echantillon.getModePrepa().getNom();
-		} else {
-			return null;
-		}
-	}
-	
-	public String getSterile() {
-		if (this.echantillon.getSterile() != null) {
-			if (this.echantillon.getSterile().booleanValue()) {
-				return "oui";
-			} else {
-				return "non";
-			}
-		} else {
-			return null;
-		}
-	}
-	
-//	public String getReservation() {
-//		if (this.echantillon.getReservation() != null) {
-//			StringBuffer sb = new StringBuffer();
-//			if (this.echantillon.getReservation().getDebut() != null) {
-//				sb.append(ObjectTypesFormatters
-//					.dateRenderer2(this.echantillon.getReservation()
-//															.getDebut()));
-//			} else {
-//				sb.append("-");
-//			}
-//			
-//			if (this.echantillon.getReservation().getFin() != null) {
-//				sb.append(" ");
-//				sb.append(ObjectTypesFormatters
-//					.dateRenderer2(this.echantillon.getReservation()
-//															.getFin()));
-//			}
-//			
-//			return sb.toString();
-//		} else {
-//			return null;
-//		}
-//	}
-	
-	public String getEtatIncomplet() {
-		if (this.echantillon.getEtatIncomplet() != null) {
-			if (this.echantillon.getEtatIncomplet().booleanValue()) {
-				return "oui";
-			} else {
-				return "non";
-			}
-		} else {
-			return null;
-		}
-	}
-	
-	public String getArchive() {
-		if (this.echantillon.getArchive() != null) {
-			if (this.echantillon.getArchive().booleanValue()) {
-				return "oui";
-			} else {
-				return "non";
-			}
-		} else {
-			return null;
-		}
-	}
+      //	if (this.echantillon.getEchantillonId() != null) {
+      //		setCodesOrgsToCreateOrEdit(codeAssigneManager()
+      //				.findCodesOrganeByEchantillonManager(this.echantillon));
+      //		
+      //		setCodesLesToCreateOrEdit(codeAssigneManager()
+      //				.findCodesMorphoByEchantillonManager(this.echantillon));
+      //	}
+   }
 
+   public Echantillon getEchantillon(){
+      return echantillon;
+   }
 
-	@Override
-	public boolean equals(Object obj) {
-		
-		if (this == obj) {
-			return true;
-		}
-		
-		if ((obj == null) || obj.getClass() != this.getClass()) {
-			return false;
-		}
-		
-		EchantillonDTO deco = (EchantillonDTO) obj;
-		return this.getEchantillon().equals(deco.getEchantillon());
-		
-	}
+   public void setEchantillon(final Echantillon echan){
+      this.echantillon = echan;
+   }
 
-	@Override
-	public int hashCode() {
-		
-		int hash = 7;
-		int hashEchantillon = 0;
-		
-		if (this.echantillon != null) {
-			hashEchantillon = this.echantillon.hashCode();
-		}
-		
-		hash = 7 * hash + hashEchantillon;
+   public String getCode(){
+      return this.echantillon.getCode();
+   }
 
-		return hash;
-	}
-	
-	/**
-	 * Arrondi d'un double avec n éléments après la virgule.
-	 * @param a La valeur à convertir.
-	 * @param n Le nombre de décimales à conserver.
-	 * @return La valeur arrondi à n décimales.
-	 */
-	public static float floor(float a, int n) {
-		double p = Math.pow(10.0, n);
-		return (float) (Math.floor((a * p) + 0.5) / p);
-	}
+   public String getBanque(){
+      if(this.echantillon.getBanque() != null){
+         return this.echantillon.getBanque().getNom();
+      }
+      return null;
+   }
 
-	public Boolean getCheckedEchantillon() {
-		return checkedEchantillon;
-	}
+   public String getPrelevement(){
+      if(this.echantillon.getPrelevement() != null){
+         return this.echantillon.getPrelevement().getCode();
+      }
+      return null;
+   }
 
-	public void setCheckedEchantillon(Boolean checked) {
-		this.checkedEchantillon = checked;
-	}
+   public Calendar getDateStockage(){
+      return this.echantillon.getDateStock();
+   }
 
-	public String getAdrlTmp() {
-		return adrlTmp;
-	}
+   public String getAdicapOrgane(){
+      return null;
+   }
 
-	public void setAdrlTmp(String tmp) {
-		this.adrlTmp = tmp;
-	}
+   public String getType(){
+      if(this.echantillon.getEchantillonType() != null){
+         return this.echantillon.getEchantillonType().getType();
+      }
+      return null;
+   }
 
-	public List<AnnotationValeur> getValeursToCreateOrUpdate() {
-		return valeursToCreateOrUpdate;
-	}
+   /**
+    * Concatène la quantité et son unité.
+    * @return String.
+    */
+   public String getQuantite(){
+      final StringBuffer sb = new StringBuffer();
+      if(this.echantillon.getQuantite() != null){
+         sb.append(floor(this.echantillon.getQuantite(), 4));
+      }else{
+         sb.append("-");
+      }
 
-	public void setValeursToCreateOrUpdate(List<AnnotationValeur> vals) {
-		this.valeursToCreateOrUpdate = vals;
-	}
+      sb.append(" / ");
 
-	public List<CodeAssigne> getCodesOrgsToCreateOrEdit() {
-		return codesOrgsToCreateOrEdit;
-	}
+      if(this.echantillon.getQuantiteInit() != null){
+         sb.append(floor(this.echantillon.getQuantiteInit(), 4));
+      }else{
+         sb.append("-");
+      }
 
-	public void setCodesOrgsToCreateOrEdit(List<CodeAssigne> cOS) {
-		this.codesOrgsToCreateOrEdit = cOS;
-	}
+      if(this.echantillon.getQuantiteUnite() != null){
+         sb.append(" ");
+         sb.append(this.echantillon.getQuantiteUnite().getUnite());
+      }
 
-	public List<CodeAssigne> getCodesLesToCreateOrEdit() {
-		return codesLesToCreateOrEdit;
-	}
+      return sb.toString();
+   }
 
-	public void setCodesLesToCreateOrEdit(List<CodeAssigne> cLS) {
-		this.codesLesToCreateOrEdit = cLS;
-	}
+   /**
+    * Concatène la quantité initiale et son unité.
+    * @return String.
+    */
+   public String getQuantiteInitiale(){
+      final StringBuffer sb = new StringBuffer();
+      if(this.echantillon.getQuantiteInit() != null){
+         sb.append(this.echantillon.getQuantiteInit());
+      }else{
+         sb.append("-");
+      }
 
-	public CodeAssigne getCodeOrganeToExport() {
-		return codeOrganeToExport;
-	}
+      if(this.echantillon.getQuantiteUnite() != null){
+         sb.append(" ");
+         sb.append(this.echantillon.getQuantiteUnite().getUnite());
+      }
 
-	public void setCodeOrganeToExport(CodeAssigne coE) {
-		this.codeOrganeToExport = coE;
-	}
+      return sb.toString();
+   }
 
-	public CodeAssigne getCodeLesToExport() {
-		return codeLesToExport;
-	}
+   public String getOnlyQuantiteInit(){
 
-	public void setCodeLesToExport(CodeAssigne coE) {
-		this.codeLesToExport = coE;
-	}
+      final StringBuffer sb = new StringBuffer();
+      if(this.echantillon.getQuantiteInit() != null){
+         sb.append(this.echantillon.getQuantiteInit());
+      }else{
+         sb.append("-");
+      }
 
-	public List<NonConformite> getNonConformiteTraitements() {
-		return nonConformiteTraitements;
-	}
+      if(this.echantillon.getQuantiteUnite() != null){
+         sb.append(" ");
+         sb.append(this.echantillon.getQuantiteUnite().getUnite());
+      }
 
-	public void setNonConformiteTraitements(
-			List<NonConformite> n) {
-		this.nonConformiteTraitements = n;
-	}
+      return sb.toString();
+   }
 
-	public List<NonConformite> getNonConformiteCessions() {
-		return nonConformiteCessions;
-	}
+   public ObjetStatut getStatut(){
+      return this.echantillon.getObjetStatut();
 
-	public void setNonConformiteCessions(List<NonConformite> n) {
-		this.nonConformiteCessions = n;
-	}
+   }
 
-	public void setCode(String value) {
-		getEchantillon().setCode(value);
-	}
-	
-	public void setNbDerives(Integer _d) {
-		this.nbDerives = _d;
-	}
+   public Integer getNbDerives(){
+      return nbDerives;
+   }
 
-	public void setNbCessions(Integer _c) {
-		this.nbCessions = _c;
-	}
+   public Integer getNbCessions(){
+      return nbCessions;
+   }
 
-	public void setDateCreation(Calendar _d) {
-		this.dateCreation = _d;
-	}
+   public boolean isNew(){
+      return isNew;
+   }
 
-	public void setEmplacementAdrl(String _e) {
-		this.emplacementAdrl = _e;
-	}
+   /**
+    * Récupère la date de création système de l'échantillon.
+    * @return Date de création.
+    */
+   public Calendar getDateCreation(){
+      return dateCreation;
+      // Calendar date = ManagerLocator.getOperationManager()
+      // 	.findDateCreationManager(this.echantillon);
+      // if (dateCreation != null) {
+      //	return ObjectTypesFormatters.dateRenderer2(date);
+      // } else {
+      //	return null;
+      // }
+   }
 
-	public void setTempStock(Float _t) {
-		this.tempStock = _t;
-	}
+   public String getCollaborateurNomAndPrenom(){
+      final StringBuffer sb = new StringBuffer();
+      final Collaborateur collaborateur = this.echantillon.getCollaborateur();
+      if(collaborateur != null){
+         if(collaborateur.getNom() != null && collaborateur.getPrenom() != null){
+            sb.append(collaborateur.getNom());
+            sb.append(" ");
+            sb.append(collaborateur.getPrenom());
+         }else if(collaborateur.getNom() != null){
+            sb.append(collaborateur.getNom());
+         }else if(collaborateur.getPrenom() != null){
+            sb.append(collaborateur.getPrenom());
+         }
+      }
+      return sb.toString();
+   }
+
+   public String getEmplacementAdrl(){
+      // if (echantillon != null && echantillon.getEchantillonId() != null) {
+      //	return ManagerLocator.getEchantillonManager()
+      //		.getEmplacementAdrlManager(echantillon);
+      // } else {
+      //	return "";
+      // }
+      return emplacementAdrl;
+   }
+
+   /**
+    * @since 2.0.13
+    * @version 2.1.1
+    * @return température de stockage
+    */
+   public String getTempStock(){
+      //	if (echantillon != null) {
+      //		Float temp = ManagerLocator.getConteneurManager()
+      //				.findTempForEmplacementManager(echantillon.getEmplacement());
+      //		if (temp != null) {
+      //			return temp.toString();
+      //		}
+      //	}
+      //	return null;
+      if(tempStock != null){
+         return tempStock.toString();
+      }
+      return null;
+   }
+
+   public String getEmplacementAdrlinMulti(){
+      if(adrlTmp != null){
+         return adrlTmp;
+      }else if(echantillon != null && echantillon.getEchantillonId() != null){
+         //			return ManagerLocator.getEchantillonManager()
+         //				.getEmplacementAdrlManager(echantillon);
+         return emplacementAdrl;
+      }else{
+         return null;
+      }
+   }
+
+   public String getLateralite(){
+      //return this.echantillon.getLateralite();
+      return null;
+   }
+
+   public String getDelaiDeCongelation(){
+      if(this.echantillon.getDelaiCgl() != null){
+         return this.echantillon.getDelaiCgl().toString();
+      }
+      return null;
+   }
+
+   public String getQualite(){
+      if(this.echantillon.getEchanQualite() != null){
+         return this.echantillon.getEchanQualite().getEchanQualite();
+      }
+      return null;
+   }
+
+   public String getTumoral(){
+      if(this.echantillon.getTumoral() != null){
+         if(this.echantillon.getTumoral().booleanValue()){
+            return "oui";
+         }
+         return "non";
+      }
+      return null;
+   }
+
+   public String getModeDePreparation(){
+      if(this.echantillon.getModePrepa() != null){
+         return this.echantillon.getModePrepa().getNom();
+      }
+      return null;
+   }
+
+   public String getSterile(){
+      if(this.echantillon.getSterile() != null){
+         if(this.echantillon.getSterile().booleanValue()){
+            return "oui";
+         }
+         return "non";
+      }
+      return null;
+   }
+
+   public String getEtatIncomplet(){
+      if(this.echantillon.getEtatIncomplet() != null){
+         if(this.echantillon.getEtatIncomplet().booleanValue()){
+            return "oui";
+         }
+         return "non";
+      }
+      return null;
+   }
+
+   public String getArchive(){
+      if(this.echantillon.getArchive() != null){
+         if(this.echantillon.getArchive().booleanValue()){
+            return "oui";
+         }
+         return "non";
+      }
+      return null;
+   }
+
+   @Override
+   public boolean equals(final Object obj){
+
+      if(this == obj){
+         return true;
+      }
+
+      if((obj == null) || obj.getClass() != this.getClass()){
+         return false;
+      }
+
+      final EchantillonDTO deco = (EchantillonDTO) obj;
+      return this.getEchantillon().equals(deco.getEchantillon());
+
+   }
+
+   @Override
+   public int hashCode(){
+
+      int hash = 7;
+      int hashEchantillon = 0;
+
+      if(this.echantillon != null){
+         hashEchantillon = this.echantillon.hashCode();
+      }
+
+      hash = 7 * hash + hashEchantillon;
+
+      return hash;
+   }
+
+   /**
+    * Arrondi d'un double avec n éléments après la virgule.
+    * @param a La valeur à convertir.
+    * @param n Le nombre de décimales à conserver.
+    * @return La valeur arrondi à n décimales.
+    */
+   public static float floor(final float a, final int n){
+      final double p = Math.pow(10.0, n);
+      return (float) (Math.floor((a * p) + 0.5) / p);
+   }
+
+   public Boolean getCheckedEchantillon(){
+      return checkedEchantillon;
+   }
+
+   public void setCheckedEchantillon(final Boolean checked){
+      this.checkedEchantillon = checked;
+   }
+
+   public String getAdrlTmp(){
+      return adrlTmp;
+   }
+
+   public void setAdrlTmp(final String tmp){
+      this.adrlTmp = tmp;
+   }
+
+   public List<AnnotationValeur> getValeursToCreateOrUpdate(){
+      return valeursToCreateOrUpdate;
+   }
+
+   public void setValeursToCreateOrUpdate(final List<AnnotationValeur> vals){
+      this.valeursToCreateOrUpdate = vals;
+   }
+
+   public List<CodeAssigne> getCodesOrgsToCreateOrEdit(){
+      return codesOrgsToCreateOrEdit;
+   }
+
+   public void setCodesOrgsToCreateOrEdit(final List<CodeAssigne> cOS){
+      this.codesOrgsToCreateOrEdit = cOS;
+   }
+
+   public List<CodeAssigne> getCodesLesToCreateOrEdit(){
+      return codesLesToCreateOrEdit;
+   }
+
+   public void setCodesLesToCreateOrEdit(final List<CodeAssigne> cLS){
+      this.codesLesToCreateOrEdit = cLS;
+   }
+
+   public CodeAssigne getCodeOrganeToExport(){
+      return codeOrganeToExport;
+   }
+
+   public void setCodeOrganeToExport(final CodeAssigne coE){
+      this.codeOrganeToExport = coE;
+   }
+
+   public CodeAssigne getCodeLesToExport(){
+      return codeLesToExport;
+   }
+
+   public void setCodeLesToExport(final CodeAssigne coE){
+      this.codeLesToExport = coE;
+   }
+
+   public List<NonConformite> getNonConformiteTraitements(){
+      return nonConformiteTraitements;
+   }
+
+   public void setNonConformiteTraitements(final List<NonConformite> n){
+      this.nonConformiteTraitements = n;
+   }
+
+   public List<NonConformite> getNonConformiteCessions(){
+      return nonConformiteCessions;
+   }
+
+   public void setNonConformiteCessions(final List<NonConformite> n){
+      this.nonConformiteCessions = n;
+   }
+
+   public void setCode(final String value){
+      getEchantillon().setCode(value);
+   }
+
+   public void setNbDerives(final Integer _d){
+      this.nbDerives = _d;
+   }
+
+   public void setNbCessions(final Integer _c){
+      this.nbCessions = _c;
+   }
+
+   public void setDateCreation(final Calendar _d){
+      this.dateCreation = _d;
+   }
+
+   public void setEmplacementAdrl(final String _e){
+      this.emplacementAdrl = _e;
+   }
+
+   public void setTempStock(final Float _t){
+      this.tempStock = _t;
+   }
 }

@@ -7,25 +7,31 @@
     <!--<bannerRight>
         <name>AP-HP</name>
     </bannerRight>-->
+    <version position="right"/>
     <publishDate position="right"/>
     <skin>
         <groupId>org.apache.maven.skins</groupId>
         <artifactId>maven-fluido-skin</artifactId>
-        <version>1.6</version>
+        <version>1.7</version>
     </skin>
     <body>
         <head>
             <![CDATA[<link rel="icon" href="images/favicon.ico">]]>
-            <![CDATA[<script src="https://use.fontawesome.com/cc50386fe4.js"></script>]]>
+            <![CDATA[<script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>]]>
             <![CDATA[<script>
                 window.onload = function() {
                     document.querySelectorAll('[title="GitHub"]')[0].href = "${project.url}";
+                    document.querySelectorAll('[title="Liste des versions"]')[0].href = "${project.url}/releases";
                     document.querySelectorAll('[title="Dossier d\'installation"]')[0].href = "${project.url}/releases/download/v${project.parent.version}/${project.artifactId}-${project.parent.version}.zip";
                 };
             </script>]]>
         </head>
+        <breadcrumbs>
+            <!--<item name="Interfaces" href="../../"/>-->
+            <item name="Liste des versions" href=""/>
+        </breadcrumbs>
         <links>
-            <item name="GitHub" href="https://github.com/TumoroteK/TumoroteK" img="images/GitHub-Mark-32px.png" width="20px"/>
+            <item name="GitHub" href="https://github.com/TumoroteK/TumoroteK" img="images/GitHub-Mark-32px.png" width="14px"/>
         </links>
         <menu name="TumoroteK">
             <item name="Notes de version" href="note-version.html" />

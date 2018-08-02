@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 	<changeSet id="1" author="JDI" context="*, 2.1.3, 2.1.4">
-		<tagDatabase tag="${project.parent.version}" />
-	</changeSet>
-	<changeSet id="2" author="JDI" context="*, 2.1.3, 2.1.4">
 		<preConditions onFail="MARK_RAN">
 			<tableExists tableName="VERSION" />
 			<columnExists tableName="VERSION" columnName="DATE_" />
@@ -16,12 +13,15 @@
 		<renameColumn columnDataType="DATETIME" oldColumnName="DATE_"
 			newColumnName="DATE" tableName="VERSION" />
 	</changeSet>
-	<changeSet id="3" author="ABO" context="*, 2.1.3, 2.1.4">
+	<changeSet id="2" author="ABO" context="*, 2.1.3, 2.1.4">
 		<comment>Update Table VERSION Col VERSION VARCHAR(20) -> VARCHAR(100)</comment>
 		<modifyDataType tableName="VERSION" columnName="VERSION"
 						newDataType="VARCHAR(100)" />
 		<addNotNullConstraint columnDataType="VARCHAR(100)"
 							  columnName="VERSION"
 							  tableName="VERSION"/>
+	</changeSet>
+	<changeSet id="3" author="JDI" context="*, 2.1.3, 2.1.4">
+		<tagDatabase tag="${project.parent.version}" />
 	</changeSet>
 </databaseChangeLog>

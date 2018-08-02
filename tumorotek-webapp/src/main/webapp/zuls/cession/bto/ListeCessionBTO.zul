@@ -1,0 +1,172 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<window id="lwinCessionBTO" border="none" apply="fr.aphp.tumorotek.action.cession.bto.ListeCessionBTO">
+<panel border="none" collapsible="true" id="listPanel" sclass="fichePanelv2">
+	<panelchildren id="scrollPan" style="overflow-y: auto">
+		<grid id="objectsListGrid" mold="paging"
+			fixedLayout="true" 
+			autopaging="true" vflex="1" hflex="1"
+			sclass="gridListStyle"
+			span="true"
+			sizedByContent="true"
+			model="@{lwinCessionBTO$composer.listObjects}"
+			rowRenderer="@{lwinCessionBTO$composer.listObjectsRenderer}">
+			<columns menupopup="auto" sizable="true" width="100%">
+				<column width="40px">
+					<checkbox id="checkAll"/>
+				</column>
+				<column align="center" width="20px"/>
+				<column label="${c:l('Champ.Cession.Numero')}" sort="auto(numero)"/>
+				<column label="${c:l('Champ.Cession.CessionType.Type')}" sort="auto(cessionType.type)"
+					width="100px"/>
+				<column label="${c:l('Entite.Banque')}" 
+						visible="@{lwinCessionBTO$composer.isTtesCollection}" />
+				<column label="${c:l('echantillons.nb')}" 
+					sort="auto" id="nbEchantillonsColumn"/>
+				<column label="${c:l('derives.nb')}" 
+					sort="auto" id="nbProdDerivesColumn"/>
+				<column label="${c:l('Champ.Cession.ReceptionDate')}" sort="auto(demandeDate)" />
+				<column label="${c:l('cessions.date.DateEnvoi')}" sort="auto(departDate)"/>
+				<column label="${c:l('Champ.Cession.Demandeur')}" sort="auto(demandeur.nom)"/>
+				<column label="${c:l('cessions.titre.etude')}" width="150px" visible="false"/>
+				<column label="${c:l('Champ.Cession.CessionStatut')}" sort="auto(cessionStatut.statut)" />
+				<column label="${c:l('cessions.etat')}" visible="false" width="100px"/>
+				<column label="${c:l('Champ.Cession.Contrat')}"  visible="false" width="100px"/>
+				<column label="${c:l('Champ.Cession.Pers.Resp.Distribution')}" visible="false" width="100px"/>
+			</columns>
+			<rows>
+				<row self="@{each='currCession'}" value="currCession"/>
+			</rows>
+		</grid>
+	</panelchildren>
+</panel>
+<panel title="${c:l('general.recherche.rapide')}" collapsible="false" height="150px"
+sclass="panelv2">
+	<panelchildren>
+		<radiogroup id="criteresRadioGroup">
+			<vbox>
+				<hbox>
+					<radio id="dateCreation"/>
+					<div width="150px">
+						<label value="${c:l('cessions.critere.date.creation')}"
+							sclass="formLabel"/>
+					</div>
+					<listbox id="dateCreationBox" mold="select" rows="1"
+						model="@{lwinCessionBTO$composer.creationDates}">
+							<listitem self="@{each='date'}" value="@{date}">			
+								<listcell label="@{date}" />
+							</listitem>
+					</listbox>
+				</hbox>
+				<hbox>
+					<radio id="numeroCession"/>
+					<div width="150px">
+						<label value="${c:l('cessions.critere.numero')}" sclass="formLabel"/>
+					</div>
+					<textbox id="codeBoxCession" 
+						value="@{lwinCessionBTO$composer.searchNumero,
+	        			save-when='find.onClick, self.onOK'}" 
+						forward="onOK=onPressEnterKey()"
+					/>
+				</hbox>
+				<hbox>
+					<radio id="statutCession"/>
+					<div width="150px">
+						<label value="${c:l('cessions.critere.statut')}"
+							sclass="formLabel"/>
+					</div>
+					<listbox id="statutBoxCession" mold="select" rows="1"
+						model="@{lwinCessionBTO$composer.statuts}">
+							<listitem self="@{each='statut'}" value="@{statut}">			
+								<listcell label="@{statut}" />
+							</listitem>
+					</listbox>
+				</hbox>
+			</vbox>
+		</radiogroup>
+	</panelchildren>
+	<toolbar height="100%" id="lToolbarEchan" align="start">
+		<hbox spacing="5">
+			<button id="find" label="${c:l('general.find')}" height="24px" visible="true"
+				image="/images/icones/search.png" sclass="buttonv2"/>
+			<button id="findMore" label="${c:l('general.recherche.avancee')}" 
+					image="/images/icones/find.png" height="24px" visible="true" sclass="buttonv2"/>
+			<button id="addNew" label="${c:l('general.new')}" height="24px" visible="true"
+				image="/images/icones/new.png" sclass="buttonv2"
+				use="fr.aphp.tumorotek.component.TKDisablableButton" />
+			<menubar sclass="menuBarV2" id="menuBar">
+				<menu label="${c:l('general.tree.objs')}"
+					image="/images/icones/objTree.png" width="36px"
+					height="24px">
+					<menupopup>
+						<menuitem id="patientsItem"
+							image="/images/icones/patient.png"
+							label="${c:l('Entite.Patient.pluriel')}"
+							disabled="true" />
+						<menuitem id="prelevementsItem"
+							image="/images/icones/prelevement.png"
+							label="${c:l('Entite.Prelevement.pluriel')}" 
+							disabled="true" />
+						<menuitem id="echantillonsItem"
+							image="/images/icones/echantillon.png"
+							label="${c:l('Entite.Echantillon.pluriel')}" 
+							disabled="true" />
+						<menuitem id="derivesItem"
+							image="/images/icones/derive.png"
+							label="${c:l('Entite.ProdDerive.pluriel')}" 
+							disabled="true" />
+					</menupopup>
+				</menu>
+			</menubar>
+			<menubar sclass="menuBarV2" id="menuBarEchantillons">
+				<menu label="${c:l('general.actions')}" image="/images/icones/small_utilities.png" 
+					height="24px">
+					<menupopup>
+						<menuitem id="exportItem" image="/images/icones/export.png" 
+							label="${c:l('general.actions.exporter')}"
+							disabled="true"/>
+						<menuitem id="exportItemAdv"
+								image="/images/icones/export.png"
+								label="${c:l('general.actions.exporterAdv')}" disabled="true" />
+						<menuitem id="deleteItem" image="/images/icones/delete.png"
+								label="${c:l('general.delete')}" disabled="true" visible="false"/>
+					</menupopup>
+				</menu>
+			</menubar>
+		</hbox>
+	</toolbar>
+</panel>
+</window>

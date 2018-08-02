@@ -35,7 +35,7 @@
 -->
 <?component name="referents" macroURI="/zuls/patient/MedecinsReferents.zul" ?>
 <?component name="incaPopUps" macroURI="/zuls/patient/incaPopUpsPatient.zul" inline="true" ?>
-
+<?component name="ficheAnnotationInline" macroURI="/zuls/annotation/FicheAnnotationInline.zul" ?>
 
 <window id="fwinPatientEdit" border="none" apply="fr.aphp.tumorotek.action.patient.FichePatientEdit">
 	<panel id="winPanel" title="${c:l('fichePatient.panel.title')}"
@@ -161,7 +161,11 @@
 						<datebox id="dateEtatDecesBox" format="${c:l('validation.date.format.simple')}" 
 							value="@{fwinPatientEdit$composer.dateEtatDeces,
 								save-when='validate.onClick, create.onClick'}" lenient="false"/>
-					</row>		
+					</row>
+					<!-- Annotation inline -->
+					<row spans="4" style="background-color: blue">
+						<ficheAnnotationInline id="ficheTissuInlineAnnoPatient" hflex="1"/>
+					</row>
 					<!-- Referents -->
 					<group id="referentsGroup" 
 						label="@{fwinPatientEdit$composer.referentsGroupHeader load-after='onRefreshHeader'}"

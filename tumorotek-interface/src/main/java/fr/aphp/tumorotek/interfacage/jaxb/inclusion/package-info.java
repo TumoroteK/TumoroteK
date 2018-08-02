@@ -14,5 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@javax.xml.bind.annotation.XmlSchema(namespace = "http://openclinica.org/ws/beans", elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
+@javax.xml.bind.annotation.XmlSchema(namespace = "http://openclinica.org/ws/beans",
+   elementFormDefault = javax.xml.bind.annotation.XmlNsForm.QUALIFIED)
 package fr.aphp.tumorotek.interfacage.jaxb.inclusion;

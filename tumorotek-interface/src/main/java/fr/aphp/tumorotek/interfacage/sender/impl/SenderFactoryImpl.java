@@ -1,37 +1,37 @@
-/** 
+/**
  * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
  * dsi-projet.tk@aphp.fr
- * 
- * Ce logiciel est un programme informatique servant à la gestion de 
- * l'activité de biobanques. 
+ *
+ * Ce logiciel est un programme informatique servant à la gestion de
+ * l'activité de biobanques.
  *
  * Ce logiciel est régi par la licence CeCILL soumise au droit français
- * et respectant les principes de diffusion des logiciels libres. Vous 
- * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
- * conditions de la licence CeCILL telle que diffusée par le CEA, le 
- * CNRS et l'INRIA sur le site "http://www.cecill.info". 
- * En contrepartie de l'accessibilité au code source et des droits de   
- * copie, de modification et de redistribution accordés par cette 
- * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
- * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
- * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * et respectant les principes de diffusion des logiciels libres. Vous
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le
+ * CNRS et l'INRIA sur le site "http://www.cecill.info".
+ * En contrepartie de l'accessibilité au code source et des droits de
+ * copie, de modification et de redistribution accordés par cette
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée.
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les
  * concédants successifs.
  *
- * A cet égard  l'attention de l'utilisateur est attirée sur les 
- * risques associés au chargement,  à l'utilisation,  à la modification 
- * et/ou au  développement et à la reproduction du logiciel par 
- * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
- * le rendre complexe à manipuler et qui le réserve donc à des 	
- * développeurs et des professionnels  avertis possédant  des 
- * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * A cet égard  l'attention de l'utilisateur est attirée sur les
+ * risques associés au chargement,  à l'utilisation,  à la modification
+ * et/ou au  développement et à la reproduction du logiciel par
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut
+ * le rendre complexe à manipuler et qui le réserve donc à des
+ * développeurs et des professionnels  avertis possédant  des
+ * connaissances  informatiques approfondies.  Les utilisateurs sont
  * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
  * besoins dans des conditions permettant d'assurer la sécurité de leurs
- * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
- * et l'exploiter dans les mêmes conditions de sécurité. 
- *	
- * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
- * avez pris connaissance de la licence CeCILL, et que vous en avez 
- * accepté les termes. 
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser
+ * et l'exploiter dans les mêmes conditions de sécurité.
+ *
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous
+ * avez pris connaissance de la licence CeCILL, et que vous en avez
+ * accepté les termes.
  **/
 package fr.aphp.tumorotek.interfacage.sender.impl;
 
@@ -48,52 +48,50 @@ import fr.aphp.tumorotek.model.interfacage.Recepteur;
 import fr.aphp.tumorotek.model.qualite.OperationType;
 import fr.aphp.tumorotek.model.stockage.Emplacement;
 
-public class SenderFactoryImpl implements SenderFactory {
-	
-	private HmMessageSender hmMessageSender;
-	private TumoLinkUrd tumoLinkUrd;
-	private StorageRobotSender storageRobotSender;
-	
-	public void setHmMessageSender(HmMessageSender h) {
-		this.hmMessageSender = h;
-	}
+public class SenderFactoryImpl implements SenderFactory
+{
 
-	public void setTumoLinkUrd(TumoLinkUrd t) {
-		this.tumoLinkUrd = t;
-	}
+   private HmMessageSender hmMessageSender;
+   private TumoLinkUrd tumoLinkUrd;
+   private StorageRobotSender storageRobotSender;
 
-	public void setStorageRobotSender(StorageRobotSender s) {
-		this.storageRobotSender = s;
-	}
+   public void setHmMessageSender(final HmMessageSender h){
+      this.hmMessageSender = h;
+   }
 
-	@Override
-	public void sendMessage(Recepteur re, TKAnnotableObject tkObj,
-			String dosExtId, String url) {
+   public void setTumoLinkUrd(final TumoLinkUrd t){
+      this.tumoLinkUrd = t;
+   }
 
-		if (tumoLinkUrd.useRecepteur(re)) {
-			tumoLinkUrd.sendMessage(tkObj, dosExtId, url);
-		}
-		if (hmMessageSender.useRecepteur(re)) {
-			hmMessageSender.sendMessage(tkObj, dosExtId, url);
-		}
-	}
+   public void setStorageRobotSender(final StorageRobotSender s){
+      this.storageRobotSender = s;
+   }
 
-	@Override
-	public void sendMessages(Recepteur re, List<TKAnnotableObject> tkObjs,
-			Integer b) {
-		// seul Hopital Manager DME n'est concerné pour l'instant
-		if (hmMessageSender.useRecepteur(re)) {
-			hmMessageSender.sendMessages(tkObjs, b);
-		}		
-	}
+   @Override
+   public void sendMessage(final Recepteur re, final TKAnnotableObject tkObj, final String dosExtId, final String url){
 
-	@Override
-	public void sendEmplacements(Recepteur re, Map<TKStockableObject, Emplacement> tkEmpls, OperationType oType) {
-		// seul le système IRELEC-Grenoble concerné pour l'instant
-		if (storageRobotSender.useRecepteur(re)) {
-			storageRobotSender.sendEmplacements(re, tkEmpls, oType);
-		}
-	}
+      if(tumoLinkUrd.useRecepteur(re)){
+         tumoLinkUrd.sendMessage(tkObj, dosExtId, url);
+      }
+      if(hmMessageSender.useRecepteur(re)){
+         hmMessageSender.sendMessage(tkObj, dosExtId, url);
+      }
+   }
 
-	
+   @Override
+   public void sendMessages(final Recepteur re, final List<TKAnnotableObject> tkObjs, final Integer b){
+      // seul Hopital Manager DME n'est concerné pour l'instant
+      if(hmMessageSender.useRecepteur(re)){
+         hmMessageSender.sendMessages(tkObjs, b);
+      }
+   }
+
+   @Override
+   public void sendEmplacements(final Recepteur re, final Map<TKStockableObject, Emplacement> tkEmpls, final OperationType oType){
+      // seul le système IRELEC-Grenoble concerné pour l'instant
+      if(storageRobotSender.useRecepteur(re)){
+         storageRobotSender.sendEmplacements(re, tkEmpls, oType);
+      }
+   }
+
 }

@@ -49,8 +49,7 @@
 		</tabs>
 		<tabpanels>
 			<tabpanel id="panelModelisation" hflex="1" vflex="1">
-				<tabbox id="modelisationTabbox"
-					mold="accordion" sclass="tabAcc">
+				<tabbox id="modelisationTabbox" mold="accordion" sclass="tabAcc">
 					<tabs>
 						<tab label="${c:l('recherche.tabbox.affichages')}" />
 						<tab label="${c:l('recherche.tabbox.requetes')}"/>

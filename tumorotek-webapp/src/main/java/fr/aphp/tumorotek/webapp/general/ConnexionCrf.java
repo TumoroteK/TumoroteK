@@ -30,381 +30,357 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 @SuppressWarnings("deprecation")
-public class ConnexionCrf extends GenericForwardComposer<Component> {
-	
-	private static final long serialVersionUID = -6157769915889694408L;
-	
-	private Log log = LogFactory.getLog(ConnexionCrf.class);
-	
-	private Row rowWait;
-	private Row rowError;
-	private Row rowInactive;
-	
-	// variables POST
-	private String login = null;
-	private String pass = null;
-	private String banque =  null;
-	private String nip =  null;
-	private String nom =  null;
-	private String nomNaissance =  null;
-	private String prenom =  null;
-	private String sexe =  null;
-	private String dateNaissance =  null;
-	
-	private Banque selectedBanque = null;
-	private Utilisateur user = null;
+public class ConnexionCrf extends GenericForwardComposer<Component>
+{
 
-	@Override
-	public void doAfterCompose(Component comp) throws Exception {
-		super.doAfterCompose(comp);
-		
-		// on vérifie que la connexion est bien active
-		if (connexionActive()) {
-			rowInactive.setVisible(false);
-			extractParameters();
-			
-			if (selectedBanque != null && logUser()) {
-				rowWait.setVisible(true);
-				rowError.setVisible(false);
-				
-				user = ConnexionUtils.getLoggedUtilisateur();
-				
-				redirect();
-				
-			} else {
-				if (selectedBanque != null) {
-					log.info("La tentative de connection " 
-						+ login + " a échoué "
-						+ "car les paramètres de connection sont invalides");
-				} else {
-					log.info("Aucune banque trouvée ayant l'identifiant " 
-							+ "'" + banque + "'");
-				}
-				rowWait.setVisible(false);
-				rowError.setVisible(true);
-			}
-		} else {
-			rowInactive.setVisible(true);
-			rowWait.setVisible(false);
-			rowError.setVisible(false);
-		}
-	}
-	
-	/**
-	 * envoie true si la connexion depuis un crf est active.
-	 * @return
-	 */
-	public boolean connexionActive() {
-		boolean active = false;
-		
-		// on récupère le bundle de paramétrage de l'application
-		ResourceBundle res = null;
-    	if (ManagerLocator.getResourceBundleTumo()
-    			.doesResourceBundleExists("tumorotek.properties")) {
-    		res = ManagerLocator.getResourceBundleTumo()
-    			.getResourceBundle("tumorotek.properties");
-    	}
-    	// on récupère la propriété définissant les interfaçages
-    	String connexion = null;
-    	if (res.containsKey("CONNEXION_CRF")) {
-    		connexion = res.getString("CONNEXION_CRF");
-    	}
-    	if (connexion != null && connexion.equals("true")) {
-    		// extraction des interfaçages
-    		active = true;
-    	}
-    	
-    	return active;
-	}
-	
-	/**
-	 * Extrait les paramètres passés dans l'url.
-	 */
-	public void extractParameters() {
-		// extraction du login
-		String[] tmp = ((String[]) Executions.getCurrent()
-				.getParameterMap().get("loginCrf"));
-		if (tmp != null && tmp.length > 0) {
-			login = tmp[0];
-		} else {
-			login = null;
-		}
-		
-		// extraction du mdp
-		tmp = ((String[]) Executions.getCurrent()
-				.getParameterMap().get("passCrf"));
-		if (tmp != null && tmp.length > 0) {
-			pass = tmp[0];
-		} else {
-			pass = null;
-		}
-		
-		// extraction de la banque
-		tmp = ((String[]) Executions.getCurrent()
-				.getParameterMap().get("banque"));
-		if (tmp != null && tmp.length > 0) {
-			banque = tmp[0];
-			try {
-				Integer id = Integer.parseInt(banque);
-				selectedBanque = ManagerLocator.getBanqueManager()
-					.findByIdManager(id);
-			} catch (Exception e) {
-				selectedBanque = null;
-			}
-		} else {
-			banque = null;
-			selectedBanque = null;
-		}
-		
-		// extraction du nip
-		tmp = ((String[]) Executions.getCurrent()
-				.getParameterMap().get("nip"));
-		if (tmp != null && tmp.length > 0) {
-			nip = tmp[0];
-		} else {
-			nip = null;
-		}
-		
-		// extraction du nom
-		tmp = ((String[]) Executions.getCurrent()
-				.getParameterMap().get("nom"));
-		if (tmp != null && tmp.length > 0) {
-			nom = tmp[0];
-		} else {
-			nom = null;
-		}
-		
-		// extraction du nomNaissance
-		tmp = ((String[]) Executions.getCurrent()
-				.getParameterMap().get("nomNaissance"));
-		if (tmp != null && tmp.length > 0) {
-			nomNaissance = tmp[0];
-		} else {
-			nomNaissance = null;
-		}
-		
-		// extraction du prenom
-		tmp = ((String[]) Executions.getCurrent()
-				.getParameterMap().get("prenom"));
-		if (tmp != null && tmp.length > 0) {
-			prenom = tmp[0];
-		} else {
-			prenom = null;
-		}
-		
-		// extraction du sexe
-		tmp = ((String[]) Executions.getCurrent()
-				.getParameterMap().get("sexe"));
-		if (tmp != null && tmp.length > 0) {
-			sexe = tmp[0];
-		} else {
-			sexe = null;
-		}
-		
-		// extraction de la date de naissance
-		tmp = ((String[]) Executions.getCurrent()
-				.getParameterMap().get("dateNaissance"));
-		if (tmp != null && tmp.length > 0) {
-			dateNaissance = tmp[0];
-		} else {
-			dateNaissance = null;
-		}
-	}
-	
-	/**
-	 * Log un utilisateur et renvoie true si la connection s'est
-	 * bien passée.
-	 * @param login
-	 * @param pass
-	 * @return
-	 */
-	public boolean logUser() {
-		boolean ok = false;
-		
-		if (login != null && pass != null) {
-			
-			// on transforme le mdp en MD5
-			PasswordEncoder encoder = new Md5PasswordEncoder();
-			String pwd = encoder.encodePassword(pass, null);
-			
-			if (ManagerLocator.getUtilisateurManager()
-					.findByLoginPasswordAndArchiveManager(
-							login, pwd, false).size() > 0) {
-				ok = true;
-				
-				// création d'un utilisateur pour SpringSecurity
-				User u = new User(login, pwd,
-						true, true, true, true, 
-						getAuthorities(false));
-				
-				// Authentification de cet utilisateur
-				Authentication auth = 
-					  new UsernamePasswordAuthenticationToken(u, null, 
-							  getAuthorities(false));
+   private static final long serialVersionUID = -6157769915889694408L;
 
-				// on met l'utilisateur dans SpringSecurity
-				SecurityContextHolder.getContext().setAuthentication(auth);
-			} else {
-				ok = false;
-			}			
-		}
-		return ok;
-	}
-	
-	private Collection<? extends GrantedAuthority> getAuthorities(boolean isAdmin) {
-		List<GrantedAuthority> authList = new ArrayList<GrantedAuthority>(2);
-		authList.add(new GrantedAuthorityImpl("ROLE_USER"));
-		if (isAdmin) {
-			authList.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
-		}
-		return authList;
-	}
-	
-	/**
-	 * Valide la page et redirige vers TumoroteK.
-	 */
-	public void redirect() {
-		if (selectedBanque != null) {
-			sessionScope.put("User", user);
-			sessionScope.put("Plateforme", selectedBanque.getPlateforme());
-			sessionScope.put("Banque", selectedBanque);
-			List<Banque> bks = new ArrayList<Banque>();
-			bks.add(selectedBanque);
-			ConnexionUtils.setSessionCatalogues(bks, sessionScope);
-			ConnexionUtils.generateDroitsForSelectedBanque(selectedBanque,
-					user, sessionScope);
-			sessionScope.remove("ToutesCollections");
+   private final Log log = LogFactory.getLog(ConnexionCrf.class);
 
-			// gestion des interfaçages
-			ConnexionUtils.initInterfacages(selectedBanque.getPlateforme(), sessionScope);
-			
-			// on passe le patient dans la session
-			sessionScope.put("patient", createPatientFromParameters());
-			
-			Executions.sendRedirect("/zuls/main/main.zul");
-		}
-	}
-	
-	public void onClientInfo$winConnectionCrf(ClientInfoEvent event) {
-		sessionScope.put("screenWidth", event.getDesktopWidth());
-		sessionScope.put("screenHeight", event.getDesktopHeight());
-	}
-	
-	/**
-	 * Crée et initialise un objet Patient à partir des paramètres
-	 * passés dans l'url.
-	 * @return
-	 */
-	public Patient createPatientFromParameters() {
-		Patient pat = new Patient();
-		
-		pat.setNip(nip);
-		pat.setNom(nom);
-		pat.setNomNaissance(nomNaissance);
-		pat.setPrenom(prenom);
-		pat.setSexe(sexe);
-		
-		Date date = null;
-		if (dateNaissance != null) {
-			SimpleDateFormat sdf = 
-				new SimpleDateFormat("yyyyMMdd");
-			try {
-				date = sdf.parse(dateNaissance);
-			} catch (ParseException e) {
-				date = null;
-			}
-		}
-		pat.setDateNaissance(date);
-		
-		return pat;
-	}
-	
-	public String getLogin() {
-		return login;
-	}
+   private Row rowWait;
+   private Row rowError;
+   private Row rowInactive;
 
-	public void setLogin(String l) {
-		this.login = l;
-	}
+   // variables POST
+   private String login = null;
+   private String pass = null;
+   private String banque = null;
+   private String nip = null;
+   private String nom = null;
+   private String nomNaissance = null;
+   private String prenom = null;
+   private String sexe = null;
+   private String dateNaissance = null;
 
-	public String getPass() {
-		return pass;
-	}
+   private Banque selectedBanque = null;
+   private Utilisateur user = null;
 
-	public void setPass(String p) {
-		this.pass = p;
-	}
+   @Override
+   public void doAfterCompose(final Component comp) throws Exception{
+      super.doAfterCompose(comp);
 
-	public String getBanque() {
-		return banque;
-	}
+      // on vérifie que la connexion est bien active
+      if(connexionActive()){
+         rowInactive.setVisible(false);
+         extractParameters();
 
-	public void setBanque(String b) {
-		this.banque = b;
-	}
+         if(selectedBanque != null && logUser()){
+            rowWait.setVisible(true);
+            rowError.setVisible(false);
 
-	public Banque getSelectedBanque() {
-		return selectedBanque;
-	}
+            user = ConnexionUtils.getLoggedUtilisateur();
 
-	public void setSelectedBanque(Banque s) {
-		this.selectedBanque = s;
-	}
+            redirect();
 
-	public Utilisateur getUser() {
-		return user;
-	}
+         }else{
+            if(selectedBanque != null){
+               log.info("La tentative de connection " + login + " a échoué " + "car les paramètres de connection sont invalides");
+            }else{
+               log.info("Aucune banque trouvée ayant l'identifiant " + "'" + banque + "'");
+            }
+            rowWait.setVisible(false);
+            rowError.setVisible(true);
+         }
+      }else{
+         rowInactive.setVisible(true);
+         rowWait.setVisible(false);
+         rowError.setVisible(false);
+      }
+   }
 
-	public void setUser(Utilisateur u) {
-		this.user = u;
-	}
+   /**
+    * envoie true si la connexion depuis un crf est active.
+    * @return
+    */
+   public boolean connexionActive(){
+      boolean active = false;
 
-	public String getNip() {
-		return nip;
-	}
+      // on récupère le bundle de paramétrage de l'application
+      ResourceBundle res = null;
+      if(ManagerLocator.getResourceBundleTumo().doesResourceBundleExists("tumorotek.properties")){
+         res = ManagerLocator.getResourceBundleTumo().getResourceBundle("tumorotek.properties");
+      // on récupère la propriété définissant les interfaçages
+         String connexion = null;
+         if(res.containsKey("CONNEXION_CRF")){
+            connexion = res.getString("CONNEXION_CRF");
+         }
+         if(connexion != null && connexion.equals("true")){
+            // extraction des interfaçages
+            active = true;
+         }
+      }
+      return active;
+   }
 
-	public void setNip(String n) {
-		this.nip = n;
-	}
+   /**
+    * Extrait les paramètres passés dans l'url.
+    */
+   public void extractParameters(){
+      // extraction du login
+      String[] tmp = (Executions.getCurrent().getParameterMap().get("loginCrf"));
+      if(tmp != null && tmp.length > 0){
+         login = tmp[0];
+      }else{
+         login = null;
+      }
 
-	public String getNom() {
-		return nom;
-	}
+      // extraction du mdp
+      tmp = (Executions.getCurrent().getParameterMap().get("passCrf"));
+      if(tmp != null && tmp.length > 0){
+         pass = tmp[0];
+      }else{
+         pass = null;
+      }
 
-	public void setNom(String n) {
-		this.nom = n;
-	}
+      // extraction de la banque
+      tmp = (Executions.getCurrent().getParameterMap().get("banque"));
+      if(tmp != null && tmp.length > 0){
+         banque = tmp[0];
+         try{
+            final Integer id = Integer.parseInt(banque);
+            selectedBanque = ManagerLocator.getBanqueManager().findByIdManager(id);
+         }catch(final Exception e){
+            selectedBanque = null;
+         }
+      }else{
+         banque = null;
+         selectedBanque = null;
+      }
 
-	public String getNomNaissance() {
-		return nomNaissance;
-	}
+      // extraction du nip
+      tmp = (Executions.getCurrent().getParameterMap().get("nip"));
+      if(tmp != null && tmp.length > 0){
+         nip = tmp[0];
+      }else{
+         nip = null;
+      }
 
-	public void setNomNaissance(String n) {
-		this.nomNaissance = n;
-	}
+      // extraction du nom
+      tmp = (Executions.getCurrent().getParameterMap().get("nom"));
+      if(tmp != null && tmp.length > 0){
+         nom = tmp[0];
+      }else{
+         nom = null;
+      }
 
-	public String getPrenom() {
-		return prenom;
-	}
+      // extraction du nomNaissance
+      tmp = (Executions.getCurrent().getParameterMap().get("nomNaissance"));
+      if(tmp != null && tmp.length > 0){
+         nomNaissance = tmp[0];
+      }else{
+         nomNaissance = null;
+      }
 
-	public void setPrenom(String p) {
-		this.prenom = p;
-	}
+      // extraction du prenom
+      tmp = (Executions.getCurrent().getParameterMap().get("prenom"));
+      if(tmp != null && tmp.length > 0){
+         prenom = tmp[0];
+      }else{
+         prenom = null;
+      }
 
-	public String getSexe() {
-		return sexe;
-	}
+      // extraction du sexe
+      tmp = (Executions.getCurrent().getParameterMap().get("sexe"));
+      if(tmp != null && tmp.length > 0){
+         sexe = tmp[0];
+      }else{
+         sexe = null;
+      }
 
-	public void setSexe(String s) {
-		this.sexe = s;
-	}
+      // extraction de la date de naissance
+      tmp = (Executions.getCurrent().getParameterMap().get("dateNaissance"));
+      if(tmp != null && tmp.length > 0){
+         dateNaissance = tmp[0];
+      }else{
+         dateNaissance = null;
+      }
+   }
 
-	public String getDateNaissance() {
-		return dateNaissance;
-	}
+   /**
+    * Log un utilisateur et renvoie true si la connection s'est
+    * bien passée.
+    * @param login
+    * @param pass
+    * @return
+    */
+   public boolean logUser(){
+      boolean ok = false;
 
-	public void setDateNaissance(String d) {
-		this.dateNaissance = d;
-	}
+      if(login != null && pass != null){
+
+         // on transforme le mdp en MD5
+         final PasswordEncoder encoder = new Md5PasswordEncoder();
+         final String pwd = encoder.encodePassword(pass, null);
+
+         if(ManagerLocator.getUtilisateurManager().findByLoginPasswordAndArchiveManager(login, pwd, false).size() > 0){
+            ok = true;
+
+            // création d'un utilisateur pour SpringSecurity
+            final User u = new User(login, pwd, true, true, true, true, getAuthorities(false));
+
+            // Authentification de cet utilisateur
+            final Authentication auth = new UsernamePasswordAuthenticationToken(u, null, getAuthorities(false));
+
+            // on met l'utilisateur dans SpringSecurity
+            SecurityContextHolder.getContext().setAuthentication(auth);
+         }else{
+            ok = false;
+         }
+      }
+      return ok;
+   }
+
+   private Collection<? extends GrantedAuthority> getAuthorities(final boolean isAdmin){
+      final List<GrantedAuthority> authList = new ArrayList<>(2);
+      authList.add(new GrantedAuthorityImpl("ROLE_USER"));
+      if(isAdmin){
+         authList.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
+      }
+      return authList;
+   }
+
+   /**
+    * Valide la page et redirige vers TumoroteK.
+    */
+   public void redirect(){
+      if(selectedBanque != null){
+         sessionScope.put("User", user);
+         sessionScope.put("Plateforme", selectedBanque.getPlateforme());
+         sessionScope.put("Banque", selectedBanque);
+         final List<Banque> bks = new ArrayList<>();
+         bks.add(selectedBanque);
+         ConnexionUtils.setSessionCatalogues(bks, sessionScope);
+         ConnexionUtils.generateDroitsForSelectedBanque(selectedBanque, user, sessionScope);
+         sessionScope.remove("ToutesCollections");
+
+         // gestion des interfaçages
+         ConnexionUtils.initInterfacages(selectedBanque.getPlateforme(), sessionScope);
+
+         // on passe le patient dans la session
+         sessionScope.put("patient", createPatientFromParameters());
+
+         Executions.sendRedirect("/zuls/main/main.zul");
+      }
+   }
+
+   public void onClientInfo$winConnectionCrf(final ClientInfoEvent event){
+      sessionScope.put("screenWidth", event.getDesktopWidth());
+      sessionScope.put("screenHeight", event.getDesktopHeight());
+   }
+
+   /**
+    * Crée et initialise un objet Patient à partir des paramètres
+    * passés dans l'url.
+    * @return
+    */
+   public Patient createPatientFromParameters(){
+      final Patient pat = new Patient();
+
+      pat.setNip(nip);
+      pat.setNom(nom);
+      pat.setNomNaissance(nomNaissance);
+      pat.setPrenom(prenom);
+      pat.setSexe(sexe);
+
+      Date date = null;
+      if(dateNaissance != null){
+         final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+         try{
+            date = sdf.parse(dateNaissance);
+         }catch(final ParseException e){
+         }
+      }
+      pat.setDateNaissance(date);
+
+      return pat;
+   }
+
+   public String getLogin(){
+      return login;
+   }
+
+   public void setLogin(final String l){
+      this.login = l;
+   }
+
+   public String getPass(){
+      return pass;
+   }
+
+   public void setPass(final String p){
+      this.pass = p;
+   }
+
+   public String getBanque(){
+      return banque;
+   }
+
+   public void setBanque(final String b){
+      this.banque = b;
+   }
+
+   public Banque getSelectedBanque(){
+      return selectedBanque;
+   }
+
+   public void setSelectedBanque(final Banque s){
+      this.selectedBanque = s;
+   }
+
+   public Utilisateur getUser(){
+      return user;
+   }
+
+   public void setUser(final Utilisateur u){
+      this.user = u;
+   }
+
+   public String getNip(){
+      return nip;
+   }
+
+   public void setNip(final String n){
+      this.nip = n;
+   }
+
+   public String getNom(){
+      return nom;
+   }
+
+   public void setNom(final String n){
+      this.nom = n;
+   }
+
+   public String getNomNaissance(){
+      return nomNaissance;
+   }
+
+   public void setNomNaissance(final String n){
+      this.nomNaissance = n;
+   }
+
+   public String getPrenom(){
+      return prenom;
+   }
+
+   public void setPrenom(final String p){
+      this.prenom = p;
+   }
+
+   public String getSexe(){
+      return sexe;
+   }
+
+   public void setSexe(final String s){
+      this.sexe = s;
+   }
+
+   public String getDateNaissance(){
+      return dateNaissance;
+   }
+
+   public void setDateNaissance(final String d){
+      this.dateNaissance = d;
+   }
 
 }

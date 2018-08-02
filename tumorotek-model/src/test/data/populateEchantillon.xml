@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
 <dataset>
 	<table name="GROUPEMENT">
 		<column>GROUPEMENT_ID</column>
@@ -9,14 +10,14 @@
 		<row>
 			<value>1</value>
 			<value>1</value>
-			<null/>
+			<null />
 			<value>2</value>
-			<null/>
+			<null />
 		</row>
 		<row>
 			<value>2</value>
-			<null/>
-			<null/>
+			<null />
+			<null />
 			<value>1</value>
 			<value>1</value>
 		</row>

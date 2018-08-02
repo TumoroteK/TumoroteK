@@ -12,92 +12,97 @@ import java.util.ResourceBundle;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class ResourceBundleSipImpl implements ResourceBundleSip {
+public class ResourceBundleSipImpl implements ResourceBundleSip
+{
 
-	private Log log = LogFactory.getLog(ResourceBundleSip.class);
-	
-	private String sipPath;
+   private final Log log = LogFactory.getLog(ResourceBundleSip.class);
 
-	public void setSipPath(String s) {
-		this.sipPath = s;
-	}
+   private String sipPath;
 
-	@Override
-	public boolean doesResourceBundleExists(String baseName) {
-		boolean exist = true;
+   public void setSipPath(final String s){
+      this.sipPath = s;
+   }
 
-		if (baseName != null) {
-			InputStreamReader reader = null;
-			FileInputStream fis = null;
-			File file = new File(sipPath, 
-					baseName);
-			if (file.isFile()) { // Also checks for existance
-				try {
-					fis = new FileInputStream(file);
-					reader = new InputStreamReader(fis, 
-							Charset.forName("UTF-8"));
-					reader.close();
-					fis.close();
-				} catch (FileNotFoundException e) {
-					exist = false;
-				} catch (IOException e) {
-					log.error(e);
-				} finally {
-					try {
-						reader.close();
-					} catch (IOException e) {
-						reader = null;
-					}
-					try {
-						fis.close();
-					} catch (IOException e) {
-						fis = null;
-					}
-				}
-			} else {
-				exist = false;
-			}
-		} else {
-			exist = false;
-		}
+   @Override
+   public boolean doesResourceBundleExists(final String baseName){
+      boolean exist = true;
 
-		return exist;
-	}
+      if(baseName != null){
+         InputStreamReader reader = null;
+         FileInputStream fis = null;
+         final File file = new File(sipPath, baseName);
+         if(file.isFile()){ // Also checks for existance
+            try{
+               fis = new FileInputStream(file);
+               reader = new InputStreamReader(fis, Charset.forName("UTF-8"));
+               reader.close();
+               fis.close();
+            }catch(final FileNotFoundException e){
+               exist = false;
+            }catch(final IOException e){
+               log.error(e);
+            }finally{
+               if(null != reader){
+                  try{
+                     reader.close();
+                  }catch(final IOException e){
+                     reader = null;
+                  }
+               }
+               if(null != fis){
+                  try{
+                     fis.close();
+                  }catch(final IOException e){
+                     fis = null;
+                  }
+               }
+            }
+         }else{
+            exist = false;
+         }
+      }else{
+         exist = false;
+      }
 
-	@Override
-	public ResourceBundle getResourceBundle(String baseName) {
-		InputStreamReader reader = null;
-		FileInputStream fis = null;
-		ResourceBundle bundle = null;
+      return exist;
+   }
 
-		if (baseName != null) {
-			File file = new File(sipPath, 
-					baseName);
-			if (file.isFile()) { // Also checks for existance
-				try {
-					fis = new FileInputStream(file);
-					reader = new InputStreamReader(fis, 
-							Charset.forName("UTF-8"));
-					bundle = new PropertyResourceBundle(reader);
-				} catch (FileNotFoundException e) {
-					log.error(e);
-				} catch (IOException e) {
-					log.error(e);
-				} finally {
-					try {
-						reader.close();
-					} catch (IOException e) {
-						reader = null;
-					}
-					try {
-						fis.close();
-					} catch (IOException e) {
-						fis = null;
-					}
-				}
-			}
-		}
+   @Override
+   public ResourceBundle getResourceBundle(final String baseName){
+      InputStreamReader reader = null;
+      FileInputStream fis = null;
+      ResourceBundle bundle = null;
 
-		return bundle;
-	}
+      if(baseName != null){
+         final File file = new File(sipPath, baseName);
+         if(file.isFile()){ // Also checks for existance
+            try{
+               fis = new FileInputStream(file);
+               reader = new InputStreamReader(fis, Charset.forName("UTF-8"));
+               bundle = new PropertyResourceBundle(reader);
+            }catch(final FileNotFoundException e){
+               log.error(e);
+            }catch(final IOException e){
+               log.error(e);
+            }finally{
+               if(null != reader){
+                  try{
+                     reader.close();
+                  }catch(final IOException e){
+                     reader = null;
+                  }
+               }
+               if(null != fis){
+                  try{
+                     fis.close();
+                  }catch(final IOException e){
+                     fis = null;
+                  }
+               }
+            }
+         }
+      }
+
+      return bundle;
+   }
 }

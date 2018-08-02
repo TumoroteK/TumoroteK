@@ -35,17 +35,16 @@
  **/
 package fr.aphp.tumorotek.interfacage.sender.test;
 
-import fr.aphp.tumorotek.interfacage.sender.SenderFactory;
-import fr.aphp.tumorotek.interfacage.sender.StorageRobotSender;
-import fr.aphp.tumorotek.interfacage.storageRobot.StorageEmplacement;
-import fr.aphp.tumorotek.manager.qualite.OperationTypeManager;
-import fr.aphp.tumorotek.manager.stockage.EmplacementManager;
-import fr.aphp.tumorotek.model.TKStockableObject;
-import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
-import fr.aphp.tumorotek.model.interfacage.Logiciel;
-import fr.aphp.tumorotek.model.interfacage.Recepteur;
-import fr.aphp.tumorotek.model.qualite.OperationType;
-import fr.aphp.tumorotek.model.stockage.Emplacement;
+import static org.junit.Assert.assertTrue;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.camel.CamelContext;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.junit.Before;
@@ -58,18 +57,24 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.*;
-
-import static org.junit.Assert.assertTrue;
+import fr.aphp.tumorotek.interfacage.sender.SenderFactory;
+import fr.aphp.tumorotek.interfacage.sender.StorageRobotSender;
+import fr.aphp.tumorotek.interfacage.storageRobot.StorageEmplacement;
+import fr.aphp.tumorotek.manager.qualite.OperationTypeManager;
+import fr.aphp.tumorotek.manager.stockage.EmplacementManager;
+import fr.aphp.tumorotek.model.TKStockableObject;
+import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
+import fr.aphp.tumorotek.model.interfacage.Logiciel;
+import fr.aphp.tumorotek.model.interfacage.Recepteur;
+import fr.aphp.tumorotek.model.qualite.OperationType;
+import fr.aphp.tumorotek.model.stockage.Emplacement;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:test-camel-config.xml",
-   "classpath:applicationContextManagerBase.xml",
-   "classpath:applicationContextDaoBase.xml"})
+@ContextConfiguration(locations = {"classpath:test-camel-config.xml", "classpath:applicationContextManagerBase.xml",
+   "classpath:applicationContextDaoBase-test-mysql.xml"})
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class})
-public class SenderTest {
+public class SenderTest
+{
 
    @Autowired
    private CamelContext camelContext;
@@ -94,11 +99,11 @@ public class SenderTest {
    private Recepteur robot;
 
    @Before
-   public void setUp() {
+   public void setUp(){
       robot = new Recepteur();
       robot.setRecepteurId(2);
       robot.setIdentification("STORAGE-ROBOT-ONE");
-      Logiciel irelec = new Logiciel();
+      final Logiciel irelec = new Logiciel();
       irelec.setNom("IRELEC");
       robot.setLogiciel(irelec);
 
@@ -111,8 +116,8 @@ public class SenderTest {
    // TODO : Test à corriger pour être lancé avec maven test. Fonctionne avec JUnit en revanche - JDI
    //@Test
    @DirtiesContext
-   public void testStorageRobotRoute() throws Exception {
-      Map<TKStockableObject, Emplacement> tkEmpls = initTKEmpls();
+   public void testStorageRobotRoute() throws Exception{
+      final Map<TKStockableObject, Emplacement> tkEmpls = initTKEmpls();
 
       senderFactory.sendEmplacements(robot, tkEmpls, null);
       senderFactory.sendEmplacements(robot, tkEmpls, operationTypeManager.findByNomLikeManager("Destockage", true).get(0));
@@ -135,36 +140,24 @@ public class SenderTest {
    }
 
    @Test
-   public void testStorageEmplacementSort() {
+   public void testStorageEmplacementSort(){
 
-      StorageEmplacement st1 =
-         new StorageEmplacement("E1", "B", "B", "B", "2"); // 2
-      StorageEmplacement st2 =
-         new StorageEmplacement("E2", "B", "B", "C", "2"); // 4
-      StorageEmplacement st3 =
-         new StorageEmplacement("E3", "B", "B", "C", "3"); // 5
-      StorageEmplacement st4 =
-         new StorageEmplacement("E4", "B", "C", "C", "3"); // 6
-      StorageEmplacement st5 =
-         new StorageEmplacement("E5", "C", "A", "C", "3"); // 7
-      StorageEmplacement st6 =
-         new StorageEmplacement("E6", "A", "D", "C", "1"); // 1
-      StorageEmplacement st7 =
-         new StorageEmplacement("Aa", "B", "B", "C", "2"); // 3
+      final StorageEmplacement st1 = new StorageEmplacement("E1", "B", "B", "B", "2"); // 2
+      final StorageEmplacement st2 = new StorageEmplacement("E2", "B", "B", "C", "2"); // 4
+      final StorageEmplacement st3 = new StorageEmplacement("E3", "B", "B", "C", "3"); // 5
+      final StorageEmplacement st4 = new StorageEmplacement("E4", "B", "C", "C", "3"); // 6
+      final StorageEmplacement st5 = new StorageEmplacement("E5", "C", "A", "C", "3"); // 7
+      final StorageEmplacement st6 = new StorageEmplacement("E6", "A", "D", "C", "1"); // 1
+      final StorageEmplacement st7 = new StorageEmplacement("Aa", "B", "B", "C", "2"); // 3
       // nulls unclassables
-      StorageEmplacement st8 =
-         new StorageEmplacement(null, "B", "B", "C", "2");
-      StorageEmplacement st9 =
-         new StorageEmplacement("E8", null, "B", "C", "2");
-      StorageEmplacement st10 =
-         new StorageEmplacement("Aa", "B", null, "C", "2");
-      StorageEmplacement st11 =
-         new StorageEmplacement("Aa", "B", "B", null, "2");
-      StorageEmplacement st12 =
-         new StorageEmplacement("Aa", "B", "B", "C", null);
+      final StorageEmplacement st8 = new StorageEmplacement(null, "B", "B", "C", "2");
+      final StorageEmplacement st9 = new StorageEmplacement("E8", null, "B", "C", "2");
+      final StorageEmplacement st10 = new StorageEmplacement("Aa", "B", null, "C", "2");
+      final StorageEmplacement st11 = new StorageEmplacement("Aa", "B", "B", null, "2");
+      final StorageEmplacement st12 = new StorageEmplacement("Aa", "B", "B", "C", null);
       // StorageEmplacement st13 = null;
 
-      List<StorageEmplacement> sts = new ArrayList<StorageEmplacement>();
+      final List<StorageEmplacement> sts = new ArrayList<>();
       sts.add(st1);
       sts.add(st2);
       sts.add(st3);
@@ -189,15 +182,15 @@ public class SenderTest {
    }
 
    @Test
-   public void testMakeCSV() {
+   public void testMakeCSV(){
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-      Map<TKStockableObject, Emplacement> tkEmpls = initTKEmpls();
+      final Map<TKStockableObject, Emplacement> tkEmpls = initTKEmpls();
 
-      OperationType stockage = operationTypeManager.findByNomLikeManager("Stockage", true).get(0);
-      OperationType destockage = operationTypeManager.findByNomLikeManager("Destockage", true).get(0);
+      final OperationType stockage = operationTypeManager.findByNomLikeManager("Stockage", true).get(0);
+      final OperationType destockage = operationTypeManager.findByNomLikeManager("Destockage", true).get(0);
 
-      try {
+      try{
          storageRobotSender.makeCSVfromMap(robot, baos, tkEmpls, stockage, "|", 5);
 
          String[] out = baos.toString().split("\\\n");
@@ -222,34 +215,33 @@ public class SenderTest {
 
          baos.close();
 
-      } catch (Exception e) {
+      }catch(final Exception e){
          e.printStackTrace();
-      } finally {
-         try {
+      }finally{
+         try{
             baos.close();
-         } catch (IOException e) {
+         }catch(final IOException e){
             e.printStackTrace();
          }
       }
    }
 
-   private Map<TKStockableObject, Emplacement> initTKEmpls() {
-      Map<TKStockableObject, Emplacement> tkEmpls =
-         new HashMap<TKStockableObject, Emplacement>();
-      Echantillon e1 = new Echantillon();
+   private Map<TKStockableObject, Emplacement> initTKEmpls(){
+      final Map<TKStockableObject, Emplacement> tkEmpls = new HashMap<>();
+      final Echantillon e1 = new Echantillon();
       e1.setCode("ECHAN1");
-      Emplacement emp4 = emplacementManager.findByIdManager(4);
+      final Emplacement emp4 = emplacementManager.findByIdManager(4);
       tkEmpls.put(e1, emp4);
-      Echantillon e3 = new Echantillon();
+      final Echantillon e3 = new Echantillon();
       e3.setCode("ECHAN3");
-      Emplacement emp6 = emplacementManager.findByIdManager(6);
+      final Emplacement emp6 = emplacementManager.findByIdManager(6);
       tkEmpls.put(e3, emp6);
-      Echantillon e4 = new Echantillon();
+      final Echantillon e4 = new Echantillon();
       e4.setCode("ECHAN4");
       tkEmpls.put(e4, null);
-      Echantillon e2 = new Echantillon();
+      final Echantillon e2 = new Echantillon();
       e2.setCode("ECHAN2");
-      Emplacement emp5 = emplacementManager.findByIdManager(5);
+      final Emplacement emp5 = emplacementManager.findByIdManager(5);
       tkEmpls.put(e2, emp5);
 
       return tkEmpls;

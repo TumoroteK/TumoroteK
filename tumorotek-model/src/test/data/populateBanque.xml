@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
 <dataset>
 	<table name="TEMPERATURE">
 		<column>TEMPERATURE_ID</column>
@@ -39,14 +40,22 @@
 	<table name="CONTEXTE">
 		<column>CONTEXTE_ID</column>
 		<column>NOM</column>
+		<column>LIBELLE</column>
 		<row>
 			<value>1</value>
-			<value>CONT1</value>
+			<value>DEFAUT</value>
+            <value>Anatomopathologie</value>
 		</row>
 		<row>
 			<value>2</value>
-			<value>CONT2</value>
+			<value>SEROLOGIE</value>
+            <value>Sérologie</value>
 		</row>
+        <!--<row>
+            <value>3</value>
+            <value>BTO</value>
+            <value>Banque de tissus osseux</value>
+        </row>-->
 	</table>
 	<table name="COORDONNEE">
 		<column>COORDONNEE_ID</column>
@@ -2223,43 +2232,63 @@
 		</row>
 	</table>
 	
-	<table name="MALADIE_SERO">
-		<column>MALADIE_DELEGATE_ID</column>
-		<column>DIAGNOSTIC</column>
+	<table name="DIAGNOSTIC">
+		<column>DIAGNOSTIC_ID</column>
+		<column>NOM</column>
+		<column>DESCRIPTION</column>
+		<column>PLATEFORME_ID</column>
 		<row>
 			<value>1</value>
-			<value>C</value>
+			<value>CERTAIN</value>
+			<value>CERTAIN</value>
+			<value>1</value>
 		</row>
 		<row>
 			<value>2</value>
-			<value>P</value>
+			<value>PROBABLE</value>
+			<value>PROBABLE</value>
+			<value>1</value>
 		</row>
 		<row>
 			<value>3</value>
-			<value>S</value>
+			<value>SUSPECTE</value>
+			<value>SUSPECTE</value>
+			<value>1</value>
+		</row>
+	</table>
+	
+	<table name="MALADIE_SERO">
+		<column>MALADIE_DELEGATE_ID</column>
+		<column>DIAGNOSTIC_ID</column>
+		<row>
+			<value>1</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>2</value>
+			<value>2</value>
+		</row>
+		<row>
+			<value>3</value>
+			<value>3</value>
 		</row>
 	</table>
 	
 	<table name="PRELEVEMENT_DELEGATE">
 		<column>PRELEVEMENT_DELEGATE_ID</column>
 		<column>PRELEVEMENT_ID</column>
-		<column>CONTEXTE_ID</column>
 		<row>
-			<value>1</value>
 			<value>1</value>
 			<value>1</value>
 		</row>
 		<row>
 			<value>2</value>
 			<value>4</value>
-			<value>1</value>
 		</row>
 		<row>
 			<value>3</value>
 			<value>3</value>
-			<value>2</value>
 		</row>
-	
 	</table>
 	
 	<table name="PRELEVEMENT_SERO">
@@ -4018,6 +4047,14 @@
 			<value>11</value>
 			<value>date</value>
 		</row>
+		<row>
+			<value>12</value>
+			<value>calcule</value>
+		</row>
+		<row>
+			<value>13</value>
+			<value>duree</value>
+		</row>
 	</table>
 	<table name="CHAMP_ENTITE">
 		<column>CHAMP_ENTITE_ID</column>
@@ -5187,7 +5224,7 @@
 		<row>
 			<value>111</value>
 			<value>35</value>
-			<value>Nature</value>
+			<value>Nom</value>
 			<value>1</value>
 			<value>0</value>
 			<value>1</value>
@@ -5209,7 +5246,7 @@
 		<row>
 			<value>113</value>
 			<value>36</value>
-			<value>Type</value>
+			<value>Nom</value>
 			<value>1</value>
 			<value>0</value>
 			<value>1</value>
@@ -5242,7 +5279,7 @@
 		<row>
 			<value>116</value>
 			<value>37</value>
-			<value>Type</value>
+			<value>Nom</value>
 			<value>1</value>
 			<value>0</value>
 			<value>1</value>
@@ -5264,7 +5301,7 @@
 		<row>
 			<value>118</value>
 			<value>38</value>
-			<value>Milieu</value>
+			<value>Nom</value>
 			<value>1</value>
 			<value>0</value>
 			<value>1</value>
@@ -5407,7 +5444,7 @@
 		<row>
 			<value>131</value>
 			<value>42</value>
-			<value>EchanQualite</value>
+			<value>Nom</value>
 			<value>1</value>
 			<value>0</value>
 			<value>1</value>
@@ -5506,7 +5543,7 @@
 		<row>
 			<value>140</value>
 			<value>45</value>
-			<value>Type</value>
+			<value>Nom</value>
 			<value>1</value>
 			<value>0</value>
 			<value>1</value>
@@ -5528,7 +5565,7 @@
 		<row>
 			<value>142</value>
 			<value>46</value>
-			<value>ProdQualite</value>
+			<value>Nom</value>
 			<value>1</value>
 			<value>0</value>
 			<value>1</value>
@@ -5550,7 +5587,7 @@
 		<row>
 			<value>144</value>
 			<value>47</value>
-			<value>Type</value>
+			<value>Nom</value>
 			<value>1</value>
 			<value>0</value>
 			<value>1</value>
@@ -5869,7 +5906,7 @@
 		<row>
 			<value>173</value>
 			<value>49</value>
-			<value>Examen</value>
+			<value>Nom</value>
 			<value>1</value>
 			<value>0</value>
 			<value>1</value>
@@ -6056,7 +6093,7 @@
 		<row>
 			<value>190</value>
 			<value>51</value>
-			<value>Motif</value>
+			<value>Nom</value>
 			<value>6</value>
 			<value>0</value>
 			<value>1</value>
@@ -6331,7 +6368,7 @@
 		<row>
 			<value>215</value>
 			<value>52</value>
-			<value>Type</value>
+			<value>Nom</value>
 			<value>1</value>
 			<value>0</value>
 			<value>1</value>
@@ -6891,6 +6928,13 @@
 		</row>
 		
 	</table> 
+	<table name="CHAMP_DELEGUE">
+		<column>CHAMP_DELEGUE_ID</column>
+		<column>NOM</column>
+		<column>DATA_TYPE_ID</column>
+		<column>ENTITE_ID</column>
+		<column>CONTEXTE</column>
+	</table>
 	<table name="CHAMP">
 		<column>CHAMP_ID</column>
 		<column>CHAMP_ENTITE_ID</column>
@@ -10531,14 +10575,17 @@
 	</table>
 	<table name="TEMPLATE">
 		<column>TEMPLATE_ID</column>
+		<column>TYPE</column>
 		<column>BANQUE_ID</column>
 		<column>NOM</column>
 		<column>ENTITE_ID</column>
 		<column>DESCRIPTION</column>
 		<column>EN_TETE</column>
 		<column>PIED_PAGE</column>
+		<column>FICHIER</column>
 		<row>
 			<value>1</value>
+			<value>BLOC</value>
 			<value>1</value>
 			<value>Fiche prélèvement</value>
 			<value>2</value>
@@ -10548,6 +10595,7 @@
 		</row>
 		<row>
 			<value>2</value>
+			<value>BLOC</value>
 			<value>1</value>
 			<value>Fiche patient</value>
 			<value>1</value>
@@ -10557,6 +10605,7 @@
 		</row>
 		<row>
 			<value>3</value>
+			<value>BLOC</value>
 			<value>2</value>
 			<value>Fiche prélèvement</value>
 			<value>2</value>
@@ -12223,104 +12272,4 @@
 			<value>DIAMIC</value>
 		</row>
 	</table>
-	
-<!-- 	</table> -->
-	<!--  UI TABLES -->
-	
-<!-- 	<table name="UI_REQUETE"> -->
-<!-- 	    <column>UI_REQUETE_ID</column> -->
-<!-- 	    <column>NOM</column> -->
-<!-- 	    <column>UTILISATEUR_ID</column> -->
-<!-- 	    <column>ENTITE_ID</column> -->
-<!--  		<column>ORDRE</column> -->
-<!-- 		<row> -->
-<!-- 		    <value>1</value> -->
-<!-- 		    <value>REQ1</value> -->
-<!-- 		    <value>1</value> -->
-<!-- 		    <value>2</value> -->
-<!-- 		    <value>1</value> -->
-<!-- 		</row> -->
-<!-- 		<row> -->
-<!-- 		    <value>2</value> -->
-<!-- 		    <value>REQ2</value> -->
-<!-- 		    <value>1</value> -->
-<!-- 		    <value>2</value> -->
-<!-- 		    <value>2</value> -->
-<!-- 		</row> -->
-<!-- 		<row> -->
-<!-- 		    <value>3</value> -->
-<!-- 		    <value>REQ3</value> -->
-<!-- 		    <value>1</value> -->
-<!-- 		    <value>2</value> -->
-<!-- 		    <value>3</value> -->
-<!-- 		</row> -->
-<!-- 		<row> -->
-<!-- 		    <value>4</value> -->
-<!-- 		    <value>REQADMIN</value> -->
-<!-- 		    <value>5</value> -->
-<!-- 		    <value>3</value> -->
-<!-- 		    <value>1</value> -->
-<!-- 		</row> -->
-<!-- 	</table> -->
-<!-- 	<table name="UI_COMP_VALUE"> -->
-<!-- 		<column>UI_COMP_VALUE_ID</column> -->
-<!--   		<column>UI_REQUETE_ID</column> -->
-<!-- 	 	<column>ID_COMPONENT</column> -->
-<!-- 	 	<column>COMPONENT_CLASS</column> -->
-<!-- 	 	<column>INDEX_VALUE</column> -->
-<!-- 		<column>TEXT_VALUE</column> -->
-<!-- 		<column>CHECK_VALUE</column> -->
-<!-- 		<column>CALENDAR_VALUE</column> -->
-<!-- 		<row> -->
-<!-- 		    <value>1</value> -->
-<!-- 		    <value>1</value> -->
-<!-- 			<value>codePrelevementBox</value> -->
-<!-- 			<value>textbox</value> -->
-<!-- 			<null /> -->
-<!-- 			<value>PREL1</value> -->
-<!-- 			<null /> -->
-<!-- 			<null /> -->
-<!-- 		</row> -->
-<!-- 		<row> -->
-<!-- 		    <value>2</value> -->
-<!-- 		    <value>2</value> -->
-<!-- 			<value>natutePrelevementBox</value> -->
-<!-- 			<value>listtbox</value> -->
-<!-- 			<value>3</value> -->
-<!-- 			<null /> -->
-<!-- 			<null /> -->
-<!-- 			<null /> -->
-<!-- 		</row> -->
-<!-- 		<row> -->
-<!-- 		    <value>3</value> -->
-<!-- 		    <value>3</value> -->
-<!-- 			<value>datePrelevement1Box</value> -->
-<!-- 			<value>calendarbox</value> -->
-<!-- 			<null /> -->
-<!-- 			<null /> -->
-<!-- 			<null /> -->
-<!-- 			<value>2010-06-09 12:15:00</value> -->
-<!-- 		</row> -->
-<!-- 		<row> -->
-<!-- 		    <value>4</value> -->
-<!-- 		    <value>3</value> -->
-<!-- 			<value>operateursDatePrlvtBox</value> -->
-<!-- 			<value>listbox</value> -->
-<!-- 			<value>3</value> -->
-<!-- 			<null /> -->
-<!-- 			<null /> -->
-<!-- 			<null /> -->
-<!-- 		</row> -->
-<!-- 		<row> -->
-<!-- 		    <value>5</value> -->
-<!-- 		    <value>3</value> -->
-<!-- 			<value>sexeFBox</value> -->
-<!-- 			<value>checkbox</value> -->
-<!-- 			<null /> -->
-<!-- 			<null /> -->
-<!-- 			<value>1</value> -->
-<!-- 			<null /> -->
-<!-- 		</row> -->
-<!-- 	</table> -->
 </dataset>
-

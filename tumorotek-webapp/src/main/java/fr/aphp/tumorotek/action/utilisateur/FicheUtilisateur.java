@@ -1,37 +1,37 @@
-/** 
+/**
  * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
  * dsi-projet.tk@aphp.fr
- * 
- * Ce logiciel est un programme informatique servant à la gestion de 
- * l'activité de biobanques. 
+ *
+ * Ce logiciel est un programme informatique servant à la gestion de
+ * l'activité de biobanques.
  *
  * Ce logiciel est régi par la licence CeCILL soumise au droit français
- * et respectant les principes de diffusion des logiciels libres. Vous 
- * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
- * conditions de la licence CeCILL telle que diffusée par le CEA, le 
- * CNRS et l'INRIA sur le site "http://www.cecill.info". 
- * En contrepartie de l'accessibilité au code source et des droits de   
- * copie, de modification et de redistribution accordés par cette 
- * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
- * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
- * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * et respectant les principes de diffusion des logiciels libres. Vous
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le
+ * CNRS et l'INRIA sur le site "http://www.cecill.info".
+ * En contrepartie de l'accessibilité au code source et des droits de
+ * copie, de modification et de redistribution accordés par cette
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée.
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les
  * concédants successifs.
  *
- * A cet égard  l'attention de l'utilisateur est attirée sur les 
- * risques associés au chargement,  à l'utilisation,  à la modification 
- * et/ou au  développement et à la reproduction du logiciel par 
- * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
- * le rendre complexe à manipuler et qui le réserve donc à des 	
- * développeurs et des professionnels  avertis possédant  des 
- * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * A cet égard  l'attention de l'utilisateur est attirée sur les
+ * risques associés au chargement,  à l'utilisation,  à la modification
+ * et/ou au  développement et à la reproduction du logiciel par
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut
+ * le rendre complexe à manipuler et qui le réserve donc à des
+ * développeurs et des professionnels  avertis possédant  des
+ * connaissances  informatiques approfondies.  Les utilisateurs sont
  * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
  * besoins dans des conditions permettant d'assurer la sécurité de leurs
- * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
- * et l'exploiter dans les mêmes conditions de sécurité. 
- *	
- * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
- * avez pris connaissance de la licence CeCILL, et que vous en avez 
- * accepté les termes. 
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser
+ * et l'exploiter dans les mêmes conditions de sécurité.
+ *
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous
+ * avez pris connaissance de la licence CeCILL, et que vous en avez
+ * accepté les termes.
  **/
 package fr.aphp.tumorotek.action.utilisateur;
 
@@ -40,6 +40,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Errors;
@@ -100,1591 +101,1406 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
- * 
+ *
  * @author Mathieu BARTHELEMY
  * @version 2.1
  *
  */
-public class FicheUtilisateur extends AbstractFicheCombineController {
+public class FicheUtilisateur extends AbstractFicheCombineController
+{
 
-	private Log log = LogFactory.getLog(FicheUtilisateur.class);
-	
-	private static final long serialVersionUID = 6626506501770467670L;
-	
-	// Static Components pour le mode static.
-	private Label loginLabel;
-	private Label passwordLabel;
-	private Label ldapLabel;
-	private Label emailLabel;
-	private Label collaborateurLabel;
-	private Label archiveLabel;
-	private Label timeoutLabel;
-	private Row rowPfsAdmin;
-	private Menubar menuBar;
-	private Group affectationsGroup;
-	private Row affectationsRow;
-	private Grid affectationsGrid;
-	private Button addAffectations;
-	private Button editPassword;
-	
-	// Editable components : mode d'édition ou de création.
-	private Label loginRequired;
-	private Label passwordRequired;
-	private Textbox loginBox;
-	private Textbox passwordBox;
-	private Textbox ldapBox;
-	private Textbox emailBox;
-	private Checkbox archiveBox;
-	private Datebox timeoutBox;
-	private Row rowConfirmationPassword;
-	private Textbox confirmPasswordBox;
-	private Combobox collabBox;
-	private Label collabAideSaisieUser;
-	private Column deleteRoleColumn;
-	private Row rowAddRoleTitle;
-	private Row rowAddRole;
-	private Grid rolesGrid;
-	private Listbox collectionsBox;
-	private Listbox profilsBox;
-	
-	// @since 2.1
-	private Checkbox banquesArchiveBox;
-	
-	// composant pour le mode admin de collection
-	private Component[] objAdminCollectionComponents;
-	// component pour le mode modif de son propre compte
-	private Component[] objModifPersoComponents;
-	private Component[] labelModifPersoComponents;
-	
-	// Objets Principaux.
-	private Utilisateur user;
-	
-	// Associations.
-	private List<ProfilUtilisateur> profilUtilisateurs = 
-											new ArrayList<ProfilUtilisateur>();
-	private List<ProfilUtilisateur> profilUtilisateursOtherBanques = 
-		new ArrayList<ProfilUtilisateur>();
-	private List<Plateforme> plateformes = new ArrayList<Plateforme>();
-	private List<Collaborateur> collaborateurs = new ArrayList<Collaborateur>();
-	private Collaborateur selectedCollaborateur;
-	private List<String> nomsAndPrenoms = new ArrayList<String>();
-	private List<Banque> banques = new ArrayList<Banque>();
-	private List<Banque> selectedBanques = new ArrayList<Banque>();
-	private List<Profil> profils = new ArrayList<Profil>();
-	private Profil selectedProfil;
-	private Hashtable<Banque, ProfilUtilisateur> banquesDefined = 
-			new Hashtable<Banque, ProfilUtilisateur>();
-	private List<AffectationDecorator> affectationDecorators = 
-		new ArrayList<AffectationDecorator>();
-	private static AffectationRowRenderer affectationRenderer;
-	
-	// Variables formulaire.
-	private String plateformesFormated = "";
-	private String confirmationPassword = "";
-	private Integer nbMoisMdp = null;
-	
-	private boolean isAdminPF = false;
-	private boolean isAdmin = false;
-	
-	@Override
-	public void doAfterCompose(Component comp) throws Exception {
-		super.doAfterCompose(comp);
-		
-		setDeletionMessage("message.deletion.utilisateur");
-		setFantomable(false);
-		setDeletable(true);
-		
-		// Initialisation des listes de composants
-		setObjLabelsComponents(new Component[]{
-				this.loginLabel,
-				this.passwordLabel,
-				this.ldapLabel,
-				this.emailLabel,
-				this.collaborateurLabel,
-				this.archiveLabel,
-				this.timeoutLabel,
-				this.rowPfsAdmin,
-				this.menuBar,
-				this.affectationsGroup,
-				this.affectationsRow,
-				this.editPassword
-		});
-		
-		setObjBoxsComponents(new Component[]{
-				this.loginBox,
-				this.passwordBox,
-				this.rowConfirmationPassword,
-				this.ldapBox,
-				this.emailBox,
-				this.archiveBox,
-				this.timeoutBox,
-				this.collabBox,
-				this.collabAideSaisieUser,
-				this.deleteRoleColumn,
-				this.rowAddRole,
-				this.rowAddRoleTitle
-		});
-		
-		objAdminCollectionComponents = new Component[]{
-				this.deleteRoleColumn,
-				this.rowAddRole,
-				this.rowAddRoleTitle
-		};
-		
-		// Initialisation des listes de composants
-		labelModifPersoComponents = new Component[]{
-				this.loginLabel,
-				this.passwordLabel,
-				this.ldapLabel,
-				this.emailLabel,
-				this.collaborateurLabel
-		};
-		
-		objModifPersoComponents = new Component[]{
-				this.loginBox,
-				this.passwordBox,
-				this.rowConfirmationPassword,
-				this.ldapBox,
-				this.emailBox,
-				this.collabBox,
-				this.collabAideSaisieUser
-		};
-		
-		setRequiredMarks(new Component[]{
-				this.loginRequired,
-				this.passwordRequired
-		});	
-			
-		affectationRenderer = new AffectationRowRenderer(
-				SessionUtils.getPlateforme(sessionScope));
-		drawActionsForUtilisateur();
-		menuBar.setVisible(false);
-		affectationsGroup.setOpen(false);
-		
-		if (winPanel != null) {
-			winPanel.setHeight(getMainWindow().getPanelHeight() - 5 + "px");
-		}
-		
-		nbMoisMdp = ObjectTypesFormatters.getNbMoisMdp();
-		
-		getBinder().loadAll();
-		
-	}
-	
-	@Override
-	public void setObject(TKdataObject obj) {
-		this.user = (Utilisateur) obj;
-		
-		if (!isAdmin && !isAdminPF) {
-			if (this.user.equals(SessionUtils
-					.getLoggedUser(sessionScope))) {
-				setCanEdit(true);
-			} else {
-				setCanEdit(false);
-			}
-			editPassword.setDisabled(!isCanEdit());
-		}
-		
-		profilUtilisateurs.clear();
-		profilUtilisateursOtherBanques.clear();
-		plateformes.clear();
-		plateformesFormated = "";
-		
-		if (user.getUtilisateurId() != null) {
-			// on récup les banques avec des droits d'admin
-			List<Banque> availableBanques = ManagerLocator
-				.getUtilisateurManager()
-				.getAvailableBanquesAsAdminManager(SessionUtils
-					.getLoggedUser(sessionScope));
-			// on récup tous les profils
-			List<ProfilUtilisateur> tmp = ManagerLocator
-				.getProfilUtilisateurManager().findByUtilisateurManager(user, false);
-			// on va afficher seulement les profils pour lesquels l'utilisateur
-			// a des droits d'admin sur la banque
-			for (int i = 0; i < tmp.size(); i++) {
-				if (availableBanques.contains(tmp.get(i).getBanque())) {
-					profilUtilisateurs.add(tmp.get(i));
-				} else {
-					profilUtilisateursOtherBanques.add(tmp.get(i));
-				}
-			}
-		
-			plateformes.addAll(ManagerLocator.getUtilisateurManager()
-				.getPlateformesManager(user));
-			
-			if (this.user.getCollaborateur() != null
-					&& collaborateurs.contains(this.user.getCollaborateur())) {
-					selectedCollaborateur = this.user.getCollaborateur();
-				collabBox.setValue(selectedCollaborateur.getNomAndPrenom());
-			} else if (this.user.getCollaborateur() != null) {
-				collaborateurs.add(this.user.getCollaborateur());
-				selectedCollaborateur = this.user.getCollaborateur();
-				nomsAndPrenoms.add(this.user.getCollaborateur()
-						.getNomAndPrenom());
-				collabBox.setModel(new CustomSimpleListModel(nomsAndPrenoms));
-				collabBox.setValue(selectedCollaborateur.getNomAndPrenom());
-			} else {
-				collabBox.setValue("");
-				selectedCollaborateur = null;
-			}
-			
-			initAffectations();
-		}
-		
-		StringBuffer sb = new StringBuffer();
-		if (plateformes.size() > 0) {
-			for (int i = 0; i < plateformes.size(); i++) {
-				sb.append(plateformes.get(i).getNom());
-				if (i + 1 < plateformes.size()) {
-					sb.append(", ");
-				}
-			}
-		} else {
-			sb.append(Labels.getLabel("utilisateur.plateformes.aucune"));
-		}
-		plateformesFormated = sb.toString();
-		
-		super.setObject(user);		
-	}
-	
-	@Override
-	public void cloneObject() {
-		setClone(this.user.clone());
-	}
-	
-	@Override
-	public Utilisateur getObject() {
-		return this.user;
-	}
-	
-	@Override
-	public TKdataObject getParentObject() {
-		return null;
-	}
+   private final Log log = LogFactory.getLog(FicheUtilisateur.class);
 
-	@Override
-	public void setParentObject(TKdataObject obj) {
-	}
+   private static final long serialVersionUID = 6626506501770467670L;
 
-	@Override
-	public UtilisateurController getObjectTabController() {
-		return (UtilisateurController) super.getObjectTabController();
-	}
+   // Static Components pour le mode static.
+   private Label loginLabel;
+   private Label passwordLabel;
+   private Label ldapLabel;
+   private Label emailLabel;
+   private Label collaborateurLabel;
+   private Label archiveLabel;
+   private Label timeoutLabel;
+   private Row rowPfsAdmin;
+   private Menubar menuBar;
+   private Group affectationsGroup;
+   private Row affectationsRow;
+   private Grid affectationsGrid;
+   private Button addAffectations;
+   private Button editPassword;
 
-	@Override
-	public void setNewObject() {
-		setObject(new Utilisateur());
-		super.setNewObject();
-	}
-	
-	@Override
-	public void switchToCreateMode() {
-		
-		super.switchToCreateMode();
-		
-		// Initialisation du mode (listes, valeurs...)
-		initEditableMode();
-		collabBox.setValue(null);
-		
-		// lors de la création, on fixe par défaut la date de
-		// desactivation du MDP à 6 mois
-		if (nbMoisMdp != null) {
-			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.MONTH, nbMoisMdp);
-			this.user.setTimeOut(cal.getTime());
-		}
-		
-		// on ajoute les contraintes sur les
-		// mots de passe
-		passwordBox.setMaxlength(20);
-		passwordBox.setConstraint(getPasswordConstraint());
-		confirmPasswordBox.setMaxlength(20);
-		confirmPasswordBox.setConstraint("no empty");
-		
-		getBinder().loadComponent(self);
-	}
-	
-	@Override
-	public void switchToStaticMode() {
-		super.switchToStaticMode(this.user.equals(new Utilisateur()));
-		
-		if (this.user.getUtilisateurId() == null) {
-			menuBar.setVisible(false);
-		}
-		
-		getBinder().loadComponent(self);
-	}
-	
-	/**
-	 * Change mode de la fiche en mode edition.
-	 */
-	public void switchToEditMode() {
-		
-		if (isAdminPF) {
-			super.switchToEditMode();
-		} else {
-			validateC.setVisible(true);
-			revertC.setVisible(true);
-			createC.setVisible(false);
-			cancelC.setVisible(false);
-			addNewC.setVisible(false);
-			editC.setVisible(false);
-			deleteC.setVisible(false);
-			if (isAdmin) {
-				for (int i = 0; i < objAdminCollectionComponents
-					.length; i++) {
-					objAdminCollectionComponents[i].setVisible(true);
-				}
-			} 
-			
-			if (user.equals(SessionUtils
-					.getLoggedUser(sessionScope))) {
-				for (int i = 0; i < objModifPersoComponents
-					.length; i++) {
-					objModifPersoComponents[i].setVisible(true);
-				}
-				for (int i = 0; i < labelModifPersoComponents
-					.length; i++) {
-					labelModifPersoComponents[i].setVisible(false);
-				}
-			}
-		}
-		
-		passwordLabel.setVisible(true);
-		passwordBox.setVisible(false);
-		rowConfirmationPassword.setVisible(false);
-		
-		// on supprime toutes les contraintes sur les
-		// mots de passe
-		passwordBox.setMaxlength(1000);
-		passwordBox.setConstraint("");
-		confirmPasswordBox.setConstraint("");
-		confirmPasswordBox.setMaxlength(1000);
-		
-		// Initialisation du mode (listes, valeurs...)
-		initEditableMode();
-		
-		getBinder().loadComponent(self);
-	}
-	
-	@Override
-	public void setFocusOnElement() {
-		loginBox.setFocus(true);
-	}
+   // Editable components : mode d'édition ou de création.
+   private Label loginRequired;
+   private Label passwordRequired;
+   private Textbox loginBox;
+   private Textbox passwordBox;
+   private Textbox ldapBox;
+   private Textbox emailBox;
+   private Checkbox archiveBox;
+   private Datebox timeoutBox;
+   private Row rowConfirmationPassword;
+   private Textbox confirmPasswordBox;
+   private Combobox collabBox;
+   private Label collabAideSaisieUser;
+   private Column deleteRoleColumn;
+   private Row rowAddRoleTitle;
+   private Row rowAddRole;
+   private Grid rolesGrid;
+   private Listbox collectionsBox;
+   private Listbox profilsBox;
 
-	@Override
-	public void clearData() {
-		clearConstraints();
-		super.clearData();
-	}
+   // @since 2.1
+   private Checkbox banquesArchiveBox;
 
-	@Override
-	public void createNewObject() {
-			
-		// on remplit l'utilisateur en fonction des champs nulls
-		setEmptyToNulls();
-			
-		this.user.setArchive(archiveBox.isChecked());
-		this.user.setSuperAdmin(false);
-			
-		// Gestion du collaborateur
-		String selectedNomAndPremon = 
-						this.collabBox.getValue().toUpperCase();
-		this.collabBox.setValue(selectedNomAndPremon);
-		int ind = nomsAndPrenoms.indexOf(selectedNomAndPremon);
-		if (ind > -1) {
-			selectedCollaborateur = collaborateurs.get(ind);				
-		} else {
-			selectedCollaborateur = null;
-		}
-		
-		// on fusionne les 2 listes de profils
-		List<ProfilUtilisateur> tmp = new ArrayList<ProfilUtilisateur>();
-		tmp.addAll(profilUtilisateurs);
-		tmp.addAll(profilUtilisateursOtherBanques);
-		
-		// encodage du password
-		user.setPassword(ObjectTypesFormatters
-				.getEncodedPassword(user.getPassword()));
-					
-		// update de l'objet
-		ManagerLocator.getUtilisateurManager()
-			.createObjectManager(
-					user, 
-					selectedCollaborateur, 
-					tmp, 
-					null,
-					SessionUtils.getLoggedUser(sessionScope),
-					SessionUtils.getPlateforme(sessionScope));
-	}
-	
-	/**
-	 * Recupere le controller du composant representant la liste associee
-	 * a l'entite de domaine a partir de l'evenement.
-	 * @param event Event
-	 * @return fiche ListeContrat
-	 */
-	private ListeUtilisateur getListeUtilisateur() {
-		return getObjectTabController().getListe();
-	}
+   // composant pour le mode admin de collection
+   private Component[] objAdminCollectionComponents;
+   // component pour le mode modif de son propre compte
+   private Component[] objModifPersoComponents;
+   private Component[] labelModifPersoComponents;
 
-	@Override
-	public void onClick$addNewC() {
-		switchToCreateMode();
-	}
+   // Objets Principaux.
+   private Utilisateur user;
 
-	@Override
-	public void onClick$cancelC() {
-		clearData();
-	}
+   // Associations.
+   private List<ProfilUtilisateur> profilUtilisateurs = new ArrayList<>();
+   private List<ProfilUtilisateur> profilUtilisateursOtherBanques = new ArrayList<>();
+   private final List<Plateforme> plateformes = new ArrayList<>();
+   private List<Collaborateur> collaborateurs = new ArrayList<>();
+   private Collaborateur selectedCollaborateur;
+   private List<String> nomsAndPrenoms = new ArrayList<>();
+   private List<Banque> banques = new ArrayList<>();
+   private List<Banque> selectedBanques = new ArrayList<>();
+   private final List<Profil> profils = new ArrayList<>();
+   private Profil selectedProfil;
+   private Hashtable<Banque, ProfilUtilisateur> banquesDefined = new Hashtable<>();
+   private List<AffectationDecorator> affectationDecorators = new ArrayList<>();
+   private static AffectationRowRenderer affectationRenderer;
 
-	@Override
-	public void onClick$createC() {
-		if (!confirmationPassword.equals(this.user.getPassword())) {
-			throw new WrongValueException(
-				confirmPasswordBox, 
-				Labels.getLabel("utilisateur.bad.password"));
-		}
-		
-		Clients.showBusy(Labels.getLabel("utilisateur.creation.encours"));
-		Events.echoEvent("onLaterCreate", self, null);
-	}
-	
-	public void onLaterCreate() {
-		try {
-			createNewObject();
-			cloneObject();
-			setObject(this.user);
-			switchToStaticMode();
-			disableToolBar(false);
-			
-			if (getListeUtilisateur() != null) {
-				// ajout de l'utilisateur à la liste
-				getListeUtilisateur().addToObjectList(this.user);
-			}
-			// ferme wait message
-			Clients.clearBusy();
-		} catch (RuntimeException re) {
-			// ferme wait message
-			Clients.clearBusy();
-			Messagebox.show(handleExceptionMessage(re), 
-					"Error", Messagebox.OK, Messagebox.ERROR);
-		}
-	}
-	
-	@Override
-	public boolean prepareDeleteObject() {
-		boolean isUsed = ManagerLocator
-			.getUtilisateurManager().isUsedObjectManager(getObject());
-		setDeleteMessage(ObjectTypesFormatters
-				.getLabel("message.deletion.message", 
-						new String[]{Labels
-								.getLabel(getDeletionMessage())}));
-		if (isUsed) {
-			setDeleteMessage(Labels
-					.getLabel("utilisateur.suppression.impossible"));
-		} 
-		// propose l'archivage par ce booleen dans removeObject
-		setCascadable(isUsed); 
-		return isUsed;
-	}
-	
-	@Override
-	public void removeObject(String comments) {	
-		if (!isCascadable()) {
-			ManagerLocator.getUtilisateurManager()
-							.removeObjectManager(getObject());
-		} else {
-			// opération d'archivage
-			OperationType oType = ManagerLocator.getOperationTypeManager()
-				.findByNomLikeManager("Archivage", true).get(0);
-			getObject().setArchive(true);
-			// on fusionne les 2 listes de profils
-			List<ProfilUtilisateur> tmp = 
-				new ArrayList<ProfilUtilisateur>();
-			tmp.addAll(profilUtilisateurs);
-			tmp.addAll(profilUtilisateursOtherBanques);
-			// update de l'objet
-			ManagerLocator.getUtilisateurManager()
-				.updateObjectManager(
-					user, 
-					selectedCollaborateur, 
-					tmp, 
-					null,
-					SessionUtils.getLoggedUser(sessionScope),
-					oType);
-		}
-	}
-	
-	@Override
-	public void onLaterDelete(Event event) {
-		try {		
-			removeObject((String) event.getData());
-			
-			if (!isCascadable()) { // suppression
-				if (getListeUtilisateur() != null) {				
-					// on enlève le contrat de la liste
-					getListeUtilisateur().
-					removeObjectAndUpdateList(this.user);
-				}
-				// clear form
-				clearData();
-			} else { //archivage
-				cloneObject();
-				switchToStaticMode(); 
-				
-				if (getListeUtilisateur() != null) {
-					// ajout de l'utilisateur à la liste
-					getListeUtilisateur()
-						.updateObjectGridList(this.user);
-				}
-			}
-		} catch (RuntimeException re) {
-			// ferme wait message
-			Clients.clearBusy();
-			Messagebox.show(handleExceptionMessage(re), 
-					"Error", Messagebox.OK, Messagebox.ERROR);
-		} finally {
-			// ferme wait message
-			Clients.clearBusy();
-		}
-	}
+   // Variables formulaire.
+   private String plateformesFormated = "";
+   private String confirmationPassword = "";
+   private Integer nbMoisMdp = null;
 
-	public void onClick$delete2C() {
-		if (this.user != null) {		
-			// si l'utilisateur n'a jamais été utilisé : pas d'historique
-			if (!ManagerLocator.getUtilisateurManager()
-					.isUsedObjectManager(user)) {
-				if (Messagebox.show(ObjectTypesFormatters
-						.getLabel("message.deletion.message", 
-						new String[]{Labels
-							.getLabel("message.deletion.utilisateur")}),
-						Labels.getLabel("message.deletion.title"), 
-						Messagebox.YES | Messagebox.NO, 
-						Messagebox.QUESTION) == Messagebox.YES) {
-				
-					// suppression du contrat
-					ManagerLocator.getUtilisateurManager()
-						.removeObjectManager(user);
-					
-					// on vérifie que l'on retrouve bien la page 
-					// contenant la liste des contrats
-					if (getListeUtilisateur() != null) {				
-						// on enlève le contrat de la liste
-						getListeUtilisateur().
-						removeObjectFromList(this.user);
-					}
-					// clear form
-					clearData();
-				}
-			} else {
-				if (Messagebox.show(
-						Labels.getLabel(
-							"utilisateur.suppression.impossible"),
-						Labels.getLabel("utilisateur.archiver.title"), 
-						Messagebox.YES | Messagebox.NO, 
-						Messagebox.QUESTION) == Messagebox.YES) {
-				
-					// opération d'archivage
-					OperationType oType = ManagerLocator
-						.getOperationTypeManager()
-						.findByNomLikeManager("Archivage", true).get(0);
-					this.user.setArchive(true);
-					// on fusionne les 2 listes de profils
-					List<ProfilUtilisateur> tmp = 
-						new ArrayList<ProfilUtilisateur>();
-					tmp.addAll(profilUtilisateurs);
-					tmp.addAll(profilUtilisateursOtherBanques);
-					// update de l'objet
-					ManagerLocator.getUtilisateurManager()
-						.updateObjectManager(
-							user, 
-							selectedCollaborateur, 
-							tmp, 
-							null,
-							SessionUtils.getLoggedUser(sessionScope),
-							oType);
-					cloneObject();
-					switchToStaticMode(); 
-					
-					if (getListeUtilisateur() != null) {
-						// ajout de l'utilisateur à la liste
-						getListeUtilisateur()
-							.updateObjectGridList(this.user);
-					}
-				}
-			}
-		}
-	}
+   private boolean isAdminPF = false;
+   private boolean isAdmin = false;
 
-//	@Override
-//	public void onClick$editC() {
-//		if (this.user != null) {
-//			switchToEditMode();
-//		}
-//	}
+   @Override
+   public void doAfterCompose(final Component comp) throws Exception{
+      super.doAfterCompose(comp);
 
-	@Override
-	public void onClick$revertC() {
-		clearConstraints();
-		super.onClick$revertC();
-	}
+      setDeletionMessage("message.deletion.utilisateur");
+      setFantomable(false);
+      setDeletable(true);
 
-	@Override
-	public void onClick$validateC() {
-		Clients.showBusy(Labels.getLabel("utilisateur.creation.encours"));
-		Events.echoEvent("onLaterUpdate", self, null);
-	}
-	
-	public void onLaterUpdate() {
-		try {
-			updateObject();
-			cloneObject();
-			switchToStaticMode(); 
-			
-			if (getListeUtilisateur() != null) {
-				// ajout de l'utilisateur à la liste
-				getListeUtilisateur().updateObjectGridList(this.user);
-			}
-			// ferme wait message
-			Clients.clearBusy();
-			
-			initAffectations();
-			getBinder().loadComponent(affectationsGrid);
-		} catch (RuntimeException re) {
-			// ferme wait message
-			Clients.clearBusy();
-			Messagebox.show(handleExceptionMessage(re), 
-					"Error", Messagebox.OK, Messagebox.ERROR);
-		} 
-	}
-	
-	/**
-	 * Méthode appelée après modification du mdp. On va alors
-	 * mettre à jour la fiche et la liste de utilisateurs.
-	 * @param event
-	 */
-	public void onGetPasswordUpdated(Event event) {
-		if (event.getData() != null) {
-			Utilisateur u = (Utilisateur) event.getData();
-			
-			// maj de la fiche
-			setObject(u);
-			
-			// maj de la liste
-			if (getListeUtilisateur() != null) {
-				// ajout de l'utilisateur à la liste
-				getListeUtilisateur().updateObjectGridList(this.user);
-			}
-		}
-	}
+      // Initialisation des listes de composants
+      setObjLabelsComponents(new Component[] {this.loginLabel, this.passwordLabel, this.ldapLabel, this.emailLabel,
+         this.collaborateurLabel, this.archiveLabel, this.timeoutLabel, this.rowPfsAdmin, this.menuBar, this.affectationsGroup,
+         this.affectationsRow, this.editPassword});
 
-	@Override
-	public void setEmptyToNulls() {
-		if (this.user.getDnLdap().equals("")) {
-			this.user.setDnLdap(null);
-		}
-		
-		if (this.user.getEmail().equals("")) {
-			this.user.setEmail(null);
-		}
-	}
+      setObjBoxsComponents(new Component[] {this.loginBox, this.passwordBox, this.rowConfirmationPassword, this.ldapBox,
+         this.emailBox, this.archiveBox, this.timeoutBox, this.collabBox, this.collabAideSaisieUser, this.deleteRoleColumn,
+         this.rowAddRole, this.rowAddRoleTitle});
 
-	@Override
-	public void updateObject() {
-		// on remplit l'utilisateur en fonction des champs nulls
-		setEmptyToNulls();
-			
-		this.user.setArchive(archiveBox.isChecked());
-		
-		OperationType oType = null;
-		// on teste si la modification est un archivage ou une
-		// restauration
-		if (user.isArchive()) {
-			if (!((Utilisateur) getClone()).isArchive()) {
-				oType = ManagerLocator.getOperationTypeManager()
-					.findByNomLikeManager("Archivage", true).get(0);
-			} else {
-				oType = ManagerLocator.getOperationTypeManager()
-					.findByNomLikeManager("Modification", true).get(0);
-			}
-		} else {
-			if (((Utilisateur) getClone()).isArchive()) {
-				oType = ManagerLocator.getOperationTypeManager()
-					.findByNomLikeManager("Restauration", true).get(0);
-			} else {
-				oType = ManagerLocator.getOperationTypeManager()
-					.findByNomLikeManager("Modification", true).get(0);
-			}
-		}
-			
-		// Gestion du collaborateur
-		String selectedNomAndPremon = this.collabBox.getValue()
-			.toUpperCase();
-		this.collabBox.setValue(selectedNomAndPremon);
-		int ind = nomsAndPrenoms.indexOf(selectedNomAndPremon);
-		if (ind > -1) {
-			selectedCollaborateur = collaborateurs.get(ind);				
-		} else {
-			selectedCollaborateur = null;
-		}
-		
-		// on fusionne les 2 listes de profils
-		List<ProfilUtilisateur> tmp = new ArrayList<ProfilUtilisateur>();
-		tmp.addAll(profilUtilisateurs);
-		tmp.addAll(profilUtilisateursOtherBanques);
-						
-		// update de l'objet
-		ManagerLocator.getUtilisateurManager().updateObjectManager(
-				user, 
-				selectedCollaborateur, 
-				tmp, 
-				null,
-				SessionUtils.getLoggedUser(sessionScope),
-				oType);
-	}
-	
-	/**
-	 * Clic sur le bouton addRoleButton pour ajouter un role à
-	 * l'utilisateur.
-	 * @version 2.1
-	 */
-	@SuppressWarnings("unchecked")
-	public void onClick$addRoleButton() {
-		
-		// if no profile defined in PF -> warning
-		if (selectedProfil != null) {
-		
-			selectedBanques.clear();
-			selectedBanques.addAll(((Selectable<Banque>) 
-					collectionsBox.getModel()).getSelection());
-			
-			for (Banque bq : selectedBanques) {
-				ProfilUtilisateur newRole = new ProfilUtilisateur();
-				newRole.setBanque(bq);
-				newRole.setProfil(selectedProfil);
-				newRole.setUtilisateur(user);
-				
-				if (!profilUtilisateurs.contains(newRole)) {
-					
-					// si une banque a déja été définie, on modifie le
-					// précédent profil
-					if (banquesDefined.containsKey(bq)) {
-						ProfilUtilisateur pu = banquesDefined.get(bq);
-						pu.setProfil(selectedProfil);
-						banquesDefined.remove(bq);
-						banquesDefined.put(bq, pu);
-					} else {
-						profilUtilisateurs.add(newRole);
-						banquesDefined.put(bq, newRole);
-					}
-				}
-			}
-			ListModel<ProfilUtilisateur> list = 
-				new ListModelList<ProfilUtilisateur>(profilUtilisateurs);
-			rolesGrid.setModel(list);
-		} else { // warn empty profiles
-			throw new WrongValueException(profilsBox, Labels.getLabel("ficheUtilisateur.emptyRoles.warning"));
-		}
-	}
-	
-	/**
-	 * Clic sur le bouton deleteRole pour supprimer un role à
-	 * l'utilisateur.
-	 * @version 2.1
-	 */
-	public void onClick$deleteRole(Event event) {
-		//@since 2.1 template rendering
-		ProfilUtilisateur role = (ProfilUtilisateur) event.getData();
-		// AbstractListeController2
-		//	.getBindingData((ForwardEvent) event, false);
-		
-		// l'utilisateur ne peut modifier que les autorisations
-		// pour lesquelles il a un droit d'administration sur
-		// la banque
-		if (banques.contains(role.getBanque())) {
-			if (profilUtilisateurs.contains(role)) {
-				profilUtilisateurs.remove(role);
-				ListModel<ProfilUtilisateur> list = 
-					new ListModelList<ProfilUtilisateur>(profilUtilisateurs);
-				rolesGrid.setModel(list);
-				if (banquesDefined.containsKey(role.getBanque())) {
-					banquesDefined.remove(role.getBanque());
-				}
-			}
-		} else {
-			Messagebox.show(Labels
-				.getLabel("utilisateur.suppression.role.impossible"), 
-				"Error", Messagebox.OK, Messagebox.ERROR);
-		}
-	}
-	
-	/**
-	 * Méthode appelée lorsque l'utilisateur clique sur le lien
-	 * collabAideSaisieUser. Cette méthode va créer une nouvelle
-	 * fenêtre contenant l'aide pour la sélection d'un collaborateur.
-	 */
-	public void onClick$collabAideSaisieUser() {
-		// on récupère le collaborateur actuellement sélectionné
-		// pour l'afficher dans la modale
-		List<Object> old = new ArrayList<Object>();
-		if (selectedCollaborateur != null) {
-			old.add(selectedCollaborateur);
-		}
-		
-		// ouvre la modale
-		openCollaborationsWindow(page, 
-								"general.recherche",
-								"select", null,
-								"Collaborateur", null, 
-								Path.getPath(self),
-								old);
-		
-	}
-	
-	/**
-	 * Méthode appelée par la fenêtre CollaborationsController quand
-	 * l'utilisateur sélectionne un collaborateur.
-	 * @param e Event contenant le collaborateur sélectionné.
-	 */
-	public void onGetObjectFromSelection(Event e) {
-		
-		// les collaborateurs peuvent être modifiés dans la fenêtre
-		// d'aide => maj de ceux-ci
-		nomsAndPrenoms = new ArrayList<String>();
-		collaborateurs = ManagerLocator.getCollaborateurManager()
-			.findAllActiveObjectsWithOrderManager();
-		for (int i = 0; i < collaborateurs.size(); i++) {
-			nomsAndPrenoms.add(collaborateurs.get(i).getNomAndPrenom());
-		}
-		
-		if (this.user.getCollaborateur() != null 
-			&& !collaborateurs.contains(this.user.getCollaborateur())) {
-			collaborateurs.add(this.user.getCollaborateur());
-			nomsAndPrenoms.add(this.user.getCollaborateur()
-					.getNomAndPrenom());
-		}
-		collabBox.setModel(new CustomSimpleListModel(nomsAndPrenoms));			
-		
-		// si un collaborateur a été sélectionné
-		if (e.getData() != null) {
-			Collaborateur coll = (Collaborateur) e.getData();
-			if (nomsAndPrenoms.contains(coll.getNomAndPrenom())) {
-				int ind = nomsAndPrenoms.indexOf(coll.getNomAndPrenom());
-				selectedCollaborateur = collaborateurs.get(ind);
-				collabBox.setValue(selectedCollaborateur.getNomAndPrenom());
-			}
-		}
-	}
-	
-	/**
-	 * Méthode pour l'initialisation du mode d'édition : récupération du contenu
-	 * des listes déroulantes (types, qualités...).
-	 */
-	public void initEditableMode() {
-		confirmationPassword = this.user.getPassword();
-		
-		// init des collaborateurs
-		// nomsAndPrenoms .clear();
-		
-		if (collaborateurs.isEmpty()) {
-			collaborateurs = ManagerLocator.getCollaborateurManager()
-				.findAllActiveObjectsWithOrderManager();
-			for (int i = 0; i < collaborateurs.size(); i++) {
-				nomsAndPrenoms.add(collaborateurs.get(i).getNomAndPrenom());
-			}
-		}
-		collabBox.setModel(new CustomSimpleListModel(nomsAndPrenoms));
-	
-		// reset profiles
-		profils.clear();
-		// @since 2.1 plateforme + archive
-		profils.addAll(ManagerLocator.getProfilManager()
-				.findByPlateformeAndArchiveManager(SessionUtils.getCurrentPlateforme(), false));
-		if (!profils.isEmpty()) {
-			selectedProfil = profils.get(0);
-		}
-		
-		archiveBox.setChecked(this.user.isArchive());
-		
-		selectedBanques.clear();
-		banques = ManagerLocator.getUtilisateurManager()
-			.getAvailableBanquesAsAdminManager(SessionUtils
-												.getLoggedUser(sessionScope));
-		// ((Selectable<Banque>) collectionsBox.getModel())
-		// .setSelection(ncfCess);
-		// if (banques.size() > 0) {
-		//	selectedBanque = banques.get(0);
-		//}
-		
-		banquesDefined.clear();
-		for (int i = 0; i < profilUtilisateurs.size(); i++) {
-			banquesDefined.put(profilUtilisateurs.get(i).getBanque(), 
-					profilUtilisateurs.get(i));
-		}
-	}
-	
-	/**
-	 * Méthode vidant tous les messages d'erreurs apparaissant dans
-	 * les contraintes de la fiche.
-	 */
-	public void clearConstraints() {
-		Clients.clearWrongValue(loginBox);
-		Clients.clearWrongValue(passwordBox);
-		Clients.clearWrongValue(ldapBox);
-		Clients.clearWrongValue(emailBox);
-		Clients.clearWrongValue(archiveBox);
-		Clients.clearWrongValue(timeoutBox);
-		Clients.clearWrongValue(confirmPasswordBox);
-	}
-	
-	/**
-	 * Rend les boutons d'actions cliquables ou non.
-	 */
-	public void drawActionsForUtilisateur() {
-		if (sessionScope.containsKey("AdminPF")) {
-			isAdminPF = (Boolean) sessionScope.get("AdminPF");
-		} else if (sessionScope.containsKey("Admin")) {
-			isAdmin = (Boolean) sessionScope.get("Admin");
-		}
-		
-		affectationRenderer.setCanEdit(false);
-		addAffectations.setVisible(false);
-		if (isAdminPF) {
-			setCanNew(true);
-			setCanEdit(true);
-			setCanDelete(true);
-			setCanSeeHistorique(true);
-			affectationRenderer.setCanEdit(true);
-			addAffectations.setVisible(true);
-		} else if (isAdmin) {
-			setCanNew(false);
-			setCanEdit(true);
-			setCanDelete(false);
-			setCanSeeHistorique(false);
-		} else {
-			setCanNew(false);
-			setCanEdit(false);
-			setCanDelete(false);
-			setCanSeeHistorique(false);
-		}
-		
-//		List<String> entites = new ArrayList<String>();
-//		entites.add("Collaborateur");
-//		setDroitsConsultation(drawConsultationLinks(entites));
-		// si pas le droit d'accès aux dérivés, on cache le lien
-		if (!getDroitsConsultation().get("Collaborateur")) {
-			collaborateurLabel.setSclass(null);
-		} else {
-			collaborateurLabel.setSclass("formLink");
-		}
-		
-		editPassword.setDisabled(!isCanEdit());
-	}
-	
-	/**
-	 * Affiche la fiche d'un medecin referent.
-	 */
-	public void onClick$collaborateurLabel(Event event) {
-		if (getDroitsConsultation().get("Collaborateur")
-				&& this.user.getCollaborateur() != null) {
-						
-			// ouvre la modale
-			openCollaborationsWindow(page, 
-									"context.modal.collaborateur",
-									"details", 
-									this.user.getCollaborateur(),
-									null, null, null, null);
-		}
-	}
-	
-	public void onClick$editPassword() {
-		openPasswordWindow(page, self, user);
-	}
-	
-	/**********************************************************************/
-	/*********************** Gestion des affectations**********************/
-	/**********************************************************************/
-	
-	public void initAffectations() {
-		affectationDecorators = new ArrayList<AffectationDecorator>();
-		if (this.user.getUtilisateurId() != null) {
-			// gestion des imprimantes
-			// on extrait les banques accessibles pour la pf actuelle
-			List<Banque> bks = ManagerLocator.getBanqueManager()
-				.findByUtilisateurAndPFManager(user, 
-						SessionUtils.getPlateforme(sessionScope));
-			
-			// pour chaque banque, on crée un AffectationDecorator
-			for (int j = 0; j < bks.size(); j++) {
-				AffectationDecorator aff = new AffectationDecorator(
-						user,
-						bks.get(j),
-						j == 0,
-						j == bks.size() - 1,
-						bks.size());
-				affectationDecorators.add(aff);
-			}
-		}
-	}
-	
-	/**
-	 * Méthode appelée lorsque l'utilisateur souhaite modifier une
-	 * affectation.
-	 * @param event
-	 */
-	public void onClickEditAffectation(ForwardEvent event) {
-		AffectationDecorator aff = (AffectationDecorator) event.getData();
-		// on passe le décorator en éditable et on recharge la grid
-		aff.setEdit(true);
-		getBinder().loadComponent(affectationsGrid);
-	}
-	
-	/**
-	 * Méthode appelée lorsque l'utilisateur valide une modif sur une
-	 * affectation.
-	 * @param event
-	 */
-	@SuppressWarnings("unchecked")
-	public void onClickValidateAffectation(ForwardEvent event) {
-		// on récupère les donneés : la listbox contenant les imprimantes,
-		// celle contenant es modèles et le decorator d'affectation
-		List<Object> datas = (List<Object>) event.getData();
-		Listbox liImp = (Listbox) datas.get(0);
-		Listbox liMod = (Listbox) datas.get(1);
-		AffectationDecorator aff = (AffectationDecorator) datas.get(2);
-		
-		// on récupère l'imprimante sélectionnée
-		Imprimante selectedImprimante = null;
-		if (liImp.getSelectedItem().getValue() != null) {
-			selectedImprimante = ManagerLocator.getImprimanteManager()
-				.findByNomAndPlateformeManager((String) 
-						liImp.getSelectedItem().getValue(), 
-						SessionUtils.getPlateforme(sessionScope)).get(0);
-		}
-		
-		// on récupère le modèle sélectionné
-		Modele selectedModele = null;
-		if (liMod.getSelectedItem().getValue() != null) {
-			selectedModele = ManagerLocator.getModeleManager()
-				.findByNomAndPlateformeManager((String) 
-						liMod.getSelectedItem().getValue(), 
-						SessionUtils.getPlateforme(sessionScope)).get(0);
-		}
-		
-		try {
-			AffectationImprimante ai = null;
-			// on cherche si une affectation existait déjà
-			List<AffectationImprimante> liste = ManagerLocator
-				.getAffectationImprimanteManager()
-				.findByBanqueUtilisateurManager(
-						aff.getBanque(), user);
-			if (liste.size() > 0) {
-				ai = liste.get(0);
-			} else {
-				ai = new AffectationImprimante();
-			}
-			
-			// on sauvegarde l'affectation
-			ManagerLocator.getAffectationImprimanteManager()
-				.createObjectManager(new AffectationImprimante(), 
-						user, 
-						aff.getBanque(), selectedImprimante, 
-						selectedModele);
-			
-			// l'imprimante faisant partie de la PK, si celle ci a changé
-			// et qu'une affectation existait, on la supprime
-			if (ai.getImprimante() != null
-					&& !ai.getImprimante().equals(selectedImprimante)) {
-				ManagerLocator.getAffectationImprimanteManager()
-					.removeObjectManager(ai);
-			}
-		
-			// Maj de la grid
-			aff.setEdit(false);
-			getBinder().loadComponent(affectationsGrid);
-		} catch (RuntimeException re) {
-			// ferme wait message
-			Clients.clearBusy();
-			Messagebox.show(handleExceptionMessage(re), 
-					"Error", Messagebox.OK, Messagebox.ERROR);
-		}
-	}
-	
-	/**
-	 * Méthode appelée lorsque l'utilisateur souhaite supprimer
-	 * une affectation d'imrpiamnte.
-	 * @param event
-	 */
-	public void onClickDeleteAffectation(ForwardEvent event) {
-		AffectationDecorator aff = (AffectationDecorator) event.getData();
-		
-		AffectationImprimante ai = null;
-		// on cherche si une affectation existait
-		List<AffectationImprimante> liste = ManagerLocator
-			.getAffectationImprimanteManager()
-			.findByBanqueUtilisateurManager(
-					aff.getBanque(), user);
-		if (liste.size() > 0) {
-			ai = liste.get(0);
-		}
-		
-		// si une affectation était définie
-		if (ai != null) {
-			// confirmation
-			if (Messagebox.show(ObjectTypesFormatters
-					.getLabel("message.deletion.message", 
-							new String[]{Labels
-						.getLabel(
-				"message.deletion.affectationImprimante")}),
-			Labels.getLabel("message.deletion.title"), 
-			Messagebox.YES | Messagebox.NO, 
-			Messagebox.QUESTION) == Messagebox.YES) {
-				// suppression
-				ManagerLocator.getAffectationImprimanteManager()
-					.removeObjectManager(ai);
-				// maj
-				getBinder().loadComponent(affectationsGrid);
-			}
-		}
-	}
-	
-	/**
-	 * Méthode appelée lorsque l'utilisateur annule une modif sur une
-	 * affectation.
-	 * @param event
-	 */
-	public void onClickCancelAffectation(ForwardEvent event) {
-		AffectationDecorator aff = (AffectationDecorator) event.getData();
-		// on repasse le decirator en non editable et on recharge
-		// la grid
-		aff.setEdit(false);
-		getBinder().loadComponent(affectationsGrid);
-	}
-	
-	public void onClick$addAffectations() {
-		openAffectationCollectionsWindow();
-	}
-	
-	/**
-	 * PopUp window appelée permettre la définition des
-	 * imprimantes pour chaque collection.
-	 */
-	public void openAffectationCollectionsWindow() {
-		 if (!isBlockModal()) {
-				
-			 setBlockModal(true);
-		
-			// nouvelle fenêtre
-			final Window win = new Window();
-			win.setVisible(false);
-			win.setId("affectationCollectionsWindow");
-			win.setPage(page);
-			win.setMaximizable(true);
-			win.setSizable(true);
-			win.setTitle(Labels.getLabel(
-					"utilisateur.affectations.modale.title"));
-			win.setBorder("normal");
-			win.setWidth("500px");
-			int height = 260;
-			win.setHeight(String.valueOf(height) + "px");
-			win.setClosable(true);
-			
-			final HtmlMacroComponent ua;
-			ua = (HtmlMacroComponent)
-					page.getComponentDefinition(
-							"affectationCollectionsModale", false)
-												.newInstance(page, null);
-			ua.setParent(win);
-			ua.setId("affectationCollectionsModaleComponent");
-			ua.applyProperties();
-			ua.afterCompose(); 
-			
-			List<Banque> bks = ManagerLocator.getBanqueManager()
-				.findByUtilisateurAndPFManager(user, 
-					SessionUtils.getPlateforme(sessionScope));
-			((AffectationCollectionsModale) 
-					ua.getFellow("fwinAffectationCollectionsModale")
-					.getAttributeOrFellow(
-					"fwinAffectationCollectionsModale$composer", true))
-					.init(bks, self, user, 
-							SessionUtils.getPlateforme(sessionScope));
-			ua.setVisible(false);
-			
-			win.addEventListener("onTimed", new EventListener<Event>() {
-				public void onEvent(Event event) throws Exception {
-					//progress.detach();
-					ua.setVisible(true);
-				}
-			});
-			
-			Timer timer = new Timer();
-			timer.setDelay(500);
-			timer.setRepeats(false);
-			timer.addForward("onTimer", timer.getParent(), "onTimed");
-			win.appendChild(timer);
-			timer.start();
-			
-			try {
-				win.onModal();
-				setBlockModal(false);
-	
-			} catch (SuspendNotAllowedException e) { log.error(e);
-			}
-		 }
-	}
-	
-	/**
-	 * Méthode appelée pour mettre à jour les affectations
-	 * d'imprimantes.
-	 * @param e
-	 */
-	public void onGetAffectationsDone(Event e) {
-		getBinder().loadComponent(affectationsGrid);
-	}
-	
-	/*********************************************************/
-	/********************** ACCESSEURS. **********************/
-	/*********************************************************/
+      objAdminCollectionComponents = new Component[] {this.deleteRoleColumn, this.rowAddRole, this.rowAddRoleTitle};
 
-	public Utilisateur getUser() {
-		return user;
-	}
+      // Initialisation des listes de composants
+      labelModifPersoComponents =
+         new Component[] {this.loginLabel, this.passwordLabel, this.ldapLabel, this.emailLabel, this.collaborateurLabel};
 
-	public void setUser(Utilisateur u) {
-		setObject(u);
-	}
-	
-	public List<ProfilUtilisateur> getProfilUtilisateurs() {
-		return profilUtilisateurs;
-	}
+      objModifPersoComponents = new Component[] {this.loginBox, this.passwordBox, this.rowConfirmationPassword, this.ldapBox,
+         this.emailBox, this.collabBox, this.collabAideSaisieUser};
 
-	public void setProfilUtilisateurs(List<ProfilUtilisateur> p) {
-		this.profilUtilisateurs = p;
-	}
+      setRequiredMarks(new Component[] {this.loginRequired, this.passwordRequired});
 
-	/**
-	 * Formate la valeur du champ Archive.
-	 * @return Oui ou non.
-	 */
-	public String getArchiveFormated() {
-		
-		if (this.user != null) {
-			return ObjectTypesFormatters
-				.booleanLitteralFormatter(this.user.isArchive());
-		} else {
-			return "";
-		}
-	}
-	
-	/**
-	 * Formate la valeur du champ super.
-	 * @return Oui ou non.
-	 */
-	public String getSuperFormated() {
-		
-		if (this.user != null) {
-			return ObjectTypesFormatters
-				.booleanLitteralFormatter(this.user.isSuperAdmin());
-		} else {
-			return "";
-		}
-	}
-	
-	/**
-	 * Formate la date de création de l'utilisateur.
-	 * @return Date de création formatée.
-	 */
-	public String getDateCreationFormated() {
-		if (this.user != null && !this.user.equals(new Utilisateur())) {
-			
-			Calendar date = ManagerLocator.getOperationManager()
-				.findDateCreationManager(user);
-			
-			if (date != null) {
-				return ObjectTypesFormatters.dateRenderer2(date);
-			} else {
-				return null;
-			}
-		} else {
-			return null;
-		}
-	}
-	
-	/**
-	 * Formate la date de stockage de l'échantillon.
-	 * @return Date de stockage formatée.
-	 */
-	public String getTimeoutFormated() {
-		if (this.user != null) {
-			return ObjectTypesFormatters
-								.dateRenderer2(this.user.getTimeOut());
-		} else {
-			return null;
-		}
-	}
-	
-	/**
-	 * Formate le message d'explication sur la durée de validité du MDP.
-	 * @return
-	 */
-	public String getTimeoutLabelFormated() {
-		String value = "";
-		
-		if (nbMoisMdp != null && nbMoisMdp > 0) {
-			value = ObjectTypesFormatters.getLabel(
-					"utilisateur.timeout.help", 
-					new String[] {String.valueOf(nbMoisMdp)});
-		}
-		
-		return value;
-	}
-	
-	public String getSClassOperateur() {
-		if (this.user != null) {
-			return ObjectTypesFormatters
-				.sClassCollaborateur(this.user.getCollaborateur());
-		} else {
-			return null;
-		}
-	}
+      affectationRenderer = new AffectationRowRenderer(SessionUtils.getPlateforme(sessionScope));
+      drawActionsForUtilisateur();
+      menuBar.setVisible(false);
+      affectationsGroup.setOpen(false);
 
-	public List<Plateforme> getPlateformes() {
-		return plateformes;
-	}
+      if(winPanel != null){
+         winPanel.setHeight(getMainWindow().getPanelHeight() - 5 + "px");
+      }
 
-	public String getPlateformesFormated() {
-		return plateformesFormated;
-	}
+      nbMoisMdp = ObjectTypesFormatters.getNbMoisMdp();
 
-	public String getConfirmationPassword() {
-		return confirmationPassword;
-	}
+      getBinder().loadAll();
 
-	public void setConfirmationPassword(String cPassword) {
-		this.confirmationPassword = cPassword;
-	}
+   }
 
-	public List<Collaborateur> getCollaborateurs() {
-		return collaborateurs;
-	}
+   @Override
+   public void setObject(final TKdataObject obj){
+      this.user = (Utilisateur) obj;
 
-	public Collaborateur getSelectedCollaborateur() {
-		return selectedCollaborateur;
-	}
+      if(!isAdmin && !isAdminPF){
+         if(this.user.equals(SessionUtils.getLoggedUser(sessionScope))){
+            setCanEdit(true);
+         }else{
+            setCanEdit(false);
+         }
+         editPassword.setDisabled(!isCanEdit());
+      }
 
-	public void setSelectedCollaborateur(Collaborateur selectedC) {
-		this.selectedCollaborateur = selectedC;
-	}
+      profilUtilisateurs.clear();
+      profilUtilisateursOtherBanques.clear();
+      plateformes.clear();
+      plateformesFormated = "";
 
-	public List<String> getNomsAndPrenoms() {
-		return nomsAndPrenoms;
-	}
-	
-	public List<Banque> getBanques() {
-		return banques;
-	}
+      if(user.getUtilisateurId() != null){
+         // on récup les banques avec des droits d'admin
+         final List<Banque> availableBanques =
+            ManagerLocator.getUtilisateurManager().getAvailableBanquesAsAdminManager(SessionUtils.getLoggedUser(sessionScope));
+         // on récup tous les profils
+         final List<ProfilUtilisateur> tmp = ManagerLocator.getProfilUtilisateurManager().findByUtilisateurManager(user, false);
+         // on va afficher seulement les profils pour lesquels l'utilisateur
+         // a des droits d'admin sur la banque
+         for(int i = 0; i < tmp.size(); i++){
+            if(availableBanques.contains(tmp.get(i).getBanque())){
+               profilUtilisateurs.add(tmp.get(i));
+            }else{
+               profilUtilisateursOtherBanques.add(tmp.get(i));
+            }
+         }
 
-	public List<Banque> getSelectedBanques() {
-		return selectedBanques;
-	}
+         plateformes.addAll(ManagerLocator.getUtilisateurManager().getPlateformesManager(user));
 
-	public void setSelectedBanques(List<Banque> selected) {
-		this.selectedBanques = selected;
-	}
+         if(this.user.getCollaborateur() != null && collaborateurs.contains(this.user.getCollaborateur())){
+            selectedCollaborateur = this.user.getCollaborateur();
+            collabBox.setValue(selectedCollaborateur.getNomAndPrenom());
+         }else if(this.user.getCollaborateur() != null){
+            collaborateurs.add(this.user.getCollaborateur());
+            selectedCollaborateur = this.user.getCollaborateur();
+            nomsAndPrenoms.add(this.user.getCollaborateur().getNomAndPrenom());
+            collabBox.setModel(new CustomSimpleListModel(nomsAndPrenoms));
+            collabBox.setValue(selectedCollaborateur.getNomAndPrenom());
+         }else{
+            collabBox.setValue("");
+            selectedCollaborateur = null;
+         }
 
-	public List<Profil> getProfils() {
-		return profils;
-	}
+         initAffectations();
+      }
 
-	public Profil getSelectedProfil() {
-		return selectedProfil;
-	}
+      final StringBuffer sb = new StringBuffer();
+      if(plateformes.size() > 0){
+         for(int i = 0; i < plateformes.size(); i++){
+            sb.append(plateformes.get(i).getNom());
+            if(i + 1 < plateformes.size()){
+               sb.append(", ");
+            }
+         }
+      }else{
+         sb.append(Labels.getLabel("utilisateur.plateformes.aucune"));
+      }
+      plateformesFormated = sb.toString();
 
-	public void setSelectedProfil(Profil selected) {
-		this.selectedProfil = selected;
-	}
+      super.setObject(user);
+   }
 
-	public Hashtable<Banque, ProfilUtilisateur> getBanquesDefined() {
-		return banquesDefined;
-	}
+   @Override
+   public void cloneObject(){
+      setClone(this.user.clone());
+   }
 
-	public void setBanquesDefined(
-			Hashtable<Banque, ProfilUtilisateur> bDefined) {
-		this.banquesDefined = bDefined;
-	}
-	
-	public ConstWord getLoginConstraint() {
-		return UtilisateurConstraints.getNomConstraint();
-	}
-	
-	public ConstWord getLdapConstraint() {
-		return UtilisateurConstraints.getLdapConstraint();
-	}
-	
-	public ConstEmail getEmailConstraint() {
-		return UtilisateurConstraints.getEmailConstraint();
-	}
-	
-	public ConstPassword getPasswordConstraint() {
-		return UtilisateurConstraints.getPasswordConstraint();
-	}
-	
-	public ConstDateLimit getDateConstraint() {
-		return UtilisateurConstraints.getDateConstraint();
-	}
-	
-	private void validateCoherenceDate(Component comp, Object value) {
-		Date dateValue = (Date) value;
-		Errors errs = null;
-		String field = "timeOut";
-		
-		if (dateValue == null || dateValue.equals("")) { 
-			// la contrainte est retiree
-			//((Datebox) comp).setConstraint("");
-			((Datebox) comp).clearErrorMessage(true);
-			((Datebox) comp).setValue(null);
-			if (comp.getId().equals("timeoutBox")) {
-				this.user.setTimeOut(dateValue);
-			}
-		} else {		
-			if (comp.getId().equals("timeoutBox")) {
-				this.user.setTimeOut(dateValue);
-				errs = UtilisateurValidator.checkDateDesactCoherence(user);
-			}
-			
-			// Si la date n'est pas vide, on applique la contrainte
-			if (errs != null && errs.hasErrors()) {
-				 throw new WrongValueException(
-						comp, ObjectTypesFormatters.handleErrors(errs, field));
-			 }
-		}
-	}	
-	
-	public void onBlur$timeoutBox() {
-		boolean badDateFormat = false;
-		if (timeoutBox.getErrorMessage() != null) {
-			badDateFormat = true;
-		}
-		if (!badDateFormat) {
-			timeoutBox.clearErrorMessage(true);
-			validateCoherenceDate(timeoutBox, timeoutBox.getValue());
-		}
-	}
-	
-	@Override
-	public void setFieldsToUpperCase() {
-	}
+   @Override
+   public Utilisateur getObject(){
+      return this.user;
+   }
 
-	public boolean isAdminPF() {
-		return isAdminPF;
-	}
+   @Override
+   public TKdataObject getParentObject(){
+      return null;
+   }
 
-	public void setAdminPF(boolean isA) {
-		this.isAdminPF = isA;
-	}
+   @Override
+   public void setParentObject(final TKdataObject obj){}
 
-	public boolean isAdmin() {
-		return isAdmin;
-	}
+   @Override
+   public UtilisateurController getObjectTabController(){
+      return (UtilisateurController) super.getObjectTabController();
+   }
 
-	public void setAdmin(boolean isA) {
-		this.isAdmin = isA;
-	}
+   @Override
+   public void setNewObject(){
+      setObject(new Utilisateur());
+      super.setNewObject();
+   }
 
-	public List<ProfilUtilisateur> getProfilUtilisateursOtherBanques() {
-		return profilUtilisateursOtherBanques;
-	}
+   @Override
+   public void switchToCreateMode(){
 
-	public void setProfilUtilisateursOtherBanques(
-			List<ProfilUtilisateur> pOtherBanques) {
-		this.profilUtilisateursOtherBanques = pOtherBanques;
-	}
-	
-	@Override
-	public String getDeleteWaitLabel() {
-		if (!isCascadable()) {
-			return Labels.getLabel("deletion.general.wait");
-		} else {
-			return Labels.getLabel("archivage.general.wait");
-		}
-	}
+      super.switchToCreateMode();
 
-	public List<AffectationDecorator> getAffectationDecorators() {
-		return affectationDecorators;
-	}
+      // Initialisation du mode (listes, valeurs...)
+      initEditableMode();
+      collabBox.setValue(null);
 
-	public void setAffectationDecorators(
-			List<AffectationDecorator> a) {
-		this.affectationDecorators = a;
-	}
+      // lors de la création, on fixe par défaut la date de
+      // desactivation du MDP à 6 mois
+      if(nbMoisMdp != null){
+         final Calendar cal = Calendar.getInstance();
+         cal.add(Calendar.MONTH, nbMoisMdp);
+         this.user.setTimeOut(cal.getTime());
+      }
 
-	public static AffectationRowRenderer getAffectationRenderer() {
-		return affectationRenderer;
-	}
+      // on ajoute les contraintes sur les
+      // mots de passe
+      passwordBox.setMaxlength(20);
+      passwordBox.setConstraint(getPasswordConstraint());
+      confirmPasswordBox.setMaxlength(20);
+      confirmPasswordBox.setConstraint("no empty");
 
-	public static void setAffectationRenderer(
-			AffectationRowRenderer a) {
-		FicheUtilisateur.affectationRenderer = a;
-	}
+      getBinder().loadComponent(self);
+   }
 
-	public Integer getNbMoisMdp() {
-		return nbMoisMdp;
-	}
+   @Override
+   public void switchToStaticMode(){
+      super.switchToStaticMode(this.user.equals(new Utilisateur()));
 
-	public void setNbMoisMdp(Integer nb) {
-		this.nbMoisMdp = nb;
-	}
-	
-	/**
-	 * Traite onClick hyperlien nom banque
-	 * @param event
-	 * @since 2.1
-	 */
-	public void onClick$banqueNom(Event event) {
-		ProfilUtilisateur pf = (ProfilUtilisateur) event.getData();
-		getAdministrationController()
-			.selectBanqueInController(pf.getBanque());
-	}
-	
-	/**
-	 * Traite onClick hyperlien nom profil
-	 * @param event
-	 * @since 2.1
-	 */
-	public void onClick$profilNom(Event event) {
-		ProfilUtilisateur pf = (ProfilUtilisateur) event.getData();
-		getAdministrationController()
-			.selectProfilInController(pf.getProfil());
-	}
-	
-	/**
-	 * 
-	 * @since 2.1
-	 */
-	public AdministrationController getAdministrationController() {	
-		return (AdministrationController) self
-			.getParent().getParent()
-			.getParent().getParent().getParent()
-			.getParent().getParent().getParent()
-			//.getParent()
-			.getAttributeOrFellow("winAdministration$composer", true);
-	}
-	
-	/**
-	 * @since 2.1
-	 */
-	public void onCheck$banquesArchiveBox(Event e) {
-		profilUtilisateurs.clear();
-		// display non-archived users only
-		if (user != null && user.getUtilisateurId() != null) {
-			if (banquesArchiveBox.isChecked()) {
-				profilUtilisateurs.addAll(ManagerLocator
-					.getProfilUtilisateurManager().findByUtilisateurManager(user, false));
-			} else { // display all of them
-				profilUtilisateurs.addAll(ManagerLocator
-					.getProfilUtilisateurManager().findByUtilisateurManager(user, null));
-			}
-		}
-	}
+      if(this.user.getUtilisateurId() == null){
+         menuBar.setVisible(false);
+      }
+
+      getBinder().loadComponent(self);
+   }
+
+   /**
+    * Change mode de la fiche en mode edition.
+    */
+   @Override
+   public void switchToEditMode(){
+
+      if(isAdminPF){
+         super.switchToEditMode();
+      }else{
+         validateC.setVisible(true);
+         revertC.setVisible(true);
+         createC.setVisible(false);
+         cancelC.setVisible(false);
+         addNewC.setVisible(false);
+         editC.setVisible(false);
+         deleteC.setVisible(false);
+         if(isAdmin){
+            for(int i = 0; i < objAdminCollectionComponents.length; i++){
+               objAdminCollectionComponents[i].setVisible(true);
+            }
+         }
+
+         if(user.equals(SessionUtils.getLoggedUser(sessionScope))){
+            for(int i = 0; i < objModifPersoComponents.length; i++){
+               objModifPersoComponents[i].setVisible(true);
+            }
+            for(int i = 0; i < labelModifPersoComponents.length; i++){
+               labelModifPersoComponents[i].setVisible(false);
+            }
+         }
+      }
+
+      passwordLabel.setVisible(true);
+      passwordBox.setVisible(false);
+      rowConfirmationPassword.setVisible(false);
+
+      // on supprime toutes les contraintes sur les
+      // mots de passe
+      passwordBox.setMaxlength(1000);
+      passwordBox.setConstraint("");
+      confirmPasswordBox.setConstraint("");
+      confirmPasswordBox.setMaxlength(1000);
+
+      // Initialisation du mode (listes, valeurs...)
+      initEditableMode();
+
+      getBinder().loadComponent(self);
+   }
+
+   @Override
+   public void setFocusOnElement(){
+      loginBox.setFocus(true);
+   }
+
+   @Override
+   public void clearData(){
+      clearConstraints();
+      super.clearData();
+   }
+
+   @Override
+   public void createNewObject(){
+
+      // on remplit l'utilisateur en fonction des champs nulls
+      setEmptyToNulls();
+
+      this.user.setArchive(archiveBox.isChecked());
+      this.user.setSuperAdmin(false);
+
+      // Gestion du collaborateur
+      final String selectedNomAndPremon = this.collabBox.getValue().toUpperCase();
+      this.collabBox.setValue(selectedNomAndPremon);
+      final int ind = nomsAndPrenoms.indexOf(selectedNomAndPremon);
+      if(ind > -1){
+         selectedCollaborateur = collaborateurs.get(ind);
+      }else{
+         selectedCollaborateur = null;
+      }
+
+      // on fusionne les 2 listes de profils
+      final List<ProfilUtilisateur> tmp = new ArrayList<>();
+      tmp.addAll(profilUtilisateurs);
+      tmp.addAll(profilUtilisateursOtherBanques);
+
+      // encodage du password
+      user.setPassword(ObjectTypesFormatters.getEncodedPassword(user.getPassword()));
+
+      // update de l'objet
+      ManagerLocator.getUtilisateurManager().createObjectManager(user, selectedCollaborateur, tmp, null,
+         SessionUtils.getLoggedUser(sessionScope), SessionUtils.getPlateforme(sessionScope));
+   }
+
+   /**
+    * Recupere le controller du composant representant la liste associee
+    * a l'entite de domaine a partir de l'evenement.
+    * @param event Event
+    * @return fiche ListeContrat
+    */
+   private ListeUtilisateur getListeUtilisateur(){
+      return getObjectTabController().getListe();
+   }
+
+   @Override
+   public void onClick$addNewC(){
+      switchToCreateMode();
+   }
+
+   @Override
+   public void onClick$cancelC(){
+      clearData();
+   }
+
+   @Override
+   public void onClick$createC(){
+      if(!confirmationPassword.equals(this.user.getPassword())){
+         throw new WrongValueException(confirmPasswordBox, Labels.getLabel("utilisateur.bad.password"));
+      }
+
+      Clients.showBusy(Labels.getLabel("utilisateur.creation.encours"));
+      Events.echoEvent("onLaterCreate", self, null);
+   }
+
+   @Override
+   public void onLaterCreate(){
+      try{
+         createNewObject();
+         cloneObject();
+         setObject(this.user);
+         switchToStaticMode();
+         disableToolBar(false);
+
+         if(getListeUtilisateur() != null){
+            // ajout de l'utilisateur à la liste
+            getListeUtilisateur().addToObjectList(this.user);
+         }
+         // ferme wait message
+         Clients.clearBusy();
+      }catch(final RuntimeException re){
+         // ferme wait message
+         Clients.clearBusy();
+         Messagebox.show(handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
+      }
+   }
+
+   @Override
+   public boolean prepareDeleteObject(){
+      final boolean isUsed = ManagerLocator.getUtilisateurManager().isUsedObjectManager(getObject());
+      setDeleteMessage(
+         ObjectTypesFormatters.getLabel("message.deletion.message", new String[] {Labels.getLabel(getDeletionMessage())}));
+      if(isUsed){
+         setDeleteMessage(Labels.getLabel("utilisateur.suppression.impossible"));
+      }
+      // propose l'archivage par ce booleen dans removeObject
+      setCascadable(isUsed);
+      return isUsed;
+   }
+
+   @Override
+   public void removeObject(final String comments){
+      if(!isCascadable()){
+         ManagerLocator.getUtilisateurManager().removeObjectManager(getObject());
+      }else{
+         // opération d'archivage
+         final OperationType oType = ManagerLocator.getOperationTypeManager().findByNomLikeManager("Archivage", true).get(0);
+         getObject().setArchive(true);
+         // on fusionne les 2 listes de profils
+         final List<ProfilUtilisateur> tmp = new ArrayList<>();
+         tmp.addAll(profilUtilisateurs);
+         tmp.addAll(profilUtilisateursOtherBanques);
+         // update de l'objet
+         ManagerLocator.getUtilisateurManager().updateObjectManager(user, selectedCollaborateur, tmp, null,
+            SessionUtils.getLoggedUser(sessionScope), oType);
+      }
+   }
+
+   @Override
+   public void onLaterDelete(final Event event){
+      try{
+         removeObject((String) event.getData());
+
+         if(!isCascadable()){ // suppression
+            if(getListeUtilisateur() != null){
+               // on enlève le contrat de la liste
+               getListeUtilisateur().removeObjectAndUpdateList(this.user);
+            }
+            // clear form
+            clearData();
+         }else{ //archivage
+            cloneObject();
+            switchToStaticMode();
+
+            if(getListeUtilisateur() != null){
+               // ajout de l'utilisateur à la liste
+               getListeUtilisateur().updateObjectGridList(this.user);
+            }
+         }
+      }catch(final RuntimeException re){
+         // ferme wait message
+         Clients.clearBusy();
+         Messagebox.show(handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
+      }finally{
+         // ferme wait message
+         Clients.clearBusy();
+      }
+   }
+
+   public void onClick$delete2C(){
+      if(this.user != null){
+         // si l'utilisateur n'a jamais été utilisé : pas d'historique
+         if(!ManagerLocator.getUtilisateurManager().isUsedObjectManager(user)){
+            if(Messagebox.show(
+               ObjectTypesFormatters.getLabel("message.deletion.message",
+                  new String[] {Labels.getLabel("message.deletion.utilisateur")}),
+               Labels.getLabel("message.deletion.title"), Messagebox.YES | Messagebox.NO, Messagebox.QUESTION) == Messagebox.YES){
+
+               // suppression du contrat
+               ManagerLocator.getUtilisateurManager().removeObjectManager(user);
+
+               // on vérifie que l'on retrouve bien la page 
+               // contenant la liste des contrats
+               if(getListeUtilisateur() != null){
+                  // on enlève le contrat de la liste
+                  getListeUtilisateur().removeObjectFromList(this.user);
+               }
+               // clear form
+               clearData();
+            }
+         }else{
+            if(Messagebox.show(Labels.getLabel("utilisateur.suppression.impossible"),
+               Labels.getLabel("utilisateur.archiver.title"), Messagebox.YES | Messagebox.NO,
+               Messagebox.QUESTION) == Messagebox.YES){
+
+               // opération d'archivage
+               final OperationType oType =
+                  ManagerLocator.getOperationTypeManager().findByNomLikeManager("Archivage", true).get(0);
+               this.user.setArchive(true);
+               // on fusionne les 2 listes de profils
+               final List<ProfilUtilisateur> tmp = new ArrayList<>();
+               tmp.addAll(profilUtilisateurs);
+               tmp.addAll(profilUtilisateursOtherBanques);
+               // update de l'objet
+               ManagerLocator.getUtilisateurManager().updateObjectManager(user, selectedCollaborateur, tmp, null,
+                  SessionUtils.getLoggedUser(sessionScope), oType);
+               cloneObject();
+               switchToStaticMode();
+
+               if(getListeUtilisateur() != null){
+                  // ajout de l'utilisateur à la liste
+                  getListeUtilisateur().updateObjectGridList(this.user);
+               }
+            }
+         }
+      }
+   }
+
+   //	@Override
+   //	public void onClick$editC() {
+   //		if (this.user != null) {
+   //			switchToEditMode();
+   //		}
+   //	}
+
+   @Override
+   public void onClick$revertC(){
+      clearConstraints();
+      super.onClick$revertC();
+   }
+
+   @Override
+   public void onClick$validateC(){
+      Clients.showBusy(Labels.getLabel("utilisateur.creation.encours"));
+      Events.echoEvent("onLaterUpdate", self, null);
+   }
+
+   public void onLaterUpdate(){
+      try{
+         updateObject();
+         cloneObject();
+         switchToStaticMode();
+
+         if(getListeUtilisateur() != null){
+            // ajout de l'utilisateur à la liste
+            getListeUtilisateur().updateObjectGridList(this.user);
+         }
+         // ferme wait message
+         Clients.clearBusy();
+
+         initAffectations();
+         getBinder().loadComponent(affectationsGrid);
+      }catch(final RuntimeException re){
+         // ferme wait message
+         Clients.clearBusy();
+         Messagebox.show(handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
+      }
+   }
+
+   /**
+    * Méthode appelée après modification du mdp. On va alors
+    * mettre à jour la fiche et la liste de utilisateurs.
+    * @param event
+    */
+   public void onGetPasswordUpdated(final Event event){
+      if(event.getData() != null){
+         final Utilisateur u = (Utilisateur) event.getData();
+
+         // maj de la fiche
+         setObject(u);
+
+         // maj de la liste
+         if(getListeUtilisateur() != null){
+            // ajout de l'utilisateur à la liste
+            getListeUtilisateur().updateObjectGridList(this.user);
+         }
+      }
+   }
+
+   @Override
+   public void setEmptyToNulls(){
+      if(this.user.getDnLdap().equals("")){
+         this.user.setDnLdap(null);
+      }
+
+      if(this.user.getEmail().equals("")){
+         this.user.setEmail(null);
+      }
+   }
+
+   @Override
+   public void updateObject(){
+      // on remplit l'utilisateur en fonction des champs nulls
+      setEmptyToNulls();
+
+      this.user.setArchive(archiveBox.isChecked());
+
+      OperationType oType = null;
+      // on teste si la modification est un archivage ou une
+      // restauration
+      if(user.isArchive()){
+         if(!((Utilisateur) getClone()).isArchive()){
+            oType = ManagerLocator.getOperationTypeManager().findByNomLikeManager("Archivage", true).get(0);
+         }else{
+            oType = ManagerLocator.getOperationTypeManager().findByNomLikeManager("Modification", true).get(0);
+         }
+      }else{
+         if(((Utilisateur) getClone()).isArchive()){
+            oType = ManagerLocator.getOperationTypeManager().findByNomLikeManager("Restauration", true).get(0);
+         }else{
+            oType = ManagerLocator.getOperationTypeManager().findByNomLikeManager("Modification", true).get(0);
+         }
+      }
+
+      // Gestion du collaborateur
+      final String selectedNomAndPremon = this.collabBox.getValue().toUpperCase();
+      this.collabBox.setValue(selectedNomAndPremon);
+      final int ind = nomsAndPrenoms.indexOf(selectedNomAndPremon);
+      if(ind > -1){
+         selectedCollaborateur = collaborateurs.get(ind);
+      }else{
+         selectedCollaborateur = null;
+      }
+
+      // on fusionne les 2 listes de profils
+      final List<ProfilUtilisateur> tmp = new ArrayList<>();
+      tmp.addAll(profilUtilisateurs);
+      tmp.addAll(profilUtilisateursOtherBanques);
+
+      // update de l'objet
+      ManagerLocator.getUtilisateurManager().updateObjectManager(user, selectedCollaborateur, tmp, null,
+         SessionUtils.getLoggedUser(sessionScope), oType);
+   }
+
+   /**
+    * Clic sur le bouton addRoleButton pour ajouter un role à
+    * l'utilisateur.
+    * @version 2.1
+    */
+
+   public void onClick$addRoleButton(){
+
+      // if no profile defined in PF -> warning
+      if(selectedProfil != null){
+
+         selectedBanques.clear();
+         selectedBanques.addAll(((Selectable<Banque>) collectionsBox.getModel()).getSelection());
+
+         for(final Banque bq : selectedBanques){
+            final ProfilUtilisateur newRole = new ProfilUtilisateur();
+            newRole.setBanque(bq);
+            newRole.setProfil(selectedProfil);
+            newRole.setUtilisateur(user);
+
+            if(!profilUtilisateurs.contains(newRole)){
+
+               // si une banque a déja été définie, on modifie le
+               // précédent profil
+               if(banquesDefined.containsKey(bq)){
+                  final ProfilUtilisateur pu = banquesDefined.get(bq);
+                  pu.setProfil(selectedProfil);
+                  banquesDefined.remove(bq);
+                  banquesDefined.put(bq, pu);
+               }else{
+                  profilUtilisateurs.add(newRole);
+                  banquesDefined.put(bq, newRole);
+               }
+            }
+         }
+         final ListModel<ProfilUtilisateur> list = new ListModelList<>(profilUtilisateurs);
+         rolesGrid.setModel(list);
+      }else{ // warn empty profiles
+         throw new WrongValueException(profilsBox, Labels.getLabel("ficheUtilisateur.emptyRoles.warning"));
+      }
+   }
+
+   /**
+    * Clic sur le bouton deleteRole pour supprimer un role à
+    * l'utilisateur.
+    * @version 2.1
+    */
+   public void onClick$deleteRole(final Event event){
+      //@since 2.1 template rendering
+      final ProfilUtilisateur role = (ProfilUtilisateur) event.getData();
+      // AbstractListeController2
+      //	.getBindingData((ForwardEvent) event, false);
+
+      // l'utilisateur ne peut modifier que les autorisations
+      // pour lesquelles il a un droit d'administration sur
+      // la banque
+      if(banques.contains(role.getBanque())){
+         if(profilUtilisateurs.contains(role)){
+            profilUtilisateurs.remove(role);
+            final ListModel<ProfilUtilisateur> list = new ListModelList<>(profilUtilisateurs);
+            rolesGrid.setModel(list);
+            if(banquesDefined.containsKey(role.getBanque())){
+               banquesDefined.remove(role.getBanque());
+            }
+         }
+      }else{
+         Messagebox.show(Labels.getLabel("utilisateur.suppression.role.impossible"), "Error", Messagebox.OK, Messagebox.ERROR);
+      }
+   }
+
+   /**
+    * Méthode appelée lorsque l'utilisateur clique sur le lien
+    * collabAideSaisieUser. Cette méthode va créer une nouvelle
+    * fenêtre contenant l'aide pour la sélection d'un collaborateur.
+    */
+   public void onClick$collabAideSaisieUser(){
+      // on récupère le collaborateur actuellement sélectionné
+      // pour l'afficher dans la modale
+      final List<Object> old = new ArrayList<>();
+      if(selectedCollaborateur != null){
+         old.add(selectedCollaborateur);
+      }
+
+      // ouvre la modale
+      openCollaborationsWindow(page, "general.recherche", "select", null, "Collaborateur", null, Path.getPath(self), old);
+
+   }
+
+   /**
+    * Méthode appelée par la fenêtre CollaborationsController quand
+    * l'utilisateur sélectionne un collaborateur.
+    * @param e Event contenant le collaborateur sélectionné.
+    */
+   public void onGetObjectFromSelection(final Event e){
+
+      // les collaborateurs peuvent être modifiés dans la fenêtre
+      // d'aide => maj de ceux-ci
+      nomsAndPrenoms = new ArrayList<>();
+      collaborateurs = ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager();
+      for(int i = 0; i < collaborateurs.size(); i++){
+         nomsAndPrenoms.add(collaborateurs.get(i).getNomAndPrenom());
+      }
+
+      if(this.user.getCollaborateur() != null && !collaborateurs.contains(this.user.getCollaborateur())){
+         collaborateurs.add(this.user.getCollaborateur());
+         nomsAndPrenoms.add(this.user.getCollaborateur().getNomAndPrenom());
+      }
+      collabBox.setModel(new CustomSimpleListModel(nomsAndPrenoms));
+
+      // si un collaborateur a été sélectionné
+      if(e.getData() != null){
+         final Collaborateur coll = (Collaborateur) e.getData();
+         if(nomsAndPrenoms.contains(coll.getNomAndPrenom())){
+            final int ind = nomsAndPrenoms.indexOf(coll.getNomAndPrenom());
+            selectedCollaborateur = collaborateurs.get(ind);
+            collabBox.setValue(selectedCollaborateur.getNomAndPrenom());
+         }
+      }
+   }
+
+   /**
+    * Méthode pour l'initialisation du mode d'édition : récupération du contenu
+    * des listes déroulantes (types, qualités...).
+    */
+   public void initEditableMode(){
+      confirmationPassword = this.user.getPassword();
+
+      // init des collaborateurs
+      // nomsAndPrenoms .clear();
+
+      if(collaborateurs.isEmpty()){
+         collaborateurs = ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager();
+         for(int i = 0; i < collaborateurs.size(); i++){
+            nomsAndPrenoms.add(collaborateurs.get(i).getNomAndPrenom());
+         }
+      }
+      collabBox.setModel(new CustomSimpleListModel(nomsAndPrenoms));
+
+      // reset profiles
+      profils.clear();
+      // @since 2.1 plateforme + archive
+      profils
+         .addAll(ManagerLocator.getProfilManager().findByPlateformeAndArchiveManager(SessionUtils.getCurrentPlateforme(), false));
+      if(!profils.isEmpty()){
+         selectedProfil = profils.get(0);
+      }
+
+      archiveBox.setChecked(this.user.isArchive());
+
+      selectedBanques.clear();
+      banques =
+         ManagerLocator.getUtilisateurManager().getAvailableBanquesAsAdminManager(SessionUtils.getLoggedUser(sessionScope));
+      // ((Selectable<Banque>) collectionsBox.getModel())
+      // .setSelection(ncfCess);
+      // if (banques.size() > 0) {
+      //	selectedBanque = banques.get(0);
+      //}
+
+      banquesDefined.clear();
+      for(int i = 0; i < profilUtilisateurs.size(); i++){
+         banquesDefined.put(profilUtilisateurs.get(i).getBanque(), profilUtilisateurs.get(i));
+      }
+   }
+
+   /**
+    * Méthode vidant tous les messages d'erreurs apparaissant dans
+    * les contraintes de la fiche.
+    */
+   public void clearConstraints(){
+      Clients.clearWrongValue(loginBox);
+      Clients.clearWrongValue(passwordBox);
+      Clients.clearWrongValue(ldapBox);
+      Clients.clearWrongValue(emailBox);
+      Clients.clearWrongValue(archiveBox);
+      Clients.clearWrongValue(timeoutBox);
+      Clients.clearWrongValue(confirmPasswordBox);
+   }
+
+   /**
+    * Rend les boutons d'actions cliquables ou non.
+    */
+   public void drawActionsForUtilisateur(){
+      if(sessionScope.containsKey("AdminPF")){
+         isAdminPF = (Boolean) sessionScope.get("AdminPF");
+      }else if(sessionScope.containsKey("Admin")){
+         isAdmin = (Boolean) sessionScope.get("Admin");
+      }
+
+      affectationRenderer.setCanEdit(false);
+      addAffectations.setVisible(false);
+      if(isAdminPF){
+         setCanNew(true);
+         setCanEdit(true);
+         setCanDelete(true);
+         setCanSeeHistorique(true);
+         affectationRenderer.setCanEdit(true);
+         addAffectations.setVisible(true);
+      }else if(isAdmin){
+         setCanNew(false);
+         setCanEdit(true);
+         setCanDelete(false);
+         setCanSeeHistorique(false);
+      }else{
+         setCanNew(false);
+         setCanEdit(false);
+         setCanDelete(false);
+         setCanSeeHistorique(false);
+      }
+
+      //		List<String> entites = new ArrayList<String>();
+      //		entites.add("Collaborateur");
+      //		setDroitsConsultation(drawConsultationLinks(entites));
+      // si pas le droit d'accès aux dérivés, on cache le lien
+      if(!getDroitsConsultation().get("Collaborateur")){
+         collaborateurLabel.setSclass(null);
+      }else{
+         collaborateurLabel.setSclass("formLink");
+      }
+
+      editPassword.setDisabled(!isCanEdit());
+   }
+
+   /**
+    * Affiche la fiche d'un medecin referent.
+    */
+   public void onClick$collaborateurLabel(){
+      if(getDroitsConsultation().get("Collaborateur") && this.user.getCollaborateur() != null){
+
+         // ouvre la modale
+         openCollaborationsWindow(page, "context.modal.collaborateur", "details", this.user.getCollaborateur(), null, null, null,
+            null);
+      }
+   }
+
+   public void onClick$editPassword(){
+      openPasswordWindow(page, self, user);
+   }
+
+   /**********************************************************************/
+   /*********************** Gestion des affectations**********************/
+   /**********************************************************************/
+
+   public void initAffectations(){
+      affectationDecorators = new ArrayList<>();
+      if(this.user.getUtilisateurId() != null){
+         // gestion des imprimantes
+         // on extrait les banques accessibles pour la pf actuelle
+         final List<Banque> bks =
+            ManagerLocator.getBanqueManager().findByUtilisateurAndPFManager(user, SessionUtils.getPlateforme(sessionScope));
+
+         // pour chaque banque, on crée un AffectationDecorator
+         for(int j = 0; j < bks.size(); j++){
+            final AffectationDecorator aff = new AffectationDecorator(user, bks.get(j), j == 0, j == bks.size() - 1, bks.size());
+            affectationDecorators.add(aff);
+         }
+      }
+   }
+
+   /**
+    * Méthode appelée lorsque l'utilisateur souhaite modifier une
+    * affectation.
+    * @param event
+    */
+   public void onClickEditAffectation(final ForwardEvent event){
+      final AffectationDecorator aff = (AffectationDecorator) event.getData();
+      // on passe le décorator en éditable et on recharge la grid
+      aff.setEdit(true);
+      getBinder().loadComponent(affectationsGrid);
+   }
+
+   /**
+    * Méthode appelée lorsque l'utilisateur valide une modif sur une
+    * affectation.
+    * @param event
+    */
+
+   public void onClickValidateAffectation(final ForwardEvent event){
+      // on récupère les donneés : la listbox contenant les imprimantes,
+      // celle contenant es modèles et le decorator d'affectation
+      final List<Object> datas = (List<Object>) event.getData();
+      final Listbox liImp = (Listbox) datas.get(0);
+      final Listbox liMod = (Listbox) datas.get(1);
+      final AffectationDecorator aff = (AffectationDecorator) datas.get(2);
+
+      // on récupère l'imprimante sélectionnée
+      Imprimante selectedImprimante = null;
+      if(liImp.getSelectedItem().getValue() != null){
+         selectedImprimante = ManagerLocator.getImprimanteManager()
+            .findByNomAndPlateformeManager((String) liImp.getSelectedItem().getValue(), SessionUtils.getPlateforme(sessionScope))
+            .get(0);
+      }
+
+      // on récupère le modèle sélectionné
+      Modele selectedModele = null;
+      if(liMod.getSelectedItem().getValue() != null){
+         selectedModele = ManagerLocator.getModeleManager()
+            .findByNomAndPlateformeManager((String) liMod.getSelectedItem().getValue(), SessionUtils.getPlateforme(sessionScope))
+            .get(0);
+      }
+
+      try{
+         AffectationImprimante ai = null;
+         // on cherche si une affectation existait déjà
+         final List<AffectationImprimante> liste =
+            ManagerLocator.getAffectationImprimanteManager().findByBanqueUtilisateurManager(aff.getBanque(), user);
+         if(liste.size() > 0){
+            ai = liste.get(0);
+         }else{
+            ai = new AffectationImprimante();
+         }
+
+         // on sauvegarde l'affectation
+         ManagerLocator.getAffectationImprimanteManager().createObjectManager(new AffectationImprimante(), user, aff.getBanque(),
+            selectedImprimante, selectedModele);
+
+         // l'imprimante faisant partie de la PK, si celle ci a changé
+         // et qu'une affectation existait, on la supprime
+         if(ai.getImprimante() != null && !ai.getImprimante().equals(selectedImprimante)){
+            ManagerLocator.getAffectationImprimanteManager().removeObjectManager(ai);
+         }
+
+         // Maj de la grid
+         aff.setEdit(false);
+         getBinder().loadComponent(affectationsGrid);
+      }catch(final RuntimeException re){
+         // ferme wait message
+         Clients.clearBusy();
+         Messagebox.show(handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
+      }
+   }
+
+   /**
+    * Méthode appelée lorsque l'utilisateur souhaite supprimer
+    * une affectation d'imrpiamnte.
+    * @param event
+    */
+   public void onClickDeleteAffectation(final ForwardEvent event){
+      final AffectationDecorator aff = (AffectationDecorator) event.getData();
+
+      AffectationImprimante ai = null;
+      // on cherche si une affectation existait
+      final List<AffectationImprimante> liste =
+         ManagerLocator.getAffectationImprimanteManager().findByBanqueUtilisateurManager(aff.getBanque(), user);
+      if(liste.size() > 0){
+         ai = liste.get(0);
+      }
+
+      // si une affectation était définie
+      if(ai != null){
+         // confirmation
+         if(Messagebox.show(
+            ObjectTypesFormatters.getLabel("message.deletion.message",
+               new String[] {Labels.getLabel("message.deletion.affectationImprimante")}),
+            Labels.getLabel("message.deletion.title"), Messagebox.YES | Messagebox.NO, Messagebox.QUESTION) == Messagebox.YES){
+            // suppression
+            ManagerLocator.getAffectationImprimanteManager().removeObjectManager(ai);
+            // maj
+            getBinder().loadComponent(affectationsGrid);
+         }
+      }
+   }
+
+   /**
+    * Méthode appelée lorsque l'utilisateur annule une modif sur une
+    * affectation.
+    * @param event
+    */
+   public void onClickCancelAffectation(final ForwardEvent event){
+      final AffectationDecorator aff = (AffectationDecorator) event.getData();
+      // on repasse le decirator en non editable et on recharge
+      // la grid
+      aff.setEdit(false);
+      getBinder().loadComponent(affectationsGrid);
+   }
+
+   public void onClick$addAffectations(){
+      openAffectationCollectionsWindow();
+   }
+
+   /**
+    * PopUp window appelée permettre la définition des
+    * imprimantes pour chaque collection.
+    */
+   public void openAffectationCollectionsWindow(){
+      if(!isBlockModal()){
+
+         setBlockModal(true);
+
+         // nouvelle fenêtre
+         final Window win = new Window();
+         win.setVisible(false);
+         win.setId("affectationCollectionsWindow");
+         win.setPage(page);
+         win.setMaximizable(true);
+         win.setSizable(true);
+         win.setTitle(Labels.getLabel("utilisateur.affectations.modale.title"));
+         win.setBorder("normal");
+         win.setWidth("500px");
+         final int height = 260;
+         win.setHeight(String.valueOf(height) + "px");
+         win.setClosable(true);
+
+         final HtmlMacroComponent ua;
+         ua = (HtmlMacroComponent) page.getComponentDefinition("affectationCollectionsModale", false).newInstance(page, null);
+         ua.setParent(win);
+         ua.setId("affectationCollectionsModaleComponent");
+         ua.applyProperties();
+         ua.afterCompose();
+
+         final List<Banque> bks =
+            ManagerLocator.getBanqueManager().findByUtilisateurAndPFManager(user, SessionUtils.getPlateforme(sessionScope));
+         ((AffectationCollectionsModale) ua.getFellow("fwinAffectationCollectionsModale")
+            .getAttributeOrFellow("fwinAffectationCollectionsModale$composer", true)).init(bks, self, user,
+               SessionUtils.getPlateforme(sessionScope));
+         ua.setVisible(false);
+
+         win.addEventListener("onTimed", new EventListener<Event>()
+         {
+            @Override
+            public void onEvent(final Event event) throws Exception{
+               //progress.detach();
+               ua.setVisible(true);
+            }
+         });
+
+         final Timer timer = new Timer();
+         timer.setDelay(500);
+         timer.setRepeats(false);
+         timer.addForward("onTimer", timer.getParent(), "onTimed");
+         win.appendChild(timer);
+         timer.start();
+
+         try{
+            win.onModal();
+            setBlockModal(false);
+
+         }catch(final SuspendNotAllowedException e){
+            log.error(e);
+         }
+      }
+   }
+
+   /**
+    * Méthode appelée pour mettre à jour les affectations
+    * d'imprimantes.
+    * @param e
+    */
+   public void onGetAffectationsDone(final Event e){
+      getBinder().loadComponent(affectationsGrid);
+   }
+
+   /*********************************************************/
+   /********************** ACCESSEURS. **********************/
+   /*********************************************************/
+
+   public Utilisateur getUser(){
+      return user;
+   }
+
+   public void setUser(final Utilisateur u){
+      setObject(u);
+   }
+
+   public List<ProfilUtilisateur> getProfilUtilisateurs(){
+      return profilUtilisateurs;
+   }
+
+   public void setProfilUtilisateurs(final List<ProfilUtilisateur> p){
+      this.profilUtilisateurs = p;
+   }
+
+   /**
+    * Formate la valeur du champ Archive.
+    * @return Oui ou non.
+    */
+   public String getArchiveFormated(){
+
+      if(this.user != null){
+         return ObjectTypesFormatters.booleanLitteralFormatter(this.user.isArchive());
+      }
+      return "";
+   }
+
+   /**
+    * Formate la valeur du champ super.
+    * @return Oui ou non.
+    */
+   public String getSuperFormated(){
+
+      if(this.user != null){
+         return ObjectTypesFormatters.booleanLitteralFormatter(this.user.isSuperAdmin());
+      }
+      return "";
+   }
+
+   /**
+    * Formate la date de création de l'utilisateur.
+    * @return Date de création formatée.
+    */
+   public String getDateCreationFormated(){
+      if(this.user != null && !this.user.equals(new Utilisateur())){
+
+         final Calendar date = ManagerLocator.getOperationManager().findDateCreationManager(user);
+
+         if(date != null){
+            return ObjectTypesFormatters.dateRenderer2(date);
+         }
+         return null;
+      }
+      return null;
+   }
+
+   /**
+    * Formate la date de stockage de l'échantillon.
+    * @return Date de stockage formatée.
+    */
+   public String getTimeoutFormated(){
+      if(this.user != null){
+         return ObjectTypesFormatters.dateRenderer2(this.user.getTimeOut());
+      }
+      return null;
+   }
+
+   /**
+    * Formate le message d'explication sur la durée de validité du MDP.
+    * @return
+    */
+   public String getTimeoutLabelFormated(){
+      String value = "";
+
+      if(nbMoisMdp != null && nbMoisMdp > 0){
+         value = ObjectTypesFormatters.getLabel("utilisateur.timeout.help", new String[] {String.valueOf(nbMoisMdp)});
+      }
+
+      return value;
+   }
+
+   public String getSClassOperateur(){
+      if(this.user != null){
+         return ObjectTypesFormatters.sClassCollaborateur(this.user.getCollaborateur());
+      }
+      return null;
+   }
+
+   public List<Plateforme> getPlateformes(){
+      return plateformes;
+   }
+
+   public String getPlateformesFormated(){
+      return plateformesFormated;
+   }
+
+   public String getConfirmationPassword(){
+      return confirmationPassword;
+   }
+
+   public void setConfirmationPassword(final String cPassword){
+      this.confirmationPassword = cPassword;
+   }
+
+   public List<Collaborateur> getCollaborateurs(){
+      return collaborateurs;
+   }
+
+   public Collaborateur getSelectedCollaborateur(){
+      return selectedCollaborateur;
+   }
+
+   public void setSelectedCollaborateur(final Collaborateur selectedC){
+      this.selectedCollaborateur = selectedC;
+   }
+
+   public List<String> getNomsAndPrenoms(){
+      return nomsAndPrenoms;
+   }
+
+   public List<Banque> getBanques(){
+      return banques;
+   }
+
+   public List<Banque> getSelectedBanques(){
+      return selectedBanques;
+   }
+
+   public void setSelectedBanques(final List<Banque> selected){
+      this.selectedBanques = selected;
+   }
+
+   public List<Profil> getProfils(){
+      return profils;
+   }
+
+   public Profil getSelectedProfil(){
+      return selectedProfil;
+   }
+
+   public void setSelectedProfil(final Profil selected){
+      this.selectedProfil = selected;
+   }
+
+   public Hashtable<Banque, ProfilUtilisateur> getBanquesDefined(){
+      return banquesDefined;
+   }
+
+   public void setBanquesDefined(final Hashtable<Banque, ProfilUtilisateur> bDefined){
+      this.banquesDefined = bDefined;
+   }
+
+   public ConstWord getLoginConstraint(){
+      return UtilisateurConstraints.getNomConstraint();
+   }
+
+   public ConstWord getLdapConstraint(){
+      return UtilisateurConstraints.getLdapConstraint();
+   }
+
+   public ConstEmail getEmailConstraint(){
+      return UtilisateurConstraints.getEmailConstraint();
+   }
+
+   public ConstPassword getPasswordConstraint(){
+      return UtilisateurConstraints.getPasswordConstraint();
+   }
+
+   public ConstDateLimit getDateConstraint(){
+      return UtilisateurConstraints.getDateConstraint();
+   }
+
+   private void validateCoherenceDate(final Component comp, final Object value){
+      final Date dateValue = (Date) value;
+      Errors errs = null;
+      final String field = "timeOut";
+
+      if(dateValue == null || dateValue.equals("")){
+         // la contrainte est retiree
+         //((Datebox) comp).setConstraint("");
+         ((Datebox) comp).clearErrorMessage(true);
+         ((Datebox) comp).setValue(null);
+         if(comp.getId().equals("timeoutBox")){
+            this.user.setTimeOut(dateValue);
+         }
+      }else{
+         if(comp.getId().equals("timeoutBox")){
+            this.user.setTimeOut(dateValue);
+            errs = UtilisateurValidator.checkDateDesactCoherence(user);
+         }
+
+         // Si la date n'est pas vide, on applique la contrainte
+         if(errs != null && errs.hasErrors()){
+            throw new WrongValueException(comp, ObjectTypesFormatters.handleErrors(errs, field));
+         }
+      }
+   }
+
+   public void onBlur$timeoutBox(){
+      boolean badDateFormat = false;
+      if(timeoutBox.getErrorMessage() != null){
+         badDateFormat = true;
+      }
+      if(!badDateFormat){
+         timeoutBox.clearErrorMessage(true);
+         validateCoherenceDate(timeoutBox, timeoutBox.getValue());
+      }
+   }
+
+   @Override
+   public void setFieldsToUpperCase(){}
+
+   public boolean isAdminPF(){
+      return isAdminPF;
+   }
+
+   public void setAdminPF(final boolean isA){
+      this.isAdminPF = isA;
+   }
+
+   public boolean isAdmin(){
+      return isAdmin;
+   }
+
+   public void setAdmin(final boolean isA){
+      this.isAdmin = isA;
+   }
+
+   public List<ProfilUtilisateur> getProfilUtilisateursOtherBanques(){
+      return profilUtilisateursOtherBanques;
+   }
+
+   public void setProfilUtilisateursOtherBanques(final List<ProfilUtilisateur> pOtherBanques){
+      this.profilUtilisateursOtherBanques = pOtherBanques;
+   }
+
+   @Override
+   public String getDeleteWaitLabel(){
+      if(!isCascadable()){
+         return Labels.getLabel("deletion.general.wait");
+      }
+      return Labels.getLabel("archivage.general.wait");
+   }
+
+   public List<AffectationDecorator> getAffectationDecorators(){
+      return affectationDecorators;
+   }
+
+   public void setAffectationDecorators(final List<AffectationDecorator> a){
+      this.affectationDecorators = a;
+   }
+
+   public static AffectationRowRenderer getAffectationRenderer(){
+      return affectationRenderer;
+   }
+
+   public static void setAffectationRenderer(final AffectationRowRenderer a){
+      FicheUtilisateur.affectationRenderer = a;
+   }
+
+   public Integer getNbMoisMdp(){
+      return nbMoisMdp;
+   }
+
+   public void setNbMoisMdp(final Integer nb){
+      this.nbMoisMdp = nb;
+   }
+
+   /**
+    * Traite onClick hyperlien nom banque
+    * @param event
+    * @since 2.1
+    */
+   public void onClick$banqueNom(final Event event){
+      final ProfilUtilisateur pf = (ProfilUtilisateur) event.getData();
+      getAdministrationController().selectBanqueInController(pf.getBanque());
+   }
+
+   /**
+    * Traite onClick hyperlien nom profil
+    * @param event
+    * @since 2.1
+    */
+   public void onClick$profilNom(final Event event){
+      final ProfilUtilisateur pf = (ProfilUtilisateur) event.getData();
+      getAdministrationController().selectProfilInController(pf.getProfil());
+   }
+
+   /**
+    * 
+    * @since 2.1
+    */
+   public AdministrationController getAdministrationController(){
+      return (AdministrationController) self.getParent().getParent().getParent().getParent().getParent().getParent().getParent()
+         .getParent()
+         //.getParent()
+         .getAttributeOrFellow("winAdministration$composer", true);
+   }
+
+   /**
+    * @since 2.1
+    */
+   public void onCheck$banquesArchiveBox(){
+      profilUtilisateurs.clear();
+      // display non-archived users only
+      if(user != null && user.getUtilisateurId() != null){
+         if(banquesArchiveBox.isChecked()){
+            profilUtilisateurs.addAll(ManagerLocator.getProfilUtilisateurManager().findByUtilisateurManager(user, false));
+         }else{ // display all of them
+            profilUtilisateurs.addAll(ManagerLocator.getProfilUtilisateurManager().findByUtilisateurManager(user, null));
+         }
+      }
+   }
 }

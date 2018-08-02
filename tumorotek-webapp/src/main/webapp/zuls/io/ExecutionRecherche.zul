@@ -35,7 +35,7 @@
 -->
 <?page title="Execution Recherche Page" contentType="text/html;charset=UTF-8"?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
-<zk>
+<zk xmlns:x="xhtml">
 
 <window id="winExecutionRecherche" border="none" apply="fr.aphp.tumorotek.action.io.ExecutionRechercheController">
 	<panel collapsible="false" title="${c:l('execution.recherche.title')}"
@@ -51,6 +51,13 @@
 							<label value="${c:l('execution.recherche.liste')}"
 								sclass="formLabel"/>
 							<separator width="30px"/>
+							<listbox id="banquesBox" mold="select" rows="1"
+								model="@{winExecutionRecherche$composer.banques}"
+								selectedItem="@{winExecutionRecherche$composer.selectedBanque}">
+								<listitem self="@{each='banque'}" value="@{banque}">
+									<listcell label="@{banque.nom}"/>
+								</listitem>
+							</listbox>
 							<listbox id="recherchesBox" mold="select" rows="1"
 								width="200px"
 								model="@{winExecutionRecherche$composer.recherches}"

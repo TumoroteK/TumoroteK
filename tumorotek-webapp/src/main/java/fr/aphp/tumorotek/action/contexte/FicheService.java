@@ -1,37 +1,37 @@
-/** 
+/**
  * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
  * dsi-projet.tk@aphp.fr
- * 
- * Ce logiciel est un programme informatique servant à la gestion de 
- * l'activité de biobanques. 
+ *
+ * Ce logiciel est un programme informatique servant à la gestion de
+ * l'activité de biobanques.
  *
  * Ce logiciel est régi par la licence CeCILL soumise au droit français
- * et respectant les principes de diffusion des logiciels libres. Vous 
- * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
- * conditions de la licence CeCILL telle que diffusée par le CEA, le 
- * CNRS et l'INRIA sur le site "http://www.cecill.info". 
- * En contrepartie de l'accessibilité au code source et des droits de   
- * copie, de modification et de redistribution accordés par cette 
- * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
- * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
- * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * et respectant les principes de diffusion des logiciels libres. Vous
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le
+ * CNRS et l'INRIA sur le site "http://www.cecill.info".
+ * En contrepartie de l'accessibilité au code source et des droits de
+ * copie, de modification et de redistribution accordés par cette
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée.
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les
  * concédants successifs.
  *
- * A cet égard  l'attention de l'utilisateur est attirée sur les 
- * risques associés au chargement,  à l'utilisation,  à la modification 
- * et/ou au  développement et à la reproduction du logiciel par 
- * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
- * le rendre complexe à manipuler et qui le réserve donc à des 	
- * développeurs et des professionnels  avertis possédant  des 
- * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * A cet égard  l'attention de l'utilisateur est attirée sur les
+ * risques associés au chargement,  à l'utilisation,  à la modification
+ * et/ou au  développement et à la reproduction du logiciel par
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut
+ * le rendre complexe à manipuler et qui le réserve donc à des
+ * développeurs et des professionnels  avertis possédant  des
+ * connaissances  informatiques approfondies.  Les utilisateurs sont
  * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
  * besoins dans des conditions permettant d'assurer la sécurité de leurs
- * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
- * et l'exploiter dans les mêmes conditions de sécurité. 
- *	
- * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
- * avez pris connaissance de la licence CeCILL, et que vous en avez 
- * accepté les termes. 
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser
+ * et l'exploiter dans les mêmes conditions de sécurité.
+ *
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous
+ * avez pris connaissance de la licence CeCILL, et que vous en avez
+ * accepté les termes.
  **/
 package fr.aphp.tumorotek.action.contexte;
 
@@ -87,10 +87,10 @@ import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
- * 
+ *
  * Controller gérant la fiche d'un service.
  * Controller créé le 17/12/2009.
- * 
+ *
  * @author Pierre Ventadour
  * @version 2.0
  *
@@ -98,7 +98,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FicheService extends AbstractFicheCombineController
 {
 
-   private Log log = LogFactory.getLog(FicheService.class);
+   private final Log log = LogFactory.getLog(FicheService.class);
 
    private static final long serialVersionUID = -5842411632241759671L;
 
@@ -180,19 +180,19 @@ public class FicheService extends AbstractFicheCombineController
    private Etablissement etablissement;
 
    // Associations.
-   private List<Etablissement> etablissements = new ArrayList<Etablissement>();
+   private List<Etablissement> etablissements = new ArrayList<>();
 
    private Etablissement selectedEtablissement;
 
-   private List<Collaborateur> collaborateursActifs = new ArrayList<Collaborateur>();
+   private List<Collaborateur> collaborateursActifs = new ArrayList<>();
 
-   private List<Collaborateur> collaborateursInactifs = new ArrayList<Collaborateur>();
+   private List<Collaborateur> collaborateursInactifs = new ArrayList<>();
 
-   private List<Collaborateur> collaborateursEdit = new ArrayList<Collaborateur>();
+   private List<Collaborateur> collaborateursEdit = new ArrayList<>();
 
-   private List<Collaborateur> allCollaborateurs = new ArrayList<Collaborateur>();
+   private List<Collaborateur> allCollaborateurs = new ArrayList<>();
 
-   private List<String> nomsAndPrenoms = new ArrayList<String>();
+   private final List<String> nomsAndPrenoms = new ArrayList<>();
 
    // Variables formulaire.
    private String collabsActifsGroupHeader = Labels.getLabel("service.collaborateurs.actifs");
@@ -206,7 +206,7 @@ public class FicheService extends AbstractFicheCombineController
    private boolean cascadeArchive = false;
 
    @Override
-   public void doAfterCompose(Component comp) throws Exception{
+   public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
 
       setDeletionMessage("message.deletion.service");
@@ -238,7 +238,7 @@ public class FicheService extends AbstractFicheCombineController
    }
 
    @Override
-   public void setObject(TKdataObject obj){
+   public void setObject(final TKdataObject obj){
       this.service = (Service) obj;
 
       if(this.service.getCoordonnee() != null){
@@ -290,7 +290,7 @@ public class FicheService extends AbstractFicheCombineController
    }
 
    @Override
-   public void setParentObject(TKdataObject obj){}
+   public void setParentObject(final TKdataObject obj){}
 
    @Override
    public CollaborationsController getObjectTabController(){
@@ -309,7 +309,7 @@ public class FicheService extends AbstractFicheCombineController
     * Change le mode de la fiche en creation.
     * @param parent Objet dont est issu l'échantillon.
     */
-   public void switchToCreateMode(Etablissement etab){
+   public void switchToCreateMode(final Etablissement etab){
       this.etablissement = etab;
       switchToCreateMode();
    }
@@ -320,7 +320,7 @@ public class FicheService extends AbstractFicheCombineController
 
       super.switchToCreateMode();
 
-      collaborateursEdit = new ArrayList<Collaborateur>();
+      collaborateursEdit = new ArrayList<>();
       collabsActifsGroupHeader = Labels.getLabel("service.collaborateurs.actifs");
       collabsInactifsGroupHeader = Labels.getLabel("service.collaborateurs.inactifs");
 
@@ -352,7 +352,7 @@ public class FicheService extends AbstractFicheCombineController
     * Change mode de la fiche en mode statique.
     * Modifie le membre modeFiche.
     */
-   public void switchToStaticMode(String modeFiche){
+   public void switchToStaticMode(final String modeFiche){
       this.mode = modeFiche;
       switchToStaticMode();
    }
@@ -400,6 +400,7 @@ public class FicheService extends AbstractFicheCombineController
    /**
     * Change mode de la fiche en mode edition.
     */
+   @Override
    public void switchToEditMode(){
       // Initialisation du mode (listes, valeurs...)
       createMode = false;
@@ -420,14 +421,14 @@ public class FicheService extends AbstractFicheCombineController
       nomBox.setFocus(true);
    }
 
-   public void switchToModificationMode(boolean isNew){
+   public void switchToModificationMode(final boolean isNew){
       addNewC.setVisible(true);
       editC.setVisible(!isNew);
       deleteC.setVisible(!isNew);
       newCollaborateur.setVisible(!isNew);
    }
 
-   public void switchToSelectMode(boolean isNew){
+   public void switchToSelectMode(final boolean isNew){
       addNewC.setVisible(true);
       editC.setVisible(false);
       deleteC.setVisible(false);
@@ -511,8 +512,8 @@ public class FicheService extends AbstractFicheCombineController
 
    @Override
    public boolean prepareDeleteObject(){
-      boolean isUsed = ManagerLocator.getServiceManager().isUsedObjectManager(getObject());
-      boolean isReferenced = ManagerLocator.getServiceManager().isReferencedObjectManager(getObject());
+      final boolean isUsed = ManagerLocator.getServiceManager().isUsedObjectManager(getObject());
+      final boolean isReferenced = ManagerLocator.getServiceManager().isReferencedObjectManager(getObject());
       setDeleteMessage(
          ObjectTypesFormatters.getLabel("message.deletion.message", new String[] {Labels.getLabel(getDeletionMessage())}));
       setDeletable(true);
@@ -532,7 +533,7 @@ public class FicheService extends AbstractFicheCombineController
    }
 
    @Override
-   public void removeObject(String comments){
+   public void removeObject(final String comments){
       if(isCascadable()){
          if(isFantomable()){ // suppression possible
             ManagerLocator.getServiceManager().removeObjectCascadeManager(getObject(), comments,
@@ -548,7 +549,7 @@ public class FicheService extends AbstractFicheCombineController
    }
 
    @Override
-   public void onLaterDelete(Event event){
+   public void onLaterDelete(final Event event){
       try{
          removeObject((String) event.getData());
 
@@ -566,7 +567,7 @@ public class FicheService extends AbstractFicheCombineController
             }
          }
 
-      }catch(RuntimeException re){
+      }catch(final RuntimeException re){
          // ferme wait message
          Clients.clearBusy();
          Messagebox.show(handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
@@ -617,13 +618,13 @@ public class FicheService extends AbstractFicheCombineController
     * Cette méthode va supprimer un Collaborateur de la liste.
     * @param event Clic sur une image deleteCollab.
     */
-   public void onClick$deleteCollab(Event event){
+   public void onClick$deleteCollab(final Event event){
       // on récupère le collab que l'utilisateur veut
       // suppimer
-      Collaborateur collab = (Collaborateur) AbstractListeController2.getBindingData((ForwardEvent) event, false);
+      final Collaborateur collab = (Collaborateur) AbstractListeController2.getBindingData((ForwardEvent) event, false);
       // on enlève le collab de la liste et on la met à jour
       collaborateursEdit.remove(collab);
-      ListModel<Collaborateur> list = new ListModelList<Collaborateur>(collaborateursEdit);
+      final ListModel<Collaborateur> list = new ListModelList<>(collaborateursEdit);
       collabsListEdit.setModel(list);
 
    }
@@ -633,17 +634,17 @@ public class FicheService extends AbstractFicheCombineController
     * clic sur le bouton addCollaborateur.
     */
    public void onClick$addCollaborateur(){
-      String selectedNomAndPremon = this.addCollabBox.getValue().toUpperCase();
+      final String selectedNomAndPremon = this.addCollabBox.getValue().toUpperCase();
       addCollabBox.setValue(selectedNomAndPremon);
 
-      int ind = nomsAndPrenoms.indexOf(selectedNomAndPremon);
+      final int ind = nomsAndPrenoms.indexOf(selectedNomAndPremon);
 
       if(ind > -1){
-         Collaborateur collab = allCollaborateurs.get(ind);
+         final Collaborateur collab = allCollaborateurs.get(ind);
 
          if(!collaborateursEdit.contains(collab)){
             collaborateursEdit.add(collab);
-            ListModel<Collaborateur> list = new ListModelList<Collaborateur>(collaborateursEdit);
+            final ListModel<Collaborateur> list = new ListModelList<>(collaborateursEdit);
             collabsListEdit.setModel(list);
          }
 
@@ -668,8 +669,8 @@ public class FicheService extends AbstractFicheCombineController
     * groupCollabsActifsService.
     */
    public void onOpen$groupCollabsActifsService(){
-      String id = groupCollabsActifsService.getUuid();
-      String idTop = panelChildrenWithScroll.getUuid();
+      final String id = groupCollabsActifsService.getUuid();
+      final String idTop = panelChildrenWithScroll.getUuid();
       Clients.evalJavaScript(
          "document.getElementById('" + idTop + "')" + ".scrollTop = document.getElementById('" + id + "')" + ".offsetTop;");
    }
@@ -679,8 +680,8 @@ public class FicheService extends AbstractFicheCombineController
     * groupCollabsService.
     */
    public void onOpen$groupCollabsInactifsService(){
-      String id = groupCollabsInactifsService.getUuid();
-      String idTop = panelChildrenWithScroll.getUuid();
+      final String id = groupCollabsInactifsService.getUuid();
+      final String idTop = panelChildrenWithScroll.getUuid();
       Clients.evalJavaScript(
          "document.getElementById('" + idTop + "')" + ".scrollTop = document.getElementById('" + id + "')" + ".offsetTop;");
    }
@@ -697,7 +698,7 @@ public class FicheService extends AbstractFicheCombineController
     * Méthode appelée après la saisie d'une valeur dans le champ
     * villeBox. Cette valeur sera mise en majuscules.
     */
-   public void onBlur$villeBox(Event event){
+   public void onBlur$villeBox(final Event event){
       villeBox.setValue(villeBox.getValue().toUpperCase().trim());
    }
 
@@ -705,7 +706,7 @@ public class FicheService extends AbstractFicheCombineController
     * Méthode appelée après la saisie d'une valeur dans le champ
     * paysBox. Cette valeur sera mise en majuscules.
     */
-   public void onBlur$paysBox(Event event){
+   public void onBlur$paysBox(final Event event){
       paysBox.setValue(paysBox.getValue().toUpperCase().trim());
    }
 
@@ -800,7 +801,7 @@ public class FicheService extends AbstractFicheCombineController
    //		service.setArchive(copyService.getArchive());
    //		service.setCollaborateurs(copyService.getCollaborateurs());
    //	}
-   //	
+   //
    //	public void revertCoordonnee() {
    //		coordonnee.setCoordonneeId(copyCoord.getCoordonneeId());
    //		coordonnee.setAdresse(copyCoord.getAdresse());
@@ -842,9 +843,9 @@ public class FicheService extends AbstractFicheCombineController
    public void onClick$print(){
       if(this.service != null){
          // création du document XML contenant les données à imprimer
-         Document document = ManagerLocator.getXmlUtils().createJDomDocument();
-         Element root = document.getRootElement();
-         Element pageXML = ManagerLocator.getXmlUtils().addPage(root, null);
+         final Document document = ManagerLocator.getXmlUtils().createJDomDocument();
+         final Element root = document.getRootElement();
+         final Element pageXML = ManagerLocator.getXmlUtils().addPage(root, null);
          ManagerLocator.getXmlUtils().addHautDePage(root, Labels.getLabel("ficheService.panel.title"), false, null);
          ManagerLocator.getXmlUtils().addBasDePage(root, "");
 
@@ -857,11 +858,11 @@ public class FicheService extends AbstractFicheCombineController
          byte[] dl = null;
          try{
             dl = ManagerLocator.getXmlUtils().creerPdf(document);
-         }catch(Exception e){
+         }catch(final Exception e){
             log.error(e);
          }
 
-         StringBuffer sb = new StringBuffer();
+         final StringBuffer sb = new StringBuffer();
          sb.append(service.getNom().trim());
          sb.append(".pdf");
          // envoie du fichier à imprimer à l'utilisateur
@@ -876,34 +877,34 @@ public class FicheService extends AbstractFicheCombineController
     * Ajout les infos générales à imprimer.
     * @param page
     */
-   public void addInfosGeneralesToPrint(Element page){
+   public void addInfosGeneralesToPrint(final Element page){
       String tmp = "";
-      CoupleValeur cpVide = new CoupleValeur("", "");
+      final CoupleValeur cpVide = new CoupleValeur("", "");
       // établissement
       if(service.getEtablissement() != null){
          tmp = service.getEtablissement().getNom();
       }else{
          tmp = "";
       }
-      CoupleValeur cp1 = new CoupleValeur(Labels.getLabel("service.etablissement"), tmp);
-      LigneParagraphe li1 = new LigneParagraphe("", new CoupleValeur[] {cp1, cpVide});
+      final CoupleValeur cp1 = new CoupleValeur(Labels.getLabel("service.etablissement"), tmp);
+      final LigneParagraphe li1 = new LigneParagraphe("", new CoupleValeur[] {cp1, cpVide});
       // nom
       if(service.getNom() != null){
          tmp = service.getNom();
       }else{
          tmp = "";
       }
-      CoupleValeur cp2 = new CoupleValeur(Labels.getLabel("service.nom"), tmp);
-      LigneParagraphe li2 = new LigneParagraphe("", new CoupleValeur[] {cp2, cpVide});
+      final CoupleValeur cp2 = new CoupleValeur(Labels.getLabel("service.nom"), tmp);
+      final LigneParagraphe li2 = new LigneParagraphe("", new CoupleValeur[] {cp2, cpVide});
       // Inactif
       if(service.getArchive() != null){
          tmp = ObjectTypesFormatters.booleanLitteralFormatter(this.service.getArchive());
       }else{
          tmp = "";
       }
-      CoupleValeur cp3 = new CoupleValeur(Labels.getLabel("service.archive"), tmp);
-      LigneParagraphe li3 = new LigneParagraphe("", new CoupleValeur[] {cp3, cpVide});
-      Paragraphe par1 = new Paragraphe(null, new LigneParagraphe[] {li1, li2, li3}, null, null, null);
+      final CoupleValeur cp3 = new CoupleValeur(Labels.getLabel("service.archive"), tmp);
+      final LigneParagraphe li3 = new LigneParagraphe("", new CoupleValeur[] {cp3, cpVide});
+      final Paragraphe par1 = new Paragraphe(null, new LigneParagraphe[] {li1, li2, li3}, null, null, null);
       ManagerLocator.getXmlUtils().addParagraphe(page, par1);
    }
 
@@ -911,68 +912,68 @@ public class FicheService extends AbstractFicheCombineController
     * Ajout les coordonnées à imprimer.
     * @param page
     */
-   public void addCoordonneesToPrint(Element page){
+   public void addCoordonneesToPrint(final Element page){
 
       if(this.service.getCoordonnee() != null){
          String tmp = "";
-         CoupleValeur cpVide = new CoupleValeur("", "");
+         final CoupleValeur cpVide = new CoupleValeur("", "");
          // Coordonnées adresse
          if(service.getCoordonnee().getAdresse() != null){
             tmp = service.getCoordonnee().getAdresse();
          }else{
             tmp = "";
          }
-         CoupleValeur cp5 = new CoupleValeur(Labels.getLabel("coordonnee.adresse"), tmp);
-         LigneParagraphe li5 = new LigneParagraphe("", new CoupleValeur[] {cp5, cpVide});
+         final CoupleValeur cp5 = new CoupleValeur(Labels.getLabel("coordonnee.adresse"), tmp);
+         final LigneParagraphe li5 = new LigneParagraphe("", new CoupleValeur[] {cp5, cpVide});
          // Coordonnées code postal
          if(service.getCoordonnee().getCp() != null){
             tmp = service.getCoordonnee().getCp();
          }else{
             tmp = "";
          }
-         CoupleValeur cp6 = new CoupleValeur(Labels.getLabel("coordonnee.cp"), tmp);
-         LigneParagraphe li6 = new LigneParagraphe("", new CoupleValeur[] {cp6, cpVide});
+         final CoupleValeur cp6 = new CoupleValeur(Labels.getLabel("coordonnee.cp"), tmp);
+         final LigneParagraphe li6 = new LigneParagraphe("", new CoupleValeur[] {cp6, cpVide});
          // Coordonnées ville
          if(service.getCoordonnee().getVille() != null){
             tmp = service.getCoordonnee().getVille();
          }else{
             tmp = "";
          }
-         CoupleValeur cp7 = new CoupleValeur(Labels.getLabel("coordonnee.ville"), tmp);
-         LigneParagraphe li7 = new LigneParagraphe("", new CoupleValeur[] {cp7, cpVide});
+         final CoupleValeur cp7 = new CoupleValeur(Labels.getLabel("coordonnee.ville"), tmp);
+         final LigneParagraphe li7 = new LigneParagraphe("", new CoupleValeur[] {cp7, cpVide});
          // Coordonnées pays
          if(service.getCoordonnee().getPays() != null){
             tmp = service.getCoordonnee().getPays();
          }else{
             tmp = "";
          }
-         CoupleValeur cp8 = new CoupleValeur(Labels.getLabel("coordonnee.pays"), tmp);
-         LigneParagraphe li8 = new LigneParagraphe("", new CoupleValeur[] {cp8, cpVide});
+         final CoupleValeur cp8 = new CoupleValeur(Labels.getLabel("coordonnee.pays"), tmp);
+         final LigneParagraphe li8 = new LigneParagraphe("", new CoupleValeur[] {cp8, cpVide});
          // Coordonnées tel
          if(service.getCoordonnee().getTel() != null){
             tmp = service.getCoordonnee().getTel();
          }else{
             tmp = "";
          }
-         CoupleValeur cp9 = new CoupleValeur(Labels.getLabel("coordonnee.telephone"), tmp);
-         LigneParagraphe li9 = new LigneParagraphe("", new CoupleValeur[] {cp9, cpVide});
+         final CoupleValeur cp9 = new CoupleValeur(Labels.getLabel("coordonnee.telephone"), tmp);
+         final LigneParagraphe li9 = new LigneParagraphe("", new CoupleValeur[] {cp9, cpVide});
          // Coordonnées fax
          if(service.getCoordonnee().getFax() != null){
             tmp = service.getCoordonnee().getFax();
          }else{
             tmp = "";
          }
-         CoupleValeur cp10 = new CoupleValeur(Labels.getLabel("coordonnee.fax"), tmp);
-         LigneParagraphe li10 = new LigneParagraphe("", new CoupleValeur[] {cp10, cpVide});
+         final CoupleValeur cp10 = new CoupleValeur(Labels.getLabel("coordonnee.fax"), tmp);
+         final LigneParagraphe li10 = new LigneParagraphe("", new CoupleValeur[] {cp10, cpVide});
          // Coordonnées mail
          if(service.getCoordonnee().getMail() != null){
             tmp = service.getCoordonnee().getMail();
          }else{
             tmp = "";
          }
-         CoupleValeur cp11 = new CoupleValeur(Labels.getLabel("coordonnee.mail"), tmp);
-         LigneParagraphe li11 = new LigneParagraphe("", new CoupleValeur[] {cp11, cpVide});
-         Paragraphe par2 = new Paragraphe(Labels.getLabel("coordonnee.group.infos"),
+         final CoupleValeur cp11 = new CoupleValeur(Labels.getLabel("coordonnee.mail"), tmp);
+         final LigneParagraphe li11 = new LigneParagraphe("", new CoupleValeur[] {cp11, cpVide});
+         final Paragraphe par2 = new Paragraphe(Labels.getLabel("coordonnee.group.infos"),
             new LigneParagraphe[] {li5, li6, li7, li8, li9, li10, li11}, null, null, null);
          ManagerLocator.getXmlUtils().addParagraphe(page, par2);
       }
@@ -982,13 +983,13 @@ public class FicheService extends AbstractFicheCombineController
     * Ajout les services à imprimer.
     * @param page
     */
-   public void addCollaborateursActifsToPrint(Element page){
+   public void addCollaborateursActifsToPrint(final Element page){
       // Services
-      EnteteListe entetes = new EnteteListe(new String[] {Labels.getLabel("collaborateur.nom"),
+      final EnteteListe entetes = new EnteteListe(new String[] {Labels.getLabel("collaborateur.nom"),
          Labels.getLabel("collaborateur.prenom"), Labels.getLabel("collaborateur.specialite")});
-      LigneListe[] liste = new LigneListe[collaborateursActifs.size()];
+      final LigneListe[] liste = new LigneListe[collaborateursActifs.size()];
       for(int i = 0; i < collaborateursActifs.size(); i++){
-         String[] valeurs = new String[3];
+         final String[] valeurs = new String[3];
          // nom
          if(collaborateursActifs.get(i).getNom() != null){
             valeurs[0] = collaborateursActifs.get(i).getNom();
@@ -1007,17 +1008,17 @@ public class FicheService extends AbstractFicheCombineController
          }else{
             valeurs[2] = "-";
          }
-         LigneListe ligne = new LigneListe(valeurs);
+         final LigneListe ligne = new LigneListe(valeurs);
          liste[i] = ligne;
       }
-      ListeElement listeSites = new ListeElement(null, entetes, liste);
+      final ListeElement listeSites = new ListeElement(null, entetes, liste);
       // ajout du paragraphe
-      StringBuffer titre = new StringBuffer();
+      final StringBuffer titre = new StringBuffer();
       titre.append(Labels.getLabel("service.collaborateurs.actifs"));
       titre.append(" (");
       titre.append(collaborateursActifs.size());
       titre.append(")");
-      Paragraphe par = new Paragraphe(titre.toString(), null, null, null, listeSites);
+      final Paragraphe par = new Paragraphe(titre.toString(), null, null, null, listeSites);
       ManagerLocator.getXmlUtils().addParagraphe(page, par);
    }
 
@@ -1025,13 +1026,13 @@ public class FicheService extends AbstractFicheCombineController
     * Ajout les services à imprimer.
     * @param page
     */
-   public void addCollaborateursInactifsToPrint(Element page){
+   public void addCollaborateursInactifsToPrint(final Element page){
       // Services
-      EnteteListe entetes = new EnteteListe(new String[] {Labels.getLabel("collaborateur.nom"),
+      final EnteteListe entetes = new EnteteListe(new String[] {Labels.getLabel("collaborateur.nom"),
          Labels.getLabel("collaborateur.prenom"), Labels.getLabel("collaborateur.specialite")});
-      LigneListe[] liste = new LigneListe[collaborateursInactifs.size()];
+      final LigneListe[] liste = new LigneListe[collaborateursInactifs.size()];
       for(int i = 0; i < collaborateursInactifs.size(); i++){
-         String[] valeurs = new String[3];
+         final String[] valeurs = new String[3];
          // nom
          if(collaborateursInactifs.get(i).getNom() != null){
             valeurs[0] = collaborateursInactifs.get(i).getNom();
@@ -1050,36 +1051,36 @@ public class FicheService extends AbstractFicheCombineController
          }else{
             valeurs[2] = "-";
          }
-         LigneListe ligne = new LigneListe(valeurs);
+         final LigneListe ligne = new LigneListe(valeurs);
          liste[i] = ligne;
       }
-      ListeElement listeSites = new ListeElement(null, entetes, liste);
+      final ListeElement listeSites = new ListeElement(null, entetes, liste);
       // ajout du paragraphe
-      StringBuffer titre = new StringBuffer();
+      final StringBuffer titre = new StringBuffer();
       titre.append(Labels.getLabel("service.collaborateurs.inactifs"));
       titre.append(" (");
       titre.append(collaborateursInactifs.size());
       titre.append(")");
-      Paragraphe par = new Paragraphe(titre.toString(), null, null, null, listeSites);
+      final Paragraphe par = new Paragraphe(titre.toString(), null, null, null, listeSites);
       ManagerLocator.getXmlUtils().addParagraphe(page, par);
    }
 
-   public String isArchiveCollab(Object obj){
-      Boolean arch = (Boolean) obj;
+   public String isArchiveCollab(final Object obj){
+      final Boolean arch = (Boolean) obj;
 
       return ObjectTypesFormatters.booleanLitteralFormatter(arch);
    }
 
-   public void onClick$collabActifNom(Event event){
-      Collaborateur collab = (Collaborateur) AbstractListeController2.getBindingData((ForwardEvent) event, false);
+   public void onClick$collabActifNom(final Event event){
+      final Collaborateur collab = (Collaborateur) AbstractListeController2.getBindingData((ForwardEvent) event, false);
 
       if(getListeCollaborations() != null){
          getListeCollaborations().openCollaborateurInTree(collab, true, true);
       }
    }
 
-   public void onClick$collabInactifNom(Event event){
-      Collaborateur collab = (Collaborateur) AbstractListeController2.getBindingData((ForwardEvent) event, false);
+   public void onClick$collabInactifNom(final Event event){
+      final Collaborateur collab = (Collaborateur) AbstractListeController2.getBindingData((ForwardEvent) event, false);
 
       if(getListeCollaborations() != null){
          getListeCollaborations().openCollaborateurInTree(collab, true, true);
@@ -1094,7 +1095,7 @@ public class FicheService extends AbstractFicheCombineController
       return service;
    }
 
-   public void setService(Service s){
+   public void setService(final Service s){
       setObject(s);
    }
 
@@ -1102,7 +1103,7 @@ public class FicheService extends AbstractFicheCombineController
       return coordonnee;
    }
 
-   public void setCoordonnee(Coordonnee coord){
+   public void setCoordonnee(final Coordonnee coord){
       this.coordonnee = coord;
    }
 
@@ -1110,7 +1111,7 @@ public class FicheService extends AbstractFicheCombineController
       return copyCoord;
    }
 
-   public void setCopyCoord(Coordonnee copy){
+   public void setCopyCoord(final Coordonnee copy){
       this.copyCoord = copy;
    }
 
@@ -1122,7 +1123,7 @@ public class FicheService extends AbstractFicheCombineController
       return selectedEtablissement;
    }
 
-   public void setSelectedEtablissement(Etablissement selected){
+   public void setSelectedEtablissement(final Etablissement selected){
       this.selectedEtablissement = selected;
    }
 
@@ -1138,7 +1139,7 @@ public class FicheService extends AbstractFicheCombineController
       return mode;
    }
 
-   public void setMode(String m){
+   public void setMode(final String m){
       this.mode = m;
    }
 
@@ -1159,7 +1160,7 @@ public class FicheService extends AbstractFicheCombineController
       return createMode;
    }
 
-   public void setCreateMode(boolean createM){
+   public void setCreateMode(final boolean createM){
       this.createMode = createM;
    }
 
@@ -1167,7 +1168,7 @@ public class FicheService extends AbstractFicheCombineController
       return cascadeArchive;
    }
 
-   public void setCascadeArchive(boolean cascadeA){
+   public void setCascadeArchive(final boolean cascadeA){
       this.cascadeArchive = cascadeA;
    }
 
@@ -1199,7 +1200,7 @@ public class FicheService extends AbstractFicheCombineController
       return collaborateursActifs;
    }
 
-   public void setCollaborateursActifs(List<Collaborateur> collaborateurs){
+   public void setCollaborateursActifs(final List<Collaborateur> collaborateurs){
       this.collaborateursActifs = collaborateurs;
    }
 
@@ -1207,7 +1208,7 @@ public class FicheService extends AbstractFicheCombineController
       return collaborateursInactifs;
    }
 
-   public void setCollaborateursInactifs(List<Collaborateur> collaborateurs){
+   public void setCollaborateursInactifs(final List<Collaborateur> collaborateurs){
       this.collaborateursInactifs = collaborateurs;
    }
 
@@ -1215,7 +1216,7 @@ public class FicheService extends AbstractFicheCombineController
       return collaborateursEdit;
    }
 
-   public void setCollaborateursEdit(List<Collaborateur> collaborateurs){
+   public void setCollaborateursEdit(final List<Collaborateur> collaborateurs){
       this.collaborateursEdit = collaborateurs;
    }
 

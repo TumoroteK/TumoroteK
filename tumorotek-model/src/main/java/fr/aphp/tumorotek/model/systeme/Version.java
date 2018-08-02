@@ -59,67 +59,65 @@ import org.hibernate.annotations.GenericGenerator;
  */
 @Entity
 @Table(name = "VERSION")
-@NamedQueries(value = {
-   @NamedQuery(name = "Version.findByVersion", query = "SELECT v FROM Version v WHERE v.version = ?1"),
+@NamedQueries(value = {@NamedQuery(name = "Version.findByVersion", query = "SELECT v FROM Version v WHERE v.version = ?1"),
    @NamedQuery(name = "Version.findByDate", query = "SELECT v FROM Version v WHERE v.date = ?1"),
    @NamedQuery(name = "Version.findByDateChronologique", query = "SELECT v FROM Version v ORDER BY v.date ASC"),
    @NamedQuery(name = "Version.findByDateAntiChronologique", query = "SELECT v FROM Version v ORDER BY v.date DESC"),
    @NamedQuery(name = "Version.findDoublon", query = "SELECT v FROM Version v WHERE v.version = ?1 AND v.date = ?2")})
-public class Version implements Serializable {
+public class Version implements Serializable
+{
    private Integer versionId;
    private String version;
    private Date date;
    private String nomSite;
    private static final long serialVersionUID = 8764654676154L;
 
-   public Version() {
-   }
+   public Version(){}
 
    @Id
    @Column(name = "VERSION_ID", unique = true, nullable = false)
    @GeneratedValue(generator = "autoincrement")
    @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getVersionId() {
+   public Integer getVersionId(){
       return versionId;
    }
 
-   public void setVersionId(Integer vid) {
+   public void setVersionId(final Integer vid){
       this.versionId = vid;
    }
 
-
    @Column(name = "VERSION", nullable = false, length = 20)
-   public String getVersion() {
+   public String getVersion(){
       return this.version;
    }
 
-   public void setVersion(String v) {
+   public void setVersion(final String v){
       this.version = v;
    }
 
    @Column(name = "DATE", nullable = true)
-   public Date getDate() {
-      if (date != null) {
+   public Date getDate(){
+      if(date != null){
          return new Date(date.getTime());
-      } else {
+      }else{
          return null;
       }
    }
 
-   public void setDate(Date d) {
-      if (d != null) {
+   public void setDate(final Date d){
+      if(d != null){
          this.date = new Date(d.getTime());
-      } else {
+      }else{
          this.date = null;
       }
    }
 
    @Column(name = "NOM_SITE", nullable = true, length = 100)
-   public String getNomSite() {
+   public String getNomSite(){
       return nomSite;
    }
 
-   public void setNomSite(String n) {
+   public void setNomSite(final String n){
       this.nomSite = n;
    }
 
@@ -130,34 +128,33 @@ public class Version implements Serializable {
     * @return true si les versions sont égales.
     */
    @Override
-   public boolean equals(Object obj) {
+   public boolean equals(final Object obj){
 
-      if (this == obj) {
+      if(this == obj){
          return true;
       }
-      if ((obj == null) || obj.getClass() != this.getClass()) {
+      if((obj == null) || obj.getClass() != this.getClass()){
          return false;
       }
-      Version test = (Version) obj;
-      if (this.version == null) {
-         if (test.version == null) {
-            if (this.date == null) {
+      final Version test = (Version) obj;
+      if(this.version == null){
+         if(test.version == null){
+            if(this.date == null){
                return (test.date == null);
-            } else {
+            }else{
                return (this.date.equals(test.date));
             }
-         } else {
+         }else{
             return false;
          }
-      } else if (this.date == null) {
-         if (test.date == null) {
+      }else if(this.date == null){
+         if(test.date == null){
             return (this.version.equals(test.version));
-         } else {
+         }else{
             return false;
          }
-      } else {
-         return (this.version.equals(test.version)
-            && this.date.equals(test.date));
+      }else{
+         return (this.version.equals(test.version) && this.date.equals(test.date));
       }
    }
 
@@ -166,16 +163,16 @@ public class Version implements Serializable {
     * @return la valeur du hashcode.
     */
    @Override
-   public int hashCode() {
+   public int hashCode(){
 
       int hash = 7;
       int hashVersion = 0;
       int hashDate = 0;
 
-      if (this.version != null) {
+      if(this.version != null){
          hashVersion = this.version.hashCode();
       }
-      if (this.date != null) {
+      if(this.date != null){
          hashDate = this.date.hashCode();
       }
 
@@ -190,10 +187,10 @@ public class Version implements Serializable {
     * Méthode surchargeant le toString() de l'objet.
     */
    @Override
-   public String toString() {
-      if (this.version != null || this.date != null) {
+   public String toString(){
+      if(this.version != null || this.date != null){
          return "{" + this.version + " " + this.date + "}";
-      } else {
+      }else{
          return "{Empty Version}";
       }
    }

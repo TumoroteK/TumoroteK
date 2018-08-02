@@ -1,37 +1,37 @@
-/** 
+/**
  * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
  * dsi-projet.tk@aphp.fr
- * 
- * Ce logiciel est un programme informatique servant à la gestion de 
- * l'activité de biobanques. 
+ *
+ * Ce logiciel est un programme informatique servant à la gestion de
+ * l'activité de biobanques.
  *
  * Ce logiciel est régi par la licence CeCILL soumise au droit français
- * et respectant les principes de diffusion des logiciels libres. Vous 
- * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
- * conditions de la licence CeCILL telle que diffusée par le CEA, le 
- * CNRS et l'INRIA sur le site "http://www.cecill.info". 
- * En contrepartie de l'accessibilité au code source et des droits de   
- * copie, de modification et de redistribution accordés par cette 
- * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
- * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
- * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * et respectant les principes de diffusion des logiciels libres. Vous
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le
+ * CNRS et l'INRIA sur le site "http://www.cecill.info".
+ * En contrepartie de l'accessibilité au code source et des droits de
+ * copie, de modification et de redistribution accordés par cette
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée.
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les
  * concédants successifs.
  *
- * A cet égard  l'attention de l'utilisateur est attirée sur les 
- * risques associés au chargement,  à l'utilisation,  à la modification 
- * et/ou au  développement et à la reproduction du logiciel par 
- * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
- * le rendre complexe à manipuler et qui le réserve donc à des 	
- * développeurs et des professionnels  avertis possédant  des 
- * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * A cet égard  l'attention de l'utilisateur est attirée sur les
+ * risques associés au chargement,  à l'utilisation,  à la modification
+ * et/ou au  développement et à la reproduction du logiciel par
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut
+ * le rendre complexe à manipuler et qui le réserve donc à des
+ * développeurs et des professionnels  avertis possédant  des
+ * connaissances  informatiques approfondies.  Les utilisateurs sont
  * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
  * besoins dans des conditions permettant d'assurer la sécurité de leurs
- * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
- * et l'exploiter dans les mêmes conditions de sécurité. 
- *	
- * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
- * avez pris connaissance de la licence CeCILL, et que vous en avez 
- * accepté les termes. 
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser
+ * et l'exploiter dans les mêmes conditions de sécurité.
+ *
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous
+ * avez pris connaissance de la licence CeCILL, et que vous en avez
+ * accepté les termes.
  **/
 package fr.aphp.tumorotek.action.contexte;
 
@@ -77,11 +77,11 @@ import fr.aphp.tumorotek.webapp.tree.TumoTreeModel;
 import fr.aphp.tumorotek.webapp.tree.TumoTreeNode;
 
 /**
- * 
- * Controller gérant une liste de collaborations (collaborateurs, 
+ *
+ * Controller gérant une liste de collaborations (collaborateurs,
  * services et établissements).
  * Controller créé le 16/12/2009.
- * 
+ *
  * @author Pierre Ventadour
  * @version 2.0
  *
@@ -177,7 +177,7 @@ public class ListeCollaborations extends AbstractController
    private String pageToSendObject;
 
    // liste de noeuds principaux de l'arbre
-   private List<TumoTreeNode> rootNodes = new ArrayList<TumoTreeNode>();
+   private List<TumoTreeNode> rootNodes = new ArrayList<>();
 
    /**
     * Variables pour l'arbre.
@@ -189,17 +189,18 @@ public class ListeCollaborations extends AbstractController
    /**
     * Liste des collabs isolés.
     */
-   private List<Collaborateur> collabsWithoutService = new ArrayList<Collaborateur>();
+   private List<Collaborateur> collabsWithoutService = new ArrayList<>();
 
    private Collaborateur selectedCollaborateur;
 
-   public void doAfterCompose(Component comp) throws Exception{
+   @Override
+   public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
 
       setBinder(new AnnotateDataBinder(comp));
 
       // Init du noeud root de l'arbre
-      ContexteRootNode root = new ContexteRootNode();
+      final ContexteRootNode root = new ContexteRootNode();
       root.readChildren();
       rootNodes = root.getChildren();
 
@@ -209,7 +210,7 @@ public class ListeCollaborations extends AbstractController
       // init des tailles de l'arbre et de la recherche
       oldOpen = false;
       //int height = getMainWindow().getListPanelHeight() - 12;
-      // listPanel.setHeight(getMainWindow().getWindowAvailableHeight() 
+      // listPanel.setHeight(getMainWindow().getWindowAvailableHeight()
       //		- 180 + "px");
       // int height = getMainWindow().getWindowAvailableHeight() - 220;
       // mainGridContext.setHeight(height + "px");
@@ -218,7 +219,7 @@ public class ListeCollaborations extends AbstractController
 
       // Init du groupe des collabs isolés
       collabsWithoutService = ManagerLocator.getCollaborateurManager().findAllObjectsWithoutService();
-      StringBuffer sb = new StringBuffer();
+      final StringBuffer sb = new StringBuffer();
       sb.append(Labels.getLabel("collaborateurs.isoles"));
       sb.append(" (");
       sb.append(collabsWithoutService.size());
@@ -237,7 +238,7 @@ public class ListeCollaborations extends AbstractController
    public void onOpen$searchPanel(){
       if(!oldOpen){
          oldOpen = true;
-         // listPanel.setHeight(getMainWindow().getWindowAvailableHeight() 
+         // listPanel.setHeight(getMainWindow().getWindowAvailableHeight()
          //		- 270 + "px");
          // int height = getMainWindow().getWindowAvailableHeight() - 320;
          // mainGridContext.setHeight(height + "px");
@@ -253,7 +254,7 @@ public class ListeCollaborations extends AbstractController
          }
       }else{
          oldOpen = false;
-         // listPanel.setHeight(getMainWindow().getWindowAvailableHeight() 
+         // listPanel.setHeight(getMainWindow().getWindowAvailableHeight()
          //		- 175 + "px");
          // int height = getMainWindow().getWindowAvailableHeight() - 220;
          // mainGridContext.setHeight(height + "px");
@@ -271,7 +272,7 @@ public class ListeCollaborations extends AbstractController
     * @param oldSelection Liste des objets qui étaient sélectionnés.
     * il faut réaliser un filtre lors de l'ouverture de la fenêtre.
     */
-   public void swithToSelectionMode(String type, String from, List<Object> filtres, List<Object> oldSelection){
+   public void swithToSelectionMode(final String type, final String from, List<Object> filtres, final List<Object> oldSelection){
       selectItem.setVisible(true);
       refresh.setVisible(true);
       typeObjectToSelect = type;
@@ -282,7 +283,7 @@ public class ListeCollaborations extends AbstractController
       oldOpen = true;
       listPanel.setHeight(getMainWindow().getWindowAvailableHeight() - 270 + "px");
       listPanel.setHeight("100%");
-      int height = getMainWindow().getWindowAvailableHeight() - 320;
+      final int height = getMainWindow().getWindowAvailableHeight() - 320;
       mainGridContext.setHeight(height + "px");
       // int heightTree = height - 60;
       // mainTreeContext.setHeight(heightTree + "px");
@@ -337,7 +338,7 @@ public class ListeCollaborations extends AbstractController
    public void initTree(){
 
       // Init du noeud root de l'arbre
-      ContexteRootNode root = new ContexteRootNode();
+      final ContexteRootNode root = new ContexteRootNode();
       root.readChildren();
       rootNodes = root.getChildren();
 
@@ -346,7 +347,7 @@ public class ListeCollaborations extends AbstractController
 
       // Init du groupe des collabs isolés
       collabsWithoutService = ManagerLocator.getCollaborateurManager().findAllObjectsWithoutService();
-      StringBuffer sb = new StringBuffer();
+      final StringBuffer sb = new StringBuffer();
       sb.append(Labels.getLabel("collaborateurs.isoles"));
       sb.append(" (");
       sb.append(collabsWithoutService.size());
@@ -362,7 +363,7 @@ public class ListeCollaborations extends AbstractController
     */
    public void updateTree(){
       // Init du noeud root de l'arbre
-      ContexteRootNode root = new ContexteRootNode();
+      final ContexteRootNode root = new ContexteRootNode();
       root.readChildren();
 
       // Init de l'arbre et de son affichage
@@ -383,15 +384,15 @@ public class ListeCollaborations extends AbstractController
     * recherche sur un établissement, service ou
     * collaborateur.
     */
-   public void updateTreeAfterResearch(List<Etablissement> etabs){
-      List<TumoTreeNode> nodes = new ArrayList<TumoTreeNode>();
+   public void updateTreeAfterResearch(final List<Etablissement> etabs){
+      final List<TumoTreeNode> nodes = new ArrayList<>();
       for(int i = 0; i < etabs.size(); i++){
-         EtablissementNode node = new EtablissementNode(etabs.get(i));
+         final EtablissementNode node = new EtablissementNode(etabs.get(i));
          nodes.add(node);
       }
 
       // Init du noeud root de l'arbre
-      ContexteRootNode root = new ContexteRootNode();
+      final ContexteRootNode root = new ContexteRootNode();
       root.setChildren((ArrayList<TumoTreeNode>) nodes);
 
       // Init de l'arbre et de son affichage
@@ -405,11 +406,11 @@ public class ListeCollaborations extends AbstractController
     * Méthode qui met à jour le contenu de l'arbre après une
     * recherche sur un service.
     */
-   public void updateTreeForServicesAfterResearch(List<Service> services){
-      List<TumoTreeNode> nodes = new ArrayList<TumoTreeNode>();
+   public void updateTreeForServicesAfterResearch(final List<Service> services){
+      final List<TumoTreeNode> nodes = new ArrayList<>();
       // pour chaque service
       for(int i = 0; i < services.size(); i++){
-         Service serv = services.get(i);
+         final Service serv = services.get(i);
          // creation d'un noeud avec l'étab du service
          EtablissementNode node = new EtablissementNode(serv.getEtablissement());
          // si ce noeud n'existe pas, on l'ajoute comme racine
@@ -420,7 +421,7 @@ public class ListeCollaborations extends AbstractController
          }
 
          // ajout du service aux enfants de l'établissement
-         ServiceNode sNode = new ServiceNode(serv);
+         final ServiceNode sNode = new ServiceNode(serv);
          if(node.getChildren() == null || node.getChildren().size() == 0){
             node.setChildren(new ArrayList<TumoTreeNode>());
          }
@@ -428,7 +429,7 @@ public class ListeCollaborations extends AbstractController
       }
 
       // Init du noeud root de l'arbre
-      ContexteRootNode root = new ContexteRootNode();
+      final ContexteRootNode root = new ContexteRootNode();
       root.setChildren((ArrayList<TumoTreeNode>) nodes);
 
       // Init de l'arbre et de son affichage
@@ -442,18 +443,18 @@ public class ListeCollaborations extends AbstractController
     * Méthode qui met à jour le contenu de l'arbre après une
     * recherche sur un collaborateur.
     */
-   public void updateTreeForCollaborateursAfterResearch(List<Collaborateur> collaborateurs){
-      List<TumoTreeNode> nodes = new ArrayList<TumoTreeNode>();
+   public void updateTreeForCollaborateursAfterResearch(final List<Collaborateur> collaborateurs){
+      final List<TumoTreeNode> nodes = new ArrayList<>();
       // pour chaque collab
       for(int i = 0; i < collaborateurs.size(); i++){
-         Collaborateur collab = collaborateurs.get(i);
+         final Collaborateur collab = collaborateurs.get(i);
          // extraction des services
-         Set<Service> services = ManagerLocator.getCollaborateurManager().getServicesManager(collab);
+         final Set<Service> services = ManagerLocator.getCollaborateurManager().getServicesManager(collab);
 
          // pour chaque service
-         Iterator<Service> it = services.iterator();
+         final Iterator<Service> it = services.iterator();
          while(it.hasNext()){
-            Service serv = it.next();
+            final Service serv = it.next();
             // création du noeud établissement
             EtablissementNode node = new EtablissementNode(serv.getEtablissement());
             // si ce noeud n'existe pas, on l'ajoute comme racine
@@ -476,7 +477,7 @@ public class ListeCollaborations extends AbstractController
             }
 
             // creation du noeud collab
-            CollaborateurNode cNode = new CollaborateurNode(collab);
+            final CollaborateurNode cNode = new CollaborateurNode(collab);
             if(sNode.getChildren() == null || sNode.getChildren().size() == 0){
                sNode.setChildren(new ArrayList<TumoTreeNode>());
             }
@@ -488,7 +489,7 @@ public class ListeCollaborations extends AbstractController
       }
 
       // Init du noeud root de l'arbre
-      ContexteRootNode root = new ContexteRootNode();
+      final ContexteRootNode root = new ContexteRootNode();
       root.setChildren((ArrayList<TumoTreeNode>) nodes);
 
       // Init de l'arbre et de son affichage
@@ -508,7 +509,7 @@ public class ListeCollaborations extends AbstractController
       // on récupère les collaborateurs sans service
       collabsWithoutService = ManagerLocator.getCollaborateurManager().findAllObjectsWithoutService();
       // on met à jour le nb de ces collabs
-      StringBuffer sb = new StringBuffer();
+      final StringBuffer sb = new StringBuffer();
       sb.append(Labels.getLabel("collaborateurs.isoles"));
       sb.append(" (");
       sb.append(collabsWithoutService.size());
@@ -540,23 +541,23 @@ public class ListeCollaborations extends AbstractController
     */
    public void onSelect$mainTreeContext(){
       collabsIsolesBox.setSelectedItem(null);
-      Object obj = mainTreeContext.getSelectedItem().getValue();
+      final Object obj = mainTreeContext.getSelectedItem().getValue();
 
       // Si c'est un noeud établissement => FicheEtablissement
       // Si c'est un noeud service => FicheService
       // Si c'est un noeud collaborateur => FicheCollaborateur
       if(obj instanceof EtablissementNode){
 
-         EtablissementNode node = (EtablissementNode) obj;
+         final EtablissementNode node = (EtablissementNode) obj;
          getCollaborationsController().switchToFicheEtablissementMode(node.getEtablissement());
 
       }else if(obj instanceof ServiceNode){
 
-         ServiceNode node = (ServiceNode) obj;
+         final ServiceNode node = (ServiceNode) obj;
          getCollaborationsController().switchToFicheServiceMode(node.getService());
 
       }else if(obj instanceof CollaborateurNode){
-         CollaborateurNode node = (CollaborateurNode) obj;
+         final CollaborateurNode node = (CollaborateurNode) obj;
          getCollaborationsController().switchToFicheCollaborateurMode(node.getCollaborateur());
       }
 
@@ -574,19 +575,19 @@ public class ListeCollaborations extends AbstractController
 
    /**
     * Méthode appelée lors du clic sur le bouton selectItem. Elle va envoyer,
-    * par l'intermédiaire d'un event, l'objet sélectionné à la page qui 
+    * par l'intermédiaire d'un event, l'objet sélectionné à la page qui
     * attend une sélection.
     */
    public void onClick$selectItem(){
 
       if(mainTreeContext.getSelectedItem() != null){
-         Object obj = mainTreeContext.getSelectedItem().getValue();
+         final Object obj = mainTreeContext.getSelectedItem().getValue();
 
          if(typeObjectToSelect.equals("Etablissement")){
             // Si l'objet attendu est un établissement et que la
             // sélection est correcte
             if(obj instanceof EtablissementNode){
-               EtablissementNode node = (EtablissementNode) obj;
+               final EtablissementNode node = (EtablissementNode) obj;
 
                // si l'objet est archivé : sélection impossible
                if(node.getEtablissement().getArchive()){
@@ -605,7 +606,7 @@ public class ListeCollaborations extends AbstractController
             }else{
                // si l'utilisateur sélectionne autre chose qu'un
                // établissement => message d'erreur
-               StringBuffer sb = new StringBuffer();
+               final StringBuffer sb = new StringBuffer();
                sb.append(Labels.getLabel("message.wrong.selection.message"));
                sb.append(" ");
                sb.append(typeObjectToSelect);
@@ -616,7 +617,7 @@ public class ListeCollaborations extends AbstractController
             // Si l'objet attendu est un service et que la
             // sélection est correcte
             if(obj instanceof ServiceNode){
-               ServiceNode node = (ServiceNode) obj;
+               final ServiceNode node = (ServiceNode) obj;
 
                // si l'objet est archivé : sélection impossible
                if(node.getService().getArchive()){
@@ -624,7 +625,7 @@ public class ListeCollaborations extends AbstractController
                }else{
                   // si le chemin d'accès à la page est correcte
                   if(Path.getComponent(pageToSendObject) != null){
-                     // on envoie un event à cette page avec le 
+                     // on envoie un event à cette page avec le
                      // service sélectionné
                      Events
                         .postEvent(new Event("onGetObjectFromSelection", Path.getComponent(pageToSendObject), node.getService()));
@@ -635,7 +636,7 @@ public class ListeCollaborations extends AbstractController
             }else{
                // si l'utilisateur sélectionne autre chose qu'un
                // service => message d'erreur
-               StringBuffer sb = new StringBuffer();
+               final StringBuffer sb = new StringBuffer();
                sb.append(Labels.getLabel("message.wrong.selection.message"));
                sb.append(" ");
                sb.append(typeObjectToSelect);
@@ -646,7 +647,7 @@ public class ListeCollaborations extends AbstractController
             // Si l'objet attendu est un collaborateur et que la
             // sélection est correcte
             if(obj instanceof CollaborateurNode){
-               CollaborateurNode node = (CollaborateurNode) obj;
+               final CollaborateurNode node = (CollaborateurNode) obj;
 
                // si l'objet est archivé : sélection impossible
                if(node.getCollaborateur().getArchive()){
@@ -654,7 +655,7 @@ public class ListeCollaborations extends AbstractController
                }else{
                   // si le chemin d'accès à la page est correcte
                   if(Path.getComponent(pageToSendObject) != null){
-                     // on envoie un event à cette page avec le 
+                     // on envoie un event à cette page avec le
                      // collaborateur sélectionné
                      Events.postEvent(new Event("onGetObjectFromSelection", Path.getComponent(pageToSendObject),
                         node.getCollaborateur().clone()));
@@ -665,7 +666,7 @@ public class ListeCollaborations extends AbstractController
             }else{
                // si l'utilisateur sélectionne autre chose qu'un
                // collaborateur => message d'erreur
-               StringBuffer sb = new StringBuffer();
+               final StringBuffer sb = new StringBuffer();
                sb.append(Labels.getLabel("message.wrong.selection.message"));
                sb.append(" ");
                sb.append(typeObjectToSelect);
@@ -677,7 +678,7 @@ public class ListeCollaborations extends AbstractController
 
          if(typeObjectToSelect.equals("Etablissement")){
             // établissement => message d'erreur
-            StringBuffer sb = new StringBuffer();
+            final StringBuffer sb = new StringBuffer();
             sb.append(Labels.getLabel("message.wrong.selection.message"));
             sb.append(" ");
             sb.append(typeObjectToSelect);
@@ -686,21 +687,21 @@ public class ListeCollaborations extends AbstractController
          }else if(typeObjectToSelect.equals("Service")){
             // si l'utilisateur sélectionne autre chose qu'un
             // service => message d'erreur
-            StringBuffer sb = new StringBuffer();
+            final StringBuffer sb = new StringBuffer();
             sb.append(Labels.getLabel("message.wrong.selection.message"));
             sb.append(" ");
             sb.append(typeObjectToSelect);
 
             throw new WrongValueException(selectItem, sb.toString());
          }else if(typeObjectToSelect.equals("Collaborateur")){
-            Collaborateur collab = (Collaborateur) collabsIsolesBox.getSelectedItem().getValue();
+            final Collaborateur collab = (Collaborateur) collabsIsolesBox.getSelectedItem().getValue();
             // si l'objet est archivé : sélection impossible
             if(collab.getArchive()){
                throw new WrongValueException(selectItem, Labels.getLabel("message.wrong.selection.inactif.message"));
             }else{
                // si le chemin d'accès à la page est correcte
                if(Path.getComponent(pageToSendObject) != null){
-                  // on envoie un event à cette page avec le 
+                  // on envoie un event à cette page avec le
                   // collaborateur sélectionné
                   Events.postEvent(new Event("onGetObjectFromSelection", Path.getComponent(pageToSendObject), collab.clone()));
                }
@@ -742,7 +743,7 @@ public class ListeCollaborations extends AbstractController
 
    /**
     * Méthode appelée lors d'une sélection sur la liste typeSearchBox.
-    * Les éléemnts de formulaire seront affichés en fct de cette 
+    * Les éléemnts de formulaire seront affichés en fct de cette
     * sélection.
     */
    public void onSelect$typeSearchBox(){
@@ -765,7 +766,7 @@ public class ListeCollaborations extends AbstractController
          rowServiceNom.setVisible(false);
 
       }else if(selectedIndex == 2){
-         // recherche de services 
+         // recherche de services
          rowCollabNom.setVisible(false);
          rowEtabVille.setVisible(false);
          rowEtabNom.setVisible(false);
@@ -857,7 +858,8 @@ public class ListeCollaborations extends AbstractController
                searchNomCollab = "";
             }
             searchNomCollab = searchNomCollab.toUpperCase();
-            List<Collaborateur> collabs = ManagerLocator.getCollaborateurManager().findByNomLikeBothSideManager(searchNomCollab);
+            final List<Collaborateur> collabs =
+               ManagerLocator.getCollaborateurManager().findByNomLikeBothSideManager(searchNomCollab);
 
             updateTreeForCollaborateursAfterResearch(collabs);
             boolean foundOne = false;
@@ -876,7 +878,7 @@ public class ListeCollaborations extends AbstractController
             if(selectItem.isVisible()){
                // si nous sommes en mode de sélection
                if(collabs.size() > 0){
-                  // si l'objet sélectionné peut être renvoyé, 
+                  // si l'objet sélectionné peut être renvoyé,
                   // le bouton devient accessible
                   if(typeObjectToSelect.equals("Collaborateur")){
                      selectItem.setDisabled(false);
@@ -896,7 +898,8 @@ public class ListeCollaborations extends AbstractController
                searchNomEtab = "";
             }
             searchNomEtab = searchNomEtab.toUpperCase();
-            List<Etablissement> etabs = ManagerLocator.getEtablissementManager().findByNomLikeBothSideManager(searchNomEtab);
+            final List<Etablissement> etabs =
+               ManagerLocator.getEtablissementManager().findByNomLikeBothSideManager(searchNomEtab);
 
             updateTreeAfterResearch(etabs);
             // on sélectionne le 1er étab dans l'arbre
@@ -905,7 +908,7 @@ public class ListeCollaborations extends AbstractController
             }
          }else if(villeEtab.isChecked()){
             // recherche par ville
-            List<Etablissement> etabs = ManagerLocator.getEtablissementManager().findByVilleLikeManager(searchVilleEtab);
+            final List<Etablissement> etabs = ManagerLocator.getEtablissementManager().findByVilleLikeManager(searchVilleEtab);
 
             updateTreeAfterResearch(etabs);
             // on ouvre le 1er étab dans l'arbre
@@ -921,7 +924,7 @@ public class ListeCollaborations extends AbstractController
                searchNomService = "";
             }
             searchNomService = searchNomService.toUpperCase();
-            List<Service> services = ManagerLocator.getServiceManager().findByNomLikeBothSideManager(searchNomService);
+            final List<Service> services = ManagerLocator.getServiceManager().findByNomLikeBothSideManager(searchNomService);
 
             updateTreeForServicesAfterResearch(services);
             // on ouvre chaque service dans l'arbre
@@ -950,8 +953,8 @@ public class ListeCollaborations extends AbstractController
     * groupCollabsIsoles.
     */
    public void onOpen$groupCollabsIsoles(){
-      String id = groupCollabsIsoles.getUuid();
-      String idTop = mainGridContext.getUuid();
+      final String id = groupCollabsIsoles.getUuid();
+      final String idTop = mainGridContext.getUuid();
       Clients.evalJavaScript(
          "document.getElementById('" + idTop + "')" + ".scrollTop = document.getElementById('" + id + "')" + ".offsetTop;");
 
@@ -963,11 +966,11 @@ public class ListeCollaborations extends AbstractController
    public void closeAllNodes(){
       // on récupère tous les Treeitems de niveau 1 : ceux contenant des
       // établissements
-      Collection<Treeitem> collection = mainTreeContext.getItems();
-      Iterator<Treeitem> it = collection.iterator();
+      final Collection<Treeitem> collection = mainTreeContext.getItems();
+      final Iterator<Treeitem> it = collection.iterator();
       // on ferme tous les items
       while(it.hasNext()){
-         Treeitem item = it.next();
+         final Treeitem item = it.next();
          item.setOpen(false);
       }
    }
@@ -978,10 +981,10 @@ public class ListeCollaborations extends AbstractController
     * @param open Si true, ouvre les enfants de l'établissement.
     * @param select Si true, selectionne l'établissement
     */
-   public void openEtablissement(Etablissement etablissement, boolean open, boolean select){
+   public void openEtablissement(final Etablissement etablissement, final boolean open, final boolean select){
       // Création d'un noeud pour l'établissement que l'on comparera
       // aux autres noeuds
-      EtablissementNode etabNode = new EtablissementNode(etablissement);
+      final EtablissementNode etabNode = new EtablissementNode(etablissement);
 
       // on récupère tous les Treeitems de niveau 1 : ceux contenant des
       // établissements
@@ -1008,7 +1011,7 @@ public class ListeCollaborations extends AbstractController
          //	.renderItemByPath(ttm.getPath(etabNode));
          //mainTreeContext.setSelectedItem(selectedItem);
          //mainTreeContext.setSelectedItem(etabToSelect);
-         //EtablissementNode node = (EtablissementNode) 
+         //EtablissementNode node = (EtablissementNode)
          //	etabToSelect.getValue();
          getCollaborationsController()
             .switchToFicheEtablissementMode(((EtablissementNode) ttm.getChild(ttm.getPath(etabNode))).getEtablissement());
@@ -1021,13 +1024,13 @@ public class ListeCollaborations extends AbstractController
     * @param open Si true, ouvre les enfants du Service.
     * @param select Si true, selectionne le Service.
     */
-   public void openService(Service service, boolean open, boolean select){
+   public void openService(final Service service, final boolean open, final boolean select){
 
-      Etablissement etablissement = service.getEtablissement();
+      final Etablissement etablissement = service.getEtablissement();
       // Création d'un noeud pour l'établissement que l'on comparera
       // aux autres noeuds
-      EtablissementNode etabNode = new EtablissementNode(etablissement);
-      ServiceNode servNode = new ServiceNode(service);
+      final EtablissementNode etabNode = new EtablissementNode(etablissement);
+      final ServiceNode servNode = new ServiceNode(service);
 
       // on récupère tous les Treeitems de niveau 1 : ceux contenant des
       // établissements
@@ -1060,10 +1063,10 @@ public class ListeCollaborations extends AbstractController
       //					// Ce Treechildren contient tous les items de niveau 2
       //					// => les noeuds services de l'établissement
       //					Treechildren tc = (Treechildren) objs.get(i);
-      //					Collection<Treeitem> servItems = 
-      //						tc.getItems();					
+      //					Collection<Treeitem> servItems =
+      //						tc.getItems();
       //					Iterator<Treeitem> itServ = servItems.iterator();
-      //					
+      //
       //					// Pour chaque item
       //					while (itServ.hasNext()) {
       //						// on vérifie que l'item contient bien un ServiceNode et
@@ -1104,7 +1107,7 @@ public class ListeCollaborations extends AbstractController
     * @param open Si true, on ouvre le noeud.
     * @param select Si true, on affiche le collaborateur.
     */
-   public void openCollaborateurInTreeOrList(Collaborateur collab, boolean open, boolean select){
+   public void openCollaborateurInTreeOrList(final Collaborateur collab, final boolean open, final boolean select){
 
       // si le collab est isolé, on le recherche dans la liste
       // sinon on le recherche dans l'arbre
@@ -1122,26 +1125,26 @@ public class ListeCollaborations extends AbstractController
     * @param open Si true, ouvre les enfants du Collaborateur.
     * @param select Si true, selectionne le Collaborateur.
     */
-   public void openCollaborateurInTree(Collaborateur collab, boolean open, boolean select){
+   public void openCollaborateurInTree(final Collaborateur collab, final boolean open, final boolean select){
       // Création d'un noeud pour le collab recherché que l'on comparera
       // aux autres noeuds
-      CollaborateurNode collabNode = new CollaborateurNode(collab);
+      final CollaborateurNode collabNode = new CollaborateurNode(collab);
 
       // on récupère les services du collaborateur recherché
-      Set<Service> services = ManagerLocator.getCollaborateurManager().getServicesManager(collab);
+      final Set<Service> services = ManagerLocator.getCollaborateurManager().getServicesManager(collab);
 
-      List<EtablissementNode> etabs = new ArrayList<EtablissementNode>();
+      final List<EtablissementNode> etabs = new ArrayList<>();
       // Pour chaque service, on récupère l'établissement
-      Iterator<Service> itServices = services.iterator();
+      final Iterator<Service> itServices = services.iterator();
       while(itServices.hasNext()){
-         Service tmp = itServices.next();
-         EtablissementNode node = new EtablissementNode(tmp.getEtablissement());
+         final Service tmp = itServices.next();
+         final EtablissementNode node = new EtablissementNode(tmp.getEtablissement());
          if(!etabs.contains(node)){
             etabs.add(node);
             ttm.addOpenPath(ttm.getPath(node));
          }
 
-         ServiceNode sNode = new ServiceNode(tmp);
+         final ServiceNode sNode = new ServiceNode(tmp);
          ttm.addOpenPath(ttm.getPath(sNode));
       }
 
@@ -1212,13 +1215,13 @@ public class ListeCollaborations extends AbstractController
       //					// => les noeuds collabs du service courant
       //					Treechildren tc = (Treechildren) objs.get(i);
       //					Collection<Treeitem> servItems = tc.getItems();
-      //					
+      //
       //					Iterator<Treeitem> itColl = servItems.iterator();
       //					// Pour chaque item
       //					while (itColl.hasNext()) {
       //						Treeitem item = itColl.next();
-      //						// on vérifie que l'item contient bien un 
-      //						// CollaborateurNode et que le collab est 
+      //						// on vérifie que l'item contient bien un
+      //						// CollaborateurNode et que le collab est
       //						// celui recherché
       //						if (item.getValue().getClass().getSimpleName()
       //								.equals("CollaborateurNode")) {
@@ -1239,17 +1242,17 @@ public class ListeCollaborations extends AbstractController
       //			if (open) {
       //				collabsToSelect.get(i).setOpen(true);
       //			}
-      //			
+      //
       //			// si c'est le 1er collab
       //			if (i == 0 && select) {
       //				mainTreeContext.setSelectedItem(collabsToSelect.get(i));
-      //				CollaborateurNode node = (CollaborateurNode) 
+      //				CollaborateurNode node = (CollaborateurNode)
       //					collabsToSelect.get(i).getValue();
       //				getCollaborationsController()
       //					.switchToFicheCollaborateurMode(node.getCollaborateur());
-      //				
+      //
       //				selectedItem = collabsToSelect.get(i);
-      //				
+      //
       //			}
       //		}
       // si c'est le 1er collab
@@ -1267,7 +1270,7 @@ public class ListeCollaborations extends AbstractController
     * @param open Si true, on ouvre le noeud.
     * @param select Si true, on affiche le collaborateur.
     */
-   public void openCollaborateurInList(Collaborateur collab, boolean open, boolean select){
+   public void openCollaborateurInList(final Collaborateur collab, final boolean open, final boolean select){
 
       // si la liste contient ce collab
       if(collabsWithoutService.contains(collab)){
@@ -1276,7 +1279,7 @@ public class ListeCollaborations extends AbstractController
             groupCollabsIsoles.setOpen(true);
 
             // sélection et affichage du collaborateur
-            int ind = collabsWithoutService.indexOf(collab);
+            final int ind = collabsWithoutService.indexOf(collab);
             collabsIsolesBox.setSelectedIndex(ind);
             getCollaborationsController().switchToFicheCollaborateurMode(collab);
          }
@@ -1284,8 +1287,8 @@ public class ListeCollaborations extends AbstractController
 
    }
 
-   public List<Etablissement> getEtablissementForServices(List<Service> services){
-      List<Etablissement> etabs = new ArrayList<Etablissement>();
+   public List<Etablissement> getEtablissementForServices(final List<Service> services){
+      final List<Etablissement> etabs = new ArrayList<>();
 
       for(int i = 0; i < services.size(); i++){
          if(!etabs.contains(services.get(i).getEtablissement())){
@@ -1296,18 +1299,18 @@ public class ListeCollaborations extends AbstractController
       return etabs;
    }
 
-   public List<Etablissement> getEtablissementForCollaborateurs(List<Collaborateur> collabs){
-      List<Etablissement> etabs = new ArrayList<Etablissement>();
+   public List<Etablissement> getEtablissementForCollaborateurs(final List<Collaborateur> collabs){
+      final List<Etablissement> etabs = new ArrayList<>();
 
       for(int i = 0; i < collabs.size(); i++){
-         Collaborateur collab = collabs.get(i);
+         final Collaborateur collab = collabs.get(i);
          // on récupère les services du collaborateur
-         Set<Service> services = ManagerLocator.getCollaborateurManager().getServicesManager(collab);
+         final Set<Service> services = ManagerLocator.getCollaborateurManager().getServicesManager(collab);
 
          // Pour chaque service, on récupère l'établissement
-         Iterator<Service> itServices = services.iterator();
+         final Iterator<Service> itServices = services.iterator();
          while(itServices.hasNext()){
-            Service tmp = itServices.next();
+            final Service tmp = itServices.next();
             if(!etabs.contains(tmp.getEtablissement())){
                etabs.add(tmp.getEtablissement());
             }
@@ -1317,23 +1320,23 @@ public class ListeCollaborations extends AbstractController
       return etabs;
    }
 
-   public List<Etablissement> getEtablissementsForObjects(List<Object> objects){
-      List<Etablissement> etabs = new ArrayList<Etablissement>();
+   public List<Etablissement> getEtablissementsForObjects(final List<Object> objects){
+      final List<Etablissement> etabs = new ArrayList<>();
 
       for(int i = 0; i < objects.size(); i++){
-         Object currentObject = objects.get(i);
+         final Object currentObject = objects.get(i);
 
          if(currentObject != null){
 
             if(currentObject.getClass().getSimpleName().equals("Etablissement")){
-               Etablissement currentEtab = (Etablissement) currentObject;
+               final Etablissement currentEtab = (Etablissement) currentObject;
 
                if(!etabs.contains(currentEtab)){
                   etabs.add(currentEtab);
                }
 
             }else if(currentObject.getClass().getSimpleName().equals("Service")){
-               Service currentService = (Service) currentObject;
+               final Service currentService = (Service) currentObject;
 
                if(!etabs.contains(currentService.getEtablissement())){
                   etabs.add(currentService.getEtablissement());
@@ -1341,15 +1344,15 @@ public class ListeCollaborations extends AbstractController
 
             }else if(currentObject.getClass().getSimpleName().equals("Collaborateur")){
 
-               Collaborateur currentCollab = (Collaborateur) currentObject;
+               final Collaborateur currentCollab = (Collaborateur) currentObject;
 
                // on récupère les services du collaborateur
-               Set<Service> services = ManagerLocator.getCollaborateurManager().getServicesManager(currentCollab);
+               final Set<Service> services = ManagerLocator.getCollaborateurManager().getServicesManager(currentCollab);
 
                // Pour chaque service, on récupère l'établissement
-               Iterator<Service> itServices = services.iterator();
+               final Iterator<Service> itServices = services.iterator();
                while(itServices.hasNext()){
-                  Service tmp = itServices.next();
+                  final Service tmp = itServices.next();
                   if(!etabs.contains(tmp.getEtablissement())){
                      etabs.add(tmp.getEtablissement());
                   }
@@ -1363,7 +1366,7 @@ public class ListeCollaborations extends AbstractController
 
    /**
     * Méthode appelée lors de la sélection d'un collab dans la liste
-    * collabsIsolesBox. Cette méthode va ouvrir la page 
+    * collabsIsolesBox. Cette méthode va ouvrir la page
     * FicheCollaborateur en static mode.
     */
    public void onSelect$collabsIsolesBox(){
@@ -1384,7 +1387,7 @@ public class ListeCollaborations extends AbstractController
       }
    }
 
-   public String styleListCell(Listcell cell){
+   public String styleListCell(final Listcell cell){
       return "";
    }
 
@@ -1415,7 +1418,7 @@ public class ListeCollaborations extends AbstractController
       return ttm;
    }
 
-   public void setTtm(TumoTreeModel t){
+   public void setTtm(final TumoTreeModel t){
       this.ttm = t;
    }
 
@@ -1423,7 +1426,7 @@ public class ListeCollaborations extends AbstractController
       return ctr;
    }
 
-   public void setCtr(ContexteTreeitemRenderer c){
+   public void setCtr(final ContexteTreeitemRenderer c){
       this.ctr = c;
    }
 
@@ -1431,7 +1434,7 @@ public class ListeCollaborations extends AbstractController
       return collabsWithoutService;
    }
 
-   public void setCollabsWithoutService(List<Collaborateur> c){
+   public void setCollabsWithoutService(final List<Collaborateur> c){
       this.collabsWithoutService = c;
    }
 
@@ -1439,7 +1442,7 @@ public class ListeCollaborations extends AbstractController
       return collabsIsolesGroupHeader;
    }
 
-   public void setCollabsIsolesGroupHeader(String groupHeader){
+   public void setCollabsIsolesGroupHeader(final String groupHeader){
       this.collabsIsolesGroupHeader = groupHeader;
    }
 
@@ -1447,7 +1450,7 @@ public class ListeCollaborations extends AbstractController
       return selectedIndex;
    }
 
-   public void setSelectedIndex(Integer index){
+   public void setSelectedIndex(final Integer index){
       this.selectedIndex = index;
    }
 
@@ -1455,7 +1458,7 @@ public class ListeCollaborations extends AbstractController
       return searchNomCollab;
    }
 
-   public void setSearchNomCollab(String search){
+   public void setSearchNomCollab(final String search){
       this.searchNomCollab = search;
    }
 
@@ -1463,7 +1466,7 @@ public class ListeCollaborations extends AbstractController
       return searchNomEtab;
    }
 
-   public void setSearchNomEtab(String search){
+   public void setSearchNomEtab(final String search){
       this.searchNomEtab = search;
    }
 
@@ -1471,7 +1474,7 @@ public class ListeCollaborations extends AbstractController
       return searchNomService;
    }
 
-   public void setSearchNomService(String search){
+   public void setSearchNomService(final String search){
       this.searchNomService = search;
    }
 
@@ -1479,7 +1482,7 @@ public class ListeCollaborations extends AbstractController
       return searchVilleEtab;
    }
 
-   public void setSearchVilleEtab(String search){
+   public void setSearchVilleEtab(final String search){
       this.searchVilleEtab = search;
    }
 
@@ -1487,7 +1490,7 @@ public class ListeCollaborations extends AbstractController
       return typeObjectToSelect;
    }
 
-   public void setTypeObjectToSelect(String typeObject){
+   public void setTypeObjectToSelect(final String typeObject){
       this.typeObjectToSelect = typeObject;
    }
 
@@ -1495,7 +1498,7 @@ public class ListeCollaborations extends AbstractController
       return pageToSendObject;
    }
 
-   public void setPageToSendObject(String page){
+   public void setPageToSendObject(final String page){
       this.pageToSendObject = page;
    }
 
@@ -1503,7 +1506,7 @@ public class ListeCollaborations extends AbstractController
       return selectedItem;
    }
 
-   public void setSelectedItem(Treeitem selected){
+   public void setSelectedItem(final Treeitem selected){
       this.selectedItem = selected;
    }
 
@@ -1511,7 +1514,7 @@ public class ListeCollaborations extends AbstractController
       return rootNodes;
    }
 
-   public void setRootNodes(List<TumoTreeNode> nodes){
+   public void setRootNodes(final List<TumoTreeNode> nodes){
       this.rootNodes = nodes;
    }
 }

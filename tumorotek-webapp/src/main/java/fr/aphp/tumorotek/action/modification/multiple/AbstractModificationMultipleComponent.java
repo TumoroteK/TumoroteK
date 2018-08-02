@@ -1,37 +1,37 @@
-/** 
+/**
  * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
  * dsi-projet.tk@aphp.fr
- * 
- * Ce logiciel est un programme informatique servant à la gestion de 
- * l'activité de biobanques. 
+ *
+ * Ce logiciel est un programme informatique servant à la gestion de
+ * l'activité de biobanques.
  *
  * Ce logiciel est régi par la licence CeCILL soumise au droit français
- * et respectant les principes de diffusion des logiciels libres. Vous 
- * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
- * conditions de la licence CeCILL telle que diffusée par le CEA, le 
- * CNRS et l'INRIA sur le site "http://www.cecill.info". 
- * En contrepartie de l'accessibilité au code source et des droits de   
- * copie, de modification et de redistribution accordés par cette 
- * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
- * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
- * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * et respectant les principes de diffusion des logiciels libres. Vous
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le
+ * CNRS et l'INRIA sur le site "http://www.cecill.info".
+ * En contrepartie de l'accessibilité au code source et des droits de
+ * copie, de modification et de redistribution accordés par cette
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée.
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les
  * concédants successifs.
  *
- * A cet égard  l'attention de l'utilisateur est attirée sur les 
- * risques associés au chargement,  à l'utilisation,  à la modification 
- * et/ou au  développement et à la reproduction du logiciel par 
- * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
- * le rendre complexe à manipuler et qui le réserve donc à des 	
- * développeurs et des professionnels  avertis possédant  des 
- * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * A cet égard  l'attention de l'utilisateur est attirée sur les
+ * risques associés au chargement,  à l'utilisation,  à la modification
+ * et/ou au  développement et à la reproduction du logiciel par
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut
+ * le rendre complexe à manipuler et qui le réserve donc à des
+ * développeurs et des professionnels  avertis possédant  des
+ * connaissances  informatiques approfondies.  Les utilisateurs sont
  * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
  * besoins dans des conditions permettant d'assurer la sécurité de leurs
- * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
- * et l'exploiter dans les mêmes conditions de sécurité. 
- *	
- * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
- * avez pris connaissance de la licence CeCILL, et que vous en avez 
- * accepté les termes. 
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser
+ * et l'exploiter dans les mêmes conditions de sécurité.
+ *
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous
+ * avez pris connaissance de la licence CeCILL, et que vous en avez
+ * accepté les termes.
  **/
 package fr.aphp.tumorotek.action.modification.multiple;
 
@@ -60,585 +60,559 @@ import fr.aphp.tumorotek.action.controller.AbstractController;
 
 /**
  * Classe Abstraite gérant les fenêtres modales pour la modification multiple.
- * 
+ *
  * Classe créée le 15/03/09.
- * 
+ *
  * @author Pierre Ventadour
  *
  */
-public abstract class AbstractModificationMultipleComponent 
-	extends AbstractController  {
-	
-	protected Log log = LogFactory
-		.getLog(AbstractModificationMultipleComponent.class);
-	
-	/**
-	 * Components.
-	 */
-	protected Label presentationLabel;
-	protected Row rowOneValue;
-	protected Row rowMultiValue;
-	protected Label champAttentionLabel;
-	protected Label champEcraserLabel;
-	protected Image lock;
-	protected Listbox multiListBox;
-	protected Checkbox combine;
-	protected Checkbox eraseCombine;
-	
-	protected Button validate;
-	
-	private boolean hasNulls;
-	
-	/**
-	 * Objets principaux.
-	 */
-	// Valeurs du champ des différents objets
-	private List<Object> values = new ArrayList<Object>();
-	private List<String> stringValues = new ArrayList<String>();
-	// Si une seule valeur : ancienne
-	private Object oldUniqueValue;
-	// Nouvelle valeur
-	private Object newValue;
-	// Valeur sélectionnée dans la liste
-	private Object selectedValue;
-	// liste des objets à modifier
-	private List<Object> listObjets = new ArrayList<Object>();
-	// Code pour label du champ dans .properties internationalisation
-	private String champLabel = "";
-	// Classe des objets à modifier
-	private String entite = "";
-	// Champ à modifier
-	private String champ = "";
-	// Champ du thesaurus a afficher
-	private String champThesaurus = "";
-	// Chemin pour retrouver la page de modif
-	private String path = "";
-	// Méthode à qui renvoyer la modif
-	private String methode = "";
-	private Boolean isCombined = false;
-	// Modification ou non
-	private boolean changedValue = false;
-	private Constraint constraint  = null;
+public abstract class AbstractModificationMultipleComponent extends AbstractController
+{
 
-	private static final long serialVersionUID = 1L;
-	
-	@Override
-	public void doAfterCompose(Component comp) throws Exception {
-		super.doAfterCompose(comp);
-	}
-	
-	public Boolean getIsCombined() {
-		return isCombined;
-	}
-	
-	public void setValues(List<Object> vals) {
-		this.values = vals;
-	}
+   protected Log log = LogFactory.getLog(AbstractModificationMultipleComponent.class);
 
-	public void setHasNulls(boolean h) {
-		this.hasNulls = h;
-	}
-	
-	public boolean getHasNulls() {
-		return this.hasNulls;
-	}
+   /**
+    * Components.
+    */
+   protected Label presentationLabel;
+   protected Row rowOneValue;
+   protected Row rowMultiValue;
+   protected Label champAttentionLabel;
+   protected Label champEcraserLabel;
+   protected Image lock;
+   protected Listbox multiListBox;
+   protected Checkbox combine;
+   protected Checkbox eraseCombine;
 
-	public List<Object> getValues() {
-		return values;
-	}
+   protected Button validate;
 
-	public Object getNewValue() {
-		return newValue;
-	}
-	
-	public void setNewValue(Object value) {
-		this.newValue = value;
-	}
+   private boolean hasNulls;
 
-	public Object getOldUniqueValue() {
-		return oldUniqueValue;
-	}
+   /**
+    * Objets principaux.
+    */
+   // Valeurs du champ des différents objets
+   private List<Object> values = new ArrayList<>();
+   private final List<String> stringValues = new ArrayList<>();
+   // Si une seule valeur : ancienne
+   private Object oldUniqueValue;
+   // Nouvelle valeur
+   private Object newValue;
+   // Valeur sélectionnée dans la liste
+   private Object selectedValue;
+   // liste des objets à modifier
+   private List<Object> listObjets = new ArrayList<>();
+   // Code pour label du champ dans .properties internationalisation
+   private String champLabel = "";
+   // Classe des objets à modifier
+   private String entite = "";
+   // Champ à modifier
+   private String champ = "";
+   // Champ du thesaurus a afficher
+   private String champThesaurus = "";
+   // Chemin pour retrouver la page de modif
+   private String path = "";
+   // Méthode à qui renvoyer la modif
+   private String methode = "";
+   private Boolean isCombined = false;
+   // Modification ou non
+   private boolean changedValue = false;
+   private Constraint constraint = null;
 
-	public void setOldUniqueValue(Object oUValue) {
-		this.oldUniqueValue = oUValue;
-	}
+   private static final long serialVersionUID = 1L;
 
-	public void setSelectedValue(Object s) {
-		this.selectedValue = s;
-	}
+   @Override
+   public void doAfterCompose(final Component comp) throws Exception{
+      super.doAfterCompose(comp);
+   }
 
-	public Object getSelectedValue() {
-		return selectedValue;
-	}
+   public Boolean getIsCombined(){
+      return isCombined;
+   }
 
-	public List<Object> getListObjets() {
-		return listObjets;
-	}
+   public void setValues(final List<Object> vals){
+      this.values = vals;
+   }
 
-	public void setListObjets(List<Object> list) {
-		this.listObjets = list;
-	}
+   public void setHasNulls(final boolean h){
+      this.hasNulls = h;
+   }
 
-	public String getChampLabel() {
-		return champLabel;
-	}
+   public boolean getHasNulls(){
+      return this.hasNulls;
+   }
 
-	public void setChampLabel(String cl) {
-		this.champLabel = cl;
-	}
+   public List<Object> getValues(){
+      return values;
+   }
 
-	public String getEntite() {
-		return entite;
-	}
+   public Object getNewValue(){
+      return newValue;
+   }
 
-	public void setEntite(String e) {
-		this.entite = e;
-	}
+   public void setNewValue(final Object value){
+      this.newValue = value;
+   }
 
-	public String getChamp() {
-		return champ;
-	}
+   public Object getOldUniqueValue(){
+      return oldUniqueValue;
+   }
 
-	public void setChamp(String c) {
-		this.champ = c;
-	}
+   public void setOldUniqueValue(final Object oUValue){
+      this.oldUniqueValue = oUValue;
+   }
 
-	public String getChampThesaurus() {
-		return champThesaurus;
-	}
+   public void setSelectedValue(final Object s){
+      this.selectedValue = s;
+   }
 
-	public void setChampThesaurus(String cs) {
-		this.champThesaurus = cs;
-	}
+   public Object getSelectedValue(){
+      return selectedValue;
+   }
 
-	public String getPath() {
-		return path;
-	}
+   public List<Object> getListObjets(){
+      return listObjets;
+   }
 
-	public void setPath(String p) {
-		this.path = p;
-	}
+   public void setListObjets(final List<Object> list){
+      this.listObjets = list;
+   }
 
-	public String getMethode() {
-		return methode;
-	}
+   public String getChampLabel(){
+      return champLabel;
+   }
 
-	public void setMethode(String m) {
-		this.methode = m;
-	}
+   public void setChampLabel(final String cl){
+      this.champLabel = cl;
+   }
 
-	public boolean isChangedValue() {
-		return changedValue;
-	}
+   public String getEntite(){
+      return entite;
+   }
 
-	public void setChangedValue(boolean cValue) {
-		this.changedValue = cValue;
-	}
+   public void setEntite(final String e){
+      this.entite = e;
+   }
 
-	public List<String> getStringValues() {
-		return stringValues;
-	}
-	
-	public Constraint getConstraint() {
-		return constraint;
-	}
+   public String getChamp(){
+      return champ;
+   }
 
-	/**
-	 * Cette méthode crée le titre de la fenêtre.
-	 * Cherche dans le fichier d'internationalization les traductions des
-	 * champs et entités.
-	 * @return Le titre de la fenêtre.
-	 */
-	public String createPresentationLabel() {
-		StringBuffer sb = new StringBuffer();
-		sb.append(Labels.getLabel("champ.presentation.1"));
-		String i3label = Labels.getLabel(champLabel);
-		if (i3label != null) {
-			sb.append(i3label);
-		} else {
-			sb.append(champLabel);
-		}
-		sb.append(Labels.getLabel("champ.presentation.2"));
-		sb.append(" ");
-		sb.append(Labels.getLabel("Entite." + entite));
-		sb.append(Labels.getLabel("champ.presentation.3"));
-		
-		return sb.toString();
-	}
-	
-	/**
-	 * Renvoie l'evenement à la fiche commandant le pop up de 
-	 * modification multiple. Peut renvoyer la nouvelle valeur
-	 * à appliquer ou un signal de 'reset'.
-	 * @param finalValue valeur à appliquer
-	 */
-	public void postBack(Object finalValue) {
-		if (changedValue) {
-			// on vérifie que la page devant récupérer la sélection
-			// existe
-			if (Path.getComponent(path) != null) {
-				// on envoie un event à cette page avec
-				// les échantillons sélectionnés
-				Events.postEvent(
-					new Event(methode, 
-						Path.getComponent(path), 
-						finalValue));
-			}
-		} else {
-			if (Path.getComponent(path) != null) {
-				// on envoie un event à cette page avec
-				// les échantillons sélectionnés
-				Events.postEvent(
-					new Event("onResetMulti", 
-						Path.getComponent(path), 
-						finalValue));
-			}
-		}
-	}
-	
-	/**
-	 * Méthode intialisant le composant.
-	 * @param pathToPage Chemin vers la page qui demande une modif.
-	 * @param methodToCall Méthode à appeler
-	 * @param objs Liste des objets à modifier
-	 * @param label Code pour label du champ dans .properties 
-	 * internationalisation.
-	 * @param entiteToEdit Nom de l'entité à modifier. 
-	 * @param champToEdit Champ de l'entité à modifier.
-	 * @param ent nom de l'entite a afficher dans l'intitulé
-	 * @param Constraint à appliquer
-	 * @param Boolean true si champAnnotation combine
-	 */
-	public void init(String pathToPage, String methodToCall,
-			List< ? extends Object> objs, String label, 
-			String champToEdit, String entiteNom, Constraint constr,
-			Boolean isComb) {
-		this.path = pathToPage;
-		this.methode = methodToCall;
-		this.listObjets.clear();
-		this.listObjets.addAll(objs);
-		this.champLabel = label;
-		if (entiteNom == null) {
-			this.entite = listObjets.get(0).getClass().getSimpleName();
-		} else {
-			this.entite = entiteNom;
-		}
-		this.champ = champToEdit;
-		this.isCombined = isComb;
-		if (combine != null) {
-			combine.setVisible(isComb);
-		}
-		this.constraint = constr;
-		
-		// Initialisation du titre de la fenêtre
-		presentationLabel.setValue(createPresentationLabel());
-		
-		// application de la contrainte
-		setConstraintsToBoxes(constr);
-		
-		// extraction des valeurs
-		extractValuesFromObjects();
-		
-		// initialisation des composants
-		initComponentsInWindow();
-		getBinder().loadComponent(self);	
-	}
-	
-	/**
-	 * Extrait toutes les valeurs du champ à modifier.
-	 */
-	public void extractValuesFromObjects() {
-		
-		// pour chaque objet à modifier
-		// on extrait la valeur actuelle du champ à modifier
-		// toutes ces valeurs sont placées dans la liste values
-		hasNulls = false;
-		for (int i = 0; i < listObjets.size(); i++) {
-			try {
-				Object tmp = PropertyUtils.getSimpleProperty(
-						listObjets.get(i), champ);
-				
-				// recupere les valeurs non vides
-				if (tmp == null) {
-					if (isCombined) {
-						tmp = PropertyUtils.getSimpleProperty(
-									listObjets.get(i), "alphanum");
-					}
-				}
-				if (tmp != null && !tmp.equals("")) {
-					Object formatted = formatValue(tmp);
-					if (!values.contains(formatted)) {					
-						values.add(formatted);
-						stringValues.add(formatLocalObject(formatted));
-					}
-				} else {
-					hasNulls = true;
-				}
-			} catch (IllegalAccessException e) {
-				log.error(e);
-			} catch (InvocationTargetException e) {
-				log.error(e);
-			} catch (NoSuchMethodException e) {
-				log.error(e);
-			}
-		}
-	}
-	
-	/**
-	 * Initialise les composants de la fenêtre.
-	 */
-	public void initComponentsInWindow() {
-		// si plusieurs sont saisies pour les différents objets.
-		// on affiche la liste permettant de choisir une de ces
-		// valeurs ou bien de les écraser par une nouvelle	
-		rowOneValue.setVisible(values.size() <= 1);
-		rowMultiValue.setVisible(values.size() > 1);
-		if (values.size() != 1) {
-			if (values.size() > 1) {
-				if (combine != null) {
-					combine.setVisible(false);
-				}
-			}
-			values.add(0, null);
-			stringValues.add(0, "");
-			// selectionne le premier item de la liste
-			selectedValue = values.get(0);
-		} else if (values.size() == 1) {
-			oldUniqueValue = values.get(0);
-			setUniqueValueToMultiBox();
-		}
-	}
-	
-	/**
-	 * Assigne la valeur unique au multibox.
-	 */
-	public void setUniqueValueToMultiBox() {
-		newValue = oldUniqueValue;
-		if (isCombined) {
-			// affiche le checkbox combine et checked au besoin
-			if (values.get(0)
-					.equals("system.tk.unknownExistingValue")) {
-				combine.setChecked(true);
-				oldUniqueValue = "system.tk.unknownExistingValue";
-				newValue = null;
-			} 
-		}
-	}
-	
-	/**
-	 * Méthode appelée lors du clic sur le bouton lock.
-	 */
-	public void onClick$lock() {
-		// si la modification était impossible, on la rend
-		// possible.
-		if (multiListBox.isDisabled()) {
-			multiListBox.setDisabled(false);
-			champAttentionLabel.setVisible(false);
-			champEcraserLabel.setVisible(true);
-			setEraserBoxeVisible(true);
-			if (eraseCombine != null && isCombined) {
-				eraseCombine.setVisible(true);
-			}
-			lock.setSrc("/images/icones/unlocked.png");
-			lock.setTooltiptext(Labels
-						.getLabel("tooltip.modifmultiple.lock"));
-			// pour jamais être egal à une nouvelle valeur
-			 setOldUniqueValueAsNewObject();
-		} else {
-			// sinon, on empêche toute modif
-			multiListBox.setDisabled(true);
-			champAttentionLabel.setVisible(true);
-			champEcraserLabel.setVisible(false);
-			setEraserBoxeVisible(false);
-			if (eraseCombine != null) {
-				eraseCombine.setVisible(false);
-			}
-			lock.setSrc("/images/icones/locked.png");
-			lock.setTooltiptext(Labels
-						.getLabel("tooltip.modifmultiple.unlock"));
-			oldUniqueValue = null;
-		}
-	}
-	
-	public void setOldUniqueValueAsNewObject() {
-		oldUniqueValue = new Object();	
-	}
+   public void setChamp(final String c){
+      this.champ = c;
+   }
 
-	/**
-	 * Prepare la valeur issu de la selection de la liste de valeurs 
-	 * existantes. Passe la valeur au composant eraser;
-	 */
-	public void onSelect$multiListBox() {
-		selectedValue = values.get(multiListBox.getSelectedIndex());
-		if (isCombined) {
-			if (selectedValue != null) {
-				if (!selectedValue.equals("system.tk.unknownExistingValue")) {
-					eraseCombine.setChecked(false);
-					passValueToEraserBox();		
-				} else {
-					eraseCombine.setChecked(true);
-					passNullToEraserBox();
-				}
-			} else {
-				eraseCombine.setChecked(false);
-				passNullToEraserBox();
-			}
-		} else {
-			passValueToEraserBox();
-		}
-	}
-	
-	/**
-	 * Méthode appelée lors du clic sur le bouton validate : on va
-	 * sauvegarder la modification.
-	 */
-	public void onClick$validate() {
-		Object finalValue = null;
-		changedValue = false;
-		// si on était en mode liste
-		if (values.size() > 1) {
-			if (!multiListBox.isDisabled()) {
-				// si une valeur a été saisie dans le nouveau champ,
-				// c'est la nouvelle valeur
-				// sinon
-				newValue = extractValueFromEraserBox();
-				if (newValue == null || newValue.equals("")) {
-					// verifie que si eraseCombine box est checke 
-					if (isCombined && (eraseCombine.isChecked())) {
-						newValue = "system.tk.unknownExistingValue";
-					} 
-//					else if (!multiListBox.isDisabled()) {
-//						// prend la valeur de la liste
-//						newValue = selectedValue;
-//					} else {
-//						newValue = null;
-//					}
-				}
-			}
-		} else { // mode unique
-			newValue = extractValueFromMultiBox();
-			if (newValue == null || newValue.equals("")) {
-				// verifie que si eraseCombine box est checke 
-				if (isCombined && combine.isChecked()) {
-					newValue = "system.tk.unknownExistingValue";
-				} else {
-					newValue = null;
-				}
-			}
-		}
-				
-		// verifie le changement
-		if ((newValue != null 
-				&& (!newValue.equals(oldUniqueValue) || hasNulls)) 
-				|| (newValue == null && (oldUniqueValue != null
-				&& !isObligatoire()))) {
-			finalValue = newValue;
-			changedValue = true;
-		}	
-		
-		SimpleChampValue scv = new SimpleChampValue();
-		scv.setChamp(getChamp());
-		scv.setValue(finalValue);
-		
-		scv.setPrintValue(getPrintFinalValue(finalValue));
-		
-		postBack(scv);
-		
-		Events.postEvent(new Event("onClose", self.getRoot()));
-	
-	}
-	
-	/**
-	 * Méthode appelée lors du clic sur le bouton revert : on ferme
-	 * la fenêtre.
-	 */
-	public void onClick$revert() {
-		if (Path.getComponent(path) != null) {
-			// on envoie un event à cette page avec
-			// les échantillons sélectionnés
-			SimpleChampValue scv = new SimpleChampValue();
-			scv.setChamp(getChamp());
-			Events.postEvent(
-				new Event("onResetMulti", 
-					Path.getComponent(path), 
-					scv));
-		}
-		// fermeture de la fenêtre
-		Events.postEvent(new Event("onClose", self.getRoot()));
-	}
-	
-	/***************** abstract methods **************************/
-	
-	/**
-	 * Applique la contrainte passée à l'initialisation au boxes.
-	 * @param constr
-	 */
-	public abstract void setConstraintsToBoxes(Constraint constr);
-	
-	/**
-	 * Formate la valeur pour l'affichage.
-	 * @param obj
-	 * @return
-	 */
-	public abstract String formatLocalObject(Object obj);
-	
-	/**
-	 * Formate au besoin la valeur extraite de la bd en un objet
-	 * intermédiaire (LableCodeItem pour sexe ou état patient). 
-	 * @param obj
-	 * @return
-	 */
-	public Object formatValue(Object obj) {
-		return obj;
-	}
-	
-	/**
-	 * Affiche ou cache le composant 'eraser'.
-	 * @param visible
-	 */
-	public abstract void setEraserBoxeVisible(boolean visible);
-	
-	/**
-	 * Recupere la valeur specifiée dans le Box uniqueValue.
-	 * @return valeur Object
-	 */
-	public abstract Object extractValueFromMultiBox();
-	
-	/**
-	 * Recupere la valeur specifiée dans le Box 'eraser'.
-	 * @return valeur Object
-	 */
-	public abstract Object extractValueFromEraserBox();
-	
-	/**
-	 * Prepare le String qui sera utilisé pour l'affichage de la 
-	 * valeur issue de la modification multiple.
-	 * @param obj valeur issu modification multiple
-	 * @return String utilisé pour affichage
-	 */
-	public String getPrintFinalValue(Object obj) {
-		return formatLocalObject(obj);
-	}
-	
-	/**
-	 * Passe la valeur choisie dans la liste de valeurs existantes
-	 * au composant eraserBox.
-	 */
-	public abstract void passValueToEraserBox();
-	
-	/**
-	 * Passe une valeur nulle pour re-initialiser l'eraserBox.
-	 */
-	public abstract void passNullToEraserBox();
-	
-	/**
-	 * Indique si le champ est obligatoire en fonction de la contrainte 
-	 * passée lors de la init.
-	 * @return boolean true si obligatoire
-	 */
-	public Boolean isObligatoire() {
-		return (getConstraint() != null 
-			&& getConstraint() instanceof TumoTextConstraint
-				&& !((TumoTextConstraint) getConstraint()).getNullable());
-	}
+   public String getChampThesaurus(){
+      return champThesaurus;
+   }
+
+   public void setChampThesaurus(final String cs){
+      this.champThesaurus = cs;
+   }
+
+   public String getPath(){
+      return path;
+   }
+
+   public void setPath(final String p){
+      this.path = p;
+   }
+
+   public String getMethode(){
+      return methode;
+   }
+
+   public void setMethode(final String m){
+      this.methode = m;
+   }
+
+   public boolean isChangedValue(){
+      return changedValue;
+   }
+
+   public void setChangedValue(final boolean cValue){
+      this.changedValue = cValue;
+   }
+
+   public List<String> getStringValues(){
+      return stringValues;
+   }
+
+   public Constraint getConstraint(){
+      return constraint;
+   }
+
+   /**
+    * Cette méthode crée le titre de la fenêtre.
+    * Cherche dans le fichier d'internationalization les traductions des
+    * champs et entités.
+    * @return Le titre de la fenêtre.
+    */
+   public String createPresentationLabel(){
+      final StringBuffer sb = new StringBuffer();
+      sb.append(Labels.getLabel("champ.presentation.1"));
+      final String i3label = Labels.getLabel(champLabel);
+      if(i3label != null){
+         sb.append(i3label);
+      }else{
+         sb.append(champLabel);
+      }
+      sb.append(Labels.getLabel("champ.presentation.2"));
+      sb.append(" ");
+      sb.append(Labels.getLabel("Entite." + entite));
+      sb.append(Labels.getLabel("champ.presentation.3"));
+
+      return sb.toString();
+   }
+
+   /**
+    * Renvoie l'evenement à la fiche commandant le pop up de 
+    * modification multiple. Peut renvoyer la nouvelle valeur
+    * à appliquer ou un signal de 'reset'.
+    * @param finalValue valeur à appliquer
+    */
+   public void postBack(final Object finalValue){
+      if(changedValue){
+         // on vérifie que la page devant récupérer la sélection
+         // existe
+         if(Path.getComponent(path) != null){
+            // on envoie un event à cette page avec
+            // les échantillons sélectionnés
+            Events.postEvent(new Event(methode, Path.getComponent(path), finalValue));
+         }
+      }else{
+         if(Path.getComponent(path) != null){
+            // on envoie un event à cette page avec
+            // les échantillons sélectionnés
+            Events.postEvent(new Event("onResetMulti", Path.getComponent(path), finalValue));
+         }
+      }
+   }
+
+   /**
+    * Méthode intialisant le composant.
+    * @param pathToPage Chemin vers la page qui demande une modif.
+    * @param methodToCall Méthode à appeler
+    * @param objs Liste des objets à modifier
+    * @param label Code pour label du champ dans .properties 
+    * internationalisation.
+    * @param entiteToEdit Nom de l'entité à modifier. 
+    * @param champToEdit Champ de l'entité à modifier.
+    * @param ent nom de l'entite a afficher dans l'intitulé
+    * @param Constraint à appliquer
+    * @param Boolean true si champAnnotation combine
+    */
+   public void init(final String pathToPage, final String methodToCall, final List<? extends Object> objs, final String label,
+      final String champToEdit, final String entiteNom, final Constraint constr, final Boolean isComb){
+      this.path = pathToPage;
+      this.methode = methodToCall;
+      this.listObjets.clear();
+      this.listObjets.addAll(objs);
+      this.champLabel = label;
+      if(entiteNom == null){
+         this.entite = listObjets.get(0).getClass().getSimpleName();
+      }else{
+         this.entite = entiteNom;
+      }
+      this.champ = champToEdit;
+      this.isCombined = isComb;
+      if(combine != null){
+         combine.setVisible(isComb);
+      }
+      this.constraint = constr;
+
+      // Initialisation du titre de la fenêtre
+      presentationLabel.setValue(createPresentationLabel());
+
+      // application de la contrainte
+      setConstraintsToBoxes(constr);
+
+      // extraction des valeurs
+      extractValuesFromObjects();
+
+      // initialisation des composants
+      initComponentsInWindow();
+      getBinder().loadComponent(self);
+   }
+
+   /**
+    * Extrait toutes les valeurs du champ à modifier.
+    */
+   public void extractValuesFromObjects(){
+
+      // pour chaque objet à modifier
+      // on extrait la valeur actuelle du champ à modifier
+      // toutes ces valeurs sont placées dans la liste values
+      hasNulls = false;
+      for(int i = 0; i < listObjets.size(); i++){
+         try{
+            Object tmp = PropertyUtils.getSimpleProperty(listObjets.get(i), champ);
+
+            // recupere les valeurs non vides
+            if(tmp == null){
+               if(isCombined){
+                  tmp = PropertyUtils.getSimpleProperty(listObjets.get(i), "alphanum");
+               }
+            }
+            if(tmp != null && !tmp.equals("")){
+               final Object formatted = formatValue(tmp);
+               if(!values.contains(formatted)){
+                  values.add(formatted);
+                  stringValues.add(formatLocalObject(formatted));
+               }
+            }else{
+               hasNulls = true;
+            }
+         }catch(final IllegalAccessException e){
+            log.error(e);
+         }catch(final InvocationTargetException e){
+            log.error(e);
+         }catch(final NoSuchMethodException e){
+            log.error(e);
+         }
+      }
+   }
+
+   /**
+    * Initialise les composants de la fenêtre.
+    */
+   public void initComponentsInWindow(){
+      // si plusieurs sont saisies pour les différents objets.
+      // on affiche la liste permettant de choisir une de ces
+      // valeurs ou bien de les écraser par une nouvelle	
+      rowOneValue.setVisible(values.size() <= 1);
+      rowMultiValue.setVisible(values.size() > 1);
+      if(values.size() != 1){
+         if(values.size() > 1){
+            if(combine != null){
+               combine.setVisible(false);
+            }
+         }
+         values.add(0, null);
+         stringValues.add(0, "");
+         // selectionne le premier item de la liste
+         selectedValue = values.get(0);
+      }else if(values.size() == 1){
+         oldUniqueValue = values.get(0);
+         setUniqueValueToMultiBox();
+      }
+   }
+
+   /**
+    * Assigne la valeur unique au multibox.
+    */
+   public void setUniqueValueToMultiBox(){
+      newValue = oldUniqueValue;
+      if(isCombined){
+         // affiche le checkbox combine et checked au besoin
+         if(values.get(0).equals("system.tk.unknownExistingValue")){
+            combine.setChecked(true);
+            oldUniqueValue = "system.tk.unknownExistingValue";
+            newValue = null;
+         }
+      }
+   }
+
+   /**
+    * Méthode appelée lors du clic sur le bouton lock.
+    */
+   public void onClick$lock(){
+      // si la modification était impossible, on la rend
+      // possible.
+      if(multiListBox.isDisabled()){
+         multiListBox.setDisabled(false);
+         champAttentionLabel.setVisible(false);
+         champEcraserLabel.setVisible(true);
+         setEraserBoxeVisible(true);
+         if(eraseCombine != null && isCombined){
+            eraseCombine.setVisible(true);
+         }
+         lock.setSrc("/images/icones/unlocked.png");
+         lock.setTooltiptext(Labels.getLabel("tooltip.modifmultiple.lock"));
+         // pour jamais être egal à une nouvelle valeur
+         setOldUniqueValueAsNewObject();
+      }else{
+         // sinon, on empêche toute modif
+         multiListBox.setDisabled(true);
+         champAttentionLabel.setVisible(true);
+         champEcraserLabel.setVisible(false);
+         setEraserBoxeVisible(false);
+         if(eraseCombine != null){
+            eraseCombine.setVisible(false);
+         }
+         lock.setSrc("/images/icones/locked.png");
+         lock.setTooltiptext(Labels.getLabel("tooltip.modifmultiple.unlock"));
+         oldUniqueValue = null;
+      }
+   }
+
+   public void setOldUniqueValueAsNewObject(){
+      oldUniqueValue = new Object();
+   }
+
+   /**
+    * Prepare la valeur issu de la selection de la liste de valeurs 
+    * existantes. Passe la valeur au composant eraser;
+    */
+   public void onSelect$multiListBox(){
+      selectedValue = values.get(multiListBox.getSelectedIndex());
+      if(isCombined){
+         if(selectedValue != null){
+            if(!selectedValue.equals("system.tk.unknownExistingValue")){
+               eraseCombine.setChecked(false);
+               passValueToEraserBox();
+            }else{
+               eraseCombine.setChecked(true);
+               passNullToEraserBox();
+            }
+         }else{
+            eraseCombine.setChecked(false);
+            passNullToEraserBox();
+         }
+      }else{
+         passValueToEraserBox();
+      }
+   }
+
+   /**
+    * Méthode appelée lors du clic sur le bouton validate : on va
+    * sauvegarder la modification.
+    */
+   public void onClick$validate(){
+      Object finalValue = null;
+      changedValue = false;
+      // si on était en mode liste
+      if(values.size() > 1){
+         if(!multiListBox.isDisabled()){
+            // si une valeur a été saisie dans le nouveau champ,
+            // c'est la nouvelle valeur
+            // sinon
+            newValue = extractValueFromEraserBox();
+            if(newValue == null || newValue.equals("")){
+               // verifie que si eraseCombine box est checke 
+               if(isCombined && (eraseCombine.isChecked())){
+                  newValue = "system.tk.unknownExistingValue";
+               }
+            }
+         }
+      }else{ // mode unique
+         newValue = extractValueFromMultiBox();
+         if(newValue == null || newValue.equals("")){
+            // verifie que si eraseCombine box est checke 
+            if(isCombined && combine.isChecked()){
+               newValue = "system.tk.unknownExistingValue";
+            }else{
+               newValue = null;
+            }
+         }
+      }
+
+      // verifie le changement
+      if((newValue != null && (!newValue.equals(oldUniqueValue) || hasNulls))
+         || (newValue == null && (oldUniqueValue != null && !isObligatoire()))){
+         finalValue = newValue;
+         changedValue = true;
+      }
+
+      final SimpleChampValue scv = new SimpleChampValue();
+      scv.setChamp(getChamp());
+      scv.setValue(finalValue);
+
+      scv.setPrintValue(getPrintFinalValue(finalValue));
+
+      postBack(scv);
+
+      Events.postEvent(new Event("onClose", self.getRoot()));
+
+   }
+
+   /**
+    * Méthode appelée lors du clic sur le bouton revert : on ferme
+    * la fenêtre.
+    */
+   public void onClick$revert(){
+      if(Path.getComponent(path) != null){
+         // on envoie un event à cette page avec
+         // les échantillons sélectionnés
+         final SimpleChampValue scv = new SimpleChampValue();
+         scv.setChamp(getChamp());
+         Events.postEvent(new Event("onResetMulti", Path.getComponent(path), scv));
+      }
+      // fermeture de la fenêtre
+      Events.postEvent(new Event("onClose", self.getRoot()));
+   }
+
+   /***************** abstract methods **************************/
+
+   /**
+    * Applique la contrainte passée à l'initialisation au boxes.
+    * @param constr
+    */
+   public abstract void setConstraintsToBoxes(Constraint constr);
+
+   /**
+    * Formate la valeur pour l'affichage.
+    * @param obj
+    * @return
+    */
+   public abstract String formatLocalObject(Object obj);
+
+   /**
+    * Formate au besoin la valeur extraite de la bd en un objet
+    * intermédiaire (LableCodeItem pour sexe ou état patient). 
+    * @param obj
+    * @return
+    */
+   public Object formatValue(final Object obj){
+      return obj;
+   }
+
+   /**
+    * Affiche ou cache le composant 'eraser'.
+    * @param visible
+    */
+   public abstract void setEraserBoxeVisible(boolean visible);
+
+   /**
+    * Recupere la valeur specifiée dans le Box uniqueValue.
+    * @return valeur Object
+    */
+   public abstract Object extractValueFromMultiBox();
+
+   /**
+    * Recupere la valeur specifiée dans le Box 'eraser'.
+    * @return valeur Object
+    */
+   public abstract Object extractValueFromEraserBox();
+
+   /**
+    * Prepare le String qui sera utilisé pour l'affichage de la 
+    * valeur issue de la modification multiple.
+    * @param obj valeur issu modification multiple
+    * @return String utilisé pour affichage
+    */
+   public String getPrintFinalValue(final Object obj){
+      return formatLocalObject(obj);
+   }
+
+   /**
+    * Passe la valeur choisie dans la liste de valeurs existantes
+    * au composant eraserBox.
+    */
+   public abstract void passValueToEraserBox();
+
+   /**
+    * Passe une valeur nulle pour re-initialiser l'eraserBox.
+    */
+   public abstract void passNullToEraserBox();
+
+   /**
+    * Indique si le champ est obligatoire en fonction de la contrainte 
+    * passée lors de la init.
+    * @return boolean true si obligatoire
+    */
+   public Boolean isObligatoire(){
+      return (getConstraint() != null && getConstraint() instanceof TumoTextConstraint
+         && !((TumoTextConstraint) getConstraint()).getNullable());
+   }
 }

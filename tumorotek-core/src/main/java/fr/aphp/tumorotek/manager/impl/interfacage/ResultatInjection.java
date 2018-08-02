@@ -14,112 +14,110 @@ import fr.aphp.tumorotek.model.systeme.Fichier;
 /**
  * Classe contenant les objets créés par l'injection d'un dossier
  * externe dans TK.
- * 
+ *
  * @author Pierre Ventadour
  * Créée le 12/10/2011.
- * 
+ *
  * @version 2.0.13
  *
  */
-public class ResultatInjection {
+public class ResultatInjection
+{
 
-	private Prelevement prelevement;
-	private List<AnnotationValeur> annosPrelevement = 
-		new ArrayList<AnnotationValeur>();
-	private List<AnnotationValeur> annosPatient = 
-		new ArrayList<AnnotationValeur>();
-	private Echantillon echantillon;
-	private List<AnnotationValeur> annosEchantillon = 
-			new ArrayList<AnnotationValeur>();
-	private DossierExterne dossierExterne;
-	private List<CodeAssigne> codesOrgane = new ArrayList<CodeAssigne>();
-	private List<CodeAssigne> codesMorpho = new ArrayList<CodeAssigne>();
-	
-	private Fichier crAnapath;
-	private InputStream stream;
-	
-	public ResultatInjection() {
-		super();
-	}
+   private Prelevement prelevement;
+   private List<AnnotationValeur> annosPrelevement = new ArrayList<>();
+   private List<AnnotationValeur> annosPatient = new ArrayList<>();
+   private Echantillon echantillon;
+   private List<AnnotationValeur> annosEchantillon = new ArrayList<>();
+   private DossierExterne dossierExterne;
+   private List<CodeAssigne> codesOrgane = new ArrayList<>();
+   private List<CodeAssigne> codesMorpho = new ArrayList<>();
 
-	public Prelevement getPrelevement() {
-		return prelevement;
-	}
+   private Fichier crAnapath;
+   private InputStream stream;
 
-	public void setPrelevement(Prelevement p) {
-		this.prelevement = p;
-	}
+   public ResultatInjection(){
+      super();
+   }
 
-	public List<AnnotationValeur> getAnnosPrelevement() {
-		return annosPrelevement;
-	}
+   public Prelevement getPrelevement(){
+      return prelevement;
+   }
 
-	public void setAnnosPrelevement(List<AnnotationValeur> annos) {
-		this.annosPrelevement = annos;
-	}
+   public void setPrelevement(final Prelevement p){
+      this.prelevement = p;
+   }
 
-	public List<AnnotationValeur> getAnnosPatient() {
-		return annosPatient;
-	}
+   public List<AnnotationValeur> getAnnosPrelevement(){
+      return annosPrelevement;
+   }
 
-	public void setAnnosPatient(List<AnnotationValeur> annos) {
-		this.annosPatient = annos;
-	}
+   public void setAnnosPrelevement(final List<AnnotationValeur> annos){
+      this.annosPrelevement = annos;
+   }
 
-	public Echantillon getEchantillon() {
-		return echantillon;
-	}
+   public List<AnnotationValeur> getAnnosPatient(){
+      return annosPatient;
+   }
 
-	public void setEchantillon(Echantillon e) {
-		this.echantillon = e;
-	}
+   public void setAnnosPatient(final List<AnnotationValeur> annos){
+      this.annosPatient = annos;
+   }
 
-	public List<AnnotationValeur> getAnnosEchantillon() {
-		return annosEchantillon;
-	}
+   public Echantillon getEchantillon(){
+      return echantillon;
+   }
 
-	public void setAnnosEchantillon(List<AnnotationValeur> annos) {
-		this.annosEchantillon = annos;
-	}
+   public void setEchantillon(final Echantillon e){
+      this.echantillon = e;
+   }
 
-	public List<CodeAssigne> getCodesOrgane() {
-		return codesOrgane;
-	}
+   public List<AnnotationValeur> getAnnosEchantillon(){
+      return annosEchantillon;
+   }
 
-	public void setCodesOrgane(List<CodeAssigne> codesOrgane) {
-		this.codesOrgane = codesOrgane;
-	}
+   public void setAnnosEchantillon(final List<AnnotationValeur> annos){
+      this.annosEchantillon = annos;
+   }
 
-	public List<CodeAssigne> getCodesMorpho() {
-		return codesMorpho;
-	}
+   public List<CodeAssigne> getCodesOrgane(){
+      return codesOrgane;
+   }
 
-	public void setCodesMorpho(List<CodeAssigne> codesMorpho) {
-		this.codesMorpho = codesMorpho;
-	}
+   public void setCodesOrgane(final List<CodeAssigne> codesOrgane){
+      this.codesOrgane = codesOrgane;
+   }
 
-	public Fichier getCrAnapath() {
-		return crAnapath;
-	}
+   public List<CodeAssigne> getCodesMorpho(){
+      return codesMorpho;
+   }
 
-	public void setCrAnapath(Fichier crAnapath) {
-		this.crAnapath = crAnapath;
-	}
+   public void setCodesMorpho(final List<CodeAssigne> codesMorpho){
+      this.codesMorpho = codesMorpho;
+   }
 
-	public DossierExterne getDossierExterne() {
-		return dossierExterne;
-	}
+   public Fichier getCrAnapath(){
+      return crAnapath;
+   }
 
-	public void setDossierExterne(DossierExterne dExterne) {
-		this.dossierExterne = dExterne;
-	}
+   public void setCrAnapath(final Fichier crAnapath){
+      this.crAnapath = crAnapath;
+   }
 
-	public InputStream getStream() {
-		return stream;
-	}
+   public DossierExterne getDossierExterne(){
+      return dossierExterne;
+   }
 
-	public void setStream(InputStream i) {
-		this.stream = i;
-	}
-	
+   public void setDossierExterne(final DossierExterne dExterne){
+      this.dossierExterne = dExterne;
+   }
+
+   public InputStream getStream(){
+      return stream;
+   }
+
+   public void setStream(final InputStream i){
+      this.stream = i;
+   }
+
 }
