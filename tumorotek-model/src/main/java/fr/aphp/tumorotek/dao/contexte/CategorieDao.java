@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.dao.contexte;
 import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import fr.aphp.tumorotek.dao.TKThesaurusDao;
 import fr.aphp.tumorotek.model.contexte.Categorie;
 
 /**
@@ -49,7 +50,7 @@ import fr.aphp.tumorotek.model.contexte.Categorie;
  * @author Pierre Ventadour
  * @version 2.0
  */
-public interface CategorieDao extends GenericDaoJpa<Categorie, Integer>
+public interface CategorieDao extends GenericDaoJpa<Categorie, Integer>, TKThesaurusDao<Categorie>
 {
 
    /**

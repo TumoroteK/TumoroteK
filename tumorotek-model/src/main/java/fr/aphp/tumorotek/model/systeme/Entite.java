@@ -77,7 +77,7 @@ import fr.aphp.tumorotek.model.utilisateur.DroitObjet;
 @Entity
 @Table(name = "ENTITE")
 @NamedQueries(value = {@NamedQuery(name = "Entite.findByNom", query = "SELECT e FROM Entite e WHERE e.nom like ?1"),
-   @NamedQuery(name = "Entite.findByMasc", query = "SELECT e FROM Entite e WHERE e.masc = ?1"),
+   @NamedQuery(name = "Entite.findByMasc", query = "SELECT e FROM Entite e WHERE e.masc = ?1"), //FIXME Query non présente dans EntiteDao
    @NamedQuery(name = "Entite.findAnnotables", query = "SELECT e FROM Entite e WHERE e.annotable = 1 " + "order by e.entiteId")})
 public class Entite implements Serializable
 {
@@ -86,19 +86,14 @@ public class Entite implements Serializable
 
    private Integer entiteId;
    private String nom;
-   private Boolean masc;
+   private Boolean masc; //FIXME jamais utilisé
    private Boolean annotable;
 
-   //private Set<Conformite> conformites;
    private Set<DroitObjet> droitObjets = new HashSet<>();
    private Set<Retour> retours = new HashSet<>();
    private Set<Transformation> transformations = new HashSet<>();
-   //private Set<TableAnnotation> tableAnnotations;
-   //private Set<Operation> operations;
-   //private Set<Numerotation> numerotations;
    private Set<Emplacement> emplacements = new HashSet<>();
    private Set<CederObjet> cederObjets = new HashSet<>();
-   //private Set<Template> templates;
    private Set<Terminale> terminales = new HashSet<>();
    private Set<Enceinte> enceintes = new HashSet<>();
    private Set<ImportTemplate> importTemplates = new HashSet<>();
@@ -128,11 +123,13 @@ public class Entite implements Serializable
       this.nom = n;
    }
 
+   //FIXME jamais utilisé
    @Column(name = "MASC", nullable = false)
    public Boolean getMasc(){
       return this.masc;
    }
 
+   //FIXME jamais utilisé
    public void setMasc(final Boolean m){
       this.masc = m;
    }
@@ -145,15 +142,6 @@ public class Entite implements Serializable
    public void setAnnotable(final Boolean annot){
       this.annotable = annot;
    }
-
-   /*@OneToMany(mappedBy = "entite")
-   public Set<Conformite> getConformites() {
-   	return conformites;
-   }
-   
-   public void setConformites(Set<Conformite> conforms) {
-   	this.conformites = conforms;
-   }*/
 
    @OneToMany(mappedBy = "pk.entite")
    public Set<DroitObjet> getDroitObjets(){
@@ -182,34 +170,6 @@ public class Entite implements Serializable
       this.transformations = trans;
    }
 
-   /*@OneToMany(mappedBy = "entiteId")
-   public Set<TableAnnotation> getTableAnnotations() {
-   	return tableAnnotations;
-   }
-   
-   public void setTableAnnotations(
-   		Set<TableAnnotation> tables) {
-   	this.tableAnnotations = tables;
-   }
-   
-   @OneToMany(mappedBy = "entiteId")
-   public Set<Operation> getOperations() {
-   	return operations;
-   }
-   
-   public void setOperations(Set<Operation> ops) {
-   	this.operations = ops;
-   }
-   
-   @OneToMany(mappedBy = "entiteId")
-   public Set<Numerotation> getNumerotations() {
-   	return numerotations;
-   }
-   
-   public void setNumerotations(Set<Numerotation> nums) {
-   	this.numerotations = nums;
-   }*/
-
    @OneToMany(mappedBy = "entite")
    public Set<Emplacement> getEmplacements(){
       return emplacements;
@@ -227,15 +187,6 @@ public class Entite implements Serializable
    public void setCederObjets(final Set<CederObjet> cederObjs){
       this.cederObjets = cederObjs;
    }
-
-   /*@OneToMany(mappedBy = "entiteId")
-   public Set<Template> getTemplates() {
-   	return templates;
-   }
-   
-   public void setTemplates(Set<Template> temps) {
-   	this.templates = temps;
-   }*/
 
    @OneToMany(mappedBy = "entite")
    public Set<Terminale> getTerminales(){

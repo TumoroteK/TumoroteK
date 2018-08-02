@@ -39,12 +39,10 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -53,8 +51,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import fr.aphp.tumorotek.model.TKThesaurusObject;
-import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 
 /**
  *
@@ -67,46 +64,65 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  */
 @Entity
 @Table(name = "CESSION_EXAMEN")
+@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "CESSION_EXAMEN_ID")),
+   @AttributeOverride(name = "nom", column = @Column(name = "EXAMEN", nullable = false, length = 200))})
+@GenericGenerator(name = "autoincrement", strategy = "increment")
 @NamedQueries(
-   value = {@NamedQuery(name = "CessionExamen.findByExamen", query = "SELECT c FROM CessionExamen c WHERE c.examen like ?1"),
+   value = {@NamedQuery(name = "CessionExamen.findByExamen", query = "SELECT c FROM CessionExamen c WHERE c.nom like ?1"),
       @NamedQuery(name = "CessionExamen.findByExamenEn", query = "SELECT c FROM CessionExamen c " + "WHERE c.examenEn like ?1"),
-      @NamedQuery(name = "CessionExamen.findByExcludedId",
-         query = "SELECT c FROM CessionExamen c " + "WHERE c.cessionExamenId != ?1"),
-      @NamedQuery(name = "CessionExamen.findByOrder",
-         query = "SELECT c FROM CessionExamen c " + "WHERE c.plateforme = ?1 ORDER BY c.examen")})
-public class CessionExamen implements Serializable, TKThesaurusObject
+      @NamedQuery(name = "CessionExamen.findByExcludedId", query = "SELECT c FROM CessionExamen c " + "WHERE c.id != ?1"),
+      @NamedQuery(name = "CessionExamen.findByPfOrder",
+         query = "SELECT c FROM CessionExamen c WHERE c.plateforme = ?1 ORDER BY c.nom"),
+      @NamedQuery(name = "CessionExamen.findByOrder", query = "FROM CessionExamen c ORDER BY c.nom")})
+public class CessionExamen extends AbstractPfDependantThesaurusObject implements Serializable
 {
 
    private static final long serialVersionUID = -6437415927205983957L;
 
-   private Integer cessionExamenId;
-   private String examen;
    private String examenEn;
-   private Plateforme plateforme;
-
    private Set<Cession> cessions = new HashSet<>();
 
+   /**
+    * Constructeur par défaut
+    */
    public CessionExamen(){}
 
-   @Id
-   @Column(name = "CESSION_EXAMEN_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
+   /**
+    * @deprecated Utiliser {@link #getId()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public Integer getCessionExamenId(){
-      return this.cessionExamenId;
+      return this.getId();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setId(Integer)}
+    * @return
+    */
+   @Deprecated
    public void setCessionExamenId(final Integer id){
-      this.cessionExamenId = id;
+      this.setId(id);
    }
 
-   @Column(name = "EXAMEN", nullable = false, length = 200)
+   /**
+    * @deprecated Utiliser {@link #getNom()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public String getExamen(){
-      return this.examen;
+      return this.getNom();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setNom(String)}
+    * @param ex
+    */
+   @Deprecated
    public void setExamen(final String ex){
-      this.examen = ex;
+      this.setNom(ex);
    }
 
    @Column(name = "EXAMEN_EN", nullable = true, length = 50)
@@ -127,82 +143,15 @@ public class CessionExamen implements Serializable, TKThesaurusObject
       this.cessions = cess;
    }
 
-   @Override
-   @ManyToOne
-   @JoinColumn(name = "PLATEFORME_ID", nullable = false)
-   public Plateforme getPlateforme(){
-      return plateforme;
-   }
-
-   @Override
-   public void setPlateforme(final Plateforme pf){
-      this.plateforme = pf;
-   }
-
-   /**
-    * 2 objets sont considérés comme égaux s'ils ont le même examen et 
-    * la même plateforme.
-    * @param obj est l'objet à tester.
-    * @return true si les objets sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
-
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-
-      final CessionExamen test = (CessionExamen) obj;
-      return ((this.examen == test.examen || (this.examen != null && this.examen.equals(test.examen)))
-         && (this.plateforme == test.plateforme || (this.plateforme != null && this.plateforme.equals(test.plateforme))));
-   }
-
-   /**
-    * Le hashcode est calculé sur les attributs examen et plateforme.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-      int hash = 7;
-      int hashExamen = 0;
-      int hashPF = 0;
-
-      if(this.examen != null){
-         hashExamen = this.examen.hashCode();
-      }
-      if(this.plateforme != null){
-         hashPF = this.plateforme.hashCode();
-      }
-
-      hash = 31 * hash + hashExamen;
-      hash = 31 * hash + hashPF;
-
-      return hash;
-   }
-
    /**
     * Méthode surchargeant le toString() de l'objet.
     */
    @Override
    public String toString(){
-      if(this.examen != null){
-         return "{" + this.examen + "}";
+      if(this.getNom() != null){
+         return "{" + this.getNom() + "}";
       }
       return "{Empty CessionExamen}";
    }
 
-   @Override
-   @Transient
-   public String getNom(){
-      return getExamen();
-   }
-
-   @Override
-   @Transient
-   public Integer getId(){
-      return getCessionExamenId();
-   }
 }

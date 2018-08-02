@@ -112,15 +112,6 @@ public class ProdTypeManagerImpl implements ProdTypeManager
       return prodTypeDao.findById(prodTypeId);
    }
 
-   //	/**
-   //	 * Recherche tous les types de produits dérivés présents dans la base.
-   //	 * @return Liste de ProdType.
-   //	 */
-   //	public List<ProdType> findAllObjectsManager() {
-   //		log.info("Recherche de tous les ProdTypes");
-   //		return prodTypeDao.findByOrder();
-   //	}
-
    /**
     * Recherche tous les types de produits dérivés dont la valeur commence
     * comme celle passée en paramètre.
@@ -145,10 +136,10 @@ public class ProdTypeManagerImpl implements ProdTypeManager
    public boolean findDoublonManager(final ProdType obj){
       final ProdType type = obj;
       if(type != null){
-         if(type.getProdTypeId() == null){
+         if(type.getId() == null){
             return prodTypeDao.findAll().contains(type);
          }
-         return prodTypeDao.findByExcludedId(type.getProdTypeId()).contains(type);
+         return prodTypeDao.findByExcludedId(type.getId()).contains(type);
       }
       return false;
    }
@@ -200,12 +191,17 @@ public class ProdTypeManagerImpl implements ProdTypeManager
          log.warn("Objet utilisé lors de la suppression de l'objet " + "ProdType : " + type.toString());
          throw new ObjectUsedException("ProdType", "suppression");
       }
-         prodTypeDao.removeObject(type.getProdTypeId());
+         prodTypeDao.removeObject(type.getId());
          log.info("Suppression de l'objet ProdType : " + type.toString());
    }
 
    @Override
    public List<ProdType> findByOrderManager(final Plateforme pf){
-      return prodTypeDao.findByOrder(pf);
+      return prodTypeDao.findByPfOrder(pf);
+   }
+
+   @Override
+   public List<ProdType> findByOrderManager(){
+      return prodTypeDao.findByOrder();
    }
 }

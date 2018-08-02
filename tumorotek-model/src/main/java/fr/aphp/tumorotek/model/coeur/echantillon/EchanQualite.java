@@ -38,12 +38,10 @@ package fr.aphp.tumorotek.model.coeur.echantillon;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -52,8 +50,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import fr.aphp.tumorotek.model.TKThesaurusObject;
-import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 
 /**
  *
@@ -66,21 +63,22 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  */
 @Entity
 @Table(name = "ECHAN_QUALITE")
-@NamedQueries(value = {
-   @NamedQuery(name = "EchanQualite.findByQualite", query = "SELECT e FROM EchanQualite e " + "WHERE e.echanQualite like ?1"),
-   @NamedQuery(name = "EchanQualite.findByEchantillonId",
-      query = "SELECT e FROM EchanQualite e " + "left join e.echantillons h " + "WHERE h.echantillonId = ?1"),
-   @NamedQuery(name = "EchanQualite.findByExcludedId", query = "SELECT e FROM EchanQualite e " + "WHERE e.echanQualiteId != ?1"),
-   @NamedQuery(name = "EchanQualite.findByOrder",
-      query = "SELECT e FROM EchanQualite e " + "WHERE e.plateforme = ?1 ORDER BY e.echanQualite")})
-public class EchanQualite implements java.io.Serializable, TKThesaurusObject
+@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "ECHAN_QUALITE_ID")),
+   @AttributeOverride(name = "nom", column = @Column(name = "ECHAN_QUALITE", nullable = false, length = 200))})
+@GenericGenerator(name = "autoincrement", strategy = "increment")
+@NamedQueries(
+   value = {@NamedQuery(name = "EchanQualite.findByQualite", query = "SELECT e FROM EchanQualite e " + "WHERE e.nom like ?1"),
+      @NamedQuery(name = "EchanQualite.findByEchantillonId",
+         query = "SELECT e FROM EchanQualite e " + "left join e.echantillons h " + "WHERE h.echantillonId = ?1"),
+      @NamedQuery(name = "EchanQualite.findByExcludedId", query = "SELECT e FROM EchanQualite e " + "WHERE e.id != ?1"),
+      @NamedQuery(name = "EchanQualite.findByPfOrder",
+         query = "SELECT e FROM EchanQualite e " + "WHERE e.plateforme = ?1 ORDER BY e.nom"),
+      @NamedQuery(name = "EchanQualite.findByOrder",
+      query = "SELECT e FROM EchanQualite e ORDER BY e.nom")})
+public class EchanQualite extends AbstractPfDependantThesaurusObject implements java.io.Serializable
 {
 
    private static final long serialVersionUID = 768431365534341L;
-
-   private Integer echanQualiteId;
-   private String echanQualite;
-   private Plateforme plateforme;
 
    private Set<Echantillon> echantillons;
 
@@ -95,29 +93,46 @@ public class EchanQualite implements java.io.Serializable, TKThesaurusObject
     * @param q .
     */
    public EchanQualite(final Integer id, final String q){
-      this.echanQualiteId = id;
-      this.echanQualite = q;
+      this.setId(id);
+      this.setNom(q);
    }
 
-   @Id
-   @Column(name = "ECHAN_QUALITE_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
+   /**
+    * @deprecated Utiliser {@link #getId()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public Integer getEchanQualiteId(){
-      return echanQualiteId;
+      return this.getId();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setId(Integer)}
+    * @return
+    */
+   @Deprecated
    public void setEchanQualiteId(final Integer eId){
-      this.echanQualiteId = eId;
+      this.setId(eId);
    }
 
-   @Column(name = "ECHAN_QUALITE", nullable = false, length = 200)
+   /**
+    * @deprecated Utiliser {@link #getNom()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public String getEchanQualite(){
-      return echanQualite;
+      return this.getNom();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setNom(String)}
+    * @param q
+    */
+   @Deprecated
    public void setEchanQualite(final String q){
-      this.echanQualite = q;
+      this.setNom(q);
    }
 
    @OneToMany(mappedBy = "echanQualite")
@@ -129,85 +144,15 @@ public class EchanQualite implements java.io.Serializable, TKThesaurusObject
       this.echantillons = echants;
    }
 
-   @Override
-   @ManyToOne
-   @JoinColumn(name = "PLATEFORME_ID", nullable = false)
-   public Plateforme getPlateforme(){
-      return plateforme;
-   }
-
-   @Override
-   public void setPlateforme(final Plateforme pf){
-      this.plateforme = pf;
-   }
-
-   /**
-    * 2 objets sont considérés comme égaux s'ils ont la même qualité et 
-    * la même plateforme.
-    * @param obj est l'objet à tester.
-    * @return true si les objets sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
-
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final EchanQualite test = (EchanQualite) obj;
-      return ((this.echanQualite == test.echanQualite
-         || (this.echanQualite != null && this.echanQualite.equals(test.echanQualite)))
-         && (this.plateforme == test.plateforme || (this.plateforme != null && this.plateforme.equals(test.plateforme))));
-   }
-
-   /**
-    * Le hashcode est calculé sur les attributs echanQualite et plateforme.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-
-      int hash = 7;
-      int hashQualite = 0;
-      int hashPF = 0;
-
-      if(this.echanQualite != null){
-         hashQualite = this.echanQualite.hashCode();
-      }
-      if(this.plateforme != null){
-         hashPF = this.plateforme.hashCode();
-      }
-
-      hash = 31 * hash + hashQualite;
-      hash = 31 * hash + hashPF;
-
-      return hash;
-
-   }
-
    /**
     * Méthode surchargeant le toString() de l'objet.
     */
    @Override
    public String toString(){
-      if(this.echanQualite != null){
-         return "{" + this.echanQualite + "}";
+      if(this.getNom() != null){
+         return "{" + this.getNom() + "}";
       }
       return "{Empty EchanQualite}";
-   }
-
-   @Override
-   @Transient
-   public String getNom(){
-      return getEchanQualite();
-   }
-
-   @Override
-   @Transient
-   public Integer getId(){
-      return getEchanQualiteId();
    }
 
 }

@@ -41,12 +41,14 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 
+import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.patient.FicheMaladie;
-import fr.aphp.tumorotek.action.patient.LabelCodeItem;
-import fr.aphp.tumorotek.action.patient.PatientUtils;
+import fr.aphp.tumorotek.manager.context.ContexteManager;
+import fr.aphp.tumorotek.manager.context.DiagnosticManager;
 import fr.aphp.tumorotek.model.TKdataObject;
-import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.serotk.MaladieSero;
+import fr.aphp.tumorotek.model.contexte.Diagnostic;
+import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -66,7 +68,7 @@ public class FicheMaladieSero extends FicheMaladie
    private Label diagSeroLabel;
    private Listbox diagSeroBox;
 
-   private LabelCodeItem selectedDiag;
+   private Diagnostic selectedDiag;
 
    private MaladieSero delegate;
 
@@ -92,6 +94,16 @@ public class FicheMaladieSero extends FicheMaladie
       comps[comps.length - 1] = diagSeroBox;
       setObjBoxsComponents(comps);
    }
+   
+   @Override
+   public void onClick$editC(){
+      if(null == maladie.getDelegate()){
+         delegate = new MaladieSero();
+         delegate.setContexte(ManagerLocator.getManager(ContexteManager.class).findByNomManager(EContexte.SEROLOGIE.getNom()).get(0));
+         maladie.setDelegate(delegate);
+      }
+      super.onClick$editC();
+   }
 
    public MaladieSero getDelegate(){
       return delegate;
@@ -101,20 +113,16 @@ public class FicheMaladieSero extends FicheMaladie
       this.delegate = d;
    }
 
-   public void setSelectedDiag(final LabelCodeItem s){
+   public void setSelectedDiag(final Diagnostic s){
       this.selectedDiag = s;
    }
 
-   public LabelCodeItem getSelectedDiag(){
+   public Diagnostic getSelectedDiag(){
       return selectedDiag;
    }
 
-   public List<LabelCodeItem> getDiagnostics(){
-      return PatientUtils.getDiagsSero();
-   }
-
-   public String getDiagnosticFormatted(){
-      return PatientUtils.setDiagSeroFromDBValue(getObject());
+   public List<Diagnostic> getDiagnostics(){
+      return ManagerLocator.getManager(DiagnosticManager.class).findAllObjectsManager();
    }
 
    /**
@@ -128,12 +136,12 @@ public class FicheMaladieSero extends FicheMaladie
    @Override
    public void setObject(final TKdataObject mal){
       super.setObject(mal);
-      this.selectedDiag = setDiagItemFromDBValue(getObject());
-
       delegate = (MaladieSero) getObject().getDelegate();
       if(delegate == null){
          delegate = new MaladieSero();
          delegate.setContexte(SessionUtils.getSelectedBanques(sessionScope).get(0).getContexte());
+      }else{
+         this.selectedDiag = delegate.getDiagnostic();
       }
 
    }
@@ -144,7 +152,7 @@ public class FicheMaladieSero extends FicheMaladie
 
       delegate.setDiagnostic(null);
       if(this.selectedDiag != null){
-         delegate.setDiagnostic(this.selectedDiag.getCode());
+         delegate.setDiagnostic(this.selectedDiag);
       }
 
       if(delegate.isEmpty()){
@@ -156,24 +164,4 @@ public class FicheMaladieSero extends FicheMaladie
       }
    }
 
-   /**
-    * Transforme la valeur 'diagnostic' maladie seroTK 
-    * récupérée de la base de données
-    * en un objet utilisable par l'interface.
-    * @param pat
-    * @return LabelCodeItem diagnostic seroTK
-    */
-   public static LabelCodeItem setDiagItemFromDBValue(final Maladie mal){
-      if(mal != null && mal.getDelegate() != null && ((MaladieSero) mal.getDelegate()).getDiagnostic() != null){
-         final String diag = ((MaladieSero) mal.getDelegate()).getDiagnostic();
-         if(diag.equals("C")){
-            return PatientUtils.DIAG_C;
-         }else if(diag.equals("P")){
-            return PatientUtils.DIAG_P;
-         }else if(diag.equals("S")){
-            return PatientUtils.DIAG_S;
-         }
-      }
-      return PatientUtils.DIAG_EMPTY;
-   }
 }

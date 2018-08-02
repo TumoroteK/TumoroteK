@@ -46,6 +46,7 @@ import fr.aphp.tumorotek.action.controller.AbstractController;
 import fr.aphp.tumorotek.action.utils.PrelevementUtils;
 import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.cession.CederObjet;
+import fr.aphp.tumorotek.model.cession.ECederObjetStatut;
 import fr.aphp.tumorotek.model.cession.Retour;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
@@ -734,5 +735,39 @@ public class CederObjetDecorator
          return "greenrow";
       }
       return null;
+   }
+
+   public String getStatut(){
+      if(null != this.cederObjet.getStatut()){
+         return Labels.getLabel("cederObjet.statut." + this.cederObjet.getStatut().getStatut());
+      }
+      return null;
+   }
+
+   public String getProduitRetourList(){
+      String res = null;
+      if(null != this.cederObjet && null != this.cederObjet.getProduitRetourList()
+         && !this.cederObjet.getProduitRetourList().isEmpty()){
+         Integer nbProdRetour = this.cederObjet.getProduitRetourList().size();
+         res = nbProdRetour + " ...";
+      }
+
+      return res;
+   }
+
+   public Boolean getIsEnTraitement(){
+      Boolean res = false;
+      if(null != this.cederObjet){
+         res = ECederObjetStatut.TRAITEMENT == this.cederObjet.getStatut();
+      }
+      return res;
+   }
+
+   public Boolean getHasProduitRetour(){
+      Boolean res = false;
+      if(null != this.cederObjet && null != this.cederObjet.getProduitRetourList()){
+         res = !this.cederObjet.getProduitRetourList().isEmpty();
+      }
+      return res;
    }
 }

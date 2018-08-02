@@ -2619,22 +2619,22 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       final Banque b3 = banqueDao.findById(3);
       final Banque b4 = banqueDao.findById(4);
       // ne doit pas planter
-      prelevementManager.switchBanqueCascadeManager(null, b3, false, u, null);
+      prelevementManager.switchBanqueCascadeManager(null, b3, false, u, null, null);
       Prelevement p = new Prelevement();
       p.setCode("switchPrelev1");
       // ne doit pas planter getBanque() == null
-      prelevementManager.switchBanqueCascadeManager(p, null, false, u, null);
+      prelevementManager.switchBanqueCascadeManager(p, null, false, u, null, null);
       prelevementManager.createObjectManager(p, b3, natureDao.findById(1), null, consentTypeDao.findById(1), null, null, null,
          null, null, null, null, null, null, null, null, u, false, "/tmp/", false);
       assertTrue(banqueManager.getPrelevementsManager(b3).size() == 2);
       p = prelevementManager.findByIdManager(p.getPrelevementId());
 
       // banque depart = banque arrivee
-      prelevementManager.switchBanqueCascadeManager(p, b3, false, u, null);
+      prelevementManager.switchBanqueCascadeManager(p, b3, false, u, null, null);
       assertTrue(getOperationManager().findByObjectManager(p).size() == 1);
 
       // switch 3 -> 2
-      prelevementManager.switchBanqueCascadeManager(p, b2, false, u, null);
+      prelevementManager.switchBanqueCascadeManager(p, b2, false, u, null, null);
       assertTrue(banqueManager.getPrelevementsManager(b3).size() == 1);
       assertTrue(banqueManager.getPrelevementsManager(b2).size() == 2);
       assertTrue(getOperationManager().findByObjectManager(p).size() == 2);
@@ -2653,7 +2653,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
          null, null, null, null, transfo1, null, null, null, u, false, "/tmp/", false);
       assertTrue(banqueManager.getProdDerivesManager(b2).size() == 2);
       assertTrue(banqueManager.getEchantillonsManager(b2).size() == 2);
-      prelevementManager.switchBanqueCascadeManager(p, b3, true, u, null);
+      prelevementManager.switchBanqueCascadeManager(p, b3, true, u, null, null);
       assertTrue(banqueManager.getProdDerivesManager(b2).size() == 1);
       assertTrue(banqueManager.getEchantillonsManager(b2).size() == 1);
       assertTrue(banqueManager.getProdDerivesManager(b3).size() == 1);
@@ -2669,7 +2669,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       cederObjetManager.createObjectManager(ced1, cession, entiteDao.findById(8), null);
       boolean catched = false;
       try{
-         prelevementManager.switchBanqueCascadeManager(p, b4, true, u, null);
+         prelevementManager.switchBanqueCascadeManager(p, b4, true, u, null, null);
       }catch(final RuntimeException re){
          catched = true;
          assertTrue(re.getMessage().equals("derive.switchBanque.isCessed"));
@@ -2689,7 +2689,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       cederObjetManager.createObjectManager(ced2, cession, entiteDao.findById(3), null);
       catched = false;
       try{
-         prelevementManager.switchBanqueCascadeManager(p, b4, true, u, null);
+         prelevementManager.switchBanqueCascadeManager(p, b4, true, u, null, null);
       }catch(final RuntimeException re){
          catched = true;
          assertTrue(re.getMessage().equals("echantillon.switchBanque.isCessed"));
@@ -2767,7 +2767,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
          null, null, derive.getTransformation(), null, null, null, null, null, u, false, null, "/tmp/");
 
       try{
-         prelevementManager.switchBanqueCascadeManager(p, b2, true, u, null);
+         prelevementManager.switchBanqueCascadeManager(p, b2, true, u, null, null);
       }catch(final RuntimeException re){
          catched = true;
          assertTrue(re.getMessage().equals("derive.switchBanque.badBanqueStockage"));
@@ -2790,7 +2790,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
          null, null, transfo1, null, null, null, null, null, u, false, null, "/tmp/");
 
       try{
-         prelevementManager.switchBanqueCascadeManager(p, b2, true, u, null);
+         prelevementManager.switchBanqueCascadeManager(p, b2, true, u, null, null);
       }catch(final RuntimeException re){
          catched = true;
          assertTrue(re.getMessage().equals("echantillon.switchBanque.badBanqueStockage"));
@@ -2804,7 +2804,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       assertTrue(getOperationManager().findByObjectManager(p).size() == 3);
 
       // annotations
-      prelevementManager.switchBanqueCascadeManager(p, b1, true, u, null);
+      prelevementManager.switchBanqueCascadeManager(p, b1, true, u, null, null);
       assertTrue(banqueManager.getPrelevementsManager(b1).size() == 4);
       assertTrue(banqueManager.getPrelevementsManager(b2).size() == 1);
       assertTrue(banqueManager.getPrelevementsManager(b3).size() == 1);
@@ -2828,10 +2828,10 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       assertTrue(annotationValeurManager.findByObjectManager(p).size() == 2);
       assertTrue(annotationValeurManager.findAllObjectsManager().size() == 14);
 
-      prelevementManager.switchBanqueCascadeManager(p, b3, true, u, null);
+      prelevementManager.switchBanqueCascadeManager(p, b3, true, u, null, null);
       assertTrue(annotationValeurManager.findByObjectManager(p).size() == 0);
 
-      prelevementManager.switchBanqueCascadeManager(p, b1, true, u, null);
+      prelevementManager.switchBanqueCascadeManager(p, b1, true, u, null, null);
       assertTrue(annotationValeurManager.findByObjectManager(p).size() == 0);
       assertTrue(annotationValeurManager.findAllObjectsManager().size() == 12);
 

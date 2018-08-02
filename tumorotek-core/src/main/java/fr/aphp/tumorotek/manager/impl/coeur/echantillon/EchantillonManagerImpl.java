@@ -39,16 +39,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -60,11 +56,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.coeur.ObjetStatutDao;
-import fr.aphp.tumorotek.dao.coeur.echantillon.EchanQualiteDao;
-import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonDao;
-import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonDelegateDao;
-import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonTypeDao;
-import fr.aphp.tumorotek.dao.coeur.echantillon.ModePrepaDao;
+import fr.aphp.tumorotek.dao.coeur.echantillon.*;
 import fr.aphp.tumorotek.dao.coeur.prelevement.PrelevementDao;
 import fr.aphp.tumorotek.dao.coeur.prodderive.TransformationDao;
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
@@ -87,6 +79,7 @@ import fr.aphp.tumorotek.manager.exception.ObjectUsedException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.manager.impl.coeur.CreateOrUpdateUtilities;
+import fr.aphp.tumorotek.manager.impl.systeme.MvFichier;
 import fr.aphp.tumorotek.manager.io.imports.ImportHistoriqueManager;
 import fr.aphp.tumorotek.manager.qualite.ObjetNonConformeManager;
 import fr.aphp.tumorotek.manager.qualite.OperationManager;
@@ -538,6 +531,14 @@ public class EchantillonManagerImpl implements EchantillonManager
    public List<String> findAllCodesForBanqueAndQuantiteManager(final Banque banque){
       if(banque != null){
          return echantillonDao.findByBanqueAndQuantiteSelectCode(banque);
+      }
+      return new ArrayList<>();
+   }
+   
+   @Override
+   public List<String> findAllCodesForDerivesByBanque(final Banque banque){
+      if(banque != null){
+         return echantillonDao.findAllCodesByBanqueAndQuantiteNotNullOrInCessionTraitement(banque);
       }
       return new ArrayList<>();
    }
@@ -1492,10 +1493,11 @@ public class EchantillonManagerImpl implements EchantillonManager
    }
 
    @Override
-   public String writeCrAnapathFilePath(final String baseDir, final Banque bank, final Fichier file){
-
-      String path =
-         baseDir + "pt_" + bank.getPlateforme().getPlateformeId() + "/" + "coll_" + bank.getBanqueId() + "/cr_anapath/";
+   public String writeCrAnapathFilePath(String baseDir, final Banque bank, final Fichier file){
+      if (!baseDir.endsWith("/")) {
+         baseDir = baseDir + "/";
+      }
+      String path = baseDir + "pt_" + bank.getPlateforme().getPlateformeId() + "/" + "coll_" + bank.getBanqueId() + "/cr_anapath/";
 
       if(!new File(path).exists()){
          throw new RuntimeException("error.filesystem.access");
@@ -1554,7 +1556,7 @@ public class EchantillonManagerImpl implements EchantillonManager
 
    @Override
    public void switchBanqueCascadeManager(Echantillon echan, final Banque bank, final boolean doValidation, final Utilisateur u,
-      final List<File> filesToDelete){
+      final List<File> filesToDelete, Set<MvFichier> filesToMove) {
       if(bank != null && echan != null && !bank.equals(echan.getBanque())){
 
          if(doValidation){
@@ -1582,7 +1584,8 @@ public class EchantillonManagerImpl implements EchantillonManager
 
          final Iterator<ProdDerive> derivesIt = getProdDerivesManager(echan).iterator();
          while(derivesIt.hasNext()){
-            prodDeriveManager.switchBanqueCascadeManager(derivesIt.next(), bank, doValidation, u, filesToDelete);
+            prodDeriveManager.switchBanqueCascadeManager(derivesIt.next(), bank, doValidation, u, 
+            		filesToDelete, filesToMove);
          }
 
          //Suppression du délégué si la banque de destination n'est pas dans le même contexte que la banque d'origine
@@ -1601,8 +1604,13 @@ public class EchantillonManagerImpl implements EchantillonManager
          }
          echan = echantillonDao.mergeObject(echan);
 
-         // annotations
-         annotationValeurManager.switchBanqueManager(echan, bank, filesToDelete);
+         // @since 2.2.0
+		// met à jour la référence vers le CR anapath
+		fichierManager.switchBanqueManager(echan.getCrAnapath(), bank, filesToMove);
+
+		// annotations
+		annotationValeurManager.switchBanqueManager(echan, bank, filesToDelete, filesToMove);
+
 
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
@@ -1980,5 +1988,4 @@ public class EchantillonManagerImpl implements EchantillonManager
    public void updateEchantillon(final Echantillon echantillon){
       echantillonDao.updateObject(echantillon);
    }
-
 }

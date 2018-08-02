@@ -4,7 +4,7 @@
     <parent>
         <groupId>fr.aphp.tumorotek</groupId>
         <artifactId>tumorotek-parent</artifactId>
-        <version>2.2.0-beta-3-SNAPSHOT</version>
+        <version>2.2.0-beta-4-SNAPSHOT</version>
     </parent>
 
     <artifactId>tumorotek-webapp</artifactId>
@@ -12,7 +12,7 @@
     <name>APHP :: TumoroteK :: WebApp</name>
 
     <properties>
-        <liquibase-version>3.6.1</liquibase-version>
+        <liquibase-version>3.6.2</liquibase-version>
         <spring-security-version>3.2.8.RELEASE</spring-security-version>
         <zk-version>6.5.7</zk-version>
 
@@ -23,16 +23,6 @@
 
     <build>
         <finalName>${webapp.packaging.finalName}</finalName>
-<!--         <pluginManagement> -->
-<!--             <plugins> -->
-<!--                 <plugin> -->
-<!--                     <groupId>org.codehaus.mojo</groupId> -->
-<!--                     <artifactId>license-maven-plugin</artifactId> -->
-<!--                     <version>1.0-beta-2</version> -->
-<!--                 </plugin> -->
-<!--             </plugins> -->
-<!--         </pluginManagement> -->
-
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -40,61 +30,8 @@
                 <configuration>
                     <verbose>true</verbose>
                     <fork>true</fork>
-                    <!-- <executable>${JAVA_HOME}/bin/javac</executable>
-                     <compilerVersion>1.6.0.10</compilerVersion> -->
-                    <!--<source>1.7</source>
-                    <target>1.7</target>-->
                 </configuration>
             </plugin>
-            <!--        <plugin>-->
-            <!--            <groupId>org.codehaus.mojo</groupId>-->
-            <!--            <artifactId>selenium-maven-plugin</artifactId>-->
-            <!--            <executions>-->
-            <!--                <execution>-->
-            <!--                    <phase>pre-integration-test</phase>-->
-            <!--                    <goals>-->
-            <!--                       <goal>start-server</goal>-->
-            <!--	                   </goals>-->
-            <!--                    <configuration>-->
-            <!--                        <background>true</background>-->
-            <!--                        -->
-            <!--                            To capture the logs from Selenium to a file, enable logOutput.-->
-            <!--                            This will create a server.log that captures all of the output.-->
-            <!--                            <logOutput>false</logOutput>-->
-            <!--                        -->
-            <!--                    </configuration>-->
-            <!--                </execution>-->
-            <!--                <execution>-->
-            <!--                    <id>stop</id>-->
-            <!--                    <phase>post-integration-test</phase>-->
-            <!--                    <goals>-->
-            <!--                        <goal>stop-server</goal>-->
-            <!--                    </goals>-->
-            <!--                </execution>-->
-            <!--            </executions>-->
-            <!--        </plugin>-->
-            <!--        <plugin>-->
-            <!--            <groupId>org.apache.maven.plugins</groupId>-->
-            <!--            <artifactId>maven-surefire-plugin</artifactId>-->
-            <!--            <configuration>-->
-            <!--                -->
-            <!--                   Skip the normal tests, we'll run them in the integration-test-->
-            <!--                    phase-->
-            <!--                -->
-            <!--                <skip>true</skip>-->
-            <!--            </configuration>-->
-            <!--            <executions>-->
-            <!--                <execution>-->
-            <!--                    <phase>integration-test</phase>-->
-            <!--                    <goals>-->
-            <!--                        <goal>test</goal>-->
-            <!--                    </goals>-->
-            <!--                    <configuration>-->
-            <!--                        <skip>false</skip>-->
-            <!--                    </configuration>-->
-            <!--                </execution>-->
-            <!--            </executions>-->
-            <!--        </plugin>-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>license-maven-plugin</artifactId>
@@ -105,10 +42,10 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.2.0</version>
                 <configuration>
-                    <packagingExcludes>
+                    <!--<packagingExcludes>
                         WEB-INF/lib/logback-classic-*.jar,
                         WEB-INF/lib/logback-core-*.jar
-                    </packagingExcludes>
+                    </packagingExcludes>-->
                     <!--<filters>
                         <filter>${basedir}/src/main/webapp/WEB-INF/internationalization/zk-label_fr.properties</filter>
                     </filters>-->
@@ -130,8 +67,8 @@
                     </webResources>
                 </configuration>
             </plugin>
-            <plugin>
-                <!-- Permet de supprimer les dépendances de Liquibase qui sont en conflit avec d'autres -->
+            <!--<plugin>
+                &lt;!&ndash; Permet de supprimer les dépendances de Liquibase qui sont en conflit avec d'autres &ndash;&gt;
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>1.8</version>
@@ -151,7 +88,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
             <plugin>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-maven-plugin</artifactId>
@@ -191,32 +128,6 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-        <!--   <repository> -->
-        <!--         <id>openqa.org</id> -->
-        <!--         <name>Openqa Release Repository</name> -->
-        <!--         <url>http://archiva.openqa.org/repository/releases</url> -->
-        <!--         <layout>default</layout> -->
-        <!--         <snapshots> -->
-        <!--             <enabled>false</enabled> -->
-        <!--         </snapshots> -->
-        <!--         <releases> -->
-        <!--             <enabled>true</enabled> -->
-        <!--         </releases> -->
-        <!--     </repository> -->
-        <!--     <repository> -->
-        <!--         <id>openqa.org-snaps</id> -->
-        <!--         <name>Openqa Snapshot Repository</name> -->
-        <!--         <url>http://archiva.openqa.org/repository/snapshots</url> -->
-        <!--         <layout>default</layout> -->
-        <!--         <snapshots> -->
-        <!--             <enabled>true</enabled> -->
-        <!--             <updatePolicy>daily</updatePolicy> -->
-        <!--             <checksumPolicy>ignore</checksumPolicy> -->
-        <!--         </snapshots> -->
-        <!--         <releases> -->
-        <!--             <enabled>false</enabled> -->
-        <!--         </releases> -->
-        <!--     </repository> -->
         <repository>
             <id>ZK EE</id>
             <url>https://maven.zkoss.org/repo/zk/ee</url>
@@ -246,14 +157,6 @@
             <version>1.1.2</version>
         </dependency>
 
-        <!-- <dependency>
-            <groupId>bsh</groupId>
-            <artifactId>bsh</artifactId>
-            <version>1.3.0</version>
-            <scope>runtime</scope>
-        </dependency>
-        -->
-
         <!-- Security -->
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -280,23 +183,12 @@
             <artifactId>spring-security-ldap</artifactId>
             <version>${spring-security-version}</version>
         </dependency>
-
-        <!-- <dependency>
-           <groupId>org.apache.tomcat</groupId>
-           <artifactId>servlet-api</artifactId>
-           <version>6.0.29</version>
-       </dependency>-->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>4.0.0</version>
             <scope>provided</scope>
         </dependency>
-        <!-- 	<dependency> -->
-        <!-- 		<groupId>jasperreports</groupId> -->
-        <!-- 		<artifactId>jasperreports</artifactId> -->
-        <!-- 		<version>3.5.3</version> -->
-        <!-- 	</dependency> -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
@@ -307,34 +199,6 @@
             <artifactId>poi-scratchpad</artifactId>
             <version>3.9</version>
         </dependency>
-        <!--	<dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
-                <version>1.5.5</version>
-            </dependency> -->
-
-        <!-- Monitoring -->
-        <!-- 	<dependency> -->
-        <!--                 <groupId>net.bull.javamelody</groupId> -->
-        <!--                 <artifactId>javamelody-core</artifactId> -->
-        <!--                 <version>1.41.0</version> -->
-        <!--         </dependency> -->
-
-        <!--     <dependency> -->
-        <!-- 	      <groupId>zkMonitor</groupId> -->
-        <!-- 	      <artifactId>zkMonitor</artifactId> -->
-        <!-- 	      <version>5.0</version> -->
-        <!-- 	    </dependency> -->
-
-        <!--	<dependency>
-                <groupId>myZkBreezeTheme</groupId>
-                <artifactId>myZkBreezeTheme</artifactId>
-                <version>6.0.2</version>
-                <scope>runtime</scope>
-                </dependency>
-
-
-            -->
         <dependency>
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zkplus</artifactId>
@@ -383,7 +247,7 @@
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
             <version>${liquibase-version}</version>
-            <exclusions>
+            <!--<exclusions>
                 <exclusion>
                     <artifactId>ch.qos.logback</artifactId>
                     <groupId>logback-core</groupId>
@@ -392,7 +256,7 @@
                     <artifactId>ch.qos.logback</artifactId>
                     <groupId>logback-classic</groupId>
                 </exclusion>
-            </exclusions>
+            </exclusions>-->
         </dependency>
 
         <!-- For Java 9 compatibility -->

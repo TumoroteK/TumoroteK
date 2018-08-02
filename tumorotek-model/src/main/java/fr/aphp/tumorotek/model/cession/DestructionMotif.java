@@ -39,12 +39,10 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -53,8 +51,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import fr.aphp.tumorotek.model.TKThesaurusObject;
-import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 
 /**
  *
@@ -67,45 +64,63 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  */
 @Entity
 @Table(name = "DESTRUCTION_MOTIF")
+@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "DESTRUCTION_MOTIF_ID")),
+   @AttributeOverride(name = "nom", column = @Column(name = "MOTIF", nullable = false, length = 200))})
+@GenericGenerator(name = "autoincrement", strategy = "increment")
 @NamedQueries(
-   value = {@NamedQuery(name = "DestructionMotif.findByMotif", query = "SELECT d FROM DestructionMotif d WHERE d.motif like ?1"),
+   value = {@NamedQuery(name = "DestructionMotif.findByMotif", query = "SELECT d FROM DestructionMotif d WHERE d.nom like ?1"),
       @NamedQuery(name = "DestructionMotif.findByExcludedId",
-         query = "SELECT d FROM DestructionMotif d " + "WHERE d.destructionMotifId != ?1"),
+         query = "SELECT d FROM DestructionMotif d " + "WHERE d.id != ?1"),
+      @NamedQuery(name = "DestructionMotif.findByPfOrder",
+         query = "SELECT d FROM DestructionMotif d " + "WHERE d.plateforme = ?1 ORDER BY d.nom"),
       @NamedQuery(name = "DestructionMotif.findByOrder",
-         query = "SELECT d FROM DestructionMotif d " + "WHERE d.plateforme = ?1 ORDER BY d.motif")})
-public class DestructionMotif implements Serializable, TKThesaurusObject
+      query = "SELECT d FROM DestructionMotif d ORDER BY d.nom")})
+public class DestructionMotif extends AbstractPfDependantThesaurusObject implements Serializable
 {
 
    private static final long serialVersionUID = -3784391207102019937L;
-
-   private Integer destructionMotifId;
-   private String motif;
-   private Plateforme plateforme;
 
    private Set<Cession> cessions = new HashSet<>();
 
    /** Constructeur par défaut. */
    public DestructionMotif(){}
 
-   @Id
-   @Column(name = "DESTRUCTION_MOTIF_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
+   /**
+    * @deprecated Utiliser {@link #getId()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public Integer getDestructionMotifId(){
-      return this.destructionMotifId;
+      return this.getId();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setId(Integer)}
+    * @return
+    */
+   @Deprecated
    public void setDestructionMotifId(final Integer id){
-      this.destructionMotifId = id;
+      this.setId(id);
    }
 
-   @Column(name = "MOTIF", nullable = false, length = 200)
+   /**
+    * @deprecated Utiliser {@link #getNom()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public String getMotif(){
-      return this.motif;
+      return this.getNom();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setNom(String)}
+    * @param m
+    */
+   @Deprecated
    public void setMotif(final String m){
-      this.motif = m;
+      this.setNom(m);
    }
 
    @OneToMany(mappedBy = "destructionMotif")
@@ -117,82 +132,15 @@ public class DestructionMotif implements Serializable, TKThesaurusObject
       this.cessions = cess;
    }
 
-   @Override
-   @ManyToOne
-   @JoinColumn(name = "PLATEFORME_ID", nullable = false)
-   public Plateforme getPlateforme(){
-      return plateforme;
-   }
-
-   @Override
-   public void setPlateforme(final Plateforme pf){
-      this.plateforme = pf;
-   }
-
-   /**
-    * 2 destructions sont considérées comme égales si elles ont le même motif 
-    * et la même plateforme.
-    * @param obj est la destruction à tester.
-    * @return true si les destructions sont égales.
-    */
-   @Override
-   public boolean equals(final Object obj){
-
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-
-      final DestructionMotif test = (DestructionMotif) obj;
-      return ((this.motif == test.motif || (this.motif != null && this.motif.equals(test.motif)))
-         && (this.plateforme == test.plateforme || (this.plateforme != null && this.plateforme.equals(test.plateforme))));
-   }
-
-   /**
-    * Le hashcode est calculé sur les attributs motif et plateforme.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-      int hash = 7;
-      int hashMotif = 0;
-      int hashPF = 0;
-
-      if(this.motif != null){
-         hashMotif = this.motif.hashCode();
-      }
-      if(this.plateforme != null){
-         hashPF = this.plateforme.hashCode();
-      }
-
-      hash = 31 * hash + hashMotif;
-      hash = 31 * hash + hashPF;
-
-      return hash;
-   }
-
    /**
     * Méthode surchargeant le toString() de l'objet.
     */
    @Override
    public String toString(){
-      if(this.motif != null){
-         return "{" + this.motif + "}";
+      if(this.getNom() != null){
+         return "{" + this.getNom() + "}";
       }
       return "{Empty DestructionMotif}";
    }
 
-   @Override
-   @Transient
-   public String getNom(){
-      return getMotif();
-   }
-
-   @Override
-   @Transient
-   public Integer getId(){
-      return getDestructionMotifId();
-   }
 }

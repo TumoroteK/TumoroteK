@@ -23,8 +23,8 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * Controller gérant la fiche en édition d'un prélèvement du contexte BTO.
  *
  * @author 
- * @since 2.2
- * @version 2.2
+ * @since 2.2.0
+ * @version 2.2.0
  */
 public class FichePrelevementEditBTO extends FichePrelevementEdit
 {

@@ -71,6 +71,7 @@ import fr.aphp.tumorotek.manager.ConfigManager;
 import fr.aphp.tumorotek.model.cession.Cession;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Contexte;
+import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.utils.Utils;
 import fr.aphp.tumorotek.webapp.general.ResultSetToCsv;
@@ -119,6 +120,7 @@ public class Export extends Thread
    protected List<Integer> objsId;
    protected int total;
    protected Utilisateur user;
+   protected EContexte ctx;
 
    private List<Integer> restrictedAnnosTableIds = new ArrayList<>();
 
@@ -173,7 +175,7 @@ public class Export extends Thread
 
    public Export(){}
 
-   public Export(final Desktop d, final List<Integer> o, final boolean e, final HtmlMacroComponent htmlMacroComponent){
+   public Export(final Desktop d, final List<Integer> o, final boolean e, final HtmlMacroComponent htmlMacroComponent, final EContexte contexte){
       objsId = o;
       isExportAnonyme = e;
       init(d, htmlMacroComponent);
@@ -192,13 +194,15 @@ public class Export extends Thread
     */
    public Export(final Desktop d, final int ent, final List<Integer> o, final List<Banque> b, final boolean anonyme,
       final short type, final Utilisateur u, final List<Integer> rI, final HtmlMacroComponent htmlMacroComponent,
-      final Map<String, ?> _p){
+      final Map<String, ?> _p, final EContexte contexte){
 
       objsId = o;
       isExportAnonyme = anonyme;
 
       params = _p;
 
+      ctx = contexte;
+      
       init(d, htmlMacroComponent);
 
       entite = ent;
@@ -486,6 +490,7 @@ public class Export extends Thread
    protected void load_sequences() throws SQLException, DesktopUnavailableException, InterruptedException{
       // Creation des Annotations pour l'Entite en cours
       log.debug("load_sequence");
+      
       createAndFillTmpAnnotationTable(entite);
       progress = 10;
       setExportDetails(progress, null, null, EXPORT_PROGRESS, null, null);
@@ -1289,14 +1294,35 @@ public class Export extends Thread
          String create = "";
          String fill = "";
          if(entiteId == 1){ // PATIENT
-            create = "{call create_tmp_patient_table()}";
-            fill = "{call fill_tmp_table_patient(?)}";
+            
+            switch(ctx){
+               case SEROLOGIE:
+                  create = "{call create_tmp_patient_sero_table()}";
+                  fill = "{call fill_tmp_table_patient_sero(?)}";
+                  break;
+               default:
+                  create = "{call create_tmp_patient_table()}";
+                  fill = "{call fill_tmp_table_patient(?)}";
+                  break;
+            }            
+            
          }else if(entiteId == 7){ // MALADIE
             create = "{call create_tmp_maladie_table()}";
             fill = "{call fill_tmp_table_maladie(?)}";
          }else if(entiteId == 2){ // PRELEVEMENT
-            create = "{call create_tmp_prelevement_table()}";
-            fill = "{call fill_tmp_table_prel(?)}";
+            
+            switch(ctx){
+               case SEROLOGIE:
+                  create = "{call create_tmp_prelevement_sero_table()}";
+                  fill = "{call fill_tmp_table_prel_sero(?)}";
+                  break;
+               default:
+                  create = "{call create_tmp_prelevement_table()}";
+                  fill = "{call fill_tmp_table_prel(?)}";
+                  break;
+            }
+            
+            
          }else if(entiteId == 3){ // ECHANTILLON
             create = "{call create_tmp_echantillon_table()}";
             fill = "{call fill_tmp_table_echan(?)}";

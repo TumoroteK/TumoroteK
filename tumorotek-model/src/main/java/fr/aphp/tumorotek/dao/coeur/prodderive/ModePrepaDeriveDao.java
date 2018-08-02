@@ -38,7 +38,7 @@ package fr.aphp.tumorotek.dao.coeur.prodderive;
 import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
-import fr.aphp.tumorotek.dao.TKThesaurusDao;
+import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.coeur.prodderive.ModePrepaDerive;
 
 /**
@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ModePrepaDerive;
  * @version 2.0
  *
  */
-public interface ModePrepaDeriveDao extends GenericDaoJpa<ModePrepaDerive, Integer>, TKThesaurusDao<ModePrepaDerive>
+public interface ModePrepaDeriveDao extends GenericDaoJpa<ModePrepaDerive, Integer>, PfDependantTKThesaurusDao<ModePrepaDerive>
 {
 
    /**

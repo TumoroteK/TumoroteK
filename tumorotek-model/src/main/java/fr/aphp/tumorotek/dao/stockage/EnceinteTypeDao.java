@@ -38,11 +38,11 @@ package fr.aphp.tumorotek.dao.stockage;
 import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
-import fr.aphp.tumorotek.dao.TKThesaurusDao;
+import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.stockage.EnceinteType;
 
-public interface EnceinteTypeDao extends GenericDaoJpa<EnceinteType, Integer>, TKThesaurusDao<EnceinteType>
+public interface EnceinteTypeDao extends GenericDaoJpa<EnceinteType, Integer>, PfDependantTKThesaurusDao<EnceinteType>
 {
 
    /**

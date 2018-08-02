@@ -729,6 +729,10 @@ public class ResultSetToExcel
       }else if(entite.equals("Prelevement")){
          if(title.equals("CODE_ORGANE")){
             return Labels.getLabel("Champ.Echantillon.Organe");
+         }else if(title.equals("PROTOCOLES")){
+            return Labels.getLabel("Champ.Prelevement.SEROLOGIE.Protocoles");
+         }else if(title.equals("COMPLEMENT_DIAG")){
+            return Labels.getLabel("Champ.Prelevement.SEROLOGIE.Libelle");
          }else if(title.equals("ETABLISSEMENT")){
             return Labels.getLabel("prelevement.etablissement");
          }else if(title.equals("RAISON_NC_TRAITEMENT")){

@@ -325,7 +325,7 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest
       }
       assertTrue(catched);
       catched = false;
-      assertTrue(importHistoriqueManager.findAllObjectsManager().size() == 3);
+      assertEquals(3, importHistoriqueManager.findAllObjectsManager().size());
 
       // on test l'insertion avec l'utilisateur null
       try{

@@ -95,7 +95,7 @@ public class GroupementManagerTest extends AbstractManagerTest4
       while(it.hasNext()){
          final Groupement temp = it.next();
          if(temp != null){
-            assertTrue(temp.equals(manager.findByIdManager(temp.getGroupementId())));
+            assertEquals(manager.findByIdManager(temp.getGroupementId()), temp);
          }
       }
    }
@@ -286,7 +286,7 @@ public class GroupementManagerTest extends AbstractManagerTest4
       }
       if(groupement.getParent() != null){
          assertFalse(groupement.getParent().equals(oldParent));
-         assertTrue(groupement.getParent().equals(parent));
+         assertEquals(parent, groupement.getParent());
       }else{
          assertFalse(oldParent != null);
          assertTrue(parent == null);

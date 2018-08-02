@@ -54,7 +54,7 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
  * @version 08/09/2009
  *
  */
-public class DummyTest extends AbstractDaoTest
+public class DummyTest extends AbstractDaoTest //FIXME non lancé dans mavent surefire ?
 {
 
    /** Bean Dao BanqueDao. */
@@ -101,7 +101,7 @@ public class DummyTest extends AbstractDaoTest
       final List<String> ps = prelevementDao.findByBanqueSelectCode(banqueDao.findById(2));
       System.out.println(ps.size());
       final List<Prelevement> prels = prelevementDao.findByCode("NPD5S");
-      System.out.println(prels.get(0).getBanque());
+      System.out.println(prels.get(0).getBanque()); //FIXME False
       assertNotNull(prels);
    }
 
@@ -116,7 +116,7 @@ public class DummyTest extends AbstractDaoTest
       final List<Collaborateur> cols = collaborateurDao.findAll();
       cols.get(5).getEtablissement();
       //cols.get(1).getBanques();
-      System.out.println(cols.get(4).getEchantillons().iterator().next().getBanque());
+      System.out.println(cols.get(4).getEchantillons().iterator().next().getBanque()); //FIXME False
    }
 
 }

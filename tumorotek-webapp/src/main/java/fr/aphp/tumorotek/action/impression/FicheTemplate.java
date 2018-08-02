@@ -93,7 +93,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * Controlleur de la fiche template d'impression dans l'Administration
  * @author 
  * @since
- * @version 2.2
+ * @version 2.2.0
  */
 public class FicheTemplate extends AbstractImpressionController
 {
@@ -191,7 +191,7 @@ public class FicheTemplate extends AbstractImpressionController
 
    private Listbox entitesBox;
 
-   //FIXME Entite Cession non prise en charge pour l'impression de clés, besoin de l'ajouter/l'enlever selon le type de template
+   //FIXME CleImpression - Entite Cession non prise en charge pour l'impression de clés, besoin de l'ajouter/l'enlever selon le type de template
    private EntiteDecorator entiteCession;
 
    /**
@@ -348,7 +348,7 @@ public class FicheTemplate extends AbstractImpressionController
 
    /**
     * Génère la liste des CleImpression
-    * @since 2.2
+    * @since 2.2.0
     */
    public void generateListeClesImpression(){
       final List<CleImpression> cleImpressionList = this.template.getCleImpressionList();
@@ -380,7 +380,7 @@ public class FicheTemplate extends AbstractImpressionController
             defineBlocsRow.setVisible(true);
             groupClesChamps.setVisible(false);
             cleImpressionEditGrid.setVisible(false);
-            //FIXME Cession Pris en charge pour les blocs mais pas pour les Docs
+            //FIXME CleImpression - Cession Pris en charge pour les blocs mais pas pour les Docs
             if(!entites.contains(entiteCession)){
                entites.add(entiteCession);
             }
@@ -395,7 +395,7 @@ public class FicheTemplate extends AbstractImpressionController
             defineBlocsRow.setVisible(false);
             groupClesChamps.setVisible(true);
             cleImpressionEditGrid.setVisible(true);
-            //FIXME Cession Pris en charge pour les blocs mais pas pour les Docs
+            //FIXME CleImpression - Cession Pris en charge pour les blocs mais pas pour les Docs
             if(entites.contains(entiteCession)){
                entites.remove(entiteCession);
             }
@@ -421,7 +421,7 @@ public class FicheTemplate extends AbstractImpressionController
     * Méthode appelée une fois que l'utilisateur a choisi les champs
     * à afficher.
     * @param e
-    * @since 2.2
+    * @since 2.2.0
     */
    public void onGetChamps(final Event e){
       if(e.getData() != null){
@@ -450,7 +450,7 @@ public class FicheTemplate extends AbstractImpressionController
     * Click sur l'édition d'une cleImpression permet de choisir/modifier
     * le champ à lier à cette clé
     * @param event Clic sur une image d'édition
-    * @since 2.2
+    * @since 2.2.0
     */
    public void onClick$editImg(final Event event){
       // on récupère la cleImpression que l'utilisateur veut éditer
@@ -477,7 +477,7 @@ public class FicheTemplate extends AbstractImpressionController
    /**
     * Evenement click bouton upload fichier : Cherche les clé [[CLE]] dans le fichier
     * puis les affiche pour que l'utilisateur leur associe un champ
-    * @since 2.2
+    * @since 2.2.0
     */
    public void onClick$uploadFichierBtn(){
 
@@ -490,8 +490,8 @@ public class FicheTemplate extends AbstractImpressionController
 
       /*
        * TODO N'afficher que les formats pris en charge dans la boite de dialogue de sélection du fichier
-      * --> Pas possible sous ZK 7
-      */
+       * FIXME --> Pas possible sous ZK 7
+       */
       Media newUploadedMedia = Fileupload.get();
 
       if(newUploadedMedia == null){
@@ -518,7 +518,7 @@ public class FicheTemplate extends AbstractImpressionController
    /**
     * Traitement du fichier uploader pour template DOC
     * @param fileExtension extension du fichier
-    * @since 2.2
+    * @since 2.2.0
     */
    private void traitementFichierUpload(String fileExtension){
       List<String> clesDocListe = null;
@@ -551,7 +551,7 @@ public class FicheTemplate extends AbstractImpressionController
    /**
     * Creation de clés d'impression à partir d'une liste de noms (String)
     * @param clesDocListe liste des noms de clés
-    * @since 2.2
+    * @since 2.2.0
     */
    private void createClesImpression(List<String> clesDocListe){
       // Création de cleImpressions et ajout au template
@@ -560,8 +560,7 @@ public class FicheTemplate extends AbstractImpressionController
       for(final String cleStr : clesDocListe){
          CleImpression cleImpr = new CleImpression();
          cleImpr.setNom(cleStr);
-         
-         
+
          Boolean keyFound = false;
          //Itération sur les anciennes clés d'impression du template
          for(final CleImpression oldCleImpr : this.cleImpressionList){
@@ -571,7 +570,7 @@ public class FicheTemplate extends AbstractImpressionController
                break;
             }
          }
-         
+
          if(!keyFound && !newCleImpressionList.contains(cleImpr)){
             //Recherche en base si cette clé existe
             CleImpression cleImpressionBase = ManagerLocator.getCleImpressionManager().findByNameManager(cleStr);
@@ -746,7 +745,7 @@ public class FicheTemplate extends AbstractImpressionController
             // Enregistrement du modèle dans le FS
             TemplateUtils.saveDocTemplate(uploadedMedia, template);
          }
-         
+
          if(null == template.getFichier()){
             throw new WrongValueException(uploadFichierBtn, Labels.getLabel("impression.fichier.empty"));
          }
@@ -948,7 +947,7 @@ public class FicheTemplate extends AbstractImpressionController
       typeLabel.setVisible(true);
 
       uploadedMedia = null;
-      
+
       if(ETemplateType.BLOC == this.template.getType()){
          groupContenu.setVisible(true);
          cleImpressionEditGrid.setVisible(false);

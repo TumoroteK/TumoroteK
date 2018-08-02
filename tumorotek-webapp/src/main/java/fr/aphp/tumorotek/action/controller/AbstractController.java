@@ -147,7 +147,6 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  */
 public abstract class AbstractController extends GenericForwardComposer<Component>
 {
-   //TODO  JavaDoc
    protected static Log log = LogFactory.getLog(AbstractController.class);
 
    private static final long serialVersionUID = -3799945305452822008L;
@@ -683,7 +682,13 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
             new String[] {((TransformationQuantiteOverDemandException) ex).getQteDemandee().toString(),
                ((TransformationQuantiteOverDemandException) ex).getQteRestante().toString()}));
       }else{
-         message = new StringBuilder(Labels.getLabel(ex.getMessage()));
+         if(null == ex.getMessage()){
+            message = new StringBuilder(ex.toString());
+         }else if(null != Labels.getLabel(ex.getMessage())){
+            message = new StringBuilder(Labels.getLabel(ex.getMessage()));
+         }else{
+            message = new StringBuilder(ex.getMessage());
+         }
          log.error(ex);
          ex.printStackTrace();
       }

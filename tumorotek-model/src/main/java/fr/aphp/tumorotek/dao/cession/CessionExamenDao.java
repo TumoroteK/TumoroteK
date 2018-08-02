@@ -38,7 +38,7 @@ package fr.aphp.tumorotek.dao.cession;
 import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
-import fr.aphp.tumorotek.dao.TKThesaurusDao;
+import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.cession.CessionExamen;
 
 /**
@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.cession.CessionExamen;
  * @version 2.0
  *
  */
-public interface CessionExamenDao extends GenericDaoJpa<CessionExamen, Integer>, TKThesaurusDao<CessionExamen>
+public interface CessionExamenDao extends GenericDaoJpa<CessionExamen, Integer>, PfDependantTKThesaurusDao<CessionExamen>
 {
 
    /**

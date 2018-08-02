@@ -111,7 +111,7 @@ public abstract class AbstractObjectTabController extends AbstractController
    private String editZulPath;
    private String multiEditZulPath;
    private String listZulPath;
-   private TKSelectObjectRenderer listRenderer;
+   private TKSelectObjectRenderer<? extends TKdataObject> listRenderer;
    private final List<Banque> savedBanques = new ArrayList<>();
 
    private boolean isStaticEditMode = true;
@@ -166,27 +166,6 @@ public abstract class AbstractObjectTabController extends AbstractController
     */
    public void drawListe(){
       Components.removeAllChildren(listeRegion);
-
-      //		Caption caption = new Caption();
-      //		caption.setHflex("min");
-      //		caption.setSclass("mainCaption");
-      //		Div capDiv = new Div();
-      //		capDiv.setSclass("captionButtons");
-      //		caption.appendChild(capDiv);
-      //		Button b1 = new Button("b1");
-      //		b1.setSclass("captionButton");
-      //		capDiv.appendChild(b1);
-      //		Button b2 = new Button("b2");
-      //		b2.setSclass("captionButton");
-      //		capDiv.appendChild(b2);
-      //		Button b3 = new Button("b3");
-      //		b3.setSclass("captionButton");
-      //		capDiv.appendChild(b3);
-      //		Textbox tb = new Textbox();
-      //		tb.setCols(3);
-      //		// tb.setSclass("captionButton");
-      //		capDiv.appendChild(tb);
-      //		listeRegion.appendChild(caption);
 
       Map<String, Object> params = null;
       if(getListRenderer() != null){
@@ -270,11 +249,11 @@ public abstract class AbstractObjectTabController extends AbstractController
       this.listZulPath = lzp;
    }
 
-   public TKSelectObjectRenderer getListRenderer(){
+   public TKSelectObjectRenderer<? extends TKdataObject> getListRenderer(){
       return listRenderer;
    }
 
-   public void setListRenderer(final TKSelectObjectRenderer lR){
+   public void setListRenderer(final TKSelectObjectRenderer<? extends TKdataObject> lR){
       this.listRenderer = lR;
    }
 

@@ -35,8 +35,6 @@
  **/
 package fr.aphp.tumorotek.model;
 
-import fr.aphp.tumorotek.model.contexte.Plateforme;
-
 /**
  * Interface representant les Entite systeme de TK qui représentent
  * des thesaurus systèmes (donc liés à la palteforme).
@@ -48,11 +46,10 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 public interface TKThesaurusObject
 {
 
-   Plateforme getPlateforme();
-
-   void setPlateforme(Plateforme pf);
-
    String getNom();
+   
+   void setNom(String nom);
 
    Integer getId();
+   
 }

@@ -39,12 +39,10 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -53,8 +51,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import fr.aphp.tumorotek.model.TKThesaurusObject;
-import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 
 /**
  *
@@ -67,47 +64,46 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  */
 @Entity
 @Table(name = "PRELEVEMENT_TYPE")
+@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "PRELEVEMENT_TYPE_ID")),
+   @AttributeOverride(name = "nom", column = @Column(name = "TYPE", nullable = false, length = 200))})
+@GenericGenerator(name = "autoincrement", strategy = "increment")
 @NamedQueries(
    value = {@NamedQuery(name = "PrelevementType.findByIncaCat", query = "SELECT p FROM PrelevementType p WHERE p.incaCat = ?1"),
-      @NamedQuery(name = "PrelevementType.findByType", query = "SELECT p FROM PrelevementType p WHERE p.type like ?1"),
+      @NamedQuery(name = "PrelevementType.findByType", query = "SELECT p FROM PrelevementType p WHERE p.nom like ?1"),
       @NamedQuery(name = "PrelevementType.findByExcludedId",
-         query = "SELECT p FROM PrelevementType p " + "WHERE p.prelevementTypeId != ?1"),
+         query = "SELECT p FROM PrelevementType p " + "WHERE p.id != ?1"),
       @NamedQuery(name = "PrelevementType.findByOrder",
-         query = "SELECT p FROM PrelevementType p " + "WHERE p.plateforme = ?1 ORDER BY p.type")})
-public class PrelevementType implements Serializable, TKThesaurusObject
+         query = "SELECT p FROM PrelevementType p " + "ORDER BY p.nom"),
+      @NamedQuery(name = "PrelevementType.findByPfOrder",
+      query = "SELECT p FROM PrelevementType p WHERE p.plateforme = ?1 ORDER BY p.nom")})
+public class PrelevementType extends AbstractPfDependantThesaurusObject implements Serializable
 {
 
    private static final long serialVersionUID = -2564474300703034012L;
 
-   private Integer prelevementTypeId;
    private String incaCat;
-   private String type;
-   private Plateforme plateforme;
-
    private Set<Prelevement> prelevements = new HashSet<>();
 
    /** Constructeur par défaut. */
    public PrelevementType(){}
 
-   @Override
-   public String toString(){
-      if(this.type != null && this.incaCat != null){
-         return "{" + this.type + ", " + this.incaCat + "}";
-      }else{
-         return "{Empty PrelevementType}";
-      }
-   }
-
-   @Id
-   @Column(name = "PRELEVEMENT_TYPE_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
+   /**
+    * @deprecated Utiliser {@link #getId()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public Integer getPrelevementTypeId(){
-      return this.prelevementTypeId;
+      return this.getId();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setId(Integer)}
+    * @return
+    */
+   @Deprecated
    public void setPrelevementTypeId(final Integer id){
-      this.prelevementTypeId = id;
+      this.setId(id);
    }
 
    @Column(name = "INCA_CAT", nullable = true, length = 2)
@@ -119,13 +115,23 @@ public class PrelevementType implements Serializable, TKThesaurusObject
       this.incaCat = inca;
    }
 
-   @Column(name = "TYPE", nullable = false, length = 200)
+   /**
+    * @deprecated Utiliser {@link #getNom()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public String getType(){
-      return this.type;
+      return this.getNom();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setNom(String)}
+    * @param t
+    */
+   @Deprecated
    public void setType(final String t){
-      this.type = t;
+      this.setNom(t);
    }
 
    @OneToMany(mappedBy = "prelevementType")
@@ -135,18 +141,6 @@ public class PrelevementType implements Serializable, TKThesaurusObject
 
    public void setPrelevements(final Set<Prelevement> prelevs){
       this.prelevements = prelevs;
-   }
-
-   @Override
-   @ManyToOne
-   @JoinColumn(name = "PLATEFORME_ID", nullable = false)
-   public Plateforme getPlateforme(){
-      return plateforme;
-   }
-
-   @Override
-   public void setPlateforme(final Plateforme pf){
-      this.plateforme = pf;
    }
 
    /**
@@ -165,9 +159,10 @@ public class PrelevementType implements Serializable, TKThesaurusObject
          return false;
       }
       final PrelevementType test = (PrelevementType) obj;
-      return ((this.type == test.type || (this.type != null && this.type.equals(test.type)))
+      return ((this.getNom() == test.getNom() || (this.getNom() != null && this.getNom().equals(test.getNom())))
          && (this.incaCat == test.incaCat || (this.incaCat != null && this.incaCat.equals(test.incaCat)))
-         && (this.plateforme == test.plateforme || (this.plateforme != null && this.plateforme.equals(test.plateforme))));
+         && (this.getPlateforme() == test.getPlateforme()
+            || (this.getPlateforme() != null && this.getPlateforme().equals(test.getPlateforme()))));
    }
 
    /**
@@ -182,14 +177,14 @@ public class PrelevementType implements Serializable, TKThesaurusObject
       int hashInca = 0;
       int hashPF = 0;
 
-      if(this.type != null){
-         hashType = this.type.hashCode();
+      if(this.getNom() != null){
+         hashType = this.getNom().hashCode();
       }
       if(this.incaCat != null){
          hashInca = this.incaCat.hashCode();
       }
-      if(this.plateforme != null){
-         hashPF = this.plateforme.hashCode();
+      if(this.getPlateforme() != null){
+         hashPF = this.getPlateforme().hashCode();
       }
 
       hash = 31 * hash + hashType;
@@ -200,14 +195,12 @@ public class PrelevementType implements Serializable, TKThesaurusObject
    }
 
    @Override
-   @Transient
-   public String getNom(){
-      return getType();
+   public String toString(){
+      if(this.getNom() != null && this.incaCat != null){
+         return "{" + this.getNom() + ", " + this.incaCat + "}";
+      }else{
+         return "{Empty PrelevementType}";
+      }
    }
 
-   @Override
-   @Transient
-   public Integer getId(){
-      return getPrelevementTypeId();
-   }
 }

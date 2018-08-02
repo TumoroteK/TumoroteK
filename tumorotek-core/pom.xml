@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>fr.aphp.tumorotek</groupId>
 		<artifactId>tumorotek-parent</artifactId>
-		<version>2.2.0-beta-3-SNAPSHOT</version>
+		<version>2.2.0-beta-4-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>tumorotek-core</artifactId>
@@ -29,18 +29,11 @@
 			<artifactId>commons-beanutils</artifactId>
 			<version>1.8.3</version>
 		</dependency>
-		<!-- <dependency> -->
-		<!-- <groupId>commons-collections</groupId> -->
-		<!-- <artifactId>commons-collections</artifactId> -->
-		<!-- <version>3.2</version> -->
-		<!-- </dependency> -->
-		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-collections4 -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-collections4</artifactId>
 			<version>4.1</version>
 		</dependency>
-
 		<dependency>
 			<groupId>commons-validator</groupId>
 			<artifactId>commons-validator</artifactId>
@@ -125,6 +118,9 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${maven-surefire-plugin.version}</version>
 				<configuration>
+				
+					<argLine>-Dfile.encoding=UTF-8</argLine>
+				
 					<includes>
 						<include>**/ObjetStatutManagerTest.java</include>
 						<include>**/EchantillonTypeManagerTest.java</include>
@@ -314,8 +310,7 @@
 						<include>**/CritereValidationImplManagerTest.java</include>
 						<include>**/NiveauValidationManagerImplTest.java</include>
 						<include>**/ResultatValidationTest.java</include>
-<!-- 						TODO Test Passe en Junit mais pas avec Maven Test -->
-<!-- 						<include>**/ValidateurManagerImplTest.java</include> -->
+						<include>**/ValidateurManagerImplTest.java</include>
 						<include>**/ValidationManagerImplTest.java</include>
 
 						<!-- Package stats -->

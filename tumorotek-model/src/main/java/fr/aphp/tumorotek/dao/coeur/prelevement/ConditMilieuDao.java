@@ -38,7 +38,7 @@ package fr.aphp.tumorotek.dao.coeur.prelevement;
 import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
-import fr.aphp.tumorotek.dao.TKThesaurusDao;
+import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.coeur.prelevement.ConditMilieu;
 
 /**
@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.ConditMilieu;
  * @version 2.0
  *
  */
-public interface ConditMilieuDao extends GenericDaoJpa<ConditMilieu, Integer>, TKThesaurusDao<ConditMilieu>
+public interface ConditMilieuDao extends GenericDaoJpa<ConditMilieu, Integer>, PfDependantTKThesaurusDao<ConditMilieu>
 {
 
    /**

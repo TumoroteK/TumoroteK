@@ -122,10 +122,10 @@ public class CessionExamenManagerImpl implements CessionExamenManager
    public boolean findDoublonManager(final CessionExamen o){
       if(o != null){
          final CessionExamen examen = o;
-         if(examen.getCessionExamenId() == null){
+         if(examen.getId() == null){
             return cessionExamenDao.findAll().contains(examen);
          }
-         return cessionExamenDao.findByExcludedId(examen.getCessionExamenId()).contains(examen);
+         return cessionExamenDao.findByExcludedId(examen.getId()).contains(examen);
       }
       return false;
    }
@@ -169,7 +169,7 @@ public class CessionExamenManagerImpl implements CessionExamenManager
    @Override
    public void removeObjectManager(final CessionExamen obj){
       if(obj != null){
-         cessionExamenDao.removeObject(obj.getCessionExamenId());
+         cessionExamenDao.removeObject(obj.getId());
          log.debug("Suppression objet CessionExamen " + obj.toString());
       }else{
          log.warn("Suppression d'une CessionExamen null");
@@ -178,6 +178,12 @@ public class CessionExamenManagerImpl implements CessionExamenManager
 
    @Override
    public List<CessionExamen> findByOrderManager(final Plateforme pf){
-      return cessionExamenDao.findByOrder(pf);
+      return cessionExamenDao.findByPfOrder(pf);
    }
+
+   @Override
+   public List<CessionExamen> findByOrderManager(){
+      return cessionExamenDao.findByOrder();
+   }
+   
 }

@@ -35,15 +35,14 @@
  **/
 package fr.aphp.tumorotek.model.coeur.echantillon;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -52,8 +51,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import fr.aphp.tumorotek.model.TKThesaurusObject;
-import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 
 /**
  *
@@ -66,22 +64,21 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  */
 @Entity
 @Table(name = "MODE_PREPA")
+@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "MODE_PREPA_ID"))})
+@GenericGenerator(name = "autoincrement", strategy = "increment")
 @NamedQueries(value = {@NamedQuery(name = "ModePrepa.findByNom", query = "SELECT m FROM ModePrepa m WHERE m.nom like ?1"),
    @NamedQuery(name = "ModePrepa.findByNomEn", query = "SELECT m FROM ModePrepa m WHERE m.nomEn like ?1"),
    @NamedQuery(name = "ModePrepa.findByEchantillonId",
       query = "SELECT m FROM ModePrepa m " + "left join m.echantillons e " + "WHERE e.echantillonId = ?1"),
-   @NamedQuery(name = "ModePrepa.findByExcludedId", query = "SELECT m FROM ModePrepa m " + "WHERE m.modePrepaId != ?1"),
-   @NamedQuery(name = "ModePrepa.findByOrder", query = "SELECT m FROM ModePrepa m " + "WHERE m.plateforme = ?1 ORDER BY m.nom")})
-public class ModePrepa implements java.io.Serializable, TKThesaurusObject
+   @NamedQuery(name = "ModePrepa.findByExcludedId", query = "SELECT m FROM ModePrepa m " + "WHERE m.id != ?1"),
+   @NamedQuery(name = "ModePrepa.findByPfOrder", query = "SELECT m FROM ModePrepa m " + "WHERE m.plateforme = ?1 ORDER BY m.nom"),
+   @NamedQuery(name = "ModePrepa.findByOrder", query = "SELECT m FROM ModePrepa m ORDER BY m.nom")})
+public class ModePrepa extends AbstractPfDependantThesaurusObject implements Serializable
 {
 
    private static final long serialVersionUID = 5348645345465465L;
 
-   private Integer modePrepaId;
-   private String nom;
    private String nomEn;
-   private Plateforme plateforme;
-
    private Set<Echantillon> echantillons;
 
    /** Constructeur par défaut. */
@@ -96,31 +93,28 @@ public class ModePrepa implements java.io.Serializable, TKThesaurusObject
     * @param e .
     */
    public ModePrepa(final Integer id, final String n, final String e){
-      this.modePrepaId = id;
-      this.nom = n;
+      this.setId(id);
+      this.setNom(n);
       this.nomEn = e;
    }
 
-   @Id
-   @Column(name = "MODE_PREPA_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
+   /**
+    * @deprecated Utiliser {@link #getId()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public Integer getModePrepaId(){
-      return modePrepaId;
+      return this.getId();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setId(Integer)}
+    * @param mId
+    */
+   @Deprecated
    public void setModePrepaId(final Integer mId){
-      this.modePrepaId = mId;
-   }
-
-   @Override
-   @Column(name = "NOM", nullable = false, length = 200)
-   public String getNom(){
-      return nom;
-   }
-
-   public void setNom(final String n){
-      this.nom = n;
+      this.setId(mId);
    }
 
    @Column(name = "NOM_EN", nullable = true, length = 25)
@@ -141,80 +135,16 @@ public class ModePrepa implements java.io.Serializable, TKThesaurusObject
       this.echantillons = echants;
    }
 
-   @Override
-   @ManyToOne
-   @JoinColumn(name = "PLATEFORME_ID", nullable = false)
-   public Plateforme getPlateforme(){
-      return plateforme;
-   }
-
-   @Override
-   public void setPlateforme(final Plateforme pf){
-      this.plateforme = pf;
-   }
-
-   /**
-    * 2 préparations sont considérées comme égales si elles ont le même nom 
-    * et la même plateforme.
-    * @param obj est la préparation à tester.
-    * @return true si les préparations sont égales.
-    */
-   @Override
-   public boolean equals(final Object obj){
-
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final ModePrepa test = (ModePrepa) obj;
-      return ((this.nom == test.nom || (this.nom != null && this.nom.equals(test.nom)))
-         && (this.plateforme == test.plateforme || (this.plateforme != null && this.plateforme.equals(test.plateforme))));
-   }
-
-   /**
-    * Le hashcode est calculé sur les attributs nom
-    * et plateforme.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-
-      int hash = 7;
-      int hashNom = 0;
-      int hashPF = 0;
-
-      if(this.nom != null){
-         hashNom = this.nom.hashCode();
-      }
-      if(this.plateforme != null){
-         hashPF = this.plateforme.hashCode();
-      }
-
-      hash = 31 * hash + hashNom;
-      hash = 31 * hash + hashPF;
-
-      return hash;
-
-   }
-
    /**
     * Méthode surchargeant le toString() de l'objet.
     */
    @Override
    public String toString(){
-      if(this.nom != null){
-         return "{" + this.nom + "}";
+      if(this.getNom() != null){
+         return "{" + this.getNom() + "}";
       }else{
          return "{Empty ModePrepa}";
       }
-   }
-
-   @Override
-   @Transient
-   public Integer getId(){
-      return getModePrepaId();
    }
 
 }

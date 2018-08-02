@@ -66,7 +66,7 @@ import fr.aphp.tumorotek.utils.Utils;
  * @version 2.0.11
  *
  */
-public class AbstractUiRequeteVM
+public class AbstractUiRequeteVM //FIXME Class non utilisée ?? A quoi sert-elle ?
 {
 
    private final Entite entite;

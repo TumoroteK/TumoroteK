@@ -122,7 +122,7 @@ public class CategorieDaoTest extends AbstractDaoTest
       assertTrue(liste.size() == 1);
       final Categorie cat = liste.get(0);
       assertNotNull(cat);
-      assertTrue(cat.getCategorieId() == 2);
+      assertTrue(cat.getId() == 2);
 
       liste = categorieDao.findByExcludedId(15);
       assertTrue(liste.size() == 2);
@@ -139,7 +139,7 @@ public class CategorieDaoTest extends AbstractDaoTest
       c.setNom("CAT3");
       // Test de l'insertion
       categorieDao.createObject(c);
-      assertEquals(new Integer(3), c.getCategorieId());
+      assertEquals(new Integer(3), c.getId());
 
       // Test de la mise à jour
       final Categorie c2 = categorieDao.findById(new Integer(3));
@@ -199,13 +199,13 @@ public class CategorieDaoTest extends AbstractDaoTest
    public void testHashCode(){
       final String nom = "Categorie";
       final Categorie c1 = new Categorie();
-      c1.setCategorieId(1);
+      c1.setId(1);
       c1.setNom(nom);
       final Categorie c2 = new Categorie();
-      c2.setCategorieId(1);
+      c2.setId(1);
       c2.setNom(nom);
       final Categorie c3 = new Categorie();
-      c3.setCategorieId(1);
+      c3.setId(1);
       c3.setNom(null);
       assertTrue(c3.hashCode() > 0);
 

@@ -47,7 +47,7 @@ import fr.aphp.tumorotek.model.impression.CleImpression;
  * 
  * @author Answald Bournique
  * @version 2.2.0
- * @since 2.2
+ * @since 2.2.0
  *
  */
 public class CleImpressionDecorator

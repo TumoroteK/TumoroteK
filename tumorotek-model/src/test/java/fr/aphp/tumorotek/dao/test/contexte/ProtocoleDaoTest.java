@@ -101,13 +101,13 @@ public class ProtocoleDaoTest extends AbstractDaoTest
 
    public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
-      List<? extends TKThesaurusObject> list = protocoleDao.findByOrder(pf);
+      List<? extends TKThesaurusObject> list = protocoleDao.findByPfOrder(pf);
       assertTrue(list.size() == 2);
       assertTrue(list.get(0).getNom().equals("OFSEP"));
       pf = plateformeDao.findById(2);
-      list = protocoleDao.findByOrder(pf);
+      list = protocoleDao.findByPfOrder(pf);
       assertTrue(list.size() == 1);
-      list = protocoleDao.findByOrder(null);
+      list = protocoleDao.findByPfOrder(null);
       assertTrue(list.size() == 0);
    }
 

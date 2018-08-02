@@ -35,19 +35,23 @@
  **/
 package fr.aphp.tumorotek.model.contexte;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import fr.aphp.tumorotek.model.AbstractThesaurusObject;
 
 /**
  *
@@ -60,18 +64,17 @@ import org.hibernate.annotations.GenericGenerator;
  */
 @Entity
 @Table(name = "CATEGORIE")
+@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "CATEGORIE_ID"))})
+@GenericGenerator(name = "autoincrement", strategy = "increment")
 @NamedQueries(value = {@NamedQuery(name = "Categorie.findByNom", query = "SELECT c FROM Categorie c WHERE c.nom like ?1"),
    @NamedQuery(name = "Categorie.findByEtablissementId",
       query = "SELECT c FROM Categorie c " + "left join c.etablissements e " + "WHERE e.etablissementId = ?1"),
-   @NamedQuery(name = "Categorie.findByExcludedId", query = "SELECT c FROM Categorie c " + "WHERE c.categorieId != ?1"),
+   @NamedQuery(name = "Categorie.findByExcludedId", query = "SELECT c FROM Categorie c " + "WHERE c.id != ?1"),
    @NamedQuery(name = "Categorie.findByOrder", query = "SELECT c FROM Categorie c ORDER BY c.nom")})
-public class Categorie implements java.io.Serializable
+public class Categorie  extends AbstractThesaurusObject implements Serializable
 {
 
    private static final long serialVersionUID = 86784231547511654L;
-
-   private Integer categorieId;
-   private String nom;
 
    private Set<Etablissement> etablissements = new HashSet<>();
 
@@ -79,36 +82,24 @@ public class Categorie implements java.io.Serializable
     * Constructeur par défaut.
     */
    public Categorie(){}
-
-   //	/**
-   //	 * Constructeur avec paramètres.
-   //	 * @param id est l'identifiant de l'objet dans la base de données.
-   //	 * @param newNom de la catégorie.
-   //	 */
-   //	public Categorie(Integer id, String newNom) {
-   //		this.categorieId = id;
-   //		this.nom = newNom;
-   //	}
-
-   @Id
-   @Column(name = "CATEGORIE_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
+   
+   /**
+    * @deprecated Utiliser {@link #getId()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public Integer getCategorieId(){
-      return categorieId;
+      return getId();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setId(Integer)}
+    * @param cId
+    */
+   @Deprecated
    public void setCategorieId(final Integer cId){
-      this.categorieId = cId;
-   }
-
-   @Column(name = "NOM", nullable = false, length = 50)
-   public String getNom(){
-      return nom;
-   }
-
-   public void setNom(final String n){
-      this.nom = n;
+      this.setId(cId);
    }
 
    @OneToMany(mappedBy = "categorie")
@@ -135,7 +126,7 @@ public class Categorie implements java.io.Serializable
          return false;
       }
       final Categorie test = (Categorie) obj;
-      return ((this.nom == test.nom || (this.nom != null && this.nom.equals(test.nom))));
+      return ((this.getNom() == test.getNom() || (this.getNom() != null && this.getNom().equals(test.getNom()))));
    }
 
    /**
@@ -148,8 +139,8 @@ public class Categorie implements java.io.Serializable
       int hash = 7;
       int hashNom = 0;
 
-      if(this.nom != null){
-         hashNom = this.nom.hashCode();
+      if(this.getNom() != null){
+         hashNom = this.getNom().hashCode();
       }
 
       hash = 31 * hash + hashNom;
@@ -163,7 +154,7 @@ public class Categorie implements java.io.Serializable
     */
    @Override
    public String toString(){
-      return "{" + this.nom + "}";
+      return "{" + this.getNom() + "}";
    }
 
 }

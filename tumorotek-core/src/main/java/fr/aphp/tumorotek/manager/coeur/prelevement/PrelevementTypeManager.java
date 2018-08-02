@@ -37,7 +37,7 @@ package fr.aphp.tumorotek.manager.coeur.prelevement;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.manager.TKThesaurusManager;
+import fr.aphp.tumorotek.manager.PfDependantTKThesaurusManager;
 import fr.aphp.tumorotek.model.coeur.prelevement.PrelevementType;
 
 /**
@@ -57,7 +57,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.PrelevementType;
  * @version 2.0
  *
  */
-public interface PrelevementTypeManager extends TKThesaurusManager<PrelevementType>
+public interface PrelevementTypeManager extends PfDependantTKThesaurusManager<PrelevementType>
 {
 
    /**

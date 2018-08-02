@@ -66,6 +66,7 @@ import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
+import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 public class FichePatientStatic extends AbstractFicheStaticController
@@ -512,7 +513,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
 
       // Injection des contextes
       String compDef = "maladiePanel";
-      if(SessionUtils.isSeroContexte(sessionScope)){
+      if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
          compDef = "maladieSeroPanel";
       }
 

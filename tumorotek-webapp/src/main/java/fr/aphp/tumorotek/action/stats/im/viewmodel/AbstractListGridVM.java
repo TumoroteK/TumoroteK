@@ -54,7 +54,7 @@ import org.zkoss.zul.Window;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.stats.im.export.ValueToExport;
 import fr.aphp.tumorotek.action.stats.im.model.StatResultsRow;
-import fr.aphp.tumorotek.manager.TKThesaurusManager;
+import fr.aphp.tumorotek.manager.PfDependantTKThesaurusManager;
 import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.stats.Indicateur;
@@ -229,7 +229,7 @@ public abstract class AbstractListGridVM
       getSubdivMap().clear();
 
       if(getGridSubdivision() != null){
-         TKThesaurusManager<?> manager = null;
+         PfDependantTKThesaurusManager<?> manager = null;
          if(getGridSubdivision().getChampEntite().getEntite().getNom().equals("Nature")){
             manager = ManagerLocator.getNatureManager();
          }else if(getGridSubdivision().getChampEntite().getEntite().getNom().equals("PrelevementType")){
@@ -250,7 +250,7 @@ public abstract class AbstractListGridVM
    }
 
    public TKThesaurusObject getTKObj(final String typeThesaurus, final Integer id){
-      TKThesaurusManager<?> thesManager = null;
+      PfDependantTKThesaurusManager<?> thesManager = null;
       if(typeThesaurus.equals("Nature")){
          thesManager = ManagerLocator.getNatureManager();
       }else if(typeThesaurus.equals("PrelevementType")){

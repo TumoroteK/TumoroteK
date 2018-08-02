@@ -117,6 +117,14 @@ import fr.aphp.tumorotek.model.utils.Utils;
    @NamedQuery(name = "Echantillon.findByBanqueAndQuantiteSelectCode",
       query = "SELECT e.code FROM Echantillon e " + "WHERE e.banque = ?1 " + "AND (quantite > 0 OR quantite IS NULL) "
          + "AND e.objetStatut.statut not in ('EPUISE', 'ENCOURS', 'RESERVE')"),
+   @NamedQuery(name = "Echantillon.findAllCodesByBanqueAndQuantiteNotNullOrInCessionTraitement",
+      query = "SELECT e.code FROM Echantillon e "
+         + "WHERE e.banque = ?1 "
+         + "AND (((quantite > 0 OR quantite IS NULL) "
+         + "AND e.objetStatut.statut not in ('EPUISE', 'ENCOURS', 'RESERVE'))"
+         + "OR ("
+               + "e.echantillonId in (SELECT c.pk.objetId FROM CederObjet c WHERE c.pk.entite.nom = 'Echantillon' AND c.pk.cession.cessionType.type = 'Traitement' AND c.statut = 'TRAITEMENT'"
+         + ")))"),
    @NamedQuery(name = "Echantillon.findByBanqueStatutSelectCode",
       query = "SELECT e.code FROM Echantillon e " + "WHERE e.banque = ?1 AND e.objetStatut=?2 " + "ORDER BY e.code"),
    @NamedQuery(name = "Echantillon.findByBanqueInListStatutSelectCode",
@@ -129,7 +137,7 @@ import fr.aphp.tumorotek.model.utils.Utils;
    @NamedQuery(name = "Echantillon.findByTerminaleDirect",
       query = "SELECT e FROM Echantillon e " + "WHERE e.emplacement.terminale = ?1)"),
    @NamedQuery(name = "Echantillon.findByMaladieAndType",
-      query = "SELECT e FROM Echantillon e " + "WHERE e.prelevement.maladie = ?1 " + "AND e.echantillonType.type like ?2 "
+      query = "SELECT e FROM Echantillon e " + "WHERE e.prelevement.maladie = ?1 " + "AND e.echantillonType.nom like ?2 "
          + "AND e.prelevement.datePrelevement = ?3"),
    @NamedQuery(name = "Echantillon.findCountSamplesByDates",
       query = "SELECT count(distinct e) FROM Echantillon e, Operation o " + "WHERE e.echantillonId = o.objetId "
@@ -145,13 +153,6 @@ import fr.aphp.tumorotek.model.utils.Utils;
          + "AND c.pk.entite.nom = 'Echantillon' " + "AND c.pk.cession.cessionType = ?1 " + "AND e.banque in (?4) "
          + "AND ((c.pk.cession.validationDate >= ?2 " + "AND c.pk.cession.validationDate <= ?3) "
          + "OR (c.pk.cession.destructionDate >= ?2 " + "AND c.pk.cession.destructionDate <= ?3))"),
-   /*
-    * @NamedQuery(name = "Echantillon.findCountByCollaborateur", query =
-    * "SELECT count(e) FROM Echantillon e, Operation o "
-    * +"join e.UTILISATEUR as u " +"where o.operationType.nom = 'Creation' "
-    * +"AND e.echantillonId = o.objetId " +"AND o.entite.nom = 'Echantillon' "
-    * +"AND u.COLLABORATEUR_ID = (?1)"),
-    */
    @NamedQuery(name = "Echantillon.findCountByCollaborateur",
       query = "SELECT count(e) FROM Echantillon e " + "WHERE e.collaborateur = (?1)"),
    @NamedQuery(name = "Echantillon.findCountCreatedByCollaborateur",

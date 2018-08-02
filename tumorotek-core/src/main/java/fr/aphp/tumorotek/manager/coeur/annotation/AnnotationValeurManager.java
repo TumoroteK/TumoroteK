@@ -39,8 +39,10 @@ import java.io.File;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 
 import fr.aphp.tumorotek.manager.impl.coeur.echantillon.EchantillonJdbcSuite;
+import fr.aphp.tumorotek.manager.impl.systeme.MvFichier;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
@@ -196,8 +198,11 @@ public interface AnnotationValeurManager
     * @param bank banque d'arrivée
     * @param liste des fichiers à supprimer. La suppression se fera systématiquement 
     * dans la méthode parente.
+    * @param liste de déplacements (uniques) de fichiers à programmer [Correctif bug TK-155]
     */
-   void switchBanqueManager(TKAnnotableObject obj, Banque bank, List<File> filesToDelete);
+	void switchBanqueManager(TKAnnotableObject obj, Banque bank, 
+						List<File> filesToDelete, Set<MvFichier> filesToMove);
+			
 
    /**
     * Prépare les batchs statements pour full JDBC inserts d'une liste de valeurs annotations

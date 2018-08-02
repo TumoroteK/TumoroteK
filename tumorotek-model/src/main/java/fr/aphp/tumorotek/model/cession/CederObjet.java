@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.model.cession;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.AssociationOverride;
 import javax.persistence.AssociationOverrides;
@@ -45,13 +46,20 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import fr.aphp.tumorotek.model.TKdataObject;
+import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.systeme.Unite;
 import fr.aphp.tumorotek.model.utils.Utils;
@@ -78,6 +86,8 @@ import fr.aphp.tumorotek.model.utils.Utils;
       @NamedQuery(name = "CederObjet.findByEntite", query = "SELECT c FROM CederObjet c " + "WHERE c.pk.entite = ?1"),
       @NamedQuery(name = "CederObjet.findByEntiteObjet",
          query = "SELECT c FROM CederObjet c " + "WHERE c.pk.entite = ?1 AND c.pk.objetId = ?2"),
+      @NamedQuery(name = "CederObjet.findByEntiteObjetStatut",
+      query = "SELECT c FROM CederObjet c " + "WHERE c.pk.entite = ?1 AND c.pk.objetId = ?2 AND c.statut = ?3"),
       @NamedQuery(name = "CederObjet.findByObjetId", query = "SELECT c FROM CederObjet c " + "WHERE c.pk.objetId = ?1"),
       @NamedQuery(name = "CederObjet.findByCessionEntite",
          query = "SELECT c FROM CederObjet c " + "WHERE c.pk.cession = ?1 AND c.pk.entite = ?2"),
@@ -91,13 +101,15 @@ import fr.aphp.tumorotek.model.utils.Utils;
             + "AND c.pk.cession = ?1 AND c.pk.entite.entiteId = 8 " + "ORDER BY e.code"),
       @NamedQuery(name = "CederObjet.findCountObjCession",
          query = "SELECT count(c.pk.cession) FROM CederObjet c " + "WHERE c.pk.objetId = ?1 AND c.pk.entite = ?2"),})
-public class CederObjet implements Serializable
+public class CederObjet implements Serializable, TKdataObject
 {
 
    private static final long serialVersionUID = -4882326831163602398L;
 
    private Float quantite;
    private Unite quantiteUnite;
+   private ECederObjetStatut statut;
+   private List<ProdDerive> produitRetourList;
 
    /** Constructeur par défaut. */
    public CederObjet(){}
@@ -151,6 +163,30 @@ public class CederObjet implements Serializable
 
    public void setQuantiteUnite(final Unite qu){
       this.quantiteUnite = qu;
+   }
+
+   @Column(name = "STATUT")
+   @Enumerated(EnumType.STRING)
+   public ECederObjetStatut getStatut(){
+      return statut;
+   }
+
+   public void setStatut(ECederObjetStatut statut){
+      this.statut = statut;
+   }
+
+   @OneToMany(fetch = FetchType.EAGER)
+   @JoinTable(name = "CEDER_OBJET_PROD_DERIVE",
+      joinColumns = {@JoinColumn(name = "CESSION_ID", referencedColumnName = "CESSION_ID"),
+         @JoinColumn(name = "ENTITE_ID", referencedColumnName = "ENTITE_ID"),
+         @JoinColumn(name = "OBJET_ID", referencedColumnName = "OBJET_ID")},
+      inverseJoinColumns = @JoinColumn(name = "PROD_DERIVE_ID"))
+   public List<ProdDerive> getProduitRetourList(){
+      return produitRetourList;
+   }
+
+   public void setProduitRetourList(List<ProdDerive> produitRetour){
+      this.produitRetourList = produitRetour;
    }
 
    @Transient
@@ -225,5 +261,10 @@ public class CederObjet implements Serializable
       clone.setQuantiteUnite(this.getQuantiteUnite());
 
       return clone;
+   }
+
+   @Override
+   public Integer listableObjectId(){
+      return null;
    }
 }

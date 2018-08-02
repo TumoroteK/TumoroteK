@@ -60,6 +60,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import fr.aphp.tumorotek.model.TKDelegetableObject;
 import fr.aphp.tumorotek.model.TKFantomableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.patient.serotk.MaladieDelegate;
@@ -90,7 +91,7 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
       query = "SELECT m FROM Maladie m " + "LEFT JOIN m.collaborateurs o " + "WHERE o.collaborateurId = ?1"),
    @NamedQuery(name = "Maladie.findCountByReferent",
       query = "SELECT count(m) FROM Maladie m " + "JOIN m.collaborateurs c " + "WHERE c = ?1")})
-public class Maladie implements TKdataObject, TKFantomableObject, Serializable
+public class Maladie implements TKdataObject, TKFantomableObject, Serializable, TKDelegetableObject<Maladie>
 {
 
    private static final long serialVersionUID = 4092522013404060267L;
@@ -115,9 +116,8 @@ public class Maladie implements TKdataObject, TKFantomableObject, Serializable
    public String toString(){
       if(this.libelle != null){
          return "{" + this.libelle + "}";
-      }else{
-         return "{Empty Maladie}";
       }
+      return "{Empty Maladie}";
    }
 
    @Id
@@ -164,9 +164,8 @@ public class Maladie implements TKdataObject, TKFantomableObject, Serializable
    public Date getDateDiagnostic(){
       if(dateDiagnostic != null){
          return new Date(dateDiagnostic.getTime());
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void setDateDiagnostic(final Date date){
@@ -181,9 +180,8 @@ public class Maladie implements TKdataObject, TKFantomableObject, Serializable
    public Date getDateDebut(){
       if(dateDebut != null){
          return new Date(dateDebut.getTime());
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void setDateDebut(final Date date){

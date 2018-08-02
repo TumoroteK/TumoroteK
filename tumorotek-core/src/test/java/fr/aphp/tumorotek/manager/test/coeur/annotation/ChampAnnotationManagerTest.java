@@ -695,13 +695,13 @@ public class ChampAnnotationManagerTest extends AbstractManagerTest4
       }
       champAnnotationManager.createOrUpdateObjectManager(chp, null, dt, null, null, u, null, "creation", "/tmp/");
       assertTrue((champAnnotationManager.findByNomLikeManager("CHAMP_TEST", true)).size() == 1);
-      assertTrue(new File("/tmp/pt_1/coll_1/anno/chp_" + chp.getChampAnnotationId()).isDirectory());
+      assertTrue(new File("/tmp/pt_1/coll_1/anno/chp_" + chp.getId()).isDirectory());
 
       final ChampAnnotation cTest = champAnnotationManager.findByNomLikeManager("CHAMP_TEST", true).get(0);
 
       champAnnotationManager.removeObjectManager(cTest, null, u, "/tmp/");
       assertTrue(champAnnotationManager.findByNomLikeManager("CHAMP_TEST", true).size() == 0);
-      assertFalse(new File("/tmp/pt_1/coll_1/anno/chp_" + chp.getChampAnnotationId()).exists());
+      assertFalse(new File("/tmp/pt_1/coll_1/anno/chp_" + chp.getId()).exists());
 
       // nettoyage
       try{

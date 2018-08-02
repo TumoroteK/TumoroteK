@@ -94,13 +94,13 @@ public class EchantillonTypeDaoTest extends AbstractDaoTest
 
    public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
-      List<? extends TKThesaurusObject> list = echantillonTypeDao.findByOrder(pf);
+      List<? extends TKThesaurusObject> list = echantillonTypeDao.findByPfOrder(pf);
       assertTrue(list.size() == 3);
       assertTrue(list.get(0).getNom().equals("ADN"));
       pf = plateformeDao.findById(2);
-      list = echantillonTypeDao.findByOrder(pf);
+      list = echantillonTypeDao.findByPfOrder(pf);
       assertTrue(list.size() == 1);
-      list = echantillonTypeDao.findByOrder(null);
+      list = echantillonTypeDao.findByPfOrder(null);
       assertTrue(list.size() == 0);
    }
 

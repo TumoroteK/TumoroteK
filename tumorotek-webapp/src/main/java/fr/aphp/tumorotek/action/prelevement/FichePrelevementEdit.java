@@ -287,34 +287,6 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       getObjectTabController().setOldCode(null);
    }
 
-   //	/**
-   //	 * Dessine le composant de resume patient.
-   //	 * @return reference vers le controller du composant.
-   //	 */
-   //	protected ResumePatient drawResumePatientComponent() {
-   //		
-   //		final HtmlMacroComponent ua;
-   //		ua = (HtmlMacroComponent)
-   //				page.getComponentDefinition("resumePatient", false)
-   //											.newInstance(page, null);
-   //		ua.setParent(refPatientDiv);
-   //		ua.setId("resumePatient");
-   //		ua.applyProperties();
-   //		ua.afterCompose(); 
-   //		
-   //		ResumePatient resume = ((ResumePatient) ua.getFellow("winResume")
-   //				.getAttributeOrFellow("winResume$composer", true));
-   //		
-   //		resume.setAnonyme(isAnonyme());
-   //		resume.setMaladie(maladie);
-   //		resume.setPrelevement(prelevement);
-   //		
-   //		ndaBox = resume.getNdaBox();
-   //		ndaBox.setConstraint(PrelevementConstraints.getNdaConstraint());
-   //						
-   //		return resume;
-   //	}
-
    /**
     * Initialisation du contenu des listes déroulantes.
     */
@@ -751,41 +723,6 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    public boolean onLaterUpdate(){
 
       try{
-         //			updateObjectWithAnnots();
-         //			
-         //			// update de la liste
-         //			if (getObjectTabController().getListe() != null) {			
-         //				getObjectTabController().getListe()
-         //										.updateObjectGridList(getObject());
-         //			}
-         //			
-         //			// update de l'objet parent
-         //			if (!getObjectTabController()
-         //					.getReferencingObjectControllers().isEmpty()
-         //												&& getParentObject() != null) {
-         //				for (int i = 0; i < getObjectTabController()
-         //							.getReferencingObjectControllers().size(); i++) {
-         //					if (getObjectTabController()
-         //							.getReferencingObjectControllers()
-         //												.get(i).getListe() != null) {
-         //						getObjectTabController()
-         //							.getReferencingObjectControllers().get(i).getListe()
-         //						.updateObjectGridListFromOtherPage(getParentObject(), true);
-         //					}
-         //				}
-         //			}
-         //			
-         //			// update de la liste des enfants et l'enfant en fiche
-         //			getObjectTabController()
-         //				.updateReferencedObjects((List<TKdataObject>) 
-         //					getObjectTabController().getChildrenObjects(prelevement));
-         //			
-         //			// commande le passage en mode statique
-         //			getObjectTabController().onEditDone(getObject());
-         //			
-         //			// ferme wait message
-         //			Clients.clearBusy();
-
          if(super.onLaterUpdate()){
             getObjectTabController().showEchantillonsAfterUpdate(prelevement);
          }
@@ -878,7 +815,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
           *
           * @since 2.2.0
           */
-         // update de l'objet
+         //          update de l'objet
          ManagerLocator.getPrelevementManager().updateObjectManager(prelevement, null, selectedNature, maladie,
             selectedConsentType, selectedCollaborateur, selectedService, selectedMode, selectedConditType, selectedConditMilieu,
             transporteur, operateur, quantiteUnite, null, annotationValeursToCreateOrUpdate, annotationValeursToDelete,
@@ -1044,7 +981,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       }else{
          // si nous sommes dans une action de création, on
          // appelle la page FicheLaboInter en mode create
-         getObjectTabController().switchToLaboInterCreateMode(this.prelevement, this.maladie, this.oldLabos);
+         getObjectTabController().switchToLaboInterCreateMode(this.prelevement, this.oldLabos);
       }
 
       Clients.clearBusy();

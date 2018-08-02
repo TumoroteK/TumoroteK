@@ -90,13 +90,13 @@ public class DestructionMotifDaoTest extends AbstractDaoTest
 
    public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
-      List<? extends TKThesaurusObject> list = destructionMotifDao.findByOrder(pf);
+      List<? extends TKThesaurusObject> list = destructionMotifDao.findByPfOrder(pf);
       assertTrue(list.size() == 2);
       assertTrue(list.get(0).getNom().equals("INUTILISABLE"));
       pf = plateformeDao.findById(2);
-      list = destructionMotifDao.findByOrder(pf);
+      list = destructionMotifDao.findByPfOrder(pf);
       assertTrue(list.size() == 1);
-      list = destructionMotifDao.findByOrder(null);
+      list = destructionMotifDao.findByPfOrder(null);
       assertTrue(list.size() == 0);
    }
 

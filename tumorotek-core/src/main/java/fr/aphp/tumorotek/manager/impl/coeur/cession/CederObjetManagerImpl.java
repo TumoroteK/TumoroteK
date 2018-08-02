@@ -57,6 +57,7 @@ import fr.aphp.tumorotek.manager.validation.coeur.cession.CederObjetValidator;
 import fr.aphp.tumorotek.model.cession.CederObjet;
 import fr.aphp.tumorotek.model.cession.CederObjetPK;
 import fr.aphp.tumorotek.model.cession.Cession;
+import fr.aphp.tumorotek.model.cession.ECederObjetStatut;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.systeme.Entite;
@@ -232,6 +233,38 @@ public class CederObjetManagerImpl implements CederObjetManager
             final ProdDerive derive = (ProdDerive) obj;
             final Entite entite = entiteDao.findByNom("ProdDerive").get(0);
             return cederObjetDao.findByEntiteObjet(entite, derive.getProdDeriveId());
+
+         }else{
+            return new ArrayList<>();
+         }
+      }
+      return new ArrayList<>();
+   }
+   
+   /**
+    * Recherche tous les CederObjet pour l'objet passé en paramètre dans un statut précis
+    * @param obj Objet pour lequel on recherche des CederObjets.
+    * @param statut statut de l'objet cédé
+    * @return Liste ordonnée de CederObjets.
+    */
+   @Override
+   public List<CederObjet> findByObjetAndStatutManager(final Object obj, final ECederObjetStatut statut){
+      // si l'objet n'est pas null, il doit etre de type Echantillon
+      // ou ProdDerive
+      if(obj != null){
+         if(obj.getClass().getSimpleName().equals("Echantillon")){
+            // si echantillon, on recupere l'entite correspondante
+            // et on fait une recherche
+            final Echantillon echan = (Echantillon) obj;
+            final Entite entite = entiteDao.findByNom("Echantillon").get(0);
+            return cederObjetDao.findByEntiteObjetStatut(entite, echan.getEchantillonId(), statut);
+
+         }else if(obj.getClass().getSimpleName().equals("ProdDerive")){
+            // si ProdDerive, on recupere l'entite correspondante
+            // et on fait une recherche
+            final ProdDerive derive = (ProdDerive) obj;
+            final Entite entite = entiteDao.findByNom("ProdDerive").get(0);
+            return cederObjetDao.findByEntiteObjetStatut(entite, derive.getProdDeriveId(), statut);
 
          }else{
             return new ArrayList<>();

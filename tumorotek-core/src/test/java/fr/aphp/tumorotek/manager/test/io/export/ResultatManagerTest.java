@@ -198,7 +198,7 @@ public class ResultatManagerTest extends AbstractManagerTest4
 
       assertFalse(resultat.equals(resultat2));
       assertFalse(resultat.getNomColonne().equals(resultat2.getNomColonne()));
-      assertTrue(manager.findByIdManager(resultat.getResultatId()).getChamp().getChampEntite().getChampEntiteId().equals(58));
+      assertTrue(manager.findByIdManager(resultat.getResultatId()).getChamp().getChampEntite().getId().equals(58));
       /** Remove. */
       final int id = resultat.getResultatId();
       manager.removeObjectManager(resultat);

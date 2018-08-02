@@ -347,7 +347,7 @@ public class FicheAnnotationInline extends FicheAnnotation
       final String colClass){
       HtmlMacroComponent ua;
       ua = (HtmlMacroComponent) page.getComponentDefinition("annoComp", false).newInstance(page, null);
-      ua.setId("chp_" + chp.getChampAnnotationId());
+      ua.setId("chp_" + chp.getId());
       ua.applyProperties();
       ua.setHflex("1");
       ua.afterCompose();
@@ -441,7 +441,7 @@ public class FicheAnnotationInline extends FicheAnnotation
             champsIt = ManagerLocator.getTableAnnotationManager().getChampAnnotationsManager(tables.get(i)).iterator();
             while(champsIt.hasNext()){
                chp = champsIt.next();
-               ((AnnotationComponent) annoInlineBaseLayout.getFellow("chp_" + chp.getChampAnnotationId()).getFellow("annoDiv")
+               ((AnnotationComponent) annoInlineBaseLayout.getFellow("chp_" + chp.getId()).getFellow("annoDiv")
                   .getAttributeOrFellow("annoDiv$composer", true)).switchToStaticOrEditMode(isStatic);
             }
          }

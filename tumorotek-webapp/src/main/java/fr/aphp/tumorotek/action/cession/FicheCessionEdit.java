@@ -111,6 +111,7 @@ import fr.aphp.tumorotek.model.cession.CessionStatut;
 import fr.aphp.tumorotek.model.cession.CessionType;
 import fr.aphp.tumorotek.model.cession.Contrat;
 import fr.aphp.tumorotek.model.cession.DestructionMotif;
+import fr.aphp.tumorotek.model.cession.ECederObjetStatut;
 import fr.aphp.tumorotek.model.cession.Retour;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
@@ -742,6 +743,7 @@ public class FicheCessionEdit extends AbstractFicheEditController
          cessionStatutDestructionLabel.setVisible(true);
          statutsBox.setVisible(false);
          statutsBox2.setVisible(false);
+         rowStatutDestruction.setVisible(false);
       }else{
          cessionStatutLabel.setVisible(false);
          cessionStatutDestructionLabel.setVisible(false);
@@ -1092,17 +1094,7 @@ public class FicheCessionEdit extends AbstractFicheEditController
          onBlur$dateDestructionCalBox();
 
          super.onLaterCreate();
-
-         // if (// !cession.getCessionType().getType().equals("Destruction")
-         // && getDroitOnAction("Stockage", "Modification")
-         //		cession.getCessionStatut().getStatut()
-         //			.equals("EN ATTENTE")) {
-
-         // propose retours si objets en cession partielle
-         // les autres ont un évènement épuisement automatique
-         // si cession VALIDEE dès la création
-         // retours peuvent être incomplets si cession en ATTENTE
-
+         
          if(!getNewlyCeds().isEmpty()){
             Date date = null;
             if(cession.getDepartDate() != null){
@@ -1114,7 +1106,6 @@ public class FicheCessionEdit extends AbstractFicheEditController
             proposeRetoursCreation(getNewlyCeds(), null, date, cession, null, null,
                ManagerLocator.getOperationTypeManager().findByNomLikeManager("Creation", true).get(0),
                Labels.getLabel("ficheRetour.observations.cession"), getSelectedExecutant());
-            //}
          }
          if(terminaleDestockage != null){
             getStockageController().switchToFicheTerminaleMode(terminaleDestockage, null);
@@ -2034,94 +2025,12 @@ public class FicheCessionEdit extends AbstractFicheEditController
             // maj de la liste
             echantillonsCedesDecores.remove(deco);
             echantillonsCedes.remove(obj);
-            // ListModel<CederObjetDecorator> list =
-            //	new ListModelList<CederObjetDecorator> (echantillonsCedesDecores);
-            // echantillonsListEdit.setModel(list);
 
             revertedObjs.add(deco);
-
-            //				CederObjet cede = deco.getCederObjet();
-            //				Echantillon echan = deco.getEchantillon();
-            //				
-            //				// Maj de la quantité et du volume de l'échantillon
-            //				if (echan.getQuantite() != null) {
-            //					if (deco.getCederObjet().getQuantite() != null) {
-            //						echan.setQuantite(deco.getQuantiteMax());
-            //					} else {
-            //						echan.setQuantite(null);
-            //					}
-            //				}
-            //						
-            //				// maj du statut
-            //				ObjetStatut statut = null;
-            //				statut = findStatutForTKStockableObject(echan);
-            //				Retour incomp = null;
-            //				if (statut.getStatut().equals("ENCOURS")) {
-            //					List<Integer> objsId = new ArrayList<Integer>();
-            //					objsId.add(echan.getEchantillonId());
-            //					incomp = ManagerLocator.getRetourManager()
-            //							.findByObjectDateRetourEmptyManager(objsId, 
-            //						ManagerLocator.getEntiteManager().findByIdManager(3))
-            //						.get(0);
-            //					statut = incomp.getObjetStatut();
-            //				}
-            //	
-            //				
-            //				// Update echantillon
-            //				Prelevement prlvt = ManagerLocator.getEchantillonManager()
-            //					.getPrelevementManager(echan);
-            //				ManagerLocator.getEchantillonManager().updateObjectManager(
-            //						echan, 
-            //						echan.getBanque(), 
-            //						prlvt, 
-            //						echan.getCollaborateur(), 
-            //						statut, 
-            //						echan.getEmplacement(), 
-            //						echan.getEchantillonType(), 
-            //						null, null,
-            //						echan.getQuantiteUnite(), 
-            //						echan.getEchanQualite(), 
-            //						echan.getModePrepa(), 
-            //					//	echan.getCrAnapath(), null,
-            //						echan.getReservation(), 
-            //						null, null, null, null,
-            //						SessionUtils.getLoggedUser(sessionScope),
-            //						false, null, null);
-            //				
-            //				// on vérifie que l'on retrouve bien la page contenant 
-            //				// la liste des échantillons
-            //				if (getEchantillonController() != null
-            //					&& getEchantillonController().getListe() != null) {
-            //					
-            //					// update de l'échantillon dans la liste
-            //					getEchantillonController().getListe()
-            //						.updateObjectGridListFromOtherPage(echan, false);
-            //				}
-            //				
-            //				// on supprime le CederObjet
-            //				ManagerLocator.getCederObjetManager()
-            //					.removeObjectManager(cede);
-            //				
-            //				if (incomp != null) {
-            //					ManagerLocator.getRetourManager()
-            //									.removeObjectManager(incomp);
-            //				}
-            //				
-            //				// on maj la liste des codes
-            //				codesEchans = ManagerLocator.getEchantillonManager()
-            //					.findAllCodesForBanqueAndStockesManager(SessionUtils
-            //								.getSelectedBanques(sessionScope).get(0));
-            //				echantillonsBox.setModel(new CustomSimpleListModel(
-            //						codesEchans));
-
          }else{
-
             // maj de la liste
             echantillonsCedesDecores.remove(deco);
             echantillonsCedes.remove(obj);
-            // ListModel<CederObjetDecorator> list =
-            // 	new ListModelList<CederObjetDecorator>(echantillonsCedesDecores);
-            // echantillonsListEdit.setModel(list);
          }
 
          if(echantillonsCedesDecores.size() % 10 == 0 && _startPageNumberE > 0){
@@ -2167,96 +2076,12 @@ public class FicheCessionEdit extends AbstractFicheEditController
             // maj de la liste
             derivesCedesDecores.remove(deco);
             derivesCedes.remove(obj);
-            //				ListModel<CederObjetDecorator> list = 
-            //					new ListModelList<CederObjetDecorator>(derivesCedesDecores);
-            //				derivesListEdit.setModel(list);
 
             revertedObjs.add(deco);
-
-            //				CederObjet cede = deco.getCederObjet();
-            //				ProdDerive derive = deco.getProdDerive();
-            //								
-            //				// Maj de la quantité et du volume du dérivé
-            //				if (deco.getSelectedUnite() != null
-            //					&& deco.getSelectedUnite().getType().equals("volume")) {
-            //						derive.setVolume(deco.getQuantiteMax());
-            //						derive.setQuantite(
-            //								calculerQuantiteRestante(
-            //								derive, derive.getVolume()));
-            //				} else {
-            //					derive.setQuantite(deco.getQuantiteMax());
-            //					derive.setVolume(
-            //						calculerVolumeRestant(
-            //								derive, derive.getQuantite()));
-            //				}
-            //	
-            //				
-            //				// maj du statut
-            //				ObjetStatut statut = null;
-            //				statut = findStatutForTKStockableObject(derive);
-            //				Retour incomp = null;
-            //				if (statut.getStatut().equals("ENCOURS")) {
-            //					List<Integer> objsId = new ArrayList<Integer>();
-            //					objsId.add(derive.getProdDeriveId());
-            //					incomp = ManagerLocator.getRetourManager()
-            //							.findByObjectDateRetourEmptyManager(objsId, 
-            //						ManagerLocator.getEntiteManager().findByIdManager(8))
-            //						.get(0);
-            //					statut = incomp.getObjetStatut();
-            //				}
-            //				
-            //				// update du dérvié
-            //				ManagerLocator.getProdDeriveManager().updateObjectManager(
-            //						derive, 
-            //						derive.getBanque(), 
-            //						derive.getProdType(), 
-            //						statut, 
-            //						derive.getCollaborateur(), 
-            //						derive.getEmplacement(), 
-            //						derive.getVolumeUnite(), 
-            //						derive.getConcUnite(), 
-            //						derive.getQuantiteUnite(), 
-            //						derive.getModePrepaDerive(),
-            //						derive.getProdQualite(), 
-            //						derive.getTransformation(),
-            //						null, null, null, null,
-            //						derive.getReservation(), 
-            //						SessionUtils.getLoggedUser(sessionScope),
-            //						false, null, null);
-            //				
-            //				// on vérifie que l'on retrouve bien la page contenant 
-            //				// la liste des dérivés
-            //				if (getProdDeriveController() != null) {
-            //					if (getProdDeriveController().getListe() != null) {
-            //						// update du dérivé dans la liste
-            //						getProdDeriveController().getListe()
-            //							.updateObjectGridListFromOtherPage(derive, false);
-            //					}
-            //				}
-            //				
-            //				ManagerLocator.getCederObjetManager()
-            //				.removeObjectManager(cede);
-            //				
-            //				if (incomp != null) {
-            //					ManagerLocator.getRetourManager()
-            //								.removeObjectManager(incomp);
-            //				}
-            //				
-            //				// on maj la liste des codes
-            //				codesDerives = ManagerLocator.getProdDeriveManager()
-            //					.findAllCodesForBanqueAndStockesManager(SessionUtils
-            //								.getSelectedBanques(sessionScope).get(0));
-            //				derivesBox.setModel(new CustomSimpleListModel(
-            //						codesDerives));
-
          }else{
-
             // maj de la liste
             derivesCedesDecores.remove(deco);
             derivesCedes.remove(obj);
-            //				ListModel<CederObjetDecorator> list = 
-            //					new ListModelList<CederObjetDecorator>(derivesCedesDecores);
-            //				derivesListEdit.setModel(list);
          }
          if(derivesCedesDecores.size() % 10 == 0 && _startPageNumberP > 0){
             _startPageNumberP--;
@@ -2273,7 +2098,6 @@ public class FicheCessionEdit extends AbstractFicheEditController
          derivesGroupHeader = sb.toString();
          groupProdDerives.setLabel(derivesGroupHeader);
 
-         //newlyCeds.remove(deco.getProdDerive());
       }
 
    }
@@ -2289,7 +2113,7 @@ public class FicheCessionEdit extends AbstractFicheEditController
       final List<Retour> incompletes = new ArrayList<>();
       final List<Integer> ids = new ArrayList<>();
       Entite e;
-
+      
       final List<CederObjetDecorator> cedeDecos = new ArrayList<>();
       cedeDecos.addAll(echantillonsCedesDecores);
       cedeDecos.addAll(derivesCedesDecores);
@@ -2297,6 +2121,12 @@ public class FicheCessionEdit extends AbstractFicheEditController
       // pour chaque échantillon cédé
       for(final CederObjetDecorator deco : cedeDecos){
 
+         if(selectedCessionType.getType().equals("Traitement")){
+            if(null == deco.getCederObjet().getPk() || null == deco.getCederObjet().getStatut()){
+               deco.getCederObjet().setStatut(ECederObjetStatut.TRAITEMENT);
+            }
+         }
+         
          final TKStockableObject tkObj = deco.getTKobj();
 
          // si les valeurs ont pu changées ou que la cession a été
@@ -2305,25 +2135,6 @@ public class FicheCessionEdit extends AbstractFicheEditController
             // si la cession est refusée => quantité et volume au MAX
             if(this.cession.getCessionStatut().getStatut().equals("REFUSEE")){
                revertedObjs.add(deco);
-               //					if (deco.getCederObjet().getQuantite() != null) {
-               //						if (deco.getSelectedUnite() == null || !deco.getSelectedUnite().getType().equals("volume")) {
-               //							if (tkObj.getQuantite() != null) {
-               //								tkObj.setQuantite(deco.getQuantiteMax());
-               //							}
-               //						} else {
-               //							if (tkObj instanceof ProdDerive) { 
-               //								if (((ProdDerive) tkObj).getVolume() != null) {
-               //									((ProdDerive) tkObj).setVolume(deco.getQuantiteMax());
-               //								}
-               //							} else {
-               //								if (tkObj.getQuantite() != null) {
-               //									tkObj.setQuantite(deco.getQuantiteMax());
-               //								}
-               //							}
-               //						}
-               //					} else {
-               //						tkObj.setQuantite(null);
-               //					}
 
             }else{
                if(deco.getSelectedUnite() == null || !deco.getSelectedUnite().getType().equals("volume")){
@@ -2473,10 +2284,6 @@ public class FicheCessionEdit extends AbstractFicheEditController
                deco.setNewStatut(ManagerLocator.getObjetStatutManager().findByStatutLikeManager("DETRUIT", true).get(0));
             }
 
-            // retour Epuisement
-            // statut EPUISE --> creation retours automatique
-            // Set<Retour> epuisements = new HashSet<Retour>();
-
             if(deco.getNewStatut().getStatut().equals("EPUISE") || deco.getNewStatut().getStatut().equals("DETRUIT")){
                // passage temporaire au statut NON STOCKE
                // afin que ce statut soit enregistré dans le retour correspondant
@@ -2557,195 +2364,6 @@ public class FicheCessionEdit extends AbstractFicheEditController
          }
       }
    }
-
-   //	/**
-   //	 * Mets a jour les dérivés cédés.
-   //	 * @param calculerValeurs Si true, les valeurs de volume et de quantité
-   //	 * seront recalculées.
-   //	 */
-   //	public void prepareCedesDerives(boolean calculerValeurs) {
-   //		
-   //		Entite entite = ManagerLocator.getEntiteManager()
-   //									.findByNomManager("ProdDerive").get(0);
-   //
-   //		// pour chaque dérivécédé
-   //		for (CederObjetDecorator deco : derivesCedesDecores) {
-   //			
-   //			// CederObjetDecorator deco = derivesCedesDecores.get(i);
-   //			ProdDerive deriveToUpdate = deco.getProdDerive();
-   //			
-   //			// si les valeurs ont pu changées ou que la cession a été
-   //			// refusée => maj quantité et volume
-   //			if (calculerValeurs || this.cession.getCessionStatut().getStatut()
-   //					.equals("REFUSEE")) {
-   //				// si la cession est refusée => quantité et volume au MAX
-   //				if (this.cession.getCessionStatut().getStatut()
-   //						.equals("REFUSEE")) {
-   //					if (deco.getSelectedUnite().getType().equals("masse")) {
-   //						if (deriveToUpdate.getQuantite() != null) {
-   //							deriveToUpdate.setQuantite(deco.getQuantiteMax());
-   //						}
-   //					} else {
-   //						if (deriveToUpdate.getVolume() != null) {
-   //							deriveToUpdate.setVolume(deco.getQuantiteMax());
-   //						}
-   //					}
-   //					
-   //				} else {
-   //					if (deco.getSelectedUnite().getType().equals("masse")) {
-   //						deriveToUpdate.setQuantite(deco.getQuantiteRestante());
-   //					} else {
-   //						deriveToUpdate.setVolume(deco.getQuantiteRestante());
-   //					}
-   //				}
-   //				
-   //				if (deco.getSelectedUnite().getType().equals("masse")) {
-   //					deriveToUpdate.setVolume(
-   //						calculerVolumeRestant(
-   //						deriveToUpdate, deriveToUpdate.getQuantite()));	
-   //				} else {
-   //					deriveToUpdate.setQuantite(
-   //							calculerQuantiteRestante(
-   //							deriveToUpdate, deriveToUpdate.getVolume()));
-   //				}
-   //			}
-   //			
-   //			// maj du statut
-   //			deco.setNewStatut(findStatutForProdDerive(deriveToUpdate));
-   //			
-   //			// validation retour si epuisement
-   //			Retour epuisement = null;
-   //			if (deco.getNewStatut().getStatut().equals("EPUISE")
-   //					|| deco.getNewStatut().getStatut().equals("RESERVE")) {
-   //				epuisement = new Retour();
-   //				Calendar dateS = cession.getDepartDate() != null ?
-   //					cession.getDepartDate() : Calendar.getInstance();
-   //				epuisement.setDateSortie(dateS);
-   //				//finalRetour.setDateRetour(Utils.getCurrentSystemCalendar());
-   //				// température arbitraire
-   //				epuisement.setTempMoyenne(new Float(20.0));
-   //				epuisement
-   //					.setObservations(Labels.getLabel("ficheRetour.observations.cession"));
-   //				
-   //				epuisement.setObjetId(deriveToUpdate.getProdDeriveId());
-   //				epuisement.setEntite(entite);
-   //				Errors errs= ManagerLocator.getRetourValidator()
-   //						.checkDateSortieCoherence(epuisement);
-   //				if(errs.hasErrors()) {
-   //					List<Errors> errsList = new ArrayList<Errors>();
-   //					errsList.add(errs);
-   //					throw new ValidationException(errsList);
-   //				}
-   //				deco.setRetour(epuisement);
-   //			}
-   //		}
-   //	}
-   //		
-   //	public void updateCedesDerives() {
-   //		
-   //		ObjetStatut nonstocke = ManagerLocator.getObjetStatutManager()
-   //						.findByStatutLikeManager("NON STOCKE", true).get(0);
-   //		
-   //		// pour chaque échantillon cédé
-   //		for (CederObjetDecorator deco : derivesCedesDecores) {
-   //			
-   //			ProdDerive deriveToUpdate = deco.getProdDerive();
-   //			
-   //			List<OperationType> ops = new ArrayList<OperationType>();
-   //			ObjetStatut oldStatut = deriveToUpdate.getObjetStatut();
-   //			
-   //			// maj du statut après création de la cession 
-   //			// gestion des cessions EN ATTENTE statut RESERVE
-   //			deco.setNewStatut(findStatutForProdDerive(deriveToUpdate));
-   //			
-   //			if (deco.getNewStatut().getStatut().equals("EPUISE")) {
-   //				Emplacement empl = ManagerLocator.getProdDeriveManager()
-   //					.getEmplacementManager(deriveToUpdate);
-   //				deco.setOldEmplacement(empl);
-   //				empl.setEntite(null);
-   //				empl.setObjetId(null);
-   //				empl.setVide(true);
-   //				deriveToUpdate.setEmplacement(null);
-   //				
-   //				ManagerLocator.getEmplacementManager()
-   //					.updateObjectManager(
-   //							empl, 
-   //							empl.getTerminale(), 
-   //							null);
-   //				
-   //				// fork du statut EPUISE pour DETRUIT si cession Destruction
-   //				if (cession.getCessionType().getCessionTypeId() == 3) {
-   //					deco.setNewStatut(ManagerLocator.getObjetStatutManager()
-   //								.findByStatutLikeManager("DETRUIT", true).get(0));
-   //				}
-   //				
-   //				// retour Epuisement
-   //				// statut EPUISE --> creation retours automatique
-   //				if (deco.getNewStatut().getStatut().equals("EPUISE") 
-   //						|| deco.getNewStatut().getStatut().equals("DETRUIT")) {
-   //					// passage temporaire au statut NON STOCKE 
-   //					// afin que ce statut soit enregistré dans le retour correspondant 
-   //					// à l'épuisement de l'échantillon
-   //					deriveToUpdate.setObjetStatut(nonstocke);
-   //					
-   //					ManagerLocator.getRetourManager()
-   //					.createOrUpdateObjectManager(deco.getRetour(), 
-   //							deriveToUpdate, 
-   //							deco.getOldEmplacement(), getSelectedExecutant(), getCession(), null,
-   //							 null,
-   //							SessionUtils.getLoggedUser(sessionScope), 
-   //							"creation");
-   //					
-   //				}
-   //			}
-   //			
-   //			if (!deco.getNewStatut().equals(oldStatut)) {
-   //				ops = ManagerLocator.getOperationTypeManager()
-   //					.findByNomLikeManager("Destockage", true);
-   //			}
-   //
-   //			
-   //			// update du dérivé
-   //			ManagerLocator.getProdDeriveManager().updateObjectManager(
-   //					deriveToUpdate, 
-   //					deriveToUpdate.getBanque(), 
-   //					deriveToUpdate.getProdType(), 
-   //					deco.getNewStatut(), 
-   //					deriveToUpdate.getCollaborateur(), 
-   //					deriveToUpdate.getEmplacement(), 
-   //					deriveToUpdate.getVolumeUnite(), 
-   //					deriveToUpdate.getConcUnite(), 
-   //					deriveToUpdate.getQuantiteUnite(), 
-   //					deriveToUpdate.getModePrepaDerive(),
-   //					deriveToUpdate.getProdQualite(), 
-   //					deriveToUpdate.getTransformation(), 
-   //					null, null,
-   //					deriveToUpdate.getReservation(), 
-   //					SessionUtils.getLoggedUser(sessionScope),
-   //					false, ops, null);
-   //			
-   //			if (!newlyCeds.contains(deriveToUpdate) && !deriveToUpdate
-   //					.getObjetStatut().getStatut().equals("EPUISE")) {
-   //				newlyCeds.add(deriveToUpdate);
-   //				// oldEmpsForNewlyCeds.put(deriveToUpdate, oldAdrl);
-   //			}
-   //			
-   //			// on vérifie que l'on retrouve bien la page contenant la liste
-   //			// des dérivés
-   //			if (getMainWindow().isFullfilledComponent(
-   //					"derivePanel", "winProdDerive")) {
-   //				if (getProdDeriveController() != null
-   //					&& getProdDeriveController().getListe() != null) {
-   //					
-   //					// update du dérivé dans la liste
-   //					getProdDeriveController().getListe()
-   //						.updateObjectGridListFromOtherPage(deriveToUpdate, false);
-   //					
-   //					getProdDeriveController().switchToOnlyListeMode();
-   //				}
-   //			}
-   //		}		
-   //	}
 
    @Override
    protected void validateCoherenceDate(final Component comp, final Object value){
@@ -2898,11 +2516,6 @@ public class FicheCessionEdit extends AbstractFicheEditController
     * Rend les boutons d'actions cliquables ou non.
     */
    public void drawActionsForCessions(){
-      //		List<String> entites = new ArrayList<String>();
-      //		entites.add("Echantillon");
-      //		entites.add("ProdDerive");
-      //		setDroitsConsultation(drawConsultationLinks(entites));
-      //
       // si pas le droit d'accès aux dérivés, on cache le lien
       if(!getDroitsConsultation().get("ProdDerive")){
          codeProdDeriveCede.setSclass(null);
@@ -3256,7 +2869,7 @@ public class FicheCessionEdit extends AbstractFicheEditController
                   sb.append(" ");
                   sb.append(deco.getQuantiteMax());
                   if(deco.getCederObjet().getQuantiteUnite() != null){
-                     sb.append(deco.getCederObjet().getQuantiteUnite().getUnite());
+                     sb.append(deco.getCederObjet().getQuantiteUnite().getNom());
                   }
 
                   throw new WrongValueException(comp, sb.toString());
@@ -3267,7 +2880,7 @@ public class FicheCessionEdit extends AbstractFicheEditController
          }else{
             if(deco.getTKobj().getQuantite() != null
                || (deco.getTKobj() instanceof ProdDerive && deco.getProdDerive().getVolume() != null)){
-               throw new WrongValueException(comp, "no empty");
+               throw new WrongValueException(comp, Labels.getLabel("cession.error.ceder.quantite.obligatoire"));
             }
          }
       }

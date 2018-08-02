@@ -39,9 +39,12 @@ import java.util.Iterator;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Components;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Vbox;
 
+import fr.aphp.tumorotek.action.echantillon.serotk.EchantillonSeroRowRenderer;
+import fr.aphp.tumorotek.action.prelevement.FichePrelevementStatic;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.prelevement.delegate.PrelevementSero;
 import fr.aphp.tumorotek.model.contexte.Protocole;
@@ -56,7 +59,7 @@ import fr.aphp.tumorotek.model.contexte.Protocole;
  * @version 2.0.6
  *
  */
-public class FichePrelevementStaticSero extends fr.aphp.tumorotek.action.prelevement.FichePrelevementStatic
+public class FichePrelevementStaticSero extends FichePrelevementStatic
 {
 
    //private Log log = LogFactory.getLog(FichePrelevementStaticSero.class);
@@ -64,9 +67,11 @@ public class FichePrelevementStaticSero extends fr.aphp.tumorotek.action.preleve
    private static final long serialVersionUID = -7612780578022559022L;
 
    protected Vbox protocolesBox;
+   protected Div refPatientDiv;
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
+      echantillonRenderer = new EchantillonSeroRowRenderer(false, false);
       super.doAfterCompose(comp);
    }
 

@@ -57,6 +57,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.GenericGenerator;
 
 import fr.aphp.tumorotek.model.TKAnnotableObject;
+import fr.aphp.tumorotek.model.TKDelegetableObject;
 import fr.aphp.tumorotek.model.coeur.patient.delegate.AbstractPatientDelegate;
 import fr.aphp.tumorotek.model.contexte.Banque;
 
@@ -138,7 +139,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
          + "WHERE p.nip in (?1) " + "AND prlvts.banque in (?2)"),
    @NamedQuery(name = "Patient.findCountByReferent",
       query = "SELECT count(p) FROM Patient p " + "JOIN p.patientMedecins o " + "WHERE o.pk.collaborateur = ?1")})
-public class Patient extends Object implements TKAnnotableObject, Serializable
+public class Patient extends Object implements TKAnnotableObject, TKDelegetableObject<Patient>, Serializable
 {
 
    private static final long serialVersionUID = -2015746269357055625L;
@@ -200,16 +201,6 @@ public class Patient extends Object implements TKAnnotableObject, Serializable
    public void setNip(final String n){
       this.nip = n;
    }
-
-   //Groupe sanguin passé en annotation
-   //	@Column(name = "GROUPE_SANGUIN", nullable = true, length = 5)
-   //	public String getGroupeSanguin() {
-   //		return groupeSanguin;
-   //	}
-
-   //	public void setGroupeSanguin(String groupeSanguin) {
-   //		this.groupeSanguin = groupeSanguin;
-   //	}
 
    @Column(name = "NOM", nullable = false, length = 50)
    public String getNom(){
@@ -343,7 +334,7 @@ public class Patient extends Object implements TKAnnotableObject, Serializable
       this.archive = arch;
    }
 
-   @OneToOne(mappedBy="delegator", cascade=CascadeType.MERGE, orphanRemoval=true)
+   @OneToOne(mappedBy="delegator", cascade=CascadeType.ALL, orphanRemoval=true)
    public AbstractPatientDelegate getDelegate(){
       return delegate;
    }

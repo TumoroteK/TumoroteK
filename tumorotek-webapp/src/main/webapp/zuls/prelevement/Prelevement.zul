@@ -1,85 +1,76 @@
 <!--
- * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
- * dsi-projet.tk@aphp.fr
- * 
- * Ce logiciel est un programme informatique servant à la gestion de 
- * l'activité de biobanques. 
- *
- * Ce logiciel est régi par la licence CeCILL soumise au droit français
- * et respectant les principes de diffusion des logiciels libres. Vous 
- * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
- * conditions de la licence CeCILL telle que diffusée par le CEA, le 
- * CNRS et l'INRIA sur le site "http://www.cecill.info". 
- * En contrepartie de l'accessibilité au code source et des droits de   
- * copie, de modification et de redistribution accordés par cette 
- * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
- * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
- * l'auteur du programme, le titulaire des droits patrimoniaux et les 
- * concédants successifs.
- *
- * A cet égard  l'attention de l'utilisateur est attirée sur les 
- * risques associés au chargement,  à l'utilisation,  à la modification 
- * et/ou au  développement et à la reproduction du logiciel par 
- * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
- * le rendre complexe à manipuler et qui le réserve donc à des 	
- * développeurs et des professionnels  avertis possédant  des 
- * connaissances  informatiques approfondies.  Les utilisateurs sont 
- * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
- * besoins dans des conditions permettant d'assurer la sécurité de leurs
- * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
- * et l'exploiter dans les mêmes conditions de sécurité. 
- *	
- * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
- * avez pris connaissance de la licence CeCILL, et que vous en avez 
- * accepté les termes. 
+	* Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+	* dsi-projet.tk@aphp.fr
+	* 
+	* Ce logiciel est un programme informatique servant à la gestion de 
+	* l'activité de biobanques. 
+	*
+	* Ce logiciel est régi par la licence CeCILL soumise au droit français
+	* et respectant les principes de diffusion des logiciels libres. Vous 
+	* pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+	* conditions de la licence CeCILL telle que diffusée par le CEA, le 
+	* CNRS et l'INRIA sur le site "http://www.cecill.info". 
+	* En contrepartie de l'accessibilité au code source et des droits de   
+	* copie, de modification et de redistribution accordés par cette 
+	* licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+	* Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+	* l'auteur du programme, le titulaire des droits patrimoniaux et les 
+	* concédants successifs.
+	*
+	* A cet égard  l'attention de l'utilisateur est attirée sur les 
+	* risques associés au chargement,  à l'utilisation,  à la modification 
+	* et/ou au  développement et à la reproduction du logiciel par 
+	* l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+	* le rendre complexe à manipuler et qui le réserve donc à des 	
+	* développeurs et des professionnels  avertis possédant  des 
+	* connaissances  informatiques approfondies.  Les utilisateurs sont 
+	* donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+	* besoins dans des conditions permettant d'assurer la sécurité de leurs
+	* systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+	* et l'exploiter dans les mêmes conditions de sécurité. 
+	*	
+	* Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+	* avez pris connaissance de la licence CeCILL, et que vous en avez 
+	* accepté les termes. 
 -->
 <?page id="prelevementPage" title="Prelevement Page" contentType="text/html;charset=UTF-8" ?>
 
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <zk>
-    <?component name="listePrelevement" macroURI="/zuls/prelevement/ListePrelevement.zul" ?>
-    <?component name="fichePrelevementStatic" macroURI="/zuls/prelevement/FichePrelevementStatic.zul" ?>
-    <?component name="listePrelevementBTO" macroURI="/zuls/prelevement/bto/ListePrelevementBTO.zul" ?>
-    <?component name="fichePrelevementStaticBTO" macroURI="/zuls/prelevement/bto/FichePrelevementStaticBTO.zul" ?>
-    <?component name="ficheLaboInter" macroURI="/zuls/prelevement/FicheLaboInter.zul" ?>
-    <?component name="ficheMultiEchantillons" macroURI="/zuls/echantillon/FicheMultiEchantillons.zul" ?>
-    <?component name="ficheAnnotation" macroURI="/zuls/annotation/FicheAnnotation.zul" ?>
+	<?component name="listePrelevement" macroURI="/zuls/prelevement/ListePrelevement.zul" ?>
+	<?component name="fichePrelevementStatic" macroURI="/zuls/prelevement/FichePrelevementStatic.zul" ?>
 
-    <window id="winPrelevement" border="none" apply="fr.aphp.tumorotek.action.prelevement.PrelevementController">
-        <borderlayout sclass="tabBorderLayout" id="mainBorder">
-            <west size="30%" title="${c:l('general.recherche')}"
-                  border="normal" splittable="true" collapsible="true"
-                  id="listeRegion">
-                <!-- <caption label="${c:l('general.recherche')}"> -->
-                <!--     <div align="right"> -->
-                <!--         <intbox cols="3" id="pageSizeBox" -->
-                <!--         	style="	border-radius: 15px 15px 15px 15px; text-align: center"/> -->
-                <!--         <label value="its/page" /> -->
-                <!--     </div> -->
-                <!--  </caption> -->
+	<?component name="listePrelevementBTO" macroURI="/zuls/prelevement/bto/ListePrelevementBTO.zul" ?>
+	<?component name="fichePrelevementStaticBTO" macroURI="/zuls/prelevement/bto/FichePrelevementStaticBTO.zul" ?>
 
-                <div>
-                    <listePrelevement visible="false" id="listePrelevement" hflex="1" vflex="1"/>
-                    <listePrelevementBTO visible="false" id="listePrelevementBTO" hflex="1" vflex="1"/>
-                </div>
-            </west>
-            <center id="ficherRegion">
-                <div hflex="1">
-                    <div id="divPrelevementStatic" visible="true">
-                        <!-- <fichePrelevementStatic id="fichePrelevement"/> -->
-                    </div>
-                    <div id="divPrelevementEdit">
-                    </div>
-                    <div id="divLaboInter">
-                    </div>
-                    <div id="modifMultiDiv">
-                    </div>
-                </div>
-            </center>
-            <east id="annoRegion" title="${c:l('general.annotations')}" splittable="true"
-                  collapsible="true" size="25%" visible="true" open="false">
-                <ficheAnnotation id="ficheAnnoPrelevement" hflex="1"/>
-            </east>
-        </borderlayout>
-    </window>
+	<?component name="listePrelevementSero" macroURI="/zuls/prelevement/serotk/ListePrelevementSero.zul" ?>
+	<?component name="fichePrelevementStaticSero" macroURI="/zuls/prelevement/serotk/FichePrelevementStaticSero.zul" ?>
+
+	<?component name="ficheLaboInter" macroURI="/zuls/prelevement/FicheLaboInter.zul" ?>
+	<?component name="ficheMultiEchantillons" macroURI="/zuls/echantillon/FicheMultiEchantillons.zul" ?>
+	<?component name="ficheAnnotation" macroURI="/zuls/annotation/FicheAnnotation.zul" ?>
+
+	<window id="winPrelevement" border="none" apply="fr.aphp.tumorotek.action.prelevement.PrelevementController">
+		<borderlayout sclass="tabBorderLayout" id="mainBorder">
+			<west size="30%" title="${c:l('general.recherche')}" border="normal" splittable="true" collapsible="true" id="listeRegion">
+
+				<div>
+					<listePrelevement visible="false" id="listePrelevement" hflex="1" vflex="1" />
+					<listePrelevementBTO visible="false" id="listePrelevementBTO" hflex="1" vflex="1" />
+					<listePrelevementSero visible="false" id="listePrelevementSero" hflex="1" vflex="1" />
+				</div>
+			</west>
+			<center id="ficherRegion">
+				<div hflex="1">
+					<div id="divPrelevementStatic" visible="true"></div>
+					<div id="divPrelevementEdit"></div>
+					<div id="divLaboInter"></div>
+					<div id="modifMultiDiv"></div>
+				</div>
+			</center>
+			<east id="annoRegion" title="${c:l('general.annotations')}" splittable="true" collapsible="true" size="25%" visible="true" open="false">
+				<ficheAnnotation id="ficheAnnoPrelevement" hflex="1" />
+			</east>
+		</borderlayout>
+	</window>
 </zk>

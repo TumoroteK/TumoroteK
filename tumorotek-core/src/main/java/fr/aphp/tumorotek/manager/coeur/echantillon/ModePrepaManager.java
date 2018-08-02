@@ -37,7 +37,7 @@ package fr.aphp.tumorotek.manager.coeur.echantillon;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.manager.TKThesaurusManager;
+import fr.aphp.tumorotek.manager.PfDependantTKThesaurusManager;
 import fr.aphp.tumorotek.model.coeur.echantillon.ModePrepa;
 
 /**
@@ -49,7 +49,7 @@ import fr.aphp.tumorotek.model.coeur.echantillon.ModePrepa;
  * @version 2.0
  *
  */
-public interface ModePrepaManager extends TKThesaurusManager<ModePrepa>
+public interface ModePrepaManager extends PfDependantTKThesaurusManager<ModePrepa>
 {
 
    /**

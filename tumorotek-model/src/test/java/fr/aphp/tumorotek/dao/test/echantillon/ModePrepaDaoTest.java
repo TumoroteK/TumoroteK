@@ -93,13 +93,13 @@ public class ModePrepaDaoTest extends AbstractDaoTest
 
    public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
-      List<? extends TKThesaurusObject> list = modePrepaDao.findByOrder(pf);
+      List<? extends TKThesaurusObject> list = modePrepaDao.findByPfOrder(pf);
       assertTrue(list.size() == 3);
       assertTrue(list.get(0).getNom().equals("PREPA1"));
       pf = plateformeDao.findById(2);
-      list = modePrepaDao.findByOrder(pf);
+      list = modePrepaDao.findByPfOrder(pf);
       assertTrue(list.size() == 1);
-      list = modePrepaDao.findByOrder(null);
+      list = modePrepaDao.findByPfOrder(null);
       assertTrue(list.size() == 0);
    }
 

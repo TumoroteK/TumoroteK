@@ -45,6 +45,7 @@ import org.apache.commons.collections4.ListUtils;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Checkbox;
@@ -78,7 +79,6 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ProdType;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Etablissement;
-import fr.aphp.tumorotek.model.contexte.Protocole;
 import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.io.export.Champ;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
@@ -199,20 +199,16 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
    private Boolean groupEchantillonsOpened;
    private Boolean groupProdDerivesOpened;
 
-   // Contexte Serotheque
-   private Listbox protocolesBox;
-   private Textbox diagCompBox;
-
    /**
     * Objets principaux.
     */
    private boolean anonyme;
-   private Champ parent1ToQueryPatient;
-   private Champ parent2ToQueryPatient;
-   private Champ parent1ToQueryMaladie;
-   private Champ parent2ToQueryMaladie;
-   private Champ parent1ToQueryPrlvt;
-   private Champ parent2ToQueryPrlvt;
+   protected Champ parent1ToQueryPatient;
+   protected Champ parent2ToQueryPatient;
+   protected Champ parent1ToQueryMaladie;
+   protected Champ parent2ToQueryMaladie;
+   protected Champ parent1ToQueryPrlvt;
+   protected Champ parent2ToQueryPrlvt;
    private Champ parentToQueryEchantillon;
    private boolean critereOnEchantillon = false;
 
@@ -230,7 +226,6 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
    private List<ProdType> prodDeriveTypes;
    private List<ProdQualite> deriveQualites;
    private List<ModePrepa> modePrepas;
-   private List<Protocole> protocoles;
 
    private List<NonConformite> nCarrivee;
    private List<NonConformite> nCechanTraitement;
@@ -290,14 +285,15 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
    }
 
    /**
+    * Crééer les composants spécifiques au contexte de la banque courante
+    */
+   protected void prepareContextComponents(){}
+
+   /**
     * Peuple les listes des composants spécifiques au contexte de la banque
     * courante.
     */
-   private void prepareContextComponents(){
-      if(SessionUtils.isSeroContexte(sessionScope)){
-         objPrelevementContextComponents = new Component[] {this.protocolesBox, this.diagCompBox};
-      }
-   }
+   protected void initContextsLists(){}
 
    /**
     * Initialise la fiche de recherche.
@@ -383,10 +379,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
       risquesModel = new ListModelList<>();
       risquesModel.addAll(ManagerLocator.getRisqueManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
 
-      if(SessionUtils.isSeroContexte(sessionScope)){
-         protocoles.addAll(ManagerLocator.getProtocoleManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
-         protocoles.add(0, null);
-      }
+      initContextsLists();
 
       operateursDecimaux = new ArrayList<>();
       operateursDecimaux.add("=");
@@ -536,11 +529,17 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
       // traite les critères sur les champs des patients
       if(getGroupPatientsOpened()){
          executeQueriesForPatients();
+         if(objPatientContextComponents != null){
+            executeQueriesForPatientsContext();
+         }
       }
 
       // traite les critères sur les champs des maladies
       if(getGroupMaladiesOpened()){
          executeQueriesForMaladies();
+         if(objMaladieContextComponents != null){
+            executeQueriesForMaladiesContext();
+         }
       }
 
       // traite les critères sur les champs des prlvts
@@ -681,7 +680,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
          Messagebox.show(Labels.getLabel("recherche.avancee.no.results"), Labels.getLabel("recherche.avancee.no.results.title"),
             new Messagebox.Button[] {Messagebox.Button.CANCEL, Messagebox.Button.RETRY},
             new String[] {Labels.getLabel("general.cancel"), Labels.getLabel("general.retry")}, Messagebox.QUESTION, null,
-            new org.zkoss.zk.ui.event.EventListener<ClickEvent>()
+            new EventListener<ClickEvent>()
             {
                @Override
                public void onEvent(final ClickEvent e){
@@ -913,7 +912,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
                if(current.getValue() != null && !current.getValue().equals("")){
 
                   // exécution de la requête
-                  executeSimpleQueryForTextbox(current, parent1ToQueryPatient, parent2ToQueryPatient, oneValueEntered, false);
+                  executeSimpleQueryForTextbox(current, parent1ToQueryPatient, parent2ToQueryPatient,  false);
 
                   oneValueEntered = true;
                }
@@ -936,7 +935,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
                   }
 
                   // exécution de la requête
-                  executeSimpleQueryForListbox(current, parent1, parent2, oneValueEntered, null);
+                  executeSimpleQueryForListbox(current, parent1, parent2,  null);
 
                   oneValueEntered = true;
                }
@@ -959,7 +958,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
                   }
 
                   // exécution de la requête
-                  executeSimpleQueryForCombobox(current, parent1, parent2, oneValueEntered, null);
+                  executeSimpleQueryForCombobox(current, parent1, parent2,  null);
 
                   oneValueEntered = true;
                }
@@ -995,7 +994,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
 
                   // exécution de la requête
                   if(operateur != null){
-                     executeSimpleQueryForDatebox(current, parent1ToQueryPatient, parent2ToQueryPatient, oneValueEntered,
+                     executeSimpleQueryForDatebox(current, parent1ToQueryPatient, parent2ToQueryPatient, 
                         operateur, false);
                   }
 
@@ -1021,12 +1020,12 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
       }
 
       if(sexes.size() > 0){
-         executeListQuery("Sexe", "Patient", ManagerLocator.getEntiteManager().findByIdManager(1), null, oneValueEntered, sexes,
+         executeListQuery("Sexe", "Patient", ManagerLocator.getEntiteManager().findByIdManager(1), null,  sexes,
             false);
          oneValueEntered = true;
       }
       if(etats.size() > 0){
-         executeListQuery("PatientEtat", "Patient", ManagerLocator.getEntiteManager().findByIdManager(1), null, oneValueEntered,
+         executeListQuery("PatientEtat", "Patient", ManagerLocator.getEntiteManager().findByIdManager(1), null, 
             etats, false);
          oneValueEntered = true;
       }
@@ -1046,7 +1045,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
                if(current.getValue() != null && !current.getValue().equals("")){
                   ;
                   // exécution de la requête
-                  executeSimpleQueryForTextbox(current, parent1ToQueryMaladie, parent2ToQueryMaladie, oneValueEntered, false);
+                  executeSimpleQueryForTextbox(current, parent1ToQueryMaladie, parent2ToQueryMaladie,  false);
 
                   oneValueEntered = true;
                }
@@ -1105,7 +1104,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
                   }
                   // exécution de la requête
                   if(operateur != null){
-                     executeSimpleQueryForDatebox(current, parent1ToQueryMaladie, parent2ToQueryMaladie, oneValueEntered,
+                     executeSimpleQueryForDatebox(current, parent1ToQueryMaladie, parent2ToQueryMaladie, 
                         operateur, false);
                   }
 
@@ -1130,7 +1129,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
                   }
 
                   // exécution de la requête
-                  executeSimpleQueryForCombobox(current, parent1, parent2, oneValueEntered, null);
+                  executeSimpleQueryForCombobox(current, parent1, parent2,  null);
 
                   oneValueEntered = true;
                }
@@ -1154,24 +1153,6 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
                if(current.getValue() != null && !current.getValue().equals("")){
                   Champ parent1 = parent1ToQueryPrlvt;
                   Champ parent2 = parent2ToQueryPrlvt;
-                  //						// si le critère est sur le risque, il faut passer
-                  //						// par le Risques
-                  //						if (current.getId().equals("risquesBox")) {
-                  //							Entite prlvtEntite = ManagerLocator.getEntiteManager()
-                  //									.findByNomManager("Prelevement").get(0);
-                  //							ChampEntite champRisques = ManagerLocator
-                  //									.getChampEntiteManager()
-                  //									.findByEntiteAndNomManager(prlvtEntite,
-                  //											"Risques").get(0);
-                  //							parent1 = new Champ(champRisques);
-                  //							parent1.setChampParent(parent1ToQueryPrlvt);
-                  //							parent2 = new Champ(champRisques);
-                  //							parent2.setChampParent(parent2ToQueryPrlvt);
-                  //							
-                  //							// exécution de la requête
-                  //							executeSimpleQueryForTextbox(current, parent1, parent2,
-                  //								oneValueEntered, false);						
-                  //						} else 
                   if(current.getId().equals("nonConformitesArriveeBox")){
                      final ChampEntite idPrel = ManagerLocator.getChampEntiteManager().findByIdManager(21);
 
@@ -1181,18 +1162,18 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
                         parent2 = new Champ(idPrel);
                         parent2.setChampParent(parent2ToQueryPrlvt);
 
-                        executeObjetByNonConformite(current, oneValueEntered,
+                        executeObjetByNonConformite(current, 
                            ManagerLocator.getConformiteTypeManager().findByIdManager(1), current.getValue(), parent1, parent2,
                            searchForProdDerives);
                      }else{
-                        executeObjetByNonConformite(current, oneValueEntered,
+                        executeObjetByNonConformite(current, 
                            ManagerLocator.getConformiteTypeManager().findByIdManager(1), current.getValue(), null, null,
                            searchForProdDerives);
                      }
 
                   }else{
                      // exécution de la requête
-                     executeSimpleQueryForTextbox(current, parent1, parent2, oneValueEntered, false);
+                     executeSimpleQueryForTextbox(current, parent1, parent2,  false);
                   }
 
                   oneValueEntered = true;
@@ -1208,7 +1189,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
                         // si la requete porte le medecin référent
                         final Collaborateur collab = getCollaborateurs().get(current.getSelectedIndex());
                         // execution de la requête
-                        executePrelevementsByMedecinQuery(oneValueEntered, collab);
+                        executePrelevementsByMedecinQuery(collab);
                         final RechercheCompValues rcv = new RechercheCompValues();
                         rcv.setCompClass(Listbox.class);
                         rcv.setCompId(current.getId());
@@ -1231,7 +1212,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
                         }
 
                         // exécution de la requête
-                        executeSimpleQueryForListbox(current, parent1, parent2, oneValueEntered, null);
+                        executeSimpleQueryForListbox(current, parent1, parent2,  null);
                         // si le critère est sur le risque, il faut passer
                         // par le Risques
                      }
@@ -1254,7 +1235,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
                      }
 
                      final boolean cumulative = ((Checkbox) current.getNextSibling()).isChecked();
-                     executeListQuery("nom", "Risque", prlvtEntite, parent1, oneValueEntered, rNoms, cumulative);
+                     executeListQuery("nom", "Risque", prlvtEntite, parent1,  rNoms, cumulative);
 
                      final RechercheCompValues rcv = new RechercheCompValues();
                      rcv.setCompClass(Listbox.class);
@@ -1299,7 +1280,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
 
                   // exécution de la requête
                   if(operateur != null){
-                     executeSimpleQueryForDatebox(current, parent1ToQueryPrlvt, parent2ToQueryPrlvt, oneValueEntered, operateur,
+                     executeSimpleQueryForDatebox(current, parent1ToQueryPrlvt, parent2ToQueryPrlvt,  operateur,
                         false);
                   }
 
@@ -1338,7 +1319,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
 
                   // exécution de la requête
                   if(operateur != null){
-                     executeSimpleQueryForCalendarbox(current, parent1ToQueryPrlvt, parent2ToQueryPrlvt, oneValueEntered,
+                     executeSimpleQueryForCalendarbox(current, parent1ToQueryPrlvt, parent2ToQueryPrlvt, 
                         operateur);
                   }
 
@@ -1359,7 +1340,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
                      operateur = (String) operateursNbEchantillonBox.getListModel().getElementAt(idx);
                      final Integer nb = current.getValue();
                      // execution de la requête
-                     executeNbEchantillonsQuery(oneValueEntered, operateur, nb);
+                     executeNbEchantillonsQuery(operateur, nb);
                   }else if(current.getId().equals("agePrlvtBox")){
                      // si la requete porte sur le delai
                      int idx = 0;
@@ -1369,7 +1350,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
                      operateur = (String) operateursAgePrlvtBox.getListModel().getElementAt(idx);
                      final Integer age = current.getValue();
                      // execution de la requête
-                     executeAgeAuPrelevementQuery(oneValueEntered, operateur, age);
+                     executeAgeAuPrelevementQuery(operateur, age);
                   }
 
                   oneValueEntered = true;
@@ -1401,12 +1382,12 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
                   if(current.getId().equals("codeOrganeBox")){
 
                      // execution de la requête
-                     executeCodesQuery(current, parentToQueryEchantillon, oneValueEntered, "CodesAssignes", "CodeOrgane", false);
+                     executeCodesQuery(current, parentToQueryEchantillon,  "CodesAssignes", "CodeOrgane", false);
 
                   }else if(current.getId().equals("codeLesionnelBox")){
 
                      // execution de la requête
-                     executeCodesQuery(current, parentToQueryEchantillon, oneValueEntered, "CodesAssignes", "CodeOrgane", true);
+                     executeCodesQuery(current, parentToQueryEchantillon,  "CodesAssignes", "CodeOrgane", true);
 
                   }else if(current.getId().equals("nonConformitesEchanTraitementBox")){
 
@@ -1415,11 +1396,11 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
                         final Champ parent1 = new Champ(idEchan);
                         parent1.setChampParent(parentToQueryEchantillon);
 
-                        executeObjetByNonConformite(current, oneValueEntered,
+                        executeObjetByNonConformite(current, 
                            ManagerLocator.getConformiteTypeManager().findByIdManager(2), current.getValue(), parent1, null,
                            searchForProdDerives);
                      }else{
-                        executeObjetByNonConformite(current, oneValueEntered,
+                        executeObjetByNonConformite(current, 
                            ManagerLocator.getConformiteTypeManager().findByIdManager(2), current.getValue(), null, null,
                            searchForProdDerives);
                      }
@@ -1429,17 +1410,17 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
                         final Champ parent1 = new Champ(idEchan);
                         parent1.setChampParent(parentToQueryEchantillon);
 
-                        executeObjetByNonConformite(current, oneValueEntered,
+                        executeObjetByNonConformite(current, 
                            ManagerLocator.getConformiteTypeManager().findByIdManager(3), current.getValue(), parent1, null,
                            searchForProdDerives);
                      }else{
-                        executeObjetByNonConformite(current, oneValueEntered,
+                        executeObjetByNonConformite(current, 
                            ManagerLocator.getConformiteTypeManager().findByIdManager(3), current.getValue(), null, null,
                            searchForProdDerives);
                      }
                   }else{
                      // exécution de la requête
-                     executeSimpleQueryForTextbox(current, parentToQueryEchantillon, null, oneValueEntered, false);
+                     executeSimpleQueryForTextbox(current, parentToQueryEchantillon, null,  false);
 
                   }
                   oneValueEntered = true;
@@ -1454,7 +1435,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
                   if(!current.getId().equals("crAnapathFilebox")){
                      critereOnEchantillon = true;
                      // exécution de la requête
-                     executeSimpleQueryForListbox(current, parentToQueryEchantillon, null, oneValueEntered, null);
+                     executeSimpleQueryForListbox(current, parentToQueryEchantillon, null,  null);
                   }else{ // filebox recherche
                      executeFileQuery(current, getEntiteToSearch(), new Boolean((String) current.getSelectedItem().getValue()));
                   }
@@ -1478,7 +1459,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
                      }
                      operateur = (String) operateursTempStockEchantillonBox.getListModel().getElementAt(idx);
 
-                     executeTempStockQuery(oneValueEntered, current, operateur, entiteToSearch);
+                     executeTempStockQuery(current, operateur, entiteToSearch);
                   }else{
                      if(current.getId().equals("quantiteEchantillonBox")){
                         int idx = 0;
@@ -1496,7 +1477,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
                      }
 
                      // exécution de la requête
-                     executeSimpleQueryForDecimalbox(current, parentToQueryEchantillon, null, oneValueEntered, operateur, false);
+                     executeSimpleQueryForDecimalbox(current, parentToQueryEchantillon, null,  operateur, false);
                   }
                   oneValueEntered = true;
                }
@@ -1525,11 +1506,11 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
                         final Champ parent2 = new Champ(idDerive);
                         parent2.setChampParent(parent2ToQueryProdDerive);
 
-                        executeObjetByNonConformite(current, oneValueEntered,
+                        executeObjetByNonConformite(current, 
                            ManagerLocator.getConformiteTypeManager().findByIdManager(4), current.getValue(), parent1, parent2,
                            searchForProdDerives);
                      }else{
-                        executeObjetByNonConformite(current, oneValueEntered,
+                        executeObjetByNonConformite(current, 
                            ManagerLocator.getConformiteTypeManager().findByIdManager(4), current.getValue(), null, null,
                            searchForProdDerives);
                      }
@@ -1543,17 +1524,17 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
                         final Champ parent2 = new Champ(idDerive);
                         parent2.setChampParent(parent2ToQueryProdDerive);
 
-                        executeObjetByNonConformite(current, oneValueEntered,
+                        executeObjetByNonConformite(current, 
                            ManagerLocator.getConformiteTypeManager().findByIdManager(5), current.getValue(), parent1, parent2,
                            searchForProdDerives);
                      }else{
-                        executeObjetByNonConformite(current, oneValueEntered,
+                        executeObjetByNonConformite(current, 
                            ManagerLocator.getConformiteTypeManager().findByIdManager(5), current.getValue(), null, null,
                            searchForProdDerives);
                      }
                   }else{
                      // exécution de la requête
-                     executeDeriveQueryForTextbox(current, oneValueEntered);
+                     executeDeriveQueryForTextbox(current);
                   }
 
                   oneValueEntered = true;
@@ -1566,7 +1547,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
                // si une valeur a été saisie
                if(current.getSelectedIndex() > 0){
                   // exécution de la requête
-                  executeDeriveQueryForListbox(current, oneValueEntered);
+                  executeDeriveQueryForListbox(current);
 
                   oneValueEntered = true;
                }
@@ -1587,7 +1568,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
                      }
                      operateur = (String) operateursTempStockDeriveBox.getListModel().getElementAt(idx);
 
-                     executeTempStockQuery(oneValueEntered, current, operateur, entiteToSearch);
+                     executeTempStockQuery(current, operateur, entiteToSearch);
                   }else{
                      // si la requete porte sur la quantité
                      if(current.getId().equals("quantiteDeriveBox")){
@@ -1606,7 +1587,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
                      }
 
                      // exécution de la requête
-                     executeDeriveQueryForDecimalbox(current, oneValueEntered, operateur);
+                     executeDeriveQueryForDecimalbox(current, operateur);
                   }
 
                   oneValueEntered = true;
@@ -1620,8 +1601,6 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
     * Exécute la requête permettant de récupérer des prlvts en fonction du
     * nombre d'échantillons.
     * 
-    * @param first
-    *            True si c'est la 1ère requête que l'on exécute.
     * @param operateur
     *            Opérateur de la requête.
     * @param nbEchantillons
@@ -1629,7 +1608,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
     * @return La liste de résultats mise à jour.
     */
 
-   public void executeNbEchantillonsQuery(final boolean firstQuery, final String operateur, final Integer nbEchantillons){
+   public void executeNbEchantillonsQuery(final String operateur, final Integer nbEchantillons){
 
       // on récupère la ou les banques sélectionnée(s)
       final List<Banque> banques = SessionUtils.getSelectedBanques(sessionScope);
@@ -1654,8 +1633,6 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
     * Exécute la requête permettant de récupérer des prlvts en fonction de
     * l'age du patient.
     * 
-    * @param first
-    *            True si c'est la 1ère requête que l'on exécute.
     * @param operateur
     *            Opérateur de la requête.
     * @param age
@@ -1663,7 +1640,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
     * @return La liste de résultats mise à jour.
     */
 
-   public void executeAgeAuPrelevementQuery(final boolean firstQuery, final String operateur, final Integer age){
+   public void executeAgeAuPrelevementQuery(final String operateur, final Integer age){
 
       // on récupère la ou les banques sélectionnée(s)
       final List<Banque> banques = SessionUtils.getSelectedBanques(sessionScope);
@@ -1691,12 +1668,12 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
     * Exécute la requête permettant de récupérer tous prlvts prélevés par un
     * medecin.
     * 
-    * @param medecin
+    * @param collab
     *            .
     * @return La liste de résultats mise à jour.
     */
 
-   public void executePrelevementsByMedecinQuery(final boolean firstQuery, final Collaborateur collab){
+   public void executePrelevementsByMedecinQuery(final Collaborateur collab){
 
       // on récupère la ou les banques sélectionnée(s)
       final List<Banque> banques = SessionUtils.getSelectedBanques(sessionScope);
@@ -1720,13 +1697,14 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
     * Exécute la requête permettant de récupérer tous les objets à partir 
     * d'une non conformité.
     * Met à jour la liste des resultats ids.
-    * @param component à passer à l'objet searchHistory
-    * @param boolean firstQuery
-    * @param noconf nonconformité
-    * @param searchForDerive si recherche sur derive
+    * @param current
+    * @param cType
+    * @param p1
+    * @param p2
+    * @param searchForDerive
     */
 
-   public void executeObjetByNonConformite(final Textbox current, final boolean firstQuery, final ConformiteType cType,
+   public void executeObjetByNonConformite(final Textbox current, final ConformiteType cType,
       final String cNom, final Champ p1, final Champ p2, final boolean searchForDerive){
 
       // si c'est la 1ère requête les résultats vont directement
@@ -1786,8 +1764,6 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
     * Exécute la requête permettant de récupérer des prlvts en fonction du
     * nombre d'échantillons.
     * 
-    * @param first
-    *            True si c'est la 1ère requête que l'on exécute.
     * @param operateur
     *            Opérateur de la requête.
     * @param nbEchantillons
@@ -1795,7 +1771,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
     * @return La liste de résultats mise à jour.
     */
 
-   public void executeCodesQuery(final Textbox current, final Champ parent1, final boolean firstQuery,
+   public void executeCodesQuery(final Textbox current, final Champ parent1,
       final String entiteInEchantillon, final String entiteFinale, final boolean isMorpho){
 
       // on récupère la ou les banques sélectionnée(s)
@@ -1867,7 +1843,6 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
     * Exécute la requête permettant de récupérer tous TKStockableObjects 
     * (échantillons ou dérivés) à partir d'une température de stockage
     * medecin.
-    * @param firstQuery
     * @param Decimalbox imput
     * @param String opérateur
     * @param Entite du tkStockableObject
@@ -1876,7 +1851,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
     * @return La liste de résultats mise à jour.
     */
 
-   public void executeTempStockQuery(final boolean firstQuery, final Decimalbox current, final String op, final Entite ent){
+   public void executeTempStockQuery(final Decimalbox current, final String op, final Entite ent){
 
       // on récupère la ou les banques sélectionnée(s)
       final List<Banque> banques = SessionUtils.getSelectedBanques(sessionScope);
@@ -2029,14 +2004,6 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
 
    public void setCollaborateurs(final List<Collaborateur> cs){
       this.collaborateurs = cs;
-   }
-
-   public List<Protocole> getProtocoles(){
-      return protocoles;
-   }
-
-   public void setProtocoles(final List<Protocole> protocoles){
-      this.protocoles = protocoles;
    }
 
    public List<NonConformite> getNCarrivee(){
@@ -2348,50 +2315,19 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
     * Exécute les requêtes avec des critères sur les champs des prlvts pour le
     * contexte associé à la banque courante.
     */
-   private void executeQueriesForPrelevementsContext(){
+   protected void executeQueriesForPrelevementsContext(){}
 
-      final Entite prlvtEntite = ManagerLocator.getEntiteManager().findByNomManager("Prelevement").get(0);
-      ChampEntite delegate = ManagerLocator.getChampEntiteManager().findByEntiteAndNomManager(prlvtEntite, "Delegate").get(0);
-      final Champ parent1 = new Champ(delegate);
-      parent1.setChampParent(parent1ToQueryPrlvt);
-      final Champ parent2 = new Champ(delegate);
-      parent2.setChampParent(parent2ToQueryPrlvt);
+   /**
+    * Exécute les requêtes avec des critères sur les champs des patients pour le
+    * contexte associé à la banque courante.
+    */
+   protected void executeQueriesForPatientsContext(){}
 
-      // pour chaque champ interrogeable pour les prlvts
-      for(int i = 0; i < objPrelevementContextComponents.length; i++){
-         // si c'est un textbox
-
-         if(objPrelevementContextComponents[i].getClass().getSimpleName().equals("Textbox")){
-            final Textbox current = (Textbox) objPrelevementContextComponents[i];
-            // si une valeur a été saisie
-            if(current.getValue() != null && !current.getValue().equals("")){
-
-               // exécution de la requête
-               executeSimpleQueryForTextbox(current, parent1, parent2, oneValueEntered, false);
-
-               oneValueEntered = true;
-            }
-         }
-
-         // si c'est un listbox
-         if(objPrelevementContextComponents[i].getClass().getSimpleName().equals("Listbox")){
-            final Listbox current = (Listbox) objPrelevementContextComponents[i];
-            // si une valeur a été saisie
-            if(current.getSelectedIndex() > 0){
-               if(current.getId().equals("protocolesBox")){
-                  delegate =
-                     ManagerLocator.getChampEntiteManager().findByEntiteAndNomManager(prlvtEntite, "Delegate.protocoles").get(0);
-                  parent1.setChampEntite(delegate);
-                  parent2.setChampEntite(delegate);
-               }
-
-               executeSimpleQueryForListbox(current, parent1, parent2, oneValueEntered,
-                  ((String) current.getAttribute("attribut")).toLowerCase());
-            }
-            oneValueEntered = true;
-         }
-      }
-   }
+   /**
+    * Exécute les requêtes avec des critères sur les champs des patients pour le
+    * contexte associé à la banque courante.
+    */
+   protected void executeQueriesForMaladiesContext(){}
 
    /***************************** listbox helpers ****************************/
    public void onSelect$nonConformitesArriveeBoxHelper(){

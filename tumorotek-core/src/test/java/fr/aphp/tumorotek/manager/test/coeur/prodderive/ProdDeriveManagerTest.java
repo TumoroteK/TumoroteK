@@ -44,11 +44,14 @@ import static org.junit.Assert.assertTrue;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -2489,18 +2492,18 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       final Banque b3 = banqueDao.findById(3);
       final Banque b4 = banqueDao.findById(4);
       // ne doit pas planter
-      prodDeriveManager.switchBanqueCascadeManager(null, b3, false, u, null);
+      prodDeriveManager.switchBanqueCascadeManager(null, b3, false, u, null, null);
       ProdDerive p = new ProdDerive();
       p.setCode("JEG.1.2");
       // ne doit pas planter getBanque() == null
-      prodDeriveManager.switchBanqueCascadeManager(p, null, false, u, null);
+      prodDeriveManager.switchBanqueCascadeManager(p, null, false, u, null, null);
       prodDeriveManager.createObjectManager(p, b3, prodTypeManager.findByIdManager(1), objetStatutManager.findByIdManager(4),
          null, null, null, null, null, null, null, null, null, null, null, u, false, "/tmp/", false);
       assertTrue(banqueManager.getProdDerivesManager(b3).size() == 1);
       p = prodDeriveManager.findByIdManager(p.getProdDeriveId());
 
       // banque depart = banque arrivee
-      prodDeriveManager.switchBanqueCascadeManager(p, b3, false, u, null);
+      prodDeriveManager.switchBanqueCascadeManager(p, b3, false, u, null, null);
       assertTrue(getOperationManager().findByObjectManager(p).size() == 1);
 
       // doublon
@@ -2514,7 +2517,7 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       assertTrue(banqueManager.getProdDerivesManager(b4).size() == 1);
       boolean catched = false;
       try{
-         prodDeriveManager.switchBanqueCascadeManager(pbis, b2, false, u, null);
+         prodDeriveManager.switchBanqueCascadeManager(pbis, b2, false, u, null, null);
       }catch(final DoublonFoundException dbe){
          catched = true;
       }
@@ -2527,7 +2530,7 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       p.setCode("switchDerive");
       prodDeriveManager.updateObjectManager(p, p.getBanque(), p.getProdType(), p.getObjetStatut(), null, null, null, null, null,
          null, null, null, null, null, null, null, null, u, false, null, null);
-      prodDeriveManager.switchBanqueCascadeManager(p, b2, false, u, null);
+      prodDeriveManager.switchBanqueCascadeManager(p, b2, false, u, null, null);
       // switched ok
       assertTrue(banqueManager.getProdDerivesManager(b3).isEmpty());
       assertTrue(banqueManager.getProdDerivesManager(b2).size() == 2);
@@ -2542,7 +2545,7 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       prodDeriveManager.createObjectManager(derive, b2, prodTypeManager.findByIdManager(1), objetStatutManager.findByIdManager(4),
          null, null, null, null, null, null, null, transfo1, null, null, null, u, false, "/tmp/", false);
       assertTrue(banqueManager.getProdDerivesManager(b2).size() == 3);
-      prodDeriveManager.switchBanqueCascadeManager(p, b3, true, u, null);
+      prodDeriveManager.switchBanqueCascadeManager(p, b3, true, u, null, null);
       // switched ok
       assertTrue(banqueManager.getProdDerivesManager(b2).size() == 1);
       assertTrue(banqueManager.getProdDerivesManager(b3).size() == 2);
@@ -2556,7 +2559,7 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       cederObjetManager.createObjectManager(ced1, cession, entite, null);
       catched = false;
       try{
-         prodDeriveManager.switchBanqueCascadeManager(p, b4, true, u, null);
+         prodDeriveManager.switchBanqueCascadeManager(p, b4, true, u, null, null);
       }catch(final RuntimeException re){
          catched = true;
          assertTrue(re.getMessage().equals("derive.switchBanque.isCessed"));
@@ -2572,7 +2575,7 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       cederObjetManager.createObjectManager(ced2, cession, entite, null);
       catched = false;
       try{
-         prodDeriveManager.switchBanqueCascadeManager(p, b4, true, u, null);
+         prodDeriveManager.switchBanqueCascadeManager(p, b4, true, u, null, null);
       }catch(final RuntimeException re){
          catched = true;
          assertTrue(re.getMessage().equals("derive.switchBanque.isCessed"));
@@ -2647,7 +2650,7 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
          null, null, derive.getTransformation(), null, null, null, null, null, u, false, null, "/tmp/");
 
       try{
-         prodDeriveManager.switchBanqueCascadeManager(derive, b2, true, u, null);
+         prodDeriveManager.switchBanqueCascadeManager(derive, b2, true, u, null, null);
       }catch(final RuntimeException re){
          catched = true;
          assertTrue(re.getMessage().equals("derive.switchBanque.badBanqueStockage"));
@@ -2668,7 +2671,7 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       // e = echantillonManager.findByIdManager(e.getEchantillonId());
 
       try{
-         prodDeriveManager.switchBanqueCascadeManager(p, b2, true, u, null);
+         prodDeriveManager.switchBanqueCascadeManager(p, b2, true, u, null, null);
       }catch(final RuntimeException re){
          catched = true;
          assertTrue(re.getMessage().equals("derive.switchBanque.badBanqueStockage"));
@@ -2684,7 +2687,7 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       cederObjetManager.createObjectManager(ced2, cession, entite, null);
 
       // annotations
-      prodDeriveManager.switchBanqueCascadeManager(p, b1, true, u, null);
+      prodDeriveManager.switchBanqueCascadeManager(p, b1, true, u, null, null);
       // switched ok
       assertTrue(banqueManager.getProdDerivesManager(b3).isEmpty());
       assertTrue(banqueManager.getProdDerivesManager(b1).size() == 5);
@@ -2705,7 +2708,7 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
          null, listAnnots, null, null, null, null, u, false, null, "/tmp/");
       assertTrue(annotationValeurManager.findByObjectManager(p).size() == 2);
 
-      prodDeriveManager.switchBanqueCascadeManager(p, b3, true, u, null);
+      prodDeriveManager.switchBanqueCascadeManager(p, b3, true, u, null, null);
       // switched ok
       assertTrue(annotationValeurManager.findByObjectManager(p).size() == 0);
 
@@ -2757,7 +2760,10 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
 
       // test sur le risque
       final Champ c249 = new Champ(champEntiteDao.findById(249));
-      assertTrue(extractValueFromChampManager.extractValueForChampManager(p1, c249).equals("LEUCEMIE, HIV"));
+      final String[] expected = new String[]{"HIV", "LEUCEMIE"};
+      String value = extractValueFromChampManager.extractValueForChampManager(p1, c249);
+      List<String> actual = Stream.of(value.split(",")).map( token -> token.trim() ).collect(Collectors.toList());
+      assertTrue(actual.size() == 2 && actual.containsAll(Arrays.asList(expected)));
 
       // test sur l'emplacement
       final Champ c87 = new Champ(champEntiteDao.findById(87));

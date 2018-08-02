@@ -4,7 +4,7 @@ import java.util.ResourceBundle;
 
 import fr.aphp.tumorotek.model.bundles.ResourceBundleTumo;
 
-public class ResourceBundleTumoTest extends AbstractDaoTest
+public class ResourceBundleTumoTest extends AbstractDaoTest //FIXME Class de test non utilisée/executée ?
 {
 
    /** Bean. */
@@ -19,14 +19,14 @@ public class ResourceBundleTumoTest extends AbstractDaoTest
    }
 
    public void testDoesResourceBundleExists(){
-      assertTrue(resourceBundleTumo.doesResourceBundleExists("tumorotek.properties"));
+      assertTrue(resourceBundleTumo.doesResourceBundleExists("tumorotek.properties")); //FIXME Aucun path spécifié ????
       assertFalse(resourceBundleTumo.doesResourceBundleExists("blabla"));
       assertFalse(resourceBundleTumo.doesResourceBundleExists(null));
    }
 
    public void testGetResourceBundle(){
       ResourceBundle bundle = resourceBundleTumo.getResourceBundle("tumorotek.properties");
-      assertTrue(bundle.getString("DBMS").equals("MySQL"));
+      assertTrue(bundle.getString("DBMS").equals("MySQL")); //FIXME False
 
       bundle = resourceBundleTumo.getResourceBundle("blabla");
       assertNull(bundle);

@@ -2232,20 +2232,45 @@
 		</row>
 	</table>
 	
-	<table name="MALADIE_SERO">
-		<column>MALADIE_DELEGATE_ID</column>
-		<column>DIAGNOSTIC</column>
+	<table name="DIAGNOSTIC">
+		<column>DIAGNOSTIC_ID</column>
+		<column>NOM</column>
+		<column>DESCRIPTION</column>
+		<column>PLATEFORME_ID</column>
 		<row>
 			<value>1</value>
-			<value>C</value>
+			<value>CERTAIN</value>
+			<value>CERTAIN</value>
+			<value>1</value>
 		</row>
 		<row>
 			<value>2</value>
-			<value>P</value>
+			<value>PROBABLE</value>
+			<value>PROBABLE</value>
+			<value>1</value>
 		</row>
 		<row>
 			<value>3</value>
-			<value>S</value>
+			<value>SUSPECTE</value>
+			<value>SUSPECTE</value>
+			<value>1</value>
+		</row>
+	</table>
+	
+	<table name="MALADIE_SERO">
+		<column>MALADIE_DELEGATE_ID</column>
+		<column>DIAGNOSTIC_ID</column>
+		<row>
+			<value>1</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>2</value>
+			<value>2</value>
+		</row>
+		<row>
+			<value>3</value>
+			<value>3</value>
 		</row>
 	</table>
 	
@@ -5199,7 +5224,7 @@
 		<row>
 			<value>111</value>
 			<value>35</value>
-			<value>Nature</value>
+			<value>Nom</value>
 			<value>1</value>
 			<value>0</value>
 			<value>1</value>
@@ -5221,7 +5246,7 @@
 		<row>
 			<value>113</value>
 			<value>36</value>
-			<value>Type</value>
+			<value>Nom</value>
 			<value>1</value>
 			<value>0</value>
 			<value>1</value>
@@ -5254,7 +5279,7 @@
 		<row>
 			<value>116</value>
 			<value>37</value>
-			<value>Type</value>
+			<value>Nom</value>
 			<value>1</value>
 			<value>0</value>
 			<value>1</value>
@@ -5276,7 +5301,7 @@
 		<row>
 			<value>118</value>
 			<value>38</value>
-			<value>Milieu</value>
+			<value>Nom</value>
 			<value>1</value>
 			<value>0</value>
 			<value>1</value>
@@ -5419,7 +5444,7 @@
 		<row>
 			<value>131</value>
 			<value>42</value>
-			<value>EchanQualite</value>
+			<value>Nom</value>
 			<value>1</value>
 			<value>0</value>
 			<value>1</value>
@@ -5518,7 +5543,7 @@
 		<row>
 			<value>140</value>
 			<value>45</value>
-			<value>Type</value>
+			<value>Nom</value>
 			<value>1</value>
 			<value>0</value>
 			<value>1</value>
@@ -5540,7 +5565,7 @@
 		<row>
 			<value>142</value>
 			<value>46</value>
-			<value>ProdQualite</value>
+			<value>Nom</value>
 			<value>1</value>
 			<value>0</value>
 			<value>1</value>
@@ -5562,7 +5587,7 @@
 		<row>
 			<value>144</value>
 			<value>47</value>
-			<value>Type</value>
+			<value>Nom</value>
 			<value>1</value>
 			<value>0</value>
 			<value>1</value>
@@ -5881,7 +5906,7 @@
 		<row>
 			<value>173</value>
 			<value>49</value>
-			<value>Examen</value>
+			<value>Nom</value>
 			<value>1</value>
 			<value>0</value>
 			<value>1</value>
@@ -6068,7 +6093,7 @@
 		<row>
 			<value>190</value>
 			<value>51</value>
-			<value>Motif</value>
+			<value>Nom</value>
 			<value>6</value>
 			<value>0</value>
 			<value>1</value>
@@ -6343,7 +6368,7 @@
 		<row>
 			<value>215</value>
 			<value>52</value>
-			<value>Type</value>
+			<value>Nom</value>
 			<value>1</value>
 			<value>0</value>
 			<value>1</value>
@@ -6903,6 +6928,13 @@
 		</row>
 		
 	</table> 
+	<table name="CHAMP_DELEGUE">
+		<column>CHAMP_DELEGUE_ID</column>
+		<column>NOM</column>
+		<column>DATA_TYPE_ID</column>
+		<column>ENTITE_ID</column>
+		<column>CONTEXTE</column>
+	</table>
 	<table name="CHAMP">
 		<column>CHAMP_ID</column>
 		<column>CHAMP_ENTITE_ID</column>

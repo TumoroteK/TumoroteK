@@ -38,7 +38,7 @@ package fr.aphp.tumorotek.manager.coeur.echantillon;
 import java.util.List;
 import java.util.Set;
 
-import fr.aphp.tumorotek.manager.TKThesaurusManager;
+import fr.aphp.tumorotek.manager.PfDependantTKThesaurusManager;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.echantillon.EchantillonType;
 
@@ -51,7 +51,7 @@ import fr.aphp.tumorotek.model.coeur.echantillon.EchantillonType;
  * @version 2.0
  *
  */
-public interface EchantillonTypeManager extends TKThesaurusManager<EchantillonType>
+public interface EchantillonTypeManager extends PfDependantTKThesaurusManager<EchantillonType>
 {
 
    /**

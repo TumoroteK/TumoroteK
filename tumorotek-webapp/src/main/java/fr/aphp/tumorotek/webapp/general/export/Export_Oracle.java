@@ -46,6 +46,7 @@ import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 import oracle.sql.ARRAY;
@@ -57,8 +58,8 @@ public class Export_Oracle extends Export
 
    public Export_Oracle(final Desktop d, final int ent, final List<Integer> o, final List<Banque> b, final boolean anonyme,
       final short type, final Utilisateur u, final List<Integer> rI, final HtmlMacroComponent htmlMacroComponent,
-      final Map<String, ?> params){
-      super(d, ent, o, b, anonyme, type, u, rI, htmlMacroComponent, params);
+      final Map<String, ?> params, EContexte contexte){
+      super(d, ent, o, b, anonyme, type, u, rI, htmlMacroComponent, params, contexte);
    }
 
    @Override

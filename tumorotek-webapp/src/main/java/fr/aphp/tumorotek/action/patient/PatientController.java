@@ -97,7 +97,6 @@ public class PatientController extends AbstractObjectTabController
 
       super.doAfterCompose(comp);
       if(BTO.equals(getCurrentContexte())){
-         // TODO : Modifier le nom de la liste
          listePatientBTO.setVisible(true);
       }else{
          listePatient.setVisible(true);

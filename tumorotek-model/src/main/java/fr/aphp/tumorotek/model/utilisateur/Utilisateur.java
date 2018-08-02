@@ -99,9 +99,12 @@ import fr.aphp.tumorotek.model.imprimante.AffectationImprimante;
    @NamedQuery(name = "Utilisateur.findByExcludedId", query = "SELECT u FROM Utilisateur u " + "WHERE u.utilisateurId != ?1"),
    @NamedQuery(name = "Utilisateur.findByOrder",
       query = "SELECT u FROM Utilisateur u WHERE superAdmin = 0 " + "ORDER BY u.login"),
-   @NamedQuery(name = "Utilisateur.findByOrderWithArchive",
+   @NamedQuery(name = "Utilisateur.findByOrderWithArchiveExcludeSuperAdmin",
       query = "SELECT u FROM Utilisateur u " + "WHERE u.archive = ?1 and u.superAdmin = 0 " + "AND u.plateformeOrig in (?2) "
          + "ORDER BY u.login"),
+   @NamedQuery(name = "Utilisateur.findByOrderWithArchiveIncludeSuperAdmin",
+   query = "SELECT u FROM Utilisateur u " + "WHERE u.archive = ?1 and ( u.plateformeOrig in (?2) OR (u.superAdmin = 1 ))"
+      + "ORDER BY u.login"),
    @NamedQuery(name = "Utilisateur.findByLoginPassAndArchive",
       query = "SELECT u FROM Utilisateur u " + "WHERE u.login = ?1 " + "AND u.password = ?2 " + "AND u.archive = ?3")})
 public class Utilisateur implements TKdataObject, java.io.Serializable, Comparable<Utilisateur>

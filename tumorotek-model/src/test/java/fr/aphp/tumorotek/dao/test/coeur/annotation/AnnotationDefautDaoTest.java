@@ -188,9 +188,9 @@ public class AnnotationDefautDaoTest extends AbstractDaoTest
 
       // Test de l'insertion a partir du champ
       champAnnotationDao.createObject(alpha);
-      assertNotNull(alpha.getChampAnnotationId());
+      assertNotNull(alpha.getId());
 
-      final Integer maxId = alpha.getChampAnnotationId();
+      final Integer maxId = alpha.getId();
 
       // Test de l'insertion
       annotationDefautDao.createObject(ad1);

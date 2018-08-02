@@ -47,13 +47,35 @@ import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
 import fr.aphp.tumorotek.action.controller.AbstractListeController2;
 import fr.aphp.tumorotek.decorator.TKSelectObjectRenderer;
 import fr.aphp.tumorotek.model.TKdataObject;
+import fr.aphp.tumorotek.model.cession.CessionExamen;
+import fr.aphp.tumorotek.model.cession.DestructionMotif;
+import fr.aphp.tumorotek.model.cession.ProtocoleType;
+import fr.aphp.tumorotek.model.coeur.echantillon.EchanQualite;
+import fr.aphp.tumorotek.model.coeur.echantillon.EchantillonType;
+import fr.aphp.tumorotek.model.coeur.echantillon.ModePrepa;
+import fr.aphp.tumorotek.model.coeur.prelevement.ConditMilieu;
+import fr.aphp.tumorotek.model.coeur.prelevement.ConditType;
+import fr.aphp.tumorotek.model.coeur.prelevement.ConsentType;
+import fr.aphp.tumorotek.model.coeur.prelevement.Nature;
+import fr.aphp.tumorotek.model.coeur.prelevement.PrelevementType;
+import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
+import fr.aphp.tumorotek.model.coeur.prodderive.ModePrepaDerive;
+import fr.aphp.tumorotek.model.coeur.prodderive.ProdQualite;
+import fr.aphp.tumorotek.model.coeur.prodderive.ProdType;
+import fr.aphp.tumorotek.model.contexte.Categorie;
+import fr.aphp.tumorotek.model.contexte.Diagnostic;
+import fr.aphp.tumorotek.model.contexte.Protocole;
+import fr.aphp.tumorotek.model.contexte.Specialite;
+import fr.aphp.tumorotek.model.qualite.NonConformite;
+import fr.aphp.tumorotek.model.stockage.ConteneurType;
+import fr.aphp.tumorotek.model.stockage.EnceinteType;
 
 public class ListeThesaurus extends AbstractListeController2
 {
 
    private static final long serialVersionUID = -3344253941641747494L;
 
-   private List<Thesaurus> listObjects = new ArrayList<>();
+   private List<Thesaurus<?>> listObjects = new ArrayList<>();
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
@@ -64,7 +86,7 @@ public class ListeThesaurus extends AbstractListeController2
    }
 
    @Override
-   public List<Thesaurus> getListObjects(){
+   public List<Thesaurus<?>> getListObjects(){
       return this.listObjects;
    }
 
@@ -72,7 +94,7 @@ public class ListeThesaurus extends AbstractListeController2
    @Override
    public void setListObjects(final List<? extends TKdataObject> objs){
       this.listObjects.clear();
-      this.listObjects = (List<Thesaurus>) objs;
+      this.listObjects = (List<Thesaurus<?>>) objs;
    }
 
    @Override
@@ -87,7 +109,7 @@ public class ListeThesaurus extends AbstractListeController2
    }
 
    @Override
-   public TKSelectObjectRenderer getListObjectsRenderer(){
+   public TKSelectObjectRenderer<? extends TKdataObject> getListObjectsRenderer(){
       return null;
    }
 
@@ -113,58 +135,60 @@ public class ListeThesaurus extends AbstractListeController2
    public void initListes(){
       listObjects.clear();
       // Catégorie
-      listObjects.add(new Thesaurus("Categorie", Labels.getLabel("thesaurus.liste.categorie")));
+      listObjects.add(new Thesaurus<>(Categorie.class, Labels.getLabel("thesaurus.liste.categorie")));
       // examen
-      listObjects.add(new Thesaurus("CessionExamen", Labels.getLabel("thesaurus.liste.examen.cession")));
+      listObjects.add(new Thesaurus<>(CessionExamen.class, Labels.getLabel("thesaurus.liste.examen.cession")));
       // Milieu de conditionnement
-      listObjects.add(new Thesaurus("ConditMilieu", Labels.getLabel("thesaurus.liste.milieu.conditionnement")));
+      listObjects.add(new Thesaurus<>(ConditMilieu.class, Labels.getLabel("thesaurus.liste.milieu.conditionnement")));
       // Mode de préparation
-      listObjects.add(new Thesaurus("ModePrepa", Labels.getLabel("thesaurus.liste.mode.preparation")));
+      listObjects.add(new Thesaurus<>(ModePrepa.class, Labels.getLabel("thesaurus.liste.mode.preparation")));
       // Mode de préparation dérivés
-      listObjects.add(new Thesaurus("ModePrepaDerive", Labels.getLabel("thesaurus.liste.mode.preparation.derive")));
+      listObjects.add(new Thesaurus<>(ModePrepaDerive.class, Labels.getLabel("thesaurus.liste.mode.preparation.derive")));
       // Motif de destruction
-      listObjects.add(new Thesaurus("DestructionMotif", Labels.getLabel("thesaurus.liste.motif.destruction")));
+      listObjects.add(new Thesaurus<>(DestructionMotif.class, Labels.getLabel("thesaurus.liste.motif.destruction")));
       // nature des prlvts
-      listObjects.add(new Thesaurus("Nature", Labels.getLabel("thesaurus.liste.nature.prelevement")));
+      listObjects.add(new Thesaurus<>(Nature.class, Labels.getLabel("thesaurus.liste.nature.prelevement")));
       // Non conformite a l'arrivee
-      listObjects.add(new Thesaurus("NonConformiteArrivee", Labels.getLabel("thesaurus.liste.nonConformite.arrivee")));
+      listObjects.add(new Thesaurus<>(NonConformite.class, "NonConformiteArrivee", Labels.getLabel("thesaurus.liste.nonConformite.arrivee")));
       // Non conformite apres traitement Echantillon
       listObjects
-         .add(new Thesaurus("NonConformiteTraitementEchan", Labels.getLabel("thesaurus.liste.nonConformite.traitement.echan")));
+         .add(new Thesaurus<>(NonConformite.class, "NonConformiteTraitementEchan", Labels.getLabel("thesaurus.liste.nonConformite.traitement.echan")));
       // Non conformite a la cession Echantillon
-      listObjects.add(new Thesaurus("NonConformiteCessionEchan", Labels.getLabel("thesaurus.liste.nonConformite.cession.echan")));
+      listObjects.add(new Thesaurus<>(NonConformite.class, "NonConformiteCessionEchan", Labels.getLabel("thesaurus.liste.nonConformite.cession.echan")));
       // Non conformite apres traitement Derive
       listObjects
-         .add(new Thesaurus("NonConformiteTraitementDerive", Labels.getLabel("thesaurus.liste.nonConformite.traitement.derive")));
+         .add(new Thesaurus<>(NonConformite.class, "NonConformiteTraitementDerive", Labels.getLabel("thesaurus.liste.nonConformite.traitement.derive")));
       // Non conformite a la cession Derive
       listObjects
-         .add(new Thesaurus("NonConformiteCessionDerive", Labels.getLabel("thesaurus.liste.nonConformite.cession.derive")));
+         .add(new Thesaurus<>(NonConformite.class, "NonConformiteCessionDerive", Labels.getLabel("thesaurus.liste.nonConformite.cession.derive")));
       // Protocole SerotK
-      listObjects.add(new Thesaurus("Protocole", Labels.getLabel("thesaurus.liste.serotk.protocole")));
+      listObjects.add(new Thesaurus<>(Protocole.class, Labels.getLabel("thesaurus.liste.serotk.protocole")));
+   // Diagnostic SerotK
+      listObjects.add(new Thesaurus<>(Diagnostic.class, Labels.getLabel("thesaurus.liste.serotk.diagnostic")));
       // Qualité de l'échantillon
-      listObjects.add(new Thesaurus("EchanQualite", Labels.getLabel("thesaurus.liste.qualite.echantillon")));
+      listObjects.add(new Thesaurus<>(EchanQualite.class, Labels.getLabel("thesaurus.liste.qualite.echantillon")));
       // Qualité du dérivé
-      listObjects.add(new Thesaurus("ProdQualite", Labels.getLabel("thesaurus.liste.qualite.prodDerive")));
+      listObjects.add(new Thesaurus<>(ProdQualite.class, Labels.getLabel("thesaurus.liste.qualite.prodDerive")));
       // Risque
-      listObjects.add(new Thesaurus("Risque", Labels.getLabel("thesaurus.liste.risque")));
+      listObjects.add(new Thesaurus<>(Risque.class, Labels.getLabel("thesaurus.liste.risque")));
       // Spécialité
-      listObjects.add(new Thesaurus("Specialite", Labels.getLabel("thesaurus.liste.specialite")));
+      listObjects.add(new Thesaurus<>(Specialite.class, Labels.getLabel("thesaurus.liste.specialite")));
       // Statut juridique
-      listObjects.add(new Thesaurus("ConsentType", Labels.getLabel("thesaurus.liste.type.consentement")));
+      listObjects.add(new Thesaurus<>(ConsentType.class, Labels.getLabel("thesaurus.liste.type.consentement")));
       // Type d'échantillon
-      listObjects.add(new Thesaurus("EchantillonType", Labels.getLabel("thesaurus.liste.type.echantillon")));
+      listObjects.add(new Thesaurus<>(EchantillonType.class, Labels.getLabel("thesaurus.liste.type.echantillon")));
       // Type d'enceinte
-      listObjects.add(new Thesaurus("EnceinteType", Labels.getLabel("thesaurus.liste.type.enceinte")));
+      listObjects.add(new Thesaurus<>(EnceinteType.class, Labels.getLabel("thesaurus.liste.type.enceinte")));
       // Type de conditionnement
-      listObjects.add(new Thesaurus("ConditType", Labels.getLabel("thesaurus.liste.type.conditionnement")));
+      listObjects.add(new Thesaurus<>(ConditType.class, Labels.getLabel("thesaurus.liste.type.conditionnement")));
       // Type de conteneur
-      listObjects.add(new Thesaurus("ConteneurType", Labels.getLabel("thesaurus.liste.type.conteneur")));
+      listObjects.add(new Thesaurus<>(ConteneurType.class, Labels.getLabel("thesaurus.liste.type.conteneur")));
       // Type de prélèvement
-      listObjects.add(new Thesaurus("PrelevementType", Labels.getLabel("thesaurus.liste.type.prelevement")));
+      listObjects.add(new Thesaurus<>(PrelevementType.class, Labels.getLabel("thesaurus.liste.type.prelevement")));
       // Type de dérivé
-      listObjects.add(new Thesaurus("ProdType", Labels.getLabel("thesaurus.liste.type.prodDerive")));
+      listObjects.add(new Thesaurus<>(ProdType.class, Labels.getLabel("thesaurus.liste.type.prodDerive")));
       // Type de protocole
-      listObjects.add(new Thesaurus("ProtocoleType", Labels.getLabel("thesaurus.liste.type.protocole")));
+      listObjects.add(new Thesaurus<>(ProtocoleType.class, Labels.getLabel("thesaurus.liste.type.protocole")));
    }
 
    public void onClick$viewObject(final Event event){

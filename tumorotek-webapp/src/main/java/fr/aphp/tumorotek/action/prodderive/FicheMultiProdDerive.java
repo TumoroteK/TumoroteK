@@ -58,19 +58,26 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.validation.Validator;
 import org.zkoss.util.resource.Labels;
+import org.zkoss.zhtml.Text;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.Path;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Box;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Cell;
+import org.zkoss.zul.Column;
+import org.zkoss.zul.Columns;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
@@ -80,6 +87,7 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Row;
+import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -98,6 +106,8 @@ import fr.aphp.tumorotek.manager.validation.exception.ValidationException;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
+import fr.aphp.tumorotek.model.cession.CederObjet;
+import fr.aphp.tumorotek.model.cession.ECederObjetStatut;
 import fr.aphp.tumorotek.model.cession.Retour;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
@@ -123,7 +133,8 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * Controller créé le 16/02/10.
  *
  * @author Pierre Ventadour
- * @version 2.1
+ * @since 2.1
+ * @version 2.2.0
  *
  */
 public class FicheMultiProdDerive extends FicheProdDeriveEdit
@@ -134,7 +145,6 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    private static final long serialVersionUID = 8521632198848434054L;
 
    // Boutons supplémentaires.
-   // private Group groupInfosCompDerive;
 
    private Combobox separatorBox;
    private Intbox premierCodeBoxDerive;
@@ -145,6 +155,12 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    private Radio numLettres;
    private Box choixNumerotation;
    private Button changeNumerotation;
+   private Label qteEchLabel;
+   private Div qteEchDiv;
+   private Label prelQteLabel;
+   private Div prelQteDiv;
+   private Label prodDeriveQteLabel;
+   private Div prodDeriveQteDiv;
 
    private Grid derivesList;
 
@@ -157,22 +173,16 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    private List<List<ProdDerive>> addedProdDerives = new ArrayList<>();
    private List<String> usedCodesProdDerives = new ArrayList<>();
    private Hashtable<ProdDerive, Emplacement> derivesEmpl = new Hashtable<>();
+   private Boolean prodDeriveFromRetourCession = false;
+   private CederObjet objetRetourCession;
 
    // Variables formulaire.
-   //private String valeurQuantiteRestante = "";
-   //private String valeurVolumeRestant = "";
    private Integer premierCode;
    private Integer dernierCode;
    private String premiereLettre;
    private String derniereLettre;
    private List<String> lettres = new ArrayList<>();
-   // quantite max que peut saisir l'utilisateur pour la transformation
-   //private Float quantiteMax;
-   //private Float quantiteTransformation;
    private boolean selectParent = false;
-   //private String codeParent = "";
-   //private Date dateTransformation;
-   //private Float quantiteInit;
    private Date dateSortie;
 
    private final ProdDeriveDecoratorRowRenderer deriveDecoRenderer = new ProdDeriveDecoratorRowRenderer();
@@ -209,12 +219,24 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
     * @param parent Objet dont est issu le dérivé.
     */
    public void switchToCreateMode(final TKdataObject parent){
-      // init with empty object
-      //dateTransformation = null;
-      //banque = getMainSelectedBanque();
-
       // Init du parent
-      setParentObject(parent);
+      TKdataObject newParent = null;
+
+      if(parent instanceof CederObjet){
+         prodDeriveFromRetourCession = true;
+         objetRetourCession = (CederObjet) parent;
+         if(this.objetRetourCession.getEntite().getNom().equals("Echantillon")){
+            newParent = (Echantillon) ManagerLocator.getEntiteManager()
+               .findObjectByEntiteAndIdManager(objetRetourCession.getEntite(), objetRetourCession.getObjetId());
+         }else if(this.objetRetourCession.getEntite().getNom().equals("ProdDerive")){
+            newParent = (ProdDerive) ManagerLocator.getEntiteManager()
+               .findObjectByEntiteAndIdManager(objetRetourCession.getEntite(), objetRetourCession.getObjetId());
+         }
+      }else{
+         newParent = parent;
+      }
+
+      setParentObject(newParent);
 
       super.switchToCreateMode();
 
@@ -222,9 +244,19 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
       // si le parent n'est pas null, on l'associe au
       // nouveau dérivé
-      if(parent != null){
+      if(prodDeriveFromRetourCession){
+         transfoQuantiteLabel.setVisible(false);
+         transfoQuantiteDiv.setVisible(false);
+         qteEchLabel.setVisible(false);
+         qteEchDiv.setVisible(false);
+         prelQteLabel.setVisible(false);
+         prelQteDiv.setVisible(false);
+         prodDeriveQteLabel.setVisible(false);
+         prodDeriveQteDiv.setVisible(false);
+      }
+      if(newParent != null){
          selectParent = false;
-         setTypeParent(parent.getClass().getSimpleName());
+         setTypeParent(newParent.getClass().getSimpleName());
          removeSelectParentMode();
       }else{
          // sinon, l'utilisateur devra sélectionner le parent
@@ -281,6 +313,15 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
          // ferme wait message
          Clients.clearBusy();
+
+         // Traitement d'un retour de cession
+         if(prodDeriveFromRetourCession){
+            this.objetRetourCession.getProduitRetourList().addAll(this.addedProdDerives.get(0));
+            this.objetRetourCession.setStatut(ECederObjetStatut.TRAITE);
+            ManagerLocator.getCederObjetManager().updateObjectManager(this.objetRetourCession,
+               this.objetRetourCession.getCession(), this.objetRetourCession.getEntite(),
+               this.objetRetourCession.getQuantiteUnite());
+         }
 
          // proposition d'un événement de stockage
          if((getTypeParent().equals("Echantillon") || getTypeParent().equals("ProdDerive")) && transfoRetour == null){
@@ -412,7 +453,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          for(int i = 0; i < prodDerivesDecorated.size(); i++){
             if(prodDerivesDecorated.get(i).getProdDerive().getConformeTraitement() != null
                && !prodDerivesDecorated.get(i).getProdDerive().getConformeTraitement()){
-               // enregistrement de la non conformité 
+               // enregistrement de la non conformité
                // après traitement
                ManagerLocator.getObjetNonConformeManager().createUpdateOrRemoveListObjectManager(
                   prodDerivesDecorated.get(i).getProdDerive(), prodDerivesDecorated.get(i).getNonConformiteTraitements(),
@@ -421,7 +462,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
             if(prodDerivesDecorated.get(i).getProdDerive().getConformeCession() != null
                && !prodDerivesDecorated.get(i).getProdDerive().getConformeCession()){
-               // enregistrement de la non conformité 
+               // enregistrement de la non conformité
                // à la cession
                ManagerLocator.getObjetNonConformeManager().createUpdateOrRemoveListObjectManager(
                   prodDerivesDecorated.get(i).getProdDerive(), prodDerivesDecorated.get(i).getNonConformiteCessions(), "Cession");
@@ -437,8 +478,8 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
          // statut EPUISE --> creation retours automatique
          if(transfoRetour != null){
-            // passage temporaire au statut NON STOCKE 
-            // afin que ce statut soit enregistré dans le retour correspondant 
+            // passage temporaire au statut NON STOCKE
+            // afin que ce statut soit enregistré dans le retour correspondant
             // à l'épuisement de l'échantillon
             ((TKStockableObject) getParentObject())
                .setObjetStatut(ManagerLocator.getObjetStatutManager().findByStatutLikeManager("NON STOCKE", true).get(0));
@@ -481,7 +522,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
                p.setObjetStatut(stocke);
                p.setEmplacement(null);
                // clean echanEmpl from emplacement in error
-               // doublon ou emplacement occupé 
+               // doublon ou emplacement occupé
                if((re instanceof EmplacementDoublonFoundException
                   && derivesEmpl.get(p).equals(((EmplacementDoublonFoundException) re).getEmplacementMock()))
                   || (re instanceof TKException && re.getMessage().equals("error.emplacement.notEmpty")
@@ -572,7 +613,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          // dans la liste des dérivés
          for(final List<ProdDerive> derives : addedProdDerives){
             if(!derives.contains(deco)){
-               // on vérifie que l'on retrouve bien la 
+               // on vérifie que l'on retrouve bien la
                // page contenant la liste
                // des dérivés
                if(getObjectTabController().getListe() != null){
@@ -931,8 +972,8 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
          //			String id = groupInfosCompDerive.getUuid();
          //			String idTop = panelChildrenWithScroll.getUuid();
-         //			Clients.evalJavaScript("document.getElementById('" + idTop + "')" 
-         //					+ ".scrollTop = document.getElementById('" + id + "')" 
+         //			Clients.evalJavaScript("document.getElementById('" + idTop + "')"
+         //					+ ".scrollTop = document.getElementById('" + id + "')"
          //					+ ".offsetTop;");
          Clients.scrollIntoView(stockageDerives);
 
@@ -953,7 +994,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
     * des dérivés.
     */
    public void onDeleteDeco$rows(final ForwardEvent event){
-      //		EchantillonDecorator2 deco = (EchantillonDecorator2) 
+      //		EchantillonDecorator2 deco = (EchantillonDecorator2)
       //			AbstractListeController2
       //				.getBindingData((ForwardEvent) event, false);
 
@@ -1209,7 +1250,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    }
 
    /**
-    * Recupere les informations du parents pour préparer les champs de 
+    * Recupere les informations du parents pour préparer les champs de
     * formulaire suivants: code prefixe, quantiteMax, transfo quantité unité,
     *  collaborateurs et liste de dérivés.
     */
@@ -1393,7 +1434,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    }
 
    /**
-    * 
+    *
     * @author Pierre Ventadour.
     *
     */
@@ -1491,7 +1532,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    }
 
    /**
-    * 
+    *
     * @author Pierre Ventadour.
     *
     */
@@ -1610,7 +1651,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
                // Si la derniereLettre est null (1ère édition de la page)
                // on va récupérer la valeur du champ derniereLettreBoxDerive
                if(derniereLettre == null || derniereLettre.equals("")){
-                  // on enlève la contrainte de 
+                  // on enlève la contrainte de
                   // derniereLettreBoxDerive pour
                   // pouvoir récupérer sa valeur
                   derniereLettreBoxDerive.setConstraint("");
@@ -1620,7 +1661,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
                   derniereLettreBoxDerive.setConstraint(cttDerniereLettre);
                }
 
-               // si une valeur est saisie dans le champ 
+               // si une valeur est saisie dans le champ
                // derniereLettreBoxDerive
                if(derniereLettre != null && !derniereLettre.equals("")){
                   // si la derniere est avant la premiere
@@ -1689,7 +1730,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    private Constraint cttPremiereLettre = new ConstPremiereLettre();
 
    /**
-    * 
+    *
     * @author Pierre Ventadour.
     *
     */
@@ -1712,7 +1753,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
                   throw new WrongValueException(comp, Labels.getLabel("ficheMultiEchantillons.lettre.invalide"));
                }
                // Si la premiere lettre est null (1ère édition de la page)
-               // on va récupérer la valeur 
+               // on va récupérer la valeur
                // du champ premiereLettreBoxDerive
                if(premiereLettre == null || premiereLettre.equals("")){
                   // on enlève la contrainte pour
@@ -1724,7 +1765,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
                   premiereLettreBoxDerive.setConstraint(cttPremiereLettre);
                }
 
-               // si une valeur est saisie dans le champ 
+               // si une valeur est saisie dans le champ
                // premiereLettreBoxDerive
                if(premiereLettre != null && !premiereLettre.equals("")){
                   // si le dernier code est < au premier
@@ -1871,21 +1912,6 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       // on cache les éléments.
       selectParentRowDerive.setVisible(false);
       showParentInformation();
-      //typesParentBoxDerive.setVisible(false);
-      //codesParentBoxDerive.setVisible(false);
-      //typeParentLabelDerive.setVisible(false);
-      //codeParentLabelDerive.setVisible(false);
-      //requiredCodeParentDerive.setVisible(false);
-
-      // on réinitialise les listes de codes.
-      //		codesParent = new ArrayList<String>();
-      //		dictCodesModel = new SimpleListModel(codesParent);
-      //		codesParentBoxDerive.setConstraint("");
-      //		codesParentBoxDerive.clearErrorMessage();
-      //		codesParentBoxDerive.setValue("");
-      //		codesParentBoxDerive.setModel(dictCodesModel);
-      //		codesParentBoxDerive.setConstraint(cttCodeParent);
-
    }
 
    /**
@@ -1908,11 +1934,6 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
       // affichage des éléments
       selectParentRowDerive.setVisible(true);
-      //typesParentBoxDerive.setVisible(true);
-      //codesParentBoxDerive.setVisible(true);
-      //typeParentLabelDerive.setVisible(true);
-      //codeParentLabelDerive.setVisible(true);
-      //requiredCodeParentDerive.setVisible(true);
 
       // on cache les données sur le parent
       for(int i = 0; i < getObjLabelsPrlvtParent().length; i++){
@@ -1923,7 +1944,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
       // par défaut, on récupère la liste des codes échantillons
       codesParent = ManagerLocator.getEchantillonManager()
-         .findAllCodesForBanqueAndQuantiteManager(SessionUtils.getSelectedBanques(sessionScope).get(0));
+         .findAllCodesForDerivesByBanque(SessionUtils.getSelectedBanques(sessionScope).get(0));
       // ces codes sont placés dans un dictionnaire pour permettre
       // le filtre lorsque l'utilisateur saisit le code
       dictCodesModel = new CustomSimpleListModel(codesParent.toArray());
@@ -1934,7 +1955,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    /**
     * Mise à jour de la valeur sélectionnée dans la combobox lorsque
     * l'utilisateur clique à l'extérieur de celle-ci.
-    * @param event Event : clique à l'extérieur de la combobox 
+    * @param event Event : clique à l'extérieur de la combobox
     * codesParentBoxDerive.
     * @throws Exception
     */
@@ -1942,7 +1963,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       // on enlève la contrainte de la combobox
       codesParentBoxDerive.setConstraint("");
       codesParentBoxDerive.clearErrorMessage();
-      // si aucun élément n'est sélectionné, la valeur de la box correspond 
+      // si aucun élément n'est sélectionné, la valeur de la box correspond
       // à ce qu'a tapé l'utilisateur.
       if(codesParentBoxDerive.getSelectedItem() == null){
          codesParentBoxDerive.setValue(codeTmp);
@@ -1956,12 +1977,20 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
             setParentObject(ManagerLocator.getPrelevementManager()
                .findByCodeOrNumLaboLikeWithBanqueManager(getCodeParent(), getBanque(), true).get(0));
          }else if(getTypeParent().equals("Echantillon")){
-            setParentObject(
-               ManagerLocator.getEchantillonManager().findByCodeLikeWithBanqueManager(getCodeParent(), getBanque(), true).get(0));
+            final Echantillon echantillon =
+               ManagerLocator.getEchantillonManager().findByCodeLikeWithBanqueManager(getCodeParent(), getBanque(), true).get(0);
+
+            createComponentForListeParent(echantillon);
+
+            setParentObject(echantillon);
             // si le parent est un dérivé
          }else if(getTypeParent().equals("ProdDerive")){
-            setParentObject(ManagerLocator.getProdDeriveManager()
-               .findByCodeOrLaboWithBanqueManager(getCodeParent(), getBanque(), true).get(0));
+            final ProdDerive prodDerive =
+               ManagerLocator.getProdDeriveManager().findByCodeOrLaboWithBanqueManager(getCodeParent(), getBanque(), true).get(0);
+
+            createComponentForListeParent(prodDerive);
+
+            setParentObject(prodDerive);
          }
          initDeriveInfosFromParent();
       }
@@ -1977,6 +2006,195 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       validateCoherenceDate(dateStockCalBox, dateStockCalBox.getValue());
 
       getBinder().loadComponent(self);
+   }
+
+   /**
+    * Nouvelle fenêtre pour afficher la liste des parents disponibles
+    * @param page page où ouvrir la fenêtre
+    * @return Window
+    */
+   private Window createWindowForListeParent(final Page page){
+      // nouvelle fenêtre
+      final Window win = new Window();
+      win.setVisible(true);
+      //      win.setId("listeParentWindow");
+      win.setPage(page);
+      win.setMaximizable(true);
+      win.setSizable(true);
+      win.setTitle(selectedParent + " " + codesParentBoxDerive.getSelectedItem().getLabel() + ": "
+         + Labels.getLabel("prodDerive.parents.disponibles"));
+      win.setBorder("normal");
+      win.setWidth("500px");
+      win.setHeight("510px");
+      win.setClosable(false);
+
+      return win;
+   }
+
+   /**
+    * Recherche si le parent est en stock et/ou présent dans une ou plusieurs cession.
+    * Ouvre une fenêtre pour la sélection
+    * @param tkStockObj objet parent
+    * @since 2.2.0
+    */
+   private void createComponentForListeParent(final TKStockableObject tkStockObj){
+      final ArrayList<String> statuts = new ArrayList<>();
+      statuts.add("EPUISE");
+      statuts.add("ENCOURS");
+      statuts.add("RESERVE");
+
+      final List<CederObjet> cederObjetRef =
+         ManagerLocator.getCederObjetManager().findByObjetAndStatutManager(tkStockObj, ECederObjetStatut.TRAITEMENT);
+
+      if((null == tkStockObj.getQuantite() || 0 < tkStockObj.getQuantite()) && !statuts.contains(tkStockObj.getObjetStatut())){
+         if(!cederObjetRef.isEmpty()){
+            createGridForListeParent(tkStockObj, cederObjetRef);
+         }else{
+            switchToCreateMode(tkStockObj);
+         }
+      }else if(cederObjetRef.size() > 1){
+         createGridForListeParent(cederObjetRef);
+      }else if(cederObjetRef.size() == 1){
+         switchToCreateMode(cederObjetRef.get(0));
+      }
+
+   }
+
+   /**
+    * Création d'une ligne pour un objet en stock
+    * @param tkStockObj l'objet en stock
+    * @return Row
+    * @since 2.2.0
+    */
+   private Row createRowForStockedParent(final TKStockableObject tkStockObj, final Window win){
+      final Row row = new Row();
+      row.setClass("formLink");
+      row.addEventListener("onClick", new EventListener<Event>()
+      {
+
+         @Override
+         public void onEvent(final Event event) throws Exception{
+            switchToCreateMode(tkStockObj);
+            win.detach();
+         }
+      });
+      final Cell typeCell = new Cell();
+      row.appendChild(typeCell);
+
+      final Cell qtteCell = new Cell();
+      row.appendChild(qtteCell);
+
+      final Text typeText = new Text(Labels.getLabel("Statut.STOCKE"));
+      typeCell.appendChild(typeText);
+
+      final Text qtteText = new Text(tkStockObj.getQuantite().toString() + " " + tkStockObj.getQuantiteUnite().getNom());
+      qtteCell.appendChild(qtteText);
+
+      return row;
+   }
+
+   /**
+    * Création d'une ligne pour un objet cédé
+    * @param cederObjetRef l'objet cédé
+    * @return Row
+    * @since 2.2.0
+    */
+   private Row createRowForCederObjetParent(final CederObjet cederObjetRef, final Window win){
+      final Row row = new Row();
+      row.setClass("formLink");
+      row.addEventListener("onClick", new EventListener<Event>()
+      {
+
+         @Override
+         public void onEvent(final Event event) throws Exception{
+            switchToCreateMode(cederObjetRef);
+            win.detach();
+         }
+      });
+
+      final Cell typeCell = new Cell();
+      row.appendChild(typeCell);
+
+      final Text typeText = new Text(Labels.getLabel("Entite.Cession") + " "
+         + Labels.getLabel("cession.type." + cederObjetRef.getCession().getCessionType().getType().toLowerCase()) + " - "
+         + cederObjetRef.getCession().getNumero());
+      typeCell.appendChild(typeText);
+
+      final Cell qtteCell = new Cell();
+      row.appendChild(qtteCell);
+
+      final Text qtteText = new Text(cederObjetRef.getQuantite().toString() + " " + cederObjetRef.getQuantiteUnite().getNom());
+      qtteCell.appendChild(qtteText);
+
+      return row;
+   }
+
+   /**
+    * Ouverture d'une fenêtre avec la liste des ojets en stock et en cédés
+    * @param tkStockObj l'objet en stock
+    * @param cederObjetRef la liste des objets cédés
+    * @since 2.2.0
+    */
+   private void createGridForListeParent(final TKStockableObject tkStockObj, final List<CederObjet> cederObjetRef){
+
+      final Grid grid = initiateGridForListeParent();
+
+      final Rows rows = new Rows();
+      grid.appendChild(rows);
+
+      final Window win = createWindowForListeParent(page);
+
+      win.appendChild(grid);
+
+      rows.appendChild(createRowForStockedParent(tkStockObj, win));
+
+      for(final CederObjet cederObj : cederObjetRef){
+         rows.appendChild(createRowForCederObjetParent(cederObj, win));
+      }
+
+      win.onModal();
+   }
+
+   /**
+    * Ouverture d'une fenêtre avec uniquement une liste d'objets cédés
+    * @param cederObjetRef la liste des objets cédés
+    * @since 2.2.0
+    */
+   private void createGridForListeParent(final List<CederObjet> cederObjetRef){
+      final Grid grid = initiateGridForListeParent();
+
+      final Rows rows = new Rows();
+      grid.appendChild(rows);
+
+      final Window win = createWindowForListeParent(page);
+
+      win.appendChild(grid);
+
+      for(final CederObjet cederObj : cederObjetRef){
+         rows.appendChild(createRowForCederObjetParent(cederObj, win));
+      }
+
+      win.onModal();
+   }
+
+   /**
+    * Grid vide qui va contenir la liste des Parents du Stock et/ou dans une cession
+    * @return Grid
+    * @since 2.2.0
+    */
+   private Grid initiateGridForListeParent(){
+      final Grid grid = new Grid();
+      grid.setClass("gridListStyle");
+      final Columns cols = new Columns();
+      grid.appendChild(cols);
+
+      final Column typeCol = new Column(Labels.getLabel("Champ.ProdDerive.ProdType"));
+      final Column quantité = new Column(Labels.getLabel("Champ.ProdDerive.Quantite"));
+
+      cols.appendChild(typeCol);
+      cols.appendChild(quantité);
+
+      return grid;
    }
 
    /**
@@ -2000,12 +2218,11 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       }
 
       // en fonction du type, on recherche les codes disponibles
-      //TODO Chercher en fonction des cessions de type traitement
       if(!tmp.equals(getTypeParent())){
          setTypeParent(tmp);
          if(getTypeParent().equals("Echantillon")){
             codesParent = ManagerLocator.getEchantillonManager()
-               .findAllCodesForBanqueAndQuantiteManager(SessionUtils.getSelectedBanques(sessionScope).get(0));
+               .findAllCodesForDerivesByBanque(SessionUtils.getSelectedBanques(sessionScope).get(0));
             noParentMode(false);
          }else if(getTypeParent().equals("Prelevement")){
             codesParent = ManagerLocator.getPrelevementManager()
@@ -2013,7 +2230,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
             noParentMode(false);
          }else if(getTypeParent().equals("ProdDerive")){
             codesParent = ManagerLocator.getProdDeriveManager()
-               .findAllCodesForBanqueAndQuantiteManager(SessionUtils.getSelectedBanques(sessionScope).get(0));
+               .findAllCodesForDerivesByBanque(SessionUtils.getSelectedBanques(sessionScope).get(0));
             noParentMode(false);
          }else if(getTypeParent().equals("Aucun")){
             codesParent = new ArrayList<>();
@@ -2110,7 +2327,6 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          }
       }
    }
-
 
    private Constraint cttQuantiteInit = new ConstQuantiteInit();
 
@@ -2395,7 +2611,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    }
 
    /**
-    * Applique les codes obtenus depuis le scan dans l'ordre aux codes dérivés 
+    * Applique les codes obtenus depuis le scan dans l'ordre aux codes dérivés
     * en attente de création dans la liste de travail.
     * @param sT scanTerminale
     */

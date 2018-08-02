@@ -89,7 +89,7 @@ public class ConditTypeDaoTest extends AbstractDaoTest
     */
    public void testToString(){
       ConditType ct1 = conditTypeDao.findById(1);
-      assertTrue(ct1.toString().equals("{" + ct1.getType() + "}"));
+      assertTrue(ct1.toString().equals("{" + ct1.getNom() + "}"));
       ct1 = new ConditType();
       assertTrue(ct1.toString().equals("{Empty ConditType}"));
    }
@@ -104,13 +104,13 @@ public class ConditTypeDaoTest extends AbstractDaoTest
 
    public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
-      List<? extends TKThesaurusObject> list = conditTypeDao.findByOrder(pf);
+      List<? extends TKThesaurusObject> list = conditTypeDao.findByPfOrder(pf);
       assertTrue(list.size() == 1);
       assertTrue(list.get(0).getNom().equals("TUBE"));
       pf = plateformeDao.findById(2);
-      list = conditTypeDao.findByOrder(pf);
+      list = conditTypeDao.findByPfOrder(pf);
       assertTrue(list.size() == 1);
-      list = conditTypeDao.findByOrder(null);
+      list = conditTypeDao.findByPfOrder(null);
       assertTrue(list.size() == 0);
    }
 
@@ -136,19 +136,19 @@ public class ConditTypeDaoTest extends AbstractDaoTest
    @Rollback(false)
    public void testCrudConditType() throws Exception{
       final ConditType ct = new ConditType();
-      ct.setType("AUTRE");
+      ct.setNom("AUTRE");
       ct.setPlateforme(plateformeDao.findById(1));
       // Test de l'insertion
       conditTypeDao.createObject(ct);
-      assertEquals(new Integer(3), ct.getConditTypeId());
+      assertEquals(new Integer(3), ct.getId());
 
       // Test de la mise à jour
       final ConditType ct2 = conditTypeDao.findById(new Integer(3));
       assertNotNull(ct2);
-      assertTrue(ct2.getType().equals("AUTRE"));
-      ct2.setType(updatedType);
+      assertTrue(ct2.getNom().equals("AUTRE"));
+      ct2.setNom(updatedType);
       conditTypeDao.updateObject(ct2);
-      assertTrue(conditTypeDao.findById(new Integer(3)).getType().equals(updatedType));
+      assertTrue(conditTypeDao.findById(new Integer(3)).getNom().equals(updatedType));
 
       // Test de la délétion
       conditTypeDao.removeObject(new Integer(3));
@@ -162,9 +162,9 @@ public class ConditTypeDaoTest extends AbstractDaoTest
       final String type = "Type";
       final String type2 = "Type2";
       final ConditType ct1 = new ConditType();
-      ct1.setType(type);
+      ct1.setNom(type);
       final ConditType ct2 = new ConditType();
-      ct2.setType(type);
+      ct2.setNom(type);
       final Plateforme pf1 = plateformeDao.findById(1);
       final Plateforme pf2 = plateformeDao.findById(2);
 
@@ -177,23 +177,23 @@ public class ConditTypeDaoTest extends AbstractDaoTest
       assertTrue(ct2.equals(ct1));
 
       // Vérification de la différenciation de 2 objets
-      ct2.setType(type2);
+      ct2.setNom(type2);
       assertFalse(ct1.equals(ct2));
       assertFalse(ct2.equals(ct1));
 
       //passe la clef naturelle type a nulle pour un des objets
-      ct2.setType(null);
+      ct2.setNom(null);
       assertFalse(ct1.equals(ct2));
       assertFalse(ct2.equals(ct1));
 
       //passe la clef naturelle type a nulle pour l'autre objet
-      ct1.setType(null);
+      ct1.setNom(null);
       assertTrue(ct1.equals(ct2));
-      ct2.setType(type);
+      ct2.setNom(type);
       assertFalse(ct1.equals(ct2));
 
       //plateforme
-      ct1.setType(ct2.getType());
+      ct1.setNom(ct2.getNom());
       ct1.setPlateforme(pf1);
       ct2.setPlateforme(pf1);
       assertTrue(ct1.equals(ct2));
@@ -212,14 +212,14 @@ public class ConditTypeDaoTest extends AbstractDaoTest
    public void testHashCode(){
       final String type = "Type";
       final ConditType ct1 = new ConditType();
-      ct1.setConditTypeId(1);
-      ct1.setType(type);
+      ct1.setId(1);
+      ct1.setNom(type);
       final ConditType ct2 = new ConditType();
-      ct2.setConditTypeId(2);
-      ct2.setType(type);
+      ct2.setId(2);
+      ct2.setNom(type);
       final ConditType ct3 = new ConditType();
-      ct3.setConditTypeId(3);
-      ct3.setType(null);
+      ct3.setId(3);
+      ct3.setNom(null);
       assertTrue(ct3.hashCode() > 0);
 
       final Plateforme pf1 = plateformeDao.findById(1);

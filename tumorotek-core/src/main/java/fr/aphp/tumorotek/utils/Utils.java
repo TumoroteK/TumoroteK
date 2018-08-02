@@ -36,13 +36,11 @@
 package fr.aphp.tumorotek.utils;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -123,17 +121,20 @@ public final class Utils
     * Ecris le filesystem path pour une banque et/ou le champ annotation.
     * @param bank Banque
     * @param chp ChampAnnotation
-    * @param obj TKAnnotableObject
+    * @param file TKAnnotableObject
     * @return path
     */
-   public static String writeAnnoFilePath(final String basedir, final Banque bank, final ChampAnnotation chp, final Fichier file){
-      if(basedir == null || !new File(basedir).exists()){
+   public static String writeAnnoFilePath(String baseDir, final Banque bank, final ChampAnnotation chp, final Fichier file){
+      if(baseDir == null || !new File(baseDir).exists()){
          throw new RuntimeException("error.filesystem.access");
       }
-      String path = basedir + "pt_" + bank.getPlateforme().getPlateformeId() + "/" + "coll_" + bank.getBanqueId();
+      if (!baseDir.endsWith("/")) {
+         baseDir = baseDir + "/";
+      }
+      String path = baseDir + "pt_" + bank.getPlateforme().getPlateformeId() + "/" + "coll_" + bank.getBanqueId();
 
       if(chp != null){
-         path = path + "/anno/chp_" + chp.getChampAnnotationId() + "/";
+         path = path + "/anno/chp_" + chp.getId() + "/";
       }
       //		
       //		if (obj != null) {
@@ -155,11 +156,13 @@ public final class Utils
    public static boolean deleteDirectory(final File path){
       if(path.exists()){
          final File[] files = path.listFiles();
-         for(int i = 0; i < files.length; i++){
-            if(files[i].isDirectory()){
-               deleteDirectory(files[i]);
-            }else{
-               files[i].delete();
+         if(null != files){
+            for(File file : files){
+               if(file.isDirectory()){
+                  deleteDirectory(file);
+               }else{
+                  file.delete();
+               }
             }
          }
       }

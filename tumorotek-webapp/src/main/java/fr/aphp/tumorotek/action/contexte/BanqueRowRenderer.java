@@ -51,7 +51,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
  * @author Mathieu BARTHELEMY
  * @version 2.1
  */
-public class BanqueRowRenderer extends TKSelectObjectRenderer
+public class BanqueRowRenderer extends TKSelectObjectRenderer<Banque>
 {
 
    //private Log log = LogFactory.getLog(BanqueRowRenderer.class);
@@ -59,9 +59,9 @@ public class BanqueRowRenderer extends TKSelectObjectRenderer
    public BanqueRowRenderer(){}
 
    @Override
-   public void render(final Row row, final Object data, final int index){
+   public void render(final Row row, final Banque data, final int index){
 
-      final Banque bank = (Banque) data;
+      final Banque bank = data;
 
       final Label nomLabel = new Label(bank.getNom());
       nomLabel.addForward(null, nomLabel.getParent(), "onClickObject", bank);

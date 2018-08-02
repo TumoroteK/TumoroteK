@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- For assistance related to logback-translator or configuration  -->
+<!-- files in general, please contact the logback user mailing list -->
+<!-- at http://www.qos.ch/mailman/listinfo/logback-user             -->
+<!--                                                                -->
+<!-- For professional support please see                            -->
+<!--    http://www.qos.ch/shop/products/professionalSupport         -->
+<!--                                                                -->
+<configuration>
+    <appender name="DailyRollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--See also http://logback.qos.ch/manual/appenders.html#RollingFileAppender-->
+        <ack.MaxBackupIndex>5</ack.MaxBackupIndex>
+        <File>${catalina.base}/logs/tumorotek_trace.log</File>
+        <encoder>
+            <pattern>%d %-5p %X{client} (%F:%L) - %m%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <maxIndex>5</maxIndex>
+            <FileNamePattern>${catalina.base}/logs/tumorotek_trace.log.%i</FileNamePattern>
+        </rollingPolicy>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>500KB</MaxFileSize>
+        </triggeringPolicy>
+    </appender>
+
+    <appender name="LIQUIBASE" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoders are assigned the type
+             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder>
+            <pattern>%d{HH:mm:ss} [%thread] %highlight(%-5level) %cyan(%logger{36}) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="fr.aphp.tumorotek.manager" additivity="false" level="ERROR">
+        <appender-ref ref="DailyRollingFile"/>
+    </logger>
+
+    <logger name="fr.aphp.tumorotek.model" additivity="false" level="ERROR">
+        <appender-ref ref="DailyRollingFile"/>
+    </logger>
+
+    <logger name="fr.aphp.tumorotek.webapp" additivity="false" level="ERROR">
+        <appender-ref ref="DailyRollingFile"/>
+    </logger>
+
+    <logger name="fr.aphp.tumorotek.action" additivity="false" level="ERROR">
+        <appender-ref ref="DailyRollingFile"/>
+    </logger>
+
+    <logger name="liquibase">
+        <appender-ref ref="LIQUIBASE" />
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="DailyRollingFile"/>
+    </root>
+</configuration>

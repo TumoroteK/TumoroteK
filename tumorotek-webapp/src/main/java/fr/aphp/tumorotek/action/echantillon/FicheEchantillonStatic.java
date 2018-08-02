@@ -140,6 +140,8 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
    private Grid prodDerivesGrid;
    private Grid cessionsGrid;
 
+   protected Row lateraliteRow;
+
    // Infos prelevement
    //private Group groupPrlvt;
    private Row row1PrlvtEchan;
@@ -149,6 +151,8 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
    private Label prlvtInconnuEchan;
    private Label patientLabel;
    private Label anapathLabel;
+   protected Label qualiteEchanLabel;
+   protected Label qualiteEchanValue;
 
    private Vbox risquesBox;
 
@@ -452,7 +456,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       }
       if(this.echantillon.getQuantiteUnite() != null){
          sb.append(" ");
-         sb.append(this.echantillon.getQuantiteUnite().getUnite());
+         sb.append(this.echantillon.getQuantiteUnite().getNom());
       }
       valeurQuantite = sb.toString();
 
@@ -557,29 +561,32 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       if(echantillon.getLateralite() != null){
          return Labels.getLabel("echantillon.lateralite." + echantillon.getLateralite());
       }
-         return null;
-      }
+      return null;
+   }
 
    public String getSClassCession(){
       if(getDroitsConsultation().get("Cession")){
          return "formLink";
       }
-         return null;
-      }
+      return null;
+   }
 
    public String getSClassOperateur(){
       if(this.echantillon != null){
          return ObjectTypesFormatters.sClassCollaborateur(this.echantillon.getCollaborateur());
       }
-         return null;
-      }
+      return null;
+   }
 
    public String getSClassStockage(){
+      
       if(isCanStockage()){
          return "formLink";
       }
-         return "formValue";
-      }
+      
+      return "formAnonymeBlock";
+      
+   }
 
    /*************************************************************************/
    /************************** GROUPS ***************************************/
@@ -592,8 +599,8 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       if(getDroitsConsultation().containsKey("ProdDerive") && getDroitsConsultation().get("ProdDerive")){
          return this.derives.size() > 1;
       }
-         return false;
-      }
+      return false;
+   }
 
    /**
     * Indique si la liste contient plus d'une cession.
@@ -602,8 +609,8 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       if(getDroitsConsultation().containsKey("Cession") && getDroitsConsultation().get("Cession")){
          return this.cedesDecorated.size() > 1;
       }
-         return false;
-      }
+      return false;
+   }
 
    /**
     * Cett méthode descend la barre de scroll au niveau du groupe
@@ -993,7 +1000,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       // prele type
       ++nbItemsINCaTotaux;
       if(prlvt != null && prlvt.getPrelevementType() != null){
-         tmp = prlvt.getPrelevementType().getType();
+         tmp = prlvt.getPrelevementType().getNom();
          ++nbItemsINCaRemplis;
       }else{
          tmp = "-";
@@ -1134,9 +1141,9 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       // Type
       ++nbItemsINCaTotaux;
       if(echantillon.getEchantillonType() != null){
-         if(echantillon.getEchantillonType().getType().toLowerCase().contains("tissu")){
+         if(echantillon.getEchantillonType().getNom().toLowerCase().contains("tissu")){
             tmp = "tissu";
-         }else if(echantillon.getEchantillonType().getType().toLowerCase().contains("cellule")){
+         }else if(echantillon.getEchantillonType().getNom().toLowerCase().contains("cellule")){
             tmp = "cellules";
          }else{
             tmp = "autre";
@@ -1195,7 +1202,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       // Unité
       ++nbItemsINCaTotaux;
       if(echantillon.getQuantiteUnite() != null){
-         tmp = echantillon.getQuantiteUnite().getUnite();
+         tmp = echantillon.getQuantiteUnite().getNom();
          ++nbItemsINCaRemplis;
       }else{
          tmp = "-";
@@ -1565,8 +1572,8 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       if(!simpleCouple){
          return cv;
       }
-         return csv;
-      }
+      return csv;
+   }
 
    /**
     * Crée un couple de valeurs pour un ChampAnnotation.
@@ -1774,7 +1781,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
    }
 
    /**
-    * Forward Event. 
+    * Forward Event.
     */
    public void onSelectAllDerives(){
       onClickProdDeriveCode(null);
@@ -1818,15 +1825,6 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       }
    }
 
-   /*public void onClick$print() {
-   	StringBuffer sb = new StringBuffer();
-   	sb.append(Labels.getLabel("impression.print.echantillon"));
-   	sb.append(" ");
-   	sb.append(this.echantillon.getCode());
-   	
-   	openImpressionWindow(page, echantillon, sb.toString(), isAnonyme());
-   }*/
-
    /*************************************************************************/
    /************************** DROITS ***************************************/
    /*************************************************************************/
@@ -1866,7 +1864,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       //		entites.add("ProdDerive");
       //		entites.add("Cession");
       //		setDroitsConsultation(drawConsultationLinks(entites));
-      //		
+      //
       // si pas le droit d'accès aux dérivés, on cache le lien
       if(!getDroitsConsultation().get("ProdDerive")){
          prodDeriveRenderer.setAccessible(false);
@@ -1929,13 +1927,24 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
    }
 
    public String getEmplacementAdrl(){
+
+      Boolean isAutorise;
+
       if(isAnonyme()){
+         isAutorise = false;
+      }else{
+         isAutorise = getDroitOnAction("Stockage", "Consultation");
+      }
+
+      if(!isAutorise){
          makeLabelAnonyme(emplacementLabelEchan, false);
          return getAnonymeString();
       }
-         emplacementLabelEchan.setSclass("formValue");
-         return emplacementAdrl;
-      }
+
+      emplacementLabelEchan.setSclass("formValue");
+      return emplacementAdrl;
+
+   }
 
    public String getTemperatureFormated(){
       return ObjectTypesFormatters.formatTemperature(getTemp());
@@ -1964,8 +1973,9 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
     */
    public void onClick$anapathLabel(){
       if(echantillon.getCrAnapath() != null && !isAnonyme()){
-         try( FileInputStream fis = new FileInputStream(echantillon.getCrAnapath().getPath());){
-            Filedownload.save(fis, echantillon.getCrAnapath().getMimeType(), echantillon.getCrAnapath().getNom());
+         try{
+            Filedownload.save(new FileInputStream(echantillon.getCrAnapath().getPath()), echantillon.getCrAnapath().getMimeType(),
+               echantillon.getCrAnapath().getNom());
          }catch(final Exception e){
             log.error(e);
          }
@@ -2000,8 +2010,8 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       if(this.prelevement != null){
          return PrelevementUtils.getPatientNomAndPrenom(prelevement);
       }
-         return null;
-      }
+      return null;
+   }
 
    public String getHautPageInca(){
       return hautPageInca;
@@ -2020,7 +2030,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
    }
 
    /**
-    * Recoit l'évenement de clique sur le lien emplacement contenu 
+    * Recoit l'évenement de clique sur le lien emplacement contenu
     * dans la fiche statique.
     * @param event
     */
@@ -2030,13 +2040,6 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
             ManagerLocator.getEchantillonManager().getEmplacementManager(getObject()));
       }
    }
-
-   //	/**
-   //	 * Ouvre la modale listant les operations de sortie du système de stockage.
-   //	 */
-   //	public void onClick$retours() {
-   //		openListRetourModale(getObject());
-   //	}
 
    private void drawRisquesFormatted(){
       Components.removeAllChildren(risquesBox);
@@ -2070,7 +2073,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
    }
 
    /**
-    * Recoit l'evenement venant de la liste de retours quand 
+    * Recoit l'evenement venant de la liste de retours quand
     * un élément est ajouté.
     */
    public void onClickUpdateSorties$retourRow(final Event event){
@@ -2138,7 +2141,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
    	if(null != inline){
    		// passe l'entite au controller
    		getFicheAnnotationInline().setEntite(getObjectTabController().getEntiteTab());
-   
+
    		// à remplacer par ce controller
    		// setFicheController
    		getFicheAnnotationInline().setObjectTabController(getObjectTabController());

@@ -85,6 +85,7 @@ import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.manager.exception.TransformationQuantiteOverDemandException;
 import fr.aphp.tumorotek.manager.impl.coeur.CreateOrUpdateUtilities;
+import fr.aphp.tumorotek.manager.impl.systeme.MvFichier;
 import fr.aphp.tumorotek.manager.io.imports.ImportHistoriqueManager;
 import fr.aphp.tumorotek.manager.qualite.ObjetNonConformeManager;
 import fr.aphp.tumorotek.manager.qualite.OperationManager;
@@ -477,6 +478,14 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    public List<String> findAllCodesForBanqueAndQuantiteManager(final Banque banque){
       if(banque != null){
          return prodDeriveDao.findByBanqueAndQuantiteSelectCode(banque);
+      }
+      return new ArrayList<>();
+   }
+   
+   @Override
+   public List<String> findAllCodesForDerivesByBanque(final Banque banque){
+      if(banque != null){
+         return prodDeriveDao.findAllCodesByBanqueAndQuantiteNotNullOrInCessionTraitement(banque);
       }
       return new ArrayList<>();
    }
@@ -1496,7 +1505,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
 
    @Override
    public void switchBanqueCascadeManager(ProdDerive derive, final Banque bank, final boolean doValidation, final Utilisateur u,
-      final List<File> filesToDelete){
+      final List<File> filesToDelete, final Set<MvFichier> filesToMove){
       if(bank != null && derive != null && !bank.equals(derive.getBanque())){
 
          if(doValidation){
@@ -1524,7 +1533,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
 
          final Iterator<ProdDerive> derivesIt = getProdDerivesManager(derive).iterator();
          while(derivesIt.hasNext()){
-            switchBanqueCascadeManager(derivesIt.next(), bank, doValidation, u, filesToDelete);
+            switchBanqueCascadeManager(derivesIt.next(), bank, doValidation, u, filesToDelete, filesToMove);
          }
 
          //Suppression du délégué si la banque de destination n'est pas dans le même contexte que la banque d'origine
@@ -1544,7 +1553,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          derive = prodDeriveDao.mergeObject(derive);
 
          // annotations
-         annotationValeurManager.switchBanqueManager(derive, bank, filesToDelete);
+         annotationValeurManager.switchBanqueManager(derive, bank, filesToDelete, filesToMove);
 
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());

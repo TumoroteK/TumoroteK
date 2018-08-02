@@ -69,6 +69,16 @@ public class Duree
    public Duree(final Long temps, final Long unite){
       this.millisecondes = temps * unite;
    }
+   
+   /**
+    * Initialise une durée selon l'unité
+    * @param temps temps
+    * @param unite unité utiliser (Duree.TYPE_SOUHAITE)
+    */
+   public Duree(final Float temps, final Long unite){
+      Float res = temps * new Float(unite);
+      this.millisecondes = res.longValue();
+   }
 
    /**
     * Initialise une durée entre une date de début et une date de fin

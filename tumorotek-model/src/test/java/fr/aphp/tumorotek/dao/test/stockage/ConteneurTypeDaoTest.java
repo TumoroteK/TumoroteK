@@ -79,13 +79,13 @@ public class ConteneurTypeDaoTest extends AbstractDaoTest
 
    public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
-      List<? extends TKThesaurusObject> list = conteneurTypeDao.findByOrder(pf);
+      List<? extends TKThesaurusObject> list = conteneurTypeDao.findByPfOrder(pf);
       assertTrue(list.size() == 3);
       assertTrue(list.get(0).getNom().equals("CONGELATEUR"));
       pf = plateformeDao.findById(2);
-      list = conteneurTypeDao.findByOrder(pf);
+      list = conteneurTypeDao.findByPfOrder(pf);
       assertTrue(list.size() == 0);
-      list = conteneurTypeDao.findByOrder(null);
+      list = conteneurTypeDao.findByPfOrder(null);
       assertTrue(list.size() == 0);
    }
 

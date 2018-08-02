@@ -187,8 +187,8 @@
 					</row>	
 					<row>
 						<!-- Qualité de l'échantillon -->
-						<label value="${c:l('Champ.Echantillon.EchanQualite')}" sclass="formLabel"/>
-						<label id="qualiteLabelEchan" 
+						<label id="qualiteEchanLabel" value="${c:l('Champ.Echantillon.EchanQualite')}" sclass="formLabel"/>
+						<label id="qualiteEchanValue" 
 							value="@{fwinEchantillonStatic$composer.object.echanQualite.echanQualite}"
 							sclass="formValue" />
 													
@@ -251,7 +251,7 @@
 						</box>
 						<div id="codesOrganeDiv" />
 					</row>
-					<row spans="1,3">
+					<row id="lateraliteRow" spans="1,3">
 						<label value="${c:l('Champ.Echantillon.Lateralite')}" sclass="formLabel"/>
 						<label id="lateraliteLabel" sclass="formValue" value="@{fwinEchantillonStatic$composer.lateraliteLabel}"/>
 					</row>

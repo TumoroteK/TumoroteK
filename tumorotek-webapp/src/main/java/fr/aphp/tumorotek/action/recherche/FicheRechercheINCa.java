@@ -450,7 +450,7 @@ public class FicheRechercheINCa extends AbstractFicheRechercheAvancee
                }
 
                // exécution de la requête
-               executeSimpleQueryForListboxWithSpecialValue(current, parentToQueryPatient, null, value, oneValueEntered);
+               executeSimpleQueryForListboxWithSpecialValue(current, parentToQueryPatient, null, value);
 
                oneValueEntered = true;
             }
@@ -512,7 +512,7 @@ public class FicheRechercheINCa extends AbstractFicheRechercheAvancee
 
                // exécution de la requête
                if(operateur != null){
-                  executeSimpleQueryForDatebox(current, parentToQueryPatient, null, oneValueEntered, operateur, false);
+                  executeSimpleQueryForDatebox(current, parentToQueryPatient, null, operateur, false);
                }
 
                oneValueEntered = true;
@@ -533,7 +533,7 @@ public class FicheRechercheINCa extends AbstractFicheRechercheAvancee
             // si une valeur a été saisie
             if(current.getValue() != null && !current.getValue().equals("")){
                // exécution de la requête
-               executeSimpleQueryForTextbox(current, parentToQueryMaladie, null, oneValueEntered, false);
+               executeSimpleQueryForTextbox(current, parentToQueryMaladie, null, false);
 
                oneValueEntered = true;
             }
@@ -573,7 +573,7 @@ public class FicheRechercheINCa extends AbstractFicheRechercheAvancee
 
                // exécution de la requête
                if(operateur != null){
-                  executeSimpleQueryForDatebox(current, parentToQueryMaladie, null, oneValueEntered, operateur, false);
+                  executeSimpleQueryForDatebox(current, parentToQueryMaladie, null, operateur, false);
                }
 
                oneValueEntered = true;
@@ -594,7 +594,7 @@ public class FicheRechercheINCa extends AbstractFicheRechercheAvancee
             // si une valeur a été saisie
             if(current.getSelectedIndex() > 0){
                // exécution de la requête
-               executeSimpleQueryForListbox(current, parentToQueryPrlvt, null, oneValueEntered, null);
+               executeSimpleQueryForListbox(current, parentToQueryPrlvt, null, null);
 
                oneValueEntered = true;
             }
@@ -634,7 +634,7 @@ public class FicheRechercheINCa extends AbstractFicheRechercheAvancee
 
                // exécution de la requête
                if(operateur != null){
-                  executeSimpleQueryForCalendarbox(current, parentToQueryPrlvt, null, oneValueEntered, operateur);
+                  executeSimpleQueryForCalendarbox(current, parentToQueryPrlvt, null, operateur);
                }
 
                oneValueEntered = true;
@@ -668,7 +668,7 @@ public class FicheRechercheINCa extends AbstractFicheRechercheAvancee
 
                }else{
                   // exécution de la requête
-                  executeSimpleQueryForTextbox(current, parentToQueryEchantillon, null, oneValueEntered, false);
+                  executeSimpleQueryForTextbox(current, parentToQueryEchantillon, null, false);
 
                }
                oneValueEntered = true;
@@ -688,10 +688,10 @@ public class FicheRechercheINCa extends AbstractFicheRechercheAvancee
                   }
 
                   // exécution de la requête
-                  executeSimpleQueryForListboxWithSpecialValue(current, parentToQueryEchantillon, null, tum, oneValueEntered);
+                  executeSimpleQueryForListboxWithSpecialValue(current, parentToQueryEchantillon, null, tum);
                }else{
                   // exécution de la requête
-                  executeSimpleQueryForListbox(current, parentToQueryEchantillon, null, oneValueEntered, null);
+                  executeSimpleQueryForListbox(current, parentToQueryEchantillon, null, null);
                }
                oneValueEntered = true;
             }
@@ -713,7 +713,7 @@ public class FicheRechercheINCa extends AbstractFicheRechercheAvancee
                }
 
                // exécution de la requête
-               executeSimpleQueryForDecimalbox(current, parentToQueryEchantillon, null, oneValueEntered, operateur, false);
+               executeSimpleQueryForDecimalbox(current, parentToQueryEchantillon, null, operateur, false);
 
                oneValueEntered = true;
             }
@@ -742,7 +742,7 @@ public class FicheRechercheINCa extends AbstractFicheRechercheAvancee
             // si une valeur a été saisie
             if(current.getValue() != null && !current.getValue().equals("")){
                // exécution de la requête
-               executeSimpleQueryForTextbox(current, parent, null, oneValueEntered, false);
+               executeSimpleQueryForTextbox(current, parent, null, false);
 
                oneValueEntered = true;
             }
@@ -755,7 +755,7 @@ public class FicheRechercheINCa extends AbstractFicheRechercheAvancee
             if(current.getSelectedIndex() > 0){
 
                // exécution de la requête
-               executeSimpleQueryForListbox(current, parent, null, oneValueEntered, null);
+               executeSimpleQueryForListbox(current, parent, null, null);
 
                oneValueEntered = true;
             }
@@ -767,7 +767,7 @@ public class FicheRechercheINCa extends AbstractFicheRechercheAvancee
             // si une valeur a été saisie
             if(current.getValue() != null){
 
-               executeSimpleQueryForDatebox(current, parent, null, oneValueEntered, "=", false);
+               executeSimpleQueryForDatebox(current, parent, null, "=", false);
 
                oneValueEntered = true;
             }
@@ -780,7 +780,7 @@ public class FicheRechercheINCa extends AbstractFicheRechercheAvancee
             if(current.getValue() != null){
 
                // exécution de la requête
-               executeSimpleQueryForDecimalbox(current, parent, null, oneValueEntered, "like", true);
+               executeSimpleQueryForDecimalbox(current, parent, null, "like", true);
 
                oneValueEntered = true;
             }

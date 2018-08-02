@@ -38,11 +38,10 @@ package fr.aphp.tumorotek.model.io.export;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -50,6 +49,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -70,9 +70,11 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  */
 @Entity
 @Table(name = "CHAMP_ENTITE")
+@GenericGenerator(name = "seqGenerator", strategy = "increment")
+@AttributeOverride(name="id", column=@Column(name = "CHAMP_ENTITE_ID", unique = true, nullable = false))
 @NamedQueries(value = {@NamedQuery(name = "ChampEntite.findByEntite", query = "SELECT c FROM ChampEntite c WHERE c.entite = ?1"),
    @NamedQuery(name = "ChampEntite.findByEntiteAndImport",
-      query = "SELECT c FROM ChampEntite c " + "WHERE c.entite = ?1 " + "AND c.canImport = ?2 ORDER BY c.champEntiteId"),
+      query = "SELECT c FROM ChampEntite c " + "WHERE c.entite = ?1 " + "AND c.canImport = ?2 ORDER BY c.id"),
    @NamedQuery(name = "ChampEntite.findByEntiteImportObligatoire",
       query = "SELECT c FROM ChampEntite c " + "WHERE c.entite = ?1 " + "AND c.canImport = ?2 " + "AND c.nullable = ?3"),
    @NamedQuery(name = "ChampEntite.findByEntiteAndNom",
@@ -83,13 +85,10 @@ import fr.aphp.tumorotek.model.systeme.Entite;
    @NamedQuery(name = "ChampEntite.findByEntiteAndImportAndDataType",
       query = "SELECT c FROM ChampEntite c " + "WHERE c.entite = ?1 " + "AND c.canImport = ?2 " + "AND c.dataType in ?3")})
 
-public class ChampEntite implements Comparable<ChampEntite>
+public class ChampEntite extends AbstractTKChamp implements Comparable<ChampEntite>
 {
 
-   private Integer champEntiteId;
    private Entite entite;
-   private String nom;
-   private DataType dataType;
    private Boolean nullable;
    private Boolean unique;
    private String valeurDefaut;
@@ -107,10 +106,8 @@ public class ChampEntite implements Comparable<ChampEntite>
 
    public ChampEntite(final Entite e, final String n, final DataType dt, final Boolean nul, final Boolean u,
       final String valDefaut, final Boolean canI, final ChampEntite queryC){
-      super();
+      super(n, dt);
       this.entite = e;
-      this.nom = n;
-      this.dataType = dt;
       this.nullable = nul;
       this.unique = u;
       this.valeurDefaut = valDefaut;
@@ -118,18 +115,27 @@ public class ChampEntite implements Comparable<ChampEntite>
       this.queryChamp = queryC;
    }
 
-   @Id
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   @Column(name = "CHAMP_ENTITE_ID", unique = true, nullable = false)
+   /**
+    * @deprecated
+    * Utiliser getId()
+    * @return
+    */
+   @Transient
+   @Deprecated
    public Integer getChampEntiteId(){
-      return champEntiteId;
+      return getId();
    }
 
+   /**
+    * @deprecated
+    * Utiliser {@link #setId(Integer)}
+    * @param chId
+    */
+   @Deprecated
    public void setChampEntiteId(final Integer chId){
-      this.champEntiteId = chId;
+      this.setId(chId);
    }
-
+   
    @ManyToOne
    @JoinColumn(name = "ENTITE_ID", nullable = false)
    public Entite getEntite(){
@@ -138,25 +144,6 @@ public class ChampEntite implements Comparable<ChampEntite>
 
    public void setEntite(final Entite ent){
       this.entite = ent;
-   }
-
-   @Column(name = "NOM", nullable = false)
-   public String getNom(){
-      return nom;
-   }
-
-   public void setNom(final String n){
-      this.nom = n;
-   }
-
-   @ManyToOne(cascade = {CascadeType.PERSIST})
-   @JoinColumn(name = "DATA_TYPE_ID", nullable = false)
-   public DataType getDataType(){
-      return dataType;
-   }
-
-   public void setDataType(final DataType t){
-      this.dataType = t;
    }
 
    @Column(name = "IS_NULL", nullable = false)
@@ -259,17 +246,17 @@ public class ChampEntite implements Comparable<ChampEntite>
       final ChampEntite test = (ChampEntite) obj;
       if(this.entite == null){
          if(test.entite == null){
-            if(this.nom == null){
-               return test.nom == null;
+            if(this.getNom() == null){
+               return test.getNom() == null;
             }
-            return this.nom.equals(test.nom);
+            return this.getNom().equals(test.getNom());
          }
          return false;
       }else if(this.entite.equals(test.entite)){
-         if(this.nom == null){
-            return test.nom == null;
+         if(this.getNom() == null){
+            return test.getNom() == null;
          }
-         return this.nom.equals(test.nom);
+         return this.getNom().equals(test.getNom());
       }else{
          return false;
       }
@@ -289,8 +276,8 @@ public class ChampEntite implements Comparable<ChampEntite>
       if(this.entite != null){
          hashEntite = this.entite.hashCode();
       }
-      if(this.nom != null){
-         hashNom = this.nom.hashCode();
+      if(this.getNom() != null){
+         hashNom = this.getNom().hashCode();
       }
 
       hash = 31 * hash + hashEntite;
@@ -305,8 +292,8 @@ public class ChampEntite implements Comparable<ChampEntite>
     */
    @Override
    public String toString(){
-      if(this.nom != null){
-         return "{" + this.nom + "}";
+      if(this.getNom() != null){
+         return "{" + this.getNom() + "}";
       }
       return "{Empty ChampEntite}";
    }
@@ -314,8 +301,8 @@ public class ChampEntite implements Comparable<ChampEntite>
    @Override
    public ChampEntite clone(){
       final ChampEntite clone = new ChampEntite();
-      clone.setChampEntiteId(this.getChampEntiteId());
-      clone.setDataType(this.getDataType());
+      clone.setId( this.getId() );
+      clone.setDataType( this.getDataType() );
       clone.setEntite(this.getEntite());
       clone.setNom(this.getNom());
       clone.setNullable(this.isNullable());

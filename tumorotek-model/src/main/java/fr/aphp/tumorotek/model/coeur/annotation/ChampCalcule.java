@@ -91,12 +91,12 @@ public class ChampCalcule implements Serializable
    private Champ champ2;
    /**
     * Si le calcul se fait avec une saisie utilisateur (à la place de champ2)
-    * TODO Renommé plus explicitement comme "valeurSaisie"
+    * TODO ChampCalcule - Renommer plus explicitement comme "valeurSaisie" ?
     */
    private String valeur;
    /**
     * Opération a effectuer entre les deux champs/valeur
-    * TODO Enum ?
+    * TODO ChampCalcule - Enum ?
     */
    private String operateur;
    /**

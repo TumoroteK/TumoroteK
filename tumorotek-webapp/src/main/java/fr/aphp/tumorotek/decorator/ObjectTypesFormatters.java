@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.decorator;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -45,6 +46,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
@@ -71,6 +73,7 @@ import fr.aphp.tumorotek.model.coeur.annotation.Item;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
+import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.contexte.Etablissement;
 import fr.aphp.tumorotek.model.contexte.Protocole;
 import fr.aphp.tumorotek.model.contexte.Service;
@@ -145,6 +148,11 @@ public final class ObjectTypesFormatters
 
    public static String doubleLitteralFormatter(final Double d){
       return dF.format(d);
+   }
+   
+   public static String doubleLitteralFormatter(final Double d, DecimalFormatSymbols dfs){
+      DecimalFormat dEn = new DecimalFormat("###.###", dfs);
+      return dEn.format(d);
    }
 
    /**
@@ -315,10 +323,10 @@ public final class ObjectTypesFormatters
    }
 
    /**
-    * Dessine dans un label le code ou le libelle (en fonction 
-    * de l'association entre la banque et la table de codification) du 
-    * premier code de la liste. 
-    * Utilisation d'un tooltip pour afficher la totalité des codes 
+    * Dessine dans un label le code ou le libelle (en fonction
+    * de l'association entre la banque et la table de codification) du
+    * premier code de la liste.
+    * Utilisation d'un tooltip pour afficher la totalité des codes
     * suivant cette même règle.
     * S'adapate au grid (Row) ou a listbox (Listitem)
     * @param Row row
@@ -336,7 +344,7 @@ public final class ObjectTypesFormatters
          final List<String> strs = ManagerLocator.getCodeAssigneManager().formatCodesAsStringsManager(codes);
 
          final Label c1Label = new Label(strs.get(0));
-         // dessine le label avec un lien vers popup 
+         // dessine le label avec un lien vers popup
          if(strs.size() > 1){
             final Hlayout labelAndLinkBox = new Hlayout();
             labelAndLinkBox.setSpacing("5px");
@@ -413,9 +421,9 @@ public final class ObjectTypesFormatters
    //	}
 
    /**
-    * Méthode utilitaire renvoyant la date d'un Calendar sans les heures et 
+    * Méthode utilitaire renvoyant la date d'un Calendar sans les heures et
     * minutes qui sont passées à 0.
-    * (Méthode utilisée dans la création d'un prélèvement lors du 
+    * (Méthode utilisée dans la création d'un prélèvement lors du
     * transfert de la date de Prelevement sans les heures.)
     * @param cal
     * @return date sans heures ni minutes Calendar
@@ -454,6 +462,43 @@ public final class ObjectTypesFormatters
 
       // on ajoute la valeur du champ
       return Labels.getLabel(iProperty.toString());
+   }
+
+   /**
+    * Retourne le libellé internationalisé correspondant à un champ
+    * @param champ
+    * @return
+    */
+   public static String getLabelForChamp(final Champ champ){
+
+      String label = "";
+
+      if(champ.getChampAnnotation() != null){
+         label = champ.getChampAnnotation().getNom();
+      }else{
+
+         String nomEntite = null;
+         String nomChamp = null;
+
+         String propertyKey = "Champ.";
+         
+         if(champ.getChampEntite() != null){
+            nomEntite = champ.getChampEntite().getEntite().getNom();
+            nomChamp = champ.getChampEntite().getNom().replace("Id", "");
+            propertyKey += nomEntite + "." + nomChamp;
+         }else if(champ.getChampDelegue() != null){
+            EContexte contexte = champ.getChampDelegue().getContexte();
+            nomEntite = champ.getChampDelegue().getEntite().getNom();
+            nomChamp = champ.getChampDelegue().getNom().replace("Id", "");
+            propertyKey += nomEntite + "." + contexte.getNom() + "." + StringUtils.capitalize(nomChamp);
+         }
+
+         label = Labels.getLabel(propertyKey);
+
+      }
+
+      return label;
+
    }
 
    /**
@@ -583,16 +628,16 @@ public final class ObjectTypesFormatters
     * @return Délai en Années Mois Jours Heures Minutes.
     */
    public static String formatDuree(final Duree duree){
-      Duree dureeDecompte = new Duree(duree.getTemps(Duree.MILLISECONDE), Duree.MILLISECONDE);
-      Long annees = dureeDecompte.getTemps(Duree.ANNEE);
+      final Duree dureeDecompte = new Duree(duree.getTemps(Duree.MILLISECONDE), Duree.MILLISECONDE);
+      final Long annees = dureeDecompte.getTemps(Duree.ANNEE);
       dureeDecompte.addTemps(-annees, Duree.ANNEE);
-      Long mois = dureeDecompte.getTemps(Duree.MOIS);
+      final Long mois = dureeDecompte.getTemps(Duree.MOIS);
       dureeDecompte.addTemps(-mois, Duree.MOIS);
-      Long jours = dureeDecompte.getTemps(Duree.JOUR);
+      final Long jours = dureeDecompte.getTemps(Duree.JOUR);
       dureeDecompte.addTemps(-jours, Duree.JOUR);
-      Long heures = dureeDecompte.getTemps(Duree.HEURE);
+      final Long heures = dureeDecompte.getTemps(Duree.HEURE);
       dureeDecompte.addTemps(-heures, Duree.HEURE);
-      Long minutes = dureeDecompte.getTemps(Duree.MINUTE);
+      final Long minutes = dureeDecompte.getTemps(Duree.MINUTE);
 
       final StringBuffer sb = new StringBuffer();
       // Flag pour savoir d'où commence le formattage et ne pas avoir de "trous"
@@ -645,8 +690,8 @@ public final class ObjectTypesFormatters
     * @param champCalcule
     * @return label du champCalculé
     */
-   public static String renderChampCalcule(ChampCalcule champCalcule){
-      StringBuffer sb = new StringBuffer();
+   public static String renderChampCalcule(final ChampCalcule champCalcule){
+      final StringBuffer sb = new StringBuffer();
       if(null != champCalcule && null != champCalcule.getChamp1()){
          sb.append("[" + formatChampLabel(champCalcule.getChamp1(), true, "-") + "]");
          sb.append(" " + champCalcule.getOperateur() + " ");
@@ -655,7 +700,7 @@ public final class ObjectTypesFormatters
             sb.append("[" + formatChampLabel(champCalcule.getChamp2(), true, "-") + "]");
          }else if("date".equals(champCalcule.getDataType().getType()) || "datetime".equals(champCalcule.getDataType().getType())
             || "duree".equals(champCalcule.getDataType().getType())){
-            Duree duree = new Duree(new Long(champCalcule.getValeur()), Duree.SECONDE);
+            final Duree duree = new Duree(new Long(champCalcule.getValeur()), Duree.SECONDE);
             sb.append(formatDuree(duree));
          }else{
             sb.append(champCalcule.getValeur());
@@ -670,9 +715,9 @@ public final class ObjectTypesFormatters
     * @param entite entité
     * @return label formaté
     */
-   public static String formatEntiteLabel(Entite entite){
-      String entiteNom = entite.getNom();
-      String entiteLabel = Labels.getLabel("Entite." + entiteNom);
+   public static String formatEntiteLabel(final Entite entite){
+      final String entiteNom = entite.getNom();
+      final String entiteLabel = Labels.getLabel("Entite." + entiteNom);
 
       if(null == entiteLabel || "".equals(entiteLabel)){
          return entiteNom;
@@ -688,10 +733,10 @@ public final class ObjectTypesFormatters
     * @param separator
     * @return Label formatté
     */
-   public static String formatChampLabel(Champ champ, Boolean withEntityName, String separator){
+   public static String formatChampLabel(final Champ champ, final Boolean withEntityName, final String separator){
       String labelChamp = formatChampLabel(champ);
       if(withEntityName){
-         String labelEntite = formatEntiteLabel(champ.entite());
+         final String labelEntite = formatEntiteLabel(champ.entite());
          if(null != separator){
             labelChamp = labelEntite + separator + labelChamp;
          }else{
@@ -706,15 +751,21 @@ public final class ObjectTypesFormatters
     * @param champ champ à formatter
     * @return Label formatté
     */
-   public static String formatChampLabel(Champ champ){
+   public static String formatChampLabel(final Champ champ){
       String labelChamp = null;
       String champNom = champ.nom();
       if(null != champ.getChampEntite() && champNom.endsWith("Id")){
          // si le nom du champ finit par "Id", on le retire
          champNom = champ.nom().substring(0, champNom.length() - 2);
       }
-      String entiteNom = champ.entite().getNom();
-      labelChamp = Labels.getLabel("Champ." + entiteNom + "." + champNom);
+      final String entiteNom = champ.entite().getNom();
+      
+      if(champ.getChampEntite() != null) {
+         labelChamp = Labels.getLabel("Champ." + entiteNom + "." + champNom);
+      } else if(champ.getChampDelegue() != null){
+         EContexte contexte = champ.getChampDelegue().getContexte();
+         labelChamp = Labels.getLabel("Champ." + entiteNom + "." + contexte.getNom() + "." + StringUtils.capitalize(champNom));
+      }
 
       if(null == labelChamp || "".equals(labelChamp)){
          labelChamp = champ.nom();
@@ -742,9 +793,9 @@ public final class ObjectTypesFormatters
    }
 
    /**
-    * Dessine dans un label les references des protocoles pour 
-    * un objet Prelevement dans un contexte Serotheque. 
-    * Utilisation d'un tooltip pour afficher la totalité des protocoles  
+    * Dessine dans un label les references des protocoles pour
+    * un objet Prelevement dans un contexte Serotheque.
+    * Utilisation d'un tooltip pour afficher la totalité des protocoles
     * suivant cette même règle.
     * S'adapate au grid (Row) ou a listbox (Listitem)
     * @param Row row
@@ -757,7 +808,7 @@ public final class ObjectTypesFormatters
          final Iterator<Protocole> protosIt = protocoles.iterator();
 
          final Label c1Label = new Label(protosIt.next().getNom());
-         // dessine le label avec un lien vers popup 
+         // dessine le label avec un lien vers popup
          if(protosIt.hasNext()){
             final Hlayout labelAndLinkBox = new Hlayout();
             labelAndLinkBox.setSpacing("5px");

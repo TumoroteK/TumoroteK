@@ -51,7 +51,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * @version 2.11
  *
  */
-public interface UiRequeteDao extends GenericDaoJpa<UiRequete, Integer>
+public interface UiRequeteDao extends GenericDaoJpa<UiRequete, Integer> //FIXME Class non utilisée ?? A quoi sert-elle ?
 {
 
    /**

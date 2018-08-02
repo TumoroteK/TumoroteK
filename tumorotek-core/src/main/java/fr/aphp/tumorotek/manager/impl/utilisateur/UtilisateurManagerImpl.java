@@ -156,7 +156,27 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 
    @Override
    public List<Utilisateur> findByArchiveManager(final boolean archive, final List<Plateforme> pfs){
-      return utilisateurDao.findByOrderWithArchive(archive, pfs);
+      return findByArchiveManager(archive, pfs, false);
+   }
+
+   /*
+    * (non-Javadoc)
+    * @see fr.aphp.tumorotek.manager.utilisateur.UtilisateurManager#findByArchiveManager(boolean, java.util.List, boolean)
+    */
+   @Override
+   public List<Utilisateur> findByArchiveManager(final boolean archive, final List<Plateforme> pfs,
+      final Boolean includeSuperAdmin){
+
+      final List<Utilisateur> users;
+
+      if(includeSuperAdmin){
+         users = utilisateurDao.findByOrderWithArchiveIncludeSuperAdmin(archive, pfs);
+      }else{
+         users = utilisateurDao.findByOrderWithArchiveExcludeSuperAdmin(archive, pfs);
+      }
+
+      return users;
+
    }
 
    /**
@@ -291,10 +311,10 @@ public class UtilisateurManagerImpl implements UtilisateurManager
     * une liste de profils et une liste de plateformes.
     * @param utilisateur Utilisateur pour lequel on veut mettre à jour
     * les associations.
-    * @param profils Liste de tous les profils de l'utilisateur : ceux 
+    * @param profils Liste de tous les profils de l'utilisateur : ceux
     * déjà existant et ceux a creer.
     * @param profilsToCreate Liste des profils a creer.
-    * @param plateformes Liste des plateformes que l'on veut associer a 
+    * @param plateformes Liste des plateformes que l'on veut associer a
     * l'utilisateur.
     */
    public void updateProfilsAndPlateformes(final Utilisateur utilisateur, final List<ProfilUtilisateur> profils,
@@ -421,12 +441,12 @@ public class UtilisateurManagerImpl implements UtilisateurManager
                profilUtilisateurManager.removeObjectManager(objets.get(i));
             }
             //remove cascade codes
-            //				Iterator<CodeSelect> codeSelIt = 
+            //				Iterator<CodeSelect> codeSelIt =
             //									utilisateur.getCodeSelects().iterator();
             //				while (codeSelIt.hasNext()) {
             //					codeSelectManager.removeObjectManager(codeSelIt.next());
             //				}
-            //				Iterator<CodeUtilisateur> codeUIt = 
+            //				Iterator<CodeUtilisateur> codeUIt =
             //								utilisateur.getCodeUtilisateurs().iterator();
             //				while (codeUIt.hasNext()) {
             //					codeUtilisateurManager.removeObjectManager(codeUIt.next());
@@ -564,7 +584,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
             // pour chaque profil
             for(int i = 0; i < profils.size(); i++){
                // si la plateforme de la banque accessible via
-               // ce profil n'est pas ds la liste 
+               // ce profil n'est pas ds la liste
                if(!plateformes.contains(profils.get(i).getBanque().getPlateforme())){
                   plateformes.add(profils.get(i).getBanque().getPlateforme());
                }

@@ -129,7 +129,7 @@ public class PrelevementTypeManagerImpl implements PrelevementTypeManager
    @Override
    public void removeObjectManager(final PrelevementType obj){
       if(obj != null){
-         prelevementTypeDao.removeObject(obj.getPrelevementTypeId());
+         prelevementTypeDao.removeObject(obj.getId());
          log.info("Suppression objet PrelevementType " + obj.toString());
       }else{
          log.warn("Suppression d'un PrelevementType null");
@@ -140,10 +140,10 @@ public class PrelevementTypeManagerImpl implements PrelevementTypeManager
    public boolean findDoublonManager(final PrelevementType o){
       if(o != null){
          final PrelevementType type = o;
-         if(type.getPrelevementTypeId() == null){
+         if(type.getId() == null){
             return prelevementTypeDao.findAll().contains(type);
          }
-         return prelevementTypeDao.findByExcludedId(type.getPrelevementTypeId()).contains(type);
+         return prelevementTypeDao.findByExcludedId(type.getId()).contains(type);
       }
       return false;
    }
@@ -162,12 +162,17 @@ public class PrelevementTypeManagerImpl implements PrelevementTypeManager
 
    @Override
    public List<PrelevementType> findByOrderManager(final Plateforme pf){
-      return prelevementTypeDao.findByOrder(pf);
+      return prelevementTypeDao.findByPfOrder(pf);
    }
 
    @Override
    public PrelevementType findByIdManager(final Integer id){
       return prelevementTypeDao.findById(id);
+   }
+
+   @Override
+   public List<PrelevementType> findByOrderManager(){
+      return prelevementTypeDao.findByOrder();
    }
 
 }

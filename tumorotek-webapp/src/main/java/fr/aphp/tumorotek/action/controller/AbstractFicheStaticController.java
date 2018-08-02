@@ -145,32 +145,6 @@ public abstract class AbstractFicheStaticController extends AbstractFicheControl
          prepareDeleteObject();
 
          openDeleteWindow(page, getDeleteMessage(), isCascadable(), isFantomable(), isDeletable(), self, false);
-         //			
-         //			// on fait apparaître un fenêtre demandant à l'utilisateur 
-         //			// s'il est sûr de vouloir supprimer l'objet.
-         //			try {
-         //				if (Messagebox.show(ObjectTypesFormatters.getLabel(
-         //						"message.deletion.message", 
-         //						new String[]{Labels
-         //							.getLabel(getDeletionMessage())}), 
-         //						Labels.getLabel("message.deletion.title"), 
-         //						Messagebox.YES | Messagebox.NO, 
-         //						Messagebox.QUESTION) == Messagebox.YES) {
-         //				
-         //					// suppression du patient
-         //					removeObject();
-         //
-         //					if (getObjectTabController().getListe() != null) {
-         //						// on enlève l'échantillon de la liste
-         //						getObjectTabController().getListe().
-         //							removeFromObjectList(getObject());
-         //					}
-         //					getObjectTabController().clearStaticFiche();
-         //					getObjectTabController().switchToOnlyListeMode();
-         //				}
-         //			} catch (InterruptedException e) {
-         //				log.error(e);
-         //			}	
       }
    }
 
@@ -207,22 +181,6 @@ public abstract class AbstractFicheStaticController extends AbstractFicheControl
             getObjectTabController().clearStaticFiche();
             getObjectTabController().switchToOnlyListeMode();
          }
-
-         //			// update de l'objet parent
-         //			if (!getObjectTabController()
-         //					.getReferencingObjectControllers().isEmpty()
-         //												&& parent != null) {
-         //				for (int i = 0; i < getObjectTabController()
-         //							.getReferencingObjectControllers().size(); i++) {
-         //					if (getObjectTabController()
-         //							.getReferencingObjectControllers()
-         //												.get(i).getListe() != null) {
-         //						getObjectTabController()
-         //							.getReferencingObjectControllers().get(i).getListe()
-         //						.updateObjectGridListFromOtherPage(parent, true);
-         //					}
-         //				}
-         //			}
 
          // update de la liste des parents
          getObjectTabController().updateParentsReferences(parents);
@@ -508,72 +466,6 @@ public abstract class AbstractFicheStaticController extends AbstractFicheControl
       this.isAdmin = isA;
    }
 
-   //	/**
-   //	 * Ouvre la modale contenant le formulaire permettant d'enregistrer 
-   //	 * ou de modifier un retour.
-   //	 */
-   //	public void openListRetourModale(TKAnnotableObject obj) {
-   //		if (!isBlockModal()) {
-   //			
-   //			setBlockModal(true);
-   //			
-   //			// nouvelle fenêtre
-   //			final Window win = new Window();
-   //			win.setVisible(false);
-   //			win.setId("lwinRetourModal");
-   //			win.setPage(page);
-   //			win.setPosition("center,top");
-   //			win.setHeight("350px");
-   //			win.setWidth("650px");
-   //			win.setMaximizable(true);
-   //			win.setSizable(true);
-   //			
-   //			win.setTitle(Labels.getLabel("listeRetour.title"));
-   //			win.setBorder("normal");
-   //			win.setClosable(true);
-   //
-   //			final HtmlMacroComponent ua = (HtmlMacroComponent)
-   //				 page.getComponentDefinition("listeRetoursModale", false)
-   //											.newInstance(page, null);
-   //			
-   //			ua.setParent(win);
-   //			ua.setId("lRetourModalMacro");
-   //			ua.applyProperties();
-   //			ua.afterCompose();
-   //			ua.setVisible(false);
-   //			
-   //			((ListeRetour) ua
-   //					.getFellow("lwinRetour")
-   //					.getAttributeOrFellow("lwinRetour$composer", true))
-   //						.setEmbedded(false);
-   //			
-   //			((ListeRetour) ua
-   //				.getFellow("lwinRetour")
-   //				.getAttributeOrFellow("lwinRetour$composer", true))
-   //					.setObject(obj);
-   //				
-   //			win.addEventListener("onTimed", new EventListener<Event>() {
-   //				public void onEvent(Event event) throws Exception {
-   //					ua.setVisible(true);
-   //				}
-   //			});
-   //			Timer timer = new Timer();
-   //			timer.setDelay(200);
-   //			timer.setRepeats(false);
-   //			timer.addForward("onTimer", timer.getParent(), "onTimed");
-   //			win.appendChild(timer);
-   //			timer.start();
-   //			try {
-   //				win.onModal();
-   //				setBlockModal(false);
-   //
-   //			} catch (SuspendNotAllowedException e) {
-   //				log.error(e);
-   //			} catch (InterruptedException e) {
-   //				log.error(e);
-   //			}
-   //		}
-   //	}
 
    public boolean getTtesCollections(){
       return SessionUtils.getSelectedBanques(sessionScope).size() > 1;

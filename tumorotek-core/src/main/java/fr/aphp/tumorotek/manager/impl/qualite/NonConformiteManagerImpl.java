@@ -140,11 +140,12 @@ public class NonConformiteManagerImpl implements NonConformiteManager
 
    @Override
    public boolean findDoublonManager(final NonConformite nonConformite){
+      
       if(nonConformite != null){
-         if(nonConformite.getNonConformiteId() == null){
+         if(nonConformite.getId() == null){
             return nonConformiteDao.findAll().contains(nonConformite);
          }else{
-            return nonConformiteDao.findByExcludedId(nonConformite.getNonConformiteId()).contains(nonConformite);
+            return nonConformiteDao.findByExcludedId(nonConformite.getId()).contains(nonConformite);
          }
       }else{
          return false;
@@ -153,6 +154,7 @@ public class NonConformiteManagerImpl implements NonConformiteManager
 
    @Override
    public boolean isUsedObjectManager(final NonConformite nonConformite){
+      
       final List<ObjetNonConforme> objs = objetNonConformeDao.findByNonConformite(nonConformite);
 
       return (objs.size() > 0);
@@ -160,6 +162,7 @@ public class NonConformiteManagerImpl implements NonConformiteManager
 
    @Override
    public void createObjectManager(final NonConformite nonConformite){
+      
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(nonConformite.getPlateforme() == null){
@@ -188,6 +191,7 @@ public class NonConformiteManagerImpl implements NonConformiteManager
 
    @Override
    public void updateObjectManager(final NonConformite nonConformite){
+      
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(nonConformite.getPlateforme() == null){
@@ -216,6 +220,7 @@ public class NonConformiteManagerImpl implements NonConformiteManager
 
    @Override
    public void removeObjectManager(final NonConformite nonConformite){
+      
       if(nonConformite != null){
          // suppression des objets non conforme
          final List<ObjetNonConforme> objs = objetNonConformeDao.findByNonConformite(nonConformite);
@@ -223,7 +228,7 @@ public class NonConformiteManagerImpl implements NonConformiteManager
             objetNonConformeManager.removeObjectManager(objs.get(i));
          }
 
-         nonConformiteDao.removeObject(nonConformite.getNonConformiteId());
+         nonConformiteDao.removeObject(nonConformite.getId());
          log.info("Suppression de l'objet NonConformite : " + nonConformite.toString());
       }
    }
@@ -238,5 +243,15 @@ public class NonConformiteManagerImpl implements NonConformiteManager
          }
       }
       return nonConfs;
+   }
+
+   @Override
+   public List<NonConformite> findByOrderManager(Plateforme pf){
+      return nonConformiteDao.findByPfOrder(pf);
+   }
+
+   @Override
+   public List<NonConformite> findByOrderManager(){
+      return nonConformiteDao.findByOrder();
    }
 }

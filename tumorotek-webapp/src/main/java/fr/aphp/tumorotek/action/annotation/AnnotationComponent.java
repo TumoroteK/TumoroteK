@@ -40,12 +40,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -961,7 +963,6 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
                doubleV = new BigDecimal(numV);
                annoValue.setValue(ObjectTypesFormatters.doubleLitteralFormatter(doubleV.doubleValue()));
             }
-            annoValue.setValue(null);
             ((Decimalbox) box).setValue(doubleV);
          }
       }else{
@@ -1000,7 +1001,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
       String newVal = null;
 
       if(((Decimalbox) box).getValue() != null){
-         newVal = ObjectTypesFormatters.doubleLitteralFormatter(((Decimalbox) box).getValue().doubleValue());
+         newVal = ObjectTypesFormatters.doubleLitteralFormatter(((Decimalbox) box).getValue().doubleValue(), DecimalFormatSymbols.getInstance(Locale.ENGLISH));
       }else if(isCombined && combineBox.isChecked()){
          newVal = "system.tk.unknownExistingValue";
       }
@@ -1582,6 +1583,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
             && ("Patient".equals(getFicheAnnotation().getObject().entiteNom())
                || "Prelevement".equals(getFicheAnnotation().getObject().entiteNom())
                || "Echantillon".equals(getFicheAnnotation().getObject().entiteNom())
+               || "ProdDerive".equals(getFicheAnnotation().getObject().entiteNom())
                || "Cession".equals(getFicheAnnotation().getObject().entiteNom()))){
             if(getFicheAnnotation().getObject().getBanque() != null){
                return getFicheAnnotation().getObject().getBanque();
@@ -2488,7 +2490,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
             break;
          case "alphanum":
             if(value.getValue() != null && value.getValue() instanceof BigDecimal){
-               value.setValue(ObjectTypesFormatters.doubleLitteralFormatter(((BigDecimal) value.getValue()).doubleValue()));
+               value.setValue(ObjectTypesFormatters.doubleLitteralFormatter(((BigDecimal) value.getValue()).doubleValue(), DecimalFormatSymbols.getInstance(Locale.ENGLISH)));
             }
             break;
          case "multiThes":

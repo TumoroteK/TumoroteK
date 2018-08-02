@@ -37,13 +37,13 @@ package fr.aphp.tumorotek.action.prelevement.serotk;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ext.Selectable;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.constraints.ConstWord;
@@ -59,7 +59,8 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * Controller créé le 23/06/2010.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @since 2.0
+ * @version 2.2.0
  *
  */
 public class FichePrelevementEditSero extends FichePrelevementEdit
@@ -71,7 +72,6 @@ public class FichePrelevementEditSero extends FichePrelevementEdit
 
    private Listbox protocolesBox;
    private final List<Protocole> protocoles = new ArrayList<>();
-   private Set<Listitem> selectedProtocoles = new HashSet<>();
 
    private PrelevementSero delegate = null;
 
@@ -90,14 +90,6 @@ public class FichePrelevementEditSero extends FichePrelevementEdit
 
    public List<Protocole> getProtocoles(){
       return protocoles;
-   }
-
-   public Set<Listitem> getSelectedProtocoles(){
-      return selectedProtocoles;
-   }
-
-   public void setSelectedProtocoles(final Set<Listitem> sR){
-      this.selectedProtocoles = sR;
    }
 
    @Override
@@ -120,9 +112,8 @@ public class FichePrelevementEditSero extends FichePrelevementEdit
 
    private Set<Protocole> findSelectedProtocoles(){
       final Set<Protocole> rs = new HashSet<>();
-      final Iterator<Listitem> its = protocolesBox.getSelectedItems().iterator();
-      while(its.hasNext()){
-         rs.add(protocoles.get(protocolesBox.getItems().indexOf(its.next())));
+      for(Listitem listitem : protocolesBox.getSelectedItems()){
+         rs.add(protocoles.get(protocolesBox.getItems().indexOf(listitem)));
       }
       return rs;
    }
@@ -132,16 +123,9 @@ public class FichePrelevementEditSero extends FichePrelevementEdit
     * @param protos liste à selectionner
     */
    public void selectProtocoles(final List<Protocole> protos){
-
-      selectedProtocoles.clear();
-
       if(protos != null){
-         for(int i = 0; i < protos.size(); i++){
-            if(protocoles.indexOf(protos.get(i)) >= 0){
-               selectedProtocoles.add(protocolesBox.getItemAtIndex(protocoles.indexOf(protos.get(i))));
-            }
-         }
-         protocolesBox.setSelectedItems(selectedProtocoles);
+         ((Selectable<Protocole>) protocolesBox.getModel()).setSelection(protos);
+
          getBinder().loadAttribute(protocolesBox, "selectedItems");
       }else{
          getBinder().loadComponent(protocolesBox);
@@ -174,7 +158,6 @@ public class FichePrelevementEditSero extends FichePrelevementEdit
 
    @Override
    public void clearProtocoles(){
-      selectedProtocoles.clear();
       getBinder().loadComponent(protocolesBox);
    }
 

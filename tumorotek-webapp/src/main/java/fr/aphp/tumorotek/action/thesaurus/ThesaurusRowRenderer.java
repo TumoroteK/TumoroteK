@@ -40,26 +40,7 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 
-import fr.aphp.tumorotek.model.cession.CessionExamen;
-import fr.aphp.tumorotek.model.cession.DestructionMotif;
-import fr.aphp.tumorotek.model.cession.ProtocoleType;
-import fr.aphp.tumorotek.model.coeur.echantillon.EchanQualite;
-import fr.aphp.tumorotek.model.coeur.echantillon.EchantillonType;
-import fr.aphp.tumorotek.model.coeur.echantillon.ModePrepa;
-import fr.aphp.tumorotek.model.coeur.prelevement.ConditMilieu;
-import fr.aphp.tumorotek.model.coeur.prelevement.ConditType;
-import fr.aphp.tumorotek.model.coeur.prelevement.ConsentType;
-import fr.aphp.tumorotek.model.coeur.prelevement.Nature;
-import fr.aphp.tumorotek.model.coeur.prelevement.PrelevementType;
-import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
-import fr.aphp.tumorotek.model.coeur.prodderive.ModePrepaDerive;
-import fr.aphp.tumorotek.model.coeur.prodderive.ProdQualite;
-import fr.aphp.tumorotek.model.coeur.prodderive.ProdType;
-import fr.aphp.tumorotek.model.contexte.Categorie;
-import fr.aphp.tumorotek.model.contexte.Specialite;
-import fr.aphp.tumorotek.model.qualite.NonConformite;
-import fr.aphp.tumorotek.model.stockage.ConteneurType;
-import fr.aphp.tumorotek.model.stockage.EnceinteType;
+import fr.aphp.tumorotek.model.TKThesaurusObject;
 
 /**
  * Renderer permettant d'afficher les valeurs d'un thésaurus.
@@ -75,8 +56,10 @@ public class ThesaurusRowRenderer implements RowRenderer<Object>
    @Override
    public void render(final Row row, final Object data, final int index) throws Exception{
 
+      final TKThesaurusObject thesaurusObject = (TKThesaurusObject)data;
+      
       // valeur row
-      final Label valLabel = new Label(getValeur(data));
+      final Label valLabel = new Label(thesaurusObject.getNom());
       valLabel.setParent(row);
 
       if(!isAdmin){
@@ -102,60 +85,6 @@ public class ThesaurusRowRenderer implements RowRenderer<Object>
          delImg.setParent(row);
       }
 
-   }
-
-   /**
-    * Renvoie le nom à afficher en fonction du thésaurus.
-    * @param data Valeur du thésaurus.
-    * @return Valeur à afficher.
-    */
-   public String getValeur(final Object data){
-      final String thesaurus = data.getClass().getSimpleName();
-      // valeur
-      String valeur = "";
-      if(thesaurus.equals("Nature")){
-         valeur = ((Nature) data).getNature();
-      }else if(thesaurus.equals("PrelevementType")){
-         valeur = ((PrelevementType) data).getType();
-      }else if(thesaurus.equals("EchantillonType")){
-         valeur = ((EchantillonType) data).getType();
-      }else if(thesaurus.equals("EchanQualite")){
-         valeur = ((EchanQualite) data).getEchanQualite();
-      }else if(thesaurus.equals("ProdType")){
-         valeur = ((ProdType) data).getType();
-      }else if(thesaurus.equals("ProdQualite")){
-         valeur = ((ProdQualite) data).getProdQualite();
-      }else if(thesaurus.equals("ConditType")){
-         valeur = ((ConditType) data).getType();
-      }else if(thesaurus.equals("ConditMilieu")){
-         valeur = ((ConditMilieu) data).getMilieu();
-      }else if(thesaurus.equals("ConsentType")){
-         valeur = ((ConsentType) data).getType();
-      }else if(thesaurus.equals("Risque")){
-         valeur = ((Risque) data).getNom();
-      }else if(thesaurus.equals("ModePrepa")){
-         valeur = ((ModePrepa) data).getNom();
-      }else if(thesaurus.equals("ModePrepaDerive")){
-         valeur = ((ModePrepaDerive) data).getNom();
-      }else if(thesaurus.equals("CessionExamen")){
-         valeur = ((CessionExamen) data).getExamen();
-      }else if(thesaurus.equals("DestructionMotif")){
-         valeur = ((DestructionMotif) data).getMotif();
-      }else if(thesaurus.equals("ProtocoleType")){
-         valeur = ((ProtocoleType) data).getType();
-      }else if(thesaurus.equals("Specialite")){
-         valeur = ((Specialite) data).getNom();
-      }else if(thesaurus.equals("Categorie")){
-         valeur = ((Categorie) data).getNom();
-      }else if(thesaurus.equals("ConteneurType")){
-         valeur = ((ConteneurType) data).getType();
-      }else if(thesaurus.equals("EnceinteType")){
-         valeur = ((EnceinteType) data).getType();
-      }else if(thesaurus.contains("NonConformite")){
-         valeur = ((NonConformite) data).getNom();
-      }
-
-      return valeur;
    }
 
    public boolean isAdmin(){

@@ -45,6 +45,7 @@ import fr.aphp.tumorotek.dao.coeur.patient.PatientDao;
 import fr.aphp.tumorotek.dao.coeur.prelevement.PrelevementDao;
 import fr.aphp.tumorotek.dao.contexte.CollaborateurDao;
 import fr.aphp.tumorotek.dao.contexte.ContexteDao;
+import fr.aphp.tumorotek.dao.contexte.DiagnosticDao;
 import fr.aphp.tumorotek.dao.utilisateur.UtilisateurDao;
 import fr.aphp.tumorotek.manager.coeur.patient.MaladieManager;
 import fr.aphp.tumorotek.manager.coeur.patient.PatientManager;
@@ -77,6 +78,7 @@ public class MaladieManagerTest extends AbstractManagerTest
    private PrelevementDao prelevementDao;
    private UtilisateurDao utilisateurDao;
    private ContexteDao contexteDao;
+   private DiagnosticDao diagnosticDao;
 
    public MaladieManagerTest(){}
 
@@ -106,6 +108,10 @@ public class MaladieManagerTest extends AbstractManagerTest
 
    public void setContexteDao(final ContexteDao cDao){
       this.contexteDao = cDao;
+   }
+   
+   public void setDiagnosticDao(final DiagnosticDao cDao){
+      this.diagnosticDao = cDao;
    }
 
    /**
@@ -459,7 +465,7 @@ public class MaladieManagerTest extends AbstractManagerTest
       m.setLibelle("maldelegate");
       m.setCode("xde");
       MaladieSero sero = new MaladieSero();
-      sero.setDiagnostic("C");
+      sero.setDiagnostic(diagnosticDao.findById(1));
       sero.setContexte(contexteDao.findById(1));
       sero.setMaladie(m);
       m.setDelegate(sero);
@@ -474,7 +480,7 @@ public class MaladieManagerTest extends AbstractManagerTest
       assertTrue(m.getDelegate() == null);
 
       sero = new MaladieSero();
-      sero.setDiagnostic("C");
+      sero.setDiagnostic(diagnosticDao.findById(1));
       sero.setContexte(contexteDao.findById(1));
       sero.setMaladie(m);
       m.setDelegate(sero);
@@ -482,7 +488,7 @@ public class MaladieManagerTest extends AbstractManagerTest
       maladieManager.createOrUpdateObjectManager(m, null, null, u, "modification");
       m = maladieManager.findByCodeLikeManager("xde", true).get(0);
       assertTrue(m.getDelegate() != null);
-      assertTrue(((MaladieSero) m.getDelegate()).getDiagnostic().equals("C"));
+      assertTrue(((MaladieSero) m.getDelegate()).getDiagnostic().equals(diagnosticDao.findById(1)));
 
       maladieManager.removeObjectManager(m, null, u);
 

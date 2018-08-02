@@ -143,23 +143,18 @@ public class DureeComponent extends Div
     * Cree la structure du composant
     */
    private void buildComponent(){
-      anneesBox.setId("anneeBox");
       anneesBox.setWidth("15px");
       anneesBox.setValue(0L);
 
-      moisBox.setId("moisBox");
       moisBox.setWidth("15px");
       moisBox.setValue(0L);
 
-      joursBox.setId("joursBox");
       joursBox.setWidth("15px");
       joursBox.setValue(0L);
 
-      heuresBox.setId("heuresBox");
       heuresBox.setWidth("15px");
       heuresBox.setValue(0L);
 
-      minutesBox.setId("minutesBox");
       minutesBox.setWidth("15px");
       minutesBox.setValue(0L);
 

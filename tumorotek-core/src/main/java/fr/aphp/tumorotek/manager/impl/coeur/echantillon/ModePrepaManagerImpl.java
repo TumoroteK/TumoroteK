@@ -144,10 +144,10 @@ public class ModePrepaManagerImpl implements ModePrepaManager
    public boolean findDoublonManager(final ModePrepa obj){
       final ModePrepa mode = obj;
       if(mode != null){
-         if(mode.getModePrepaId() == null){
+         if(mode.getId() == null){
             return modePrepaDao.findAll().contains(mode);
          }
-         return modePrepaDao.findByExcludedId(mode.getModePrepaId()).contains(mode);
+         return modePrepaDao.findByExcludedId(mode.getId()).contains(mode);
       }
       return false;
    }
@@ -199,11 +199,16 @@ public class ModePrepaManagerImpl implements ModePrepaManager
    public void removeObjectManager(final ModePrepa obj){
 
       final ModePrepa mode = obj;
-      modePrepaDao.removeObject(mode.getModePrepaId());
+      modePrepaDao.removeObject(mode.getId());
    }
 
    @Override
    public List<ModePrepa> findByOrderManager(final Plateforme pf){
-      return modePrepaDao.findByOrder(pf);
+      return modePrepaDao.findByPfOrder(pf);
+   }
+
+   @Override
+   public List<ModePrepa> findByOrderManager(){
+      return modePrepaDao.findByOrder();
    }
 }

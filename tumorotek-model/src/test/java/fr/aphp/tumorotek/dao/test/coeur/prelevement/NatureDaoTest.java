@@ -104,13 +104,13 @@ public class NatureDaoTest extends AbstractDaoTest
 
    public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
-      List<? extends TKThesaurusObject> list = natureDao.findByOrder(pf);
+      List<? extends TKThesaurusObject> list = natureDao.findByPfOrder(pf);
       assertTrue(list.size() == 3);
       assertTrue(list.get(2).getNom().equals("TISSU"));
       pf = plateformeDao.findById(2);
-      list = natureDao.findByOrder(pf);
+      list = natureDao.findByPfOrder(pf);
       assertTrue(list.size() == 1);
-      list = natureDao.findByOrder(null);
+      list = natureDao.findByPfOrder(null);
       assertTrue(list.size() == 0);
    }
 

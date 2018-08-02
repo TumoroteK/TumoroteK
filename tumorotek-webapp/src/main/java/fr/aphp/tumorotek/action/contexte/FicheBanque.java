@@ -103,6 +103,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.BanqueTableCodage;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Contexte;
+import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.systeme.Couleur;
 import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
@@ -1829,7 +1830,7 @@ public class FicheBanque extends AbstractFicheCombineController
       // validation
       if(selectedContexte != null && selectedContexte.getContexteId() != null){
          // Pour le contexte BTO, le niveau Maladie est désactivé
-         if("BTO".equals(selectedContexte.getNom())){
+         if(EContexte.BTO.getNom().equals(selectedContexte.getNom())){
             defMaladieBox.setDisabled(true);
             defMaladieBox.setChecked(false);
          }

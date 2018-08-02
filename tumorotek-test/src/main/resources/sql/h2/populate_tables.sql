@@ -35,7 +35,7 @@ INSERT INTO `ENTITE` (`ENTITE_ID`, `NOM`, `MASC`, `ANNOTABLE`) VALUES
   (51, 'DestructionMotif', 1, 0), (52, 'EchantillonType', 1, 0), (53, 'CodeDossier', 1, 0), (54, 'CodeMorpho', 1, 0),
   (55, 'PatientMedecin', 1, 0), (56, 'Terminale', 0, 0), (57, 'Enceinte', 0, 0), (58, 'Fantome', 1, 0),
   (59, 'ModePrepaDerive', 1, 0), (60, 'Transformation', 0, 0), (61, 'Plateforme', 0, 0), (62, 'Risque', 1, 0),
-  (63, 'NonConformite', 0, 0), (64, 'ConformiteType', 0, 0);
+  (63, 'NonConformite', 0, 0), (64, 'ConformiteType', 0, 0), (65, 'Diagnostic', 1, 0);
 
 INSERT INTO `CHAMP_ENTITE` (`CHAMP_ENTITE_ID`, `NOM`, `DATA_TYPE_ID`, `IS_NULL`, `IS_UNIQUE`, `VALEUR_DEFAUT`, `ENTITE_ID`, `CAN_IMPORT`, `QUERY_CHAMP_ID`) VALUES
   (1, 'PatientId', 5, 0, 1, '0', 1, 0, NULL), (2, 'Nip', 1, 1, 0, NULL, 1, 1, NULL),
@@ -90,24 +90,24 @@ INSERT INTO `CHAMP_ENTITE` (`CHAMP_ENTITE_ID`, `NOM`, `DATA_TYPE_ID`, `IS_NULL`,
   (104, 'ProprietaireId', 5, 1, 0, NULL, 34, 0, NULL), (105, 'AutoriseCrossPatient', 2, 1, 0, NULL, 34, 0, NULL),
   (106, 'Archive', 2, 1, 0, NULL, 34, 0, NULL), (107, 'DefMaladies', 2, 1, 0, NULL, 34, 0, NULL),
   (108, 'ContexteId', 5, 1, 0, NULL, 34, 0, NULL), (109, 'PlateformeId', 5, 0, 0, NULL, 34, 0, NULL),
-  (110, 'NatureId', 5, 0, 1, '0', 35, 0, NULL), (111, 'Nature', 1, 0, 1, NULL, 35, 0, NULL),
-  (112, 'ConsentTypeId', 5, 0, 1, '0', 36, 0, NULL), (113, 'Type', 1, 0, 1, NULL, 36, 0, NULL),
+  (110, 'NatureId', 5, 0, 1, '0', 35, 0, NULL), (111, 'Nom', 1, 0, 1, NULL, 35, 0, NULL),
+  (112, 'ConsentTypeId', 5, 0, 1, '0', 36, 0, NULL), (113, 'Nom', 1, 0, 1, NULL, 36, 0, NULL),
   (114, 'PrelevementTypeId', 5, 0, 1, '0', 37, 0, NULL), (115, 'IncaCat', 1, 1, 0, NULL, 37, 0, NULL),
-  (116, 'Type', 1, 0, 1, NULL, 37, 0, NULL), (117, 'ConditMilieuId', 5, 0, 1, '0', 38, 0, NULL),
-  (118, 'Milieu', 1, 0, 1, NULL, 38, 0, NULL), (119, 'UniteId', 5, 0, 1, '0', 39, 0, NULL),
+  (116, 'Nom', 1, 0, 1, NULL, 37, 0, NULL), (117, 'ConditMilieuId', 5, 0, 1, '0', 38, 0, NULL),
+  (118, 'Nom', 1, 0, 1, NULL, 38, 0, NULL), (119, 'UniteId', 5, 0, 1, '0', 39, 0, NULL),
   (120, 'Unite', 1, 0, 1, NULL, 39, 0, NULL), (121, 'Type', 1, 0, 0, NULL, 39, 0, NULL),
   (122, 'ObjetStatutId', 5, 0, 1, '0', 40, 0, NULL), (123, 'Statut', 1, 0, 1, NULL, 40, 0, NULL),
   (124, 'Code', 1, 0, 0, NULL, 41, 0, NULL), (125, 'Libelle', 1, 0, 0, NULL, 41, 0, NULL),
   (126, 'Libelle', 1, 0, 1, NULL, 41, 0, NULL), (127, 'Dictionnaire', 5, 0, 0, NULL, 41, 0, NULL),
   (128, 'TopoParentId', 5, 0, 0, NULL, 41, 0, NULL), (129, 'Morpho', 2, 1, 0, NULL, 41, 0, NULL),
-  (130, 'EchanQualiteId', 5, 0, 1, '0', 42, 0, NULL), (131, 'EchanQualite', 1, 0, 1, NULL, 42, 0, NULL),
+  (130, 'EchanQualiteId', 5, 0, 1, '0', 42, 0, NULL), (131, 'Nom', 1, 0, 1, NULL, 42, 0, NULL),
   (132, 'ModePrepaId', 5, 0, 1, '0', 43, 0, NULL), (133, 'Nom', 1, 0, 1, NULL, 43, 0, NULL),
   (134, 'NomEn', 1, 1, 0, NULL, 43, 0, NULL), (135, 'ReservationId', 5, 0, 1, '0', 44, 0, NULL),
   (136, 'Fin', 3, 1, 0, NULL, 44, 0, NULL), (137, 'Debut', 3, 1, 0, NULL, 44, 0, NULL),
   (138, 'UtilisateurId', 5, 0, 0, NULL, 44, 0, NULL), (139, 'ProdTypeId', 5, 0, 1, '0', 45, 0, NULL),
-  (140, 'Type', 1, 0, 1, NULL, 45, 0, NULL), (141, 'ProdQualiteId', 5, 0, 1, '0', 46, 0, NULL),
-  (142, 'ProdQualite', 1, 0, 1, NULL, 46, 0, NULL), (143, 'ConditTypeId', 5, 0, 1, '0', 47, 0, NULL),
-  (144, 'Type', 1, 0, 1, NULL, 47, 0, NULL), (145, 'CessionId', 5, 0, 1, '0', 5, 0, NULL),
+  (140, 'Nom', 1, 0, 1, NULL, 45, 0, NULL), (141, 'ProdQualiteId', 5, 0, 1, '0', 46, 0, NULL),
+  (142, 'Nom', 1, 0, 1, NULL, 46, 0, NULL), (143, 'ConditTypeId', 5, 0, 1, '0', 47, 0, NULL),
+  (144, 'Nom', 1, 0, 1, NULL, 47, 0, NULL), (145, 'CessionId', 5, 0, 1, '0', 5, 0, NULL),
   (146, 'Numero', 6, 1, 1, NULL, 5, 1, NULL), (147, 'BanqueId', 5, 1, 0, NULL, 5, 0, NULL),
   (148, 'CessionTypeId', 5, 1, 0, NULL, 5, 1, 171), (149, 'DemandeDate', 3, 1, 0, NULL, 5, 1, NULL),
   (150, 'CessionExamenId', 5, 1, 0, NULL, 5, 1, 173), (151, 'ContratId', 5, 1, 0, NULL, 5, 1, 176),
@@ -121,7 +121,7 @@ INSERT INTO `CHAMP_ENTITE` (`CHAMP_ENTITE_ID`, `NOM`, `DATA_TYPE_ID`, `IS_NULL`,
   (166, 'DestructionDate', 3, 1, 0, NULL, 5, 1, NULL), (167, 'Sterile', 2, 1, 0, NULL, 5, 1, NULL),
   (168, 'EtatIncomplet', 2, 1, 0, NULL, 5, 0, NULL), (169, 'Archive', 2, 1, 0, NULL, 5, 0, NULL),
   (170, 'CessionTypeId', 5, 0, 1, '0', 48, 0, NULL), (171, 'Type', 1, 0, 1, NULL, 48, 0, NULL),
-  (172, 'CessionExamenId', 5, 0, 1, '0', 49, 0, NULL), (173, 'Examen', 1, 0, 1, NULL, 49, 0, NULL),
+  (172, 'CessionExamenId', 5, 0, 1, '0', 49, 0, NULL), (173, 'Nom', 1, 0, 1, NULL, 49, 0, NULL),
   (174, 'ExamenEn', 1, 1, 0, NULL, 49, 0, NULL), (175, 'ContratId', 5, 0, 1, '0', 18, 0, NULL),
   (176, 'Numero', 5, 1, 1, NULL, 18, 0, NULL), (177, 'DateDemandeCession', 3, 1, 0, NULL, 18, 0, NULL),
   (178, 'DateValidation', 3, 1, 0, NULL, 18, 0, NULL), (179, 'DateDemandeRedaction', 3, 1, 0, NULL, 18, 0, NULL),
@@ -130,7 +130,7 @@ INSERT INTO `CHAMP_ENTITE` (`CHAMP_ENTITE_ID`, `NOM`, `DATA_TYPE_ID`, `IS_NULL`,
   (184, 'ServiceId', 5, 1, 0, NULL, 18, 0, NULL), (185, 'ProtocoleTypeId', 5, 1, 0, NULL, 18, 0, NULL),
   (186, 'Description', 6, 1, 0, NULL, 18, 0, NULL), (187, 'CessionStatutId', 5, 0, 1, '0', 50, 0, NULL),
   (188, 'Statut', 1, 0, 1, NULL, 50, 0, NULL), (189, 'DestructionMotifId', 5, 0, 1, '0', 51, 0, NULL),
-  (190, 'Motif', 6, 0, 1, NULL, 51, 0, NULL), (191, 'ServiceId', 5, 0, 1, '0', 26, 0, NULL),
+  (190, 'Nom', 6, 0, 1, NULL, 51, 0, NULL), (191, 'ServiceId', 5, 0, 1, '0', 26, 0, NULL),
   (192, 'CoordonneeId', 5, 1, 0, NULL, 26, 0, NULL), (193, 'EtablissementId', 5, 0, 0, NULL, 26, 0, NULL),
   (194, 'Nom', 6, 0, 1, NULL, 26, 0, NULL), (195, 'Archive', 2, 1, 0, NULL, 26, 0, NULL),
   (196, 'CollaborateurId', 5, 0, 1, '0', 27, 0, NULL), (197, 'EtalissementId', 5, 1, 0, NULL, 27, 0, NULL),
@@ -142,7 +142,7 @@ INSERT INTO `CHAMP_ENTITE` (`CHAMP_ENTITE_ID`, `NOM`, `DATA_TYPE_ID`, `IS_NULL`,
   (208, 'ContactPrenom', 1, 1, 0, NULL, 28, 0, NULL), (209, 'ContactTel', 1, 1, 0, NULL, 28, 0, NULL),
   (210, 'ContactFax', 1, 1, 0, NULL, 28, 0, NULL), (211, 'ContactMail', 6, 1, 0, NULL, 28, 0, NULL),
   (212, 'Archive', 2, 1, 0, NULL, 28, 0, NULL), (213, 'EchantillonTypeId', 5, 0, 1, '0', 52, 0, NULL),
-  (214, 'IncaCat', 1, 1, 0, NULL, 52, 0, NULL), (215, 'Type', 1, 0, 1, NULL, 52, 0, NULL),
+  (214, 'IncaCat', 1, 1, 0, NULL, 52, 0, NULL), (215, 'Nom', 1, 0, 1, NULL, 52, 0, NULL),
   (216, 'CodeAssigneId', 5, 1, 0, NULL, 3, 0, NULL), (217, 'QuantiteCedee', 5, 1, 0, NULL, 5, 0, NULL),
   (218, 'QuantiteDemandee', 5, 1, 0, NULL, 5, 0, NULL), (219, 'QuantiteRestante', 5, 1, 0, NULL, 5, 0, NULL),
   (220, 'NbEchantillons', 1, 1, 0, NULL, 2, 0, NULL), (221, 'SystemeDefaut', 2, 0, 0, '0', 7, 0, NULL),
@@ -169,7 +169,8 @@ INSERT INTO `CHAMP_ENTITE` (`CHAMP_ENTITE_ID`, `NOM`, `DATA_TYPE_ID`, `IS_NULL`,
   (262, 'ConformeCession.Raison', 1, 1, 0, NULL, 3, 1, 258),
   (263, 'ConformeTraitement.Raison', 1, 1, 0, NULL, 8, 1, 258),
   (264, 'ConformeCession.Raison', 1, 1, 0, NULL, 8, 1, 258), (265, 'TempStock', 5, 1, 0, NULL, 3, 0, NULL),
-  (266, 'TempStock', 5, 1, 0, NULL, 8, 0, NULL);
+  (266, 'TempStock', 5, 1, 0, NULL, 8, 0, NULL), (267, 'Nom', 1, 0, 1, NULL, 17, 1, NULL), 
+  (268, 'Nom', 1, 0, 1, NULL, 65, 1, NULL);
 
 INSERT INTO `NIVEAU_VALIDATION` (`NIVEAU_VALIDATION_ID`, `LIBELLE`, `COULEUR`, `CLE_MESSAGE`, `CRITICITE`) VALUES (1, 'UNDEFINED', 'red', 'validation.popup.message.undefined', 0);
 INSERT INTO `NIVEAU_VALIDATION` (`NIVEAU_VALIDATION_ID`, `LIBELLE`, `COULEUR`, `CLE_MESSAGE`, `CRITICITE`) VALUES (2, 'KO', 'red', 'validation.popup.message.ko', 1);
@@ -205,5 +206,14 @@ INSERT INTO `PRELEVEMENT` (`PRELEVEMENT_ID`, `BANQUE_ID`, `CODE`, `NATURE_ID`, `
   
 INSERT INTO `ANNOTATION_VALEUR` (`ANNOTATION_VALEUR_ID`, `CHAMP_ANNOTATION_ID`, `OBJET_ID`, `ALPHANUM`, `TEXTE`, `ANNO_DATE`, `BOOL`, `ITEM_ID`, `FICHIER_ID`, `BANQUE_ID`) VALUES
   (1, 1, 1, 'Valeur annotation Prélèvement 1', null, null, null, null, null, 1);
+
+  --
+-- Dumping data for table `CHAMP_DELEGUE`
+--
+INSERT INTO CHAMP_DELEGUE(`CHAMP_DELEGUE_ID`, `NOM`, `DATA_TYPE_ID`, `ENTITE_ID`, `CONTEXTE`)
+VALUES
+  (1, 'Libelle', 1, 2, 'SEROLOGIE'),
+  (2, 'Protocoles', 7, 2, 'SEROLOGIE'),
+  (3, 'Diagnostic', 1, 7, 'SEROLOGIE');
 
 SET FOREIGN_KEY_CHECKS=1;

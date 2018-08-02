@@ -38,9 +38,12 @@ package fr.aphp.tumorotek.manager.systeme;
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Set;
 
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
+import fr.aphp.tumorotek.manager.impl.systeme.MvFichier;
 import fr.aphp.tumorotek.model.TKFileSettableObject;
+import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.systeme.Fichier;
 
 /**
@@ -49,7 +52,7 @@ import fr.aphp.tumorotek.model.systeme.Fichier;
  * Interface créée le 23/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.2.0
  *
  */
 public interface FichierManager
@@ -161,5 +164,17 @@ public interface FichierManager
     */
    void createOrUpdateFileForObject(TKFileSettableObject obj, Fichier fileRef, InputStream stream, String pathBase,
       List<File> filesCreated, List<File> filesToDelete);
+   
+	/**
+	 * [Correctif bug TK-155]
+	 * Change le fichier de collection, lors du changement de collection d'un objet et de 
+	 * ses annotations.
+	 * Met à jour le path et déplace physiquement le fichier dans le système de stockage. 
+	 * @param file Fichier
+	 * @param dest Collection de destination
+	 * @param liste de déplacements (unique) de fichiers à programmer 
+	 * @since 2.2.0
+	 */
+	void switchBanqueManager(Fichier file, Banque dest, Set<MvFichier> filesToMove);
 
 }

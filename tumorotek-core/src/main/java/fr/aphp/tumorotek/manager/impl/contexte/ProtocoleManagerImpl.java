@@ -128,7 +128,7 @@ public class ProtocoleManagerImpl implements ProtocoleManager
    @Override
    public void removeObjectManager(final Protocole obj){
       if(obj != null){
-         protocoleDao.removeObject(obj.getProtocoleId());
+         protocoleDao.removeObject(obj.getId());
          log.info("Suppression objet Protocole " + obj.toString());
       }else{
          log.warn("Suppression d'un Protocole null");
@@ -139,10 +139,10 @@ public class ProtocoleManagerImpl implements ProtocoleManager
    public boolean findDoublonManager(final Protocole o){
       if(o != null){
          final Protocole pt = o;
-         if(pt.getProtocoleId() == null){
+         if(pt.getId() == null){
             return protocoleDao.findAll().contains(pt);
          }
-         return protocoleDao.findByExcludedId(pt.getProtocoleId()).contains(pt);
+         return protocoleDao.findByExcludedId(pt.getId()).contains(pt);
       }
       return false;
    }
@@ -155,11 +155,16 @@ public class ProtocoleManagerImpl implements ProtocoleManager
 
    @Override
    public List<Protocole> findByOrderManager(final Plateforme pf){
-      return protocoleDao.findByOrder(pf);
+      return protocoleDao.findByPfOrder(pf);
    }
 
    @Override
    public Protocole findByIdManager(final Integer id){
-      return null;
+      return protocoleDao.findById(id);
+   }
+
+   @Override
+   public List<Protocole> findByOrderManager(){
+      return protocoleDao.findByOrder();
    }
 }

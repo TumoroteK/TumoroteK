@@ -27,7 +27,7 @@ public class FichePatientEditBTO extends FichePatientEdit
    }
 
    /**
-    * Prepare les valeurs des attributs qui seront sauvées avec le 
+    * Prepare les valeurs des attributs qui seront sauvées avec le
     * bean patient.
     * Recupere la liste de referents depuis le composant embarqué.
     * @param boolean specifiant si la liste de medecins doit être passée
@@ -35,6 +35,7 @@ public class FichePatientEditBTO extends FichePatientEdit
     */
    @Override
    public void prepareDataBeforeSave(final boolean setMedecins){
+
       setEmptyToNulls();
       setFieldsToUpperCase();
       recordDateEtatDeces();
@@ -48,10 +49,6 @@ public class FichePatientEditBTO extends FichePatientEdit
          }
          if(patient.getNomNaissance() == null){
             patient.setNomNaissance("Inconnu");
-            // Groupe sanguin pass� en annotations
-            //	            if(null != groupeSanguinBox && !groupeSanguinBox.getSelectedItems().isEmpty()){
-            //	               patient.setGroupeSanguin(groupeSanguinBox.getSelectedItem().getLabel());
-            //	            }
          }
       }
 
@@ -69,6 +66,7 @@ public class FichePatientEditBTO extends FichePatientEdit
          }
          this.patient.setPatientMedecins(pmeds);
       }
+
    }
 
    @Override
@@ -80,4 +78,5 @@ public class FichePatientEditBTO extends FichePatientEdit
       final List<LabelCodeItem> l = PatientUtils.getEtats();
       return remove(l);
    }
+
 }

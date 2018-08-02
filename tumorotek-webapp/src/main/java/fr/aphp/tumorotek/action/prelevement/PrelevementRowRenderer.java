@@ -62,11 +62,11 @@ import fr.aphp.tumorotek.model.interfacage.Emetteur;
  * @author Mathieu BARTHELEMY
  * @version 2.0.10
  */
-public class PrelevementRowRenderer extends TKSelectObjectRenderer
+public class PrelevementRowRenderer extends TKSelectObjectRenderer<Prelevement>
 {
 
    private boolean accessPatient = true;
-   private List<Emetteur> emetteurs = new ArrayList<>();
+   protected List<Emetteur> emetteurs = new ArrayList<>();
    private Integer nbEchansRestants = 0;
 
    public PrelevementRowRenderer(final boolean select, final boolean cols){
@@ -83,7 +83,7 @@ public class PrelevementRowRenderer extends TKSelectObjectRenderer
    }
 
    @Override
-   public void render(final Row row, final Object data, final int index){
+   public void render(final Row row, final Prelevement data, final int index){
 
       // dessine le checkbox
       super.render(row, data, index);

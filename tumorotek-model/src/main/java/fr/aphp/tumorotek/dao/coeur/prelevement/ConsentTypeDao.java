@@ -38,7 +38,7 @@ package fr.aphp.tumorotek.dao.coeur.prelevement;
 import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
-import fr.aphp.tumorotek.dao.TKThesaurusDao;
+import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.coeur.prelevement.ConsentType;
 
 /**
@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.ConsentType;
  * @version 2.0
  *
  */
-public interface ConsentTypeDao extends GenericDaoJpa<ConsentType, Integer>, TKThesaurusDao<ConsentType>
+public interface ConsentTypeDao extends GenericDaoJpa<ConsentType, Integer>, PfDependantTKThesaurusDao<ConsentType>
 {
 
    /**

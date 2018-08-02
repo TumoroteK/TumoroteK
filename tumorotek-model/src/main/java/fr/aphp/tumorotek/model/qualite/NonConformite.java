@@ -35,23 +35,25 @@
  **/
 package fr.aphp.tumorotek.model.qualite;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 
 /**
  *
@@ -64,40 +66,46 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  */
 @Entity
 @Table(name = "NON_CONFORMITE")
-@NamedQueries(value = {
-   @NamedQuery(name = "NonConformite.findByTypeAndPf",
-      query = "SELECT n FROM NonConformite n " + "WHERE n.conformiteType = ?1 " + "AND n.plateforme = ?2 " + "ORDER BY n.nom"),
-   @NamedQuery(name = "NonConformite.findByTypePfAndNom",
-      query = "SELECT n FROM NonConformite n " + "WHERE n.conformiteType = ?1 " + "AND n.plateforme = ?2 " + "AND n.nom like ?3 "
-         + "ORDER BY n.nom"),
-   @NamedQuery(name = "NonConformite.findByExcludedId",
-      query = "SELECT n FROM NonConformite n " + "WHERE n.nonConformiteId != ?1")})
-public class NonConformite implements java.io.Serializable
+@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "NON_CONFORMITE_ID"))})
+@GenericGenerator(name = "autoincrement", strategy = "increment")
+@NamedQueries(
+   value = {@NamedQuery(name = "NonConformite.findByPfOrder", query = "FROM NonConformite n WHERE n.plateforme=?1 ORDER BY n.nom"),
+      @NamedQuery(name = "NonConformite.findByOrder", query = "FROM NonConformite n ORDER BY n.nom"),
+      @NamedQuery(name = "NonConformite.findByTypeAndPf",
+         query = "SELECT n FROM NonConformite n " + "WHERE n.conformiteType = ?1 " + "AND n.plateforme = ?2 " + "ORDER BY n.nom"),
+      @NamedQuery(name = "NonConformite.findByTypePfAndNom",
+         query = "SELECT n FROM NonConformite n " + "WHERE n.conformiteType = ?1 " + "AND n.plateforme = ?2 "
+            + "AND n.nom like ?3 " + "ORDER BY n.nom"),
+      @NamedQuery(name = "NonConformite.findByExcludedId", query = "SELECT n FROM NonConformite n " + "WHERE n.id != ?1")})
+public class NonConformite extends AbstractPfDependantThesaurusObject implements Serializable
 {
 
    private static final long serialVersionUID = -6139596888096490682L;
 
-   private Integer nonConformiteId;
    private ConformiteType conformiteType;
-   private Plateforme plateforme;
-   private String nom;
-
    private Set<ObjetNonConforme> objetNonConformes = new HashSet<>();
 
    public NonConformite(){
       super();
    }
 
-   @Id
-   @Column(name = "NON_CONFORMITE_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
+   /**
+    * @deprecated Utiliser {@link #getId()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public Integer getNonConformiteId(){
-      return nonConformiteId;
+      return this.getId();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setId(Integer)}
+    * @param id
+    */
+   @Deprecated
    public void setNonConformiteId(final Integer id){
-      this.nonConformiteId = id;
+      this.setId(id);
    }
 
    @ManyToOne()
@@ -110,24 +118,6 @@ public class NonConformite implements java.io.Serializable
       this.conformiteType = c;
    }
 
-   @ManyToOne()
-   @JoinColumn(name = "PLATEFORME_ID", nullable = false)
-   public Plateforme getPlateforme(){
-      return plateforme;
-   }
-
-   public void setPlateforme(final Plateforme p){
-      this.plateforme = p;
-   }
-
-   @Column(name = "NOM", nullable = false, length = 200)
-   public String getNom(){
-      return nom;
-   }
-
-   public void setNom(final String n){
-      this.nom = n;
-   }
 
    @OneToMany(mappedBy = "nonConformite")
    public Set<ObjetNonConforme> getObjetNonConformes(){
@@ -148,10 +138,10 @@ public class NonConformite implements java.io.Serializable
          return false;
       }
       final NonConformite test = (NonConformite) obj;
-      return ((this.nom == test.nom || (this.nom != null && this.nom.equals(test.nom)))
+      return ((this.getNom() == test.getNom() || (this.getNom() != null && this.getNom().equals(test.getNom())))
          && (this.conformiteType == test.conformiteType
             || (this.conformiteType != null && this.conformiteType.equals(test.conformiteType)))
-         && (this.plateforme == test.plateforme || (this.plateforme != null && this.plateforme.equals(test.plateforme))));
+         && (this.getPlateforme() == test.getPlateforme() || (this.getPlateforme() != null && this.getPlateforme().equals(test.getPlateforme()))));
    }
 
    @Override
@@ -162,14 +152,14 @@ public class NonConformite implements java.io.Serializable
       int hashType = 0;
       int hashPlateforme = 0;
 
-      if(this.nom != null){
-         hashNom = this.nom.hashCode();
+      if(this.getNom() != null){
+         hashNom = this.getNom().hashCode();
       }
       if(this.conformiteType != null){
          hashType = this.conformiteType.hashCode();
       }
-      if(this.plateforme != null){
-         hashPlateforme = this.plateforme.hashCode();
+      if(this.getPlateforme() != null){
+         hashPlateforme = this.getPlateforme().hashCode();
       }
 
       hash = 7 * hash + hashNom;
@@ -184,8 +174,8 @@ public class NonConformite implements java.io.Serializable
     */
    @Override
    public String toString(){
-      if(this.nom != null){
-         return "{" + this.nom + ", " + conformiteType.getConformiteType() + "(ConformiteType), " + plateforme.getNom()
+      if(this.getNom() != null){
+         return "{" + this.getNom() + ", " + conformiteType.getConformiteType() + "(ConformiteType), " + getPlateforme().getNom()
             + "(Plateforme)}";
       }
       return "{Empty NonConformite}";
@@ -195,10 +185,10 @@ public class NonConformite implements java.io.Serializable
    public NonConformite clone(){
       final NonConformite clone = new NonConformite();
 
-      clone.setNonConformiteId(this.nonConformiteId);
-      clone.setNom(this.nom);
+      clone.setId(this.getId());
+      clone.setNom(this.getNom());
       clone.setConformiteType(this.conformiteType);
-      clone.setPlateforme(this.plateforme);
+      clone.setPlateforme(this.getPlateforme());
 
       return clone;
    }

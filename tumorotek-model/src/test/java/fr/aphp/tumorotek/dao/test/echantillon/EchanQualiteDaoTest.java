@@ -94,13 +94,13 @@ public class EchanQualiteDaoTest extends AbstractDaoTest
 
    public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
-      List<? extends TKThesaurusObject> list = echanQualiteDao.findByOrder(pf);
+      List<? extends TKThesaurusObject> list = echanQualiteDao.findByPfOrder(pf);
       assertTrue(list.size() == 2);
       assertTrue(list.get(0).getNom().equals("MELANGE MO"));
       pf = plateformeDao.findById(2);
-      list = echanQualiteDao.findByOrder(pf);
+      list = echanQualiteDao.findByPfOrder(pf);
       assertTrue(list.size() == 1);
-      list = echanQualiteDao.findByOrder(null);
+      list = echanQualiteDao.findByPfOrder(null);
       assertTrue(list.size() == 0);
    }
 

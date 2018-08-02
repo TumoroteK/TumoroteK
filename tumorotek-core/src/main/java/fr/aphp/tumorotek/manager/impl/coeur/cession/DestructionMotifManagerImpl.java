@@ -132,10 +132,10 @@ public class DestructionMotifManagerImpl implements DestructionMotifManager
    public boolean findDoublonManager(final DestructionMotif o){
       if(o != null){
          final DestructionMotif motif = o;
-         if(motif.getDestructionMotifId() == null){
+         if(motif.getId() == null){
             return destructionMotifDao.findAll().contains(motif);
          }
-         return destructionMotifDao.findByExcludedId(motif.getDestructionMotifId()).contains(motif);
+         return destructionMotifDao.findByExcludedId(motif.getId()).contains(motif);
       }
       return false;
    }
@@ -179,7 +179,7 @@ public class DestructionMotifManagerImpl implements DestructionMotifManager
    @Override
    public void removeObjectManager(final DestructionMotif obj){
       if(obj != null){
-         destructionMotifDao.removeObject(obj.getDestructionMotifId());
+         destructionMotifDao.removeObject(obj.getId());
          log.info("Suppression objet DestructionMotif " + obj.toString());
       }else{
          log.warn("Suppression d'un DestructionMotif null");
@@ -188,6 +188,11 @@ public class DestructionMotifManagerImpl implements DestructionMotifManager
 
    @Override
    public List<DestructionMotif> findByOrderManager(final Plateforme pf){
-      return destructionMotifDao.findByOrder(pf);
+      return destructionMotifDao.findByPfOrder(pf);
+   }
+
+   @Override
+   public List<DestructionMotif> findByOrderManager(){
+      return destructionMotifDao.findByOrder();
    }
 }

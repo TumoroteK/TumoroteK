@@ -37,14 +37,18 @@ package fr.aphp.tumorotek.webapp.tree.export;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import fr.aphp.tumorotek.action.utils.ChampUtils;
 import fr.aphp.tumorotek.model.cession.Cession;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
@@ -65,6 +69,12 @@ import fr.aphp.tumorotek.model.io.export.Critere;
  */
 public abstract class ExportNode
 {
+
+   private final static Set<String> TEXT_DATATYPES = new HashSet<>(Arrays.asList("alphanum", "texte", "thesaurus", "hyperlien", "thesaurusM"));
+   private final static Set<String> DATE_DATATYPES = new HashSet<>(Arrays.asList("date"));
+   private final static Set<String> DATETIME_DATATYPES = new HashSet<>(Arrays.asList("datetime"));
+   private final static Set<String> BOOLEAN_DATATYPES = new HashSet<>(Arrays.asList("boolean"));
+   private final static Set<String> NUMERIC_DATATYPES = new HashSet<>(Arrays.asList("num", "duree"));
 
    private final Log log = LogFactory.getLog(ExportNode.class);
 
@@ -138,33 +148,6 @@ public abstract class ExportNode
    }
 
    public abstract boolean isLeaf();
-
-   /*public String getCritereToString() {
-   	String retour = null;
-   	if (this instanceof GroupementNode) {
-   		return ((GroupementNode) this).toString();
-   	} else if (this instanceof CritereNode) {
-   		Critere crit = ((CritereNode) this).getCritere();
-   		String op = "";
-   		if (crit.getOperateur().equals("is null")) {
-   			op = Labels.getLabel("critere.is.null");
-   		} else {
-   			op = crit.getOperateur();
-   		}
-   		if (crit.getChamp() != null 
-   				&& crit.getOperateur() != null
-   				&& crit.getValeur() != null) {
-   		return new ChampDecorator(crit.getChamp()).getLabelLong() + " "
-   				+ op + " " + crit.getValeur();
-   		} else {
-   			return new CombinaisonDecorator(crit.getCombinaison())
-   					.getLabel()
-   					+ " " + op + " " + crit.getValeur();
-   		}
-   		return ((CritereNode)this).toString();
-   	}
-   	return retour;
-   }*/
 
    public List<ExportNode> getExportNodeList(){
       final List<ExportNode> liste = new ArrayList<>();
@@ -317,40 +300,28 @@ public abstract class ExportNode
       e = null;
       return crit;
    }
-
+   
    /**
     * Renvoie True si la valeur du critère est alphanumerique : on
     * va afficher une Textbox.
     * @return
     */
    public boolean getVisibleTextbox(){
-      if(this instanceof CritereNode){
-         final CritereNode cn = (CritereNode) this;
-         if(cn.getCritere().getOperateur().equals("is null")){
-            return false;
+
+      boolean visibleTextBox = false;
+
+      if(this instanceof CritereNode) {
+         CritereNode cn = (CritereNode) this;
+         if(!cn.getIsNullOperateur()) {
+            String dataType = ChampUtils.getChampDataType(cn.getCritere().getChamp()).getType(); 
+            visibleTextBox = TEXT_DATATYPES.contains(dataType);
          }
-         if(cn.getCritere().getChamp().getChampEntite() != null){
-            if(cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("alphanum")
-               || cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("texte")
-               || cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("thesaurus")
-               || cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("hyperlien")
-               || cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("thesaurusM")){
-               return true;
-            }
-            return false;
-         }
-         if(cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("alphanum")
-            || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("texte")
-            || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("thesaurus")
-            || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("hyperlien")
-            || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("thesaurusM")
-            || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("num")){
-            return true;
-         }
-         return false;
       }
-      return false;
+
+      return visibleTextBox;
+
    }
+
 
    /**
     * Renvoie True si la valeur du critère est une date : on
@@ -358,23 +329,19 @@ public abstract class ExportNode
     * @return
     */
    public boolean getVisibleDatebox(){
-      if(this instanceof CritereNode){
-         final CritereNode cn = (CritereNode) this;
-         if(cn.getCritere().getOperateur().equals("is null")){
-            return false;
+      
+      boolean visibleTextBox = false;
+
+      if(this instanceof CritereNode) {
+         CritereNode cn = (CritereNode) this;
+         if(!cn.getIsNullOperateur()) {
+            String dataType = ChampUtils.getChampDataType(cn.getCritere().getChamp()).getType(); 
+            visibleTextBox = DATE_DATATYPES.contains(dataType);
          }
-         if(cn.getCritere().getChamp().getChampEntite() != null){
-            if(cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("date")){
-               return true;
-            }
-            return false;
-         }
-         if(cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("date")){
-            return true;
-         }
-         return false;
       }
-      return false;
+
+      return visibleTextBox;
+      
    }
 
    /**
@@ -383,23 +350,19 @@ public abstract class ExportNode
     * @return
     */
    public boolean getVisibleCalendarbox(){
-      if(this instanceof CritereNode){
-         final CritereNode cn = (CritereNode) this;
-         if(cn.getCritere().getOperateur().equals("is null")){
-            return false;
+      
+      boolean visibleTextBox = false;
+
+      if(this instanceof CritereNode) {
+         CritereNode cn = (CritereNode) this;
+         if(!cn.getIsNullOperateur()) {
+            String dataType = ChampUtils.getChampDataType(cn.getCritere().getChamp()).getType(); 
+            visibleTextBox = DATETIME_DATATYPES.contains(dataType);
          }
-         if(cn.getCritere().getChamp().getChampEntite() != null){
-            if(cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("datetime")){
-               return true;
-            }
-            return false;
-         }
-         if(cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("datetime")){
-            return true;
-         }
-         return false;
       }
-      return false;
+
+      return visibleTextBox;
+      
    }
 
    /**
@@ -408,23 +371,19 @@ public abstract class ExportNode
     * @return
     */
    public boolean getVisibleCheckbox(){
-      if(this instanceof CritereNode){
-         final CritereNode cn = (CritereNode) this;
-         if(cn.getCritere().getOperateur().equals("is null")){
-            return false;
+      
+      boolean visibleTextBox = false;
+
+      if(this instanceof CritereNode) {
+         CritereNode cn = (CritereNode) this;
+         if(!cn.getIsNullOperateur()) {
+            String dataType = ChampUtils.getChampDataType(cn.getCritere().getChamp()).getType(); 
+            visibleTextBox = BOOLEAN_DATATYPES.contains(dataType);
          }
-         if(cn.getCritere().getChamp().getChampEntite() != null){
-            if(cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("boolean")){
-               return true;
-            }
-            return false;
-         }
-         if(cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("boolean")){
-            return true;
-         }
-         return false;
       }
-      return false;
+
+      return visibleTextBox;
+      
    }
 
    /**
@@ -433,20 +392,19 @@ public abstract class ExportNode
     * @return
     */
    public boolean getVisibleDecimalbox(){
-      if(this instanceof CritereNode){
-         final CritereNode cn = (CritereNode) this;
-         if(cn.getCritere().getOperateur().equals("is null")){
-            return false;
+      
+      boolean visibleTextBox = false;
+
+      if(this instanceof CritereNode) {
+         CritereNode cn = (CritereNode) this;
+         if(!cn.getIsNullOperateur()) {
+            String dataType = ChampUtils.getChampDataType(cn.getCritere().getChamp()).getType(); 
+            visibleTextBox = NUMERIC_DATATYPES.contains(dataType);
          }
-         if(cn.getCritere().getChamp().getChampEntite() != null){
-            if(cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("num")){
-               return true;
-            }
-            return false;
-         }
-         return false;
       }
-      return false;
+
+      return visibleTextBox;
+      
    }
 
    /**
@@ -469,29 +427,30 @@ public abstract class ExportNode
     * @return
     */
    public Object getCritereValue(){
+
       if(this instanceof CritereNode){
+
          final CritereNode cn = (CritereNode) this;
-         if(cn.getCritere().getChamp().getChampEntite() != null){
-            if(cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("alphanum")
-               || cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("texte")
-               || cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("thesaurus")
-               || cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("hyperlien")
-               || cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("thesaurusM")){
+         if(cn.getCritere().getChamp() != null){
+
+            String dataType = ChampUtils.getChampDataType(cn.getCritere().getChamp()).getType();
+
+            if(TEXT_DATATYPES.contains(dataType)){
                if(critereAlphanumValue != null && critereAlphanumValue.equals("")){
                   critereAlphanumValue = null;
                }
                return critereAlphanumValue;
-            }else if(cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("num")){
-               if(cn.getCritere().getChamp().getChampEntite().getNom().equals("ConditNbr")){
+            }else if(NUMERIC_DATATYPES.contains(dataType)){
+               if("ConditNbr".equals(ChampUtils.getChampNom(cn.getCritere().getChamp()))){
                   return critereNumValue.intValue();
                }
-               if(cn.getCritere().getChamp().getChampEntite().getNom().equals("AgeAuPrelevement")){
+               if("AgeAuPrelevement".equals(ChampUtils.getChampNom(cn.getCritere().getChamp()))){
                   return new Integer(critereNumValue.intValue());
                }
                return critereNumValue;
-            }else if(cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("datetime")){
+            }else if(DATETIME_DATATYPES.contains(dataType)){
                return critereCalendarValue;
-            }else if(cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("date")){
+            }else if(DATE_DATATYPES.contains(dataType)){
                if(isCalendar(cn.getCritere().getChamp().getChampEntite())){
                   Calendar cal = Calendar.getInstance();
                   if(critereDateValue != null){
@@ -502,38 +461,14 @@ public abstract class ExportNode
                   return cal;
                }
                return critereDateValue;
-            }else if(cn.getCritere().getChamp().getChampEntite().getDataType().getType().equals("boolean")){
+            }else if(BOOLEAN_DATATYPES.contains(dataType)){
                return critereBooleanValue;
-            }else{
-               return null;
             }
          }
-         if(cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("alphanum")
-            || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("texte")
-            || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("thesaurus")
-            || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("hyperlien")
-            || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("thesaurusM")
-            || cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("num")){
-            return critereAlphanumValue;
-         }else if(cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().matches("date.*")){
-            if(null != critereDateValue || null != critereCalendarValue){
-               Calendar cal = Calendar.getInstance();
-               if(critereDateValue != null){
-                  cal.setTime(critereDateValue);
-               }else{
-                  cal = critereCalendarValue;
-               }
-               return cal;
-            }
-            return critereDateValue;
-            //[/TKB-2 FIX]
-
-         }else if(cn.getCritere().getChamp().getChampAnnotation().getDataType().getType().equals("boolean")){
-            return critereBooleanValue;
-         }
-         return null;
       }
+
       return null;
+
    }
 
    public boolean isCalendar(final ChampEntite ce){

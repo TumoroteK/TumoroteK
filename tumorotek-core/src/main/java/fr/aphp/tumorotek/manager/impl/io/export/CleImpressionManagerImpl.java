@@ -56,7 +56,7 @@ import fr.aphp.tumorotek.model.io.export.Champ;
   * Classe créée le 16/01/2018.
  *
  * @author Answald Bournique
- * @version 2.2
+ * @version 2.2.0
  *
  */
 public class CleImpressionManagerImpl implements CleImpressionManager

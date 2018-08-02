@@ -131,7 +131,7 @@ public class NatureManagerImpl implements NatureManager
    public void removeObjectManager(final Nature obj){
       if(obj != null){
          if(!isUsedObjectManager(obj)){
-            natureDao.removeObject(obj.getNatureId());
+            natureDao.removeObject(obj.getId());
             log.info("Suppression objet Nature " + obj.toString());
          }else{
             log.warn("Suppression objet Nature " + obj.toString() + " impossible car est reference (par Prelevement)");
@@ -152,21 +152,26 @@ public class NatureManagerImpl implements NatureManager
    public boolean findDoublonManager(final Nature o){
       if(o != null){
          final Nature nature = o;
-         if(nature.getNatureId() == null){
+         if(nature.getId() == null){
             return natureDao.findAll().contains(nature);
          }
-         return natureDao.findByExcludedId(nature.getNatureId()).contains(nature);
+         return natureDao.findByExcludedId(nature.getId()).contains(nature);
       }
       return false;
    }
 
    @Override
    public List<Nature> findByOrderManager(final Plateforme pf){
-      return natureDao.findByOrder(pf);
+      return natureDao.findByPfOrder(pf);
    }
 
    @Override
    public Nature findByIdManager(final Integer id){
       return natureDao.findById(id);
+   }
+
+   @Override
+   public List<Nature> findByOrderManager(){
+      return natureDao.findByOrder();
    }
 }

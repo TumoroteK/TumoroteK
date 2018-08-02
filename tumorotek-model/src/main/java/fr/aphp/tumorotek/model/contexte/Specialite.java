@@ -35,19 +35,23 @@
  **/
 package fr.aphp.tumorotek.model.contexte;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
+
+import fr.aphp.tumorotek.model.AbstractThesaurusObject;
 
 /**
  * Objet persistant mappant la table SPECIALITE.
@@ -59,43 +63,40 @@ import org.hibernate.annotations.GenericGenerator;
  */
 @Entity
 @Table(name = "SPECIALITE")
+@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "SPECIALITE_ID"))})
+@GenericGenerator(name = "autoincrement", strategy = "increment")
 @NamedQueries(value = {@NamedQuery(name = "Specialite.findByNom", query = "SELECT s FROM Specialite s WHERE s.nom like ?1"),
    @NamedQuery(name = "Specialite.findByCollaborateurId",
       query = "SELECT s FROM Specialite s " + "left join s.collaborateurs c " + "WHERE c.collaborateurId = ?1"),
-   @NamedQuery(name = "Specialite.findByExcludedId", query = "SELECT s FROM Specialite s " + "WHERE s.specialiteId != ?1"),
+   @NamedQuery(name = "Specialite.findByExcludedId", query = "SELECT s FROM Specialite s " + "WHERE s.id != ?1"),
    @NamedQuery(name = "Specialite.findByOrder", query = "SELECT s FROM Specialite s ORDER BY s.nom")})
-public class Specialite implements java.io.Serializable
+public class Specialite extends AbstractThesaurusObject implements Serializable
 {
 
    private static final long serialVersionUID = 5165872187465355L;
-
-   private Integer specialiteId;
-   private String nom;
 
    private Set<Collaborateur> collaborateurs = new HashSet<>();
 
    /** Constructeur par défaut. */
    public Specialite(){}
 
-   @Id
-   @Column(name = "SPECIALITE_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
+   /**
+    * @deprecated Utiliser {@link #getId()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public Integer getSpecialiteId(){
-      return specialiteId;
+      return this.getId();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setId(Integer)}
+    * @param sId
+    */
+   @Deprecated
    public void setSpecialiteId(final Integer sId){
-      this.specialiteId = sId;
-   }
-
-   @Column(name = "NOM", nullable = false, length = 200)
-   public String getNom(){
-      return nom;
-   }
-
-   public void setNom(final String n){
-      this.nom = n;
+      this.setId(sId);
    }
 
    @OneToMany(mappedBy = "specialite")
@@ -124,7 +125,7 @@ public class Specialite implements java.io.Serializable
       }
 
       final Specialite test = (Specialite) obj;
-      return ((this.nom == test.nom || (this.nom != null && this.nom.equals(test.nom))));
+      return ((this.getNom() == test.getNom() || (this.getNom() != null && this.getNom().equals(test.getNom()))));
    }
 
    /**
@@ -137,8 +138,8 @@ public class Specialite implements java.io.Serializable
       int hash = 7;
       int hashNom = 0;
 
-      if(this.nom != null){
-         hashNom = this.nom.hashCode();
+      if(this.getNom() != null){
+         hashNom = this.getNom().hashCode();
       }
 
       hash = 31 * hash + hashNom;
@@ -152,7 +153,7 @@ public class Specialite implements java.io.Serializable
     */
    @Override
    public String toString(){
-      return "{" + this.nom + "}";
+      return "{" + this.getNom() + "}";
    }
 
 }

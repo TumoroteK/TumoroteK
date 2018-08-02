@@ -39,14 +39,13 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -54,8 +53,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import fr.aphp.tumorotek.model.TKThesaurusObject;
-import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 
 /**
  *
@@ -68,56 +66,43 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  */
 @Entity
 @Table(name = "RISQUE")
+@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "RISQUE_ID"))})
+@GenericGenerator(name = "autoincrement", strategy = "increment")
 @NamedQueries(value = {@NamedQuery(name = "Risque.findByNom", query = "SELECT r FROM Risque r WHERE r.nom like ?1"),
    @NamedQuery(name = "Risque.findByInfectieux", query = "SELECT r FROM Risque r WHERE r.infectieux = ?1"),
    @NamedQuery(name = "Risque.findByPrelevementId",
       query = "SELECT r FROM Risque r " + "left join r.prelevements p " + "WHERE p.prelevementId = ?1"),
-   @NamedQuery(name = "Risque.findByExcludedId", query = "SELECT r FROM Risque r " + "WHERE r.risqueId != ?1"),
-   @NamedQuery(name = "Risque.findByOrder", query = "SELECT r FROM Risque r " + "WHERE r.plateforme = ?1 ORDER BY r.nom")})
-public class Risque implements Serializable, TKThesaurusObject
+   @NamedQuery(name = "Risque.findByExcludedId", query = "SELECT r FROM Risque r " + "WHERE r.id != ?1"),
+   @NamedQuery(name = "Risque.findByPfOrder", query = "SELECT r FROM Risque r " + "WHERE r.plateforme = ?1 ORDER BY r.nom"),
+   @NamedQuery(name = "Risque.findByOrder", query = "SELECT r FROM Risque r ORDER BY r.nom")})
+public class Risque extends AbstractPfDependantThesaurusObject implements Serializable
 {
 
    private static final long serialVersionUID = 5495762619216759L;
 
-   private Integer risqueId;
-   private String nom;
    private Boolean infectieux;
-   private Plateforme plateforme;
-
    private Set<Prelevement> prelevements = new HashSet<>();
 
    /** Constructeur par défaut. */
    public Risque(){}
 
-   @Override
-   public String toString(){
-      if(this.nom != null){
-         return "{" + this.nom + "}";
-      }else{
-         return "{Empty Risque}";
-      }
-   }
-
-   @Id
-   @Column(name = "RISQUE_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
+   /**
+    * @deprecated Utiliser {@link #getId()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public Integer getRisqueId(){
-      return this.risqueId;
+      return this.getId();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setId(Integer)}
+    * @param mId
+    */
+   @Deprecated
    public void setRisqueId(final Integer id){
-      this.risqueId = id;
-   }
-
-   @Override
-   @Column(name = "NOM", nullable = false, length = 200)
-   public String getNom(){
-      return this.nom;
-   }
-
-   public void setNom(final String n){
-      this.nom = n;
+      this.setId(id);
    }
 
    @Column(name = "INFECTIEUX", nullable = false)
@@ -127,18 +112,6 @@ public class Risque implements Serializable, TKThesaurusObject
 
    public void setInfectieux(final Boolean inf){
       this.infectieux = inf;
-   }
-
-   @Override
-   @ManyToOne
-   @JoinColumn(name = "PLATEFORME_ID", nullable = false)
-   public Plateforme getPlateforme(){
-      return plateforme;
-   }
-
-   @Override
-   public void setPlateforme(final Plateforme pf){
-      this.plateforme = pf;
    }
 
    @ManyToMany(targetEntity = Prelevement.class)
@@ -152,54 +125,13 @@ public class Risque implements Serializable, TKThesaurusObject
       this.prelevements = prelevs;
    }
 
-   /**
-    * 2 risques sont considérés comme égaux s'ils ont les mêmes
-    * noms et plateforme.
-    * @param obj est le risque à tester.
-    * @return true si les risques sont égaux.
-    */
    @Override
-   public boolean equals(final Object obj){
-
-      if(this == obj){
-         return true;
+   public String toString(){
+      if(this.getNom() != null){
+         return "{" + this.getNom() + "}";
+      }else{
+         return "{Empty Risque}";
       }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final Risque test = (Risque) obj;
-      return ((this.nom == test.nom || (this.nom != null && this.nom.equals(test.nom)))
-         && (this.plateforme == test.plateforme || (this.plateforme != null && this.plateforme.equals(test.plateforme))));
    }
 
-   /**
-    * Le hashcode est calculé sur les attributs nom et plateforme.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-
-      int hash = 7;
-      int hashNom = 0;
-      int hashPF = 0;
-
-      if(this.nom != null){
-         hashNom = this.nom.hashCode();
-      }
-      if(this.plateforme != null){
-         hashPF = this.plateforme.hashCode();
-      }
-
-      hash = 31 * hash + hashNom;
-      hash = 31 * hash + hashPF;
-
-      return hash;
-
-   }
-
-   @Override
-   @Transient
-   public Integer getId(){
-      return getRisqueId();
-   }
 }

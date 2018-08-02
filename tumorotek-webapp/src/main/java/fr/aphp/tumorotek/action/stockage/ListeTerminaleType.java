@@ -212,7 +212,7 @@ public class ListeTerminaleType extends AbstractListeController2
    }
 
    @Override
-   public TKSelectObjectRenderer getListObjectsRenderer(){
+   public TKSelectObjectRenderer<? extends TKdataObject> getListObjectsRenderer(){
       return null;
    }
 

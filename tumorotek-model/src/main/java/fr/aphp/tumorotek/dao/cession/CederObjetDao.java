@@ -41,6 +41,7 @@ import fr.aphp.tumorotek.dao.GenericDaoJpa;
 import fr.aphp.tumorotek.model.cession.CederObjet;
 import fr.aphp.tumorotek.model.cession.CederObjetPK;
 import fr.aphp.tumorotek.model.cession.Cession;
+import fr.aphp.tumorotek.model.cession.ECederObjetStatut;
 import fr.aphp.tumorotek.model.systeme.Entite;
 
 /**
@@ -78,6 +79,16 @@ public interface CederObjetDao extends GenericDaoJpa<CederObjet, CederObjetPK>
     * @return Liste ordonnée de CederObjets.
     */
    List<CederObjet> findByEntiteObjet(Entite entite, Integer objetId);
+   
+   /**
+    * Recherche touss les CederObjet ppur un couple de valeurs entité
+    * et objetId.
+    * @param entite Entite des CederObjets recherchés.
+    * @param objetId Identifiant de l'obejt.
+    * @param statut statut de l'oobjet cédé
+    * @return Liste ordonnée de CederObjets.
+    */
+   List<CederObjet> findByEntiteObjetStatut(Entite entite, Integer objetId, ECederObjetStatut statut);
 
    /**
     * Recherche les CederObjets par objetId.

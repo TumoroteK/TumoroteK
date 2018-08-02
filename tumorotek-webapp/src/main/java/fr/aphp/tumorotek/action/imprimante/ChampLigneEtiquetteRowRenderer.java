@@ -70,7 +70,7 @@ public class ChampLigneEtiquetteRowRenderer implements RowRenderer<ChampLigneEti
       if(cle.getChamp().getChampAnnotation() != null){
          champ = cle.getChamp().getChampAnnotation().getNom();
       }else{
-         champ = ObjectTypesFormatters.getLabelForChampEntite(cle.getChamp().getChampEntite());
+         champ = ObjectTypesFormatters.getLabelForChamp(cle.getChamp());
       }
       final Label champLabel = new Label(champ);
       champLabel.setParent(row);

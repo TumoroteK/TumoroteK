@@ -37,7 +37,7 @@ package fr.aphp.tumorotek.manager.stockage;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.manager.TKThesaurusManager;
+import fr.aphp.tumorotek.manager.PfDependantTKThesaurusManager;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.stockage.EnceinteType;
 
@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.stockage.EnceinteType;
  * @version 2.0
  *
  */
-public interface EnceinteTypeManager extends TKThesaurusManager<EnceinteType>
+public interface EnceinteTypeManager extends PfDependantTKThesaurusManager<EnceinteType>
 {
 
    /**

@@ -129,7 +129,7 @@ public class ConditTypeManagerImpl implements ConditTypeManager
    @Override
    public void removeObjectManager(final ConditType obj){
       if(obj != null){
-         conditTypeDao.removeObject(obj.getConditTypeId());
+         conditTypeDao.removeObject(obj.getId());
          log.info("Suppression objet ConditType " + obj.toString());
       }else{
          log.warn("Suppression d'un ConditType null");
@@ -140,10 +140,10 @@ public class ConditTypeManagerImpl implements ConditTypeManager
    public boolean findDoublonManager(final ConditType o){
       if(o != null){
          final ConditType type = o;
-         if(type.getConditTypeId() == null){
+         if(type.getId() == null){
             return conditTypeDao.findAll().contains(type);
          }
-         return conditTypeDao.findByExcludedId(type.getConditTypeId()).contains(type);
+         return conditTypeDao.findByExcludedId(type.getId()).contains(type);
       }
       return false;
    }
@@ -156,12 +156,17 @@ public class ConditTypeManagerImpl implements ConditTypeManager
 
    @Override
    public List<ConditType> findByOrderManager(final Plateforme pf){
-      return conditTypeDao.findByOrder(pf);
+      return conditTypeDao.findByPfOrder(pf);
    }
 
    @Override
    public ConditType findByIdManager(final Integer id){
       return conditTypeDao.findById(id);
+   }
+
+   @Override
+   public List<ConditType> findByOrderManager(){
+      return conditTypeDao.findByOrder();
    }
 
 }

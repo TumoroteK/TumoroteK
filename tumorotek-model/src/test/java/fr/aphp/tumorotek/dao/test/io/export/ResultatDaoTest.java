@@ -175,14 +175,14 @@ public class ResultatDaoTest extends AbstractDaoTest
 
       ChampEntite chEntite = new ChampEntite(entiteDao.findById(2), "champEntite1", dataType, false, true, "000-0", false, null);
       champEntiteDao.createObject(chEntite);
-      final int idChEn1 = chEntite.getChampEntiteId();
+      final int idChEn1 = chEntite.getId();
       Champ ch = new Champ(chEntite);
       champDao.createObject(ch);
       final int idCh1 = ch.getChampId();
       dataType = dataTypeDao.findById(2);
       chEntite = new ChampEntite(entiteDao.findById(1), "champEntite2", dataType, false, false, null, false, null);
       champEntiteDao.createObject(chEntite);
-      final int idChEn2 = chEntite.getChampEntiteId();
+      final int idChEn2 = chEntite.getId();
       ch = new Champ(chEntite);
       champDao.createObject(ch);
       final int idCh2 = ch.getChampId();

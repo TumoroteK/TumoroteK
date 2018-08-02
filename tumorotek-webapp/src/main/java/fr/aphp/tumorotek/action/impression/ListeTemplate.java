@@ -99,7 +99,7 @@ public class ListeTemplate extends AbstractListeController2
    public void setSelectedObjects(final List<? extends TKdataObject> objs){}
 
    @Override
-   public TKSelectObjectRenderer getListObjectsRenderer(){
+   public TKSelectObjectRenderer<? extends TKdataObject> getListObjectsRenderer(){
       return null;
    }
 

@@ -52,6 +52,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.util.StringUtils;
 
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.annotation.DataType;
@@ -74,13 +75,10 @@ public class Champ implements Comparable<Champ>
 {
 
    private Integer champId;
-
    private ChampEntite champEntite;
-
    private ChampAnnotation champAnnotation;
-
+   private ChampDelegue champDelegue;
    private Champ champParent;
-
    private Set<ChampLigneEtiquette> champLigneEtiquettes = new HashSet<>();
 
    public Champ(){
@@ -97,6 +95,25 @@ public class Champ implements Comparable<Champ>
       this.champAnnotation = chAnno;
    }
 
+   public Champ(final ChampDelegue chDel){
+      super();
+      this.champDelegue = chDel;
+   }
+
+   public Champ(final AbstractTKChamp ch, final Champ champParent) {
+      
+      if(ch instanceof ChampEntite) {
+         this.champEntite = (ChampEntite)ch;
+      }else if(ch instanceof ChampAnnotation) {
+         this.champAnnotation = (ChampAnnotation)ch;
+      }else if(ch instanceof ChampDelegue) {
+         this.champDelegue = (ChampDelegue)ch;
+      }
+      
+      this.champParent = champParent;
+      
+   }
+   
    @Id
    @GeneratedValue(generator = "autoincrement")
    @GenericGenerator(name = "autoincrement", strategy = "increment")
@@ -129,6 +146,16 @@ public class Champ implements Comparable<Champ>
       this.champAnnotation = champAnno;
    }
 
+   @ManyToOne
+   @JoinColumn(name = "CHAMP_DELEGUE_ID")
+   public ChampDelegue getChampDelegue(){
+      return champDelegue;
+   }
+
+   public void setChampDelegue(final ChampDelegue champDelegue){
+      this.champDelegue = champDelegue;
+   }
+
    @OneToOne
    @JoinColumn(name = "CHAMP_PARENT_ID")
    public Champ getChampParent(){
@@ -148,62 +175,53 @@ public class Champ implements Comparable<Champ>
       this.champLigneEtiquettes = c;
    }
 
-   /**
-    * 2 champs sont considérés comme égaux s'ils ont la même champ-entité
-    * et le même champ-annotation.
-    * @param obj est le champ à tester.
-    * @return true si les champs sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
-
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final Champ test = (Champ) obj;
-      if(this.champAnnotation == null){
-         if(test.champAnnotation == null){
-            if(this.champEntite == null){
-               return test.champEntite == null;
-            }
-            return this.champEntite.equals(test.champEntite);
-         }
-         return false;
-      }else if(this.champAnnotation.equals(test.champAnnotation)){
-         if(this.champEntite == null){
-            return test.champEntite == null;
-         }
-         return this.champEntite.equals(test.champEntite);
-      }
-      return false;
-   }
-
-   /**
-    * Le hashcode est calculé sur les attributs entité et sous-entité.
-    * @return la valeur du hashcode.
-    */
    @Override
    public int hashCode(){
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((champAnnotation == null) ? 0 : champAnnotation.hashCode());
+      result = prime * result + ((champDelegue == null) ? 0 : champDelegue.hashCode());
+      result = prime * result + ((champEntite == null) ? 0 : champEntite.hashCode());
+      return result;
+   }
 
-      int hash = 7;
-      int hashChampAnnotation = 0;
-      int hashChampEntite = 0;
-
-      if(this.champAnnotation != null){
-         hashChampAnnotation = this.champAnnotation.hashCode();
+   @Override
+   public boolean equals(final Object obj){
+      if(obj == null){
+         return false;
       }
-      if(this.champEntite != null){
-         hashChampEntite = this.champEntite.hashCode();
+      final Champ other = (Champ) obj;
+      if(null == this.champParent && null != other.champParent){
+         return false;
       }
-
-      hash = 31 * hash + hashChampAnnotation;
-      hash = 31 * hash + hashChampEntite;
-
-      return hash;
-
+      if(null != this.champParent && null == other.champParent){
+         return false;
+      }
+      if(null != this.champParent && null != other.champParent){
+         return this.champParent.equals(other.champParent);
+      }
+      if(champAnnotation == null){
+         if(other.champAnnotation != null){
+            return false;
+         }
+      }else if(!champAnnotation.equals(other.champAnnotation)){
+         return false;
+      }
+      if(champDelegue == null){
+         if(other.champDelegue != null){
+            return false;
+         }
+      }else if(!champDelegue.equals(other.champDelegue)){
+         return false;
+      }
+      if(champEntite == null){
+         if(other.champEntite != null){
+            return false;
+         }
+      }else if(!champEntite.equals(other.champEntite)){
+         return false;
+      }
+      return true;
    }
 
    /**
@@ -213,15 +231,21 @@ public class Champ implements Comparable<Champ>
    public String toString(){
       if(this.champAnnotation != null){
          return this.champAnnotation.getTableAnnotation().getEntite().getNom() + " " + this.getChampAnnotation().getNom();
+      }else if(this.champDelegue != null){
+         if(this.champParent != null){
+            return champParentToString();
+         }
+         final String nomEntite = this.getChampDelegue().getEntite().getNom();
+         final String contexte = this.getChampDelegue().getContexte().getNom();
+         final String nomChampDelegue = StringUtils.capitalize(this.getChampDelegue().getNom()).replaceAll("Id$", "");
+         return nomEntite + "." + contexte + "." + nomChampDelegue;
       }else if(this.champEntite != null){
          String champEntiteNom = this.champEntite.getNom();
          if(this.getChampEntite().getNom().matches("^[a-zA-Z]+Id$")){
             champEntiteNom = champEntiteNom.substring(0, champEntiteNom.length() - 2);
          }
          if(this.champParent != null){
-            final String champParentNom =
-               this.champParent.getChampEntite().getNom().substring(0, this.champParent.getChampEntite().getNom().length() - 2);
-            return this.champParent.getChampEntite().getEntite().getNom() + "." + champParentNom + "." + champEntiteNom;
+            return champParentToString();
          }
          return this.getChampEntite().getEntite().getNom() + "." + champEntiteNom;
       }
@@ -237,6 +261,8 @@ public class Champ implements Comparable<Champ>
          if(retour.matches("^[a-zA-Z]+Id$")){
             retour = retour.substring(0, retour.length() - 2);
          }
+      }else if(this.champDelegue != null){
+         retour = this.champDelegue.getNom().replaceAll("Id$", "");
       }
       return retour;
    }
@@ -247,6 +273,8 @@ public class Champ implements Comparable<Champ>
          retour = this.champAnnotation.getDataType();
       }else if(this.champEntite != null){
          retour = this.champEntite.getDataType();
+      }else if(this.champDelegue != null){
+         retour = champDelegue.getDataType();
       }
       return retour;
    }
@@ -255,10 +283,39 @@ public class Champ implements Comparable<Champ>
       Entite retour = null;
       if(this.champAnnotation != null){
          retour = this.champAnnotation.getTableAnnotation().getEntite();
+      }else if(this.champDelegue != null){
+         retour = this.getChampDelegue().getEntite();
       }else if(this.champEntite != null){
          retour = this.champEntite.getEntite();
       }
       return retour;
+   }
+   
+   public String champParentToString() {
+      
+      final String champParentNom;
+      if(this.champParent.getChampEntite() != null) {
+         champParentNom = this.champParent.getChampEntite().getNom().replaceAll("Id$", "");
+      }else {
+         champParentNom = this.champParent.getChampDelegue().getNom().replaceAll("Id$", "");
+      }
+      
+      final String entiteNom;
+      if(this.champParent.getChampEntite() != null) {
+         entiteNom = this.champParent.getChampEntite().getEntite().getNom();
+      }else {
+         entiteNom = this.champParent.getChampDelegue().getEntite().getNom();
+      }
+      
+      final String champNom;
+      if(this.getChampEntite() != null) {
+         champNom = this.getChampEntite().getNom();
+      }else {
+         champNom = this.getChampDelegue().getNom();
+      }
+      
+      return entiteNom + "." + champParentNom + "." + champNom;
+      
    }
 
    @Override
@@ -276,6 +333,9 @@ public class Champ implements Comparable<Champ>
       }
       if(this.getChampParent() != null){
          copy.setChampParent(this.getChampParent().copy());
+      }
+      if(this.getChampDelegue() != null){
+         copy.setChampDelegue(this.getChampDelegue());
       }
       return copy;
    }

@@ -38,7 +38,7 @@ package fr.aphp.tumorotek.dao.cession;
 import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
-import fr.aphp.tumorotek.dao.TKThesaurusDao;
+import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.cession.ProtocoleType;
 
 /**
@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.cession.ProtocoleType;
  * @version 2.0
  *
  */
-public interface ProtocoleTypeDao extends GenericDaoJpa<ProtocoleType, Integer>, TKThesaurusDao<ProtocoleType>
+public interface ProtocoleTypeDao extends GenericDaoJpa<ProtocoleType, Integer>, PfDependantTKThesaurusDao<ProtocoleType>
 {
 
    /**

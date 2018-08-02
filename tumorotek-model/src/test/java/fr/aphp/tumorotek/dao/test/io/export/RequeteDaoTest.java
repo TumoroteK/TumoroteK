@@ -248,14 +248,14 @@ public class RequeteDaoTest extends AbstractDaoTest
       DataType dataType = dataTypeDao.findById(3);
       ChampEntite chEntite = new ChampEntite(entiteDao.findById(5), "champEntite1", dataType, true, true, null, false, null);
       this.champEntiteDao.createObject(chEntite);
-      final int idChEn1 = chEntite.getChampEntiteId();
+      final int idChEn1 = chEntite.getId();
       final Champ ch1 = new Champ(chEntite);
       this.champDao.createObject(ch1);
       final int idCh1 = ch1.getChampId();
       dataType = dataTypeDao.findById(2);
       chEntite = new ChampEntite(entiteDao.findById(5), "champEntite1", dataType, true, true, null, false, null);
       this.champEntiteDao.createObject(chEntite);
-      final int idChEn2 = chEntite.getChampEntiteId();
+      final int idChEn2 = chEntite.getId();
       final Champ ch2 = new Champ(chEntite);
       this.champDao.createObject(ch2);
       final int idCh2 = ch2.getChampId();

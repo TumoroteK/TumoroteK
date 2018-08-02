@@ -203,8 +203,8 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
    public List<AnnotationValeur> findAnnotationValeurByChampAnnotationManager(final ChampAnnotation ca){
       List<AnnotationValeur> objets = null;
       final StringBuffer sb = new StringBuffer("");
-      sb.append("SELECT va FROM AnnotationValeur as av " + "join av.champAnnotation as ca where ca.champAnnotationId = "
-         + ca.getChampAnnotationId());
+      sb.append("SELECT va FROM AnnotationValeur as av " + "join av.champAnnotation as ca where ca.id = "
+         + ca.getId());
       /* On exécute la requête. */
       log.debug("findAnnotationValeurByChampAnnotationManager : " + "Exécution de la requête : \n" + sb.toString());
       final EntityManager em = entityManagerFactory.createEntityManager();
@@ -265,7 +265,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
          final StringBuffer sb = new StringBuffer("");
          sb.append("SELECT av." + type + " FROM AnnotationValeur as av " + "join av.champAnnotation as ca "
             + "join ca.tableAnnotation.entite as en " + "WHERE en.nom like '" + objet.getClass().getSimpleName()
-            + "' and av.objetId = " + id + " and ca.champAnnotationId = " + champAnnotation.getChampAnnotationId());
+            + "' and av.objetId = " + id + " and ca.id = " + champAnnotation.getId());
          /* On exécute la requête. */
          log.debug("findAnnotationValeurManager : " + "Exécution de la requête : \n" + sb.toString());
          final EntityManager em = entityManagerFactory.createEntityManager();
@@ -311,16 +311,16 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
 
    @Override
    public boolean findDoublonManager(final ChampAnnotation champ){
-      if(champ.getChampAnnotationId() == null){
+      if(champ.getId() == null){
          return champAnnotationDao.findAll().contains(champ);
       }
-      return champAnnotationDao.findByExcludedId(champ.getChampAnnotationId()).contains(champ);
+      return champAnnotationDao.findByExcludedId(champ.getId()).contains(champ);
    }
 
    @Override
    public Set<AnnotationDefaut> getAnnotationDefautsManager(final ChampAnnotation chp){
       Set<AnnotationDefaut> defauts = new HashSet<>();
-      if(chp.getChampAnnotationId() != null){
+      if(chp.getId() != null){
          final ChampAnnotation champ = champAnnotationDao.mergeObject(chp);
          defauts = champ.getAnnotationDefauts();
          // operation empechant LazyInitialisationException
@@ -332,7 +332,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
    @Override
    public Set<AnnotationValeur> getAnnotationValeursManager(final ChampAnnotation chp){
       Set<AnnotationValeur> valeurs = new HashSet<>();
-      if(chp.getChampAnnotationId() != null){
+      if(chp.getId() != null){
          final ChampAnnotation champ = champAnnotationDao.mergeObject(chp);
          valeurs = champ.getAnnotationValeurs();
          // operation empechant LazyInitialisationException
@@ -344,7 +344,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
    @Override
    public Set<Item> getItemsManager(final ChampAnnotation chp, final Banque bank){
       Set<Item> items = new HashSet<>();
-      if(chp.getChampAnnotationId() != null){
+      if(chp.getId() != null){
          final ChampAnnotation champ = champAnnotationDao.mergeObject(chp);
 
          if(champ.getTableAnnotation().getCatalogue() == null){
@@ -361,7 +361,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
    @Override
    public ChampCalcule getChampCalculeManager(final ChampAnnotation chpAnno){
       ChampCalcule champCalcule = null;
-      if(chpAnno.getChampAnnotationId() != null){
+      if(chpAnno.getId() != null){
          final ChampAnnotation champAnnotation = champAnnotationDao.mergeObject(chpAnno);
          champCalcule = champCalculeManager.findByChampAnnotationManager(champAnnotation);
       }
@@ -448,7 +448,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
             champCalculeManager.removeObjectManager(champAnnotation.getChampCalcule());
          }
 
-         champAnnotationDao.removeObject(champAnnotation.getChampAnnotationId());
+         champAnnotationDao.removeObject(champAnnotation.getId());
          log.info("Suppression objet ChampAnnotation " + champAnnotation.toString());
 
          //Supprime operations associes
@@ -647,7 +647,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
    @Override
    public void createOrDeleteFileDirectoryManager(final String baseDir, final ChampAnnotation chp, final boolean delete,
       final List<Banque> banques){
-      if(chp.getChampAnnotationId() != null){
+      if(chp.getId() != null){
          String path;
          Banque bank;
          final Iterator<Banque> it = banques.iterator();
@@ -724,7 +724,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
                // qui déclenchera une TransientException si on essaie 
                // d'enregistrer a nouveau.
                if(operation.equals("creation")){
-                  champ.setChampAnnotationId(null);
+                  champ.setId(null);
                }
                throw re;
             }

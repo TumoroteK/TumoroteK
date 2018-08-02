@@ -45,7 +45,7 @@ import org.springframework.test.jpa.AbstractJpaTests;
  * @version 09/09/2009
  *
  */
-public class AbstractDaoTest extends AbstractJpaTests
+public abstract class AbstractDaoTest extends AbstractJpaTests
 {
 
    /***/

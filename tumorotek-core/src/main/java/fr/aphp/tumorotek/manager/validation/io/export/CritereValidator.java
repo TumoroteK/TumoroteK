@@ -51,7 +51,7 @@ import fr.aphp.tumorotek.model.io.export.Critere;
  *
  *
  * @author Maxime GOUSSEAU
- * @version 2.0
+ * @version 2.2.0
  */
 public class CritereValidator implements Validator
 {
@@ -93,6 +93,9 @@ public class CritereValidator implements Validator
             // On recupere le type de la combinaison
             if(critere.getCombinaison().getChamp1().getChampAnnotation() != null){
                type = critere.getCombinaison().getChamp1().getChampAnnotation().getDataType().getType();
+               if("calcule".equals(type)){
+                  type = critere.getCombinaison().getChamp1().getChampAnnotation().getChampCalcule().getDataType().getType();
+               }
             }else if(critere.getCombinaison().getChamp1().getChampEntite() != null){
                if(critere.getOperateur() != null){
                   type = critere.getCombinaison().getChamp1().getChampEntite().getDataType().getType();
@@ -106,6 +109,9 @@ public class CritereValidator implements Validator
          // On recupere le type du champ
          if(critere.getChamp().getChampAnnotation() != null){
             type = critere.getChamp().getChampAnnotation().getDataType().getType();
+            if("calcule".equals(type)){
+               type = critere.getChamp().getChampAnnotation().getChampCalcule().getDataType().getType();
+            }
          }else if(critere.getChamp().getChampEntite() != null){
             if(critere.getOperateur() != null){
                type = critere.getChamp().getChampEntite().getDataType().getType();
@@ -113,7 +119,7 @@ public class CritereValidator implements Validator
          }
       }
       if(type != null && critere.getOperateur() != null){
-         if(type.equals("num") || type.equals("text")){
+         if(type.equals("num") || type.equals("text") || type.equals("duree")){
             if(!critere.getOperateur().equals("<") && !critere.getOperateur().equals("<=") && !critere.getOperateur().equals(">")
                && !critere.getOperateur().equals(">=") && !critere.getOperateur().equals("=")
                && !critere.getOperateur().equals("!=") && !critere.getOperateur().equals("like")

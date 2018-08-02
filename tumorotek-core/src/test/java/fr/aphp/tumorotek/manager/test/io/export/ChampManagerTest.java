@@ -175,7 +175,7 @@ public class ChampManagerTest extends AbstractManagerTest4
 
       manager.updateObjectManager(champ, parent);
 
-      assertFalse(champ.getChampEntite().getChampEntiteId().equals(10));
+      assertFalse(champ.getChampEntite().getId().equals(10));
 
       /** Remove. */
       final int id = champ.getChampId();

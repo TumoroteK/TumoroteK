@@ -97,15 +97,6 @@ public class ProtocoleTypeManagerImpl implements ProtocoleTypeManager
       return protocoleTypeDao.findById(protocoleTypeId);
    }
 
-   //	/**
-   //	 * Recherche tous les ProtocoleTypes présents dans la base.
-   //	 * @return Liste de ProtocoleTypes.
-   //	 */
-   //	@Override
-   //	public List<ProtocoleType> findAllObjectsManager() {
-   //		return protocoleTypeDao.findByOrder();
-   //	}
-
    /**
     * Recherche tous les ProtocoleType dont le type commence
     * comme celui passé en paramètre.
@@ -131,10 +122,10 @@ public class ProtocoleTypeManagerImpl implements ProtocoleTypeManager
    public boolean findDoublonManager(final ProtocoleType o){
       if(o != null){
          final ProtocoleType type = o;
-         if(type.getProtocoleTypeId() == null){
+         if(type.getId() == null){
             return protocoleTypeDao.findAll().contains(type);
          }
-         return protocoleTypeDao.findByExcludedId(type.getProtocoleTypeId()).contains(type);
+         return protocoleTypeDao.findByExcludedId(type.getId()).contains(type);
       }
       return false;
    }
@@ -178,7 +169,7 @@ public class ProtocoleTypeManagerImpl implements ProtocoleTypeManager
    @Override
    public void removeObjectManager(final ProtocoleType obj){
       if(obj != null){
-         protocoleTypeDao.removeObject(obj.getProtocoleTypeId());
+         protocoleTypeDao.removeObject(obj.getId());
          log.info("Suppression objet ProtocoleType " + obj.toString());
       }else{
          log.warn("Suppression d'un ProtocoleType null");
@@ -187,6 +178,11 @@ public class ProtocoleTypeManagerImpl implements ProtocoleTypeManager
 
    @Override
    public List<ProtocoleType> findByOrderManager(final Plateforme pf){
-      return protocoleTypeDao.findByOrder(pf);
+      return protocoleTypeDao.findByPfOrder(pf);
+   }
+
+   @Override
+   public List<ProtocoleType> findByOrderManager(){
+      return protocoleTypeDao.findByOrder();
    }
 }

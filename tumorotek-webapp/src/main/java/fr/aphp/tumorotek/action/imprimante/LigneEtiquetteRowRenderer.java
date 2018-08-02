@@ -172,7 +172,7 @@ public class LigneEtiquetteRowRenderer implements RowRenderer<Object>
             sb.append(deco.getChamps().get(i).getEntite().getNom());
             sb.append("]");
          }else if(chp.getChampEntite() != null){
-            sb.append(ObjectTypesFormatters.getLabelForChampEntite(chp.getChampEntite()));
+            sb.append(ObjectTypesFormatters.getLabelForChamp(chp));
             sb.append(" [");
             sb.append(deco.getChamps().get(i).getEntite().getNom());
             sb.append("]");
@@ -230,7 +230,7 @@ public class LigneEtiquetteRowRenderer implements RowRenderer<Object>
          final Champ chp = deco.getChamps().get(i).getChamp();
          final StringBuffer sb = new StringBuffer();
          if(chp.getChampEntite() != null){
-            sb.append(ObjectTypesFormatters.getLabelForChampEntite(chp.getChampEntite()));
+            sb.append(ObjectTypesFormatters.getLabelForChamp(chp));
             if(deco.getChamps().get(i).getEntite().getNom().equals("Echantillon")){
                valuesEchans.add(sb.toString());
             }else{

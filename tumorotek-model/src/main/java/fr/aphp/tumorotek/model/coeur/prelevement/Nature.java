@@ -39,12 +39,10 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -53,8 +51,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import fr.aphp.tumorotek.model.TKThesaurusObject;
-import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 
 /**
  *
@@ -67,50 +64,60 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  */
 @Entity
 @Table(name = "NATURE")
-@NamedQueries(value = {@NamedQuery(name = "Nature.findByNature", query = "SELECT n FROM Nature n WHERE n.nature like ?1"),
-   @NamedQuery(name = "Nature.findByExcludedId", query = "SELECT n FROM Nature n " + "WHERE n.natureId != ?1"),
-   @NamedQuery(name = "Nature.findByOrder", query = "SELECT n FROM Nature n " + "WHERE n.plateforme = ?1 ORDER BY n.nature")})
-public class Nature implements Serializable, TKThesaurusObject
+@GenericGenerator(name = "autoincrement", strategy = "increment")
+@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "NATURE_ID")),
+   @AttributeOverride(name = "nom", column = @Column(name = "NATURE", nullable = false, length = 200))})
+@NamedQueries(value = {@NamedQuery(name = "Nature.findByNature", query = "SELECT n FROM Nature n WHERE n.nom like ?1"),
+   @NamedQuery(name = "Nature.findByExcludedId", query = "SELECT n FROM Nature n " + "WHERE n.id != ?1"),
+   @NamedQuery(name = "Nature.findByPfOrder", query = "SELECT n FROM Nature n " + "WHERE n.plateforme = ?1 ORDER BY n.nom"),
+   @NamedQuery(name = "Nature.findByOrder", query = "SELECT n FROM Nature n ORDER BY n.nom")})
+public class Nature extends AbstractPfDependantThesaurusObject implements Serializable
 {
 
    private static final long serialVersionUID = 8513939510881684683L;
-
-   private Integer natureId;
-   private String nature;
-   private Plateforme plateforme;
 
    private Set<Prelevement> prelevements = new HashSet<>();
 
    /** Constructeur par défaut. */
    public Nature(){}
 
-   @Override
-   public String toString(){
-      if(this.nature != null){
-         return "{" + this.nature + "}";
-      }
-      return "{Empty Nature}";
-   }
-
-   @Id
-   @Column(name = "NATURE_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
+   /**
+    * @deprecated Utiliser {@link #getId()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public Integer getNatureId(){
-      return this.natureId;
+      return this.getId();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setId(Integer)}
+    * @param id
+    */
+   @Deprecated
    public void setNatureId(final Integer id){
-      this.natureId = id;
+      this.setId(id);
+      ;
    }
 
-   @Column(name = "NATURE", nullable = false, length = 200)
+   /**
+    * @deprecated Utiliser {@link #getNom()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public String getNature(){
-      return this.nature;
+      return this.getNom();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setNom(String)}
+    * @param nat
+    */
+   @Deprecated
    public void setNature(final String nat){
-      this.nature = nat;
+      this.setNom(nat);
    }
 
    @OneToMany(mappedBy = "nature")
@@ -122,62 +129,6 @@ public class Nature implements Serializable, TKThesaurusObject
       this.prelevements = prelevs;
    }
 
-   @Override
-   @ManyToOne
-   @JoinColumn(name = "PLATEFORME_ID", nullable = false)
-   public Plateforme getPlateforme(){
-      return plateforme;
-   }
-
-   @Override
-   public void setPlateforme(final Plateforme pf){
-      this.plateforme = pf;
-   }
-
-   /**
-    * 2 objets sont considérés comme égaux s'ils ont la même nature.
-    * @param obj est l'objet à tester.
-    * @return true si les objets sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
-
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final Nature test = (Nature) obj;
-      return ((this.nature == test.nature || (this.nature != null && this.nature.equals(test.nature)))
-         && (this.plateforme == test.plateforme || (this.plateforme != null && this.plateforme.equals(test.plateforme))));
-   }
-
-   /**
-    * Le hashcode est calculé sur l'attribut nature.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-
-      int hash = 7;
-      int hashNature = 0;
-      int hashPF = 0;
-
-      if(this.nature != null){
-         hashNature = this.nature.hashCode();
-      }
-      if(this.plateforme != null){
-         hashPF = this.plateforme.hashCode();
-      }
-
-      hash = 31 * hash + hashNature;
-      hash = 31 * hash + hashPF;
-
-      return hash;
-
-   }
-
    /**
     * Cree un clone de l'objet.
     * @return clone Utilisateur.
@@ -186,8 +137,8 @@ public class Nature implements Serializable, TKThesaurusObject
    public Nature clone(){
       final Nature clone = new Nature();
 
-      clone.setNatureId(this.natureId);
-      clone.setNature(this.nature);
+      clone.setId(this.getId());
+      clone.setNom(this.getNom());
       clone.setPlateforme(getPlateforme());
 
       return clone;
@@ -195,14 +146,11 @@ public class Nature implements Serializable, TKThesaurusObject
    }
 
    @Override
-   @Transient
-   public String getNom(){
-      return getNature();
+   public String toString(){
+      if(this.getNom() != null){
+         return "{" + this.getNom() + "}";
+      }
+      return "{Empty Nature}";
    }
 
-   @Override
-   @Transient
-   public Integer getId(){
-      return getNatureId();
-   }
 }

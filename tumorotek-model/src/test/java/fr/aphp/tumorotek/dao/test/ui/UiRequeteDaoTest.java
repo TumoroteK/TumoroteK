@@ -58,7 +58,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  *
  */
 @TransactionConfiguration(defaultRollback = false)
-public class UiRequeteDaoTest extends AbstractDaoTest
+public class UiRequeteDaoTest extends AbstractDaoTest //FIXME Test de Class non utilisé ?? Aucune table créée pour ce test
 {
 
    private UiRequeteDao uiRequeteDao;

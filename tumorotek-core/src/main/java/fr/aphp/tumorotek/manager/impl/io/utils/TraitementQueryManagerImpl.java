@@ -38,7 +38,10 @@ package fr.aphp.tumorotek.manager.impl.io.utils;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,21 +52,26 @@ import javax.persistence.TypedQuery;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.StringUtils;
 
 import fr.aphp.tumorotek.dao.coeur.prelevement.PrelevementDao;
 import fr.aphp.tumorotek.dao.qualite.NonConformiteDao;
 import fr.aphp.tumorotek.manager.ConfigManager;
+import fr.aphp.tumorotek.manager.coeur.annotation.ChampCalculeManager;
 import fr.aphp.tumorotek.manager.coeur.prelevement.PrelevementManager;
+import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.manager.io.utils.CorrespondanceIdManager;
 import fr.aphp.tumorotek.manager.io.utils.TraitementQueryManager;
 import fr.aphp.tumorotek.manager.qualite.ObjetNonConformeManager;
 import fr.aphp.tumorotek.manager.systeme.EntiteManager;
+import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.contexte.Service;
+import fr.aphp.tumorotek.model.io.export.AbstractTKChamp;
 import fr.aphp.tumorotek.model.io.export.Champ;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.export.Critere;
@@ -83,6 +91,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
    private ObjetNonConformeManager objetNonConformeManager;
    private EntiteManager entiteManager;
    private CorrespondanceIdManager correspondanceIdManager;
+   private ChampCalculeManager champCalculeManager;
 
    public void setEntityManagerFactory(final EntityManagerFactory eFactory){
       this.entityManagerFactory = eFactory;
@@ -112,6 +121,10 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
       this.correspondanceIdManager = cM;
    }
 
+   public void setChampCalculeManager(ChampCalculeManager champCalculeManager){
+      this.champCalculeManager = champCalculeManager;
+   }
+
    /**
     * Retourne les objets correspondant à un critère. Méthode utilisée
     * dans la recherche réalisée par Maxime.
@@ -119,15 +132,23 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
     * @return Liste d'objets correspondant au critère.
     */
    @Override
-
    public List<Object> findObjetByCritereManager(final Critere critere, final List<Banque> banks, final Object value,
       final String jdbcDialect){
       List<Object> objets = null;
-
       if(critere.getChamp() != null){
-         final StringBuffer sb = new StringBuffer("");
-         final Champ champ = critere.getChamp();
+         StringBuffer sb = new StringBuffer("");
+         Champ champ = critere.getChamp();
+
+         //Cas des champs annotation
          if(champ.getChampAnnotation() != null){
+            if(champ.getChampAnnotation().getChampCalcule() != null){
+               List<Critere> criteresChampsCalcules = new ArrayList<>();
+               criteresChampsCalcules.add(critere);
+               List<Object> valuesChampsCalcules = new ArrayList<>();
+               valuesChampsCalcules.add(value);
+               return traitementChampsCalcules(criteresChampsCalcules, valuesChampsCalcules, critere.getChamp().entite().getNom(),
+                  banks);
+            }
             final ChampAnnotation ca = champ.getChampAnnotation();
             if(ca.getTableAnnotation() != null && ca.getTableAnnotation().getEntite() != null){
                final String nomEntite = ca.getTableAnnotation().getEntite().getNom();
@@ -135,12 +156,11 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                   final String nomEntiteMajFirst = nomEntite.replaceFirst(".", (nomEntite.charAt(0) + "").toUpperCase());
                   final String nomEntiteMinFirst = nomEntite.replaceFirst(".", (nomEntite.charAt(0) + "").toLowerCase());
                   if(!critere.getOperateur().equals("is null")){
-                     sb.append(
-                        "SELECT e From " + nomEntiteMajFirst + " as e, AnnotationValeur av" + " join av.champAnnotation as ca"
-                           + " WHERE" + " e." + nomEntiteMinFirst + "Id = av.objetId" + " and ca.champAnnotationId = "
-                           + ca.getChampAnnotationId() + " and ca.tableAnnotation.entite.nom = '" + nomEntiteMajFirst + "'");
+                     sb.append("SELECT e From " + nomEntiteMajFirst + " as e, AnnotationValeur av"
+                        + " join av.champAnnotation as ca" + " WHERE" + " e." + nomEntiteMinFirst + "Id = av.objetId"
+                        + " and ca.id = " + ca.getId() + " and ca.tableAnnotation.entite.nom = '" + nomEntiteMajFirst + "'");
 
-                     if(ca.getDataType().getType().equals("num")){
+                     if(ca.getDataType().getType().equals("num") || ca.getDataType().getType().equals("duree")){
                         sb.append(" and av.alphanum ");
                         sb.append(critere.getOperateur());
                      }else if(ca.getDataType().getType().equals("alphanum") || ca.getDataType().getType().equals("date")){
@@ -159,16 +179,15 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                         sb.append(" and av." + ca.getDataType().getType() + " " + critere.getOperateur());
                      }
 
-                     if(ca.getDataType().getType().equals("num")){
+                     if(ca.getDataType().getType().equals("num") || ca.getDataType().getType().equals("duree")){
                         sb.append(" " + value);
                      }else{
                         sb.append(" :valeur");
                      }
                   }else{ // is null champ annotation
                      sb.append("SELECT e From " + nomEntiteMajFirst + " as e WHERE" + " e." + nomEntiteMinFirst + "Id not in ("
-                        + "select av.objetId from AnnotationValeur av" + " join av.champAnnotation as ca"
-                        + " where ca.champAnnotationId = " + ca.getChampAnnotationId() + " and ca.tableAnnotation.entite.nom = '"
-                        + nomEntiteMajFirst + "')");
+                        + "select av.objetId from AnnotationValeur av" + " join av.champAnnotation as ca" + " where ca.id = "
+                        + ca.getId() + " and ca.tableAnnotation.entite.nom = '" + nomEntiteMajFirst + "')");
                   }
 
                   // si l'entité recherchée n'est pas un patient
@@ -180,23 +199,50 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                   }
                }
             }
+
+            // Cas des champs entité
          }else if(champ.getChampEntite() != null){
+
             final ChampEntite ce = critere.getChamp().getChampEntite();
+
             if(ce != null && ce.getEntite() != null){
                final String nomEntite = ce.getEntite().getNom();
                if(nomEntite != null){
+
                   String nomEntiteMajFirst = nomEntite.replaceFirst(".", (nomEntite.charAt(0) + "").toUpperCase());
                   String nomChampMinFirst = ce.getNom().replaceFirst(".", (ce.getNom().charAt(0) + "").toLowerCase());
+                  boolean delegate = false;
+
+                  List<String> joins = new ArrayList<>();
+
+                  if(nomChampMinFirst.endsWith("Id")){
+                     nomChampMinFirst = nomChampMinFirst.substring(0, nomChampMinFirst.length() - 2);
+                  }
+
+                  joins = (buildJoinsList(champ, joins));
+
                   Champ parent = champ.getChampParent();
+                  if(parent != null && (parent.getChampEntite() != null || parent.getChampDelegue() != null)){
+                     nomEntiteMajFirst = getNomEntiteAncetre(champ);
+                  }
 
-                  while(parent != null && parent.getChampEntite() != null){
+                  while(parent != null && (parent.getChampEntite() != null || parent.getChampDelegue() != null)){
 
-                     final ChampEntite ceParent = parent.getChampEntite();
+                     final AbstractTKChamp ceParent;
+                     final String nomEntiteParent;
+
+                     if(parent.getChampEntite() != null){
+                        ceParent = parent.getChampEntite();
+                        nomEntiteParent = parent.getChampEntite().getEntite().getNom();
+                     }else{
+                        ceParent = parent.getChampDelegue();
+                        nomEntiteParent = parent.getChampDelegue().getEntite().getNom();
+                        delegate = true;
+                     }
+
                      String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
                      // On enlève le suffixe "Id"
-                     if(nomParent.endsWith("Id")){
-                        nomParent = nomParent.substring(0, nomParent.length() - 2);
-                     }
+                     nomParent = nomParent.replaceFirst("Id$", "");
 
                      if(!critere.getOperateur().equals("is null")){
                         nomChampMinFirst = nomParent + "." + nomChampMinFirst;
@@ -205,7 +251,6 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                      }
 
                      // On change le nom de l'entiteMajFirst
-                     final String nomEntiteParent = ceParent.getEntite().getNom();
                      nomEntiteMajFirst = nomEntiteParent.replaceFirst(".", (nomEntiteParent.charAt(0) + "").toUpperCase());
 
                      parent = parent.getChampParent();
@@ -291,12 +336,70 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                         critere.getOperateur(), banks, false));
                      return objets;
                   }else{
-                     sb.append("SELECT DISTINCT e From " + nomEntiteMajFirst + " as e WHERE" + " e." + nomChampMinFirst + " "
-                        + critere.getOperateur());
+
+                     StringBuffer query = new StringBuffer("SELECT DISTINCT e FROM " + nomEntiteMajFirst + " ");
+
+                     for(int j = 0; j < joins.size(); j++){
+                        query.append(joins.get(j));
+                     }
+
+                     query.append("WHERE e." + nomChampMinFirst);
+
+                     //Construction de la requête pour un champ délégué
+                     if(delegate){
+
+                        if("is null".equals(critere.getOperateur())){
+                           sb.append("SELECT DISTINCT e From " + nomEntiteMajFirst + " e LEFT JOIN e.delegate d WHERE d."
+                              + nomChampMinFirst + " " + critere.getOperateur() + " OR e."
+                              + StringUtils.uncapitalize(nomEntiteMajFirst) + "Id NOT IN (SELECT d.delegator."
+                              + StringUtils.uncapitalize(nomEntiteMajFirst) + "Id FROM Abstract" + nomEntiteMajFirst
+                              + "Delegate d" + ")");
+                        }else{
+
+                           //On crée un champ pour représenter l'objet délégué
+                           ChampEntite chpEntiteDelegate = new ChampEntite();
+                           chpEntiteDelegate.setNom("Delegate");
+                           Champ champDelegate = new Champ(chpEntiteDelegate);
+
+                           //On ajoute de champ représentant le délégué comme cahmp ancêtre de la hiérarchie du champ
+                           //sur lequel on fait la recherche afin d'avoir le délégué dans la liste des jointures
+                           Champ ancetre = null;
+                           if(champ.getChampParent() != null) {
+                              ancetre = champ.getChampParent();
+                              while(ancetre.getChampParent() != null){
+                                 ancetre = ancetre.getChampParent();
+                              }
+                              ancetre.setChampParent(champDelegate);
+                           }
+
+                           champ.getChampParent().setChampParent(champDelegate);
+
+                           List<String> delegateJoins = buildJoinsList(champ, null);
+                           
+                           //Constructin de la requête
+                           sb.append("SELECT DISTINCT e FROM " + nomEntiteMajFirst + " e ");
+
+                           for(String join : delegateJoins){
+                              sb.append(join);
+                           }
+
+                           sb.append("WHERE p" + delegateJoins.size() + ".nom " + critere.getOperateur());
+
+                           //On remet la hiérarchie du champ dans son état initial
+                           ancetre.setChampParent(null);
+
+                        }
+
+                     //Construction de la requête pour un champ entité
+                     }else{
+                        sb.append("SELECT DISTINCT e From " + nomEntiteMajFirst + " as e WHERE" + " e." + nomChampMinFirst + " "
+                           + critere.getOperateur());
+                     }
 
                      if(!critere.getOperateur().equals("is null")){
                         sb.append(" :valeur");
                      }
+
                   }
                   //+ critere.getValeur() + "'");
                   // si l'entité recherchée n'est pas un patient
@@ -309,9 +412,42 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                   }
                }
             }
+         }else if(champ.getChampDelegue() != null){
+
+            final long nbContextes = banks.stream().map(b -> b.getContexte()).distinct().count();
+            if(nbContextes != 1){
+               throw new TKException(
+                  "Impossible d'effectuer une recherche sur plusieurs contextes avec un paramètre de recherche lié au contexte");
+            }
+
+            final String entiteNom = StringUtils.uncapitalize(champ.getChampDelegue().getEntite().getNom());
+            final String capitalizedEntiteNom = StringUtils.capitalize(champ.getChampDelegue().getEntite().getNom());
+            String nomChamp = StringUtils.uncapitalize(champ.getChampDelegue().getNom());
+
+            //Cas particulier des thésauri
+            if("thesaurusM".equals(champ.getChampDelegue().getDataType().getType())) {
+
+               sb.append("SELECT DISTINCT e FROM " + capitalizedEntiteNom +  " e LEFT JOIN e.delegate d JOIN d." + nomChamp + " t WHERE t.nom "+ critere.getOperateur() + " :valeur");
+               
+            }
+            else if(!"is null".equals(critere.getOperateur())){
+
+               sb.append("SELECT DISTINCT e FROM " + capitalizedEntiteNom + " e JOIN e.delegate d WHERE d." + nomChamp + " "
+                  + critere.getOperateur() + " :valeur");
+
+            }else{
+               
+               sb.append("SELECT DISTINCT e From " + capitalizedEntiteNom + " e LEFT JOIN e.delegate d WHERE d." + nomChamp + " "
+                  + critere.getOperateur() + " OR e." + entiteNom + "Id NOT IN (SELECT d.delegator." + entiteNom
+                  + "Id FROM Abstract" + capitalizedEntiteNom + "Delegate d" + ")");
+
+            }
+
+            
          }else{
             throw new IllegalArgumentException();
          }
+
          /* On exécute la requête. */
          log.info("findObjetByCritereManager : Exécution de la requête : \n" + sb.toString());
          final EntityManager em = entityManagerFactory.createEntityManager();
@@ -365,14 +501,16 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
 
    @Override
    public List<Integer> findObjetByCriteresWithBanquesManager(final List<Critere> criteres, final List<Banque> banques,
-      final List<Object> values){
+      final List<Object> values){ //TODO Refactorer
       List<Integer> objets = null;
 
       final StringBuffer sql = new StringBuffer();
       String nomEntiteMajFirst = "";
-      final List<String> joins = new ArrayList<>();
-      final java.util.Hashtable<Champ, String> allParents = new java.util.Hashtable<>();
+      List<String> joins = new ArrayList<>();
+      final Map<Champ, String> allParents = new Hashtable<>();
       final List<String> wheres = new ArrayList<>();
+      List<Critere> criteresChampsCalcules = new ArrayList<>();
+      List<Object> valuesChampsCalcules = new ArrayList<>();
       int cpt = 1;
       int nbWhere = 1;
       int nbBanquesInCriteres = 1;
@@ -381,6 +519,19 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
       for(int k = 0; k < criteres.size(); k++){
          final Champ champ = criteres.get(k).getChamp();
          if(champ.getChampAnnotation() != null){
+            if("calcule".equals(champ.dataType().getType())){
+               criteresChampsCalcules.add(criteres.get(k));
+               valuesChampsCalcules.add(values.get(k));
+               final ChampAnnotation ca = champ.getChampAnnotation();
+               if(ca != null && ca.getTableAnnotation() != null && ca.getTableAnnotation().getEntite() != null){
+                  final String nomEntite = ca.getTableAnnotation().getEntite().getNom();
+                  if(nomEntite != null){
+                     withAnno = true;
+                     nomEntiteMajFirst = nomEntite.replaceFirst(".", (nomEntite.charAt(0) + "").toUpperCase());
+                  }
+               }
+               continue;
+            }
             ++nbChampAnnotations;
             final ChampAnnotation ca = champ.getChampAnnotation();
             if(ca != null && ca.getTableAnnotation() != null && ca.getTableAnnotation().getEntite() != null){
@@ -461,8 +612,8 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
 
                   where.append("ca");
                   where.append(nbChampAnnotations);
-                  where.append(".champAnnotationId = ");
-                  where.append(ca.getChampAnnotationId());
+                  where.append(".id = ");
+                  where.append(ca.getId());
                   where.append(" AND " + prefixe + "." + nomEntiteMinFirst + "Id = av" + nbChampAnnotations + ".objetId");
 
                   /*
@@ -488,12 +639,12 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                         }
                      }else{
                         where
-                           .append(" and av" + nbChampAnnotations + "." + "date " + criteres.get(k).getOperateur() + " :valeur");
+                        .append(" and av" + nbChampAnnotations + "." + "date " + criteres.get(k).getOperateur() + " :valeur");
                      }
 
                   }else if(ca.getDataType().getType().equals("hyperlien")){
                      where.append(" and " + nbChampAnnotations + ".alphanum " + criteres.get(k).getOperateur() + " :valeur");
-                  }else if(ca.getDataType().getType().equals("num")){
+                  }else if(ca.getDataType().getType().equals("num") || ca.getDataType().getType().equals("duree")){
                      where.append(" and cast(av" + nbChampAnnotations + ".alphanum as big_decimal) "
                         + criteres.get(k).getOperateur() + " :valeur");
                   }else if(ca.getDataType().getType().equals("thesaurus") || ca.getDataType().getType().equals("thesaurusM")){
@@ -512,32 +663,55 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                   ++nbWhere;
                }
             }
-         }else if(champ.getChampEntite() != null){
-            final ChampEntite ce = champ.getChampEntite();
-            if(ce != null && ce.getEntite() != null){
-               final String nomEntite = ce.getEntite().getNom();
+         }else if(champ.getChampEntite() != null || null != champ.getChampDelegue()){
+            AbstractTKChamp ce = null;
+            Entite entite = null;
+            ChampEntite queryChamp = null;
+            if(null != champ.getChampEntite()){
+               ce = champ.getChampEntite();
+               entite = champ.getChampEntite().getEntite();
+               queryChamp = champ.getChampEntite().getQueryChamp();
+            }else if(null != champ.getChampDelegue()){
+               ce = champ.getChampDelegue();
+               entite = champ.getChampDelegue().getEntite();
+            }
+            if(ce != null && entite != null){
+
+               final String nomEntite = entite.getNom();
+
                if(nomEntite != null){
+
                   nomEntiteMajFirst = nomEntite.replaceFirst(".", (nomEntite.charAt(0) + "").toUpperCase());
                   String nomChampMinFirst = ce.getNom().replaceFirst(".", (ce.getNom().charAt(0) + "").toLowerCase());
+
                   if(nomChampMinFirst.endsWith("Id")){
                      nomChampMinFirst = nomChampMinFirst.substring(0, nomChampMinFirst.length() - 2);
-                  }else if(nomChampMinFirst.endsWith("s") && ce.getQueryChamp() != null){
+                  }else if(nomChampMinFirst.endsWith("s") && queryChamp != null){
                      // ne concerne donc que les champ entite Maladie.Collaborateurs .
                      nomChampMinFirst = "";
                   }
+
                   Champ parent = champ.getChampParent();
 
                   final List<Champ> parents = new ArrayList<>();
-                  while(parent != null && parent.getChampEntite() != null){
+                  while(parent != null && (parent.getChampEntite() != null || parent.getChampDelegue() != null)){
                      parents.add(0, parent);
 
-                     final ChampEntite ceParent = parent.getChampEntite();
+                     AbstractTKChamp ceParent = null;
+                     String nomEntiteParent = null;
+                     if(null != parent.getChampEntite()){
+                        ceParent = parent.getChampEntite();
+                        nomEntiteParent = parent.getChampEntite().getEntite().getNom();
+                     }else if(null != parent.getChampDelegue()){
+                        ceParent = parent.getChampDelegue();
+                        nomEntiteParent = parent.getChampDelegue().getEntite().getNom();
+                     }
+
                      String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
                      // On enlève le suffixe "Id"
                      if(nomParent.endsWith("Id")){
                         nomParent = nomParent.substring(0, nomParent.length() - 2);
                      }
-                     final String nomEntiteParent = ceParent.getEntite().getNom();
                      nomEntiteMajFirst = nomEntiteParent.replaceFirst(".", (nomEntiteParent.charAt(0) + "").toUpperCase());
 
                      parent = parent.getChampParent();
@@ -546,14 +720,19 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                   // incrémente z pour pouvoir assigner 
                   // p + cpt au bon niveau de joins
                   String correspParent = "";
-
+                  
                   String prefixe = "e";
 
                   for(int i = 0; i < parents.size(); i++){
                      parent = parents.get(i);
                      if(!allParents.containsKey(parent)){
                         allParents.put(parent, "p" + cpt);
-                        final ChampEntite ceParent = parent.getChampEntite();
+                        AbstractTKChamp ceParent = null;
+                        if(null != parent.getChampEntite()){
+                           ceParent = parent.getChampEntite();
+                        }else if(null != parent.getChampDelegue()){
+                           ceParent = parent.getChampDelegue();
+                        }
                         String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
                         // On enlève le suffixe "Id"
                         if(nomParent.endsWith("Id")){
@@ -591,7 +770,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                         correspParent = allParents.get(parent);
                      }
                   }
-
+                  
                   String clause = "";
                   if(nbWhere == 1){
                      clause = "WHERE ";
@@ -635,21 +814,32 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                      }
                   }
                   // 2.0.10.2 Recherche patient implique 
-                  // recherche sur jointure
                   if(parents.size() > 0 && nomEntiteMajFirst.equals("Patient") && !nomEntite.equals("Patient")
-                     && !nomEntite.equals("Maladie")
-                     && !parents.get(parents.size() - 1).getChampEntite().getNom().matches("Delegate.*")
+                     && !nomEntite.equals("Maladie") && null != parents.get(parents.size() - 1).getChampEntite()
+                     && null == parents.get(parents.size() - 1).getChampDelegue()
                      && !parents.get(parents.size() - 1).getChampEntite().getNom().equals("PatientMedecins")
                      && !parents.get(parents.size() - 1).getChampEntite().getNom().equals("Collaborateurs")
                      && !parents.get(parents.size() - 1).getChampEntite().getNom().equals("ServicePreleveurId")
                      && !parents.get(parents.size() - 1).getChampEntite().getNom().equals("Risques")){
-                     where.append(" AND ");
-                     prefixe = allParents.get(parents.get(parents.size() - 1));
-                     where.append(prefixe);
-                     where.append(".banque in (:list");
-                     where.append(nbBanquesInCriteres);
-                     where.append(")");
-                     ++nbBanquesInCriteres;
+
+                     Champ parentTest = parents.get(parents.size() - 1);
+                     Boolean isFromDelegate = false;
+                     while(!isFromDelegate && null != parentTest){
+                        parentTest = parentTest.getChampParent();
+                        if(null != parentTest && null != parentTest.getChampDelegue()){
+                           isFromDelegate = true;
+                           break;
+                        }
+                     }
+                     if(!isFromDelegate){
+                        where.append(" AND ");
+                        prefixe = allParents.get(parents.get(parents.size() - 1));
+                        where.append(prefixe);
+                        where.append(".banque in (:list");
+                        where.append(nbBanquesInCriteres);
+                        where.append(")");
+                        ++nbBanquesInCriteres;
+                     }
                   }
                   wheres.add(where.toString());
                   ++nbWhere;
@@ -685,7 +875,11 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
       // si la liste n'est pas vide et que l'entité
       // recherchée n'est pas un patient
       if(banques != null && !banques.isEmpty() && !nomEntiteMajFirst.equals("Patient")){
-         sql.append(" and e.banque in (:list)");
+         if(wheres.isEmpty()){
+            sql.append(" WHERE e.banque in (:list)");
+         }else{
+            sql.append(" and e.banque in (:list)");
+         }
       }
 
       /* On exécute la requête. */
@@ -693,6 +887,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
 
       final EntityManager em = entityManagerFactory.createEntityManager();
       final TypedQuery<Integer> query = em.createQuery(sql.toString(), Integer.class);
+      values.removeAll(valuesChampsCalcules);
       for(int i = 0; i < values.size(); i++){
          final StringBuffer sb = new StringBuffer("valeur");
          sb.append(i + 1);
@@ -710,16 +905,299 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
          query.setParameter(sb.toString(), banques);
       }
       objets = query.getResultList();
-      log.debug("Fin de la requête");
 
+      traitementChampsCalcules(criteresChampsCalcules, valuesChampsCalcules, objets, nomEntiteMajFirst);
+
+      log.debug("Fin de la requête");
+      
       return objets;
+   }
+
+
+   private List<Object> traitementChampsCalcules(List<Critere> criteresChampsCalcules, List<Object> valuesChampsCalcules,
+      String entite, List<Banque> banks){ //FIXME ChampCalcule Recherche - Traitement lourd
+      List<Object> result = null;
+      if(!criteresChampsCalcules.isEmpty() && !valuesChampsCalcules.isEmpty()){
+         StringBuilder sql = new StringBuilder();
+         sql.append("SELECT e FROM ");
+         sql.append(entite);
+         sql.append(" as e");
+         if(banks != null && !banks.isEmpty() && !entite.equals("Patient")){
+            sql.append(" WHERE e.banque in (:list)");
+         }
+         final EntityManager em = entityManagerFactory.createEntityManager();
+         final TypedQuery<Object> query = em.createQuery(sql.toString(), Object.class);
+         if(banks != null && !banks.isEmpty() && !entite.equals("Patient")){
+            query.setParameter("list", banks);
+         }
+         List<Object> objects = query.getResultList();
+         if(!objects.isEmpty()){
+            result = new ArrayList<>();
+            result.addAll(objects);
+            for(Object obj : objects){
+               for(int i = 0; i < criteresChampsCalcules.size(); i++){
+                  Object val = champCalculeManager.getValueForObjectManager(
+                     criteresChampsCalcules.get(i).getChamp().getChampAnnotation().getChampCalcule(), obj);
+                  if(null == val /*FIXME ChampCalcule Recherche - Comparaison avec valeur nulle ? */ || !compareValues(val,
+                     criteresChampsCalcules.get(i).getOperateur(), valuesChampsCalcules.get(i))){
+                     result.remove(obj);
+                     break;
+                  }
+               }
+            }
+         }
+      }
+      return result;
+   }
+
+   private void traitementChampsCalcules(List<Critere> criteresChampsCalcules, List<Object> valuesChampsCalcules,
+      List<Integer> objetsIds, String entite){ //FIXME ChampCalcule Recherche - Traitement lourd
+      if(!criteresChampsCalcules.isEmpty() && !valuesChampsCalcules.isEmpty() && !objetsIds.isEmpty()){
+         StringBuilder sql = new StringBuilder();
+         sql.append("SELECT e FROM ");
+         sql.append(entite);
+         sql.append(" as e WHERE e.");
+         sql.append(entite.replaceFirst(".", (entite.charAt(0) + "").toLowerCase()));
+         sql.append("Id in (:list)");
+         final EntityManager em = entityManagerFactory.createEntityManager();
+         final TypedQuery<TKdataObject> query = em.createQuery(sql.toString(), TKdataObject.class);
+         query.setParameter("list", objetsIds);
+         List<TKdataObject> objs = query.getResultList();
+         for(TKdataObject obj : objs){
+            for(int i = 0; i < criteresChampsCalcules.size(); i++){
+               Object val = champCalculeManager
+                  .getValueForObjectManager(criteresChampsCalcules.get(i).getChamp().getChampAnnotation().getChampCalcule(), obj);
+               if(null == val /*FIXME ChampCalcule Recherche - Comparaison avec valeur nulle ? */ || !compareValues(val,
+                  criteresChampsCalcules.get(i).getOperateur(), valuesChampsCalcules.get(i))){
+                  for(int j = 0; j < objetsIds.size(); j++){
+                     if(objetsIds.get(j) == obj.listableObjectId()){
+                        objetsIds.remove(j);
+                     }
+                  }
+                  break;
+               }
+            }
+         }
+      }
+   }
+
+   private Boolean compareValues(Object val1, String operateur, Object val2){ //FIXME ChampCalcule Recherche - meilleure méthode
+      if(val1 instanceof Number){
+         Double valNum1 = new Double(val1.toString());
+         Double valNum2 = new Double(val2.toString());
+         return compareValues(valNum1, operateur, valNum2);
+      }
+      if(val1 instanceof Date || val2 instanceof Date){
+         Calendar cal1 = Calendar.getInstance();
+         cal1.setTime((Date) val1);
+         Calendar cal2 = Calendar.getInstance();
+         cal2.setTime((Date) val2);
+         return compareValues(cal1, operateur, cal2);
+      }
+      if(val1 instanceof Calendar || val2 instanceof Calendar){
+         return compareValues((Calendar) val1, operateur, (Calendar) val2);
+      }
+      return false;
+   }
+
+   private Boolean compareValues(Double val1, String operateur, Double val2){ //FIXME ChampCalcule Recherche - meilleure méthode
+      Boolean result = false;
+      switch(operateur){
+         case "=":
+            result = val1.equals(val2);
+            break;
+         case "!=":
+            result = !val1.equals(val2);
+            break;
+         case ">":
+            result = val1 > val2;
+            break;
+         case ">=":
+            result = val1 >= val2;
+            break;
+         case "<":
+            result = val1 <= val2;
+            break;
+         case "<=":
+            result = val1 < val2 || val1.equals(val2);
+            break;
+         default:
+            break;
+
+      }
+      return result;
+   }
+
+   private Boolean compareValues(Calendar val1, String operateur, Calendar val2){ //FIXME ChampCalcule Recherche - meilleure méthode
+      Boolean result = false;
+      switch(operateur){
+         case "=":
+            result = (0 == val1.compareTo(val2));
+            break;
+         case "!=":
+            result = (0 != val1.compareTo(val2));
+            break;
+         case ">":
+            result = (0 < val1.compareTo(val2));
+            break;
+         case ">=":
+            result = (0 <= val1.compareTo(val2));
+            break;
+         case "<":
+            result = (0 > val1.compareTo(val2));
+            break;
+         case "<=":
+            result = (0 >= val1.compareTo(val2));
+            break;
+         default:
+            break;
+
+      }
+      return result;
+   }
+
+   /**
+    * Retourne le nom de l'entité correspondant au champ 
+    * @param champ
+    * @return
+    */
+   private String getNomEntiteAncetre(Champ champ){
+
+      String nomEntiteAncetre = null;
+      Champ parent = champ.getChampParent();
+
+      while(parent != null && (parent.getChampEntite() != null || parent.getChampDelegue() != null)){
+
+         if(null != parent.getChampEntite()){
+            nomEntiteAncetre = parent.getChampEntite().getEntite().getNom();
+         }else if(null != parent.getChampDelegue()){
+            nomEntiteAncetre = parent.getChampDelegue().getEntite().getNom();
+         }
+
+         parent = parent.getChampParent();
+      }
+
+      return StringUtils.capitalize(nomEntiteAncetre);
+
+   }
+
+   /**
+    * Retourne l'ensemble des champs ancêtres d'un champ
+    * @param champ
+    * @return
+    */
+   private List<Champ> getChampAncestors(Champ champ){
+
+      List<Champ> ancestors = new ArrayList<>();
+
+      Champ parent = champ.getChampParent();
+
+      while(parent != null && (parent.getChampEntite() != null || parent.getChampDelegue() != null)){
+         ancestors.add(0, parent);
+         parent = parent.getChampParent();
+      }
+
+      return ancestors;
+
+   }
+
+   /**
+    * Retourne la liste de critères SQL de type JOIN pour un champ
+    * @param champ
+    * @return
+    */
+   private List<String> buildJoinsList(final Champ champ, final List<String> joinsList){
+
+      List<String> joins = new ArrayList<>();
+
+      if(joinsList != null) {
+         joins.addAll(joinsList);
+      }
+      
+      Champ parent = champ.getChampParent();
+      Hashtable<Champ, String> allParents = new Hashtable<>();
+
+      final List<Champ> parents = new ArrayList<>();
+      while(parent != null && (parent.getChampEntite() != null || parent.getChampDelegue() != null)){
+         parents.add(0, parent);
+
+         AbstractTKChamp ceParent = null;
+         if(null != parent.getChampEntite()){
+            ceParent = parent.getChampEntite();
+         }else if(null != parent.getChampDelegue()){
+            ceParent = parent.getChampDelegue();
+         }
+
+         String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
+         // On enlève le suffixe "Id"
+         if(nomParent.endsWith("Id")){
+            nomParent = nomParent.substring(0, nomParent.length() - 2);
+         }
+
+         parent = parent.getChampParent();
+      }
+
+      String correspParent = "";
+
+      for(int i = 0; i < parents.size(); i++){
+
+         int idx = joins.size() + 1;
+
+         parent = parents.get(i);
+         if(!allParents.containsKey(parent)){
+            allParents.put(parent, "p" + idx);
+            AbstractTKChamp ceParent = null;
+            if(null != parent.getChampEntite()){
+               ceParent = parent.getChampEntite();
+            }else if(null != parent.getChampDelegue()){
+               ceParent = parent.getChampDelegue();
+            }
+            String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
+            // On enlève le suffixe "Id"
+            if(nomParent.endsWith("Id")){
+               nomParent = nomParent.substring(0, nomParent.length() - 2);
+            }
+
+            // Création des joins
+            final StringBuffer join = new StringBuffer();
+            if(i == 0){
+               join.append("JOIN e.");
+               join.append(nomParent);
+               join.append(" as p");
+               join.append(idx);
+               join.append(" ");
+
+            }else{
+               //HERE A TESTER
+               if(!correspParent.equals("")){
+                  join.append("JOIN " + correspParent);
+                  correspParent = "";
+               }else{
+                  join.append("JOIN p");
+                  join.append(idx - 1);
+
+               }
+               join.append(".");
+               join.append(nomParent);
+               join.append(" as p");
+               join.append(idx);
+               join.append(" ");
+            }
+            joins.add(join.toString());
+         }else{
+            correspParent = allParents.get(parent);
+         }
+      }
+
+      return joins;
+
    }
 
    @Override
    public List<Object> findObjetByCritereWithBanquesManager(final Critere critere, final List<Banque> banques, final Object value,
       final boolean idSearch){
       List<Object> objets = new ArrayList<>();
-      if(!idSearch || (value != null && value instanceof Collection && !((Collection<?>) value).isEmpty())){
+      if(!idSearch || (null != value && value instanceof Collection && !((Collection<?>) value).isEmpty())){
          if(critere.getChamp() != null){
             final StringBuffer sb = new StringBuffer("");
             final Champ champ = critere.getChamp();
@@ -734,7 +1212,8 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                         + " join av.champAnnotation as ca" + " WHERE" + " e." + nomEntiteMinFirst + "Id = av.objetId"
                         + " and ca.tableAnnotation.entite.nom = '" + nomEntiteMajFirst + "'");
 
-                     if(ca.getDataType().getType().equals("num") || ca.getDataType().getType().equals("hyperlien")){
+                     if(ca.getDataType().getType().equals("num") || ca.getDataType().getType().equals("hyperlien")
+                        || ca.getDataType().getType().equals("duree")){
                         sb.append(" and av.alphanum " + critere.getOperateur() + " :valeur");
                      }else if(ca.getDataType().getType().equals("alphanum") || ca.getDataType().getType().equals("date")){
                         sb.append(" and av." + ca.getDataType().getType() + " " + critere.getOperateur() + " :valeur");
@@ -865,7 +1344,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
       final StringBuffer sql = new StringBuffer();
       String nomEntiteMajFirst = "";
       final List<String> joins = new ArrayList<>();
-      final java.util.Hashtable<Champ, String> allParents = new java.util.Hashtable<>();
+      final Hashtable<Champ, String> allParents = new Hashtable<>();
       final List<String> wheres = new ArrayList<>();
       Entite entiteTransformation = null;
       int cpt = 1;
@@ -875,37 +1354,54 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
          if(criteres.get(k) != null){
             final Champ champ = criteres.get(k).getChamp();
             if(champ != null){
-               if(champ.getChampEntite() != null){
-                  final ChampEntite ce = champ.getChampEntite();
-                  if(ce != null && ce.getEntite() != null){
-                     final String nomEntite = ce.getEntite().getNom();
+               if(champ.getChampEntite() != null || null != champ.getChampDelegue()){
+                  AbstractTKChamp ce = null;
+                  Entite entite = null;
+                  ChampEntite queryChamp = null;
+                  if(null != champ.getChampEntite()){
+                     ce = champ.getChampEntite();
+                     entite = champ.getChampEntite().getEntite();
+                     queryChamp = champ.getChampEntite().getQueryChamp();
+                  }else if(null != champ.getChampDelegue()){
+                     ce = champ.getChampDelegue();
+                     entite = champ.getChampDelegue().getEntite();
+                  }
+                  if(ce != null && entite != null){
+                     final String nomEntite = entite.getNom();
                      if(nomEntite != null){
                         nomEntiteMajFirst = nomEntite.replaceFirst(".", (nomEntite.charAt(0) + "").toUpperCase());
                         String nomChampMinFirst = ce.getNom().replaceFirst(".", (ce.getNom().charAt(0) + "").toLowerCase());
                         if(nomChampMinFirst.endsWith("Id")){
                            nomChampMinFirst = nomChampMinFirst.substring(0, nomChampMinFirst.length() - 2);
-                        }else if(nomChampMinFirst.endsWith("s") && ce.getQueryChamp() != null){
+                        }else if(nomChampMinFirst.endsWith("s") && queryChamp != null){
                            // ne concerne donc que les champ entite Maladie.Collaborateurs .
                            nomChampMinFirst = "";
                         }
                         Champ parent = champ.getChampParent();
                         final List<Champ> parents = new ArrayList<>();
-                        while(parent != null && parent.getChampEntite() != null){
+                        while(parent != null && (parent.getChampEntite() != null || parent.getChampDelegue() != null)){
+                           AbstractTKChamp ceParent = null;
+                           String nomEntiteParent = null;
+                           if(null != parent.getChampEntite()){
+                              ceParent = parent.getChampEntite();
+                              nomEntiteParent = parent.getChampEntite().getEntite().getNom();
+                           }else if(null != parent.getChampDelegue()){
+                              ceParent = parent.getChampDelegue();
+                              nomEntiteParent = parent.getChampDelegue().getEntite().getNom();
+                           }
 
-                           if(!parent.getChampEntite().getNom().contains("ProdDerives")){
+                           if(!ceParent.getNom().contains("ProdDerives")){
                               parents.add(0, parent);
                            }else{
                               entiteTransformation = parent.getChampEntite().getEntite();
                            }
 
-                           final ChampEntite ceParent = parent.getChampEntite();
                            String nomParent =
                               ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
                            // On enlève le suffixe "Id"
                            if(nomParent.endsWith("Id")){
                               nomParent = nomParent.substring(0, nomParent.length() - 2);
                            }
-                           final String nomEntiteParent = ceParent.getEntite().getNom();
                            nomEntiteMajFirst = nomEntiteParent.replaceFirst(".", (nomEntiteParent.charAt(0) + "").toUpperCase());
 
                            parent = parent.getChampParent();
@@ -920,7 +1416,12 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                            parent = parents.get(i);
                            if(!allParents.containsKey(parent)){
                               allParents.put(parent, "p" + cpt);
-                              final ChampEntite ceParent = parent.getChampEntite();
+                              AbstractTKChamp ceParent = null;
+                              if(null != parent.getChampEntite()){
+                                 ceParent = parent.getChampEntite();
+                              }else if(null != parent.getChampDelegue()){
+                                 ceParent = parent.getChampDelegue();
+                              }
                               String nomParent =
                                  ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
                               // On enlève le suffixe "Id"
@@ -949,11 +1450,6 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                                  join.append(cpt);
                                  join.append(" ");
 
-                                 //											join.append(".");
-                                 //											join.append(nomParent);
-                                 //											join.append(" as p");
-                                 //											join.append(i + 1);
-                                 //											join.append(" ");
                               }
                               if(!join.toString().contains("prodDerive")){
                                  joins.add(join.toString());
@@ -1261,38 +1757,11 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
          String nomChampMinFirst = null;
          final StringBuffer sb = new StringBuffer("");
          final Champ champ = critere.getChamp();
-         // init valeurs communes
-         //			if (champ.getChampAnnotation() != null) {
-         //				ChampAnnotation ca = champ.getChampAnnotation();
-         //				if (ca != null && ca.getTableAnnotation() != null
-         //						&& ca.getTableAnnotation().getEntite() != null) {
-         //					nomEntite = ca.getTableAnnotation().getEntite()
-         //							.getNom();
-         //				}
-         //			}
-
-         // annotation type thesM uniquement
          if(champ.getChampAnnotation() != null && champ.getChampAnnotation().getDataType().getType().equals("thesaurusM")){
-            //				sb.append("SELECT DISTINCT e.");
-            //				if (!nomEntiteMajFirst.equals("ProdDerive")) {
-            //					sb.append(nomEntiteMajFirst.toLowerCase() + "Id");
-            //				} else {
-            //					sb.append("prodDeriveId");
-            //				}
-            //				
-            //				sb.append(" From " + nomEntiteMajFirst
-            //						+ " as e, AnnotationValeur av"
-            //						+ " join av.champAnnotation as ca" + " WHERE"
-            //						+ " e." + nomEntiteMinFirst + "Id = av.objetId"
-            //						+ " and ca.tableAnnotation.entite.nom = '"
-            //						+ nomEntiteMajFirst + "'");
 
             sb.append("SELECT DISTINCT av.objetId From AnnotationValeur av");
             sb.append(" JOIN av.champAnnotation ca ");
-            sb.append(" WHERE ca.champAnnotationId = :champId ");
-            //				+ nomEntiteMinFirst + "Id = av.objetId"
-            //				+ " and ca.tableAnnotation.entite.nom = '"
-            //				+ nomEntiteMajFirst + "'");
+            sb.append(" WHERE ca.id = :champId ");
 
             if(!cumulative || values.isEmpty()){
                sb.append("AND av.item in (:valeurs)");
@@ -1313,38 +1782,6 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                   sb.append("(" + sbPart.replaceFirst(":val1", ":val" + i).replaceAll(" av", " av" + i) + ") ");
                }
             }
-
-            //						+ critere.getOperateur() + " '"
-            //						+ critere.getValeur() + "'");
-
-            //				if (ca.getDataType().getType().equals("num")) {
-            //					sb.append(" and av.alphanum "
-            //							+ critere.getOperateur() + " '"
-            //							+ critere.getValeur() + "'");
-            //				} else if (ca.getDataType().getType()
-            //						.equals("alphanum")
-            //						|| ca.getDataType().getType().equals("date")) {
-            //					sb.append(" and av." + ca.getDataType().getType()
-            //							+ " " + critere.getOperateur() + " '"
-            //							+ critere.getValeur() + "'");
-            //				} else if (ca.getDataType().getType().equals("datetime")) {
-            //					sb.append(" and av.date "
-            //							+ critere.getOperateur() + " '"
-            //							+ critere.getValeur() + "'");
-            //				} else if (ca.getDataType().getType()
-            //						.equals("thesaurus")) {
-            //					sb.append(" and av.item.valeur "
-            //							+ critere.getOperateur() + " '"
-            //							+ critere.getValeur() + "'");
-            //				} else if (ca.getDataType().getType().equals("boolean")) {
-            //					sb.append(" and av.bool " + critere.getOperateur()
-            //							+ " " + critere.getValeur());
-            //				} else {
-            //					sb.append(" and av." + ca.getDataType().getType()
-            //							+ " " + critere.getOperateur() + " "
-            //							+ critere.getValeur());
-            //				}
-            //			}
          }else if(champ.getChampEntite() != null){
             final ChampEntite ce = critere.getChamp().getChampEntite();
             if(ce != null && ce.getEntite() != null){
@@ -1461,7 +1898,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
 
          // si annotation 
          if(sb.toString().contains(":champId")){
-            query.setParameter("champId", champ.getChampAnnotation().getChampAnnotationId());
+            query.setParameter("champId", champ.getChampAnnotation().getId());
          }
 
          // si la liste n'est pas vide et que l'entité

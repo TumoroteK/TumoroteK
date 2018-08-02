@@ -40,9 +40,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -54,6 +56,7 @@ import fr.aphp.tumorotek.manager.systeme.FichierManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.systeme.FichierValidator;
 import fr.aphp.tumorotek.model.TKFileSettableObject;
+import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.systeme.Fichier;
 
 import eu.medsea.mimeutil.MimeUtil;
@@ -315,5 +318,22 @@ public class FichierManagerImpl implements FichierManager
          removeObjectManager(obj.getFile(), filesToDelete);
       }
       obj.setFile(fileRef);
+   }
+   
+   @Override
+   public void switchBanqueManager(Fichier file, Banque dest, Set<MvFichier> filesToMove) {
+
+	   if (file != null && dest != null && filesToMove != null) {
+		   log.debug("modification chemin et déplacement du fichier: " + file.getNom());
+		   String actualPathStr = file.getPath();
+		   String destPathStr = actualPathStr.replaceFirst("coll_\\d+", "coll_" + dest.getBanqueId());
+
+		   // programme de déplacement physique du fichier
+		   filesToMove.add(new MvFichier(Paths.get(actualPathStr), Paths.get(destPathStr)));
+
+		   // mise à jour du chemin
+		   file.setPath(destPathStr);
+		   fichierDao.updateObject(file);
+	   }
    }
 }

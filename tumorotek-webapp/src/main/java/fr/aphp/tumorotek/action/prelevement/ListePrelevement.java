@@ -101,7 +101,7 @@ public class ListePrelevement extends AbstractListeController2
    // Variable de droits.
    private boolean canAccessPatient;
 
-   private PrelevementRowRenderer listObjectsRenderer = new PrelevementRowRenderer(true, false);
+   protected PrelevementRowRenderer listObjectsRenderer = new PrelevementRowRenderer(true, false);
    private PrelevementsNbEchantillonsComparator comparatorAsc = new PrelevementsNbEchantillonsComparator(true);
    private PrelevementsNbEchantillonsComparator comparatorDesc = new PrelevementsNbEchantillonsComparator(false);
 
@@ -127,9 +127,9 @@ public class ListePrelevement extends AbstractListeController2
 
       // recoit le renderer en argument
       if(arg != null && arg.containsKey("renderer")){
-         setListObjectsRenderer((TKSelectObjectRenderer) arg.get("renderer"));
+         setListObjectsRenderer((TKSelectObjectRenderer<? extends TKdataObject>) arg.get("renderer"));
       }
-      
+
       nbEchantillonsColumn.setSortAscending(comparatorAsc);
       nbEchantillonsColumn.setSortDescending(comparatorDesc);
 
@@ -138,7 +138,7 @@ public class ListePrelevement extends AbstractListeController2
       listObjectsRenderer.setEmetteurs(SessionUtils.getEmetteursInterfacages(sessionScope));
    }
 
-   public void setListObjectsRenderer(final TKSelectObjectRenderer listObjectsRenderer){
+   public void setListObjectsRenderer(final TKSelectObjectRenderer<? extends TKdataObject> listObjectsRenderer){
       this.listObjectsRenderer = (PrelevementRowRenderer) listObjectsRenderer;
    }
 
@@ -147,7 +147,6 @@ public class ListePrelevement extends AbstractListeController2
       return this.listObjects;
    }
 
-   
    @Override
    public void setListObjects(final List<? extends TKdataObject> objs){
       clearSelection();
@@ -171,7 +170,6 @@ public class ListePrelevement extends AbstractListeController2
       getListObjects().remove(obj);
    }
 
-   
    @Override
    public void setSelectedObjects(final List<? extends TKdataObject> objs){
       this.selectedObjects = (List<Prelevement>) objs;
@@ -197,7 +195,7 @@ public class ListePrelevement extends AbstractListeController2
    }
 
    @Override
-   public TKSelectObjectRenderer getListObjectsRenderer(){
+   public TKSelectObjectRenderer<? extends TKdataObject> getListObjectsRenderer(){
       return listObjectsRenderer;
    }
 
@@ -324,9 +322,8 @@ public class ListePrelevement extends AbstractListeController2
    public List<? extends TKdataObject> extractObjectsFromIds(final List<Integer> ids){
       if(ids != null && ids.size() > 0){
          return ManagerLocator.getPrelevementManager().findByIdsInListManager(ids);
-      }else{
-         return new ArrayList<Prelevement>();
       }
+      return new ArrayList<Prelevement>();
    }
 
    /**

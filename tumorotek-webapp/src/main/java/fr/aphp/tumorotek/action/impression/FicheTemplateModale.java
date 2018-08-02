@@ -126,7 +126,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * Controlleur de la fiche template d'impression dans l'application
  * 
  * @author 
- * @version 2.2
+ * @version 2.2.0
  */
 public class FicheTemplateModale extends AbstractImpressionController
 {

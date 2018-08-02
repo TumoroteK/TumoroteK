@@ -38,17 +38,19 @@ package fr.aphp.tumorotek.model.systeme;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import fr.aphp.tumorotek.model.AbstractThesaurusObject;
 import fr.aphp.tumorotek.model.cession.CederObjet;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
@@ -66,16 +68,19 @@ import fr.aphp.tumorotek.model.coeur.prodderive.Transformation;
  */
 @Entity
 @Table(name = "UNITE")
-@NamedQueries(value = {@NamedQuery(name = "Unite.findByUnite", query = "SELECT u FROM Unite u WHERE u.unite like ?1"),
-   @NamedQuery(name = "Unite.findByTypeWithOrder", query = "SELECT u FROM Unite u WHERE u.type like ?1 " + "ORDER BY u.unite"),
-   @NamedQuery(name = "Unite.findByOrder", query = "SELECT u FROM Unite u ORDER BY u.unite")})
-public class Unite implements java.io.Serializable
+@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "UNITE_ID")),
+   @AttributeOverride(name = "nom", column = @Column(name = "UNITE", nullable = false, length = 200))})
+@GenericGenerator(name = "autoincrement", strategy = "increment")
+@NamedQueries(value = {@NamedQuery(name = "Unite.findByUnite", query = "SELECT u FROM Unite u WHERE u.nom like ?1"),
+   @NamedQuery(name = "Unite.findByTypeWithOrder", query = "SELECT u FROM Unite u WHERE u.type like ?1 " + "ORDER BY u.nom"),
+   @NamedQuery(name = "Unite.findByOrder", query = "SELECT u FROM Unite u ORDER BY u.nom")})
+public class Unite extends AbstractThesaurusObject implements java.io.Serializable
 {
 
    private static final long serialVersionUID = 468743654364634L;
 
-   private Integer uniteId;
-   private String unite;
+//   private Integer uniteId;
+//   private String unite;
    private String type;
 
    private Set<Prelevement> prelevementQuantites = new HashSet<>();
@@ -103,30 +108,38 @@ public class Unite implements java.io.Serializable
     * @param t .
     */
    public Unite(final Integer id, final String u, final String t){
-      this.uniteId = id;
-      this.unite = u;
+      this.setId(id);
+      this.setNom(u);
       this.type = t;
    }
 
-   @Id
-   @Column(name = "UNITE_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
+   /**
+    * @deprecated Utiliser {@link #getId()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public Integer getUniteId(){
-      return uniteId;
+      return this.getId();
    }
 
    public void setUniteId(final Integer id){
-      this.uniteId = id;
+      this.setId(id);
    }
 
-   @Column(name = "UNITE", nullable = false, length = 30)
+   /**
+    * @deprecated Utiliser {@link #getNom()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public String getUnite(){
-      return unite;
+      return this.getNom();
    }
 
+   
    public void setUnite(final String u){
-      this.unite = u;
+      this.setNom(u);
    }
 
    @Column(name = "TYPE", nullable = false, length = 15)
@@ -254,7 +267,7 @@ public class Unite implements java.io.Serializable
       }
       final Unite test = (Unite) obj;
       return ((this.type == test.type || (this.type != null && this.type.equals(test.type)))
-         && (this.unite == test.unite || (this.unite != null && this.unite.equals(test.unite))));
+         && (this.getNom() == test.getNom() || (this.getNom() != null && this.getNom().equals(test.getNom()))));
    }
 
    /**
@@ -268,8 +281,8 @@ public class Unite implements java.io.Serializable
       int hashUnite = 0;
       int hashType = 0;
 
-      if(this.unite != null){
-         hashUnite = this.unite.hashCode();
+      if(this.getNom() != null){
+         hashUnite = this.getNom().hashCode();
       }
       if(this.type != null){
          hashType = this.type.hashCode();
@@ -287,11 +300,10 @@ public class Unite implements java.io.Serializable
     */
    @Override
    public String toString(){
-      if(this.type != null && this.unite != null){
-         return "{" + this.unite + ", " + this.type + "}";
-      }else{
-         return "{Empty Unite}";
+      if(this.type != null && this.getNom() != null){
+         return "{" + this.getNom() + ", " + this.type + "}";
       }
+         return "{Empty Unite}";
    }
 
 }

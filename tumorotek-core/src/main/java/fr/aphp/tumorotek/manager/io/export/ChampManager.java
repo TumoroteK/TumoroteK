@@ -116,6 +116,6 @@ public interface ChampManager
     * @param boolean format String
     * @return Valeur du champ (en String).
     */
-   Object getValueForObjectManager(Champ champ, Object obj, boolean prettyFormat);
+   <T> Object getValueForObjectManager(Champ champ, T obj, boolean prettyFormat);
 
 }

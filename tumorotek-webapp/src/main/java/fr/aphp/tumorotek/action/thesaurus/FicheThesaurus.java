@@ -51,10 +51,11 @@ import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.constraints.ConstWord;
 import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
-import fr.aphp.tumorotek.manager.CrudManager;
+import fr.aphp.tumorotek.manager.PfDependantTKThesaurusManager;
 import fr.aphp.tumorotek.manager.TKThesaurusManager;
-import fr.aphp.tumorotek.manager.context.CategorieManager;
-import fr.aphp.tumorotek.manager.context.SpecialiteManager;
+import fr.aphp.tumorotek.manager.exception.TKException;
+import fr.aphp.tumorotek.manager.qualite.NonConformiteManager;
+import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.cession.CessionExamen;
@@ -73,6 +74,7 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ModePrepaDerive;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdQualite;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdType;
 import fr.aphp.tumorotek.model.contexte.Categorie;
+import fr.aphp.tumorotek.model.contexte.Diagnostic;
 import fr.aphp.tumorotek.model.contexte.Protocole;
 import fr.aphp.tumorotek.model.contexte.Specialite;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
@@ -93,11 +95,11 @@ public class FicheThesaurus extends AbstractFicheCombineController
    /**
     * Objets principaux.
     */
-   private Thesaurus typeThesaurus;
+   private Thesaurus<? extends TKThesaurusObject> typeThesaurus;
    private boolean isAdmin = false;
    private ThesaurusRowRenderer listValeursRenderer = new ThesaurusRowRenderer();
-   private CrudManager<? extends Object> thesManager;
-   private List<? extends Object> listValeurs = new ArrayList<>();
+   private TKThesaurusManager<? extends TKThesaurusObject> thesManager;
+   private List<?> listValeurs = new ArrayList<>();
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
@@ -171,7 +173,7 @@ public class FicheThesaurus extends AbstractFicheCombineController
 
    @Override
    public void setObject(final TKdataObject obj){
-      this.typeThesaurus = (Thesaurus) obj;
+      this.typeThesaurus = (Thesaurus<?>) obj;
 
       super.setObject(typeThesaurus);
 
@@ -185,79 +187,55 @@ public class FicheThesaurus extends AbstractFicheCombineController
     * @param reset si manager change
     */
    public void initListeValeurs(final boolean reset){
-      listValeurs = new ArrayList<>();
-      if(reset){
-         thesManager = null;
-         if(typeThesaurus.getNom().equals("Nature")){
-            thesManager = ManagerLocator.getNatureManager();
-         }else if(typeThesaurus.getNom().equals("PrelevementType")){
-            thesManager = ManagerLocator.getPrelevementTypeManager();
-         }else if(typeThesaurus.getNom().equals("EchantillonType")){
-            thesManager = ManagerLocator.getEchantillonTypeManager();
-         }else if(typeThesaurus.getNom().equals("EchanQualite")){
-            thesManager = ManagerLocator.getEchanQualiteManager();
-         }else if(typeThesaurus.getNom().equals("ProdType")){
-            thesManager = ManagerLocator.getProdTypeManager();
-         }else if(typeThesaurus.getNom().equals("ProdQualite")){
-            thesManager = ManagerLocator.getProdQualiteManager();
-         }else if(typeThesaurus.getNom().equals("ConditType")){
-            thesManager = ManagerLocator.getConditTypeManager();
-         }else if(typeThesaurus.getNom().equals("ConditMilieu")){
-            thesManager = ManagerLocator.getConditMilieuManager();
-         }else if(typeThesaurus.getNom().equals("ConsentType")){
-            thesManager = ManagerLocator.getConsentTypeManager();
-         }else if(typeThesaurus.getNom().equals("Risque")){
-            thesManager = ManagerLocator.getRisqueManager();
-         }else if(typeThesaurus.getNom().equals("ModePrepa")){
-            thesManager = ManagerLocator.getModePrepaManager();
-         }else if(typeThesaurus.getNom().equals("ModePrepaDerive")){
-            thesManager = ManagerLocator.getModePrepaDeriveManager();
-         }else if(typeThesaurus.getNom().equals("CessionExamen")){
-            thesManager = ManagerLocator.getCessionExamenManager();
-         }else if(typeThesaurus.getNom().equals("DestructionMotif")){
-            thesManager = ManagerLocator.getDestructionMotifManager();
-         }else if(typeThesaurus.getNom().equals("ProtocoleType")){
-            thesManager = ManagerLocator.getProtocoleTypeManager();
-         }else if(typeThesaurus.getNom().equals("Specialite")){
-            thesManager = ManagerLocator.getSpecialiteManager();
-         }else if(typeThesaurus.getNom().equals("Categorie")){
-            thesManager = ManagerLocator.getCategorieManager();
-         }else if(typeThesaurus.getNom().equals("ConteneurType")){
-            thesManager = ManagerLocator.getConteneurTypeManager();
-         }else if(typeThesaurus.getNom().equals("EnceinteType")){
-            thesManager = ManagerLocator.getEnceinteTypeManager();
-         }else if(typeThesaurus.getNom().equals("Protocole")){
-            thesManager = ManagerLocator.getProtocoleManager();
-         }
-      }
 
-      // si c'est un thes de non conformité
-      if(thesManager == null){
-         if(typeThesaurus.getNom().equals("NonConformiteArrivee")){
-            listValeurs = ManagerLocator.getNonConformiteManager().findByPlateformeEntiteAndTypeStringManager(
-               SessionUtils.getPlateforme(sessionScope), "Arrivee", ManagerLocator.getEntiteManager().findByIdManager(2));
-         }else if(typeThesaurus.getNom().equals("NonConformiteTraitementEchan")){
-            listValeurs = ManagerLocator.getNonConformiteManager().findByPlateformeEntiteAndTypeStringManager(
-               SessionUtils.getPlateforme(sessionScope), "Traitement", ManagerLocator.getEntiteManager().findByIdManager(3));
-         }else if(typeThesaurus.getNom().equals("NonConformiteCessionEchan")){
-            listValeurs = ManagerLocator.getNonConformiteManager().findByPlateformeEntiteAndTypeStringManager(
-               SessionUtils.getPlateforme(sessionScope), "Cession", ManagerLocator.getEntiteManager().findByIdManager(3));
-         }else if(typeThesaurus.getNom().equals("NonConformiteTraitementDerive")){
-            listValeurs = ManagerLocator.getNonConformiteManager().findByPlateformeEntiteAndTypeStringManager(
-               SessionUtils.getPlateforme(sessionScope), "Traitement", ManagerLocator.getEntiteManager().findByIdManager(8));
-         }else if(typeThesaurus.getNom().equals("NonConformiteCessionDerive")){
-            listValeurs = ManagerLocator.getNonConformiteManager().findByPlateformeEntiteAndTypeStringManager(
-               SessionUtils.getPlateforme(sessionScope), "Cession", ManagerLocator.getEntiteManager().findByIdManager(8));
-         }
-      }else if(thesManager instanceof TKThesaurusManager){
-         listValeurs = ((TKThesaurusManager<?>) thesManager).findByOrderManager(SessionUtils.getPlateforme(sessionScope));
-      }else{
-         if(typeThesaurus.getNom().equals("Specialite")){
-            listValeurs = ((SpecialiteManager) thesManager).findAllObjectsManager();
-         }else if(typeThesaurus.getNom().equals("Categorie")){
-            listValeurs = ((CategorieManager) thesManager).findAllObjectsManager();
-         }
+      listValeurs = new ArrayList<>();
+
+      if(reset){
+         
+         thesManager = ManagerLocator.getThesaurusManager(typeThesaurus.getThesaurusObjectClass());
+
+         }/*else if(typeThesaurus.getNom().equals("Diagnostic")){
+            thesManager = ManagerLocator.getManager(DiagnosticManager.class);
+         }*/
+
+      boolean thesaurusNonConformite = NonConformite.class.equals(typeThesaurus.getThesaurusObjectClass());
+
+      if( !thesaurusNonConformite ) {
+         if(thesManager instanceof PfDependantTKThesaurusManager){
+            listValeurs = ((PfDependantTKThesaurusManager<?>) thesManager).findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+         }else{
+            listValeurs = ((TKThesaurusManager<?>) thesManager).findByOrderManager();
       }
+      } else {
+
+         NonConformiteManager ncManager = (NonConformiteManager) thesManager;
+
+         switch(typeThesaurus.getQualifier()){
+            case "NonConformiteArrivee":
+               listValeurs = ncManager.findByPlateformeEntiteAndTypeStringManager(
+               SessionUtils.getPlateforme(sessionScope), "Arrivee", ManagerLocator.getEntiteManager().findByIdManager(2));
+               break;
+            case "NonConformiteTraitementEchan":
+               listValeurs = ncManager.findByPlateformeEntiteAndTypeStringManager(
+               SessionUtils.getPlateforme(sessionScope), "Traitement", ManagerLocator.getEntiteManager().findByIdManager(3));
+               break;
+            case "NonConformiteCessionEchan":
+               listValeurs = ncManager.findByPlateformeEntiteAndTypeStringManager(
+               SessionUtils.getPlateforme(sessionScope), "Cession", ManagerLocator.getEntiteManager().findByIdManager(3));
+               break;
+            case "NonConformiteTraitementDerive":
+               listValeurs = ncManager.findByPlateformeEntiteAndTypeStringManager(
+               SessionUtils.getPlateforme(sessionScope), "Traitement", ManagerLocator.getEntiteManager().findByIdManager(8));
+               break;
+            case "NonConformiteCessionDerive":
+               listValeurs = ncManager.findByPlateformeEntiteAndTypeStringManager(
+               SessionUtils.getPlateforme(sessionScope), "Cession", ManagerLocator.getEntiteManager().findByIdManager(8));
+               break;
+            default:
+               throw new TKException("Type de non-conformité [" + typeThesaurus.getQualifier() + "] inconnu");
+         }
+
+         }
 
       getBinder().loadAttribute(valeursListGrid, "model");
       getBinder().loadComponent(valeursListGrid);
@@ -283,73 +261,47 @@ public class FicheThesaurus extends AbstractFicheCombineController
     * Clic sur le bouton addNewValeur.
     */
    public void onClick$addNewValeur(){
+
       // on récupère le thesaurus associé à l'event
       Object value = null;
 
-      // création du nouvel objet
-      if(typeThesaurus.getNom().equals("Nature")){
-         value = new Nature();
-      }else if(typeThesaurus.getNom().equals("PrelevementType")){
-         value = new PrelevementType();
-      }else if(typeThesaurus.getNom().equals("EchantillonType")){
-         value = new EchantillonType();
-      }else if(typeThesaurus.getNom().equals("EchanQualite")){
-         value = new EchanQualite();
-      }else if(typeThesaurus.getNom().equals("ProdType")){
-         value = new ProdType();
-      }else if(typeThesaurus.getNom().equals("ProdQualite")){
-         value = new ProdQualite();
-      }else if(typeThesaurus.getNom().equals("ConditType")){
-         value = new ConditType();
-      }else if(typeThesaurus.getNom().equals("ConditMilieu")){
-         value = new ConditMilieu();
-      }else if(typeThesaurus.getNom().equals("ConsentType")){
-         value = new ConsentType();
-      }else if(typeThesaurus.getNom().equals("Risque")){
-         value = new Risque();
-      }else if(typeThesaurus.getNom().equals("ModePrepa")){
-         value = new ModePrepa();
-      }else if(typeThesaurus.getNom().equals("ModePrepaDerive")){
-         value = new ModePrepaDerive();
-      }else if(typeThesaurus.getNom().equals("CessionExamen")){
-         value = new CessionExamen();
-      }else if(typeThesaurus.getNom().equals("DestructionMotif")){
-         value = new DestructionMotif();
-      }else if(typeThesaurus.getNom().equals("Protocole")){
-         value = new Protocole();
-      }else if(typeThesaurus.getNom().equals("ProtocoleType")){
-         value = new ProtocoleType();
-      }else if(typeThesaurus.getNom().equals("Specialite")){
-         value = new Specialite();
-      }else if(typeThesaurus.getNom().equals("Categorie")){
-         value = new Categorie();
-      }else if(typeThesaurus.getNom().equals("ConteneurType")){
-         value = new ConteneurType();
-      }else if(typeThesaurus.getNom().equals("EnceinteType")){
-         value = new EnceinteType();
-      }else if(typeThesaurus.getNom().contains("NonConformite")){
-         value = new NonConformite();
-         ((NonConformite) value).setPlateforme(SessionUtils.getPlateforme(sessionScope));
-         if(typeThesaurus.getNom().equals("NonConformiteArrivee")){
-            ((NonConformite) value).setConformiteType(ManagerLocator.getConformiteTypeManager()
-               .findByEntiteAndTypeManager("Arrivee", ManagerLocator.getEntiteManager().findByIdManager(2)).get(0));
-         }else if(typeThesaurus.getNom().equals("NonConformiteTraitementEchan")){
-            ((NonConformite) value).setConformiteType(ManagerLocator.getConformiteTypeManager()
-               .findByEntiteAndTypeManager("Traitement", ManagerLocator.getEntiteManager().findByIdManager(3)).get(0));
-         }else if(typeThesaurus.getNom().equals("NonConformiteCessionEchan")){
-            ((NonConformite) value).setConformiteType(ManagerLocator.getConformiteTypeManager()
-               .findByEntiteAndTypeManager("Cession", ManagerLocator.getEntiteManager().findByIdManager(3)).get(0));
-         }else if(typeThesaurus.getNom().equals("NonConformiteTraitementDerive")){
-            ((NonConformite) value).setConformiteType(ManagerLocator.getConformiteTypeManager()
-               .findByEntiteAndTypeManager("Traitement", ManagerLocator.getEntiteManager().findByIdManager(8)).get(0));
-         }else if(typeThesaurus.getNom().equals("NonConformiteCessionDerive")){
-            ((NonConformite) value).setConformiteType(ManagerLocator.getConformiteTypeManager()
-               .findByEntiteAndTypeManager("Cession", ManagerLocator.getEntiteManager().findByIdManager(8)).get(0));
-         }
+      try{
+         value = typeThesaurus.getThesaurusObjectClass().newInstance();
+      }catch(InstantiationException | IllegalAccessException e){
+         throw new TKException("Impossible d'instancier " + typeThesaurus.getThesaurusObjectClass().getSimpleName());
       }
 
-      if(value instanceof TKThesaurusObject){
-         ((TKThesaurusObject) value).setPlateforme(SessionUtils.getPlateforme(sessionScope));
+      if(value instanceof NonConformite) {
+
+         switch(typeThesaurus.getQualifier()){
+            case "NonConformiteArrivee":
+            ((NonConformite) value).setConformiteType(ManagerLocator.getConformiteTypeManager()
+               .findByEntiteAndTypeManager("Arrivee", ManagerLocator.getEntiteManager().findByIdManager(2)).get(0));
+               break;
+            case "NonConformiteTraitementEchan":
+            ((NonConformite) value).setConformiteType(ManagerLocator.getConformiteTypeManager()
+               .findByEntiteAndTypeManager("Traitement", ManagerLocator.getEntiteManager().findByIdManager(3)).get(0));
+               break;
+            case "NonConformiteCessionEchan":
+            ((NonConformite) value).setConformiteType(ManagerLocator.getConformiteTypeManager()
+               .findByEntiteAndTypeManager("Cession", ManagerLocator.getEntiteManager().findByIdManager(3)).get(0));
+               break;
+            case "NonConformiteTraitementDerive":
+            ((NonConformite) value).setConformiteType(ManagerLocator.getConformiteTypeManager()
+               .findByEntiteAndTypeManager("Traitement", ManagerLocator.getEntiteManager().findByIdManager(8)).get(0));
+               break;
+            case "NonConformiteCessionDerive":
+            ((NonConformite) value).setConformiteType(ManagerLocator.getConformiteTypeManager()
+               .findByEntiteAndTypeManager("Cession", ManagerLocator.getEntiteManager().findByIdManager(8)).get(0));
+               break;
+            default:
+               throw new TKException("Type de non-conformité [" + typeThesaurus.getQualifier() + "] inconnu");
+         }
+
+      }
+
+      if(value instanceof AbstractPfDependantThesaurusObject){
+         ((AbstractPfDependantThesaurusObject) value).setPlateforme(SessionUtils.getPlateforme(sessionScope));
       }
 
       // création du titre
@@ -375,40 +327,31 @@ public class FicheThesaurus extends AbstractFicheCombineController
       openChampThesaurusWindow(page, Path.getPath(self), value, getConstraint(), getSecondConstraint(), title, false);
    }
 
-   private boolean isUsedValeur(final Object value){
-      if(value.getClass().getSimpleName().equals("Specialite")){
-         return ManagerLocator.getSpecialiteManager().isUsedObjectManager((Specialite) value);
-      }else if(value.getClass().getSimpleName().equals("Categorie")){
-         return ManagerLocator.getCategorieManager().isUsedObjectManager((Categorie) value);
-      }else if(value.getClass().getSimpleName().equals("NonConformite")){
-         return ManagerLocator.getNonConformiteManager().isUsedObjectManager((NonConformite) value);
-      }else{
-         if(thesManager instanceof TKThesaurusManager){
-            return ((TKThesaurusManager<TKThesaurusObject>) thesManager).isUsedObjectManager((TKThesaurusObject) value);
-         }
-         return ((CrudManager<Object>) thesManager).isUsedObjectManager(value);
-      }
-   }
-
    /**
     * Clique sur l'image onClickDeleteItem.
     * @param event
     */
+   @SuppressWarnings("unchecked")
    public void onClickDeleteItem(final ForwardEvent event){
       // on récupère le thesaurus associé à l'event
-      final Object value = event.getData();
+      final TKThesaurusObject value = (TKThesaurusObject) event.getData();
+
+      final List<Class<? extends TKThesaurusObject>> checkIsUsedClassList = new ArrayList<>();
+      checkIsUsedClassList.add(Nature.class);
+      checkIsUsedClassList.add(EchantillonType.class);
+      checkIsUsedClassList.add(ProdType.class);
+      checkIsUsedClassList.add(ConsentType.class);
+      checkIsUsedClassList.add(EnceinteType.class);
 
       final String nom = getValeur(value);
 
-      final boolean isUsed = isUsedValeur(value);
+      final boolean isUsed = ((TKThesaurusManager<TKThesaurusObject>)thesManager).isUsedObjectManager(value);
       boolean isDeletable = true;
 
       String message = ObjectTypesFormatters.getLabel("message.deletion.message",
          new String[] {ObjectTypesFormatters.getLabel("message.deletion.value.thesaurus", new String[] {nom})});
       if(isUsed){
-         if(typeThesaurus.getNom().equals("Nature") || typeThesaurus.getNom().equals("EchantillonType")
-            || typeThesaurus.getNom().equals("ProdType") || typeThesaurus.getNom().equals("ConsentType")
-            || typeThesaurus.getNom().equals("EnceinteType")){
+         if(checkIsUsedClassList.contains( typeThesaurus.getThesaurusObjectClass() )){
             message = Labels.getLabel("thesaurus.deletion.isUsedNotNull");
             isDeletable = false;
          }else{
@@ -421,18 +364,7 @@ public class FicheThesaurus extends AbstractFicheCombineController
             Messagebox.QUESTION) == Messagebox.YES){
 
             try{
-               if(thesManager != null){
-                  // suppression
-                  if(thesManager instanceof TKThesaurusManager){
-                     ((TKThesaurusManager<TKThesaurusObject>) thesManager).removeObjectManager((TKThesaurusObject) value);
-                  }else{
-                     ((CrudManager<Object>) thesManager).removeObjectManager(value);
-                  }
-               }else{
-                  if(typeThesaurus.getNom().contains("NonConformite")){
-                     ManagerLocator.getNonConformiteManager().removeObjectManager((NonConformite) value);
-                  }
-               }
+               ((TKThesaurusManager<TKThesaurusObject>)thesManager).removeObjectManager(value);
 
                initListeValeurs(false);
                getBinder().loadComponent(gridValeurs);
@@ -473,47 +405,49 @@ public class FicheThesaurus extends AbstractFicheCombineController
       ConstWord constraint = null;
 
       // création du nouvel objet
-      if(typeThesaurus.getNom().equals("Nature")){
+      if(Nature.class.equals(typeThesaurus.getThesaurusObjectClass())){
          constraint = ThesaurusConstraints.getNatureConstraint();
-      }else if(typeThesaurus.getNom().equals("PrelevementType")){
+      }else if(PrelevementType.class.equals(typeThesaurus.getThesaurusObjectClass())){
          constraint = ThesaurusConstraints.getPrelevementTypeConstraint();
-      }else if(typeThesaurus.getNom().equals("EchantillonType")){
+      }else if(EchantillonType.class.equals(typeThesaurus.getThesaurusObjectClass())){
          constraint = ThesaurusConstraints.getEchantillonTypeConstraint();
-      }else if(typeThesaurus.getNom().equals("EchanQualite")){
+      }else if(EchanQualite.class.equals(typeThesaurus.getThesaurusObjectClass())){
          constraint = ThesaurusConstraints.getEchanQualiteConstraint();
-      }else if(typeThesaurus.getNom().equals("ProdType")){
+      }else if(ProdType.class.equals(typeThesaurus.getThesaurusObjectClass())){
          constraint = ThesaurusConstraints.getProdTypeConstraint();
-      }else if(typeThesaurus.getNom().equals("ProdQualite")){
+      }else if(ProdQualite.class.equals(typeThesaurus.getThesaurusObjectClass())){
          constraint = ThesaurusConstraints.getProdQualiteConstraint();
-      }else if(typeThesaurus.getNom().equals("ConditType")){
+      }else if(ConditType.class.equals(typeThesaurus.getThesaurusObjectClass())){
          constraint = ThesaurusConstraints.getConditTypeConstraint();
-      }else if(typeThesaurus.getNom().equals("ConditMilieu")){
+      }else if(ConditMilieu.class.equals(typeThesaurus.getThesaurusObjectClass())){
          constraint = ThesaurusConstraints.getConditMilieurConstraint();
-      }else if(typeThesaurus.getNom().equals("ConsentType")){
+      }else if(ConsentType.class.equals(typeThesaurus.getThesaurusObjectClass())){
          constraint = ThesaurusConstraints.getConsentTypeConstraint();
-      }else if(typeThesaurus.getNom().equals("Risque")){
+      }else if(Risque.class.equals(typeThesaurus.getThesaurusObjectClass())){
          constraint = ThesaurusConstraints.getRisqueConstraint();
-      }else if(typeThesaurus.getNom().equals("ModePrepa")){
+      }else if(ModePrepa.class.equals(typeThesaurus.getThesaurusObjectClass())){
          constraint = ThesaurusConstraints.getModePrepaConstraint();
-      }else if(typeThesaurus.getNom().equals("ModePrepaDerive")){
+      }else if(ModePrepaDerive.class.equals(typeThesaurus.getThesaurusObjectClass())){
          constraint = ThesaurusConstraints.getModePrepaConstraint();
-      }else if(typeThesaurus.getNom().equals("CessionExamen")){
+      }else if(CessionExamen.class.equals(typeThesaurus.getThesaurusObjectClass())){
          constraint = ThesaurusConstraints.getCessionExamenConstraint();
-      }else if(typeThesaurus.getNom().equals("DestructionMotif")){
+      }else if(DestructionMotif.class.equals(typeThesaurus.getThesaurusObjectClass())){
          constraint = ThesaurusConstraints.getDestructionMotifConstraint();
-      }else if(typeThesaurus.getNom().equals("ProtocoleType")){
+      }else if(ProtocoleType.class.equals(typeThesaurus.getThesaurusObjectClass())){
          constraint = ThesaurusConstraints.getProtocoleTypeConstraint();
-      }else if(typeThesaurus.getNom().equals("Protocole")){
+      }else if(Protocole.class.equals(typeThesaurus.getThesaurusObjectClass())){
          constraint = ThesaurusConstraints.getProtocoleConstraint();
-      }else if(typeThesaurus.getNom().equals("Specialite")){
+      }else if(Diagnostic.class.equals(typeThesaurus.getThesaurusObjectClass())){
+         constraint = ThesaurusConstraints.getDiagnosticConstraint();
+      }else if(Specialite.class.equals(typeThesaurus.getThesaurusObjectClass())){
          constraint = ThesaurusConstraints.getSpecialiteConstraint();
-      }else if(typeThesaurus.getNom().equals("Categorie")){
+      }else if(Categorie.class.equals(typeThesaurus.getThesaurusObjectClass())){
          constraint = ThesaurusConstraints.getCategorieConstraint();
-      }else if(typeThesaurus.getNom().equals("ConteneurType")){
+      }else if(ConteneurType.class.equals(typeThesaurus.getThesaurusObjectClass())){
          constraint = ThesaurusConstraints.getConteneurTypeConstraint();
-      }else if(typeThesaurus.getNom().equals("EnceinteType")){
+      }else if(EnceinteType.class.equals(typeThesaurus.getThesaurusObjectClass())){
          constraint = ThesaurusConstraints.getEnceinteTypeConstraint();
-      }else if(typeThesaurus.getNom().contains("NonConformite")){
+      }else if(NonConformite.class.equals(typeThesaurus.getThesaurusObjectClass())){
          constraint = ThesaurusConstraints.getNonConformiteConstraint();
       }
 
@@ -529,7 +463,7 @@ public class FicheThesaurus extends AbstractFicheCombineController
       ConstWord constraint = null;
 
       // création du nouvel objet
-      if(typeThesaurus.getNom().equals("EnceinteType")){
+      if(EnceinteType.class.equals(typeThesaurus.getThesaurusObjectClass())){
          constraint = ThesaurusConstraints.getEnceinteTypePrefixeConstraint();
       }
 
@@ -554,11 +488,11 @@ public class FicheThesaurus extends AbstractFicheCombineController
    /****************** GETTERS et SETTERS *********************/
    /***********************************************************/
 
-   public Thesaurus getTypeThesaurus(){
+   public Thesaurus<?> getTypeThesaurus(){
       return typeThesaurus;
    }
 
-   public void setTypeThesaurus(final Thesaurus typeTh){
+   public void setTypeThesaurus(final Thesaurus<?> typeTh){
       this.typeThesaurus = typeTh;
    }
 

@@ -289,9 +289,8 @@ public class TableAnnotation implements TKFantomableObject, TKdataObject, Serial
    public String toString(){
       if(this.entite != null && this.nom != null){
          return "{" + this.entite.getNom() + "." + this.nom + "}";
-      }else{
-         return "{Empty TableAnnotation}";
       }
+      return "{Empty TableAnnotation}";
    }
 
    /**

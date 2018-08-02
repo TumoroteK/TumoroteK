@@ -40,9 +40,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
 
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.ObjectUsedException;
+import fr.aphp.tumorotek.manager.impl.systeme.MvFichier;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
@@ -69,7 +71,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Interface créée le 02/10/09.
  *
  * @author Pierre Ventadour
- * @version 2.1
+ * @version 2.2.0
  *
  */
 public interface ProdDeriveManager
@@ -177,6 +179,14 @@ public interface ProdDeriveManager
     * @return Liste de codes.
     */
    List<String> findAllCodesForBanqueAndQuantiteManager(Banque banque);
+   
+   /**
+    * Recherche la liste des codes utilisés par les dérivés pour associer à un produit dérivé :
+    * Dérivés liés à la banque passée en paramètre et dont la quantité n'est pas égale à 0, ou dans une cession de type traotement
+    * @param banque Banque pour laquelle on recherche les codes.
+    * @return Liste de codes.
+    */
+   List<String> findAllCodesForDerivesByBanque(Banque banque);
 
    /**
     * Recherche la liste des codes utilisés par les dérivés liés à la
@@ -475,9 +485,12 @@ public interface ProdDeriveManager
     * @param doValidation si true
     * @param u utilisateur enregistrant l'opération.
     * @param liste des fichiers à supprimer après transaction
-    * @version 2.0.10
-    */
-   void switchBanqueCascadeManager(ProdDerive derive, Banque bank, boolean doValidation, Utilisateur u, List<File> filesToDelete);
+    * @param liste de déplacements (uniques) de fichiers à programmer [Correctif bug TK-155]
+    * @version 2.2.0
+	*/
+	void switchBanqueCascadeManager(ProdDerive derive, Banque bank,
+								boolean doValidation, Utilisateur u, 
+								List<File>filesToDelete, Set<MvFichier> filesToMove);
 
    /**
     * Supprime une Transformation de la base de données.

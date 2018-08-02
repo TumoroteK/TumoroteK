@@ -38,7 +38,7 @@ package fr.aphp.tumorotek.dao.cession;
 import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
-import fr.aphp.tumorotek.dao.TKThesaurusDao;
+import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.cession.DestructionMotif;
 
 /**
@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.cession.DestructionMotif;
  * @version 2.0
  *
  */
-public interface DestructionMotifDao extends GenericDaoJpa<DestructionMotif, Integer>, TKThesaurusDao<DestructionMotif>
+public interface DestructionMotifDao extends GenericDaoJpa<DestructionMotif, Integer>, PfDependantTKThesaurusDao<DestructionMotif>
 {
 
    /**

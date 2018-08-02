@@ -267,12 +267,9 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
          }
 
          // mise à jour du parent
-         //				boolean parentUpdated = false;
-
          if(getParentObject() != null){
             if(getObjectTabController().getReferencingObjectControllers() != null){
                // update du parent dans la liste
-               //parentUpdated =
                for(int i = 0; i < getObjectTabController().getReferencingObjectControllers().size(); i++){
                   getObjectTabController().getReferencingObjectControllers().get(i).getListe()
                      .updateObjectGridListFromOtherPage(getParentObject(), true);
@@ -289,7 +286,6 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
 
       }catch(final DoublonFoundException re){
          Clients.clearBusy();
-         //			try {
          final HashMap<String, Object> map = new HashMap<>();
          map.put("title", Labels.getLabel("error.unhandled"));
          map.put("message", handleExceptionMessage(re));
@@ -298,10 +294,6 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
          final Window window = (Window) Executions.createComponents("/zuls/component/DynamicMultiLineMessageBox.zul", null, map);
          window.doModal();
 
-         //			} catch (InterruptedException ie) {
-         //				Messagebox.show(handleExceptionMessage(re), 
-         //						"Error", Messagebox.OK, Messagebox.ERROR);
-         //			}
          return false;
       }catch(final Exception e){
          // ferme wait message

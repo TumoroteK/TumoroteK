@@ -49,8 +49,8 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * Classe fournissant les méthodes et propriétés statiques pour les Templates
  * Classe créée le 
  * @author Answald Bournique
- * @since 2.2
- * @version 2.2
+ * @since 2.2.0
+ * @version 2.2.0
  */
 public class TemplateUtils
 {

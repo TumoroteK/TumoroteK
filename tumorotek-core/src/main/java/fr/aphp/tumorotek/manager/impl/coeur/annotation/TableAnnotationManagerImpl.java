@@ -458,7 +458,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
             List<AnnotationDefaut> defs = null;
             ChampCalcule cc = null;
             // si un champ en modification
-            if(champs.get(i).getChampAnnotationId() != null){
+            if(champs.get(i).getId() != null){
                operation = "modification";
             }
             // sinon LazyInitialisationException
@@ -493,10 +493,10 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
          // retrouver etat initial au niveau des ids
          // et des valeurs defauts?
          for(int i = 0; i < champs.size(); i++){
-            if(copies.get(i).getChampAnnotationId() == null){
+            if(copies.get(i).getId() == null){
                table.getChampAnnotations().remove(champs.get(i));
             }
-            champs.get(i).setChampAnnotationId(copies.get(i).getChampAnnotationId());
+            champs.get(i).setId(copies.get(i).getId());
             champs.get(i).setTableAnnotation(copies.get(i).getTableAnnotation());
             champs.get(i).setItems(copies.get(i).getItems());
             champs.get(i).setAnnotationDefauts(copies.get(i).getAnnotationDefauts());

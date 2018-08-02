@@ -41,6 +41,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import fr.aphp.tumorotek.manager.impl.systeme.MvFichier;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
@@ -70,7 +71,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Interface pour le manager du bean de domaine Prelevement.<br>
  * Interface créée le 13/10/09.<br>
  * @author Mathieu BARTHELEMY
- * @version 2.1
+ * @version 2.2.0
  *
  */
 public interface PrelevementManager
@@ -542,9 +543,13 @@ public interface PrelevementManager
     * @param utilisateur
     * @param filesToDelete liste de fichier à supprimer. Les suppressions seront 
     * réalisées dans la méthode parente switchBanqueMultiple
-    */
-   void switchBanqueCascadeManager(Prelevement prel, Banque bank, boolean doValidation, Utilisateur usr,
-      List<File> filesToDelete);
+    * @param liste de déplacements (uniques) de fichiers à programmer. Les déplacements
+	* seront réalisées dans la méthode parente switchBanqueMultiple [Correctif bug TK-155]
+	* @verison 2.2.0
+	*/
+	void switchBanqueCascadeManager(Prelevement prel, Banque bank, 
+									boolean doValidation, Utilisateur usr, 
+									List<File> filesToDelete, Set<MvFichier> filesToMove);
 
    /**
     * Attribue à la maladie passée en paramètre le prélèvement.

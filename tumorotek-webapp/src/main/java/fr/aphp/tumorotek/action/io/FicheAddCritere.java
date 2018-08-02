@@ -36,8 +36,12 @@
 package fr.aphp.tumorotek.action.io;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
 
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -52,17 +56,22 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.SimpleListModel;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
+import fr.aphp.tumorotek.action.utils.ChampUtils;
 import fr.aphp.tumorotek.decorator.ChampDecorator;
 import fr.aphp.tumorotek.decorator.CritereDecorator;
 import fr.aphp.tumorotek.decorator.EntiteDecorator;
-import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
+import fr.aphp.tumorotek.manager.coeur.annotation.ChampAnnotationManager;
+import fr.aphp.tumorotek.manager.coeur.annotation.TableAnnotationManager;
+import fr.aphp.tumorotek.manager.io.ChampDelegueManager;
+import fr.aphp.tumorotek.manager.io.ChampEntiteManager;
 import fr.aphp.tumorotek.model.coeur.annotation.DataType;
-import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.io.export.AbstractTKChamp;
 import fr.aphp.tumorotek.model.io.export.Champ;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.export.Critere;
 import fr.aphp.tumorotek.model.systeme.Entite;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  * Dessine la fiche modale permettant à l'utilisateur de créer un
@@ -149,49 +158,34 @@ public class FicheAddCritere extends GenericForwardComposer<Component>
     * Sélection de l'entité.
     */
    public void onSelect$entitesBox(){
+
       this.rowChamp.setVisible(true);
       this.champsBox.setVisible(true);
 
       champs = new ArrayList<>();
       if(this.entitesBox.getSelectedIndex() > 0){
          entite = entites.get(this.entitesBox.getSelectedIndex()).getEntite();
-         // On cherche les ChampEntite de l'Entite.
-         final List<ChampEntite> champsEntite = ManagerLocator.getChampEntiteManager().findByEntiteAndImportManager(entite, true);
-         final Iterator<ChampEntite> itCE = champsEntite.iterator();
-         while(itCE.hasNext()){
-            final ChampEntite ce = itCE.next();
-            if(!ce.getNom().equals(ce.getEntite().getNom() + "Id")){
-               if(ce.getEntite().getNom().equals("Patient")){
-                  champs.add(new ChampDecorator(new Champ(ce)));
-               }else if(ce.getEntite().getNom().equals("Prelevement")){
-                  champs.add(new ChampDecorator(new Champ(ce)));
-               }else if(ce.getEntite().getNom().equals("Echantillon")){
-                  if(!ce.getNom().equals("EmplacementId")){
-                     champs.add(new ChampDecorator(new Champ(ce)));
-                  }
-               }else if(ce.getEntite().getNom().equals("ProdDerive")){
-                  if(!ce.getNom().equals("EmplacementId")){
-                     champs.add(new ChampDecorator(new Champ(ce)));
-                  }
-               }else{
-                  champs.add(new ChampDecorator(new Champ(ce)));
-               }
-            }
-         }
 
-         addCustomChampToPrelevement(champs);
+         final Stream<ChampEntite> champEntiteStream =
+            ManagerLocator.getManager(ChampEntiteManager.class).findByEntiteAndImportManager(entite, true).stream();
+         final Stream<ChampEntite> customChampsEntiteStream = getCustomChampEntite().stream();
 
-         // On cherche les ChampAnnotation de l'Entite.
-         // Ajout des annotations
-         final List<TableAnnotation> tas =
-            ManagerLocator.getTableAnnotationManager().findByEntiteAndBanqueManager(entite, banque);
-         final List<ChampAnnotation> champsAnnotations = new ArrayList<>();
-         for(int i = 0; i < tas.size(); i++){
-            champsAnnotations.addAll(ManagerLocator.getChampAnnotationManager().findByTableManager(tas.get(i)));
-         }
-         for(int i = 0; i < champsAnnotations.size(); i++){
-            champs.add(new ChampDecorator(new Champ(champsAnnotations.get(i))));
-         }
+         //Ajout des champs entité
+         Stream.concat(champEntiteStream, customChampsEntiteStream).filter(this::isNotExcluded).map(Champ::new)
+            .map(ChampDecorator::new).forEach(champs::add);
+
+         //Ajout des champs annotation
+         ManagerLocator.getManager(TableAnnotationManager.class).findByEntiteAndBanqueManager(entite, banque).stream()
+            .map(table -> ManagerLocator.getManager(ChampAnnotationManager.class).findByTableManager(table))
+            .flatMap(listChampsAnnotation -> listChampsAnnotation.stream()).map(Champ::new).map(ChampDecorator::new)
+            .forEach(champs::add);
+
+         //Ajout des champs délégués
+         ManagerLocator.getManager(ChampDelegueManager.class).findByEntiteAndContexte(entite, SessionUtils.getCurrentContexte())
+            .stream().map(Champ::new).map(ChampDecorator::new).forEach(champs::add);
+
+         champs.sort(Comparator.comparing(ChampDecorator::getLabel));
+
       }else{
          /** si aucune entité n'est sélectionnée, on cache les champs. */
          this.champsBox.setVisible(false);
@@ -214,99 +208,179 @@ public class FicheAddCritere extends GenericForwardComposer<Component>
       this.addCritere.setVisible(false);
    }
 
-   public void onSelect$champsBox(){
-      DataType dataType = null;
-      if(champsBox.getSelectedIndex() > 0){
-         champ = champs.get(champsBox.getSelectedIndex()).getChamp();
-         dataType = champ.dataType();
+   /**
+    * Afficher les opérateurs selon le champ
+    * @param champ champ
+    */
+   private void afficherOperateurs(final Champ champ){
+      if(null != champ && null != champ.dataType() && null != champ.dataType().getType()){
+         if("calcule".equals(champ.dataType().getType())){
+            afficherOperateurs(champ.getChampAnnotation().getChampCalcule().getDataType());
+         }else{
+            afficherOperateurs(champ.dataType());
+         }
+      }
+   }
 
-         boolean id = false;
-         /** Si le champ est un identifiant, on remplit la liste de
-          * sousChamps.
-          */
+   /**
+    * Afficher le sopérateurs selon le datatype du champ
+    * @param dataType datatype
+    */
+   private void afficherOperateurs(final DataType dataType){
+      operateurs.add("=");
+      operateurs.add("!=");
+
+      switch(dataType.getType()){
+         case "alphanum":
+         case "thesaurus":
+         case "texte":
+         case "thesaurusM":
+            operateurs.add("like");
+            operateurs.add("not like");
+            break;
+         case "date":
+         case "datetime":
+         case "num":
+         case "duree":
+            operateurs.add("<");
+            operateurs.add("<=");
+            operateurs.add(">");
+            operateurs.add(">=");
+            break;
+         default:
+            break;
+      }
+
+      // hack age au prélèvement
+      if(champ.getChampEntite() != null && !champ.getChampEntite().getNom().equals("AgeAuPrelevement")){
+         operateurs.add(Labels.getLabel("critere.is.null"));
+      }
+   }
+
+   /**
+    * Renvoie true si le champ entité passé en paramètre est exclu des critères de recherche
+    * @param champEntite
+    * @return
+    */
+   private boolean isNotExcluded(final ChampEntite champEntite){
+
+      final Map<String, List<String>> excludedChampsMap = new HashMap<>();
+      excludedChampsMap.put("Echantillon", Arrays.asList(new String[] {"EmplacementId"}));
+      excludedChampsMap.put("ProdDerive", Arrays.asList(new String[] {"EmplacementId"}));
+
+      //Le champ id de l'entité courante est systématiquement exclu (e.g. : PatientId pour Patient)
+      boolean excluded = champEntite.getNom().equals(champEntite.getEntite().getNom() + "Id");
+
+      final List<String> excludedChampsForEntite = excludedChampsMap.get(champEntite.getEntite().getNom());
+
+      //Sinon, on regarde si le champ est dans la liste des champs exclus pour l'entité
+      if(!excluded && excludedChampsForEntite != null){
+         excluded = excludedChampsForEntite.contains(champEntite.getNom());
+      }
+
+      return !excluded;
+
+   }
+
+   public void onSelect$champsBox(){
+
+      if(champsBox.getSelectedIndex() > 0){
+
+         champ = champs.get(champsBox.getSelectedIndex()).getChamp();
+
+         String nomChamp = null;
          if(champ.getChampAnnotation() != null){
-            if(champ.getChampAnnotation().getNom().matches("^[a-zA-Z]+Id$")){
-               id = true;
-            }
+            nomChamp = champ.getChampAnnotation().getNom();
          }else if(champ.getChampEntite() != null){
-            if(champ.getChampEntite().getNom().matches("^[a-zA-Z]+Id$")){
-               id = true;
-            }
+            nomChamp = champ.getChampEntite().getNom();
+         }else if(champ.getChampDelegue() != null){
+            nomChamp = champ.getChampDelegue().getNom();
          }
 
-         if(id){
+         //Si le champ est un identifiant, on alimente la liste de sousChamps.
+         if(nomChamp.matches("^[a-zA-Z]+Id$")){
+
             this.rowOperateur.setVisible(false);
             this.operateursBox.setVisible(false);
             this.rowSousChamp.setVisible(true);
             this.sousChampsBox.setVisible(true);
+
             sousChamps = new ArrayList<>();
-            sousChamps.add(null);
             sousChamp = null;
 
-            /** On cherche l'entité correspondant au Champ */
-            final String nomChampEntite = champ.getChampEntite().getNom();
-            String nomEntite = null;
-            if(champ.getChampEntite().getEntite().getNom().equals("Prelevement")){
-               if(champ.getChampEntite().getNom().equals("OperateurId")){
-                  nomEntite = "Collaborateur";
-               }else if(champ.getChampEntite().getNom().equals("PreleveurId")){
-                  nomEntite = "Collaborateur";
-               }else if(champ.getChampEntite().getNom().equals("ServicePreleveurId")){
-                  nomEntite = "Service";
-               }else if(champ.getChampEntite().getNom().equals("QuantiteUniteId")){
-                  nomEntite = "Unite";
+            final String nomEntiteChamp = champ.entite().getNom();
+            String nomEntiteReel = null;
+
+            //Cas particuliers pour lesquels le nom du champ ne correspond pas au nom de l'entité
+            if("Prelevement".equals(nomEntiteChamp)){
+               if("OperateurId".equals(nomChamp)){
+                  nomEntiteReel = "Collaborateur";
+               }else if("PreleveurId".equals(nomChamp)){
+                  nomEntiteReel = "Collaborateur";
+               }else if("ServicePreleveurId".equals(nomChamp)){
+                  nomEntiteReel = "Service";
+               }else if("QuantiteUniteId".equals(nomChamp)){
+                  nomEntiteReel = "Unite";
                }
-            }else if(champ.getChampEntite().getEntite().getNom().equals("Echantillon")){
-               if(champ.getChampEntite().getNom().equals("QuantiteUniteId")){
-                  nomEntite = "Unite";
+//               else if("Protocoles".equals(nomChamp)){
+//                  nomEntiteReel = "Protocole";
+//               }
+            }else if("Echantillon".equals(nomEntiteChamp)){
+               if("QuantiteUniteId".equals(nomChamp)){
+                  nomEntiteReel = "Unite";
                }
-            }else if(champ.getChampEntite().getEntite().getNom().equals("ProdDerive")){
-               if(champ.getChampEntite().getNom().equals("VolumeUniteId")){
-                  nomEntite = "Unite";
-               }else if(champ.getChampEntite().getNom().equals("QuantiteUniteId")){
-                  nomEntite = "Unite";
-               }else if(champ.getChampEntite().getNom().equals("ConcUniteId")){
-                  nomEntite = "Unite";
+            }else if("ProdDerive".equals(nomEntiteChamp)){
+               if("VolumeUniteId".equals(nomChamp)){
+                  nomEntiteReel = "Unite";
+               }else if("QuantiteUniteId".equals(nomChamp)){
+                  nomEntiteReel = "Unite";
+               }else if("ConcUniteId".equals(nomChamp)){
+                  nomEntiteReel = "Unite";
                }
-            }else if(champ.getChampEntite().getEntite().getNom().equals("Cession")){
-               if(champ.getChampEntite().getNom().equals("DemandeurId")){
-                  nomEntite = "Collaborateur";
-               }else if(champ.getChampEntite().getNom().equals("DestinataireId")){
-                  nomEntite = "Collaborateur";
-               }else if(champ.getChampEntite().getNom().equals("ServiceDestId")){
-                  nomEntite = "Service";
-               }else if(champ.getChampEntite().getNom().equals("ExecutantId")){
-                  nomEntite = "Collaborateur";
+            }else if("Cession".equals(nomEntiteChamp)){
+               if("DemandeurId".equals(nomChamp)){
+                  nomEntiteReel = "Collaborateur";
+               }else if("DestinataireId".equals(nomChamp)){
+                  nomEntiteReel = "Collaborateur";
+               }else if("ServiceDestId".equals(nomChamp)){
+                  nomEntiteReel = "Service";
+               }else if("ExecutantId".equals(nomChamp)){
+                  nomEntiteReel = "Collaborateur";
                }
-            }else if(champ.getChampEntite().getEntite().getNom().equals("Service")){
+            }else if("Service".equals(nomEntiteChamp)){
                // hack Etablissement preleveur
-               nomEntite = "Etablissement";
+               nomEntiteReel = "Etablissement";
+            }else if(champ.getChampAnnotation() != null || champ.getChampDelegue() != null
+               || (champ.getChampEntite() != null && !"AgeAuPrelevement".equals(nomChamp))){
+               // hack age au prélèvement
+               operateurs.add(Labels.getLabel("critere.is.null"));
             }
-            if(nomEntite == null){
-               nomEntite = nomChampEntite.substring(0, nomChampEntite.length() - 2);
+
+            //Si on n'est pas dans un cas particulier, alors le nom de l'entité est celui du champ (moins le suffixe "Id")
+            if(nomEntiteReel == null){
+               nomEntiteReel = nomChamp.replaceAll("Id$", "");
             }
-            final List<Entite> ents = ManagerLocator.getEntiteManager().findByNomManager(nomEntite);
+
+            final List<Entite> ents = ManagerLocator.getEntiteManager().findByNomManager(nomEntiteReel);
             Entite entite2 = null;
             if(ents.size() > 0){
                entite2 = ents.get(0);
             }
 
             /** On cherche les SousChamp du Champ. */
-            final List<ChampEntite> champsEntite = ManagerLocator.getChampEntiteManager().findByEntiteManager(entite2);
-            final Iterator<ChampEntite> itCE = champsEntite.iterator();
-            while(itCE.hasNext()){
-               final ChampEntite ce = itCE.next();
-               if(ce != null){
-                  if(!ce.getNom().matches("^[a-zA-Z]+Id$")){
-                     final Champ sschp = new Champ(ce);
-                     sschp.setChampParent(champ);
-                     sousChamps.add(new ChampDecorator(sschp));
-                  }
-               }
-            }
+            final Stream<? extends AbstractTKChamp> champsEntitesStream =
+               ManagerLocator.getManager(ChampEntiteManager.class).findByEntiteManager(entite2).stream();
+            final Stream<? extends AbstractTKChamp> champsDeleguesStream = ManagerLocator.getManager(ChampDelegueManager.class)
+               .findByEntiteAndContexte(entite2, SessionUtils.getCurrentContexte()).stream();
+
+            Stream.concat(champsEntitesStream, champsDeleguesStream).filter(c -> !c.getNom().matches("^[a-zA-Z]+Id$"))
+               .map(c -> new Champ(c, champ)).map(ChampDecorator::new).forEach(sousChamps::add);
+
+            sousChamps.sort(Comparator.comparing(ChampDecorator::getLabelLong));
+
+            sousChamps.add(0, null);
 
          }else{
-            // si aucun champ n'est sélectionné, on cache les opérateurs.
             this.rowSousChamp.setVisible(false);
             this.sousChampsBox.setVisible(false);
             this.rowOperateur.setVisible(true);
@@ -317,33 +391,12 @@ public class FicheAddCritere extends GenericForwardComposer<Component>
 
             entite = entites.get(this.entitesBox.getSelectedIndex()).getEntite();
 
-            /** On affiche les différents opérateurs selon le type. */
-            if(dataType.getType() != null){
-               if(dataType.getType().equals("alphanum") || dataType.getType().equals("thesaurus")
-                  || dataType.getType().equals("boolean") || dataType.getType().equals("texte")
-                  || dataType.getType().equals("thesaurusM")){
-                  operateurs.add("=");
-                  operateurs.add("!=");
-                  if(dataType.getType().equals("alphanum") || dataType.getType().equals("thesaurus")
-                     || dataType.getType().equals("texte") || dataType.getType().equals("thesaurusM")){
-                     operateurs.add("like");
-                     operateurs.add("not like");
-                  }
-               }else if(dataType.getType().matches("date.*") || dataType.getType().equals("num")){
-                  operateurs.add("=");
-                  operateurs.add("!=");
-                  operateurs.add("<");
-                  operateurs.add("<=");
-                  operateurs.add(">");
-                  operateurs.add(">=");
-               }
-               // hack age au prélèvement
-               if(champ.getChampEntite() != null && !champ.getChampEntite().getNom().equals("AgeAuPrelevement")){
-                  operateurs.add(Labels.getLabel("critere.is.null"));
-               }
-            }
+            afficherOperateurs(champ);
+
          }
-      }else{
+      }
+
+      else{
          /** si aucun champ n'est sélectionné, on cache les opérateurs. */
          this.operateursBox.setVisible(false);
          this.rowOperateur.setVisible(false);
@@ -452,6 +505,37 @@ public class FicheAddCritere extends GenericForwardComposer<Component>
       Events.postEvent(new Event("onClose", self.getRoot()));
    }
 
+   /**
+    * Renvoie une liste de champs entités à ajouter aux champs existants
+    * @return
+    */
+   private List<ChampEntite> getCustomChampEntite(){
+
+      final List<ChampEntite> customChampsEntite = new ArrayList<>();
+
+      //On utilise directement les id car il peut potentiellement exister plusieurs ChampEntite de même nom
+      //pour une même entité. TODO Ajouter une contrainte d'unicité sur nom + entité pour les champs entité ?
+      switch(entite.getNom()){
+         case "Prelevement":
+            //EtablissementId
+            customChampsEntite.add(ManagerLocator.getManager(ChampEntiteManager.class).findByIdManager(193));
+            //Age au prélèvement
+            customChampsEntite.add(ManagerLocator.getManager(ChampEntiteManager.class).findByIdManager(254));
+            break;
+         case "Echantillon":
+            //TempStock
+            customChampsEntite.add(ManagerLocator.getChampEntiteManager().findByIdManager(265));
+            break;
+         case "ProdDerive":
+            //TempStock
+            customChampsEntite.add(ManagerLocator.getChampEntiteManager().findByIdManager(266));
+            break;
+      }
+
+      return customChampsEntite;
+
+   }
+
    public Component getParent(){
       return parent;
    }
@@ -530,25 +614,6 @@ public class FicheAddCritere extends GenericForwardComposer<Component>
 
    public void setBanque(final Banque b){
       this.banque = b;
-   }
-
-   /**
-    * Ajoute un critère non existant dans la base à l'entité 
-    * prélèvement.
-    * @since 2.0.10
-    */
-   private void addCustomChampToPrelevement(final List<ChampDecorator> champs){
-      if(entite.getNom().equals("Prelevement")){
-         // Etablissement preleveur
-         champs.add(6, new ChampDecorator(new Champ(ManagerLocator.getChampEntiteManager().findByIdManager(193))));
-
-         // Age au prélèvement
-         champs.add(8, new ChampDecorator(new Champ(ManagerLocator.getChampEntiteManager().findByIdManager(254))));
-      }else if(entite.getNom().equals("Echantillon")){
-         champs.add(5, new ChampDecorator(new Champ(ManagerLocator.getChampEntiteManager().findByIdManager(265))));
-      }else if(entite.getNom().equals("ProdDerive")){
-         champs.add(10, new ChampDecorator(new Champ(ManagerLocator.getChampEntiteManager().findByIdManager(266))));
-      }
    }
 
 }

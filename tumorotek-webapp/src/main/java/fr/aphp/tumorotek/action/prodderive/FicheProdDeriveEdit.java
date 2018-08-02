@@ -119,6 +119,8 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    protected Decimalbox concentrationBoxDerive;
    protected Label quantiteBoxDerive;
    protected Decimalbox quantiteInitBoxDerive;
+   protected Label transfoQuantiteLabel;
+   protected Div transfoQuantiteDiv;
    protected Decimalbox transfoQuantiteBoxDerive;
    protected CalendarBox dateStockCalBox;
    protected CalendarBox dateTransfoCalBox;
@@ -215,6 +217,9 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    private String codeParent = "";
    private String emplacementAdrl = "";
 
+   //Labels anonymisables
+   private Label emplacementLabelDerive;
+   
    /**
     * Gestion des contraintes sur les quantités et volumes .
     * Variables conservant les valeurs saisies dans les champs. 
@@ -259,15 +264,15 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          setTypeParent(transformation.getEntite().getNom());
 
          // en fonction du type, on récupère l'objet
-         if(getTypeParent().equals("Prelevement")){
+         if(getTypeParent().equals(Prelevement.class.getSimpleName())){
             setParentObject((Prelevement) ManagerLocator.getEntiteManager()
                .findObjectByEntiteAndIdManager(transformation.getEntite(), transformation.getObjetId()));
             groupPrlvtDerive.setVisible(true);
-         }else if(getTypeParent().equals("Echantillon")){
+         }else if(getTypeParent().equals(Echantillon.class.getSimpleName())){
             setParentObject((Echantillon) ManagerLocator.getEntiteManager()
                .findObjectByEntiteAndIdManager(transformation.getEntite(), transformation.getObjetId()));
             groupEchanDerive.setVisible(true);
-         }else if(getTypeParent().equals("ProdDerive")){
+         }else if(getTypeParent().equals(ProdDerive.class.getSimpleName())){
             setParentObject((ProdDerive) ManagerLocator.getEntiteManager()
                .findObjectByEntiteAndIdManager(transformation.getEntite(), transformation.getObjetId()));
             groupDeriveDerive.setVisible(true);
@@ -397,11 +402,6 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
       // création du code échantillon en fct de celui du prlvt et
       // de celui saisi
-      //		StringBuffer sb = new StringBuffer();
-      //		sb.append(codePrefixe);
-      //		sb.append(".");
-      //		sb.append(codeSuffixe);
-      //		prodDerive.setCode(sb.toString());
       prodDerive.setCode(codePrefixe);
 
       // on remplit le dérivé en fonction des champs nulls
@@ -669,7 +669,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       }
       if(this.prodDerive.getQuantiteUnite() != null){
          sb.append(" ");
-         sb.append(this.prodDerive.getQuantiteUnite().getUnite());
+         sb.append(this.prodDerive.getQuantiteUnite().getNom());
       }
       valeurQuantite = sb.toString();
 
@@ -688,7 +688,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       }
       if(this.prodDerive.getVolumeUnite() != null){
          sb.append(" ");
-         sb.append(this.prodDerive.getVolumeUnite().getUnite());
+         sb.append(this.prodDerive.getVolumeUnite().getNom());
       }
       valeurVolume = sb.toString();
 
@@ -855,7 +855,6 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
     * en fonction de son type (prlvt, échantillon, prodderive).
     */
    public void showParentInformation(){
-
       if(getTypeParent() == null || getTypeParent().equals("Aucun")){
          for(int i = 0; i < getObjLabelsPrlvtParent().length; i++){
             getObjLabelsPrlvtParent()[i].detach();
@@ -1183,17 +1182,17 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
     */
    public void onSelect$volumeUnitesBoxDerive(){
       if(getSelectedVolumeUnite() != null){
-         if(getSelectedVolumeUnite().getUnite().toLowerCase().equals("ml")){
+         if(getSelectedVolumeUnite().getNom().toLowerCase().equals("ml")){
 
             setSelectedConcUnite(ManagerLocator.getUniteManager().findByUniteLikeManager("mg/ml", true).get(0));
             setSelectedQuantiteUnite(ManagerLocator.getUniteManager().findByUniteLikeManager("mg", true).get(0));
 
-         }else if(getSelectedVolumeUnite().getUnite().toLowerCase().equals("µl")){
+         }else if(getSelectedVolumeUnite().getNom().toLowerCase().equals("µl")){
 
             setSelectedConcUnite(ManagerLocator.getUniteManager().findByUniteLikeManager("µg/µl", true).get(0));
             setSelectedQuantiteUnite(ManagerLocator.getUniteManager().findByUniteLikeManager("µg", true).get(0));
 
-         }else if(getSelectedVolumeUnite().getUnite().toLowerCase().equals("nl")){
+         }else if(getSelectedVolumeUnite().getNom().toLowerCase().equals("nl")){
 
             setSelectedConcUnite(ManagerLocator.getUniteManager().findByUniteLikeManager("ng/nl", true).get(0));
             setSelectedQuantiteUnite(ManagerLocator.getUniteManager().findByUniteLikeManager("ng", true).get(0));
@@ -1209,27 +1208,27 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
     */
    public void onSelect$concentrationUnitesBoxDerive(){
       if(getSelectedConcUnite() != null){
-         if(getSelectedConcUnite().getUnite().toLowerCase().equals("mg/ml")){
+         if(getSelectedConcUnite().getNom().toLowerCase().equals("mg/ml")){
 
             setSelectedVolumeUnite(ManagerLocator.getUniteManager().findByUniteLikeManager("ml", true).get(0));
             setSelectedQuantiteUnite(ManagerLocator.getUniteManager().findByUniteLikeManager("mg", true).get(0));
 
-         }else if(getSelectedConcUnite().getUnite().toLowerCase().equals("µg/µl")){
+         }else if(getSelectedConcUnite().getNom().toLowerCase().equals("µg/µl")){
 
             setSelectedVolumeUnite(ManagerLocator.getUniteManager().findByUniteLikeManager("µl", true).get(0));
             setSelectedQuantiteUnite(ManagerLocator.getUniteManager().findByUniteLikeManager("µg", true).get(0));
 
-         }else if(getSelectedConcUnite().getUnite().toLowerCase().equals("ng/nl")){
+         }else if(getSelectedConcUnite().getNom().toLowerCase().equals("ng/nl")){
 
             setSelectedVolumeUnite(ManagerLocator.getUniteManager().findByUniteLikeManager("nl", true).get(0));
             setSelectedQuantiteUnite(ManagerLocator.getUniteManager().findByUniteLikeManager("ng", true).get(0));
 
-         }else if(getSelectedConcUnite().getUnite().toLowerCase().equals("ng/µl")){
+         }else if(getSelectedConcUnite().getNom().toLowerCase().equals("ng/µl")){
 
             setSelectedVolumeUnite(ManagerLocator.getUniteManager().findByUniteLikeManager("µl", true).get(0));
             setSelectedQuantiteUnite(ManagerLocator.getUniteManager().findByUniteLikeManager("ng", true).get(0));
 
-         }else if(getSelectedConcUnite().getUnite().toLowerCase().equals("µg/ml")){
+         }else if(getSelectedConcUnite().getNom().toLowerCase().equals("µg/ml")){
 
             setSelectedVolumeUnite(ManagerLocator.getUniteManager().findByUniteLikeManager("ml", true).get(0));
             setSelectedQuantiteUnite(ManagerLocator.getUniteManager().findByUniteLikeManager("µg", true).get(0));
@@ -1246,17 +1245,17 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
     */
    public void onSelect$quantiteUnitesBoxDerive(){
       if(getSelectedQuantiteUnite() != null){
-         if(getSelectedQuantiteUnite().getUnite().toLowerCase().equals("mg")){
+         if(getSelectedQuantiteUnite().getNom().toLowerCase().equals("mg")){
 
             setSelectedConcUnite(ManagerLocator.getUniteManager().findByUniteLikeManager("mg/ml", true).get(0));
             setSelectedVolumeUnite(ManagerLocator.getUniteManager().findByUniteLikeManager("ml", true).get(0));
 
-         }else if(getSelectedQuantiteUnite().getUnite().toLowerCase().equals("µg")){
+         }else if(getSelectedQuantiteUnite().getNom().toLowerCase().equals("µg")){
 
             setSelectedConcUnite(ManagerLocator.getUniteManager().findByUniteLikeManager("µg/µl", true).get(0));
             setSelectedVolumeUnite(ManagerLocator.getUniteManager().findByUniteLikeManager("µl", true).get(0));
 
-         }else if(getSelectedQuantiteUnite().getUnite().toLowerCase().equals("ng")){
+         }else if(getSelectedQuantiteUnite().getNom().toLowerCase().equals("ng")){
 
             setSelectedConcUnite(ManagerLocator.getUniteManager().findByUniteLikeManager("ng/nl", true).get(0));
             setSelectedVolumeUnite(ManagerLocator.getUniteManager().findByUniteLikeManager("nl", true).get(0));
@@ -2126,17 +2125,17 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
                if(typeParent.equals("Prelevement")){
                   sb.append("le prélèvement parent : ");
                   sb.append(quantiteMax);
-                  sb.append(((Prelevement) getParentObject()).getQuantiteUnite().getUnite());
+                  sb.append(((Prelevement) getParentObject()).getQuantiteUnite().getNom());
                   sb.append(".");
                }else if(typeParent.equals("Echantillon")){
                   sb.append("l'échantillon parent : ");
                   sb.append(quantiteMax);
-                  sb.append(((Echantillon) getParentObject()).getQuantiteUnite().getUnite());
+                  sb.append(((Echantillon) getParentObject()).getQuantiteUnite().getNom());
                   sb.append(".");
                }else if(typeParent.equals("ProdDerive")){
                   sb.append("le produit dérivé parent : ");
                   sb.append(quantiteMax);
-                  sb.append(((ProdDerive) getParentObject()).getQuantiteUnite().getUnite());
+                  sb.append(((ProdDerive) getParentObject()).getQuantiteUnite().getNom());
                   sb.append(".");
                }
 
@@ -2288,17 +2287,22 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    }
 
    public String getEmplacementAdrl(){
-      boolean isAnonyme = false;
-      if(sessionScope.containsKey("Anonyme") && (Boolean) sessionScope.get("Anonyme")){
-         isAnonyme = true;
+      
+      Boolean isAutorise;
+
+      if(isAnonyme()){
+         isAutorise = false;
       }else{
-         isAnonyme = false;
+         isAutorise = getDroitOnAction("Stockage", "Consultation");
       }
 
-      if(isAnonyme){
-         return "-";
+      if(!isAutorise){
+         makeLabelAnonyme(emplacementLabelDerive, false);
+         return getAnonymeString();
       }
+
       return emplacementAdrl;
+      
    }
 
    public void setEmplacementAdrl(final String eAdrl){

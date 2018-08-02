@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import fr.aphp.tumorotek.dto.EchantillonDTO;
 import fr.aphp.tumorotek.manager.code.CodeAssigneManager;
@@ -24,12 +25,16 @@ import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
+import fr.aphp.tumorotek.model.coeur.patient.serotk.MaladieSero;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
+import fr.aphp.tumorotek.model.coeur.prelevement.delegate.PrelevementSero;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
+import fr.aphp.tumorotek.model.contexte.Protocole;
 import fr.aphp.tumorotek.model.impression.CleImpression;
 import fr.aphp.tumorotek.model.io.export.Affichage;
 import fr.aphp.tumorotek.model.io.export.Champ;
+import fr.aphp.tumorotek.model.io.export.ChampDelegue;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.export.Resultat;
 import fr.aphp.tumorotek.model.qualite.ObjetNonConforme;
@@ -159,6 +164,8 @@ public class RechercheUtilsManager
       final List<Object> liste = new ArrayList<>();
       if(champ.getChampEntite() != null){
          liste.addAll(getListeObjetsCorrespondants(objetInitial, champ.getChampEntite(), champ.getChampParent(), reservedEntite));
+      }else if(champ.getChampDelegue() != null){
+         liste.addAll( getListeObjetsCorrespondants(objetInitial, champ.getChampDelegue(), champ.getChampParent(), reservedEntite));
       }else if(champ.getChampAnnotation() != null){
          liste.addAll(getListeObjetsCorrespondants(objetInitial, champ.getChampAnnotation(), reservedEntite));
       }
@@ -192,6 +199,36 @@ public class RechercheUtilsManager
       }
 
       return liste;
+   }
+
+   /**
+    * Retourne la liste des objets liés à un objet passé en paramètre en fonction d'un champ recherché
+    * @param objetInitial objet initial
+    * @param champDelegue le champ recherché
+    * @param reservedEntite entité reservée ???
+    * @return liste des objets liés à un objet initial
+    */
+   public static List<Object> getListeObjetsCorrespondants(final Object objetInitial, final ChampDelegue champDelegue,
+
+      final Champ champParent, final String reservedEntite){
+      Entite entite = null;
+      final List<Object> liste = new ArrayList<>();
+      if(champDelegue != null){
+         entite = champDelegue.getEntite();
+         // On récupère l'entité parente s'il y en a !
+         Champ parent = champParent;
+         while(parent != null){
+            entite = champParent.getChampEntite().getEntite();
+            parent = parent.getChampParent();
+         }
+
+         if(entite != null){
+            liste.addAll(getListeObjetsCorrespondants(objetInitial, entite, reservedEntite));
+         }
+      }
+
+      return liste;
+
    }
 
    /**
@@ -241,12 +278,12 @@ public class RechercheUtilsManager
    }
 
    /**
-   * Retourne la liste des objets liés à un objet passé en paramètre
-   * @param objetInitial objet initial
-   * @param affichage affichage de la recherche
-   * @param reservedEntite entité reservée ???
-   * @return liste des objets liés à un objet initial
-   */
+    * Retourne la liste des objets liés à un objet passé en paramètre
+    * @param objetInitial objet initial
+    * @param affichage affichage de la recherche
+    * @param reservedEntite entité reservée ???
+    * @return liste des objets liés à un objet initial
+    */
    public static List<Object> getListeObjetsCorrespondants(Object objetInitial, Affichage affichage, String reservedEntite){
       List<Object> liste = new ArrayList<>();
       /* On itère la liste des résultats de l'affichage. */
@@ -270,6 +307,8 @@ public class RechercheUtilsManager
                   }
                }else if(res.getChamp().getChampAnnotation() != null){
                   entite = res.getChamp().getChampAnnotation().getTableAnnotation().getEntite();
+               }else if(res.getChamp().getChampDelegue() != null) {
+                  entite = res.getChamp().getChampDelegue().getEntite();
                }else{
                   liste.add(null);
                }
@@ -323,6 +362,8 @@ public class RechercheUtilsManager
       return champManager.getValueForObjectManager(champ, tkObject, prettyFormat);
    }
 
+
+
    /**
     * Retourne la valeur d'un champAnnotation de l'objet correspondant
     * @param obj objet contenant l'annotation
@@ -367,6 +408,7 @@ public class RechercheUtilsManager
       Entite entite = null;
       Champ parent = null;
       Object value = null;
+
       if(champ.getChampEntite() != null){
          entite = champ.getChampEntite().getEntite();
          // On cherche l'entite parente
@@ -376,7 +418,11 @@ public class RechercheUtilsManager
             entite = parent.getChampEntite().getEntite();
             temp = parent.getChampParent();
          }
-      }else if(champ.getChampAnnotation() != null){
+      }
+      else if(champ.getChampDelegue() != null) {
+         entite = champ.getChampDelegue().getEntite();
+      }
+      else if(champ.getChampAnnotation() != null){
          entite = champ.getChampAnnotation().getTableAnnotation().getEntite();
       }
 
@@ -445,7 +491,7 @@ public class RechercheUtilsManager
     */
    public static Object getChampValueFromPatient(final Patient pat, final Champ chp){
       if(pat != null && chp != null){
-         if(chp.getChampEntite() != null){
+         if(chp.getChampEntite() != null || chp.getChampDelegue() != null){
             return getChampValueForObject(chp, pat, false);
          }else if(chp.getChampAnnotation() != null){
             return getChampValueFromPatient(pat, chp.getChampAnnotation(), true);
@@ -475,7 +521,22 @@ public class RechercheUtilsManager
     * @return valeur du champ maladie
     */
    public static Object getChampValueFromMaladie(final Maladie maladie, final Champ chp, final Champ parent){
+      
       if(maladie != null && chp != null){
+
+         //Cas particulier du champ délégué diagnostic (contexte SéroTK)
+         if(chp.getChampDelegue() != null){
+
+            if("Diagnostic".equals(chp.getChampDelegue().getNom()) && maladie.getDelegate() != null){
+               final MaladieSero prelSero = ((MaladieSero) maladie.getDelegate());
+               if(prelSero.getDiagnostic() != null){
+                  return prelSero.getDiagnostic().getNom();
+               }
+            }
+
+         }
+         
+         //Cas général
          if(chp.getChampEntite() != null){
             if(parent == null){
                return getChampValueForObject(chp, maladie, false);
@@ -486,7 +547,9 @@ public class RechercheUtilsManager
             }
          }
       }
+      
       return null;
+      
    }
 
    /**
@@ -514,7 +577,18 @@ public class RechercheUtilsManager
     */
    public static Object getChampValueFromPrelevement(final Prelevement prel, final Champ chp, final Champ parent){
       if(prel != null && chp != null){
-         if(chp.getChampEntite() != null){
+         if(chp.getChampDelegue() != null) {
+
+            if("Protocoles".equals(chp.getChampDelegue().getNom()) && prel.getDelegate() != null) {
+               PrelevementSero prelSero = ((PrelevementSero)prel.getDelegate());
+               if(prelSero.getProtocoles() != null) {
+                  return prelSero.getProtocoles().stream().map(Protocole::getNom).sorted().collect(Collectors.joining(","));
+               }
+            }
+
+            return getChampValueForObject(chp, prel, false);
+         }
+         else if(chp.getChampEntite() != null){
             if(parent == null){
                if(chp.getChampEntite().getNom().equals("EtablissementId")){
                   if(prel.getServicePreleveur() != null){

@@ -35,16 +35,15 @@
  **/
 package fr.aphp.tumorotek.model.contexte;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -52,7 +51,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import fr.aphp.tumorotek.model.TKThesaurusObject;
+import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.coeur.prelevement.delegate.PrelevementSero;
 
@@ -67,66 +66,50 @@ import fr.aphp.tumorotek.model.coeur.prelevement.delegate.PrelevementSero;
  */
 @Entity
 @Table(name = "PROTOCOLE")
+@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "PROTOCOLE_ID"))})
+@GenericGenerator(name = "autoincrement", strategy = "increment")
 @NamedQueries(value = {
    @NamedQuery(name = "Protocole.findByNom", query = "SELECT p FROM Protocole p WHERE p.nom like ?1 " + "order by p.nom"),
-   @NamedQuery(name = "Protocole.findByExcludedId", query = "SELECT p FROM Protocole p " + "WHERE p.protocoleId != ?1"),
-   @NamedQuery(name = "Protocole.findByOrder", query = "SELECT p FROM Protocole p " + "WHERE p.plateforme = ?1 ORDER BY p.nom")})
-public class Protocole implements java.io.Serializable, TKThesaurusObject
+   @NamedQuery(name = "Protocole.findByExcludedId", query = "SELECT p FROM Protocole p " + "WHERE p.id != ?1"),
+   @NamedQuery(name = "Protocole.findByPfOrder", query = "SELECT p FROM Protocole p " + "WHERE p.plateforme = ?1 ORDER BY p.nom"),
+   @NamedQuery(name = "Protocole.findByOrder", query = "SELECT p FROM Protocole p ORDER BY p.nom")})
+public class Protocole extends AbstractPfDependantThesaurusObject implements Serializable
 {
 
    private static final long serialVersionUID = 54864135646414L;
 
-   private Integer protocoleId;
-   private String nom;
    private String description;
-   private Plateforme plateforme;
    private Set<Prelevement> prelevements = new HashSet<>();
 
    /** Constructeur par défaut. */
    public Protocole(){}
 
-   @Id
-   @Column(name = "PROTOCOLE_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
+   /**
+    * @deprecated Utiliser {@link #getId()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public Integer getProtocoleId(){
-      return protocoleId;
+      return getId();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setId(Integer)}
+    * @param pId
+    */
+   @Deprecated
    public void setProtocoleId(final Integer pId){
-      this.protocoleId = pId;
-   }
-
-   @Override
-   @Column(name = "NOM", nullable = false, length = 200)
-   public String getNom(){
-      return nom;
-   }
-
-   public void setNom(final String n){
-      this.nom = n;
+      this.setId(pId);
    }
 
    @Column(name = "DESCRIPTION", nullable = true)
-   //Lob
    public String getDescription(){
       return description;
    }
 
    public void setDescription(final String description){
       this.description = description;
-   }
-
-   @Override
-   @ManyToOne
-   @JoinColumn(name = "PLATEFORME_ID", nullable = false)
-   public Plateforme getPlateforme(){
-      return plateforme;
-   }
-
-   @Override
-   public void setPlateforme(final Plateforme plateforme){
-      this.plateforme = plateforme;
    }
 
    @ManyToMany(mappedBy = "protocoles", targetEntity = PrelevementSero.class)
@@ -138,62 +121,12 @@ public class Protocole implements java.io.Serializable, TKThesaurusObject
       this.prelevements = prelevements;
    }
 
-   /**
-    * 2 objets sont considérés comme égaux s'ils ont le même type.
-    * @param obj est l'objet à tester.
-    * @return true si les objets sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
-
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final Protocole test = (Protocole) obj;
-      return ((this.nom == test.nom || (this.nom != null && this.nom.equals(test.nom)))
-         && (this.plateforme == test.plateforme || (this.plateforme != null && this.plateforme.equals(test.plateforme))));
-   }
-
-   /**
-    * Le hashcode est calculé sur l'attribut type.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-
-      int hash = 7;
-      int hashNom = 0;
-      int hashPF = 0;
-
-      if(this.nom != null){
-         hashNom = this.nom.hashCode();
-      }
-      if(this.plateforme != null){
-         hashPF = this.plateforme.hashCode();
-      }
-
-      hash = 31 * hash + hashNom;
-      hash = 31 * hash + hashPF;
-
-      return hash;
-
-   }
-
    @Override
    public String toString(){
-      if(this.nom != null){
-         return "{" + this.nom + "}";
+      if(this.getNom() != null){
+         return "{" + this.getNom() + "}";
       }
       return "{Empty Protocole}";
-   }
-
-   @Override
-   @Transient
-   public Integer getId(){
-      return getProtocoleId();
    }
 
 }

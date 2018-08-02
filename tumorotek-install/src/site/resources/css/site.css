@@ -1,6 +1,6 @@
-body{
+/*body{
     font-family: 'Open Sans';
-}
+}*/
 
 h4 {
     /*font-size: 18px;*/
@@ -79,6 +79,11 @@ svg.fa-exclamation-triangle{
 .badge-annotation-champ-calcule {
     color: #4da400;
     background-color: #e6f6cf;
+}
+
+.badge-cession {
+    color: #444444;
+    background-color: #bababa;
 }
 
 .badge-impression-doc {

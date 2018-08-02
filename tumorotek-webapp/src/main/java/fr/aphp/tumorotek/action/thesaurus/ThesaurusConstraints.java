@@ -134,6 +134,12 @@ public final class ThesaurusConstraints
       protocoleConstraint.setSize(200);
    }
 
+   private static ConstWord diagnosticConstraint = new ConstWord();
+   static{
+      protocoleConstraint.setNullable(false);
+      protocoleConstraint.setSize(200);
+   }
+   
    private static ConstWord categorieConstraint = new ConstWord();
    static{
       categorieConstraint.setNullable(false);
@@ -258,6 +264,10 @@ public final class ThesaurusConstraints
 
    public static ConstWord getProtocoleConstraint(){
       return protocoleConstraint;
+   }
+   
+   public static ConstWord getDiagnosticConstraint(){
+      return diagnosticConstraint;
    }
 
 }

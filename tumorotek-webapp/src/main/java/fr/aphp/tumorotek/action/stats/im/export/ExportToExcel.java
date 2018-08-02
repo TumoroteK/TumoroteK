@@ -225,7 +225,6 @@ public class ExportToExcel extends ResultSetToExcel
          		createDataSheetByMonth(collection, rowValue, currentCol,
          				period, subValue, s, year);
          	}
-         	// TODO
          	else if (intervalType.contentEquals("week")) {
          		createDataSheetByWeek(collection, rowValue, currentCol,
          				period, subValue, s, year);

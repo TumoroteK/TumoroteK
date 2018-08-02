@@ -124,7 +124,7 @@ public class ListeBanque extends AbstractListeController2
    public void removeFromSelectedObjects(final TKdataObject obj){}
 
    @Override
-   public TKSelectObjectRenderer getListObjectsRenderer(){
+   public TKSelectObjectRenderer<? extends TKdataObject> getListObjectsRenderer(){
       return banqueRenderer;
    }
 

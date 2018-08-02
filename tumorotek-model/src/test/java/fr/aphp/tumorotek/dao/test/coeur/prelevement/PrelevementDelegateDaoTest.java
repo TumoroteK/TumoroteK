@@ -64,7 +64,7 @@ import fr.aphp.tumorotek.model.contexte.Protocole;
  * @version 2.0.6
  *
  */
-public class PrelevementDelegateDaoTest extends AbstractDaoTest
+public class PrelevementDelegateDaoTest extends AbstractDaoTest //FIXME non lancé dans maven surefire ?
 {
 
    private NatureDao natureDao;
@@ -191,7 +191,7 @@ public class PrelevementDelegateDaoTest extends AbstractDaoTest
       final AbstractPrelevementDelegate p2 = new PrelevementSero();
       assertFalse(p1.equals(null));
       assertNotNull(p2);
-      assertTrue(p1.equals(p2));
+      assertTrue(p1.equals(p2)); //FIXME false
       assertTrue(p2.equals(p1));
       assertTrue(p1.hashCode() == p2.hashCode());
 

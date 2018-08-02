@@ -122,10 +122,10 @@ public class SpecialiteManagerImpl implements SpecialiteManager
    public boolean findDoublonManager(final Specialite o){
       if(o != null){
          final Specialite spe = o;
-         if(spe.getSpecialiteId() == null){
+         if(spe.getId() == null){
             return specialiteDao.findAll().contains(spe);
          }
-         return specialiteDao.findByExcludedId(spe.getSpecialiteId()).contains(spe);
+         return specialiteDao.findByExcludedId(spe.getId()).contains(spe);
       }
       return false;
    }
@@ -163,10 +163,16 @@ public class SpecialiteManagerImpl implements SpecialiteManager
    @Override
    public void removeObjectManager(final Specialite obj){
       if(obj != null){
-         specialiteDao.removeObject(obj.getSpecialiteId());
+         specialiteDao.removeObject(obj.getId());
          log.info("Suppression objet Specialite " + obj.toString());
       }else{
          log.warn("Suppression d'une Specialite null");
       }
    }
+
+   @Override
+   public List<Specialite> findByOrderManager(){
+      return specialiteDao.findByOrder();
+   }
+   
 }

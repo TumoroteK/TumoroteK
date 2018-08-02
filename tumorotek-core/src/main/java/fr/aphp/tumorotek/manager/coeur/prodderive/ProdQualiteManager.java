@@ -37,7 +37,7 @@ package fr.aphp.tumorotek.manager.coeur.prodderive;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.manager.TKThesaurusManager;
+import fr.aphp.tumorotek.manager.PfDependantTKThesaurusManager;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdQualite;
 
 /**
@@ -49,7 +49,7 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ProdQualite;
  * @version 2.0
  *
  */
-public interface ProdQualiteManager extends TKThesaurusManager<ProdQualite>
+public interface ProdQualiteManager extends PfDependantTKThesaurusManager<ProdQualite>
 {
 
    /**
@@ -70,44 +70,5 @@ public interface ProdQualiteManager extends TKThesaurusManager<ProdQualite>
     * @return Liste de ProdQualite.
     */
    List<ProdQualite> findByQualiteLikeManager(String qualite, boolean exactMatch);
-
-   //	/**
-   //	 * Recherche les doublons du ProdQualite passé en paramètre.
-   //	 * @param qualite ProdQualite pour lequel on cherche des doublons.
-   //	 * @return True s'il existe des doublons.
-   //	 */
-   //	Boolean findDoublonManager(ProdQualite qualite);
-   //	
-   //	/**
-   //	 * Test si une qualité de produit dérivé est liée à des 
-   //	 * produits dérivés.
-   //	 * @param qualite ProdQualite que l'on souhaite tester.
-   //	 * @return Vrai si la qualité est utilisée.
-   //	 */
-   //	Boolean isUsedObjectManager(ProdQualite qualite);
-   //	
-   //	/**
-   //	 * Persist une instance de ProdQualite dans la base de données.
-   //	 * @param qualite Nouvelle instance de l'objet à créer.
-   //	 * @throws DoublonFoundException Lance une exception si un doublon de
-   //	 * l'objet à créer se trouve déjà dans la base.
-   //	 */
-   //	void createObjectManager(ProdQualite qualite);
-   //	
-   //	/**
-   //	 * Sauvegarde les modifications apportées à un objet persistant.
-   //	 * @param qualite Objet à mettre à jour dans la base.
-   //	 * @throws DoublonFoundException Lance une exception si un doublon de
-   //	 * l'objet à créer se trouve déjà dans la base.
-   //	 */
-   //	void updateObjectManager(ProdQualite qualite);
-   //	
-   //	/**
-   //	 * Supprime un ProdQualite de la base de données.
-   //	 * @param qualite EchanQualite à supprimer de la base de données.
-   //	 * @throws DoublonFoundException Lance une exception si l'objet
-   //	 * est utilisé par des échantillons.
-   //	 */
-   //	void removeObjectManager(ProdQualite qualite);
 
 }

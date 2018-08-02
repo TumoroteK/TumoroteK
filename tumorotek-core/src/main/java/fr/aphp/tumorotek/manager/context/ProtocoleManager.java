@@ -37,7 +37,7 @@ package fr.aphp.tumorotek.manager.context;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.manager.TKThesaurusManager;
+import fr.aphp.tumorotek.manager.PfDependantTKThesaurusManager;
 import fr.aphp.tumorotek.model.contexte.Protocole;
 
 /**
@@ -55,7 +55,7 @@ import fr.aphp.tumorotek.model.contexte.Protocole;
  * @version 2.0.6
  *
  */
-public interface ProtocoleManager extends TKThesaurusManager<Protocole>
+public interface ProtocoleManager extends PfDependantTKThesaurusManager<Protocole>
 {
 
    /**

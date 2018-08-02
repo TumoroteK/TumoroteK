@@ -46,9 +46,7 @@ import org.zkoss.util.resource.Labels;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
-import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
-import fr.aphp.tumorotek.model.coeur.patient.serotk.MaladieSero;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
@@ -191,9 +189,8 @@ public final class PatientUtils
          }else{
             return Labels.getLabel("patient.sexe.ind");
          }
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -207,15 +204,13 @@ public final class PatientUtils
          if(pat.getPatientEtat().equals("V")){
             if(!"F".equals(pat.getSexe())){
                return Labels.getLabel("patient.etat.vivant");
-            }else{
-               return Labels.getLabel("patient.etat.vivant.f");
             }
+            return Labels.getLabel("patient.etat.vivant.f");
          }else if(pat.getPatientEtat().equals("D")){
             if(!"F".equals(pat.getSexe())){
                return Labels.getLabel("patient.etat.decede");
-            }else{
-               return Labels.getLabel("patient.etat.decede.f");
             }
+            return Labels.getLabel("patient.etat.decede.f");
          }else{
             return Labels.getLabel("patient.etat.inconnu");
          }
@@ -230,50 +225,7 @@ public final class PatientUtils
    public static String getDateDecesOrEtat(final Patient patient){
       if(!"D".equals(patient.getPatientEtat())){
          return ObjectTypesFormatters.dateRenderer2(patient.getDateEtat());
-      }else{
-         return ObjectTypesFormatters.dateRenderer2(patient.getDateDeces());
       }
-   }
-
-   /*************************************************************************/
-   /*************************** SEROTK	**************************************/
-   /*************************************************************************/
-
-   /**
-    * Transforme la valeur 'diagnostic' Maladise seroTK 
-    * récupérée de la base de données
-    * en un String affichable par l'interface.
-    * @param pat
-    * @return String diagnostic maladie internationalise
-    */
-   public static String setDiagSeroFromDBValue(final Maladie mal){
-      if(mal != null && mal.getDelegate() != null && ((MaladieSero) mal.getDelegate()).getDiagnostic() != null){
-         final MaladieSero mS = (MaladieSero) mal.getDelegate();
-         if(mS.getDiagnostic().equals("C")){
-            return Labels.getLabel("maladie.diagnostic.certain");
-         }else if(mS.getDiagnostic().equals("P")){
-            return Labels.getLabel("maladie.diagnostic.probable");
-         }else if(mS.getDiagnostic().equals("S")){
-            return Labels.getLabel("maladie.diagnostic.suspecte");
-         }
-      }
-      return null;
-   }
-
-   public static final LabelCodeItem DIAG_EMPTY = new LabelCodeItem("", null);
-   public static final LabelCodeItem DIAG_C = new LabelCodeItem(Labels.getLabel("maladie.diagnostic.certain"), "C");
-   public static final LabelCodeItem DIAG_P = new LabelCodeItem(Labels.getLabel("maladie.diagnostic.probable"), "P");
-   public static final LabelCodeItem DIAG_S = new LabelCodeItem(Labels.getLabel("maladie.diagnostic.suspecte"), "S");
-
-   private static List<LabelCodeItem> diagsSero = new ArrayList<>();
-   static{
-      diagsSero.add(DIAG_EMPTY);
-      diagsSero.add(DIAG_C);
-      diagsSero.add(DIAG_P);
-      diagsSero.add(DIAG_S);
-   }
-
-   public static List<LabelCodeItem> getDiagsSero(){
-      return diagsSero;
+      return ObjectTypesFormatters.dateRenderer2(patient.getDateDeces());
    }
 }

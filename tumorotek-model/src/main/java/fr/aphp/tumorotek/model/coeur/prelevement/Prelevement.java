@@ -64,6 +64,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.GenericGenerator;
 
 import fr.aphp.tumorotek.model.TKAnnotableObject;
+import fr.aphp.tumorotek.model.TKDelegetableObject;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.prelevement.delegate.AbstractPrelevementDelegate;
@@ -126,7 +127,7 @@ import fr.aphp.tumorotek.model.utils.Utils;
    @NamedQuery(name = "Prelevement.findByNumberEchantillons",
       query = "SELECT p FROM Prelevement p " + "WHERE (select count(e) From Echantillon e " + "WHERE e.prelevement=p) = ?1"),
    @NamedQuery(name = "Prelevement.findByMaladieAndNature",
-      query = "SELECT p FROM Prelevement p " + "WHERE p.maladie = ?1 " + "AND p.nature.nature like ?2 "
+      query = "SELECT p FROM Prelevement p " + "WHERE p.maladie = ?1 " + "AND p.nature.nom like ?2 "
          + "AND p.datePrelevement = ?3"),
    @NamedQuery(name = "Prelevement.findCountEclConsentByDates",
       query = "SELECT count(distinct p) FROM Prelevement p, " + "Operation o " + "WHERE p.prelevementId = o.objetId "
@@ -181,7 +182,7 @@ import fr.aphp.tumorotek.model.utils.Utils;
    @NamedQuery(name = "Prelevement.findByService", query = "SELECT e FROM Prelevement e " + "WHERE e.servicePreleveur = (?1)"),
    @NamedQuery(name = "Prelevement.findByPatientAndBanques",
       query = "SELECT e FROM Prelevement e " + "WHERE e.maladie.patient = ?1 AND e.banque in (?2)")})
-public class Prelevement implements TKAnnotableObject, Serializable
+public class Prelevement implements TKAnnotableObject, TKDelegetableObject<Prelevement>, Serializable
 {
 
    private static final long serialVersionUID = 6737874055478715763L;
@@ -219,7 +220,7 @@ public class Prelevement implements TKAnnotableObject, Serializable
    //private Unite volumeUnite;
    private ConsentType consentType;
    private Maladie maladie;
-   
+
    private Set<LaboInter> laboInters = new HashSet<>();
    private Set<Echantillon> echantillons = new HashSet<>();
    private Set<Risque> risques = new HashSet<>();
@@ -232,9 +233,8 @@ public class Prelevement implements TKAnnotableObject, Serializable
    public String toString(){
       if(this.code != null){
          return "{" + this.code + "}";
-      }else{
-         return "{Empty Prelevement}";
       }
+      return "{Empty Prelevement}";
    }
 
    @Id
@@ -262,9 +262,8 @@ public class Prelevement implements TKAnnotableObject, Serializable
    public Date getConsentDate(){
       if(consentDate != null){
          return new Date(consentDate.getTime());
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void setConsentDate(final Date date){
@@ -282,9 +281,8 @@ public class Prelevement implements TKAnnotableObject, Serializable
          final Calendar cal = Calendar.getInstance();
          cal.setTime(datePrelevement.getTime());
          return cal;
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void setDatePrelevement(final Calendar cal){
@@ -312,9 +310,8 @@ public class Prelevement implements TKAnnotableObject, Serializable
          final Calendar cal = Calendar.getInstance();
          cal.setTime(dateDepart.getTime());
          return cal;
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void setDateDepart(final Calendar cal){
@@ -342,9 +339,8 @@ public class Prelevement implements TKAnnotableObject, Serializable
          final Calendar cal = Calendar.getInstance();
          cal.setTime(dateArrivee.getTime());
          return cal;
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void setDateArrivee(final Calendar cal){
@@ -578,7 +574,7 @@ public class Prelevement implements TKAnnotableObject, Serializable
       this.maladie = m;
    }
 
-   @OneToMany(mappedBy = "prelevement", cascade = {CascadeType.REMOVE}, fetch=FetchType.EAGER)
+   @OneToMany(mappedBy = "prelevement", cascade = {CascadeType.REMOVE}, fetch = FetchType.EAGER)
    public Set<LaboInter> getLaboInters(){
       return this.laboInters;
    }
@@ -724,9 +720,8 @@ public class Prelevement implements TKAnnotableObject, Serializable
    public PrelevementSero getPrelevementSero(){
       if(delegate instanceof PrelevementSero){
          return (PrelevementSero) delegate;
-      }else{
-         return null;
       }
+      return null;
    }
 
 }

@@ -174,10 +174,10 @@ public class EchantillonTypeManagerImpl implements EchantillonTypeManager
    public boolean findDoublonManager(final EchantillonType obj){
       final EchantillonType type = obj;
       if(type != null){
-         if(type.getEchantillonTypeId() == null){
+         if(type.getId() == null){
             return echantillonTypeDao.findAll().contains(type);
          }
-         return echantillonTypeDao.findByExcludedId(type.getEchantillonTypeId()).contains(type);
+         return echantillonTypeDao.findByExcludedId(type.getId()).contains(type);
       }
       return false;
    }
@@ -231,12 +231,17 @@ public class EchantillonTypeManagerImpl implements EchantillonTypeManager
          log.warn("Objet utilisé lors de la suppression de l'objet " + "EchantillonType : " + type.toString());
          throw new ObjectUsedException("EchantillonType", "suppression");
       }
-      echantillonTypeDao.removeObject(type.getEchantillonTypeId());
+      echantillonTypeDao.removeObject(type.getId());
       log.info("Suppression de l'objet EchantillonType : " + type.toString());
    }
 
    @Override
    public List<EchantillonType> findByOrderManager(final Plateforme pf){
-      return echantillonTypeDao.findByOrder(pf);
+      return echantillonTypeDao.findByPfOrder(pf);
+   }
+
+   @Override
+   public List<EchantillonType> findByOrderManager(){
+      return echantillonTypeDao.findByOrder();
    }
 }

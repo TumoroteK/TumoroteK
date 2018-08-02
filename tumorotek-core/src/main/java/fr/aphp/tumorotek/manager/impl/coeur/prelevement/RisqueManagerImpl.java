@@ -155,7 +155,7 @@ public class RisqueManagerImpl implements RisqueManager
    @Override
    public void removeObjectManager(final Risque obj){
       if(obj != null){
-         risqueDao.removeObject(obj.getRisqueId());
+         risqueDao.removeObject(obj.getId());
          log.info("Suppression objet Risque " + obj.toString());
       }else{
          log.warn("Suppression d'un Risque null");
@@ -166,10 +166,10 @@ public class RisqueManagerImpl implements RisqueManager
    public boolean findDoublonManager(final Risque o){
       if(o != null){
          final Risque risque = o;
-         if(risque.getRisqueId() == null){
+         if(risque.getId() == null){
             return risqueDao.findAll().contains(risque);
          }
-         return risqueDao.findByExcludedId(risque.getRisqueId()).contains(risque);
+         return risqueDao.findByExcludedId(risque.getId()).contains(risque);
       }
       return false;
    }
@@ -182,7 +182,7 @@ public class RisqueManagerImpl implements RisqueManager
 
    @Override
    public List<Risque> findByOrderManager(final Plateforme pf){
-      return risqueDao.findByOrder(pf);
+      return risqueDao.findByPfOrder(pf);
    }
 
    @Override
@@ -211,5 +211,10 @@ public class RisqueManagerImpl implements RisqueManager
    @Override
    public Risque findByIdManager(final Integer id){
       return risqueDao.findById(id);
+   }
+
+   @Override
+   public List<Risque> findByOrderManager(){
+      return risqueDao.findByOrder();
    }
 }

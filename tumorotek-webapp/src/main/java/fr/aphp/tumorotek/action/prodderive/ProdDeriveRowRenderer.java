@@ -61,7 +61,7 @@ import fr.aphp.tumorotek.model.coeur.prodderive.Transformation;
  * @author Pierre Ventadour.
  * @version 2.0
  */
-public class ProdDeriveRowRenderer extends TKSelectObjectRenderer
+public class ProdDeriveRowRenderer extends TKSelectObjectRenderer<ProdDerive>
 {
 
    private boolean accessible = true;
@@ -81,11 +81,11 @@ public class ProdDeriveRowRenderer extends TKSelectObjectRenderer
    }
 
    @Override
-   public void render(final Row row, final Object data, final int index){
+   public void render(final Row row, final ProdDerive data, final int index){
       // dessine le checkbox
       super.render(row, data, index);
 
-      final ProdDerive derive = (ProdDerive) data;
+      final ProdDerive derive = data;
 
       final Hlayout icones = TKStockableObjectUtils.drawListIcones(derive, null, null);
       icones.setParent(row);
@@ -181,9 +181,8 @@ public class ProdDeriveRowRenderer extends TKSelectObjectRenderer
       if(transformation != null){
          // on récupère le type du parent (prlvt, echan, prodderive)
          return transformation.getEntite().getNom();
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -306,9 +305,8 @@ public class ProdDeriveRowRenderer extends TKSelectObjectRenderer
    public String getEmplacementAdrl(final ProdDerive prodDerive){
       if(prodDerive != null && prodDerive.getProdDeriveId() != null){
          return ManagerLocator.getProdDeriveManager().getEmplacementAdrlManager(prodDerive);
-      }else{
-         return "";
       }
+      return "";
    }
 
    public static int getNbDerives(final ProdDerive prodDerive){
@@ -327,9 +325,8 @@ public class ProdDeriveRowRenderer extends TKSelectObjectRenderer
       final Calendar date = ManagerLocator.getOperationManager().findDateCreationManager(prodDerive);
       if(date != null){
          return ObjectTypesFormatters.dateRenderer2(date);
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**
@@ -348,9 +345,8 @@ public class ProdDeriveRowRenderer extends TKSelectObjectRenderer
 
       if(prlvt != null){
          return PrelevementUtils.getPatientNomAndPrenom(prlvt);
-      }else{
-         return "";
       }
+      return "";
    }
 
    public boolean isAccessible(){

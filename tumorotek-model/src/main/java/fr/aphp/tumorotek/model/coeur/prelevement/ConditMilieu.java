@@ -39,12 +39,10 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -53,8 +51,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import fr.aphp.tumorotek.model.TKThesaurusObject;
-import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 
 /**
  *
@@ -67,53 +64,63 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  */
 @Entity
 @Table(name = "CONDIT_MILIEU")
+@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "CONDIT_MILIEU_ID")),
+   @AttributeOverride(name = "nom", column = @Column(name = "MILIEU", nullable = false, length = 200))})
+@GenericGenerator(name = "autoincrement", strategy = "increment")
 @NamedQueries(
-   value = {@NamedQuery(name = "ConditMilieu.findByMilieu", query = "SELECT c FROM ConditMilieu c WHERE c.milieu like ?1"),
-      @NamedQuery(name = "ConditMilieu.findByExcludedId",
-         query = "SELECT c FROM ConditMilieu c " + "WHERE c.conditMilieuId != ?1"),
+   value = {@NamedQuery(name = "ConditMilieu.findByMilieu", query = "SELECT c FROM ConditMilieu c WHERE c.nom like ?1"),
+      @NamedQuery(name = "ConditMilieu.findByExcludedId", query = "SELECT c FROM ConditMilieu c " + "WHERE c.id != ?1"),
+      @NamedQuery(name = "ConditMilieu.findByPfOrder",
+         query = "SELECT c FROM ConditMilieu c " + "WHERE c.plateforme = ?1 ORDER BY c.nom"),
       @NamedQuery(name = "ConditMilieu.findByOrder",
-         query = "SELECT c FROM ConditMilieu c " + "WHERE c.plateforme = ?1 ORDER BY c.milieu")})
-public class ConditMilieu implements Serializable, TKThesaurusObject
+         query = "FROM ConditMilieu c ORDER BY c.nom")})
+
+public class ConditMilieu extends AbstractPfDependantThesaurusObject implements Serializable
 {
 
    private static final long serialVersionUID = -1948372046053283715L;
-
-   private Integer conditMilieuId;
-   private String milieu;
-   private Plateforme plateforme;
 
    private Set<Prelevement> prelevements = new HashSet<>();
 
    /** Constructeur par défaut. */
    public ConditMilieu(){}
 
-   @Override
-   public String toString(){
-      if(this.milieu != null){
-         return "{" + this.milieu + "}";
-      }
-      return "{Empty ConditMilieu}";
-   }
-
-   @Id
-   @Column(name = "CONDIT_MILIEU_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
+   /**
+    * @deprecated Utiliser {@link #getId()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public Integer getConditMilieuId(){
-      return this.conditMilieuId;
+      return this.getId();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setId(Integer)}
+    * @return
+    */
+   @Deprecated
    public void setConditMilieuId(final Integer id){
-      this.conditMilieuId = id;
+      this.setId(id);
    }
 
-   @Column(name = "MILIEU", nullable = false, length = 200)
+   /**
+    * @deprecated Utiliser {@link #getNom()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public String getMilieu(){
-      return this.milieu;
+      return this.getNom();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setNom(String)}
+    * @param mil
+    */
+   @Deprecated
    public void setMilieu(final String mil){
-      this.milieu = mil;
+      this.setNom(mil);
    }
 
    @OneToMany(mappedBy = "conditMilieu")
@@ -126,70 +133,12 @@ public class ConditMilieu implements Serializable, TKThesaurusObject
    }
 
    @Override
-   @ManyToOne
-   @JoinColumn(name = "PLATEFORME_ID", nullable = false)
-   public Plateforme getPlateforme(){
-      return plateforme;
-   }
-
-   @Override
-   public void setPlateforme(final Plateforme pf){
-      this.plateforme = pf;
-   }
-
-   /**
-    * 2 objets sont considérés comme égaux s'ils ont le même milieu.
-    * @param obj est l'objet à tester.
-    * @return true si les objets sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
-
-      if(this == obj){
-         return true;
+   public String toString(){
+      if(this.getNom() != null){
+         return "{" + this.getNom() + "}";
+      }else{
+         return "{Empty ConditMilieu}";
       }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final ConditMilieu test = (ConditMilieu) obj;
-      return ((this.milieu == test.milieu || (this.milieu != null && this.milieu.equals(test.milieu)))
-         && (this.plateforme == test.plateforme || (this.plateforme != null && this.plateforme.equals(test.plateforme))));
    }
 
-   /**
-    * Le hashCode est calculé sur l'attribut milieu.
-    * @return la valeur du hashCode.
-    */
-   @Override
-   public int hashCode(){
-
-      int hash = 7;
-      int hashMilieu = 0;
-      int hashPF = 0;
-
-      if(this.milieu != null){
-         hashMilieu = this.milieu.hashCode();
-      }
-      if(this.plateforme != null){
-         hashPF = this.plateforme.hashCode();
-      }
-
-      hash = 31 * hash + hashMilieu;
-      hash = 31 * hash + hashPF;
-
-      return hash;
-
-   }
-
-   @Override
-   @Transient
-   public String getNom(){
-      return getMilieu();
-   }
-
-   @Override
-   @Transient
-   public Integer getId(){
-      return getConditMilieuId();
-   }
 }

@@ -50,7 +50,7 @@ import org.zkoss.zk.ui.Sessions;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.manager.CrudManager;
-import fr.aphp.tumorotek.manager.TKThesaurusManager;
+import fr.aphp.tumorotek.manager.PfDependantTKThesaurusManager;
 import fr.aphp.tumorotek.manager.context.CategorieManager;
 import fr.aphp.tumorotek.manager.context.SpecialiteManager;
 import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
@@ -85,8 +85,6 @@ public final class SessionUtils
 
    private final static String MYSQL_DB = "mysql";
    private final static String ORACLE_DB = "oracle";
-   private final static String seroContextName = "SEROLOGIE";
-   private final static String banqueOrganeContextName = "CONT3";
 
    /**
     * Renvoie la liste de banque selectionnées par l'utilisateur et passée en
@@ -298,31 +296,6 @@ public final class SessionUtils
       return jdbcDialect;
    }
 
-   /**
-    * Indique si la collection courante est de contexte Serotheque. Toutes
-    * collections -> false car l'interface affiche les pages definies pour le
-    * contexte par defaut de TK (anapath).
-    * 
-    * @param sessionScp
-    *            session map
-    * @return true si collection serotheque, false sinon.
-    */
-   public static boolean isSeroContexte(final Map<?, ?> sessionScp){
-      return ((getSelectedBanques(sessionScp).size() == 1)
-         && (getSelectedBanques(sessionScp).get(0).getContexte().getNom().equals(seroContextName)));
-   }
-
-   /**
-    * @deprecated : Remplacer par getCurrentContexte()
-    * @param sessionScp
-    * @return
-    */
-   @Deprecated
-   public static boolean isBanqueOrganeContexte(final Map<?, ?> sessionScp){
-      return ((getSelectedBanques(sessionScp).size() == 1)
-         && (getSelectedBanques(sessionScp).get(0).getContexte().getNom().equals(banqueOrganeContextName)));
-   }
-
    public static Plateforme getCurrentPlateforme(){
       return (Plateforme) Sessions.getCurrent().getAttribute("Plateforme");
    }
@@ -425,8 +398,8 @@ public final class SessionUtils
             listValeurs = ManagerLocator.getNonConformiteManager()
                .findByPlateformeEntiteAndTypeStringManager(getCurrentPlateforme(), "Cession", null);
          }
-      }else if(thesManager instanceof TKThesaurusManager){
-         listValeurs = ((TKThesaurusManager<?>) thesManager).findByOrderManager(getCurrentPlateforme());
+      }else if(thesManager instanceof PfDependantTKThesaurusManager){
+         listValeurs = ((PfDependantTKThesaurusManager<?>) thesManager).findByOrderManager(getCurrentPlateforme());
       }else{
          if(typeThesaurus.equals("Specialite")){
             listValeurs = ((SpecialiteManager) thesManager).findAllObjectsManager();

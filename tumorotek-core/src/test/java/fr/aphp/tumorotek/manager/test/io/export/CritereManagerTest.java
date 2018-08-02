@@ -92,7 +92,7 @@ public class CritereManagerTest extends AbstractManagerTest4
       while(it.hasNext()){
          final Critere temp = it.next();
          if(temp != null){
-            assertTrue(temp.equals(manager.findByIdManager(temp.getCritereId())));
+            assertEquals(manager.findByIdManager(temp.getCritereId()), temp);
          }
       }
    }

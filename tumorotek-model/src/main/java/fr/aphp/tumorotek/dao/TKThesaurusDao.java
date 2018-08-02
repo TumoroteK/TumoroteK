@@ -37,8 +37,7 @@ package fr.aphp.tumorotek.dao;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.model.TKThesaurusObject;
-import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.AbstractThesaurusObject;
 
 /**
  * Interface Dao pour les objets repsentant les thesaurus
@@ -51,7 +50,7 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  * @param <T> est l'objet de type TKThesaurusObject
  *
  */
-public interface TKThesaurusDao<T extends TKThesaurusObject>
+public interface TKThesaurusDao<T extends AbstractThesaurusObject>
 {
 
    /**
@@ -60,5 +59,6 @@ public interface TKThesaurusDao<T extends TKThesaurusObject>
     * @param plateforme
     * @return Liste ordonnée des éléments de thesaurus.
     */
-   List<T> findByOrder(Plateforme pf);
+   List<T> findByOrder();
+   
 }

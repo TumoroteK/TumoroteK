@@ -44,9 +44,11 @@ import org.apache.commons.logging.LogFactory;
 import fr.aphp.tumorotek.dao.io.export.ChampDao;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.exception.SearchedObjectIdNotExistException;
+import fr.aphp.tumorotek.manager.io.ChampDelegueManager;
 import fr.aphp.tumorotek.manager.io.ChampEntiteManager;
 import fr.aphp.tumorotek.manager.io.export.ChampManager;
 import fr.aphp.tumorotek.manager.io.export.GroupementManager;
+import fr.aphp.tumorotek.model.TKDelegetableObject;
 import fr.aphp.tumorotek.model.io.export.Champ;
 
 /**
@@ -67,6 +69,7 @@ public class ChampManagerImpl implements ChampManager
    private ChampDao champDao = null;
    
    private ChampEntiteManager champEntiteManager;
+   private ChampDelegueManager champDelegueManager;
    
    public ChampManagerImpl(){
       super();
@@ -284,7 +287,7 @@ public class ChampManagerImpl implements ChampManager
    }
 
    @Override
-   public Object getValueForObjectManager(final Champ champ, final Object obj, final boolean prettyFormat){
+   public <T> Object getValueForObjectManager(final Champ champ, final T obj, final boolean prettyFormat){
       /*
        * TODO Cette fonction ne traite que les champsEntite...
        * TODO Creer une methode getValueForObjectManager dans dans ChampAnnotationManager afin de l'utiliser ici 
@@ -296,12 +299,19 @@ public class ChampManagerImpl implements ChampManager
          if(null != champ.getChampEntite()){
             res = champEntiteManager.getValueForObjectManager(champ.getChampEntite(), obj, prettyFormat);
          }
+         else if( null != champ.getChampDelegue() && obj instanceof TKDelegetableObject) {
+            res = champDelegueManager.getValueForEntite(champ.getChampDelegue(), (TKDelegetableObject<T>) obj);
+         }
       }
       return res;
    }
 
    public void setChampEntiteManager(ChampEntiteManager champEntiteManager){
       this.champEntiteManager = champEntiteManager;
+   }
+
+   public void setChampDelegueManager(ChampDelegueManager champDelegueManager){
+      this.champDelegueManager = champDelegueManager;
    }
 
 }

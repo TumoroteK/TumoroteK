@@ -105,13 +105,13 @@ public class PrelevementTypeDaoTest extends AbstractDaoTest
 
    public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
-      List<? extends TKThesaurusObject> list = prelevementTypeDao.findByOrder(pf);
+      List<? extends TKThesaurusObject> list = prelevementTypeDao.findByPfOrder(pf);
       assertTrue(list.size() == 3);
       assertTrue(list.get(0).getNom().equals("BIOPSIE"));
       pf = plateformeDao.findById(2);
-      list = prelevementTypeDao.findByOrder(pf);
+      list = prelevementTypeDao.findByPfOrder(pf);
       assertTrue(list.size() == 1);
-      list = prelevementTypeDao.findByOrder(null);
+      list = prelevementTypeDao.findByPfOrder(null);
       assertTrue(list.size() == 0);
    }
 

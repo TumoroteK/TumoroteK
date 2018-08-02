@@ -131,7 +131,7 @@ public class ConsentTypeManagerImpl implements ConsentTypeManager
    public void removeObjectManager(final ConsentType obj){
       if(obj != null){
          if(!isUsedObjectManager(obj)){
-            consentTypeDao.removeObject(obj.getConsentTypeId());
+            consentTypeDao.removeObject(obj.getId());
             log.info("Suppression objet ConsentType " + obj.toString());
          }else{
             log.warn("Suppression objet ConsentType " + obj.toString() + " impossible car est reference (par Prelevement)");
@@ -146,10 +146,10 @@ public class ConsentTypeManagerImpl implements ConsentTypeManager
    public boolean findDoublonManager(final ConsentType o){
       if(o != null){
          final ConsentType type = o;
-         if(type.getConsentTypeId() == null){
+         if(type.getId() == null){
             return consentTypeDao.findAll().contains(type);
          }
-         return consentTypeDao.findByExcludedId(type.getConsentTypeId()).contains(type);
+         return consentTypeDao.findByExcludedId(type.getId()).contains(type);
       }
       return false;
    }
@@ -162,12 +162,17 @@ public class ConsentTypeManagerImpl implements ConsentTypeManager
 
    @Override
    public List<ConsentType> findByOrderManager(final Plateforme pf){
-      return consentTypeDao.findByOrder(pf);
+      return consentTypeDao.findByPfOrder(pf);
    }
 
    @Override
    public ConsentType findByIdManager(final Integer id){
       return consentTypeDao.findById(id);
+   }
+
+   @Override
+   public List<ConsentType> findByOrderManager(){
+      return consentTypeDao.findByOrder();
    }
 
 }

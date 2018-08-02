@@ -38,7 +38,6 @@ package fr.aphp.tumorotek.manager;
 import java.util.List;
 
 import fr.aphp.tumorotek.model.TKThesaurusObject;
-import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
  * Interface generique pour les managers des objets représentant
@@ -53,7 +52,8 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 public interface TKThesaurusManager<T extends TKThesaurusObject> extends CrudManager<T>
 {
 
-   List<T> findByOrderManager(Plateforme pf);
-
    T findByIdManager(Integer id);
+   
+   List<T> findByOrderManager();
+   
 }

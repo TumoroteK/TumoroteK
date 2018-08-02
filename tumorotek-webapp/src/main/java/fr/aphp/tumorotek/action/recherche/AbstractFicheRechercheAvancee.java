@@ -81,19 +81,24 @@ import org.zkoss.zul.impl.InputElement;
 import org.zkoss.zul.impl.NumberInputElement;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
+import fr.aphp.tumorotek.action.administration.annotations.DureeComponent;
 import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
 import fr.aphp.tumorotek.action.recherche.historique.SearchHistory;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.decorator.AnnotationItemRenderer;
+import fr.aphp.tumorotek.manager.io.ChampDelegueManager;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.annotation.DataType;
 import fr.aphp.tumorotek.model.coeur.annotation.Item;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.io.export.Champ;
+import fr.aphp.tumorotek.model.io.export.ChampDelegue;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.export.Critere;
 import fr.aphp.tumorotek.model.systeme.Entite;
+import fr.aphp.tumorotek.model.utils.Duree;
 import fr.aphp.tumorotek.utils.Utils;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
@@ -153,6 +158,8 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
    protected Component[] objMaladieComponents;
    protected Component[] objPrelevementComponents;
    protected Component[] objPrelevementContextComponents;
+   protected Component[] objMaladieContextComponents;
+   protected Component[] objPatientContextComponents;
    protected Component[] objEchantillonComponents;
    protected Component[] objProdDeriveComponents;
    protected Component[] objAnonymeComponents;
@@ -205,7 +212,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
             // si une valeur a été saisie
             if(current.getValue() != null && !current.getValue().equals("")){
                // exécution de la requête
-               executeSimpleQueryForTextbox(current, null, null, oneValueEntered, false);
+               executeSimpleQueryForTextbox(current, null, null, false);
 
                oneValueEntered = true;
                rcv.setCompClass(Textbox.class);
@@ -220,7 +227,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
                   || current.getSelectedIndex() > 0){
                   if(!current.hasAttribute("fileBox")){
                      // exécution de la requête
-                     executeSimpleQueryForListbox(current, null, null, oneValueEntered, null);
+                     executeSimpleQueryForListbox(current, null, null, null);
                      rcv.setCompClass(Listbox.class);
                      rcv.setCompId(current.getId());
                      rcv.setSelectedIndexValue(current.getSelectedIndex());
@@ -243,8 +250,8 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
                   }
 
                   final boolean cumulative = ((Checkbox) current.getNextSibling()).isChecked();
-                  executeListQuery((String) current.getAttribute("chpId"), "ChampAnnotation", entiteToSearch, null,
-                     oneValueEntered, items, cumulative);
+                  executeListQuery((String) current.getAttribute("chpId"), "ChampAnnotation", entiteToSearch, null, items,
+                     cumulative);
 
                   rcv.setCompClass(Listbox.class);
                   rcv.setCompId(current.getId());
@@ -262,7 +269,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 
                final String operateur = getOperateursDecimaux().get(((Listbox) current.getPreviousSibling()).getSelectedIndex());
 
-               executeSimpleQueryForDatebox(current, null, null, oneValueEntered, operateur, true);
+               executeSimpleQueryForDatebox(current, null, null, operateur, true);
 
                oneValueEntered = true;
                rcv.setCompClass(Datebox.class);
@@ -276,7 +283,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 
                final String operateur = getOperateursDecimaux().get(((Listbox) current.getPreviousSibling()).getSelectedIndex());
 
-               executeSimpleQueryForCalendarbox(current, null, null, oneValueEntered, operateur);
+               executeSimpleQueryForCalendarbox(current, null, null, operateur);
 
                oneValueEntered = true;
                rcv.setCompClass(CalendarBox.class);
@@ -291,12 +298,28 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
                final String operateur = getOperateursDecimaux().get(((Listbox) current.getPreviousSibling()).getSelectedIndex());
 
                // exécution de la requête
-               executeSimpleQueryForDecimalbox(current, null, null, oneValueEntered, operateur, true);
+               executeSimpleQueryForDecimalbox(current, null, null, operateur, true);
 
                oneValueEntered = true;
                rcv.setCompClass(Decimalbox.class);
                rcv.setCompId(current.getId());
                rcv.setTextValue(current.getText());
+
+            }
+         }else if(objAnnotationsComponent.get(i).getClass().getSimpleName().equals(DureeComponent.class.getSimpleName())){
+            final DureeComponent current = (DureeComponent) objAnnotationsComponent.get(i);
+            // si une valeur a été saisie
+            if(current.getDuree() != null && ((Listbox) current.getPreviousSibling()).getSelectedIndex() > -1){
+
+               final String operateur = getOperateursDecimaux().get(((Listbox) current.getPreviousSibling()).getSelectedIndex());
+
+               // exécution de la requête
+               executeSimpleQueryForDureeComponent(current, null, null, operateur);
+
+               oneValueEntered = true;
+               rcv.setCompClass(DureeComponent.class);
+               rcv.setCompId(current.getId());
+               rcv.setTextValue(current.getDuree().getTemps(Duree.SECONDE).toString());
 
             }
          }
@@ -325,6 +348,17 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
          final ChampAnnotation anno = (ChampAnnotation) current.getAttribute("champ");
          champ = new Champ();
          champ.setChampAnnotation(anno);
+         if(parent != null){
+            champ.setChampParent(parent);
+         }
+      }else if(null != current.getAttribute("champDelegue")){
+         final String champDelegueNom = (String) current.getAttribute("champDelegue");
+         final String nomEntite = (String) current.getAttribute("entite");
+         final Entite entite = ManagerLocator.getEntiteManager().findByNomManager(nomEntite).get(0);
+         final ChampDelegue champDelegue = ManagerLocator.getManager(ChampDelegueManager.class)
+            .findByNomAndEntiteAndContexte(champDelegueNom, entite, EContexte.SEROLOGIE).get(0);
+
+         champ = new Champ(champDelegue);
          if(parent != null){
             champ.setChampParent(parent);
          }
@@ -375,12 +409,10 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
     *            2eme Parent pour accéder à l'objet à requeter.
     * @param resultats
     *            Liste de résultats actuellement trouvés.
-    * @param firstQuery
-    *            True si c'est la 1ère requête que l'on exécute.
     * @return
     */
    public void executeSimpleQueryForTextbox(final Textbox current, final Champ parent1, final Champ parent2,
-      final boolean firstQuery, final boolean contain){
+      final boolean contain){
       String value = "";
       if(contain){
          value = "%" + current.getValue() + "%";
@@ -396,7 +428,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
          executeSimpleQuery(critere, value);
       }else{
          // requête spéciale pour les dérivés
-         prepareAndExecuteQueyForDerives(firstQuery, value, "like", parent1, parent2, current);
+         prepareAndExecuteQueyForDerives(value, "like", parent1, parent2, current);
       }
 
       // ajout du composant à l'historique
@@ -418,16 +450,13 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
     *            2eme Parent pour accéder à l'objet à requeter.
     * @param resultats
     *            Liste de résultats actuellement trouvés.
-    * @param firstQuery
-    *            True si c'est la 1ère requête que l'on exécute.
     * @param prop
     *            pour extraire un membre de l'objet a passer en critère au lieu
     *            de l'objet lui même.
     * @return
     */
 
-   public void executeSimpleQueryForListbox(final Listbox current, final Champ parent1, final Champ parent2,
-      final boolean firstQuery, final String prop){
+   public void executeSimpleQueryForListbox(final Listbox current, final Champ parent1, final Champ parent2, final String prop){
 
       Object obj = null;
       // on récupère l'objet sélectionné
@@ -458,7 +487,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
          executeSimpleQuery(critere, obj);
       }else{
          // requête spéciale pour les dérivés
-         prepareAndExecuteQueyForDerives(firstQuery, obj, "=", parent1, parent2, current);
+         prepareAndExecuteQueyForDerives(obj, "=", parent1, parent2, current);
       }
 
       // ajout du composant à l'historique
@@ -481,15 +510,12 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
     *            2eme Parent pour accéder à l'objet à requeter.
     * @param resultats
     *            Liste de résultats actuellement trouvés.
-    * @param firstQuery
-    *            True si c'est la 1ère requête que l'on exécute.
     * @param prop
     *            pour extraire un membre de l'objet a passer en critère au lieu
     *            de l'objet lui même.
     * @return
     */
-   public void executeSimpleQueryForCombobox(final Combobox current, final Champ parent1, final Champ parent2,
-      final boolean firstQuery, final String prop){
+   public void executeSimpleQueryForCombobox(final Combobox current, final Champ parent1, final Champ parent2, final String prop){
 
       Object obj = null;
       // on récupère l'objet sélectionné
@@ -518,7 +544,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
          executeSimpleQuery(critere, obj);
       }else{
          // requête spéciale pour les dérivés
-         prepareAndExecuteQueyForDerives(firstQuery, obj, "=", parent1, parent2, current);
+         prepareAndExecuteQueyForDerives(obj, "=", parent1, parent2, current);
       }
 
       // ajout du composant à l'historique
@@ -540,12 +566,10 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
     *            2eme Parent pour accéder à l'objet à requeter.
     * @param resultats
     *            Liste de résultats actuellement trouvés.
-    * @param firstQuery
-    *            True si c'est la 1ère requête que l'on exécute.
     * @return
     */
    public void executeSimpleQueryForListboxWithSpecialValue(final Listbox current, final Champ parent1, final Champ parent2,
-      final Object value, final boolean firstQuery){
+      final Object value){
 
       if(!searchForProdDerives){
          // création du critère
@@ -554,7 +578,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
          executeSimpleQuery(critere, value);
       }else{
          // requête spéciale pour les dérivés
-         prepareAndExecuteQueyForDerives(firstQuery, value, "=", parent1, parent2, current);
+         prepareAndExecuteQueyForDerives(value, "=", parent1, parent2, current);
       }
 
       // ajout du composant à l'historique
@@ -576,14 +600,12 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
     *            2eme Parent pour accéder à l'objet à requeter.
     * @param resultats
     *            Liste de résultats actuellement trouvés.
-    * @param firstQuery
-    *            True si c'est la 1ère requête que l'on exécute.
     * @param operateur
     *            Operateur de la requête.
     * @return
     */
    public void executeSimpleQueryForDecimalbox(final Decimalbox current, final Champ parent1, final Champ parent2,
-      final boolean firstQuery, final String operateur, final boolean isBigDecimal){
+      final String operateur, final boolean isBigDecimal){
       // on récupère la valeur saisie
       final BigDecimal val = current.getValue();
       Number obj;
@@ -599,7 +621,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
          executeSimpleQuery(critere, obj);
       }else{
          // requête spéciale pour les dérivés
-         prepareAndExecuteQueyForDerives(firstQuery, obj, operateur, parent1, parent2, current);
+         prepareAndExecuteQueyForDerives(obj, operateur, parent1, parent2, current);
       }
 
       // ajout du composant à l'historique
@@ -607,6 +629,44 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
       rcv.setCompClass(Decimalbox.class);
       rcv.setCompId(current.getId());
       rcv.setTextValue(current.getText());
+      getUsedComponents().add(rcv);
+   }
+
+   /**
+    * Exécute une requête simple sur un dureeComponent.
+    * 
+    * @param current
+    *            Component courant.
+    * @param parent1
+    *            1er Parent pour accéder à l'objet à requeter.
+    * @param parent2
+    *            2eme Parent pour accéder à l'objet à requeter.
+    * @param resultats
+    *            Liste de résultats actuellement trouvés.
+    * @param operateur
+    *            Operateur de la requête.
+    * @return
+    */
+   public void executeSimpleQueryForDureeComponent(final DureeComponent current, final Champ parent1, final Champ parent2,
+      final String operateur){
+      // on récupère la valeur saisie
+      final Duree val = current.getDuree();
+      BigDecimal obj = new BigDecimal(val.getTemps(Duree.SECONDE));
+      if(!searchForProdDerives || current.getId().matches("annoBox.*")){
+         // création du critère
+         final Critere critere = createCritereForQuery(current, parent1, operateur);
+         // exécution de la requête
+         executeSimpleQuery(critere, obj);
+      }else{
+         // requête spéciale pour les dérivés
+         prepareAndExecuteQueyForDerives(obj, operateur, parent1, parent2, current);
+      }
+
+      // ajout du composant à l'historique
+      final RechercheCompValues rcv = new RechercheCompValues();
+      rcv.setCompClass(DureeComponent.class);
+      rcv.setCompId(current.getId());
+      rcv.setTextValue(current.getDuree().getTemps(Duree.SECONDE).toString());
       getUsedComponents().add(rcv);
    }
 
@@ -621,14 +681,12 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
     *            2eme Parent pour accéder à l'objet à requeter.
     * @param resultats
     *            Liste de résultats actuellement trouvés.
-    * @param firstQuery
-    *            True si c'est la 1ère requête que l'on exécute.
     * @param operateur
     *            Operateur de la requête.
     * @return
     */
    public void executeSimpleQueryForIntbox(final Intbox current, final Champ parent1, final Champ parent2,
-      final boolean firstQuery, final String operateur){
+      final String operateur){
       // on récupère la valeur saisie
       final Integer obj = current.getValue();
       if(!searchForProdDerives){
@@ -638,7 +696,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
          executeSimpleQuery(critere, obj);
       }else{
          // requête spéciale pour les dérivés
-         prepareAndExecuteQueyForDerives(firstQuery, obj, operateur, parent1, parent2, current);
+         prepareAndExecuteQueyForDerives(obj, operateur, parent1, parent2, current);
       }
 
       // ajout du composant à l'historique
@@ -660,8 +718,6 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
     *            2eme Parent pour accéder à l'objet à requeter.
     * @param resultats
     *            Liste de résultats actuellement trouvés.
-    * @param firstQuery
-    *            True si c'est la 1ère requête que l'on exécute.
     * @param operateur
     *            Operateur de la requête.
     * @since 2.0.10 permet de faire une requête exacte et avec les opérateurs numériques.
@@ -669,7 +725,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
     * @return
     */
    public void executeSimpleQueryForDoublebox(final NumberInputElement current, final Champ parent1, final Champ parent2,
-      final boolean firstQuery, final String operateur){
+      final String operateur){
       // on récupère la valeur saisie
       // Float obj = current.getText().floatValue();
       // String val = String.valueOf(obj);
@@ -685,7 +741,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
          executeSimpleQuery(critere, val);
       }else{
          // requête spéciale pour les dérivés
-         prepareAndExecuteQueyForDerives(firstQuery, val, operateur, parent1, parent2, current);
+         prepareAndExecuteQueyForDerives(val, operateur, parent1, parent2, current);
       }
 
       // ajout du composant à l'historique
@@ -704,14 +760,12 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
     *            1er Parent pour accéder à l'objet à requeter.
     * @param parent2
     *            2eme Parent pour accéder à l'objet à requeter.
-    * @param firstQuery
-    *            True si c'est la 1ère requête que l'on exécute.
     * @param operateur
     *            Operateur de la requête.
     * @return
     */
    public void executeSimpleQueryForDatebox(final Datebox current, final Champ parent1, final Champ parent2,
-      final boolean firstQuery, final String operateur, final boolean isCalendar){
+      final String operateur, final boolean isCalendar){
       // on récupère la valeur saisie
       final Date tmp = current.getValue();
       Object obj = null;
@@ -731,7 +785,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
          executeSimpleQuery(critere, obj);
       }else{
          // requête spéciale pour les dérivés
-         prepareAndExecuteQueyForDerives(firstQuery, obj, operateur, parent1, parent2, current);
+         prepareAndExecuteQueyForDerives(obj, operateur, parent1, parent2, current);
       }
 
       // ajout du composant à l'historique
@@ -751,14 +805,12 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
     *            1er Parent pour accéder à l'objet à requeter.
     * @param parent2
     *            2eme Parent pour accéder à l'objet à requeter.
-    * @param firstQuery
-    *            True si c'est la 1ère requête que l'on exécute.
     * @param operateur
     *            Operateur de la requête.
     * @return
     */
    public void executeSimpleQueryForCalendarbox(final CalendarBox current, final Champ parent1, final Champ parent2,
-      final boolean firstQuery, final String operateur){
+      final String operateur){
       // on récupère la valeur saisie
       final Calendar value = current.getValue();
 
@@ -777,7 +829,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
          executeSimpleQuery(critere, value);
       }else{
          // requête spéciale pour les dérivés
-         prepareAndExecuteQueyForDerives(firstQuery, value, operateur, parent1, parent2, current);
+         prepareAndExecuteQueyForDerives(value, operateur, parent1, parent2, current);
       }
 
       // ajout du composant à l'historique
@@ -799,12 +851,9 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
     *            2eme Parent pour accéder à l'objet à requeter.
     * @param resultats
     *            Liste de résultats actuellement trouvés.
-    * @param firstQuery
-    *            True si c'est la 1ère requête que l'on exécute.
     * @return
     */
-   public void executeSimpleQueryForCheckbox(final Checkbox current, final Champ parent1, final Champ parent2,
-      final boolean firstQuery){
+   public void executeSimpleQueryForCheckbox(final Checkbox current, final Champ parent1, final Champ parent2){
       final boolean value = current.isChecked();
 
       if(!searchForProdDerives){
@@ -815,7 +864,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
          executeSimpleQuery(critere, value);
       }else{
          // requête spéciale pour les dérivés
-         prepareAndExecuteQueyForDerives(firstQuery, value, "=", parent1, parent2, current);
+         prepareAndExecuteQueyForDerives(value, "=", parent1, parent2, current);
       }
 
       // ajout du composant à l'historique
@@ -829,8 +878,6 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
    /**
     * Prépare la requête permettant d'interroger les produits dérivés.
     * 
-    * @param first
-    *            True si c'est la 1ère requête que l'on exécute.
     * @param value
     *            Valeur du critère.
     * @param operateur
@@ -842,8 +889,8 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
     * @param current
     *            Component courant.
     */
-   public void prepareAndExecuteQueyForDerives(final boolean firstQuery, final Object value, final String operateur,
-      final Champ parent1, final Champ parent2, final Component current){
+   public void prepareAndExecuteQueyForDerives(final Object value, final String operateur, final Champ parent1,
+      final Champ parent2, final Component current){
       Critere critere1 = null;
       Critere critere2 = null;
 
@@ -855,7 +902,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
       }
 
       // execution de la requête
-      executeSimpleQueryForDerives(firstQuery, critere1, critere2, value);
+      executeSimpleQueryForDerives(critere1, critere2, value);
    }
 
    /**
@@ -863,10 +910,8 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
     * 
     * @param current
     *            Component courant.
-    * @param firstQuery
-    *            True si c'est la 1ère requête que l'on exécute.
     */
-   public void executeDeriveQueryForTextbox(final Textbox current, final boolean firstQuery){
+   public void executeDeriveQueryForTextbox(final Textbox current){
 
       final String value = current.getValue() + "%";
       if(!searchForProdDerives){
@@ -878,7 +923,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
             critere2 = createCritereForQuery(current, parent2ToQueryProdDerive, "like");
          }
 
-         executeSimpleQueryForDerives(firstQuery, critere1, critere2, value);
+         executeSimpleQueryForDerives(critere1, critere2, value);
 
       }else{
          // création du critère
@@ -901,12 +946,10 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
     * 
     * @param current
     *            Component courant.
-    * @param firstQuery
-    *            True si c'est la 1ère requête que l'on exécute.
     * @return
     */
 
-   public void executeDeriveQueryForListbox(final Listbox current, final boolean firstQuery){
+   public void executeDeriveQueryForListbox(final Listbox current){
 
       Object obj = null;
       // on récupère l'objet sélectionné
@@ -931,7 +974,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
             critere2 = createCritereForQuery(current, parent2ToQueryProdDerive, "=");
          }
 
-         executeSimpleQueryForDerives(firstQuery, critere1, critere2, obj);
+         executeSimpleQueryForDerives(critere1, critere2, obj);
 
       }else{
          // création du critère
@@ -957,14 +1000,13 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
     * @param parent1 1er Parent pour accéder à l'objet à requeter.
     * @param parent2 2eme Parent pour accéder à l'objet à requeter.
     * @param resultats Liste de résultats actuellement trouvés.
-    * @param firstQuery True si c'est la 1ère requête que l'on exécute.
     * @param operateur Operateur de la requête.
     * @param cumulative boolean si true chaque élément de la liste devient un critère de recherche 
     * combiné aux autres par AND, OR si false.
     * @version 2.0.13
     */
    public void executeListQuery(final String attribut, final String nomEntite, final Entite fromEntite, final Champ parent1,
-      final boolean firstQuery, final List<Object> objs, final boolean cumulative){
+      final List<Object> objs, final boolean cumulative){
 
       Champ champ = null;
       if(!nomEntite.equals("ChampAnnotation")){
@@ -1014,13 +1056,11 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
     * 
     * @param current
     *            Component courant.
-    * @param firstQuery
-    *            True si c'est la 1ère requête que l'on exécute.
     * @param operateur
     *            Operateur de la requête.
     * @return
     */
-   public void executeDeriveQueryForDecimalbox(final Decimalbox current, final boolean firstQuery, final String operateur){
+   public void executeDeriveQueryForDecimalbox(final Decimalbox current, final String operateur){
 
       // on récupère la valeur saisie
       final Float obj = current.getValue().floatValue();
@@ -1033,7 +1073,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
             critere2 = createCritereForQuery(current, parent2ToQueryProdDerive, operateur);
          }
 
-         executeSimpleQueryForDerives(firstQuery, critere1, critere2, obj);
+         executeSimpleQueryForDerives(critere1, critere2, obj);
 
       }else{
          // création du critère
@@ -1056,8 +1096,6 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
     * 
     * @param resultats
     *            Liste de résultats actuellement trouvés.
-    * @param first
-    *            True si c'est la 1ère requête que l'on exécute.
     * @param critere1
     *            1er Critère d'accès aux dérivés.
     * @param critere2
@@ -1066,8 +1104,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
     *            Valeur du critère.
     * @return La liste de résultats mise à jour.
     */
-   public void executeSimpleQueryForDerives(final boolean firstQuery/*TODO non utilisé*/, final Critere critere1, final Critere critere2,
-      final Object value){
+   public void executeSimpleQueryForDerives(final Critere critere1, final Critere critere2, final Object value){
       criteresDerives1.add(critere1);
       criteresDerives2.add(critere2);
       valeursDerives1.add(value);
@@ -1286,22 +1323,26 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
                   ManagerLocator.getTableAnnotationManager().getChampAnnotationsManager(tabs.get(i)).iterator();
                // pour chaque
                while(champsIt.hasNext()){
-                  final Row newRow = new Row();
-                  final Cell cellLabel = new Cell();
                   final ChampAnnotation champ = champsIt.next();
-                  // label du champ
-                  final Label champLabel = new Label(champ.getNom());
-                  champLabel.setSclass("formLabel");
-                  cellLabel.appendChild(champLabel);
-                  cellLabel.setColspan(1);
-                  newRow.appendChild(cellLabel);
+                  Component component = drawAnnotation(champ);
+                  if(null != component){
+                     final Row newRow = new Row();
+                     final Cell cellLabel = new Cell();
+                     // label du champ
+                     final Label champLabel = new Label(champ.getNom());
+                     champLabel.setSclass("formLabel");
+                     cellLabel.appendChild(champLabel);
+                     cellLabel.setColspan(1);
+                     newRow.appendChild(cellLabel);
 
-                  // dessine le champ
-                  final Cell cell = new Cell();
-                  cell.appendChild(drawAnnotation(champ));
-                  cell.setColspan(3);
-                  newRow.appendChild(cell);
-                  rechercheRows.appendChild(newRow);
+                     // dessine le champ
+                     final Cell cell = new Cell();
+
+                     cell.appendChild(component);
+                     cell.setColspan(3);
+                     newRow.appendChild(cell);
+                     rechercheRows.appendChild(newRow);
+                  }
                }
             }
          }
@@ -1405,14 +1446,16 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
     * 
     * @param champ
     * @return Component
-    * @version 2.0.13
+    * @version 2.2.0
     */
    private Component drawAnnotation(final ChampAnnotation champ){
       Component box = null;
       if(champ != null){
-         final DataType dtype = champ.getDataType();
+         DataType dtype = champ.getDataType();
+         if("calcule".equals(dtype.getType())){
+            dtype = champ.getChampCalcule().getDataType();
+         }
 
-         //TODO ChampCalcule ? Champ Duréé ?
          switch(dtype.getType()){
             case "alphanum":
             case "hyperlien":
@@ -1427,11 +1470,12 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
             case "datetime":
                box = createCalendarbox(champ);
                break;
-            case "num" :
+            case "num":
                box = createDoublebox(champ);
                break;
             case "texte":
                box = createTextboxForText(champ);
+               break;
             case "thesaurus":
                box = createThesaurusBox(champ, false);
                break;
@@ -1441,28 +1485,56 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
             case "fichier":
                box = createFilebox(champ);
                break;
+            case "duree":
+               box = createDureeBox(champ);
+               break;
             default:
                break;
          }
 
          // div -> contient box + opérateurs
-         if(!(box instanceof Div)){
-            box.setId("annoBox" + champ.getChampAnnotationId());
-            objAnnotationsComponent.add(box);
-         }else{
-            if(!box.hasAttribute("thesM")){
-               box.getLastChild().setId("annoBox" + champ.getChampAnnotationId());
-               objAnnotationsComponent.add(box.getLastChild());
-               annoOperateurs.add(box.getFirstChild());
-            }else{ // thesaurusM
-               box.getFirstChild().setAttribute("chpId", champ.getChampAnnotationId().toString());
-               box.getFirstChild().setId("annoBox" + champ.getChampAnnotationId());
-               objAnnotationsComponent.add(box.getFirstChild());
+         if(null != box){
+            if(!(box instanceof Div)){
+               box.setId("annoBox" + champ.getId());
+               objAnnotationsComponent.add(box);
+            }else{
+               if(!box.hasAttribute("thesM")){
+                  box.getLastChild().setId("annoBox" + champ.getId());
+                  objAnnotationsComponent.add(box.getLastChild());
+                  annoOperateurs.add(box.getFirstChild());
+               }else{ // thesaurusM
+                  box.getFirstChild().setAttribute("chpId", champ.getId().toString());
+                  box.getFirstChild().setId("annoBox" + champ.getId());
+                  objAnnotationsComponent.add(box.getFirstChild());
+               }
             }
          }
       }
 
       return box;
+   }
+
+   /**
+    * Dessine la box Duree avec contrainte et valeur par défaut.
+    */
+   private Div createDureeBox(ChampAnnotation champ){
+      final Div divBox = new Div();
+
+      // operateurs
+      final Listbox opBox = new Listbox();
+      opBox.setId("opannoBox" + champ.getId());
+      opBox.setMold("select");
+      opBox.setRows(1);
+      opBox.setModel(new ListModelList<>(getOperateursDecimaux()));
+      divBox.appendChild(opBox);
+
+      DureeComponent box = new DureeComponent();
+      box.setAttribute("champ", champ);
+      box.setAttribute("entite", champ.getTableAnnotation().getEntite().getNom());
+
+      divBox.appendChild(box);
+
+      return divBox;
    }
 
    /**
@@ -1502,7 +1574,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 
       // operateurs
       final Listbox opBox = new Listbox();
-      opBox.setId("opannoBox" + champ.getChampAnnotationId());
+      opBox.setId("opannoBox" + champ.getId());
       opBox.setMold("select");
       opBox.setRows(1);
       opBox.setModel(new ListModelList<>(getOperateursDecimaux()));
@@ -1528,7 +1600,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 
       // operateurs
       final Listbox opBox = new Listbox();
-      opBox.setId("opannoBox" + champ.getChampAnnotationId());
+      opBox.setId("opannoBox" + champ.getId());
       opBox.setMold("select");
       opBox.setRows(1);
       opBox.setModel(new ListModelList<>(getOperateursDecimaux()));
@@ -1556,7 +1628,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 
       // operateurs
       final Listbox opBox = new Listbox();
-      opBox.setId("opannoBox" + champ.getChampAnnotationId());
+      opBox.setId("opannoBox" + champ.getId());
       opBox.setMold("select");
       opBox.setRows(1);
       opBox.setModel(new ListModelList<>(getOperateursDecimaux()));
@@ -1583,9 +1655,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
       // Items si thesaurus
       final Set<Item> its =
          ManagerLocator.getChampAnnotationManager().getItemsManager(champ, SessionUtils.getSelectedBanques(sessionScope).get(0));
-      //		Iterator<Item> itemItor = null;
       // recupere les items
-      //		itemItor = its.iterator();
       Integer maxLength = ManagerLocator.getChampAnnotationManager().findMaxItemLength(its);
 
       if(maxLength < 15){
@@ -1616,23 +1686,6 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
          itemsModel.add(0, null);
       }
       box.setModel(itemsModel);
-
-      //		// ajout d'un item vide
-      //		comboIt = new Listitem();
-      //		((Listitem) comboIt).setLabel(null);
-      //		((Listitem) comboIt).setValue(null);
-      //		comboIt.setParent(box);
-      //		// ajoute items au thesaurus
-      //		if (itemItor != null) {
-      //			Item it;
-      //			while (itemItor.hasNext()) {
-      //				it = itemItor.next();
-      //				comboIt = new Listitem();
-      //				((Listitem) comboIt).setLabel(it.getLabel());
-      //				((Listitem) comboIt).setValue(it);
-      //				comboIt.setParent(box);
-      //			}
-      //		}
 
       // since 2.0.13
       // multiple box + cumulative
@@ -1922,21 +1975,6 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
          }
 
       }
-      //		else { // nettoie le bloc
-      //			if (groupAnnotations != null) {
-      //				groupAnnotations.setOpen(false);
-      //				setAnnotationAlreadyOpen(false);
-      //				Component r = groupAnnotations.getNextSibling();
-      //				List<Row> rowsToDetach = new ArrayList<Row>();
-      //				while (r != null) {
-      //					rowsToDetach.add((Row) r);
-      //					r = r.getNextSibling();
-      //				}
-      //				for (Row row : rowsToDetach) {
-      //					row.detach();
-      //				}
-      //			}
-      //		}
 
       putSearchHistoryValues(sH);
 
@@ -1957,6 +1995,10 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
          allComps.addAll(Arrays.asList(objProdDeriveComponents));
          allComps.addAll(Arrays.asList(objOperateurs));
 
+         allComps.addAll(objPrelevementContextComponents != null ? Arrays.asList(objPrelevementContextComponents)
+            : new ArrayList<Component>());
+         allComps.addAll(
+            objPatientContextComponents != null ? Arrays.asList(objPatientContextComponents) : new ArrayList<Component>());
          allComps.addAll(objPrelevementContextComponents != null ? Arrays.asList(objPrelevementContextComponents)
             : new ArrayList<Component>());
       }

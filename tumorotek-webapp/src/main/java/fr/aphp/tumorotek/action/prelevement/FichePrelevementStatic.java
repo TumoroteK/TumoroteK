@@ -180,30 +180,6 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       setImportDossierVisible();
 
       resumePatient = new ResumePatient(groupPatient);
-
-      //		resumePatient = drawResumePatientComponent();
-
-      //		final HtmlMacroComponent ua;
-      //		ua = (HtmlMacroComponent)
-      //				page.getComponentDefinition("resumePatient", false)
-      //											.newInstance(page, null);
-      //		ua.setParent(refPatientDiv);
-      //		ua.setId("resumePatient");
-      //		ua.applyProperties();
-      //		ua.afterCompose(); 
-      //		
-      //		resumePatient = ((ResumePatient) ua.getFellow("winResume")
-      //				.getAttributeOrFellow("winResume$composer", true));
-      // ua.setVisible(true);
-
-      //		resumePatient = (ResumePatient)
-      //		page.getComponentDefinition("resumePatient", false)
-      //											.newInstance(page, null);
-      //		resumePatient.setParent(refPatientDiv);
-      //		resumePatient.setId("resumePatient");
-      //		resumePatient.applyProperties();
-      //		resumePatient.afterCompose();
-      //		resumePatient.setVisible(true);
    }
 
    @Override
@@ -445,7 +421,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       }
       if(this.prelevement.getQuantiteUnite() != null){
          sb.append(" ");
-         sb.append(this.prelevement.getQuantiteUnite().getUnite());
+         sb.append(this.prelevement.getQuantiteUnite().getNom());
       }
       valeurQuantite = sb.toString();
    }

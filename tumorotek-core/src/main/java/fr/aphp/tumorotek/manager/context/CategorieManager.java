@@ -37,7 +37,7 @@ package fr.aphp.tumorotek.manager.context;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.manager.CrudManager;
+import fr.aphp.tumorotek.manager.TKThesaurusManager;
 import fr.aphp.tumorotek.model.contexte.Categorie;
 
 /**
@@ -49,7 +49,7 @@ import fr.aphp.tumorotek.model.contexte.Categorie;
  * @version 2.0
  *
  */
-public interface CategorieManager extends CrudManager<Categorie>
+public interface CategorieManager extends TKThesaurusManager<Categorie>
 {
 
    /**

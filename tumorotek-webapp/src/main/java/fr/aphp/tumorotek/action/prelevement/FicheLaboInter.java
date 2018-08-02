@@ -914,7 +914,7 @@ public class FicheLaboInter extends AbstractFicheEditController
       }else{
          // si nous sommes dans une action de création, on
          // appelle la page FicheMultiEchantillons en mode create
-         getObjectTabController().switchToMultiEchantillonsCreateMode(this.prelevement, this.maladie, this.laboInters);
+         getObjectTabController().switchToMultiEchantillonsCreateMode(this.prelevement, this.laboInters);
       }
 
       Clients.clearBusy();

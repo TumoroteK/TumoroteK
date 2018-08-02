@@ -40,6 +40,7 @@ import java.util.List;
 import fr.aphp.tumorotek.model.cession.CederObjet;
 import fr.aphp.tumorotek.model.cession.CederObjetPK;
 import fr.aphp.tumorotek.model.cession.Cession;
+import fr.aphp.tumorotek.model.cession.ECederObjetStatut;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.systeme.Unite;
 
@@ -101,6 +102,14 @@ public interface CederObjetManager
     * @return Liste ordonnée de CederObjets.
     */
    List<CederObjet> findByObjetManager(Object obj);
+   
+   /**
+    * Recherche tous les CederObjet pour l'objet passé en paramètre dans un statut précis
+    * @param obj Objet pour lequel on recherche des CederObjets.
+    * @param statut statut de l'objet cédé
+    * @return Liste ordonnée de CederObjets.
+    */
+   List<CederObjet> findByObjetAndStatutManager(Object obj, ECederObjetStatut statut);
 
    /**
     * Recherche toutes les Cessions pour l'objet passé en paramètre

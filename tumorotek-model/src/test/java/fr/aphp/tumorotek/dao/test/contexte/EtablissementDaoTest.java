@@ -204,7 +204,7 @@ public class EtablissementDaoTest extends AbstractDaoTest
       final Etablissement etab = etabs.get(0);
       assertNotNull(etab);
       assertTrue(etab.getCoordonnee().getCoordonneeId() == 1);
-      assertTrue(etab.getCategorie().getCategorieId() == 1);
+      assertTrue(etab.getCategorie().getId() == 1);
    }
 
    /**

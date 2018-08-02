@@ -123,10 +123,10 @@ public class CategorieManagerImpl implements CategorieManager
    public boolean findDoublonManager(final Categorie o){
       if(o != null){
          final Categorie cat = o;
-         if(cat.getCategorieId() == null){
+         if(cat.getId() == null){
             return categorieDao.findAll().contains(cat);
          }
-            return categorieDao.findByExcludedId(cat.getCategorieId()).contains(cat);
+            return categorieDao.findByExcludedId(cat.getId()).contains(cat);
       }
          return false;
    }
@@ -164,10 +164,16 @@ public class CategorieManagerImpl implements CategorieManager
    @Override
    public void removeObjectManager(final Categorie obj){
       if(obj != null){
-         categorieDao.removeObject(obj.getCategorieId());
+         categorieDao.removeObject(obj.getId());
          log.info("Suppression objet Categorie " + obj.toString());
       }else{
          log.warn("Suppression d'une Categorie null");
       }
    }
+
+   @Override
+   public List<Categorie> findByOrderManager(){
+      return categorieDao.findByOrder();
+   }
+
 }

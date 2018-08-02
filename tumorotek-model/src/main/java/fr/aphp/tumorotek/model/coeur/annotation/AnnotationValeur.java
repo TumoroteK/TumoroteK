@@ -44,6 +44,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -89,7 +90,7 @@ import fr.aphp.tumorotek.model.systeme.Fichier;
          + "AND a.annotationValeurId != ?3"),
    @NamedQuery(name = "AnnotationValeur.findByObjectIdAndEntite",
       query = "SELECT a FROM AnnotationValeur a " + "join a.champAnnotation as chp " + "join chp.tableAnnotation as tbl "
-         + "WHERE a.objetId = ?1 AND tbl.entite = ?2 " + "ORDER BY a.champAnnotation.champAnnotationId"),
+         + "WHERE a.objetId = ?1 AND tbl.entite = ?2 " + "ORDER BY a.champAnnotation.id"),
    @NamedQuery(name = "AnnotationValeur.findCountByItem",
       query = "SELECT count(a) FROM AnnotationValeur a WHERE " + "a.item = ?1"),
    @NamedQuery(name = "AnnotationValeur.findCountByTableAnnotationBanque", query = "SELECT count(a) FROM AnnotationValeur a "
@@ -207,7 +208,7 @@ public class AnnotationValeur extends AnnotationCommon implements Serializable, 
       this.item = it;
    }
 
-   @OneToOne
+   @OneToOne(orphanRemoval=true)
    @JoinColumn(name = "FICHIER_ID", nullable = true)
    public Fichier getFichier(){
       return this.fichier;

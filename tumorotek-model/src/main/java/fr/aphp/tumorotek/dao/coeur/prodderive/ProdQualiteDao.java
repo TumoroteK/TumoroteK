@@ -38,7 +38,7 @@ package fr.aphp.tumorotek.dao.coeur.prodderive;
 import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
-import fr.aphp.tumorotek.dao.TKThesaurusDao;
+import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdQualite;
 
 /**
@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ProdQualite;
  * @version 2.0
  *
  */
-public interface ProdQualiteDao extends GenericDaoJpa<ProdQualite, Integer>, TKThesaurusDao<ProdQualite>
+public interface ProdQualiteDao extends GenericDaoJpa<ProdQualite, Integer>, PfDependantTKThesaurusDao<ProdQualite>
 {
 
    /**

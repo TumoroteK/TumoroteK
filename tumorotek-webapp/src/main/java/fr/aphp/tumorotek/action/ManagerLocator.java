@@ -35,11 +35,15 @@
  **/
 package fr.aphp.tumorotek.action;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.web.context.ContextLoader;
 
 import fr.aphp.tumorotek.interfacage.sender.SenderFactory;
 import fr.aphp.tumorotek.interfacage.sgl.view.ViewHandlerFactory;
+import fr.aphp.tumorotek.manager.TKThesaurusManager;
 import fr.aphp.tumorotek.manager.code.AdicapManager;
 import fr.aphp.tumorotek.manager.code.CimMasterManager;
 import fr.aphp.tumorotek.manager.code.CimoMorphoManager;
@@ -94,6 +98,7 @@ import fr.aphp.tumorotek.manager.context.CategorieManager;
 import fr.aphp.tumorotek.manager.context.CollaborateurManager;
 import fr.aphp.tumorotek.manager.context.ContexteManager;
 import fr.aphp.tumorotek.manager.context.CoordonneeManager;
+import fr.aphp.tumorotek.manager.context.DiagnosticManager;
 import fr.aphp.tumorotek.manager.context.EtablissementManager;
 import fr.aphp.tumorotek.manager.context.PlateformeManager;
 import fr.aphp.tumorotek.manager.context.ProtocoleManager;
@@ -104,6 +109,7 @@ import fr.aphp.tumorotek.manager.context.TransporteurManager;
 import fr.aphp.tumorotek.manager.dto.EchantillonDTOManager;
 import fr.aphp.tumorotek.manager.etiquettes.TumoBarcodePrinter;
 import fr.aphp.tumorotek.manager.etiquettes.TumoPrinterUtilsManager;
+import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.manager.impression.BlocImpressionManager;
 import fr.aphp.tumorotek.manager.impression.BlocImpressionTemplateManager;
 import fr.aphp.tumorotek.manager.impression.ChampEntiteBlocManager;
@@ -183,14 +189,65 @@ import fr.aphp.tumorotek.manager.validation.workflow.NiveauValidationManager;
 import fr.aphp.tumorotek.manager.validation.workflow.ValidateurManager;
 import fr.aphp.tumorotek.manager.validation.workflow.ValidationManager;
 import fr.aphp.tumorotek.manager.xml.XmlUtils;
+import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.bundles.ResourceBundleMbio;
 import fr.aphp.tumorotek.model.bundles.ResourceBundleSip;
 import fr.aphp.tumorotek.model.bundles.ResourceBundleTumo;
+import fr.aphp.tumorotek.model.cession.CessionExamen;
+import fr.aphp.tumorotek.model.cession.DestructionMotif;
+import fr.aphp.tumorotek.model.cession.ProtocoleType;
+import fr.aphp.tumorotek.model.coeur.echantillon.EchanQualite;
+import fr.aphp.tumorotek.model.coeur.echantillon.EchantillonType;
+import fr.aphp.tumorotek.model.coeur.echantillon.ModePrepa;
+import fr.aphp.tumorotek.model.coeur.prelevement.ConditMilieu;
+import fr.aphp.tumorotek.model.coeur.prelevement.ConditType;
+import fr.aphp.tumorotek.model.coeur.prelevement.ConsentType;
+import fr.aphp.tumorotek.model.coeur.prelevement.Nature;
+import fr.aphp.tumorotek.model.coeur.prelevement.PrelevementType;
+import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
+import fr.aphp.tumorotek.model.coeur.prodderive.ModePrepaDerive;
+import fr.aphp.tumorotek.model.coeur.prodderive.ProdQualite;
+import fr.aphp.tumorotek.model.coeur.prodderive.ProdType;
+import fr.aphp.tumorotek.model.contexte.Categorie;
+import fr.aphp.tumorotek.model.contexte.Diagnostic;
+import fr.aphp.tumorotek.model.contexte.Protocole;
+import fr.aphp.tumorotek.model.contexte.Specialite;
+import fr.aphp.tumorotek.model.qualite.NonConformite;
+import fr.aphp.tumorotek.model.stockage.ConteneurType;
+import fr.aphp.tumorotek.model.stockage.EnceinteType;
 
 //import fr.aphp.tumorotek.manager.code.CodeDossierManager;
 
 public final class ManagerLocator
 {
+
+   private static final Map<Class<? extends TKThesaurusObject>, Class<? extends TKThesaurusManager<?>>> THESAURUS_MANAGER_MAP;
+
+   static{
+      THESAURUS_MANAGER_MAP = new HashMap<>();
+      THESAURUS_MANAGER_MAP.put(Nature.class, NatureManager.class);
+      THESAURUS_MANAGER_MAP.put(PrelevementType.class, PrelevementTypeManager.class);
+      THESAURUS_MANAGER_MAP.put(EchantillonType.class, EchantillonTypeManager.class);
+      THESAURUS_MANAGER_MAP.put(EchanQualite.class, EchanQualiteManager.class);
+      THESAURUS_MANAGER_MAP.put(ProdType.class, ProdTypeManager.class);
+      THESAURUS_MANAGER_MAP.put(ProdQualite.class, ProdQualiteManager.class);
+      THESAURUS_MANAGER_MAP.put(ConditType.class, ConditTypeManager.class);
+      THESAURUS_MANAGER_MAP.put(ConditMilieu.class, ConditMilieuManager.class);
+      THESAURUS_MANAGER_MAP.put(ConsentType.class, ConsentTypeManager.class);
+      THESAURUS_MANAGER_MAP.put(Risque.class, RisqueManager.class);
+      THESAURUS_MANAGER_MAP.put(Protocole.class, ProtocoleManager.class);
+      THESAURUS_MANAGER_MAP.put(Diagnostic.class, DiagnosticManager.class);
+      THESAURUS_MANAGER_MAP.put(ModePrepa.class, ModePrepaManager.class);
+      THESAURUS_MANAGER_MAP.put(ModePrepaDerive.class, ModePrepaDeriveManager.class);
+      THESAURUS_MANAGER_MAP.put(CessionExamen.class, CessionExamenManager.class);
+      THESAURUS_MANAGER_MAP.put(DestructionMotif.class, DestructionMotifManager.class);
+      THESAURUS_MANAGER_MAP.put(ProtocoleType.class, ProtocoleTypeManager.class);
+      THESAURUS_MANAGER_MAP.put(Specialite.class, SpecialiteManager.class);
+      THESAURUS_MANAGER_MAP.put(Categorie.class, CategorieManager.class);
+      THESAURUS_MANAGER_MAP.put(ConteneurType.class, ConteneurTypeManager.class);
+      THESAURUS_MANAGER_MAP.put(EnceinteType.class, EnceinteTypeManager.class);
+      THESAURUS_MANAGER_MAP.put(NonConformite.class, NonConformiteManager.class);
+   }
 
    // private static final Log logger =
    // LogFactory.getLog(ManagerLocator.class);
@@ -201,8 +258,25 @@ public final class ManagerLocator
    private ManagerLocator(){}
 
    //TODO Utiliser ce générique plutôt que de déclarer les manager à chaque fois c.f: supprimer tous les autres
-   public static <T> T getManager(Class<T> clazz){
+   public static <T> T getManager(final Class<T> clazz){
       return ContextLoader.getCurrentWebApplicationContext().getBean(clazz);
+   }
+
+   /**
+    * Retourne le TKThesaurusManager correspondant à une implémentation de TKThesaurusObject
+    * @param thesaurusObjectClass
+    * @return
+    */
+   public static <T extends TKThesaurusObject> TKThesaurusManager<?> getThesaurusManager(final Class<T> thesaurusObjectClass){
+
+      final Class<? extends TKThesaurusManager<?>> managerClass = THESAURUS_MANAGER_MAP.get(thesaurusObjectClass);
+
+      if(managerClass == null){
+         throw new TKException("Aucun manager de thésaurus connu pour " + thesaurusObjectClass.getSimpleName());
+      }
+
+      return ManagerLocator.getManager(managerClass);
+
    }
 
    public static JpaTransactionManager getTxManager(){
@@ -791,7 +865,7 @@ public final class ManagerLocator
       return (ConsultationIntfManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("consultationIntfManager");
    }
 
-   // la classe est packagée dans Tumo2-interface et n'est donc pas présente 
+   // la classe est packagée dans Tumo2-interface et n'est donc pas présente
    // pour toutes les installations.
    public static SenderFactory getSenderFactory(){
       if((ContextLoader.getCurrentWebApplicationContext()).containsBean("senderFactory")){

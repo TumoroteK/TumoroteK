@@ -120,7 +120,7 @@ public class ImportTemplateManagerTest extends AbstractManagerTest
     */
    public void testFindAll(){
       final List<ImportTemplate> list = importTemplateManager.findAllObjectsManager();
-      assertTrue(list.size() == 4);
+      assertEquals(4, list.size());
    }
 
    /**
@@ -131,7 +131,7 @@ public class ImportTemplateManagerTest extends AbstractManagerTest
       final Banque b3 = banqueDao.findById(3);
 
       List<ImportTemplate> list = importTemplateManager.findByBanqueManager(b1);
-      assertTrue(list.size() == 3);
+      assertEquals(3, list.size());
 
       list = importTemplateManager.findByBanqueManager(b3);
       assertTrue(list.size() == 0);

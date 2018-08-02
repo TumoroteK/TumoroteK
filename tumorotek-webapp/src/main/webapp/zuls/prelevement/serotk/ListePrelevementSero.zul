@@ -33,7 +33,7 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez 
  * accepté les termes. 
 -->
-<window id="lwinPrelevement" border="none" apply="fr.aphp.tumorotek.action.prelevement.ListePrelevement">
+<window id="lwinPrelevementSero" border="none" apply="fr.aphp.tumorotek.action.prelevement.serotk.ListePrelevementSero">
 	<panel border="none" sclass="fichePanelv2" collapsible="true" id="listPanel">
 		<panelchildren id="scrollPan">
 			<grid id="objectsListGrid" mold="paging" 
@@ -44,23 +44,25 @@
 				span="true"
 				sizedByContent="true"
 				sclass="gridListStyle"
-				model="@{lwinPrelevement$composer.listObjects load-after='find.onClick, 
+				model="@{lwinPrelevementSero$composer.listObjects load-after='find.onClick, 
 					codeBoxPrlvt.onOK, nomPatientPrlvt.onOK, findByListCodes.onClick,
 					findByListPatients.onClick'}"
-				rowRenderer="@{lwinPrelevement$composer.listObjectsRenderer}">
+				rowRenderer="@{lwinPrelevementSero$composer.listObjectsRenderer}">
 				<columns menupopup="auto" sizable="true" width="100%">
 					<column width="40px">
 						<checkbox id="checkAll"/>
 					</column>
 					<column width="70px" align="center"/>
 					<column label="${c:l('general.code')}" sort="auto(code)" />
+					<column label="" visible="false"/>
 					<column label="${c:l('prelevement.patient')}" sort="auto(maladie.patient.nom)"/>
+					<column label="" visible="false"/>
 					<column label="${c:l('prelevement.maladie')}" 
-						visible="@{lwinPrelevement$composer.banqueDefMaladies}"
+						visible="@{lwinPrelevementSero$composer.banqueDefMaladies}"
 						width="200px"/>
 					<column label="${c:l('prelevement.datePrelevementCourt')}" sort="auto(datePrelevement)" />
 					<column label="${c:l('Champ.Prelevement.Nature.Nature')}" sort="auto(nature.nature)" />
-					<column label="${c:l('Champ.Prelevement.Protocole')}" />
+					<column label="${c:l('Champ.Prelevement.SEROLOGIE.Protocoles')}" />
 					<column align="center" 
 						sort="auto" id="nbEchantillonsColumn">
 						<vbox align="center" width="100%">
@@ -90,7 +92,7 @@
 								sclass="formLabel"/>
 						</div>
 						<listbox id="dateCreationBox" mold="select" rows="1"
-							model="@{lwinPrelevement$composer.creationDates,
+							model="@{lwinPrelevementSero$composer.creationDates,
 								save-when='find.onClick, self.onBlur, self.onOK'}">
 								<listitem self="@{each='date'}" value="@{date}">			
 									<listcell label="@{date}" />
@@ -103,7 +105,7 @@
 							<label value="${c:l('prelevement.search.code.labo')}" sclass="formLabel"/>
 						</div>
 						<textbox id="codeBoxPrlvt" 
-							value="@{lwinPrelevement$composer.searchCode,
+							value="@{lwinPrelevementSero$composer.searchCode,
 		        			save-when='find.onClick, self.onOK'}" 
 							forward="onOK=onPressEnterKey()"
 						/>
@@ -119,7 +121,7 @@
 								sclass="formLabel"/>
 						</div>
 						<textbox id="nomPatientPrlvt" 
-							value="@{lwinPrelevement$composer.searchNomPatient,
+							value="@{lwinPrelevementSero$composer.searchNomPatient,
 							save-when='find.onClick, self.onOK'}"
 							forward="onOK=onPressEnterKey()"
 						/>

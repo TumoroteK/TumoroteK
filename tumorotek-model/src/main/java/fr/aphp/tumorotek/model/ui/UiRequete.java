@@ -73,7 +73,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
       query = "SELECT u FROM UiRequete u WHERE u.utilisateur = ?1 " + " AND u.entite = ?2 ORDER BY ordre"),
    @NamedQuery(name = "UiRequete.findByNomUtilisateurAndEntite",
       query = "SELECT u FROM UiRequete u WHERE u.utilisateur = ?1 " + " AND u.entite = ?2 AND u.nom = ?3 ORDER BY ordre")})
-public class UiRequete implements java.io.Serializable
+public class UiRequete implements java.io.Serializable //FIXME Class non utilisée ?? A quoi sert-elle ? Elle n'est pas créée en base non plus.
 {
 
    private static final long serialVersionUID = -7133884479005275879L;

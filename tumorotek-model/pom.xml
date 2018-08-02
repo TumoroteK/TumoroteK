@@ -1,477 +1,474 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>fr.aphp.tumorotek</groupId>
-        <artifactId>tumorotek-parent</artifactId>
-        <version>2.2.0-beta-3-SNAPSHOT</version>
-    </parent>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>fr.aphp.tumorotek</groupId>
+		<artifactId>tumorotek-parent</artifactId>
+		<version>2.2.0-beta-4-SNAPSHOT</version>
+	</parent>
 
-    <artifactId>tumorotek-model</artifactId>
-    <name>APHP :: TumoroteK :: Model</name>
+	<artifactId>tumorotek-model</artifactId>
+	<name>APHP :: TumoroteK :: Model</name>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>Wakaleo Repository</id>
-            <url>http://maven.wakaleo.com/repos/</url>
-        </pluginRepository>
-    </pluginRepositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>Wakaleo Repository</id>
+			<url>http://maven.wakaleo.com/repos/</url>
+		</pluginRepository>
+	</pluginRepositories>
 
-    <properties>
-        <skipTests>false</skipTests>
-    </properties>
+	<properties>
+		<skipTests>false</skipTests>
+	</properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>fr.aphp.tumorotek</groupId>
-            <artifactId>tumorotek-test</artifactId>
-            <version>${project.parent.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jdom</groupId>
-            <artifactId>jdom</artifactId>
-            <version>1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-aop</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>${org.hibernate.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>${org.hibernate.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.16</version>
-        </dependency>
-        <!-- <dependency> -->
-        <!-- <groupId>org.slf4j</groupId> -->
-        <!-- <artifactId>slf4j-simple</artifactId> -->
-        <!-- <version>1.6.6</version> -->
-        <!-- </dependency> -->
-        <!-- <dependency> -->
-        <!-- <groupId>org.slf4j</groupId> -->
-        <!-- <artifactId>slf4j-jdk14</artifactId> -->
-        <!-- <version>1.6.6</version> -->
-        <!-- </dependency> -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.6.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.6.6</version>
-        </dependency>
-        <dependency>
-            <groupId>com.mchange</groupId>
-            <artifactId>c3p0</artifactId>
-            <version>0.9.5.2</version>
-        </dependency>
-    </dependencies>
+	<dependencies>
+		<dependency>
+			<groupId>fr.aphp.tumorotek</groupId>
+			<artifactId>tumorotek-test</artifactId>
+			<version>${project.parent.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jdom</groupId>
+			<artifactId>jdom</artifactId>
+			<version>1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${org.hibernate.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>${org.hibernate.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.16</version>
+		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>org.slf4j</groupId> -->
+		<!-- <artifactId>slf4j-simple</artifactId> -->
+		<!-- <version>1.6.6</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.slf4j</groupId> -->
+		<!-- <artifactId>slf4j-jdk14</artifactId> -->
+		<!-- <version>1.6.6</version> -->
+		<!-- </dependency> -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.6.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.6.6</version>
+		</dependency>
+		<dependency>
+			<groupId>com.mchange</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>0.9.5.2</version>
+		</dependency>
+	</dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${maven-surefire-plugin.version}</version>
-                <configuration>
-                    <includes>
-                        <include>**/CategorieDaoTest.java</include>
-                        <include>**/ContexteDaoTest.java</include>
-                        <include>**/CollaborateurDaoTest.java</include>
-                        <include>**/CoordonneeDaoTest.java</include>
-                        <include>**/EtablissementDaoTest.java</include>
-                        <include>**/PlateformeDaoTest.java</include>
-                        <include>**/ServiceDaoTest.java</include>
-                        <include>**/SpecialiteDaoTest.java</include>
-                        <include>**/TitreDaoTest.java</include>
-                        <include>**/TransporteurDaoTest.java</include>
-                        <!-- Package contexte -->
-                        <include>**/BanqueDaoTest.java</include>
-                        <include>**/BanqueTableCodageDaoTest.java</include>
-                        <!-- Package codes -->
-                        <include>**/AdicapDaoTest.java</include>
-                        <include>**/CimLibelleDaoTest.java</include>
-                        <include>**/CimoMorphoDaoTest.java</include>
-                        <include>**/CimMasterDaoTest.java</include>
-                        <include>**/CodeDossierDaoTest.java</include>
-                        <include>**/TableCodesDaoTest.java</include>
-                        <include>**/CodeAssigneDaoTest.java</include>
-                        <include>**/CodeSelectDaoTest.java</include>
-                        <include>**/CodeUtilisateurDaoTest.java</include>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surefire-plugin.version}</version>
+				<configuration>
+					<argLine>-Dfile.encoding=UTF-8</argLine>
+					<includes>
+						<include>**/CategorieDaoTest.java</include>
+						<include>**/ContexteDaoTest.java</include>
+						<include>**/CollaborateurDaoTest.java</include>
+						<include>**/CoordonneeDaoTest.java</include>
+						<include>**/EtablissementDaoTest.java</include>
+						<include>**/PlateformeDaoTest.java</include>
+						<include>**/ServiceDaoTest.java</include>
+						<include>**/SpecialiteDaoTest.java</include>
+						<include>**/TitreDaoTest.java</include>
+						<include>**/TransporteurDaoTest.java</include>
+						<!-- Package contexte -->
+						<include>**/BanqueDaoTest.java</include>
+						<include>**/BanqueTableCodageDaoTest.java</include>
+						<!-- Package codes -->
+						<include>**/AdicapDaoTest.java</include>
+						<include>**/CimLibelleDaoTest.java</include>
+						<include>**/CimoMorphoDaoTest.java</include>
+						<include>**/CimMasterDaoTest.java</include>
+						<include>**/CodeDossierDaoTest.java</include>
+						<include>**/TableCodesDaoTest.java</include>
+						<include>**/CodeAssigneDaoTest.java</include>
+						<include>**/CodeSelectDaoTest.java</include>
+						<include>**/CodeUtilisateurDaoTest.java</include>
 
-                        <include>**/EchantillonDaoTest.java</include>
-                        <include>**/EchanQualiteDaoTest.java</include>
-                        <include>**/EchantillonTypeDaoTest.java</include>
-                        <include>**/ModePrepaDaoTest.java</include>
-                        <include>**/ObjetStatutDaoTest.java</include>
-                        <include>**/UniteDaoTest.java</include>
+						<include>**/EchantillonDaoTest.java</include>
+						<include>**/EchanQualiteDaoTest.java</include>
+						<include>**/EchantillonTypeDaoTest.java</include>
+						<include>**/ModePrepaDaoTest.java</include>
+						<include>**/ObjetStatutDaoTest.java</include>
+						<include>**/UniteDaoTest.java</include>
 
-                        <include>**/ProdQualiteDaoTest.java</include>
-                        <include>**/ProdTypeDaoTest.java</include>
-                        <include>**/ProdDeriveDaoTest.java</include>
-                        <include>**/TransformationDaoTest.java</include>
-                        <include>**/ModePrepaDeriveDaoTest.java</include>
+						<include>**/ProdQualiteDaoTest.java</include>
+						<include>**/ProdTypeDaoTest.java</include>
+						<include>**/ProdDeriveDaoTest.java</include>
+						<include>**/TransformationDaoTest.java</include>
+						<include>**/ModePrepaDeriveDaoTest.java</include>
 
-                        <!-- Package coeur.patient -->
-                        <include>**/PatientDaoTest.java</include>
-                        <include>**/LienFamilialDaoTest.java</include>
-                        <include>**/MaladieDaoTest.java</include>
-                        <include>**/PatientLienDaoTest.java</include>
-                        <include>**/PatientMedecinDaoTest.java</include>
-                        <!-- Package coeur.prelevement -->
-                        <include>**/ConditMilieuDaoTest.java</include>
-                        <include>**/ConditTypeDaoTest.java</include>
-                        <include>**/NatureDaoTest.java</include>
-                        <include>**/PrelevementTypeDaoTest.java</include>
-                        <include>**/ConsentTypeDaoTest.java</include>
-                        <include>**/RisqueDaoTest.java</include>
-                        <include>**/LaboInterDaoTest.java</include>
-                        <include>**/PrelevementDaoTest.java</include>
-                        <!-- Package qualite -->
-                        <include>**/OperationDaoTest.java</include>
-                        <include>**/OperationTypeDaoTest.java</include>
-                        <include>**/ConformiteTypeDaoTest.java</include>
-                        <include>**/NonConformiteDaoTest.java</include>
-                        <include>**/ObjetNonConformeDaoTest.java</include>
-                        <!-- Package export -->
-                        <include>**/AffichageDaoTest.java</include>
-                        <!-- <include>**/ChampDaoTest.java</include> -->
-                        <include>**/ChampEntiteDaoTest.java</include>
-                        <include>**/CombinaisonDaoTest.java</include>
-                        <include>**/CritereDaoTest.java</include>
-                        <include>**/GroupementDaoTest.java</include>
-                        <include>**/RequeteDaoTest.java</include>
-                        <include>**/ResultatDaoTest.java</include>
-                        <include>**/RechercheDaoTest.java</include>
-                        <!-- Package annotation -->
-                        <include>**/DataTypeDaoTest.java</include>
-                        <include>**/TableAnnotationDaoTest.java</include>
-                        <include>**/TableAnnotationBanqueDaoTest.java</include>
-                        <include>**/ChampAnnotationDaoTest.java</include>
-                        <include>**/ItemDaoTest.java</include>
-                        <include>**/AnnotationDefautDaoTest.java</include>
-                        <include>**/AnnotationValeurDaoTest.java</include>
-                        <include>**/CatalogueDaoTest.java</include>
-                        <!-- Package Cession -->
-                        <include>**/CederObjetDaoTest.java</include>
-                        <include>**/CederObjetPKTest.java</include>
-                        <include>**/CessionDaoTest.java</include>
-                        <include>**/CessionExamenDaoTest.java</include>
-                        <include>**/CessionStatutDaoTest.java</include>
-                        <include>**/CessionTypeDaoTest.java</include>
-                        <include>**/DestructionMotifDaoTest.java</include>
-                        <include>**/ContratDaoTest.java</include>
-                        <include>**/ProtocoleTypeDaoTest.java</include>
-                        <include>**/RetourDaoTest.java</include>
-                        <!-- Package impression -->
-                        <include>**/BlocImpressionDaoTest.java</include>
-                        <include>**/BlocImpressionTemplateDaoTest.java</include>
-                        <include>**/BlocImpressionTemplatePKTest.java</include>
-                        <include>**/ChampEntiteBlocDaoTest.java</include>
-                        <include>**/ChampEntiteBlocPKTest.java</include>
-                        <include>**/ChampImprimeDaoTest.java</include>
-                        <include>**/ChampImprimePKTest.java</include>
-                        <include>**/TemplateDaoTest.java</include>
-                        <include>**/TableAnnotationTemplateDaoTest.java</include>
-                        <include>**/TableAnnotationTemplatePKTest.java</include>
-                        <!-- Package systeme -->
-                        <include>**/EntiteDaoTest.java</include>
-                        <include>**/FichierDaoTest.java</include>
-                        <include>**/CouleurDaoTest.java</include>
-                        <include>**/CouleurEntiteTypeDaoTest.java</include>
-                        <include>**/TemperatureDaoTest.java</include>
-                        <include>**/NumerotationDaoTest.java</include>
-                        <include>**/VersionDaoTest.java</include>
-                        <!-- Package stockage -->
-                        <include>**/ConteneurDaoTest.java</include>
-                        <include>**/ConteneurTypeDaoTest.java</include>
-                        <include>**/EmplacementDaoTest.java</include>
-                        <include>**/EnceinteDaoTest.java</include>
-                        <include>**/EnceinteTypeDaoTest.java</include>
-                        <include>**/IncidentDaoTest.java</include>
-                        <include>**/TerminaleDaoTest.java</include>
-                        <include>**/TerminaleNumerotationDaoTest.java</include>
-                        <include>**/TerminaleTypeDaoTest.java</include>
-                        <!-- Package utilisateur -->
-                        <include>**/DroitObjetDaoTest.java</include>
-                        <include>**/DroitObjetPKTest.java</include>
-                        <include>**/ProfilDaoTest.java</include>
-                        <include>**/ProfilUtilisateurPKTest.java</include>
-                        <include>**/ProfilUtilisateurDaoTest.java</include>
-                        <include>**/ReservationDaoTest.java</include>
-                        <include>**/UtilisateurDaoTest.java</include>
-                        <!-- Package import -->
-                        <include>**/ImportTemplateDaoTest.java</include>
-                        <include>**/ImportColonneDaoTest.java</include>
-                        <include>**/ImportHistoriqueDaoTest.java</include>
-                        <include>**/ImportationDaoTest.java</include>
-                        <!-- Package imprimante -->
-                        <include>**/ImprimanteDaoTest.java</include>
-                        <include>**/ImprimanteApiDaoTest.java</include>
-                        <include>**/ModeleDaoTest.java</include>
-                        <include>**/LigneEtiquetteDaoTest.java</include>
-                        <include>**/ChampLigneEtiquetteDaoTest.java</include>
-                        <include>**/ModeleTypeDaoTest.java</include>
-                        <include>**/AffectationImprimanteDaoTest.java</include>
-                        <include>**/AffectationImprimantePKDaoTest.java</include>
-                        <!-- Package interfacage -->
-                        <include>**/LogicielDaoTest.java</include>
-                        <include>**/EmetteurDaoTest.java</include>
-                        <include>**/DossierExterneDaoTest.java</include>
-                        <include>**/BlocExterneDaoTest.java</include>
-                        <include>**/ValeurExterneDaoTest.java</include>
-                        <include>**/RecepteurDaoTest.java</include>
-                        <include>**/ConsultationIntfDaoTest.java</include>
-                        <include>**/PatientSipDaoTest.java</include>
-                        <include>**/ScanTerminaleDao.java</include>
-                        <!-- SeroTK -->
-                        <include>**/ProtocoleDaoTest.java</include>
-                        <!-- Package ui -->
-                        <!-- <include>**/UiRequeteDaoTest.java</include> -->
-                        <!-- Package stats -->
-                        <include>**/IndicateurDaoTest.java</include>
-                        <include>**/SModeleDaoTest.java</include>
-                        <include>**/SubdivisionDaoTest.java</include>
-                        
-                        <!-- Package validation -->
-                        <include>**/ActionDaoTest.java</include>
-                        <include>**/CritereValidationDaoTest.java</include>
-                        <include>**/NiveauValidationDaoTest.java</include>
-                        <include>**/ValidationDaoTest.java</include>
-                        
-                        
-                    </includes>
-                    <skipTests>${skipTests}</skipTests>
-                </configuration>
-            </plugin>
+						<!-- Package coeur.patient -->
+						<include>**/PatientDaoTest.java</include>
+						<include>**/LienFamilialDaoTest.java</include>
+						<include>**/MaladieDaoTest.java</include>
+						<include>**/PatientLienDaoTest.java</include>
+						<include>**/PatientMedecinDaoTest.java</include>
+						<!-- Package coeur.prelevement -->
+						<include>**/ConditMilieuDaoTest.java</include>
+						<include>**/ConditTypeDaoTest.java</include>
+						<include>**/NatureDaoTest.java</include>
+						<include>**/PrelevementTypeDaoTest.java</include>
+						<include>**/ConsentTypeDaoTest.java</include>
+						<include>**/RisqueDaoTest.java</include>
+						<include>**/LaboInterDaoTest.java</include>
+						<include>**/PrelevementDaoTest.java</include>
+						<!-- Package qualite -->
+						<include>**/OperationDaoTest.java</include>
+						<include>**/OperationTypeDaoTest.java</include>
+						<include>**/ConformiteTypeDaoTest.java</include>
+						<include>**/NonConformiteDaoTest.java</include>
+						<include>**/ObjetNonConformeDaoTest.java</include>
+						<!-- Package export -->
+						<include>**/AffichageDaoTest.java</include>
+						<!-- <include>**/ChampDaoTest.java</include> -->
+						<include>**/ChampEntiteDaoTest.java</include>
+						<include>**/CombinaisonDaoTest.java</include>
+						<include>**/CritereDaoTest.java</include>
+						<include>**/GroupementDaoTest.java</include>
+						<include>**/RequeteDaoTest.java</include>
+						<include>**/ResultatDaoTest.java</include>
+						<include>**/RechercheDaoTest.java</include>
+						<!-- Package annotation -->
+						<include>**/DataTypeDaoTest.java</include>
+						<include>**/TableAnnotationDaoTest.java</include>
+						<include>**/TableAnnotationBanqueDaoTest.java</include>
+						<include>**/ChampAnnotationDaoTest.java</include>
+						<include>**/ItemDaoTest.java</include>
+						<include>**/AnnotationDefautDaoTest.java</include>
+						<include>**/AnnotationValeurDaoTest.java</include>
+						<include>**/CatalogueDaoTest.java</include>
+						<!-- Package Cession -->
+						<include>**/CederObjetDaoTest.java</include>
+						<include>**/CederObjetPKTest.java</include>
+						<include>**/CessionDaoTest.java</include>
+						<include>**/CessionExamenDaoTest.java</include>
+						<include>**/CessionStatutDaoTest.java</include>
+						<include>**/CessionTypeDaoTest.java</include>
+						<include>**/DestructionMotifDaoTest.java</include>
+						<include>**/ContratDaoTest.java</include>
+						<include>**/ProtocoleTypeDaoTest.java</include>
+						<include>**/RetourDaoTest.java</include>
+						<!-- Package impression -->
+						<include>**/BlocImpressionDaoTest.java</include>
+						<include>**/BlocImpressionTemplateDaoTest.java</include>
+						<include>**/BlocImpressionTemplatePKTest.java</include>
+						<include>**/ChampEntiteBlocDaoTest.java</include>
+						<include>**/ChampEntiteBlocPKTest.java</include>
+						<include>**/ChampImprimeDaoTest.java</include>
+						<include>**/ChampImprimePKTest.java</include>
+						<include>**/TemplateDaoTest.java</include>
+						<include>**/TableAnnotationTemplateDaoTest.java</include>
+						<include>**/TableAnnotationTemplatePKTest.java</include>
+						<include>**/CleImpressionDaoTest</include>
+						<!-- Package systeme -->
+						<include>**/EntiteDaoTest.java</include>
+						<include>**/FichierDaoTest.java</include>
+						<include>**/CouleurDaoTest.java</include>
+						<include>**/CouleurEntiteTypeDaoTest.java</include>
+						<include>**/TemperatureDaoTest.java</include>
+						<include>**/NumerotationDaoTest.java</include>
+						<include>**/VersionDaoTest.java</include>
+						<!-- Package stockage -->
+						<include>**/ConteneurDaoTest.java</include>
+						<include>**/ConteneurTypeDaoTest.java</include>
+						<include>**/EmplacementDaoTest.java</include>
+						<include>**/EnceinteDaoTest.java</include>
+						<include>**/EnceinteTypeDaoTest.java</include>
+						<include>**/IncidentDaoTest.java</include>
+						<include>**/TerminaleDaoTest.java</include>
+						<include>**/TerminaleNumerotationDaoTest.java</include>
+						<include>**/TerminaleTypeDaoTest.java</include>
+						<!-- Package utilisateur -->
+						<include>**/DroitObjetDaoTest.java</include>
+						<include>**/DroitObjetPKTest.java</include>
+						<include>**/ProfilDaoTest.java</include>
+						<include>**/ProfilUtilisateurPKTest.java</include>
+						<include>**/ProfilUtilisateurDaoTest.java</include>
+						<include>**/ReservationDaoTest.java</include>
+						<include>**/UtilisateurDaoTest.java</include>
+						<!-- Package import -->
+						<include>**/ImportTemplateDaoTest.java</include>
+						<include>**/ImportColonneDaoTest.java</include>
+						<include>**/ImportHistoriqueDaoTest.java</include>
+						<include>**/ImportationDaoTest.java</include>
+						<!-- Package imprimante -->
+						<include>**/ImprimanteDaoTest.java</include>
+						<include>**/ImprimanteApiDaoTest.java</include>
+						<include>**/ModeleDaoTest.java</include>
+						<include>**/LigneEtiquetteDaoTest.java</include>
+						<include>**/ChampLigneEtiquetteDaoTest.java</include>
+						<include>**/ModeleTypeDaoTest.java</include>
+						<include>**/AffectationImprimanteDaoTest.java</include>
+						<include>**/AffectationImprimantePKDaoTest.java</include>
+						<!-- Package interfacage -->
+						<include>**/LogicielDaoTest.java</include>
+						<include>**/EmetteurDaoTest.java</include>
+						<include>**/DossierExterneDaoTest.java</include>
+						<include>**/BlocExterneDaoTest.java</include>
+						<include>**/ValeurExterneDaoTest.java</include>
+						<include>**/RecepteurDaoTest.java</include>
+						<include>**/ConsultationIntfDaoTest.java</include>
+						<include>**/PatientSipDaoTest.java</include>
+						<include>**/ScanTerminaleDao.java</include>
+						<!-- SeroTK -->
+						<include>**/ProtocoleDaoTest.java</include>
+						<!-- Package ui -->
+						<!-- <include>**/UiRequeteDaoTest.java</include> -->
+						<!-- Package stats -->
+						<include>**/IndicateurDaoTest.java</include>
+						<include>**/SModeleDaoTest.java</include>
+						<include>**/SubdivisionDaoTest.java</include>
 
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>dbunit-maven-plugin</artifactId>
-                <version>1.0-beta-3</version>
+						<!-- Package validation -->
+						<include>**/ActionDaoTest.java</include>
+						<include>**/CritereValidationDaoTest.java</include>
+						<include>**/NiveauValidationDaoTest.java</include>
+						<include>**/ValidationDaoTest.java</include>
 
-                <!--jar file that has the jdbc driver -->
-                <dependencies>
-                    <dependency>
-                        <groupId>mysql</groupId>
-                        <artifactId>mysql-connector-java</artifactId>
-                        <version>${mysql-connector-java.version}</version>
-                    </dependency>
-                </dependencies>
 
-                <!-- common configurations -->
-                <configuration>
-                    <skip>${skipTests}</skip>
-                    <driver>com.mysql.cj.jdbc.Driver</driver>
-                    <url>jdbc:mysql://${test.database.host}:3306/${test.database.tumorotek.name}?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=Europe/Paris&amp;sessionVariables=FOREIGN_KEY_CHECKS%3D0</url>
-                    <username>${test.database.username}</username>
-                    <password>${test.database.password}</password>
-                    <schema>${test.database.tumorotek.name}</schema>
-                    <dataTypeFactoryName>org.dbunit.ext.mysql.MySqlDataTypeFactory</dataTypeFactoryName>
-                    <metadataHandlerName>org.dbunit.ext.mysql.MySqlMetadataHandler</metadataHandlerName>
-                </configuration>
+					</includes>
+					<skipTests>${skipTests}</skipTests>
+				</configuration>
+			</plugin>
 
-                <executions>
-                    <execution>
-                        <id>clean-insert-tumorotek</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>operation</goal>
-                        </goals>
-                        <configuration>
-                            <url>jdbc:mysql://${test.database.host}:3306/${test.database.tumorotek.name}?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=Europe/Paris&amp;sessionVariables=FOREIGN_KEY_CHECKS%3D0</url>
-                            <schema>${test.database.tumorotek.name}</schema>
-                            <type>CLEAN_INSERT</type>
-                            <src>src/test/data/populateBanque.xml</src>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>clean-insert-tumorotek_interfacages</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>operation</goal>
-                        </goals>
-                        <configuration>
-                            <url>jdbc:mysql://${test.database.host}:3306/${test.database.tumorotek_interfacages.name}?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=Europe/Paris&amp;sessionVariables=FOREIGN_KEY_CHECKS%3D0</url>
-                            <schema>${test.database.tumorotek_interfacages.name}</schema>
-                            <type>CLEAN_INSERT</type>
-                            <src>src/test/data/populateInterfacage.xml</src>
-                        </configuration>
-                    </execution>
-                    <!-- <execution> <id>exe2</id> <phase>test-compile</phase> <goals> <goal>operation</goal>
-                        </goals> <configuration> <type>CLEAN_INSERT</type> <src>src/test/data/populateEchantillon.xml</src>
-                        </configuration> </execution> -->
-                    <!-- <execution> <id>exe3</id> <phase>test-compile</phase> <goals> <goal>operation</goal>
-                        </goals> <configuration> <type>CLEAN_INSERT</type> <src>src/test/data/populateUtilisateur.xml</src>
-                        </configuration> </execution> -->
-                </executions>
-            </plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>dbunit-maven-plugin</artifactId>
+				<version>1.0-beta-3</version>
 
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>sql-maven-plugin</artifactId>
-                <version>1.5</version>
+				<!--jar file that has the jdbc driver -->
+				<dependencies>
+					<dependency>
+						<groupId>mysql</groupId>
+						<artifactId>mysql-connector-java</artifactId>
+						<version>${mysql-connector-java.version}</version>
+					</dependency>
+				</dependencies>
 
-                <dependencies>
-                    <!-- specify the dependent JDBC driver here -->
-                    <dependency>
-                        <groupId>mysql</groupId>
-                        <artifactId>mysql-connector-java</artifactId>
-                        <version>${mysql-connector-java.version}</version>
-                    </dependency>
-                </dependencies>
+				<!-- common configurations -->
+				<configuration>
+					<skip>${skipTests}</skip>
+					<driver>com.mysql.cj.jdbc.Driver</driver>
+					<url>jdbc:mysql://${test.database.host}:3306/${test.database.tumorotek.name}?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=Europe/Paris&amp;sessionVariables=FOREIGN_KEY_CHECKS%3D0</url>
+					<username>${test.database.username}</username>
+					<password>${test.database.password}</password>
+					<schema>${test.database.tumorotek.name}</schema>
+					<dataTypeFactoryName>org.dbunit.ext.mysql.MySqlDataTypeFactory</dataTypeFactoryName>
+					<metadataHandlerName>org.dbunit.ext.mysql.MySqlMetadataHandler</metadataHandlerName>
+				</configuration>
 
-                <!-- common configuration shared by all executions -->
-                <configuration>
-                    <skip>${skipTests}</skip>
-                    <driver>com.mysql.cj.jdbc.Driver</driver>
-                    <url>jdbc:mysql://${test.database.host}:3306/${test.database.tumorotek.name}?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=Europe/Paris&amp;sessionVariables=FOREIGN_KEY_CHECKS%3D0</url>
-                    <username>${test.database.username}</username>
-                    <password>${test.database.password}</password>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>table-champs-items</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>execute</goal>
-                        </goals>
-                        <!-- specific configuration for this execution -->
-                        <configuration>
-                            <!-- specify your SQL commands, can be all of the following configurations -->
-                            <sqlCommand />
-                            <srcFiles>
-                                <srcFile>src/database/mysql/createINCAtables.sql</srcFile>
-                            </srcFiles>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>tableAnnotationBanque</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>execute</goal>
-                        </goals>
-                        <!-- specific configuration for this execution -->
-                        <configuration>
-                            <!-- specify your SQL commands, can be all of the following configurations -->
-                            <sqlCommand />
-                            <srcFiles>
-                                <srcFile>src/test/data/linkINCAandBANQUE1.sql</srcFile>
-                            </srcFiles>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-        <pluginManagement>
-            <plugins>
-                <!--This plugin's configuration is used to store Eclipse m2e settings
-                    only. It has no influence on the Maven build itself. -->
-                <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>org.codehaus.mojo</groupId>
-                                        <artifactId>
-                                            dbunit-maven-plugin
-                                        </artifactId>
-                                        <versionRange>
-                                            [1.0-beta-3,)
-                                        </versionRange>
-                                        <goals>
-                                            <goal>operation</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore />
-                                    </action>
-                                </pluginExecution>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>org.codehaus.mojo</groupId>
-                                        <artifactId>
-                                            sql-maven-plugin
-                                        </artifactId>
-                                        <versionRange>[1.4,)</versionRange>
-                                        <goals>
-                                            <goal>execute</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore />
-                                    </action>
-                                </pluginExecution>
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
+				<executions>
+					<execution>
+						<id>clean-insert-tumorotek</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>operation</goal>
+						</goals>
+						<configuration>
+							<url>jdbc:mysql://${test.database.host}:3306/${test.database.tumorotek.name}?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=Europe/Paris&amp;sessionVariables=FOREIGN_KEY_CHECKS%3D0</url>
+							<schema>${test.database.tumorotek.name}</schema>
+							<type>CLEAN_INSERT</type>
+							<src>src/test/data/populateBanque.xml</src>
+						</configuration>
+					</execution>
+					<execution>
+						<id>clean-insert-tumorotek_interfacages</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>operation</goal>
+						</goals>
+						<configuration>
+							<url>jdbc:mysql://${test.database.host}:3306/${test.database.tumorotek_interfacages.name}?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=Europe/Paris&amp;sessionVariables=FOREIGN_KEY_CHECKS%3D0</url>
+							<schema>${test.database.tumorotek_interfacages.name}</schema>
+							<type>CLEAN_INSERT</type>
+							<src>src/test/data/populateInterfacage.xml</src>
+						</configuration>
+					</execution>
+					<!-- <execution> <id>exe2</id> <phase>test-compile</phase> <goals> <goal>operation</goal> </goals> <configuration> <type>CLEAN_INSERT</type> <src>src/test/data/populateEchantillon.xml</src> </configuration> </execution> -->
+					<!-- <execution> <id>exe3</id> <phase>test-compile</phase> <goals> <goal>operation</goal> </goals> <configuration> <type>CLEAN_INSERT</type> <src>src/test/data/populateUtilisateur.xml</src> </configuration> </execution> -->
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>sql-maven-plugin</artifactId>
+				<version>1.5</version>
+
+				<dependencies>
+					<!-- specify the dependent JDBC driver here -->
+					<dependency>
+						<groupId>mysql</groupId>
+						<artifactId>mysql-connector-java</artifactId>
+						<version>${mysql-connector-java.version}</version>
+					</dependency>
+				</dependencies>
+
+				<!-- common configuration shared by all executions -->
+				<configuration>
+					<skip>${skipTests}</skip>
+					<driver>com.mysql.cj.jdbc.Driver</driver>
+					<url>jdbc:mysql://${test.database.host}:3306/${test.database.tumorotek.name}?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=Europe/Paris&amp;sessionVariables=FOREIGN_KEY_CHECKS%3D0</url>
+					<username>${test.database.username}</username>
+					<password>${test.database.password}</password>
+				</configuration>
+				<executions>
+					<execution>
+						<id>table-champs-items</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<!-- specific configuration for this execution -->
+						<configuration>
+							<!-- specify your SQL commands, can be all of the following configurations -->
+							<sqlCommand />
+							<srcFiles>
+								<srcFile>src/database/mysql/createINCAtables.sql</srcFile>
+							</srcFiles>
+						</configuration>
+					</execution>
+					<execution>
+						<id>tableAnnotationBanque</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<!-- specific configuration for this execution -->
+						<configuration>
+							<!-- specify your SQL commands, can be all of the following configurations -->
+							<sqlCommand />
+							<srcFiles>
+								<srcFile>src/test/data/linkINCAandBANQUE1.sql</srcFile>
+							</srcFiles>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>
+											dbunit-maven-plugin
+										</artifactId>
+										<versionRange>
+											[1.0-beta-3,)
+										</versionRange>
+										<goals>
+											<goal>operation</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>
+											sql-maven-plugin
+										</artifactId>
+										<versionRange>[1.4,)</versionRange>
+										<goals>
+											<goal>execute</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 </project>

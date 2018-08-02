@@ -35,13 +35,27 @@
  **/
 package fr.aphp.tumorotek.action.echantillon;
 
-import java.util.*;
+import static fr.aphp.tumorotek.model.contexte.EContexte.BTO;
+import static fr.aphp.tumorotek.model.contexte.EContexte.SEROLOGIE;
+import static fr.aphp.tumorotek.webapp.general.SessionUtils.getCurrentContexte;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
-import org.zkoss.zul.*;
+import org.zkoss.zul.Box;
+import org.zkoss.zul.Div;
+import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Tabbox;
+import org.zkoss.zul.Tabpanel;
+import org.zkoss.zul.Vbox;
 
 import fr.aphp.tumorotek.action.MainWindow;
 import fr.aphp.tumorotek.action.ManagerLocator;
@@ -53,6 +67,7 @@ import fr.aphp.tumorotek.action.controller.AbstractFicheModifMultiController;
 import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
 import fr.aphp.tumorotek.action.echantillon.bto.FicheEchantillonStaticBTO;
 import fr.aphp.tumorotek.action.echantillon.bto.ListeEchantillonBTO;
+import fr.aphp.tumorotek.action.echantillon.serotk.ListeEchantillonSero;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
 import fr.aphp.tumorotek.action.prodderive.ProdDeriveController;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
@@ -64,9 +79,6 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.interfacage.scan.ScanTerminale;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
-
-import static fr.aphp.tumorotek.model.contexte.EContexte.BTO;
-import static fr.aphp.tumorotek.webapp.general.SessionUtils.getCurrentContexte;
 
 /**
  * Controller de l'onglet échantillon.
@@ -85,6 +97,7 @@ public class EchantillonController extends AbstractObjectTabController
    private Div modifMultiDiv;
    private Component listeEchantillon;
    private Component listeEchantillonBTO;
+   private Component listeEchantillonSero;
 
    private String createZulPath = "/zuls/echantillon/FicheMultiEchantillons.zul";
 
@@ -99,13 +112,21 @@ public class EchantillonController extends AbstractObjectTabController
 
       if(BTO.equals(getCurrentContexte())){
          listeEchantillonBTO.setVisible(true);
+      }else if(SEROLOGIE.equals(getCurrentContexte())){
+         listeEchantillonSero.setVisible(true);
       }else{
          listeEchantillon.setVisible(true);
       }
 
       setStaticDiv(divEchantillonStatic);
       setEditDiv(divEchantillonEdit);
-      if(BTO.equals(getCurrentContexte())){
+      if(SEROLOGIE.equals(getCurrentContexte())){
+         setEditZulPath("/zuls/echantillon/serotk/FicheEchantillonEditSero.zul");
+         createZulPath = "/zuls/echantillon/serotk/FicheMultiEchantillonsSero.zul";
+         setMultiEditZulPath("/zuls/echantillon/serotk/FicheModifMultiEchantillonSero.zul");
+         setStaticZulPath("/zuls/echantillon/serotk/FicheEchantillonStaticSero.zul");
+         setListZulPath("/zuls/echantillon/serotk/ListeEchantillonSero.zul");
+      }else if(BTO.equals(getCurrentContexte())){
          setEditZulPath("/zuls/echantillon/bto/FicheEchantillonEditBTO.zul");
          createZulPath = "/zuls/echantillon/bto/FicheMultiEchantillonsBTO.zul";
          setMultiEditZulPath("/zuls/echantillon/bto/FicheModifMultiEchantillonBTO.zul");
@@ -173,6 +194,9 @@ public class EchantillonController extends AbstractObjectTabController
       if(BTO.equals(getCurrentContexte())){
          return ((ListeEchantillonBTO) self.getFellow("listeEchantillonBTO").getFellow("lwinEchantillonBTO")
             .getAttributeOrFellow("lwinEchantillonBTO$composer", true));
+      }else if(SEROLOGIE.equals(getCurrentContexte())){
+         return ((ListeEchantillonSero) self.getFellow("listeEchantillonSero").getFellow("lwinEchantillonSero")
+            .getAttributeOrFellow("lwinEchantillonSero$composer", true));
       }
       return ((ListeEchantillon) self.getFellow("listeEchantillon").getFellow("lwinEchantillon")
          .getAttributeOrFellow("lwinEchantillon$composer", true));
@@ -199,17 +223,17 @@ public class EchantillonController extends AbstractObjectTabController
           * @since 2.2.0
           */
          // Depuis un échantillon, on passe en mode édition
-         /*}else if(null != self.getFellow("divEchantillonEdit").getFellowIfAny("fwinEchantillonEdit")
-         && null != self.getFellow("divEchantillonEdit").getFellow("fwinEchantillonEdit").getFellow("ficheAnnotationInlineEchantillon")){
-         return ((FicheAnnotationInline) self.getFellow("divEchantillonEdit").getFellow("fwinEchantillonEdit").getFellow("ficheAnnotationInlineEchantillon")
-            .getFellow("fwinAnnotationInline")
+      }else if(null != self.getFellow("divEchantillonEdit").getFellowIfAny("fwinEchantillonEdit") && null != self
+         .getFellow("divEchantillonEdit").getFellow("fwinEchantillonEdit").getFellow("ficheAnnotationInlineEchantillon")){
+         return ((FicheAnnotationInline) self.getFellow("divEchantillonEdit").getFellow("fwinEchantillonEdit")
+            .getFellow("ficheAnnotationInlineEchantillon").getFellow("fwinAnnotationInline")
             .getAttributeOrFellow("fwinAnnotationInline$composer", true));
          // Depuis le bouton nouveau échantillon
-         }else if(null != self.getFellow("divEchantillonEdit").getFellowIfAny("fwinMultiEchantillons")
-         && null != self.getFellow("divEchantillonEdit").getFellow("fwinMultiEchantillons").getFellow("ficheAnnotationInlineEchantillon")){
-         return ((FicheAnnotationInline) self.getFellow("divEchantillonEdit").getFellow("fwinMultiEchantillons").getFellow("ficheAnnotationInlineEchantillon")
-            .getFellow("fwinAnnotationInline")
-            .getAttributeOrFellow("fwinAnnotationInline$composer", true));*/
+      }else if(null != self.getFellow("divEchantillonEdit").getFellowIfAny("fwinMultiEchantillons") && null != self
+         .getFellow("divEchantillonEdit").getFellow("fwinMultiEchantillons").getFellow("ficheAnnotationInlineEchantillon")){
+         return ((FicheAnnotationInline) self.getFellow("divEchantillonEdit").getFellow("fwinMultiEchantillons")
+            .getFellow("ficheAnnotationInlineEchantillon").getFellow("fwinAnnotationInline")
+            .getAttributeOrFellow("fwinAnnotationInline$composer", true));
       }
       return null;
    }
@@ -220,7 +244,7 @@ public class EchantillonController extends AbstractObjectTabController
     * @return
     * @since 2.2.0
     */
-   @Override
+   //   @Override
    public FicheAnnotationInline getFicheAnnotationInline(){
       // Depuis un échantillon, on passe en mode édition
       if(null != self.getFellow("divEchantillonEdit").getFellowIfAny("fwinEchantillonEdit") && null != self
@@ -419,9 +443,9 @@ public class EchantillonController extends AbstractObjectTabController
        *
        * @since 2.2.0
        */
-      /*if(null != getFicheAnnotationInline()){
+      if(null != getFicheAnnotationInline()){
          getFicheAnnotationInline().switchToStaticOrEditMode(false, false);
-      }*/
+      }
 
       if(!annoRegion.isOpen() && annoRegion.isVisible()){
          annoRegion.setOpen(true);

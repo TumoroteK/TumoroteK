@@ -39,16 +39,16 @@ package fr.aphp.tumorotek.manager;
  * 
  * @author 
  * @since 2.0
- * @version 2.2
+ * @version 2.2.0
  *
  * @param <T> est l'objet à persister
  */
-public interface CrudManager<T extends Object>
+public interface CrudManager<T>
 {
 
    /**
     * Persiste une instance afin de l'enregistrer dans la base de données.
-    * @param obj Nouvelle instance de l'objet à créer.
+    * @param valeurThesaurus Nouvelle instance de l'objet à créer.
     //* @throws ValidationException generee par validation AOP
     */
    void createObjectManager(T obj);

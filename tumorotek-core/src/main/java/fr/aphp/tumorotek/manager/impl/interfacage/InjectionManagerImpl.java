@@ -143,7 +143,7 @@ public class InjectionManagerImpl implements InjectionManager
       List<Object> objets = new ArrayList<>();
 
       if(champEntite != null && valeur != null && banque != null){
-
+         
          if(champEntite.getEntite().getNom().equals("Etablissement") || champEntite.getEntite().getNom().equals("Collaborateur")
             || champEntite.getEntite().getNom().equals("Service")){
 
@@ -182,8 +182,8 @@ public class InjectionManagerImpl implements InjectionManager
             final StringBuffer sql = new StringBuffer();
             sql.append("SELECT e FROM ");
             sql.append(champEntite.getEntite().getNom());
-            sql.append(" as e where e.");
-            sql.append(nomChamp);
+            sql.append(" as e where e.nom");
+//            sql.append(nomChamp);
             sql.append(" = :valeur");
 
             if(!champEntite.getEntite().getNom().equals("Transporteur") && !champEntite.getEntite().getNom().equals("Unite")

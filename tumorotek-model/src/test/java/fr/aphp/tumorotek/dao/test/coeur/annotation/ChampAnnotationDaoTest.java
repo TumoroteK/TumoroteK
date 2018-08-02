@@ -182,9 +182,9 @@ public class ChampAnnotationDaoTest extends AbstractDaoTest
 
       // Test de l'insertion
       champAnnotationDao.createObject(champ);
-      assertNotNull(champ.getChampAnnotationId());
+      assertNotNull(champ.getId());
 
-      final Integer maxId = champ.getChampAnnotationId();
+      final Integer maxId = champ.getId();
 
       // Test de la mise à jour
       final ChampAnnotation champ2 = champAnnotationDao.findById(maxId);
@@ -280,10 +280,10 @@ public class ChampAnnotationDaoTest extends AbstractDaoTest
       final ChampAnnotation c = champAnnotationDao.findById(1);
       final ChampAnnotation c2 = c.clone();
       assertTrue(c.equals(c2));
-      if(c.getChampAnnotationId() != null){
-         assertTrue(c.getChampAnnotationId().equals(c2.getChampAnnotationId()));
+      if(c.getId() != null){
+         assertTrue(c.getId().equals(c2.getId()));
       }else{
-         assertNull(c2.getChampAnnotationId());
+         assertNull(c2.getId());
       }
       if(c.getNom() != null){
          assertTrue(c.getNom().equals(c2.getNom()));

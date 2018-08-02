@@ -135,7 +135,7 @@ public class ConditMilieuManagerImpl implements ConditMilieuManager
    @Override
    public void removeObjectManager(final ConditMilieu obj){
       if(obj != null){
-         conditMilieuDao.removeObject(obj.getConditMilieuId());
+         conditMilieuDao.removeObject(obj.getId());
          log.info("Suppression objet ConditMilieu " + obj.toString());
       }else{
          log.warn("Suppression d'un ConditMilieu null");
@@ -146,10 +146,10 @@ public class ConditMilieuManagerImpl implements ConditMilieuManager
    public boolean findDoublonManager(final ConditMilieu o){
       if(o != null){
          final ConditMilieu milieu = o;
-         if(milieu.getConditMilieuId() == null){
+         if(milieu.getId() == null){
             return conditMilieuDao.findAll().contains(milieu);
          }
-         return conditMilieuDao.findByExcludedId(milieu.getConditMilieuId()).contains(milieu);
+         return conditMilieuDao.findByExcludedId(milieu.getId()).contains(milieu);
       }
       return false;
    }
@@ -162,12 +162,17 @@ public class ConditMilieuManagerImpl implements ConditMilieuManager
 
    @Override
    public List<ConditMilieu> findByOrderManager(final Plateforme pf){
-      return conditMilieuDao.findByOrder(pf);
+      return conditMilieuDao.findByPfOrder(pf);
    }
 
    @Override
    public ConditMilieu findByIdManager(final Integer id){
       return conditMilieuDao.findById(id);
+   }
+
+   @Override
+   public List<ConditMilieu> findByOrderManager(){
+      return conditMilieuDao.findByOrder();
    }
 
 }

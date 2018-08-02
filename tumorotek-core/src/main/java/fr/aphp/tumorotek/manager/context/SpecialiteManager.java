@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.context;
 import java.util.List;
 
 import fr.aphp.tumorotek.manager.CrudManager;
+import fr.aphp.tumorotek.manager.TKThesaurusManager;
 import fr.aphp.tumorotek.model.contexte.Specialite;
 
 /**
@@ -49,7 +50,7 @@ import fr.aphp.tumorotek.model.contexte.Specialite;
  * @version 2.0
  *
  */
-public interface SpecialiteManager extends CrudManager<Specialite>
+public interface SpecialiteManager extends CrudManager<Specialite>, TKThesaurusManager<Specialite>
 {
 
    /**

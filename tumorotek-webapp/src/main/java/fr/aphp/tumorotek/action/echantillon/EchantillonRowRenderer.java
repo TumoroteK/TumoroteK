@@ -67,7 +67,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
  * @author Pierre Ventadour.
  * @version 2.0
  */
-public class EchantillonRowRenderer extends TKSelectObjectRenderer
+public class EchantillonRowRenderer extends TKSelectObjectRenderer<Echantillon>
 {
 
    private final Log log = LogFactory.getLog(EchantillonRowRenderer.class);
@@ -87,16 +87,16 @@ public class EchantillonRowRenderer extends TKSelectObjectRenderer
    }
 
    @Override
-   public void render(final Row row, final Object data, final int index){
+   public void render(final Row row, final Echantillon data, final int index){
 
       log.debug("init render");
 
       // dessine le checkbox
-      super.render(row, data, index);
+      drawCheckbox(row, data, index);
 
       log.debug("super");
 
-      final Echantillon echan = (Echantillon) data;
+      final Echantillon echan = data;
 
       final Hlayout icones = TKStockableObjectUtils.drawListIcones(echan, null, null);
 
@@ -156,15 +156,11 @@ public class EchantillonRowRenderer extends TKSelectObjectRenderer
       new Label(ObjectTypesFormatters.dateRenderer2(echan.getDateStock())).setParent(row);
       log.debug("date");
 
-      // organe
-      // drawCodeAssigneLabel(echan, row, true);
       // codes organes : liste des codes exportés pour échantillons
       ObjectTypesFormatters.drawCodesExpLabel(ManagerLocator.getCodeAssigneManager().findCodesOrganeByEchantillonManager(echan),
          row, null, false);
       log.debug("codes organes");
 
-      // code lésionnel
-      // drawCodeAssigneLabel(echan, row, false);
       // codes lésionnels : liste des codes exportés pour échantillons
       ObjectTypesFormatters.drawCodesExpLabel(ManagerLocator.getCodeAssigneManager().findCodesMorphoByEchantillonManager(echan),
          row, null, false);
@@ -320,58 +316,10 @@ public class EchantillonRowRenderer extends TKSelectObjectRenderer
    public void setAccessible(final boolean a){
       this.accessible = a;
    }
-
-   //	/**
-   //	 * Dessine dans un label le ou les codes assignes de 
-   //	 * l'échantillon avec un 
-   //	 * l'utilisation d'un tooltip pour afficher la totalité.
-   //	 * Si organe alors affiche le libelle en priorité, le code
-   //	 * sinon.
-   //	 * @param
-   //	 * @param row Parent
-   //	 * @param isOrg
-   //	 */
-   //	private void drawCodeAssigneLabel(Echantillon echan,
-   //										Row row, boolean isOrg) {
-   //		
-   //		List<CodeAssigne> codes;
-   //		if (isOrg) {
-   //			codes = ManagerLocator.getCodeAssigneManager()
-   //						.findCodesOrganeByEchantillonManager(echan);
-   //		} else {
-   //			codes = ManagerLocator.getCodeAssigneManager()
-   //						.findCodesMorphoByEchantillonManager(echan);
-   //		}
-   //		
-   //		if (!codes.isEmpty()) {
-   //			String label = "";
-   //			if (isOrg && codes.get(0).getLibelle() != null) {
-   //				label = codes.get(0).getLibelle();
-   //			} else {
-   //				label = codes.get(0).getCode();
-   //			}
-   //			Label code1Label = new Label(label);
-   //			// dessine le label avec un lien vers popup 
-   //			if (codes.size() > 1) {
-   //				Hbox codesAndLinkBox = new Hbox();
-   //				codesAndLinkBox.setSpacing("5px");
-   //				Label moreLabel = new Label("...");
-   //				moreLabel.setClass("formLink");
-   //				Popup codesPopUp = new Popup();
-   //				codesPopUp.setParent(row.getParent().getParent().getParent());
-   //				EchantillonController
-   //						.drawCodesAssignes(echan, codesPopUp, isOrg, true);
-   //				moreLabel.setTooltip(codesPopUp);
-   //				codesAndLinkBox.appendChild(code1Label);
-   //				codesAndLinkBox.appendChild(moreLabel);
-   //				codesAndLinkBox.setParent(row);
-   //			} else {
-   //				code1Label.setParent(row);
-   //			}
-   //		} else {
-   //			new Label().setParent(row);
-   //		}
-   //	}
+   
+   public boolean isAccessStockage(){
+      return accessStockage;
+   }
 
    public String getCodeAssigneInString(final Echantillon echantillon, final boolean isOrg){
       List<CodeAssigne> codes;

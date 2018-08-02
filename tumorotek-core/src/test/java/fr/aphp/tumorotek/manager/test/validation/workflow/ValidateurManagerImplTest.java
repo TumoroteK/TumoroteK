@@ -236,7 +236,7 @@ public class ValidateurManagerImplTest extends AbstractInMemoryManagerTest
          champEntiteManager.findByEntiteAndNomManager(entitePrelevement, "NatureId").get(0);
       final Champ champPrelevementNatureId = new Champ(champEntitePrelevementNatureId);
 
-      final ChampEntite champEntiteNatureNature = champEntiteManager.findByEntiteAndNomManager(natureEntite, "Nature").get(0);
+      final ChampEntite champEntiteNatureNature = champEntiteManager.findByEntiteAndNomManager(natureEntite, "Nom").get(0);
       final Champ champNatureNature = new Champ(champEntiteNatureNature);
       champNatureNature.setChampParent(champPrelevementNatureId);
 

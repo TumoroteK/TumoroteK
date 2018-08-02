@@ -35,12 +35,11 @@
  **/
 package fr.aphp.tumorotek.manager.impl.validation.workflow;
 
-import static fr.aphp.tumorotek.model.validation.OperateursLogiques.OR;
 import static fr.aphp.tumorotek.model.validation.OperateursLogiques.AND;
+import static fr.aphp.tumorotek.model.validation.OperateursLogiques.OR;
 
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -100,19 +99,7 @@ public class ValidateurManagerImpl implements ValidateurManager
       final NiveauValidation niveauValidationOK = niveauValidationManager.findCriticiteLevelOk();
 
       //Ordonne la liste de validation selon leur criticité (les plus critiques en premier)
-      Collections.sort(listValidation, new Comparator<Validation>()
-      {
-
-         @Override
-         public int compare(final Validation val0, final Validation val1){
-
-            final Integer criticiteVal0 = val0.getNiveauValidation().getCriticite();
-            final Integer criticiteVal1 = val1.getNiveauValidation().getCriticite();
-
-            return criticiteVal0.compareTo(criticiteVal1);
-         }
-
-      });
+      Collections.sort(listValidation, (v1, v2) -> v1.getNiveauValidation().getCriticite().compareTo(v2.getNiveauValidation().getCriticite()));
 
       NiveauValidation currentNiveauValidation = listValidation.get(0).getNiveauValidation();
 

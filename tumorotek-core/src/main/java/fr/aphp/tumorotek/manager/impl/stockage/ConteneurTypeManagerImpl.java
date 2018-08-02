@@ -94,10 +94,10 @@ public class ConteneurTypeManagerImpl implements ConteneurTypeManager
    public boolean findDoublonManager(final ConteneurType o){
       if(o != null){
          final ConteneurType type = o;
-         if(type.getConteneurTypeId() == null){
+         if(type.getId() == null){
             return conteneurTypeDao.findAll().contains(type);
          }
-         return conteneurTypeDao.findByExcludedId(type.getConteneurTypeId()).contains(type);
+         return conteneurTypeDao.findByExcludedId(type.getId()).contains(type);
       }
       return false;
    }
@@ -141,7 +141,7 @@ public class ConteneurTypeManagerImpl implements ConteneurTypeManager
    @Override
    public void removeObjectManager(final ConteneurType obj){
       if(obj != null){
-         conteneurTypeDao.removeObject(obj.getConteneurTypeId());
+         conteneurTypeDao.removeObject(obj.getId());
          log.info("Suppression objet ConteneurType " + obj.toString());
       }else{
          log.warn("Suppression d'un ConteneurType null");
@@ -150,6 +150,11 @@ public class ConteneurTypeManagerImpl implements ConteneurTypeManager
 
    @Override
    public List<ConteneurType> findByOrderManager(final Plateforme pf){
-      return conteneurTypeDao.findByOrder(pf);
+      return conteneurTypeDao.findByPfOrder(pf);
+   }
+
+   @Override
+   public List<ConteneurType> findByOrderManager(){
+      return conteneurTypeDao.findByOrder();
    }
 }

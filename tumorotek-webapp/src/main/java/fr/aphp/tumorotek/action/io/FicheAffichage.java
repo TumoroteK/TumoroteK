@@ -634,9 +634,9 @@ public class FicheAffichage extends AbstractFicheCombineController
 
             // on extrait un nom par défaut
             String nom = "";
-            if(currChamp.getChampEntite() != null){
-               nom = ObjectTypesFormatters.getLabelForChampEntite(currChamp.getChampEntite());
-            }else{
+            if(currChamp.getChampEntite() != null || currChamp.getChampDelegue() != null){
+               nom = ObjectTypesFormatters.getLabelForChamp(currChamp);
+            }else if(currChamp.getChampAnnotation() != null){
                nom = currChamp.getChampAnnotation().getNom();
             }
 

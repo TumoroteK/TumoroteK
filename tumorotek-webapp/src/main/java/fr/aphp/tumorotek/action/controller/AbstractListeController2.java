@@ -99,6 +99,7 @@ import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.imprimante.AffectationImprimante;
 import fr.aphp.tumorotek.model.qualite.OperationType;
 import fr.aphp.tumorotek.model.systeme.Entite;
@@ -253,10 +254,6 @@ public abstract class AbstractListeController2 extends AbstractController
 
    public void setObjectTabController(final AbstractObjectTabController otc){
       this.objectTabController = otc;
-
-      // if (getExportItemAdv() != null) {
-      //	getExportItemAdv().setVisible(otc.hasAnnoTables());
-      //}
    }
 
    /**
@@ -920,12 +917,14 @@ public abstract class AbstractListeController2 extends AbstractController
 
          enregistrerValeursChampsCalculesPourExport();
 
+         EContexte contexte = SessionUtils.getCurrentContexte();
+         
          final Class<?> exportThread = Class.forName(SessionUtils.getDatabasePathClass());
          final Constructor<?> constr = exportThread.getConstructor(Desktop.class, int.class, List.class, List.class,
-            boolean.class, short.class, Utilisateur.class, List.class, HtmlMacroComponent.class, Map.class);
+            boolean.class, short.class, Utilisateur.class, List.class, HtmlMacroComponent.class, Map.class, EContexte.class);
          final Object o = constr.newInstance(desktop, getObjectTabController().getEntiteTab().getEntiteId(), getResultatsIds(),
             SessionUtils.getSelectedBanques(sessionScope), isAnonyme(), ConfigManager.DEFAULT_EXPORT,
-            SessionUtils.getLoggedUser(sessionScope), getRestrictedTableIds(), callProgressBar(), null);
+            SessionUtils.getLoggedUser(sessionScope), getRestrictedTableIds(), callProgressBar(), null, contexte);
          final Method method = exportThread.getMethod("start");
 
          // put into session
@@ -948,7 +947,7 @@ public abstract class AbstractListeController2 extends AbstractController
     */
    private void enregistrerValeursChampsCalculesPourExport(){
 
-      //FIXME Grosse moulinette... Autre moyen ?
+      //FIXME ChampCalcule Export - Grosse moulinette... Autre moyen ?
       // Récupération de l'entité
       List<Entite> entiteList = ManagerLocator.getEntiteManager().findByNomManager(this.getEntiteNom());
       if(!entiteList.isEmpty()){
@@ -991,7 +990,7 @@ public abstract class AbstractListeController2 extends AbstractController
                                  if(!annoValList.isEmpty()){ // MAJ
                                     AnnotationValeur annoVal = annoValList.get(0);
                                     annoVal.setValeur(valeurChampCalcule);
-                                    //FIXME Obligé de setter les valeurs en Alphanum sinon pas lu par l'export...
+                                    //FIXME ChampCalcule Export - Obligé de setter les valeurs en Alphanum sinon pas lu par l'export...
                                     annoVal.setAlphanum(ObjectTypesFormatters.formatObject(valeurChampCalcule));
                                     ManagerLocator.getAnnotationValeurManager().updateObject(annoVal);
                                  }else{ // Création
@@ -1000,7 +999,7 @@ public abstract class AbstractListeController2 extends AbstractController
                                     annoVal.setChampAnnotation(champAnno);
                                     annoVal.setObjetId(idObjetLie);
                                     annoVal.setValeur(valeurChampCalcule);
-                                    //FIXME Obligé de setter les valeurs en Alphanum sinon pas lu par l'export...
+                                    //FIXME ChampCalcule Export - Obligé de setter les valeurs en Alphanum sinon pas lu par l'export...
                                     annoVal.setAlphanum(ObjectTypesFormatters.formatObject(valeurChampCalcule));
                                     ManagerLocator.getAnnotationValeurManager().createObject(annoVal);
                                  }
@@ -1472,7 +1471,7 @@ public abstract class AbstractListeController2 extends AbstractController
 
    public abstract void removeFromSelectedObjects(TKdataObject obj);
 
-   public abstract TKSelectObjectRenderer getListObjectsRenderer();
+   public abstract TKSelectObjectRenderer<? extends TKdataObject> getListObjectsRenderer();
 
    /**
     * Copy la selection dans la liste d'objets courants.
@@ -1533,7 +1532,7 @@ public abstract class AbstractListeController2 extends AbstractController
     * Supprime de la base de données une liste d'objets
     * à partir de leurs ids
     * @param ids
-    * @String comment ajout suppr
+    * @param comment ajout suppr
     */
    public void batchDelete(final List<Integer> ids, final String comment){}
 
@@ -1836,28 +1835,34 @@ public abstract class AbstractListeController2 extends AbstractController
          }
       }
    }
-
+   
    private static HtmlMacroComponent populateRechercheAvanceeModal(final Window win, final Page page, final Entite entiteToSearch,
-      final String path, final boolean anonyme, final Map<?, ?> sessionScope, final AbstractListeController2 listeController){
+      final String path, final boolean anonyme, final Map<?, ?> sessionScope /*TODO Jamais utilisé */, final AbstractListeController2 listeController){
       // HtmlMacroComponent contenu dans la fenêtre : il correspond
       // au composant des collaborations.
       HtmlMacroComponent ua = null;
 
       if(entiteToSearch.getNom().equals("Patient")){
-         ua = (HtmlMacroComponent) page.getComponentDefinition("ficheRechercheAvanceePatient", false).newInstance(page, null);
+         String pageDef = "ficheRechercheAvanceePatient";
+         String winDef = "fwinRechercheAvanceePatient";
+         if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
+            pageDef = "ficheRechercheAvanceePatientSero";
+            winDef = "fwinRechercheAvanceePatientSero";
+         }
+         ua = (HtmlMacroComponent) page.getComponentDefinition(pageDef, false).newInstance(page, null);
          ua.setParent(win);
          ua.setId("openRechercheAvanceePatientModale");
          ua.applyProperties();
          ua.afterCompose();
 
-         ((FicheRechercheAvancee) ua.getFellow("fwinRechercheAvanceePatient")
-            .getAttributeOrFellow("fwinRechercheAvanceePatient$composer", true)).initRechercheAvancee(entiteToSearch, path,
+         ((FicheRechercheAvancee) ua.getFellow(winDef)
+            .getAttributeOrFellow(winDef + "$composer", true)).initRechercheAvancee(entiteToSearch, path,
                anonyme, listeController);
 
       }else if(entiteToSearch.getNom().equals("Prelevement")){
          String pageDef = "ficheRechercheAvanceePrelevement";
          String winDef = "fwinRechercheAvanceePrelevement";
-         if(SessionUtils.isSeroContexte(sessionScope)){
+         if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
             pageDef = "ficheRechercheAvanceePrelevementSero";
             winDef = "fwinRechercheAvanceePrelevementSero";
          }
@@ -1870,24 +1875,36 @@ public abstract class AbstractListeController2 extends AbstractController
          ((FicheRechercheAvancee) ua.getFellow(winDef).getAttributeOrFellow(winDef + "$composer", true))
             .initRechercheAvancee(entiteToSearch, path, anonyme, listeController);
       }else if(entiteToSearch.getNom().equals("Echantillon")){
-         ua = (HtmlMacroComponent) page.getComponentDefinition("ficheRechercheAvanceeEchantillon", false).newInstance(page, null);
+         String pageDef = "ficheRechercheAvanceeEchantillon";
+         String winDef = "fwinRechercheAvanceeEchantillon";
+         if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
+            pageDef = "ficheRechercheAvanceeEchantillonSero";
+            winDef = "fwinRechercheAvanceeEchantillonSero";
+         }
+         ua = (HtmlMacroComponent) page.getComponentDefinition(pageDef, false).newInstance(page, null);
          ua.setParent(win);
          ua.setId("openRechercheAvanceeEchantillonModale");
          ua.applyProperties();
          ua.afterCompose();
 
-         ((FicheRechercheAvancee) ua.getFellow("fwinRechercheAvanceeEchantillon")
-            .getAttributeOrFellow("fwinRechercheAvanceeEchantillon$composer", true)).initRechercheAvancee(entiteToSearch, path,
+         ((FicheRechercheAvancee) ua.getFellow(winDef)
+            .getAttributeOrFellow(winDef + "$composer", true)).initRechercheAvancee(entiteToSearch, path,
                anonyme, listeController);
       }else if(entiteToSearch.getNom().equals("ProdDerive")){
-         ua = (HtmlMacroComponent) page.getComponentDefinition("ficheRechercheAvanceeProdDerive", false).newInstance(page, null);
+         String pageDef = "ficheRechercheAvanceeProdDerive";
+         String winDef = "fwinRechercheAvanceeProdDerive";
+         if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
+            pageDef = "ficheRechercheAvanceeProdDeriveSero";
+            winDef = "fwinRechercheAvanceeProdDeriveSero";
+         }
+         ua = (HtmlMacroComponent) page.getComponentDefinition(pageDef, false).newInstance(page, null);
          ua.setParent(win);
          ua.setId("openRechercheAvanceeProdDeriveModale");
          ua.applyProperties();
          ua.afterCompose();
 
-         ((FicheRechercheAvancee) ua.getFellow("fwinRechercheAvanceeProdDerive")
-            .getAttributeOrFellow("fwinRechercheAvanceeProdDerive$composer", true)).initRechercheAvancee(entiteToSearch, path,
+         ((FicheRechercheAvancee) ua.getFellow(winDef)
+            .getAttributeOrFellow(winDef + "$composer", true)).initRechercheAvancee(entiteToSearch, path,
                anonyme, listeController);
       }
 

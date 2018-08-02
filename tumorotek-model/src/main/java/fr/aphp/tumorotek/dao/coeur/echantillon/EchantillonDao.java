@@ -213,6 +213,14 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
    List<String> findByBanqueAndQuantiteSelectCode(Banque banque);
 
    /**
+    * Recherche les codes d'échantillons dont la banque est passée en 
+    * paramètre et la quantité est non égale à 0 OU l'échantillon faisant partie d'une cession de type traitement
+    * @param banque Banque des échantillons que l'on recherche.
+    * @return une liste de codes d'échantillons.
+    */
+   List<String> findAllCodesByBanqueAndQuantiteNotNullOrInCessionTraitement(Banque banque);
+
+   /**
     * Recherche les codes d'échantillons dont la banque et le statut
     * sont passés en paramètres.
     * @param banque Banque des échantillons que l'on recherche.

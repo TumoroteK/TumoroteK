@@ -166,11 +166,31 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
    @Test
    public void testFindByArchiveManager(){
       final List<Plateforme> pfs = plateformeManager.findAllObjectsManager();
-      List<Utilisateur> list = utilisateurManager.findByArchiveManager(true, pfs);
+
+      List<Utilisateur> list;
+      boolean listContainsSuperAdmin;
+
+      //Test excluant les super-administrateurs
+
+      ////Test recherche utilisateurs archivés
+      list = utilisateurManager.findByArchiveManager(true, pfs, false);
+      listContainsSuperAdmin = list.stream().anyMatch(Utilisateur::isSuperAdmin);
+      assertTrue(list.size() == 1 && !listContainsSuperAdmin);
+
+      ////Test recherche utilisateurs non-archivés
+      list = utilisateurManager.findByArchiveManager(false, pfs, false);
+      listContainsSuperAdmin = list.stream().anyMatch(Utilisateur::isSuperAdmin);
+      assertTrue(list.size() == 3 && !listContainsSuperAdmin);
+
+      //Test incluant les super-administrateurs
+
+      ////Test recherche utilisateurs archivés
+      list = utilisateurManager.findByArchiveManager(true, pfs, true);
       assertTrue(list.size() == 1);
 
-      list = utilisateurManager.findByArchiveManager(false, pfs);
-      assertTrue(list.size() == 3);
+      ////Test recherche utilisateurs non-archivés
+      list = utilisateurManager.findByArchiveManager(false, pfs, true);
+      assertTrue(list.size() == 4);
 
    }
 
@@ -208,12 +228,12 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
    public void testGetAvailableBanquesManager(){
       final Utilisateur u1 = utilisateurManager.findByIdManager(1);
       List<Banque> bks = utilisateurManager.getAvailableBanquesManager(u1);
-      // @since 2.1 Banque2 archive 
+      // @since 2.1 Banque2 archive
       assertTrue(bks.size() == 2);
 
       final Utilisateur u2 = utilisateurManager.findByIdManager(2);
       bks = utilisateurManager.getAvailableBanquesManager(u2);
-      // @since 2.1 Banque2 archive 
+      // @since 2.1 Banque2 archive
       assertTrue(bks.size() == 2);
 
       final Utilisateur u4 = utilisateurManager.findByIdManager(4);
@@ -222,7 +242,7 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
 
       final Utilisateur u5 = utilisateurManager.findByIdManager(5);
       bks = utilisateurManager.getAvailableBanquesManager(u5);
-      // @since 2.1 Banque2 archive 
+      // @since 2.1 Banque2 archive
       assertTrue(bks.size() == 3);
 
       bks = utilisateurManager.getAvailableBanquesManager(null);
@@ -324,7 +344,7 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
 
    /**
     * Test le CRUD d'un ProtocoleExt.
-    * @throws ParseException 
+    * @throws ParseException
     */
    @Test
    public void testCrud() throws ParseException{
@@ -740,7 +760,7 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
    /**
     * Test la validation d'un utilisateur lors de sa création.
     * @param utilisateur à tester.
-    * @throws ParseException 
+    * @throws ParseException
     */
    private void validationInsert(final Utilisateur utilisateur) throws ParseException{
 
@@ -831,7 +851,7 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
    /**
     * Test la validation d'un utilisateur lors de son update.
     * @param utilisateur à tester.
-    * @throws ParseException 
+    * @throws ParseException
     */
    private void validationUpdate(final Utilisateur utilisateur) throws ParseException{
       final OperationType oType = operationTypeDao.findById(5);
@@ -921,12 +941,12 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
    @Test
    public void testDateDesactivationCoherence() throws ParseException{
       /*Utilisateur u = new Utilisateur();
-      
+
       // null validation
       u.setTimeOut(null);
       Errors errs = UtilisateurValidator.checkDateDesactCoherence(u);
       assertTrue(errs.getAllErrors().size() == 0);
-      
+
       // limites inf
       u.setTimeOut(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2009"));
       errs = UtilisateurValidator.checkDateDesactCoherence(u);
@@ -952,7 +972,7 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
       //		Banque b = banqueDao.findById(1);
       //		CodeSelect codeSel = new CodeSelect();
       //		codeSel.setCodeId(1);
-      //		codeSel.setTableCodage(tableCodageDao.findById(1));	
+      //		codeSel.setTableCodage(tableCodageDao.findById(1));
       //		codeSelectManager
       //			.createOrUpdateManager(codeSel, null, b, u, "creation");
       //		// cree code Utilisateur
@@ -960,7 +980,7 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
       //		codeU.setCode("codeCas");
       //		codeU.setLibelle("libCasc");
       //		codeUtilisateurManager
-      //			.createOrUpdateManager(codeU, null, b, u, 
+      //			.createOrUpdateManager(codeU, null, b, u,
       //											null, null, "creation");
       //		assertTrue(codeSelectManager.findAllObjectsManager().size() == 6);
       //		assertTrue(codeUtilisateurManager.findAllObjectsManager().size() == 7);

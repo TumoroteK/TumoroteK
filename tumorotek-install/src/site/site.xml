@@ -31,7 +31,7 @@
             <item name="Liste des versions" href=""/>
         </breadcrumbs>
         <links>
-            <item name="GitHub" href="https://github.com/TumoroteK/TumoroteK" img="images/GitHub-Mark-32px.png" width="20px"/>
+            <item name="GitHub" href="https://github.com/TumoroteK/TumoroteK" img="images/GitHub-Mark-32px.png" width="14px"/>
         </links>
         <menu name="TumoroteK">
             <item name="Notes de version" href="note-version.html" />

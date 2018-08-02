@@ -42,6 +42,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.logging.Log;
@@ -59,6 +60,7 @@ import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.impl.coeur.CreateOrUpdateUtilities;
 import fr.aphp.tumorotek.manager.impl.coeur.echantillon.EchantillonJdbcSuite;
+import fr.aphp.tumorotek.manager.impl.systeme.MvFichier;
 import fr.aphp.tumorotek.manager.qualite.OperationManager;
 import fr.aphp.tumorotek.manager.systeme.EntiteManager;
 import fr.aphp.tumorotek.manager.systeme.FichierManager;
@@ -271,7 +273,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
                   jdbcSuite.incrementMaxAnnotationValeurId();
                   jdbcSuite.getPstmtAnno().clearParameters();
                   jdbcSuite.getPstmtAnno().setInt(1, jdbcSuite.getMaxAnnotationValeurId());
-                  jdbcSuite.getPstmtAnno().setInt(2, av.getChampAnnotation().getChampAnnotationId());
+                  jdbcSuite.getPstmtAnno().setInt(2, av.getChampAnnotation().getId());
                   jdbcSuite.getPstmtAnno().setInt(3, obj.listableObjectId());
                   jdbcSuite.getPstmtAnno().setInt(4, obj.getBanque().getBanqueId());
                   jdbcSuite.getPstmtAnno().setNull(5, Types.VARCHAR);
@@ -516,7 +518,8 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
    }
 
    @Override
-   public void switchBanqueManager(final TKAnnotableObject obj, final Banque bank, final List<File> filesToDelete){
+   public void switchBanqueManager(final TKAnnotableObject obj, final Banque bank, final List<File> filesToDelete, 
+		   final Set<MvFichier> filesToMove){
       if(bank != null && obj != null){
 
          final Collection<?> sharedByBanques = CollectionUtils.intersection(
@@ -528,6 +531,13 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
             if(sharedByBanques.contains(annos.get(i).getChampAnnotation().getTableAnnotation())){
                annos.get(i).setBanque(bank);
                annotationValeurDao.updateObject(annos.get(i));
+               
+               // fichier?
+               if (filesToMove != null && annos.get(i)
+            		   .getChampAnnotation().getDataType().getType().equalsIgnoreCase("fichier")) {
+            	   fichierManager.switchBanqueManager(annos.get(i).getFichier(), bank, filesToMove);
+               }
+               
             }else{
                removeObjectManager(annos.get(i), filesToDelete);
             }

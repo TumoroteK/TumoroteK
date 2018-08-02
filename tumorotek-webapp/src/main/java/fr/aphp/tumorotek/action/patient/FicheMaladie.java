@@ -37,7 +37,6 @@ package fr.aphp.tumorotek.action.patient;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -81,7 +80,6 @@ import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
-import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -997,6 +995,10 @@ public class FicheMaladie extends AbstractFicheCombineController
       return libelleConstraint;
    }
 
+   public Maladie getMaladie(){
+      return maladie;
+   }
+
    /*************************************************************************/
    /************************** DROITS ***************************************/
    /*************************************************************************/
@@ -1014,10 +1016,6 @@ public class FicheMaladie extends AbstractFicheCombineController
    public void drawActionsForMaladie(){
       drawActionsButtons("Patient");
       canCreatePrelevement = drawActionOnOneButton("Prelevement", "Creation");
-
-      //		List<String> entites = new ArrayList<String>();
-      //		entites.add("Prelevement");
-      //		setDroitsConsultation(drawConsultationLinks(entites));
 
       // si pas le droit d'accès aux prelevements, on cache le lien
       if(!getDroitsConsultation().get("Prelevement")){

@@ -157,6 +157,12 @@ public class FicheRechercheAvanceeCession extends AbstractFicheRechercheAvancee
       cessionExamens.add(0, null);
       destructions = ManagerLocator.getDestructionMotifManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       destructions.add(0, null);
+      
+      operateursDecimaux = new ArrayList<>();
+      operateursDecimaux.add("=");
+      operateursDecimaux.add("<");
+      operateursDecimaux.add(">");
+
       operateursDates = new ArrayList<>();
       operateursDates.add("=");
       operateursDates.add("<");
@@ -314,7 +320,7 @@ public class FicheRechercheAvanceeCession extends AbstractFicheRechercheAvancee
             // si une valeur a été saisie
             if(current.getValue() != null && !current.getValue().equals("")){
                // exécution de la requête
-               executeSimpleQueryForTextbox(current, null, null, oneValueEntered, true);
+               executeSimpleQueryForTextbox(current, null, null, true);
 
                oneValueEntered = true;
             }
@@ -323,7 +329,7 @@ public class FicheRechercheAvanceeCession extends AbstractFicheRechercheAvancee
             // si une valeur a été saisie
             if(current.getValue() != null){
                // exécution de la requête
-               executeSimpleQueryForIntbox(current, null, null, oneValueEntered, "=");
+               executeSimpleQueryForIntbox(current, null, null, "=");
 
                oneValueEntered = true;
             }
@@ -332,7 +338,7 @@ public class FicheRechercheAvanceeCession extends AbstractFicheRechercheAvancee
             // si une valeur a été saisie
             if(current.getSelectedIndex() > 0){
                // exécution de la requête
-               executeSimpleQueryForListbox(current, null, null, oneValueEntered, null);
+               executeSimpleQueryForListbox(current, null, null, null);
 
                oneValueEntered = true;
             }
@@ -369,7 +375,7 @@ public class FicheRechercheAvanceeCession extends AbstractFicheRechercheAvancee
 
                // exécution de la requête
                if(operateur != null){
-                  executeSimpleQueryForDatebox(current, null, null, oneValueEntered, operateur, false);
+                  executeSimpleQueryForDatebox(current, null, null, operateur, false);
                }
 
                oneValueEntered = true;
@@ -411,7 +417,7 @@ public class FicheRechercheAvanceeCession extends AbstractFicheRechercheAvancee
 
                // exécution de la requête
                if(operateur != null){
-                  executeSimpleQueryForCalendarbox(current, null, null, oneValueEntered, operateur);
+                  executeSimpleQueryForCalendarbox(current, null, null, operateur);
                }
 
                oneValueEntered = true;

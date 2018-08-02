@@ -119,7 +119,7 @@ public class MaladieManagerImpl implements MaladieManager
    }
 
    @Override
-   public void createOrUpdateObjectManager(final Maladie maladie, final Patient patient, final List<Collaborateur> medecins,
+   public void createOrUpdateObjectManager(Maladie maladie, final Patient patient, final List<Collaborateur> medecins,
       final Utilisateur utilisateur, final String operation){
 
       if(operation == null){
@@ -138,7 +138,8 @@ public class MaladieManagerImpl implements MaladieManager
                CreateOrUpdateUtilities.createAssociateOperation(maladie, operationManager,
                   operationTypeDao.findByNom("Creation").get(0), utilisateur);
             }else{
-               maladieDao.updateObject(maladie);
+               
+               maladie = maladieDao.mergeObject(maladie);
                log.info("Modification objet Maladie " + maladie.toString());
                CreateOrUpdateUtilities.createAssociateOperation(maladie, operationManager,
                   operationTypeDao.findByNom("Modification").get(0), utilisateur);
@@ -160,9 +161,8 @@ public class MaladieManagerImpl implements MaladieManager
    public boolean findDoublonManager(final Maladie maladie){
       if(maladie.getMaladieId() == null){
          return maladieDao.findByLibelle(maladie.getLibelle()).contains(maladie);
-      }else{
-         return maladieDao.findByExcludedId(maladie.getMaladieId(), maladie.getLibelle()).contains((maladie));
       }
+      return maladieDao.findByExcludedId(maladie.getMaladieId(), maladie.getLibelle()).contains((maladie));
    }
 
    @Override
@@ -270,9 +270,7 @@ public class MaladieManagerImpl implements MaladieManager
     * @param collaborateurs Liste des collaborateur que l'on veut associer 
     * a la maladie.
     */
-   private void updateCollaborateurs(final Maladie maladie, final List<Collaborateur> collaborateurs){
-
-      final Maladie mal = maladieDao.mergeObject(maladie);
+   private void updateCollaborateurs(final Maladie mal, final List<Collaborateur> collaborateurs){
 
       final Iterator<Collaborateur> it = mal.getCollaborateurs().iterator();
       final List<Collaborateur> collabsToRemove = new ArrayList<>();
@@ -327,8 +325,7 @@ public class MaladieManagerImpl implements MaladieManager
    public Long findCountByReferentManager(final Collaborateur colla){
       if(colla != null){
          return maladieDao.findCountByReferent(colla).get(0);
-      }else{
-         return new Long(0);
       }
+      return new Long(0);
    }
 }

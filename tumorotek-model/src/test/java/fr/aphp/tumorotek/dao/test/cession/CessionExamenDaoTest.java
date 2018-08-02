@@ -91,13 +91,13 @@ public class CessionExamenDaoTest extends AbstractDaoTest
 
    public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
-      List<? extends TKThesaurusObject> list = cessionExamenDao.findByOrder(pf);
+      List<? extends TKThesaurusObject> list = cessionExamenDao.findByPfOrder(pf);
       assertTrue(list.size() == 3);
       assertTrue(list.get(0).getNom().equals("ANALYSE 1"));
       pf = plateformeDao.findById(2);
-      list = cessionExamenDao.findByOrder(pf);
+      list = cessionExamenDao.findByPfOrder(pf);
       assertTrue(list.size() == 1);
-      list = cessionExamenDao.findByOrder(null);
+      list = cessionExamenDao.findByPfOrder(null);
       assertTrue(list.size() == 0);
    }
 
@@ -145,7 +145,7 @@ public class CessionExamenDaoTest extends AbstractDaoTest
       assertTrue(liste.size() == 3);
       final CessionExamen exam = liste.get(0);
       assertNotNull(exam);
-      assertTrue(exam.getCessionExamenId() == 2);
+      assertTrue(exam.getId() == 2);
 
       liste = cessionExamenDao.findByExcludedId(15);
       assertTrue(liste.size() == 4);
@@ -160,19 +160,19 @@ public class CessionExamenDaoTest extends AbstractDaoTest
 
       final CessionExamen ce = new CessionExamen();
 
-      ce.setExamen("TEST");
+      ce.setNom("TEST");
       ce.setPlateforme(plateformeDao.findById(1));
       // Test de l'insertion
       cessionExamenDao.createObject(ce);
-      assertEquals(new Integer(5), ce.getCessionExamenId());
+      assertEquals(new Integer(5), ce.getId());
 
       // Test de la mise à jour
       final CessionExamen ce2 = cessionExamenDao.findById(new Integer(5));
       assertNotNull(ce2);
-      assertTrue(ce2.getExamen().equals("TEST"));
-      ce2.setExamen(updatedExamen);
+      assertTrue(ce2.getNom().equals("TEST"));
+      ce2.setNom(updatedExamen);
       cessionExamenDao.updateObject(ce2);
-      assertTrue(cessionExamenDao.findById(new Integer(5)).getExamen().equals(updatedExamen));
+      assertTrue(cessionExamenDao.findById(new Integer(5)).getNom().equals(updatedExamen));
 
       // Test de la délétion
       cessionExamenDao.removeObject(new Integer(5));
@@ -187,9 +187,9 @@ public class CessionExamenDaoTest extends AbstractDaoTest
       final String exam = "EXAM";
       final String exam2 = "EXAM2";
       final CessionExamen ce1 = new CessionExamen();
-      ce1.setExamen(exam);
+      ce1.setNom(exam);
       final CessionExamen ce2 = new CessionExamen();
-      ce2.setExamen(exam);
+      ce2.setNom(exam);
 
       // L'objet 1 n'est pas égal à null
       assertFalse(ce1.equals(null));
@@ -200,22 +200,22 @@ public class CessionExamenDaoTest extends AbstractDaoTest
       assertTrue(ce2.equals(ce1));
 
       // Vérification de la différenciation de 2 objets
-      ce2.setExamen(exam2);
+      ce2.setNom(exam2);
       assertFalse(ce1.equals(ce2));
       assertFalse(ce2.equals(ce1));
 
-      ce2.setExamen(null);
+      ce2.setNom(null);
       assertFalse(ce1.equals(ce2));
       assertFalse(ce2.equals(ce1));
 
-      ce1.setExamen(null);
+      ce1.setNom(null);
       assertTrue(ce1.equals(ce2));
-      ce2.setExamen(exam);
+      ce2.setNom(exam);
       assertFalse(ce1.equals(ce2));
 
       final Plateforme pf1 = plateformeDao.findById(1);
       final Plateforme pf2 = plateformeDao.findById(2);
-      ce1.setExamen(ce2.getExamen());
+      ce1.setNom(ce2.getNom());
       ce1.setPlateforme(pf1);
       ce2.setPlateforme(pf1);
       assertTrue(ce1.equals(ce2));
@@ -232,11 +232,11 @@ public class CessionExamenDaoTest extends AbstractDaoTest
    public void testHashCode(){
       final String exam = "Exam";
       final CessionExamen ce1 = new CessionExamen();
-      ce1.setExamen(exam);
+      ce1.setNom(exam);
       final CessionExamen ce2 = new CessionExamen();
-      ce2.setExamen(exam);
+      ce2.setNom(exam);
       final CessionExamen ce3 = new CessionExamen();
-      ce3.setExamen(null);
+      ce3.setNom(null);
       ce3.setExamenEn(null);
       assertTrue(ce3.hashCode() > 0);
 
@@ -263,7 +263,7 @@ public class CessionExamenDaoTest extends AbstractDaoTest
     */
    public void testToString(){
       final CessionExamen ce1 = cessionExamenDao.findById(1);
-      assertTrue(ce1.toString().equals("{" + ce1.getExamen() + "}"));
+      assertTrue(ce1.toString().equals("{" + ce1.getNom() + "}"));
 
       final CessionExamen ce2 = new CessionExamen();
       assertTrue(ce2.toString().equals("{Empty CessionExamen}"));

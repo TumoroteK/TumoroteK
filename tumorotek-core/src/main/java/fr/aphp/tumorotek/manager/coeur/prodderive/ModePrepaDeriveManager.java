@@ -37,7 +37,7 @@ package fr.aphp.tumorotek.manager.coeur.prodderive;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.manager.TKThesaurusManager;
+import fr.aphp.tumorotek.manager.PfDependantTKThesaurusManager;
 import fr.aphp.tumorotek.model.coeur.prodderive.ModePrepaDerive;
 
 /**
@@ -49,7 +49,7 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ModePrepaDerive;
  * @version 2.0
  *
  */
-public interface ModePrepaDeriveManager extends TKThesaurusManager<ModePrepaDerive>
+public interface ModePrepaDeriveManager extends PfDependantTKThesaurusManager<ModePrepaDerive>
 {
 
    /**

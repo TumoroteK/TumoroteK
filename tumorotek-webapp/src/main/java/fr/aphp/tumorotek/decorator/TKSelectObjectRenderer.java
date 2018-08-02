@@ -50,6 +50,7 @@ import org.zkoss.zul.Vbox;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.controller.AbstractController;
+import fr.aphp.tumorotek.model.TKdataObject;
 
 /**
  * Classe parente des renderers utilisés dans les listes d'affichages des
@@ -59,10 +60,11 @@ import fr.aphp.tumorotek.action.controller.AbstractController;
  * la fonction de tri)
  *
  * @author mathieu
- * @version 2.0.10
+ * @since 2.0.10
+ * @version 2.2.0
  *
  */
-public class TKSelectObjectRenderer implements RowRenderer<Object>
+public class TKSelectObjectRenderer<T extends TKdataObject> implements RowRenderer<T>
 {
 
    private boolean selectionMode = true;
@@ -76,8 +78,18 @@ public class TKSelectObjectRenderer implements RowRenderer<Object>
    }
 
    @Override
-   public void render(final Row row, final Object data, final int index){
-
+   public void render(final Row row, final TKdataObject data, final int index){
+      drawCheckbox(row, data, index);
+   }
+   
+   /**
+    * Dessine la checkbox
+    * @param row
+    * @param data
+    * @param index
+    * @since 2.2.0
+    */
+   protected void drawCheckbox(final Row row, final TKdataObject data, final int index){
       if(selectionMode){
          // checkbox
          final Checkbox check = new Checkbox();
@@ -98,9 +110,8 @@ public class TKSelectObjectRenderer implements RowRenderer<Object>
       final Calendar date = ManagerLocator.getOperationManager().findDateCreationManager(obj);
       if(date != null){
          return ObjectTypesFormatters.dateRenderer2(date);
-      }else{
-         return null;
       }
+      return null;
    }
 
    /**

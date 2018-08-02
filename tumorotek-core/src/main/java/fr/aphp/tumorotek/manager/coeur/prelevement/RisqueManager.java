@@ -37,7 +37,7 @@ package fr.aphp.tumorotek.manager.coeur.prelevement;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.manager.TKThesaurusManager;
+import fr.aphp.tumorotek.manager.PfDependantTKThesaurusManager;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
@@ -59,7 +59,7 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  * @version 2.0
  *
  */
-public interface RisqueManager extends TKThesaurusManager<Risque>
+public interface RisqueManager extends PfDependantTKThesaurusManager<Risque>
 {
 
    /**

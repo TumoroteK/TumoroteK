@@ -37,7 +37,7 @@ package fr.aphp.tumorotek.manager.coeur.cession;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.manager.TKThesaurusManager;
+import fr.aphp.tumorotek.manager.PfDependantTKThesaurusManager;
 import fr.aphp.tumorotek.model.cession.ProtocoleType;
 
 /**
@@ -49,7 +49,7 @@ import fr.aphp.tumorotek.model.cession.ProtocoleType;
  * @version 2.0
  *
  */
-public interface ProtocoleTypeManager extends TKThesaurusManager<ProtocoleType>
+public interface ProtocoleTypeManager extends PfDependantTKThesaurusManager<ProtocoleType>
 {
 
    /**

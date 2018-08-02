@@ -53,8 +53,11 @@ import fr.aphp.tumorotek.action.comparator.CessionsNbProdDerivesComparator;
 import fr.aphp.tumorotek.action.controller.AbstractListeController2;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.decorator.TKSelectObjectRenderer;
+import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.cession.Cession;
+import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
+import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
@@ -165,7 +168,7 @@ public class ListeCession extends AbstractListeController2
    }
 
    @Override
-   public TKSelectObjectRenderer getListObjectsRenderer(){
+   public TKSelectObjectRenderer<? extends TKdataObject> getListObjectsRenderer(){
       return listObjectRenderer;
    }
 
@@ -255,12 +258,6 @@ public class ListeCession extends AbstractListeController2
                   SessionUtils.getSelectedBanques(sessionScope));
             }
          }
-         //			else {
-         //				cessions = ManagerLocator.getCessionManager()
-         //					.findByEtatIncompletWithBanquesReturnIdsManager(true, 
-         //							SessionUtils.getSelectedBanques(sessionScope));
-         //			}
-
       }
 
       return cessions;
@@ -288,6 +285,57 @@ public class ListeCession extends AbstractListeController2
       final Entite entite = ManagerLocator.getEntiteManager().findByNomManager("Cession").get(0);
 
       openRechercheAvanceeCessionWindow(page, sb.toString(), entite, Path.getPath(self));
+   }
+   
+   /**
+    * Evenement lors du clique sur le nombre d'échantillons
+    * Posté par {@link CessionRowRenderer#drawNbEchantillons(Cession, org.zkoss.zul.Row)}
+    * @param event
+    */
+   public void onClickNbEchantillons(Event event){
+      List<String> echCodes = (List<String>) event.getData();
+      List<TKAnnotableObject> echList = new ArrayList<>();
+      for(String code : echCodes){
+         echList.add(ManagerLocator.getEchantillonManager().findByCodeLikeManager(code, true).get(0));
+      }
+      displayObjectsListData(echList);
+   }
+   
+   /**
+    * Evenement lors du clique sur le nombre de Produit Derives
+    * Posté par {@link CessionRowRenderer#drawNbProdDerives(Cession, org.zkoss.zul.Row)}
+    * @param event
+    */
+   public void onClickNbProdDerives(Event event){
+      List<String> prodDeriveCodes = (List<String>) event.getData();
+      List<TKAnnotableObject> prodDerivesList = new ArrayList<>();
+      for(String code : prodDeriveCodes){
+         prodDerivesList.add(ManagerLocator.getProdDeriveManager().findByCodeLikeManager(code, true).get(0));
+      }
+      displayObjectsListData(prodDerivesList);
+   }
+   
+   
+   /**
+    * Evenement lors du clique sur le nombre d'échantillons
+    * Posté par {@link CessionRowRenderer#drawNbEchantillons(Cession, org.zkoss.zul.Row)}
+    * @param event
+    */
+   public void onClickEchantillonCode(Event event){
+      String echCode = event.getData().toString();
+      Echantillon ech = ManagerLocator.getEchantillonManager().findByCodeLikeManager(echCode, true).get(0);
+      displayObjectData(ech);
+   }
+   
+   /**
+    * Evenement lors du clique sur le nombre de Produit Dérivés
+    * Posté par {@link CessionRowRenderer#drawNbProdDerives(Cession, org.zkoss.zul.Row)}
+    * @param event
+    */
+   public void onClickProdDeriveCode(Event event){
+      String prodDeriveCode = event.getData().toString();
+      ProdDerive prodDerive = ManagerLocator.getProdDeriveManager().findByCodeLikeManager(prodDeriveCode, true).get(0);
+      displayObjectData(prodDerive);
    }
 
    /*************************************************************************/

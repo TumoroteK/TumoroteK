@@ -47,7 +47,7 @@ public class ValidationResultatCauseRenderer implements RowRenderer<Entry<Criter
          if(critere.getChampRef() != null){
 
             final String nomChampRef = ChampUtils.getEntiteLieeLibelle(ChampUtils.getChampRacine(critere.getChampRef())) + "."
-               + ChampUtils.getChampLibelle(critere.getChampRef());
+               + ObjectTypesFormatters.getLabelForChamp(critere.getChampRef());
 
             conditionSb.append(" (" + nomChampRef + ")");
 
@@ -64,7 +64,7 @@ public class ValidationResultatCauseRenderer implements RowRenderer<Entry<Criter
       }
 
       new Label(ChampUtils.getEntiteLieeLibelle(champRacine)).setParent(row);
-      new Label(ChampUtils.getChampLibelle(champ)).setParent(row);
+      new Label(ObjectTypesFormatters.getLabelForChamp(champ)).setParent(row);
       new Label(conditionSb.toString()).setParent(row);
       new Label(valeurConstateeFormattee).setParent(row);
 

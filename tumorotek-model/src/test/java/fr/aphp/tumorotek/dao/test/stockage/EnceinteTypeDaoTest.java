@@ -82,13 +82,13 @@ public class EnceinteTypeDaoTest extends AbstractDaoTest
     */
    public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
-      List<? extends TKThesaurusObject> list = enceinteTypeDao.findByOrder(pf);
+      List<? extends TKThesaurusObject> list = enceinteTypeDao.findByPfOrder(pf);
       assertTrue(list.size() == 8);
       assertTrue(list.get(0).getNom().equals("BOITE"));
       pf = plateformeDao.findById(2);
-      list = enceinteTypeDao.findByOrder(pf);
+      list = enceinteTypeDao.findByPfOrder(pf);
       assertTrue(list.size() == 1);
-      list = enceinteTypeDao.findByOrder(null);
+      list = enceinteTypeDao.findByPfOrder(null);
       assertTrue(list.size() == 0);
    }
 

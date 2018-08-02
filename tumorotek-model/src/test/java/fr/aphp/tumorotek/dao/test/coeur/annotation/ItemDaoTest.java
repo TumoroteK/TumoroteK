@@ -160,9 +160,9 @@ public class ItemDaoTest extends AbstractDaoTest
 
       // Test de l'insertion a partir du champ
       champAnnotationDao.createObject(thes);
-      assertNotNull(thes.getChampAnnotationId());
+      assertNotNull(thes.getId());
 
-      final Integer maxId = thes.getChampAnnotationId();
+      final Integer maxId = thes.getId();
 
       // Test de l'insertion
       final ChampAnnotation thes2 = champAnnotationDao.findById(maxId);

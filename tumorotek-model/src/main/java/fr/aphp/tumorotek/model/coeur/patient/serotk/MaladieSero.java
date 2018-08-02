@@ -35,11 +35,14 @@
  **/
 package fr.aphp.tumorotek.model.coeur.patient.serotk;
 
-import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import fr.aphp.tumorotek.model.contexte.Diagnostic;
 
 /**
  * Classe deleguee à la maladie qui contient le mapping vers
@@ -47,32 +50,34 @@ import javax.persistence.Transient;
  * Date creation 19/02/12.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.6
+ * @since 2.0.6
+ * @version 2.2.0
  * @see http://www.devx.com/Java/Article/33906
  */
 @Entity
 @Table(name = "MALADIE_SERO")
-@DiscriminatorValue("1")
+@DiscriminatorValue("2")
 public class MaladieSero extends MaladieDelegate
 {
 
-   private String diagnostic;
+   private Diagnostic diagnostic;
 
    // Constructeur
    public MaladieSero(){}
 
-   @Column(name = "DIAGNOSTIC", nullable = true, length = 1)
-   public String getDiagnostic(){
+   @ManyToOne
+   @JoinColumn(name = "DIAGNOSTIC_ID")
+   public Diagnostic getDiagnostic(){
       return diagnostic;
    }
 
-   public void setDiagnostic(final String d){
-      this.diagnostic = d;
+   public void setDiagnostic(final Diagnostic diagnostic){
+      this.diagnostic = diagnostic;
    }
 
    @Override
    @Transient
    public boolean isEmpty(){
-      return (getDiagnostic() == null || getDiagnostic().equals(""));
+      return (getDiagnostic() == null);
    }
 }

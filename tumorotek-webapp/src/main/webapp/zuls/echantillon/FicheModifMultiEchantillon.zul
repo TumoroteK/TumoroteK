@@ -154,7 +154,7 @@
 					</row>
 					<row>
 					<!-- qualite -->
-					<label value="${c:l('Champ.Echantillon.EchanQualite')}" sclass="formLabel" />
+					<label id="qualiteEchanLabel" value="${c:l('Champ.Echantillon.EchanQualite')}" sclass="formLabel" />
 						<div>
 								<label id="qualiteLabelChanged" 
 									sclass="formValue"
@@ -166,7 +166,7 @@
 						</div>
 					</row>
 					<!-- Informations complémentaires -->
-					<row spans="2">
+					<row  id="infosComplementairesRow" spans="2">
 						<vbox width="100%">
 							<label value="${c:l('ficheEchantillon.infosComp')}" sclass="formSubTitle"/>
 							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
@@ -211,7 +211,7 @@
 								sclass="formLink" />
 						</div>
 					</row>
-					<row>	
+					<row id="lateraliteRow">	
 					<!-- Lateralite -->
 						<label sclass="formLabel" value="${c:l('Champ.Echantillon.Lateralite')}" />
 						<div>

@@ -2,7 +2,7 @@ package fr.aphp.tumorotek.dao.test;
 
 import fr.aphp.tumorotek.model.bundles.ResourceBundleMbio;
 
-public class ResourceBundleMbioTest extends AbstractDaoTest
+public class ResourceBundleMbioTest extends AbstractDaoTest //FIXME non lancé dans maven surefire ?
 {
 
    /** Bean. */
@@ -18,7 +18,7 @@ public class ResourceBundleMbioTest extends AbstractDaoTest
 
    public void testDoesResourceBundleExists(){
       assertNotNull(resourceBundleMbio.getMbioConfDirectory());
-      assertTrue(resourceBundleMbio.getMbioConfDirectory().equals("/home/pierre/apache-tomcat-6.0.18/conf/mbio/"));
+      assertTrue(resourceBundleMbio.getMbioConfDirectory().equals("/home/pierre/apache-tomcat-6.0.18/conf/mbio/")); //FIXME False
    }
 
 }

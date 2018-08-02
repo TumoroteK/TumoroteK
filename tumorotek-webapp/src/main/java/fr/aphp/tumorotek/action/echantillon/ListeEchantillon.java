@@ -118,7 +118,7 @@ public class ListeEchantillon extends AbstractListeController2
    // @since 2.1
    private Menuitem exportItemBIOBANQUES;
 
-   private final EchantillonRowRenderer listObjectsRenderer = new EchantillonRowRenderer(true, false);
+   protected EchantillonRowRenderer listObjectsRenderer= new EchantillonRowRenderer(true, false);
    private EchantillonsNbDerivesComparator comparatorDerivesAsc = new EchantillonsNbDerivesComparator(true);
    private EchantillonsNbDerivesComparator comparatorDerivesDesc = new EchantillonsNbDerivesComparator(false);
    private EchantillonsNbCessionsComparator comparatorCessionsAsc = new EchantillonsNbCessionsComparator(true);
@@ -142,7 +142,6 @@ public class ListeEchantillon extends AbstractListeController2
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
-
       super.doAfterCompose(comp);
 
       setOnGetEventName("onGetEchantillonsFromSelection");
@@ -159,7 +158,6 @@ public class ListeEchantillon extends AbstractListeController2
       return listObjects;
    }
 
-   
    @Override
    public void setListObjects(final List<? extends TKdataObject> objs){
       clearSelection();
@@ -188,7 +186,6 @@ public class ListeEchantillon extends AbstractListeController2
       return selectedObjects;
    }
 
-   
    @Override
    public void setSelectedObjects(final List<? extends TKdataObject> objs){
       this.selectedObjects = (List<Echantillon>) objs;
@@ -209,7 +206,7 @@ public class ListeEchantillon extends AbstractListeController2
    }
 
    @Override
-   public TKSelectObjectRenderer getListObjectsRenderer(){
+   public TKSelectObjectRenderer<? extends TKdataObject> getListObjectsRenderer(){
       return listObjectsRenderer;
    }
 
@@ -352,9 +349,8 @@ public class ListeEchantillon extends AbstractListeController2
    public List<? extends TKdataObject> extractObjectsFromIds(final List<Integer> ids){
       if(ids != null && ids.size() > 0){
          return ManagerLocator.getEchantillonManager().findByIdsInListManager(ids);
-      }else{
-         return new ArrayList<Echantillon>();
       }
+      return new ArrayList<Echantillon>();
    }
 
    /**
@@ -474,7 +470,7 @@ public class ListeEchantillon extends AbstractListeController2
     * @param e
     *            Event contenant les résultats de la recherche.
     */
-   
+
    public void onGetObjectFromResearchINCa(final Event e){
 
       // si des échantillons sont renvoyés
@@ -497,7 +493,7 @@ public class ListeEchantillon extends AbstractListeController2
    /*************************************************************************/
    /************************** DROITS ***************************************/
    /*************************************************************************/
-   
+
    @Override
    public void applyDroitsOnListe(){
       drawActionsButtons();

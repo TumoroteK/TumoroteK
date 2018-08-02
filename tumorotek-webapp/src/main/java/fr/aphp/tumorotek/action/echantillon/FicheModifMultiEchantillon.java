@@ -46,7 +46,9 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Path;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Row;
 import org.zkoss.zul.SimpleConstraint;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
@@ -96,6 +98,11 @@ public class FicheModifMultiEchantillon extends AbstractFicheModifMultiControlle
    private Label codeLesLabelChanged;
    private Label nonConformeTraitementLabelChanged;
    private Label nonConformeCessionLabelChanged;
+   protected Label qualiteEchanLabel;
+   protected Div qualiteEchanValue;
+   
+   protected Row infosComplementairesRow;
+   protected Row lateraliteRow;
 
    private List<NonConformite> nonConformitesTraitement = null;
 
@@ -339,20 +346,20 @@ public class FicheModifMultiEchantillon extends AbstractFicheModifMultiControlle
             setObjsToEdit(clones);
          }
       }
-      
+
       if(null != anapathStream){
          try{
             anapathStream.close();
          }catch(IOException e){
             log.error(e);
-   }
+         }
       }
    }
 
    /*************************************************************************/
    /************************** CHAMPS ***************************************/
    /*************************************************************************/
-   
+
    public void onClick$echantillonTypeMultiLabel(){
       final List<? extends Object> types =
          ManagerLocator.getEchantillonTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));

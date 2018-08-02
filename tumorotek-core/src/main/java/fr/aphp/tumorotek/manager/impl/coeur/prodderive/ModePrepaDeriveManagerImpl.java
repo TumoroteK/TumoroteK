@@ -97,12 +97,6 @@ public class ModePrepaDeriveManagerImpl implements ModePrepaDeriveManager
       return modePrepaDeriveDao.findById(modePrepaDeriveId);
    }
 
-   //	@Override
-   //	public List<ModePrepaDerive> findAllObjectsManager() {
-   //		log.debug("Recherche de tous les ModePrepaDerives");
-   //		return modePrepaDeriveDao.findByOrder();
-   //	}
-
    @Override
    public List<ModePrepaDerive> findByModePrepaDeriveLikeManager(String mode, final boolean exactMatch){
       log.debug("Recherche ModePrepaDerive par " + mode + " exactMatch " + String.valueOf(exactMatch));
@@ -119,10 +113,10 @@ public class ModePrepaDeriveManagerImpl implements ModePrepaDeriveManager
    public boolean findDoublonManager(final ModePrepaDerive obj){
       final ModePrepaDerive mode = obj;
       if(mode != null){
-         if(mode.getModePrepaDeriveId() == null){
+         if(mode.getId() == null){
             return modePrepaDeriveDao.findAll().contains(mode);
          }
-         return modePrepaDeriveDao.findByExcludedId(mode.getModePrepaDeriveId()).contains(mode);
+         return modePrepaDeriveDao.findByExcludedId(mode.getId()).contains(mode);
       }
       return false;
    }
@@ -169,12 +163,17 @@ public class ModePrepaDeriveManagerImpl implements ModePrepaDeriveManager
    @Override
    public void removeObjectManager(final ModePrepaDerive obj){
       final ModePrepaDerive mode = obj;
-      modePrepaDeriveDao.removeObject(mode.getModePrepaDeriveId());
+      modePrepaDeriveDao.removeObject(mode.getId());
       log.info("Suppression de l'objet ModePrepaDerive : " + mode.toString());
    }
 
    @Override
    public List<ModePrepaDerive> findByOrderManager(final Plateforme pf){
-      return modePrepaDeriveDao.findByOrder(pf);
+      return modePrepaDeriveDao.findByPfOrder(pf);
+   }
+
+   @Override
+   public List<ModePrepaDerive> findByOrderManager(){
+      return modePrepaDeriveDao.findByOrder();
    }
 }

@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.dao.qualite;
 import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.qualite.ConformiteType;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
@@ -51,7 +52,7 @@ import fr.aphp.tumorotek.model.qualite.NonConformite;
  * @version 2.0
  *
  */
-public interface NonConformiteDao extends GenericDaoJpa<NonConformite, Integer>
+public interface NonConformiteDao extends GenericDaoJpa<NonConformite, Integer>, PfDependantTKThesaurusDao<NonConformite>
 {
 
    /**

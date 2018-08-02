@@ -39,11 +39,10 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -57,6 +56,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.GenericGenerator;
 
 import fr.aphp.tumorotek.model.TKFantomableObject;
+import fr.aphp.tumorotek.model.io.export.AbstractTKChamp;
 import fr.aphp.tumorotek.model.io.export.Champ;
 
 /**
@@ -70,22 +70,17 @@ import fr.aphp.tumorotek.model.io.export.Champ;
  */
 @Entity
 @Table(name = "CHAMP_ANNOTATION")
+@GenericGenerator(name="seqGenerator", strategy="increment")
+@AttributeOverride(name="id", column=@Column(name = "CHAMP_ANNOTATION_ID", unique = true, nullable = false))
 @NamedQueries(value = {
    @NamedQuery(name = "ChampAnnotation.findByNom",
       query = "SELECT c FROM ChampAnnotation c WHERE c.nom like ?1" + " ORDER BY c.nom"),
-   //				@NamedQuery(name = "ChampAnnotation.findByType", 
-   //					query = "SELECT c FROM ChampAnnotation c "
-   //							+ "WHERE c.dataType like ?1 ORDER BY c.nom"),
    @NamedQuery(name = "ChampAnnotation.findByTable",
       query = "SELECT c FROM ChampAnnotation c " + "WHERE c.tableAnnotation = ?1 ORDER BY c.ordre"),
    @NamedQuery(name = "ChampAnnotation.findByTableAndType",
       query = "SELECT c FROM ChampAnnotation c " + "WHERE c.tableAnnotation = ?1 " + "ANd c.dataType = ?2 ORDER BY c.ordre"),
-   //				@NamedQuery(name = "ChampAnnotation.findDoublon", 
-   //					query = "SELECT c FROM ChampAnnotation c "
-   //							+ "WHERE c.nom = ?1 "
-   //							+ "AND c.tableAnnotation = ?2") 
    @NamedQuery(name = "ChampAnnotation.findByExcludedId",
-      query = "SELECT c FROM ChampAnnotation c WHERE " + "c.champAnnotationId != ?1"),
+      query = "SELECT c FROM ChampAnnotation c WHERE " + "c.id != ?1"),
    @NamedQuery(name = "ChampAnnotation.findByEditByCatalogue",
       query = "SELECT c FROM ChampAnnotation c " + "WHERE c.edit = 1 " + "AND c.tableAnnotation = ?1 " + "ORDER BY c.ordre"),
    @NamedQuery(name = "ChampAnnotation.findImportColonnesByChampAnnotation",
@@ -100,16 +95,13 @@ import fr.aphp.tumorotek.model.io.export.Champ;
       + "JOIN i.champ c WHERE i.importTemplate = ?1 " + "AND c.champAnnotation.tableAnnotation.entite = ?2"),
    @NamedQuery(name = "ChampAnnotation.findByTableAndDataType",
    query = "SELECT c FROM ChampAnnotation c " + "WHERE c.tableAnnotation = ?1 AND c.dataType in ?2 ORDER BY c.ordre")})
-public class ChampAnnotation implements TKFantomableObject, Serializable
+public class ChampAnnotation extends AbstractTKChamp implements TKFantomableObject, Serializable
 {
 
    private static final long serialVersionUID = 1L;
 
-   private Integer champAnnotationId;
-   private String nom;
    private Boolean combine;
    private Integer ordre;
-   private DataType dataType;
    private Boolean edit = true;
    private TableAnnotation tableAnnotation;
    private ChampCalcule champCalcule;
@@ -122,25 +114,24 @@ public class ChampAnnotation implements TKFantomableObject, Serializable
    /** Constructeur par défaut. */
    public ChampAnnotation(){}
 
-   @Id
-   @Column(name = "CHAMP_ANNOTATION_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
+   
+   /**
+    * @deprecated
+    * Utiliser {@link #getId()}
+    */
+   @Transient
+   @Deprecated
    public Integer getChampAnnotationId(){
-      return this.champAnnotationId;
+      return this.getId();
    }
 
+   /**
+    * @deprecated
+    * Utiliser {@link #setId(Integer)}
+    */
+   @Deprecated
    public void setChampAnnotationId(final Integer id){
-      this.champAnnotationId = id;
-   }
-
-   @Column(name = "NOM", nullable = false, length = 100)
-   public String getNom(){
-      return this.nom;
-   }
-
-   public void setNom(final String n){
-      this.nom = n;
+      this.setId(id);
    }
 
    @Column(name = "COMBINE", nullable = true)
@@ -159,16 +150,6 @@ public class ChampAnnotation implements TKFantomableObject, Serializable
 
    public void setOrdre(final Integer o){
       this.ordre = o;
-   }
-
-   @ManyToOne
-   @JoinColumn(name = "DATA_TYPE_ID", nullable = false)
-   public DataType getDataType(){
-      return this.dataType;
-   }
-
-   public void setDataType(final DataType type){
-      this.dataType = type;
    }
 
    @Column(name = "EDIT", nullable = true)
@@ -256,7 +237,7 @@ public class ChampAnnotation implements TKFantomableObject, Serializable
       }
 
       final ChampAnnotation test = (ChampAnnotation) obj;
-      return ((this.nom == test.nom || (this.nom != null && this.nom.equals(test.nom)))
+      return ((this.getNom() == test.getNom() || (this.getNom() != null && this.getNom().equals(test.getNom())))
          && (this.tableAnnotation == test.tableAnnotation
             || (this.tableAnnotation != null && this.tableAnnotation.equals(test.tableAnnotation))));
    }
@@ -273,8 +254,8 @@ public class ChampAnnotation implements TKFantomableObject, Serializable
       int hashNom = 0;
       int hasTableId = 0;
 
-      if(this.nom != null){
-         hashNom = this.nom.hashCode();
+      if(this.getNom() != null){
+         hashNom = this.getNom().hashCode();
       }
       if(this.tableAnnotation != null){
          hasTableId = this.tableAnnotation.hashCode();
@@ -288,8 +269,8 @@ public class ChampAnnotation implements TKFantomableObject, Serializable
 
    @Override
    public String toString(){
-      if(this.tableAnnotation != null && this.nom != null){
-         return "{ChampAnnotation: " + this.tableAnnotation.getNom() + "." + this.nom + "}";
+      if(this.tableAnnotation != null && this.getNom() != null){
+         return "{ChampAnnotation: " + this.tableAnnotation.getNom() + "." + this.getNom() + "}";
       }
       
       return "{Empty ChampAnnotation}";
@@ -302,9 +283,9 @@ public class ChampAnnotation implements TKFantomableObject, Serializable
    @Override
    public ChampAnnotation clone(){
       final ChampAnnotation clone = new ChampAnnotation();
-      clone.setChampAnnotationId(this.champAnnotationId);
-      clone.setNom(this.nom);
-      clone.setDataType(this.dataType);
+      clone.setId(this.getId());
+      clone.setNom(this.getNom());
+      clone.setDataType(this.getDataType());
       clone.setOrdre(this.ordre);
       clone.setCombine(this.combine);
       clone.setEdit(getEdit());

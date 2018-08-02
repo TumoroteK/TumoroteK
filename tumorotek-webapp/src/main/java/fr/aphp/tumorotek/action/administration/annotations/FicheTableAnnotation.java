@@ -792,7 +792,7 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
       // -> revert et mode statique
       if(this.beforeEditClone != null){
          // champ en cours edition deja enregistre en base
-         if(this.beforeEditClone.getChampAnnotationId() != null){
+         if(this.beforeEditClone.getId() != null){
             this.currentChampEdited.setChampAnnotation(this.beforeEditClone);
             this.currentChampEdited.setEdition(false);
          }else{ // nouveau champ
@@ -863,7 +863,7 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
       String delMessage = "message.deletion.champAnnotation.simple";
 
       List<? extends Object> refChps = new ArrayList<>();
-      if(this.currentChampEdited.getChamp().getChampAnnotationId() != null){
+      if(this.currentChampEdited.getChamp().getId() != null){
          refChps = ManagerLocator.getChampAnnotationManager().isUsedObjectManager(currentChampEdited.getChamp());
          delMessage = "message.deletion.champAnnotation";
       }
@@ -883,7 +883,7 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
             // si le champ existait dans la BDD on l'ajoute à la
             // liste des champs à supprimer (il ne sera délété que
             // lors de la sauvegarde finale)
-            if(this.currentChampEdited.getChamp().getChampAnnotationId() != null){
+            if(this.currentChampEdited.getChamp().getId() != null){
                champsToDelete.add(this.currentChampEdited.getChamp());
             }
 
@@ -1147,7 +1147,7 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
    private void revertCurrentEdition(){
       if(this.currentChampEdited != null){
          // champ en cours edition deja enregistre en base ou valide
-         if(this.currentChampEdited.getChamp().getChampAnnotationId() != null || this.currentChampEdited.isValidated()){
+         if(this.currentChampEdited.getChamp().getId() != null || this.currentChampEdited.isValidated()){
             this.currentChampEdited.setChampAnnotation(this.beforeEditClone);
             this.currentChampEdited.revertDefauts();
             this.currentChampEdited.setEdition(false);

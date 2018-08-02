@@ -144,10 +144,10 @@ public class ProdQualiteManagerImpl implements ProdQualiteManager
    public boolean findDoublonManager(final ProdQualite obj){
       final ProdQualite qualite = obj;
       if(qualite != null){
-         if(qualite.getProdQualiteId() == null){
+         if(qualite.getId() == null){
             return prodQualiteDao.findAll().contains(qualite);
          }
-         return prodQualiteDao.findByExcludedId(qualite.getProdQualiteId()).contains(qualite);
+         return prodQualiteDao.findByExcludedId(qualite.getId()).contains(qualite);
       }
       return false;
    }
@@ -195,12 +195,17 @@ public class ProdQualiteManagerImpl implements ProdQualiteManager
    @Override
    public void removeObjectManager(final ProdQualite obj){
       final ProdQualite qualite = obj;
-      prodQualiteDao.removeObject(qualite.getProdQualiteId());
+      prodQualiteDao.removeObject(qualite.getId());
       log.info("Suppression de l'objet ProdQualite : " + qualite.toString());
    }
 
    @Override
    public List<ProdQualite> findByOrderManager(final Plateforme pf){
-      return prodQualiteDao.findByOrder(pf);
+      return prodQualiteDao.findByPfOrder(pf);
+   }
+
+   @Override
+   public List<ProdQualite> findByOrderManager(){
+      return prodQualiteDao.findByOrder();
    }
 }

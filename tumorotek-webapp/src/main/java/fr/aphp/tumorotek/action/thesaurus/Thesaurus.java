@@ -35,6 +35,7 @@
  **/
 package fr.aphp.tumorotek.action.thesaurus;
 
+import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.TKdataObject;
 
 /**
@@ -46,28 +47,35 @@ import fr.aphp.tumorotek.model.TKdataObject;
  * @version 2.0.12
  *
  */
-public class Thesaurus implements TKdataObject
+public class Thesaurus<T extends TKThesaurusObject> implements TKdataObject
 {
 
-   private String nom;
+   private Class<T> thesaurusObjectClass;
    private String label;
+   private String qualifier;
 
-   public Thesaurus(final String n, final String l){
-      nom = n;
-      label = l;
+   public Thesaurus(final Class<T> clazz, String qualifier, final String label){
+      this.thesaurusObjectClass = clazz;
+      this.label = label;
+      this.qualifier = qualifier;
+   }
+   
+   public String getQualifier(){
+      return qualifier;
    }
 
+   public Thesaurus(final Class<T> clazz, final String label){
+      this.thesaurusObjectClass = clazz;
+      this.label = label;
+   }
+   
    @Override
    public Integer listableObjectId(){
       return null;
    }
 
-   public String getNom(){
-      return nom;
-   }
-
-   public void setNom(final String n){
-      this.nom = n;
+   public Class<T> getThesaurusObjectClass(){
+      return thesaurusObjectClass;
    }
 
    public String getLabel(){
@@ -80,19 +88,7 @@ public class Thesaurus implements TKdataObject
 
    @Override
    public TKdataObject clone(){
-      return new Thesaurus(getNom(), getLabel());
-   }
-
-   @Override
-   public boolean equals(final Object obj){
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final Thesaurus test = (Thesaurus) obj;
-      return (this.nom == test.nom || (this.nom != null && this.nom.equals(test.nom)));
+      return new Thesaurus<T>(this.thesaurusObjectClass, this.qualifier, this.label);
    }
 
    @Override

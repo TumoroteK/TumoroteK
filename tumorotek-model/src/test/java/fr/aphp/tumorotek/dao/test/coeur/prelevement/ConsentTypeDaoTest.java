@@ -104,13 +104,13 @@ public class ConsentTypeDaoTest extends AbstractDaoTest
 
    public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
-      List<? extends TKThesaurusObject> list = consentTypeDao.findByOrder(pf);
+      List<? extends TKThesaurusObject> list = consentTypeDao.findByPfOrder(pf);
       assertTrue(list.size() == 2);
       assertTrue(list.get(0).getNom().equals("DECEDE"));
       pf = plateformeDao.findById(2);
-      list = consentTypeDao.findByOrder(pf);
+      list = consentTypeDao.findByPfOrder(pf);
       assertTrue(list.size() == 1);
-      list = consentTypeDao.findByOrder(null);
+      list = consentTypeDao.findByPfOrder(null);
       assertTrue(list.size() == 0);
    }
 

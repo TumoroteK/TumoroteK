@@ -38,7 +38,7 @@ package fr.aphp.tumorotek.dao.coeur.echantillon;
 import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
-import fr.aphp.tumorotek.dao.TKThesaurusDao;
+import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.coeur.echantillon.EchantillonType;
 
 /**
@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.coeur.echantillon.EchantillonType;
  * @version 2.0
  *
  */
-public interface EchantillonTypeDao extends GenericDaoJpa<EchantillonType, Integer>, TKThesaurusDao<EchantillonType>
+public interface EchantillonTypeDao extends GenericDaoJpa<EchantillonType, Integer>, PfDependantTKThesaurusDao<EchantillonType>
 {
 
    /**

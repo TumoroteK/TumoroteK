@@ -209,8 +209,8 @@
 					</row>	
 					<row visible="false">
 						<!-- Qualité de l'échantillon -->
-						<label value="${c:l('Champ.Echantillon.EchanQualite')}" sclass="formLabel"/>
-						<label id="qualiteLabelEchan" 
+						<label id="qualiteEchanLabel" value="${c:l('Champ.Echantillon.EchanQualite')}" sclass="formLabel"/>
+						<label id="qualiteEchanValue" 
 							value="@{fwinEchantillonStaticBTO$composer.object.echanQualite.echanQualite}"
 							sclass="formValue" />
 													

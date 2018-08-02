@@ -248,15 +248,7 @@ public class ProdDeriveController extends AbstractObjectTabController
 
    }
 
-   /**
-    * Méthode permettant de passer en mode "création multiple" : 
-    * seule la fiche multiple de création des dérivés est visible. 
-    * Cette fiche est en mode "création".
-    * @param parent Objet parent du produit dérivé.
-    */
-   @Override
    public void switchToCreateMode(final TKdataObject parent){
-
       // si il y eu edit avant et addNew depuis liste
       clearEditDiv();
 

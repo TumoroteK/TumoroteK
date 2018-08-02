@@ -40,6 +40,7 @@ import org.springframework.test.annotation.Rollback;
 import fr.aphp.tumorotek.dao.coeur.patient.MaladieDao;
 import fr.aphp.tumorotek.dao.coeur.patient.PatientDao;
 import fr.aphp.tumorotek.dao.contexte.ContexteDao;
+import fr.aphp.tumorotek.dao.contexte.DiagnosticDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.serotk.MaladieDelegate;
@@ -55,12 +56,13 @@ import fr.aphp.tumorotek.model.contexte.Categorie;
  * @version 2.0.6
  *
  */
-public class MaladieDelegateDaoTest extends AbstractDaoTest
+public class MaladieDelegateDaoTest extends AbstractDaoTest //FIXME non lancé dans maven surefire ?
 {
 
    private MaladieDao maladieDao;
    private ContexteDao contexteDao;
    private PatientDao patientDao;
+   private DiagnosticDao diagnosticDao;
 
    public void setContexteDao(final ContexteDao ceDao){
       this.contexteDao = ceDao;
@@ -73,6 +75,10 @@ public class MaladieDelegateDaoTest extends AbstractDaoTest
    public void setPatientDao(final PatientDao pDao){
       this.patientDao = pDao;
    }
+   
+   public void setDiagnosticDao(DiagnosticDao diagnosticDao){
+      this.diagnosticDao = diagnosticDao;
+   }
 
    /**
     * Constructeur.
@@ -84,7 +90,7 @@ public class MaladieDelegateDaoTest extends AbstractDaoTest
     */
    public void testToString(){
       MaladieDelegate p1 = maladieDao.findById(4).getDelegate();
-      assertTrue(p1.toString().equals("{Addiction medocs}.CONT1"));
+      assertTrue(p1.toString().equals("{Addiction medocs}.CONT1")); //FIXME False
       p1 = new MaladieDelegate();
       assertTrue(p1.toString().equals("{Empty delegate}"));
    }
@@ -107,7 +113,7 @@ public class MaladieDelegateDaoTest extends AbstractDaoTest
 
       final MaladieSero ms1 = new MaladieSero();
       ms1.setContexte(contexteDao.findById(1));
-      ms1.setDiagnostic("S");
+      ms1.setDiagnostic(diagnosticDao.findById(2));
       ms1.setMaladie(m);
       m.setDelegate(ms1);
 
@@ -118,9 +124,9 @@ public class MaladieDelegateDaoTest extends AbstractDaoTest
       m = maladieDao.findByCode("C12.13").get(0);
       assertNotNull(m.getDelegate());
       MaladieSero ms2 = (MaladieSero) m.getDelegate();
-      assertTrue(ms2.getDiagnostic().equals("S"));
+      assertTrue(ms2.getDiagnostic().equals(diagnosticDao.findById(2)));
 
-      ms2.setDiagnostic("C");
+      ms2.setDiagnostic(diagnosticDao.findById(1));
 
       maladieDao.updateObject(m);
       assertTrue(maladieDao.findAll().size() == 7);
@@ -129,7 +135,7 @@ public class MaladieDelegateDaoTest extends AbstractDaoTest
       m = maladieDao.findByCode("C12.13").get(0);
       assertNotNull(m.getDelegate());
       ms2 = (MaladieSero) m.getDelegate();
-      assertTrue(ms2.getDiagnostic().equals("C"));
+      assertTrue(ms2.getDiagnostic().equals(diagnosticDao.findById(1)));
 
       // Test de la délétion
       m.setDelegate(null);
@@ -145,10 +151,8 @@ public class MaladieDelegateDaoTest extends AbstractDaoTest
    public void testIsEmpty(){
       final MaladieSero mSero = new MaladieSero();
       assertTrue(mSero.isEmpty());
-      mSero.setDiagnostic("C");
+      mSero.setDiagnostic(diagnosticDao.findById(1));
       assertFalse(mSero.isEmpty());
-      mSero.setDiagnostic("");
-      assertTrue(mSero.isEmpty());
       mSero.setDiagnostic(null);
       assertTrue(mSero.isEmpty());
    }
@@ -162,7 +166,7 @@ public class MaladieDelegateDaoTest extends AbstractDaoTest
       final MaladieDelegate m2 = new MaladieDelegate();
       assertFalse(m1.equals(null));
       assertNotNull(m2);
-      assertTrue(m1.equals(m2));
+      assertTrue(m1.equals(m2)); //FIXME False
       assertTrue(m1.equals(m2));
       assertTrue(m1.hashCode() == m2.hashCode());
 

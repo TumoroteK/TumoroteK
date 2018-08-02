@@ -102,6 +102,15 @@ public interface UtilisateurManager
     * @return Liste d'utilisateurs.
     */
    List<Utilisateur> findByArchiveManager(boolean archive, List<Plateforme> pfs);
+   
+   /**
+    * Recherche les utilisateurs actifs ou non.
+    * @param archive True si l'utilisateur n'est pas actif.
+    * @param pfs liste des plateformes d'origine d'un utilisateur.
+    * @param includeSuperAdmin inclus les super-utilisateurs si <i>true</i>
+    * @return Liste d'utilisateurs.
+    */
+   List<Utilisateur> findByArchiveManager(boolean archive, List<Plateforme> pfs, Boolean includeSuperAdmin);
 
    /**
     * Recherche les utilisateurs par login, mdp et archive.

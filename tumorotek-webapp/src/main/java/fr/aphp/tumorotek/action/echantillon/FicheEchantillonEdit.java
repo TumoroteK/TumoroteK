@@ -134,6 +134,9 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
    protected Listbox typesBoxEchan;
    protected Group groupInfosCompEchan;
 
+   protected Label qualiteEchanLabel;
+   protected Row lateraliteRow;
+   
    protected Checkbox conformeTraitementBoxOui;
    protected Checkbox conformeTraitementBoxNon;
    protected Div conformeTraitementBox;
@@ -143,6 +146,9 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
    protected Listbox nonConformitesTraitementBox;
    protected Listbox nonConformitesCessionBox;
 
+   //Labels anonymisables
+   private Label emplacementLabelEchan;
+   
    // Objets Principaux.
    private Echantillon echantillon = new Echantillon();
    private String selectedLateralite = "";
@@ -828,7 +834,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
       }
       if(this.echantillon.getQuantiteUnite() != null){
          sb.append(" ");
-         sb.append(this.echantillon.getQuantiteUnite().getUnite());
+         sb.append(this.echantillon.getQuantiteUnite().getNom());
       }
       valeurQuantite = sb.toString();
 
@@ -1299,17 +1305,24 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
    }
 
    public String getEmplacementAdrl(){
-      boolean isAnonyme = false;
-      if(sessionScope.containsKey("Anonyme") && (Boolean) sessionScope.get("Anonyme")){
-         isAnonyme = true;
+      
+      Boolean isAutorise;
+
+      if(isAnonyme()){
+         isAutorise = false;
       }else{
-         isAnonyme = false;
+         //La modification du stockage ne peut pas se faire ici, on regarde donc les droits de consultation
+         //pour savoir si on affiche ou non la valeur du champ
+         isAutorise = getDroitOnAction("Stockage", "Consultation");
       }
 
-      if(isAnonyme){
-         return "-";
+      if(!isAutorise){
+         makeLabelAnonyme(emplacementLabelEchan, false);
+         return getAnonymeString();
       }
+
       return emplacementAdrl;
+      
    }
 
    public String getTemperatureFormated(){

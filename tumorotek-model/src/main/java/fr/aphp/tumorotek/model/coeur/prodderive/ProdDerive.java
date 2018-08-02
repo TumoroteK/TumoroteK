@@ -109,6 +109,14 @@ import fr.aphp.tumorotek.model.utils.Utils;
       @NamedQuery(name = "ProdDerive.findByBanqueAndQuantiteSelectCode",
          query = "SELECT p.code FROM ProdDerive p " + "WHERE p.banque = ?1 " + "AND (p.quantite > 0 OR p.quantite IS NULL) "
             + "AND p.objetStatut.statut not in ('EPUISE', 'ENCOURS', 'RESERVE')"),
+      @NamedQuery(name = "ProdDerive.findAllCodesByBanqueAndQuantiteNotNullOrInCessionTraitement",
+      query = "SELECT p.code FROM ProdDerive p "
+         + "WHERE p.banque = ?1 "
+         + "AND (((p.quantite > 0 OR p.quantite IS NULL) "
+         + "AND p.objetStatut.statut not in ('EPUISE', 'ENCOURS', 'RESERVE'))"
+         + "OR ("
+               + "p.prodDeriveId in (SELECT c.pk.objetId FROM CederObjet c WHERE c.pk.entite.nom = 'ProdDerive' AND c.pk.cession.cessionType.type = 'Traitement' AND c.statut = 'TRAITEMENT'"
+         + ")))"),
       @NamedQuery(name = "ProdDerive.findByBanqueStatutSelectCode",
          query = "SELECT p.code FROM ProdDerive p " + "WHERE p.banque = ?1 AND p.objetStatut = ?2 " + "ORDER BY p.code"),
       @NamedQuery(name = "ProdDerive.findByBanqueInListStatutSelectCode",
@@ -124,7 +132,7 @@ import fr.aphp.tumorotek.model.utils.Utils;
          query = "SELECT p FROM ProdDerive p " + "WHERE p.emplacement.terminale = ?1)"),
       @NamedQuery(name = "ProdDerive.findByParentAndType",
          query = "SELECT p FROM ProdDerive p " + "WHERE p.transformation.objetId = ?1 " + "AND p.transformation.entite = ?2 "
-            + "AND p.prodType.type like ?3"),
+            + "AND p.prodType.nom like ?3"),
       @NamedQuery(name = "ProdDerive.findByEchantillonPatientNomReturnIds",
          query = "SELECT p.prodDeriveId FROM ProdDerive p, Echantillon e " + "JOIN e.prelevement as prlvt "
             + "JOIN prlvt.maladie as m " + "JOIN m.patient as pat " + "WHERE p.transformation.objetId = e.echantillonId "

@@ -89,7 +89,7 @@ public class ConditMilieuDaoTest extends AbstractDaoTest
     */
    public void testToString(){
       ConditMilieu cm1 = conditMilieuDao.findById(1);
-      assertTrue(cm1.toString().equals("{" + cm1.getMilieu() + "}"));
+      assertTrue(cm1.toString().equals("{" + cm1.getNom() + "}"));
       cm1 = new ConditMilieu();
       assertTrue(cm1.toString().equals("{Empty ConditMilieu}"));
    }
@@ -104,13 +104,13 @@ public class ConditMilieuDaoTest extends AbstractDaoTest
 
    public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
-      List<? extends TKThesaurusObject> list = conditMilieuDao.findByOrder(pf);
+      List<? extends TKThesaurusObject> list = conditMilieuDao.findByPfOrder(pf);
       assertTrue(list.size() == 1);
       assertTrue(list.get(0).getNom().equals("SEC"));
       pf = plateformeDao.findById(2);
-      list = conditMilieuDao.findByOrder(pf);
+      list = conditMilieuDao.findByPfOrder(pf);
       assertTrue(list.size() == 1);
-      list = conditMilieuDao.findByOrder(null);
+      list = conditMilieuDao.findByPfOrder(null);
       assertTrue(list.size() == 0);
    }
 
@@ -137,19 +137,19 @@ public class ConditMilieuDaoTest extends AbstractDaoTest
    public void testCrudConditMilieu() throws Exception{
       final ConditMilieu ct = new ConditMilieu();
 
-      ct.setMilieu("EDTA");
+      ct.setNom("EDTA");
       ct.setPlateforme(plateformeDao.findById(1));
       // Test de l'insertion
       conditMilieuDao.createObject(ct);
-      assertEquals(new Integer(3), ct.getConditMilieuId());
+      assertEquals(new Integer(3), ct.getId());
 
       // Test de la mise à jour
       final ConditMilieu ct2 = conditMilieuDao.findById(new Integer(3));
       assertNotNull(ct2);
-      assertTrue(ct2.getMilieu().equals("EDTA"));
-      ct2.setMilieu(updatedMilieu);
+      assertTrue(ct2.getNom().equals("EDTA"));
+      ct2.setNom(updatedMilieu);
       conditMilieuDao.updateObject(ct2);
-      assertTrue(conditMilieuDao.findById(new Integer(3)).getMilieu().equals(updatedMilieu));
+      assertTrue(conditMilieuDao.findById(new Integer(3)).getNom().equals(updatedMilieu));
 
       // Test de la délétion
       conditMilieuDao.removeObject(new Integer(3));
@@ -164,9 +164,9 @@ public class ConditMilieuDaoTest extends AbstractDaoTest
       final String milieu = "Milieu";
       final String milieu2 = "Milieu2";
       final ConditMilieu ct1 = new ConditMilieu();
-      ct1.setMilieu(milieu);
+      ct1.setNom(milieu);
       final ConditMilieu ct2 = new ConditMilieu();
-      ct2.setMilieu(milieu);
+      ct2.setNom(milieu);
       final Plateforme pf1 = plateformeDao.findById(1);
       final Plateforme pf2 = plateformeDao.findById(2);
 
@@ -179,23 +179,23 @@ public class ConditMilieuDaoTest extends AbstractDaoTest
       assertTrue(ct2.equals(ct1));
 
       // Vérification de la différenciation de 2 objets
-      ct2.setMilieu(milieu2);
+      ct2.setNom(milieu2);
       assertFalse(ct1.equals(ct2));
       assertFalse(ct2.equals(ct1));
 
       //passe la clef naturelle milieu a nulle pour un des objets
-      ct2.setMilieu(null);
+      ct2.setNom(null);
       assertFalse(ct1.equals(ct2));
       assertFalse(ct2.equals(ct1));
 
       //passe la clef naturelle milieu a nulle pour l'autre objet
-      ct1.setMilieu(null);
+      ct1.setNom(null);
       assertTrue(ct1.equals(ct2));
-      ct2.setMilieu(milieu);
+      ct2.setNom(milieu);
       assertFalse(ct1.equals(ct2));
 
       //plateforme
-      ct1.setMilieu(ct2.getMilieu());
+      ct1.setNom(ct2.getNom());
       ct1.setPlateforme(pf1);
       ct2.setPlateforme(pf1);
       assertTrue(ct1.equals(ct2));
@@ -214,14 +214,14 @@ public class ConditMilieuDaoTest extends AbstractDaoTest
    public void testHashCode(){
       final String milieu = "Milieu";
       final ConditMilieu ct1 = new ConditMilieu();
-      ct1.setConditMilieuId(1);
-      ct1.setMilieu(milieu);
+      ct1.setId(1);
+      ct1.setNom(milieu);
       final ConditMilieu ct2 = new ConditMilieu();
-      ct2.setConditMilieuId(2);
-      ct2.setMilieu(milieu);
+      ct2.setId(2);
+      ct2.setNom(milieu);
       final ConditMilieu ct3 = new ConditMilieu();
-      ct3.setConditMilieuId(3);
-      ct3.setMilieu(null);
+      ct3.setId(3);
+      ct3.setNom(null);
       assertTrue(ct3.hashCode() > 0);
 
       final Plateforme pf1 = plateformeDao.findById(1);

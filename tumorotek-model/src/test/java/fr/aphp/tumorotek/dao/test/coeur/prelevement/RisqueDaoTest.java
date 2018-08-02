@@ -104,13 +104,13 @@ public class RisqueDaoTest extends AbstractDaoTest
 
    public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
-      List<Risque> list = risqueDao.findByOrder(pf);
+      List<Risque> list = risqueDao.findByPfOrder(pf);
       assertTrue(list.size() == 2);
       assertTrue(list.get(0).getNom().equals("GRIPPE A"));
       pf = plateformeDao.findById(2);
-      list = risqueDao.findByOrder(pf);
+      list = risqueDao.findByPfOrder(pf);
       assertTrue(list.size() == 1);
-      list = risqueDao.findByOrder(null);
+      list = risqueDao.findByPfOrder(null);
       assertTrue(list.size() == 0);
    }
 

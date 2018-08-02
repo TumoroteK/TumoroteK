@@ -39,12 +39,10 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -53,8 +51,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import fr.aphp.tumorotek.model.TKThesaurusObject;
-import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 
 /**
  *
@@ -67,48 +64,65 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  */
 @Entity
 @Table(name = "ENCEINTE_TYPE")
+@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "ENCEINTE_TYPE_ID")),
+   @AttributeOverride(name = "nom", column = @Column(name = "TYPE", nullable = false, length = 200))})
+@GenericGenerator(name = "autoincrement", strategy = "increment")
 @NamedQueries(value = {
    @NamedQuery(name = "EnceinteType.findByTypeAndPf",
-      query = "SELECT e FROM EnceinteType e " + "WHERE e.type = ?1 and e.plateforme = ?2"),
-   @NamedQuery(name = "EnceinteType.findByExcludedId", query = "SELECT e FROM EnceinteType e " + "WHERE e.enceinteTypeId != ?1"),
+      query = "SELECT e FROM EnceinteType e " + "WHERE e.nom = ?1 and e.plateforme = ?2"),
+   @NamedQuery(name = "EnceinteType.findByExcludedId", query = "SELECT e FROM EnceinteType e " + "WHERE e.id != ?1"),
+   @NamedQuery(name = "EnceinteType.findByPfOrder",
+      query = "SELECT e FROM EnceinteType e " + "WHERE e.plateforme = ?1 ORDER BY e.nom"),
    @NamedQuery(name = "EnceinteType.findByOrder",
-      query = "SELECT e FROM EnceinteType e " + "WHERE e.plateforme = ?1 ORDER BY e.type"),
+   query = "SELECT e FROM EnceinteType e ORDER BY e.nom"),
    @NamedQuery(name = "EnceinteType.findByOrderExceptBoite",
-      query = "SELECT e FROM EnceinteType e " + "WHERE e.type != 'BOITE' AND e.plateforme = ?1 " + "ORDER BY e.type")})
-public class EnceinteType implements Serializable, TKThesaurusObject
+      query = "SELECT e FROM EnceinteType e " + "WHERE e.nom != 'BOITE' AND e.plateforme = ?1 " + "ORDER BY e.nom")})
+public class EnceinteType extends AbstractPfDependantThesaurusObject implements Serializable
 {
 
    private static final long serialVersionUID = -3464397633260018314L;
 
-   private Integer enceinteTypeId;
-   private String type;
    private String prefixe;
-   private Plateforme plateforme;
 
    private Set<Enceinte> enceintes = new HashSet<>();
 
    /** Constructeur par défaut. */
    public EnceinteType(){}
 
-   @Id
-   @Column(name = "ENCEINTE_TYPE_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
+   /**
+    * @deprecated Utiliser {@link #getId()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public Integer getEnceinteTypeId(){
-      return this.enceinteTypeId;
+      return this.getId();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setId(Integer)}
+    * @return
+    */
+   @Deprecated
    public void setEnceinteTypeId(final Integer id){
-      this.enceinteTypeId = id;
+      this.setId(id);
    }
 
-   @Column(name = "TYPE", nullable = false, length = 200)
+   /**
+    * @deprecated Utiliser {@link #getNom()}
+    */
+   @Deprecated
+   @Transient
    public String getType(){
-      return this.type;
+      return this.getNom();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setNom(String)}
+    */
+   @Deprecated
    public void setType(final String t){
-      this.type = t;
+      this.setNom(t);
    }
 
    @Column(name = "PREFIXE", nullable = false, length = 5)
@@ -129,81 +143,16 @@ public class EnceinteType implements Serializable, TKThesaurusObject
       this.enceintes = encs;
    }
 
-   @Override
-   @ManyToOne
-   @JoinColumn(name = "PLATEFORME_ID", nullable = false)
-   public Plateforme getPlateforme(){
-      return plateforme;
-   }
-
-   @Override
-   public void setPlateforme(final Plateforme pf){
-      this.plateforme = pf;
-   }
-
-   /**
-    * 2 objets sont considérés comme égaux s'ils ont le même type 
-    * et la même plateforme.
-    * @param obj est l'objet à tester.
-    * @return true si les objets sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
-
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final EnceinteType test = (EnceinteType) obj;
-      return ((this.type == test.type || (this.type != null && this.type.equals(test.type)))
-         && (this.plateforme == test.plateforme || (this.plateforme != null && this.plateforme.equals(test.plateforme))));
-   }
-
-   /**
-    * Le hashcode est calculé sur les attributs type et plateforme.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-      int hash = 7;
-      int hashType = 0;
-      int hashPF = 0;
-
-      if(this.type != null){
-         hashType = this.type.hashCode();
-      }
-      if(this.plateforme != null){
-         hashPF = this.plateforme.hashCode();
-      }
-
-      hash = 31 * hash + hashType;
-      hash = 31 * hash + hashPF;
-
-      return hash;
-   }
 
    /**
     * Méthode surchargeant le toString() de l'objet.
     */
    @Override
    public String toString(){
-      if(this.type != null){
-         return "{" + this.type + "}";
+      if(this.getNom() != null){
+         return "{" + this.getNom() + "}";
       }
       return "{Empty EnceinteType}";
    }
 
-   @Override
-   @Transient
-   public String getNom(){
-      return getType();
-   }
-
-   @Override
-   @Transient
-   public Integer getId(){
-      return getEnceinteTypeId();
-   }
 }

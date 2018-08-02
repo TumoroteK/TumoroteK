@@ -45,6 +45,8 @@ import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.sql.DataSource;
 
@@ -2615,11 +2617,11 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       final Banque b3 = banqueDao.findById(3);
       final Banque b4 = banqueDao.findById(4);
       // ne doit pas planter
-      echantillonManager.switchBanqueCascadeManager(null, b3, false, u, null);
+      echantillonManager.switchBanqueCascadeManager(null, b3, false, u, null, null);
       Echantillon e = new Echantillon();
       e.setObjetStatut(objetStatutManager.findByIdManager(4));
       // ne doit pas planter getBanque() == null
-      echantillonManager.switchBanqueCascadeManager(e, null, false, u, null);
+      echantillonManager.switchBanqueCascadeManager(e, null, false, u, null, null);
       e.setCode("JEG.2");
       echantillonManager.createObjectManager(e, b3, null, null, null, null, echantillonTypeManager.findByIdManager(1), null, null,
          null, null, null, null, null, u, false, null, false);
@@ -2627,7 +2629,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       e = echantillonManager.findByIdManager(e.getEchantillonId());
 
       // banque depart = banque arrivee
-      echantillonManager.switchBanqueCascadeManager(e, b3, false, u, null);
+      echantillonManager.switchBanqueCascadeManager(e, b3, false, u, null, null);
       assertTrue(getOperationManager().findByObjectManager(e).size() == 1);
 
       // switch 3 -> 2		
@@ -2643,7 +2645,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
 
       boolean catched = false;
       try{
-         echantillonManager.switchBanqueCascadeManager(ebis, b2, false, u, null);
+         echantillonManager.switchBanqueCascadeManager(ebis, b2, false, u, null, null);
       }catch(final DoublonFoundException dbe){
          catched = true;
       }
@@ -2656,7 +2658,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       e.setCode("switchEchan");
       echantillonManager.updateObjectManager(e, e.getBanque(), e.getPrelevement(), null, e.getObjetStatut(), null,
          e.getEchantillonType(), null, null, null, null, null, null, null, null, null, null, u, false, null, null);
-      echantillonManager.switchBanqueCascadeManager(e, b2, false, u, null);
+      echantillonManager.switchBanqueCascadeManager(e, b2, false, u, null, null);
       // switched ok
       assertTrue(banqueManager.getEchantillonsManager(b3).isEmpty());
       assertTrue(banqueManager.getEchantillonsManager(b2).size() == 2);
@@ -2671,7 +2673,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       prodDeriveManager.createObjectManager(derive, b2, prodTypeDao.findById(1), objetStatutManager.findByIdManager(4), null,
          null, null, null, null, null, null, transfo1, null, null, null, u, false, null, false);
       assertTrue(banqueManager.getProdDerivesManager(b2).size() == 2);
-      echantillonManager.switchBanqueCascadeManager(e, b3, true, u, null);
+      echantillonManager.switchBanqueCascadeManager(e, b3, true, u, null, null);
       // switched ok
       assertTrue(banqueManager.getEchantillonsManager(b3).size() == 1);
       assertTrue(banqueManager.getProdDerivesManager(b2).size() == 1);
@@ -2688,7 +2690,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       cederObjetManager.createObjectManager(ced1, cession, entite, null);
       catched = false;
       try{
-         echantillonManager.switchBanqueCascadeManager(e, b4, true, u, null);
+         echantillonManager.switchBanqueCascadeManager(e, b4, true, u, null, null);
       }catch(final RuntimeException re){
          catched = true;
          assertTrue(re.getMessage().equals("echantillon.switchBanque.isCessed"));
@@ -2705,7 +2707,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       cederObjetManager.createObjectManager(ced2, cession, entiteDao.findById(8), null);
       catched = false;
       try{
-         echantillonManager.switchBanqueCascadeManager(e, b4, true, u, null);
+         echantillonManager.switchBanqueCascadeManager(e, b4, true, u, null, null);
       }catch(final RuntimeException re){
          catched = true;
          assertTrue(re.getMessage().equals("derive.switchBanque.isCessed"));
@@ -2781,7 +2783,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
          null, null, derive.getTransformation(), null, null, null, null, null, u, false, null, null);
 
       try{
-         echantillonManager.switchBanqueCascadeManager(e, b2, true, u, null);
+         echantillonManager.switchBanqueCascadeManager(e, b2, true, u, null, null);
       }catch(final RuntimeException re){
          catched = true;
          assertTrue(re.getMessage().equals("derive.switchBanque.badBanqueStockage"));
@@ -2803,7 +2805,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       // e = echantillonManager.findByIdManager(e.getEchantillonId());
 
       try{
-         echantillonManager.switchBanqueCascadeManager(e, b2, true, u, null);
+         echantillonManager.switchBanqueCascadeManager(e, b2, true, u, null,null);
       }catch(final RuntimeException re){
          catched = true;
          assertTrue(re.getMessage().equals("echantillon.switchBanque.badBanqueStockage"));
@@ -2815,7 +2817,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       assertTrue(banqueManager.getProdDerivesManager(b3).size() == 1);
 
       // annotations
-      echantillonManager.switchBanqueCascadeManager(e, b1, true, u, null);
+      echantillonManager.switchBanqueCascadeManager(e, b1, true, u, null, null);
       // switched ok
       assertTrue(banqueManager.getEchantillonsManager(b3).isEmpty());
       assertTrue(banqueManager.getEchantillonsManager(b1).size() == 4);
@@ -2845,9 +2847,9 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       cederObjetManager.createObjectManager(ced2, cession, entiteDao.findById(8), null);
       cederObjetManager.createObjectManager(ced1, cession, entite, null);
 
-      echantillonManager.switchBanqueCascadeManager(e, b3, true, u, null);
+      echantillonManager.switchBanqueCascadeManager(e, b3, true, u, null, null);
       assertTrue(annotationValeurManager.findByObjectManager(e).size() == 1);
-      assertTrue(annotationValeurManager.findByObjectManager(e).get(0).getChampAnnotation().getChampAnnotationId() == 7);
+      assertTrue(annotationValeurManager.findByObjectManager(e).get(0).getChampAnnotation().getId() == 7);
 
       // clean up
       final List<Enceinte> encs = enceinteManager.findAllEnceinteByConteneurManager(c);
@@ -3411,7 +3413,10 @@ public class EchantillonManagerTest extends AbstractManagerTest4
 
       // test sur le risque
       final Champ c249 = new Champ(champEntiteDao.findById(249));
-      assertTrue(extractValueFromChampManager.extractValueForChampManager(e1, c249).equals("LEUCEMIE, HIV"));
+      final String[] expected = new String[]{"HIV", "LEUCEMIE"};
+      String value = extractValueFromChampManager.extractValueForChampManager(e1, c249);
+      List<String> actual = Stream.of(value.split(",")).map( token -> token.trim() ).collect(Collectors.toList());
+      assertTrue( actual.size() == 2 && actual.containsAll(Arrays.asList(expected)) );
 
       // test sur l'emplacement
       final Echantillon e2 = echantillonManager.findByIdManager(2);
@@ -4228,11 +4233,11 @@ public class EchantillonManagerTest extends AbstractManagerTest4
          e.printStackTrace();
       }finally{
          if(null != stmt)
-            stmt.close();
+         stmt.close();
          if(null != rs)
-            rs.close();
+         rs.close();
          if(null != conn)
-            conn.close();
+         conn.close();
          jdbcSuite.closePs();
       }
    }

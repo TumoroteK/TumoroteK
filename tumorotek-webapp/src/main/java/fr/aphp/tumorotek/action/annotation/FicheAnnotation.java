@@ -343,7 +343,7 @@ public class FicheAnnotation extends AbstractFicheController
       ua = (HtmlMacroComponent) page.getComponentDefinition("annoComp", false).newInstance(page, null);
       row.setAlign("left");
       ua.setParent(row);
-      ua.setId("chp_" + chp.getChampAnnotationId());
+      ua.setId("chp_" + chp.getId());
       ua.applyProperties();
       ua.setHflex("1");
       ua.afterCompose();
@@ -431,7 +431,7 @@ public class FicheAnnotation extends AbstractFicheController
             champsIt = ManagerLocator.getTableAnnotationManager().getChampAnnotationsManager(tables.get(i)).iterator();
             while(champsIt.hasNext()){
                chp = champsIt.next();
-               ((AnnotationComponent) annoRows.getFellow("chp_" + chp.getChampAnnotationId()).getFellow("annoDiv")
+               ((AnnotationComponent) annoRows.getFellow("chp_" + chp.getId()).getFellow("annoDiv")
                   .getAttributeOrFellow("annoDiv$composer", true)).switchToStaticOrEditMode(isStatic);
             }
          }

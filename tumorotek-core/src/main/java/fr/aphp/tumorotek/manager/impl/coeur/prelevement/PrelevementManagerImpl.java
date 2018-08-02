@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.manager.impl.coeur.prelevement;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -89,6 +90,7 @@ import fr.aphp.tumorotek.manager.exception.ObjectUsedException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.manager.impl.coeur.CreateOrUpdateUtilities;
+import fr.aphp.tumorotek.manager.impl.systeme.MvFichier;
 import fr.aphp.tumorotek.manager.io.imports.ImportHistoriqueManager;
 import fr.aphp.tumorotek.manager.qualite.ObjetNonConformeManager;
 import fr.aphp.tumorotek.manager.qualite.OperationManager;
@@ -695,14 +697,6 @@ public class PrelevementManagerImpl implements PrelevementManager
          query.setParameter("banque", banques);
          query.setFirstResult(0);
          query.setMaxResults(nbResults);
-         //				Query query = em.createQuery("SELECT p "
-         //						+ "FROM Prelevement p, Operation o "
-         //						+ "WHERE o.objetId = p.prelevementId "
-         //						+ "AND o.entite = :entite "
-         //						+ "AND o.operationType = :oType "
-         //						+ "AND p.banque in (:banque) " + "ORDER BY o.date DESC");
-         //				query.setParameter("entite", entiteDao.findByNom("Prelevement"));
-         //				query.setParameter("oType", oType);
 
          liste.addAll(query.getResultList());
 
@@ -710,50 +704,6 @@ public class PrelevementManagerImpl implements PrelevementManager
       return liste;
 
    }
-
-   //	/**
-   //	 * Récupère une liste de Prelevements en fonction de leur banque et d'un
-   //	 * type d'opération. Cette liste est ordonnée par la date de l'opération. Sa
-   //	 * taille maximale est fixée par un paramètre.
-   //	 * 
-   //	 * @param oType
-   //	 *            Type de l'opération.
-   //	 * @param banque
-   //	 *            Banque des Prelevements.
-   //	 * @param nbResults
-   //	 *            Nombre max de Prelevements souhaités.
-   //	 * @return Liste de Prelevements.
-   //	 */
-   //	
-   //	private List<Prelevement> findByLastOperationType(OperationType oType,
-   //			List<Banque> banques, int nbResults) {
-   //
-   //		List<Prelevement> prelevements = new ArrayList<Prelevement>();
-   //
-   //		if (banques.size() > 0) {
-   //			EntityManager em = entityManagerFactory.createEntityManager();
-   //			Query query = em.createQuery("SELECT p " 
-   //					+ "FROM Prelevement p " 
-   //					+ "WHERE p.banque in (:banque) " 
-   //					+ "ORDER BY p.prelevementId DESC");
-   //			query.setParameter("banque", banques);
-   //			query.setFirstResult(0);
-   //			query.setMaxResults(nbResults);
-   ////			Query query = em.createQuery("SELECT p "
-   ////					+ "FROM Prelevement p, Operation o "
-   ////					+ "WHERE o.objetId = p.prelevementId "
-   ////					+ "AND o.entite = :entite "
-   ////					+ "AND o.operationType = :oType "
-   ////					+ "AND p.banque in (:banque) " + "ORDER BY o.date DESC");
-   ////			query.setParameter("entite", entiteDao.findByNom("Prelevement"));
-   ////			query.setParameter("oType", oType);
-   //
-   //			prelevements.addAll(query.getResultList());
-   //		}
-   //
-   //		return prelevements;
-   //
-   //	}
 
    @Override
    public List<Prelevement> findByCodeLikeManager(String code, final boolean exactMatch){
@@ -1163,7 +1113,6 @@ public class PrelevementManagerImpl implements PrelevementManager
       final Service servicePreleveur, final PrelevementType prelevementType, final ConditType conditType,
       final ConditMilieu conditMilieu, final Transporteur transporteur, final Collaborateur operateur, final Unite quantiteUnite){
 
-      prelevement.setDelegate(prelevementDelegateDao.mergeObject(prelevement.getDelegate()));
       prelevement.setPrelevementType(prelevementTypeDao.mergeObject(prelevementType));
       prelevement.setPreleveur(collaborateurDao.mergeObject(preleveur));
       prelevement.setServicePreleveur(serviceDao.mergeObject(servicePreleveur));
@@ -1406,11 +1355,40 @@ public class PrelevementManagerImpl implements PrelevementManager
       final Utilisateur u){
 
       final List<File> filesToDelete = new ArrayList<>();
+      Set<MvFichier> dpcts = new HashSet<MvFichier>();
 
       if(prlvts != null){
          for(final Prelevement p : prlvts){
-            switchBanqueCascadeManager(p, bank, doValidation, u, filesToDelete);
+            switchBanqueCascadeManager(p, bank, doValidation, u, filesToDelete, dpcts);
          }
+      }
+      
+      // dpcts
+      // Correctif bug TK-155
+      MvFichier mvFichier = null;
+      try {
+    	  for (MvFichier mv : dpcts) {
+    		  mvFichier = mv;
+    		  mv.move();
+    	  }
+      } catch (IOException ioe) { // problème survenu lors du déplacement
+    	  log.error("un problème est survenu dans un déplacement de fichier: " 
+    			  + mvFichier.toString());
+
+    	  log.error(ioe);
+
+    	  // rollback
+    	  try {
+    		  for (MvFichier mv : dpcts) {
+    			  mv.revert();
+    		  }
+    	  } catch (IOException ioe2) { // problème survenu lors du rollback du déplacement
+    		  log.error("un problème est survenu dans un rollabck de déplacement de fichier: " 
+    				  + mvFichier.toString());
+
+    		  log.error(ioe2);
+    	  }
+    	  throw new RuntimeException("switch.banque.filesystem.error");
       }
 
       //      if(filesToDelete != null){
@@ -1422,50 +1400,52 @@ public class PrelevementManagerImpl implements PrelevementManager
 
    @Override
    public void switchBanqueCascadeManager(Prelevement prel, final Banque bank, final boolean doValidation, final Utilisateur u,
-      final List<File> filesToDelete){
-      if(bank != null && prel != null && !bank.equals(prel.getBanque())){
+		   final List<File> filesToDelete, final Set<MvFichier> filesToMove) {
+	   if(bank != null && prel != null && !bank.equals(prel.getBanque())){
 
-         final Iterator<Echantillon> echansIt = getEchantillonsManager(prel).iterator();
+		   final Iterator<Echantillon> echansIt = getEchantillonsManager(prel).iterator();
 
-         while(echansIt.hasNext()){
-            echantillonManager.switchBanqueCascadeManager(echansIt.next(), bank, doValidation, u, filesToDelete);
-         }
+		   while(echansIt.hasNext()){
+			   echantillonManager.switchBanqueCascadeManager(echansIt.next(), bank, 
+					   doValidation, u, filesToDelete, filesToMove);
+		   }
 
-         final Iterator<ProdDerive> derivesIt = getProdDerivesManager(prel).iterator();
-         while(derivesIt.hasNext()){
-            prodDeriveManager.switchBanqueCascadeManager(derivesIt.next(), bank, doValidation, u, filesToDelete);
-         }
+		   final Iterator<ProdDerive> derivesIt = getProdDerivesManager(prel).iterator();
+		   while(derivesIt.hasNext()){
+			   prodDeriveManager.switchBanqueCascadeManager(derivesIt.next(), bank, 
+					   doValidation, u, filesToDelete, filesToMove);
+		   }
 
-         //Suppression du délégué si la banque de destination n'est pas dans le même contexte que la banque d'origine
-         if(!bank.getContexte().equals(prel.getBanque().getContexte())){
-            prel.setDelegate(null);
-         }
-         //Si la banque de destination est dans le même contexte que la banque d'origine, on garde le délégué mais on supprime la validation le cas échéant
-         else if(prel.getDelegate() instanceof TKValidableObject) {
-            ((TKValidableObject)prel.getDelegate()).setDetailValidation(null);
-         }
+		   //Suppression du délégué si la banque de destination n'est pas dans le même contexte que la banque d'origine
+		   if(!bank.getContexte().equals(prel.getBanque().getContexte())){
+			   prel.setDelegate(null);
+		   }
+		   //Si la banque de destination est dans le même contexte que la banque d'origine, on garde le délégué mais on supprime la validation le cas échéant
+		   else if(prel.getDelegate() instanceof TKValidableObject) {
+			   ((TKValidableObject)prel.getDelegate()).setDetailValidation(null);
+		   }
 
-         prel.setBanque(bank);
+		   prel.setBanque(bank);
 
-         //Si le délégué présente des informations de validation, on 
+		   //Si le délégué présente des informations de validation, on 
 
-         if(doValidation && findDoublonManager(prel)){
-            log.warn("Doublon lors creation objet Prelevement " + prel.toString());
-            throw new DoublonFoundException("Prelevement", "switchBanque", prel.getCode(), null);
-         }
-         prel = prelevementDao.mergeObject(prel);
+		   if(doValidation && findDoublonManager(prel)){
+			   log.warn("Doublon lors creation objet Prelevement " + prel.toString());
+			   throw new DoublonFoundException("Prelevement", "switchBanque", prel.getCode(), null);
+		   }
+		   prel = prelevementDao.mergeObject(prel);
 
-         // annotations
-         annotationValeurManager.switchBanqueManager(prel, bank, filesToDelete);
-         // if (prel.getMaladie() != null) {
-         // annotationValeurManager
-         // .switchBanqueManager(prel.getMaladie().getPatient(), bank);
-         // }
+		   // annotations
+		   annotationValeurManager.switchBanqueManager(prel, bank, filesToDelete,filesToMove);
+		   // if (prel.getMaladie() != null) {
+		   // annotationValeurManager
+		   // .switchBanqueManager(prel.getMaladie().getPatient(), bank);
+		   // }
 
-         final Operation creationOp = new Operation();
-         creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.createObjectManager(creationOp, u, operationTypeDao.findByNom("ChangeCollection").get(0), prel);
-      }
+		   final Operation creationOp = new Operation();
+		   creationOp.setDate(Utils.getCurrentSystemCalendar());
+		   operationManager.createObjectManager(creationOp, u, operationTypeDao.findByNom("ChangeCollection").get(0), prel);
+	   }
    }
 
    @Override

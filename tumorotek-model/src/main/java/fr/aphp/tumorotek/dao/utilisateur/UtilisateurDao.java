@@ -155,13 +155,21 @@ public interface UtilisateurDao extends GenericDaoJpa<Utilisateur, Integer>
    List<Utilisateur> findByExcludedId(Integer utilisateurId);
 
    /**
-    * Recherche les utilisateurs archivés.
+    * Recherche les utilisateurs en excluant les super-administrateurs.
     * @param archive True ou false.
     * @param pfs plateformes d'origine
     * @return une liste d'utilisateurs.
     */
-   List<Utilisateur> findByOrderWithArchive(boolean archive, List<Plateforme> pfs);
-
+   List<Utilisateur> findByOrderWithArchiveExcludeSuperAdmin(boolean archive, List<Plateforme> pfs);
+   
+   /**
+    * Recherche les utilisateurs en incluant les super-administrateurs.
+    * @param archive True ou false.
+    * @param pfs plateformes d'origine
+    * @return une liste d'utilisateurs.
+    */
+   List<Utilisateur>  findByOrderWithArchiveIncludeSuperAdmin(boolean archive, List<Plateforme> pfs);
+   
    /**
     * Recherche les utilisateurs dont le login et le mdp sont égaux 
     * aux paramètres.

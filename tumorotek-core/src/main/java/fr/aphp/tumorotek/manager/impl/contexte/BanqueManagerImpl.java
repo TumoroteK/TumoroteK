@@ -926,25 +926,25 @@ public class BanqueManagerImpl implements BanqueManager
             if(new File(path + "/anno").mkdirs()){
                log.info("Creation file system " + path + "/anno");
             }else{
-               log.error("Erreur dans la creation du systeme " + "de fichier anno pour la banque " + bank.toString());
+               log.error("Erreur dans la creation du systeme de fichier anno pour la banque " + bank.toString());
                throw new RuntimeException("banque.filesystem.anno.error");
             }
             if(new File(path + "/cr_anapath").mkdirs()){
                log.info("Creation file system " + path + "/cr_anapath");
             }else{
-               log.error("Erreur dans la creation du systeme " + "de fichier anapath pour la banque " + bank.toString());
-               throw new RuntimeException("banque." + "filesystem.anapath.error");
+               log.error("Erreur dans la creation du systeme de fichier anapath pour la banque " + bank.toString());
+               throw new RuntimeException("banque.filesystem.anapath.error");
             }
          }else{
             log.error("Le systeme de fichier pour la banque " + bank.toString() + "existes deja");
-            throw new RuntimeException("banque." + "filesystem.exists.error");
+            throw new RuntimeException("banque.filesystem.exists.error");
          }
       }else{
          if(Utils.deleteDirectory(new File(path))){
             log.info("Filesystem complet supprimé pour la banque " + bank.toString());
          }else{
-            log.error("Erreur dans la suppression du systeme " + "de fichier anapath pour la banque " + bank.toString());
-            throw new RuntimeException("banque." + "filesystem.delete.error");
+            log.error("Erreur dans la suppression du systeme de fichier anapath pour la banque " + bank.toString());
+            throw new RuntimeException("banque.filesystem.delete.error");
          }
       }
    }

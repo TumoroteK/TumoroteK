@@ -325,7 +325,7 @@ public class TableAnnotationManagerTest extends AbstractManagerTest4
          assertTrue(ve.getErrors().get(0).getFieldError().getCode().equals("champAnnotation.nom.illegal"));
       }
       assertTrue(table.getTableAnnotationId() == null);
-      assertTrue(c1.getChampAnnotationId() == null);
+      assertTrue(c1.getId() == null);
       assertTrue(table.getChampAnnotations().size() == 0);
       assertTrue(c2.getItems().size() == 2);
       testFindAllObjectsManager();

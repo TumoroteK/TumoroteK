@@ -39,12 +39,10 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -53,8 +51,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import fr.aphp.tumorotek.model.TKThesaurusObject;
-import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 
 /**
  *
@@ -67,51 +64,60 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  */
 @Entity
 @Table(name = "CONSENT_TYPE")
-@NamedQueries(value = {@NamedQuery(name = "ConsentType.findByType", query = "SELECT c FROM ConsentType c WHERE c.type like ?1"),
-   @NamedQuery(name = "ConsentType.findByExcludedId", query = "SELECT c FROM ConsentType c " + "WHERE c.consentTypeId != ?1"),
-   @NamedQuery(name = "ConsentType.findByOrder",
-      query = "SELECT c FROM ConsentType c " + "WHERE c.plateforme = ?1 ORDER BY c.type")})
-public class ConsentType implements Serializable, TKThesaurusObject, Comparable<ConsentType>
+@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "CONSENT_TYPE_ID")),
+   @AttributeOverride(name = "nom", column = @Column(name = "TYPE", nullable = false, length = 200))})
+@GenericGenerator(name = "autoincrement", strategy = "increment")
+@NamedQueries(value = {@NamedQuery(name = "ConsentType.findByType", query = "SELECT c FROM ConsentType c WHERE c.nom like ?1"),
+   @NamedQuery(name = "ConsentType.findByExcludedId", query = "SELECT c FROM ConsentType c " + "WHERE c.id != ?1"),
+   @NamedQuery(name = "ConsentType.findByPfOrder",
+      query = "SELECT c FROM ConsentType c " + "WHERE c.plateforme = ?1 ORDER BY c.nom"),
+   @NamedQuery(name = "ConsentType.findByOrder", query = "FROM ConsentType c ORDER BY c.nom")})
+public class ConsentType extends AbstractPfDependantThesaurusObject implements Serializable, Comparable<ConsentType>
 {
 
    private static final long serialVersionUID = 8053863104954363979L;
-
-   private Integer consentTypeId;
-   private String type;
-   private Plateforme plateforme;
 
    private Set<Prelevement> prelevements = new HashSet<>();
 
    /** Constructeur par défaut. */
    public ConsentType(){}
 
-   @Override
-   public String toString(){
-      if(this.type != null){
-         return "{" + this.type + "}";
-      }
-      return "{Empty ConsentType}";
-   }
-
-   @Id
-   @Column(name = "CONSENT_TYPE_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
+   /**
+    * @deprecated Utiliser {@link #getId()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public Integer getConsentTypeId(){
-      return this.consentTypeId;
+      return this.getId();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setId(Integer)}
+    * @return
+    */
+   @Deprecated
    public void setConsentTypeId(final Integer id){
-      this.consentTypeId = id;
+      this.setId(id);
    }
 
-   @Column(name = "TYPE", nullable = false, length = 200)
+   /**
+    * @deprecated Utiliser {@link #getNom()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public String getType(){
-      return this.type;
+      return this.getNom();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setNom(String)}
+    * @param t
+    */
+   @Deprecated
    public void setType(final String t){
-      this.type = t;
+      this.setNom(t);
    }
 
    @OneToMany(mappedBy = "consentType")
@@ -124,75 +130,17 @@ public class ConsentType implements Serializable, TKThesaurusObject, Comparable<
    }
 
    @Override
-   @ManyToOne
-   @JoinColumn(name = "PLATEFORME_ID", nullable = false)
-   public Plateforme getPlateforme(){
-      return plateforme;
-   }
-
-   @Override
-   public void setPlateforme(final Plateforme pf){
-      this.plateforme = pf;
-   }
-
-   /**
-    * 2 objets sont considérés comme égaux s'ils ont le même type.
-    * @param obj est l'objet à tester.
-    * @return true si les objets sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
-
-      if(this == obj){
-         return true;
+   public String toString(){
+      if(this.getNom() != null){
+         return "{" + this.getNom() + "}";
+      }else{
+         return "{Empty ConsentType}";
       }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final ConsentType test = (ConsentType) obj;
-      return ((this.type == test.type || (this.type != null && this.type.equals(test.type)))
-         && (this.plateforme == test.plateforme || (this.plateforme != null && this.plateforme.equals(test.plateforme))));
-   }
-
-   /**
-    * Le hashcode est calculé sur l'attribut type.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-
-      int hash = 7;
-      int hashType = 0;
-      int hashPF = 0;
-
-      if(this.type != null){
-         hashType = this.type.hashCode();
-      }
-      if(this.plateforme != null){
-         hashPF = this.plateforme.hashCode();
-      }
-
-      hash = 31 * hash + hashType;
-      hash = 31 * hash + hashPF;
-
-      return hash;
-
-   }
-
-   @Override
-   @Transient
-   public String getNom(){
-      return getType();
-   }
-
-   @Override
-   @Transient
-   public Integer getId(){
-      return getConsentTypeId();
    }
 
    @Override
    public int compareTo(final ConsentType arg0){
-      return this.getType().compareTo(arg0.getType());
+      return this.getNom().compareTo(arg0.getNom());
    }
+
 }

@@ -39,12 +39,10 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -53,8 +51,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import fr.aphp.tumorotek.model.TKThesaurusObject;
-import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
 
 /**
@@ -68,19 +65,19 @@ import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
  */
 @Entity
 @Table(name = "PROD_TYPE")
-@NamedQueries(value = {@NamedQuery(name = "ProdType.findByType", query = "SELECT p FROM ProdType p WHERE p.type like ?1"),
+@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "PROD_TYPE_ID")),
+   @AttributeOverride(name = "nom", column = @Column(name = "TYPE", nullable = false, length = 200))})
+@GenericGenerator(name = "autoincrement", strategy = "increment")
+@NamedQueries(value = {@NamedQuery(name = "ProdType.findByType", query = "SELECT p FROM ProdType p WHERE p.nom like ?1"),
    @NamedQuery(name = "ProdType.findByProdDeriveId",
       query = "SELECT p FROM ProdType p " + "left join p.prodDerives d " + "WHERE d.prodDeriveId = ?1"),
-   @NamedQuery(name = "ProdType.findByExcludedId", query = "SELECT p FROM ProdType p " + "WHERE p.prodTypeId != ?1"),
-   @NamedQuery(name = "ProdType.findByOrder", query = "SELECT p FROM ProdType p " + "WHERE p.plateforme = ?1 ORDER BY p.type")})
-public class ProdType implements Serializable, TKThesaurusObject
+   @NamedQuery(name = "ProdType.findByExcludedId", query = "SELECT p FROM ProdType p " + "WHERE p.id != ?1"),
+   @NamedQuery(name = "ProdType.findByPfOrder", query = "SELECT p FROM ProdType p " + "WHERE p.plateforme = ?1 ORDER BY p.nom"),
+   @NamedQuery(name = "ProdType.findByOrder", query = "SELECT p FROM ProdType p ORDER BY p.nom")})
+public class ProdType extends AbstractPfDependantThesaurusObject implements Serializable
 {
 
    private static final long serialVersionUID = -8819167609321186090L;
-
-   private Integer prodTypeId;
-   private String type;
-   private Plateforme plateforme;
 
    private Set<ProdDerive> prodDerives;
    private Set<CouleurEntiteType> couleurEntiteTypes = new HashSet<>();
@@ -91,25 +88,36 @@ public class ProdType implements Serializable, TKThesaurusObject
       prodDerives = new HashSet<>();
    }
 
-   @Id
-   @Column(name = "PROD_TYPE_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
+   /**
+    * @deprecated Utiliser {@link #getId()}
+    * @return
+    */
+   @Transient
    public Integer getProdTypeId(){
-      return this.prodTypeId;
+      return this.getId();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setId(Integer)}
+    * @return
+    */
    public void setProdTypeId(final Integer id){
-      this.prodTypeId = id;
+      this.setId(id);
    }
 
-   @Column(name = "TYPE", nullable = false, length = 200)
+   /**
+    * @deprecated Utiliser {@link #getNom()}
+    */
+   @Transient
    public String getType(){
-      return this.type;
+      return this.getNom();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setNom(String)}
+    */
    public void setType(final String t){
-      this.type = t;
+      this.setNom(t);
    }
 
    @OneToMany(mappedBy = "prodType")
@@ -130,84 +138,16 @@ public class ProdType implements Serializable, TKThesaurusObject
       this.couleurEntiteTypes = cTypes;
    }
 
-   @Override
-   @ManyToOne
-   @JoinColumn(name = "PLATEFORME_ID", nullable = false)
-   public Plateforme getPlateforme(){
-      return plateforme;
-   }
-
-   @Override
-   public void setPlateforme(final Plateforme pf){
-      this.plateforme = pf;
-   }
-
-   /**
-    * 2 objets sont considérés comme égaux s'ils ont le même type et 
-    * la même plateforme.
-    * @param obj est l'objet à tester.
-    * @return true si les objets sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
-
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final ProdType test = (ProdType) obj;
-      return ((this.type == test.type || (this.type != null && this.type.equals(test.type)))
-         && (this.plateforme == test.plateforme || (this.plateforme != null && this.plateforme.equals(test.plateforme))));
-   }
-
-   /**
-    * Le hashcode est calculé sur l'attribut type et plateforme.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-
-      int hash = 7;
-      int hashType = 0;
-      int hashPF = 0;
-
-      if(this.type != null){
-         hashType = this.type.hashCode();
-      }
-      if(this.plateforme != null){
-         hashPF = this.plateforme.hashCode();
-      }
-
-      hash = 31 * hash + hashType;
-      hash = 31 * hash + hashPF;
-
-      return hash;
-
-   }
-
    /**
     * Méthode surchargeant le toString() de l'objet.
     */
    @Override
    public String toString(){
-      if(this.type != null){
-         return "{" + this.type + "}";
+      if(this.getNom() != null){
+         return "{" + this.getNom() + "}";
       }else{
          return "{Empty ProdType}";
       }
    }
 
-   @Override
-   @Transient
-   public String getNom(){
-      return getType();
-   }
-
-   @Override
-   @Transient
-   public Integer getId(){
-      return getProdTypeId();
-   }
 }

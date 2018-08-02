@@ -228,6 +228,14 @@ public interface ProdDeriveDao extends GenericDaoJpa<ProdDerive, Integer>
    List<String> findByBanqueAndQuantiteSelectCode(Banque banque);
 
    /**
+    * Recherche les codes de dérivés dont la banque est passée en 
+    * paramètre et la quantité est non égale à 0 OU dérivé faisant partie d'une cession de type traitement
+    * @param banque Banque des échantillons que l'on recherche.
+    * @return une liste de codes de dérivés.
+    */
+   List<String> findAllCodesByBanqueAndQuantiteNotNullOrInCessionTraitement(Banque banque);
+   
+   /**
     * Recherche les ProdDerives pour une liste de collections spécifiées.
     * @param banks liste de collections
     * @return Une liste de ProdDerives.

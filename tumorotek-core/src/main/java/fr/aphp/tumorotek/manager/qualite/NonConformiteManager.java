@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.manager.qualite;
 
 import java.util.List;
 
+import fr.aphp.tumorotek.manager.PfDependantTKThesaurusManager;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.qualite.ConformiteType;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
@@ -52,7 +53,7 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * @version 2.0
  *
  */
-public interface NonConformiteManager
+public interface NonConformiteManager extends PfDependantTKThesaurusManager<NonConformite>
 {
 
    /**
@@ -86,39 +87,6 @@ public interface NonConformiteManager
     * @return Liste de NonConformites.
     */
    List<NonConformite> findByPlateformeEntiteAndTypeStringManager(Plateforme plateforme, String typeStr, Entite e);
-
-   /**
-    * Recherche les doublons d'une NonConformite.
-    * @param nonConformite NonConformite dont on cherche les doublons.
-    * @return True s'il y a des doublons.
-    */
-   boolean findDoublonManager(NonConformite nonConformite);
-
-   /**
-    * Test si une NonConformite est utilisée.
-    * @param nonConformite NonConformite à tester.
-    * @return True si la NonConformite est utilisée.
-    */
-   boolean isUsedObjectManager(NonConformite nonConformite);
-
-   /**
-    * Persiste une instance afin de l'enregistrer dans la base de données.
-    * @param nonConformite Nouvelle instance de l'objet à créer.
-    //* @throws ValidationException generee par validation AOP
-    */
-   void createObjectManager(NonConformite nonConformite);
-
-   /**
-    * Sauvegarde les modifications apportées à un objet persistant.
-    * @param nonConformite Objet à mettre à jour dans la base.
-    */
-   void updateObjectManager(NonConformite nonConformite);
-
-   /**
-    * Supprime un objet de la base de données.
-    * @param nonConformite Objet à supprimer de la base de données.
-    */
-   void removeObjectManager(NonConformite nonConformite);
 
    /**
     * Extrait les non conformités à partir d'une liste d'objets

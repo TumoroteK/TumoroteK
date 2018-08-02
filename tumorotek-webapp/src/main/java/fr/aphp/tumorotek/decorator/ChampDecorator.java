@@ -39,9 +39,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.springframework.util.StringUtils;
 import org.zkoss.util.resource.Labels;
 
 import fr.aphp.tumorotek.model.io.export.Champ;
+import fr.aphp.tumorotek.model.io.export.ChampDelegue;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 
 /**
@@ -78,15 +80,29 @@ public class ChampDecorator implements Comparable<Object>
          nomChamp = this.champ.getChampAnnotation().getNom();
          return Labels.getLabel("Entite." + nomEntite) + " - " + nomChamp;
       }
+      if(this.champ.getChampDelegue() != null){
+         nomEntite = this.champ.getChampDelegue().getEntite().getNom();
+         nomChamp = this.champ.getChampDelegue().getNom();
+         return Labels.getLabel("Entite." + nomEntite) + " - " + Labels.getLabel("Champ." + champ.toString());
+      }
       final StringBuffer nom = new StringBuffer();
       if(this.champ.getChampParent() == null){
          nom.append(this.champ.getChampEntite().getEntite().getNom());
          nom.append(" - ");
          nom.append(getLabelForChampEntite(this.champ.getChampEntite()));
       }else{
-         nom.append(this.champ.getChampParent().getChampEntite().getEntite().getNom());
+         final String nomEntiteParent;
+         final String nomChampEntite;
+         if(this.champ.getChampParent().getChampEntite() != null) {
+            nomEntiteParent = this.champ.getChampParent().getChampEntite().getEntite().getNom();
+            nomChampEntite = getLabelForChampEntite(this.champ.getChampParent().getChampEntite());
+         }else {
+            nomEntiteParent = this.champ.getChampParent().getChampDelegue().getEntite().getNom();
+            nomChampEntite = getLabelForChampDelegue(this.champ.getChampParent().getChampDelegue());
+         }
+         nom.append(nomEntiteParent);
          nom.append(" - ");
-         nom.append(getLabelForChampEntite(this.champ.getChampParent().getChampEntite()));
+         nom.append(nomChampEntite);
       }
       return nom.toString();
    }
@@ -110,6 +126,18 @@ public class ChampDecorator implements Comparable<Object>
       return Labels.getLabel(iProperty.toString());
    }
 
+   public String getLabelForChampDelegue(final ChampDelegue c){
+      final StringBuffer iProperty = new StringBuffer();
+      iProperty.append("Champ.");
+      iProperty.append(c.getEntite().getNom());
+      iProperty.append(".");
+      iProperty.append(c.getContexte().getNom());
+      iProperty.append(".");
+      iProperty.append(StringUtils.capitalize(c.getNom().replaceAll("Id$", "")));
+
+      return Labels.getLabel(iProperty.toString());
+   }
+   
    public String getLabel(){
       String label = null;
       label = Labels.getLabel("Champ." + champ.toString());

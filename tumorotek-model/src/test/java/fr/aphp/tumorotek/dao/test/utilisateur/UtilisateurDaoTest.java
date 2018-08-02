@@ -152,19 +152,37 @@ public class UtilisateurDaoTest extends AbstractDaoTest
    }
 
    /**
-    * Test l'appel de la méthode findByOrderWithArchive().
+    * Test l'appel de la méthode findByOrderWithArchiveExcludeSuperAdmin().
     */
-   public void testFindByOrderWithArchive(){
+   public void testFindByOrderWithArchiveExcludeSuperAdmin(){
+
       final List<Plateforme> pfs = new ArrayList<>();
+
       pfs.add(plateformeDao.findById(1));
-      List<Utilisateur> utilisateurs = utilisateurDao.findByOrderWithArchive(false, pfs);
+      List<Utilisateur> utilisateurs = utilisateurDao.findByOrderWithArchiveExcludeSuperAdmin(false, pfs);
       assertTrue(utilisateurs.size() == 2);
+
       pfs.add(plateformeDao.findById(2));
-      utilisateurs = utilisateurDao.findByArchive(false, pfs);
+      utilisateurs = utilisateurDao.findByOrderWithArchiveExcludeSuperAdmin(true, pfs);
+      assertTrue(utilisateurs.size() == 1);
+
+   }
+
+   /**
+    * Test l'appel de la méthode findByOrderWithArchiveIcludeSuperAdmin().
+    */
+   public void testFindByOrderWithArchiveIncludeSuperAdmin(){
+
+      final List<Plateforme> pfs = new ArrayList<>();
+
+      pfs.add(plateformeDao.findById(1));
+      List<Utilisateur> utilisateurs = utilisateurDao.findByOrderWithArchiveIncludeSuperAdmin(false, pfs);
       assertTrue(utilisateurs.size() == 3);
 
-      utilisateurs = utilisateurDao.findByOrderWithArchive(true, pfs);
+      pfs.add(plateformeDao.findById(2));
+      utilisateurs = utilisateurDao.findByOrderWithArchiveIncludeSuperAdmin(true, pfs);
       assertTrue(utilisateurs.size() == 1);
+
    }
 
    /**

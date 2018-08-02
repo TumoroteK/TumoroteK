@@ -50,7 +50,6 @@ import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.stockage.EnceinteTypeManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.stockage.EnceinteTypeValidator;
-import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.stockage.EnceinteType;
 
@@ -108,10 +107,10 @@ public class EnceinteTypeManagerImpl implements EnceinteTypeManager
    public boolean findDoublonManager(final EnceinteType o){
       if(o != null){
          final EnceinteType type = o;
-         if(type.getEnceinteTypeId() == null){
+         if(type.getId() == null){
             return enceinteTypeDao.findAll().contains(type);
          }
-         return enceinteTypeDao.findByExcludedId(type.getEnceinteTypeId()).contains(type);
+         return enceinteTypeDao.findByExcludedId(type.getId()).contains(type);
       }
       return false;
    }
@@ -129,7 +128,7 @@ public class EnceinteTypeManagerImpl implements EnceinteTypeManager
       if(obj.getPlateforme() == null){
          throw new RequiredObjectIsNullException("Nature", "creation", "Plateforme");
       }
-      obj.setPlateforme(plateformeDao.mergeObject(((TKThesaurusObject) obj).getPlateforme()));
+      obj.setPlateforme(plateformeDao.mergeObject(obj.getPlateforme()));
       BeanValidator.validateObject(obj, new Validator[] {enceinteTypeValidator});
       if(!findDoublonManager(obj)){
          enceinteTypeDao.createObject(obj);
@@ -156,7 +155,7 @@ public class EnceinteTypeManagerImpl implements EnceinteTypeManager
    public void removeObjectManager(final EnceinteType obj){
       if(obj != null){
          if(!isUsedObjectManager(obj)){
-            enceinteTypeDao.removeObject(obj.getEnceinteTypeId());
+            enceinteTypeDao.removeObject(obj.getId());
             log.info("Suppression objet EnceinteType " + obj.toString());
          }else{
             log.warn("Suppression objet EnceinteType " + obj.toString() + " impossible car est reference " + "(par Enceinte)");
@@ -169,7 +168,7 @@ public class EnceinteTypeManagerImpl implements EnceinteTypeManager
 
    @Override
    public List<EnceinteType> findByOrderManager(final Plateforme pf){
-      return enceinteTypeDao.findByOrder(pf);
+      return enceinteTypeDao.findByPfOrder(pf);
    }
 
    @Override
@@ -178,5 +177,10 @@ public class EnceinteTypeManagerImpl implements EnceinteTypeManager
          return enceinteTypeDao.findByTypeAndPf(type, pf);
       }
       return new ArrayList<>();
+   }
+
+   @Override
+   public List<EnceinteType> findByOrderManager(){
+      return enceinteTypeDao.findByOrder();
    }
 }

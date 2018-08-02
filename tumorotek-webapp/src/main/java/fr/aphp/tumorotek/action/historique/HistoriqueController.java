@@ -143,7 +143,7 @@ public class HistoriqueController extends AbstractObjectTabController
       final List<Plateforme> pfs = new ArrayList<>();
       pfs.add(SessionUtils.getPlateforme(sessionScope));
 
-      utilisateurs = ManagerLocator.getUtilisateurManager().findByArchiveManager(false, pfs);
+      utilisateurs = ManagerLocator.getUtilisateurManager().findByArchiveManager(false, pfs, true);
 
       utilisateurs.add(0, null);
       selectedUtilisateur = null;

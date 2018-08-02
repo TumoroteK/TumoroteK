@@ -108,9 +108,8 @@ public class Operation implements Serializable
    public String toString(){
       if(this.operationType != null && this.entite != null && this.objetId != null){
          return "{" + this.operationType.getNom() + ", " + this.entite.getNom() + ", " + this.objetId + "}";
-      }else{
-         return "{Empty Operation}";
       }
+      return "{Empty Operation}";
    }
 
    @Id
@@ -132,9 +131,8 @@ public class Operation implements Serializable
          final Calendar cal = Calendar.getInstance();
          cal.setTime(date.getTime());
          return cal;
-      }else{
-         return null;
       }
+      return null;
    }
 
    public void setDate(final Calendar d){

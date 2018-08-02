@@ -133,6 +133,7 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
 
    // Composants a rendre anonymes
    private Label emplacementLabelDerive;
+   private Label emplacementEchanLabelDerive;
 
    // Objets Principaux.
    private ProdDerive prodDerive = new ProdDerive();
@@ -189,6 +190,7 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
 
       listeRetour =
          ((ListeRetour) self.getFellow("listeRetour").getFellow("lwinRetour").getAttributeOrFellow("lwinRetour$composer", true));
+      
    }
 
    @Override
@@ -534,13 +536,26 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
     * @return
     */
    public String getEmplacementEchantillonAdrl(){
-      if(getParentEchantillon() != null){
-         if(isAnonyme()){
-            return null;
-         }
-         return ManagerLocator.getEchantillonManager().getEmplacementAdrlManager(getParentEchantillon());
+      
+      String emplacementEchantillonAdrl = null;
+      
+      Boolean isAutorise;
+
+      if(isAnonyme()){
+         isAutorise = false;
+      }else{
+         isAutorise = getDroitOnAction("Stockage", "Consultation");
       }
-      return null;
+
+      if(!isAutorise){
+         makeLabelAnonyme(emplacementEchanLabelDerive, false);
+         emplacementEchantillonAdrl = getAnonymeString();
+      } else if(getParentEchantillon() != null) {
+         emplacementEchantillonAdrl = ManagerLocator.getEchantillonManager().getEmplacementAdrlManager(getParentEchantillon());
+      }
+      
+      return emplacementEchantillonAdrl;
+      
    }
 
    /**
@@ -621,10 +636,13 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
    }
 
    public String getSClassStockage(){
+      
       if(isCanStockage()){
          return "formLink";
       }
-      return "formValue";
+      
+      return "formAnonymeBlock";
+      
    }
 
    /*************************************************************************/
@@ -920,14 +938,24 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
    }
 
    public String getEmplacementAdrl(){
+      
+      Boolean isAutorise;
+
       if(isAnonyme()){
+         isAutorise = false;
+      }else{
+         isAutorise = getDroitOnAction("Stockage", "Consultation");
+      }
+
+      if(!isAutorise){
          makeLabelAnonyme(emplacementLabelDerive, false);
          return getAnonymeString();
       }
-      emplacementLabelDerive.setSclass("formValue");
-      return emplacementAdrl;
-   }
 
+      return emplacementAdrl;
+      
+   }
+   
    public String getTemperatureFormated(){
 
       Float temp = null;

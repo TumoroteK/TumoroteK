@@ -56,14 +56,18 @@ import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Group;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Paging;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.Row;
+import org.zkoss.zul.Vbox;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.event.PagingEvent;
 
@@ -71,6 +75,7 @@ import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.controller.AbstractFicheStaticController;
 import fr.aphp.tumorotek.action.controller.AbstractListeController2;
 import fr.aphp.tumorotek.action.listmodel.ObjectPagingModel;
+import fr.aphp.tumorotek.action.prodderive.ProdDeriveController;
 import fr.aphp.tumorotek.action.utils.CessionUtils;
 import fr.aphp.tumorotek.decorator.CederObjetDecorator;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
@@ -82,8 +87,10 @@ import fr.aphp.tumorotek.model.cession.CederObjet;
 import fr.aphp.tumorotek.model.cession.CederObjetPK;
 import fr.aphp.tumorotek.model.cession.Cession;
 import fr.aphp.tumorotek.model.cession.Contrat;
+import fr.aphp.tumorotek.model.cession.ECederObjetStatut;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
+import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.interfacage.scan.ScanTerminale;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
@@ -119,8 +126,6 @@ public class FicheCessionStatic extends AbstractFicheStaticController
    private Row rowDates;
    private Row rowTransporteurAndTemp;
    private Row rowSeparator3;
-   // private Label codeProdDeriveCede;
-   // private Label codeEchantillonCede;
 
    private Grid echantillonsList;
    private Paging echansPaging;
@@ -485,21 +490,11 @@ public class FicheCessionStatic extends AbstractFicheStaticController
    /*************************************************************************/
 
    public boolean getEchantillonsListSizeSupOne(){
-      // if (getDroitsConsultation().containsKey("Echantillon")
-      //		&& getDroitsConsultation().get("Echantillon")) {
       return this.echantillonsCedes.size() > 1;
-      // } else {
-      //	return false;
-      //}
    }
 
    public boolean getProdDerivesListSizeSupOne(){
-      // if (getDroitsConsultation().containsKey("ProdDerive")
-      //		&& getDroitsConsultation().get("ProdDerive")) {
       return this.derivesCedes.size() > 1;
-      // } else {
-      //	return false;
-      //}
    }
 
    /*************************************************************************/
@@ -608,6 +603,54 @@ public class FicheCessionStatic extends AbstractFicheStaticController
    public void onClick$codeProdDeriveCede(final Event event){
       onClickProdDeriveCode(event);
    }
+   
+   /**
+    * Affiche la liste des produits dérivés (échantillon)
+    * 
+    * @param event
+    *            Event : clique sur un lien codeProdDeriveCede dans la liste
+    *            des produits dérivés.
+    * @throws Exception
+    */
+   public void onClick$produitRetourListEch(final Event event){
+      onClickProduitRetourList(event);
+   }
+   
+   /**
+    * Affiche la liste des produits dérivés (produit dérivé)
+    * 
+    * @param event
+    *            Event : clique sur un lien codeProdDeriveCede dans la liste
+    *            des produits dérivés.
+    * @throws Exception
+    */
+   public void onClick$produitRetourListProdDerive(final Event event){
+      onClickProduitRetourList(event);
+   }
+   
+   /**
+    * Affiche la fiche d'un produit dérivé. (Echantillon)
+    * 
+    * @param event
+    *            Event : clique sur un lien codeProdDeriveCede dans la liste
+    *            des produits dérivés.
+    * @throws Exception
+    */
+   public void onMouseOver$produitRetourListEch(final Event event){
+      onMouseOverProduitRetourList(event);
+   }
+   
+   /**
+    * Affiche la fiche d'un produit dérivé. (Echantillon)
+    * 
+    * @param event
+    *            Event : clique sur un lien codeProdDeriveCede dans la liste
+    *            des produits dérivés.
+    * @throws Exception
+    */
+   public void onMouseOver$produitRetourListProdDerive(final Event event){
+      onMouseOverProduitRetourList(event);
+   }
 
    /**
     * Affiche la fiche d'un échantillon.
@@ -617,7 +660,7 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 
       displayObjectData(deco.getEchantillon());
    }
-
+   
    public void onSelectAllEchantillons(){
       final List<CederObjetDecorator> decos = cdEchansFactory.decorateListe(echantillonsCedes);
       displayObjectsListData(new ArrayList<TKAnnotableObject>(cdEchansFactory.undecorateListe(decos)));
@@ -628,10 +671,112 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 
       displayObjectData(deco.getProdDerive());
    }
+   
+   /**
+    * Affiche la liste des Produits dérivés de retour de traitement
+    * @param event
+    */
+   public void onClickProduitRetourList(final Event event){
+      final CederObjetDecorator cederObjetDeco = (CederObjetDecorator) AbstractListeController2.getBindingData((ForwardEvent) event, false);
+      final List<TKAnnotableObject> listAnno = new ArrayList<>();
+      listAnno.addAll(cederObjetDeco.getCederObjet().getProduitRetourList());
+      displayObjectsListData(listAnno);
+   }
+   
+   /**
+    * Affiche la fiche d'un produit dérivé.
+    */
+   public void onMouseOverProduitRetourList(final Event event){
+      final CederObjetDecorator cederObjetDeco = (CederObjetDecorator) AbstractListeController2.getBindingData((ForwardEvent) event, false);
+      Integer prodRetourCount = cederObjetDeco.getCederObjet().getProduitRetourList().size();
+      if(prodRetourCount > 0){
+         if(prodRetourCount < 50){
+            final Popup popUp = new Popup();
+            popUp.setParent(event.getTarget());
+            Label libelleStaticLabel = null;
+            final Vbox popupVbox = new Vbox();
+            for(ProdDerive prodDeriveRetour : cederObjetDeco.getCederObjet().getProduitRetourList()){
+               libelleStaticLabel = new Label(prodDeriveRetour.getCode());
+               libelleStaticLabel.setSclass("formLink");
+               libelleStaticLabel.addEventListener("onClick", new EventListener<Event>()
+               {
+                  @Override
+                  public void onEvent(final Event event) throws Exception{
+                     displayObjectData(prodDeriveRetour);
+                  }
+               });
+               popupVbox.appendChild(libelleStaticLabel);
+            }
+            
+            popUp.appendChild(popupVbox);
+            //TODO être sûre de ce qu'on récupère
+            ((Label) ((ForwardEvent) event).getOrigin().getTarget()).setTooltip(popUp);
+         }
+      }
+   }
 
    public void onSelectAllDerives(){
       final List<CederObjetDecorator> decos = cdDerivesFactory.decorateListe(derivesCedes);
       displayObjectsListData(new ArrayList<TKAnnotableObject>(cdDerivesFactory.undecorateListe(decos)));
+   }
+
+   /**
+    * Clique sur le bouton 'Retourné' pour les cessions de type traitement (Echantillons)
+    * Créé un nouveau produit dérivé lié à l'objet cédé
+    * @param event
+    * @since 2.2.0
+    */
+   public void onClick$retourBtnEch(Event event){
+      onClickRetour(event);
+   }
+   
+   /**
+    * Clique sur le bouton 'Retourné' pour les cessions de type traitement (ProdDerive)
+    * Créé un nouveau produit dérivé lié à l'objet cédé
+    * @param event
+    * @since 2.2.0
+    */
+   public void onClick$retourBtnProdDerive(Event event){
+      onClickRetour(event);
+   }
+   
+   private void onClickRetour(Event event){
+      final CederObjetDecorator objetCede =
+         (CederObjetDecorator) AbstractListeController2.getBindingData((ForwardEvent) event, false);
+      final ProdDeriveController prodDeriveController = (ProdDeriveController) ProdDeriveController.backToMe(getMainWindow(), page);
+
+      if(null != objetCede.getCederObjet()){
+         prodDeriveController.switchToCreateMode(objetCede.getCederObjet());
+      }
+   }
+
+   /**
+    * Clique sur le bouton 'Annulé' pour les cessions de type traitement (Echantillon)
+    * L'objet cédé n'a pu être retourné / traité
+    * @param event
+    * @since 2.2.0
+    */
+   public void onClick$cancelRetourBtnEch(Event event){
+      onClickCancelRetour(event);
+   }
+   
+   /**
+    * Clique sur le bouton 'Annulé' pour les cessions de type traitement (ProdDerive)
+    * L'objet cédé n'a pu être retourné / traité
+    * @param event
+    * @since 2.2.0
+    */
+   public void onClick$cancelRetourBtnProdDerive(Event event){
+      onClickCancelRetour(event);
+   }
+   
+   private void onClickCancelRetour(Event event){
+      final CederObjetDecorator objetCede = (CederObjetDecorator) AbstractListeController2.getBindingData((ForwardEvent) event, false);
+      objetCede.getCederObjet().setStatut(ECederObjetStatut.ANNULE);
+      ManagerLocator.getCederObjetManager().updateObjectManager(objetCede.getCederObjet(), cession, objetCede.getCederObjet().getEntite(), objetCede.getCederObjet().getQuantiteUnite());
+      
+      //Forcer rafraichissement de la fiche
+      this.setObject(cession);
    }
 
    public void onClick$contratLabel(){
@@ -642,8 +787,6 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 
    public void onClick$printAccord(){
       openBonLivraisonWindow(page, cession);
-      // cdObjsFactory.decorateListe(echantillonsCedes),
-      // cdObjsFactory.decorateListe(derivesCedes));
    }
 
    /**
@@ -682,11 +825,9 @@ public class FicheCessionStatic extends AbstractFicheStaticController
     * Clic sur le bouton exporterEchantillons.
     */
    public void onClick$exporterEchantillons(){
-      // Clients.showBusy(null);
       deriveExportRequest = false;
       openRestrictTablesModale(getObjectTabController().getListe(), self,
          ManagerLocator.getEntiteManager().findByNomManager("Echantillon").get(0));
-      // Events.echoEvent("onLaterExportEchantillon", self, null);
    }
 
    public void onClick$exportItem() throws ClassNotFoundException, NoSuchMethodException, SecurityException,
@@ -723,11 +864,6 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 
    public void onLaterExportEchantillon() throws ClassNotFoundException, NoSuchMethodException, SecurityException,
       InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
-      // List<Echantillon> echans = new ArrayList<Echantillon>();
-
-      // for (int i = 0; i < echantillonsCedesDecores.size(); i++) {
-      //	echans.add(echantillonsCedesDecores.get(i).getEchantillon());
-      //}
 
       final List<Integer> objsIds = new ArrayList<>();
       for(final CederObjet cObj : echantillonsCedes){
@@ -760,7 +896,6 @@ public class FicheCessionStatic extends AbstractFicheStaticController
       deriveExportRequest = true;
       openRestrictTablesModale(getObjectTabController().getListe(), self,
          ManagerLocator.getEntiteManager().findByNomManager("ProdDerive").get(0));
-      // Events.echoEvent("onLaterExportDerives", self, null);
    }
 
    /**
@@ -813,26 +948,7 @@ public class FicheCessionStatic extends AbstractFicheStaticController
       if(sessionScope.containsKey("ToutesCollections")){
          // donne aucun droit en creation
          setCanNew(false);
-         // setCanDelete(true);
       }
-
-      //		List<String> entites = new ArrayList<String>();
-      //		entites.add("Echantillon");
-      //		entites.add("ProdDerive");
-      //		setDroitsConsultation(drawConsultationLinks(entites));
-
-      // si pas le droit d'accès aux dérivés, on cache le lien
-      //		if (!getDroitsConsultation().get("ProdDerive")) {
-      //			codeProdDeriveCede.setSclass(null);
-      //		} else {
-      //			codeProdDeriveCede.setSclass("formLink");
-      //		}
-      //		// si pas le droit d'accès aux échantillons, on cache le lien
-      //		if (!getDroitsConsultation().get("Echantillon")) {
-      //			codeEchantillonCede.setSclass(null);
-      //		} else {
-      //			codeEchantillonCede.setSclass("formLink");
-      //		}
 
       // gestion de l'export
       Boolean admin = false;
@@ -844,12 +960,8 @@ public class FicheCessionStatic extends AbstractFicheStaticController
          setCanExportEchantillons(true);
          setCanExportDerives(true);
       }else{
-         //Hashtable<String, List<OperationType>> droits = new Hashtable<String, List<OperationType>>();
 
          if(sessionScope.containsKey("Droits")){
-            // on extrait les droits de l'utilisateur
-            // droits = (Hashtable<String, List<OperationType>>) sessionScope
-            //		.get("Droits");
 
             String export = "Non";
             // gestion de l'export
@@ -891,64 +1003,6 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 
       super.applyDroitsOnFiche();
    }
-   //
-   //	/**
-   //	 * Renvoie true si l'utilisateur loggé a le droit d'accéder à la fiche de ce
-   //	 * dérivé.
-   //	 * 
-   //	 * @param event
-   //	 * @return
-   //	 */
-   //	public Boolean getDroitProdDeriveConsultation(Event event) {
-   //		ProdDerive derive = ((CederObjetDecorator) AbstractListeController2
-   //				.getBindingData((ForwardEvent) event, false)).getProdDerive();
-   //		boolean acces = false;
-   //
-   //		Banque bk = derive.getBanque();
-   //		Utilisateur user = (Utilisateur) sessionScope.get("User");
-   //
-   //		Set<Plateforme> pfs = new HashSet<Plateforme>();
-   //		if (user.isSuperAdmin()) {
-   //			List<Plateforme> tmp = ManagerLocator.getPlateformeManager()
-   //					.findAllObjectsManager();
-   //			for (int i = 0; i < tmp.size(); i++) {
-   //				pfs.add(tmp.get(i));
-   //			}
-   //		} else {
-   //			pfs = ManagerLocator.getUtilisateurManager().getPlateformesManager(
-   //					user);
-   //		}
-   //		if (pfs.contains(bk.getPlateforme())) {
-   //			acces = true;
-   //		} else {
-   //			// on récupère le profil du user pour la banque
-   //			// sélectionnée
-   //			List<ProfilUtilisateur> profils = ManagerLocator
-   //					.getProfilUtilisateurManager()
-   //					.findByUtilisateurBanqueManager(user, bk);
-   //
-   //			if (profils.size() > 0) {
-   //				Profil profil = profils.get(0).getProfil();
-   //				// si l'utilisateur est admin pour la banque
-   //				if (profil.getAdmin()) {
-   //					acces = true;
-   //				} else {
-   //					List<OperationType> operations = ManagerLocator
-   //							.getDroitObjetManager()
-   //							.getOperationsByProfilEntiteManager(profil,
-   //									"ProdDerive");
-   //					OperationType opeation = ManagerLocator
-   //							.getOperationTypeManager()
-   //							.findByNomLikeManager("Consultation", true).get(0);
-   //					if (operations.contains(opeation)) {
-   //						acces = true;
-   //					}
-   //				}
-   //			}
-   //		}
-   //
-   //		return acces;
-   //	}
 
    /**********************************************************************/
    /*********************** GETTERS **************************************/
@@ -969,14 +1023,6 @@ public class FicheCessionStatic extends AbstractFicheStaticController
    public List<CederObjet> getDerivesCedes(){
       return derivesCedes;
    }
-
-   // public List<CederObjetDecorator> getEchantillonsCedesDecores() {
-   //	return echantillonsCedesDecores;
-   //}
-
-   //	public List<CederObjetDecorator> getDerivesCedesDecores() {
-   //		return derivesCedesDecores;
-   //	}
 
    public String getEchantillonsGroupHeader(){
       return echantillonsGroupHeader;
@@ -1238,23 +1284,6 @@ public class FicheCessionStatic extends AbstractFicheStaticController
     */
    public void onClick$addListCodesEchan() throws IOException{
 
-      // Ajout onLater showBusy
-
-      // récupère les codes des échantillons présents dans le
-      // fichier excel que l'utilisateur va uploader
-      // List<String> codes = getObjectTabController()
-      //							.getListe().getListStringToSearch();
-
-      // warns
-      // codes non trouves
-      // if (!notfounds.isEmpty()) {
-
-      // Clients.showNotification(ObjectTypesFormatters.getLabel("scan.objects.display.info", 
-      //		new String[] {sT.getName(), ObjectTypesFormatters.dateRenderer2(sT.getDateScan()),
-      //			String.valueOf(sT.getNbTubesStored()),
-      //			String.valueOf(derives.size())})
-      //	, derives.size() == sT.getNbTubesStored() ? "info" : "warning", null, null, 3000);
-
       Clients.clearBusy();
 
       final HashMap<String, Object> map = new HashMap<>();
@@ -1264,14 +1293,29 @@ public class FicheCessionStatic extends AbstractFicheStaticController
 
       final Window window = (Window) Executions.createComponents("/zuls/component/DynamicMultiLineMessageBox.zul", null, map);
       window.doModal();
-      // } else 
+   }
 
-      // echantillons non stocke
-
-      // ManagerLocator.getCessionManager()
-      //	.addObjectsAndValidateCession(cession, ids, 3, SessionUtils.getLoggedUser(sessionScope));
-
-      // refresh cession!
-
+   /**
+    * Test si la cession est de type Traitement
+    * @return
+    * @since 2.2.0
+    */
+   public Boolean getIsCessionTraitement(){
+      if(null != this.cession && null != this.cession.getCessionType()){
+         return "Traitement".equals(this.cession.getCessionType().getType());
+      }
+      return false;
+   }
+   
+   /**
+    * Test si la cession est de type Traitement
+    * @return
+    * @since 2.2.0
+    */
+   public Boolean getIsCessionTraitementAndValide(){
+      if(null != this.cession && null != this.cession.getCessionType()){
+         return "Traitement".equals(this.cession.getCessionType().getType()) && this.cession.getCessionStatut().getStatut().equals("VALIDEE");
+      }
+      return false;
    }
 }

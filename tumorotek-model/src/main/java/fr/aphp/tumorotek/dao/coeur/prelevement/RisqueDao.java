@@ -38,7 +38,7 @@ package fr.aphp.tumorotek.dao.coeur.prelevement;
 import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
-import fr.aphp.tumorotek.dao.TKThesaurusDao;
+import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
 
 /**
@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
  * @version 2.0
  *
  */
-public interface RisqueDao extends GenericDaoJpa<Risque, Integer>, TKThesaurusDao<Risque>
+public interface RisqueDao extends GenericDaoJpa<Risque, Integer>, PfDependantTKThesaurusDao<Risque>
 {
 
    /**

@@ -36,10 +36,12 @@
 package fr.aphp.tumorotek.action.cession;
 
 import java.util.Calendar;
-import java.util.Iterator;
 import java.util.List;
 
 import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
@@ -62,7 +64,7 @@ import fr.aphp.tumorotek.model.cession.Cession;
  * @author Pierre Ventadour.
  * @version 2.0
  */
-public class CessionRowRenderer extends TKSelectObjectRenderer
+public class CessionRowRenderer extends TKSelectObjectRenderer<Cession>
 {
 
    private boolean accessible = true;
@@ -73,12 +75,12 @@ public class CessionRowRenderer extends TKSelectObjectRenderer
    }
 
    @Override
-   public void render(final Row row, final Object data, final int index){
+   public void render(final Row row, final Cession data, final int index){
 
       // dessine le checkbox
       super.render(row, data, index);
 
-      final Cession cession = (Cession) data;
+      final Cession cession = data;
 
       // @since 2.1
       // barcodes validated cession
@@ -177,28 +179,55 @@ public class CessionRowRenderer extends TKSelectObjectRenderer
 
    public void drawNbEchantillons(final Cession cession, final Row row){
 
-      final Long echansCount = ManagerLocator.getCederObjetManager().findObjectsCessedCountManager(cession,
+      final List<String> codes = ManagerLocator.getCederObjetManager().findCodesByCessionEntiteManager(cession,
          ManagerLocator.getEntiteManager().findByNomManager("Echantillon").get(0));
+      
+      final Integer echansCount = codes.size();
 
       if(echansCount > 0){
          final Label label1 = new Label(String.valueOf(echansCount));
+         label1.setClass("formLink");
+         label1.addEventListener("onClick", new EventListener<Event>()
+         {
+            /**
+             * Post sur la windows Sesssion
+             * {@link ListeCession#onClickNbEchantillons(Cession, org.zkoss.zul.Row)}
+             */
+            @Override
+            public void onEvent(Event event) throws Exception{
+               // TODO être sûr de ce qu'on récupère avec les getarent()
+               Events.postEvent("onClickNbEchantillons", row.getParent().getParent().getParent().getParent().getParent(),
+                  codes);
+            }
+         });
          // dessine le label avec un lien vers popup 
          final Hbox labelAndLinkBox = new Hbox();
          labelAndLinkBox.setSpacing("5px");
          labelAndLinkBox.appendChild(label1);
          if(echansCount < 50){
-            final List<String> codes = ManagerLocator.getCederObjetManager().findCodesByCessionEntiteManager(cession,
-               ManagerLocator.getEntiteManager().findByNomManager("Echantillon").get(0));
+            
             final Label moreLabel = new Label("...");
             moreLabel.setClass("formLink");
             final Popup popUp = new Popup();
-            popUp.setParent(row.getParent().getParent().getParent());
-            final Iterator<String> it = codes.iterator();
+            popUp.setParent(row.getParent().getParent().getParent()); // TODO etre sûr de ce qu'on récupère avec les getarent()
             Label libelleStaticLabel = null;
             final Vbox popupVbox = new Vbox();
-            while(it.hasNext()){
-               libelleStaticLabel = new Label(it.next());
-               libelleStaticLabel.setSclass("formValue");
+            for(String code : codes){
+               libelleStaticLabel = new Label(code);
+               libelleStaticLabel.setSclass("formLink");
+               libelleStaticLabel.addEventListener("onClick", new EventListener<Event>()
+               {
+                  /**
+                   * Post sur la windows Sesssion
+                   * {@link ListeCession#onClickEchantillonCode(Cession, org.zkoss.zul.Row)}
+                   */
+                  @Override
+                  public void onEvent(Event event) throws Exception{
+                      // TODO être sûr de ce qu'on récupère avec les getarent()
+                     Events.postEvent("onClickEchantillonCode", row.getParent().getParent().getParent().getParent().getParent(),
+                        code);
+                  }
+               });
                popupVbox.appendChild(libelleStaticLabel);
             }
             popUp.appendChild(popupVbox);
@@ -213,28 +242,54 @@ public class CessionRowRenderer extends TKSelectObjectRenderer
 
    public void drawNbProdDerives(final Cession cession, final Row row){
 
-      final Long prodsCount = ManagerLocator.getCederObjetManager().findObjectsCessedCountManager(cession,
+      final List<String> codes = ManagerLocator.getCederObjetManager().findCodesByCessionEntiteManager(cession,
          ManagerLocator.getEntiteManager().findByNomManager("ProdDerive").get(0));
+      
+      final Integer prodsCount = codes.size();
 
       if(prodsCount > 0){
          final Label label1 = new Label(String.valueOf(prodsCount));
+         label1.setClass("formLink");
+         label1.addEventListener("onClick", new EventListener<Event>()
+         {
+            /**
+             * Post sur la windows Sesssion
+             * {@link ListeCession#onClickNbProdDerives(Cession, org.zkoss.zul.Row)}
+             */
+            @Override
+            public void onEvent(Event event) throws Exception{
+               // TODO être sûr de ce qu'on récupère avec les getarent()
+               Events.postEvent("onClickNbProdDerives", row.getParent().getParent().getParent().getParent().getParent(),
+                  codes);
+            }
+         });
          // dessine le label avec un lien vers popup 
          final Hbox labelAndLinkBox = new Hbox();
          labelAndLinkBox.setSpacing("5px");
          labelAndLinkBox.appendChild(label1);
          if(prodsCount < 50){
-            final List<String> codes = ManagerLocator.getCederObjetManager().findCodesByCessionEntiteManager(cession,
-               ManagerLocator.getEntiteManager().findByNomManager("ProdDerive").get(0));
             final Label moreLabel = new Label("...");
             moreLabel.setClass("formLink");
             final Popup popUp = new Popup();
-            popUp.setParent(row.getParent().getParent().getParent());
-            final Iterator<String> it = codes.iterator();
+            popUp.setParent(row.getParent().getParent().getParent()); //TODO être sûr de ce qu'on récupère avec les getarent()
             Label libelleStaticLabel = null;
             final Vbox popupVbox = new Vbox();
-            while(it.hasNext()){
-               libelleStaticLabel = new Label(it.next());
-               libelleStaticLabel.setSclass("formValue");
+            for(String code : codes){
+               libelleStaticLabel = new Label(code);
+               libelleStaticLabel.setSclass("formLink");
+               libelleStaticLabel.addEventListener("onClick", new EventListener<Event>()
+               {
+                  /**
+                   * Post sur la windows Sesssion
+                   * {@link ListeCession#onClickProdDeriveCode(Cession, org.zkoss.zul.Row)}
+                   */
+                  @Override
+                  public void onEvent(Event event) throws Exception{
+                     // TODO être sûr de ce qu'on récupère avec les getarent()
+                     Events.postEvent("onClickProdDeriveCode", row.getParent().getParent().getParent().getParent().getParent(),
+                        code);
+                  }
+               });
                popupVbox.appendChild(libelleStaticLabel);
             }
             popUp.appendChild(popupVbox);
@@ -272,12 +327,12 @@ public class CessionRowRenderer extends TKSelectObjectRenderer
             return cession.getEtudeTitre();
          }else if(cession.getCessionType().getType().toUpperCase().equals("SANITAIRE")){
             if(cession.getCessionExamen() != null){
-               return cession.getCessionExamen().getExamen();
+               return cession.getCessionExamen().getNom();
             }
             return null;
          }else if(cession.getCessionType().getType().toUpperCase().equals("DESTRUCTION")){
             if(cession.getDestructionMotif() != null){
-               return cession.getDestructionMotif().getMotif();
+               return cession.getDestructionMotif().getNom();
             }
             return null;
          }

@@ -448,7 +448,7 @@ public class InjectionManagerTest extends AbstractManagerTest4
       injectionManager.injectValeurExterneInObject(pat, banque, ve, annos);
       assertTrue(annos.size() == 1);
       assertTrue(annos.get(0).getAlphanum().equals("CODE"));
-      assertTrue(annos.get(0).getChampAnnotation().getChampAnnotationId() == 1);
+      assertTrue(annos.get(0).getChampAnnotation().getId() == 1);
       assertTrue(annos.get(0).getBanque().equals(banque));
 
       // Injection d'une date valide
@@ -459,7 +459,7 @@ public class InjectionManagerTest extends AbstractManagerTest4
       injectionManager.injectValeurExterneInObject(echan, banque, ve, annos);
       assertTrue(annos.size() == 1);
       assertTrue(format.format(annos.get(0).getDate().getTime()).equals("2005-11-10"));
-      assertTrue(annos.get(0).getChampAnnotation().getChampAnnotationId() == 5);
+      assertTrue(annos.get(0).getChampAnnotation().getId() == 5);
       assertTrue(annos.get(0).getBanque().equals(banque));
 
       // Injection d'un boolean valide
@@ -470,7 +470,7 @@ public class InjectionManagerTest extends AbstractManagerTest4
       injectionManager.injectValeurExterneInObject(prlvt, banque, ve, annos);
       assertTrue(annos.size() == 1);
       assertTrue(annos.get(0).getBool());
-      assertTrue(annos.get(0).getChampAnnotation().getChampAnnotationId() == 3);
+      assertTrue(annos.get(0).getChampAnnotation().getId() == 3);
       assertTrue(annos.get(0).getBanque().equals(banque));
 
       // Injection d'un int valide
@@ -481,7 +481,7 @@ public class InjectionManagerTest extends AbstractManagerTest4
       injectionManager.injectValeurExterneInObject(echan, banque, ve, annos);
       assertTrue(annos.size() == 1);
       assertTrue(annos.get(0).getAlphanum().equals("10.5"));
-      assertTrue(annos.get(0).getChampAnnotation().getChampAnnotationId() == 7);
+      assertTrue(annos.get(0).getChampAnnotation().getId() == 7);
       assertTrue(annos.get(0).getBanque().equals(banque));
 
       // Injection d'un item valide
@@ -492,7 +492,7 @@ public class InjectionManagerTest extends AbstractManagerTest4
       injectionManager.injectValeurExterneInObject(echan, banque, ve, annos);
       assertTrue(annos.size() == 1);
       assertTrue(annos.get(0).getItem().getLabel().equals("item1-1"));
-      assertTrue(annos.get(0).getChampAnnotation().getChampAnnotationId() == 11);
+      assertTrue(annos.get(0).getChampAnnotation().getId() == 11);
       assertTrue(annos.get(0).getBanque().equals(banque));
 
       // Injection d'une valeur vide ou null

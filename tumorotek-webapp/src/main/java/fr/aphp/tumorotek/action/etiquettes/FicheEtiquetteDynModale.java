@@ -198,7 +198,7 @@ public class FicheEtiquetteDynModale extends FicheEtiquetteModale
          final Champ chp = champs.get(i).getChamp();
          final StringBuffer sb = new StringBuffer();
          if(chp.getChampEntite() != null){
-            sb.append(ObjectTypesFormatters.getLabelForChampEntite(chp.getChampEntite()));
+            sb.append(ObjectTypesFormatters.getLabelForChamp(chp));
             if(champs.get(i).getEntite().getNom().equals("Echantillon")){
                valuesEchans.add(sb.toString());
             }else{

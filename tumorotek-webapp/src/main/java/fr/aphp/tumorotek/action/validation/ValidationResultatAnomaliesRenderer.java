@@ -7,6 +7,7 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 
 import fr.aphp.tumorotek.action.utils.ChampUtils;
+import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.io.export.Champ;
 import fr.aphp.tumorotek.model.validation.CritereValidation;
 
@@ -21,7 +22,7 @@ public class ValidationResultatAnomaliesRenderer implements RowRenderer<Entry<Cr
       Champ champRacine = ChampUtils.getChampRacine(critere.getChamp());
       
       new Label(ChampUtils.getEntiteLieeLibelle(champRacine)).setParent(row);
-      new Label(ChampUtils.getChampLibelle(champRacine)).setParent(row);
+      new Label(ObjectTypesFormatters.getLabelForChamp(champRacine)).setParent(row);
       new Label(anomalie.getValue()).setParent(row);
       
    }

@@ -6,9 +6,14 @@
 - YouTrack [TK-61](https://tumorotek.myjetbrains.com/youtrack/issue/TK-61) : <span class="badge badge-impression-doc">Impression (modèle DOC)</span> Pouvoir créer un modèle de document DOCx contenant des placeholders (clé) correspondants des champs et les remplacer par leur valeur à l'impression.
 - YouTrack [TK-98](https://tumorotek.myjetbrains.com/youtrack/issue/TK-98) : <span class="badge badge-annotation-champ-calcule">Annotation (Champ calculé)</span> Mise en place des champs calculés.
 - YouTrack [TK-110](https://tumorotek.myjetbrains.com/youtrack/issue/TK-110) : <span class="badge badge-statistiques">Statistiques</span> Amélioration de la partie Statistiques/Indicateurs
+- YouTrack [TK-160](https://tumorotek.myjetbrains.com/youtrack/issue/TK-160) : <span class="badge badge-cession">Cession</span> Cessions de type Traitement permettant un retour d'objets cédés sous forme de produits dérivés
+- YouTrack [TK-172](https://tumorotek.myjetbrains.com/youtrack/issue/TK-172) : Afficher les actions du super utilisateur dans l'historique
+- YouTrack [TK-196](https://tumorotek.myjetbrains.com/youtrack/issue/TK-196) : Implémentation du contexte Sérologie
 
 ###### Corrections
 - YouTrack [TK-111](https://tumorotek.myjetbrains.com/youtrack/issue/TK-111) : <span class="badge badge-statistiques">Statistiques</span> Modifier le libellé DGOS... en Totaux des prélèvements
+- YouTrack [TK-155](https://tumorotek.myjetbrains.com/youtrack/issue/TK-155) : Correction de la fonctionalité de déplacement de prélèvement/échantillon/dérivé de collection afin de mettre à jour les liens vers les fichiers associés
+- YouTrack [TK-159](https://tumorotek.myjetbrains.com/youtrack/issue/TK-159) : Suppression de l'erreur au remplissage d'un composant datebox au format d/M/yy.
 
 ***
 

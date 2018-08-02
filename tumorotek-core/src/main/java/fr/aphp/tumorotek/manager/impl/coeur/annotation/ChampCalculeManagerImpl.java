@@ -218,7 +218,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager
    @Override
    public ChampCalcule findByChampAnnotationManager(final ChampAnnotation champAnnotation){
       // On vérifie que l'identifiant n'est pas nul
-      if(champAnnotation.getChampAnnotationId() == null){
+      if(champAnnotation.getId() == null){
          log.warn(
             "Objet obligatoire identifiant manquant lors de la " + "recherche par l'identifiant d'un objet ChampAnnotation");
          throw new RequiredObjectIsNullException("ChampCalcule", "recherche par champAnnotation", "champAnnotation");

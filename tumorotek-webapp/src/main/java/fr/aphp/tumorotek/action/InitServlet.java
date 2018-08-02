@@ -36,6 +36,8 @@
 package fr.aphp.tumorotek.action;
 
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,8 +58,6 @@ import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.systeme.Version;
-
-import liquibase.Contexts;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -87,27 +87,29 @@ public class InitServlet extends HttpServlet
       try{
          log.info("----- TumoroteK startup routines -----");
          final Context context = new InitialContext();
-         final String baseDir = (String) context.lookup("java:comp/env/tk/tkFileSystem");
+         final Path baseDir = Paths.get((String) context.lookup("java:comp/env/tk/tkFileSystem"));
 
          // updates
          performUpdates(context);
 
          // file system
          if(baseDir != null){
-            final File f = new File(baseDir);
+            final File f = new File(baseDir.toUri());
             // crée le base directory au besoin
             if(f.exists() && f.isDirectory() && f.list().length == 0){
                log.info("----- Mise en place du base directory TumoroteK -----");
                final List<Plateforme> pfs = ManagerLocator.getPlateformeManager().findAllObjectsManager();
-               String pfDir;
+               Path pfDir;
                final List<Banque> banks = new ArrayList<>();
-               for(int i = 0; i < pfs.size(); i++){
-                  pfDir = "pt_" + pfs.get(i).getPlateformeId() + "/";
-                  banks.addAll(ManagerLocator.getBanqueManager().findByPlateformeAndArchiveManager(pfs.get(i), null));
-                  for(int j = 0; j < banks.size(); j++){
-                     new File(baseDir + pfDir + "coll_" + banks.get(j).getBanqueId() + "/cr_anapath").mkdirs();
-                     new File(baseDir + pfDir + "coll_" + banks.get(j).getBanqueId() + "/anno").mkdirs();
-                     log.info("base directory de la collection " + banks.get(j).getNom() + " généré");
+               for(Plateforme pf : pfs){
+                  pfDir = Paths.get("pt_" + pf.getPlateformeId());
+                  banks.addAll(ManagerLocator.getBanqueManager().findByPlateformeAndArchiveManager(pf, null));
+                  for(Banque bank : banks){
+                     Path crAnapathPath = Paths.get(baseDir.toString(), pfDir.toString(), "coll_" + bank.getBanqueId(), "cr_anapath");
+                     Path annoPath = Paths.get(baseDir.toString(), pfDir.toString(), "coll_" + bank.getBanqueId(), "anno");
+                     new File(crAnapathPath.toUri()).mkdirs();
+                     new File(annoPath.toUri()).mkdirs();
+                     log.info("base directory de la collection " + bank.getNom() + " généré");
                   }
                   banks.clear();
                }
@@ -135,9 +137,9 @@ public class InitServlet extends HttpServlet
    public void performUpdates(final Context context){
       log.info("----- Recherche des mises à jours database -----");
       final Version currentVersion = ManagerLocator.getVersionManager().findByCurrentVersionManager();
-      final List<Version> allVersions = ManagerLocator.getVersionManager().findAllObjectsManager();
+      //final List<Version> allVersions = ManagerLocator.getVersionManager().findAllObjectsManager();
       final String nextVersion = ObjectTypesFormatters.getLabel("app.version", new String[] {});
-      if(null != currentVersion){
+      //if(null != currentVersion){
          Database database = null;
          try{
             database = DatabaseFactory.getInstance()
@@ -148,12 +150,12 @@ public class InitServlet extends HttpServlet
          try{
             final Liquibase liquibase =
                new Liquibase("liquibase/db.changelog-master.xml", new ClassLoaderResourceAccessor(), database);
-            final Contexts contexts = new Contexts();
+            /*final Contexts contexts = new Contexts();
             for(final Version version : allVersions){
                if(null != version.getVersion()){
                   contexts.add(version.getVersion());
                }
-            }
+            }*/
             // Liquibase mettra à jour en fonction des versions précédemment installées.
             //liquibase.update(contexts);
             liquibase.update("*");
@@ -163,7 +165,7 @@ public class InitServlet extends HttpServlet
          }catch(final LiquibaseException e){
             log.error(e.toString());
          }
-      }
+      //}
 
       // Enregistre la version qui vient d'être installée
       if(null != currentVersion && !currentVersion.getVersion().equals(nextVersion)){

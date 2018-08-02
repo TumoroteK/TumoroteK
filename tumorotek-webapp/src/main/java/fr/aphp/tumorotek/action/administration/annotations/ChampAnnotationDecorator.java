@@ -577,7 +577,7 @@ public class ChampAnnotationDecorator extends SmallObjDecorator
 
    @Override
    public Integer getObjDbId(){
-      return ((ChampAnnotation) getObj()).getChampAnnotationId();
+      return ((ChampAnnotation) getObj()).getId();
    }
 
    @Override

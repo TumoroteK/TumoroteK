@@ -38,7 +38,7 @@ package fr.aphp.tumorotek.dao.coeur.echantillon;
 import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
-import fr.aphp.tumorotek.dao.TKThesaurusDao;
+import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.coeur.echantillon.EchanQualite;
 
 /**
@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.coeur.echantillon.EchanQualite;
  * @version 2.0
  *
  */
-public interface EchanQualiteDao extends GenericDaoJpa<EchanQualite, Integer>, TKThesaurusDao<EchanQualite>
+public interface EchanQualiteDao extends GenericDaoJpa<EchanQualite, Integer>, PfDependantTKThesaurusDao<EchanQualite>
 {
 
    /**

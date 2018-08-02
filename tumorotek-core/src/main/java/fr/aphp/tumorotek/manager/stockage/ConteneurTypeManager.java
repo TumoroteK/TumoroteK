@@ -35,7 +35,7 @@
  **/
 package fr.aphp.tumorotek.manager.stockage;
 
-import fr.aphp.tumorotek.manager.TKThesaurusManager;
+import fr.aphp.tumorotek.manager.PfDependantTKThesaurusManager;
 import fr.aphp.tumorotek.model.stockage.ConteneurType;
 
 /**
@@ -47,7 +47,7 @@ import fr.aphp.tumorotek.model.stockage.ConteneurType;
  * @version 2.0
  *
  */
-public interface ConteneurTypeManager extends TKThesaurusManager<ConteneurType>
+public interface ConteneurTypeManager extends PfDependantTKThesaurusManager<ConteneurType>
 {
 
    /**

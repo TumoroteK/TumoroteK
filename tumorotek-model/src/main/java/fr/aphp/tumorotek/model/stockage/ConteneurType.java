@@ -39,12 +39,10 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -53,8 +51,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import fr.aphp.tumorotek.model.TKThesaurusObject;
-import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 
 /**
  *
@@ -66,44 +63,59 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  *
  */
 @Entity
+@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "CONTENEUR_TYPE_ID")),
+   @AttributeOverride(name = "nom", column = @Column(name = "TYPE", nullable = false, length = 200))})
+@GenericGenerator(name = "autoincrement", strategy = "increment")
 @Table(name = "CONTENEUR_TYPE")
-@NamedQueries(value = {@NamedQuery(name = "ConteneurType.findByType", query = "SELECT c FROM ConteneurType c WHERE c.type = ?1"),
-   @NamedQuery(name = "ConteneurType.findByExcludedId",
-      query = "SELECT c FROM ConteneurType c " + "WHERE c.conteneurTypeId != ?1"),
+@NamedQueries(value = {@NamedQuery(name = "ConteneurType.findByType", query = "SELECT c FROM ConteneurType c WHERE c.nom = ?1"),
+   @NamedQuery(name = "ConteneurType.findByExcludedId", query = "SELECT c FROM ConteneurType c " + "WHERE c.id != ?1"),
+   @NamedQuery(name = "ConteneurType.findByPfOrder",
+      query = "SELECT c FROM ConteneurType c " + "WHERE c.plateforme = ?1 ORDER BY c.nom"),
    @NamedQuery(name = "ConteneurType.findByOrder",
-      query = "SELECT c FROM ConteneurType c " + "WHERE c.plateforme = ?1 ORDER BY c.type")})
-public class ConteneurType implements Serializable, TKThesaurusObject
+   query = "SELECT c FROM ConteneurType c ORDER BY c.nom")})
+public class ConteneurType extends AbstractPfDependantThesaurusObject implements Serializable
 {
 
    private static final long serialVersionUID = 1968660248660817618L;
-
-   private Integer conteneurTypeId;
-   private String type;
-   private Plateforme plateforme;
 
    private Set<Conteneur> conteneurs = new HashSet<>();
 
    public ConteneurType(){}
 
-   @Id
-   @Column(name = "CONTENEUR_TYPE_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
+   /**
+    * @deprecated Utiliser {@link #getId()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public Integer getConteneurTypeId(){
-      return this.conteneurTypeId;
+      return this.getId();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setId(Integer)}
+    * @return
+    */
+   @Deprecated
    public void setConteneurTypeId(final Integer id){
-      this.conteneurTypeId = id;
+      this.setId(id);
    }
 
-   @Column(name = "TYPE", nullable = false, length = 200)
+   /**
+    * @deprecated Utiliser {@link #getNom()}
+    */
+   @Deprecated
+   @Transient
    public String getType(){
-      return this.type;
+      return this.getNom();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setNom()}
+    */
+   @Deprecated
    public void setType(final String t){
-      this.type = t;
+      this.setNom(t);
    }
 
    @OneToMany(mappedBy = "conteneurType")
@@ -115,20 +127,8 @@ public class ConteneurType implements Serializable, TKThesaurusObject
       this.conteneurs = conts;
    }
 
-   @Override
-   @ManyToOne
-   @JoinColumn(name = "PLATEFORME_ID", nullable = false)
-   public Plateforme getPlateforme(){
-      return plateforme;
-   }
-
-   @Override
-   public void setPlateforme(final Plateforme pf){
-      this.plateforme = pf;
-   }
-
    /**
-    * 2 objets sont considérés comme égaux s'ils ont le même type et 
+    * 2 objets sont considérés comme égaux s'ils ont le même type et
     * la même plateforme.
     * @param obj est l'objet à tester.
     * @return true si les objets sont égales.
@@ -143,8 +143,9 @@ public class ConteneurType implements Serializable, TKThesaurusObject
          return false;
       }
       final ConteneurType test = (ConteneurType) obj;
-      return ((this.type == test.type || (this.type != null && this.type.equals(test.type)))
-         && (this.plateforme == test.plateforme || (this.plateforme != null && this.plateforme.equals(test.plateforme))));
+      return ((this.getNom() == test.getNom() || (this.getNom() != null && this.getNom().equals(test.getNom())))
+         && (this.getPlateforme() == test.getPlateforme()
+            || (this.getPlateforme() != null && this.getPlateforme().equals(test.getPlateforme()))));
    }
 
    /**
@@ -157,11 +158,11 @@ public class ConteneurType implements Serializable, TKThesaurusObject
       int hashType = 0;
       int hashPF = 0;
 
-      if(this.type != null){
-         hashType = this.type.hashCode();
+      if(this.getNom() != null){
+         hashType = this.getNom().hashCode();
       }
-      if(this.plateforme != null){
-         hashPF = this.plateforme.hashCode();
+      if(this.getPlateforme() != null){
+         hashPF = this.getPlateforme().hashCode();
       }
 
       hash = 31 * hash + hashType;
@@ -175,21 +176,10 @@ public class ConteneurType implements Serializable, TKThesaurusObject
     */
    @Override
    public String toString(){
-      if(this.type != null){
-         return "{" + this.type + "}";
+      if(this.getNom() != null){
+         return "{" + this.getNom() + "}";
       }
       return "{Empty ConteneurType}";
    }
 
-   @Override
-   @Transient
-   public String getNom(){
-      return getType();
-   }
-
-   @Override
-   @Transient
-   public Integer getId(){
-      return getConteneurTypeId();
-   }
 }

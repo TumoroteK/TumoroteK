@@ -39,12 +39,10 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -53,8 +51,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import fr.aphp.tumorotek.model.TKThesaurusObject;
-import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 
 /**
  *
@@ -67,16 +64,16 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  */
 @Entity
 @Table(name = "CONDIT_TYPE")
-@NamedQueries(value = {@NamedQuery(name = "ConditType.findByType", query = "SELECT c FROM ConditType c WHERE c.type like ?1"),
-   @NamedQuery(name = "ConditType.findByExcludedId", query = "SELECT c FROM ConditType c " + "WHERE c.conditTypeId != ?1"),
-   @NamedQuery(name = "ConditType.findByOrder",
-      query = "SELECT c FROM ConditType c " + "WHERE c.plateforme = ?1 ORDER BY c.type")})
-public class ConditType implements Serializable, TKThesaurusObject
+@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "CONDIT_TYPE_ID")),
+   @AttributeOverride(name = "nom", column = @Column(name = "TYPE", nullable = false, length = 200))})
+@GenericGenerator(name = "autoincrement", strategy = "increment")
+@NamedQueries(value = {@NamedQuery(name = "ConditType.findByType", query = "SELECT c FROM ConditType c WHERE c.nom like ?1"),
+   @NamedQuery(name = "ConditType.findByExcludedId", query = "SELECT c FROM ConditType c " + "WHERE c.id != ?1"),
+   @NamedQuery(name = "ConditType.findByPfOrder",
+      query = "SELECT c FROM ConditType c " + "WHERE c.plateforme = ?1 ORDER BY c.nom"),
+   @NamedQuery(name = "ConditType.findByOrder", query = "FROM ConditType c ORDER BY c.nom")})
+public class ConditType extends AbstractPfDependantThesaurusObject implements Serializable
 {
-
-   private Integer conditTypeId;
-   private String type;
-   private Plateforme plateforme;
 
    private Set<Prelevement> prelevements = new HashSet<>();
 
@@ -85,33 +82,42 @@ public class ConditType implements Serializable, TKThesaurusObject
    /** Constructeur par défaut. */
    public ConditType(){}
 
-   @Override
-   public String toString(){
-      if(this.type != null){
-         return "{" + this.type + "}";
-      }
-      return "{Empty ConditType}";
-   }
-
-   @Id
-   @Column(name = "CONDIT_TYPE_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
+   /**
+    * @deprecated Utiliser {@link #getId()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public Integer getConditTypeId(){
-      return this.conditTypeId;
+      return this.getId();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setId(Integer)}
+    * @return
+    */
+   @Deprecated
    public void setConditTypeId(final Integer id){
-      this.conditTypeId = id;
+      this.setId(id);
    }
 
-   @Column(name = "TYPE", nullable = false, length = 200)
+   /**
+    * @deprecated Utiliser {@link #getNom()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public String getType(){
-      return this.type;
+      return this.getNom();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setNom(String)}
+    * @param t
+    */
+   @Deprecated
    public void setType(final String t){
-      this.type = t;
+      this.setNom(t);
    }
 
    @OneToMany(mappedBy = "conditType")
@@ -124,70 +130,11 @@ public class ConditType implements Serializable, TKThesaurusObject
    }
 
    @Override
-   @ManyToOne
-   @JoinColumn(name = "PLATEFORME_ID", nullable = false)
-   public Plateforme getPlateforme(){
-      return plateforme;
-   }
-
-   @Override
-   public void setPlateforme(final Plateforme pf){
-      this.plateforme = pf;
-   }
-
-   /**
-    * 2 objets sont considérés comme égaux s'ils ont le même type.
-    * @param obj est l'objet à tester.
-    * @return true si les objets sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
-
-      if(this == obj){
-         return true;
+   public String toString(){
+      if(this.getNom() != null){
+         return "{" + this.getNom() + "}";
       }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final ConditType test = (ConditType) obj;
-      return ((this.type == test.type || (this.type != null && this.type.equals(test.type)))
-         && (this.plateforme == test.plateforme || (this.plateforme != null && this.plateforme.equals(test.plateforme))));
+      return "{Empty ConditType}";
    }
 
-   /**
-    * Le hashcode est calculé sur l'attribut type.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-
-      int hash = 7;
-      int hashType = 0;
-      int hashPF = 0;
-
-      if(this.type != null){
-         hashType = this.type.hashCode();
-      }
-      if(this.plateforme != null){
-         hashPF = this.plateforme.hashCode();
-      }
-
-      hash = 31 * hash + hashType;
-      hash = 31 * hash + hashPF;
-
-      return hash;
-
-   }
-
-   @Override
-   @Transient
-   public String getNom(){
-      return getType();
-   }
-
-   @Override
-   @Transient
-   public Integer getId(){
-      return getConditTypeId();
-   }
 }

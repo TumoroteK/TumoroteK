@@ -35,10 +35,8 @@
  **/
 package fr.aphp.tumorotek.action.prelevement.serotk;
 
-import java.util.Iterator;
-
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
 
@@ -47,7 +45,6 @@ import fr.aphp.tumorotek.action.prelevement.PrelevementRowRenderer;
 import fr.aphp.tumorotek.action.utils.PrelevementUtils;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
-import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
 import fr.aphp.tumorotek.model.coeur.prelevement.delegate.PrelevementSero;
 
 /**
@@ -59,7 +56,8 @@ import fr.aphp.tumorotek.model.coeur.prelevement.delegate.PrelevementSero;
  * Date: 17/03/2012
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.6
+ * @since 2.0.6 
+ * @version 2.2.0
  */
 public class PrelevementSeroRowRenderer extends PrelevementRowRenderer
 {
@@ -69,11 +67,11 @@ public class PrelevementSeroRowRenderer extends PrelevementRowRenderer
    }
 
    @Override
-   public void render(final Row row, final Object data, final int index){
+   public void render(final Row row, final Prelevement data, final int index){
 
       // dessine le checkbox
-      super.render(row, data, index);
-
+      drawCheckbox(row, data, index);
+      renderObjets(row,data);
    }
 
    @Override
@@ -83,35 +81,11 @@ public class PrelevementSeroRowRenderer extends PrelevementRowRenderer
       // init nbEchansRestants
       setNbEchansRestants(PrelevementUtils.getNbEchanRestants(prel));
 
-      final Hbox icones = new Hbox();
-      //infectieux
-      final Iterator<Risque> risksIt = ManagerLocator.getPrelevementManager().getRisquesManager(prel).iterator();
-      final Div bioHzd = new Div();
-      while(risksIt.hasNext()){
-         if(risksIt.next().getInfectieux()){
-            bioHzd.setWidth("18px");
-            bioHzd.setHeight("18px");
-            bioHzd.setSclass("biohazard");
-            break;
-         }
-      }
-      bioHzd.setParent(icones);
-      // non conformité
-      if(prel != null && prel.getConformeArrivee() != null){
-         final Div nonConf = new Div();
-         nonConf.setWidth("18px");
-         nonConf.setHeight("18px");
-         if(prel.getConformeArrivee()){
-            nonConf.setSclass("conformeArrivee");
-         }else{
-            nonConf.setSclass("nonConformeArrivee");
-         }
-         nonConf.setParent(icones);
-      }
+      final Hlayout icones = PrelevementUtils.drawListIcones(prel);
 
       // Dossier externe en attente
-      // @since 2.0.13.1 pivot code prelevement ou numero labo
-      if(prel != null && getEmetteurs().size() > 0){
+      // @since 2.0.13.1 pivot code ou numero labo
+      if(prel != null && emetteurs.size() > 0){
          if(ManagerLocator.getDossierExterneManager().findByEmetteurInListAndIdentificationManager(getEmetteurs(), prel.getCode())
             .size() > 0
             || ManagerLocator.getDossierExterneManager()
@@ -119,8 +93,9 @@ public class PrelevementSeroRowRenderer extends PrelevementRowRenderer
             final Div nonDossier = new Div();
             nonDossier.setWidth("18px");
             nonDossier.setHeight("18px");
-            nonDossier.setClass("dossierInbox");
+            nonDossier.setClass("dossierInbox formLink");
             nonDossier.setParent(icones);
+            nonDossier.addForward(null, nonDossier.getParent().getParent(), "onClickDossierExt", prel);
          }
       }
       icones.setParent(row);
@@ -129,6 +104,13 @@ public class PrelevementSeroRowRenderer extends PrelevementRowRenderer
       codeLabel.addForward(null, codeLabel.getParent(), "onClickObject", prel);
       codeLabel.setClass("formLink");
       codeLabel.setParent(row);
+
+      if(isTtesCollections()){
+         new Label(prel.getBanque().getNom()).setParent(row);
+      }else{
+         new Label().setParent(row);
+      }
+
       if(prel.getMaladie() != null){
          if(anonyme){
             if(getAccessPatient()){
@@ -138,6 +120,8 @@ public class PrelevementSeroRowRenderer extends PrelevementRowRenderer
             }else{
                createAnonymeBlock().setParent(row);
             }
+            // nip @version 2.0.12
+            createAnonymeBlock().setParent(row);
          }else{
             final Label patientLabel = new Label(PrelevementUtils.getPatientNomAndPrenom(prel));
             if(getAccessPatient()){
@@ -145,8 +129,13 @@ public class PrelevementSeroRowRenderer extends PrelevementRowRenderer
                patientLabel.setClass("formLink");
             }
             patientLabel.setParent(row);
+            // nip @version 2.0.12
+            final Label nipLabel = new Label(prel.getMaladie().getPatient().getNip());
+            nipLabel.setParent(row);
          }
       }else{
+         new Label().setParent(row);
+         // nip @version 2.0.12
          new Label().setParent(row);
       }
       if(prel.getMaladie() != null){
@@ -165,8 +154,11 @@ public class PrelevementSeroRowRenderer extends PrelevementRowRenderer
       }else{
          new Label().setParent(row);
       }
+
       // protocoles : liste des protocoles
-      if(prel.getDelegate() != null){
+      if(prel.getDelegate() != null)
+
+      {
          ObjectTypesFormatters.drawProtocolesLabel(((PrelevementSero) prel.getDelegate()).getProtocoles(), row, null);
       }else{
          new Label().setParent(row);

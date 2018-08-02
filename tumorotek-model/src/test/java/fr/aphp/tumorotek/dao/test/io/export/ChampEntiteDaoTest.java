@@ -175,7 +175,7 @@ public class ChampEntiteDaoTest extends AbstractDaoTest
          final ChampEntite temp = itChampEntites.next();
          if(temp.equals(c)){
             found = true;
-            idObject = temp.getChampEntiteId();
+            idObject = temp.getId();
             break;
          }
       }

@@ -839,9 +839,9 @@ public class CessionManagerImpl implements CessionManager
          final EntityManager em = entityManagerFactory.createEntityManager();
 
          // Echantillons
-         Query query = em.createQuery("SELECT new map(e.echantillonType.type as tp, "
+         Query query = em.createQuery("SELECT new map(e.echantillonType.nom as tp, "
             + "count(e.echantillonId) as ct) FROM Echantillon e, CederObjet c " + "WHERE c.pk.objetId = e.echantillonId "
-            + "AND c.pk.entite.entiteId = 3 AND c.pk.cession = :cession " + "GROUP BY e.echantillonType.type");
+            + "AND c.pk.entite.entiteId = 3 AND c.pk.cession = :cession " + "GROUP BY e.echantillonType.nom");
          query.setParameter("cession", cession);
 
          List<?> res = query.getResultList();
@@ -853,9 +853,9 @@ public class CessionManagerImpl implements CessionManager
          }
 
          // derives: additionne les comptes si type identiques avec échantillons
-         query = em.createQuery("SELECT new map(p.prodType.type as tp, "
+         query = em.createQuery("SELECT new map(p.prodType.nom as tp, "
             + "count(p.prodDeriveId) as ct) FROM ProdDerive p, CederObjet c " + "WHERE c.pk.objetId = p.prodDeriveId "
-            + "AND c.pk.entite.entiteId = 8 AND c.pk.cession = :cession " + "GROUP BY p.prodType.type");
+            + "AND c.pk.entite.entiteId = 8 AND c.pk.cession = :cession " + "GROUP BY p.prodType.nom");
          query.setParameter("cession", cession);
 
          res = query.getResultList();

@@ -35,41 +35,52 @@
  **/
 package fr.aphp.tumorotek.action.io;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.naming.NamingException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
+import org.zkoss.zul.Column;
+import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Html;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Longbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Row;
+import org.zkoss.zul.Rows;
 import org.zkoss.zul.SimpleListModel;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
+import fr.aphp.tumorotek.action.administration.annotations.DureeComponent;
+import fr.aphp.tumorotek.action.controller.AbstractListeController2;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.manager.io.export.RechercheManager;
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.Contexte;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.io.export.Critere;
 import fr.aphp.tumorotek.model.io.export.Recherche;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+import fr.aphp.tumorotek.model.utils.Duree;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 import fr.aphp.tumorotek.webapp.tree.export.CritereNode;
 import fr.aphp.tumorotek.webapp.tree.export.ExportNode;
@@ -84,8 +95,6 @@ import fr.aphp.tumorotek.webapp.tree.export.GroupementNode;
 public class FicheSetCriteresValues extends GenericForwardComposer<Component>
 {
 
-   private final Log log = LogFactory.getLog(FicheSetCriteresValues.class);
-
    private static final long serialVersionUID = 6152666419852522833L;
 
    private Panel winPanel;
@@ -98,6 +107,8 @@ public class FicheSetCriteresValues extends GenericForwardComposer<Component>
    private Listbox banquesBox;
    private Html presentationLabel;
 
+   private Column critereValueCol;
+   
    private List<Banque> banques = new ArrayList<>();
    private List<Banque> availableBanques = new ArrayList<>();
    private Recherche recherche;
@@ -106,6 +117,8 @@ public class FicheSetCriteresValues extends GenericForwardComposer<Component>
    private List<ExportNode> exportNodes = new ArrayList<>();
    private Hashtable<Integer, Object> criteresValues = new Hashtable<>();
    private Set<Listitem> selectedBanquesItem = new HashSet<>();
+
+   //   private Div valueDureeBox; //FIXME Implémentation durée
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
@@ -128,12 +141,27 @@ public class FicheSetCriteresValues extends GenericForwardComposer<Component>
       final GroupementNode node = GroupementNode.convertFromGroupement(recherche.getRequete().getGroupementRacine(), null);
       exportNodes = node.getExportNodeList();
       this.exportNodesGrid.setModel(new SimpleListModel<Object>(exportNodes));
+      Rows rows = this.exportNodesGrid.getRows();
+      for(Component rowComp : rows.getChildren()){
+         Row row = (Row) rowComp;
+         row.getChildren();
+      }
+
+      final boolean hasDelegates = exportNodes.stream().filter(en -> en instanceof CritereNode)
+         .anyMatch(cn -> ((CritereNode) cn).getCritere().getChamp().getChampDelegue() != null);
 
       // init des banques disponibles
       if(banques.size() == 1){
          final Utilisateur user = SessionUtils.getLoggedUser(sessionScope);
          final Plateforme pf = SessionUtils.getPlateforme(sessionScope);
          availableBanques = ManagerLocator.getUtilisateurManager().getAvailableBanquesByPlateformeManager(user, pf);
+
+         if(hasDelegates){
+            final Contexte currentContexte = SessionUtils.getCurrentBanque(sessionScope).getContexte();
+            availableBanques =
+               availableBanques.stream().filter(b -> currentContexte.equals(b.getContexte())).collect(Collectors.toList());
+         }
+
          availableBanques.remove(banques.get(0));
 
          rowToutesCollections.setVisible(false);
@@ -141,38 +169,31 @@ public class FicheSetCriteresValues extends GenericForwardComposer<Component>
          rowSelectionCollections.setVisible(true);
          labelOneCollection.setValue(
             ObjectTypesFormatters.getLabel("execution.recherche.liste.banques.1", new String[] {banques.get(0).getNom()}));
+
       }else{
          rowToutesCollections.setVisible(true);
          rowOneCollection.setVisible(false);
          rowSelectionCollections.setVisible(false);
-         final StringBuffer sb = new StringBuffer();
-         for(int i = 0; i < banques.size(); i++){
-            sb.append(banques.get(i).getNom());
-            if(i < banques.size() - 1){
-               sb.append(", ");
-            }
-         }
+
+         final String parameters = banques.stream().map(Banque::getNom).collect(Collectors.joining(", "));
+
          labelToutesCollections
-            .setValue(ObjectTypesFormatters.getLabel("execution.recherche.liste.banques.2", new String[] {sb.toString()}));
+            .setValue(ObjectTypesFormatters.getLabel("execution.recherche.liste.banques.2", new String[] {parameters}));
       }
 
-      final StringBuffer bksNom = new StringBuffer();
-      final List<Banque> tmp = ManagerLocator.getRechercheManager().findBanquesManager(recherche);
+      final List<Banque> tmp = ManagerLocator.getManager(RechercheManager.class).findBanquesManager(recherche);
+
+      String label;
       if(tmp.size() > 1){
-         bksNom.append(Labels.getLabel("execution.recherche.banques"));
+         label = Labels.getLabel("execution.recherche.banques");
       }else{
-         bksNom.append(Labels.getLabel("execution.recherche.banque"));
+         label = Labels.getLabel("execution.recherche.banque");
       }
-      bksNom.append(" ");
-      for(int i = 0; i < tmp.size(); i++){
-         bksNom.append(tmp.get(i).getNom());
 
-         if(i + 1 < tmp.size()){
-            bksNom.append(", ");
-         }
-      }
-      presentationLabel.setContent(ObjectTypesFormatters.getLabel("execution.recherche.presentation",
-         new String[] {recherche.getIntitule(), bksNom.toString()}));
+      label += " " + tmp.stream().map(Banque::getNom).collect(Collectors.joining(", "));
+
+      presentationLabel.setContent(
+         ObjectTypesFormatters.getLabel("execution.recherche.presentation", new String[] {recherche.getIntitule(), label}));
 
       getBinder().loadComponent(banquesBox);
    }
@@ -201,7 +222,6 @@ public class FicheSetCriteresValues extends GenericForwardComposer<Component>
             }else{
                value = exportNodes.get(i).getCritereValue();
             }
-
             if(value == null){
                ok = false;
             }else{
@@ -257,7 +277,6 @@ public class FicheSetCriteresValues extends GenericForwardComposer<Component>
     * Retourne les banques sélectionnées.
     * @return
     */
-   
    private List<Banque> findSelectedBanques(){
       final List<Banque> bks = new ArrayList<>();
       final Iterator<Listitem> its = banquesBox.getSelectedItems().iterator();
@@ -265,6 +284,71 @@ public class FicheSetCriteresValues extends GenericForwardComposer<Component>
          bks.add(availableBanques.get(banquesBox.getItems().indexOf(its.next())));
       }
       return bks;
+   }
+
+   public void onCreate$decimalBox(Event event){
+      Decimalbox decimBox = (Decimalbox) event.getData();
+      decimBox.getParent();
+   }
+
+   /**
+    * Pour l'execution de la recherche, à la saisie des valeurs, 
+    * remplace le champ de saisie numérique en un champ de saisie de durée
+    * @param event
+    */
+   public void onCreate$valueDecimalBox(Event event){ //FIXME Champ Duree Recherche - Trouver un meilleure moyen d'implémenter la box durée
+      // On récupère le critere node grace à la méthode magique
+      Object data = AbstractListeController2.getBindingData((ForwardEvent) event, false);
+      if(data instanceof CritereNode){
+         CritereNode cn = (CritereNode) data;
+         if("duree".equals(cn.getCritere().getChamp().dataType().getType())
+            || ("calcule".equals(cn.getCritere().getChamp().dataType().getType())
+               && "duree".equals(cn.getCritere().getChamp().getChampAnnotation().getChampCalcule().getDataType().getType()))){
+            // On a besoin de la decimalBox qui contient la valeur décimale qui sera traitée pour ce champ
+            Decimalbox decimalBox = (Decimalbox) ((ForwardEvent) event).getOrigin().getTarget();
+
+            // On cache la box pour afficher la dureeBox
+            decimalBox.setVisible(false);
+            DureeComponent dureeBox = drawDureeBox();
+            Component parent = decimalBox.getParent();
+            parent.appendChild(dureeBox);
+
+            /* 
+             * Afin de pouvoir enregistrer la saisie de la durée, dureeComponent étant un div on peut pas faire grand chose (pas d'évènements DOM)
+             * L'idée c'est donc d'enregistrer la durée à chaque changement de valeur dans les champs
+             */
+            for(Component compo : dureeBox.getChildren()){
+               if(compo instanceof Longbox){
+                  Longbox box = (Longbox) compo; // On récupère les box des champs de durée
+                  box.addEventListener("onChange", new EventListener<Event>()
+                  {
+                     @Override
+                     public void onEvent(Event event) throws Exception{
+                        /*
+                         * On enregistre la durée dans la decimalBox car elle est enregistree automatiquement
+                         * dans le CritereNode (c.f. setCriteresValuesModale.zul)
+                         */
+                        decimalBox.setValue(new BigDecimal(dureeBox.getDuree().getTemps(Duree.SECONDE)));
+                     }
+                  });
+               }
+            }
+            
+            /* Rectification de l'affichage */
+            critereValueCol.setHflex("1");
+            exportNodesGrid.setHflex("1");
+         }
+      }
+   }
+
+   /**
+    * Dessine le DureeComponent pour un Champ Duree
+    * @return DureeComponent Div pour un Champ Duree
+    * @since 2.2.0
+    */
+   private DureeComponent drawDureeBox(){
+      final DureeComponent dureebox = new DureeComponent();
+      return dureebox;
    }
 
    /****************************************************/

@@ -8,13 +8,13 @@
 ***
 
 ##### Installation de l'environnement applicatif :
-- MySQL v5  
+- MySQL ou MariaDB  
 > Paramétrage éventuel : modifier le path du dossier contenant les données dans la variable `datadir` du fichier *`my.cnf`*.
 
 - Java 8 minimum
 - Apache Tomcat 7 minimum
-- Paramétrage obligatoire : ajouter les variables de démarrage JAVA `-Duser.language=en -XX:MaxPermSize=256m`  
-- Paramétrage conseillé : ajouter les variables de démarrage JAVA `-Xms512m -Xmx1024m`  
+- Paramétrage obligatoire : ajouter les variables de démarrage Java `-Duser.language=en -XX:MaxPermSize=256m`  
+- Paramétrage conseillé : ajouter les variables de démarrage Java `-Xms512m -Xmx1024m`  
 (ces paramétrages sont renseignés directement sous Windows dans l'utilitaire `configureTomcat`, 
 sous Unix, dans la variable `CATALINA_OPTS`, par l'intermédiaire du script de démarrage `/etc/init.d/tomcat.sh` par exemple)
 
@@ -50,8 +50,6 @@ sous Unix, dans la variable `CATALINA_OPTS`, par l'intermédiaire du script de d
     Injection du contenu en ligne de commande (depuis le dossier */sql*)
     
         mysql -u root -p tumorotek --default-character-set=utf8 < tumorotek\tumorotek-init.sql
-    
-    > MySQL est sensible à la casse du noms des tables sous Linux, le script `renametables.sql` renomme toutes les tables en majuscules
     
     Création du compte SuperAdministrateur s'il n'existe pas encore en base (par défaut **login :** ADMIN_TUMO, **mdp :** tk4[teAm])
     
@@ -177,7 +175,7 @@ sous Unix, dans la variable `CATALINA_OPTS`, par l'intermédiaire du script de d
 
 ***
 
-##### Premiers paramétrages applicatifs (consulter le manuel utilisateur accessible depuis la page d'accueil) :
+##### Premiers paramétrages applicatifs (consulter [le manuel utilisateur](TumoroteK-Manuel.pdf)) :
 - Onglet **Administration** > **Collaborations** : créer l'environnement médical (Hôpital, Service, Collaborateurs) responsable de la biobanque
 - Onglet **Administration** > **Comptes** : les comptes des utilisateurs du personnel de la biobanque  
 > Il est recommandé de confier à un des utilisateurs les droits d'Administration de la Plateforme dans l'onglet **Administration** > **Plateforme** afin que cet 

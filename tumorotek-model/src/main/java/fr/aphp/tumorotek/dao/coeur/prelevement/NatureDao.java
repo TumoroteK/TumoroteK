@@ -38,7 +38,7 @@ package fr.aphp.tumorotek.dao.coeur.prelevement;
 import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
-import fr.aphp.tumorotek.dao.TKThesaurusDao;
+import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.coeur.prelevement.Nature;
 
 /**
@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Nature;
  * @version 2.0
  *
  */
-public interface NatureDao extends GenericDaoJpa<Nature, Integer>, TKThesaurusDao<Nature>
+public interface NatureDao extends GenericDaoJpa<Nature, Integer>, PfDependantTKThesaurusDao<Nature>
 {
 
    /**

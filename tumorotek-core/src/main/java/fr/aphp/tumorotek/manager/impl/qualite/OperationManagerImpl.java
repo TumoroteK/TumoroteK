@@ -136,13 +136,6 @@ public class OperationManagerImpl implements OperationManager
    @Override
    public void createObjectManager(final Operation operation, final Utilisateur utilisateur, final OperationType operationType,
       final Object obj){
-      //Utilisateur required
-      //		if (utilisateur == null) {
-      //			log.warn("Objet obligatoire Utilisateur manquant"
-      //						+ " lors de la creation d'une Operation");
-      //		throw new RequiredObjectIsNullException(
-      //				"Operation", "creation", "Utilisateur");
-      //		}
       operation.setUtilisateur(utilisateurDao.mergeObject(utilisateur));
       //OperationType required
       if(operationType == null){

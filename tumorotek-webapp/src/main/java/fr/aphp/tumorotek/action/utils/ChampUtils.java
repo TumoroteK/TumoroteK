@@ -37,8 +37,8 @@ package fr.aphp.tumorotek.action.utils;
 
 import org.zkoss.util.resource.Labels;
 
-import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.coeur.annotation.DataType;
+import fr.aphp.tumorotek.model.io.export.AbstractTKChamp;
 import fr.aphp.tumorotek.model.io.export.Champ;
 
 /**
@@ -53,25 +53,6 @@ public abstract class ChampUtils
     * Constructeur privé
     */
    private ChampUtils(){}
-
-   /**
-    * Retourne le libellé du {@link fr.aphp.tumorotek.model.io.export.Champ Champ} passé en paramètre (internationalisé si le champ est un {@link fr.aphp.tumorotek.model.io.export.ChampEntite ChampEntite})
-    * @param champ
-    * @return
-    */
-   public static String getChampLibelle(final Champ champ){
-
-      String nomChamp;
-
-      if(champ.getChampEntite() != null){
-         nomChamp = ObjectTypesFormatters.getLabelForChampEntite(getChampRacine(champ).getChampEntite());
-      }else{
-         nomChamp = champ.getChampAnnotation().getNom();
-      }
-
-      return nomChamp;
-
-   }
 
    /**
     * Retourne le libellé internationalisé de l'entité à laquelle est liée le {@link fr.aphp.tumorotek.model.io.export.Champ Champ} passé en paramètre
@@ -110,6 +91,11 @@ public abstract class ChampUtils
 
       if(champ.getChampAnnotation() != null){
          dataType = champ.getChampAnnotation().getDataType();
+         if("calcule".equals(dataType.getType())) {
+            dataType = champ.getChampAnnotation().getChampCalcule().getDataType();
+         }
+      }else if(champ.getChampDelegue() != null) {
+         dataType = champ.getChampDelegue().getDataType();
       }else if(champ.getChampEntite().getQueryChamp() == null){
          dataType = champ.getChampEntite().getDataType();
       }else{
@@ -120,4 +106,50 @@ public abstract class ChampUtils
 
    }
 
+   /**
+    * Retourne le nom du {@link fr.aphp.tumorotek.model.io.export.Champ Champ} passé en paramètre
+    * @param champ
+    * @return
+    */
+   public static String getChampNom(final Champ champ){
+
+      String nom = null;
+
+      if(champ.getChampAnnotation() != null){
+         nom = champ.getChampAnnotation().getNom();
+      }else if(champ.getChampDelegue() != null) {
+         nom = champ.getChampDelegue().getNom();
+      }else if(champ.getChampEntite().getQueryChamp() == null){
+         nom = champ.getChampEntite().getNom();
+      }else{
+         nom = champ.getChampEntite().getQueryChamp().getNom();
+      }
+
+      return nom;
+
+   }
+   
+   public static String getNomEntiteAncetre(Champ champ) {
+      
+      String nomEntiteAncetre = null;
+      Champ parent = champ.getChampParent();
+      AbstractTKChamp ceParent = null;
+      
+      while(parent != null && (parent.getChampEntite() != null || parent.getChampDelegue() != null)){
+         
+         if(null != parent.getChampEntite()){
+            ceParent = parent.getChampEntite();
+            nomEntiteAncetre = parent.getChampEntite().getEntite().getNom();
+         }else if(null != parent.getChampDelegue()){
+            ceParent = parent.getChampDelegue();
+            nomEntiteAncetre = parent.getChampDelegue().getEntite().getNom();
+         }
+         
+         parent = parent.getChampParent();
+      }
+      
+      return nomEntiteAncetre.replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
+      
+   }
+   
 }

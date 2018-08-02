@@ -38,7 +38,7 @@ package fr.aphp.tumorotek.dao.coeur.prelevement;
 import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
-import fr.aphp.tumorotek.dao.TKThesaurusDao;
+import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.coeur.prelevement.PrelevementType;
 
 /**
@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.PrelevementType;
  * @version 2.0
  *
  */
-public interface PrelevementTypeDao extends GenericDaoJpa<PrelevementType, Integer>, TKThesaurusDao<PrelevementType>
+public interface PrelevementTypeDao extends GenericDaoJpa<PrelevementType, Integer>, PfDependantTKThesaurusDao<PrelevementType>
 {
 
    /**

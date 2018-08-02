@@ -62,7 +62,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
  * @author Mathieu BARTHELEMY
  * @version 2.0
  */
-public class PatientRowRenderer extends TKSelectObjectRenderer
+public class PatientRowRenderer extends TKSelectObjectRenderer<Patient>
 {
 
    private List<Banque> banques = new ArrayList<>();
@@ -77,12 +77,12 @@ public class PatientRowRenderer extends TKSelectObjectRenderer
    }
 
    @Override
-   public void render(final Row row, final Object data, final int index){
+   public void render(final Row row, final Patient data, final int index){
       // dessine le checkbox
       super.render(row, data, index);
 
       // dessine les champs spécifiques Patient
-      final Patient pat = (Patient) data;
+      final Patient pat = data;
       patient = pat;
 
       if(anonyme){

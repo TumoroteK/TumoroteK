@@ -39,12 +39,10 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -53,8 +51,7 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import fr.aphp.tumorotek.model.TKThesaurusObject;
-import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 
 /**
  *
@@ -67,21 +64,22 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  */
 @Entity
 @Table(name = "PROD_QUALITE")
-@NamedQueries(value = {
-   @NamedQuery(name = "ProdQualite.findByProdQualite", query = "SELECT p FROM ProdQualite p WHERE p.prodQualite like ?1"),
-   @NamedQuery(name = "ProdQualite.findByProdDeriveId",
-      query = "SELECT p FROM ProdQualite p " + "left join p.prodDerives d " + "WHERE d.prodDeriveId = ?1"),
-   @NamedQuery(name = "ProdQualite.findByExcludedId", query = "SELECT p FROM ProdQualite p " + "WHERE p.prodQualiteId != ?1"),
-   @NamedQuery(name = "ProdQualite.findByOrder",
-      query = "SELECT p FROM ProdQualite p " + "WHERE p.plateforme = ?1 ORDER BY p.prodQualite")})
-public class ProdQualite implements Serializable, TKThesaurusObject
+@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "PROD_QUALITE_ID")),
+   @AttributeOverride(name = "nom", column = @Column(name = "PROD_QUALITE", nullable = false, length = 200))})
+@GenericGenerator(name = "autoincrement", strategy = "increment")
+@NamedQueries(
+   value = {@NamedQuery(name = "ProdQualite.findByProdQualite", query = "SELECT p FROM ProdQualite p WHERE p.nom like ?1"),
+      @NamedQuery(name = "ProdQualite.findByProdDeriveId",
+         query = "SELECT p FROM ProdQualite p " + "left join p.prodDerives d " + "WHERE d.prodDeriveId = ?1"),
+      @NamedQuery(name = "ProdQualite.findByExcludedId", query = "SELECT p FROM ProdQualite p " + "WHERE p.id != ?1"),
+      @NamedQuery(name = "ProdQualite.findByPfOrder",
+         query = "SELECT p FROM ProdQualite p " + "WHERE p.plateforme = ?1 ORDER BY p.nom"),
+      @NamedQuery(name = "ProdQualite.findByOrder",
+      query = "SELECT p FROM ProdQualite p ORDER BY p.nom")})
+public class ProdQualite extends AbstractPfDependantThesaurusObject implements Serializable
 {
 
    private static final long serialVersionUID = -4115872442854900525L;
-
-   private Integer prodQualiteId;
-   private String prodQualite;
-   private Plateforme plateforme;
 
    private Set<ProdDerive> prodDerives;
 
@@ -91,25 +89,42 @@ public class ProdQualite implements Serializable, TKThesaurusObject
       prodDerives = new HashSet<>();
    }
 
-   @Id
-   @Column(name = "PROD_QUALITE_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
+   /**
+    * @deprecated Utiliser {@link #getId()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public Integer getProdQualiteId(){
-      return this.prodQualiteId;
+      return this.getId();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setId(Integer)}
+    * @return
+    */
+   @Deprecated
    public void setProdQualiteId(final Integer id){
-      this.prodQualiteId = id;
+      this.setId(id);
    }
 
-   @Column(name = "PROD_QUALITE", nullable = false, length = 200)
+   /**
+    * @deprecated Utiliser {@link #getNom()}
+    * @return
+    */
+   @Deprecated
+   @Transient
    public String getProdQualite(){
-      return this.prodQualite;
+      return this.getNom();
    }
 
+   /**
+    * @deprecated Utiliser {@link #setNom(String)}
+    * @param t
+    */
+   @Deprecated
    public void setProdQualite(final String qualite){
-      this.prodQualite = qualite;
+      this.setNom(qualite);
    }
 
    @OneToMany(mappedBy = "prodQualite")
@@ -121,84 +136,16 @@ public class ProdQualite implements Serializable, TKThesaurusObject
       this.prodDerives = prodDs;
    }
 
-   @Override
-   @ManyToOne
-   @JoinColumn(name = "PLATEFORME_ID", nullable = false)
-   public Plateforme getPlateforme(){
-      return plateforme;
-   }
-
-   @Override
-   public void setPlateforme(final Plateforme pf){
-      this.plateforme = pf;
-   }
-
-   /**
-    * 2 objets sont considérés comme égaux s'ils ont la même qualité et 
-    * la même plateforme.
-    * @param obj est l'objet à tester.
-    * @return true si les objets sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
-
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final ProdQualite test = (ProdQualite) obj;
-      return ((this.prodQualite == test.prodQualite || (this.prodQualite != null && this.prodQualite.equals(test.prodQualite)))
-         && (this.plateforme == test.plateforme || (this.plateforme != null && this.plateforme.equals(test.plateforme))));
-   }
-
-   /**
-    * Le hashcode est calculé sur les attributs prodQualite et plateforme.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-
-      int hash = 7;
-      int hashQualite = 0;
-      int hashPF = 0;
-
-      if(this.prodQualite != null){
-         hashQualite = this.prodQualite.hashCode();
-      }
-      if(this.plateforme != null){
-         hashPF = this.plateforme.hashCode();
-      }
-
-      hash = 31 * hash + hashQualite;
-      hash = 31 * hash + hashPF;
-
-      return hash;
-
-   }
-
    /**
     * Méthode surchargeant le toString() de l'objet.
     */
    @Override
    public String toString(){
-      if(this.prodQualite != null){
-         return "{" + this.prodQualite + "}";
+      if(this.getNom() != null){
+         return "{" + this.getNom() + "}";
       }else{
          return "{Empty ProdQualite}";
       }
    }
 
-   @Override
-   @Transient
-   public String getNom(){
-      return getProdQualite();
-   }
-
-   @Override
-   @Transient
-   public Integer getId(){
-      return getProdQualiteId();
-   }
 }

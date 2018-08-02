@@ -146,10 +146,10 @@ public class EchanQualiteManagerImpl implements EchanQualiteManager
       final EchanQualite qualite = obj;
 
       if(qualite != null){
-         if(qualite.getEchanQualiteId() == null){
+         if(qualite.getId() == null){
             return echanQualiteDao.findAll().contains(qualite);
          }
-         return echanQualiteDao.findByExcludedId(qualite.getEchanQualiteId()).contains(qualite);
+         return echanQualiteDao.findByExcludedId(qualite.getId()).contains(qualite);
       }
       return false;
    }
@@ -197,11 +197,16 @@ public class EchanQualiteManagerImpl implements EchanQualiteManager
    @Override
    public void removeObjectManager(final EchanQualite obj){
       final EchanQualite qualite = obj;
-      echanQualiteDao.removeObject(qualite.getEchanQualiteId());
+      echanQualiteDao.removeObject(qualite.getId());
    }
 
    @Override
    public List<EchanQualite> findByOrderManager(final Plateforme pf){
-      return echanQualiteDao.findByOrder(pf);
+      return echanQualiteDao.findByPfOrder(pf);
+   }
+
+   @Override
+   public List<EchanQualite> findByOrderManager(){
+      return echanQualiteDao.findByOrder();
    }
 }
