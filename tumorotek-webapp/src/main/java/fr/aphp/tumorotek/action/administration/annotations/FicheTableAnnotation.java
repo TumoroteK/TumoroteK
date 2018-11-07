@@ -114,36 +114,20 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
    // Labels
    private Label nomLabel;
    private Label descriptionLabel;
-   /**
-    * ANNOTATION INLINE - Bêta
-    *
-    * @since 2.2.0
-    */
-   private Label inlineDisplayLabel;
-   //private Box catalogueLabel;
    private Label entiteLabel;
 
    // Editable components : mode d'édition ou de création.
    private Label nomRequired;
    private Textbox nomBox;
    private Textbox descriptionBox;
-   /**
-    * ANNOTATION INLINE - Bêta
-    *
-    * @since 2.2.0
-    */
-   private Checkbox inlineDisplayCheckbox;
    private Listbox entiteBox;
-   //private Combobox catalogueBox;
 
    // banque
    private Group groupBanques;
    private Div banquesAssociees;
 
    private Menubar menuBar;
-
    private Rows rows;
-   // private Row rowGridBanques;
 
    // Objets Principaux.
    private TableAnnotation table;
@@ -186,14 +170,11 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
       setFantomable(true);
 
       // Initialisation des listes de composants
-      setObjLabelsComponents(
-         new Component[] {this.entiteLabel, this.nomLabel, this.descriptionLabel, this.inlineDisplayLabel, this.menuBar
+      setObjLabelsComponents(new Component[] {this.entiteLabel, this.nomLabel, this.descriptionLabel, this.menuBar
          //this.catalogueLabel
-         });
-
-      setObjBoxsComponents(new Component[] {this.entiteBox, this.nomBox, this.descriptionBox, this.inlineDisplayCheckbox
-         //this.catalogueBox
       });
+
+      setObjBoxsComponents(new Component[] {this.entiteBox, this.nomBox, this.descriptionBox});
 
       setRequiredMarks(new Component[] {this.nomRequired});
 
@@ -345,14 +326,6 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
          descriptionLabel.setVisible(true);
          descriptionBox.setVisible(false);
 
-         /**
-          * ANNOTATION INLINE - Bêta
-          *
-          * @since 2.2.0
-          */
-         inlineDisplayLabel.setVisible(true);
-         inlineDisplayCheckbox.setVisible(false);
-
          getBanquesAssociees().switchToStaticMode();
       }else{
          getBanquesAssociees().switchToEditMode(true);
@@ -375,13 +348,6 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
    @Override
    public void createNewObject(){
       setEmptyToNulls();
-
-      /**
-       * ANNOTATION INLINE - Bêta
-       *
-       * @since 2.2.0
-       */
-      table.setInlineDisplay(inlineDisplayCheckbox.isChecked());
 
       final List<ChampAnnotation> chps = prepareChamps();
 
@@ -418,7 +384,7 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
    }
 
    /**
-    * @see super.onClick$createC. Ajoute la gestion de la fermeture 
+    * @see super.onClick$createC. Ajoute la gestion de la fermeture
     * de la busy box.
     */
    @Override
@@ -507,10 +473,10 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
       if(this.table.getDescription().equals("")){
          this.table.setDescription(null);
       }
-      //		if (this.selectedCatalogue != null 
+      //		if (this.selectedCatalogue != null
       //				&& this.selectedCatalogue.equals(emptyCatalogue)) {
       //			this.selectedCatalogue = null;
-      //		}	
+      //		}
    }
 
    @Override
@@ -592,7 +558,7 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
       //ListModel list2 = new ListModelList(catalogues);
       //catalogueBox.setModel(list);
       //catalogueBox.setSelectedIndex(catalogues.indexOf(selectedCatalogue));
-      //getBinder().loadAttribute(catalogueBox, "model");		
+      //getBinder().loadAttribute(catalogueBox, "model");
    }
 
    /**
@@ -757,9 +723,9 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
    //	 * @return true si le catalogue présente une image
    //	 */
    //	public Boolean getIconeVisible() {
-   //		return this.selectedCatalogue != null 
+   //		return this.selectedCatalogue != null
    //							&& this.selectedCatalogue.getIcone() != null;
-   //	} 
+   //	}
 
    public String getGridAvailableHeight(){
       return String.valueOf(getMainWindow().getPanelHeight() - 212) + "px";
@@ -833,7 +799,7 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
     * si c'est un champ en cours modification -> revert
     * si c'est un champ en cours de creation -> remove.
     * @param event
-    * @throws IOException 
+    * @throws IOException
     */
    public void onClick$editChamp(final Event event) throws IOException{
       revertCurrentEdition();
@@ -947,10 +913,10 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
     * @param event
     */
    public void onClick$validateChamp(final Event event){
-      Row row = (Row) AbstractListeController2.getBindingData((ForwardEvent) event, true);
+      final Row row = (Row) AbstractListeController2.getBindingData((ForwardEvent) event, true);
       //Validation saisie ChampCalcule
       if("calcule".equals(this.currentChampEdited.getChamp().getDataType().getType())){
-         ChampCalcule champCalcule = this.currentChampEdited.getChampCalcule();
+         final ChampCalcule champCalcule = this.currentChampEdited.getChampCalcule();
          if(null == champCalcule || null == champCalcule.getChamp1()){
             throw new WrongValueException(row, Labels.getLabel("anno.champCalcule.empty"));
          }
@@ -1026,7 +992,7 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
 
    /**
     * Ouvre la modale en lui spécifiant le decorateur en cours d'edition
-    * et la reference vers le composant SELF pour permettre de traiter le 
+    * et la reference vers le composant SELF pour permettre de traiter le
     * post back event qui rafraichira la div defautDiv.
     * @param event
     */
@@ -1102,8 +1068,8 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
    }
 
    /**
-    * Ouvre la modale en lui spécifiant le decorateur en cours d'edition 
-    * et la reference vers le composant SELF pour permettre de traiter le 
+    * Ouvre la modale en lui spécifiant le decorateur en cours d'edition
+    * et la reference vers le composant SELF pour permettre de traiter le
     * post back event qui rafraichira la div defautDiv.
     * @param event
     */
@@ -1160,8 +1126,8 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
 
    /**
     * En mode creation, quand le type de champ change, reinitialisation
-    * de(s) valeur(s) par defaut, et de la possibilite de combine le champ 
-    * ou pas. 
+    * de(s) valeur(s) par defaut, et de la possibilite de combine le champ
+    * ou pas.
     * @param event
     */
    public void onSelect$typeBoxEachChamp(final Event event){
@@ -1208,7 +1174,7 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
 
    /**
     * Pour chaque ChampAnnotationDecorator cree ou modifie, extrait le champ
-    * et  s'assure que si il est associe a l'AnnotationDefaut vide par defaut, 
+    * et  s'assure que si il est associe a l'AnnotationDefaut vide par defaut,
     * la supprime. Verifie le champ afin que ce dernier
     * a au moins une valeur défaut non vide, sinon aucune.
     */
@@ -1222,7 +1188,7 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
          final Iterator<AnnotationDefaut> itor = champsToCreateOrEdit.get(i).getDefauts().iterator();
 
          // cree le set annotation defaut dans l'ordre (la premiere est celle
-         // qui contient l'info obligatoire ou non) 
+         // qui contient l'info obligatoire ou non)
          // avec les defauts non vides
          final Set<AnnotationDefaut> defs = new LinkedHashSet<>();
          AnnotationDefaut def;
@@ -1250,7 +1216,7 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
    }
 
    /**
-    * Met à jour les valeurs d'annotation defaut et les items 
+    * Met à jour les valeurs d'annotation defaut et les items
     * pour le champ spécifié. Utilise HashSet et LinkedHashSet
     * pour caster les PersistentSet.
     * @param chps
@@ -1293,8 +1259,8 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
    }
 
    /**
-    * Renvoie le controller associe au composant permettant la gestion 
-    * des associations one-to-many avec les banques. 
+    * Renvoie le controller associe au composant permettant la gestion
+    * des associations one-to-many avec les banques.
     */
    public BanquesAssociees getBanquesAssociees(){
       return (BanquesAssociees) self.getFellow("banquesAssociees").getFellow("winBanquesAssociees")

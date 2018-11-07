@@ -2,18 +2,27 @@
 
 ##### Version ${project.version} - Publiée le ${timestamp}
 ###### Nouveautés
-- YouTrack [TKB-4](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-4) : <span class="badge badge-prelevement">Prélèvement</span> Amélioration de la signification : congélation à l'arrivé à la biothèque
-- YouTrack [TK-61](https://tumorotek.myjetbrains.com/youtrack/issue/TK-61) : <span class="badge badge-impression-doc">Impression (modèle DOC)</span> Pouvoir créer un modèle de document DOCx contenant des placeholders (clé) correspondants des champs et les remplacer par leur valeur à l'impression.
-- YouTrack [TK-98](https://tumorotek.myjetbrains.com/youtrack/issue/TK-98) : <span class="badge badge-annotation-champ-calcule">Annotation (Champ calculé)</span> Mise en place des champs calculés.
-- YouTrack [TK-110](https://tumorotek.myjetbrains.com/youtrack/issue/TK-110) : <span class="badge badge-statistiques">Statistiques</span> Amélioration de la partie Statistiques/Indicateurs
-- YouTrack [TK-160](https://tumorotek.myjetbrains.com/youtrack/issue/TK-160) : <span class="badge badge-cession">Cession</span> Cessions de type Traitement permettant un retour d'objets cédés sous forme de produits dérivés
+- YouTrack [TKB-4](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-4) : ${prelevement} Amélioration de la signification : congélation à l'arrivé à la biothèque
+- YouTrack [TK-14](https://tumorotek.myjetbrains.com/youtrack/issue/TK-14) : Evolution de la partie Numérotation
+- YouTrack [TK-61](https://tumorotek.myjetbrains.com/youtrack/issue/TK-61) : ${impression-modele-doc} Pouvoir créer un modèle de document DOCx contenant des placeholders (clé) correspondants des champs et les remplacer par leur valeur à l'impression.
+- YouTrack [TK-98](https://tumorotek.myjetbrains.com/youtrack/issue/TK-98) : ${annotation-champ-calcule} Mise en place des champs calculés.
+- YouTrack [TK-110](https://tumorotek.myjetbrains.com/youtrack/issue/TK-110) : ${statistiques} Amélioration de la partie Statistiques/Indicateurs
+- YouTrack [TK-119](https://tumorotek.myjetbrains.com/youtrack/issue/TK-119) : Pouvoir affecter à plusieurs collections une même table d'annotation
+- YouTrack [TK-160](https://tumorotek.myjetbrains.com/youtrack/issue/TK-160) : ${cession} Cessions de type Traitement permettant un retour d'objets cédés sous forme de produits dérivés
 - YouTrack [TK-172](https://tumorotek.myjetbrains.com/youtrack/issue/TK-172) : Afficher les actions du super utilisateur dans l'historique
 - YouTrack [TK-196](https://tumorotek.myjetbrains.com/youtrack/issue/TK-196) : Implémentation du contexte Sérologie
+- YouTrack [TK-199](https://tumorotek.myjetbrains.com/youtrack/issue/TK-199) : Choisir la température ou mettre la température de transport par défaut dans un évènement de stockage lié à une cession
+- YouTrack [TK-200](https://tumorotek.myjetbrains.com/youtrack/issue/TK-200) : Ajouter des accès utilisateur depuis l'onglet Administration > Collection
+- YouTrack [TK-201](https://tumorotek.myjetbrains.com/youtrack/issue/TK-201) : Ajouter les champs annotations / maladie dans l'impression des étiquettes paramétrables
+- YouTrack [TK-203](https://tumorotek.myjetbrains.com/youtrack/issue/TK-203) : Pouvoir ajouter un logo et un message d'accueil sur la page de login
+- YouTrack [TK-210](https://tumorotek.myjetbrains.com/youtrack/issue/TK-210) : Possibilité de choisir le mode d'authentification à la création d'un compte utilisateur
 
 ###### Corrections
-- YouTrack [TK-111](https://tumorotek.myjetbrains.com/youtrack/issue/TK-111) : <span class="badge badge-statistiques">Statistiques</span> Modifier le libellé DGOS... en Totaux des prélèvements
+- YouTrack [TK-111](https://tumorotek.myjetbrains.com/youtrack/issue/TK-111) : ${statistiques} Modifier le libellé DGOS... en Totaux des prélèvements
 - YouTrack [TK-155](https://tumorotek.myjetbrains.com/youtrack/issue/TK-155) : Correction de la fonctionalité de déplacement de prélèvement/échantillon/dérivé de collection afin de mettre à jour les liens vers les fichiers associés
 - YouTrack [TK-159](https://tumorotek.myjetbrains.com/youtrack/issue/TK-159) : Suppression de l'erreur au remplissage d'un composant datebox au format d/M/yy.
+- YouTrack [TK-173](https://tumorotek.myjetbrains.com/youtrack/issue/TK-173) : ${statistiques} Renommer les indicateurs MERRI en enlevant la notion DGOS
+- YouTrack [TK-204](https://tumorotek.myjetbrains.com/youtrack/issue/TK-204) : Il manque des pastilles de couleur lors de l'impression du contenu d'une boîte
 
 ***
 

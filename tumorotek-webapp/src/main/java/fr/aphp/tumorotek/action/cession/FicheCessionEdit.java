@@ -83,7 +83,6 @@ import org.zkoss.zul.event.PagingEvent;
 
 import fr.aphp.tumorotek.action.CustomSimpleListModel;
 import fr.aphp.tumorotek.action.ManagerLocator;
-import fr.aphp.tumorotek.action.constraints.ConstCode;
 import fr.aphp.tumorotek.action.constraints.ConstText;
 import fr.aphp.tumorotek.action.constraints.ConstWord;
 import fr.aphp.tumorotek.action.controller.AbstractFicheEditController;
@@ -96,6 +95,7 @@ import fr.aphp.tumorotek.action.stockage.StockageController;
 import fr.aphp.tumorotek.action.utils.CessionUtils;
 import fr.aphp.tumorotek.action.utils.PrelevementUtils;
 import fr.aphp.tumorotek.component.CalendarBox;
+import fr.aphp.tumorotek.component.ValeurDecimaleModale;
 import fr.aphp.tumorotek.decorator.CederObjetDecorator;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.decorator.factory.CederObjetDecoratorFactory;
@@ -293,6 +293,8 @@ public class FicheCessionEdit extends AbstractFicheEditController
    private Calendar dateRetourEchansComplete;
    private Calendar dateRetourDerivesComplete;
    private CancelFromModalException cancelException;
+
+   Float test;
 
    // @since 2.1.1 obj to be reverted onLaterEdit
    private final List<CederObjetDecorator> revertedObjs = new ArrayList<>();
@@ -1094,7 +1096,7 @@ public class FicheCessionEdit extends AbstractFicheEditController
          onBlur$dateDestructionCalBox();
 
          super.onLaterCreate();
-         
+
          if(!getNewlyCeds().isEmpty()){
             Date date = null;
             if(cession.getDepartDate() != null){
@@ -2113,12 +2115,13 @@ public class FicheCessionEdit extends AbstractFicheEditController
       final List<Retour> incompletes = new ArrayList<>();
       final List<Integer> ids = new ArrayList<>();
       Entite e;
-      
+
       final List<CederObjetDecorator> cedeDecos = new ArrayList<>();
       cedeDecos.addAll(echantillonsCedesDecores);
       cedeDecos.addAll(derivesCedesDecores);
 
       // pour chaque échantillon cédé
+      Float temperatureEpuisement = null;
       for(final CederObjetDecorator deco : cedeDecos){
 
          if(selectedCessionType.getType().equals("Traitement")){
@@ -2126,7 +2129,7 @@ public class FicheCessionEdit extends AbstractFicheEditController
                deco.getCederObjet().setStatut(ECederObjetStatut.TRAITEMENT);
             }
          }
-         
+
          final TKStockableObject tkObj = deco.getTKobj();
 
          // si les valeurs ont pu changées ou que la cession a été
@@ -2184,9 +2187,20 @@ public class FicheCessionEdit extends AbstractFicheEditController
                   dateS.setTime(cession.getValidationDate());
                }
                epuisement.setDateSortie(dateS);
-               //finalRetour.setDateRetour(Utils.getCurrentSystemCalendar());
-               // température arbitraire
-               epuisement.setTempMoyenne(new Float(20.0));
+
+               //Pas super propre mais permet de ne saisir la température qu'une seule fois par cession
+               if(temperatureEpuisement == null){
+                  final Retour tmp = new Retour();
+                  final Float temperatureCession =
+                     temperatureBox.getValue() != null ? temperatureBox.getValue().floatValue() : 20f;
+                  Clients.clearBusy();
+                  ValeurDecimaleModale.show(Labels.getLabel("listeRetour.title"), Labels.getLabel("Champ.Retour.TempMoyenne"),
+                     temperatureCession, false, evt -> tmp.setTempMoyenne((Float) evt.getData()));
+                  Clients.showBusy(Labels.getLabel(getWaitLabel()));
+                  temperatureEpuisement = tmp.getTempMoyenne();
+               }
+
+               epuisement.setTempMoyenne(temperatureEpuisement);
                epuisement.setObservations(Labels.getLabel("ficheRetour.observations.cession") + " "
                   + Labels.getLabel("ficheRetour.observations.epuisement"));
                epuisement.setEntite(e);
@@ -2947,7 +2961,7 @@ public class FicheCessionEdit extends AbstractFicheEditController
       this.terminaleDestockage = terminale;
    }
 
-   public ConstCode getNumeroConstraint(){
+   public Constraint getNumeroConstraint(){
       return CessionConstraints.getNumeroCessionConstraint();
    }
 
@@ -3157,4 +3171,5 @@ public class FicheCessionEdit extends AbstractFicheEditController
             break;
       }
    }
+
 }

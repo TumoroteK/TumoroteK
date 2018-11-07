@@ -183,11 +183,6 @@ import fr.aphp.tumorotek.manager.utilisateur.ProfilManager;
 import fr.aphp.tumorotek.manager.utilisateur.ProfilUtilisateurManager;
 import fr.aphp.tumorotek.manager.utilisateur.UtilisateurManager;
 import fr.aphp.tumorotek.manager.validation.coeur.cession.retour.RetourValidator;
-import fr.aphp.tumorotek.manager.validation.workflow.ActionManager;
-import fr.aphp.tumorotek.manager.validation.workflow.CritereValidationManager;
-import fr.aphp.tumorotek.manager.validation.workflow.NiveauValidationManager;
-import fr.aphp.tumorotek.manager.validation.workflow.ValidateurManager;
-import fr.aphp.tumorotek.manager.validation.workflow.ValidationManager;
 import fr.aphp.tumorotek.manager.xml.XmlUtils;
 import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.bundles.ResourceBundleMbio;
@@ -911,25 +906,4 @@ public final class ManagerLocator
       return (EchantillonDTOManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("echantillonDTOManager");
    }
 
-   /********************* Validation Managers *************************/
-   public static CritereValidationManager getCritereValidationManager(){
-      return (CritereValidationManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("critereValidationManager");
-   }
-
-   public static ValidationManager getEntiteValidationManager(){
-      return (fr.aphp.tumorotek.manager.validation.workflow.ValidationManager) (ContextLoader.getCurrentWebApplicationContext())
-         .getBean("entiteValidationManager");
-   }
-
-   public static NiveauValidationManager getNiveauValidationManager(){
-      return (NiveauValidationManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("niveauValidationManager");
-   }
-
-   public static ValidateurManager getValidateurManager(){
-      return (ValidateurManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("validateurManager");
-   }
-
-   public static ActionManager getActionManager(){
-      return (ActionManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("actionManager");
-   }
 }

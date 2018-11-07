@@ -44,6 +44,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -71,13 +72,10 @@ import org.zkoss.zul.Window;
 import org.zkoss.zul.ext.Selectable;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
-import fr.aphp.tumorotek.action.annotation.FicheAnnotation;
-import fr.aphp.tumorotek.action.annotation.FicheAnnotationInline;
 import fr.aphp.tumorotek.action.constraints.ConstCode;
 import fr.aphp.tumorotek.action.constraints.ConstInt;
 import fr.aphp.tumorotek.action.constraints.ConstWord;
 import fr.aphp.tumorotek.action.controller.AbstractFicheEditController;
-import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
 import fr.aphp.tumorotek.action.echantillon.EchantillonController;
 import fr.aphp.tumorotek.action.patient.FicheMaladie;
 import fr.aphp.tumorotek.action.patient.FichePatientEdit;
@@ -88,9 +86,9 @@ import fr.aphp.tumorotek.action.patient.ResumePatient;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.decorator.PrelevementDecorator2;
+import fr.aphp.tumorotek.manager.coeur.prelevement.PrelevementManager;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
-import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
@@ -464,7 +462,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          if(idx >= 0){
             collaborateursBoxPrlvt.setSelectedIndex(collaborateurs.indexOf(selectedCollaborateur));
          }else{ // warning incoherence appartenance service
-            //				throw new WrongValueException(collaborateursBoxPrlvt, 
+            //				throw new WrongValueException(collaborateursBoxPrlvt,
             //						Labels.getLabel(
             //							"interfacage.injection.collaborateur.incoherent"));
             Messagebox.show(Labels.getLabel("interfacage.injection.collaborateur.incoherent"), Labels.getLabel("general.warning"),
@@ -492,15 +490,6 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
       super.setObject(obj);
 
-      /**
-       * ANNOTATION INLINE - Bêta
-       *
-       * @since 2.2.0
-       */
-      final FicheAnnotation inline = getFicheAnnotationInline();
-      if(null != inline){ // re-dessine le bloc inline annotation
-         inline.setObj((TKAnnotableObject) obj);
-      }
    }
 
    @Override
@@ -588,17 +577,6 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    public void createNewObject(){
       final List<File> filesCreated = new ArrayList<>();
 
-      /**
-       * ANNOTATION INLINE - Bêta
-       *
-       * @since 2.2.0
-       */
-      // On ajoute à la liste des annotations verticales celles horizontales
-      final List<AnnotationValeur> annotationValeursToCreateOrUpdate =
-         getObjectTabController().getFicheAnnotationInline().getValeursToCreateOrUpdate();
-      annotationValeursToCreateOrUpdate.addAll(getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate());
-      /** END **/
-
       try{
          setEmptyToNulls();
          setFieldsToUpperCase();
@@ -612,17 +590,12 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          getObject().setRisques(findSelectedRisques());
          getObject().setLaboInters(new HashSet<LaboInter>());
 
-         /**
-          * ANNOTATION INLINE - Bêta
-          *
-          * @since 2.2.0
-          */
          // update de l'objet
          ManagerLocator.getPrelevementManager().createObjectManager(prelevement,
             SessionUtils.getSelectedBanques(sessionScope).get(0), selectedNature, this.maladie, selectedConsentType,
             selectedCollaborateur, selectedService, selectedMode, selectedConditType, selectedConditMilieu, transporteur,
-            operateur, quantiteUnite, null, annotationValeursToCreateOrUpdate, filesCreated,
-            SessionUtils.getLoggedUser(sessionScope), true, SessionUtils.getSystemBaseDir(), false);
+            operateur, quantiteUnite, null, getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(),
+            filesCreated, SessionUtils.getLoggedUser(sessionScope), true, SessionUtils.getSystemBaseDir(), false);
 
          // rafraichit la maladie pour avoir les references
          this.maladie = ManagerLocator.getPrelevementManager().getMaladieManager(this.prelevement);
@@ -761,22 +734,6 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       final List<File> filesCreated = new ArrayList<>();
       final List<File> filesToDelete = new ArrayList<>();
 
-      /**
-       * ANNOTATION INLINE - Bêta
-       *
-       * @since 2.2.0
-       */
-      // On ajoute à la liste des annotations verticales celles horizontales
-      final List<AnnotationValeur> annotationValeursToCreateOrUpdate =
-         getObjectTabController().getFicheAnnotationInline().getValeursToCreateOrUpdate();
-      annotationValeursToCreateOrUpdate.addAll(getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate());
-
-      // On ajoute à la liste des annotations verticales celles horizontales
-      final List<AnnotationValeur> annotationValeursToDelete =
-         getObjectTabController().getFicheAnnotationInline().getValeursToDelete();
-      annotationValeursToDelete.addAll(getObjectTabController().getFicheAnnotation().getValeursToDelete());
-      /** END **/
-
       try{
          Integer cascadeNonSterile = null;
 
@@ -810,17 +767,13 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          getObject().getRisques().clear();
          getObject().getRisques().addAll(findSelectedRisques());
 
-         /**
-          * ANNOTATION INLINE - Bêta
-          *
-          * @since 2.2.0
-          */
-         //          update de l'objet
+         //Update de l'objet
          ManagerLocator.getPrelevementManager().updateObjectManager(prelevement, null, selectedNature, maladie,
             selectedConsentType, selectedCollaborateur, selectedService, selectedMode, selectedConditType, selectedConditMilieu,
-            transporteur, operateur, quantiteUnite, null, annotationValeursToCreateOrUpdate, annotationValeursToDelete,
-            filesCreated, filesToDelete, SessionUtils.getLoggedUser(sessionScope), cascadeNonSterile, true,
-            SessionUtils.getSystemBaseDir(), false);
+            transporteur, operateur, quantiteUnite, null,
+            getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(),
+            getObjectTabController().getFicheAnnotation().getValeursToDelete(), filesCreated, filesToDelete,
+            SessionUtils.getLoggedUser(sessionScope), cascadeNonSterile, true, SessionUtils.getSystemBaseDir(), false);
 
          getObjectTabController().handleExtCom(getObject(), getObjectTabController());
 
@@ -1132,9 +1085,6 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    }
 
    public void onSelect$naturesBoxPrlvt(){
-      /*if (BTO.equals(getCurrentContexte()))
-         selectedNature = ManagerLocator.getNatureManager().findByNatureLikeManager(naturesBoxPrlvt.getItems().get(0).getValue().toString(), false).get(0);
-      */
       // validation
       if(selectedNature == null){
          Clients.scrollIntoView(naturesBoxPrlvt);
@@ -1156,13 +1106,17 @@ public class FichePrelevementEdit extends AbstractFicheEditController
     * codeBoxPrlvt. Cette valeur sera mise en majuscules.
     */
    public void onBlur$codeBoxPrlvt(){
+
       codeBoxPrlvt.setValue(codeBoxPrlvt.getValue().toUpperCase().trim());
+
+      validatePrelevementCode(codeBoxPrlvt.getValue());
 
       // si le code a été modifié lors de l'update du prélèvement
       if(prelevement.getPrelevementId() != null && !((Prelevement) getCopy()).getCode().equals(codeBoxPrlvt.getValue())){
          getObjectTabController().setCodeUpdated(true);
          getObjectTabController().setOldCode(((Prelevement) getCopy()).getCode());
       }
+
    }
 
    @Override
@@ -1247,6 +1201,25 @@ public class FichePrelevementEdit extends AbstractFicheEditController
             throw new WrongValueException(comp, ObjectTypesFormatters.handleErrors(errs, field));
          }
       }
+   }
+
+   /**
+    * Validation "à la volée" du code prélèvement saisi
+    * @param prltCode
+    */
+   private void validatePrelevementCode(String prltCode){
+
+      //Vérification de l'absence de doublons
+      final List<Prelevement> doublons = ManagerLocator.getManager(PrelevementManager.class)
+         .findByCodeInPlateformeManager(prltCode, SessionUtils.getCurrentPlateforme());
+
+      if(!doublons.isEmpty()){
+         final String collectionsDoublon =
+            doublons.stream().map(Prelevement::getBanque).map(Banque::getNom).collect(Collectors.joining(", "));
+         throw new WrongValueException(codeBoxPrlvt,
+            Labels.getLabel("error.validation.doublon.code", new String[] {prltCode, collectionsDoublon}));
+      }
+
    }
 
    /**
@@ -1750,44 +1723,4 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       colorConsentTypeItem(true);
    }
 
-   /**
-    * ANNOTATION INLINE - Bêta
-    *
-    * Copie depuis AbstractObjectTabController
-    * Récupère le controller de la fiche
-    *
-    * @return
-    * @since 2.2.0
-    */
-   public FicheAnnotationInline getFicheAnnotationInline(){
-      if(self.getFellowIfAny("ficheTissuInlineAnnoPrelevement") != null){
-         return ((FicheAnnotationInline) self.getFellow("ficheTissuInlineAnnoPrelevement").getFellow("fwinAnnotationInline")
-            .getAttributeOrFellow("fwinAnnotationInline$composer", true));
-      }
-      return null;
-   }
-
-   /**
-    * ANNOTATION INLINE - Bêta
-    *
-    * Passe qq params au bloc inline annotation sans le dessiner la creation de la
-    * fiche statique.
-    *
-    * @param controller
-    * @since 2.2.0
-    */
-   @Override
-   public void setObjectTabController(final AbstractObjectTabController controller){
-      super.setObjectTabController(controller);
-      final FicheAnnotation inline = getFicheAnnotationInline();
-
-      if(null != inline){
-         // passe l'entite au controller
-         getFicheAnnotationInline().setEntite(getObjectTabController().getEntiteTab());
-
-         // à remplacer par ce controller
-         // setFicheController
-         getFicheAnnotationInline().setObjectTabController(getObjectTabController());
-      }
-   }
 }

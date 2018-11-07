@@ -36,17 +36,26 @@
 package fr.aphp.tumorotek.action.contexte;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModel;
+import org.zkoss.zul.ListModelSet;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.ListitemRenderer;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.component.OneToManyComponent;
-import fr.aphp.tumorotek.decorator.CouleurItemRenderer;
-import fr.aphp.tumorotek.model.TKThesaurusObject;
+import fr.aphp.tumorotek.manager.coeur.echantillon.EchantillonTypeManager;
+import fr.aphp.tumorotek.manager.coeur.prodderive.ProdTypeManager;
+import fr.aphp.tumorotek.manager.systeme.CouleurManager;
+import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
+import fr.aphp.tumorotek.model.AbstractThesaurusObject;
 import fr.aphp.tumorotek.model.coeur.echantillon.EchantillonType;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdType;
 import fr.aphp.tumorotek.model.systeme.Couleur;
@@ -59,29 +68,14 @@ public class CoulTypesAssociees extends OneToManyComponent<CouleurEntiteType>
    private static final long serialVersionUID = 1L;
 
    private Listbox couleurBox;
-
-   private boolean isEchantillonTyped = true;
+   private Listbox typeBox;
 
    private List<CouleurEntiteType> objects = new ArrayList<>();
-   private final List<Couleur> couleurs = new ArrayList<>();
 
    private final CoulTypesRowRenderer coulTypesRenderer = new CoulTypesRowRenderer();
-   private final CouleurItemRenderer couleurRenderer = new CouleurItemRenderer();
 
    public CoulTypesRowRenderer getCoulTypesRenderer(){
       return coulTypesRenderer;
-   }
-
-   public CouleurItemRenderer getCouleurRenderer(){
-      return couleurRenderer;
-   }
-
-   public List<Couleur> getCouleurs(){
-      return couleurs;
-   }
-
-   public void setEchantillonTyped(final boolean is){
-      this.isEchantillonTyped = is;
    }
 
    @Override
@@ -89,9 +83,27 @@ public class CoulTypesAssociees extends OneToManyComponent<CouleurEntiteType>
       objLinkLabel = new Label();
       super.doAfterCompose(comp);
 
-      couleurs.addAll(ManagerLocator.getCouleurManager().findAllObjectsManager());
+      final List<Couleur> listCouleurs = ManagerLocator.getManager(CouleurManager.class).findAllObjectsManager().stream()
+         .sorted(Comparator.comparing(Couleur::getCouleur)).collect(Collectors.toList());
 
-      getBinder().loadAttribute(couleurBox, "model");
+      final ListModel<Couleur> couleurs = new ListModelSet<>(listCouleurs);
+
+      final ListitemRenderer<AbstractThesaurusObject> typesRenderer = (li, item, idx) -> {
+         li.setLabel(item.getNom());
+         li.setValue(item);
+      };
+
+      final ListitemRenderer<Couleur> couleursRenderer = (li, couleur, idx) -> {
+         li.setLabel(couleur.getCouleur());
+         li.setStyle(couleur.getHexaCssStyle());
+         li.setValue(couleur);
+      };
+
+      typeBox.setItemRenderer(typesRenderer);
+
+      couleurBox.setItemRenderer(couleursRenderer);
+      couleurBox.setModel(couleurs);
+
    }
 
    @Override
@@ -106,24 +118,39 @@ public class CoulTypesAssociees extends OneToManyComponent<CouleurEntiteType>
    }
 
    @Override
-   public void addToListObjects(final CouleurEntiteType obj){
-      addToListObjects(obj);
-   }
-   
-   public void addToListObjects(final TKThesaurusObject obj){
-      final CouleurEntiteType cet = new CouleurEntiteType();
-      if(isEchantillonTyped){
-         cet.setEchantillonType((EchantillonType) obj);
-      }else{
-         cet.setProdType((ProdType) obj);
-      }
-      Couleur selected = couleurs.get(0);
-      if(couleurBox.getSelectedItem() != null){
-         selected = (Couleur) couleurBox.getSelectedItem().getValue();
-      }
-      cet.setCouleur(selected);
+   public void addToListObjects(final CouleurEntiteType obj){}
 
-      addToListObjects(cet);
+   @Override
+   public void onClick$addObj(){
+
+      final List<AbstractThesaurusObject> listTypes = findObjectsAddable();
+      final ListModelSet<AbstractThesaurusObject> types = new ListModelSet<>(listTypes);
+
+      typeBox.setModel(types);
+
+      addObjBox.setVisible(true);
+      addObj.setVisible(false);
+      deleteHeader.setVisible(false);
+   }
+
+   @Override
+   public void onClick$addSelObj(){
+
+      final CouleurEntiteType cet = new CouleurEntiteType();
+
+      final AbstractPfDependantThesaurusObject selectedType = typeBox.getSelectedItem().getValue();
+      if(selectedType instanceof ProdType){
+         cet.setProdType((ProdType) selectedType);
+      }else{
+         cet.setEchantillonType((EchantillonType) selectedType);
+      }
+
+      ((ListModelSet<Object>) typeBox.getListModel()).remove(selectedType);
+
+      cet.setCouleur((Couleur) couleurBox.getSelectedItem().getValue());
+
+      objects.add(cet);
+
    }
 
    @Override
@@ -137,23 +164,27 @@ public class CoulTypesAssociees extends OneToManyComponent<CouleurEntiteType>
    }
 
    @Override
-   public List<? extends Object> findObjectsAddable(){
-      if(isEchantillonTyped){
-         final List<EchantillonType> echanTypes =
-            ManagerLocator.getEchantillonTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
-         // retire les types deja assignés
-         for(int i = 0; i < getObjects().size(); i++){
-            echanTypes.remove(getObjects().get(i).getEchantillonType());
-         }
-         return echanTypes;
+   public List<AbstractThesaurusObject> findObjectsAddable(){
+
+      final boolean typeEchantillon = (Boolean) arg.get("isEchantillonTyped");
+
+      final List<AbstractThesaurusObject> listTypes;
+      if(typeEchantillon){
+         final List<EchantillonType> listTypesAssignes = getObjects().stream().map(CouleurEntiteType::getEchantillonType)
+            .filter(Objects::nonNull).collect(Collectors.toList());
+         listTypes = ManagerLocator.getManager(EchantillonTypeManager.class)
+            .findByOrderManager(SessionUtils.getCurrentPlateforme()).stream().filter(et -> !listTypesAssignes.contains(et))
+            .sorted(Comparator.comparing(EchantillonType::getNom)).collect(Collectors.toList());
+      }else{
+         final List<ProdType> listTypesAssignes =
+            getObjects().stream().map(CouleurEntiteType::getProdType).filter(Objects::nonNull).collect(Collectors.toList());
+         listTypes = ManagerLocator.getManager(ProdTypeManager.class).findByOrderManager(SessionUtils.getCurrentPlateforme())
+            .stream().filter(pt -> !listTypesAssignes.contains(pt)).sorted(Comparator.comparing(ProdType::getNom))
+            .collect(Collectors.toList());
+
       }
-      final List<ProdType> prodTypes =
-         ManagerLocator.getProdTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
-      // retire les types deja assignés
-      for(int i = 0; i < getObjects().size(); i++){
-         prodTypes.remove(getObjects().get(i).getProdType());
-      }
-      return prodTypes;
+
+      return listTypes;
    }
 
    @Override

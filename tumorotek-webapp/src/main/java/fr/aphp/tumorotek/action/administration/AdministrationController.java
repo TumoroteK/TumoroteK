@@ -46,7 +46,6 @@ import org.zkoss.zul.Tabpanels;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.annotation.FicheAnnotation;
-import fr.aphp.tumorotek.action.annotation.FicheAnnotationInline;
 import fr.aphp.tumorotek.action.cession.ContratController;
 import fr.aphp.tumorotek.action.code.CodesController;
 import fr.aphp.tumorotek.action.contexte.BanqueController;
@@ -210,6 +209,16 @@ public class AdministrationController extends AbstractObjectTabController
          availableTabsNames.add("plateformesTab");
       }
 
+      if(!SessionUtils.getLoggedUser(sessionScope).isSuperAdmin() && !sessionScope.containsKey("AdminPF")){
+         final Tab tabPf = (Tab) adminTabbox.getFellow("parametresTab");
+         tabPf.setDisabled(true);
+         tabPf.setVisible(false);
+      }else{
+         final Tab tabPf = (Tab) adminTabbox.getFellow("parametresTab");
+         tabPf.setVisible(true);
+         availableTabsNames.add("parametresTab");
+      }
+      
       availableTabsNames.add("annotationsTab");
       availableTabsNames.add("banquesTab");
       availableTabsNames.add("utilisateursTab");
@@ -252,11 +261,6 @@ public class AdministrationController extends AbstractObjectTabController
 
    @Override
    public FicheAnnotation getFicheAnnotation(){
-      return null;
-   }
-
-   @Override
-   public FicheAnnotationInline getFicheAnnotationInline(){
       return null;
    }
 

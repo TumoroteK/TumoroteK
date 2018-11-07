@@ -34,7 +34,6 @@
 	* accepté les termes. 
 -->
 <?component name="calendarbox" macroURI="/zuls/component/CalendarBox.zul" class="fr.aphp.tumorotek.component.CalendarBox" ?>
-<?component name="ficheAnnotationInline" macroURI="/zuls/annotation/FicheAnnotationInline.zul" ?>
 
 <window id="fwinPrelevementEditSero" border="none" apply="fr.aphp.tumorotek.action.prelevement.serotk.FichePrelevementEditSero">
 	<panel collapsible="false" title="${c:l('fichePrelevement.panel.title')}" sclass="fichePanelv2" id="winPanel" closable="true">
@@ -86,10 +85,6 @@
 								<listcell label="@{proto.nom}" />
 							</listitem>
 						</listbox>
-					</row>
-					<!-- Annotation inline -->
-					<row spans="4" style="background-color: blue">
-						<ficheAnnotationInline id="ficheTissuInlineAnnoPrelevement" hflex="1" />
 					</row>
 					<row spans="4">
 						<separator />
@@ -261,7 +256,7 @@
 						<label value="${c:l('fichePrelevement.date.statut')}" sclass="formLabel" />
 
 						<datebox id="dateConsentBoxPrlvt" format="${c:l('validation.date.format.simple')}" value="@{fwinPrelevementEditSero$composer.object.consentDate,
-									save-when='validate.onClick, create.onClick, next.onClick'}" lenient="false" />
+									save-when='validate.onClick, create.onClick, next.onClick'}" lenient="true" />
 					</row>
 					<row spans="1,3">
 						<label value="${c:l('Champ.Prelevement.SEROLOGIE.Libelle')}" sclass="formLabel" />

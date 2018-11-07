@@ -114,6 +114,10 @@ public class Champ implements Comparable<Champ>
       
    }
    
+   public Champ(final AbstractTKChamp ch) {
+      this(ch, null);
+   }
+   
    @Id
    @GeneratedValue(generator = "autoincrement")
    @GenericGenerator(name = "autoincrement", strategy = "increment")

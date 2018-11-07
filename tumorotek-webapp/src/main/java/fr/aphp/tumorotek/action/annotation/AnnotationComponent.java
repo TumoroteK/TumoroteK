@@ -66,8 +66,6 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Checkbox;
-//import org.zkoss.zul.Combobox;
-//import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Constraint;
@@ -1574,11 +1572,6 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
     */
    private Banque getBanqueForValeur(final boolean forceByGroup){
       if(!forceByGroup){
-         /**
-          * ANNOTATION INLINE - Bêta
-          *
-          * @since 2.2.0
-          */
          if(null != getFicheAnnotation() && null != getFicheAnnotation().getObject()
             && ("Patient".equals(getFicheAnnotation().getObject().entiteNom())
                || "Prelevement".equals(getFicheAnnotation().getObject().entiteNom())
@@ -1590,40 +1583,8 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
             }
             return getFicheAnnotation().getBankUsedToDrawChamps();
          }
-         /**
-          * ANNOTATION INLINE - Bêta
-          *
-          * @since 2.2.0
-          */
-         if(null != getFicheAnnotationInline() && null != getFicheAnnotationInline().getObject()
-            && ("Patient".equals(getFicheAnnotationInline().getObject().entiteNom())
-            || "Prelevement".equals(getFicheAnnotationInline().getObject().entiteNom())
-            || "Echantillon".equals(getFicheAnnotationInline().getObject().entiteNom())
-            || "Cession".equals(getFicheAnnotation().getObject().entiteNom()))){
-            if(null != getFicheAnnotationInline().getObject().getBanque()){
-               return getFicheAnnotationInline().getObject().getBanque();
-            }
-            return getFicheAnnotationInline().getBankUsedToDrawChamps();
-         }
       }
-      /**
-       * ANNOTATION INLINE - Bêta
-       *
-       * @since 2.2.0
-       */
-      //return (Banque) annoGroup.getAttribute("bank");
       return (Banque) tableComponent.getAttribute("bank");
-      /** END **/
-   }
-
-   /**
-    * ANNOTATION INLINE - Bêta
-    *
-    * @since 2.2.0
-    */
-   private FicheAnnotationInline getFicheAnnotationInline(){
-      return (FicheAnnotationInline) self.getParent().getParent().getParent()
-         .getAttributeOrFellow("fwinAnnotationInline$composer", true);
    }
 
    /**
@@ -1824,7 +1785,7 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
 
       initConstraintDate();
       ((Datebox) box).setConstraint(this.boxConstr);
-      ((Datebox) box).setLenient(false);
+      ((Datebox) box).setLenient(true);
 
       if(isCombined){
          ((Datebox) box).setDisabled(true);

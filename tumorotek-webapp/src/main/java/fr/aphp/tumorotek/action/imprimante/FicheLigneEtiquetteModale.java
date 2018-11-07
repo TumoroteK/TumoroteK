@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.action.imprimante;
 
 import java.awt.GraphicsEnvironment;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -62,12 +65,19 @@ import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
 import fr.aphp.tumorotek.action.imports.ImportChampDecorator;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.manager.ConfigManager;
+import fr.aphp.tumorotek.manager.coeur.annotation.ChampAnnotationManager;
+import fr.aphp.tumorotek.manager.io.ChampDelegueManager;
+import fr.aphp.tumorotek.manager.io.ChampEntiteManager;
 import fr.aphp.tumorotek.model.TKdataObject;
+import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.imprimante.ChampLigneEtiquette;
 import fr.aphp.tumorotek.model.imprimante.LigneEtiquette;
+import fr.aphp.tumorotek.model.io.export.AbstractTKChamp;
 import fr.aphp.tumorotek.model.io.export.Champ;
+import fr.aphp.tumorotek.model.io.export.ChampDelegue;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.systeme.Entite;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  * Classe gérant la création et l'édition des lignes d'une étiquette.
@@ -77,8 +87,6 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  */
 public class FicheLigneEtiquetteModale extends AbstractFicheCombineController
 {
-
-   // private Log log = LogFactory.getLog(FicheLigneEtiquetteModale.class);
 
    private static final long serialVersionUID = 6047056651132329158L;
 
@@ -134,10 +142,6 @@ public class FicheLigneEtiquetteModale extends AbstractFicheCombineController
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
-
-      // if (winPanel != null) {
-      //	winPanel.setHeight("80%");
-      //}
 
       // Initialisation des listes de composants
       setObjLabelsComponents(new Component[] {});
@@ -354,14 +358,12 @@ public class FicheLigneEtiquetteModale extends AbstractFicheCombineController
       showFontValues(texteRadio.isChecked());
 
       // init des entités imprimables
-      // entitesToPrint = new ArrayList<Entite>();
       entitesToPrint.add(null);
       entitesToPrint.add(ManagerLocator.getEntiteManager().findByNomManager("Echantillon").get(0));
       entitesToPrint.add(ManagerLocator.getEntiteManager().findByNomManager("ProdDerive").get(0));
       selectedEntiteToPrint = null;
 
       // init de la liste des formatages
-      // formatages = new ArrayList<String>();
       formatages.add(null);
       formatages.add(Labels.getLabel("fiche.ligne.etiquette.formatage.aucun"));
       formatages.add(Labels.getLabel("fiche.ligne.etiquette.formatage.avant"));
@@ -384,9 +386,7 @@ public class FicheLigneEtiquetteModale extends AbstractFicheCombineController
             // quel est la meilleure font family par défaut? La plus répandue
          }
       }
-      //		if (!fonts.contains(selectedFont)) {
-      //			fonts.add(selectedFont);
-      //		}
+
       final ListModelList<String> list = new ListModelList<>(fonts);
       fontsBox.setModel(list);
       list.addToSelection(selectedFont);
@@ -412,26 +412,8 @@ public class FicheLigneEtiquetteModale extends AbstractFicheCombineController
       list2.addToSelection(selectedStyle);
 
       // init des sizes
-      sizes = new ArrayList<>();
-      sizes.add(2);
-      sizes.add(3);
-      sizes.add(4);
-      sizes.add(5);
-      sizes.add(6);
-      sizes.add(7);
-      sizes.add(8);
-      sizes.add(9);
-      sizes.add(10);
-      sizes.add(11);
-      sizes.add(12);
-      sizes.add(13);
-      sizes.add(14);
-      sizes.add(15);
-      sizes.add(16);
-      sizes.add(17);
-      sizes.add(18);
-      sizes.add(19);
-      sizes.add(20);
+      sizes = IntStream.rangeClosed(2, 20).boxed().collect(Collectors.toList());
+
       if(ligneEtiquette.getSize() == null){
          selectedSize = 4;
       }else{
@@ -486,28 +468,43 @@ public class FicheLigneEtiquetteModale extends AbstractFicheCombineController
     * @throws Exception
     */
    public void onSelect$entitesBox(final Event event) throws Exception{
+
       final int ind = entitesBox.getSelectedIndex();
       selectedEntite = entites.get(ind);
       champsDecorator.clear();
+
       if(selectedEntite != null){
-         final List<Champ> tmp = new ArrayList<>();
+
+         final List<AbstractTKChamp> listChamps = new ArrayList<>();
          final List<ChampEntite> ces = ManagerLocator.getChampEntiteManager().findByEntiteAndImportManager(selectedEntite, true);
+         final List<ChampAnnotation> chAnnoList =
+            ManagerLocator.getManager(ChampAnnotationManager.class).findByEntiteManager(selectedEntite);
+         final List<ChampDelegue> chDelegueList = ManagerLocator.getManager(ChampDelegueManager.class)
+            .findByEntiteAndContexte(selectedEntite, SessionUtils.getCurrentContexte());
 
-         for(int i = 0; i < ces.size(); i++){
-            tmp.add(new Champ(ces.get(i)));
+
+         //Ajout du champ banqueId (collection) s'il existe pour l'entité sélectionnée
+         List<ChampEntite> champCollectionList = ManagerLocator.getManager(ChampEntiteManager.class).findByEntiteAndNomManager(selectedEntite, "BanqueId");
+         if(!champCollectionList.isEmpty()) {
+            ces.add(champCollectionList.get(0));
          }
-         champsDecorator.addAll(ImportChampDecorator.decorateListe(tmp));
-      } // else {
-        // champsDecorator = new ArrayList<ImportChampDecorator>();
-        //}
-      champsDecorator.add(0, null);
+         
+         listChamps.addAll(ces);
+         listChamps.addAll(chAnnoList);
+         listChamps.addAll(chDelegueList);
 
-      // ListModel list = new ListModelList(champsDecorator);
-      // champsBox.setModel(list);
+         listChamps.stream().map(Champ::new).map(ImportChampDecorator::new)
+            .sorted(Comparator.comparing(ImportChampDecorator::getNom, String.CASE_INSENSITIVE_ORDER))
+            .forEach(champsDecorator::add);
+
+      }
+
+      champsDecorator.add(0, null);
 
       if(!champsDecorator.contains(selectedChamp)){
          selectedChamp = null;
       }
+
       champsBox.setSelectedIndex(champsDecorator.indexOf(selectedChamp));
    }
 
@@ -600,6 +597,7 @@ public class FicheLigneEtiquetteModale extends AbstractFicheCombineController
       if(selectedChamp == null){
          throw new WrongValueException(champsBox, Labels.getLabel("validation.syntax.empty"));
       }
+
       cle.setChamp(selectedChamp.getChamp());
 
       cle.setExpReg(null);
@@ -645,13 +643,7 @@ public class FicheLigneEtiquetteModale extends AbstractFicheCombineController
       }
 
       // ajout du nouveau champ à la liste
-      // if (!champs.contains(cle)) {
       champs.add(cle);
-      // ListModel<ChampDecorator> list = new ListModelList<ChampDecorator>(champs);
-      // champsGrid.setModel(list);
-      // getBinder().loadComponent(champsGrid);
-      // Clients.scrollIntoView(champsGrid);
-      //}
 
       clearSelection(true);
    }
@@ -670,7 +662,6 @@ public class FicheLigneEtiquetteModale extends AbstractFicheCombineController
          selectedFormatage = formatages.get(0);
          formatagesBox.clearSelection();
          onSelect$formatagesBox(); // re-initialise le composant
-         // selectedEntiteToPrint = null;
       }
    }
 
@@ -692,9 +683,6 @@ public class FicheLigneEtiquetteModale extends AbstractFicheCombineController
 
             // on l'enlève de la liste
             champs.remove(cle);
-            // ListModel list = new ListModelList(champs);
-            // champsGrid.setModel(list);
-            // getBinder().loadComponent(champsGrid);
          }
       }
    }

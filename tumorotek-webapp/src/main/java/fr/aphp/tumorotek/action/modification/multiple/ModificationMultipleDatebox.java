@@ -142,11 +142,18 @@ public class ModificationMultipleDatebox extends AbstractModificationMultipleCom
    @Override
    public void passValueToEraserBox(){
       if(getValues().get(multiListBox.getSelectedIndex()) != null){
-         if(!isCalendar){
-            eraseMultiDatebox.setValue((Date) getValues().get(multiListBox.getSelectedIndex()));
+
+         final Object selectedItem = getValues().get(multiListBox.getSelectedIndex());
+
+         final Date newDate;
+         if(selectedItem instanceof Calendar){
+            newDate = ((Calendar) selectedItem).getTime();
          }else{
-            eraseMultiDatebox.setValue(((Calendar) getValues().get(multiListBox.getSelectedIndex())).getTime());
+            newDate = (Date) selectedItem;
          }
+
+         eraseMultiDatebox.setValue(newDate);
+
       }else{
          eraseMultiDatebox.setValue(null);
       }

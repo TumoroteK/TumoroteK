@@ -37,7 +37,6 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <zk>
 	<?component name="listeEchantillon" macroURI="/zuls/echantillon/ListeEchantillon.zul"?>
-	<?component name="listeEchantillonBTO" macroURI="/zuls/echantillon/bto/ListeEchantillonBTO.zul"?>
 	<?component name="listeEchantillonSero" macroURI="/zuls/echantillon/serotk/ListeEchantillonSero.zul"?>
 	<?component name="ficheEchantillonStatic" macroURI="/zuls/echantillon/FicheEchantillonStatic.zul"?>
 	<?component name="ficheAnnotation" macroURI="/zuls/annotation/FicheAnnotation.zul" ?>
@@ -47,7 +46,6 @@
 			<west title="${c:l('general.recherche')}" size="30%" border="normal" splittable="true" collapsible="true" id="listeRegion">
 				<div>
 					<listeEchantillon id="listeEchantillon" hflex="1" visible="false" />
-					<listeEchantillonBTO id="listeEchantillonBTO" hflex="1" visible="false" />
 					<listeEchantillonSero id="listeEchantillonSero" hflex="1" visible="false" />
 				</div>
 			</west>

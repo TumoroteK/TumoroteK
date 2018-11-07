@@ -36,36 +36,54 @@
 package fr.aphp.tumorotek.action.stockage;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModel;
+import org.zkoss.zul.ListModelSet;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.controller.AbstractListeController2;
 import fr.aphp.tumorotek.component.OneToManyComponent;
-import fr.aphp.tumorotek.model.TKdataObject;
+import fr.aphp.tumorotek.manager.context.PlateformeManager;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.stockage.ConteneurPlateforme;
-import fr.aphp.tumorotek.model.stockage.ConteneurPlateformePK;
 
 public class PlateformesAssociees extends OneToManyComponent<ConteneurPlateforme>
 {
 
    private static final long serialVersionUID = 1L;
 
+   private Listbox plateformeBox;
+
    private List<ConteneurPlateforme> objects = new ArrayList<>();
    private Conteneur conteneur;
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
-      objLinkLabel = new Label();
+
       super.doAfterCompose(comp);
+
+      objLinkLabel = new Label();
+
+      final ListitemRenderer<Plateforme> plateformeRenderer = (li, pf, idx) -> {
+         li.setLabel(pf.getNom());
+         li.setValue(pf);
+      };
+
+      plateformeBox.setItemRenderer(plateformeRenderer);
+
    }
 
    @Override
@@ -73,7 +91,6 @@ public class PlateformesAssociees extends OneToManyComponent<ConteneurPlateforme
       return this.objects;
    }
 
-   
    @Override
    public void setObjects(final List<ConteneurPlateforme> objs){
       this.objects = objs;
@@ -84,41 +101,68 @@ public class PlateformesAssociees extends OneToManyComponent<ConteneurPlateforme
    public void addToListObjects(final ConteneurPlateforme obj){
       getObjects().add(obj);
    }
-   
-   public void addToListObjects(final TKdataObject obj){
-      final ConteneurPlateforme cp = new ConteneurPlateforme();
-      final ConteneurPlateformePK cpk = new ConteneurPlateformePK(getConteneur(), (Plateforme) obj);
-      cp.setPk(cpk);
-      addToListObjects(cp);
-   }
 
    @Override
    public void removeFromListObjects(final Object obj){
+      
+      final ConteneurPlateforme objToRemove = (ConteneurPlateforme)obj;
+      
       getObjects().remove(obj);
+      
+      if(null != objToRemove.getPlateforme() && plateformeBox.getListModel() != null) {
+         
+         ListModelSet<Object> listModel = ((ListModelSet<Object>)plateformeBox.getListModel());
+         
+         listModel.add(objToRemove.getPlateforme());
+         
+      }
+      
    }
 
+   @Override
+   public void updateComponent(){
+
+      ListModelSet<Object> listModelPf = (ListModelSet<Object>)plateformeBox.getListModel();
+      
+      if(!addObj.isVisible() && null != listModelPf) {
+         addObjBox.setVisible(!listModelPf.isEmpty());
+      }
+      
+      super.updateComponent();
+      
+   }
+   
    @Override
    public String getGroupHeaderValue(){
-      final StringBuffer sb = new StringBuffer();
-      sb.append(Labels.getLabel("conteneur.plateformes.accessibles"));
-      sb.append(" (");
-      sb.append(getObjects().size());
-      sb.append(")");
-      return sb.toString();
+      return Labels.getLabel("conteneur.plateformes.accessibles", new Object[] {getObjects().size()});
    }
 
    @Override
-   public List<? extends Object> findObjectsAddable(){
-      // Banques ajoutables
-      final List<Plateforme> pfs = ManagerLocator.getPlateformeManager().findAllObjectsManager();
-      if(conteneur != null){
-         pfs.remove(conteneur.getPlateformeOrig());
-      }
-      // retire les ConteneurPlateformes deja assignées
-      for(int i = 0; i < getObjects().size(); i++){
-         pfs.remove(getObjects().get(i).getPlateforme());
-      }
-      return pfs;
+   public List<Plateforme> findObjectsAddable(){
+
+      final List<Plateforme> plateformesAssignees =
+         getObjects().stream().map(ConteneurPlateforme::getPlateforme).collect(Collectors.toList());
+
+      plateformesAssignees.add(conteneur.getPlateformeOrig());
+
+      final List<Plateforme> plateformesAjoutables = ManagerLocator.getManager(PlateformeManager.class).findAllObjectsManager()
+         .stream().filter(pf -> !plateformesAssignees.contains(pf)).sorted(Comparator.comparing(Plateforme::getNom))
+         .collect(Collectors.toList());
+
+      return plateformesAjoutables;
+
+   }
+
+   @Override
+   public void onClick$addObj(){
+
+      ListModel<Plateforme> plateformesList = new ListModelSet<>(findObjectsAddable());
+
+      plateformeBox.setModel(plateformesList);
+
+      // affiche les composants
+      addObjBox.setVisible(true);
+      addObj.setVisible(false);
    }
 
    @Override
@@ -146,6 +190,29 @@ public class PlateformesAssociees extends OneToManyComponent<ConteneurPlateforme
       }
    }
 
+   @Override
+   public void onClick$addSelObj(){
+
+      final Listitem selectedItem = plateformeBox.getSelectedItem();
+
+      if(null != selectedItem) {
+         final Plateforme selectedPf = selectedItem.getValue();
+         final ConteneurPlateforme conteneurPf = new ConteneurPlateforme();
+
+         conteneurPf.setConteneur(conteneur);
+         conteneurPf.setPlateforme(selectedPf);
+         conteneurPf.setPartage(true);
+         addToListObjects(conteneurPf);
+         
+         ListModelSet<Object> listModel = ((ListModelSet<Object>)plateformeBox.getListModel());
+         
+         listModel.remove(selectedPf);
+      }
+
+      updateComponent();
+      
+   }
+
    /**
     * Surcharge pour ne pas appliquer clear sur la liste.
     */
@@ -162,7 +229,6 @@ public class PlateformesAssociees extends OneToManyComponent<ConteneurPlateforme
    @Override
    public void switchToEditMode(final boolean b){
       super.switchToEditMode(b);
-      // deleteHeader.setVisible(getObjects().size() > 1);
    }
 
    public List<Plateforme> getPlateformes(){

@@ -993,13 +993,13 @@ public class ServiceManagerTest extends AbstractManagerTest4
       b.setNom("BANK");
       b.setArchive(false);
       banqueManager.createOrUpdateObjectManager(b, plateformeDao.findById(1), contexteDao.findById(1), passif, null, null, null,
-         null, null, null, null, null, null, null, null, null, u1, "creation", "/tmp/");
+         null, null, null, null, null, null, null, null, null, u1, null, "creation", "/tmp/");
 
       final Banque b2 = new Banque();
       b2.setNom("BANK2");
       b2.setArchive(false);
       banqueManager.createOrUpdateObjectManager(b2, plateformeDao.findById(1), contexteDao.findById(1), passif, null, null, null,
-         null, null, null, null, null, null, null, null, null, u1, "creation", "/tmp/");
+         null, null, null, null, null, null, null, null, null, u1, null, "creation", "/tmp/");
 
       assertTrue(banqueDao.findByProprietaire(passif).size() == 2);
       assertTrue(banqueDao.findByProprietaire(actif).isEmpty());

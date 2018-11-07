@@ -255,12 +255,7 @@ public class FicheSetCriteresValues extends GenericForwardComposer<Component>
    public void onLaterExecuteSearch(){
       banques.addAll(findSelectedBanques());
 
-      String jdbcDialect = null;
-      try{
-         jdbcDialect = SessionUtils.getDbms();
-      }catch(final NamingException e){
-         jdbcDialect = "inconnu";
-      }
+      String jdbcDialect = SessionUtils.getDbms();
 
       final List<Object> objets = ManagerLocator.getTraitementRequeteManager().traitementRequeteManager(recherche.getRequete(),
          banques, criteresValues, jdbcDialect);

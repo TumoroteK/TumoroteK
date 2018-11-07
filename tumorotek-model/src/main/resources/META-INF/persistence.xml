@@ -257,20 +257,10 @@
         <class>fr.aphp.tumorotek.model.interfacage.ConsultationIntf</class>
         <class>fr.aphp.tumorotek.model.ui.UiRequete</class>
         <class>fr.aphp.tumorotek.model.ui.UiCompValue</class>
-        <class>fr.aphp.tumorotek.model.validation.CritereValidation</class>
-        <class>fr.aphp.tumorotek.model.validation.Validation</class>
-        <class>fr.aphp.tumorotek.model.validation.Action</class>
-        <class>fr.aphp.tumorotek.model.validation.NiveauValidation</class>
         <class>fr.aphp.tumorotek.model.coeur.echantillon.delegate.AbstractEchantillonDelegate</class>
-        <class>fr.aphp.tumorotek.model.coeur.echantillon.delegate.EchantillonBTO</class>
         <class>fr.aphp.tumorotek.model.coeur.prodderive.delegate.AbstractProdDeriveDelegate</class>
-        <class>fr.aphp.tumorotek.model.coeur.prodderive.delegate.ProdDeriveBTO</class>
         <class>fr.aphp.tumorotek.model.cession.delegate.AbstractCessionDelegate</class>
-        <class>fr.aphp.tumorotek.model.cession.delegate.CessionBTO</class>
-        <class>fr.aphp.tumorotek.model.validation.DetailValidation</class>
-        <class>fr.aphp.tumorotek.model.coeur.prelevement.delegate.PrelevementBTO</class>
         <class>fr.aphp.tumorotek.model.coeur.patient.delegate.AbstractPatientDelegate</class>
-        <class>fr.aphp.tumorotek.model.coeur.patient.delegate.PatientBTO</class>
         <class>fr.aphp.tumorotek.model.io.export.ChampDelegue</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
     </persistence-unit>

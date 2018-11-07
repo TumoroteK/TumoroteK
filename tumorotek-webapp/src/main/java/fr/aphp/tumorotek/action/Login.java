@@ -35,27 +35,68 @@
  **/
 package fr.aphp.tumorotek.action;
 
+import java.io.File;
+
+import org.apache.commons.lang.StringUtils;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.session.SessionAuthenticationException;
+import org.zkoss.image.AImage;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Html;
+import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 
-public class Login extends GenericForwardComposer<Component>
+import fr.aphp.tumorotek.action.controller.AbstractController;
+import fr.aphp.tumorotek.manager.administration.ParametresManager;
+import fr.aphp.tumorotek.utils.TKStringUtils;
+
+public class Login extends AbstractController
 {
 
    private static final long serialVersionUID = 1L;
 
    private Label errorLabel;
+   private Image imgLogo;
+   private Html htmlMsg;
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
+
       super.doAfterCompose(comp);
+
+      final ParametresManager parametresManager = ManagerLocator.getManager(ParametresManager.class);
+      
+      //Chargement du message d'accueil personnalisé
+      String msgAccueil = parametresManager.getMessageAccueil(false);
+      
+      if(StringUtils.isEmpty(msgAccueil)) {
+         msgAccueil = Labels.getLabel("login.welcome");
+      }
+
+      //Chargement du logo personnalisé
+      AImage logo = null;
+
+      final File logoFile = parametresManager.getLogoFile();
+      if(logoFile.exists()){
+         logo = new AImage(logoFile);
+      }
+
+      if(logo != null){
+         imgLogo.setVisible(true);
+         imgLogo.setContent(logo);
+      }
+
+      if(StringUtils.isNotEmpty(msgAccueil)){
+         htmlMsg.setVisible(true);
+         htmlMsg.setContent(TKStringUtils.cleanHtmlString(msgAccueil));
+      }
+
       final AuthenticationException loginException =
          (AuthenticationException) session.getAttribute("SPRING_SECURITY_LAST_EXCEPTION");
 
       setErrorMessage(loginException);
+
    }
 
    public void setErrorMessage(final Exception ex){

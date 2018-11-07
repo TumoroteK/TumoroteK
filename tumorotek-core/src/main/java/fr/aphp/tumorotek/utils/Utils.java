@@ -36,20 +36,19 @@
 package fr.aphp.tumorotek.utils;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.List;
 
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.systeme.Fichier;
+import fr.aphp.tumorotek.param.TkParam;
 
 /**
  * Utils class
@@ -114,8 +113,8 @@ public final class Utils
       if(max < 27){
          return out;
       }
-         return createListChars(max - 26, prefix, out);
-      }
+      return createListChars(max - 26, prefix, out);
+   }
 
    /**
     * Ecris le filesystem path pour une banque et/ou le champ annotation.
@@ -180,8 +179,8 @@ public final class Utils
          final double p = Math.pow(10.0, n);
          return (float) (Math.floor((a * p) + 0.5) / p);
       }
-         return null;
-      }
+      return null;
+   }
 
    /**
     * Cette méthode formate un string en fct d'une expression régulière
@@ -289,8 +288,8 @@ public final class Utils
       if(value != null){
          return value.toUpperCase();
       }
-         return null;
-      }
+      return null;
+   }
 
    /**
     * Formate un string en lower case.
@@ -301,8 +300,8 @@ public final class Utils
       if(value != null){
          return value.toLowerCase();
       }
-         return null;
-      }
+      return null;
+   }
 
    /**
     * Remplace toutes les virgules d'un string par des points.
@@ -316,8 +315,8 @@ public final class Utils
          }
          return value;
       }
-         return null;
-      }
+      return null;
+   }
 
    /**
     * @see http://stackoverflow.com/questions/1910236/how-can-i-split-an-arraylist-into-several-lists
@@ -350,55 +349,44 @@ public final class Utils
       return readProp;
    }
 
-   public static String getDatabaseURL() throws NamingException{
-      // get a handle on the JNDI root context
-      final Context ctx = new InitialContext();
-
-      // and access the environment variable for this web component
-      return (String) ctx.lookup("java:comp/env/jdbc/url");
+   public static String getDatabaseURL(){
+      return TkParam.TK_DATABASE_URL.getValue();
    }
 
    /**
-    * Accède via JNDI au path spécifié dans le ficher de conf du server.
-    * 
+    * Accède au path spécifié dans le ficher de conf du server.
     * @return database url path
-    * @throws NamingException 
     */
-   public static String getDriverClass() throws NamingException{
-
-      // get a handle on the JNDI root context
-      final Context ctx = new InitialContext();
-
-      // and access the environment variable for this web component
-      return (String) ctx.lookup("java:comp/env/jdbc/driverClass");
+   public static String getDriverClass(){
+      return TkParam.TK_DATABASE_DRIVER.getValue();
    }
 
-   public static Boolean isOracleDBMS() throws NamingException{
+   public static Boolean isOracleDBMS(){
       return getDatabaseURL().contains("oracle");
    }
 
    /**
     * 
     * @return usernameDB
-    * @throws NamingException 
     */
-   public static String getUsernameDB() throws NamingException{
-
-      // get a handle on the JNDI root context
-      final Context ctx = new InitialContext();
-
-      // and access the environment variable for this web component
-      return (String) ctx.lookup("java:comp/env/jdbc/user");
+   public static String getUsernameDB(){
+      return TkParam.TK_DATABASE_USER.getValue();
    }
 
    /**
     * 
     * @return passwordDB
-    * @throws NamingException 
     */
-   public static String getPasswordDB() throws NamingException{
-      final Context ctx = new InitialContext();
-
-      return (String) ctx.lookup("java:comp/env/jdbc/password");
+   public static String getPasswordDB(){
+      return TkParam.TK_DATABASE_PASSWORD.getValue();
    }
+
+   /**
+    * Récupère le chemin du fichier de configuration de TK
+    * @return chemin du fichier de configuration de TK
+    */
+   public static String getTkTumoPropertiesPath(){
+      return TkParam.CONF_DIR.getValue();
+   }
+
 }

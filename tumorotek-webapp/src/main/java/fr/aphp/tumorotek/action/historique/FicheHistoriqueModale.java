@@ -65,6 +65,8 @@ import fr.aphp.tumorotek.model.stockage.Enceinte;
 import fr.aphp.tumorotek.model.stockage.Terminale;
 import fr.aphp.tumorotek.model.utilisateur.Profil;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+import fr.aphp.tumorotek.param.TkParam;
+import fr.aphp.tumorotek.param.TumorotekProperties;
 
 public class FicheHistoriqueModale extends AbstractFicheCombineController
 {
@@ -112,14 +114,14 @@ public class FicheHistoriqueModale extends AbstractFicheCombineController
    public void setObject(final TKdataObject obj){
       this.historiqueObject = obj;
       ResourceBundle res = null;
-      if(ManagerLocator.getResourceBundleTumo().doesResourceBundleExists("tumorotek.properties")){
-         res = ManagerLocator.getResourceBundleTumo().getResourceBundle("tumorotek.properties");
+      if(ManagerLocator.getResourceBundleTumo().doesResourceBundleExists(TumorotekProperties.TUMO_PROPERTIES_FILENAME)){
+         res = ManagerLocator.getResourceBundleTumo().getResourceBundle(TumorotekProperties.TUMO_PROPERTIES_FILENAME);
       }
       // on récupère la propriété définissant si on doit sauver
       // et afficher les connexions
       String save = null;
-      if(null != res && res.containsKey("SAUVER_CONNEXION_TK")){
-         save = res.getString("SAUVER_CONNEXION_TK");
+      if(null != res && res.containsKey(TkParam.SAUVER_CONNEXION.getKey())){
+         save = res.getString(TkParam.SAUVER_CONNEXION.getKey());
       }
       if(save != null && save.equals("true")){
          operations = ManagerLocator.getOperationManager().findByObjectManager(historiqueObject);

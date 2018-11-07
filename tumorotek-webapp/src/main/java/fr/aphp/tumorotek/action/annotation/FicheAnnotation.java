@@ -229,50 +229,34 @@ public class FicheAnnotation extends AbstractFicheController
          Group annoTable = null;
 
          for(int i = 0; i < tabs.size(); i++){
-            /**
-             * ANNOTATION INLINE - Bêta
-             *
-             * @since 2.2.0
-             */
-            if(!tabs.get(i).isInlineDisplay()){
-               annoTable = drawTableAnnotationGroup(tabs.get(i), tableNum);
-               annoRows.appendChild(annoTable);
-               tableNum++;
+            annoTable = drawTableAnnotationGroup(tabs.get(i), tableNum);
+            annoRows.appendChild(annoTable);
+            tableNum++;
 
-               // si patient ou multiple mode, assigne une reference vers
-               // la banque dans le groupe pour pouvoir la passer aux
-               // AnnotationValeurs
-               if(this.entite.getNom().equals("Patient") || multi){
-                  annoTable.setAttribute("bank", bankUsedToDrawChamps);
-               }
-
-               // couleur des Labels
-               String colClass = null;
-               if(tabs.get(i).getCatalogue() != null){
-                  if(tabs.get(i).getCatalogue().getNom().matches("INCa.*")){
-                     colClass = "incaLabel";
-                  }
-               }
-
-               // dessine les champs
-               final Iterator<ChampAnnotation> champsIt =
-                  ManagerLocator.getTableAnnotationManager().getChampAnnotationsManager(tabs.get(i)).iterator();
-               while(champsIt.hasNext()){
-                  final Row newRow = new Row();
-                  newRow.appendChild(drawAnnotation(champsIt.next(), newRow, annoTable, multi, colClass));
-                  annoRows.appendChild(newRow);
-               }
-               collapGroups.add(annoTable);
+            // si patient ou multiple mode, assigne une reference vers
+            // la banque dans le groupe pour pouvoir la passer aux
+            // AnnotationValeurs
+            if(this.entite.getNom().equals("Patient") || multi){
+               annoTable.setAttribute("bank", bankUsedToDrawChamps);
             }
-         }
-         // ouvre la première table si unique
-         /**
-          * ANNOTATION INLINE - Bêta
-          *
-          * @since 2.2.0
-          */
-         if(null != annoTable && tables.size() == 1 && !cumulative && !tables.get(0).isInlineDisplay()){
-            annoTable.setOpen(true);
+
+            // couleur des Labels
+            String colClass = null;
+            if(tabs.get(i).getCatalogue() != null){
+               if(tabs.get(i).getCatalogue().getNom().matches("INCa.*")){
+                  colClass = "incaLabel";
+               }
+            }
+
+            // dessine les champs
+            final Iterator<ChampAnnotation> champsIt =
+               ManagerLocator.getTableAnnotationManager().getChampAnnotationsManager(tabs.get(i)).iterator();
+            while(champsIt.hasNext()){
+               final Row newRow = new Row();
+               newRow.appendChild(drawAnnotation(champsIt.next(), newRow, annoTable, multi, colClass));
+               annoRows.appendChild(newRow);
+            }
+            collapGroups.add(annoTable);
          }
       }
 
@@ -422,18 +406,11 @@ public class FicheAnnotation extends AbstractFicheController
       // update les champs
       Iterator<ChampAnnotation> champsIt;
       for(int i = 0; i < tables.size(); i++){
-         /**
-          * ANNOTATION INLINE - Bêta
-          *
-          * @since 2.2.0
-          */
-         if(!tables.get(i).isInlineDisplay()){
-            champsIt = ManagerLocator.getTableAnnotationManager().getChampAnnotationsManager(tables.get(i)).iterator();
-            while(champsIt.hasNext()){
-               chp = champsIt.next();
-               ((AnnotationComponent) annoRows.getFellow("chp_" + chp.getId()).getFellow("annoDiv")
-                  .getAttributeOrFellow("annoDiv$composer", true)).switchToStaticOrEditMode(isStatic);
-            }
+         champsIt = ManagerLocator.getTableAnnotationManager().getChampAnnotationsManager(tables.get(i)).iterator();
+         while(champsIt.hasNext()){
+            chp = champsIt.next();
+            ((AnnotationComponent) annoRows.getFellow("chp_" + chp.getId()).getFellow("annoDiv")
+               .getAttributeOrFellow("annoDiv$composer", true)).switchToStaticOrEditMode(isStatic);
          }
       }
 
@@ -598,7 +575,7 @@ public class FicheAnnotation extends AbstractFicheController
 
    //	/**
    //	 * Indiques aux AnnotationComponents que l'enregistrement
-   //	 * des valeurs est effectué et donc met à jour le backup en vue 
+   //	 * des valeurs est effectué et donc met à jour le backup en vue
    //	 * d'autres modification.
    //	 */
    //	public void tellComponentToBackUp() {
@@ -674,7 +651,7 @@ public class FicheAnnotation extends AbstractFicheController
                droits = (Hashtable<?, ?>) sessionScope.get("Droits");
                if(droits.get(nomEntite) instanceof List){
                   //List<OperationType>
-                  final List<?> ops = (List<?>)droits.get(nomEntite);
+                  final List<?> ops = (List<?>) droits.get(nomEntite);
                   setCanEdit(ops.contains(modification));
                }
             }

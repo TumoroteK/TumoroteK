@@ -69,39 +69,18 @@ public class UtilisateurValidator implements Validator
          }
       }
 
-      // password non null
-      ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "utilisateur.password.empty");
-      //password valide
-      if(utilisateur.getPassword() != null){
-         if(utilisateur.getPassword().length() > 100){
-            errors.rejectValue("password", "utilisateur.password.tooLong");
-         }
-      }
+      //Utilisateur non LDAP
+      if(!utilisateur.isLdap()) {
 
-      //dnLdap valide
-      if(utilisateur.getDnLdap() != null){
-         if(utilisateur.getDnLdap().matches(ValidationUtilities.ONLYSPACESREGEXP)){
-            errors.rejectValue("dnLdap", "utilisateur.dnLdap.empty");
+         // password non null
+         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "utilisateur.password.empty");
+         //password valide
+         if(utilisateur.getPassword() != null){
+            if(utilisateur.getPassword().length() > 100){
+               errors.rejectValue("password", "utilisateur.password.tooLong");
+            }
          }
-         if(!utilisateur.getDnLdap().matches(ValidationUtilities.MOTREGEXP)){
-            errors.rejectValue("dnLdap", "utilisateur.dnLdap.illegal");
-         }
-         if(utilisateur.getDnLdap().length() > 100){
-            errors.rejectValue("dnLdap", "utilisateur.dnLdap.tooLong");
-         }
-      }
 
-      //encodedPassword valide
-      if(utilisateur.getEncodedPassword() != null){
-         if(utilisateur.getEncodedPassword().matches(ValidationUtilities.ONLYSPACESREGEXP)){
-            errors.rejectValue("encodedPassword", "utilisateur.encodedPassword.empty");
-         }
-         if(!utilisateur.getEncodedPassword().matches(ValidationUtilities.MOTREGEXP)){
-            errors.rejectValue("encodedPassword", "utilisateur.encodedPassword.illegal");
-         }
-         if(utilisateur.getEncodedPassword().length() > 100){
-            errors.rejectValue("encodedPassword", "utilisateur.encodedPassword.tooLong");
-         }
       }
 
       //email valide

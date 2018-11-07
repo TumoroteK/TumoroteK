@@ -82,6 +82,8 @@ import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.systeme.Fichier;
 import fr.aphp.tumorotek.model.utils.Duree;
+import fr.aphp.tumorotek.param.TkParam;
+import fr.aphp.tumorotek.param.TumorotekProperties;
 
 /**
  * Classe utilitaire regroupant les methodes statiques permettant le formatage
@@ -566,13 +568,13 @@ public final class ObjectTypesFormatters
       // init du nb de mois de validité du MDP
       // on récupère le bundle de paramétrage de l'application
       ResourceBundle res = null;
-      if(ManagerLocator.getResourceBundleTumo().doesResourceBundleExists("tumorotek.properties")){
-         res = ManagerLocator.getResourceBundleTumo().getResourceBundle("tumorotek.properties");
+      if(ManagerLocator.getResourceBundleTumo().doesResourceBundleExists(TumorotekProperties.TUMO_PROPERTIES_FILENAME)){
+         res = ManagerLocator.getResourceBundleTumo().getResourceBundle(TumorotekProperties.TUMO_PROPERTIES_FILENAME);
       }
 
       // on récupère la propriété définissant le nb de mois
-      if(res != null && res.containsKey("NB_MOIS_VALIDITE_MDP")){
-         final String nb = res.getString("NB_MOIS_VALIDITE_MDP");
+      if(res != null && res.containsKey(TkParam.DUREE_VALIDITE_MDP.getKey())){
+         final String nb = res.getString(TkParam.DUREE_VALIDITE_MDP.getKey());
 
          if(nb != null){
             try{
@@ -584,7 +586,6 @@ public final class ObjectTypesFormatters
                nbMoisMdp = null;
             }
          }
-         nbMoisMdp = null;
       }
 
       return nbMoisMdp;

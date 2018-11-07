@@ -186,16 +186,6 @@ public class UtilisateurDaoTest extends AbstractDaoTest
    }
 
    /**
-    * Test l'appel de la méthode findBydnLdap().
-    */
-   public void testFindBydnLdap(){
-      List<Utilisateur> utilisateurs = utilisateurDao.findBydnLdap("LDAP3");
-      assertTrue(utilisateurs.size() == 1);
-      utilisateurs = utilisateurDao.findBydnLdap("LDAP");
-      assertTrue(utilisateurs.size() == 0);
-   }
-
-   /**
     * Test l'appel de la méthode findByEmail().
     */
    public void testFindByEmail(){
@@ -345,8 +335,7 @@ public class UtilisateurDaoTest extends AbstractDaoTest
       assertNotNull(u2);
       assertTrue(u2.getLogin().equals("new user"));
       assertTrue(u2.getPassword().equals("new pass"));
-      assertTrue(u2.getEncodedPassword().equals("encoded"));
-      assertTrue(u2.getDnLdap().equals("ladp"));
+      assertFalse(u2.isLdap());
       assertTrue(u2.getEmail().equals("mail@gmail.com"));
       assertTrue(u2.getTimeOut().getTime() == dateTest.getTime());
       assertTrue(u2.getPlateformeOrig().equals(pf1));
@@ -462,16 +451,10 @@ public class UtilisateurDaoTest extends AbstractDaoTest
 
       assertTrue(u1.isArchive() == u2.isArchive());
 
-      if(u1.getEncodedPassword() != null){
-         assertTrue(u1.getEncodedPassword().equals(u2.getEncodedPassword()));
+      if(u1.isLdap()){
+         assertTrue(u2.isLdap());
       }else{
-         assertNull(u2.getEncodedPassword());
-      }
-
-      if(u1.getDnLdap() != null){
-         assertTrue(u1.getDnLdap().equals(u2.getDnLdap()));
-      }else{
-         assertNull(u2.getDnLdap());
+         assertFalse(u2.isLdap());
       }
 
       if(u1.getEmail() != null){

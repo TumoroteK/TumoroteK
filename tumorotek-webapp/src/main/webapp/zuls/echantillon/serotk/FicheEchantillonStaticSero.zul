@@ -35,7 +35,6 @@
 -->
 <?component name="incaPopUps" macroURI="/zuls/echantillon/incaPopUpsEchantillon.zul" inline="true" ?>
 <?component name="listeRetours" macroURI="/zuls/cession/retour/ListeRetour2.zul" ?>
-<!--<?component name="ficheAnnotationInline" macroURI="/zuls/annotation/FicheAnnotationInline.zul" ?>-->
 
 <window id="fwinEchantillonStatic" border="none" apply="fr.aphp.tumorotek.action.echantillon.serotk.FicheEchantillonStaticSero">
 	<panel collapsible="false" title="${c:l('ficheEchantillon.panel.title')}"
@@ -218,10 +217,6 @@
 							value="@{fwinEchantillonStatic$composer.conformeCessionFormated}"
 							sclass="formValue" />
 					</row>
-					<!-- Annotations inline -->
-					<!--<row spans="4" style="background-color: blue">
-						<ficheAnnotationInline id="ficheAnnotationInlineEchantillon" hflex="1" />
-					</row>-->
 					<row spans="4">
 						<separator/>
 					</row>					

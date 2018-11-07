@@ -44,14 +44,11 @@
 			<div sclass="z-msgbox z-msgbox-error"/>
 			<separator spacing="13px" />
 			<div sclass="z-messagebox" hflex="1">
-				<label value="@load(vm.message)" multiline="true" />		
+				<div id="detailsLabel">
+					<html sclass="z-messagebox z-label" content="@load(vm.exceptionDetails)" style="color: #363636"/>
+				</div>
 			</div>
 		</hlayout>
-		<label value="${c:l('error.modal.details')}" onClick="@command('details')"
-			style="margin: 40px; color: blue; text-decoration: underline; font-style: italic; cursor: pointer" />
-		<div id="detailsLabel" visible="@load(vm.detailsLabelVisible)">
-			<html sclass="z-messagebox z-label" content="@load(vm.exceptionDetails)" style="color: #363636"/>
-		</div>
 	</vlayout>
 	<hbox id="buttons" style="margin-left:auto; margin-right:auto; margin-bottom: 10px">
 		<button label="OK" onClick="win.detach()" />

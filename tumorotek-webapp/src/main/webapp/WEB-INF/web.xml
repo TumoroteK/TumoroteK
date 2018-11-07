@@ -18,6 +18,7 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
+        	classpath:applicationContext.xml
             classpath:applicationContextDaoBase.xml
             classpath:applicationContextManagerBase.xml
             classpath:applicationContext-security.xml

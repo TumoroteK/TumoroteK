@@ -39,6 +39,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -89,6 +91,7 @@ public class Numerotation implements TKdataObject, Serializable
    private Boolean zeroFill;
    private Entite entite;
    private Banque banque;
+   private ENumerotationDateFormat dateFormat;
 
    /** Constructeur par défaut. */
    public Numerotation(){}
@@ -170,6 +173,17 @@ public class Numerotation implements TKdataObject, Serializable
       this.banque = b;
    }
 
+   @Column(name="DATE_FORMAT")
+   @Enumerated(EnumType.STRING)
+   public ENumerotationDateFormat getDateFormat(){
+      return dateFormat;
+   }
+
+   public void setDateFormat(ENumerotationDateFormat dateFormat){
+      this.dateFormat = dateFormat;
+   }
+
+   
    /**
     * Deux numerotations sont considerees comme egales
     * si elles partagent la meme formule et si elles
@@ -239,6 +253,7 @@ public class Numerotation implements TKdataObject, Serializable
       clone.setStartIncrement(this.startIncrement);
       clone.setNbChiffres(this.nbChiffres);
       clone.setZeroFill(this.zeroFill);
+      clone.setDateFormat(this.dateFormat);
       return clone;
    }
 

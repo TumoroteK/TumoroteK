@@ -42,7 +42,6 @@ import org.zkoss.zul.Tabpanel;
 import fr.aphp.tumorotek.action.MainWindow;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.annotation.FicheAnnotation;
-import fr.aphp.tumorotek.action.annotation.FicheAnnotationInline;
 import fr.aphp.tumorotek.action.controller.AbstractFicheEditController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheModifMultiController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheStaticController;
@@ -81,7 +80,7 @@ public class UtilisateurController extends AbstractObjectTabController
    }
 
    /**
-    * Méthode permettant de passer en mode "fiche & liste" : liste 
+    * Méthode permettant de passer en mode "fiche & liste" : liste
     * et la fiche sont visibles.
     * Détache la fiche édition/création
     */
@@ -116,11 +115,6 @@ public class UtilisateurController extends AbstractObjectTabController
 
    @Override
    public FicheAnnotation getFicheAnnotation(){
-      return null;
-   }
-
-   @Override
-   public FicheAnnotationInline getFicheAnnotationInline(){
       return null;
    }
 

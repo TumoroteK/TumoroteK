@@ -433,7 +433,7 @@
 							value="@{fwinCessionEdit$composer.cession.demandeDate,
 							save-when='validate.onClick, create.onClick'
 							load-after='remplissageAuto.onClick'}"
-							cols="15" lenient="false"
+							cols="15" lenient="true"
 						/>
 					</row>
 					
@@ -624,7 +624,7 @@
 									value="@{fwinCessionEdit$composer.cession.validationDate,
 									save-when='validate.onClick, create.onClick',
 									load-after='remplissageAuto.onClick'}"
-									cols="15" lenient="false"
+									cols="15" lenient="true"
 								/>
 								<label id="dateValidationHelpLabel" 
 									value="@{fwinCessionEdit$composer.dateValidationContratFormated,

@@ -44,6 +44,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -51,6 +52,7 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -67,6 +69,8 @@ import fr.aphp.tumorotek.dao.contexte.ServiceDao;
 import fr.aphp.tumorotek.dao.stockage.ConteneurDao;
 import fr.aphp.tumorotek.dao.systeme.CouleurDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
+import fr.aphp.tumorotek.dao.utilisateur.ProfilDao;
+import fr.aphp.tumorotek.dao.utilisateur.ProfilUtilisateurDao;
 import fr.aphp.tumorotek.dao.utilisateur.UtilisateurDao;
 import fr.aphp.tumorotek.manager.code.CodeDossierManager;
 import fr.aphp.tumorotek.manager.code.CodeSelectManager;
@@ -87,6 +91,7 @@ import fr.aphp.tumorotek.manager.stockage.EnceinteManager;
 import fr.aphp.tumorotek.manager.stockage.EnceinteTypeManager;
 import fr.aphp.tumorotek.manager.systeme.CouleurEntiteTypeManager;
 import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
+import fr.aphp.tumorotek.manager.utilisateur.UtilisateurManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.contexte.BanqueValidator;
 import fr.aphp.tumorotek.manager.validation.exception.ValidationException;
@@ -116,6 +121,8 @@ import fr.aphp.tumorotek.model.stockage.Enceinte;
 import fr.aphp.tumorotek.model.systeme.Couleur;
 import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
 import fr.aphp.tumorotek.model.systeme.Entite;
+import fr.aphp.tumorotek.model.utilisateur.Profil;
+import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.utils.Utils;
 
@@ -189,7 +196,13 @@ public class BanqueManagerTest extends AbstractManagerTest4
    private ObjetStatutDao objetStatutDao;
    @Autowired
    private ProdTypeDao prodTypeDao;
-
+   @Autowired
+   private ProfilDao profilDao;
+   @Autowired
+   private ProfilUtilisateurDao profilUtilisateurDao;
+   @Autowired
+   private UtilisateurManager utilisateurManager;
+   
    public BanqueManagerTest(){}
 
    @Test
@@ -664,7 +677,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       //required plateforme
       try{
          banqueManager.createOrUpdateObjectManager(b, null, null, null, null, null, null, null, null, null, null, null, null,
-            null, null, null, u, "creation", null);
+            null, null, null, u, null, "creation", null);
       }catch(final RequiredObjectIsNullException re){
          assertTrue(re.getMessage().equals("Banque: Plateforme est " + "null lors de l'opération de creation"));
       }
@@ -672,7 +685,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       //required contexte
       try{
          banqueManager.createOrUpdateObjectManager(b, pf, null, null, null, null, null, null, null, null, null, null, null, null,
-            null, null, u, "creation", null);
+            null, null, u, null, "creation", null);
       }catch(final RequiredObjectIsNullException re){
          assertTrue(re.getMessage().equals("Banque: Contexte est " + "null lors de l'opération de creation"));
       }
@@ -680,7 +693,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       //validation
       try{
          banqueManager.createOrUpdateObjectManager(b, pf, ct, null, null, null, null, null, null, null, null, null, null, null,
-            null, null, u, "creation", null);
+            null, null, u, null, "creation", null);
       }catch(final ValidationException ve){
          assertTrue(ve.getErrors().get(0).getFieldError().getCode().equals("banque.nom.empty"));
       }
@@ -690,7 +703,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       //Insertion d'un doublon engendrant une exception
       try{
          banqueManager.createOrUpdateObjectManager(b, pf, ct, null, null, null, null, null, null, null, null, null, null, null,
-            null, null, u, "creation", null);
+            null, null, u, null, "creation", null);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("DoublonFoundException")){
             catched = true;
@@ -712,13 +725,13 @@ public class BanqueManagerTest extends AbstractManagerTest4
       //operation invalide
       try{
          banqueManager.createOrUpdateObjectManager(b, pf, ct, null, null, null, null, null, null, null, null, null, null, null,
-            null, null, u, null, null);
+            null, null, u, null, null, null);
       }catch(final NullPointerException ne){
          assertTrue(ne.getMessage().equals("operation cannot be " + "set to null for createorUpdateMethod"));
       }
       try{
          banqueManager.createOrUpdateObjectManager(b, pf, ct, null, null, null, null, null, null, null, null, null, null, null,
-            null, null, u, "jiggs", null);
+            null, null, u, null, "jiggs", null);
       }catch(final IllegalArgumentException ie){
          assertTrue(ie.getMessage().equals("Operation must match " + "'creation/modification' values"));
       }
@@ -726,7 +739,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
 
       //insertion
       banqueManager.createOrUpdateObjectManager(b, pf, ct, s, c, co, null, null, null, null, null, null, null, null, c1, c2, u,
-         "creation", "/tmp/");
+         null, "creation", "/tmp/");
       assertTrue(banqueManager.findAllObjectsManager().size() == 5);
       assertTrue(banqueManager.findByIdManager(b.getBanqueId()).getPlateforme().equals(pf));
       assertTrue(banqueManager.findByIdManager(b.getBanqueId()).getContexte().equals(ct));
@@ -756,7 +769,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       try{
          b2.setNom("BANQUE2");
          banqueManager.createOrUpdateObjectManager(b2, null, null, null, null, null, null, null, null, null, null, null, null,
-            null, null, null, u, "modification", null);
+            null, null, null, u, null, "modification", null);
       }catch(final DoublonFoundException e){
          catched = true;
       }
@@ -767,7 +780,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       catched = false;
       try{
          banqueManager.createOrUpdateObjectManager(b2, null, null, null, null, null, null, null, null, null, null, null, null,
-            null, null, null, u, "modification", null);
+            null, null, null, u, null, "modification", null);
       }catch(final ValidationException e){
          catched = true;
       }
@@ -777,7 +790,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       catched = false;
       try{
          banqueManager.createOrUpdateObjectManager(b2, null, null, null, null, null, null, null, null, null, null, null, null,
-            null, null, null, u, "modification", null);
+            null, null, null, u, null, "modification", null);
       }catch(final ValidationException e){
          catched = true;
       }
@@ -787,7 +800,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       b2.getCatalogues().remove(catalogueDao.findById(1));
 
       banqueManager.createOrUpdateObjectManager(b2, null, null, null, null, null, null, null, null, null, null, null, null, null,
-         null, null, u, "modification", null);
+         null, null, u, null, "modification", null);
 
       assertTrue(banqueManager.findAllObjectsManager().size() == 5);
       assertTrue(banqueManager.findByIdManager(b2.getBanqueId()).getNom().equals("BNP Parisbas"));
@@ -848,7 +861,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       final List<CouleurEntiteType> couls = new ArrayList<>();
 
       banqueManager.createOrUpdateObjectManager(b, pf, ct, null, null, null, conts, tabs, tabsPat, tabsPrel, tabsEchan, null,
-         tabsCess, couls, null, null, u, "creation", "/tmp/");
+         tabsCess, couls, null, null, u, null, "creation", "/tmp/");
       b = banqueManager.findByIdManager(b.getBanqueId());
       assertTrue(banqueManager.findAllObjectsManager().size() == 5);
       assertTrue(banqueManager.getConteneursManager(b).size() == 3);
@@ -885,7 +898,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       conts.add(c4);
 
       banqueManager.createOrUpdateObjectManager(b, null, null, null, null, null, conts, tabs, tabsPat, tabsPrel, tabsEchan, null,
-         null, couls, null, null, u, "modification", null);
+         null, couls, null, null, u, null, "modification", null);
       assertTrue(banqueManager.findAllObjectsManager().size() == 5);
       // recupere la derniere banque
       final Banque b2 = banqueManager.findByIdManager(b.getBanqueId());
@@ -945,7 +958,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       tabs.add(btc3);
 
       banqueManager.createOrUpdateObjectManager(b, pf, ct, null, null, null, null, tabs, null, null, null, null, null, null, null,
-         null, u, "creation", "/tmp/");
+         null, u, null, "creation", "/tmp/");
       assertTrue(banqueManager.findAllObjectsManager().size() == 5);
       b = banqueManager.findByIdManager(b.getBanqueId());
       assertTrue(banqueManager.getBanqueTableCodageByBanqueManager(b).size() == 3);
@@ -964,7 +977,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       tabs.add(btc4);
 
       banqueManager.createOrUpdateObjectManager(b, null, null, null, null, null, null, tabs, null, null, null, null, null, null,
-         null, null, u, "modification", null);
+         null, null, u, null, "modification", null);
       assertTrue(banqueManager.findAllObjectsManager().size() == 5);
       // recupere la derniere banque
       final Banque b2 = banqueManager.findByIdManager(b.getBanqueId());
@@ -1008,7 +1021,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       tabsDerive.add(t6);
 
       banqueManager.createOrUpdateObjectManager(b, pf, ct, null, null, null, null, null, tabsPat, tabsPrel, tabsEchan, tabsDerive,
-         null, null, null, null, u, "creation", "/tmp/");
+         null, null, null, null, u, null, "creation", "/tmp/");
 
       assertTrue(banqueManager.findAllObjectsManager().size() == 5);
       b = banqueManager.findByIdManager(b.getBanqueId());
@@ -1030,7 +1043,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       tabsEchan.add(t4);
 
       banqueManager.createOrUpdateObjectManager(b, pf, null, null, null, null, null, null, tabsPat, tabsPrel, tabsEchan,
-         tabsDerive, null, null, null, null, u, "modification", null);
+         tabsDerive, null, null, null, null, u, null, "modification", null);
 
       assertTrue(banqueManager.findAllObjectsManager().size() == 5);
       // recupere la derniere banque
@@ -1092,7 +1105,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       coulTypes.add(cD1);
 
       banqueManager.createOrUpdateObjectManager(b, pf, ct, null, null, null, null, null, null, null, null, null, null, coulTypes,
-         null, null, u, "creation", "/tmp/");
+         null, null, u, null, "creation", "/tmp/");
 
       assertTrue(banqueManager.findAllObjectsManager().size() == 5);
       b = banqueManager.findByIdManager(b.getBanqueId());
@@ -1119,7 +1132,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       coulTypes.get(coulTypes.indexOf(cD1)).setCouleur(coul4);
 
       banqueManager.createOrUpdateObjectManager(b, pf, null, null, null, null, null, null, null, null, null, null, null,
-         coulTypes, null, null, u, "modification", null);
+         coulTypes, null, null, u, null, "modification", null);
 
       assertTrue(banqueManager.findAllObjectsManager().size() == 5);
       // recupere la derniere banque
@@ -1142,6 +1155,101 @@ public class BanqueManagerTest extends AbstractManagerTest4
       cleanUpFantomes(fs);
    }
 
+   @Test
+   public void testCreateOrUpdateBanqueWithProfilUtilisateur() throws IOException{
+
+      //Suppression du FS
+      if(new File("/tmp/pt_1").exists()) {
+         FileUtils.deleteDirectory(new File("/tmp/pt_1"));
+      }
+      
+      final Plateforme pf = plateformeDao.findById(1);
+      final Contexte contexte = contexteDao.findById(1);
+      
+      //Récupération des profils utilisé pour le test
+      final Profil profilConsultation = profilDao.findById(1);
+      final Profil profilGestionPatient = profilDao.findById(2);
+      final Profil profilAdminBanque = profilDao.findById(4);
+      
+      //Préparation de la banque
+      final Utilisateur admin = utilisateurDao.findById(5);
+      final Banque banque = new Banque();
+      banque.setNom("BANQUE TEST UTLISATEURPROFIL");
+      banque.setPlateforme(pf);
+      banque.setDefMaladies(false);
+      banque.setContexte(contexte);
+      
+      //Préparation des utlisateurs
+      Utilisateur user1 = new Utilisateur();
+      user1.setLogin("USER_TEST_UTLISATEURPROFIL_1");
+      user1.setPassword("passwd1");
+      user1.setSuperAdmin(false);
+      
+      Utilisateur user2 = new Utilisateur();
+      user2.setLogin("USER_TEST_UTLISATEURPROFIL_2");
+      user2.setPassword("passwd2");
+      user2.setSuperAdmin(false);
+      
+      utilisateurManager.createObjectManager(user1, null, null, null, admin, pf);
+      utilisateurManager.createObjectManager(user2, null, null, null, admin, pf);
+      
+      //Préparation des ProfilUtilisateur à ajouter à la création de la banque
+      final ProfilUtilisateur profilUtilisateur1 = new ProfilUtilisateur();
+      profilUtilisateur1.setUtilisateur(user1);
+      profilUtilisateur1.setProfil(profilConsultation);
+      profilUtilisateur1.setBanque(banque);
+      user1.getProfilUtilisateurs().add(profilUtilisateur1);
+      
+      final ProfilUtilisateur profilUtilisateur2 = new ProfilUtilisateur();
+      profilUtilisateur2.setUtilisateur(user2);
+      profilUtilisateur2.setProfil(profilAdminBanque);
+      profilUtilisateur2.setBanque(banque);
+      user2.getProfilUtilisateurs().add(profilUtilisateur2);
+      
+      final Set<Utilisateur> banqueUsers = new HashSet<>(Arrays.asList(user1, user2));
+      
+      banqueManager.createOrUpdateObjectManager(banque, pf, contexte, null, null, null, null,
+         null, null, null, null, null, null, null, null, null, admin, banqueUsers, "creation", "/tmp");
+      
+      List<ProfilUtilisateur> listPuForBanque = profilUtilisateurDao.findByBanque(banque, false);
+      
+      assertTrue(listPuForBanque.containsAll(Arrays.asList(profilUtilisateur1, profilUtilisateur2)));
+      
+      //Préparation du ProfilUtilisateur à ajouter
+      final ProfilUtilisateur profilUtilisateur3 = new ProfilUtilisateur();
+      profilUtilisateur3.setUtilisateur(user1);
+      profilUtilisateur3.setProfil(profilGestionPatient);
+      profilUtilisateur3.setBanque(banque);
+      user1.getProfilUtilisateurs().add(profilUtilisateur3);
+
+      //Update de la banque (ajout de ProfilUtilisateur)
+      banqueManager.createOrUpdateObjectManager(banque, pf, contexte, null, null, null, null,
+         null, null, null, null, null, null, null, null, null, admin, banqueUsers, "modification", "/tmp");
+
+      listPuForBanque = profilUtilisateurDao.findByBanque(banque, false);
+      
+      assertTrue(listPuForBanque.containsAll(Arrays.asList(profilUtilisateur1, profilUtilisateur2, profilUtilisateur3)));
+      
+      //Suppression du profil de consultation pour le user1
+      user1.getProfilUtilisateurs().remove(profilUtilisateur1);
+      
+      //Update de la banque (suppression de ProfilUtilisateur)
+      banqueManager.createOrUpdateObjectManager(banque, pf, contexte, null, null, null, null,
+         null, null, null, null, null, null, null, null, null, admin, banqueUsers, "modification", "/tmp");
+
+      listPuForBanque = profilUtilisateurDao.findByBanque(banque, false);
+      
+      assertFalse(listPuForBanque.contains(profilUtilisateur1));
+      assertTrue(listPuForBanque.containsAll(Arrays.asList(profilUtilisateur2, profilUtilisateur3)));
+
+      //Suppression de la banque et des utilisateurs créées
+      utilisateurManager.removeObjectManager(user1);
+      utilisateurManager.removeObjectManager(user2);
+      banqueManager.removeObjectManager(banque, null, admin, "/tmp/", true);
+      cleanUpFantomes(Arrays.asList(banque));
+      
+   }
+   
    @Test
    public void testFindByProfilUtilisateurManager(){
       final Utilisateur u2 = utilisateurDao.findById(2);
@@ -1188,8 +1296,8 @@ public class BanqueManagerTest extends AbstractManagerTest4
 
       banqueManager.createOrUpdateObjectManager(b, pf, ct, b1.getProprietaire(), b1.getCollaborateur(), b1.getContact(),
          new ArrayList<>(banqueManager.getConteneursManager(b1)),
-         new ArrayList<>(banqueManager.getBanqueTableCodageByBanqueManager(b1)), null, null, null, null, null,
-         null, null, couleurDao.findById(2), u, "creation", "/tmp/");
+         new ArrayList<>(banqueManager.getBanqueTableCodageByBanqueManager(b1)), null, null, null, null, null, null, null,
+         couleurDao.findById(2), u, null, "creation", "/tmp/");
 
       assertTrue(banqueManager.findAllObjectsManager().size() == 5);
       b = banqueManager.findByIdManager(b.getBanqueId());
@@ -1344,14 +1452,14 @@ public class BanqueManagerTest extends AbstractManagerTest4
       boolean catched = false;
       try{
          banqueManager.createOrUpdateObjectManager(b, pf, ct, null, null, null, null, null, null, null, null, null, null, null,
-            null, null, u, "creation", null);
+            null, null, u, null, "creation", null);
       }catch(final RuntimeException re){
          catched = true;
       }
       assertTrue(catched);
 
       banqueManager.createOrUpdateObjectManager(b, pf, ct, null, null, null, null, null, null, null, null, null, null, null, null,
-         null, u, "creation", "/tmp/");
+         null, u, null, "creation", "/tmp/");
 
       assertTrue(new File(Utils.writeAnnoFilePath("/tmp/", b, null, null)).exists());
       assertTrue(new File(Utils.writeAnnoFilePath("/tmp/", b, null, null) + "/anno").exists());
@@ -1424,7 +1532,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
 
       banqueManager.createOrUpdateObjectManager(b2, b2.getPlateforme(), b2.getContexte(), b2.getProprietaire(),
          b2.getCollaborateur(), b2.getContact(), null, null, null, null, tabEchans, null, null, null, b2.getEchantillonCouleur(),
-         b2.getProdDeriveCouleur(), utilisateurDao.findById(1), "modification", "/tmp");
+         b2.getProdDeriveCouleur(), utilisateurDao.findById(1), null, "modification", "/tmp");
 
       assertTrue(tableAnnotationManager.findByEntiteAndBanqueManager(entiteDao.findById(3), b2).size() == 2);
       assertTrue(tableAnnotationManager.findByEntiteAndBanqueManager(entiteDao.findById(3), b2).contains(t3));
@@ -1436,7 +1544,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       try{
          banqueManager.createOrUpdateObjectManager(b2, b2.getPlateforme(), b2.getContexte(), b2.getProprietaire(),
             b2.getCollaborateur(), b2.getContact(), null, null, null, null, tabEchans, null, null, null,
-            b2.getEchantillonCouleur(), b2.getProdDeriveCouleur(), utilisateurDao.findById(1), "modification", "/tmp");
+            b2.getEchantillonCouleur(), b2.getProdDeriveCouleur(), utilisateurDao.findById(1), null, "modification", "/tmp");
       }catch(final ExistingAnnotationValuesException ex){
          assertTrue(ex.getBanque().equals(b2));
          assertTrue(ex.getTable().equals(t3));
@@ -1450,7 +1558,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       tabEchans.add(t3);
       banqueManager.createOrUpdateObjectManager(b2, b2.getPlateforme(), b2.getContexte(), b2.getProprietaire(),
          b2.getCollaborateur(), b2.getContact(), null, null, null, null, tabEchans, null, null, null, b2.getEchantillonCouleur(),
-         b2.getProdDeriveCouleur(), utilisateurDao.findById(1), "modification", "/tmp");
+         b2.getProdDeriveCouleur(), utilisateurDao.findById(1), null, "modification", "/tmp");
 
       assertTrue(tableAnnotationManager.findByEntiteAndBanqueManager(entiteDao.findById(3), b2).size() == 1);
       assertTrue(tableAnnotationManager.findByEntiteAndBanqueManager(entiteDao.findById(3), b2).contains(t3));

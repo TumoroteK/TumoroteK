@@ -44,7 +44,6 @@ import org.zkoss.zul.Tabpanel;
 import fr.aphp.tumorotek.action.MainWindow;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.annotation.FicheAnnotation;
-import fr.aphp.tumorotek.action.annotation.FicheAnnotationInline;
 import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheEditController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheModifMultiController;
@@ -96,11 +95,6 @@ public class BanqueController extends AbstractObjectTabController
 
    @Override
    public FicheAnnotation getFicheAnnotation(){
-      return null;
-   }
-
-   @Override
-   public FicheAnnotationInline getFicheAnnotationInline(){
       return null;
    }
 

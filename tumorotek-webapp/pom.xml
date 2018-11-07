@@ -4,7 +4,7 @@
     <parent>
         <groupId>fr.aphp.tumorotek</groupId>
         <artifactId>tumorotek-parent</artifactId>
-        <version>2.2.0-beta-4-SNAPSHOT</version>
+        <version>2.2.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>tumorotek-webapp</artifactId>
@@ -12,6 +12,7 @@
     <name>APHP :: TumoroteK :: WebApp</name>
 
     <properties>
+        <skipTests>false</skipTests>
         <liquibase-version>3.6.2</liquibase-version>
         <spring-security-version>3.2.8.RELEASE</spring-security-version>
         <zk-version>6.5.7</zk-version>
@@ -38,57 +39,98 @@
                 <version>1.14</version>
             </plugin>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>sql-maven-plugin</artifactId>
+                <version>1.5</version>
+
+                <dependencies>
+                    <!-- specify the dependent JDBC driver here -->
+                    <dependency>
+                        <groupId>mysql</groupId>
+                        <artifactId>mysql-connector-java</artifactId>
+                        <version>${mysql-connector-java.version}</version>
+                    </dependency>
+                </dependencies>
+
+                <!-- common configuration shared by all executions -->
+                <configuration>
+                    <skip>${skipTests}</skip>
+                    <driver>com.mysql.cj.jdbc.Driver</driver>
+                    <url>jdbc:mysql://${test.database.host}:3306/${test.database.tumorotek.name}?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=Europe/Paris&amp;sessionVariables=FOREIGN_KEY_CHECKS%3D0</url>
+                    <username>${test.database.username}</username>
+                    <password>${test.database.password}</password>
+                </configuration>
+                <executions>
+                    <!-- drop db after test -->
+                    <execution>
+                        <id>drop-3-schemas-after-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <url>jdbc:mysql://${test.database.host}:3306/mysql?serverTimezone=Europe/Paris</url>
+                            <autocommit>true</autocommit>
+                            <sqlCommand>
+                                drop schema ${test.database.tumorotek.name};
+                                drop schema ${test.database.tumorotek_codes.name};
+                                drop schema ${test.database.tumorotek_interfacages.name};
+                            </sqlCommand>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources-sql</id>
+                        <!-- here the phase you need -->
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>../tumorotek-install/src/assembly/sql</directory>
+                                    <!--<filtering>true</filtering>-->
+                                    <includes>
+                                        <include>**/*</include>
+                                    </includes>
+                                    <excludes>
+                                        <exclude>*.bat</exclude>
+                                        <exclude>*.sh</exclude>
+                                    </excludes>
+                                </resource>
+                            </resources>
+                            <outputDirectory>${basedir}/target/classes/liquibase/sql</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.2.0</version>
                 <configuration>
-                    <!--<packagingExcludes>
-                        WEB-INF/lib/logback-classic-*.jar,
-                        WEB-INF/lib/logback-core-*.jar
-                    </packagingExcludes>-->
-                    <!--<filters>
-                        <filter>${basedir}/src/main/webapp/WEB-INF/internationalization/zk-label_fr.properties</filter>
-                    </filters>-->
+                	<archive>
+                		<manifest>
+                			<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                			<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                		</manifest>
+                	</archive>
                     <webResources>
-                        <!--<resource>
-                            <directory>resource2</directory>
-                            &lt;!&ndash; it's not a good idea to filter binary files &ndash;&gt;
-                            <filtering>false</filtering>
-                        </resource>-->
                         <resource>
                             <directory>${basedir}/src/main/webapp/WEB-INF/internationalization</directory>
                             <targetPath>WEB-INF/internationalization</targetPath>
                             <!-- enable filtering -->
                             <filtering>true</filtering>
-                            <!--<excludes>
-                                <exclude>**/properties</exclude>
-                            </excludes>-->
                         </resource>
                     </webResources>
                 </configuration>
             </plugin>
-            <!--<plugin>
-                &lt;!&ndash; Permet de supprimer les dépendances de Liquibase qui sont en conflit avec d'autres &ndash;&gt;
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <configuration>
-                            <target>
-                                <delete>
-                                    <fileset dir="${project.build.directory}/${webapp.packaging.finalName}/WEB-INF/lib" includes="logback-classic-*.jar" />
-                                    <fileset dir="${project.build.directory}/${webapp.packaging.finalName}/WEB-INF/lib" includes="logback-core-*.jar" />
-                                </delete>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>-->
             <plugin>
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-maven-plugin</artifactId>
@@ -97,14 +139,6 @@
                     <propertyFile>src/main/resources/liquibase/liquibase.properties</propertyFile>
                     <contexts>*</contexts>
                 </configuration>
-                <!--<executions>
-                    <execution>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>update</goal>
-                        </goals>
-                    </execution>
-                </executions>-->
             </plugin>
         </plugins>
 
@@ -247,16 +281,6 @@
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
             <version>${liquibase-version}</version>
-            <!--<exclusions>
-                <exclusion>
-                    <artifactId>ch.qos.logback</artifactId>
-                    <groupId>logback-core</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>ch.qos.logback</artifactId>
-                    <groupId>logback-classic</groupId>
-                </exclusion>
-            </exclusions>-->
         </dependency>
 
         <!-- For Java 9 compatibility -->

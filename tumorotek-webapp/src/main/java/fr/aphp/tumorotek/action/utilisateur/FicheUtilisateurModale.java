@@ -73,9 +73,12 @@ public class FicheUtilisateurModale extends AbstractFicheCombineController
    // Static Components pour le mode static.
    private Label emailLabel;
    private Row rowPfsAdmin;
+   private Row timeoutRow;
+   private Row timeoutHelpRow;
    private Button close;
 
    // Editable components : mode d'édition ou de création.
+   private Row passwordRow;
    private Textbox emailBox;
    private Group groupRoles;
 
@@ -133,6 +136,10 @@ public class FicheUtilisateurModale extends AbstractFicheCombineController
       setObject(utilisateur);
       switchToStaticMode();
 
+      passwordRow.setVisible(!user.isLdap());
+      timeoutRow.setVisible(!user.isLdap());
+      timeoutHelpRow.setVisible(!user.isLdap());
+      
       getBinder().loadComponent(self);
    }
 
@@ -209,6 +216,7 @@ public class FicheUtilisateurModale extends AbstractFicheCombineController
       deleteC.setVisible(false);
 
       getBinder().loadComponent(self);
+      
    }
 
    /**
@@ -220,6 +228,7 @@ public class FicheUtilisateurModale extends AbstractFicheCombineController
       super.switchToEditMode();
 
       getBinder().loadComponent(self);
+      
    }
 
    @Override
@@ -399,6 +408,22 @@ public class FicheUtilisateurModale extends AbstractFicheCombineController
       return value;
    }
 
+   /**
+    * Formate la valeur du champ authentification LDAP.
+    * @return Oui ou non.
+    */
+   public String getLdapFormated(){
+
+      String ftdIsLdap = "";
+      
+      if(this.user != null){
+         ftdIsLdap = ObjectTypesFormatters.booleanLitteralFormatter(this.user.isLdap());
+      }
+      
+      return ftdIsLdap;
+      
+   }
+   
    public void onClick$editPassword(){
       openPasswordWindow(page, self, user);
    }
@@ -486,5 +511,5 @@ public class FicheUtilisateurModale extends AbstractFicheCombineController
    public void setNbMoisMdp(final Integer nb){
       this.nbMoisMdp = nb;
    }
-
+   
 }

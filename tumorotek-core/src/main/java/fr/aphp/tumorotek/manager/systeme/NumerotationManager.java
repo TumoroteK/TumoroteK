@@ -53,6 +53,8 @@ import fr.aphp.tumorotek.model.systeme.Numerotation;
 public interface NumerotationManager
 {
 
+   public static String DATE_PLACEHOLDER = "[DATE]";
+   
    /**
     * Recherche une Numerotation dont l'identifiant est passé en 
     * paramètre.

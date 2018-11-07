@@ -68,12 +68,12 @@
 								<datebox id="dateHist1Box" format="${c:l('validation.date.format.simple')}"
 									value="@{winHistorique$composer.date1,
 			        					save-when='find.onClick, self.onBlur'}" 
-									cols="10" lenient="false"/>
+									cols="10" lenient="true"/>
 								<label value="${c:l('general.selectlist.and')}" sclass="formLabel"/>
 								<datebox id="dateHist2Box" format="${c:l('validation.date.format.simple')}"
 									value="@{winHistorique$composer.date2,
 			        					save-when='find.onClick, self.onBlur'}"  
-									cols="10" style="align:right;" lenient="false"/>
+									cols="10" style="align:right;" lenient="true"/>
 							</div>
 							<separator width="20px"/>
 							<button id="find" label="${c:l('general.find')}" height="24px" visible="true"

@@ -70,6 +70,8 @@ import fr.aphp.tumorotek.model.qualite.OperationType;
 import fr.aphp.tumorotek.model.utilisateur.Profil;
 import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+import fr.aphp.tumorotek.param.TkParam;
+import fr.aphp.tumorotek.param.TumorotekProperties;
 import fr.aphp.tumorotek.utils.Utils;
 
 /**
@@ -170,14 +172,14 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
 
             // on récupère le bundle de paramétrage de l'application
             ResourceBundle res = null;
-            if(ManagerLocator.getResourceBundleTumo().doesResourceBundleExists("tumorotek.properties")){
-               res = ManagerLocator.getResourceBundleTumo().getResourceBundle("tumorotek.properties");
+            if(ManagerLocator.getResourceBundleTumo().doesResourceBundleExists(TumorotekProperties.TUMO_PROPERTIES_FILENAME)){
+               res = ManagerLocator.getResourceBundleTumo().getResourceBundle(TumorotekProperties.TUMO_PROPERTIES_FILENAME);
             }
             // on récupère la propriété définissant si on doit sauver
             // les connexions
             String lastCxValue = "";
-            if(null != res && res.containsKey("SAUVER_CONNEXION_TK") && res.getString("SAUVER_CONNEXION_TK") != null
-               && res.getString("SAUVER_CONNEXION_TK").equals("true")){
+            if(null != res && res.containsKey(TkParam.SAUVER_CONNEXION.getKey()) && res.getString(TkParam.SAUVER_CONNEXION.getKey()) != null
+               && res.getString(TkParam.SAUVER_CONNEXION.getKey()).equals("true")){
                // last connection
                final Operation lastCx = ManagerLocator.getOperationManager().findLastByUtilisateurAndTypeManager(
                   ManagerLocator.getOperationTypeManager().findByNomLikeManager("Login", true).get(0), user, 1);

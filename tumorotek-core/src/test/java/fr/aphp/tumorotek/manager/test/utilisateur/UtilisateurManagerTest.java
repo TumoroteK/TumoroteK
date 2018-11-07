@@ -799,37 +799,6 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
       }
       utilisateur.setPassword("PASS");
 
-      // On teste une insertion avec un attribut encopass non valide
-      emptyValues = new String[] {"", "  ", "%$$*gd¤¤", createOverLength(100)};
-      for(int i = 0; i < emptyValues.length; i++){
-         catchedInsert = false;
-         try{
-            utilisateur.setEncodedPassword(emptyValues[i]);
-            utilisateurManager.createObjectManager(utilisateur, null, null, null, admin, null);
-         }catch(final Exception e){
-            if(e.getClass().getSimpleName().equals("ValidationException")){
-               catchedInsert = true;
-            }
-         }
-         assertTrue(catchedInsert);
-      }
-      utilisateur.setEncodedPassword(null);
-
-      // On teste une insertion avec un attribut dnldap non valide
-      for(int i = 0; i < emptyValues.length; i++){
-         catchedInsert = false;
-         try{
-            utilisateur.setDnLdap(emptyValues[i]);
-            utilisateurManager.createObjectManager(utilisateur, null, null, null, admin, null);
-         }catch(final Exception e){
-            if(e.getClass().getSimpleName().equals("ValidationException")){
-               catchedInsert = true;
-            }
-         }
-         assertTrue(catchedInsert);
-      }
-      utilisateur.setDnLdap(null);
-
       // On teste une insertion avec un attribut email non valide
       emptyValues = new String[] {"", "  ", "%$$*gd¤", createOverLength(50)};
       for(int i = 0; i < emptyValues.length; i++){
@@ -888,37 +857,6 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
          assertTrue(catched);
       }
       utilisateur.setPassword("PASS");
-
-      // On teste un update avec un attribut encopass non valide
-      emptyValues = new String[] {"", "  ", "%$$*gd¤", createOverLength(100)};
-      for(int i = 0; i < emptyValues.length; i++){
-         catched = false;
-         try{
-            utilisateur.setEncodedPassword(emptyValues[i]);
-            utilisateurManager.updateObjectManager(utilisateur, null, null, null, admin, oType);
-         }catch(final Exception e){
-            if(e.getClass().getSimpleName().equals("ValidationException")){
-               catched = true;
-            }
-         }
-         assertTrue(catched);
-      }
-      utilisateur.setEncodedPassword(null);
-
-      // On teste un update avec un attribut dnldap non valide
-      for(int i = 0; i < emptyValues.length; i++){
-         catched = false;
-         try{
-            utilisateur.setDnLdap(emptyValues[i]);
-            utilisateurManager.updateObjectManager(utilisateur, null, null, null, admin, oType);
-         }catch(final Exception e){
-            if(e.getClass().getSimpleName().equals("ValidationException")){
-               catched = true;
-            }
-         }
-         assertTrue(catched);
-      }
-      utilisateur.setDnLdap(null);
 
       // On teste un update avec un attribut email non valide
       emptyValues = new String[] {"", "  ", "%$$*gd¤", createOverLength(50)};

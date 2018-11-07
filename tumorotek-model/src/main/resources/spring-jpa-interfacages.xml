@@ -15,37 +15,16 @@
 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 				<property name="showSql" value="${db.interfacages.hibernate.showSql}" />
 				<property name="generateDdl" value="${db.interfacages.hibernate.generateDdl}" />
-				<property name="databasePlatform">
-					<bean class="org.springframework.jndi.JndiObjectFactoryBean">
-						<property name="jndiName" value="${db.jndi.interfacages.dialect}" />
-					</bean>
-				</property>
+				<property name="databasePlatform" value="${db.interfacages.dialect}"/>
 			</bean>
 		</property>
 	</bean>
 
-	<bean id="dataSourceInterfacages" class="com.mchange.v2.c3p0.ComboPooledDataSource"
-		destroy-method="close">
-		<property name="driverClass">
-			<bean class="org.springframework.jndi.JndiObjectFactoryBean">
-				<property name="jndiName" value="${db.jndi.interfacages.driver}" />
-			</bean>
-		</property>
-		<property name="jdbcUrl">
-			<bean class="org.springframework.jndi.JndiObjectFactoryBean">
-				<property name="jndiName" value="${db.jndi.interfacages.url}" />
-			</bean>
-		</property>
-		<property name="user">
-			<bean class="org.springframework.jndi.JndiObjectFactoryBean">
-				<property name="jndiName" value="${db.jndi.interfacages.user}" />
-			</bean>
-		</property>
-		<property name="password">
-			<bean class="org.springframework.jndi.JndiObjectFactoryBean">
-				<property name="jndiName" value="${db.jndi.interfacages.password}" />
-			</bean>
-		</property>
+	<bean id="dataSourceInterfacages" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<property name="driverClass" value="${db.interfacages.driver}"/>
+		<property name="jdbcUrl" value="${db.interfacages.url}"/>
+		<property name="user" value="${db.interfacages.user}"/>
+		<property name="password" value="${db.interfacages.password}"/>
 		<property name="initialPoolSize" value="${db.interfacages.initialPoolSize}" />
 		<property name="minPoolSize" value="${db.interfacages.minPoolSize}" />
 		<property name="maxPoolSize" value="${db.interfacages.maxPoolSize}" />

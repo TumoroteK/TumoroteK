@@ -38,6 +38,9 @@ package fr.aphp.tumorotek.utils;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -45,6 +48,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import fr.aphp.tumorotek.manager.exception.TKException;
+import fr.aphp.tumorotek.model.systeme.Fichier;
 
 /**
  * Classe utilitaire permettant la conversion d'instances Object en un type défini
@@ -221,7 +225,7 @@ public abstract class ConversionUtils
       if(res == null){
          throw new TKException("Conversion " + objet.getClass() + " en Boolean");
       }
-      
+
       return res;
 
    }
@@ -320,6 +324,46 @@ public abstract class ConversionUtils
       }
 
       return format;
+
+   }
+
+   public static String formatToStringValue(Object obj) {
+
+      String value = null;
+
+      if(obj instanceof String){
+         value = (String)obj;
+      }
+      else if(obj instanceof Number){
+         value = String.valueOf(obj);
+      }
+      else if(obj instanceof Boolean){
+         if((Boolean) obj){
+            value = "Oui";
+         }else{
+            value = "Non";
+         }
+      }
+      else if(obj instanceof Date){
+         final Date date = (Date) obj;
+         final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+         value = sdf.format(date);
+      }
+      else if(obj instanceof Calendar){
+         final Calendar tmp = (Calendar) obj;
+         SimpleDateFormat sdf = null;
+         if(tmp.get(Calendar.HOUR_OF_DAY) > 0 || tmp.get(Calendar.MINUTE) > 0 || tmp.get(Calendar.SECOND) > 0){
+            sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+         }else{
+            sdf = new SimpleDateFormat("dd/MM/yyyy");
+         }
+         value = sdf.format(tmp.getTime());
+      }
+      else if(obj instanceof Fichier){
+         value = ((Fichier) obj).getNom();
+      }
+
+      return value;
 
    }
 

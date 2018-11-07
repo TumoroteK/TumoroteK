@@ -528,10 +528,6 @@ div.biocap {
 	background: url(${c:encodeURL('/images/icones/catalogues/biocap.gif')});
 }
 
-div.bto {
-	background: url(${c:encodeURL('/images/icones/catalogues/bto.gif')});
-}
-
 div.pelican {
 	background: url(${c:encodeURL('/images/icones/catalogues/pelican.png')});
 }

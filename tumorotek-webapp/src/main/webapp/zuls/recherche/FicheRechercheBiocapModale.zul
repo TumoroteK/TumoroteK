@@ -73,11 +73,11 @@
 						<hlayout hflex="1">
 							<label value="du" sclass="formLabel"/>
 							<datebox id="datePrelevement1Box" format="${c:l('validation.date.format.simple')}"  
-								cols="8" constraint="no empty" lenient="false"
+								cols="8" constraint="no empty" lenient="true"
 								value="@save(vm.dateInf, before='find')" />
 							<label value="${c:l('general.au')}"  sclass="formLabel"/>
 							<datebox id="datePrelevement2Box" format="${c:l('validation.date.format.simple')}"
-								cols="8" constraint="no empty" lenient="false"
+								cols="8" constraint="no empty" lenient="true"
 								value="@save(vm.dateSup, before='find')" />
 						</hlayout>
 					</row>

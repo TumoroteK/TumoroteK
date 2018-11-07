@@ -28,6 +28,8 @@ import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+import fr.aphp.tumorotek.param.TkParam;
+import fr.aphp.tumorotek.param.TumorotekProperties;
 
 @SuppressWarnings("deprecation")
 public class ConnexionCrf extends GenericForwardComposer<Component>
@@ -97,12 +99,12 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
 
       // on récupère le bundle de paramétrage de l'application
       ResourceBundle res = null;
-      if(ManagerLocator.getResourceBundleTumo().doesResourceBundleExists("tumorotek.properties")){
-         res = ManagerLocator.getResourceBundleTumo().getResourceBundle("tumorotek.properties");
+      if(ManagerLocator.getResourceBundleTumo().doesResourceBundleExists(TumorotekProperties.TUMO_PROPERTIES_FILENAME)){
+         res = ManagerLocator.getResourceBundleTumo().getResourceBundle(TumorotekProperties.TUMO_PROPERTIES_FILENAME);
       // on récupère la propriété définissant les interfaçages
          String connexion = null;
-         if(res.containsKey("CONNEXION_CRF")){
-            connexion = res.getString("CONNEXION_CRF");
+         if(res.containsKey(TkParam.CONNEXION_CRF.getKey())){
+            connexion = res.getString(TkParam.CONNEXION_CRF.getKey());
          }
          if(connexion != null && connexion.equals("true")){
             // extraction des interfaçages

@@ -15,37 +15,16 @@
 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 				<property name="showSql" value="${db.codes.hibernate.showSql}" />
 				<property name="generateDdl" value="${db.codes.hibernate.generateDdl}" />
-				<property name="databasePlatform">
-					<bean class="org.springframework.jndi.JndiObjectFactoryBean">
-						<property name="jndiName" value="${db.jndi.codes.dialect}" />
-					</bean>
-				</property>
+				<property name="databasePlatform" value="${db.codes.dialect}"/>
 			</bean>
 		</property>
 	</bean>
 
-	<bean id="dataSourceCodes" class="com.mchange.v2.c3p0.ComboPooledDataSource"
-		destroy-method="close">
-		<property name="driverClass">
-			<bean class="org.springframework.jndi.JndiObjectFactoryBean">
-				<property name="jndiName" value="${db.jndi.codes.driver}" />
-			</bean>
-		</property>
-		<property name="jdbcUrl">
-			<bean class="org.springframework.jndi.JndiObjectFactoryBean">
-				<property name="jndiName" value="${db.jndi.codes.url}" />
-			</bean>
-		</property>
-		<property name="user">
-			<bean class="org.springframework.jndi.JndiObjectFactoryBean">
-				<property name="jndiName" value="${db.jndi.codes.user}" />
-			</bean>
-		</property>
-		<property name="password">
-			<bean class="org.springframework.jndi.JndiObjectFactoryBean">
-				<property name="jndiName" value="${db.jndi.codes.password}" />
-			</bean>
-		</property>
+	<bean id="dataSourceCodes" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<property name="driverClass" value="${db.codes.driver}"/>
+		<property name="jdbcUrl" value="${db.codes.url}"/>
+		<property name="user" value="${db.codes.user}"/>
+		<property name="password" value="${db.codes.password}"/>
 		<property name="initialPoolSize" value="${db.codes.initialPoolSize}" />
 		<property name="minPoolSize" value="${db.codes.minPoolSize}" />
 		<property name="maxPoolSize" value="${db.codes.maxPoolSize}" />

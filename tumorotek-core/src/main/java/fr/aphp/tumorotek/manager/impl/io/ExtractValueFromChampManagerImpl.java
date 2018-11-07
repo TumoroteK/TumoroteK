@@ -35,179 +35,46 @@
  **/
 package fr.aphp.tumorotek.manager.impl.io;
 
-import java.util.Iterator;
 import java.util.List;
 
-import fr.aphp.tumorotek.manager.code.CodeAssigneManager;
-import fr.aphp.tumorotek.manager.coeur.echantillon.EchantillonManager;
-import fr.aphp.tumorotek.manager.coeur.prelevement.PrelevementManager;
-import fr.aphp.tumorotek.manager.coeur.prodderive.ProdDeriveManager;
+import fr.aphp.tumorotek.manager.impl.io.utils.RechercheUtilsManager;
 import fr.aphp.tumorotek.manager.io.ExtractValueFromChampManager;
-import fr.aphp.tumorotek.manager.io.export.ChampManager;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
-import fr.aphp.tumorotek.model.coeur.patient.Maladie;
-import fr.aphp.tumorotek.model.coeur.patient.Patient;
-import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
-import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.io.export.Champ;
+import fr.aphp.tumorotek.utils.ConversionUtils;
 
 public class ExtractValueFromChampManagerImpl implements ExtractValueFromChampManager
 {
 
-   private ChampManager champManager;
-   private EchantillonManager echantillonManager;
-   private ProdDeriveManager prodDeriveManager;
-   private CodeAssigneManager codeAssigneManager;
-   private PrelevementManager prelevementManager;
-
-   public void setChampManager(final ChampManager cManager){
-      this.champManager = cManager;
-   }
-
-   public void setEchantillonManager(final EchantillonManager eManager){
-      this.echantillonManager = eManager;
-   }
-
-   public void setProdDeriveManager(final ProdDeriveManager pManager){
-      this.prodDeriveManager = pManager;
-   }
-
-   public void setCodeAssigneManager(final CodeAssigneManager cManager){
-      this.codeAssigneManager = cManager;
-   }
-
-   public void setPrelevementManager(final PrelevementManager pManager){
-      this.prelevementManager = pManager;
-   }
-
    @Override
    public String extractValueForChampManager(final Echantillon echantillon, final Champ champ){
+
+      String res = null;
+      
       if(echantillon != null && champ != null){
-         String value = null;
-         if(champ.getChampEntite() != null){
-            if(champ.getChampEntite().getEntite().getNom().equals("Patient")){
-               // on récupère le patient
-               final Prelevement prlvt = echantillonManager.getPrelevementManager(echantillon);
-               Patient patient = null;
-               if(prlvt != null && prlvt.getMaladie() != null){
-                  patient = prlvt.getMaladie().getPatient();
-               }
-               value = (String) champManager.getValueForObjectManager(champ, patient, true);
-            }else if(champ.getChampEntite().getEntite().getNom().equals("Maladie")){
-               // on récupère la maladie
-               final Prelevement prlvt = echantillonManager.getPrelevementManager(echantillon);
-               Maladie maladie = null;
-               if(prlvt != null){
-                  maladie = prlvt.getMaladie();
-               }
-               value = (String) champManager.getValueForObjectManager(champ, maladie, true);
-            }else if(champ.getChampEntite().getEntite().getNom().equals("Prelevement")){
-               // on récupère le prelevement
-               final Prelevement prlvt = echantillonManager.getPrelevementManager(echantillon);
-               if(champ.getChampEntite().getNom().equals("Risques")){
-                  // extraction des risques
-                  final Iterator<Risque> risksIt = prelevementManager.getRisquesManager(prlvt).iterator();
-                  final StringBuffer sb = new StringBuffer();
-                  while(risksIt.hasNext()){
-                     sb.append(risksIt.next().getNom());
-                     if(risksIt.hasNext()){
-                        sb.append(", ");
-                     }
-                  }
-                  value = sb.toString();
-               }else{
-                  value = (String) champManager.getValueForObjectManager(champ, prlvt, true);
-               }
-            }else if(champ.getChampEntite().getEntite().getNom().equals("Echantillon")){
-               // si c'est l'emplacement à extraire
-               if(champ.getChampEntite().getNom().equals("EmplacementId")){
-                  value = echantillonManager.getEmplacementAdrlManager(echantillon);
-               }else if(champ.getChampEntite().getNom().equals("CodeOrganes")){
-                  // si ce sont les codes organes à extraire
-                  final List<String> codes = codeAssigneManager
-                     .formatCodesAsStringsManager(codeAssigneManager.findCodesOrganeByEchantillonManager(echantillon));
-                  final StringBuffer sb = new StringBuffer();
-                  for(int k = 0; k < codes.size(); k++){
-                     sb.append(codes.get(k));
-                     if(k + 1 < codes.size()){
-                        sb.append(", ");
-                     }
-                  }
-                  value = sb.toString();
-               }else if(champ.getChampEntite().getNom().equals("CodeMorphos")){
-                  // si ce sont les codes morphos à extraire
-                  final List<String> codes = codeAssigneManager
-                     .formatCodesAsStringsManager(codeAssigneManager.findCodesMorphoByEchantillonManager(echantillon));
-                  final StringBuffer sb = new StringBuffer();
-                  for(int k = 0; k < codes.size(); k++){
-                     sb.append(codes.get(k));
-                     if(k + 1 < codes.size()){
-                        sb.append(", ");
-                     }
-                  }
-                  value = sb.toString();
-               }else{
-                  value = (String) champManager.getValueForObjectManager(champ, echantillon, true);
-               }
-            }
-         }
-         return value;
+         final List<Object> listObjetsCorrespondants = RechercheUtilsManager.getListeObjetsCorrespondants(echantillon, champ, null);
+         final Object value = RechercheUtilsManager.getChampValueFromObjectList(champ, listObjetsCorrespondants);
+         res = ConversionUtils.formatToStringValue(value);
       }
-      return null;
+
+      return res;
+
    }
 
    @Override
    public String extractValueForChampManager(final ProdDerive prodDerive, final Champ champ){
+
+      String res = null;
+
       if(prodDerive != null && champ != null){
-         String value = null;
-         if(champ.getChampEntite() != null){
-            if(champ.getChampEntite().getEntite().getNom().equals("Patient")){
-               // on récupère le patient
-               final Patient patient = prodDeriveManager.getPatientParentManager(prodDerive);
-               value = (String) champManager.getValueForObjectManager(champ, patient, true);
-            }else if(champ.getChampEntite().getEntite().getNom().equals("Maladie")){
-               // on récupère la maladie
-               final Prelevement prlvt = prodDeriveManager.getPrelevementParent(prodDerive);
-               Maladie maladie = null;
-               if(prlvt != null){
-                  maladie = prlvt.getMaladie();
-               }
-               value = (String) champManager.getValueForObjectManager(champ, maladie, true);
-            }else if(champ.getChampEntite().getEntite().getNom().equals("Prelevement")){
-               // on récupère le prelevement
-               final Prelevement prlvt = prodDeriveManager.getPrelevementParent(prodDerive);
-               if(champ.getChampEntite().getNom().equals("Risques")){
-                  // extraction des risques
-                  final Iterator<Risque> risksIt = prelevementManager.getRisquesManager(prlvt).iterator();
-                  final StringBuffer sb = new StringBuffer();
-                  while(risksIt.hasNext()){
-                     sb.append(risksIt.next().getNom());
-                     if(risksIt.hasNext()){
-                        sb.append(", ");
-                     }
-                  }
-                  value = sb.toString();
-               }else{
-                  value = (String) champManager.getValueForObjectManager(champ, prlvt, true);
-               }
-            }else if(champ.getChampEntite().getEntite().getNom().equals("Echantillon")){
-               // on récupère l'échantillon
-               final Object parent = prodDeriveManager.findParent(prodDerive);
-               if(parent.getClass().getSimpleName().equals("Echantillon")){
-                  value = extractValueForChampManager((Echantillon) parent, champ);
-               }
-            }else if(champ.getChampEntite().getEntite().getNom().equals("ProdDerive")){
-               // si c'est l'emplacement à extraire
-               if(champ.getChampEntite().getNom().equals("EmplacementId")){
-                  value = prodDeriveManager.getEmplacementAdrlManager(prodDerive);
-               }else{
-                  value = (String) champManager.getValueForObjectManager(champ, prodDerive, true);
-               }
-            }
-         }
-         return value;
+         final List<Object> listObjetsCorrespondants = RechercheUtilsManager.getListeObjetsCorrespondants(prodDerive, champ, null);
+         final Object value = RechercheUtilsManager.getChampValueFromObjectList(champ, listObjetsCorrespondants);
+         res = ConversionUtils.formatToStringValue(value);
       }
-      return null;
+
+      return res;
+
    }
+
 }

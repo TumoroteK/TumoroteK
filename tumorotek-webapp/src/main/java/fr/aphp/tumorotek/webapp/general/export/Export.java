@@ -76,7 +76,6 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.utils.Utils;
 import fr.aphp.tumorotek.webapp.general.ResultSetToCsv;
 import fr.aphp.tumorotek.webapp.general.ResultSetToExcel;
-import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  * SuperClass Export : Exports des données type Patient, Prelevement,
@@ -236,10 +235,10 @@ public class Export extends Thread
    @Override
    public void run(){
       // if MySQL maybe add zeroDateTimeBehavior=convertToNull
-      final String dbUrl = SessionUtils.getDatabaseURL();
-      final String dbClass = SessionUtils.getDriverClass();
-      final String username = SessionUtils.getUsernameDB();
-      final String password = SessionUtils.getPasswordDB();
+      final String dbUrl = Utils.getDatabaseURL();
+      final String dbClass = Utils.getDriverClass();
+      final String username = Utils.getUsernameDB();
+      final String password = Utils.getPasswordDB();
 
       try{
          // Connection to database

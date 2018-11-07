@@ -7,28 +7,11 @@
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
     http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
 
-	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
-		destroy-method="close">
-	 	<property name="driverClass">
-	 		<bean class="org.springframework.jndi.JndiObjectFactoryBean">
-				<property name="jndiName" value="${db.jndi.driver}" />
-			</bean>
-	 	</property>
- 		<property name="jdbcUrl">
- 			<bean class="org.springframework.jndi.JndiObjectFactoryBean">
-				<property name="jndiName" value="${db.jndi.url}" />
-			</bean>			
- 		</property> 
-	 	<property name="user">
-	 		<bean class="org.springframework.jndi.JndiObjectFactoryBean">
-				<property name="jndiName" value="${db.jndi.user}" />
-			</bean>
-	 	</property>
-	 	<property name="password">
-	 		<bean class="org.springframework.jndi.JndiObjectFactoryBean">
-				<property name="jndiName" value="${db.jndi.password}" />
-			</bean>
-	 	</property>
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<property name="driverClass" value="${db.driver}"/>
+		<property name="jdbcUrl" value="${db.url}"/>
+		<property name="user" value="${db.user}"/>
+		<property name="password" value="${db.password}"/>
 		<property name="initialPoolSize" value="${db.initialPoolSize}" />
 		<property name="minPoolSize" value="${db.minPoolSize}" />
 		<property name="maxPoolSize" value="${db.maxPoolSize}" />
@@ -39,7 +22,6 @@
 		<property name="maxIdleTime" value="5000" />
 		<property name="maxConnectionAge" value="5000" />
 		<property name="idleConnectionTestPeriod" value="500" />
-		
  	 </bean>
 
 	<!-- couche de persistance JPA -->
@@ -51,38 +33,21 @@
 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 				<property name="generateDdl" value="${db.hibernate.generateDdl}" />
 				<property name="showSql" value="${db.hibernate.showSql}" />
-				<property name="databasePlatform">
-					<bean class="org.springframework.jndi.JndiObjectFactoryBean">
-						<property name="jndiName" value="${db.jndi.dialect}" />
-					</bean>
-				</property>
+				<property name="databasePlatform" value="${db.dialect}" />
 			</bean>
 		</property>
 	</bean>
 
-
-
 	<bean id="resourceBundleSip" class="fr.aphp.tumorotek.model.bundles.ResourceBundleSipImpl">
-		 <property name="sipPath">
-				<bean class="org.springframework.jndi.JndiObjectFactoryBean">
-				<property name="jndiName" value="${db.jndi.sip.resources}" />
-				</bean>
-		 </property>
+		 <property name="sipPath" value="${tk.sip.system}" />
 	</bean>
 
 	<bean id="resourceBundleMbio" class="fr.aphp.tumorotek.model.bundles.ResourceBundleMbioImpl">
-		 <property name="mbioPath">
-				<bean class="org.springframework.jndi.JndiObjectFactoryBean">
-				<property name="jndiName" value="${db.jndi.mbio.path}" />
-				</bean>
-		 </property>
+		 <property name="mbioPath" value="${tk.mbio.system}" />
 	</bean>
+	
 	<bean id="resourceBundleTumo" class="fr.aphp.tumorotek.model.bundles.ResourceBundleTumoImpl">
-		 <property name="tumoPropertiesPath">
-				<bean class="org.springframework.jndi.JndiObjectFactoryBean">
-				<property name="jndiName" value="${db.jndi.tumo.properties}" />
-				</bean>
-		 </property>
+		 <property name="tumoPropertiesPath" value="${tk.conf.dir}" />
 	</bean>
 
 <!--  le gestionnaire de transactions... utilisé dans les tests par AbstractDaoTest -->

@@ -112,7 +112,7 @@
 							
 							<datebox id="dateDebutBox" format="${c:l('validation.date.format.simple')}" 
 								value="@{fwinMaladie$composer.object.dateDebut, save-when='validateC.onClick, createC.onClick'}"
-								visible="false" lenient="false"/>
+								visible="false" lenient="true"/>
 							<label id="validationDateDebutLabel" visible="false" />
 						</div>
 					<!-- Date diagnostic -->
@@ -124,7 +124,7 @@
 							
 							<datebox id="dateDiagBox" format="${c:l('validation.date.format.simple')}" 
 								value="@{fwinMaladie$composer.object.dateDiagnostic, save-when='validateC.onClick, createC.onClick'}"
-								visible="false" lenient="false"/>
+								visible="false" lenient="true"/>
 							<label id="validationDateDiagLabel" visible="false" />
 						</div>
 					</row>

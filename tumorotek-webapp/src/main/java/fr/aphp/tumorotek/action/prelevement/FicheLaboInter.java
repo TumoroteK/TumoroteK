@@ -35,9 +35,6 @@
  **/
 package fr.aphp.tumorotek.action.prelevement;
 
-import static fr.aphp.tumorotek.model.contexte.EContexte.BTO;
-import static fr.aphp.tumorotek.webapp.general.SessionUtils.getCurrentContexte;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -70,7 +67,6 @@ import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Row;
 
 import fr.aphp.tumorotek.action.CustomSimpleListModel;
 import fr.aphp.tumorotek.action.ManagerLocator;
@@ -154,10 +150,7 @@ public class FicheLaboInter extends AbstractFicheEditController
     */
    private Prelevement prelevement;
    private Maladie maladie;
-   //private LaboInter currentLabo;
-   private Div divCongDepart;
-   private Div divCongArrivee;
-   private Label conformeArriveeLabel;
+
    /**
     *  Associations.
     */
@@ -180,8 +173,6 @@ public class FicheLaboInter extends AbstractFicheEditController
    private NonConformite selectedNonConformite;
    private Set<Listitem> selectedNonConformitesItem = new HashSet<>();
 
-   private Row rowQuantite;
-
    /**
     *  Variables formulaire.
     */
@@ -198,12 +189,6 @@ public class FicheLaboInter extends AbstractFicheEditController
       initEditableMode();
 
       super.doAfterCompose(comp);
-      if(BTO.equals(getCurrentContexte())){
-         divCongDepart.setVisible(false);
-         divCongArrivee.setVisible(false);
-         conformeArriveeLabel.setValue("Conforme à l'emballage");
-         rowQuantite.setVisible(false);
-      }
 
       next.setDisabled(!getDroitOnAction("Echantillon", "Creation"));
    }
@@ -342,7 +327,7 @@ public class FicheLaboInter extends AbstractFicheEditController
       }
       if(this.prelevement.getQuantiteUnite() != null){
          sb.append(" ");
-         sb.append(this.prelevement.getQuantiteUnite().getUnite());
+         sb.append(this.prelevement.getQuantiteUnite().getNom());
       }
       valeurQuantite = sb.toString();
    }

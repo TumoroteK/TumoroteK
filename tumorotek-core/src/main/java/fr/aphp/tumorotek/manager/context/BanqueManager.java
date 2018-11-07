@@ -198,7 +198,7 @@ public interface BanqueManager
       Collaborateur contact, List<Conteneur> conteneurs, List<BanqueTableCodage> codifications,
       List<TableAnnotation> tablesPatient, List<TableAnnotation> tablesPrlvt, List<TableAnnotation> tablesEchan,
       List<TableAnnotation> tablesDerive, List<TableAnnotation> tablesCess, List<CouleurEntiteType> coulTypes,
-      Couleur couleurEchan, Couleur couleurDerive, Utilisateur utilisateur, String operation, String basedir);
+      Couleur couleurEchan, Couleur couleurDerive, Utilisateur utilisateur, Set<Utilisateur> utilisateursList, String operation, String basedir);
 
    /**
     * Recherche la présence de doublon d'un objet Banque.

@@ -42,7 +42,9 @@ import java.util.List;
 import org.zkoss.util.resource.Labels;
 
 import fr.aphp.tumorotek.model.io.export.Champ;
+import fr.aphp.tumorotek.model.io.export.ChampDelegue;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 public class ImportChampDecorator
 {
@@ -65,8 +67,11 @@ public class ImportChampDecorator
       String nom = "";
       if(champ.getChampEntite() != null){
          nom = getLabelForChampEntite(champ.getChampEntite());
-      }else{
+      }else if(champ.getChampAnnotation() != null){
          nom = champ.getChampAnnotation().getNom();
+      }
+      else {
+         nom = getLabelForChampDelegue(champ.getChampDelegue());
       }
       return nom;
    }
@@ -90,6 +95,20 @@ public class ImportChampDecorator
       return Labels.getLabel(iProperty.toString());
    }
 
+   public String getLabelForChampDelegue(final ChampDelegue c){
+      
+      final StringBuffer iProperty = new StringBuffer()
+         .append("Champ.")
+         .append(c.getEntite().getNom())
+         .append(".")
+         .append(SessionUtils.getCurrentContexte())
+         .append(".")
+         .append(c.getNom().replaceAll("Id$", ""));
+
+      // on ajoute la valeur du champ
+      return Labels.getLabel(iProperty.toString());
+   }
+   
    /**
     * Decore une liste de cederobjets.
     * @param cederobjets

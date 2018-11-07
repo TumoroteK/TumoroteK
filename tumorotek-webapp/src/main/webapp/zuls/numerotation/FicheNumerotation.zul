@@ -40,7 +40,7 @@
 			<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvt">
 				<columns>
 					<column width="150px"/>
-					<column width="200px"/>
+					<column width="300px"/>
 					<column/>
 				</columns>
 				<rows>
@@ -98,6 +98,13 @@
 							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
 						</vbox>
 					</row>
+					<!-- APPERCU -->
+					<row>
+						<label id="codePreviewLabel" value="${c:l('numerotation.code.apercu')}" sclass="formLabel"/>
+						<label id="codePreview" sclass="formValue" value="@{fwinNumerotation$composer.codePreview, 
+							load-after='codePrefixeNumerotation.onBlur, codeSuffixeNumerotation.onBlur, dateCheckbox.onCheck,
+							dateFormatBox.onSelect, datePlaceBox.onSelect, nbChiffresBox.onChange, zeroFillBox.onCheck'}"/>
+					</row>
 					<!-- CODE -->
 					<row>
 						<label value="${c:l('numerotation.code.genere')}" sclass="formLabel"/>
@@ -107,8 +114,6 @@
 								sclass="formValue" 
 							/>
 							<textbox id="codePrefixeNumerotation" 
-								value="@{fwinNumerotation$composer.codePrefixe,
-			        			save-when='validateC.onClick, createC.onClick'}"
 								width="50px" 
 								constraint="${fwinNumerotation$composer.codeConstraint}"
 								visible="false"/>
@@ -118,8 +123,6 @@
 								visible="false"
 							/>
 							<textbox id="codeSuffixeNumerotation" 
-								value="@{fwinNumerotation$composer.codeSuffixe,
-			        			save-when='validateC.onClick, createC.onClick'}"
 								width="50px" 
 								constraint="${fwinNumerotation$composer.codeConstraint}"
 								visible="false"/>
@@ -133,6 +136,29 @@
 								value="${c:l('numerotation.help.code.edit')}" 
 								sclass="formArchiveValue" 
 							/>
+						</div>
+					</row>
+					<!-- DATE -->
+					<row>
+						<hlayout>
+							<div>
+								<checkbox id="dateCheckbox" visible="false"/>
+								<label id="dateLabel" value="${c:l('numerotation.date.libelle')}" sclass="formLabel"/>
+							</div>
+						</hlayout>
+						<div>
+							<span id="infoDatesDiv" visible="false">
+								<label id="dateFormatLabel" value="${c:l('numerotation.date.format')} " sclass="formLabel"/>
+								<listbox id="dateFormatBox" mold="select" visible="false"/>
+								<label id="dateFormatStatic" sclass="formValue" visible="false"/>
+								<label id="datePlaceLabel" value=" ${c:l('numerotation.date.place')} " sclass="formLabel"/>
+								<listbox id="datePlaceBox" mold="select" visible="false"/>
+								<label id="datePlaceStatic" sclass="formValue" visible="false"/>
+							</span>
+							<label id="noDateLabel" value="${c:l('general.checkbox.false')}" sclass="formValue" visible="false"/>
+						</div>
+						<div>
+							<label id="dateHelpLabel" value="${c:l('numerotation.help.date')}" sclass="formArchiveValue"/>
 						</div>
 					</row>
 					<!-- START_INCREMENT -->

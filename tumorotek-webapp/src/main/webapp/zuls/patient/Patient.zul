@@ -37,9 +37,7 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <zk>
 <?component name="listePatient" macroURI="/zuls/patient/ListePatient.zul" ?>
-<?component name="listePatientBTO" macroURI="/zuls/patient/bto/ListePatientBTO.zul" ?>
 <?component name="fichePatientStatic" macroURI="/zuls/patient/FichePatientStatic.zul" ?>
-<?component name="fichePatientStaticBTO" macroURI="/zuls/patient/bto/FichePatientStaticBTO.zul" ?>
 <?component name="ficheAnnotation" macroURI="/zuls/annotation/FicheAnnotation.zul" ?>
 
 <window id="winPatient" border="none" apply="fr.aphp.tumorotek.action.patient.PatientController">
@@ -48,9 +46,7 @@
 				border="normal" splittable="true" 
 				collapsible="true" id="listeRegion">
 			<div >
-			<listePatient visible="false" id="listePatient" hflex="1" />
-
-			<listePatientBTO visible="false" id="listePatientBTO" hflex="1" />
+				<listePatient visible="false" id="listePatient" hflex="1" />
 			</div>
 		</west>
 		<center id="ficheRegion">

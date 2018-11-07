@@ -62,7 +62,6 @@ import org.zkoss.zul.ListModelList;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.annotation.FicheAnnotation;
-import fr.aphp.tumorotek.action.annotation.FicheAnnotationInline;
 import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheEditController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheModifMultiController;
@@ -78,6 +77,8 @@ import fr.aphp.tumorotek.model.interfacage.Emetteur;
 import fr.aphp.tumorotek.model.qualite.Operation;
 import fr.aphp.tumorotek.model.qualite.OperationType;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+import fr.aphp.tumorotek.param.TkParam;
+import fr.aphp.tumorotek.param.TumorotekProperties;
 import fr.aphp.tumorotek.webapp.general.FileDownloadTumo;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
@@ -158,7 +159,7 @@ public class HistoriqueController extends AbstractObjectTabController
    }
 
    /**
-    * Méthode appelée lors de l'appui sur la touche ENTREE : 
+    * Méthode appelée lors de l'appui sur la touche ENTREE :
     * valide le formulaire en mode création ou validation.
     */
    public void onOK(){
@@ -176,14 +177,14 @@ public class HistoriqueController extends AbstractObjectTabController
 
       boolean showLogin = false;
       ResourceBundle res = null;
-      if(ManagerLocator.getResourceBundleTumo().doesResourceBundleExists("tumorotek.properties")){
-         res = ManagerLocator.getResourceBundleTumo().getResourceBundle("tumorotek.properties");
+      if(ManagerLocator.getResourceBundleTumo().doesResourceBundleExists(TumorotekProperties.TUMO_PROPERTIES_FILENAME)){
+         res = ManagerLocator.getResourceBundleTumo().getResourceBundle(TumorotekProperties.TUMO_PROPERTIES_FILENAME);
       }
       // on récupère la propriété définissant si on doit sauver
       // et afficher les connexions
       String save = null;
-      if(null != res && res.containsKey("SAUVER_CONNEXION_TK")){
-         save = res.getString("SAUVER_CONNEXION_TK");
+      if(null != res && res.containsKey(TkParam.SAUVER_CONNEXION.getKey())){
+         save = res.getString(TkParam.SAUVER_CONNEXION.getKey());
       }
       if(save != null && save.equals("true")){
          showLogin = true;
@@ -261,7 +262,7 @@ public class HistoriqueController extends AbstractObjectTabController
             op.setIdentificationDossier(cI.getIdentification());
             operations.add(op);
          }
-      }else{ // historique search	
+      }else{ // historique search
          operations = ManagerLocator.getOperationManager().findByMultiCriteresManager(operateur1, cal1, operateur2, cal2,
             operationType, selUsers, showLogin);
       }
@@ -354,11 +355,6 @@ public class HistoriqueController extends AbstractObjectTabController
 
    @Override
    public FicheAnnotation getFicheAnnotation(){
-      return null;
-   }
-
-   @Override
-   public FicheAnnotationInline getFicheAnnotationInline(){
       return null;
    }
 

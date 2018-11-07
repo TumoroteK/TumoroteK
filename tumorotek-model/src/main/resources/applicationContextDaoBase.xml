@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-	http://www.springframework.org/schema/beans
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
 
-	<context:property-placeholder location="classpath:jndi.properties, classpath:sgbd.properties" />
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" depends-on="tkPropertiesInit">
+		<property name="order" value="1"/>
+		<property name="valueSeparator" value="#"/>
+		<property name="ignoreUnresolvablePlaceholders" value="true"/>
+		<property name="locations">
+			<list>
+				<value>classpath:sgbd.properties</value>
+				<value>file:${catalina.base}/conf/Catalina/localhost/tumorotek.properties</value>
+			</list>
+		</property>
+	</bean>
+
 	<import resource="applicationContextInterceptor.xml" />
 	<import resource="spring-jpa.xml" />
 	<import resource="applicationContextDao.xml" />

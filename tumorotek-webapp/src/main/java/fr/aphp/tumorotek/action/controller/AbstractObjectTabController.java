@@ -62,7 +62,6 @@ import org.zkoss.zul.West;
 import fr.aphp.tumorotek.action.MainWindow;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.annotation.FicheAnnotation;
-import fr.aphp.tumorotek.action.annotation.FicheAnnotationInline;
 import fr.aphp.tumorotek.action.cession.CessionController;
 import fr.aphp.tumorotek.action.echantillon.EchantillonController;
 import fr.aphp.tumorotek.action.patient.PatientController;
@@ -467,24 +466,8 @@ public abstract class AbstractObjectTabController extends AbstractController
       getFicheEdit().switchToCreateMode();
 
       if(canUpdateAnnotation()){
-         /**
-          * ANNOTATION INLINE - Bêta
-          *
-          * @since 2.2.0
-          */
-         if(null != getFicheAnnotation()){
-            getFicheAnnotation().switchToStaticOrEditMode(false, false);
-            //getFicheAnnotation().showButtonsBar(false);
-         }
-
-         /**
-          * ANNOTATION INLINE - Bêta
-          *
-          * @since 2.2.0
-          */
-         if(null != getFicheAnnotationInline()){
-            getFicheAnnotationInline().switchToStaticOrEditMode(false, false);
-         }
+         getFicheAnnotation().showButtonsBar(false);
+         getFicheAnnotation().switchToStaticOrEditMode(false, false);
       }
 
       if(!annoRegion.isOpen() && annoRegion.isVisible()){
@@ -514,24 +497,11 @@ public abstract class AbstractObjectTabController extends AbstractController
       getFicheEdit().switchToEditMode();
 
       if(canUpdateAnnotation()){
-         /**
-          * ANNOTATION INLINE - Bêta
-          *
-          * @since 2.2.0
-          */
+
          if(null != getFicheAnnotation()){
             getFicheAnnotation().switchToStaticOrEditMode(false, false);
          }
 
-         /**
-          * ANNOTATION INLINE - Bêta
-          *
-          * @since 2.2.0
-          */
-         if(null != getFicheAnnotationInline()){
-            getFicheAnnotationInline().switchToStaticOrEditMode(false, false);
-         }
-         //getFicheAnnotation().showButtonsBar(false);
       }
 
       if(!annoRegion.isOpen() && annoRegion.isVisible()){
@@ -863,13 +833,6 @@ public abstract class AbstractObjectTabController extends AbstractController
     * @return FicheAnntotation controller
     */
    public abstract FicheAnnotation getFicheAnnotation();
-
-   /**
-    * ANNOTATION INLINE - Bêta
-    *
-    * @since 2.2.0
-    */
-   public abstract FicheAnnotationInline getFicheAnnotationInline();
 
    /**
     * Renvoie le controller de la fiche modification multiple associée.

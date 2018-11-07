@@ -31,10 +31,7 @@ Exécuter la commande Maven :
 L'archive est disponible dans `tumorotek-webapp/target`
 
 #### Pour lancer les tests
-Vérifier que les bases de données de test sont accessibles :
-- test_tumorotek
-- test_tumorotek_codes
-- test_tumorotek_interfacages
+Utiliser une base MySQL ou MariaDB et vérifier les coordonnées d'accès à la base dans le [pom.xml](pom.xml).
     
 Ensuite exécuter la commande Maven :
 

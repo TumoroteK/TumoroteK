@@ -37,9 +37,13 @@ package fr.aphp.tumorotek.action.contexte;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.collections4.ListUtils;
@@ -56,14 +60,17 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zkplus.databind.BindingListModelSet;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Group;
+import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Menubar;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
@@ -95,6 +102,8 @@ import fr.aphp.tumorotek.manager.impl.xml.LigneParagraphe;
 import fr.aphp.tumorotek.manager.impl.xml.LigneSimpleParagraphe;
 import fr.aphp.tumorotek.manager.impl.xml.ListeElement;
 import fr.aphp.tumorotek.manager.impl.xml.Paragraphe;
+import fr.aphp.tumorotek.manager.utilisateur.ProfilManager;
+import fr.aphp.tumorotek.manager.utilisateur.UtilisateurManager;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.code.CodeCommon;
 import fr.aphp.tumorotek.model.coeur.annotation.Catalogue;
@@ -103,11 +112,12 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.BanqueTableCodage;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Contexte;
-import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.systeme.Couleur;
 import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
+import fr.aphp.tumorotek.model.utilisateur.Profil;
 import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
+import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -179,7 +189,13 @@ public class FicheBanque extends AbstractFicheCombineController
 
    // utilisateurs
    private Group groupProfilUtilisateurs;
+   private Hlayout utilisateursArchiveLayout;
    private Grid gridProfilUtilisateur;
+   private Grid gridAjoutUtilisateur;
+   private Listbox listboxUtilisateurs;
+   private Listbox listboxProfils;
+   private BindingListModelSet<Utilisateur> utilisateursData;
+   private BindingListModelSet<Profil> profilsData;
 
    // conteneurs
    private Group groupConteneurs;
@@ -211,6 +227,7 @@ public class FicheBanque extends AbstractFicheCombineController
    private final List<Catalogue> selectedCatalogues = new ArrayList<>();
 
    private final List<ProfilUtilisateur> profilUtilisateurs = new ArrayList<>();
+   private final Set<Utilisateur> updatedUtilisateurs = new HashSet<>();
    private ProfilUtilisateurRowRenderer profilUtilisateurRowRenderer = new ProfilUtilisateurRowRenderer(false);
    private ServiceWithEtablissementRenderer serviceRenderer = new ServiceWithEtablissementRenderer();
 
@@ -270,10 +287,32 @@ public class FicheBanque extends AbstractFicheCombineController
       Executions.createComponents("/zuls/contexte/CodificationsAssociees.zul", codificationsAssociees, null);
       getCodificationsAssociees().setGroupHeader(groupCodifications);
 
-      Executions.createComponents("/zuls/contexte/CoulEntiteTypesAssociees.zul", coulTypesEchanWin, null);
-      Executions.createComponents("/zuls/contexte/CoulEntiteTypesAssociees.zul", coulTypesDeriveWin, null);
+      final Map<String, Object> coulTypesEchanArgs = new HashMap<String, Object>();
+      coulTypesEchanArgs.put("isEchantillonTyped", Boolean.TRUE);
+      Executions.createComponents("/zuls/contexte/CoulEntiteTypesAssociees.zul", coulTypesEchanWin, coulTypesEchanArgs);
+      
+      final Map<String, Object> coulTypesProdArgs = new HashMap<String, Object>();
+      coulTypesProdArgs.put("isEchantillonTyped", Boolean.FALSE);
+      Executions.createComponents("/zuls/contexte/CoulEntiteTypesAssociees.zul", coulTypesDeriveWin, coulTypesProdArgs);
+      
+      final ListitemRenderer<Utilisateur> utilisateurRenderer = (li, utilisateur, index) -> {
+         li.setValue(utilisateur);
+         li.setLabel(utilisateur.getLogin());
+      };
 
-      getCoulTypesProdDeriveAssociees().setEchantillonTyped(false);
+      final ListitemRenderer<Profil> profilRenderer = (li, profil, index) -> {
+         li.setValue(profil);
+         li.setLabel(profil.getNom());
+      };
+
+      listboxUtilisateurs.setItemRenderer(utilisateurRenderer);
+      listboxProfils.setItemRenderer(profilRenderer);
+
+      utilisateursData = new BindingListModelSet<>(new HashSet<Utilisateur>(), true);
+      profilsData = new BindingListModelSet<>(new HashSet<Profil>(), true);
+
+      utilisateursData.setMultiple(true);
+
       this.menuBar.setVisible(false);
 
       getBinder().loadAll();
@@ -286,6 +325,18 @@ public class FicheBanque extends AbstractFicheCombineController
       initAssociations();
 
       super.setObject(banque);
+
+      //initialisation de la liste des utilisateurs
+      final Set<Utilisateur> utilisateursPlateforme = new HashSet<>(ManagerLocator.getManager(UtilisateurManager.class)
+         .findByArchiveManager(false, Arrays.asList(SessionUtils.getCurrentPlateforme())));
+      utilisateursData.clear();
+      utilisateursData.addAll(utilisateursPlateforme);
+
+      //Initialisation de la liste des profils
+      final Set<Profil> profilsPlateforme = new HashSet<>(ManagerLocator.getManager(ProfilManager.class)
+         .findByPlateformeAndArchiveManager(SessionUtils.getCurrentPlateforme(), false));
+      profilsData.clear();
+      profilsData.addAll(profilsPlateforme);
 
       // applique eventuellement acces au bouton modification si
       // utilisateur est admin de la collection
@@ -355,8 +406,12 @@ public class FicheBanque extends AbstractFicheCombineController
 
       super.switchToCreateMode();
 
-      groupProfilUtilisateurs.setVisible(false);
-      gridProfilUtilisateur.setVisible(false);
+      profilUtilisateurRowRenderer.setEditMode(true);
+
+      utilisateursArchiveLayout.setVisible(false);
+      groupProfilUtilisateurs.setVisible(true);
+      gridAjoutUtilisateur.setVisible(true);
+      gridProfilUtilisateur.setVisible(true);
 
       // Initialisation du mode (listes, valeurs...)
       initEditableMode();
@@ -375,6 +430,8 @@ public class FicheBanque extends AbstractFicheCombineController
    public void switchToStaticMode(){
       super.switchToStaticMode(this.banque.equals(new Banque()));
 
+      profilUtilisateurRowRenderer.setEditMode(false);
+
       groupProfilUtilisateurs.setVisible(true);
       gridProfilUtilisateur.setVisible(true);
 
@@ -389,6 +446,9 @@ public class FicheBanque extends AbstractFicheCombineController
       getTablesEchanSorterController().switchToStaticMode();
       getTablesDeriveSorterController().switchToStaticMode();
       getTablesCessSorterController().switchToStaticMode();
+
+      //affiche le formulaire d'jout d'utilisateurs
+      gridAjoutUtilisateur.setVisible(false);
 
       if(this.banque.getBanqueId() == null){
          menuBar.setVisible(false);
@@ -405,7 +465,11 @@ public class FicheBanque extends AbstractFicheCombineController
 
    public void onLaterSwitch(){
       super.switchToEditMode();
+
       initEditableMode();
+
+      profilUtilisateurRowRenderer.setEditMode(true);
+
       getConteneursAssocies().switchToEditMode(true);
       getCodificationsAssociees().switchToEditMode(true);
       getCoulTypesEchanAssociees().switchToEditMode(true);
@@ -424,7 +488,9 @@ public class FicheBanque extends AbstractFicheCombineController
       // empeche modification contexte
       contexteLabel.setVisible(true);
       contexteBox.setVisible(false);
-      // checkCataCol.setVisible(false);
+
+      //affiche le formulaire d'jout d'utilisateurs
+      gridAjoutUtilisateur.setVisible(true);
 
       getBinder().loadComponent(self);
 
@@ -502,8 +568,8 @@ public class FicheBanque extends AbstractFicheCombineController
       ManagerLocator.getBanqueManager().createOrUpdateObjectManager(banque, SessionUtils.getPlateforme(sessionScope),
          selectedContexte, selectedService, selectedCollaborateur, selectedContact,
          ConteneurDecorator.extractConteneursFromDecos(conteneurs), codifications, tabsPat, tabsPrel, tabsEchan, tabsDerive,
-         tabsCess, coulTypes, selectedEchanCouleur, selectedDeriveCouleur, SessionUtils.getLoggedUser(sessionScope), "creation",
-         SessionUtils.getSystemBaseDir());
+         tabsCess, coulTypes, selectedEchanCouleur, selectedDeriveCouleur, SessionUtils.getLoggedUser(sessionScope),
+         updatedUtilisateurs, "creation", SessionUtils.getSystemBaseDir());
 
       // refresh??? sinon modif associations ne marche pas sur cet objet
       banque = ManagerLocator.getBanqueManager().findByIdManager(banque.getBanqueId());
@@ -529,7 +595,7 @@ public class FicheBanque extends AbstractFicheCombineController
    //		Clients.showBusy(null, true);
    //		Events.echoEvent("onLaterCancel", self, null);
    //	}
-   //	
+   //
    //	public void onLaterCancel() {
    //		clearData();
    //		super.onClick$cancelC();
@@ -721,6 +787,62 @@ public class FicheBanque extends AbstractFicheCombineController
       }
    }
 
+   /**
+    * Affecte un profil utilisateur sur la collection courante
+    * @param event
+    */
+   public void onClick$affecterProfilUtilisateur(){
+
+      final Set<Utilisateur> selectedUsers = utilisateursData.getSelection();
+
+      if(!selectedUsers.isEmpty() && !profilsData.getSelection().isEmpty()){
+         
+         final Profil selectedProfil = (Profil) listboxProfils.getSelectedItem().getValue();
+         
+         for(final Utilisateur user : selectedUsers){
+
+            final Optional<ProfilUtilisateur> optionalPu =
+               profilUtilisateurs.stream().filter(pu -> pu.getUtilisateur().equals(user)).findFirst();
+
+            final ProfilUtilisateur profilUtilisateur;
+            if(optionalPu.isPresent()){
+               profilUtilisateur = optionalPu.get();
+               //On retire l'ancien ProfilUtilisateur de l'utilisateur sur cette banque
+               //On ne peut pas faire une simple modification de l'existant car
+               //la clé primaire de ProfilUtilisateur est constituée de toutes ses colonnes...
+               user.getProfilUtilisateurs().remove(profilUtilisateur);
+            }else{
+               profilUtilisateur = new ProfilUtilisateur();
+               profilUtilisateur.setUtilisateur(user);
+               profilUtilisateur.setBanque(this.getBanque());
+               profilUtilisateurs.add(profilUtilisateur);
+            }
+
+            profilUtilisateur.setProfil(selectedProfil);
+            user.getProfilUtilisateurs().add(profilUtilisateur);
+
+            updatedUtilisateurs.add(user);
+
+         }
+         
+      }
+
+   }
+
+   public void onClickRemoveProfil(final Event event){
+
+      final ProfilUtilisateur profilUtilisateurToRemove = (ProfilUtilisateur) event.getData();
+      final Utilisateur user = profilUtilisateurToRemove.getUtilisateur();
+
+      user.getProfilUtilisateurs().remove(profilUtilisateurToRemove);
+      profilUtilisateurs.remove(profilUtilisateurToRemove);
+
+      updatedUtilisateurs.add(user);
+
+      getBinder().loadAttribute(gridProfilUtilisateur, "model");
+
+   }
+
    @Override
    public void setFieldsToUpperCase(){}
 
@@ -840,10 +962,6 @@ public class FicheBanque extends AbstractFicheCombineController
          }else if(tabs.get(i).getEntite().getNom().equals("ProdDerive")){
             tabsDerive.remove(tabs.get(i));
          }
-         // Aucune table de cession dans les catalogues
-         //		else if (tabs.get(i).getEntite().getNom().equals("Cession")) {
-         //			tabsCess.add(tabs.get(i));
-         //		}
       }
 
       // ajout catalogues
@@ -863,33 +981,18 @@ public class FicheBanque extends AbstractFicheCombineController
          }else if(tabs.get(i).getEntite().getNom().equals("ProdDerive")){
             tabsDerive.add(tabs.get(i));
          }
-         // Aucune table de cession dans les catalogues
-         //		else if (tabs.get(i).getEntite().getNom().equals("Cession")) {
-         //			tabsCess.add(tabs.get(i));
-         //		}
       }
-
-      // order tabs TableAnnotationBanque
-      // since 2.0.9
-      //		tabsPat.addAll(TableAnnotationDecorator
-      //				.undecorateListe(getTablesPatSorterController().getObjs()));
-      //		tabsPrel.addAll(TableAnnotationDecorator
-      //				.undecorateListe(getTablesPrelSorterController().getObjs()));
-      //		tabsEchan.addAll(TableAnnotationDecorator
-      //				.undecorateListe(getTablesEchanSorterController().getObjs()));
-      //		tabsDerive.addAll(TableAnnotationDecorator
-      //				.undecorateListe(getTablesDeriveSorterController().getObjs()));
-      //		tabsCess.addAll(TableAnnotationDecorator
-      //				.undecorateListe(getTablesCessSorterController().getObjs()));
 
       final List<CouleurEntiteType> coulTypes = new ArrayList<>();
       coulTypes.addAll(coulTypesEchan);
       coulTypes.addAll(coulTypesDerives);
 
+      coulTypes.forEach(ct -> ct.setBanque(banque));
+      
       ManagerLocator.getBanqueManager().createOrUpdateObjectManager(banque, null, selectedContexte, selectedService,
          selectedCollaborateur, selectedContact, ConteneurDecorator.extractConteneursFromDecos(conteneurs), codifications,
          tabsPat, tabsPrel, tabsEchan, tabsDerive, tabsCess, coulTypes, selectedEchanCouleur, selectedDeriveCouleur,
-         SessionUtils.getLoggedUser(sessionScope), "modification", null);
+         SessionUtils.getLoggedUser(sessionScope), updatedUtilisateurs, "modification", null);
 
       // update de la liste
       getObjectTabController().getListe().updateObjectGridList(banque);
@@ -973,6 +1076,7 @@ public class FicheBanque extends AbstractFicheCombineController
       catalogues.clear();
       selectedCatalogues.clear();
       profilUtilisateurs.clear();
+      updatedUtilisateurs.clear();
       tablesAnnoPat.clear();
       tablesAnnoPrel.clear();
       tablesAnnoEchan.clear();
@@ -1015,13 +1119,6 @@ public class FicheBanque extends AbstractFicheCombineController
             }
          }
 
-         /*if (this.banque.getProprietaire() != null
-         		&& services.contains(this.banque.getProprietaire())) {
-         		selectedService = this.banque.getProprietaire();
-         } else if (this.banque.getProprietaire() != null) {
-         	services.add(this.banque.getProprietaire());
-         	selectedService = this.banque.getProprietaire();
-         } */
          if(this.banque.getProprietaire() != null){
             selectedService = this.banque.getProprietaire();
 
@@ -1813,14 +1910,14 @@ public class FicheBanque extends AbstractFicheCombineController
       if(banque != null && banque.getEchantillonCouleur() != null){
          return Labels.getLabel("Couleur." + banque.getEchantillonCouleur().getCouleur());
       }
-         return null;
+      return null;
    }
 
    public String getProdDeriveCouleur(){
       if(banque != null && banque.getProdDeriveCouleur() != null){
          return Labels.getLabel("Couleur." + banque.getProdDeriveCouleur().getCouleur());
       }
-         return null;
+      return null;
    }
 
    /*************************************************************************/
@@ -1829,11 +1926,6 @@ public class FicheBanque extends AbstractFicheCombineController
    public void onSelect$contexteBox(){
       // validation
       if(selectedContexte != null && selectedContexte.getContexteId() != null){
-         // Pour le contexte BTO, le niveau Maladie est désactivé
-         if(EContexte.BTO.getNom().equals(selectedContexte.getNom())){
-            defMaladieBox.setDisabled(true);
-            defMaladieBox.setChecked(false);
-         }
          Clients.clearWrongValue(contexteBox);
       }else{
          Clients.scrollIntoView(contexteBox);
@@ -1879,7 +1971,8 @@ public class FicheBanque extends AbstractFicheCombineController
     */
    public void updateConteneurs(){
       if(this.banque != null && this.banque.getBanqueId() != null){
-         getConteneursAssocies().setObjects(ConteneurDecorator.decorateListe(ManagerLocator.getConteneurManager().findByBanqueWithOrderManager(banque), banque.getPlateforme()));
+         getConteneursAssocies().setObjects(ConteneurDecorator
+            .decorateListe(ManagerLocator.getConteneurManager().findByBanqueWithOrderManager(banque), banque.getPlateforme()));
       }
    }
 
@@ -2140,6 +2233,18 @@ public class FicheBanque extends AbstractFicheCombineController
       this.nomsServices = n;
    }
 
+   public BindingListModelSet<Utilisateur> getUtilisateursData(){
+      return utilisateursData;
+   }
+
+   public BindingListModelSet<Profil> getProfilsData(){
+      return profilsData;
+   }
+
+   public Hlayout getUtilisateursArchiveLayout(){
+      return utilisateursArchiveLayout;
+   }
+
    /**
     * Méthode appelée après la saisie d'une valeur dans le champ
     * codeDiagBox. Cette valeur sera mise en majuscules et une recherche
@@ -2181,4 +2286,19 @@ public class FicheBanque extends AbstractFicheCombineController
          }
       }
    }
+
+   /**
+    * Action déclenchée par le clic sur le bouton tout sélectionner
+    */
+   public void onClick$selectAllUsers(){
+      utilisateursData.setSelection(utilisateursData);
+   }
+
+   /**
+    * Action déclenchée par le clic sur le bouton tout sélectionner
+    */
+   public void onClick$unselectAllUsers(){
+      utilisateursData.clearSelection();
+   }
+
 }

@@ -3,222 +3,191 @@
 <!-- Spring namespace-based configuration -->
 
 <beans:beans xmlns="http://www.springframework.org/schema/security"
-	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:aop="http://www.springframework.org/schema/aop" 
-	xsi:schemaLocation="http://www.springframework.org/schema/beans
+             xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:aop="http://www.springframework.org/schema/aop"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 	       http://www.springframework.org/schema/aop   
 		   http://www.springframework.org/schema/aop/spring-aop-3.0.xsd                        
            http://www.springframework.org/schema/security
            http://www.springframework.org/schema/security/spring-security-3.2.xsd">
 
-	<!-- ====================================================== -->
-	<!--      For catching the @Secured annotation methods      -->
-	<!--                we use our own mechanism.               -->
-	<!--      Look in GFCBaseCtrl.java onEvent() method.        -->
-	<!-- ====================================================== -->
+    <!-- ====================================================== -->
+    <!--      For catching the @Secured annotation methods      -->
+    <!--                we use our own mechanism.               -->
+    <!--      Look in GFCBaseCtrl.java onEvent() method.        -->
+    <!-- ====================================================== -->
 
-	<!-- Enable the @Secured annotation to secure service layer methods -->
-	<global-method-security secured-annotations="disabled" />
+    <!-- Enable the @Secured annotation to secure service layer methods -->
+    <global-method-security secured-annotations="disabled"/>
 
-		<http>
+    <http>
 
-		<!-- ====================================================== -->
-		<!--       If we have our own LoginPage. So we must         -->
-		<!--         tell Spring the name and the place.            -->
-		<!--          In our case we take the same page             -->
-		<!--         for a error message by a failure.              -->
-		<!--      Further the page after a successfully login.      -->
-		<!-- ====================================================== -->
-		<form-login login-page="/login/login.zul"
-			always-use-default-target="false"
-			authentication-failure-url="/login/login.zul?errmes=login.error"
-			authentication-success-handler-ref="customRedirSuccessHandler"
-			default-target-url="/login/SelectBanque.zul"
-			login-processing-url="/login/j_spring_security_check" />
-			
-			
+        <!-- ====================================================== -->
+        <!--       If we have our own LoginPage. So we must         -->
+        <!--         tell Spring the name and the place.            -->
+        <!--          In our case we take the same page             -->
+        <!--         for a error message by a failure.              -->
+        <!--      Further the page after a successfully login.      -->
+        <!-- ====================================================== -->
+        <form-login login-page="/login/login.zul"
+                    always-use-default-target="false"
+                    authentication-failure-url="/login/login.zul?errmes=login.error"
+                    authentication-success-handler-ref="customRedirSuccessHandler"
+                    default-target-url="/login/SelectBanque.zul"
+                    login-processing-url="/login/j_spring_security_check"/>
 
-		<!-- ====================================================== -->
-		<!--        Tell Spring where it goes after logout.         -->
-		<!--              logout-url is a action url.               -->
-		<!-- ====================================================== -->
-		 <logout logout-url="/j_spring_security_logout" logout-success-url="/login/login.zul" />
 
-		<!-- ====================================================== -->
-		<!--      Define the pages that are to be intercepted       -->
-		<!--       It is parsed from top to bottom. Means that      -->
-		<!--      the most specific pattern is standing on TOP      -->
-		<!--            and the CATCH ALL is on BOTTOM!             -->
-		<!-- ====================================================== -->
-		<!-- <intercept-url pattern="/zk/**" access="IS_AUTHENTICATED_ANONYMOUSLY" /> -->
-		<intercept-url pattern="/zuls/code/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-		<intercept-url pattern="/zuls/**" access="IS_AUTHENTICATED_REMEMBERED" />
-		<intercept-url pattern="/ext/**" access="IS_AUTHENTICATED_REMEMBERED" />		
+        <!-- ====================================================== -->
+        <!--        Tell Spring where it goes after logout.         -->
+        <!--              logout-url is a action url.               -->
+        <!-- ====================================================== -->
+        <logout logout-url="/j_spring_security_logout" logout-success-url="/login/login.zul"/>
 
-		<!-- ====================================================== -->
-		<!--      The root page is accessible by everyone but       -->
-		<!--           internally spring makes a login and          -->
-		<!--            this user becames a UserDetails             -->
-		<!--       (in there are the ip-address and others)         -->
-		<!-- ====================================================== -->
-		<intercept-url pattern="/login/login.zul" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-		<intercept-url pattern="/login/SelectBanque.zul" access="IS_AUTHENTICATED_REMEMBERED" />
+        <!-- ====================================================== -->
+        <!--      Define the pages that are to be intercepted       -->
+        <!--       It is parsed from top to bottom. Means that      -->
+        <!--      the most specific pattern is standing on TOP      -->
+        <!--            and the CATCH ALL is on BOTTOM!             -->
+        <!-- ====================================================== -->
+        <!-- <intercept-url pattern="/zk/**" access="IS_AUTHENTICATED_ANONYMOUSLY" /> -->
+        <intercept-url pattern="/zuls/code/**" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/zuls/**" access="IS_AUTHENTICATED_REMEMBERED"/>
+        <intercept-url pattern="/ext/**" access="IS_AUTHENTICATED_REMEMBERED"/>
 
-		<!-- ====================================================== -->
-		<!--                 Per user one session !!                -->
-		<!--               In DEMO mode we set it to 5              -->
-		<!-- 													    -->
-		<!-- En ajoutant cette ligne, le nouvel utilisateur sera    -->
-		<!-- bloqué à la connexion, sinon il éjectera l'autre user  -->
-		<!--error-if-maximum-exceeded="true"                        -->
-		<!-- ====================================================== -->
-		<!--  tomcat 8 servlet 3.1 fix -->
-		<session-management session-fixation-protection="migrateSession"> 
-	        <concurrency-control max-sessions="1" 
-	        	error-if-maximum-exceeded="true" />
-	    </session-management>
+        <!-- ====================================================== -->
+        <!--      The root page is accessible by everyone but       -->
+        <!--           internally spring makes a login and          -->
+        <!--            this user becames a UserDetails             -->
+        <!--       (in there are the ip-address and others)         -->
+        <!-- ====================================================== -->
+        <intercept-url pattern="/login/login.zul" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+        <intercept-url pattern="/login/SelectBanque.zul" access="IS_AUTHENTICATED_REMEMBERED"/>
 
-	</http>
+        <!-- ====================================================== -->
+        <!--                 Per user one session !!                -->
+        <!--               In DEMO mode we set it to 5              -->
+        <!-- 													    -->
+        <!-- En ajoutant cette ligne, le nouvel utilisateur sera    -->
+        <!-- bloqué à la connexion, sinon il éjectera l'autre user  -->
+        <!--error-if-maximum-exceeded="true"                        -->
+        <!-- ====================================================== -->
+        <!--  tomcat 8 servlet 3.1 fix -->
+        <session-management session-fixation-protection="migrateSession">
+            <concurrency-control max-sessions="1" error-if-maximum-exceeded="true"/>
+        </session-management>
 
-	<!-- ====================================================== -->
-	<!--     We define the kind of authentification with a      -->
-	<!--           so called authentication-provider            -->
-	<!--        We use the DAO authenticationProvider.          -->
-	<!--     We coded out a custom UserDetailServiceImpl.       -->
-	<!--     So we have our users stored in a DB we use         -->
-	<!--     our own user-service class and point to her.       -->
-	<!-- ====================================================== -->
-	<authentication-manager>
-		<!-- <ldap-authentication-provider user-dn-pattern="uid={0}"/>	-->
-		<!-- <authentication-provider ref="ldapActiveDirectoryAuthProvider" /> -->
-	
-<!-- 		<authentication-provider> -->
-<!-- 			<password-encoder hash="md5"/>   -->
-			<!-- <password-encoder ref="passwordEncoder"/> -->
-<!-- 		   users-by-username-query=" -->
-<!-- 		      select login, password, 'true' as enabled  -->
-<!-- 		      	from UTILISATEUR where login=? and archive=0"  -->
-		      	
-<!-- 		   authorities-by-username-query="select login, 'ROLE_USER' from UTILISATEUR  -->
-<!-- 		   	where login=?"     	 -->
-<!-- 		     /> -->
-<!-- 	   </authentication-provider> -->
-		<authentication-provider user-service-ref="customUserDetailsService">
-			<password-encoder hash="md5"/>
-		</authentication-provider>
-		
-	</authentication-manager>
-	
-	<beans:bean id="contextSource" class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
+    </http>
+
+    <!-- ====================================================== -->
+    <!--     We define the kind of authentification with a      -->
+    <!--           so called authentication-provider            -->
+    <!--        We use the DAO authenticationProvider.          -->
+    <!--     We coded out a custom UserDetailServiceImpl.       -->
+    <!--     So we have our users stored in a DB we use         -->
+    <!--     our own user-service class and point to her.       -->
+    <!-- ====================================================== -->
+    <authentication-manager>
+
+		<!-- N.B. : L'ordre des authentication-provider est l'ordre dans lequel ils sont utilisés. 
+		Si l'autentification échoue avec le premier on tente avec le 2ème puis le 3ème, etc. -->
+
+		<!-- Authentification par LDAP -->
+        <authentication-provider ref="ldapActiveDirectoryAuthProvider"/>
+
+		<!-- Authentification par la base de données -->
+        <authentication-provider user-service-ref="customUserDetailsService">
+            <password-encoder hash="md5"/>
+        </authentication-provider>
+        
+    </authentication-manager>
+
+	<!-- Configuration du LDAP -->
+    <beans:bean id="contextSource" class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
+        <beans:constructor-arg value="${activedirectory.url#ldap://127.0.0.1:389/dc=sls,dc=aphp,dc=fr}" />
+        <beans:property name="userDn" value="${ldap.userdn#cn=admin,ou=Groupes et user applicatifs,dc=sls,dc=aphp,dc=fr}"/>
+        <beans:property name="password" value="${ldap.password#*****}"/>
+    </beans:bean>
+
+	<beans:bean id="ldapActiveDirectoryAuthProvider" class="fr.aphp.tumorotek.action.CustomLdapProvider">
 		<beans:constructor-arg>
-			<beans:bean class="org.springframework.jndi.JndiObjectFactoryBean">
- 				<beans:property name="jndiName" value="java:comp/env/activedirectory/url" />
- 				<beans:property name="defaultObject" value="ldap://127.0.0.1:389/dc=sls,dc=aphp,dc=fr" />
- 			</beans:bean>
-		</beans:constructor-arg>
-		<beans:property name="userDn">
-			<beans:bean class="org.springframework.jndi.JndiObjectFactoryBean">
- 				<beans:property name="jndiName" value="java:comp/env/ldap/userDn" />
- 				<beans:property name="defaultObject" value="cn=admin,ou=Groupes et user applicatifs,dc=sls,dc=aphp,dc=fr" />
- 			</beans:bean>
-		</beans:property>
-		<beans:property name="password">
-			<beans:bean class="org.springframework.jndi.JndiObjectFactoryBean">
- 				<beans:property name="jndiName" value="java:comp/env/ldap/userPass" />
- 				<beans:property name="defaultObject" value="******" />
- 			</beans:bean>
- 		</beans:property>
- 	</beans:bean>
- 
-	<beans:bean id="ldapActiveDirectoryAuthProvider" class="org.springframework.security.ldap.authentication.LdapAuthenticationProvider">
-		<beans:constructor-arg>
-			<beans:bean class="org.springframework.security.ldap.authentication.BindAuthenticator">
-				<beans:constructor-arg ref="contextSource"/>
-					<beans:property name="userSearch">
-						<beans:bean id="userSearch" class="org.springframework.security.ldap.search.FilterBasedLdapUserSearch">
-							<beans:constructor-arg index="0" value=""/>
-							<beans:constructor-arg index="1" value="(sAMAccountName={0})"/>
-							<beans:constructor-arg index="2" ref="contextSource" />
-							<beans:property name="searchSubtree" value="true" />
-						</beans:bean>    
-					</beans:property>
-				</beans:bean>		
-		</beans:constructor-arg>
-	</beans:bean>
-		
-	<beans:bean id="tdrUserDetailsContextMapper" class="fr.aphp.tumorotek.action.UserDetailsContextMapperImpl"/>
-	
-<!-- 	<beans:bean id="ldapUrl" class="org.springframework.jndi.JndiObjectFactoryBean"> -->
-<!-- 		<beans:property name="jndiName" value="java:comp/env/ldap/url" /> -->
-<!-- 		<beans:property name="expectedType" value="java.lang.String" /> -->
-<!-- 		<beans:property name="defaultObject" value="ldap://127.0.0.1:389/dc=sls,dc=aphp,dc=fr" /> -->
-<!-- 	</beans:bean> -->
- 	
-	
-<!-- 	<ldap-server url="#{ldapUrl}" /> -->
+            <beans:bean class="org.springframework.security.ldap.authentication.BindAuthenticator">
+                <beans:constructor-arg ref="contextSource"/>
+                <beans:property name="userSearch">
+                    <beans:bean id="userSearch" class="org.springframework.security.ldap.search.FilterBasedLdapUserSearch">
+                        <beans:constructor-arg index="0" value=""/>
+                        <beans:constructor-arg index="1" value="(sAMAccountName={0})"/>
+                        <beans:constructor-arg index="2" ref="contextSource"/>
+                        <beans:property name="searchSubtree" value="true"/>
+                    </beans:bean>
+                </beans:property>
+            </beans:bean>
+        </beans:constructor-arg>
+    </beans:bean>
 
-	<!-- ====================================================== -->
-	<!--           The Implementation of the Interface          -->
-	<!--           UserDetailService for the logged in          -->
-	<!--                    user and his rights                 -->
-	<!-- ====================================================== -->
-	<beans:bean id="customUserDetailsService" class="fr.aphp.tumorotek.action.MyUserDetailsService">
-		<beans:property name="dataSource" ref="dataSource" />
-	</beans:bean>
+    <beans:bean id="tdrUserDetailsContextMapper" class="fr.aphp.tumorotek.action.UserDetailsContextMapperImpl"/>
 
-	<!-- ====================================================== -->
-	<!--          The Password Encoder who works in the         -->
-	<!--             one-time-password mechanism.               -->
-	<!-- ====================================================== -->
-	<beans:bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder">
-	</beans:bean>
+    <!-- ====================================================== -->
+    <!--           The Implementation of the Interface          -->
+    <!--           UserDetailService for the logged in          -->
+    <!--                    user and his rights                 -->
+    <!-- ====================================================== -->
+    <beans:bean id="customUserDetailsService" class="fr.aphp.tumorotek.action.MyUserDetailsService">
+        <beans:property name="dataSource" ref="dataSource"/>
+    </beans:bean>
 
-	<!-- ====================================================== -->
-	<!--         Here, only for showing in the console          -->
-	<!--               that we can catches the events.          -->
-	<!-- ====================================================== -->
-<!--	<zksp:zk-event login-template-close-delay="5">-->
-<!--		<zksp:intercept-event path="//**/btn_*" event="onClick"-->
-<!--			access="IS_AUTHENTICATED_REMEMBERED" />-->
-<!--		<zksp:intercept-event path="/**" event="onClick"-->
-<!--			access="IS_AUTHENTICATED_ANONYMOUSLY" />-->
-<!---->
-<!--		<zksp:intercept-event path="//**/window_BranchesList/listBoxBranch"-->
-<!--			event="onClick" access="IS_AUTHENTICATED_ANONYMOUSLY" />-->
-<!--		<zksp:intercept-event path="//**/window_BranchesList/listBoxBranch"-->
-<!--			event="onDoubleClick" access="IS_AUTHENTICATED_REMEMBERED" />-->
-<!--	</zksp:zk-event>-->
+    <!-- ====================================================== -->
+    <!--          The Password Encoder who works in the         -->
+    <!--             one-time-password mechanism.               -->
+    <!-- ====================================================== -->
+    <beans:bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder">
+    </beans:bean>
+
+    <!-- ====================================================== -->
+    <!--         Here, only for showing in the console          -->
+    <!--               that we can catches the events.          -->
+    <!-- ====================================================== -->
+    <!--	<zksp:zk-event login-template-close-delay="5">-->
+    <!--		<zksp:intercept-event path="//**/btn_*" event="onClick"-->
+    <!--			access="IS_AUTHENTICATED_REMEMBERED" />-->
+    <!--		<zksp:intercept-event path="/**" event="onClick"-->
+    <!--			access="IS_AUTHENTICATED_ANONYMOUSLY" />-->
+    <!---->
+    <!--		<zksp:intercept-event path="//**/window_BranchesList/listBoxBranch"-->
+    <!--			event="onClick" access="IS_AUTHENTICATED_ANONYMOUSLY" />-->
+    <!--		<zksp:intercept-event path="//**/window_BranchesList/listBoxBranch"-->
+    <!--			event="onDoubleClick" access="IS_AUTHENTICATED_REMEMBERED" />-->
+    <!--	</zksp:zk-event>-->
 
 
-	<!-- ====================================================== -->
-	<!--       This ASPECT calls automatically the method       -->
-	<!--      'loginLogging' which is for writing a log for     -->
-	<!--        all successfully and failed logins, if a        -->
-	<!--         method is called that handles the              -->
-	<!--                     Authentication.                    -->
-	<!-- ====================================================== -->
-	<!-- <beans:bean id="LoginLoggingPolicyService"
-		class="de.forsthaus.policy.LoginLoggingPolicyService">
-		<beans:property name="guiLoginLoggingPolicService" ref="guiLoginLoggingPolicService" />
-	</beans:bean>
+    <!-- ====================================================== -->
+    <!--       This ASPECT calls automatically the method       -->
+    <!--      'loginLogging' which is for writing a log for     -->
+    <!--        all successfully and failed logins, if a        -->
+    <!--         method is called that handles the              -->
+    <!--                     Authentication.                    -->
+    <!-- ====================================================== -->
+    <!-- <beans:bean id="LoginLoggingPolicyService"
+        class="de.forsthaus.policy.LoginLoggingPolicyService">
+        <beans:property name="guiLoginLoggingPolicService" ref="guiLoginLoggingPolicService" />
+    </beans:bean>
 
-	<aop:config>
-		<aop:aspect id="LoginLoggingAspect" ref="LoginLoggingPolicyService">
-			<aop:pointcut id="authPointcut"
-				expression="execution(public org.springframework.security.core.Authentication org.springframework.security.authentication.AuthenticationProvider.authenticate(org.springframework.security.core.Authentication))" />
-			<aop:around pointcut-ref="authPointcut" method="loginLogging" />
-		</aop:aspect>
-	</aop:config>-->
-	
-	<!-- ====================================================== -->
-	<!--       Redirect Strategy				                -->
-	<!-- ====================================================== -->
-	<beans:bean id="customSuccessRedirStrategy" 
-			class="fr.aphp.tumorotek.action.CustomSuccessRedirection" />
-			
-	<beans:bean id="customRedirSuccessHandler" 
-		class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler">
-   		<beans:property name="redirectStrategy" ref="customSuccessRedirStrategy" />
-	</beans:bean>
+    <aop:config>
+        <aop:aspect id="LoginLoggingAspect" ref="LoginLoggingPolicyService">
+            <aop:pointcut id="authPointcut"
+                expression="execution(public org.springframework.security.core.Authentication org.springframework.security.authentication.AuthenticationProvider.authenticate(org.springframework.security.core.Authentication))" />
+            <aop:around pointcut-ref="authPointcut" method="loginLogging" />
+        </aop:aspect>
+    </aop:config>-->
+
+    <!-- ====================================================== -->
+    <!--       Redirect Strategy				                -->
+    <!-- ====================================================== -->
+    <beans:bean id="customSuccessRedirStrategy"
+                class="fr.aphp.tumorotek.action.CustomSuccessRedirection"/>
+
+    <beans:bean id="customRedirSuccessHandler"
+                class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler">
+        <beans:property name="redirectStrategy" ref="customSuccessRedirStrategy"/>
+    </beans:bean>
 </beans:beans>

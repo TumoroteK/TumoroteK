@@ -96,7 +96,6 @@ import fr.aphp.tumorotek.manager.qualite.ObjetNonConformeManager;
 import fr.aphp.tumorotek.manager.qualite.OperationManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
-import fr.aphp.tumorotek.model.TKValidableObject;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
@@ -1419,10 +1418,6 @@ public class PrelevementManagerImpl implements PrelevementManager
 		   //Suppression du délégué si la banque de destination n'est pas dans le même contexte que la banque d'origine
 		   if(!bank.getContexte().equals(prel.getBanque().getContexte())){
 			   prel.setDelegate(null);
-		   }
-		   //Si la banque de destination est dans le même contexte que la banque d'origine, on garde le délégué mais on supprime la validation le cas échéant
-		   else if(prel.getDelegate() instanceof TKValidableObject) {
-			   ((TKValidableObject)prel.getDelegate()).setDetailValidation(null);
 		   }
 
 		   prel.setBanque(bank);

@@ -40,15 +40,20 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
@@ -76,7 +81,6 @@ import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Constraint;
-import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
@@ -90,17 +94,27 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
+import org.zkoss.zul.impl.InputElement;
 
 import fr.aphp.tumorotek.action.CustomSimpleListModel;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.stockage.StockageController;
+import fr.aphp.tumorotek.component.CalendarBox;
+import fr.aphp.tumorotek.component.ValeurDecimaleModale;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.manager.coeur.cession.CederObjetManager;
+import fr.aphp.tumorotek.manager.coeur.cession.RetourManager;
+import fr.aphp.tumorotek.manager.coeur.echantillon.EchantillonManager;
+import fr.aphp.tumorotek.manager.coeur.prelevement.PrelevementManager;
+import fr.aphp.tumorotek.manager.coeur.prodderive.ProdDeriveManager;
 import fr.aphp.tumorotek.manager.exception.DeriveBatchSaveException;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.EmplacementDoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.manager.helper.FileBatch;
 import fr.aphp.tumorotek.manager.impl.xml.BoiteImpression;
+import fr.aphp.tumorotek.manager.qualite.ObjetNonConformeManager;
+import fr.aphp.tumorotek.manager.qualite.OperationTypeManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.exception.ValidationException;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
@@ -115,6 +129,7 @@ import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.coeur.prodderive.Transformation;
+import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.interfacage.scan.ScanTerminale;
 import fr.aphp.tumorotek.model.qualite.OperationType;
@@ -123,7 +138,6 @@ import fr.aphp.tumorotek.model.stockage.Emplacement;
 import fr.aphp.tumorotek.model.stockage.Enceinte;
 import fr.aphp.tumorotek.model.stockage.Terminale;
 import fr.aphp.tumorotek.model.systeme.Entite;
-import fr.aphp.tumorotek.utils.Utils;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -181,7 +195,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    private Integer dernierCode;
    private String premiereLettre;
    private String derniereLettre;
-   private List<String> lettres = new ArrayList<>();
+   //   private List<String> lettres = new ArrayList<>();
    private boolean selectParent = false;
    private Date dateSortie;
 
@@ -209,7 +223,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
       stockageDerives.setVisible(getDroitOnAction("Stockage", "Consultation"));
 
-      lettres = Utils.createListChars(26, null, new ArrayList<String>());
+      //      lettres = Utils.createListChars(26, null, new ArrayList<String>());
 
       getBinder().loadAll();
    }
@@ -280,6 +294,8 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
       boolean ok = false;
 
+      //      codesParentBoxDerive.getValue();
+
       if(addedProdDerives.size() == 0){
          if(Messagebox.show(Labels.getLabel("message.noDeriveAdded"), Labels.getLabel("message.save.title"),
             Messagebox.YES | Messagebox.NO, Messagebox.QUESTION) == Messagebox.YES){
@@ -318,7 +334,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          if(prodDeriveFromRetourCession){
             this.objetRetourCession.getProduitRetourList().addAll(this.addedProdDerives.get(0));
             this.objetRetourCession.setStatut(ECederObjetStatut.TRAITE);
-            ManagerLocator.getCederObjetManager().updateObjectManager(this.objetRetourCession,
+            ManagerLocator.getManager(CederObjetManager.class).updateObjectManager(this.objetRetourCession,
                this.objetRetourCession.getCession(), this.objetRetourCession.getEntite(),
                this.objetRetourCession.getQuantiteUnite());
          }
@@ -337,7 +353,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
             list.add((TKStockableObject) getParentObject());
 
             proposeRetoursCreation(list, oldEmps, dateSortie, null, getTransformation(), null,
-               ManagerLocator.getOperationTypeManager().findByNomLikeManager("Creation", true).get(0),
+               ManagerLocator.getManager(OperationTypeManager.class).findByNomLikeManager("Creation", true).get(0),
                Labels.getLabel("ficheRetour.observations.derives"), getSelectedCollaborateur());
          }
          return true;
@@ -366,7 +382,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    }
 
    @Override
-   public void createNewObject(){ //TODO Refactorer
+   public void createNewObject(){
 
       final DefaultTransactionDefinition def = new DefaultTransactionDefinition();
       def.setName("updatePrelAndEchansTx");
@@ -388,86 +404,25 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          }
 
          ObjetStatut statut = null;
-         if(getTypeParent().equals("Echantillon")){
+         if("Echantillon".equals(getTypeParent())){
             statut = prepareUpdateParentEchantillon();
-         }else if(getTypeParent().equals("ProdDerive")){
+         }else if("ProdDerive".equals(getTypeParent())){
             statut = prepareUpdateParentProduitDerive();
          }
 
-         // validation retour si epuisement
-         // ou si retour incomplet
-         transfoRetour = null;
-         if(getTypeParent().equals("Echantillon") || getTypeParent().equals("ProdDerive")){
-
-            final Calendar dateS = Calendar.getInstance();
-            if(dateSortie != null){
-               dateS.setTime(dateSortie);
-            }
-
-            final List<Integer> id = new ArrayList<>();
-            id.add(((TKStockableObject) getParentObject()).listableObjectId());
-            final List<Retour> rets =
-               ManagerLocator.getRetourManager().findByObjectDateRetourEmptyManager(id, getTransformation().getEntite());
-            if(!rets.isEmpty()){
-               transfoRetour = rets.get(0);
-            }
-
-            if(null != statut && statut.getStatut().equals("EPUISE")){
-               if(transfoRetour == null){
-                  transfoRetour = new Retour();
-                  transfoRetour.setDateSortie(dateS);
-                  //finalRetour.setDateRetour(Utils.getCurrentSystemCalendar());
-                  // température arbitraire
-                  transfoRetour.setTempMoyenne(new Float(20.0));
-                  transfoRetour.setObjetId(((TKStockableObject) getParentObject()).listableObjectId());
-                  transfoRetour.setEntite(entite);
-               }else{
-                  transfoRetour.setObjetStatut(null);
-               }
-               transfoRetour.setObservations(Labels.getLabel("ficheRetour.observations.derives") + " "
-                  + Labels.getLabel("ficheRetour.observations.epuisement"));
-
-            }else{ // complete le retour existant
-               if(transfoRetour != null){
-                  transfoRetour.setDateRetour(dateS);
-                  statut = transfoRetour.getObjetStatut();
-                  transfoRetour.setObjetStatut(null);
-               }
-            }
-            if(transfoRetour != null){
-               BeanValidator.validateObject(transfoRetour, new Validator[] {ManagerLocator.getRetourValidator()});
-            }
-         }
+         // validation retour
+         transfoRetour = validerEtCreerRetour(entite, statut);
 
          for(int i = 0; i < addedProdDerives.size(); i++){
 
-            ManagerLocator.getProdDeriveManager().createDeriveListWithAnnotsManager(addedProdDerives.get(i), getBanque(),
-               getTransformation(), SessionUtils.getLoggedUser(sessionScope),
-               //	getObjectTabController().getFicheAnnotation()
-               //							.getValeursToCreateOrUpdate(),
-               annoBatches.get(i), SessionUtils.getSystemBaseDir(), null, null);
+            ManagerLocator.getManager(ProdDeriveManager.class).createDeriveListWithAnnotsManager(addedProdDerives.get(i),
+               getBanque(), getTransformation(), SessionUtils.getLoggedUser(sessionScope), annoBatches.get(i),
+               SessionUtils.getSystemBaseDir(), null, null);
          }
 
          saveEmplacements();
 
-         for(int i = 0; i < prodDerivesDecorated.size(); i++){
-            if(prodDerivesDecorated.get(i).getProdDerive().getConformeTraitement() != null
-               && !prodDerivesDecorated.get(i).getProdDerive().getConformeTraitement()){
-               // enregistrement de la non conformité
-               // après traitement
-               ManagerLocator.getObjetNonConformeManager().createUpdateOrRemoveListObjectManager(
-                  prodDerivesDecorated.get(i).getProdDerive(), prodDerivesDecorated.get(i).getNonConformiteTraitements(),
-                  "Traitement");
-            }
-
-            if(prodDerivesDecorated.get(i).getProdDerive().getConformeCession() != null
-               && !prodDerivesDecorated.get(i).getProdDerive().getConformeCession()){
-               // enregistrement de la non conformité
-               // à la cession
-               ManagerLocator.getObjetNonConformeManager().createUpdateOrRemoveListObjectManager(
-                  prodDerivesDecorated.get(i).getProdDerive(), prodDerivesDecorated.get(i).getNonConformiteCessions(), "Cession");
-            }
-         }
+         creerNonConformites(prodDerivesDecorated);
 
          // annotation file batches
          for(final FileBatch batch : batches){
@@ -476,27 +431,20 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
                SessionUtils.getSystemBaseDir(), filesCreated);
          }
 
-         // statut EPUISE --> creation retours automatique
-         if(transfoRetour != null){
-            // passage temporaire au statut NON STOCKE
-            // afin que ce statut soit enregistré dans le retour correspondant
-            // à l'épuisement de l'échantillon
-            ((TKStockableObject) getParentObject())
-               .setObjetStatut(ManagerLocator.getObjetStatutManager().findByStatutLikeManager("NON STOCKE", true).get(0));
-
-            ManagerLocator.getRetourManager().createOrUpdateObjectManager(transfoRetour, (TKStockableObject) getParentObject(),
-               getOldEmplacement(), null, null, getTransformation(), null, SessionUtils.getLoggedUser(sessionScope), "creation");
-
-         }
-
          // s'il n'y a pas d'erreurs, on met à jour le parent : modif
          // de sa quantité et de son volume
-         if(getTypeParent().equals("Prelevement")){
-            updateParentPrelevement();
-         }else if(getTypeParent().equals("Echantillon")){
-            updateParentEchantillon(statut);
-         }else if(getTypeParent().equals("ProdDerive")){
-            updateParentProduitDerive(statut);
+         switch(getTypeParent()){
+            case "Prelevement":
+               updateParentPrelevement();
+               break;
+            case "Echantillon":
+               updateParentEchantillon(statut);
+               break;
+            case "ProdDerive":
+               updateParentProduitDerive(statut);
+               break;
+            default:
+               break;
          }
 
       }catch(final RuntimeException re){
@@ -542,6 +490,119 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       ManagerLocator.getTxManager().commit(status);
 
       createFileHtmlToPrint();
+   }
+
+   /**
+    * Valide et crée un retour de transformation
+    * @param statut statut de l'objet parent 
+    * @param entite entité
+    */
+   private Retour validerEtCreerRetour(Entite entite, ObjetStatut statut){
+
+      Retour res = null;
+
+      if("Echantillon".equals(getTypeParent()) || "ProdDerive".equals(getTypeParent())){
+
+         final boolean epuise = "EPUISE".equals(statut.getStatut());
+
+         final Calendar dateS = Calendar.getInstance();
+         if(dateSortie != null){
+            dateS.setTime(dateSortie);
+         }
+
+         final List<Integer> id = new ArrayList<>();
+         id.add(((TKStockableObject) getParentObject()).listableObjectId());
+         final List<Retour> rets = ManagerLocator.getManager(RetourManager.class).findByObjectDateRetourEmptyManager(id,
+            getTransformation().getEntite());
+
+         final Retour epuisement;
+         if(!rets.isEmpty()){
+            epuisement = rets.get(0);
+         }else if(epuise){
+            epuisement = new Retour();
+         }else{
+            epuisement = null;
+         }
+
+         if(epuise){
+
+            //Si le Retour ne provient pas de la base
+            if(epuisement.getRetourId() == null){
+
+               Clients.clearBusy();
+               ValeurDecimaleModale.show(Labels.getLabel("listeRetour.title"), Labels.getLabel("Champ.Retour.TempMoyenne"), 20f,
+                  false, evt -> epuisement.setTempMoyenne((Float) evt.getData()));
+               Clients.showBusy(Labels.getLabel(getWaitLabel()));
+
+               epuisement.setDateSortie(dateS);
+
+               epuisement.setObjetId(((TKStockableObject) getParentObject()).listableObjectId());
+               epuisement.setEntite(entite);
+            }else{
+               epuisement.setObjetStatut(null);
+            }
+            epuisement.setObservations(Labels.getLabel("ficheRetour.observations.derives") + " "
+               + Labels.getLabel("ficheRetour.observations.epuisement"));
+
+         }else{
+            // complete le retour existant
+            if(epuisement != null){
+               epuisement.setDateRetour(dateS);
+               statut = epuisement.getObjetStatut();
+               epuisement.setObjetStatut(null);
+            }
+         }
+         if(epuisement != null){
+            BeanValidator.validateObject(epuisement, new Validator[] {ManagerLocator.getRetourValidator()});
+         }
+
+         if(epuisement != null){
+            // passage temporaire au statut NON STOCKE
+            // afin que ce statut soit enregistré dans le retour correspondant
+            // à l'épuisement de l'échantillon
+            ((TKStockableObject) getParentObject())
+            .setObjetStatut(ManagerLocator.getObjetStatutManager().findByStatutLikeManager("NON STOCKE", true).get(0));
+
+            ManagerLocator.getManager(RetourManager.class).createOrUpdateObjectManager(epuisement,
+               (TKStockableObject) getParentObject(), getOldEmplacement(), null, null, getTransformation(), null,
+               SessionUtils.getLoggedUser(sessionScope), "creation");
+
+         }
+
+         res = epuisement;
+
+      }
+
+      return res;
+
+   }
+
+   /**
+    * Crée les non conformités pour une liste de produits dérivés décorés
+    * @param listDecoratedDerives liste de produits dérivés décorés
+    */
+   private void creerNonConformites(final List<ProdDeriveDecorator2> listDecoratedDerives){
+
+      for(final ProdDeriveDecorator2 prodDeriveDecorator : listDecoratedDerives){
+
+         final ProdDerive decoratedDerive = prodDeriveDecorator.getProdDerive();
+
+         //Conforme si le booléen est true ou null
+         final Boolean conformeTraitement = Optional.ofNullable(decoratedDerive.getConformeTraitement()).orElse(true);
+         final Boolean conformeCession = Optional.ofNullable(decoratedDerive.getConformeCession()).orElse(true);
+
+         if(!conformeTraitement){
+            ManagerLocator.getManager(ObjetNonConformeManager.class).createUpdateOrRemoveListObjectManager(decoratedDerive,
+               prodDeriveDecorator.getNonConformiteTraitements(), "Traitement");
+         }
+
+         if(!conformeCession){
+            ManagerLocator.getManager(ObjetNonConformeManager.class).createUpdateOrRemoveListObjectManager(decoratedDerive,
+               prodDeriveDecorator.getNonConformiteCessions(), "Cession");
+         }
+
+      }
+
    }
 
    @Override
@@ -612,7 +673,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          // si le dérivé existait déjà, on MAJ sa fiche
          // dans la liste des dérivés
          for(final List<ProdDerive> derives : addedProdDerives){
-            if(!derives.contains(deco)){
+            if(!derives.contains(deco.getProdDerive())){
                // on vérifie que l'on retrouve bien la
                // page contenant la liste
                // des dérivés
@@ -685,7 +746,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
                   }
                   // ajout des instructions à la boite
                   instructions
-                     .add(ObjectTypesFormatters.getLabel("impression.boite.instruction.terminale", new String[] {term.getNom()}));
+                  .add(ObjectTypesFormatters.getLabel("impression.boite.instruction.terminale", new String[] {term.getNom()}));
                   instructions.add(Labels.getLabel("impression.boite.instruction" + ".stockage.prodDerives"));
                   newBi.setInstructions(instructions);
 
@@ -789,10 +850,13 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
     * sauvegardés) et ajoutés à la liste.
     * @param Event : clic sur le lien addProdDerives.
     */
-   public void onClick$addProdDerives(){ //TODO Refactorer
+   public void onClick$addProdDerives(){
+
       try{
-         onBlur$dateStockCalBox();
-         onBlur$dateTransfoCalBox();
+         
+         validateCalendarBox(dateStockCalBox);
+         validateCalendarBox(dateTransfoCalBox);
+         
          if(getSelectedType() == null){
             Clients.scrollIntoView(typesBoxDerive);
             throw new WrongValueException(typesBoxDerive, Labels.getLabel("ficheProdDerive.error.type"));
@@ -800,7 +864,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
          // si le dérivé est issu d'un parent connu
          if(selectParent && !getTypeParent().equals("Aucun")){
-            cttCodeParent.validate(codesParentBoxDerive, null);
+            codesParentBoxDerive.getValue();
          }
          // on remplit le dérivé en fonction des champs nulls
          setEmptyToNulls();
@@ -820,7 +884,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          getProdDerive().setQuantite(getProdDerive().getQuantiteInit());
          getProdDerive().setVolume(getProdDerive().getVolumeInit());
 
-         final ObjetStatut statut = ManagerLocator.getObjetStatutManager().findByStatutLikeManager("NON STOCKE", true).get(0);
+         final ObjetStatut statutNonStocke = ManagerLocator.getObjetStatutManager().findByStatutLikeManager("NON STOCKE", true).get(0);
 
          if(getProdDerive().getDateTransformation() != null){
             dateSortie = getProdDerive().getDateTransformation().getTime();
@@ -860,6 +924,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          }else{
             getProdDerive().setConformeTraitement(null);
          }
+         
          if(getProdDerive().getConformeTraitement() == null){
             setSelectedNonConformiteTraitement(null);
          }else if(getProdDerive().getConformeTraitement()){
@@ -874,6 +939,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          }else{
             getProdDerive().setConformeCession(null);
          }
+         
          if(getProdDerive().getConformeCession() == null){
             setSelectedNonConformiteCession(null);
          }else if(getProdDerive().getConformeCession()){
@@ -886,30 +952,29 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          int first = 0;
          int last = 0;
          if(numNombres.isChecked()){
-            first = premierCode;
-            last = dernierCode;
+            first = premierCodeBoxDerive.getValue();
+            last = dernierCodeBoxDerive.getValue();
          }else{
-            first = lettres.indexOf(premiereLettre.toUpperCase());
-            last = lettres.indexOf(derniereLettre.toUpperCase());
+            first = premiereLettreBoxDerive.getValue().toUpperCase().charAt(0);
+            last = derniereLettreBoxDerive.getValue().toUpperCase().charAt(0);
          }
 
-         // Création de tous les nouveaux échantillons
+         // 2.0.10.6 VIROBIOTEC création codes sans prefixe
+         final String prefix = Optional.ofNullable(getCodePrefixe()).orElse("").trim();
+         final String separator = Optional.ofNullable(separatorBox.getValue()).orElse("");
+
+         // Création de tous les nouveaux produits dérivés
          for(int i = first; i <= last; i++){
 
-            // création du code échantillon en fct de celui du prlvt et
-            // du numéro saisi
-            final StringBuffer sb = new StringBuffer();
+            // création du code produit dérivé en fct de celui du parent et
+            // de l'intervalle saisi
+            final StringBuilder sb = new StringBuilder();
+            sb.append(prefix).append(separator);
 
-            // 2.0.10.6 VIROBIOTEC création codes sans prefixe
-            if(getCodePrefixe() != null && !getCodePrefixe().trim().equals("")){
-               sb.append(getCodePrefixe());
-               //sb.append(".");
-               sb.append(separatorBox.getValue() != null ? separatorBox.getValue() : "");
-            }
             if(numNombres.isChecked()){
                sb.append(i);
             }else{
-               sb.append(lettres.get(i));
+               sb.append((char) i);
             }
 
             usedCodesProdDerives.add(sb.toString());
@@ -920,7 +985,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
             newProdDerive.setProdType(getSelectedType());
             newProdDerive.setCode(sb.toString());
             newProdDerive.setCodeLabo(getProdDerive().getCodeLabo());
-            newProdDerive.setObjetStatut(statut);
+            newProdDerive.setObjetStatut(statutNonStocke);
             newProdDerive.setCollaborateur(getSelectedCollaborateur());
             newProdDerive.setVolumeInit(getProdDerive().getVolumeInit());
             newProdDerive.setVolume(getProdDerive().getVolume());
@@ -970,11 +1035,6 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
          clearForm(true);
 
-         //			String id = groupInfosCompDerive.getUuid();
-         //			String idTop = panelChildrenWithScroll.getUuid();
-         //			Clients.evalJavaScript("document.getElementById('" + idTop + "')"
-         //					+ ".scrollTop = document.getElementById('" + id + "')"
-         //					+ ".offsetTop;");
          Clients.scrollIntoView(stockageDerives);
 
          // active le lien vers le stockage
@@ -994,46 +1054,37 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
     * des dérivés.
     */
    public void onDeleteDeco$rows(final ForwardEvent event){
-      //		EchantillonDecorator2 deco = (EchantillonDecorator2)
-      //			AbstractListeController2
-      //				.getBindingData((ForwardEvent) event, false);
 
-      ProdDeriveDecorator2 deco = (ProdDeriveDecorator2) event.getOrigin().getData();
+      final ProdDeriveDecorator2 deco = (ProdDeriveDecorator2) event.getOrigin().getData();
 
-      ProdDerive deletedDerive = deco.getProdDerive();
+      final ProdDerive deletedDerive = deco.getProdDerive();
 
-      for(final List<ProdDerive> derives : addedProdDerives){
-         if(derives.contains(deletedDerive)){
-            derives.remove(deletedDerive);
-            prodDerives.remove(deletedDerive);
-            prodDerivesDecorated.remove(deco);
-            usedCodesProdDerives.remove(deletedDerive.getCode());
-
-            // on enlève l'association entre le dérivé et son
-            // emplacement dans la hashtable
-            if(derivesEmpl.containsKey(deletedDerive)){
-               derivesEmpl.remove(deletedDerive);
-            }
-
-            final ListModel<ProdDeriveDecorator2> list = new ListModelList<>(prodDerivesDecorated);
-            derivesList.setModel(list);
-
-            // derive retire fileBatches
-            for(final FileBatch batch : batches){
-               batch.getObjs().remove(deletedDerive);
-            }
-
-            deletedDerive = null;
-            deco = null;
-
-            break;
+      final Optional<List<ProdDerive>> maybeDerives = addedProdDerives.stream().filter(list -> list.contains(deletedDerive)).findFirst(); 
+      
+      if(maybeDerives.isPresent()) {
+         
+         List<ProdDerive> derives = maybeDerives.get();
+         
+         derives.remove(deletedDerive);
+         prodDerives.remove(deletedDerive);
+         prodDerivesDecorated.remove(deco);
+         usedCodesProdDerives.remove(deletedDerive.getCode());
+         derivesEmpl.remove(deletedDerive);
+         
+         final ListModel<ProdDeriveDecorator2> list = new ListModelList<>(prodDerivesDecorated);
+         derivesList.setModel(list);
+   
+         // derive retire fileBatches
+         for(final FileBatch batch : batches){
+            batch.getObjs().remove(deletedDerive);
+         }
+         
+         //Si le dérivé supprimé est le dernier de la liste, désactive le lien vers le stockage
+         if(prodDerives.isEmpty()){
+            stockageDerives.setDisabled(true);
          }
       }
-
-      // desactive le lien vers le stockage
-      if(prodDerives.isEmpty()){
-         stockageDerives.setDisabled(true);
-      }
+      
    }
 
    /**
@@ -1049,28 +1100,23 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
     * Méthode appelée lors du clic sur le bouton stockageDerives.
     */
    public void onClick$stockageDerives(){
+      
       if(!stockageDerives.isDisabled()){
+         
+         final Predicate<ProdDerive> isNonStocke = prodDerive -> "NON STOCKE".equals(prodDerive.getObjetStatut().getStatut());
+         
          // on récupère tous les dérivés NON STOCKE
-         final List<ProdDerive> derivesToStock = new ArrayList<>();
-         for(int i = 0; i < prodDerives.size(); i++){
-            if(prodDerives.get(i).getObjetStatut().getStatut().equals("NON STOCKE")){
-               derivesToStock.add(prodDerives.get(i));
-            }
-         }
-
-         // si des emplacements ont déja ete définis pour des dérivés
-         // ils sont réservés
-         final Enumeration<Emplacement> empls = derivesEmpl.elements();
-         final List<Emplacement> reserves = new ArrayList<>();
-         while(empls.hasMoreElements()){
-            reserves.add(empls.nextElement());
-         }
-
+         final List<ProdDerive> derivesToStock = prodDerives.stream().filter(isNonStocke).collect(Collectors.toList());
+         
+         // on récupère les emplacements déjà réservés
+         final List<Emplacement> reserves = new ArrayList<>(derivesEmpl.values());
+         
          final StockageController tabController = StockageController.backToMe(getMainWindow(), page);
          getMainWindow().blockAllPanelsExceptOne("stockageTab");
          tabController.clearAllPage();
          tabController.switchToStockerMode(null, derivesToStock, Path.getPath(self), "onGetResultsFromStockage", reserves);
       }
+      
    }
 
    /**
@@ -1093,30 +1139,32 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
     * @param table dérivé - emplacements
     */
    private void updateDecoList(final Hashtable<ProdDerive, Emplacement> results){
+      
       final ObjetStatut stocke = ManagerLocator.getObjetStatutManager().findByStatutLikeManager("STOCKE", true).get(0);
 
       final Set<ProdDerive> prods = results.keySet();
-      final Iterator<ProdDerive> it = prods.iterator();
+      
       // pour chaque dérivé qui vient d'être stocké
-      while(it.hasNext()){
-         final ProdDerive tmp = it.next();
-         final ProdDeriveDecorator2 deco = new ProdDeriveDecorator2(tmp);
-         // on récupère son decorator correspondant dans la liste
-         if(prodDerivesDecorated.contains(deco)){
-            final ProdDeriveDecorator2 decoUp = prodDerivesDecorated.get(prodDerivesDecorated.indexOf(deco));
-
-            // MAJ du stockage de cet échantillon
-            decoUp.setAdrlTmp(results.get(tmp).getAdrl());
+      for(ProdDerive prodDerive : prods) {
+         
+         final Optional<ProdDeriveDecorator2> maybeDecorator = prodDerivesDecorated.stream().filter(pdd -> prodDerive.equals(pdd.getProdDerive())).findAny();
+         
+         if(maybeDecorator.isPresent()) {
+            final ProdDeriveDecorator2 decoUp = maybeDecorator.get();
+            decoUp.setAdrlTmp(results.get(prodDerive).getAdrl());
             decoUp.getProdDerive().setObjetStatut(stocke);
          }
 
          // ajout du couple dans la hashtable
-         if(!derivesEmpl.contains(tmp)){
-            derivesEmpl.put(tmp, results.get(tmp));
+         if(!derivesEmpl.contains(prodDerive)){
+            derivesEmpl.put(prodDerive, results.get(prodDerive));
          }
+         
       }
+      
       // MAJ de la liste
       getBinder().loadAttribute(self.getFellow("derivesList"), "model");
+      
    }
 
    /**
@@ -1244,7 +1292,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       }
 
       // init des codes utilisés
-      usedCodesProdDerives = ManagerLocator.getProdDeriveManager().findAllCodesForBanqueManager(getBanque());
+      usedCodesProdDerives = ManagerLocator.getManager(ProdDeriveManager.class).findAllCodesForBanqueManager(getBanque());
 
       super.initNonConformites();
    }
@@ -1315,32 +1363,81 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    }
 
    /**
-    * Recherche des doublons pour le permier et dernier codes saisis.
-    * @param premier Premier code des dérivés à créer.
-    * @param dernier Dernier code des dérivés à créer.
-    * @return True s'il y a des doublons, false sinon.
+    * Recherche des doublons avec les codes produit dérivé existant pour l'échantillon parent avec l'intervalle saisi.
+    * @param premier numéro du premier code à créer
+    * @param dernier numéro du premier code à créer
+    * @return liste des codes trouvés en doublon
     */
-   public List<String> findDoublons(final Integer premier, final Integer dernier){
+   private List<String> findDoublonsWithUsedCodes(final int premier, final int dernier){
 
-      final List<String> doublons = new ArrayList<>();
-      final String codePrefixeTmp = this.codePrefixeLabelDerive.getValue();
-      for(int i = premier; i <= dernier; i++){
-         final StringBuffer sb = new StringBuffer();
-         if(codePrefixeTmp != null && !codePrefixeTmp.trim().equals("")){
-            sb.append(codePrefixeTmp);
-            // sb.append(".");
-            sb.append(separatorBox.getValue() != null ? separatorBox.getValue() : "");
-         }
-         // sb.append(codePrefixeTmp);
-         // sb.append(".");
-         sb.append(i);
+      final String separator = Optional.ofNullable(separatorBox.getValue()).orElse("");
+      final String prefix = Optional.ofNullable(codePrefixeLabelDerive.getValue()).orElse("");
 
-         if(usedCodesProdDerives.contains(sb.toString())){
-            doublons.add(String.valueOf(i));
-         }
-      }
+      final Function<String, String> mapToCode = s -> new StringBuilder(prefix.trim()).append(separator).append(s).toString();
 
-      return doublons;
+      return IntStream.rangeClosed(premier, dernier).mapToObj(String::valueOf).map(mapToCode)
+         .filter(usedCodesProdDerives::contains).collect(Collectors.toList());
+
+   }
+
+   /**
+    * Recherche des doublons avec les codes produit dérivé existant pour l'échantillon parent avec l'intervalle saisi.
+    * @param premier lettre du premier code à créer
+    * @param dernier lettre du premier code à créer
+    * @return liste des codes trouvés en doublon
+    */
+   private List<String> findDoublonsWithUsedCodes(final char premier, final char dernier){
+
+      final String separator = Optional.ofNullable(separatorBox.getValue()).orElse("");
+      final String prefix = Optional.ofNullable(codePrefixeLabelDerive.getValue()).orElse("");
+
+      final Function<String, String> mapToCode = s -> new StringBuilder(prefix.trim()).append(separator).append(s).toString();
+
+      return IntStream.rangeClosed(premier, dernier).mapToObj(i -> String.valueOf((char) i)).map(mapToCode)
+         .filter(usedCodesProdDerives::contains).collect(Collectors.toList());
+
+   }
+
+   /**
+    * Recherche des doublons de codes produit dérivé sur la plateforme avec l'intervalle saisi.
+    * @param premier numéro du premier code à créer
+    * @param dernier numéro du premier code à créer
+    * @return liste des codes trouvés en doublon
+    */
+   private List<ProdDerive> findDoublonsWithPlateforme(final int premier, final int dernier){
+
+      final String separator = Optional.ofNullable(separatorBox.getValue()).orElse("");
+      final String prefix = Optional.ofNullable(codePrefixeLabelDerive.getValue()).orElse("");
+
+      final Function<String, String> mapToCode = s -> new StringBuilder(prefix.trim()).append(separator).append(s).toString();
+
+      final List<String> codesToCreate =
+         IntStream.rangeClosed(premier, dernier).mapToObj(String::valueOf).map(mapToCode).collect(Collectors.toList());
+
+      return ManagerLocator.getManager(ProdDeriveManager.class).findByListCodeWithPlateforme(codesToCreate,
+         SessionUtils.getCurrentPlateforme());
+
+   }
+
+   /**
+    * Recherche des doublons de codes produit dérivé sur la plateforme avec l'intervalle saisi.
+    * @param premier lettre du premier code à créer
+    * @param dernier lettre du premier code à créer
+    * @return liste des codes trouvés en doublon
+    */
+   private List<ProdDerive> findDoublonsWithPlateforme(final char premier, final char dernier){
+
+      final String separator = Optional.ofNullable(separatorBox.getValue()).orElse("");
+      final String prefix = Optional.ofNullable(codePrefixeLabelDerive.getValue()).orElse("");
+
+      final Function<String, String> mapToCode = s -> new StringBuilder(prefix.trim()).append(separator).append(s).toString();
+
+      final List<String> codesToCreate = IntStream.rangeClosed(premier, dernier).mapToObj(i -> String.valueOf((char) i))
+         .map(mapToCode).collect(Collectors.toList());
+
+      return ManagerLocator.getManager(ProdDeriveManager.class).findByListCodeWithPlateforme(codesToCreate,
+         SessionUtils.getCurrentPlateforme());
+
    }
 
    /*********************************************************/
@@ -1438,97 +1535,69 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
     * @author Pierre Ventadour.
     *
     */
-   public class ConstPremierCode implements Constraint
+   private class ConstPremierCode implements Constraint
    {
 
       @Override
-      public void validate(final Component comp, final Object value){
+      public void validate(Component comp, Object value){
 
-         // on ne prend en compte cette contrainte que si
-         // l'utilisateur veut utiliser des chiffres en
-         // numérotation
          if(numNombres.isChecked()){
-            // on récupère la valeur dans premierCodeBoxDerive
-            premierCode = (Integer) value;
-            // si une valeur est saisie dans le champ premierCodeBoxDerive
-            if(premierCode != null){
-               // si le premier code est négatif
-               if(premierCode <= 0){
-                  throw new WrongValueException(comp, Labels.getLabel("ficheMultiProdDerive.error.code.sup.zero"));
-               }
-               // Si le dernierCode est null (1ère édition de la page)
-               // on va récupérer la valeur du champ dernierCodeBoxDerive
-               if(dernierCode == null){
-                  // on enlève la contrainte de dernierCodeBoxDerive pour
-                  // pouvoir récupérer sa valeur
-                  dernierCodeBoxDerive.setConstraint("");
-                  dernierCodeBoxDerive.clearErrorMessage();
-                  dernierCode = dernierCodeBoxDerive.getValue();
-                  // on remet la contrainte
-                  dernierCodeBoxDerive.setConstraint(cttDernierCode);
+
+            premierCodeBoxDerive.setRawValue(value);
+
+            premierCodeBoxDerive.clearErrorMessage();
+            dernierCodeBoxDerive.clearErrorMessage();
+
+            if(value != null){
+
+               Integer debut = (Integer) value;
+
+               if(debut <= 0){
+                  throw new WrongValueException(comp, Labels.getLabel("error.sup.zero"));
                }
 
-               // si une valeur est saisie dans le champ dernierCodeBoxDerive
-               if(dernierCode != null){
-                  // si le dernier code est < au premier
-                  if(dernierCode < premierCode){
+               //Récupération de la valeur de fin de l'intervalle (on utilise getRawValue 
+               //pour éviter de déclencher la validation de cette valeur qui causerait une
+               //boucle de validation sans fin)
+               Integer fin = (Integer) dernierCodeBoxDerive.getRawValue();
+
+               if(fin != null){
+
+                  //Vérification de la cohérence des valeurs de début et fin d'intervalle
+                  if(debut > fin){
                      throw new WrongValueException(comp, Labels.getLabel("ficheMultiProdDerive.error.premier.code.superieur"));
                   }
 
-                  // sinon on enlève toutes les erreurs affichées
-                  Integer tmp = dernierCode;
-                  Clients.clearWrongValue(dernierCodeBoxDerive);
-                  dernierCodeBoxDerive.setConstraint("");
-                  dernierCodeBoxDerive.setValue(tmp);
-                  dernierCodeBoxDerive.setConstraint(cttDernierCode);
-
-                  final List<String> doublons = findDoublons(premierCode, dernierCode);
+                  //Recherche de doublons avec les dérivés existants pour le parent
+                  final List<String> doublonsParent = findDoublonsWithUsedCodes(debut, fin);
                   // si des doublons existent pour les valeurs saisies
-                  if(doublons.size() > 0){
-                     final StringBuffer sb = new StringBuffer();
-                     if(doublons.size() == 1){
-                        sb.append(Labels.getLabel("ficheMultiProdDerive.error.un.prodDerive" + ".existant"));
-                        sb.append(doublons.get(0));
-                     }else{
-                        sb.append(Labels.getLabel("ficheMultiProdDerive.error.plus.prodDerive" + ".existant"));
-                        for(int i = 0; i < doublons.size(); i++){
-                           sb.append(doublons.get(i));
-                           if(i + 1 < doublons.size()){
-                              sb.append(", ");
-                           }
-                        }
-                     }
-                     sb.append(Labels.getLabel("ficheMultiProdDerive.error.prodDerive" + ".existant.saisie"));
-                     throw new WrongValueException(comp, sb.toString());
+                  if(doublonsParent.size() > 0){
+                     final String codesDoublons = doublonsParent.stream().collect(Collectors.joining(", "));
+                     throw new WrongValueException(comp,
+                        Labels.getLabel("prodDerive.doublon.error.num", new String[] {codesDoublons}));
                   }
-                  // sinon on enlève toutes les erreurs affichées
-                  tmp = dernierCode;
-                  Clients.clearWrongValue(dernierCodeBoxDerive);
-                  dernierCodeBoxDerive.setConstraint("");
-                  dernierCodeBoxDerive.setValue(tmp);
-                  dernierCodeBoxDerive.setConstraint(cttDernierCode);
-               }else{
-                  // sinon on enlève toutes les erreurs affichées
-                  final Integer tmp = dernierCode;
-                  Clients.clearWrongValue(dernierCodeBoxDerive);
-                  dernierCodeBoxDerive.setConstraint("");
-                  dernierCodeBoxDerive.setValue(tmp);
-                  dernierCodeBoxDerive.setConstraint(cttDernierCode);
+
+                  //Recherche de doublons avec les dérivés existants sur la plateforme
+                  final List<ProdDerive> doublonsPf = findDoublonsWithPlateforme(debut, fin);
+                  // si des doublons existent pour les valeurs saisies
+                  if(doublonsPf.size() > 0){
+                     final String codesDoublons = doublonsPf.stream().map(ProdDerive::getCode).collect(Collectors.joining(", "));
+                     final String banques = doublonsPf.stream().map(ProdDerive::getBanque).distinct().map(Banque::getNom)
+                        .collect(Collectors.joining(", "));
+                     throw new WrongValueException(comp,
+                        Labels.getLabel("error.validation.doublon.code", new String[] {codesDoublons, banques}));
+                  }
+
                }
+
             }else{
-               throw new WrongValueException(comp, "Champ vide non autorisé. " + "Vous devez spécifier une valeur.");
+               throw new WrongValueException(comp, Labels.getLabel("validation.syntax.empty"));
             }
-         }else{
-            Clients.clearWrongValue(premierCodeBoxDerive);
-            premierCodeBoxDerive.setConstraint("");
-            premierCodeBoxDerive.setValue(null);
-            premierCodeBoxDerive.setConstraint(cttPremierCode);
-            Clients.clearWrongValue(dernierCodeBoxDerive);
-            dernierCodeBoxDerive.setConstraint("");
-            dernierCodeBoxDerive.setValue(null);
-            dernierCodeBoxDerive.setConstraint(cttDernierCode);
+
          }
+
       }
+
    }
 
    /**
@@ -1536,195 +1605,136 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
     * @author Pierre Ventadour.
     *
     */
-   public class ConstDernierCode implements Constraint
+   private class ConstDernierCode implements Constraint
    {
 
-      // on ne prend en compte cette contrainte que si
-      // l'utilisateur veut utiliser des chiffres en
-      // numérotation
       @Override
-      public void validate(final Component comp, final Object value){
+      public void validate(Component comp, Object value){
 
          if(numNombres.isChecked()){
-            // on récupère la valeur dans dernierCodeBoxDerive
-            dernierCode = (Integer) value;
-            // si une valeur est saisie dans le champ dernierCodeBoxDerive
-            if(dernierCode != null){
-               // si le dernier code est négatif
-               if(dernierCode <= 0){
-                  throw new WrongValueException(comp, Labels.getLabel("ficheMultiProdDerive.error.code.sup.zero"));
-               }
-               // Si le premierCode est null (1ère édition de la page)
-               // on va récupérer la valeur du champ premierCodeBoxDerive
-               if(premierCode == null){
-                  // on enlève la contrainte de premierCodeBoxDerive pour
-                  // pouvoir récupérer sa valeur
-                  premierCodeBoxDerive.setConstraint("");
-                  premierCodeBoxDerive.clearErrorMessage();
-                  premierCode = premierCodeBoxDerive.getValue();
-                  // on remet la contrainte
-                  premierCodeBoxDerive.setConstraint(cttPremierCode);
+
+            dernierCodeBoxDerive.setRawValue(value);
+
+            premierCodeBoxDerive.clearErrorMessage();
+            dernierCodeBoxDerive.clearErrorMessage();
+
+            if(value != null){
+
+               Integer fin = (Integer) value;
+
+               if(fin <= 0){
+                  throw new WrongValueException(comp, Labels.getLabel("error.sup.zero"));
                }
 
-               // si une valeur est saisie dans le champ premierCodeBoxDerive
-               if(premierCode != null){
-                  // si le dernier code est < au premier
-                  if(dernierCode < premierCode){
-                     throw new WrongValueException(comp,
-                        Labels.getLabel("ficheMultiProdDerive.error.premier.code" + ".superieur"));
+               //Récupération de la valeur de début de l'intervalle (on utilise getRawValue 
+               //pour éviter de déclencher la validation de cette valeur qui causerait une
+               //boucle de validation sans fin)
+               Integer debut = (Integer) premierCodeBoxDerive.getRawValue();
+
+               if(debut != null){
+
+                  //Vérification de la cohérence des valeurs de début et fin d'intervalle
+                  if(debut > fin){
+                     throw new WrongValueException(comp, Labels.getLabel("ficheMultiProdDerive.error.premier.code.superieur"));
                   }
 
-                  // sinon on enlève toutes les erreurs affichées
-                  Integer tmp = premierCode;
-                  Clients.clearWrongValue(premierCodeBoxDerive);
-                  premierCodeBoxDerive.setConstraint("");
-                  premierCodeBoxDerive.setValue(tmp);
-                  premierCodeBoxDerive.setConstraint(cttPremierCode);
-
-                  final List<String> doublons = findDoublons(premierCode, dernierCode);
+                  //Recherche de doublons avec les dérivés existants pour le parent
+                  final List<String> doublonsParent = findDoublonsWithUsedCodes(debut, fin);
                   // si des doublons existent pour les valeurs saisies
-                  if(doublons.size() > 0){
-                     final StringBuffer sb = new StringBuffer();
-                     if(doublons.size() == 1){
-                        sb.append(Labels.getLabel("ficheMultiProdDerive.error.un" + ".prodDerive.existant"));
-                        sb.append(doublons.get(0));
-                     }else{
-                        sb.append(Labels.getLabel("ficheMultiProdDerive.error.plus." + "prodDerive.existant"));
-                        for(int i = 0; i < doublons.size(); i++){
-                           sb.append(doublons.get(i));
-                           if(i + 1 < doublons.size()){
-                              sb.append(", ");
-                           }
-                        }
-                     }
-                     sb.append(Labels.getLabel("ficheMultiProdDerive.error.prodDerive" + ".existant.saisie"));
-                     throw new WrongValueException(comp, sb.toString());
+                  if(doublonsParent.size() > 0){
+                     final String codesDoublons = doublonsParent.stream().collect(Collectors.joining(", "));
+                     throw new WrongValueException(comp,
+                        Labels.getLabel("prodDerive.doublon.error.num", new String[] {codesDoublons}));
                   }
-                  // sinon on enlève toutes les erreurs affichées
-                  tmp = premierCode;
-                  Clients.clearWrongValue(premierCodeBoxDerive);
-                  premierCodeBoxDerive.setConstraint("");
-                  premierCodeBoxDerive.setValue(tmp);
-                  premierCodeBoxDerive.setConstraint(cttPremierCode);
-               }else{
-                  // sinon on enlève toutes les erreurs affichées
-                  final Integer tmp = premierCode;
-                  Clients.clearWrongValue(premierCodeBoxDerive);
-                  premierCodeBoxDerive.setConstraint("");
-                  premierCodeBoxDerive.setValue(tmp);
-                  premierCodeBoxDerive.setConstraint(cttPremierCode);
+
+                  //Recherche de doublons avec les dérivés existants sur la plateforme
+                  final List<ProdDerive> doublonsPf = findDoublonsWithPlateforme(debut, fin);
+                  // si des doublons existent pour les valeurs saisies
+                  if(doublonsPf.size() > 0){
+                     final String codesDoublons = doublonsPf.stream().map(ProdDerive::getCode).collect(Collectors.joining(", "));
+                     final String banques = doublonsPf.stream().map(ProdDerive::getBanque).distinct().map(Banque::getNom)
+                        .collect(Collectors.joining(", "));
+                     throw new WrongValueException(comp,
+                        Labels.getLabel("error.validation.doublon.code", new String[] {codesDoublons, banques}));
+                  }
+
                }
+
             }else{
-               throw new WrongValueException(comp, "Champ vide non autorisé. " + "Vous devez spécifier une valeur.");
+               throw new WrongValueException(comp, Labels.getLabel("validation.syntax.empty"));
             }
-         }else{
-            Clients.clearWrongValue(premierCodeBoxDerive);
-            premierCodeBoxDerive.setConstraint("");
-            premierCodeBoxDerive.setValue(null);
-            premierCodeBoxDerive.setConstraint(cttPremierCode);
-            Clients.clearWrongValue(dernierCodeBoxDerive);
-            dernierCodeBoxDerive.setConstraint("");
-            dernierCodeBoxDerive.setValue(null);
-            dernierCodeBoxDerive.setConstraint(cttDernierCode);
+
          }
       }
    }
 
-   public class ConstPremiereLettre implements Constraint
+   private class ConstPremiereLettre implements Constraint
    {
 
       @Override
-      public void validate(final Component comp, final Object value){
-         // on ne prend en compte cette contrainte que si
-         // l'utilisateur veut utiliser des lettres en
-         // numérotation
-         if(numLettres.isChecked()){
-            // on récupère la valeur dans premiereLettreBoxDerive
-            premiereLettre = (String) value;
+      public void validate(Component comp, Object value) throws WrongValueException{
 
-            // si une valeur est saisie
-            if(premiereLettre != null && !premiereLettre.equals("")){
-               // si le premier code est invalide
-               if(!lettres.contains(premiereLettre.toUpperCase())){
+         if(numLettres.isChecked()){
+
+            premiereLettreBoxDerive.setRawValue(value);
+
+            premiereLettreBoxDerive.clearErrorMessage();
+            derniereLettreBoxDerive.clearErrorMessage();
+
+            String sValue = (String) value;
+
+            if(StringUtils.isNotEmpty(sValue)){
+
+               char debut = sValue.toUpperCase().charAt(0);
+
+               if(debut < 'A' || debut > 'Z'){
                   throw new WrongValueException(comp, Labels.getLabel("ficheMultiEchantillons.lettre.invalide"));
                }
-               // Si la derniereLettre est null (1ère édition de la page)
-               // on va récupérer la valeur du champ derniereLettreBoxDerive
-               if(derniereLettre == null || derniereLettre.equals("")){
-                  // on enlève la contrainte de
-                  // derniereLettreBoxDerive pour
-                  // pouvoir récupérer sa valeur
-                  derniereLettreBoxDerive.setConstraint("");
-                  derniereLettreBoxDerive.clearErrorMessage();
-                  derniereLettre = derniereLettreBoxDerive.getValue();
-                  // on remet la contrainte
-                  derniereLettreBoxDerive.setConstraint(cttDerniereLettre);
-               }
 
-               // si une valeur est saisie dans le champ
-               // derniereLettreBoxDerive
-               if(derniereLettre != null && !derniereLettre.equals("")){
-                  // si la derniere est avant la premiere
-                  if(lettres.indexOf(derniereLettre.toUpperCase()) < lettres.indexOf(premiereLettre.toUpperCase())){
-                     throw new WrongValueException(comp,
-                        "La première lettre saisie ne " + "peut pas être alphabétiquement " + "après la dernière.");
+               //Récupération de la valeur de début de l'intervalle (on utilise getRawValue 
+               //pour éviter de déclencher la validation de cette valeur qui causerait une
+               //boucle de validation sans fin)
+               String derniereLettre = (String) derniereLettreBoxDerive.getRawValue();
+
+               if(derniereLettre != null){
+
+                  char fin = derniereLettre.toUpperCase().charAt(0);
+
+                  //Vérification de la cohérence des valeurs de début et fin d'intervalle
+                  if(debut > fin){
+                     throw new WrongValueException(comp, Labels.getLabel("ficheMultiProdDerive.error.premier.lettre.superieur"));
                   }
 
-                  // sinon on enlève toutes les erreurs affichées
-                  String tmp = derniereLettre;
-                  Clients.clearWrongValue(derniereLettreBoxDerive);
-                  derniereLettreBoxDerive.setConstraint("");
-                  derniereLettreBoxDerive.setValue(tmp);
-                  derniereLettreBoxDerive.setConstraint(cttDerniereLettre);
-
-                  final List<String> doublons =
-                     findDoublonsForLetters(premiereLettre.toUpperCase(), derniereLettre.toUpperCase());
+                  //Recherche de doublons avec les dérivés existants pour le parent
+                  final List<String> doublonsParent = findDoublonsWithUsedCodes(debut, fin);
                   // si des doublons existent pour les valeurs saisies
-                  if(doublons.size() > 0){
-                     final StringBuffer sb = new StringBuffer();
-                     if(doublons.size() == 1){
-                        sb.append("Echantillon déjà enregistré " + "pour la lettre : {");
-                        sb.append(doublons.get(0));
-                     }else{
-                        sb.append("Echantillons déjà enregistrés " + "pour les lettres : {");
-                        for(int i = 0; i < doublons.size(); i++){
-                           sb.append(doublons.get(i));
-                           if(i + 1 < doublons.size()){
-                              sb.append(", ");
-                           }
-                        }
-                     }
-                     sb.append("}. Veuillez modifier les lettres saisies.");
-                     throw new WrongValueException(comp, sb.toString());
+                  if(doublonsParent.size() > 0){
+                     final String codesDoublons = doublonsParent.stream().collect(Collectors.joining(", "));
+                     throw new WrongValueException(comp,
+                        Labels.getLabel("prodDerive.doublon.error.num", new String[] {codesDoublons}));
                   }
-                  // sinon on enlève toutes les erreurs affichées
-                  tmp = derniereLettre;
-                  Clients.clearWrongValue(derniereLettreBoxDerive);
-                  derniereLettreBoxDerive.setConstraint("");
-                  derniereLettreBoxDerive.setValue(tmp);
-                  derniereLettreBoxDerive.setConstraint(cttDerniereLettre);
-               }else{
-                  // sinon on enlève toutes les erreurs affichées
-                  final String tmp = derniereLettre;
-                  Clients.clearWrongValue(derniereLettreBoxDerive);
-                  derniereLettreBoxDerive.setConstraint("");
-                  derniereLettreBoxDerive.setValue(tmp);
-                  derniereLettreBoxDerive.setConstraint(cttDerniereLettre);
+
+                  //Recherche de doublons avec les dérivés existants sur la plateforme
+                  final List<ProdDerive> doublonsPf = findDoublonsWithPlateforme(debut, fin);
+                  // si des doublons existent pour les valeurs saisies
+                  if(doublonsPf.size() > 0){
+                     final String codesDoublons = doublonsPf.stream().map(ProdDerive::getCode).collect(Collectors.joining(", "));
+                     final String banques = doublonsPf.stream().map(ProdDerive::getBanque).distinct().map(Banque::getNom)
+                        .collect(Collectors.joining(", "));
+                     throw new WrongValueException(comp,
+                        Labels.getLabel("error.validation.doublon.code", new String[] {codesDoublons, banques}));
+                  }
+
                }
+
             }else{
-               throw new WrongValueException(comp, "Champ vide non autorisé. " + "Vous devez spécifier une valeur.");
+               throw new WrongValueException(comp, Labels.getLabel("validation.syntax.empty"));
             }
-         }else{
-            Clients.clearWrongValue(premiereLettreBoxDerive);
-            premiereLettreBoxDerive.setConstraint("");
-            premiereLettreBoxDerive.setValue(null);
-            premiereLettreBoxDerive.setConstraint(cttPremiereLettre);
-            Clients.clearWrongValue(derniereLettreBoxDerive);
-            derniereLettreBoxDerive.setConstraint("");
-            derniereLettreBoxDerive.setValue(null);
-            derniereLettreBoxDerive.setConstraint(cttDerniereLettre);
+
          }
+
       }
+
    }
 
    private Constraint cttPremiereLettre = new ConstPremiereLettre();
@@ -1734,102 +1744,72 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
     * @author Pierre Ventadour.
     *
     */
-   public class ConstDerniereLettre implements Constraint
+   private class ConstDerniereLettre implements Constraint
    {
 
       @Override
-      public void validate(final Component comp, final Object value){
-         // on ne prend en compte cette contrainte que si
-         // l'utilisateur veut utiliser des lettres en
-         // numérotation
-         if(numLettres.isChecked()){
-            // on récupère la valeur dans derniereLettreBoxDerive
-            derniereLettre = (String) value;
+      public void validate(Component comp, Object value) throws WrongValueException{
 
-            // si une valeur est saisie
-            if(derniereLettre != null && !derniereLettre.equals("")){
-               // si la derniere lettre n'est pas valide
-               if(!lettres.contains(derniereLettre.toUpperCase())){
+         if(numLettres.isChecked()){
+
+            derniereLettreBoxDerive.setRawValue(value);
+
+            derniereLettreBoxDerive.clearErrorMessage();
+            premiereLettreBoxDerive.clearErrorMessage();
+
+            String sValue = (String) value;
+
+            if(StringUtils.isNotEmpty(sValue)){
+
+               char fin = sValue.toUpperCase().charAt(0);
+
+               if(fin < 'A' || fin > 'Z'){
                   throw new WrongValueException(comp, Labels.getLabel("ficheMultiEchantillons.lettre.invalide"));
                }
-               // Si la premiere lettre est null (1ère édition de la page)
-               // on va récupérer la valeur
-               // du champ premiereLettreBoxDerive
-               if(premiereLettre == null || premiereLettre.equals("")){
-                  // on enlève la contrainte pour
-                  // pouvoir récupérer sa valeur
-                  premiereLettreBoxDerive.setConstraint("");
-                  premiereLettreBoxDerive.clearErrorMessage();
-                  premiereLettre = premiereLettreBoxDerive.getValue();
-                  // on remet la contrainte
-                  premiereLettreBoxDerive.setConstraint(cttPremiereLettre);
-               }
 
-               // si une valeur est saisie dans le champ
-               // premiereLettreBoxDerive
-               if(premiereLettre != null && !premiereLettre.equals("")){
-                  // si le dernier code est < au premier
-                  // si la derniere est avant la premiere
-                  if(!lettres.contains(premiereLettre.toUpperCase())
-                     || lettres.indexOf(derniereLettre.toUpperCase()) < lettres.indexOf(premiereLettre.toUpperCase())){
-                     throw new WrongValueException(comp,
-                        "La première lettre saisie ne " + "peut pas être alphabétiquement " + "après la dernière.");
+               //Récupération de la valeur de début de l'intervalle (on utilise getRawValue 
+               //pour éviter de déclencher la validation de cette valeur qui causerait une
+               //boucle de validation sans fin)
+               String premiereLettre = (String) premiereLettreBoxDerive.getRawValue();
+
+               if(premiereLettre != null){
+
+                  char debut = premiereLettre.toUpperCase().charAt(0);
+
+                  //Vérification de la cohérence des valeurs de début et fin d'intervalle
+                  if(debut > fin){
+                     throw new WrongValueException(comp, Labels.getLabel("ficheMultiProdDerive.error.premier.lettre.superieur"));
                   }
-                  // sinon on enlève toutes les erreurs affichées
-                  String tmp = premiereLettre;
-                  Clients.clearWrongValue(premiereLettreBoxDerive);
-                  premiereLettreBoxDerive.setConstraint("");
-                  premiereLettreBoxDerive.setValue(tmp);
-                  premiereLettreBoxDerive.setConstraint(cttPremiereLettre);
 
-                  final List<String> doublons =
-                     findDoublonsForLetters(premiereLettre.toUpperCase(), derniereLettre.toUpperCase());
+                  //Recherche de doublons avec les dérivés existants pour le parent
+                  final List<String> doublonsParent = findDoublonsWithUsedCodes(debut, fin);
                   // si des doublons existent pour les valeurs saisies
-                  if(doublons.size() > 0){
-                     final StringBuffer sb = new StringBuffer();
-                     if(doublons.size() == 1){
-                        sb.append("Echantillon déjà enregistré " + "pour la lettre : {");
-                        sb.append(doublons.get(0));
-                     }else{
-                        sb.append("Echantillons déjà enregistrés " + "pour les lettres : {");
-                        for(int i = 0; i < doublons.size(); i++){
-                           sb.append(doublons.get(i));
-                           if(i + 1 < doublons.size()){
-                              sb.append(", ");
-                           }
-                        }
-                     }
-                     sb.append("}. Veuillez modifier les lettres saisies.");
-                     throw new WrongValueException(comp, sb.toString());
+                  if(doublonsParent.size() > 0){
+                     final String codesDoublons = doublonsParent.stream().collect(Collectors.joining(", "));
+                     throw new WrongValueException(comp,
+                        Labels.getLabel("prodDerive.doublon.error.num", new String[] {codesDoublons}));
                   }
-                  // sinon on enlève toutes les erreurs affichées
-                  tmp = premiereLettre;
-                  Clients.clearWrongValue(premiereLettreBoxDerive);
-                  premiereLettreBoxDerive.setConstraint("");
-                  premiereLettreBoxDerive.setValue(tmp);
-                  premiereLettreBoxDerive.setConstraint(cttPremiereLettre);
-               }else{
-                  // sinon on enlève toutes les erreurs affichées
-                  final String tmp = premiereLettre;
-                  Clients.clearWrongValue(premiereLettreBoxDerive);
-                  premiereLettreBoxDerive.setConstraint("");
-                  premiereLettreBoxDerive.setValue(tmp);
-                  premiereLettreBoxDerive.setConstraint(cttPremiereLettre);
+
+                  //Recherche de doublons avec les dérivés existants sur la plateforme
+                  final List<ProdDerive> doublonsPf = findDoublonsWithPlateforme(debut, fin);
+                  // si des doublons existent pour les valeurs saisies
+                  if(doublonsPf.size() > 0){
+                     final String codesDoublons = doublonsPf.stream().map(ProdDerive::getCode).collect(Collectors.joining(", "));
+                     final String banques = doublonsPf.stream().map(ProdDerive::getBanque).distinct().map(Banque::getNom)
+                        .collect(Collectors.joining(", "));
+                     throw new WrongValueException(comp,
+                        Labels.getLabel("error.validation.doublon.code", new String[] {codesDoublons, banques}));
+                  }
+
                }
+
             }else{
-               throw new WrongValueException(comp, "Champ vide non autorisé. " + "Vous devez spécifier une valeur.");
+               throw new WrongValueException(comp, Labels.getLabel("validation.syntax.empty"));
             }
-         }else{
-            Clients.clearWrongValue(premiereLettreBoxDerive);
-            premiereLettreBoxDerive.setConstraint("");
-            premiereLettreBoxDerive.setValue(null);
-            premiereLettreBoxDerive.setConstraint(cttPremiereLettre);
-            Clients.clearWrongValue(derniereLettreBoxDerive);
-            derniereLettreBoxDerive.setConstraint("");
-            derniereLettreBoxDerive.setValue(null);
-            derniereLettreBoxDerive.setConstraint(cttDerniereLettre);
+
          }
       }
+
    }
 
    private Constraint cttDerniereLettre = new ConstDerniereLettre();
@@ -1864,7 +1844,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    private CustomSimpleListModel dictCodesModel;
    private String selectedCodeParent;
    //Variable contenant le code parent saisi par l'utilisateur.
-   private String codeTmp;
+   //   private String codeTmp;
 
    // Mode de sélection du parent
    private Row selectParentRowDerive;
@@ -1960,44 +1940,43 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
     * @throws Exception
     */
    public void onBlur$codesParentBoxDerive(final Event event) throws Exception{
-      // on enlève la contrainte de la combobox
-      codesParentBoxDerive.setConstraint("");
-      codesParentBoxDerive.clearErrorMessage();
-      // si aucun élément n'est sélectionné, la valeur de la box correspond
-      // à ce qu'a tapé l'utilisateur.
-      if(codesParentBoxDerive.getSelectedItem() == null){
-         codesParentBoxDerive.setValue(codeTmp);
+
+      final String codePrefixe;
+      if(codesParentBoxDerive.getSelectedItem() != null){
+         codePrefixe = codesParentBoxDerive.getSelectedItem().getLabel();
       }else{
-         // on valide la sélection
-         cttCodeParent.validate(codesParentBoxDerive, null);
-         setCodePrefixe(codesParentBoxDerive.getSelectedItem().getLabel());
-         setCodeParent(getCodePrefixe());
-         // si le parent est un prlvt
-         if(getTypeParent().equals("Prelevement")){
-            setParentObject(ManagerLocator.getPrelevementManager()
-               .findByCodeOrNumLaboLikeWithBanqueManager(getCodeParent(), getBanque(), true).get(0));
-         }else if(getTypeParent().equals("Echantillon")){
-            final Echantillon echantillon =
-               ManagerLocator.getEchantillonManager().findByCodeLikeWithBanqueManager(getCodeParent(), getBanque(), true).get(0);
-
-            createComponentForListeParent(echantillon);
-
-            setParentObject(echantillon);
-            // si le parent est un dérivé
-         }else if(getTypeParent().equals("ProdDerive")){
-            final ProdDerive prodDerive =
-               ManagerLocator.getProdDeriveManager().findByCodeOrLaboWithBanqueManager(getCodeParent(), getBanque(), true).get(0);
-
-            createComponentForListeParent(prodDerive);
-
-            setParentObject(prodDerive);
-         }
-         initDeriveInfosFromParent();
+         codePrefixe = codesParentBoxDerive.getValue();
       }
-      // on ré-active la contrainte
-      //codesParentBoxDerive.setModel(dictCodesModel);
-      codesParentBoxDerive.setConstraint(cttCodeParent);
-      cttCodeParent.validate(codesParentBoxDerive, null);
+
+      setCodePrefixe(codePrefixe);
+      setCodeParent(getCodePrefixe());
+
+      final TKdataObject parent;
+      switch(getTypeParent()){
+         case "Prelevement":
+            parent = ManagerLocator.getManager(PrelevementManager.class)
+            .findByCodeOrNumLaboLikeWithBanqueManager(getCodeParent(), getBanque(), true).get(0);
+            break;
+         case "Echantillon":
+            parent = ManagerLocator.getManager(EchantillonManager.class)
+            .findByCodeLikeWithBanqueManager(getCodeParent(), getBanque(), true).get(0);
+            break;
+         case "ProdDerive":
+            parent = ManagerLocator.getManager(ProdDeriveManager.class)
+            .findByCodeOrLaboWithBanqueManager(getCodeParent(), getBanque(), true).get(0);
+            break;
+         default:
+            parent = null;
+            break;
+      }
+
+      if(!"Prelevement".equals(getTypeParent())){
+         createComponentForListeParent((TKStockableObject) parent);
+      }else{
+         setParentObject(parent);
+      }
+
+      initDeriveInfosFromParent();
 
       // date validation
       dateTransfoCalBox.clearErrorMessage(dateTransfoCalBox.getValue());
@@ -2006,6 +1985,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       validateCoherenceDate(dateStockCalBox, dateStockCalBox.getValue());
 
       getBinder().loadComponent(self);
+
    }
 
    /**
@@ -2046,7 +2026,9 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       final List<CederObjet> cederObjetRef =
          ManagerLocator.getCederObjetManager().findByObjetAndStatutManager(tkStockObj, ECederObjetStatut.TRAITEMENT);
 
-      if((null == tkStockObj.getQuantite() || 0 < tkStockObj.getQuantite()) && !statuts.contains(tkStockObj.getObjetStatut())){
+      String objetStockeStatus = tkStockObj.getObjetStatut() != null ? tkStockObj.getObjetStatut().getStatut() : null;
+
+      if((null == tkStockObj.getQuantite() || 0 < tkStockObj.getQuantite()) && !statuts.contains(objetStockeStatus)){
          if(!cederObjetRef.isEmpty()){
             createGridForListeParent(tkStockObj, cederObjetRef);
          }else{
@@ -2300,32 +2282,24 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
     * @author Pierre Ventadour.
     *
     */
-   public class ConstCodeParent implements Constraint
+   private class ConstCodeParent implements Constraint
    {
-      /**
-       * Méthode de validation du champ dateTransfoBox.
-       */
-      @Override
-      public void validate(final Component comp, final Object value){
-         codesParentBoxDerive.setConstraint("");
-         codesParentBoxDerive.clearErrorMessage();
-         String code = "";
-         if(codesParentBoxDerive.getSelectedItem() != null){
-            code = codesParentBoxDerive.getSelectedItem().getLabel();
-            //codesParentBoxDerive.setValue(code);
-         }else{
-            code = codesParentBoxDerive.getValue();
-         }
-         codesParentBoxDerive.setConstraint(cttCodeParent);
 
-         if(code.length() == 0){
-            throw new WrongValueException(comp,
-               "Champ vide non autorisé. Vous devez spécifier un " + "code présent dans la liste.");
+      @Override
+      public void validate(final Component comp, final Object value) throws WrongValueException{
+
+         ((InputElement) comp).clearErrorMessage();
+
+         String code = (String) value;
+
+         if(code == null || code.length() == 0){
+            throw new WrongValueException(comp, Labels.getLabel("validation.syntax.empty"));
          }else if(!codesParent.contains(code)){
-            throw new WrongValueException(comp,
-               "Valeur non autorisée. Vous devez spécifier une " + "valeur présente dans la liste.");
+            throw new WrongValueException(comp, Labels.getLabel("ficheMultiProdDerive.error.parent.not.liste"));
          }
+
       }
+
    }
 
    private Constraint cttQuantiteInit = new ConstQuantiteInit();
@@ -2344,7 +2318,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
     * @author Pierre Ventadour.
     *
     */
-   public class ConstQuantiteInit implements Constraint
+   private class ConstQuantiteInit implements Constraint
    {
       /**
        * Méthode de validation du champ quantiteInitBox.
@@ -2378,31 +2352,31 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    }
 
    /**
+    * Valide le contenu d'une calendarBox
+    * @param calendarBox
+    */
+   private void validateCalendarBox(CalendarBox calendarBox) {
+      
+      calendarBox.clearErrorMessage(calendarBox.getValue());
+      
+      final Calendar dateStockage = calendarBox.getValue();
+
+      if(dateStockage!= null){
+         if(dateStockage.get(Calendar.YEAR) <= 9999) {
+            validateCoherenceDate(calendarBox, calendarBox.getValue());
+         }else{
+            throw new WrongValueException(calendarBox, Labels.getLabel("validation.invalid.date"));
+         }
+      }
+      
+   }
+   
+   /**
     * Applique la validation sur la date.
     */
    @Override
    public void onBlur$dateTransfoCalBox(){
-      final Datebox box = (Datebox) dateTransfoCalBox.getFirstChild().getFirstChild();
-      boolean badDateFormat = false;
-      if(box.getErrorMessage() != null && box.getErrorMessage().contains(box.getFormat())){
-         badDateFormat = true;
-      }else{
-         final Calendar calValue = Calendar.getInstance();
-         if(box.getValue() != null){
-            calValue.setTime(box.getValue());
-            if(!calValue.equals("")){
-               if(calValue.get(Calendar.YEAR) > 9999){
-                  badDateFormat = true;
-               }
-            }
-         }
-      }
-      if(!badDateFormat){
-         dateTransfoCalBox.clearErrorMessage(dateTransfoCalBox.getValue());
-         validateCoherenceDate(dateTransfoCalBox, dateTransfoCalBox.getValue());
-      }else{
-         throw new WrongValueException(dateTransfoCalBox, Labels.getLabel("validation.invalid.date"));
-      }
+      validateCalendarBox(dateTransfoCalBox);
    }
 
    /**
@@ -2410,27 +2384,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
     */
    @Override
    public void onBlur$dateStockCalBox(){
-      final Datebox box = (Datebox) dateStockCalBox.getFirstChild().getFirstChild();
-      boolean badDateFormat = false;
-      if(box.getErrorMessage() != null && box.getErrorMessage().contains(box.getFormat())){
-         badDateFormat = true;
-      }else{
-         final Calendar calValue = Calendar.getInstance();
-         if(box.getValue() != null){
-            calValue.setTime(box.getValue());
-            if(!calValue.equals("")){
-               if(calValue.get(Calendar.YEAR) > 9999){
-                  badDateFormat = true;
-               }
-            }
-         }
-      }
-      if(!badDateFormat){
-         dateStockCalBox.clearErrorMessage(dateStockCalBox.getValue());
-         validateCoherenceDate(dateStockCalBox, dateStockCalBox.getValue());
-      }else{
-         throw new WrongValueException(dateStockCalBox, Labels.getLabel("validation.invalid.date"));
-      }
+      validateCalendarBox(dateStockCalBox);
    }
 
    /***********************************************************/
@@ -2543,33 +2497,6 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       changeNumerotation.setImage("/images/icones/smallLetter.png");
    }
 
-   /**
-    * Recherche des doublons pour la permiere et derniere letres saisies.
-    * @return True s'il y a des doublons, false sinon.
-    */
-   public List<String> findDoublonsForLetters(final String premier, final String dernier){
-
-      final List<String> doublons = new ArrayList<>();
-      for(int i = lettres.indexOf(premier); i <= lettres.indexOf(dernier); i++){
-         final StringBuffer sb = new StringBuffer();
-         if(getCodePrefixe() != null && !getCodePrefixe().trim().equals("")){
-            sb.append(getCodePrefixe());
-            // sb.append(".");
-            sb.append(separatorBox.getValue() != null ? separatorBox.getValue() : "");
-
-         }
-         // sb.append(codePrefixeEchan.getValue());
-         // sb.append(".");
-         sb.append(lettres.get(i));
-
-         if(usedCodesProdDerives.contains(sb.toString())){
-            doublons.add(lettres.get(i));
-         }
-      }
-
-      return doublons;
-   }
-
    public String getPremiereLettre(){
       return premiereLettre;
    }
@@ -2584,14 +2511,6 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
    public void setDerniereLettre(final String derniereLettre){
       this.derniereLettre = derniereLettre;
-   }
-
-   public List<String> getLettres(){
-      return lettres;
-   }
-
-   public void setLettres(final List<String> lettres){
-      this.lettres = lettres;
    }
 
    public Constraint getCttPremiereLettre(){
@@ -2636,4 +2555,5 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
       }
 
    }
+
 }

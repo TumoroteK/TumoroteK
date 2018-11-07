@@ -57,7 +57,7 @@
 							/>
 							
 							<textbox id="loginBox" value="@{fwinUtilisateur$composer.user.login,
-			        				save-when='validateC.onClick, createC.onClick'
+			        				save-when='validateC.onClick, createC.onClick, loginBox.onBlur'
 			        				load-after='editC.onClick, createC.onClick'}" 
 								width="200px" 
 								constraint="${fwinUtilisateur$composer.loginConstraint}"
@@ -66,17 +66,23 @@
 						</div>
 					</row>
 					<!-- Password -->
-					<row>
+					<row id="authLdapRow" 
+						visible="@{fwinUtilisateur$composer.authLdapRowVisible, load-after='validateC.onClick'}">
 						<hbox>
-							<label value="${c:l('utilisateur.password')}" sclass="formLabel"/>
-							<label id="passwordRequired" value="*" sclass="requiredMark"
-												visible="false"/>
+							<label value="Authentification LDAP" sclass="formLabel"/>
 						</hbox>
 						<div>
-							<label id="passwordLabel" 
-								value="-" 
-								sclass="formValue"
-							/>
+							<label id="authLdapLabel" value="@{fwinUtilisateur$composer.ldapFormated}" sclass="formValue"/>
+							<checkbox id="authLdapCheckbox" visible="false"/>
+						</div>
+					</row>
+					<row id="passwordRow" visible="false">
+						<hbox>
+							<label value="${c:l('utilisateur.password')}" sclass="formLabel"/>
+							<label id="passwordRequired" value="*" sclass="requiredMark" visible="false"/>
+						</hbox>
+						<div>
+							<label id="passwordLabel" value="*****" sclass="formValue"/>
 							
 							<textbox id="passwordBox" value="@{fwinUtilisateur$composer.user.password,
 			        				save-when='validateC.onClick, createC.onClick'
@@ -101,28 +107,7 @@
 			        				load-after='editC.onClick, createC.onClick'}" 
 								width="200px" 
 								maxlength="20"
-								constraint="no empty"
 								type="password"
-							/>
-						</div>
-					</row>
-					<!-- LDAP -->
-					<row>
-						<hbox>
-							<label value="${c:l('utilisateur.dnLdap')}" sclass="formLabel"/>
-						</hbox>
-						<div>
-							<label id="ldapLabel" 
-								value="@{fwinUtilisateur$composer.user.dnLdap}" 
-								sclass="formValue" 
-							/>
-							
-							<textbox id="ldapBox" value="@{fwinUtilisateur$composer.user.dnLdap,
-			        				save-when='validateC.onClick, createC.onClick'
-			        				load-after='editC.onClick, createC.onClick'}" 
-								width="200px" 
-								constraint="@{fwinUtilisateur$composer.ldapConstraint}"
-								visible="false"
 							/>
 						</div>
 					</row>
@@ -180,7 +165,7 @@
 							<checkbox id="archiveBox" visible="false"/>
 						</div>
 					</row>
-					<row>
+					<row id="timeoutRow">
 					<!-- Date de désactivation -->
 						<label value="${c:l('utilisateur.timeout')}" sclass="formLabel"/>
 						<div>
@@ -191,7 +176,8 @@
 							
 							<datebox id="timeoutBox" format="${c:l('validation.date.format.simple')}" 
 								value="@{fwinUtilisateur$composer.user.timeOut,
-								save-when='validateC.onClick, createC.onClick'}"
+								save-when='validateC.onClick, createC.onClick',
+								load-after='authLdapCheckbox.onCheck'}"
 								visible="false"
 								cols="15" lenient="false"
 								constraint="${fwinUtilisateur$composer.dateConstraint}"
@@ -199,7 +185,7 @@
 						</div>
 					</row>
 					
-					<row spans="2">
+					<row spans="2" id="timeoutHelpRow">
 						<!-- Date de désactivation help -->
 						<label value="@{fwinUtilisateur$composer.timeoutLabelFormated}" 
 							sclass="formValueItalics"/>
@@ -367,7 +353,8 @@
 				<button id="editC" label="${c:l('general.edit')}" height="24px" visible="true"
 					image="/images/icones/edit.png" sclass="buttonv2"/>
 				<button id="editPassword" label="${c:l('general.edit.password')}" height="24px" visible="true"
-					image="/images/icones/locked.png" sclass="buttonv2"/>
+					image="/images/icones/locked.png" sclass="buttonv2" use="fr.aphp.tumorotek.component.TKDisablableButton" 
+					disabled="@{fwinUtilisateur$composer.user.ldap}"/>
 				<button id="deleteC" label="${c:l('general.delete')}" height="24px" visible="true"
 					image="/images/icones/trash.png" sclass="buttonv2"/>
 				<button id="validateC" label="${c:l('general.validate')}" height="24px" visible="false"

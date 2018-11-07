@@ -784,4 +784,6 @@ public interface EchantillonManager
 
    void updateEchantillon(Echantillon echantillon);
 
+   List<Echantillon> findByCodeInListWithPlateforme(List<String> codes, Plateforme pf);
+   
 }

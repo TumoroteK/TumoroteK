@@ -593,7 +593,7 @@ public class Prelevement implements TKAnnotableObject, TKDelegetableObject<Prele
       this.echantillons = echants;
    }
 
-   @ManyToMany(targetEntity = Risque.class)
+   @ManyToMany(targetEntity = Risque.class, fetch=FetchType.EAGER)
    @JoinTable(name = "PRELEVEMENT_RISQUE", joinColumns = @JoinColumn(name = "PRELEVEMENT_ID"),
       inverseJoinColumns = @JoinColumn(name = "RISQUE_ID"))
    public Set<Risque> getRisques(){

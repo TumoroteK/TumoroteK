@@ -80,6 +80,7 @@ import fr.aphp.tumorotek.manager.impression.TemplateManager;
 import fr.aphp.tumorotek.manager.io.imports.ImportTemplateManager;
 import fr.aphp.tumorotek.manager.qualite.OperationManager;
 import fr.aphp.tumorotek.manager.stockage.ConteneurManager;
+import fr.aphp.tumorotek.manager.utilisateur.UtilisateurManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.contexte.BanqueValidator;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
@@ -108,6 +109,7 @@ import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.systeme.Couleur;
 import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
 import fr.aphp.tumorotek.model.systeme.Entite;
+import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.utils.Utils;
 
@@ -151,6 +153,7 @@ public class BanqueManagerImpl implements BanqueManager
    private ImportTemplateManager importTemplateManager;
    private AnnotationValeurManager annotationValeurManager;
    private TemplateManager templateManager;
+   private UtilisateurManager utilisateurManager;
 
    public void setBanqueDao(final BanqueDao bDao){
       this.banqueDao = bDao;
@@ -260,6 +263,10 @@ public class BanqueManagerImpl implements BanqueManager
       this.templateManager = tManager;
    }
 
+   public void setUtilisateurManager(UtilisateurManager utilisateurManager){
+      this.utilisateurManager = utilisateurManager;
+   }
+   
    /**
     * Recherche une Banque dont l'identifiant est passé en paramètre.
     * @param banqueId Identifiant de la banque que l'on recherche.
@@ -420,7 +427,7 @@ public class BanqueManagerImpl implements BanqueManager
       if(usr != null && pf != null){
          return banqueDao.findByUtilisateurAndPF(usr, pf);
       }
-         return new ArrayList<>();
+      return new ArrayList<>();
    }
 
    @Override
@@ -428,7 +435,7 @@ public class BanqueManagerImpl implements BanqueManager
       if(banque.getBanqueId() == null){
          return banqueDao.findByNom(banque.getNom()).contains(banque);
       }
-         return banqueDao.findByExcludedId(banque.getBanqueId()).contains(banque);
+      return banqueDao.findByExcludedId(banque.getBanqueId()).contains(banque);
    }
 
    @Override
@@ -437,7 +444,8 @@ public class BanqueManagerImpl implements BanqueManager
       final List<BanqueTableCodage> codifications, final List<TableAnnotation> tablesPatient,
       final List<TableAnnotation> tablesPrlvt, final List<TableAnnotation> tablesEchan, final List<TableAnnotation> tablesDerive,
       final List<TableAnnotation> tablesCess, final List<CouleurEntiteType> coulTypes, final Couleur couleurEchan,
-      final Couleur couleurDerive, final Utilisateur utilisateur, final String operation, final String basedir){
+      final Couleur couleurDerive, final Utilisateur utilisateur, final Set<Utilisateur> utilisateursList,
+      final String operation, final String basedir){
 
       if(operation == null){
          throw new NullPointerException("operation cannot be " + "set to null for createorUpdateMethod");
@@ -543,6 +551,30 @@ public class BanqueManagerImpl implements BanqueManager
                if(coulTypes != null){
                   updateCoulTypes(banque, coulTypes);
                }
+
+               //Mise à jour des profils utilisateur sur la banque
+               if(utilisateursList != null && !utilisateursList.isEmpty()){
+
+                  for(Utilisateur userToUpdate : utilisateursList){
+
+                     Set<ProfilUtilisateur> profilsUtilisateur = userToUpdate.getProfilUtilisateurs();
+                     
+                     //Pas idéal mais l'Utilisateur contient un set de ProfilUtilisateur qui lui-même contient l'Utilisateur,
+                     //on se retrouve donc avec une référence circulaire qu'on est obligé de briser avant de pouvoir sauvegarder
+                     //TODO Revoir la gestion des profils
+                     List<ProfilUtilisateur> newProfils = new ArrayList<>(userToUpdate.getProfilUtilisateurs());
+                     userToUpdate.setProfilUtilisateurs(new HashSet<>());
+                     
+                     utilisateurManager.updateObjectManager(userToUpdate, userToUpdate.getCollaborateur(),
+                        newProfils, new ArrayList<>(userToUpdate.getPlateformes()),
+                        utilisateur, oType);
+                     
+                     userToUpdate.setProfilUtilisateurs(profilsUtilisateur);
+                     
+                  }
+
+               }
+
             }catch(final RuntimeException re){
                // rollback du a erreur dans creation systeme fichier
                if(operation.equals("creation")){
@@ -899,7 +931,7 @@ public class BanqueManagerImpl implements BanqueManager
          //imps.size();		
          return new HashSet<>();
       }
-         return new HashSet<>();
+      return new HashSet<>();
    }
 
    @Override
@@ -991,4 +1023,5 @@ public class BanqueManagerImpl implements BanqueManager
       }
       return banks;
    }
+
 }

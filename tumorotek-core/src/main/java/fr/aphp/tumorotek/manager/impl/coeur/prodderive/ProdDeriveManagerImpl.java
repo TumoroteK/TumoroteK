@@ -95,7 +95,6 @@ import fr.aphp.tumorotek.manager.systeme.EntiteManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKStockableObject;
-import fr.aphp.tumorotek.model.TKValidableObject;
 import fr.aphp.tumorotek.model.cession.CederObjet;
 import fr.aphp.tumorotek.model.cession.Retour;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
@@ -1540,10 +1539,6 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          if(!bank.getContexte().equals(derive.getBanque().getContexte())){
             derive.setDelegate(null);
          }
-         //Si la banque de destination est dans le même contexte que la banque d'origine, on garde le délégué mais on supprime la validation le cas échéant
-         else if(derive.getDelegate() instanceof TKValidableObject) {
-            ((TKValidableObject)derive.getDelegate()).setDetailValidation(null);
-         }
 
          derive.setBanque(bank);
 
@@ -2033,5 +2028,10 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    @Override
    public List<ProdDerive> findByCodeInPlateformeManager(final String code, final Plateforme pf){
       return prodDeriveDao.findByCodeInPlateforme(code, pf);
+   }
+
+   @Override
+   public List<ProdDerive> findByListCodeWithPlateforme(List<String> listCodes, Plateforme pf){
+      return prodDeriveDao.findByListCodeWithPlateforme(listCodes, pf);
    }
 }

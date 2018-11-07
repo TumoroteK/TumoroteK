@@ -35,9 +35,6 @@
  **/
 package fr.aphp.tumorotek.action.patient;
 
-import static fr.aphp.tumorotek.model.contexte.EContexte.BTO;
-import static fr.aphp.tumorotek.webapp.general.SessionUtils.getCurrentContexte;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,15 +49,11 @@ import org.zkoss.zul.Tabpanel;
 import fr.aphp.tumorotek.action.MainWindow;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.annotation.FicheAnnotation;
-import fr.aphp.tumorotek.action.annotation.FicheAnnotationInline;
 import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheEditController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheModifMultiController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheStaticController;
 import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
-import fr.aphp.tumorotek.action.patient.bto.FichePatientEditBTO;
-import fr.aphp.tumorotek.action.patient.bto.FichePatientStaticBTO;
-import fr.aphp.tumorotek.action.patient.bto.ListePatientBTO;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
@@ -88,7 +81,6 @@ public class PatientController extends AbstractObjectTabController
    private Div divPatientEdit;
    private Div modifMultiDiv;
    private Component listePatient;
-   private Component listePatientBTO;
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
@@ -96,23 +88,13 @@ public class PatientController extends AbstractObjectTabController
       setEntiteTab(ManagerLocator.getEntiteManager().findByNomManager("Patient").get(0));
 
       super.doAfterCompose(comp);
-      if(BTO.equals(getCurrentContexte())){
-         listePatientBTO.setVisible(true);
-      }else{
-         listePatient.setVisible(true);
-      }
+      listePatient.setVisible(true);
 
       setStaticDiv(divPatientStatic);
       setEditDiv(divPatientEdit);
       setModifMultiDiv(modifMultiDiv);
-
-      if(BTO.equals(getCurrentContexte())){
-         setStaticZulPath("/zuls/patient/bto/FichePatientStaticBTO.zul");
-         setEditZulPath("/zuls/patient/bto/FichePatientEditBTO.zul");
-      }else{
-         setStaticZulPath("/zuls/patient/FichePatientStatic.zul");
-         setEditZulPath("/zuls/patient/FichePatientEdit.zul");
-      }
+      setStaticZulPath("/zuls/patient/FichePatientStatic.zul");
+      setEditZulPath("/zuls/patient/FichePatientEdit.zul");
 
       setMultiEditZulPath("/zuls/patient/FicheModifMultiPatient.zul");
 
@@ -129,35 +111,20 @@ public class PatientController extends AbstractObjectTabController
 
    @Override
    public AbstractFicheEditController getFicheEdit(){
-      if(BTO.equals(getCurrentContexte())){
-         return ((FichePatientEditBTO) self.getFellow("divPatientEdit").getFellow("fwinPatientEditBTO")
-            .getAttributeOrFellow("fwinPatientEditBTO$composer", true));
-      }else{
-         return ((FichePatientEdit) self.getFellow("divPatientEdit").getFellow("fwinPatientEdit")
-            .getAttributeOrFellow("fwinPatientEdit$composer", true));
-      }
+      return ((FichePatientEdit) self.getFellow("divPatientEdit").getFellow("fwinPatientEdit")
+         .getAttributeOrFellow("fwinPatientEdit$composer", true));
    }
 
    @Override
    public AbstractFicheStaticController getFicheStatic(){
-      if(BTO.equals(getCurrentContexte())){
-         return ((FichePatientStaticBTO) self.getFellow("divPatientStatic").getFellow("fwinPatientStaticBTO")
-            .getAttributeOrFellow("fwinPatientStaticBTO$composer", true));
-      }else{
-         return ((FichePatientStatic) self.getFellow("divPatientStatic").getFellow("fwinPatientStatic")
-            .getAttributeOrFellow("fwinPatientStatic$composer", true));
-      }
+      return ((FichePatientStatic) self.getFellow("divPatientStatic").getFellow("fwinPatientStatic")
+         .getAttributeOrFellow("fwinPatientStatic$composer", true));
    }
 
    @Override
    public ListePatient getListe(){
-      if(BTO.equals(getCurrentContexte())){
-         return ((ListePatientBTO) self.getFellow("listePatientBTO").getFellow("lwinPatientBTO")
-            .getAttributeOrFellow("lwinPatientBTO$composer", true));
-      }else{
-         return ((ListePatient) self.getFellow("listePatient").getFellow("lwinPatient")
-            .getAttributeOrFellow("lwinPatient$composer", true));
-      }
+      return ((ListePatient) self.getFellow("listePatient").getFellow("lwinPatient").getAttributeOrFellow("lwinPatient$composer",
+         true));
    }
 
    @Override
@@ -171,29 +138,6 @@ public class PatientController extends AbstractObjectTabController
       if(self.getFellowIfAny("ficheAnnoPatient") != null){
          return ((FicheAnnotation) self.getFellow("ficheAnnoPatient").getFellow("fwinAnnotation")
             .getAttributeOrFellow("fwinAnnotation$composer", true));
-      }else{
-         return null;
-      }
-   }
-
-   /**
-    * ANNOTATION INLINE - Bêta
-    *
-    * @return
-    * @since 2.2.0
-    */
-   @Override
-   public FicheAnnotationInline getFicheAnnotationInline(){
-      if(null != self.getFellow("divPatientEdit").getFellowIfAny("fwinPatientEdit")
-         && null != self.getFellow("divPatientEdit").getFellow("fwinPatientEdit").getFellow("ficheTissuInlineAnnoPatient")){
-         return ((FicheAnnotationInline) self.getFellow("divPatientEdit").getFellow("fwinPatientEdit")
-            .getFellow("ficheTissuInlineAnnoPatient").getFellow("fwinAnnotationInline")
-            .getAttributeOrFellow("fwinAnnotationInline$composer", true));
-      }else if(null != self.getFellow("divPatientEdit").getFellowIfAny("fwinPatientEditBTO")
-         && null != self.getFellow("divPatientEdit").getFellow("fwinPatientEditBTO").getFellow("ficheTissuInlineAnnoPatient")){
-         return ((FicheAnnotationInline) self.getFellow("divPatientEdit").getFellow("fwinPatientEditBTO")
-            .getFellow("ficheTissuInlineAnnoPatient").getFellow("fwinAnnotationInline")
-            .getAttributeOrFellow("fwinAnnotationInline$composer", true));
       }else{
          return null;
       }
@@ -233,11 +177,6 @@ public class PatientController extends AbstractObjectTabController
       }else{
          // clean up
          Components.removeAllChildren(getFicheAnnotation().getAnnoRows());
-         /*Iterator<Banque> banksIt = banks.iterator();
-         while (banksIt.hasNext()) {
-         	getFicheAnnotation().setBankUsedToDrawChamps(banksIt.next());
-         	getFicheAnnotation().drawAnnotationPanelContent(isMulti, true);
-         }*/
       }
 
       setAnnoRegionVisible();

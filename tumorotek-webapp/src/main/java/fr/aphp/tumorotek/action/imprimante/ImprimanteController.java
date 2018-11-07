@@ -59,7 +59,6 @@ import org.zkoss.zul.Window;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.annotation.FicheAnnotation;
-import fr.aphp.tumorotek.action.annotation.FicheAnnotationInline;
 import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheEditController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheModifMultiController;
@@ -247,11 +246,6 @@ public class ImprimanteController extends AbstractObjectTabController
    }
 
    @Override
-   public FicheAnnotationInline getFicheAnnotationInline(){
-      return null;
-   }
-
-   @Override
    public AbstractFicheCombineController getFicheCombine(){
       return null;
    }
@@ -326,7 +320,7 @@ public class ImprimanteController extends AbstractObjectTabController
     * affectation.
     * @param event
     */
-   
+
    public void onClickValidateAffectation(final ForwardEvent event){
       // on récupère les donneés : la listbox contenant les imprimantes,
       // celle contenant es modèles et le decorator d'affectation

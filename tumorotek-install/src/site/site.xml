@@ -17,7 +17,7 @@
     <body>
         <head>
             <![CDATA[<link rel="icon" href="images/favicon.ico">]]>
-            <![CDATA[<script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>]]>
+            <![CDATA[<script defer src="https://use.fontawesome.com/releases/v5.2.0/js/all.js" integrity="sha384-4oV5EgaV02iISL2ban6c/RmotsABqE4yZxZLcYMAdG7FAPsyHYAPpywE9PJo+Khy" crossorigin="anonymous"></script>]]>
             <![CDATA[<script>
                 window.onload = function() {
                     document.querySelectorAll('[title="GitHub"]')[0].href = "${project.url}";
@@ -27,7 +27,6 @@
             </script>]]>
         </head>
         <breadcrumbs>
-            <!--<item name="Interfaces" href="../../"/>-->
             <item name="Liste des versions" href=""/>
         </breadcrumbs>
         <links>
@@ -39,6 +38,7 @@
         </menu>
         <menu name="Procédures">
             <item name="Installation" href="installation-readme.html" />
+            <item name="Ancienne installation" href="installation-readme-old.html" />
             <item name="Mise à jour" href="mise-a-jour-readme.html" />
         </menu>
         <menu name="Ressources">

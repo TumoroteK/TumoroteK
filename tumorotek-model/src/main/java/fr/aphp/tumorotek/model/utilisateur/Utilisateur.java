@@ -42,6 +42,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -85,7 +86,6 @@ import fr.aphp.tumorotek.model.imprimante.AffectationImprimante;
          + "AND u.plateformeOrig in (?3)"),
    @NamedQuery(name = "Utilisateur.findByArchive",
       query = "SELECT u FROM Utilisateur u " + "WHERE u.archive = ?1 AND u.superAdmin = 0 " + "AND u.plateformeOrig in (?2)"),
-   @NamedQuery(name = "Utilisateur.findBydnLdap", query = "SELECT u FROM Utilisateur u WHERE u.dnLdap = ?1"),
    @NamedQuery(name = "Utilisateur.findByEmail", query = "SELECT u FROM Utilisateur u WHERE u.email = ?1"),
    @NamedQuery(name = "Utilisateur.findByTimeOut", query = "SELECT u FROM Utilisateur u WHERE u.timeOut = ?1"),
    @NamedQuery(name = "Utilisateur.findByTimeOutBefore",
@@ -116,8 +116,7 @@ public class Utilisateur implements TKdataObject, java.io.Serializable, Comparab
    private String login;
    private String password;
    private Boolean archive = false;
-   private String encodedPassword;
-   private String dnLdap;
+   private boolean ldap;
    private String email;
    private Date timeOut;
    private boolean superAdmin;
@@ -155,7 +154,7 @@ public class Utilisateur implements TKdataObject, java.io.Serializable, Comparab
       this.login = log;
    }
 
-   @Column(name = "PASSWORD", nullable = false, length = 100)
+   @Column(name = "PASSWORD", nullable = true, length = 100)
    public String getPassword(){
       return password;
    }
@@ -173,22 +172,13 @@ public class Utilisateur implements TKdataObject, java.io.Serializable, Comparab
       this.archive = arch;
    }
 
-   @Column(name = "ENCODED_PASSWORD", nullable = true, length = 100)
-   public String getEncodedPassword(){
-      return encodedPassword;
+   @Column(name = "LDAP", nullable = false)
+   public boolean isLdap(){
+      return ldap;
    }
 
-   public void setEncodedPassword(final String encodedPass){
-      this.encodedPassword = encodedPass;
-   }
-
-   @Column(name = "DN_LDAP", nullable = true, length = 100)
-   public String getDnLdap(){
-      return dnLdap;
-   }
-
-   public void setDnLdap(final String ldap){
-      this.dnLdap = ldap;
+   public void setLdap(final boolean ldap){
+      this.ldap = ldap;
    }
 
    @Column(name = "EMAIL", nullable = true, length = 50)
@@ -263,7 +253,7 @@ public class Utilisateur implements TKdataObject, java.io.Serializable, Comparab
       this.codeUtilisateurs = codes;
    }
 
-   @OneToMany(mappedBy = "pk.utilisateur")
+   @OneToMany(mappedBy = "pk.utilisateur", fetch=FetchType.EAGER)
    public Set<ProfilUtilisateur> getProfilUtilisateurs(){
       return profilUtilisateurs;
    }
@@ -272,7 +262,7 @@ public class Utilisateur implements TKdataObject, java.io.Serializable, Comparab
       this.profilUtilisateurs = profils;
    }
 
-   @ManyToMany(targetEntity = Plateforme.class)
+   @ManyToMany(targetEntity = Plateforme.class, fetch=FetchType.EAGER)
    @JoinTable(name = "PLATEFORME_ADMINISTRATEUR", joinColumns = @JoinColumn(name = "UTILISATEUR_ID"),
       inverseJoinColumns = @JoinColumn(name = "PLATEFORME_ID"))
    public Set<Plateforme> getPlateformes(){
@@ -363,8 +353,7 @@ public class Utilisateur implements TKdataObject, java.io.Serializable, Comparab
       clone.setLogin(this.login);
       clone.setPassword(this.password);
       clone.setArchive(this.archive);
-      clone.setEncodedPassword(this.encodedPassword);
-      clone.setDnLdap(this.dnLdap);
+      clone.setLdap(this.ldap);
       clone.setEmail(this.email);
       clone.setTimeOut(this.timeOut);
       clone.setCollaborateur(this.collaborateur);

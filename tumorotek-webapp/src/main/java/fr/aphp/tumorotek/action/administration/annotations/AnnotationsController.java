@@ -39,7 +39,6 @@ import org.zkoss.zk.ui.Component;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.annotation.FicheAnnotation;
-import fr.aphp.tumorotek.action.annotation.FicheAnnotationInline;
 import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheEditController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheModifMultiController;
@@ -93,16 +92,6 @@ public class AnnotationsController extends AbstractObjectTabController
       return null;
    }
 
-   /**
-    * ANNOTATION INLINE - Bêta
-    *
-    * @since 2.2.0
-    */
-   @Override
-   public FicheAnnotationInline getFicheAnnotationInline(){
-      return null;
-   }
-
    @Override
    public AbstractFicheEditController getFicheEdit(){
       return null;
@@ -117,22 +106,5 @@ public class AnnotationsController extends AbstractObjectTabController
    public AbstractFicheStaticController getFicheStatic(){
       return null;
    }
-
-   //	@Override
-   //	public void switchToFicheMode() {
-   //		// on cache la liste
-   //		super.getListeRegion().setOpen(false);
-   //		
-   //		getFiche().setTable(this.tableAnnotation);
-   //		getFiche().switchToStaticMode(false);
-   //	}
-   //	
-   //	public void switchToDetailMode(TableAnnotation tableToShow) {
-   //		// on cache la liste
-   //		super.getListeRegion().setVisible(false);
-   //		
-   //		getFiche().setTable(tableToShow);
-   //		getFiche().switchToStaticMode(true);		
-   //	}
 
 }

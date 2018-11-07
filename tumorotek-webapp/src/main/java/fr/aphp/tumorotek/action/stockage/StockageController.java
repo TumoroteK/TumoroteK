@@ -51,7 +51,6 @@ import org.zkoss.zul.Tabpanel;
 import fr.aphp.tumorotek.action.MainWindow;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.annotation.FicheAnnotation;
-import fr.aphp.tumorotek.action.annotation.FicheAnnotationInline;
 import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheEditController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheModifMultiController;
@@ -301,7 +300,7 @@ public class StockageController extends AbstractObjectTabController
    /**
     * Ppasse en mode de déplacements des échantillons/dérivés.
     * @param terminale Terminale à afficher.
-    * @param mismatches Une liste de mismatches entre un scan et le stockage virtuel 
+    * @param mismatches Une liste de mismatches entre un scan et le stockage virtuel
     * peux être passée en paramètre pour pré-remplir les déplacements
     * @version 2.1
     */
@@ -444,11 +443,6 @@ public class StockageController extends AbstractObjectTabController
    }
 
    @Override
-   public FicheAnnotationInline getFicheAnnotationInline(){
-      return null;
-   }
-
-   @Override
    public AbstractFicheCombineController getFicheCombine(){
       return null;
    }
@@ -508,7 +502,7 @@ public class StockageController extends AbstractObjectTabController
                }
                // destockage directly from FicheTerminale after scan apply checks
                // else if (getFicheDeplacerEmplacements().isDestockageMode()) {
-               //	
+               //
                // }
             }else{
                Clients

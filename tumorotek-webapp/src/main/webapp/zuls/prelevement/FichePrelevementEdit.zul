@@ -34,7 +34,6 @@
 	* accepté les termes. 
 -->
 <?component name="calendarbox" macroURI="/zuls/component/CalendarBox.zul" class="fr.aphp.tumorotek.component.CalendarBox" ?>
-<?component name="ficheAnnotationInline" macroURI="/zuls/annotation/FicheAnnotationInline.zul" ?>
 
 <window id="fwinPrelevementEdit" border="none" apply="fr.aphp.tumorotek.action.prelevement.FichePrelevementEdit">
 	<panel collapsible="false" title="${c:l('fichePrelevement.panel.title')}" sclass="fichePanelv2" id="winPanel" closable="true">
@@ -81,10 +80,6 @@
 								<listcell label="@{naturePrlvt.nature}" />
 							</listitem>
 						</listbox>
-					</row>
-					<!-- Annotation inline -->
-					<row spans="4" style="background-color: blue">
-						<ficheAnnotationInline id="ficheTissuInlineAnnoPrelevement" hflex="1" />
 					</row>
 					<row spans="4">
 						<separator />
@@ -269,7 +264,7 @@
 						<label value="${c:l('fichePrelevement.date.statut')}" sclass="formLabel" />
 
 						<datebox id="dateConsentBoxPrlvt" format="${c:l('validation.date.format.simple')}" value="@{fwinPrelevementEdit$composer.object.consentDate,
-									save-when='validate.onClick, create.onClick, next.onClick'}" lenient="false" />
+									save-when='validate.onClick, create.onClick, next.onClick'}" lenient="true" />
 					</row>
 				</rows>
 			</grid>

@@ -45,7 +45,12 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -56,6 +61,7 @@ import org.jdom.Element;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -93,6 +99,7 @@ import fr.aphp.tumorotek.action.stockage.StockageController;
 import fr.aphp.tumorotek.component.SmallObjDecorator;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.dto.EchantillonDTO;
+import fr.aphp.tumorotek.manager.coeur.echantillon.EchantillonManager;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.EmplacementDoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.TKException;
@@ -119,7 +126,6 @@ import fr.aphp.tumorotek.model.stockage.Emplacement;
 import fr.aphp.tumorotek.model.stockage.Enceinte;
 import fr.aphp.tumorotek.model.stockage.Terminale;
 import fr.aphp.tumorotek.model.systeme.Fichier;
-import fr.aphp.tumorotek.utils.Utils;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -173,7 +179,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
    private Integer dernierCode;
    private String premiereLettre;
    private String derniereLettre;
-   private List<String> lettres = new ArrayList<>();
 
    private boolean isPrelevementProcedure = false;
 
@@ -212,8 +217,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
       getCodesMorphoController().setIsOrg(false);
       getCodesMorphoController().setIsMorpho(true);
 
-      lettres = Utils.createListChars(26, null, new ArrayList<String>());
-
       getBinder().loadAll();
    }
 
@@ -221,16 +224,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
    public void setObject(final TKdataObject echan){
       setEchantillon((Echantillon) echan);
       super.setObject(echan);
-
-      /**
-       * ANNOTATION INLINE - Bêta
-       *
-       * @since 2.2.0
-       */
-      /*FicheAnnotation inline = getFicheAnnotationInline();
-      if(null != inline){ // re-dessine le bloc inline annotation
-         inline.setObj((TKAnnotableObject) echan);
-      }*/
    }
 
    @Override
@@ -282,16 +275,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
    @Override
    public void onClick$create(){
-      // si l'utilisateur devait sélectionner un prlvt parent
-      //		if (selectParent
-      //				&& connaissancesBoxEchan.getSelectedIndex() == 0) {
-      //			// on valide la sélection
-      //			cttCodeParentEchan.validate(codesParentBoxEchan, null);
-      //			String tmp = codesParentBoxEchan.getValue();
-      //			// on récupère le prlvt en fonction de son code
-      //			this.prelevement = ManagerLocator.getPrelevementManager()
-      //				.findByCodeLikeManager(tmp, true).get(0);
-      //		}
 
       boolean ok = false;
 
@@ -345,13 +328,10 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
    public boolean onLaterCreate(){
 
       try{
-         // createObjectWithAnnots();
          createNewObject();
 
          // ajout des echantillons
-         //if (!isPrelevementProcedure) {
          getObjectTabController().getListe().addListToObjectList(addedEchantillons);
-         //}
 
          if(isPrelevementProcedure){
             getPrelevementController().getListe().addToObjectList(getParentObject());
@@ -359,7 +339,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
             if(getParentObject() != null){
                if(getPrelevementController() != null){
                   // update du parent dans la liste
-                  //parentUpdated =
                   getPrelevementController().getListe().updateObjectGridListFromOtherPage(getParentObject(), true);
                }
                // retour vers la fiche prelevement au besoin
@@ -378,13 +357,8 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
             }
          }
 
-         //			if (isPrelevementProcedure) {
-         //				Tabpanel panel = (Tabpanel) getMainWindow()
-         //					.getMainTabbox().getFellow("echantillonPanel");
-         //				getMainWindow().destroyContentPanel(panel);
-         //			} else {
          getObjectTabController().onCreateDone();
-         //			}
+
          // commande le passage en mode statique
          if(isPrelevementProcedure){
             getPrelevementController().setNextToEchanClicked(false);
@@ -431,23 +405,11 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
    @Override
    public void createNewObject(){
 
-      /**
-       * ANNOTATION INLINE - Bêta
-       *
-       * @since 2.2.0
-       */
-      // On ajoute à la liste des annotations verticales celles horizontales
-      /*List<AnnotationValeur> annotationValeursToCreateOrUpdate = getObjectTabController().getFicheAnnotationInline().getValeursToCreateOrUpdate();
-      annotationValeursToCreateOrUpdate.addAll(getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate());*/
-      /** END **/
-
       boolean revertMaladie = false;
       boolean revertPatient = false;
 
       // Enregistrement ou reference vers le prelevement
       if(isPrelevementProcedure){
-         //			setParentObject(getPrelevementController()
-         //					.getFicheLaboInter().getPrelevementPrepared());
          getParentObject().setLaboInters(new HashSet<>(getLaboInters()));
 
          if(getParentObject().getMaladie() != null){
@@ -458,25 +420,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
          }
 
          getPrelevementController().getFicheAnnotation().populateValeursActionLists(true, false);
-         /**
-          * ANNOTATION INLINE - Bêta
-          *
-          * @since 2.2.0
-          */
-         //getPrelevementController().getFicheAnnotationInline().populateValeursActionLists(true, false);
-
-         //			ManagerLocator.getPrelevementManager()
-         //				.createPrelAndEchansManager(getParentObject(),
-         //					getPrelevementController().getFicheAnnotation()
-         //											.getValeursToCreateOrUpdate(),
-         //													addedEchantillons,
-         //					getObjectTabController().getFicheAnnotation()
-         //											.getValeursToCreateOrUpdate(),
-         //					getBanque(), SessionUtils.getLoggedUser(sessionScope),
-         //								true);
-         //
-         //			getPrelevementController()
-         //							.getFicheAnnotation().clearValeursLists(true);
 
       }else{ // reference vers le patient
          // si l'utilisateur devait sélectionner un prlvt parent
@@ -487,7 +430,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
       }
 
       final List<File> filesCreated = new ArrayList<>();
-      // List<File> filesToDelete = new ArrayList<File>();
 
       final DefaultTransactionDefinition def = new DefaultTransactionDefinition();
       def.setName("updatePrelAndEchansTx");
@@ -497,15 +439,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
       try{
          if(isPrelevementProcedure){
-            /**
-             * ANNOTATION INLINE - Bêta
-             *
-             * @since 2.2.0
-             */
-            // On ajoute à la liste des annotations verticales celles horizontales pour le prélèvement
-            /*List<AnnotationValeur> annotationValeursToCreateOrUpdatePrelevement = getPrelevementController().getFicheAnnotationInline().getValeursToCreateOrUpdate();
-            annotationValeursToCreateOrUpdatePrelevement.addAll(getPrelevementController().getFicheAnnotation().getValeursToCreateOrUpdate());*/
-            /** END **/
 
             //enregistrement du prelevement
             ManagerLocator.getPrelevementManager().createObjectManager(getParentObject(), getBanque(),
@@ -516,35 +449,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                new ArrayList<>(getParentObject().getLaboInters()),
                getPrelevementController().getFicheAnnotation().getValeursToCreateOrUpdate(), filesCreated,
                SessionUtils.getLoggedUser(sessionScope), true, SessionUtils.getSystemBaseDir(), false);
-            /**
-             * ANNOTATION INLINE - Bêta
-             *
-             * @since 2.2.0
-             */
-            /*ManagerLocator.getPrelevementManager()
-               .createObjectManager(
-                  getParentObject(),
-                  getBanque(),
-                  getParentObject().getNature(),
-                  getParentObject().getMaladie(),
-                  getParentObject().getConsentType(),
-                  getParentObject().getPreleveur(),
-                  getParentObject().getServicePreleveur(),
-                  getParentObject().getPrelevementType(),
-                  getParentObject().getConditType(),
-                  getParentObject().getConditMilieu(),
-                  getParentObject().getTransporteur(),
-                  getParentObject().getOperateur(),
-                  getParentObject().getQuantiteUnite(),
-                  new ArrayList<LaboInter>(getParentObject().getLaboInters()),
-                  annotationValeursToCreateOrUpdatePrelevement,
-                  filesCreated,
-                  SessionUtils.getLoggedUser(sessionScope), true,
-                  SessionUtils.getSystemBaseDir(), false);*/
          }
-
-         //CodeAssigne codeOrgExp;
-         //CodeAssigne codeLesExp;
 
          Fichier crAnapath = null;
          String crDataType = null;
@@ -557,18 +462,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
                // nettoie les code de la reference vers l'echantillon
                // utilisé comme base objet pour la creation multiple
-               //					codeOrgExp = echantillonsDecorated
-               //											.get(i).getCodeOrganeToExport();
-               //					if (codeOrgExp != null) {
-               //						codeOrgExp.setEchantillon(null);
-               //						codeOrgExp.setEchanExpOrg(null);
-               //					}
-               //					codeLesExp = echantillonsDecorated
-               //												.get(i).getCodeLesToExport();
-               //					if (codeLesExp != null) {
-               //						codeLesExp.setEchantillon(null);
-               //						codeLesExp.setEchanExpLes(null);
-               //					}
                final List<CodeAssigne> codes = new ArrayList<>();
                codes.addAll(echantillonsDecorated.get(i).getCodesOrgsToCreateOrEdit());
                codes.addAll(echantillonsDecorated.get(i).getCodesLesToCreateOrEdit());
@@ -577,8 +470,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                if(newEchan.getCrAnapath() != null && newEchan.getAnapathStream() == null){
                   newEchan.getCrAnapath().setMimeType(crDataType);
                   newEchan.getCrAnapath().setPath(crPath);
-                  // crAnapath = newEchan.getCrAnapath().cloneNoId();
-                  // crAnapath.setFichierId(null);
                }
                crAnapath = newEchan.getCrAnapath();
                newEchan.setCrAnapath(null);
@@ -586,45 +477,11 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                // création de l'objet
                ManagerLocator.getEchantillonManager().createObjectWithCrAnapathManager(newEchan, getBanque(), getParentObject(),
                   newEchan.getCollaborateur(),
-                  ManagerLocator.getObjetStatutManager().findByStatutLikeManager("NON STOCKE", true).get(0),
-                  // newEchan.getEmplacement(),
-                  null, // since 2.0.13.2
+                  ManagerLocator.getObjetStatutManager().findByStatutLikeManager("NON STOCKE", true).get(0), null, // since 2.0.13.2
                   newEchan.getEchantillonType(), codes, newEchan.getQuantiteUnite(), newEchan.getEchanQualite(),
                   newEchan.getModePrepa(), crAnapath, newEchan.getAnapathStream(), filesCreated, newEchan.getReservation(),
-                  //codeOrgExp,
-                  //codeLesExp,
                   echantillonsDecorated.get(i).getValeursToCreateOrUpdate(), SessionUtils.getLoggedUser(sessionScope), true,
                   SessionUtils.getSystemBaseDir(), false);
-               /**
-                * ANNOTATION INLINE - Bêta
-                *
-                * @since 2.2.0
-                */
-               /*ManagerLocator.getEchantillonManager()
-                  .createObjectWithCrAnapathManager(newEchan,
-                     getBanque(),
-                     getParentObject(),
-                     newEchan.getCollaborateur(),
-                     ManagerLocator.getObjetStatutManager()
-                        .findByStatutLikeManager("NON STOCKE", true).get(0),
-                     // newEchan.getEmplacement(),
-                     null, // since 2.0.13.2
-                     newEchan.getEchantillonType(),
-                     codes,
-                     newEchan.getQuantiteUnite(),
-                     newEchan.getEchanQualite(),
-                     newEchan.getModePrepa(),
-                     crAnapath,
-                     newEchan.getAnapathStream(),
-                     filesCreated,
-                     newEchan.getReservation(),
-                     //codeOrgExp,
-                     //codeLesExp,
-                     annotationValeursToCreateOrUpdate,
-                     SessionUtils.getLoggedUser(sessionScope),
-                     true,
-                     SessionUtils.getSystemBaseDir(),
-                     false);*/
 
                if(newEchan.getAnapathStream() != null){
                   crDataType = newEchan.getCrAnapath().getMimeType();
@@ -673,10 +530,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                batch.getStream(), batch.getChamp(), getBanque(), SessionUtils.getLoggedUser(sessionScope),
                SessionUtils.getSystemBaseDir(), filesCreated);
          }
-
-         //			for (File f : filesToDelete) {
-         //				f.delete();
-         //			}
 
       }catch(final RuntimeException re){
          ManagerLocator.getTxManager().rollback(status);
@@ -733,16 +586,9 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                   }
                }
 
-               //						if (ed.getCodeOrganeToExport() != null) {
-               //							ed.getCodeOrganeToExport().setEchantillon(e);
-               //							ed.getCodeOrganeToExport().setEchanExpOrg(e);
-               //						}
-               //						if (ed.getCodeLesToExport() != null) {
-               //							ed.getCodeLesToExport().setEchantillon(e);
-               //							ed.getCodeLesToExport().setEchanExpLes(e);
-               //						}
-
-            }else{ // la boucle arrive a l'echantillon planté.
+            }
+            // la boucle arrive a l'echantillon planté.
+            else{
                break;
             }
          }
@@ -892,9 +738,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
          getParentObject().setLaboInters(
             new HashSet<>(ManagerLocator.getPrelevementManager().getLaboIntersWithOrderManager(getParentObject())));
 
-         //CodeAssigne codeOrgExp;
-         //CodeAssigne codeLesExp;
-
          Fichier crAnapath = null;
          String crDataType = null;
          String crPath = null;
@@ -904,18 +747,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                final Echantillon newEchan = echantillonsDecorated.get(i).getEchantillon();
                // nettoie les code de la reference vers l'echantillon
                // utilisé comme base objet pour la creation multiple
-               //					codeOrgExp = echantillonsDecorated
-               //											.get(i).getCodeOrganeToExport();
-               //					if (codeOrgExp != null) {
-               //						codeOrgExp.setEchantillon(null);
-               //						codeOrgExp.setEchanExpOrg(null);
-               //					}
-               //					codeLesExp = echantillonsDecorated
-               //												.get(i).getCodeLesToExport();
-               //					if (codeLesExp != null) {
-               //						codeLesExp.setEchantillon(null);
-               //						codeLesExp.setEchanExpLes(null);
-               //					}
                final List<CodeAssigne> codes = new ArrayList<>();
                codes.addAll(echantillonsDecorated.get(i).getCodesOrgsToCreateOrEdit());
                codes.addAll(echantillonsDecorated.get(i).getCodesLesToCreateOrEdit());
@@ -924,8 +755,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                if(newEchan.getCrAnapath() != null && newEchan.getAnapathStream() == null){
                   newEchan.getCrAnapath().setMimeType(crDataType);
                   newEchan.getCrAnapath().setPath(crPath);
-                  // crAnapath = newEchan.getCrAnapath().cloneNoId();
-                  // crAnapath.setFichierId(null);
                }
                crAnapath = newEchan.getCrAnapath();
                newEchan.setCrAnapath(null);
@@ -1033,7 +862,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
     * Méthode qui va sauvegarder le stockage des échantillons.
     */
    public void saveEmplacements(){
-      //List<String> errorMsg = new ArrayList<String>();
 
       // on parcourt la hashtable du stockage et on extrait
       // l'emplacement de chaque échantillon
@@ -1068,8 +896,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
          // dans la liste des échantillons
          if(!addedEchantillons.contains(deco.getEchantillon())){
             // update de l'échantillon dans la liste
-            //getObjectTabController().getListe()
-            //.updateObjectGridList(echanToUpdate);
             getObjectTabController().getListe().updateObjectGridListFromOtherPage(echanToUpdate, false);
          }
       }
@@ -1254,9 +1080,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
     */
    public void onClick$addEchantillons(final Event event){
       try{
-         // onBlur$dateStockCalBox();
          if(getSelectedType() == null){
-            //Clients.scrollIntoView(typesBoxEchan);
             throw new WrongValueException(typesBoxEchan, Labels.getLabel("ficheEchantillon.error.type"));
          }
 
@@ -1324,12 +1148,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
          // prepare les listes de valeurs à manipuler
          getObjectTabController().getFicheAnnotation().populateValeursActionLists(true, false);
-         /**
-          * ANNOTATION INLINE - Bêta
-          *
-          * @since 2.2.0
-          */
-         //getObjectTabController().getFicheAnnotationInline().populateValeursActionLists(true, false);
+
          // clone liste valeurs annotations
          final List<AnnotationValeur> clonesValeurs = new ArrayList<>();
 
@@ -1357,8 +1176,8 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
             first = premierCode;
             last = dernierCode;
          }else{
-            first = lettres.indexOf(premiereLettre.toUpperCase());
-            last = lettres.indexOf(derniereLettre.toUpperCase());
+            first = premiereLettre.charAt(0);
+            last = derniereLettre.charAt(0);
          }
 
          // Création de tous les nouveaux échantillons
@@ -1371,13 +1190,12 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
             // 2.0.10.6 VIROBIOTEC création codes sans prefixe
             if(getCodePrefixe() != null && !getCodePrefixe().trim().equals("")){
                sb.append(getCodePrefixe());
-               //sb.append(".");
                sb.append(separatorBox.getValue() != null ? separatorBox.getValue() : "");
             }
             if(numNombres.isChecked()){
                sb.append(i);
             }else{
-               sb.append(lettres.get(i));
+               sb.append((char) i);
             }
 
             usedCodesEchantillons.add(sb.toString());
@@ -1410,17 +1228,14 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
             deco.setCodesOrgsToCreateOrEdit(
                CodeAssigneDecorator.undecorateListe(getCodesOrganeController().getObjToCreateOrEdit()));
-            //deco.setCodeOrganeToExport(getCodeOrganeToExport());
             deco.setCodesLesToCreateOrEdit(
                CodeAssigneDecorator.undecorateListe(getCodesMorphoController().getObjToCreateOrEdit()));
-            //deco.setCodeLesToExport(getCodeLesToExport());
 
             deco.setValeursToCreateOrUpdate(clonesValeurs);
 
             deco.setNonConformiteTraitements(findSelectedNonConformitesTraitement());
             deco.setNonConformiteCessions(findSelectedNonConformitesCession());
 
-            //				deco.setAnapatStream(getAnapathStream());
             echantillonsDecorated.add(deco);
 
             // file batches
@@ -1440,18 +1255,12 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
          getEchanDecoRenderer().setUsedCodes(usedCodesEchantillons);
 
-         /*String id = stockageEchantillons.getUuid();
-         String idTop = panelChildrenWithScroll.getUuid();
-         Clients.evalJavaScript("document.getElementById('" + idTop + "')"
-         		+ ".scrollTop = document.getElementById('" + id + "')"
-         		+ ".offsetTop;");	*/
          Clients.scrollIntoView(stockageEchantillons);
 
          clearForm(true);
 
          // active le lien vers le stockage
          if(!echantillons.isEmpty()){
-            //stockageEchantillons.setSclass("formLink");
             stockageEchantillons.setDisabled(false);
          }
       }catch(final ValidationException ve){
@@ -1467,9 +1276,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
     * d'échantillons.
     */
    public void onDeleteDeco$rows(final ForwardEvent event){
-      //		EchantillonDecorator2 deco = (EchantillonDecorator2)
-      //			AbstractListeController2
-      //				.getBindingData((ForwardEvent) event, false);
 
       EchantillonDTO deco = (EchantillonDTO) event.getOrigin().getData();
 
@@ -1502,7 +1308,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
       // desactive le lien vers le stockage
       if(echantillons.isEmpty()){
-         //stockageEchantillons.setSclass("formLabel");
          stockageEchantillons.setDisabled(true);
       }
    }
@@ -1672,8 +1477,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
       quaniteUnitesBoxEchan.clearSelection();
       ((ListModelList<Object>) quaniteUnitesBoxEchan.getModel()).clearSelection();
 
-      // setSelectedCollaborateur(null);
-
       setSelectedQualite(null);
       qualitesBoxEchan.clearSelection();
       ((ListModelList<Object>) qualitesBoxEchan.getModel()).clearSelection();
@@ -1715,8 +1518,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
          getObjectTabController().getFicheAnnotation().clearValeursLists(true);
          getObjectTabController().getFicheAnnotation().updateAnnotationValues();
          getObjectTabController().getFicheAnnotation().switchToStaticOrEditMode(false, false);
-         //getObjectTabController()
-         //.getFicheAnnotation().showButtonsBar(false);
       }
 
       setSelectedNonConformiteTraitement(null);
@@ -1763,53 +1564,84 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
     * @param dernier Dernier code des échanstillons à créer.
     * @return True s'il y a des doublons, false sinon.
     */
-   public List<String> findDoublons(final Integer premier, final Integer dernier){
+   private List<String> findDoublonsInUsedCodes(final Integer premier, final Integer dernier){
 
-      final List<String> doublons = new ArrayList<>();
-      for(int i = premier; i <= dernier; i++){
-         final StringBuffer sb = new StringBuffer();
-         if(getCodePrefixe() != null && !getCodePrefixe().trim().equals("")){
-            sb.append(getCodePrefixe());
-            // sb.append(".");
-            sb.append(separatorBox.getValue() != null ? separatorBox.getValue() : "");
-         }
-         // sb.append(codePrefixeEchan.getValue());
-         // sb.append(".");
-         sb.append(i);
+      Function<Integer, String> codeEchantillonMapper =
+         i -> new StringBuilder(getCodePrefixe()).append(separatorBox.getValue()).append(i).toString();
+      return IntStream.rangeClosed(premier, dernier).boxed().map(codeEchantillonMapper)
+         .filter(code -> usedCodesEchantillons.contains(code)).collect(Collectors.toList());
 
-         if(usedCodesEchantillons.contains(sb.toString())){
-            doublons.add(String.valueOf(i));
-         }
-      }
-
-      return doublons;
    }
 
    /**
-    * Recherche des doublons pour la permiere et derniere letres saisies.
-    * @return True s'il y a des doublons, false sinon.
+    * Recherche s'il existe en base des doublons de code échantillon dans l'intervalle saisi pour la plateforme courante
+    * @param premier numéro de début de l'intervalle
+    * @param dernier numéro de fn de l'intervalle
+    * @return liste des codes échantillon en doublon
     */
-   public List<String> findDoublonsForLetters(final String premier, final String dernier){
+   private List<Echantillon> findDoublonsInPlateforme(final int premier, final int dernier){
 
-      final List<String> doublons = new ArrayList<>();
-      for(int i = lettres.indexOf(premier); i <= lettres.indexOf(dernier); i++){
-         final StringBuffer sb = new StringBuffer();
-         if(getCodePrefixe() != null && !getCodePrefixe().trim().equals("")){
-            sb.append(getCodePrefixe());
-            // sb.append(".");
-            sb.append(separatorBox.getValue() != null ? separatorBox.getValue() : "");
+      Function<String, String> mapToCodeEchantillon =
+         s -> new StringBuilder(getCodePrefixe()).append(separatorBox.getValue()).append(s).toString();
 
-         }
-         // sb.append(codePrefixeEchan.getValue());
-         // sb.append(".");
-         sb.append(lettres.get(i));
+      List<String> listeCodes = IntStream.rangeClosed(premierCode, dernierCode).mapToObj(String::valueOf)
+         .map(mapToCodeEchantillon).collect(Collectors.toList());
+      return ManagerLocator.getManager(EchantillonManager.class).findByCodeInListWithPlateforme(listeCodes,
+         SessionUtils.getCurrentPlateforme());
 
-         if(usedCodesEchantillons.contains(sb.toString())){
-            doublons.add(lettres.get(i));
-         }
+   }
+
+   /**
+    * Recherche s'il existe des doublons de code échantillon dans entre l'intervalle saisi et les
+    * codes échantillons connus du prélèvement parent
+    * @param premier lettre du début de l'intervalle
+    * @param dernier lettre de fin de l'intervalle
+    * @return liste des codes échantillon en doublon
+    */
+   private List<String> findDoublonsInUsedCodes(final String premier, final String dernier){
+
+      int begin = premier.charAt(0);
+      int end = dernier.charAt(0);
+
+      String prefix = getCodePrefixe();
+
+      List<String> doublons = new ArrayList<>();
+
+      if(!StringUtils.isEmpty(prefix)){
+
+         String delimiter = Optional.ofNullable(separatorBox.getValue()).orElse("");
+
+         Function<String, String> mapCharToCode = s -> new StringBuilder().append(prefix).append(delimiter).append(s).toString();
+         Predicate<String> isCodeUsed = s -> usedCodesEchantillons.contains(s);
+
+         doublons = IntStream.rangeClosed(begin, end).mapToObj(i -> String.valueOf((char) i)).map(mapCharToCode)
+            .filter(isCodeUsed).collect(Collectors.toList());
+
       }
 
       return doublons;
+
+   }
+
+   /**
+    * Recherche s'il existe en base des doublons de code échantillon dans l'intervalle saisi pour la plateforme courante
+    * @param premier lettre de début de l'intervalle
+    * @param dernier lettre de fn de l'intervalle
+    * @return liste des codes échantillon en doublon
+    */
+   private List<Echantillon> findDoublonsInPlateforme(final String premier, final String dernier){
+
+      int begin = premier.charAt(0);
+      int end = dernier.charAt(0);
+
+      Function<Character, String> mapToCodeEchantillon =
+         s -> new StringBuilder(getCodePrefixe()).append(separatorBox.getValue()).append(s).toString();
+
+      List<String> listeCodes =
+         IntStream.rangeClosed(begin, end).mapToObj(idx -> (char) idx).map(mapToCodeEchantillon).collect(Collectors.toList());
+      return ManagerLocator.getManager(EchantillonManager.class).findByCodeInListWithPlateforme(listeCodes,
+         SessionUtils.getCurrentPlateforme());
+
    }
 
    /**
@@ -1845,37 +1677,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
          }
       }
    }
-
-   //	/**
-   //	 * Recherche le statut de l'échantillon en fonction de la valeurs du
-   //	 * champ QUANTITE.
-   //	 * @return Un ObjetStatut : STOCKE ou EPUISE.
-   //	 */
-   //	public ObjetStatut findStatutForEchantillon() {
-   //		ObjetStatut stocke = ManagerLocator.getObjetStatutManager()
-   //			.findByStatutLikeManager("STOCKE", true).get(0);
-   //		ObjetStatut epuise = ManagerLocator.getObjetStatutManager()
-   //			.findByStatutLikeManager("EPUISE", true).get(0);
-   //
-   //		if (stocke != null && epuise != null) {
-   //			Float zero = (float) 0.0;
-   //			// si la qté est non null
-   //			if (getEchantillon().getQuantite() != null) {
-   //
-   //				// si sa valeur est égale a 0 => epuisé
-   //				if (getEchantillon().getQuantite().equals(zero)) {
-   //					return epuise;
-   //				} else {
-   //					return stocke;
-   //				}
-   //
-   //			} else {
-   //				return stocke;
-   //			}
-   //		} else {
-   //			return null;
-   //		}
-   //	}
 
    /*********************************************************/
    /********************** ACCESSEURS. **********************/
@@ -1965,10 +1766,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
       return echansEmpl;
    }
 
-   //	public void setEchansEmpl(Hashtable<TKStockableObject, Emplacement> e) {
-   //		this.echansEmpl = e;
-   //	}
-
    /*************************************************************************/
    /************************** VALIDATION ***********************************/
    /*************************************************************************/
@@ -1994,7 +1791,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
     * @author Pierre Ventadour.
     *
     */
-   public class ConstPremierCode implements Constraint
+   private class ConstPremierCode implements Constraint
    {
 
       @Override
@@ -2028,7 +1825,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                if(dernierCode != null){
                   // si le dernier code est < au premier
                   if(dernierCode < premierCode){
-                     throw new WrongValueException(comp, "Le premier code saisi ne peut pas être " + "supérieur au dernier.");
+                     throw new WrongValueException(comp, Labels.getLabel("ficheMultiEchantillon.error.premier.code.superieur"));
                   }
 
                   // sinon on enlève toutes les erreurs affichées
@@ -2038,25 +1835,24 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                   dernierCodeBoxEchan.setValue(tmp);
                   dernierCodeBoxEchan.setConstraint(cttDernierCode);
 
-                  final List<String> doublons = findDoublons(premierCode, dernierCode);
-                  // si des doublons existent pour les valeurs saisies
-                  if(doublons.size() > 0){
-                     final StringBuffer sb = new StringBuffer();
-                     if(doublons.size() == 1){
-                        sb.append("Echantillon déjà enregistré " + "pour le numéro : {");
-                        sb.append(doublons.get(0));
-                     }else{
-                        sb.append("Echantillons déjà enregistrés " + "pour les numéros : {");
-                        for(int i = 0; i < doublons.size(); i++){
-                           sb.append(doublons.get(i));
-                           if(i + 1 < doublons.size()){
-                              sb.append(", ");
-                           }
-                        }
-                     }
-                     sb.append("}. Veuillez modifier les numéros saisis.");
-                     throw new WrongValueException(comp, sb.toString());
+                  // recherche de doublons dans les échantillons du parent
+                  final List<String> doublonsParent = findDoublonsInUsedCodes(premierCode, dernierCode);
+                  if(!doublonsParent.isEmpty()){
+                     String doublonsCodes = doublonsParent.stream().collect(Collectors.joining(", "));
+                     throw new WrongValueException(comp,
+                        Labels.getLabel("echantillon.doublon.error.num", new String[] {doublonsCodes}));
                   }
+
+                  // recherche de doublon dans les codes échantillons de la plateforme
+                  final List<Echantillon> doublonsPf = findDoublonsInPlateforme(premierCode, dernierCode);
+                  if(!doublonsPf.isEmpty()){
+                     String doublonsCodes = doublonsPf.stream().map(Echantillon::getCode).collect(Collectors.joining(", "));
+                     String doublonsBanques = doublonsPf.stream().map(Echantillon::getBanque).distinct().map(Banque::getNom)
+                        .collect(Collectors.joining(", "));
+                     throw new WrongValueException(dernierCodeBoxEchan,
+                        Labels.getLabel("error.validation.doublon.code", new String[] {doublonsCodes, doublonsBanques}));
+                  }
+
                   // sinon on enlève toutes les erreurs affichées
                   tmp = dernierCode;
                   Clients.clearWrongValue(dernierCodeBoxEchan);
@@ -2072,7 +1868,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                   dernierCodeBoxEchan.setConstraint(cttDernierCode);
                }
             }else{
-               throw new WrongValueException(comp, "Champ vide non autorisé. " + "Vous devez spécifier une valeur.");
+               throw new WrongValueException(comp, Labels.getLabel("validation.syntax.empty"));
             }
          }else{
             Clients.clearWrongValue(premierCodeBoxEchan);
@@ -2094,7 +1890,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
     * @author Pierre Ventadour.
     *
     */
-   public class ConstDernierCode implements Constraint
+   private class ConstDernierCode implements Constraint
    {
 
       @Override
@@ -2128,7 +1924,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                if(premierCode != null){
                   // si le dernier code est < au premier
                   if(dernierCode < premierCode){
-                     throw new WrongValueException(comp, "Le premier code saisi ne peut pas être " + "supérieur au dernier.");
+                     throw new WrongValueException(comp, Labels.getLabel("ficheMultiEchantillon.error.premier.code.superieur"));
                   }
 
                   // sinon on enlève toutes les erreurs affichées
@@ -2138,24 +1934,26 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                   premierCodeBoxEchan.setValue(tmp);
                   premierCodeBoxEchan.setConstraint(cttPremierCode);
 
-                  final List<String> doublons = findDoublons(premierCode, dernierCode);
-                  // si des doublons existent pour les valeurs saisies
-                  if(doublons.size() > 0){
-                     final StringBuffer sb = new StringBuffer();
-                     if(doublons.size() == 1){
-                        sb.append("Echantillon déjà enregistré " + "pour le numéro : {");
-                        sb.append(doublons.get(0));
-                     }else{
-                        sb.append("Echantillons déjà enregistrés " + "pour les numéros : {");
-                        for(int i = 0; i < doublons.size(); i++){
-                           sb.append(doublons.get(i));
-                           if(i + 1 < doublons.size()){
-                              sb.append(", ");
-                           }
-                        }
-                     }
-                     sb.append("}. Veuillez modifier les numéros saisis.");
-                     throw new WrongValueException(comp, sb.toString());
+                  // recherche de doublons avec les échantillons du parent
+                  final List<String> doublonsCode = findDoublonsInUsedCodes(premierCode, dernierCode);
+                  if(!doublonsCode.isEmpty()){
+                     String codesDoublons = doublonsCode.stream().collect(Collectors.joining(", "));
+                     throw new WrongValueException(comp,
+                        Labels.getLabel("echantillon.doublon.error.num", new String[] {codesDoublons}));
+                  }
+
+                  // si des doublons existent pour la plateforme
+                  final List<Echantillon> doublonsEchantillons = findDoublonsInPlateforme(premierCode, dernierCode);
+                  if(!doublonsEchantillons.isEmpty()){
+
+                     String codesDoublons =
+                        doublonsEchantillons.stream().map(Echantillon::getCode).collect(Collectors.joining(", "));
+                     String banquesDoublons = doublonsEchantillons.stream().map(Echantillon::getBanque).distinct()
+                        .map(Banque::getNom).collect(Collectors.joining(", "));
+
+                     throw new WrongValueException(comp,
+                        Labels.getLabel("error.validation.doublon.code", new String[] {codesDoublons, banquesDoublons}));
+
                   }
                   // sinon on enlève toutes les erreurs affichées
                   tmp = premierCode;
@@ -2172,7 +1970,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                   premierCodeBoxEchan.setConstraint(cttPremierCode);
                }
             }else{
-               throw new WrongValueException(comp, "Champ vide non autorisé. " + "Vous devez spécifier une valeur.");
+               throw new WrongValueException(comp, Labels.getLabel("validation.syntax.empty"));
             }
          }else{
             Clients.clearWrongValue(premierCodeBoxEchan);
@@ -2194,22 +1992,27 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
     * @author Pierre Ventadour.
     *
     */
-   public class ConstPremiereLettre implements Constraint
+   private class ConstPremiereLettre implements Constraint
    {
 
       @Override
       public void validate(final Component comp, final Object value){
+
          // on ne prend en compte cette contrainte que si
          // l'utilisateur veut utiliser des lettres en
          // numérotation
          if(numLettres.isChecked()){
-            // on récupère la valeur dans premiereLettreBoxEchan
-            premiereLettre = (String) value;
+
+            String sValue = (String) value;
 
             // si une valeur est saisie
-            if(premiereLettre != null && !premiereLettre.equals("")){
+            if(sValue != null && !"".equals(sValue)){
+
+               // on récupère la valeur dans premiereLettreBoxEchan
+               premiereLettre = sValue.toUpperCase();
+
                // si le premier code est invalide
-               if(!lettres.contains(premiereLettre.toUpperCase())){
+               if(!premiereLettre.matches("[A-Z]")){
                   throw new WrongValueException(comp, Labels.getLabel("ficheMultiEchantillons.lettre.invalide"));
                }
                // Si la derniereLettre est null (1ère édition de la page)
@@ -2229,9 +2032,8 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                // derniereLettreBoxEchan
                if(derniereLettre != null && !derniereLettre.equals("")){
                   // si la derniere est avant la premiere
-                  if(lettres.indexOf(derniereLettre.toUpperCase()) < lettres.indexOf(premiereLettre.toUpperCase())){
-                     throw new WrongValueException(comp,
-                        "La première lettre saisie ne " + "peut pas être alphabétiquement " + "après la dernière.");
+                  if(derniereLettre.compareToIgnoreCase(premiereLettre) < 0){
+                     throw new WrongValueException(comp, Labels.getLabel("ficheMultiEchantillon.error.premier.lettre.superieur"));
                   }
 
                   // sinon on enlève toutes les erreurs affichées
@@ -2241,26 +2043,25 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                   derniereLettreBoxEchan.setValue(tmp);
                   derniereLettreBoxEchan.setConstraint(cttDerniereLettre);
 
-                  final List<String> doublons =
-                     findDoublonsForLetters(premiereLettre.toUpperCase(), derniereLettre.toUpperCase());
-                  // si des doublons existent pour les valeurs saisies
-                  if(doublons.size() > 0){
-                     final StringBuffer sb = new StringBuffer();
-                     if(doublons.size() == 1){
-                        sb.append("Echantillon déjà enregistré " + "pour la lettre : {");
-                        sb.append(doublons.get(0));
-                     }else{
-                        sb.append("Echantillons déjà enregistrés " + "pour les lettres : {");
-                        for(int i = 0; i < doublons.size(); i++){
-                           sb.append(doublons.get(i));
-                           if(i + 1 < doublons.size()){
-                              sb.append(", ");
-                           }
-                        }
-                     }
-                     sb.append("}. Veuillez modifier les lettres saisies.");
-                     throw new WrongValueException(comp, sb.toString());
+                  // recherche de doublons avec les échantillons du parent
+                  final List<String> doublonsCodes = findDoublonsInUsedCodes(premiereLettre, derniereLettre);
+                  if(!doublonsCodes.isEmpty()){
+                     String codesDoublons = doublonsCodes.stream().collect(Collectors.joining(", "));
+                     throw new WrongValueException(comp,
+                        Labels.getLabel("echantillon.doublon.error.letter", new String[] {codesDoublons}));
                   }
+
+                  // recherche de doublons sur la plateforme
+                  final List<Echantillon> doublonsEchantillons = findDoublonsInPlateforme(premiereLettre, derniereLettre);
+                  if(!doublonsEchantillons.isEmpty()){
+                     String codesDoublons =
+                        doublonsEchantillons.stream().map(Echantillon::getCode).collect(Collectors.joining(", "));
+                     String pfDoublons = doublonsEchantillons.stream().map(Echantillon::getBanque).distinct().map(Banque::getNom)
+                        .collect(Collectors.joining(", "));
+                     throw new WrongValueException(comp,
+                        Labels.getLabel("error.validation.doublon.code", new String[] {codesDoublons, pfDoublons}));
+                  }
+
                   // sinon on enlève toutes les erreurs affichées
                   tmp = derniereLettre;
                   Clients.clearWrongValue(derniereLettreBoxEchan);
@@ -2276,7 +2077,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                   derniereLettreBoxEchan.setConstraint(cttDerniereLettre);
                }
             }else{
-               throw new WrongValueException(comp, "Champ vide non autorisé. " + "Vous devez spécifier une valeur.");
+               throw new WrongValueException(comp, Labels.getLabel("validation.syntax.empty"));
             }
          }else{
             Clients.clearWrongValue(premiereLettreBoxEchan);
@@ -2298,22 +2099,27 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
     * @author Pierre Ventadour.
     *
     */
-   public class ConstDerniereLettre implements Constraint
+   private class ConstDerniereLettre implements Constraint
    {
 
       @Override
       public void validate(final Component comp, final Object value){
+
          // on ne prend en compte cette contrainte que si
          // l'utilisateur veut utiliser des lettres en
          // numérotation
          if(numLettres.isChecked()){
-            // on récupère la valeur dans derniereLettreBoxEchan
-            derniereLettre = (String) value;
+
+            final String sValue = (String) value;
 
             // si une valeur est saisie
-            if(derniereLettre != null && !derniereLettre.equals("")){
+            if(value != null && !"".equals(sValue)){
+
+               // on récupère la valeur dans derniereLettreBoxEchan
+               derniereLettre = sValue.toUpperCase();
+
                // si la derniere lettre n'est pas valide
-               if(!lettres.contains(derniereLettre.toUpperCase())){
+               if(!derniereLettre.matches("[A-Z]")){
                   throw new WrongValueException(comp, Labels.getLabel("ficheMultiEchantillons.lettre.invalide"));
                }
                // Si la premiere lettre est null (1ère édition de la page)
@@ -2323,8 +2129,8 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                   // on enlève la contrainte pour
                   // pouvoir récupérer sa valeur
                   premiereLettreBoxEchan.setConstraint("");
-                  premiereLettreBoxEchan.clearErrorMessage();
                   premiereLettre = premiereLettreBoxEchan.getValue();
+                  premiereLettreBoxEchan.clearErrorMessage();
                   // on remet la contrainte
                   premiereLettreBoxEchan.setConstraint(cttPremiereLettre);
                }
@@ -2334,10 +2140,8 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                if(premiereLettre != null && !premiereLettre.equals("")){
                   // si le dernier code est < au premier
                   // si la derniere est avant la premiere
-                  if(!lettres.contains(premiereLettre.toUpperCase())
-                     || lettres.indexOf(derniereLettre.toUpperCase()) < lettres.indexOf(premiereLettre.toUpperCase())){
-                     throw new WrongValueException(comp,
-                        "La première lettre saisie ne " + "peut pas être alphabétiquement " + "après la dernière.");
+                  if(!premiereLettre.matches("[A-Z]") || derniereLettre.compareToIgnoreCase(premiereLettre) < 0){
+                     throw new WrongValueException(comp, Labels.getLabel("ficheMultiEchantillon.error.premier.lettre.superieur"));
                   }
                   // sinon on enlève toutes les erreurs affichées
                   String tmp = premiereLettre;
@@ -2346,26 +2150,24 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                   premiereLettreBoxEchan.setValue(tmp);
                   premiereLettreBoxEchan.setConstraint(cttPremiereLettre);
 
-                  final List<String> doublons =
-                     findDoublonsForLetters(premiereLettre.toUpperCase(), derniereLettre.toUpperCase());
-                  // si des doublons existent pour les valeurs saisies
-                  if(doublons.size() > 0){
-                     final StringBuffer sb = new StringBuffer();
-                     if(doublons.size() == 1){
-                        sb.append("Echantillon déjà enregistré " + "pour la lettre : {");
-                        sb.append(doublons.get(0));
-                     }else{
-                        sb.append("Echantillons déjà enregistrés " + "pour les lettres : {");
-                        for(int i = 0; i < doublons.size(); i++){
-                           sb.append(doublons.get(i));
-                           if(i + 1 < doublons.size()){
-                              sb.append(", ");
-                           }
-                        }
-                     }
-                     sb.append("}. Veuillez modifier les lettres saisies.");
-                     throw new WrongValueException(comp, sb.toString());
+                  // recherche de doublons dans les échantillons du parent
+                  final List<String> doublonsParent = findDoublonsInUsedCodes(premiereLettre, derniereLettre);
+                  if(!doublonsParent.isEmpty()){
+                     String codesDoublons = doublonsParent.stream().collect(Collectors.joining(", "));
+                     throw new WrongValueException(comp,
+                        Labels.getLabel("echantillon.doublon.error.letter", new String[] {codesDoublons}));
                   }
+
+                  // recherche de doublons dans les échantillons de la plateforme
+                  final List<Echantillon> doublonsPf = findDoublonsInPlateforme(premiereLettre, derniereLettre);
+                  if(!doublonsPf.isEmpty()){
+                     String codesDoublons = doublonsPf.stream().map(Echantillon::getCode).collect(Collectors.joining(", "));
+                     String banquesDoublons = doublonsPf.stream().map(Echantillon::getBanque).distinct().map(Banque::getNom)
+                        .collect(Collectors.joining(", "));
+                     throw new WrongValueException(comp,
+                        Labels.getLabel("error.validation.doublon.code", new String[] {codesDoublons, banquesDoublons}));
+                  }
+
                   // sinon on enlève toutes les erreurs affichées
                   tmp = premiereLettre;
                   Clients.clearWrongValue(premiereLettreBoxEchan);
@@ -2381,7 +2183,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                   premiereLettreBoxEchan.setConstraint(cttPremiereLettre);
                }
             }else{
-               throw new WrongValueException(comp, "Champ vide non autorisé. " + "Vous devez spécifier une valeur.");
+               throw new WrongValueException(comp, Labels.getLabel("validation.syntax.empty"));
             }
          }else{
             Clients.clearWrongValue(premiereLettreBoxEchan);
@@ -2400,7 +2202,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
    @Override
    public void clearConstraints(){
-      //super.clearConstraints();
       Clients.clearWrongValue(codesParentBoxEchan);
       Clients.clearWrongValue(premierCodeBoxEchan);
       Clients.clearWrongValue(dernierCodeBoxEchan);
@@ -2417,7 +2218,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
    @Override
    public void onCheck$sterileBox(){
       Clients.clearWrongValue(sterileBox);
-      //validateSterilite(sterileBox.isChecked());
    }
 
    /**
@@ -2426,10 +2226,8 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
     */
    private void validateSterilite(final boolean value){
       Errors errs = null;
-      //String field = "";
 
       if(value){
-         //field = "sterile";
          // test objet
          final Echantillon testEchan = new Echantillon();
          testEchan.setSterile(true);
@@ -2454,8 +2252,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
       }
 
       if(errs != null && errs.hasErrors()){
-         //			throw new WrongValueException(
-         //				sterileBox, handleErrors(errs, field));
          final List<Errors> errors = new ArrayList<>();
          errors.add(errs);
          throw new ValidationException(errors);
@@ -2548,18 +2344,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
       // on cache les éléments.
       selectParentRowEchan.setVisible(false);
       prelRow.setVisible(true);
-      //codesParentBoxEchan.setVisible(false);
-      //codeParentLabelEchan.setVisible(false);
-      //requiredCodeParentEchan.setVisible(false);
-
-      // on réinitialise les listes de codes.
-      // codesParent.clear();
-      // dictCodesModel = new SimpleListModel(codesParent);
-      // codesParentBoxEchan.setConstraint("");
-      // codesParentBoxEchan.clearErrorMessage();
-      // codesParentBoxEchan.setValue("");
-      // codesParentBoxEchan.setModel(dictCodesModel);
-      // codesParentBoxEchan.setConstraint(cttCodeParentEchan);
 
    }
 
@@ -2570,16 +2354,12 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
     */
    public void addSelectParentMode(){
       selectParent = true;
-      // setParentObject(new Prelevement());
       setParentObject(null);
 
       // affichage des éléments
       selectParentRowEchan.setVisible(true);
       connaissancesBoxEchan.setSelectedIndex(0);
       prelRow.setVisible(false);
-      //codesParentBoxEchan.setVisible(true);
-      //codeParentLabelEchan.setVisible(true);
-      //requiredCodeParentEchan.setVisible(true);
 
       // on récupère la liste des codes des prlvts
       codesParent = ManagerLocator.getPrelevementManager()
@@ -2589,29 +2369,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
       dictCodesModel = new CustomSimpleListModel(codesParent.toArray());
       codesParentBoxEchan.setModel(dictCodesModel);
    }
-
-   /**
-    * Sélection d'un code de prélèvement.
-    * @param event Event : sélection dans la combobox codesParentBoxEchan.
-    * @throws Exception
-    */
-   /*public void onSelect$codesParentBoxEchan(Event event) throws Exception {
-   	if (codesParentBoxEchan.getSelectedItem() != null) {
-   		setCodePrefixe(codesParentBoxEchan.getSelectedItem().getLabel());
-   	}
-   	dateStockCalBox.setHasChanged(false);
-   }*/
-
-   /**
-    * Mise à jour de la variable codeTmp à chaque modification
-    * de l'utilisateur.
-    * @param event Event : modification dans la combobox codesParentBoxEchan.
-    * @throws Exception
-    */
-   /*public void onChanging$codesParentBoxEchan(
-   		InputEvent event) throws Exception {
-   	codeTmp = event.getValue();
-   }*/
 
    /**
     * Mise à jour de la valeur sélectionné dans la combobox lorsque
@@ -2653,8 +2410,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
       setDerniereLettre(null);
 
       // on ré-active la contrainte
-      //codesParentBoxEchan.setModel(dictCodesModel);
-      //codesParentBoxEchan.setConstraint(cttCodeParentEchan);
       cttCodeParentEchan.validate(codesParentBoxEchan, null);
    }
 
@@ -2679,7 +2434,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
          codesParentBoxEchan.setConstraint("");
          codesParentBoxEchan.clearErrorMessage();
          codesParentBoxEchan.setValue("");
-         // codesParentBoxEchan.setConstraint(cttCodeParentEchan);
          connaissancesBoxEchan.setSelectedIndex(0);
       }
 
@@ -2696,11 +2450,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
     */
    @Override
    public void onClick$numerotation(){
-      //		if (getCodePrefixe() == null || getCodePrefixe().equals("")
-      //			||
-      if(getParentObject() != null && !getCodePrefixe().equals(getParentObject().getCode())){
-         setCodePrefixe(generateCodeAndUpdateNumerotation());
-      }
+      setCodePrefixe(generateCodeAndUpdateNumerotation());
    }
 
    /*********************************************************/
@@ -2712,7 +2462,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
     * @author Pierre Ventadour.
     *
     */
-   public class ConstCodeParentEchan implements Constraint
+   private class ConstCodeParentEchan implements Constraint
    {
       /**
        * Méthode de validation du champ dateTransfoBox.
@@ -2724,11 +2474,9 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
          String code = "";
          if(codesParentBoxEchan.getSelectedItem() != null){
             code = codesParentBoxEchan.getSelectedItem().getLabel();
-            //codesParentBoxEchan.setValue(code);
          }else{
             code = codesParentBoxEchan.getValue();
          }
-         // codesParentBoxEchan.setConstraint(cttCodeParentEchan);
 
          if(code.length() == 0){
             throw new WrongValueException(comp,
@@ -2759,10 +2507,8 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
          final Calendar calValue = Calendar.getInstance();
          if(box.getValue() != null){
             calValue.setTime(box.getValue());
-            if(!calValue.equals("")){
-               if(calValue.get(Calendar.YEAR) > 9999){
-                  badDateFormat = true;
-               }
+            if(calValue.get(Calendar.YEAR) > 9999){
+               badDateFormat = true;
             }
          }
       }
@@ -2827,8 +2573,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
    /*************************************************************************/
    public void initFormFromDossierExterne(){
       final ResultatInjection res = SessionUtils.getDossierExterneInjection(sessionScope);
-      // getObjectTabController().setDossierExterne(
-      //		res.getDossierExterne());
 
       if(res != null){
 
@@ -2850,11 +2594,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
             && res.getAnnosEchantillon() != null){
             getObjectTabController().getFicheAnnotation().setAnnotationValues(res.getAnnosEchantillon());
          }
-
-         //	if (getObjectTabController().canUpdateAnnotation()) {
-         //		getObjectTabController().getFicheAnnotation()
-         //			.switchToStaticOrEditMode(false, false);
-         //	}
 
          // codes
          getCodesOrganeController().addCodesFromInjection(res.getCodesOrgane());
@@ -2918,15 +2657,6 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
    public void applyTKObjectsCodesFromScan(final ScanTerminale sT){
       if(!getAddedEchantillons().isEmpty() && !sT.getScanTubes().isEmpty()){
          int i = 0;
-         //			for (ScanTube tube : sT.getScanTubes()) {
-         //				if (i < getAddedEchantillons().size()) {
-         //					((Echantillon) getAddedEchantillons().get(i)).setCode(tube.getCode());
-         //					i++;
-         //				} else {
-         //					break;
-         //				}
-         //			}
-         //			getBinder().loadAttribute(echantillonsList, "model");
          Textbox tb;
          for(final EchantillonDTO deco : getEchantillonsDecorated()){
             if(deco.isNew() && deco.getAdrlTmp() == null){
@@ -2944,45 +2674,4 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
       }
    }
 
-   /**
-    * ANNOTATION INLINE - Bêta
-    *
-    * Copie depuis AbstractObjectTabController
-    * Récupère le controller de la fiche
-    *
-    * @return
-    * @since 2.2.0
-    */
-   /*public FicheAnnotationInline getFicheAnnotationInline(){
-      if(self.getFellowIfAny("ficheAnnotationInlineEchantillon") != null){
-         return ((FicheAnnotationInline) self.getFellow("ficheAnnotationInlineEchantillon")
-            .getFellow("fwinAnnotationInline").getAttributeOrFellow("fwinAnnotationInline$composer", true));
-      }else{
-         return null;
-      }
-   }*/
-
-   /**
-    * ANNOTATION INLINE - Bêta
-    *
-    * Passe qq params au bloc inline annotation sans le dessiner la creation de la
-    * fiche statique.
-    *
-    * @param controller
-    * @since 2.2.0
-    */
-   /*@Override
-   public void setObjectTabController(AbstractObjectTabController controller){
-      super.setObjectTabController(controller);
-      FicheAnnotation inline = getFicheAnnotationInline();
-   
-      if(null != inline){
-         // passe l'entite au controller
-         getFicheAnnotationInline().setEntite(getObjectTabController().getEntiteTab());
-   
-         // à remplacer par ce controller
-         // setFicheController
-         getFicheAnnotationInline().setObjectTabController(getObjectTabController());
-      }
-   }*/
 }

@@ -36,17 +36,25 @@
 package fr.aphp.tumorotek.action.administration.annotations;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zkplus.databind.BindingListModelSet;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.administration.AdministrationController;
 import fr.aphp.tumorotek.component.OneToManyComponent;
+import fr.aphp.tumorotek.manager.context.BanqueManager;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
@@ -61,12 +69,27 @@ public class BanquesAssociees extends OneToManyComponent<Banque>
 
    private static final long serialVersionUID = 1L;
 
+   private Listbox collectionsBox;
+   private BindingListModelSet<Banque> banquesData;
+   private Button addOrRemoveAllBanques;
+
    private List<Banque> objects = new ArrayList<>();
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       objLinkLabel = new Label();
       super.doAfterCompose(comp);
+
+      final ListitemRenderer<Banque> banqueRenderer = (li, banque, index) -> {
+         li.setValue(banque);
+         li.setLabel(banque.getNom());
+      };
+
+      collectionsBox.setItemRenderer(banqueRenderer);
+
+      banquesData = new BindingListModelSet<>(new HashSet<>(), true);
+      banquesData.setMultiple(true);
+
    }
 
    @Override
@@ -74,7 +97,6 @@ public class BanquesAssociees extends OneToManyComponent<Banque>
       return this.objects;
    }
 
-   
    @Override
    public void setObjects(final List<Banque> objs){
       this.objects = objs;
@@ -115,14 +137,14 @@ public class BanquesAssociees extends OneToManyComponent<Banque>
 
    @Override
    public List<Banque> findObjectsAddable(){
-      // Banques ajoutables
-      final List<Banque> banks = ManagerLocator.getBanqueManager()
+
+      final Predicate<Banque> isAddable = b -> !getObjects().contains(b);
+
+      final List<Banque> banks = ManagerLocator.getManager(BanqueManager.class)
          .findByUtilisateurIsAdminManager(SessionUtils.getLoggedUser(sessionScope), SessionUtils.getPlateforme(sessionScope));
-      // retire les TableCodages deja assignés
-      for(int i = 0; i < getObjects().size(); i++){
-         banks.remove(getObjects().get(i));
-      }
-      return banks;
+
+      return banks.stream().filter(isAddable).collect(Collectors.toList());
+
    }
 
    @Override
@@ -171,6 +193,12 @@ public class BanquesAssociees extends OneToManyComponent<Banque>
       deleteHeader.setVisible(getObjects().size() > 1);
    }
 
+   @Override
+   public void switchToStaticMode(){
+      super.switchToStaticMode();
+      addOrRemoveAllBanques.setVisible(false);
+   }
+
    /**
     * Clic sur une banque pour afficher sa fiche.
     * @version 2.1
@@ -188,4 +216,70 @@ public class BanquesAssociees extends OneToManyComponent<Banque>
       return (AdministrationController) self.getParent().getParent().getParent().getParent().getParent().getParent().getParent()
          .getParent().getParent().getAttributeOrFellow("winAdministration$composer", true);
    }
+
+   @Override
+   public void onClick$addObj(){
+
+      // affiche les composants
+      addObjBox.setVisible(true);
+      addObj.setVisible(false);
+      deleteHeader.setVisible(false);
+      addObjBox.setVisible(true);
+      addOrRemoveAllBanques.setVisible(true);
+      collectionsBox.setVisible(true);
+
+      banquesData.clear();
+      banquesData.addAll(findObjectsAddable());
+
+   }
+
+   @Override
+   public void onClick$cancelSelObj(){
+      super.onClick$cancelSelObj();
+      addOrRemoveAllBanques.setVisible(false);
+   }
+
+   @Override
+   public void onClick$addSelObj(){
+
+      addOrRemoveAllBanques.setImage("/images/icones/addBank.png");
+      addOrRemoveAllBanques.setLabel(Labels.getLabel("general.selectAll"));
+
+      banquesData.getSelection().forEach(this::addToListObjects);
+
+      updateComponent();
+
+      // affiche les composants
+      onClick$cancelSelObj();
+   }
+
+   /**
+    * Action déclenchée par le clic sur le bouton tout sélectionner / tout déselectionner
+    */
+   public void onClick$addOrRemoveAllBanques(){
+
+      final Boolean selectAll = (Boolean) addOrRemoveAllBanques.getAttribute("selectAll");
+
+      if(selectAll == null || selectAll){
+         banquesData.setSelection(banquesData);
+         addOrRemoveAllBanques.setImage("/images/icones/small_delete.png");
+         addOrRemoveAllBanques.setLabel(Labels.getLabel("general.unselectAll"));
+         addOrRemoveAllBanques.setAttribute("selectAll", Boolean.FALSE);
+      }else{
+         banquesData.clearSelection();
+         addOrRemoveAllBanques.setImage("/images/icones/addBank.png");
+         addOrRemoveAllBanques.setLabel(Labels.getLabel("general.selectAll"));
+         addOrRemoveAllBanques.setAttribute("selectAll", Boolean.TRUE);
+      }
+
+   }
+
+   /**
+    * Rentourne le modèle de données contenant les collections sélectionnables
+    * @return
+    */
+   public BindingListModelSet<Banque> getBanquesData(){
+      return banquesData;
+   }
+
 }

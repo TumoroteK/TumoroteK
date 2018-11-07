@@ -1,0 +1,33 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <changeSet id="${project.artifactId}-1-init-tumorotek-ddl-dml" author="JDI" context="*">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <or>
+                    <tableExists tableName="PATIENT"/>
+                    <tableExists tableName="PRELEVEMENT"/>
+                    <tableExists tableName="ECHANTILLON"/>
+                </or>
+            </not>
+        </preConditions>
+        <comment>Initialisation de la base de données tumorotek : DDL &amp; DML</comment>
+        <sqlFile encoding="utf8" path="../sql/tumorotek/tumorotek-init.sql" relativeToChangelogFile="true"/>
+        <sqlFile encoding="utf8" path="../sql/tumorotek/createINCAtables.sql" relativeToChangelogFile="true"/>
+        <sqlFile encoding="utf8" path="../sql/tumorotek/createSTATStables.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <changeSet id="${project.artifactId}-2-init-tumorotek-stored-procedures" author="JDI" runOnChange="true" context="*">
+        <comment>Initialisation de la base de données tumorotek : procédures stockées</comment>
+        <sqlFile encoding="utf8" path="../sql/tumorotek/charts.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+        <sqlFile encoding="utf8" path="../sql/tumorotek/export_biobanques.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+        <sqlFile encoding="utf8" path="../sql/tumorotek/export_BIOCAP.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+        <sqlFile encoding="utf8" path="../sql/tumorotek/export_INCA.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+        <sqlFile encoding="utf8" path="../sql/tumorotek/export_mysql.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+        <sqlFile encoding="utf8" path="../sql/tumorotek/export_TGVSO.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+        <sqlFile encoding="utf8" path="../sql/tumorotek/getBoite.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+        <sqlFile encoding="utf8" path="../sql/tumorotek/indicateurs.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+    </changeSet>
+</databaseChangeLog>

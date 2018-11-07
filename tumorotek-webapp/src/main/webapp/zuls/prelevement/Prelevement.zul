@@ -40,9 +40,6 @@
 	<?component name="listePrelevement" macroURI="/zuls/prelevement/ListePrelevement.zul" ?>
 	<?component name="fichePrelevementStatic" macroURI="/zuls/prelevement/FichePrelevementStatic.zul" ?>
 
-	<?component name="listePrelevementBTO" macroURI="/zuls/prelevement/bto/ListePrelevementBTO.zul" ?>
-	<?component name="fichePrelevementStaticBTO" macroURI="/zuls/prelevement/bto/FichePrelevementStaticBTO.zul" ?>
-
 	<?component name="listePrelevementSero" macroURI="/zuls/prelevement/serotk/ListePrelevementSero.zul" ?>
 	<?component name="fichePrelevementStaticSero" macroURI="/zuls/prelevement/serotk/FichePrelevementStaticSero.zul" ?>
 
@@ -56,7 +53,6 @@
 
 				<div>
 					<listePrelevement visible="false" id="listePrelevement" hflex="1" vflex="1" />
-					<listePrelevementBTO visible="false" id="listePrelevementBTO" hflex="1" vflex="1" />
 					<listePrelevementSero visible="false" id="listePrelevementSero" hflex="1" vflex="1" />
 				</div>
 			</west>

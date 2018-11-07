@@ -1,0 +1,27 @@
+<?page title="Résultat de la validation" contentType="text/html;charset=UTF-8"?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+
+<zk>
+<window id="fwinValeurDecimaleModale" border="none"
+	apply="fr.aphp.tumorotek.component.ValeurDecimaleModale">
+	<panel collapsible="false" sclass="fichePanelv2" id="winPanel"
+		style="overflow-y:scroll">
+		<panelchildren id="panelChildrenWithScroll">
+
+			<label id="decimalBoxLabel" sclass="formLabel"/>
+			<decimalbox id="decimalBox" />
+			
+			<toolbar height="100%" id="toolbar" align="end">
+				<hbox spacing="5" align="center">
+					<button id="validate"
+						label="${c:l('general.validate')}" height="24px"
+						image="/images/icones/validate.png" sclass="buttonv2" />
+					<button id="cancelBtn" label="${c:l('general.cancel')}"
+						height="24px" image="/images/icones/cancel.png" sclass="buttonv2" />
+				</hbox>
+			</toolbar>
+			
+		</panelchildren>
+	</panel>
+</window>
+</zk>

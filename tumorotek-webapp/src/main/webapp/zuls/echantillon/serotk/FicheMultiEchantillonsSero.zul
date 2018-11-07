@@ -36,7 +36,6 @@
 <?component name="calendarbox" macroURI="/zuls/component/CalendarBox.zul" class="fr.aphp.tumorotek.component.CalendarBox" ?>
 <?component name="codeAssigneEditor" macroURI="/zuls/code/CodeAssigneEditor.zul" ?>
 <?component name="incaPopUps" macroURI="/zuls/echantillon/incaPopUpsEchantillon.zul" inline="true" ?>
-<!--<?component name="ficheAnnotationInline" macroURI="/zuls/annotation/FicheAnnotationInline.zul" ?>-->
 
 <window id="fwinMultiEchantillons" border="none"
     viewModel="@id('vm')" apply="fr.aphp.tumorotek.action.echantillon.serotk.FicheMultiEchantillonsSero">
@@ -374,10 +373,6 @@
 							</div>
 						</hlayout>
 					</row>
-					<!-- Annotations inline -->
-					<!--<row spans="4" style="background-color: blue">
-						<ficheAnnotationInline id="ficheAnnotationInlineEchantillon" hflex="1" />
-					</row>-->
 					<!-- Infos complémentaires -->
 					<group label="${c:l('ficheEchantillon.infosComp')}"
 						id="groupInfosCompEchan"/>

@@ -416,4 +416,11 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
     * @return liste Echantillons
     */
    List<Echantillon> findByEmplacement(Terminale terminale, Integer position);
+   
+   /**
+    * Recherche des échnatillons correspondant à une liste de code dans une plateforme donnée
+    * @param codes liste des codes à rechercher
+    * @param pf plateforme dans laquelle effectuer la recherche
+    */
+   List<Echantillon> findByCodeInListWithPlateforme(List<String> codes, Plateforme pf);
 }

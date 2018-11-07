@@ -58,7 +58,7 @@ import fr.aphp.tumorotek.action.stats.im.export.ValueToExport;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.stats.Indicateur;
 import fr.aphp.tumorotek.model.stats.SModele;
-import fr.aphp.tumorotek.webapp.general.SessionUtils;
+import fr.aphp.tumorotek.utils.Utils;
 
 public class ExecuteModele
 {
@@ -119,10 +119,10 @@ public class ExecuteModele
    private void initJDBC(){
 
       // if MySQL maybe add zeroDateTimeBehavior=convertToNull
-      final String dbUrl = SessionUtils.getDatabaseURL();
-      final String dbClass = SessionUtils.getDriverClass();
-      final String username = SessionUtils.getUsernameDB();
-      final String password = SessionUtils.getPasswordDB();
+      final String dbUrl = Utils.getDatabaseURL();
+      final String dbClass = Utils.getDriverClass();
+      final String username = Utils.getUsernameDB();
+      final String password = Utils.getPasswordDB();
 
       try{
          // Connection to database

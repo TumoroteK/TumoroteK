@@ -39,8 +39,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.naming.NamingException;
-
 import org.apache.commons.collections4.ListUtils;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -681,33 +679,33 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
             new Messagebox.Button[] {Messagebox.Button.CANCEL, Messagebox.Button.RETRY},
             new String[] {Labels.getLabel("general.cancel"), Labels.getLabel("general.retry")}, Messagebox.QUESTION, null,
             new EventListener<ClickEvent>()
-            {
-               @Override
-               public void onEvent(final ClickEvent e){
-                  if(e.getName().equals("onClose")){
-                     Events.postEvent(new Event("onClose", self.getRoot()));
-                  }else if(e.getButton() != null){
-                     switch(e.getButton()){
-                        case CANCEL: // CANCEL is clicked
-                           Events.postEvent(new Event("onClose", self.getRoot()));
-                           break;
-                        case RETRY: // RETRY is clicked
-                           // ICI Nettoyer champs!
-                           criteresStandards.clear();
-                           valeursStandards.clear();
-                           criteresDerives1.clear();
-                           valeursDerives1.clear();
-                           criteresDerives2.clear();
-                           valeursDerives2.clear();
-                           getUsedComponents().clear();
-                           getUsedAnnoComponents().clear();
-                           otherQuery = false;
-                           break;
-                        default: // if e.getButton() returns null
-                     }
+         {
+            @Override
+            public void onEvent(final ClickEvent e){
+               if(e.getName().equals("onClose")){
+                  Events.postEvent(new Event("onClose", self.getRoot()));
+               }else if(e.getButton() != null){
+                  switch(e.getButton()){
+                     case CANCEL: // CANCEL is clicked
+                        Events.postEvent(new Event("onClose", self.getRoot()));
+                        break;
+                     case RETRY: // RETRY is clicked
+                        // ICI Nettoyer champs!
+                        criteresStandards.clear();
+                        valeursStandards.clear();
+                        criteresDerives1.clear();
+                        valeursDerives1.clear();
+                        criteresDerives2.clear();
+                        valeursDerives2.clear();
+                        getUsedComponents().clear();
+                        getUsedAnnoComponents().clear();
+                        otherQuery = false;
+                        break;
+                     default: // if e.getButton() returns null
                   }
                }
-            });
+            }
+         });
       }
    }
 
@@ -1644,24 +1642,20 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
 
       // on récupère la ou les banques sélectionnée(s)
       final List<Banque> banques = SessionUtils.getSelectedBanques(sessionScope);
-      try{
-         // si c'est la 1ère requête les résultats vont directement
-         // dans la liste
-         if(!otherQuery){
-            resultatsIds = ManagerLocator.getTraitementQueryManager().findPrelevementsByAgePatientWithBanquesManager(operateur,
-               age, banques, SessionUtils.getDbms());
-         }else{
-            // sinon on fait une intersection des résultats de la
-            // requête avec ceux déjà trouvés
-            final List<Integer> objects = ManagerLocator.getTraitementQueryManager()
-               .findPrelevementsByAgePatientWithBanquesManager(operateur, age, banques, SessionUtils.getDbms());
+      // si c'est la 1ère requête les résultats vont directement
+      // dans la liste
+      if(!otherQuery){
+         resultatsIds = ManagerLocator.getTraitementQueryManager().findPrelevementsByAgePatientWithBanquesManager(operateur,
+            age, banques, SessionUtils.getDbms());
+      }else{
+         // sinon on fait une intersection des résultats de la
+         // requête avec ceux déjà trouvés
+         final List<Integer> objects = ManagerLocator.getTraitementQueryManager()
+            .findPrelevementsByAgePatientWithBanquesManager(operateur, age, banques, SessionUtils.getDbms());
 
-            resultatsIds = ListUtils.intersection(resultatsIds, objects);
-         }
-         otherQuery = true;
-      }catch(final NamingException ne){
-         throw new RuntimeException("Internal query error");
+         resultatsIds = ListUtils.intersection(resultatsIds, objects);
       }
+      otherQuery = true;
    }
 
    /**
@@ -2341,7 +2335,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
    public void onSelect$nonConformitesEchanTraitementBoxHelper(){
       if(nonConformitesEchanTraitementBoxHelper.getSelectedIndex() > 0){
          nonConformitesEchanTraitementBox
-            .setValue(getNCechanTraitement().get(nonConformitesEchanTraitementBoxHelper.getSelectedIndex()).getNom());
+         .setValue(getNCechanTraitement().get(nonConformitesEchanTraitementBoxHelper.getSelectedIndex()).getNom());
       }else{
          nonConformitesEchanTraitementBox.setValue(null);
       }
@@ -2350,7 +2344,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
    public void onSelect$nonConformitesEchanCessionBoxHelper(){
       if(nonConformitesEchanCessionBoxHelper.getSelectedIndex() > 0){
          nonConformitesEchanCessionBox
-            .setValue(getNCechanCession().get(nonConformitesEchanCessionBoxHelper.getSelectedIndex()).getNom());
+         .setValue(getNCechanCession().get(nonConformitesEchanCessionBoxHelper.getSelectedIndex()).getNom());
       }else{
          nonConformitesEchanCessionBox.setValue(null);
       }
@@ -2359,7 +2353,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
    public void onSelect$nonConformitesDeriveTraitementBoxHelper(){
       if(nonConformitesDeriveTraitementBoxHelper.getSelectedIndex() > 0){
          nonConformitesDeriveTraitementBox
-            .setValue(getNCderiveTraitement().get(nonConformitesDeriveTraitementBoxHelper.getSelectedIndex()).getNom());
+         .setValue(getNCderiveTraitement().get(nonConformitesDeriveTraitementBoxHelper.getSelectedIndex()).getNom());
       }else{
          nonConformitesDeriveTraitementBox.setValue(null);
       }
@@ -2368,7 +2362,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee
    public void onSelect$nonConformitesDeriveCessionBoxHelper(){
       if(nonConformitesDeriveCessionBoxHelper.getSelectedIndex() > 0){
          nonConformitesDeriveCessionBox
-            .setValue(getNCderiveCession().get(nonConformitesDeriveCessionBoxHelper.getSelectedIndex()).getNom());
+         .setValue(getNCderiveCession().get(nonConformitesDeriveCessionBoxHelper.getSelectedIndex()).getNom());
       }else{
          nonConformitesDeriveCessionBox.setValue(null);
       }

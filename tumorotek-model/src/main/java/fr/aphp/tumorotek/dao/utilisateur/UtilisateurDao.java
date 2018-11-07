@@ -85,13 +85,6 @@ public interface UtilisateurDao extends GenericDaoJpa<Utilisateur, Integer>
    List<Utilisateur> findByArchive(boolean archive, List<Plateforme> pfs);
 
    /**
-    * Recherche les utilisateurs dont le dn_ldap est égal au paramètre.
-    * @param dnLdap Login dans l'annuaire LDAP.
-    * @return une liste d'utilisateurs.
-    */
-   List<Utilisateur> findBydnLdap(String dnLdap);
-
-   /**
     * Recherche les utilisateurs dont l'email est égal au paramètre.
     * @param email Email de l'utilisateur.
     * @return une liste d'utilisateurs.

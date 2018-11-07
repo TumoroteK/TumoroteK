@@ -51,11 +51,6 @@
 			<value>SEROLOGIE</value>
             <value>Sérologie</value>
 		</row>
-        <!--<row>
-            <value>3</value>
-            <value>BTO</value>
-            <value>Banque de tissus osseux</value>
-        </row>-->
 	</table>
 	<table name="COORDONNEE">
 		<column>COORDONNEE_ID</column>
@@ -1024,8 +1019,7 @@
 		<column>LOGIN</column>
 		<column>PASSWORD</column>
 		<column>ARCHIVE</column>
-		<column>ENCODED_PASSWORD</column>
-		<column>DN_LDAP</column>
+		<column>LDAP</column>
 		<column>EMAIL</column>
 		<column>TIMEOUT</column>
 		<column>COLLABORATEUR_ID</column>
@@ -1036,8 +1030,7 @@
 			<value>USER1</value>
 			<value>616f9aaafc5e973e5a6d0e525375c4a3</value>
 			<value>0</value>
-			<value>ENCO1</value>
-			<value>LDAP1</value>
+			<value>0</value>
 			<value>mail1@yahoo.fr</value>
 			<value>2025-12-01 00:00:00</value>
 			<value>1</value>
@@ -1049,8 +1042,7 @@
 			<value>USER2</value>
 			<value>7257b9bc032394bb39c92031d78b4f60</value>
 			<value>0</value>
-			<value>ENCO2</value>
-			<value>LDAP2</value>
+			<value>0</value>
 			<value>mail2@yahoo.fr</value>
 			<value>2011-05-15 00:00:00</value>
 			<value>2</value>
@@ -1062,8 +1054,7 @@
 			<value>USER3</value>
 			<value>f36f9d2d969237506191252d762e5f2a</value>
 			<value>1</value>
-			<value>ENCO3</value>
-			<value>LDAP3</value>
+			<value>0</value>
 			<value>mail3@yahoo.fr</value>
 			<value>2009-01-01 00:00:00</value>
 			<value>3</value>
@@ -1075,8 +1066,7 @@
 			<value>USER4</value>
 			<value>a775ee0493acc70c04183ce4bb6fc00e</value>
 			<value>0</value>
-			<value>ENCO4</value>
-			<value>LDAP4</value>
+			<value>0</value>
 			<value>mail4@yahoo.fr</value>
 			<value>2014-06-21 00:00:00</value>
 			<null/>
@@ -1088,8 +1078,7 @@
 			<value>USER5</value>
 			<value>b383bb08bd750d8ef04d034ad648a208</value>
 			<value>0</value>
-			<value>ENCO5</value>
-			<value>LDAP5</value>
+			<value>0</value>
 			<value>mail5@yahoo.fr</value>
 			<value>2025-11-31 00:00:00</value>
 			<null/>

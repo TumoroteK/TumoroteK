@@ -18,19 +18,15 @@
 	<!--      Look in GFCBaseCtrl.java onEvent() method.        -->
 	<!-- ====================================================== -->
 	
-	<beans:bean id="portalConfigLocation" class="org.springframework.jndi.JndiObjectFactoryBean">
-		<beans:property name="jndiName" value="java:comp/env/tk/tkTumoPropertiesSystem" />
-		<beans:property name="defaultObject" value="${catalina.base}/conf/Catalina/localhost/" />
+	<beans:bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<beans:property name="order" value="3"/>
+		<beans:property name="locations">
+			<beans:bean class="java.lang.System" factory-method="getenv">
+				<beans:constructor-arg value="portal.properties.path"/>
+	      	</beans:bean>
+		</beans:property>
 	</beans:bean>
 	
-	
-	<beans:bean name="propertyPlaceholder" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-           <beans:property name="locations">
-               <beans:value>#{'file:'+portalConfigLocation+'portal.properties'}</beans:value>
-           </beans:property>
-    </beans:bean>
-
-
 	<!-- Enable the @Secured annotation to secure service layer methods -->
 	<global-method-security secured-annotations="disabled" />
 	

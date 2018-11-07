@@ -52,7 +52,6 @@ import fr.aphp.tumorotek.dao.contexte.CollaborateurDao;
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
 import fr.aphp.tumorotek.dao.qualite.OperationTypeDao;
 import fr.aphp.tumorotek.dao.utilisateur.UtilisateurDao;
-import fr.aphp.tumorotek.manager.context.BanqueManager;
 import fr.aphp.tumorotek.manager.context.PlateformeManager;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.ObjectUsedException;
@@ -89,7 +88,6 @@ public class UtilisateurManagerImpl implements UtilisateurManager
    private OperationTypeDao operationTypeDao;
    private OperationManager operationManager;
    private BanqueDao banqueDao;
-   private BanqueManager banqueManager;
 
    public void setUtilisateurDao(final UtilisateurDao uDao){
       this.utilisateurDao = uDao;
@@ -125,10 +123,6 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 
    public void setBanqueDao(final BanqueDao bDao){
       this.banqueDao = bDao;
-   }
-
-   public void setBanqueManager(final BanqueManager bManager){
-      this.banqueManager = bManager;
    }
 
    @Override
@@ -191,7 +185,6 @@ public class UtilisateurManagerImpl implements UtilisateurManager
    @Override
    public Set<Plateforme> getPlateformesManager(Utilisateur utilisateur){
       if(utilisateur != null){
-         utilisateur = utilisateurDao.mergeObject(utilisateur);
          final Set<Plateforme> pfs = utilisateur.getPlateformes();
          pfs.size();
 
@@ -472,7 +465,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
          final List<Banque> availables = new ArrayList<>();
 
          if(utilisateur.isSuperAdmin()){
-            for(final Banque banque : banqueManager.findAllObjectsManager()){
+            for(final Banque banque : banqueDao.findByOrder()){
                if(!banque.getArchive()){
                   availables.add(banque);
                }
@@ -521,7 +514,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
          final List<Banque> availables = new ArrayList<>();
 
          if(utilisateur.isSuperAdmin()){
-            for(final Banque banque : banqueManager.findAllObjectsManager()){
+            for(final Banque banque : banqueDao.findByOrder()){
                if(!banque.getArchive()){
                   availables.add(banque);
                }

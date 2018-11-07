@@ -16,60 +16,17 @@
          </includes>
          <fileMode>0550</fileMode>
          <lineEnding>unix</lineEnding>
-         <!--<filtered>true</filtered>-->
       </fileSet>
       <fileSet>
          <directory>src/assembly/localhost</directory>
          <outputDirectory>localhost</outputDirectory>
-         <excludes>
-            <exclude>context-MySQL.xml</exclude>
-            <exclude>context-Oracle.xml</exclude>
-         </excludes>
-         <!--<includes>
-            <include>**/*.sql</include>
-         </includes>
-         <fileMode>0550</fileMode>
-         <lineEnding>unix</lineEnding>-->
-         <!--<filtered>true</filtered>-->
       </fileSet>
       <fileSet>
          <directory>${build.directory}/site</directory>
          <outputDirectory>README</outputDirectory>
       </fileSet>
-      <!--<fileSet>
-         <outputDirectory>transco</outputDirectory>
-         <directory>src/assembly/transco</directory>
-         <excludes>
-            <exclude>*.formated</exclude>
-         </excludes>
-         <includes>
-            <include>**/*.sql</include>
-         </includes>
-         <fileMode>0550</fileMode>
-         <lineEnding>unix</lineEnding>
-         <filtered>false</filtered>
-      </fileSet>-->
-      <!--<fileSet>
-         <outputDirectory>/</outputDirectory>
-         <directory>src/assembly/install</directory>
-         <excludes>
-            <exclude>*.formated</exclude>
-         </excludes>
-         <includes>
-            <include>*.sh</include>
-         </includes>
-         <fileMode>0550</fileMode>
-         <lineEnding>unix</lineEnding>
-         <filtered>true</filtered>
-      </fileSet>-->
    </fileSets>
    <files>
-      <file>
-         <source>src/assembly/localhost/context-MySQL.xml</source>
-         <outputDirectory>localhost</outputDirectory>
-         <destName>${webapp.packaging.finalName}.xml</destName>
-         <filtered>true</filtered>
-      </file>
       <file>
          <source>${project.build.directory}/${webapp.packaging.finalName}.war</source>
          <outputDirectory>./</outputDirectory>

@@ -60,7 +60,8 @@
 		
 		<div align="center">
 			<vbox align="center">
-				<label sclass="formSubTitle" value="${c:l('login.welcome')}"/>
+				<image id="imgLogo" style="width: 100px;" visible="false"/>
+				<html id="htmlMsg" sclass="formSubTitle z-label" />
 				<separator/>
 				<separator/>
 			</vbox>

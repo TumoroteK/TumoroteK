@@ -35,8 +35,11 @@
  **/
 package fr.aphp.tumorotek.manager.impl.systeme;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -133,28 +136,43 @@ public class NumerotationManagerImpl implements NumerotationManager
 
    @Override
    public String getGeneratedCodeManager(final Numerotation numerotation){
+      
+      String generatedCode = null;
+      
       if(numerotation != null && numerotation.getCodeFormula() != null){
-         if(numerotation.getCurrentIncrement() != null){
-            String num = String.valueOf(numerotation.getCurrentIncrement());
-            if(numerotation.getZeroFill() != null && numerotation.getZeroFill()){
-               int indx = 0;
-               if(numerotation.getNbChiffres() != null && numerotation.getNbChiffres() > num.length()){
-                  indx = numerotation.getNbChiffres() - num.length();
-               }
-               final StringBuffer sb = new StringBuffer();
-               for(int i = 0; i < indx; i++){
-                  sb.append("0");
-               }
-               sb.append(num);
-               num = sb.toString();
+         
+         final Integer currentIncrement = numerotation.getCurrentIncrement();
+         
+         if(currentIncrement != null){
+
+            final boolean zeroFill = Optional.ofNullable(numerotation.getZeroFill()).orElse(false);
+            
+            String format = "%d";
+            
+            if(zeroFill) {
+               format = "%0" + Optional.ofNullable(numerotation.getNbChiffres()).orElse(1) + "d";
             }
-            return numerotation.getCodeFormula().replace("[]", num);
+            
+            final String num = String.format(format, currentIncrement);
+            
+            generatedCode = numerotation.getCodeFormula().replace("[]", num);
          }else{
-            return numerotation.getCodeFormula();
+            generatedCode = numerotation.getCodeFormula();
          }
-      }else{
-         return null;
+         
+         if(numerotation.getCodeFormula().contains(DATE_PLACEHOLDER)) {
+            
+            final String dateFormat = numerotation.getDateFormat().getFormat();
+            final String date = LocalDate.now().format(DateTimeFormatter.ofPattern(dateFormat));
+            
+            generatedCode = generatedCode.replace(DATE_PLACEHOLDER, date);
+            
+         }
+         
       }
+      
+      return generatedCode;
+      
    }
 
    @Override

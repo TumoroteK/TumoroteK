@@ -39,12 +39,16 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -56,7 +60,11 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.coeur.ObjetStatutDao;
-import fr.aphp.tumorotek.dao.coeur.echantillon.*;
+import fr.aphp.tumorotek.dao.coeur.echantillon.EchanQualiteDao;
+import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonDao;
+import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonDelegateDao;
+import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonTypeDao;
+import fr.aphp.tumorotek.dao.coeur.echantillon.ModePrepaDao;
 import fr.aphp.tumorotek.dao.coeur.prelevement.PrelevementDao;
 import fr.aphp.tumorotek.dao.coeur.prodderive.TransformationDao;
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
@@ -88,7 +96,6 @@ import fr.aphp.tumorotek.manager.stockage.EmplacementManager;
 import fr.aphp.tumorotek.manager.systeme.FichierManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.model.TKStockableObject;
-import fr.aphp.tumorotek.model.TKValidableObject;
 import fr.aphp.tumorotek.model.cession.CederObjet;
 import fr.aphp.tumorotek.model.cession.Retour;
 import fr.aphp.tumorotek.model.code.CodeAssigne;
@@ -1592,10 +1599,6 @@ public class EchantillonManagerImpl implements EchantillonManager
          if(!bank.getContexte().equals(echan.getBanque().getContexte())){
             echan.setDelegate(null);
          }
-         //Si la banque de destination est dans le même contexte que la banque d'origine, on garde le délégué mais on supprime la validation le cas échéant
-         else if(echan.getDelegate() instanceof TKValidableObject) {
-            ((TKValidableObject)echan.getDelegate()).setDetailValidation(null);
-         }
 
          echan.setBanque(bank);
 
@@ -1987,5 +1990,9 @@ public class EchantillonManagerImpl implements EchantillonManager
    @Override
    public void updateEchantillon(final Echantillon echantillon){
       echantillonDao.updateObject(echantillon);
+   }
+   
+   public List<Echantillon> findByCodeInListWithPlateforme(List<String> codes, Plateforme pf){
+      return echantillonDao.findByCodeInListWithPlateforme(codes, pf);
    }
 }

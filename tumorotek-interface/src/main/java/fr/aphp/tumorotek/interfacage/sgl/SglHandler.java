@@ -37,9 +37,6 @@ package fr.aphp.tumorotek.interfacage.sgl;
 
 import java.util.ResourceBundle;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-
 import org.apache.camel.component.hl7.HL7DataFormat;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -47,6 +44,8 @@ import org.apache.commons.logging.LogFactory;
 import fr.aphp.tumorotek.manager.interfacage.InterfacageParsingUtils;
 import fr.aphp.tumorotek.model.bundles.ResourceBundleTumo;
 import fr.aphp.tumorotek.model.interfacage.Emetteur;
+import fr.aphp.tumorotek.param.TkParam;
+import fr.aphp.tumorotek.param.TumorotekProperties;
 
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.Message;
@@ -64,6 +63,8 @@ import ca.uhn.hl7v2.model.v25.message.ORU_R01;
 public class SglHandler
 {
 
+   private final static Integer DEFAULT_MAX_DOSSIER_TABLE_SIZE = 2000;
+   
    private final Log log = LogFactory.getLog(SglHandler.class);
 
    private InterfacageParsingUtils interfacageParsingUtils;
@@ -115,10 +116,10 @@ public class SglHandler
       // tests only
       //		"/home/mathieu2/apache-tomcat-7.0.40/conf/Catalina/localhost/sgl/inboxes.xml";
 
-      if(resourceBundleTumo.doesResourceBundleExists("tumorotek.properties")){
-         res = resourceBundleTumo.getResourceBundle("tumorotek.properties");
+      if(resourceBundleTumo.doesResourceBundleExists(TumorotekProperties.TUMO_PROPERTIES_FILENAME)){
+         res = resourceBundleTumo.getResourceBundle(TumorotekProperties.TUMO_PROPERTIES_FILENAME);
          if(res != null){
-            inboxesProp = resourceBundleTumo.getResourceBundle("tumorotek.properties").getString("INTERFACAGES_INBOXES");
+            inboxesProp = resourceBundleTumo.getResourceBundle(TumorotekProperties.TUMO_PROPERTIES_FILENAME).getString(TkParam.INTERFACAGES_INBOXES.getKey());
          }
       }
 
@@ -140,23 +141,20 @@ public class SglHandler
          }
 
       }else{
-         throw new RuntimeException("Interfacage SGL: " + "tumorotek.properties not found!");
+         throw new RuntimeException("Interfacage SGL: " + TumorotekProperties.TUMO_PROPERTIES_PATH + " not found!");
       }
 
    }
 
    public int getMaxDossierTableSize(){
-      int max = 2000;
+      Integer max = DEFAULT_MAX_DOSSIER_TABLE_SIZE;
 
+      final String value = TkParam.SGL_MAX_TABLE_SIZE.getValue();
+      
       try{
-         Context ctx;
-         ctx = new InitialContext();
-         final Integer maxEnvV = (Integer) ctx.lookup("java:comp/env/interfacage/maxSglTableSize");
-         if(maxEnvV != null){
-            max = maxEnvV.intValue();
-         }
+         max = Integer.parseInt(value);
       }catch(final Exception e){
-         e.printStackTrace();
+         log.warn("Valeur [" + value + "] invalide, utilisation de la valeur par défaut (" + DEFAULT_MAX_DOSSIER_TABLE_SIZE + ")");
       }
       return max;
    }

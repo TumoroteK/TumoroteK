@@ -35,7 +35,6 @@
  **/
 package fr.aphp.tumorotek.action.prelevement;
 
-import static fr.aphp.tumorotek.model.contexte.EContexte.BTO;
 import static fr.aphp.tumorotek.model.contexte.EContexte.SEROLOGIE;
 import static fr.aphp.tumorotek.webapp.general.SessionUtils.getCurrentContexte;
 
@@ -68,15 +67,12 @@ import org.zkoss.zul.Window;
 import fr.aphp.tumorotek.action.MainWindow;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.annotation.FicheAnnotation;
-import fr.aphp.tumorotek.action.annotation.FicheAnnotationInline;
 import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheModifMultiController;
 import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
 import fr.aphp.tumorotek.action.echantillon.EchantillonController;
 import fr.aphp.tumorotek.action.echantillon.FicheMultiEchantillons;
 import fr.aphp.tumorotek.action.patient.PatientController;
-import fr.aphp.tumorotek.action.prelevement.bto.FichePrelevementStaticBTO;
-import fr.aphp.tumorotek.action.prelevement.bto.ListePrelevementBTO;
 import fr.aphp.tumorotek.action.prelevement.serotk.FichePrelevementEditSero;
 import fr.aphp.tumorotek.action.prelevement.serotk.FichePrelevementStaticSero;
 import fr.aphp.tumorotek.action.prelevement.serotk.ListePrelevementSero;
@@ -116,7 +112,6 @@ public class PrelevementController extends AbstractObjectTabController
    //private Div divMultiEchantillons;
    private Div modifMultiDiv;
    private Component listePrelevement;
-   private Component listePrelevementBTO;
    private Component listePrelevementSero;
 
    // flag ordonnant le retour vers la fiche patient
@@ -174,31 +169,31 @@ public class PrelevementController extends AbstractObjectTabController
 
       super.doAfterCompose(comp);
 
-      if(BTO.equals(getCurrentContexte())){
-         listePrelevementBTO.setVisible(true);
-      }else if(SEROLOGIE.equals(getCurrentContexte())){
-         listePrelevementSero.setVisible(true);
-      }else{
-         listePrelevement.setVisible(true);
+      switch(getCurrentContexte()){
+         case SEROLOGIE:
+            listePrelevementSero.setVisible(true);
+            break;
+         default:
+            listePrelevement.setVisible(true);
+            break;
       }
 
       setStaticDiv(divPrelevementStatic);
       setEditDiv(divPrelevementEdit);
       setModifMultiDiv(modifMultiDiv);
-      if(BTO.equals(getCurrentContexte())){
-         setEditZulPath("/zuls/prelevement/bto/FichePrelevementEditBTO.zul");
-         setListZulPath("/zuls/prelevement/bto/ListePrelevementBTO.zul");
-      }else if(SEROLOGIE.equals(getCurrentContexte())){
-         setEditZulPath("/zuls/prelevement/serotk/FichePrelevementEditSero.zul");
-         setListZulPath("/zuls/prelevement/serotk/ListePrelevementSero.zul");
-      }else{
-         setEditZulPath("/zuls/prelevement/FichePrelevementEdit.zul");
-         setListZulPath("/zuls/prelevement/ListePrelevement.zul");
-      }
-      setMultiEditZulPath("/zuls/prelevement/FicheModifMultiPrelevement.zul");
-      //setListZulPath("/zuls/prelevement/ListePrelevement.zul");
 
-      // drawListe();
+      switch(getCurrentContexte()){
+         case SEROLOGIE:
+            setEditZulPath("/zuls/prelevement/serotk/FichePrelevementEditSero.zul");
+            setListZulPath("/zuls/prelevement/serotk/ListePrelevementSero.zul");
+            break;
+         default:
+            setEditZulPath("/zuls/prelevement/FichePrelevementEdit.zul");
+            setListZulPath("/zuls/prelevement/ListePrelevement.zul");
+            break;
+      }
+
+      setMultiEditZulPath("/zuls/prelevement/FicheModifMultiPrelevement.zul");
 
       initFicheStatic();
 
@@ -222,9 +217,7 @@ public class PrelevementController extends AbstractObjectTabController
 
    @Override
    public void populateFicheStatic(){
-      if(BTO.equals(getCurrentContexte())){
-         setStaticZulPath("/zuls/prelevement/bto/FichePrelevementStaticBTO.zul");
-      }else if(SEROLOGIE.equals(getCurrentContexte())){
+      if(SEROLOGIE.equals(getCurrentContexte())){
          setStaticZulPath("/zuls/prelevement/serotk/FichePrelevementStaticSero.zul");
       }else{
          setStaticZulPath("/zuls/prelevement/FichePrelevementStatic.zul");
@@ -234,10 +227,7 @@ public class PrelevementController extends AbstractObjectTabController
 
    @Override
    public FichePrelevementStatic getFicheStatic(){
-      if(BTO.equals(getCurrentContexte())){
-         return ((FichePrelevementStaticBTO) this.self.getFellow("divPrelevementStatic").getFellow("fwinPrelevementStaticBTO")
-            .getAttributeOrFellow("fwinPrelevementStaticBTO$composer", true));
-      }else if(SEROLOGIE.equals(getCurrentContexte())){
+      if(SEROLOGIE.equals(getCurrentContexte())){
          return ((FichePrelevementStaticSero) this.self.getFellow("divPrelevementStatic").getFellow("fwinPrelevementStaticSero")
             .getAttributeOrFellow("fwinPrelevementStaticSero$composer", true));
       }
@@ -247,10 +237,7 @@ public class PrelevementController extends AbstractObjectTabController
 
    @Override
    public FichePrelevementEdit getFicheEdit(){
-      if(BTO.equals(getCurrentContexte())){
-         return ((FichePrelevementEdit) this.self.getFellow("divPrelevementEdit").getFellow("fwinPrelevementEditBTO")
-            .getAttributeOrFellow("fwinPrelevementEditBTO$composer", true));
-      }else if(SEROLOGIE.equals(getCurrentContexte())){
+      if(SEROLOGIE.equals(getCurrentContexte())){
          return ((FichePrelevementEditSero) this.self.getFellow("divPrelevementEdit").getFellow("fwinPrelevementEditSero")
             .getAttributeOrFellow("fwinPrelevementEditSero$composer", true));
       }
@@ -260,10 +247,7 @@ public class PrelevementController extends AbstractObjectTabController
 
    @Override
    public ListePrelevement getListe(){
-      if(BTO.equals(getCurrentContexte())){
-         return ((ListePrelevementBTO) self.getFellow("listePrelevementBTO").getFellow("lwinPrelevementBTO")
-            .getAttributeOrFellow("lwinPrelevementBTO$composer", true));
-      }else if(SEROLOGIE.equals(getCurrentContexte())){
+      if(SEROLOGIE.equals(getCurrentContexte())){
          return ((ListePrelevementSero) self.getFellow("listePrelevementSero").getFellow("lwinPrelevementSero")
             .getAttributeOrFellow("lwinPrelevementSero$composer", true));
       }
@@ -285,34 +269,6 @@ public class PrelevementController extends AbstractObjectTabController
             .getAttributeOrFellow("fwinAnnotation$composer", true));
       }
       return null;
-   }
-
-   /**
-    * ANNOTATION INLINE - Bêta
-    *
-    * @return
-    * @since 2.2.0
-    */
-   @Override
-   public FicheAnnotationInline getFicheAnnotationInline(){
-      if(null != self.getFellow("divPrelevementEdit").getFellowIfAny("fwinPrelevementEdit") && null != self
-         .getFellow("divPrelevementEdit").getFellow("fwinPrelevementEdit").getFellow("ficheTissuInlineAnnoPrelevement")){
-         return ((FicheAnnotationInline) self.getFellow("divPrelevementEdit").getFellow("fwinPrelevementEdit")
-            .getFellow("ficheTissuInlineAnnoPrelevement").getFellow("fwinAnnotationInline")
-            .getAttributeOrFellow("fwinAnnotationInline$composer", true));
-      }else if(null != self.getFellow("divPrelevementEdit").getFellowIfAny("fwinPrelevementEditBTO") && null != self
-         .getFellow("divPrelevementEdit").getFellow("fwinPrelevementEditBTO").getFellow("ficheTissuInlineAnnoPrelevement")){
-         return ((FicheAnnotationInline) self.getFellow("divPrelevementEdit").getFellow("fwinPrelevementEditBTO")
-            .getFellow("ficheTissuInlineAnnoPrelevement").getFellow("fwinAnnotationInline")
-            .getAttributeOrFellow("fwinAnnotationInline$composer", true));
-      }else if(null != self.getFellow("divPrelevementEdit").getFellowIfAny("fwinPrelevementEditSero") && null != self
-         .getFellow("divPrelevementEdit").getFellow("fwinPrelevementEditSero").getFellowIfAny("ficheTissuInlineAnnoPrelevement")){
-         return ((FicheAnnotationInline) self.getFellow("divPrelevementEdit").getFellow("fwinPrelevementEditSero")
-            .getFellow("ficheTissuInlineAnnoPrelevement").getFellow("fwinAnnotationInline")
-            .getAttributeOrFellow("fwinAnnotationInline$composer", true));
-      }else{
-         return null;
-      }
    }
 
    @Override
@@ -654,9 +610,7 @@ public class PrelevementController extends AbstractObjectTabController
 
          // si il y eu edit avant et addNew depuis liste
          clearEditDiv();
-         if(BTO.equals(getCurrentContexte())){
-            Executions.createComponents("/zuls/prelevement/bto/FichePrelevementEditBTO.zul", divPrelevementEdit, null);
-         }else if(SEROLOGIE.equals(getCurrentContexte())){
+         if(SEROLOGIE.equals(getCurrentContexte())){
             Executions.createComponents("/zuls/prelevement/serotk/FichePrelevementEditSero.zul", divPrelevementEdit, null);
          }else{
             Executions.createComponents("/zuls/prelevement/FichePrelevementEdit.zul", divPrelevementEdit, null);

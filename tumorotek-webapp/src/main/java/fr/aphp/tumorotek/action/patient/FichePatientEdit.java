@@ -61,17 +61,13 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Toolbar;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
-import fr.aphp.tumorotek.action.annotation.FicheAnnotation;
-import fr.aphp.tumorotek.action.annotation.FicheAnnotationInline;
 import fr.aphp.tumorotek.action.constraints.ConstCode;
 import fr.aphp.tumorotek.action.constraints.ConstWord;
 import fr.aphp.tumorotek.action.contexte.ContexteConstraints;
 import fr.aphp.tumorotek.action.controller.AbstractFicheEditController;
-import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.manager.validation.coeur.patient.PatientValidatorImpl;
-import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
@@ -86,30 +82,18 @@ public class FichePatientEdit extends AbstractFicheEditController
 
    // boxes
    protected Textbox nipBox;
-
    protected Textbox nomBox;
-
    protected Textbox nomNaisBox;
-
    protected Textbox prenomBox;
-
    protected Datebox dateNaisBox;
-
    protected Textbox villeNaisBox;
-
    protected Textbox paysNaisBox;
-
    protected Datebox dateEtatDecesBox;
-
    protected Listbox sexeBox;
-
    protected Toolbar toolbar;
-   // Groupe sanguin pass� en annotations
-   //	protected Row groupeSanguinRow;
 
    // included ndaBox (embedded in Prelevement mode only)
    protected Label ndaFieldLabel;
-
    protected Textbox ndaBox;
 
    // referents
@@ -120,25 +104,16 @@ public class FichePatientEdit extends AbstractFicheEditController
 
    // dateEtatDeces
    protected Label dateEtatDecesField;
-
    protected Date dateEtatDeces;
 
    // traduction pour affichage
    protected LabelCodeItem selectedSexe;
-
    protected LabelCodeItem selectedEtat;
-
-   // Groupe sanguin pass� en annotations
-   //	protected Listbox groupeSanguinBox;
-   //	protected String selectedGroupeSanguin;
-   //	List<String> groupeSanguin = new ArrayList<String>();
 
    // Associations
    protected List<Collaborateur> medecins = new ArrayList<>();
 
    protected List<PatientLien> liens = new ArrayList<>();
-
-   //public static final LabelCodeItem ETAT_I = new LabelCodeItem(Labels.getLabel("patient.etat.inconnu"), "Inconnu");
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
@@ -212,15 +187,6 @@ public class FichePatientEdit extends AbstractFicheEditController
 
       super.setObject(obj);
 
-      /**
-       * ANNOTATION INLINE - Bêta
-       *
-       * @since 2.2.0
-       */
-      final FicheAnnotation inline = getFicheAnnotationInline();
-      if(null != inline){ // re-dessine le bloc inline annotation
-         inline.setObj((TKAnnotableObject) obj);
-      }
    }
 
    @Override
@@ -267,17 +233,6 @@ public class FichePatientEdit extends AbstractFicheEditController
    public void createNewObject(){
       final List<File> filesCreated = new ArrayList<>();
 
-      /**
-       * ANNOTATION INLINE - Bêta
-       *
-       * @since 2.2.0
-       */
-      // On ajoute à la liste des annotations verticales celles horizontales
-      final List<AnnotationValeur> annotationValeursToCreateOrUpdate =
-         getObjectTabController().getFicheAnnotationInline().getValeursToCreateOrUpdate();
-      annotationValeursToCreateOrUpdate.addAll(getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate());
-      /** END **/
-
       try{
          prepareDataBeforeSave(false);
          if(patient != null){
@@ -292,20 +247,10 @@ public class FichePatientEdit extends AbstractFicheEditController
             }
          }
 
-         //Map<String, Object> antecedentConsentementValue= getAntecedentConsentementValue(getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate());
-
-         /**
-          * ANNOTATION INLINE - Bêta
-          *
-          * @since 2.2.0
-          */
-         /*ManagerLocator.getPatientManager().createOrUpdateObjectManager(patient, null, medecins, liens,
-            getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(), null, filesCreated, null,
-            SessionUtils.getLoggedUser(sessionScope), "creation", SessionUtils.getSystemBaseDir(), false);*/
          ManagerLocator.getPatientManager().createOrUpdateObjectManager(patient, null, medecins, liens,
-            annotationValeursToCreateOrUpdate, null, filesCreated, null, SessionUtils.getLoggedUser(sessionScope), "creation",
-            SessionUtils.getSystemBaseDir(), false);
-         /** END **/
+            getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(), null, filesCreated, null,
+            SessionUtils.getLoggedUser(sessionScope), "creation", SessionUtils.getSystemBaseDir(), false);
+
       }catch(final RuntimeException re){
          for(final File f : filesCreated){
             f.delete();
@@ -319,40 +264,18 @@ public class FichePatientEdit extends AbstractFicheEditController
       final List<File> filesCreated = new ArrayList<>();
       final List<File> filesToDelete = new ArrayList<>();
 
-      /**
-       * ANNOTATION INLINE - Bêta
-       *
-       * @since 2.2.0
-       */
-      // On ajoute à la liste des annotations verticales celles horizontales
-      final List<AnnotationValeur> annotationValeursToCreateOrUpdate =
-         getObjectTabController().getFicheAnnotationInline().getValeursToCreateOrUpdate();
-      annotationValeursToCreateOrUpdate.addAll(getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate());
-
-      // On ajoute à la liste des annotations verticales celles horizontales
-      final List<AnnotationValeur> annotationValeursToDelete =
-         getObjectTabController().getFicheAnnotationInline().getValeursToDelete();
-      annotationValeursToDelete.addAll(getObjectTabController().getFicheAnnotation().getValeursToDelete());
-      /** END **/
-
       try{
          prepareDataBeforeSave(false);
-         /**
-          * ANNOTATION INLINE - Bêta
-          *
-          * @since 2.2.0
-          */
-         /*ManagerLocator.getPatientManager().createOrUpdateObjectManager(patient, null, medecins, liens,
+
+         ManagerLocator.getPatientManager().createOrUpdateObjectManager(patient, null, medecins, liens,
             getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(),
             getObjectTabController().getFicheAnnotation().getValeursToDelete(), filesCreated, filesToDelete,
-            SessionUtils.getLoggedUser(sessionScope), "modification", SessionUtils.getSystemBaseDir(), false);*/
-         ManagerLocator.getPatientManager().createOrUpdateObjectManager(patient, null, medecins, liens,
-            annotationValeursToCreateOrUpdate, annotationValeursToDelete, filesCreated, filesToDelete,
             SessionUtils.getLoggedUser(sessionScope), "modification", SessionUtils.getSystemBaseDir(), false);
-         /** END **/
+
          for(final File f : filesToDelete){
             f.delete();
          }
+
       }catch(final RuntimeException re){
          for(final File f : filesCreated){
             f.delete();
@@ -806,43 +729,4 @@ public class FichePatientEdit extends AbstractFicheEditController
       return ndaBox;
    }
 
-   /**
-    * ANNOTATION INLINE - Bêta
-    *
-    * Copie depuis AbstractObjectTabController
-    * Récupère le controller de la fiche
-    * @return
-    * @since 2.2.0
-    */
-   public FicheAnnotationInline getFicheAnnotationInline(){
-      if(self.getFellowIfAny("ficheTissuInlineAnnoPatient") != null){
-         return ((FicheAnnotationInline) self.getFellow("ficheTissuInlineAnnoPatient").getFellow("fwinAnnotationInline")
-            .getAttributeOrFellow("fwinAnnotationInline$composer", true));
-      }
-
-      return null;
-   }
-
-   /**
-    * ANNOTATION INLINE - Bêta
-    *
-    * Passe qq params au bloc inline annotation sans le dessiner la creation de la
-    * fiche statique.
-    * @param controller
-    * @since 2.2.0
-    */
-   @Override
-   public void setObjectTabController(final AbstractObjectTabController controller){
-      super.setObjectTabController(controller);
-      final FicheAnnotation inline = getFicheAnnotationInline();
-
-      if(null != inline){
-         // passe l'entite au controller
-         getFicheAnnotationInline().setEntite(getObjectTabController().getEntiteTab());
-
-         // à remplacer par ce controller
-         // setFicheController
-         getFicheAnnotationInline().setObjectTabController(getObjectTabController());
-      }
-   }
 }

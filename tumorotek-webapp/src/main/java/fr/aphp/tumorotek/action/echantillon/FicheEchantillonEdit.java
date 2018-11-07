@@ -108,8 +108,6 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FicheEchantillonEdit extends AbstractFicheEditController
 {
 
-   // private Log log = LogFactory.getLog(FicheEchantillonEdit.class);
-
    private static final long serialVersionUID = 2661016754151830781L;
 
    protected Textbox codePrefixeEchan;
@@ -171,10 +169,6 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
    private NonConformite selectedNonConformiteTraitement;
    private List<NonConformite> nonConformitesCession = new ArrayList<>();
    private NonConformite selectedNonConformiteCession;
-   //	private Set<Listitem> selectedNonConformitesTraitementItem = 
-   //		new HashSet<Listitem>();
-   //	private Set<Listitem> selectedNonConformitesCessionItem = 
-   //		new HashSet<Listitem>();
 
    private List<LaboInter> laboInters = null;
    private List<LaboInter> laboIntersToDelete = null;
@@ -257,15 +251,6 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
       super.setObject(this.echantillon);
 
-      /**
-       * ANNOTATION INLINE - Bêta
-       *
-       * @since 2.2.0
-       */
-      /*FicheAnnotation inline = getFicheAnnotationInline();
-      if(null != inline){ // re-dessine le bloc inline annotation
-         inline.setObj(this.echantillon);
-      }*/
    }
 
    @Override
@@ -350,39 +335,13 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
    @Override
    public void createNewObject(){
-      /**
-       * ANNOTATION INLINE - Bêta
-       *
-       * @since 2.2.0
-       */
-      // On ajoute à la liste des annotations verticales celles horizontales
-      /*List<AnnotationValeur> annotationValeursToCreateOrUpdate = getObjectTabController().getFicheAnnotationInline().getValeursToCreateOrUpdate();
-      annotationValeursToCreateOrUpdate.addAll(getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate());*/
    }
 
    @Override
    public void updateObject(){
-      /**
-       * ANNOTATION INLINE - Bêta
-       *
-       * @since 2.2.0
-       */
-      // On ajoute à la liste des annotations verticales celles horizontales
-      /*List<AnnotationValeur> annotationValeursToCreateOrUpdate = getObjectTabController().getFicheAnnotationInline().getValeursToCreateOrUpdate();
-      annotationValeursToCreateOrUpdate.addAll(getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate());*/
-
-      // On ajoute à la liste des annotations verticales celles horizontales
-      /*List<AnnotationValeur> annotationValeursToDelete = getObjectTabController().getFicheAnnotationInline().getValeursToDelete();
-      annotationValeursToDelete.addAll(getObjectTabController().getFicheAnnotation().getValeursToDelete());*/
-      /** END **/
 
       // création du code échantillon en fct de celui du prlvt et
       // de celui saisi
-      //StringBuffer sb = new StringBuffer();
-      //sb.append(codePrefixe);
-      //sb.append(".");
-      //sb.append(codeSuffixe);
-      //echantillon.setCode(sb.toString());
       echantillon.setCode(codePrefixe);
 
       // on remplit l'échantillon en fonction des champs nulls
@@ -446,55 +405,6 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
          getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(),
          getObjectTabController().getFicheAnnotation().getValeursToDelete(), SessionUtils.getLoggedUser(sessionScope), true, null,
          SessionUtils.getSystemBaseDir(), noconfsT, noconfsC);
-
-      /**
-       * ANNOTATION INLINE - Bêta
-       *
-       * @since 2.2.0
-       */
-      /*ManagerLocator.getEchantillonManager().updateObjectWithNonConformitesManager(
-         echantillon, getBanque(), prelevement,
-         selectedCollaborateur,
-         statut, emp, selectedType,
-         codesToCreateOrEdit,
-         codesAssignesToDelete,
-         selectedQuantiteUnite,
-         selectedQualite, selectedPrepa,
-         getCrAnapath(), getAnapathStream(), null,
-         annotationValeursToCreateOrUpdate,
-         annotationValeursToDelete,
-         SessionUtils.getLoggedUser(sessionScope), true,
-         null, SessionUtils.getSystemBaseDir(),
-         noconfsT, noconfsC);*/
-
-      // délétion des champs à supprimer
-      //		for (int i = 0; i < codesAssignesToDelete.size(); i++) {
-      // met à jour l'echantillon si le
-      // code assigne delete est celui exporté
-      //			if (codesAssignesToDelete.get(i)
-      //									.getEchanExpOrg() != null) {
-      //				codesAssignesToDelete.get(i)
-      //									.setEchanExpOrg(echantillon);
-      //			} else if (codesAssignesToDelete.get(i)
-      //									.getEchanExpLes() != null) {
-      //				codesAssignesToDelete.get(i)
-      //									.setEchanExpLes(echantillon);
-      //			}
-
-      //			ManagerLocator.getCodeAssigneManager()
-      //					.removeObjectManager(codesAssignesToDelete.get(i));
-
-      //			if (codesAssignesToDelete.get(i).getIsOrgane()) {
-      //				echantillon.getCodeOrganes()
-      //						.remove(codesAssignesToDelete.get(i));
-      //			} else {
-      //				echantillon.getCodeMorphos()
-      //						.remove(codesAssignesToDelete.get(i));
-      //			}
-      //			echantillon.getCodesAssignes()
-      //								.remove(codesAssignesToDelete.get(i));
-
-      //		}
 
    }
 
@@ -1857,65 +1767,8 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
       this.selectedNonConformiteCession = selectedNConformiteCession;
    }
 
-   //	public Set<Listitem> getSelectedNonConformitesTraitementItem() {
-   //		return selectedNonConformitesTraitementItem;
-   //	}
-   //
-   //	public void setSelectedNonConformitesTraitementItem(
-   //			Set<Listitem> s) {
-   //		this.selectedNonConformitesTraitementItem = s;
-   //	}
-   //
-   //	public Set<Listitem> getSelectedNonConformitesCessionItem() {
-   //		return selectedNonConformitesCessionItem;
-   //	}
-   //
-   //	public void setSelectedNonConformitesCessionItem(
-   //			Set<Listitem> s) {
-   //		this.selectedNonConformitesCessionItem = s;
-   //	}
-
    public String getObjetStatut(){
       return ObjectTypesFormatters.ILNObjectStatut(getObject().getObjetStatut());
    }
 
-   /**
-    * ANNOTATION INLINE<br>
-    * Copie depuis AbstractObjectTabController
-    * Récupère le controller de la fiche
-    *
-    * @return
-    * @since 2.2.0
-    */
-   /*public FicheAnnotationInline getFicheAnnotationInline(){
-      if(self.getFellowIfAny("ficheAnnotationInlineEchantillon") != null){
-         return ((FicheAnnotationInline) self.getFellow("ficheAnnotationInlineEchantillon")
-            .getFellow("fwinAnnotationInline").getAttributeOrFellow("fwinAnnotationInline$composer", true));
-      }else{
-         return null;
-      }
-   }*/
-
-   /**
-    * ANNOTATION INLINE<br>
-    * Passe qq params au bloc inline annotation sans le dessiner la creation de la
-    * fiche statique.
-    *
-    * @param controller
-    * @since 2.2.0
-    */
-   /*@Override
-   public void setObjectTabController(AbstractObjectTabController controller){
-      super.setObjectTabController(controller);
-      FicheAnnotation inline = getFicheAnnotationInline();
-   
-      if(null != inline){
-         // passe l'entite au controller
-         getFicheAnnotationInline().setEntite(getObjectTabController().getEntiteTab());
-   
-         // à remplacer par ce controller
-         // setFicheController
-         getFicheAnnotationInline().setObjectTabController(getObjectTabController());
-      }
-   }*/
 }

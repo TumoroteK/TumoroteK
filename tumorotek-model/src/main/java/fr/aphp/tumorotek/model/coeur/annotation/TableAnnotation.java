@@ -114,12 +114,6 @@ public class TableAnnotation implements TKFantomableObject, TKdataObject, Serial
    private Catalogue catalogue;
    private Plateforme plateforme;
 
-   /**
-    * ANNOTATION INLINE - Bêta
-    *
-    * @since 2.2.0
-    */
-   private boolean inlineDisplay;
    private Set<ChampAnnotation> champAnnotations = new HashSet<>();
    private Set<TableAnnotationBanque> tableAnnotationBanques = new HashSet<>();
    private Set<TableAnnotationTemplate> tableAnnotationTemplates = new HashSet<>();
@@ -188,15 +182,6 @@ public class TableAnnotation implements TKFantomableObject, TKdataObject, Serial
 
    public void setPlateforme(final Plateforme pf){
       this.plateforme = pf;
-   }
-
-   @Column(name = "INLINE_DISPLAY")
-   public boolean isInlineDisplay(){
-      return inlineDisplay;
-   }
-
-   public void setInlineDisplay(final boolean inlineDisplay){
-      this.inlineDisplay = inlineDisplay;
    }
 
    @OneToMany(mappedBy = "tableAnnotation")
@@ -308,7 +293,6 @@ public class TableAnnotation implements TKFantomableObject, TKdataObject, Serial
       clone.setEntite(this.entite);
       clone.setChampAnnotations(this.getChampAnnotations());
       clone.setPlateforme(getPlateforme());
-      clone.setInlineDisplay(isInlineDisplay());
 
       return clone;
    }

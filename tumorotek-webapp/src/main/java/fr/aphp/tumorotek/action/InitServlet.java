@@ -36,16 +36,18 @@
 package fr.aphp.tumorotek.action;
 
 import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.sql.DataSource;
@@ -58,6 +60,8 @@ import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.systeme.Version;
+import fr.aphp.tumorotek.param.TkParam;
+
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -73,7 +77,7 @@ import liquibase.resource.ClassLoaderResourceAccessor;
  *
  * @author Mathieu BARTHELEMY
  * @version 2.2.0
- * @since 2.0
+ * @since 2.0.0
  */
 public class InitServlet extends HttpServlet
 {
@@ -84,89 +88,140 @@ public class InitServlet extends HttpServlet
    public void init() throws ServletException{
       super.init();
 
-      try{
-         log.info("----- TumoroteK startup routines -----");
-         final Context context = new InitialContext();
-         final Path baseDir = Paths.get((String) context.lookup("java:comp/env/tk/tkFileSystem"));
+      log.info("----- TumoroteK startup routines -----");
+      final Path baseDir = Paths.get(TkParam.FILESYSTEM.getValue());
 
-         // updates
-         performUpdates(context);
+      // Initialisation TUMOROTEK_CODES & TUMOROTEK_INTERFACAGES
+      performInitialisation();
 
-         // file system
-         if(baseDir != null){
-            final File f = new File(baseDir.toUri());
-            // crée le base directory au besoin
-            if(f.exists() && f.isDirectory() && f.list().length == 0){
-               log.info("----- Mise en place du base directory TumoroteK -----");
-               final List<Plateforme> pfs = ManagerLocator.getPlateformeManager().findAllObjectsManager();
-               Path pfDir;
-               final List<Banque> banks = new ArrayList<>();
-               for(Plateforme pf : pfs){
-                  pfDir = Paths.get("pt_" + pf.getPlateformeId());
-                  banks.addAll(ManagerLocator.getBanqueManager().findByPlateformeAndArchiveManager(pf, null));
-                  for(Banque bank : banks){
-                     Path crAnapathPath = Paths.get(baseDir.toString(), pfDir.toString(), "coll_" + bank.getBanqueId(), "cr_anapath");
-                     Path annoPath = Paths.get(baseDir.toString(), pfDir.toString(), "coll_" + bank.getBanqueId(), "anno");
-                     new File(crAnapathPath.toUri()).mkdirs();
-                     new File(annoPath.toUri()).mkdirs();
-                     log.info("base directory de la collection " + bank.getNom() + " généré");
-                  }
-                  banks.clear();
+      // updates
+      performUpdates();
+
+      deleteContextFile();
+
+      // file system
+      if(baseDir != null){
+         final File f = new File(baseDir.toUri());
+         // crée le base directory au besoin
+         if(f.exists() && f.isDirectory() && f.list().length == 0){
+            log.info("----- Mise en place du base directory TumoroteK -----");
+            final List<Plateforme> pfs = ManagerLocator.getPlateformeManager().findAllObjectsManager();
+            Path pfDir;
+            final List<Banque> banks = new ArrayList<>();
+            for(final Plateforme pf : pfs){
+               pfDir = Paths.get("pt_" + pf.getPlateformeId());
+               banks.addAll(ManagerLocator.getBanqueManager().findByPlateformeAndArchiveManager(pf, null));
+               for(final Banque bank : banks){
+                  final Path crAnapathPath =
+                     Paths.get(baseDir.toString(), pfDir.toString(), "coll_" + bank.getBanqueId(), "cr_anapath");
+                  final Path annoPath = Paths.get(baseDir.toString(), pfDir.toString(), "coll_" + bank.getBanqueId(), "anno");
+                  new File(crAnapathPath.toUri()).mkdirs();
+                  new File(annoPath.toUri()).mkdirs();
+                  log.info("base directory de la collection " + bank.getNom() + " généré");
                }
+               banks.clear();
             }
          }
-      }catch(final NamingException ex){
-         log.error(ex);
       }
+
    }
 
-   public DataSource dataSource(final Context context) throws NamingException{
+   public enum ESchema
+   {
+      TUMOROTEK, TUMOROTEK_CODES, TUMOROTEK_INTERFACAGES
+   }
+
+   public DataSource dataSource(final ESchema eSchema){
+
       final DriverManagerDataSource dataSource = new DriverManagerDataSource();
-      dataSource.setDriverClassName((String) context.lookup("java:comp/env/jdbc/driverClass"));
-      dataSource.setUrl((String) context.lookup("java:comp/env/jdbc/url"));
-      dataSource.setUsername((String) context.lookup("java:comp/env/jdbc/user"));
-      dataSource.setPassword((String) context.lookup("java:comp/env/jdbc/password"));
+      switch(eSchema){
+         case TUMOROTEK_CODES:
+            dataSource.setDriverClassName(TkParam.CODES_DATABASE_DRIVER.getValue());
+            dataSource.setUrl(TkParam.CODES_DATABASE_URL.getValue());
+            dataSource.setUsername(TkParam.CODES_DATABASE_USER.getValue());
+            dataSource.setPassword(TkParam.CODES_DATABASE_PASSWORD.getValue());
+            break;
+         case TUMOROTEK_INTERFACAGES:
+            dataSource.setDriverClassName(TkParam.INTERFACAGES_DATABASE_DRIVER.getValue());
+            dataSource.setUrl(TkParam.INTERFACAGES_DATABASE_URL.getValue());
+            dataSource.setUsername(TkParam.INTERFACAGES_DATABASE_USER.getValue());
+            dataSource.setPassword(TkParam.INTERFACAGES_DATABASE_PASSWORD.getValue());
+            break;
+         default:
+            dataSource.setDriverClassName(TkParam.TK_DATABASE_DRIVER.getValue());
+            dataSource.setUrl(TkParam.TK_DATABASE_URL.getValue());
+            dataSource.setUsername(TkParam.TK_DATABASE_USER.getValue());
+            dataSource.setPassword(TkParam.TK_DATABASE_PASSWORD.getValue());
+            break;
+      }
       return dataSource;
    }
 
    /**
     * Applique la mise à jour des versions grâce à Liquibase.
-    *
-    * @param context qui correspond entre autres aux variables définies dans tumorotek##xxx.xml
     */
-   public void performUpdates(final Context context){
+   public void performInitialisation(){
       log.info("----- Recherche des mises à jours database -----");
+
+      // TUMOROTEK_CODES
+      Database database = null;
+      try{
+         database = DatabaseFactory.getInstance()
+            .findCorrectDatabaseImplementation(new JdbcConnection(dataSource(ESchema.TUMOROTEK_CODES).getConnection()));
+      }catch(DatabaseException | SQLException e){
+         log.error(e.toString());
+      }
+      try{
+         final Liquibase liquibase =
+            new Liquibase("liquibase/changelog/db.changelog-init-codes.xml", new ClassLoaderResourceAccessor(), database);
+         liquibase.update("*");
+      }catch(final LiquibaseException e){
+         log.error(e.toString());
+      }
+
+      // TUMOROTEK_INTERFACAGES
+      try{
+         database = DatabaseFactory.getInstance()
+            .findCorrectDatabaseImplementation(new JdbcConnection(dataSource(ESchema.TUMOROTEK_INTERFACAGES).getConnection()));
+      }catch(DatabaseException | SQLException e){
+         log.error(e.toString());
+      }
+      try{
+         final Liquibase liquibase =
+            new Liquibase("liquibase/changelog/db.changelog-init-interfacages.xml", new ClassLoaderResourceAccessor(), database);
+         liquibase.update("*");
+      }catch(final LiquibaseException e){
+         log.error(e.toString());
+      }
+   }
+
+   /**
+    * Applique la mise à jour des versions grâce à Liquibase.
+    */
+   public void performUpdates(){
+      log.info("----- Recherche des mises à jours database -----");
+
+      Database database = null;
+      try{
+         database = DatabaseFactory.getInstance()
+            .findCorrectDatabaseImplementation(new JdbcConnection(dataSource(ESchema.TUMOROTEK).getConnection()));
+      }catch(DatabaseException | SQLException e){
+         log.error(e.toString());
+      }
+      try{
+         final Liquibase liquibase =
+            new Liquibase("liquibase/changelog/db.changelog-master.xml", new ClassLoaderResourceAccessor(), database);
+         liquibase.update("*");
+
+         // Pour faire un rollback
+         //liquibase.rollback("2.1.4-SNAPSHOT", contexts);
+      }catch(final LiquibaseException e){
+         log.error(e.toString());
+      }
+
       final Version currentVersion = ManagerLocator.getVersionManager().findByCurrentVersionManager();
       //final List<Version> allVersions = ManagerLocator.getVersionManager().findAllObjectsManager();
       final String nextVersion = ObjectTypesFormatters.getLabel("app.version", new String[] {});
-      //if(null != currentVersion){
-         Database database = null;
-         try{
-            database = DatabaseFactory.getInstance()
-               .findCorrectDatabaseImplementation(new JdbcConnection(dataSource(context).getConnection()));
-         }catch(DatabaseException | SQLException | NamingException e){
-            log.error(e.toString());
-         }
-         try{
-            final Liquibase liquibase =
-               new Liquibase("liquibase/db.changelog-master.xml", new ClassLoaderResourceAccessor(), database);
-            /*final Contexts contexts = new Contexts();
-            for(final Version version : allVersions){
-               if(null != version.getVersion()){
-                  contexts.add(version.getVersion());
-               }
-            }*/
-            // Liquibase mettra à jour en fonction des versions précédemment installées.
-            //liquibase.update(contexts);
-            liquibase.update("*");
-
-            // Pour faire un rollback
-            //liquibase.rollback("2.1.4-SNAPSHOT", contexts);
-         }catch(final LiquibaseException e){
-            log.error(e.toString());
-         }
-      //}
-
       // Enregistre la version qui vient d'être installée
       if(null != currentVersion && !currentVersion.getVersion().equals(nextVersion)){
          final Version version = new Version();
@@ -187,15 +242,47 @@ public class InitServlet extends HttpServlet
       Database database = null;
       try{
          database = DatabaseFactory.getInstance()
-            .findCorrectDatabaseImplementation(new JdbcConnection(dataSource(context).getConnection()));
-      }catch(DatabaseException | SQLException | NamingException e){
+            .findCorrectDatabaseImplementation(new JdbcConnection(dataSource(ESchema.TUMOROTEK).getConnection()));
+      }catch(DatabaseException | SQLException e){
          log.error(e.toString());
       }
 
-      new Liquibase("liquibase/db.changelog-master.xml", new ClassLoaderResourceAccessor(), database);
+      new Liquibase("liquibase/changelog/db.changelog-master.xml", new ClassLoaderResourceAccessor(), database);
 
       // Pour faire un rollback
       //liquibase.rollback("2.1.4-SNAPSHOT", "*");
+   }
+
+   /**
+    * Supprime le descripteur de configuration correspondant à la version déployée
+    */
+   private void deleteContextFile(){
+
+      final Path confDir = Paths.get(TkParam.CONF_DIR.getValue());
+
+      //On utlise cette manière de faire car Tomcat 7 ne sait pas récupérer la version
+      //avec getClass().getPackage().getImplementationVersion()
+      final Properties manifest = new Properties();
+      try( InputStream is = getServletContext().getResourceAsStream("/META-INF/MANIFEST.MF")){
+         manifest.load(is);
+      }catch(final IOException e){
+         log.error("Impossible de lire le fichier MANIFEST.MF", e);
+      }
+
+      final String version = manifest.getProperty("Implementation-Version");
+
+      final FilenameFilter contextFileFilter = (f, s) -> {
+         return s.matches("^tumorotek##" + version + "\\.xml$");
+      };
+
+      //Recherche du fichier de configuration xml
+      final File[] contextFiles = confDir.toFile().listFiles(contextFileFilter);
+
+      if(contextFiles.length == 1){
+         log.info("Suppression du descripteur de configuration " + contextFiles[0].getName());
+         contextFiles[0].delete();
+      }
+
    }
 
    @Override

@@ -38,12 +38,10 @@ package fr.aphp.tumorotek.component;
 import java.util.List;
 
 import org.zkoss.bind.annotation.AfterCompose;
-import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ContextParam;
 import org.zkoss.bind.annotation.ContextType;
 import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
-import org.zkoss.bind.annotation.NotifyChange;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.select.Selectors;
@@ -83,8 +81,6 @@ public class DynamicMultiLineMessageBox
    @Wire
    private Label detailsLabel;
 
-   private Boolean detailsLabelVisible = false;
-
    @AfterCompose
    public void afterCompose(@ContextParam(ContextType.VIEW) final Component view){
       Selectors.wireComponents(view, this, false);
@@ -92,17 +88,15 @@ public class DynamicMultiLineMessageBox
 
    @Init
    public void init(@ExecutionArgParam("title") final String _t, @ExecutionArgParam("message") final String _m,
-      @ExecutionArgParam("exception") final Exception _e, @ExecutionArgParam("exceptionDetails") final String _s){
+      @ExecutionArgParam("exception") final Exception _e){
       this.title = _t;
       this.message = _m;
       this.exception = _e;
-      this.exceptionDetails = _s;
+      details();
+      
    }
 
-   @Command
-   @NotifyChange({"detailsLabelVisible", "exceptionDetails"})
-   public void details(){
-      detailsLabelVisible = !detailsLabelVisible;
+   private void details(){
 
       if(exceptionDetails == null){
          if(exception instanceof DoublonFoundException){
@@ -177,14 +171,6 @@ public class DynamicMultiLineMessageBox
 
    public String getMessage(){
       return message;
-   }
-
-   public Boolean getDetailsLabelVisible(){
-      return detailsLabelVisible;
-   }
-
-   public void setDetailsLabelVisible(final Boolean _d){
-      this.detailsLabelVisible = _d;
    }
 
    public String getExceptionDetails(){

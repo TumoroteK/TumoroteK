@@ -67,10 +67,7 @@ import org.zkoss.zul.Window;
 
 import fr.aphp.tumorotek.action.MainWindow;
 import fr.aphp.tumorotek.action.ManagerLocator;
-import fr.aphp.tumorotek.action.annotation.FicheAnnotation;
-import fr.aphp.tumorotek.action.annotation.FicheAnnotationInline;
 import fr.aphp.tumorotek.action.controller.AbstractFicheStaticController;
-import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
 import fr.aphp.tumorotek.action.echantillon.EchantillonController;
 import fr.aphp.tumorotek.action.echantillon.EchantillonRowRenderer;
 import fr.aphp.tumorotek.action.patient.ResumePatient;
@@ -78,7 +75,6 @@ import fr.aphp.tumorotek.action.prodderive.ProdDeriveController;
 import fr.aphp.tumorotek.action.prodderive.ProdDeriveRowRenderer;
 import fr.aphp.tumorotek.decorator.LaboInterDecorator;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
-import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
@@ -283,19 +279,6 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       // annotations
       super.setObject(prelevement);
 
-      /**
-       * ANNOTATION INLINE - Bêta
-       *
-       * @since 2.2.0
-       * Il pourrait y avoir optimisation ICI car le bloc inline est redessiné à chaque fois
-       * qu'un nouvel objet est affiché.
-       * A priori, il ne serait utile de re-dessiner que si la collection change!
-       * Cette optimisation est valable pour FicheAnnotation également.
-       */
-      final FicheAnnotation inline = getFicheAnnotationInline();
-      if(inline != null){ // re-dessine le bloc inline annotation
-         inline.setObj((TKAnnotableObject) p);
-      }
    }
 
    @Override
@@ -398,7 +381,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    }
 
    /**
-    * Entraine l'affichage du résumé Patient-maladie (si true). 
+    * Entraine l'affichage du résumé Patient-maladie (si true).
     */
    public boolean getIsMaladieNotNull(){
       return this.maladie != null;
@@ -689,7 +672,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    }
 
    /**
-    * Forward Event. 
+    * Forward Event.
     */
    public void onSelectAllEchantillons(){
       onClickEchantillonCode(null);
@@ -718,7 +701,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    }
 
    /**
-    * Forward Event. 
+    * Forward Event.
     */
    public void onSelectAllDerives(){
       onClickProdDeriveCode(null);
@@ -753,8 +736,8 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    	sb.append(Labels.getLabel("impression.print.prelevement"));
    	sb.append(" ");
    	sb.append(this.prelevement.getCode());
-   	
-   	openImpressionWindow(page, prelevement, 
+
+   	openImpressionWindow(page, prelevement,
    			sb.toString(), isAnonyme(), isCanSeeHistorique());
    }*/
 
@@ -1177,44 +1160,4 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       }
    }
 
-   /**
-    * ANNOTATION INLINE - Bêta
-    *
-    * Copie depuis AbstractObjectTabController
-    * Récupère le controller de la fiche
-    *
-    * @return
-    * @since 2.2.0
-    */
-   public FicheAnnotationInline getFicheAnnotationInline(){
-      if(self.getFellow("ficheTissuInlineAnnoPrelevement") != null){
-         return ((FicheAnnotationInline) self.getFellow("ficheTissuInlineAnnoPrelevement").getFellow("fwinAnnotationInline")
-            .getAttributeOrFellow("fwinAnnotationInline$composer", true));
-      }
-      return null;
-   }
-
-   /**
-    * ANNOTATION INLINE - Bêta
-    *
-    * Passe qq params au bloc inline annotation sans le dessiner la creation de la
-    * fiche statique.
-    *
-    * @param controller
-    * @since 2.2.0
-    */
-   @Override
-   public void setObjectTabController(final AbstractObjectTabController controller){
-      super.setObjectTabController(controller);
-      //
-      final FicheAnnotation inline = getFicheAnnotationInline();
-      if(null != inline){
-         // passe l'entite au controller
-         getFicheAnnotationInline().setEntite(getObjectTabController().getEntiteTab());
-
-         // à remplacer par ce controller
-         // setFicheController
-         getFicheAnnotationInline().setObjectTabController(getObjectTabController());
-      }
-   }
 }

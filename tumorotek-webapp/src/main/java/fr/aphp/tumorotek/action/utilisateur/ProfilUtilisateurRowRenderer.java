@@ -35,6 +35,8 @@
  **/
 package fr.aphp.tumorotek.action.utilisateur;
 
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
@@ -55,6 +57,7 @@ public class ProfilUtilisateurRowRenderer implements RowRenderer<ProfilUtilisate
    // si true render login - banque
    // sinon rendre login - profil
    private boolean banqueRender = false;
+   private boolean editMode;
 
    public ProfilUtilisateurRowRenderer(final boolean _b){
       banqueRender = _b;
@@ -96,6 +99,24 @@ public class ProfilUtilisateurRowRenderer implements RowRenderer<ProfilUtilisate
          banqueLabel.addForward(null, banqueLabel.getParent(), "onClickProfilUtilisateurBanque", profil);
          banqueLabel.setParent(row);
       }
+      
+      if(editMode) {
+         Image removeIcon = new Image("/images/icones/small_delete.png");
+         removeIcon.addForward(Events.ON_CLICK, removeIcon.getParent(), "onClickRemoveProfil", profil);
+         removeIcon.setStyle("cursor:pointer");
+         removeIcon.setParent(row);
+      }
+      
    }
 
+   public boolean isEditMode(){
+      return editMode;
+   }
+
+   public void setEditMode(boolean editMode){
+      this.editMode = editMode;
+   }
+
+   
+   
 }

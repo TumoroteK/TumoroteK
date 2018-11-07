@@ -229,14 +229,6 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
    public void createObjectWithAnnots(){
       // prepare les listes de valeurs à manipuler
       getObjectTabController().getFicheAnnotation().populateValeursActionLists(true, false);
-      /**
-       * ANNOTATION INLINE - Bêta
-       *
-       * @since 2.2.0
-       */
-      if(null != getObjectTabController().getFicheAnnotationInline()){ // Contre Null Pointer
-         getObjectTabController().getFicheAnnotationInline().populateValeursActionLists(true, false);
-      }
 
       createNewObject();
 
@@ -244,14 +236,6 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
       // ne sont plus utilisés donc pas besoin de mettre à jour les ids
       // ni l'affichage
       getObjectTabController().getFicheAnnotation().clearValeursLists(true);
-      /**
-       * ANNOTATION INLINE - Bêta
-       *
-       * @since 2.2.0
-       */
-      if(null != getObjectTabController().getFicheAnnotationInline()){ // Contre Null Pointer
-         getObjectTabController().getFicheAnnotationInline().clearValeursLists(true);
-      }
    }
 
    /**
@@ -332,26 +316,8 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
       // si champ fichier stream -> null
       getObjectTabController().getFicheAnnotation().clearValeursLists(false);
 
-      /**
-       * ANNOTATION INLINE - Bêta
-       *
-       * @since 2.2.0
-       */
-      if(null != getObjectTabController().getFicheAnnotationInline()){ // Contre NullPointer
-         getObjectTabController().getFicheAnnotationInline().clearValeursLists(false);
-      }
-
       // prepare les listes de valeurs à manipuler
       getObjectTabController().getFicheAnnotation().populateValeursActionLists(false, false);
-
-      /**
-       * ANNOTATION INLINE - Bêta
-       *
-       * @since 2.2.0
-       */
-      if(null != getObjectTabController().getFicheAnnotationInline()){ // Contre Null Pointer
-         getObjectTabController().getFicheAnnotationInline().populateValeursActionLists(false, false);
-      }
 
       updateObject();
 
@@ -360,14 +326,6 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
       // ni l'affichage
       getObjectTabController().getFicheAnnotation().clearValeursLists(true);
 
-      /**
-       * ANNOTATION INLINE - Bêta
-       *
-       * @since 2.2.0
-       */
-      if(null != getObjectTabController().getFicheAnnotationInline()){ // Contre Null Pointer
-         getObjectTabController().getFicheAnnotationInline().clearValeursLists(true);
-      }
    }
 
    /**

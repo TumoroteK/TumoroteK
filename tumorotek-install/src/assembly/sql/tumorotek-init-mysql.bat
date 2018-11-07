@@ -93,37 +93,26 @@ echo.
 echo Ajout des donnees
 echo mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 ^< tumorotek\tumorotek-init.sql
 mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 < tumorotek\tumorotek-init.sql
-echo mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 ^< tumorotek\charts.sql
-mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 < tumorotek\charts.sql
-echo mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 ^< tumorotek\export_biobanques.sql
-mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 < tumorotek\export_biobanques.sql
-echo mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 ^< tumorotek\export_BIOCAP.sql
-mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 < tumorotek\export_BIOCAP.sql
-echo mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 ^< tumorotek\export_INCA.sql
-mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 < tumorotek\export_INCA.sql
-echo mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 ^< tumorotek\export_mysql.sql
-mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 < tumorotek\export_mysql.sql
-echo mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 ^< tumorotek\export_TGVSO.sql
-mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 < tumorotek\export_TGVSO.sql
-echo mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 ^< tumorotek\getBoite.sql
-mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 < tumorotek\getBoite.sql
-echo mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 ^< tumorotek\indicateurs.sql
-mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 < tumorotek\indicateurs.sql
+echo mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 ^< tumorotek\createINCAtables.sql
+mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 < tumorotek\createINCAtables.sql
 echo mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 ^< tumorotek\createSTATStables.sql
 mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 < tumorotek\createSTATStables.sql
-
-:tumorotek_add-bto-context_again
-    echo.
-    set answer=
-    set /p answer="Ajouter le contexte BTO ? (Y/N)? "
-    if /i "%answer:~,1%" EQU "Y" goto tumorotek_add-bto-context_add
-    if /i "%answer:~,1%" EQU "N" goto end /b
-    echo Please type Y for Yes or N for No
-    goto tumorotek_add-bto-context_again
-
-:tumorotek_add-bto-context_add
-echo mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 ^< tumorotek\add-bto-context.sql
-mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 < tumorotek\add-bto-context.sql
+echo mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 --delimiter="&&" ^< tumorotek\charts.sql
+mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 --delimiter="&&" < tumorotek\charts.sql
+echo mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 --delimiter="&&" ^< tumorotek\export_biobanques.sql
+mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 --delimiter="&&" < tumorotek\export_biobanques.sql
+echo mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 --delimiter="&&" ^< tumorotek\export_BIOCAP.sql
+mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 --delimiter="&&" < tumorotek\export_BIOCAP.sql
+echo mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 --delimiter="&&" ^< tumorotek\export_INCA.sql
+mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 --delimiter="&&" < tumorotek\export_INCA.sql
+echo mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 --delimiter="&&" ^< tumorotek\export_mysql.sql
+mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 --delimiter="&&" < tumorotek\export_mysql.sql
+echo mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 --delimiter="&&" ^< tumorotek\export_TGVSO.sql
+mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 --delimiter="&&" < tumorotek\export_TGVSO.sql
+echo mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 --delimiter="&&" ^< tumorotek\getBoite.sql
+mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 --delimiter="&&" < tumorotek\getBoite.sql
+echo mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 --delimiter="&&" ^< tumorotek\indicateurs.sql
+mysql -u %user_mysql% -p%password_mysql% %tumorotek% --default-character-set=utf8 --delimiter="&&" < tumorotek\indicateurs.sql
 
 :end
 echo.

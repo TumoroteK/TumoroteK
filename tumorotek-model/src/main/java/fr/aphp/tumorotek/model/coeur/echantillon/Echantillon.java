@@ -184,7 +184,8 @@ import fr.aphp.tumorotek.model.utils.Utils;
    @NamedQuery(name = "Echantillon" + ".findByCollaborateur",
       query = "SELECT e FROM Echantillon e " + "WHERE e.collaborateur = (?1)"),
    @NamedQuery(name = "Echantillon.findByEmplacement",
-      query = "SELECT e FROM Echantillon e " + "WHERE e.emplacement.terminale = ?1 " + "AND e.emplacement.position = ?2")})
+      query = "SELECT e FROM Echantillon e " + "WHERE e.emplacement.terminale = ?1 " + "AND e.emplacement.position = ?2"),
+   @NamedQuery(name = "Echantillon.findByCodeInListWithPlateforme", query= "SELECT e FROM Echantillon e JOIN e.banque bq JOIN bq.plateforme pf WHERE e.code in (?1) AND pf = ?2 ")})
 public class Echantillon implements TKStockableObject, Serializable, TKFileSettableObject
 {
 
@@ -473,7 +474,7 @@ public class Echantillon implements TKStockableObject, Serializable, TKFileSetta
       this.echantillonType = type;
    }
 
-   @ManyToOne(fetch = FetchType.LAZY)
+   @ManyToOne(fetch = FetchType.EAGER)
    @JoinColumn(name = "PRELEVEMENT_ID", nullable = true)
    public Prelevement getPrelevement(){
       return this.prelevement;

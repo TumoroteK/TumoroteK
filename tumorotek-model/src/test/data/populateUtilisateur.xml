@@ -6,8 +6,7 @@
 		<column>LOGIN</column>
 		<column>PASSWORD</column>
 		<column>ARCHIVE</column>
-		<column>ENCODED_PASSWORD</column>
-		<column>DN_LDAP</column>
+		<column>LDAP</column>
 		<column>EMAIL</column>
 		<column>TIMEOUT</column>
 		<column>COLLABORATEUR_ID</column>
@@ -17,8 +16,7 @@
 			<value>USER1</value>
 			<value>PASS1</value>
 			<value>0</value>
-			<value>ENCO1</value>
-			<value>LDAP1</value>
+			<value>0</value>
 			<value>mail1@yahoo.fr</value>
 			<value>2010-12-01</value>
 			<value>1</value>
@@ -29,8 +27,7 @@
 			<value>USER2</value>
 			<value>PASS2</value>
 			<value>0</value>
-			<value>ENCO2</value>
-			<value>LDAP2</value>
+			<value>0</value>
 			<value>mail2@yahoo.fr</value>
 			<value>2014-05-15</value>
 			<value>2</value>
@@ -41,8 +38,7 @@
 			<value>USER3</value>
 			<value>PASS3</value>
 			<value>1</value>
-			<value>ENCO3</value>
-			<value>LDAP3</value>
+			<value>0</value>
 			<value>mail3@yahoo.fr</value>
 			<value>2009-01-01</value>
 			<value>3</value>
@@ -53,8 +49,7 @@
 			<value>USER4</value>
 			<value>PASS4</value>
 			<value>0</value>
-			<value>ENCO4</value>
-			<value>LDAP4</value>
+			<value>0</value>
 			<value>mail4@yahoo.fr</value>
 			<value>2011-06-21</value>
 			<null />
@@ -65,8 +60,7 @@
 			<value>USER5</value>
 			<value>PASS5</value>
 			<value>0</value>
-			<value>ENCO5</value>
-			<value>LDAP5</value>
+			<value>0</value>
 			<value>mail5@yahoo.fr</value>
 			<value>2010-11-31</value>
 			<null />

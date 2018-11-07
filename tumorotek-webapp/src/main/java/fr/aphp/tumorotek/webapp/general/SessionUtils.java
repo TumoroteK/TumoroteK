@@ -1,10 +1,10 @@
 /**
  * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
  * dsi-projet.tk@aphp.fr
- *
+ * <p>
  * Ce logiciel est un programme informatique servant à la gestion de
  * l'activité de biobanques.
- *
+ * <p>
  * Ce logiciel est régi par la licence CeCILL soumise au droit français
  * et respectant les principes de diffusion des logiciels libres. Vous
  * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
@@ -16,7 +16,7 @@
  * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
  * l'auteur du programme, le titulaire des droits patrimoniaux et les
  * concédants successifs.
- *
+ * <p>
  * A cet égard  l'attention de l'utilisateur est attirée sur les
  * risques associés au chargement,  à l'utilisation,  à la modification
  * et/ou au  développement et à la reproduction du logiciel par
@@ -28,7 +28,7 @@
  * besoins dans des conditions permettant d'assurer la sécurité de leurs
  * systèmes et ou de leurs données et, plus généralement, à l'utiliser
  * et l'exploiter dans les mêmes conditions de sécurité.
- *
+ * <p>
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
@@ -36,23 +36,13 @@
 package fr.aphp.tumorotek.webapp.general;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zkoss.zk.ui.Sessions;
 
-import fr.aphp.tumorotek.action.ManagerLocator;
-import fr.aphp.tumorotek.manager.CrudManager;
-import fr.aphp.tumorotek.manager.PfDependantTKThesaurusManager;
-import fr.aphp.tumorotek.manager.context.CategorieManager;
-import fr.aphp.tumorotek.manager.context.SpecialiteManager;
 import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.EContexte;
@@ -60,6 +50,7 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.interfacage.Emetteur;
 import fr.aphp.tumorotek.model.interfacage.Recepteur;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.utils.Utils;
 
 /**
@@ -67,21 +58,17 @@ import fr.aphp.tumorotek.utils.Utils;
  * Date: 26/07/2010.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.2.0
+ * @since 2.0
  */
-public final class SessionUtils
-{
+public final class SessionUtils {
 
-   private SessionUtils(){}
+   private SessionUtils(){
+   }
 
    private static Log log = LogFactory.getLog(SessionUtils.class);
 
-   private static String baseDir = null;
-   private static String databaseURL = null;
-   private static String driverClass = null;
    private static String databasePathClass = null;
-   private static String usernameDB = null;
-   private static String passwordDB = null;
 
    private final static String MYSQL_DB = "mysql";
    private final static String ORACLE_DB = "oracle";
@@ -89,10 +76,10 @@ public final class SessionUtils
    /**
     * Renvoie la liste de banque selectionnées par l'utilisateur et passée en
     * variable de session.
-    * 
+    *
     * @return liste de Banque
     */
-   
+
    public static List<Banque> getSelectedBanques(final Map<?, ?> sessionScp){
       final List<Banque> banks = new ArrayList<>();
       if(sessionScp.containsKey("Banque")){
@@ -118,7 +105,7 @@ public final class SessionUtils
 
    /**
     * Indique si l'utilisateur est connecté en tant qu'admin de plateforme.
-    * 
+    *
     * @param sessionScp
     * @return true si oui.
     */
@@ -126,21 +113,19 @@ public final class SessionUtils
       if(sessionScp.get("AdminPF") != null){
          return (Boolean) sessionScp.get("AdminPF");
       }
-         return false;
-      }
+      return false;
+   }
 
    /**
     * Indique si parmi les banques selectionnées par l'utilisateur au moins une
     * définit des maladies.
-    * 
-    * @param liste
-    *            de banques
+    *
+    * @param banks liste de banques
     * @return boolean true/false
     */
    public static boolean isAnyDefMaladieInBanques(final List<Banque> banks){
-      final Iterator<Banque> it = banks.iterator();
-      while(it.hasNext()){
-         if(it.next().getDefMaladies()){
+      for(Banque bank : banks){
+         if(bank.getDefMaladies()){
             return true;
          }
       }
@@ -150,109 +135,37 @@ public final class SessionUtils
    /**
     * Accède via JNDI au path spécifié en tant que base directory dans le
     * ficher de conf du server.
-    * 
+    *
     * @return base Directory path
     */
    public static String getSystemBaseDir(){
-      if(baseDir == null){
-         try{
-            // get a handle on the JNDI root context
-            final Context ctx = new InitialContext();
-
-            // and access the environment variable for this web component
-            baseDir = (String) ctx.lookup("java:comp/env/tk/tkFileSystem");
-         }catch(final NamingException ex){
-            log.error(ex);
-         }
-      }
-      return baseDir;
+      return TkParam.FILESYSTEM.getValue();
    }
 
    /**
-    * Accède via JNDI au path spécifié dans le ficher de conf du server.
-    * 
-    * @return database url path
-    */
-   public static String getDatabaseURL(){
-      if(databaseURL == null){
-         try{
-            databaseURL = Utils.getDatabaseURL();
-         }catch(final NamingException ex){
-            log.error(ex);
-         }
-      }
-      return databaseURL;
-   }
-
-   /**
-    * Accède via JNDI au path spécifié dans le ficher de conf du server.
-    * 
-    * @return database url path
-    */
-   public static String getDriverClass(){
-      if(driverClass == null){
-         try{
-            driverClass = Utils.getDriverClass();
-         }catch(final NamingException ex){
-            log.error(ex);
-         }
-      }
-      return driverClass;
-   }
-
-   /**
-    * 
+    *
     * @return db class to export
     */
    public static String getDatabasePathClass(){
-      if(getDatabaseURL().contains(MYSQL_DB)){
+      final String databaseUrl = Utils.getDatabaseURL();
+      if(databaseUrl.contains(MYSQL_DB)){
          databasePathClass = "fr.aphp.tumorotek.webapp.general.export.Export_MySQL";
-      }else if(getDatabaseURL().contains(ORACLE_DB)){
+      }else if(databaseUrl.contains(ORACLE_DB)){
          databasePathClass = "fr.aphp.tumorotek.webapp.general.export.Export_Oracle";
       }
       return databasePathClass;
    }
 
    public static Boolean isOracleDBMS(){
-      return getDatabaseURL().contains(ORACLE_DB);
-   }
-
-   /**
-    * 
-    * @return usernameDB
-    */
-   public static String getUsernameDB(){
-      if(usernameDB == null){
-         try{
-            usernameDB = Utils.getUsernameDB();
-         }catch(final NamingException ex){
-            log.error(ex);
-         }
-      }
-      return usernameDB;
-   }
-
-   /**
-    * 
-    * @return passwordDB
-    */
-   public static String getPasswordDB(){
-      if(passwordDB == null){
-         try{
-            passwordDB = Utils.getPasswordDB();
-         }catch(final NamingException ex){
-            log.error(ex);
-         }
-      }
-      return passwordDB;
+      return Utils.getDatabaseURL().contains(ORACLE_DB);
    }
 
    /**
     * Renvoie la liste d'emetteurs définis comme interfacages.
-    * 
+    *
     * @return liste d'Emetteurs
     */
-   
+
    public static List<Emetteur> getEmetteursInterfacages(final Map<?, ?> sessionScp){
       final List<Emetteur> emetteurs = new ArrayList<>();
       if(sessionScp.containsKey("Emetteurs")){
@@ -263,10 +176,10 @@ public final class SessionUtils
 
    /**
     * Renvoie la liste de recepteurs définis comme interfacages.
-    * 
+    *
     * @return liste de Recepteurs
     */
-   
+
    public static List<Recepteur> getRecepteursInterfacages(final Map<?, ?> sessionScp){
       final List<Recepteur> recepteurs = new ArrayList<>();
       if(sessionScp.containsKey("Recepteurs")){
@@ -277,15 +190,12 @@ public final class SessionUtils
 
    /**
     * Retourne le type de base de données utilisé (mysql ou oracle).
-    * 
+    *
     * @return mysql ou oracle.
-    * @throws NamingException
-    *             Exception.
     */
-   public static String getDbms() throws NamingException{
+   public static String getDbms(){
 
-      final Context ctx = new InitialContext();
-      String jdbcDialect = (String) ctx.lookup("java:comp/env/jdbc/dialect");
+      String jdbcDialect = TkParam.TK_DATABASE_DIALECT.getValue();
 
       if(jdbcDialect.contains("Oracle")){
          jdbcDialect = "oracle";
@@ -317,8 +227,8 @@ public final class SessionUtils
       if(sessionScp.get("dossierExt") != null){
          return (ResultatInjection) sessionScp.get("dossierExt");
       }
-         return null;
-      }
+      return null;
+   }
 
    public static void setDossierExterneInjection(final Map<String, Object> sessionScp, final ResultatInjection res){
       sessionScp.remove("dossierExt");
@@ -329,74 +239,101 @@ public final class SessionUtils
 
    /**
     * Initialise la liste des objets du thésaurus à afficher.
-    * 
+    *
     * @param reset
     *            si manager change
     */
-   private static CrudManager<?> thesManager = null;
+//   private static CrudManager<?> thesManager = null;
 
-   public static List<? extends Object> getThesaurusListeValeurs(final String typeThesaurus){
-      List<? extends Object> listValeurs = new ArrayList<>();
+   /*public static List<?> getThesaurusListeValeurs(final String typeThesaurus){
+      List<?> listValeurs = new ArrayList<>();
 
-      if(typeThesaurus.equals("Nature")){
-         thesManager = ManagerLocator.getNatureManager();
-      }else if(typeThesaurus.equals("PrelevementType")){
-         thesManager = ManagerLocator.getPrelevementTypeManager();
-      }else if(typeThesaurus.equals("EchantillonType")){
-         thesManager = ManagerLocator.getEchantillonTypeManager();
-      }else if(typeThesaurus.equals("EchanQualite")){
-         thesManager = ManagerLocator.getEchanQualiteManager();
-      }else if(typeThesaurus.equals("ProdType")){
-         thesManager = ManagerLocator.getProdTypeManager();
-      }else if(typeThesaurus.equals("ProdQualite")){
-         thesManager = ManagerLocator.getProdQualiteManager();
-      }else if(typeThesaurus.equals("ConditType")){
-         thesManager = ManagerLocator.getConditTypeManager();
-      }else if(typeThesaurus.equals("ConditMilieu")){
-         thesManager = ManagerLocator.getConditMilieuManager();
-      }else if(typeThesaurus.equals("ConsentType")){
-         thesManager = ManagerLocator.getConsentTypeManager();
-      }else if(typeThesaurus.equals("Risque")){
-         thesManager = ManagerLocator.getRisqueManager();
-      }else if(typeThesaurus.equals("ModePrepa")){
-         thesManager = ManagerLocator.getModePrepaManager();
-      }else if(typeThesaurus.equals("ModePrepaDerive")){
-         thesManager = ManagerLocator.getModePrepaDeriveManager();
-      }else if(typeThesaurus.equals("CessionExamen")){
-         thesManager = ManagerLocator.getCessionExamenManager();
-      }else if(typeThesaurus.equals("DestructionMotif")){
-         thesManager = ManagerLocator.getDestructionMotifManager();
-      }else if(typeThesaurus.equals("ProtocoleType")){
-         thesManager = ManagerLocator.getProtocoleTypeManager();
-      }else if(typeThesaurus.equals("Specialite")){
-         thesManager = ManagerLocator.getSpecialiteManager();
-      }else if(typeThesaurus.equals("Categorie")){
-         thesManager = ManagerLocator.getCategorieManager();
-      }else if(typeThesaurus.equals("ConteneurType")){
-         thesManager = ManagerLocator.getConteneurTypeManager();
-      }else if(typeThesaurus.equals("EnceinteType")){
-         thesManager = ManagerLocator.getEnceinteTypeManager();
-      }else if(typeThesaurus.equals("Protocole")){
-         thesManager = ManagerLocator.getProtocoleManager();
+      switch(typeThesaurus){
+         case "Nature":
+            thesManager = ManagerLocator.getNatureManager();
+            break;
+         case "PrelevementType":
+            thesManager = ManagerLocator.getPrelevementTypeManager();
+            break;
+         case "EchantillonType":
+            thesManager = ManagerLocator.getEchantillonTypeManager();
+            break;
+         case "EchanQualite":
+            thesManager = ManagerLocator.getEchanQualiteManager();
+            break;
+         case "ProdType":
+            thesManager = ManagerLocator.getProdTypeManager();
+            break;
+         case "ProdQualite":
+            thesManager = ManagerLocator.getProdQualiteManager();
+            break;
+         case "ConditType":
+            thesManager = ManagerLocator.getConditTypeManager();
+            break;
+         case "ConditMilieu":
+            thesManager = ManagerLocator.getConditMilieuManager();
+            break;
+         case "ConsentType":
+            thesManager = ManagerLocator.getConsentTypeManager();
+            break;
+         case "Risque":
+            thesManager = ManagerLocator.getRisqueManager();
+            break;
+         case "ModePrepa":
+            thesManager = ManagerLocator.getModePrepaManager();
+            break;
+         case "ModePrepaDerive":
+            thesManager = ManagerLocator.getModePrepaDeriveManager();
+            break;
+         case "CessionExamen":
+            thesManager = ManagerLocator.getCessionExamenManager();
+            break;
+         case "DestructionMotif":
+            thesManager = ManagerLocator.getDestructionMotifManager();
+            break;
+         case "ProtocoleType":
+            thesManager = ManagerLocator.getProtocoleTypeManager();
+            break;
+         case "Specialite":
+            thesManager = ManagerLocator.getSpecialiteManager();
+            break;
+         case "Categorie":
+            thesManager = ManagerLocator.getCategorieManager();
+            break;
+         case "ConteneurType":
+            thesManager = ManagerLocator.getConteneurTypeManager();
+            break;
+         case "EnceinteType":
+            thesManager = ManagerLocator.getEnceinteTypeManager();
+            break;
+         case "Protocole":
+            thesManager = ManagerLocator.getProtocoleManager();
+            break;
       }
 
       // si c'est un thes de non conformité
       if(thesManager == null){
-         if(typeThesaurus.equals("NonConformiteArrivee")){
-            listValeurs = ManagerLocator.getNonConformiteManager()
-               .findByPlateformeEntiteAndTypeStringManager(getCurrentPlateforme(), "Arrivee", null);
-         }else if(typeThesaurus.equals("NonConformiteTraitementEchan")){
-            listValeurs = ManagerLocator.getNonConformiteManager()
-               .findByPlateformeEntiteAndTypeStringManager(getCurrentPlateforme(), "Traitement", null);
-         }else if(typeThesaurus.equals("NonConformiteCessionEchan")){
-            listValeurs = ManagerLocator.getNonConformiteManager()
-               .findByPlateformeEntiteAndTypeStringManager(getCurrentPlateforme(), "Cession", null);
-         }else if(typeThesaurus.equals("NonConformiteTraitementDerive")){
-            listValeurs = ManagerLocator.getNonConformiteManager()
-               .findByPlateformeEntiteAndTypeStringManager(getCurrentPlateforme(), "TraitementDerive", null);
-         }else if(typeThesaurus.equals("NonConformiteCession")){
-            listValeurs = ManagerLocator.getNonConformiteManager()
-               .findByPlateformeEntiteAndTypeStringManager(getCurrentPlateforme(), "Cession", null);
+         switch(typeThesaurus){
+            case "NonConformiteArrivee":
+               listValeurs = ManagerLocator.getNonConformiteManager()
+                  .findByPlateformeEntiteAndTypeStringManager(getCurrentPlateforme(), "Arrivee", null);
+               break;
+            case "NonConformiteTraitementEchan":
+               listValeurs = ManagerLocator.getNonConformiteManager()
+                  .findByPlateformeEntiteAndTypeStringManager(getCurrentPlateforme(), "Traitement", null);
+               break;
+            case "NonConformiteCessionEchan":
+               listValeurs = ManagerLocator.getNonConformiteManager()
+                  .findByPlateformeEntiteAndTypeStringManager(getCurrentPlateforme(), "Cession", null);
+               break;
+            case "NonConformiteTraitementDerive":
+               listValeurs = ManagerLocator.getNonConformiteManager()
+                  .findByPlateformeEntiteAndTypeStringManager(getCurrentPlateforme(), "TraitementDerive", null);
+               break;
+            case "NonConformiteCession":
+               listValeurs = ManagerLocator.getNonConformiteManager()
+                  .findByPlateformeEntiteAndTypeStringManager(getCurrentPlateforme(), "Cession", null);
+               break;
          }
       }else if(thesManager instanceof PfDependantTKThesaurusManager){
          listValeurs = ((PfDependantTKThesaurusManager<?>) thesManager).findByOrderManager(getCurrentPlateforme());
@@ -407,9 +344,6 @@ public final class SessionUtils
             listValeurs = ((CategorieManager) thesManager).findAllObjectsManager();
          }
       }
-
       return listValeurs;
-
-   }
-
+   }*/
 }

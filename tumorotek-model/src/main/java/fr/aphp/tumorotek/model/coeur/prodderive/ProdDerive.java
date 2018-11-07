@@ -78,96 +78,89 @@ import fr.aphp.tumorotek.model.utils.Utils;
  */
 @Entity
 @Table(name = "PROD_DERIVE")
-@NamedQueries(
-   value = {@NamedQuery(name = "ProdDerive.findByCode", query = "SELECT p FROM ProdDerive p WHERE p.code like ?1"),
-      @NamedQuery(name = "ProdDerive.findByCodeOrLaboWithBanque",
-         query = "SELECT p FROM ProdDerive p WHERE " + "(p.code like ?1 OR p.codeLabo like ?1) " + "AND p.banque = ?2"),
-      @NamedQuery(name = "ProdDerive.findByCodeInPlateforme",
-         query = "SELECT p FROM ProdDerive p WHERE p.code like ?1 " + "AND p.banque.plateforme = ?2"),
-      @NamedQuery(name = "ProdDerive.findByCodeOrLaboWithBanqueReturnIds",
-         query = "SELECT p.prodDeriveId FROM ProdDerive p WHERE " + "(p.code like ?1 OR p.codeLabo like ?1) "
-            + "AND p.banque = ?2"),
-      @NamedQuery(name = "ProdDerive.findByCodeLabo", query = "SELECT p FROM ProdDerive p WHERE p.codeLabo like ?1"),
-      @NamedQuery(name = "ProdDerive.findByDateStockAfterDate", query = "SELECT p FROM ProdDerive p WHERE p.dateStock > ?1"),
-      @NamedQuery(name = "ProdDerive.findByDateTransformationAfterDate",
-         query = "SELECT p FROM ProdDerive p " + "WHERE p.dateTransformation > ?1"),
-      @NamedQuery(name = "ProdDerive." + "findByDateTransformationAfterDateWithBanque",
-         query = "SELECT p FROM ProdDerive p " + "WHERE p.dateTransformation > ?1 " + "AND p.banque = ?2"),
-      @NamedQuery(name = "ProdDerive.findByEtatIncomplet", query = "SELECT p FROM ProdDerive p WHERE p.etatIncomplet = ?1"),
-      @NamedQuery(name = "ProdDerive.findByExcludedIdCodes",
-         query = "SELECT p.code FROM ProdDerive p " + "WHERE p.prodDeriveId != ?1 and banque = ?2"),
-      @NamedQuery(name = "ProdDerive.findByProdType", query = "SELECT p FROM ProdDerive p " + "WHERE p.prodType = ?1"),
-      @NamedQuery(name = "ProdDerive.findByObjetStatut", query = "SELECT p FROM ProdDerive p " + "WHERE p.objetStatut = ?1"),
-      @NamedQuery(name = "ProdDerive.findByProdQualite", query = "SELECT p FROM ProdDerive p " + "WHERE p.prodQualite = ?1"),
-      @NamedQuery(name = "ProdDerive.findByCollaborateur", query = "SELECT p FROM ProdDerive p " + "WHERE p.collaborateur = ?1"),
-      @NamedQuery(name = "ProdDerive.findByEmplacement",
-         query = "SELECT p FROM ProdDerive p " + "WHERE p.emplacement.terminale = ?1 " + "AND p.emplacement.position = ?2"),
-      @NamedQuery(name = "ProdDerive.findByReservation", query = "SELECT p FROM ProdDerive p " + "WHERE p.reservation = ?1"),
-      @NamedQuery(name = "ProdDerive.findByModePrepaDerive",
-         query = "SELECT p FROM ProdDerive p " + "WHERE p.modePrepaDerive = ?1"),
-      @NamedQuery(name = "ProdDerive.findByBanqueSelectCode", query = "SELECT p.code FROM ProdDerive p " + "WHERE p.banque = ?1"),
-      @NamedQuery(name = "ProdDerive.findByBanqueAndQuantiteSelectCode",
-         query = "SELECT p.code FROM ProdDerive p " + "WHERE p.banque = ?1 " + "AND (p.quantite > 0 OR p.quantite IS NULL) "
-            + "AND p.objetStatut.statut not in ('EPUISE', 'ENCOURS', 'RESERVE')"),
-      @NamedQuery(name = "ProdDerive.findAllCodesByBanqueAndQuantiteNotNullOrInCessionTraitement",
-      query = "SELECT p.code FROM ProdDerive p "
-         + "WHERE p.banque = ?1 "
-         + "AND (((p.quantite > 0 OR p.quantite IS NULL) "
-         + "AND p.objetStatut.statut not in ('EPUISE', 'ENCOURS', 'RESERVE'))"
-         + "OR ("
-               + "p.prodDeriveId in (SELECT c.pk.objetId FROM CederObjet c WHERE c.pk.entite.nom = 'ProdDerive' AND c.pk.cession.cessionType.type = 'Traitement' AND c.statut = 'TRAITEMENT'"
+@NamedQueries(value = {@NamedQuery(name = "ProdDerive.findByCode", query = "SELECT p FROM ProdDerive p WHERE p.code like ?1"),
+   @NamedQuery(name = "ProdDerive.findByCodeOrLaboWithBanque",
+      query = "SELECT p FROM ProdDerive p WHERE " + "(p.code like ?1 OR p.codeLabo like ?1) " + "AND p.banque = ?2"),
+   @NamedQuery(name = "ProdDerive.findByCodeInPlateforme",
+      query = "SELECT p FROM ProdDerive p WHERE p.code like ?1 " + "AND p.banque.plateforme = ?2"),
+   @NamedQuery(name = "ProdDerive.findByCodeOrLaboWithBanqueReturnIds",
+      query = "SELECT p.prodDeriveId FROM ProdDerive p WHERE " + "(p.code like ?1 OR p.codeLabo like ?1) " + "AND p.banque = ?2"),
+   @NamedQuery(name = "ProdDerive.findByCodeLabo", query = "SELECT p FROM ProdDerive p WHERE p.codeLabo like ?1"),
+   @NamedQuery(name = "ProdDerive.findByDateStockAfterDate", query = "SELECT p FROM ProdDerive p WHERE p.dateStock > ?1"),
+   @NamedQuery(name = "ProdDerive.findByDateTransformationAfterDate",
+      query = "SELECT p FROM ProdDerive p " + "WHERE p.dateTransformation > ?1"),
+   @NamedQuery(name = "ProdDerive." + "findByDateTransformationAfterDateWithBanque",
+      query = "SELECT p FROM ProdDerive p " + "WHERE p.dateTransformation > ?1 " + "AND p.banque = ?2"),
+   @NamedQuery(name = "ProdDerive.findByEtatIncomplet", query = "SELECT p FROM ProdDerive p WHERE p.etatIncomplet = ?1"),
+   @NamedQuery(name = "ProdDerive.findByExcludedIdCodes",
+      query = "SELECT p.code FROM ProdDerive p " + "WHERE p.prodDeriveId != ?1 and banque = ?2"),
+   @NamedQuery(name = "ProdDerive.findByProdType", query = "SELECT p FROM ProdDerive p " + "WHERE p.prodType = ?1"),
+   @NamedQuery(name = "ProdDerive.findByObjetStatut", query = "SELECT p FROM ProdDerive p " + "WHERE p.objetStatut = ?1"),
+   @NamedQuery(name = "ProdDerive.findByProdQualite", query = "SELECT p FROM ProdDerive p " + "WHERE p.prodQualite = ?1"),
+   @NamedQuery(name = "ProdDerive.findByCollaborateur", query = "SELECT p FROM ProdDerive p " + "WHERE p.collaborateur = ?1"),
+   @NamedQuery(name = "ProdDerive.findByEmplacement",
+      query = "SELECT p FROM ProdDerive p " + "WHERE p.emplacement.terminale = ?1 " + "AND p.emplacement.position = ?2"),
+   @NamedQuery(name = "ProdDerive.findByReservation", query = "SELECT p FROM ProdDerive p " + "WHERE p.reservation = ?1"),
+   @NamedQuery(name = "ProdDerive.findByModePrepaDerive", query = "SELECT p FROM ProdDerive p " + "WHERE p.modePrepaDerive = ?1"),
+   @NamedQuery(name = "ProdDerive.findByBanqueSelectCode", query = "SELECT p.code FROM ProdDerive p " + "WHERE p.banque = ?1"),
+   @NamedQuery(name = "ProdDerive.findByBanqueAndQuantiteSelectCode",
+      query = "SELECT p.code FROM ProdDerive p " + "WHERE p.banque = ?1 " + "AND (p.quantite > 0 OR p.quantite IS NULL) "
+         + "AND p.objetStatut.statut not in ('EPUISE', 'ENCOURS', 'RESERVE')"),
+   @NamedQuery(name = "ProdDerive.findAllCodesByBanqueAndQuantiteNotNullOrInCessionTraitement",
+      query = "SELECT p.code FROM ProdDerive p " + "WHERE p.banque = ?1 " + "AND (((p.quantite > 0 OR p.quantite IS NULL) "
+         + "AND p.objetStatut.statut not in ('EPUISE', 'ENCOURS', 'RESERVE'))" + "OR ("
+         + "p.prodDeriveId in (SELECT c.pk.objetId FROM CederObjet c WHERE c.pk.entite.nom = 'ProdDerive' AND c.pk.cession.cessionType.type = 'Traitement' AND c.statut = 'TRAITEMENT'"
          + ")))"),
-      @NamedQuery(name = "ProdDerive.findByBanqueStatutSelectCode",
-         query = "SELECT p.code FROM ProdDerive p " + "WHERE p.banque = ?1 AND p.objetStatut = ?2 " + "ORDER BY p.code"),
-      @NamedQuery(name = "ProdDerive.findByBanqueInListStatutSelectCode",
-         query = "SELECT p.code FROM ProdDerive p " + "WHERE p.banque in (?1) AND p.objetStatut = ?2 " + "ORDER BY p.code"),
-      @NamedQuery(name = "ProdDerive.findByTransformation",
-         query = "SELECT p FROM ProdDerive p " + "WHERE p.transformation = ?1 ORDER BY p.prodDeriveId"),
-      @NamedQuery(name = "ProdDerive.findByTerminale",
-         query = "SELECT p FROM ProdDerive p " + "WHERE p.prodDeriveId IN " + "(select empl.objetId FROM Emplacement empl "
-            + "WHERE empl.entite = ?1 AND empl.terminale = ?2)"),
-      @NamedQuery(name = "ProdDerive.findByBanques",
-         query = "SELECT p FROM ProdDerive p WHERE p.banque in (?1) " + "ORDER BY p.banque, p.code"),
-      @NamedQuery(name = "ProdDerive.findByTerminaleDirect",
-         query = "SELECT p FROM ProdDerive p " + "WHERE p.emplacement.terminale = ?1)"),
-      @NamedQuery(name = "ProdDerive.findByParentAndType",
-         query = "SELECT p FROM ProdDerive p " + "WHERE p.transformation.objetId = ?1 " + "AND p.transformation.entite = ?2 "
-            + "AND p.prodType.nom like ?3"),
-      @NamedQuery(name = "ProdDerive.findByEchantillonPatientNomReturnIds",
-         query = "SELECT p.prodDeriveId FROM ProdDerive p, Echantillon e " + "JOIN e.prelevement as prlvt "
-            + "JOIN prlvt.maladie as m " + "JOIN m.patient as pat " + "WHERE p.transformation.objetId = e.echantillonId "
-            + "AND p.transformation.entite.nom = 'Echantillon' " + "AND (pat.nom like ?1 OR pat.nip like ?1)  AND p.banque = ?2"),
-      @NamedQuery(name = "ProdDerive.findByPrelevementPatientNomreturnIds",
-         query = "SELECT p.prodDeriveId " + "FROM ProdDerive p, Prelevement prlvt " + "JOIN prlvt.maladie as m "
-            + "JOIN m.patient as pat " + "WHERE p.transformation.objetId = prlvt.prelevementId "
-            + "AND p.transformation.entite.nom = 'Prelevement' " + "AND pat.nom like ?1 AND p.banque = ?2"),
-      @NamedQuery(name = "ProdDerive.findByIdInList", query = "SELECT p FROM ProdDerive p " + "WHERE p.prodDeriveId in (?1)"),
-      @NamedQuery(name = "ProdDerive.findByBanquesAllIds",
-         query = "SELECT p.prodDeriveId FROM ProdDerive p " + "WHERE p.banque in (?1)"),
-      @NamedQuery(name = "ProdDerive.findByParent",
-         query = "SELECT p FROM ProdDerive p " + "WHERE p.transformation.objetId = ?1 " + "AND p.transformation.entite = ?2 "),
-      @NamedQuery(name = "ProdDerive.findByCodeInListWithBanque",
-         query = "SELECT p.prodDeriveId, p.code FROM ProdDerive p " + "WHERE p.code in (?1) " + "AND p.banque in (?2)"),
-      @NamedQuery(name = "ProdDerive" + ".findByEchantillonPatientNomInListReturnIds",
-         query = "SELECT p.prodDeriveId FROM ProdDerive p, Echantillon e " + "JOIN e.prelevement as prlvt "
-            + "JOIN prlvt.maladie as m " + "JOIN m.patient as pat " + "WHERE p.transformation.objetId = e.echantillonId "
-            + "AND p.transformation.entite.nom = 'Echantillon' " + "AND (pat.nom in (?1) OR pat.nip in (?1)) "
-            + "AND p.banque in (?2)"),
-      @NamedQuery(name = "ProdDerive" + ".findByPrelevementPatientNomInListreturnIds",
-         query = "SELECT p.prodDeriveId " + "FROM ProdDerive p, Prelevement prlvt " + "JOIN prlvt.maladie as m "
-            + "JOIN m.patient as pat "
-            + "WHERE p.transformation.objetId = prlvt.prelevementId " + "AND p.transformation.entite.nom = 'Prelevement' "
-            + "AND (pat.nom in (?1) OR pat.nip in (?1)) " + "AND p.banque in (?2)"),
-      @NamedQuery(
-         name = "ProdDerive.findCountCreatedByCollaborateur", query = "SELECT count(p) FROM ProdDerive p, Operation o "
-            + "WHERE p.prodDeriveId = o.objetId " + "and p.collaborateur = (?1) " + "AND o.operationType.nom = 'Creation' "
-            + "AND o.entite.nom = 'ProdDerive'"),
-      @NamedQuery(name = "ProdDerive.findCountByOperateur",
-         query = "SELECT count(p) FROM ProdDerive p " + "WHERE p.collaborateur = ?1"),
-      @NamedQuery(name = "ProdDerive.findCountByParent", query = "SELECT count(p) FROM ProdDerive p "
-         + "WHERE p.transformation.objetId = ?1 " + "AND p.transformation.entite = ?2"),
-
-   })
+   @NamedQuery(name = "ProdDerive.findByBanqueStatutSelectCode",
+      query = "SELECT p.code FROM ProdDerive p " + "WHERE p.banque = ?1 AND p.objetStatut = ?2 " + "ORDER BY p.code"),
+   @NamedQuery(name = "ProdDerive.findByBanqueInListStatutSelectCode",
+      query = "SELECT p.code FROM ProdDerive p " + "WHERE p.banque in (?1) AND p.objetStatut = ?2 " + "ORDER BY p.code"),
+   @NamedQuery(name = "ProdDerive.findByTransformation",
+      query = "SELECT p FROM ProdDerive p " + "WHERE p.transformation = ?1 ORDER BY p.prodDeriveId"),
+   @NamedQuery(name = "ProdDerive.findByTerminale",
+      query = "SELECT p FROM ProdDerive p " + "WHERE p.prodDeriveId IN " + "(select empl.objetId FROM Emplacement empl "
+         + "WHERE empl.entite = ?1 AND empl.terminale = ?2)"),
+   @NamedQuery(name = "ProdDerive.findByBanques",
+      query = "SELECT p FROM ProdDerive p WHERE p.banque in (?1) " + "ORDER BY p.banque, p.code"),
+   @NamedQuery(name = "ProdDerive.findByTerminaleDirect",
+      query = "SELECT p FROM ProdDerive p " + "WHERE p.emplacement.terminale = ?1)"),
+   @NamedQuery(name = "ProdDerive.findByParentAndType",
+      query = "SELECT p FROM ProdDerive p " + "WHERE p.transformation.objetId = ?1 " + "AND p.transformation.entite = ?2 "
+         + "AND p.prodType.nom like ?3"),
+   @NamedQuery(name = "ProdDerive.findByEchantillonPatientNomReturnIds",
+      query = "SELECT p.prodDeriveId FROM ProdDerive p, Echantillon e " + "JOIN e.prelevement as prlvt "
+         + "JOIN prlvt.maladie as m " + "JOIN m.patient as pat " + "WHERE p.transformation.objetId = e.echantillonId "
+         + "AND p.transformation.entite.nom = 'Echantillon' " + "AND (pat.nom like ?1 OR pat.nip like ?1)  AND p.banque = ?2"),
+   @NamedQuery(name = "ProdDerive.findByPrelevementPatientNomreturnIds",
+      query = "SELECT p.prodDeriveId " + "FROM ProdDerive p, Prelevement prlvt " + "JOIN prlvt.maladie as m "
+         + "JOIN m.patient as pat " + "WHERE p.transformation.objetId = prlvt.prelevementId "
+         + "AND p.transformation.entite.nom = 'Prelevement' " + "AND pat.nom like ?1 AND p.banque = ?2"),
+   @NamedQuery(name = "ProdDerive.findByIdInList", query = "SELECT p FROM ProdDerive p " + "WHERE p.prodDeriveId in (?1)"),
+   @NamedQuery(name = "ProdDerive.findByBanquesAllIds",
+      query = "SELECT p.prodDeriveId FROM ProdDerive p " + "WHERE p.banque in (?1)"),
+   @NamedQuery(name = "ProdDerive.findByParent",
+      query = "SELECT p FROM ProdDerive p " + "WHERE p.transformation.objetId = ?1 " + "AND p.transformation.entite = ?2 "),
+   @NamedQuery(name = "ProdDerive.findByCodeInListWithBanque",
+      query = "SELECT p.prodDeriveId, p.code FROM ProdDerive p " + "WHERE p.code in (?1) " + "AND p.banque in (?2)"),
+   @NamedQuery(name = "ProdDerive" + ".findByEchantillonPatientNomInListReturnIds",
+      query = "SELECT p.prodDeriveId FROM ProdDerive p, Echantillon e " + "JOIN e.prelevement as prlvt "
+         + "JOIN prlvt.maladie as m " + "JOIN m.patient as pat " + "WHERE p.transformation.objetId = e.echantillonId "
+         + "AND p.transformation.entite.nom = 'Echantillon' " + "AND (pat.nom in (?1) OR pat.nip in (?1)) "
+         + "AND p.banque in (?2)"),
+   @NamedQuery(name = "ProdDerive" + ".findByPrelevementPatientNomInListreturnIds",
+      query = "SELECT p.prodDeriveId " + "FROM ProdDerive p, Prelevement prlvt " + "JOIN prlvt.maladie as m "
+         + "JOIN m.patient as pat " + "WHERE p.transformation.objetId = prlvt.prelevementId "
+         + "AND p.transformation.entite.nom = 'Prelevement' " + "AND (pat.nom in (?1) OR pat.nip in (?1)) "
+         + "AND p.banque in (?2)"),
+   @NamedQuery(name = "ProdDerive.findCountCreatedByCollaborateur",
+      query = "SELECT count(p) FROM ProdDerive p, Operation o " + "WHERE p.prodDeriveId = o.objetId "
+         + "and p.collaborateur = (?1) " + "AND o.operationType.nom = 'Creation' " + "AND o.entite.nom = 'ProdDerive'"),
+   @NamedQuery(name = "ProdDerive.findCountByOperateur",
+      query = "SELECT count(p) FROM ProdDerive p " + "WHERE p.collaborateur = ?1"),
+   @NamedQuery(name = "ProdDerive.findCountByParent",
+      query = "SELECT count(p) FROM ProdDerive p " + "WHERE p.transformation.objetId = ?1 " + "AND p.transformation.entite = ?2"),
+   @NamedQuery(name = "ProdDerive.findByListCodeWithPlateforme",
+      query = "SELECT e FROM ProdDerive e JOIN e.banque bq JOIN bq.plateforme pf WHERE e.code in (?1) AND pf = ?2 ")})
 public class ProdDerive implements TKStockableObject, Serializable
 {
 

@@ -54,10 +54,7 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Panel;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
-import fr.aphp.tumorotek.action.annotation.FicheAnnotation;
-import fr.aphp.tumorotek.action.annotation.FicheAnnotationInline;
 import fr.aphp.tumorotek.action.controller.AbstractFicheStaticController;
-import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.TKdataObject;
@@ -100,14 +97,12 @@ public class FichePatientStatic extends AbstractFicheStaticController
    // Associations
    private List<Maladie> maladies = new ArrayList<>();
    private List<Collaborateur> medecins = new ArrayList<>();
-   // private List<PatientLien> liens = new ArrayList<PatientLien>();
 
    // Labels à cacher en cas de compte anonyme
    private Label nipLabel;
    private Label nomLabel;
    private Label nomNaisLabel;
    private Label prenomLabel;
-   //private Label dateNaisLabel;
 
    private final List<Prelevement> prelevementsFromOtherMaladies = new ArrayList<>();
    private final PrelevementItemRenderer prelevementFromOtherMaladiesRenderer = new PrelevementItemRenderer();
@@ -213,9 +208,6 @@ public class FichePatientStatic extends AbstractFicheStaticController
             SessionUtils.getLoggedUser(sessionScope), ManagerLocator.getEntiteManager().findByNomManager("Prelevement").get(0),
             SessionUtils.getPlateforme(sessionScope));
 
-         // banks.remove(SessionUtils.getSelectedBanques(sessionScope)
-         //													.get(0));
-
          // configure le renderer pour inactiver les liens des
          // prélèvements non consultables
          prelevementFromOtherMaladiesRenderer.setFromOtherConsultBanks(banks);
@@ -232,23 +224,9 @@ public class FichePatientStatic extends AbstractFicheStaticController
       getReferents().setMedecins(this.medecins);
       referentsGroup.setOpen(false);
 
-      //this.liens = new ArrayList<PatientLien>(ManagerLocator
-      //					.getPatientManager().getPatientLiensManager(pat));
-
-      setListBoxesMold();
-
       // annotations
       super.setObject(patient);
 
-      /**
-       * ANNOTATION INLINE - Bêta
-       *
-       * @since 2.2.0
-       */
-      final FicheAnnotation inline = getFicheAnnotationInline();
-      if(null != inline){ // re-dessine le bloc inline annotation
-         inline.setObj(patient);
-      }
    }
 
    @Override
@@ -411,9 +389,6 @@ public class FichePatientStatic extends AbstractFicheStaticController
    public void onMaladieDone(final Event e){
       if(e.getData() != null){
          this.maladies.add((Maladie) e.getData());
-         // refresh from database
-         //this.maladies = new ArrayList<Maladie>(ManagerLocator
-         //		.getPatientManager().getMaladiesManager(this.patient));
 
          populateMaladieGroupHeader();
 
@@ -428,7 +403,6 @@ public class FichePatientStatic extends AbstractFicheStaticController
 
    public void onMaladieDelete(final Event e){
       this.maladies.remove(e.getData());
-      //this.patient.setMaladies(new HashSet<Maladie>(this.maladies));
 
       populateMaladieGroupHeader();
 
@@ -457,8 +431,6 @@ public class FichePatientStatic extends AbstractFicheStaticController
       Components.removeAllChildren(malaDiv);
 
       if(maladies.size() > 0){
-         //			if (SessionUtils
-         //					.getMainSelectedBanque(sessionScope).size() == 1) {
          // dessine les differents panel maladies
          HtmlMacroComponent ua = null;
          int i;
@@ -477,18 +449,6 @@ public class FichePatientStatic extends AbstractFicheStaticController
             ((FicheMaladie) ua.getFellow("fwinMaladie").getAttributeOrFellow("fwinMaladie$composer", true)).openAll();
          }
          this.lastPanelId = i;
-         //			} else { // dessine toutes maladies sauf sous-jacentes
-         //				// dessine les differents panel maladies
-         //				int i;
-         //				for (i = 0; i < maladies.size(); i++) {
-         //					if (!maladies.get(i).getSystemeDefaut()) {
-         //						drawAMaladiePanel(maladies.get(i), i, false);
-         //					} else { // ne dessine pas la maladie sous-jacente
-         //						drawAMaladiePanel(maladies.get(i), i, true);
-         //					}
-         //				}
-         //				this.lastPanelId = i;	
-         //			}
 
          getBinder().loadComponent(malaDiv);
       }
@@ -640,7 +600,6 @@ public class FichePatientStatic extends AbstractFicheStaticController
    @Override
    public void applyDroitsOnFiche(){
       drawActionsButtons("Patient");
-      //drawActionOnOneButton("Patient", "Modification", addMaladie);
       if(sessionScope.containsKey("Banque")){
          canCreatePrel = drawActionOnOneButton("Prelevement", "Creation");
       }else if(sessionScope.containsKey("ToutesCollections")){
@@ -649,13 +608,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
          setCanEdit(true);
          setCanNew(true);
          canCreatePrel = false;
-         //setCanDelete(true);
       }
-
-      //		List<String> entites = new ArrayList<String>();
-      //		entites.add("Prelevement");
-      //		entites.add("Collaborateur");
-      //		setDroitsConsultation(drawConsultationLinks(entites));
 
       getReferents().drawActionsForMedecins();
 
@@ -687,17 +640,6 @@ public class FichePatientStatic extends AbstractFicheStaticController
 
    public boolean getHasPrelevementsToShow(){
       return this.prelevementsFromOtherMaladies.size() > 0;
-   }
-
-   /**
-    * Passe les listes de prélèvements des autres banskes en mold paging si
-    * cette liste contient plus de 5 prelevements.
-    */
-   public void setListBoxesMold(){
-      /*if (prelevementsFromOtherMaladies.size() > 5) {
-      	prelevementsFromOtherMaladiesBox.setMold("paging");
-      	prelevementsFromOtherMaladiesBox.setPageSize(5);
-      }*/
    }
 
    /**
@@ -784,47 +726,6 @@ public class FichePatientStatic extends AbstractFicheStaticController
       }
       prenomLabel.setSclass("formValue");
       return this.getObject().getPrenom();
-   }
-
-   /**
-    * ANNOTATION INLINE - Bêta
-    *
-    * Copie depuis AbstractObjectTabController
-    * Récupère le controller de la fiche
-    *
-    * @return
-    * @since 2.2.0
-    */
-   public FicheAnnotationInline getFicheAnnotationInline(){
-      if(self.getFellow("ficheTissuInlineAnnoPatient") != null){
-         return ((FicheAnnotationInline) self.getFellow("ficheTissuInlineAnnoPatient").getFellow("fwinAnnotationInline")
-            .getAttributeOrFellow("fwinAnnotationInline$composer", true));
-      }
-      return null;
-   }
-
-   /**
-    * ANNOTATION INLINE - Bêta
-    *
-    * Passe qq params au bloc inline annotation sans le dessiner la creation de la
-    * fiche statique.
-    *
-    * @param controller
-    * @since 2.2.0
-    */
-   @Override
-   public void setObjectTabController(final AbstractObjectTabController controller){
-      super.setObjectTabController(controller);
-      //
-      final FicheAnnotation inline = getFicheAnnotationInline();
-      if(null != inline){
-         // passe l'entite au controller
-         getFicheAnnotationInline().setEntite(getObjectTabController().getEntiteTab());
-
-         // à remplacer par ce controller
-         // setFicheController
-         getFicheAnnotationInline().setObjectTabController(getObjectTabController());
-      }
    }
 
    public Patient getPatient(){

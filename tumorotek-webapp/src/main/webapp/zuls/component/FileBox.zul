@@ -36,7 +36,7 @@
 <zk>
 	<div width="250px">
 		<datebox id="dateBox" format="${c:l('validation.date.format.simple')}" cols="8"
-			lenient="false" />
+			lenient="true" />
 		<timebox id="timeBox" format="HH:mm" />
 	</div>
 </zk>

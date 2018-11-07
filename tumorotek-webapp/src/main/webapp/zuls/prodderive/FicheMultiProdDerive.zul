@@ -189,7 +189,7 @@
 		 						<comboitem self="@{each=codeParentDerive}" label="@{codeParentDerive}"/>
 		 				</combobox>
 					</row>
-					
+
 					<row spans="4" id="rowTransformation1">
 						<vbox>
 							<label value="${c:l('ficheProdDerive.transformation.title')}" sclass="formSubTitle"/>
@@ -281,7 +281,7 @@
 								value="@{fwinMultiProdDerive$composer.premiereLettre,
 			        			save-when='addProdDerives.onClick'
 			        			load-after='addProdDerives.onClick, numerotation.onClick'}" 
-								width="30px" 
+								width="30px" maxlength="1"
 								constraint="@{fwinMultiProdDerive$composer.cttPremiereLettre}"
 								visible="false" mold="rounded"/>
 							
@@ -298,7 +298,7 @@
 								value="@{fwinMultiProdDerive$composer.derniereLettre,
 			        			save-when='addProdDerives.onClick'
 			        			load-after='addProdDerives.onClick, numerotation.onClick'}" 
-								width="30px" 
+								width="30px" maxlength="1"
 								constraint="@{fwinMultiProdDerive$composer.cttDerniereLettre}"
 								visible="false" mold="rounded"/>
 							

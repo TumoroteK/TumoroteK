@@ -65,7 +65,43 @@ Renommer la copie en :
                     <Environment name="/interfacages/jdbc/driverClass" type="java.lang.String" value="com.mysql.cj.jdbc.Driver" override="false"/>
                 ...
             </Context>  
+
+    - **/jdbc/dialect**
+    
+        Nouvelle valeur : `org.hibernate.dialect.MySQL5Dialect`
+        
+        Exemple : 
+        
+            <Context>
+                ...
+                    <Environment name="/jdbc/dialect" type="java.lang.String" value="org.hibernate.dialect.MySQL5Dialect" override="false"/>
+                ...
+            </Context>
+
+    - **/codes/jdbc/dialect**
+    
+        Nouvelle valeur : `org.hibernate.dialect.MySQL5Dialect`
                 
+        Exemple : 
+        
+            <Context>
+                ...
+                    <Environment name="/codes/jdbc/dialect" type="java.lang.String" value="org.hibernate.dialect.MySQL5Dialect" override="false"/>
+                ...
+            </Context>    
+    
+    - **/interfacages/jdbc/dialect**
+    
+        Nouvelle valeur : `org.hibernate.dialect.MySQL5Dialect`
+                        
+        Exemple : 
+        
+            <Context>
+                ...
+                    <Environment name="/interfacages/jdbc/dialect" type="java.lang.String" value="org.hibernate.dialect.MySQL5Dialect" override="false"/>
+                ...
+            </Context>  
+               
     - **/jdbc/url**
     
         Ajouter un paramètre à la fin de l'URL : `&amp;serverTimezone=Europe/Paris`
@@ -101,12 +137,23 @@ Renommer la copie en :
                     <Environment name="/interfacages/jdbc/url" type="java.lang.String" value="jdbc:mysql://localhost:3306/tumorotek_interfacages?characterEncoding=UTF-8&amp;serverTimezone=Europe/Paris" override="false"/>
                 ...
             </Context> 
-    
+
 4. Télécharger le [Dossier d'installation](${project.url}/releases/download/v${project.parent.version}/${project.artifactId}-${project.parent.version}.zip)
 
 5. Dézipper le dossier
 
 6. Copier/déplacer l'archive `${webapp.packaging.finalName}.war` sur le serveur Tomcat dans le dossier `<PATH_TOMCAT>/webapps`
+
+    ${warning} A partir de cette version, la configuration de l'application est portée par le fichier `<PATH_TOMCAT>/conf/Catalina/localhost/tumorotek.properties`.  
+    A cette étape de l'installation, le contenu du fichier `${webapp.packaging.finalName}.xml` est automatiquement reporté dans `tumorotek.properties` et le fichier `${webapp.packaging.finalName}.xml` est supprimé.
+
+	${warning} Si l'authentification LDAP est utilisée, remplacer la ligne du fichier `<PATH_TOMCAT>/conf/Catalina/localhost/tumorotek.properties` suivante
+    
+    	ldap.authentication = false
+    
+	par
+    
+    	ldap.authentication = true
 
 7. Dans le Manager du Tomcat `http://<SERVEUR>:8080/manager/html` vérifier que l'application dans sa dernière version est bien déployée et démarrée
     - Si OK et si les utilisateurs se sont déconnectés, vous pouvez retirer l'ancienne version de TumoroteK depuis l'interface du Manager 

@@ -57,23 +57,16 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
-import fr.aphp.tumorotek.action.annotation.FicheAnnotation;
-import fr.aphp.tumorotek.action.annotation.FicheAnnotationInline;
-import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
 import fr.aphp.tumorotek.action.patient.FicheMaladie;
 import fr.aphp.tumorotek.action.patient.FichePatientEdit;
 import fr.aphp.tumorotek.action.patient.PatientController;
-import fr.aphp.tumorotek.action.patient.bto.FichePatientEditBTO;
 import fr.aphp.tumorotek.action.patient.serotk.FicheMaladieSero;
-import fr.aphp.tumorotek.action.prelevement.bto.FichePrelevementEditBTO;
 import fr.aphp.tumorotek.action.prelevement.serotk.FichePrelevementEditSero;
 import fr.aphp.tumorotek.action.sip.SipFactory;
 import fr.aphp.tumorotek.decorator.MaladieDecorator;
 import fr.aphp.tumorotek.decorator.PatientItemRenderer;
 import fr.aphp.tumorotek.manager.coeur.patient.MaladieManager;
 import fr.aphp.tumorotek.manager.coeur.prelevement.RisqueManager;
-import fr.aphp.tumorotek.model.TKAnnotableObject;
-import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
@@ -138,13 +131,6 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
-
-      /*if (BTO.equals(getCurrentContexte())) {
-         // TODO : je ne pense pas que cette ligne soit necessaire - JDI
-         self.getFellow("newPatientDiv").getFellow("newMaladieBox").setVisible(false);
-         listMedcinRef.setVisible(false);
-
-      }*/
 
       referenceurBinder = new AnnotateDataBinder(comp);
       referenceurBinder.loadAll();
@@ -250,10 +236,6 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
 
       final FichePrelevementEdit fichePrelevementEdit;
       switch(SessionUtils.getCurrentContexte()){
-         case BTO:
-            fichePrelevementEdit = (FichePrelevementEditBTO) self.getParent().getParent()
-               .getAttributeOrFellow("fwinPrelevementEditBTO$composer", true);
-            break;
          case SEROLOGIE:
             fichePrelevementEdit = (FichePrelevementEditSero) self.getParent().getParent()
                .getAttributeOrFellow("fwinPrelevementEditSero$composer", true);
@@ -301,10 +283,6 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
 
             FichePrelevementEdit fichePrelevementEdit;
             switch(SessionUtils.getCurrentContexte()){
-               case BTO:
-                  fichePrelevementEdit = (FichePrelevementEditBTO) self.getParent().getParent()
-                     .getAttributeOrFellow("fwinPrelevementEditBTO$composer", true);
-                  break;
                case SEROLOGIE:
                   fichePrelevementEdit = (FichePrelevementEditSero) self.getParent().getParent()
                      .getAttributeOrFellow("fwinPrelevementEditSero$composer", true);
@@ -412,10 +390,6 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
 
       FichePrelevementEdit fichePrelevementEdit;
       switch(SessionUtils.getCurrentContexte()){
-         case BTO:
-            fichePrelevementEdit = (FichePrelevementEditBTO) self.getParent().getParent()
-               .getAttributeOrFellow("fwinPrelevementEditBTO$composer", true);
-            break;
          case SEROLOGIE:
             fichePrelevementEdit = (FichePrelevementEditSero) self.getParent().getParent()
                .getAttributeOrFellow("fwinPrelevementEditSero$composer", true);
@@ -597,71 +571,8 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
       }
    }
 
-   /**
-    * ANNOTATION INLINE - Bêta
-    *
-    * @since 2.2.0
-    * Passe qq params au bloc inline annotation sans le dessiner la creation de la
-    * fiche statique.
-    * @param controller TODO Jamais utilisé ?
-    */
-   public void setObjectTabController(final AbstractObjectTabController controller){
-      //
-      final FicheAnnotation inline = getFicheAnnotationInline();
-      if(inline != null){
-         // passe l'entite au controller
-         getFicheAnnotationInline().setEntite(getObjectTabController().getEntiteTab());
-
-         // à remplacer par ce controller
-         // setFicheController
-         getFicheAnnotationInline().setObjectTabController(getObjectTabController());
-      }
-   }
-
    public PatientController getObjectTabController(){
       return getObjectTabController();
-   }
-
-   /**
-    * ANNOTATION INLINE - Bêta
-    *
-    * @since 2.2.0
-    * Il pourrait y avoir optimisation ICI car le bloc inline est redessiné à chaque fois
-    * qu'un nouvel objet est affiché.
-    * A priori, il ne serait utile de re-dessiner que si la collection change!
-    * Cette optimisation est valable pour FicheAnnotation également.
-    */
-   public void setObject(final TKdataObject p){
-
-      final FicheAnnotation inline = getFicheAnnotationInline();
-      if(inline != null){ // re-dessine le bloc inline annotation
-         inline.setObj((TKAnnotableObject) p);
-      }
-   }
-
-   /**
-    * ANNOTATION INLINE - Bêta
-    *
-    * @since 2.2.0
-    * Copie depuis AbstractObjectTabController
-    * Récupère le controller de la fiche
-    */
-   public FicheAnnotationInline getFicheAnnotationInline(){
-      if(null != fichePatientDiv.getFellowIfAny("fwinPatientEdit")
-         && null != fichePatientDiv.getFellow("fwinPatientEdit").getFellowIfAny("ficheTissuInlineAnnoPatient")){
-         return ((FicheAnnotationInline) fichePatientDiv.getFellow("fwinPatientEdit").getFellow("ficheTissuInlineAnnoPatient")
-            .getFellow("fwinAnnotationInline").getAttributeOrFellow("fwinAnnotationInline$composer", true));
-      }else if(null != fichePatientDiv.getFellowIfAny("fwinPatientEditBTO")
-         && null != fichePatientDiv.getFellow("fwinPatientEditBTO").getFellowIfAny("ficheTissuInlineAnnoPatient")){
-         return ((FicheAnnotationInline) fichePatientDiv.getFellow("fwinPatientEditBTO").getFellow("ficheTissuInlineAnnoPatient")
-            .getFellow("fwinAnnotationInline").getAttributeOrFellow("fwinAnnotationInline$composer", true));
-      }else if(null != fichePatientDiv.getFellowIfAny("fwinPatientEditSero")
-         && null != fichePatientDiv.getFellow("fwinPatientEditSero").getFellowIfAny("ficheTissuInlineAnnoPatient")){
-         return ((FicheAnnotationInline) fichePatientDiv.getFellow("fwinPatientEditSero").getFellow("ficheTissuInlineAnnoPatient")
-            .getFellow("fwinAnnotationInline").getAttributeOrFellow("fwinAnnotationInline$composer", true));
-      }else{
-         return null;
-      }
    }
 
    /**
@@ -679,22 +590,11 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
 
          Components.removeAllChildren(fichePatientDiv);
 
-         final FichePatientEdit fichePatient;
-         switch(SessionUtils.getCurrentContexte()){
-            case BTO:
-               Executions.createComponents("/zuls/patient/bto/FichePatientEditBTO.zul", fichePatientDiv, null);
-               fichePatient = (FichePatientEditBTO) fichePatientDiv.getFellow("fwinPatientEditBTO")
-                  .getAttributeOrFellow("fwinPatientEditBTO$composer", true);
-               break;
-            default:
-               Executions.createComponents("/zuls/patient/FichePatientEdit.zul", fichePatientDiv, null);
-               fichePatient = (FichePatientEdit) fichePatientDiv.getFellow("fwinPatientEdit")
-                  .getAttributeOrFellow("fwinPatientEdit$composer", true);
-               break;
-         }
+         Executions.createComponents("/zuls/patient/FichePatientEdit.zul", fichePatientDiv, null);
+         final FichePatientEdit fichePatient = (FichePatientEdit) fichePatientDiv.getFellow("fwinPatientEdit")
+            .getAttributeOrFellow("fwinPatientEdit$composer", true);
 
          fichePatient.setEmbedded(pat);
-         setObject(pat);
 
          Components.removeAllChildren(embeddedFicheMaladieDiv);
          createMaladieComponent(ficheMaladieWithPatientDiv);
@@ -739,10 +639,6 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
 
       final FichePrelevementEdit fichePrelevementEdit;
       switch(SessionUtils.getCurrentContexte()){
-         case BTO:
-            fichePrelevementEdit = (FichePrelevementEditBTO) self.getParent().getParent()
-               .getAttributeOrFellow("fwinPrelevementEditBTO$composer", true);
-            break;
          case SEROLOGIE:
             fichePrelevementEdit = (FichePrelevementEditSero) self.getParent().getParent()
                .getAttributeOrFellow("fwinPrelevementEditSero$composer", true);
@@ -777,10 +673,6 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
 
       final FichePrelevementEdit fichePrelevementEdit;
       switch(SessionUtils.getCurrentContexte()){
-         case BTO:
-            fichePrelevementEdit = (FichePrelevementEditBTO) self.getParent().getParent()
-               .getAttributeOrFellow("fwinPrelevementEditBTO$composer", true);
-            break;
          case SEROLOGIE:
             fichePrelevementEdit = (FichePrelevementEditSero) self.getParent().getParent()
                .getAttributeOrFellow("fwinPrelevementEditSero$composer", true);

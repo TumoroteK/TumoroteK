@@ -12,6 +12,7 @@ import fr.aphp.tumorotek.manager.code.CodeAssigneManager;
 import fr.aphp.tumorotek.manager.coeur.annotation.AnnotationValeurManager;
 import fr.aphp.tumorotek.manager.coeur.prelevement.PrelevementManager;
 import fr.aphp.tumorotek.manager.coeur.prodderive.ProdDeriveManager;
+import fr.aphp.tumorotek.manager.dto.EchantillonDTOManager;
 import fr.aphp.tumorotek.manager.io.export.ChampManager;
 import fr.aphp.tumorotek.manager.io.utils.CorrespondanceManager;
 import fr.aphp.tumorotek.manager.qualite.ConformiteTypeManager;
@@ -64,6 +65,7 @@ public class RechercheUtilsManager
    private static CodeAssigneManager codeAssigneManager;
    private static ProdDeriveManager prodDeriveManager;
    private static ConteneurManager conteneurManager;
+   private static EchantillonDTOManager echantillonDTOManager;
 
    public static void setCorrespondanceManager(CorrespondanceManager correspondanceManager){
       RechercheUtilsManager.correspondanceManager = correspondanceManager;
@@ -97,6 +99,10 @@ public class RechercheUtilsManager
       RechercheUtilsManager.prodDeriveManager = prodDeriveManager;
    }
 
+   public static void setEchantillonDTOManager(EchantillonDTOManager echantillonDTOManager){
+      RechercheUtilsManager.echantillonDTOManager = echantillonDTOManager;
+   }
+   
    public static void setConteneurManager(ConteneurManager conteneurManager){
       RechercheUtilsManager.conteneurManager = conteneurManager;
    }
@@ -589,6 +595,11 @@ public class RechercheUtilsManager
             return getChampValueForObject(chp, prel, false);
          }
          else if(chp.getChampEntite() != null){
+            
+            if("Risques".equals(chp.getChampEntite().getNom())) {
+               return prel.getRisques().stream().map(Risque::getNom).collect(Collectors.joining(","));
+            }
+            
             if(parent == null){
                if(chp.getChampEntite().getNom().equals("EtablissementId")){
                   if(prel.getServicePreleveur() != null){
@@ -779,7 +790,7 @@ public class RechercheUtilsManager
    public static Object getChampValueFromEchantillon(final Champ chp, final Champ parent, final List<Object> listeObjets){
       final Echantillon recup = getObjectFromList(listeObjets, Echantillon.class);
       if(null != recup){
-         final EchantillonDTO echDeco = new EchantillonDTO(recup);
+         final EchantillonDTO echDeco = echantillonDTOManager.initEchantillonDecoratorManager(recup);
          return getChampValueFromEchantillon(echDeco, chp, parent);
       }
       return null;
@@ -796,7 +807,7 @@ public class RechercheUtilsManager
       final List<Object> listeObjets, final Boolean prettyFormat){
       final Echantillon recup = getObjectFromList(listeObjets, Echantillon.class);
       if(null != recup){
-         final EchantillonDTO echDeco = new EchantillonDTO(recup);
+         final EchantillonDTO echDeco = echantillonDTOManager.initEchantillonDecoratorManager(recup);
          return getChampValueFromEchantillon(echDeco, chp, parent, prettyFormat);
       }
       return null;

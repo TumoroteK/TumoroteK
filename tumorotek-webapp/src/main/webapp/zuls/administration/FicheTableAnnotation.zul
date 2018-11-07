@@ -101,19 +101,6 @@
 								constraint="${fwinTableAnnotation$composer.descrConstraint}"/>
 						</div>
 					</row>
-					<!-- Annotation Inline display -->
-					<row>
-						<label value="${c:l('annotation.table.inlineDisplay')}" sclass="formLabel"/>
-						<div>
-							<label id="inlineDisplayLabel"
-								   value="@{fwinTableAnnotation$composer.table.inlineDisplay}" sclass="formValue"/>
-							<checkbox id="inlineDisplayCheckbox"
-									  checked="@{fwinTableAnnotation$composer.table.inlineDisplay,
-			        					save-when='validateC.onClick, createC.onClick'
-			        					load-after='editC.onClick, createC.onClick'}"
-									  visible="false"/>
-						</div>
-					</row>
 					
 					<!-- Banques -->
 					<row spans="2">

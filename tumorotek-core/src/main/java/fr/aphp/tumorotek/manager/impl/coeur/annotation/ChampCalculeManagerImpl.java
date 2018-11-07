@@ -41,6 +41,10 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import fr.aphp.tumorotek.dao.annotation.ChampCalculeDao;
 import fr.aphp.tumorotek.manager.coeur.annotation.ChampCalculeManager;
@@ -67,13 +71,15 @@ import fr.aphp.tumorotek.utils.ConversionUtils;
  * @since 2.2.0
  *
  */
-public class ChampCalculeManagerImpl implements ChampCalculeManager
+public class ChampCalculeManagerImpl implements ChampCalculeManager, ApplicationContextAware, InitializingBean
 {
 
    //ODO Revoir les méthodes et typages.
 
    private final Log log = LogFactory.getLog(GroupementManager.class);
 
+   private ApplicationContext context;
+   
    /** Bean Dao ChampCalculeDao. */
    private ChampCalculeDao champCalculeDao;
 
@@ -483,6 +489,18 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager
          log.error(e);
       }
       return null;
+   }
+
+   @Override
+   //le bean champManager est injecté après l'initialisaton du bean pour éviter les problèmes
+   //de dépendance cyclique
+   public void afterPropertiesSet() throws Exception{
+      champManager = context.getBean(ChampManager.class);
+   }
+
+   @Override
+   public void setApplicationContext(ApplicationContext context) throws BeansException{
+      this.context = context;
    }
 
 }

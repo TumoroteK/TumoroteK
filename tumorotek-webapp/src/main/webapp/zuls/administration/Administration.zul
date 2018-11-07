@@ -54,6 +54,7 @@
 <?component name="imprimantes" macroURI="/zuls/imprimante/Imprimante.zul" ?>
 <?component name="historique" macroURI="/zuls/historique/Historique.zul" ?>
 <?component name="outils" macroURI="/zuls/outils/Outils.zul" ?>
+<?component name="parametres" macroURI="/zuls/administration/Parametres.zul" ?>
 
 <window id="winAdministration" border="none" apply="fr.aphp.tumorotek.action.administration.AdministrationController">
 	<tabbox id="adminTabbox" orient="vertical" sclass="vertTabBox" >
@@ -76,6 +77,7 @@
 			<tab label="${c:l('admin.tabbox.reports')}" id="reportsTab" style="text-align:center"/>
 			<tab label="${c:l('admin.tabbox.thesaurus')}" id="thesaurusTab" style="text-align:center"/>
 			<tab label="${c:l('admin.tabbox.transporteurs')}" id="transporteursTab" style="text-align:center"/>
+			<tab label="${c:l('admin.tabbox.parametres')}" id="parametresTab"/>
 		</tabs>
 		<tabpanels>
 			<tabpanel id="annotationsPanel" hflex="1" vflex="1" >
@@ -127,6 +129,9 @@
 			</tabpanel>
 			<tabpanel id="transporteursPanel" fulfill="transporteursTab.onSelect" hflex="1">
 				<transporteurs id="transporteursMacro" hflex="1" />
+			</tabpanel>
+			<tabpanel id="parametresPanel" fulfill="parametresTab.onSelect" hflex="1" vflex="1">
+				<parametres id="parametresMacro" hflex="1" vflex="1" />
 			</tabpanel>
 		</tabpanels>
 	</tabbox>

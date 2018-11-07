@@ -155,17 +155,14 @@ public class ModificationMultipleDoublebox extends AbstractModificationMultipleC
 
    @Override
    public void passValueToEraserBox(){
+      
       if(getValues().get(multiListBox.getSelectedIndex()) != null){
-         if(isInteger){
-            eraseMultiDoublebox.setRawValue(new Double((Integer) getValues().get(multiListBox.getSelectedIndex())));
-         }else if(isFloat){
-            eraseMultiDoublebox.setRawValue(new Double((Float) getValues().get(multiListBox.getSelectedIndex())));
-         }else{
-            eraseMultiDoublebox.setRawValue(getValues().get(multiListBox.getSelectedIndex()));
-         }
+         Number selectedValue = (Number) getValues().get(multiListBox.getSelectedIndex());
+         eraseMultiDoublebox.setValue(selectedValue.toString());
       }else{
          eraseMultiDoublebox.setRawValue(null);
       }
+      
    }
 
    @Override

@@ -35,7 +35,6 @@
  **/
 package fr.aphp.tumorotek.action.echantillon;
 
-import static fr.aphp.tumorotek.model.contexte.EContexte.BTO;
 import static fr.aphp.tumorotek.model.contexte.EContexte.SEROLOGIE;
 import static fr.aphp.tumorotek.webapp.general.SessionUtils.getCurrentContexte;
 
@@ -60,13 +59,10 @@ import org.zkoss.zul.Vbox;
 import fr.aphp.tumorotek.action.MainWindow;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.annotation.FicheAnnotation;
-import fr.aphp.tumorotek.action.annotation.FicheAnnotationInline;
 import fr.aphp.tumorotek.action.cession.CessionController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheModifMultiController;
 import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
-import fr.aphp.tumorotek.action.echantillon.bto.FicheEchantillonStaticBTO;
-import fr.aphp.tumorotek.action.echantillon.bto.ListeEchantillonBTO;
 import fr.aphp.tumorotek.action.echantillon.serotk.ListeEchantillonSero;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
 import fr.aphp.tumorotek.action.prodderive.ProdDeriveController;
@@ -96,7 +92,6 @@ public class EchantillonController extends AbstractObjectTabController
    private Div divEchantillonEdit;
    private Div modifMultiDiv;
    private Component listeEchantillon;
-   private Component listeEchantillonBTO;
    private Component listeEchantillonSero;
 
    private String createZulPath = "/zuls/echantillon/FicheMultiEchantillons.zul";
@@ -110,39 +105,40 @@ public class EchantillonController extends AbstractObjectTabController
 
       super.doAfterCompose(comp);
 
-      if(BTO.equals(getCurrentContexte())){
-         listeEchantillonBTO.setVisible(true);
-      }else if(SEROLOGIE.equals(getCurrentContexte())){
-         listeEchantillonSero.setVisible(true);
-      }else{
-         listeEchantillon.setVisible(true);
+      switch(getCurrentContexte()){
+         case SEROLOGIE:
+            listeEchantillonSero.setVisible(true);
+            break;
+         default:
+            listeEchantillon.setVisible(true);
+            break;
       }
 
       setStaticDiv(divEchantillonStatic);
       setEditDiv(divEchantillonEdit);
-      if(SEROLOGIE.equals(getCurrentContexte())){
-         setEditZulPath("/zuls/echantillon/serotk/FicheEchantillonEditSero.zul");
-         createZulPath = "/zuls/echantillon/serotk/FicheMultiEchantillonsSero.zul";
-         setMultiEditZulPath("/zuls/echantillon/serotk/FicheModifMultiEchantillonSero.zul");
-         setStaticZulPath("/zuls/echantillon/serotk/FicheEchantillonStaticSero.zul");
-         setListZulPath("/zuls/echantillon/serotk/ListeEchantillonSero.zul");
-      }else if(BTO.equals(getCurrentContexte())){
-         setEditZulPath("/zuls/echantillon/bto/FicheEchantillonEditBTO.zul");
-         createZulPath = "/zuls/echantillon/bto/FicheMultiEchantillonsBTO.zul";
-         setMultiEditZulPath("/zuls/echantillon/bto/FicheModifMultiEchantillonBTO.zul");
-         setStaticZulPath("/zuls/echantillon/bto/FicheEchantillonStaticBTO.zul");
-         setListZulPath("/zuls/echantillon/bto/ListeEchantillonBTO.zul");
-      }else{
-         setEditZulPath("/zuls/echantillon/FicheEchantillonEdit.zul");
-         setMultiEditZulPath("/zuls/echantillon/FicheModifMultiEchantillon.zul");
-         setStaticZulPath("/zuls/echantillon/FicheEchantillonStatic.zul");
+
+      switch(getCurrentContexte()){
+         case SEROLOGIE:
+            setEditZulPath("/zuls/echantillon/serotk/FicheEchantillonEditSero.zul");
+            createZulPath = "/zuls/echantillon/serotk/FicheMultiEchantillonsSero.zul";
+            setMultiEditZulPath("/zuls/echantillon/serotk/FicheModifMultiEchantillonSero.zul");
+            setStaticZulPath("/zuls/echantillon/serotk/FicheEchantillonStaticSero.zul");
+            setListZulPath("/zuls/echantillon/serotk/ListeEchantillonSero.zul");
+            break;
+         default:
+            setEditZulPath("/zuls/echantillon/FicheEchantillonEdit.zul");
+            setMultiEditZulPath("/zuls/echantillon/FicheModifMultiEchantillon.zul");
+            setStaticZulPath("/zuls/echantillon/FicheEchantillonStatic.zul");
+            break;
       }
+
       setModifMultiDiv(modifMultiDiv);
 
       initFicheStatic();
 
       switchToOnlyListeMode();
       orderAnnotationDraw(false);
+
    }
 
    @Override
@@ -152,10 +148,6 @@ public class EchantillonController extends AbstractObjectTabController
 
    @Override
    public FicheEchantillonStatic getFicheStatic(){
-      if(BTO.equals(getCurrentContexte())){
-         return ((FicheEchantillonStaticBTO) self.getFellow("divEchantillonStatic").getFellow("fwinEchantillonStaticBTO")
-            .getAttributeOrFellow("fwinEchantillonStaticBTO$composer", true));
-      }
       return ((FicheEchantillonStatic) self.getFellow("divEchantillonStatic").getFellow("fwinEchantillonStatic")
          .getAttributeOrFellow("fwinEchantillonStatic$composer", true));
    }
@@ -165,36 +157,22 @@ public class EchantillonController extends AbstractObjectTabController
       if(hasMultiFicheEdit()){
          return getMultiFicheEdit();
       }
-      if(BTO.equals(getCurrentContexte())){
-         return ((FicheEchantillonEdit) self.getFellow("divEchantillonEdit").getFellow("fwinEchantillonEditBTO")
-            .getAttributeOrFellow("fwinEchantillonEditBTO$composer", true));
-      }
       return ((FicheEchantillonEdit) self.getFellow("divEchantillonEdit").getFellow("fwinEchantillonEdit")
          .getAttributeOrFellow("fwinEchantillonEdit$composer", true));
    }
 
    public FicheMultiEchantillons getMultiFicheEdit(){
-      if(BTO.equals(getCurrentContexte())){
-         return ((FicheMultiEchantillons) self.getFellow("divEchantillonEdit").getFellow("fwinMultiEchantillonsBTO")
-            .getAttributeOrFellow("fwinMultiEchantillonsBTO$composer", true));
-      }
       return ((FicheMultiEchantillons) self.getFellow("divEchantillonEdit").getFellow("fwinMultiEchantillons")
          .getAttributeOrFellow("fwinMultiEchantillons$composer", true));
    }
 
    public boolean hasMultiFicheEdit(){
-      if(BTO.equals(getCurrentContexte())){
-         return self.getFellow("divEchantillonEdit").getFellowIfAny("fwinMultiEchantillonsBTO") != null;
-      }
       return self.getFellow("divEchantillonEdit").getFellowIfAny("fwinMultiEchantillons") != null;
    }
 
    @Override
    public ListeEchantillon getListe(){
-      if(BTO.equals(getCurrentContexte())){
-         return ((ListeEchantillonBTO) self.getFellow("listeEchantillonBTO").getFellow("lwinEchantillonBTO")
-            .getAttributeOrFellow("lwinEchantillonBTO$composer", true));
-      }else if(SEROLOGIE.equals(getCurrentContexte())){
+      if(SEROLOGIE.equals(getCurrentContexte())){
          return ((ListeEchantillonSero) self.getFellow("listeEchantillonSero").getFellow("lwinEchantillonSero")
             .getAttributeOrFellow("lwinEchantillonSero$composer", true));
       }
@@ -204,10 +182,6 @@ public class EchantillonController extends AbstractObjectTabController
 
    @Override
    public AbstractFicheModifMultiController getFicheModifMulti(){
-      if(BTO.equals(getCurrentContexte())){
-         return ((FicheModifMultiEchantillon) self.getFellow("modifMultiDiv").getFellow("fwinModifMultiEchantillonBTO")
-            .getAttributeOrFellow("fwinModifMultiEchantillonBTO$composer", true));
-      }
       return ((FicheModifMultiEchantillon) self.getFellow("modifMultiDiv").getFellow("fwinModifMultiEchantillon")
          .getAttributeOrFellow("fwinModifMultiEchantillon$composer", true));
    }
@@ -217,50 +191,8 @@ public class EchantillonController extends AbstractObjectTabController
       if(self.getFellowIfAny("ficheAnnoEchantillon") != null){
          return ((FicheAnnotation) self.getFellow("ficheAnnoEchantillon").getFellow("fwinAnnotation")
             .getAttributeOrFellow("fwinAnnotation$composer", true));
-         /**
-          * ANNOTATION INLINE - Bêta
-          *
-          * @since 2.2.0
-          */
-         // Depuis un échantillon, on passe en mode édition
-      }else if(null != self.getFellow("divEchantillonEdit").getFellowIfAny("fwinEchantillonEdit") && null != self
-         .getFellow("divEchantillonEdit").getFellow("fwinEchantillonEdit").getFellow("ficheAnnotationInlineEchantillon")){
-         return ((FicheAnnotationInline) self.getFellow("divEchantillonEdit").getFellow("fwinEchantillonEdit")
-            .getFellow("ficheAnnotationInlineEchantillon").getFellow("fwinAnnotationInline")
-            .getAttributeOrFellow("fwinAnnotationInline$composer", true));
-         // Depuis le bouton nouveau échantillon
-      }else if(null != self.getFellow("divEchantillonEdit").getFellowIfAny("fwinMultiEchantillons") && null != self
-         .getFellow("divEchantillonEdit").getFellow("fwinMultiEchantillons").getFellow("ficheAnnotationInlineEchantillon")){
-         return ((FicheAnnotationInline) self.getFellow("divEchantillonEdit").getFellow("fwinMultiEchantillons")
-            .getFellow("ficheAnnotationInlineEchantillon").getFellow("fwinAnnotationInline")
-            .getAttributeOrFellow("fwinAnnotationInline$composer", true));
       }
       return null;
-   }
-
-   /**
-    * ANNOTATION INLINE - Bêta
-    *
-    * @return
-    * @since 2.2.0
-    */
-   //   @Override
-   public FicheAnnotationInline getFicheAnnotationInline(){
-      // Depuis un échantillon, on passe en mode édition
-      if(null != self.getFellow("divEchantillonEdit").getFellowIfAny("fwinEchantillonEdit") && null != self
-         .getFellow("divEchantillonEdit").getFellow("fwinEchantillonEdit").getFellowIfAny("ficheAnnotationInlineEchantillon")){
-         return ((FicheAnnotationInline) self.getFellow("divEchantillonEdit").getFellow("fwinEchantillonEdit")
-            .getFellow("ficheAnnotationInlineEchantillon").getFellow("fwinAnnotationInline")
-            .getAttributeOrFellow("fwinAnnotationInline$composer", true));
-         // Depuis le bouton nouveau échantillon
-      }else if(null != self.getFellow("divEchantillonEdit").getFellowIfAny("fwinMultiEchantillons") && null != self
-         .getFellow("divEchantillonEdit").getFellow("fwinMultiEchantillons").getFellowIfAny("ficheAnnotationInlineEchantillon")){
-         return ((FicheAnnotationInline) self.getFellow("divEchantillonEdit").getFellow("fwinMultiEchantillons")
-            .getFellow("ficheAnnotationInlineEchantillon").getFellow("fwinAnnotationInline")
-            .getAttributeOrFellow("fwinAnnotationInline$composer", true));
-      }else{
-         return null;
-      }
    }
 
    @Override
@@ -433,19 +365,9 @@ public class EchantillonController extends AbstractObjectTabController
       Executions.createComponents(createZulPath, divEchantillonEdit, null);
       getMultiFicheEdit().setObjectTabController(this);
       getMultiFicheEdit().setNewObject();
-      //getMultiFicheEdit().setParentObject(parent);
       getMultiFicheEdit().switchToCreateMode((Prelevement) parent);
 
       getFicheAnnotation().switchToStaticOrEditMode(false, false);
-      //getFicheAnnotation().showButtonsBar(false);
-      /**
-       * ANNOTATION INLINE - Bêta
-       *
-       * @since 2.2.0
-       */
-      if(null != getFicheAnnotationInline()){
-         getFicheAnnotationInline().switchToStaticOrEditMode(false, false);
-      }
 
       if(!annoRegion.isOpen() && annoRegion.isVisible()){
          annoRegion.setOpen(true);

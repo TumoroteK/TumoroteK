@@ -66,14 +66,15 @@
 				 image="/images/icones/addBank.png" sclass="buttonv2" visible="false"
 				 use="fr.aphp.tumorotek.component.TKDisablableButton" />
 			<box orient="horizontal" id="addObjBox" visible="false">
-				<listbox id="objectsBox" mold="select" rows="1">
-					<listitem self="@{each='obj'}" value="@{obj}">	
-						<listcell label="@{obj.nom}" />		
-					</listitem>
-				</listbox>
+				<listbox id="collectionsBox" mold="select" rows="5" width="250px" 
+					model="@{winBanquesAssociees$composer.banquesData,
+					 load-after='addObj.onClick, addOrRemoveAllBanques.onClick'}"
+					visible="false"/>
 				<image id="addSelObj" src="/images/icones/small_validate.png" style="cursor:pointer" />
 				<image id="cancelSelObj" src="/images/icones/eraser.png" style="cursor:pointer" />
 			</box>
+			<button id="addOrRemoveAllBanques" label="${c:l('general.selectAll')}" height="30px" 
+				image="/images/icones/addBank.png" sclass="buttonv2" visible="false"/>
 		</div>
 	</box>
 </window>

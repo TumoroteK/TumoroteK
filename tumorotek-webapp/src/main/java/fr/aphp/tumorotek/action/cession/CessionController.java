@@ -35,7 +35,11 @@
  **/
 package fr.aphp.tumorotek.action.cession;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Page;
@@ -47,10 +51,6 @@ import fr.aphp.tumorotek.action.MainWindow;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.administration.AdministrationController;
 import fr.aphp.tumorotek.action.annotation.FicheAnnotation;
-import fr.aphp.tumorotek.action.annotation.FicheAnnotationInline;
-import fr.aphp.tumorotek.action.cession.bto.FicheCessionEditBTO;
-import fr.aphp.tumorotek.action.cession.bto.FicheCessionStaticBTO;
-import fr.aphp.tumorotek.action.cession.bto.ListeCessionBTO;
 import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheModifMultiController;
 import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
@@ -68,9 +68,6 @@ import fr.aphp.tumorotek.model.stockage.Terminale;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
-import static fr.aphp.tumorotek.model.contexte.EContexte.BTO;
-import static fr.aphp.tumorotek.webapp.general.SessionUtils.getCurrentContexte;
-
 /**
  * Controller de l'onglet Cession.
  * Controller créé le 02/01/2010.
@@ -86,7 +83,6 @@ public class CessionController extends AbstractObjectTabController
    private Div divCessionStatic;
    private Div divCessionEdit;
    private Component listeCession;
-   private Component listeCessionBTO;
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
@@ -96,15 +92,9 @@ public class CessionController extends AbstractObjectTabController
 
       setStaticDiv(divCessionStatic);
       setEditDiv(divCessionEdit);
-      if(BTO.equals(getCurrentContexte())){
-         listeCessionBTO.setVisible(true);
-         setEditZulPath("/zuls/cession/bto/FicheCessionEditBTO.zul");
-         setStaticZulPath("/zuls/cession/bto/FicheCessionStaticBTO.zul");
-      }else{
-         listeCession.setVisible(true);
-         setEditZulPath("/zuls/cession/FicheCessionEdit.zul");
-         setStaticZulPath("/zuls/cession/FicheCessionStatic.zul");
-      }
+      listeCession.setVisible(true);
+      setEditZulPath("/zuls/cession/FicheCessionEdit.zul");
+      setStaticZulPath("/zuls/cession/FicheCessionStatic.zul");
 
       initFicheStatic();
 
@@ -120,11 +110,6 @@ public class CessionController extends AbstractObjectTabController
 
    @Override
    public FicheCessionStatic getFicheStatic(){
-      if(BTO.equals(getCurrentContexte())){
-         return ((FicheCessionStaticBTO) this.self
-            //.getFellow("ficheCession")
-            .getFellow("fwinCessionStaticBTO").getAttributeOrFellow("fwinCessionStaticBTO$composer", true));
-      }
       return ((FicheCessionStatic) this.self
          //.getFellow("ficheCession")
          .getFellow("fwinCessionStatic").getAttributeOrFellow("fwinCessionStatic$composer", true));
@@ -132,20 +117,12 @@ public class CessionController extends AbstractObjectTabController
 
    @Override
    public FicheCessionEdit getFicheEdit(){
-      if(BTO.equals(getCurrentContexte())){
-         return ((FicheCessionEditBTO) self.getFellow("divCessionEdit").getFellow("fwinCessionEditBTO")
-            .getAttributeOrFellow("fwinCessionEditBTO$composer", true));
-      }
       return ((FicheCessionEdit) self.getFellow("divCessionEdit").getFellow("fwinCessionEdit")
          .getAttributeOrFellow("fwinCessionEdit$composer", true));
    }
 
    @Override
    public ListeCession getListe(){
-      if(BTO.equals(getCurrentContexte())){
-         return ((ListeCessionBTO) self.getFellow("listeCessionBTO").getFellow("lwinCessionBTO")
-            .getAttributeOrFellow("lwinCessionBTO$composer", true));
-      }
       return ((ListeCession) self.getFellow("listeCession").getFellow("lwinCession").getAttributeOrFellow("lwinCession$composer",
          true));
    }
@@ -161,11 +138,6 @@ public class CessionController extends AbstractObjectTabController
          return ((FicheAnnotation) self.getFellow("ficheAnnoCession").getFellow("fwinAnnotation")
             .getAttributeOrFellow("fwinAnnotation$composer", true));
       }
-      return null;
-   }
-
-   @Override
-   public FicheAnnotationInline getFicheAnnotationInline(){
       return null;
    }
 

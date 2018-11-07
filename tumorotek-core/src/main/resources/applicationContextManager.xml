@@ -646,6 +646,7 @@
 				<property name="importTemplateManager" ref="importTemplateManager" />
 				<property name="annotationValeurManager" ref="annotationValeurManager" />
 				<property name="templateManager" ref="templateManager" />
+				<property name="utilisateurManager" ref="utilisateurManager"/>
 			</bean>
 		</property>
 	</bean>
@@ -1076,7 +1077,6 @@
 				<property name="operationManager" ref="operationManager" />
 				<property name="operationTypeDao" ref="operationTypeDao" />
 				<property name="banqueDao" ref="banqueDao" />
-				<property name="banqueManager" ref="banqueManager" />
 			</bean>
 		</property>
 	</bean>
@@ -1246,6 +1246,7 @@
 				<property name="conteneurManager">
 					<ref bean="conteneurManager" />
 				</property>
+				<property name="echantillonDTOManager" ref="echantillonDTOManager"/>
 			</bean>
 		</property>
 	</bean>
@@ -1788,17 +1789,7 @@
 		</property>
 	</bean>
 
-	<bean id="extractValueFromChampManager" parent="txProxyTemplate">
-		<property name="target">
-			<bean class="fr.aphp.tumorotek.manager.impl.io.ExtractValueFromChampManagerImpl">
-				<property name="echantillonManager" ref="echantillonManager" />
-				<property name="prodDeriveManager" ref="prodDeriveManager" />
-				<property name="champManager" ref="champManager" />
-				<property name="codeAssigneManager" ref="codeAssigneManager" />
-				<property name="prelevementManager" ref="prelevementManager" />
-			</bean>
-		</property>
-	</bean>
+	<bean id="extractValueFromChampManager" class="fr.aphp.tumorotek.manager.impl.io.ExtractValueFromChampManagerImpl" />
 
 	<!-- Package io.imports -->
 	<bean id="importTemplateValidator" class="fr.aphp.tumorotek.manager.validation.io.imports.ImportTemplateValidator" />
@@ -2169,45 +2160,7 @@
 		</property>
 	</bean>
 
-	<!-- Validation -->
-	<bean id="critereValidationManager" parent="txProxyTemplate">
-		<property name="target">
-			<bean class="fr.aphp.tumorotek.manager.impl.validation.workflow.CritereValidationManagerImpl">
-				<property name="critereValidationDao" ref="critereValidationDao" />
-			</bean>
-		</property>
-	</bean>
-
-	<bean id="entiteValidationManager" parent="txProxyTemplate">
-		<property name="target">
-			<bean class="fr.aphp.tumorotek.manager.impl.validation.workflow.ValidationManagerImpl">
-				<property name="validationDao" ref="entiteValidationDao" />
-			</bean>
-		</property>
-	</bean>
-
-	<bean id="niveauValidationManager" parent="txProxyTemplate">
-		<property name="target">
-			<bean class="fr.aphp.tumorotek.manager.impl.validation.workflow.NiveauValidationManagerImpl">
-				<property name="niveauValidationDao" ref="niveauValidationDao" />
-			</bean>
-		</property>
-	</bean>
-
-	<bean id="validateurManager" parent="txProxyTemplate">
-		<property name="target">
-			<bean class="fr.aphp.tumorotek.manager.impl.validation.workflow.ValidateurManagerImpl">
-				<property name="niveauValidationManager" ref="niveauValidationManager" />
-			</bean>
-		</property>
-	</bean>
-
-	<bean id="actionManager" parent="txProxyTemplate">
-		<property name="target">
-			<bean class="fr.aphp.tumorotek.manager.impl.validation.workflow.ActionManagerImpl">
-				<property name="actionDao" ref="actionDao" />
-			</bean>
-		</property>
-	</bean>
+	<!-- Package administration -->
+	<bean id="parametresManager" class="fr.aphp.tumorotek.manager.impl.administration.ParametresManagerImpl" />
 
 </beans>

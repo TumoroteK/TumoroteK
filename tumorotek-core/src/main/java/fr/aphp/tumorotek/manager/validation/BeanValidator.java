@@ -1,10 +1,10 @@
 /**
  * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
  * dsi-projet.tk@aphp.fr
- *
+ * <p>
  * Ce logiciel est un programme informatique servant à la gestion de
  * l'activité de biobanques.
- *
+ * <p>
  * Ce logiciel est régi par la licence CeCILL soumise au droit français
  * et respectant les principes de diffusion des logiciels libres. Vous
  * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
@@ -16,7 +16,7 @@
  * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
  * l'auteur du programme, le titulaire des droits patrimoniaux et les
  * concédants successifs.
- *
+ * <p>
  * A cet égard  l'attention de l'utilisateur est attirée sur les
  * risques associés au chargement,  à l'utilisation,  à la modification
  * et/ou au  développement et à la reproduction du logiciel par
@@ -28,7 +28,7 @@
  * besoins dans des conditions permettant d'assurer la sécurité de leurs
  * systèmes et ou de leurs données et, plus généralement, à l'utiliser
  * et l'exploiter dans les mêmes conditions de sécurité.
- *
+ * <p>
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
@@ -51,10 +51,9 @@ import fr.aphp.tumorotek.manager.validation.exception.ValidationException;
  * Date: 06/10/2009
  *
  * @author jbriscoe
- * @see http://javaboutique.internet.com/tutorials/validation/index-3.html
+ * @see <a href="http://javaboutique.internet.com/tutorials/validation/index-3.html">http://javaboutique.internet.com/tutorials/validation/index-3.html</a>
  */
-public final class BeanValidator
-{
+public final class BeanValidator {
 
    private static Log log = LogFactory.getLog(BeanValidator.class);
 
@@ -67,7 +66,8 @@ public final class BeanValidator
    /**
     * Constructeur.
     */
-   private BeanValidator(){}
+   private BeanValidator(){
+   }
 
    public static void validateObject(final Object arg, final Validator[] vals){
       final List<Errors> errors = new ArrayList<>();
@@ -83,10 +83,9 @@ public final class BeanValidator
 
       if(errors.size() > 0){
          log.debug(errors.toString());
-         log.warn("Validation error(s) found, " + "throwing ValidationException.");
+         log.warn("Validation error(s) found, throwing ValidationException.");
          throw new ValidationException(errors);
       }
-
    }
 
    private static Errors validateAndAddErrors(final Object arg, final Validator validator, final List<Errors> errors){
@@ -98,5 +97,4 @@ public final class BeanValidator
       }
       return objErrors;
    }
-
 }

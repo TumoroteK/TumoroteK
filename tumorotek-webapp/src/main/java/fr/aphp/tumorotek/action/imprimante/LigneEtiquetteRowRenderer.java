@@ -50,6 +50,7 @@ import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Vbox;
 
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.model.imprimante.ChampLigneEtiquette;
 import fr.aphp.tumorotek.model.imprimante.LigneEtiquette;
 import fr.aphp.tumorotek.model.io.export.Champ;
 
@@ -224,21 +225,23 @@ public class LigneEtiquetteRowRenderer implements RowRenderer<Object>
    }
 
    public Component formateChampsForLigne(final LigneEtiquetteDecorator deco, final Row row, final Component parent){
+      
       final List<String> valuesEchans = new ArrayList<>();
       final List<String> valuesDerives = new ArrayList<>();
-      for(int i = 0; i < deco.getChamps().size(); i++){
-         final Champ chp = deco.getChamps().get(i).getChamp();
-         final StringBuffer sb = new StringBuffer();
-         if(chp.getChampEntite() != null){
-            sb.append(ObjectTypesFormatters.getLabelForChamp(chp));
-            if(deco.getChamps().get(i).getEntite().getNom().equals("Echantillon")){
-               valuesEchans.add(sb.toString());
-            }else{
-               valuesDerives.add(sb.toString());
-            }
+      
+      for(ChampLigneEtiquette champLigneEtiquette : deco.getChamps()) {
+         
+         final Champ champ = champLigneEtiquette.getChamp();
+         final String labelChamp = ObjectTypesFormatters.getLabelForChamp(champ);
+         
+         if("Echantillon".equals(champLigneEtiquette.getEntite().getNom())) {
+            valuesEchans.add(labelChamp);
+         }else if("ProdDerive".equals(champLigneEtiquette.getEntite().getNom())) {
+            valuesDerives.add(labelChamp);
          }
+         
       }
-
+      
       if(valuesEchans.size() + valuesDerives.size() > 0){
          final String italicStyle = "font-style : italic;";
          final String boldStyle = "font-weight : bold;";

@@ -37,7 +37,7 @@
 	<vlayout>
 		<grid id="objectsList"
 			span="true"
-			model="@{winCoulTypesAssociees$composer.objects load-after='addObj.onClick'}"
+			model="@{winCoulTypesAssociees$composer.objects load-after='addSelObj.onClick'}"
 			rowRenderer="@{winCoulTypesAssociees$composer.coulTypesRenderer}"
 			fixedLayout="false"
 			sclass="gridForm1">
@@ -49,24 +49,16 @@
 			</columns>
 			<rows id="rows">
 				<row self="@{each='obj'}" value="@{obj}" />
-			</rows>			
+			</rows>
 		</grid>
 		<div>
 			<button id="addObj" label="${c:l('ficheBanque.new.coultype')}" height="24px" 
 				 image="/images/icones/addDerive.png" sclass="buttonv2" visible="false"
 				 use="fr.aphp.tumorotek.component.TKDisablableButton" />
 			<box orient="horizontal" id="addObjBox" visible="false">
-				<listbox id="objectsBox" mold="select" rows="1">
-					<listitem self="@{each='obj'}" value="@{obj}">	
-						<listcell label="@{obj.type}" />		
-					</listitem>
-				</listbox>
+				<listbox id="typeBox" mold="select" />
 				<separator width="5px" />
-				<listbox id="couleurBox" mold="select"
-					model="@{winCoulTypesAssociees$composer.couleurs}"
-					itemRenderer="@{winCoulTypesAssociees$composer.couleurRenderer}">
-					<listitem self="@{each='coul'}" value="@{obj}"/>
-				</listbox>
+				<listbox id="couleurBox" mold="select" />
 				<image id="addSelObj" src="/images/icones/small_validate.png" style="cursor:pointer" />
 				<image id="cancelSelObj" src="/images/icones/eraser.png" style="cursor:pointer" />
 			</box>

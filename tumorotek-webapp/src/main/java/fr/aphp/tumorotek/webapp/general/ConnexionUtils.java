@@ -61,6 +61,8 @@ import fr.aphp.tumorotek.model.qualite.OperationType;
 import fr.aphp.tumorotek.model.utilisateur.Profil;
 import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+import fr.aphp.tumorotek.param.TkParam;
+import fr.aphp.tumorotek.param.TumorotekProperties;
 import fr.aphp.tumorotek.utils.Utils;
 
 /**
@@ -207,15 +209,15 @@ public final class ConnexionUtils
    public static void initInterfacages(final Plateforme pf, final Map<String, Object> sess){
       // on récupère le bundle de paramétrage de l'application
       ResourceBundle res = null;
-      if(ManagerLocator.getResourceBundleTumo().doesResourceBundleExists("tumorotek.properties")){
-         res = ManagerLocator.getResourceBundleTumo().getResourceBundle("tumorotek.properties");
+      if(ManagerLocator.getResourceBundleTumo().doesResourceBundleExists(TumorotekProperties.TUMO_PROPERTIES_FILENAME)){
+         res = ManagerLocator.getResourceBundleTumo().getResourceBundle(TumorotekProperties.TUMO_PROPERTIES_FILENAME);
       }
 
       // EMETTEURS
       // on récupère la propriété définissant les interfaçages entrant
       String interfacages = null;
-      if(null != res && res.containsKey("INTERFACAGES")){
-         interfacages = res.getString("INTERFACAGES");
+      if(null != res && res.containsKey(TkParam.INTERFACAGES.getKey())){
+         interfacages = res.getString(TkParam.INTERFACAGES.getKey());
       }
       Hashtable<Integer, List<Integer>> hashInterfacages = null;
       if(interfacages != null && !interfacages.equals("") && !interfacages.equals("false")){
@@ -239,8 +241,8 @@ public final class ConnexionUtils
       // on récupère la propriété définissant les interfaçages sortant
       interfacages = null;
       hashInterfacages = null;
-      if(null != res && res.containsKey("INTERFACAGES_OUT")){
-         interfacages = res.getString("INTERFACAGES_OUT");
+      if(null != res && res.containsKey(TkParam.INTERFACAGES_OUT.getKey())){
+         interfacages = res.getString(TkParam.INTERFACAGES_OUT.getKey());
       }
       if(interfacages != null && !interfacages.equals("") && !interfacages.equals("false")){
          // extraction des interfaçages

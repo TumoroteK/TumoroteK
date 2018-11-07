@@ -35,10 +35,23 @@
  **/
 package fr.aphp.tumorotek.action.cession;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zul.Constraint;
+
+import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.constraints.ConstCode;
 import fr.aphp.tumorotek.action.constraints.ConstDateLimit;
 import fr.aphp.tumorotek.action.constraints.ConstText;
 import fr.aphp.tumorotek.action.constraints.ConstWord;
+import fr.aphp.tumorotek.manager.coeur.cession.CessionManager;
+import fr.aphp.tumorotek.model.cession.Cession;
+import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  * Utility class fournissant les contraintes qui seront appliquées dans
@@ -53,13 +66,32 @@ public final class CessionConstraints
 
    private CessionConstraints(){}
 
-   private static ConstCode numeroCessionConstraint = new ConstCode();
-   static{
-      numeroCessionConstraint.setNullable(false);
-      numeroCessionConstraint.setSize(100);
-   }
+   private static Constraint numeroCessionConstraint = new ConstCode()
+   {
 
-   public static ConstCode getNumeroCessionConstraint(){
+      @Override
+      public void validate(final Component comp, final Object value) throws WrongValueException{
+
+         setNullable(false);
+         setSize(100);
+         
+         super.validate(comp, value);
+
+         final String numCession = (String) value;
+
+         final List<Cession> doublons = ManagerLocator.getManager(CessionManager.class)
+            .findByNumeroInPlateformeManager(numCession, SessionUtils.getCurrentPlateforme());
+
+         if(!doublons.isEmpty()){
+            final String banques =
+               doublons.stream().map(Cession::getBanque).distinct().map(Banque::getNom).collect(Collectors.joining(", "));
+            throw new WrongValueException(comp, Labels.getLabel("cession.doublon.error.num", new String[] {numCession, banques}));
+         }
+
+      }
+   };
+
+   public static Constraint getNumeroCessionConstraint(){
       return numeroCessionConstraint;
    }
 

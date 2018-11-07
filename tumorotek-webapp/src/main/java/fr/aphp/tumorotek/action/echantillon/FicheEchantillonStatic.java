@@ -320,20 +320,6 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       // annotations
       super.setObject(echantillon);
 
-      /**
-       * ANNOTATION INLINE - Bêta
-       *
-       * @since 2.2.0
-       * Il pourrait y avoir optimisation ICI car le bloc inline est redessiné à chaque fois
-       * qu'un nouvel objet est affiché.
-       * A priori, il ne serait utile de re-dessiner que si la collection change!
-       * Cette optimisation est valable pour FicheAnnotation également.
-       */
-      /*FicheAnnotation inline = getFicheAnnotationInline();
-      if(inline != null){ // re-dessine le bloc inline annotation
-      	inline.setObj((TKAnnotableObject) echantillon);
-      }*/
-
       getBinder().loadComponent(self);
    }
 
@@ -2106,45 +2092,4 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       return ObjectTypesFormatters.ILNObjectStatut(getObject().getObjetStatut());
    }
 
-   /**
-    * ANNOTATION INLINE - Bêta
-    *
-    * Copie depuis AbstractObjectTabController
-    * Récupère le controller de la fiche
-    *
-    * @return
-    * @since 2.2.0
-    */
-   /*public FicheAnnotationInline getFicheAnnotationInline(){
-   	if(self.getFellow("ficheAnnotationInlineEchantillon") != null){
-   		return ((FicheAnnotationInline) self.getFellow("ficheAnnotationInlineEchantillon")
-   			.getFellow("fwinAnnotationInline")
-   			.getAttributeOrFellow("fwinAnnotationInline$composer", true));
-   	}else{
-   		return null;
-   	}
-   }*/
-
-   /**
-    * ANNOTATION INLINE - Bêta
-    *
-    * Passe qq params au bloc inline annotation sans le dessiner la creation de la
-    * fiche statique.
-    *
-    * @param controller
-    * @since 2.2.0
-    */
-   /*public void setObjectTabController(AbstractObjectTabController controller){
-   	super.setObjectTabController(controller);
-   	//
-   	FicheAnnotation inline = getFicheAnnotationInline();
-   	if(null != inline){
-   		// passe l'entite au controller
-   		getFicheAnnotationInline().setEntite(getObjectTabController().getEntiteTab());
-
-   		// à remplacer par ce controller
-   		// setFicheController
-   		getFicheAnnotationInline().setObjectTabController(getObjectTabController());
-   	}
-   }*/
 }

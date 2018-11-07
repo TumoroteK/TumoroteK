@@ -39,7 +39,6 @@ import org.zkoss.zk.ui.Component;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.annotation.FicheAnnotation;
-import fr.aphp.tumorotek.action.annotation.FicheAnnotationInline;
 import fr.aphp.tumorotek.action.controller.AbstractFicheEditController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheModifMultiController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheStaticController;
@@ -78,7 +77,7 @@ public class ContratController extends AbstractObjectTabController
    }
 
    /**
-    * Méthode permettant de passer en mode "fiche & liste" : liste 
+    * Méthode permettant de passer en mode "fiche & liste" : liste
     * et la fiche sont visibles.
     * Détache la fiche édition/création
     */
@@ -95,25 +94,6 @@ public class ContratController extends AbstractObjectTabController
       }
    }
 
-   //	@Override
-   //	public void switchToFicheMode() {
-   //		// on cache la liste
-   //		super.getListeRegion().setOpen(false);
-   //		
-   //		getFiche().setContrat(contrat);
-   //		getFiche().switchToStaticMode(false);
-   //		
-   //		// si la liste cachée contient le protocole affiché, on sélectionne
-   //		// ce protocole
-   //		ContratDecorator decorator = 
-   //			new ContratDecorator(contrat);
-   //		if (getListe().getListObjects().contains(decorator)) {
-   //			getListe().changeCurrentObject(decorator);
-   //		} else {
-   //			getListe().deselectRow();
-   //		}
-   //	}
-
    public void switchToDetailMode(final Contrat contratToShow){
       // on cache la liste
       super.getListeRegion().setVisible(false);
@@ -124,11 +104,6 @@ public class ContratController extends AbstractObjectTabController
 
    @Override
    public FicheAnnotation getFicheAnnotation(){
-      return null;
-   }
-
-   @Override
-   public FicheAnnotationInline getFicheAnnotationInline(){
       return null;
    }
 

@@ -645,4 +645,13 @@ public interface ProdDeriveManager
     * @since 2.1
     */
    List<ProdDerive> findByCodeInPlateformeManager(String code, Plateforme pf);
+   
+   /**
+    * Recherche sur une plateforme les dérivés dont le code est contenu dans la liste passée en paramètre
+    * @param listCodes liste des codes recherchés
+    * @param pf plateforme sur laquelle la recherche est effectuée
+    * @since 2.2.0 
+    */
+   List<ProdDerive> findByListCodeWithPlateforme(List<String> listCodes, Plateforme pf);
+   
 }

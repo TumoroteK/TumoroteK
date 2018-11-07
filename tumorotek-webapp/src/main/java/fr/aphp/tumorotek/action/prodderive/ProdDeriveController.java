@@ -35,9 +35,6 @@
  **/
 package fr.aphp.tumorotek.action.prodderive;
 
-import static fr.aphp.tumorotek.model.contexte.EContexte.BTO;
-import static fr.aphp.tumorotek.webapp.general.SessionUtils.getCurrentContexte;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -54,7 +51,6 @@ import org.zkoss.zul.Tabpanel;
 import fr.aphp.tumorotek.action.MainWindow;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.annotation.FicheAnnotation;
-import fr.aphp.tumorotek.action.annotation.FicheAnnotationInline;
 import fr.aphp.tumorotek.action.cession.CessionController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheModifMultiController;
@@ -98,11 +94,7 @@ public class ProdDeriveController extends AbstractObjectTabController
 
       setStaticDiv(divProdDeriveStatic);
       setEditDiv(divProdDeriveEdit);
-      if(!BTO.equals(getCurrentContexte())){
-         setEditZulPath("/zuls/prodderive/FicheProdDeriveEdit.zul");
-      }else{
-         setEditZulPath("/zuls/prodderive/bto/FicheProdDeriveEditBTO.zul");
-      }
+      setEditZulPath("/zuls/prodderive/FicheProdDeriveEdit.zul");
 
       setModifMultiDiv(modifMultiDiv);
       setMultiEditZulPath("/zuls/prodderive/FicheModifMultiProdDerive.zul");
@@ -121,21 +113,13 @@ public class ProdDeriveController extends AbstractObjectTabController
 
    @Override
    public FicheProdDeriveStatic getFicheStatic(){
-      if(BTO.equals(getCurrentContexte())){
-         return ((FicheProdDeriveStatic) self.getFellow("divProdDeriveStatic").getFellow("fwinProdDeriveStaticBTO")
-            .getAttributeOrFellow("fwinProdDeriveStaticBTO$composer", true));
-      }
       return ((FicheProdDeriveStatic) self.getFellow("divProdDeriveStatic").getFellow("fwinProdDeriveStatic")
          .getAttributeOrFellow("fwinProdDeriveStatic$composer", true));
    }
 
    @Override
    public void populateFicheStatic(){
-      if(BTO.equals(getCurrentContexte())){
-         setStaticZulPath("/zuls/prodderive/bto/FicheProdDeriveStaticBTO.zul");
-      }else{
-         setStaticZulPath("/zuls/prodderive/FicheProdDeriveStatic.zul");
-      }
+      setStaticZulPath("/zuls/prodderive/FicheProdDeriveStatic.zul");
       super.populateFicheStatic();
    }
 
@@ -144,12 +128,8 @@ public class ProdDeriveController extends AbstractObjectTabController
       if(hasMultiFicheEdit()){
          return getMultiFicheEdit();
       }
-      if(!BTO.equals(getCurrentContexte())){
-         return ((FicheProdDeriveEdit) self.getFellow("divProdDeriveEdit").getFellow("fwinProdDeriveEdit")
-            .getAttributeOrFellow("fwinProdDeriveEdit$composer", true));
-      }
-      return ((FicheProdDeriveEdit) self.getFellow("divProdDeriveEdit").getFellow("fwinProdDeriveEditBTO")
-         .getAttributeOrFellow("fwinProdDeriveEditBTO$composer", true));
+      return ((FicheProdDeriveEdit) self.getFellow("divProdDeriveEdit").getFellow("fwinProdDeriveEdit")
+         .getAttributeOrFellow("fwinProdDeriveEdit$composer", true));
    }
 
    public FicheMultiProdDerive getMultiFicheEdit(){
@@ -182,11 +162,6 @@ public class ProdDeriveController extends AbstractObjectTabController
          return ((FicheAnnotation) self.getFellow("ficheAnnoProdDerive").getFellow("fwinAnnotation")
             .getAttributeOrFellow("fwinAnnotation$composer", true));
       }
-      return null;
-   }
-
-   @Override
-   public FicheAnnotationInline getFicheAnnotationInline(){
       return null;
    }
 
@@ -248,6 +223,7 @@ public class ProdDeriveController extends AbstractObjectTabController
 
    }
 
+   @Override
    public void switchToCreateMode(final TKdataObject parent){
       // si il y eu edit avant et addNew depuis liste
       clearEditDiv();
@@ -345,7 +321,7 @@ public class ProdDeriveController extends AbstractObjectTabController
       children.put(deriveEntite, ManagerLocator.getCorrespondanceIdManager().findTargetIdsFromIdsManager(ids, getEntiteTab(),
          deriveEntite, SessionUtils.getSelectedBanques(sessionScope), true));
 
-      // cession 
+      // cession
       final Entite cessionEntite = ManagerLocator.getEntiteManager().findByNomManager("Cession").get(0);
 
       children.put(cessionEntite, ManagerLocator.getCorrespondanceIdManager().findTargetIdsFromIdsManager(ids, getEntiteTab(),

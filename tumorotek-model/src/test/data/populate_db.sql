@@ -88,13 +88,13 @@ insert into UNITE (UNITE_ID, UNITE) values (1, 'FRAGMENTS'), (2, 'COUPES'), (3, 
 insert into CR_ANAPATH (CR_ANAPATH_ID,PATH) values (1,'PATH1'),(2,'PATH2'),(3,'PATH3');
 
 /* TABLE UTILISATEUR */
-insert INTO UTILISATEUR(UTILISATEUR_ID, LOGIN, PASSWORD, ARCHIVE, ENCODED_PASSWORD, DN_LDAP, 
+insert INTO UTILISATEUR(UTILISATEUR_ID, LOGIN, PASSWORD, ARCHIVE, LDAP, 
 EMAIL, TIMEOUT, COLLABORATEUR_ID, SUPER) values 
-(1, 'USER1', 'PASS1', 0, 'ENCO1', 'LDAP1', 'mail1@yahoo.fr', '2010-12-01', 1, 1),
-(2, 'USER2', 'PASS2', 0, 'ENCO2', 'LDAP2', 'mail2@yahoo.fr', '2014-05-15', 2, 0),
-(3, 'USER3', 'PASS3', 1, 'ENCO3', 'LDAP3', 'mail3@yahoo.fr', '2009-01-01', 3, 0),
-(4, 'USER4', 'PASS4', 0, 'ENCO4', 'LDAP4', 'mail4@yahoo.fr', '2011-06-21', null, 0),
-(5, 'USER5', 'PASS5', 0, 'ENCO5', 'LDAP5', 'mail5@yahoo.fr', '2010-11-31', null, 1);
+(1, 'USER1', 'PASS1', 0, 0, 'mail1@yahoo.fr', '2010-12-01', 1, 1),
+(2, 'USER2', 'PASS2', 0, 0, 'mail2@yahoo.fr', '2014-05-15', 2, 0),
+(3, 'USER3', 'PASS3', 1, 0, 'mail3@yahoo.fr', '2009-01-01', 3, 0),
+(4, 'USER4', 'PASS4', 0, 0, 'mail4@yahoo.fr', '2011-06-21', null, 0),
+(5, 'USER5', 'PASS5', 0, 0, 'mail5@yahoo.fr', '2010-11-31', null, 1);
 
 /* TABLE RESERVATION */
 insert into RESERVATION (RESERVATION_ID, DEBUT, FIN, UTILISATEUR_ID) values

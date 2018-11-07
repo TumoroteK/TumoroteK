@@ -71,7 +71,6 @@ import org.zkoss.zul.event.PagingEvent;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.annotation.FicheAnnotation;
-import fr.aphp.tumorotek.action.annotation.FicheAnnotationInline;
 import fr.aphp.tumorotek.action.cession.CessionController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheEditController;
@@ -273,22 +272,18 @@ public class ExecutionRechercheController extends AbstractObjectTabController
       }
    }
 
-   
    public void onClick$exportItemINCa(){
       onLaterExportCatalogue((List<Integer>) getObjectsFromList("Echantillon", true), ConfigManager.INCA_EXPORT, 3, false, null);
    }
 
-   
    public void onClick$exportItemTVGSO(){
       onLaterExportCatalogue((List<Integer>) getObjectsFromList("Echantillon", true), ConfigManager.TVGSO_EXPORT, 3, false, null);
    }
 
-   
    public void onClick$exportItemTVGSOcsv(){
       onLaterExportCatalogue((List<Integer>) getObjectsFromList("Echantillon", true), ConfigManager.TVGSO_EXPORT, 3, true, null);
    }
 
-   
    public void onClick$exportItemBIOCAP(){
       onLaterExportCatalogue((List<Integer>) getObjectsFromList("Echantillon", true), ConfigManager.BIOCAP_EXPORT, 3, false,
          null);
@@ -387,7 +382,7 @@ public class ExecutionRechercheController extends AbstractObjectTabController
     *
     * @param e
     */
-   
+
    public void onGetSearchResults(final Event e){
       // cleanUp();
 
@@ -534,7 +529,7 @@ public class ExecutionRechercheController extends AbstractObjectTabController
     * Cette méthode va extraire les objets de la liste de résultats et les
     * envoyer dans la liste de l'onglet correspondant à leur entité.
     */
-   
+
    public void onLaterShowResultsInList(){
       final List<? extends Object> resultats = getObjectsFromList(entite, true);
 
@@ -652,7 +647,7 @@ public class ExecutionRechercheController extends AbstractObjectTabController
       boolean tvgso = false;
       boolean biocap = false;
       if(sessionScope.containsKey("catalogues")){
-         
+
          final Map<String, Catalogue> catsMap = (Map<String, Catalogue>) sessionScope.get("catalogues");
 
          inca = catsMap.containsKey("INCa");
@@ -667,11 +662,6 @@ public class ExecutionRechercheController extends AbstractObjectTabController
 
    @Override
    public FicheAnnotation getFicheAnnotation(){
-      return null;
-   }
-
-   @Override
-   public FicheAnnotationInline getFicheAnnotationInline(){
       return null;
    }
 

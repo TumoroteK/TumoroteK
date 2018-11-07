@@ -2222,20 +2222,27 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
    @Override
    protected void validateCoherenceDate(final Component comp, final Object value){
+
+      final Calendar dateToValidate = (Calendar) value;
+      
       Errors errs = null;
       String field = "";
 
-      if(value == null || value.equals("")){
-         ((CalendarBox) comp).clearErrorMessage(((CalendarBox) comp).getValue());
+      if(dateToValidate == null){
+         
+         ((CalendarBox) comp).clearErrorMessage(dateToValidate);
          ((CalendarBox) comp).setValue(null);
-         if(comp.getId().equals("dateStockCalBox")){
+         
+         if(dateTransfoCalBox.equals(comp)){
             prodDerive.setDateStock(null);
-         }else if(comp.getId().equals("dateTransfoCalBox")){
+         }else if(dateTransfoCalBox.equals(comp)){
             prodDerive.setDateTransformation(null);
          }
+         
       }else{
+         
          // date transformation
-         if(comp.getId().equals("dateTransfoCalBox")){
+         if(dateTransfoCalBox.equals(comp)){
             field = "dateTransformation";
             if(this.prodDerive.getProdDeriveId() == null && (!(new Prelevement()).equals(getParentObject())
                || !getParentObject().equals(new Echantillon()) || !getParentObject().equals(new ProdDerive()))){
@@ -2248,7 +2255,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          }
 
          // date stockage
-         if(comp.getId().equals("dateStockCalBox")){
+         if(dateStockCalBox.equals(comp)){
             field = "dateStock";
             if(this.prodDerive.getProdDeriveId() == null && getParentObject() != null
                && (!getParentObject().equals(new Prelevement()) || !getParentObject().equals(new Echantillon())
@@ -2265,6 +2272,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
             Clients.scrollIntoView(comp);
             throw new WrongValueException(comp, ObjectTypesFormatters.handleErrors(errs, field));
          }
+         
       }
    }
 

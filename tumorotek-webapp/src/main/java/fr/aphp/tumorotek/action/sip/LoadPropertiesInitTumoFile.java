@@ -1,10 +1,10 @@
 /**
  * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
  * dsi-projet.tk@aphp.fr
- *
+ * <p>
  * Ce logiciel est un programme informatique servant à la gestion de
  * l'activité de biobanques.
- *
+ * <p>
  * Ce logiciel est régi par la licence CeCILL soumise au droit français
  * et respectant les principes de diffusion des logiciels libres. Vous
  * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
@@ -16,7 +16,7 @@
  * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
  * l'auteur du programme, le titulaire des droits patrimoniaux et les
  * concédants successifs.
- *
+ * <p>
  * A cet égard  l'attention de l'utilisateur est attirée sur les
  * risques associés au chargement,  à l'utilisation,  à la modification
  * et/ou au  développement et à la reproduction du logiciel par
@@ -28,7 +28,7 @@
  * besoins dans des conditions permettant d'assurer la sécurité de leurs
  * systèmes et ou de leurs données et, plus généralement, à l'utiliser
  * et l'exploiter dans les mêmes conditions de sécurité.
- *
+ * <p>
  * Le fait que vous puissiez accéder à cet en-tête signifie que vous
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
@@ -38,43 +38,29 @@ package fr.aphp.tumorotek.action.sip;
 import java.util.ResourceBundle;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
+import fr.aphp.tumorotek.param.TkParam;
+import fr.aphp.tumorotek.param.TumorotekProperties;
 
-public abstract class LoadPropertiesInitTumoFile
-{
+public abstract class LoadPropertiesInitTumoFile {
    /* declaration des noms des variables dans le fichier */
-   //TODO Pourquoi autant de paramètres privés non utilisés ??
-//   private static final String LANGUE = "LANGUE";
-//   private static final String DBMS = "DBMS";
-//   private static final String HOST = "HOST";
-//   private static final String PORT = "PORT";
-//   private static final String DRIVER = "DRIVER";
-//   private static final String DATABASE = "DATABASE";
-//   private static final String LOGIN = "LOGIN";
-//   private static final String PASSWORD = "PASSWORD";
-//   private static final String CONNECTIONS_INIT = "CONNECTIONS_INIT";
-//   private static final String CONNECTIONS_MAX = "CONNECTIONS_MAX";
-   private static final String MAX_PATIENTS = "MAX_PATIENTS";
-   private static final String LONGUEUR_NIP = "LONGUEUR_NIP";
-//   private static final String NUMEROTATION_AUTO = "NUMEROTATION_AUTO";
-//   private static final String DELAI_OUT = "DELAI_OUT";
-//   private static final String RECH_MAX_LIGNES = "RECH_MAX_LIGNES";
-//   private static final String CODES_BARRES = "CODES_BARRES";
-   private static final String SIP = "SIP";
+   private static final String MAX_PATIENTS = TkParam.MAX_PATIENTS.getKey();
+   private static final String LONGUEUR_NIP = TkParam.LONGUEUR_NIP.getKey();
+   private static final String SIP = TkParam.MODULE_SIP.getKey();
 
    /* accesseurs */
    /* getters */
    public static InitTumoFileBean getInitTumoFileBean(){
       InitTumoFileBean initTumoFileBean = null;
-      ResourceBundle res = null;
-      if(ManagerLocator.getResourceBundleTumo().doesResourceBundleExists("tumorotek.properties")){
-         res = ManagerLocator.getResourceBundleTumo().getResourceBundle("tumorotek.properties");
-         
-      // lecture des proprietes du fichier de ressources
+      ResourceBundle res;
+      if(ManagerLocator.getResourceBundleTumo().doesResourceBundleExists(TumorotekProperties.TUMO_PROPERTIES_FILENAME)){
+         res = ManagerLocator.getResourceBundleTumo().getResourceBundle(TumorotekProperties.TUMO_PROPERTIES_FILENAME);
+
+         // lecture des proprietes du fichier de ressources
          final int maxPatients = Integer.parseInt(res.getString(MAX_PATIENTS));
          final int longueurNip = Integer.parseInt(res.getString(LONGUEUR_NIP));
          final String sip = res.getString(SIP);
-         
-      // creation du bean de memorisation des proprietes
+
+         // creation du bean de memorisation des proprietes
          initTumoFileBean = new InitTumoFileBean(maxPatients, longueurNip, sip);
       }
 
