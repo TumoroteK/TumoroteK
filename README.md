@@ -2,11 +2,6 @@
 
 Logiciel de gestion des collections de prélèvements biologiques
 
-:heavy_exclamation_mark: La branche **2.2.0** sera supprimée lors de la release de la prochaine beta. Il faut basculer sur la branche **master**.
-
-:heavy_exclamation_mark: Dans la prochaine beta, 
-le système d'**annotation inline** sera supprimé car il ne fonctionne pas comme désiré.
-
 ## Commencer
 
 Ces instructions vous permettront d'obtenir une copie du projet opérationnel sur votre machine locale à des fins de développement et de test.
