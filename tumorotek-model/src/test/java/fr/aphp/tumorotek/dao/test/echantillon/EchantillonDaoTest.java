@@ -953,11 +953,6 @@ public class EchantillonDaoTest extends AbstractDaoTest
       }else{
          assertNull(e2.getConformeCession());
       }
-      if(e1.getReservation() != null){
-         assertTrue(e1.getReservation().equals(e2.getReservation()));
-      }else{
-         assertNull(e2.getReservation());
-      }
       if(e1.getEtatIncomplet() != null){
          assertTrue(e1.getEtatIncomplet().equals(e2.getEtatIncomplet()));
       }else{

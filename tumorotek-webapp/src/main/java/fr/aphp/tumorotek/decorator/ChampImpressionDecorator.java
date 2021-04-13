@@ -35,6 +35,8 @@
  **/
 package fr.aphp.tumorotek.decorator;
 
+import java.util.Objects;
+
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 
 public class ChampImpressionDecorator
@@ -79,6 +81,32 @@ public class ChampImpressionDecorator
       iProperty.append(champOk);
 
       return iProperty.toString();
+   }
+   
+   @Override
+   public boolean equals(final Object obj){
+      if(this == obj){
+         return true;
+      }
+      if((obj == null) || obj.getClass() != this.getClass()){
+         return false;
+      }
+      final ChampImpressionDecorator test = (ChampImpressionDecorator) obj;
+      return Objects.equals(test.getChampEntite(), champEntite);
+   }
+   
+   @Override
+   public int hashCode(){
+      int hash = 7;
+      int hashChampEntite = 0;
+      
+      if(this.champEntite != null){
+    	  hashChampEntite = this.champEntite.hashCode();
+      }
+
+      hash = 7 * hash + hashChampEntite;
+      
+      return hash;
    }
 
 }

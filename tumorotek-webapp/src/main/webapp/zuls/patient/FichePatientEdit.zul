@@ -115,7 +115,8 @@
 							</box>
 							<label id="dateNaissanceRequired" value="*" sclass="requiredMark" />
 						</hbox>
-						<datebox id="dateNaisBox" format="${c:l('validation.date.format.simple')}" 
+						
+						<datebox id="dateNaisBox" format="${c:l('validation.date.format.simple')}"
 							value="@{fwinPatientEdit$composer.object.dateNaissance,
 							save-when='validate.onClick, create.onClick'}" 
 							constraint="no empty" lenient="true"/>

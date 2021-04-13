@@ -90,8 +90,8 @@ public class PersonnePhysique
    private ArrayList<String> prenomList = null;
    @XmlElement(name = "dateNaissance")
    private DateNaissanceWrapper dateNaissanceWrapper = null;
-   @XmlElement(name = "CDMORT")
-   private String etatPatient = null;
+   @XmlElement(name = "decede", required = false)
+   private Decede decede = null;
 
    public String getSexe(){
       if(sexe != null && sexe.equals("")){
@@ -154,17 +154,21 @@ public class PersonnePhysique
          return dateNaissanceWrapper.getDate();
       }
       return null;
-   }
+   	}
 
-   public String getEtatPatient(){
-      if(etatPatient != null && etatPatient.equals("")){
-         return null;
+   	public Decede getDecede() {
+		return decede;
+	}
+	
+	public void setDecede(Decede decede) {
+		this.decede = decede;
+	}
+
+	public String getEtatPatient() {
+      if(decede != null) {
+         return "D";
       }
-      return etatPatient;
-   }
-
-   public void setEtatPatient(final String eP){
-      this.etatPatient = eP;
+      return null;
    }
 
    @XmlAccessorType(XmlAccessType.FIELD)

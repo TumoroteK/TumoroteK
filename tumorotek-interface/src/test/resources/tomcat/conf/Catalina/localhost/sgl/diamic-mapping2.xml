@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Interfacage>
+	<Logiciel func="SGL">
+		<Nom>DIAMIC</Nom>
+		<Editeur>INFOLOGIC-SANTE</Editeur>
+		<Version>8.1.2.1.1</Version>
+	</Logiciel>
+	<Configuration>
+		<SeparateurChamps>|</SeparateurChamps>
+		<SeparateurComposants>^</SeparateurComposants>
+		<SeparateurSousComposants>~</SeparateurSousComposants>
+		<BlocLibreKey>OBX</BlocLibreKey>
+		<NumeroDossier>
+			<BlocValue>ORC</BlocValue>
+			<Key>4.2</Key>
+		</NumeroDossier>
+		<DateDossier>
+			<BlocValue>MSH</BlocValue>
+			<Key>6</Key>
+		</DateDossier>
+		<OperationDossier>
+			<BlocValue>ORC</BlocValue>
+			<Key>5</Key>
+		</OperationDossier>
+	</Configuration>
+	<Bloc nom="PID">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Nip" idChamp="2"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>3</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Nom" idChamp="3"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>5.1</Key>
+			</Source>
+		</Mapping>
+<!-- !! A VERIFIER  car disparu des spécifications.?c-->
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="NomNaissance" idChamp="4"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>5.7.2</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Prenom" idChamp="5"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>5.2</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Sexe" idChamp="6"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>8</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="DateNaissance" idChamp="7"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>7</Key>
+			</Source>
+		</Mapping>
+<!-- vérifier date décès car par validé lors tests de recette ?? -->
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="DateDeces" idChamp="12"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>29</Key>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<Bloc nom="ORC">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="NumeroLabo" idChamp="45"></ChampEntite>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>4.2</Key>
+			</Source>
+		</Mapping>
+<!--		<Mapping>
+			<Tk>
+				<ChampEntite nom="PatientNda" idChamp="44"></ChampEntite>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>4.2</Key>
+			</Source>
+		</Mapping> -->
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="DatePrelevement" idChamp="30"></ChampEntite>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>7</Key>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<BlocLibre nom="RP">
+		<Source>
+			<Key>2</Key>
+		</Source>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="CrAnapath" idChamp="255"></ChampEntite>
+				<Entite nom="Echantillon" idChamp="3"></Entite>
+			</Tk>
+			<Source>
+				<Key>5.1</Key>
+				<Modifier nom="Fichier">
+					<Path>/tumotest/interface_diamic2/diamic2tk/</Path>
+				</Modifier>
+			</Source>
+		</Mapping>
+	</BlocLibre>
+	<!-- <Bloc nom="OBR_OBX2">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="CodesOrganes" idChamp="229"></ChampEntite>
+				<Entite nom="Echantillon" idChamp="3"></Entite>
+			</Tk>
+			<Source>
+				<Key>5</Key>
+			</Source>
+		</Mapping>
+	</Bloc>
+	-->
+
+	<BlocLibre nom="ADICAP_ORG">
+		<Source>
+			<Key>3</Key>
+		</Source>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="CodesMorphos" idChamp="229"></ChampEntite>
+				<Entite nom="Echantillon" idChamp="3"></Entite>
+			</Tk>
+			<Source>
+				<Key>5</Key>
+			</Source>
+		</Mapping>
+	</BlocLibre>
+	<BlocLibre nom="ADICAP_LES">
+		<Source>
+			<Key>3</Key>
+		</Source>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="CodesMorphos" idChamp="230"></ChampEntite>
+				<Entite nom="Echantillon" idChamp="3"></Entite>
+			</Tk>
+			<Source>
+				<Key>5</Key>
+			</Source>
+		</Mapping>
+	</BlocLibre>
+	<!-- <Bloc nom="SPM">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="DateStock" idChamp="56"></ChampEntite>
+				<Entite nom="Echantillon" idChamp="3"></Entite>
+			</Tk>
+			<Source>
+				<Key>18</Key>
+			</Source>
+		</Mapping>
+	</Bloc> -->
+</Interfacage>

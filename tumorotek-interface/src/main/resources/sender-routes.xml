@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <beans xmlns="http://www.springframework.org/schema/beans"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xmlns:camel="http://camel.apache.org/schema/spring"
       xsi:schemaLocation="
-      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-      http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">	
+      http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://camel.apache.org/schema/spring
+      http://camel.apache.org/schema/spring/camel-spring.xsd">	
 
 	<errorHandler id="ackErrorHandler" xmlns="http://camel.apache.org/schema/spring"
 				useOriginalMessage="true" type="DeadLetterChannel" deadLetterUri="{{ack.deadLetter}}" >
@@ -21,7 +22,7 @@
 		        <exception>java.lang.Exception</exception>
 		         <redeliveryPolicy maximumRedeliveries="5" />
 		        <handled><constant>true</constant></handled>
-		        <log logName="fr.aphp.tumorotek.interfacage.ack.dead" message="Error sending file: ${file:name}" />
+		        <log logName="fr.aphp.tumorotek.interfacage.sender.ack.dead" message="Error sending file: ${file:name}" />
 		        <to uri="bean:exceptionLogProcessor" />
 				<to uri="{{ack.deadLetter}}" />
 		    </onException>
@@ -36,7 +37,7 @@
 		        <exception>java.lang.Exception</exception>
 		         <redeliveryPolicy maximumRedeliveries="5" />
 		        <handled><constant>true</constant></handled>
-		        <log logName="fr.aphp.tumorotek.interfacage.ack.dead" message="Error sending file: ${file:name}" />
+		        <log logName="fr.aphp.tumorotek.interfacage.sender.ack.dead" message="Error sending file: ${file:name}" />
 		        <to uri="bean:exceptionLogProcessor" />
 				<to uri="{{ack.deadLetter}}" />
 		    </onException>
@@ -52,9 +53,10 @@
 	   		<to uri="{{ack-dme.endpoint}}" />
 	   	</route>
 	   	
-	   	<route id="storageRobot" autoStartup="{{storage.robot.startup}}" startupOrder="8">
+	   	<!--  storage robot IRELEC since 2.2.1 -->
+	   	<route id="storageRobotMaster" autoStartup="{{storage.robot.startup}}" startupOrder="8">
 	   		
-	   		<from uri="direct:storage-robot" />
+	   		<from uri="direct:storage-robot-master" />
 	   		<onException useOriginalMessage="true">
 		        <exception>java.lang.Exception</exception>
 		         <redeliveryPolicy maximumRedeliveries="5" />
@@ -64,8 +66,23 @@
 				<to uri="{{storage.robot.deadLetter}}" />
 		    </onException>
 	   		
-	   		<to uri="{{storage.robot.endpoint}}" />
+	   		<to uri="{{storage.robot.master.endpoint}}" />
 	   	</route>
+	   	
+	   	<route id="storageRobotRecette" autoStartup="{{storage.robot.startup}}" startupOrder="9">
+	   		
+	   		<from uri="direct:storage-robot-recette" />
+	   		<onException useOriginalMessage="true">
+		        <exception>java.lang.Exception</exception>
+		         <redeliveryPolicy maximumRedeliveries="5" />
+		        <handled><constant>true</constant></handled>
+		        <log logName="fr.aphp.tumorotek.interfacage.storagerobot.dead" message="Error sending file: ${file:name}" />
+		        <to uri="bean:exceptionLogProcessor" />
+				<to uri="{{storage.robot.deadLetter}}" />
+		    </onException>
+	   		
+	   		<to uri="{{storage.robot.recette.endpoint}}" />
+	   	</route>   	
 	   	
     </routeContext>
 </beans>

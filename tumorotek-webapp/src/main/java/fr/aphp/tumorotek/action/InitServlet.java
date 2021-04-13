@@ -90,6 +90,9 @@ public class InitServlet extends HttpServlet
 
       log.info("----- TumoroteK startup routines -----");
       final Path baseDir = Paths.get(TkParam.FILESYSTEM.getValue());
+      
+      log.info(baseDir.toString());
+
 
       // Initialisation TUMOROTEK_CODES & TUMOROTEK_INTERFACAGES
       performInitialisation();
@@ -188,7 +191,7 @@ public class InitServlet extends HttpServlet
       }
       try{
          final Liquibase liquibase =
-            new Liquibase("liquibase/changelog/db.changelog-init-interfacages.xml", new ClassLoaderResourceAccessor(), database);
+            new Liquibase("liquibase/changelog/interfacages/db.changelog-init-interfacages.xml", new ClassLoaderResourceAccessor(), database);
          liquibase.update("*");
       }catch(final LiquibaseException e){
          log.error(e.toString());
@@ -202,16 +205,28 @@ public class InitServlet extends HttpServlet
       log.info("----- Recherche des mises à jours database -----");
 
       Database database = null;
+      Database databaseIntf = null;
       try{
          database = DatabaseFactory.getInstance()
             .findCorrectDatabaseImplementation(new JdbcConnection(dataSource(ESchema.TUMOROTEK).getConnection()));
+         
+         databaseIntf = DatabaseFactory.getInstance()
+             .findCorrectDatabaseImplementation(new JdbcConnection(dataSource(ESchema.TUMOROTEK_INTERFACAGES).getConnection()));
+         
       }catch(DatabaseException | SQLException e){
          log.error(e.toString());
       }
       try{
          final Liquibase liquibase =
-            new Liquibase("liquibase/changelog/db.changelog-master.xml", new ClassLoaderResourceAccessor(), database);
+            new Liquibase("liquibase/changelog/db.changelog-master.xml", 
+            	new ClassLoaderResourceAccessor(), database);
          liquibase.update("*");
+         
+         // interfacages
+         final Liquibase liquibaseIntf =
+                new Liquibase("liquibase/changelog/interfacages/db.changelog-master.xml", 
+                		new ClassLoaderResourceAccessor(), databaseIntf);
+         liquibaseIntf.update("*");
 
          // Pour faire un rollback
          //liquibase.rollback("2.1.4-SNAPSHOT", contexts);

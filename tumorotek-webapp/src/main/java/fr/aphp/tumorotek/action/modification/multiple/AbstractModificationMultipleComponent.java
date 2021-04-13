@@ -57,6 +57,8 @@ import org.zkoss.zul.Row;
 
 import fr.aphp.tumorotek.action.constraints.TumoTextConstraint;
 import fr.aphp.tumorotek.action.controller.AbstractController;
+import fr.aphp.tumorotek.model.TKDelegateObject;
+import fr.aphp.tumorotek.model.TKDelegetableObject;
 
 /**
  * Classe Abstraite gérant les fenêtres modales pour la modification multiple.
@@ -344,14 +346,30 @@ public abstract class AbstractModificationMultipleComponent extends AbstractCont
       // on extrait la valeur actuelle du champ à modifier
       // toutes ces valeurs sont placées dans la liste values
       hasNulls = false;
-      for(int i = 0; i < listObjets.size(); i++){
+      for(Object object : listObjets) {
          try{
-            Object tmp = PropertyUtils.getSimpleProperty(listObjets.get(i), champ);
-
+            
+            boolean isDelegateProperty = false;
+            TKDelegateObject<?> delegate = null;
+            
+            if(object instanceof TKDelegetableObject) {
+               delegate = ((TKDelegetableObject<?>)object).getDelegate();
+               isDelegateProperty = delegate != null 
+            		   && PropertyUtils.describe(delegate).keySet().contains(champ);
+            }
+            
+            Object tmp = null;
+            if(isDelegateProperty) {
+               tmp = PropertyUtils.getSimpleProperty(delegate, champ);
+            }
+            else {
+               tmp = PropertyUtils.getSimpleProperty(object, champ);
+            }
+            
             // recupere les valeurs non vides
             if(tmp == null){
                if(isCombined){
-                  tmp = PropertyUtils.getSimpleProperty(listObjets.get(i), "alphanum");
+                  tmp = PropertyUtils.getSimpleProperty(object, "alphanum");
                }
             }
             if(tmp != null && !tmp.equals("")){
@@ -363,11 +381,7 @@ public abstract class AbstractModificationMultipleComponent extends AbstractCont
             }else{
                hasNulls = true;
             }
-         }catch(final IllegalAccessException e){
-            log.error(e);
-         }catch(final InvocationTargetException e){
-            log.error(e);
-         }catch(final NoSuchMethodException e){
+         }catch(final IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
             log.error(e);
          }
       }

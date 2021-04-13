@@ -98,4 +98,32 @@ public interface DossierExterneDao extends GenericDaoJpa<DossierExterne, Integer
     * @since 2.1
     */
    List<DossierExterne> findFirst();
+
+   /**
+    * Renvoie les dossiers externes partageant une valeur externe.
+    * Utilisé par GENNO pour regrouper les dérivés enfants avec le dossier parent.
+    * @param emetteur
+    * @param champ entite id
+    * @param valeur 
+    * @return liste de dossiers
+    * @since 2.2.3-genno
+    */
+   List<DossierExterne> findChildrenByEmetteurValeur(Emetteur _e, Integer _c, String valeur);
+   
+   /**
+    * Renvoie les dossiers externes corrspondant à une entité.
+    * @param emetteur
+    * @param entite id
+    * @return liste de dossiers
+    * @since 2.2.3-genno
+    */
+   List<DossierExterne> findByEmetteurAndEntite(Emetteur _e, Integer _i);
+   
+   /**
+    * Renvoie les dossiers externes corrspondant à une entité nulle.
+    * @param emetteur
+    * @return liste de dossiers
+    * @since 2.2.3-genno
+    */
+   List<DossierExterne> findByEmetteurAndEntiteNull(Emetteur _e);
 }

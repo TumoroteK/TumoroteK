@@ -35,12 +35,17 @@
  **/
 package fr.aphp.tumorotek.manager.test.io.imports;
 
+import static org.junit.Assert.*;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import fr.aphp.tumorotek.dao.coeur.ObjetStatutDao;
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonTypeDao;
@@ -57,7 +62,7 @@ import fr.aphp.tumorotek.manager.coeur.patient.PatientManager;
 import fr.aphp.tumorotek.manager.coeur.prelevement.PrelevementManager;
 import fr.aphp.tumorotek.manager.coeur.prodderive.ProdDeriveManager;
 import fr.aphp.tumorotek.manager.io.imports.ImportHistoriqueManager;
-import fr.aphp.tumorotek.manager.test.AbstractManagerTest;
+import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
 import fr.aphp.tumorotek.model.TKFantomableObject;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.echantillon.EchantillonType;
@@ -83,94 +88,46 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * @version 2.0.10.3
  *
  */
-public class ImportHistoriqueManagerTest extends AbstractManagerTest
+public class ImportHistoriqueManagerTest extends AbstractManagerTest4
 {
 
+@Autowired
    private ImportHistoriqueManager importHistoriqueManager;
+@Autowired
    private ImportTemplateDao importTemplateDao;
+@Autowired
    private UtilisateurDao utilisateurDao;
+@Autowired
    private ImportationDao importationDao;
+   @Autowired
    private EntiteDao entiteDao;
+   @Autowired
    private ObjetStatutDao objetStatutDao;
-
+   @Autowired
    private PatientManager patientManager;
+   @Autowired
    private PrelevementManager prelevementManager;
+   @Autowired
    private EchantillonManager echantillonManager;
+   @Autowired
    private ProdDeriveManager prodDeriveManager;
+   @Autowired
    private BanqueDao banqueDao;
+   @Autowired
    private NatureDao natureDao;
+   @Autowired
    private ConsentTypeDao consentTypeDao;
+   @Autowired
    private EchantillonTypeDao echantillonTypeDao;
+   @Autowired
    private ProdTypeDao prodTypeDao;
 
    public ImportHistoriqueManagerTest(){
 
    }
 
-   public void setImportHistoriqueManager(final ImportHistoriqueManager iManager){
-      this.importHistoriqueManager = iManager;
-   }
-
-   public void setImportTemplateDao(final ImportTemplateDao iDao){
-      this.importTemplateDao = iDao;
-   }
-
-   public void setUtilisateurDao(final UtilisateurDao uDao){
-      this.utilisateurDao = uDao;
-   }
-
-   public void setImportationDao(final ImportationDao iDao){
-      this.importationDao = iDao;
-   }
-
-   public void setEntiteDao(final EntiteDao eDao){
-      this.entiteDao = eDao;
-   }
-
-   public void setPatientManager(final PatientManager pManager){
-      this.patientManager = pManager;
-   }
-
-   public void setPrelevementManager(final PrelevementManager pManager){
-      this.prelevementManager = pManager;
-   }
-
-   public void setEchantillonManager(final EchantillonManager eManager){
-      this.echantillonManager = eManager;
-   }
-
-   public void setProdDeriveManager(final ProdDeriveManager pManager){
-      this.prodDeriveManager = pManager;
-   }
-
-   public void setNatureDao(final NatureDao nDao){
-      this.natureDao = nDao;
-   }
-
-   public void setConsentTypeDao(final ConsentTypeDao ctDao){
-      this.consentTypeDao = ctDao;
-   }
-
-   public void setBanqueDao(final BanqueDao bDao){
-      this.banqueDao = bDao;
-   }
-
-   public void setEchantillonTypeDao(final EchantillonTypeDao eTypeDao){
-      this.echantillonTypeDao = eTypeDao;
-   }
-
-   public void setProdTypeDao(final ProdTypeDao pDao){
-      this.prodTypeDao = pDao;
-   }
-
-   public void setObjetStatutDao(final ObjetStatutDao oDao){
-      this.objetStatutDao = oDao;
-   }
-
-   /**
-    * Test la méthode findById.
-    */
-   public void testFindById(){
+  @Test
+  public void testFindById(){
       final ImportHistorique temp = importHistoriqueManager.findByIdManager(1);
       assertNotNull(temp);
 
@@ -181,6 +138,7 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest
    /**
     * Test la méthode findAllObjects.
     */
+   @Test
    public void testFindAll(){
       final List<ImportHistorique> list = importHistoriqueManager.findAllObjectsManager();
       assertEquals(3, list.size());
@@ -189,6 +147,7 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest
    /**
     * Test la méthode findByTemplateWithOrderManager.
     */
+   @Test
    public void testFindByTemplateWithOrderManager(){
       ImportTemplate it = importTemplateDao.findById(1);
       List<ImportHistorique> list = importHistoriqueManager.findByTemplateWithOrderManager(it);
@@ -209,6 +168,7 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest
    /**
     * Test la méthode findImportationsByHistoriqueManager.
     */
+   @Test
    public void testFindImportationsByHistoriqueManager(){
       ImportHistorique ih = importHistoriqueManager.findByIdManager(1);
       List<Importation> list = importHistoriqueManager.findImportationsByHistoriqueManager(ih);
@@ -225,6 +185,7 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest
    /**
     * Test la méthode findImportationsByHistoriqueAndEntiteManager.
     */
+   @Test
    public void testFindImportationsByHistoriqueAndEntiteManager(){
       final ImportHistorique ih = importHistoriqueManager.findByIdManager(1);
       final ImportHistorique ih2 = importHistoriqueManager.findByIdManager(2);
@@ -249,6 +210,7 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest
    /**
     * Test la méthode findImportationsByObjectManager.
     */
+   @Test
    public void testFindImportationsByObjectManager(){
       final Patient p1 = patientManager.findByNomLikeManager("MAYER", true).get(0);
       final Prelevement prlvt = prelevementManager.findByIdManager(4);
@@ -278,6 +240,7 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest
    /**
     * Test la méthode findImportationsByEntiteAndObjectIdManager.
     */
+   @Test
    public void testFindImportationsByEntiteAndObjectIdManager(){
       final Entite e1 = entiteDao.findById(1);
       final Entite e3 = entiteDao.findById(3);
@@ -302,6 +265,7 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest
     * Teste la methode createObjectManager. 
     * @throws ParseException 
     */
+   @Test
    public void testCreateObjectManager() throws ParseException{
 
       final ImportTemplate it1 = importTemplateDao.findById(1);
@@ -405,6 +369,7 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest
     * suppression d'un objet importé.
     * @throws ParseException 
     */
+   @Test
    public void testRemoveImportationsByObjects() throws ParseException{
       final ImportTemplate it1 = importTemplateDao.findById(1);
       final Utilisateur u = utilisateurDao.findById(1);
@@ -459,7 +424,7 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest
       final Echantillon echan = new Echantillon();
       echan.setCode("RRRRRR");
       echantillonManager.createObjectManager(echan, banque, null, null, objetStatutDao.findById(4), null, eType, null, null, null,
-         null, null, null, null, u, false, null, false);
+         null, null, null, u, false, null, false);
       assertEquals(5, echantillonManager.findAllObjectsManager().size());
       final Importation i3 = new Importation();
       i3.setImportHistorique(ih1);
@@ -471,7 +436,7 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest
       final ProdDerive derive = new ProdDerive();
       derive.setCode("jhosbj");
       prodDeriveManager.createObjectManager(derive, banque, pType, objetStatutDao.findById(4), null, null, null, null, null, null,
-         null, null, null, null, null, u, false, null, false);
+         null, null, null, null, u, false, null, false);
       assertEquals(5, prodDeriveManager.findAllObjectsManager().size());
       final Importation i4 = new Importation();
       i4.setImportHistorique(ih1);
@@ -506,6 +471,7 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest
       assertEquals(3, importHistoriqueManager.findAllObjectsManager().size());
    }
 
+   @Test
    public void testFindPrelevementByImportHistoriqueManager(){
       final ImportHistorique ih1 = importHistoriqueManager.findByIdManager(1);
       final List<Prelevement> prels = new ArrayList<>();

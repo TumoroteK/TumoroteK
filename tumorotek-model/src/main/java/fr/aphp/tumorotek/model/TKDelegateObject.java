@@ -35,7 +35,7 @@
  **/
 package fr.aphp.tumorotek.model;
 
-import fr.aphp.tumorotek.model.coeur.prelevement.delegate.AbstractPrelevementDelegate;
+import java.util.Objects;
 
 /**
  * Interface representant les Entite systeme qui sont
@@ -46,7 +46,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.delegate.AbstractPrelevementDel
  * Interface créée le 19/01/12.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.2.3-rc1
  */
 public abstract class TKDelegateObject<T>
 {
@@ -62,6 +62,11 @@ public abstract class TKDelegateObject<T>
     * @return true/false
     */
    public abstract boolean isEmpty();
+   
+   /**
+    * @since 2.2.3-rc1
+    */
+   public abstract TKDelegateObject<T> clone();
 
    @Override
    public String toString(){
@@ -74,26 +79,24 @@ public abstract class TKDelegateObject<T>
    @Override
    public int hashCode(){
       final int prime = 31;
-      int result = super.hashCode();
+   //   int result = super.hashCode();
+      int result = 1;
       result = prime * result + ((getDelegator() == null) ? 0 : getDelegator().hashCode());
       return result;
    }
 
    @Override
    public boolean equals(Object obj){
-      if(this == obj)
-         return true;
-      if(!super.equals(obj))
-         return false;
-      if(getClass() != obj.getClass())
-         return false;
-      AbstractPrelevementDelegate other = (AbstractPrelevementDelegate) obj;
-      if(getDelegator() == null){
-         if(other.getDelegator() != null)
+		if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
             return false;
-      }else if(!getDelegator().equals(other.getDelegator()))
-         return false;
-      return true;
-   }
+        }
 
+        @SuppressWarnings("unchecked")
+		TKDelegateObject<T> del = (TKDelegateObject<T>) obj;
+
+        return (Objects.equals(getDelegator(), del.getDelegator()));
+   }
 }

@@ -6,9 +6,9 @@
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" name="ficheTemplateModale" root="../"?>
 
 	<window id="fwinTemplateModale" border="none" apply="fr.aphp.tumorotek.action.impression.FicheTemplateModale">
-		<panel collapsible="false" sclass="fichePanelv2" id="winPanel">
-			<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
-				<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvt">
+		<div style="display: flex; flex-direction: column; min-height: 100%; max-height: 100%">
+			<div style="display: flex; flex: 1; overflow-y: auto">
+				<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvt" height="100%">
 					<columns>
 						<column width="200px" />
 						<column />
@@ -160,12 +160,13 @@
 
 					</rows>
 				</grid>
-			</panelchildren>
-			<toolbar height="30px" id="toolbarEchan" align="end">
-				<hbox spacing="5" align="center">
-					<button id="print" label="${c:l('general.print')}" height="24px" visible="true" image="/images/icones/printer.png" sclass="buttonv2" />
-				</hbox>
-			</toolbar>
-		</panel>
+			</div>
+			<div style="display: flex; min-height: 30px; max-height: 30px">
+				<toolbar height="30px" id="toolbarEchan" align="end" hflex="1">
+					<button id="print" label="${c:l('general.print')}" height="24px" visible="true" 
+						image="/images/icones/printer.png" sclass="buttonv2" hflex="1" />
+				</toolbar>
+			</div>
+		</div>
 	</window>
 </zk>

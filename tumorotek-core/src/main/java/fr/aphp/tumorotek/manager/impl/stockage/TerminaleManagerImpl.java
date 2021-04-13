@@ -45,6 +45,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
@@ -70,8 +71,10 @@ import fr.aphp.tumorotek.manager.exception.ObjectUsedException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.exception.UsedPositionException;
 import fr.aphp.tumorotek.manager.impl.coeur.CreateOrUpdateUtilities;
+import fr.aphp.tumorotek.manager.impl.coeur.cession.OldEmplTrace;
 import fr.aphp.tumorotek.manager.qualite.OperationManager;
 import fr.aphp.tumorotek.manager.stockage.CheckPositionManager;
+import fr.aphp.tumorotek.manager.stockage.EmplacementManager;
 import fr.aphp.tumorotek.manager.stockage.IncidentManager;
 import fr.aphp.tumorotek.manager.stockage.TerminaleManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
@@ -94,6 +97,7 @@ import fr.aphp.tumorotek.model.systeme.Couleur;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.utils.Utils;
+import oracle.jdbc.internal.OracleTypes;
 
 /**
  *
@@ -101,7 +105,7 @@ import fr.aphp.tumorotek.utils.Utils;
  * Interface créée le 19/03/10.
  *
  * @author Pierre Ventadour
- * @version 2.1
+ * @version 2.2-2-diamic
  *
  */
 public class TerminaleManagerImpl implements TerminaleManager
@@ -125,6 +129,7 @@ public class TerminaleManagerImpl implements TerminaleManager
    private CouleurDao couleurDao;
    private IncidentManager incidentManager;
    private IncidentValidator incidentValidator;
+   private EmplacementManager emplacementManager;
    // @since 2.1
    private DataSource dataSource;
 
@@ -196,7 +201,11 @@ public class TerminaleManagerImpl implements TerminaleManager
       this.dataSource = dataSource;
    }
 
-   @Override
+   public void setEmplacementManager(EmplacementManager _e) {
+	this.emplacementManager = _e;
+}
+
+@Override
    public Terminale findByIdManager(final Integer terminaleId){
       return terminaleDao.findById(terminaleId);
    }
@@ -856,6 +865,64 @@ public class TerminaleManagerImpl implements TerminaleManager
 
       return res;
    }
+   
+   @Override
+   public List<OldEmplTrace> getTkObjectsEmplacementTracesManager(final Terminale term){
+      final List<OldEmplTrace> traces = new ArrayList<OldEmplTrace>();
+
+      final List<Emplacement> emps = emplacementDao.findByTerminaleAndVide(term, false);
+      final List<Echantillon> echans = getEchantillonsManager(term);
+      final List<ProdDerive> derives = getProdDerivesManager(term);
+
+      // check coherence
+      if(emps.size() != (echans.size() + derives.size())){
+         throw new RuntimeException("stockage.terminale.contenu.incoherent");
+      }
+
+      for(final Emplacement emp : emps){
+         if(emp.getEntite().getNom().equals("Echantillon")){
+            echanLoop: for(final Echantillon e : echans){
+               if(e.getEchantillonId().equals(emp.getObjetId())){
+                  traces.add(new OldEmplTrace(e, emplacementManager
+                		.getAdrlManager(emp, false), emplacementManager.getConteneurManager(emp), emp));
+                  echans.remove(e);
+                  break echanLoop;
+               }
+            }
+         }else{
+            derivesLoop: for(final ProdDerive p : derives){
+               if(p.getProdDeriveId().equals(emp.getObjetId())){
+            	   traces.add(new OldEmplTrace(p, emplacementManager
+                   		.getAdrlManager(emp, false), emplacementManager.getConteneurManager(emp), emp));
+                  derives.remove(p);
+                  break derivesLoop;
+               }
+            }
+         }
+      }
+
+      return traces;
+   }
+   
+   @Override
+   public List<Banque> getDistinctBanquesFromTkObjectsManager(final Terminale term) {
+	   List<Banque> banks = new ArrayList<Banque>();
+	   
+	   if (term != null) {
+		   List<TKStockableObject> tkObjs = new ArrayList<TKStockableObject>();
+		   tkObjs.addAll(getEchantillonsManager(term));
+		   tkObjs.addAll(getProdDerivesManager(term));
+		   
+		   banks.addAll(tkObjs.stream().map(o -> o.getBanque())
+				   .distinct().collect(Collectors.toList()));
+	   }
+	   return banks;
+   }
+   
+   @Override
+   public List<Terminale> findByAliasManager(String _a){
+      return terminaleDao.findByAlias(_a);
+   }
 
    @Override
    public List<Integer> findTerminaleIdsFromNomManager(final String nom, final Enceinte enc, final List<Conteneur> conts){
@@ -865,34 +932,50 @@ public class TerminaleManagerImpl implements TerminaleManager
       if(nom != null && conts != null){
          Connection conn = null;
          CallableStatement stmt = null;
-         ResultSet rs = null;
+         ResultSet rset = null;
          try{
             conn = DataSourceUtils.getConnection(dataSource);
-            stmt = conn.prepareCall("call get_terminale_by_nom_and_parent(?,?,?)");
-            for(final Conteneur cont : conts){
-               stmt.clearParameters();
-               stmt.setString(1, nom);
-               if(enc != null){
-                  stmt.setInt(2, enc.getEnceinteId());
-               }else{
-                  stmt.setNull(2, Types.INTEGER);
-               }
-               stmt.setInt(3, cont.getConteneurId());
-
-               rs = stmt.executeQuery();
-
-               while(rs.next()){
-                  ids.add(rs.getInt(1));
-               }
-            }
+            
+            // DBMS
+			if (Utils.isOracleDBMS()) {
+				stmt = conn.prepareCall("call get_term_by_nom_and_parent(?,?,?,?)");
+				stmt.registerOutParameter(4, OracleTypes.CURSOR);
+			} else {
+				stmt = conn.prepareCall("call get_term_by_nom_and_parent(?,?,?)");
+			}
+			
+			for (final Conteneur cont : conts) {
+				stmt.clearParameters();
+				stmt.setString(1, nom);
+				if (enc != null) {
+					stmt.setInt(2, enc.getEnceinteId());
+				} else {
+					stmt.setNull(2, Types.INTEGER);
+				}
+				stmt.setInt(3, cont.getConteneurId());
+									
+				// DBMS
+				if (Utils.isOracleDBMS()) {
+					stmt.executeQuery();
+					rset = (ResultSet) stmt.getObject(4);
+				} else {
+					if (stmt.execute()) {
+						rset = stmt.getResultSet();
+					}
+				}
+									
+				while (rset.next()) {
+					ids.add(rset.getInt(1));
+				}
+			}
          }catch(final Exception e){
             log.error(e.getMessage());
          }finally{
-            if(rs != null){
+            if(rset != null){
                try{
-                  rs.close();
+                  rset.close();
                }catch(final Exception ex){
-                  rs = null;
+                  rset = null;
                }
             }
             if(stmt != null){

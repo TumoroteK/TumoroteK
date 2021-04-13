@@ -167,7 +167,7 @@ public final class ThesaurusConstraints
    private static ConstWord enceinteTypePrefixeConstraint = new ConstWord();
    static{
       enceinteTypePrefixeConstraint.setNullable(false);
-      enceinteTypePrefixeConstraint.setSize(200);
+      enceinteTypePrefixeConstraint.setSize(5);
    }
 
    private static ConstWord risqueConstraint = new ConstWord();

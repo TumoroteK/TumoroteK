@@ -40,13 +40,16 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import fr.aphp.tumorotek.model.TKDelegateObject;
+import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
+
 /**
  * Classe deleguee au prelevement qui contient le mapping vers
  * les donnes propres aux serotheques.
  * Date creation 19/01/12.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.6
+ * @version 2.2.3-rc1
  */
 @Entity
 @Table(name = "PRELEVEMENT_XENO")
@@ -72,4 +75,11 @@ public class PrelevementXeno extends AbstractPrelevementDelegate
    public boolean isEmpty(){
       return getSouris() == null;
    }
+   
+   @Override
+	public TKDelegateObject<Prelevement> clone() {
+	   PrelevementXeno clone = new PrelevementXeno();
+		clone.setSouris(getSouris());
+		return clone;
+	}
 }

@@ -184,8 +184,8 @@ public class Champ implements Comparable<Champ>
       final int prime = 31;
       int result = 1;
       result = prime * result + ((champAnnotation == null) ? 0 : champAnnotation.hashCode());
-      result = prime * result + ((champDelegue == null) ? 0 : champDelegue.hashCode());
       result = prime * result + ((champEntite == null) ? 0 : champEntite.hashCode());
+      result = prime * result + ((champDelegue == null) ? 0 : champDelegue.hashCode());
       return result;
    }
 

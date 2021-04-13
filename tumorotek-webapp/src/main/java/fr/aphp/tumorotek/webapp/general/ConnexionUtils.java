@@ -103,11 +103,11 @@ public final class ConnexionUtils
     * Cette méthode va placer les droits de l'utilisateur pour la
     * banque sélectionnée en variables de la session.
     */
-   public static void generateDroitsForSelectedBanque(final Banque bk, final Utilisateur user, final Map<String, Object> sess){
+   public static void generateDroitsForSelectedBanque(final Banque bk, final Plateforme pf, final Utilisateur user, final Map<String, Object> sess){
       // on regarde si l'utilisateur est admin de la plateforme
       // de la banque sélectionnée
       final Set<Plateforme> pfs = ManagerLocator.getUtilisateurManager().getPlateformesManager(user);
-      if(user.isSuperAdmin() || pfs.contains(bk.getPlateforme())){
+      if(user.isSuperAdmin() || pfs.contains(pf)){
          sess.put("Admin", true);
          sess.put("AccesAdmin", true);
          sess.put("AdminPF", true);
@@ -131,17 +131,20 @@ public final class ConnexionUtils
             }
 
             // gestion de l'export
-            if(profil.getProfilExport() != null){
-               if(profil.getProfilExport() == 2){
-                  sess.put("Export", "Export");
-               }else if(profil.getProfilExport() == 1){
-                  sess.put("Export", "ExportAnonyme");
-               }else{
-                  sess.put("Export", "Non");
-               }
-            }else{
-               sess.put("Export", "Non");
-            }
+            // @since 2.2.3-rc1
+//            if(profil.getProfilExport() != null){
+//               if(profil.getProfilExport() == 2){
+//                  sess.put("Export", "Export");
+//               }else if(profil.getProfilExport() == 1){
+//                  sess.put("Export", "ExportAnonyme");
+//               }else{
+//                  sess.put("Export", "Non");
+//               }
+//            }else{
+//               sess.put("Export", "Non");
+//            }
+            
+            sess.put("Export", ExportUtils.getProfilExportFromValue(profil.getProfilExport())); 
 
             // si l'utilisateur a accès à l'onglet admin
             if(profil.getAccesAdministration()){
@@ -161,6 +164,8 @@ public final class ConnexionUtils
          }
       }
    }
+   
+  
 
    /**
     * Cette méthode créee une hashtable contenant, pour chaque entité, la
@@ -312,7 +317,7 @@ public final class ConnexionUtils
          final List<Banque> banks = new ArrayList<>();
          banks.add(bank);
          ConnexionUtils.setSessionCatalogues(banks, sessionScp);
-         ConnexionUtils.generateDroitsForSelectedBanque(bank, user, sessionScp);
+         ConnexionUtils.generateDroitsForSelectedBanque(bank, pf, user, sessionScp);
          sessionScp.remove("ToutesCollections");
       }else{ // toutes collections
          // suppose que l'utilisateur ne peut pas être admin
@@ -320,7 +325,7 @@ public final class ConnexionUtils
          sessionScp.put("ToutesCollections", banques);
          //generateDroitsForSelectedBanque(banques.get(0));
          ConnexionUtils.setSessionCatalogues(banques, sessionScp);
-         ConnexionUtils.generateDroitsForSelectedBanque(banques.get(0), user, sessionScp);
+         ConnexionUtils.generateDroitsForSelectedBanque(banques.get(0), pf, user, sessionScp);
          sessionScp.remove("Banque");
       }
 

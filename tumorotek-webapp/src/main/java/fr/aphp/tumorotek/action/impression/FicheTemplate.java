@@ -321,22 +321,26 @@ public class FicheTemplate extends AbstractImpressionController
             // on ajoute à la liste finale celui qui a le +
             // petit ordre
             if(anno.getOrdre() < bloc.getOrdre()){
-               final BlocImpressionDecorator deco = new BlocImpressionDecorator(null, anno.getTableAnnotation(), template);
+               final BlocImpressionDecorator deco = new BlocImpressionDecorator(null, anno.getTableAnnotation(), 
+            		   template, SessionUtils.getCurrentContexte());
                blocImpressionsDecorated.add(deco);
                ++j;
             }else{
-               final BlocImpressionDecorator deco = new BlocImpressionDecorator(bloc.getBlocImpression(), null, template);
+               final BlocImpressionDecorator deco = new BlocImpressionDecorator(bloc.getBlocImpression(), null, 
+            		   template, SessionUtils.getCurrentContexte());
                blocImpressionsDecorated.add(deco);
                ++i;
             }
          }else if(bloc != null){
             // s'il ne reste que des blocs
-            final BlocImpressionDecorator deco = new BlocImpressionDecorator(bloc.getBlocImpression(), null, template);
+            final BlocImpressionDecorator deco = new BlocImpressionDecorator(bloc.getBlocImpression(), null, 
+            		template, SessionUtils.getCurrentContexte());
             blocImpressionsDecorated.add(deco);
             ++i;
          }else if(anno != null){
             // s'il ne reste que des annotations
-            final BlocImpressionDecorator deco = new BlocImpressionDecorator(null, anno.getTableAnnotation(), template);
+            final BlocImpressionDecorator deco = new BlocImpressionDecorator(null, anno.getTableAnnotation(), 
+            		template, SessionUtils.getCurrentContexte());
             blocImpressionsDecorated.add(deco);
             ++j;
          }
@@ -964,7 +968,8 @@ public class FicheTemplate extends AbstractImpressionController
       // on récupère tous les blocs pour l'entité
       final List<BlocImpression> blocImpressions = ManagerLocator.getBlocImpressionManager().findByEntiteManager(selectedEntite);
       for(int i = 0; i < blocImpressions.size(); i++){
-         final BlocImpressionDecorator deco = new BlocImpressionDecorator(blocImpressions.get(i), null, template);
+         final BlocImpressionDecorator deco = new BlocImpressionDecorator(blocImpressions.get(i), null, 
+        		 template, SessionUtils.getCurrentContexte());
          if(!blocImpressionsDecorated.contains(deco)){
             deco.setImprimer(false);
             blocImpressionsDecorated.add(deco);
@@ -976,7 +981,7 @@ public class FicheTemplate extends AbstractImpressionController
       final List<TableAnnotation> tables = ManagerLocator.getTableAnnotationManager().findByEntiteAndBanqueManager(selectedEntite,
          SessionUtils.getSelectedBanques(sessionScope).get(0));
       for(int i = 0; i < tables.size(); i++){
-         final BlocImpressionDecorator deco = new BlocImpressionDecorator(null, tables.get(i), template);
+         final BlocImpressionDecorator deco = new BlocImpressionDecorator(null, tables.get(i), template, SessionUtils.getCurrentContexte());
          if(!blocImpressionsDecorated.contains(deco)){
             deco.setImprimer(false);
             blocImpressionsDecorated.add(deco);
@@ -1062,7 +1067,8 @@ public class FicheTemplate extends AbstractImpressionController
       final List<BlocImpression> blocImpressions = ManagerLocator.getBlocImpressionManager().findByEntiteManager(selectedEntite);
 
       for(int i = 0; i < blocImpressions.size(); i++){
-         final BlocImpressionDecorator deco = new BlocImpressionDecorator(blocImpressions.get(i), null, template);
+         final BlocImpressionDecorator deco = new BlocImpressionDecorator(blocImpressions.get(i), null, 
+        		 template, SessionUtils.getCurrentContexte());
          blocImpressionsDecorated.add(deco);
       }
 
@@ -1071,7 +1077,8 @@ public class FicheTemplate extends AbstractImpressionController
       final List<TableAnnotation> tables = ManagerLocator.getTableAnnotationManager().findByEntiteAndBanqueManager(selectedEntite,
          SessionUtils.getSelectedBanques(sessionScope).get(0));
       for(int i = 0; i < tables.size(); i++){
-         final BlocImpressionDecorator deco = new BlocImpressionDecorator(null, tables.get(i), template);
+         final BlocImpressionDecorator deco = new BlocImpressionDecorator(null, tables.get(i), 
+        		 template, SessionUtils.getCurrentContexte());
          blocImpressionsDecorated.add(deco);
       }
    }

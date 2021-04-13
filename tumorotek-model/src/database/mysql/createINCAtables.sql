@@ -1,3 +1,4 @@
+SET FOREIGN_KEY_CHECKS=0;
 alter table TABLE_ANNOTATION modify TABLE_ANNOTATION_ID int(10) NOT NULL auto_increment;
 alter table CHAMP_ANNOTATION modify CHAMP_ANNOTATION_ID int(10) NOT NULL auto_increment;
 alter table ITEM modify ITEM_ID int(10) NOT NULL auto_increment;
@@ -36,7 +37,7 @@ insert into ITEM (LABEL, VALEUR, CHAMP_ANNOTATION_ID) values ('4 : autre cancer 
 insert into ITEM (LABEL, VALEUR, CHAMP_ANNOTATION_ID) values ('5 : autre', '5', (select max(champ_annotation_id) from CHAMP_ANNOTATION));
 
 
--- 
+--
 
 -- table d'annotations INCa Prélèvement
 insert into TABLE_ANNOTATION (NOM, DESCRIPTION, ENTITE_ID, CATALOGUE_ID) values ('INCa-Prélèvement', 'Champs INCa Prélèvement', 2, 1);
@@ -91,7 +92,7 @@ insert into ITEM (LABEL, VALEUR, CHAMP_ANNOTATION_ID) values ('2: récidive', '2
 insert into ITEM (LABEL, VALEUR, CHAMP_ANNOTATION_ID) values ('3: métastase', '3', (select max(champ_annotation_id) from CHAMP_ANNOTATION));
 insert into ITEM (LABEL, VALEUR, CHAMP_ANNOTATION_ID) values ('4: transformation', '4', (select max(champ_annotation_id) from CHAMP_ANNOTATION));
 insert into ITEM (LABEL, VALEUR, CHAMP_ANNOTATION_ID) values ('5: rémission', '5', (select max(champ_annotation_id) from CHAMP_ANNOTATION));
-insert into ITEM (LABEL, VALEUR, CHAMP_ANNOTATION_ID) values ('9: inconnu', '9', (select max(champ_annotation_id) from CHAMP_ANNOTATION)); 
+insert into ITEM (LABEL, VALEUR, CHAMP_ANNOTATION_ID) values ('9: inconnu', '9', (select max(champ_annotation_id) from CHAMP_ANNOTATION));
 
 -- 023 : Version du pTNM
 insert into CHAMP_ANNOTATION (NOM, DATA_TYPE_ID, TABLE_ANNOTATION_ID, COMBINE, ORDRE, EDIT) values ('023 : Version du pTNM', 7, (select max(TABLE_ANNOTATION_id) from TABLE_ANNOTATION), 0, 6, 0);
@@ -210,3 +211,4 @@ insert into CHAMP_ANNOTATION (NOM, DATA_TYPE_ID, TABLE_ANNOTATION_ID, COMBINE, O
 alter table TABLE_ANNOTATION modify TABLE_ANNOTATION_ID int(10) NOT NULL;-- enleve l'auto_increment
 alter table CHAMP_ANNOTATION modify CHAMP_ANNOTATION_ID int(10) NOT NULL;-- enleve l'auto_increment
 alter table ITEM modify ITEM_ID int(10) NOT NULL;-- enleve l'auto_increment
+SET FOREIGN_KEY_CHECKS=1;

@@ -35,25 +35,10 @@
  **/
 package fr.aphp.tumorotek.action.echantillon;
 
-import java.util.List;
-
-import org.zkoss.util.resource.Labels;
-import org.zkoss.zk.ui.WrongValueException;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zul.Hlayout;
-import org.zkoss.zul.Image;
-import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
-import org.zkoss.zul.RowRenderer;
-import org.zkoss.zul.Textbox;
 
-import fr.aphp.tumorotek.action.ManagerLocator;
-import fr.aphp.tumorotek.action.utils.TKStockableObjectUtils;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.dto.EchantillonDTO;
-import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 
 /**
  * EchantillonDecoratorRenderer affiche dans la grid temporaire
@@ -66,107 +51,20 @@ import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
  * @author Mathieu BARTHELEMY.
  * @version 2.0
  */
-public class EchantillonDecoratorRowRenderer implements RowRenderer<EchantillonDTO>
+public class EchantillonDecoratorRowRenderer extends AbstractEchantillonDecoratorRowRenderer
 {
-
-   private List<String> usedCodes = null;
-
-   public void setUsedCodes(final List<String> o){
-      usedCodes = o;
-   }
 
    @Override
    public void render(final Row row, final EchantillonDTO deco, final int index){
 
-      final Hlayout icones = TKStockableObjectUtils.drawListIcones(deco.getEchantillon(), deco.getNonConformiteTraitements(),
-         deco.getNonConformiteCessions());
-      icones.setParent(row);
-
-      // code
-      if(deco.isNew() && deco.getAdrlTmp() == null){
-         final Textbox tb = new Textbox();
-         tb.setValue(deco.getCode());
-         tb.setInplace(true);
-         tb.setConstraint(EchantillonConstraints.getCodePrefixConstraint());
-         tb.addEventListener(Events.ON_CHANGE, new EventListener<Event>()
-         {
-            @Override
-            public void onEvent(final Event event) throws Exception{
-               final String old = deco.getCode();
-               tb.setValue(tb.getValue().toUpperCase());
-               deco.setCode(tb.getValue());
-               if(ManagerLocator.getEchantillonManager().findDoublonManager(deco.getEchantillon())){
-                  final String newCode = tb.getValue();
-                  deco.setCode(old);
-                  tb.setValue(old);
-                  throw new WrongValueException(tb, ObjectTypesFormatters.getLabel("error.code.used", new String[] {newCode})
-                     + " " + new DoublonFoundException("Echantillon", "creation").getMessage());
-               }else if(usedCodes != null && usedCodes.contains(tb.getValue())){
-                  deco.setCode(old);
-                  tb.setValue(old);
-                  throw new WrongValueException(tb,
-                     "Modification impossible! " + new DoublonFoundException("Echantillon", "creation").getMessage());
-               }else{ // changement du code
-                  usedCodes.remove(old);
-                  usedCodes.add(tb.getValue());
-               }
-            }
-         });
-         tb.addEventListener(Events.ON_OK, new EventListener<Event>()
-         {
-            @Override
-            public void onEvent(final Event event) throws Exception{
-               Events.postEvent(Events.ON_MOUSE_OUT, tb, null);
-            }
-         });
-
-         tb.setParent(row);
-      }else{
-         new Label(deco.getCode()).setParent(row);
-      }
+      super.render(row, deco, index);
 
       // codes organes : liste des codes exportés pour échantillons
-      ObjectTypesFormatters.drawCodesExpLabel(deco.getCodesOrgsToCreateOrEdit(), row, null, false);
+      ObjectTypesFormatters.drawCodesExpLabel(deco.getCodesOrgsToCreateOrEdit(), row, null, false, 2);
 
       // codes lésionnels : liste des codes exportés pour échantillons
-      ObjectTypesFormatters.drawCodesExpLabel(deco.getCodesLesToCreateOrEdit(), row, null, false);
+      ObjectTypesFormatters.drawCodesExpLabel(deco.getCodesLesToCreateOrEdit(), row, null, false, 3);
 
-      // type
-      if(deco.getType() != null){
-         new Label(deco.getType()).setParent(row);
-      }else{
-         new Label().setParent(row);
-      }
-
-      // quantité
-      if(deco.getOnlyQuantiteInit() != null){
-         new Label(deco.getOnlyQuantiteInit()).setParent(row);
-      }else{
-         new Label().setParent(row);
-      }
-
-      // emplct
-      if(deco.getEmplacementAdrlinMulti() != null){
-         new Label(deco.getEmplacementAdrlinMulti()).setParent(row);
-      }else{
-         new Label().setParent(row);
-      }
-
-      // objet statut
-      if(deco.getStatut() != null){
-         new Label(Labels.getLabel("Statut." + deco.getStatut().getStatut())).setParent(row);
-      }else{
-         new Label().setParent(row);
-      }
-
-      // delete Image
-      final Image delImg = new Image();
-      delImg.setWidth("12px");
-      delImg.setHeight("12px");
-      delImg.setStyle("cursor:pointer");
-      delImg.setSrc("/images/icones/small_delete.png");
-      delImg.addForward("onClick", row.getParent(), "onDeleteDeco", deco);
-      delImg.setVisible(deco.isNew());
-      delImg.setParent(row);
    }
+   
 }

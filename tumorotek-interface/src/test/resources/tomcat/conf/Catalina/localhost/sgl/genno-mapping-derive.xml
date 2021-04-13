@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Interfacage>
+	<Logiciel func="SGL">
+		<Nom>GENNO</Nom>
+		<Editeur>DEDALUS</Editeur>
+		<Version>1.1</Version>
+	</Logiciel>
+	<Configuration>
+		<SeparateurChamps>|</SeparateurChamps>
+		<SeparateurComposants>^</SeparateurComposants>
+		<SeparateurSousComposants>~</SeparateurSousComposants>
+		<BlocLibreKey>OBX</BlocLibreKey>
+		<NumeroDossier>
+			<BlocValue>SPM</BlocValue>
+			<Key>2</Key>
+		</NumeroDossier>
+		<DateDossier>
+			<BlocValue>MSH</BlocValue>
+			<Key>6</Key>
+		</DateDossier>
+		<OperationDossier>
+			<BlocValue>SPM</BlocValue>
+			<Key>22</Key>
+		</OperationDossier>
+	</Configuration>
+	<Bloc nom="SPM_OBX10">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Code" idChamp="23"></ChampEntite>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>5</Key>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<Bloc nom="SPM">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Code" idChamp="79"></ChampEntite>
+				<Entite nom="ProdDerive" idChamp="8"></Entite>
+			</Tk>
+			<Source>
+				<Key>2</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="CodeLabo" idChamp="80"></ChampEntite>
+				<Entite nom="ProdDerive" idChamp="8"></Entite>
+			</Tk>
+			<Source>
+				<Key>2</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="DateStock" idChamp="86"></ChampEntite>
+				<Entite nom="ProdDerive" idChamp="8"></Entite>
+			</Tk>
+			<Source>
+				<Key>17</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="ProdTypeId" idChamp="78"></ChampEntite>
+				<Entite nom="ProdDerive" idChamp="8"></Entite>
+			</Tk>
+			<Source>
+				<Key>5.2.1</Key>
+                <Modifier nom="Thesaurus">
+					<MappingThes>
+					    <SourceThes>ADN_EXT</SourceThes>
+					    <TkThes>ADN</TkThes>
+					</MappingThes>
+					<MappingThes>
+					    <SourceThes>CELL_ARN_CULOT</SourceThes>
+					    <TkThes>ARN</TkThes>
+					</MappingThes>
+                </Modifier>
+			</Source>
+		</Mapping>
+	</Bloc>
+<!-- 	<Bloc nom="SPM_OBX10"> -->
+<!-- 		<Mapping> -->
+<!-- 			<Tk> -->
+<!-- 				<ChampEntite nom="VolumeInit" idChamp="83"></ChampEntite> -->
+<!-- 				<Entite nom="ProdDerive" idChamp="8"></Entite> -->
+<!-- 			</Tk> -->
+<!-- 			<Source> -->
+<!-- 				<Key>5</Key> -->
+<!-- 			</Source> -->
+<!-- 		</Mapping> -->
+<!--         <Mapping> -->
+<!-- 			<Tk> -->
+<!-- 				<ChampEntite nom="VolumeUnitId" idChamp="88"></ChampEntite> -->
+<!-- 				<Entite nom="ProdDerive" idChamp="8"></Entite> -->
+<!-- 			</Tk> -->
+<!-- 			<Source> -->
+<!-- 				<Key>6</Key> -->
+<!--                 <Modifier nom="Thesaurus"> -->
+<!-- 					<MappingThes><SourceThes>MICROLI</SourceThes><TkThes>ml</TkThes></MappingThes> -->
+<!--                 </Modifier> -->
+<!-- 			</Source> -->
+<!-- 		</Mapping> -->
+<!-- 	</Bloc> -->
+<!-- 	<Bloc nom="SPM_OBX14"> -->
+<!-- 		<Mapping> -->
+<!-- 			<Tk> -->
+<!-- 				<ChampEntite nom="Conc" idChamp="85"></ChampEntite> -->
+<!-- 				<Entite nom="ProdDerive" idChamp="8"></Entite> -->
+<!-- 			</Tk> -->
+<!-- 			<Source> -->
+<!-- 				<Key>5</Key> -->
+<!-- 			</Source> -->
+<!-- 		</Mapping> -->
+<!-- 		<Mapping> -->
+<!-- 			<Tk> -->
+<!-- 				<ChampEntite nom="ConcUniteId" idChamp="89"></ChampEntite> -->
+<!-- 				<Entite nom="ProdDerive" idChamp="8"></Entite> -->
+<!-- 			</Tk> -->
+<!-- 			<Source> -->
+<!-- 				<Key>6</Key> -->
+<!-- 				<Modifier nom="Thesaurus"> -->
+<!-- 					<MappingThes> -->
+<!-- 						<SourceThes>NGUL</SourceThes> -->
+<!-- 						<TkThes>ng/µl</TkThes> -->
+<!-- 					</MappingThes> -->
+<!--                 </Modifier> -->
+<!-- 			</Source> -->
+<!-- 		</Mapping> -->
+<!-- 	</Bloc> -->
+	<BlocLibre nom="CON">
+		<Source>
+			<Key>3</Key>
+		</Source>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Conc" idChamp="85"></ChampEntite>
+				<Entite nom="ProdDerive" idChamp="8"></Entite>
+			</Tk>
+			<Source>
+				<Key>5</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="ConcUniteId" idChamp="89"></ChampEntite>
+				<Entite nom="ProdDerive" idChamp="8"></Entite>
+			</Tk>
+			<Source>
+				<Key>6</Key>
+				<Modifier nom="Thesaurus">
+					<MappingThes>
+						<SourceThes>NGUL</SourceThes>
+						<TkThes>ng/µl</TkThes>
+					</MappingThes>
+                </Modifier>
+			</Source>
+		</Mapping>
+	</BlocLibre>
+</Interfacage>

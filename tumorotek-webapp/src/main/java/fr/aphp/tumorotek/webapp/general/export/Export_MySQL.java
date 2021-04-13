@@ -41,16 +41,20 @@ import java.util.Map;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 
+import fr.aphp.tumorotek.action.utilisateur.ProfilExport;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
+/**
+ * @version 2.2.3-rc1
+ */
 public class Export_MySQL extends Export
 {
 
-   public Export_MySQL(final Desktop d, final int ent, final List<Integer> o, final List<Banque> b, final boolean anonyme,
+   public Export_MySQL(final Desktop d, final int ent, final List<Integer> o, final List<Banque> b, final ProfilExport pE,
       final short type, final Utilisateur u, final List<Integer> rI, final HtmlMacroComponent htmlMacroComponent,
       final Map<String, ?> params, final EContexte contexte){
-      super(d, ent, o, b, anonyme, type, u, rI, htmlMacroComponent, params, contexte);
+      super(d, ent, o, b, pE, type, u, rI, htmlMacroComponent, params, contexte);
    }
 }

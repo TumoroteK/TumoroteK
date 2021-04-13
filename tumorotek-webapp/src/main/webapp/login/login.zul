@@ -53,12 +53,11 @@
 
 <window id="winLogin" border="none" mode="modal"
 	apply="fr.aphp.tumorotek.action.Login"
-	width="500px">
+	width="500px" height="auto">
 	
-	<groupbox mold="3d" sclass="groupBoxTk">
 		<caption image="/images/small_logo_tumo.png"/>
 		
-		<div align="center">
+		<div align="center" style="padding-top: 20px">
 			<vbox align="center">
 				<image id="imgLogo" style="width: 100px;" visible="false"/>
 				<html id="htmlMsg" sclass="formSubTitle z-label" />
@@ -67,8 +66,8 @@
 			</vbox>
 		</div>
 		
-		<groupbox sclass="groupBoxNormal">
-				<caption label="${c:l('login.title')}" />
+		<!-- ><groupbox sclass="groupBoxNormal">
+				<caption label="${c:l('login.title')}" /> -->
 		<div align="center">
 			<label id="errorLabel" style="color:red; font-weight: bold;" />
 			<!-- ### Spring Security action-url = j_spring_security_check  ### -->
@@ -109,19 +108,16 @@
 							</vbox>
 						</row>
 						
-						<row spans="2" align="right">
+						<row spans="2" align="center">
 							<hbox>
-								<h:input type="submit"
-									value="Valider"/>
 								<h:input type="reset" value="Annuler"/>
+								<h:input type="submit" value="Valider"/>
 							</hbox>
 						</row>
 					</rows>
 				</grid>
 			</h:form>
 		</div>
-		</groupbox>
-	</groupbox>
 </window>
 	
 </zk>

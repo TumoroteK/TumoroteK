@@ -43,6 +43,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -87,25 +88,23 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.utils.Utils;
 
+/**
+ * 
+ * @author Mathieu BARTHELEMY
+ * @version 2.2.1
+ */
 public class EnceinteManagerImpl implements EnceinteManager
 {
 
    private final Log log = LogFactory.getLog(EnceinteManager.class);
 
-   /** Bean Dao. */
    private TerminaleDao terminaleDao;
-   /** Bean Dao. */
    private EnceinteDao enceinteDao;
-   /** Bean Dao. */
    private EnceinteTypeDao enceinteTypeDao;
    private ConteneurDao conteneurDao;
-   /** Bean Dao. */
    private EntiteDao entiteDao;
-   /** Bean Dao. */
    private BanqueDao banqueDao;
-   /** Bean Manager. */
    private TerminaleManager terminaleManager;
-   /** Bean Validator. */
    private EnceinteValidator enceinteValidator;
    private JpaTransactionManager txManager;
    private OperationManager operationManager;
@@ -1466,5 +1465,19 @@ public class EnceinteManagerImpl implements EnceinteManager
       }
 
       return enceinte;
+   }
+   
+   @Override
+   public List<Banque> getDistinctBanquesFromTkObjectsManager(Enceinte enc) {
+	   List<Banque> banks = new ArrayList<Banque>();
+	   
+	   if (enc != null) {
+		   List<Terminale> terms = getAllTerminalesInArborescenceManager(enc);
+		   banks.addAll(terms.stream().map(t -> terminaleManager.getDistinctBanquesFromTkObjectsManager(t))
+				   .flatMap(List::stream)
+				   .distinct().collect(Collectors.toList()));
+	   }
+	   
+	   return banks;
    }
 }

@@ -35,11 +35,12 @@
  **/
 package fr.aphp.tumorotek.interfacage.sgl.view;
 
+import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.interfacage.DossierExterne;
 import fr.aphp.tumorotek.model.interfacage.Emetteur;
 
 public interface ViewHandler {
 	
 	DossierExterne sendQuery(Emetteur _e, String sglNumDos, 
-				String propFileName, ViewResultProcessor processor);	
+				String propFileName, ViewResultProcessor processor, Banque bank);	
 }

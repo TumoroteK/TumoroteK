@@ -55,6 +55,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Filedownload;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
+import fr.aphp.tumorotek.action.utilisateur.ProfilExport;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.manager.ConfigManager;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
@@ -64,6 +65,11 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
+/**
+ * @version 2.2.3-rc1
+ * @author Mathieu BARTHELEMY
+ *
+ */
 public final class ExportUtils
 {
 
@@ -303,5 +309,30 @@ public final class ExportUtils
       entetes.add(Labels.getLabel("prelevement.utilisateur.creation"));
 
       return entetes;
+   }
+   
+   /**
+    * Renvoie l'enum correspondant à la valeur (integer) 
+    * passée en paramètre
+    * @since 2.2.3-rc1
+    * @param _v valeur
+    * @return ProfilExport 
+    */
+   public static ProfilExport getProfilExportFromValue(Integer _v) {
+	   if (_v != null) {
+			switch (_v) {
+			case 0: 
+				return ProfilExport.NO;
+
+			case 1: 
+				return ProfilExport.ANONYME;
+
+			case 3:
+				return ProfilExport.ANONYMESTOCK;
+			case 2: 
+				return ProfilExport.NOMINATIF;
+			}            
+		}
+	   return ProfilExport.NO; // defaut
    }
 }

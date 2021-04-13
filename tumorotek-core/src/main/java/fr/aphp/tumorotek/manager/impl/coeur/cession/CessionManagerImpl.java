@@ -56,7 +56,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.cession.CessionDao;
-import fr.aphp.tumorotek.dao.cession.CessionDelegateDao;
 import fr.aphp.tumorotek.dao.cession.CessionExamenDao;
 import fr.aphp.tumorotek.dao.cession.CessionStatutDao;
 import fr.aphp.tumorotek.dao.cession.CessionTypeDao;
@@ -119,7 +118,7 @@ public class CessionManagerImpl implements CessionManager
    private CessionStatutDao cessionStatutDao;
    private TransporteurDao transporteurDao;
    private DestructionMotifDao destructionMotifDao;
-   private CessionDelegateDao cessionDelegateDao;
+   // private CessionDelegateDao cessionDelegateDao;
    private CederObjetManager cederObjetManager;
    private OperationTypeDao operationTypeDao;
    private OperationManager operationManager;
@@ -168,9 +167,9 @@ public class CessionManagerImpl implements CessionManager
       this.destructionMotifDao = dDao;
    }
 
-   public void setCessionDelegateDao(CessionDelegateDao cessionDelegateDao){
-      this.cessionDelegateDao = cessionDelegateDao;
-   }
+//   public void setCessionDelegateDao(CessionDelegateDao cessionDelegateDao){
+//      this.cessionDelegateDao = cessionDelegateDao;
+//   }
 
    public void setCederObjetManager(final CederObjetManager cManager){
       this.cederObjetManager = cManager;
@@ -604,7 +603,7 @@ public class CessionManagerImpl implements CessionManager
       final Collaborateur destinataire, final Service servDest, final Collaborateur demandeur, final Collaborateur executant,
       final Transporteur transporteur, final DestructionMotif destructionMotif, final Contrat contrat){
 
-      cession.setDelegate( cessionDelegateDao.mergeObject( cession.getDelegate() ) );
+      // cession.setDelegate( cessionDelegateDao.mergeObject( cession.getDelegate() ) );
       cession.setCessionExamen(cessionExamenDao.mergeObject(cessionExamen));
       cession.setDestinataire(collaborateurDao.mergeObject(destinataire));
       cession.setServiceDest(serviceDao.mergeObject(servDest));

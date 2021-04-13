@@ -90,7 +90,7 @@ public class PrelevementTypeDaoTest extends AbstractDaoTest
     */
    public void testToString(){
       PrelevementType pt1 = prelevementTypeDao.findById(1);
-      assertTrue(pt1.toString().equals("{" + pt1.getType() + ", " + pt1.getIncaCat() + "}"));
+      assertTrue(pt1.toString().equals("{" + pt1.getNom() + ", " + pt1.getIncaCat() + "}"));
       pt1 = new PrelevementType();
       assertTrue(pt1.toString().equals("{Empty PrelevementType}"));
    }
@@ -147,7 +147,7 @@ public class PrelevementTypeDaoTest extends AbstractDaoTest
       assertTrue(liste.size() == 3);
       final PrelevementType type = liste.get(0);
       assertNotNull(type);
-      assertTrue(type.getPrelevementTypeId() == 2);
+      assertTrue(type.getId() == 2);
 
       liste = prelevementTypeDao.findByExcludedId(15);
       assertTrue(liste.size() == 4);
@@ -161,22 +161,22 @@ public class PrelevementTypeDaoTest extends AbstractDaoTest
    @Rollback(false)
    public void testCrudPrelevementType() throws Exception{
       final PrelevementType t = new PrelevementType();
-      t.setType("PIECE OPERATOIRE");
+      t.setNom("PIECE OPERATOIRE");
       t.setIncaCat("O");
       t.setPlateforme(plateformeDao.findById(1));
       // Test de l'insertion
       prelevementTypeDao.createObject(t);
-      assertEquals(new Integer(5), t.getPrelevementTypeId());
+      assertEquals(new Integer(5), t.getId());
 
       // Test de la mise à jour
       final PrelevementType t2 = prelevementTypeDao.findById(new Integer(5));
       assertNotNull(t2);
-      assertTrue(t2.getType().equals("PIECE OPERATOIRE"));
+      assertTrue(t2.getNom().equals("PIECE OPERATOIRE"));
       assertTrue(t2.getIncaCat().equals("O"));
-      t2.setType(updatedType);
+      t2.setNom(updatedType);
       t2.setIncaCat(updatedInca);
       prelevementTypeDao.updateObject(t2);
-      assertTrue(prelevementTypeDao.findById(new Integer(5)).getType().equals(updatedType));
+      assertTrue(prelevementTypeDao.findById(new Integer(5)).getNom().equals(updatedType));
       assertTrue(prelevementTypeDao.findById(new Integer(5)).getIncaCat().equals(updatedInca));
 
       // Test de la délétion
@@ -194,9 +194,9 @@ public class PrelevementTypeDaoTest extends AbstractDaoTest
       final String inca = "I";
       final String inca2 = "J";
       final PrelevementType t1 = new PrelevementType();
-      //t1.setType(type);
+      //t1.setNom(type);
       final PrelevementType t2 = new PrelevementType();
-      //t2.setType(type);
+      //t2.setNom(type);
 
       // L'objet 1 n'est pas égal à null
       assertFalse(t1.equals(null));
@@ -210,11 +210,11 @@ public class PrelevementTypeDaoTest extends AbstractDaoTest
       final String[] incas = new String[] {null, inca, inca2, ""};
 
       for(int i = 0; i < types.length; i++){
-         t1.setType(types[i]);
+         t1.setNom(types[i]);
          for(int j = 0; j < incas.length; j++){
             t1.setIncaCat(incas[j]);
             for(int k = 0; k < types.length; k++){
-               t2.setType(types[k]);
+               t2.setNom(types[k]);
                for(int l = 0; l < incas.length; l++){
                   t2.setIncaCat(incas[l]);
                   if((i == k) && (j == l)){
@@ -231,7 +231,7 @@ public class PrelevementTypeDaoTest extends AbstractDaoTest
 
       final Plateforme pf1 = plateformeDao.findById(1);
       final Plateforme pf2 = plateformeDao.findById(2);
-      t1.setType(t2.getType());
+      t1.setNom(t2.getNom());
       t1.setIncaCat(t2.getIncaCat());
       t1.setPlateforme(pf1);
       t2.setPlateforme(pf1);
@@ -251,15 +251,15 @@ public class PrelevementTypeDaoTest extends AbstractDaoTest
       final String type = "Type";
       final String inca = "Inca";
       final PrelevementType t1 = new PrelevementType();
-      t1.setPrelevementTypeId(1);
-      t1.setType(type);
+      t1.setId(1);
+      t1.setNom(type);
       t1.setIncaCat(inca);
       final PrelevementType t2 = new PrelevementType();
-      t2.setPrelevementTypeId(2);
-      t2.setType(type);
+      t2.setId(2);
+      t2.setNom(type);
       t2.setIncaCat(inca);
       final PrelevementType t3 = new PrelevementType();
-      t1.setPrelevementTypeId(3);
+      t1.setId(3);
       assertTrue(t3.hashCode() > 0);
 
       final Plateforme pf1 = plateformeDao.findById(1);

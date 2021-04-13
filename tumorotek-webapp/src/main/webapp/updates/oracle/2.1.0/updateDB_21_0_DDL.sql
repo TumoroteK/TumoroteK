@@ -1,8 +1,4 @@
 -- PROFIL
-alter table PROFIL add ARCHIVE number(1);
-update PROFIL set ARCHIVE = 0;
-alter table PROFIL modify ARCHIVE number(1) not null;
-
 alter table PROFIL add PLATEFORME_ID number(22);
 update PROFIL set PLATEFORME_ID = 1;
 alter table PROFIL modify PLATEFORME_ID number(22) not null;

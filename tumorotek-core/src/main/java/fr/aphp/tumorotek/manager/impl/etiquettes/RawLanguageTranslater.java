@@ -49,7 +49,7 @@ import fr.aphp.tumorotek.model.imprimante.LigneEtiquette;
  * Classe créée le 01/02/2015
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.11
+ * @version 2.2.2
  *
  */
 public class RawLanguageTranslater
@@ -104,8 +104,10 @@ public class RawLanguageTranslater
             }else{
                content = contenu;
             }
+            
+            int fontHeight = (le.getSize() != null ? le.getSize() : 6) * (dpiResolution / 72);
 
-            buf.append("^A0N,21,18^FO0," + String.valueOf(y));
+            buf.append(String.format("^A0N,%d^FO0,%d", fontHeight, y));
             if(!content.contains("^")){
                buf.append("^FD");
                buf.append(content);
@@ -115,7 +117,7 @@ public class RawLanguageTranslater
             }
             buf.append("^FS");
 
-            y = y + 25;
+            y = y + fontHeight + 3;
          }
       }
 
@@ -249,7 +251,7 @@ public class RawLanguageTranslater
             buf.append(",");
             // text size in pts
             // 0.375 mm = 1 point voir p275
-            // 12 pt par dégaut
+            // 12 pt par défaut
             textSize = (le.getSize() != null ? le.getSize() : 12) * 0.375;
             buf.append(String.format("%.1f", textSize));
             // effects

@@ -55,7 +55,7 @@ public class HprimMarshallerTest2
    @Test
    public void testUnmarshalVenue() throws JAXBException, ParseException{
 
-      final File file = new File("/home/mathieu/Documents/tumorotek/interfacages/" + "HPRIM_GEMA/venuePatient.xml");
+      final File file = new File("src/test/resources/HPRIM_GEMA/venuePatient.xml");
       final JAXBContext jaxbContext = JAXBContext.newInstance(HprimMessage.class);
 
       final Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
@@ -72,6 +72,9 @@ public class HprimMarshallerTest2
       assertTrue(message.toPatientSip().getSejours().size() == 1);
       assertTrue(message.toPatientSip().getSejours().iterator().next().getNumero().equals("531604772"));
       assertTrue(message.toPatientSip().getDateEtat() == null);
+      assertTrue(message.toPatientSip().getPatientEtat() == "D");
+      assertTrue(message.toPatientSip().getDateDeces().equals(new SimpleDateFormat("dd/MM/yyyy").parse(("04/09/2019"))));
+      
       assertTrue(message.getAction().equals("création"));
       assertTrue(message.toPatientPassif() == null);
    }
@@ -79,7 +82,7 @@ public class HprimMarshallerTest2
    @Test
    public void testUnmarshalFusion() throws JAXBException, ParseException{
 
-      final File file = new File("/home/mathieu/Documents/tumorotek/interfacages/" + "HPRIM_GEMA/fusionPatient.xml");
+      final File file = new File("src/test/resources/HPRIM_GEMA/fusionPatient.xml");
       final JAXBContext jaxbContext = JAXBContext.newInstance(HprimMessage.class);
 
       final Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();

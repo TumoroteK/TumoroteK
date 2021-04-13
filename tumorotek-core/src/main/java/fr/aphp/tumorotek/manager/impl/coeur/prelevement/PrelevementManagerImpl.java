@@ -63,7 +63,6 @@ import fr.aphp.tumorotek.dao.coeur.prelevement.ConditTypeDao;
 import fr.aphp.tumorotek.dao.coeur.prelevement.ConsentTypeDao;
 import fr.aphp.tumorotek.dao.coeur.prelevement.NatureDao;
 import fr.aphp.tumorotek.dao.coeur.prelevement.PrelevementDao;
-import fr.aphp.tumorotek.dao.coeur.prelevement.PrelevementDelegateDao;
 import fr.aphp.tumorotek.dao.coeur.prelevement.PrelevementTypeDao;
 import fr.aphp.tumorotek.dao.coeur.prodderive.TransformationDao;
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
@@ -126,10 +125,9 @@ import fr.aphp.tumorotek.utils.Utils;
 /**
  *
  * Implémentation du manager du bean de domaine Prelevement. Classe créée le
- * 13/10/09.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.13
+ * @version 2.2.1
  *
  */
 public class PrelevementManagerImpl implements PrelevementManager
@@ -137,7 +135,6 @@ public class PrelevementManagerImpl implements PrelevementManager
 
    private final Log log = LogFactory.getLog(PrelevementManager.class);
 
-   /* Beans injectes par Spring */
    private PrelevementDao prelevementDao;
    private PatientManager patientManager;
    private MaladieManager maladieManager;
@@ -169,7 +166,7 @@ public class PrelevementManagerImpl implements PrelevementManager
    private CederObjetManager cederObjetManager;
    private DossierExterneDao dossierExterneDao;
    private ObjetNonConformeManager objetNonConformeManager;
-   private PrelevementDelegateDao prelevementDelegateDao;
+//   private PrelevementDelegateDao prelevementDelegateDao;
 
    public PrelevementManagerImpl(){}
 
@@ -945,9 +942,9 @@ public class PrelevementManagerImpl implements PrelevementManager
       return new ArrayList<>();
    }
 
-   public void setPrelevementDelegateDao(PrelevementDelegateDao prelevementDelegateDao){
-      this.prelevementDelegateDao = prelevementDelegateDao;
-   }
+//   public void setPrelevementDelegateDao(PrelevementDelegateDao prelevementDelegateDao){
+//      this.prelevementDelegateDao = prelevementDelegateDao;
+//   }
 
    @Override
    public void removeObjectManager(final Prelevement prelevement, final String comments, final Utilisateur u,
@@ -1272,7 +1269,7 @@ public class PrelevementManagerImpl implements PrelevementManager
             echantillonManager.createObjectWithCrAnapathManager(newEchan, banque, prelevement, newEchan.getCollaborateur(),
                newEchan.getObjetStatut(), newEchan.getEmplacement(), newEchan.getEchantillonType(), null,
                newEchan.getQuantiteUnite(), newEchan.getEchanQualite(), newEchan.getModePrepa(), newEchan.getCrAnapath(),
-               newEchan.getAnapathStream(), filesCreated, newEchan.getReservation(), annosEchan, user, doValidation, baseDir,
+               newEchan.getAnapathStream(), filesCreated, annosEchan, user, doValidation, baseDir,
                false);
          }
       }catch(final RuntimeException re){

@@ -2,12 +2,15 @@ package fr.aphp.tumorotek.manager.impl.interfacage;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import fr.aphp.tumorotek.model.code.CodeAssigne;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
+import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.interfacage.DossierExterne;
 import fr.aphp.tumorotek.model.systeme.Fichier;
 
@@ -18,7 +21,7 @@ import fr.aphp.tumorotek.model.systeme.Fichier;
  * @author Pierre Ventadour
  * Créée le 12/10/2011.
  *
- * @version 2.0.13
+ * @version 2.2.3-genno
  *
  */
 public class ResultatInjection
@@ -32,9 +35,14 @@ public class ResultatInjection
    private DossierExterne dossierExterne;
    private List<CodeAssigne> codesOrgane = new ArrayList<>();
    private List<CodeAssigne> codesMorpho = new ArrayList<>();
+   private Map<Echantillon, String> echanAdrls = new HashMap<Echantillon, String>();
 
    private Fichier crAnapath;
    private InputStream stream;
+   
+   // @since 2.2.3-genno
+   private ProdDerive prodDerive;
+   private List<AnnotationValeur> annosDerive = new ArrayList<>();
 
    public ResultatInjection(){
       super();
@@ -120,4 +128,27 @@ public class ResultatInjection
       this.stream = i;
    }
 
+	public Map<Echantillon, String> getEchanAdrls() {
+		return echanAdrls;
+	}
+	
+	public void setEchanAdrls(Map<Echantillon, String> _e) {
+		this.echanAdrls = _e;
+	}
+
+	public ProdDerive getProdDerive() {
+		return prodDerive;
+	}
+
+	public void setProdDerive(ProdDerive _p) {
+		this.prodDerive = _p;
+	}
+
+	public List<AnnotationValeur> getAnnosDerive() {
+		return annosDerive;
+	}
+
+	public void setAnnosDerive(List<AnnotationValeur> _d) {
+		this.annosDerive = _d;
+	}
 }

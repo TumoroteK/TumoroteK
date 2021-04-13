@@ -35,10 +35,9 @@
  **/
 package fr.aphp.tumorotek.manager.coeur.cession;
 
-import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 
+import fr.aphp.tumorotek.manager.impl.coeur.cession.OldEmplTrace;
 import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.cession.Cession;
 import fr.aphp.tumorotek.model.cession.Retour;
@@ -66,7 +65,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * par la trace du conteneur obligatoire à partir de l'emplacement
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.10
+ * @version 2.2.3-genno
  *
  */
 public interface RetourManager
@@ -126,15 +125,17 @@ public interface RetourManager
     * actuels référencés directement par les objets sont utilisés. 
     * passé dans la liste.
     * @param objects
-    * @param table Emplacements précédents associés aux objets
+    * @param table Emplacements + conteneur avt dpct associés aux objets
     * @param retour base pour créer pour tous les autres.
     * @param collaborateur
     * @param cession
     * @param transformation
     * @param incident
     * @param utilisateur
+    * @version 2.2.3-genno
+    * @deprecated
     */
-   void createRetourListManager(List<TKStockableObject> objects, Hashtable<TKStockableObject, Emplacement> oldEmpAdrls,
+   void createRetourListManager(List<TKStockableObject> objects, List<OldEmplTrace> oldEmpAdrls,
       Retour retour, Collaborateur collaborateur, Cession cession, Transformation transformation, Incident incident,
       Utilisateur utilisateur);
 
@@ -146,6 +147,7 @@ public interface RetourManager
     * actuels référencés directement par les objets sont utilisés. 
     * passé dans la liste.
     * @param objects
+    * @param table Emplacements + conteneur avt dpct associés aux objets
     * @param retour base pour créer pour tous les autres.
     * @param collaborateur
     * @param cession
@@ -153,9 +155,9 @@ public interface RetourManager
     * @param incident
     * @param utilisateur
     * @return True si l'insert s'est bien passé.
-    * @version 2.0.10
+    * @version 2.2.3-genno
     */
-   boolean createRetourHugeListManager(List<TKStockableObject> objects, HashMap<TKStockableObject, Emplacement> oldEmpAdrls,
+   boolean createRetourHugeListManager(List<TKStockableObject> objects, List<OldEmplTrace> oldEmpAdrls,
       Retour retour, Collaborateur collaborateur, Cession cession, Transformation transformation, Incident incident,
       Utilisateur utilisateur);
    /*

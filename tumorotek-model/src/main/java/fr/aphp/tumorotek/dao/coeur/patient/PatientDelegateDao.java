@@ -36,13 +36,14 @@
 package fr.aphp.tumorotek.dao.coeur.patient;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
-import fr.aphp.tumorotek.model.coeur.patient.delegate.AbstractPatientDelegate;
+import fr.aphp.tumorotek.model.TKDelegateObject;
+import fr.aphp.tumorotek.model.coeur.patient.Patient;
 
 /**
  * @author Gille Chapelot
  *
  */
-public interface PatientDelegateDao extends GenericDaoJpa<AbstractPatientDelegate, Integer>
+public interface PatientDelegateDao extends GenericDaoJpa<TKDelegateObject<Patient>, Integer>
 {
 
 }

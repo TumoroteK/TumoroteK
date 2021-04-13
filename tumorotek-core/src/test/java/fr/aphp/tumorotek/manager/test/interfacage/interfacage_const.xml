@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<Interfacage>
+	<Logiciel func="SIP">
+		<Nom>APIX</Nom>
+		<Editeur>TECHNIDATA</Editeur>
+		<Version>1.0</Version>
+	</Logiciel>
+	<Configuration>
+		<SeparateurChamps>|</SeparateurChamps>
+		<SeparateurComposants>~</SeparateurComposants>
+		<SeparateurSousComposants>^</SeparateurSousComposants>
+		<BlocLibreKey>OBX</BlocLibreKey>
+		<NumeroDossier>
+			<BlocValue>H</BlocValue>
+			<Key>2</Key>
+		</NumeroDossier>
+		<DateDossier>
+			<BlocValue>H</BlocValue>
+			<Key>13</Key>
+		</DateDossier>
+		<OperationDossier>
+			<BlocValue>H</BlocValue>
+			<Key>6</Key>
+		</OperationDossier>
+	</Configuration>
+	<Bloc nom="OBR">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Code" idChamp="23"></ChampEntite>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>3.2</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="DatePrelevement" idChamp="30"></ChampEntite>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>6</Key>
+				<Modifier nom="Autre" />
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="ConsentTypeId" idChamp="27"></ChampEntite>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Const>12</Const>
+			</Source>
+		</Mapping>
+	</Bloc>
+</Interfacage>

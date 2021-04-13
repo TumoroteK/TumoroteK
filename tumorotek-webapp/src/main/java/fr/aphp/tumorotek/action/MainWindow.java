@@ -54,6 +54,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.Path;
+import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.BookmarkEvent;
 import org.zkoss.zk.ui.event.Event;
@@ -91,6 +92,7 @@ import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.interfacage.Emetteur;
 import fr.aphp.tumorotek.model.interfacage.scan.ScanTerminale;
 import fr.aphp.tumorotek.model.qualite.OperationType;
 import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
@@ -100,7 +102,14 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.webapp.general.ConnexionUtils;
 import fr.aphp.tumorotek.webapp.general.MainTabbox;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
+import fr.aphp.tumorotek.webapp.general.ext.ResourceRequest;
 
+/**
+ * 
+ * @author Mathieu BARTHELEMY
+ * @version 2.2.3-genno
+ *
+ */
 public class MainWindow extends GenericForwardComposer<Component>
 {
 
@@ -136,6 +145,9 @@ public class MainWindow extends GenericForwardComposer<Component>
    // @since 2.1 scan device
    protected Timer scanTimer;
    protected Div scanButtonDiv;
+   
+   // @since 2.2.3-genno
+   private Div genno;
 
    private Hashtable<String, String> echantillonTypesCouleur = new Hashtable<>();
    private Hashtable<String, String> prodDeriveTypesCouleur = new Hashtable<>();
@@ -254,14 +266,17 @@ public class MainWindow extends GenericForwardComposer<Component>
       searchHistoryList = new LinkedList<>();
       sessionScope.put(SEARCH_HISTORY_SESSION, searchHistoryList);
 
-      if(sessionScope.containsKey("tkobj")){
-         displayTkObjDetails((TKAnnotableObject) sessionScope.get("tkobj"));
-      }
+      if(sessionScope.containsKey("resourceRequest")){
+         displayTkObjDetails((ResourceRequest<?>) sessionScope.get("resourceRequest"));
+      } 
 
       scanButtonDiv = (Div) mainBorderLayout.getFellow("northTopBanniere").getFellow("scanButtonDiv");
       scanButtonDiv.addForward("onClick", self, "onSwitchScanButton");
       scanTimer = (Timer) scanButtonDiv.getFellow("scanTimer");
       scanTimer.addForward("onTimer", self, "onScanTimer");
+      
+      genno =  (Div) mainBorderLayout.getFellow("northTopBanniere").getFellow("genno");
+      genno.addForward("onClick", self, "onOpenDossierExternes");
    }
 
    public void prepareListBanques(){
@@ -269,7 +284,7 @@ public class MainWindow extends GenericForwardComposer<Component>
       final Plateforme pf = SessionUtils.getPlateforme(sessionScope);
 
       // init des banques
-      banques = ManagerLocator.getUtilisateurManager().getAvailableBanquesByPlateformeManager(user, pf);
+      banques = ManagerLocator.getUtilisateurManager().getAvailableBanquesByPlateformeManager(user, pf, false);
       if(canAccessToutesCollections(user, pf)){
          toutesColl = new Banque();
          toutesColl.setNom(Labels.getLabel("select.banque.toutesCollection"));
@@ -966,7 +981,8 @@ public class MainWindow extends GenericForwardComposer<Component>
     */
    public void updateDroitsForSelectedBanque(final Banque bk){
 
-      ConnexionUtils.generateDroitsForSelectedBanque(bk, (Utilisateur) sessionScope.get("User"), sessionScope);
+      ConnexionUtils.generateDroitsForSelectedBanque(bk, bk.getPlateforme(), 
+    		  (Utilisateur) sessionScope.get("User"), sessionScope);
    }
 
    /**
@@ -1221,8 +1237,12 @@ public class MainWindow extends GenericForwardComposer<Component>
 
          maladie.setPatient(patient);
          // on regarde si la maladie existe deja en base
-         if(ManagerLocator.getMaladieManager().findDoublonManager(maladie)){
-            final List<Maladie> mals = ManagerLocator.getMaladieManager().findByLibelleLikeManager(maladie.getLibelle(), true);
+         // @since 2.2.3-genno optimisation = recherche la maladie par patient
+
+         if(ManagerLocator.getMaladieManager().findDoublonManager(maladie, patient)){
+				// @since 2.2.3-genno optimisation = recherche la maladie par patient
+				final List<Maladie> mals = ManagerLocator.getMaladieManager()
+						.findByLibelleAndPatientManager(maladie.getLibelle(), patient);
 
             for(int i = 0; i < mals.size(); i++){
                final Maladie m = mals.get(i);
@@ -1264,6 +1284,32 @@ public class MainWindow extends GenericForwardComposer<Component>
       if(tabController != null){
          tabController.switchToFicheStaticMode(tkObj);
       }
+   }
+   
+   /**
+    * Affiche une liste d'objects (prelevement) suite à une demande 
+    * de resources externe, comme le lien http envoyé à DIAMIC
+    * @param tkObjs
+    * @since 2.2.2-diamic
+    */
+   public void displayTkObjDetails(final ResourceRequest<?> resReq){
+	   if (resReq != null) {
+	      AbstractObjectTabController tabController = null;
+	      if(resReq.isPrelevement()){
+	         tabController = PrelevementController.backToMe(this, page);
+	      }
+	
+	      // si on arrive à récupérer le panel prelevement et son controller
+	      if(tabController != null){
+	    	  
+	    	 // si un seul objet à afficher
+	    	 if (resReq.getTkObjs().size() == 1) {
+	    		 tabController.switchToFicheStaticMode(resReq.getTkObjs().get(0));
+	    	 } else {
+	    		 tabController.displayObjectsListData(resReq.getTkObjs());
+	    	 }
+	      }
+	   }
    }
 
    /******************** DROITS CONSULTATION SESSION UTILISATEUR ********/
@@ -1397,4 +1443,24 @@ public class MainWindow extends GenericForwardComposer<Component>
       }
       ManagerLocator.getScanTerminaleManager().removeObjectManager((ScanTerminale) ev.getData());
    }
+   
+   /**** since 2.2.3-genno dossier externjes multiple integration *******/
+   
+   public boolean getGenno() {	   
+	   return findGennoEmetteurIfAny() != null;	   
+   }
+   
+   private Emetteur findGennoEmetteurIfAny() {
+	   return SessionUtils.getEmetteursInterfacages(Sessions.getCurrent().getAttributes())
+			   .stream().filter(e -> e.getIdentification()
+					   .equalsIgnoreCase("Genno")).findFirst().orElse(null);
+   }
+   
+   public void onOpenDossierExternes() {
+	   final Map<String, Object> args = new HashMap<>();
+       args.put("emetteur", findGennoEmetteurIfAny());
+       args.put("mainWindow", this);
+       Executions.createComponents("/zuls/interfacage/SelectDossierExterneToSaveModale.zul", null, args);
+   }
+
 }

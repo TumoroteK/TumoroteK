@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    
+    <changeSet id="${project.artifactId}-1" author="MB" context="*, 2.2.1-SNAPSHOT, 2.2.2-SNAPSHOT">
+        <tagDatabase tag="${project.parent.version}"/>
+    </changeSet>
+	<changeSet id="${project.artifactId}-2" author="MB" runAlways="false" context="*">
+		<comment>Chargement des procédures d'export spécifiques serotk</comment>
+		<sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_mysql.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+		<sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_sero.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+	</changeSet>
+	<changeSet id="${project.artifactId}-3" author="MB" runAlways="false" context="*">
+		<preConditions onFail="MARK_RAN">
+		    <not>
+		        <columnExists tableName="CONTENEUR_PLATEFORME" columnName="RESTRICT_STOCK"/>
+		    </not>
+		</preConditions>
+	    <comment>IRELEC plateforme conteneur restriction</comment>
+	    <addColumn tableName="CONTENEUR_PLATEFORME">
+		    <column name="RESTRICT_STOCK" type="boolean" defaultValueBoolean="0">
+			<constraints nullable="false" />
+	            </column>
+	         </addColumn>
+    </changeSet>
+<!--     <changeSet id="${project.artifactId}-4" author="MB" runAlways="true" context="*"> -->
+<!--         <comment>HCL M. Delhorme C94.0 corr</comment> -->
+<!--         <update tableName="CIM_MASTER" schemaName="tumo2codes"> -->
+<!--         	<column name="LIBELLE" value="Leucémie érythroïde aigüe" /> -->
+<!--         	<column name="COMMENTS" value="up M. DELHORME 04/2020" /> -->
+<!--         	<where>CODE = 'C94.0'</where> -->
+<!--     	</update> -->
+<!--     </changeSet> -->
+</databaseChangeLog>

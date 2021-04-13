@@ -58,7 +58,6 @@ import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.coeur.patient.MaladieDao;
 import fr.aphp.tumorotek.dao.coeur.patient.PatientDao;
-import fr.aphp.tumorotek.dao.coeur.patient.PatientDelegateDao;
 import fr.aphp.tumorotek.dao.coeur.patient.PatientLienDao;
 import fr.aphp.tumorotek.dao.coeur.patient.PatientMedecinDao;
 import fr.aphp.tumorotek.dao.coeur.prelevement.PrelevementDao;
@@ -118,7 +117,7 @@ public class PatientManagerImpl implements PatientManager
    private PrelevementDao prelevementDao;
    private AnnotationValeurManager annotationValeurManager;
    private ImportHistoriqueManager importHistoriqueManager;
-   private PatientDelegateDao patientDelegateDao;
+   // private PatientDelegateDao patientDelegateDao;
 
    public PatientManagerImpl(){}
 
@@ -205,7 +204,7 @@ public class PatientManagerImpl implements PatientManager
                oType = operationTypeDao.findByNom("Creation").get(0);
             }else{
 
-               patient.setDelegate(patientDelegateDao.mergeObject(patient.getDelegate()));
+               // patient.setDelegate(patientDelegateDao.mergeObject(patient.getDelegate()));
 
                patientDao.updateObject(patient);
                log.info("Modification objet Patient " + patient.toString());
@@ -1095,7 +1094,7 @@ public class PatientManagerImpl implements PatientManager
       }
    }
 
-   public void setPatientDelegateDao(PatientDelegateDao patientDelegateDao){
-      this.patientDelegateDao = patientDelegateDao;
-   }
+//   public void setPatientDelegateDao(PatientDelegateDao patientDelegateDao){
+//      this.patientDelegateDao = patientDelegateDao;
+//   }
 }

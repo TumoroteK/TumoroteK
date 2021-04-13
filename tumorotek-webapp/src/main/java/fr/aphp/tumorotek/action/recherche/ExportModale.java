@@ -430,7 +430,6 @@ public class ExportModale extends AbstractFicheCombineController
       this.banques = b;
    }
 
-   @Override
    public boolean isExportAnonyme(){
       return isExportAnonyme;
    }

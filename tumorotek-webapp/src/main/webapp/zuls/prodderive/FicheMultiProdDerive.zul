@@ -201,8 +201,8 @@
 						<label value="${c:l('ficheProdDerive.transformation.date')}" 
 						sclass="formLabel"/>	
 												
-						<calendarbox id="dateTransfoCalBox" value="@{fwinProdDeriveEdit$composer.object.dateTransformation,
-			        			save-when='validate.onClick, create.onClick, self.onBlur'}" />
+						<calendarbox id="dateTransfoCalBox" value="@{fwinMultiProdDerive$composer.object.dateTransformation,
+			        			save-when='validate.onClick, create.onClick, self.onBlur, interfacage.onClick'}" />
 							
 						<!-- Quantité utilisé dans la transformation -->
 						<label id="transfoQuantiteLabel" value="${c:l('ficheProdDerive.transformation.quantité')}" sclass="formLabel"/>
@@ -211,7 +211,7 @@
 							<decimalbox id="transfoQuantiteBoxDerive"
 								width="50px"
 								value="@{fwinMultiProdDerive$composer.transformation.quantite, 
-									save-when='validate.onClick, create.onClick, addProdDerives.onClick'}"
+									save-when='validate.onClick, create.onClick, addProdDerives.onClick, interfacage.onClick'}"
 								constraint="@{fwinMultiProdDerive$composer.cttQuantiteTransfo}"
 								format="##0.###" scale="3"
 								locale="en"
@@ -251,7 +251,7 @@
 						<hlayout sclass="z-valign-middle">
 							<textbox id="codePrefixeLabelDerive" 
 								value="@{fwinMultiProdDerive$composer.codePrefixe,
-			        			save-when='validate.onClick, create.onClick, addProdDerives.onClick'
+			        			save-when='validate.onClick, create.onClick, addProdDerives.onClick, interfacage.onClick'
 			        			load-after='codesParentBoxDerive.onSelect, numerotation.onClick'}" 
 								width="150px" mold="rounded"
 								constraint="${fwinMultiProdDerive$composer.codePrefixNullableConstraint}"
@@ -272,14 +272,14 @@
 							
 							<intbox id="premierCodeBoxDerive"
 								value="@{fwinMultiProdDerive$composer.premierCode,
-								save-when='addProdDerives.onClick',
+								save-when='addProdDerives.onClick, interfacage.onClick',
 								load-after='addProdDerives.onClick'}"
 								constraint="@{fwinMultiProdDerive$composer.cttPremierCode}"
 								width="40px" mold="rounded" />
 								
 							<textbox id="premiereLettreBoxDerive" 
 								value="@{fwinMultiProdDerive$composer.premiereLettre,
-			        			save-when='addProdDerives.onClick'
+			        			save-when='addProdDerives.onClick, interfacage.onClick'
 			        			load-after='addProdDerives.onClick, numerotation.onClick'}" 
 								width="30px" maxlength="1"
 								constraint="@{fwinMultiProdDerive$composer.cttPremiereLettre}"
@@ -289,14 +289,14 @@
 							
 							<intbox id="dernierCodeBoxDerive"
 								value="@{fwinMultiProdDerive$composer.dernierCode,
-								save-when='addProdDerives.onClick',
+								save-when='addProdDerives.onClick, interfacage.onClick',
 								load-after='addProdDerives.onClick'}"
 								constraint="@{fwinMultiProdDerive$composer.cttDernierCode}"
 								width="40px" mold="rounded" />
 								
 							<textbox id="derniereLettreBoxDerive" 
 								value="@{fwinMultiProdDerive$composer.derniereLettre,
-			        			save-when='addProdDerives.onClick'
+			        			save-when='addProdDerives.onClick, interfacage.onClick'
 			        			load-after='addProdDerives.onClick, numerotation.onClick'}" 
 								width="30px" maxlength="1"
 								constraint="@{fwinMultiProdDerive$composer.cttDerniereLettre}"
@@ -323,7 +323,9 @@
 								</radiogroup>
 								<label value=")" sclass="formLabel"/>
 							</box>
-								
+							
+							<button id="interfacage" image="/images/icones/wizard.png" sclass="buttonv2" 
+								visible="@{fwinMultiProdDerive$composer.interfacageVisible}" />
 						</hlayout>
 					</row>
 					
@@ -354,7 +356,7 @@
 			        			save-when='validate.onClick, create.onClick, 
 			        				addProdDerives.onClick, self.onBlur'}" 
 								width="206px" 
-								constraint="${fwinProdDeriveEdit$composer.codeNullConstraint}" />
+								constraint="${fwinMultiProdDerive$composer.codeNullConstraint}" />
 						</div>
 					</row>
 					<row>
@@ -362,7 +364,7 @@
 						<label value="${c:l('Champ.ProdDerive.VolumeInit')}" sclass="formLabel"/>
 						<div>
 							<decimalbox id="volumeInitBoxDerive" 					
-								constraint="@{fwinProdDeriveEdit$composer.cttVolumeInit}"
+								constraint="@{fwinMultiProdDerive$composer.cttVolumeInit}"
 								width="50px"
 								value="@{fwinMultiProdDerive$composer.prodDerive.volumeInit,
 								save-when='validate.onClick, create.onClick, 
@@ -443,27 +445,20 @@
 						<label value="${c:l('Champ.ProdDerive.DateStock')}" sclass="formLabel"/>
 						<!-- <label value="*" sclass="requiredMark"/> -->
 						</hbox>
-						<calendarbox id="dateStockCalBox" value="@{fwinProdDeriveEdit$composer.object.dateStock,
+						<calendarbox id="dateStockCalBox" value="@{fwinMultiProdDerive$composer.object.dateStock,
 			        			save-when='validate.onClick, create.onClick, self.onBlur'}" /> 
 			        	<!--	constraint="no empty" /> -->
 						
 						<!-- Qualité du produit dérivé -->
 						<label value="${c:l('Champ.ProdDerive.ProdQualite')}" sclass="formLabel"/>
-						<div>
-							<label id="qualiteLabelDerive" 
-								value="@{fwinMultiProdDerive$composer.prodDerive.prodQualite.prodQualite}"
-								sclass="formValue"
-							/>
-							
-							<listbox id="qualitesBoxDerive" mold="select" rows="1"
-								model="@{fwinMultiProdDerive$composer.qualites}"
-								selectedItem="@{fwinMultiProdDerive$composer.selectedQualite load-after='addProdDerives.onClick'}"
-								>
-								<listitem self="@{each='qualiteMultiDerive'}" value="@{qualiteMultiDerive}">			
-									<listcell label="@{qualiteMultiDerive.prodQualite}" />
-								</listitem>
-							</listbox>
-						</div>
+						<listbox id="qualitesBoxDerive" mold="select" rows="1"
+							model="@{fwinMultiProdDerive$composer.qualites}"
+							selectedItem="@{fwinMultiProdDerive$composer.selectedQualite load-after='addProdDerives.onClick'}"
+							>
+							<listitem self="@{each='qualiteMultiDerive'}" value="@{qualiteMultiDerive}">			
+								<listcell label="@{qualiteMultiDerive.prodQualite}" />
+							</listitem>
+						</listbox>
 					</row>
 					<row spans="1,3">
 						<!-- Opérateur du produit dérivé -->

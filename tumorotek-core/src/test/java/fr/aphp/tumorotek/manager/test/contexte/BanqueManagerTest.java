@@ -52,7 +52,6 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
@@ -1372,7 +1371,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       e.setCode("echan");
       final Echantillon e1 = echantillonManager.findByIdManager(1);
       echantillonManager.createObjectManager(e, b, null, null, e1.getObjetStatut(), null, e1.getEchantillonType(), null, null,
-         null, null, null, null, null, u, false, "/tmp/", false);
+         null, null, null, null, u, false, "/tmp/", false);
 
       catched = false;
       try{
@@ -1392,7 +1391,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       d.setCode("derive");
       final ProdDerive d1 = prodDeriveManager.findByIdManager(1);
       prodDeriveManager.createObjectManager(d, b, d1.getProdType(), objetStatutDao.findById(4), null, null, null, null, null,
-         null, null, null, null, null, null, u, true, "/tmp/", false);
+         null, null, null, null, null, u, true, "/tmp/", false);
 
       catched = false;
       try{
@@ -1459,7 +1458,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       assertTrue(catched);
 
       banqueManager.createOrUpdateObjectManager(b, pf, ct, null, null, null, null, null, null, null, null, null, null, null, null,
-         null, u, null, "creation", "/tmp/");
+         null, u, null, "creation", "/tmp");
 
       assertTrue(new File(Utils.writeAnnoFilePath("/tmp/", b, null, null)).exists());
       assertTrue(new File(Utils.writeAnnoFilePath("/tmp/", b, null, null) + "/anno").exists());
@@ -1570,5 +1569,23 @@ public class BanqueManagerTest extends AbstractManagerTest4
       }
 
       cleanUpFantomes(null);
+   }
+   
+   @Test
+   public void testFindByConteneurManager(){
+
+      final Conteneur c1 = conteneurDao.findById(1);
+      List<Banque> banks = banqueManager.findByConteneurManager(c1);
+      assertTrue(banks.size() == 4);
+
+      final Conteneur c2 = conteneurDao.findById(2);
+      banks = banqueManager.findByConteneurManager(c2);
+      assertTrue(banks.size() == 2);
+      
+      banks = banqueManager.findByConteneurManager(new Conteneur());
+      assertTrue(banks.isEmpty());
+
+      banks = banqueManager.findByConteneurManager(null);
+      assertTrue(banks.isEmpty());
    }
 }

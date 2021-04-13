@@ -88,7 +88,7 @@ import fr.aphp.tumorotek.utils.Utils;
  *  2.0.7 Ajout validation sur STATUT et EMPLACEMENT
  *
  * @author Pierre VENTADOUR
- * @version 2.0.7
+ * @version 2.2.3-genno
  */
 public class ProdDeriveValidatorImpl implements ProdDeriveValidator
 {
@@ -143,7 +143,7 @@ public class ProdDeriveValidatorImpl implements ProdDeriveValidator
          if(!derive.getCodeLabo().matches(ValidationUtilities.MOTREGEXP)){
             errs.rejectValue("codeLabo", "prodDerive.codeLabo.illegal");
          }
-         if(derive.getCodeLabo().length() > 10){
+         if(derive.getCodeLabo().length() > 50){
             errs.rejectValue("codeLabo", "prodDerive.codeLabo.tooLong");
          }
       }
@@ -187,20 +187,22 @@ public class ProdDeriveValidatorImpl implements ProdDeriveValidator
       // quantiteInit = volumeInit * concentration
       if(derive.getQuantiteInit() != null && derive.getVolumeInit() != null && derive.getConc() != null){
          Float res = derive.getVolumeInit() * derive.getConc();
-         res = Utils.floor(res, 3);
-         if(!derive.getQuantiteInit().equals(res)){
+         Float floor = Utils.floor(res, 3);
+         // TK-290 arrondi peut être supérieur ou inférieur = OK
+         if((derive.getQuantiteInit().floatValue() > (floor + 0.001f)) 
+        		|| (derive.getQuantiteInit().floatValue() < (floor - 0.001f)) ){
             errs.rejectValue("quantiteInit", "prodDerive.quantiteInit.illegal");
          }
       }
       // unites valides
       if(derive.getVolumeUnite() != null){
          if(derive.getConcUnite() != null){
-            if(!derive.getConcUnite().getUnite().contains(derive.getVolumeUnite().getUnite())){
+            if(!derive.getConcUnite().getNom().contains(derive.getVolumeUnite().getNom())){
                errs.rejectValue("concUnite", "prodDerive.concUnite.illegal");
             }
 
             if(derive.getQuantiteUnite() != null){
-               if(!derive.getConcUnite().getUnite().contains(derive.getQuantiteUnite().getUnite())){
+               if(!derive.getConcUnite().getNom().contains(derive.getQuantiteUnite().getNom())){
                   errs.rejectValue("concUnite", "prodDerive.concUnite.illegal");
                }
             }

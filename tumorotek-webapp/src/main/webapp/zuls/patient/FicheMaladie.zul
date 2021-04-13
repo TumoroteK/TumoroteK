@@ -162,19 +162,14 @@
 								>
 								<listhead sizable="true" visible="@{fwinMaladie$composer.hasPrelevements}">
 									<listheader width="50px" />
-									<listheader label="${c:l('prelevement.datePrelevementCourt')}"
-									width="100px"/>
-									<listheader label="${c:l('general.code')}" width="100px" />
-									<listheader label="${c:l('Champ.Prelevement.Nature')}"
-									width="100px"/>
-									<listheader label="${c:l('general.type')}" width="100px"/>
-									<listheader label="${c:l('Champ.Echantillon.Organe')}"
-									width="100px"/>
-									<listheader label="${c:l('general.diagnostic')}"
-									width="100px"/>
-									<listheader label="${c:l('Champ.Prelevement.ConsentType')}"
-									width="100px"/>
-									<listheader width="100px">
+									<listheader label="${c:l('prelevement.datePrelevementCourt')}" />
+									<listheader label="${c:l('general.code')}"  />
+									<listheader label="${c:l('Champ.Prelevement.Nature')}" />
+									<listheader label="${c:l('general.type')}" />
+									<listheader label="${c:l('Champ.Echantillon.Organe')}" />
+									<listheader label="${c:l('general.diagnostic')}" />
+									<listheader label="${c:l('Champ.Prelevement.ConsentType')}" />
+									<listheader>
 										<vbox align="center" hflex="1">
 											<label value="${c:l('prelevement.nbEchantillons')}" 
 												style="font-weight : bold;"/>
@@ -207,11 +202,11 @@
 								<listhead sizable="true" visible="@{fwinMaladie$composer.hasPrelevementsFromOtherBanks}">
 									<listheader width="50px" />
 									<listheader label="${c:l('prelevement.datePrelevementCourt')}" />
-									<listheader label="${c:l('general.code')}"   />
+									<listheader label="${c:l('general.code')}" />
 									<listheader label="${c:l('Entite.Banque')}" />
 									<listheader label="${c:l('Champ.Prelevement.Nature')}" />
 									<listheader label="${c:l('general.type')}" />
-									<listheader label="${c:l('prelevement.etablissement')}"  />
+									<listheader label="${c:l('prelevement.etablissement')}" />
 									<!-- <listheader label="${c:l('Champ.Echantillon.Organe')}" width="100px"/> -->
 									<!-- <listheader label="${c:l('general.diagnostic')}" width="100px"/> -->
 									<listheader label="${c:l('Champ.Prelevement.ConsentType')}"

@@ -44,6 +44,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.contexte.Service;
+import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
@@ -53,144 +54,152 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  *
  * Date: 09/09/2009
  *
- * @author Pierre Ventadour
- * @version 2.1
+ * @author Pierre Ventadour, Mathieu BARTHELEMY
+ * @version 2.2.1
  */
 public interface BanqueDao extends GenericDaoJpa<Banque, Integer>
 {
 
-   /**
-    * Recherche les banques dont le nom est égal au paramètre.
-    * @param nom pour lequel on recherche des banques.
-    * @return une liste de banques.
-    */
-   List<Banque> findByNom(String nom);
+	/**
+	 * Recherche les banques dont le nom est égal au paramètre.
+	 * @param nom pour lequel on recherche des banques.
+	 * @return une liste de banques.
+	 */
+	List<Banque> findByNom(String nom);
 
-   /**
-    * Recherche les banques dont l'identification est égale au paramètre.
-    * @param identification pour laquelle on recherche des banques.
-    * @return une liste banques.
-    */
-   List<Banque> findByIdentification(String identification);
+	/**
+	 * Recherche les banques dont l'identification est égale au paramètre.
+	 * @param identification pour laquelle on recherche des banques.
+	 * @return une liste banques.
+	 */
+	List<Banque> findByIdentification(String identification);
 
-   /**
-    * Recherche les banques qui autorisent les cross ref pour les patients.
-    * @param autoriseCrossPatient .
-    * @return une liste de banques.
-    */
-   List<Banque> findByAutoriseCrossPatient(boolean autoriseCrossPatient);
+	/**
+	 * Recherche les banques qui autorisent les cross ref pour les patients.
+	 * @param autoriseCrossPatient .
+	 * @return une liste de banques.
+	 */
+	List<Banque> findByAutoriseCrossPatient(boolean autoriseCrossPatient);
 
-   /**
-    * Recherche les banques archivées.
-    * @param archive .
-    * @return une liste de banques.
-    */
-   List<Banque> findByArchive(boolean archive);
+	/**
+	 * Recherche les banques archivées.
+	 * @param archive .
+	 * @return une liste de banques.
+	 */
+	List<Banque> findByArchive(boolean archive);
 
-   /**
-    * Recherche les banques dont le collaborateur est passé en paramètre.
-    * @param collaborateur pour lequel on recherche des banques.
-    * @return une liste de banques.
-    */
-   List<Banque> findByCollaborateur(Collaborateur c);
+	/**
+	 * Recherche les banques dont le collaborateur est passé en paramètre.
+	 * @param collaborateur pour lequel on recherche des banques.
+	 * @return une liste de banques.
+	 */
+	List<Banque> findByCollaborateur(Collaborateur c);
 
-   /**
-    * Recherche les banques dont le propriétaire est passé en paramètre.
-    * @param service proprietaire pour lequel on recherche des banques.
-    * @return une liste de banques.
-    */
-   List<Banque> findByProprietaire(Service proprietaire);
+	/**
+	 * Recherche les banques dont le propriétaire est passé en paramètre.
+	 * @param service proprietaire pour lequel on recherche des banques.
+	 * @return une liste de banques.
+	 */
+	List<Banque> findByProprietaire(Service proprietaire);
 
-   /**
-    * Recherche les banques dont la plateforme est passée en paramètre.
-    * Filtre sur le statut archivé.
-    * @param plateforme pour laquelle on recherche des banques.
-    * @param archive true/false
-    * @return une liste de banques.
-    * @version 2.1
-    */
-   List<Banque> findByPlateformeAndArchive(Plateforme plateforme, boolean archive);
+	/**
+	 * Recherche les banques dont la plateforme est passée en paramètre.
+	 * Filtre sur le statut archivé.
+	 * @param plateforme pour laquelle on recherche des banques.
+	 * @param archive true/false
+	 * @return une liste de banques.
+	 * @version 2.1
+	 */
+	List<Banque> findByPlateformeAndArchive(Plateforme plateforme, boolean archive);
 
-   /**
-    * Recherche la banque dont l'identifiant passé en paramètre.
-    * Les associations avec les tables COLLABORATEUR, SERVICE ET
-    * PLATEFORME seront chargées par l'intermédiaire d'un fetch.
-    * @param banqueId est l'identifiant du collaborateur recherché.
-    * @return un collaborateur.
-    */
-   List<Banque> findByIdWithFetch(Integer banqueId);
+	/**
+	 * Recherche la banque dont l'identifiant passé en paramètre.
+	 * Les associations avec les tables COLLABORATEUR, SERVICE ET
+	 * PLATEFORME seront chargées par l'intermédiaire d'un fetch.
+	 * @param banqueId est l'identifiant du collaborateur recherché.
+	 * @return un collaborateur.
+	 */
+	List<Banque> findByIdWithFetch(Integer banqueId);
 
-   /**
-    * Recherche toutes les Banques ordonnées.
-    * @return Liste ordonnée de Banques.
-    */
-   List<Banque> findByOrder();
+	/**
+	 * Recherche toutes les Banques ordonnées.
+	 * @return Liste ordonnée de Banques.
+	 */
+	List<Banque> findByOrder();
 
-   /**
-    * Trouve les catalogues associés au contexte auquel la banque
-    * appartient.
-    * @param banqueId
-    * @return list Catalogue
-    */
-   List<Catalogue> findContexteCatalogues(Integer banqueId);
+	/**
+	 * Trouve les catalogues associés au contexte auquel la banque
+	 * appartient.
+	 * @param banqueId
+	 * @return list Catalogue
+	 */
+	List<Catalogue> findContexteCatalogues(Integer banqueId);
 
-   /**
-    * Trouve les banques pour lesquelles l'utilisateur a un droit de
-    * consultation sur l'entité spécifiée pour la plateforme spécifiée.
-    * @param user
-    * @param entite
-    * @param pf
-    * @return list BANQUE
-    */
-   List<Banque> findByEntiteConsultByUtilisateur(Utilisateur usr, Entite entite, Plateforme pf);
+	/**
+	 * Trouve les banques pour lesquelles l'utilisateur a un droit de
+	 * consultation sur l'entité spécifiée pour la plateforme spécifiée.
+	 * @param user
+	 * @param entite
+	 * @param pf
+	 * @return list BANQUE
+	 */
+	List<Banque> findByEntiteConsultByUtilisateur(Utilisateur usr, Entite entite, Plateforme pf);
 
-   /**
-    * Trouve les banques pour lesquelles l'utilisateur a un droit de
-    * modification sur l'entité spécifiée pour la plateforme spécifiée.
-    * @param user
-    * @param entite
-    * @param pf
-    * @return list BANQUE
-    */
-   List<Banque> findByEntiteModifByUtilisateur(Utilisateur usr, Entite entite, Plateforme pf);
+	/**
+	 * Trouve les banques pour lesquelles l'utilisateur a un droit de
+	 * modification sur l'entité spécifiée pour la plateforme spécifiée.
+	 * @param user
+	 * @param entite
+	 * @param pf
+	 * @return list BANQUE
+	 */
+	List<Banque> findByEntiteModifByUtilisateur(Utilisateur usr, Entite entite, Plateforme pf);
 
-   /**
-    * Trouve les banques pour lesquelles l'utilisateur a un droit
-    * d'administrateur pour une plateforme passée en paramètres.
-    * @return liste de BANQUE
-    */
-   List<Banque> findByUtilisateurIsAdmin(Utilisateur usr, Plateforme pf);
+	/**
+	 * Trouve les banques pour lesquelles l'utilisateur a un droit
+	 * d'administrateur pour une plateforme passée en paramètres.
+	 * @return liste de BANQUE
+	 */
+	List<Banque> findByUtilisateurIsAdmin(Utilisateur usr, Plateforme pf);
 
-   /**
-    * Trouve les banques pour lesquelles l'utilisateur a un droit en
-    * fonction d'une plateforme.
-    */
-   List<Banque> findByUtilisateurAndPF(Utilisateur usr, Plateforme pf);
+	/**
+	 * Trouve les banques pour lesquelles l'utilisateur a un droit en
+	 * fonction d'une plateforme.
+	 */
+	List<Banque> findByUtilisateurAndPF(Utilisateur usr, Plateforme pf);
 
-   /**
-    * Recherche toutes les banques sauf celle dont l'id est passé 
-    * en paramètre.
-    * @param banqueId Identifiant de la abnque que l'on souhaite
-    * exclure de la liste retournée.
-    * @return une liste de banques.
-    */
-   List<Banque> findByExcludedId(Integer banqueId);
+	/**
+	 * Recherche toutes les banques sauf celle dont l'id est passé 
+	 * en paramètre.
+	 * @param banqueId Identifiant de la abnque que l'on souhaite
+	 * exclure de la liste retournée.
+	 * @return une liste de banques.
+	 */
+	List<Banque> findByExcludedId(Integer banqueId);
 
-   /**
-    * Recherche toutes les banques sur lesquelles l'utilisateur 
-    * passé en paramètre a un profil assigné. Les banques sont 
-    * retournées ordonnées par leur nom.
-    * @param u Utilisateur
-    * @return liste de banques 
-    */
-   List<Banque> findByProfilUtilisateur(Utilisateur u);
+	/**
+	 * Recherche toutes les banques sur lesquelles l'utilisateur 
+	 * passé en paramètre a un profil assigné. Les banques sont 
+	 * retournées ordonnées par leur nom.
+	 * @param u Utilisateur
+	 * @return liste de banques 
+	 */
+	List<Banque> findByProfilUtilisateur(Utilisateur u);
 
-   /**
-    * Recherche toutes les banques pour auxquelles la table 
-    * d'annotation a été passée en paramètres.
-    * @param table TableAnnotation
-    * @return liste de banques 
-    */
-   List<Banque> findByTableAnnotation(TableAnnotation table);
+	/**
+	 * Recherche toutes les banques pour auxquelles la table 
+	 * d'annotation a été passée en paramètres.
+	 * @param table TableAnnotation
+	 * @return liste de banques 
+	 */
+	List<Banque> findByTableAnnotation(TableAnnotation table);
 
+	/**
+	 * Recherche toutes les banques donnant l'accès au 
+	 * conteneur passé en paramètre.  
+	 * @param conteneur
+	 * @return liste de banques 
+	 * @since 2.2.1
+	 */
+	List<Banque> findByConteneur(Conteneur cont);
 }

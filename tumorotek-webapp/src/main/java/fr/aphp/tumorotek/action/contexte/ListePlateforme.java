@@ -40,6 +40,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.ForwardEvent;
@@ -195,5 +196,15 @@ public class ListePlateforme extends AbstractListeController2
    public List<? extends TKdataObject> extractLastObjectsCreated(){
       return null;
    }
+   
+   @Override
+   public void updateListResultsLabel(final Integer nbResults){
+	      if(getObjectTabController() != null && getObjectTabController().getListeRegion() != null){
+	         getObjectTabController().getListeRegion()
+	            //.getCaption().setLabel
+	            .setTitle(Labels.getLabel("liste.plateforme.titre") + " ("
+	               + (nbResults != null ? nbResults : getListObjects() != null ? getListObjects().size() : 0) + ")");
+	      }
+	   }
 
 }

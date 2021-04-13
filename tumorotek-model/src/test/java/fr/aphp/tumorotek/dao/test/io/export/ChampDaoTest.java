@@ -204,7 +204,7 @@ public class ChampDaoTest extends AbstractDaoTest
       //On boucle sur les 4 possibilités
       for(int i = 0; i < Math.pow(2, 2); i++){
          final Champ champ = new Champ();
-         int hash = 7;
+         int hash = 1;
          ChampAnnotation champAnnotation = null;
          int hashChampAnnotation = 0;
          if(i >= 2){
@@ -218,10 +218,14 @@ public class ChampDaoTest extends AbstractDaoTest
             champEntite = champEntiteDao.findById(2);
             hashChampEntite = champEntite.hashCode();
          }
+         int hashChampDelegue = 0;
+         // TODO utiliser des valeurs pour tester l'égalité du champ délégué
          hash = 31 * hash + hashChampAnnotation;
          hash = 31 * hash + hashChampEntite;
+         hash = 31 * hash + hashChampDelegue;
          champ.setChampAnnotation(champAnnotation);
          champ.setChampEntite(champEntite);
+         champ.setChampDelegue(null);
          //On vérifie que le hashCode est bon
          assertTrue(champ.hashCode() == hash);
          assertTrue(champ.hashCode() == hash);

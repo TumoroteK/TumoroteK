@@ -102,8 +102,8 @@ public class PrelevementDelegateDaoTest extends AbstractDaoTest //FIXME non lanc
     * Test l'appel de la méthode toString().
     */
    public void testToString(){
-      AbstractPrelevementDelegate p1 = prelevementDao.findById(1).getPrelevementSero();
-      assertTrue(p1.toString().equals("{PRLVT1}." + PrelevementSero.class.getSimpleName()));
+      AbstractPrelevementDelegate p2 = prelevementDao.findById(2).getPrelevementSero();
+      assertTrue(p2.toString().equals("{PRLVT2}." + PrelevementSero.class.getSimpleName()));
    }
 
    /**

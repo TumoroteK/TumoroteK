@@ -41,7 +41,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Hashtable;
@@ -88,15 +87,13 @@ import fr.aphp.tumorotek.action.recherche.ExportModale;
 import fr.aphp.tumorotek.action.recherche.FicheRechercheAvancee;
 import fr.aphp.tumorotek.action.recherche.FicheRechercheAvanceeCession;
 import fr.aphp.tumorotek.action.recherche.FicheRechercheINCa;
+import fr.aphp.tumorotek.action.utilisateur.ProfilExport;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.decorator.TKSelectObjectRenderer;
 import fr.aphp.tumorotek.manager.ConfigManager;
-import fr.aphp.tumorotek.manager.impl.io.utils.RechercheUtilsManager;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
-import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
-import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.EContexte;
@@ -108,2349 +105,2257 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 import fr.aphp.tumorotek.webapp.general.export.Export;
 
 /**
- * @author
- * @version 2.2.0
- * @since 2.x.x
+ * @author Mathieu BARTHELEMY
+ * @version 2.2.1
  */
 public abstract class AbstractListeController2 extends AbstractController
 {
-   //TODO JavaDoc
-   private static final long serialVersionUID = -7175263022919263339L;
-
-   // Row actuellement sélectionnée.
-   private Row currentRow;
-
-   protected Panel listPanel;
-
-   protected Panelchildren scrollPan;
-
-   protected Grid objectsListGrid;
-
-   protected Checkbox checkAll;
-
-   protected Menuitem modificationItem;
-
-   protected Menuitem exportItem;
-
-   protected Menuitem exportItemAdv;
-
-   protected Menuitem etiquetteItem;
-
-   protected Menuitem changeCollectionItem;
-
-   protected Menuitem retourItem;
-
-   protected Menuitem deleteItem;
-
-   protected Menuitem incompRetoursItem;
-
-   protected Button find;
-
-   protected Button addNew;
-
-   protected Button select;
-
-   protected Button cancelSelection;
-
-   protected Menubar menuBar;
-
-   protected Menuitem patientsItem;
-
-   protected Menuitem prelevementsItem;
-
-   protected Menuitem echantillonsItem;
-
-   protected Menuitem derivesItem;
-
-   protected Menuitem derivesAscItem;
-
-   protected Menuitem cessionsItem;
-
-   // citere date creation
-   protected Radio dateCreation;
-
-   protected Listbox dateCreationBox;
-
-   private Calendar searchDateCreation;
-
-   private String selectedDate;
-
-   private AbstractObjectTabController objectTabController;
-
-   private String path;
-
-   private String mode = "liste";
-
-   private String onGetEventName;
-
-   private final Integer nbLastObjs = 30;
-
-   // Variable de droits.
-   private boolean canModifMultiple;
-
-   private boolean canExport;
-
-   private boolean canNew;
-
-   private boolean canEtiquette;
-
-   private boolean isAdmin;
-
-   private boolean canDelete;
-
-   private TKdataObject currentObject;
-
-   private final List<Integer> resultatsIds = new ArrayList<>();
-
-   private List<Integer> restrictedTableIds = new ArrayList<>();
-
-   public TKdataObject getCurrentObject(){
-      return currentObject;
-   }
-
-   public void setCurrentObject(final TKdataObject o){
-      this.currentObject = o;
-   }
-
-   public Row getCurrentRow(){
-      return currentRow;
-   }
-
-   public void setCurrentRow(final Row cRow){
-      this.currentRow = cRow;
-   }
-
-   public String getPath(){
-      return path;
-   }
-
-   public void setPath(final String p){
-      this.path = p;
-   }
-
-   public String getMode(){
-      return mode;
-   }
-
-   public void setMode(final String m){
-      this.mode = m;
-   }
-
-   public Integer getNbLastObjs(){
-      return nbLastObjs;
-   }
-
-   public String getOnGetEventName(){
-      return onGetEventName;
-   }
-
-   public void setOnGetEventName(final String onName){
-      this.onGetEventName = onName;
-   }
-
-   public AbstractObjectTabController getObjectTabController(){
-      return objectTabController;
-   }
-
-   public void setObjectTabController(final AbstractObjectTabController otc){
-      this.objectTabController = otc;
-   }
-
-   /**
-    * Calcule la date de référence (en fonction de selection de la liste de
-    * String creationDates) à passer à la méthode pour qui cherche les objets
-    * en fonction de leur date de création.
-    *
-    * @return Date de référence
-    */
-   public Calendar getSearchDateCreation(){
-      final int ind = dateCreationBox.getSelectedIndex();
-      // on récupère la date du jour
-      final Calendar today = Calendar.getInstance();
-      // SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-      today.set(Calendar.HOUR_OF_DAY, 0);
-      today.set(Calendar.MINUTE, 0);
-      today.set(Calendar.SECOND, 0);
-      // en fonction de la sélection, on enlève des jours
-      if(ind <= 0){
-         today.add(Calendar.DAY_OF_YEAR, -1);
-      }else if(ind == 1){
-         today.add(Calendar.DAY_OF_YEAR, -10);
-      }else if(ind == 2){
-         today.add(Calendar.DAY_OF_YEAR, -30);
-      }
-      searchDateCreation = today;
-      /*
-       * try { searchDateCreation = new
-       * SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
-       * .parse(sdf.format(today.getTime())); } catch (ParseException e) {
-       * log.error(e); }
-       */
-      return searchDateCreation;
-   }
-
-   public void setSearchDateCreation(final Calendar search){
-      this.searchDateCreation = search;
-   }
-
-   public String getSelectedDate(){
-      return selectedDate;
-   }
-
-   public void setSelectedDate(final String selected){
-      this.selectedDate = selected;
-   }
-
-   public Grid getObjectsListGrid(){
-      return objectsListGrid;
-   }
-
-   @Override
-   public void doAfterCompose(final Component comp) throws Exception{
-
-      super.doAfterCompose(comp);
-
-      // reference liste selectedObjects dans le renderer
-      if(getListObjectsRenderer() != null){
-         getListObjectsRenderer().setSelectedObjects(getSelectedObjects());
-      }
-
-      // IE8 hack
-      if(Executions.getCurrent().getBrowser("ie") != null && Executions.getCurrent().getBrowser("ie") <= 8 && scrollPan != null){
-         scrollPan.setStyle("overflow-y: auto;");
-      }
-
-      setBinder(new AnnotateDataBinder(comp));
-      getBinder().loadAll();
-      if(listPanel != null){
-         listPanel.setHeight(getMainWindow().getListPanelHeight() + "px");
-      }
-
-      // applique le scroll que si l'écran est trop petit
-      // 340 px = taille demandée pour afficher page de grid 10 objets
-      /*
-       * if (Integer.valueOf(getMainWindow() .getListPanelHeight()) < 340 &&
-       * objectsListGrid != null) {
-       * objectsListGrid.setStyle("overflow-y:scroll"); }
-       */
-
-      // applyDroitsOnListe();
-      if(sessionScope.containsKey("Anonyme") && (Boolean) sessionScope.get("Anonyme")){
-         setAnonyme(true);
-      }else{
-         setAnonyme(false);
-      }
-
-      // applique l'affichage de la Banque si Toutes collections
-      if(getListObjectsRenderer() != null){
-         getListObjectsRenderer().setTtesCollections(SessionUtils.getSelectedBanques(sessionScope).size() > 1);
-      }
-
-      initObjectsBox();
-   }
-
-   /**
-    * Passe le composant en mode de liste.
-    */
-   public void switchToListMode(){
-      setMode("liste");
-      clearSelection();
-      this.find.setVisible(true);
-      this.addNew.setVisible(true);
-      this.select.setVisible(false);
-      this.cancelSelection.setVisible(false);
-      this.menuBar.setVisible(true);
-   }
-
-   /**
-    * Passe le composant en mode de sélection.
-    */
-   public void switchToSelectMode(){
-      setMode("select");
-      clearSelection();
-      this.find.setVisible(true);
-      this.addNew.setVisible(false);
-      this.select.setVisible(true);
-      this.cancelSelection.setVisible(true);
-      this.menuBar.setVisible(false);
-   }
-
-   /**
-    * Gèle ou dégèle les boutons de la toolbar.
-    *
-    * @param b
-    */
-   public void disableToolBar(final boolean b){
-      disableObjetsSelectionItems(b);
-      if(addNew != null){
-         addNew.setDisabled(b || !isCanNew());
-      }
-   }
-
-   /**
-    * Compose et renvoie la liste affichables de dates par défaut utilisables
-    * comme critère de recherche dans la sélection.
-    *
-    * @return String[] liste de dates proposées
-    */
-   public String[] getCreationDates(){
-      final String[] dates =
-         new String[] {Labels.getLabel("general.date.depuis1jour"), Labels.getLabel("general.date.depuis10jour"),
-            Labels.getLabel("general.date.depuis30jour"), Labels.getLabel("general.30.derniers")};
-      return dates;
-   }
-
-   /**
-    * Cette méthode retourne le numéro de la page sur laquelle se trouve
-    * l'objet passé en paramètre.
-    *
-    * @param obj
-    *            Objet pour lequel on recherche une page.
-    * @return Numéro de la page.
-    */
-   public int getPageNumberForObject(final Object obj){
-      final int ind = getListObjects().indexOf(obj);
-      int page = 0;
-
-      if(ind > -1){
-         page = ind / objectsListGrid.getPageSize();
-      }
-
-      return page;
-   }
-
-   /**
-    * Cette méthode déselectionne l'objet courant et sélectionne celui passé en
-    * paramètre.
-    *
-    * @param newCurrent
-    *            Objet que l'on souhaite sélectionner.
-    */
-   public void changeCurrentObject(final TKdataObject newCurrent){
-
-      // si la liste contient l'objet
-      if(getListObjects().contains(newCurrent)){
-         deselectRow();
-
-         // this.currentObject = newCurrent;
-         final int ind = getListObjects().indexOf(newCurrent);
-
-         objectsListGrid.getPaginal().setActivePage(getPageNumberForObject(currentObject));
-
-         final Rows rows = objectsListGrid.getRows();
-         final List<Component> comps = rows.getChildren();
-         // this.currentRow = (Row) comps.get(ind);
-         // this.currentRow.setStyle("background-color : #b3c8e8");
-
-         // Bug Romain Casey 20/06/2014 getListObjects et Rows
-         // ne sont pas dans le même état? Pas reproduit...
-         // suppose que aucune Rows dessinées alors que ListObjects
-         // n'est pas vide
-         if(comps.size() < ind){
-            getBinder().loadAttribute(objectsListGrid, "model");
-            objectsListGrid.getPaginal().setActivePage(getPageNumberForObject(currentObject));
-         }
-
-         selectRow((Row) comps.get(ind), newCurrent);
-
-      }
-   }
-
-   /**
-    * Déselectionne la ligne actuellement sélectionnée.
-    */
-   public void deselectRow(){
-      // on vérifie qu'une ligne est bien sélectionnée
-      if(getCurrentObject() != null && getCurrentRow() != null){
-         final int ind = getListObjects().indexOf(currentObject);
-         // on lui spécifie une couleur en fonction de son
-         // numéro de ligne
-         if(ind > -1){
-            getCurrentRow().setStyle("background-color : #e2e9fe");
-            /*
-             * if (ind % 2 == 0) {
-             * currentRow.setStyle("background-color : #FFFFFF"); } else {
-             * currentRow.setStyle("background-color : #e2e9fe"); }
-             */
-            setCurrentRow(null);
-            setCurrentObject(null);
-         }
-      }
-   }
-
-   /**
-    * Sélectionne la ligne passée en paramètre.
-    *
-    * @param row
-    *            Row à sélectionner.
-    * @param obj
-    *            Objet se trouvant dans la ligne
-    */
-   public void selectRow(final Row row, final TKdataObject obj){
-
-      setCurrentRow(row);
-      setCurrentObject(obj);
-
-      getCurrentRow().setStyle("background-color : #b3c8e8");
-   }
-
-   /**
-    * Méthode appelée lors du check de la checkbox des colonnes : sélectionne
-    * ou déselctionne tous les éléments.
-    */
-   public void onCheck$checkAll(){
-      if(!checkAll.isChecked()){
-         clearSelection();
-      }else{
-         getListObjectsRenderer().setCheckAll(true);
-         checkOrNotAllElements(true);
-         passListToSelected();
-         disableObjetsSelectionItems(false);
-      }
-   }
-
-   /**
-    * Déselectionne tous les objets de la grid.
-    */
-   public void clearSelection(){
-      if(getSelectedObjects() != null){
-         getSelectedObjects().clear();
-         // getResultatsIds().clear();
-
-         disableObjetsSelectionItems(true);
-
-         getListObjectsRenderer().setCheckAll(false);
-         checkAll.setChecked(false);
-         checkOrNotAllElements(false);
-      }
-   }
-
-   /**
-    * Check ou non tous les éléments de la liste.
-    *
-    * @param check
-    *            Si true, coche toutes les checkboxs.
-    */
-   public void checkOrNotAllElements(final boolean check){
-      final Rows rows = objectsListGrid.getRows();
-      final List<Component> allRow = rows.getChildren();
-      for(int i = 0; i < allRow.size(); i++){
-         final List<Component> comps = allRow.get(i).getChildren();
-         int j = 0;
-         while(j < comps.size() && !comps.get(j).getClass().getSimpleName().equals("Checkbox")){
-            j++;
-         }
-
-         if(j < comps.size() && comps.get(j).getClass().getSimpleName().equals("Checkbox")){
-            final Checkbox box = (Checkbox) comps.get(j);
-            box.setChecked(check);
-         }
-      }
-   }
-
-   /**
-    * Clique sur la checkbox d'un objet.
-    *
-    * @param event
-    */
-   public void onCheckObject(final ForwardEvent event){
-      // on récupère la checkbox associé à l'event
-      final Checkbox box = (Checkbox) event.getOrigin().getTarget();
-      // on récupère l'Echantillon associé à l'event
-      final TKdataObject obj = (TKdataObject) event.getData();
-
-      if(box.isChecked()){
-         addToSelectedObjects(obj);
-      }else{
-         removeFromSelectedObjects(obj);
-      }
-
-      // les actions ne sont disponibles que si des objets sont
-      // sélectionnés
-      disableObjetsSelectionItems(false);
-   }
-
-   /**
-    * Inactive/active les composants de manipulation des sélections multiples
-    * venant de la liste en fonction des droits sur les opérations.
-    */
-   public void disableObjetsSelectionItems(final boolean disable){
-      if(modificationItem != null){
-         modificationItem.setDisabled(disable || !isCanModifMultiple() || getSelectedObjects().size() < 2);
-      }
-      if(exportItem != null){
-         exportItem.setDisabled(disable || !isCanExport() || getSelectedObjects().size() < 1);
-      }
-      if(exportItemAdv != null && exportItemAdv.isVisible()){
-         exportItemAdv.setDisabled(disable || !isCanExport() || getSelectedObjects().size() < 1);
-      }
-      if(changeCollectionItem != null){
-         changeCollectionItem.setDisabled(disable || !isCanExport() || getSelectedObjects().size() < 1);
-      }
-      if(etiquetteItem != null){
-         etiquetteItem.setDisabled(disable || !isCanEtiquette() || getSelectedObjects().size() < 1);
-      }
-      if(retourItem != null && retourItem.isVisible()){
-         retourItem.setDisabled(disable || getSelectedObjects().size() < 1);
-      }
-      if(deleteItem != null && deleteItem.isVisible()){
-         deleteItem.setDisabled(disable || !isCanDelete() || getSelectedObjects().size() < 1);
-      }
-      disableObjectTreeButtons(disable);
-   }
-
-   //	/**
-   //	 * Vérifie que tous les objets sont ENCOURS.
-   //	 * Affiche le bouton permettant la complétion des Evènements
-   //	 * @return true/false
-   //	 */
-   //	private boolean allSelectedEncours() {
-   //
-   //		if (getSelectedObjects().isEmpty()) {
-   //			return false;
-   //		} else {
-   //			for (Object obj : getSelectedObjects()) {
-   //				if (!((TKStockableObject) obj)
-   //					.getObjetStatut().getStatut().equals("ENCOURS")) {
-   //					return false;
-   //				}
-   //			}
-   //		}
-   //
-   //		return true;
-   //	}
-
-   /**
-    * Forwarded Event. Sélectionne la ligne concernée par l'event et affiche
-    * les infos de l'objet contenu dans celle-ci.
-    *
-    * @param event
-    *            forwardé depuis le lable nom cliquable (event.getData contient
-    *            l'objet).
-    */
-   public void onClickObject(final Event event){
-      if(!getMode().equals("select")){
-         // déselection de la ligne courante
-         deselectRow();
-
-         selectRowAndDisplayObject(getRow((ForwardEvent) event), (TKdataObject) event.getData());
-      }
-   }
-
-   /**
-    * Selectionne l'objet dans la liste et affiche le contenu de l'objet
-    * selectionné dans la fiche statique.
-    *
-    * @param row
-    * @param data
-    *            Objet à afficher
-    */
-   public void selectRowAndDisplayObject(final Row row, final TKdataObject obj){
-      deselectRow();
-      // sélection de la nouvelle ligne
-      selectRow(row, obj);
-
-      // on envoie l'objet à la fiche
-      final TKdataObject edit = currentObject.clone();
-
-      if(getObjectTabController().isStaticEditMode()){
-         getObjectTabController().getFicheStatic().setObject(edit);
-         // on envoie le patient à la fiche annotation
-         if(getObjectTabController().getFicheAnnotation() != null){
-            getObjectTabController().getFicheAnnotation().setObj((TKAnnotableObject) edit);
-         }
-      }else{ // fiche combine
-         getObjectTabController().getFicheCombine().setObject(edit);
-         getObjectTabController().getFicheCombine().switchToStaticMode();
-      }
-
-      // on passe en mode fiche & liste
-      getObjectTabController().switchToFicheAndListeMode();
-   }
-
-   /**
-    * Selectionne le premier objet de la liste par défaut.
-    */
-   public void selectFirstObjet(){
-      if(getListObjects().size() > 0){
-         selectRowAndDisplayObject((Row) objectsListGrid.getRows().getFirstChild(), getListObjects().get(0));
-      }
-   }
-
-   /**
-    * Selectionne dans la liste la row correspondant à l'objet passé en
-    * paramètre.
-    *
-    * @param obj
-    */
-   public void selectlastRow(final TKdataObject obj){
-      final Iterator<Component> rowsIt = objectsListGrid.getRows().getChildren().iterator();
-
-      Row row = null;
-      while(rowsIt.hasNext()){
-         row = (Row) rowsIt.next();
-      }
-      selectRowAndDisplayObject(row, obj);
-   }
-
-   /**
-    * Passe la fiche associee en formulaire de création.
-    *
-    * @param event
-    *            Event : clique du bouton addNewEchantillon.
-    * @throws Exception
-    */
-   public void onClick$addNew(final Event event) throws Exception{
-      getObjectTabController().switchToCreateMode(null);
-   }
-
-   /**
-    * Méthode appelée lorsque l'utilisateur utiliser la touche ENTREE sur l'un
-    * des éléments du formulaire de recherche : redirection vers la méthode de
-    * recherche onClick$find().
-    */
-   public void onPressEnterKey(){
-      onClick$find();
-   }
-
-   /**
-    * Méthode appelée après lors du focus sur le champ dateCreationBoxPatient.
-    * Le radiobutton correspondant sera automatiquement sélectionné.
-    */
-   public void onSelect$dateCreationBox(){
-      dateCreation.setChecked(true);
-   }
-
-   /**
-    * Recherche la liste des échantillons à afficher.
-    *
-    * @param event
-    *            Event : clique du bouton find.
-    * @throws Exception
-    */
-   public void onClick$find(){
-      clearSelection();
-      if(dateCreation.isChecked() && dateCreationBox.getSelectedIndex() == 3){
-         setListObjects(extractLastObjectsCreated());
-      }else{
-         setResultatsIds(doFindObjects());
-         if(getResultatsIds().size() > 500){
-            openResultatsWindow(page, getResultatsIds(), self, getEntiteNom(), getObjectTabController());
-         }else if(getResultatsIds().size() > 0){
-            // setListObjects(extractObjectsFromIds(resultatsIds));
-            onShowResults();
-         }else{
-            // setListObjects(new ArrayList<Object>());
-            onShowResults();
-            Messagebox.show(Labels.getLabel("recherche.avancee.no.results"),
-               Labels.getLabel("recherche.avancee.no.results.title"), Messagebox.OK, Messagebox.INFORMATION);
-         }
-      }
-   }
-
-   /**
-    * Gère l'affichage des résultats obtenus par une recherche sur une liste de
-    * critères.
-    *
-    * @param res
-    *            Liste des ids des objets à afficher.
-    */
-   public void showResultsAfterSearchByList(final List<Integer> res){
-      clearSelection();
-      setResultatsIds(res);
-      if(res.size() > 500){
-         openResultatsWindow(page, res, self, getEntiteNom(), getObjectTabController());
-      }else if(res.size() > 0){
-         onShowResults();
-      }else{
-         onShowResults();
-         Messagebox.show(Labels.getLabel("recherche.avancee.no.results"), Labels.getLabel("recherche.avancee.no.results.title"),
-            Messagebox.OK, Messagebox.INFORMATION);
-      }
-      setCurrentRow(null);
-      setCurrentObject(null);
-      getObjectTabController().clearStaticFiche();
-      getObjectTabController().switchToOnlyListeMode();
-   }
-
-   public void onShowResults(){
-      List<Integer> ids = new ArrayList<>();
-      if(getResultatsIds().size() > 500){
-         Collections.reverse(getResultatsIds());
-         ids = getResultatsIds().subList(0, 500);
-      }else{
-         ids = getResultatsIds();
-      }
-
-      clearSelection();
-      setListObjects(extractObjectsFromIds(ids));
-
-      setCurrentRow(null);
-      setCurrentObject(null);
-      getObjectTabController().clearStaticFiche();
-      getObjectTabController().switchToOnlyListeMode();
-      objectsListGrid.setActivePage(0);
-      getBinder().loadComponent(objectsListGrid);
-
-      updateListResultsLabel(ids.size());
-   }
-
-   /**
-    * Evenement relayant l'envoi vers une nouvelle cession
-    * d'un trop grand nombre de résultats (envoyé depuis ResultatsModale)
-    */
-   public void onDoNewCession(){
-      Clients.showBusy(Labels.getLabel("cession.select.wait"));
-      Events.echoEvent("onLaterNewCession", self, null);
-   }
-
-   public void onLaterNewCession(){
-      setResultatsIds(getResultatsIds());
-
-      onNewCessionFromResultatModale();
-
-      Clients.clearBusy();
-   }
-
-   /**
-    * Méthode appelée par la fenêtre FicheRechercheAvancee quand l'utilisateur
-    * fait une recherche.
-    *
-    * @param Event contenant les résultats de la recherche.
-    */
-
-   public void onGetObjectFromResearch(final Event e){
-
-      // si des patients sont renvoyés
-      if(e.getData() != null){
-         setListObjects(new ArrayList<TKAnnotableObject>());
-         clearSelection();
-         setListObjects((List<? extends TKdataObject>) e.getData());
-         setCurrentRow(null);
-         setCurrentObject(null);
-         getObjectTabController().clearStaticFiche();
-         getObjectTabController().switchToOnlyListeMode();
-         getBinder().loadComponent(objectsListGrid);
-
-         updateListResultsLabel(getListObjects().size());
-      }
-
-   }
-
-   /**
-    * Clique sur le bouton exportItem
-    * @throws ClassNotFoundException
-    * @throws InstantiationException
-    * @throws IllegalAccessException
-    * @throws IllegalArgumentException
-    * @throws InvocationTargetException
-    * @throws NoSuchMethodException
-    * @throws SecurityException
-    */
-   public void onClick$exportItem(){
-      onLaterExport(true);
-   }
-
-   /**
-    * Export affichant la modale permettant la restriction
-    * des tables d'annotations concernées par l'export.
-    * @since 2.0.10
-    */
-   public void onClick$exportItemAdv(){
-      openRestrictTablesModale(this, null, getObjectTabController().getEntiteTab());
-   }
-
-   /**
-    * Evenement relayant l'export d'un trop grand nombre de
-    * résultats (envoyé depuis ResultatsModale)
-    * @version 2.1
-    */
-   public void onDoExport(final Event e){
-      if(e.getData() == null){
-         onLaterExport(false);
-      }else if(e.getData().equals("TVGSO")){
-         onDoExportTVGSO(false);
-      }else if(e.getData().equals("INCa")){
-         onDoExportINCa();
-      }else if(e.getData().equals("BIOCAP")){
-         onDoExportBIOCAP();
-      }else if(e.getData().equals("BIOBANQUES")){ //@since 2.1
-         onDoExportBIOBANQUES();
-      }
-   }
-
-   /**
-    * 
-    * @param csv
-    */
-   public void onDoExportTVGSO(final boolean csv){}
-
-   public void onDoExportINCa(){}
-
-   public void onDoExportBIOCAP(){}
-
-   public void onDoExportBIOBANQUES(){}
-
-   /**
-    * Lance l'export à partir d'une selection ou d'une recherche
-    * vide
-    * @param fromSelection
-    */
-
-   public void onLaterExport(final boolean fromSelection){
-      if(fromSelection){
-         getResultatsIds().clear();
-         extractIdsFromList((List<TKdataObject>) getSelectedObjects(), getResultatsIds());
-      }
-      try{
-         // ajoute toutes les tables disponibles aucune restriction
-         if(getRestrictedTableIds() != null){
-            if(getRestrictedTableIds().isEmpty()){
-               for(final TableAnnotation tb : ManagerLocator.getTableAnnotationManager()
-                  .findByBanquesManager(SessionUtils.getSelectedBanques(sessionScope), true)){
-                  getRestrictedTableIds().add(tb.getTableAnnotationId());
-               }
-            }
-         }else{
-            setRestrictedTableIds(new ArrayList<Integer>());
-         }
-
-         enregistrerValeursChampsCalculesPourExport();
-
-         EContexte contexte = SessionUtils.getCurrentContexte();
-         
-         final Class<?> exportThread = Class.forName(SessionUtils.getDatabasePathClass());
-         final Constructor<?> constr = exportThread.getConstructor(Desktop.class, int.class, List.class, List.class,
-            boolean.class, short.class, Utilisateur.class, List.class, HtmlMacroComponent.class, Map.class, EContexte.class);
-         final Object o = constr.newInstance(desktop, getObjectTabController().getEntiteTab().getEntiteId(), getResultatsIds(),
-            SessionUtils.getSelectedBanques(sessionScope), isAnonyme(), ConfigManager.DEFAULT_EXPORT,
-            SessionUtils.getLoggedUser(sessionScope), getRestrictedTableIds(), callProgressBar(), null, contexte);
-         final Method method = exportThread.getMethod("start");
-
-         // put into session
-         if(!desktop.hasAttribute("threads")){
-            desktop.setAttribute("threads", new ArrayList<Export>());
-         }
-         ((List<Export>) desktop.getAttribute("threads")).add((Export) o);
-
-         method.invoke(o);
-
-         getRestrictedTableIds().clear();
-      }catch(final Exception e){
-         e.printStackTrace();
-      }
-   }
-
-   /**
-    * Enregistrement des résultats de champs calculés pour pouvoir être exportés
-    * @since 2.2.0
-    */
-   private void enregistrerValeursChampsCalculesPourExport(){
-
-      //FIXME ChampCalcule Export - Grosse moulinette... Autre moyen ?
-      // Récupération de l'entité
-      List<Entite> entiteList = ManagerLocator.getEntiteManager().findByNomManager(this.getEntiteNom());
-      if(!entiteList.isEmpty()){
-         Entite entite = entiteList.get(0);
-         // Itération sur la liste d'ids d'objets sélectionnés
-         for(Integer id : getResultatsIds()){
-            // Récupération de l'objet en base
-            Object tkObjet = ManagerLocator.getEntiteManager().findObjectByEntiteAndIdManager(entite, id);
-            // Itération sur les tables d'annotations
-            for(Integer tbid : getRestrictedTableIds()){
-               final TableAnnotation tb = ManagerLocator.getTableAnnotationManager().findByIdManager(tbid);
-               // Récupération des champs d'annotation de type calculé
-               List<ChampAnnotation> champAnnoList = ManagerLocator.getChampAnnotationManager().findByTableAndDataTypeManager(tb,
-                  Arrays.asList(ManagerLocator.getDataTypeManager().findByTypeManager("calcule")));
-               for(ChampAnnotation champAnno : champAnnoList){
-                  if(null != champAnno.getChampCalcule()){
-                     // Récupération des objets liés à l'objet sélectionné pour le champ calculé
-                     List<Object> listeObjets = new ArrayList<>();
-                     listeObjets.addAll(RechercheUtilsManager.getListeObjetsCorrespondants(tkObjet, champAnno, null));
-                     // Récupération de la valeur du champ d'annotation
-                     //                     Object value = RechercheUtilsManager.getChampValueFromObjectList(champAnno, lo);
-                     Object valeurChampCalcule = null;
-                     Integer idObjetLie = null;
-                     TKAnnotableObject tkObjLie = null;
-                     // Récupération de l'objet lié contenant l'annotation
-                     for(Object obj : listeObjets){
-                        String champAnnoEntite = champAnno.getTableAnnotation().getEntite().getNom();
-                        tkObjLie = (TKAnnotableObject) obj;
-                        if(null != tkObjLie){
-                           String tkObjEntite = tkObjLie.entiteNom();
-                           if(champAnnoEntite.equals(tkObjEntite)){
-                              idObjetLie = tkObjLie.listableObjectId();
-                              // Récupération de la valeur du champ calculé sur l'objet lié
-                              valeurChampCalcule = ManagerLocator.getChampCalculeManager()
-                                 .getValueForObjectManager(champAnno.getChampCalcule(), tkObjLie);
-                              if(null != valeurChampCalcule && !"".equals(valeurChampCalcule.toString())){
-                                 // Récupération de l'annotationValeur correspondante si existante
-                                 List<AnnotationValeur> annoValList = ManagerLocator.getAnnotationValeurManager()
-                                    .findByChampAndObjetManager(champAnno, tkObjLie, true);
-                                 if(!annoValList.isEmpty()){ // MAJ
-                                    AnnotationValeur annoVal = annoValList.get(0);
-                                    annoVal.setValeur(valeurChampCalcule);
-                                    //FIXME ChampCalcule Export - Obligé de setter les valeurs en Alphanum sinon pas lu par l'export...
-                                    annoVal.setAlphanum(ObjectTypesFormatters.formatObject(valeurChampCalcule));
-                                    ManagerLocator.getAnnotationValeurManager().updateObject(annoVal);
-                                 }else{ // Création
-                                    AnnotationValeur annoVal = new AnnotationValeur();
-                                    annoVal.setBanque(SessionUtils.getCurrentBanque(sessionScope));
-                                    annoVal.setChampAnnotation(champAnno);
-                                    annoVal.setObjetId(idObjetLie);
-                                    annoVal.setValeur(valeurChampCalcule);
-                                    //FIXME ChampCalcule Export - Obligé de setter les valeurs en Alphanum sinon pas lu par l'export...
-                                    annoVal.setAlphanum(ObjectTypesFormatters.formatObject(valeurChampCalcule));
-                                    ManagerLocator.getAnnotationValeurManager().createObject(annoVal);
-                                 }
-                              }
-                           }
-                        }
-                     }
-                  }
-               }
-            }
-         }
-      }
-   }
-
-   /**
-    * Ajoute un objet (venant du formulaire de creation) a la liste Cet objet
-    * devient l'objet courant.
-    *
-    * @param objet
-    */
-   public void addToObjectList(final Object newObj){
-      if(getSelectedObjects() != null){
-         clearSelection();
-      }
-      // L'objet inséré est un clone de celui du formulaire
-      // afin d'éviter des effets de bord lors de la modif
-      // du formulaire
-      final TKdataObject objClone = ((TKdataObject) newObj).clone();
-      addToListObjects(objClone, 0);
-
-      // déselection de la liste courante
-      deselectRow();
-
-      // on affiche la page sur laquelle se trouve l'objet
-      objectsListGrid.getPaginal().setActivePage(getPageNumberForObject(currentObject));
-
-      // ListModel list = new SimpleListModel(getListObjects());
-      // objectsListGrid.setModel(list);
-      //
-      // Row row = new Row();
-      // row.setValue(objClone);
-      // row.setParent(objectsListGrid.getRows());
-
-      // update de la liste
-      getBinder().loadAttribute(objectsListGrid, "model");
-
-      updateListResultsLabel(getListObjects().size());
-   }
-
-   /**
-    * Ajoute une liste d'objet (venant du formulaire de creation) a la liste.
-    *
-    * @param objet
-    */
-   public void addListToObjectList(final List<Object> newObjs){
-      if(getSelectedObjects() != null){
-         clearSelection();
-      }
-
-      for(int i = 0; i < newObjs.size(); i++){
-         // L'objet inséré est un clone de celui du formulaire
-         // afin d'éviter des effets de bord lors de la modif
-         // du formulaire
-         final TKdataObject objClone = ((TKdataObject) newObjs.get(i)).clone();
-         addToListObjects(objClone, 0);
-      }
-
-      // déselection de la liste courante
-      deselectRow();
-
-      // update de la liste
-      getBinder().loadAttribute(objectsListGrid, "model");
-
-      // on affiche la page sur laquelle se trouve l'objet
-      objectsListGrid.getPaginal().setActivePage(getPageNumberForObject(currentObject));
-
-      updateListResultsLabel(getListObjects().size());
-   }
-
-   /**
-    * Supprime un objet a la liste.
-    *
-    * @param objet
-    */
-   public void removeObjectAndUpdateList(final TKdataObject obj){
-      if(getSelectedObjects() != null){
-         clearSelection();
-      }
-      // on déselectionne la ligne courante
-      deselectRow();
-      // suppression de la liste
-      removeObjectFromList(obj);
-
-      // update de la grille
-      getBinder().loadAttribute(objectsListGrid, "model");
-
-      updateListResultsLabel(getListObjects().size());
-
-   }
-
-   /**
-    * Met à jour la liste des objets.
-    */
-   public void refreshListe(){
-      getBinder().loadAttribute(objectsListGrid, "model");
-      updateListResultsLabel(getListObjects().size());
-      getObjectTabController().clearStaticFiche();
-   }
-
-   /**
-    * Met à jour la liste des objets.
-    */
-   public void refreshListe2(){
-      getBinder().loadAttribute(objectsListGrid, "model");
-      updateListResultsLabel(getListObjects().size());
-      //	getObjectTabController().clearStaticFiche();
-      if(getObjectTabController().getFicheStatic() != null){
-         getObjectTabController().getFicheStatic().reloadObject();
-      }
-   }
-
-   /**
-    * Met à jour le contenu de la liste avec les éléments passés en paramètre.
-    *
-    * @param objets
-    *            à mettre dans la liste.
-    */
-   public void updateListContent(final List<? extends TKdataObject> objs){
-      clearSelection();
-      setListObjects(objs);
-      setCurrentRow(null);
-      setCurrentObject(null);
-
-      getObjectTabController().clearStaticFiche();
-      // update de la grille
-      getBinder().loadAttribute(objectsListGrid, "model");
-      clearSelection();
-   }
-
-   public void updateMultiObjectsGridListInPlace(final List<? extends TKdataObject> objs){
-      for(final Object obj : objs){
-         final TKdataObject edit = ((TKdataObject) obj).clone();
-
-         // si la liste contient l'objet updaté
-         if(getListObjects().contains(edit)){
-
-            // déselection de la liste courante
-            deselectRow();
-
-            // on récupère l'objet et on le met à jour par
-            // suppression/insertion dans la liste
-            final int ind = getListObjects().indexOf(edit);
-            getListObjects().remove(ind);
-            addToListObjects(edit, new Integer(ind));
-         }
-      }
-      // maj de la grille
-      getBinder().loadAttribute(objectsListGrid, "model");
-
-      updateListResultsLabel(objs.size());
-   }
-
-   /**
-    * Mets à jour l'objet sélectionné de la liste.
-    *
-    * @param objet
-    *            Objet à mettre à jour.
-    */
-   public void updateObjectGridList(final Object obj){
-      // l'objet passé en paramètre est cloné
-      final TKdataObject edit = ((TKdataObject) obj).clone();
-
-      // on vérifie que la liste a bien un objet sélectionné
-      if(this.currentObject != null){
-         // si l'objet édité est dans la liste, il est forcément
-         // sélectionné.
-         // On vérifie donc que l'objet sélectionné a le meme id
-         // que celui édité
-         final Integer idSelected = (this.currentObject).listableObjectId();
-         final Integer idUpdated = edit.listableObjectId();
-         if(idSelected.equals(idUpdated)){
-            final int ind = getListObjects().indexOf(this.currentObject);
-            // si c'est le cas, maj de la liste par
-            // suppression/insertion
-            if(ind > -1){
-               getListObjects().remove(ind);
-               addToListObjects(edit, new Integer(ind));
-
-               getBinder().loadAttribute(objectsListGrid, "model");
-
-               // on re-sélctionne la liste contenant l'obj
-               final Rows rows = objectsListGrid.getRows();
-               final List<Component> comps = rows.getChildren();
-               selectRow((Row) comps.get(ind), edit);
-            }
-         }
-      }
-   }
-
-   /**
-    * Mets à jour la liste après un update depuis une autre page et selectionne
-    * l'objet mis à jour.
-    *
-    * @param objet Objet a mettre a jour.
-    * @param boolean si selection de l'objet dans la liste
-    * @return true si liste updated.
-    */
-   public boolean updateObjectGridListFromOtherPage(final Object obj, final boolean select){
-
-      boolean updated = false;
-
-      // l'objet passé en paramètre est cloné
-      final TKdataObject edit = ((TKdataObject) obj).clone();
-
-      // si la liste contient l'objet updaté
-      if(getListObjects().contains(edit)){
-
-         // déselection de la liste courante
-         deselectRow();
-
-         // on récupère l'objet et on le met à jour par
-         // suppression/insertion dans la liste
-         final int ind = getListObjects().indexOf(edit);
-         getListObjects().remove(ind);
-         addToListObjects(edit, new Integer(ind));
-
-         // maj de la grille
-         getBinder().loadAttribute(objectsListGrid, "model");
-
-         if(select){
-            // on récupère toutes les lignes de la grille et on
-            // sélectionne celle qui contient l'obj updaté
-            final Rows rows = objectsListGrid.getRows();
-            final List<Component> comps = rows.getChildren();
-            selectRow((Row) comps.get(ind), edit);
-
-            // on affiche la page contenant l'objet
-            objectsListGrid.getPaginal().setActivePage(getPageNumberForObject(currentObject));
-
-            // on passe l'objet à la fiche
-            getObjectTabController().getFicheStatic().setObject(edit);
-         }
-         updated = true;
-      }
-      return updated;
-   }
-
-   /**
-    * Mets à jour la liste après un update multiple de plusieurs objets.
-    * Recharge la liste directement
-    *
-    * @param objects
-    *            Liste d'objets a mettre a jour.
-    */
-   public void updateMultiObjectsGridListFromOtherPage(final List<TKdataObject> objects){
-      if(objects != null && !objects.isEmpty()){
-         clearList();
-         // setListObjects(objects);
-         // refreshListe();
-         final List<Integer> ids = new ArrayList<>();
-         extractIdsFromList(objects, ids);
-         updateGridByIds(ids, false, true);
-      }
-   }
-
-   /**
-    * Mets à jour la liste avec une liste d'objets suite à la modification du
-    * parent de ces objets.
-    *
-    * @param objects
-    *            Liste d'objets a mettre a jour.
-    * @param isDelete
-    *            true si l'operation est une deletion.
-    * @return enfant selectionné avant update, null si aucun
-    */
-   public TKdataObject updateGridListChildrenObjectsFromOtherPage(final List<? extends TKdataObject> objects,
-      final boolean isDelete){
-      final Iterator<? extends TKdataObject> it = objects.iterator();
-      TKdataObject next;
-      TKdataObject selected = null;
-      while(it.hasNext()){
-         next = it.next();
-
-         final int ind = getListObjects().indexOf(next);
-         // si c'est le cas, maj de la liste par
-         // suppression/insertion
-         if(ind > -1){
-            getListObjects().remove(ind);
-            if(!isDelete){
-               addToListObjects(next, new Integer(ind));
-            }
-            // si une enfant etait selectionné
-            if(next.equals(currentObject)){
-               selected = next;
-            }
-
-         }
-      }
-      refreshListe();
-
-      return selected;
-   }
-
-   /**
-    * Mets à jour la liste avec une liste d'objets suite à la modification du
-    * parent de ces objets.
-    * @param objects Liste d'objets a mettre a jour.
-    * @param isDelete true si l'operation est une deletion.
-    * @param met à jour le composant si true
-    * @return enfant selectionné avant update, null si aucun
-    */
-   public void updateGridByIds(final List<Integer> objectIds, final boolean isDelete, final boolean updateListeComposant){
-
-      final List<Integer> listObjsIds = new ArrayList<>();
-
-      // si la liste n'est pas vide
-      // mise à jour des objets
-      if(!getListObjects().isEmpty()){
-
-         extractIdsFromList(getListObjects(), listObjsIds);
-
-         for(final Integer idx : objectIds){
-
-            final int ind = listObjsIds.indexOf(idx);
-            // si c'est le cas, maj de la liste par
-            // suppression/insertion
-            if(ind > -1){
-               getListObjects().remove(ind);
-               // listObjsIds.remove(ind);
-               if(!isDelete){ // remplacement
-                  addIdToListObjects(idx, new Integer(ind));
-               }else{ // suppression
-                  listObjsIds.remove(ind);
-               }
-            }
-         }
-      }else{ // liste vide, on ajoute dans l'ordre
-         int i = 0;
-         for(final Integer idx : objectIds){
-            addIdToListObjects(idx, i);
-            i++;
-         }
-      }
-
-      if(updateListeComposant){
-         clearSelection();
-         refreshListe2();
-      }
-   }
-
-   /**
-    * Efface le contenu de la liste.
-    */
-   public void clearList(){
-      clearSelection();
-      getListObjects().clear();
-      setCurrentRow(null);
-      setCurrentObject(null);
-
-      refreshListe();
-   }
-
-   public void onSelectFromResultatModale(){
-      setSelectedObjects(extractObjectsFromIds(getResultatsIds()));
-      onClick$select();
-   }
-
-   public void onNewCessionFromResultatModale(){
-      setSelectedObjects(extractObjectsFromIds(getResultatsIds()));
-      if(this instanceof ListeEchantillon){
-         ((ListeEchantillon) this).onClick$newCessionItem();
-      }else if(this instanceof ListeProdDerive){
-         ((ListeProdDerive) this).onClick$newCessionItem();
-      }
-   }
-
-   /**
-    * Reception de l'évènement qd la modale de résultat est ouverte
-    * directement depuis le listeController (recherche rapide).
-    * @param Event
-    */
-   public void onDoBatchDelete(){
-      final List<Integer> ids = new ArrayList<>();
-      ids.addAll(getResultatsIds());
-      Events.echoEvent("onDeleteIdsFromModaleEvent", self, ids);
-   }
-
-   /**
-    * Méthode appelée lors du clic sur le bouton select. Tous les échantillons
-    * sélectionnés seront envoyés à la page demandant cette sélection.
-    */
-   public void onClick$select(){
-      // on vérifie que la page devant récupérer la sélection
-      // existe
-      if(Path.getComponent(path) != null){
-         final List<Object> data = new ArrayList<>();
-         data.addAll(getSelectedObjects());
-         // on envoie un event à cette page avec
-         // les objets sélectionnés
-         Events.postEvent(new Event(getOnGetEventName(), Path.getComponent(path), data));
-      }
-      // fermeture de la fenêtre
-      getMainWindow().unblockAllPanels();
-
-      clearSelection();
-      getObjectTabController().switchToNormalMode();
-   }
-
-   /**
-    * Méthode appelée lors du clic sur le bouton cancelSelection.
-    */
-   public void onClick$cancelSelection(){
-      // fermeture de la fenêtre
-      getMainWindow().unblockAllPanels();
-
-      clearSelection();
-      getObjectTabController().switchToNormalMode();
-   }
-
-   /**
-    * Methode appelée lors de la modification multiple.
-    */
-   public void onClick$modificationItem(){
-      Clients.showBusy(Labels.getLabel("general.display.wait"));
-      Events.echoEvent("onLaterUpdateMulti", self, null);
-   }
-
-   public void onLaterUpdateMulti(){
-      passSelectedToList();
-      setCurrentObject(null);
-      setCurrentRow(null);
-      getObjectTabController().clearStaticFiche();
-      // update de la grille
-      getBinder().loadAttribute(objectsListGrid, "model");
-
-      final List<TKdataObject> objs = new ArrayList<>();
-      objs.addAll(getListObjects());
-      getObjectTabController().switchToModifMultiMode(objs);
-
-      clearSelection();
-
-      Clients.clearBusy();
-   }
-
-   /**
-    * Renvoie le nom de l'entite associée à la liste.
-    *
-    * @return nom de l'entite.
-    */
-   public String getEntiteNom(){
-      return getObjectTabController().getEntiteTab().getNom();
-   }
-
-   /***************** abstract methods. **************************/
-
-   public abstract List<? extends TKdataObject> getListObjects();
-
-   public abstract void setListObjects(List<? extends TKdataObject> objs);
-
-   public abstract void addToListObjects(TKdataObject obj, Integer pos);
-
-   public abstract void removeObjectFromList(TKdataObject obj);
-
-   public abstract List<? extends Object> getSelectedObjects();
-
-   public abstract void setSelectedObjects(List<? extends TKdataObject> objs);
-
-   public abstract void addToSelectedObjects(TKdataObject obj);
-
-   public abstract void removeFromSelectedObjects(TKdataObject obj);
-
-   public abstract TKSelectObjectRenderer<? extends TKdataObject> getListObjectsRenderer();
-
-   /**
-    * Copy la selection dans la liste d'objets courants.
-    */
-   public abstract void passSelectedToList();
-
-   /**
-    * Copy la liste d'objets courants dans la selection.
-    */
-   public abstract void passListToSelected();
-
-   /**
-    * Initialise le contenu de la liste d'éléments.
-    *
-    * @param nbObjects
-    *            Nombre max d'objets souhaités dans la liste.
-    */
-   public abstract void initObjectsBox();
-
-   /**
-    * Applique les critères pour lancer réaliser l'opération de recherche dans
-    * la base.
-    *
-    * @return liste d'objets resultats
-    */
-   public abstract List<Integer> doFindObjects();
-
-   /**
-    * Méthode qui va retourner une liste d'objets dont les ids se trouvent dans
-    * la liste d'identifiants.
-    *
-    * @param ids
-    *            Liste des identifiants.
-    * @return Liste d'objets.
-    */
-   public abstract List<? extends TKdataObject> extractObjectsFromIds(List<Integer> ids);
-
-   /**
-    * Méthode qui va retourner une d'ids se trouvent dans
-    * la liste des objets.
-    *
-    * @param liste objetds
-    * @param liste ids à peupler
-    */
-   public void extractIdsFromList(final List<? extends TKdataObject> objs, final List<Integer> ids){
-
-      for(final TKdataObject obj : objs){
-         ids.add(obj.listableObjectId());
-      }
-   }
-
-   public void addIdToListObjects(final Integer id, final Integer pos){
-      final TKdataObject obj = getObjectTabController().loadById(id);
-      addToListObjects(obj, pos);
-   }
-
-   /**
-    * Supprime de la base de données une liste d'objets
-    * à partir de leurs ids
-    * @param ids
-    * @param comment ajout suppr
-    */
-   public void batchDelete(final List<Integer> ids, final String comment){}
-
-   /**
-    * Méthode qui va retourner une liste des derniers objets enregistrés.
-    *
-    * @param ids
-    *            Liste des identifiants.
-    * @return Liste d'objets.
-    */
-   public abstract List<? extends TKdataObject> extractLastObjectsCreated();
-
-   /*************************************************************************/
-   /******************************** Statics. *******************************/
-   /*************************************************************************/
-
-   /**
-    * Renvoie l'objet 'bound' a la Ligne d'une liste (ou grid) ou le composant
-    * représentant la ligne.
-    *
-    * @param event
-    * @param getTarget
-    *            boolean si true renvoie le composant, l'objet sinon
-    * @return object bound ou composant
-    */
-   public static Object getBindingData(final ForwardEvent event, final boolean getTarget){
-      Component target = event.getOrigin().getTarget();
-      try{
-         while(!(target instanceof Row || target instanceof Listitem)){
-            target = target.getParent();
-         }
-         final Map<?, ?> map = (Map<?, ?>) target.getAttribute("zkplus.databind.TEMPLATEMAP");
-
-         if(!getTarget){
-            return map.get(target.getAttribute("zkplus.databind.VARNAME"));
-         }
-
-         return target;
-
-      }catch(final NullPointerException e){
-         return null;
-      }
-   }
-
-   /**
-    * Cette méthode va retourner la ligne courante.
-    *
-    * @param event
-    *            Event sur la grille contenant la liste des objets.
-    * @return Une Row.
-    */
-   public static Row getRow(final ForwardEvent event){
-      Component target = event.getOrigin().getTarget();
-      try{
-         while(!(target instanceof Row)){
-            target = target.getParent();
-         }
-         // Map map = (Map) target
-         // .getAttribute("zkplus.databind.TEMPLATEMAP");
-         return (Row) target;
-      }catch(final NullPointerException e){
-         return null;
-      }
-   }
-
-   /*************************************************************************/
-   /************************** DROITS ***************************************/
-   /*************************************************************************/
-   public boolean isCanNew(){
-      return canNew;
-   }
-
-   public void setCanNew(final boolean cNew){
-      this.canNew = cNew;
-   }
-
-   public boolean isAdmin(){
-      return isAdmin;
-   }
-
-   public void setAdmin(final boolean i){
-      this.isAdmin = i;
-   }
-
-   public boolean isCanModifMultiple(){
-      return canModifMultiple;
-   }
-
-   public void setCanModifMultiple(final boolean can){
-      this.canModifMultiple = can;
-   }
-
-   public boolean isCanExport(){
-      return canExport;
-   }
-
-   public void setCanExport(final boolean can){
-      this.canExport = can;
-   }
-
-   public boolean isCanEtiquette(){
-      return canEtiquette;
-   }
-
-   public void setCanEtiquette(final boolean canE){
-      this.canEtiquette = canE;
-   }
-
-   public boolean isCanDelete(){
-      return canDelete;
-   }
-
-   public void setCanDelete(final boolean cDelete){
-      this.canDelete = cDelete;
-   }
-
-   /**
-    * Genere les droits supplémentaire à ceux appliqués aux boutons de creation
-    * et de modification multiples.
-    */
-   public void applyDroitsOnListe(){
-      // application aux buttons
-      if(addNew != null){
-         addNew.setDisabled(!isCanNew());
-      }
-      disableObjetsSelectionItems(true);
-
-      if(sessionScope.containsKey("Anonyme") && (Boolean) sessionScope.get("Anonyme")){
-         setAnonyme(true);
-      }else{
-         setAnonyme(false);
-      }
-   }
-
-   public void disableObjectTreeButtons(final boolean disable){
-      // objets tree item
-      // recupère LA banque courante ou la première banque en toutes collections
-      // car par définition, même profil pour toutes les banques en toutes collections
-      Banque banqueToGetAuthorisation = null;
-      if(!SessionUtils.getSelectedBanques(sessionScope).isEmpty()){
-         banqueToGetAuthorisation = SessionUtils.getSelectedBanques(sessionScope).get(0);
-      }
-      if(patientsItem != null){
-         patientsItem.setDisabled(
-            disable || getSelectedObjects().size() < 1 || !getDroitEntiteObjectConsultation(banqueToGetAuthorisation, "Patient"));
-      }
-      if(prelevementsItem != null){
-         prelevementsItem.setDisabled(disable || getSelectedObjects().size() < 1
-            || !getDroitEntiteObjectConsultation(banqueToGetAuthorisation, "Prelevement"));
-      }
-      if(echantillonsItem != null){
-         echantillonsItem.setDisabled(disable || getSelectedObjects().size() < 1
-            || !getDroitEntiteObjectConsultation(banqueToGetAuthorisation, "Echantillon"));
-      }
-      if(derivesItem != null){
-         derivesItem.setDisabled(disable || getSelectedObjects().size() < 1
-            || !getDroitEntiteObjectConsultation(banqueToGetAuthorisation, "ProdDerive"));
-      }
-      if(derivesAscItem != null){
-         derivesAscItem.setDisabled(disable || getSelectedObjects().size() < 1
-            || !getDroitEntiteObjectConsultation(banqueToGetAuthorisation, "ProdDerive"));
-      }
-      if(cessionsItem != null){
-         cessionsItem.setDisabled(
-            disable || getSelectedObjects().size() < 1 || !getDroitEntiteObjectConsultation(banqueToGetAuthorisation, "Cession"));
-      }
-   }
-
-   /**
-    * Attribues les droits de creation et de modification multiples.
-    */
-
-   public void drawActionsButtons(){
-      Boolean admin = false;
-      if(sessionScope.containsKey("Admin")){
-         admin = (Boolean) sessionScope.get("Admin");
-      }
-      setAdmin(admin);
-
-      // si l'utilisateur est admin => boutons cliquables
-      if(isAdmin()){
-         setCanNew(true);
-         setCanModifMultiple(true);
-         setCanExport(true);
-         setCanDelete(true);
-      }else{
-         // on extrait les OperationTypes de la base
-         final OperationType creation = ManagerLocator.getOperationTypeManager().findByNomLikeManager("Creation", true).get(0);
-         final OperationType modifMulti =
-            ManagerLocator.getOperationTypeManager().findByNomLikeManager("ModifMultiple", true).get(0);
-         final OperationType archivage = ManagerLocator.getOperationTypeManager().findByNomLikeManager("Archivage", true).get(0);
-
-         Hashtable<String, List<OperationType>> droits = new Hashtable<>();
-
-         if(sessionScope.containsKey("Droits")){
-            // on extrait les droits de l'utilisateur
-            droits = (Hashtable<String, List<OperationType>>) sessionScope.get("Droits");
-
-            final List<OperationType> ops = droits.get(getEntiteNom());
-            setCanNew(ops.contains(creation));
-            setCanModifMultiple(ops.contains(modifMulti));
-            setCanDelete(ops.contains(archivage));
-         }
-
-         // gestion de l'export
-         if(sessionScope.containsKey("Export")){
-            if(sessionScope.get("Export").equals("Export")){
-               setCanExport(true);
-            }else if(sessionScope.get("Export").equals("ExportAnonyme")){
-               setCanExport(true);
-            }else{
-               setCanExport(false);
-            }
-         }else{
-            setCanExport(false);
-         }
-      }
-
-      // retour
-      if(retourItem != null){
-         retourItem.setVisible(isAdmin());
-      }
-
-      if(SessionUtils.getSelectedBanques(sessionScope).size() > 0){
-         // on récupère les imprimantes associées au compte
-         // pour la banque courante
-         //			List<AffectationImprimante> imprimantes = ManagerLocator
-         //					.getAffectationImprimanteManager()
-         //					.findByBanqueUtilisateurManager(
-         //							SessionUtils.getSelectedBanques(sessionScope)
-         //									.get(0),
-         //							SessionUtils.getLoggedUser(sessionScope));
-         //			setCanEtiquette(imprimantes.size() > 0);
-         setCanEtiquette(
-            !ManagerLocator.getImprimanteManager().findByPlateformeManager(SessionUtils.getPlateforme(sessionScope)).isEmpty());
-      }else{
-         setCanEtiquette(false);
-      }
-   }
-
-   /**
-    * Méthode appelée lorsque l'utilisateur lance une recherche avançées Cette
-    * méthode va créer une nouvelle fenêtre.
-    *
-    * @param page
-    *            dans laquelle inclure la modale
-    * @param objToPrint
-    *            Objet à imprimer.
-    */
-   public void openRechercheAvanceeWindow(final Page page, final String title, final Entite entiteToSearch, final String p,
-      final boolean anonyme, final AbstractListeController2 listecontroller){
-      if(!isBlockModal()){
-
-         setBlockModal(true);
-
-         // nouvelle fenêtre
-         final Window win = new Window();
-         win.setVisible(false);
-         win.setId("rechercheAvanceeWindow");
-         win.setPage(page);
-         win.setMaximizable(true);
-         win.setSizable(true);
-         win.setTitle(title);
-         win.setBorder("normal");
-         win.setHflex("1");
-         win.setWidth("90%");
-         win.setFocus(true);
-         final int height = getMainWindow().getPanelHeight() + 30;
-         win.setHeight(height + "px");
-         win.setClosable(true);
-         // win.setZclass("z-window-modal");
-
-         final HtmlMacroComponent ua =
-            populateRechercheAvanceeModal(win, page, entiteToSearch, p, anonyme, sessionScope, listecontroller);
-         ua.setVisible(false);
-
-         win.addEventListener("onTimed", new EventListener<Event>()
-         {
-            @Override
-            public void onEvent(final Event event) throws Exception{
-               // progress.detach();
-               ua.setVisible(true);
-            }
-         });
-
-         final Timer timer = new Timer();
-         timer.setDelay(500);
-         timer.setRepeats(false);
-         timer.addForward("onTimer", timer.getParent(), "onTimed");
-         win.appendChild(timer);
-         timer.start();
-
-         try{
-            win.doModal();
-
-            setBlockModal(false);
-
-         }catch(final SuspendNotAllowedException e){
-            log.error(e);
-         }
-      }
-   }
-   
-   private static HtmlMacroComponent populateRechercheAvanceeModal(final Window win, final Page page, final Entite entiteToSearch,
-      final String path, final boolean anonyme, final Map<?, ?> sessionScope /*TODO Jamais utilisé */, final AbstractListeController2 listeController){
-      // HtmlMacroComponent contenu dans la fenêtre : il correspond
-      // au composant des collaborations.
-      HtmlMacroComponent ua = null;
-
-      if(entiteToSearch.getNom().equals("Patient")){
-         String pageDef = "ficheRechercheAvanceePatient";
-         String winDef = "fwinRechercheAvanceePatient";
-         if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
-            pageDef = "ficheRechercheAvanceePatientSero";
-            winDef = "fwinRechercheAvanceePatientSero";
-         }
-         ua = (HtmlMacroComponent) page.getComponentDefinition(pageDef, false).newInstance(page, null);
-         ua.setParent(win);
-         ua.setId("openRechercheAvanceePatientModale");
-         ua.applyProperties();
-         ua.afterCompose();
-
-         ((FicheRechercheAvancee) ua.getFellow(winDef)
-            .getAttributeOrFellow(winDef + "$composer", true)).initRechercheAvancee(entiteToSearch, path,
-               anonyme, listeController);
-
-      }else if(entiteToSearch.getNom().equals("Prelevement")){
-         String pageDef = "ficheRechercheAvanceePrelevement";
-         String winDef = "fwinRechercheAvanceePrelevement";
-         if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
-            pageDef = "ficheRechercheAvanceePrelevementSero";
-            winDef = "fwinRechercheAvanceePrelevementSero";
-         }
-         ua = (HtmlMacroComponent) page.getComponentDefinition(pageDef, false).newInstance(page, null);
-         ua.setParent(win);
-         ua.setId("openRechercheAvanceePrelevementModale");
-         ua.applyProperties();
-         ua.afterCompose();
-
-         ((FicheRechercheAvancee) ua.getFellow(winDef).getAttributeOrFellow(winDef + "$composer", true))
-            .initRechercheAvancee(entiteToSearch, path, anonyme, listeController);
-      }else if(entiteToSearch.getNom().equals("Echantillon")){
-         String pageDef = "ficheRechercheAvanceeEchantillon";
-         String winDef = "fwinRechercheAvanceeEchantillon";
-         if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
-            pageDef = "ficheRechercheAvanceeEchantillonSero";
-            winDef = "fwinRechercheAvanceeEchantillonSero";
-         }
-         ua = (HtmlMacroComponent) page.getComponentDefinition(pageDef, false).newInstance(page, null);
-         ua.setParent(win);
-         ua.setId("openRechercheAvanceeEchantillonModale");
-         ua.applyProperties();
-         ua.afterCompose();
-
-         ((FicheRechercheAvancee) ua.getFellow(winDef)
-            .getAttributeOrFellow(winDef + "$composer", true)).initRechercheAvancee(entiteToSearch, path,
-               anonyme, listeController);
-      }else if(entiteToSearch.getNom().equals("ProdDerive")){
-         String pageDef = "ficheRechercheAvanceeProdDerive";
-         String winDef = "fwinRechercheAvanceeProdDerive";
-         if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
-            pageDef = "ficheRechercheAvanceeProdDeriveSero";
-            winDef = "fwinRechercheAvanceeProdDeriveSero";
-         }
-         ua = (HtmlMacroComponent) page.getComponentDefinition(pageDef, false).newInstance(page, null);
-         ua.setParent(win);
-         ua.setId("openRechercheAvanceeProdDeriveModale");
-         ua.applyProperties();
-         ua.afterCompose();
-
-         ((FicheRechercheAvancee) ua.getFellow(winDef)
-            .getAttributeOrFellow(winDef + "$composer", true)).initRechercheAvancee(entiteToSearch, path,
-               anonyme, listeController);
-      }
-
-      return ua;
-   }
-
-   /**
-    * Méthode appelée lorsque l'utilisateur clique sur le lien pour imprimer la
-    * page. Cette méthode va créer une nouvelle fenêtre.
-    *
-    * @param page
-    *            dans laquelle inclure la modale
-    * @param objToPrint
-    *            Objet à imprimer.
-    */
-   public void openRechercheAvanceeCessionWindow(final Page page, final String title, final Entite entiteToSearch,
-      final String p){
-      if(!isBlockModal()){
-
-         setBlockModal(true);
-
-         // nouvelle fenêtre
-         final Window win = new Window();
-         win.setVisible(false);
-         win.setId("rechercheAvanceeWindow");
-         win.setPage(page);
-         win.setMaximizable(true);
-         win.setSizable(true);
-         win.setTitle(title);
-         win.setBorder("normal");
-         win.setHflex("1");
-         win.setWidth("90%");
-         win.setFocus(true);
-         final int height = getMainWindow().getPanelHeight() + 30;
-         win.setHeight(height + "px");
-         win.setClosable(true);
-
-         final HtmlMacroComponent ua = populateRechercheAvanceeCessionModal(win, page, entiteToSearch, p);
-         ua.setVisible(false);
-
-         win.addEventListener("onTimed", new EventListener<Event>()
-         {
-            @Override
-            public void onEvent(final Event event) throws Exception{
-               // progress.detach();
-               ua.setVisible(true);
-            }
-         });
-
-         final Timer timer = new Timer();
-         timer.setDelay(500);
-         timer.setRepeats(false);
-         timer.addForward("onTimer", timer.getParent(), "onTimed");
-         win.appendChild(timer);
-         timer.start();
-
-         try{
-            win.doModal();
-
-            setBlockModal(false);
-
-         }catch(final SuspendNotAllowedException e){
-            log.error(e);
-         }
-      }
-   }
-
-   public HtmlMacroComponent populateRechercheAvanceeCessionModal(final Window win, final Page page, final Entite entiteToSearch,
-      final String path){
-      // HtmlMacroComponent contenu dans la fenêtre : il correspond
-      // au composant des collaborations.
-      HtmlMacroComponent ua = null;
-
-      ua = (HtmlMacroComponent) page.getComponentDefinition("ficheRechercheAvanceeCession", false).newInstance(page, null);
-      ua.setParent(win);
-      ua.setId("openRechercheAvanceeCessionModale");
-      ua.applyProperties();
-      ua.afterCompose();
-
-      ((FicheRechercheAvanceeCession) ua.getFellow("fwinRechercheAvanceeCession")
-         .getAttributeOrFellow("fwinRechercheAvanceeCession$composer", true)).initRechercheAvancee(entiteToSearch, path, this);
-
-      return ua;
-   }
-
-   /**
-    * Ouverture de la modale permettant une recherche avancée à partir des
-    * items INCa.
-    */
-   public void openRechercheINCaWindow(final Page page, final Entite entiteToSearch, final String p){
-      if(!isBlockModal()){
-
-         setBlockModal(true);
-
-         // nouvelle fenêtre
-         final Window win = new Window();
-         win.setVisible(false);
-         win.setId("rechercheINCaWindow");
-         win.setPage(page);
-         win.setMaximizable(true);
-         win.setSizable(true);
-         win.setTitle(Labels.getLabel("recherche.inca.titre"));
-         win.setBorder("normal");
-         win.setHflex("1");
-         win.setWidth("90%");
-         win.setFocus(true);
-         final int height = getMainWindow().getPanelHeight() + 30;
-         win.setHeight(height + "px");
-         win.setClosable(true);
-
-         final HtmlMacroComponent ua = populateRechercheINCa(win, page, entiteToSearch, p, this);
-         ua.setVisible(false);
-
-         win.addEventListener("onTimed", new EventListener<Event>()
-         {
-            @Override
-            public void onEvent(final Event event) throws Exception{
-               // progress.detach();
-               ua.setVisible(true);
-            }
-         });
-
-         final Timer timer = new Timer();
-         timer.setDelay(500);
-         timer.setRepeats(false);
-         timer.addForward("onTimer", timer.getParent(), "onTimed");
-         win.appendChild(timer);
-         timer.start();
-
-         try{
-            win.doModal();
-
-            setBlockModal(false);
-
-         }catch(final SuspendNotAllowedException e){
-            log.error(e);
-         }
-      }
-   }
-
-   private static HtmlMacroComponent populateRechercheINCa(final Window win, final Page page, final Entite entiteToSearch,
-      final String path, final AbstractListeController2 controller){
-      // HtmlMacroComponent contenu dans la fenêtre : il correspond
-      // au composant des collaborations.
-      HtmlMacroComponent ua = null;
-
-      ua = (HtmlMacroComponent) page.getComponentDefinition("ficheRechercheINCa", false).newInstance(page, null);
-      ua.setParent(win);
-      ua.setId("openRechercheINCaModale");
-      ua.applyProperties();
-      ua.afterCompose();
-
-      ((FicheRechercheINCa) ua.getFellow("fwinRechercheINCa").getAttributeOrFellow("fwinRechercheINCa$composer", true))
-         .initRechercheAvancee(entiteToSearch, path, controller);
-
-      return ua;
-   }
-
-   /**
-    * PopUp window appelée pour attente lors de l'export.
-    *
-    * @param page
-    *            dans laquelle inclure la modale
-    * @param message
-    *            affiché à l'utilisateur.
-    * @param boolean cascadable si possibilité de cascader la délétion ou
-    *        l'archivage
-    * @param deletable
-    *            si la deletion est possible.
-    * @param controller
-    *            parent ayant demandé la délétion.
-    */
-
-   public void openExportWindow(final Page page, final String entite, final List<?> objs, final List<Banque> banques,
-      final boolean isExportAnonyme, final Utilisateur user){
-      if(!isBlockModal()){
-
-         setBlockModal(true);
-
-         // nouvelle fenêtre
-         final Window win = new Window();
-         win.setVisible(false);
-         win.setId("exportWindow");
-         win.setPage(page);
-         win.setMaximizable(true);
-         win.setSizable(true);
-         win.setBorder("normal");
-         win.setWidth("400px");
-         final int height = 175;
-         win.setHeight(String.valueOf(height) + "px");
-         win.setClosable(false);
-
-         final HtmlMacroComponent ua;
-         ua = (HtmlMacroComponent) page.getComponentDefinition("exportModale", false).newInstance(page, null);
-         ua.setParent(win);
-         ua.setId("exportModaleComponent");
-         ua.applyProperties();
-         ua.afterCompose();
-
-         ((ExportModale) ua.getFellow("fwinExportModale").getAttributeOrFellow("fwinExportModale$composer", true)).init(entite,
-            (List<Object>) objs, banques, isExportAnonyme, user);
-         ua.setVisible(false);
-
-         win.addEventListener("onTimed", new EventListener<Event>()
-         {
-            @Override
-            public void onEvent(final Event event) throws Exception{
-               // progress.detach();
-               ua.setVisible(true);
-            }
-         });
-
-         final Timer timer = new Timer();
-         timer.setDelay(500);
-         timer.setRepeats(false);
-         timer.addForward("onTimer", timer.getParent(), "onTimed");
-         win.appendChild(timer);
-         timer.start();
-
-         try{
-            win.onModal();
-            setBlockModal(false);
-
-         }catch(final SuspendNotAllowedException e){
-            log.error(e);
-         }
-      }
-   }
-
-   public List<Integer> getResultatsIds(){
-      return resultatsIds;
-   }
-
-   public void setResultatsIds(final List<Integer> ids){
-      this.resultatsIds.clear();
-      if(ids != null){
-         this.resultatsIds.addAll(ids);
-      }
-   }
-
-   public List<Integer> getRestrictedTableIds(){
-      return restrictedTableIds;
-   }
-
-   public void setRestrictedTableIds(final List<Integer> rI){
-      this.restrictedTableIds = rI;
-   }
-
-   public Menuitem getExportItemAdv(){
-      return exportItemAdv;
-   }
-
-   public void switchToEditMode(final boolean b){
-      disableToolBar(b);
-   }
-
-   /**
-    * Ouvre une fenêtre pour uploader un fichier contenant une liste de
-    * valeurs, extrait ces valeurs et les retourne pour permettre la recherche.
-    *
-    * @return
-    */
-   public List<String> getListStringToSearch(){
-      List<String> liste = new ArrayList<>();
-      Media[] medias;
-      InputStream fileInputStream = null;
-      medias = Fileupload.get(ObjectTypesFormatters.getLabel("general.upload.limit", new String[] {String.valueOf(10000)}),
-         Labels.getLabel("general.search.file.upload"), 1, 10000, true);
-      if(medias != null && medias.length > 0){
-         fileInputStream = medias[0].getStreamData();
-         liste = ManagerLocator.getImportManager().extractListOfStringFromExcelFile(fileInputStream, true);
-      }
-
-      // since 2.1
-      if(fileInputStream != null){
-         try{
-            fileInputStream.close();
-         }catch(final IOException e){
-            e.printStackTrace();
-         }finally{
-            fileInputStream = null;
-         }
-      }
-
-      return liste;
-   }
-
-   /**
-    * Impression des étiquettes pour les TKStockableObject
-    */
-
-   public void onClick$etiquetteItem(){
-
-      AffectationImprimante affectation = null;
-
-      final List<AffectationImprimante> affs = ManagerLocator.getAffectationImprimanteManager().findByBanqueUtilisateurManager(
-         SessionUtils.getSelectedBanques(sessionScope).get(0), SessionUtils.getLoggedUser(sessionScope));
-      if(affs.size() > 0){
-         affectation = affs.get(0);
-      }
-
-      openImprimanteModeleModale(SessionUtils.getPlateforme(sessionScope),
-         (List<? extends TKStockableObject>) getSelectedObjects(), affectation, null);
-   }
-
-   public void onDeleteIdsFromModaleEvent(final Event e){
-      getResultatsIds().clear();
-      if(e.getData() != null && e.getData() instanceof List){
-         getResultatsIds().addAll((List<Integer>) e.getData());
-      }
-      openDeleteWindow(getPage(), "message", true, true, true, self, false);
-   }
-
-   /**
-    * batch delete objects from Liste selection
-    * clear resultatsIds avant toute chose, récupère
-    * les ids depuis la résultatModale
-    * @since 2.0.12
-    */
-   public void onClick$deleteItem(final Event e){
-      Messagebox.show(
-         ObjectTypesFormatters.getLabel("message.deletion.multiple", new String[] {String.valueOf(getSelectedIds(true).size())}),
-         Labels.getLabel("general.warning"), Messagebox.OK | Messagebox.CANCEL, Messagebox.EXCLAMATION,
-         new org.zkoss.zk.ui.event.EventListener<Event>()
-         {
-            @Override
-            public void onEvent(final Event e){
-               if(Messagebox.ON_OK.equals(e.getName())){
-                  getResultatsIds().clear();
-                  openDeleteWindow(getPage(), "message", true, true, true, self, false);
-               }else if(Messagebox.ON_CANCEL.equals(e.getName())){
-                  //Cancel is clicked
-               }
-            }
-         });
-   }
-
-   public void onDeleteTriggered(final Event event){
-      Clients.showBusy(Labels.getLabel("deletion.general.wait"));
-      String comments = null;
-      if(event.getData() != null){
-         comments = (String) event.getData();
-      }
-      Events.echoEvent("onLaterBatchDelete", self, comments);
-   }
-
-   public void onLaterBatchDelete(final Event e){
-      try{
-         if(getResultatsIds().isEmpty()){
-            setResultatsIds(getSelectedIds(true));
-         }
-
-         final Map<Entite, List<Integer>> childrens = getObjectTabController().getChildrenObjectsIds(getResultatsIds());
-
-         final Map<Entite, List<Integer>> parents = getObjectTabController().getParentsObjectsIds(getResultatsIds());
-
-         batchDelete(getResultatsIds(), (String) e.getData());
-
-         getObjectTabController().getListe().updateGridByIds(getResultatsIds(), true, true);
-         //				}
-         //				getObjectTabController().clearStaticFiche();
-         //				getObjectTabController().switchToOnlyListeMode();
-         //			}
-         //
-         //
-         //			refreshListe();
-         //
-
-         // update de la liste des parents
-         getObjectTabController().updateParentsReferences(parents);
-
-         // update de la liste des enfants
-         getObjectTabController().updateChildrenReferences(childrens, true);
-
-      }catch(final RuntimeException re){
-         // ferme wait message
-         Clients.clearBusy();
-         Messagebox.show(handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
-      }finally{
-         // ferme wait message
-         Clients.clearBusy();
-      }
-   }
-
-   /**
-    * Vérifie que dans la liste d'objets sélectionnés, au moins un
-    * n'est pas stocké afin de rendre le bouton 'Stocker' cliquable.
-    * Cette méthode n'est appelée que pour les listes Echantillon et Derives.
-    * @return false si au moins un objet n'est pas stocke.
-    */
-   public boolean areAllObjectsStocked(){
-      final boolean out = true;
-
-      for(final Object tkSObj : getSelectedObjects()){
-         if(((TKStockableObject) tkSObj).getObjetStatut().getStatut().equals("NON STOCKE")){
-            return false;
-         }
-      }
-
-      return out;
-   }
-
-   /**
-    * Vérifie que dans la liste d'objets sélectionnés, au moins a un statut STOCKE
-    * ou non STOCKE.
-    * Cette méthode n'est appelée que pour les listes Echantillon et Derives.
-    * @return false si au moins un objet n'est pas stocke.
-    */
-   public boolean areAllObjectsCessibles(){
-      final boolean out = true;
-
-      for(final Object tkSObj : getSelectedObjects()){
-         if(((TKStockableObject) tkSObj).getObjetStatut().getStatut().equals("STOCKE")
-            || ((TKStockableObject) tkSObj).getObjetStatut().getStatut().equals("NON STOCKE")){
-            return false;
-         }
-      }
-
-      return out;
-   }
-
-   /**
-    * Ouvre la modale permettant de renseigner un évènement de stockage
-    * à tous les objets sélectionnés.
-    * Ouvre une warning modale si un objet est en statut
-    * @since 2.0.10
-    */
-
-   public void onClick$retourItem(){
-
-      if(!getObjStatutIncompatibleForRetour(getSelectedObjects(), null)){
-         openRetourFormModale(null, true, null, null, (List<TKStockableObject>) getSelectedObjects(), null, null, null, null,
-            null, null, null);
-
-         clearSelection();
-      }
-   }
-
-   public boolean isTtesCollection(){
-      return SessionUtils.getSelectedBanques(sessionScope).size() > 1;
-   }
-
-   @Override
-   public void onClickObjectEmplacement(final Event event){
-      if(!getMode().equals("select")){
-         super.onClickObjectEmplacement(event);
-      }
-   }
-
-   /**
-    * Bouton de menu affichant la modale permettant la complétion
-    * des évènements de stockage incomplets
-    * @since 2.0.10
-    */
-
-   public void onClick$incompRetoursItem(){
-      openDateRetourModale(this, (List<TKStockableObject>) getSelectedObjects());
-   }
-
-   /**
-    * Appelles l'ouverture de la resultats modale depuis un autre
-    * component
-    * @param ids Resultats
-    */
-   public void callResultatsModale(final List<Integer> res){
-      getResultatsIds().clear();
-      getResultatsIds().addAll(res);
-      openResultatsWindow(page, res, self, getEntiteNom(), getObjectTabController());
-   }
-
-   /*************************************************************************/
-   /****************** Evenements on click arbre d'objets *******************/
-   /*************************************************************************/
-   private void postTargetObjectsIds(final String eNom, final Boolean deriveDesc, final List<Integer> ids){
-
-      // recuperation des ids target
-      final List<Integer> resIds = ManagerLocator.getCorrespondanceIdManager().findTargetIdsFromIdsManager(ids,
-         getObjectTabController().getEntiteTab(), ManagerLocator.getEntiteManager().findByNomManager(eNom).get(0),
-         SessionUtils.getSelectedBanques(sessionScope), deriveDesc);
-
-      // changement onglet
-      getObjectTabController().postIdsToOtherEntiteTab(eNom, resIds);
-   }
-
-   private List<Integer> getSelectedIds(final boolean fromSelection){
-      final List<Integer> ids = new ArrayList<>();
-      if(fromSelection){
-         extractIdsFromList((List<TKdataObject>) getSelectedObjects(), ids);
-      }
-      return ids;
-   }
-
-   public void onClick$patientsItem(final Event e){
-      if(e.getData() != null && !((List<Integer>) e.getData()).isEmpty()){
-         postTargetObjectsIds("Patient", null, (List<Integer>) e.getData());
-      }else{
-         postTargetObjectsIds("Patient", null, getSelectedIds(true));
-      }
-   }
-
-   public void onClick$prelevementsItem(final Event e){
-      if(e.getData() != null && !((List<Integer>) e.getData()).isEmpty()){
-         postTargetObjectsIds("Prelevement", null, (List<Integer>) e.getData());
-      }else{
-         postTargetObjectsIds("Prelevement", null, getSelectedIds(true));
-      }
-   }
-
-   public void onClick$echantillonsItem(final Event e){
-      if(e.getData() != null && !((List<Integer>) e.getData()).isEmpty()){
-         postTargetObjectsIds("Echantillon", null, (List<Integer>) e.getData());
-      }else{
-         postTargetObjectsIds("Echantillon", null, getSelectedIds(true));
-      }
-   }
-
-   public void onClick$derivesItem(final Event e){
-      if(e.getData() != null && !((List<Integer>) e.getData()).isEmpty()){
-         postTargetObjectsIds("ProdDerive", true, (List<Integer>) e.getData());
-      }else{
-         postTargetObjectsIds("ProdDerive", true, getSelectedIds(true));
-      }
-   }
-
-   public void onClick$derivesAscItem(final Event e){
-      if(e.getData() != null && !((List<Integer>) e.getData()).isEmpty()){
-         postTargetObjectsIds("ProdDerive", false, (List<Integer>) e.getData());
-      }else{
-         postTargetObjectsIds("ProdDerive", false, getSelectedIds(true));
-      }
-   }
-
-   public void onClick$cessionsItem(final Event e){
-      if(e.getData() != null && !((List<Integer>) e.getData()).isEmpty()){
-         postTargetObjectsIds("Cession", null, (List<Integer>) e.getData());
-      }else{
-         postTargetObjectsIds("Cession", null, getSelectedIds(true));
-      }
-   }
-
-   public void updateListResultsLabel(final Integer nbResults){
-      if(getObjectTabController() != null && getObjectTabController().getListeRegion() != null){
-         getObjectTabController().getListeRegion()
-            //.getCaption().setLabel
-            .setTitle(Labels.getLabel("general.recherche") + " ("
-               + (nbResults != null ? nbResults : getListObjects() != null ? getListObjects().size() : 0) + ")");
-      }
-   }
+	private static final long serialVersionUID = -7175263022919263339L;
+
+	// Row actuellement sélectionnée.
+	private Row currentRow;
+	protected Panel listPanel;	
+	protected Panelchildren scrollPan;
+	protected Grid objectsListGrid;
+	protected Checkbox checkAll;
+	protected Menuitem modificationItem;
+	protected Menuitem exportItem;
+	protected Menuitem exportItemAdv;
+	protected Menuitem etiquetteItem;
+	protected Menuitem changeCollectionItem;
+	protected Menuitem retourItem;
+	protected Menuitem deleteItem;
+	protected Menuitem incompRetoursItem;
+	protected Button find;
+	protected Button addNew;
+	protected Button select;
+	protected Button cancelSelection;
+	protected Menubar menuBar;
+	protected Menuitem patientsItem;
+	protected Menuitem prelevementsItem;
+	protected Menuitem echantillonsItem;
+	protected Menuitem derivesItem;
+	protected Menuitem derivesAscItem;
+	protected Menuitem cessionsItem;
+
+	// citere date creation
+	protected Radio dateCreation;
+	protected Listbox dateCreationBox;
+	private Calendar searchDateCreation;
+	private String selectedDate;
+
+	private AbstractObjectTabController objectTabController;
+	private String path;
+	private String mode = "liste";
+	private String onGetEventName;
+	private final Integer nbLastObjs = 30;
+
+	// Variable de droits.
+	private boolean canModifMultiple;
+	private boolean canExport;
+	private boolean canNew;
+	private boolean canEtiquette;
+	private boolean isAdmin;
+	private boolean canDelete;
+	
+	private TKdataObject currentObject;
+	private final List<Integer> resultatsIds = new ArrayList<>();
+	private List<Integer> restrictedTableIds = new ArrayList<>();
+
+	public TKdataObject getCurrentObject(){
+		return currentObject;
+	}
+
+	public void setCurrentObject(final TKdataObject o){
+		this.currentObject = o;
+	}
+
+	public Row getCurrentRow(){
+		return currentRow;
+	}
+
+	public void setCurrentRow(final Row cRow){
+		this.currentRow = cRow;
+	}
+
+	public String getPath(){
+		return path;
+	}
+
+	public void setPath(final String p){
+		this.path = p;
+	}
+
+	public String getMode(){
+		return mode;
+	}
+
+	public void setMode(final String m){
+		this.mode = m;
+	}
+
+	public Integer getNbLastObjs(){
+		return nbLastObjs;
+	}
+
+	public String getOnGetEventName(){
+		return onGetEventName;
+	}
+
+	public void setOnGetEventName(final String onName){
+		this.onGetEventName = onName;
+	}
+
+	public AbstractObjectTabController getObjectTabController(){
+		return objectTabController;
+	}
+
+	public void setObjectTabController(final AbstractObjectTabController otc){
+		this.objectTabController = otc;
+	}
+
+	/**
+	 * Calcule la date de référence (en fonction de selection de la liste de
+	 * String creationDates) à passer à la méthode pour qui cherche les objets
+	 * en fonction de leur date de création.
+	 *
+	 * @return Date de référence
+	 */
+	public Calendar getSearchDateCreation(){
+		final int ind = dateCreationBox.getSelectedIndex();
+		// on récupère la date du jour
+		final Calendar today = Calendar.getInstance();
+		// SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		today.set(Calendar.HOUR_OF_DAY, 0);
+		today.set(Calendar.MINUTE, 0);
+		today.set(Calendar.SECOND, 0);
+		// en fonction de la sélection, on enlève des jours
+		if(ind <= 0){
+			today.add(Calendar.DAY_OF_YEAR, -1);
+		}else if(ind == 1){
+			today.add(Calendar.DAY_OF_YEAR, -10);
+		}else if(ind == 2){
+			today.add(Calendar.DAY_OF_YEAR, -30);
+		}
+		searchDateCreation = today;
+		/*
+		 * try { searchDateCreation = new
+		 * SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
+		 * .parse(sdf.format(today.getTime())); } catch (ParseException e) {
+		 * log.error(e); }
+		 */
+		return searchDateCreation;
+	}
+
+	public void setSearchDateCreation(final Calendar search){
+		this.searchDateCreation = search;
+	}
+
+	public String getSelectedDate(){
+		return selectedDate;
+	}
+
+	public void setSelectedDate(final String selected){
+		this.selectedDate = selected;
+	}
+
+	public Grid getObjectsListGrid(){
+		return objectsListGrid;
+	}
+
+	@Override
+	public void doAfterCompose(final Component comp) throws Exception{
+
+		super.doAfterCompose(comp);
+
+		// reference liste selectedObjects dans le renderer
+		if(getListObjectsRenderer() != null){
+			getListObjectsRenderer().setSelectedObjects(getSelectedObjects());
+		}
+
+		// IE8 hack
+		if(Executions.getCurrent().getBrowser("ie") != null && Executions.getCurrent().getBrowser("ie") <= 8 && scrollPan != null){
+			scrollPan.setStyle("overflow-y: auto;");
+		}
+
+		setBinder(new AnnotateDataBinder(comp));
+		getBinder().loadAll();
+		if(listPanel != null){
+			listPanel.setHeight(getMainWindow().getListPanelHeight() + "px");
+		}
+
+		// applique le scroll que si l'écran est trop petit
+		// 340 px = taille demandée pour afficher page de grid 10 objets
+		/*
+		 * if (Integer.valueOf(getMainWindow() .getListPanelHeight()) < 340 &&
+		 * objectsListGrid != null) {
+		 * objectsListGrid.setStyle("overflow-y:scroll"); }
+		 */
+
+		// applyDroitsOnListe();
+		setAnonyme(sessionScope.containsKey("Anonyme") && (Boolean) sessionScope.get("Anonyme"));
+
+		// applique l'affichage de la Banque si Toutes collections
+		if(getListObjectsRenderer() != null){
+			getListObjectsRenderer().setTtesCollections(SessionUtils.getSelectedBanques(sessionScope).size() > 1);
+		}
+
+		initObjectsBox();
+	}
+
+	/**
+	 * Passe le composant en mode de liste.
+	 */
+	public void switchToListMode(){
+		setMode("liste");
+		clearSelection();
+		this.find.setVisible(true);
+		this.addNew.setVisible(true);
+		this.select.setVisible(false);
+		this.cancelSelection.setVisible(false);
+		this.menuBar.setVisible(true);
+	}
+
+	/**
+	 * Passe le composant en mode de sélection.
+	 */
+	public void switchToSelectMode(){
+		setMode("select");
+		clearSelection();
+		this.find.setVisible(true);
+		this.addNew.setVisible(false);
+		this.select.setVisible(true);
+		this.cancelSelection.setVisible(true);
+		this.menuBar.setVisible(false);
+	}
+
+	/**
+	 * Gèle ou dégèle les boutons de la toolbar.
+	 *
+	 * @param b
+	 */
+	public void disableToolBar(final boolean b){
+		disableObjetsSelectionItems(b);
+		if(addNew != null){
+			addNew.setDisabled(b || !isCanNew());
+		}
+	}
+
+	/**
+	 * Compose et renvoie la liste affichables de dates par défaut utilisables
+	 * comme critère de recherche dans la sélection.
+	 *
+	 * @return String[] liste de dates proposées
+	 */
+	public String[] getCreationDates(){
+		final String[] dates =
+				new String[] {Labels.getLabel("general.date.depuis1jour"), Labels.getLabel("general.date.depuis10jour"),
+						Labels.getLabel("general.date.depuis30jour"), Labels.getLabel("general.30.derniers")};
+		return dates;
+	}
+
+	/**
+	 * Cette méthode retourne le numéro de la page sur laquelle se trouve
+	 * l'objet passé en paramètre.
+	 *
+	 * @param obj
+	 *            Objet pour lequel on recherche une page.
+	 * @return Numéro de la page.
+	 */
+	public int getPageNumberForObject(final Object obj){
+		final int ind = getListObjects().indexOf(obj);
+		int page = 0;
+
+		if(ind > -1){
+			page = ind / objectsListGrid.getPageSize();
+		}
+
+		return page;
+	}
+
+	/**
+	 * Cette méthode déselectionne l'objet courant et sélectionne celui passé en
+	 * paramètre.
+	 *
+	 * @param newCurrent
+	 *            Objet que l'on souhaite sélectionner.
+	 */
+	public void changeCurrentObject(final TKdataObject newCurrent){
+
+		// si la liste contient l'objet
+		if(getListObjects().contains(newCurrent)){
+			deselectRow();
+
+			// this.currentObject = newCurrent;
+			final int ind = getListObjects().indexOf(newCurrent);
+
+			objectsListGrid.getPaginal().setActivePage(getPageNumberForObject(currentObject));
+
+			final Rows rows = objectsListGrid.getRows();
+			final List<Component> comps = rows.getChildren();
+			// this.currentRow = (Row) comps.get(ind);
+			// this.currentRow.setStyle("background-color : #b3c8e8");
+
+			// Bug Romain Casey 20/06/2014 getListObjects et Rows
+			// ne sont pas dans le même état? Pas reproduit...
+			// suppose que aucune Rows dessinées alors que ListObjects
+			// n'est pas vide
+			if(comps.size() < ind){
+				getBinder().loadAttribute(objectsListGrid, "model");
+				objectsListGrid.getPaginal().setActivePage(getPageNumberForObject(currentObject));
+			}
+
+			selectRow((Row) comps.get(ind), newCurrent);
+
+		}
+	}
+
+	/**
+	 * Déselectionne la ligne actuellement sélectionnée.
+	 */
+	public void deselectRow(){
+		// on vérifie qu'une ligne est bien sélectionnée
+		if(getCurrentObject() != null && getCurrentRow() != null){
+			final int ind = getListObjects().indexOf(currentObject);
+			// on lui spécifie une couleur en fonction de son
+			// numéro de ligne
+			if(ind > -1){
+				getCurrentRow().setStyle("background-color : #e2e9fe");
+				/*
+				 * if (ind % 2 == 0) {
+				 * currentRow.setStyle("background-color : #FFFFFF"); } else {
+				 * currentRow.setStyle("background-color : #e2e9fe"); }
+				 */
+				setCurrentRow(null);
+				setCurrentObject(null);
+			}
+		}
+	}
+
+	/**
+	 * Sélectionne la ligne passée en paramètre.
+	 *
+	 * @param row
+	 *            Row à sélectionner.
+	 * @param obj
+	 *            Objet se trouvant dans la ligne
+	 */
+	public void selectRow(final Row row, final TKdataObject obj){
+
+		setCurrentRow(row);
+		setCurrentObject(obj);
+
+		getCurrentRow().setStyle("background-color : #b3c8e8");
+	}
+
+	/**
+	 * Méthode appelée lors du check de la checkbox des colonnes : sélectionne
+	 * ou déselctionne tous les éléments.
+	 */
+	public void onCheck$checkAll(){
+		if(!checkAll.isChecked()){
+			clearSelection();
+		}else{
+			getListObjectsRenderer().setCheckAll(true);
+			checkOrNotAllElements(true);
+			passListToSelected();
+			disableObjetsSelectionItems(false);
+		}
+	}
+
+	/**
+	 * Déselectionne tous les objets de la grid.
+	 */
+	public void clearSelection(){
+		if(getSelectedObjects() != null){
+			getSelectedObjects().clear();
+			// getResultatsIds().clear();
+
+			disableObjetsSelectionItems(true);
+
+			getListObjectsRenderer().setCheckAll(false);
+			checkAll.setChecked(false);
+			checkOrNotAllElements(false);
+		}
+	}
+
+	/**
+	 * Check ou non tous les éléments de la liste.
+	 *
+	 * @param check
+	 *            Si true, coche toutes les checkboxs.
+	 */
+	public void checkOrNotAllElements(final boolean check){
+		final Rows rows = objectsListGrid.getRows();
+		final List<Component> allRow = rows.getChildren();
+		for(int i = 0; i < allRow.size(); i++){
+			final List<Component> comps = allRow.get(i).getChildren();
+			int j = 0;
+			while(j < comps.size() && !comps.get(j).getClass().getSimpleName().equals("Checkbox")){
+				j++;
+			}
+
+			if(j < comps.size() && comps.get(j).getClass().getSimpleName().equals("Checkbox")){
+				final Checkbox box = (Checkbox) comps.get(j);
+				box.setChecked(check);
+			}
+		}
+	}
+
+	/**
+	 * Clique sur la checkbox d'un objet.
+	 *
+	 * @param event
+	 */
+	public void onCheckObject(final ForwardEvent event){
+		// on récupère la checkbox associé à l'event
+		final Checkbox box = (Checkbox) event.getOrigin().getTarget();
+		// on récupère l'Echantillon associé à l'event
+		final TKdataObject obj = (TKdataObject) event.getData();
+
+		if(box.isChecked()){
+			addToSelectedObjects(obj);
+		}else{
+			removeFromSelectedObjects(obj);
+		}
+
+		// les actions ne sont disponibles que si des objets sont
+		// sélectionnés
+		disableObjetsSelectionItems(false);
+	}
+
+	/**
+	 * Inactive/active les composants de manipulation des sélections multiples
+	 * venant de la liste en fonction des droits sur les opérations.
+	 */
+	public void disableObjetsSelectionItems(final boolean disable){
+		if(modificationItem != null){
+			modificationItem.setDisabled(disable || !isCanModifMultiple() || getSelectedObjects().size() < 2);
+		}
+		if(exportItem != null){
+			exportItem.setDisabled(disable || !isCanExport() || getSelectedObjects().size() < 1);
+		}
+		if(exportItemAdv != null && exportItemAdv.isVisible()){
+			exportItemAdv.setDisabled(disable || !isCanExport() || getSelectedObjects().size() < 1);
+		}
+		if(changeCollectionItem != null){
+			changeCollectionItem.setDisabled(disable || !isCanExport() || getSelectedObjects().size() < 1);
+		}
+		if(etiquetteItem != null){
+			etiquetteItem.setDisabled(disable || !isCanEtiquette() || getSelectedObjects().size() < 1);
+		}
+		if(retourItem != null && retourItem.isVisible()){
+			retourItem.setDisabled(disable || getSelectedObjects().size() < 1);
+		}
+		if(deleteItem != null && deleteItem.isVisible()){
+			deleteItem.setDisabled(disable || !isCanDelete() || getSelectedObjects().size() < 1);
+		}
+		disableObjectTreeButtons(disable);
+	}
+
+	//	/**
+	//	 * Vérifie que tous les objets sont ENCOURS.
+	//	 * Affiche le bouton permettant la complétion des Evènements
+	//	 * @return true/false
+	//	 */
+	//	private boolean allSelectedEncours() {
+	//
+	//		if (getSelectedObjects().isEmpty()) {
+	//			return false;
+	//		} else {
+	//			for (Object obj : getSelectedObjects()) {
+	//				if (!((TKStockableObject) obj)
+	//					.getObjetStatut().getStatut().equals("ENCOURS")) {
+	//					return false;
+	//				}
+	//			}
+	//		}
+	//
+	//		return true;
+	//	}
+
+	/**
+	 * Forwarded Event. Sélectionne la ligne concernée par l'event et affiche
+	 * les infos de l'objet contenu dans celle-ci.
+	 *
+	 * @param event
+	 *            forwardé depuis le lable nom cliquable (event.getData contient
+	 *            l'objet).
+	 */
+	public void onClickObject(final Event event){
+		if(!getMode().equals("select")){
+			// déselection de la ligne courante
+			deselectRow();
+
+			selectRowAndDisplayObject(getRow((ForwardEvent) event), (TKdataObject) event.getData());
+		}
+	}
+
+	/**
+	 * Selectionne l'objet dans la liste et affiche le contenu de l'objet
+	 * selectionné dans la fiche statique.
+	 *
+	 * @param row
+	 * @param data
+	 *            Objet à afficher
+	 */
+	public void selectRowAndDisplayObject(final Row row, final TKdataObject obj){
+		deselectRow();
+		// sélection de la nouvelle ligne
+		selectRow(row, obj);
+
+		// on envoie l'objet à la fiche
+		final TKdataObject edit = currentObject.clone();
+
+		if(getObjectTabController().isStaticEditMode()){
+			getObjectTabController().getFicheStatic().setObject(edit);
+			// on envoie le patient à la fiche annotation
+			if(getObjectTabController().getFicheAnnotation() != null){
+				getObjectTabController().getFicheAnnotation().setObj((TKAnnotableObject) edit);
+			}
+		}else{ // fiche combine
+			getObjectTabController().getFicheCombine().setObject(edit);
+			getObjectTabController().getFicheCombine().switchToStaticMode();
+		}
+
+		// on passe en mode fiche & liste
+		getObjectTabController().switchToFicheAndListeMode();
+	}
+
+	/**
+	 * Selectionne le premier objet de la liste par défaut.
+	 */
+	public void selectFirstObjet(){
+		if(getListObjects().size() > 0){
+			selectRowAndDisplayObject((Row) objectsListGrid.getRows().getFirstChild(), getListObjects().get(0));
+		}
+	}
+
+	/**
+	 * Selectionne dans la liste la row correspondant à l'objet passé en
+	 * paramètre.
+	 *
+	 * @param obj
+	 */
+	public void selectlastRow(final TKdataObject obj){
+		final Iterator<Component> rowsIt = objectsListGrid.getRows().getChildren().iterator();
+
+		Row row = null;
+		while(rowsIt.hasNext()){
+			row = (Row) rowsIt.next();
+		}
+		selectRowAndDisplayObject(row, obj);
+	}
+
+	/**
+	 * Passe la fiche associee en formulaire de création.
+	 *
+	 * @param event
+	 *            Event : clique du bouton addNewEchantillon.
+	 * @throws Exception
+	 */
+	public void onClick$addNew(final Event event) throws Exception{
+		getObjectTabController().switchToCreateMode(null);
+	}
+
+	/**
+	 * Méthode appelée lorsque l'utilisateur utiliser la touche ENTREE sur l'un
+	 * des éléments du formulaire de recherche : redirection vers la méthode de
+	 * recherche onClick$find().
+	 */
+	public void onPressEnterKey(){
+		onClick$find();
+	}
+
+	/**
+	 * Méthode appelée après lors du focus sur le champ dateCreationBoxPatient.
+	 * Le radiobutton correspondant sera automatiquement sélectionné.
+	 */
+	public void onSelect$dateCreationBox(){
+		dateCreation.setChecked(true);
+	}
+
+	/**
+	 * Recherche la liste des échantillons à afficher.
+	 *
+	 * @param event
+	 *            Event : clique du bouton find.
+	 * @throws Exception
+	 */
+	public void onClick$find(){
+		clearSelection();
+		if(dateCreation.isChecked() && dateCreationBox.getSelectedIndex() == 3){
+			setListObjects(extractLastObjectsCreated());
+		}else{
+			setResultatsIds(doFindObjects());
+			if(getResultatsIds().size() > 500){
+				openResultatsWindow(page, getResultatsIds(), self, getEntiteNom(), getObjectTabController());
+			}else if(getResultatsIds().size() > 0){
+				// setListObjects(extractObjectsFromIds(resultatsIds));
+				onShowResults();
+			}else{
+				// setListObjects(new ArrayList<Object>());
+				onShowResults();
+				Messagebox.show(Labels.getLabel("recherche.avancee.no.results"),
+						Labels.getLabel("recherche.avancee.no.results.title"), Messagebox.OK, Messagebox.INFORMATION);
+			}
+		}
+	}
+
+	/**
+	 * Gère l'affichage des résultats obtenus par une recherche sur une liste de
+	 * critères.
+	 *
+	 * @param res
+	 *            Liste des ids des objets à afficher.
+	 */
+	public void showResultsAfterSearchByList(final List<Integer> res){
+		clearSelection();
+		setResultatsIds(res);
+		if(res.size() > 500){
+			openResultatsWindow(page, res, self, getEntiteNom(), getObjectTabController());
+		}else if(res.size() > 0){
+			onShowResults();
+		}else{
+			onShowResults();
+			Messagebox.show(Labels.getLabel("recherche.avancee.no.results"), Labels.getLabel("recherche.avancee.no.results.title"),
+					Messagebox.OK, Messagebox.INFORMATION);
+		}
+		setCurrentRow(null);
+		setCurrentObject(null);
+		getObjectTabController().clearStaticFiche();
+		getObjectTabController().switchToOnlyListeMode();
+	}
+
+	public void onShowResults(){
+		List<Integer> ids = new ArrayList<>();
+		if(getResultatsIds().size() > 500){
+			Collections.reverse(getResultatsIds());
+			ids = getResultatsIds().subList(0, 500);
+		}else{
+			ids = getResultatsIds();
+		}
+
+		clearSelection();
+		setListObjects(extractObjectsFromIds(ids));
+
+		setCurrentRow(null);
+		setCurrentObject(null);
+		getObjectTabController().clearStaticFiche();
+		getObjectTabController().switchToOnlyListeMode();
+		objectsListGrid.setActivePage(0);
+		getBinder().loadComponent(objectsListGrid);
+
+		updateListResultsLabel(ids.size());
+	}
+
+	/**
+	 * Evenement relayant l'envoi vers une nouvelle cession
+	 * d'un trop grand nombre de résultats (envoyé depuis ResultatsModale)
+	 */
+	public void onDoNewCession(){
+		Clients.showBusy(Labels.getLabel("cession.select.wait"));
+		Events.echoEvent("onLaterNewCession", self, null);
+	}
+
+	public void onLaterNewCession(){
+		setResultatsIds(getResultatsIds());
+
+		onNewCessionFromResultatModale();
+
+		Clients.clearBusy();
+	}
+
+	/**
+	 * Méthode appelée par la fenêtre FicheRechercheAvancee quand l'utilisateur
+	 * fait une recherche.
+	 *
+	 * @param Event contenant les résultats de la recherche.
+	 */
+
+	public void onGetObjectFromResearch(final Event e){
+
+		// si des patients sont renvoyés
+		if(e.getData() != null){
+			setListObjects(new ArrayList<TKAnnotableObject>());
+			clearSelection();
+			setListObjects((List<? extends TKdataObject>) e.getData());
+			setCurrentRow(null);
+			setCurrentObject(null);
+			getObjectTabController().clearStaticFiche();
+			getObjectTabController().switchToOnlyListeMode();
+			getBinder().loadComponent(objectsListGrid);
+
+			updateListResultsLabel(getListObjects().size());
+		}
+
+	}
+
+	/**
+	 * Clique sur le bouton exportItem
+	 * @throws ClassNotFoundException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 * @throws InvocationTargetException
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
+	 */
+	public void onClick$exportItem(){
+				
+		onLaterExport(true);
+	}
+
+	/**
+	 * Export affichant la modale permettant la restriction
+	 * des tables d'annotations concernées par l'export.
+	 * @since 2.0.10
+	 */
+	public void onClick$exportItemAdv(){
+		openRestrictTablesModale(this, null, getObjectTabController().getEntiteTab());
+	}
+	
+	/**
+	 * Affiche le messageBox confirmant ou infirmant l'anonymisation des 
+	 * informations patient
+	 * @return true si anonymisation confirmée
+	 * @since 2.2.3-rc1
+	 */
+	public ProfilExport askForNonAnonymizationStatut() {
+		// par defaut tout export est anonyme
+		// sauf si profil NOMINATIF alors le choix reste possible
+		if(getProfilExport().equals(ProfilExport.NOMINATIF)) { // export nominatif est possible
+						
+			return openExportAnonymeModale();
+			
+		}
+		return getProfilExport();
+	}
+
+	/**
+	 * Evenement relayant l'export d'un trop grand nombre de
+	 * résultats (envoyé depuis ResultatsModale)
+	 * @version 2.1
+	 */
+	public void onDoExport(final Event e) {
+	
+		if(e.getData() == null){			
+			onLaterExport(false);
+		}else if(e.getData().equals("TVGSO")){
+			onDoExportTVGSO(false);
+		}else if(e.getData().equals("INCa")){
+			onDoExportINCa();
+		}else if(e.getData().equals("BIOCAP")){
+			onDoExportBIOCAP();
+		}else if(e.getData().equals("BIOBANQUES")){ //@since 2.1
+			onDoExportBIOBANQUES();
+		}
+	}
+
+	/**
+	 * 
+	 * @param csv
+	 */
+	public void onDoExportTVGSO(final boolean csv){}
+
+	public void onDoExportINCa(){}
+
+	public void onDoExportBIOCAP(){}
+
+	public void onDoExportBIOBANQUES(){}
+
+	/**
+	 * Lance l'export à partir d'une selection ou d'une recherche
+	 * vide
+	 * @param fromSelection
+	 */
+
+	public void onLaterExport(final boolean fromSelection){
+
+		if(fromSelection){
+			getResultatsIds().clear();
+			extractIdsFromList((List<TKdataObject>) getSelectedObjects(), getResultatsIds());
+		}
+		try{
+			// ajoute toutes les tables disponibles aucune restriction
+			if(getRestrictedTableIds() != null){
+				if(getRestrictedTableIds().isEmpty()){
+					for(final TableAnnotation tb : ManagerLocator.getTableAnnotationManager()
+							.findByBanquesManager(SessionUtils.getSelectedBanques(sessionScope), true)){
+						getRestrictedTableIds().add(tb.getTableAnnotationId());
+					}
+				}
+			}else{
+				setRestrictedTableIds(new ArrayList<Integer>());
+			}
+
+			getObjectTabController().enregistrerValeursChampsCalculesPourExport(null, getResultatsIds(), 
+					getRestrictedTableIds());
+
+			EContexte contexte = SessionUtils.getCurrentContexte();
+			
+			ProfilExport pExport = askForNonAnonymizationStatut();
+			
+			final Class<?> exportThread = Class.forName(SessionUtils.getDatabasePathClass());
+			final Constructor<?> constr = exportThread.getConstructor(Desktop.class, int.class, List.class, List.class,
+					ProfilExport.class, short.class, Utilisateur.class, List.class, HtmlMacroComponent.class, Map.class, EContexte.class);
+			final Object o = constr.newInstance(desktop, getObjectTabController().getEntiteTab().getEntiteId(), getResultatsIds(),
+					SessionUtils.getSelectedBanques(sessionScope), pExport, ConfigManager.DEFAULT_EXPORT,
+					SessionUtils.getLoggedUser(sessionScope), getRestrictedTableIds(), callProgressBar(), null, contexte);
+			final Method method = exportThread.getMethod("start");
+
+			// put into session
+			if(!desktop.hasAttribute("threads")){
+				desktop.setAttribute("threads", new ArrayList<Export>());
+			}
+			((List<Export>) desktop.getAttribute("threads")).add((Export) o);
+
+			method.invoke(o);
+
+			getRestrictedTableIds().clear();
+		}catch(final Exception e){
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Ajoute un objet (venant du formulaire de creation) a la liste Cet objet
+	 * devient l'objet courant.
+	 *
+	 * @param objet
+	 */
+	public void addToObjectList(final Object newObj){
+		if(getSelectedObjects() != null){
+			clearSelection();
+		}
+		// L'objet inséré est un clone de celui du formulaire
+		// afin d'éviter des effets de bord lors de la modif
+		// du formulaire
+		final TKdataObject objClone = ((TKdataObject) newObj).clone();
+		addToListObjects(objClone, 0);
+
+		// déselection de la liste courante
+		deselectRow();
+
+		// on affiche la page sur laquelle se trouve l'objet
+		objectsListGrid.getPaginal().setActivePage(getPageNumberForObject(currentObject));
+
+		// ListModel list = new SimpleListModel(getListObjects());
+		// objectsListGrid.setModel(list);
+		//
+		// Row row = new Row();
+		// row.setValue(objClone);
+		// row.setParent(objectsListGrid.getRows());
+
+		// update de la liste
+		getBinder().loadAttribute(objectsListGrid, "model");
+
+		updateListResultsLabel(getListObjects().size());
+	}
+
+	/**
+	 * Ajoute une liste d'objet (venant du formulaire de creation) a la liste.
+	 *
+	 * @param objet
+	 */
+	public void addListToObjectList(final List<Object> newObjs){
+		if(getSelectedObjects() != null){
+			clearSelection();
+		}
+
+		for(int i = 0; i < newObjs.size(); i++){
+			// L'objet inséré est un clone de celui du formulaire
+			// afin d'éviter des effets de bord lors de la modif
+			// du formulaire
+			final TKdataObject objClone = ((TKdataObject) newObjs.get(i)).clone();
+			addToListObjects(objClone, 0);
+		}
+
+		// déselection de la liste courante
+		deselectRow();
+
+		// update de la liste
+		getBinder().loadAttribute(objectsListGrid, "model");
+
+		// on affiche la page sur laquelle se trouve l'objet
+		objectsListGrid.getPaginal().setActivePage(getPageNumberForObject(currentObject));
+
+		updateListResultsLabel(getListObjects().size());
+	}
+
+	/**
+	 * Supprime un objet a la liste.
+	 *
+	 * @param objet
+	 */
+	public void removeObjectAndUpdateList(final TKdataObject obj){
+		if(getSelectedObjects() != null){
+			clearSelection();
+		}
+		// on déselectionne la ligne courante
+		deselectRow();
+		// suppression de la liste
+		removeObjectFromList(obj);
+
+		// update de la grille
+		getBinder().loadAttribute(objectsListGrid, "model");
+
+		updateListResultsLabel(getListObjects().size());
+
+	}
+
+	/**
+	 * Met à jour la liste des objets.
+	 */
+	public void refreshListe(){
+		getBinder().loadAttribute(objectsListGrid, "model");
+		updateListResultsLabel(getListObjects().size());
+		getObjectTabController().clearStaticFiche();
+	}
+
+	/**
+	 * Met à jour la liste des objets.
+	 */
+	public void refreshListe2(){
+		getBinder().loadAttribute(objectsListGrid, "model");
+		updateListResultsLabel(getListObjects().size());
+		//	getObjectTabController().clearStaticFiche();
+		if(getObjectTabController().getFicheStatic() != null){
+			getObjectTabController().getFicheStatic().reloadObject();
+		}
+	}
+
+	/**
+	 * Met à jour le contenu de la liste avec les éléments passés en paramètre.
+	 *
+	 * @param objets
+	 *            à mettre dans la liste.
+	 */
+	public void updateListContent(final List<? extends TKdataObject> objs){
+		clearSelection();
+		setListObjects(objs);
+		setCurrentRow(null);
+		setCurrentObject(null);
+
+		getObjectTabController().clearStaticFiche();
+		// update de la grille
+		getBinder().loadAttribute(objectsListGrid, "model");
+		clearSelection();
+	}
+
+	public void updateMultiObjectsGridListInPlace(final List<? extends TKdataObject> objs){
+		for(final Object obj : objs){
+			final TKdataObject edit = ((TKdataObject) obj).clone();
+
+			// si la liste contient l'objet updaté
+			if(getListObjects().contains(edit)){
+
+				// déselection de la liste courante
+				deselectRow();
+
+				// on récupère l'objet et on le met à jour par
+				// suppression/insertion dans la liste
+				final int ind = getListObjects().indexOf(edit);
+				getListObjects().remove(ind);
+				addToListObjects(edit, new Integer(ind));
+			}
+		}
+		// maj de la grille
+		getBinder().loadAttribute(objectsListGrid, "model");
+
+		updateListResultsLabel(objs.size());
+	}
+
+	/**
+	 * Mets à jour l'objet sélectionné de la liste.
+	 *
+	 * @param objet
+	 *            Objet à mettre à jour.
+	 */
+	public void updateObjectGridList(final Object obj){
+		// l'objet passé en paramètre est cloné
+		final TKdataObject edit = ((TKdataObject) obj).clone();
+
+		// on vérifie que la liste a bien un objet sélectionné
+		if(this.currentObject != null){
+			// si l'objet édité est dans la liste, il est forcément
+			// sélectionné.
+			// On vérifie donc que l'objet sélectionné a le meme id
+			// que celui édité
+			final Integer idSelected = (this.currentObject).listableObjectId();
+			final Integer idUpdated = edit.listableObjectId();
+			if(idSelected.equals(idUpdated)){
+				final int ind = getListObjects().indexOf(this.currentObject);
+				// si c'est le cas, maj de la liste par
+				// suppression/insertion
+				if(ind > -1){
+					getListObjects().remove(ind);
+					addToListObjects(edit, new Integer(ind));
+
+					getBinder().loadAttribute(objectsListGrid, "model");
+
+					// on re-sélctionne la liste contenant l'obj
+					final Rows rows = objectsListGrid.getRows();
+					final List<Component> comps = rows.getChildren();
+					selectRow((Row) comps.get(ind), edit);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Mets à jour la liste après un update depuis une autre page et selectionne
+	 * l'objet mis à jour.
+	 *
+	 * @param objet Objet a mettre a jour.
+	 * @param boolean si selection de l'objet dans la liste
+	 * @return true si liste updated.
+	 */
+	public boolean updateObjectGridListFromOtherPage(final Object obj, final boolean select){
+
+		boolean updated = false;
+
+		// l'objet passé en paramètre est cloné
+		final TKdataObject edit = ((TKdataObject) obj).clone();
+
+		// si la liste contient l'objet updaté
+		if(getListObjects().contains(edit)){
+
+			// déselection de la liste courante
+			deselectRow();
+
+			// on récupère l'objet et on le met à jour par
+			// suppression/insertion dans la liste
+			final int ind = getListObjects().indexOf(edit);
+			getListObjects().remove(ind);
+			addToListObjects(edit, new Integer(ind));
+
+			// maj de la grille
+			getBinder().loadAttribute(objectsListGrid, "model");
+
+			if(select){
+				// on récupère toutes les lignes de la grille et on
+				// sélectionne celle qui contient l'obj updaté
+				final Rows rows = objectsListGrid.getRows();
+				final List<Component> comps = rows.getChildren();
+				selectRow((Row) comps.get(ind), edit);
+
+				// on affiche la page contenant l'objet
+				objectsListGrid.getPaginal().setActivePage(getPageNumberForObject(currentObject));
+
+				// on passe l'objet à la fiche
+				getObjectTabController().getFicheStatic().setObject(edit);
+			}
+			updated = true;
+		}
+		return updated;
+	}
+
+	/**
+	 * Mets à jour la liste après un update multiple de plusieurs objets.
+	 * Recharge la liste directement
+	 *
+	 * @param objects
+	 *            Liste d'objets a mettre a jour.
+	 */
+	public void updateMultiObjectsGridListFromOtherPage(final List<TKdataObject> objects){
+		if(objects != null && !objects.isEmpty()){
+			clearList();
+			// setListObjects(objects);
+			// refreshListe();
+			final List<Integer> ids = new ArrayList<>();
+			extractIdsFromList(objects, ids);
+			updateGridByIds(ids, false, true);
+		}
+	}
+
+	/**
+	 * Mets à jour la liste avec une liste d'objets suite à la modification du
+	 * parent de ces objets.
+	 *
+	 * @param objects
+	 *            Liste d'objets a mettre a jour.
+	 * @param isDelete
+	 *            true si l'operation est une deletion.
+	 * @return enfant selectionné avant update, null si aucun
+	 */
+	public TKdataObject updateGridListChildrenObjectsFromOtherPage(final List<? extends TKdataObject> objects,
+			final boolean isDelete){
+		final Iterator<? extends TKdataObject> it = objects.iterator();
+		TKdataObject next;
+		TKdataObject selected = null;
+		while(it.hasNext()){
+			next = it.next();
+
+			final int ind = getListObjects().indexOf(next);
+			// si c'est le cas, maj de la liste par
+			// suppression/insertion
+			if(ind > -1){
+				getListObjects().remove(ind);
+				if(!isDelete){
+					addToListObjects(next, new Integer(ind));
+				}
+				// si une enfant etait selectionné
+				if(next.equals(currentObject)){
+					selected = next;
+				}
+
+			}
+		}
+		refreshListe();
+
+		return selected;
+	}
+
+	/**
+	 * Mets à jour la liste avec une liste d'objets suite à la modification du
+	 * parent de ces objets.
+	 * @param objects Liste d'objets a mettre a jour.
+	 * @param isDelete true si l'operation est une deletion.
+	 * @param met à jour le composant si true
+	 * @return enfant selectionné avant update, null si aucun
+	 */
+	public void updateGridByIds(final List<Integer> objectIds, final boolean isDelete, final boolean updateListeComposant){
+
+		final List<Integer> listObjsIds = new ArrayList<>();
+
+		// si la liste n'est pas vide
+		// mise à jour des objets
+		if(!getListObjects().isEmpty()){
+
+			extractIdsFromList(getListObjects(), listObjsIds);
+
+			for(final Integer idx : objectIds){
+
+				final int ind = listObjsIds.indexOf(idx);
+				// si c'est le cas, maj de la liste par
+				// suppression/insertion
+				if(ind > -1){
+					getListObjects().remove(ind);
+					// listObjsIds.remove(ind);
+					if(!isDelete){ // remplacement
+						addIdToListObjects(idx, new Integer(ind));
+					}else{ // suppression
+						listObjsIds.remove(ind);
+					}
+				}
+			}
+		}else{ // liste vide, on ajoute dans l'ordre
+			int i = 0;
+			for(final Integer idx : objectIds){
+				addIdToListObjects(idx, i);
+				i++;
+			}
+		}
+
+		if(updateListeComposant){
+			clearSelection();
+			refreshListe2();
+		}
+	}
+
+	/**
+	 * Efface le contenu de la liste.
+	 */
+	public void clearList(){
+		clearSelection();
+		getListObjects().clear();
+		setCurrentRow(null);
+		setCurrentObject(null);
+
+		refreshListe();
+	}
+
+	public void onSelectFromResultatModale(){
+		setSelectedObjects(extractObjectsFromIds(getResultatsIds()));
+		onClick$select();
+	}
+
+	public void onNewCessionFromResultatModale(){
+		setSelectedObjects(extractObjectsFromIds(getResultatsIds()));
+		if(this instanceof ListeEchantillon){
+			((ListeEchantillon) this).onClick$newCessionItem();
+		}else if(this instanceof ListeProdDerive){
+			((ListeProdDerive) this).onClick$newCessionItem();
+		}
+	}
+
+	/**
+	 * Reception de l'évènement qd la modale de résultat est ouverte
+	 * directement depuis le listeController (recherche rapide).
+	 * @param Event
+	 */
+	public void onDoBatchDelete(){
+		final List<Integer> ids = new ArrayList<>();
+		ids.addAll(getResultatsIds());
+		Events.echoEvent("onDeleteIdsFromModaleEvent", self, ids);
+	}
+
+	/**
+	 * Méthode appelée lors du clic sur le bouton select. Tous les échantillons
+	 * sélectionnés seront envoyés à la page demandant cette sélection.
+	 */
+	public void onClick$select(){
+		// on vérifie que la page devant récupérer la sélection
+		// existe
+		if(Path.getComponent(path) != null){
+			final List<Object> data = new ArrayList<>();
+			data.addAll(getSelectedObjects());
+			// on envoie un event à cette page avec
+			// les objets sélectionnés
+			Events.postEvent(new Event(getOnGetEventName(), Path.getComponent(path), data));
+		}
+		// fermeture de la fenêtre
+		getMainWindow().unblockAllPanels();
+
+		clearSelection();
+		getObjectTabController().switchToNormalMode();
+	}
+
+	/**
+	 * Méthode appelée lors du clic sur le bouton cancelSelection.
+	 */
+	public void onClick$cancelSelection(){
+		// fermeture de la fenêtre
+		getMainWindow().unblockAllPanels();
+
+		clearSelection();
+		getObjectTabController().switchToNormalMode();
+	}
+
+	/**
+	 * Methode appelée lors de la modification multiple.
+	 */
+	public void onClick$modificationItem(){
+		Clients.showBusy(Labels.getLabel("general.display.wait"));
+		Events.echoEvent("onLaterUpdateMulti", self, null);
+	}
+
+	public void onLaterUpdateMulti(){
+		passSelectedToList();
+		setCurrentObject(null);
+		setCurrentRow(null);
+		getObjectTabController().clearStaticFiche();
+		// update de la grille
+		getBinder().loadAttribute(objectsListGrid, "model");
+
+		final List<TKdataObject> objs = new ArrayList<>();
+		objs.addAll(getListObjects());
+		getObjectTabController().switchToModifMultiMode(objs);
+
+		clearSelection();
+
+		Clients.clearBusy();
+	}
+
+	/**
+	 * Renvoie le nom de l'entite associée à la liste.
+	 *
+	 * @return nom de l'entite.
+	 */
+	public String getEntiteNom(){
+		return getObjectTabController().getEntiteTab().getNom();
+	}
+
+	/***************** abstract methods. **************************/
+
+	public abstract List<? extends TKdataObject> getListObjects();
+
+	public abstract void setListObjects(List<? extends TKdataObject> objs);
+
+	public abstract void addToListObjects(TKdataObject obj, Integer pos);
+
+	public abstract void removeObjectFromList(TKdataObject obj);
+
+	public abstract List<? extends Object> getSelectedObjects();
+
+	public abstract void setSelectedObjects(List<? extends TKdataObject> objs);
+
+	public abstract void addToSelectedObjects(TKdataObject obj);
+
+	public abstract void removeFromSelectedObjects(TKdataObject obj);
+
+	public abstract TKSelectObjectRenderer<? extends TKdataObject> getListObjectsRenderer();
+
+	/**
+	 * Copy la selection dans la liste d'objets courants.
+	 */
+	public abstract void passSelectedToList();
+
+	/**
+	 * Copy la liste d'objets courants dans la selection.
+	 */
+	public abstract void passListToSelected();
+
+	/**
+	 * Initialise le contenu de la liste d'éléments.
+	 *
+	 * @param nbObjects
+	 *            Nombre max d'objets souhaités dans la liste.
+	 */
+	public abstract void initObjectsBox();
+
+	/**
+	 * Applique les critères pour lancer réaliser l'opération de recherche dans
+	 * la base.
+	 *
+	 * @return liste d'objets resultats
+	 */
+	public abstract List<Integer> doFindObjects();
+
+	/**
+	 * Méthode qui va retourner une liste d'objets dont les ids se trouvent dans
+	 * la liste d'identifiants.
+	 *
+	 * @param ids
+	 *            Liste des identifiants.
+	 * @return Liste d'objets.
+	 */
+	public abstract List<? extends TKdataObject> extractObjectsFromIds(List<Integer> ids);
+
+	/**
+	 * Méthode qui va retourner une d'ids se trouvent dans
+	 * la liste des objets.
+	 *
+	 * @param liste objetds
+	 * @param liste ids à peupler
+	 */
+	public void extractIdsFromList(final List<? extends TKdataObject> objs, final List<Integer> ids){
+
+		for(final TKdataObject obj : objs){
+			ids.add(obj.listableObjectId());
+		}
+	}
+
+	public void addIdToListObjects(final Integer id, final Integer pos){
+		final TKdataObject obj = getObjectTabController().loadById(id);
+		addToListObjects(obj, pos);
+	}
+
+	/**
+	 * Supprime de la base de données une liste d'objets
+	 * à partir de leurs ids
+	 * @param ids
+	 * @param comment ajout suppr
+	 */
+	public void batchDelete(final List<Integer> ids, final String comment){}
+
+	/**
+	 * Méthode qui va retourner une liste des derniers objets enregistrés.
+	 *
+	 * @param ids
+	 *            Liste des identifiants.
+	 * @return Liste d'objets.
+	 */
+	public abstract List<? extends TKdataObject> extractLastObjectsCreated();
+
+	/*************************************************************************/
+	/******************************** Statics. *******************************/
+	/*************************************************************************/
+
+	/**
+	 * Renvoie l'objet 'bound' a la Ligne d'une liste (ou grid) ou le composant
+	 * représentant la ligne.
+	 *
+	 * @param event
+	 * @param getTarget
+	 *            boolean si true renvoie le composant, l'objet sinon
+	 * @return object bound ou composant
+	 */
+	public static Object getBindingData(final ForwardEvent event, final boolean getTarget){
+		Component target = event.getOrigin().getTarget();
+		try{
+			while(!(target instanceof Row || target instanceof Listitem)){
+				target = target.getParent();
+			}
+			final Map<?, ?> map = (Map<?, ?>) target.getAttribute("zkplus.databind.TEMPLATEMAP");
+
+			if(!getTarget){
+				return map.get(target.getAttribute("zkplus.databind.VARNAME"));
+			}
+
+			return target;
+
+		}catch(final NullPointerException e){
+			return null;
+		}
+	}
+
+	/**
+	 * Cette méthode va retourner la ligne courante.
+	 *
+	 * @param event
+	 *            Event sur la grille contenant la liste des objets.
+	 * @return Une Row.
+	 */
+	public static Row getRow(final ForwardEvent event){
+		Component target = event.getOrigin().getTarget();
+		try{
+			while(!(target instanceof Row)){
+				target = target.getParent();
+			}
+			// Map map = (Map) target
+			// .getAttribute("zkplus.databind.TEMPLATEMAP");
+			return (Row) target;
+		}catch(final NullPointerException e){
+			return null;
+		}
+	}
+
+	/*************************************************************************/
+	/************************** DROITS ***************************************/
+	/*************************************************************************/
+	public boolean isCanNew(){
+		return canNew;
+	}
+
+	public void setCanNew(final boolean cNew){
+		this.canNew = cNew;
+	}
+
+	public boolean isAdmin(){
+		return isAdmin;
+	}
+
+	public void setAdmin(final boolean i){
+		this.isAdmin = i;
+	}
+
+	public boolean isCanModifMultiple(){
+		return canModifMultiple;
+	}
+
+	public void setCanModifMultiple(final boolean can){
+		this.canModifMultiple = can;
+	}
+
+	public boolean isCanExport(){
+		return canExport;
+	}
+
+	public void setCanExport(final boolean can){
+		this.canExport = can;
+	}
+
+	public boolean isCanEtiquette(){
+		return canEtiquette;
+	}
+
+	public void setCanEtiquette(final boolean canE){
+		this.canEtiquette = canE;
+	}
+
+	public boolean isCanDelete(){
+		return canDelete;
+	}
+
+	public void setCanDelete(final boolean cDelete){
+		this.canDelete = cDelete;
+	}
+
+	/**
+	 * Genere les droits supplémentaire à ceux appliqués aux boutons de creation
+	 * et de modification multiples.
+	 */
+	public void applyDroitsOnListe(){
+		// application aux buttons
+		if(addNew != null){
+			addNew.setDisabled(!isCanNew());
+		}
+		disableObjetsSelectionItems(true);
+
+		//      if(sessionScope.containsKey("Anonyme") && (Boolean) sessionScope.get("Anonyme")){
+		//         setAnonyme(true);
+		//      }else{
+		//         setAnonyme(false);
+		//      }
+	}
+
+	public void disableObjectTreeButtons(final boolean disable){
+		// objets tree item
+		// recupère LA banque courante ou la première banque en toutes collections
+		// car par définition, même profil pour toutes les banques en toutes collections
+		Banque banqueToGetAuthorisation = null;
+		if(!SessionUtils.getSelectedBanques(sessionScope).isEmpty()){
+			banqueToGetAuthorisation = SessionUtils.getSelectedBanques(sessionScope).get(0);
+		}
+		if(patientsItem != null){
+			patientsItem.setDisabled(
+					disable || getSelectedObjects().size() < 1 || !getDroitEntiteObjectConsultation(banqueToGetAuthorisation, "Patient"));
+		}
+		if(prelevementsItem != null){
+			prelevementsItem.setDisabled(disable || getSelectedObjects().size() < 1
+					|| !getDroitEntiteObjectConsultation(banqueToGetAuthorisation, "Prelevement"));
+		}
+		if(echantillonsItem != null){
+			echantillonsItem.setDisabled(disable || getSelectedObjects().size() < 1
+					|| !getDroitEntiteObjectConsultation(banqueToGetAuthorisation, "Echantillon"));
+		}
+		if(derivesItem != null){
+			derivesItem.setDisabled(disable || getSelectedObjects().size() < 1
+					|| !getDroitEntiteObjectConsultation(banqueToGetAuthorisation, "ProdDerive"));
+		}
+		if(derivesAscItem != null){
+			derivesAscItem.setDisabled(disable || getSelectedObjects().size() < 1
+					|| !getDroitEntiteObjectConsultation(banqueToGetAuthorisation, "ProdDerive"));
+		}
+		if(cessionsItem != null){
+			cessionsItem.setDisabled(
+					disable || getSelectedObjects().size() < 1 || !getDroitEntiteObjectConsultation(banqueToGetAuthorisation, "Cession"));
+		}
+	}
+
+	/**
+	 * Attribues les droits de creation et de modification multiples.
+	 */
+
+	public void drawActionsButtons(){
+		Boolean admin = false;
+		if(sessionScope.containsKey("Admin")){
+			admin = (Boolean) sessionScope.get("Admin");
+		}
+		setAdmin(admin);
+
+		// si l'utilisateur est admin => boutons cliquables
+		if(isAdmin()){
+			setCanNew(true);
+			setCanModifMultiple(true);
+			setCanExport(true);
+			setCanDelete(true);
+		}else{
+			// on extrait les OperationTypes de la base
+			final OperationType creation = ManagerLocator.getOperationTypeManager().findByNomLikeManager("Creation", true).get(0);
+			final OperationType modifMulti =
+					ManagerLocator.getOperationTypeManager().findByNomLikeManager("ModifMultiple", true).get(0);
+			final OperationType archivage = ManagerLocator.getOperationTypeManager().findByNomLikeManager("Archivage", true).get(0);
+
+			Hashtable<String, List<OperationType>> droits = new Hashtable<>();
+
+			if(sessionScope.containsKey("Droits")){
+				// on extrait les droits de l'utilisateur
+				droits = (Hashtable<String, List<OperationType>>) sessionScope.get("Droits");
+
+				final List<OperationType> ops = droits.get(getEntiteNom());
+				setCanNew(ops.contains(creation));
+				setCanModifMultiple(ops.contains(modifMulti));
+				setCanDelete(ops.contains(archivage));
+			}
+
+			// gestion de l'export
+			if(sessionScope.containsKey("Export")){
+				if(sessionScope.get("Export").equals(ProfilExport.NO)){
+					setCanExport(false);
+				}else{
+					setCanExport(true);
+				}
+			}else{
+				setCanExport(false);
+			}
+		}
+
+		// retour
+		if(retourItem != null){
+			retourItem.setVisible(isAdmin());
+		}
+
+		if(SessionUtils.getSelectedBanques(sessionScope).size() > 0){
+			// on récupère les imprimantes associées au compte
+			// pour la banque courante
+			//			List<AffectationImprimante> imprimantes = ManagerLocator
+			//					.getAffectationImprimanteManager()
+			//					.findByBanqueUtilisateurManager(
+			//							SessionUtils.getSelectedBanques(sessionScope)
+			//									.get(0),
+			//							SessionUtils.getLoggedUser(sessionScope));
+			//			setCanEtiquette(imprimantes.size() > 0);
+			setCanEtiquette(
+					!ManagerLocator.getImprimanteManager().findByPlateformeManager(SessionUtils.getPlateforme(sessionScope)).isEmpty());
+		}else{
+			setCanEtiquette(false);
+		}
+	}
+
+	/**
+	 * Méthode appelée lorsque l'utilisateur lance une recherche avançées Cette
+	 * méthode va créer une nouvelle fenêtre.
+	 *
+	 * @param page
+	 *            dans laquelle inclure la modale
+	 * @param objToPrint
+	 *            Objet à imprimer.
+	 */
+	public void openRechercheAvanceeWindow(final Page page, final String title, final Entite entiteToSearch, final String p,
+			final boolean anonyme, final AbstractListeController2 listecontroller){
+		if(!isBlockModal()){
+
+			setBlockModal(true);
+
+			// nouvelle fenêtre
+			final Window win = new Window();
+			win.setVisible(false);
+			win.setId("rechercheAvanceeWindow");
+			win.setPage(page);
+			win.setMaximizable(true);
+			win.setSizable(true);
+			win.setTitle(title);
+			win.setBorder("normal");
+			win.setWidth("90%");
+			win.setFocus(true);
+			final int height = getMainWindow().getPanelHeight() + 35;
+			win.setHeight(height + "px");
+			win.setClosable(true);
+			win.setVflex("1");
+			win.setSclass("rechWindow");
+
+			final HtmlMacroComponent ua =
+					populateRechercheAvanceeModal(win, page, entiteToSearch, p, anonyme, sessionScope, listecontroller);
+			ua.setVisible(false);
+			
+			win.addEventListener("onTimed", new EventListener<Event>()
+			{
+				@Override
+				public void onEvent(final Event event) throws Exception{
+					// progress.detach();
+					ua.setVisible(true);
+				}
+			});
+
+			final Timer timer = new Timer();
+			timer.setDelay(500);
+			timer.setRepeats(false);
+			timer.addForward("onTimer", timer.getParent(), "onTimed");
+			win.appendChild(timer);
+			timer.start();
+
+			try{
+				win.doModal();
+
+				setBlockModal(false);
+
+			}catch(final SuspendNotAllowedException e){
+				log.error(e);
+			}
+		}
+	}
+
+	private static HtmlMacroComponent populateRechercheAvanceeModal(final Window win, final Page page, final Entite entiteToSearch,
+			final String path, final boolean anonyme, final Map<?, ?> sessionScope /*TODO Jamais utilisé */, final AbstractListeController2 listeController){
+		// HtmlMacroComponent contenu dans la fenêtre : il correspond
+		// au composant des collaborations.
+		HtmlMacroComponent ua = null;
+
+		if(entiteToSearch.getNom().equals("Patient")){
+			String pageDef = "ficheRechercheAvanceePatient";
+			String winDef = "fwinRechercheAvanceePatient";
+			if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
+				pageDef = "ficheRechercheAvanceePatientSero";
+				winDef = "fwinRechercheAvanceePatientSero";
+			}
+			ua = (HtmlMacroComponent) page.getComponentDefinition(pageDef, false).newInstance(page, null);
+			ua.setParent(win);
+			ua.setId("openRechercheAvanceePatientModale");
+			ua.applyProperties();
+			ua.afterCompose();
+
+			((FicheRechercheAvancee) ua.getFellow(winDef)
+					.getAttributeOrFellow(winDef + "$composer", true)).initRechercheAvancee(entiteToSearch, path,
+							anonyme, listeController);
+
+		}else if(entiteToSearch.getNom().equals("Prelevement")){
+			String pageDef = "ficheRechercheAvanceePrelevement";
+			String winDef = "fwinRechercheAvanceePrelevement";
+			if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
+				pageDef = "ficheRechercheAvanceePrelevementSero";
+				winDef = "fwinRechercheAvanceePrelevementSero";
+			}
+			ua = (HtmlMacroComponent) page.getComponentDefinition(pageDef, false).newInstance(page, null);
+			ua.setParent(win);
+			ua.setId("openRechercheAvanceePrelevementModale");
+			ua.applyProperties();
+			ua.afterCompose();
+
+			((FicheRechercheAvancee) ua.getFellow(winDef).getAttributeOrFellow(winDef + "$composer", true))
+			.initRechercheAvancee(entiteToSearch, path, anonyme, listeController);
+		}else if(entiteToSearch.getNom().equals("Echantillon")){
+			String pageDef = "ficheRechercheAvanceeEchantillon";
+			String winDef = "fwinRechercheAvanceeEchantillon";
+			if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
+				pageDef = "ficheRechercheAvanceeEchantillonSero";
+				winDef = "fwinRechercheAvanceeEchantillonSero";
+			}
+			ua = (HtmlMacroComponent) page.getComponentDefinition(pageDef, false).newInstance(page, null);
+			ua.setParent(win);
+			ua.setId("openRechercheAvanceeEchantillonModale");
+			ua.applyProperties();
+			ua.afterCompose();
+
+			((FicheRechercheAvancee) ua.getFellow(winDef)
+					.getAttributeOrFellow(winDef + "$composer", true)).initRechercheAvancee(entiteToSearch, path,
+							anonyme, listeController);
+		}else if(entiteToSearch.getNom().equals("ProdDerive")){
+			String pageDef = "ficheRechercheAvanceeProdDerive";
+			String winDef = "fwinRechercheAvanceeProdDerive";
+			if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
+				pageDef = "ficheRechercheAvanceeProdDeriveSero";
+				winDef = "fwinRechercheAvanceeProdDeriveSero";
+			}
+			ua = (HtmlMacroComponent) page.getComponentDefinition(pageDef, false).newInstance(page, null);
+			ua.setParent(win);
+			ua.setId("openRechercheAvanceeProdDeriveModale");
+			ua.applyProperties();
+			ua.afterCompose();
+
+			((FicheRechercheAvancee) ua.getFellow(winDef)
+					.getAttributeOrFellow(winDef + "$composer", true)).initRechercheAvancee(entiteToSearch, path,
+							anonyme, listeController);
+		}
+
+		return ua;
+	}
+
+	/**
+	 * Méthode appelée lorsque l'utilisateur clique sur le lien pour imprimer la
+	 * page. Cette méthode va créer une nouvelle fenêtre.
+	 *
+	 * @param page
+	 *            dans laquelle inclure la modale
+	 * @param objToPrint
+	 *            Objet à imprimer.
+	 */
+	public void openRechercheAvanceeCessionWindow(final Page page, final String title, final Entite entiteToSearch,
+			final String p){
+		if(!isBlockModal()){
+
+			setBlockModal(true);
+
+			// nouvelle fenêtre
+			final Window win = new Window();
+			win.setVisible(false);
+			win.setId("rechercheAvanceeWindow");
+			win.setPage(page);
+			win.setMaximizable(true);
+			win.setSizable(true);
+			win.setTitle(title);
+			win.setBorder("normal");
+			win.setHflex("1");
+			win.setWidth("90%");
+			win.setFocus(true);
+			final int height = getMainWindow().getPanelHeight() + 30;
+			win.setHeight(height + "px");
+			win.setClosable(true);
+			win.setVflex("1");
+			win.setSclass("rechWindow");
+
+
+			final HtmlMacroComponent ua = populateRechercheAvanceeCessionModal(win, page, entiteToSearch, p);
+			ua.setVisible(false);
+
+			win.addEventListener("onTimed", new EventListener<Event>()
+			{
+				@Override
+				public void onEvent(final Event event) throws Exception{
+					// progress.detach();
+					ua.setVisible(true);
+				}
+			});
+
+			final Timer timer = new Timer();
+			timer.setDelay(500);
+			timer.setRepeats(false);
+			timer.addForward("onTimer", timer.getParent(), "onTimed");
+			win.appendChild(timer);
+			timer.start();
+
+			try{
+				win.doModal();
+
+				setBlockModal(false);
+
+			}catch(final SuspendNotAllowedException e){
+				log.error(e);
+			}
+		}
+	}
+
+	public HtmlMacroComponent populateRechercheAvanceeCessionModal(final Window win, final Page page, final Entite entiteToSearch,
+			final String path){
+		// HtmlMacroComponent contenu dans la fenêtre : il correspond
+		// au composant des collaborations.
+		HtmlMacroComponent ua = null;
+
+		ua = (HtmlMacroComponent) page.getComponentDefinition("ficheRechercheAvanceeCession", false).newInstance(page, null);
+		ua.setParent(win);
+		ua.setId("openRechercheAvanceeCessionModale");
+		ua.applyProperties();
+		ua.afterCompose();
+
+		((FicheRechercheAvanceeCession) ua.getFellow("fwinRechercheAvanceeCession")
+				.getAttributeOrFellow("fwinRechercheAvanceeCession$composer", true)).initRechercheAvancee(entiteToSearch, path, this);
+
+		return ua;
+	}
+
+	/**
+	 * Ouverture de la modale permettant une recherche avancée à partir des
+	 * items INCa.
+	 */
+	public void openRechercheINCaWindow(final Page page, final Entite entiteToSearch, final String p){
+		if(!isBlockModal()){
+
+			setBlockModal(true);
+
+			// nouvelle fenêtre
+			final Window win = new Window();
+			win.setVisible(false);
+			win.setId("rechercheINCaWindow");
+			win.setPage(page);
+			win.setMaximizable(true);
+			win.setSizable(true);
+			win.setTitle(Labels.getLabel("recherche.inca.titre"));
+			win.setBorder("normal");
+			win.setHflex("1");
+			win.setWidth("90%");
+			win.setFocus(true);
+			final int height = getMainWindow().getPanelHeight() + 30;
+			win.setHeight(height + "px");
+			win.setClosable(true);
+
+			final HtmlMacroComponent ua = populateRechercheINCa(win, page, entiteToSearch, p, this);
+			ua.setVisible(false);
+
+			win.addEventListener("onTimed", new EventListener<Event>()
+			{
+				@Override
+				public void onEvent(final Event event) throws Exception{
+					// progress.detach();
+					ua.setVisible(true);
+				}
+			});
+
+			final Timer timer = new Timer();
+			timer.setDelay(500);
+			timer.setRepeats(false);
+			timer.addForward("onTimer", timer.getParent(), "onTimed");
+			win.appendChild(timer);
+			timer.start();
+
+			try{
+				win.doModal();
+
+				setBlockModal(false);
+
+			}catch(final SuspendNotAllowedException e){
+				log.error(e);
+			}
+		}
+	}
+
+	private static HtmlMacroComponent populateRechercheINCa(final Window win, final Page page, final Entite entiteToSearch,
+			final String path, final AbstractListeController2 controller){
+		// HtmlMacroComponent contenu dans la fenêtre : il correspond
+		// au composant des collaborations.
+		HtmlMacroComponent ua = null;
+
+		ua = (HtmlMacroComponent) page.getComponentDefinition("ficheRechercheINCa", false).newInstance(page, null);
+		ua.setParent(win);
+		ua.setId("openRechercheINCaModale");
+		ua.applyProperties();
+		ua.afterCompose();
+
+		((FicheRechercheINCa) ua.getFellow("fwinRechercheINCa").getAttributeOrFellow("fwinRechercheINCa$composer", true))
+		.initRechercheAvancee(entiteToSearch, path, controller);
+
+		return ua;
+	}
+
+	/**
+	 * PopUp window appelée pour attente lors de l'export.
+	 *
+	 * @param page
+	 *            dans laquelle inclure la modale
+	 * @param message
+	 *            affiché à l'utilisateur.
+	 * @param boolean cascadable si possibilité de cascader la délétion ou
+	 *        l'archivage
+	 * @param deletable
+	 *            si la deletion est possible.
+	 * @param controller
+	 *            parent ayant demandé la délétion.
+	 */
+
+	public void openExportWindow(final Page page, final String entite, final List<?> objs, final List<Banque> banques,
+			final boolean isExportAnonyme, final Utilisateur user){
+		if(!isBlockModal()){
+
+			setBlockModal(true);
+
+			// nouvelle fenêtre
+			final Window win = new Window();
+			win.setVisible(false);
+			win.setId("exportWindow");
+			win.setPage(page);
+			win.setMaximizable(true);
+			win.setSizable(true);
+			win.setBorder("normal");
+			win.setWidth("400px");
+			final int height = 175;
+			win.setHeight(String.valueOf(height) + "px");
+			win.setClosable(false);
+
+			final HtmlMacroComponent ua;
+			ua = (HtmlMacroComponent) page.getComponentDefinition("exportModale", false).newInstance(page, null);
+			ua.setParent(win);
+			ua.setId("exportModaleComponent");
+			ua.applyProperties();
+			ua.afterCompose();
+
+			((ExportModale) ua.getFellow("fwinExportModale").getAttributeOrFellow("fwinExportModale$composer", true)).init(entite,
+					(List<Object>) objs, banques, isExportAnonyme, user);
+			ua.setVisible(false);
+
+			win.addEventListener("onTimed", new EventListener<Event>()
+			{
+				@Override
+				public void onEvent(final Event event) throws Exception{
+					// progress.detach();
+					ua.setVisible(true);
+				}
+			});
+
+			final Timer timer = new Timer();
+			timer.setDelay(500);
+			timer.setRepeats(false);
+			timer.addForward("onTimer", timer.getParent(), "onTimed");
+			win.appendChild(timer);
+			timer.start();
+
+			try{
+				win.onModal();
+				setBlockModal(false);
+
+			}catch(final SuspendNotAllowedException e){
+				log.error(e);
+			}
+		}
+	}
+
+	public List<Integer> getResultatsIds(){
+		return resultatsIds;
+	}
+
+	public void setResultatsIds(final List<Integer> ids){
+		this.resultatsIds.clear();
+		if(ids != null){
+			this.resultatsIds.addAll(ids);
+		}
+	}
+
+	public List<Integer> getRestrictedTableIds(){
+		return restrictedTableIds;
+	}
+
+	public void setRestrictedTableIds(final List<Integer> rI){
+		this.restrictedTableIds = rI;
+	}
+
+	public Menuitem getExportItemAdv(){
+		return exportItemAdv;
+	}
+
+	public void switchToEditMode(final boolean b){
+		disableToolBar(b);
+	}
+
+	/**
+	 * Ouvre une fenêtre pour uploader un fichier contenant une liste de
+	 * valeurs, extrait ces valeurs et les retourne pour permettre la recherche.
+	 *
+	 * @return
+	 */
+	public List<String> getListStringToSearch(){
+		List<String> liste = new ArrayList<>();
+		Media[] medias;
+		InputStream fileInputStream = null;
+		medias = Fileupload.get(ObjectTypesFormatters.getLabel("general.upload.limit", new String[] {String.valueOf(10000)}),
+				Labels.getLabel("general.search.file.upload"), 1, 10000, true);
+		if(medias != null && medias.length > 0){
+			fileInputStream = medias[0].getStreamData();
+			liste = ManagerLocator.getImportManager().extractListOfStringFromExcelFile(fileInputStream, true);
+		}
+
+		// since 2.1
+		if(fileInputStream != null){
+			try{
+				fileInputStream.close();
+			}catch(final IOException e){
+				e.printStackTrace();
+			}finally{
+				fileInputStream = null;
+			}
+		}
+
+		return liste;
+	}
+
+	/**
+	 * Impression des étiquettes pour les TKStockableObject
+	 */
+
+	public void onClick$etiquetteItem(){
+
+		AffectationImprimante affectation = null;
+
+		final List<AffectationImprimante> affs = ManagerLocator.getAffectationImprimanteManager().findByBanqueUtilisateurManager(
+				SessionUtils.getSelectedBanques(sessionScope).get(0), SessionUtils.getLoggedUser(sessionScope));
+		if(affs.size() > 0){
+			affectation = affs.get(0);
+		}
+
+		openImprimanteModeleModale(SessionUtils.getPlateforme(sessionScope),
+				(List<? extends TKStockableObject>) getSelectedObjects(), affectation, null);
+	}
+
+	public void onDeleteIdsFromModaleEvent(final Event e){
+		getResultatsIds().clear();
+		if(e.getData() != null && e.getData() instanceof List){
+			getResultatsIds().addAll((List<Integer>) e.getData());
+		}
+		openDeleteWindow(getPage(), "message", true, true, true, self, false);
+	}
+
+	/**
+	 * batch delete objects from Liste selection
+	 * clear resultatsIds avant toute chose, récupère
+	 * les ids depuis la résultatModale
+	 * @since 2.0.12
+	 */
+	public void onClick$deleteItem(final Event e){
+		Messagebox.show(
+				ObjectTypesFormatters.getLabel("message.deletion.multiple", new String[] {String.valueOf(getSelectedIds(true).size())}),
+				Labels.getLabel("general.warning"), Messagebox.OK | Messagebox.CANCEL, Messagebox.EXCLAMATION,
+				new org.zkoss.zk.ui.event.EventListener<Event>()
+				{
+					@Override
+					public void onEvent(final Event e){
+						if(Messagebox.ON_OK.equals(e.getName())){
+							getResultatsIds().clear();
+							openDeleteWindow(getPage(), "message", true, true, true, self, false);
+						}else if(Messagebox.ON_CANCEL.equals(e.getName())){
+							//Cancel is clicked
+						}
+					}
+				});
+	}
+
+	public void onDeleteTriggered(final Event event){
+		Clients.showBusy(Labels.getLabel("deletion.general.wait"));
+		String comments = null;
+		if(event.getData() != null){
+			comments = (String) event.getData();
+		}
+		Events.echoEvent("onLaterBatchDelete", self, comments);
+	}
+
+	public void onLaterBatchDelete(final Event e){
+		try{
+			if(getResultatsIds().isEmpty()){
+				setResultatsIds(getSelectedIds(true));
+			}
+
+			final Map<Entite, List<Integer>> childrens = getObjectTabController().getChildrenObjectsIds(getResultatsIds());
+
+			final Map<Entite, List<Integer>> parents = getObjectTabController().getParentsObjectsIds(getResultatsIds());
+
+			batchDelete(getResultatsIds(), (String) e.getData());
+
+			getObjectTabController().getListe().updateGridByIds(getResultatsIds(), true, true);
+			//				}
+		//				getObjectTabController().clearStaticFiche();
+			//				getObjectTabController().switchToOnlyListeMode();
+			//			}
+			//
+			//
+			//			refreshListe();
+			//
+
+			// update de la liste des parents
+			getObjectTabController().updateParentsReferences(parents);
+
+			// update de la liste des enfants
+			getObjectTabController().updateChildrenReferences(childrens, true);
+
+		}catch(final RuntimeException re){
+			// ferme wait message
+			Clients.clearBusy();
+			Messagebox.show(handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
+		}finally{
+			// ferme wait message
+			Clients.clearBusy();
+		}
+	}
+
+	/**
+	 * Vérifie que dans la liste d'objets sélectionnés, au moins un
+	 * n'est pas stocké afin de rendre le bouton 'Stocker' cliquable.
+	 * Cette méthode n'est appelée que pour les listes Echantillon et Derives.
+	 * @return false si au moins un objet n'est pas stocke.
+	 */
+	public boolean areAllObjectsStocked(){
+		final boolean out = true;
+
+		for(final Object tkSObj : getSelectedObjects()){
+			if(((TKStockableObject) tkSObj).getObjetStatut().getStatut().equals("NON STOCKE")){
+				return false;
+			}
+		}
+
+		return out;
+	}
+
+	/**
+	 * Vérifie que dans la liste d'objets sélectionnés, au moins a un statut STOCKE
+	 * ou non STOCKE.
+	 * Cette méthode n'est appelée que pour les listes Echantillon et Derives.
+	 * @return false si au moins un objet n'est pas stocke.
+	 */
+	public boolean areAllObjectsCessibles(){
+		final boolean out = true;
+
+		for(final Object tkSObj : getSelectedObjects()){
+			if(((TKStockableObject) tkSObj).getObjetStatut().getStatut().equals("STOCKE")
+					|| ((TKStockableObject) tkSObj).getObjetStatut().getStatut().equals("NON STOCKE")){
+				return false;
+			}
+		}
+
+		return out;
+	}
+
+	/**
+	 * Ouvre la modale permettant de renseigner un évènement de stockage
+	 * à tous les objets sélectionnés.
+	 * Ouvre une warning modale si un objet est en statut
+	 * @since 2.0.10
+	 */
+
+	public void onClick$retourItem(){
+
+		if(!getObjStatutIncompatibleForRetour(getSelectedObjects(), null)){
+			openRetourFormModale(null, true, null, null, (List<TKStockableObject>) getSelectedObjects(), null, null, null, null,
+					null, null, null);
+
+			clearSelection();
+		}
+	}
+
+	public boolean isTtesCollection(){
+		return SessionUtils.getSelectedBanques(sessionScope).size() > 1;
+	}
+
+	@Override
+	public void onClickObjectEmplacement(final Event event){
+		if(!getMode().equals("select")){
+			super.onClickObjectEmplacement(event);
+		}
+	}
+
+	/**
+	 * Bouton de menu affichant la modale permettant la complétion
+	 * des évènements de stockage incomplets
+	 * @since 2.0.10
+	 */
+
+	public void onClick$incompRetoursItem(){
+		openDateRetourModale(this, (List<TKStockableObject>) getSelectedObjects());
+	}
+
+	/**
+	 * Appelles l'ouverture de la resultats modale depuis un autre
+	 * component
+	 * @param ids Resultats
+	 */
+	public void callResultatsModale(final List<Integer> res){
+		getResultatsIds().clear();
+		getResultatsIds().addAll(res);
+		openResultatsWindow(page, res, self, getEntiteNom(), getObjectTabController());
+	}
+
+	/*************************************************************************/
+	/****************** Evenements on click arbre d'objets *******************/
+	/*************************************************************************/
+	private void postTargetObjectsIds(final String eNom, final Boolean deriveDesc, final List<Integer> ids){
+
+		// recuperation des ids target
+		final List<Integer> resIds = ManagerLocator.getCorrespondanceIdManager().findTargetIdsFromIdsManager(ids,
+				getObjectTabController().getEntiteTab(), ManagerLocator.getEntiteManager().findByNomManager(eNom).get(0),
+				SessionUtils.getSelectedBanques(sessionScope), deriveDesc);
+
+		// changement onglet
+		getObjectTabController().postIdsToOtherEntiteTab(eNom, resIds);
+	}
+
+	private List<Integer> getSelectedIds(final boolean fromSelection){
+		final List<Integer> ids = new ArrayList<>();
+		if(fromSelection){
+			extractIdsFromList((List<TKdataObject>) getSelectedObjects(), ids);
+		}
+		return ids;
+	}
+
+	public void onClick$patientsItem(final Event e){
+		if(e.getData() != null && !((List<Integer>) e.getData()).isEmpty()){
+			postTargetObjectsIds("Patient", null, (List<Integer>) e.getData());
+		}else{
+			postTargetObjectsIds("Patient", null, getSelectedIds(true));
+		}
+	}
+
+	public void onClick$prelevementsItem(final Event e){
+		if(e.getData() != null && !((List<Integer>) e.getData()).isEmpty()){
+			postTargetObjectsIds("Prelevement", null, (List<Integer>) e.getData());
+		}else{
+			postTargetObjectsIds("Prelevement", null, getSelectedIds(true));
+		}
+	}
+
+	public void onClick$echantillonsItem(final Event e){
+		if(e.getData() != null && !((List<Integer>) e.getData()).isEmpty()){
+			postTargetObjectsIds("Echantillon", null, (List<Integer>) e.getData());
+		}else{
+			postTargetObjectsIds("Echantillon", null, getSelectedIds(true));
+		}
+	}
+
+	public void onClick$derivesItem(final Event e){
+		if(e.getData() != null && !((List<Integer>) e.getData()).isEmpty()){
+			postTargetObjectsIds("ProdDerive", true, (List<Integer>) e.getData());
+		}else{
+			postTargetObjectsIds("ProdDerive", true, getSelectedIds(true));
+		}
+	}
+
+	public void onClick$derivesAscItem(final Event e){
+		if(e.getData() != null && !((List<Integer>) e.getData()).isEmpty()){
+			postTargetObjectsIds("ProdDerive", false, (List<Integer>) e.getData());
+		}else{
+			postTargetObjectsIds("ProdDerive", false, getSelectedIds(true));
+		}
+	}
+
+	public void onClick$cessionsItem(final Event e){
+		if(e.getData() != null && !((List<Integer>) e.getData()).isEmpty()){
+			postTargetObjectsIds("Cession", null, (List<Integer>) e.getData());
+		}else{
+			postTargetObjectsIds("Cession", null, getSelectedIds(true));
+		}
+	}
+
+	public void updateListResultsLabel(final Integer nbResults){
+		if(getObjectTabController() != null && getObjectTabController().getListeRegion() != null){
+			getObjectTabController().getListeRegion()
+			//.getCaption().setLabel
+			.setTitle(Labels.getLabel("general.recherche") + " ("
+					+ (nbResults != null ? nbResults : getListObjects() != null ? getListObjects().size() : 0) + ")");
+		}
+	}
 }

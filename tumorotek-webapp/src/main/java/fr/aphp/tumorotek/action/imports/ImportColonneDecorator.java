@@ -43,6 +43,7 @@ import org.zkoss.util.resource.Labels;
 
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  * Decorateur ImportColonne pour affichage ImportTemplate.
@@ -51,200 +52,210 @@ import fr.aphp.tumorotek.model.io.imports.ImportColonne;
  * @author Mathieu BARTHELEMY
  *
  */
-public class ImportColonneDecorator
-{
+public class ImportColonneDecorator {
 
-   private ImportColonne colonne;
-   private Boolean canDelete = true;
-   private Boolean canMove = true;
-   private Boolean disableEditLabel = false;
+	private ImportColonne colonne;
+	private Boolean canDelete = true;
+	private Boolean canMove = true;
+	private Boolean disableEditLabel = false;
 
-   public ImportColonneDecorator(final ImportColonne ic){
-      colonne = ic;
-   }
+	public ImportColonneDecorator(final ImportColonne ic) {
+		colonne = ic;
+	}
 
-   public ImportColonne getColonne(){
-      return colonne;
-   }
+	public ImportColonne getColonne() {
+		return colonne;
+	}
 
-   public void setColonne(final ImportColonne c){
-      this.colonne = c;
-   }
+	public void setColonne(final ImportColonne c) {
+		this.colonne = c;
+	}
 
-   public String getChamp(){
-      String champ = "";
-      if(colonne.getChamp() != null){
-         if(colonne.getChamp().getChampEntite() != null){
-            champ = getLabelForChampEntite(colonne.getChamp().getChampEntite());
-         }else{
-            champ = colonne.getChamp().getChampAnnotation().getNom();
-         }
-      }else{ // subderive header
-         if(colonne.getNom().equals("code.parent")){
-            champ = Labels.getLabel("import.colonne.subderive.parent");
-         }else if(colonne.getNom().equals("qte.transf")){
-            champ = Labels.getLabel("import.colonne.subderive.qte.transf");
-         }else if(colonne.getNom().equals("evt.date")){
-            champ = Labels.getLabel("import.colonne.subderive.evt.date");
-         }
-      }
-      return champ;
-   }
+	public String getChamp() {
+		String champ = "";
+		if (colonne.getChamp() != null) {
+			if (colonne.getChamp().getChampEntite() != null) {
+				champ = getLabelForChampEntite(colonne.getChamp().getChampEntite());
+			} else if (colonne.getChamp().getChampDelegue() != null) {
+				champ = Labels.getLabel(colonne.getChamp().getChampDelegue()
+						.getILNLabelForChampDelegue(SessionUtils.getCurrentContexte()));
+			} else {
+				champ = colonne.getChamp().getChampAnnotation().getNom();
+			}
+		} else { // subderive header
+			if (colonne.getNom().equals("code.parent")) {
+				champ = Labels.getLabel("import.colonne.subderive.parent");
+			} else if (colonne.getNom().equals("qte.transf")) {
+				champ = Labels.getLabel("import.colonne.subderive.qte.transf");
+			} else if (colonne.getNom().equals("evt.date")) {
+				champ = Labels.getLabel("import.colonne.subderive.evt.date");
+			}
+		}
+		return champ;
+	}
 
-   public String getFormat(){
-      String format = "";
-      if(colonne.getChamp() != null){
-         if(colonne.getChamp().getChampEntite() != null){
-            if(colonne.getChamp().getChampEntite().getNom().equals("EmplacementId")){
-               format = Labels.getLabel("importColonne.Type.Emplacement");
-            }else if(colonne.getChamp().getChampEntite().getQueryChamp() != null){
-               format = "thesaurus";
-            }else{
-               format = colonne.getChamp().getChampEntite().getDataType().getType();
-            }
-         }else{
-            format = colonne.getChamp().getChampAnnotation().getDataType().getType();
-         }
-      }else{ // subderive header
-         if(colonne.getNom().equals("code.parent")){
-            format = "alphanum";
-         }else if(colonne.getNom().equals("qte.transf")){
-            format = "num";
-         }else if(colonne.getNom().equals("evt.date")){
-            format = "datetime";
-         }
-      }
-      return format;
-   }
+	public String getFormat() {
+		String format = "";
+		if (colonne.getChamp() != null) {
+			if (colonne.getChamp().getChampEntite() != null) {
+				if (colonne.getChamp().getChampEntite().getNom().equals("EmplacementId")) {
+					format = Labels.getLabel("importColonne.Type.Emplacement");
+				} else if (colonne.getChamp().getChampEntite().getQueryChamp() != null) {
+					format = "thesaurus";
+				} else {
+					format = colonne.getChamp().getChampEntite().getDataType().getType();
+				}
+			} else if (colonne.getChamp().getChampDelegue() != null) {
+				format = colonne.getChamp().getChampDelegue().getDataType().getType();
+			} else {
+				format = colonne.getChamp().getChampAnnotation().getDataType().getType();
+			}
+		} else { // subderive header
+			if (colonne.getNom().equals("code.parent")) {
+				format = "alphanum";
+			} else if (colonne.getNom().equals("qte.transf")) {
+				format = "num";
+			} else if (colonne.getNom().equals("evt.date")) {
+				format = "datetime";
+			}
+		}
+		return format;
+	}
 
-   public String getEntite(){
-      String entite = "";
-      if(colonne.getChamp() != null){
-         if(colonne.getChamp().getChampEntite() != null){
-            entite = Labels.getLabel("Entite." + colonne.getChamp().getChampEntite().getEntite().getNom());
-         }else{
-            entite =
-               Labels.getLabel("Entite." + colonne.getChamp().getChampAnnotation().getTableAnnotation().getEntite().getNom());
-         }
-      }else{
-         entite = Labels.getLabel("import.colonne.subderive.header");
-      }
-      return entite;
-   }
+	public String getEntite() {
+		String entite = "";
+		if (colonne.getChamp() != null) {
+			if (colonne.getChamp().getChampEntite() != null) {
+				entite = Labels.getLabel("Entite." + colonne.getChamp().getChampEntite().getEntite().getNom());
+			} else if (colonne.getChamp().getChampDelegue() != null) {
+				entite = Labels.getLabel("Entite." + colonne.getChamp().getChampDelegue().getEntite().getNom());
+			} else {
+				entite = Labels.getLabel(
+						"Entite." + colonne.getChamp().getChampAnnotation().getTableAnnotation().getEntite().getNom());
+			}
+		} else {
+			entite = Labels.getLabel("import.colonne.subderive.header");
+		}
+		return entite;
+	}
 
-   public boolean getCanDelete(){
-      if(colonne.getChamp() != null && colonne.getChamp().getChampEntite() != null){
-         return colonne.getChamp().getChampEntite().isNullable();
-      }
-      return canDelete;
-   }
+	public boolean getCanDelete() {
+		if (colonne.getChamp() != null && colonne.getChamp().getChampEntite() != null) {
+			return colonne.getChamp().getChampEntite().isNullable();
+		}
+		return canDelete;
+	}
 
-   public boolean getCanMove(){
-      return canMove;
-   }
+	public boolean getCanMove() {
+		return canMove;
+	}
 
-   public void setCanMove(final Boolean b){
-      canMove = b;
-   }
+	public void setCanMove(final Boolean b) {
+		canMove = b;
+	}
 
-   public Boolean getDisableEditLabel(){
-      return disableEditLabel;
-   }
+	public Boolean getDisableEditLabel() {
+		return disableEditLabel;
+	}
 
-   public void setDisableEditLabel(final Boolean d){
-      this.disableEditLabel = d;
-   }
+	public void setDisableEditLabel(final Boolean d) {
+		this.disableEditLabel = d;
+	}
 
-   public String getLabelForChampEntite(final ChampEntite champ){
-      final StringBuffer iProperty = new StringBuffer();
-      iProperty.append("Champ.");
-      iProperty.append(champ.getEntite().getNom());
-      iProperty.append(".");
+	public String getLabelForChampEntite(final ChampEntite champ) {
+		final StringBuffer iProperty = new StringBuffer();
+		iProperty.append("Champ.");
+		iProperty.append(champ.getEntite().getNom());
+		iProperty.append(".");
 
-      String champOk = "";
-      // si le nom du champ finit par "Id", on le retire
-      if(champ.getNom().endsWith("Id")){
-         champOk = champ.getNom().substring(0, champ.getNom().length() - 2);
-      }else{
-         champOk = champ.getNom();
-      }
-      iProperty.append(champOk);
+		String champOk = "";
+		// si le nom du champ finit par "Id", on le retire
+		if (champ.getNom().endsWith("Id")) {
+			champOk = champ.getNom().substring(0, champ.getNom().length() - 2);
+		} else {
+			champOk = champ.getNom();
+		}
+		iProperty.append(champOk);
 
-      // on ajoute la valeur du champ
-      return Labels.getLabel(iProperty.toString());
-   }
+		// on ajoute la valeur du champ
+		return Labels.getLabel(iProperty.toString());
+	}
 
-   /**
-    * Decore une liste de cederobjets.
-    * @param cederobjets
-    * @param isSubderive rend artificiellement les 3 colonnes de l'entete non supprimables
-    * @return CederObjets décorées.
-    */
-   public static List<ImportColonneDecorator> decorateListe(final List<ImportColonne> objets, final boolean isSubderive){
-      final List<ImportColonneDecorator> liste = new ArrayList<>();
-      final Iterator<ImportColonne> it = objets.iterator();
-      int i = 0;
-      while(it.hasNext()){
-         liste.add(new ImportColonneDecorator(it.next()));
-         // rend les 3 premiers decorateurs non supprimables
-         if(i < 3 && isSubderive){
-            liste.get(i).setCanDelete(false);
-            liste.get(i).setCanMove(false);
-            liste.get(i).setDisableEditLabel(true);
-         }
-         i++;
-      }
-      return liste;
-   }
+	/**
+	 * Decore une liste de cederobjets.
+	 * 
+	 * @param cederobjets
+	 * @param isSubderive
+	 *            rend artificiellement les 3 colonnes de l'entete non supprimables
+	 * @return CederObjets décorées.
+	 */
+	public static List<ImportColonneDecorator> decorateListe(final List<ImportColonne> objets,
+			final boolean isSubderive) {
+		final List<ImportColonneDecorator> liste = new ArrayList<>();
+		final Iterator<ImportColonne> it = objets.iterator();
+		int i = 0;
+		while (it.hasNext()) {
+			liste.add(new ImportColonneDecorator(it.next()));
+			// rend les 3 premiers decorateurs non supprimables
+			if (i < 3 && isSubderive) {
+				liste.get(i).setCanDelete(false);
+				liste.get(i).setCanMove(false);
+				liste.get(i).setDisableEditLabel(true);
+			}
+			i++;
+		}
+		return liste;
+	}
 
-   /**
-    * Extrait les CederObjets d'une liste de Decorator.
-    * @param CederObjets
-    * @return CederObjets décorés.
-    */
-   public static List<ImportColonne> extractListe(final List<ImportColonneDecorator> cedes){
-      final List<ImportColonne> liste = new ArrayList<>();
-      final Iterator<ImportColonneDecorator> it = cedes.iterator();
+	/**
+	 * Extrait les CederObjets d'une liste de Decorator.
+	 * 
+	 * @param CederObjets
+	 * @return CederObjets décorés.
+	 */
+	public static List<ImportColonne> extractListe(final List<ImportColonneDecorator> cedes) {
+		final List<ImportColonne> liste = new ArrayList<>();
+		final Iterator<ImportColonneDecorator> it = cedes.iterator();
 
-      while(it.hasNext()){
-         liste.add(it.next().getColonne());
-      }
-      return liste;
-   }
+		while (it.hasNext()) {
+			liste.add(it.next().getColonne());
+		}
+		return liste;
+	}
 
-   @Override
-   public boolean equals(final Object obj){
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
+		if (this == obj) {
+			return true;
+		}
 
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
+		if ((obj == null) || obj.getClass() != this.getClass()) {
+			return false;
+		}
 
-      final ImportColonneDecorator deco = (ImportColonneDecorator) obj;
-      return this.getColonne().equals(deco.getColonne());
+		final ImportColonneDecorator deco = (ImportColonneDecorator) obj;
+		return this.getColonne().equals(deco.getColonne());
 
-   }
+	}
 
-   @Override
-   public int hashCode(){
+	@Override
+	public int hashCode() {
 
-      int hash = 7;
-      int hashColonne = 0;
+		int hash = 7;
+		int hashColonne = 0;
 
-      if(this.getColonne() != null){
-         hashColonne = this.getColonne().hashCode();
-      }
+		if (this.getColonne() != null) {
+			hashColonne = this.getColonne().hashCode();
+		}
 
-      hash = 7 * hash + hashColonne;
+		hash = 7 * hash + hashColonne;
 
-      return hash;
-   }
+		return hash;
+	}
 
-   public void setCanDelete(final Boolean canDelete){
-      this.canDelete = canDelete;
-   }
+	public void setCanDelete(final Boolean canDelete) {
+		this.canDelete = canDelete;
+	}
 
 }

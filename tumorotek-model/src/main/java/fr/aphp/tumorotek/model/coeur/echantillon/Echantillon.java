@@ -63,6 +63,8 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
+import fr.aphp.tumorotek.model.TKDelegateObject;
+import fr.aphp.tumorotek.model.TKDelegetableObject;
 import fr.aphp.tumorotek.model.TKFileSettableObject;
 import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.TKThesaurusObject;
@@ -75,7 +77,6 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.stockage.Emplacement;
 import fr.aphp.tumorotek.model.systeme.Fichier;
 import fr.aphp.tumorotek.model.systeme.Unite;
-import fr.aphp.tumorotek.model.utilisateur.Reservation;
 import fr.aphp.tumorotek.model.utils.Utils;
 
 /**
@@ -186,7 +187,7 @@ import fr.aphp.tumorotek.model.utils.Utils;
    @NamedQuery(name = "Echantillon.findByEmplacement",
       query = "SELECT e FROM Echantillon e " + "WHERE e.emplacement.terminale = ?1 " + "AND e.emplacement.position = ?2"),
    @NamedQuery(name = "Echantillon.findByCodeInListWithPlateforme", query= "SELECT e FROM Echantillon e JOIN e.banque bq JOIN bq.plateforme pf WHERE e.code in (?1) AND pf = ?2 ")})
-public class Echantillon implements TKStockableObject, Serializable, TKFileSettableObject
+public class Echantillon extends TKDelegetableObject<Echantillon> implements TKStockableObject, Serializable, TKFileSettableObject
 {
 
    private static final long serialVersionUID = 7561274704258954965L;
@@ -215,11 +216,10 @@ public class Echantillon implements TKStockableObject, Serializable, TKFileSetta
    private Collaborateur collaborateur;
    private Emplacement emplacement;
    private Fichier crAnapath;
-   private Reservation reservation;
    private EchantillonType echantillonType;
    private Prelevement prelevement;
    private Set<CodeAssigne> codesAssignes = new HashSet<>();
-   private AbstractEchantillonDelegate delegate;
+   private TKDelegateObject<Echantillon> delegate;
 
    // stream utilise pour enregistre Cr anapath
    private InputStream anapathStream;
@@ -454,16 +454,6 @@ public class Echantillon implements TKStockableObject, Serializable, TKFileSetta
       this.crAnapath = f;
    }
 
-   @ManyToOne
-   @JoinColumn(name = "RESERVATION_ID", nullable = true)
-   public Reservation getReservation(){
-      return this.reservation;
-   }
-
-   public void setReservation(final Reservation res){
-      this.reservation = res;
-   }
-
    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "ECHANTILLON_TYPE_ID", nullable = false)
    public EchantillonType getEchantillonType(){
@@ -493,13 +483,10 @@ public class Echantillon implements TKStockableObject, Serializable, TKFileSetta
       this.codesAssignes = cs;
    }
 
-   @OneToOne(mappedBy = "delegator", cascade = CascadeType.MERGE, orphanRemoval = true)
-   public AbstractEchantillonDelegate getDelegate(){
+   @OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "delegator",
+		      targetEntity = AbstractEchantillonDelegate.class)
+   public TKDelegateObject<Echantillon> getDelegate(){
       return delegate;
-   }
-
-   public void setDelegate(AbstractEchantillonDelegate delegate){
-      this.delegate = delegate;
    }
 
    /**
@@ -599,7 +586,6 @@ public class Echantillon implements TKStockableObject, Serializable, TKFileSetta
       clone.setConformeTraitement(this.getConformeTraitement());
       clone.setConformeCession(this.getConformeCession());
       clone.setLateralite(this.getLateralite());
-      clone.setReservation(this.getReservation());
       clone.setEtatIncomplet(this.getEtatIncomplet());
       clone.setArchive(this.getArchive());
       // clone.setCodeOrganes(this.getCodeOrganes());
@@ -608,7 +594,9 @@ public class Echantillon implements TKStockableObject, Serializable, TKFileSetta
       // clone.setCodeLesExport(this.getCodeLesExport());
       clone.setCodesAssignes(getCodesAssignes());
       clone.setAnapathStream(getAnapathStream());
-      clone.setDelegate(this.getDelegate());
+
+      clone.setDelegate(getDelegate());
+      
       return clone;
    }
 
@@ -668,4 +656,9 @@ public class Echantillon implements TKStockableObject, Serializable, TKFileSetta
    public void setFile(final Fichier f){
       setCrAnapath(f);
    }
+
+	@Override
+	public void setDelegate(TKDelegateObject<Echantillon> _d) {
+		this.delegate = _d;
+	}
 }

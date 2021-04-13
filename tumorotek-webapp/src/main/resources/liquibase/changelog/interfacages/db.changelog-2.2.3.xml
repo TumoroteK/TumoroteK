@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    
+    <changeSet id="${project.artifactId}-interfacages-1" author="MB" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+	        <not>
+	            <indexExists indexName="dosExtIdx" tableName="DOSSIER_EXTERNE" />
+	        </not>
+    	</preConditions>
+        <createIndex  indexName="DossierIdx" tableName="DOSSIER_EXTERNE" unique="false">  
+        	<column  name="IDENTIFICATION_DOSSIER"/>  
+    	</createIndex> 
+    </changeSet>
+    <changeSet id="${project.artifactId}-interfacages-2" author="MB" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="DOSSIER_EXTERNE" columnName="ENTITE_ID" />
+            </not>
+        </preConditions>
+        <addColumn tableName="DOSSIER_EXTERNE">
+            <column name="ENTITE_ID" type="INT(3)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+	 </changeSet>
+</databaseChangeLog>

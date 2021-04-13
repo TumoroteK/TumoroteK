@@ -95,7 +95,7 @@ public class Version implements Serializable
       this.version = v;
    }
 
-   @Column(name = "DATE", nullable = true)
+   @Column(name = "\"DATE\"", nullable = true)
    public Date getDate(){
       if(date != null){
          return new Date(date.getTime());

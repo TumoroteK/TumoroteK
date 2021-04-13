@@ -49,6 +49,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.manager.systeme.EntiteManager;
 import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
+import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -134,6 +135,12 @@ public class EntiteManagerTest extends AbstractManagerTest4
       final Entite retour = entiteManager.findByIdManager(19);
       final Object objRetour = entiteManager.findObjectByEntiteAndIdManager(retour, 10);
       assertNull(objRetour);
+      
+      // @since 2.2.1 AbstractTKChamp utilise ID
+      final Entite chpA = entiteManager.findByIdManager(30);
+      final Object objChpA = entiteManager.findObjectByEntiteAndIdManager(chpA, 1);
+      assertTrue(((ChampAnnotation) objChpA).getId() == 1);
+      
    }
 
    @Test

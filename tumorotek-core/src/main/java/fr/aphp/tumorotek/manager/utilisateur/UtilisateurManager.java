@@ -58,10 +58,12 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * logs INFO ces opérations
  *
  * @since 2.1 ajout toutes les pfs getPlateformesAvailableManager au superAdmin
+ * 
+ * @since 2.2.1 getAvailableBanque peux conserver les banques archivees, find super archive users
  *
  *
  * @author Pierre Ventadour
- * @version 2.1
+ * @version 2.2.1
  *
  */
 public interface UtilisateurManager
@@ -147,9 +149,11 @@ public interface UtilisateurManager
    /**
     * Retourne toutes les banques auxquelles l'utilisateur a accès.
     * @param utilisateur Utilisateur.
+    * @param boolean conserve les banques archivées si true
     * @return Liste de banques.
+    * @version 2.2.1
     */
-   List<Banque> getAvailableBanquesManager(Utilisateur utilisateur);
+   List<Banque> getAvailableBanquesManager(Utilisateur utilisateur, boolean keepArchived);
 
    /**
     * Retourne toutes les banques auxquelles l'utilisateur a accès
@@ -162,7 +166,7 @@ public interface UtilisateurManager
    /**
     * Retourne toutes les plateformes auxquelles l'utilisateur a accès.
     * @param utilisateur Utilisateur.
-    * @return Liste de platformes.
+    * @param boolean conserve les banques archivées si true
     * @version 2.1
     */
    List<Plateforme> getAvailablePlateformesManager(Utilisateur utilisateur);
@@ -172,9 +176,11 @@ public interface UtilisateurManager
     * en fonction d'une plateforme.
     * @param utilisateur Utilisateur.
     * @param plateforme Plateforme.
+    * @param boolean conserve les banques archivées si true
     * @return Liste de banques.
     */
-   List<Banque> getAvailableBanquesByPlateformeManager(Utilisateur utilisateur, Plateforme plateforme);
+   List<Banque> getAvailableBanquesByPlateformeManager(Utilisateur utilisateur, 
+		   Plateforme plateforme, boolean keepArchived);
 
    /**
     * Persist une instance d'Utilisateur dans la base de données.
@@ -232,5 +238,14 @@ public interface UtilisateurManager
     * @param admin Utilisateur associée à la trace de l'archivage dans OPERATION
     */
    void archiveScheduledUtilisateursManager(Utilisateur admin);
+
+   /**
+    * Recherche les utilisateurs superadmin.
+    * @param boolean archive ou non
+    * @param boolean super ou non
+    * @return une liste d'utilisateurs.
+    * @since 2.2.1
+    */
+   List<Utilisateur> findBySuperAndArchiveManager(boolean archive, boolean isSuper);
 
 }

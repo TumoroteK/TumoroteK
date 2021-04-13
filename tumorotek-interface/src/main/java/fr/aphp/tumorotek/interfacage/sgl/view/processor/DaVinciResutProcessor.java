@@ -42,6 +42,7 @@ import java.util.Calendar;
 import org.apache.log4j.Logger;
 
 import fr.aphp.tumorotek.interfacage.sgl.view.ViewResultProcessor;
+import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.interfacage.BlocExterne;
 import fr.aphp.tumorotek.model.interfacage.DossierExterne;
 import fr.aphp.tumorotek.model.interfacage.ValeurExterne;
@@ -51,7 +52,7 @@ public class DaVinciResutProcessor implements ViewResultProcessor {
 	private Logger log = Logger.getLogger(DaVinciResutProcessor.class);
 	
 	@Override
-	public DossierExterne processResult(ResultSet rSet) throws SQLException {
+	public DossierExterne processResult(ResultSet rSet, Banque bank) throws SQLException {
 		DossierExterne ext = new DossierExterne();	
 		ext.setIdentificationDossier(rSet.getString("NUM_ECHAN")); 
 		ext.setDateOperation(Calendar.getInstance());

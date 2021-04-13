@@ -41,28 +41,42 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import fr.aphp.tumorotek.dao.annotation.ChampAnnotationDao;
+import fr.aphp.tumorotek.dao.coeur.ObjetStatutDao;
 import fr.aphp.tumorotek.dao.coeur.patient.MaladieDao;
 import fr.aphp.tumorotek.dao.coeur.patient.PatientDao;
+import fr.aphp.tumorotek.dao.interfacage.DossierExterneDao;
 import fr.aphp.tumorotek.dao.io.export.ChampEntiteDao;
+import fr.aphp.tumorotek.dao.qualite.OperationTypeDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
 import fr.aphp.tumorotek.manager.coeur.patient.MaladieManager;
 import fr.aphp.tumorotek.manager.coeur.patient.PatientManager;
+import fr.aphp.tumorotek.manager.coeur.prelevement.PrelevementManager;
+import fr.aphp.tumorotek.manager.coeur.prodderive.ProdDeriveManager;
+import fr.aphp.tumorotek.manager.context.BanqueManager;
+import fr.aphp.tumorotek.manager.impl.coeur.CreateOrUpdateUtilities;
 import fr.aphp.tumorotek.manager.interfacage.BlocExterneManager;
+import fr.aphp.tumorotek.manager.interfacage.DossierExterneManager;
 import fr.aphp.tumorotek.manager.interfacage.InjectionManager;
 import fr.aphp.tumorotek.manager.interfacage.ValeurExterneManager;
+import fr.aphp.tumorotek.manager.qualite.OperationManager;
 import fr.aphp.tumorotek.model.code.CodeAssigne;
+import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.annotation.DataType;
@@ -71,620 +85,979 @@ import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
+import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
+import fr.aphp.tumorotek.model.coeur.prodderive.Transformation;
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.interfacage.BlocExterne;
 import fr.aphp.tumorotek.model.interfacage.DossierExterne;
+import fr.aphp.tumorotek.model.interfacage.Emetteur;
 import fr.aphp.tumorotek.model.interfacage.ValeurExterne;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.systeme.Fichier;
+import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.utils.Utils;
 
+/**
+ * 
+ * @author Mathieu BARTHELEMY
+ * @version 2.2.3-genno
+ *
+ */
 public class InjectionManagerImpl implements InjectionManager
 {
 
-   private final Log log = LogFactory.getLog(InjectionManager.class);
+	private final Log log = LogFactory.getLog(InjectionManager.class);
 
-   private EntityManagerFactory entityManagerFactory;
-   private ChampEntiteDao champEntiteDao;
-   private ChampAnnotationDao champAnnotationDao;
-   private ValeurExterneManager valeurExterneManager;
-   private BlocExterneManager blocExterneManager;
-   private EntiteDao entiteDao;
-   private PatientManager patientManager;
-   private PatientDao patientDao;
-   private MaladieManager maladieManager;
-   private MaladieDao maladieDao;
+	private EntityManagerFactory entityManagerFactory;
+	private ChampEntiteDao champEntiteDao;
+	private ChampAnnotationDao champAnnotationDao;
+	private ValeurExterneManager valeurExterneManager;
+	private BlocExterneManager blocExterneManager;
+	private EntiteDao entiteDao;
+	private PatientManager patientManager;
+	private PatientDao patientDao;
+	private MaladieManager maladieManager;
+	private MaladieDao maladieDao;
+	private DossierExterneManager dossierExterneManager;
+	private PrelevementManager prelevementManager;
+	private ProdDeriveManager prodDeriveManager;
+	private ObjetStatutDao objetStatutDao;
+	private DossierExterneDao dossierExterneDao;
+	private BanqueManager banqueManager;
+	private OperationManager operationManager;
+	private OperationTypeDao operationTypeDao;
 
-   public void setEntityManagerFactory(final EntityManagerFactory eFactory){
-      this.entityManagerFactory = eFactory;
-   }
+	public void setEntityManagerFactory(final EntityManagerFactory eFactory){
+		this.entityManagerFactory = eFactory;
+	}
 
-   public void setChampEntiteDao(final ChampEntiteDao cDao){
-      this.champEntiteDao = cDao;
-   }
+	public void setChampEntiteDao(final ChampEntiteDao cDao){
+		this.champEntiteDao = cDao;
+	}
 
-   public void setChampAnnotationDao(final ChampAnnotationDao cDao){
-      this.champAnnotationDao = cDao;
-   }
+	public void setChampAnnotationDao(final ChampAnnotationDao cDao){
+		this.champAnnotationDao = cDao;
+	}
 
-   public void setValeurExterneManager(final ValeurExterneManager vManager){
-      this.valeurExterneManager = vManager;
-   }
+	public void setValeurExterneManager(final ValeurExterneManager vManager){
+		this.valeurExterneManager = vManager;
+	}
 
-   public void setBlocExterneManager(final BlocExterneManager bManager){
-      this.blocExterneManager = bManager;
-   }
+	public void setBlocExterneManager(final BlocExterneManager bManager){
+		this.blocExterneManager = bManager;
+	}
 
-   public void setEntiteDao(final EntiteDao eDao){
-      this.entiteDao = eDao;
-   }
+	public void setEntiteDao(final EntiteDao eDao){
+		this.entiteDao = eDao;
+	}
 
-   public void setPatientManager(final PatientManager pManager){
-      this.patientManager = pManager;
-   }
+	public void setPatientManager(final PatientManager pManager){
+		this.patientManager = pManager;
+	}
 
-   public void setPatientDao(final PatientDao pDao){
-      this.patientDao = pDao;
-   }
+	public void setPatientDao(final PatientDao pDao){
+		this.patientDao = pDao;
+	}
 
-   public void setMaladieManager(final MaladieManager mManager){
-      this.maladieManager = mManager;
-   }
+	public void setMaladieManager(final MaladieManager mManager){
+		this.maladieManager = mManager;
+	}
 
-   public void setMaladieDao(final MaladieDao mDao){
-      this.maladieDao = mDao;
-   }
+	public void setMaladieDao(final MaladieDao mDao){
+		this.maladieDao = mDao;
+	}
 
-   
-   @Override
-   public Object extractValueForOneThesaurus(final ChampEntite champEntite, final Banque banque, final Object valeur){
-      Object resultat = null;
-      List<Object> objets = new ArrayList<>();
+	public void setDossierExterneManager(final DossierExterneManager _d) {
+		this.dossierExterneManager = _d;
+	}
 
-      if(champEntite != null && valeur != null && banque != null){
-         
-         if(champEntite.getEntite().getNom().equals("Etablissement") || champEntite.getEntite().getNom().equals("Collaborateur")
-            || champEntite.getEntite().getNom().equals("Service")){
+	public void setPrelevementManager(final PrelevementManager _p) {
+		this.prelevementManager = _p;
+	}
 
-            Integer id = 0;
-            if(valeur instanceof String){
-               id = Integer.parseInt((String) valeur);
-            }else{
-               id = (Integer) valeur;
-            }
+	public void setProdDeriveManager(ProdDeriveManager _p) {
+		this.prodDeriveManager = _p;
+	}
 
-            // création de la requête
-            final String nomChampId =
-               champEntite.getEntite().getNom().replaceFirst(".", (champEntite.getEntite().getNom().charAt(0) + "").toLowerCase())
-                  + "Id";
+	public void setObjetStatutDao(ObjetStatutDao _o) {
+		this.objetStatutDao = _o;
+	}
+	
+	public void setDossierExterneDao(DossierExterneDao _d) {
+		this.dossierExterneDao = _d;
+	}
 
-            final StringBuffer sql = new StringBuffer();
-            sql.append("SELECT e FROM ");
-            sql.append(champEntite.getEntite().getNom());
-            sql.append(" as e where e.");
-            sql.append(nomChampId);
-            sql.append(" = :valeur");
+	public void setBanqueManager(BanqueManager _b) {
+		this.banqueManager = _b;
+	}
 
-            final EntityManager em = entityManagerFactory.createEntityManager();
-            final TypedQuery<Object> query = em.createQuery(sql.toString(), Object.class);
-            query.setParameter("valeur", id);
+	public void setOperationManager(OperationManager _o) {
+		this.operationManager = _o;
+	}
 
-            objets = query.getResultList();
-            em.close();
+	public void setOperationTypeDao(OperationTypeDao _o) {
+		this.operationTypeDao = _o;
+	}
 
-         }else{
-            // creation de la requête permettant de récupérer
-            // les valeurs du thésaurus
-            // on formate le champ du thésaurus à extraire
-            final String nomChamp = champEntite.getNom().replaceFirst(".", (champEntite.getNom().charAt(0) + "").toLowerCase());
+	@Override
+	public Object extractValueForOneThesaurus(final ChampEntite champEntite, final Banque banque, final Object valeur){
+		Object resultat = null;
+		List<Object> objets = new ArrayList<>();
 
-            final StringBuffer sql = new StringBuffer();
-            sql.append("SELECT e FROM ");
-            sql.append(champEntite.getEntite().getNom());
-            sql.append(" as e where e.nom");
-//            sql.append(nomChamp);
-            sql.append(" = :valeur");
+		if(champEntite != null && valeur != null && banque != null){
 
-            if(!champEntite.getEntite().getNom().equals("Transporteur") && !champEntite.getEntite().getNom().equals("Unite")
-               && !champEntite.getEntite().getNom().equals("ObjetStatut")){
-               sql.append(" and e.plateforme = :pf");
-            }
+			if(champEntite.getEntite().getNom().equals("Etablissement") || champEntite.getEntite().getNom().equals("Collaborateur")
+					|| champEntite.getEntite().getNom().equals("Service")){
 
-            final EntityManager em = entityManagerFactory.createEntityManager();
-            final TypedQuery<Object> query = em.createQuery(sql.toString(), Object.class);
-            query.setParameter("valeur", valeur);
-            if(!champEntite.getEntite().getNom().equals("Transporteur") && !champEntite.getEntite().getNom().equals("Unite")
-               && !champEntite.getEntite().getNom().equals("ObjetStatut")){
-               query.setParameter("pf", banque.getPlateforme());
-            }
+				Integer id = 0;
+				if(valeur instanceof String){
+					id = Integer.parseInt((String) valeur);
+				}else{
+					id = (Integer) valeur;
+				}
 
-            objets = query.getResultList();
-            em.close();
+				// création de la requête
+				final String nomChampId =
+						champEntite.getEntite().getNom().replaceFirst(".", (champEntite.getEntite().getNom().charAt(0) + "").toLowerCase())
+						+ "Id";
 
-         }
+				final StringBuffer sql = new StringBuffer();
+				sql.append("SELECT e FROM ");
+				sql.append(champEntite.getEntite().getNom());
+				sql.append(" as e where e.");
+				sql.append(nomChampId);
+				sql.append(" = :valeur");
 
-         if(objets.size() > 0){
-            resultat = objets.get(0);
-         }
-      }
+				final EntityManager em = entityManagerFactory.createEntityManager();
+				final TypedQuery<Object> query = em.createQuery(sql.toString(), Object.class);
+				query.setParameter("valeur", id);
 
-      return resultat;
-   }
+				objets = query.getResultList();
+				em.close();
 
-   
-   @Override
-   public Object extractValueForOneAnnotationThesaurus(final ChampAnnotation champAnnotation, final Banque banque,
-      final String valeur){
-      Object resultat = null;
+			}else{
+				// creation de la requête permettant de récupérer
+				// les valeurs du thésaurus
+				// on formate le champ du thésaurus à extraire
+				// final String nomChamp = champEntite.getNom().replaceFirst(".", (champEntite.getNom().charAt(0) + "").toLowerCase());
 
-      if(champAnnotation != null && valeur != null && banque != null){
-         // creation de la requête permettant de récupérer
-         // l'item
-         final StringBuffer sql = new StringBuffer();
-         sql.append("SELECT i FROM Item as i");
-         sql.append(" where i.champAnnotation = :champ");
-         sql.append(" and i.label = :valeur");
+				final StringBuffer sql = new StringBuffer();
+				sql.append("SELECT e FROM ");
+				sql.append(champEntite.getEntite().getNom());
+				sql.append(" as e where e.nom");
+				//            sql.append(nomChamp);
+				sql.append(" = :valeur");
 
-         final EntityManager em = entityManagerFactory.createEntityManager();
-         final TypedQuery<Object> query = em.createQuery(sql.toString(), Object.class);
-         query.setParameter("champ", champAnnotation);
-         query.setParameter("valeur", valeur);
+				if(!champEntite.getEntite().getNom().equals("Transporteur") && !champEntite.getEntite().getNom().equals("Unite")
+						&& !champEntite.getEntite().getNom().equals("ObjetStatut")){
+					sql.append(" and e.plateforme = :pf");
+				}
 
-         final List<Object> objets = query.getResultList();
-         em.close();
+				final EntityManager em = entityManagerFactory.createEntityManager();
+				final TypedQuery<Object> query = em.createQuery(sql.toString(), Object.class);
+				query.setParameter("valeur", valeur);
+				if(!champEntite.getEntite().getNom().equals("Transporteur") && !champEntite.getEntite().getNom().equals("Unite")
+						&& !champEntite.getEntite().getNom().equals("ObjetStatut")){
+					query.setParameter("pf", banque.getPlateforme());
+				}
 
-         if(objets.size() > 0){
-            resultat = objets.get(0);
-         }
-      }
-      return resultat;
-   }
+				objets = query.getResultList();
+				em.close();
 
-   @Override
-   public void setPropertyValueForObject(final Object value, final ChampEntite attribut, final Object obj){
-      if(attribut != null && obj != null){
-         // on formate l'attribut pour qu'il corresponde à celui
-         // de l'objet
-         String nomChamp = attribut.getNom().replaceFirst(".", (attribut.getNom().charAt(0) + "").toLowerCase());
-         if(nomChamp.endsWith("Id")){
-            nomChamp = nomChamp.substring(0, nomChamp.length() - 2);
-         }
+			}
 
-         try{
-            if(value != null){
-               // si la valeur à setter n'est pas un thésaurus
-               if(value.getClass().getSimpleName().equals("String")){
-                  final String type = PropertyUtils.getPropertyDescriptor(obj, nomChamp).getPropertyType().getSimpleName();
-                  // set d'un string
-                  if(type.equals("String")){
-                     PropertyUtils.setSimpleProperty(obj, nomChamp, value);
-                  }else if(type.equals("Integer")){
-                     // si l'attibut est un integer, on caste
-                     // la valeur issue du fichier
-                     Integer tmp = null;
-                     try{
-                        tmp = Integer.parseInt((String) value);
-                     }catch(final NumberFormatException n){
-                        //throw new WrongImportValueException(
-                        //		colonne, "Integer");
-                     }
-                     PropertyUtils.setSimpleProperty(obj, nomChamp, tmp);
-                  }else if(type.equals("Float")){
-                     // si l'attibut est un float, on caste
-                     // la valeur issue du fichier
-                     Float tmp = null;
-                     try{
-                        tmp = Float.parseFloat((String) value);
-                        tmp = Utils.floor(tmp, 3);
-                     }catch(final NumberFormatException n){
-                        //throw new WrongImportValueException(
-                        //		colonne, "Float");
-                     }
-                     PropertyUtils.setSimpleProperty(obj, nomChamp, tmp);
-                  }else if(type.equals("Boolean")){
-                     // si l'attibut est un boolean, on caste
-                     // la valeur issue du fichier
-                     Boolean tmp = null;
-                     if(value.equals("1")){
-                        tmp = true;
-                     }else if(value.equals("0")){
-                        tmp = false;
-                     }else{
-                        //throw new WrongImportValueException(
-                        //		colonne, "Boolean");
-                     }
-                     PropertyUtils.setSimpleProperty(obj, nomChamp, tmp);
-                  }else if(type.equals("Date")){
-                     // si l'attibut est une date, on caste
-                     // la valeur issue du fichier
-                     Date date = null;
-                     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-                     try{
-                        date = sdf.parse((String) value);
-                     }catch(final ParseException e){
-                        sdf = new SimpleDateFormat("yyyyMMddHHmm");
-                        try{
-                           date = sdf.parse((String) value);
-                        }catch(final ParseException e1){
-                           sdf = new SimpleDateFormat("yyyyMMdd");
-                           try{
-                              date = sdf.parse((String) value);
-                           }catch(final ParseException e2){}
-                        }
-                     }
+			if(objets.size() > 0){
+				resultat = objets.get(0);
+			}
+		}
 
-                     PropertyUtils.setSimpleProperty(obj, nomChamp, date);
-                  }else if(type.equals("Calendar")){
-                     // si l'attibut est un calendar, on caste
-                     // la valeur issue du fichier
-                     Date date = null;
-                     SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-                     try{
-                        date = sdf.parse((String) value);
-                     }catch(final ParseException e){
-                        sdf = new SimpleDateFormat("yyyyMMddHHmm");
-                        try{
-                           date = sdf.parse((String) value);
-                        }catch(final ParseException e1){
-                           sdf = new SimpleDateFormat("yyyyMMdd");
-                           try{
-                              date = sdf.parse((String) value);
-                           }catch(final ParseException e2){}
-                        }
-                     }
-                     Calendar cal = Calendar.getInstance();
-                     if(date != null){
-                        cal.setTime(date);
-                     }else{
-                        cal = null;
-                     }
-                     PropertyUtils.setSimpleProperty(obj, nomChamp, cal);
-                  }
-               }else{
-                  // si l'attibut est un thésaurus, on ajoute
-                  // la valeur directement
-                  PropertyUtils.setSimpleProperty(obj, nomChamp, value);
-               }
-            }else{
-               // sinon on set un null
-               PropertyUtils.setSimpleProperty(obj, nomChamp, null);
-            }
-         }catch(final IllegalAccessException e){
-            log.error(e);
-         }catch(final InvocationTargetException e){
-            log.error(e);
-         }catch(final NoSuchMethodException e){
-            log.error(e);
-         }
-      }
-   }
+		return resultat;
+	}
 
-   @Override
-   public AnnotationValeur setPropertyValueForAnnotationValeur(final Object value, final ChampAnnotation annotation,
-      final Banque banque){
-      AnnotationValeur annoValeur = new AnnotationValeur();
 
-      if(value != null && annotation != null){
-         // si la valeur à setter n'est pas un thésaurus
-         if(value.getClass().getSimpleName().equals("String")){
-            final DataType dt = annotation.getDataType();
+	@Override
+	public Object extractValueForOneAnnotationThesaurus(final ChampAnnotation champAnnotation, final Banque banque,
+			final String valeur){
+		Object resultat = null;
 
-            if(dt.getType().equals("alphanum") || dt.getType().equals("num") || dt.getType().equals("hyperlien")){
-               annoValeur.setAlphanum((String) value);
-            }else if(dt.getType().equals("boolean")){
-               // si l'attibut est un boolean, on caste
-               // la valeur issue du fichier
-               Boolean tmp = null;
-               if(value.equals("1")){
-                  tmp = true;
-               }else if(value.equals("0")){
-                  tmp = false;
-               }else{
-                  //throw new WrongImportValueException(
-                  //		colonne, "Boolean");
-               }
-               if(tmp != null){
-                  annoValeur.setBool(tmp);
-               }else{
-                  annoValeur = null;
-               }
-            }else if(dt.getType().matches("date.*")){
-               // si l'attibut est un calendar, on caste
-               // la valeur issue du fichier
-               Date date = null;
-               SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-               try{
-                  date = sdf.parse((String) value);
-               }catch(final ParseException e){
-                  sdf = new SimpleDateFormat("yyyyMMddHHmm");
-                  try{
-                     date = sdf.parse((String) value);
-                  }catch(final ParseException e1){
-                     sdf = new SimpleDateFormat("yyyyMMdd");
-                     try{
-                        date = sdf.parse((String) value);
-                     }catch(final ParseException e2){}
-                  }
-               }
-               Calendar cal = Calendar.getInstance();
-               if(date != null){
-                  cal.setTime(date);
-               }else{
-                  cal = null;
-               }
-               if(cal != null){
-                  annoValeur.setDate(cal);
-               }else{
-                  annoValeur = null;
-               }
-            }else if(dt.getType().equals("texte")){
-               annoValeur.setTexte((String) value);
-            }
-         }else{
-            annoValeur.setItem((Item) value);
-         }
-      }
+		if(champAnnotation != null && valeur != null && banque != null){
+			// creation de la requête permettant de récupérer
+			// l'item
+			final StringBuffer sql = new StringBuffer();
+			sql.append("SELECT i FROM Item as i");
+			sql.append(" where i.champAnnotation = :champ");
+			sql.append(" and i.label = :valeur");
 
-      if(annoValeur != null){
-         annoValeur.setChampAnnotation(annotation);
-         annoValeur.setBanque(banque);
-      }
+			final EntityManager em = entityManagerFactory.createEntityManager();
+			final TypedQuery<Object> query = em.createQuery(sql.toString(), Object.class);
+			query.setParameter("champ", champAnnotation);
+			query.setParameter("valeur", valeur);
 
-      return annoValeur;
-   }
+			final List<Object> objets = query.getResultList();
+			em.close();
 
-   @Override
-   public void injectValeurExterneInObject(final Object obj, final Banque banque, final ValeurExterne valeurExterne,
-      final List<AnnotationValeur> annoValeurs){
-      if(obj != null && banque != null && valeurExterne != null){
-         // si la valeur concerne un champentite
-         if(valeurExterne.getChampEntiteId() != null){
-            final ChampEntite champ = champEntiteDao.findById(valeurExterne.getChampEntiteId());
-            if(champ != null){
-               // on va extraire le type de l'attibut à remplir
-               String nomChamp = champ.getNom().replaceFirst(".", (champ.getNom().charAt(0) + "").toLowerCase());
-               if(nomChamp.endsWith("Id")){
-                  nomChamp = nomChamp.substring(0, nomChamp.length() - 2);
-               }
+			if(objets.size() > 0){
+				resultat = objets.get(0);
+			}
+		}
+		return resultat;
+	}
 
-               try{
-                  // on vérifie que le champ se trouve bien dans
-                  // l'objet
-                  if(PropertyUtils.getPropertyDescriptor(obj, nomChamp) != null){
-                     Object value = null;
-                     if(valeurExterne.getValeur() != null && !valeurExterne.getValeur().equals("")){
-                        // si le champ de la colonne est un thésaurus
-                        if(champ.getQueryChamp() != null){
-                           value = extractValueForOneThesaurus(champ.getQueryChamp(), banque, valeurExterne.getValeur());
-                        }else{
-                           value = valeurExterne.getValeur();
-                        }
-                     }
-                     // set de la valeur
-                     setPropertyValueForObject(value, champ, obj);
-                  }
-               }catch(final IllegalAccessException e){
-                  log.error(e);
-               }catch(final InvocationTargetException e){
-                  log.error(e);
-               }catch(final NoSuchMethodException e){
-                  log.error(e);
-               }
-            }
-         }else if(valeurExterne.getChampAnnotationId() != null){
-            // si la valeur concerne une annotation
-            final ChampAnnotation champ = champAnnotationDao.findById(valeurExterne.getChampAnnotationId());
-            if(champ != null){
-               Object value = null;
-               if(valeurExterne.getValeur() != null && !valeurExterne.getValeur().equals("")){
-                  // on vérifie que l'annotation correspond bien
-                  // au type de l'objet
-                  if(champ.getTableAnnotation().getEntite().getNom().equals(obj.getClass().getSimpleName())){
-                     // si le champ de la colonne est un thésaurus
-                     if(champ.getDataType().getType().equals("thesaurus") || champ.getDataType().getType().equals("thesaurusM")){
-                        value = extractValueForOneAnnotationThesaurus(champ, banque, valeurExterne.getValeur());
-                     }else{
-                        value = valeurExterne.getValeur();
-                     }
-                  }
-               }
+	@Override
+	public void setPropertyValueForObject(final Object value, final ChampEntite attribut, final Object obj){
+		if(attribut != null && obj != null){
+			// on formate l'attribut pour qu'il corresponde à celui
+			// de l'objet
+			String nomChamp = attribut.getNom().replaceFirst(".", (attribut.getNom().charAt(0) + "").toLowerCase());
+			if(nomChamp.endsWith("Id")){
+				nomChamp = nomChamp.substring(0, nomChamp.length() - 2);
+			}
 
-               // s'il y a une valeur pour l'annotation
-               if(value != null){
-                  final AnnotationValeur av = setPropertyValueForAnnotationValeur(value, champ, banque);
-                  if(av != null){
-                     annoValeurs.add(av);
-                  }
-               }
-            }
-         }
-      }
-   }
+			try{
+				if(value != null){
+					// si la valeur à setter n'est pas un thésaurus
+					if(value.getClass().getSimpleName().equals("String")){
+						final String type = PropertyUtils.getPropertyDescriptor(obj, nomChamp).getPropertyType().getSimpleName();
+						// set d'un string
+						if(type.equals("String")){
+							PropertyUtils.setSimpleProperty(obj, nomChamp, value);
+						}else if(type.equals("Integer")){
+							// si l'attibut est un integer, on caste
+							// la valeur issue du fichier
+							Integer tmp = null;
+							try{
+								tmp = Integer.parseInt((String) value);
+							}catch(final NumberFormatException n){
+								//throw new WrongImportValueException(
+								//		colonne, "Integer");
+							}
+							PropertyUtils.setSimpleProperty(obj, nomChamp, tmp);
+						}else if(type.equals("Float")){
+							// si l'attibut est un float, on caste
+							// la valeur issue du fichier
+							Float tmp = null;
+							try{
+								tmp = Float.parseFloat((String) value);
+								tmp = Utils.floor(tmp, 3);
+							}catch(final NumberFormatException n){
+								//throw new WrongImportValueException(
+								//		colonne, "Float");
+							}
+							PropertyUtils.setSimpleProperty(obj, nomChamp, tmp);
+						}else if(type.equals("Boolean")){
+							// si l'attibut est un boolean, on caste
+							// la valeur issue du fichier
+							Boolean tmp = null;
+							if(value.equals("1")){
+								tmp = true;
+							}else if(value.equals("0")){
+								tmp = false;
+							}else{
+								//throw new WrongImportValueException(
+								//		colonne, "Boolean");
+							}
+							PropertyUtils.setSimpleProperty(obj, nomChamp, tmp);
+						}else if(type.equals("Date")){
+							// si l'attibut est une date, on caste
+							// la valeur issue du fichier
+							Date date = null;
+							SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+							try{
+								date = sdf.parse((String) value);
+							}catch(final ParseException e){
+								sdf = new SimpleDateFormat("yyyyMMddHHmm");
+								try{
+									date = sdf.parse((String) value);
+								}catch(final ParseException e1){
+									sdf = new SimpleDateFormat("yyyyMMdd");
+									try{
+										date = sdf.parse((String) value);
+									}catch(final ParseException e2){}
+								}
+							}
 
-   @Override
-   public void injectBlocExterneInObject(final Object obj, final Banque banque, final BlocExterne blocExterne,
-      final List<AnnotationValeur> annoValeurs){
-      if(obj != null && banque != null && blocExterne != null){
-         // on récupère la liste des valeurs du bloc
-         // @since 2.1 blocExterneId may be null 
-         // if view query
-         final List<ValeurExterne> valeurs = new ArrayList<>();
-         valeurs.addAll(blocExterne.getBlocExterneId() != null ? valeurExterneManager.findByBlocExterneManager(blocExterne)
-            : blocExterne.getValeurs());
+							PropertyUtils.setSimpleProperty(obj, nomChamp, date);
+						}else if(type.equals("Calendar")){
+							// si l'attibut est un calendar, on caste
+							// la valeur issue du fichier
+							Date date = null;
+							SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+							try{
+								date = sdf.parse((String) value);
+							}catch(final ParseException e){
+								sdf = new SimpleDateFormat("yyyyMMddHHmm");
+								try{
+									date = sdf.parse((String) value);
+								}catch(final ParseException e1){
+									sdf = new SimpleDateFormat("yyyyMMdd");
+									try{
+										date = sdf.parse((String) value);
+									}catch(final ParseException e2){}
+								}
+							}
+							Calendar cal = Calendar.getInstance();
+							if(date != null){
+								cal.setTime(date);
+							}else{
+								cal = null;
+							}
+							PropertyUtils.setSimpleProperty(obj, nomChamp, cal);
+						}
+					}else{
+						// si l'attibut est un thésaurus, on ajoute
+						// la valeur directement
+						PropertyUtils.setSimpleProperty(obj, nomChamp, value);
+					}
+				}else{
+					// sinon on set un null
+					PropertyUtils.setSimpleProperty(obj, nomChamp, null);
+				}
+			}catch(final IllegalAccessException e){
+				log.error(e);
+			}catch(final InvocationTargetException e){
+				log.error(e);
+			}catch(final NoSuchMethodException e){
+				log.error(e);
+			}
+		}
+	}
 
-         // injection de chaque valeur
-         for(int i = 0; i < valeurs.size(); i++){
-            injectValeurExterneInObject(obj, banque, valeurs.get(i), annoValeurs);
-         }
-      }
-   }
+	@Override
+	public AnnotationValeur setPropertyValueForAnnotationValeur(final Object value, final ChampAnnotation annotation,
+			final Banque banque){
+		AnnotationValeur annoValeur = new AnnotationValeur();
 
-   //TODO Refactorer
-   @Override
-   public ResultatInjection injectDossierManager(final DossierExterne dossier, final Banque banque){
-      ResultatInjection resultat = null;
-      if(dossier != null && banque != null){
-         resultat = new ResultatInjection();
-         // création des objets
-         Patient patient = new Patient();
-         Maladie maladie = new Maladie();
-         if(banque.getDefautMaladie() != null){
-            maladie.setLibelle(banque.getDefautMaladie());
-         }else{
-            maladie.setLibelle("INDETERMINEE");
-         }
-         if(banque.getDefautMaladieCode() != null){
-            maladie.setCode(banque.getDefautMaladieCode());
-         }
-         final Prelevement prelevement = new Prelevement();
-         prelevement.setCode(dossier.getIdentificationDossier());
-         prelevement.setBanque(banque);
-         final Echantillon echantillon = new Echantillon();
-         echantillon.setBanque(banque);
-         // création des listes d'annotations
-         final List<AnnotationValeur> annosPatient = new ArrayList<>();
-         final List<AnnotationValeur> annosPrelevement = new ArrayList<>();
-         final List<AnnotationValeur> annosEchantillon = new ArrayList<>();
+		if(value != null && annotation != null){
+			// si la valeur à setter n'est pas un thésaurus
+			if(value.getClass().getSimpleName().equals("String")){
+				final DataType dt = annotation.getDataType();
 
-         // Récupération des blocs
-         // @since 2.1 dossierExterneId may be null 
-         // if view query
-         final List<BlocExterne> blocs = new ArrayList<>();
-         blocs.addAll(dossier.getDossierExterneId() != null ? blocExterneManager.findByDossierExterneManager(dossier)
-            : dossier.getBlocExternes());
+				if(dt.getType().equals("alphanum") || dt.getType().equals("num") || dt.getType().equals("hyperlien")){
+					annoValeur.setAlphanum((String) value);
+				}else if(dt.getType().equals("boolean")){
+					// si l'attibut est un boolean, on caste
+					// la valeur issue du fichier
+					Boolean tmp = null;
+					if(value.equals("1")){
+						tmp = true;
+					}else if(value.equals("0")){
+						tmp = false;
+					}else{
+						//throw new WrongImportValueException(
+						//		colonne, "Boolean");
+					}
+					if(tmp != null){
+						annoValeur.setBool(tmp);
+					}else{
+						annoValeur = null;
+					}
+				}else if(dt.getType().matches("date.*")){
+					// si l'attibut est un calendar, on caste
+					// la valeur issue du fichier
+					Date date = null;
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+					try{
+						date = sdf.parse((String) value);
+					}catch(final ParseException e){
+						sdf = new SimpleDateFormat("yyyyMMddHHmm");
+						try{
+							date = sdf.parse((String) value);
+						}catch(final ParseException e1){
+							sdf = new SimpleDateFormat("yyyyMMdd");
+							try{
+								date = sdf.parse((String) value);
+							}catch(final ParseException e2){}
+						}
+					}
+					Calendar cal = Calendar.getInstance();
+					if(date != null){
+						cal.setTime(date);
+					}else{
+						cal = null;
+					}
+					if(cal != null){
+						annoValeur.setDate(cal);
+					}else{
+						annoValeur = null;
+					}
+				}else if(dt.getType().equals("texte")){
+					annoValeur.setTexte((String) value);
+				}
+			}else{
+				annoValeur.setItem((Item) value);
+			}
+		}
 
-         for(int i = 0; i < blocs.size(); i++){
-            final Entite entite = entiteDao.findById(blocs.get(i).getEntiteId());
-            if(entite != null){
-               if(entite.getNom().equals("Patient")){
-                  injectBlocExterneInObject(patient, banque, blocs.get(i), annosPatient);
-               }else if(entite.getNom().equals("Maladie")){
-                  injectBlocExterneInObject(maladie, banque, blocs.get(i), null);
-               }else if(entite.getNom().equals("Prelevement")){
-                  injectBlocExterneInObject(prelevement, banque, blocs.get(i), annosPrelevement);
-               }else if(entite.getNom().equals("Echantillon")){ // since 2.0.13						
-                  // on récupère la liste des valeurs du bloc
-                  // @since 2.1 blocExterneId may be null 
-                  // if view query
-                  final List<ValeurExterne> valeurs = new ArrayList<>();
-                  valeurs.addAll(blocs.get(i).getBlocExterneId() != null
-                     ? valeurExterneManager.findByBlocExterneManager(blocs.get(i)) : blocs.get(i).getValeurs());
+		if(annoValeur != null){
+			annoValeur.setChampAnnotation(annotation);
+			annoValeur.setBanque(banque);
+		}
 
-                  boolean isCode = false;
-                  boolean isCR = false;
-                  ChampEntite ce = null;
+		return annoValeur;
+	}
 
-                  // injection de chaque valeur
-                  for(final ValeurExterne val : valeurs){
-                     isCode = false;
-                     isCR = false;
-                     if(val.getChampEntiteId() != null){
-                        ce = champEntiteDao.findById(val.getChampEntiteId());
+	@Override
+	public void injectValeurExterneInObject(final Object obj, final Banque banque, final ValeurExterne valeurExterne,
+			final List<AnnotationValeur> annoValeurs){
+		if(obj != null && banque != null && valeurExterne != null){
+			// si la valeur concerne un champentite
+			if(valeurExterne.getChampEntiteId() != null){
+				final ChampEntite champ = champEntiteDao.findById(valeurExterne.getChampEntiteId());
+				if(champ != null){
+					// on va extraire le type de l'attibut à remplir
+					String nomChamp = champ.getNom().replaceFirst(".", (champ.getNom().charAt(0) + "").toLowerCase());
+					if(nomChamp.endsWith("Id")){
+						nomChamp = nomChamp.substring(0, nomChamp.length() - 2);
+					}
 
-                        if(ce.getNom().equals("CodeOrganes") || ce.getNom().equals("CodeMorphos")){
-                           isCode = true;
-                        }else if(ce.getNom().equalsIgnoreCase("CrAnapath")){
-                           isCR = true;
-                        }
+					try{
+						// on vérifie que le champ se trouve bien dans
+						// l'objet
+						if(PropertyUtils.getPropertyDescriptor(obj, nomChamp) != null){
+							Object value = null;
+							if(valeurExterne.getValeur() != null && !valeurExterne.getValeur().equals("")){
+								// si le champ de la colonne est un thésaurus
+								if(champ.getQueryChamp() != null){
+									value = extractValueForOneThesaurus(champ.getQueryChamp(), banque, valeurExterne.getValeur());
+								}else{
+									value = valeurExterne.getValeur();
+								}
+							}
+							// set de la valeur
+							setPropertyValueForObject(value, champ, obj);
+						}
+					}catch(final IllegalAccessException e){
+						log.error(e);
+					}catch(final InvocationTargetException e){
+						log.error(e);
+					}catch(final NoSuchMethodException e){
+						log.error(e);
+					}
+				}
+			}else if(valeurExterne.getChampAnnotationId() != null){
+				// si la valeur concerne une annotation
+				final ChampAnnotation champ = champAnnotationDao.findById(valeurExterne.getChampAnnotationId());
+				if(champ != null){
+					Object value = null;
+					if(valeurExterne.getValeur() != null && !valeurExterne.getValeur().equals("")){
+						// on vérifie que l'annotation correspond bien
+						// au type de l'objet
+						if(champ.getTableAnnotation().getEntite().getNom().equals(obj.getClass().getSimpleName())){
+							// si le champ de la colonne est un thésaurus
+							if(champ.getDataType().getType().equals("thesaurus") || champ.getDataType().getType().equals("thesaurusM")){
+								value = extractValueForOneAnnotationThesaurus(champ, banque, valeurExterne.getValeur());
+							}else{
+								value = valeurExterne.getValeur();
+							}
+						}
+					}
 
-                     }
+					// s'il y a une valeur pour l'annotation
+					if(value != null){
+						final AnnotationValeur av = setPropertyValueForAnnotationValeur(value, champ, banque);
+						if(av != null){
+							annoValeurs.add(av);
+						}
+					}
+				}
+			}
+		}
+	}
 
-                     if(!isCode && !isCR){
-                        injectValeurExterneInObject(echantillon, banque, val, annosEchantillon);
-                     }else if(isCode){
-                        String[] codes = null;
-                        // DIAMIC Hack
-                        if(val.getValeur().contains("~")){
-                           codes = val.getValeur().split("~");
-                        }else{
-                           codes = val.getValeur().split(";");
-                        }
+	@Override
+	public void injectBlocExterneInObject(final Object obj, final Banque banque, final BlocExterne blocExterne,
+			final List<AnnotationValeur> annoValeurs){
+		if(obj != null && banque != null && blocExterne != null){
+			// on récupère la liste des valeurs du bloc
+			// @since 2.1 blocExterneId may be null 
+			// if view query
+			final List<ValeurExterne> valeurs = new ArrayList<>();
+			valeurs.addAll(blocExterne.getBlocExterneId() != null ? valeurExterneManager.findByBlocExterneManager(blocExterne)
+					: blocExterne.getValeurs());
 
-                        int ordreOrgane = 1;
-                        int ordreMorpho = 1;
-                        for(int j = 0; j < codes.length; j++){
-                           final CodeAssigne codeAs = new CodeAssigne();
-                           codeAs.setCodeRefId(null);
-                           codeAs.setCode(codes[j]);
-                           // codeAs.setLibelle(codes[j]);
-                           codeAs.setTableCodage(null);
-                           codeAs.setIsMorpho(ce.getNom().equals("CodeMorphos"));
-                           codeAs.setIsOrgane(ce.getNom().equals("CodeOrganes"));
-                           if(ce.getNom().equals("CodeMorphos")){
-                              codeAs.setOrdre(ordreMorpho);
-                              if(ordreMorpho == 1){
-                                 codeAs.setExport(true);
-                              }
-                              ++ordreMorpho;
-                              if(!resultat.getCodesMorpho().contains(codeAs)){
-                                 resultat.getCodesMorpho().add(codeAs);
-                              }
-                           }else{
-                              codeAs.setOrdre(ordreOrgane);
-                              if(ordreOrgane == 1){
-                                 codeAs.setExport(true);
-                              }
-                              ++ordreOrgane;
-                              if(!resultat.getCodesOrgane().contains(codeAs)){
-                                 resultat.getCodesOrgane().add(codeAs);
-                              }
-                           }
-                        }
+			// injection de chaque valeur
+			for(int i = 0; i < valeurs.size(); i++){
+				injectValeurExterneInObject(obj, banque, valeurs.get(i), annoValeurs);
+			}
+		}
+	}
 
-                     }else if(isCR){
-                        final Fichier crAnapath = new Fichier();
-                        crAnapath.setNom(val.getValeur());
-                        crAnapath.setMimeType("application/pdf");
-                        resultat.setCrAnapath(crAnapath);
-                        resultat.setStream(new ByteArrayInputStream(val.getContenu()));
-                     }
-                  }
-               }
-            }
-         }
+	//TODO Refactorer
+	@Override
+	public ResultatInjection injectDossierManager(final DossierExterne dossier, final Banque banque){
+		ResultatInjection resultat = null;
+		if(dossier != null && banque != null){
+			resultat = new ResultatInjection();
+			// création des objets
+			Patient patient = new Patient();
+			Maladie maladie = new Maladie();
+			if(banque.getDefautMaladie() != null){
+				maladie.setLibelle(banque.getDefautMaladie());
+			}else{
+				maladie.setLibelle("INDETERMINEE");
+			}
+			if(banque.getDefautMaladieCode() != null){
+				maladie.setCode(banque.getDefautMaladieCode());
+			}
+			final Prelevement prelevement = new Prelevement();
+			prelevement.setCode(dossier.getIdentificationDossier());
+			prelevement.setBanque(banque);
+			final Echantillon echantillon = new Echantillon();
+			echantillon.setBanque(banque);
+			// création des listes d'annotations
+			final List<AnnotationValeur> annosPatient = new ArrayList<>();
+			final List<AnnotationValeur> annosPrelevement = new ArrayList<>();
+			final List<AnnotationValeur> annosEchantillon = new ArrayList<>();
 
-         // doublon patient
-         // on regarde si le patient existe deja en base
-         if(patientManager.findDoublonManager(patient)){
-            final List<Patient> liste = patientManager.findByNomLikeManager(patient.getNom(), true);
+			// Récupération des blocs
+			// @since 2.1 dossierExterneId may be null 
+			// if view query
+			final List<BlocExterne> blocs = new ArrayList<>();
+			blocs.addAll(dossier.getDossierExterneId() != null ? blocExterneManager.findByDossierExterneManager(dossier)
+					: dossier.getBlocExternes());
 
-            for(int i = 0; i < liste.size(); i++){
-               Patient p = liste.get(i);
-               if(!p.getClass().getSimpleName().equals("Patient")){
-                  p = patientDao.mergeObject(liste.get(i));
-               }
-               if(patient.equals(p)){
-                  patient = p;
-               }
-            }
+			for(int i = 0; i < blocs.size(); i++){
+				final Entite entite = entiteDao.findById(blocs.get(i).getEntiteId());
+				if(entite != null){
+					if(entite.getNom().equals("Patient")){
+						injectBlocExterneInObject(patient, banque, blocs.get(i), annosPatient);
+					}else if(entite.getNom().equals("Maladie")){
+						injectBlocExterneInObject(maladie, banque, blocs.get(i), null);
+					}else if(entite.getNom().equals("Prelevement")){
+						injectBlocExterneInObject(prelevement, banque, blocs.get(i), annosPrelevement);
+					}else if(entite.getNom().equals("Echantillon")){ 						
+						// on récupère la liste des valeurs du bloc
+						// @since 2.1 blocExterneId may be null 
+						// if view query
+						final List<ValeurExterne> valeurs = new ArrayList<>();
+						valeurs.addAll(blocs.get(i).getBlocExterneId() != null
+								? valeurExterneManager.findByBlocExterneManager(blocs.get(i)) : blocs.get(i).getValeurs());
 
-            maladie.setPatient(patient);
-            // on regarde si la maladie existe deja en base
-            if(maladieManager.findDoublonManager(maladie)){
-               final List<Maladie> mals = maladieManager.findByLibelleLikeManager(maladie.getLibelle(), true);
+						if (!valeurs.isEmpty()) {
+							// @since 2.2.2-diamic, certains blocs correspondent à un échantillon complet
+							// la première valeur = code échantillon
+							if (!valeurs.get(0).getChampEntiteId().equals(54)) { // bloc échantillon générique
 
-               for(int i = 0; i < mals.size(); i++){
-                  Maladie m = mals.get(i);
-                  if(!m.getClass().getSimpleName().equals("Maladie")){
-                     m = maladieDao.mergeObject(mals.get(i));
-                  }
-                  if(maladie.equals(m)){
-                     maladie = m;
-                  }
-               }
-            }
-         }else{
-            maladie.setPatient(patient);
-         }
-         prelevement.setMaladie(maladie);
-         resultat.setPrelevement(prelevement);
-         resultat.setAnnosPatient(annosPatient);
-         resultat.setAnnosPrelevement(annosPrelevement);
-         resultat.setEchantillon(echantillon);
-         resultat.setAnnosEchantillon(annosEchantillon);
-      }
+								boolean isCode = false;
+								boolean isCR = false;
+								ChampEntite ce = null;
 
-      return resultat;
-   }
+								// injection de chaque valeur
+								for(final ValeurExterne val : valeurs){
+									isCode = false;
+									isCR = false;
+									if(val.getChampEntiteId() != null){
+										ce = champEntiteDao.findById(val.getChampEntiteId());
+
+										if(ce.getNom().equals("CodeOrganes") || ce.getNom().equals("CodeMorphos")){
+											isCode = true;
+										}else if(ce.getNom().equalsIgnoreCase("CrAnapath")){
+											isCR = true;
+										}
+
+									}
+
+									if(!isCode && !isCR){
+										injectValeurExterneInObject(echantillon, banque, val, annosEchantillon);
+									}else if(isCode){
+										String[] codes = null;
+										// DIAMIC Hack
+										if(val.getValeur().contains("~")){
+											codes = val.getValeur().split("~");
+										}else{
+											codes = val.getValeur().split(";");
+										}
+
+										int ordreOrgane = 1;
+										int ordreMorpho = 1;
+										for(int j = 0; j < codes.length; j++){
+											final CodeAssigne codeAs = new CodeAssigne();
+											codeAs.setCodeRefId(null);
+											codeAs.setCode(codes[j]);
+											// codeAs.setLibelle(codes[j]);
+											codeAs.setTableCodage(null);
+											codeAs.setIsMorpho(ce.getNom().equals("CodeMorphos"));
+											codeAs.setIsOrgane(ce.getNom().equals("CodeOrganes"));
+											if(ce.getNom().equals("CodeMorphos")){
+												codeAs.setOrdre(ordreMorpho);
+												if(ordreMorpho == 1){
+													codeAs.setExport(true);
+												}
+												++ordreMorpho;
+												if(!resultat.getCodesMorpho().contains(codeAs)){
+													resultat.getCodesMorpho().add(codeAs);
+												}
+											}else{
+												codeAs.setOrdre(ordreOrgane);
+												if(ordreOrgane == 1){
+													codeAs.setExport(true);
+												}
+												++ordreOrgane;
+												if(!resultat.getCodesOrgane().contains(codeAs)){
+													resultat.getCodesOrgane().add(codeAs);
+												}
+											}
+										}
+
+									}else if(isCR){
+										final Fichier crAnapath = new Fichier();
+										crAnapath.setNom(val.getValeur());
+										crAnapath.setMimeType("application/pdf");
+										resultat.setCrAnapath(crAnapath);
+										resultat.setStream(new ByteArrayInputStream(val.getContenu()));
+									}
+								}
+							} else { // un échantillon complet
+
+								Echantillon echanComplet = echantillon.clone();
+
+								String adrl = null;
+
+								// injection de chaque valeur
+								for(final ValeurExterne val : valeurs){
+									adrl = null;
+
+									if(val.getChampEntiteId() != 57){ // Emplacement
+										injectValeurExterneInObject(echanComplet, banque, val, annosEchantillon);
+									} else { // emplacement
+										adrl = val.getValeur();
+									}
+								}
+
+								resultat.getEchanAdrls().put(echanComplet, adrl);
+							}
+						}
+					}
+				}
+			}
+
+			// doublon patient
+			// on regarde si le patient existe deja en base
+			if(patientManager.findDoublonManager(patient)){
+				final List<Patient> liste = patientManager.findByNomLikeManager(patient.getNom(), true);
+
+				for(int i = 0; i < liste.size(); i++){
+					Patient p = liste.get(i);
+					if(!p.getClass().getSimpleName().equals("Patient")){
+						p = patientDao.mergeObject(liste.get(i));
+					}
+					if(patient.equals(p)){
+						patient = p;
+					}
+				}
+
+				maladie.setPatient(patient);
+				// on regarde si la maladie existe deja en base
+				if(maladieManager.findDoublonManager(maladie, patient)){
+					// @since 2.2.3-genno optimisation = recherche la maladie par patient
+					final List<Maladie> mals = maladieManager.findByLibelleAndPatientManager(maladie.getLibelle(), patient);
+
+					for(int i = 0; i < mals.size(); i++){
+						Maladie m = mals.get(i);
+						if(!m.getClass().getSimpleName().equals("Maladie")){
+							m = maladieDao.mergeObject(mals.get(i));
+						}
+						if(maladie.equals(m)){
+							maladie = m;
+						}
+					}
+				}
+			}else{
+				maladie.setPatient(patient);
+			}
+			prelevement.setMaladie(maladie);
+			resultat.setPrelevement(prelevement);
+			resultat.setAnnosPatient(annosPatient);
+			resultat.setAnnosPrelevement(annosPrelevement);
+			resultat.setEchantillon(echantillon);
+			resultat.setAnnosEchantillon(annosEchantillon);
+		}
+
+		return resultat;
+	}
+
+	@Override
+	public ResultatInjection injectDossierDeriveManager(final DossierExterne dossier, 
+																final Banque banque){
+		ResultatInjection resultat = null;
+		if(dossier != null && banque != null){
+
+			// au moins un bloc derive attendu
+			final List<BlocExterne> blocs = new ArrayList<>();
+			blocs.addAll(dossier.getDossierExterneId() != null ? 
+				blocExterneManager.findByDossierExterneManager(dossier)
+					: dossier.getBlocExternes());
+
+			BlocExterne blocDerive = blocs.stream()
+					.filter(b -> b.getEntiteId() == 8).findFirst().orElse(null);
+			
+			// breaks si pas de données dérivés
+			// ne doit pas arriver si le mapping est correct
+			if (blocDerive == null) {
+				return null;
+			}
+
+			resultat = new ResultatInjection();
+			ProdDerive derive = new ProdDerive();
+			final List<AnnotationValeur> annosDerive = new ArrayList<>();
+
+			final List<ValeurExterne> valeurs = new ArrayList<>();
+			valeurs.addAll(valeurExterneManager.findByBlocExterneManager(blocDerive));
+
+			// injection de chaque valeur
+			for (final ValeurExterne val : valeurs){
+				injectValeurExterneInObject(derive, banque, val, annosDerive);
+			}
+
+			// doublon derive -> check UI
+			resultat.setProdDerive(derive);
+			resultat.setAnnosDerive(annosDerive);
+		}
+
+		return resultat;
+	}
+
+	@Override
+	public void saveDossierAndChildrenManager(DossierExterne dossier, Banque banque, Utilisateur u, String baseDir) {
+		if (dossier != null & banque != null && u != null && baseDir != null) {
+
+//			try {
+			ResultatInjection patPrelDos = injectDossierManager(dossier, banque);
+	
+			Prelevement newPrel = patPrelDos.getPrelevement();
+			
+			// patient etat = V par défaut pour nouveau patient
+			if (newPrel.getMaladie() != null && newPrel.getMaladie().getPatient().getPatientId() == null) {
+				newPrel.getMaladie().getPatient().setPatientEtat("V");
+			}
+			
+			prelevementManager.createObjectWithNonConformitesManager(newPrel, banque, newPrel.getNature(), 
+				newPrel.getMaladie(), newPrel.getConsentType(), newPrel.getPreleveur(), newPrel.getServicePreleveur(), 
+				newPrel.getPrelevementType(), newPrel.getConditType(), newPrel.getConditMilieu(), newPrel.getTransporteur(), 
+				newPrel.getOperateur(), newPrel.getQuantiteUnite(), null, // labo inter forcément nulls par transmission !?
+				patPrelDos.getAnnosPrelevement(), u, true, baseDir, false, null); // pas de non conformité par transmission !?
+		
+			// dérivés enfants
+			// GENNO jointure par VALEUR code_prélevement (champ_entite_id = 23)
+			List<DossierExterne> derivesDos = dossierExterneManager
+					.findChildrenByEmetteurValeurManager(dossier.getEmetteur(), 23, newPrel.getCode());
+
+			saveDeriveChildrenManager(newPrel, derivesDos, banque, u, baseDir);
+			
+			// si tout s'est bien passé = suppression
+			// car ces transactions ne seront pas rollbackées 
+			// si une erreur survient (car pas le même entityManager)
+			dossierExterneManager.removeObjectManager(dossier);
+			for (DossierExterne dE : derivesDos) {		
+				dossierExterneManager.removeObjectManager(dE);
+			}
+		}
+	}
+	
+	@Override
+	public void saveDeriveChildrenManager(Prelevement prel, List<DossierExterne> derivesDos, Banque banque, 
+			Utilisateur u, String baseDir) {
+
+		if (prel != null && banque != null && derivesDos != null && !derivesDos.isEmpty()) {
+			Transformation transfo = new Transformation();
+			// transfo.setQuantite(qteTransfo);
+			// transfo.setQuantiteUnite(uniteTransfo); // est-ce transmissible par interfacage ?
+			transfo.setEntite(entiteDao.findById(2)); // prelevement
+			transfo.setObjetId(prel.getPrelevementId());
+			ResultatInjection resDer;
+			for (DossierExterne dE: derivesDos) {
+				if ((new Integer(8)).equals(dE.getEntiteId())) { // derive dossier
+					resDer = injectDossierDeriveManager(dE, banque);
+		
+					if (resDer != null) {
+						// le stockage peut etre transmis
+						ObjetStatut statut = resDer.getProdDerive().getEmplacement() != null ? 
+							objetStatutDao.findByStatut("STOCKE").get(0) : objetStatutDao.findByStatut("NON STOCKE").get(0);
+		
+						prodDeriveManager.createObjectWithNonConformitesManager(resDer.getProdDerive(), banque, 
+							resDer.getProdDerive().getProdType(), statut, resDer.getProdDerive().getCollaborateur(), 
+							resDer.getProdDerive().getEmplacement(), resDer.getProdDerive().getVolumeUnite(), 
+							resDer.getProdDerive().getConcUnite(), resDer.getProdDerive().getQuantiteUnite(), 
+							resDer.getProdDerive().getModePrepaDerive(), resDer.getProdDerive().getProdQualite(), transfo, 
+							resDer.getAnnosDerive(), u, true, baseDir, false, 
+							null, null); // pas de non conformité par transmission !?
+					}
+				}
+			}
+		}
+	}
+	
+	@Override
+	public List<DossierExterne> findExistingPrelevementByEmetteurManager(Emetteur emet, Plateforme pf) {
+		
+		List<DossierExterne> alreadyExistsAsPrel = new ArrayList<DossierExterne>();		
+		if (pf != null) {
+			
+			List<DossierExterne> dosPrelExt = dossierExterneDao.findByEmetteurAndEntiteNull(emet);
+			
+			List<Banque> banks = banqueManager.findByPlateformeAndArchiveManager(pf, false);
+			
+			for (DossierExterne dos : dosPrelExt) {
+				if (!prelevementManager
+					.findByCodeOrNumLaboLikeBothSideWithBanqueReturnIdsManager(dos.getIdentificationDossier(), 
+							banks, true).isEmpty()) {
+					alreadyExistsAsPrel.add(dos);
+				}
+			}
+		}
+		
+		return alreadyExistsAsPrel;
+	}
+	
+	@Override
+	public List<DossierExterne> findExistingParentByEmetteurAndEntiteManager(Emetteur emet, Integer _id, Plateforme pf) {
+		
+		List<DossierExterne> parentsAlreadyExistsAsPrel = new ArrayList<DossierExterne>();
+
+		if (pf != null) {
+			List<DossierExterne> dosPrelExt = dossierExterneDao.findByEmetteurAndEntite(emet, 8);
+			
+			List<Banque> banks = banqueManager.findByPlateformeAndArchiveManager(pf, false);
+			
+			for (DossierExterne dos : dosPrelExt) {
+				if (!getParentPrelevementIdsForDossierExterne(dos, banks, _id).isEmpty()) {
+					parentsAlreadyExistsAsPrel.add(dos);
+				}
+			}
+		}
+		
+		return parentsAlreadyExistsAsPrel;
+	}
+	
+	/**
+	 * Renvoie les ids prélèvements correspondant au code du prélèvement parent 
+	 * pour un dossier externe représentant en enfant (prélèvement primaire)
+	 * @param dos
+	 * @param banks
+	 * @param champ entite id correspondant au code parent (= 23 code prélèvement)
+	 * @return ids prelevements
+	 */
+	private List<Integer> getParentPrelevementIdsForDossierExterne(DossierExterne dos, List<Banque> banks, Integer pChpId) {
+		
+		 // champ entite id = 23 entite id = 2
+		List<ValeurExterne> vals = valeurExterneManager
+				.findByDossierChampEntiteIdAndBlocEntiteIdManager(dos, pChpId, 2);
+			
+		ValeurExterne codePrelValeur = vals.size() > 0 ? vals.get(0) : null;
+			
+		if (codePrelValeur != null) {				
+			return prelevementManager
+				.findByCodeOrNumLaboLikeBothSideWithBanqueReturnIdsManager(codePrelValeur.getValeur(), 
+							banks, true);
+		} 
+		return new ArrayList<Integer>();
+	}
+	
+	@Override
+	public List<DossierExterne> findExistingChildByEmetteurAndEntiteManager(Emetteur emet, Plateforme pf) {
+		
+		List<DossierExterne> childAlreadyExistsAsDerive = new ArrayList<DossierExterne>();
+
+		if (pf != null) {
+			List<DossierExterne> dosPrelExt = dossierExterneDao.findByEmetteurAndEntite(emet, 8);
+			
+			List<Banque> banks = banqueManager.findByPlateformeAndArchiveManager(pf, false);
+			
+			for (DossierExterne dos : dosPrelExt) {
+				if (!prodDeriveManager
+					.findByCodeOrLaboBothSideWithBanqueReturnIdsManager(dos.getIdentificationDossier(), banks, true).isEmpty()) {
+					childAlreadyExistsAsDerive.add(dos);
+				}
+			}
+		}
+		
+		return childAlreadyExistsAsDerive;
+	}
+	
+	
+	@Override
+	public boolean synchronizeDeriveChildrenManager(Emetteur emet, Plateforme pf, Utilisateur u, String baseDir) {
+
+		boolean isAnyParentPrelSynced = false;
+		
+		if (pf != null && u != null && baseDir != null) {
+			
+			// recherche tous les dossiers enfants (prels secondaires) dont 
+			// le parent (prel primaire) existe mais ne sont pas déja enregistrés
+			// pour les ajouter
+			Collection<DossierExterne> childrenDossierToSync = CollectionUtils
+			.subtract(findExistingParentByEmetteurAndEntiteManager(emet, 23, pf), 
+					findExistingChildByEmetteurAndEntiteManager(emet, pf)	
+			);
+			
+			List<Integer> prelParentIds;
+			Prelevement parent;
+			Map<Prelevement, List<DossierExterne>> dosToAddToParent = 
+									new HashMap<Prelevement, List<DossierExterne>>();
+				
+			// prépare une map pour chaque parent, une liste de dossier 
+			// enfants à synchroniser
+			for (DossierExterne dos : childrenDossierToSync) {
+				
+				prelParentIds = getParentPrelevementIdsForDossierExterne(dos, banqueManager
+						.findByPlateformeAndArchiveManager(pf, false), 23); // 23 = champEntiteId = code prel
+				
+				// skips synchronisation à cause de doublon !!
+				if (prelParentIds.size() != 1) { // doublon prelevement !!
+					log.warn("doublon de prélèvement parent détecté: " + valeurExterneManager
+							.findByDossierChampEntiteIdAndBlocEntiteIdManager(dos, 23, 2));
+					continue;
+				} else {
+					parent = prelevementManager.findByIdManager(prelParentIds.get(0));
+					if (dosToAddToParent.containsKey(parent)) {
+						dosToAddToParent.get(parent).add(dos);
+					} else { // premier element à être ajouter
+						List<DossierExterne> dosToAdd = new ArrayList<DossierExterne>();
+						dosToAdd.add(dos);
+						dosToAddToParent.put(parent, dosToAdd);
+					}
+				}
+			}
+			
+			// une transformation pour chaque parent
+			for (Prelevement prel : dosToAddToParent.keySet()) {
+				Transformation transfo = new Transformation();
+				// transfo.setQuantite(qteTransfo);
+				// transfo.setQuantiteUnite(uniteTransfo); // est-ce transmissible par interfacage ?
+				transfo.setEntite(entiteDao.findById(2)); // prelevement
+				transfo.setObjetId(prel.getPrelevementId());
+				for (DossierExterne dos : dosToAddToParent.get(prel)) {
+					ResultatInjection resDer = injectDossierDeriveManager(dos, prel.getBanque()); // synchro banque prel
+			
+					if (resDer != null) {
+						// le stockage peut etre transmis
+						ObjetStatut statut = resDer.getProdDerive().getEmplacement() != null ? 
+							objetStatutDao.findByStatut("STOCKE").get(0) : objetStatutDao.findByStatut("NON STOCKE").get(0);
+		
+						prodDeriveManager.createObjectWithNonConformitesManager(resDer.getProdDerive(), prel.getBanque(), 
+							resDer.getProdDerive().getProdType(), statut, resDer.getProdDerive().getCollaborateur(), 
+							resDer.getProdDerive().getEmplacement(), resDer.getProdDerive().getVolumeUnite(), 
+							resDer.getProdDerive().getConcUnite(), resDer.getProdDerive().getQuantiteUnite(), 
+							resDer.getProdDerive().getModePrepaDerive(), resDer.getProdDerive().getProdQualite(), transfo, 
+							resDer.getAnnosDerive(), u, true, baseDir, false, 
+							null, null); // pas de non conformité par transmission !?
+					}
+				}
+				
+				// operation synchronisation
+				 CreateOrUpdateUtilities.createAssociateOperation(prel, operationManager,
+			               operationTypeDao.findByNom("Synchronisation").get(0), u);
+				 
+				 isAnyParentPrelSynced = true;
+			}
+			
+			// si tout s'est bien passé = suppression
+			for (DossierExterne dos : childrenDossierToSync) {
+				dossierExterneManager.removeObjectManager(dos);
+			}
+		}
+		return isAnyParentPrelSynced;
+	}
 }

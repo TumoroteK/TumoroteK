@@ -35,34 +35,40 @@
  **/
 package fr.aphp.tumorotek.manager.impl.stockage;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonDao;
 import fr.aphp.tumorotek.dao.coeur.prodderive.ProdDeriveDao;
 import fr.aphp.tumorotek.dao.qualite.OperationTypeDao;
+import fr.aphp.tumorotek.dao.stockage.ConteneurDao;
 import fr.aphp.tumorotek.dao.stockage.EmplacementDao;
+import fr.aphp.tumorotek.dao.stockage.EnceinteDao;
 import fr.aphp.tumorotek.dao.stockage.TerminaleDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
 import fr.aphp.tumorotek.manager.exception.EmplacementDoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.EmplacementImportConteneurException;
 import fr.aphp.tumorotek.manager.exception.EntiteObjectIdNotExistException;
 import fr.aphp.tumorotek.manager.exception.InvalidPositionException;
+import fr.aphp.tumorotek.manager.exception.ObjectAlreadyStockedException;
 import fr.aphp.tumorotek.manager.exception.ObjectUsedException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.qualite.OperationManager;
-import fr.aphp.tumorotek.manager.stockage.ConteneurManager;
 import fr.aphp.tumorotek.manager.stockage.EmplacementManager;
-import fr.aphp.tumorotek.manager.stockage.EnceinteManager;
-import fr.aphp.tumorotek.manager.stockage.TerminaleManager;
 import fr.aphp.tumorotek.manager.systeme.EntiteManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.stockage.EmplacementValidator;
@@ -84,7 +90,7 @@ import fr.aphp.tumorotek.utils.Utils;
  * Interface créée le 02/10/09.
  *
  * @author Pierre Ventadour
- * @version 2.1.1
+ * @version 2.2.2-diamic
  *
  */
 public class EmplacementManagerImpl implements EmplacementManager
@@ -92,24 +98,19 @@ public class EmplacementManagerImpl implements EmplacementManager
 
    private final Log log = LogFactory.getLog(EmplacementManager.class);
 
-   /** Bean Dao EmplacementDao. */
    private EmplacementDao emplacementDao;
-   /** Bean Dao EmplacementDao. */
    private TerminaleDao terminaleDao;
-   /** Bean Dao EmplacementDao. */
    private EntiteDao entiteDao;
-   /** Bean Manager. */
    private EntiteManager entiteManager;
-   /** Bean validator. */
    private EmplacementValidator emplacementValidator;
    private JpaTransactionManager txManager;
    private OperationManager operationManager;
    private OperationTypeDao operationTypeDao;
-   private ConteneurManager conteneurManager;
-   private EnceinteManager enceinteManager;
-   private TerminaleManager terminaleManager;
+   private ConteneurDao conteneurDao;
+   private EnceinteDao enceinteDao;
    private EchantillonDao echantillonDao;
    private ProdDeriveDao prodDeriveDao;
+   private DataSource dataSource;
 
    public void setEmplacementDao(final EmplacementDao eDao){
       this.emplacementDao = eDao;
@@ -143,16 +144,12 @@ public class EmplacementManagerImpl implements EmplacementManager
       this.operationTypeDao = oDao;
    }
 
-   public void setConteneurManager(final ConteneurManager cManager){
-      this.conteneurManager = cManager;
+   public void setConteneurDao(final ConteneurDao cDao){
+      this.conteneurDao = cDao;
    }
 
-   public void setEnceinteManager(final EnceinteManager eManager){
-      this.enceinteManager = eManager;
-   }
-
-   public void setTerminaleManager(final TerminaleManager tManager){
-      this.terminaleManager = tManager;
+   public void setEnceinteDao(final EnceinteDao eDao){
+      this.enceinteDao = eDao;
    }
 
    public void setEchantillonDao(final EchantillonDao eDao){
@@ -161,6 +158,10 @@ public class EmplacementManagerImpl implements EmplacementManager
 
    public void setProdDeriveDao(final ProdDeriveDao pDao){
       this.prodDeriveDao = pDao;
+   }
+   
+   public void setDataSource(final DataSource d){
+	  this.dataSource = d;
    }
 
    /**
@@ -250,20 +251,21 @@ public class EmplacementManagerImpl implements EmplacementManager
                }
             }
 
-            final List<Conteneur> conteneurs = conteneurManager.findByBanqueAndCodeManager(banque, conteneur);
+            final List<Conteneur> conteneurs = conteneurDao
+            	.findByBanqueIdAndCode(banque != null ? banque.getBanqueId() : null, conteneur);
             if(conteneurs.size() == 1){
                List<Enceinte> enceintesTmp = new ArrayList<>();
                for(int i = 0; i < enceintes.size(); i++){
                   if(i == 0){
-                     enceintesTmp = enceinteManager.findByConteneurAndNomManager(conteneurs.get(0), enceintes.get(i));
+                     enceintesTmp = enceinteDao.findByConteneurAndNom(conteneurs.get(0), enceintes.get(i));
                   }else if(enceintesTmp.size() == 1){
-                     enceintesTmp = enceinteManager.findByEnceintePereAndNomManager(enceintesTmp.get(0), enceintes.get(i));
+                     enceintesTmp = enceinteDao.findByEnceintePereAndNom(enceintesTmp.get(0), enceintes.get(i));
                   }
                }
 
                List<Terminale> terminales = new ArrayList<>();
                if(enceintesTmp.size() == 1){
-                  terminales = terminaleManager.findByEnceinteAndNomManager(enceintesTmp.get(0), terminale);
+                  terminales = terminaleDao.findByEnceinteAndNom(enceintesTmp.get(0), terminale);
                }
 
                Integer pos = -1;
@@ -791,7 +793,7 @@ public class EmplacementManagerImpl implements EmplacementManager
             }
          }else{
             if(numLigne <= terminale.getTerminaleType().getHauteur() && numColonne <= terminale.getTerminaleType().getLongueur()){
-               position = (numLigne - 1) * terminale.getTerminaleType().getHauteur();
+               position = (numLigne - 1) * terminale.getTerminaleType().getLongueur();
                position = position + numColonne;
             }
          }
@@ -956,7 +958,7 @@ public class EmplacementManagerImpl implements EmplacementManager
    @Override
    public void deplacerMultiEmplacementsManager(final List<Emplacement> emplacements, final Utilisateur utilisateur){
       if(emplacements != null){
-         validateMultiEmplacementsManager(emplacements);
+         validateMultiEmplacementsManager(emplacements, true);
 
          final OperationType opType = operationTypeDao.findByNom("Deplacement").get(0);
          for(int i = 0; i < emplacements.size(); i++){
@@ -998,7 +1000,7 @@ public class EmplacementManagerImpl implements EmplacementManager
    }
 
    @Override
-   public void validateMultiEmplacementsManager(final List<Emplacement> emplacements){
+   public void validateMultiEmplacementsManager(final List<Emplacement> emplacements, boolean isDeplacement){
       if(emplacements != null){
          for(int i = 0; i < emplacements.size(); i++){
             final Emplacement empl = emplacements.get(i);
@@ -1017,13 +1019,19 @@ public class EmplacementManagerImpl implements EmplacementManager
                   throw new InvalidPositionException("Emplacement", "creation", empl.getPosition());
                }
 
-               if(empl.getEntite() != null && empl.getObjetId() != null){
+               if(!isDeplacement && empl.getEntite() != null && empl.getObjetId() != null){
                   // on vérifie que le couple Entité/ObjectId référence 
                   // un objet existant
-                  if(entiteManager.findObjectByEntiteAndIdManager(empl.getEntite(), empl.getObjetId()) == null){
+            	  TKStockableObject tkObj = (TKStockableObject) 
+            			 entiteManager.findObjectByEntiteAndIdManager(empl.getEntite(), empl.getObjetId());
+                  if(tkObj == null){
                      log.warn("Couple Entite : " + empl.getEntite().toString() + " - ObjetId :" + empl.getObjetId()
                         + " inexistant lors de la " + "création d'un objet Emplacement");
                      throw new EntiteObjectIdNotExistException("Emplacement", empl.getEntite().getNom(), empl.getObjetId());
+                  } else if (tkObj.getEmplacement() != null && !tkObj.getEmplacement().equals(empl)) { 
+                	  // verifie que l'objet n'a pas ete stocke
+                	  // TK-237
+                	 throw new ObjectAlreadyStockedException(tkObj);
                   }
                }
 
@@ -1063,7 +1071,7 @@ public class EmplacementManagerImpl implements EmplacementManager
    @Override
    public void saveMultiEmplacementsManager(final List<Emplacement> emplacements){
       if(emplacements != null){
-         validateMultiEmplacementsManager(emplacements);
+         validateMultiEmplacementsManager(emplacements, false);
 
          for(int i = 0; i < emplacements.size(); i++){
             final Emplacement empl = emplacements.get(i);
@@ -1085,6 +1093,20 @@ public class EmplacementManagerImpl implements EmplacementManager
             }
          }
       }
+   }
+   
+   @Override
+   public Emplacement findByTKStockableObjectManager(TKStockableObject tkObj) {
+	   if (tkObj != null) {
+		   List<Entite> ets = entiteDao.findByNom(tkObj.entiteNom());
+		   if (!ets.isEmpty()) {
+			   List<Emplacement> emps = emplacementDao.findByObjetIdEntite(tkObj.listableObjectId(), ets.get(0));
+			   if (!emps.isEmpty()) {
+				  return emps.get(0); 
+			   }
+		   }
+	   }
+	   return null;
    }
 
    @Override
@@ -1108,5 +1130,44 @@ public class EmplacementManagerImpl implements EmplacementManager
 
       return objs;
    }
-
+   
+   @Override
+   public Emplacement findByAdrlCallableManager(String adrl, Banque bank) {
+	   
+	   Emplacement empl = null;
+	   
+	   if (!StringUtils.isEmpty(adrl) && bank != null) {
+	   
+		   Connection conn = null;
+		   CallableStatement findCall = null;
+		   ResultSet rSet = null;
+	
+		   try{
+	           conn = DataSourceUtils.getConnection(dataSource);	
+	           findCall = conn.prepareCall("select find_emplacement_by_adrl(?,?)");
+	           findCall.setString(1, adrl);
+	           findCall.setInt(2, bank.getBanqueId());
+	           if(findCall.execute()) {
+	               rSet = findCall.getResultSet();
+	               while(rSet.next()){
+	                  // if(rSet.getInt(1) != null){
+	            	   empl = emplacementDao.findById(rSet.getInt(1));
+	                  //}
+	           		}
+	           }
+		   }catch(final Exception e){
+			   e.printStackTrace();
+			   log.error(e.getMessage());
+		   }finally{
+			   if(conn != null){
+				   try{ conn.close(); }catch(final Exception e){ conn = null;}
+			   }  
+			   if(findCall != null){
+				   try{ findCall.close(); }catch(final Exception e){ findCall = null;}
+			   }
+		   }
+	   }
+	   
+	   return empl;
+   }
 }

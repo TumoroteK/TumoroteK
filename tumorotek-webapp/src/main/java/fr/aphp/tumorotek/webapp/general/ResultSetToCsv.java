@@ -43,6 +43,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 
+import fr.aphp.tumorotek.action.utilisateur.ProfilExport;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.webapp.general.export.Export;
 
@@ -51,7 +52,7 @@ import fr.aphp.tumorotek.webapp.general.export.Export;
  * Fichier Excel des Exports exploitable par les Users
  *
  * @author jhusson
- * @version 2.0
+ * @version 2.2.3-rc1
  */
 public class ResultSetToCsv extends ResultSetToExcel
 {
@@ -63,9 +64,9 @@ public class ResultSetToCsv extends ResultSetToExcel
 
    private final String cellSeparator;
 
-   public ResultSetToCsv(final OutputStream oStr, final Export export, final ResultSet resultSet, final boolean isExportAnonyme,
+   public ResultSetToCsv(final OutputStream oStr, final Export export, final ResultSet resultSet, final ProfilExport pE,
       final String cellSep){
-      super(export, resultSet, isExportAnonyme);
+      super(export, resultSet, pE);
       this.outStream = oStr;
       this.cellSeparator = cellSep != null ? cellSep : "\t";
       setUpdateThread(getExport());
@@ -79,7 +80,7 @@ public class ResultSetToCsv extends ResultSetToExcel
       numCols = resultSetMetaData.getColumnCount();
       setFormatTypes(new FormatType[numCols]);
 
-      if(isExportAnonyme()){
+      if(getProfilExport() != null && !getProfilExport().equals(ProfilExport.NOMINATIF)){
          getAnonymeColumn().clear();
       }
 
@@ -91,13 +92,17 @@ public class ResultSetToCsv extends ResultSetToExcel
             && getExport().getMapCorrespondanceAnnotationName().containsKey(title)){
             title = getExport().getMapCorrespondanceAnnotationName().get(title);
          }
-         // Anonyme
-         if(isExportAnonyme()){
-            if(title.equalsIgnoreCase("emplacement") || title.equalsIgnoreCase("patient_nda")
+		
+         // @since 2.2.3-genno anonyme -> 3 etats possibles (nominatif, anonyme, anonymestock)
+         if(getProfilExport() != null && !getProfilExport().equals(ProfilExport.NOMINATIF)) {
+				// ces traits seront toujours masqués
+            if (title.equalsIgnoreCase("patient_nda")
                || title.equalsIgnoreCase("patient_id") || title.equalsIgnoreCase("nip") || title.equalsIgnoreCase("nom_naissance")
                || title.equalsIgnoreCase("nom") || title.equalsIgnoreCase("prenom") || title.equalsIgnoreCase("date_naissance")){
                getAnonymeColumn().add(i);
-            }
+            } else if (title.equalsIgnoreCase("emplacement") && getProfilExport().equals(ProfilExport.ANONYME)) { // anonyme strict (sans accès stockage)
+            	getAnonymeColumn().add(i);
+			}
          }
 
          final Class<?> _class = Class.forName(resultSetMetaData.getColumnClassName(i + 1));
@@ -182,7 +187,7 @@ public class ResultSetToCsv extends ResultSetToExcel
             cell = value.toString();
          }
 
-         if(isExportAnonyme()){
+         if(getProfilExport() != null && !getProfilExport().equals(ProfilExport.NOMINATIF)){
             if(this.getAnonymeColumn().contains(col)){
                cell = "****";
             }

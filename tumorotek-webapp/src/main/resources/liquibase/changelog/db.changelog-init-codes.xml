@@ -15,6 +15,6 @@
             </not>
         </preConditions>
         <comment>Initialisation de la base de données tumorotek_codes : DDL &amp; DML</comment>
-        <sqlFile encoding="utf8" path="../sql/tumorotek_codes/tumorotek_codes-init.sql" relativeToChangelogFile="true"/>
+        <sqlFile encoding="utf8" path="../sql/mysql/tumorotek_codes/tumorotek_codes-init.sql" relativeToChangelogFile="true"/>
     </changeSet>
 </databaseChangeLog>

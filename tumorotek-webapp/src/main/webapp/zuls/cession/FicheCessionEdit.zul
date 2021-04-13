@@ -88,145 +88,164 @@
 						id="groupEchantillons"/>
 					<row spans="4">
 						<vbox align="center" hflex="1" width="100%">
-						<div id="cederEchantillonsHbox" visible="false" style="valign:top;">
-							<label value="${c:l('cession.ceder.echantillon.code')}" 
-								sclass="formLabel"/>
-							
-							<listbox id="banquesEchantillonsBox" mold="select" rows="1">
-								<listitem self="@{each='banque'}" value="banque">			
-									<listcell label="@{banque.nom}" />
-								</listitem>
-							</listbox>
-							
-							<combobox id="echantillonsBox" 
-								buttonVisible="false"
-				 				autodrop="true" width="150px">
-				 					<comboitem self="@{each=echantillonCode}" 
-				 					label="@{echantillonCode}"/>
-				 			</combobox>
-				 			
-				 			<button id="cederEchantillonsButton" sclass="buttonv2" 
-				 				label="${c:l('cession.ceder.echantillon')}"  
-								height="24px"
-								image="/images/icones/cederObjet.png" />
-			 			</div>
-			 			<label id="lastEchantillonsLabel" sclass="formErrorValue" visible="false"
-			 				value="${c:l('cession.warning.last.echantillon')}"/>
-			 			<label id="echantillonsNonStockesLabel" sclass="formErrorValue" 
-			 				visible="false"
-			 				value="${c:l('cession.echantillons.non.stocke')}"/>
-						<!-- Echantillons en mode edition -->
-						<grid id="echantillonsList" mold="paging"
-							hflex="1"
-							sizedByContent="true" 
-							span="true"
-							sclass="gridListStyle"
-							>
-							<columns sizable="true" width="100%">
-								<column />
-								<column label="${c:l('cederObjet.code')}" />
-								<column label="${c:l('cederObjet.type')}" />
-								<column label="${c:l('prelevement.patient')}" />
-								<column >
-									<vbox>
-										<label value="${c:l('cederObjet.statut')}" 
-											style="font-weight : bold;"/>
-										<label value="${c:l('cederObjet.juridique')}" 
-											style="font-weight : bold;"/>
-									</vbox>
-								</column>
-								<column id="echanQteColBox" visible="true" >
-									<vbox>
-										<label value="${c:l('cederObjet.quantite')}" 
-											style="font-weight : bold;"/>
-										<label value="${c:l('cederObjet.demandee')}" 
-											style="font-weight : bold;"/>
-									</vbox>
-								</column>
-								<column id="echanQteCol" visible="false">
-									<vbox>
-										<label value="${c:l('cederObjet.quantite')}" 
-											style="font-weight : bold;"/>
-										<label value="${c:l('cederObjet.demandee')}" 
-											style="font-weight : bold;"/>
-									</vbox>
-								</column>
-								<column >
-									<vbox>
-										<label value="${c:l('cederObjet.quantite')}" 
-											style="font-weight : bold;"/>
-										<label value="${c:l('cederObjet.restante')}" 
-											style="font-weight : bold;"/>
-									</vbox>
-								</column>
-								<column label="${c:l('cederObjet.unite')}" />
-								<column label="${c:l('Champ.Echantillon.Emplacement')}" />
-								<column>
-									<vbox>
-										<label value="${c:l('general.nb')}" 
-											style="font-weight : bold;"/>
-										<label value="${c:l('cederObjet.sorties')}" 
-											style="font-weight : bold;"/>
-									</vbox>
-								</column>
-								<column id="echanDeleteCol" width="18px"/>
-							</columns>
-							<rows>
-								<row self="@{each='echanCedeEdit'}">
-									<hlayout>
-										<div width="18px" height="18px" visible="@{echanCedeEdit.impactVisible}"
-											sclass="impact" tooltiptext="${c:l('Champ.Retour.Impact')}"/>
-										<div width="18px" height="18px" visible="@{echanCedeEdit.prelC}"
-											sclass="conformeArrivee" tooltiptext="${c:l('tooltip.conforme.arrivee')}"/>
-										<div width="18px" height="18px" visible="@{echanCedeEdit.prelNC}"
-											sclass="nonConformeArrivee" tooltiptext="@{echanCedeEdit.prelNcfs}"/>
-										<div width="18px" height="18px" visible="@{echanCedeEdit.tKObjTraitementC}"
-											sclass="conformeTraitement" tooltiptext="${c:l('tooltip.conforme.traitement')}"/>
-										<div width="18px" height="18px" visible="@{echanCedeEdit.tKObjTraitementNC}"
-											sclass="nonConformeTraitement" tooltiptext="@{echanCedeEdit.tKObjTraitementNcfs}"/>
-										<div width="18px" height="18px" visible="@{echanCedeEdit.tKObjCessionC}"
-											sclass="conformeCession" tooltiptext="${c:l('tooltip.conforme.cession')}"/>
-										<div width="18px" height="18px" visible="@{echanCedeEdit.tKObjCessionNC}"
-											sclass="nonConformeCession" tooltiptext="@{echanCedeEdit.tKObjCessionNcfs}"/>	
-									</hlayout>
-									<label value="@{echanCedeEdit.echantillonCode}" 
-										id = "codeEchantillonCede"/>
-									<label value="@{echanCedeEdit.echantillonType}"/>
-									<label value="@{echanCedeEdit.nomPatient}"/>
-									<label value="@{echanCedeEdit.statutJuridique}"/>
-									<!-- Quantité a céder -->
-									<div align="center">
-										<decimalbox id="echantillonQuantiteBox"
-											width="50px"
-											value="@{echanCedeEdit.cederObjet.quantite,
-											save-when='validate.onClick, create.onClick,
-											self.onBlur'}"
-											visible="@{echanCedeEdit.quantiteEdition}"
-											constraint="@{fwinCessionEdit$composer.cttQuantiteDemandee}"
-											format="#,##0.###" scale="3"
-											locale="en"
-										/>
-										<label value="@{echanCedeEdit.cederQuantite}"
-											visible="@{echanCedeEdit.quantiteVisualisation}"/>
+							<div id="cederEchantillonsHbox" visible="false" style="valign:top;">
+								<label value="${c:l('cession.ceder.echantillon.code')}" 
+									sclass="formLabel"/>
+								
+								<listbox id="banquesEchantillonsBox" mold="select" rows="1">
+									<listitem self="@{each='banque'}" value="banque">			
+										<listcell label="@{banque.nom}" />
+									</listitem>
+								</listbox>
+								
+								<combobox id="echantillonsBox" 
+									buttonVisible="false"
+					 				autodrop="true" width="150px">
+					 					<comboitem self="@{each=echantillonCode}" 
+					 					label="@{echantillonCode}"/>
+					 			</combobox>
+					 			
+					 			<button id="cederEchantillonsButton" sclass="buttonv2" 
+					 				label="${c:l('cession.ceder.echantillon')}"  
+									height="24px"
+									image="/images/icones/cederObjet.png" />
+				 			</div>
+				 			<label id="lastEchantillonsLabel" sclass="formErrorValue" visible="false"
+				 				value="${c:l('cession.warning.last.echantillon')}"/>
+				 			<label id="echantillonsNonStockesLabel" sclass="formErrorValue" 
+				 				visible="false"
+				 				value="${c:l('cession.echantillons.non.stocke')}"/>
+							<!-- Echantillons en mode edition -->
+							<grid id="echantillonsList" mold="paging"
+								hflex="1"
+								sizedByContent="true" 
+								span="true"
+								sclass="gridListStyle"
+								>
+								<columns sizable="true" width="100%">
+									<column />
+									<column label="${c:l('cederObjet.code')}" />
+									<column label="${c:l('cederObjet.type')}" />
+									<column label="${c:l('prelevement.patient')}" />
+									<column >
+										<vbox>
+											<label value="${c:l('cederObjet.statut')}" 
+												style="font-weight : bold;"/>
+											<label value="${c:l('cederObjet.juridique')}" 
+												style="font-weight : bold;"/>
+										</vbox>
+									</column>
+									<column id="echanQteColBox" visible="true" >
+										<vbox>
+											<label value="${c:l('cederObjet.quantite')}" 
+												style="font-weight : bold;"/>
+											<label value="${c:l('cederObjet.demandee')}" 
+												style="font-weight : bold;"/>
+										</vbox>
+									</column>
+									<column id="echanQteCol" visible="false">
+										<vbox>
+											<label value="${c:l('cederObjet.quantite')}" 
+												style="font-weight : bold;"/>
+											<label value="${c:l('cederObjet.demandee')}" 
+												style="font-weight : bold;"/>
+										</vbox>
+									</column>
+									<column >
+										<vbox>
+											<label value="${c:l('cederObjet.quantite')}" 
+												style="font-weight : bold;"/>
+											<label value="${c:l('cederObjet.restante')}" 
+												style="font-weight : bold;"/>
+										</vbox>
+									</column>
+									<column label="${c:l('cederObjet.unite')}" />
+									<column label="${c:l('Champ.Echantillon.Emplacement')}" />
+									<column>
+										<vbox>
+											<label value="${c:l('general.nb')}" 
+												style="font-weight : bold;"/>
+											<label value="${c:l('cederObjet.sorties')}" 
+												style="font-weight : bold;"/>
+										</vbox>
+									</column>
+									<column id="echanDeleteCol" width="18px"/>
+								</columns>
+								<rows>
+									<row self="@{each='echanCedeEdit'}">
+										<hlayout>
+											<div width="18px" height="18px" visible="@{echanCedeEdit.impactVisible}"
+												sclass="impact" tooltiptext="${c:l('Champ.Retour.Impact')}"/>
+											<div width="18px" height="18px" visible="@{echanCedeEdit.prelC}"
+												sclass="conformeArrivee" tooltiptext="${c:l('tooltip.conforme.arrivee')}"/>
+											<div width="18px" height="18px" visible="@{echanCedeEdit.prelNC}"
+												sclass="nonConformeArrivee" tooltiptext="@{echanCedeEdit.prelNcfs}"/>
+											<div width="18px" height="18px" visible="@{echanCedeEdit.tKObjTraitementC}"
+												sclass="conformeTraitement" tooltiptext="${c:l('tooltip.conforme.traitement')}"/>
+											<div width="18px" height="18px" visible="@{echanCedeEdit.tKObjTraitementNC}"
+												sclass="nonConformeTraitement" tooltiptext="@{echanCedeEdit.tKObjTraitementNcfs}"/>
+											<div width="18px" height="18px" visible="@{echanCedeEdit.tKObjCessionC}"
+												sclass="conformeCession" tooltiptext="${c:l('tooltip.conforme.cession')}"/>
+											<div width="18px" height="18px" visible="@{echanCedeEdit.tKObjCessionNC}"
+												sclass="nonConformeCession" tooltiptext="@{echanCedeEdit.tKObjCessionNcfs}"/>	
+										</hlayout>
+										<label value="@{echanCedeEdit.echantillonCode}" 
+											id = "codeEchantillonCede"/>
+										<label value="@{echanCedeEdit.echantillonType}"/>
+										<label value="@{echanCedeEdit.nomPatient}"/>
+										<label value="@{echanCedeEdit.statutJuridique}"/>
+										<!-- Quantité a céder -->
+										<div align="center">
+											<decimalbox id="echantillonQuantiteBox"
+												width="50px"
+												value="@{echanCedeEdit.cederObjet.quantite,
+												save-when='validate.onClick, create.onClick,
+												self.onBlur'}"
+												visible="@{echanCedeEdit.quantiteEdition}"
+												constraint="@{fwinCessionEdit$composer.cttQuantiteDemandee}"
+												format="#,##0.###" scale="3"
+												locale="en"
+											/>
+											<label value="@{echanCedeEdit.cederQuantite}"
+												visible="@{echanCedeEdit.quantiteVisualisation}"/>
+										</div>
+										<label value="@{echanCedeEdit.cederQuantite}" />
+										<label value="@{echanCedeEdit.quantiteRestante, 
+											load-after='echantillonQuantiteBox.onBlur'}"/>
+										<label value="@{echanCedeEdit.cederQuantiteUnite}"/>
+										<label value="@{echanCedeEdit.emplacementAdrl}"/>
+										<label value="@{echanCedeEdit.nbSorties}"/>
+										<!-- Suppression -->
+										<div align="center">
+											<image width="12px" height="12px" id="deleteEchan"
+												src="/images/icones/small_delete.png"
+												style="cursor:pointer"/>
+										</div>
+									</row>
+								</rows>
+							</grid>
+							<paging id="echansPaging" detailed="true"/>
+							<vlayout hflex="1">	
+								<hbox id="cederMultiEchantillonsBox" hflex="1">
+									<div hflex="1" vflex="1" style="text-align: right">
+										<label style="margin: auto" value="${c:l('cession.ceder.multi.echantillon')}" 
+											sclass="formLink" id="cederMultiEchantillonsLabel" />
 									</div>
-									<label value="@{echanCedeEdit.cederQuantite}" />
-									<label value="@{echanCedeEdit.quantiteRestante, 
-										load-after='echantillonQuantiteBox.onBlur'}"/>
-									<label value="@{echanCedeEdit.cederQuantiteUnite}"/>
-									<label value="@{echanCedeEdit.emplacementAdrl}"/>
-									<label value="@{echanCedeEdit.nbSorties}"/>
-									<!-- Suppression -->
-									<div align="center">
-										<image width="12px" height="12px" id="deleteEchan"
-											src="/images/icones/small_delete.png"
-											style="cursor:pointer"/>
-									</div>
-								</row>
-							</rows>
-						</grid>
-						<paging id="echansPaging" detailed="true"/>
-						<label value="${c:l('cession.ceder.multi.echantillon')}" 
-							sclass="formLink" id="cederMultiEchantillonsLabel"/>							
+									<label hflex="1" id="cederMultiEchantillonBanquesLabel" value="${c:l('cession.ceder.banques.choix')}" 
+										sclass="formLink"
+										style="font-style: italics; font-weight: normal; color: #636363; font-size: 10px" />
+								</hbox>	
+								<listbox id="cederMultiEchantillonBanquesBox" width="60%" visible="false"
+										model="@{fwinCessionEdit$composer.availableBanquesForEchantillonModel}"
+										multiple="true" checkmark="true" mold="paging" pageSize="5">
+										<listhead>
+											<listheader label="${c:l('general.selectAll')}" />
+										</listhead>
+										<template name="model">
+											<listitem label="${each.nom}" value="{each}" />
+										</template>
+									</listbox>
+							</vlayout>						
 						</vbox>
 					</row>
 					
@@ -384,8 +403,28 @@
 							</rows>
 						</grid>
 						<paging id="derivesPaging" detailed="true"/>
-						<label value="${c:l('cession.ceder.multi.prodDerive')}" 
-							sclass="formLink" id="cederMultiProdDerivesLabel"/>
+						
+						<vlayout hflex="1">	
+								<hbox id="cederMultiProdDerivesBox" hflex="1">
+									<div hflex="1" vflex="1" style="text-align: right">
+										<label style="margin: auto" value="${c:l('cession.ceder.multi.prodDerive')}" 
+											sclass="formLink" id="cederMultiProdDerivesLabel" />
+									</div>
+									<label hflex="1" id="cederMultiProdDeriveBanquesLabel" value="${c:l('cession.ceder.banques.choix')}" 
+										sclass="formLink"
+										style="font-style: italics; font-weight: normal; color: #636363; font-size: 10px" />
+								</hbox>	
+								<listbox id="cederMultiDerivesBanquesBox" width="60%" visible="false"
+										model="@{fwinCessionEdit$composer.availableBanquesForDeriveModel}"
+										multiple="true" checkmark="true" mold="paging" pageSize="5">
+										<listhead>
+											<listheader label="${c:l('general.selectAll')}" />
+										</listhead>
+										<template name="model">
+											<listitem label="${each.nom}" value="{each}" />
+										</template>
+									</listbox>
+							</vlayout>
 						</vbox>
 					</row>
 					

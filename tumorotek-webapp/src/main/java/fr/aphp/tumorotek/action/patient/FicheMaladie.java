@@ -165,9 +165,13 @@ public class FicheMaladie extends AbstractFicheCombineController
 
    protected List<Collaborateur> medecins = new ArrayList<>();
 
-   protected PrelevementItemRenderer prelevementRenderer = new PrelevementItemRenderer();
+   // defaut contexte TK renderer
+   protected PrelevementItemRenderer prelevementRenderer = 
+		   new PrelevementItemRenderer();
 
-   protected PrelevementItemRenderer prelevementFromOtherBanksRenderer = new PrelevementItemRenderer();
+   // other banks -> contexte defaut TK
+   protected PrelevementItemRenderer prelevementFromOtherBanksRenderer = 
+		   new PrelevementItemRenderer();
 
    public Panel getContainer(){
       return container;
@@ -231,7 +235,8 @@ public class FicheMaladie extends AbstractFicheCombineController
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
-      super.doAfterCompose(comp);
+      	   
+	  super.doAfterCompose(comp);
 
       setDeletionMessage("message.deletion.maladie");
 
@@ -261,6 +266,28 @@ public class FicheMaladie extends AbstractFicheCombineController
          }
       });
    }
+   
+//   /**
+//    * Fixe le contexte de la banque courante, ou si mode toutes collections, le contexte 
+//    * commun à toutes les collections.
+//    * Si pas de contexte commun alors contexte 'null' = anapath par défaut
+//    * @since 2.2.1
+//    * @return
+//    */
+//   private Contexte initContexte() {
+//	   // une seule collection en cours
+//	   if(SessionUtils.getSelectedBanques(sessionScope).size() == 1) { 
+//		   return SessionUtils.getSelectedBanques(sessionScope).get(0).getContexte();
+//	   } else { // toutes collections
+//		   List<Contexte> conts = SessionUtils.getSelectedBanques(sessionScope).stream().map(b -> b.getContexte())
+//				   .distinct().collect(Collectors.toList());
+//		   if (conts.size() == 1) { // 1 seul contexte pour toutes les banques
+//			   return conts.get(0);
+//		   } else { // contexte TK par défaut > null
+//			   return null;
+//		   }
+//	   }
+//   }
 
    public void setPatient(final Patient pat){
       this.maladie.setPatient(pat);

@@ -50,7 +50,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import fr.aphp.tumorotek.manager.coeur.prelevement.PrelevementManager;
 import fr.aphp.tumorotek.manager.io.ChampDelegueManager;
 import fr.aphp.tumorotek.manager.systeme.EntiteManager;
-import fr.aphp.tumorotek.manager.test.inmemory.AbstractInMemoryManagerTest;
+import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.coeur.prelevement.delegate.PrelevementSero;
 import fr.aphp.tumorotek.model.contexte.EContexte;
@@ -62,7 +62,7 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * @author Gille Chapelot
  *
  */
-public class ChampDelegueManagerTest extends AbstractInMemoryManagerTest
+public class ChampDelegueManagerTest extends AbstractManagerTest4
 {
 
    @Autowired

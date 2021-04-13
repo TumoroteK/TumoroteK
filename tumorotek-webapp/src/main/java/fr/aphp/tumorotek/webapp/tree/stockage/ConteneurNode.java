@@ -40,6 +40,7 @@ import java.util.List;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.stockage.Enceinte;
 import fr.aphp.tumorotek.webapp.tree.TumoTreeNode;
@@ -50,7 +51,7 @@ import fr.aphp.tumorotek.webapp.tree.TumoTreeNode;
  * Classe créée le 25/03/10.
  *
  * @author Pierre Ventadour.
- * @version 2.0.
+ * @version 2.2.3-genno
  *
  */
 public class ConteneurNode extends TumoTreeNode
@@ -60,7 +61,7 @@ public class ConteneurNode extends TumoTreeNode
    private String libelle = "";
    private Banque selectedBanque;
 
-   public ConteneurNode(final Conteneur cont, final Banque banque){
+   public ConteneurNode(final Conteneur cont, final Banque banque, final Plateforme curPf){
       this.conteneur = cont;
       this.selectedBanque = banque;
       if(this.conteneur != null && !this.conteneur.equals(new Conteneur())){
@@ -68,6 +69,15 @@ public class ConteneurNode extends TumoTreeNode
             this.libelle = this.conteneur.getNom();
          }else{
             this.libelle = this.conteneur.getCode();
+         }
+         
+         // conteneur partagé depuis pf extérieur
+         // ajoute au libellé
+         // TK-289
+         if (!conteneur.getPlateformeOrig().equals(curPf)) {
+        	 this.libelle = this.libelle.concat(" [")
+        		.concat(conteneur.getPlateformeOrig().getAlias() != null ? 
+        			conteneur.getPlateformeOrig().getAlias() : conteneur.getPlateformeOrig().getNom()).concat("]");
          }
       }else{
          this.libelle = "(Vide)";

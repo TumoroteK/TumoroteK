@@ -35,10 +35,16 @@
  **/
 package fr.aphp.tumorotek.manager.test.patient;
 
+import static org.junit.Assert.*;
+
+
 import java.util.List;
 
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import fr.aphp.tumorotek.manager.coeur.patient.LienFamilialManager;
-import fr.aphp.tumorotek.manager.test.AbstractManagerTest;
+import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
 import fr.aphp.tumorotek.manager.validation.exception.ValidationException;
 import fr.aphp.tumorotek.model.coeur.patient.LienFamilial;
 
@@ -51,10 +57,10 @@ import fr.aphp.tumorotek.model.coeur.patient.LienFamilial;
  * @version 2.0
  *
  */
-public class LienFamilialManagerTest extends AbstractManagerTest
+public class LienFamilialManagerTest extends AbstractManagerTest4
 {
 
-   /* Managers injectes par Spring*/
+   @Autowired
    private LienFamilialManager lienFamilialManager;
 
    public LienFamilialManagerTest(){}
@@ -66,6 +72,7 @@ public class LienFamilialManagerTest extends AbstractManagerTest
    /**
     * Test la méthode findAllObjectsManager.
     */
+   @Test
    public void testFindAllObjectsManager(){
       final List<LienFamilial> lienFamilials = lienFamilialManager.findAllObjectsManager();
       assertTrue(lienFamilials.size() == 6);
@@ -74,6 +81,7 @@ public class LienFamilialManagerTest extends AbstractManagerTest
    /**
     * Test la methode findByNomLikeManager.
     */
+   @Test
    public void testfindByNomLikeManager(){
       //teste une recherche exactMatch
       List<LienFamilial> lienFamilials = lienFamilialManager.findByNomLikeManager("Pere-Fille", true);
@@ -92,6 +100,7 @@ public class LienFamilialManagerTest extends AbstractManagerTest
    /**
     * Teste la méthode findDoublon.
     */
+   @Test
    public void testFindDoublon(){
       //Cree le doublon
       final LienFamilial lf1 = (lienFamilialManager.findByNomLikeManager("Tante-Neveu", true)).get(0);
@@ -104,6 +113,7 @@ public class LienFamilialManagerTest extends AbstractManagerTest
    /**
     * Teste la méthode isUsedObject.
     */
+   @Test
    public void testIsUsedObject(){
       //Enregistrement est reference
       final LienFamilial lf1 = (lienFamilialManager.findByNomLikeManager("Pere-Fille", true)).get(0);
@@ -116,15 +126,14 @@ public class LienFamilialManagerTest extends AbstractManagerTest
    /**
     * Teste les methodes CRUD. 
     */
+   @Test
    public void testCRUD(){
       createObjectManagerTest();
       updateObjectManagerTest();
       removeObjectManagerTest();
    }
 
-   /**
-    * Teste la methode createObjectManager. 
-    */
+   @Test
    public void createObjectManagerTest(){
       //Insertion nouvel enregistrement
       final LienFamilial lf1 = new LienFamilial();
@@ -167,9 +176,7 @@ public class LienFamilialManagerTest extends AbstractManagerTest
       }
    }
 
-   /**
-    * Teste la methode updateObjectManager. 
-    */
+   @Test
    public void updateObjectManagerTest(){
       //Modification d'un enregistrement
       final LienFamilial lf1 = (lienFamilialManager.findByNomLikeManager("GrandMere-Petitfils", true)).get(0);
@@ -198,9 +205,7 @@ public class LienFamilialManagerTest extends AbstractManagerTest
       assertTrue((lienFamilialManager.findByNomLikeManager("Fille-Pere", false)).size() == 1);
    }
 
-   /**
-    * Teste la methode removeObjectManager. 
-    */
+   @Test
    public void removeObjectManagerTest(){
       //Suppression de l'enregistrement precedemment insere
       final LienFamilial lf1 = (lienFamilialManager.findByNomLikeManager("Kilo-Jaffar", true)).get(0);

@@ -88,7 +88,7 @@ import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
  * Classe créée le 09/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.1
+ * @version 2.2.1
  *
  */
 @Entity
@@ -136,7 +136,11 @@ import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
          + "WHERE profilU.pk.utilisateur = ?1 " + "ORDER BY b.nom"),
    @NamedQuery(name = "Banque.findByExcludedId", query = "SELECT b FROM Banque b " + "WHERE b.banqueId != ?1"),
    @NamedQuery(name = "Banque.findByTableAnnotation",
-      query = "SELECT b FROM Banque b " + "JOIN b.tableAnnotationBanques t " + "WHERE t.pk.tableAnnotation = ?1")})
+      query = "SELECT b FROM Banque b " + "JOIN b.tableAnnotationBanques t " + "WHERE t.pk.tableAnnotation = ?1"),
+	@NamedQuery(name = "Banque.findByConteneur",
+		query = "SELECT b FROM Banque b " + "JOIN b.conteneurs c " + "WHERE c = ?1")}
+)
+
 public class Banque implements TKFantomableObject, TKdataObject, java.io.Serializable, Comparable<Object>
 {
 
@@ -692,5 +696,16 @@ public class Banque implements TKFantomableObject, TKdataObject, java.io.Seriali
    @Transient
    public String getPhantomData(){
       return getNom();
+   }
+   
+   /**
+    * @since 2.2.1
+    * @return le nom de la banque et de la pf entre crochets
+    */
+   @Transient
+   public String getBanqueAndPlateformeNoms() {
+      return getNom().concat(" [")
+    	.concat(plateforme.getNom())
+    	.concat("]");
    }
 }

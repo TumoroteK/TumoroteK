@@ -527,25 +527,4 @@ public abstract class AbstractFicheEditController extends AbstractFicheControlle
       this.currentNumerotation = cNumerotation;
    }
 
-   /************************* INTERFACAGES ***********************************/
-   /**************************************************************************/
-
-   /**
-    * Méthode qui permet de produire un fichier tabulé contenant
-    * les emplacements à fournir avec les codes échantillons
-    * concernés.
-    */
-   public void postStorageData(final Map<TKStockableObject, Emplacement> tkEmpls){
-      if(tkEmpls.size() > 0){
-         try{
-            // Recepteurs
-            for(final Recepteur recept : SessionUtils.getRecepteursInterfacages(sessionScope)){
-               ManagerLocator.getSenderFactory().sendEmplacements(recept, tkEmpls,
-                  ManagerLocator.getOperationTypeManager().findByNomLikeManager("Stockage", false).get(0));
-            }
-         }catch(final Exception e){
-            Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
-         }
-      }
-   }
 }

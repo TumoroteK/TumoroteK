@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+
 <beans xmlns="http://www.springframework.org/schema/beans"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xmlns:camel="http://camel.apache.org/schema/spring"
-      xsi:schemaLocation="
-      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-      http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:camel="http://camel.apache.org/schema/spring"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring 
+       http://camel.apache.org/schema/spring/camel-spring.xsd">
 
 	<!-- global GILDA error handling -->
 	<errorHandler id="sipErrorHandler" xmlns="http://camel.apache.org/schema/spring"
@@ -27,39 +29,7 @@
 		    </onException>
 	   
 	   		<choice>
-	   			<when>
-	   				<simple>${file:ext} == 'dat'</simple>
-	   				<convertBodyTo type="fr.aphp.tumorotek.interfacage.jaxb.gilda.GildaMessage" />
-	   				<to uri="direct:gilda-handle" />
-	   			</when>
-	   			<when>
-	   				<simple>${file:ext} == 'hl7'</simple>
-	   				<choice>
-		   				<when>
-	                		<simple>${properties:sip.convert} == 'ISO-8859-1'</simple>
-	                		<convertBodyTo type="java.lang.String" charset="ISO-8859-1" />
-	            		</when>   				
-	            		<otherwise>
-	            			<convertBodyTo type="java.lang.String" />
-	            		</otherwise>
-	            	</choice>
-	   				<unmarshal ref="myHl7"   />
-	   				<to uri="direct:sip-handle" />
-	   			</when>
-	   			<when>
-	   				<simple>${file:ext} == 'HL7'</simple>
-	   				<choice>
-		   				<when>
-	                		<simple>${properties:sip.convert} == 'ISO-8859-1'</simple>
-	                		<convertBodyTo type="java.lang.String" charset="ISO-8859-1" />
-	            		</when>   				
-	            		<otherwise>
-	            			<convertBodyTo type="java.lang.String" />
-	            		</otherwise>
-	            	</choice>
-	   				<unmarshal ref="myHl7"   />
-	   				<to uri="direct:sip-handle" />
-	   			</when>
+	   			<!--  commence par format particuliers -->
 	   			<when>
 	   				<simple>${file:ext} == 'xml'</simple>
 	   				<unmarshal>
@@ -68,8 +38,24 @@
 	   				<convertBodyTo type="fr.aphp.tumorotek.interfacage.jaxb.hprim.HprimMessage" />
 	   				<to uri="direct:hprim-handle" />
 	   			</when>
-	   			<otherwise>
-	   				<stop />
+	   			<when>
+	   				<simple>${file:ext} == 'dat'</simple>
+	   				<convertBodyTo type="fr.aphp.tumorotek.interfacage.jaxb.gilda.GildaMessage" />
+	   				<to uri="direct:gilda-handle" />
+	   			</when>
+	   			<otherwise> <!-- sinon ça doit être HL7, par dépot fichier ou MLLP -->
+	   				<!-- charset conversion may be requested -->
+	   				<choice>
+		   				<when>
+	                		<simple>${properties:sip.convert} == 'ISO-8859-1'</simple>
+	                		<convertBodyTo type="java.lang.String" charset="ISO-8859-1" />
+	            		</when>   				
+	            		<otherwise>
+	            			<convertBodyTo type="java.lang.String" />
+	            		</otherwise>
+	            	</choice>
+	   				<unmarshal ref="myHl7"   />
+	   				<to uri="direct:sip-handle" />
 	   			</otherwise>
 	   		</choice>
 	   	</route>

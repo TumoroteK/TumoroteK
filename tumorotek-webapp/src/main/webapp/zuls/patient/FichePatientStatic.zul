@@ -82,7 +82,7 @@
 							<image src="/images/icones/codif-export.png" visible="${sessionScope.catalogues['INCa'] != null}" 
 								tooltip="inca3" style="cursor: pointer" />
 						</box>
-							<label id="dateNaisLabel"  value="@{fwinPatientStatic$composer.dateNaisFormatted}" sclass="formValue" />						
+							<label id="dateNaisLabel" value="@{fwinPatientStatic$composer.dateNaisFormatted}" sclass="formValue" />						
 							
 					</row>	
 					<row>

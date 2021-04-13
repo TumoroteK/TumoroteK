@@ -103,6 +103,11 @@ public class ChampEntite extends AbstractTKChamp implements Comparable<ChampEnti
    public ChampEntite(){
       super();
    }
+   
+   public ChampEntite(final Entite e, final String n, final DataType dt){
+      super(n, dt);
+      this.entite = e;
+   }
 
    public ChampEntite(final Entite e, final String n, final DataType dt, final Boolean nul, final Boolean u,
       final String valDefaut, final Boolean canI, final ChampEntite queryC){

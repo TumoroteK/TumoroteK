@@ -70,7 +70,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Classe créée le 30/10/09.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.2.3-genno
  *
  */
 public class MaladieManagerImpl implements MaladieManager
@@ -130,7 +130,7 @@ public class MaladieManagerImpl implements MaladieManager
       checkRequiredObjectsAndValidate(maladie, patient, operation);
 
       //Doublon
-      if(!findDoublonManager(maladie)){
+      if(!findDoublonManager(maladie, patient)){
          if((operation.equals("creation") || operation.equals("modification"))){
             if(operation.equals("creation")){
                maladieDao.createObject(maladie);
@@ -158,11 +158,25 @@ public class MaladieManagerImpl implements MaladieManager
    }
 
    @Override
-   public boolean findDoublonManager(final Maladie maladie){
-      if(maladie.getMaladieId() == null){
-         return maladieDao.findByLibelle(maladie.getLibelle()).contains(maladie);
-      }
-      return maladieDao.findByExcludedId(maladie.getMaladieId(), maladie.getLibelle()).contains((maladie));
+   public boolean findDoublonManager(final Maladie maladie, final Patient patient){
+	   if (patient != null) { 
+		   if (patient.getPatientId() != null) { // si le patient n'est pas encore enregistré, doublon impossible
+	   		   List<Maladie> mals = maladieDao.findByLibelleAndPatient(maladie.getLibelle(), patient);
+			   if (mals.contains(maladie)) {
+				   if (maladie.getMaladieId() == null) {
+					   return true;
+				   } 
+				   return maladie.getMaladieId() != mals.get(mals.indexOf(maladie)).getMaladieId();
+			   }
+		   }
+	   } else { // ancienne recherche de doublons ne reposant pas sur le patient
+	      if(maladie.getMaladieId() == null){
+	    	return maladieDao.findByLibelle(maladie.getLibelle()).contains(maladie);
+	      } else {
+	    	  return maladieDao.findByExcludedId(maladie.getMaladieId(), maladie.getLibelle()).contains((maladie));
+	      }
+	   }
+	   return false;
    }
 
    @Override
@@ -328,4 +342,9 @@ public class MaladieManagerImpl implements MaladieManager
       }
       return new Long(0);
    }
+
+	@Override
+	public List<Maladie> findByLibelleAndPatientManager(String libelle, Patient patient) {
+		return maladieDao.findByLibelleAndPatient(libelle, patient);
+	}
 }

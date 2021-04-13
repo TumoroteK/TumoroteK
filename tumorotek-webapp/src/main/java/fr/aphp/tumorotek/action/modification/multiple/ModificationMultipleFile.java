@@ -55,6 +55,8 @@ import org.zkoss.zul.Textbox;
 import fr.aphp.tumorotek.action.constraints.ConstFilename;
 import fr.aphp.tumorotek.action.echantillon.EchantillonConstraints;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.model.TKDelegateObject;
+import fr.aphp.tumorotek.model.TKDelegetableObject;
 import fr.aphp.tumorotek.model.systeme.Fichier;
 
 /**
@@ -156,26 +158,41 @@ public class ModificationMultipleFile extends AbstractModificationMultipleCompon
       // toutes ces valeurs sont placées dans la liste values
       setHasNulls(false);
       final Set<String> paths = new HashSet<>();
-      for(int i = 0; i < getListObjets().size(); i++){
+      for(Object object : getListObjets()){
+         
          try{
-            final Object tmp = PropertyUtils.getSimpleProperty(getListObjets().get(i), getChamp());
-
-            if(tmp != null && !tmp.equals("")){
-               if(!paths.contains(((Fichier) tmp).getPath()) || !getStringValues().contains(((Fichier) tmp).getNom())){
-                  paths.add(((Fichier) tmp).getPath());
-                  getValues().add(tmp);
-                  getStringValues().add(formatLocalObject(tmp));
+            
+            boolean isDelegateProperty = false;
+            TKDelegateObject<?> delegate = null;
+            
+            if(object instanceof TKDelegetableObject) {
+               delegate = ((TKDelegetableObject<?>)object).getDelegate();
+               isDelegateProperty = delegate != null 
+            		   && PropertyUtils.describe(delegate).keySet().contains(getChamp());
+            }
+            
+            Fichier fichier = null;
+            if(isDelegateProperty) {
+               fichier = (Fichier)PropertyUtils.getSimpleProperty(delegate, getChamp());
+            }
+            else {
+               fichier = (Fichier)PropertyUtils.getSimpleProperty(object, getChamp());
+            }
+            
+            if(fichier != null){
+               if(!paths.contains(fichier.getPath()) || !getStringValues().contains(fichier.getNom())){
+                  paths.add(fichier.getPath());
+                  getValues().add(fichier);
+                  getStringValues().add(formatLocalObject(fichier));
                }
             }else{
                setHasNulls(true);
             }
-         }catch(final IllegalAccessException e){
-            log.error(e);
-         }catch(final InvocationTargetException e){
-            log.error(e);
-         }catch(final NoSuchMethodException e){
+            
+         }catch(final IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
             log.error(e);
          }
+         
       }
    }
 

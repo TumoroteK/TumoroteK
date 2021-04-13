@@ -201,7 +201,7 @@ public class PrelevementRowRenderer extends TKSelectObjectRenderer<Prelevement>
       }
       new Label(ObjectTypesFormatters.dateRenderer2(prel.getDatePrelevement())).setParent(row);
       if(prel.getNature() != null){
-         new Label(prel.getNature().getNature()).setParent(row);
+         new Label(prel.getNature().getNom()).setParent(row);
       }else{
          new Label().setParent(row);
       }
@@ -210,7 +210,7 @@ public class PrelevementRowRenderer extends TKSelectObjectRenderer<Prelevement>
          row, null, true);
       new Label(getNbEchanRestantsSurTotalEtStockes(prel)).setParent(row);
       if(prel.getConsentType() != null){
-         new Label(prel.getConsentType().getType()).setParent(row);
+         new Label(prel.getConsentType().getNom()).setParent(row);
       }else{
          new Label().setParent(row);
       }

@@ -39,10 +39,12 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -54,13 +56,11 @@ import fr.aphp.tumorotek.param.TkParam;
  * Utils class
  *
  * @author Mathieu BARTHELEMY
- * @version 2.1
+ * @version 2.2.2-diamic
  *
  */
 public final class Utils
 {
-
-   //private Log log = LogFactory.getLog(Utils.class);
 
    private Utils(){}
 
@@ -127,13 +127,13 @@ public final class Utils
       if(baseDir == null || !new File(baseDir).exists()){
          throw new RuntimeException("error.filesystem.access");
       }
-      if (!baseDir.endsWith("/")) {
-         baseDir = baseDir + "/";
+      if (!baseDir.endsWith(File.separator)) {
+         baseDir = baseDir + File.separator;
       }
-      String path = baseDir + "pt_" + bank.getPlateforme().getPlateformeId() + "/" + "coll_" + bank.getBanqueId();
+      String path = baseDir + "pt_" + bank.getPlateforme().getPlateformeId() + File.separator + "coll_" + bank.getBanqueId();
 
       if(chp != null){
-         path = path + "/anno/chp_" + chp.getId() + "/";
+         path = path + File.separator + "anno" + File.separator + "chp_" + chp.getId() + File.separator;
       }
       //		
       //		if (obj != null) {
@@ -169,7 +169,7 @@ public final class Utils
    }
 
    /**
-    * Arrondi d'un double avec n éléments après la virgule.
+    * Arrondi (vers le bas) d'un double avec n éléments après la virgule.
     * @param a La valeur à convertir.
     * @param n Le nombre de décimales à conserver.
     * @return La valeur arrondi à n décimales.
@@ -314,6 +314,19 @@ public final class Utils
             value = value.replace(',', '.');
          }
          return value;
+      }
+      return null;
+   }
+   
+   /**
+    * Concatene strings
+    * @param value
+    * @return
+    * @version 2.2.2-diamic
+    */
+   public static String concat(final String sep, final String ... vals){
+      if (vals != null) {
+    	  return Arrays.stream(vals).collect(Collectors.joining(sep));
       }
       return null;
    }

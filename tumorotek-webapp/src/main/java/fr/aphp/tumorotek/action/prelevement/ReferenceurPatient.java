@@ -234,16 +234,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
 
       final String critereValue = nomNipNdaBox.getValue();
 
-      final FichePrelevementEdit fichePrelevementEdit;
-      switch(SessionUtils.getCurrentContexte()){
-         case SEROLOGIE:
-            fichePrelevementEdit = (FichePrelevementEditSero) self.getParent().getParent()
-               .getAttributeOrFellow("fwinPrelevementEditSero$composer", true);
-            break;
-         default:
-            fichePrelevementEdit =
-               (FichePrelevementEdit) self.getParent().getParent().getAttributeOrFellow("fwinPrelevementEdit$composer", true);
-      }
+      final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
 
       fichePrelevementEdit.getObjectTabController().setPatientSip(null);
       fichePrelevementEdit.openSelectPatientWindow(Path.getPath(self), "onGetPatientFromSelection", false, critereValue, null);
@@ -281,17 +272,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
             radioGroup.setSelectedItem(newRadio);
             displayEmbeddedPatient(true, patSel);
 
-            FichePrelevementEdit fichePrelevementEdit;
-            switch(SessionUtils.getCurrentContexte()){
-               case SEROLOGIE:
-                  fichePrelevementEdit = (FichePrelevementEditSero) self.getParent().getParent()
-                     .getAttributeOrFellow("fwinPrelevementEditSero$composer", true);
-                  break;
-               default:
-                  fichePrelevementEdit = (FichePrelevementEdit) self.getParent().getParent()
-                     .getAttributeOrFellow("fwinPrelevementEdit$composer", true);
-                  break;
-            }
+            FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
 
             fichePrelevementEdit.clearRisques();
             fichePrelevementEdit.clearProtocoles();
@@ -360,8 +341,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
 
          ficheMaladie.getBinder().loadAll();
 
-         final FichePrelevementEdit fichePrelevementEdit =
-            (FichePrelevementEdit) self.getParent().getParent().getAttributeOrFellow("fwinPrelevementEdit$composer", true);
+         final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
 
          fichePrelevementEdit.clearRisques();
          fichePrelevementEdit.clearProtocoles();
@@ -388,18 +368,8 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
     */
    private void selectPatientAuto(final Patient selected){
 
-      FichePrelevementEdit fichePrelevementEdit;
-      switch(SessionUtils.getCurrentContexte()){
-         case SEROLOGIE:
-            fichePrelevementEdit = (FichePrelevementEditSero) self.getParent().getParent()
-               .getAttributeOrFellow("fwinPrelevementEditSero$composer", true);
-            break;
-         default:
-            fichePrelevementEdit =
-               (FichePrelevementEdit) self.getParent().getParent().getAttributeOrFellow("fwinPrelevementEdit$composer", true);
-            break;
-      }
-
+      FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
+     
       if(this.banqueDefMaladies){
 
          final List<Maladie> res = new ArrayList<>(ManagerLocator.getMaladieManager().findByPatientNoSystemManager(selected));
@@ -415,8 +385,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
 
             }else{
                this.selectedMaladie = this.maladies.get(maladies.indexOf(selectedMaladieByNda));
-               ((FichePrelevementEdit) self.getParent().getParent().getAttributeOrFellow("fwinPrelevementEdit$composer", true))
-                  .setMaladie(selectedMaladieByNda.getMaladie());
+               fichePrelevementEdit.setMaladie(selectedMaladieByNda.getMaladie());
             }
          }
          referenceurBinder.loadAttribute(maladiesBox, "model");
@@ -452,23 +421,29 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
    }
 
    /**
+    * Factorisation de la méthode de récupération du controller 
+    * FichePrelevementEdit en fonction du contexte collection.
+    * @return
+    */
+   private FichePrelevementEdit getFichePrelevementEditFromContexte() {
+	   switch(SessionUtils.getCurrentContexte()){
+       case SEROLOGIE:
+          return (FichePrelevementEditSero) self.getParent().getParent()
+             .getAttributeOrFellow("fwinPrelevementEditSero$composer", true);
+       default:
+          return (FichePrelevementEdit) self.getParent()
+        		  .getParent().getAttributeOrFellow("fwinPrelevementEdit$composer", true);
+	   }
+   }
+
+/**
     * Assigne la référence vers la maladie à la fiche prélèvement.
     */
    public void onSelect$maladiesBox(){
 
       final Maladie selected = ((MaladieDecorator) this.maladiesBox.getSelectedItem().getValue()).getMaladie();
 
-      final FichePrelevementEdit fichePrelevement;
-      switch(SessionUtils.getCurrentContexte()){
-         case SEROLOGIE:
-            fichePrelevement = (FichePrelevementEditSero) self.getParent().getParent()
-               .getAttributeOrFellow("fwinPrelevementEditSero$composer", true);
-            break;
-         default:
-            fichePrelevement =
-               (FichePrelevementEdit) self.getParent().getParent().getAttributeOrFellow("fwinPrelevementEdit$composer", true);
-            break;
-      }
+      final FichePrelevementEdit fichePrelevement = getFichePrelevementEditFromContexte();
 
       fichePrelevement.setMaladie(selected);
 
@@ -488,18 +463,14 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
       setEmbeddedMaladieVisible(true);
 
       final FicheMaladie ficheMaladie;
-      final FichePrelevementEdit fichePrelevementEdit;
+      final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
       switch(SessionUtils.getCurrentContexte()){
          case SEROLOGIE:
-            fichePrelevementEdit =
-               (FichePrelevementEditSero) self.getParent().getAttributeOrFellow("fwinPrelevementEditSero$composer", true);
             ficheMaladie = (FicheMaladieSero) embeddedFicheMaladieDiv.getFellow("fwinMaladie")
                .getAttributeOrFellow("fwinMaladie$composer", true);
             break;
          default:
-            fichePrelevementEdit =
-               (FichePrelevementEdit) self.getParent().getAttributeOrFellow("fwinPrelevementEdit$composer", true);
-            ficheMaladie =
+           ficheMaladie =
                (FicheMaladie) embeddedFicheMaladieDiv.getFellow("fwinMaladie").getAttributeOrFellow("fwinMaladie$composer", true);
             break;
       }
@@ -520,17 +491,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
       Components.removeAllChildren(embeddedFicheMaladieDiv);
       setEmbeddedMaladieVisible(false);
 
-      final FichePrelevementEdit fichePrelevementEdit;
-      switch(SessionUtils.getCurrentContexte()){
-         case SEROLOGIE:
-            fichePrelevementEdit = (FichePrelevementEditSero) self.getParent().getParent()
-               .getAttributeOrFellow("fwinPrelevementEditSero$composer", true);
-            break;
-         default:
-            fichePrelevementEdit =
-               (FichePrelevementEdit) self.getParent().getParent().getAttributeOrFellow("fwinPrelevementEdit$composer", true);
-            break;
-      }
+      final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
 
       // informe la fiche prelevement de l'absence
       fichePrelevementEdit.setMaladieEmbedded(false);
@@ -637,17 +598,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
          Components.removeAllChildren(ficheMaladieWithPatientDiv);
       }
 
-      final FichePrelevementEdit fichePrelevementEdit;
-      switch(SessionUtils.getCurrentContexte()){
-         case SEROLOGIE:
-            fichePrelevementEdit = (FichePrelevementEditSero) self.getParent().getParent()
-               .getAttributeOrFellow("fwinPrelevementEditSero$composer", true);
-            break;
-         default:
-            fichePrelevementEdit =
-               (FichePrelevementEdit) self.getParent().getParent().getAttributeOrFellow("fwinPrelevementEdit$composer", true);
-            break;
-      }
+      final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
 
       fichePrelevementEdit.setPatientEmbedded(show);
 
@@ -671,17 +622,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
 
       ndaBox.setValue(null);
 
-      final FichePrelevementEdit fichePrelevementEdit;
-      switch(SessionUtils.getCurrentContexte()){
-         case SEROLOGIE:
-            fichePrelevementEdit = (FichePrelevementEditSero) self.getParent().getParent()
-               .getAttributeOrFellow("fwinPrelevementEditSero$composer", true);
-            break;
-         default:
-            fichePrelevementEdit =
-               (FichePrelevementEdit) self.getParent().getParent().getAttributeOrFellow("fwinPrelevementEdit$composer", true);
-            break;
-      }
+      final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
 
       if(show){
 

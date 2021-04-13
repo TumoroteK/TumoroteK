@@ -62,7 +62,6 @@ import fr.aphp.tumorotek.model.qualite.NonConformite;
 import fr.aphp.tumorotek.model.qualite.OperationType;
 import fr.aphp.tumorotek.model.stockage.Emplacement;
 import fr.aphp.tumorotek.model.systeme.Unite;
-import fr.aphp.tumorotek.model.utilisateur.Reservation;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 /**
@@ -337,7 +336,6 @@ public interface ProdDeriveManager
     * @param transfo Transformation dont est issu le produit dérivé.
     * @param liste des valeurs d'annotation à enregistrer
     * @param filesCreated liste de fichier créés
-    * @param reservation Réservation faite sur le produit dérivé.
     * @param utilisateur Utilisateur ayant créé le prod dérivé.
     * @param doValidation True : la validation sera faite.
     * @param base directory pour enregistrer un fichier associé 
@@ -346,7 +344,7 @@ public interface ProdDeriveManager
    void createObjectManager(ProdDerive prodDerive, Banque banque, ProdType type, ObjetStatut statut, Collaborateur collab,
       Emplacement emplacement, Unite volumeUnite, Unite concUnite, Unite quantiteUnite, ModePrepaDerive modePrepaDerive,
       ProdQualite qualite, Transformation transfo, List<AnnotationValeur> listAnnoToCreateOrUpdate, List<File> filesCreated,
-      Reservation reservation, Utilisateur utilisateur, boolean doValidation, String baseDir, boolean isImport);
+      Utilisateur utilisateur, boolean doValidation, String baseDir, boolean isImport);
 
    /**
     * Sauvegarde les modifications apportées à un objet persistant.
@@ -365,7 +363,6 @@ public interface ProdDeriveManager
     * @param liste des valeurs d'annotation à supprimer.
     * @param filesCreated liste de fichier créés
     * @param filesToDelete liste de fichier à supprimer
-    * @param reservation Réservation faite sur le produit dérivé.
     * @param utilisateur Utilisateur ayant modifié le prod dérivé.
     * @param doValidation True : la validation sera faite.
     * @param base directory pour enregistrer un fichier associé 
@@ -374,7 +371,7 @@ public interface ProdDeriveManager
    void updateObjectManager(ProdDerive prodDerive, Banque banque, ProdType type, ObjetStatut statut, Collaborateur collab,
       Emplacement emplacement, Unite volumeUnite, Unite concUnite, Unite quantiteUnite, ModePrepaDerive modePrepaDerive,
       ProdQualite qualite, Transformation transfo, List<AnnotationValeur> listAnnoToCreateOrUpdate,
-      List<AnnotationValeur> listAnnoToDelete, List<File> filesCreated, List<File> filesToDelete, Reservation reservation,
+      List<AnnotationValeur> listAnnoToDelete, List<File> filesCreated, List<File> filesToDelete, 
       Utilisateur utilisateur, boolean doValidation, List<OperationType> operations, String baseDir);
 
    /**
@@ -540,7 +537,6 @@ public interface ProdDeriveManager
     * @param transfo
     * @param listAnnoToCreateOrUpdate
     * @param listAnnoToDelete
-    * @param reservation
     * @param utilisateur
     * @param doValidation
     * @param operations
@@ -551,7 +547,7 @@ public interface ProdDeriveManager
    void updateObjectWithNonConformitesManager(ProdDerive prodDerive, Banque banque, ProdType type, ObjetStatut statut,
       Collaborateur collab, Emplacement emplacement, Unite volumeUnite, Unite concUnite, Unite quantiteUnite,
       ModePrepaDerive modePrepaDerive, ProdQualite qualite, Transformation transfo,
-      List<AnnotationValeur> listAnnoToCreateOrUpdate, List<AnnotationValeur> listAnnoToDelete, Reservation reservation,
+      List<AnnotationValeur> listAnnoToCreateOrUpdate, List<AnnotationValeur> listAnnoToDelete, 
       Utilisateur utilisateur, boolean doValidation, List<OperationType> operations, String baseDir,
       List<NonConformite> noconfsTraitement, List<NonConformite> noconfsCession);
 
@@ -571,7 +567,6 @@ public interface ProdDeriveManager
     * @param qualite
     * @param transfo
     * @param listAnnoToCreateOrUpdate
-    * @param reservation
     * @param utilisateur
     * @param doValidation
     * @param baseDir
@@ -583,7 +578,7 @@ public interface ProdDeriveManager
    void createObjectWithNonConformitesManager(ProdDerive prodDerive, Banque banque, ProdType type, ObjetStatut statut,
       Collaborateur collab, Emplacement emplacement, Unite volumeUnite, Unite concUnite, Unite quantiteUnite,
       ModePrepaDerive modePrepaDerive, ProdQualite qualite, Transformation transfo,
-      List<AnnotationValeur> listAnnoToCreateOrUpdate, Reservation reservation, Utilisateur utilisateur, boolean doValidation,
+      List<AnnotationValeur> listAnnoToCreateOrUpdate, Utilisateur utilisateur, boolean doValidation,
       String baseDir, boolean isImport, List<NonConformite> noconfsTrait, List<NonConformite> noconfsCess);
 
    /**

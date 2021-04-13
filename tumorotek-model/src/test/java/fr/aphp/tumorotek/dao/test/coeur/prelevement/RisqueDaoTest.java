@@ -146,7 +146,7 @@ public class RisqueDaoTest extends AbstractDaoTest
       assertTrue(liste.size() == 2);
       final Risque risque = liste.get(0);
       assertNotNull(risque);
-      assertTrue(risque.getRisqueId() == 2);
+      assertTrue(risque.getId() == 2);
 
       liste = risqueDao.findByExcludedId(15);
       assertTrue(liste.size() == 3);
@@ -165,7 +165,7 @@ public class RisqueDaoTest extends AbstractDaoTest
       r.setPlateforme(plateformeDao.findById(1));
       // Test de l'insertion
       risqueDao.createObject(r);
-      assertEquals(new Integer(4), r.getRisqueId());
+      assertEquals(new Integer(4), r.getId());
 
       // Test de la mise à jour
       final Risque r2 = risqueDao.findById(new Integer(4));
@@ -235,11 +235,11 @@ public class RisqueDaoTest extends AbstractDaoTest
    public void testHashCode(){
 
       final Risque r1 = new Risque();
-      r1.setRisqueId(1);
+      r1.setId(1);
       final Risque r2 = new Risque();
-      r2.setRisqueId(2);
+      r2.setId(2);
       final Risque r3 = new Risque();
-      r3.setRisqueId(3);
+      r3.setId(3);
 
       assertTrue(r1.hashCode() == r2.hashCode());
       assertTrue(r2.hashCode() == r3.hashCode());

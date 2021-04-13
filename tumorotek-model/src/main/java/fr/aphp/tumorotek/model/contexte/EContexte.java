@@ -5,7 +5,7 @@ package fr.aphp.tumorotek.model.contexte;
  */
 public enum EContexte
 {
-   DEFAUT("DEFAUT", "Anatomopathologie"), SEROLOGIE("SEROLOGIE", "Sérologie");
+   DEFAUT("DEFAUT", "Anatomopathologie"), SEROLOGIE("SEROLOGIE", "Sérologie"), HEMATOLOGIE("HEMATOLOGIE", "Hématologie");
 
    private String nom;
    private String libelle;

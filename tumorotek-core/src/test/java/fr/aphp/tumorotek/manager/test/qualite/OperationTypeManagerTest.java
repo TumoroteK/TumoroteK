@@ -35,12 +35,17 @@
  **/
 package fr.aphp.tumorotek.manager.test.qualite;
 
+import static org.junit.Assert.*;
+
+
 import java.util.List;
 
-import fr.aphp.tumorotek.manager.qualite.OperationTypeManager;
-import fr.aphp.tumorotek.manager.test.AbstractManagerTest;
-import fr.aphp.tumorotek.model.qualite.OperationType;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import fr.aphp.tumorotek.manager.qualite.OperationTypeManager;
+import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
+import fr.aphp.tumorotek.model.qualite.OperationType;
 /**
  *
  * Classe de test pour le manager OperationTypeManager.
@@ -50,72 +55,60 @@ import fr.aphp.tumorotek.model.qualite.OperationType;
  * @version 2.0
  *
  */
-public class OperationTypeManagerTest extends AbstractManagerTest
+public class OperationTypeManagerTest extends AbstractManagerTest4
 {
 
-   /** Bean Manager. */
-   private OperationTypeManager operationTypeManager;
+	@Autowired
+	private OperationTypeManager operationTypeManager;
 
-   public OperationTypeManagerTest(){
+	public OperationTypeManagerTest(){
 
-   }
+	}
 
-   public void setOperationTypeManager(final OperationTypeManager oManager){
-      this.operationTypeManager = oManager;
-   }
+	@Test
+	public void testFindById(){
+		final OperationType op = operationTypeManager.findByIdManager(1);
+		assertNotNull(op);
+		assertTrue(op.getNom().equals("Consultation"));
 
-   /**
-    * Test la méthode findById.
-    */
-   public void testFindById(){
-      final OperationType op = operationTypeManager.findByIdManager(1);
-      assertNotNull(op);
-      assertTrue(op.getNom().equals("Consultation"));
+		final OperationType opNull = operationTypeManager.findByIdManager(87);
+		assertNull(opNull);
+	}
 
-      final OperationType opNull = operationTypeManager.findByIdManager(87);
-      assertNull(opNull);
-   }
+	@Test
+	public void testFindAll(){
+		final List<OperationType> list = operationTypeManager.findAllObjectsManager();
+		assertTrue(list.size() == 23);
+	}
 
-   /**
-    * Test la méthode findAllObjects.
-    */
-   public void testFindAll(){
-      final List<OperationType> list = operationTypeManager.findAllObjectsManager();
-      assertTrue(list.size() == 23);
-   }
+	@Test
+	public void testFindByNomLikeExactManager(){
+		List<OperationType> list = operationTypeManager.findByNomLikeManager("Export", true);
+		assertTrue(list.size() == 1);
 
-   /**
-    * Test la méthode findByNomLikeManager.
-    */
-   public void testFindByNomLikeExactManager(){
-      List<OperationType> list = operationTypeManager.findByNomLikeManager("Export", true);
-      assertTrue(list.size() == 1);
+		list = operationTypeManager.findByNomLikeManager("Exp", true);
+		assertTrue(list.size() == 0);
 
-      list = operationTypeManager.findByNomLikeManager("Exp", true);
-      assertTrue(list.size() == 0);
+		list = operationTypeManager.findByNomLikeManager("", true);
+		assertTrue(list.size() == 0);
 
-      list = operationTypeManager.findByNomLikeManager("", true);
-      assertTrue(list.size() == 0);
+		list = operationTypeManager.findByNomLikeManager(null, true);
+		assertTrue(list.size() == 0);
+	}
 
-      list = operationTypeManager.findByNomLikeManager(null, true);
-      assertTrue(list.size() == 0);
-   }
+	@Test
+	public void testFindByNomLikeManager(){
+		List<OperationType> list = operationTypeManager.findByNomLikeManager("ExportAnonyme", false);
+		assertTrue(list.size() == 1);
 
-   /**
-    * Test la méthode findByNomLikeManager.
-    */
-   public void testFindByNomLikeManager(){
-      List<OperationType> list = operationTypeManager.findByNomLikeManager("ExportAnonyme", false);
-      assertTrue(list.size() == 1);
+		list = operationTypeManager.findByNomLikeManager("Exp", false);
+		assertTrue(list.size() == 5);
 
-      list = operationTypeManager.findByNomLikeManager("Exp", false);
-      assertTrue(list.size() == 5);
+		list = operationTypeManager.findByNomLikeManager("", false);
+		assertTrue(list.size() == 23);
 
-      list = operationTypeManager.findByNomLikeManager("", false);
-      assertTrue(list.size() == 23);
-
-      list = operationTypeManager.findByNomLikeManager(null, false);
-      assertTrue(list.size() == 0);
-   }
+		list = operationTypeManager.findByNomLikeManager(null, false);
+		assertTrue(list.size() == 0);
+	}
 
 }

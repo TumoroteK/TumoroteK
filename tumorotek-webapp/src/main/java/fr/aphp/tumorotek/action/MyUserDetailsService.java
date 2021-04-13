@@ -72,7 +72,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
    @Override
    public UserDetails loadUserByUsername(final String username){
-      final String sql = "select * from UTILISATEUR where login like ? and archive = 0";
+      final String sql = "select * from UTILISATEUR where login = ? and archive = 0";
       final JdbcTemplate jdbcTemplate = new JdbcTemplate();
       jdbcTemplate.setDataSource(getDataSource());
       User user;

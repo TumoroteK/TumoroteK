@@ -70,7 +70,7 @@ public class UniteManagerTest extends AbstractManagerTest4
    public void testFindById(){
       final Unite unite = uniteManager.findByIdManager(1);
       assertNotNull(unite);
-      assertTrue(unite.getUnite().equals("FRAGMENTS"));
+      assertTrue(unite.getNom().equals("FRAGMENTS"));
 
       final Unite uniteNull = uniteManager.findByIdManager(25);
       assertNull(uniteNull);
@@ -220,7 +220,7 @@ public class UniteManagerTest extends AbstractManagerTest4
       unite1.setUnite("COUPES");
       unite1.setType("poids");
       uniteManager.createObjectManager(unite1);
-      assertTrue(unite1.getUniteId() == 15);
+      assertTrue(unite1.getId() == 15);
 
       // Test de la mise à jour
       final Unite unite2 = uniteManager.findByIdManager(15);

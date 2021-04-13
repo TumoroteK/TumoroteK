@@ -14,6 +14,10 @@
 		<property name="jdbcUrl" value="jdbc:mysql://${test.database.host}:3306/${test.database.tumorotek.name}?serverTimezone=Europe/Paris" />
 		<property name="user" value="${test.database.username}" />
 		<property name="password" value="${test.database.password}" />
+<!-- 		<property name="driverClass" value="oracle.jdbc.OracleDriver" /> -->
+<!-- 		<property name="jdbcUrl" value="jdbc:oracle:thin:@localhost:32118/XEPDB1" /> -->
+<!-- 		<property name="user" value="tumotest" /> -->
+<!-- 		<property name="password" value="tumotest" /> -->
 		<property name="initialPoolSize" value="3" />
 		<property name="minPoolSize" value="3" />
 		<property name="maxPoolSize" value="10" />
@@ -36,6 +40,8 @@
 				<property name="generateDdl" value="false" />
 				<property name="showSql" value="false" />
 				<property name="databasePlatform" value="org.hibernate.dialect.MySQLDialect" />
+<!-- 				<property name="databasePlatform" value="org.hibernate.dialect.Oracle9Dialect" /> -->
+
 			</bean>
 		</property>
 	</bean>

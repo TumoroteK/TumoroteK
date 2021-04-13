@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE xml>
-
-<zk>
+<zk xmlns="http://www.zkoss.org/2005/zk/config"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	>
+	
 	<!-- Turn on the following if you want to use the trendy mold as default for all buttons. -->
 	<library-property>
 		<name>org.zkoss.zul.Button.mold</name>
@@ -43,6 +44,7 @@
 	<!-- ====================================================== -->
 	<system-config>
 		<!-- <ui-factory-class> org.zkoss.zk.ui.http.SerializableUiFactory </ui-factory-class> -->
+		
 		<disable-event-thread>false</disable-event-thread>
 		<label-location>/WEB-INF/internationalization/zk-label.properties</label-location>
 		<label-location>/WEB-INF/internationalization/export.properties</label-location>
@@ -61,12 +63,12 @@
 		<label-location>/WEB-INF/internationalization/utilisateur.properties</label-location>
 		<label-location>/WEB-INF/internationalization/interfacages.properties</label-location>
 
-		<!-- <label-location>file:///home/mathieu/animotek_fr.properties</label-location> -->
-
 		<label-location>/WEB-INF/internationalization/tooltips/tooltip.properties</label-location>
 		<label-location>/WEB-INF/internationalization/tooltips/patient.properties</label-location>
 		<label-location>/WEB-INF/internationalization/tooltips/prelevement.properties</label-location>
 		<label-location>/WEB-INF/internationalization/tooltips/echantillon.properties</label-location>
+		
+		<!-- <label-location>file:///home/mathieu/animotek_fr.properties</label-location> -->
 
 	</system-config>
 

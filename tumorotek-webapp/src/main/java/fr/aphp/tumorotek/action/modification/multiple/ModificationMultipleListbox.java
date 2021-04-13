@@ -50,6 +50,8 @@ import org.zkoss.zul.Listitem;
 import fr.aphp.tumorotek.action.patient.LabelCodeItem;
 import fr.aphp.tumorotek.action.patient.PatientUtils;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.model.TKDelegateObject;
+import fr.aphp.tumorotek.model.TKDelegetableObject;
 
 /**
  * Classe gérant une fenêtre modal pour la modification multiple d'une
@@ -170,25 +172,40 @@ public class ModificationMultipleListbox extends AbstractModificationMultipleCom
 
       // pour chaque objet du thésaurus, on va extraire la valeur du
       // champ à afficher
-      for(int i = 0; i < allValues.size(); i++){
+      for(Object object : allValues) {
          try{
+
+            boolean isDelegateProperty = false;
+            TKDelegateObject<?> delegate = null;
+
+            if(object instanceof TKDelegetableObject) {
+               delegate = ((TKDelegetableObject<?>)object).getDelegate();
+               isDelegateProperty =  delegate != null && 
+            		 PropertyUtils.describe(delegate).keySet().contains(getChampThesaurus());
+            }
+
             String stringTmp = null;
 
-            if(allValues.get(i) != null){
-               if(!getChamp().equals("bool") && !getChampThesaurus().equals("bool")){
-                  stringTmp = (String) PropertyUtils.getSimpleProperty(allValues.get(i), getChampThesaurus());
-               }else{
-                  stringTmp = ObjectTypesFormatters.booleanLitteralFormatter((Boolean) allValues.get(i));
+            if(null != object) {
+               
+               if(isDelegateProperty) {
+                  stringTmp = (String) PropertyUtils.getSimpleProperty(delegate, getChampThesaurus());
                }
+               else if(!"bool".equals(getChamp()) && !"bool".equals(getChampThesaurus())) {
+                  stringTmp = (String) PropertyUtils.getSimpleProperty(object, getChampThesaurus());
+               }
+               else{
+                  stringTmp = ObjectTypesFormatters.booleanLitteralFormatter((Boolean) object);
+               }
+
                allStringValues.add(stringTmp);
+
             }
-         }catch(final IllegalAccessException e){
-            log.error(e);
-         }catch(final InvocationTargetException e){
-            log.error(e);
-         }catch(final NoSuchMethodException e){
+
+         }catch(final IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
             log.error(e);
          }
+         
       }
       if(!("sexe".equals(getChamp()) || "patientEtat".equals(getChamp())) && (isObligatoire == null || !isObligatoire)
          && !allValues.isEmpty()){

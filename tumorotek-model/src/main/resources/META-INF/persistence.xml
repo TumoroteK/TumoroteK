@@ -46,8 +46,6 @@
         <class>fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur</class>
         <class>fr.aphp.tumorotek.model.utilisateur.Utilisateur
         </class>
-        <class>fr.aphp.tumorotek.model.utilisateur.Reservation
-        </class>
         <class>fr.aphp.tumorotek.model.code.TableCodage
         </class>
         <class>fr.aphp.tumorotek.model.code.CodeDossier
@@ -238,7 +236,7 @@
         </class>
         <class>fr.aphp.tumorotek.model.coeur.prelevement.delegate.PrelevementXeno
         </class>
-        <class>fr.aphp.tumorotek.model.coeur.patient.serotk.MaladieDelegate
+        <class>fr.aphp.tumorotek.model.coeur.patient.serotk.AbstractMaladieDelegate
         </class>
         <class>fr.aphp.tumorotek.model.coeur.patient.serotk.MaladieSero
         </class>

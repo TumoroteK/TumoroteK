@@ -50,7 +50,8 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Interface créée le 01/10/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @author Mathieu BARTHELEMY
+ * @version 2.2.1
  *
  */
 public interface PlateformeManager
@@ -100,7 +101,38 @@ public interface PlateformeManager
     * @param utilisateurs Liste d'administrateurs.
     * @param conteneurs Liste de conteneurs.
     * @param admin Utilisateur modifiant la plateforme.
+    * @return updated plateforme
     */
-   void updateObjectManager(Plateforme plateforme, Collaborateur collaborateur, List<Utilisateur> utilisateurs,
+   Plateforme updateObjectManager(Plateforme plateforme, Collaborateur collaborateur, List<Utilisateur> utilisateurs,
       List<Conteneur> conteneurs, Utilisateur admin);
+
+   /**
+    * Création d'une plateforme.
+    * @since 2.2.1
+    * @param plateforme
+    * @param collaborateur responsable pf
+    * @param utilisateurs administrateurs
+    * @param admin créateur pf
+    * @param basedir Tk base system directory
+    * @return plateforme créée
+    */
+   Plateforme createObjectManager(Plateforme plateforme, Collaborateur collaborateur, List<Utilisateur> utilisateurs,
+		Utilisateur admin, String baseDir);
+
+   /**
+    * Vérifie les dépendances d'une plateforme avant délétion.
+    * @since 2.2.1
+    * @param plateforme
+    * 
+   	*/
+   boolean isReferencedObjectManager(Plateforme pf);
+
+   /**
+    * Supprime une plateforme si elle ne définit aucune banque et qu'elle n'est plus associée à 
+    * aucun conteneur
+    * @since 2.2.1
+    * @param plateforme
+    * 
+   	*/
+   void removeObjectManager(Plateforme pf, String comments, Utilisateur user, String basedir);
 }

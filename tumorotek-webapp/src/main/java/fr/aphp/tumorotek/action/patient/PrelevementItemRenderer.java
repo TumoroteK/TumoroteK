@@ -58,58 +58,62 @@ import fr.aphp.tumorotek.model.contexte.Banque;
  * Date: 17/04/2010
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.2.1
  */
 public class PrelevementItemRenderer implements ListitemRenderer<Prelevement>
 {
 
    private List<Banque> otherConsultBanks = null;
    private boolean accessible = false;
-
-   /**
-    * Constructeur.
-    */
-   public PrelevementItemRenderer(){}
+   
 
    public void setFromOtherConsultBanks(final List<Banque> oBks){
       this.otherConsultBanks = oBks;
    }
 
    @Override
-   public void render(final Listitem li, final Prelevement data, final int index){
+   public void render(final Listitem li, final Prelevement data, final int index) {
 
-      final Prelevement prel = data;
+      final Prelevement prel = (Prelevement) data;
 
+      // icones
       final Listcell rCell = new Listcell();
       final Hlayout icones = PrelevementUtils.drawListIcones(prel);
-
       rCell.appendChild(icones);
       rCell.setParent(li);
 
+      // date prelevement
       new Listcell(ObjectTypesFormatters.dateRenderer2(prel.getDatePrelevement())).setParent(li);
+      
+      // code prelevement
       final Listcell codeCell = new Listcell(prel.getCode());
       codeCell.setParent(li);
       if(isAccessible() || (getOtherConsultBanks() != null && getOtherConsultBanks().contains(prel.getBanque()))){
          codeCell.addForward(null, li.getParent(), "onClickPrelevementCode", prel);
          codeCell.setClass("formLink");
       }
+      
+      // foreign bank
       if(getOtherConsultBanks() != null){ // mode otherBank prelevement
          new Listcell(prel.getBanque().getNom()).setParent(li);
       }
+      
+      // nature
       if(prel.getNature() != null){
-         new Listcell(prel.getNature().getNature()).setParent(li);
+         new Listcell(prel.getNature().getNom()).setParent(li);
       }else{
          new Listcell().setParent(li);
       }
 
       // type
       if(prel.getPrelevementType() != null){
-         new Listcell(prel.getPrelevementType().getType()).setParent(li);
+         new Listcell(prel.getPrelevementType().getNom()).setParent(li);
       }else{
          new Listcell().setParent(li);
       }
 
-      if(getOtherConsultBanks() == null){ // mode otherBank prelevement
+      // affiche diagnostic anapath 
+      if(getOtherConsultBanks() == null){  	  
          // organe
          ObjectTypesFormatters.drawCodesExpLabel(
             ManagerLocator.getCodeAssigneManager().findFirstCodesOrgByPrelevementManager(prel), null, li, true);
@@ -117,15 +121,15 @@ public class PrelevementItemRenderer implements ListitemRenderer<Prelevement>
          // diagnostic
          ObjectTypesFormatters.drawCodesExpLabel(
             ManagerLocator.getCodeAssigneManager().findFirstCodesLesByPrelevementManager(prel), null, li, true);
-      }else{
-         //	new Listcell(Labels.getLabel("Contexte." 
-         //			+ prel.getBanque().getContexte().getNom())).setParent(li);
+    
+      }else{ // pour foreign bank, le service preleveur
          new Listcell(prel.getServicePreleveur() != null ? prel.getServicePreleveur().getEtablissement().getNom() : "")
             .setParent(li);
       }
 
+      // statut juridique
       if(prel.getConsentType() != null){
-         new Listcell(prel.getConsentType().getType()).setParent(li);
+         new Listcell(prel.getConsentType().getNom()).setParent(li);
       }else{
          new Listcell().setParent(li);
       }

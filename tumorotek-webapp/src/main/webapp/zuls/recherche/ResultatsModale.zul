@@ -65,7 +65,7 @@
 							</box>
 						</row>
 						<!-- Message -->
-						<row>
+						<row visible="@{fwinResultatsModale$composer.canExport}">
 							<checkbox id="exportBox"/>
 							<label id="exportLabel" 
 								value="${c:l('recherche.avancee.export.xls')}" 

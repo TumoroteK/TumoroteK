@@ -72,9 +72,12 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * Date: 18/02/2011
  *
  * @author Mathieu BARTHELEMY, Julien HUSSON
- * @version 2.0
+ * @version 2.2.1
  *
  *          modifié le 21 Septembre 2012 par Julien HUSSON déplacement multiple
+ *  
+ * @since 2.2.1 TK-254 contrainte de contexte afin que les banques disponibles pour 
+ * un changement de collection soient de même contexte
  *
  */
 public class ChangeBanqueModale extends GenericForwardComposer<Component>

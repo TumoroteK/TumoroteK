@@ -45,8 +45,8 @@ order by p.profil_id, b.plateforme_id;
 -- lyon2 : 34 profils insérés
 
 --  droits objets
-insert into DROIT_OBJET (profil_id, entite_id, droit_niveau, droit_nom, operation_type_id) 
-	select p.profil_id, d.entite_id, d.droit_niveau, d.droit_nom, d.operation_type_id 
+insert into DROIT_OBJET (profil_id, entite_id, operation_type_id) 
+	select p.profil_id, d.entite_id, d.operation_type_id 
 from DROIT_OBJET d join PROFIL p on p.ref_profil = d.profil_id;
 -- lyon2 : 657 droits objets insérés
 

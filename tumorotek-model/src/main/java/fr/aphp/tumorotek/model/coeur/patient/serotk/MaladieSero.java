@@ -35,13 +35,14 @@
  **/
 package fr.aphp.tumorotek.model.coeur.patient.serotk;
 
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import fr.aphp.tumorotek.model.TKDelegateObject;
+import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.contexte.Diagnostic;
 
 /**
@@ -56,8 +57,8 @@ import fr.aphp.tumorotek.model.contexte.Diagnostic;
  */
 @Entity
 @Table(name = "MALADIE_SERO")
-@DiscriminatorValue("2")
-public class MaladieSero extends MaladieDelegate
+// @DiscriminatorValue("2")
+public class MaladieSero extends AbstractMaladieDelegate
 {
 
    private Diagnostic diagnostic;
@@ -80,4 +81,11 @@ public class MaladieSero extends MaladieDelegate
    public boolean isEmpty(){
       return (getDiagnostic() == null);
    }
+   
+   @Override
+	public TKDelegateObject<Maladie> clone() {
+		MaladieSero clone = new MaladieSero();
+		clone.setDiagnostic(getDiagnostic());
+		return clone;
+	}
 }

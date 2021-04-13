@@ -37,13 +37,11 @@ package fr.aphp.tumorotek.interfacage.sender;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Map;
-
+import java.util.List;
+import fr.aphp.tumorotek.interfacage.storageRobot.StorageMovement;
+import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.manager.interfacage.ExtMessageSender;
-import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.interfacage.Recepteur;
-import fr.aphp.tumorotek.model.qualite.OperationType;
-import fr.aphp.tumorotek.model.stockage.Emplacement;
 
 /**
  *
@@ -52,31 +50,43 @@ import fr.aphp.tumorotek.model.stockage.Emplacement;
  * (Projet initié CHU Grenoble IRELEC)
  *
  * @author Mathieu BARTHELEMY
- * @version 2.1.1
+ * @version 2.2.1-IRELEC
  *
  */
 public interface StorageRobotSender extends ExtMessageSender
 {
 
-   /**
-    * Formate les emplacements en une liste d'échantillon dans un .CSV
-    * @param tkEmpls Map<TKStockableObject, Emplacement>
-    * @param oType type operation stockage/destockage/deplacement
-    * @param recepteur interfacages
-    */
-   void sendEmplacements(Recepteur re, Map<TKStockableObject, Emplacement> tkEmpls, OperationType oType);
+	/**
+	 * Formate les emplacements/mouvements en une liste d'échantillon dans un .CSV
+	 * @param mvts dans le système de stockage robotisé
+	 * @param recepteur interfacages
+	 * @param utilisateur Utilisateur
+	 */
+	void sendEmplacements(Recepteur re, List<StorageMovement> storageMvts, 
+											Utilisateur u);
 
-   /**
-    * Produit le CSV qui sera déposé à l'attention du robot.
-    * @param baos OutputStream contenu du fichier
-    * @param tkEmpls List<Emplacement> à stocker / destocker
-    * @param oType Stockage/Destockage
-    * @param separator utilisé pour le CSV
-    * @param nbLinesToBeProvide nb de lignes vides à ajouter au csv si, si différent -1
-    * @param recepteur interfacages
-    * @throws IOException
-    */
-   void makeCSVfromMap(Recepteur re, ByteArrayOutputStream baos, Map<TKStockableObject, Emplacement> tkEmpls, OperationType oType,
-      String separator, int nbLinesToBeProvide) throws IOException;
+	/**
+	 * Produit le CSV qui sera déposé à l'attention du robot.
+	 * @param baos OutputStream contenu du fichier
+	 * @param mvts dans le système de stockage robotisé
+
+	 * @param separator utilisé pour le CSV
+	 * @param recepteur interfacages
+	 * @throws IOException
+	 */
+	void makeCSVfromMap(Recepteur re, ByteArrayOutputStream baos, 
+			List<StorageMovement> stoE,
+			String separator) throws IOException;
+
+	/**
+	 * Ecrit une ligne dans le fichier NomRecette.csv
+	 * @param baos OutputStream contenu du fichier
+	 * @param filename nom fichier Recette à écrire
+	 * @param user login à écrire
+	 * @param separator utilisé pour le CSV
+	 * @throws IOException
+	 */
+	void writeOneRecetteLine(ByteArrayOutputStream baos, String filename, Utilisateur user, String separator)
+			throws IOException;
 
 }

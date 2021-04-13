@@ -54,6 +54,7 @@ import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.interfacage.ValeurExterneValidator;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.interfacage.BlocExterne;
+import fr.aphp.tumorotek.model.interfacage.DossierExterne;
 import fr.aphp.tumorotek.model.interfacage.ValeurExterne;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 
@@ -122,6 +123,13 @@ public class ValeurExterneManagerImpl implements ValeurExterneManager
          return new ArrayList<>();
       }
    }
+   
+   @Override
+   public List<ValeurExterne> findByDossierChampEntiteIdAndBlocEntiteIdManager(DossierExterne dos, 
+		   Integer chpId, Integer eId) {
+	   return valeurExterneDao.findByDossierChampEntiteIdAndBlocEntiteId(dos, chpId, eId);
+   }
+
 
    @Override
    public ChampEntite getChampEntiteManager(final ValeurExterne valeurExterne){

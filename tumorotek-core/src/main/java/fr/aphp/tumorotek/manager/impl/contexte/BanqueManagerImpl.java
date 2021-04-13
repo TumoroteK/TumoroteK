@@ -43,6 +43,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.logging.Log;
@@ -105,6 +106,7 @@ import fr.aphp.tumorotek.model.impression.Template;
 import fr.aphp.tumorotek.model.imprimante.Imprimante;
 import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
 import fr.aphp.tumorotek.model.qualite.OperationType;
+import fr.aphp.tumorotek.model.stats.SModele;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.systeme.Couleur;
 import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
@@ -116,10 +118,10 @@ import fr.aphp.tumorotek.utils.Utils;
 /**
  *
  * Implémentation du manager du bean de domaine Banque.
- * Interface créée le 01/10/09.
  *
  * @author Pierre Ventadour
- * @version 2.1
+ * @author Mathieu BARTHELEMY
+ * @version 2.2.1
  *
  */
 public class BanqueManagerImpl implements BanqueManager
@@ -901,6 +903,10 @@ public class BanqueManagerImpl implements BanqueManager
             banqueDao.removeObject(banque.getBanqueId());
             log.info("Suppression objet Banque " + banque.toString());
 
+            for (SModele mod : banque.getSModeles()) {
+            	mod.getBanques().remove(banque);
+            }
+            
             for(final File f : filesToDelete){
                f.delete();
             }
@@ -990,7 +996,10 @@ public class BanqueManagerImpl implements BanqueManager
          final List<Banque> adminBanks = new ArrayList<>();
 
          // premiere restriction sur les banques de la plateforme
-         adminBanks.addAll(findByUtilisateurIsAdminManager(u, p.getBanque().getPlateforme()));
+         // TK-254 et stream filter restriction sur le contexte
+         adminBanks.addAll(findByUtilisateurIsAdminManager(u, p.getBanque().getPlateforme())
+        		 .stream().filter(b -> b.getContexte().equals(p.getBanque().getContexte()))
+        		 	.collect(Collectors.toList()));
 
          // deuxieme restriction sur les banques - conteneurs.
          final List<TKAnnotableObject> children = prelevementManager.getPrelevementChildrenManager(p);
@@ -1023,5 +1032,13 @@ public class BanqueManagerImpl implements BanqueManager
       }
       return banks;
    }
+
+	@Override
+	public List<Banque> findByConteneurManager(Conteneur c1) {
+		if (c1 != null && c1.getConteneurId() != null) {
+			return banqueDao.findByConteneur(c1);
+		}
+		return new ArrayList<Banque>();
+	}
 
 }

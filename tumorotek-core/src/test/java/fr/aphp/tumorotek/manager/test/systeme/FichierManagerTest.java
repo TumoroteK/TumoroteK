@@ -42,14 +42,25 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.FileSystem;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import fr.aphp.tumorotek.dao.annotation.AnnotationValeurDao;
+import com.google.common.jimfs.Configuration;
+import com.google.common.jimfs.Jimfs;
+
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonDao;
+import fr.aphp.tumorotek.dao.contexte.BanqueDao;
+import fr.aphp.tumorotek.manager.impl.systeme.MvFichier;
 import fr.aphp.tumorotek.manager.systeme.FichierManager;
 import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
 import fr.aphp.tumorotek.model.systeme.Fichier;
@@ -60,7 +71,7 @@ import fr.aphp.tumorotek.model.systeme.Fichier;
  * Classe créée le 24/09/09.
  *
  * @author Pierre Ventadour.
- * @version 2.0
+ * @version 2.2.1-IRELEC
  *
  */
 public class FichierManagerTest extends AbstractManagerTest4
@@ -69,9 +80,9 @@ public class FichierManagerTest extends AbstractManagerTest4
    @Autowired
    private FichierManager fichierManager;
    @Autowired
-   private AnnotationValeurDao annotationValeurDao;
-   @Autowired
    private EchantillonDao echantillonDao;
+   @Autowired
+   private BanqueDao banqueDao;
 
    public FichierManagerTest(){}
 
@@ -398,4 +409,81 @@ public class FichierManagerTest extends AbstractManagerTest4
 
       testFindAll();
    }
+   
+   /**
+    * TODO Mock Jimfs est une bonne idée mais la methode
+    * FichierManagerImpl.storeFile ne repose pas sur Java NIO
+    * donc les utilitaires Paths. 
+    * Sans mock, le Test ne peut fonctionner que si les répertoires 
+    * /home/TK/pt_1/coll_2/anno/chp_12 et 
+    * /home/TK/pt_1/coll_77/anno/chp_12 existent.
+    * @throws IOException
+    */
+   @Test
+	public void testSwitchBanqueManager() throws IOException {
+		FileSystem fs = null;
+		try {
+			fs = Jimfs.newFileSystem(Configuration.unix());
+			Path root = fs.getPath("/home/TK");
+			Files.createDirectories(root);	
+			Path coll77 = root.resolve("/pt_1/coll_77/anno/chp_12");
+			Files.createDirectories(coll77);
+			Path coll2 = root.resolve("/pt_1/coll_2/anno/chp_12");
+			Files.createDirectories(coll2);
+
+			
+			List<File> filesCreated = new ArrayList<File>();
+			Set<MvFichier> mvts = new HashSet<MvFichier>();
+			Fichier f = new Fichier();
+			f.setNom("fileToMove.pdf");
+			f.setEchantillon(echantillonDao.findById(1));
+			f.setPath("/home/TK/pt_1/coll_77/anno/chp_12/fileToMove.pdf");
+			InputStream is = new ByteArrayInputStream("TEST".getBytes());
+			fichierManager.createObjectManager(f, is, filesCreated);
+			
+			Integer id = f.getFichierId();
+			
+			assertTrue(f.getPath().startsWith("/home/TK/pt_1/coll_77/anno/chp_12/fileToMove.pdf"));
+			assertTrue(filesCreated.get(0).getName().equals("fileToMove.pdf_" + id));
+			
+			// Path file1 = coll77.resolve("fileToMove.pdf_" + id);
+			assertTrue(new File("/home/TK/pt_1/coll_77/anno/chp_12/fileToMove.pdf_" + id).exists());
+			
+			fichierManager.switchBanqueManager(f, banqueDao.findById(2), mvts);
+			assertTrue(f.getPath().startsWith("/home/TK/pt_1/coll_2/anno/chp_12/fileToMove.pdf"));
+			assertTrue(mvts.size() == 1);
+			assertTrue(mvts.iterator().next().toString()
+				.equals("/home/TK/pt_1/coll_77/anno/chp_12/fileToMove.pdf_"+ id 
+						+ " -> /home/TK/pt_1/coll_2/anno/chp_12/fileToMove.pdf_" + id));
+			
+			// mvt pas encore réalisé
+			// Path fileMoved = coll2.resolve("fileToMove.pdf_" + id);
+			assertFalse(new File("/home/TK/pt_1/coll_2/anno/chp_12/fileToMove.pdf_" + id).exists());
+			
+			// error
+			// boolean catched = false;
+			fichierManager.switchBanqueManager(f, banqueDao.findById(3), mvts);
+			
+			// nulls
+			fichierManager.switchBanqueManager(null, banqueDao.findById(2), mvts);
+			fichierManager.switchBanqueManager(f, null, mvts);
+			fichierManager.switchBanqueManager(f, banqueDao.findById(2), null);
+
+			
+			assertTrue(f.getPath().startsWith("/home/TK/pt_1/coll_3/anno/chp_12/fileToMove.pdf"));			
+			assertFalse(new File("/home/TK/pt_1/coll_3/anno/chp_12/fileToMove.pdf_" + id).exists());
+			
+			// clean up
+			// List<File> filesToDelete = new ArrayList<File>();
+			f.setPath("/home/TK/pt_1/coll_77/anno/chp_12/fileToMove.pdf_" + id);
+			fichierManager.removeObjectManager(f, null);
+			assertFalse(new File("/home/TK/pt_1/coll_77/anno/chp_12/fileToMove.pdf_" + id).exists());
+			
+			testFindAll();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			if (fs != null) { fs.close(); }
+		}
+	}
 }

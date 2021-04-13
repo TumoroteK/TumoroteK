@@ -418,7 +418,7 @@ div.z-grid.gridError1 .z-row.z-detail-faker{
 	border-left-style : solid; /*PRO*/
 	border-left-color : #FFFFFF; /*PRO*/
 	border-right-color : #FFFFFF; /*PRO*/
-	border-right-width : 1px; /*PRO*/
+	border-right-width : 0px; /*PRO*/
 	border-bottom-width : 1px; /*PRO*/
 	border-left-width : 1px; /*PRO*/
 }
@@ -434,7 +434,6 @@ div.z-grid.gridError1 .z-row.z-detail-faker{
 }
 div.listBox .z-listbox-body{
 	border-style : solid; /*PRO*/
-	border-width : 1px; /*PRO*/
 	border-color : #FFFFFF; /*PRO*/
 }
 /*RULE_E*//*RULE:LISTBOX-DEFAULT*/
@@ -1372,7 +1371,11 @@ div.z-grid.gridListStyle tr.z-row td.z-row-inner {
 div.z-grid.gridListStyle tr.greenrow td.z-row-inner {
 	background-color : #5CB85C;
 	background-image : none;
-	#border: 1px solid #5CB85C;
+}
+
+div.z-grid.gridListStyle tr.gold td.z-row-inner {
+	background-color : #FFD700;
+	background-image : none;
 }
 
 div.z-grid.gridListStyle div.z-grid-autopaging tr.z-row div.z-row-cnt {
@@ -1893,4 +1896,15 @@ width: 20px;
 height: 20px;
 border: 1px solid rgba(0, 0, 0, .2);
 margin-right: 10px;
+}
+
+# .gridForm1 .z-grid-body {
+#	height: -webkit-fill-available;
+# }
+
+.rechWindow .z-window-modal, .rechWindow .z-window-embedded, 
+.rechWindow .z-window-modal-cnt-noborder, .rechWindow .z-window-embedded-cnt-noborder,
+.rechWindow .z-window-modal-cnt > span {
+	display: block;
+	height: inherit;
 }

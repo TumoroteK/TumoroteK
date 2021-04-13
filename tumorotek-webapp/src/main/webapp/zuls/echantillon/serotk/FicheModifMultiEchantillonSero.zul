@@ -33,7 +33,7 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez 
  * accepté les termes. 
 -->
-<window id="fwinModifMultiEchantillon" border="none" apply="fr.aphp.tumorotek.action.echantillon.serotk.FicheModifMultiEchantillonSero">
+<window id="fwinModifMultiEchantillon" border="none" apply="fr.aphp.tumorotek.action.echantillon.FicheModifMultiEchantillon">
 	<panel id="winPanel" title="${c:l('ficheEchantillon.panel.title')}"
 	 	sclass="fichePanelv2" closable="true">
 		<panelchildren id="panelChildrenWithScroll" style="overflow:scroll">
@@ -152,7 +152,7 @@
 								sclass="formLink" />
 						</div>					
 					</row>
-					<row>
+					<row visible="false">
 					<!-- qualite -->
 					<label id="qualiteEchanLabel" value="${c:l('Champ.Echantillon.EchanQualite')}" sclass="formLabel" />
 						<div id="qualiteEchanValue">
@@ -166,13 +166,13 @@
 						</div>
 					</row>
 					<!-- Informations complémentaires -->
-					<row id="infosComplementairesRow" spans="2">
+					<row id="infosComplementairesRow" spans="2" visible="false">
 						<vbox width="100%">
 							<label value="${c:l('ficheEchantillon.infosComp')}" sclass="formSubTitle"/>
 							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
 						</vbox>
 					</row>	
-					<row>
+					<row visible="false">
 					<!-- cr anapath -->
 					<label sclass="formLabel" value="${c:l('ficheEchantillon.crAnapathLabel')}" />
 						<div>
@@ -185,7 +185,7 @@
 								sclass="formLink" />
 						</div>
 					</row>	
-					<row>
+					<row visible="false">
 					<!-- Tumoral -->
 					<label sclass="formLabel" value="${c:l('Champ.Echantillon.Tumoral')}" />
 						<div>
@@ -198,7 +198,7 @@
 								sclass="formLink" />
 						</div>
 					</row>	
-					<row>
+					<row visible="false">
 					<!-- Organe -->
 						<label sclass="formLabel" value="${c:l('Champ.Echantillon.Organe')}" />
 						<div>
@@ -211,7 +211,7 @@
 								sclass="formLink" />
 						</div>
 					</row>
-					<row id="lateraliteRow">	
+					<row id="lateraliteRow" visible="false">	
 					<!-- Lateralite -->
 						<label sclass="formLabel" value="${c:l('Champ.Echantillon.Lateralite')}" />
 						<div>
@@ -224,7 +224,7 @@
 								sclass="formLink" />
 						</div>
 					</row>
-					<row>	
+					<row visible="false">	
 					<!-- codes lesionnels -->
 						<label sclass="formLabel" value="${c:l('ficheEchantillon.codeLesionelLabel')}" />
 						<div>

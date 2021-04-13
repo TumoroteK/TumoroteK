@@ -77,17 +77,6 @@ public final class CessionConstraints
          
          super.validate(comp, value);
 
-         final String numCession = (String) value;
-
-         final List<Cession> doublons = ManagerLocator.getManager(CessionManager.class)
-            .findByNumeroInPlateformeManager(numCession, SessionUtils.getCurrentPlateforme());
-
-         if(!doublons.isEmpty()){
-            final String banques =
-               doublons.stream().map(Cession::getBanque).distinct().map(Banque::getNom).collect(Collectors.joining(", "));
-            throw new WrongValueException(comp, Labels.getLabel("cession.doublon.error.num", new String[] {numCession, banques}));
-         }
-
       }
    };
 

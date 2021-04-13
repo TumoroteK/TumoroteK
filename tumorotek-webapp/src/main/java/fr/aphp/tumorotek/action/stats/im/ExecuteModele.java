@@ -99,7 +99,7 @@ public class ExecuteModele
          initJDBC();
          loadCalling(ManagerLocator.getIndicateurManager().findBySModeleManager(model),
             new ArrayList<>(ManagerLocator.getSModeleManager().getBanquesManager(model)), date_debut, date_fin);
-         printDataMap();
+         // printDataMap(); debug only
 
       }catch(final SQLException e){
          log.error(e);

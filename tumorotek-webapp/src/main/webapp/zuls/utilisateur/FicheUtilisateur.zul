@@ -84,9 +84,11 @@
 						<div>
 							<label id="passwordLabel" value="*****" sclass="formValue"/>
 							
-							<textbox id="passwordBox" value="@{fwinUtilisateur$composer.user.password,
+							<!-- value="@{fwinUtilisateur$composer.user.password,
 			        				save-when='validateC.onClick, createC.onClick'
-			        				load-after='editC.onClick, createC.onClick'}" 
+			        				load-after='editC.onClick, createC.onClick'}" -->
+			        				
+							<textbox id="passwordBox"  
 								width="200px" 
 								maxlength="20"
 								constraint="${fwinUtilisateur$composer.passwordConstraint}"
@@ -102,9 +104,7 @@
 							<label value="*" sclass="requiredMark"/>
 						</hbox>
 						<div>
-							<textbox id="confirmPasswordBox" value="@{fwinUtilisateur$composer.confirmationPassword,
-			        				save-when='validateC.onClick, createC.onClick'
-			        				load-after='editC.onClick, createC.onClick'}" 
+							<textbox id="confirmPasswordBox" 
 								width="200px" 
 								maxlength="20"
 								type="password"
@@ -239,7 +239,7 @@
 							</columns>
 							<template name="model">
 								<row>
-									<label value="${each.banque.nom}" forward="onClick=onClick$banqueNom(${each})"
+									<label value="${each.banque.banqueAndPlateformeNoms}" forward="onClick=onClick$banqueNom(${each})"
 										sclass="${each.banque.archive eq 'false' ? 'formLink' : 'formLinkArchive'}" />
 									<label value="${each.profil.nom}" forward="onClick=onClick$profilNom(${each})"
 										sclass="${each.profil.archive eq 'false' ? 'formLink' : 'formLinkArchive'}" />
@@ -271,7 +271,7 @@
 											model="@{fwinUtilisateur$composer.banques, 
 											load-after='editC.onClick, createC.onClick'}">
 											<listitem self="@{each='banque'}" value="banque">			
-												<listcell label="@{banque.nom}" />
+												<listcell label="@{banque.banqueAndPlateformeNoms}" />
 											</listitem>
 										</listbox>
 									</hbox>
@@ -354,7 +354,7 @@
 					image="/images/icones/edit.png" sclass="buttonv2"/>
 				<button id="editPassword" label="${c:l('general.edit.password')}" height="24px" visible="true"
 					image="/images/icones/locked.png" sclass="buttonv2" use="fr.aphp.tumorotek.component.TKDisablableButton" 
-					disabled="@{fwinUtilisateur$composer.user.ldap}"/>
+					/>
 				<button id="deleteC" label="${c:l('general.delete')}" height="24px" visible="true"
 					image="/images/icones/trash.png" sclass="buttonv2"/>
 				<button id="validateC" label="${c:l('general.validate')}" height="24px" visible="false"

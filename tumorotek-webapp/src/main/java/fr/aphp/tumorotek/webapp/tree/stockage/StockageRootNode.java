@@ -41,6 +41,7 @@ import java.util.List;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.webapp.tree.TumoTreeNode;
 
@@ -50,7 +51,7 @@ import fr.aphp.tumorotek.webapp.tree.TumoTreeNode;
  * Classe créée le 25/03/10.
  *
  * @author Pierre Ventadour.
- * @version 2.1
+ * @version 2.2.3-genno
  *
  */
 public class StockageRootNode extends TumoTreeNode
@@ -60,8 +61,15 @@ public class StockageRootNode extends TumoTreeNode
    // @since 2.1
    private final List<Conteneur> conteneurs = new ArrayList<>();
 
-   public StockageRootNode(final List<Banque> banks){
+   // @since 2.2.3-genno
+   // TK-289
+   private final Plateforme curPf;
+   
+   public StockageRootNode(final List<Banque> banks, Plateforme _f){
       this.banques = banks;
+      this.curPf = _f;
+      
+      conteneurs.addAll(ManagerLocator.getConteneurManager().findByBanquesWithOrderManager(banques));
    }
 
    @Override
@@ -75,7 +83,6 @@ public class StockageRootNode extends TumoTreeNode
     */
    @Override
    public void readChildren(){
-      conteneurs.addAll(ManagerLocator.getConteneurManager().findByBanquesWithOrderManager(banques));
 
       Collections.sort(conteneurs, new Conteneur.NomComparator());
 
@@ -85,7 +92,7 @@ public class StockageRootNode extends TumoTreeNode
          if(banques.size() == 1){
             banque = banques.get(0);
          }
-         final ConteneurNode node = new ConteneurNode(conteneurs.get(i), banque);
+         final ConteneurNode node = new ConteneurNode(conteneurs.get(i), banque, curPf);
          // transmet l'information hideComplete au noeuds
          node.setHideComplete(isHideComplete());
          children.add(node);

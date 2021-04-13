@@ -100,7 +100,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Classe créée le 19/03/10.
  *
  * @author Pierre Ventadour.
- * @version 2.1
+ * @version 2.2.1
  *
  */
 public class TerminaleManagerTest extends AbstractManagerTest4
@@ -216,6 +216,19 @@ public class TerminaleManagerTest extends AbstractManagerTest4
       assertTrue(list.size() == 0);
 
       list = terminaleManager.findByEnceinteAndNomManager(e3, null);
+      assertTrue(list.size() == 0);
+   }
+   
+   @Test
+   public void testFindByAliasManager(){
+
+      List<Terminale> list = terminaleManager.findByAliasManager("ALIAS BT1");
+      assertTrue(list.size() == 3);
+      assertTrue(list.get(0).getTerminaleId().equals(1));
+      assertTrue(list.get(1).getTerminaleId().equals(4));
+      assertTrue(list.get(2).getTerminaleId().equals(6));
+
+      list = terminaleManager.findByAliasManager(null);
       assertTrue(list.size() == 0);
    }
 
@@ -1826,5 +1839,19 @@ public class TerminaleManagerTest extends AbstractManagerTest4
       assertTrue(ids.isEmpty());
       ids.addAll(terminaleManager.findTerminaleIdsFromNomManager("BT2", enceinteDao.findById(4), conts));
       assertTrue(ids.isEmpty());
+   }
+   
+   // @since 2.2.1
+   @Test
+   public void testGetDistinctBanquesFromTkObjectsManager() {
+	   List<Banque> banks = terminaleManager.getDistinctBanquesFromTkObjectsManager(terminaleManager.findByIdManager(1));
+	   assertTrue(banks.size() == 1);
+	   assertTrue(banks.contains(banqueDao.findById(1)));
+	   
+	   banks = terminaleManager.getDistinctBanquesFromTkObjectsManager(terminaleManager.findByIdManager(2));
+	   assertTrue(banks.isEmpty());
+
+	   banks = terminaleManager.getDistinctBanquesFromTkObjectsManager(null);
+	   assertTrue(banks.isEmpty());
    }
 }

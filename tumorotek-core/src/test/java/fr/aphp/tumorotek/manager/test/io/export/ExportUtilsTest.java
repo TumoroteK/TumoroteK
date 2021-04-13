@@ -69,6 +69,7 @@ import fr.aphp.tumorotek.manager.io.export.ExportUtils;
 import fr.aphp.tumorotek.manager.qualite.OperationManager;
 import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
 import fr.aphp.tumorotek.manager.utilisateur.UtilisateurManager;
+import fr.aphp.tumorotek.manager.validation.ValidationUtilities;
 import fr.aphp.tumorotek.model.cession.Cession;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
@@ -539,5 +540,17 @@ public class ExportUtilsTest extends AbstractManagerTest4
             sw = null;
          }
       }
+   }
+   
+   /**
+    * teste la regexp qui suppr les 7 caractères problématiques 
+    * dans la création des noms des workbook sheets 
+    * @since 2.2.1 TK-255
+    * @see https://www.accountingweb.com/technology/excel/seven-characters-you-cant-use-in-worksheet-names
+    */
+   @Test
+   public void testXlsxSheetNameInfamousChars() {	   
+	   String sheetname = "\\/*[]:?";
+	   assertTrue(sheetname.replaceAll(ValidationUtilities.SHEETNAME_INFAMOUSCHARS, "").isEmpty());
    }
 }

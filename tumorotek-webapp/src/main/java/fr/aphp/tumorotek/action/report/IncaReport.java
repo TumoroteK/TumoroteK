@@ -49,7 +49,7 @@ import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -67,6 +67,7 @@ import fr.aphp.tumorotek.action.code.CodeAssigneEditableGrid;
 import fr.aphp.tumorotek.action.controller.AbstractController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheController;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.manager.validation.ValidationUtilities;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.code.CimMaster;
 import fr.aphp.tumorotek.model.code.CodeAssigne;
@@ -290,6 +291,14 @@ public class IncaReport extends AbstractFicheController
          String sheetname;
          if(banks.size() == 1){
             sheetname = banks.get(0).getNom();
+            
+            // xlsx sheet infamous 7 chars
+            sheetname = sheetname.replaceAll(ValidationUtilities.SHEETNAME_INFAMOUSCHARS, "");
+            
+            // si une collection nommée uniquement avec des caractères illegaux pour sheet name
+            if (sheetname.isEmpty()) { // remplace par banque_id
+            	sheetname = banks.get(0).getBanqueId().toString();
+            }
          }else{
             sheetname = "Total";
          }
@@ -385,13 +394,14 @@ public class IncaReport extends AbstractFicheController
       }
    }
 
+   @SuppressWarnings("unchecked")
    private <T> List<T> getSelectedFromListbox(final Listbox box){
-      final List<T> objs = new ArrayList<>();
+      final List<T> objs = new ArrayList<T>();
       Iterator<Listitem> listIt;
       if(box.getSelectedItems() != null){
          listIt = box.getSelectedItems().iterator();
          while(listIt.hasNext()){
-            objs.add(listIt.next().getValue());
+        	 objs.add((T) listIt.next().getValue());
          }
       }
       return objs;
@@ -463,7 +473,7 @@ public class IncaReport extends AbstractFicheController
          dateRow.createCell(0);
          cell = dateRow.createCell(1);
          final HSSFCellStyle cellStyle = wb.createCellStyle();
-         cellStyle.setAlignment(CellStyle.ALIGN_CENTER);
+         cellStyle.setAlignment(HorizontalAlignment.CENTER);
          cell.setCellStyle(cellStyle);
 
          final DateFormat format = new SimpleDateFormat("dd/MM/yyyy");

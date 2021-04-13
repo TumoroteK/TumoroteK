@@ -41,10 +41,12 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 
 import fr.aphp.tumorotek.dao.interfacage.BlocExterneDao;
+import fr.aphp.tumorotek.dao.interfacage.DossierExterneDao;
 import fr.aphp.tumorotek.dao.interfacage.ValeurExterneDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
 import fr.aphp.tumorotek.model.contexte.Categorie;
 import fr.aphp.tumorotek.model.interfacage.BlocExterne;
+import fr.aphp.tumorotek.model.interfacage.DossierExterne;
 import fr.aphp.tumorotek.model.interfacage.ValeurExterne;
 
 /**
@@ -59,11 +61,9 @@ import fr.aphp.tumorotek.model.interfacage.ValeurExterne;
 @TransactionConfiguration(defaultRollback = false)
 public class ValeurExterneDaoTest extends AbstractDaoTest
 {
-
-   /** Bean Dao. */
    private ValeurExterneDao valeurExterneDao;
-   /** Bean Dao. */
    private BlocExterneDao blocExterneDao;
+   private DossierExterneDao dossierExterneDao;
 
    public ValeurExterneDaoTest(){
 
@@ -82,7 +82,11 @@ public class ValeurExterneDaoTest extends AbstractDaoTest
       this.blocExterneDao = bDao;
    }
 
-   /**
+   public void setDossierExterneDao(DossierExterneDao _d) {
+	  this.dossierExterneDao = _d;
+   }
+
+/**
     * Test l'appel de la méthode findAll().
     */
    public void testReadAll(){
@@ -253,5 +257,33 @@ public class ValeurExterneDaoTest extends AbstractDaoTest
       final ValeurExterne v2 = new ValeurExterne();
       assertTrue(v2.toString().equals("{Empty ValeurExterne}"));
    }
+   
+   public void testFindByDossierChampEntiteIdAndBlocEntiteId() {
+	  DossierExterne dos = dossierExterneDao.findById(4);
+      List<ValeurExterne> liste = valeurExterneDao
+    		  .findByDossierChampEntiteIdAndBlocEntiteId(dos, 44, 2);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).getValeur().equals("NDA127896 BI"));
 
+      liste = valeurExterneDao
+    		  .findByDossierChampEntiteIdAndBlocEntiteId(dos, 230, 3);
+      assertTrue(liste.size() == 1);
+      assertTrue(liste.get(0).getValeur().equals("GHLOJ7F4;GHOTJMF4"));
+
+      liste = valeurExterneDao
+    		  .findByDossierChampEntiteIdAndBlocEntiteId(dos, 89, 3);
+      assertTrue(liste.isEmpty());
+      
+      liste = valeurExterneDao
+    		  .findByDossierChampEntiteIdAndBlocEntiteId(null, 89, 3);
+      assertTrue(liste.isEmpty());
+      
+      liste = valeurExterneDao
+    		  .findByDossierChampEntiteIdAndBlocEntiteId(dos, null, 3);
+      assertTrue(liste.isEmpty());
+      
+      liste = valeurExterneDao
+    		  .findByDossierChampEntiteIdAndBlocEntiteId(dos, 89, null);
+      assertTrue(liste.isEmpty());
+   }
 }

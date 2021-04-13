@@ -36,7 +36,7 @@
 package fr.aphp.tumorotek.action.administration.annotations;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zkplus.databind.BindingListModelSet;
+import org.zkoss.zkplus.databind.BindingListModelList;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
@@ -70,7 +70,7 @@ public class BanquesAssociees extends OneToManyComponent<Banque>
    private static final long serialVersionUID = 1L;
 
    private Listbox collectionsBox;
-   private BindingListModelSet<Banque> banquesData;
+   private BindingListModelList<Banque> banquesData;
    private Button addOrRemoveAllBanques;
 
    private List<Banque> objects = new ArrayList<>();
@@ -87,7 +87,7 @@ public class BanquesAssociees extends OneToManyComponent<Banque>
 
       collectionsBox.setItemRenderer(banqueRenderer);
 
-      banquesData = new BindingListModelSet<>(new HashSet<>(), true);
+      banquesData = new BindingListModelList<Banque>(new ArrayList<Banque>(), true);
       banquesData.setMultiple(true);
 
    }
@@ -100,6 +100,9 @@ public class BanquesAssociees extends OneToManyComponent<Banque>
    @Override
    public void setObjects(final List<Banque> objs){
       this.objects = objs;
+      
+      Collections.sort(objs);
+      
       updateComponent();
    }
 
@@ -143,8 +146,7 @@ public class BanquesAssociees extends OneToManyComponent<Banque>
       final List<Banque> banks = ManagerLocator.getManager(BanqueManager.class)
          .findByUtilisateurIsAdminManager(SessionUtils.getLoggedUser(sessionScope), SessionUtils.getPlateforme(sessionScope));
 
-      return banks.stream().filter(isAddable).collect(Collectors.toList());
-
+      return banks.stream().filter(isAddable).sorted().collect(Collectors.toList());
    }
 
    @Override
@@ -230,6 +232,8 @@ public class BanquesAssociees extends OneToManyComponent<Banque>
 
       banquesData.clear();
       banquesData.addAll(findObjectsAddable());
+      
+     // Collections.sort(banquesData);
 
    }
 
@@ -278,7 +282,7 @@ public class BanquesAssociees extends OneToManyComponent<Banque>
     * Rentourne le modèle de données contenant les collections sélectionnables
     * @return
     */
-   public BindingListModelSet<Banque> getBanquesData(){
+   public BindingListModelList<Banque> getBanquesData(){
       return banquesData;
    }
 

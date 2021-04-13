@@ -43,10 +43,9 @@
 
 	<window id="fwinRechercheAvanceeProdDerive" border="none"
 		apply="fr.aphp.tumorotek.action.recherche.FicheRechercheAvancee">
-		<panel collapsible="false" sclass="fichePanelv2"
-			id="winPanel">
-			<panelchildren id="panelChildrenWithScroll">
-				<borderlayout id="bLayout">
+		<div style="display: flex; flex-direction: column; min-height: 100%; max-height: 100%">
+			<div style="display: flex; flex: 1" id="topDivForScroll">
+				<borderlayout id="bLayout" style="height: inherit">
 					<west sclass="tabBorderLayout" id="panelSearchHistorique" title="Historique"
 						size="24%" splittable="true" collapsible="true" open="false" vflex="1">
 						<groupbox width="98%" open="true" >
@@ -183,8 +182,42 @@
 										</decimalbox>
 									</div>
 								</row>
-								<!-- Temp stock since 2.0.13 -->
-								<row spans="1,3">
+								<!-- Temperatures -->
+								<row>
+									<label value="${c:l('Champ.ProdDerive.DateStock')}"
+										sclass="formLabel" />
+									<vlayout hflex="1">
+										<hlayout hflex="1">
+											<listbox
+												id="operateursDateStockDeriveBox" mold="select" rows="1"
+												model="@{fwinRechercheAvanceeProdDerive$composer.operateursDates}">
+												<listitem
+													self="@{each='opDateStock'}" value="opDateStock">
+													<listcell
+														label="@{opDateStock}" />
+												</listitem>
+											</listbox>
+											<calendarbox
+												id="dateStockDerive1Box"
+												format="${c:l('validation.date.format')}" cols="8">
+												<custom-attributes
+													attribut="DateStock" entite="ProdDerive" />
+											</calendarbox>
+										</hlayout>
+										<hlayout hflex="1">
+											<label
+												value="${c:l('general.selectlist.and')}"
+												sclass="formLabel" />
+											<calendarbox
+												id="dateStockDerive2Box"
+												format="${c:l('validation.date.format')}" cols="8"
+												style="align:right;">
+												<custom-attributes
+													attribut="DateStock" entite="ProdDerive" />
+											</calendarbox>
+										</hlayout>
+									</vlayout>
+								
 									<label
 										value="${c:l('Champ.ProdDerive.TempStock')}"
 										sclass="formLabel" />
@@ -327,6 +360,61 @@
 										</decimalbox>
 										<label value=" min"
 											sclass="formLabel" />
+									</div>
+								</row>
+								<row>
+									<label value="${c:l('Champ.Echantillon.DateStock')}"
+										sclass="formLabel" />
+									<vlayout hflex="1">
+										<hlayout hflex="1">
+											<listbox
+												id="operateursDateStockBox" mold="select" rows="1"
+												model="@{fwinRechercheAvanceeProdDerive$composer.operateursDates}">
+												<listitem
+													self="@{each='opDateStock'}" value="opDateStock">
+													<listcell
+														label="@{opDateStock}" />
+												</listitem>
+											</listbox>
+											<calendarbox
+												id="dateStock1Box"
+												format="${c:l('validation.date.format')}" cols="8">
+												<custom-attributes
+													attribut="DateStock" entite="Echantillon" />
+											</calendarbox>
+										</hlayout>
+										<hlayout hflex="1">
+											<label
+												value="${c:l('general.selectlist.and')}"
+												sclass="formLabel" />
+											<calendarbox
+												id="dateStock2Box"
+												format="${c:l('validation.date.format')}" cols="8"
+												style="align:right;">
+												<custom-attributes
+													attribut="DateStock" entite="Echantillon" />
+											</calendarbox>
+										</hlayout>
+									</vlayout>
+								
+									<label
+										value="${c:l('Champ.Echantillon.TempStock')}"
+										sclass="formLabel" />
+									<div>
+										<listbox
+											id="operateursTempStockEchantillonBox" mold="select" rows="1"
+											model="@{fwinRechercheAvanceeProdDerive$composer.operateursDecimaux}">
+											<listitem
+												self="@{each='opTempStockEchan'}" value="opTempStockEchan">
+												<listcell
+													label="@{opTempStockEchan}" />
+											</listitem>
+										</listbox>
+										<decimalbox format="#,##0.###" scale="3"
+											id="tempStockEchantillonBox" width="75px" locale="en">
+											<custom-attributes
+												attribut="TempStock" entite="Echantillon" />
+										</decimalbox>
 									</div>
 								</row>
 								<!-- Cr Anapath -->
@@ -573,8 +661,8 @@
 											attribut="ServicePreleveurId" entite="Prelevement" />
 									</listbox>
 								</row>
-								<!-- code labo -->
-								<row spans="1,3">
+								<!-- code labo et N° dossier-->
+								<row>
 									<label
 										value="${c:l('Champ.Prelevement.NumeroLabo')}"
 										sclass="formLabel" />
@@ -582,6 +670,15 @@
 										width="150px">
 										<custom-attributes
 											attribut="NumeroLabo" entite="Prelevement" />
+									</textbox>
+
+									<label
+										value="${c:l('Champ.Prelevement.PatientNda')}"
+										sclass="formLabel" />
+									<textbox id="ndaPatientBox"
+										width="150px">
+										<custom-attributes
+											attribut="PatientNda" entite="Prelevement" />
 									</textbox>
 								</row>
 								<!-- nb echantillons + age au prélèvement -->
@@ -672,23 +769,14 @@
 								<group id="groupPatients"
 									label="${c:l('recherche.avancee.informations.patient')}"
 									open="false" />
-								<!-- N° Patient et N° dossier -->
-								<row>
+								<!-- N° Patient -->
+								<row spans="1,3">
 									<label
 										value="${c:l('Champ.Patient.Nip')}" sclass="formLabel" />
 									<textbox id="nipPatientBox"
 										width="150px">
 										<custom-attributes
 											attribut="Nip" entite="Patient" />
-									</textbox>
-
-									<label
-										value="${c:l('Champ.Prelevement.PatientNda')}"
-										sclass="formLabel" />
-									<textbox id="ndaPatientBox"
-										width="150px">
-										<custom-attributes
-											attribut="PatientNda" entite="Prelevement" />
 									</textbox>
 								</row>
 								<!-- Nom Patient et Nom patronymique -->
@@ -961,15 +1049,15 @@
 						</grid>
 					</center>
 				</borderlayout>
-			</panelchildren>
-			<toolbar height="30px" id="toolbarEchan" align="end">
-				<hbox spacing="5" align="center">
-					<button id="find" label="${c:l('general.find')}"
+			</div>
+			<div style="display: flex; min-height: 30px; max-height: 30px">
+				<toolbar height="30px" id="toolbarEchan" align="end" hflex="1">
+					<button id="find" label="${c:l('general.find')}" hflex="1"
 						height="24px" visible="true" image="/images/icones/find.png"
 						sclass="buttonv2" />
-				</hbox>
-			</toolbar>
-		</panel>
+				</toolbar>
+			</div>
+		</div>
 	</window>
 	<popup id="codesInfos" width="300px" tooltiptext="">
         <html content="${c:l('tooltip.recherche.codes')}"/>

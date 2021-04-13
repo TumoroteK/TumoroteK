@@ -53,6 +53,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.zkoss.bind.ValidationContext;
 import org.zkoss.bind.Validator;
@@ -270,19 +271,20 @@ public class EditModel extends AbstractListGridVM
       row = sheet.createRow(currentRow);
       currentRow++;
       cell = row.createCell(currColl);
-      cell.setCellType(Cell.CELL_TYPE_STRING);
+      cell.setCellType(CellType.STRING);
       cell.setCellValue(Labels.getLabel("Entite.Banque"));
       currColl++;
       if(getIsSubdivised()){
          cell = row.createCell(currColl);
-         cell.setCellType(Cell.CELL_TYPE_STRING);
+         cell.setCellType(CellType.STRING);
          cell.setCellValue(Labels.getLabel("Champ.SModele.Subdivision"));
          currColl++;
       }
-      for(final Indicateur indic : getGridIndicateurs()){
+      for(final IndicateurDecorator indic : getGridIndicateurs()){
          cell = row.createCell(currColl);
-         cell.setCellType(Cell.CELL_TYPE_STRING);
-         cell.setCellValue(Labels.getLabel("Indicateur." + indic.getNom()));
+         cell.setCellType(CellType.STRING);
+         
+         cell.setCellValue(indic.getNom());
          currColl++;
       }
 
@@ -294,13 +296,13 @@ public class EditModel extends AbstractListGridVM
          currColl = 0;
          // banque
          cell = row.createCell(currColl);
-         cell.setCellType(Cell.CELL_TYPE_STRING);
+         cell.setCellType(CellType.STRING);
          cell.setCellValue(data.getBanque().getNom());
          currColl++;
          // subdivision
          if(getIsSubdivised()){
             cell = row.createCell(currColl);
-            cell.setCellType(Cell.CELL_TYPE_STRING);
+            cell.setCellType(CellType.STRING);
             cell.setCellValue(data.getSubDivNom());
             currColl++;
          }
@@ -308,7 +310,7 @@ public class EditModel extends AbstractListGridVM
          if(!percentDisplay){
             for(final Number n : data.getValues()){
                cell = row.createCell(currColl);
-               cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+               cell.setCellType(CellType.NUMERIC);
                cell.setCellValue(n.doubleValue());
                cell.setCellStyle(intTotStyle);
                currColl++;
@@ -316,7 +318,7 @@ public class EditModel extends AbstractListGridVM
          }else{ // percents
             for(final Number n : data.getValuesPourcentage()){
                cell = row.createCell(currColl);
-               cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+               cell.setCellType(CellType.NUMERIC);
                cell.setCellValue(n.doubleValue());
                cell.setCellStyle(nbStyle);
                currColl++;
@@ -349,6 +351,12 @@ public class EditModel extends AbstractListGridVM
          Filedownload.save(media);
       }catch(final IOException e){
          e.printStackTrace();
+      } finally {
+    	  try {
+			wb.close();
+		} catch (IOException e) {
+			log.error(e.getMessage());
+		}
       }
    }
 }

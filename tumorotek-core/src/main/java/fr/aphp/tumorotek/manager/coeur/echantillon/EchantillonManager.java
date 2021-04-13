@@ -63,7 +63,6 @@ import fr.aphp.tumorotek.model.qualite.OperationType;
 import fr.aphp.tumorotek.model.stockage.Emplacement;
 import fr.aphp.tumorotek.model.systeme.Fichier;
 import fr.aphp.tumorotek.model.systeme.Unite;
-import fr.aphp.tumorotek.model.utilisateur.Reservation;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 /**
@@ -72,7 +71,8 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Interface créée le 25/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.2.0
+ * @author Mathieu BARTHELEMY
+ * @version 2.2.2
  *
  */
 public interface EchantillonManager
@@ -375,7 +375,6 @@ public interface EchantillonManager
     * @param quantite Unité de la quantité.
     * @param qualite Qualité de l'échantillon.
     * @param preparation Mode de préparation de l'échantillon.
-    * @param reserv Reservation faite sur l'échantillon.
     * @param listAnnoToCreateOrUpdate des valeurs d'annotation à enregistrer
     * @param filesCreated liste des fichiers créés physiquement 
     * lors de la transaction (utilisés pour rollback)
@@ -386,7 +385,7 @@ public interface EchantillonManager
     */
    void createObjectManager(Echantillon echantillon, Banque banque, Prelevement prelevement, Collaborateur collaborateur,
       ObjetStatut statut, Emplacement emplacement, EchantillonType type, List<CodeAssigne> codesAssigne, Unite quantite,
-      EchanQualite qualite, ModePrepa preparation, Reservation reserv, List<AnnotationValeur> listAnnoToCreateOrUpdate,
+      EchanQualite qualite, ModePrepa preparation, List<AnnotationValeur> listAnnoToCreateOrUpdate,
       List<File> filesCreated, Utilisateur utilisateur, boolean doValidation, String baseDir, boolean isImport);
 
    /**
@@ -407,8 +406,6 @@ public interface EchantillonManager
     * @param stream contenu du CrAnapath
     * @param filesCreated liste des fichiers créés physiquement 
     * lors de la transaction (utilisés pour rollback)
-    * @param reserv Reservation faite sur l'échantillon.
-    * @param liste des valeurs d'annotation à enregistrer
     * @param utilisateur Utilisateur ayant créé l'échantillon.
     * @param doValidation True : la validation sera faite.
     * @param base directory pour enregistrer un fichier associé 
@@ -418,7 +415,7 @@ public interface EchantillonManager
    void createObjectWithCrAnapathManager(Echantillon echantillon, Banque banque, Prelevement prelevement,
       Collaborateur collaborateur, ObjetStatut statut, Emplacement emplacement, EchantillonType type,
       List<CodeAssigne> codesAssigne, Unite quantite, EchanQualite qualite, ModePrepa preparation, Fichier anapath,
-      InputStream anapathStream, List<File> filesCreated, Reservation reserv, List<AnnotationValeur> listAnnoToCreateOrUpdate,
+      InputStream anapathStream, List<File> filesCreated, List<AnnotationValeur> listAnnoToCreateOrUpdate,
       Utilisateur utilisateur, boolean doValidation, String baseDir, boolean isImport);
 
    /**
@@ -439,7 +436,6 @@ public interface EchantillonManager
     * @param quantite Unité de la quantité.
     * @param qualite Qualité de l'échantillon.
     * @param preparation Mode de préparation de l'échantillon.
-    * @param reserv Reservation faite sur l'échantillon.
     * @param liste des valeurs d'annotation à enregistrer
     * @param liste des valeurs d'annotation à supprimer. 
     * @param filesCreated liste de fichier créés
@@ -451,7 +447,7 @@ public interface EchantillonManager
     */
    void updateObjectManager(Echantillon echantillon, Banque banque, Prelevement prelevement, Collaborateur collaborateur,
       ObjetStatut statut, Emplacement emplacement, EchantillonType type, List<CodeAssigne> codesAssigne,
-      List<CodeAssigne> codesToDelete, Unite quantite, EchanQualite qualite, ModePrepa preparation, Reservation reserv,
+      List<CodeAssigne> codesToDelete, Unite quantite, EchanQualite qualite, ModePrepa preparation,
       List<AnnotationValeur> listAnnoToCreateOrUpdate, List<AnnotationValeur> listAnnoToDelete, List<File> filesCreated,
       List<File> filesToDelete, Utilisateur utilisateur, boolean doValidation, List<OperationType> operations, String baseDir);
 
@@ -477,7 +473,6 @@ public interface EchantillonManager
     * @param filesCreated liste de fichier créés
     * @param filesToDelete liste de fichier à supprimer
     * @param stream contenu du CrAnapath
-    * @param reserv Reservation faite sur l'échantillon.
     * @param liste des valeurs d'annotation à enregistrer
     * @param liste des valeurs d'annotation à supprimer. 
     * @param utilisateur Utilisateur ayant modifié l'échantillon.
@@ -488,7 +483,7 @@ public interface EchantillonManager
    public void updateObjectWithCrAnapathManager(Echantillon echantillon, Banque banque, Prelevement prelevement,
       Collaborateur collaborateur, ObjetStatut statut, Emplacement emplacement, EchantillonType type, List<CodeAssigne> codes,
       List<CodeAssigne> codesToDelete, Unite quantite, EchanQualite qualite, ModePrepa preparation, Fichier anapath,
-      InputStream anapathStream, List<File> filesCreated, List<File> filesToDelete, Reservation reserv,
+      InputStream anapathStream, List<File> filesCreated, List<File> filesToDelete,
       List<AnnotationValeur> listAnnoToCreateOrUpdate, List<AnnotationValeur> listAnnoToDelete, Utilisateur utilisateur,
       boolean doValidation, List<OperationType> operations, String baseDir);
 
@@ -677,7 +672,6 @@ public interface EchantillonManager
     * @param preparation
     * @param anapath
     * @param anapathStream
-    * @param reserv
     * @param listAnnoToCreateOrUpdate
     * @param listAnnoToDelete
     * @param utilisateur
@@ -690,7 +684,7 @@ public interface EchantillonManager
    void updateObjectWithNonConformitesManager(Echantillon echantillon, Banque banque, Prelevement prelevement,
       Collaborateur collaborateur, ObjetStatut statut, Emplacement emplacement, EchantillonType type, List<CodeAssigne> codes,
       List<CodeAssigne> codesToDelete, Unite quantite, EchanQualite qualite, ModePrepa preparation, Fichier anapath,
-      InputStream anapathStream, Reservation reserv, List<AnnotationValeur> listAnnoToCreateOrUpdate,
+      InputStream anapathStream, List<AnnotationValeur> listAnnoToCreateOrUpdate,
       List<AnnotationValeur> listAnnoToDelete, Utilisateur utilisateur, boolean doValidation, List<OperationType> operations,
       String baseDir, List<NonConformite> noconfsTraitement, List<NonConformite> noconfsCession);
 
@@ -710,7 +704,6 @@ public interface EchantillonManager
     * @param preparation
     * @param anapath
     * @param anapathStream
-    * @param reserv
     * @param listAnnoToCreateOrUpdate
     * @param utilisateur
     * @param doValidation
@@ -722,7 +715,7 @@ public interface EchantillonManager
     */
    void createObjectWithNonConformitesManager(Echantillon echantillon, Banque banque, Prelevement prelevement,
       Collaborateur collaborateur, ObjetStatut statut, Emplacement emplacement, EchantillonType type, List<CodeAssigne> codes,
-      Unite quantite, EchanQualite qualite, ModePrepa preparation, Fichier anapath, InputStream anapathStream, Reservation reserv,
+      Unite quantite, EchanQualite qualite, ModePrepa preparation, Fichier anapath, InputStream anapathStream, 
       List<AnnotationValeur> listAnnoToCreateOrUpdate, Utilisateur utilisateur, boolean doValidation, String baseDir,
       boolean isImport, List<NonConformite> noconfsTrait, List<NonConformite> noconfsCess);
 
@@ -785,5 +778,19 @@ public interface EchantillonManager
    void updateEchantillon(Echantillon echantillon);
 
    List<Echantillon> findByCodeInListWithPlateforme(List<String> codes, Plateforme pf);
-   
+
+   /**
+    * Calcule le délai de stockage.
+    * Actuellement défini par la différence entre la date de prélèvement et
+    * la date de stockage de l' echantillon.
+    * (anciennement délai de congélation, prenait en compte la date de 
+    * congélation dans un site intermédiaire.
+    * Le délai est persisté et affiché en minutes donc ces dates doivent contenir 
+    * obligatoirement des heures/minutes pour etre prise en compte dans le calcul.
+    * @param echan
+    * @param prel
+    * @return delai en millisecondes
+    * @since 2.2.2
+    */
+   long calculDelaiStockage(Echantillon echan, Prelevement prel); 
 }

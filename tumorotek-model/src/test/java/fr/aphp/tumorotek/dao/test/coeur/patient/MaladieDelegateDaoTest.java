@@ -39,11 +39,10 @@ import org.springframework.test.annotation.Rollback;
 
 import fr.aphp.tumorotek.dao.coeur.patient.MaladieDao;
 import fr.aphp.tumorotek.dao.coeur.patient.PatientDao;
-import fr.aphp.tumorotek.dao.contexte.ContexteDao;
 import fr.aphp.tumorotek.dao.contexte.DiagnosticDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
+import fr.aphp.tumorotek.model.TKDelegateObject;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
-import fr.aphp.tumorotek.model.coeur.patient.serotk.MaladieDelegate;
 import fr.aphp.tumorotek.model.coeur.patient.serotk.MaladieSero;
 import fr.aphp.tumorotek.model.contexte.Categorie;
 
@@ -53,20 +52,20 @@ import fr.aphp.tumorotek.model.contexte.Categorie;
  * Classe de test créée le 19/02/2012.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.6
+ * @version 2.2.3-rc1
  *
  */
 public class MaladieDelegateDaoTest extends AbstractDaoTest //FIXME non lancé dans maven surefire ?
 {
 
    private MaladieDao maladieDao;
-   private ContexteDao contexteDao;
+   // private ContexteDao contexteDao;
    private PatientDao patientDao;
    private DiagnosticDao diagnosticDao;
 
-   public void setContexteDao(final ContexteDao ceDao){
-      this.contexteDao = ceDao;
-   }
+//   public void setContexteDao(final ContexteDao ceDao){
+//      this.contexteDao = ceDao;
+//   }
 
    public void setMaladieDao(final MaladieDao maladieDao){
       this.maladieDao = maladieDao;
@@ -89,9 +88,9 @@ public class MaladieDelegateDaoTest extends AbstractDaoTest //FIXME non lancé d
     * Test l'appel de la méthode toString().
     */
    public void testToString(){
-      MaladieDelegate p1 = maladieDao.findById(4).getDelegate();
-      assertTrue(p1.toString().equals("{Addiction medocs}.CONT1")); //FIXME False
-      p1 = new MaladieDelegate();
+      TKDelegateObject<Maladie> p1 = maladieDao.findById(4).getDelegate();
+      assertTrue(p1.toString().equals("{Addiction medocs}.MaladieSero"));
+      p1 = new MaladieSero();
       assertTrue(p1.toString().equals("{Empty delegate}"));
    }
 
@@ -112,9 +111,9 @@ public class MaladieDelegateDaoTest extends AbstractDaoTest //FIXME non lancé d
       m.setSystemeDefaut(false);
 
       final MaladieSero ms1 = new MaladieSero();
-      ms1.setContexte(contexteDao.findById(1));
+      // ms1.setContexte(contexteDao.findById(1));
       ms1.setDiagnostic(diagnosticDao.findById(2));
-      ms1.setMaladie(m);
+      ms1.setDelegator(m);
       m.setDelegate(ms1);
 
       // Test de l'insertion
@@ -162,23 +161,23 @@ public class MaladieDelegateDaoTest extends AbstractDaoTest //FIXME non lancé d
     * la table transcodeUtilisateur.
     */
    public void testEqualsAndHashCode(){
-      final MaladieDelegate m1 = new MaladieDelegate();
-      final MaladieDelegate m2 = new MaladieDelegate();
+      final MaladieSero m1 = new MaladieSero();
+      final MaladieSero m2 = new MaladieSero();
       assertFalse(m1.equals(null));
       assertNotNull(m2);
       assertTrue(m1.equals(m2)); //FIXME False
       assertTrue(m1.equals(m2));
       assertTrue(m1.hashCode() == m2.hashCode());
 
-      m1.setMaladie(maladieDao.findById(1));
+      m1.setDelegator(maladieDao.findById(1));
       assertFalse(m1.equals(m2));
       assertFalse(m2.equals(m1));
       assertTrue(m1.hashCode() != m2.hashCode());
-      m2.setMaladie(maladieDao.findById(2));
+      m2.setDelegator(maladieDao.findById(2));
       assertFalse(m1.equals(m2));
       assertFalse(m2.equals(m1));
       assertTrue(m1.hashCode() != m2.hashCode());
-      m1.setMaladie(maladieDao.findById(2));
+      m1.setDelegator(maladieDao.findById(2));
       assertTrue(m1.equals(m2));
       assertTrue(m2.equals(m1));
       assertTrue(m1.hashCode() == m2.hashCode());

@@ -89,7 +89,7 @@ public class ConsentTypeDaoTest extends AbstractDaoTest
     */
    public void testToString(){
       ConsentType ct1 = consentTypeDao.findById(1);
-      assertTrue(ct1.toString().equals("{" + ct1.getType() + "}"));
+      assertTrue(ct1.toString().equals("{" + ct1.getNom() + "}"));
       ct1 = new ConsentType();
       assertTrue(ct1.toString().equals("{Empty ConsentType}"));
    }
@@ -136,19 +136,19 @@ public class ConsentTypeDaoTest extends AbstractDaoTest
    @Rollback(false)
    public void testCrudConsentType() throws Exception{
       final ConsentType ct = new ConsentType();
-      ct.setType("INCONNU");
+      ct.setNom("INCONNU");
       ct.setPlateforme(plateformeDao.findById(1));
       // Test de l'insertion
       consentTypeDao.createObject(ct);
-      assertEquals(new Integer(4), ct.getConsentTypeId());
+      assertEquals(new Integer(4), ct.getId());
 
       // Test de la mise à jour
       final ConsentType ct2 = consentTypeDao.findById(new Integer(4));
       assertNotNull(ct2);
-      assertTrue(ct2.getType().equals("INCONNU"));
-      ct2.setType(updatedType);
+      assertTrue(ct2.getNom().equals("INCONNU"));
+      ct2.setNom(updatedType);
       consentTypeDao.updateObject(ct2);
-      assertTrue(consentTypeDao.findById(new Integer(4)).getType().equals(updatedType));
+      assertTrue(consentTypeDao.findById(new Integer(4)).getNom().equals(updatedType));
 
       // Test de la délétion
       consentTypeDao.removeObject(new Integer(4));
@@ -162,9 +162,9 @@ public class ConsentTypeDaoTest extends AbstractDaoTest
       final String type = "Type";
       final String type2 = "Type2";
       final ConsentType ct1 = new ConsentType();
-      ct1.setType(type);
+      ct1.setNom(type);
       final ConsentType ct2 = new ConsentType();
-      ct2.setType(type);
+      ct2.setNom(type);
 
       // L'objet 1 n'est pas égal à null
       assertFalse(ct1.equals(null));
@@ -175,25 +175,25 @@ public class ConsentTypeDaoTest extends AbstractDaoTest
       assertTrue(ct2.equals(ct1));
 
       // Vérification de la différenciation de 2 objets
-      ct2.setType(type2);
+      ct2.setNom(type2);
       assertFalse(ct1.equals(ct2));
       assertFalse(ct2.equals(ct1));
 
       //passe la clef naturelle type a nulle pour un des objets
-      ct2.setType(null);
+      ct2.setNom(null);
       assertFalse(ct1.equals(ct2));
       assertFalse(ct2.equals(ct1));
 
       //passe la clef naturelle type a nulle pour l'autre objet
-      ct1.setType(null);
+      ct1.setNom(null);
       assertTrue(ct1.equals(ct2));
-      ct2.setType(type);
+      ct2.setNom(type);
       assertFalse(ct1.equals(ct2));
 
       //plateforme
       final Plateforme pf1 = plateformeDao.findById(1);
       final Plateforme pf2 = plateformeDao.findById(2);
-      ct1.setType(ct2.getType());
+      ct1.setNom(ct2.getNom());
       ct1.setPlateforme(pf1);
       ct2.setPlateforme(pf1);
       assertTrue(ct1.equals(ct2));
@@ -212,14 +212,14 @@ public class ConsentTypeDaoTest extends AbstractDaoTest
    public void testHashCode(){
       final String type = "Type";
       final ConsentType ct1 = new ConsentType();
-      ct1.setConsentTypeId(1);
-      ct1.setType(type);
+      ct1.setId(1);
+      ct1.setNom(type);
       final ConsentType ct2 = new ConsentType();
-      ct2.setConsentTypeId(2);
-      ct2.setType(type);
+      ct2.setId(2);
+      ct2.setNom(type);
       final ConsentType ct3 = new ConsentType();
-      ct3.setConsentTypeId(3);
-      ct3.setType(null);
+      ct3.setId(3);
+      ct3.setNom(null);
       assertTrue(ct3.hashCode() > 0);
 
       final Plateforme pf1 = plateformeDao.findById(1);

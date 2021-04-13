@@ -44,119 +44,131 @@ import org.zkoss.zul.RowRenderer;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
-public class ImportColonneRowRenderer implements RowRenderer<ImportColonne>
-{
+/**
+ * @version 2.2.1
+ * @author Mathieu BARTHELEMY
+ *
+ */
+public class ImportColonneRowRenderer implements RowRenderer<ImportColonne> {
 
-   @Override
-   public void render(final Row row, final ImportColonne data, final int index) throws Exception{
-      final ImportColonne colonne = data;
+	@Override
+	public void render(final Row row, final ImportColonne data, final int index) throws Exception {
+		final ImportColonne colonne = data;
 
-      // nom colonne
-      final Label colonneLabel = new Label(colonne.getNom());
-      colonneLabel.setParent(row);
+		// nom colonne
+		final Label colonneLabel = new Label(colonne.getNom());
+		colonneLabel.setParent(row);
 
-      // Champ associé
-      String champ = "";
-      if(colonne.getChamp() != null){
-         if(colonne.getChamp().getChampEntite() != null){
-            champ = getLabelForChampEntite(colonne.getChamp().getChampEntite());
-         }else{
-            champ = colonne.getChamp().getChampAnnotation().getNom();
-         }
-      }else{ // subderive header
-         if(colonne.getNom().equals("code.parent")){
-            champ = Labels.getLabel("import.colonne.subderive.parent");
-         }else if(colonne.getNom().equals("qte.transf")){
-            champ = Labels.getLabel("import.colonne.subderive.qte.transf");
-         }else if(colonne.getNom().equals("evt.date")){
-            champ = Labels.getLabel("import.colonne.subderive.evt.date");
-         }
-      }
-      final Label champLabel = new Label(champ);
-      champLabel.setParent(row);
+		// Champ associé
+		String champ = "";
+		if (colonne.getChamp() != null) {
+			if (colonne.getChamp().getChampEntite() != null) {
+				champ = getLabelForChampEntite(colonne.getChamp().getChampEntite());
+			} else if (colonne.getChamp().getChampDelegue() != null) {
+				champ = Labels.getLabel(colonne.getChamp().getChampDelegue()
+						.getILNLabelForChampDelegue(SessionUtils.getCurrentContexte()));
+			} else {
+				champ = colonne.getChamp().getChampAnnotation().getNom();
+			}
+		} else { // subderive header
+			if (colonne.getNom().equals("code.parent")) {
+				champ = Labels.getLabel("import.colonne.subderive.parent");
+			} else if (colonne.getNom().equals("qte.transf")) {
+				champ = Labels.getLabel("import.colonne.subderive.qte.transf");
+			} else if (colonne.getNom().equals("evt.date")) {
+				champ = Labels.getLabel("import.colonne.subderive.evt.date");
+			}
+		}
+		final Label champLabel = new Label(champ);
+		champLabel.setParent(row);
 
-      // format
-      String format = "";
-      if(colonne.getChamp() != null){
-         if(colonne.getChamp().getChampEntite() != null){
-            if(colonne.getChamp().getChampEntite().getNom().equals("EmplacementId")){
-               format = Labels.getLabel("importColonne.Type.Emplacement");
-            }else if(colonne.getChamp().getChampEntite().getQueryChamp() != null){
-               format = "thesaurus";
-            }else{
-               format = colonne.getChamp().getChampEntite().getDataType().getType();
-            }
-         }else{
-            format = colonne.getChamp().getChampAnnotation().getDataType().getType();
-         }
-      }else{ // subderive header
-         if(colonne.getNom().equals("code.parent")){
-            format = "alphanum";
-         }else if(colonne.getNom().equals("qte.transf")){
-            format = "num";
-         }else if(colonne.getNom().equals("evt.date")){
-            format = "datetime";
-         }
-      }
-      final Label formatLabel = new Label(format);
-      formatLabel.setParent(row);
+		// format
+		String format = "";
+		if (colonne.getChamp() != null) {
+			if (colonne.getChamp().getChampEntite() != null) {
+				if (colonne.getChamp().getChampEntite().getNom().equals("EmplacementId")) {
+					format = Labels.getLabel("importColonne.Type.Emplacement");
+				} else if (colonne.getChamp().getChampEntite().getQueryChamp() != null) {
+					format = "thesaurus";
+				} else {
+					format = colonne.getChamp().getChampEntite().getDataType().getType();
+				}
+			} else if (colonne.getChamp().getChampDelegue() != null) {
+				format = colonne.getChamp().getChampDelegue().getDataType().getType();
+			} else {
+				format = colonne.getChamp().getChampAnnotation().getDataType().getType();
+			}
+		} else { // subderive header
+			if (colonne.getNom().equals("code.parent")) {
+				format = "alphanum";
+			} else if (colonne.getNom().equals("qte.transf")) {
+				format = "num";
+			} else if (colonne.getNom().equals("evt.date")) {
+				format = "datetime";
+			}
+		}
+		final Label formatLabel = new Label(format);
+		formatLabel.setParent(row);
 
-      // entité
-      String entite = "";
-      if(colonne.getChamp() != null){
-         if(colonne.getChamp().getChampEntite() != null){
-            entite = Labels.getLabel("Entite." + colonne.getChamp().getChampEntite().getEntite().getNom());
-         }else{
-            entite =
-               Labels.getLabel("Entite." + colonne.getChamp().getChampAnnotation().getTableAnnotation().getEntite().getNom());
-         }
-      }else{
-         entite = Labels.getLabel("import.colonne.subderive.header");
-         //			if (colonne.getNom().equals("code.parent")) {
-         //				entite = "alphanum"; 
-         //			} else if (colonne.getNom().equals("qte.transf")) {
-         //				format = "num";  
-         //			} else if (colonne.getNom().equals("evt.date")) {
-         //				format = "datetime"; 
-         //			}
-      }
-      final Html entiteLabel = new Html(entite);
-      entiteLabel.setParent(row);
+		// entité
+		String entite = "";
+		if (colonne.getChamp() != null) {
+			if (colonne.getChamp().getChampEntite() != null) {
+				entite = Labels.getLabel("Entite." + colonne.getChamp().getChampEntite().getEntite().getNom());
+			} else if (colonne.getChamp().getChampDelegue() != null) {
+				entite = Labels.getLabel("Entite." + colonne.getChamp().getChampDelegue().getEntite().getNom());
+			} else {
+				entite = Labels.getLabel(
+						"Entite." + colonne.getChamp().getChampAnnotation().getTableAnnotation().getEntite().getNom());
+			}
+		} else {
+			entite = Labels.getLabel("import.colonne.subderive.header");
+			// if (colonne.getNom().equals("code.parent")) {
+			// entite = "alphanum";
+			// } else if (colonne.getNom().equals("qte.transf")) {
+			// format = "num";
+			// } else if (colonne.getNom().equals("evt.date")) {
+			// format = "datetime";
+			// }
+		}
+		final Html entiteLabel = new Html(entite);
+		entiteLabel.setParent(row);
 
-      // obligatoire
-      Boolean ob = false;
-      if(colonne.getChamp() != null){
-         if(colonne.getChamp().getChampEntite() != null){
-            ob = !colonne.getChamp().getChampEntite().isNullable();
-         }
-      }else{ // subderive header
-         ob = true;
-      }
-      final Label obligatoireLabel = new Label(ObjectTypesFormatters.booleanLitteralFormatter(ob));
-      if(ob){
-         obligatoireLabel.setSclass("requiredMark");
-      }
-      obligatoireLabel.setParent(row);
-   }
+		// obligatoire
+		Boolean ob = false;
+		if (colonne.getChamp() != null) {
+			if (colonne.getChamp().getChampEntite() != null) {
+				ob = !colonne.getChamp().getChampEntite().isNullable();
+			}
+		} else { // subderive header
+			ob = true;
+		}
+		final Label obligatoireLabel = new Label(ObjectTypesFormatters.booleanLitteralFormatter(ob));
+		if (ob) {
+			obligatoireLabel.setSclass("requiredMark");
+		}
+		obligatoireLabel.setParent(row);
+	}
 
-   public String getLabelForChampEntite(final ChampEntite champ){
-      final StringBuffer iProperty = new StringBuffer();
-      iProperty.append("Champ.");
-      iProperty.append(champ.getEntite().getNom());
-      iProperty.append(".");
+	public String getLabelForChampEntite(final ChampEntite champ) {
+		final StringBuffer iProperty = new StringBuffer();
+		iProperty.append("Champ.");
+		iProperty.append(champ.getEntite().getNom());
+		iProperty.append(".");
 
-      String champOk = "";
-      // si le nom du champ finit par "Id", on le retire
-      if(champ.getNom().endsWith("Id")){
-         champOk = champ.getNom().substring(0, champ.getNom().length() - 2);
-      }else{
-         champOk = champ.getNom();
-      }
-      iProperty.append(champOk);
+		String champOk = "";
+		// si le nom du champ finit par "Id", on le retire
+		if (champ.getNom().endsWith("Id")) {
+			champOk = champ.getNom().substring(0, champ.getNom().length() - 2);
+		} else {
+			champOk = champ.getNom();
+		}
+		iProperty.append(champOk);
 
-      // on ajoute la valeur du champ
-      return Labels.getLabel(iProperty.toString());
-   }
+		// on ajoute la valeur du champ
+		return Labels.getLabel(iProperty.toString());
+	}
 
 }

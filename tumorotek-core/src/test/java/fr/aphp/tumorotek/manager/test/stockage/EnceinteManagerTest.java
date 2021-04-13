@@ -74,7 +74,7 @@ import static org.junit.Assert.*;
  * Classe créée le 22/03/10.
  *
  * @author Pierre Ventadour.
- * @version 2.0
+ * @version 2.2.1
  *
  */
 public class EnceinteManagerTest extends AbstractManagerTest4
@@ -2743,5 +2743,26 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       fs.addAll(enceintes);
       fs.addAll(terminales);
       cleanUpFantomes(fs);
+   }
+   
+   // @since 2.2.1
+   @Test
+   public void testGetDistinctBanquesFromTkObjectsManager() {
+	   List<Banque> banks = enceinteManager.getDistinctBanquesFromTkObjectsManager(enceinteManager.findByIdManager(1));
+	   
+	   // enceinte premier niveau -> contient la terminale
+	   assertTrue(banks.size() == 1);
+	   assertTrue(banks.contains(banqueDao.findById(1)));
+	   
+	   // enceinte deuxième niveau -> contient la terminale
+	   banks = enceinteManager.getDistinctBanquesFromTkObjectsManager(enceinteManager.findByIdManager(3));
+	   assertTrue(banks.size() == 1);
+	   assertTrue(banks.contains(banqueDao.findById(1)));
+	   
+	   banks = enceinteManager.getDistinctBanquesFromTkObjectsManager(enceinteManager.findByIdManager(2));
+	   assertTrue(banks.isEmpty());
+
+	   banks = enceinteManager.getDistinctBanquesFromTkObjectsManager(null);
+	   assertTrue(banks.isEmpty());
    }
 }

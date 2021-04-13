@@ -134,8 +134,10 @@ public class ResumePatient
 
       if(this.maladie != null){
          linkMaladieLabel.setValue(this.maladie.getLibelle());
-         if(this.maladie.getCode() != null){
+         if (this.maladie.getCode() != null) {
             codeDiagLabel.setValue(this.maladie.getCode());
+         } else {
+        	 codeDiagLabel.setValue(null);
          }
          setPatientProperties(this.maladie.getPatient());
       }else{

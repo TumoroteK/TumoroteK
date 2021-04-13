@@ -48,7 +48,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Interface pour le DAO du bean de domaine Utilisateur.
  *
  * @author Pierre Ventadour
- * @version 10/09/2009
+ * @version 2.2.1
  *
  */
 public interface UtilisateurDao extends GenericDaoJpa<Utilisateur, Integer>
@@ -123,14 +123,6 @@ public interface UtilisateurDao extends GenericDaoJpa<Utilisateur, Integer>
    List<Utilisateur> findByCollaborateur(Collaborateur collaborateur);
 
    /**
-    * Recherche les utilisateurs dont une réservation est passée en paramètre.
-    * @param reservationId Clé primaire de la réservation pour laquelle on 
-    * recherche des utilisateurs.
-    * @return une liste de utilisateurs.
-    */
-   List<Utilisateur> findByReservationId(Integer reservationId);
-
-   /**
     * Recherche l'utilisateur dont l'identifiant passé en paramètre.
     * L'association avec la table COLLABORATEUR sera chargée par 
     * l'intermédiaire d'un fetch.
@@ -161,7 +153,7 @@ public interface UtilisateurDao extends GenericDaoJpa<Utilisateur, Integer>
     * @param pfs plateformes d'origine
     * @return une liste d'utilisateurs.
     */
-   List<Utilisateur>  findByOrderWithArchiveIncludeSuperAdmin(boolean archive, List<Plateforme> pfs);
+   List<Utilisateur> findByOrderWithArchiveIncludeSuperAdmin(boolean archive, List<Plateforme> pfs);
    
    /**
     * Recherche les utilisateurs dont le login et le mdp sont égaux 
@@ -171,5 +163,15 @@ public interface UtilisateurDao extends GenericDaoJpa<Utilisateur, Integer>
     * @return une liste d'utilisateurs.
     */
    List<Utilisateur> findByLoginPassAndArchive(String login, String password, boolean archive);
+   
+   /**
+    * Recherche les utilisateurs superadmin.
+    * @param boolean archive ou non
+    * @param boolean super ou non
+    * @return une liste d'utilisateurs.
+    * @since 2.2.1
+    */
+   List<Utilisateur> findBySuperAndArchive(boolean archive, boolean isSuper);
+
 
 }

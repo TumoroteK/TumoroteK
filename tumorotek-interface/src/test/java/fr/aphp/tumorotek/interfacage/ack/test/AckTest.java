@@ -249,7 +249,7 @@ public class AckTest
    }
 
    // TODO : Test à corriger pour être lancé avec maven test - JDI
-   //@org.junit.Test
+   @org.junit.Test
    @DirtiesContext
    public void createUDMAckBatchFromCSV() throws Exception{
 
@@ -260,10 +260,10 @@ public class AckTest
       dmeR.setLogiciel(hm);
 
       String line = "";
-      final String cvsSplitBy = "\t";
+      final String cvsSplitBy = ",";
       final File csvFile = new File(
-         "/home/mathieu/Documents/tumorotek/documents/migrationv2_diags/migrationsHCL/tk2diamic_rattrapage01a062017.csv");
-      final String base_url = "http://di57su:8080/tumo2/ext/prelevement?id=&prelId&";
+         "/home/mathieu/Dropbox/TumoroteK/maintenances/BDX_up/rattrapage_URD/ratt.csv");
+      final String base_url = "http://CHUTUMOROTEK2:8080/tumorotek/ext/prelevement?id=&prelId&";
 
       BufferedReader br = null;
       final Prelevement p = new Prelevement();

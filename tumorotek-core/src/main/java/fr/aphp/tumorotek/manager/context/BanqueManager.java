@@ -65,7 +65,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Cession au travers de la banque.
  *
  * @author Pierre Ventadour
- * @version 2.1
+ * @version 2.2.1
  *
  */
 public interface BanqueManager
@@ -269,9 +269,19 @@ public interface BanqueManager
     * Les banques doivent être administrées par l'utilisateur 
     * et partager les conteneurs des emplacements attribués 
     * aux objets issus du prelevement.
+    * @since 2.2.1 les banques doivent être de même contexte
     * @param p Prelevement
     * @param utilisateur 
     * @return liste de Banque
     */
    List<Banque> findBanqueForSwitchManager(Prelevement p, Utilisateur u);
+
+   /**
+	 * Recherche toutes les banques donnant l'accès au 
+	 * conteneur passé en paramètre.  
+	 * @param conteneur
+	 * @return liste de banques 
+	 * @since 2.2.1
+	 */
+   List<Banque> findByConteneurManager(Conteneur c1);
 }

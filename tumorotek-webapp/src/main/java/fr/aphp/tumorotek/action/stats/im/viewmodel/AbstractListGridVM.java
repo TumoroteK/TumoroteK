@@ -40,6 +40,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.zkoss.bind.annotation.Command;
 import org.zkoss.bind.annotation.ContextParam;
@@ -68,7 +69,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * Date: 12/05/2015
  *
  * @author Julien HUSSON, Marc DESCHAMPS, Mathieu BARTHELEMY
- * @version  2.1
+ * @version  2.2.3-genno
  *
  */
 public abstract class AbstractListGridVM
@@ -82,7 +83,7 @@ public abstract class AbstractListGridVM
 
    private SModele selectedModel;
    private final List<Banque> gridBanques = new ArrayList<>();
-   private final List<Indicateur> gridIndicateurs = new ArrayList<>();
+   private final List<IndicateurDecorator> gridIndicateurs = new ArrayList<IndicateurDecorator>();
    private TKThesaurusObject subdivManager = null;
    private Subdivision gridSubdivision;
 
@@ -132,7 +133,8 @@ public abstract class AbstractListGridVM
       getGridBanques().clear();
       getGridIndicateurs().clear();
 
-      getGridIndicateurs().addAll(ManagerLocator.getIndicateurManager().findBySModeleManager(selectedModel));
+      getGridIndicateurs().addAll(decorateIndicateurs(ManagerLocator.getIndicateurManager()
+    		  .findBySModeleManager(selectedModel)));
       getGridBanques().addAll(ManagerLocator.getSModeleManager().getBanquesManager(selectedModel));
       setGridSubdivision(selectedModel.getSubdivision());
       Collections.sort(getGridBanques());
@@ -182,11 +184,11 @@ public abstract class AbstractListGridVM
       }
 
       if(dataMap != null){
-         for(final Indicateur idc : getGridIndicateurs()){
+         for(final IndicateurDecorator idc : getGridIndicateurs()){
             Banque b = null;
             Integer bankId;
             final Integer previousBankId = 0;
-            for(final ValueToExport o : dataMap.get(idc)){
+            for(final ValueToExport o : dataMap.get(idc.getIndicateur())){
                bankId = o.getBanqueId();
                // recherche la banque si besoin
                if(!previousBankId.equals(bankId)){
@@ -215,11 +217,11 @@ public abstract class AbstractListGridVM
       this.subdivManager = subdivManager;
    }
 
-   public List<Indicateur> getGridIndicateurs(){
+   public List<IndicateurDecorator> getGridIndicateurs(){
       return gridIndicateurs;
    }
 
-   public void setGridIndicateurs(final List<Indicateur> ics){
+   public void setGridIndicateurs(final List<IndicateurDecorator> ics){
       this.gridIndicateurs.clear();
       this.gridIndicateurs.addAll(ics);
    }
@@ -343,5 +345,39 @@ public abstract class AbstractListGridVM
 
    public void setModelList(List<SModele> modelList){
       this.modelList = modelList;
+   }
+   
+   /**
+    * Decores indicateurs
+    * @since 2.2.3-genno
+    * @param indics
+    * @return list decorateurs
+    */
+   protected List<IndicateurDecorator> decorateIndicateurs(List<Indicateur> indics) {
+	   List<IndicateurDecorator> decos = new ArrayList<IndicateurDecorator>();
+	   
+	   if (indics != null) {
+		   decos.addAll(indics.stream().map(i -> new IndicateurDecorator(i))
+			.collect(Collectors.toList()));
+	   }
+	   
+	   return decos;
+   }
+   
+   /**
+    * Extraits les indicateurs depuis les decorateurs
+    * @since 2.2.3-genno
+    * @param decos
+    * @return list indicateurs
+    */
+   protected List<Indicateur> unDecorateIndicateurs(List<IndicateurDecorator> decos) {
+	   List<Indicateur> indics = new ArrayList<Indicateur>();
+	   
+	   if (decos != null) {
+		   indics.addAll(decos.stream().map(d -> d.getIndicateur())
+			.collect(Collectors.toList()));
+	   }
+	   
+	   return indics;
    }
 }

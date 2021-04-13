@@ -35,7 +35,7 @@
 -->
 <zk>
 	<div width="250px">
-		<datebox id="dateBox" format="d/M/y" cols="8"
+		<datebox id="dateBox" format="dd/MM/yyyy" cols="8"
 			lenient="true" />
 		<timebox id="timeBox" format="HH:mm" />
 	</div>

@@ -48,7 +48,7 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
  * Interface créée le 02/10/09.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.2.3-genno
  *
  */
 public interface MaladieDao extends GenericDaoJpa<Maladie, Integer>
@@ -60,6 +60,16 @@ public interface MaladieDao extends GenericDaoJpa<Maladie, Integer>
     * @return Liste de Maladies.
     */
    List<Maladie> findByLibelle(String libelle);
+   
+   /**
+    * Recherche les maladies dont le libelle correspond à celui 
+    * fourni en paramètre pour un patient donnée.
+    * @param libelle Libelle des maladies recherchées.
+    * @param patient Patient
+    * @return Liste de Maladies.
+    * @since 2.2.3-genno
+    */
+   List<Maladie> findByLibelleAndPatient(String libelle, Patient patient);
 
    /**
     * Recherche les maladies dont le code est 'like' le paramètre.

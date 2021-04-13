@@ -1,0 +1,395 @@
+<!--
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ * 
+ * Ce logiciel est un programme informatique servant à la gestion de 
+ * l'activité de biobanques. 
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous 
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le 
+ * CNRS et l'INRIA sur le site "http://www.cecill.info". 
+ * En contrepartie de l'accessibilité au code source et des droits de   
+ * copie, de modification et de redistribution accordés par cette 
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les 
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les 
+ * risques associés au chargement,  à l'utilisation,  à la modification 
+ * et/ou au  développement et à la reproduction du logiciel par 
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
+ * le rendre complexe à manipuler et qui le réserve donc à des 	
+ * développeurs et des professionnels  avertis possédant  des 
+ * connaissances  informatiques approfondies.  Les utilisateurs sont 
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser 
+ * et l'exploiter dans les mêmes conditions de sécurité. 
+ *	
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous 
+ * avez pris connaissance de la licence CeCILL, et que vous en avez 
+ * accepté les termes. 
+-->
+<window id="fwinModifMultiPrelevement" border="none" apply="fr.aphp.tumorotek.action.prelevement.serotk.FicheModifMultiPrelevementSero">
+	<panel id="winPanel" title="${c:l('fichePatient.panel.title')}"
+	 	sclass="fichePanelv2" closable="true">
+		<panelchildren id="panelChildrenWithScroll" style="overflow:scroll">
+			<grid id="formGrid" fixedLayout="true" sclass="gridForm1">
+				<columns>
+					<column width="200px" />
+					<column />
+				</columns>
+				<rows>
+					<row spans="2">
+						<vbox width="100%">
+							<label value="${c:l('bloc.prelevement.informations.prelevement')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					<!-- Numero labo -->
+					<row>
+						<label value="${c:l('Champ.Prelevement.NumeroLabo')}" sclass="formLabel"/>
+						<div>					
+							<label id="numeroLaboLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="numeroLaboMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>	
+					</row>
+					<row>
+					<!-- Nature -->
+						<label value="${c:l('Champ.Prelevement.Nature')}" sclass="formLabel" />
+						<div>					
+							<label id="natureLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="natureMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>
+					<row>	
+					<!-- Date prelevement-->
+						<label value="${c:l('Champ.Prelevement.DatePrelevement')}" sclass="formLabel" />
+						<div>					
+							<label id="datePrelevementLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="datePrelevementMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>					
+					</row>					
+					<row>
+					<!-- Type -->
+						<label value="${c:l('Champ.Prelevement.PrelevementType')}" sclass="formLabel" />
+						<div>					
+							<label id="prelevementTypeLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="prelevementTypeMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>
+					<row>
+					<!-- Sterile -->
+						<label value="${c:l('general.sterile')}" sclass="formLabel" />
+						<div>					
+							<label id="sterileLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="sterileMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>
+					<row>
+					<!-- Risque -->
+						<label value="${c:l('Champ.Prelevement.Risque')}" sclass="formLabel" />
+						<div>					
+							<label id="risqueLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic" />
+							<label id="risqueMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>	
+					<row>
+					<!-- Service -->
+						<label value="${c:l('Champ.Prelevement.ServicePreleveur')}" sclass="formLabel" />
+						<div>					
+							<label id="serviceLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="serviceMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>	
+					</row>	
+					<row>
+					<!-- Preleveur -->
+						<label value="${c:l('Champ.Prelevement.Preleveur')}" sclass="formLabel" />
+						<div>					
+							<label id="preleveurLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="preleveurMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+						
+					</row>
+					
+					<!-- Protocoles -->
+					<row>
+						<label value="${c:l('Champ.Prelevement.SEROLOGIE.Protocoles')}" sclass="formLabel" />
+						<div>					
+							<label id="protocolesLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="protocoleMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>
+					
+					<!-- Conditionnenemt -->
+					<row spans="2">
+						<vbox width="100%">
+							<label value="${c:l('fichePrelevement.group.conditionnement')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					<row>
+					<!-- conditType -->
+						<label value="${c:l('Champ.Prelevement.ConditType')}" sclass="formLabel" />
+						<div>					
+							<label id="conditTypeLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="conditTypeMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>					
+					</row>
+					<row>
+					<!--Condit nb -->
+					<label value="${c:l('Champ.Prelevement.ConditNbr')}" sclass="formLabel" />
+						<div>
+								<label id="conditNbLabelChanged" 
+									sclass="formValue"
+									style="font-style:italic"
+								/>
+								<label id="conditNbMultiLabel"
+									value="${c:l('general.edit.modification.multiple')}" 
+									sclass="formLink" />
+						</div>
+					</row>
+					<row>
+					<!-- Condit Milieu -->
+					<label sclass="formLabel" value="${c:l('Champ.Prelevement.ConditMilieu')}" />
+						<div>
+							<label id="conditMilieuLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="conditMilieuMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>	
+					
+					<!-- Consentement -->
+					<row spans="2">
+						<vbox width="100%">
+							<label value="${c:l('fichePrelevement.group.consentement')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>	
+					<row>
+					<!-- Consent type -->
+					<label sclass="formLabel" value="${c:l('Champ.Prelevement.ConsentType')}" />
+						<div>
+							<label id="consentTypeLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="consentTypeMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>	
+					<row>
+					<!-- Consent date -->
+					<label sclass="formLabel" value="${c:l('Champ.Prelevement.ConsentDate')}" />
+						<div>
+							<label id="consentDateLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="consentDateMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>	
+					
+					<!-- Départ du site préleveur -->
+					<row spans="2">
+						<vbox>
+							<label value="${c:l('fichePrelevement.departPreleveur')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					<row>
+					<!-- Date depart -->
+						<label sclass="formLabel" value="${c:l('Champ.Prelevement.DateDepart')}" />
+						<div>
+							<label id="dateDepartLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="dateDepartMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>
+					<row>	
+					<!-- Transporteur -->
+						<label sclass="formLabel" value="${c:l('Champ.Prelevement.Transporteur')}" />
+						<div>
+							<label id="transporteurLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="transporteurMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>
+					<row>	
+					<!-- Temp. transport -->
+						<label sclass="formLabel" value="${c:l('Champ.Prelevement.TransportTemp')}" />
+						<div>
+							<label id="transportTempLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="transportTempMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>	
+					
+					<!-- Arrivée -->
+					<row spans="2">
+						<vbox>
+							<label value="${c:l('fichePrelevement.arriveeStockage')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					
+					<row>
+					<!-- Date arrivee -->
+						<label sclass="formLabel" value="${c:l('Champ.Prelevement.DateArrivee')}" />
+						<div>
+							<label id="dateArriveeLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="dateArriveeMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>
+					<row>	
+					<!-- Operateur -->
+					<label sclass="formLabel" value="${c:l('Champ.Prelevement.Operateur')}" />
+						<div>
+							<label id="operateurLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="operateurMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>
+					<row>	
+					<!-- Quantite -->
+						<label sclass="formLabel" value="${c:l('Champ.Prelevement.Quantite')}" />
+						<div>
+							<label id="quantiteLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="quantiteMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>
+					<row>	
+					<!-- Conforme à l'arrivée -->
+						<label id="nonConformeArriveeLabel" value="${c:l('Champ.Prelevement.ConformeArrivee')}" sclass="formLabel" />
+						<div>
+							<label id="nonConformeLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="nonConformeMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>
+					
+					<!-- Informations complémentaires -->
+					<row spans="2">
+						<vbox>
+							<label value="${c:l('fichePrelevementSero.infosComp')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					
+					<!-- Complément diagnostic -->
+					<row>
+						<label sclass="formLabel" value="${c:l('Champ.Prelevement.SEROLOGIE.Libelle')}" />
+						<div>
+							<label id="complDiagLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="complDiagMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>
+							
+				</rows>
+				
+			</grid>
+		</panelchildren>
+		<toolbar height="100%" align="end">
+			<hbox spacing="5" align="center">
+				<button id="validateModifMultiple" label="${c:l('general.validate')}" height="24px"
+					image="/images/icones/save.png" sclass="buttonv2"/>
+				<button id="revert" label="${c:l('general.cancel')}" height="24px"
+					image="/images/icones/cancel.png" sclass="buttonv2"/>
+			</hbox>
+		</toolbar>
+	</panel>
+</window>

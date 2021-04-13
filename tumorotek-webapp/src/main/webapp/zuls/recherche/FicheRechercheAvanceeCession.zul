@@ -44,10 +44,9 @@
 
 	<window id="fwinRechercheAvanceeCession" border="none"
 		apply="fr.aphp.tumorotek.action.recherche.FicheRechercheAvanceeCession">
-		<panel collapsible="false" sclass="fichePanelv2"
-			id="winPanel">
-			<panelchildren id="panelChildrenWithScroll">
-				<borderlayout id="bLayout">
+		<div style="display: flex; flex-direction: column; min-height: 100%; max-height: 100%">
+			<div style="display: flex; flex: 1" id="topDivForScroll">
+				<borderlayout id="bLayout" style="height: inherit">
 					<west sclass="tabBorderLayout" id="panelSearchHistorique" title="Historique"
 						size="24%" splittable="true" collapsible="true" open="false" vflex="1">
 						<groupbox width="98%" open="true" >
@@ -286,14 +285,14 @@
 						</grid>
 					</center>
 				</borderlayout>
-			</panelchildren>
-			<toolbar height="30px" id="toolbarEchan" align="end">
-				<hbox spacing="5" align="center">
-					<button id="find" label="${c:l('general.find')}"
+			</div>
+			<div style="display: flex; min-height: 30px; max-height: 30px">
+				<toolbar height="30px" id="toolbarEchan" align="end" hflex="1">
+					<button id="find" label="${c:l('general.find')}" hflex="1"
 						height="24px" visible="true" image="/images/icones/find.png"
 						sclass="buttonv2" />
-				</hbox>
-			</toolbar>
-		</panel>
+				</toolbar>
+			</div>
+		</div>
 	</window>
 </zk>

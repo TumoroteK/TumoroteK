@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:camel="http://camel.apache.org/schema/spring"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:camel="http://camel.apache.org/schema/spring"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://camel.apache.org/schema/spring 
        http://camel.apache.org/schema/spring/camel-spring.xsd">
@@ -61,9 +61,8 @@
 		<property name="recepteurManager" ref="recepteurManager" />
 	</bean>
 	
-	<!--  Storage Robot since v2.1 -->
+	<!--  Storage Robot since v2.2.1-IRELEC -->
 	<bean id="storageRobotSender" class="fr.aphp.tumorotek.interfacage.sender.impl.StorageRobotSenderImpl">
-		<property name="emplacementManager" ref="emplacementManager"/>
 		<property name="camelTemplate" ref="camelTemplate"/> 
 		<property name="camelConfigLocation" ref="camelConfigLocation" />
 	</bean>
@@ -80,7 +79,15 @@
 		<property name="camelConfigLocation" ref="camelConfigLocation" />
 	</bean>
 	
+	<bean id="demLigResultProcessor" class="fr.aphp.tumorotek.interfacage.sgl.view.processor.DemLigResultProcessor">
+		<property name="tableAnnotationManager" ref="tableAnnotationManager" />
+		<property name="entiteManager" ref="entiteManager" />
+	</bean>
+	
 	<bean id="viewHandlerFactory" class="fr.aphp.tumorotek.interfacage.sgl.view.impl.ViewHandlerFactoryImpl">
 		<property name="viewHandler" ref="viewHandler"/> 
+		<property name="demLigResultProcessor" ref="demLigResultProcessor" /> 
 	</bean>
+	
+	<bean id="gennoFixProcessor" class="fr.aphp.tumorotek.interfacage.sgl.GennoFixProcessor"/>	   				
 </beans>

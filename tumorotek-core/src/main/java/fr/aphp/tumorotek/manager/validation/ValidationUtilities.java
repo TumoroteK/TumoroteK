@@ -43,12 +43,11 @@ import org.springframework.validation.Errors;
 /**
  * Classe finale contenant les outils associes à la validation.
  *  - les expressions regulieres
- *  -
- *
- *  Date : 13/10/2009
  *
  * @author mathieu
- * @version 2.0
+ * @version 2.2.1
+ * 
+ * @since 2.2.1 ajout contrainte xls/x workbook sheet names
  *
  */
 public final class ValidationUtilities
@@ -85,6 +84,8 @@ public final class ValidationUtilities
 
    public static final String IPREGEXP =
       "^\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}" + "(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b$";
+   
+   public static final String SHEETNAME_INFAMOUSCHARS = "\\\\|\\/|\\*|\\[|\\]|:|\\?";
 
    private ValidationUtilities(){}
 

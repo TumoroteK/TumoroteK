@@ -39,24 +39,32 @@ import fr.aphp.tumorotek.interfacage.sgl.view.ViewHandler;
 import fr.aphp.tumorotek.interfacage.sgl.view.ViewHandlerFactory;
 import fr.aphp.tumorotek.interfacage.sgl.view.processor.DaVinciResutProcessor;
 import fr.aphp.tumorotek.interfacage.sgl.view.processor.DemLigResultProcessor;
+import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.interfacage.DossierExterne;
 import fr.aphp.tumorotek.model.interfacage.Emetteur;
 
 public class ViewHandlerFactoryImpl implements ViewHandlerFactory {
 	
 	private ViewHandler viewHandler;
+	private DemLigResultProcessor demLigResultProcessor;
 	
 	public void setViewHandler(ViewHandler dv) {
 		this.viewHandler = dv;
 	}
 
+	public void setDemLigResultProcessor(DemLigResultProcessor _d) {
+		this.demLigResultProcessor = _d;
+	}
+
 	@Override
-	public DossierExterne sendQuery(Emetteur _e, String sglNumDos) {
+	public DossierExterne sendQuery(Emetteur _e, String sglNumDos, Banque bank) {
 		
 		if (_e.getLogiciel().getNom().equals("DAVINCI")) {
-			return viewHandler.sendQuery(_e, sglNumDos, "davinci.properties", new DaVinciResutProcessor());
+			return viewHandler.sendQuery(_e, sglNumDos, 
+					"davinci.properties", new DaVinciResutProcessor(), bank);
 		} else if (_e.getLogiciel().getNom().equals("DEMLIG")) {
-			return viewHandler.sendQuery(_e, sglNumDos, "demlig.properties", new DemLigResultProcessor());
+			return viewHandler.sendQuery(_e, sglNumDos, 
+					"demlig.properties", demLigResultProcessor, bank);
 		}
 		return null;
 		

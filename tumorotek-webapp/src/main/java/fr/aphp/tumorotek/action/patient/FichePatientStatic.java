@@ -105,6 +105,8 @@ public class FichePatientStatic extends AbstractFicheStaticController
    private Label prenomLabel;
 
    private final List<Prelevement> prelevementsFromOtherMaladies = new ArrayList<>();
+   
+   // maladie systems -> contexte TK anapath par défaut
    private final PrelevementItemRenderer prelevementFromOtherMaladiesRenderer = new PrelevementItemRenderer();
 
    private final List<FicheMaladie> maladiePanels = new ArrayList<>();

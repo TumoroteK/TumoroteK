@@ -2643,14 +2643,14 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       Echantillon e = new Echantillon();
       e.setCode("echanSwitch");
       echantillonManager.createObjectManager(e, b2, p, null, objetStatutDao.findById(4), null,
-         echantillonTypeManager.findByIdManager(1), null, null, null, null, null, null, null, u, false, "/tmp/", false);
+         echantillonTypeManager.findByIdManager(1), null, null, null, null, null, null, u, false, "/tmp/", false);
       final Transformation transfo1 = new Transformation();
       transfo1.setObjetId(p.getPrelevementId());
       transformationManager.createObjectManager(transfo1, entiteDao.findById(2), null);
       ProdDerive derive = new ProdDerive();
       derive.setCode("deriveSwitch");
       prodDeriveManager.createObjectManager(derive, b2, prodTypeDao.findById(1), objetStatutDao.findById(4), null, null, null,
-         null, null, null, null, transfo1, null, null, null, u, false, "/tmp/", false);
+         null, null, null, null, transfo1, null, null, u, false, "/tmp/", false);
       assertTrue(banqueManager.getProdDerivesManager(b2).size() == 2);
       assertTrue(banqueManager.getEchantillonsManager(b2).size() == 2);
       prelevementManager.switchBanqueCascadeManager(p, b3, true, u, null, null);
@@ -2764,7 +2764,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
             .iterator().next();
       emplacementManager.createObjectManager(emp, t1, entiteDao.findById(8));
       prodDeriveManager.updateObjectManager(derive, derive.getBanque(), derive.getProdType(), null, null, emp, null, null, null,
-         null, null, derive.getTransformation(), null, null, null, null, null, u, false, null, "/tmp/");
+         null, null, derive.getTransformation(), null, null, null, null, u, false, null, "/tmp/");
 
       try{
          prelevementManager.switchBanqueCascadeManager(p, b2, true, u, null, null);
@@ -2785,9 +2785,9 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       // emp = emplacementManager.findByIdManager(emp.getEmplacementId());
       // emp.getTerminale().getEnceinte();
       echantillonManager.updateObjectManager(e, e.getBanque(), e.getPrelevement(), null, null, emp2, e.getEchantillonType(), null,
-         null, null, null, null, null, null, null, null, null, u, false, null, "/tmp/");
+         null, null, null, null, null, null, null, null, u, false, null, "/tmp/");
       prodDeriveManager.updateObjectManager(derive, derive.getBanque(), derive.getProdType(), null, null, null, null, null, null,
-         null, null, transfo1, null, null, null, null, null, u, false, null, "/tmp/");
+         null, null, transfo1, null, null, null, null, u, false, null, "/tmp/");
 
       try{
          prelevementManager.switchBanqueCascadeManager(p, b2, true, u, null, null);

@@ -47,6 +47,7 @@
 			rowRenderer="${lwinBanque$composer.listObjectsRenderer}">
 			<columns sizable="true">
 				<column label="${c:l('Champ.Banque.Nom')}" sort="auto" />
+				<column label="${c:l('Champ.Banque.Contexte')}" sort="auto" />
 				<column label="${c:l('Champ.Banque.Proprietaire')}" sort="auto" />
 				<column label="${c:l('Champ.Banque.Collaborateur')}" />
 			</columns>

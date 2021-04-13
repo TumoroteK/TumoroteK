@@ -44,8 +44,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 
 import org.junit.Test;
@@ -66,6 +64,7 @@ import fr.aphp.tumorotek.dao.systeme.EntiteDao;
 import fr.aphp.tumorotek.dao.utilisateur.UtilisateurDao;
 import fr.aphp.tumorotek.manager.coeur.cession.RetourManager;
 import fr.aphp.tumorotek.manager.exception.ObjectStatutException;
+import fr.aphp.tumorotek.manager.impl.coeur.cession.OldEmplTrace;
 import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.cession.retour.RetourValidator;
@@ -78,7 +77,6 @@ import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.coeur.prodderive.Transformation;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
-import fr.aphp.tumorotek.model.stockage.Emplacement;
 import fr.aphp.tumorotek.model.stockage.Incident;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
@@ -88,7 +86,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Classe créée le 25/01/10.
  *
  * @author Mathieu BARTHELEMY.
- * @version 2.0
+ * @version 2.2.3-genno
  *
  */
 public class RetourManagerTest extends AbstractManagerTest4
@@ -353,6 +351,7 @@ public class RetourManagerTest extends AbstractManagerTest4
    }
 
    @Test
+   @SuppressWarnings("deprecation")
    public void testCreateRetourListManager() throws ParseException{
       final Retour base = new Retour();
 
@@ -380,9 +379,10 @@ public class RetourManagerTest extends AbstractManagerTest4
       objs.add(prodDeriveDao.findById(1));
 
       // old emplacements
-      final Hashtable<TKStockableObject, Emplacement> oldEmps = new Hashtable<>();
-      oldEmps.put(echantillonDao.findById(2), emplacementDao.findById(2));
-      oldEmps.put(prodDeriveDao.findById(1), emplacementDao.findById(4));
+      final List<OldEmplTrace> oldEmps = new ArrayList<OldEmplTrace>();
+      oldEmps.add(new OldEmplTrace(echantillonDao.findById(2), "OLD.C1.R1.T1.23", 
+    		  conteneurDao.findById(1), emplacementDao.findById(2)));
+      oldEmps.add(new OldEmplTrace(prodDeriveDao.findById(1), null, null, emplacementDao.findById(4)));
 
       retourManager.createRetourListManager(objs, oldEmps, base, c, c1, null, null, u);
 
@@ -452,6 +452,7 @@ public class RetourManagerTest extends AbstractManagerTest4
    }
 
    @Test
+   @SuppressWarnings("deprecation")
    public void testCreateRetourHugeListManager() throws ParseException{
       final Retour base = new Retour();
 
@@ -483,9 +484,13 @@ public class RetourManagerTest extends AbstractManagerTest4
       objs.add(prodDeriveDao.findById(1));
 
       // old emplacements
-      final HashMap<TKStockableObject, Emplacement> oldEmps = new HashMap<>();
-      oldEmps.put(echantillonDao.findById(2), emplacementDao.findById(6));
-      oldEmps.put(prodDeriveDao.findById(1), emplacementDao.findById(1));
+      final List<OldEmplTrace> oldEmps = new ArrayList<OldEmplTrace>();
+      oldEmps.add(new OldEmplTrace(echantillonDao.findById(2), "CC1.R2.T6.BT1.A-1", 
+    		  conteneurDao.findById(1), emplacementDao.findById(3)));
+      oldEmps.add(new OldEmplTrace(prodDeriveDao.findById(1), "CC1.R1.T1.BT1.A-A", 
+    		  conteneurDao.findById(1), emplacementDao.findById(1)));
+      // oldEmps.put(echantillonDao.findById(2), emplacementDao.findById(6));
+      // oldEmps.put(prodDeriveDao.findById(1), emplacementDao.findById(1));
 
       retourManager.createRetourHugeListManager(objs, oldEmps, base, c, c1, transformation, incident, u);
 
@@ -965,6 +970,7 @@ public class RetourManagerTest extends AbstractManagerTest4
    }
 
    @Test
+   @SuppressWarnings("deprecation")
    public void testUpdateMultipleObjectManager(){
       final Retour base = new Retour();
 

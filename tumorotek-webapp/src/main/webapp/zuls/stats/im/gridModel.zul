@@ -12,7 +12,7 @@
 			<column id="colSubdivision" sclass="header"
 				label="${c:l('Champ.SModele.Subdivision')}" visible="@load(vm.isSubdivised)" >
 			</column>
-			<column forEach="${vm.gridIndicateurs}" label="${c:l(c:cat('Indicateur.',each.nom))}" hflex="1"
+			<column forEach="${vm.gridIndicateurs}" label="${each.nom}" hflex="1"
 				draggable="@load(vm.inEdition)" droppable="@load(vm.inEdition)" align="center"			
 				onDrop="@command('changeGridIndicateurOrder', dropEvt = event, indic = event.dragged.attributes.item)"
 				style="cursor: pointer;" >

@@ -47,6 +47,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import fr.aphp.tumorotek.model.TKDelegateObject;
+import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Protocole;
 
 /**
@@ -55,7 +57,7 @@ import fr.aphp.tumorotek.model.contexte.Protocole;
  * Date creation 19/01/12.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.6
+ * @version 2.2.3-rc1
  * @see http://www.devx.com/Java/Article/33906
  */
 @Entity
@@ -95,4 +97,11 @@ public class PrelevementSero extends AbstractPrelevementDelegate
       return (getLibelle() == null || getLibelle().equals("")) && (getProtocoles() == null || getProtocoles().isEmpty());
    }
 
+	@Override
+	public TKDelegateObject<Prelevement> clone() {
+		PrelevementSero clone = new PrelevementSero();
+		clone.setLibelle(getLibelle());
+		clone.getProtocoles().addAll(getProtocoles());
+		return clone;
+	}
 }

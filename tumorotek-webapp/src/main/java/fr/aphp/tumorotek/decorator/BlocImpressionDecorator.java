@@ -45,12 +45,24 @@ import org.zkoss.util.resource.Labels;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
+import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.impression.BlocImpression;
 import fr.aphp.tumorotek.model.impression.ChampEntiteBloc;
 import fr.aphp.tumorotek.model.impression.ChampImprime;
 import fr.aphp.tumorotek.model.impression.Template;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 
+/**
+ * Decorateur bloc impression.
+ * 
+ * @since 2.2.3-genno vilain hack pour contexte SEROLOGIE, 
+ * supprime ou ajoute manuellement dans le bloc des champs à imprimer
+ * A revoir avec GATSBY
+ * 
+ * @author Pierre VENTADOUR
+ * @author Mathieu BARTHELEMY
+ *
+ */
 public class BlocImpressionDecorator
 {
 
@@ -59,14 +71,16 @@ public class BlocImpressionDecorator
    private BlocImpression blocImpression;
    private TableAnnotation tableAnnotation;
    private List<ChampEntite> champEntites = new ArrayList<>();
+   private EContexte contexte;
 
    private Boolean imprimer = true;
    private String description = "";
 
-   public BlocImpressionDecorator(final BlocImpression bloc, final TableAnnotation table, final Template temp){
+   public BlocImpressionDecorator(final BlocImpression bloc, final TableAnnotation table, final Template temp, EContexte _c){
       this.blocImpression = bloc;
       this.tableAnnotation = table;
       this.template = temp;
+      this.contexte = _c;
 
       if(this.blocImpression != null){
          generateContenuForBlocInConsulation();
@@ -163,6 +177,57 @@ public class BlocImpressionDecorator
             champs.add(cebs.get(i).getChampEntite());
             champEntites.add(cebs.get(i).getChampEntite());
          }
+      }
+      
+      // Vilain HACK !! contexte SEROLOGIE
+      if (contexte != null && "SEROLOGIE".equals(contexte.getNom())) {
+    	  // prelevement
+    	  if (blocImpression.getEntite().getEntiteId() == 2) {
+    		  if (blocImpression.getNom().equals("bloc.prelevement.patient")) {
+    			  ChampEntite diagnostic = new ChampEntite(ManagerLocator
+    					  .getEntiteManager().findByIdManager(7), "SEROLOGIE.Diagnostic", null);
+    			  champs.add(diagnostic);
+    			  champEntites.add(diagnostic);
+    		  }
+    		  if (blocImpression.getNom().equals("bloc.prelevement.principal")) {
+    			  ChampEntite protocoles = new ChampEntite(ManagerLocator
+    					  .getEntiteManager().findByIdManager(2), "SEROLOGIE.Protocoles", null);
+    			  champs.add(protocoles);
+    			  champEntites.add(protocoles);
+    		  }
+    		  if (blocImpression.getNom().equals("bloc.prelevement.informations.prelevement")) {
+    			  ChampEntite compDiag = new ChampEntite(blocImpression.getEntite(), "SEROLOGIE.Libelle", null);
+    			  champs.add(compDiag);
+    			  champEntites.add(compDiag);
+    		  }
+    		  if (blocImpression.getNom().equals("bloc.prelevement.echantillons")) {
+    			  ChampEntite echanQualite = new ChampEntite(ManagerLocator
+    					  .getEntiteManager().findByIdManager(3), "EchanQualiteId", null);
+    			  champEntites.remove(echanQualite);
+    			  champs.remove(echanQualite);
+    			  ChampEntite adicapOrgane = new ChampEntite(ManagerLocator
+    					  .getEntiteManager().findByIdManager(3), "AdicapOrganeId", null);
+    			  champEntites.remove(adicapOrgane);
+    			  champs.remove(adicapOrgane);
+    			  ChampEntite codeAssigne = new ChampEntite(ManagerLocator
+    					  .getEntiteManager().findByIdManager(3), "CodeAssigneId", null);
+    			  champEntites.remove(codeAssigne);
+    			  champs.remove(codeAssigne);
+    		  }
+    	  } else if (blocImpression.getEntite().getEntiteId() == 3) {
+			  if (blocImpression.getNom().equals("bloc.echantillon.informations.prelevement")) {
+				  ChampEntite protocoles = new ChampEntite(ManagerLocator
+						  .getEntiteManager().findByIdManager(2), "SEROLOGIE.Protocoles", null);
+				  champs.add(protocoles);
+				  champEntites.add(protocoles);
+			  }
+			  if (blocImpression.getNom().equals("bloc.echantillon.informations.echantillon")) {
+				  ChampEntite echanQualite = new ChampEntite(ManagerLocator
+    					  .getEntiteManager().findByIdManager(3), "EchanQualiteId", null);
+    			  champEntites.remove(echanQualite);
+    			  champs.remove(echanQualite);
+			  }
+    	  }
       }
 
       final Iterator<ChampEntite> it = champs.iterator();

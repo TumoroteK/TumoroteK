@@ -59,19 +59,19 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 public abstract class AbstractProdDeriveDelegate extends TKDelegateObject<ProdDerive>
 {
 
-   private Integer id;
+   private Integer prodDeriveId;
    private ProdDerive delegator;
    
    @Id
    @Column(name = "PROD_DERIVE_DELEGATE_ID", unique = true, nullable = false)
    @GeneratedValue(generator = "autoincrement")
    @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getId(){
-      return id;
+   public Integer getProdDeriveId(){
+      return prodDeriveId;
    }
 
-   public void setId(Integer id){
-      this.id = id;
+   public void setProdDeriveId(Integer id){
+      this.prodDeriveId = id;
    }
 
    @Override

@@ -55,7 +55,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Interface créée le 22/03/10.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.2.1
  *
  */
 public interface EnceinteManager
@@ -397,4 +397,13 @@ public interface EnceinteManager
     * @return Enceinte maj.
     */
    Enceinte updateTailleEnceinteManager(Enceinte enceinte, Integer nbPlaces, Utilisateur utilisateur);
+   
+   /**
+    * Collecte les banques distinctes représentées par le contenu de l'ensemble des 
+    * terminales composant l'enceinte
+    * @param term
+    * @return liste de banques
+    * @since 2.2.1
+    */
+   List<Banque> getDistinctBanquesFromTkObjectsManager(Enceinte enc);
 }

@@ -2,7 +2,7 @@
 
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-    <changeSet id="${project.artifactId}-1" author="ABO" context="*, 2.1.5, 2.1.5-SNAPSHOT">
+    <changeSet id="${project.artifactId}-1" author="ABO" context="*, 2.1.4, 2.1.5, 2.1.5-SNAPSHOT">
         <tagDatabase tag="${project.parent.version}"/>
     </changeSet>
     <changeSet id="${project.artifactId}-2" author="ABO" runAlways="false" context="*, 2.1.5, 2.1.5-SNAPSHOT">
@@ -41,7 +41,7 @@
             par leur valeur à l'impression.
         </comment>
         <addColumn tableName="TEMPLATE">
-            <column name="TYPE" type="VARCHAR(100)" value="BLOC">
+            <column name="TYPE" type="VARCHAR(100)" defaultValue="BLOC" value="BLOC">
                 <constraints nullable="false"/>
             </column>
             <column name="FICHIER" type="VARCHAR(100)">
@@ -66,10 +66,10 @@
             </column>
         </createTable>
 
-        <addForeignKeyConstraint constraintName="CLE_IMPRESSION_TEMPLATE_CLE_IMPRESSION_FK" referencedTableName="CLE_IMPRESSION"
+        <addForeignKeyConstraint constraintName="CLE_IMP_TEMPLATE_CLE_IMP_FK" referencedTableName="CLE_IMPRESSION"
                                  baseTableName="CLE_IMPRESSION_TEMPLATE" referencedColumnNames="CLE_IMPRESSION_ID"
                                  baseColumnNames="CLE_IMPRESSION_ID"/>
-        <addForeignKeyConstraint constraintName="CLE_IMPRESSION_TEMPLATE_TEMPLATE_FK" referencedTableName="TEMPLATE"
+        <addForeignKeyConstraint constraintName="CLE_IMP_TEMPLATE_TEMPLATE_FK" referencedTableName="TEMPLATE"
                                  baseTableName="CLE_IMPRESSION_TEMPLATE" referencedColumnNames="TEMPLATE_ID" baseColumnNames="TEMPLATE_ID"/>
     </changeSet>
     <changeSet id="${project.artifactId}-6" author="ABO" runAlways="false" context="*, 2.2.0-beta-1, 2.2.0-beta-2-SNAPSHOT">
@@ -164,7 +164,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="ECHANTILLON_ID" type="INT">
-                <constraints nullable="false" unique="true" foreignKeyName="FK_ECHANTILLON_DELEGATE_ECHANTILLON_ID" referencedTableName="ECHANTILLON"
+                <constraints nullable="false" unique="true" foreignKeyName="FK_ECHAN_DELEGATE_ECHAN_ID" referencedTableName="ECHANTILLON"
                              referencedColumnNames="ECHANTILLON_ID"/>
             </column>
         </createTable>
@@ -173,7 +173,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="PATIENT_ID" type="INT">
-                <constraints nullable="false" unique="true" foreignKeyName="FK_PATIENT_DELEGATE_PATIENT_ID" referencedTableName="PATIENT"
+                <constraints nullable="false" unique="true" foreignKeyName="FK_PAT_DELEGATE_PAT_ID" referencedTableName="PATIENT"
                              referencedColumnNames="PATIENT_ID"/>
             </column>
         </createTable>
@@ -182,7 +182,7 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="PROD_DERIVE_ID" type="INT">
-                <constraints nullable="false" unique="true" foreignKeyName="FK_PROD_DERIVE_DELEGATE_PROD_DERIVE_ID" referencedTableName="PROD_DERIVE"
+                <constraints nullable="false" unique="true" foreignKeyName="FK_DERIVE_DELEGATE_DERIVE_ID" referencedTableName="PROD_DERIVE"
                              referencedColumnNames="PROD_DERIVE_ID"/>
             </column>
         </createTable>
@@ -232,7 +232,7 @@
         <comment>Augmentation de la taille de la colonne PATH de la table FICHIER</comment>
         <modifyDataType tableName="FICHIER" columnName="PATH" newDataType="VARCHAR(250)"/>
     </changeSet>
-    <changeSet id="${project.artifactId}-15" author="ABO" runAlways="false" context="*">
+    <!--  <changeSet id="${project.artifactId}-15" author="ABO" runAlways="false" context="*">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">SELECT COUNT(1) FROM CESSION_TYPE
                 WHERE TYPE = 'Traitement'
@@ -243,7 +243,7 @@
             <column name="CESSION_TYPE_ID" value="5"/>
             <column name="TYPE" value="Traitement"/>
         </insert>
-    </changeSet>
+    </changeSet> -->
     <changeSet id="${project.artifactId}-16" author="ABO" runAlways="false" context="*">
         <preConditions onFail="MARK_RAN">
             <not>
@@ -265,10 +265,10 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-        <addForeignKeyConstraint constraintName="CEDER_OBJET_PROD_DERIVE_CEDER_OBJET_FK" referencedTableName="CEDER_OBJET"
+        <addForeignKeyConstraint constraintName="CEDER_OBJ_DERIVE_CEDER_OBJ_FK" referencedTableName="CEDER_OBJET"
                                  referencedColumnNames="CESSION_ID, OBJET_ID, ENTITE_ID" baseTableName="CEDER_OBJET_PROD_DERIVE"
                                  baseColumnNames="CESSION_ID, OBJET_ID, ENTITE_ID"/>
-        <addForeignKeyConstraint constraintName="CEDER_OBJET_PROD_DERIVE_PROD_DERIVE_FK" referencedTableName="PROD_DERIVE"
+        <addForeignKeyConstraint constraintName="CEDER_OBJ_DERIVE_DERIVE_FK" referencedTableName="PROD_DERIVE"
                                  referencedColumnNames="PROD_DERIVE_ID" baseTableName="CEDER_OBJET_PROD_DERIVE" baseColumnNames="PROD_DERIVE_ID"/>
     </changeSet>
     <changeSet id="${project.artifactId}-17" author="ABO" runAlways="false" context="*">
@@ -395,12 +395,19 @@
             </column>
         </createTable>
         <addUniqueConstraint columnNames="NOM, ENTITE_ID, CONTEXTE" tableName="CHAMP_DELEGUE"/>
+	</changeSet>  
+    <changeSet id="${project.artifactId}-22b" author="GCH" runAlways="false" context="*">
+    	<preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists columnName="CHAMP_DELEGUE_ID" tableName="CHAMP"/>
+            </not>
+        </preConditions>
         <addColumn tableName="CHAMP">
             <column name="CHAMP_DELEGUE_ID" type="INT">
                 <constraints foreignKeyName="FK_CHAMP_CHAMP_DELEGUE_ID" referencedTableName="CHAMP_DELEGUE" referencedColumnNames="CHAMP_DELEGUE_ID"/>
             </column>
         </addColumn>
-    </changeSet>
+	</changeSet>
     <changeSet id="${project.artifactId}-23" author="ABO" runAlways="false" context="*">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">SELECT COUNT(1) FROM ENTITE
@@ -408,19 +415,14 @@
             </sqlCheck>
         </preConditions>
         <comment>Contexte SEROTK - Champs entités</comment>
-        <sql>INSERT INTO ENTITE
-            VALUES (65, 'Diagnostic', 1, 0);
+        <sql>INSERT INTO ENTITE VALUES (65, 'Diagnostic', 1, 0);
 
-            INSERT INTO CHAMP_ENTITE
-            VALUES
-            (267, 'Nom', 1, 0, 1, NULL, 17, 1, NULL),
-            (268, 'Nom', 1, 0, 1, NULL, 65, 1, NULL);
+            INSERT INTO CHAMP_ENTITE VALUES (267, 'Nom', 1, 0, 1, NULL, 17, 1, NULL);
+            INSERT INTO CHAMP_ENTITE VALUES (268, 'Nom', 1, 0, 1, NULL, 65, 1, NULL);
 
-            INSERT INTO CHAMP_DELEGUE
-            VALUES
-            (1, 'Libelle', 1, 2, 'SEROLOGIE'),
-            (2, 'Protocoles', 10, 2, 'SEROLOGIE'),
-            (3, 'Diagnostic', 10, 7, 'SEROLOGIE');
+            INSERT INTO CHAMP_DELEGUE VALUES (1, 'Libelle', 1, 2, 'SEROLOGIE');
+            INSERT INTO CHAMP_DELEGUE VALUES (2, 'Protocoles', 10, 2, 'SEROLOGIE');
+            INSERT INTO CHAMP_DELEGUE VALUES (3, 'Diagnostic', 10, 7, 'SEROLOGIE');
         </sql>
     </changeSet>
     <changeSet id="${project.artifactId}-24" author="GCH" runAlways="false" context="*">
@@ -433,24 +435,33 @@
             </sqlCheck>
         </preConditions>
         <comment>[TK-201] Ajouter les champs annotations / maladie dans l'impression des étiquettes paramétrables</comment>
-        <sql>
-        	UPDATE
-				CHAMP_ENTITE ce
+       <!-- Oracle uniquement ? <sql>
+        	UPDATE CHAMP_ENTITE SET QUERY_CHAMP_ID = 101 WHERE champ_entite_id in (
+			SELECT ce.champ_entite_id from CHAMP_ENTITE ce
 			JOIN ENTITE e ON
 				ce.ENTITE_ID = e.ENTITE_ID
-			SET QUERY_CHAMP_ID = 101 
 			WHERE
 				e.NOM IN ( 'Prelevement',
 				'ProdDerive',
 				'Cession',
 				'Echantillon' )
 				AND ce.NOM = 'BanqueId'
-				AND QUERY_CHAMP_ID IS NULL;
+				AND QUERY_CHAMP_ID IS NULL);
+		</sql> -->
+		<sql>
+			UPDATE CHAMP_ENTITE ce JOIN ENTITE e ON ce.ENTITE_ID = e.ENTITE_ID 
+	            SET QUERY_CHAMP_ID = 101 
+	            WHERE e.NOM IN ('Prelevement', 'ProdDerive', 'Cession', 'Echantillon') 
+	            AND ce.NOM='BanqueId' 
+				AND ce.QUERY_CHAMP_ID IS NULL;
         </sql>
     </changeSet>
     <changeSet id="${project.artifactId}-25" author="GCH" runAlways="false" context="*">
     	<preConditions onFail="MARK_RAN">
     		<columnExists tableName="UTILISATEUR" columnName="DN_LDAP"/>
+    		<not>
+    			<columnExists tableName="UTILISATEUR" columnName="LDAP"/>
+    		</not>
     	</preConditions>
     	<comment>Remplacement d'une colonne non-utilisée par un flag permettant de savoir si l'utilisateur doit se connecter via le LDAP</comment>
     	<dropColumn tableName="UTILISATEUR" columnName="DN_LDAP"/>
@@ -470,20 +481,7 @@
     	</preConditions>
     	<comment>[TK-96] Enlever le titre de civilité Mlle</comment>
     	<sql>
-    		UPDATE
-				COLLABORATEUR coll
-				JOIN TITRE t ON
-				t.TITRE_ID = coll.TITRE_ID
-			SET
-				coll.TITRE_ID =(
-				SELECT
-					TITRE_ID
-				FROM
-					TITRE
-				WHERE
-					TITRE = 'MME' )
-			WHERE
-				t.TITRE = 'MLLE';
+    		UPDATE COLLABORATEUR SET TITRE_ID = (SELECT TITRE_ID FROM TITRE WHERE TITRE = 'MME' ) WHERE TITRE_ID = (SELECT TITRE_ID FROM TITRE WHERE TITRE = 'MLLE');
     	</sql>
     	<delete tableName="TITRE">
 			<where>TITRE='MLLE'</where>    		

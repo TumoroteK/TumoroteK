@@ -57,6 +57,7 @@ import fr.aphp.tumorotek.dao.coeur.prelevement.PrelevementTypeDao;
 import fr.aphp.tumorotek.dao.coeur.prelevement.RisqueDao;
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.contexte.CollaborateurDao;
+import fr.aphp.tumorotek.dao.contexte.EtablissementDao;
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
 import fr.aphp.tumorotek.dao.contexte.ServiceDao;
 import fr.aphp.tumorotek.dao.contexte.TransporteurDao;
@@ -74,6 +75,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.PrelevementType;
 import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
+import fr.aphp.tumorotek.model.contexte.Etablissement;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.contexte.Transporteur;
@@ -86,7 +88,7 @@ import fr.aphp.tumorotek.model.systeme.Unite;
  * Classe de test créée le 29/09/09.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.1
+ * @version 2.2.1
  *
  */
 public class PrelevementDaoTest extends AbstractDaoTest
@@ -108,10 +110,8 @@ public class PrelevementDaoTest extends AbstractDaoTest
    private PatientDao patientDao;
    private RisqueDao risqueDao;
    private PlateformeDao plateformeDao;
+   private EtablissementDao etablissementDao;
 
-   /**
-    * Constructeur.
-    */
    public PrelevementDaoTest(){}
 
    public void setPrelevementDao(final PrelevementDao pDao){
@@ -178,7 +178,11 @@ public class PrelevementDaoTest extends AbstractDaoTest
       this.risqueDao = rDao;
    }
 
-   public void testFindByNumberEchantillons(){
+   public void setEtablissementDao(EtablissementDao eDao) {
+	this.etablissementDao = eDao;
+}
+
+public void testFindByNumberEchantillons(){
       final Long nb = new Long(2);
       List<Prelevement> liste = prelevementDao.findByNumberEchantillons(nb);
       assertTrue(liste.size() == 1);
@@ -1373,7 +1377,7 @@ public class PrelevementDaoTest extends AbstractDaoTest
       assertTrue(prels.isEmpty());
 
       prels = prelevementDao.findByComDiag("%", banks);
-      assertTrue(prels.size() == 1);
+      assertTrue(prels.size() == 2);
 
       prels = prelevementDao.findByComDiag("CODE SEROTK A", banks);
       assertTrue(prels.size() == 1);
@@ -1436,5 +1440,64 @@ public class PrelevementDaoTest extends AbstractDaoTest
       assertTrue(prels.contains(prelevementDao.findById(5)));
 
    }
+   
+   /**
+    * @since 2.2.1
+    */
+   public void testFindByEtablissementLaboInter(){
+	   
+	   final List<Banque> banks = new ArrayList<>();
+	   banks.add(banqueDao.findById(1));
+	   
+	   Etablissement etab1 = etablissementDao.findById(1); 
+	   List<Prelevement> prels = prelevementDao.findByEtablissementLaboInter(etab1, banks);
+	   assertTrue(prels.size() == 1);
+	   assertTrue(prels.get(0).getPrelevementId() == 1);
+	   
+	   prels = prelevementDao.findByEtablissementLaboInter(etablissementDao.findById(2), banks);
+	   assertTrue(prels.isEmpty());
+	   
+	   prels = prelevementDao.findByEtablissementLaboInter(null, banks);
+	   assertTrue(prels.isEmpty());
+   }
 
+   /**
+    * @since 2.2.1
+    */
+   public void testFindByServiceLaboInter(){
+	   
+	   final List<Banque> banks = new ArrayList<>();
+	   banks.add(banqueDao.findById(1));
+	   
+	   Service srv1 = serviceDao.findById(1); 
+	   List<Prelevement> prels = prelevementDao.findByServiceLaboInter(srv1, banks);
+	   assertTrue(prels.size() == 1);
+	   assertTrue(prels.get(0).getPrelevementId() == 1);
+	   
+	   prels = prelevementDao.findByServiceLaboInter(serviceDao.findById(4), banks);
+	   assertTrue(prels.isEmpty());
+	   
+	   prels = prelevementDao.findByServiceLaboInter(null, banks);
+	   assertTrue(prels.isEmpty());
+   }
+   
+   /**
+    * @since 2.2.1
+    */
+   public void testFindByOperateurLaboInter(){
+	   
+	   final List<Banque> banks = new ArrayList<>();
+	   banks.add(banqueDao.findById(1));
+	   
+	   Collaborateur ope2 = collaborateurDao.findById(2); 
+	   List<Prelevement> prels = prelevementDao.findByCollaborateurLaboInter(ope2, banks);
+	   assertTrue(prels.size() == 1);
+	   assertTrue(prels.get(0).getPrelevementId() == 1);
+	   
+	   prels = prelevementDao.findByCollaborateurLaboInter(collaborateurDao.findById(1), banks);
+	   assertTrue(prels.isEmpty());
+	   
+	   prels = prelevementDao.findByCollaborateurLaboInter(null, banks);
+	   assertTrue(prels.isEmpty());
+   }
 }

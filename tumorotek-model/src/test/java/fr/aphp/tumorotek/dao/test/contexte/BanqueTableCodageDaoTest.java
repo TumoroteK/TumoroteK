@@ -112,8 +112,8 @@ public class BanqueTableCodageDaoTest extends AbstractDaoTest
       btc1.setBanque(banqueDao.findById(1));
       assertTrue(btc1.toString().equals("{Empty BanqueTableCodage}"));
       btc1.setBanque(null);
-      btc1.setTableCodage(tableCodageDao.findById(1));
-      assertTrue(btc1.toString().equals("{Empty BanqueTableCodage}"));
+      btc1.setTableCodage(tableCodageDao.findById(1)); 
+      assertTrue(btc1.toString().equals("ADICAP 5.03"));
    }
 
    public void testReadAllBanqueTableCodage(){

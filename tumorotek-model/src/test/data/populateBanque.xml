@@ -21,7 +21,7 @@
 			<value>-80</value>
 		</row>
 		<row>
-			<value>5</value>
+			<value>5</value>5			
 			<value>-196</value>
 		</row>
 	</table>
@@ -1199,36 +1199,6 @@
 			<value>5</value>
 		</row>
 	</table>
-	<table name="RESERVATION">
-		<column>RESERVATION_ID</column>
-		<column>DEBUT</column>
-		<column>FIN</column>
-		<column>UTILISATEUR_ID</column>
-		<row>
-			<value>1</value>
-			<value>2009-06-01</value>
-			<value>2009-09-01</value>
-			<value>1</value>
-		</row>
-		<row>
-			<value>2</value>
-			<value>2009-03-01</value>
-			<value>2009-03-16</value>
-			<value>1</value>
-		</row>
-		<row>
-			<value>3</value>
-			<value>2009-09-08</value>
-			<value>2009-10-29</value>
-			<value>4</value>
-		</row>
-		<row>
-			<value>4</value>
-			<value>2009-05-21</value>
-			<value>2009-12-01</value>
-			<value>5</value>
-		</row>
-	</table>
 	<table name="ENTITE">
 		<column>ENTITE_ID</column>
 		<column>NOM</column>
@@ -2203,21 +2173,17 @@
 	<table name="MALADIE_DELEGATE">
 		<column>MALADIE_DELEGATE_ID</column>
 		<column>MALADIE_ID</column>
-		<column>CONTEXTE_ID</column>
 		<row>
 			<value>1</value>
 			<value>4</value>
-			<value>1</value>
 		</row>
 		<row>
 			<value>2</value>
 			<value>3</value>
-			<value>1</value>
 		</row>
 		<row>
 			<value>3</value>
 			<value>1</value>
-			<value>2</value>
 		</row>
 	</table>
 	
@@ -2268,7 +2234,7 @@
 		<column>PRELEVEMENT_ID</column>
 		<row>
 			<value>1</value>
-			<value>1</value>
+			<value>2</value>
 		</row>
 		<row>
 			<value>2</value>
@@ -2289,7 +2255,7 @@
 		</row>
 		<row>
 			<value>2</value>
-			<null />
+			<value>Libellé prélèvement séro</value>
 		</row>
 	</table>
 	
@@ -2306,12 +2272,12 @@
 		<column>PRELEVEMENT_DELEGATE_ID</column>
 		<column>PROTOCOLE_ID</column>
 		<row>
-			<value>2</value>
+			<value>1</value>
 			<value>1</value>
 		</row>
 		<row>
 			<value>1</value>
-			<value>3</value>
+			<value>2</value>
 		</row>
 	</table>
 	
@@ -6923,6 +6889,27 @@
 		<column>DATA_TYPE_ID</column>
 		<column>ENTITE_ID</column>
 		<column>CONTEXTE</column>
+		<row>
+			<value>1</value>
+			<value>Libelle</value>
+			<value>1</value>
+			<value>2</value>
+			<value>SEROLOGIE</value>	
+		</row>
+		<row>
+			<value>2</value>
+			<value>Protocoles</value>
+			<value>7</value>
+			<value>2</value>
+			<value>SEROLOGIE</value>	
+		</row>
+		<row>
+			<value>3</value>
+			<value>Diagnostic</value>
+			<value>1</value>
+			<value>7</value>
+			<value>SEROLOGIE</value>	
+		</row>
 	</table>
 	<table name="CHAMP">
 		<column>CHAMP_ID</column>

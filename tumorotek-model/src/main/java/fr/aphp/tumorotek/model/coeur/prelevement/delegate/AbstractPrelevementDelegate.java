@@ -91,8 +91,8 @@ public abstract class AbstractPrelevementDelegate extends TKDelegateObject<Prele
    }
 
    @Override
-   public void setDelegator(final Prelevement obj){
-      this.delegator = obj;
+   public void setDelegator(final Prelevement _d){
+      this.delegator = _d;
    }
 
    @Transient
@@ -100,5 +100,4 @@ public abstract class AbstractPrelevementDelegate extends TKDelegateObject<Prele
    public boolean isEmpty(){
       return false;
    }
-
 }

@@ -52,18 +52,18 @@
 							<label value="${c:l('Champ.Prelevement.Code')}" sclass="formLabel" />
 							<label value="*" sclass="requiredMark" />
 						</hbox>
-						<box orient="horizontal" pack="center">
+						<hlayout sclass="z-valign-middle">
 							<textbox id="codeBoxPrlvt" value="@{fwinPrelevementEditSero$composer.object.code,
 			        			save-when='validate.onClick, create.onClick, next.onClick'
 			        			load-after='numerotation.onClick'}" width="150px" constraint="${fwinPrelevementEditSero$composer.codeConstraint}" />
 							<button id="numerotation" image="/images/icones/numerotation.png" sclass="buttonv2" visible="false" />
 							<button id="interfacage" image="/images/icones/wizard.png" sclass="buttonv2" visible="false" />
-						</box>
+						</hlayout>
 
 						<!-- Numéro Labo du prélèvement -->
 						<label value="${c:l('Champ.Prelevement.NumeroLabo')}" sclass="formLabel" />
 						<textbox id="numLaboBoxPrlvt" value="@{fwinPrelevementEditSero$composer.object.numeroLabo,
-		        			save-when='validate.onClick, create.onClick, next.onClick'}" width="150px" constraint="${fwinPrelevementEditSero$composer.codeNullConstraint}" />
+		        			save-when='validate.onClick, create.onClick, next.onClick'}" width="150px" constraint="${fwinPrelevementEdit$composer.codeNullConstraint}" />
 					</row>
 
 					<row>
@@ -89,7 +89,6 @@
 					<row spans="4">
 						<separator />
 					</row>
-					
 					<!-- Resume patient -->
 					<group label="${c:l('bloc.prelevement.patient')}" id="groupPatient" />
 					<row>
@@ -267,7 +266,7 @@
 			</grid>
 		</panelchildren>
 		<toolbar height="100%" id="toolbarEchan" align="end">
-			<hbox spacing="5">
+			<hbox spacing="5" align="center">
 				<button id="validate" label="${c:l('general.saveAndQuit')}" height="24px" image="/images/icones/save.png" sclass="buttonv2" />
 				<button id="revert" label="${c:l('general.cancel')}" height="24px" image="/images/icones/cancel.png" sclass="buttonv2" />
 				<button id="create" label="${c:l('general.createAndQuit')}" height="24px" image="/images/icones/save.png" sclass="buttonv2" />

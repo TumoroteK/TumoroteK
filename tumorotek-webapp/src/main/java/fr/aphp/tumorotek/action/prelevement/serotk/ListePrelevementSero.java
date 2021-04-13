@@ -42,15 +42,13 @@ import fr.aphp.tumorotek.action.prelevement.ListePrelevement;
 public class ListePrelevementSero extends ListePrelevement
 {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = -2738621521036993154L;
 
    @Override
    public void doAfterCompose(Component comp) throws Exception{
       listObjectsRenderer = new PrelevementSeroRowRenderer(true, false);
       super.doAfterCompose(comp);
+      
    }
    
 }

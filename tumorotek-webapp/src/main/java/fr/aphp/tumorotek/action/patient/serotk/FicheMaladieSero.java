@@ -43,13 +43,10 @@ import org.zkoss.zul.Listbox;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.patient.FicheMaladie;
-import fr.aphp.tumorotek.manager.context.ContexteManager;
 import fr.aphp.tumorotek.manager.context.DiagnosticManager;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.patient.serotk.MaladieSero;
 import fr.aphp.tumorotek.model.contexte.Diagnostic;
-import fr.aphp.tumorotek.model.contexte.EContexte;
-import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  * Controller gérant la fiche maladie.
@@ -57,7 +54,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * Date 23/02/12
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.6
+ * @version 2.2.3-rc1
  *
  */
 public class FicheMaladieSero extends FicheMaladie
@@ -74,9 +71,8 @@ public class FicheMaladieSero extends FicheMaladie
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
-
-      // recoit le renderer en argument
-      setPrelevementRenderer(new PrelevementSeroItemRenderer());
+	   
+	   setPrelevementRenderer(new PrelevementSeroItemRenderer());
 
       super.doAfterCompose(comp);
 
@@ -99,7 +95,7 @@ public class FicheMaladieSero extends FicheMaladie
    public void onClick$editC(){
       if(null == maladie.getDelegate()){
          delegate = new MaladieSero();
-         delegate.setContexte(ManagerLocator.getManager(ContexteManager.class).findByNomManager(EContexte.SEROLOGIE.getNom()).get(0));
+         // delegate.setContexte(ManagerLocator.getManager(ContexteManager.class).findByNomManager(EContexte.SEROLOGIE.getNom()).get(0));
          maladie.setDelegate(delegate);
       }
       super.onClick$editC();
@@ -139,7 +135,7 @@ public class FicheMaladieSero extends FicheMaladie
       delegate = (MaladieSero) getObject().getDelegate();
       if(delegate == null){
          delegate = new MaladieSero();
-         delegate.setContexte(SessionUtils.getSelectedBanques(sessionScope).get(0).getContexte());
+         // delegate.setContexte(SessionUtils.getSelectedBanques(sessionScope).get(0).getContexte());
       }else{
          this.selectedDiag = delegate.getDiagnostic();
       }
@@ -157,9 +153,9 @@ public class FicheMaladieSero extends FicheMaladie
 
       if(delegate.isEmpty()){
          getObject().setDelegate(null);
-         delegate.setMaladie(null);
-      }else if(delegate.getMaladie() == null){ //create
-         delegate.setMaladie(getObject());
+         delegate.setDelegator(null);
+      }else if(delegate.getDelegator() == null){ //create
+         delegate.setDelegator(getObject());
          getObject().setDelegate(delegate);
       }
    }

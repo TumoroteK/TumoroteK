@@ -111,7 +111,7 @@ public class PrelevementTypeManagerTest extends AbstractManagerTest4
       final PrelevementType pt1 = (prelevementTypeManager.findByTypeLikeManager("BIOPSIE", true)).get(0);
       assertFalse(prelevementTypeManager.findDoublonManager(pt1));
       final PrelevementType pt2 = new PrelevementType();
-      pt2.setType(pt1.getType());
+      pt2.setNom(pt1.getNom());
       pt2.setIncaCat(pt1.getIncaCat());
       pt2.setPlateforme(pt1.getPlateforme());
       assertTrue(pt2.equals(pt1));
@@ -144,7 +144,7 @@ public class PrelevementTypeManagerTest extends AbstractManagerTest4
    private void createObjectManagerTest(){
       //Insertion nouvel enregistrement
       final PrelevementType pt1 = new PrelevementType();
-      pt1.setType("PRISE DE SANG.");
+      pt1.setNom("PRISE DE SANG.");
       pt1.setIncaCat("S");
       pt1.setPlateforme(plateformeDao.findById(1));
       prelevementTypeManager.createObjectManager(pt1);
@@ -152,7 +152,7 @@ public class PrelevementTypeManagerTest extends AbstractManagerTest4
       //Insertion d'un doublon engendrant une exception
       Boolean catched = false;
       final PrelevementType pt1Bis = new PrelevementType();
-      pt1Bis.setType("PRISE DE SANG.");
+      pt1Bis.setNom("PRISE DE SANG.");
       pt1Bis.setIncaCat("S");
       try{
          prelevementTypeManager.createObjectManager(pt1Bis);
@@ -182,7 +182,7 @@ public class PrelevementTypeManagerTest extends AbstractManagerTest4
       for(int i = 0; i < typeValues.length; i++){
          for(int j = 0; j < incaCatValues.length; j++){
             try{
-               pt2.setType(typeValues[i]);
+               pt2.setNom(typeValues[i]);
                pt2.setIncaCat(incaCatValues[j]);
                if(i != 5 && j != 3){ //car creation valide
                   prelevementTypeManager.createObjectManager(pt2);
@@ -198,14 +198,14 @@ public class PrelevementTypeManagerTest extends AbstractManagerTest4
    private void updateObjectManagerTest(){
       //Modification d'un enregistrement
       final PrelevementType pt1 = (prelevementTypeManager.findByTypeLikeManager("PRISE DE SANG.", true)).get(0);
-      pt1.setType("Èré+");
+      pt1.setNom("Èré+");
       pt1.setIncaCat("F");
       prelevementTypeManager.updateObjectManager(pt1);
       assertTrue((prelevementTypeManager.findByTypeLikeManager("Èré+", true)).get(0).getIncaCat().equals("F"));
       //Modification en un doublon engendrant une exception
       Boolean catched = false;
       try{
-         pt1.setType("BIOPSIE");
+         pt1.setNom("BIOPSIE");
          pt1.setIncaCat("B");
          prelevementTypeManager.updateObjectManager(pt1);
       }catch(final Exception e){
@@ -222,7 +222,7 @@ public class PrelevementTypeManagerTest extends AbstractManagerTest4
       for(int i = 0; i < typeValues.length; i++){
          for(int j = 0; j < incaCatValues.length; j++){
             try{
-               pt1.setType(typeValues[i]);
+               pt1.setNom(typeValues[i]);
                pt1.setIncaCat(incaCatValues[j]);
                if(i != 5 && j != 4){ //car modification valide
                   prelevementTypeManager.updateObjectManager(pt1);

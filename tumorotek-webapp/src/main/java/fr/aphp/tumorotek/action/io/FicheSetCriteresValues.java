@@ -154,7 +154,7 @@ public class FicheSetCriteresValues extends GenericForwardComposer<Component>
       if(banques.size() == 1){
          final Utilisateur user = SessionUtils.getLoggedUser(sessionScope);
          final Plateforme pf = SessionUtils.getPlateforme(sessionScope);
-         availableBanques = ManagerLocator.getUtilisateurManager().getAvailableBanquesByPlateformeManager(user, pf);
+         availableBanques = ManagerLocator.getUtilisateurManager().getAvailableBanquesByPlateformeManager(user, pf, false);
 
          if(hasDelegates){
             final Contexte currentContexte = SessionUtils.getCurrentBanque(sessionScope).getContexte();

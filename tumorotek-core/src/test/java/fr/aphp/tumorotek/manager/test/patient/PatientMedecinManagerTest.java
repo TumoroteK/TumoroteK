@@ -35,14 +35,19 @@
  **/
 package fr.aphp.tumorotek.manager.test.patient;
 
+import static org.junit.Assert.*;
+
 import java.text.ParseException;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import fr.aphp.tumorotek.dao.coeur.patient.PatientDao;
 import fr.aphp.tumorotek.dao.coeur.patient.PatientMedecinDao;
 import fr.aphp.tumorotek.dao.contexte.CollaborateurDao;
 import fr.aphp.tumorotek.manager.coeur.patient.PatientMedecinManager;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
-import fr.aphp.tumorotek.manager.test.AbstractManagerTest;
+import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.patient.PatientMedecin;
 import fr.aphp.tumorotek.model.coeur.patient.PatientMedecinPK;
@@ -57,48 +62,28 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
  * @version 2.0
  *
  */
-public class PatientMedecinManagerTest extends AbstractManagerTest
+public class PatientMedecinManagerTest extends AbstractManagerTest4
 {
 
-   /* Managers injectes par Spring*/
+@Autowired
    private PatientMedecinManager patientMedecinManager;
+@Autowired
    private PatientMedecinDao patientmedecinDao;
+@Autowired
    private CollaborateurDao collaborateurDao;
+   @Autowired
    private PatientDao patientDao;
 
    public PatientMedecinManagerTest(){}
 
-   public void setPatientMedecinManager(final PatientMedecinManager pmManager){
-      this.patientMedecinManager = pmManager;
-   }
-
-   public void setPatientDao(final PatientDao pDao){
-      this.patientDao = pDao;
-   }
-
-   public void setCollaborateurDao(final CollaborateurDao cDao){
-      this.collaborateurDao = cDao;
-   }
-
-   public void setPatientMedecinDao(final PatientMedecinDao plDao){
-      this.patientmedecinDao = plDao;
-   }
-
-   /**
-    * Teste les methodes CRUD. 
-    * @throws ParseException 
-    */
+   @Test
    public void testCRUD() throws ParseException{
       createObjectManagerTest();
       updateObjectManagerTest();
       removeObjectManagerTest();
    }
 
-   /**
-    * Teste la methode createObjectManager. 
-    * @throws ParseException 
-    */
-   public void createObjectManagerTest() throws ParseException{
+   private void createObjectManagerTest() throws ParseException{
       //Insertion nouvel enregistrement
       final PatientMedecin pm = new PatientMedecin();
       /*Champs obligatoires*/
@@ -174,11 +159,7 @@ public class PatientMedecinManagerTest extends AbstractManagerTest
       }
    }
 
-   /**
-    * Teste la methode updateObjectManager. 
-    * @throws ParseException 
-    */
-   public void updateObjectManagerTest() throws ParseException{
+   private void updateObjectManagerTest() throws ParseException{
       final PatientMedecinPK pk = new PatientMedecinPK();
       pk.setPatient(patientDao.findById(2));
       pk.setCollaborateur(collaborateurDao.findById(1));
@@ -204,10 +185,7 @@ public class PatientMedecinManagerTest extends AbstractManagerTest
       //test validation inutile car teste dans le create
    }
 
-   /**
-    * Teste la methode removeObjectManager. 
-    */
-   public void removeObjectManagerTest(){
+   private void removeObjectManagerTest(){
       final PatientMedecinPK pk = new PatientMedecinPK(collaborateurDao.findById(1), patientDao.findById(2));
       //Suppression de l'enregistrement precedemment insere
       final PatientMedecin pm1 = patientmedecinDao.findById(pk);

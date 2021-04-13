@@ -95,6 +95,7 @@ public abstract class AbstractFicheCombineController extends AbstractFicheContro
    private boolean canDelete;
    private boolean canNew;
    private boolean canSeeHistorique;
+   private boolean admin;
 
    private String deletionMessage;
 
@@ -539,6 +540,7 @@ public abstract class AbstractFicheCombineController extends AbstractFicheContro
 
       // si l'utilisateur est admin => boutons cliquables
       if(admin){
+    	 setAdmin(true);
          setCanNew(true);
          setCanEdit(true);
          setCanDelete(true);
@@ -633,4 +635,11 @@ public abstract class AbstractFicheCombineController extends AbstractFicheContro
       this.canSeeHistorique = canHistorique;
    }
 
+	public boolean isAdmin() {
+		return admin;
+	}
+	
+	public void setAdmin(boolean _a) {
+		this.admin = _a;
+	}
 }

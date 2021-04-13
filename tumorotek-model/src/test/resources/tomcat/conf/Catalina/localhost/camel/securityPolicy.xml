@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+      		<xwss:SecurityConfiguration xmlns:xwss="http://java.sun.com/xml/ns/xwss/config">
+<!--     			<xwss:RequireTimestamp maxClockSkew="60" timestampFreshnessLimit="300"/> -->
+<!--     			<xwss:RequireUsernameToken passwordDigestRequired="true" nonceRequired="true"/> -->
+ 
+    			<xwss:Timestamp />
+    			<xwss:UsernameToken name="dbadmin" password="7c222fb2927d828af22f592134e8932480637c0d" digestPassword="false" useNonce="false"/>
+			</xwss:SecurityConfiguration>

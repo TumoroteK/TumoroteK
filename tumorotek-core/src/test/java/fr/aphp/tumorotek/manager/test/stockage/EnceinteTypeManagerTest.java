@@ -79,7 +79,7 @@ public class EnceinteTypeManagerTest extends AbstractManagerTest4
    public void testFindById(){
       final EnceinteType et1 = enceinteTypeManager.findByIdManager(1);
       assertNotNull(et1);
-      assertTrue(et1.getType().equals("CASIER"));
+      assertTrue(et1.getNom().equals("CASIER"));
 
       final EnceinteType csNull = enceinteTypeManager.findByIdManager(100);
       assertNull(csNull);
@@ -92,7 +92,7 @@ public class EnceinteTypeManagerTest extends AbstractManagerTest4
    //	public void testFindAll() {
    //		List<EnceinteType> list = enceinteTypeManager.findAllObjectsManager();
    //		assertTrue(list.size() == 8);
-   //		assertTrue(list.get(0).getType().equals("BOITE"));
+   //		assertTrue(list.get(0).getNom().equals("BOITE"));
    //	}
 
    /**
@@ -103,7 +103,7 @@ public class EnceinteTypeManagerTest extends AbstractManagerTest4
       final Plateforme pf1 = plateformeDao.findById(1);
       final List<EnceinteType> list = enceinteTypeManager.findAllObjectsExceptBoiteManager(pf1);
       assertTrue(list.size() == 7);
-      assertTrue(list.get(0).getType().equals("CANISTER"));
+      assertTrue(list.get(0).getNom().equals("CANISTER"));
    }
 
    @Test
@@ -135,16 +135,16 @@ public class EnceinteTypeManagerTest extends AbstractManagerTest4
       //Cree le doublon
       final EnceinteType e1 = enceinteTypeManager.findByIdManager(1);
       assertFalse(enceinteTypeManager.findDoublonManager(e1));
-      e1.setType("TIROIR");
+      e1.setNom("TIROIR");
       e1.setPrefixe("TIR");
       assertTrue(enceinteTypeManager.findDoublonManager(e1));
       final EnceinteType e2 = new EnceinteType();
-      e2.setType(e1.getType());
+      e2.setNom(e1.getNom());
       e2.setPrefixe(e1.getPrefixe());
       e2.setPlateforme(plateformeDao.findById(1));
       assertTrue(e2.equals(e1));
       assertTrue(enceinteTypeManager.findDoublonManager(e2));
-      e2.setType("ROOO");
+      e2.setNom("ROOO");
       e2.setPrefixe("ROOO");
       assertFalse(enceinteTypeManager.findDoublonManager(e2));
    }
@@ -175,7 +175,7 @@ public class EnceinteTypeManagerTest extends AbstractManagerTest4
    private void createObjectManagerTest(){
       //Insertion nouvel enregistrement
       final EnceinteType e1 = new EnceinteType();
-      e1.setType("NEW");
+      e1.setNom("NEW");
       e1.setPrefixe("NEW");
       e1.setPlateforme(plateformeDao.findById(1));
       enceinteTypeManager.createObjectManager(e1);
@@ -183,7 +183,7 @@ public class EnceinteTypeManagerTest extends AbstractManagerTest4
       //Insertion d'un doublon engendrant une exception
       Boolean catched = false;
       final EnceinteType e1Bis = new EnceinteType();
-      e1Bis.setType("NEW");
+      e1Bis.setNom("NEW");
       e1Bis.setPrefixe("NEW");
       try{
          enceinteTypeManager.createObjectManager(e1Bis);
@@ -213,7 +213,7 @@ public class EnceinteTypeManagerTest extends AbstractManagerTest4
       for(int i = 0; i < nomValues.length; i++){
          for(int j = 0; j < prefValues.length; j++){
             try{
-               e2.setType(nomValues[i]);
+               e2.setNom(nomValues[i]);
                e2.setPrefixe(prefValues[j]);
                if(i != 5 && j != 5){ //car creation valide
                   enceinteTypeManager.createObjectManager(e2);
@@ -229,14 +229,14 @@ public class EnceinteTypeManagerTest extends AbstractManagerTest4
    private void updateObjectManagerTest(){
       //Modification d'un enregistrement
       final EnceinteType e1 = enceinteTypeManager.findByIdManager(10);
-      e1.setType("NEW BIS");
+      e1.setNom("NEW BIS");
       enceinteTypeManager.updateObjectManager(e1);
       final EnceinteType e1Bis = enceinteTypeManager.findByIdManager(10);
-      assertTrue(e1Bis.getType().equals("NEW BIS"));
+      assertTrue(e1Bis.getNom().equals("NEW BIS"));
       //Modification en un doublon engendrant une exception
       Boolean catched = false;
       try{
-         e1Bis.setType("CASIER");
+         e1Bis.setNom("CASIER");
          e1Bis.setPrefixe("CAS");
          enceinteTypeManager.updateObjectManager(e1Bis);
       }catch(final Exception e){
@@ -252,7 +252,7 @@ public class EnceinteTypeManagerTest extends AbstractManagerTest4
       for(int i = 0; i < nomValues.length; i++){
          for(int j = 0; j < prefValues.length; j++){
             try{
-               e1Bis.setType(nomValues[i]);
+               e1Bis.setNom(nomValues[i]);
                e1Bis.setPrefixe(prefValues[j]);
                if(i != 5 && j != 5){ //car creation valide
                   catched = false;

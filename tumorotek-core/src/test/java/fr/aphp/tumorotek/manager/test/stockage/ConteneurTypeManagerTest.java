@@ -76,7 +76,7 @@ public class ConteneurTypeManagerTest extends AbstractManagerTest4
    public void testFindById(){
       final ConteneurType ct1 = conteneurTypeManager.findByIdManager(1);
       assertNotNull(ct1);
-      assertTrue(ct1.getType().equals("CONGELATEUR"));
+      assertTrue(ct1.getNom().equals("CONGELATEUR"));
 
       final ConteneurType csNull = conteneurTypeManager.findByIdManager(10);
       assertNull(csNull);
@@ -89,7 +89,7 @@ public class ConteneurTypeManagerTest extends AbstractManagerTest4
    //	public void testFindAll() {
    //		List<ConteneurType> list = conteneurTypeManager.findAllObjectsManager();
    //		assertTrue(list.size() == 3);
-   //		assertTrue(list.get(1).getType().equals("CRYOCONSERVATEUR"));
+   //		assertTrue(list.get(1).getNom().equals("CRYOCONSERVATEUR"));
    //	}
 
    /**
@@ -100,14 +100,14 @@ public class ConteneurTypeManagerTest extends AbstractManagerTest4
       //Cree le doublon
       final ConteneurType c1 = conteneurTypeManager.findByIdManager(1);
       assertFalse(conteneurTypeManager.findDoublonManager(c1));
-      c1.setType("CRYOCONSERVATEUR");
+      c1.setNom("CRYOCONSERVATEUR");
       assertTrue(conteneurTypeManager.findDoublonManager(c1));
       final ConteneurType c2 = new ConteneurType();
-      c2.setType(c1.getType());
+      c2.setNom(c1.getNom());
       c2.setPlateforme(c1.getPlateforme());
       assertTrue(c2.equals(c1));
       assertTrue(conteneurTypeManager.findDoublonManager(c2));
-      c2.setType("ROOO");
+      c2.setNom("ROOO");
       assertFalse(conteneurTypeManager.findDoublonManager(c2));
    }
 
@@ -134,14 +134,14 @@ public class ConteneurTypeManagerTest extends AbstractManagerTest4
    private void createObjectManagerTest(){
       //Insertion nouvel enregistrement
       final ConteneurType c1 = new ConteneurType();
-      c1.setType("NEW");
+      c1.setNom("NEW");
       c1.setPlateforme(plateformeDao.findById(1));
       conteneurTypeManager.createObjectManager(c1);
       assertTrue(conteneurTypeManager.findByOrderManager(c1.getPlateforme()).size() == 4);
       //Insertion d'un doublon engendrant une exception
       Boolean catched = false;
       final ConteneurType c1Bis = new ConteneurType();
-      c1Bis.setType("NEW");
+      c1Bis.setNom("NEW");
       try{
          conteneurTypeManager.createObjectManager(c1Bis);
       }catch(final Exception e){
@@ -168,7 +168,7 @@ public class ConteneurTypeManagerTest extends AbstractManagerTest4
       c2.setPlateforme(plateformeDao.findById(1));
       for(int i = 0; i < emptyValues.length; i++){
          try{
-            c2.setType(emptyValues[i]);
+            c2.setNom(emptyValues[i]);
             conteneurTypeManager.createObjectManager(c2);
          }catch(final ValidationException e){
             //verifie qu'aucune ligne n'a ete ajoutee
@@ -180,14 +180,14 @@ public class ConteneurTypeManagerTest extends AbstractManagerTest4
    private void updateObjectManagerTest(){
       //Modification d'un enregistrement
       final ConteneurType c1 = conteneurTypeManager.findByIdManager(4);
-      c1.setType("NEW BIS");
+      c1.setNom("NEW BIS");
       conteneurTypeManager.updateObjectManager(c1);
       final ConteneurType c1Bis = conteneurTypeManager.findByIdManager(4);
-      assertTrue(c1Bis.getType().equals("NEW BIS"));
+      assertTrue(c1Bis.getNom().equals("NEW BIS"));
       //Modification en un doublon engendrant une exception
       Boolean catched = false;
       try{
-         c1Bis.setType("CONGELATEUR");
+         c1Bis.setNom("CONGELATEUR");
          conteneurTypeManager.updateObjectManager(c1Bis);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("DoublonFoundException")){
@@ -201,7 +201,7 @@ public class ConteneurTypeManagerTest extends AbstractManagerTest4
       for(int i = 0; i < emptyValues.length; i++){
          catched = false;
          try{
-            c1Bis.setType(emptyValues[i]);
+            c1Bis.setNom(emptyValues[i]);
             conteneurTypeManager.updateObjectManager(c1Bis);
          }catch(final ValidationException e){
             //verifie que l'enregistrement n'a pas ete modifie

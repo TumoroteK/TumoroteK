@@ -252,7 +252,8 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
          final List<Banque> bks = new ArrayList<>();
          bks.add(selectedBanque);
          ConnexionUtils.setSessionCatalogues(bks, sessionScope);
-         ConnexionUtils.generateDroitsForSelectedBanque(selectedBanque, user, sessionScope);
+         ConnexionUtils.generateDroitsForSelectedBanque(selectedBanque, 
+        		 selectedBanque.getPlateforme(), user, sessionScope);
          sessionScope.remove("ToutesCollections");
 
          // gestion des interfaçages

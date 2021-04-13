@@ -138,7 +138,7 @@ public class EchantillonDTO
 
    public String getType(){
       if(this.echantillon.getEchantillonType() != null){
-         return this.echantillon.getEchantillonType().getType();
+         return this.echantillon.getEchantillonType().getNom();
       }
       return null;
    }
@@ -165,7 +165,7 @@ public class EchantillonDTO
 
       if(this.echantillon.getQuantiteUnite() != null){
          sb.append(" ");
-         sb.append(this.echantillon.getQuantiteUnite().getUnite());
+         sb.append(this.echantillon.getQuantiteUnite().getNom());
       }
 
       return sb.toString();
@@ -185,7 +185,7 @@ public class EchantillonDTO
 
       if(this.echantillon.getQuantiteUnite() != null){
          sb.append(" ");
-         sb.append(this.echantillon.getQuantiteUnite().getUnite());
+         sb.append(this.echantillon.getQuantiteUnite().getNom());
       }
 
       return sb.toString();
@@ -202,7 +202,7 @@ public class EchantillonDTO
 
       if(this.echantillon.getQuantiteUnite() != null){
          sb.append(" ");
-         sb.append(this.echantillon.getQuantiteUnite().getUnite());
+         sb.append(this.echantillon.getQuantiteUnite().getNom());
       }
 
       return sb.toString();
@@ -313,7 +313,7 @@ public class EchantillonDTO
 
    public String getQualite(){
       if(this.echantillon.getEchanQualite() != null){
-         return this.echantillon.getEchanQualite().getEchanQualite();
+         return this.echantillon.getEchanQualite().getNom();
       }
       return null;
    }

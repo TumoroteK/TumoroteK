@@ -225,7 +225,8 @@ public class RestrictTablesModale
 
       // modale ouverte depuis ListeController
       if(parent == null){
-         getListeController().onLaterExport(true);
+    	 Events.postEvent("onClick$exportItem", getListeController().getSelfComponent(), null);
+         // getListeController().onLaterExport(true);
       }else{ // modale ouverte depuis Fiche ResultatsModale
          Events.postEvent("onClick$exportItem", getParent(), null);
       }
@@ -233,5 +234,4 @@ public class RestrictTablesModale
       // ferme la fenêtre
       cancel();
    }
-
 }

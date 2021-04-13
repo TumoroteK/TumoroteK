@@ -35,6 +35,8 @@
  **/
 package fr.aphp.tumorotek.manager.test.xml;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -45,8 +47,9 @@ import java.util.List;
 
 import org.jdom.Document;
 import org.jdom.Element;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import fr.aphp.tumorotek.dao.interfacage.EmetteurDao;
 import fr.aphp.tumorotek.manager.coeur.echantillon.EchantillonManager;
 import fr.aphp.tumorotek.manager.coeur.prelevement.PrelevementManager;
 import fr.aphp.tumorotek.manager.impl.xml.BlocPrincipal;
@@ -68,7 +71,7 @@ import fr.aphp.tumorotek.manager.impl.xml.Signatures;
 import fr.aphp.tumorotek.manager.impl.xml.SousParagraphe;
 import fr.aphp.tumorotek.manager.impl.xml.ValeursSignatures;
 import fr.aphp.tumorotek.manager.stockage.TerminaleManager;
-import fr.aphp.tumorotek.manager.test.AbstractManagerTest;
+import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
 import fr.aphp.tumorotek.manager.xml.XmlUtils;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
@@ -83,45 +86,25 @@ import fr.aphp.tumorotek.model.stockage.Terminale;
  * @version 2.0
  *
  */
-public class XmlUtilsTest extends AbstractManagerTest
+public class XmlUtilsTest extends AbstractManagerTest4
 {
 
-   /** Bean. */
+   @Autowired
    private XmlUtils xmlUtils;
-   /** Bean. */
+   @Autowired
    private PrelevementManager prelevementManager;
-   /** Bean. */
+   @Autowired
    private EchantillonManager echantillonManager;
+   @Autowired
    private TerminaleManager terminaleManager;
-   private EmetteurDao emetteurDao;
+ //  @Autowired
+  // private EmetteurDao emetteurDao;
 
    public XmlUtilsTest(){
 
    }
 
-   public void setXmlUtils(final XmlUtils xUtils){
-      this.xmlUtils = xUtils;
-   }
-
-   public void setPrelevementManager(final PrelevementManager pManager){
-      this.prelevementManager = pManager;
-   }
-
-   public void setEchantillonManager(final EchantillonManager eManager){
-      this.echantillonManager = eManager;
-   }
-
-   public void setTerminaleManager(final TerminaleManager tManager){
-      this.terminaleManager = tManager;
-   }
-
-   public void setEmetteurDao(final EmetteurDao eDao){
-      this.emetteurDao = eDao;
-   }
-
-   /**
-    * Test la méthode createJDomDocument.
-    */
+   @Test
    public void testCreateJDomDocument(){
 
       final Document doc = xmlUtils.createJDomDocument();
@@ -135,6 +118,7 @@ public class XmlUtilsTest extends AbstractManagerTest
     * Test la méthode addCoupleValeur.
     */
 
+   @Test
    public void testAddCoupleValeur(){
 
       final Element ligne = new Element("LigneParagraphe");
@@ -162,6 +146,7 @@ public class XmlUtilsTest extends AbstractManagerTest
     * Test la méthode addCoupleValeur.
     */
 
+   @Test
    public void testAddCoupleSimpleValeur(){
 
       final Element ligne = new Element("LigneParagraphe");
@@ -189,6 +174,7 @@ public class XmlUtilsTest extends AbstractManagerTest
     * Test la méthode addLigne.
     */
 
+   @Test
    public void testAddLigne(){
 
       final Element sousP = new Element("SousParagraphe");
@@ -222,6 +208,7 @@ public class XmlUtilsTest extends AbstractManagerTest
     * Test la méthode addLigneDeuxColonnesParagraphe.
     */
 
+   @Test
    public void testAddLigneDeuxColonnesParagraphe(){
 
       final Element sousP = new Element("SousParagraphe");
@@ -249,6 +236,7 @@ public class XmlUtilsTest extends AbstractManagerTest
     * Test la méthode addLigneSimple.
     */
 
+   @Test
    public void testAddLigneSimple(){
 
       final Element sousP = new Element("SousParagraphe");
@@ -273,6 +261,7 @@ public class XmlUtilsTest extends AbstractManagerTest
     * Test la méthode addLigneListe.
     */
 
+   @Test
    public void testAddLigneListe(){
 
       final Element sousP = new Element("SousParagraphe");
@@ -299,6 +288,7 @@ public class XmlUtilsTest extends AbstractManagerTest
     * Test la méthode addColonnesListe.
     */
 
+   @Test
    public void testAddColonnesListe(){
 
       final Element sousP = new Element("SousParagraphe");
@@ -317,6 +307,7 @@ public class XmlUtilsTest extends AbstractManagerTest
     * Test la méthode addEnteteListe.
     */
 
+   @Test
    public void testAddEnteteListe(){
 
       final Element sousP = new Element("SousParagraphe");
@@ -343,6 +334,7 @@ public class XmlUtilsTest extends AbstractManagerTest
     * Test la méthode addSousParagraphe.
     */
 
+   @Test
    public void testAddSousParagraphe(){
 
       final Element para = new Element("Paragraphe");
@@ -384,6 +376,7 @@ public class XmlUtilsTest extends AbstractManagerTest
     * Test la méthode addParagraphe.
     */
 
+   @Test
    public void testAddParagraphe(){
 
       final CoupleValeur cv1 = new CoupleValeur("Nom", "Valeur");
@@ -433,6 +426,7 @@ public class XmlUtilsTest extends AbstractManagerTest
     * Test la méthode addListe.
     */
 
+   @Test
    public void testAddListe(){
 
       final LigneListe ligne1 = new LigneListe(new String[] {"Cell1", "Cell2", "Cell3"});
@@ -473,6 +467,7 @@ public class XmlUtilsTest extends AbstractManagerTest
    /**
     * Test de la méthode addPage().
     */
+   @Test
    public void testAddPage(){
       final Document doc = xmlUtils.createJDomDocument();
       final Element root = doc.getRootElement();
@@ -491,6 +486,7 @@ public class XmlUtilsTest extends AbstractManagerTest
    /**
     * Test de la méthode addTitreForDocument().
     */
+   @Test
    public void testAddTitreForDocument(){
       final Document doc = xmlUtils.createJDomDocument();
       final Element root = doc.getRootElement();
@@ -506,6 +502,7 @@ public class XmlUtilsTest extends AbstractManagerTest
    /**
     * Test de la méthode createXMLFile().
     */
+   @Test
    public void testCreateXMLFile(){
       final Document doc = xmlUtils.createJDomDocument();
       final Element root = doc.getRootElement();
@@ -542,6 +539,7 @@ public class XmlUtilsTest extends AbstractManagerTest
    /**
     * Test de la méthode createXMLFile().
     */
+   @Test
    public void testTransformAsPdf(){
       final Document doc = xmlUtils.createJDomDocument();
       final Element root = doc.getRootElement();
@@ -617,7 +615,7 @@ public class XmlUtilsTest extends AbstractManagerTest
 
       // Informations prélèvement
       final CoupleValeur cp12 = new CoupleValeur("Date et heure de prélèvement", p.getDatePrelevement().getTime().toString());
-      final CoupleValeur cp13 = new CoupleValeur("Type de prélèvement", p.getPrelevementType().getType());
+      final CoupleValeur cp13 = new CoupleValeur("Type de prélèvement", p.getPrelevementType().getNom());
       final CoupleValeur cp14 = new CoupleValeur("Stérile", p.getSterile().toString());
       final CoupleValeur cp15 = new CoupleValeur("Date de congélation", "07/07/2010");
       final CoupleValeur cp16 = new CoupleValeur("Etablissement", p.getServicePreleveur().getEtablissement().getNom());
@@ -629,14 +627,14 @@ public class XmlUtilsTest extends AbstractManagerTest
       final LigneParagraphe li9 = new LigneParagraphe("", new CoupleValeur[] {cp17});
       final LigneParagraphe li10 = new LigneParagraphe("", new CoupleValeur[] {cp18});
       // conditionnement
-      final CoupleValeur cp19 = new CoupleValeur("Type de conditionnement", p.getConditType().getType());
+      final CoupleValeur cp19 = new CoupleValeur("Type de conditionnement", p.getConditType().getNom());
       final CoupleValeur cp20 = new CoupleValeur("Nombre", p.getConditNbr().toString());
-      final CoupleSimpleValeur cp21 = new CoupleSimpleValeur("Milieu", p.getConditMilieu().getMilieu());
+      final CoupleSimpleValeur cp21 = new CoupleSimpleValeur("Milieu", p.getConditMilieu().getNom());
       final LigneParagraphe li11 = new LigneParagraphe("", new CoupleValeur[] {cp19, cp20});
       final LigneSimpleParagraphe li12 = new LigneSimpleParagraphe(cp21);
       final SousParagraphe sousPar2 = new SousParagraphe("Conditionnement", new Object[] {li11, li12}, null, null);
       // statut juridique
-      final CoupleValeur cp22 = new CoupleValeur("Statut juridique", p.getConsentType().getType());
+      final CoupleValeur cp22 = new CoupleValeur("Statut juridique", p.getConsentType().getNom());
       final CoupleValeur cp23 = new CoupleValeur("Date", "07/10/1995");
       final LigneParagraphe li13 = new LigneParagraphe("", new CoupleValeur[] {cp22, cp23});
       final SousParagraphe sousPar3 = new SousParagraphe("Statut juridique", new LigneParagraphe[] {li13}, null, null);
@@ -665,10 +663,10 @@ public class XmlUtilsTest extends AbstractManagerTest
       final EnteteListe entete = new EnteteListe(new String[] {"Code", "Date stockage", "Type", "Statut"});
       final Echantillon e1 = echantillonManager.findByIdManager(1);
       final LigneListe ligneL1 = new LigneListe(
-         new String[] {e1.getCode(), "09/07/2010", e1.getEchantillonType().getType(), e1.getObjetStatut().getStatut()});
+         new String[] {e1.getCode(), "09/07/2010", e1.getEchantillonType().getNom(), e1.getObjetStatut().getStatut()});
       final Echantillon e2 = echantillonManager.findByIdManager(2);
       final LigneListe ligneL2 = new LigneListe(new String[] {e2.getCode(), e2.getDateStock().getTime().toString(),
-         e2.getEchantillonType().getType(), e2.getObjetStatut().getStatut()});
+         e2.getEchantillonType().getNom(), e2.getObjetStatut().getStatut()});
       final ListeElement listeEchan = new ListeElement("Echantillons (2)", entete,
          new LigneListe[] {ligneL1, ligneL2, ligneL2, ligneL2, ligneL1, ligneL2, ligneL2, ligneL2, ligneL1, ligneL2, ligneL2,
             ligneL2, ligneL1, ligneL2, ligneL2, ligneL2, ligneL1, ligneL2, ligneL2, ligneL2, ligneL1, ligneL2, ligneL2, ligneL2,
@@ -722,6 +720,7 @@ public class XmlUtilsTest extends AbstractManagerTest
       return doc;
    }
 
+   @Test
    public void testCreerPdf(){
       // création du document contenant les infos
       final Document doc = creerDocument();
@@ -750,6 +749,7 @@ public class XmlUtilsTest extends AbstractManagerTest
 
    }
 
+   @Test
    public void testCreerHtml(){
       final Document doc = creerDocument();
 
@@ -784,6 +784,7 @@ public class XmlUtilsTest extends AbstractManagerTest
    /**
     * Test la méthode createJDomDocumentBoites.
     */
+   @Test
    public void testCreateJDomDocumentBoites(){
 
       final Document doc = xmlUtils.createJDomDocumentBoites();
@@ -796,6 +797,7 @@ public class XmlUtilsTest extends AbstractManagerTest
    /**
     * Test de la méthode addPageBoite().
     */
+   @Test
    public void testAddPageBoite(){
       final Document doc = xmlUtils.createJDomDocumentBoites();
       final Element root = doc.getRootElement();
@@ -814,6 +816,7 @@ public class XmlUtilsTest extends AbstractManagerTest
    /**
     * Test de la méthode addTitreIntermediaire().
     */
+   @Test
    public void testAddTitreIntermediaire(){
       final Document doc = xmlUtils.createJDomDocumentBoites();
       final Element root = doc.getRootElement();
@@ -829,6 +832,7 @@ public class XmlUtilsTest extends AbstractManagerTest
    /**
     * Test de la méthode addSeparateur().
     */
+   @Test
    public void testAddSeparateur(){
       final Document doc = xmlUtils.createJDomDocumentBoites();
       final Element root = doc.getRootElement();
@@ -845,6 +849,7 @@ public class XmlUtilsTest extends AbstractManagerTest
     * Test la méthode addInstructions.
     */
 
+   @Test
    public void testAddInstructions(){
 
       final Element page = new Element("PageBoite");
@@ -874,6 +879,7 @@ public class XmlUtilsTest extends AbstractManagerTest
     * Test la méthode addListeElements.
     */
 
+   @Test
    public void testAddListeElements(){
 
       final Element page = new Element("PageBoite");
@@ -905,6 +911,7 @@ public class XmlUtilsTest extends AbstractManagerTest
     * Test la méthode createModelisation.
     */
 
+   @Test
    public void testCreateModelisation(){
 
       final Element page = new Element("PageBoite");
@@ -938,6 +945,7 @@ public class XmlUtilsTest extends AbstractManagerTest
     * Test la méthode addBoite.
     */
 
+   @Test
    public void testAddBoite(){
 
       final Element page = new Element("PageBoite");
@@ -974,6 +982,7 @@ public class XmlUtilsTest extends AbstractManagerTest
    /**
     * Test de la méthode createXMLFile().
     */
+   @Test
    public void testCreateXMLFileBoite(){
       final Document doc = creerDocumentBoite();
 
@@ -990,6 +999,7 @@ public class XmlUtilsTest extends AbstractManagerTest
       f.delete();
    }
 
+   @Test
    public void testCreerBoiteHtml(){
       final Document doc = creerDocumentBoite();
 
@@ -1017,6 +1027,7 @@ public class XmlUtilsTest extends AbstractManagerTest
 
    }
 
+   @Test
    public void testEquals(){
       final Terminale boite = terminaleManager.findByIdManager(1);
       final List<String> instructions = new ArrayList<>();
@@ -1041,6 +1052,7 @@ public class XmlUtilsTest extends AbstractManagerTest
       assertFalse(boiteI.equals(null));
    }
 
+   @Test
    public void testHashCode(){
       final Terminale boite = terminaleManager.findByIdManager(1);
       final List<String> instructions = new ArrayList<>();
@@ -1071,6 +1083,7 @@ public class XmlUtilsTest extends AbstractManagerTest
    /**
     * Test la méthode createJDomDocumentContenuBoite.
     */
+   @Test
    public void testCreateJDomDocumentContenuBoite(){
 
       final Document doc = xmlUtils.createJDomDocumentContenuBoite();
@@ -1083,6 +1096,7 @@ public class XmlUtilsTest extends AbstractManagerTest
    /**
     * Test de la méthode addPageContenuBoite().
     */
+   @Test
    public void testAddPageContenuBoite(){
       final Document doc = xmlUtils.createJDomDocumentContenuBoite();
       final Element root = doc.getRootElement();
@@ -1102,6 +1116,7 @@ public class XmlUtilsTest extends AbstractManagerTest
     * Test la méthode addListeParents.
     */
 
+   @Test
    public void testAddListeParents(){
 
       final Element page = new Element("PageContenuBoite");
@@ -1131,6 +1146,7 @@ public class XmlUtilsTest extends AbstractManagerTest
     * Test la méthode addListeNombres.
     */
 
+   @Test
    public void testAddListeNombres(){
 
       final Element page = new Element("PageBoite");
@@ -1161,6 +1177,7 @@ public class XmlUtilsTest extends AbstractManagerTest
     * Test la méthode createContenu.
     */
 
+   @Test
    public void testCreateContenu(){
 
       final Element page = new Element("PageContenuBoite");
@@ -1188,6 +1205,7 @@ public class XmlUtilsTest extends AbstractManagerTest
     * Test la méthode addBoiteContenu.
     */
 
+   @Test
    public void testAddBoiteContenu(){
 
       final Element page = new Element("PageBoite");
@@ -1219,6 +1237,7 @@ public class XmlUtilsTest extends AbstractManagerTest
    /**
     * Test de la méthode createXMLFile().
     */
+   @Test
    public void testCreateXMLFileContenu(){
       final Document doc = creerDocumentContenu();
 
@@ -1235,6 +1254,7 @@ public class XmlUtilsTest extends AbstractManagerTest
       f.delete();
    }
 
+   @Test
    public void testCreerContenuHtml(){
       final Document doc = creerDocumentContenu();
 
@@ -1268,6 +1288,7 @@ public class XmlUtilsTest extends AbstractManagerTest
    /**
     * Test la méthode createJDomAccordTranfert.
     */
+   @Test
    public void testCreateJDomAccordTranfert(){
 
       final Document doc = xmlUtils.createJDomAccordTranfert();
@@ -1281,6 +1302,7 @@ public class XmlUtilsTest extends AbstractManagerTest
     * Test la méthode addCoupleAccordValeur.
     */
 
+   @Test
    public void testAddCoupleAccordValeur(){
 
       final Element ligne = new Element("LigneParagraphe");
@@ -1308,6 +1330,7 @@ public class XmlUtilsTest extends AbstractManagerTest
     * Test la méthode addLigneAccord.
     */
 
+   @Test
    public void testAddLigneAccord(){
 
       final Element bloc = new Element("BlocPrincipal");
@@ -1337,6 +1360,7 @@ public class XmlUtilsTest extends AbstractManagerTest
     * Test la méthode addBlocPrincipal.
     */
 
+   @Test
    public void testAddBlocPrincipal(){
 
       final CoupleAccordValeur cv1 = new CoupleAccordValeur("Nom1", new String[] {"value1", "value2"});
@@ -1377,6 +1401,7 @@ public class XmlUtilsTest extends AbstractManagerTest
     * Test la méthode addTableau.
     */
 
+   @Test
    public void testAddTableau(){
 
       final CoupleAccordValeur cv1 = new CoupleAccordValeur("Nom1", new String[] {"value1", "value2"});
@@ -1414,6 +1439,7 @@ public class XmlUtilsTest extends AbstractManagerTest
     * Test la méthode addValeursSignatures.
     */
 
+   @Test
    public void testAddValeursSignatures(){
 
       final Element ligne = new Element("LigneParagraphe");
@@ -1441,6 +1467,7 @@ public class XmlUtilsTest extends AbstractManagerTest
     * Test la méthode addLigne.
     */
 
+   @Test
    public void testAddListeSignature(){
 
       final Element sousP = new Element("SousParagraphe");
@@ -1471,6 +1498,7 @@ public class XmlUtilsTest extends AbstractManagerTest
     * Test la méthode addSignatures.
     */
 
+   @Test
    public void testAddSignatures(){
 
       final ValeursSignatures vs1 = new ValeursSignatures("Nom", "Valeur");
@@ -1572,6 +1600,7 @@ public class XmlUtilsTest extends AbstractManagerTest
    /**
     * Test de la méthode createXMLFile().
     */
+   @Test
    public void testCreateXMLAccord(){
       final Document doc = creerDocumentAccord();
 
@@ -1587,6 +1616,7 @@ public class XmlUtilsTest extends AbstractManagerTest
       //f.delete();
    }
 
+   @Test
    public void testCreerAccordPdf(){
       // création du document contenant les infos
       final Document doc = creerDocumentAccord();

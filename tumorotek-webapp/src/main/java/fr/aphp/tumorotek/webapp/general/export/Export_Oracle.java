@@ -45,21 +45,25 @@ import java.util.Map;
 import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 
+import fr.aphp.tumorotek.action.utilisateur.ProfilExport;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 import oracle.sql.ARRAY;
 
+/**
+ * @version 2.2.3-rc1
+ */
 public class Export_Oracle extends Export
 {
 
    private int outParamIdx = 2;
 
-   public Export_Oracle(final Desktop d, final int ent, final List<Integer> o, final List<Banque> b, final boolean anonyme,
+   public Export_Oracle(final Desktop d, final int ent, final List<Integer> o, final List<Banque> b, final ProfilExport pE,
       final short type, final Utilisateur u, final List<Integer> rI, final HtmlMacroComponent htmlMacroComponent,
       final Map<String, ?> params, EContexte contexte){
-      super(d, ent, o, b, anonyme, type, u, rI, htmlMacroComponent, params, contexte);
+      super(d, ent, o, b, pE, type, u, rI, htmlMacroComponent, params, contexte);
    }
 
    @Override
@@ -88,6 +92,11 @@ public class Export_Oracle extends Export
       outParamIdx = 1;
       return "{call select_biocap_data(?)}";
    }
+   
+   @Override
+   public String initPatientTableAnonymeSQL() {
+		return "{call create_tmp_patient_anonyme()}";
+	}
 
    @Override
    protected void fetchResultSet() throws SQLException{

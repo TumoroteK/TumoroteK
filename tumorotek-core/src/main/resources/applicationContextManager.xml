@@ -42,7 +42,7 @@
 				<property name="prelevementDao" ref="prelevementDao" />
 				<property name="annotationValeurManager" ref="annotationValeurManager" />
 				<property name="importHistoriqueManager" ref="importHistoriqueManager" />
-				<property name="patientDelegateDao" ref="patientDelegateDao" />
+				<!-- <property name="patientDelegateDao" ref="patientDelegateDao" /> -->
 			</bean>
 		</property>
 	</bean>
@@ -224,7 +224,7 @@
 				<property name="cederObjetManager" ref="cederObjetManager" />
 				<property name="dossierExterneDao" ref="dossierExterneDao" />
 				<property name="objetNonConformeManager" ref="objetNonConformeManager" />
-				<property name="prelevementDelegateDao" ref="prelevementDelegateDao" />
+				<!-- <property name="prelevementDelegateDao" ref="prelevementDelegateDao" /> -->
 			</bean>
 		</property>
 	</bean>
@@ -267,7 +267,6 @@
 				<property name="uniteDao" ref="uniteDao" />
 				<property name="echanQualiteDao" ref="echanQualiteDao" />
 				<property name="modePrepaDao" ref="modePrepaDao" />
-				<property name="reservationDao" ref="reservationDao" />
 				<property name="echantillonValidator" ref="echantillonValidator" />
 				<property name="operationManager" ref="operationManager" />
 				<property name="operationTypeDao" ref="operationTypeDao" />
@@ -283,7 +282,7 @@
 				<property name="conteneurManager" ref="conteneurManager" />
 				<property name="retourManager" ref="retourManager" />
 				<property name="objetNonConformeManager" ref="objetNonConformeManager" />
-				<property name="delegateDao" ref="echantillonDelegateDao" />
+				<!-- <property name="delegateDao" ref="echantillonDelegateDao" /> -->
 			</bean>
 		</property>
 	</bean>
@@ -430,7 +429,6 @@
 				<property name="prodQualiteDao" ref="prodQualiteDao" />
 				<property name="modePrepaDeriveDao" ref="modePrepaDeriveDao" />
 				<property name="transformationDao" ref="transformationDao" />
-				<property name="reservationDao" ref="reservationDao" />
 				<property name="prodDeriveValidator" ref="prodDeriveValidator" />
 				<property name="operationManager" ref="operationManager" />
 				<property name="operationTypeDao" ref="operationTypeDao" />
@@ -469,7 +467,7 @@
 				<property name="cessionStatutDao" ref="cessionStatutDao" />
 				<property name="transporteurDao" ref="transporteurDao" />
 				<property name="destructionMotifDao" ref="destructionMotifDao" />
-				<property name="cessionDelegateDao" ref="cessionDelegateDao" />
+				<!-- <property name="cessionDelegateDao" ref="cessionDelegateDao" /> -->
 				<property name="cederObjetManager" ref="cederObjetManager" />
 				<property name="operationManager" ref="operationManager" />
 				<property name="operationTypeDao" ref="operationTypeDao" />
@@ -912,11 +910,11 @@
 				<property name="txManager" ref="txManager" />
 				<property name="operationManager" ref="operationManager" />
 				<property name="operationTypeDao" ref="operationTypeDao" />
-				<property name="conteneurManager" ref="conteneurManager" />
-				<property name="enceinteManager" ref="enceinteManager" />
-				<property name="terminaleManager" ref="terminaleManager" />
+				<property name="conteneurDao" ref="conteneurDao" />
+				<property name="enceinteDao" ref="enceinteDao" />
 				<property name="echantillonDao" ref="echantillonDao" />
 				<property name="prodDeriveDao" ref="prodDeriveDao" />
+				<property name="dataSource" ref="dataSource" />
 			</bean>
 		</property>
 	</bean>
@@ -993,6 +991,7 @@
 				<property name="incidentManager" ref="incidentManager" />
 				<property name="incidentValidator" ref="incidentValidator" />
 				<property name="dataSource" ref="dataSource" />
+				<property name="emplacementManager" ref="emplacementManager" />
 			</bean>
 		</property>
 	</bean>
@@ -1051,14 +1050,6 @@
 				<property name="profilDao" ref="profilDao" />
 				<property name="utilisateurDao" ref="utilisateurDao" />
 				<property name="banqueDao" ref="banqueDao" />
-			</bean>
-		</property>
-	</bean>
-
-	<bean id="reservationManager" parent="txProxyTemplate">
-		<property name="target">
-			<bean class="fr.aphp.tumorotek.manager.impl.utilisateur.ReservationManagerImpl">
-				<property name="reservationDao" ref="reservationDao" />
 			</bean>
 		</property>
 	</bean>
@@ -1998,6 +1989,14 @@
 				<property name="maladieManager" ref="maladieManager" />
 				<property name="maladieDao" ref="maladieDao" />
 				<property name="entiteDao" ref="entiteDao" />
+				<property name="dossierExterneManager" ref="dossierExterneManager" />
+				<property name="prelevementManager" ref="prelevementManager" />
+				<property name="prodDeriveManager" ref="prodDeriveManager" />
+				<property name="objetStatutDao" ref="objetStatutDao" />
+				<property name="dossierExterneDao" ref="dossierExterneDao" />
+				<property name="banqueManager" ref="banqueManager" />
+				<property name="operationManager" ref="operationManager" />
+				<property name="operationTypeDao" ref="operationTypeDao" />
 			</bean>
 		</property>
 	</bean>
@@ -2007,6 +2006,7 @@
 			<bean class="fr.aphp.tumorotek.manager.impl.interfacage.InterfacageParsingUtilsImpl">
 				<property name="dossierExterneManager" ref="dossierExterneManager" />
 				<property name="emetteurManager" ref="emetteurManager" />
+				<property name="terminaleManager" ref="terminaleManager" />
 			</bean>
 		</property>
 	</bean>
@@ -2041,35 +2041,6 @@
 		</property>
 	</bean>
 
-	<bean id="incaPatientExport" class="fr.aphp.tumorotek.manager.impl.io.export.standard.INCaPatientExportImpl" />
-	<bean id="incaMaladieExport" class="fr.aphp.tumorotek.manager.impl.io.export.standard.INCaMaladieExportImpl" />
-	<bean id="incaPrelevementExport" class="fr.aphp.tumorotek.manager.impl.io.export.standard.INCaPrelevementExportImpl">
-		<property name="banqueManager" ref="banqueManager" />
-	</bean>
-	<bean id="incaEchantillonExport" class="fr.aphp.tumorotek.manager.impl.io.export.standard.INCaEchantillonExportImpl">
-		<property name="conteneurManager" ref="conteneurManager" />
-		<property name="echantillonManager" ref="echantillonManager" />
-	</bean>
-	<bean id="incaComplementExport" class="fr.aphp.tumorotek.manager.impl.io.export.standard.INCaComplementExportImpl">
-		<property name="collaborateurManager" ref="collaborateurManager" />
-	</bean>
-	<bean id="incaSpecifiqueExport" class="fr.aphp.tumorotek.manager.impl.io.export.standard.INCaSpecifiqueExportImpl" />
-
-
-	<bean id="tvgsoPatientExport" class="fr.aphp.tumorotek.manager.impl.io.export.standard.TvgsoPatientExportImpl" />
-	<bean id="tvgsoMaladieExport" class="fr.aphp.tumorotek.manager.impl.io.export.standard.TvgsoMaladieExportImpl" />
-	<bean id="tvgsoPrelevementExport" class="fr.aphp.tumorotek.manager.impl.io.export.standard.TvgsoPrelevementExportImpl">
-		<property name="banqueManager" ref="banqueManager" />
-	</bean>
-	<bean id="tvgsoEchantillonExport" class="fr.aphp.tumorotek.manager.impl.io.export.standard.TvgsoEchantillonExportImpl">
-		<property name="echantillonManager" ref="echantillonManager" />
-		<property name="conteneurManager" ref="conteneurManager" />
-	</bean>
-	<bean id="tvgsoComplementExport" class="fr.aphp.tumorotek.manager.impl.io.export.standard.TvgsoComplementExportImpl">
-		<property name="prodDeriveManager" ref="prodDeriveManager" />
-		<property name="collaborateurManager" ref="collaborateurManager" />
-	</bean>
-
 	<bean id="exportCatalogueManager" class="fr.aphp.tumorotek.manager.impl.io.export.standard.ExportCatalogueManagerImpl">
 		<property name="txManager" ref="txManager" />
 		<property name="echantillonManager" ref="echantillonManager" />
@@ -2077,24 +2048,11 @@
 		<property name="operationTypeDao" ref="operationTypeDao" />
 		<property name="exportUtils" ref="exportUtils" />
 	</bean>
+	
+	<bean id="exportINCaManager" class="fr.aphp.tumorotek.manager.impl.io.export.standard.ExportINCaManagerImpl" parent="exportCatalogueManager" />
 
-	<bean id="exportINCaManager" class="fr.aphp.tumorotek.manager.impl.io.export.standard.ExportINCaManagerImpl" parent="exportCatalogueManager">
-		<property name="incaPatientExport" ref="incaPatientExport" />
-		<property name="incaMaladieExport" ref="incaMaladieExport" />
-		<property name="incaPrelevementExport" ref="incaPrelevementExport" />
-		<property name="incaEchantillonExport" ref="incaEchantillonExport" />
-		<property name="incaComplementExport" ref="incaComplementExport" />
-		<property name="incaSpecifiqueExport" ref="incaSpecifiqueExport" />
-	</bean>
-
-	<bean id="exportTVGSOManager" class="fr.aphp.tumorotek.manager.impl.io.export.standard.ExportTVGSOManagerImpl" parent="exportCatalogueManager">
-		<property name="tvgsoPatientExport" ref="tvgsoPatientExport" />
-		<property name="tvgsoMaladieExport" ref="tvgsoMaladieExport" />
-		<property name="tvgsoPrelevementExport" ref="tvgsoPrelevementExport" />
-		<property name="tvgsoEchantillonExport" ref="tvgsoEchantillonExport" />
-		<property name="tvgsoComplementExport" ref="tvgsoComplementExport" />
-	</bean>
-
+	<bean id="exportTVGSOManager" class="fr.aphp.tumorotek.manager.impl.io.export.standard.ExportTVGSOManagerImpl" parent="exportCatalogueManager" />
+	
 	<!-- Contexte SeroTK -->
 
 	<bean id="protocoleValidator" class="fr.aphp.tumorotek.manager.validation.contexte.ProtocoleValidator" />

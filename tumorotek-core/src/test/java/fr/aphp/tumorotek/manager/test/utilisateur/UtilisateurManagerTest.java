@@ -76,7 +76,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Classe créée le 04/11/09.
  *
  * @author Pierre Ventadour.
- * @version 2.1
+ * @version 2.2.1
  *
  */
 public class UtilisateurManagerTest extends AbstractManagerTest4
@@ -227,25 +227,36 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
    @Test
    public void testGetAvailableBanquesManager(){
       final Utilisateur u1 = utilisateurManager.findByIdManager(1);
-      List<Banque> bks = utilisateurManager.getAvailableBanquesManager(u1);
+      List<Banque> bks = utilisateurManager.getAvailableBanquesManager(u1, false);
       // @since 2.1 Banque2 archive
       assertTrue(bks.size() == 2);
+      // @since 2.2.1 keepArchived
+      bks = utilisateurManager.getAvailableBanquesManager(u1, true);
+      assertTrue(bks.size() == 3);
 
       final Utilisateur u2 = utilisateurManager.findByIdManager(2);
-      bks = utilisateurManager.getAvailableBanquesManager(u2);
+      bks = utilisateurManager.getAvailableBanquesManager(u2, false);
       // @since 2.1 Banque2 archive
       assertTrue(bks.size() == 2);
+      // @since 2.2.1 keepArchived
+      bks = utilisateurManager.getAvailableBanquesManager(u2, true);
+      assertTrue(bks.size() == 3);
 
       final Utilisateur u4 = utilisateurManager.findByIdManager(4);
-      bks = utilisateurManager.getAvailableBanquesManager(u4);
+      bks = utilisateurManager.getAvailableBanquesManager(u4, false);
+      assertTrue(bks.size() == 0);
+      bks = utilisateurManager.getAvailableBanquesManager(u4, true);
       assertTrue(bks.size() == 0);
 
       final Utilisateur u5 = utilisateurManager.findByIdManager(5);
-      bks = utilisateurManager.getAvailableBanquesManager(u5);
+      bks = utilisateurManager.getAvailableBanquesManager(u5, false);
       // @since 2.1 Banque2 archive
       assertTrue(bks.size() == 3);
+      // @since 2.2.1 keepArchived
+      bks = utilisateurManager.getAvailableBanquesManager(u5, true);
+      assertTrue(bks.size() == 4);
 
-      bks = utilisateurManager.getAvailableBanquesManager(null);
+      bks = utilisateurManager.getAvailableBanquesManager(null, true);
       assertTrue(bks.size() == 0);
    }
 
@@ -980,36 +991,50 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
       final Plateforme pf2 = plateformeManager.findByIdManager(2);
 
       final Utilisateur u1 = utilisateurManager.findByIdManager(1);
-      List<Banque> bks = utilisateurManager.getAvailableBanquesByPlateformeManager(u1, pf1);
+      List<Banque> bks = utilisateurManager.getAvailableBanquesByPlateformeManager(u1, pf1, false);
       assertTrue(bks.size() == 2);
-      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(u1, pf2);
-      // assertTrue(bks.size() == 1);
-      assertTrue(bks.size() == 0); // since 2.1 archive = true
+      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(u1, pf1, true);
+      assertTrue(bks.size() == 2);
+      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(u1, pf2, false);
+      assertTrue(bks.size() == 0);
+      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(u1, pf2, true);
+      assertTrue(bks.size() == 1); // since 2.2.1 keepArchive
 
       final Utilisateur u3 = utilisateurManager.findByIdManager(3);
-      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(u3, pf1);
+      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(u3, pf1, false);
       assertTrue(bks.size() == 2);
-      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(u3, pf2);
+      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(u3, pf1, true);
+      assertTrue(bks.size() == 2);
+      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(u3, pf2, false);
+      assertTrue(bks.size() == 0);
+      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(u3, pf2, true);
       assertTrue(bks.size() == 0);
 
       final Utilisateur u4 = utilisateurManager.findByIdManager(4);
-      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(u4, pf1);
+      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(u4, pf1, false);
       assertTrue(bks.size() == 0);
-      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(u4, pf2);
+      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(u4, pf1, true);
+      assertTrue(bks.size() == 0);
+      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(u4, pf2, false);
+      assertTrue(bks.size() == 0);
+      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(u4, pf2, true);
       assertTrue(bks.size() == 0);
 
       final Utilisateur u5 = utilisateurManager.findByIdManager(5);
-      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(u5, pf1);
+      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(u5, pf1, false);
       assertTrue(bks.size() == 3);
-      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(u5, pf2);
-      // assertTrue(bks.size() == 1);
-      assertTrue(bks.size() == 0); // since 2.1 archive = true
+      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(u5, pf1, true);
+      assertTrue(bks.size() == 3);
+      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(u5, pf2, false);
+      assertTrue(bks.size() == 0);
+      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(u5, pf2, true);
+      assertTrue(bks.size() == 1);
 
-      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(null, pf2);
+      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(null, pf2, true);
       assertTrue(bks.size() == 0);
-      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(u5, null);
+      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(u5, null, true);
       assertTrue(bks.size() == 0);
-      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(null, null);
+      bks = utilisateurManager.getAvailableBanquesByPlateformeManager(null, null, true);
       assertTrue(bks.size() == 0);
    }
 
@@ -1076,6 +1101,27 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
       utilisateurManager.removeObjectManager(uNew2);
 
       cleanUpFantomes(null);
+   }
+   
+   /**
+    * @since 2.2.1
+    */
+   @Test
+   public void testFindSuperAndArchiveManager(){
+      List<Utilisateur> utilisateurs =
+         utilisateurManager.findBySuperAndArchiveManager(true, true);
+      assertTrue(utilisateurs.isEmpty());
+
+      utilisateurs =  utilisateurManager.findBySuperAndArchiveManager(false, true);
+      assertTrue(utilisateurs.size() == 1);
+      assertTrue(utilisateurs.get(0).getUtilisateurId() == 5);
+
+      utilisateurs = utilisateurManager.findBySuperAndArchiveManager(true, false);
+      assertTrue(utilisateurs.size() == 1);
+      assertTrue(utilisateurs.get(0).getUtilisateurId() == 3);
+      
+      utilisateurs = utilisateurManager.findBySuperAndArchiveManager(false, false);
+      assertTrue(utilisateurs.size() == 3);
    }
 
 }

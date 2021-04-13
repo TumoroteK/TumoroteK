@@ -49,7 +49,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
  * Date: 17/10/2010
  *
  * @author Mathieu BARTHELEMY
- * @version 2.1
+ * @version 2.2.0
  */
 public class BanqueRowRenderer extends TKSelectObjectRenderer<Banque>
 {
@@ -71,6 +71,8 @@ public class BanqueRowRenderer extends TKSelectObjectRenderer<Banque>
          nomLabel.setClass("formLink");
       }
       nomLabel.setParent(row);
+      // @since 2.2.0
+      new Label(bank.getContexte().getLibelle()).setParent(row);
       if(bank.getProprietaire() != null){
          new Label(bank.getProprietaire().getNom()).setParent(row);
       }else{

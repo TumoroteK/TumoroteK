@@ -56,7 +56,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
  * Classe de test créée le 28/10/09.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.6
+ * @version 2.2.3-genno
  *
  */
 public class MaladieDaoTest extends AbstractDaoTest
@@ -134,6 +134,24 @@ public class MaladieDaoTest extends AbstractDaoTest
       maladies = maladieDao.findByLibelle("Non precise");
       assertTrue(maladies.size() == 1);
       maladies = maladieDao.findByLibelle(null);
+      assertTrue(maladies.size() == 0);
+   }
+   
+   /**
+    * Test l'appel de la méthode findByLibelle().
+    * @since 2.2.3-genno
+    */
+   public void testFindByLibelleAndPatient() {
+	  Patient pat3 = patientDao.findById(3);
+      List<Maladie> maladies = maladieDao.findByLibelleAndPatient("Addiction%", pat3);
+      assertTrue(maladies.size() == 2);
+      maladies = maladieDao.findByLibelleAndPatient("Grippe A", pat3);
+      assertTrue(maladies.size() == 0);
+      maladies = maladieDao.findByLibelleAndPatient("Addiction%", patientDao.findById(2));
+      assertTrue(maladies.size() == 0);
+      maladies = maladieDao.findByLibelleAndPatient(null, patientDao.findById(3));
+      assertTrue(maladies.size() == 0);
+      maladies = maladieDao.findByLibelleAndPatient("Addiction%", null);
       assertTrue(maladies.size() == 0);
    }
 

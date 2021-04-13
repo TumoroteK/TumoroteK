@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.param;
 /**
  * Paramètres de configuration de l'application
  * @author GCH
+ * @version 2.2.3-genno
  */
 public enum TkParam
 {
@@ -80,7 +81,10 @@ public enum TkParam
    INTERFACAGES_INBOXES("INTERFACAGES_INBOXES"),
    SIP_MAX_TABLE_SIZE("sip.max.table.size"),
    SGL_MAX_TABLE_SIZE("sgl.max.table.size"),
-   CONNEXION_CRF("CONNEXION_CRF");
+   CONNEXION_CRF("CONNEXION_CRF"),
+	
+	// @since 2.2.3-genno
+	GENNO_DERIVES_NATURES("genno.derives.natures");
    
    private String paramKey;
 

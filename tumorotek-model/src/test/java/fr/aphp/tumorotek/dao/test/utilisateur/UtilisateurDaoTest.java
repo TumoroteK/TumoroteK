@@ -57,7 +57,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Classe de test pour le DAO UtilisateurDao et le bean du domaine Utilisateur.
  *
  * @author Pierre Ventadour.
- * @version 10/09/2009
+ * @version 2.2.1
  *
  */
 @TransactionConfiguration(defaultRollback = false)
@@ -248,16 +248,6 @@ public class UtilisateurDaoTest extends AbstractDaoTest
       assertTrue(utilisateurs.size() == 1);
       final Collaborateur c2 = collaborateurDao.findById(4);
       utilisateurs = utilisateurDao.findByCollaborateur(c2);
-      assertTrue(utilisateurs.size() == 0);
-   }
-
-   /**
-    * Test l'appel de la méthode findByReservationId().
-    */
-   public void testFindByReservationId(){
-      List<Utilisateur> utilisateurs = utilisateurDao.findByReservationId(1);
-      assertTrue(utilisateurs.size() == 1);
-      utilisateurs = utilisateurDao.findByReservationId(5);
       assertTrue(utilisateurs.size() == 0);
    }
 
@@ -495,12 +485,6 @@ public class UtilisateurDaoTest extends AbstractDaoTest
          assertNull(u2.getProfilUtilisateurs());
       }
 
-      if(u1.getReservations() != null){
-         assertTrue(u1.getReservations().equals(u2.getReservations()));
-      }else{
-         assertNull(u2.getReservations());
-      }
-
       if(u1.getPlateformes() != null){
          assertTrue(u1.getPlateformes().equals(u2.getPlateformes()));
       }else{
@@ -515,5 +499,24 @@ public class UtilisateurDaoTest extends AbstractDaoTest
       assertTrue(u1.getPlateformeOrig().equals(u2.getPlateformeOrig()));
 
    }
+   
+   /**
+    * @since 2.2.1
+    */
+   public void testFindSuperAndArchive(){
+      List<Utilisateur> utilisateurs =
+         utilisateurDao.findBySuperAndArchive(true, true);
+      assertTrue(utilisateurs.isEmpty());
 
+      utilisateurs =  utilisateurDao.findBySuperAndArchive(false, true);
+      assertTrue(utilisateurs.size() == 1);
+      assertTrue(utilisateurs.get(0).getUtilisateurId() == 5);
+
+      utilisateurs = utilisateurDao.findBySuperAndArchive(true, false);
+      assertTrue(utilisateurs.size() == 1);
+      assertTrue(utilisateurs.get(0).getUtilisateurId() == 3);
+      
+      utilisateurs = utilisateurDao.findBySuperAndArchive(false, false);
+      assertTrue(utilisateurs.size() == 3);
+   }
 }

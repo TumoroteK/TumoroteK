@@ -69,6 +69,7 @@ import fr.aphp.tumorotek.action.constraints.ConstText;
 import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.manager.impl.coeur.cession.OldEmplTrace;
 import fr.aphp.tumorotek.manager.validation.ValidationUtilities;
 import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
@@ -86,6 +87,11 @@ import fr.aphp.tumorotek.model.systeme.Temperature;
 import fr.aphp.tumorotek.utils.Utils;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
+/**
+ * 
+ * @author mathieu BARTHELEMY
+ * @version 2.2.3-genno
+ */
 public class FicheRetour extends AbstractFicheCombineController
 {
 
@@ -132,7 +138,11 @@ public class FicheRetour extends AbstractFicheCombineController
    private TKStockableObject tkObject;
    private final ListModelList<TKStockableObject> objects = new ListModelList<>();
    // private Set<Listitem> selectedObjectsItem = new HashSet<Listitem>();
-   private HashMap<TKStockableObject, Emplacement> oldEmplacements = new HashMap<>();
+   
+   // @since 2.2.3-genno
+   // https://tumorotek.myjetbrains.com/youtrack/issue/TK-291
+   private List<OldEmplTrace> oldEmplacements = new ArrayList<OldEmplTrace>();
+   
    private Entite entiteOperation = null;
    private Cession cession = null;
    private Transformation transformation = null;
@@ -847,11 +857,11 @@ public class FicheRetour extends AbstractFicheCombineController
       }
    }
 
-   public HashMap<TKStockableObject, Emplacement> getOldEmplacements(){
+   public List<OldEmplTrace> getOldEmplacements(){
       return oldEmplacements;
    }
 
-   public void setOldEmplacements(final HashMap<TKStockableObject, Emplacement> o){
+   public void setOldEmplacements(final List<OldEmplTrace> o){
       this.oldEmplacements = o;
       dateRetourOblig = (dateRetourOblig || o != null);
    }

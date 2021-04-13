@@ -86,7 +86,7 @@ public class TestViewQuery
       //		assertTrue(catched);
 
       // DOS1 tous champs presents 
-      DossierExterne dExt = viewHandlerFactory.sendQuery(eT, "DOS1");
+      DossierExterne dExt = viewHandlerFactory.sendQuery(eT, "DOS1", null);
 
       int allBlockHere = 0;
       assertTrue(dExt != null);
@@ -130,7 +130,7 @@ public class TestViewQuery
       assertTrue(allBlockHere == 4);
 
       // DOS 2 pas heure prel
-      dExt = viewHandlerFactory.sendQuery(eT, "DOS2");
+      dExt = viewHandlerFactory.sendQuery(eT, "DOS2", null);
 
       allBlockHere = 0;
       assertTrue(dExt != null);
@@ -174,14 +174,14 @@ public class TestViewQuery
       assertTrue(allBlockHere == 4);
 
       // DOS 3  nulls everywhere!
-      dExt = viewHandlerFactory.sendQuery(eT, "DOS3");
+      dExt = viewHandlerFactory.sendQuery(eT, "DOS3", null);
 
       assertTrue(dExt != null);
       assertTrue(dExt.getIdentificationDossier().equals("DOS3"));
       assertTrue(dExt.getBlocExternes().size() == 0);
 
       // DOS 4  blanks everywhere!
-      dExt = viewHandlerFactory.sendQuery(eT, "DOS4");
+      dExt = viewHandlerFactory.sendQuery(eT, "DOS4", null);
 
       assertTrue(dExt != null);
       assertTrue(dExt.getIdentificationDossier().equals("DOS4"));

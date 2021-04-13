@@ -839,6 +839,8 @@ public abstract class AbstractFicheController extends AbstractController
          win.setWidth("650px");
          final int height = getMainWindow().getPanelHeight() + 30;
          win.setHeight(height + "px");
+         win.setVflex("1");
+         win.setSclass("rechWindow");
          win.setClosable(true);
 
          final HtmlMacroComponent ua = populateImpressionModal(win, page, objToPrint, anonyme, canHistorique);
@@ -1345,9 +1347,10 @@ public abstract class AbstractFicheController extends AbstractController
     * Méthode appelée lorsque l'utilisateur clique sur le lien
     * pour voir recherché les dossiers existants pour l'interfacage
     * avec d'autres logiciels.
+    * @version 2.2.3-genno
     */
    public void openSelectDossierExterneWindow(final Page page, final String path, final String critere, final boolean isEdit,
-      final Prelevement prlvt){
+      final Prelevement prlvt, boolean derive){
       if(!isBlockModal()){
 
          setBlockModal(true);
@@ -1366,7 +1369,7 @@ public abstract class AbstractFicheController extends AbstractController
          win.setHeight(height + "px");
          win.setClosable(true);
 
-         final HtmlMacroComponent ua = populateSelectDossierExterneModal(win, page, path, critere, isEdit, prlvt);
+         final HtmlMacroComponent ua = populateSelectDossierExterneModal(win, page, path, critere, isEdit, prlvt, derive);
          ua.setVisible(false);
 
          win.addEventListener("onTimed", new EventListener<Event>()
@@ -1395,8 +1398,19 @@ public abstract class AbstractFicheController extends AbstractController
       }
    }
 
+   /**
+    * @param win
+    * @param page
+    * @param path
+    * @param critere
+    * @param isEdit
+    * @param prlvt
+    * @param derive 
+    * @return macro component modale
+    * @version 2.2.3-genno
+    */
    private static HtmlMacroComponent populateSelectDossierExterneModal(final Window win, final Page page, final String path,
-      final String critere, final boolean isEdit, final Prelevement prlvt){
+      final String critere, final boolean isEdit, final Prelevement prlvt, final boolean derive){
       // HtmlMacroComponent contenu dans la fenêtre : il correspond
       // au composant des collaborations.
       HtmlMacroComponent ua;
@@ -1407,7 +1421,7 @@ public abstract class AbstractFicheController extends AbstractController
       ua.afterCompose();
 
       ((SelectDossierExterneModale) ua.getFellow("fwinSelectDossierExterneModale")
-         .getAttributeOrFellow("fwinSelectDossierExterneModale$composer", true)).init(path, critere, isEdit, prlvt);
+         .getAttributeOrFellow("fwinSelectDossierExterneModale$composer", true)).init(path, critere, isEdit, prlvt, derive);
 
       return ua;
    }
@@ -1452,7 +1466,7 @@ public abstract class AbstractFicheController extends AbstractController
          echanToUpdate.getCollaborateur(), statut, echanToUpdate.getEmplacement(), echanToUpdate.getEchantillonType(), null, null,
          echanToUpdate.getQuantiteUnite(), echanToUpdate.getEchanQualite(), echanToUpdate.getModePrepa(),
          //				echanToUpdate.getCrAnapath(), null, 
-         echanToUpdate.getReservation(), null, null, null, null, SessionUtils.getLoggedUser(sessionScope), false, ops, null);
+         null, null, null, null, SessionUtils.getLoggedUser(sessionScope), false, ops, null);
 
    }
 
@@ -1524,7 +1538,7 @@ public abstract class AbstractFicheController extends AbstractController
          deriveToUpdate.getProdType(), statut, deriveToUpdate.getCollaborateur(), deriveToUpdate.getEmplacement(),
          deriveToUpdate.getVolumeUnite(), deriveToUpdate.getConcUnite(), deriveToUpdate.getQuantiteUnite(),
          deriveToUpdate.getModePrepaDerive(), deriveToUpdate.getProdQualite(), deriveToUpdate.getTransformation(), null, null,
-         null, null, deriveToUpdate.getReservation(), SessionUtils.getLoggedUser(sessionScope), false, ops, null);
+         null, null, SessionUtils.getLoggedUser(sessionScope), false, ops, null);
 
    }
 

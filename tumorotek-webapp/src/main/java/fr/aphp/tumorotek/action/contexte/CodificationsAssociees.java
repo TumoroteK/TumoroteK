@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.action.contexte;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -52,83 +53,95 @@ import fr.aphp.tumorotek.model.contexte.BanqueTableCodage;
 public class CodificationsAssociees extends OneToManyComponent<BanqueTableCodage>
 {
 
-   private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-   private List<BanqueTableCodage> objects = new ArrayList<>();
+	private List<BanqueTableCodage> objects = new ArrayList<BanqueTableCodage>();
 
-   private final CodificationsRowRenderer codificationsRenderer = new CodificationsRowRenderer();
+	private final CodificationsRowRenderer codificationsRenderer = new CodificationsRowRenderer();
 
-   private Listbox codeOrLibelleBox;
+	private Listbox codeOrLibelleBox;
 
-   public CodificationsRowRenderer getCodificationsRenderer(){
-      return codificationsRenderer;
-   }
+	public CodificationsRowRenderer getCodificationsRenderer(){
+		return codificationsRenderer;
+	}
 
-   @Override
-   public void doAfterCompose(final Component comp) throws Exception{
-      objLinkLabel = new Label();
-      super.doAfterCompose(comp);
-   }
+	@Override
+	public void doAfterCompose(final Component comp) throws Exception{
+		objLinkLabel = new Label();
+		super.doAfterCompose(comp);
+	}
 
-   @Override
-   public List<BanqueTableCodage> getObjects(){
-      return this.objects;
-   }
+	@Override
+	public List<BanqueTableCodage> getObjects(){
+		return this.objects;
+	}
 
-   
-   @Override
-   public void setObjects(final List<BanqueTableCodage> objs){
-      this.objects = objs;
-      updateComponent();
-   }
 
-   @Override
-   public void addToListObjects(final BanqueTableCodage obj){
-      getObjects().add(obj);
-   }
-   
-   public void addToListObjects(final TableCodage obj){
-      final BanqueTableCodage btc = new BanqueTableCodage();
-      btc.setTableCodage(obj);
-      Boolean value = false;
-      if(codeOrLibelleBox.getSelectedItem() != null){
-         value = codeOrLibelleBox.getSelectedItem().getValue().equals("libelle");
-      }
-      btc.setLibelleExport(value);
+	@Override
+	public void setObjects(final List<BanqueTableCodage> objs){
+		this.objects = objs;
+		updateComponent();
+	}
 
-      addToListObjects(btc);
-   }
+	@Override
+	public void addToListObjects(final BanqueTableCodage obj){
 
-   @Override
-   public void removeFromListObjects(final Object obj){
-      getObjects().remove(obj);
-   }
+		Boolean value = false;
+		if(codeOrLibelleBox.getSelectedItem() != null){
+			value = codeOrLibelleBox.getSelectedItem().getValue().equals("libelle");
+		}
+		obj.setLibelleExport(value); 
 
-   @Override
-   public String getGroupHeaderValue(){
-      final StringBuffer sb = new StringBuffer();
-      sb.append(Labels.getLabel("Champ.Banque.Codifications"));
-      sb.append(" (");
-      sb.append(getObjects().size());
-      sb.append(")");
-      return sb.toString();
-   }
+		getObjects().add(obj);
+	}
 
-   @Override
-   public List<TableCodage> findObjectsAddable(){
-      // TableCodages ajoutables
-      final List<TableCodage> tabs = ManagerLocator.getTableCodageManager().findAllObjectsManager();
-      tabs.remove(ManagerLocator.getTableCodageManager().findByNomManager("FAVORIS").get(0));
-      // retire les TableCodages deja assignés
-      for(int i = 0; i < getObjects().size(); i++){
-         tabs.remove(getObjects().get(i).getTableCodage());
-      }
-      return tabs;
-   }
+//	public void addToListObjects(final TableCodage obj){
+//		final BanqueTableCodage btc = new BanqueTableCodage();
+//		btc.setTableCodage(obj);
+//		Boolean value = false;
+//		if(codeOrLibelleBox.getSelectedItem() != null){
+//			value = codeOrLibelleBox.getSelectedItem().getValue().equals("libelle");
+//		}
+//		btc.setLibelleExport(value);
+//
+//		addToListObjects(btc);
+//	}
 
-   @Override
-   public void drawActionForComponent(){}
+	@Override
+	public void removeFromListObjects(final Object obj){
+		getObjects().remove(obj);
+	}
 
-   @Override
-   public void onClick$objLinkLabel(final Event event){}
+	@Override
+	public String getGroupHeaderValue(){
+		final StringBuffer sb = new StringBuffer();
+		sb.append(Labels.getLabel("Champ.Banque.Codifications"));
+		sb.append(" (");
+		sb.append(getObjects().size());
+		sb.append(")");
+		return sb.toString();
+	}
+
+	@Override
+	public List<BanqueTableCodage> findObjectsAddable(){
+		// TableCodages ajoutables
+		final List<TableCodage> tabs = ManagerLocator.getTableCodageManager().findAllObjectsManager();
+		tabs.remove(ManagerLocator.getTableCodageManager().findByNomManager("FAVORIS").get(0));
+
+		// retire les TableCodages deja assignés
+		for(int i = 0; i < getObjects().size(); i++){
+			tabs.remove(getObjects().get(i).getTableCodage());
+		}
+
+		List<BanqueTableCodage> btc = new ArrayList<BanqueTableCodage>();
+		btc = tabs.stream().map(t -> new BanqueTableCodage(null, t)).collect(Collectors.toList());
+
+		return btc;
+	}
+
+	@Override
+	public void drawActionForComponent(){}
+
+	@Override
+	public void onClick$objLinkLabel(final Event event){}
 }

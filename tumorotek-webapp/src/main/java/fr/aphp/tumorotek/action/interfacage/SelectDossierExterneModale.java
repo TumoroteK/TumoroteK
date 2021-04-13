@@ -68,10 +68,16 @@ import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
+import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.interfacage.DossierExterne;
 import fr.aphp.tumorotek.model.interfacage.Emetteur;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
+/**
+ * 
+ * @author Mathieu BARTHELEMY
+ * @version 2.2.3-genno
+ */
 public class SelectDossierExterneModale extends AbstractFicheCombineController
 {
 
@@ -93,6 +99,9 @@ public class SelectDossierExterneModale extends AbstractFicheCombineController
    // mode edition d'un prélèvement
    private boolean edit = false;
    private Prelevement prelevement;
+   
+   // @since 2.2.3-genno
+   private boolean derive = false;
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
@@ -123,13 +132,19 @@ public class SelectDossierExterneModale extends AbstractFicheCombineController
 
    /**
     * Méthode intialisant le composant.
-    * @param pathToPage Chemin vers la page qui demande une modif.
+    * @param pathToPage Chemin vers la page qui demande une modif
+    * @param critere
+    * @param isEdit
+    * @param prelevement
+    * @param boolean derive interfacage
     */
-   public void init(final String pathToPage, final String critere, final boolean isEdit, final Prelevement prlvt){
+   public void init(final String pathToPage, final String critere, final boolean isEdit, 
+		   										final Prelevement prlvt, final boolean _d){
       this.path = pathToPage;
       this.numDossier = critere;
       this.edit = isEdit;
       this.prelevement = prlvt;
+      this.derive = _d;
 
       searchForDossierExternes();
 
@@ -165,14 +180,17 @@ public class SelectDossierExterneModale extends AbstractFicheCombineController
       });
 
       // view
+	  Banque currBank = SessionUtils.getCurrentBanque(sessionScope);
       DossierExterne dExt;
       for(final Emetteur emet : emetteurs){
-         dExt = ManagerLocator.getViewHandlerFactory().sendQuery(emet, numDossier);
+         dExt = ManagerLocator.getViewHandlerFactory()
+        		 .sendQuery(emet, numDossier, currBank);
          if(dExt != null){
             dossierExternes.add(dExt);
          }
          if(prelevement != null){
-            dExt = ManagerLocator.getViewHandlerFactory().sendQuery(emet, prelevement.getNumeroLabo());
+            dExt = ManagerLocator.getViewHandlerFactory()
+            		.sendQuery(emet, prelevement.getNumeroLabo(), currBank);
             if(dExt != null){
                dossierExternes.add(dExt);
             }
@@ -239,8 +257,11 @@ public class SelectDossierExterneModale extends AbstractFicheCombineController
       // la fiche du prélèvement
       if(!edit){
          try{
-            final ResultatInjection resultat = ManagerLocator.getInjectionManager().injectDossierManager(selectedDossierExterne,
-               SessionUtils.getSelectedBanques(sessionScope).get(0));
+            final ResultatInjection resultat = !derive ? 
+            	ManagerLocator.getInjectionManager().injectDossierManager(selectedDossierExterne,
+            				SessionUtils.getSelectedBanques(sessionScope).get(0)) 
+            	: ManagerLocator.getInjectionManager().injectDossierDeriveManager(selectedDossierExterne,
+        				SessionUtils.getSelectedBanques(sessionScope).get(0));
             resultat.setDossierExterne(selectedDossierExterne);
 
             // si le chemin d'accès à la page est correcte

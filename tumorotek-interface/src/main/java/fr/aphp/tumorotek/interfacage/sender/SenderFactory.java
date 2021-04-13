@@ -36,20 +36,17 @@
 package fr.aphp.tumorotek.interfacage.sender;
 
 import java.util.List;
-import java.util.Map;
-
+import fr.aphp.tumorotek.interfacage.storageRobot.StorageMovement;
+import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
-import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.interfacage.Recepteur;
-import fr.aphp.tumorotek.model.qualite.OperationType;
-import fr.aphp.tumorotek.model.stockage.Emplacement;
 
 /**
  *
  * Appelles le bon MessageSender en fonction du Recepteur
  *
  * @author Mathieu BARTHELEMY
- * @version 2.1.1
+ * @version 2.2.1-IRELEC
  *
  */
 public interface SenderFactory
@@ -76,14 +73,14 @@ public interface SenderFactory
     */
    void sendMessages(Recepteur re, List<TKAnnotableObject> tkObjs, Integer b);
 
-   /**
-    * Transmet une Map de TKStockableObject - Emplacement au bon SenderMessage en fonction du Recepteur afin de 
-    * produire le message.
-    * @param re Recepteur
-    * @param Map<TKStockableObject, Emplacement>
-    * @param url
-    * @since 2.1.1
-    */
-   void sendEmplacements(Recepteur re, Map<TKStockableObject, Emplacement> tkEmpls, OperationType oType);
-
+	/**
+	 * Transmet une liste de <StorageMovement> au bon SenderMessage en fonction du Recepteur afin de 
+	 * produire le message.
+	 * @param re Recepteur
+	 * @param storage mvts
+	 * @param url
+	 * @param utilisateur u
+	 * @since 2.2.1-IRELEC
+	 */
+	void sendEmplacements(Recepteur re, List<StorageMovement> movs, Utilisateur u);
 }

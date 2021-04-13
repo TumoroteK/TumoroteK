@@ -172,7 +172,7 @@
 													selectedItem="@{labo.service.etablissement}"
 													forward="onCreate()">
 													<listitem self="@{each='eachEtabLabo'}" 
-														value="@{eachEtabLabo}">			
+														value="@{eachEtabLabo}" disabled="@{eachEtabLabo.archive}">			
 														<listcell label="@{eachEtabLabo.nom}" />
 													</listitem>
 												</listbox>
@@ -188,7 +188,7 @@
 													selectedItem="@{labo.service}"
 													forward="onCreate()">
 													<listitem self="@{each='eachServiceLabo'}" 
-														value="@{eachServiceLabo}">			
+														value="@{eachServiceLabo}" disabled="@{eachServiceLabo.archive}">			
 														<listcell label="@{eachServiceLabo.nom}" />
 													</listitem>
 												</listbox>
@@ -203,7 +203,7 @@
 													model="@{fwinLaboInter$composer.allCollaborateurs}"
 													selectedItem="@{labo.collaborateur}">
 													<listitem self="@{each='eachCollaborateurLabo'}" 
-														value="@{eachCollaborateurLabo}">			
+														value="@{eachCollaborateurLabo}" disabled="@{eachCollaborateurLabo.archive}">			
 														<listcell label="@{eachCollaborateurLabo.nomAndPrenom}" />
 													</listitem>
 												</listbox>

@@ -114,7 +114,6 @@ public class CalendarBox extends HtmlMacroComponent
          }else{
             ((Timebox) getFirstChild().getLastChild()).setValue(null);
          }
-         ((Timebox) getFirstChild().getLastChild()).setValue(date);
          ((Datebox) getFirstChild().getFirstChild()).setValue(dateShort);
       }
    }

@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Interfacage>
+	<Logiciel func="SGL">
+		<Nom>DIAMIC</Nom>
+		<Editeur>INFOLOGIC</Editeur>
+		<Version>8.1.2.1</Version>
+	</Logiciel>
+	<Configuration>
+		<SeparateurChamps>|</SeparateurChamps>
+		<SeparateurComposants>^</SeparateurComposants>
+		<SeparateurSousComposants>~</SeparateurSousComposants>
+		<BlocLibreKey>OBX</BlocLibreKey>
+		<NumeroDossier>
+			<BlocValue>ORC</BlocValue>
+			<Key>4.2</Key>
+		</NumeroDossier>
+		<DateDossier>
+			<BlocValue>MSH</BlocValue>
+			<Key>6</Key>
+		</DateDossier>
+		<OperationDossier>
+			<BlocValue>ORC</BlocValue>
+			<Key>5</Key>
+		</OperationDossier>
+	</Configuration>
+	<Bloc nom="PID">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Nip" idChamp="2"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>3</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Nom" idChamp="3"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>5.1</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="NomNaissance" idChamp="4"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>5.7.2</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Prenom" idChamp="5"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>5.2</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Sexe" idChamp="6"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>8</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="DateNaissance" idChamp="7"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>7</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="DateDeces" idChamp="12"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>29</Key>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<Bloc nom="ORC">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="NumeroLabo" idChamp="45"></ChampEntite>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>4.2</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="PatientNda" idChamp="44"></ChampEntite>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>4.2</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="DatePrelevement" idChamp="30"></ChampEntite>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>7</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="PreleveurId" idChamp="28"/>
+				<Entite nom="Prelevement" idChamp="2"/>
+			</Tk>
+			<Source>
+				<Key>10.2</Key>
+				<Modifier nom="Thesaurus">
+					<MappingThes>
+						<SourceThes>RAOUL Sylvie</SourceThes>
+						<TkThes>79</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>MALARD Olivier</SourceThes>
+						<TkThes>353</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>PÉRIGAUD Christian</SourceThes>
+						<TkThes>283</TkThes>
+					</MappingThes>
+				</Modifier>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="DateArrivee" idChamp="38"></ChampEntite>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>15</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="ServicePreleveurId" idChamp="29"/>
+				<Entite nom="Prelevement" idChamp="2"/>
+			</Tk>
+			<Source>
+				<Key>21.1</Key>
+				<Modifier nom="Thesaurus">
+					<MappingThes>
+						<SourceThes>3410</SourceThes>
+						<TkThes>3</TkThes>
+					</MappingThes>
+				</Modifier>
+
+			</Source>
+		</Mapping>
+	</Bloc>
+	<Bloc nom="OBR">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="PrelevementTypeId" idChamp="31"/>
+				<Entite nom="Prelevement" idChamp="2"/>
+			</Tk>
+			<Source>
+				<Key>4.1</Key>
+				<Modifier nom="Thesaurus">
+					<MappingThes>
+						<SourceThes>PBL</SourceThes>
+						<TkThes>BIOPSIE</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>PDC</SourceThes>
+						<TkThes>BIOPSIE</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>PFV</SourceThes>
+						<TkThes>BIOPSIE</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>PFF</SourceThes>
+						<TkThes>BIOPSIE</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>PNH</SourceThes>
+						<TkThes>BIOPSIE</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>PURT</SourceThes>
+						<TkThes>BIOPSIE</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>OUR</SourceThes>
+						<TkThes>PIECE OPERATOIRE</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>OGS</SourceThes>
+						<TkThes>PIECE OPERATOIRE</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>ODG</SourceThes>
+						<TkThes>PIECE OPERATOIRE</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>OFV</SourceThes>
+						<TkThes>PIECE OPERATOIRE</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>OES</SourceThes>
+						<TkThes>PIECE OPERATOIRE</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>OCP</SourceThes>
+						<TkThes>PIECE OPERATOIRE</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>ODC</SourceThes>
+						<TkThes>PIECE OPERATOIRE</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>ORP</SourceThes>
+						<TkThes>PIECE OPERATOIRE</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>OFP</SourceThes>
+						<TkThes>PIECE OPERATOIRE</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>ONH</SourceThes>
+						<TkThes>PIECE OPERATOIRE</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>OFF</SourceThes>
+						<TkThes>PIECE OPERATOIRE</TkThes>
+					</MappingThes>
+				</Modifier>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<BlocLibre nom="RP">
+		<Source>
+			<Key>2</Key>
+		</Source>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="CrAnapath" idChamp="255"></ChampEntite>
+				<Entite nom="Echantillon" idChamp="3"></Entite>
+			</Tk>
+			<Source>
+				<Key>5.1</Key>
+				<Modifier nom="Fichier">
+					<Path>/interface/DIAMIC/TO/TK/</Path>
+				</Modifier>
+			</Source>
+		</Mapping>
+	</BlocLibre>
+	<BlocLibre nom="ADICAP_ORG">
+		<Source>
+			<Key>3</Key>
+		</Source>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="CodesMorphos" idChamp="229"></ChampEntite>
+				<Entite nom="Echantillon" idChamp="3"></Entite>
+			</Tk>
+			<Source>
+				<Key>5</Key>
+			</Source>
+		</Mapping>
+	</BlocLibre>
+	<BlocLibre nom="ADICAP_LES">
+		<Source>
+			<Key>3</Key>
+		</Source>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="CodesMorphos" idChamp="230"></ChampEntite>
+				<Entite nom="Echantillon" idChamp="3"></Entite>
+			</Tk>
+			<Source>
+				<Key>5</Key>
+			</Source>
+		</Mapping>
+	</BlocLibre>
+</Interfacage>
+
+

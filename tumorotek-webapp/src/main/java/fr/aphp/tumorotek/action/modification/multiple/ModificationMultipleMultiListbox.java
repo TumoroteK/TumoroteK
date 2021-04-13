@@ -41,6 +41,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.zkoss.util.resource.Labels;
@@ -53,6 +54,8 @@ import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 
+import fr.aphp.tumorotek.model.TKDelegateObject;
+import fr.aphp.tumorotek.model.TKDelegetableObject;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 
 //import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
@@ -247,15 +250,33 @@ public class ModificationMultipleMultiListbox extends AbstractModificationMultip
       // on extrait la valeur actuelle du champ à modifier
       // toutes ces valeurs sont placées dans la liste values
       setHasNulls(false);
-      for(int i = 0; i < getListObjets().size(); i++){
+      for(Object object : getListObjets()){
+         
          try{
             List<? extends Object> vals;
             // annotation valeurs
-            if(getListObjets().get(i) instanceof List<?>){
-               vals = (List<? extends Object>) getListObjets().get(i);
+            if(object instanceof List<?>){
+               vals = (List<? extends Object>) object;
             }else{
-               vals = new ArrayList<>(
-                  (Set<? extends Object>) PropertyUtils.getSimpleProperty(getListObjets().get(i), getChamp()));
+               
+               boolean isDelegateProperty = false;
+               TKDelegateObject<?> delegate = null;
+               
+               if(object instanceof TKDelegetableObject) {
+                  delegate = ((TKDelegetableObject<?>)object).getDelegate();
+                  isDelegateProperty = delegate != null 
+                		 && PropertyUtils.describe(delegate).keySet().contains(getChamp());
+               }
+               
+               if(isDelegateProperty) {
+                  vals = new ArrayList<>(
+                     (Set<? extends Object>) PropertyUtils.getSimpleProperty(delegate, getChamp()));
+               }
+               else {
+                  vals = new ArrayList<>(
+                     (Set<? extends Object>) PropertyUtils.getSimpleProperty(object, getChamp()));
+               }
+               
             }
             Object tmp = null;
             final Set<Object> its = new HashSet<>();
@@ -289,13 +310,10 @@ public class ModificationMultipleMultiListbox extends AbstractModificationMultip
             }else{
                setHasNulls(true);
             }
-         }catch(final IllegalAccessException e){
-            log.error(e);
-         }catch(final InvocationTargetException e){
-            log.error(e);
-         }catch(final NoSuchMethodException e){
+         }catch(final IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
             log.error(e);
          }
+         
       }
 
       // pour chaque objet du thésaurus, on va extraire la valeur du

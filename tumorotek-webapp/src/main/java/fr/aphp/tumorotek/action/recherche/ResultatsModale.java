@@ -56,6 +56,7 @@ import fr.aphp.tumorotek.action.controller.AbstractController;
 import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
 import fr.aphp.tumorotek.action.echantillon.ListeEchantillon;
 import fr.aphp.tumorotek.action.prodderive.ListeProdDerive;
+import fr.aphp.tumorotek.action.utilisateur.ProfilExport;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.coeur.annotation.Catalogue;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -67,7 +68,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * Date: 11/01/2011.
  *
  * @author Pierre VENTADOUR
- * @version 2.1
+ * @version 2.2.3-rc1
  *
  */
 public class ResultatsModale extends AbstractController
@@ -81,6 +82,10 @@ public class ResultatsModale extends AbstractController
    private boolean cessionable = false;
    private boolean deletable = false;
    private boolean selectMode = false;
+   
+   // @since 2.2.3-rc1
+   private boolean canExport = false;
+   
    private AbstractObjectTabController controller;
 
    // Components
@@ -112,6 +117,10 @@ public class ResultatsModale extends AbstractController
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
+      
+      //@since 2.2.3-rc1
+      canExport = !getProfilExport().equals(ProfilExport.NO);
+      
       setBinder(new AnnotateDataBinder(comp));
       getBinder().loadComponent(comp);
    }
@@ -391,4 +400,8 @@ public class ResultatsModale extends AbstractController
       Events.postEvent("onClick$cessionsItem", controller.getListe().getSelfComponent(), getResults());
    }
 
+	public boolean getCanExport() {
+		return canExport;
+	}
+	
 }

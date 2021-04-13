@@ -57,161 +57,186 @@ import org.hibernate.annotations.GenericGenerator;
 
 /**
  *
- * Objet persistant mappant la table LOGICIEL.
- * Classe créée le 01/10/11.
+ * Objet persistant mappant la table DOSSIER_EXTERNE, qui représente 
+ * la consommation d'une transmission depuis un SGL.
+ * 
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @author Mathieu BARTHELEMY
+ * 
+ * @version 2.2.3-genno
  *
  */
 @Entity
 @Table(name = "DOSSIER_EXTERNE")
 @NamedQueries(value = {
-   @NamedQuery(name = "DossierExterne.findByEmetteur",
-      query = "SELECT d FROM DossierExterne d " + "WHERE d.emetteur = ?1 " + "ORDER BY d.dateOperation"),
-   @NamedQuery(name = "DossierExterne.findByEmetteurAndIdentification",
-      query = "SELECT d FROM DossierExterne d " + "WHERE d.emetteur = ?1 " + "AND d.identificationDossier like ?2 "
-         + "ORDER BY d.dateOperation"),
-   @NamedQuery(name = "DossierExterne" + ".findByEmetteurInListAndIdentification",
-      query = "SELECT d FROM DossierExterne d " + "WHERE d.emetteur in (?1) " + "AND d.identificationDossier like ?2 "
-         + "ORDER BY d.dateOperation"),
-   @NamedQuery(name = "DossierExterne" + ".findByEmetteurInListSelectIdentification",
-      query = "SELECT d.identificationDossier " + "FROM DossierExterne d " + "WHERE d.emetteur in (?1)"),
-   @NamedQuery(name = "DossierExterne.findByIdentification",
-      query = "SELECT d FROM DossierExterne d " + "WHERE d.identificationDossier like ?1"),
-   @NamedQuery(name = "DossierExterne.findCountAll", query = "SELECT count(d) FROM DossierExterne d"),
-   @NamedQuery(name = "DossierExterne.findFirst", query = "SELECT d FROM DossierExterne d "
-      + "where d.dateOperation = (select min(dateOperation) " + "from DossierExterne)")})
+	@NamedQuery(name = "DossierExterne.findByEmetteur",
+			query = "SELECT d FROM DossierExterne d " + "WHERE d.emetteur = ?1 " + "ORDER BY d.dateOperation"),
+	@NamedQuery(name = "DossierExterne.findByEmetteurAndIdentification",
+	query = "SELECT d FROM DossierExterne d " + "WHERE d.emetteur = ?1 " + "AND d.identificationDossier like ?2 "
+			+ "ORDER BY d.dateOperation"),
+	@NamedQuery(name = "DossierExterne" + ".findByEmetteurInListAndIdentification",
+	query = "SELECT d FROM DossierExterne d " + "WHERE d.emetteur in (?1) " + "AND d.identificationDossier like ?2 "
+			+ "ORDER BY d.dateOperation"),
+	@NamedQuery(name = "DossierExterne" + ".findByEmetteurInListSelectIdentification",
+	query = "SELECT d.identificationDossier " + "FROM DossierExterne d " + "WHERE d.emetteur in (?1)"),
+	@NamedQuery(name = "DossierExterne.findByIdentification",
+	query = "SELECT d FROM DossierExterne d " + "WHERE d.identificationDossier like ?1"),
+	@NamedQuery(name = "DossierExterne.findCountAll", query = "SELECT count(d) FROM DossierExterne d"),
+	@NamedQuery(name = "DossierExterne.findFirst", query = "SELECT d FROM DossierExterne d "
+			+ "where d.dateOperation = (select min(dateOperation) " + "from DossierExterne)"),
+	@NamedQuery(name = "DossierExterne.findByEmetteurAndEntite", query = "SELECT distinct d FROM DossierExterne d "
+			+ "WHERE d.emetteur = ?1 AND d.entiteId = ?2 ORDER BY d.identificationDossier"),
+	@NamedQuery(name = "DossierExterne.findByEmetteurAndEntiteNull", query = "SELECT distinct d FROM DossierExterne d "
+			+ "WHERE d.emetteur = ?1 AND d.entiteId is null ORDER BY d.identificationDossier"),
+	@NamedQuery(name = "DossierExterne.findChildrenByEmetteurValeur", query = "SELECT distinct d FROM ValeurExterne v "
+			+ "JOIN v.blocExterne.dossierExterne d WHERE d.emetteur = ?1 AND v.champEntiteId = ?2 "
+			+ "AND v.valeur like ?3 AND d.entiteId is not null ORDER BY d.identificationDossier")
+})
 public class DossierExterne implements java.io.Serializable
 {
 
-   private static final long serialVersionUID = 1798455685809786945L;
+	private static final long serialVersionUID = 1798455685809786945L;
 
-   private Integer dossierExterneId;
-   private String identificationDossier;
-   private Calendar dateOperation;
-   private String operation;
-   private Emetteur emetteur;
+	private Integer dossierExterneId;
+	private String identificationDossier;
+	private Calendar dateOperation;
+	private String operation;
+	private Emetteur emetteur;
 
-   private Set<BlocExterne> blocExternes = new HashSet<>();
+	// @since 2.2.3-genno un dossier peut être d'un niveau inférieur
+	// par défaut entite = null = PRELEVEMENT
+	// mais peut être DERIVE
+	private Integer entiteId;
 
-   public DossierExterne(){
-      super();
-   }
+	private Set<BlocExterne> blocExternes = new HashSet<>();
 
-   @Id
-   @Column(name = "DOSSIER_EXTERNE_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getDossierExterneId(){
-      return dossierExterneId;
-   }
+	public DossierExterne(){
+		super();
+	}
 
-   public void setDossierExterneId(final Integer d){
-      this.dossierExterneId = d;
-   }
+	@Id
+	@Column(name = "DOSSIER_EXTERNE_ID", unique = true, nullable = false)
+	@GeneratedValue(generator = "autoincrement")
+	@GenericGenerator(name = "autoincrement", strategy = "increment")
+	public Integer getDossierExterneId(){
+		return dossierExterneId;
+	}
 
-   @Column(name = "IDENTIFICATION_DOSSIER", nullable = false, length = 100)
-   public String getIdentificationDossier(){
-      return identificationDossier;
-   }
+	public void setDossierExterneId(final Integer d){
+		this.dossierExterneId = d;
+	}
 
-   public void setIdentificationDossier(final String i){
-      this.identificationDossier = i;
-   }
+	@Column(name = "IDENTIFICATION_DOSSIER", nullable = false, length = 100)
+	public String getIdentificationDossier(){
+		return identificationDossier;
+	}
 
-   @Temporal(TemporalType.TIMESTAMP)
-   @Column(name = "DATE_OPERATION", nullable = true)
-   public Calendar getDateOperation(){
-      if(dateOperation != null){
-         final Calendar cal = Calendar.getInstance();
-         cal.setTime(dateOperation.getTime());
-         return cal;
-      }
-      return null;
-   }
+	public void setIdentificationDossier(final String i){
+		this.identificationDossier = i;
+	}
 
-   public void setDateOperation(final Calendar cal){
-      if(cal != null){
-         this.dateOperation = Calendar.getInstance();
-         this.dateOperation.setTime(cal.getTime());
-      }else{
-         this.dateOperation = null;
-      }
-   }
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "DATE_OPERATION", nullable = true)
+	public Calendar getDateOperation(){
+		if(dateOperation != null){
+			final Calendar cal = Calendar.getInstance();
+			cal.setTime(dateOperation.getTime());
+			return cal;
+		}
+		return null;
+	}
 
-   @Column(name = "OPERATION", nullable = true, length = 50)
-   public String getOperation(){
-      return operation;
-   }
+	public void setDateOperation(final Calendar cal){
+		if(cal != null){
+			this.dateOperation = Calendar.getInstance();
+			this.dateOperation.setTime(cal.getTime());
+		}else{
+			this.dateOperation = null;
+		}
+	}
 
-   public void setOperation(final String o){
-      this.operation = o;
-   }
+	@Column(name = "OPERATION", nullable = true, length = 50)
+	public String getOperation(){
+		return operation;
+	}
 
-   @ManyToOne()
-   @JoinColumn(name = "EMETTEUR_ID", nullable = false)
-   public Emetteur getEmetteur(){
-      return emetteur;
-   }
+	public void setOperation(final String o){
+		this.operation = o;
+	}
 
-   public void setEmetteur(final Emetteur e){
-      this.emetteur = e;
-   }
+	@ManyToOne
+	@JoinColumn(name = "EMETTEUR_ID", nullable = false)
+	public Emetteur getEmetteur(){
+		return emetteur;
+	}
 
-   @OneToMany(mappedBy = "dossierExterne", cascade = CascadeType.REMOVE)
-   public Set<BlocExterne> getBlocExternes(){
-      return blocExternes;
-   }
+	public void setEmetteur(final Emetteur e){
+		this.emetteur = e;
+	}
 
-   public void setBlocExternes(final Set<BlocExterne> b){
-      this.blocExternes = b;
-   }
+	@Column(name = "ENTITE_ID", nullable = true)
+	public Integer getEntiteId(){
+		return entiteId;
+	}
 
-   @Override
-   public boolean equals(final Object obj){
+	public void setEntiteId(final Integer e){
+		this.entiteId = e;
+	}
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final DossierExterne test = (DossierExterne) obj;
-      return ((this.identificationDossier == test.identificationDossier
-         || (this.identificationDossier != null && this.identificationDossier.equals(test.identificationDossier)))
-         && (this.emetteur == test.emetteur || (this.emetteur != null && this.emetteur.equals(test.emetteur))));
-   }
+	@OneToMany(mappedBy = "dossierExterne", cascade = CascadeType.REMOVE)
+	public Set<BlocExterne> getBlocExternes(){
+		return blocExternes;
+	}
 
-   @Override
-   public int hashCode(){
+	public void setBlocExternes(final Set<BlocExterne> b){
+		this.blocExternes = b;
+	}
 
-      int hash = 7;
-      int hashId = 0;
-      int hashEm = 0;
+	@Override
+	public boolean equals(final Object obj){
 
-      if(this.identificationDossier != null){
-         hashId = this.identificationDossier.hashCode();
-      }
-      if(this.emetteur != null){
-         hashEm = this.emetteur.hashCode();
-      }
+		if(this == obj){
+			return true;
+		}
+		if((obj == null) || obj.getClass() != this.getClass()){
+			return false;
+		}
+		final DossierExterne test = (DossierExterne) obj;
+		return ((this.identificationDossier == test.identificationDossier
+				|| (this.identificationDossier != null && this.identificationDossier.equals(test.identificationDossier)))
+				&& (this.emetteur == test.emetteur || (this.emetteur != null && this.emetteur.equals(test.emetteur))));
+	}
 
-      hash = 7 * hash + hashId;
-      hash = 7 * hash + hashEm;
+	@Override
+	public int hashCode(){
 
-      return hash;
-   }
+		int hash = 7;
+		int hashId = 0;
+		int hashEm = 0;
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      if(this.identificationDossier != null){
-         return "{" + this.identificationDossier + ", " + emetteur.getIdentification() + "(Emetteur)}";
-      }
-      return "{Empty DossierExterne}";
-   }
+		if(this.identificationDossier != null){
+			hashId = this.identificationDossier.hashCode();
+		}
+		if(this.emetteur != null){
+			hashEm = this.emetteur.hashCode();
+		}
+
+		hash = 7 * hash + hashId;
+		hash = 7 * hash + hashEm;
+
+		return hash;
+	}
+
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString(){
+		if(this.identificationDossier != null){
+			return "{" + this.identificationDossier + ", " + emetteur.getIdentification() + "(Emetteur)}";
+		}
+		return "{Empty DossierExterne}";
+	}
 
 }

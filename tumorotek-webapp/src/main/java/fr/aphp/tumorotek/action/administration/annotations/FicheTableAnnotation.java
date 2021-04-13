@@ -1155,7 +1155,8 @@ public class FicheTableAnnotation extends AbstractFicheCombineController
       obligBox.getNextSibling().setVisible(false);
       obligBox.setChecked(false);
       // affiche le label non italic et efface checkbox
-      if(this.selectedDataType.getType().equals("fichier") || this.selectedDataType.getType().equals("boolean")
+      if(this.selectedDataType.getType().equals("fichier") || 
+    	this.selectedDataType.getType().equals("boolean")
          || this.selectedDataType.getType().equals("calcule")){
          combiBox.getNextSibling().setVisible(true);
          combiBox.setVisible(false);

@@ -19,14 +19,14 @@ public class ResourceBundleTumoTest extends AbstractDaoTest //FIXME Class de tes
    }
 
    public void testDoesResourceBundleExists(){
-      assertTrue(resourceBundleTumo.doesResourceBundleExists("tumorotek.properties")); //FIXME Aucun path spécifié ????
+      assertTrue(resourceBundleTumo.doesResourceBundleExists("tumorotek.properties"));
       assertFalse(resourceBundleTumo.doesResourceBundleExists("blabla"));
       assertFalse(resourceBundleTumo.doesResourceBundleExists(null));
    }
 
    public void testGetResourceBundle(){
       ResourceBundle bundle = resourceBundleTumo.getResourceBundle("tumorotek.properties");
-      assertTrue(bundle.getString("DBMS").equals("MySQL")); //FIXME False
+      assertTrue(bundle.getString("tk.filesystem").equals("/home/mathieu/TKtest/"));
 
       bundle = resourceBundleTumo.getResourceBundle("blabla");
       assertNull(bundle);

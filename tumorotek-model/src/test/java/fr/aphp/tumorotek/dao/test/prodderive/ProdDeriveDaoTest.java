@@ -1036,11 +1036,6 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
       }else{
          assertNull(p2.getDateTransformation());
       }
-      if(p1.getReservation() != null){
-         assertTrue(p1.getReservation().equals(p2.getReservation()));
-      }else{
-         assertNull(p2.getReservation());
-      }
       if(p1.getModePrepaDerive() != null){
          assertTrue(p1.getModePrepaDerive().equals(p2.getModePrepaDerive()));
       }else{

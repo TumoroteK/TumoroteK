@@ -337,7 +337,7 @@ public final class ObjectTypesFormatters
     * @param ecrit le [code echantillon]
     */
    public static void drawCodesExpLabel(final List<CodeAssigne> codes, final Row row, final Listitem li,
-      final boolean addCodeEchan){
+      final boolean addCodeEchan, final Integer pos){
 
       if(codes != null && !codes.isEmpty()){
 
@@ -382,7 +382,9 @@ public final class ObjectTypesFormatters
             labelAndLinkBox.appendChild(c1Label);
             labelAndLinkBox.appendChild(moreLabel);
             if(row != null){
-               labelAndLinkBox.setParent(row);
+               int idx = pos == null ? row.getChildren().size() : pos;
+               row.getChildren().add(idx, labelAndLinkBox);
+//               labelAndLinkBox.setParent(row);
             }else{
                final Listcell cell = new Listcell();
                labelAndLinkBox.setParent(cell);
@@ -390,7 +392,9 @@ public final class ObjectTypesFormatters
             }
          }else{
             if(row != null){
-               c1Label.setParent(row);
+               int idx = pos == null ? row.getChildren().size() : pos;
+               row.getChildren().add(idx, c1Label);
+//               c1Label.setParent(row);
             }else{
                final Listcell cell = new Listcell();
                c1Label.setParent(cell);
@@ -399,7 +403,9 @@ public final class ObjectTypesFormatters
          }
       }else{
          if(row != null){
-            new Label().setParent(row);
+            int idx = pos == null ? row.getChildren().size() : pos;
+            row.getChildren().add(idx, new Label());
+//            new Label().setParent(row);
          }else{
             final Listcell cell = new Listcell();
             cell.setParent(li);
@@ -407,6 +413,11 @@ public final class ObjectTypesFormatters
       }
    }
 
+   public static void drawCodesExpLabel(final List<CodeAssigne> codes, final Row row, final Listitem li,
+      final boolean addCodeEchan){
+      drawCodesExpLabel(codes, row, li, addCodeEchan, null);
+   }
+   
    //	/**
    //	 * Place le code exporté en premier dans la liste.
    //	 * @param codes
@@ -911,4 +922,70 @@ public final class ObjectTypesFormatters
       }
       return null;
    }
+   
+   /**
+	 * Dessine dans un label le complément diagnostic propre à un p
+	 * prélèvement dans une collection sérothèque. N'affiche que les 
+	 * caractères avant un espace.
+	 * Utilisation d'un tooltip pour afficher la totalité du texte
+	 * S'adapate au grid (Row) ou a listbox (Listitem)
+	 * @param Row row
+	 * @param Listiem li
+	 * @param Component Parent
+	 * @param ecrit le [code echantillon]
+	 * @since 2.2.3-rc1
+	 */
+	public static void drawComplementDiagnosticLabel(final String compDiag, final Row row, final Listitem li){
+
+		if(!StringUtils.isEmpty(compDiag)){
+
+			String[] strs = compDiag.trim().split(" ");
+			final Label c1Label = new Label(strs[0]);
+			// dessine le label avec un lien vers popup
+			if(strs.length > 1) {
+				final Hlayout labelAndLinkBox = new Hlayout();
+				labelAndLinkBox.setSpacing("5px");
+				final Label moreLabel = new Label("...");
+				moreLabel.setClass("formLink");
+				final Popup diagPopUp = new Popup();
+				if(row != null){
+					diagPopUp.setParent(row.getParent().getParent().getParent());
+				}else{
+					diagPopUp.setParent(li.getParent().getParent().getParent());
+	            }
+
+				// contenu de la popup = tout le texte
+				Label lab = new Label(compDiag.trim());
+				lab.setSclass("formValue");
+
+				diagPopUp.appendChild(lab);
+				moreLabel.setTooltip(diagPopUp);
+				labelAndLinkBox.appendChild(c1Label);
+				labelAndLinkBox.appendChild(moreLabel);
+
+				if (row != null) {
+					labelAndLinkBox.setParent(row);
+				} else { 
+					final Listcell cell = new Listcell();
+					labelAndLinkBox.setParent(cell);
+		            cell.setParent(li);
+				}
+			} else { // 1 seul mot à afficher
+				if (row != null) {
+					c1Label.setParent(row);
+				} else {
+					final Listcell cell = new Listcell();
+					c1Label.setParent(cell);
+		            cell.setParent(li);
+				}
+			}
+		} else { // empty
+			if (row != null) {
+				new Label().setParent(row);
+			} else {
+				final Listcell cell = new Listcell();
+	            cell.setParent(li);
+			}
+		}
+	}
 }

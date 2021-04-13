@@ -47,6 +47,9 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Constraint;
 
+import fr.aphp.tumorotek.model.TKDelegateObject;
+import fr.aphp.tumorotek.model.TKDelegetableObject;
+
 /**
  * Classe gérant une fenêtre modal pour la modification multiple d'une
  * Combobox.
@@ -114,7 +117,7 @@ public class ModificationMultipleCombobox extends AbstractModificationMultipleCo
       eraseListBox.setSelectedItem(null);
    }
 
-   
+
    private Comboitem findItemForValue(final Object value){
       final Iterator<Comboitem> its = eraseListBox.getItems().iterator();
       Comboitem item;
@@ -164,26 +167,44 @@ public class ModificationMultipleCombobox extends AbstractModificationMultipleCo
 
       // pour chaque objet du thésaurus, on va extraire la valeur du
       // champ à afficher
-      for(int i = 0; i < allValues.size(); i++){
-         try{
-            String stringTmp = null;
+      for(Object object : allValues){
 
-            if(allValues.get(i) != null){
-               stringTmp = (String) PropertyUtils.getSimpleProperty(allValues.get(i), getChampThesaurus());
-               allStringValues.add(stringTmp);
+         try{
+
+            boolean isDelegateProperty = false;
+            TKDelegateObject<?> delegate = null;
+
+            if(object instanceof TKDelegetableObject) {
+               delegate = ((TKDelegetableObject<?>)object).getDelegate();
+               isDelegateProperty = delegate != null 
+            		  && PropertyUtils.describe(delegate).keySet().contains(getChampThesaurus());
             }
-         }catch(final IllegalAccessException e){
-            log.error(e);
-         }catch(final InvocationTargetException e){
-            log.error(e);
-         }catch(final NoSuchMethodException e){
+
+            if(null != object){
+
+               String stringTmp = null;
+               if(isDelegateProperty) {
+                  stringTmp = (String)PropertyUtils.getSimpleProperty(delegate, getChampThesaurus());
+               }
+               else {
+                  stringTmp = (String)PropertyUtils.getSimpleProperty(object, getChampThesaurus());
+               }
+
+               allStringValues.add(stringTmp);
+
+            }
+            
+         }catch(final IllegalAccessException | InvocationTargetException | NoSuchMethodException e){
             log.error(e);
          }
+
       }
+
       if((isObligatoire == null || !isObligatoire) && !allValues.isEmpty()){
          allValues.add(0, null);
          allStringValues.add(0, "---");
       }
+
    }
 
    @Override

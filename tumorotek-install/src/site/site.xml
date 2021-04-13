@@ -45,6 +45,7 @@
             <item name="Dossier d'installation" href=""/>
             <item name="Dossier d'exploitation" href="TumoroteK-DossierExploitation.pdf"/>
             <item name="Dossier sur les interfaçages avec des SGL" href="TumoroteK-InterfaçagesSGL.pdf"/>
+            <item name="Note d'installation et de paramétrage VisionMate©" href="Installation_parametrage_HCL_V2.pdf"/>
         </menu>
         <!--<menu name="Developpeurs">
             <item name="Guide" href="developpeurs.html"/>

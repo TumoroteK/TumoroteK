@@ -39,6 +39,7 @@ import java.util.List;
 
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.interfacage.BlocExterne;
+import fr.aphp.tumorotek.model.interfacage.DossierExterne;
 import fr.aphp.tumorotek.model.interfacage.ValeurExterne;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 
@@ -117,4 +118,15 @@ public interface ValeurExterneManager
     * @param valeurExterne Valeur Externe à supprimer.
     */
    void removeObjectManager(ValeurExterne valeurExterne);
+
+   /**
+    * Recherche les valeurs externes d'un dossier pour un bloc dont l'entite id est 
+    * passé en paramètre et le champ entite id
+    * @param dossier
+    * @param champ entite id
+    * @param entite id
+    * @return liste valeurs
+    * @since 2.2.3-genno
+    */
+   List<ValeurExterne> findByDossierChampEntiteIdAndBlocEntiteIdManager(DossierExterne dos, Integer chpId, Integer eId);
 }

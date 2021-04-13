@@ -412,7 +412,7 @@
 									/>
 									<label value="@{deriveCede.cessionType}"/>
 									<label value="@{deriveCede.dateDemandeCessionFormatted}"/>
-									<label value="@{deriveCede.dateValidationCessionFormatted}"/>
+									<label value="@{deriveCede.dateCessionFormatted}"/>
 									<label value="@{deriveCede.cessionDemandeur}"/>
 									<label value="@{deriveCede.cessionDestinataire}"/>
 									<label value="@{deriveCede.cessionEtude}"/>

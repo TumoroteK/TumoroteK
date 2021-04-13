@@ -51,7 +51,6 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -108,7 +107,7 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * @since 2.0.6.10 download fichier correction .xlsx
  *
  * @author Pierre VENTADOUR
- * @version 2.0.10.6
+ * @version 2.2.3-genno
  *
  */
 public class ResultatsImportModale extends GenericForwardComposer<Component>
@@ -440,7 +439,7 @@ public class ResultatsImportModale extends GenericForwardComposer<Component>
          final CellStyle style = workbook.createCellStyle();
          final Font font = workbook.createFont();
          if(style instanceof HSSFCellStyle){
-            font.setColor(HSSFColor.RED.index);
+            font.setColor(Font.COLOR_RED);
          }else{
             ((XSSFFont) font).setColor(new XSSFColor(new java.awt.Color(255, 0, 0)));
          }
@@ -512,85 +511,101 @@ public class ResultatsImportModale extends GenericForwardComposer<Component>
 
    /**
     * Génère le message qui sera affiché dans la fenêtre d'erreurs.
+    * @version 2.2.3-genno
     */
    public String handleExceptionMessage(final RuntimeException ex){
-      String message = Labels.getLabel("validation.exception.inconnu");
-      if(ex instanceof ValidationException){
-         message = "";
-         final Iterator<Errors> errs = (((ValidationException) ex).getErrors()).iterator();
-         while(errs.hasNext()){
-            final Errors er = errs.next();
-            // si l'erreur n'est pas définie dans le fichier
-            // i3.properties, on va créer l'erreur à afficher
-            if(Labels.getLabel(er.getFieldError().getCode()) == null){
-               final String champ = getLabelForError(er);
-               message = message + ObjectTypesFormatters.getLabel("validation.invalid.import", new String[] {champ});
-            }else{
-               message = message + Labels.getLabel("validation.error");
-               message = message + " " + Labels.getLabel(er.getFieldError().getCode());
-            }
-         }
-      }else if(ex instanceof DoublonFoundException){
-         message = ObjectTypesFormatters.getLabel("validation.doublon",
-            new String[] {((DoublonFoundException) ex).getEntite(), ((DoublonFoundException) ex).getOperation()});
-      }else if(ex instanceof RequiredObjectIsNullException){
-         message =
-            ObjectTypesFormatters
-               .getLabel("validation.requiredObject",
-                  new String[] {((RequiredObjectIsNullException) ex).getEntite(),
-                     ((RequiredObjectIsNullException) ex).getRequiredObject(),
-                     ((RequiredObjectIsNullException) ex).getOperation()});
-      }else if(ex instanceof ObjectUsedException){
-         message = Labels.getLabel(((ObjectUsedException) ex).getKey());
-      }else if(ex instanceof ObjectReferencedException){
-         message = Labels.getLabel(((ObjectReferencedException) ex).getKey());
-      }else if(ex instanceof DeriveImportParentNotFoundException){
-         message = ObjectTypesFormatters.getLabel(((DeriveImportParentNotFoundException) ex).getMessage(),
-            new String[] {((DeriveImportParentNotFoundException) ex).getValeurAttendue(),
-               ((DeriveImportParentNotFoundException) ex).getColonne().getImportTemplate().getBanque().getNom()});
-      }else if(ex instanceof TransformationQuantiteOverDemandException){
-         message = ObjectTypesFormatters.getLabel(ex.getMessage(),
-            new String[] {((TransformationQuantiteOverDemandException) ex).getQteDemandee().toString(),
-               ((TransformationQuantiteOverDemandException) ex).getQteRestante().toString()});
-      }else if(ex instanceof WrongImportValueException){
-         final ImportColonne ic = ((WrongImportValueException) ex).getColonne();
-         if(ic.getChamp() != null){
-            // si c'est une erreur sur un thesaurus
-            if(ic.getChamp().getChampEntite() != null && ic.getChamp().getChampEntite().getQueryChamp() != null){
-               message = ObjectTypesFormatters.getLabel("validation.wrong.import.thesaurus",
-                  new String[] {((WrongImportValueException) ex).getColonne().getNom()});
-            }else if(ic.getChamp().getChampAnnotation() != null
-               && ic.getChamp().getChampAnnotation().getDataType().getType().equals("thesaurus")){
-               // si c'est une erreur sur un thesaurus
-               message = ObjectTypesFormatters.getLabel("validation.wrong.import.thesaurus",
-                  new String[] {((WrongImportValueException) ex).getColonne().getNom()});
-            }else if(ic.getChamp().getChampEntite() != null && ic.getChamp().getChampEntite().getNom().equals("EmplacementId")){
-               // si c'est une erreur sur un emplacement
-               message = ObjectTypesFormatters.getLabel("validation.wrong.import.emplacement",
-                  new String[] {((WrongImportValueException) ex).getColonne().getNom()});
-            }else{
-               message = ObjectTypesFormatters.getLabel("validation.wrong.import.value", new String[] {
-                  ((WrongImportValueException) ex).getColonne().getNom(), ((WrongImportValueException) ex).getValeurAttendue()});
-            }
-         }else{
-            message = ObjectTypesFormatters.getLabel("validation.wrong.import.value", new String[] {
-               ((WrongImportValueException) ex).getColonne().getNom(), ((WrongImportValueException) ex).getValeurAttendue()});
-         }
-      }else if(ex instanceof UsedPositionException){
-         message = ObjectTypesFormatters.getLabel("validation.emplacement.used",
-            new String[] {((UsedPositionException) ex).getEntite(), String.valueOf(((UsedPositionException) ex).getPosition())});
-      }else if(ex instanceof WrongValueException){
-         throw ex;
-      }else if(ex.getCause() != null && ex.getCause() instanceof RuntimeException){
-         return handleExceptionMessage((RuntimeException) ex.getCause());
-      }else{
-         message = Labels.getLabel(ex.getMessage());
-      }
-      // aucun message n'a pu être généré -> exception inattendue
-      if(message == null){
-         message = ex.getClass().getSimpleName() + " : " + ex.getMessage();
-         log.error(ex);
-      }
+	  
+	  log.debug("handling exception {}", ex);
+	  
+	  String message = Labels.getLabel("validation.exception.inconnu");
+	  
+	  try {   
+	      if(ex instanceof ValidationException){
+	         message = "";
+	         final Iterator<Errors> errs = (((ValidationException) ex).getErrors()).iterator();
+	         while(errs.hasNext()){
+	            final Errors er = errs.next();
+	            // si l'erreur n'est pas définie dans le fichier
+	            // i3.properties, on va créer l'erreur à afficher
+	            if(Labels.getLabel(er.getFieldError().getCode()) == null){
+	               final String champ = getLabelForError(er);
+	               if (champ != null) {
+	            	   message = message + ObjectTypesFormatters.getLabel("validation.invalid.import", new String[] {champ});
+	               } else {
+	            	   log.warn("internationalisation non trouvee pour " + er.toString());
+	            	   message = message + ObjectTypesFormatters.getLabel("validation.invalid.import", new String[] {"?"});
+	               }
+	            }else{
+	               message = message + Labels.getLabel("validation.error");
+	               message = message + " " + Labels.getLabel(er.getFieldError().getCode());
+	            }
+	         }
+	      }else if(ex instanceof DoublonFoundException){
+	         message = ObjectTypesFormatters.getLabel("validation.doublon",
+	            new String[] {((DoublonFoundException) ex).getEntite(), ((DoublonFoundException) ex).getOperation()});
+	      }else if(ex instanceof RequiredObjectIsNullException){
+	         message =
+	            ObjectTypesFormatters
+	               .getLabel("validation.requiredObject",
+	                  new String[] {((RequiredObjectIsNullException) ex).getEntite(),
+	                     ((RequiredObjectIsNullException) ex).getRequiredObject(),
+	                     ((RequiredObjectIsNullException) ex).getOperation()});
+	      }else if(ex instanceof ObjectUsedException){
+	         message = Labels.getLabel(((ObjectUsedException) ex).getKey());
+	      }else if(ex instanceof ObjectReferencedException){
+	         message = Labels.getLabel(((ObjectReferencedException) ex).getKey());
+	      }else if(ex instanceof DeriveImportParentNotFoundException){
+	         message = ObjectTypesFormatters.getLabel(((DeriveImportParentNotFoundException) ex).getMessage(),
+	            new String[] {((DeriveImportParentNotFoundException) ex).getValeurAttendue(),
+	               ((DeriveImportParentNotFoundException) ex).getColonne().getImportTemplate().getBanque().getNom()});
+	      }else if(ex instanceof TransformationQuantiteOverDemandException){
+	         message = ObjectTypesFormatters.getLabel(ex.getMessage(),
+	            new String[] {((TransformationQuantiteOverDemandException) ex).getQteDemandee().toString(),
+	               ((TransformationQuantiteOverDemandException) ex).getQteRestante().toString()});
+	      }else if(ex instanceof WrongImportValueException){
+	         final ImportColonne ic = ((WrongImportValueException) ex).getColonne();
+	         if(ic.getChamp() != null){
+	            // si c'est une erreur sur un thesaurus
+	            if(ic.getChamp().getChampEntite() != null && ic.getChamp().getChampEntite().getQueryChamp() != null){
+	               message = ObjectTypesFormatters.getLabel("validation.wrong.import.thesaurus",
+	                  new String[] {((WrongImportValueException) ex).getColonne().getNom()});
+	            }else if(ic.getChamp().getChampAnnotation() != null
+	               && ic.getChamp().getChampAnnotation().getDataType().getType().equals("thesaurus")){
+	               // si c'est une erreur sur un thesaurus
+	               message = ObjectTypesFormatters.getLabel("validation.wrong.import.thesaurus",
+	                  new String[] {((WrongImportValueException) ex).getColonne().getNom()});
+	            }else if(ic.getChamp().getChampEntite() != null && ic.getChamp().getChampEntite().getNom().equals("EmplacementId")){
+	               // si c'est une erreur sur un emplacement
+	               message = ObjectTypesFormatters.getLabel("validation.wrong.import.emplacement",
+	                  new String[] {((WrongImportValueException) ex).getColonne().getNom()});
+	            }else{
+	               message = ObjectTypesFormatters.getLabel("validation.wrong.import.value", new String[] {
+	                  ((WrongImportValueException) ex).getColonne().getNom(), ((WrongImportValueException) ex).getValeurAttendue()});
+	            }
+	         }else{
+	            message = ObjectTypesFormatters.getLabel("validation.wrong.import.value", new String[] {
+	               ((WrongImportValueException) ex).getColonne().getNom(), ((WrongImportValueException) ex).getValeurAttendue()});
+	         }
+	      }else if(ex instanceof UsedPositionException){
+	         message = ObjectTypesFormatters.getLabel("validation.emplacement.used",
+	            new String[] {((UsedPositionException) ex).getEntite(), String.valueOf(((UsedPositionException) ex).getPosition())});
+	      }else if(ex instanceof WrongValueException){
+	         throw ex;
+	      }else if(ex.getCause() != null && ex.getCause() instanceof RuntimeException){
+	         return handleExceptionMessage((RuntimeException) ex.getCause());
+	      }else{
+	         message = Labels.getLabel(ex.getMessage());
+	      }
+	      // aucun message n'a pu être généré -> exception inattendue
+	      if(message == null){
+	         message = ex.getClass().getSimpleName() + " : " + ex.getMessage();
+	         log.debug(message);
+	      }
+	  // @since 2.2.3-genno capture NullPointer renvoyée par ObjectTypesFormatters
+	  } catch (NullPointerException e) { // une exception inattendue survient dans le formatage du message
+		  log.warn("unexpected error occurred during import error message {}", ex);
+		  message = ex.getClass().getSimpleName() + " : " + ex.getMessage();
+	  }
 
       return message;
    }

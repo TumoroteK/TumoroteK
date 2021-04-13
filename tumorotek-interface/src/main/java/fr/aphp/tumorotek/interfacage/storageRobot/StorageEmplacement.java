@@ -35,81 +35,40 @@
  **/
 package fr.aphp.tumorotek.interfacage.storageRobot;
 
-public class StorageEmplacement implements Comparable<StorageEmplacement>
-{
+/**
+ * 
+ * @author Mathieu BARTHELEMY
+ * @version 2.2.1-IRELEC
+ *
+ */
+public class StorageEmplacement {
+	
+	private String barcode;
+	private String adrl;
+	
+	public StorageEmplacement(String barcode, String _a) {
+		super();
+		this.barcode = barcode;
+		this.adrl = _a;
+	}
+	
+	public String getBarcode() {
+		return barcode;
+	}
 
-   private String barcode;
-   private String conteneurCode;
-   private String rack;
-   private String boite;
-   private String position;
+	public void setBarcode(String _b) {
+		this.barcode = _b;
+	}
 
-   public StorageEmplacement(final String barcode, final String conteneurCode, final String rack, final String boite,
-      final String position){
-      super();
-      this.barcode = barcode;
-      this.conteneurCode = conteneurCode;
-      this.rack = rack;
-      this.boite = boite;
-      this.position = position;
-   }
+	public String getAdrl() {
+		return adrl;
+	}
 
-   public String getBarcode(){
-      return barcode;
-   }
+	public void setAdrl(String _a) {
+		this.adrl = _a;
+	}
 
-   public void setBarcode(final String _b){
-      this.barcode = _b;
-   }
-
-   public String getConteneurCode(){
-      return conteneurCode;
-   }
-
-   public void setConteneurCode(final String _c){
-      this.conteneurCode = _c;
-   }
-
-   public String getRack(){
-      return rack;
-   }
-
-   public void setRack(final String _r){
-      this.rack = _r;
-   }
-
-   public String getBoite(){
-      return boite;
-   }
-
-   public void setBoite(final String _b){
-      this.boite = _b;
-   }
-
-   public String getPosition(){
-      return position;
-   }
-
-   public void setPosition(final String _p){
-      this.position = _p;
-   }
-
-   @Override
-   public int compareTo(final StorageEmplacement sT){
-      if(sT != null && isComplete()){
-         final int contCompare = conteneurCode.compareTo(sT.getConteneurCode());
-         final int rackCompare = rack.compareTo(sT.getRack());
-         final int boiteCompare = boite.compareTo(sT.getBoite());
-         final int posCompare = position.compareTo(sT.getPosition());
-         final int barcodeCompare = barcode.compareTo(sT.getBarcode());
-         return contCompare == 0 ? (rackCompare == 0
-            ? (boiteCompare == 0 ? (posCompare == 0 ? barcodeCompare : posCompare) : boiteCompare) : rackCompare) : contCompare;
-      }
-      return 0;
-   }
-
-   public boolean isComplete(){
-      return getBarcode() != null && getConteneurCode() != null && getRack() != null && getBoite() != null
-         && getPosition() != null;
-   }
+	public boolean isComplete() {
+		return getBarcode() != null && getAdrl() != null;
+	}
 }

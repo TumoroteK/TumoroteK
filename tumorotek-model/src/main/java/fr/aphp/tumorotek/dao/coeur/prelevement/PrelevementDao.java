@@ -48,6 +48,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.coeur.prelevement.PrelevementType;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
+import fr.aphp.tumorotek.model.contexte.Etablissement;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.contexte.Service;
 
@@ -59,7 +60,8 @@ import fr.aphp.tumorotek.model.contexte.Service;
  *
  *
  * @author Pierre Ventadour
- * @version 2.1
+ * @author Mathieu BARTHELEMY
+ * @version 2.2.1
  *
  */
 public interface PrelevementDao extends GenericDaoJpa<Prelevement, Integer>
@@ -434,4 +436,31 @@ public interface PrelevementDao extends GenericDaoJpa<Prelevement, Integer>
     * @since 2.0.13
     */
    List<Prelevement> findByPatientAndBanques(Patient p, List<Banque> banks);
+   
+   /**
+    * Recherche les prelevements dont l'établissement du site intermédaire 
+    * est passé en param
+    * @param etablissement
+    * @param List<Banque> banks
+    * @return liste de prélèvements
+    */
+   List<Prelevement> findByEtablissementLaboInter(Etablissement etab, List<Banque> banks);
+   
+   /**
+    * Recherche les prelevements dont le service du site intermédaire 
+    * est passé en param
+    * @param service
+    * @param List<Banque> banks
+    * @return liste de prélèvements
+    */
+   List<Prelevement> findByServiceLaboInter(Service service, List<Banque> banks);
+   
+   /**
+    * Recherche les prelevements dont l'opérateur du site intermédaire 
+    * est passé en param
+    * @param operateur
+    * @param List<Banque> banks
+    * @return liste de prélèvements
+    */
+   List<Prelevement> findByCollaborateurLaboInter(Collaborateur operateur, List<Banque> banks);
 }

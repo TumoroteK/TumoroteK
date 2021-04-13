@@ -64,6 +64,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.GenericGenerator;
 
 import fr.aphp.tumorotek.model.TKAnnotableObject;
+import fr.aphp.tumorotek.model.TKDelegateObject;
 import fr.aphp.tumorotek.model.TKDelegetableObject;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
@@ -181,8 +182,14 @@ import fr.aphp.tumorotek.model.utils.Utils;
    @NamedQuery(name = "Prelevement.findByOperateur", query = "SELECT e FROM Prelevement e " + "WHERE e.operateur = (?1)"),
    @NamedQuery(name = "Prelevement.findByService", query = "SELECT e FROM Prelevement e " + "WHERE e.servicePreleveur = (?1)"),
    @NamedQuery(name = "Prelevement.findByPatientAndBanques",
-      query = "SELECT e FROM Prelevement e " + "WHERE e.maladie.patient = ?1 AND e.banque in (?2)")})
-public class Prelevement implements TKAnnotableObject, TKDelegetableObject<Prelevement>, Serializable
+      query = "SELECT e FROM Prelevement e " + "WHERE e.maladie.patient = ?1 AND e.banque in (?2)"),
+   @NamedQuery(name = "Prelevement.findByEtablissementLaboInter", 
+   		query = "SELECT DISTINCT e FROM Prelevement e JOIN e.laboInters l where l.service.etablissement = (?1) AND e.banque in (?2)"),
+   @NamedQuery(name = "Prelevement.findByServiceLaboInter", 
+		query = "SELECT DISTINCT e FROM Prelevement e JOIN e.laboInters l where l.service = (?1) AND e.banque in (?2)"), 
+   @NamedQuery(name = "Prelevement.findByCollaborateurLaboInter", 
+		query = "SELECT DISTINCT e FROM Prelevement e JOIN e.laboInters l where l.collaborateur = (?1) AND e.banque in (?2)")})
+public class Prelevement extends TKDelegetableObject<Prelevement> implements TKAnnotableObject, Serializable
 {
 
    private static final long serialVersionUID = 6737874055478715763L;
@@ -225,7 +232,7 @@ public class Prelevement implements TKAnnotableObject, TKDelegetableObject<Prele
    private Set<Echantillon> echantillons = new HashSet<>();
    private Set<Risque> risques = new HashSet<>();
 
-   private AbstractPrelevementDelegate delegate;
+   private TKDelegateObject<Prelevement> delegate;
 
    public Prelevement(){}
 
@@ -685,8 +692,9 @@ public class Prelevement implements TKAnnotableObject, TKDelegetableObject<Prele
       clone.setEtatIncomplet(this.getEtatIncomplet());
       clone.setArchive(this.getArchive());
       clone.setRisques(getRisques());
+      
       clone.setDelegate(getDelegate());
-
+      
       return clone;
    }
 
@@ -708,12 +716,8 @@ public class Prelevement implements TKAnnotableObject, TKDelegetableObject<Prele
 
    @OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "delegator",
       targetEntity = AbstractPrelevementDelegate.class)
-   public AbstractPrelevementDelegate getDelegate(){
+   public TKDelegateObject<Prelevement> getDelegate(){
       return delegate;
-   }
-
-   public void setDelegate(final AbstractPrelevementDelegate del){
-      this.delegate = del;
    }
 
    @Transient
@@ -724,4 +728,8 @@ public class Prelevement implements TKAnnotableObject, TKDelegetableObject<Prele
       return null;
    }
 
+   @Override
+   public void setDelegate(TKDelegateObject<Prelevement> delegate){
+      this.delegate = delegate;
+   }
 }

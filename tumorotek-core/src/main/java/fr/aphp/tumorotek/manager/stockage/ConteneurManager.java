@@ -56,7 +56,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Interface créée le 23/03/10.
  *
  * @author Pierre Ventadour
- * @version 2.0.10
+ * @version 2.2.1-IRELEC
  *
  */
 public interface ConteneurManager
@@ -264,4 +264,28 @@ public interface ConteneurManager
     * @return Float
     */
    Float findTempForEmplacementManager(Emplacement emplacement);
+   
+	/**
+	 * Surcharge le manager de modification pour passer en paramètre des associations 
+	 * ConteneurPlateformes
+	 * @since 2.2.1-IRELEC
+	 * @param conteneur
+	 * @param conteneurType
+	 * @param service
+	 * @param banques
+	 * @param plateformes
+	 * @param incidents
+	 * @param utilisateur
+	 */
+	void updateObjectWithConteneurPlateformesManager(Conteneur conteneur, ConteneurType conteneurType, Service service,
+			List<Banque> banques, List<ConteneurPlateforme> plateformes, List<Incident> incidents, Utilisateur utilisateur);
+
+	/**
+	 * Trouve l'association représentée par un conteneur et une plateforme
+	 * @param conteneur
+	 * @param pf
+	 * @return
+	 * @since 2.2.1-IRELEC
+	 */
+	ConteneurPlateforme getOneConteneurPlateformeManager(Conteneur conteneur, Plateforme pf);
 }

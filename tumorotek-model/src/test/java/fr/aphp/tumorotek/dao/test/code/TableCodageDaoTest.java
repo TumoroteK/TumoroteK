@@ -205,7 +205,7 @@ public class TableCodageDaoTest extends AbstractDaoTest
 
    public void testToString(){
       final TableCodage t1 = tableCodageDao.findById(1);
-      assertTrue(t1.toString().equals("{TableCodage: ADICAP}"));
+      assertTrue(t1.toString().equals("ADICAP 5.03"));
    }
 
 }

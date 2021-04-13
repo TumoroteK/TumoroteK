@@ -69,9 +69,8 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 /**
  *
  * Interface pour le manager du bean de domaine Prelevement.<br>
- * Interface créée le 13/10/09.<br>
  * @author Mathieu BARTHELEMY
- * @version 2.2.0
+ * @version 2.2.1
  *
  */
 public interface PrelevementManager

@@ -68,6 +68,8 @@ import eu.medsea.mimeutil.MimeUtil;
  *
  * @author Pierre Ventadour
  * @version 2.0.11
+ * 
+ * TODO Migrer File vers NIO Paths pour faciliter les tests
  *
  */
 public class FichierManagerImpl implements FichierManager

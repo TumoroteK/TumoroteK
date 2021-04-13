@@ -60,19 +60,19 @@ import fr.aphp.tumorotek.model.cession.Cession;
 public abstract class AbstractCessionDelegate extends TKDelegateObject<Cession>
 {
 
-   private Integer id;
+   private Integer cessionId;
    private Cession delegator;
    
    @Id
    @Column(name = "CESSION_DELEGATE_ID", unique = true, nullable = false)
    @GeneratedValue(generator = "autoincrement")
    @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getId(){
-      return id;
+   public Integer getCessionId(){
+      return cessionId;
    }
 
-   public void setId(Integer id){
-      this.id = id;
+   public void setCessionId(Integer id){
+      this.cessionId = id;
    }
 
    /* (non-Javadoc)
@@ -89,8 +89,8 @@ public abstract class AbstractCessionDelegate extends TKDelegateObject<Cession>
     * @see fr.aphp.tumorotek.model.TKDelegateObject#setDelegator(java.lang.Object)
     */
    @Override
-   public void setDelegator(Cession delegator){
-      this.delegator = delegator;
+   public void setDelegator(Cession _d){
+      this.delegator = _d;
    }
 
 }

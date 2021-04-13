@@ -35,14 +35,20 @@
  **/
 package fr.aphp.tumorotek.manager.test.qualite;
 
+import static org.junit.Assert.*;
+
+
 import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
 import fr.aphp.tumorotek.manager.qualite.ConformiteTypeManager;
 import fr.aphp.tumorotek.manager.qualite.NonConformiteManager;
-import fr.aphp.tumorotek.manager.test.AbstractManagerTest;
+import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.qualite.ConformiteType;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
@@ -57,42 +63,24 @@ import fr.aphp.tumorotek.model.qualite.ObjetNonConforme;
  * @version 2.0
  *
  */
-public class NonConformiteManagerTest extends AbstractManagerTest
+public class NonConformiteManagerTest extends AbstractManagerTest4
 {
 
-   /** Bean Manager. */
+   @Autowired
    private NonConformiteManager nonConformiteManager;
-   /** Bean Manager. */
+   @Autowired
    private ConformiteTypeManager conformiteTypeManager;
-   /** Bean Dao. */
+   @Autowired
    private PlateformeDao plateformeDao;
+   @Autowired
    private EntiteDao entiteDao;
 
    private final int tot = 11;
 
    public NonConformiteManagerTest(){
-
    }
 
-   public void setNonConformiteManager(final NonConformiteManager nManager){
-      this.nonConformiteManager = nManager;
-   }
-
-   public void setConformiteTypeManager(final ConformiteTypeManager cManager){
-      this.conformiteTypeManager = cManager;
-   }
-
-   public void setPlateformeDao(final PlateformeDao pDao){
-      this.plateformeDao = pDao;
-   }
-
-   public void setEntiteDao(final EntiteDao eDao){
-      this.entiteDao = eDao;
-   }
-
-   /**
-    * Test la méthode findById.
-    */
+   @Test
    public void testFindById(){
       final NonConformite n = nonConformiteManager.findByIdManager(1);
       assertNotNull(n);
@@ -101,17 +89,13 @@ public class NonConformiteManagerTest extends AbstractManagerTest
       assertNull(nNull);
    }
 
-   /**
-    * Test la méthode findAllObjects.
-    */
+   @Test
    public void testFindAll(){
       final List<NonConformite> list = nonConformiteManager.findAllObjectsManager();
       assertTrue(list.size() == tot);
    }
 
-   /**
-    * Test la méthode findByPlateformeAndTypeObjManager.
-    */
+   @Test
    public void testFindByPlateformeAndTypeObjManager(){
       final ConformiteType t1 = conformiteTypeManager.findByIdManager(1);
       final Plateforme p1 = plateformeDao.findById(1);
@@ -136,9 +120,7 @@ public class NonConformiteManagerTest extends AbstractManagerTest
       assertTrue(list.size() == 0);
    }
 
-   /**
-    * Test la méthode findByPlateformeAndTypeStringManager.
-    */
+   @Test
    public void testFindByPlateformeAndTypeStringManager(){
       final Plateforme p1 = plateformeDao.findById(1);
       List<NonConformite> list =
@@ -171,9 +153,7 @@ public class NonConformiteManagerTest extends AbstractManagerTest
       assertTrue(list.size() == 0);
    }
 
-   /**
-    * Test la méthode findDoublon.
-    */
+   @Test
    public void testFindDoublon(){
       NonConformite n1 = new NonConformite();
       n1.setConformiteType(conformiteTypeManager.findByIdManager(1));
@@ -198,9 +178,7 @@ public class NonConformiteManagerTest extends AbstractManagerTest
       assertTrue(nonConformiteManager.findDoublonManager(n1));
    }
 
-   /**
-    * Test la méthode isUsedObject.
-    */
+   @Test
    public void testIsUsed(){
       final NonConformite n1 = nonConformiteManager.findByIdManager(1);
       assertNotNull(n1);
@@ -210,9 +188,7 @@ public class NonConformiteManagerTest extends AbstractManagerTest
       assertFalse(nonConformiteManager.isUsedObjectManager(n2));
    }
 
-   /**
-    * Test d'un CRUD.
-    */
+  @Test
    public void testCrud(){
       // Insertion
       final NonConformite n1 = new NonConformite();
@@ -278,7 +254,7 @@ public class NonConformiteManagerTest extends AbstractManagerTest
       n1.setNom("TEST");
       nonConformiteManager.createObjectManager(n1);
       assertTrue(nonConformiteManager.findAllObjectsManager().size() == tot + 1);
-      final Integer id = n1.getNonConformiteId();
+      final Integer id = n1.getId();
 
       // Update
       final NonConformite n2 = nonConformiteManager.findByIdManager(id);
@@ -358,6 +334,7 @@ public class NonConformiteManagerTest extends AbstractManagerTest
       assertTrue(nonConformiteManager.findAllObjectsManager().size() == tot);
    }
 
+  @Test
    public void testGetFromObjetNonConformes(){
       // null
       assertTrue(nonConformiteManager.getFromObjetNonConformes(null).isEmpty());

@@ -161,7 +161,7 @@ public class ProdDeriveDecorator2
 
    public String getType(){
       if(this.prodDerive.getProdType() != null){
-         return this.prodDerive.getProdType().getType();
+         return this.prodDerive.getProdType().getNom();
       }
       return null;
    }
@@ -188,7 +188,7 @@ public class ProdDeriveDecorator2
 
       if(this.prodDerive.getQuantiteUnite() != null){
          sb.append(" ");
-         sb.append(this.prodDerive.getQuantiteUnite().getUnite());
+         sb.append(this.prodDerive.getQuantiteUnite().getNom());
       }
 
       return sb.toString();
@@ -208,7 +208,7 @@ public class ProdDeriveDecorator2
 
       if(this.prodDerive.getQuantiteUnite() != null){
          sb.append(" ");
-         sb.append(this.prodDerive.getQuantiteUnite().getUnite());
+         sb.append(this.prodDerive.getQuantiteUnite().getNom());
       }
 
       return sb.toString();
@@ -236,7 +236,7 @@ public class ProdDeriveDecorator2
 
       if(this.prodDerive.getVolumeUnite() != null){
          sb.append(" ");
-         sb.append(this.prodDerive.getVolumeUnite().getUnite());
+         sb.append(this.prodDerive.getVolumeUnite().getNom());
       }
 
       return sb.toString();
@@ -256,7 +256,7 @@ public class ProdDeriveDecorator2
 
       if(this.prodDerive.getVolumeUnite() != null){
          sb.append(" ");
-         sb.append(this.prodDerive.getVolumeUnite().getUnite());
+         sb.append(this.prodDerive.getVolumeUnite().getNom());
       }
 
       return sb.toString();
@@ -276,7 +276,7 @@ public class ProdDeriveDecorator2
 
       if(this.prodDerive.getConcUnite() != null){
          sb.append(" ");
-         sb.append(this.prodDerive.getConcUnite().getUnite());
+         sb.append(this.prodDerive.getConcUnite().getNom());
       }
 
       return sb.toString();
@@ -339,7 +339,7 @@ public class ProdDeriveDecorator2
 
    public String getQualite(){
       if(this.prodDerive.getProdQualite() != null){
-         return this.prodDerive.getProdQualite().getProdQualite();
+         return this.prodDerive.getProdQualite().getNom();
       }
       return null;
    }
@@ -370,25 +370,6 @@ public class ProdDeriveDecorator2
     */
    public String getFormattedDateTransformation(){
       return ObjectTypesFormatters.dateRenderer2(this.prodDerive.getDateTransformation());
-   }
-
-   public String getReservation(){
-      if(this.prodDerive.getReservation() != null){
-         final StringBuffer sb = new StringBuffer();
-         if(this.prodDerive.getReservation().getDebut() != null){
-            sb.append(ObjectTypesFormatters.dateRenderer2(this.prodDerive.getReservation().getDebut()));
-         }else{
-            sb.append("-");
-         }
-
-         if(this.prodDerive.getReservation().getFin() != null){
-            sb.append(" ");
-            sb.append(ObjectTypesFormatters.dateRenderer2(this.prodDerive.getReservation().getFin()));
-         }
-
-         return sb.toString();
-      }
-      return null;
    }
 
    public String getEtatIncomplet(){

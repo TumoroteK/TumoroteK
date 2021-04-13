@@ -134,6 +134,7 @@
 
 <style src="/css/font-awesome-4.6.1/css/font-awesome.min.css" />
 <style src="/css/newstyle.css.dsp" />
+<style src="/css/stats/chart.css" />
 
 
 <!-- <html><![CDATA[
@@ -180,7 +181,7 @@
 		</hbox>
 	    <hbox pack="end" style="float:right; margin-top: 10px" hflex="1">
 	    	<vbox align="right" style="margin-right: 5px">
-				<hlayout style="z-valign-middle">
+				<hlayout style="z-valign-middle; border1px solid">
 						<button label="${c:l('general.logout')}"
 							href="/j_spring_security_logout"
 							sclass="buttonv2"
@@ -232,8 +233,13 @@
 							tooltiptext="${c:l('scan.button.swith.on')}" forward="onClick=onSwitchScanButton">
 							<span class="fa fa-qrcode fa-1x" />
 							<timer id="scanTimer" delay="2000" repeats="true" running="false" />
-						</div>					
+						</div>			
 					</div>
+					<div width="20px" sclass="appLink" id="genno"
+							style="background: #ffffff; text-align: center; padding: 4px"
+							visible="${mainWin$composer.genno}">
+						<label value="G" sclass="appLabel" style="color:#2980b9;" />					
+					</div>	
 				</hlayout>
 			
 				<hlayout>

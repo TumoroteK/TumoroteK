@@ -49,6 +49,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.zkoss.util.media.AMedia;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.HtmlMacroComponent;
@@ -291,13 +292,13 @@ public class TKChart extends HtmlMacroComponent
       row = sheet.createRow(currentRow);
       currentRow++;
       cell = row.createCell(0);
-      cell.setCellType(Cell.CELL_TYPE_BLANK);
+      cell.setCellType(CellType.BLANK);
       cell = row.createCell(1);
-      cell.setCellType(Cell.CELL_TYPE_STRING);
+      cell.setCellType(CellType.STRING);
       cell.setCellValue(valueHeader.getLabel());
       if(type.equals("stacked_bar")){
          cell = row.createCell(2);
-         cell.setCellType(Cell.CELL_TYPE_STRING);
+         cell.setCellType(CellType.STRING);
          cell.setCellValue(nonStockHeader.getLabel());
       }
 
@@ -305,16 +306,16 @@ public class TKChart extends HtmlMacroComponent
          row = sheet.createRow(currentRow);
          currentRow++;
          cell = row.createCell(0);
-         cell.setCellType(Cell.CELL_TYPE_STRING);
+         cell.setCellType(CellType.STRING);
          cell.setCellValue(detail.getCategory());
 
          cell = row.createCell(1);
-         cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+         cell.setCellType(CellType.NUMERIC);
          cell.setCellValue(detail.getValue());
 
          if(detail.getNonStockValue() != null){
             cell = row.createCell(2);
-            cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+            cell.setCellType(CellType.NUMERIC);
             cell.setCellValue(detail.getNonStockValue());
          }
       }

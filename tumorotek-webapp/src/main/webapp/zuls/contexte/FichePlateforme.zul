@@ -58,7 +58,7 @@
 							
 							<textbox id="nomBox" value="@{fwinPlateforme$composer.plateforme.nom,
 			        				save-when='validateC.onClick, createC.onClick'
-			        				load-after='editC.onClick, createC.onClick'}" 
+			        				load-after='editC.onClick, createC.onClick, addNewC.onClick'}" 
 								width="150px" 
 								constraint="${fwinPlateforme$composer.nomConstraint}"
 								visible="false"
@@ -76,7 +76,7 @@
 							
 							<textbox id="aliasBox" value="@{fwinPlateforme$composer.plateforme.alias,
 			        				save-when='validateC.onClick, createC.onClick'
-			        				load-after='editC.onClick, createC.onClick'}" 
+			        				load-after='editC.onClick, createC.onClick, addNewC.onClick'}" 
 								width="50px" 
 								constraint="${fwinPlateforme$composer.aliasConstraint}"
 								visible="false"
@@ -115,7 +115,7 @@
 							fixedLayout="true" 
 							span="true"
 							sclass="gridListStyle"
-							model="@{fwinPlateforme$composer.administrateurs}"
+							model="@{fwinPlateforme$composer.administrateurs, load-after='addNewC.onClick'}"
 							hflex="1"
 							>
 							<columns sizable="true" >
@@ -124,19 +124,21 @@
 								<column label="${c:l('utilisateur.collaborateur.small')}" width="170px"/>
 								<column id="deleteAdminColumn" visible="false" width="30px"/>
 							</columns>
-							<rows>
-								<row self="@{each='currAdmin'}">
-									<label value="@{currAdmin.login}" id="adminLogin"
+							<template name="model">
+								<row value="${each}" sclass="${each.regular eq 'true' ? '': 'gold' }" >
+									<label value="${each.login}" forward="onClick=onClick$adminLogin(${each})"
 										sclass="formLink"/>
-									<label value="@{currAdmin.email}"/>
-									<label value="@{currAdmin.collaborateur.nomAndPrenom}"/>
+									<label value="${each.email}" />
+									<label value="${each.collaborateur.nomAndPrenom}"/>
 									<div align="center">
-										<image width="12px" height="12px" id="deleteAdmin"
+										<image width="12px" height="12px" 
+											forward="onClick=onClick$deleteAdmin(${each})"
 											src="/images/icones/small_delete.png"
-											style="cursor:pointer"/>
+											style="cursor:pointer" 
+											visible="${each.regular}"/>
 									</div>
 								</row>
-							</rows>
+							</template>
 						</grid>
 					</row>
 					<!-- Ajout role -->
@@ -178,7 +180,7 @@
 							fixedLayout="true" 
 							span="true"
 							sclass="gridListStyle"
-							model="@{fwinPlateforme$composer.banques}"
+							model="@{fwinPlateforme$composer.banques, load-after='addNewC.onClick'}"
 							hflex="1">
 							<columns sizable="true">
 								<column label="${c:l('Champ.Banque.Nom')}" width="170px"/>
@@ -220,7 +222,7 @@
 						</menupopup>
 					</menu>
 				</menubar>
-				<button id="addNewC" label="${c:l('general.new')}" height="24px" visible="false"
+				<button id="addNewC" label="${c:l('general.new')}" height="24px" visible="true"
 					image="/images/icones/new.png" sclass="buttonv2"/>
 				<button id="editC" label="${c:l('general.edit')}" height="24px" visible="true"
 					image="/images/icones/edit.png" sclass="buttonv2"/>

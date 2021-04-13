@@ -68,12 +68,14 @@
 
 <window id="winSelectBanque" border="none" mode="overlapped" position="center"
 	apply="fr.aphp.tumorotek.webapp.general.SelectBanqueController"
-	width="475px"
-	>
+	width="475px" height="auto">
 	
-	<groupbox mold="3d" sclass="groupBoxTk">
-		<caption image="/images/small_logo_tumo.png"/>
-		<grid fixedLayout="true" sclass="gridForm1">
+	<!-- <groupbox mold="3d" sclass="groupBoxTk"> -->
+	<caption image="/images/small_logo_tumo.png"/>
+			
+	<vlayout vflex="1">
+
+		<grid fixedLayout="true" sclass="gridForm1" vflex="1">
 			<columns>
 				<column width="450px"/>
 			</columns>
@@ -147,25 +149,27 @@
 				<row id="rowResourceRedirect" align="center" visible="false">
 					<label sclass="formValue" value="${c:l('login.select.redirect.resource')}" />
 				</row>
-				
 				<row>
 					<vbox>
 						<separator/>
 					</vbox>
 				</row>
 			</rows>
-		</grid>
-	</groupbox>
-	<toolbar height="30px" id="toolbarMultiple" align="end">
-		<button id="logout"
-				label="${c:l('general.logout')}"
-				height="24px"
-				href="/j_spring_security_logout"
-				sclass="buttonv2"
-				image="/images/icones/exit2.png"/>
-		<button id="validate" label="${c:l('general.validate')}" height="24px"
-			image="/images/icones/validate.png" sclass="buttonv2"/>
-	</toolbar>
-	
+		</grid>	
+		<hlayout hflex="1" height="40px">
+			<div hflex="1" style="text-align: right">
+				<button id="logout"
+						label="${c:l('general.logout')}"
+						height="24px"
+						href="/j_spring_security_logout"
+						sclass="buttonv2"
+						image="/images/icones/exit2.png"/>
+			</div>
+			<div hflex="1" style="text-align: left">
+				<button id="validate" label="${c:l('general.validate')}" height="24px"
+					image="/images/icones/validate.png" sclass="buttonv2"/>
+			</div>
+		</hlayout>	
+	</vlayout>
 </window>
 </zk>

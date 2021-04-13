@@ -830,16 +830,6 @@ public class ObjetsAffichageRenderer
                            }else{
                               listeStrings.add("-");
                            }
-                        }else if(parent.getChampEntite().getNom().equals("ReservationId")){
-                           if(null != recup && recup.getReservation() != null){
-                              if(nomChampEntite.equals("Fin")){
-                                 listeStrings.add(recup.getReservation().getFin());
-                              }else if(nomChampEntite.equals("Debut")){
-                                 listeStrings.add(recup.getReservation().getDebut());
-                              }
-                           }else{
-                              listeStrings.add("-");
-                           }
                         }else if(parent.getChampEntite().getNom().equals("EchanQualiteId")){
                            if(null != recup && recup.getEchanQualite() != null){
                               if(nomChampEntite.equals("EchanQualite")){
@@ -993,16 +983,6 @@ public class ObjetsAffichageRenderer
                                  listeStrings.add(recup.getCollaborateur().getNom());
                               }else if(nomChampEntite.equals("Prenom")){
                                  listeStrings.add(recup.getCollaborateur().getPrenom());
-                              }
-                           }else{
-                              listeStrings.add("-");
-                           }
-                        }else if(parent.getChampEntite().getNom().equals("ReservationId")){
-                           if(recup.getReservation() != null){
-                              if(nomChampEntite.equals("Fin")){
-                                 listeStrings.add(recup.getReservation().getFin());
-                              }else if(nomChampEntite.equals("Debut")){
-                                 listeStrings.add(recup.getReservation().getDebut());
                               }
                            }else{
                               listeStrings.add("-");

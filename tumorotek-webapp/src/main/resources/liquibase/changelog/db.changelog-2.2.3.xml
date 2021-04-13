@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    
+    <changeSet id="${project.artifactId}-1" author="MB" context="*">
+        <tagDatabase tag="${project.parent.version}"/>
+    </changeSet>
+	<changeSet id="${project.artifactId}-2" author="MB" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+	        <not>
+	            <indexExists indexName="NipIdx" tableName="PATIENT" />
+	        </not>
+    	</preConditions>
+        <createIndex indexName="NipIdx" tableName="PATIENT" unique="false">  
+        	<column name="NIP"/>  
+    	</createIndex>
+    </changeSet>
+	<changeSet id="${project.artifactId}-3" author="MB" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+	        <not>
+	            <indexExists indexName="NomIdx" tableName="PATIENT" />
+	        </not>
+    	</preConditions> 
+		<createIndex indexName="NomIdx" tableName="PATIENT" unique="false">  
+        	<column name="NOM"/>  
+    	</createIndex>
+    </changeSet>
+<!-- 	<changeSet id="${project.artifactId}-4" author="MB" runAlways="false" context="*"> -->
+<!--         <preConditions onFail="MARK_RAN"> -->
+<!-- 	        <not> -->
+<!-- 	            <indexExists indexName="LibIdx" tableName="MALADIE" /> -->
+<!-- 	        </not> -->
+<!--     	</preConditions>  -->
+<!--     	<createIndex indexName="LibIdx" tableName="MALADIE" unique="false">   -->
+<!--         	<column name="LIBELLE"  />   -->
+<!--     	</createIndex>  -->
+<!--     </changeSet> -->
+	<changeSet id="${project.artifactId}-5" author="MB" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+	        <not>
+	            <indexExists indexName="CodePrelIdx" tableName="PRELEVEMENT" />
+	        </not>
+    	</preConditions>
+		<createIndex indexName="CodePrelIdx" tableName="PRELEVEMENT" unique="false">  
+        	<column name="CODE"/>  
+    	</createIndex> 
+    </changeSet>
+	<changeSet id="${project.artifactId}-6" author="MB" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+	        <not>
+	            <indexExists indexName="NumLaboIdx" tableName="PRELEVEMENT" />
+	        </not>
+    	</preConditions>
+		<createIndex indexName="NumLaboIdx" tableName="PRELEVEMENT" unique="false">  
+        	<column name="NUMERO_LABO"/>  
+    	</createIndex>
+    </changeSet>
+	<changeSet id="${project.artifactId}-7" author="MB" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+	        <not>
+	            <indexExists indexName="CodeEchIdx" tableName="ECHANTILLON" />
+	        </not>
+    	</preConditions>
+    	<createIndex indexName="CodeEchIdx" tableName="ECHANTILLON" unique="false">  
+        	<column name="CODE"/>  
+    	</createIndex> 
+    </changeSet>
+	<changeSet id="${project.artifactId}-8" author="MB" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+	        <not>
+	            <indexExists indexName="CodeDerIdx" tableName="PROD_DERIVE" />
+	        </not>
+    	</preConditions>
+		<createIndex indexName="CodeDerIdx" tableName="PROD_DERIVE" unique="false">  
+        	<column name="CODE"/>  
+    	</createIndex> 
+    </changeSet>
+	<changeSet id="${project.artifactId}-9" author="MB" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+	        <not>
+	            <indexExists indexName="CodeLaboIdx" tableName="PROD_DERIVE" />
+	        </not>
+    	</preConditions>
+		<createIndex indexName="CodeLaboIdx" tableName="PROD_DERIVE" unique="false">  
+        	<column name="CODE_LABO"/>  
+    	</createIndex>
+    </changeSet>
+	<changeSet id="${project.artifactId}-10" author="MB" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+	        <not>
+	            <indexExists indexName="NumIdx" tableName="CESSION" />
+	        </not>
+    	</preConditions>
+        <createIndex  indexName="NumIdx" tableName="CESSION" unique="false">  
+        	<column  name="NUMERO"/>  
+    	</createIndex> 
+    </changeSet>
+    <changeSet id="${project.artifactId}-11" author="MB" runAlways="false" context="*">
+    	<!-- ne pas appliquer pour Oracle -->
+    	<comment>nettoyage date depart LaboInter car zeroDateTimeBehavior ne semble plus fonctionner MySQL 8</comment>
+       	<update tableName="LABO_INTER">
+			<column name="DATE_DEPART" value="NULL" />
+			<where>DATE_DEPART = '0000-00-00 12:00:00'</where>
+		</update>
+    </changeSet>
+    <changeSet id="${project.artifactId}-12" author="MB" runAlways="false" context="*">
+    	<!-- ne pas appliquer pour Oracle -->
+    	<comment>nettoyage date depart LaboInter car zeroDateTimeBehavior ne semble plus fonctionner MySQL 8</comment>
+       	<update tableName="LABO_INTER">
+			<column name="DATE_ARRIVEE" value="NULL" />
+			<where>DATE_ARRIVEE = '0000-00-00 12:00:00'</where>
+		</update>
+    </changeSet>
+    <changeSet id="${project.artifactId}-13" author="MB" runAlways="false" context="*">
+    	<comment>cohérence contexte Hématologie avec valeur Enum EContexte</comment>
+       	<update tableName="CONTEXTE">
+			<column name="NOM" value="HEMATOLOGIE" />
+			<column name="LIBELLE" value="Hématologie" />
+			<where>CONTEXTE_ID = 2</where>
+		</update>
+    </changeSet>
+    <changeSet id="${project.artifactId}-14" author="MB" runAlways="false" context="*">
+       	<preConditions onFail="MARK_RAN">
+       		<tableExists tableName="RESERVATION"/>
+       	</preConditions>
+       	<comment>Suppression table RESERVATION</comment>
+       	<dropForeignKeyConstraint baseTableName="ECHANTILLON" constraintName="FK_ECHANTILLON_RESERVATION_ID"/>
+        <dropColumn tableName="ECHANTILLON" columnName="RESERVATION_ID" />
+        <dropForeignKeyConstraint baseTableName="PROD_DERIVE" constraintName="FK_PROD_DERIVE_RESERVATION_ID"/>
+        <dropColumn tableName="PROD_DERIVE" columnName="RESERVATION_ID" />
+    	<dropTable cascadeConstraints="true" tableName="RESERVATION" />
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Interfacage>
+	<Logiciel func="SGL">
+		<Nom>GENNO</Nom>
+		<Editeur>DEDALUS</Editeur>
+		<Version>1.1</Version>
+	</Logiciel>
+	<Configuration>
+		<SeparateurChamps>|</SeparateurChamps>
+		<SeparateurComposants>^</SeparateurComposants>
+		<SeparateurSousComposants>~</SeparateurSousComposants>
+		<BlocLibreKey></BlocLibreKey>
+		<NumeroDossier>
+			<BlocValue>SPM</BlocValue>
+			<Key>2</Key>
+		</NumeroDossier>
+		<DateDossier>
+			<BlocValue>MSH</BlocValue>
+			<Key>6</Key>
+		</DateDossier>
+		<OperationDossier>
+			<BlocValue>SPM</BlocValue>
+			<Key>22</Key>
+		</OperationDossier>
+	</Configuration>
+	<Bloc nom="PID">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Nip" idChamp="2"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>3.1</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Nom" idChamp="3"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>5.1</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="NomNaissance" idChamp="4"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>5.7.2</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Prenom" idChamp="5"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>5.2</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Sexe" idChamp="6"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>8</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="DateNaissance" idChamp="7"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>7</Key>
+			</Source>
+		</Mapping>
+<!-- vérifier date décès car par validé lors tests de recette ?? -->
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="DateDeces" idChamp="12"></ChampEntite>
+				<Entite nom="Patient" idChamp="1"></Entite>
+			</Tk>
+			<Source>
+				<Key>29</Key>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<Bloc nom="SPM">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Code" idChamp="23"></ChampEntite>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>2</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="DatePrelevement" idChamp="30"></ChampEntite>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>17</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="NatureId" idChamp="24"></ChampEntite>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>5.2.1</Key>
+                <Modifier nom="Thesaurus">
+					<MappingThes>
+						<SourceThes>SANG_BCT</SourceThes>
+						<TkThes>SANG</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>SANG_EDTA</SourceThes>
+						<TkThes>SANG</TkThes>
+					</MappingThes>
+                </Modifier>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="ConditMilieuId" idChamp="33"></ChampEntite>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Key>5.2.1</Key>
+                <Modifier nom="Thesaurus">
+					<MappingThes>
+						<SourceThes>CELL_DMSO</SourceThes>
+						<TkThes>DMSO</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>SANG_EDTA</SourceThes>
+						<TkThes>EDTA</TkThes>
+					</MappingThes>
+                </Modifier>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="ConsentTypeId" idChamp="26"></ChampEntite>
+				<Entite nom="Prelevement" idChamp="2"></Entite>
+			</Tk>
+			<Source>
+				<Const>EN ATTENTE</Const>
+			</Source>
+		</Mapping>
+	</Bloc>
+<!-- 	<Bloc nom="SPM_OBX1"> -->
+<!-- 		<Mapping> -->
+<!-- 			<Tk> -->
+<!-- 				<ChampEntite nom="PreleveurId" idChamp="28"></ChampEntite> -->
+<!-- 				<Entite nom="Prelevement" idChamp="2"></Entite> -->
+<!-- 			</Tk> -->
+<!-- 			<Source> -->
+<!-- 				<Key>5.3</Key> -->
+<!--                 <Modifier nom="Thesaurus"> -->
+<!-- 					<MappingThes><SourceThes>4067908</SourceThes><TkThes>747</TkThes></MappingThes> -->
+<!--                 </Modifier> -->
+<!-- 			</Source> -->
+<!-- 		</Mapping> -->
+<!-- 	</Bloc> -->
+</Interfacage>

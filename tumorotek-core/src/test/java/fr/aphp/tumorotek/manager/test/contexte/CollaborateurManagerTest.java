@@ -1248,7 +1248,7 @@ public class CollaborateurManagerTest extends AbstractManagerTest4
 
       echantillonManager.createObjectManager(echantillon, banqueDao.findById(1),
          prelevementDao.findByCode("PRELEVEMENTEST").get(0), passif, null, null, echantillonTypeDao.findById(1), null, null, null,
-         null, null, null, null, u1, false, "/tmp/", false);
+         null, null, null, u1, false, "/tmp/", false);
 
       assertFalse(echantillonDao.findByCode("ECHANTILLONTEST").isEmpty());
 
@@ -1259,7 +1259,7 @@ public class CollaborateurManagerTest extends AbstractManagerTest4
 
       echantillonManager.createObjectManager(echantillon2, banqueDao.findById(1),
          prelevementDao.findByCode("PRELEVEMENTEST").get(0), passif, null, null, echantillonTypeDao.findById(1), null, null, null,
-         null, null, null, null, u1, false, "/tmp/", false);
+         null, null, null, u1, false, "/tmp/", false);
 
       assertFalse(echantillonDao.findByCode("ECHANTILLONTEST2").isEmpty());
 
@@ -1303,7 +1303,7 @@ public class CollaborateurManagerTest extends AbstractManagerTest4
       prodDerive.setObjetStatut(objetStatutDao.findById(1));
 
       produitDeriveManager.createObjectManager(prodDerive, banqueDao.findById(1), produitTypeDao.findById(1), null, passif, null,
-         null, null, null, null, null, null, null, null, null, u1, false, "/tmp/", false);
+         null, null, null, null, null, null, null, null, u1, false, "/tmp/", false);
 
       ProdDerive prodDerive2 = new ProdDerive();
       prodDerive2.setCode("PRODUITDERIVETEST2");
@@ -1311,7 +1311,7 @@ public class CollaborateurManagerTest extends AbstractManagerTest4
       prodDerive2.setObjetStatut(objetStatutDao.findById(1));
 
       produitDeriveManager.createObjectManager(prodDerive2, banqueDao.findById(1), produitTypeDao.findById(1), null, passif, null,
-         null, null, null, null, null, null, null, null, null, u1, false, "/tmp/", false);
+         null, null, null, null, null, null, null, null, u1, false, "/tmp/", false);
 
       assertTrue(prodDeriveDao.findByCollaborateur(passif).size() == 2);
       assertTrue(prodDeriveDao.findByCollaborateur(actif).isEmpty());

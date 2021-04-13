@@ -330,10 +330,10 @@ public class PrelEchanManagerTest extends AbstractManagerTest4
       assertTrue(objetNonConformeManager.findByObjetManager(echans.get(0)).size() == 2);
       assertTrue(
          objetNonConformeManager.findByObjetAndTypeManager(echans.get(0), nonConformiteDao.findById(4).getConformiteType()).get(0)
-            .getNonConformite().getNonConformiteId() == 4);
+            .getNonConformite().getId() == 4);
       assertTrue(
          objetNonConformeManager.findByObjetAndTypeManager(echans.get(0), nonConformiteDao.findById(7).getConformiteType()).get(0)
-            .getNonConformite().getNonConformiteId() == 7);
+            .getNonConformite().getId() == 7);
       assertTrue(objetNonConformeManager.findByObjetManager(echans.get(1)).isEmpty());
       assertTrue(objetNonConformeManager.findByObjetManager(echans.get(2)).isEmpty());
       assertTrue(objetNonConformeManager.findByObjetManager(echans.get(3)).isEmpty());
@@ -408,7 +408,7 @@ public class PrelEchanManagerTest extends AbstractManagerTest4
       emp5.setEntite(null);
       emplacementManager.updateObjectManager(emp5, emp5.getTerminale(), null);
       echantillonManager.updateObjectManager(echans.get(1), b1, prel, null, echans.get(4).getObjetStatut(), null,
-         echans.get(4).getEchantillonType(), null, null, null, null, null, null, null, null, null, null, utilisateur, false, null,
+         echans.get(4).getEchantillonType(), null, null, null, null, null, null, null, null, null, utilisateur, false, null,
          null);
       final Emplacement emp7 = emplacementManager.findByIdManager(7);
       emp7.setVide(true);
@@ -416,7 +416,7 @@ public class PrelEchanManagerTest extends AbstractManagerTest4
       emp7.setEntite(null);
       emplacementManager.updateObjectManager(emp7, emp7.getTerminale(), null);
       echantillonManager.updateObjectManager(echans.get(4), b1, prel, null, echans.get(4).getObjetStatut(), null,
-         echans.get(4).getEchantillonType(), null, null, null, null, null, null, null, null, null, null, utilisateur, false, null,
+         echans.get(4).getEchantillonType(), null, null, null, null, null, null, null, null, null, utilisateur, false, null,
          null);
    }
 
@@ -571,7 +571,7 @@ public class PrelEchanManagerTest extends AbstractManagerTest4
       emp5.setEntite(null);
       emplacementManager.updateObjectManager(emp5, emp5.getTerminale(), null);
       echantillonManager.updateObjectManager(echans.get(1), b1, prel, null, echans.get(4).getObjetStatut(), null,
-         echans.get(4).getEchantillonType(), null, null, null, null, null, null, null, null, null, null, utilisateur, false, null,
+         echans.get(4).getEchantillonType(), null, null, null, null, null, null, null, null, null, utilisateur, false, null,
          null);
       final Emplacement emp7 = emplacementManager.findByIdManager(7);
       emp7.setVide(true);
@@ -579,7 +579,7 @@ public class PrelEchanManagerTest extends AbstractManagerTest4
       emp7.setEntite(null);
       emplacementManager.updateObjectManager(emp7, emp7.getTerminale(), null);
       echantillonManager.updateObjectManager(echans.get(4), b1, prel, null, echans.get(4).getObjetStatut(), null,
-         echans.get(4).getEchantillonType(), null, null, null, null, null, null, null, null, null, null, utilisateur, false, null,
+         echans.get(4).getEchantillonType(), null, null, null, null, null, null, null, null, null, utilisateur, false, null,
          null);
    }
 

@@ -51,7 +51,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Interface créée le 02/10/09.
  *
  * @author Pierre Ventadour
- * @version 2.1.1
+ * @version 2.2.2-diamic
  *
  */
 public interface EmplacementManager
@@ -223,8 +223,9 @@ public interface EmplacementManager
    /**
     * Passe tous les tests de validation sur une liste d'emplacements.
     * @param emplacements Liste d'emplacements à tester.
+    * @param true si validation avant deplacements
     */
-   void validateMultiEmplacementsManager(List<Emplacement> emplacements);
+   void validateMultiEmplacementsManager(List<Emplacement> emplacements, boolean isDeplacement);
 
    /**
     * Sauvegarde (par création ou update) une liste d'emplacements.
@@ -243,5 +244,21 @@ public interface EmplacementManager
    List<TKStockableObject> findObjByEmplacementManager(Emplacement empl, String entiteNom);
 
    Integer getPositionByAdrl(Terminale terminale, String adrlPos);
+
+   /**
+    * Trouve un emplacement depuis un object stockable.
+    * @param tk object
+    * @return emplacement ou null 
+    */
+   Emplacement findByTKStockableObjectManager(TKStockableObject tkObj);
+
+   /**
+    * Trouve un emplacement depuis son adrl, accessible depuis une banque.
+    * @param adrl
+    * @param banque
+    * @return emplacement
+    * @since 2.2.2-diamic
+    */
+   Emplacement findByAdrlCallableManager(String adrl, Banque b);
 
 }

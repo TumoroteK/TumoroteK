@@ -46,9 +46,19 @@
 				<column id="deleteHeader" width="40px" />
 			</columns>
 			<rows id="rows">
-				<row self="@{each='obj'}" value="@{obj}">			
-					<label value="@{obj.plateforme.nom}" sclass="formValue" />
-					<label value="@{obj.plateforme.nom}" sclass="formValue" />
+				<row self="@{each='cp'}" value="@{cp}">
+					<hlayout spacing="20px" hflex="1" sclass="z-valign-middle">
+						<label value="@{cp.plateforme.nom}" sclass="formValue" />
+						<label style="font-style: italic" visible="@{cp.restrictStock}"
+							value="${c:l('conteneur.plateforme.restrict.stock')}" />
+					</hlayout>
+					<hlayout spacing="20px" hflex="1" sclass="z-valign-middle">
+						<label value="@{cp.plateforme.nom}" sclass="formValue" />
+						<hlayout sclass="z-valign-middle">
+							<checkbox checked="@{cp.restrictStock, save-when='self.onCheck'}" />
+							<label style="font-style: italic" value="${c:l('conteneur.plateforme.restrict.stock')}" />
+						</hlayout>
+					</hlayout>
 					<image id="deleteImage" width="12px" height="12px"
 						src="/images/icones/small_delete.png"
 						style="cursor:pointer" />

@@ -39,6 +39,7 @@ import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
 import fr.aphp.tumorotek.model.interfacage.BlocExterne;
+import fr.aphp.tumorotek.model.interfacage.DossierExterne;
 import fr.aphp.tumorotek.model.interfacage.ValeurExterne;
 
 /**
@@ -60,4 +61,10 @@ public interface ValeurExterneDao extends GenericDaoJpa<ValeurExterne, Integer>
     */
    List<ValeurExterne> findByBlocExterne(BlocExterne blocExterne);
 
+   /**
+    * Recherche une valeur externe pour un dossier par champEntiteId et entiteId.
+    * @param blocExterne BlocExterne.
+    * @return Une liste de ValeurExternes.
+    */
+   List<ValeurExterne> findByDossierChampEntiteIdAndBlocEntiteId(DossierExterne dos, Integer chpId, Integer eId);
 }

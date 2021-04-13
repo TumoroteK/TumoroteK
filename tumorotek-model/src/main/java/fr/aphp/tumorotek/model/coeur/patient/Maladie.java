@@ -43,7 +43,6 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -60,10 +59,11 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import fr.aphp.tumorotek.model.TKDelegateObject;
 import fr.aphp.tumorotek.model.TKDelegetableObject;
 import fr.aphp.tumorotek.model.TKFantomableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
-import fr.aphp.tumorotek.model.coeur.patient.serotk.MaladieDelegate;
+import fr.aphp.tumorotek.model.coeur.patient.serotk.AbstractMaladieDelegate;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 
@@ -73,7 +73,7 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
  * Classe créée le 14/09/09.
  *
  * @author Maxime Gousseau
- * @version 2.0.6
+ * @version 2.2.3-genno
  *
  */
 @Entity
@@ -90,8 +90,11 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
    @NamedQuery(name = "Maladie.findByCollaborateurId",
       query = "SELECT m FROM Maladie m " + "LEFT JOIN m.collaborateurs o " + "WHERE o.collaborateurId = ?1"),
    @NamedQuery(name = "Maladie.findCountByReferent",
-      query = "SELECT count(m) FROM Maladie m " + "JOIN m.collaborateurs c " + "WHERE c = ?1")})
-public class Maladie implements TKdataObject, TKFantomableObject, Serializable, TKDelegetableObject<Maladie>
+      query = "SELECT count(m) FROM Maladie m " + "JOIN m.collaborateurs c " + "WHERE c = ?1"), 
+   @NamedQuery(name = "Maladie.findByLibelleAndPatient", query = "SELECT m FROM Maladie m WHERE m.libelle like ?1 " 
+		 + 	"AND m.patient = ?2")
+})
+public class Maladie extends TKDelegetableObject<Maladie> implements TKdataObject, TKFantomableObject, Serializable
 {
 
    private static final long serialVersionUID = 4092522013404060267L;
@@ -107,7 +110,7 @@ public class Maladie implements TKdataObject, TKFantomableObject, Serializable, 
    private Set<Prelevement> prelevements = new HashSet<>();
    private Set<Collaborateur> collaborateurs = new HashSet<>();
 
-   private MaladieDelegate delegate;
+   private TKDelegateObject<Maladie> delegate;
 
    /** Constructeur par défaut. */
    public Maladie(){}
@@ -286,7 +289,9 @@ public class Maladie implements TKdataObject, TKFantomableObject, Serializable, 
       clone.setCollaborateurs(this.collaborateurs);
       clone.setPrelevements(this.prelevements);
       clone.setSystemeDefaut(getSystemeDefaut());
+
       clone.setDelegate(getDelegate());
+      
       return clone;
    }
 
@@ -301,14 +306,15 @@ public class Maladie implements TKdataObject, TKFantomableObject, Serializable, 
       return "Maladie";
    }
 
-   @OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "maladie",
-      targetEntity = MaladieDelegate.class, fetch = FetchType.EAGER)
-   public MaladieDelegate getDelegate(){
+   @OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "delegator",
+		      targetEntity = AbstractMaladieDelegate.class)
+   public TKDelegateObject<Maladie> getDelegate(){
       return delegate;
    }
-
-   public void setDelegate(final MaladieDelegate del){
-      this.delegate = del;
+   
+   @Override
+   public void setDelegate(TKDelegateObject<Maladie> delegate){
+      this.delegate = delegate;
    }
 
    @Override

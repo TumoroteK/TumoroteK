@@ -67,142 +67,145 @@ import fr.aphp.tumorotek.model.contexte.BanqueTableCodage;
 public class TableCodage implements Serializable
 {
 
-   private Integer tableCodageId;
-   private String nom;
-   private String version;
+	private Integer tableCodageId;
+	private String nom;
+	private String version;
 
-   private Set<CodeSelect> codeSelects = new HashSet<>();
-   private Set<CodeAssigne> codeAssignes = new HashSet<>();
-   //private Set<Banque> banques = new HashSet<Banque>();
-   private Set<BanqueTableCodage> banqueTableCodages = new HashSet<>();
+	private Set<CodeSelect> codeSelects = new HashSet<>();
+	private Set<CodeAssigne> codeAssignes = new HashSet<>();
+	//private Set<Banque> banques = new HashSet<Banque>();
+	private Set<BanqueTableCodage> banqueTableCodages = new HashSet<>();
 
-   private static final long serialVersionUID = 174651351343L;
+	private static final long serialVersionUID = 174651351343L;
 
-   /** Constructeur par défaut. */
-   public TableCodage(){}
+	/** Constructeur par défaut. */
+	public TableCodage(){}
 
-   @Id
-   @Column(name = "TABLE_CODAGE_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getTableCodageId(){
-      return this.tableCodageId;
-   }
+	@Id
+	@Column(name = "TABLE_CODAGE_ID", unique = true, nullable = false)
+	@GeneratedValue(generator = "autoincrement")
+	@GenericGenerator(name = "autoincrement", strategy = "increment")
+	public Integer getTableCodageId(){
+		return this.tableCodageId;
+	}
 
-   public void setTableCodageId(final Integer id){
-      this.tableCodageId = id;
-   }
+	public void setTableCodageId(final Integer id){
+		this.tableCodageId = id;
+	}
 
-   @Column(name = "NOM", nullable = false, length = 25)
-   public String getNom(){
-      return this.nom;
-   }
+	@Column(name = "NOM", nullable = false, length = 25)
+	public String getNom(){
+		return this.nom;
+	}
 
-   public void setNom(final String n){
-      this.nom = n;
-   }
+	public void setNom(final String n){
+		this.nom = n;
+	}
 
-   @Column(name = "VERSION", nullable = true)
-   public String getVersion(){
-      return version;
-   }
+	@Column(name = "VERSION", nullable = true)
+	public String getVersion(){
+		return version;
+	}
 
-   public void setVersion(final String v){
-      this.version = v;
-   }
+	public void setVersion(final String v){
+		this.version = v;
+	}
 
-   @OneToMany(mappedBy = "tableCodage")
-   public Set<CodeSelect> getCodeSelects(){
-      return this.codeSelects;
-   }
+	@OneToMany(mappedBy = "tableCodage")
+	public Set<CodeSelect> getCodeSelects(){
+		return this.codeSelects;
+	}
 
-   public void setCodeSelects(final Set<CodeSelect> codes){
-      this.codeSelects = codes;
-   }
+	public void setCodeSelects(final Set<CodeSelect> codes){
+		this.codeSelects = codes;
+	}
 
-   @OneToMany(mappedBy = "tableCodage")
-   public Set<CodeAssigne> getCodeAssignes(){
-      return this.codeAssignes;
-   }
+	@OneToMany(mappedBy = "tableCodage")
+	public Set<CodeAssigne> getCodeAssignes(){
+		return this.codeAssignes;
+	}
 
-   public void setCodeAssignes(final Set<CodeAssigne> codes){
-      this.codeAssignes = codes;
-   }
+	public void setCodeAssignes(final Set<CodeAssigne> codes){
+		this.codeAssignes = codes;
+	}
 
-   //	@ManyToMany(
-   //			targetEntity = Banque.class,
-   //			mappedBy = "tablesCodage"
-   //	)
-   //	public Set<Banque> getBanques() {
-   //		return banques;
-   //	}
-   //
-   //	public void setBanques(Set<Banque> bs) {
-   //		this.banques = bs;
-   //	}
+	//	@ManyToMany(
+	//			targetEntity = Banque.class,
+	//			mappedBy = "tablesCodage"
+	//	)
+	//	public Set<Banque> getBanques() {
+	//		return banques;
+	//	}
+	//
+	//	public void setBanques(Set<Banque> bs) {
+	//		this.banques = bs;
+	//	}
 
-   @OneToMany(mappedBy = "pk.tableCodage")
-   public Set<BanqueTableCodage> getBanqueTableCodages(){
-      return banqueTableCodages;
-   }
+	@OneToMany(mappedBy = "pk.tableCodage")
+	public Set<BanqueTableCodage> getBanqueTableCodages(){
+		return banqueTableCodages;
+	}
 
-   public void setBanqueTableCodages(final Set<BanqueTableCodage> btcs){
-      this.banqueTableCodages = btcs;
-   }
+	public void setBanqueTableCodages(final Set<BanqueTableCodage> btcs){
+		this.banqueTableCodages = btcs;
+	}
 
-   /**
-    * 2 tables codes sont considérés comme egales s'ils ont le même nom.
-    * @param obj est le code à tester.
-    * @return true si les codes sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 tables codes sont considérés comme egales s'ils ont le même nom.
+	 * @param obj est le code à tester.
+	 * @return true si les codes sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj){
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final TableCodage test = (TableCodage) obj;
-      if(this.nom != null){
-         return this.nom.equals(test.nom);
-      }else{ //impossible
-         return false;
-      }
-   }
+		if(this == obj){
+			return true;
+		}
+		if((obj == null) || obj.getClass() != this.getClass()){
+			return false;
+		}
+		final TableCodage test = (TableCodage) obj;
+		if(this.nom != null){
+			return this.nom.equals(test.nom);
+		}else{ //impossible
+			return false;
+		}
+	}
 
-   /**
-    * Le hashcode est calculé sur l'attribut nom.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-      int hash = 7;
-      int hashNom = 0;
+	/**
+	 * Le hashcode est calculé sur l'attribut nom.
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode(){
+		int hash = 7;
+		int hashNom = 0;
 
-      if(this.nom != null){
-         hashNom = this.nom.hashCode();
-      }
+		if(this.nom != null){
+			hashNom = this.nom.hashCode();
+		}
 
-      hash = 31 * hash + hashNom;
+		hash = 31 * hash + hashNom;
 
-      return hash;
-   }
+		return hash;
+	}
 
-   @Override
-   public TableCodage clone(){
-      final TableCodage clone = new TableCodage();
-      clone.setTableCodageId(this.tableCodageId);
-      clone.setNom(this.nom);
-      clone.setVersion(this.version);
-      clone.setCodeAssignes(this.codeAssignes);
-      clone.setCodeSelects(this.codeSelects);
-      return clone;
-   }
+	@Override
+	public TableCodage clone(){
+		final TableCodage clone = new TableCodage();
+		clone.setTableCodageId(this.tableCodageId);
+		clone.setNom(this.nom);
+		clone.setVersion(this.version);
+		clone.setCodeAssignes(this.codeAssignes);
+		clone.setCodeSelects(this.codeSelects);
+		return clone;
+	}
 
-   @Override
-   public String toString(){
-      return "{TableCodage: " + getNom() + "}";
-   }
+	@Override
+	public String toString(){
+		if (getNom() != null) {
+			return getNom().concat(getVersion() != null ? " ".concat(getVersion()): "");
+		}
+		return "{Empty TableCodage}";
+	}
 }

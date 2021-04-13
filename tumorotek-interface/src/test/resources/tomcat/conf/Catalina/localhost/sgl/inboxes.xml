@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ConfigurationInterfacage>
+	<BoiteFtp nom="Genno">
+		<Configuration>
+			<SeparateurChamps>|</SeparateurChamps>
+			<SeparateurComposants>^</SeparateurComposants>
+			<SeparateurSousComposants>~</SeparateurSousComposants>
+			<NumeroDossier>
+				<BlocValue>SPM</BlocValue>
+				<Key>2</Key>
+			</NumeroDossier>
+			<DateDossier>
+				<BlocValue>MSH</BlocValue>
+				<Key>6</Key>
+			</DateDossier>
+			<!-- <OperationDossier>
+				<BlocValue>ORC</BlocValue>
+				<Key>5</Key>
+			</OperationDossier> -->
+		</Configuration>
+		<Emetteur>
+			<Bloc>MSH</Bloc>
+			<Emplacement>2</Emplacement>
+		</Emetteur>
+		<Service>
+			<Bloc>MSH</Bloc>
+			<Emplacement>4</Emplacement>
+		</Service>
+		<MappingXml>
+			<EmetteurId>4</EmetteurId>
+			<XML>src/test/resources/tomcat/conf/Catalina/localhost/sgl/genno-mapping.xml</XML>
+		</MappingXml>
+	</BoiteFtp>
+    <BoiteFtp nom="Genno-DERIVE">
+		<Configuration>
+			<SeparateurChamps>|</SeparateurChamps>
+			<SeparateurComposants>^</SeparateurComposants>
+			<SeparateurSousComposants>~</SeparateurSousComposants>
+			<NumeroDossier>
+				<BlocValue>SPM</BlocValue>
+				<Key>2</Key>
+			</NumeroDossier>
+			<DateDossier>
+				<BlocValue>MSH</BlocValue>
+				<Key>6</Key>
+			</DateDossier>
+			<!-- <OperationDossier>
+				<BlocValue>ORC</BlocValue>
+				<Key>5</Key>
+			</OperationDossier> -->
+		</Configuration>
+		<Emetteur>
+			<Bloc>MSH</Bloc>
+			<Emplacement>2</Emplacement>
+		</Emetteur>
+		<Service>
+			<Bloc>MSH</Bloc>
+			<Emplacement>4</Emplacement>
+		</Service>
+		<MappingXml>
+			<EmetteurId>4</EmetteurId>
+			<EntiteId>8</EntiteId>
+			<XML>src/test/resources/tomcat/conf/Catalina/localhost/sgl/genno-mapping-derive.xml</XML>
+		</MappingXml>
+	</BoiteFtp>
+	<BoiteFtp nom="DIAMIC">
+		<Configuration>
+			<SeparateurChamps>|</SeparateurChamps>
+			<SeparateurComposants>^</SeparateurComposants>
+			<SeparateurSousComposants>~</SeparateurSousComposants>
+			<NumeroDossier>
+				<BlocValue>SPM</BlocValue>
+				<Key>4.1</Key>
+			</NumeroDossier>
+			<DateDossier>
+				<BlocValue>MSH</BlocValue>
+				<Key>6</Key>
+			</DateDossier>
+			<OperationDossier>
+				<BlocValue>ORC</BlocValue>
+				<Key>5</Key>
+			</OperationDossier>
+		</Configuration>
+		<Emetteur>
+			<Bloc>MSH</Bloc>
+			<Emplacement>2</Emplacement>
+		</Emetteur>
+		<Service>
+			<Bloc>MSH</Bloc>
+			<Emplacement>4</Emplacement>
+		</Service>
+		<MappingXml>
+			<EmetteurId>2</EmetteurId>
+			<XML>src/test/resources/tomcat/conf/Catalina/localhost/sgl/diamic-mapping.xml</XML>
+		</MappingXml>
+	</BoiteFtp>
+</ConfigurationInterfacage>

@@ -275,7 +275,7 @@
 					<!-- Erreur destination -->
 					<row spans="4" id="rowErreurDestination" visible="false">
 						<div align="center">
-							<label
+							<label id="errMsgLabel"
 								value="${c:l('enceinte.deplacement.emplacement.destination.incorrect')}" 
 								sclass="formErrorValue"
 							/>

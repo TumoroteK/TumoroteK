@@ -42,6 +42,10 @@
 	background-color: #FD9B0F;
 }
 
+.font-orange {
+	color: #FD9B0F;
+}
+
 .red {
 	background-color: #D9534F;
 }

@@ -45,7 +45,7 @@ import fr.aphp.tumorotek.action.constraints.ConstWordNoPunct;
  * Date: 15/09/2010.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.2.1-IRELEC
  */
 public final class StockageConstraints
 {
@@ -97,7 +97,7 @@ public final class StockageConstraints
    private static ConstWordNoPunct terminaleNomConstraint = new ConstWordNoPunct();
    static{
       terminaleNomConstraint.setNullable(false);
-      terminaleNomConstraint.setSize(10);
+      terminaleNomConstraint.setSize(50); // 2.2.1-IRELEC
    }
 
    public static ConstWordNoPunct getCodeConstraint(){

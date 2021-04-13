@@ -49,7 +49,7 @@ import org.springframework.security.web.savedrequest.SavedRequest;
  * @see http://waqassiddiqi.net/blog/2012/01/28/dynamic-authentication-success-and-failure-url-using-spring-3-mvc-security/
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.10
+ * @version 2.2.2-diamic
  *
  */
 public class CustomSuccessRedirection implements RedirectStrategy
@@ -63,7 +63,8 @@ public class CustomSuccessRedirection implements RedirectStrategy
 
       //redirect basé sur la demande d'affichage d'une ressource externe à partir
       // d'une requête HTTP
-      if(savedRequest == null || !savedRequest.getParameterMap().containsKey("id")){
+      if(savedRequest == null || (!savedRequest.getParameterMap().containsKey("id")
+    		  && !savedRequest.getParameterMap().containsKey("bId") && !savedRequest.getParameterMap().containsKey("pCode"))) {
          response.sendRedirect(response.encodeRedirectURL(request.getContextPath() + "/login/SelectBanque.zul"));
       }else{
          response.sendRedirect(savedRequest.getRedirectUrl());

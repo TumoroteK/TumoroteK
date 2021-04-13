@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.dao.test.contexte;
 
 import java.util.List;
 
+import org.junit.Test;
 import org.springframework.test.annotation.Rollback;
 
 import fr.aphp.tumorotek.dao.annotation.TableAnnotationDao;
@@ -45,6 +46,7 @@ import fr.aphp.tumorotek.dao.contexte.CollaborateurDao;
 import fr.aphp.tumorotek.dao.contexte.ContexteDao;
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
 import fr.aphp.tumorotek.dao.contexte.ServiceDao;
+import fr.aphp.tumorotek.dao.stockage.ConteneurDao;
 import fr.aphp.tumorotek.dao.systeme.CouleurDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
@@ -57,6 +59,7 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Contexte;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.contexte.Service;
+import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.systeme.Couleur;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
@@ -66,7 +69,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Classe de test pour le DAO BanqueDao et le bean du domaine Banque.
  *
  * @author Pierre Ventadour.
- * @version 2.1
+ * @version 2.2.1
  *
  */
 public class BanqueDaoTest extends AbstractDaoTest
@@ -81,6 +84,7 @@ public class BanqueDaoTest extends AbstractDaoTest
    private UtilisateurDao utilisateurDao;
    private EntiteDao entiteDao;
    private TableAnnotationDao tableAnnotationDao;
+   private ConteneurDao conteneurDao;
 
    private final String updatedNom = "Banque mise a jour";
 
@@ -123,7 +127,11 @@ public class BanqueDaoTest extends AbstractDaoTest
       this.tableAnnotationDao = tDao;
    }
 
-   /**
+   public void setConteneurDao(ConteneurDao cDao) {
+	this.conteneurDao = cDao;
+}
+
+/**
     * Test l'appel de la méthode findAll().
     */
    public void testReadAllBanques(){
@@ -620,5 +628,20 @@ public class BanqueDaoTest extends AbstractDaoTest
       assertTrue(banks.size() == 3);
       banks = banqueDao.findByTableAnnotation(null);
       assertTrue(banks.size() == 0);
+   }
+   
+   @Test
+   public void testFindByConteneur(){
+
+      final Conteneur c1 = conteneurDao.findById(1);
+      List<Banque> banks = banqueDao.findByConteneur(c1);
+      assertEquals(4, banks.size());
+
+      final Conteneur c2 = conteneurDao.findById(2);
+      banks = banqueDao.findByConteneur(c2);
+      assertEquals(2, banks.size());
+
+      banks = banqueDao.findByConteneur(null);
+      assertEquals(0, banks.size());
    }
 }

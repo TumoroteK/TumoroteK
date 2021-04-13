@@ -49,7 +49,7 @@ import fr.aphp.tumorotek.model.interfacage.Emetteur;
 /**
  *
  * @author Mathieu BARTHELEMY
- * @version 2.1
+ * @version 2.2-3-genno
  */
 public interface InterfacageParsingUtils
 {
@@ -65,11 +65,12 @@ public interface InterfacageParsingUtils
    /**
     * Parse le fichier à injecter et renvoie chaque catégorie de
     * celui-ci dans une HashTable.
+    * @since 2.2.2-diamic, parse le fichier sous la forme de record/enregistrements (ORC)
     * @param file
     * @return
     * @throws IOException
     */
-   Hashtable<String, List<String>> parseFileToInjectInTk(ConfigurationParsing conf, String file) throws IOException;
+   List<Hashtable<String, List<String>>> parseFileToInjectInTk(ConfigurationParsing conf, String file) throws IOException;
 
    /**
     * Parse le fichier à injecter et renvoie une liste contenant tous
@@ -92,17 +93,19 @@ public interface InterfacageParsingUtils
    Emetteur extractEmetteurFromFileToInjectInTk(String fileXml, String file, String boiteFtp) throws IOException;
 
    /**
-    * Renvoie le fichier XML à utiliser pour le fichier reçu 
-    * à injecter dans TK.
+    * Renvoie un paramétrage attribué à la boite de réception (inbox) depuis le 
+    * fichier de conf XML.
+    * ex: le fichier XML à utiliser pour le fichier reçu à injecter dans TK.
     * @param fileXml Ficher XML de configuration.
     * @param file Contenu du fichier à injecter dans TK.
     * @param boiteFtp Boite ftp ayant reçu le message.
-   // * @param emetteur Emetteur pour lequel on recherche le XML.
-    * @return Fichier XML à utiliser pour injecter le message
+    * @param balise nom du paramétrage
+    * @return valeur du paramétrage, null si absent
     * dans TK.
     * @throws IOException 
+    * @version 2.2.3-genno
     */
-   String extractXMLFIleFromFileToInjectInTk(String fileXml, String file, String boiteFtp) throws IOException;
+   String extractInboxParamFromFile(String fileXml, String file, String boiteFtp, String balise) throws IOException;
 
    /**
     * Extrait les mappings entre les valeurs de thésaurus dans le fichier
@@ -156,24 +159,36 @@ public interface InterfacageParsingUtils
    /**
     * Formate une valeur extraite en utilisant la fonction dont
     * le nom est passé en paramètres.
+    * @since 2.2.2-diamic, recoit la fonction en param afin d'utiliser certains attribut et les références vers le bloc permettant la concatenation 
+    * avec d'autres valeurs issues de la ligne
     * @param fonction
     * @param value
-    * @return
+    * @param contenu
+    * @param conf
+    * @param emplacement
+    * @param table d'association en cours pour le bloc issue du mapping.xml
+    * @param adresse de stockage qui sera complétée au parcours des segments SPM_OBX avec la fonction emplacementAddr
+    * @return string formatted
+    * @version 2.2.2-diamic
     */
-   String formateValueUsingFunction(String fonction, String value);
+   String formateValueUsingFunction(Element fonction, String value, Hashtable<String, List<String>> contenu, ConfigurationParsing conf,
+			String bloc, StringBuilder emplacementAdrl, Hashtable<String, String> mappingValues);
 
    /**
     * Parse le fichier XML de conf et extrait les valeurs
     * du fichier à injecter dans TK.
+    * @since 2.2.2-diamic, parse les record/enregistrement (ORC) sous la forme de plusieurs dossiers.
     * @param file
     * @param emetteur
     * @param true si delete file associée au message
     * @param int max pour First In First Out
+    * @param application émettrice = inboxes (boiteFtp)
     * @return
     * @throws Exception
-    * @version 2.1
+    * @version 2.2.3-genno
     */
-   DossierExterne parseInterfacageXmlFile(String xmlFile, String message, Emetteur emetteur, boolean delFile, int max)
+   List<DossierExterne> parseInterfacageXmlFile(String xmlFile, String message, 
+		   				Emetteur emetteur, boolean delFile, int max, String sendingApp)
       throws Exception;
 
    /**

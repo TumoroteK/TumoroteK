@@ -76,7 +76,7 @@ public class NatureDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param nDao est le bean Dao.
     */
-   public void setNatureDao(final NatureDao nDao){
+   public void setNomDao(final NatureDao nDao){
       this.natureDao = nDao;
    }
 
@@ -89,7 +89,7 @@ public class NatureDaoTest extends AbstractDaoTest
     */
    public void testToString(){
       Nature n1 = natureDao.findById(1);
-      assertTrue(n1.toString().equals("{" + n1.getNature() + "}"));
+      assertTrue(n1.toString().equals("{" + n1.getNom() + "}"));
       n1 = new Nature();
       assertTrue(n1.toString().equals("{Empty Nature}"));
    }
@@ -136,7 +136,7 @@ public class NatureDaoTest extends AbstractDaoTest
       assertTrue(liste.size() == 3);
       final Nature nature = liste.get(0);
       assertNotNull(nature);
-      assertTrue(nature.getNatureId() == 2);
+      assertTrue(nature.getId() == 2);
 
       liste = natureDao.findByExcludedId(15);
       assertTrue(liste.size() == 4);
@@ -150,19 +150,19 @@ public class NatureDaoTest extends AbstractDaoTest
    @Rollback(false)
    public void testCrudNature() throws Exception{
       final Nature n = new Nature();
-      n.setNature("URINES");
+      n.setNom("URINES");
       n.setPlateforme(plateformeDao.findById(1));
       // Test de l'insertion
       natureDao.createObject(n);
-      assertEquals(new Integer(5), n.getNatureId());
+      assertEquals(new Integer(5), n.getId());
 
       // Test de la mise à jour
       final Nature n2 = natureDao.findById(new Integer(5));
       assertNotNull(n2);
-      assertTrue(n2.getNature().equals("URINES"));
-      n2.setNature(updatedNature);
+      assertTrue(n2.getNom().equals("URINES"));
+      n2.setNom(updatedNature);
       natureDao.updateObject(n2);
-      assertTrue(natureDao.findById(new Integer(5)).getNature().equals(updatedNature));
+      assertTrue(natureDao.findById(new Integer(5)).getNom().equals(updatedNature));
 
       // Test de la délétion
       natureDao.removeObject(new Integer(5));
@@ -179,9 +179,9 @@ public class NatureDaoTest extends AbstractDaoTest
       final Plateforme pf1 = plateformeDao.findById(1);
       final Plateforme pf2 = plateformeDao.findById(2);
       final Nature n1 = new Nature();
-      n1.setNature(nature);
+      n1.setNom(nature);
       final Nature n2 = new Nature();
-      n2.setNature(nature);
+      n2.setNom(nature);
 
       // L'objet 1 n'est pas égal à null
       assertFalse(n1.equals(null));
@@ -192,23 +192,23 @@ public class NatureDaoTest extends AbstractDaoTest
       assertTrue(n2.equals(n1));
 
       // Vérification de la différenciation de 2 objets
-      n2.setNature(nature2);
+      n2.setNom(nature2);
       assertFalse(n1.equals(n2));
       assertFalse(n2.equals(n1));
 
       //passe la clef naturelle nature a nulle pour un des objets
-      n2.setNature(null);
+      n2.setNom(null);
       assertFalse(n1.equals(n2));
       assertFalse(n2.equals(n1));
 
       //passe la clef naturelle nature a nulle pour l'autre objet
-      n1.setNature(null);
+      n1.setNom(null);
       assertTrue(n1.equals(n2));
-      n2.setNature(nature);
+      n2.setNom(nature);
       assertFalse(n1.equals(n2));
 
       //plateforme
-      n1.setNature(n2.getNature());
+      n1.setNom(n2.getNom());
       n1.setPlateforme(pf1);
       n2.setPlateforme(pf1);
       assertTrue(n1.equals(n2));
@@ -227,14 +227,14 @@ public class NatureDaoTest extends AbstractDaoTest
    public void testHashCode(){
       final String nature = "Nature";
       final Nature n1 = new Nature();
-      n1.setNatureId(1);
-      n1.setNature(nature);
+      n1.setId(1);
+      n1.setNom(nature);
       final Nature n2 = new Nature();
-      n2.setNatureId(2);
-      n2.setNature(nature);
+      n2.setId(2);
+      n2.setNom(nature);
       final Nature n3 = new Nature();
-      n3.setNatureId(3);
-      n3.setNature(null);
+      n3.setId(3);
+      n3.setNom(null);
       assertTrue(n3.hashCode() > 0);
 
       final Plateforme pf1 = plateformeDao.findById(1);
@@ -264,16 +264,16 @@ public class NatureDaoTest extends AbstractDaoTest
 
       assertTrue(n1.equals(n2));
 
-      if(n1.getNatureId() != null){
-         assertTrue(n1.getNatureId() == n2.getNatureId());
+      if(n1.getId() != null){
+         assertTrue(n1.getId() == n2.getId());
       }else{
-         assertNull(n2.getNatureId());
+         assertNull(n2.getId());
       }
 
-      if(n1.getNature() != null){
-         assertTrue(n1.getNature().equals(n2.getNature()));
+      if(n1.getNom() != null){
+         assertTrue(n1.getNom().equals(n2.getNom()));
       }else{
-         assertNull(n2.getNature());
+         assertNull(n2.getNom());
       }
       assertTrue(n1.getPlateforme().equals(n2.getPlateforme()));
    }

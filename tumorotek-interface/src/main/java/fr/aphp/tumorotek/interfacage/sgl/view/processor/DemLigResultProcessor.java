@@ -1,6 +1,7 @@
 /** 
  * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
- * dsi-projet.tk@aphp.fr
+ * mathieu.barthelemy@sls.aphp.fr
+ * nathalie.dufay@chu-lyon.fr
  * 
  * Ce logiciel est un programme informatique servant à la gestion de 
  * l'activité de biobanques. 
@@ -38,9 +39,17 @@ package fr.aphp.tumorotek.interfacage.sgl.view.processor;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.log4j.Logger;
 
 import fr.aphp.tumorotek.interfacage.sgl.view.ViewResultProcessor;
+import fr.aphp.tumorotek.manager.coeur.annotation.TableAnnotationManager;
+import fr.aphp.tumorotek.manager.systeme.EntiteManager;
+import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
+import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
+import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.interfacage.BlocExterne;
 import fr.aphp.tumorotek.model.interfacage.DossierExterne;
 import fr.aphp.tumorotek.model.interfacage.ValeurExterne;
@@ -55,13 +64,28 @@ public class DemLigResultProcessor implements ViewResultProcessor {
 	// NOM2 != PATIENT
 	// NOM_NAISSANCE?
 	// Date_naissance format YYYYMMDD
-	// NUMHOSPI = NDA
 	// DATE PRELEVEMENT format YYYYMMDD sans heures?
-	// CODE PRELVEMENT ? Numero_Inlog / Code_prelevement / Prelevement
-	// UF / Nom UF associations?
+	// ANNOTATION PRELEVEMENT suite retour M. Sauget 10/12/2018
+	// NUMHOSPI = Anciennement NDA  
+	// Code_prelevement
+	// Prelevement
+	// UF
+	// Nom UF associations
 	
+	private TableAnnotationManager tableAnnotationManager;
+	
+	private EntiteManager entiteManager;
+		
+	public void setTableAnnotationManager(TableAnnotationManager _t) {
+		this.tableAnnotationManager = _t;
+	}
+
+	public void setEntiteManager(EntiteManager _e) {
+		this.entiteManager = _e;
+	}
+
 	@Override
-	public DossierExterne processResult(ResultSet rSet) throws SQLException {
+	public DossierExterne processResult(ResultSet rSet, Banque bank) throws SQLException {
 		DossierExterne ext = new DossierExterne();	
 		ext.setIdentificationDossier(rSet.getString("NUMERO_INLOG")); // 1
 		ext.setDateOperation(Calendar.getInstance());
@@ -143,15 +167,6 @@ public class DemLigResultProcessor implements ViewResultProcessor {
 			valNumLabo.setValeur(rSet.getString("CODE_PRELEVEMENT"));
 			log.debug(valNumLabo.getValeur());
 		}
-		// 7 - NUMHOSPI
-		if (rSet.getString("NUMHOSPI") != null && !rSet.getString("NUMHOSPI").trim().equals("")) {
-			ValeurExterne valNda = new ValeurExterne();
-			valNda.setBlocExterne(blocPrel);
-			blocPrel.getValeurs().add(valNda);
-			valNda.setChampEntiteId(44);
-			valNda.setValeur(rSet.getString("NUMHOSPI"));
-			log.debug(valNda.getValeur());
-		}
 		// 4 - DATE PRELEVEMENT SANS HEURES?
 		if (rSet.getString("DATE_PRELEVEMENT") != null && !rSet.getString("DATE_PRELEVEMENT").trim().equals("")) {
 			ValeurExterne valDatePrel = new ValeurExterne();
@@ -167,6 +182,82 @@ public class DemLigResultProcessor implements ViewResultProcessor {
 			valDatePrel.setValeur(datePrel);
 			log.debug(valDatePrel.getValeur());
 		}
+		// ANNOTATIONS PRELEVEMENT
+		List<TableAnnotation> tables = 
+			tableAnnotationManager
+				.findByEntiteAndBanqueManager(entiteManager.findByIdManager(2), bank);
+		Integer chpId;
+		// 7 - NUMHOSPI
+		if (rSet.getString("NUMHOSPI") != null && !rSet.getString("NUMHOSPI").trim().equals("")) {
+			chpId = findChampAnnotationIdByName("Numéro d'hospitalisation", tables);
+			if (chpId != null) {
+				ValeurExterne valNumHospit = new ValeurExterne();
+				valNumHospit.setBlocExterne(blocPrel);
+				blocPrel.getValeurs().add(valNumHospit);
+				valNumHospit.setChampAnnotationId(chpId);
+				valNumHospit.setValeur(rSet.getString("NUMHOSPI"));
+				log.debug(valNumHospit.getValeur());
+			} else {
+				log.warn("NUMHOSPI non traité en l'absence du champ d'annotation");
+			}
+		}
+		// Code_prelevement
+		if (rSet.getString("Code_prelevement") != null && !rSet.getString("Code_prelevement").trim().equals("")) {
+			chpId = findChampAnnotationIdByName("Code de prélèvement", tables);
+			if (chpId != null) {
+				ValeurExterne valCodePrel = new ValeurExterne();
+				valCodePrel.setBlocExterne(blocPrel);
+				blocPrel.getValeurs().add(valCodePrel);
+				valCodePrel.setChampAnnotationId(chpId);
+				valCodePrel.setValeur(rSet.getString("Code_prelevement"));
+				log.debug(valCodePrel.getValeur());
+			} else {
+				log.warn("Code_prelevement non traité en l'absence du champ d'annotation");
+			}
+		}
+		// Prelevement
+		if (rSet.getString("Prelevement") != null && !rSet.getString("Prelevement").trim().equals("")) {
+			chpId = findChampAnnotationIdByName("Prélèvement", tables);
+			if (chpId != null) {
+				ValeurExterne valPrel = new ValeurExterne();
+				valPrel.setBlocExterne(blocPrel);
+				blocPrel.getValeurs().add(valPrel);
+				valPrel.setChampAnnotationId(chpId);
+				valPrel.setValeur(rSet.getString("Prelevement"));
+				log.debug(valPrel.getValeur());
+			} else {
+				log.warn("Prelevement non traité en l'absence du champ d'annotation");
+			}
+		}
+		// UF
+		if (rSet.getString("UF") != null && !rSet.getString("UF").trim().equals("")) {
+			chpId = findChampAnnotationIdByName("UF", tables);
+			if (chpId != null) {
+				ValeurExterne valUF = new ValeurExterne();
+				valUF.setBlocExterne(blocPrel);
+				blocPrel.getValeurs().add(valUF);
+				valUF.setChampAnnotationId(chpId);
+				valUF.setValeur(rSet.getString("UF"));
+				log.debug(valUF.getValeur());
+			} else {
+				log.warn("UF non traité en l'absence du champ d'annotation");
+			}
+		}
+		// Nom UF
+		// UF
+		if (rSet.getString("NOM_UF") != null && !rSet.getString("NOM_UF").trim().equals("")) {
+			chpId = findChampAnnotationIdByName("Nom de l'UF", tables);
+			if (chpId != null) {
+				ValeurExterne valNomUF = new ValeurExterne();
+				valNomUF.setBlocExterne(blocPrel);
+				blocPrel.getValeurs().add(valNomUF);
+				valNomUF.setChampAnnotationId(chpId);
+				valNomUF.setValeur(rSet.getString("NOM_UF"));
+				log.debug(valNomUF.getValeur());
+			} else {
+				log.warn("NOM_UF non traité en l'absence du champ d'annotation");
+			}
+		}
 		
 		if (!blocPrel.getValeurs().isEmpty()) {
 			blocPrel.setDossierExterne(ext);
@@ -177,5 +268,25 @@ public class DemLigResultProcessor implements ViewResultProcessor {
 		
 				
 		return ext;
+	}
+	
+	/**
+	 * Pour bien faire devrait être remplacé par un service spécifique 
+	 * findChampAnnotationByNameEntiteAndBanque
+	 * @param name
+	 * @param tables
+	 * @return champ
+	 */
+	private Integer findChampAnnotationIdByName(String name, List<TableAnnotation> tables) {
+		Set<ChampAnnotation> chps;
+		for (TableAnnotation tableAnnotation : tables) {
+			chps = tableAnnotationManager.getChampAnnotationsManager(tableAnnotation);
+			for (ChampAnnotation champAnnotation : chps) {
+				if (champAnnotation.getNom().equals(name)) {
+					return champAnnotation.getId();
+				}
+			}
+		}
+		return null;
 	}
 }

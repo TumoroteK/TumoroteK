@@ -33,9 +33,12 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez 
  * accepté les termes. 
 -->
+<zk>
 <?component name="calendarbox" macroURI="/zuls/component/CalendarBox.zul" class="fr.aphp.tumorotek.component.CalendarBox" ?>
 <?component name="codeAssigneEditor" macroURI="/zuls/code/CodeAssigneEditor.zul" ?>
 <?component name="incaPopUps" macroURI="/zuls/echantillon/incaPopUpsEchantillon.zul" inline="true" ?>
+
+<style src="/css/font-awesome-4.6.1/css/font-awesome.min.css"/>
 
 <window id="fwinMultiEchantillons" border="none"
     viewModel="@id('vm')" apply="fr.aphp.tumorotek.action.echantillon.FicheMultiEchantillons">
@@ -105,6 +108,18 @@
 						<separator/>
 					</row>
 					<group label="${c:l('ficheMultiEchantillons.group')}"/>
+					<row spans="1,3" visible="@{fwinMultiEchantillons$composer.hasInjectableEchantillons}">
+						<hlayout sclass="z-valign-middle formLabel" hflex="1">
+							<div width="12px" height="15px" class="fa fa-envelope fa-1x" />
+							<label value="${c:l('interfacage.echantillons.injectable')}" style="font-weight: bold"/>
+						</hlayout>
+						<listbox id="injectableEchantillonsBox" mold="select" rows="1"
+							model="@{fwinMultiEchantillons$composer.injectableEchantillons}">
+							<listitem self="@{each='obj'}" value="@{obj}">			
+								<listcell label="@{obj.code}" />
+							</listitem>
+						</listbox>
+					</row>
 					<row spans="1,3">
 						<label/>
 						<button id="changeNumerotation" 
@@ -374,7 +389,7 @@
 						</hlayout>
 					</row>
 					<!-- Infos complémentaires -->
-					<group label="${c:l('ficheEchantillon.infosComp')}"
+					<group label="${c:l('ficheEchantillon.infosComp')}" 
 						id="groupInfosCompEchan"/>
 					<row>
 					<!-- CrAnapath -->
@@ -500,3 +515,4 @@
 	<incaPopUps />
 	
 </window>
+</zk>

@@ -338,8 +338,8 @@ public class ObjetDecorator implements Comparable<Object>
                      liste.add(prodDeco.getTransformation());
                   }else if(nomChampEntite.equals("DateTransformation")){
                      liste.add(prodDeco.getFormattedDateTransformation());
-                  }else if(nomChampEntite.equals("ReservationId")){
-                     liste.add(prodDeco.getReservation());
+//                  }else if(nomChampEntite.equals("ReservationId")){
+//                     liste.add(prodDeco.getReservation());
                   }else if(nomChampEntite.equals("EtatIncomplet")){
                      liste.add(prodDeco.getEtatIncomplet());
                   }else if(nomChampEntite.equals("Archive")){

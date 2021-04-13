@@ -256,13 +256,13 @@ public class FicheLaboInter extends AbstractFicheEditController
       quantiteUnites.addAll(tmpUnites);
       quantiteUnites.add(0, null);
 
-      allServices = ManagerLocator.getServiceManager().findAllActiveObjectsWithOrderManager();
+      allServices = ManagerLocator.getServiceManager().findAllObjectsWithOrderManager();
       allServices.add(0, null);
 
-      allCollaborateurs = ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager();
+      allCollaborateurs = ManagerLocator.getCollaborateurManager().findAllObjectsWithOrderManager();
       allCollaborateurs.add(0, null);
 
-      allEtablissements = ManagerLocator.getEtablissementManager().findAllActiveObjectsWithOrderManager();
+      allEtablissements = ManagerLocator.getEtablissementManager().findAllObjectsWithOrderManager();
       allEtablissements.add(0, null);
 
       temperatures = ManagerLocator.getTemperatureManager().findAllObjectsManager();
@@ -512,7 +512,7 @@ public class FicheLaboInter extends AbstractFicheEditController
       // suppression du patientSip
       getObjectTabController().removePatientSip();
       // gestion de la communication des infos et de l'éventuel dossier externe
-      getObjectTabController().handleExtCom((Prelevement) getObject(), getObjectTabController());
+      getObjectTabController().handleExtCom(null, (Prelevement) getObject(), getObjectTabController());
 
       //			// pour chaque LaboInter
       //			for (int i = 0; i < laboInters.size(); i++) {
@@ -759,7 +759,7 @@ public class FicheLaboInter extends AbstractFicheEditController
       //							labo.getTransporteur());
       //				}
       //			}
-      getObjectTabController().handleExtCom((Prelevement) getObject(), getObjectTabController());
+      getObjectTabController().handleExtCom(null, (Prelevement) getObject(), getObjectTabController());
    }
 
    //	/**

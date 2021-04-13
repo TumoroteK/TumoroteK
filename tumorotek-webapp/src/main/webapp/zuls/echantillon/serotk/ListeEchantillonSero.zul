@@ -173,6 +173,9 @@
 								<menuitem id="stockageItem" image="/images/icones/terminale.png" 
 									label="${c:l('general.actions.stockage.echantillons')}"
 									disabled="true"/>
+								<menuitem id="storageRobotItem" image="/images/icones/kstars.png" 
+									label="${c:l('storage.robot.stockage')}"
+									disabled="true" visible="false" />
 								<menu label="${c:l('general.actions.exporter')}" image="/images/icones/export.png" 
 										 height="24px">
 									<menupopup sclass="exportsMenu">

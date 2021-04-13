@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import fr.aphp.tumorotek.manager.impl.coeur.cession.OldEmplTrace;
 import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
@@ -61,7 +62,8 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Interface créée le 19/03/10.
  *
  * @author Pierre Ventadour
- * @version 2.1
+ * @author Mathieu BARTHELEMY
+ * @version 2.2.3-genno
  *
  */
 public interface TerminaleManager
@@ -302,4 +304,29 @@ public interface TerminaleManager
     */
    List<Integer> findTerminaleIdsFromNomManager(String nom, Enceinte enc, List<Conteneur> cont);
 
+   /**
+    * Collecte les banques distinctes représentées par le contenu de la boite
+    * @param term
+    * @return liste de banques
+    * @since 2.2.1
+    */
+   List<Banque> getDistinctBanquesFromTkObjectsManager(Terminale term);
+
+   /**
+    * Recherche les terminales dont l'alias égale la valeur passée en paramètre
+    * @param alias
+    * @return liste terminale
+    * @since 2.2.2-diamic
+    */
+   List<Terminale> findByAliasManager(String _a);
+
+   /**
+    * Renvoie une trace emplacement de tous les échantillons/dérivés contenus 
+    * dans une terminale.
+    * Voir https://tumorotek.myjetbrains.com/youtrack/issue/TK-291
+    * @param term
+    * @return liste de trace echantillon/stockage
+    * @since 2.2.3-genno
+    */
+   List<OldEmplTrace> getTkObjectsEmplacementTracesManager(Terminale term);
 }

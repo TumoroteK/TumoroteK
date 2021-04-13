@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xmlns:camel="http://camel.apache.org/schema/spring"
-      xsi:schemaLocation="
-      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-      http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:camel="http://camel.apache.org/schema/spring"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring 
+       http://camel.apache.org/schema/spring/camel-spring.xsd">
 
 	<!-- global APIX error handling -->
 	<errorHandler id="sglErrorHandler" xmlns="http://camel.apache.org/schema/spring"
@@ -49,8 +50,21 @@
 	   			<when>
 	   				<simple>${file:ext} == 'hl7'</simple>
 	   				<convertBodyTo type="java.lang.String" />
-	   				<!-- <unmarshal ref="myHl7"   /> -->
-	   				<to uri="bean:sglHandler?method=handleMessageSGL" />
+	   				<process ref="gennoFixProcessor" />
+	   				<unmarshal ref="myHl7"   />
+	   				<log message="${header.CamelHL7MessageType}" loggingLevel="DEBUG" logName="fr.aphp.tumorotek.interfacage" />
+	   				<choice>
+			   			<when>
+			   				<simple>${in.header.CamelHL7MessageType} contains 'ORU'</simple>
+			   				<convertBodyTo type="java.lang.String" />
+	   						<to uri="bean:sglHandler?method=handleMessageSGL_ORU" />
+			   			</when>
+			   			<when>
+			   				<simple>${in.header.CamelHL7MessageType} contains 'SSU'</simple>
+			   				<convertBodyTo type="java.lang.String" />
+			   				<to uri="bean:sglHandler?method=handleMessageSGL_SSU" />
+			   			</when>
+	   				</choice>
 	   			</when>
 	   			<otherwise>
 	   				<stop />

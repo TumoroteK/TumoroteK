@@ -43,6 +43,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.validation.Errors;
 import org.zkoss.util.resource.Labels;
@@ -74,6 +75,7 @@ import fr.aphp.tumorotek.action.prelevement.PrelevementController;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.manager.coeur.prodderive.ModePrepaDeriveManager;
+import fr.aphp.tumorotek.manager.coeur.prodderive.ProdDeriveManager;
 import fr.aphp.tumorotek.manager.coeur.prodderive.ProdQualiteManager;
 import fr.aphp.tumorotek.manager.coeur.prodderive.ProdTypeManager;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
@@ -87,6 +89,7 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdQualite;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdType;
 import fr.aphp.tumorotek.model.coeur.prodderive.Transformation;
+import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
 import fr.aphp.tumorotek.model.qualite.ObjetNonConforme;
@@ -219,7 +222,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
    //Labels anonymisables
    private Label emplacementLabelDerive;
-   
+
    /**
     * Gestion des contraintes sur les quantités et volumes .
     * Variables conservant les valeurs saisies dans les champs. 
@@ -282,7 +285,8 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       emplacementAdrl = null;
 
       // on récupère les objets associés
-      if(!this.prodDerive.equals(new ProdDerive())){
+      // if(!this.prodDerive.equals(new ProdDerive())){
+      if (this.prodDerive.getProdDeriveId() != null) {
          // on extrait les dérivés et on initialise le nombre à afficher
          emplacementAdrl = ManagerLocator.getProdDeriveManager().getEmplacementAdrlManager(prodDerive);
       }
@@ -418,7 +422,12 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          selectedCollaborateur = null;
       }
 
-      final Emplacement emp = prodDerive.getEmplacement();
+      // final Emplacement emp = prodDerive.getEmplacement();
+      // TK-225 echantillon en modification peux avoir son statut de stockage 
+      // modifié par un autre utilisateur
+      // -> refresh emplacement depuis la base de données 
+      final Emplacement emp = ManagerLocator.getEmplacementManager().findByTKStockableObjectManager(prodDerive);
+      prodDerive.setEmplacement(emp);
 
       // gestion de la non conformitée après traitement
       final List<NonConformite> noconfsT = new ArrayList<>();
@@ -447,7 +456,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          selectedType, findStatutForTKStockableObject(prodDerive), selectedCollaborateur, emp, selectedVolumeUnite,
          selectedConcUnite, selectedQuantiteUnite, selectedModePrepaDerive, selectedQualite, prodDerive.getTransformation(),
          getObjectTabController().getFicheAnnotation().getValeursToCreateOrUpdate(),
-         getObjectTabController().getFicheAnnotation().getValeursToDelete(), null, SessionUtils.getLoggedUser(sessionScope), true,
+         getObjectTabController().getFicheAnnotation().getValeursToDelete(), SessionUtils.getLoggedUser(sessionScope), true,
          null, SessionUtils.getSystemBaseDir(), noconfsT, noconfsC);
 
       // s'il n'y a pas d'erreurs, on met à jour le parent : modif
@@ -553,8 +562,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          ((Echantillon) getParentObject()).getEmplacement(), ((Echantillon) getParentObject()).getEchantillonType(), null, null,
          ((Echantillon) getParentObject()).getQuantiteUnite(), ((Echantillon) getParentObject()).getEchanQualite(),
          ((Echantillon) getParentObject()).getModePrepa(),
-         // null, null, 
-         ((Echantillon) getParentObject()).getReservation(), null, null, null, null, SessionUtils.getLoggedUser(sessionScope),
+         null, null, null, null, SessionUtils.getLoggedUser(sessionScope),
          false, ops, null);
 
       // on vérifie que l'on retrouve bien la page contenant la liste
@@ -634,7 +642,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          ((ProdDerive) getParentObject()).getVolumeUnite(), ((ProdDerive) getParentObject()).getConcUnite(),
          ((ProdDerive) getParentObject()).getQuantiteUnite(), ((ProdDerive) getParentObject()).getModePrepaDerive(),
          ((ProdDerive) getParentObject()).getProdQualite(), ((ProdDerive) getParentObject()).getTransformation(), null, null,
-         null, null, ((ProdDerive) getParentObject()).getReservation(), SessionUtils.getLoggedUser(sessionScope), false, ops,
+         null, null, SessionUtils.getLoggedUser(sessionScope), false, ops,
          null);
 
       // on vérifie que l'on retrouve bien la page contenant la liste
@@ -700,7 +708,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       }
       if(this.prodDerive.getConcUnite() != null){
          sb.append(" ");
-         sb.append(this.prodDerive.getConcUnite().getUnite());
+         sb.append(this.prodDerive.getConcUnite().getNom());
       }
       valeurConcentration = sb.toString();
 
@@ -713,7 +721,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          }
          if(this.transformation.getQuantiteUnite() != null){
             sb.append(" ");
-            sb.append(this.transformation.getQuantiteUnite().getUnite());
+            sb.append(this.transformation.getQuantiteUnite().getNom());
          }
       }
       valeurTransfoQuantite = sb.toString();
@@ -1009,7 +1017,33 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
     * codePrefixeLabelDerive. Cette valeur sera mise en majuscules.
     */
    public void onBlur$codePrefixeLabelDerive(){
+      
       codePrefixeLabelDerive.setValue(codePrefixeLabelDerive.getValue().toUpperCase().trim());
+
+      //On ne contrôle le code que s'il s'agit d'un nouveau prélèvement ou si le code a été modifié
+      if(prodDerive.getCode() == null || !codePrefixeLabelDerive.getValue().equals(prodDerive.getCode())) {
+         validateProdDeriveCode(codePrefixeLabelDerive.getValue());
+      }
+
+   }
+
+   /**
+    * Validation "à la volée" du code produit dérivé saisi
+    * @param prodDeriveCode
+    */
+   private void validateProdDeriveCode(String prodDeriveCode){
+
+      //Vérification de l'absence de doublons
+      final List<ProdDerive> doublons = ManagerLocator.getManager(ProdDeriveManager.class)
+         .findByCodeInPlateformeManager(prodDeriveCode, SessionUtils.getCurrentPlateforme());
+
+      if(!doublons.isEmpty()){
+         final String collectionsDoublon =
+            doublons.stream().map(ProdDerive::getBanque).map(Banque::getNom).collect(Collectors.joining(", "));
+         throw new WrongValueException(codePrefixeLabelDerive,
+            Labels.getLabel("error.validation.doublon.code", new String[] {prodDeriveCode, collectionsDoublon}));
+      }
+
    }
 
    @Override
@@ -2082,7 +2116,9 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
                   Float res = prodDerive.getVolumeInit() * prodDerive.getConc();
                   res = ObjectTypesFormatters.floor(res, 3);
 
-                  if(!quantiteInit.equals(res)){
+                  // TK-290 arrondi peut être supérieur ou inférieur = OK
+                  if((quantiteInit.floatValue() > (res + 0.001f)) 
+                 		|| (quantiteInit.floatValue() < (res - 0.001f)) ){
                      throw new WrongValueException(comp, Labels.getLabel("validation.invalid.formule" + ".quantite.init"));
                   }
                }
@@ -2224,23 +2260,23 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    protected void validateCoherenceDate(final Component comp, final Object value){
 
       final Calendar dateToValidate = (Calendar) value;
-      
+
       Errors errs = null;
       String field = "";
 
       if(dateToValidate == null){
-         
+
          ((CalendarBox) comp).clearErrorMessage(dateToValidate);
          ((CalendarBox) comp).setValue(null);
-         
+
          if(dateTransfoCalBox.equals(comp)){
             prodDerive.setDateStock(null);
          }else if(dateTransfoCalBox.equals(comp)){
             prodDerive.setDateTransformation(null);
          }
-         
+
       }else{
-         
+
          // date transformation
          if(dateTransfoCalBox.equals(comp)){
             field = "dateTransformation";
@@ -2272,7 +2308,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
             Clients.scrollIntoView(comp);
             throw new WrongValueException(comp, ObjectTypesFormatters.handleErrors(errs, field));
          }
-         
+
       }
    }
 
@@ -2295,7 +2331,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    }
 
    public String getEmplacementAdrl(){
-      
+
       Boolean isAutorise;
 
       if(isAnonyme()){
@@ -2310,7 +2346,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       }
 
       return emplacementAdrl;
-      
+
    }
 
    public void setEmplacementAdrl(final String eAdrl){

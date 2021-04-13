@@ -46,7 +46,7 @@
 		        </template>
 	         </listbox>
 	         
-	         <button id="data" label="${c:l('charts.tkcharts.update')}"  />
+	         <button id="data" label="${c:l('general.refresh')}"  />
 	         
 	    </vlayout>
 	    

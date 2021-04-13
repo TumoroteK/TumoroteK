@@ -44,8 +44,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zkoss.util.resource.Labels;
@@ -85,7 +83,6 @@ import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.prelevement.LaboInter;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.interfacage.PatientSip;
-import fr.aphp.tumorotek.model.interfacage.Recepteur;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
@@ -169,14 +166,14 @@ public class PrelevementController extends AbstractObjectTabController
 
       super.doAfterCompose(comp);
 
-      switch(getCurrentContexte()){
-         case SEROLOGIE:
-            listePrelevementSero.setVisible(true);
-            break;
-         default:
-            listePrelevement.setVisible(true);
-            break;
-      }
+//      switch(getCurrentContexte()){
+//         case SEROLOGIE:
+//            listePrelevementSero.setVisible(true);
+//            break;
+//         default:
+//            listePrelevement.setVisible(true);
+//            break;
+//      }
 
       setStaticDiv(divPrelevementStatic);
       setEditDiv(divPrelevementEdit);
@@ -184,16 +181,18 @@ public class PrelevementController extends AbstractObjectTabController
 
       switch(getCurrentContexte()){
          case SEROLOGIE:
+            listePrelevementSero.setVisible(true);
             setEditZulPath("/zuls/prelevement/serotk/FichePrelevementEditSero.zul");
             setListZulPath("/zuls/prelevement/serotk/ListePrelevementSero.zul");
+            setMultiEditZulPath("/zuls/prelevement/serotk/FicheModifMultiPrelevementSero.zul");
             break;
          default:
+            listePrelevement.setVisible(true);
             setEditZulPath("/zuls/prelevement/FichePrelevementEdit.zul");
             setListZulPath("/zuls/prelevement/ListePrelevement.zul");
+            setMultiEditZulPath("/zuls/prelevement/FicheModifMultiPrelevement.zul");
             break;
       }
-
-      setMultiEditZulPath("/zuls/prelevement/FicheModifMultiPrelevement.zul");
 
       initFicheStatic();
 
@@ -732,61 +731,6 @@ public class PrelevementController extends AbstractObjectTabController
 
    public void setOldCode(final String c){
       this.oldCode = c;
-   }
-
-   /**
-    * Gère la communication entre TK et l'environnement applicatif
-    * après création du dossier.
-    * Suppression d'un dossier temporaire si enregistré en base.
-    * Envoi d'un accusé de réception/synthèse du prélèvement.
-    *
-    * @param prel       Prelevement
-    * @param controller (Prelvement/Echantillon) qui reçoit la validation
-    * @version 2.1
-    */
-   public void handleExtCom(final Prelevement prel, final AbstractObjectTabController controller){
-
-      String url = null;
-      String dosExtId = null;
-
-      // gère la suppression du dossier externe
-      if(SessionUtils.getDossierExterneInjection(sessionScope) != null
-         && SessionUtils.getDossierExterneInjection(sessionScope).getDossierExterne() != null
-         && SessionUtils.getDossierExterneInjection(sessionScope).getDossierExterne().getDossierExterneId() != null){
-
-         dosExtId = SessionUtils.getDossierExterneInjection(sessionScope).getDossierExterne().getIdentificationDossier();
-
-         // since 2.0.13
-         // suppr si pas info echantillon + validation depuis onglet Prelevement
-         // ou si info échantillons + validation depuis onglet échantillon
-
-         if(ManagerLocator.getBlocExterneManager()
-            .findByDossierExterneAndEntiteManager(SessionUtils.getDossierExterneInjection(sessionScope).getDossierExterne(),
-               ManagerLocator.getEntiteManager().findByIdManager(3))
-            .isEmpty() || controller.getEntiteTab().getNom().equals("Echantillon")){
-            ManagerLocator.getDossierExterneManager()
-               .removeObjectManager(SessionUtils.getDossierExterneInjection(sessionScope).getDossierExterne());
-         }
-
-         // setDossierExterne(null);
-         SessionUtils.setDossierExterneInjection(sessionScope, null);
-
-         final HttpServletRequest req = (HttpServletRequest) Executions.getCurrent().getNativeRequest();
-         url = req.getScheme() + "://" + req.getServerName();
-         if(req.getServerPort() > -1){
-            url = url + ":" + req.getServerPort();
-         }
-         url = url + req.getContextPath() + "/ext/prelevement?id=" + prel.getPrelevementId();
-      }
-
-      try{
-         // Recepteurs
-         for(final Recepteur recept : SessionUtils.getRecepteursInterfacages(sessionScope)){
-            ManagerLocator.getSenderFactory().sendMessage(recept, prel, dosExtId, url);
-         }
-      }catch(final Exception e){
-         throw new RuntimeException(e);
-      }
    }
 
    public PatientSip getPatientSip(){

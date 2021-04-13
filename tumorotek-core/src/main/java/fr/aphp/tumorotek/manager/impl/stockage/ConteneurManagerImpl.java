@@ -78,6 +78,11 @@ import fr.aphp.tumorotek.model.stockage.Terminale;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.utils.Utils;
 
+/**
+ * @version 2.2.1-IRELEC
+ * @author Mathieu BARTHELEMY
+ *
+ */
 public class ConteneurManagerImpl implements ConteneurManager
 {
 
@@ -690,4 +695,38 @@ public class ConteneurManagerImpl implements ConteneurManager
       }
       return null;
    }
+   
+	@Override
+	public void updateObjectWithConteneurPlateformesManager(Conteneur conteneur,
+			ConteneurType conteneurType, Service service, List<Banque> banques,
+			List<ConteneurPlateforme> conteneurPlateformes,
+			List<Incident> incidents, Utilisateur utilisateur) {
+		
+		List<Plateforme> plateformes = null;
+		if (conteneurPlateformes != null) {
+			plateformes = new ArrayList<Plateforme>();
+			for (ConteneurPlateforme cp : conteneurPlateformes) {
+				plateformes.add(cp.getPlateforme());
+			}
+		}
+		
+		updateObjectManager(conteneur, conteneurType, service, banques, plateformes, incidents, utilisateur);
+		
+		// met à jour les informations spécifiques au conteneurPlateforme (ex: restrictStock)
+		if (conteneurPlateformes != null) {
+			for (ConteneurPlateforme cp : conteneurPlateformes) {
+				conteneurPlateformeDao.mergeObject(cp);
+			}
+		}
+	}
+	
+	@Override
+	public ConteneurPlateforme getOneConteneurPlateformeManager(Conteneur conteneur, Plateforme pf) {
+		for (ConteneurPlateforme cpf : getConteneurPlateformesManager(conteneur)) {
+			if (cpf.getPlateforme().equals(pf)) {
+				return cpf;
+			}
+		}
+		return null;
+	}
 }

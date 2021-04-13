@@ -56,6 +56,7 @@ import org.apache.commons.logging.LogFactory;
 import fr.aphp.tumorotek.interfacage.sgl.SglHandler;
 import fr.aphp.tumorotek.interfacage.sgl.view.ViewHandler;
 import fr.aphp.tumorotek.interfacage.sgl.view.ViewResultProcessor;
+import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.interfacage.DossierExterne;
 import fr.aphp.tumorotek.model.interfacage.Emetteur;
 
@@ -71,7 +72,8 @@ public class ViewHandlerImpl implements ViewHandler  {
 
 	@Override
 	public DossierExterne sendQuery(Emetteur _e, String sglNumDos, 
-					String propFileName, ViewResultProcessor processor) {
+					String propFileName, ViewResultProcessor processor, 
+					Banque bank) {
 		
 		log.debug("send query for emetteur: " + _e.toString());
 		log.debug("send query for code: " + sglNumDos);
@@ -79,7 +81,7 @@ public class ViewHandlerImpl implements ViewHandler  {
 		Map<String,Object> args = new HashMap<String, Object>();
 		args.put("numDos", sglNumDos);
 				 
-		DossierExterne dExt = queryView(sglNumDos, propFileName, processor);
+		DossierExterne dExt = queryView(sglNumDos, propFileName, processor, bank);
 		if (dExt != null) {
 			dExt.setEmetteur(_e);
 		}
@@ -88,7 +90,7 @@ public class ViewHandlerImpl implements ViewHandler  {
 	
 
 	public DossierExterne queryView(String numDos, String propFileName, 
-											ViewResultProcessor processor) {
+										ViewResultProcessor processor, Banque bank) {
 		DossierExterne dExt = null;
 		ResourceBundle jdbcBundle = getJdbcBundle(propFileName);
 		if (jdbcBundle != null) {
@@ -120,7 +122,7 @@ public class ViewHandlerImpl implements ViewHandler  {
 
 				// one result max
 				if (rSet.next()) {
-					dExt = processor.processResult(rSet);
+					dExt = processor.processResult(rSet, bank);
 				}
 				
 			} catch (Exception e) {

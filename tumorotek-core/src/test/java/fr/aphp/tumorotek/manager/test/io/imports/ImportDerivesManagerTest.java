@@ -349,7 +349,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       final List<ProdDerive> t1Derives = prodDeriveManager.findByTransformationManager(t1);
       assertTrue(t1Derives.size() == 3);
       // derive 1
-      assertTrue(t1Derives.get(0).getProdType().getType().equals("ADN"));
+      assertTrue(t1Derives.get(0).getProdType().getNom().equals("ADN"));
       assertTrue(t1Derives.get(0).getDateTransformation() != null);
       assertTrue(t1Derives.get(0).getObjetStatut().getStatut().equals("NON STOCKE"));
       assertNull(t1Derives.get(0).getConformeTraitement());
@@ -360,7 +360,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       assertTrue(vals.get(0).getAlphanum().equals("1"));
       assertTrue(vals.get(1).getBool());
       // derive2
-      assertTrue(t1Derives.get(1).getProdType().getType().equals("ADN"));
+      assertTrue(t1Derives.get(1).getProdType().getNom().equals("ADN"));
       assertTrue(t1Derives.get(1).getDateTransformation() != null);
       assertTrue(t1Derives.get(1).getObjetStatut().getStatut().equals("NON STOCKE"));
       assertFalse(t1Derives.get(1).getConformeTraitement());
@@ -371,7 +371,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       assertTrue(vals.get(0).getAlphanum().equals("2"));
       assertTrue(vals.get(1).getBool());
       // derive3
-      assertTrue(t1Derives.get(2).getProdType().getType().equals("ADN"));
+      assertTrue(t1Derives.get(2).getProdType().getNom().equals("ADN"));
       assertTrue(t1Derives.get(2).getDateTransformation() != null);
       assertTrue(t1Derives.get(2).getObjetStatut().getStatut().equals("NON STOCKE"));
       assertNull(t1Derives.get(2).getConformeTraitement());
@@ -390,7 +390,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       final List<ProdDerive> t2Derives = prodDeriveManager.findByTransformationManager(t2);
       assertTrue(t2Derives.size() == 2);
       // derive10
-      assertTrue(t2Derives.get(1).getProdType().getType().equals("PROTEINE"));
+      assertTrue(t2Derives.get(1).getProdType().getNom().equals("PROTEINE"));
       assertTrue(t2Derives.get(1).getDateTransformation() == null);
       assertTrue(t2Derives.get(1).getObjetStatut().getStatut().equals("NON STOCKE"));
       assertNull(t2Derives.get(1).getConformeTraitement());
@@ -409,7 +409,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       final List<ProdDerive> t3Derives = prodDeriveManager.findByTransformationManager(t3);
       assertTrue(t3Derives.size() == 2);
       // derive12
-      assertTrue(t3Derives.get(1).getProdType().getType().equals("ARN"));
+      assertTrue(t3Derives.get(1).getProdType().getNom().equals("ARN"));
       assertTrue(t3Derives.get(1).getDateTransformation() == null);
       assertTrue(t3Derives.get(1).getObjetStatut().getStatut().equals("NON STOCKE"));
       assertFalse(t3Derives.get(1).getConformeTraitement());
@@ -437,7 +437,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       final List<ProdDerive> t4Derives = prodDeriveManager.findByTransformationManager(t4);
       assertTrue(t4Derives.size() == 2);
       // derive 6
-      assertTrue(t4Derives.get(1).getProdType().getType().equals("ARN"));
+      assertTrue(t4Derives.get(1).getProdType().getNom().equals("ARN"));
       assertTrue(t4Derives.get(1).getDateTransformation() != null);
       assertTrue(t4Derives.get(1).getObjetStatut().getStatut().equals("NON STOCKE"));
       assertNull(t4Derives.get(1).getConformeTraitement());
@@ -457,7 +457,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       final List<ProdDerive> t5Derives = prodDeriveManager.findByTransformationManager(t5);
       assertTrue(t5Derives.size() == 3);
       // derive 7
-      assertTrue(t5Derives.get(0).getProdType().getType().equals("ADN"));
+      assertTrue(t5Derives.get(0).getProdType().getNom().equals("ADN"));
       assertTrue(t5Derives.get(0).getDateTransformation() == null);
       assertTrue(t5Derives.get(0).getObjetStatut().getStatut().equals("NON STOCKE"));
       assertNull(t5Derives.get(0).getConformeTraitement());
@@ -641,7 +641,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       newEch.setQuantite(new Float(100.0));
       Emplacement e4 = emplacementManager.findByIdManager(4);
       echantillonManager.createObjectManager(newEch, itTest2.getBanque(), e2.getPrelevement(), null, objetStatutDao.findById(1),
-         e4, e2.getEchantillonType(), null, null, null, null, null, null, null, u, false, null, false);
+         e4, e2.getEchantillonType(), null, null, null, null, null, null, u, false, null, false);
       assertTrue(echantillonManager.findByCodeLikeManager("NEWECH", true).get(0).getQuantite().equals(new Float(100.0)));
       e4.setVide(false);
       e4.setObjetId(newEch.getEchantillonId());
@@ -708,12 +708,12 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       // t1 = complete Retour
       final Transformation t1 = trEch2.get(0);
       assertTrue(t1.getQuantite().equals(new Float(12.0)));
-      assertTrue(t1.getQuantiteUnite().getUnite().equals("FRAGMENTS"));
+      assertTrue(t1.getQuantiteUnite().getNom().equals("FRAGMENTS"));
       final List<ProdDerive> t1Derives = prodDeriveManager.findByTransformationManager(t1);
       assertTrue(t1Derives.size() == 3);
       assertTrue(complete1.getTransformation().equals(t1));
       // derive 1
-      assertTrue(t1Derives.get(0).getProdType().getType().equals("ADN"));
+      assertTrue(t1Derives.get(0).getProdType().getNom().equals("ADN"));
       assertTrue(t1Derives.get(0).getDateTransformation() != null);
       assertTrue(t1Derives.get(0).getObjetStatut().getStatut().equals("NON STOCKE"));
       assertNull(t1Derives.get(0).getConformeTraitement());
@@ -724,7 +724,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       assertTrue(vals.get(0).getAlphanum().equals("1"));
       assertTrue(vals.get(1).getBool());
       // derive2
-      assertTrue(t1Derives.get(1).getProdType().getType().equals("ADN"));
+      assertTrue(t1Derives.get(1).getProdType().getNom().equals("ADN"));
       assertTrue(t1Derives.get(1).getDateTransformation() != null);
       assertTrue(t1Derives.get(1).getObjetStatut().getStatut().equals("NON STOCKE"));
       assertFalse(t1Derives.get(1).getConformeTraitement());
@@ -735,7 +735,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       assertTrue(vals.get(0).getAlphanum().equals("2"));
       assertTrue(vals.get(1).getBool());
       // derive3
-      assertTrue(t1Derives.get(2).getProdType().getType().equals("ADN"));
+      assertTrue(t1Derives.get(2).getProdType().getNom().equals("ADN"));
       assertTrue(t1Derives.get(2).getDateTransformation() != null);
       assertTrue(t1Derives.get(2).getObjetStatut().getStatut().equals("NON STOCKE"));
       assertNull(t1Derives.get(2).getConformeTraitement());
@@ -754,7 +754,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       final List<ProdDerive> t3Derives = prodDeriveManager.findByTransformationManager(t3);
       assertTrue(t3Derives.size() == 2);
       // derive10
-      assertTrue(t3Derives.get(1).getProdType().getType().equals("PROTEINE"));
+      assertTrue(t3Derives.get(1).getProdType().getNom().equals("PROTEINE"));
       assertTrue(t3Derives.get(1).getDateTransformation() != null);
       assertTrue(t3Derives.get(1).getObjetStatut().getStatut().equals("NON STOCKE"));
       assertNull(t3Derives.get(1).getConformeTraitement());
@@ -773,7 +773,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       final List<ProdDerive> t4Derives = prodDeriveManager.findByTransformationManager(t4);
       assertTrue(t4Derives.size() == 2);
       // derive12
-      assertTrue(t4Derives.get(1).getProdType().getType().equals("ARN"));
+      assertTrue(t4Derives.get(1).getProdType().getNom().equals("ARN"));
       assertTrue(t4Derives.get(1).getDateTransformation() == null);
       assertTrue(t4Derives.get(1).getObjetStatut().getStatut().equals("NON STOCKE"));
       assertFalse(t4Derives.get(1).getConformeTraitement());
@@ -818,7 +818,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       assertTrue(t2Derives.size() == 2);
       assertTrue(complete2.getTransformation().equals(t2));
       // derive 6
-      assertTrue(t2Derives.get(1).getProdType().getType().equals("ARN"));
+      assertTrue(t2Derives.get(1).getProdType().getNom().equals("ARN"));
       assertTrue(t2Derives.get(1).getDateTransformation() != null);
       assertTrue(t2Derives.get(1).getObjetStatut().getStatut().equals("NON STOCKE"));
       assertNull(t2Derives.get(1).getConformeTraitement());
@@ -838,7 +838,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       final List<ProdDerive> t5Derives = prodDeriveManager.findByTransformationManager(t5);
       assertTrue(t5Derives.size() == 1);
       // derive 7
-      assertTrue(t5Derives.get(0).getProdType().getType().equals("ADN"));
+      assertTrue(t5Derives.get(0).getProdType().getNom().equals("ADN"));
       assertTrue(t5Derives.get(0).getDateTransformation() == null);
       assertTrue(t5Derives.get(0).getObjetStatut().getStatut().equals("NON STOCKE"));
       assertNull(t5Derives.get(0).getConformeTraitement());
@@ -858,7 +858,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       assertTrue(t6Derives.size() == 2);
       assertTrue(epuisement.getTransformation().equals(t6));
       // derive 7
-      assertTrue(t6Derives.get(0).getProdType().getType().equals("ADN"));
+      assertTrue(t6Derives.get(0).getProdType().getNom().equals("ADN"));
       assertTrue(t6Derives.get(0).getDateTransformation() != null);
       assertTrue(t6Derives.get(0).getObjetStatut().getStatut().equals("NON STOCKE"));
       assertNull(t6Derives.get(0).getConformeTraitement());
@@ -875,7 +875,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       e2.setQuantite(new Float(25.0));
       echantillonManager.updateObjectManager(e2, e2.getBanque(), e2.getPrelevement(), e2.getCollaborateur(), e2.getObjetStatut(),
          e2.getEmplacement(), e2.getEchantillonType(), null, null, e2.getQuantiteUnite(), e2.getEchanQualite(), e2.getModePrepa(),
-         null, null, null, null, null, u, false, null, null);
+         null, null, null, null, u, false, null, null);
       final List<Operation> ops = getOperationManager().findByObjetIdEntiteAndOpeTypeManager(e2, operationTypeDao.findById(5));
       assertTrue(ops.size() == 1);
       getOperationManager().removeObjectManager(ops.get(0));
@@ -919,7 +919,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       newEch.setQuantite(new Float(100.0));
       Emplacement e4 = emplacementManager.findByIdManager(4);
       echantillonManager.createObjectManager(newEch, itTest2.getBanque(), e2.getPrelevement(), null, objetStatutDao.findById(1),
-         e4, e2.getEchantillonType(), null, e2.getQuantiteUnite(), null, null, null, null, null, u, false, null, false);
+         e4, e2.getEchantillonType(), null, e2.getQuantiteUnite(), null, null, null, null, u, false, null, false);
       assertTrue(echantillonManager.findByCodeLikeManager("NEWECH", true).get(0).getQuantite().equals(new Float(100.0)));
       e4.setVide(false);
       e4.setObjetId(newEch.getEchantillonId());
@@ -1047,7 +1047,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       emplacementManager.updateObjectManager(e4, e4.getTerminale(), null);
 
       echantillonManager.updateObjectManager(newEch, newEch.getBanque(), newEch.getPrelevement(), null, newEch.getObjetStatut(),
-         null, newEch.getEchantillonType(), null, null, null, null, null, null, null, null, null, null, u, false, null, null);
+         null, newEch.getEchantillonType(), null, null, null, null, null, null, null, null, null, u, false, null, null);
 
       fs.add(newEch);
       echantillonManager.removeObjectCascadeManager(newEch, null, u, null);
@@ -1076,7 +1076,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       newDerive.setQuantite(new Float(100.0));
       Emplacement e4 = emplacementManager.findByIdManager(4);
       prodDeriveManager.createObjectManager(newDerive, itTest2.getBanque(), p2.getProdType(), objetStatutDao.findById(1), null,
-         e4, null, null, null, null, null, null, null, null, null, u, false, null, false);
+         e4, null, null, null, null, null, null, null, null, u, false, null, false);
       assertTrue(prodDeriveManager.findByCodeLikeManager("NEWDER", true).get(0).getQuantite().equals(new Float(100.0)));
       e4.setVide(false);
       e4.setObjetId(newDerive.getProdDeriveId());
@@ -1152,7 +1152,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       assertTrue(t1Derives.size() == 5);
       assertTrue(complete1.getTransformation().equals(t1));
       // derive 1
-      assertTrue(t1Derives.get(0).getProdType().getType().equals("ADN"));
+      assertTrue(t1Derives.get(0).getProdType().getNom().equals("ADN"));
       assertTrue(t1Derives.get(0).getDateTransformation() != null);
       assertTrue(t1Derives.get(0).getObjetStatut().getStatut().equals("NON STOCKE"));
       assertNull(t1Derives.get(0).getConformeTraitement());
@@ -1163,7 +1163,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       assertTrue(vals.get(0).getAlphanum().equals("1"));
       assertTrue(vals.get(1).getBool());
       // derive2
-      assertTrue(t1Derives.get(1).getProdType().getType().equals("ADN"));
+      assertTrue(t1Derives.get(1).getProdType().getNom().equals("ADN"));
       assertTrue(t1Derives.get(1).getDateTransformation() != null);
       assertTrue(t1Derives.get(1).getObjetStatut().getStatut().equals("NON STOCKE"));
       assertFalse(t1Derives.get(1).getConformeTraitement());
@@ -1174,7 +1174,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       assertTrue(vals.get(0).getAlphanum().equals("2"));
       assertTrue(vals.get(1).getBool());
       // derive3
-      assertTrue(t1Derives.get(2).getProdType().getType().equals("ADN"));
+      assertTrue(t1Derives.get(2).getProdType().getNom().equals("ADN"));
       assertTrue(t1Derives.get(2).getDateTransformation() != null);
       assertTrue(t1Derives.get(2).getObjetStatut().getStatut().equals("NON STOCKE"));
       assertNull(t1Derives.get(2).getConformeTraitement());
@@ -1184,7 +1184,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       assertTrue(vals.size() == 1);
       assertTrue(vals.get(0).getBool());
       // derive12
-      assertTrue(t1Derives.get(4).getProdType().getType().equals("ARN"));
+      assertTrue(t1Derives.get(4).getProdType().getNom().equals("ARN"));
       assertTrue(t1Derives.get(4).getDateTransformation() == null);
       assertTrue(t1Derives.get(4).getObjetStatut().getStatut().equals("NON STOCKE"));
       assertFalse(t1Derives.get(4).getConformeTraitement());
@@ -1203,7 +1203,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       final List<ProdDerive> t3Derives = prodDeriveManager.findByTransformationManager(t3);
       assertTrue(t3Derives.size() == 2);
       // derive10
-      assertTrue(t3Derives.get(1).getProdType().getType().equals("PROTEINE"));
+      assertTrue(t3Derives.get(1).getProdType().getNom().equals("PROTEINE"));
       assertTrue(t3Derives.get(1).getDateTransformation() != null);
       assertTrue(t3Derives.get(1).getObjetStatut().getStatut().equals("NON STOCKE"));
       assertNull(t3Derives.get(1).getConformeTraitement());
@@ -1254,7 +1254,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       assertTrue(t2Derives.size() == 2);
       assertTrue(complete2.getTransformation().equals(t2));
       // derive 5
-      assertTrue(t2Derives.get(1).getProdType().getType().equals("ARN"));
+      assertTrue(t2Derives.get(1).getProdType().getNom().equals("ARN"));
       assertTrue(t2Derives.get(1).getDateTransformation() != null);
       assertTrue(t2Derives.get(1).getObjetStatut().getStatut().equals("NON STOCKE"));
       assertNull(t2Derives.get(1).getConformeTraitement());
@@ -1274,7 +1274,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       final List<ProdDerive> t5Derives = prodDeriveManager.findByTransformationManager(t5);
       assertTrue(t5Derives.size() == 1);
       // derive 7
-      assertTrue(t5Derives.get(0).getProdType().getType().equals("ADN"));
+      assertTrue(t5Derives.get(0).getProdType().getNom().equals("ADN"));
       assertTrue(t5Derives.get(0).getDateTransformation() == null);
       assertTrue(t5Derives.get(0).getObjetStatut().getStatut().equals("NON STOCKE"));
       assertNull(t5Derives.get(0).getConformeTraitement());
@@ -1294,7 +1294,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       assertTrue(t6Derives.size() == 2);
       assertTrue(epuisement.getTransformation().equals(t6));
       // derive 7
-      assertTrue(t6Derives.get(0).getProdType().getType().equals("ADN"));
+      assertTrue(t6Derives.get(0).getProdType().getNom().equals("ADN"));
       assertTrue(t6Derives.get(0).getDateTransformation() != null);
       assertTrue(t6Derives.get(0).getObjetStatut().getStatut().equals("NON STOCKE"));
       assertNull(t6Derives.get(0).getConformeTraitement());
@@ -1348,7 +1348,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       newDerive.setQuantite(new Float(100.0));
       Emplacement e4 = emplacementManager.findByIdManager(4);
       prodDeriveManager.createObjectManager(newDerive, itTest2.getBanque(), p2.getProdType(), objetStatutDao.findById(1), null,
-         e4, null, null, null, null, null, null, null, null, null, u, false, null, false);
+         e4, null, null, null, null, null, null, null, null, u, false, null, false);
       assertTrue(prodDeriveManager.findByCodeLikeManager("NEWDER", true).get(0).getQuantite().equals(new Float(100.0)));
       e4.setVide(false);
       e4.setObjetId(newDerive.getProdDeriveId());
@@ -1483,7 +1483,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       emplacementManager.updateObjectManager(e4, e4.getTerminale(), null);
 
       prodDeriveManager.updateObjectManager(newDerive, newDerive.getBanque(), newDerive.getProdType(), newDerive.getObjetStatut(),
-         null, null, null, null, null, null, null, null, null, null, null, null, null, u, false, null, null);
+         null, null, null, null, null, null, null, null, null, null, null, null, u, false, null, null);
 
       fs.add(newDerive);
       prodDeriveManager.removeObjectCascadeManager(newDerive, null, u, null);

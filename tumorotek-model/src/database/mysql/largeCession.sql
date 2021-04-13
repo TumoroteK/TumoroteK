@@ -25,7 +25,7 @@ BEGIN
 		insert into OPERATION (utilisateur_id, entite_id, operation_type_id, date_, objet_id) select id_utilisateur, id_entite, 13, now(), z.id from ECHANTILLON e join TEMP_TRSFT z on z.id=e.echantillon_id;
 -- where e.objet_statut_id = 1;
 			
-		insert into RETOUR (entite_id, objet_id, date_sortie, temp_moyenne, collaborateur_id, cession_id, observations) select id_entite, z.id, if(c.depart_date is not null, c.depart_date, if(c.destruction_date is not null, c.destruction_date, now())), 20.0, c.executant_id, c.cession_id, 'cession automatisee par fichier' from ECHANTILLON e join TEMP_TRSFT z on z.id=e.echantillon_id join CESSION c on c.cession_id = id_cession;
+		insert into RETOUR (entite_id, objet_id, date_sortie, temp_moyenne, collaborateur_id, cession_id, observations, old_emplacement_adrl, conteneur_id) select id_entite, z.id, if(c.depart_date is not null, c.depart_date, if(c.destruction_date is not null, c.destruction_date, now())), 20.0, c.executant_id, c.cession_id, 'cession automatisee par fichier', get_adrl(e.emplacement_id), get_conteneur(e.emplacement_id) from ECHANTILLON e join TEMP_TRSFT z on z.id=e.echantillon_id join CESSION c on c.cession_id = id_cession;
 -- where e.objet_statut_id = 1;
 			
 		update ECHANTILLON e join TEMP_TRSFT z on z.id=e.echantillon_id set emplacement_id=null, quantite=0, objet_statut_id = (select if(cession_type_id=3,5,2) from CESSION where cession_id = id_cession); -- where e.objet_statut_id = 1;
@@ -40,8 +40,8 @@ BEGIN
 		insert into OPERATION (utilisateur_id, entite_id, operation_type_id, date_, objet_id) select id_utilisateur, id_entite, 13, now(), z.id 
 			from PROD_DERIVE p join TEMP_TRSFT z on z.idp.prod_derive_id where p.objet_statut_id = 1;
 			
-		insert into RETOUR (entite_id, objet_id, date_sortie, temp_moyenne, operateur_id, cession_id, observations) 
-			select id_entite, z.id, if(c.depart_date is not null, c.depart_date, if(c.destruction_date is not null, c.destruction_date, now())), 20.0, c.executant_id, c.cession_id, 'cession automatisée par fichier tabuulé' 
+		insert into RETOUR (entite_id, objet_id, date_sortie, temp_moyenne, operateur_id, cession_id, observations, old_emplacement_adrl, conteneur_id)
+			select id_entite, z.id, if(c.depart_date is not null, c.depart_date, if(c.destruction_date is not null, c.destruction_date, now())), 20.0, c.executant_id, c.cession_id, 'cession automatisée par fichier tabuulé', get_adrl(p.emplacement_id), get_conteneur(p.emplacement_id) 
 			from PROD_DERIVE p join TEMP_TRSFT z on z.id=p.prod_derive_id 
 			join CESSION c on c.cession_id = id_cession where p.objet_statut_id = 1;
 			

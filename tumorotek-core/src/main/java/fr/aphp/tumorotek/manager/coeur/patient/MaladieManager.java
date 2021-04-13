@@ -58,7 +58,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * 	- Supprimer une maladie
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.2.3-genno
  *
  */
 public interface MaladieManager
@@ -81,8 +81,9 @@ public interface MaladieManager
     * attribue par le SGBD, ce dernier est retire de la liste findAll.
     * @param maladie Maladie dont on cherche la presence dans la base
     * @return true/false
+    * @version 2.2.3-genno
     */
-   boolean findDoublonManager(Maladie maladie);
+   boolean findDoublonManager(Maladie maladie, Patient patient);
 
    /**
     * Verifie avant la suppression que d'autres objets ne referencent
@@ -130,6 +131,17 @@ public interface MaladieManager
     * @return Liste de Maladie.
     */
    List<Maladie> findByLibelleLikeManager(String libelle, boolean exactMatch);
+   
+   /**
+    * Recherche les maladies dont le libelle correspond à celui 
+    * fourni en paramètre pour un patient donnée.
+    * @param libelle Libelle des maladies recherchées.
+    * @param patient Patient
+    * @return Liste de Maladies.
+    * @since 2.2.3-genno
+    */
+   List<Maladie> findByLibelleAndPatientManager(String libelle, Patient pat);
+
 
    /**
     * Recherche toutes les maladies dont le code est egal

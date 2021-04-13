@@ -174,6 +174,13 @@ public class HprimMessage implements SipMessage
          sip.setPrenom(getPatient().getPersonnePhysique().getPrenom());
          sip.setSexe(getPatient().getPersonnePhysique().getSexe());
          sip.setDateNaissance(getPatient().getPersonnePhysique().getDateNaissance());
+         if (getPatient().getPersonnePhysique().getEtatPatient() != null) {
+        	 sip.setPatientEtat(getPatient().getPersonnePhysique().getEtatPatient());
+         }
+         if (sip.getPatientEtat() != null && sip.getPatientEtat().equals("D")) {
+        	 sip.setDateDeces(getPatient()
+        			 .getPersonnePhysique().getDecede().getDateDeces());
+         }
 
          // numero de sejour
          final String nda = getVenueEmetteurValeur();
@@ -206,6 +213,12 @@ public class HprimMessage implements SipMessage
          sipP.setPrenom(personne.getPrenom());
          sipP.setSexe(personne.getSexe());
          sipP.setDateNaissance(personne.getDateNaissance());
+         if (personne.getEtatPatient() != null) {
+        	 sipP.setPatientEtat(personne.getEtatPatient());
+         }        
+         if (sipP.getPatientEtat() != null && sipP.getPatientEtat().equals("D")) {
+        	 sipP.setDateDecesP(personne.getDecede().getDateDeces());
+         }
       }
       return sipP;
    }

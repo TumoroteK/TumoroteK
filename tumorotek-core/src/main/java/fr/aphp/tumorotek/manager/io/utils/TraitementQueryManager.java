@@ -204,5 +204,16 @@ public interface TraitementQueryManager
     * @return liste objets ids
     */
    List<Integer> findFileUploadedManager(Champ fileChp, Entite target, List<Banque> banques, boolean empty);
+   
+   /**
+    * Retourne les ids des prelèvements d'une liste de collections 
+    * pour lesquels un objet correspondant 
+    * à une information de traçabilité d'un site intermédiaire est passé en paramètre.
+    * @param obj etablissement/Service/Collaborateur site intermédiaire
+    * @param banques liste de banques
+    * @return liste prelevements ids
+    * @since 2.2.1
+    */
+   List<Integer> findPrelevementIdsViaLaboInterManager(Object obj, List<Banque> banques);
 
 }

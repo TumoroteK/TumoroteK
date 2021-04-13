@@ -164,7 +164,7 @@
 			        				save-when='createC.onClick, previsualiser.onClick'
 			        				load-after='addNewC.onClick'}" 
 								width="50px" 
-								constraint="no empty, no zero, no negative"/>
+								constraint="no zero, no negative"/>
 						</div>
 					
 						<hbox>
@@ -176,7 +176,7 @@
 			        				save-when='createC.onClick, previsualiser.onClick'
 			        				load-after='addNewC.onClick'}" 
 								width="50px" 
-								constraint="no empty, no zero, no negative"/>
+								constraint="no zero, no negative"/>
 						</div>
 					</row>
 					<!-- nb lignes -->
@@ -191,7 +191,7 @@
 			        					createC.onClick'
 			        				load-after='addNewC.onClick'}" 
 								width="50px" 
-								constraint="no empty, no zero, no negative"/>
+								constraint="no zero, no negative"/>
 								
 								<button id="definirNbLignes" 
 									label="${c:l('terminaleType.creation.definir.lignes')}" 

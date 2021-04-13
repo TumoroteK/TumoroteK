@@ -553,20 +553,15 @@
 						<label value="${c:l('general.export')}" sclass="formLabel"/>
 						<div>
 							<label id="exportLabel" 
-								value="@{fwinProfil$composer.selectedExport}" 
+								value="@{fwinProfil$composer.selectedExportTranslated}" 
 								sclass="formValue" />
 							
 							<listbox id="exportListBox" mold="select" rows="1"
-								selectedItem="@{fwinProfil$composer.selectedExport 
-									save-when='createC.onClick, validateC.onClick'}"
-								visible="false" >											
-								<listitem label="${c:l('profil.droit.export.non')}" 
-									value="${c:l('profil.droit.export.non')}"/>
-								<listitem label="${c:l('profil.droit.export.anonyme')}" 
-									value="${c:l('profil.droit.export.anonyme')}"/>
-								<listitem label="${c:l('profil.droit.export.nominatif')}" 
-									value="${c:l('profil.droit.export.nominatif')}"/>
-							</listbox>
+								model="@{fwinProfil$composer.profilExportsModel}"
+								selectedItem="@{fwinProfil$composer.selectedExport}" 
+								itemRenderer="@{fwinProfil$composer.profilExportRenderer}" 
+								visible="false" />		
+																	
 							<label value="${c:l('profil.droit.export.attention')}" 
 								sclass="formValueItalics"
 								visible="false"

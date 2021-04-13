@@ -42,18 +42,23 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFDataFormat;
 import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -112,13 +117,13 @@ public class ExportToExcel extends ResultSetToExcel
 
       final XSSFCellStyle cs = (XSSFCellStyle) workbook.createCellStyle();
       cs.setFillForegroundColor(IndexedColors.BLUE_GREY.index);
-      cs.setFillPattern(CellStyle.SOLID_FOREGROUND);
-      cs.setBorderBottom((short) 1);
-      cs.setBorderTop((short) 1);
-      cs.setAlignment(CellStyle.ALIGN_JUSTIFY);
-      cs.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+      cs.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+      cs.setBorderBottom(BorderStyle.THIN);
+      cs.setBorderTop(BorderStyle.THIN);
+      cs.setAlignment(HorizontalAlignment.JUSTIFY);
+      cs.setVerticalAlignment(VerticalAlignment.CENTER);
       final Font f = workbook.createFont();
-      f.setBoldweight(Font.BOLDWEIGHT_BOLD);
+      f.setBold(true);
       f.setFontHeightInPoints((short) 8);
       cs.setFont(f);
       currentRow = 0;
@@ -149,9 +154,9 @@ public class ExportToExcel extends ResultSetToExcel
    private void createCell(){
       final XSSFCellStyle cs = (XSSFCellStyle) workbook.createCellStyle();
       cs.setFillBackgroundColor(new XSSFColor(Color.getHSBColor(194, 16, 100)));
-      cs.setFillPattern(CellStyle.SOLID_FOREGROUND);
+      cs.setFillPattern(FillPatternType.SOLID_FOREGROUND);
       final Font f = workbook.createFont();
-      f.setBoldweight(Font.BOLDWEIGHT_BOLD);
+      f.setBold(true);
       f.setFontHeightInPoints((short) 12);
       cs.setFont(f);
 
@@ -432,6 +437,7 @@ public class ExportToExcel extends ResultSetToExcel
             log.error(ex);
          }finally{
             // Autosize columns
+            ((SXSSFSheet)sh).trackAllColumnsForAutoSizing();
             for(int i = 0; i < 30; i++){
                sh.autoSizeColumn((short) i);
             }
@@ -450,7 +456,7 @@ public class ExportToExcel extends ResultSetToExcel
       if(font != null){
          //System.out.println("style font");
          style.setFont(font);
-         font.setBoldweight((short) 1);
+         font.setBold(true);
          font.setItalic(true);
          cell.setCellStyle(style);
       }
@@ -469,7 +475,7 @@ public class ExportToExcel extends ResultSetToExcel
             cell.setCellStyle(style);
             cell.setCellValue((java.util.Date) value);
          }else if(formatType.equals(FormatType.DATE) && row.getRowNum() != 0){
-            cell.setCellType(Cell.CELL_TYPE_NUMERIC);
+            cell.setCellType(CellType.NUMERIC);
             cell.setCellValue(value.toString());
          }else if(formatType.equals(FormatType.NUMERIC)){
             cell.setCellValue((int) value);
@@ -484,11 +490,11 @@ public class ExportToExcel extends ResultSetToExcel
       if(bgColor != null){
          final XSSFCellStyle titleStyle = (XSSFCellStyle) workbook.createCellStyle();
 
-         titleStyle.setAlignment(CellStyle.ALIGN_CENTER);
-         titleStyle.setBorderBottom(CellStyle.BORDER_MEDIUM);
-         titleStyle.setBorderLeft(CellStyle.BORDER_MEDIUM);
-         titleStyle.setBorderRight(CellStyle.BORDER_MEDIUM);
-         titleStyle.setBorderTop(CellStyle.BORDER_MEDIUM);
+         titleStyle.setAlignment(HorizontalAlignment.CENTER);
+         titleStyle.setBorderBottom(BorderStyle.MEDIUM);
+         titleStyle.setBorderLeft(BorderStyle.MEDIUM);
+         titleStyle.setBorderRight(BorderStyle.MEDIUM);
+         titleStyle.setBorderTop(BorderStyle.MEDIUM);
          cell.setCellStyle(titleStyle);
       }
    }
@@ -514,11 +520,11 @@ public class ExportToExcel extends ResultSetToExcel
       if(bgColor != null){
          final XSSFCellStyle titleStyle = (XSSFCellStyle) workbook.createCellStyle();
 
-         titleStyle.setAlignment(CellStyle.ALIGN_CENTER);
-         titleStyle.setBorderBottom(CellStyle.BORDER_MEDIUM);
-         titleStyle.setBorderLeft(CellStyle.BORDER_MEDIUM);
-         titleStyle.setBorderRight(CellStyle.BORDER_MEDIUM);
-         titleStyle.setBorderTop(CellStyle.BORDER_MEDIUM);
+         titleStyle.setAlignment(HorizontalAlignment.CENTER);
+         titleStyle.setBorderBottom(BorderStyle.MEDIUM);
+         titleStyle.setBorderLeft(BorderStyle.MEDIUM);
+         titleStyle.setBorderRight(BorderStyle.MEDIUM);
+         titleStyle.setBorderTop(BorderStyle.MEDIUM);
          cell.setCellStyle(titleStyle);
       }
    }

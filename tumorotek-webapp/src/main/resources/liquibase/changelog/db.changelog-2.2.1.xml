@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <changeSet id="${project.artifactId}-1" author="ABO" context="*, 2.1.5, 2.2.1-SNAPSHOT">
+        <tagDatabase tag="${project.parent.version}"/>
+    </changeSet>
+	<changeSet id="${project.artifactId}-2" author="MB" runAlways="false" context="*">
+		<comment>Modification de la procédure getBoite pour prendre en compte les modifications impliquées par Oracle</comment>
+		<sqlFile encoding="utf8" path="../sql/mysql/tumorotek/getBoite.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+	</changeSet>
+	<changeSet id="${project.artifactId}-3" author="MB" runAlways="false" context="*">
+		<comment>UTILISATEUR.LOGIN casse sensitive</comment>
+		<modifyDataType tableName="UTILISATEUR" columnName="LOGIN"
+						newDataType="VARCHAR(100)"/>
+		<modifySql dbms="mysql">
+   			<append value="COLLATE utf8_bin"/>
+		</modifySql>
+	</changeSet>
+	<changeSet id="${project.artifactId}-4" author="MB" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">SELECT COUNT(1) FROM CESSION_TYPE
+                WHERE TYPE = 'Traitement'
+            </sqlCheck>
+        </preConditions>
+        <comment>Suppr pour l'instant Cessions de type Traitement</comment>
+        <delete tableName="CESSION_TYPE">
+            <where>type='Traitement'</where>
+        </delete>
+    </changeSet>
+    <changeSet id="${project.artifactId}-5" author="MB" runAlways="false" context="*">
+        <comment>export par defaut anonyme</comment>
+        <update tableName="PROFIL">
+            <column name="PROFIL_EXPORT" value="1" />
+        </update>
+    </changeSet>
+</databaseChangeLog>

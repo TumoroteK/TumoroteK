@@ -339,11 +339,12 @@ public class PatientSipManagerImpl implements PatientSipManager
       config.setSeparateurSousComposants("~");
 
       // on parse le message pour le transformer en hashtable
-      final Hashtable<String, List<String>> contenu = interfacageParsingUtils.parseFileToInjectInTk(config, message);
+      // le segment PID se trouve toujours avant les ORC
+
+      final Hashtable<String, List<String>> contenu = interfacageParsingUtils.parseFileToInjectInTk(config, message).get(0);
 
       // init du PatientSip à remplir
       final PatientSip pSip = new PatientSip();
-
       pSip.setNip(interfacageParsingUtils.getValueFromBlocAndEmplacement(contenu, config, "PID", "3.1"));
 
       // since 2.0.10.6
@@ -436,7 +437,7 @@ public class PatientSipManagerImpl implements PatientSipManager
       config.setSeparateurSousComposants("~");
 
       // on parse le message pour le transformer en hashtable
-      final Hashtable<String, List<String>> contenu = interfacageParsingUtils.parseFileToInjectInTk(config, message);
+      final Hashtable<String, List<String>> contenu = interfacageParsingUtils.parseFileToInjectInTk(config, message).get(0);
 
       // init du PatientSip passif à remplir
       final PatientSip pSip = new PatientSip();

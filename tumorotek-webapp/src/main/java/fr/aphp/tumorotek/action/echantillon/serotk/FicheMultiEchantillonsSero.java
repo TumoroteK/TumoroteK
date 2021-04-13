@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.action.echantillon.serotk;
 
 import org.zkoss.zk.ui.Component;
 
+import fr.aphp.tumorotek.action.echantillon.AbstractEchantillonDecoratorRowRenderer;
 import fr.aphp.tumorotek.action.echantillon.FicheMultiEchantillons;
 
 /**
@@ -53,11 +54,9 @@ import fr.aphp.tumorotek.action.echantillon.FicheMultiEchantillons;
 public class FicheMultiEchantillonsSero extends FicheMultiEchantillons
 {
 
-   /**
-    * 
-    */
    private static final long serialVersionUID = 9006918899739619179L;
 
+   private final AbstractEchantillonDecoratorRowRenderer echanDecoRenderer = new EchantillonSeroDecoratorRowRenderer();
    
    @Override
    public void doAfterCompose(Component comp) throws Exception{
@@ -67,4 +66,10 @@ public class FicheMultiEchantillonsSero extends FicheMultiEchantillons
       qualiteEchanLabel.setVisible(false);
       groupInfosCompEchan.setVisible(false);
    }
+   
+   @Override
+   public AbstractEchantillonDecoratorRowRenderer getEchanDecoRenderer(){
+      return echanDecoRenderer;
+   }
+   
 }

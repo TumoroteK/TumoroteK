@@ -59,19 +59,19 @@ import fr.aphp.tumorotek.model.coeur.patient.Patient;
 public abstract class AbstractPatientDelegate extends TKDelegateObject<Patient>
 {
 
-   private Integer id;
+   private Integer patientId;
    private Patient delegator;
 
    @Id
    @Column(name = "PATIENT_DELEGATE_ID", unique = true, nullable = false)
    @GeneratedValue(generator = "autoincrement")
    @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getId(){
-      return id;
+   public Integer getPatientId(){
+      return patientId;
    }
 
-   public void setId(Integer id){
-      this.id = id;
+   public void setPatientId(Integer id){
+      this.patientId = id;
    }
 
    /* (non-Javadoc)

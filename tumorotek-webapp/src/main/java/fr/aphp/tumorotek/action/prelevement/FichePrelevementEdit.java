@@ -251,7 +251,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          referenceur = (Window) Executions.createComponents("/zuls/prelevement/ReferenceurPatient.zul", refPatientDiv, null);
          // initialize le referenceur
          ((ReferenceurPatient) referenceur.getAttributeOrFellow("winRefPatient$composer", true))
-            .initialize(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefMaladies());
+         .initialize(SessionUtils.getSelectedBanques(sessionScope).get(0).getDefMaladies());
       }
    }
 
@@ -530,6 +530,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       final List<AnnotationValeur> annos = new ArrayList<>();
       if(prlvt != null){
          newObj = prlvt.clone();
+         newObj.setDelegate(prlvt.cloneDelegateTo(newObj));
          newObj.setPrelevementId(null);
          newObj.setCode(null);
          newObj.setNumeroLabo(null);
@@ -603,7 +604,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          // suppression du patientSip
          getObjectTabController().removePatientSip();
          // gestion de la communication des infos et de l'éventuel dossier externe
-         getObjectTabController().handleExtCom(getObject(), getObjectTabController());
+         getObjectTabController().handleExtCom(null, getObject(), getObjectTabController());
       }catch(final RuntimeException re){
          for(final File f : filesCreated){
             f.delete();
@@ -623,13 +624,13 @@ public class FichePrelevementEdit extends AbstractFicheEditController
                if(getObjectTabController().getFromFichePatient()){
                   getObjectTabController().setFromFichePatient(false);
                   getObjectTabController().getReferencingObjectControllers().get(0)
-                     .switchToFicheStaticMode(this.maladie.getPatient());
+                  .switchToFicheStaticMode(this.maladie.getPatient());
 
                   PatientController.backToMe(getMainWindow(), page);
                   // ouvre le panel maladie et la liste de prelevements
                   if(getObjectTabController().getFromFicheMaladie()){
                      ((FichePatientStatic) getObjectTabController().getReferencingObjectControllers().get(0).getFicheStatic())
-                        .openMaladiePanel(maladie);
+                     .openMaladiePanel(maladie);
                      getObjectTabController().setFromFicheMaladie(false);
                   }
                }
@@ -775,7 +776,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
             getObjectTabController().getFicheAnnotation().getValeursToDelete(), filesCreated, filesToDelete,
             SessionUtils.getLoggedUser(sessionScope), cascadeNonSterile, true, SessionUtils.getSystemBaseDir(), false);
 
-         getObjectTabController().handleExtCom(getObject(), getObjectTabController());
+         getObjectTabController().handleExtCom(null, getObject(), getObjectTabController());
 
          for(final File f : filesToDelete){
             f.delete();
@@ -863,7 +864,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
             // car les dates de naissance
             // et deces du patient ont pu être modifée à posteriori
             ((FicheMaladie) embeddedMaladie.getFellow("fwinMaladie").getAttributeOrFellow("fwinMaladie$composer", true))
-               .validateAllDateComps();
+            .validateAllDateComps();
 
             setMaladieFromEmbedded(embeddedMaladie);
 
@@ -890,7 +891,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
             }else if(((ReferenceurPatient) referenceur.getAttributeOrFellow("winRefPatient$composer", true)).getNoRadio()
                .isChecked()
                || ((ReferenceurPatient) referenceur.getAttributeOrFellow("winRefPatient$composer", true))
-                  .getSelectedPatient() == null){
+               .getSelectedPatient() == null){
                this.maladie = null;
                this.prelevement.setMaladie(null);
             }
@@ -907,10 +908,10 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       // enregistre le formulaire dans le backing-bean
       // meme si il est vide...
       ((FicheMaladie) embedded.getFellow("fwinMaladie").getAttributeOrFellow("fwinMaladie$composer", true)).getBinder()
-         .saveComponent(embedded.getFellow("fwinMaladie"));
+      .saveComponent(embedded.getFellow("fwinMaladie"));
       // prepare les valeurs des attributs
       ((FicheMaladie) embedded.getFellow("fwinMaladie").getAttributeOrFellow("fwinMaladie$composer", true))
-         .prepareDataBeforeSave(true);
+      .prepareDataBeforeSave(true);
       // recupere la maladie meme si empty
       this.maladie =
          ((FicheMaladie) embedded.getFellow("fwinMaladie").getAttributeOrFellow("fwinMaladie$composer", true)).getObject();
@@ -1109,7 +1110,10 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
       codeBoxPrlvt.setValue(codeBoxPrlvt.getValue().toUpperCase().trim());
 
-      validatePrelevementCode(codeBoxPrlvt.getValue());
+      //On ne contrôle le code que s'il s'agit d'un nouveau prélèvement ou si le code a été modifié
+      if(prelevement.getPrelevementId() == null || !codeBoxPrlvt.getValue().equals(prelevement.getCode())) {
+         validatePrelevementCode(codeBoxPrlvt.getValue());
+      }
 
       // si le code a été modifié lors de l'update du prélèvement
       if(prelevement.getPrelevementId() != null && !((Prelevement) getCopy()).getCode().equals(codeBoxPrlvt.getValue())){
@@ -1258,7 +1262,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       // remet à null le calcul du delai congelation au besoin
       if(getObjectTabController().getNextToEchanClicked()){
          ((EchantillonController) getObjectTabController().getReferencedObjectsControllers(true).get(0)).getMultiFicheEdit()
-            .resetDelaiCgl();
+         .resetDelaiCgl();
       }
    }
 
@@ -1483,7 +1487,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
    public void onClick$interfacage(){
       final String value = codeBoxPrlvt.getValue();
-      openSelectDossierExterneWindow(page, Path.getPath(self), value, false, null);
+      openSelectDossierExterneWindow(page, Path.getPath(self), value, false, null, false);
    }
 
    /**
@@ -1523,7 +1527,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
          // initialize le referenceur
          ((ReferenceurPatient) referenceur.getAttributeOrFellow("winRefPatient$composer", true))
-            .setPatientAndMaladieFromOutSideReferenceur(newPat, newObj.getMaladie(), newObj.getPatientNda());
+         .setPatientAndMaladieFromOutSideReferenceur(newPat, newObj.getMaladie(), newObj.getPatientNda());
 
          getBinder().loadComponent(self);
 
@@ -1540,7 +1544,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
       // initialize le referenceur
       ((ReferenceurPatient) referenceur.getAttributeOrFellow("winRefPatient$composer", true))
-         .setPatientAndMaladieFromOutSideReferenceur(pat, mal, null);
+      .setPatientAndMaladieFromOutSideReferenceur(pat, mal, null);
    }
 
    /**

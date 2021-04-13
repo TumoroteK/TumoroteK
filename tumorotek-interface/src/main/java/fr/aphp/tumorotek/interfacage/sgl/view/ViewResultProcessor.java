@@ -38,9 +38,10 @@ package fr.aphp.tumorotek.interfacage.sgl.view;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.interfacage.DossierExterne;
 
 public interface ViewResultProcessor {
 	
-	DossierExterne processResult(ResultSet rSet) throws SQLException;
+	DossierExterne processResult(ResultSet rSet, Banque bank) throws SQLException;
 }

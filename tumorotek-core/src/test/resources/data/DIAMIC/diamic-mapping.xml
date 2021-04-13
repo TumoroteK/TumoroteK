@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Interfacage>
+	<Logiciel func="SGL">
+		<Nom>DIAMIC</Nom>
+		<Editeur>INFOLOGIC-SANTE</Editeur>
+		<Version>8.1.2.1.1</Version>
+	</Logiciel>
+	<Configuration>
+		<SeparateurChamps>|</SeparateurChamps>
+		<SeparateurComposants>^</SeparateurComposants>
+		<SeparateurSousComposants>~</SeparateurSousComposants>
+		<BlocLibreKey></BlocLibreKey>
+		<NumeroDossier>
+			<BlocValue>ORC</BlocValue>
+			<Key>8.2</Key>
+		</NumeroDossier>
+		<IndexDossier>
+			<BlocValue>ORC</BlocValue>
+			<Key>3</Key>
+		</IndexDossier>
+		<DateDossier>
+			<BlocValue>MSH</BlocValue>
+			<Key>6</Key>
+		</DateDossier>
+		<OperationDossier>
+			<BlocValue>ORC</BlocValue>
+			<Key>5</Key>
+		</OperationDossier>
+	</Configuration>
+	<Bloc nom="PID">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Nip" idChamp="2" />
+				<Entite nom="Patient" idChamp="1" />
+			</Tk>
+			<Source>
+				<Key>3</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Nom" idChamp="3" />
+				<Entite nom="Patient" idChamp="1" />
+			</Tk>
+			<Source>
+				<Key>5.1</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Prenom" idChamp="5" />
+				<Entite nom="Patient" idChamp="1" />
+			</Tk>
+			<Source>
+				<Key>5.2</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Sexe" idChamp="6" />
+				<Entite nom="Patient" idChamp="1" />
+			</Tk>
+			<Source>
+				<Key>8</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="DateNaissance" idChamp="7" />
+				<Entite nom="Patient" idChamp="1" />
+			</Tk>
+			<Source>
+				<Key>7</Key>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<Bloc nom="PV1">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="NumeroLabo" idChamp="45" />
+				<Entite nom="Prelevement" idChamp="2" />
+			</Tk>
+			<Source>
+				<Key>19</Key>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<Bloc nom="ORC">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Code" idChamp="23" />
+				<Entite nom="Prelevement" idChamp="2" />
+			</Tk>
+			<Source>
+				<Key>8.2</Key>
+				<Fonctions>
+					<Fonction nom="concat" sep="-" key="3" />
+				</Fonctions>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="DatePrelevement" idChamp="30" />
+				<Entite nom="Prelevement" idChamp="2" />
+			</Tk>
+			<Source>
+				<Key>7</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="DateArrivee" idChamp="38" />
+				<Entite nom="Prelevement" idChamp="2" />
+			</Tk>
+			<Source>
+				<Key>15</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="ServicePreleveurId" idChamp="29" />
+				<Entite nom="Prelevement" idChamp="2" />
+			</Tk>
+			<Source>
+				<Key>21.1</Key>
+				<Modifier nom="Thesaurus">
+					<MappingThes>
+						<SourceThes>989</SourceThes>
+						<TkThes>27</TkThes>
+					</MappingThes>
+				</Modifier>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<!-- <Bloc nom="OBR">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="NatureId" idChamp="24" />
+				<Entite nom="Prelevement" idChamp="2" />
+			</Tk>
+			<Source>
+				<Key>4.1</Key>
+				<Modifier nom="Thesaurus">
+					<MappingThes>
+						<SourceThes>UVP1</SourceThes>
+						<TkThes>TISSU</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>ALP1</SourceThes>
+						<TkThes>TISSU</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>Prelevement Sanguin</SourceThes>
+						<TkThes>SANG</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>Liquide d'Ascite</SourceThes>
+						<TkThes>LIQUIDE D'ASCITE</TkThes>
+					</MappingThes>
+				</Modifier>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="PrelevementTypeId" idChamp="31" />
+				<Entite nom="Prelevement" idChamp="2" />
+			</Tk>
+			<Source>
+				<Key>4.1</Key>
+				<Modifier nom="Thesaurus">
+					<MappingThes>
+						<SourceThes>UVP1</SourceThes>
+						<TkThes>B:BIOPSIE</TkThes>
+					</MappingThes>
+<MappingThes>
+						<SourceThes>ALP1</SourceThes>
+						<TkThes>B:BIOPSIE</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>Prelevement Sanguin</SourceThes>
+						<TkThes>SANG</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>Liquide d'Ascite</SourceThes>
+						<TkThes>LIQUIDE D'ASCITE</TkThes>
+					</MappingThes>
+				</Modifier>
+			</Source>
+		</Mapping>
+	</Bloc> -->
+	<Bloc nom="OBR_OBX1">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="CrAnapath" idChamp="255" />
+				<Entite nom="Echantillon" idChamp="3" />
+			</Tk>
+			<Source>
+				<Key>5.1</Key>
+<!-- 				<Modifier nom="Fichier"> -->
+<!-- 					<Path>/home/mathieu/Documents/tumorotek/interfacages/DIAMIC/testPDF/</Path> -->
+<!-- 				</Modifier> -->
+			</Source>
+		</Mapping>
+	</Bloc>
+	<Bloc nom="OBR_OBX4">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="CodesMorphos" idChamp="230" />
+				<Entite nom="Echantillon" idChamp="3" />
+			</Tk>
+			<Source>
+				<Key>5</Key>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<Bloc nom="OBR_OBX5">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="CodesOrganes" idChamp="229" />
+				<Entite nom="Echantillon" idChamp="3" />
+			</Tk>
+			<Source>
+				<Key>5</Key>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<Bloc nom="SPM">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="Code" idChamp="54" />
+				<Entite nom="Echantillon" idChamp="3" />
+			</Tk>
+			<Source>
+				<Key>2</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="EchantillonTypeId" idChamp="58" />
+				<Entite nom="Echantillon" idChamp="3" />
+			</Tk>
+			<Source>
+				<Key>4</Key>
+			</Source>
+		</Mapping>
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="DateStock" idChamp="56" />
+				<Entite nom="Echantillon" idChamp="3" />
+			</Tk>
+			<Source>
+				<Key>18</Key>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<Bloc nom="SPM_OBX1">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="CollaborateurId" idChamp="53" />
+				<Entite nom="Echantillon" idChamp="3" />
+			</Tk>
+			<Source>
+				<Key>5.1</Key>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<Bloc nom="SPM_OBX2">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="EmplacementId" idChamp="57" />
+				<Entite nom="Echantillon" idChamp="3" />
+			</Tk>
+			<Source>
+				<Key>5</Key>
+				<Modifier nom="Thesaurus">
+					<MappingThes>
+						<SourceThes>TUMOROTHEQUE</SourceThes>
+						<TkThes>C1</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>AP9 -80°C</SourceThes>
+						<TkThes>C2</TkThes>
+					</MappingThes>
+				</Modifier>
+				<Fonctions>
+					<Fonction nom="emplacementAddr" niveau="conteneur" />
+				</Fonctions>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<Bloc nom="SPM_OBX3">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="EmplacementId" idChamp="57" />
+				<Entite nom="Echantillon" idChamp="3" />
+			</Tk>
+			<Source>
+				<Key>5</Key>
+				<Modifier nom="Thesaurus">
+					<MappingThes>
+						<SourceThes>Rayon1</SourceThes>
+						<TkThes>R1</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>Tiroir3</SourceThes>
+						<TkThes>C1</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>Rayon2</SourceThes>
+						<TkThes>R2</TkThes>
+					</MappingThes>
+					<MappingThes>
+						<SourceThes>Tiroir3</SourceThes>
+						<TkThes>T3</TkThes>
+					</MappingThes>
+				</Modifier>
+				<Fonctions>
+					<Fonction nom="emplacementAddr" niveau="enceinte" />
+				</Fonctions>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<Bloc nom="SPM_OBX4">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="EmplacementId" idChamp="57" />
+				<Entite nom="Echantillon" idChamp="3" />
+			</Tk>
+			<Source>
+				<Key>5</Key>
+				<Fonctions>
+					<Fonction nom="emplacementAddr" niveau="boite" />
+				</Fonctions>
+			</Source>
+		</Mapping>
+	</Bloc>
+	<Bloc nom="SPM_OBX5">
+		<Mapping>
+			<Tk>
+				<ChampEntite nom="EmplacementId" idChamp="57" />
+				<Entite nom="Echantillon" idChamp="3" />
+			</Tk>
+			<Source>
+				<Key>5</Key>
+				<Fonctions>
+					<Fonction nom="emplacementAddr" niveau="emplacement" />
+				</Fonctions>
+			</Source>
+		</Mapping>
+	</Bloc>
+		
+</Interfacage>

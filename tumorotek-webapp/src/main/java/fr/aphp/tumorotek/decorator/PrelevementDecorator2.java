@@ -133,7 +133,7 @@ public class PrelevementDecorator2
 
    public String getNature(){
       if(this.prelevement.getNature() != null){
-         return this.prelevement.getNature().getNature();
+         return this.prelevement.getNature().getNom();
       }else{
          return null;
       }
@@ -141,7 +141,7 @@ public class PrelevementDecorator2
 
    public String getType(){
       if(this.prelevement.getPrelevementType() != null){
-         return this.prelevement.getPrelevementType().getType();
+         return this.prelevement.getPrelevementType().getNom();
       }else{
          return null;
       }
@@ -149,7 +149,7 @@ public class PrelevementDecorator2
 
    public String getConsentement(){
       if(this.prelevement.getConsentType() != null){
-         return this.prelevement.getConsentType().getType();
+         return this.prelevement.getConsentType().getNom();
       }else{
          return null;
       }
@@ -238,7 +238,7 @@ public class PrelevementDecorator2
 
    public String getTypeConditionnement(){
       if(this.prelevement.getConditType() != null){
-         return this.prelevement.getConditType().getType();
+         return this.prelevement.getConditType().getNom();
       }else{
          return null;
       }
@@ -246,7 +246,7 @@ public class PrelevementDecorator2
 
    public String getMilieuConditionnement(){
       if(this.prelevement.getConditMilieu() != null){
-         return this.prelevement.getConditMilieu().getMilieu();
+         return this.prelevement.getConditMilieu().getNom();
       }else{
          return null;
       }
@@ -322,7 +322,7 @@ public class PrelevementDecorator2
 
       if(this.prelevement.getQuantiteUnite() != null){
          sb.append(" ");
-         sb.append(this.prelevement.getQuantiteUnite().getUnite());
+         sb.append(this.prelevement.getQuantiteUnite().getNom());
       }
 
       return sb.toString();

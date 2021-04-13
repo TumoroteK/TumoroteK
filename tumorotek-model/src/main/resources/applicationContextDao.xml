@@ -337,21 +337,6 @@
 		</property>
 	</bean>
 
-	<bean id="reservationDao" parent="abstractDao">
-		<property name="proxyInterfaces">
-			<value>fr.aphp.tumorotek.dao.utilisateur.ReservationDao
-			</value>
-		</property>
-		<property name="target">
-			<bean parent="abstractDaoTarget">
-				<constructor-arg>
-					<value>fr.aphp.tumorotek.model.utilisateur.Reservation
-					</value>
-				</constructor-arg>
-			</bean>
-		</property>
-	</bean>
-
 	<!-- Package code -->
 
 	<bean id="tableCodageDao" parent="abstractDao">

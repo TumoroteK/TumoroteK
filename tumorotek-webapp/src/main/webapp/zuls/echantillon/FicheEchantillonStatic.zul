@@ -350,7 +350,7 @@
 									/>
 									<label value="@{echanCede.cessionType}"/>
 									<label value="@{echanCede.dateDemandeCessionFormatted}"/>
-									<label value="@{echanCede.dateValidationCessionFormatted}"/>
+									<label value="@{echanCede.dateCessionFormatted}"/>
 									<label value="@{echanCede.cessionDemandeur}"/>
 									<label value="@{echanCede.cessionDestinataire}"/>
 									<label value="@{echanCede.cessionEtude}"/>

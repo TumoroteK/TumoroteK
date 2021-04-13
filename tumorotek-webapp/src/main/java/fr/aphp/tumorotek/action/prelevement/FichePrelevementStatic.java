@@ -1124,7 +1124,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
     * Ouvre la fenêtre de sélection du dossier à importer.
     */
    public void onClick$importDossier(){
-      openSelectDossierExterneWindow(page, Path.getPath(self), this.prelevement.getCode(), true, this.prelevement.clone());
+      openSelectDossierExterneWindow(page, Path.getPath(self), this.prelevement.getCode(), true, this.prelevement.clone(), false);
    }
 
    /**

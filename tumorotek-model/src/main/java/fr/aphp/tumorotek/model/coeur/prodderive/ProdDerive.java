@@ -56,6 +56,8 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import fr.aphp.tumorotek.model.TKDelegateObject;
+import fr.aphp.tumorotek.model.TKDelegetableObject;
 import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
@@ -64,7 +66,6 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.stockage.Emplacement;
 import fr.aphp.tumorotek.model.systeme.Unite;
-import fr.aphp.tumorotek.model.utilisateur.Reservation;
 import fr.aphp.tumorotek.model.utils.Utils;
 
 /**
@@ -73,7 +74,7 @@ import fr.aphp.tumorotek.model.utils.Utils;
  * Classe créée le 14/09/09.
  *
  * @author Maxime Gousseau
- * @version 2.1
+ * @version 2.2.3-rc1
  *
  */
 @Entity
@@ -100,7 +101,6 @@ import fr.aphp.tumorotek.model.utils.Utils;
    @NamedQuery(name = "ProdDerive.findByCollaborateur", query = "SELECT p FROM ProdDerive p " + "WHERE p.collaborateur = ?1"),
    @NamedQuery(name = "ProdDerive.findByEmplacement",
       query = "SELECT p FROM ProdDerive p " + "WHERE p.emplacement.terminale = ?1 " + "AND p.emplacement.position = ?2"),
-   @NamedQuery(name = "ProdDerive.findByReservation", query = "SELECT p FROM ProdDerive p " + "WHERE p.reservation = ?1"),
    @NamedQuery(name = "ProdDerive.findByModePrepaDerive", query = "SELECT p FROM ProdDerive p " + "WHERE p.modePrepaDerive = ?1"),
    @NamedQuery(name = "ProdDerive.findByBanqueSelectCode", query = "SELECT p.code FROM ProdDerive p " + "WHERE p.banque = ?1"),
    @NamedQuery(name = "ProdDerive.findByBanqueAndQuantiteSelectCode",
@@ -161,7 +161,7 @@ import fr.aphp.tumorotek.model.utils.Utils;
       query = "SELECT count(p) FROM ProdDerive p " + "WHERE p.transformation.objetId = ?1 " + "AND p.transformation.entite = ?2"),
    @NamedQuery(name = "ProdDerive.findByListCodeWithPlateforme",
       query = "SELECT e FROM ProdDerive e JOIN e.banque bq JOIN bq.plateforme pf WHERE e.code in (?1) AND pf = ?2 ")})
-public class ProdDerive implements TKStockableObject, Serializable
+public class ProdDerive extends TKDelegetableObject<ProdDerive> implements TKStockableObject, Serializable
 {
 
    private static final long serialVersionUID = 1110628569548421522L;
@@ -189,12 +189,12 @@ public class ProdDerive implements TKStockableObject, Serializable
    private ProdQualite prodQualite;
    private Collaborateur collaborateur;
    private Emplacement emplacement;
-   private Reservation reservation;
    private Unite volumeUnite;
    private Transformation transformation;
    private ModePrepaDerive modePrepaDerive;
 
-   private AbstractProdDeriveDelegate delegate;
+   private TKDelegateObject<ProdDerive> delegate;
+   // private AbstractProdDeriveDelegate delegate;
 
    public ProdDerive(){
       super();
@@ -429,16 +429,6 @@ public class ProdDerive implements TKStockableObject, Serializable
    }
 
    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-   @JoinColumn(name = "RESERVATION_ID", nullable = true)
-   public Reservation getReservation(){
-      return this.reservation;
-   }
-
-   public void setReservation(final Reservation reserv){
-      this.reservation = reserv;
-   }
-
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "VOLUME_UNITE_ID", nullable = true)
    public Unite getVolumeUnite(){
       return this.volumeUnite;
@@ -488,20 +478,24 @@ public class ProdDerive implements TKStockableObject, Serializable
       this.conformeCession = conforme;
    }
 
-   /**
-    * @return the delegate
-    */
-   @OneToOne(mappedBy = "delegator", cascade = CascadeType.MERGE, orphanRemoval = true)
-   public AbstractProdDeriveDelegate getDelegate(){
+   @OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "delegator",
+		      targetEntity = AbstractProdDeriveDelegate.class)
+   // @OneToOne(mappedBy = "delegator", cascade = CascadeType.MERGE, orphanRemoval = true)
+   public TKDelegateObject<ProdDerive> getDelegate(){
       return delegate;
    }
-
-   /**
-    * @param delegate the delegate to set
-    */
-   public void setDelegate(AbstractProdDeriveDelegate delegate){
-      this.delegate = delegate;
+   
+   @Override
+   public void setDelegate(TKDelegateObject<ProdDerive> _d){
+      this.delegate = _d;
    }
+
+//   /**
+//    * @param delegate the delegate to set
+//    */
+//   public void setDelegate(AbstractProdDeriveDelegate delegate){
+//      this.delegate = delegate;
+//   }
 
    /**
     * 2 produits dérivés sont considérés comme égaux s'ils ont le même code
@@ -583,13 +577,13 @@ public class ProdDerive implements TKStockableObject, Serializable
       clone.setProdQualite(this.getProdQualite());
       clone.setTransformation(this.getTransformation());
       clone.setDateTransformation(this.getDateTransformation());
-      clone.setReservation(this.getReservation());
       clone.setModePrepaDerive(this.getModePrepaDerive());
       clone.setEtatIncomplet(this.getEtatIncomplet());
       clone.setArchive(this.getArchive());
       clone.setConformeTraitement(this.getConformeTraitement());
       clone.setConformeCession(this.getConformeCession());
-      clone.setDelegate(this.getDelegate());
+      
+      clone.setDelegate(getDelegate());
 
       return clone;
    }

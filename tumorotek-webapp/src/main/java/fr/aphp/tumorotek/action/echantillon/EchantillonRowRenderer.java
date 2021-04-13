@@ -168,7 +168,7 @@ public class EchantillonRowRenderer extends TKSelectObjectRenderer<Echantillon>
 
       // type
       if(echan.getEchantillonType() != null){
-         new Label(echan.getEchantillonType().getType()).setParent(row);
+         new Label(echan.getEchantillonType().getNom()).setParent(row);
       }else{
          new Label().setParent(row);
       }
@@ -234,7 +234,7 @@ public class EchantillonRowRenderer extends TKSelectObjectRenderer<Echantillon>
 
       if(echantillon.getQuantiteUnite() != null){
          sb.append(" ");
-         sb.append(echantillon.getQuantiteUnite().getUnite());
+         sb.append(echantillon.getQuantiteUnite().getNom());
       }
 
       return sb.toString();

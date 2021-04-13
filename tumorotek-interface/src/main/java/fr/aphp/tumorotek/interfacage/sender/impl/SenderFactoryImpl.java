@@ -36,18 +36,20 @@
 package fr.aphp.tumorotek.interfacage.sender.impl;
 
 import java.util.List;
-import java.util.Map;
-
+import fr.aphp.tumorotek.interfacage.storageRobot.StorageMovement;
+import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.interfacage.sender.SenderFactory;
 import fr.aphp.tumorotek.interfacage.sender.StorageRobotSender;
 import fr.aphp.tumorotek.interfacage.sender.ack.HmMessageSender;
 import fr.aphp.tumorotek.interfacage.sender.ack.TumoLinkUrd;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
-import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.interfacage.Recepteur;
-import fr.aphp.tumorotek.model.qualite.OperationType;
-import fr.aphp.tumorotek.model.stockage.Emplacement;
 
+/**
+ * 
+ * @author Mathieu BARTHELEMY
+ * @version 2.2.1-IRELEC
+ */
 public class SenderFactoryImpl implements SenderFactory
 {
 
@@ -68,30 +70,31 @@ public class SenderFactoryImpl implements SenderFactory
    }
 
    @Override
-   public void sendMessage(final Recepteur re, final TKAnnotableObject tkObj, final String dosExtId, final String url){
+	public void sendMessage(Recepteur re, TKAnnotableObject tkObj,
+			String dosExtId, String url) {
 
-      if(tumoLinkUrd.useRecepteur(re)){
-         tumoLinkUrd.sendMessage(tkObj, dosExtId, url);
-      }
-      if(hmMessageSender.useRecepteur(re)){
-         hmMessageSender.sendMessage(tkObj, dosExtId, url);
-      }
-   }
-
-   @Override
-   public void sendMessages(final Recepteur re, final List<TKAnnotableObject> tkObjs, final Integer b){
-      // seul Hopital Manager DME n'est concerné pour l'instant
-      if(hmMessageSender.useRecepteur(re)){
-         hmMessageSender.sendMessages(tkObjs, b);
-      }
-   }
+		if (tumoLinkUrd.useRecepteur(re)) {
+			tumoLinkUrd.sendMessage(tkObj, dosExtId, url);
+		}
+		if (hmMessageSender.useRecepteur(re)) {
+			hmMessageSender.sendMessage(tkObj, dosExtId, url);
+		}
+	}
 
    @Override
-   public void sendEmplacements(final Recepteur re, final Map<TKStockableObject, Emplacement> tkEmpls, final OperationType oType){
-      // seul le système IRELEC-Grenoble concerné pour l'instant
-      if(storageRobotSender.useRecepteur(re)){
-         storageRobotSender.sendEmplacements(re, tkEmpls, oType);
-      }
-   }
+	public void sendMessages(Recepteur re, List<TKAnnotableObject> tkObjs,
+			Integer b) {
+		// seul Hopital Manager DME n'est concerné pour l'instant
+		if (hmMessageSender.useRecepteur(re)) {
+			hmMessageSender.sendMessages(tkObjs, b);
+		}		
+	}
 
+   @Override
+	public void sendEmplacements(Recepteur re, List<StorageMovement> movs, Utilisateur u) {
+		// seul le système IRELEC-Grenoble concerné pour l'instant
+		if (storageRobotSender.useRecepteur(re)) {
+			storageRobotSender.sendEmplacements(re, movs, u);
+		}
+	}
 }

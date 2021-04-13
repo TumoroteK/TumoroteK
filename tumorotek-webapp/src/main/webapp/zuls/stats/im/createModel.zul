@@ -164,17 +164,17 @@
                     <center title="${c:l('Entite.Indicateur.pluriel')}">
                         <div hflex="1" vflex="1">
                             <listbox id="listbox" model="${vm.indicateursModel}" hflex="1" vflex="1"
-                                     multiple="true" checkmark="true"
+                                     multiple="true" checkmark="@load(vm.inEdition)"
                                      onMouseOut="@command('onMouseOutIndicateurList')"
                                      onCheckSelectAll="@command('onSelectAllIndicateurs')">
-                                <listhead visible="@load(vm.inEdition)">
+                                <listhead>
                                     <listheader id="indicHeader" label="${c:l('general.selectAll')}"/>
                                 </listhead>
                                 <template name="model">
                                     <listitem checkable="@load(vm.inEdition)"
                                               onMouseOver="@command('OnMouseOverIndicateurList', target=self , item=self.value)"
                                               onClick="@command('onSelectIndicateur', item=self.value)">
-                                        <listcell label="${c:l(c:cat('Indicateur.',each.nom))}"/>
+                                     <listcell label="${each.nom}"/>
                                     </listitem>
                                 </template>
                             </listbox>
@@ -187,9 +187,9 @@
 
                         <listbox id="banquesBox" hflex="1" vflex="1"
                                  model="${vm.banquesModel}" multiple="true"
-                                 checkmark="true"
+                                 checkmark="@load(vm.inEdition)"
                                  onSelect="@command('onSelectBanque')">
-                            <listhead visible="@load(vm.inEdition)">
+                            <listhead>
                                 <listheader label="${c:l('general.selectAll')}"/>
                             </listhead>
                             <template name="model">

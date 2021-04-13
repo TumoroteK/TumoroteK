@@ -38,8 +38,8 @@
 	<panel collapsible="false" title="${c:l('fichePrelevement.panel.title')}"
 	 sclass="fichePanelv2" id="winPanel" closable="true">
 		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
-			<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvt">
-				<columns>
+<grid fixedLayout="true" width="100%"
+				sclass="gridForm1" id="gridFormPrlvt" span="true">				<columns>
 					<column width="150px"/>
 					<column/>
 					<column width="150px"/>
@@ -321,22 +321,19 @@
 					</row>
 					<row spans="4">
 						<grid id="laboIntersGrid" 
-							fixedLayout="true" 
-							width="620px"
-							height="100%"
+							hflex="1"
 							sclass="gridListStyle"
-							model="@{fwinPrelevementStaticSero$composer.laboInters}">
-							
+							model="@{fwinPrelevementStaticSero$composer.laboInters}">							
 							<columns>
-								<column width="25px"/>
+								<column width="40px"/>
 								<column label="${c:l('laboInter.dateArrivee')}"
-								width="140px"/>
+									hflex="1" />
 								<column label="${c:l('laboInter.dateDepart')}"
-								width="140px"/>
+									hflex="1" />
 								<column label="${c:l('laboInter.service')}"
-								width="140px"/>
+									hflex="1"/>
 								<column label="${c:l('prelevement.laboInters.transportTemp')}"
-								width="140px"/>
+									hflex="1" />
 								<column width="30px" />
 							</columns>
 							<rows>

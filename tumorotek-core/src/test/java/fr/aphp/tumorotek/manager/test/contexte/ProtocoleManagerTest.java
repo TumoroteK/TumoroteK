@@ -101,12 +101,12 @@ public class ProtocoleManagerTest extends AbstractManagerTest4
    public void testIsUsedObject(){
       //Enregistrement est reference
       final Plateforme pf1 = plateformeDao.findById(1);
-      final Protocole tysa = protocoleManager.findByOrderManager(pf1).get(0);
+      final Protocole tysa = protocoleManager.findByOrderManager(pf1).get(1);
       assertTrue(protocoleManager.isUsedObjectManager(tysa));
       //Enregistrement n'est pas reference
       final Plateforme pf2 = plateformeDao.findById(2);
       final Protocole edmus = protocoleManager.findByOrderManager(pf2).get(0);
-      assertFalse(protocoleManager.isUsedObjectManager(edmus));
+      assertTrue(protocoleManager.isUsedObjectManager(edmus));
    }
 
    /**

@@ -47,7 +47,7 @@ import fr.aphp.tumorotek.model.stockage.Terminale;
  * Interface créée le 18/03/10.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.2.2-diamic
  *
  */
 public interface TerminaleDao extends GenericDaoJpa<Terminale, Integer>
@@ -114,5 +114,12 @@ public interface TerminaleDao extends GenericDaoJpa<Terminale, Integer>
     * @return Liste de terminales.
     */
    List<Terminale> findByTwoExcludedIdsWithEnceinte(Integer terminaleId, Integer terminaleId2, Enceinte enceinte);
-
+   
+   /**
+    * Recherche les terminales dont l'alias égale la valeur passée en paramètre
+    * @param alias
+    * @return liste terminale
+    * @since 2.2.2-diamic
+    */
+   List<Terminale> findByAlias(String alias);
 }

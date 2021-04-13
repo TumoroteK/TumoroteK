@@ -54,7 +54,7 @@
 				<column label="${c:l('utilisateur.timeout')}"/>
 			</columns>
 			<rows>
-				<row self="@{each='currUtilisateur'}" value="currUtilisateur"/>
+				<row self="@{each='currUtilisateur'}" value="currUtilisateur" />
 			</rows>
 		</grid>
 	</panelchildren>

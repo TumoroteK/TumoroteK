@@ -199,6 +199,9 @@ public class FicheChampThesaurus extends AbstractFicheCombineController
       //Alimentation des champs supplémentaires
       if(valeurThesaurus instanceof Risque) {
          ((Risque) valeurThesaurus).setInfectieux(valueCheckbox.isChecked());
+      } else if (valeurThesaurus instanceof EnceinteType) {
+    	  newSecondValue = newSecondValue.toUpperCase().trim();
+    	 ((EnceinteType) valeurThesaurus).setPrefixe(newSecondValue);
       }
       
       try{

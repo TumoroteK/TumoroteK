@@ -174,7 +174,7 @@ public class PrelEchansManagerImpl implements PrelEchansManager
                   // newEchan.getEmplacement(), 
                   null, // since 2.0.13.2
                   newEchan.getEchantillonType(), codes, newEchan.getQuantiteUnite(), newEchan.getEchanQualite(),
-                  newEchan.getModePrepa(), crAnapath, newEchan.getAnapathStream(), filesCreated, newEchan.getReservation(),
+                  newEchan.getModePrepa(), crAnapath, newEchan.getAnapathStream(), filesCreated,
                   //codeOrgExp, 
                   //codeLesExp,
                   echanDTOs.get(i).getValeursToCreateOrUpdate(), utilisateur, true, baseDir, false);

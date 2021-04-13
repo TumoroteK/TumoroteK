@@ -14,7 +14,7 @@ import fr.aphp.tumorotek.model.interfacage.ValeurExterne;
  * Interface créée le 07/10/2011.
  *
  * @author Pierre Ventadour
- * @version 2.1
+ * @version 2.2.3-genno
  *
  */
 public interface DossierExterneManager
@@ -97,5 +97,23 @@ public interface DossierExterneManager
     * @param dossierExterne Dossier à supprimer.
     */
    void removeObjectManager(DossierExterne dossierExterne);
+   
+   /**
+    * Recherche tous les DossierExternes contenant une valeur externe 'like" la valeur 
+    * passée en paramètre pour le champ spécifié
+    * @param emetteur
+    * @param champ entite Id
+    * @param valeur;
+    * @return Liste de DossierExternes.
+    * @since 2.2.3-genno
+    */
+   List<DossierExterne> findChildrenByEmetteurValeurManager(Emetteur emet, Integer champEntiteId, String valeur);
 
+   /**
+    * Recherche les dossiers externes 'parent' = entite Id is null 
+    * pour un émetteur passé en paramètre
+    * @param emetteur
+    * @return liste dossiers externes
+    */
+   List<DossierExterne> findByEmetteurAndEntiteNullManager(Emetteur emet);
 }

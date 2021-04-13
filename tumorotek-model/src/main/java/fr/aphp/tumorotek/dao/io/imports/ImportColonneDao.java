@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * Date: 24/01/2011.
  *
  * @author Pierre VENTADOUR
- * @version 2.0
+ * @version 2.2.1
  */
 public interface ImportColonneDao extends GenericDaoJpa<ImportColonne, Integer>
 {
@@ -69,6 +69,16 @@ public interface ImportColonneDao extends GenericDaoJpa<ImportColonne, Integer>
     * @return Liste d'ImportColonnes.
     */
    List<ImportColonne> findByTemplateAndEntite(ImportTemplate importTemplate, Entite entite);
+   
+   /**
+    * Recherche les ImportColonnes de l'ImportTemplate et de l'entité pour les champs delegues
+    * contextuels.
+    * @param importTemplate Template.
+    * @param entite Entité.
+    * @return Liste d'ImportColonnes.
+    * @since 2.2.1
+    */
+   List<ImportColonne> findByTemplateAndEntiteDelegue(ImportTemplate importTemplate, Entite entite);
 
    /**
     * Recherche les ImportColonnes de l'ImportTemplate et du datatype.

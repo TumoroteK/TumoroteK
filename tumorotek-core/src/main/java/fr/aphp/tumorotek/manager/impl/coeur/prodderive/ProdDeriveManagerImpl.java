@@ -69,7 +69,6 @@ import fr.aphp.tumorotek.dao.qualite.OperationTypeDao;
 import fr.aphp.tumorotek.dao.stockage.EmplacementDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
 import fr.aphp.tumorotek.dao.systeme.UniteDao;
-import fr.aphp.tumorotek.dao.utilisateur.ReservationDao;
 import fr.aphp.tumorotek.manager.coeur.ObjetStatutManager;
 import fr.aphp.tumorotek.manager.coeur.annotation.AnnotationValeurManager;
 import fr.aphp.tumorotek.manager.coeur.cession.CederObjetManager;
@@ -116,7 +115,6 @@ import fr.aphp.tumorotek.model.qualite.OperationType;
 import fr.aphp.tumorotek.model.stockage.Emplacement;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.systeme.Unite;
-import fr.aphp.tumorotek.model.utilisateur.Reservation;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.utils.Utils;
 
@@ -143,7 +141,6 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    private UniteDao uniteDao;
    private ProdQualiteDao prodQualiteDao;
    private TransformationDao transformationDao;
-   private ReservationDao reservationDao;
    private ProdDeriveValidator prodDeriveValidator;
    private OperationTypeDao operationTypeDao;
    private OperationManager operationManager;
@@ -197,10 +194,6 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
 
    public void setTransformationDao(final TransformationDao tDao){
       this.transformationDao = tDao;
-   }
-
-   public void setReservationDao(final ReservationDao rDao){
-      this.reservationDao = rDao;
    }
 
    public void setProdDeriveValidator(final ProdDeriveValidator validator){
@@ -899,7 +892,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       final ObjetStatut statut, final Collaborateur collab, final Emplacement emplacement, final Unite volumeUnite,
       final Unite concUnite, final Unite quantiteUnite, final ModePrepaDerive modePrepaDerive, final ProdQualite qualite,
       final Transformation transfo, final List<AnnotationValeur> listAnnoToCreateOrUpdate, final List<File> filesCreated,
-      final Reservation reservation, final Utilisateur utilisateur, final boolean doValidation, final String baseDir,
+      final Utilisateur utilisateur, final boolean doValidation, final String baseDir,
       final boolean isImport){
 
       // On vérifie que la banque n'est pas null. Si c'est le cas on envoie
@@ -985,12 +978,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          }else{
             prodDerive.setProdQualite(null);
          }
-         // On vérifie que la réservation n'est pas null
-         if(reservation != null){
-            prodDerive.setReservation(reservationDao.mergeObject(reservation));
-         }else{
-            prodDerive.setReservation(null);
-         }
+
          if(doValidation){
             BeanValidator.validateObject(prodDerive, new Validator[] {prodDeriveValidator});
          }
@@ -1046,7 +1034,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    public void createObjectWithNonConformitesManager(final ProdDerive prodDerive, final Banque banque, final ProdType type,
       final ObjetStatut statut, final Collaborateur collab, final Emplacement emplacement, final Unite volumeUnite,
       final Unite concUnite, final Unite quantiteUnite, final ModePrepaDerive modePrepaDerive, final ProdQualite qualite,
-      final Transformation transfo, final List<AnnotationValeur> listAnnoToCreateOrUpdate, final Reservation reservation,
+      final Transformation transfo, final List<AnnotationValeur> listAnnoToCreateOrUpdate, 
       final Utilisateur utilisateur, final boolean doValidation, final String baseDir, final boolean isImport,
       final List<NonConformite> noconfsTrait, final List<NonConformite> noconfsCess){
 
@@ -1062,7 +1050,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          }
 
          createObjectManager(prodDerive, banque, type, statut, collab, emplacement, volumeUnite, concUnite, quantiteUnite,
-            modePrepaDerive, qualite, transfo, listAnnoToCreateOrUpdate, filesCreated, reservation, utilisateur, doValidation,
+            modePrepaDerive, qualite, transfo, listAnnoToCreateOrUpdate, filesCreated, utilisateur, doValidation,
             baseDir, isImport);
 
          objetNonConformeManager.createUpdateOrRemoveListObjectManager(prodDerive, noconfsTrait, "Traitement");
@@ -1081,7 +1069,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       final Unite concUnite, final Unite quantiteUnite, final ModePrepaDerive modePrepaDerive, final ProdQualite qualite,
       final Transformation transfo, final List<AnnotationValeur> listAnnoToCreateOrUpdate,
       final List<AnnotationValeur> listAnnoToDelete, final List<File> filesCreated, final List<File> filesToDelete,
-      final Reservation reservation, final Utilisateur utilisateur, final boolean doValidation,
+      final Utilisateur utilisateur, final boolean doValidation,
       final List<OperationType> operations, final String baseDir){
 
       // On vérifie que la banque n'est pas null. Si c'est le cas on envoie
@@ -1157,12 +1145,6 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
             prodDerive.setProdQualite(prodQualiteDao.mergeObject(qualite));
          }else{
             prodDerive.setProdQualite(null);
-         }
-         // On vérifie que la réservation n'est pas null
-         if(reservation != null){
-            prodDerive.setReservation(reservationDao.mergeObject(reservation));
-         }else{
-            prodDerive.setReservation(null);
          }
 
          if(doValidation){
@@ -1256,7 +1238,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
             updateObjectManager(derive, derive.getBanque(), derive.getProdType(), derive.getObjetStatut(),
                derive.getCollaborateur(), derive.getEmplacement(), derive.getVolumeUnite(), derive.getConcUnite(),
                derive.getQuantiteUnite(), derive.getModePrepaDerive(), derive.getProdQualite(), derive.getTransformation(), null,
-               null, filesCreated, filesToDelete, derive.getReservation(), utilisateur, true, null, baseDir);
+               null, filesCreated, filesToDelete, utilisateur, true, null, baseDir);
 
             // enregistrement de la conformité
             objetNonConformeManager.createUpdateOrRemoveListObjectManager(derive, ncfsTrait, "Traitement");
@@ -1432,7 +1414,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
 
             createObjectManager(newDerive, banque, newDerive.getProdType(), nonstocke, newDerive.getCollaborateur(), null,
                newDerive.getVolumeUnite(), newDerive.getConcUnite(), newDerive.getQuantiteUnite(), newDerive.getModePrepaDerive(),
-               newDerive.getProdQualite(), transfo, listAnnotations, filesCreated, null, utilisateur, true, baseDir, false);
+               newDerive.getProdQualite(), transfo, listAnnotations, filesCreated, utilisateur, true, baseDir, false);
 
             objetNonConformeManager.createUpdateOrRemoveListObjectManager(newDerive, noconfsTrait, "Traitement");
             objetNonConformeManager.createUpdateOrRemoveListObjectManager(newDerive, noconfsCess, "Cession");
@@ -1561,7 +1543,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       final ObjetStatut statut, final Collaborateur collab, final Emplacement emplacement, final Unite volumeUnite,
       final Unite concUnite, final Unite quantiteUnite, final ModePrepaDerive modePrepaDerive, final ProdQualite qualite,
       final Transformation transfo, final List<AnnotationValeur> listAnnoToCreateOrUpdate,
-      final List<AnnotationValeur> listAnnoToDelete, final Reservation reservation, final Utilisateur utilisateur,
+      final List<AnnotationValeur> listAnnoToDelete, final Utilisateur utilisateur,
       final boolean doValidation, final List<OperationType> operations, final String baseDir,
       final List<NonConformite> noconfsTraitement, final List<NonConformite> noconfsCession){
 
@@ -1579,7 +1561,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
 
          updateObjectManager(prodDerive, banque, type, statut, collab, emplacement, volumeUnite, concUnite, quantiteUnite,
             modePrepaDerive, qualite, transfo, listAnnoToCreateOrUpdate, listAnnoToDelete, filesCreated, filesToDelete,
-            reservation, utilisateur, doValidation, operations, baseDir);
+            utilisateur, doValidation, operations, baseDir);
 
          objetNonConformeManager.createUpdateOrRemoveListObjectManager(prodDerive, noconfsTraitement, "Traitement");
          objetNonConformeManager.createUpdateOrRemoveListObjectManager(prodDerive, noconfsCession, "Cession");

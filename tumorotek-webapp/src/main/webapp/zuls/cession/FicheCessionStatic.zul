@@ -379,6 +379,10 @@
 							<menuitem id="printAccord" image="/images/icones/printerAccord.png" label="${c:l('general.print.accord')}" />
 							<menuitem id="print" image="/images/icones/printer.png" label="${c:l('general.print')}" />
 							<menuitem id="historique" image="/images/icones/history.png" label="${c:l('general.historique')}" />
+							<!-- since 2.2.1-IRELEC -->
+							<menuitem id="storageRobotItem" image="/images/icones/kstars.png" 
+									label="${c:l('storage.robot.stockage')}"
+									visible="false" />
 						</menupopup>
 					</menu>
 				</menubar>

@@ -60,19 +60,19 @@ import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 public abstract class AbstractEchantillonDelegate extends TKDelegateObject<Echantillon>
 {
 
-   private Integer id;
+   private Integer echantillonId;
    private Echantillon delegator;
 
    @Id
    @Column(name = "ECHANTILLON_DELEGATE_ID", unique = true, nullable = false)
    @GeneratedValue(generator = "autoincrement")
    @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getId() {
-      return this.id;
+   public Integer getEchantillonId() {
+      return this.echantillonId;
    }
    
-   public void setId(Integer id) {
-      this.id = id;
+   public void setEchantillonId(Integer id) {
+      this.echantillonId = id;
    }
    
    @Override
@@ -83,8 +83,8 @@ public abstract class AbstractEchantillonDelegate extends TKDelegateObject<Echan
    }
 
    @Override
-   public void setDelegator(Echantillon delegator){
-      this.delegator = delegator;
+   public void setDelegator(Echantillon _d){
+      this.delegator = _d;
    }
 
 }

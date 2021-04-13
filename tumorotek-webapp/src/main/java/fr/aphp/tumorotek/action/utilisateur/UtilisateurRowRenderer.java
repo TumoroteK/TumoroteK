@@ -51,6 +51,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  * Renderer d'un Utilisateur.
@@ -87,6 +88,8 @@ public class UtilisateurRowRenderer implements RowRenderer<Utilisateur>
             autorisationLabel.setClass("formArchiveValue");
          }
          autorisationLabel.setParent(vBox);
+         
+         row.setSclass("gold");
       }
 
       // si admin de plateforme
@@ -117,7 +120,14 @@ public class UtilisateurRowRenderer implements RowRenderer<Utilisateur>
          if(availableBanques.contains(profils.get(i).getBanque())){
             // on ajoute le nom de la banque et le role
             final StringBuffer sb = new StringBuffer();
-            sb.append(profils.get(i).getBanque().getNom());
+            
+            // @since 2.2.1
+            // ajoute la PF si pas la PF courante
+            if (profils.get(i).getBanque().getPlateforme().equals(SessionUtils.getCurrentPlateforme())) {
+            	sb.append(profils.get(i).getBanque().getNom());
+            } else {
+            	sb.append(profils.get(i).getBanque().getBanqueAndPlateformeNoms());
+            }
             sb.append(" - ");
             sb.append(profils.get(i).getProfil().getNom());
             final Label autorisationLabel = new Label(sb.toString());
@@ -129,11 +139,11 @@ public class UtilisateurRowRenderer implements RowRenderer<Utilisateur>
       }
       vBox.setParent(row);
 
-      if(utilisateur.getPlateformeOrig() != null){
-         new Label(utilisateur.getPlateformeOrig().getNom()).setParent(row);
-      }
+      new Label(utilisateur.getPlateformeOrig() != null ?   
+    		utilisateur.getPlateformeOrig().getNom() : "").setParent(row);
 
-      new Label(ObjectTypesFormatters.dateRenderer2(ManagerLocator.getOperationManager().findDateCreationManager(utilisateur)))
+      new Label(ObjectTypesFormatters.dateRenderer2(ManagerLocator
+    	.getOperationManager().findDateCreationManager(utilisateur)))
          .setParent(row);
 
       new Label(ObjectTypesFormatters.dateRenderer2(utilisateur.getTimeOut())).setParent(row);

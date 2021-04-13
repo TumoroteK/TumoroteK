@@ -41,10 +41,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import org.apache.camel.CamelContext;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.junit.Before;
@@ -57,193 +54,236 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
+import fr.aphp.tumorotek.interfacage.storageRobot.StorageMovement;
+import fr.aphp.tumorotek.interfacage.storageRobot.StorageMovementComparator;
+import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+import fr.aphp.tumorotek.manager.utilisateur.UtilisateurManager;
 import fr.aphp.tumorotek.interfacage.sender.SenderFactory;
 import fr.aphp.tumorotek.interfacage.sender.StorageRobotSender;
-import fr.aphp.tumorotek.interfacage.storageRobot.StorageEmplacement;
-import fr.aphp.tumorotek.manager.qualite.OperationTypeManager;
-import fr.aphp.tumorotek.manager.stockage.EmplacementManager;
-import fr.aphp.tumorotek.model.TKStockableObject;
-import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.interfacage.Logiciel;
 import fr.aphp.tumorotek.model.interfacage.Recepteur;
-import fr.aphp.tumorotek.model.qualite.OperationType;
-import fr.aphp.tumorotek.model.stockage.Emplacement;
 
+/**
+ * 
+ * @author Mathieu BARTHELEMY
+ * @version 2.2.1-IRELEC
+ *
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:test-camel-config.xml", "classpath:applicationContextManagerBase.xml",
-   "classpath:applicationContextDaoBase-test-mysql.xml"})
+"classpath:applicationContextDaoBase-test-mysql.xml"})
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class})
 public class SenderTest
 {
 
-   @Autowired
-   private CamelContext camelContext;
+	@Autowired
+	private CamelContext camelContext;
 
-   @Autowired
-   private StorageRobotSender storageRobotSender;
+	@Autowired
+	private StorageRobotSender storageRobotSender;
 
-   @Autowired
-   private SenderFactory senderFactory;
+	@Autowired
+	private SenderFactory senderFactory;
 
-   @Autowired
-   private OperationTypeManager operationTypeManager;
+	@Autowired
+	private UtilisateurManager utilisateurManager;
 
-   @Autowired
-   private EmplacementManager emplacementManager;
+	private MockEndpoint mockDirect;
+	private MockEndpoint mockEp;
+	private MockEndpoint mockDead;
+	private MockEndpoint mockLogger;
 
-   private MockEndpoint mockDirect;
-   private MockEndpoint mockEp;
-   private MockEndpoint mockDead;
-   private MockEndpoint mockLogger;
+	private Recepteur robot;
 
-   private Recepteur robot;
+	@Before
+	public void setUp(){
+		robot = new Recepteur();
+		robot.setRecepteurId(2);
+		robot.setIdentification("STORAGE-ROBOT-ONE");
+		final Logiciel irelec = new Logiciel();
+		irelec.setNom("IRELEC");
+		robot.setLogiciel(irelec);
 
-   @Before
-   public void setUp(){
-      robot = new Recepteur();
-      robot.setRecepteurId(2);
-      robot.setIdentification("STORAGE-ROBOT-ONE");
-      final Logiciel irelec = new Logiciel();
-      irelec.setNom("IRELEC");
-      robot.setLogiciel(irelec);
+		mockDirect = (MockEndpoint) camelContext.getEndpoint("mock:direct:storage-robot-master");
+		mockEp = (MockEndpoint) camelContext.getEndpoint("mock:file:/home/mathieu/Desktop/IRELEC");
+		mockDead = (MockEndpoint) camelContext.getEndpoint("mock:storage-robot.deadLetter");
+		mockLogger = (MockEndpoint) camelContext.getEndpoint("mock:bean:exceptionLogProcessor");
+	}
 
-      mockDirect = (MockEndpoint) camelContext.getEndpoint("mock:direct:storage-robot");
-      mockEp = (MockEndpoint) camelContext.getEndpoint("mock:file:/home/mathieu/Desktop/IRELEC");
-      mockDead = (MockEndpoint) camelContext.getEndpoint("mock:storage-robot.deadLetter");
-      mockLogger = (MockEndpoint) camelContext.getEndpoint("mock:bean:exceptionLogProcessor");
-   }
+	// TODO : Test à corriger pour être lancé avec maven test. Fonctionne avec JUnit en revanche - JDI
+	@Test
+	@DirtiesContext
+	public void testStorageRobotRoute() throws Exception{
 
-   // TODO : Test à corriger pour être lancé avec maven test. Fonctionne avec JUnit en revanche - JDI
-   //@Test
-   @DirtiesContext
-   public void testStorageRobotRoute() throws Exception{
-      final Map<TKStockableObject, Emplacement> tkEmpls = initTKEmpls();
+		List<StorageMovement> movs = initMoves();
 
-      senderFactory.sendEmplacements(robot, tkEmpls, null);
-      senderFactory.sendEmplacements(robot, tkEmpls, operationTypeManager.findByNomLikeManager("Destockage", true).get(0));
-      senderFactory.sendEmplacements(null, tkEmpls, null);
-      senderFactory.sendEmplacements(null, tkEmpls, null);
+		Utilisateur u1 = utilisateurManager.findByIdManager(1);
 
-      mockDirect.expectedMessageCount(2);
-      mockEp.expectedMessageCount(2);
-      mockLogger.expectedMessageCount(0);
-      mockDead.expectedMessageCount(0);
+		senderFactory.sendEmplacements(null, movs, u1);
+		senderFactory.sendEmplacements(robot, movs, u1);
+		senderFactory.sendEmplacements(robot, null, u1);
+		senderFactory.sendEmplacements(robot, movs, null);
+		boolean caught = false;
+		try {
+			senderFactory.sendEmplacements(robot, initBadMoves(), u1);
+		} catch (RuntimeException re) {
+			caught = true;
+			assertTrue(re.getMessage().equals("storage.robot.emplacement.adrl.incompatible"));
+		}
+		assertTrue(caught);
 
-      Thread.sleep(100);
+		mockDirect.expectedMessageCount(2);
+		mockEp.expectedMessageCount(2);
+		mockLogger.expectedMessageCount(0);
+		mockDead.expectedMessageCount(0);
 
-      mockDirect.assertIsSatisfied();
-      mockEp.assertIsSatisfied();
-      mockLogger.assertIsSatisfied();
-      mockLogger.assertIsSatisfied();
+		Thread.sleep(100);
 
-      assertTrue(true);
-   }
+		mockDirect.assertIsSatisfied();
+		mockEp.assertIsSatisfied();
+		mockLogger.assertIsSatisfied();
+		mockLogger.assertIsSatisfied();
 
-   @Test
-   public void testStorageEmplacementSort(){
+		assertTrue(true);
+	}
 
-      final StorageEmplacement st1 = new StorageEmplacement("E1", "B", "B", "B", "2"); // 2
-      final StorageEmplacement st2 = new StorageEmplacement("E2", "B", "B", "C", "2"); // 4
-      final StorageEmplacement st3 = new StorageEmplacement("E3", "B", "B", "C", "3"); // 5
-      final StorageEmplacement st4 = new StorageEmplacement("E4", "B", "C", "C", "3"); // 6
-      final StorageEmplacement st5 = new StorageEmplacement("E5", "C", "A", "C", "3"); // 7
-      final StorageEmplacement st6 = new StorageEmplacement("E6", "A", "D", "C", "1"); // 1
-      final StorageEmplacement st7 = new StorageEmplacement("Aa", "B", "B", "C", "2"); // 3
-      // nulls unclassables
-      final StorageEmplacement st8 = new StorageEmplacement(null, "B", "B", "C", "2");
-      final StorageEmplacement st9 = new StorageEmplacement("E8", null, "B", "C", "2");
-      final StorageEmplacement st10 = new StorageEmplacement("Aa", "B", null, "C", "2");
-      final StorageEmplacement st11 = new StorageEmplacement("Aa", "B", "B", null, "2");
-      final StorageEmplacement st12 = new StorageEmplacement("Aa", "B", "B", "C", null);
-      // StorageEmplacement st13 = null;
+	@Test
+	public void testStorageMovementSort() {
 
-      final List<StorageEmplacement> sts = new ArrayList<>();
-      sts.add(st1);
-      sts.add(st2);
-      sts.add(st3);
-      sts.add(st4);
-      sts.add(st5);
-      sts.add(st6);
-      sts.add(st7);
-      sts.add(st8);
-      sts.add(st9);
-      sts.add(st10);
-      sts.add(st11);
-      sts.add(st12);
+		StorageMovement st1 = 
+				new StorageMovement("E1", "2", "IRE.1.1.1"); // 2 - 1
+		StorageMovement st2 = 
+				new StorageMovement("E2", "4", "IRE.1.1.2"); // 4 - 2
+		StorageMovement st3 =
+				new StorageMovement("E3", "5", "IRE.1.2.1"); // 5 - 3
+		StorageMovement st4 = 
+				new StorageMovement("E4", "6", "IRE.1.3.1"); // 6 - 4
+		StorageMovement st5 = 
+				new StorageMovement("E5", "7", "IRE.2.1.1"); // 7 - 5
+		StorageMovement st6 = 
+				new StorageMovement("E6", "1", "IRE.3.1.1"); // 1 - 6
+		StorageMovement st7 = 
+				new StorageMovement("Aa", "3", "JRE.1.1.1"); // 3 - 7
+		StorageMovement st8 = 
+				new StorageMovement(null, null, null); // inclassable
+		// nulls unclassables
+		StorageMovement st9 = 
+				new StorageMovement("E8", null, "JRE.1.2.1");  // ? - 8
+		StorageMovement st10 = 
+				new StorageMovement("E9", "8", null);  // 8 - ?
 
-      Collections.sort(sts);
-      assertTrue(sts.get(0).equals(st6));
-      assertTrue(sts.get(1).equals(st1));
-      assertTrue(sts.get(2).equals(st7));
-      assertTrue(sts.get(3).equals(st2));
-      assertTrue(sts.get(4).equals(st3));
-      assertTrue(sts.get(5).equals(st4));
-      assertTrue(sts.get(6).equals(st5));
-   }
+		List<StorageMovement> sts = new ArrayList<StorageMovement>();
+		sts.add(st1); sts.add(st2); sts.add(st3);
+		sts.add(st4); sts.add(st5); sts.add(st6); sts.add(st7);
+		sts.add(st8); sts.add(st9); sts.add(st10);  
 
-   @Test
-   public void testMakeCSV(){
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		// sort by adrl
+		Collections.sort(sts, new StorageMovementComparator(true));
+		assertTrue(sts.get(0).equals(st6));
+		assertTrue(sts.get(1).equals(st1));
+		assertTrue(sts.get(2).equals(st7));
+		assertTrue(sts.get(3).equals(st2));
+		assertTrue(sts.get(4).equals(st3));
+		assertTrue(sts.get(5).equals(st4));
+		assertTrue(sts.get(6).equals(st5));
+		assertTrue(sts.get(7).equals(st10));
 
-      final Map<TKStockableObject, Emplacement> tkEmpls = initTKEmpls();
+		// sort by destAdrl
+		Collections.sort(sts, new StorageMovementComparator(false));
+		assertTrue(sts.get(0).equals(st1));
+		assertTrue(sts.get(1).equals(st2));
+		assertTrue(sts.get(2).equals(st3));
+		assertTrue(sts.get(3).equals(st4));
+		assertTrue(sts.get(4).equals(st5));
+		assertTrue(sts.get(5).equals(st6));
+		assertTrue(sts.get(6).equals(st7));
+		assertTrue(sts.get(7).equals(st9));
+	}
 
-      final OperationType stockage = operationTypeManager.findByNomLikeManager("Stockage", true).get(0);
-      final OperationType destockage = operationTypeManager.findByNomLikeManager("Destockage", true).get(0);
+	@Test
+	public void testWriteOneRecetteLine() {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-      try{
-         storageRobotSender.makeCSVfromMap(robot, baos, tkEmpls, stockage, "|", 5);
+		Utilisateur u1 = utilisateurManager.findByIdManager(1);
 
-         String[] out = baos.toString().split("\\\n");
+		try {						
+			storageRobotSender.writeOneRecetteLine(baos, "test.csv", u1, "|");
 
-         assertTrue(out.length == 5);
-         assertTrue("1|ECHAN1|CC1|1|1|10".equals(out[0]));
-         assertTrue("2|ECHAN2|CC1|1|1|11".equals(out[1]));
-         assertTrue("3|ECHAN3|CC1|2|1|1".equals(out[2]));
-         assertTrue("4|||||".equals(out[3]));
-         assertTrue("5|||||".equals(out[4]));
+			String[] out = baos.toString().split("\\\n");
 
-         baos.close();
+			assertTrue(out.length == 1);
+			assertTrue("test.csv|USER1".equals(out[0]));
 
-         baos = new ByteArrayOutputStream();
-         storageRobotSender.makeCSVfromMap(robot, baos, tkEmpls, destockage, ";", -1);
+			baos.close();
 
-         out = baos.toString().split("\\\n");
-         assertTrue(out.length == 3);
-         assertTrue("1;;;;;;ECHAN1;CC1;1;1;10".equals(out[0]));
-         assertTrue("2;;;;;;ECHAN2;CC1;1;1;11".equals(out[1]));
-         assertTrue("3;;;;;;ECHAN3;CC1;2;1;1".equals(out[2]));
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				baos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
-         baos.close();
+	@Test
+	public void testMakeCSV() {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-      }catch(final Exception e){
-         e.printStackTrace();
-      }finally{
-         try{
-            baos.close();
-         }catch(final IOException e){
-            e.printStackTrace();
-         }
-      }
-   }
+		List<StorageMovement> movs = initMoves();
 
-   private Map<TKStockableObject, Emplacement> initTKEmpls(){
-      final Map<TKStockableObject, Emplacement> tkEmpls = new HashMap<>();
-      final Echantillon e1 = new Echantillon();
-      e1.setCode("ECHAN1");
-      final Emplacement emp4 = emplacementManager.findByIdManager(4);
-      tkEmpls.put(e1, emp4);
-      final Echantillon e3 = new Echantillon();
-      e3.setCode("ECHAN3");
-      final Emplacement emp6 = emplacementManager.findByIdManager(6);
-      tkEmpls.put(e3, emp6);
-      final Echantillon e4 = new Echantillon();
-      e4.setCode("ECHAN4");
-      tkEmpls.put(e4, null);
-      final Echantillon e2 = new Echantillon();
-      e2.setCode("ECHAN2");
-      final Emplacement emp5 = emplacementManager.findByIdManager(5);
-      tkEmpls.put(e2, emp5);
+		Collections.sort(movs, new StorageMovementComparator(false));
+		
+		try {						
+			storageRobotSender.makeCSVfromMap(robot, baos, movs, "|");
 
-      return tkEmpls;
-   }
+			String[] out = baos.toString().split("\\\n");
+
+			assertTrue(out.length == 3);
+			assertTrue("1|ECHAN1|0|0|0|1|1|1|1|10|".equals(out[0]));
+			assertTrue("2|ECHAN2|0|0|0|2|1|1|1|11|".equals(out[1]));
+			assertTrue("3|ECHAN3|0|0|0|3|1|2|1|1|".equals(out[2]));
+			// assertTrue("4|ECHAN4|CC1|1|1|6|||||".equals(out[3]));
+
+			baos.close();
+
+			baos = new ByteArrayOutputStream();
+			storageRobotSender.makeCSVfromMap(robot, baos, movs, ";");
+
+			out = baos.toString().split("\\\n");
+			assertTrue(out.length == 3);
+			assertTrue("1;ECHAN1;0;0;0;1;1;1;1;10;".equals(out[0]));
+			assertTrue("2;ECHAN2;0;0;0;2;1;1;1;11;".equals(out[1]));
+			assertTrue("3;ECHAN3;0;0;0;3;1;2;1;1;".equals(out[2]));
+			// assertTrue("4;ECHAN4;CC1;1;1;6;;;;;".equals(out[3]));
+
+			baos.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				baos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private List<StorageMovement> initMoves() {
+		List<StorageMovement> movs = new ArrayList<StorageMovement>();
+		movs.add(new StorageMovement("ECHAN1", "1", "1.1.1.10"));
+		movs.add(new StorageMovement("ECHAN3", "3", "1.2.1.1"));
+		// movs.add(new StorageMovement("ECHAN4", "1.1.1.6", null));
+		movs.add(new StorageMovement("ECHAN2", "2", "1.1.1.11"));
+		return movs;
+	}
+
+	private List<StorageMovement> initBadMoves() {
+		List<StorageMovement> movs = new ArrayList<StorageMovement>();
+		movs.add(new StorageMovement("ECHAN1", "0.0.0.1", "1.X.1.1.10"));
+		movs.add(new StorageMovement("ECHAN3", "0.0.0.X.3", "1.2.1.1"));
+		return movs;
+	}
 }

@@ -808,6 +808,28 @@ BEGIN
 END fill_tmp_table_patient;
 /
 
+create or replace 
+PROCEDURE fill_tmp_table_patient_anonyme (id IN patient.patient_id%Type) AS 
+BEGIN
+  INSERT INTO TMP_PATIENT_EXPORT (PATIENT_ID, SEXE, 
+           VILLE_NAISSANCE, PAYS_NAISSANCE, PATIENT_ETAT, DATE_ETAT, DATE_DECES, MEDECIN_PATIENT, 
+           CODE_ORGANE, NOMBRE_PRELEVEMENT, UTILISATEUR_SAISIE, DATE_HEURE_SAISIE, MALADIE_ID) 
+     SELECT id, sexe, ville_naissance, pays_naissance, patient_etat, date_etat, date_deces,  
+     	(SELECT stragg(c.nom) FROM PATIENT_MEDECIN pm JOIN COLLABORATEUR c ON pm.COLLABORATEUR_ID = c.COLLABORATEUR_ID AND pm.PATIENT_id = id),
+     	(SELECT stragg(code) from (select ca.code FROM CODE_ASSIGNE ca 
+          		INNER JOIN ECHANTILLON e ON e.echantillon_id = ca.echantillon_id 
+		    	INNER JOIN PRELEVEMENT pr on pr.prelevement_id = e.prelevement_id  
+		    	INNER JOIN MALADIE m ON m.maladie_id = pr.maladie_id 
+		    	WHERE ca.IS_ORGANE=1 AND m.patient_id = id ORDER BY ca.ordre)),
+     	(SELECT count(*) FROM PRELEVEMENT pr INNER JOIN MALADIE m ON pr.maladie_id = m.maladie_id WHERE m.patient_id = id),
+     	(SELECT login FROM UTILISATEUR JOIN OPERATION on utilisateur.utilisateur_id = operation.utilisateur_id where entite_id = 1 AND operation_type_id = 3 AND operation.objet_id = id),
+     	(SELECT date_ FROM OPERATION op WHERE op.OPERATION_TYPE_ID = 3 AND op.entite_id = 1 AND op.objet_id = id ),
+     	(SELECT stragg(maladie_id) FROM MALADIE WHERE patient_id = id)
+	FROM PATIENT WHERE patient_id = id;
+
+END fill_tmp_table_patient_anonyme;
+/
+
 -- -----------------------------------------------------
 --  procedures MALADIE
 -- ------------------------------------------------------

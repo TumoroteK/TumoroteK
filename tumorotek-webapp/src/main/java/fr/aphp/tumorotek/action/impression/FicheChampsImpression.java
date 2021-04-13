@@ -55,7 +55,13 @@ import fr.aphp.tumorotek.decorator.ChampImpressionRowRenderer;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.impression.ChampEntiteBloc;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
+/**
+ * 
+ * @author mathieu
+ * @version 2.2.3-genno
+ */
 public class FicheChampsImpression extends AbstractFicheController
 {
 
@@ -214,14 +220,29 @@ public class FicheChampsImpression extends AbstractFicheController
       // on extrait tous les champs disponibles
       final List<ChampEntiteBloc> cebs =
          ManagerLocator.getChampEntiteBlocManager().findByBlocManager(blocImpressionDecorator.getBlocImpression());
+      
+      // decoration
       for(int i = 0; i < cebs.size(); i++){
-         if(!blocImpressionDecorator.getChampEntites().contains(cebs.get(i).getChampEntite())){
-            final ChampImpressionDecorator deco = new ChampImpressionDecorator(cebs.get(i).getChampEntite());
-            deco.setImprimer(false);
-            champs.add(deco);
-         }
+          if(!blocImpressionDecorator.getChampEntites().contains(cebs.get(i).getChampEntite())){
+             final ChampImpressionDecorator deco = new ChampImpressionDecorator(cebs.get(i).getChampEntite());
+             deco.setImprimer(false);
+             champs.add(deco);
+          }
+       }
+      
+      // Vilain HACK !! contexte SEROLOGIE
+      // suppr les champs échantillons
+      if ("SEROLOGIE".equalsIgnoreCase(SessionUtils.getCurrentContexte().getNom())) {
+	      if (blocImpressionDecorator.getBlocImpression().getNom().equals("bloc.prelevement.echantillons")) {
+	    	  champs.remove(new ChampImpressionDecorator(new ChampEntite(ManagerLocator
+					  .getEntiteManager().findByIdManager(3), "EchanQualiteId", null)));
+			  champs.remove(new ChampImpressionDecorator(new ChampEntite(ManagerLocator
+					  .getEntiteManager().findByIdManager(3), "AdicapOrganeId", null)));
+			  champs.remove(new ChampImpressionDecorator(new ChampEntite(ManagerLocator
+					  .getEntiteManager().findByIdManager(3), "CodeAssigneId", null)));
+		  }
       }
-
+     
       getBinder().loadComponent(self);
    }
 

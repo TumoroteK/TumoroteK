@@ -40,9 +40,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -97,7 +95,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Classe créée le 25/01/10.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.10
+ * @version 2.2.3-genno
  *
  */
 public class RetourManagerImpl implements RetourManager
@@ -359,7 +357,7 @@ public class RetourManagerImpl implements RetourManager
 
    @Override
    public void createRetourListManager(final List<TKStockableObject> objects,
-      final Hashtable<TKStockableObject, Emplacement> oldEmpAdrls, final Retour retour, final Collaborateur collaborateur,
+      final List<OldEmplTrace> oldEmpAdrls, final Retour retour, final Collaborateur collaborateur,
       final Cession cession, final Transformation transformation, final Incident incident, final Utilisateur utilisateur){
 
       Retour newRet;
@@ -370,8 +368,8 @@ public class RetourManagerImpl implements RetourManager
 
             // emplacement actuel ou avant déplacement
             Emplacement emp = null;
-            if(oldEmpAdrls != null && oldEmpAdrls.containsKey(objects.get(i))){
-               emp = oldEmpAdrls.get(objects.get(i));
+            if(oldEmpAdrls != null && oldEmpAdrls.contains(new OldEmplTrace(objects.get(i), null, null, null))){
+              emp = oldEmpAdrls.get(oldEmpAdrls.indexOf(new OldEmplTrace(objects.get(i), null, null, null))).getCurrent();
             }
 
             createOrUpdateObjectManager(newRet, objects.get(i), emp, collaborateur, cession, transformation, incident,
@@ -383,7 +381,7 @@ public class RetourManagerImpl implements RetourManager
 
    @Override
    public boolean createRetourHugeListManager(final List<TKStockableObject> objects,
-      final HashMap<TKStockableObject, Emplacement> oldEmpAdrls, final Retour retour, final Collaborateur collaborateur,
+      final List<OldEmplTrace> oldEmpAdrls, final Retour retour, final Collaborateur collaborateur,
       final Cession cession, final Transformation transformation, final Incident incident, final Utilisateur utilisateur){
 
       final boolean ok = true;
@@ -521,9 +519,14 @@ public class RetourManagerImpl implements RetourManager
                }
 
                // OLD_EMPLACEMENT_ADRL
-               if(oldEmpAdrls != null && oldEmpAdrls.containsKey(objects.get(i))){
-                  pstmt.setString(10, emplacementManager.getAdrlManager(oldEmpAdrls.get(objects.get(i)), false));
-                  pstmt.setInt(13, emplacementManager.getConteneurManager(oldEmpAdrls.get(objects.get(i))).getConteneurId());
+               // @since 2.2.3-genno
+               // fix https://tumorotek.myjetbrains.com/youtrack/issue/TK-291
+               if(oldEmpAdrls != null && oldEmpAdrls.contains((new OldEmplTrace(objects.get(i), null, null, null)))){
+                  pstmt.setString(10, oldEmpAdrls.get(oldEmpAdrls
+                		.indexOf(new OldEmplTrace(objects.get(i), null, null, null))).getOldAdrl());
+                  pstmt.setInt(13,  oldEmpAdrls.get(oldEmpAdrls
+                  		.indexOf(new OldEmplTrace(objects.get(i), null, null, null))).getConteneur()
+                		  	.getConteneurId());
                }else if(objects.get(i).getEmplacement() != null){
                   emp = emplacementDao.mergeObject(objects.get(i).getEmplacement());
                   pstmt.setString(10, emplacementManager.getAdrlManager(emp, false));

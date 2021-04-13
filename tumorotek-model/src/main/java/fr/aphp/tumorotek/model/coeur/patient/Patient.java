@@ -57,6 +57,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.GenericGenerator;
 
 import fr.aphp.tumorotek.model.TKAnnotableObject;
+import fr.aphp.tumorotek.model.TKDelegateObject;
 import fr.aphp.tumorotek.model.TKDelegetableObject;
 import fr.aphp.tumorotek.model.coeur.patient.delegate.AbstractPatientDelegate;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -139,7 +140,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
          + "WHERE p.nip in (?1) " + "AND prlvts.banque in (?2)"),
    @NamedQuery(name = "Patient.findCountByReferent",
       query = "SELECT count(p) FROM Patient p " + "JOIN p.patientMedecins o " + "WHERE o.pk.collaborateur = ?1")})
-public class Patient extends Object implements TKAnnotableObject, TKDelegetableObject<Patient>, Serializable
+public class Patient extends TKDelegetableObject<Patient> implements TKAnnotableObject, Serializable
 {
 
    private static final long serialVersionUID = -2015746269357055625L;
@@ -158,7 +159,7 @@ public class Patient extends Object implements TKAnnotableObject, TKDelegetableO
    private Date dateDeces;
    private Boolean etatIncomplet;
    private Boolean archive = false;
-   private AbstractPatientDelegate delegate;
+   private TKDelegateObject<Patient> delegate;
 
    private Set<PatientLien> patientLiens = new HashSet<>();
    private Set<PatientLien> patientLiens2 = new HashSet<>();
@@ -334,11 +335,18 @@ public class Patient extends Object implements TKAnnotableObject, TKDelegetableO
       this.archive = arch;
    }
 
-   @OneToOne(mappedBy="delegator", cascade=CascadeType.ALL, orphanRemoval=true)
-   public AbstractPatientDelegate getDelegate(){
+   @OneToOne(mappedBy="delegator", cascade=CascadeType.ALL, orphanRemoval=true,
+      targetEntity = AbstractPatientDelegate.class)
+//   public AbstractPatientDelegate getDelegate(){
+   public TKDelegateObject<Patient> getDelegate(){
       return delegate;
    }
 
+   @Override
+   public void setDelegate(TKDelegateObject<Patient> delegate){
+      this.delegate = delegate;
+   }
+   
    public void setDelegate(AbstractPatientDelegate delegate){
       this.delegate = delegate;
    }
@@ -464,7 +472,9 @@ public class Patient extends Object implements TKAnnotableObject, TKDelegetableO
       clone.setEtatIncomplet(this.etatIncomplet);
       clone.setArchive(this.archive);
       clone.setMaladies(this.maladies);
-      clone.setDelegate(this.delegate);
+
+      clone.setDelegate(getDelegate());
+      
       return clone;
    }
 
@@ -497,4 +507,5 @@ public class Patient extends Object implements TKAnnotableObject, TKDelegetableO
          return getNom();
       }
    }
+
 }
