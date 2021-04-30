@@ -69,6 +69,7 @@ import fr.aphp.tumorotek.manager.coeur.patient.PatientManager;
 import fr.aphp.tumorotek.manager.coeur.prelevement.PrelevementManager;
 import fr.aphp.tumorotek.manager.coeur.prodderive.ProdDeriveManager;
 import fr.aphp.tumorotek.manager.context.BanqueManager;
+import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.manager.impl.coeur.CreateOrUpdateUtilities;
 import fr.aphp.tumorotek.manager.interfacage.BlocExterneManager;
 import fr.aphp.tumorotek.manager.interfacage.DossierExterneManager;
@@ -808,7 +809,13 @@ public class InjectionManagerImpl implements InjectionManager
 
 			// injection de chaque valeur
 			for (final ValeurExterne val : valeurs){
+				
 				injectValeurExterneInObject(derive, banque, val, annosDerive);
+				
+				// throws prod type not null post validation
+				if (val.getChampEntiteId() == 78 && derive.getProdType() == null) {
+					throw new TKException("prod.type.undeclared.value", val.getValeur());
+				}
 			}
 
 			// doublon derive -> check UI
