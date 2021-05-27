@@ -71,6 +71,7 @@ import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
 import fr.aphp.tumorotek.action.echantillon.EchantillonController;
 import fr.aphp.tumorotek.action.echantillon.FicheMultiEchantillons;
 import fr.aphp.tumorotek.action.patient.PatientController;
+import fr.aphp.tumorotek.action.prelevement.gatsby.FichePrelevementStaticGatsby;
 import fr.aphp.tumorotek.action.prelevement.serotk.FichePrelevementEditSero;
 import fr.aphp.tumorotek.action.prelevement.serotk.FichePrelevementStaticSero;
 import fr.aphp.tumorotek.action.prelevement.serotk.ListePrelevementSero;
@@ -219,7 +220,7 @@ public class PrelevementController extends AbstractObjectTabController
       if(SEROLOGIE.equals(getCurrentContexte())){
          setStaticZulPath("/zuls/prelevement/serotk/FichePrelevementStaticSero.zul");
       }else{
-         setStaticZulPath("/zuls/prelevement/FichePrelevementStatic.zul");
+         setStaticZulPath("/zuls/prelevement/gatsby/FichePrelevementStaticGatsby.zul");
       }
       super.populateFicheStatic();
    }

@@ -212,7 +212,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
       isPatientAccessible = getDroitOnAction("Patient", "Consultation");
 
-      resumePatient = new ResumePatient(groupPatient);
+      resumePatient = new ResumePatient(groupPatient, false);
    }
 
    @Override
