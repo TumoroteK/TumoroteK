@@ -29,10 +29,16 @@ public class DisplayItem {
 			List<Integer> hidden = c.getHiddenChamps();
 			
 			for (Div div : items) {
-				div.setVisible(!hidden.contains(Integer.valueOf((String) div.getAttribute("champId"))));
+				div.setVisible(!div.hasAttribute("champId") || !hidden.contains(Integer.valueOf((String) div.getAttribute("champId"))));
 				log.debug((div.isVisible() ? "showing " : "hiding ").concat(div.getId()));
 			}
 		}
+	}
+	
+	private void specificRules() {
+		
+		// Si service preleveur est invisible 
+		
 	}
 	
 	public void hideParentOrGroupIfEmpty(List<Div> blocks) {}

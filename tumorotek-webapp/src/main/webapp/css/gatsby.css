@@ -22,7 +22,7 @@ div.item {
 }
 
 div.block-title {
-   width: 100%;
+	width: 100%;
 }
 
 div.item-mid {
@@ -30,7 +30,7 @@ div.item-mid {
 }
 
 div.item-wide {
-  width: 100%;
+	width: 100%;
 }
 
 .item:nth-child(2n){
@@ -44,11 +44,26 @@ div.row-container {
   justify-content: start;
 }
 
+div.column-container {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: start;
+}
+
+div.column-container > * {
+	margin-bottom: 5px;
+}
+
+div.row-container > span {
+	margin-right: 5px;
+}
+
 div.block-separator {
 	height: 15px;
 }
 
-div.item span.formLabel, div.item span.formValue, div.item span.formLink {
+div.item .chpLabel, div.item span.formValue, div.item span.formLink {
 	width: 150px;
 	display: inline-flex;
   	align-items: center;

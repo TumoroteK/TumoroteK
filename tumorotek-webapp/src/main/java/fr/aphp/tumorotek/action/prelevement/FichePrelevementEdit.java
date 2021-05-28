@@ -52,6 +52,7 @@ import org.springframework.validation.Errors;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.Path;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -139,7 +140,12 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
    protected ResumePatient resumePatient;
    protected Textbox ndaBox;
-   protected Group groupPatient;
+   
+   // gatsby overrides
+   // protected Group groupPatient;
+   protected HtmlBasedComponent groupPatient;
+
+   
    // Objets Principaux.
    protected Prelevement prelevement = new Prelevement();
    protected Maladie maladie;
@@ -212,7 +218,15 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
       isPatientAccessible = getDroitOnAction("Patient", "Consultation");
 
-      resumePatient = new ResumePatient(groupPatient, false);
+      // gatsby overrides
+      resumePatient = initResumePatient();
+   }
+   
+   // gatsby surcharge cette méthode 
+   // car le component group patient n'est pas 
+   // de même type group VS Groupbox
+   protected ResumePatient initResumePatient() {
+	  return new ResumePatient(groupPatient, false);
    }
 
    @Override
@@ -267,10 +281,10 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          resumePatient.setPatientAccessible(false);
          resumePatient.hideMaladieRows(SessionUtils.isAnyDefMaladieInBanques(SessionUtils.getSelectedBanques(sessionScope)));
          resumePatient.setNdaBoxVisible(true);
-         groupPatient.setClass("z-group");
+         enablePatientGroup(true);
       }else{
          resumePatient.setVisible(false);
-         groupPatient.setClass("z-group-dsd");
+         enablePatientGroup(false);
       }
 
       initSelectedInLists();
@@ -283,6 +297,17 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
       getObjectTabController().setCodeUpdated(false);
       getObjectTabController().setOldCode(null);
+   }
+   
+   /** 
+    * Gatsby surcharge cette méthode
+    */
+   protected void enablePatientGroup(boolean b) {
+	   if (b) { // enable
+	        this.groupPatient.setClass("z-group");
+	   } else {
+		  this.groupPatient.setClass("z-group-dsd");
+	   }	
    }
 
    /**

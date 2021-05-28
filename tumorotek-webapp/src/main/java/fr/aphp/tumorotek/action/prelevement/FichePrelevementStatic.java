@@ -196,8 +196,15 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
 
       setImportDossierVisible();
 
-      // TODO: GATSBY HERE
-      resumePatient = new ResumePatient(groupPatient, true);
+      // gatsby overrides
+      resumePatient = initResumePatient();
+   }
+
+   // gatsby surcharge cette méthode 
+   // car le component group patient n'est pas 
+   // de même type group VS Groupbox
+   protected ResumePatient initResumePatient() {
+	  return new ResumePatient(groupPatient, false);
    }
 
    @Override
@@ -237,8 +244,9 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       gridFormPrlvtComp.setVisible(true);
       // grise le libelle car pas de reference vers patient/maladie
       
-      // gatsby ** override ***
-      disablePatientGroup();
+      // gatsby override
+      enablePatientGroup(this.maladie != null 
+    		  || this.prelevement.equals(new Prelevement()));
 
       // dessine le resume si la maladie est non nulle
       if(maladie != null){
@@ -304,8 +312,8 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    /** 
     * Gatsby surcharge cette méthode
     */
-   protected void disablePatientGroup() {
-	   if (this.maladie != null || this.prelevement.equals(new Prelevement())){
+   protected void enablePatientGroup(boolean b) {
+	   if (b) { // enable
 	        this.groupPatient.setClass("z-group");
 	   } else {
 		  this.groupPatient.setClass("z-group-dsd");
