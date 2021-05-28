@@ -10,8 +10,9 @@
 	 sclass="fichePanelv2" id="winPanel" closable="true">
 		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
 			<div class="main-container gridForm1">
-				<div class="block-container"><!-- Identifiants prélèvement -->
+				<div class="block-container" id="identifiantBlockDiv"><!-- Identifiants prélèvement -->
 					<div class="item item-mid" id="codeDiv"><!-- Code du prélèvement -->
+						<custom-attributes champId="23" />
 						<label value="${c:l('Champ.Prelevement.Code')}" sclass="formLabel" />
 						<div class="row-container">
 							<label id="codeLabelPrlvt" 
@@ -21,13 +22,15 @@
 								visible="false"/>
 						</div>
 					</div>
-					<div class="item item-mid" id="codeLaboDiv"><!-- Numéro Labo du prélèvement -->			
+					<div class="item item-mid" id="codeLaboDiv"><!-- Numéro Labo du prélèvement -->	
+						<custom-attributes champId="45" />
 						<label value="${c:l('Champ.Prelevement.NumeroLabo')}" sclass="formLabel"/>
 						<label id="numeroLaboLabelPrlvt" 
 							value="@{fwinPrelevementStatic$composer.object.numeroLabo}"
 							sclass="formValue" />
 					</div>
 					<div class="item item-mid" id="natureDiv"><!-- Nature du prélèvement -->
+						<custom-attributes champId="24" />
 						<label value="${c:l('Champ.Prelevement.Nature')}" 
 							sclass="formLabel"/>
 						<label id="typeLabelPrlvt" 
@@ -40,7 +43,7 @@
 				<groupbox id="groupPatient">
 					<caption label="${c:l('bloc.prelevement.patient')}" />
 					<div>
-						<div class="block-container"><!-- Patient -->
+						<div class="block-container" id="patientBlockDiv"><!-- Patient -->
 							<div class="item item-mid" id="nipDiv"><!-- Nip patient -->
 								<label value="${c:l('Champ.Patient.Nip')}" sclass="formLabel"/>
 								<label id="nipLabel" sclass="formValue" />
@@ -71,11 +74,11 @@
 						<div class="block-container"
 							id="linkMaladie" 
 							style="border-top-style: solid; border-top-color: #6ca1e6; border-top-width: 1px"> 
-							<div class="item item-mid"><!-- Libelle -->
+							<div class="item item-mid" id="libelleDiv"><!-- Libelle -->
 								<label value="${c:l('Champ.Maladie.Libelle')}" sclass="formLabel"/>
 								<label id="linkMaladieLabel" sclass="formLink" />
 							</div>
-							<div class="item item-mid"><!-- Code -->
+							<div class="item item-mid" id="codeMaladieDiv"><!-- Code -->
 								<label value="${c:l('Champ.Maladie.Code')}" sclass="formLabel" />
 								<label id="codeDiagLabel" sclass="formValue" />
 							</div>
@@ -86,43 +89,43 @@
 				<!-- Informations prélèvement -->
 				<groupbox id="groupPrlvt">
 					<caption label="${c:l('bloc.prelevement.informations.prelevement')}" />
-					<div class="block-container">
-						<div class="item item-mid"><!-- date du prélèvement -->
+					<div class="block-container" id="infoPrelBlockDiv">
+						<div class="item item-mid" id="datePrelDiv"><!-- date du prélèvement -->
 							<label value="${c:l('Champ.Prelevement.DatePrelevement')}" sclass="formLabel"/>
 							<label id="dateLabelPrlvt" 
 								value="@{fwinPrelevementStatic$composer.datePrelevementFormated}"
 								sclass="formValue" />
 						</div>
-						<div class="item item-mid"><!-- Mode du prélèvement -->
+						<div class="item item-mid" id="typeDiv"><!-- Mode du prélèvement -->
 							<label value="${c:l('Champ.Prelevement.PrelevementType')}" sclass="formLabel"/>
 							<label id="modeLabelPrlvt" 
 								value="@{fwinPrelevementStatic$composer.object.prelevementType.type}"
 								sclass="formValue" />
 						</div>
-						<div class="item item-mid"><!-- Sterile -->
+						<div class="item item-mid" id="sterileDiv"><!-- Sterile -->
 							<label value="${c:l('general.sterile')}" sclass="formLabel"/>
 							<label id="sterileLabelPrlvt" 
 								value="@{fwinPrelevementStatic$composer.sterileFormated}"
 								sclass="formValue" />
 						</div>
-						<div class="item item-mid"><!-- Risques -->	
+						<div class="item item-mid" id="risquesDiv"><!-- Risques -->	
 							<label value="${c:l('Champ.Prelevement.Risque')}" sclass="formLabel"/>	
 							<vbox id="risquesBox" />
 						</div>
-						<div class="item item-wide"><!-- établissement du prélèvement -->
+						<div class="item item-wide" id="etabPreleveurDiv"><!-- établissement du prélèvement -->
 							<label value="${c:l('prelevement.etablissement')}" sclass="formLabel"
 								id="etabStaticLabelPrlvt"/>
 							<label id="etabLabelPrlvt" 
 								value="@{fwinPrelevementStatic$composer.etablissementFormated}"
 								sclass="formValue" />
 						</div>
-						<div class="item item-wide"><!-- service du prélèvement -->
+						<div class="item item-wide" id="servicePreleveurDiv"><!-- service du prélèvement -->
 							<label value="${c:l('Champ.Prelevement.ServicePreleveur')}" sclass="formLabel"/>
 							<label id="serviceLabelPrlvt" 
 							value="@{fwinPrelevementStatic$composer.object.servicePreleveur.nom}"
 							sclass="@{fwinPrelevementStatic$composer.sClassService}" />
 						</div>
-						<div class="item item-wide"><!-- Préleveur du prélèvement -->
+						<div class="item item-wide" id="preleveurDiv"><!-- Préleveur du prélèvement -->
 							<label value="${c:l('Champ.Prelevement.Preleveur')}" sclass="formLabel"/>
 							<label id="preleveurLabelPrlvt" 
 								value="@{fwinPrelevementStatic$composer.object.preleveur.nomAndPrenom}"
@@ -130,26 +133,26 @@
 						</div>
 					</div>
 					<div class="block-separator" />
-					<div class="block-container"><!-- Conditionnenemt -->
+					<div class="block-container" id="conditBlockDiv"><!-- Conditionnenemt -->
 						<div class="block-title">
 							<vlayout>
 								<label value="${c:l('fichePrelevement.group.conditionnement')}" sclass="formSubTitle"/>
 								<image width="100%" height="1px" src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
 							</vlayout>
 						</div>
-						<div class="item item-mid"><!-- type de conditionnement -->
+						<div class="item item-mid" id="conditTypeDiv"><!-- type de conditionnement -->
 							<label value="${c:l('Champ.Prelevement.ConditType')}" sclass="formLabel"/>
 							<label id="conditTypeLabelPrlvt" 
 								value="@{fwinPrelevementStatic$composer.object.conditType.type}"
 								sclass="formValue" />
 						</div>
-						<div class="item item-mid"><!-- Nombre de condit -->
+						<div class="item item-mid" id="conditNbrDiv"><!-- Nombre de condit -->
 							<label value="${c:l('Champ.Prelevement.ConditNbr')}" sclass="formLabel"/>
 							<label id="conditNbrLabelPrlvt" 
 								value="@{fwinPrelevementStatic$composer.object.conditNbr}"
 								sclass="formValue" />
 						</div>
-						<div class="item item-mid"><!-- Mileu de Condit -->
+						<div class="item item-mid" id="conditMilieuDiv"><!-- Mileu de Condit -->
 							<label value="${c:l('Champ.Prelevement.ConditMilieu')}" sclass="formLabel"/>
 							<label id="conditMilieurLabelPrlvt" 
 								value="@{fwinPrelevementStatic$composer.object.conditMilieu.milieu}"
@@ -157,21 +160,21 @@
 						</div>
 					</div>
 					<div class="block-separator" />
-					<div class="block-container"><!-- Consentement -->
+					<div class="block-container" id="consentBlockDiv"><!-- Consentement -->
 						<div class="block-title">
 							<vlayout>
 								<label value="${c:l('fichePrelevement.group.consentement')}" sclass="formSubTitle"/>
 								<image width="100%" height="1px" src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
 							</vlayout>
 						</div>
-						<div class="item item-mid"><!-- type de consentement -->
+						<div class="item item-mid" id="consentTypeDiv"><!-- type de consentement -->
 							<label value="${c:l('Champ.Prelevement.ConsentType')}" 
 								sclass="formLabel"/>
 							<label id="consentTypeLabelPrlvt" 
 								value="@{fwinPrelevementStatic$composer.object.consentType.type}"
 								sclass="formValue" />
 						</div>
-						<div class="item item-mid"><!-- Date de consentement -->
+						<div class="item item-mid" id="consentDateDiv"><!-- Date de consentement -->
 							<label value="${c:l('fichePrelevement.date.statut')}" sclass="formLabel"/>
 							<label id="consentDateLabelPrlvt" 
 								value="@{fwinPrelevementStatic$composer.dateConsentementFormated}"
@@ -179,330 +182,330 @@
 						</div>
 					</div>
 				</groupbox>
-			</div>
-			<div class="block-separator" />
-			<!-- Transfert du site préleveur vers le site de stockage -->
-			<groupbox id="gridFormPrlvtComp">
-				<caption label="${c:l('bloc.prelevement.laboInter')}" />
-				<!-- Départ du site préleveur -->
-				<div class="block-container">
-					<div class="block-title">
-						<vbox>
-							<label value="${c:l('fichePrelevement.departPreleveur')}" sclass="formSubTitle"/>
-							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
-						</vbox>
-					</div>
-					<div class="item item-mid"><!-- Date de départ -->
-						<label value="${c:l('Champ.Prelevement.DateDepart')}" sclass="formLabel"/>
-						<div>
-							<label id="dateDepartLabelPrlvt" 
-								value="@{fwinPrelevementStatic$composer.dateDepartFormated}"
-								sclass="formValue"/>
-						</div>
-					</div>
-					<div class="item item-mid"><!-- Transporteur -->
-						<label value="${c:l('Champ.Prelevement.Transporteur')}" sclass="formLabel"/>
-						<div>
-							<label id="transporteurLabelPrlvt" 
-								value="@{fwinPrelevementStatic$composer.object.transporteur.nom}"
-								sclass="formValue"/>
-						</div>
-					</div>
-					<div class="item item-mid"><!-- Température de transport -->
-						<label value="${c:l('Champ.Prelevement.TransportTemp')}" sclass="formLabel"/>	
-						<div>
-							<label id="transportTempLabelPrlvt" 
-								value="@{fwinPrelevementStatic$composer.object.transportTemp}"
-								sclass="formValue" />
-						</div>
-					</div>
-					<div class="item item-wide"><!-- Congelation au prélèvement -->
-						<div width="25px" height="25px" style="background: url(${c:encodeURL('/images/icones/freeze.png')})" id="congDepartImg" />
-						<label id="congDepartLabel" value="" sclass="formValue" style="font-weight: bold; width: 100%" />
-					</div>
-				</div>
-				<!-- Sites d'analyse -->
-				<div class="block-container" id="groupLaboInter">
-					<div class="block-title">
-						<vbox>
-							<label value="${c:l('fichePrelevement.laboInters')}" sclass="formSubTitle"/>
-							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
-						</vbox>
-					</div>
-					<div class="item item-wide">
-						<grid id="laboIntersGrid" 
-							fixedLayout="true" 
-							width="100%"
-							sclass="gridListStyle"
-							model="@{fwinPrelevementStatic$composer.laboInters}">
-							<columns>
-								<column width="40px"/>
-								<column label="${c:l('laboInter.dateArrivee')}" hflex="1" />
-								<column label="${c:l('laboInter.dateDepart')}" hflex="1" />
-								<column label="${c:l('laboInter.service')}" hflex="1" />
-								<column label="${c:l('prelevement.laboInters.transportTemp')}" hflex="1" />
-								<column width="40px" />
-							</columns>
-							<rows>
-								<row self="@{each='laboPrlvt'}" value="@{laboPrlvt}" height="100%">
-									<detail>
-										<vbox>
-											<hbox  visible="@{laboPrlvt.labo.congelation}" >
-												<div width="600px" align="center">
-													<label value="${c:l('laboInter.congelation')}" sclass="formValue" 
-														style="font-style: italic" />
-												</div>
-											</hbox>
-											<hbox>
-												<div width="140px">
-													<label value="${c:l('laboInter.etablissement')}"
-													sclass="formLabel"/>
-												</div>
-												<div>
-													<label value="@{laboPrlvt.labo.service.etablissement.nom}"
-													sclass="formValue"/>
-												</div>
-											</hbox>
-											<hbox>
-												<div width="140px">
-													<label value="${c:l('laboInter.service')}"
-													sclass="formLabel"/>
-												</div>
-												<div>
-													<label value="@{laboPrlvt.labo.service.nom}"
-													sclass="formValue"/>
-												</div>
-											</hbox>
-											<hbox>
-												<div width="140px">
-													<label value="${c:l('laboInter.operateur')}"
-													sclass="formLabel"/>
-												</div>
-												<div>
-													<label value="@{laboPrlvt.labo.collaborateur.nomAndPrenom}"
-													sclass="formValue"/>
-												</div>
-											</hbox>
-											<hbox>
-											<vbox>
-											<label value="${c:l('laboInter.title.arrivee')}"
-												sclass="formSubTitle"/>
-											<image src="/images/pixelble.gif" id="ligne1"
-												width="520px"/>
-											</vbox>
-											</hbox>
-											<hbox>
-												<div width="140px">
-													<label value="${c:l('laboInter.dateArrivee')}"
-													sclass="formLabel"/>
-												</div>
-												<div width="140px">
-													<label value="@{laboPrlvt.dateArriveeFormatted}"
-													sclass="formValue"/>
-												</div>
-											</hbox>
-											<hbox>
-												<div width="140px">
-													<label value="${c:l('laboInter.temperature.conservation')}"
-													sclass="formLabel"/>
-												</div>
-												<div width="140px">
-													<label value="@{laboPrlvt.labo.conservTemp}"
-														sclass="formValue"/>
-													<label value="°C"
-														sclass="formValue"/>
-												</div>
-												<div width="140px">
-													<label value="${c:l('laboInter.sterile')}"
-													sclass="formLabel"/>
-												</div>
-												<div width="140px">
-													<label value="@{laboPrlvt.sterileFormatted}"
-													sclass="formValue"/>
-												</div>
-											</hbox>
-											<hbox>
-											<vbox>
-											<label value="${c:l('laboInter.title.depart')}"
-												sclass="formSubTitle"/>
-											<image src="/images/pixelble.gif" id="ligne2"
-												width="520px"/>
-												</vbox>
-											</hbox>
-											<hbox>
-												<div width="140px">
-													<label value="${c:l('laboInter.dateDepart')}"
-														sclass="formLabel"/>
-												</div>
-												<div width="140px">
-													<label value="@{laboPrlvt.dateDepartFormatted}"
-														sclass="formValue"/>
-												</div>
-											</hbox>
-											<hbox>
-												<div width="140px">
-													<label value="${c:l('laboInter.transporteur')}"
-													sclass="formLabel"/>
-												</div>
-												<div width="140px">
-													<label value="@{laboPrlvt.labo.transporteur.nom}"
-														sclass="formValue"/>
-												</div>
-												<div width="140px">
-													<label value="${c:l('laboInter.temperature.transport')}"
-													sclass="formLabel"/>
-												</div>
-												<div width="140px">
-													<label value="@{laboPrlvt.labo.transportTemp}"
-														sclass="formValue"/>
-													<label value="°C"
-														sclass="formValue"/>
-												</div>
-											</hbox>
-										</vbox>
-									</detail>
-									<label value="@{laboPrlvt.dateArriveeFormatted}"/>
-									<label value="@{laboPrlvt.dateDepartFormatted}"/>
-									<label value="@{laboPrlvt.labo.service.nom}"/>
-									<label value="@{laboPrlvt.labo.conservTemp}"/>
-									<div width="25px" height="25px" 
-										style="background: url(${c:encodeURL('/images/icones/freeze.png')})"
-											visible="@{laboPrlvt.congFormatted}" />
-								</row>
-							</rows>
-						</grid>
-					</div>
-				</div>
 				<div class="block-separator" />
-				<!-- Arrivée -->
-				<div class="block-container">
-					<div class="block-title">
-						<vbox>
-							<label value="${c:l('fichePrelevement.arriveeStockage')}" sclass="formSubTitle"/>
-							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+				<!-- Transfert du site préleveur vers le site de stockage -->
+				<groupbox id="gridFormPrlvtComp">
+					<caption label="${c:l('bloc.prelevement.laboInter')}" />
+					<!-- Départ du site préleveur -->
+					<div class="block-container" id="departBlockDiv">
+						<div class="block-title">
+							<vbox>
+								<label value="${c:l('fichePrelevement.departPreleveur')}" sclass="formSubTitle"/>
+								<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+							</vbox>
+						</div>
+						<div class="item item-mid" id="dateDepartDiv"><!-- Date de départ -->
+							<label value="${c:l('Champ.Prelevement.DateDepart')}" sclass="formLabel"/>
+							<div>
+								<label id="dateDepartLabelPrlvt" 
+									value="@{fwinPrelevementStatic$composer.dateDepartFormated}"
+									sclass="formValue"/>
+							</div>
+						</div>
+						<div class="item item-mid" id="transporteurDiv"><!-- Transporteur -->
+							<label value="${c:l('Champ.Prelevement.Transporteur')}" sclass="formLabel"/>
+							<div>
+								<label id="transporteurLabelPrlvt" 
+									value="@{fwinPrelevementStatic$composer.object.transporteur.nom}"
+									sclass="formValue"/>
+							</div>
+						</div>
+						<div class="item item-mid" id="tempTranspDiv"><!-- Température de transport -->
+							<label value="${c:l('Champ.Prelevement.TransportTemp')}" sclass="formLabel"/>	
+							<div>
+								<label id="transportTempLabelPrlvt" 
+									value="@{fwinPrelevementStatic$composer.object.transportTemp}"
+									sclass="formValue" />
+							</div>
+						</div>
+						<div class="item item-wide" id="congPrelDiv"><!-- Congelation au prélèvement -->
+							<div width="25px" height="25px" style="background: url(${c:encodeURL('/images/icones/freeze.png')})" id="congDepartImg" />
+							<label id="congDepartLabel" value="" sclass="formValue" style="font-weight: bold; width: 100%" />
+						</div>
+					</div>
+					<!-- Sites d'analyse -->
+					<div class="block-container" id="groupLaboInter">
+						<div class="block-title">
+							<vbox>
+								<label value="${c:l('fichePrelevement.laboInters')}" sclass="formSubTitle"/>
+								<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+							</vbox>
+						</div>
+						<div class="item item-wide">
+							<grid id="laboIntersGrid" 
+								fixedLayout="true" 
+								width="100%"
+								sclass="gridListStyle"
+								model="@{fwinPrelevementStatic$composer.laboInters}">
+								<columns>
+									<column width="40px"/>
+									<column label="${c:l('laboInter.dateArrivee')}" hflex="1" />
+									<column label="${c:l('laboInter.dateDepart')}" hflex="1" />
+									<column label="${c:l('laboInter.service')}" hflex="1" />
+									<column label="${c:l('prelevement.laboInters.transportTemp')}" hflex="1" />
+									<column width="40px" />
+								</columns>
+								<rows>
+									<row self="@{each='laboPrlvt'}" value="@{laboPrlvt}" height="100%">
+										<detail>
+											<vbox>
+												<hbox  visible="@{laboPrlvt.labo.congelation}" >
+													<div width="600px" align="center">
+														<label value="${c:l('laboInter.congelation')}" sclass="formValue" 
+															style="font-style: italic" />
+													</div>
+												</hbox>
+												<hbox>
+													<div width="140px">
+														<label value="${c:l('laboInter.etablissement')}"
+														sclass="formLabel"/>
+													</div>
+													<div>
+														<label value="@{laboPrlvt.labo.service.etablissement.nom}"
+														sclass="formValue"/>
+													</div>
+												</hbox>
+												<hbox>
+													<div width="140px">
+														<label value="${c:l('laboInter.service')}"
+														sclass="formLabel"/>
+													</div>
+													<div>
+														<label value="@{laboPrlvt.labo.service.nom}"
+														sclass="formValue"/>
+													</div>
+												</hbox>
+												<hbox>
+													<div width="140px">
+														<label value="${c:l('laboInter.operateur')}"
+														sclass="formLabel"/>
+													</div>
+													<div>
+														<label value="@{laboPrlvt.labo.collaborateur.nomAndPrenom}"
+														sclass="formValue"/>
+													</div>
+												</hbox>
+												<hbox>
+												<vbox>
+												<label value="${c:l('laboInter.title.arrivee')}"
+													sclass="formSubTitle"/>
+												<image src="/images/pixelble.gif" id="ligne1"
+													width="520px"/>
+												</vbox>
+												</hbox>
+												<hbox>
+													<div width="140px">
+														<label value="${c:l('laboInter.dateArrivee')}"
+														sclass="formLabel"/>
+													</div>
+													<div width="140px">
+														<label value="@{laboPrlvt.dateArriveeFormatted}"
+														sclass="formValue"/>
+													</div>
+												</hbox>
+												<hbox>
+													<div width="140px">
+														<label value="${c:l('laboInter.temperature.conservation')}"
+														sclass="formLabel"/>
+													</div>
+													<div width="140px">
+														<label value="@{laboPrlvt.labo.conservTemp}"
+															sclass="formValue"/>
+														<label value="°C"
+															sclass="formValue"/>
+													</div>
+													<div width="140px">
+														<label value="${c:l('laboInter.sterile')}"
+														sclass="formLabel"/>
+													</div>
+													<div width="140px">
+														<label value="@{laboPrlvt.sterileFormatted}"
+														sclass="formValue"/>
+													</div>
+												</hbox>
+												<hbox>
+												<vbox>
+												<label value="${c:l('laboInter.title.depart')}"
+													sclass="formSubTitle"/>
+												<image src="/images/pixelble.gif" id="ligne2"
+													width="520px"/>
+													</vbox>
+												</hbox>
+												<hbox>
+													<div width="140px">
+														<label value="${c:l('laboInter.dateDepart')}"
+															sclass="formLabel"/>
+													</div>
+													<div width="140px">
+														<label value="@{laboPrlvt.dateDepartFormatted}"
+															sclass="formValue"/>
+													</div>
+												</hbox>
+												<hbox>
+													<div width="140px">
+														<label value="${c:l('laboInter.transporteur')}"
+														sclass="formLabel"/>
+													</div>
+													<div width="140px">
+														<label value="@{laboPrlvt.labo.transporteur.nom}"
+															sclass="formValue"/>
+													</div>
+													<div width="140px">
+														<label value="${c:l('laboInter.temperature.transport')}"
+														sclass="formLabel"/>
+													</div>
+													<div width="140px">
+														<label value="@{laboPrlvt.labo.transportTemp}"
+															sclass="formValue"/>
+														<label value="°C"
+															sclass="formValue"/>
+													</div>
+												</hbox>
+											</vbox>
+										</detail>
+										<label value="@{laboPrlvt.dateArriveeFormatted}"/>
+										<label value="@{laboPrlvt.dateDepartFormatted}"/>
+										<label value="@{laboPrlvt.labo.service.nom}"/>
+										<label value="@{laboPrlvt.labo.conservTemp}"/>
+										<div width="25px" height="25px" 
+											style="background: url(${c:encodeURL('/images/icones/freeze.png')})"
+												visible="@{laboPrlvt.congFormatted}" />
+									</row>
+								</rows>
+							</grid>
+						</div>
+					</div>
+					<div class="block-separator" />
+					<!-- Arrivée -->
+					<div class="block-container" id="arriveeBlockDiv">
+						<div class="block-title">
+							<vbox>
+								<label value="${c:l('fichePrelevement.arriveeStockage')}" sclass="formSubTitle"/>
+								<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+							</vbox>
+						</div>
+						<div class="item item-mid" id="dateArriveeDiv"><!-- Date d'arrivée -->
+							<label value="${c:l('Champ.Prelevement.DateArrivee')}" sclass="formLabel"/>
+							<div>
+								<label id="dateArriveeLabelPrlvt" 
+									value="@{fwinPrelevementStatic$composer.dateArriveeFormated}"
+									sclass="formValue"/>
+							</div>
+						</div>
+						<div class="item item-mid" id="operateurDiv"><!-- Opérateur -->
+							<label value="${c:l('Champ.Prelevement.Operateur')}" sclass="formLabel" />
+							<div>
+								<label id="operateurLabelPrlvt" 
+									value="@{fwinPrelevementStatic$composer.object.operateur.nomAndPrenom}"
+									sclass="@{fwinPrelevementStatic$composer.sClassOperateur}" />
+							</div>
+						</div>
+						<div class="item item-mid" id="quantiteDiv"><!-- Quantité -->
+							<label value="${c:l('Champ.Prelevement.Quantite')}" sclass="formLabel"/>
+							
+							<div>
+							<label id="quantiteLabelPrlvt" 
+								value="@{fwinPrelevementStatic$composer.valeurQuantite}"
+								sclass="formValue" />
+							</div>
+						</div>
+						<div class="item item-mid" id="conformeArriveeDiv"><!-- Conforme à l'arrivée -->
+							<label value="${c:l('Champ.Prelevement.ConformeArrivee')}" sclass="formLabel"/>
+							<label id="conformeArriveeLabelPrlvt" 
+								value="@{fwinPrelevementStatic$composer.conformeArriveeFormated}"
+								sclass="formValue" />	
+						</div>
+						<div class="item item-wide" id="congBiothequeDiv"><!-- Congelation biotheque -->
+							<div width="25px" height="25px" style="background: url(${c:encodeURL('/images/icones/freeze.png')})" 
+										id="congArriveeImg" />
+							<label id="congArriveeLabel" sclass="formValue" style="font-weight: bold; width: 100%" />
+						</div>
+					</div>
+				</groupbox>
+				<div class="block-separator" />
+				<!-- Echantillons -->
+				<groupbox id="groupEchans">
+					<caption label="@{fwinPrelevementStatic$composer.echantillonsGroupHeader}" />
+					<div class="item item-wide">
+						<vbox align="center" hflex="1" vflex="1">
+							<grid id="echantillonsGrid"
+								fixedLayout="true" 
+								hflex="1"
+								sclass="gridListStyle"
+								span="true"
+								sizedByContent="false"
+								model="@{fwinPrelevementStatic$composer.echantillons}"
+								rowRenderer="@{fwinPrelevementStatic$composer.echantillonRenderer}">
+								<columns menupopup="auto" sizable="true" >
+									<column align="center" width="70px"/>
+									<column label="${c:l('general.code')}" />
+									<column label="${c:l('Entite.Banque')}" visible="@{fwinPrelevementStatic$composer.ttesCollections}" />
+									<column label="${c:l('Champ.Echantillon.DateStock')}" width="130px" />
+									<column label="${c:l('Champ.Echantillon.Organe')}"/>
+									<column label="${c:l('Champ.Echantillon.CodeLes')}"/>
+									<column label="${c:l('Champ.Echantillon.EchantillonType.Type')}"/>
+									<column label="${c:l('Champ.Echantillon.Quantite')}" width="130px"/>
+									<column label="${c:l('Champ.Echantillon.ObjetStatut')}"/>
+									<column label="${c:l('Champ.Echantillon.Emplacement')}" />
+									<column label="${c:l('derives.nb')}" width="100px"
+										visible="false"/>
+									<column label="${c:l('cession.nb')}" width="100px"
+										visible="false"/>
+								</columns>
+								<rows id="echansRows">
+									<row self="@{each='currEchantillon'}" value="currEchantillon"/>
+								</rows>
+							</grid>
+							<button id="selectAllechantillonsButton" sclass="buttonv2" label="${c:l('general.selectAll')}"  
+									height="24px" visible="@{fwinPrelevementStatic$composer.echantillonsListSizeSupOne}"
+									image="/images/icones/selectall.png" forward="onClick=onSelectAllEchantillons(all)" />
 						</vbox>
 					</div>
-					<div class="item item-mid"><!-- Date d'arrivée -->
-						<label value="${c:l('Champ.Prelevement.DateArrivee')}" sclass="formLabel"/>
-						<div>
-							<label id="dateArriveeeLabelPrlvt" 
-								value="@{fwinPrelevementStatic$composer.dateArriveeFormated}"
-								sclass="formValue"/>
-						</div>
+				</groupbox>
+				<div class="block-separator" />
+				<!-- Dérivés -->
+				<groupbox id="groupDerivesPrlvt">
+					<caption label="@{fwinPrelevementStatic$composer.prodDerivesGroupHeader}" />
+					<div class="item item-wide">				
+						<vbox align="center" hflex="1" vflex="1">
+							<grid id="prodDerivesGrid"
+								hflex="1"
+								fixedLayout="true" 
+								sclass="gridListStyle"
+								span="true"
+								sizedByContent="false"
+								model="@{fwinPrelevementStatic$composer.derives}"
+								rowRenderer="@{fwinPrelevementStatic$composer.prodDeriveRenderer}">
+								<columns menupopup="auto" sizable="true">
+									<column align="center" width="70px"/>
+									<column label="${c:l('general.code')}" />
+									<column label="${c:l('Entite.Banque')}" visible="@{fwinPrelevementStatic$composer.ttesCollections}" />
+									<column label="${c:l('Champ.ProdDerive.CodeLabo')}" visible="false"/>
+									<column label="${c:l('prodDerive.type.parent')}" visible="false"/>
+									<column label="${c:l('prodDerive.code.parent')}" visible="false"/>
+									<column label="${c:l('Champ.ProdDerive.DateStock')}" width="130px"/>
+									<column label="${c:l('Champ.ProdDerive.ProdType')}"/>
+									<column label="${c:l('Champ.ProdDerive.Volume')}" width="130px"/>
+									<column label="${c:l('Champ.ProdDerive.Conc')}" visible="false" width="130px"/>
+									<column label="${c:l('Champ.ProdDerive.Quantite')}" width="130px"/>
+									<column label="${c:l('Champ.ProdDerive.ObjetStatut')}"/>
+									<column label="${c:l('Champ.ProdDerive.Emplacement')}"/>
+									<column label="${c:l('derives.nb')}" width="100px"
+										visible="false"/>
+									<column label="${c:l('cession.nb')}" width="100px"
+										visible="false"/>
+								</columns>
+								<rows>
+									<row self="@{each='currDerive'}" value="currDerive"/>
+								</rows>
+							</grid>
+							<button id="selectAllderivesButton" sclass="buttonv2" label="${c:l('general.selectAll')}"  
+									height="24px" visible="@{fwinPrelevementStatic$composer.derivesListSizeSupOne}"
+									image="/images/icones/selectall.png" forward="onClick=onSelectAllDerives(all)" />
+						</vbox>
 					</div>
-					<div class="item item-mid"><!-- Opérateur -->
-						<label value="${c:l('Champ.Prelevement.Operateur')}" sclass="formLabel" />
-						<div>
-							<label id="operateurLabelPrlvt" 
-								value="@{fwinPrelevementStatic$composer.object.operateur.nomAndPrenom}"
-								sclass="@{fwinPrelevementStatic$composer.sClassOperateur}" />
-						</div>
-					</div>
-					<div class="item item-mid"><!-- Quantité -->
-						<label value="${c:l('Champ.Prelevement.Quantite')}" sclass="formLabel"/>
-						
-						<div>
-						<label id="quantiteLabelPrlvt" 
-							value="@{fwinPrelevementStatic$composer.valeurQuantite}"
-							sclass="formValue" />
-						</div>
-					</div>
-					<div class="item item-mid"><!-- Conforme à l'arrivée -->
-						<label value="${c:l('Champ.Prelevement.ConformeArrivee')}" sclass="formLabel"/>
-						<label id="conformeArriveeLabelPrlvt" 
-							value="@{fwinPrelevementStatic$composer.conformeArriveeFormated}"
-							sclass="formValue" />	
-					</div>
-					<div class="item item-wide"><!-- Congelation biotheque -->
-						<div width="25px" height="25px" style="background: url(${c:encodeURL('/images/icones/freeze.png')})" 
-									id="congArriveeImg" />
-						<label id="congArriveeLabel" sclass="formValue" style="font-weight: bold; width: 100%" />
-					</div>
-				</div>
-			</groupbox>
-			<div class="block-separator" />
-			<!-- Echantillons -->
-			<groupbox id="groupEchans">
-				<caption label="@{fwinPrelevementStatic$composer.echantillonsGroupHeader}" />
-				<div class="item item-wide">
-					<vbox align="center" hflex="1" vflex="1">
-						<grid id="echantillonsGrid"
-							fixedLayout="true" 
-							hflex="1"
-							sclass="gridListStyle"
-							span="true"
-							sizedByContent="false"
-							model="@{fwinPrelevementStatic$composer.echantillons}"
-							rowRenderer="@{fwinPrelevementStatic$composer.echantillonRenderer}">
-							<columns menupopup="auto" sizable="true" >
-								<column align="center" width="70px"/>
-								<column label="${c:l('general.code')}" />
-								<column label="${c:l('Entite.Banque')}" visible="@{fwinPrelevementStatic$composer.ttesCollections}" />
-								<column label="${c:l('Champ.Echantillon.DateStock')}" width="130px" />
-								<column label="${c:l('Champ.Echantillon.Organe')}"/>
-								<column label="${c:l('Champ.Echantillon.CodeLes')}"/>
-								<column label="${c:l('Champ.Echantillon.EchantillonType.Type')}"/>
-								<column label="${c:l('Champ.Echantillon.Quantite')}" width="130px"/>
-								<column label="${c:l('Champ.Echantillon.ObjetStatut')}"/>
-								<column label="${c:l('Champ.Echantillon.Emplacement')}" />
-								<column label="${c:l('derives.nb')}" width="100px"
-									visible="false"/>
-								<column label="${c:l('cession.nb')}" width="100px"
-									visible="false"/>
-							</columns>
-							<rows id="echansRows">
-								<row self="@{each='currEchantillon'}" value="currEchantillon"/>
-							</rows>
-						</grid>
-						<button id="selectAllechantillonsButton" sclass="buttonv2" label="${c:l('general.selectAll')}"  
-								height="24px" visible="@{fwinPrelevementStatic$composer.echantillonsListSizeSupOne}"
-								image="/images/icones/selectall.png" forward="onClick=onSelectAllEchantillons(all)" />
-					</vbox>
-				</div>
-			</groupbox>
-			<div class="block-separator" />
-			<!-- Dérivés -->
-			<groupbox id="groupDerivesPrlvt">
-				<caption label="@{fwinPrelevementStatic$composer.prodDerivesGroupHeader}" />
-				<div class="item item-wide">				
-					<vbox align="center" hflex="1" vflex="1">
-						<grid id="prodDerivesGrid"
-							hflex="1"
-							fixedLayout="true" 
-							sclass="gridListStyle"
-							span="true"
-							sizedByContent="false"
-							model="@{fwinPrelevementStatic$composer.derives}"
-							rowRenderer="@{fwinPrelevementStatic$composer.prodDeriveRenderer}">
-							<columns menupopup="auto" sizable="true">
-								<column align="center" width="70px"/>
-								<column label="${c:l('general.code')}" />
-								<column label="${c:l('Entite.Banque')}" visible="@{fwinPrelevementStatic$composer.ttesCollections}" />
-								<column label="${c:l('Champ.ProdDerive.CodeLabo')}" visible="false"/>
-								<column label="${c:l('prodDerive.type.parent')}" visible="false"/>
-								<column label="${c:l('prodDerive.code.parent')}" visible="false"/>
-								<column label="${c:l('Champ.ProdDerive.DateStock')}" width="130px"/>
-								<column label="${c:l('Champ.ProdDerive.ProdType')}"/>
-								<column label="${c:l('Champ.ProdDerive.Volume')}" width="130px"/>
-								<column label="${c:l('Champ.ProdDerive.Conc')}" visible="false" width="130px"/>
-								<column label="${c:l('Champ.ProdDerive.Quantite')}" width="130px"/>
-								<column label="${c:l('Champ.ProdDerive.ObjetStatut')}"/>
-								<column label="${c:l('Champ.ProdDerive.Emplacement')}"/>
-								<column label="${c:l('derives.nb')}" width="100px"
-									visible="false"/>
-								<column label="${c:l('cession.nb')}" width="100px"
-									visible="false"/>
-							</columns>
-							<rows>
-								<row self="@{each='currDerive'}" value="currDerive"/>
-							</rows>
-						</grid>
-						<button id="selectAllderivesButton" sclass="buttonv2" label="${c:l('general.selectAll')}"  
-								height="24px" visible="@{fwinPrelevementStatic$composer.derivesListSizeSupOne}"
-								image="/images/icones/selectall.png" forward="onClick=onSelectAllDerives(all)" />
-					</vbox>
-				</div>
-			</groupbox>
+				</groupbox>
+			</div>
 		</panelchildren>
 		<toolbar height="100%" id="toolbarEchan" align="end">
 			<hbox spacing="5">
