@@ -62,7 +62,6 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Group;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
@@ -677,14 +676,8 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    @Override
    public void onClick$create(){
 
-      if(selectedNature == null){
-         Clients.scrollIntoView(naturesBoxPrlvt);
-         throw new WrongValueException(naturesBoxPrlvt, Labels.getLabel("fichePrelevement.error.nature"));
-      }
-      if(selectedConsentType == null){
-         Clients.scrollIntoView(consentTypesBoxPrlvt);
-         throw new WrongValueException(consentTypesBoxPrlvt, Labels.getLabel("fichePrelevement.error.consenType"));
-      }
+	   // gatsbi overrides
+	   checkRequiredListboxes();
 
       // valide les dates donc
       validateAllDateComps();
@@ -700,14 +693,8 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    @Override
    public void onClick$validate(){
 
-      if(selectedNature == null){
-         Clients.scrollIntoView(naturesBoxPrlvt);
-         throw new WrongValueException(naturesBoxPrlvt, Labels.getLabel("fichePrelevement.error.nature"));
-      }
-      if(selectedConsentType == null){
-         Clients.scrollIntoView(consentTypesBoxPrlvt);
-         throw new WrongValueException(consentTypesBoxPrlvt, Labels.getLabel("fichePrelevement.error.consenType"));
-      }
+	   // gatsbi overrides
+	  checkRequiredListboxes();
 
       // valide les dates donc
       validateAllDateComps();
@@ -969,20 +956,12 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    /**
     * Passe à la fiche des labos inters.
     *
-    * @version 2.1
+    * @version 2.3.0-gatsbi
     */
    public void onClick$next(){
-      // validation des champs obligatoires
-      if(selectedNature == null){
-         Clients.scrollIntoView(naturesBoxPrlvt);
-         throw new WrongValueException(naturesBoxPrlvt, Labels.getLabel("fichePrelevement.error.nature"));
-      }
-      Clients.clearWrongValue(naturesBoxPrlvt);
-      if(selectedConsentType == null){
-         Clients.scrollIntoView(consentTypesBoxPrlvt);
-         throw new WrongValueException(consentTypesBoxPrlvt, Labels.getLabel("fichePrelevement.error.consenType"));
-      }
-      Clients.clearWrongValue(consentTypesBoxPrlvt);
+      
+	   // gatsbi overrides
+	   checkRequiredListboxes();
 
       // valide les dates donc
       validateAllDateComps();
@@ -1031,7 +1010,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
                   (Window) Executions.createComponents("/zuls/component/DynamicMultiLineMessageBox.zul", null, map);
                window.doModal();
             }catch(final RuntimeException re){
-               Messagebox.show(handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
+               throw new RuntimeException(handleExceptionMessage(re));
             }
          }
       }
@@ -1441,6 +1420,11 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    public List<Risque> getRisques(){
       return risques;
    }
+   
+   public void setRisques(List<Risque> _r){
+	   risques.clear();
+	   risques.addAll(_r);
+   }
 
    /**
     * Clic sur le bouton générant un code.
@@ -1750,6 +1734,25 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       super.openSelectPatientWindow(path, returnMethode, isFusionPatients, critere, patAExclure);
       consentTypeUsed.clear();
       colorConsentTypeItem(true);
+   }
+
+   /**
+    * Validation sécifique des listboxes obligatoires
+    * Gatsbi surcharge cette méthode
+    * @since 2.3.0-gatsbi
+    */
+   protected void checkRequiredListboxes() {
+	
+		      if(selectedNature == null){
+		         Clients.scrollIntoView(naturesBoxPrlvt);
+		         throw new WrongValueException(naturesBoxPrlvt, Labels.getLabel("fichePrelevement.error.nature"));
+		      }
+		      Clients.clearWrongValue(naturesBoxPrlvt);
+		      if(selectedConsentType == null){
+		         Clients.scrollIntoView(consentTypesBoxPrlvt);
+		         throw new WrongValueException(consentTypesBoxPrlvt, Labels.getLabel("fichePrelevement.error.consenType"));
+		      }
+		      Clients.clearWrongValue(consentTypesBoxPrlvt);	
    }
 
 }

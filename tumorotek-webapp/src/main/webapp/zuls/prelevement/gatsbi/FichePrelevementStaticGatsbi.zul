@@ -3,13 +3,13 @@
 -->
 <zk>
 
-<style src="/css/gatsby.css" />
+<style src="/css/gatsbi.css" />
 
-<window id="fwinPrelevementStatic" border="none" apply="fr.aphp.tumorotek.action.prelevement.gatsby.FichePrelevementStaticGatsby">
+<window id="fwinPrelevementStatic" border="none" apply="fr.aphp.tumorotek.action.prelevement.gatsbi.FichePrelevementStaticGatsbi">
 	<panel collapsible="false" title="${c:l('fichePrelevement.panel.title')}"
 	 sclass="fichePanelv2" id="winPanel" closable="true">
 		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
-			<div id="gatsbyContainer" class="main-container gridForm1">
+			<div id="gatsbiContainer" class="main-container gridForm1">
 				<div class="block-container" id="identifiantBlockDiv" style="padding-left: 5px"><!-- Identifiants prélèvement -->
 					<div class="item item-mid" id="codeDiv"><!-- Code du prélèvement -->
 						<custom-attributes champId="23" />
@@ -409,7 +409,7 @@
 					<!-- Arrivée -->
 					<div id="arriveeBlockDiv">
 						<div class="block-title">
-							<div class="row-container">
+							<div class="column-container">
 								<label value="${c:l('fichePrelevement.arriveeStockage')}" sclass="formSubTitle"/>
 								<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
 							</div>

@@ -71,7 +71,6 @@ import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
 import fr.aphp.tumorotek.action.echantillon.EchantillonController;
 import fr.aphp.tumorotek.action.echantillon.FicheMultiEchantillons;
 import fr.aphp.tumorotek.action.patient.PatientController;
-import fr.aphp.tumorotek.action.prelevement.gatsby.FichePrelevementStaticGatsby;
 import fr.aphp.tumorotek.action.prelevement.serotk.FichePrelevementEditSero;
 import fr.aphp.tumorotek.action.prelevement.serotk.FichePrelevementStaticSero;
 import fr.aphp.tumorotek.action.prelevement.serotk.ListePrelevementSero;
@@ -189,7 +188,7 @@ public class PrelevementController extends AbstractObjectTabController
             break;
          default:
             listePrelevement.setVisible(true);
-            setEditZulPath("/zuls/prelevement/gatsby/FichePrelevementEditGatsby.zul"); // TODO à changer pour conserver TK standard aussi
+            setEditZulPath("/zuls/prelevement/gatsbi/FichePrelevementEditGatsbi.zul"); // TODO à changer pour conserver TK standard aussi
            // setEditZulPath("/zuls/prelevement/FichePrelevementEdit.zul"); 
             setListZulPath("/zuls/prelevement/ListePrelevement.zul");
             setMultiEditZulPath("/zuls/prelevement/FicheModifMultiPrelevement.zul");
@@ -221,7 +220,7 @@ public class PrelevementController extends AbstractObjectTabController
       if(SEROLOGIE.equals(getCurrentContexte())){
          setStaticZulPath("/zuls/prelevement/serotk/FichePrelevementStaticSero.zul");
       }else{
-         setStaticZulPath("/zuls/prelevement/gatsby/FichePrelevementStaticGatsby.zul"); // TODO à changer pour conserver TK standard aussi
+         setStaticZulPath("/zuls/prelevement/gatsbi/FichePrelevementStaticGatsbi.zul"); // TODO à changer pour conserver TK standard aussi
      //  setStaticZulPath("/zuls/prelevement/FichePrelevementStatic.zul");
       }
       super.populateFicheStatic();

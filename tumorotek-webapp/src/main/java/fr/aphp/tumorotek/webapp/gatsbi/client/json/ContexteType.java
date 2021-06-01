@@ -1,7 +1,7 @@
 /**
   * projet-tk@sesan.fr
  **/
-package fr.aphp.tumorotek.webapp.gatsby.client.json;
+package fr.aphp.tumorotek.webapp.gatsbi.client.json;
 
 public enum ContexteType {
 	

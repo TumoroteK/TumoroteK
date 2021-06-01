@@ -3,13 +3,13 @@
 -->
 <zk>
 
-<style src="/css/gatsby.css" />
+<style src="/css/gatsbi.css" />
 <?component name="calendarbox" macroURI="/zuls/component/CalendarBox.zul" class="fr.aphp.tumorotek.component.CalendarBox" ?>
 
-<window id="fwinPrelevementEdit" border="none" apply="fr.aphp.tumorotek.action.prelevement.gatsby.FichePrelevementEditGatsby">
+<window id="fwinPrelevementEdit" border="none" apply="fr.aphp.tumorotek.action.prelevement.gatsbi.FichePrelevementEditGatsbi">
 	<panel collapsible="false" title="${c:l('fichePrelevement.panel.title')}" sclass="fichePanelv2" id="winPanel" closable="true">
 		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
-			<div id="gatsbyContainer" class="main-container gridForm1">
+			<div id="gatsbiContainer" class="main-container gridForm1">
 				<div class="block-container" id="identifiantBlockDiv"><!-- Identifiants prélèvement -->
 					<div class="item item-mid" id="codeDiv"><!-- Code du prélèvement -->
 						<custom-attributes champId="23" />
@@ -37,7 +37,7 @@
 	        				width="150px" constraint="${fwinPrelevementEdit$composer.codeNullConstraint}" />
 	        		</div>
 					<div class="item item-mid" id="natureDiv"><!-- Nature du prélèvement -->
-						<custom-attributes champId="24" />
+						<custom-attributes champId="24" listmodel="natures" />
 						<div class="row-container chpLabel">
 							<label value="${c:l('Champ.Prelevement.Nature')}" sclass="formLabel" />
 							<label value="*" sclass="requiredMark" />
@@ -64,7 +64,7 @@
 							<div class="item item-mid" id="ndaDiv"><!-- nda patient -->
 								<custom-attributes champId="44" />
 								<div class="row-container chpLabel">
-									<label value="${c:l('Champ.Prelevement.PatientNda')}" sclass="chpLabel formLabel" />
+									<label value="${c:l('Champ.Prelevement.PatientNda')}" sclass="formLabel" />
 									<label value="*" sclass="requiredMark" />
 								</div>
 								<textbox id="ndaBox" width="100px" visible="false" constraint="${fwinPrelevementEdit$composer.ndaConstraint}" />
@@ -123,7 +123,7 @@
 			        			save-when='validate.onClick, create.onClick, next.onClick, self.onBlur'}" />
 			        	</div>
 						<div class="item item-mid" id="typeDiv"><!-- Mode du prélèvement -->
-							<custom-attributes champId="31" />
+							<custom-attributes champId="31" listmodel="modes" />
 							<div class="row-container chpLabel">
 								<label value="${c:l('Champ.Prelevement.PrelevementType')}" sclass="formLabel" />
 								<label value="*" sclass="requiredMark"/>
@@ -144,7 +144,7 @@
 								save-when='validate.onClick, create.onClick, next.onClick'}" />
 						</div>
 						<div class="item item-mid" id="risquesDiv"><!-- Risques -->	
-							<custom-attributes champId="249" />
+							<custom-attributes champId="249" listmodel="risques" />
 							<div class="row-container chpLabel">
 								<label value="${c:l('Champ.Prelevement.Risque')}" sclass="formLabel" />
 								<label value="*" sclass="requiredMark"/>
@@ -207,7 +207,7 @@
 						</div>
 						<div class="block-container">
 							<div class="item item-mid" id="conditTypeDiv"><!-- type de conditionnement -->
-								<custom-attributes champId="32" />
+								<custom-attributes champId="32" listmodel="conditTypes" />
 								<div class="row-container chpLabel">
 									<label value="${c:l('Champ.Prelevement.ConditType')}" sclass="formLabel" />
 									<label value="*" sclass="requiredMark"/>
@@ -228,7 +228,7 @@
 									save-when='validate.onClick, create.onClick, next.onClick'}" constraint="no negative" />
 							</div>
 							<div class="item item-mid" id="conditMilieuDiv"><!-- Milieu de Condit -->
-								<custom-attributes champId="33" />
+								<custom-attributes champId="33" listmodel="conditMilieus" />
 								<div class="row-container chpLabel">
 									<label value="${c:l('Champ.Prelevement.ConditMilieu')}" sclass="formLabel" />
 									<label value="*" sclass="requiredMark"/>
@@ -251,7 +251,7 @@
 						</div>
 						<div class="block-container">
 							<div class="item item-mid" id="consentTypeDiv"><!-- type de consentement -->
-								<custom-attributes champId="26" />
+								<custom-attributes champId="26" listmodel="consentTypes" />
 								<div class="row-container chpLabel">
 									<label value="${c:l('Champ.Prelevement.ConsentType')}" sclass="formLabel" />
 									<label id="requiredConsentTypePrlvt" value="*" sclass="requiredMark" />
@@ -272,7 +272,7 @@
 									<label value="*" sclass="requiredMark" />
 								</div>
 								<datebox id="dateConsentBoxPrlvt" format="${c:l('validation.date.format.simple')}" 
-									value="@{fwinPrelevementEdit$composer.object.consentDate,
+										value="@{fwinPrelevementEdit$composer.object.consentDate,
 											save-when='validate.onClick, create.onClick, next.onClick'}" lenient="true" />
 							</div>
 						</div>

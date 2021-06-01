@@ -1,7 +1,7 @@
 /**
   * projet-tk@sesan.fr
  **/
-package fr.aphp.tumorotek.webapp.gatsby.client.json;
+package fr.aphp.tumorotek.webapp.gatsbi.client.json;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -122,11 +122,35 @@ public class Contexte implements Serializable {
 	}
 	
 	@JsonIgnore
-	public List<Integer> getHiddenChamps() {
+	public List<Integer> getHiddenChampEntiteIds() {
 		return champEntites.stream()
 				.filter(c -> !c.getVisible())
 				.map(ChampEntite::getChampId)
 			.collect(Collectors.toList());
+	}
+	
+	@JsonIgnore
+	public List<Integer> getRequiredChampEntiteIds() {
+		return champEntites.stream()
+				.filter(c -> c.getObligatoire())
+				.map(ChampEntite::getChampId)
+			.collect(Collectors.toList());
+	}
+	
+	@JsonIgnore
+	public List<Integer> getThesaurusChampEntiteIds() {
+		return champEntites.stream()
+				.filter(c -> c.getIsChampReferToThesaurus() != null)
+				.map(ChampEntite::getChampId)
+			.collect(Collectors.toList());
+	}
+	
+	@JsonIgnore
+	public List<ThesaurusValue> getThesaurusValuesForChampEntiteId(Integer id) {
+		return champEntites.stream()
+				.filter(c -> c.getChampId().equals(id))
+				.findFirst().orElse(new ChampEntite())
+				.getThesaurusValues();
 	}
 	
 }

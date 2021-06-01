@@ -37,6 +37,11 @@ div.item-wide {
   break-after: always;
 }
 
+div.item > .z-datebox {
+	display: inline-flex;
+	align-items: center;
+}
+
 div.row-container {
   display: flex;
   flex-direction: row;
@@ -56,7 +61,7 @@ div.column-container > * {
 }
 
 div.row-container > span {
-	margin-right: 5px;
+	margin-right: 2px;
 }
 
 div.block-separator {
@@ -65,8 +70,8 @@ div.block-separator {
 
 div.item .chpLabel, div.item span.formValue, div.item span.formLink {
 	width: 150px;
-	display: inline-flex;
-  	align-items: center;
+	display: inline-block;
+  	align-items: start;
 }
 
 div.gridForm1 div.item {
@@ -93,4 +98,15 @@ div.gridForm1 .z-group-box{
 	border-left-style : none; /*PRO*/
 	border-top-width : 1px; /*PRO*/
 	border-top-color : #E03F06; /*PRO*/
+}
+
+
+/* required field */
+span.requiredMark {
+	display: none;
+}
+
+div.item-required span.requiredMark {
+	display: inline;
+	width: 5px;
 }

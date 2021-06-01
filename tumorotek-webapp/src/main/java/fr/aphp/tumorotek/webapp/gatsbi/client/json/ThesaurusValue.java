@@ -1,7 +1,7 @@
 /**
   * projet-tk@sesan.fr
  **/
-package fr.aphp.tumorotek.webapp.gatsby.client.json;
+package fr.aphp.tumorotek.webapp.gatsbi.client.json;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -14,7 +14,8 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 	"champId",
 	"templateThesaurusId",
 	"thesaurusId",
-	"thesaurusValue"
+	"thesaurusValue",
+	"position"
 })
 public class ThesaurusValue implements Serializable {
 
@@ -24,6 +25,7 @@ public class ThesaurusValue implements Serializable {
 	private Integer templateThesaurusId;
 	private Integer thesaurusId;
 	private String thesaurusValue;
+	private Integer position;
 	
 	@JsonProperty
 	public Integer getChampId() {
@@ -59,6 +61,15 @@ public class ThesaurusValue implements Serializable {
 	
 	public void setThesaurusValue(String _v) {
 		this.thesaurusValue = _v;
+	}
+
+	@JsonProperty
+	public Integer getPosition() {
+		return position;
+	}
+
+	public void setPosition(Integer _p) {
+		this.position = _p;
 	}
 
 	@Override

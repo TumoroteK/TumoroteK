@@ -692,15 +692,15 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 			}else{
 				message = new StringBuilder(ex.getMessage());
 			}
-			log.error(ex);
-			ex.printStackTrace();
+			log.error(ex.getMessage());
+			log.debug(ex);
 		}
-		// aucun message n'a pu être généré -> exception inattendue
-		if(message == null){
-			message = new StringBuilder(ex.getClass().getSimpleName() + " : " + ex.getMessage());
-			log.error(ex);
-			ex.printStackTrace();
-		}
+//		// aucun message n'a pu être généré -> exception inattendue
+//		if(message == null){
+//			message = new StringBuilder(ex.getClass().getSimpleName() + " : " + ex.getMessage());
+//			log.error(ex.getMessage());
+//			log.debug(ex);
+//		}
 
 		// si l'exception possède des infos sur l'objet qui l'a
 		// généré, on écrit ces informations dans le message
