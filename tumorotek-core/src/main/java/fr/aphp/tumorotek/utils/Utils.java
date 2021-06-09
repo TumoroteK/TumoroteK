@@ -128,12 +128,12 @@ public final class Utils
          throw new RuntimeException("error.filesystem.access");
       }
       if (!baseDir.endsWith(File.separator)) {
-         baseDir = baseDir + File.separator;
+         baseDir = baseDir + "/";
       }
-      String path = baseDir + "pt_" + bank.getPlateforme().getPlateformeId() + File.separator + "coll_" + bank.getBanqueId();
+      String path = baseDir + "pt_" + bank.getPlateforme().getPlateformeId() + "/" + "coll_" + bank.getBanqueId();
 
       if(chp != null){
-         path = path + File.separator + "anno" + File.separator + "chp_" + chp.getId() + File.separator;
+         path = path + "/" + "anno" + "/" + "chp_" + chp.getId() + "/";
       }
       //		
       //		if (obj != null) {

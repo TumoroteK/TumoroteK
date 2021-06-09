@@ -793,4 +793,13 @@ public interface EchantillonManager
     * @since 2.2.2
     */
    long calculDelaiStockage(Echantillon echan, Prelevement prel); 
+   
+   /**
+    * Renvoie tous les échantillons ayant eu une dégradation possible
+    * @param banks
+    * @param impact
+    * @return liste d'ids
+    * @since 2.3
+    */
+   List<Integer> findByBanksAndImpact(List<Banque> banks, List<Boolean> impact);
 }

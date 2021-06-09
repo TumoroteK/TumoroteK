@@ -2019,4 +2019,12 @@ public class EchantillonManagerImpl implements EchantillonManager
       return milli;
 
    }
+   
+   @Override
+   public List<Integer> findByBanksAndImpact(List<Banque> banks, List<Boolean> impact){
+      if(banks.size() > 0){
+         return echantillonDao.findByBanksAndImpact(banks, impact);
+      }
+      return new ArrayList<>();
+   }
 }

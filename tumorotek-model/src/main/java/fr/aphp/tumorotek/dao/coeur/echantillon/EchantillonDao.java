@@ -423,4 +423,12 @@ public interface EchantillonDao extends GenericDaoJpa<Echantillon, Integer>
     * @param pf plateforme dans laquelle effectuer la recherche
     */
    List<Echantillon> findByCodeInListWithPlateforme(List<String> codes, Plateforme pf);
+   
+   /**
+    * Recherche les échantillons ayant eu une dégradation possible du matériel
+    * @param banque
+    * @param impact
+    * @return une liste d'ids.
+    */
+   List<Integer> findByBanksAndImpact(List<Banque> banks, List<Boolean> impact);
 }

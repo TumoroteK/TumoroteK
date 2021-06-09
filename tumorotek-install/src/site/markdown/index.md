@@ -1,6 +1,6 @@
 #### Notes de version
 
-##### Version 2.2.3-SNAPSHOT - Publiée le 12/02/2021
+##### Version 2.2.3 - Publiée le 09/06/2021
 ###### Nouveautés
 - YouTrack [TKB-4](https://tumorotek.myjetbrains.com/youtrack/issue/TKB-4) : <span class="badge badge-prelevement">Prélèvement</span> Amélioration de la signification : congélation à l'arrivé à la biothèque
 - YouTrack [TK-14](https://tumorotek.myjetbrains.com/youtrack/issue/TK-14) : Evolution de la partie Numérotation

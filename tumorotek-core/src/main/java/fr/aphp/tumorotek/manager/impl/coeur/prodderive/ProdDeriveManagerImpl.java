@@ -2016,4 +2016,12 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    public List<ProdDerive> findByListCodeWithPlateforme(List<String> listCodes, Plateforme pf){
       return prodDeriveDao.findByListCodeWithPlateforme(listCodes, pf);
    }
+   
+   @Override
+   public List<Integer> findByBanksAndImpact(List<Banque> banks, List<Boolean> impact){
+      if(banks.size() > 0){
+         return prodDeriveDao.findByBanksAndImpact(banks, impact);
+      }
+      return new ArrayList<>();
+   }
 }

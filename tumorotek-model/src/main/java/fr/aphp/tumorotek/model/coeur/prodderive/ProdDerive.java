@@ -160,7 +160,10 @@ import fr.aphp.tumorotek.model.utils.Utils;
    @NamedQuery(name = "ProdDerive.findCountByParent",
       query = "SELECT count(p) FROM ProdDerive p " + "WHERE p.transformation.objetId = ?1 " + "AND p.transformation.entite = ?2"),
    @NamedQuery(name = "ProdDerive.findByListCodeWithPlateforme",
-      query = "SELECT e FROM ProdDerive e JOIN e.banque bq JOIN bq.plateforme pf WHERE e.code in (?1) AND pf = ?2 ")})
+      query = "SELECT e FROM ProdDerive e JOIN e.banque bq JOIN bq.plateforme pf WHERE e.code in (?1) AND pf = ?2 "),
+   @NamedQuery(name = "ProdDerive.findByBanksAndImpact",
+   query = "SELECT e.prodDeriveId FROM ProdDerive e, Retour r " + "WHERE e.prodDeriveId = r.objetId "
+      + "and e.banque in (?1)"+ "and r.impact in (?2) ")})
 public class ProdDerive extends TKDelegetableObject<ProdDerive> implements TKStockableObject, Serializable
 {
 

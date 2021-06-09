@@ -22,7 +22,7 @@ create table SCAN_TUBE (SCAN_TUBE_ID int(10) not null,
 	SCAN_TERMINALE_ID int(10) not null,
 	CODE varchar(50),
 	CELL varchar(10) not null,
-	ROW varchar(10) not null,
+	`ROW` varchar(10) not null,
 	COL varchar(10) not null,
 	primary key(SCAN_TUBE_ID)
 );

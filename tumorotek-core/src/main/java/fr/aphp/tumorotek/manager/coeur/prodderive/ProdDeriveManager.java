@@ -648,5 +648,14 @@ public interface ProdDeriveManager
     * @since 2.2.0 
     */
    List<ProdDerive> findByListCodeWithPlateforme(List<String> listCodes, Plateforme pf);
+
+   /**
+    * Renvoie tous les dérivés ayant eu une dégradation possible
+    * @param banks
+    * @param impact
+    * @return liste d'ids
+    * @since 2.3
+    */
+   List<Integer> findByBanksAndImpact(List<Banque> banks, List<Boolean> impact);
    
 }
