@@ -528,15 +528,12 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 				while(it.hasNext()){
 					// pour chaque pf on récupère ses banques
 					final Set<Banque> bks = plateformeManager.getBanquesManager(it.next());
-					final Iterator<Banque> it2 = bks.iterator();
 
 					// @since 2.1 retire bank archive
-					if (!keepArchived) {
-						while(it2.hasNext()){
-							final Banque bk = it2.next();
-							if(!availables.contains(bk) && !bk.getArchive()){
-								availables.add(bk);
-							}
+					// @since 2.2.3.2 TK-299 fix
+					for(final Banque banque : bks){
+						if(!availables.contains(banque) && (keepArchived || !banque.getArchive())){
+							availables.add(banque);
 						}
 					}
 				}
