@@ -10,44 +10,46 @@
 	<panel collapsible="false" title="${c:l('fichePrelevement.panel.title')}" sclass="fichePanelv2" id="winPanel" closable="true">
 		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
 			<div id="gatsbiContainer" class="main-container gridForm1">
-				<div class="block-container" id="identifiantBlockDiv"><!-- Identifiants prélèvement -->
-					<div class="item item-mid" id="codeDiv"><!-- Code du prélèvement -->
-						<custom-attributes champId="23" />
-						<div class="row-container chpLabel">
-							<label value="${c:l('Champ.Prelevement.Code')}" sclass="formLabel" />
-							<label value="*" sclass="requiredMark" />
+				<div id="identifiantBlockDiv"><!-- Identifiants prélèvement -->
+					<div id="identifiantBlockDivContainer" class="block-container">
+						<div class="item item-mid" id="codeDiv"><!-- Code du prélèvement -->
+							<custom-attributes champId="23" />
+							<div class="row-container chpLabel">
+								<label value="${c:l('Champ.Prelevement.Code')}" sclass="formLabel" />
+								<label value="*" sclass="requiredMark" />
+							</div>
+							<div class="row-container">
+								<textbox id="codeBoxPrlvt" value="@{fwinPrelevementEdit$composer.object.code,
+				        			save-when='validate.onClick, create.onClick, next.onClick'
+				        			load-after='numerotation.onClick'}" width="150px" 
+				        			constraint="${fwinPrelevementEdit$composer.codeConstraint}" />
+								<button id="numerotation" image="/images/icones/numerotation.png" sclass="buttonv2" visible="false" />
+								<button id="interfacage" image="/images/icones/wizard.png" sclass="buttonv2" visible="false" />
+							</div>
 						</div>
-						<div class="row-container">
-							<textbox id="codeBoxPrlvt" value="@{fwinPrelevementEdit$composer.object.code,
-			        			save-when='validate.onClick, create.onClick, next.onClick'
-			        			load-after='numerotation.onClick'}" width="150px" 
-			        			constraint="${fwinPrelevementEdit$composer.codeConstraint}" />
-							<button id="numerotation" image="/images/icones/numerotation.png" sclass="buttonv2" visible="false" />
-							<button id="interfacage" image="/images/icones/wizard.png" sclass="buttonv2" visible="false" />
+						<div class="item item-mid" id="codeLaboDiv"><!-- Numéro Labo du prélèvement -->	
+							<custom-attributes champId="45" />
+							<div class="row-container chpLabel">
+								<label value="${c:l('Champ.Prelevement.NumeroLabo')}" sclass="formLabel" />
+								<label value="*" sclass="requiredMark" />
+							</div>
+							<textbox id="numLaboBoxPrlvt" value="@{fwinPrelevementEdit$composer.object.numeroLabo,
+		        				save-when='validate.onClick, create.onClick, next.onClick'}" 
+		        				width="150px" constraint="${fwinPrelevementEdit$composer.codeNullConstraint}" />
+		        		</div>
+						<div class="item item-mid" id="natureDiv"><!-- Nature du prélèvement -->
+							<custom-attributes champId="24" listmodel="natures" />
+							<div class="row-container chpLabel">
+								<label value="${c:l('Champ.Prelevement.Nature')}" sclass="formLabel" />
+								<label value="*" sclass="requiredMark" />
+							</div>
+							<listbox id="naturesBoxPrlvt" mold="select" rows="1" width="150px" 
+									model="@{fwinPrelevementEdit$composer.natures}" selectedItem="@{fwinPrelevementEdit$composer.selectedNature}">
+								<listitem self="@{each='naturePrlvt'}" value="@{naturePrlvt}">
+									<listcell label="@{naturePrlvt.nature}" />
+								</listitem>
+							</listbox>
 						</div>
-					</div>
-					<div class="item item-mid" id="codeLaboDiv"><!-- Numéro Labo du prélèvement -->	
-						<custom-attributes champId="45" />
-						<div class="row-container chpLabel">
-							<label value="${c:l('Champ.Prelevement.NumeroLabo')}" sclass="formLabel" />
-							<label value="*" sclass="requiredMark" />
-						</div>
-						<textbox id="numLaboBoxPrlvt" value="@{fwinPrelevementEdit$composer.object.numeroLabo,
-	        				save-when='validate.onClick, create.onClick, next.onClick'}" 
-	        				width="150px" constraint="${fwinPrelevementEdit$composer.codeNullConstraint}" />
-	        		</div>
-					<div class="item item-mid" id="natureDiv"><!-- Nature du prélèvement -->
-						<custom-attributes champId="24" listmodel="natures" />
-						<div class="row-container chpLabel">
-							<label value="${c:l('Champ.Prelevement.Nature')}" sclass="formLabel" />
-							<label value="*" sclass="requiredMark" />
-						</div>
-						<listbox id="naturesBoxPrlvt" mold="select" rows="1" width="150px" 
-								model="@{fwinPrelevementEdit$composer.natures}" selectedItem="@{fwinPrelevementEdit$composer.selectedNature}">
-							<listitem self="@{each='naturePrlvt'}" value="@{naturePrlvt}">
-								<listcell label="@{naturePrlvt.nature}" />
-							</listitem>
-						</listbox>
 					</div>
 				</div>
 				<div class="block-separator" />
@@ -55,39 +57,41 @@
 				<groupbox id="groupPatient">
 					<caption label="${c:l('bloc.prelevement.patient')}" />
 					<div>
-						<div class="block-container" id="patientBlockDiv"><!-- Patient -->
-							<div class="item item-mid" id="nipDiv"><!-- Nip patient -->
-								<custom-attributes champId="2" />
-								<label value="${c:l('Champ.Patient.Nip')}" sclass="chpLabel formLabel"/>
-								<label id="nipLabel" sclass="formValue" />
-							</div>
-							<div class="item item-mid" id="ndaDiv"><!-- nda patient -->
-								<custom-attributes champId="44" />
-								<div class="row-container chpLabel">
-									<label value="${c:l('Champ.Prelevement.PatientNda')}" sclass="formLabel" />
-									<label value="*" sclass="requiredMark" />
+						<div id="patientBlockDiv"><!-- Patient -->
+							<div id="patientBlockDivContainer" class="block-container">
+								<div class="item item-mid" id="nipDiv"><!-- Nip patient -->
+									<custom-attributes champId="2" />
+									<label value="${c:l('Champ.Patient.Nip')}" sclass="chpLabel formLabel"/>
+									<label id="nipLabel" sclass="formValue" />
 								</div>
-								<textbox id="ndaBox" width="100px" visible="false" constraint="${fwinPrelevementEdit$composer.ndaConstraint}" />
-							</div>
-							<div class="item item-mid" id="nomDiv"><!-- Nom -->
-								<custom-attributes champId="3" />
-								<label value="${c:l('Champ.Patient.Nom')}" sclass="chpLabel formLabel" />
-								<label id="linkPatientLabel" sclass="formLink" />
-							</div>
-							<div class="item item-mid" id="prenomDiv"><!-- Prenom -->
-								<custom-attributes champId="5" />
-								<label value="${c:l('Champ.Patient.Prenom')}" sclass="chpLabel formLabel" />
-								<label id="prenomLabel" sclass="formValue" />
-							</div>
-							<div class="item item-mid" id="dateNaisDiv"><!-- Date de naissance -->
-								<custom-attributes champId="7" />
-								<label value="${c:l('Champ.Patient.DateNaissance')}" sclass="chpLabel formLabel" />
-								<label id="dateNaisLabel" sclass="formValue" />
-							</div>
-							<div class="item item-mid" id="sexeDiv"><!-- Sexe -->
-								<custom-attributes champId="6" />
-								<label value="${c:l('Champ.Patient.Sexe')}" sclass="chpLabel formLabel" />
-								<label id="sexeLabel" sclass="formValue" />							
+								<div class="item item-mid" id="ndaDiv"><!-- nda patient -->
+									<custom-attributes champId="44" />
+									<div class="row-container chpLabel">
+										<label value="${c:l('Champ.Prelevement.PatientNda')}" sclass="formLabel" />
+										<label value="*" sclass="requiredMark" />
+									</div>
+									<textbox id="ndaBox" width="100px" visible="false" constraint="${fwinPrelevementEdit$composer.ndaConstraint}" />
+								</div>
+								<div class="item item-mid" id="nomDiv"><!-- Nom -->
+									<custom-attributes champId="3" />
+									<label value="${c:l('Champ.Patient.Nom')}" sclass="chpLabel formLabel" />
+									<label id="linkPatientLabel" sclass="formLink" />
+								</div>
+								<div class="item item-mid" id="prenomDiv"><!-- Prenom -->
+									<custom-attributes champId="5" />
+									<label value="${c:l('Champ.Patient.Prenom')}" sclass="chpLabel formLabel" />
+									<label id="prenomLabel" sclass="formValue" />
+								</div>
+								<div class="item item-mid" id="dateNaisDiv"><!-- Date de naissance -->
+									<custom-attributes champId="7" />
+									<label value="${c:l('Champ.Patient.DateNaissance')}" sclass="chpLabel formLabel" />
+									<label id="dateNaisLabel" sclass="formValue" />
+								</div>
+								<div class="item item-mid" id="sexeDiv"><!-- Sexe -->
+									<custom-attributes champId="6" />
+									<label value="${c:l('Champ.Patient.Sexe')}" sclass="chpLabel formLabel" />
+									<label id="sexeLabel" sclass="formValue" />							
+								</div>
 							</div>
 						</div>
 						<div class="block-separator" />
@@ -112,88 +116,90 @@
 				<div class="item-wide" id="refPatientDiv" />
 				<groupbox id="groupPrlvt">
 					<caption label="${c:l('bloc.prelevement.informations.prelevement')}" />
-					<div class="block-container" id="infoPrelBlockDiv">
-						<div class="item item-mid" id="datePrelDiv"><!-- date du prélèvement -->
-							<custom-attributes champId="30" />
-							<div class="row-container chpLabel">
-								<label value="${c:l('Champ.Prelevement.DatePrelevement')}" sclass="formLabel" />
-								<label value="*" sclass="requiredMark"/>
-							</div>
-							<calendarbox id="datePrelCalBox" value="@{fwinPrelevementEdit$composer.object.datePrelevement,
-			        			save-when='validate.onClick, create.onClick, next.onClick, self.onBlur'}" />
-			        	</div>
-						<div class="item item-mid" id="typeDiv"><!-- Mode du prélèvement -->
-							<custom-attributes champId="31" listmodel="modes" />
-							<div class="row-container chpLabel">
-								<label value="${c:l('Champ.Prelevement.PrelevementType')}" sclass="formLabel" />
-								<label value="*" sclass="requiredMark"/>
-							</div>
-							<listbox id="modesBoxPrlvt" mold="select" rows="1" width="150px" model="@{fwinPrelevementEdit$composer.modes}" selectedItem="@{fwinPrelevementEdit$composer.selectedMode}">
-								<listitem self="@{each='modePrlvt'}" value="@{modePrlvt}">
-									<listcell label="@{modePrlvt.type}" />
-								</listitem>
-							</listbox>
-						</div>
-						<div class="item item-mid" id="sterileDiv"><!-- Sterile -->
-							<custom-attributes champId="47" />
-							<div class="row-container chpLabel">
-								<label value="${c:l('general.sterile')}" sclass="formLabel" />
-								<label value="*" sclass="requiredMark"/>
-							</div>
-							<checkbox id="sterileBoxPrlvt" label="" checked="@{fwinPrelevementEdit$composer.object.sterile 
-								save-when='validate.onClick, create.onClick, next.onClick'}" />
-						</div>
-						<div class="item item-mid" id="risquesDiv"><!-- Risques -->	
-							<custom-attributes champId="249" listmodel="risques" />
-							<div class="row-container chpLabel">
-								<label value="${c:l('Champ.Prelevement.Risque')}" sclass="formLabel" />
-								<label value="*" sclass="requiredMark"/>
-							</div>
-							<listbox id="risquesBox" mold="select" multiple="true" rows="4" width="150px" model="@{fwinPrelevementEdit$composer.risques}">
-								<listitem self="@{each='risque'}" value="@{risque.nom}">
-									<listcell label="@{risque.nom}" />
-								</listitem>
-							</listbox>
-						</div>
-						<div class="item item-wide" id="etabPreleveurDiv"><!-- établissement du prélèvement -->
-							<custom-attributes champId="29" /> <!-- l'affichage est dépendant de celui champ service préleveur -->
-							<label value="${c:l('prelevement.etablissement.filtre')}" sclass="chpLabel formLabel" id="etabEditLabelPrlvt" />
-							<listbox id="etabsBoxPrlvt" mold="select" rows="1" model="@{fwinPrelevementEdit$composer.etablissements}" selectedItem="@{fwinPrelevementEdit$composer.selectedEtablissement}">
-								<listitem self="@{each='etablissement'}" value="@{etablissement}">
-									<listcell label="@{etablissement.nom}" />
-								</listitem>
-							</listbox>
-						</div>
-						<div class="item item-wide" id="servicePreleveurDiv"><!-- service du prélèvement -->
-							<custom-attributes champId="29" />
-							<div class="row-container chpLabel">
-								<label value="${c:l('Champ.Prelevement.ServicePreleveur')}" sclass="formLabel" />
-								<label value="*" sclass="requiredMark"/>
-							</div>
-							<div class="row-container">							
-								<listbox id="servicesBoxPrlvt" mold="select" rows="1">
-									<listitem self="@{each='service'}" value="@{service}">
-										<listcell label="@{service.nom}" />
+					<div id="infoPrelBlockDiv">
+						<div class="block-container" id="infoPrelBlockDivContainer">
+							<div class="item item-mid" id="datePrelDiv"><!-- date du prélèvement -->
+								<custom-attributes champId="30" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('Champ.Prelevement.DatePrelevement')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark"/>
+								</div>
+								<calendarbox id="datePrelCalBox" value="@{fwinPrelevementEdit$composer.object.datePrelevement,
+				        			save-when='validate.onClick, create.onClick, next.onClick, self.onBlur'}" />
+				        	</div>
+							<div class="item item-mid" id="typeDiv"><!-- Mode du prélèvement -->
+								<custom-attributes champId="31" listmodel="modes" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('Champ.Prelevement.PrelevementType')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark"/>
+								</div>
+								<listbox id="modesBoxPrlvt" mold="select" rows="1" width="150px" model="@{fwinPrelevementEdit$composer.modes}" selectedItem="@{fwinPrelevementEdit$composer.selectedMode}">
+									<listitem self="@{each='modePrlvt'}" value="@{modePrlvt}">
+										<listcell label="@{modePrlvt.type}" />
 									</listitem>
 								</listbox>
-								<space />
-								<label id="operateurAideSaisieServ" style="font-weight:bold;" value="${c:l('laboInter.operateur.aideSaisie')}" sclass="formLink" />
 							</div>
-						</div>
-						<div class="item item-wide" id="preleveurDiv"><!-- Préleveur du prélèvement -->
-							<custom-attributes champId="28" />
-							<div class="row-container chpLabel">
-								<label value="${c:l('Champ.Prelevement.Preleveur')}" sclass="formLabel" />
-								<label value="*" sclass="requiredMark"/>
+							<div class="item item-mid" id="sterileDiv"><!-- Sterile -->
+								<custom-attributes champId="47" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('general.sterile')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark"/>
+								</div>
+								<checkbox id="sterileBoxPrlvt" label="" checked="@{fwinPrelevementEdit$composer.object.sterile 
+									save-when='validate.onClick, create.onClick, next.onClick'}" />
 							</div>
-							<div class="row-container">
-								<listbox id="collaborateursBoxPrlvt" mold="select" rows="1">
-									<listitem self="@{each='collaborateur'}" value="@{collaborateur}">
-										<listcell label="@{collaborateur.nomAndPrenom}" />
+							<div class="item item-mid" id="risquesDiv"><!-- Risques -->	
+								<custom-attributes champId="249" listmodel="risques" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('Champ.Prelevement.Risque')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark"/>
+								</div>
+								<listbox id="risquesBox" mold="select" multiple="true" rows="4" width="150px" model="@{fwinPrelevementEdit$composer.risques}">
+									<listitem self="@{each='risque'}" value="@{risque.nom}">
+										<listcell label="@{risque.nom}" />
 									</listitem>
 								</listbox>
-								<space />
-								<label id="operateurAideSaisiePrel" style="font-weight:bold;" value="${c:l('laboInter.operateur.aideSaisie')}" sclass="formLink" />
+							</div>
+							<div class="item item-wide" id="etabPreleveurDiv"><!-- établissement du prélèvement -->
+								<custom-attributes champId="29" /> <!-- l'affichage est dépendant de celui champ service préleveur -->
+								<label value="${c:l('prelevement.etablissement.filtre')}" sclass="chpLabel formLabel" id="etabEditLabelPrlvt" />
+								<listbox id="etabsBoxPrlvt" mold="select" rows="1" model="@{fwinPrelevementEdit$composer.etablissements}" selectedItem="@{fwinPrelevementEdit$composer.selectedEtablissement}">
+									<listitem self="@{each='etablissement'}" value="@{etablissement}">
+										<listcell label="@{etablissement.nom}" />
+									</listitem>
+								</listbox>
+							</div>
+							<div class="item item-wide" id="servicePreleveurDiv"><!-- service du prélèvement -->
+								<custom-attributes champId="29" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('Champ.Prelevement.ServicePreleveur')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark"/>
+								</div>
+								<div class="row-container">							
+									<listbox id="servicesBoxPrlvt" mold="select" rows="1">
+										<listitem self="@{each='service'}" value="@{service}">
+											<listcell label="@{service.nom}" />
+										</listitem>
+									</listbox>
+									<space />
+									<label id="operateurAideSaisieServ" style="font-weight:bold;" value="${c:l('laboInter.operateur.aideSaisie')}" sclass="formLink" />
+								</div>
+							</div>
+							<div class="item item-wide" id="preleveurDiv"><!-- Préleveur du prélèvement -->
+								<custom-attributes champId="28" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('Champ.Prelevement.Preleveur')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark"/>
+								</div>
+								<div class="row-container">
+									<listbox id="collaborateursBoxPrlvt" mold="select" rows="1">
+										<listitem self="@{each='collaborateur'}" value="@{collaborateur}">
+											<listcell label="@{collaborateur.nomAndPrenom}" />
+										</listitem>
+									</listbox>
+									<space />
+									<label id="operateurAideSaisiePrel" style="font-weight:bold;" value="${c:l('laboInter.operateur.aideSaisie')}" sclass="formLink" />
+								</div>
 							</div>
 						</div>
 					</div>
@@ -205,7 +211,7 @@
 								<image width="100%" height="1px" src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
 							</div>
 						</div>
-						<div class="block-container">
+						<div class="block-container" id="conditBlockDivContainer">
 							<div class="item item-mid" id="conditTypeDiv"><!-- type de conditionnement -->
 								<custom-attributes champId="32" listmodel="conditTypes" />
 								<div class="row-container chpLabel">
@@ -249,7 +255,7 @@
 								<image width="100%" height="1px" src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
 							</div>
 						</div>
-						<div class="block-container">
+						<div class="block-container" id="consentBlockDivContainer">
 							<div class="item item-mid" id="consentTypeDiv"><!-- type de consentement -->
 								<custom-attributes champId="26" listmodel="consentTypes" />
 								<div class="row-container chpLabel">

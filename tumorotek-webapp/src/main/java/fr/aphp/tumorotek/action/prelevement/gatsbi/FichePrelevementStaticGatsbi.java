@@ -15,8 +15,7 @@ import fr.aphp.tumorotek.webapp.gatsbi.client.json.Contexte;
 
 /**
  *
- * Controller gérant la fiche static d'un prélèvement.
- * CONTEXTE SEROTK
+ * Controller gérant la fiche static d'un prélèvement GATSBI.
  * Controller créé le 25/05/2021.
  *
  * @author mathieu BARTHELEMY

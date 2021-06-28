@@ -109,7 +109,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FicheLaboInter extends AbstractFicheEditController
 {
 
-   private final Log log = LogFactory.getLog(FicheLaboInter.class);
+   protected final Log log = LogFactory.getLog(FicheLaboInter.class);
 
    private static final long serialVersionUID = -422768239086454672L;
 
@@ -121,7 +121,7 @@ public class FicheLaboInter extends AbstractFicheEditController
    // Buttons
    private Button previous;
    private Button next;
-   private Button addLabo;
+   protected Button addLabo;
 
    /**
     *  Editable components : mode d'édition ou de création.
@@ -213,7 +213,9 @@ public class FicheLaboInter extends AbstractFicheEditController
       initAssociations();
 
       // scroll up pour se placer en haut de la page
-      Clients.scrollIntoView(gridFormPrlvtComp.getColumns());
+      if (gridFormPrlvtComp != null) {
+    	  Clients.scrollIntoView(gridFormPrlvtComp.getColumns());
+      }
    }
 
    @Override

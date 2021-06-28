@@ -194,7 +194,9 @@ public class GatsbiController {
 		log.debug("showing or hiding blocks");
 		if (blocks != null) {
 			for (Div div : blocks) {
-				div.setVisible(!div.getFellows().isEmpty());
+				div.setVisible(div.hasFellow(div.getId().concat("Container")) && 
+					div.getFellow(div.getId().concat("Container")).getChildren().stream().anyMatch(d -> d.isVisible()));
+				
 				log.debug((div.isVisible() ? "showing " : "hiding ").concat(div.getId()));
 			}
 		}
@@ -209,42 +211,44 @@ public class GatsbiController {
 			if (!required.isEmpty()) {
 				boolean isReq;
 				for (Div div : items) {
-					isReq = (div.hasAttribute("champId") && required.contains(Integer.valueOf((String) div.getAttribute("champId"))));
-					if (isReq) { // required
-						div.setSclass(div.getSclass().concat(" item-required"));
-						
-						Component formElement = null;
-						
-						formElement = findInputOrListboxElement(div);
-						
-						if (formElement != null) {
-							if (formElement instanceof InputElement) {
-								if (((InputElement) formElement).getConstraint() != null) {
-									if (((InputElement) formElement).getConstraint() instanceof TumoTextConstraint) {
-										((TumoTextConstraint) ((InputElement) formElement).getConstraint()).setNullable(false);
-									} else if (((InputElement) formElement).getConstraint() instanceof SimpleConstraint) {
-										
-										((InputElement) formElement)
-											.setConstraint(new SimpleConstraint(
-													((SimpleConstraint) ((InputElement) formElement).getConstraint()).getFlags()
-													+ SimpleConstraint.NO_EMPTY));		
-										
-										log.debug(((InputElement) formElement).getConstraint());
-										
+					if (div.isVisible()) {
+						isReq = (div.hasAttribute("champId") && required.contains(Integer.valueOf((String) div.getAttribute("champId"))));
+						if (isReq) { // required
+							div.setSclass(div.getSclass().concat(" item-required"));
+							
+							Component formElement = null;
+							
+							formElement = findInputOrListboxElement(div);
+							
+							if (formElement != null) {
+								if (formElement instanceof InputElement) {
+									if (((InputElement) formElement).getConstraint() != null) {
+										if (((InputElement) formElement).getConstraint() instanceof TumoTextConstraint) {
+											((TumoTextConstraint) ((InputElement) formElement).getConstraint()).setNullable(false);
+										} else if (((InputElement) formElement).getConstraint() instanceof SimpleConstraint) {
+											
+											((InputElement) formElement)
+												.setConstraint(new SimpleConstraint(
+														((SimpleConstraint) ((InputElement) formElement).getConstraint()).getFlags()
+														+ SimpleConstraint.NO_EMPTY));		
+											
+											log.debug(((InputElement) formElement).getConstraint());
+											
+										} else {
+											throw new RuntimeException(div.getId() + " input constraint unknown");
+										}
 									} else {
-										throw new RuntimeException(div.getId() + " input constraint unknown");
+										((InputElement) formElement).setConstraint("no empty");
 									}
-								} else {
-									((InputElement) formElement).setConstraint("no empty");
+								} else { // listbox
+									lboxes.add(((Listbox) formElement));
 								}
-							} else { // listbox
-								lboxes.add(((Listbox) formElement));
-							}
-						}					
-					}
+							}					
+						}
 					
-					log.debug("switching ".concat(div.getId()).concat(" ")
+						log.debug("switching ".concat(div.getId()).concat(" ")
 							.concat(!isReq ? "not" : "").concat("required"));
+					}
 				}
 			}
 		}
@@ -260,7 +264,8 @@ public class GatsbiController {
 			
 			if (!thesaurii.isEmpty()) {
 				for (Div div : items) {
-					if(div.hasAttribute("champId") && thesaurii.contains(Integer.valueOf((String) div.getAttribute("champId")))) {
+					if(div.hasAttribute("champId") && div.hasAttribute("listmodel") 
+							&& thesaurii.contains(Integer.valueOf((String) div.getAttribute("champId")))) {
 						log.debug("applying thesaurus values for ".concat(div.getId()));
 						
 						List<ThesaurusValue> values = 
@@ -311,7 +316,7 @@ public class GatsbiController {
 		   ChampEntite code = new ChampEntite();
 		   code.setChampId(23);
 		   code.setVisible(true);
-		   code.setObligatoire(true);
+		   code.setObligatoire(false);
 		   cont.getChampEntites().add(code);
 		   ChampEntite codeLabo = new ChampEntite();
 		   codeLabo.setChampId(45);
@@ -355,21 +360,21 @@ public class GatsbiController {
 		   ChampEntite consentDate = new ChampEntite();
 		   consentDate.setChampId(27);
 		   consentDate.setVisible(true);
-		   consentDate.setObligatoire(true);
+		   consentDate.setObligatoire(false);
 		   cont.getChampEntites().add(consentDate);
 		   
 		  // listbox
 		   ChampEntite prelType = new ChampEntite();
 		   prelType.setChampId(31);
 		   prelType.setVisible(true);
-		   prelType.setObligatoire(true);
+		   prelType.setObligatoire(false);
 		   cont.getChampEntites().add(prelType);
 		   
 		   // multi listbox
 		   ChampEntite risques = new ChampEntite();
 		   risques.setChampId(249);
 		   risques.setVisible(true);
-		   risques.setObligatoire(true);
+		   risques.setObligatoire(false);
 		   risques.setIsChampReferToThesaurus("risques");
 		   ThesaurusValue hiv = new ThesaurusValue();
 		   hiv.setChampId(249);
@@ -383,10 +388,67 @@ public class GatsbiController {
 		   ChampEntite conditnbr = new ChampEntite();
 		   conditnbr.setChampId(34);
 		   conditnbr.setVisible(true);
-		   conditnbr.setObligatoire(true);
+		   conditnbr.setObligatoire(false);
 		   cont.getChampEntites().add(conditnbr);
 		   
-		   cont.setSiteInter(false);
+		   // sites interm
+		   // intboc
+		   ChampEntite depart = new ChampEntite();
+		   depart.setChampId(35);
+		   depart.setVisible(false);
+		   depart.setObligatoire(true);
+		   cont.getChampEntites().add(depart);
+		   
+		   ChampEntite transporteur = new ChampEntite();
+		   transporteur.setChampId(36);
+		   transporteur.setVisible(false);
+		   transporteur.setObligatoire(true);
+		   cont.getChampEntites().add(transporteur);
+		   
+		   ChampEntite temp = new ChampEntite();
+		   temp.setChampId(37);
+		   temp.setVisible(false);
+		   temp.setObligatoire(true);
+		   cont.getChampEntites().add(temp);
+		   		   
+		   ChampEntite arrivee = new ChampEntite();
+		   arrivee.setChampId(38);
+		   arrivee.setVisible(false);
+		   arrivee.setObligatoire(true);
+		   cont.getChampEntites().add(arrivee);
+		   
+		   ChampEntite operateur = new ChampEntite();
+		   operateur.setChampId(39);
+		   operateur.setVisible(false);
+		   operateur.setObligatoire(true);
+		   cont.getChampEntites().add(operateur);
+		   
+		   ChampEntite qte = new ChampEntite();
+		   qte.setChampId(40);
+		   qte.setVisible(false);
+		   qte.setObligatoire(true);
+		   cont.getChampEntites().add(qte);
+		   
+		   ChampEntite ncf = new ChampEntite();
+		   ncf.setChampId(256);
+		   ncf.setVisible(false);
+		   ncf.setObligatoire(true);
+		   cont.getChampEntites().add(ncf);
+		   
+		   ChampEntite congDepart = new ChampEntite();
+		   congDepart.setChampId(267);
+		   congDepart.setVisible(false);
+		   congDepart.setObligatoire(true);
+		   cont.getChampEntites().add(congDepart);
+		   
+		   ChampEntite congArrivee = new ChampEntite();
+		   congArrivee.setChampId(268);
+		   congArrivee.setVisible(true);
+		   congArrivee.setObligatoire(true);
+		   cont.getChampEntites().add(congArrivee);
+		   
+		   
+		   cont.setSiteInter(true);
 		   
 		   return cont;
 	   }

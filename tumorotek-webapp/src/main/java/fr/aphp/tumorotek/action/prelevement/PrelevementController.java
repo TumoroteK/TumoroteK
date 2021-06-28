@@ -371,7 +371,8 @@ public class PrelevementController extends AbstractObjectTabController
       //divMultiEchantillons.setVisible(false);
 
       if(divLaboInter.getChildren().size() == 0){
-         Executions.createComponents("/zuls/prelevement/FicheLaboInter.zul", divLaboInter, null);
+//         Executions.createComponents("/zuls/prelevement/FicheLaboInter.zul", divLaboInter, null);
+    	 Executions.createComponents("/zuls/prelevement/gatsbi/FicheLaboInterGatsbi.zul", divLaboInter, null); // TODO à changer pour conserver TK standard aussi
          getFicheLaboInter().setObjectTabController(this);
          getFicheLaboInter().setObject(edit);
          getFicheLaboInter().switchToEditMode();
@@ -394,7 +395,8 @@ public class PrelevementController extends AbstractObjectTabController
       //divMultiEchantillons.setVisible(false);
 
       if(divLaboInter.getChildren().size() == 0){
-         Executions.createComponents("/zuls/prelevement/FicheLaboInter.zul", divLaboInter, null);
+         // Executions.createComponents("/zuls/prelevement/FicheLaboInter.zul", divLaboInter, null);
+     	 Executions.createComponents("/zuls/prelevement/gatsbi/FicheLaboInterGatsbi.zul", divLaboInter, null); // TODO à changer pour conserver TK standard aussi
          getFicheLaboInter().setObjectTabController(this);
          getFicheLaboInter().setObject(newPrlvt);
          getFicheLaboInter().setOldLaboInters(labos);

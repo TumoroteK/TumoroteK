@@ -10,32 +10,34 @@
 	 sclass="fichePanelv2" id="winPanel" closable="true">
 		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
 			<div id="gatsbiContainer" class="main-container gridForm1">
-				<div class="block-container" id="identifiantBlockDiv" style="padding-left: 5px"><!-- Identifiants prélèvement -->
-					<div class="item item-mid" id="codeDiv"><!-- Code du prélèvement -->
-						<custom-attributes champId="23" />
-						<label value="${c:l('Champ.Prelevement.Code')}" sclass="chpLabel formLabel" />
-						<div class="row-container">
-							<label id="codeLabelPrlvt" 
-								value="@{fwinPrelevementStatic$composer.object.code}"
-								sclass="formValue" />
-							<image src="/images/icones/dossier_inbox.png" id="imgDossierInbox"
-								visible="false"/>
+				<div id="identifiantBlockDiv" style="padding-left: 5px">><!-- Identifiants prélèvement -->
+					<div id="identifiantBlockDivContainer" class="block-container">
+						<div class="item item-mid" id="codeDiv"><!-- Code du prélèvement -->
+							<custom-attributes champId="23" />
+							<label value="${c:l('Champ.Prelevement.Code')}" sclass="chpLabel formLabel" />
+							<div class="row-container">
+								<label id="codeLabelPrlvt" 
+									value="@{fwinPrelevementStatic$composer.object.code}"
+									sclass="formValue" />
+								<image src="/images/icones/dossier_inbox.png" id="imgDossierInbox"
+									visible="false"/>
+							</div>
 						</div>
-					</div>
-					<div class="item item-mid" id="codeLaboDiv"><!-- Numéro Labo du prélèvement -->	
-						<custom-attributes champId="45" />
-						<label value="${c:l('Champ.Prelevement.NumeroLabo')}" sclass="chpLabel formLabel"/>
-						<label id="numeroLaboLabelPrlvt" 
-							value="@{fwinPrelevementStatic$composer.object.numeroLabo}"
-							sclass="formValue" />
-					</div>
-					<div class="item item-mid" id="natureDiv"><!-- Nature du prélèvement -->
-						<custom-attributes champId="24" />
-						<label value="${c:l('Champ.Prelevement.Nature')}" 
-							sclass="chpLabel formLabel"/>
-						<label id="typeLabelPrlvt" 
-							value="@{fwinPrelevementStatic$composer.object.nature.nature}"
-							sclass="formValue" />
+						<div class="item item-mid" id="codeLaboDiv"><!-- Numéro Labo du prélèvement -->	
+							<custom-attributes champId="45" />
+							<label value="${c:l('Champ.Prelevement.NumeroLabo')}" sclass="chpLabel formLabel"/>
+							<label id="numeroLaboLabelPrlvt" 
+								value="@{fwinPrelevementStatic$composer.object.numeroLabo}"
+								sclass="formValue" />
+						</div>
+						<div class="item item-mid" id="natureDiv"><!-- Nature du prélèvement -->
+							<custom-attributes champId="24" />
+							<label value="${c:l('Champ.Prelevement.Nature')}" 
+								sclass="chpLabel formLabel"/>
+							<label id="typeLabelPrlvt" 
+								value="@{fwinPrelevementStatic$composer.object.nature.nature}"
+								sclass="formValue" />
+						</div>
 					</div>
 				</div>
 				<div class="block-separator" />
@@ -43,36 +45,38 @@
 				<groupbox id="groupPatient">
 					<caption label="${c:l('bloc.prelevement.patient')}" />
 					<div>
-						<div class="block-container" id="patientBlockDiv"><!-- Patient -->
-							<div class="item item-mid" id="nipDiv"><!-- Nip patient -->
-								<custom-attributes champId="2" />
-								<label value="${c:l('Champ.Patient.Nip')}" sclass="chpLabel formLabel"/>
-								<label id="nipLabel" sclass="formValue" />
-							</div>
-							<div class="item item-mid" id="ndaDiv"><!-- nda patient -->
-								<custom-attributes champId="44" />
-								<label value="${c:l('Champ.Prelevement.PatientNda')}" sclass="chpLabel formLabel" />
-								<label id="ndaLabel" sclass="formValue" />
-							</div>
-							<div class="item item-mid" id="nomDiv"><!-- Nom -->
-								<custom-attributes champId="3" />
-								<label value="${c:l('Champ.Patient.Nom')}" sclass="chpLabel formLabel" />
-								<label id="linkPatientLabel" sclass="formLink" />
-							</div>
-							<div class="item item-mid" id="prenomDiv"><!-- Prenom -->
-								<custom-attributes champId="5" />
-								<label value="${c:l('Champ.Patient.Prenom')}" sclass="chpLabel formLabel" />
-								<label id="prenomLabel" sclass="formValue" />
-							</div>
-							<div class="item item-mid" id="dateNaisDiv"><!-- Date de naissance -->
-								<custom-attributes champId="7" />
-								<label value="${c:l('Champ.Patient.DateNaissance')}" sclass="chpLabel formLabel" />
-								<label id="dateNaisLabel" sclass="formValue" />
-							</div>
-							<div class="item item-mid" id="sexeDiv"><!-- Sexe -->
-								<custom-attributes champId="6" />
-								<label value="${c:l('Champ.Patient.Sexe')}" sclass="chpLabel formLabel" />
-								<label id="sexeLabel" sclass="formValue" />
+						<div id="patientBlockDiv"><!-- Patient -->
+							<div id="patientBlockDivContainer" class="block-container">
+								<div class="item item-mid" id="nipDiv"><!-- Nip patient -->
+									<custom-attributes champId="2" />
+									<label value="${c:l('Champ.Patient.Nip')}" sclass="chpLabel formLabel"/>
+									<label id="nipLabel" sclass="formValue" />
+								</div>
+								<div class="item item-mid" id="ndaDiv"><!-- nda patient -->
+									<custom-attributes champId="44" />
+									<label value="${c:l('Champ.Prelevement.PatientNda')}" sclass="chpLabel formLabel" />
+									<label id="ndaLabel" sclass="formValue" />
+								</div>
+								<div class="item item-mid" id="nomDiv"><!-- Nom -->
+									<custom-attributes champId="3" />
+									<label value="${c:l('Champ.Patient.Nom')}" sclass="chpLabel formLabel" />
+									<label id="linkPatientLabel" sclass="formLink" />
+								</div>
+								<div class="item item-mid" id="prenomDiv"><!-- Prenom -->
+									<custom-attributes champId="5" />
+									<label value="${c:l('Champ.Patient.Prenom')}" sclass="chpLabel formLabel" />
+									<label id="prenomLabel" sclass="formValue" />
+								</div>
+								<div class="item item-mid" id="dateNaisDiv"><!-- Date de naissance -->
+									<custom-attributes champId="7" />
+									<label value="${c:l('Champ.Patient.DateNaissance')}" sclass="chpLabel formLabel" />
+									<label id="dateNaisLabel" sclass="formValue" />
+								</div>
+								<div class="item item-mid" id="sexeDiv"><!-- Sexe -->
+									<custom-attributes champId="6" />
+									<label value="${c:l('Champ.Patient.Sexe')}" sclass="chpLabel formLabel" />
+									<label id="sexeLabel" sclass="formValue" />
+								</div>
 							</div>
 						</div>
 						<div class="block-separator" />
@@ -97,54 +101,56 @@
 				<!-- Informations prélèvement -->
 				<groupbox id="groupPrlvt">
 					<caption label="${c:l('bloc.prelevement.informations.prelevement')}" />
-					<div class="block-container" id="infoPrelBlockDiv">
-						<div class="item item-mid" id="datePrelDiv"><!-- date du prélèvement -->
-							<custom-attributes champId="30" />
-							<label value="${c:l('Champ.Prelevement.DatePrelevement')}" sclass="chpLabel formLabel"/>
-							<label id="dateLabelPrlvt" 
-								value="@{fwinPrelevementStatic$composer.datePrelevementFormated}"
-								sclass="formValue" />
-						</div>
-						<div class="item item-mid" id="typeDiv"><!-- Mode du prélèvement -->
-							<custom-attributes champId="31" />
-							<label value="${c:l('Champ.Prelevement.PrelevementType')}" sclass="chpLabel formLabel"/>
-							<label id="modeLabelPrlvt" 
-								value="@{fwinPrelevementStatic$composer.object.prelevementType.type}"
-								sclass="formValue" />
-						</div>
-						<div class="item item-mid" id="sterileDiv"><!-- Sterile -->
-							<custom-attributes champId="47" />
-							<label value="${c:l('general.sterile')}" sclass="chpLabel formLabel"/>
-							<label id="sterileLabelPrlvt" 
-								value="@{fwinPrelevementStatic$composer.sterileFormated}"
-								sclass="formValue" />
-						</div>
-						<div class="item item-mid" id="risquesDiv"><!-- Risques -->	
-							<custom-attributes champId="249" />
-							<label value="${c:l('Champ.Prelevement.Risque')}" sclass="chpLabel formLabel"/>	
-							<vbox id="risquesBox" />
-						</div>
-						<div class="item item-wide" id="etabPreleveurDiv"><!-- établissement du prélèvement -->
-							<custom-attributes champId="29" /> <!-- l'affichage est dépendant de celui champ service préleveur -->
-							<label value="${c:l('prelevement.etablissement')}" sclass="chpLabel formLabel"
-								id="etabStaticLabelPrlvt"/>
-							<label id="etabLabelPrlvt" 
-								value="@{fwinPrelevementStatic$composer.etablissementFormated}"
-								sclass="formValue" />
-						</div>
-						<div class="item item-wide" id="servicePreleveurDiv"><!-- service du prélèvement -->
-							<custom-attributes champId="29" />
-							<label value="${c:l('Champ.Prelevement.ServicePreleveur')}" sclass="chpLabel formLabel"/>
-							<label id="serviceLabelPrlvt" 
-							value="@{fwinPrelevementStatic$composer.object.servicePreleveur.nom}"
-							sclass="@{fwinPrelevementStatic$composer.sClassService}" />
-						</div>
-						<div class="item item-wide" id="preleveurDiv"><!-- Préleveur du prélèvement -->
-							<custom-attributes champId="28" />
-							<label value="${c:l('Champ.Prelevement.Preleveur')}" sclass="chpLabel formLabel"/>
-							<label id="preleveurLabelPrlvt" 
-								value="@{fwinPrelevementStatic$composer.object.preleveur.nomAndPrenom}"
-								sclass="@{fwinPrelevementStatic$composer.sClassPreleveur}" />
+					<div id="infoPrelBlockDiv">
+						<div class="block-container" id="infoPrelBlockDivContainer">
+							<div class="item item-mid" id="datePrelDiv"><!-- date du prélèvement -->
+								<custom-attributes champId="30" />
+								<label value="${c:l('Champ.Prelevement.DatePrelevement')}" sclass="chpLabel formLabel"/>
+								<label id="dateLabelPrlvt" 
+									value="@{fwinPrelevementStatic$composer.datePrelevementFormated}"
+									sclass="formValue" />
+							</div>
+							<div class="item item-mid" id="typeDiv"><!-- Mode du prélèvement -->
+								<custom-attributes champId="31" />
+								<label value="${c:l('Champ.Prelevement.PrelevementType')}" sclass="chpLabel formLabel"/>
+								<label id="modeLabelPrlvt" 
+									value="@{fwinPrelevementStatic$composer.object.prelevementType.type}"
+									sclass="formValue" />
+							</div>
+							<div class="item item-mid" id="sterileDiv"><!-- Sterile -->
+								<custom-attributes champId="47" />
+								<label value="${c:l('general.sterile')}" sclass="chpLabel formLabel"/>
+								<label id="sterileLabelPrlvt" 
+									value="@{fwinPrelevementStatic$composer.sterileFormated}"
+									sclass="formValue" />
+							</div>
+							<div class="item item-mid" id="risquesDiv"><!-- Risques -->	
+								<custom-attributes champId="249" />
+								<label value="${c:l('Champ.Prelevement.Risque')}" sclass="chpLabel formLabel"/>	
+								<vbox id="risquesBox" />
+							</div>
+							<div class="item item-wide" id="etabPreleveurDiv"><!-- établissement du prélèvement -->
+								<custom-attributes champId="29" /> <!-- l'affichage est dépendant de celui champ service préleveur -->
+								<label value="${c:l('prelevement.etablissement')}" sclass="chpLabel formLabel"
+									id="etabStaticLabelPrlvt"/>
+								<label id="etabLabelPrlvt" 
+									value="@{fwinPrelevementStatic$composer.etablissementFormated}"
+									sclass="formValue" />
+							</div>
+							<div class="item item-wide" id="servicePreleveurDiv"><!-- service du prélèvement -->
+								<custom-attributes champId="29" />
+								<label value="${c:l('Champ.Prelevement.ServicePreleveur')}" sclass="chpLabel formLabel"/>
+								<label id="serviceLabelPrlvt" 
+								value="@{fwinPrelevementStatic$composer.object.servicePreleveur.nom}"
+								sclass="@{fwinPrelevementStatic$composer.sClassService}" />
+							</div>
+							<div class="item item-wide" id="preleveurDiv"><!-- Préleveur du prélèvement -->
+								<custom-attributes champId="28" />
+								<label value="${c:l('Champ.Prelevement.Preleveur')}" sclass="chpLabel formLabel"/>
+								<label id="preleveurLabelPrlvt" 
+									value="@{fwinPrelevementStatic$composer.object.preleveur.nomAndPrenom}"
+									sclass="@{fwinPrelevementStatic$composer.sClassPreleveur}" />
+							</div>
 						</div>
 					</div>
 					<div class="block-separator" />
@@ -155,7 +161,7 @@
 								<image width="100%" height="1px" src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
 							</div>
 						</div>
-						<div class="block-container">
+						<div class="block-container" id="conditBlockDivContainer">
 							<div class="item item-mid" id="conditTypeDiv"><!-- type de conditionnement -->
 								<custom-attributes champId="32" />
 								<label value="${c:l('Champ.Prelevement.ConditType')}" sclass="chpLabel formLabel"/>
@@ -187,7 +193,7 @@
 								<image width="100%" height="1px" src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
 							</div>
 						</div>
-						<div class="block-container">
+						<div class="block-container" id="consentBlockDivContainer">
 							<div class="item item-mid" id="consentTypeDiv"><!-- type de consentement -->
 								<custom-attributes champId="26" />
 								<label value="${c:l('Champ.Prelevement.ConsentType')}" 
@@ -218,7 +224,7 @@
 								<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
 							</div>
 						</div>
-						<div class="block-container">
+						<div class="block-container" id="departBlockDivContainer" >
 							<div class="item item-wide" id="dateDepartDiv"><!-- Date de départ -->
 								<custom-attributes champId="35" />
 								<label value="${c:l('Champ.Prelevement.DateDepart')}" sclass="chpLabel formLabel"/>
@@ -247,7 +253,7 @@
 								</div>
 							</div>
 							<div class="item item-wide" id="congPrelDiv"><!-- Congelation au prélèvement -->
-								<custom-attributes champId="0" />
+								<custom-attributes champId="267" />
 								<div width="25px" height="25px" style="background: url(${c:encodeURL('/images/icones/freeze.png')})" id="congDepartImg" />
 								<label id="congDepartLabel" value="" sclass="formValue" style="font-weight: bold; width: 100%" />
 							</div>
@@ -414,7 +420,7 @@
 								<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
 							</div>
 						</div>
-						<div class="block-container">
+						<div class="block-container" id="arriveeBlockDivContainer" >
 							<div class="item item-wide" id="dateArriveeDiv"><!-- Date d'arrivée -->
 								<custom-attributes champId="38" />
 								<label value="${c:l('Champ.Prelevement.DateArrivee')}" sclass="chpLabel formLabel"/>
@@ -450,7 +456,7 @@
 									sclass="formValue" />	
 							</div>
 							<div class="item item-wide" id="congBiothequeDiv"><!-- Congelation biotheque -->
-								<custom-attributes champId="0" />
+								<custom-attributes champId="268" />
 								<div width="25px" height="25px" style="background: url(${c:encodeURL('/images/icones/freeze.png')})" 
 											id="congArriveeImg" />
 								<label id="congArriveeLabel" sclass="formValue" style="font-weight: bold; width: 100%" />
