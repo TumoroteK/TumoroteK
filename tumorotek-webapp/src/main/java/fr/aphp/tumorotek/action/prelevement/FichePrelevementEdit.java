@@ -217,7 +217,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
 
       isPatientAccessible = getDroitOnAction("Patient", "Consultation");
 
-      // gatsby overrides
+      // gatsbi overrides
       resumePatient = initResumePatient();
    }
    

@@ -186,9 +186,9 @@ public class FicheLaboInter extends AbstractFicheEditController
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
 
-      initEditableMode();
-
       super.doAfterCompose(comp);
+      
+      initEditableMode();
 
       next.setDisabled(!getDroitOnAction("Echantillon", "Creation"));
    }
@@ -270,6 +270,11 @@ public class FicheLaboInter extends AbstractFicheEditController
       temperatures = ManagerLocator.getTemperatureManager().findAllObjectsManager();
       temperatures.add(0, null);
       selectedTemperature = null;
+      
+      // init des non conformites
+      nonConformites = ManagerLocator.getNonConformiteManager().findByPlateformeEntiteAndTypeStringManager(
+         SessionUtils.getPlateforme(sessionScope), "Arrivee", ManagerLocator.getEntiteManager().findByIdManager(2));
+      selectedNonConformite = null;
    }
 
    /**
@@ -300,10 +305,6 @@ public class FicheLaboInter extends AbstractFicheEditController
    }
 
    public void initNonConformites(){
-      // init des non conformites
-      nonConformites = ManagerLocator.getNonConformiteManager().findByPlateformeEntiteAndTypeStringManager(
-         SessionUtils.getPlateforme(sessionScope), "Arrivee", getObjectTabController().getEntiteTab());
-      selectedNonConformite = null;
       if(prelevement != null && prelevement.getPrelevementId() != null){
          final List<ObjetNonConforme> tmp =
             ManagerLocator.getObjetNonConformeManager().findByObjetAndTypeManager(prelevement, "Arrivee");

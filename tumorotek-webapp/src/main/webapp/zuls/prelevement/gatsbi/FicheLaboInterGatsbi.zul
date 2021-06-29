@@ -67,8 +67,7 @@
 							<div class="item item-mid" id="transporteurDiv"><!-- Transporteur -->
 								<custom-attributes champId="36" />
 								<div class="row-container chpLabel">
-									<label value="${c:l('Champ.Prelevement.Transporteur')}"
-										sclass="chpLabel formLabel" />
+									<label value="${c:l('Champ.Prelevement.Transporteur')}" sclass="formLabel" />
 									<label value="*" sclass="requiredMark" />
 								</div>
 								<listbox id="transporteursBoxLabo" mold="select"
@@ -83,8 +82,7 @@
 							<div class="item item-mid" id="tempTranspDiv"><!-- Température de transport -->
 								<custom-attributes champId="37" />
 								<div class="row-container chpLabel">
-									<label value="${c:l('Champ.Prelevement.TransportTemp')}"
-										sclass="formLabel" />
+									<label value="${c:l('Champ.Prelevement.TransportTemp')}" sclass="formLabel" />
 									<label value="*" sclass="requiredMark" />
 								</div>
 								<div class="row-container">
@@ -349,8 +347,7 @@
 							<div class="item item-wide" id="dateArriveeDiv"><!-- Date d'arrivée -->
 								<custom-attributes champId="38" />
 								<div class="row-container chpLabel">
-									<label value="${c:l('Champ.Prelevement.DateArrivee')}"
-										sclass="formLabel" />
+									<label value="${c:l('Champ.Prelevement.DateArrivee')}" sclass="formLabel" />
 									<label value="*" sclass="requiredMark" />
 								</div>
 								<calendarbox id="dateArriveeCalBox"
@@ -360,8 +357,7 @@
 							<div class="item item-wide" id="operateurDiv"><!-- Operateur -->
 								<custom-attributes champId="39" />
 								<div class="row-container chpLabel">
-									<label value="${c:l('Champ.Prelevement.Operateur')}"
-										sclass="formLabel" />
+									<label value="${c:l('Champ.Prelevement.Operateur')}" sclass="formLabel" />
 									<label value="*" sclass="requiredMark" />
 								</div>
 								<div class="row-container">
@@ -379,8 +375,7 @@
 							<div class="item item-wide" id="quantiteDiv"><!-- Quantite -->
 								<custom-attributes champId="40" />
 								<div class="row-container chpLabel">
-									<label value="${c:l('Champ.Prelevement.Quantite')}"
-										sclass="chpLabel formLabel" />
+									<label value="${c:l('Champ.Prelevement.Quantite')}" sclass="formLabel" />
 									<label value="*" sclass="requiredMark" />
 								</div>
 								<div class="row-container">
@@ -412,7 +407,7 @@
 							</div>
 						</div>
 						<div class="item item-wide" id="conformeArriveeDiv"><!-- Conforme à l'arrivée -->
-							<custom-attributes champId="256" />
+							<custom-attributes champId="256" listmodel="nonConformites" />
 							<div class="row-container chpLabel">
 								<label id="conformeArriveeLabel"
 									value="${c:l('Champ.Prelevement.ConformeArrivee')}"

@@ -11,7 +11,12 @@ import java.util.stream.Collectors;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.SimpleConstraint;
@@ -19,6 +24,7 @@ import org.zkoss.zul.impl.InputElement;
 
 import fr.aphp.tumorotek.action.constraints.TumoTextConstraint;
 import fr.aphp.tumorotek.action.controller.AbstractFicheEditController;
+import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.webapp.gatsbi.client.json.ChampEntite;
@@ -202,7 +208,8 @@ public class GatsbiController {
 		}
 	}
 	
-	public static void switchItemsRequiredOrNot(List<Div> items, Contexte c, List<Listbox> lboxes) {
+	public static void switchItemsRequiredOrNot(List<Div> items, Contexte c, List<Listbox> lboxes, List<Combobox> cboxes, 
+																								List<Div> reqConformeDivs) {
 		log.debug("switch items required or not");
 		if (items != null && c != null) {
 			
@@ -237,12 +244,18 @@ public class GatsbiController {
 										} else {
 											throw new RuntimeException(div.getId() + " input constraint unknown");
 										}
-									} else {
+									} else if (!(formElement instanceof Combobox)) {
 										((InputElement) formElement).setConstraint("no empty");
+									} else { // combobox
+										cboxes.add(((Combobox) formElement));
 									}
+								} else if (formElement instanceof CalendarBox) {
+									((CalendarBox) formElement).setConstraint("no empty");
 								} else { // listbox
 									lboxes.add(((Listbox) formElement));
 								}
+							} else if (div.getId().startsWith("conforme")) { // non-conformite
+								reqConformeDivs.add(div);
 							}					
 						}
 					
@@ -294,14 +307,60 @@ public class GatsbiController {
 		}
 	}
 	
+	/**
+	 * Applique spécifiquement la validation pour 'sélection obligatoire' pour les champs 
+	 * de formulaires de type liste, combobox et les divs regroupant les checkboxes de 
+	 * non-conformité.
+	 * @param reqListboxes
+	 * @param reqComboboxes
+	 * @param conformeDivs
+	 */
+	public static void checkRequiredNonInputComponents(List<Listbox> reqListboxes, 
+												List<Combobox> reqComboboxes, List<Div> conformeDivs) {
+
+		if (reqListboxes != null) {
+			for (Listbox lb : reqListboxes) {
+				Clients.clearWrongValue(lb);
+				if (lb.getSelectedItem() == null) {
+					Clients.scrollIntoView(lb);
+					throw new WrongValueException(lb, Labels.getLabel("validation.syntax.empty"));
+				}
+			}
+		}
+		
+		if (reqComboboxes != null) {
+			for (Combobox lb : reqComboboxes) {
+				Clients.clearWrongValue(lb);
+				if (lb.getSelectedItem() == null) {
+					Clients.scrollIntoView(lb);
+					throw new WrongValueException(lb, Labels.getLabel("validation.syntax.empty"));
+				}
+			}
+		}
+		
+		if (conformeDivs != null) {
+			for (Div div : conformeDivs) {
+				Clients.clearWrongValue(div.getFirstChild());
+				if (div.getLastChild().getChildren().stream()
+					.filter(c -> c instanceof Checkbox)
+					.noneMatch(c -> ((Checkbox) c).isChecked())) {
+					Clients.scrollIntoView(div);
+					throw new WrongValueException(div.getFirstChild(), Labels.getLabel("validation.syntax.empty"));
+				}
+			}
+		}
+	}
+	
 	private static Component findInputOrListboxElement(Div item) {
 		// finds input element or listbox
 		if (item.getLastChild() instanceof InputElement 
-					|| item.getLastChild() instanceof Listbox) {
+					|| item.getLastChild() instanceof Listbox
+					|| item.getLastChild() instanceof CalendarBox) {
 			return item.getLastChild();
 		} else if (item.getLastChild() instanceof Div) {
-			for (Component child : item.getLastChild().getFellows()) {
-				if (child instanceof InputElement || child instanceof Listbox) {
+			for (Component child : item.getLastChild().getChildren()) {
+				if (child instanceof InputElement || child instanceof Listbox
+						|| item.getLastChild() instanceof CalendarBox) {
 					return  child;
 				}
 			}
@@ -395,49 +454,56 @@ public class GatsbiController {
 		   // intboc
 		   ChampEntite depart = new ChampEntite();
 		   depart.setChampId(35);
-		   depart.setVisible(false);
+		   depart.setVisible(true);
 		   depart.setObligatoire(true);
 		   cont.getChampEntites().add(depart);
 		   
 		   ChampEntite transporteur = new ChampEntite();
 		   transporteur.setChampId(36);
-		   transporteur.setVisible(false);
-		   transporteur.setObligatoire(true);
+		   transporteur.setVisible(true);
+		   transporteur.setObligatoire(false);
 		   cont.getChampEntites().add(transporteur);
 		   
 		   ChampEntite temp = new ChampEntite();
 		   temp.setChampId(37);
-		   temp.setVisible(false);
-		   temp.setObligatoire(true);
+		   temp.setVisible(true);
+		   temp.setObligatoire(false);
 		   cont.getChampEntites().add(temp);
 		   		   
 		   ChampEntite arrivee = new ChampEntite();
 		   arrivee.setChampId(38);
-		   arrivee.setVisible(false);
-		   arrivee.setObligatoire(true);
+		   arrivee.setVisible(true);
+		   arrivee.setObligatoire(false);
 		   cont.getChampEntites().add(arrivee);
 		   
 		   ChampEntite operateur = new ChampEntite();
 		   operateur.setChampId(39);
-		   operateur.setVisible(false);
+		   operateur.setVisible(true);
 		   operateur.setObligatoire(true);
 		   cont.getChampEntites().add(operateur);
 		   
 		   ChampEntite qte = new ChampEntite();
 		   qte.setChampId(40);
-		   qte.setVisible(false);
-		   qte.setObligatoire(true);
+		   qte.setVisible(true);
+		   qte.setObligatoire(false);
 		   cont.getChampEntites().add(qte);
 		   
 		   ChampEntite ncf = new ChampEntite();
 		   ncf.setChampId(256);
-		   ncf.setVisible(false);
+		   ncf.setVisible(true);
 		   ncf.setObligatoire(true);
+		   ncf.setIsChampReferToThesaurus("nonConformites");
+		   ThesaurusValue err = new ThesaurusValue();
+		   err.setChampId(256);
+		   err.setPosition(1);
+		   err.setThesaurusId(2);
+		   err.setThesaurusValue("Erreur dossier");
+		   ncf.getThesaurusValues().add(err);
 		   cont.getChampEntites().add(ncf);
 		   
 		   ChampEntite congDepart = new ChampEntite();
 		   congDepart.setChampId(267);
-		   congDepart.setVisible(false);
+		   congDepart.setVisible(true);
 		   congDepart.setObligatoire(true);
 		   cont.getChampEntites().add(congDepart);
 		   

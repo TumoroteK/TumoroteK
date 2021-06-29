@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
@@ -32,13 +33,15 @@ public class FicheLaboInterGatsbi extends FicheLaboInter {
 	private Div gatsbiContainer;
 
 	private List<Listbox> reqListboxes = new ArrayList<Listbox>();
+	private List<Combobox> reqComboboxes = new ArrayList<Combobox>();
+	private List<Div> reqConformeDivs = new ArrayList<Div>();
 	
 	private Contexte c;
 
 	@Override
 	public void doAfterCompose(final Component comp) throws Exception{
 		super.doAfterCompose(comp);
-
+				
 		c = GatsbiController.mockOneContexte(); // TODO replace by collection.contexte
 
 		try {
@@ -46,7 +49,7 @@ public class FicheLaboInterGatsbi extends FicheLaboInter {
 			List<Div> blockDivs = GatsbiController.wireBlockDivsFromMainComponent(gatsbiContainer);
 
 			GatsbiController.showOrhideItems(itemDivs, blockDivs, c); 
-			GatsbiController.switchItemsRequiredOrNot(itemDivs, c, reqListboxes);
+			GatsbiController.switchItemsRequiredOrNot(itemDivs, c, reqListboxes, reqComboboxes, reqConformeDivs);
 
 			GatsbiController.appliThesaurusValues(itemDivs, c, this);
 
@@ -84,4 +87,24 @@ public class FicheLaboInterGatsbi extends FicheLaboInter {
 		
 		addLabo.setVisible(c.getSiteInter());
 	}
+	
+	@Override
+	public void onClick$next() {
+		GatsbiController.checkRequiredNonInputComponents(reqListboxes, reqComboboxes, reqConformeDivs);
+		super.onClick$next();
+	}
+	
+	@Override
+	public void onClick$validate() {
+		GatsbiController.checkRequiredNonInputComponents(reqListboxes, reqComboboxes, reqConformeDivs);
+		super.onClick$validate();
+	}
+	
+	@Override
+	public void onClick$create() {
+		GatsbiController.checkRequiredNonInputComponents(reqListboxes, reqComboboxes, reqConformeDivs);
+		super.onClick$create();
+	}
+	
+	
 }

@@ -7,10 +7,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Listbox;
@@ -55,7 +54,8 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit {
 			c = GatsbiController.mockOneContexte();
 
 			GatsbiController.showOrhideItems(itemDivs, blockDivs, c); // TODO replace by collection.contexte
-			GatsbiController.switchItemsRequiredOrNot(itemDivs, c, reqListboxes);
+			GatsbiController.switchItemsRequiredOrNot(itemDivs, c, reqListboxes, 
+									new ArrayList<Combobox>(), new ArrayList<Div>());
 
 			GatsbiController.appliThesaurusValues(itemDivs, c, this);
 		} catch (Exception e) {
@@ -85,13 +85,7 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit {
 		log.debug("Surcharge Gastbi pour conserver sélectivement la "
 				+ "contrainte de sélection des listes nature et statut juridique ");
 		
-		for (Listbox lb : reqListboxes) {
-			Clients.clearWrongValue(lb);
-			if (lb.getSelectedItem() == null) {
-				Clients.scrollIntoView(lb);
-				throw new WrongValueException(lb, Labels.getLabel("validation.syntax.empty"));
-			}
-		}
+		GatsbiController.checkRequiredNonInputComponents(reqListboxes, null, null);
 	}
 
 	/**
