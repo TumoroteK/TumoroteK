@@ -1762,7 +1762,7 @@ public abstract class AbstractListeController2 extends AbstractController
 							anonyme, listeController);
 
 		}else if(entiteToSearch.getNom().equals("Prelevement")){
-			String pageDef = "ficheRechercheAvanceePrelevement";
+			String pageDef = "ficheRechercheAvanceePrelevementGatsbi"; // remplacer par Session contexte TODO
 			String winDef = "fwinRechercheAvanceePrelevement";
 			if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
 				pageDef = "ficheRechercheAvanceePrelevementSero";

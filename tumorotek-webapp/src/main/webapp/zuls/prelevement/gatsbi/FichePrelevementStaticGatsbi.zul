@@ -10,7 +10,7 @@
 	 sclass="fichePanelv2" id="winPanel" closable="true">
 		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">
 			<div id="gatsbiContainer" class="main-container gridForm1">
-				<div id="identifiantBlockDiv" style="padding-left: 5px">><!-- Identifiants prélèvement -->
+				<div id="identifiantBlockDiv" style="padding-left: 5px"><!-- Identifiants prélèvement -->
 					<div id="identifiantBlockDivContainer" class="block-container">
 						<div class="item item-mid" id="codeDiv"><!-- Code du prélèvement -->
 							<custom-attributes champId="23" />

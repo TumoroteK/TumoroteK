@@ -24,6 +24,7 @@
         <insert tableName="CHAMP_ENTITE">
             <column name="CHAMP_ENTITE_ID" value="267"/>
             <column name="NOM" value="congDepart"/>
+             <column name="DATA_TYPE_ID" value="2" />
             <column name="IS_NULL" value="1"/>
             <column name="IS_UNIQUE" value="0"/>
             <column name="ENTITE_ID" value="2"/>
@@ -40,6 +41,7 @@
         <insert tableName="CHAMP_ENTITE">
             <column name="CHAMP_ENTITE_ID" value="268"/>
             <column name="NOM" value="congArrivee"/>
+            <column name="DATA_TYPE_ID" value="2" />
             <column name="IS_NULL" value="1"/>
             <column name="IS_UNIQUE" value="0"/>
             <column name="ENTITE_ID" value="2"/>

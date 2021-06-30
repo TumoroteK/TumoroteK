@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
@@ -22,6 +23,7 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 	"parametrages",
 	"rChampEntites"
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Contexte implements Serializable {
 
 	private static final long serialVersionUID = 1L;

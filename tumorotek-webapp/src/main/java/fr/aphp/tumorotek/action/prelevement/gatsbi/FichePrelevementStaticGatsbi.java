@@ -28,6 +28,7 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
    
    private Div gatsbiContainer;
    
+   private Groupbox groupPrlvt;
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
@@ -42,6 +43,13 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
       
    // prelevement specific
       groupLaboInter.setVisible(c.getSiteInter());
+      
+      hideEmptyGroupboxes();
+   }
+   
+   private void hideEmptyGroupboxes() {
+	   GatsbiController.hideGroupBoxIfEmpty(groupPrlvt);
+	   GatsbiController.hideGroupBoxIfEmpty(gridFormPrlvtComp);
    }
    
    

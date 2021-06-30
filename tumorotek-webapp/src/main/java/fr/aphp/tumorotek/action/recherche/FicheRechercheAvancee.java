@@ -97,7 +97,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 
 	// @since 2.2.1 chrome fix to div flex display
-	private Div topDivForScroll;
+	protected Div topDivForScroll;
 	
 	// Components patient
 	private Checkbox searchPatientsBox;
@@ -207,7 +207,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 	private Group groupPatients;
 	private Group groupMaladies;
 	private Group groupPrelevements;
-	private Group groupLaboInters;
+	protected Group groupLaboInters;
 	private Group groupEchantillons;
 	private Group groupProdDerives;
 
@@ -229,7 +229,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 	protected Champ parent1ToQueryPrlvt;
 	protected Champ parent2ToQueryPrlvt;
 	private Champ parentToQueryEchantillon;
-	private boolean critereOnEchantillon = false;
+	protected boolean critereOnEchantillon = false;
 
 	/**
 	 * Liste d'objets.
@@ -301,6 +301,16 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 
 		prepareContextComponents();
 
+		openGroups();
+
+		getBinder().loadAll();
+
+	}
+	
+	/**
+	 * Gatsbi surcharge cette méthode
+	 */
+	protected void openGroups() {
 		setGroupPatientsOpened(groupPatients.isOpen());
 		setGroupMaladiesOpened(groupMaladies.isOpen());
 		setGroupPrelevementsOpened(groupPrelevements.isOpen());
@@ -309,9 +319,6 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 		}
 		setGroupEchantillonsOpened(groupEchantillons.isOpen());
 		setGroupProdDerivesOpened(groupProdDerives.isOpen());
-
-		getBinder().loadAll();
-
 	}
 
 	/**
@@ -428,7 +435,18 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 		operateursDates.add("<");
 		operateursDates.add(">");
 		operateursDates.add("[..]");
+		
+		initGroupAnnotations();
 
+		createSearchHistoryListbox(entiteToSearch.getNom());
+
+		getBinder().loadComponent(self);
+	}
+	
+	/**
+	 * Gatsbi surcharge cette méthode
+	 */
+	protected void initGroupAnnotations() {
 		if(entiteToSearch.getNom().equals("Patient")){
 			groupAnnotations.setLabel(Labels.getLabel("recherche.avancee.patient.annotations"));
 		}else if(entiteToSearch.getNom().equals("Prelevement")){
@@ -440,10 +458,6 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 			groupAnnotations.setLabel(Labels.getLabel("recherche.avancee.prodDerives.annotations"));
 			searchForProdDerives = true;
 		}
-
-		createSearchHistoryListbox(entiteToSearch.getNom());
-
-		getBinder().loadComponent(self);
 	}
 
 	@Override

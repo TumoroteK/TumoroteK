@@ -241,7 +241,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       echantillonsGrid.setVisible(echantillons.size() > 0);
       prodDerivesGrid.setVisible(derives.size() > 0);
 
-      gridFormPrlvtComp.setVisible(true);
+      // gridFormPrlvtComp.setVisible(true);
       // grise le libelle car pas de reference vers patient/maladie
       
       // gatsby override

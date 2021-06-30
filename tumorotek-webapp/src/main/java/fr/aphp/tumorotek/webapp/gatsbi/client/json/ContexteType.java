@@ -3,6 +3,8 @@
  **/
 package fr.aphp.tumorotek.webapp.gatsbi.client.json;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+
 public enum ContexteType {
 	
 	PATIENT(1, Values.PATIENT), 
@@ -16,9 +18,9 @@ public enum ContexteType {
         this.entiteId = _i;
         this.type = _t;
     }
-	
-	 private ContexteType (String val) {
-	     if (!this.name().equals(val))
+
+	private ContexteType (String val) {
+	     if (!this.type.equals(val))
 	        throw new IllegalArgumentException();
 	  }
 
@@ -33,6 +35,18 @@ public enum ContexteType {
             if(ref.entiteId.equals(_i)) return ref;
         }
         return null;
+    }
+    
+    public static ContexteType getByType(String _s) {
+        for(ContexteType ref : values()) {
+            if(ref.type.equals(_s)) return ref;
+        }
+        return null;
+    }
+    
+    @JsonCreator // This is the factory method and must be static
+    public static ContexteType fromString(String _s) {
+        return getByType(_s);
     }
     
     public String getType() {

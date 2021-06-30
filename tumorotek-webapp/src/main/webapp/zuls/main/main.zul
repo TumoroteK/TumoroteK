@@ -70,6 +70,7 @@
 <?component name="ficheTemplateModale" macroURI="/zuls/impression/FicheTemplateModale.zul"?>
 <?component name="ficheRechercheAvanceePatient" macroURI="/zuls/recherche/FicheRechercheAvanceePatient.zul"?>
 <?component name="ficheRechercheAvanceePrelevement" macroURI="/zuls/recherche/FicheRechercheAvanceePrelevement.zul"?>
+<?component name="ficheRechercheAvanceePrelevementGatsbi" macroURI="/zuls/recherche/gatsbi/FicheRechercheAvanceePrelevementGatsbi.zul"?>
 <?component name="ficheRechercheAvanceeEchantillon" macroURI="/zuls/recherche/FicheRechercheAvanceeEchantillon.zul"?>
 <?component name="ficheRechercheAvanceeProdDerive" macroURI="/zuls/recherche/FicheRechercheAvanceeProdDerive.zul"?>
 <?component name="ficheRechercheAvanceeCession" macroURI="/zuls/recherche/FicheRechercheAvanceeCession.zul"?>

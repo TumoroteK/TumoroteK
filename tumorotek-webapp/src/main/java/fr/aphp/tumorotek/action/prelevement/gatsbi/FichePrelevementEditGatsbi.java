@@ -59,6 +59,8 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit {
 
 			GatsbiController.appliThesaurusValues(itemDivs, c, this);
 		} catch (Exception e) {
+			e.printStackTrace();
+
 			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
 			log.debug(e);
 		}

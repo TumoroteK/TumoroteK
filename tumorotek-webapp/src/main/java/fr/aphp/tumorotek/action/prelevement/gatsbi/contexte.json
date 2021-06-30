@@ -1,0 +1,280 @@
+{
+    "siteInter": false,
+    "type": "Prelevement",
+    "archive": false,
+    "contexteId": 2,
+    "contexteLibelle": "[MEL] Contexte Prélèvement",
+    "parametrages": [
+      {
+        "parametrageId": 1,
+        "parametrageLibelle": "[MEL] Sang"
+      },
+      {
+        "parametrageId": 2,
+        "parametrageLibelle": "[MEL] Tissu"
+      }
+    ],
+    "rChampEntites": [
+      {
+	"__comment": "code",
+        "champId": 23,
+        "champOrdre": 1,
+        "contexteChampEntiteId": 11,
+        "obligatoire": true,
+        "visible": true
+      },
+      {
+	"__comment": "nature",
+        "champId": 24,
+        "champOrdre": 2,
+        "contexteChampEntiteId": 12,
+        "isChampReferToThesaurus": "nature",
+        "obligatoire": false,
+	"visible": false,
+        "rThesauruses": [
+          {
+            "champId": 24,
+            "templateThesaurusId": 1,
+            "thesaurusId": 3,
+            "thesaurusValue": "LIQUIDE D'ASCITE",
+            "position": 1
+          },
+          {
+            "champId": 24,
+            "templateThesaurusId": 2,
+            "thesaurusId": 2,
+            "thesaurusValue": "SANG",
+            "position": 2
+          }
+        ]
+      },
+      {
+	"__comment": "numero labo",
+        "champId": 45,
+        "champOrdre": 3,
+        "contexteChampEntiteId": 13,
+        "obligatoire": false,
+        "visible": false
+      },
+      {
+	"__comment": "nda",
+        "champId": 44,
+        "champOrdre": 4,
+        "contexteChampEntiteId": 14,
+        "obligatoire": false,
+        "visible": false
+      },
+      {
+	"__comment": "Date prelevement",
+        "champId": 30,
+        "champOrdre": 5,
+        "contexteChampEntiteId": 15,
+        "dateFormat": "dd/MM/yyyy",
+        "obligatoire": false,
+        "visible": false
+      },
+      {
+	"__comment": "Type prelevement",
+        "champId": 31,
+        "champOrdre": 6,
+        "contexteChampEntiteId": 16,
+        "isChampReferToThesaurus": "prelevement_type",
+        "obligatoire": false,
+	"visible": false,
+        "rThesauruses": [
+          {
+            "champId": 31,
+            "templateThesaurusId": 5,
+            "thesaurusId": 3,
+            "thesaurusValue": "PONCTION",
+            "position": 1
+          },
+          {
+            "champId": 31,
+            "templateThesaurusId": 6,
+            "thesaurusId": 1,
+            "thesaurusValue": "BIOPSIE",
+            "position": 2
+          }
+        ]
+      },
+      {
+	"__comment": "Sterile",
+        "champId": 47,
+        "champOrdre": 7,
+        "contexteChampEntiteId": 17,
+        "obligatoire": false,
+        "visible": false
+      },
+      {
+	"__comment": "Risques",
+        "champId": 249,
+        "champOrdre": 8,
+        "contexteChampEntiteId": 18,
+        "isChampReferToThesaurus": "risque",
+        "obligatoire": false,
+		"visible": false,
+        "rThesauruses": [
+		{
+            "champId": 249,
+            "templateThesaurusId": 5,
+            "thesaurusId": 1,
+            "thesaurusValue": "HIV"
+          }
+		]     
+	  },
+      {
+	"__comment": "Service preleveur",
+        "champId": 29,
+        "champOrdre": 9,
+        "contexteChampEntiteId": 20,
+        "obligatoire": false,
+        "visible": false
+      },
+      {
+	"__comment": "Preleveur",
+        "champId": 28,
+        "champOrdre": 10,
+        "contexteChampEntiteId": 19,
+        "obligatoire": false,
+        "visible": false
+      },
+      {
+	"__comment": "Condit Type",
+        "champId": 32,
+        "champOrdre": 11,
+        "contexteChampEntiteId": 21,
+        "isChampReferToThesaurus": "condit_type",
+        "obligatoire": false,
+	"visible": false,
+        "rThesauruses": [
+        ]
+      },
+      {
+	"__comment": "Condit Nbr",
+        "champId": 34,
+        "champOrdre": 12,
+        "contexteChampEntiteId": 23,
+        "obligatoire": false,
+        "visible": false
+      },
+      {
+	"__comment": "Condit Milieu",
+        "champId": 33,
+        "champOrdre": 13,
+        "contexteChampEntiteId": 22,
+        "isChampReferToThesaurus": "condit_milieu",
+        "obligatoire": false,
+	"visible": false,
+        "rThesauruses": [
+          {
+            "champId": 33,
+            "templateThesaurusId": 11,
+            "thesaurusId": 1,
+            "thesaurusValue": "SEC"
+          }
+        ]
+      },
+      {
+	"__comment": "Consent Type",        
+	"champId": 26,
+        "champOrdre": 14,
+        "contexteChampEntiteId": 24,
+        "isChampReferToThesaurus": "consent_type",
+        "obligatoire": false,
+	"visible": false,
+        "rThesauruses": [
+          {
+            "champId": 26,
+            "templateThesaurusId": 15,
+            "thesaurusId": 1,
+            "thesaurusValue": "EN ATTENTE",
+            "position": 1
+          }
+        ]
+      },
+      {
+	"__comment": "Consent Date",   
+        "champId": 27,
+        "champOrdre": 15,
+        "contexteChampEntiteId": 25,
+        "dateFormat": "dd/MM/yyyy",
+        "obligatoire": false,
+        "visible": false
+      },
+      {
+	"__comment": "Cong prel",  
+        "champId": 267,
+        "champOrdre": 16,
+        "contexteChampEntiteId": 26,
+        "obligatoire": false,
+        "visible": false
+      },
+      {
+	"__comment": "Date Depart",  
+        "champId": 35,
+        "champOrdre": 17,
+        "contexteChampEntiteId": 26,
+        "dateFormat": "dd/MM/yyyy",
+        "obligatoire": false,
+        "visible": false
+      },
+      {
+	"__comment": "Transporteur",
+        "champId": 36,
+        "champOrdre": 18,
+        "contexteChampEntiteId": 28,
+        "obligatoire": false,
+        "visible": false
+      },
+      {
+	"__comment": "Temp transp",
+        "champId": 37,
+        "champOrdre": 19,
+        "contexteChampEntiteId": 29,
+        "obligatoire": false,
+        "visible": false
+      },
+      {
+	"__comment": "Date Arrivee",        
+	"champId": 38,
+        "champOrdre": 20,
+        "contexteChampEntiteId": 30,
+        "dateFormat": "dd/MM/yyyy",
+        "obligatoire": false,
+        "visible": false
+      },
+      {
+	"__comment": "Operateur", 
+        "champId": 39,
+        "champOrdre": 21,
+        "contexteChampEntiteId": 31,
+        "obligatoire": false,
+        "visible": false
+      },
+      {
+	"__comment": "Quantite", 
+        "champId": 40,
+        "champOrdre": 22,
+        "contexteChampEntiteId": 32,
+        "obligatoire": false,
+        "visible": false
+      },
+      {
+	"__comment": "Non conformite Arrivee",  
+        "champId": 256,
+        "champOrdre": 23,
+        "contexteChampEntiteId": 34,
+        "obligatoire": false,
+        "visible": false
+      },
+      {
+	"__comment": "Cong Arrivee",  
+        "champId": 268,
+        "champOrdre": 24,
+        "contexteChampEntiteId": 26,
+        "obligatoire": false,
+        "visible": false
+      }
+   ]
+}

@@ -42,6 +42,10 @@ div.item > .z-datebox {
 	align-items: center;
 }
 
+div.item > .z-select {
+	height: 25px;
+}
+
 div.row-container {
   display: flex;
   flex-direction: row;
@@ -72,6 +76,7 @@ div.item .chpLabel, div.item span.formValue, div.item span.formLink {
 	width: 150px;
 	display: inline-block;
   	align-items: start;
+  	line-height: 20px;
 }
 
 div.gridForm1 div.item {
