@@ -19,7 +19,7 @@
         <!--<spring.version>3.2.4.RELEASE</spring.version>-->
         <spring.version>3.2.18.RELEASE</spring.version>
         <maven-surefire-plugin.version>2.21.0</maven-surefire-plugin.version>
-        <mysql-connector-java.version>8.0.11</mysql-connector-java.version>
+        <mysql-connector-java.version>8.0.16</mysql-connector-java.version>
         <webapp.packaging.finalName>${webapp.name}##${project.version}</webapp.packaging.finalName>
 
         <!-- Tests -->
