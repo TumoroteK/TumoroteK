@@ -188,7 +188,8 @@ public class PrelevementController extends AbstractObjectTabController
             break;
          default:
             listePrelevement.setVisible(true);
-            setEditZulPath("/zuls/prelevement/FichePrelevementEdit.zul");
+            setEditZulPath("/zuls/prelevement/gatsbi/FichePrelevementEditGatsbi.zul"); // TODO à changer pour conserver TK standard aussi
+           // setEditZulPath("/zuls/prelevement/FichePrelevementEdit.zul"); 
             setListZulPath("/zuls/prelevement/ListePrelevement.zul");
             setMultiEditZulPath("/zuls/prelevement/FicheModifMultiPrelevement.zul");
             break;
@@ -219,7 +220,8 @@ public class PrelevementController extends AbstractObjectTabController
       if(SEROLOGIE.equals(getCurrentContexte())){
          setStaticZulPath("/zuls/prelevement/serotk/FichePrelevementStaticSero.zul");
       }else{
-         setStaticZulPath("/zuls/prelevement/FichePrelevementStatic.zul");
+         setStaticZulPath("/zuls/prelevement/gatsbi/FichePrelevementStaticGatsbi.zul"); // TODO à changer pour conserver TK standard aussi
+     //  setStaticZulPath("/zuls/prelevement/FichePrelevementStatic.zul");
       }
       super.populateFicheStatic();
    }
@@ -369,7 +371,8 @@ public class PrelevementController extends AbstractObjectTabController
       //divMultiEchantillons.setVisible(false);
 
       if(divLaboInter.getChildren().size() == 0){
-         Executions.createComponents("/zuls/prelevement/FicheLaboInter.zul", divLaboInter, null);
+//         Executions.createComponents("/zuls/prelevement/FicheLaboInter.zul", divLaboInter, null);
+    	 Executions.createComponents("/zuls/prelevement/gatsbi/FicheLaboInterGatsbi.zul", divLaboInter, null); // TODO à changer pour conserver TK standard aussi
          getFicheLaboInter().setObjectTabController(this);
          getFicheLaboInter().setObject(edit);
          getFicheLaboInter().switchToEditMode();
@@ -392,7 +395,8 @@ public class PrelevementController extends AbstractObjectTabController
       //divMultiEchantillons.setVisible(false);
 
       if(divLaboInter.getChildren().size() == 0){
-         Executions.createComponents("/zuls/prelevement/FicheLaboInter.zul", divLaboInter, null);
+         // Executions.createComponents("/zuls/prelevement/FicheLaboInter.zul", divLaboInter, null);
+     	 Executions.createComponents("/zuls/prelevement/gatsbi/FicheLaboInterGatsbi.zul", divLaboInter, null); // TODO à changer pour conserver TK standard aussi
          getFicheLaboInter().setObjectTabController(this);
          getFicheLaboInter().setObject(newPrlvt);
          getFicheLaboInter().setOldLaboInters(labos);

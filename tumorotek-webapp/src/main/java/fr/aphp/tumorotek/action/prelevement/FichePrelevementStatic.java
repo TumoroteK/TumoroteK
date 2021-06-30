@@ -47,6 +47,7 @@ import org.apache.commons.logging.LogFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Components;
+import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.Path;
@@ -58,6 +59,7 @@ import org.zkoss.zul.Box;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Group;
+import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Menuitem;
@@ -110,12 +112,19 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    protected Grid echantillonsGrid;
    protected Grid prodDerivesGrid;
    protected Grid laboIntersGrid;
-   protected Grid gridFormPrlvtComp;
-   // Groups
-   protected Group groupPatient;
-   protected Group groupLaboInter;
-   protected Group groupEchans;
-   protected Group groupDerivesPrlvt;
+   
+   // gatsby overrides
+   // protected Grid gridFormPrlvtComp;
+   // protected Group groupPatient;
+   // protected Group groupLaboInter;
+   // protected Group groupEchans;
+   // protected Group groupDerivesPrlvt;
+   
+   protected HtmlBasedComponent gridFormPrlvtComp;
+   protected HtmlBasedComponent groupPatient;
+   protected HtmlBasedComponent groupLaboInter;
+   protected HtmlBasedComponent groupEchans;
+   protected HtmlBasedComponent groupDerivesPrlvt;
 
    private ResumePatient resumePatient;
 
@@ -163,9 +172,21 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       prodDerivesGrid.setVisible(false);
       addDerive.setDisabled(true);
 
-      groupLaboInter.setOpen(false);
-      groupEchans.setOpen(false);
-      groupDerivesPrlvt.setOpen(false);
+      // **************** gastby
+      if (groupLaboInter instanceof Group) {
+    	  ((Group) groupLaboInter).setOpen(false);
+      }
+      if (groupEchans instanceof Group) {
+    	  ((Group) groupEchans).setOpen(false);
+      } else {
+    	  ((Groupbox) groupEchans).setOpen(false);
+      }
+      if (groupDerivesPrlvt instanceof Group) {
+    	  ((Group) groupDerivesPrlvt).setOpen(false);
+      } else {
+    	  ((Groupbox) groupDerivesPrlvt).setOpen(false);
+      }
+      // gatsby **************** 
 
       echantillonRenderer.setEmbedded(true);
       echantillonRenderer.setTtesCollections(getTtesCollections());
@@ -175,7 +196,15 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
 
       setImportDossierVisible();
 
-      resumePatient = new ResumePatient(groupPatient);
+      // gatsby overrides
+      resumePatient = initResumePatient();
+   }
+
+   // gatsby surcharge cette méthode 
+   // car le component group patient n'est pas 
+   // de même type group VS Groupbox
+   protected ResumePatient initResumePatient() {
+	  return new ResumePatient(groupPatient, false);
    }
 
    @Override
@@ -214,11 +243,10 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
 
       gridFormPrlvtComp.setVisible(true);
       // grise le libelle car pas de reference vers patient/maladie
-      if(this.maladie != null || this.prelevement.equals(new Prelevement())){
-         this.groupPatient.setClass("z-group");
-      }else{
-         this.groupPatient.setClass("z-group-dsd");
-      }
+      
+      // gatsby override
+      enablePatientGroup(this.maladie != null 
+    		  || this.prelevement.equals(new Prelevement()));
 
       // dessine le resume si la maladie est non nulle
       if(maladie != null){
@@ -281,7 +309,18 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
 
    }
 
-   @Override
+   /** 
+    * Gatsby surcharge cette méthode
+    */
+   protected void enablePatientGroup(boolean b) {
+	   if (b) { // enable
+	        this.groupPatient.setClass("z-group");
+	   } else {
+		  this.groupPatient.setClass("z-group-dsd");
+	   }	
+   }
+
+@Override
    public TKdataObject getParentObject(){
       if(this.maladie != null){
          return this.maladie.getPatient();

@@ -40,6 +40,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Group;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
@@ -87,42 +88,61 @@ public class ResumePatient
    private final Label dateNaisLabel;
    private final Label sexeLabel;
 
-   private final Row row1;
-   private final Row row2;
-   private final Row row3;
-   private final Row linkMaladie;
-   private final Row row5;
+   private Row row1;
+   private Row row2;
+   private Row row3;
+   private Row row5;
    private boolean anonyme = false;
+   
+   // ******** Gatsby
+   private boolean gatsby = false;
+   private Div mainContainer;
+   private Component linkMaladie;
 
-   public ResumePatient(final Group resumePatientGroup){
+   public ResumePatient(final Component resumePatientGroup, boolean _g){
 
+	  this.gatsby = _g;
       page = resumePatientGroup.getPage();
 
-      // first row
-      row1 = (Row) resumePatientGroup.getNextSibling();
-      nipLabel = (Label) row1.getFellowIfAny("nipLabel");
-      ndaBox = (Textbox) row1.getFellowIfAny("ndaBox");
-      ndaLabel = (Label) row1.getFellowIfAny("ndaLabel");
-
-      // second Row
-      row2 = (Row) resumePatientGroup.getNextSibling().getNextSibling();
-      linkPatientLabel = (Label) row2.getFellowIfAny("linkPatientLabel");
-      prenomLabel = (Label) row2.getFellowIfAny("prenomLabel");
-
-      // third Row
-      row3 = (Row) resumePatientGroup.getNextSibling().getNextSibling().getNextSibling();
-      dateNaisLabel = (Label) row3.getFellowIfAny("dateNaisLabel");
-      sexeLabel = (Label) row3.getFellowIfAny("sexeLabel");
-
-      // fourth Row
-      linkMaladie = (Row) resumePatientGroup.getNextSibling().getNextSibling().getNextSibling().getNextSibling();
-
-      // fifth Row
-      row5 = (Row) resumePatientGroup.getNextSibling().getNextSibling().getNextSibling().getNextSibling().getNextSibling();
-      linkMaladieLabel = (Label) row5.getFellowIfAny("linkMaladieLabel");
-      codeDiagLabel = (Label) row5.getFellowIfAny("codeDiagLabel");
+      if (!gatsby) {
+	      // first row
+	      row1 = (Row) resumePatientGroup.getNextSibling();
+	      nipLabel = (Label) row1.getFellowIfAny("nipLabel");
+	      ndaBox = (Textbox) row1.getFellowIfAny("ndaBox");
+	      ndaLabel = (Label) row1.getFellowIfAny("ndaLabel");
+	
+	      // second Row
+	      row2 = (Row) resumePatientGroup.getNextSibling().getNextSibling();
+	      linkPatientLabel = (Label) row2.getFellowIfAny("linkPatientLabel");
+	      prenomLabel = (Label) row2.getFellowIfAny("prenomLabel");
+	
+	      // third Row
+	      row3 = (Row) resumePatientGroup.getNextSibling().getNextSibling().getNextSibling();
+	      dateNaisLabel = (Label) row3.getFellowIfAny("dateNaisLabel");
+	      sexeLabel = (Label) row3.getFellowIfAny("sexeLabel");
+	
+	      // fourth Row
+	      linkMaladie = (Row) resumePatientGroup.getNextSibling().getNextSibling().getNextSibling().getNextSibling();
+	
+	      // fifth Row
+	      row5 = (Row) resumePatientGroup.getNextSibling().getNextSibling().getNextSibling().getNextSibling().getNextSibling();
+	      linkMaladieLabel = (Label) row5.getFellowIfAny("linkMaladieLabel");
+	      codeDiagLabel = (Label) row5.getFellowIfAny("codeDiagLabel");
+	   } else {
+		   mainContainer = (Div) resumePatientGroup.getLastChild();
+		   nipLabel = (Label) resumePatientGroup.getFellowIfAny("nipLabel");
+		   ndaBox = (Textbox) resumePatientGroup.getFellowIfAny("ndaBox");
+		   ndaLabel = (Label) resumePatientGroup.getFellowIfAny("ndaLabel");
+		   linkPatientLabel = (Label) resumePatientGroup.getFellowIfAny("linkPatientLabel");
+		   prenomLabel = (Label) resumePatientGroup.getFellowIfAny("prenomLabel");
+		   dateNaisLabel = (Label) resumePatientGroup.getFellowIfAny("dateNaisLabel");
+		   sexeLabel = (Label) resumePatientGroup.getFellowIfAny("sexeLabel");
+		   linkMaladie = (Div) resumePatientGroup.getFellowIfAny("linkMaladie");
+		   linkMaladieLabel = (Label) resumePatientGroup.getFellowIfAny("linkMaladieLabel");
+		   codeDiagLabel = (Label) resumePatientGroup.getFellowIfAny("codeDiagLabel");
+	   }
    }
-
+   
    /**
     * Assigne les valeurs aux labels représentant les informations
     * de la maladie. Cette méthode est le point d'entrée des informations
@@ -275,7 +295,9 @@ public class ResumePatient
 
    public void hideMaladieRows(final boolean visible){
       linkMaladie.setVisible(visible);
-      linkMaladie.getNextSibling().setVisible(visible);
+      if (!gatsby) {
+    	  linkMaladie.getNextSibling().setVisible(visible);
+      }
    }
 
    /**
@@ -312,10 +334,14 @@ public class ResumePatient
    }
 
    public void setVisible(final boolean b){
-      row1.setVisible(b);
-      row2.setVisible(b);
-      row3.setVisible(b);
-      linkMaladie.setVisible(b);
-      row5.setVisible(b);
+	  if (!gatsby) {
+	      row1.setVisible(b);
+	      row2.setVisible(b);
+	      row3.setVisible(b);
+	      linkMaladie.setVisible(b);
+	      row5.setVisible(b);
+	  } else {
+		  mainContainer.setVisible(b);
+	  }
    }
 }
