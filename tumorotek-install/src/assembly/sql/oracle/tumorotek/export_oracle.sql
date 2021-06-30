@@ -801,7 +801,7 @@ BEGIN
      	(SELECT count(*) FROM PRELEVEMENT pr INNER JOIN MALADIE m ON pr.maladie_id = m.maladie_id WHERE m.patient_id = id),
      	(SELECT login FROM UTILISATEUR JOIN OPERATION on utilisateur.utilisateur_id = operation.utilisateur_id where entite_id = 1 AND operation_type_id = 3 AND operation.objet_id = id),
      	(SELECT date_ FROM OPERATION op WHERE op.OPERATION_TYPE_ID = 3 AND op.entite_id = 1 AND op.objet_id = id ),
-     	SUBSTR((SELECT stragg(maladie_id) FROM MALADIE WHERE patient_id = id), 0, 200)
+     	SUBSTR((SELECT stragg(maladie_id) FROM MALADIE WHERE patient_id = id), 0, 100)
 	FROM PATIENT WHERE patient_id = id;
 
 END fill_tmp_table_patient;
@@ -831,7 +831,7 @@ BEGIN
      	(SELECT count(*) FROM PRELEVEMENT pr INNER JOIN MALADIE m ON pr.maladie_id = m.maladie_id WHERE m.patient_id = id),
      	(SELECT login FROM UTILISATEUR JOIN OPERATION on utilisateur.utilisateur_id = operation.utilisateur_id where entite_id = 1 AND operation_type_id = 3 AND operation.objet_id = id),
      	(SELECT date_ FROM OPERATION op WHERE op.OPERATION_TYPE_ID = 3 AND op.entite_id = 1 AND op.objet_id = id ),
-     	SUBSTR((SELECT stragg(maladie_id) FROM MALADIE WHERE patient_id = id), 0, 200) 
+     	SUBSTR((SELECT stragg(maladie_id) FROM MALADIE WHERE patient_id = id), 0, 100) 
 	FROM PATIENT WHERE patient_id = id;
 
 END fill_tmp_table_patient_anonyme;

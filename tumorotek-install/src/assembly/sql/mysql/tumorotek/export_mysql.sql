@@ -392,7 +392,7 @@ CREATE PROCEDURE `fill_tmp_table_patient`(IN id INTEGER)
            (SELECT op.date_ FROM OPERATION op WHERE op.OPERATION_TYPE_ID = 3
                                                 AND op.entite_id = 1
                                                 AND op.objet_id = id),
-           LEFT((SELECT GROUP_CONCAT(maladie_id) FROM MALADIE WHERE patient_id = id), 200)
+           LEFT((SELECT GROUP_CONCAT(maladie_id) FROM MALADIE WHERE patient_id = id), 100)
     FROM PATIENT
     WHERE patient_id = id;
   END&&
@@ -453,7 +453,7 @@ CREATE PROCEDURE `fill_tmp_table_patient_anonyme`(IN id INTEGER)
            (SELECT op.date_ FROM OPERATION op WHERE op.OPERATION_TYPE_ID = 3
                                                 AND op.entite_id = 1
                                                 AND op.objet_id = id),
-           LEFT((SELECT GROUP_CONCAT(maladie_id) FROM MALADIE WHERE patient_id = id), 200) 
+           LEFT((SELECT GROUP_CONCAT(maladie_id) FROM MALADIE WHERE patient_id = id), 100) 
     FROM PATIENT
     WHERE patient_id = id;
   END&&
