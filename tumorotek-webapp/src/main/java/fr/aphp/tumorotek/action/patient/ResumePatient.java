@@ -41,7 +41,6 @@ import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Div;
-import org.zkoss.zul.Group;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Tabbox;
@@ -129,7 +128,7 @@ public class ResumePatient
 	      linkMaladieLabel = (Label) row5.getFellowIfAny("linkMaladieLabel");
 	      codeDiagLabel = (Label) row5.getFellowIfAny("codeDiagLabel");
 	   } else {
-		   mainContainer = (Div) resumePatientGroup.getLastChild();
+		   mainContainer = (Div) resumePatientGroup.getFellowIfAny("mainPatientContainer");
 		   nipLabel = (Label) resumePatientGroup.getFellowIfAny("nipLabel");
 		   ndaBox = (Textbox) resumePatientGroup.getFellowIfAny("ndaBox");
 		   ndaLabel = (Label) resumePatientGroup.getFellowIfAny("ndaLabel");
@@ -341,7 +340,8 @@ public class ResumePatient
 	      linkMaladie.setVisible(b);
 	      row5.setVisible(b);
 	  } else {
-		  mainContainer.setVisible(b);
+		  if (mainContainer != null)
+			  mainContainer.setVisible(b);
 	  }
    }
 }

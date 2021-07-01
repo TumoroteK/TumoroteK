@@ -23,11 +23,13 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.impl.InputElement;
 
 import fr.aphp.tumorotek.action.constraints.TumoTextConstraint;
+import fr.aphp.tumorotek.action.controller.AbstractController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheEditController;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.manager.exception.TKException;
@@ -226,7 +228,7 @@ public class GatsbiController {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static void appliThesaurusValues(List<Div> items, Contexte contexte, AbstractFicheEditController controller) 
+	public static void appliThesaurusValues(List<Div> items, Contexte contexte, AbstractController controller) 
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		log.debug("applying thesaurus values");
 		if (items != null && contexte != null) {
@@ -245,6 +247,7 @@ public class GatsbiController {
 								Comparator.nullsLast(Comparator.naturalOrder())));
 
 						// Model
+						log.debug("finding thesaurus values for model ".concat((String) div.getAttribute("listmodel")));
 						Object lModel = PropertyUtils.getProperty(controller, (String) div.getAttribute("listmodel"));
 						
 						List<TKThesaurusObject> thesObjs = new ArrayList<TKThesaurusObject>();
@@ -257,8 +260,14 @@ public class GatsbiController {
 									.findAny()
 									.orElseThrow(() -> new TKException("gatsbi.thesaurus.value.notfound", val.getThesaurusValue())));
 						}
-						//lb.setModel(new ListModelList<TKThesaurusObject>(thesObjs));
-						PropertyUtils.setProperty(controller, (String) div.getAttribute("listmodel"), thesObjs);
+						
+						// ListModelList conversion
+						if (!((String) div.getAttribute("listmodel")).matches(".*Model")) {
+							PropertyUtils.setProperty(controller, (String) div.getAttribute("listmodel"), thesObjs);
+						} else { // ListModelList conversion
+							PropertyUtils.setProperty(controller, 
+								(String) div.getAttribute("listmodel"), new ListModelList<TKThesaurusObject>(thesObjs));
+						}
 						log.debug("Thes values: ".concat(thesObjs.toString()).concat(" applied to ").concat(div.getId()));				
 					}
 				}

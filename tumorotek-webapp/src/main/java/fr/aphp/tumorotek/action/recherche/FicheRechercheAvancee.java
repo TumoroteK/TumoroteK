@@ -91,7 +91,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 /**
  *
  * @author Mathieu BARTHELEMY
- * @version 2.2.1
+ * @version 2.3.0-gatsbi
  * @since 2.2.1 date stockage echantillon/dérivés
  */
 public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
@@ -439,10 +439,21 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 		initGroupAnnotations();
 
 		createSearchHistoryListbox(entiteToSearch.getNom());
+		
+		// gatsbi overrides
+		applyThesaurusRestrictions();
 
 		getBinder().loadComponent(self);
 	}
 	
+	/**
+	 * Retire certaines valeurs de thésaurus suivant 
+	 * le contexte appliqué par Gatsbi
+	 * @since 2.3.0-gatsbi
+	 */
+	protected void applyThesaurusRestrictions() {		
+	}
+
 	/**
 	 * Gatsbi surcharge cette méthode
 	 */

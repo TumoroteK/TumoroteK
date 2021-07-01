@@ -56,7 +56,8 @@
 				<!-- Resume patient -->
 				<groupbox id="groupPatient">
 					<caption label="${c:l('bloc.prelevement.patient')}" />
-					<div>
+					<div id="mainPatientContainer">
+						ooo
 						<div id="patientBlockDiv"><!-- Patient -->
 							<div id="patientBlockDivContainer" class="block-container">
 								<div class="item item-mid" id="nipDiv"><!-- Nip patient -->
@@ -111,9 +112,9 @@
 							</div>
 						</div>
 					</div>
+					<div class="item-wide" id="refPatientDiv" />
 				</groupbox>
 				<div class="block-separator" />	
-				<div class="item-wide" id="refPatientDiv" />
 				<groupbox id="groupPrlvt">
 					<caption label="${c:l('bloc.prelevement.informations.prelevement')}" />
 					<div id="infoPrelBlockDiv">

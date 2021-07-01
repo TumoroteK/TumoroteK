@@ -30,7 +30,7 @@
         "contexteChampEntiteId": 12,
         "isChampReferToThesaurus": "nature",
         "obligatoire": false,
-	"visible": false,
+	    "visible": true,
         "rThesauruses": [
           {
             "champId": 24,
@@ -80,7 +80,7 @@
         "contexteChampEntiteId": 16,
         "isChampReferToThesaurus": "prelevement_type",
         "obligatoire": false,
-	"visible": false,
+	    "visible": true,
         "rThesauruses": [
           {
             "champId": 31,
@@ -113,7 +113,7 @@
         "contexteChampEntiteId": 18,
         "isChampReferToThesaurus": "risque",
         "obligatoire": false,
-		"visible": false,
+		"visible": true,
         "rThesauruses": [
 		{
             "champId": 249,
@@ -129,7 +129,7 @@
         "champOrdre": 9,
         "contexteChampEntiteId": 20,
         "obligatoire": false,
-        "visible": false
+        "visible": true
       },
       {
 	"__comment": "Preleveur",
@@ -137,7 +137,7 @@
         "champOrdre": 10,
         "contexteChampEntiteId": 19,
         "obligatoire": false,
-        "visible": false
+        "visible": true
       },
       {
 	"__comment": "Condit Type",
@@ -146,7 +146,7 @@
         "contexteChampEntiteId": 21,
         "isChampReferToThesaurus": "condit_type",
         "obligatoire": false,
-	"visible": false,
+		"visible": true,
         "rThesauruses": [
         ]
       },
@@ -165,7 +165,7 @@
         "contexteChampEntiteId": 22,
         "isChampReferToThesaurus": "condit_milieu",
         "obligatoire": false,
-	"visible": false,
+		"visible": true,
         "rThesauruses": [
           {
             "champId": 33,
@@ -182,7 +182,7 @@
         "contexteChampEntiteId": 24,
         "isChampReferToThesaurus": "consent_type",
         "obligatoire": false,
-	"visible": false,
+		"visible": true,
         "rThesauruses": [
           {
             "champId": 26,
@@ -266,7 +266,16 @@
         "champOrdre": 23,
         "contexteChampEntiteId": 34,
         "obligatoire": false,
-        "visible": false
+        "isChampReferToThesaurus": "non_conformite_arrivee",
+        "visible": true,
+        "rThesauruses": [
+          {
+            "champId": 256,
+            "thesaurusId": 2,
+            "thesaurusValue": "Erreur dossier",
+            "position": 1
+          }
+        ]
       },
       {
 	"__comment": "Cong Arrivee",  

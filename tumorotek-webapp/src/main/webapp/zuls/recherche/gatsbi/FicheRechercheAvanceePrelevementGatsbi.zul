@@ -202,7 +202,7 @@
 											</div>
 											<div class="item item-wide" id="risquesDiv"><!-- Risques -->
 												<custom-attributes champId="249"
-													listmodel="risques" />
+													listmodel="risquesModel" />
 												<label value="${c:l('Champ.Prelevement.Risques')}"
 													sclass="chpLabel formLabel" />
 												<div>
@@ -219,8 +219,7 @@
 												</div>
 											</div>
 											<div class="item item-wide" id="conformeArriveeDiv"><!-- Conforme à l'arrivée -->
-												<custom-attributes
-													listmodel="nonConformites" />
+												<custom-attributes champId="256" listmodel="ncarrivee" />
 												<label
 													value="${c:l('Champ.Prelevement.ConformeArrivee')}"
 													sclass="chpLabel formLabel" />

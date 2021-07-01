@@ -46,7 +46,7 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
       
       hideEmptyGroupboxes();
    }
-   
+      
    private void hideEmptyGroupboxes() {
 	   GatsbiController.hideGroupBoxIfEmpty(groupPrlvt);
 	   GatsbiController.hideGroupBoxIfEmpty(gridFormPrlvtComp);
