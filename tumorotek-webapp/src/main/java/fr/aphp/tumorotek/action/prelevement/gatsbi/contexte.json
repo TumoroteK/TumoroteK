@@ -30,7 +30,7 @@
         "contexteChampEntiteId": 12,
         "isChampReferToThesaurus": "nature",
         "obligatoire": false,
-	    "visible": true,
+	    "visible": false,
         "rThesauruses": [
           {
             "champId": 24,
@@ -61,8 +61,8 @@
         "champId": 44,
         "champOrdre": 4,
         "contexteChampEntiteId": 14,
-        "obligatoire": false,
-        "visible": false
+        "obligatoire": true,
+        "visible": true
       },
       {
 	"__comment": "Date prelevement",
@@ -80,7 +80,7 @@
         "contexteChampEntiteId": 16,
         "isChampReferToThesaurus": "prelevement_type",
         "obligatoire": false,
-	    "visible": true,
+	    "visible": false,
         "rThesauruses": [
           {
             "champId": 31,
@@ -156,7 +156,7 @@
         "champOrdre": 12,
         "contexteChampEntiteId": 23,
         "obligatoire": false,
-        "visible": false
+        "visible": true
       },
       {
 	"__comment": "Condit Milieu",
@@ -200,7 +200,7 @@
         "contexteChampEntiteId": 25,
         "dateFormat": "dd/MM/yyyy",
         "obligatoire": false,
-        "visible": false
+        "visible": true
       },
       {
 	"__comment": "Cong prel",  
@@ -208,7 +208,7 @@
         "champOrdre": 16,
         "contexteChampEntiteId": 26,
         "obligatoire": false,
-        "visible": false
+        "visible": true
       },
       {
 	"__comment": "Date Depart",  
@@ -217,7 +217,7 @@
         "contexteChampEntiteId": 26,
         "dateFormat": "dd/MM/yyyy",
         "obligatoire": false,
-        "visible": false
+        "visible": true
       },
       {
 	"__comment": "Transporteur",
@@ -225,7 +225,7 @@
         "champOrdre": 18,
         "contexteChampEntiteId": 28,
         "obligatoire": false,
-        "visible": false
+        "visible": true
       },
       {
 	"__comment": "Temp transp",
@@ -233,7 +233,7 @@
         "champOrdre": 19,
         "contexteChampEntiteId": 29,
         "obligatoire": false,
-        "visible": false
+        "visible": true
       },
       {
 	"__comment": "Date Arrivee",        
@@ -242,7 +242,7 @@
         "contexteChampEntiteId": 30,
         "dateFormat": "dd/MM/yyyy",
         "obligatoire": false,
-        "visible": false
+        "visible": true
       },
       {
 	"__comment": "Operateur", 
@@ -250,7 +250,7 @@
         "champOrdre": 21,
         "contexteChampEntiteId": 31,
         "obligatoire": false,
-        "visible": false
+        "visible": true
       },
       {
 	"__comment": "Quantite", 
@@ -258,7 +258,7 @@
         "champOrdre": 22,
         "contexteChampEntiteId": 32,
         "obligatoire": false,
-        "visible": false
+        "visible": true
       },
       {
 	"__comment": "Non conformite Arrivee",  
@@ -283,7 +283,7 @@
         "champOrdre": 24,
         "contexteChampEntiteId": 26,
         "obligatoire": false,
-        "visible": false
+        "visible": true
       }
    ]
 }

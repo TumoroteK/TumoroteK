@@ -450,7 +450,7 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
    }
 
    @ManyToOne
-   @JoinColumn(name = "NATURE_ID", nullable = false)
+   @JoinColumn(name = "NATURE_ID", nullable = true)
    public Nature getNature(){
       return this.nature;
    }
@@ -562,7 +562,7 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
    }*/
 
    @ManyToOne
-   @JoinColumn(name = "CONSENT_TYPE_ID", nullable = false)
+   @JoinColumn(name = "CONSENT_TYPE_ID", nullable = true)
    public ConsentType getConsentType(){
       return this.consentType;
    }

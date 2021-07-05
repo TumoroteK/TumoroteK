@@ -115,3 +115,13 @@ div.item-required span.requiredMark {
 	display: inline;
 	width: 5px;
 }
+
+div.item .changedValue {
+	flex-grow: 1; 
+	align-content: right;
+}
+
+div.item .modifmultiValue {
+	text-align: right;
+	font-style:italic; 
+}

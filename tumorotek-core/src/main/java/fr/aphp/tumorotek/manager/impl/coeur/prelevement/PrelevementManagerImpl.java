@@ -1033,10 +1033,12 @@ public class PrelevementManagerImpl implements PrelevementManager
          log.warn("Objet obligatoire Banque manquant" + " lors de la " + operation + " d'un Prelevement");
          throw new RequiredObjectIsNullException("Prelevement", operation, "Banque");
       }
-      // Nature required
+      
+      // TODO replace banque gastbi contexte discrimination
+      
       if(nature != null){
          prelevement.setNature(natureDao.mergeObject(nature));
-      }else if(prelevement.getNature() == null){
+      }else if(prelevement.getNature() == null && prelevement.getBanque().getContexte().getContexteId() != 1){ // required -> only if not managed gatsbi collection    	 
          log.warn("Objet obligatoire Nature manquant" + " lors de la " + operation + " d'un Prelevement");
          throw new RequiredObjectIsNullException("Prelevement", operation, "Nature");
       }
@@ -1044,7 +1046,7 @@ public class PrelevementManagerImpl implements PrelevementManager
       // ConsentType required
       if(consentType != null){
          prelevement.setConsentType(consentTypeDao.mergeObject(consentType));
-      }else if(prelevement.getConsentType() == null){
+      }else if(prelevement.getConsentType() == null && prelevement.getBanque().getContexte().getContexteId() != 1){ // required -> only if not managed gatsbi collection    	 
          log.warn("Objet obligatoire ConsentType manquant" + " lors de la " + operation + " d'un Prelevement");
          throw new RequiredObjectIsNullException("Prelevement", operation, "ConsentType");
       }

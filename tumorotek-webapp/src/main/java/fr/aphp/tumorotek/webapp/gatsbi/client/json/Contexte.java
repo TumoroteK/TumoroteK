@@ -155,4 +155,11 @@ public class Contexte implements Serializable {
 				.getThesaurusValues();
 	}
 	
+	@JsonIgnore
+	public boolean isChampIdRequired(Integer id) {
+		return champEntites.stream()
+			.filter(c -> c.getChampId().equals(id))
+			.findFirst().orElse(new ChampEntite()).getObligatoire();
+	}
+	
 }

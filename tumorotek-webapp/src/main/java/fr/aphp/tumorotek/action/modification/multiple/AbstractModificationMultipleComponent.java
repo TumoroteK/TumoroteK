@@ -506,6 +506,8 @@ public abstract class AbstractModificationMultipleComponent extends AbstractCont
                // verifie que si eraseCombine box est checke 
                if(isCombined && (eraseCombine.isChecked())){
                   newValue = "system.tk.unknownExistingValue";
+               }else{
+                   newValue = null;
                }
             }
          }

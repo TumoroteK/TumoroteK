@@ -191,7 +191,8 @@ public class PrelevementController extends AbstractObjectTabController
             setEditZulPath("/zuls/prelevement/gatsbi/FichePrelevementEditGatsbi.zul"); // TODO à changer pour conserver TK standard aussi
            // setEditZulPath("/zuls/prelevement/FichePrelevementEdit.zul"); 
             setListZulPath("/zuls/prelevement/ListePrelevement.zul");
-            setMultiEditZulPath("/zuls/prelevement/FicheModifMultiPrelevement.zul");
+            setMultiEditZulPath("/zuls/prelevement/gatsbi/FicheModifMultiPrelevementGatsbi.zul");
+           // setMultiEditZulPath("/zuls/prelevement/FicheModifMultiPrelevement.zul"); // TODO à changer pour conserver TK standard aussi
             break;
       }
 

@@ -205,7 +205,7 @@
 						</div>
 					</div>
 					<div class="block-separator" />
-					<div id="conditBlockDiv"><!-- Conditionnenemt -->
+					<div id="conditBlockDiv"><!-- Conditionnement -->
 						<div class="block-title">
 							<div class="column-container">
 								<label value="${c:l('fichePrelevement.group.conditionnement')}" sclass="formSubTitle"/>

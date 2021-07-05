@@ -45,16 +45,24 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Messagebox;
 
 import fr.aphp.tumorotek.action.factory.DelegateFactory;
 import fr.aphp.tumorotek.action.modification.multiple.SimpleChampValue;
+import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.model.TKDelegateObject;
 import fr.aphp.tumorotek.model.TKDelegetableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
+/**
+ * 
+ * @author Mathieu BARTHELEMY
+ * @version 2.3.0-gatsbi
+ *
+ */
 public abstract class AbstractFicheModifMultiController extends AbstractFicheController
 {
 
@@ -255,4 +263,38 @@ public abstract class AbstractFicheModifMultiController extends AbstractFicheCon
       getObjectTabController().clearStaticFiche();
       getObjectTabController().switchToOnlyListeMode();
    }
+   
+	/**
+	 * Cette restriction est implémentée par Gatsbi
+	 * @param liste de valeurs de thesaurus initiale
+	 * @param champ entite id
+	 * @return liste filtrée par le contexte défini par le gestionnaire Gatsbi
+	 * @since 2.3.0-gatsbi
+	 */
+	protected List<Object> applyAnyThesaurusRestriction(List<Object> thObjs, Integer chpId) {	
+		return thObjs;
+	}
+	
+	/**
+	 * Cette mutation est implémentée par Gatsbi
+	 * @param contrainte dont le flag NO_EMPTY est muté suivant le caractère obligatoire 
+	 * défini par Gatsbi
+	 * @param champ entite id
+	 * @return contrainte mutée
+	 * @since 2.3.0-gatsbi
+	 */
+	protected Constraint muteAnyRequiredConstraint(Constraint cstr, Integer chpId) {
+		return cstr;
+	}
+	
+	/**
+	 * Cette mutation est implémentée par Gatsbi
+	 * @param flag isObligatoire
+	 * @param champ entite id
+	 * @return flag isObligatoire muté
+	 * @since 2.3.0-gatsbi
+	 */
+	protected boolean switchAnyRequiredFlag(Boolean flag, Integer chpId) {
+		return flag;
+	}
 }

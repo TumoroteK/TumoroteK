@@ -51,7 +51,6 @@ import fr.aphp.tumorotek.action.modification.multiple.SimpleChampValue;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
-import fr.aphp.tumorotek.model.systeme.Unite;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -60,7 +59,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * Controller créé le 20/02/2011.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.2.1
+ * @version 2.3.à-gatsbi
  *
  */
 public class FicheModifMultiPrelevement extends AbstractFicheModifMultiController
@@ -390,52 +389,56 @@ public class FicheModifMultiPrelevement extends AbstractFicheModifMultiControlle
 
 	public void onClick$numeroLaboMultiLabel(){
 		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Textbox", getObjsToEdit(),
-				"Champ.Prelevement.NumeroLabo", "numeroLabo", null, null, null, PrelevementConstraints.getCodeNullConstraint(), false,
-				false, null);
+			"Champ.Prelevement.NumeroLabo", "numeroLabo", null, null, null, 
+				muteAnyRequiredConstraint(PrelevementConstraints.getCodeNullConstraint(), 45), false, false, null);
 	}
 
 
 	public void onClick$natureMultiLabel(){
-		final List<? extends Object> natures =
-				ManagerLocator.getNatureManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+		List<Object> natures = new ArrayList<Object>();
+		natures.addAll(ManagerLocator.getNatureManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
+		
+		natures = applyAnyThesaurusRestriction(natures, 24);
 
 		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Listbox", getObjsToEdit(),
-				"Champ.Prelevement.Nature", "nature", (List<Object>) natures, "nature", null, null, false, null, true);
+				"Champ.Prelevement.Nature", "nature", natures, "nature", null, null, false, null, switchAnyRequiredFlag(true, 24));
 	}
 
 	public void onClick$datePrelevementMultiLabel(){
 		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Calendarbox", getObjsToEdit(),
-				"Champ.Prelevement.DatePrelevement", "datePrelevement", null, null, null, null, false, null, null);
+			"Champ.Prelevement.DatePrelevement", "datePrelevement", null, null, null, 
+				muteAnyRequiredConstraint(null, 30), false, null, null);
 	}
 
 
 	public void onClick$prelevementTypeMultiLabel(){
-		final List<? extends Object> pTypes =
-				ManagerLocator.getPrelevementTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+		List<Object> pTypes = new ArrayList<Object>();
+		pTypes.addAll(ManagerLocator.getPrelevementTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
+		
+		pTypes = applyAnyThesaurusRestriction(pTypes, 31);
 
 		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Listbox", getObjsToEdit(),
-				"Champ.Prelevement.PrelevementType", "prelevementType", (List<Object>) pTypes, "type", null, null, false, null, false);
+				"Champ.Prelevement.PrelevementType", "prelevementType", pTypes, "type", null, null, false, null, switchAnyRequiredFlag(false, 31));
 	}
 
 
 	public void onClick$sterileMultiLabel(){
 
-		List<? extends Object> bools;
-		final List<Boolean> bools2 = new ArrayList<>();
-		bools2.add(new Boolean(true));
-		bools2.add(new Boolean(false));
-
-		bools = bools2;
+		List<Object> bools = new ArrayList<Object>();
+		bools.add(new Boolean(true));
+		bools.add(new Boolean(false));
 
 		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Listbox", getObjsToEdit(),
-				"general.sterile", "sterile", (List<Object>) bools, "bool", null, null, false, null, false);
+				"general.sterile", "sterile", bools, "bool", null, null, false, null, false);
 	}
 
 
 	public void onClick$risqueMultiLabel(){
-
-		final List<? extends Object> risques =
-				ManagerLocator.getRisqueManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+		
+		List<Object> risques = new ArrayList<Object>();
+		risques.addAll(ManagerLocator.getRisqueManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
+		
+		risques = applyAnyThesaurusRestriction(risques, 249);
 
 		for(int i = 0; i < getObjsToEdit().size(); i++){
 			((Prelevement) getObjsToEdit().get(i))
@@ -443,122 +446,141 @@ public class FicheModifMultiPrelevement extends AbstractFicheModifMultiControlle
 		}
 
 		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "MultiListbox", getObjsToEdit(),
-				"Champ.Prelevement.Risque", "risques", (List<Object>) risques, "nom", null, null, false, null, false);
+				"Champ.Prelevement.Risque", "risques", risques, "nom", null, null, false, null, switchAnyRequiredFlag(false, 249));
 	}
 
 
 	public void onClick$serviceMultiLabel(){
 
-		final List<? extends Object> services = ManagerLocator.getServiceManager().findAllActiveObjectsWithOrderManager();
+		final List<Object> services = new ArrayList<Object>();
+		services.addAll(ManagerLocator.getServiceManager().findAllActiveObjectsWithOrderManager());
 
-		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Combobox", (List<Object>) getObjsToEdit(),
-				"Champ.Prelevement.ServicePreleveur", "servicePreleveur", (List<Object>) services, "nom", null, null, false, null,
-				false);
+		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Combobox", getObjsToEdit(),
+				"Champ.Prelevement.ServicePreleveur", "servicePreleveur", services, "nom", null, null, false, null,
+				switchAnyRequiredFlag(false, 29));
 	}
 
 
 	public void onClick$preleveurMultiLabel(){
 
-		final List<? extends Object> collaborateurs =
-				ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager();
+		final List<Object> collaborateurs = new ArrayList<Object>();
+		collaborateurs.addAll(ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager());
 
-		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Combobox", (List<Object>) getObjsToEdit(),
-				"Champ.Prelevement.Preleveur", "preleveur", (List<Object>) collaborateurs, "nomAndPrenom", null, null, false, null,
-				false);
+		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Combobox", getObjsToEdit(),
+				"Champ.Prelevement.Preleveur", "preleveur", collaborateurs, "nomAndPrenom", null, null, false, null,
+				switchAnyRequiredFlag(false, 28));
 	}
 
 
 	public void onClick$conditTypeMultiLabel(){
-		final List<? extends Object> cTypes =
-				ManagerLocator.getConditTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+		List<Object> cTypes = new ArrayList<Object>();
+		cTypes.addAll(ManagerLocator.getConditTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
+		
+		cTypes = applyAnyThesaurusRestriction(cTypes, 32);
 
 		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Listbox", getObjsToEdit(),
-				"Champ.Prelevement.ConditType", "conditType", (List<Object>) cTypes, "type", null, null, false, null, false);
+				"Champ.Prelevement.ConditType", "conditType", cTypes, "type", null, null, false, null, switchAnyRequiredFlag(false, 32));
 	}
 
 	public void onClick$conditNbMultiLabel(){
 
 		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Intbox", getObjsToEdit(),
-				"Champ.Prelevement.ConditNbr", "conditNbr", null, null, null, null, false, null, false);
+				"Champ.Prelevement.ConditNbr", "conditNbr", null, null, null, null, false, null, switchAnyRequiredFlag(false, 34));
 	}
 
 
 	public void onClick$conditMilieuMultiLabel(){
-		final List<? extends Object> milieux =
-				ManagerLocator.getConditMilieuManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+		
+		List<Object> milieux = new ArrayList<Object>();
+		milieux.addAll(ManagerLocator.getConditMilieuManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
+		
+		milieux = applyAnyThesaurusRestriction(milieux, 33);
 
 		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Listbox", getObjsToEdit(),
-				"Champ.Prelevement.ConditMilieu", "conditMilieu", (List<Object>) milieux, "milieu", null, null, false, null, false);
+				"Champ.Prelevement.ConditMilieu", "conditMilieu", milieux, "milieu", null, null, false, null, switchAnyRequiredFlag(false, 33));
 	}
 
 
 	public void onClick$consentTypeMultiLabel(){
-		final List<? extends Object> cTypes =
-				ManagerLocator.getConsentTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
+		List<Object> cTypes = new ArrayList<Object>();
+		cTypes.addAll(ManagerLocator.getConsentTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
+		
+		cTypes = applyAnyThesaurusRestriction(cTypes, 26);
 
 		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Listbox", getObjsToEdit(),
-				"Champ.Prelevement.ConsentType", "consentType", (List<Object>) cTypes, "type", null, null, false, null, true);
+				"Champ.Prelevement.ConsentType", "consentType", cTypes, "type", null, null, false, null, switchAnyRequiredFlag(true, 26));
 	}
 
 	public void onClick$consentDateMultiLabel(){
 		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Datebox", getObjsToEdit(),
-				"Champ.Prelevement.ConsentDate", "consentDate", null, null, null, null, false, null, null);
+			"Champ.Prelevement.ConsentDate", "consentDate", null, null, null, 
+				muteAnyRequiredConstraint(null, 27), false, null, null);
 	}
 
 	public void onClick$dateDepartMultiLabel(){
 		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Calendarbox", getObjsToEdit(),
-				"Champ.Prelevement.DateDepart", "dateDepart", null, null, null, null, false, null, null);
+			"Champ.Prelevement.DateDepart", "dateDepart", null, null, null, 
+				muteAnyRequiredConstraint(null, 35), false, null, null);
 	}
 
 
 	public void onClick$transporteurMultiLabel(){
-		final List<? extends Object> trsps = ManagerLocator.getTransporteurManager().findAllActiveManager();
+		final List<Object> trsps = new ArrayList<Object>();
+		trsps.addAll(ManagerLocator.getTransporteurManager().findAllActiveManager());
 
 		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Combobox", getObjsToEdit(),
-				"Champ.Prelevement.Transporteur", "transporteur", (List<Object>) trsps, "nom", null, null, false, null, false);
+				"Champ.Prelevement.Transporteur", "transporteur", trsps, "nom", null, null, false, null, 
+				switchAnyRequiredFlag(false, 36));
 	}
 
 	public void onClick$transportTempMultiLabel(){
 
 		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Floatbox", getObjsToEdit(),
-				"Champ.Prelevement.TransportTemp", "transportTemp", null, null, null, null, false, null, false);
+			"Champ.Prelevement.TransportTemp", "transportTemp", null, null, null, null, false, null, 
+				switchAnyRequiredFlag(false, 37));
 	}
 
 	public void onClick$dateArriveeMultiLabel(){
 		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Calendarbox", getObjsToEdit(),
-				"Champ.Prelevement.DateArrivee", "dateArrivee", null, null, null, null, false, null, null);
+			"Champ.Prelevement.DateArrivee", "dateArrivee", null, null, null, 
+				muteAnyRequiredConstraint(null, 38), false, null, null);
 	}
 
 
 	public void onClick$operateurMultiLabel(){
-		final List<? extends Object> ops = ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager();
+		final List<Object> ops =  new ArrayList<Object>(); 
+		ops.addAll(ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager());
 
 		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Combobox", getObjsToEdit(),
-				"Champ.Prelevement.Operateur", "operateur", (List<Object>) ops, "nomAndPrenom", null, null, false, null, false);
+			"Champ.Prelevement.Operateur", "operateur", ops, "nomAndPrenom", null, null, false, null, 
+				switchAnyRequiredFlag(false, 39));
 	}
 
 
 	public void onClick$quantiteMultiLabel(){
 
-		final List<Unite> quantiteUnites = ManagerLocator.getUniteManager().findByTypeLikeManager("masse", true);
-		quantiteUnites.addAll(ManagerLocator.getUniteManager().findByTypeLikeManager("discret", true));
-		quantiteUnites.addAll(ManagerLocator.getUniteManager().findByTypeLikeManager("volume", true));
-
-		final List<? extends Object> units = quantiteUnites;
+		final List<Object> units =  new ArrayList<Object>();
+		units.addAll(ManagerLocator.getUniteManager().findByTypeLikeManager("masse", true));
+		units.addAll(ManagerLocator.getUniteManager().findByTypeLikeManager("discret", true));
+		units.addAll(ManagerLocator.getUniteManager().findByTypeLikeManager("volume", true));
 
 		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Quantification", getObjsToEdit(),
-				"Champ.Prelevement.Quantite", "quantite", (List<Object>) units, "unite", null, null, false, null, false);
+			"Champ.Prelevement.Quantite", "quantite", units, "unite", null, null, false, null, 
+			switchAnyRequiredFlag(false, 40));
 	}
 
 
 	public void onClick$nonConformeMultiLabel(){
 
-		final List<? extends Object> nonConfs = ManagerLocator.getNonConformiteManager().findByPlateformeEntiteAndTypeStringManager(
-				SessionUtils.getPlateforme(sessionScope), "Arrivee", getObjectTabController().getEntiteTab());
+		List<Object> nonConfs =  new ArrayList<Object>();
+		nonConfs.addAll(ManagerLocator.getNonConformiteManager().findByPlateformeEntiteAndTypeStringManager(
+						SessionUtils.getPlateforme(sessionScope), "Arrivee", getObjectTabController().getEntiteTab()));
+		
+		nonConfs = applyAnyThesaurusRestriction(nonConfs, 256);
 
 		openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Conformitebox", getObjsToEdit(),
-				"Champ.Prelevement.ConformeArrivee", "conformeArrivee", (List<Object>) nonConfs, "Arrivee", null, null, false, null,
-				false);
+				"Champ.Prelevement.ConformeArrivee", "conformeArrivee", nonConfs, "Arrivee", null, null, false, null,
+				switchAnyRequiredFlag(false, 256));
 	}
 
 	@Override

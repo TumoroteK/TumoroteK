@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><!-- * projet-tk@sesan.fr -->
+<!-- * projet-tk@sesan.fr -->
+<?xml version="1.0" encoding="UTF-8"?>
 <zk>
 
 	<style src="/css/gatsbi.css" />
@@ -32,7 +33,7 @@
 					</div>
 					<div class="block-separator" />
 					<!-- Départ -->
-					<div id="departBlockDiv"><!-- Consentement -->
+					<div id="departBlockDiv">
 						<div class="block-title">
 							<div class="column-container">
 								<label value="${c:l('fichePrelevement.departPreleveur')}"

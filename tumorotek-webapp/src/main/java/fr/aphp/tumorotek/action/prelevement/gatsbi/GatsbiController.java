@@ -22,6 +22,7 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
@@ -30,7 +31,6 @@ import org.zkoss.zul.impl.InputElement;
 
 import fr.aphp.tumorotek.action.constraints.TumoTextConstraint;
 import fr.aphp.tumorotek.action.controller.AbstractController;
-import fr.aphp.tumorotek.action.controller.AbstractFicheEditController;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.model.TKThesaurusObject;
@@ -188,31 +188,15 @@ public class GatsbiController {
 							formElement = findInputOrListboxElement(div);
 							
 							if (formElement != null) {
-								if (formElement instanceof InputElement) {
-									if (((InputElement) formElement).getConstraint() != null) {
-										if (((InputElement) formElement).getConstraint() instanceof TumoTextConstraint) {
-											((TumoTextConstraint) ((InputElement) formElement).getConstraint()).setNullable(false);
-										} else if (((InputElement) formElement).getConstraint() instanceof SimpleConstraint) {
-											
-											((InputElement) formElement)
-												.setConstraint(new SimpleConstraint(
-														((SimpleConstraint) ((InputElement) formElement).getConstraint()).getFlags()
-														+ SimpleConstraint.NO_EMPTY));		
-											
-											log.debug(((InputElement) formElement).getConstraint());
-											
-										} else {
-											throw new RuntimeException(div.getId() + " input constraint unknown");
-										}
-									} else if (!(formElement instanceof Combobox)) {
-										((InputElement) formElement).setConstraint("no empty");
-									} else { // combobox
-										cboxes.add(((Combobox) formElement));
-									}
+								if (formElement instanceof Combobox) {
+									cboxes.add(((Combobox) formElement));
+								} else if (formElement instanceof Listbox) {
+									lboxes.add(((Listbox) formElement));
+								} else if (formElement instanceof InputElement) {
+									((InputElement) formElement)
+										.setConstraint(muteConstraintFromContexte(((InputElement) formElement).getConstraint(), isReq));
 								} else if (formElement instanceof CalendarBox) {
 									((CalendarBox) formElement).setConstraint("no empty");
-								} else { // listbox
-									lboxes.add(((Listbox) formElement));
 								}
 							} else if (div.getId().startsWith("conforme")) { // non-conformite
 								reqConformeDivs.add(div);
@@ -241,38 +225,50 @@ public class GatsbiController {
 							&& thesaurii.contains(Integer.valueOf((String) div.getAttribute("champId")))) {
 						log.debug("applying thesaurus values for ".concat(div.getId()));
 						
-						List<ThesaurusValue> values = 
-							contexte.getThesaurusValuesForChampEntiteId(Integer.valueOf((String) div.getAttribute("champId")));
-						Collections.sort(values, Comparator.comparing(ThesaurusValue::getPosition, 
-								Comparator.nullsLast(Comparator.naturalOrder())));
+						
 
 						// Model
 						log.debug("finding thesaurus values for model ".concat((String) div.getAttribute("listmodel")));
-						Object lModel = PropertyUtils.getProperty(controller, (String) div.getAttribute("listmodel"));
+						List<TKThesaurusObject> lModel = (List<TKThesaurusObject>) 
+								PropertyUtils.getProperty(controller, (String) div.getAttribute("listmodel"));
 						
-						List<TKThesaurusObject> thesObjs = new ArrayList<TKThesaurusObject>();
-						if (((List<TKThesaurusObject>) lModel).contains(null)) {
-							thesObjs.add(null);
-						}
-						for (ThesaurusValue val : values) {
-							thesObjs.add(((List<TKThesaurusObject>) lModel).stream()
-								.filter(v -> v != null && v.getId().equals(val.getThesaurusId()))
-									.findAny()
-									.orElseThrow(() -> new TKException("gatsbi.thesaurus.value.notfound", val.getThesaurusValue())));
-						}
+						List<TKThesaurusObject> thesObjs = 
+							filterExistingListModel(contexte, lModel, Integer.valueOf((String) div.getAttribute("champId")));					
 						
 						// ListModelList conversion
 						if (!((String) div.getAttribute("listmodel")).matches(".*Model")) {
 							PropertyUtils.setProperty(controller, (String) div.getAttribute("listmodel"), thesObjs);
 						} else { // ListModelList conversion
 							PropertyUtils.setProperty(controller, 
-								(String) div.getAttribute("listmodel"), new ListModelList<TKThesaurusObject>(thesObjs));
+								(String) div.getAttribute("listmodel"), new ListModelList<Object>(thesObjs));
 						}
 						log.debug("Thes values: ".concat(thesObjs.toString()).concat(" applied to ").concat(div.getId()));				
 					}
 				}
 			}
 		}
+	}
+	
+	public static <T> List<T> filterExistingListModel(Contexte contexte, List<T> lModel, Integer chpId) {
+		
+		List<ThesaurusValue> values = 
+				contexte.getThesaurusValuesForChampEntiteId(chpId);
+			Collections.sort(values, Comparator.comparing(ThesaurusValue::getPosition, 
+					Comparator.nullsLast(Comparator.naturalOrder())));
+		
+		List<T> thesObjs = new ArrayList<T>();
+		if (lModel.contains(null)) {
+			thesObjs.add(null);
+		}
+		for (ThesaurusValue val : values) {
+			thesObjs.add(lModel.stream()
+				.filter(v -> v != null && (v instanceof TKThesaurusObject) 
+					&& ((TKThesaurusObject) v).getId().equals(val.getThesaurusId()))
+					.findAny()
+					.orElseThrow(() -> new TKException("gatsbi.thesaurus.value.notfound", val.getThesaurusValue())));
+		}
+		
+		return thesObjs;
 	}
 	
 	/**
@@ -336,6 +332,29 @@ public class GatsbiController {
 		return null;
 	}
 	
+	public static Constraint muteConstraintFromContexte(Constraint constraint, boolean required) {
+		if (constraint != null) {			
+			log.debug("Constraint " + constraint.toString() 
+				+ " being switched to " + (required ? "" : " not ") + "required");
+			
+			if (constraint instanceof TumoTextConstraint) {
+				((TumoTextConstraint) constraint).setNullable(!required);
+			} else if (constraint instanceof SimpleConstraint) {
+				int flags = ((SimpleConstraint) constraint).getFlags();
+				if (required) {
+					flags = flags | SimpleConstraint.NO_EMPTY;
+				} // else not possible to remove required flag with bitwise operator ???
+				
+				constraint = new SimpleConstraint(flags);		
+			} else {
+				throw new RuntimeException("Constraint unknown");
+			}
+		} else if (required) { // add required constraint
+			constraint = new SimpleConstraint("no empty");
+		}
+		
+		return constraint;
+	}	
 	
 	// test only
 	public static Contexte mockOneContexte() throws JsonParseException, JsonMappingException, IOException {

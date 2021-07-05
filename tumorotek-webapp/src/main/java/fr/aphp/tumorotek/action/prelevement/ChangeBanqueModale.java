@@ -258,6 +258,6 @@ class MyGridRenderer implements RowRenderer<Prelevement>
       codeLbl.setParent(row);
       codeLbl.setClass("formLink");
       new Label(p.getNumeroLabo()).setParent(row);
-      new Label(p.getNature().getNom()).setParent(row);
+      new Label(p.getNature() != null ? p.getNature().getNom() : "").setParent(row);
    }
 }

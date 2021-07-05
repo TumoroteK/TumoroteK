@@ -69,11 +69,11 @@ public class PrelevementTypeValidator implements Validator
 
       final PrelevementType pType = (PrelevementType) obj;
       //nom valide
-      if(pType.getType() != null){
-         if(!pType.getType().matches(ValidationUtilities.MOTREGEXP)){
+      if(pType.getNom() != null){
+         if(!pType.getNom().matches(ValidationUtilities.MOTREGEXP)){
             errs.rejectValue("type", "prelevementType.type.illegal");
          }
-         if(pType.getType().length() > 200){
+         if(pType.getNom().length() > 200){
             errs.rejectValue("type", "prelevementType.type.tooLong");
          }
       }
