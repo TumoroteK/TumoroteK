@@ -50,6 +50,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Panel;
+import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.Timer;
 import org.zkoss.zul.Window;
 
@@ -275,7 +276,7 @@ public abstract class AbstractFicheController extends AbstractController
                break;
             case "Quantification":
                populateModificationMultipleQuantification(win, page, pathToPage, methodToCall, objs, label, champToEdit,
-                  allValuesThesaurus, champThesaurus);
+                  allValuesThesaurus, champThesaurus, isOblig);
                break;
             case "Checkbox":
                populateModificationMultipleCheckbox(win, page, pathToPage, methodToCall, objs, label, champToEdit, entiteNom,
@@ -283,18 +284,18 @@ public abstract class AbstractFicheController extends AbstractController
                break;
             case "Doublebox":
                populateModificationMultipleDoublebox(win, page, pathToPage, methodToCall, objs, label, champToEdit, entiteNom,
-                  constr, isCombined);
+                  constr, isCombined, isOblig);
                break;
             case "Intbox":
                ua = populateModificationMultipleDoublebox(win, page, pathToPage, methodToCall, objs, label, champToEdit,
-                  entiteNom, constr, isCombined);
+                  entiteNom, constr, isCombined, isOblig);
 
                ((ModificationMultipleDoublebox) ua.getFellow("winModificationMultipleDoublebox")
                   .getAttributeOrFellow("winModificationMultipleDoublebox$composer", true)).setInteger(true);
                break;
             case "Floatbox":
                ua = populateModificationMultipleDoublebox(win, page, pathToPage, methodToCall, objs, label, champToEdit,
-                  entiteNom, constr, isCombined);
+                  entiteNom, constr, isCombined, isOblig);
 
                ((ModificationMultipleDoublebox) ua.getFellow("winModificationMultipleDoublebox")
                   .getAttributeOrFellow("winModificationMultipleDoublebox$composer", true)).setFloat(true);
@@ -319,7 +320,7 @@ public abstract class AbstractFicheController extends AbstractController
                break;
             case "Conformitebox":
                populateModificationMultipleNonConformites(win, page, pathToPage, methodToCall, objs, label, champToEdit,
-                  allValuesThesaurus, champThesaurus, entiteNom);
+                  allValuesThesaurus, champThesaurus, entiteNom, isOblig);
                break;
             case "DureeBox":
                populateModificationMultipleDuree(win, page, pathToPage, methodToCall, objs, label, champToEdit, entiteNom, constr,
@@ -541,10 +542,11 @@ public abstract class AbstractFicheController extends AbstractController
     * valeurs du thésaurus.
     * @param ent nom de l'entite a afficher dans l'intitulé
     * @param Constraint à appliquer
+    * @param Boolean obligatoire?
     */
    private static HtmlMacroComponent populateModificationMultipleQuantification(final Window win, final Page page,
       final String pathToPage, final String methodToCall, final List<? extends Object> objs, final String label,
-      final String champToEdit, final List<Object> allValuesThesaurus, final String champThesaurus){
+      final String champToEdit, final List<Object> allValuesThesaurus, final String champThesaurus, final Boolean isOblig){
       // HtmlMacroComponent contenu dans la fenêtre : il correspond
       // au composant de la modif multiple.
       HtmlMacroComponent ua;
@@ -553,10 +555,16 @@ public abstract class AbstractFicheController extends AbstractController
       ua.setId("openModificationMultipleQuantification");
       ua.applyProperties();
       ua.afterCompose();
+      
+      // @since 2.2.3-gatsbi obligatoire constraint
+      SimpleConstraint constr = null;
+      if (isOblig) {
+    	  constr = new SimpleConstraint("no empty");
+      }
 
       ((ModificationMultipleQuantification) ua.getFellow("winModificationMultipleQuantification")
          .getAttributeOrFellow("winModificationMultipleQuantification$composer", true)).init(pathToPage, methodToCall, objs,
-            label, champToEdit, allValuesThesaurus, champThesaurus);
+            label, champToEdit, allValuesThesaurus, champThesaurus, constr);
 
       return ua;
    }
@@ -610,10 +618,12 @@ public abstract class AbstractFicheController extends AbstractController
     * @param ent nom de l'entite a afficher dans l'intitulé
     * @param Constraint à appliquer
     * @param Boolean true si champAnnotation combine
+    * @param Boolean obligatoire?
     */
    private static HtmlMacroComponent populateModificationMultipleDoublebox(final Window win, final Page page,
       final String pathToPage, final String methodToCall, final List<? extends Object> objs, final String label,
-      final String champToEdit, final String entiteNom, final Constraint constr, final Boolean isCombined){
+      final String champToEdit, final String entiteNom, Constraint constr, final Boolean isCombined, 
+      final Boolean isOblig){
       // HtmlMacroComponent contenu dans la fenêtre : il correspond
       // au composant de la modif multiple.
       HtmlMacroComponent ua;
@@ -622,7 +632,12 @@ public abstract class AbstractFicheController extends AbstractController
       ua.setId("openModificationMultipleDoublebox");
       ua.applyProperties();
       ua.afterCompose();
-
+      
+      // @since 2.2.3-gatsbi obligatoire constraint
+      if (constr == null && isOblig != null && isOblig) {
+    	  constr = new SimpleConstraint("no empty");
+      }
+      
       ((ModificationMultipleDoublebox) ua.getFellow("winModificationMultipleDoublebox")
          .getAttributeOrFellow("winModificationMultipleDoublebox$composer", true)).init(pathToPage, methodToCall, objs, label,
             champToEdit, entiteNom, constr, isCombined);
@@ -792,11 +807,12 @@ public abstract class AbstractFicheController extends AbstractController
     * @param ent nom de l'entite a afficher dans l'intitulé
     * @param Constraint à appliquer
     * @param Boolean true si champAnnotation combine
+    * @param Boolean obligatoire ?
     */
    private static HtmlMacroComponent populateModificationMultipleNonConformites(final Window win, final Page page,
       final String pathToPage, final String methodToCall, final List<? extends Object> objs, final String label,
       final String champToEdit, final List<? extends Object> allValuesThesaurus, final String champThesaurus,
-      final String entiteNom){
+      final String entiteNom, final Boolean isOblig){
       // HtmlMacroComponent contenu dans la fenêtre : il correspond
       // au composant de la modif multiple.
       HtmlMacroComponent ua;
@@ -808,7 +824,7 @@ public abstract class AbstractFicheController extends AbstractController
 
       ((ModificationMultipleNonConformites) ua.getFellow("winModificationMultipleNonConformites")
          .getAttributeOrFellow("winModificationMultipleNonConformites$composer", true)).init(pathToPage, methodToCall, objs,
-            label, champToEdit, allValuesThesaurus, champThesaurus, entiteNom);
+            label, champToEdit, allValuesThesaurus, champThesaurus, entiteNom, isOblig);
 
       return ua;
 

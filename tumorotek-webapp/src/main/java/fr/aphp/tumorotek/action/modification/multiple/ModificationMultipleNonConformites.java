@@ -43,6 +43,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
@@ -59,7 +61,7 @@ import fr.aphp.tumorotek.model.qualite.NonConformite;
  * Classe créée le 25/09/12.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.8
+ * @version 2.2.3-gatsbi
  *
  */
 public class ModificationMultipleNonConformites extends AbstractModificationMultipleComponent
@@ -82,6 +84,9 @@ public class ModificationMultipleNonConformites extends AbstractModificationMult
    private final List<NonConformite> nonConformites = new ArrayList<>();
    private Set<Listitem> selectedNonConformitesItem = new HashSet<>();
    private Set<Listitem> selectedNonConformitesEraseItem = new HashSet<>();
+   
+   // @since 2.2.3-gatsbi
+   private Boolean isOblig = false;
 
    public List<NonConformite> getNonConformites(){
       return nonConformites;
@@ -116,8 +121,10 @@ public class ModificationMultipleNonConformites extends AbstractModificationMult
     */
    public void init(final String pathToPage, final String methodToCall, final List<? extends Object> objs, final String label,
       final String champToEdit, final List<? extends Object> allValuesThesaurus, final String champNameThesaurus,
-      final String entiteNom){
+      final String entiteNom, final Boolean isOblig){
 
+	  this.isOblig = isOblig;
+	   
       // copie la liste pour eviter la modification de la liste originale
       this.nonConformites.clear();
       final Iterator<? extends Object> iT = allValuesThesaurus.iterator();
@@ -360,4 +367,21 @@ public class ModificationMultipleNonConformites extends AbstractModificationMult
          li.setParent(nonConformitesBoxOne);
       }
    }
+   
+   @Override
+	public void onClick$validate() {
+	    // @since 2.2.3-gatsbi apply required check
+	   if (isOblig) {
+		   if (rowOneValue.isVisible() 
+				 && !conformeCheckOne.isChecked() && !nonconformeCheckOne.isChecked()) {
+			   throw new WrongValueException(rowOneValue.getLastChild().getFirstChild(), 
+					   Labels.getLabel("validation.syntax.empty"));
+		   } else if (eraseDiv.isVisible() 
+				&& !conformeCheckErase.isChecked() && !nonconformeCheckErase.isChecked()) {
+			   throw new WrongValueException(eraseDiv.getFirstChild().getFirstChild(), Labels.getLabel("validation.syntax.empty"));
+		   }
+	   }
+	  
+	   super.onClick$validate();
+	}
 }

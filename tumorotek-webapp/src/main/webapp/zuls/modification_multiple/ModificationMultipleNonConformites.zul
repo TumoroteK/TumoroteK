@@ -106,18 +106,18 @@
 						<div id="eraseDiv" visible="false">
 							<hlayout sclass="z-valign-middle">
 								<checkbox id="conformeCheckErase" label="${c:l('general.checkbox.true')}" />
-							<checkbox id="nonconformeCheckErase" label="${c:l('general.checkbox.false')}" />
-							
-							<div id="nonConformeDivErase" visible="false" 
-								style="valign:top;">
-								<space width="10px"/>
-								<listbox id="nonConformitesBoxErase" mold="select" multiple="true" rows="4" width="250px"
-									model="@{winModificationMultipleNonConformites$composer.nonConformites}">
-									<listitem self="@{each='nonconf'}" value="@{nonconf}">			
-										<listcell label="@{nonconf.nom}" />
-									</listitem>
-								</listbox>
-							</div>
+								<checkbox id="nonconformeCheckErase" label="${c:l('general.checkbox.false')}" />
+								
+								<div id="nonConformeDivErase" visible="false" 
+									style="valign:top;">
+									<space width="10px"/>
+									<listbox id="nonConformitesBoxErase" mold="select" multiple="true" rows="4" width="250px"
+										model="@{winModificationMultipleNonConformites$composer.nonConformites}">
+										<listitem self="@{each='nonconf'}" value="@{nonconf}">			
+											<listcell label="@{nonconf.nom}" />
+										</listitem>
+									</listbox>
+								</div>
 							</hlayout>
 						</div>
 					</row>

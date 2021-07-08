@@ -313,10 +313,9 @@
 						<div class="item item-wide" id="conformeArriveeDiv"><!-- Conforme à l'arrivée -->
 							<custom-attributes champId="256" listmodel="nonConformites" />
 							<label id="nonConformeArriveeLabel" value="${c:l('Champ.Prelevement.ConformeArrivee')}" sclass="chpLabel formLabel" />
-							<div class="row-container" style="flex-grow: 1; align-content: right">
+							<div class="row-container changedValue">
 								<label id="nonConformeLabelChanged" 
 									sclass="modifmultiValue formValue"
-									style="font-style:italic; flex-grow: 1"
 									visible="false"
 								/>
 								<label id="nonConformeMultiLabel"

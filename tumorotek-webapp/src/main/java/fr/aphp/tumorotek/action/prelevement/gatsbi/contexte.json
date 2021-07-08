@@ -62,7 +62,7 @@
         "champOrdre": 4,
         "contexteChampEntiteId": 14,
         "obligatoire": true,
-        "visible": true
+        "visible": false
       },
       {
 	"__comment": "Date prelevement",
@@ -113,7 +113,7 @@
         "contexteChampEntiteId": 18,
         "isChampReferToThesaurus": "risque",
         "obligatoire": false,
-		"visible": true,
+		"visible": false,
         "rThesauruses": [
 		{
             "champId": 249,
@@ -129,7 +129,7 @@
         "champOrdre": 9,
         "contexteChampEntiteId": 20,
         "obligatoire": false,
-        "visible": true
+        "visible": false
       },
       {
 	"__comment": "Preleveur",
@@ -137,7 +137,7 @@
         "champOrdre": 10,
         "contexteChampEntiteId": 19,
         "obligatoire": false,
-        "visible": true
+        "visible": false
       },
       {
 	"__comment": "Condit Type",
@@ -146,7 +146,7 @@
         "contexteChampEntiteId": 21,
         "isChampReferToThesaurus": "condit_type",
         "obligatoire": false,
-		"visible": true,
+		"visible": false,
         "rThesauruses": [
         ]
       },
@@ -156,7 +156,7 @@
         "champOrdre": 12,
         "contexteChampEntiteId": 23,
         "obligatoire": false,
-        "visible": true
+        "visible": false
       },
       {
 	"__comment": "Condit Milieu",
@@ -165,7 +165,7 @@
         "contexteChampEntiteId": 22,
         "isChampReferToThesaurus": "condit_milieu",
         "obligatoire": false,
-		"visible": true,
+		"visible": false,
         "rThesauruses": [
           {
             "champId": 33,
@@ -182,7 +182,7 @@
         "contexteChampEntiteId": 24,
         "isChampReferToThesaurus": "consent_type",
         "obligatoire": false,
-		"visible": true,
+		"visible": false,
         "rThesauruses": [
           {
             "champId": 26,
@@ -200,15 +200,15 @@
         "contexteChampEntiteId": 25,
         "dateFormat": "dd/MM/yyyy",
         "obligatoire": false,
-        "visible": true
+        "visible": false
       },
       {
 	"__comment": "Cong prel",  
         "champId": 267,
         "champOrdre": 16,
         "contexteChampEntiteId": 26,
-        "obligatoire": false,
-        "visible": true
+        "obligatoire": true,
+        "visible": false
       },
       {
 	"__comment": "Date Depart",  
@@ -283,7 +283,7 @@
         "champOrdre": 24,
         "contexteChampEntiteId": 26,
         "obligatoire": false,
-        "visible": true
+        "visible": false
       }
    ]
 }

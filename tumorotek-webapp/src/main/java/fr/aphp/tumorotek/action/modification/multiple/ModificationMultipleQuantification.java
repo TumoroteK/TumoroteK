@@ -50,6 +50,7 @@ import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Row;
+import org.zkoss.zul.SimpleConstraint;
 
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.systeme.Unite;
@@ -60,7 +61,7 @@ import fr.aphp.tumorotek.model.systeme.Unite;
  * Classe créée le 15/03/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.2.3-gatsbi
  */
 public class ModificationMultipleQuantification extends AbstractModificationMultipleComponent
 {
@@ -97,7 +98,7 @@ public class ModificationMultipleQuantification extends AbstractModificationMult
    private boolean modifPossible = true;
 
    public void init(final String pathToPage, final String methodToCall, final List<? extends Object> objs, final String label,
-      final String champToEdit, final List<Object> allValuesThesaurus, final String champNameThesaurus){
+      final String champToEdit, final List<Object> allValuesThesaurus, final String champNameThesaurus, final Constraint constr){
       setPath(pathToPage);
       setMethode(methodToCall);
       getListObjets().clear();
@@ -107,6 +108,8 @@ public class ModificationMultipleQuantification extends AbstractModificationMult
       setChamp(champToEdit);
       this.allUniteValues = allValuesThesaurus;
       setChampThesaurus(champNameThesaurus);
+      setConstraint(constr);
+     
 
       // on crée le nom du champ des unités
       if(getChamp().contains("Init")){
@@ -128,6 +131,10 @@ public class ModificationMultipleQuantification extends AbstractModificationMult
 
          // initialisation des composants
          initComponentsInWindow();
+         
+         // @since 2.2.3-gatsbi
+         setConstraintsToBoxes(constr);
+
          getBinder().loadComponent(self);
 
          if(getStringValues().size() <= 1){
@@ -260,6 +267,7 @@ public class ModificationMultipleQuantification extends AbstractModificationMult
          champAttentionLabel.setVisible(false);
          champEcraserLabel.setVisible(true);
          eraseMultiNumeriqueBox.setVisible(true);
+         eraseMultiNumeriqueBox.setConstraint(getConstraint());
          eraseMultiUnitesBox.setVisible(true);
          lock.setSrc("/images/icones/unlocked.png");
          // pour jamais être egal à une nouvelle valeur
@@ -270,6 +278,8 @@ public class ModificationMultipleQuantification extends AbstractModificationMult
          champAttentionLabel.setVisible(true);
          champEcraserLabel.setVisible(false);
          eraseMultiNumeriqueBox.setVisible(false);
+         SimpleConstraint nullCstr = null;
+         eraseMultiNumeriqueBox.setConstraint(nullCstr);
          eraseMultiUnitesBox.setVisible(false);
          lock.setSrc("/images/icones/locked.png");
          setOldUniqueValue(null);
@@ -420,7 +430,9 @@ public class ModificationMultipleQuantification extends AbstractModificationMult
 
    @Override
    public void setConstraintsToBoxes(final Constraint constr){
-
+	   if (rowOneValue.isVisible()) {
+		   multiNumeriqueBox.setConstraint(constr);
+	   }
    }
 
    @Override

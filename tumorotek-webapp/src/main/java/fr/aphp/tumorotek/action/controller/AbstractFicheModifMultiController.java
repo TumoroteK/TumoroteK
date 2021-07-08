@@ -50,7 +50,6 @@ import org.zkoss.zul.Messagebox;
 
 import fr.aphp.tumorotek.action.factory.DelegateFactory;
 import fr.aphp.tumorotek.action.modification.multiple.SimpleChampValue;
-import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.model.TKDelegateObject;
 import fr.aphp.tumorotek.model.TKDelegetableObject;
 import fr.aphp.tumorotek.model.TKdataObject;

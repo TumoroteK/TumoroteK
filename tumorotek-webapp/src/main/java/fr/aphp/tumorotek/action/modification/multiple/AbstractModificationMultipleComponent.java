@@ -244,7 +244,11 @@ public abstract class AbstractModificationMultipleComponent extends AbstractCont
       return constraint;
    }
 
-   /**
+   public void setConstraint(Constraint constraint) {
+	this.constraint = constraint;
+}
+
+/**
     * Cette méthode crée le titre de la fenêtre.
     * Cherche dans le fichier d'internationalization les traductions des
     * champs et entités.

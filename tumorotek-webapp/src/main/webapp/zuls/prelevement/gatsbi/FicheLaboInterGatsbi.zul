@@ -1,8 +1,9 @@
-<!-- * projet-tk@sesan.fr -->
-<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * projet-tk@sesan.fr
+-->
 <zk>
 
-	<style src="/css/gatsbi.css" />
+<style src="/css/gatsbi.css" />
 <?component name="calendarbox" macroURI="/zuls/component/CalendarBox.zul" class="fr.aphp.tumorotek.component.CalendarBox" ?>
 
 	<window id="fwinLaboInter" border="none"
