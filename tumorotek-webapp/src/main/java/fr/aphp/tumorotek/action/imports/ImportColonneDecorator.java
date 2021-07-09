@@ -55,7 +55,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class ImportColonneDecorator {
 
 	private ImportColonne colonne;
-	private Boolean canDelete = true;
+	private Boolean canDelete = null;
 	private Boolean canMove = true;
 	private Boolean disableEditLabel = false;
 
@@ -140,10 +140,12 @@ public class ImportColonneDecorator {
 	}
 
 	public boolean getCanDelete() {
-		if (colonne.getChamp() != null && colonne.getChamp().getChampEntite() != null) {
+		if (canDelete != null) {
+			return canDelete;
+		} else if (colonne.getChamp() != null && colonne.getChamp().getChampEntite() != null) {
 			return colonne.getChamp().getChampEntite().isNullable();
 		}
-		return canDelete;
+		return true;
 	}
 
 	public boolean getCanMove() {
@@ -182,17 +184,17 @@ public class ImportColonneDecorator {
 	}
 
 	/**
-	 * Decore une liste de cederobjets.
+	 * Decore une liste de ImportColonne.
 	 * 
-	 * @param cederobjets
+	 * @param import colonnes
 	 * @param isSubderive
 	 *            rend artificiellement les 3 colonnes de l'entete non supprimables
-	 * @return CederObjets décorées.
+	 * @return ImportColonnes décorées.
 	 */
-	public static List<ImportColonneDecorator> decorateListe(final List<ImportColonne> objets,
+	public static List<ImportColonneDecorator> decorateListe(final List<ImportColonne> cols,
 			final boolean isSubderive) {
 		final List<ImportColonneDecorator> liste = new ArrayList<>();
-		final Iterator<ImportColonne> it = objets.iterator();
+		final Iterator<ImportColonne> it = cols.iterator();
 		int i = 0;
 		while (it.hasNext()) {
 			liste.add(new ImportColonneDecorator(it.next()));
@@ -213,9 +215,9 @@ public class ImportColonneDecorator {
 	 * @param CederObjets
 	 * @return CederObjets décorés.
 	 */
-	public static List<ImportColonne> extractListe(final List<ImportColonneDecorator> cedes) {
+	public static List<ImportColonne> extractListe(final List<ImportColonneDecorator> cols) {
 		final List<ImportColonne> liste = new ArrayList<>();
-		final Iterator<ImportColonneDecorator> it = cedes.iterator();
+		final Iterator<ImportColonneDecorator> it = cols.iterator();
 
 		while (it.hasNext()) {
 			liste.add(it.next().getColonne());

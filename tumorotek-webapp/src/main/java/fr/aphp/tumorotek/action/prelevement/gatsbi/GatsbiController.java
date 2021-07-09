@@ -1,3 +1,39 @@
+/**
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * PARIS et SESAN
+ * projet-tk@sesan.fr
+ *
+ * Ce logiciel est un programme informatique servant à la gestion de
+ * l'activité de biobanques.
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le
+ * CNRS et l'INRIA sur le site "http://www.cecill.info".
+ * En contrepartie de l'accessibilité au code source et des droits de
+ * copie, de modification et de redistribution accordés par cette
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée.
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les
+ * risques associés au chargement,  à l'utilisation,  à la modification
+ * et/ou au  développement et à la reproduction du logiciel par
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut
+ * le rendre complexe à manipuler et qui le réserve donc à des
+ * développeurs et des professionnels  avertis possédant  des
+ * connaissances  informatiques approfondies.  Les utilisateurs sont
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser
+ * et l'exploiter dans les mêmes conditions de sécurité.
+ *
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous
+ * avez pris connaissance de la licence CeCILL, et que vous en avez
+ * accepté les termes.
+ **/
 package fr.aphp.tumorotek.action.prelevement.gatsbi;
 
 import java.io.IOException;
@@ -29,11 +65,16 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.impl.InputElement;
 
+import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.constraints.TumoTextConstraint;
 import fr.aphp.tumorotek.action.controller.AbstractController;
+import fr.aphp.tumorotek.action.imports.ImportColonneDecorator;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.model.TKThesaurusObject;
+import fr.aphp.tumorotek.model.io.export.ChampEntite;
+import fr.aphp.tumorotek.model.io.imports.ImportColonne;
+import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.webapp.gatsbi.client.json.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.client.json.ThesaurusValue;
 
@@ -354,7 +395,63 @@ public class GatsbiController {
 		}
 		
 		return constraint;
-	}	
+	}
+	
+	// Interceptions
+	// imports
+	public static List<ChampEntite> 
+		findByEntiteImportAndIsNullableManager(final Entite entite, final Boolean canImport, 
+				final Boolean isNullable, final Contexte contexte) {
+		
+		final List<ChampEntite> chpE = new ArrayList<ChampEntite>();
+		
+		if (contexte == null) { // TK defaut
+			chpE.addAll(ManagerLocator.getChampEntiteManager()
+				.findByEntiteImportAndIsNullableManager(entite, canImport, isNullable));
+		} else { // surcharge gatsbi
+			chpE.addAll(ManagerLocator.getChampEntiteManager().findByEntiteAndImportManager(entite, canImport));
+		
+			// filtre les champs visibles suivant le contexte Gatsbi
+			List<Integer> hiddenIds = contexte.getHiddenChampEntiteIds();
+			addPrelevementComplementaryIds(hiddenIds);
+			chpE.removeIf(chp -> hiddenIds.contains(chp.getId()));
+			
+			if (isNullable != null) {
+				// filtre les champs obligatoires suivant le contexte Gatsbi
+				// surcharge la propriété isNullable de manière non persistante
+				List<Integer> reqIds = contexte.getRequiredChampEntiteIds();
+				if (isNullable) { // champs non obligatoires
+					chpE.removeIf(chp -> reqIds.contains(chp.getId()));
+					chpE.stream().forEach(chp -> chp.setNullable(true)); 
+				} else { // obligatoires
+					chpE.removeIf(chp -> !reqIds.contains(chp.getId()));
+					chpE.stream().forEach(chp -> chp.setNullable(false));
+				}
+			}
+		}
+		return chpE;	
+	}
+	
+	public static List<ImportColonneDecorator> decorateImportColonnes(final List<ImportColonne> cols,
+			final boolean isSubderive, final Contexte contexte) {
+		
+		List<ImportColonneDecorator> decos = ImportColonneDecorator.decorateListe(cols, isSubderive);
+		
+		// surcharge la propriété deletable suivant le contexte gastby
+		if (contexte != null) {
+			decos.forEach(d -> d.setCanDelete(!contexte.isChampIdRequired(d.getColonne().getChamp().getChampEntite().getId())));
+		}
+		return decos;
+
+	}
+	
+	// prelevement specific
+	public static void addPrelevementComplementaryIds(List<Integer> ids) {
+		// unite quantite
+		if (ids.contains(40)) ids.add(41); // unite adds unite id
+		if (ids.contains(256)) ids.add(257); // non conformite adds raisons no conf
+	}
+	
 	
 	// test only
 	public static Contexte mockOneContexte() throws JsonParseException, JsonMappingException, IOException {

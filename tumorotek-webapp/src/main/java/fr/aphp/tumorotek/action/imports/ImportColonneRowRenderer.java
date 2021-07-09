@@ -44,14 +44,22 @@ import org.zkoss.zul.RowRenderer;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
+import fr.aphp.tumorotek.webapp.gatsbi.client.json.Contexte;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
- * @version 2.2.1
+ * @version 2.2.3-gatsbi
  * @author Mathieu BARTHELEMY
  *
  */
 public class ImportColonneRowRenderer implements RowRenderer<ImportColonne> {
+	
+	// @since 2.2.3-gatsbi
+	private Contexte c;
+	
+	public ImportColonneRowRenderer(Contexte c) {
+		this.c = c;
+	}
 
 	@Override
 	public void render(final Row row, final ImportColonne data, final int index) throws Exception {
@@ -140,8 +148,12 @@ public class ImportColonneRowRenderer implements RowRenderer<ImportColonne> {
 		Boolean ob = false;
 		if (colonne.getChamp() != null) {
 			if (colonne.getChamp().getChampEntite() != null) {
-				ob = !colonne.getChamp().getChampEntite().isNullable();
-			}
+				if (c == null) { // TK-defaut
+					ob = !colonne.getChamp().getChampEntite().isNullable();
+				} else { // gatsbi
+					ob = c.isChampIdRequired(colonne.getChamp().getChampEntite().getId());
+				}
+			} 
 		} else { // subderive header
 			ob = true;
 		}

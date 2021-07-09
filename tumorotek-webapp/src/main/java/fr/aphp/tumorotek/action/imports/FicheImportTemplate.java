@@ -86,6 +86,7 @@ import fr.aphp.tumorotek.action.controller.AbstractListeController2;
 import fr.aphp.tumorotek.action.echantillon.EchantillonController;
 import fr.aphp.tumorotek.action.patient.PatientController;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
+import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.action.prodderive.ProdDeriveController;
 import fr.aphp.tumorotek.decorator.EntiteDecorator;
 import fr.aphp.tumorotek.decorator.I3listBoxItemRenderer;
@@ -109,6 +110,7 @@ import fr.aphp.tumorotek.model.io.imports.ImportHistorique;
 import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
 import fr.aphp.tumorotek.model.io.imports.Importation;
 import fr.aphp.tumorotek.model.systeme.Entite;
+import fr.aphp.tumorotek.webapp.gatsbi.client.json.Contexte;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 public class FicheImportTemplate extends AbstractFicheCombineController
@@ -155,7 +157,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 	private List<ImportColonne> importColonnes = new ArrayList<>();
 	private List<ImportColonne> importColonnesToRemove = new ArrayList<>();
 	private List<ImportColonneDecorator> importColonnesDecorator = new ArrayList<>();
-	private ImportColonneRowRenderer colonnesRenderer = new ImportColonneRowRenderer();
+	private ImportColonneRowRenderer colonnesRenderer;
 	private List<ImportChampDecorator> champs = new ArrayList<>();
 	private ImportChampDecorator selectedChamp;
 	private List<ImportHistorique> historiques = new ArrayList<>();
@@ -173,6 +175,9 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 	private Boolean isSubderive = false;
 
 	private static I3listBoxItemRenderer entiteRenderer = new I3listBoxItemRenderer("nom");
+	
+	// TODO put sessionScope
+	private Contexte c;
 
 	@Override
 	public void doAfterCompose(final Component comp) throws Exception{
@@ -204,6 +209,10 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 		Executions.createComponents("/zuls/imports/EntitesAssocieesImport.zul", entitesAssocieesImport, null);
 		getEntitesAssocieesImport().setGroupHeader(groupEntites);
 		getEntitesAssocieesImport().setPathToRespond(Path.getPath(self));
+		
+		c = GatsbiController.mockOneContexte();
+		
+		colonnesRenderer = new ImportColonneRowRenderer(c);
 
 		getBinder().loadAll();
 	}
@@ -282,8 +291,9 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 			importColonnes.addAll(makeSubderiveHeaderCols(it));
 			// ajout des colonnes obligatoires derives
 			// on récupère les champs obligatoires que l'on va ajouter
+			// @since 2.2.3-gatsbi surcharge 
 			final List<ChampEntite> ces =
-					ManagerLocator.getChampEntiteManager().findByEntiteImportAndIsNullableManager(deriveE, true, false);
+				GatsbiController.findByEntiteImportAndIsNullableManager(deriveE, true, false, c);
 
 			for(int i = ces.size() - 1; i > -1; i--){
 				final ImportColonne ic = new ImportColonne();
@@ -554,8 +564,8 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 			}
 
 			// on récupère les champs obligatoires que l'on va ajouter
-			List<ChampEntite> ces =
-					ManagerLocator.getChampEntiteManager().findByEntiteImportAndIsNullableManager(entiteDeco.getEntite(), true, false);
+			List<ChampEntite> ces = GatsbiController
+				.findByEntiteImportAndIsNullableManager(entiteDeco.getEntite(), true, false, c);
 
 			for(int i = 0; i < ces.size(); i++){
 				final ImportColonne ic = new ImportColonne();
@@ -593,7 +603,8 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 				if(selectedEntite != null){
 					final List<Champ> tmp = new ArrayList<>();
 					final List<ChampEntite> ces =
-							ManagerLocator.getChampEntiteManager().findByEntiteAndImportManager(selectedEntite.getEntite(), true);
+						// ManagerLocator.getChampEntiteManager().findByEntiteAndImportManager(selectedEntite.getEntite(), true);
+						GatsbiController.findByEntiteImportAndIsNullableManager(selectedEntite.getEntite(), true, true, c);
 					final List<TableAnnotation> tas = ManagerLocator.getTableAnnotationManager()
 							.findByEntiteAndBanqueManager(selectedEntite.getEntite(), importTemplate.getBanque());
 					final List<ChampAnnotation> cas = new ArrayList<>();
@@ -624,7 +635,8 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 
 			final List<Champ> tmp = new ArrayList<>();
 			final List<ChampEntite> ces =
-					ManagerLocator.getChampEntiteManager().findByEntiteAndImportManager(entiteDeco.getEntite(), true);
+				// ManagerLocator.getChampEntiteManager().findByEntiteAndImportManager(entiteDeco.getEntite(), true);
+				GatsbiController.findByEntiteImportAndIsNullableManager(entiteDeco.getEntite(), true, null, c);
 			final List<TableAnnotation> tas = ManagerLocator.getTableAnnotationManager()
 					.findByEntiteAndBanqueManager(entiteDeco.getEntite(), importTemplate.getBanque());
 			final List<ChampAnnotation> cas = new ArrayList<>();
@@ -736,7 +748,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 
 		importColonnesDecorator.clear();
 
-		importColonnesDecorator.addAll(ImportColonneDecorator.decorateListe(importColonnes, isSubderive));
+		importColonnesDecorator.addAll(GatsbiController.decorateImportColonnes(importColonnes, isSubderive, c));
 
 		if(entitesAssociees.size() > 0){
 			selectedEntite = entitesAssociees.get(0);
@@ -752,7 +764,8 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 		if(selectedEntite != null){
 			final List<Champ> tmp = new ArrayList<>();
 			final List<ChampEntite> ces =
-					ManagerLocator.getChampEntiteManager().findByEntiteAndImportManager(selectedEntite.getEntite(), true);
+				// ManagerLocator.getChampEntiteManager().findByEntiteAndImportManager(selectedEntite.getEntite(), true);
+				GatsbiController.findByEntiteImportAndIsNullableManager(selectedEntite.getEntite(), true, true, c);
 			final List<TableAnnotation> tas = ManagerLocator.getTableAnnotationManager()
 					.findByEntiteAndBanqueManager(selectedEntite.getEntite(), importTemplate.getBanque());
 			final List<ChampAnnotation> cas = new ArrayList<>();
@@ -890,8 +903,9 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 		if(selectedEntite != null){
 			final List<Champ> tmp = new ArrayList<Champ>();
 			final List<ChampEntite> ces =
-					ManagerLocator.getChampEntiteManager()
-					.findByEntiteAndImportManager(selectedEntite.getEntite(), true);
+				GatsbiController.findByEntiteImportAndIsNullableManager(selectedEntite.getEntite(), true, true, c);
+				// ManagerLocator.getChampEntiteManager()
+				//	.findByEntiteAndImportManager(selectedEntite.getEntite(), true);
 			
 			// @since 2.2.x
 			// enlève manuellement champs anapath ECHANTILLON
