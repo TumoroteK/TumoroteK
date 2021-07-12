@@ -33,48 +33,22 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.manager.validation.coeur.prelevement;
+package fr.aphp.tumorotek.manager.impl.io.imports.gastbi;
 
-import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
-import org.springframework.validation.Validator;
-
-import fr.aphp.tumorotek.manager.validation.ValidationUtilities;
-import fr.aphp.tumorotek.model.coeur.prelevement.Nature;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import fr.aphp.tumorotek.manager.impl.io.imports.ImportManagerImpl;
+import fr.aphp.tumorotek.manager.io.imports.gatsbi.ImportGatsbiManager;
 
 /**
- * Validator pour le bean domaine Nature (de prelevement).<br>
- * Classe creee le 05/10/09<br>
- * <br>
- * Regles de validation:<br>
- * 	- le champ nature doit etre non vide, non null
- *
+ * 
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3.0-gatsbi
  */
-public class NatureValidator implements Validator
+public class ImportGatsbiManagerImpl extends ImportManagerImpl implements ImportGatsbiManager
 {
 
-   @Override
-   public boolean supports(final Class<?> clazz){
-      return Nature.class.equals(clazz);
-   }
+	private final Log log = LogFactory.getLog(ImportGatsbiManager.class);
 
-   @Override
-   public void validate(final Object obj, final Errors errs){
-      //Nature non vide
-      ValidationUtils.rejectIfEmptyOrWhitespace(errs, "nature", "nature.nature.empty");
-
-      final Nature nature = (Nature) obj;
-      //nom valide
-      if(nature.getNom() != null){
-         if(!nature.getNom().matches(ValidationUtilities.MOTREGEXP)){
-            errs.rejectValue("nature", "nature.nature.illegal");
-         }
-         if(nature.getNom().length() > 200){
-            errs.rejectValue("nature", "nature.nature.tooLong");
-         }
-      }
-   }
-
+	
 }

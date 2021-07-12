@@ -39,8 +39,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.zkoss.zk.ui.Sessions;
 
 import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
@@ -65,8 +63,6 @@ public final class SessionUtils {
 
    private SessionUtils(){
    }
-
-   private static Log log = LogFactory.getLog(SessionUtils.class);
 
    private static String databasePathClass = null;
 

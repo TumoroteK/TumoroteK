@@ -72,11 +72,11 @@ import fr.aphp.tumorotek.action.imports.ImportColonneDecorator;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.model.TKThesaurusObject;
+import fr.aphp.tumorotek.model.contexte.gatsbi.ThesaurusValue;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
 import fr.aphp.tumorotek.model.systeme.Entite;
-import fr.aphp.tumorotek.webapp.gatsbi.client.json.Contexte;
-import fr.aphp.tumorotek.webapp.gatsbi.client.json.ThesaurusValue;
+import fr.aphp.tumorotek.webapp.gatsbi.client.json.ContexteDTO;
 
 public class GatsbiController {
 	
@@ -178,7 +178,7 @@ public class GatsbiController {
 			.collect(Collectors.toList());
 	}
 	
-	public static void showOrhideItems(List<Div> items, List<Div> blocks, Contexte c) {
+	public static void showOrhideItems(List<Div> items, List<Div> blocks, ContexteDTO c) {
 		log.debug("showing or hiding items");
 		if (items != null && c != null) {
 			
@@ -209,7 +209,7 @@ public class GatsbiController {
 				.anyMatch(c -> c.isVisible()));
 	}
 	
-	public static void switchItemsRequiredOrNot(List<Div> items, Contexte c, List<Listbox> lboxes, List<Combobox> cboxes, 
+	public static void switchItemsRequiredOrNot(List<Div> items, ContexteDTO c, List<Listbox> lboxes, List<Combobox> cboxes, 
 																								List<Div> reqConformeDivs) {
 		log.debug("switch items required or not");
 		if (items != null && c != null) {
@@ -253,7 +253,7 @@ public class GatsbiController {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static void appliThesaurusValues(List<Div> items, Contexte contexte, AbstractController controller) 
+	public static void appliThesaurusValues(List<Div> items, ContexteDTO contexte, AbstractController controller) 
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		log.debug("applying thesaurus values");
 		if (items != null && contexte != null) {
@@ -290,11 +290,10 @@ public class GatsbiController {
 		}
 	}
 	
-	public static <T> List<T> filterExistingListModel(Contexte contexte, List<T> lModel, Integer chpId) {
+	public static <T> List<T> filterExistingListModel(ContexteDTO contexte, List<T> lModel, Integer chpId) {
 		
-		List<ThesaurusValue> values = 
-				contexte.getThesaurusValuesForChampEntiteId(chpId);
-			Collections.sort(values, Comparator.comparing(ThesaurusValue::getPosition, 
+		List<ThesaurusValue> values = contexte.getThesaurusValuesForChampEntiteId(chpId);
+		Collections.sort(values, Comparator.comparing(ThesaurusValue::getPosition, 
 					Comparator.nullsLast(Comparator.naturalOrder())));
 		
 		List<T> thesObjs = new ArrayList<T>();
@@ -401,7 +400,7 @@ public class GatsbiController {
 	// imports
 	public static List<ChampEntite> 
 		findByEntiteImportAndIsNullableManager(final Entite entite, final Boolean canImport, 
-				final Boolean isNullable, final Contexte contexte) {
+				final Boolean isNullable, final ContexteDTO contexte) {
 		
 		final List<ChampEntite> chpE = new ArrayList<ChampEntite>();
 		
@@ -433,7 +432,7 @@ public class GatsbiController {
 	}
 	
 	public static List<ImportColonneDecorator> decorateImportColonnes(final List<ImportColonne> cols,
-			final boolean isSubderive, final Contexte contexte) {
+			final boolean isSubderive, final ContexteDTO contexte) {
 		
 		List<ImportColonneDecorator> decos = ImportColonneDecorator.decorateListe(cols, isSubderive);
 		
@@ -454,13 +453,13 @@ public class GatsbiController {
 	
 	
 	// test only
-	public static Contexte mockOneContexte() throws JsonParseException, JsonMappingException, IOException {
+	public static ContexteDTO mockOneContexte() throws JsonParseException, JsonMappingException, IOException {
 		  
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		
-		Contexte cont = mapper.readValue( 
-				  GatsbiController.class.getResourceAsStream("contexte.json"), Contexte.class);
+		ContexteDTO cont = mapper.readValue( 
+				  GatsbiController.class.getResourceAsStream("contexte.json"), ContexteDTO.class);
 		   
 		   return cont;
 	   }

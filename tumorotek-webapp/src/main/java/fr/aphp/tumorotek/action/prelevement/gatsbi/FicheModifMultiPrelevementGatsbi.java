@@ -44,7 +44,7 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Messagebox;
 
 import fr.aphp.tumorotek.action.prelevement.FicheModifMultiPrelevement;
-import fr.aphp.tumorotek.webapp.gatsbi.client.json.Contexte;
+import fr.aphp.tumorotek.webapp.gatsbi.client.json.ContexteDTO;
 
 /**
  *
@@ -62,7 +62,7 @@ public class FicheModifMultiPrelevementGatsbi extends FicheModifMultiPrelevement
 	
 	private Div gatsbiContainer;
 
-	private Contexte c;
+	private ContexteDTO c;
 	List<Div> itemDivs  = new ArrayList<Div>();
 	List<Div> blockDivs  = new ArrayList<Div>();
 	

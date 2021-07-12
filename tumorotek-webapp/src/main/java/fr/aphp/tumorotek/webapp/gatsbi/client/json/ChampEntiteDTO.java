@@ -1,6 +1,7 @@
 /**
- * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
- * dsi-projet.tk@aphp.fr
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * PARIS et SESAN
+ * projet-tk@sesan.fr
  *
  * Ce logiciel est un programme informatique servant à la gestion de
  * l'activité de biobanques.
@@ -33,48 +34,41 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.manager.validation.coeur.prelevement;
+package fr.aphp.tumorotek.webapp.gatsbi.client.json;
 
-import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
-import org.springframework.validation.Validator;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-import fr.aphp.tumorotek.manager.validation.ValidationUtilities;
-import fr.aphp.tumorotek.model.coeur.prelevement.Nature;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
-/**
- * Validator pour le bean domaine Nature (de prelevement).<br>
- * Classe creee le 05/10/09<br>
- * <br>
- * Regles de validation:<br>
- * 	- le champ nature doit etre non vide, non null
- *
- * @author Mathieu BARTHELEMY
- * @version 2.0
- */
-public class NatureValidator implements Validator
-{
+import fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite;
 
-   @Override
-   public boolean supports(final Class<?> clazz){
-      return Nature.class.equals(clazz);
-   }
+@JsonPropertyOrder({
+	"champId",
+	"champOrdre",
+	"contexteChampEntiteId",
+	"dateFormat",
+	"isChampReferToThesaurus",
+	"obligatoire",
+	"visible", 
+	"rThesauruses"
+})
+public class ChampEntiteDTO extends ChampEntite implements Serializable {
 
-   @Override
-   public void validate(final Object obj, final Errors errs){
-      //Nature non vide
-      ValidationUtils.rejectIfEmptyOrWhitespace(errs, "nature", "nature.nature.empty");
-
-      final Nature nature = (Nature) obj;
-      //nom valide
-      if(nature.getNom() != null){
-         if(!nature.getNom().matches(ValidationUtilities.MOTREGEXP)){
-            errs.rejectValue("nature", "nature.nature.illegal");
-         }
-         if(nature.getNom().length() > 200){
-            errs.rejectValue("nature", "nature.nature.tooLong");
-         }
-      }
-   }
-
+	private static final long serialVersionUID = 1L;
+	
+	private List<ThesaurusValueDTO> thesaurusValueDTOs = new ArrayList<ThesaurusValueDTO>();
+	
+	@JsonProperty("rThesauruses")
+	public List<ThesaurusValueDTO> getThesaurusValueDTOs() {
+		return thesaurusValueDTOs;
+	}
+	
+	public void setThesaurusValueDTOs(List<ThesaurusValueDTO> _v) {
+		this.thesaurusValueDTOs = _v;
+		this.getThesaurusValues().clear();
+		this.getThesaurusValues().addAll(_v);
+	}
 }

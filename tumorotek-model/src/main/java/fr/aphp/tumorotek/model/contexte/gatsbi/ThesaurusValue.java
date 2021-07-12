@@ -1,6 +1,7 @@
 /**
- * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
- * dsi-projet.tk@aphp.fr
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * PARIS et SESAN
+ * projet-tk@sesan.fr
  *
  * Ce logiciel est un programme informatique servant à la gestion de
  * l'activité de biobanques.
@@ -33,48 +34,80 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.manager.validation.coeur.prelevement;
+package fr.aphp.tumorotek.model.contexte.gatsbi;
 
-import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
-import org.springframework.validation.Validator;
+import java.io.Serializable;
+import java.util.Objects;
 
-import fr.aphp.tumorotek.manager.validation.ValidationUtilities;
-import fr.aphp.tumorotek.model.coeur.prelevement.Nature;
+public class ThesaurusValue implements Serializable {
 
-/**
- * Validator pour le bean domaine Nature (de prelevement).<br>
- * Classe creee le 05/10/09<br>
- * <br>
- * Regles de validation:<br>
- * 	- le champ nature doit etre non vide, non null
- *
- * @author Mathieu BARTHELEMY
- * @version 2.0
- */
-public class NatureValidator implements Validator
-{
+	private static final long serialVersionUID = 1L;
+	
+	private Integer champId;
+	private Integer templateThesaurusId;
+	private Integer thesaurusId;
+	private String thesaurusValue;
+	private Integer position;
+	
+	public Integer getChampId() {
+		return champId;
+	}
+	
+	public void setChampId(Integer _i) {
+		this.champId = _i;
+	}
+	
+	public Integer getTemplateThesaurusId() {
+		return templateThesaurusId;
+	}
+	
+	public void setTemplateThesaurusId(Integer _i) {
+		this.templateThesaurusId = _i;
+	}
+	
+	public Integer getThesaurusId() {
+		return thesaurusId;
+	}
+	
+	public void setThesaurusId(Integer _i) {
+		this.thesaurusId = _i;
+	}
+	
+	public String getThesaurusValue() {
+		return thesaurusValue;
+	}
+	
+	public void setThesaurusValue(String _v) {
+		this.thesaurusValue = _v;
+	}
 
-   @Override
-   public boolean supports(final Class<?> clazz){
-      return Nature.class.equals(clazz);
-   }
+	public Integer getPosition() {
+		return position;
+	}
 
-   @Override
-   public void validate(final Object obj, final Errors errs){
-      //Nature non vide
-      ValidationUtils.rejectIfEmptyOrWhitespace(errs, "nature", "nature.nature.empty");
+	public void setPosition(Integer _p) {
+		this.position = _p;
+	}
 
-      final Nature nature = (Nature) obj;
-      //nom valide
-      if(nature.getNom() != null){
-         if(!nature.getNom().matches(ValidationUtilities.MOTREGEXP)){
-            errs.rejectValue("nature", "nature.nature.illegal");
-         }
-         if(nature.getNom().length() > 200){
-            errs.rejectValue("nature", "nature.nature.tooLong");
-         }
-      }
-   }
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
 
+        ThesaurusValue val = (ThesaurusValue) obj;
+
+        return Objects.equals(thesaurusId, val.getThesaurusId());
+	}
+	
+	@Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+    	result = prime * result + ((thesaurusId == null) ? 0 : thesaurusId.hashCode());
+    	return result;
+	}
 }

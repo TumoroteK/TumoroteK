@@ -67,6 +67,7 @@ import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotationBanque;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 import fr.aphp.tumorotek.model.impression.Template;
 import fr.aphp.tumorotek.model.imprimante.AffectationImprimante;
 import fr.aphp.tumorotek.model.io.export.Affichage;
@@ -88,7 +89,7 @@ import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
  * Classe créée le 09/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.2.1
+ * @version 2.3.0-gatsbi
  *
  */
 @Entity
@@ -163,6 +164,9 @@ public class Banque implements TKFantomableObject, TKdataObject, java.io.Seriali
    private Contexte contexte;
    private Couleur echantillonCouleur;
    private Couleur prodDeriveCouleur;
+   
+   // @since 2.3.0-gatsbi
+   private Etude etude;
 
    //private Set<Service> services = new HashSet<Service>();
    private Set<Conteneur> conteneurs = new HashSet<>();
@@ -588,6 +592,16 @@ public class Banque implements TKFantomableObject, TKdataObject, java.io.Seriali
 
    public void setSModeles(final Set<SModele> sim){
       this.sModeles = sim;
+   }
+   
+   @ManyToOne
+   @JoinColumn(name = "GATSBY_ETUDE_ID", nullable = true)
+   public Etude getEtude(){
+      return etude;
+   }
+
+   public void setEtude(final Etude e){
+      this.etude = e;
    }
 
    /**

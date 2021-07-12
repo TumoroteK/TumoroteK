@@ -29,7 +29,7 @@ public class Etude implements Serializable {
 	private String titre;
 	private String acronyme;
 	private Boolean archive;
-	private List<Contexte> contextes = new ArrayList<Contexte>();
+	private List<ContexteDTO> contextes = new ArrayList<ContexteDTO>();
 	
 	@JsonProperty
 	public Integer getEtudeId() {
@@ -68,11 +68,11 @@ public class Etude implements Serializable {
 	}
 
 	@JsonProperty("rContextes")
-	public List<Contexte> getrContextes() {
+	public List<ContexteDTO> getrContextes() {
 		return contextes;
 	}
 
-	public void setContextes(List<Contexte> _r) {
+	public void setContextes(List<ContexteDTO> _r) {
 		this.contextes = _r;
 	}
 	

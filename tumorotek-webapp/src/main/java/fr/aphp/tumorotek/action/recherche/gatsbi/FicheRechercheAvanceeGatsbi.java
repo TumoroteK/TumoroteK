@@ -16,7 +16,7 @@ import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.action.recherche.FicheRechercheAvancee;
 import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
-import fr.aphp.tumorotek.webapp.gatsbi.client.json.Contexte;
+import fr.aphp.tumorotek.webapp.gatsbi.client.json.ContexteDTO;
 
 /**
  *
@@ -37,7 +37,7 @@ public class FicheRechercheAvanceeGatsbi extends FicheRechercheAvancee {
 	List<Div> itemDivs = new ArrayList<Div>();
 	List<Div> blockDivs = new ArrayList<Div>();
 
-	private Contexte c;
+	private ContexteDTO c;
 
 	@Override
 	public void doAfterCompose(final Component comp) throws Exception{

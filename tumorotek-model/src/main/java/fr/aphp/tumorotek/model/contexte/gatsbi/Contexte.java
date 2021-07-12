@@ -1,7 +1,40 @@
 /**
-  * projet-tk@sesan.fr
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * PARIS et SESAN
+ * projet-tk@sesan.fr
+ *
+ * Ce logiciel est un programme informatique servant à la gestion de
+ * l'activité de biobanques.
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le
+ * CNRS et l'INRIA sur le site "http://www.cecill.info".
+ * En contrepartie de l'accessibilité au code source et des droits de
+ * copie, de modification et de redistribution accordés par cette
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée.
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les
+ * risques associés au chargement,  à l'utilisation,  à la modification
+ * et/ou au  développement et à la reproduction du logiciel par
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut
+ * le rendre complexe à manipuler et qui le réserve donc à des
+ * développeurs et des professionnels  avertis possédant  des
+ * connaissances  informatiques approfondies.  Les utilisateurs sont
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser
+ * et l'exploiter dans les mêmes conditions de sécurité.
+ *
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous
+ * avez pris connaissance de la licence CeCILL, et que vous en avez
+ * accepté les termes.
  **/
-package fr.aphp.tumorotek.webapp.gatsbi.client.json;
+package fr.aphp.tumorotek.model.contexte.gatsbi;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,21 +42,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.annotate.JsonPropertyOrder;
-
-@JsonPropertyOrder({
-	"contexteId",
-	"contexteLibelle",
-	"type",
-	"archive",
-	"siteInter",
-	"parametrages",
-	"rChampEntites"
-})
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Contexte implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -36,7 +54,6 @@ public class Contexte implements Serializable {
 	private List<Parametrage> parametrages = new ArrayList<Parametrage>();
 	private List<ChampEntite> champEntites = new ArrayList<ChampEntite>();
 	
-	@JsonProperty
 	public Integer getContexteId() {
 		return contexteId;
 	}
@@ -45,7 +62,6 @@ public class Contexte implements Serializable {
 		this.contexteId = contexteId;
 	}
 
-	@JsonProperty
 	public String getContexteLibelle() {
 		return contexteLibelle;
 	}
@@ -54,7 +70,6 @@ public class Contexte implements Serializable {
 		this.contexteLibelle = _l;
 	}
 
-	@JsonProperty
 	public ContexteType getType() {
 		return type;
 	}
@@ -63,7 +78,6 @@ public class Contexte implements Serializable {
 		this.type = _t;
 	}
 
-	@JsonProperty
 	public Boolean getArchive() {
 		return archive;
 	}
@@ -72,7 +86,6 @@ public class Contexte implements Serializable {
 		this.archive = _a;
 	}
 	
-	@JsonProperty
 	public Boolean getSiteInter() {
 		return siteInter;
 	}
@@ -81,7 +94,6 @@ public class Contexte implements Serializable {
 		this.siteInter = _s;
 	}
 
-	@JsonProperty
 	public List<Parametrage> getParametrages() {
 		return parametrages;
 	}
@@ -90,7 +102,6 @@ public class Contexte implements Serializable {
 		this.parametrages = parametrages;
 	}
 
-	@JsonProperty("rChampEntites")
 	public List<ChampEntite> getChampEntites() {
 		return champEntites;
 	}
@@ -102,28 +113,27 @@ public class Contexte implements Serializable {
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == this) {
-            return true;
-        }
-        if (obj == null || obj.getClass() != this.getClass()) {
-            return false;
-        }
+           return true;
+       }
+       if (obj == null || obj.getClass() != this.getClass()) {
+           return false;
+       }
 
-        Contexte contexte = (Contexte) obj;
+       Contexte contexte = (Contexte) obj;
 
-        return Objects.equals(contexteLibelle, contexte.getContexteLibelle())
-        	&& Objects.equals(type, contexte.getType());
+       return Objects.equals(contexteLibelle, contexte.getContexteLibelle())
+       	&& Objects.equals(type, contexte.getType());
 	}
 	
 	@Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-    	result = prime * result + ((contexteLibelle == null) ? 0 : contexteLibelle.hashCode());
-    	result = prime * result + ((type == null) ? 0 : type.hashCode());
-    	return result;
+   public int hashCode() {
+       final int prime = 31;
+       int result = 1;
+   	result = prime * result + ((contexteLibelle == null) ? 0 : contexteLibelle.hashCode());
+   	result = prime * result + ((type == null) ? 0 : type.hashCode());
+   	return result;
 	}
 	
-	@JsonIgnore
 	public List<Integer> getHiddenChampEntiteIds() {
 		return champEntites.stream()
 				.filter(c -> !c.getVisible())
@@ -131,7 +141,6 @@ public class Contexte implements Serializable {
 			.collect(Collectors.toList());
 	}
 	
-	@JsonIgnore
 	public List<Integer> getRequiredChampEntiteIds() {
 		return champEntites.stream()
 				.filter(c -> c.getObligatoire())
@@ -139,7 +148,6 @@ public class Contexte implements Serializable {
 			.collect(Collectors.toList());
 	}
 	
-	@JsonIgnore
 	public List<Integer> getThesaurusChampEntiteIds() {
 		return champEntites.stream()
 				.filter(c -> c.getIsChampReferToThesaurus() != null)
@@ -147,7 +155,6 @@ public class Contexte implements Serializable {
 			.collect(Collectors.toList());
 	}
 	
-	@JsonIgnore
 	public List<ThesaurusValue> getThesaurusValuesForChampEntiteId(Integer id) {
 		return champEntites.stream()
 				.filter(c -> c.getChampId().equals(id))
@@ -155,7 +162,6 @@ public class Contexte implements Serializable {
 				.getThesaurusValues();
 	}
 	
-	@JsonIgnore
 	public boolean isChampIdRequired(Integer id) {
 		return champEntites.stream()
 			.filter(c -> c.getChampId().equals(id))

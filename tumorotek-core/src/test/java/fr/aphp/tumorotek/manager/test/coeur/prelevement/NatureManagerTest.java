@@ -78,7 +78,7 @@ public class NatureManagerTest extends AbstractManagerTest4
       //teste une recherche non exactMatch
       natures = natureManager.findByNatureLikeManager("S", false);
       assertTrue(natures.size() == 1);
-      assertTrue(natures.get(0).getNature().equals("SANG"));
+      assertTrue(natures.get(0).getNom().equals("SANG"));
       //teste une recherche infructueuse
       natures = natureManager.findByNatureLikeManager("URINES", false);
       assertTrue(natures.size() == 0);
@@ -95,14 +95,14 @@ public class NatureManagerTest extends AbstractManagerTest4
       //Cree le doublon
       final Nature n1 = (natureManager.findByNatureLikeManager("TISSU", true)).get(0);
       assertFalse(natureManager.findDoublonManager(n1));
-      n1.setNature("SANG");
+      n1.setNom("SANG");
       assertTrue(natureManager.findDoublonManager(n1));
       final Nature n2 = new Nature();
-      n2.setNature(n1.getNature());
+      n2.setNom(n1.getNom());
       n2.setPlateforme(n1.getPlateforme());
       assertTrue(n2.equals(n1));
       assertTrue(natureManager.findDoublonManager(n2));
-      n2.setNature("ROOO");
+      n2.setNom("ROOO");
       assertFalse(natureManager.findDoublonManager(n2));
    }
 
@@ -132,14 +132,14 @@ public class NatureManagerTest extends AbstractManagerTest4
    private void createObjectManagerTest(){
       //Insertion nouvel enregistrement
       final Nature n1 = new Nature();
-      n1.setNature("CERVEAU -");
+      n1.setNom("CERVEAU -");
       n1.setPlateforme(plateformeDao.findById(1));
       natureManager.createObjectManager(n1);
       assertTrue((natureManager.findByNatureLikeManager("CERVEAU -", true)).size() == 1);
       //Insertion d'un doublon engendrant une exception
       Boolean catched = false;
       final Nature nBis = new Nature();
-      nBis.setNature("CERVEAU -");
+      nBis.setNom("CERVEAU -");
       try{
          natureManager.createObjectManager(nBis);
       }catch(final Exception e){
@@ -166,7 +166,7 @@ public class NatureManagerTest extends AbstractManagerTest4
       n2.setPlateforme(n1.getPlateforme());
       for(int i = 0; i < emptyValues.length; i++){
          try{
-            n2.setNature(emptyValues[i]);
+            n2.setNom(emptyValues[i]);
             natureManager.createObjectManager(n2);
          }catch(final ValidationException e){
             //verifie qu'aucune ligne n'a ete ajoutee
@@ -181,13 +181,13 @@ public class NatureManagerTest extends AbstractManagerTest4
    private void updateObjectManagerTest(){
       //Modification d'un enregistrement
       final Nature n1 = (natureManager.findByNatureLikeManager("CERVEAU -", true)).get(0);
-      n1.setNature("UR. INES");
+      n1.setNom("UR. INES");
       natureManager.updateObjectManager(n1);
       assertTrue((natureManager.findByNatureLikeManager("UR. INES", true)).size() == 1);
       //Modification en un doublon engendrant une exception
       Boolean catched = false;
       try{
-         n1.setNature("SANG");
+         n1.setNom("SANG");
          natureManager.updateObjectManager(n1);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("DoublonFoundException")){
@@ -201,7 +201,7 @@ public class NatureManagerTest extends AbstractManagerTest4
       final String[] emptyValues = new String[] {"", "  ", "plk$_¤¤", createOverLength(200), null};
       for(int i = 0; i < emptyValues.length; i++){
          try{
-            n1.setNature(emptyValues[i]);
+            n1.setNom(emptyValues[i]);
             natureManager.updateObjectManager(n1);
          }catch(final ValidationException e){
             //verifie que l'enregistrement n'a pas ete modifie

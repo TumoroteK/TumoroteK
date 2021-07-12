@@ -1,6 +1,7 @@
 /**
- * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
- * dsi-projet.tk@aphp.fr
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * PARIS et SESAN
+ * projet-tk@sesan.fr
  *
  * Ce logiciel est un programme informatique servant à la gestion de
  * l'activité de biobanques.
@@ -33,48 +34,53 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.manager.validation.coeur.prelevement;
+package fr.aphp.tumorotek.model.contexte.gatsbi;
 
-import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
-import org.springframework.validation.Validator;
+import java.io.Serializable;
+import java.util.Objects;
 
-import fr.aphp.tumorotek.manager.validation.ValidationUtilities;
-import fr.aphp.tumorotek.model.coeur.prelevement.Nature;
+public class Parametrage implements Serializable {
 
-/**
- * Validator pour le bean domaine Nature (de prelevement).<br>
- * Classe creee le 05/10/09<br>
- * <br>
- * Regles de validation:<br>
- * 	- le champ nature doit etre non vide, non null
- *
- * @author Mathieu BARTHELEMY
- * @version 2.0
- */
-public class NatureValidator implements Validator
-{
+	private static final long serialVersionUID = 1L;
+	
+	private Integer parametrageId;
+	private String parametrageLibelle;
+	
+	public Integer getParametrageId() {
+		return parametrageId;
+	}
+	
+	public void setParametrageId(Integer _i) {
+		this.parametrageId = _i;
+	}
+	
+	public String getParametrageLibelle() {
+		return parametrageLibelle;
+	}
+	
+	public void setParametrageLibelle(String _l) {
+		this.parametrageLibelle = _l;
+	}
 
-   @Override
-   public boolean supports(final Class<?> clazz){
-      return Nature.class.equals(clazz);
-   }
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
 
-   @Override
-   public void validate(final Object obj, final Errors errs){
-      //Nature non vide
-      ValidationUtils.rejectIfEmptyOrWhitespace(errs, "nature", "nature.nature.empty");
+        Parametrage param = (Parametrage) obj;
 
-      final Nature nature = (Nature) obj;
-      //nom valide
-      if(nature.getNom() != null){
-         if(!nature.getNom().matches(ValidationUtilities.MOTREGEXP)){
-            errs.rejectValue("nature", "nature.nature.illegal");
-         }
-         if(nature.getNom().length() > 200){
-            errs.rejectValue("nature", "nature.nature.tooLong");
-         }
-      }
-   }
-
+        return Objects.equals(parametrageId, param.getParametrageId());
+	}
+	
+	@Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+    	result = prime * result + ((parametrageId == null) ? 0 : parametrageId.hashCode());
+    	return result;
+	}
 }

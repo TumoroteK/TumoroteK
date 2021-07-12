@@ -94,6 +94,7 @@ import fr.aphp.tumorotek.manager.io.imports.ImportHistoriqueManager;
 import fr.aphp.tumorotek.manager.qualite.ObjetNonConformeManager;
 import fr.aphp.tumorotek.manager.qualite.OperationManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
+import fr.aphp.tumorotek.manager.validation.coeur.prelevement.gastbi.PrelevementGatsbiValidator;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
@@ -114,6 +115,7 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.contexte.Transporteur;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.interfacage.Emetteur;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
 import fr.aphp.tumorotek.model.qualite.Operation;
@@ -1008,22 +1010,9 @@ public class PrelevementManagerImpl implements PrelevementManager
       return prel.getEchantillons().size() > 0 || transformationManager.findByParentManager(prelevement).size() > 0;
    }
 
-   /**
-    * Verifie que les Objets devant etre obligatoirement associes sont non
-    * nulls et lance la validation via le Validator. Set la maladie et le
-    * patient en cascade car utilisée dans la validation.
-    * 
-    * @param prelevement
-    * @param banque
-    * @param nature
-    * @param consentType
-    * @param maladie
-    * @param laboInters
-    * @param operation
-    *            demandant la verification
-    * @param utilisateur
-    */
-   private void checkRequiredObjectsAndValidate(final Prelevement prelevement, final Banque banque, final Nature nature,
+   
+   @Override
+   public void checkRequiredObjectsAndValidate(final Prelevement prelevement, final Banque banque, final Nature nature,
       final ConsentType consentType, final Maladie maladie, final List<LaboInter> laboInters, final String operation,
       final Utilisateur utilisateur, final boolean doValidation, final String baseDir){
       // Banque required
@@ -1034,19 +1023,25 @@ public class PrelevementManagerImpl implements PrelevementManager
          throw new RequiredObjectIsNullException("Prelevement", operation, "Banque");
       }
       
-      // TODO replace banque gastbi contexte discrimination
+      // Gatsbi required
+      List<Integer> requiredChampEntiteId = new ArrayList<Integer>();
+      if (banque.getEtude() != null) {
+    	  Contexte prelContexte = banque.getEtude().getContexteForEntite(2);
+    	  if (prelContexte != null) {
+    		  requiredChampEntiteId.addAll(prelContexte.getRequiredChampEntiteIds());
+    	  }
+      }
       
       if(nature != null){
          prelevement.setNature(natureDao.mergeObject(nature));
-      }else if(prelevement.getNature() == null && prelevement.getBanque().getContexte().getContexteId() != 1){ // required -> only if not managed gatsbi collection    	 
+      }else if(prelevement.getNature() == null && (banque.getEtude() == null || requiredChampEntiteId.contains(24))) {   	 
          log.warn("Objet obligatoire Nature manquant" + " lors de la " + operation + " d'un Prelevement");
          throw new RequiredObjectIsNullException("Prelevement", operation, "Nature");
       }
 
-      // ConsentType required
       if(consentType != null){
          prelevement.setConsentType(consentTypeDao.mergeObject(consentType));
-      }else if(prelevement.getConsentType() == null && prelevement.getBanque().getContexte().getContexteId() != 1){ // required -> only if not managed gatsbi collection    	 
+      }else if(prelevement.getConsentType() == null && (banque.getEtude() == null || requiredChampEntiteId.contains(26))) {  	 
          log.warn("Objet obligatoire ConsentType manquant" + " lors de la " + operation + " d'un Prelevement");
          throw new RequiredObjectIsNullException("Prelevement", operation, "ConsentType");
       }
@@ -1087,9 +1082,18 @@ public class PrelevementManagerImpl implements PrelevementManager
          prelevement.setLaboInters(new HashSet<LaboInter>());
       }
 
-      if(doValidation){
-         // Validation
-         BeanValidator.validateObject(prelevement, new Validator[] {prelevementValidator});
+      // Validation
+      if(doValidation) {
+    	 Validator[] validators;
+    	 if (requiredChampEntiteId.isEmpty()) { // pas de restriction gatsbi
+    		 validators = new Validator[] {prelevementValidator} ;
+    	 } else { // gatsbi définit certain champs obligatoires
+    		 PrelevementGatsbiValidator gValidator = 
+    				new PrelevementGatsbiValidator("prelevement", requiredChampEntiteId);
+    		 validators = new Validator[] {gValidator, prelevementValidator} ;
+    	 }
+   
+         BeanValidator.validateObject(prelevement, validators);      
       }
    }
 

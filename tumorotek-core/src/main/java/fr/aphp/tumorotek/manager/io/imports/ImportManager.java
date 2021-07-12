@@ -111,6 +111,7 @@ public interface ImportManager
     * Extrait toutes les valeurs d'un thésaurus et les met dans 1
     * hashtable : <valeur, Objet>.
     * @param champEntite Champ thésaurus.
+    * @param banque
     * @return Hashtable.
     */
    Hashtable<String, Object> extractValuesForOneThesaurus(ChampEntite champEntite, Banque banque);

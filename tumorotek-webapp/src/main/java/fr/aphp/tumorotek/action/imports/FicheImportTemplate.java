@@ -110,7 +110,7 @@ import fr.aphp.tumorotek.model.io.imports.ImportHistorique;
 import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
 import fr.aphp.tumorotek.model.io.imports.Importation;
 import fr.aphp.tumorotek.model.systeme.Entite;
-import fr.aphp.tumorotek.webapp.gatsbi.client.json.Contexte;
+import fr.aphp.tumorotek.webapp.gatsbi.client.json.ContexteDTO;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 public class FicheImportTemplate extends AbstractFicheCombineController
@@ -177,7 +177,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 	private static I3listBoxItemRenderer entiteRenderer = new I3listBoxItemRenderer("nom");
 	
 	// TODO put sessionScope
-	private Contexte c;
+	private ContexteDTO c;
 
 	@Override
 	public void doAfterCompose(final Component comp) throws Exception{

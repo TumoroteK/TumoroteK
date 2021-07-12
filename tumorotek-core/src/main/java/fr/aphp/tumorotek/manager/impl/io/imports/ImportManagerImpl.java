@@ -400,8 +400,8 @@ public class ImportManagerImpl implements ImportManager
 	}
 
 	@Override
-	public Hashtable<String, Object> extractValuesForOneThesaurus(final ChampEntite champEntite, final Banque banque){
-		final Hashtable<String, Object> values = new Hashtable<>();
+	public Hashtable<String, Object> extractValuesForOneThesaurus(final ChampEntite champEntite, final Banque banque) {
+		Hashtable<String, Object> values = new Hashtable<String, Object>();
 
 		if(champEntite != null){
 			if(!champEntite.getNom().matches("Conforme.*Raison")){

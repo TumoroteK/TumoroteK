@@ -70,7 +70,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  *
  * Interface pour le manager du bean de domaine Prelevement.<br>
  * @author Mathieu BARTHELEMY
- * @version 2.2.1
+ * @version 2.3.0-gatsbi
  *
  */
 public interface PrelevementManager
@@ -687,4 +687,22 @@ public interface PrelevementManager
     * @since 2.1
     */
    List<Prelevement> findByCodeInPlateformeManager(String code, Plateforme pf);
+
+   /**
+    * Verifie que les Objets devant etre obligatoirement associes sont non
+    * nulls et lance la validation via le Validator. Set la maladie et le
+    * patient en cascade car utilisée dans la validation.
+    * 
+    * @param prelevement
+    * @param banque
+    * @param nature
+    * @param consentType
+    * @param maladie
+    * @param laboInters
+    * @param operation demandant la verification
+    * @param utilisateur
+    */
+   void checkRequiredObjectsAndValidate(Prelevement prelevement, Banque banque, Nature nature, ConsentType consentType,
+		Maladie maladie, List<LaboInter> laboInters, String operation, Utilisateur utilisateur, boolean doValidation,
+		String baseDir);
 }

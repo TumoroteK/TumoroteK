@@ -14,7 +14,7 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 
 import fr.aphp.tumorotek.action.prelevement.FicheLaboInter;
-import fr.aphp.tumorotek.webapp.gatsbi.client.json.Contexte;
+import fr.aphp.tumorotek.webapp.gatsbi.client.json.ContexteDTO;
 
 /**
  *
@@ -36,7 +36,7 @@ public class FicheLaboInterGatsbi extends FicheLaboInter {
 	private List<Combobox> reqComboboxes = new ArrayList<Combobox>();
 	private List<Div> reqConformeDivs = new ArrayList<Div>();
 	
-	private Contexte c;
+	private ContexteDTO c;
 
 	@Override
 	public void doAfterCompose(final Component comp) throws Exception{

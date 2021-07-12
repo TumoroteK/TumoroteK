@@ -1,6 +1,7 @@
 /**
- * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
- * dsi-projet.tk@aphp.fr
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * PARIS et SESAN
+ * projet-tk@sesan.fr
  *
  * Ce logiciel est un programme informatique servant à la gestion de
  * l'activité de biobanques.
@@ -33,48 +34,52 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.manager.validation.coeur.prelevement;
+package fr.aphp.tumorotek.model.contexte.gatsbi;
 
-import org.springframework.validation.Errors;
-import org.springframework.validation.ValidationUtils;
-import org.springframework.validation.Validator;
+public enum ContexteType {
+	
+	PATIENT(1, Values.PATIENT), 
+	PRELEVEMENT(2, Values.PRELEVEMENT),
+	ECHANTILLON(3, Values.ECHANTILLON);
+    
+	private Integer entiteId;
+	private String type;
 
-import fr.aphp.tumorotek.manager.validation.ValidationUtilities;
-import fr.aphp.tumorotek.model.coeur.prelevement.Nature;
+	ContexteType(Integer _i, String _t) {
+        this.entiteId = _i;
+        this.type = _t;
+    }
 
-/**
- * Validator pour le bean domaine Nature (de prelevement).<br>
- * Classe creee le 05/10/09<br>
- * <br>
- * Regles de validation:<br>
- * 	- le champ nature doit etre non vide, non null
- *
- * @author Mathieu BARTHELEMY
- * @version 2.0
- */
-public class NatureValidator implements Validator
-{
+	private ContexteType (String val) {
+	     if (!this.type.equals(val))
+	        throw new IllegalArgumentException();
+	  }
 
-   @Override
-   public boolean supports(final Class<?> clazz){
-      return Nature.class.equals(clazz);
-   }
+    public static class Values {
+        public static final String PATIENT = "Patient";
+        public static final String PRELEVEMENT = "Prelevement";
+        public static final String ECHANTILLON = "Echantillon";
+    }
+    
+    public static ContexteType getById(Integer _i) {
+        for(ContexteType ref : values()) {
+            if(ref.entiteId.equals(_i)) return ref;
+        }
+        return null;
+    }
+    
+    public static ContexteType getByType(String _s) {
+        for(ContexteType ref : values()) {
+            if(ref.type.equals(_s)) return ref;
+        }
+        return null;
+    }
+    
+    public String getType() {
+        return type;
+    }
 
-   @Override
-   public void validate(final Object obj, final Errors errs){
-      //Nature non vide
-      ValidationUtils.rejectIfEmptyOrWhitespace(errs, "nature", "nature.nature.empty");
-
-      final Nature nature = (Nature) obj;
-      //nom valide
-      if(nature.getNom() != null){
-         if(!nature.getNom().matches(ValidationUtilities.MOTREGEXP)){
-            errs.rejectValue("nature", "nature.nature.illegal");
-         }
-         if(nature.getNom().length() > 200){
-            errs.rejectValue("nature", "nature.nature.tooLong");
-         }
-      }
-   }
-
+    public Integer getEntiteId() {
+        return entiteId;
+    }
 }

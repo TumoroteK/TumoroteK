@@ -48,5 +48,18 @@
             <column name="CAN_IMPORT" value="0"/>
         </insert>
     </changeSet>
+    <changeSet id="${project.artifactId}-5" author="MB" runAlways="false" context="*"> 
+    	<preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(1) FROM CONTEXTE
+                WHERE NOM = 'GATSBI'
+            </sqlCheck>
+        </preConditions>
+        <comment>Ajout contexte nommé GATBSI</comment>
+        <insert tableName="CONTEXTE">
+        	<column name="CONTEXTE_ID" value="3"/>
+            <column name="NOM" value="GATSBI"/>
+        </insert>
+    </changeSet>
+        
     
 </databaseChangeLog>

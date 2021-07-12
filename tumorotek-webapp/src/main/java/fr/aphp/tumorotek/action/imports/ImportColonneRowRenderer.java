@@ -44,7 +44,7 @@ import org.zkoss.zul.RowRenderer;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
-import fr.aphp.tumorotek.webapp.gatsbi.client.json.Contexte;
+import fr.aphp.tumorotek.webapp.gatsbi.client.json.ContexteDTO;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -55,9 +55,9 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class ImportColonneRowRenderer implements RowRenderer<ImportColonne> {
 	
 	// @since 2.2.3-gatsbi
-	private Contexte c;
+	private ContexteDTO c;
 	
-	public ImportColonneRowRenderer(Contexte c) {
+	public ImportColonneRowRenderer(ContexteDTO c) {
 		this.c = c;
 	}
 

@@ -90,7 +90,7 @@ public class RequiredObjectIsNullException extends TKException
 
    @Override
    public String getMessage(){
-      return this.entite + ": " + requiredObject + " est null lors de " + "l'opération de " + this.operation + "";
+      return this.entite + ": " + requiredObject + " manquant lors de " + "l'opération de " + this.operation + "";
    }
 
 }

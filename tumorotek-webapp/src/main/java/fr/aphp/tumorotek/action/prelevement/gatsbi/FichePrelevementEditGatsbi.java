@@ -18,7 +18,7 @@ import org.zkoss.zul.Messagebox;
 import fr.aphp.tumorotek.action.patient.ResumePatient;
 import fr.aphp.tumorotek.action.prelevement.FichePrelevementEdit;
 import fr.aphp.tumorotek.model.coeur.prelevement.LaboInter;
-import fr.aphp.tumorotek.webapp.gatsbi.client.json.Contexte;
+import fr.aphp.tumorotek.webapp.gatsbi.client.json.ContexteDTO;
 
 /**
  *
@@ -43,7 +43,7 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit {
 	// @wire
 	private Groupbox groupPrlvt;
 
-	private Contexte c;
+	private ContexteDTO c;
 
 
 	@Override
