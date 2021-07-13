@@ -70,6 +70,7 @@ public class RequiredValueValidator implements Validator {
 		super();
 		this.eNom = _e != null ? _e.toLowerCase() : null;
 		requiredFieldChpIds.addAll(_f);
+		initChpIdNameMap();
 	}
 
 	@Override
@@ -81,7 +82,7 @@ public class RequiredValueValidator implements Validator {
 	public void validate(Object target, Errors errs) {
 		for (String fName : translateChpIdToFieldName()) {
 			try {
-				if (!PropertyUtils.getPropertyType(target, fName).isInstance(Collection.class)) { // not collection
+				if (!Collection.class.isAssignableFrom(PropertyUtils.getPropertyType(target, fName))) { // not collection
 				     ValidationUtils.rejectIfEmptyOrWhitespace(errs, fName, eNom + "." + fName + ".empty");
 				} else if (((Collection<?>) PropertyUtils.getProperty(target, fName)).isEmpty()) {
 					errs.rejectValue(fName, eNom + "." + fName + ".empty");
@@ -109,30 +110,4 @@ public class RequiredValueValidator implements Validator {
 		}
 		return fNames;
 	}
-	
-//	"codeLaboDiv",
-//	"ndaDiv",
-//	"datePrelDiv",
-//	"typeDiv",
-//	"sterileDiv",
-//	"risquesDiv",
-//	"etabPreleveurDiv",
-//	"servicePreleveurDiv",
-//	"preleveurDiv",
-//	"conditTypeDiv",
-//	"conditNbrDiv",
-//	"conditMilieuDiv",
-//
-//	"consentDateDiv",
-//	"congPrelDiv",
-//	"dateDepartDiv",
-//	"transporteurDiv",
-//	"tempTranspDiv",
-//	"congPrelDiv",
-//	"dateArriveeDiv",
-//	"operateurDiv",
-//	"quantiteDiv",
-//	"conformeArriveeDiv",
-//	"congBiothequeDiv",
-
 }

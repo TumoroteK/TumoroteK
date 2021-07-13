@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -61,10 +62,14 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  *
  */
 @Entity
+@Immutable
 @Table(name = "GATSBY_ETUDE")
 public class Etude implements Serializable {
 
 	private static final long serialVersionUID = 86784231547511654L;
+
+	private Integer etudeId;
+	
 
 	private Plateforme plateforme;
 	private String titre;
@@ -72,28 +77,43 @@ public class Etude implements Serializable {
 	private List<Contexte> contextes = new ArrayList<Contexte>();
 
 	public Etude(){}
+	
+	@Id
+	@Column(name = "ETUDE_ID", unique = true, nullable = false)
+	public Integer getEtudeId() {
+		return etudeId;
+	}
+	
+	public void setEtudeId(Integer etudeId) {
+		this.etudeId = etudeId;
+	}
 
-	@Immutable
 	@ManyToOne
 	@JoinColumn(name = "PLATEFORME_ID")
 	public Plateforme getPlateforme() {
 		return plateforme;
 	}
-
+	
 	public void setPlateforme(Plateforme plateforme) {
 		this.plateforme = plateforme;
 	}
 
-	@Immutable
 	@Column(name = "TITRE")
 	public String getTitre() {
 		return titre;
 	}
+	
+	public void setTitre(String titre) {
+		this.titre = titre;
+	}
 
-	@Immutable
 	@Column(name = "ACRONYME")
 	public String getAcronyme() {
 		return acronyme;
+	}
+	
+	public void setAcronyme(String acronyme) {
+		this.acronyme = acronyme;
 	}
 
 	@Transient
@@ -101,8 +121,9 @@ public class Etude implements Serializable {
 		return contextes;
 	}
 
+	@Transient
 	public void addToContextes(Contexte c) {
-		if (this.contextes.contains(c)) {
+		if (!this.contextes.contains(c)) {
 			contextes.add(c);
 		}
 	}
@@ -155,7 +176,11 @@ public class Etude implements Serializable {
 	
 	@Transient
 	public Contexte getContexteForEntite(Integer entiteId) {
-		return contextes.stream().filter(c -> c.getType().getEntiteId().equals(entiteId))
-			.findFirst().orElse(null);
+		for (Contexte c : contextes) {
+			if (c.getType().getEntiteId().equals(entiteId)) {
+				return c;
+			}
+		}
+		return null;
 	}
 }

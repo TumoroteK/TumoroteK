@@ -81,7 +81,7 @@ public class ConditTypeManagerTest extends AbstractManagerTest4
       //teste une recherche non exactMatch
       conditTypes = conditTypeManager.findByTypeLikeManager("P", false);
       assertTrue(conditTypes.size() == 1);
-      assertTrue(conditTypes.get(0).getType().equals("POUDRIER"));
+      assertTrue(conditTypes.get(0).getNom().equals("POUDRIER"));
       //teste une recherche infructueuse
       conditTypes = conditTypeManager.findByTypeLikeManager("V", false);
       assertTrue(conditTypes.size() == 0);
@@ -99,11 +99,11 @@ public class ConditTypeManagerTest extends AbstractManagerTest4
       final ConditType ct1 = (conditTypeManager.findByTypeLikeManager("TUBE", true)).get(0);
       assertFalse(conditTypeManager.findDoublonManager(ct1));
       final ConditType ct2 = new ConditType();
-      ct2.setType(ct1.getType());
+      ct2.setNom(ct1.getNom());
       ct2.setPlateforme(ct1.getPlateforme());
       assertTrue(ct2.equals(ct1));
       assertTrue(conditTypeManager.findDoublonManager(ct2));
-      ct1.setType("POUDRIER");
+      ct1.setNom("POUDRIER");
       ct1.setPlateforme(plateformeDao.findById(2));
       assertTrue(conditTypeManager.findDoublonManager(ct1));
    }
@@ -134,14 +134,14 @@ public class ConditTypeManagerTest extends AbstractManagerTest4
    private void createObjectManagerTest(){
       //Insertion nouvel enregistrement
       final ConditType ct1 = new ConditType();
-      ct1.setType("PILLULIER 1.-");
+      ct1.setNom("PILLULIER 1.-");
       ct1.setPlateforme(plateformeDao.findById(1));
       conditTypeManager.createObjectManager(ct1);
       assertTrue((conditTypeManager.findByTypeLikeManager("PILLULIER 1.-", true)).size() == 1);
       //Insertion d'un doublon engendrant une exception
       Boolean catched = false;
       final ConditType ct1Bis = new ConditType();
-      ct1Bis.setType("PILLULIER 1.-");
+      ct1Bis.setNom("PILLULIER 1.-");
       try{
          conditTypeManager.createObjectManager(ct1Bis);
       }catch(final Exception e){
@@ -167,7 +167,7 @@ public class ConditTypeManagerTest extends AbstractManagerTest4
       ct2.setPlateforme(ct1.getPlateforme());
       for(int i = 0; i < emptyValues.length; i++){
          try{
-            ct2.setType(emptyValues[i]);
+            ct2.setNom(emptyValues[i]);
             conditTypeManager.createObjectManager(ct2);
          }catch(final ValidationException e){
             //verifie qu'aucune ligne n'a ete ajoutee
@@ -179,13 +179,13 @@ public class ConditTypeManagerTest extends AbstractManagerTest4
    private void updateObjectManagerTest(){
       //Modification d'un enregistrement
       final ConditType ct1 = (conditTypeManager.findByTypeLikeManager("PILLULIER 1.-", true)).get(0);
-      ct1.setType("EPPEN-DORF");
+      ct1.setNom("EPPEN-DORF");
       conditTypeManager.updateObjectManager(ct1);
       assertTrue((conditTypeManager.findByTypeLikeManager("EPPEN-DORF", true)).size() == 1);
       //Modification en un doublon engendrant une exception
       Boolean catched = false;
       try{
-         ct1.setType("POUDRIER");
+         ct1.setNom("POUDRIER");
          ct1.setPlateforme(plateformeDao.findById(2));
          conditTypeManager.updateObjectManager(ct1);
       }catch(final Exception e){
@@ -200,7 +200,7 @@ public class ConditTypeManagerTest extends AbstractManagerTest4
       final String[] emptyValues = new String[] {"", "  ", "¢¢$$anti^", createOverLength(200), null};
       for(int i = 0; i < emptyValues.length; i++){
          try{
-            ct1.setType(emptyValues[i]);
+            ct1.setNom(emptyValues[i]);
             conditTypeManager.updateObjectManager(ct1);
          }catch(final ValidationException e){
             //verifie que l'enregistrement n'a pas ete modifie

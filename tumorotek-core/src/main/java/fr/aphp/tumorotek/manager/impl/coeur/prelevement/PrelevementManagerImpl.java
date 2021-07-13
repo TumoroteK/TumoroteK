@@ -1025,8 +1025,8 @@ public class PrelevementManagerImpl implements PrelevementManager
       
       // Gatsbi required
       List<Integer> requiredChampEntiteId = new ArrayList<Integer>();
-      if (banque.getEtude() != null) {
-    	  Contexte prelContexte = banque.getEtude().getContexteForEntite(2);
+      if (prelevement.getBanque().getEtude() != null) {
+    	  Contexte prelContexte = prelevement.getBanque().getEtude().getContexteForEntite(2);
     	  if (prelContexte != null) {
     		  requiredChampEntiteId.addAll(prelContexte.getRequiredChampEntiteIds());
     	  }
@@ -1034,14 +1034,16 @@ public class PrelevementManagerImpl implements PrelevementManager
       
       if(nature != null){
          prelevement.setNature(natureDao.mergeObject(nature));
-      }else if(prelevement.getNature() == null && (banque.getEtude() == null || requiredChampEntiteId.contains(24))) {   	 
+      }else if(prelevement.getNature() == null 
+    		 && (prelevement.getBanque().getEtude() == null || requiredChampEntiteId.contains(24))) {   	 
          log.warn("Objet obligatoire Nature manquant" + " lors de la " + operation + " d'un Prelevement");
          throw new RequiredObjectIsNullException("Prelevement", operation, "Nature");
       }
 
-      if(consentType != null){
+      if(consentType != null) {
          prelevement.setConsentType(consentTypeDao.mergeObject(consentType));
-      }else if(prelevement.getConsentType() == null && (banque.getEtude() == null || requiredChampEntiteId.contains(26))) {  	 
+      } else if(prelevement.getConsentType() == null 
+    		 && (prelevement.getBanque().getEtude() == null || requiredChampEntiteId.contains(26))) {  	 
          log.warn("Objet obligatoire ConsentType manquant" + " lors de la " + operation + " d'un Prelevement");
          throw new RequiredObjectIsNullException("Prelevement", operation, "ConsentType");
       }

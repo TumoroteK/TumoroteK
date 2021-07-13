@@ -40,7 +40,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class Contexte implements Serializable {
 
@@ -135,37 +134,51 @@ public class Contexte implements Serializable {
 	}
 	
 	public List<Integer> getHiddenChampEntiteIds() {
-		return champEntites.stream()
-				.filter(c -> !c.getVisible())
-				.map(ChampEntite::getChampId)
-			.collect(Collectors.toList());
+		List<Integer> ids = new ArrayList<Integer>();
+		for (ChampEntite c : champEntites) {
+			if (!c.getVisible()) {
+				ids.add(c.getChampId());
+			}
+		}
+		return ids;
 	}
 	
 	public List<Integer> getRequiredChampEntiteIds() {
-		return champEntites.stream()
-				.filter(c -> c.getObligatoire())
-				.map(ChampEntite::getChampId)
-			.collect(Collectors.toList());
+		List<Integer> ids = new ArrayList<Integer>();
+		for (ChampEntite c : champEntites) {
+			if (c.getVisible() && c.getObligatoire()) {
+				ids.add(c.getChampId());
+			}
+		}
+		return ids;
 	}
 	
 	public List<Integer> getThesaurusChampEntiteIds() {
-		return champEntites.stream()
-				.filter(c -> c.getIsChampReferToThesaurus() != null)
-				.map(ChampEntite::getChampId)
-			.collect(Collectors.toList());
+		List<Integer> ids = new ArrayList<Integer>();
+		for (ChampEntite c : champEntites) {
+			if (c.getVisible() && c.getIsChampReferToThesaurus() != null) {
+				ids.add(c.getChampId());
+			}
+		}
+		return ids;
 	}
 	
 	public List<ThesaurusValue> getThesaurusValuesForChampEntiteId(Integer id) {
-		return champEntites.stream()
-				.filter(c -> c.getChampId().equals(id))
-				.findFirst().orElse(new ChampEntite())
-				.getThesaurusValues();
+		List<ThesaurusValue> tValues = new ArrayList<ThesaurusValue>();
+		for (ChampEntite c : champEntites) {
+			if (c.getChampId().equals(id)) {
+				tValues.addAll(c.getThesaurusValues());
+			}
+		}
+		return tValues;
 	}
 	
 	public boolean isChampIdRequired(Integer id) {
-		return champEntites.stream()
-			.filter(c -> c.getChampId().equals(id))
-			.findFirst().orElse(new ChampEntite()).getObligatoire();
-	}
-	
+		for (ChampEntite c : champEntites) {
+			if (c.getChampId().equals(id)) {
+				return c.getObligatoire();
+			}
+		}
+		return false;
+	}	
 }

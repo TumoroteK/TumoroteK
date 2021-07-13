@@ -595,7 +595,7 @@ public class Banque implements TKFantomableObject, TKdataObject, java.io.Seriali
    }
    
    @ManyToOne
-   @JoinColumn(name = "GATSBY_ETUDE_ID", nullable = true)
+   @JoinColumn(name = "ETUDE_ID", nullable = true)
    public Etude getEtude(){
       return etude;
    }
