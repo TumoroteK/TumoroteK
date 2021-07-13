@@ -47,7 +47,7 @@ public class Contexte implements Serializable {
 
 	private Integer contexteId;
 	private String contexteLibelle;
-	private ContexteType type;
+	private ContexteType contexteType;
 	private Boolean archive;
 	private Boolean siteInter = true;
 	private List<Parametrage> parametrages = new ArrayList<Parametrage>();
@@ -69,12 +69,12 @@ public class Contexte implements Serializable {
 		this.contexteLibelle = _l;
 	}
 
-	public ContexteType getType() {
-		return type;
+	public ContexteType getContexteType() {
+		return contexteType;
 	}
 
-	public void setType(ContexteType _t) {
-		this.type = _t;
+	public void setContexteType(ContexteType _t) {
+		this.contexteType = _t;
 	}
 
 	public Boolean getArchive() {
@@ -121,7 +121,7 @@ public class Contexte implements Serializable {
        Contexte contexte = (Contexte) obj;
 
        return Objects.equals(contexteLibelle, contexte.getContexteLibelle())
-       	&& Objects.equals(type, contexte.getType());
+       	&& Objects.equals(contexteType, contexte.getContexteType());
 	}
 	
 	@Override
@@ -129,7 +129,7 @@ public class Contexte implements Serializable {
        final int prime = 31;
        int result = 1;
    	result = prime * result + ((contexteLibelle == null) ? 0 : contexteLibelle.hashCode());
-   	result = prime * result + ((type == null) ? 0 : type.hashCode());
+   	result = prime * result + ((contexteType == null) ? 0 : contexteType.hashCode());
    	return result;
 	}
 	
@@ -164,6 +164,7 @@ public class Contexte implements Serializable {
 	}
 	
 	public List<ThesaurusValue> getThesaurusValuesForChampEntiteId(Integer id) {
+		
 		List<ThesaurusValue> tValues = new ArrayList<ThesaurusValue>();
 		for (ChampEntite c : champEntites) {
 			if (c.getChampId().equals(id)) {
@@ -176,7 +177,7 @@ public class Contexte implements Serializable {
 	public boolean isChampIdRequired(Integer id) {
 		for (ChampEntite c : champEntites) {
 			if (c.getChampId().equals(id)) {
-				return c.getObligatoire();
+				return c.getVisible() && c.getObligatoire();
 			}
 		}
 		return false;

@@ -126,6 +126,10 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Service;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
+import fr.aphp.tumorotek.model.contexte.gatsbi.ContexteType;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
+import fr.aphp.tumorotek.model.contexte.gatsbi.ThesaurusValue;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
 import fr.aphp.tumorotek.model.io.imports.ImportHistorique;
@@ -2811,5 +2815,110 @@ public class ImportManagerTest extends AbstractManagerTest4
 		fs.add(mal2);
 		fs.add(mal3);
 		cleanUpFantomes(fs);
+	}
+
+	/**
+	 * @since 2.3.0-gatsbi
+	 */
+	@Test
+	public void extractValuesForOneThesaurus_shouldFilterOutValues_whenGatsbiApplies(){
+		//given
+		final Contexte contexte = new Contexte();
+		contexte.setContexteType(ContexteType.PRELEVEMENT);
+		contexte.setContexteLibelle("test_contexte");
+		fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite nature = new fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite();
+		nature.setChampId(24);
+		nature.setIsChampReferToThesaurus("nature");
+		ThesaurusValue liqAscite = new ThesaurusValue();
+		liqAscite.setThesaurusId(3); liqAscite.setThesaurusValue("LIQUIDE D'ASCITE");
+		nature.getThesaurusValues().add(liqAscite);
+		contexte.getChampEntites().add(nature);
+		final Etude etude = new Etude();
+		etude.addToContextes(contexte);
+
+		final ImportTemplate it = importTemplateManager.findByIdManager(1);
+		it.getBanque().setEtude(etude); // application contexte Gatsbi
+
+		// 1 seule valeur LIQUIDE D'ASCITE retenue pour le thesaurus nature
+		final ChampEntite ceNature = champEntiteDao.findById(111);
+		Hashtable<String, Object> values = importManager.extractValuesForOneThesaurus(ceNature, it.getBanque());
+		assertTrue(values.size() == 1);
+		final Nature nat = (Nature) values.get("LIQUIDE D'ASCITE");
+		assertNotNull(nat);
+		assertTrue(nat.getId().equals(3));
+
+		// aucun impact sur collaborateur
+		final ChampEntite ceCollab = champEntiteDao.findById(199);
+		values = importManager.extractValuesForOneThesaurus(ceCollab, it.getBanque());
+		assertTrue(values.size() == 6);
+
+		// 1 valeur retenue pour Non conformité 
+		fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite ncArr = new fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite();
+		ncArr.setChampId(256);
+		ncArr.setIsChampReferToThesaurus("non_conformite_arrivee");
+		ThesaurusValue errDossier = new ThesaurusValue();
+		errDossier.setThesaurusId(2); errDossier.setThesaurusValue("Erreur dossier");
+		ncArr.getThesaurusValues().add(errDossier);
+		contexte.getChampEntites().add(ncArr);
+		final ChampEntite confArrivee = champEntiteDao.findById(257);
+		values = importManager.extractValuesForOneThesaurus(confArrivee, it.getBanque());
+		assertTrue(values.size() == 1);
+		assertTrue(values.contains(nonConformiteDao.findById(2)));
+
+		// 1 valeur retenue pour Consent type
+		fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite consentType = new fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite();
+		consentType.setChampId(26);
+		consentType.setIsChampReferToThesaurus("consent_type");
+		ThesaurusValue enattente = new ThesaurusValue();
+		enattente.setThesaurusId(1); enattente.setThesaurusValue("EN ATTENTE");
+		consentType.getThesaurusValues().add(enattente);
+		contexte.getChampEntites().add(consentType);
+		values = importManager.extractValuesForOneThesaurus(champEntiteDao.findById(113), it.getBanque());
+		assertTrue(values.size() == 1);
+		assertNotNull(values.get("EN ATTENTE"));
+
+		// 1 valeur retenue pour prelevement type
+		fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite prelType = new fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite();
+		prelType.setChampId(31);
+		prelType.setIsChampReferToThesaurus("prelevement_type");
+		ThesaurusValue biopsie = new ThesaurusValue();
+		biopsie.setThesaurusId(1); biopsie.setThesaurusValue("BIOPSIE");
+		prelType.getThesaurusValues().add(biopsie);
+		contexte.getChampEntites().add(prelType);
+		values = importManager.extractValuesForOneThesaurus(champEntiteDao.findById(116), it.getBanque());
+		assertTrue(values.size() == 1);
+		assertNotNull(values.get("BIOPSIE"));
+
+		// 0 valeur retenue pour condit type
+		fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite conditType = new fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite();
+		conditType.setChampId(32);
+		conditType.setIsChampReferToThesaurus("condit_type");
+		contexte.getChampEntites().add(conditType);
+		values = importManager.extractValuesForOneThesaurus(champEntiteDao.findById(144), it.getBanque());
+		assertTrue(values.size() == 0);
+
+		// 1 valeur retenue pour condit milieu
+		fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite conditMilieu = new fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite();
+		conditMilieu.setChampId(33);
+		conditMilieu.setIsChampReferToThesaurus("condit_milieu");
+		ThesaurusValue sec = new ThesaurusValue();
+		sec.setThesaurusId(1); sec.setThesaurusValue("SEC");
+		conditMilieu.getThesaurusValues().add(sec);
+		contexte.getChampEntites().add(conditMilieu);
+		values = importManager.extractValuesForOneThesaurus(champEntiteDao.findById(118), it.getBanque());
+		assertTrue(values.size() == 1);
+		assertNotNull(values.get("SEC"));
+
+		// 1 valeur retenue pour risques
+		fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite risques = new fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite();
+		risques.setChampId(249);
+		risques.setIsChampReferToThesaurus("risques");
+		ThesaurusValue hiv = new ThesaurusValue();
+		hiv.setThesaurusId(1); hiv.setThesaurusValue("HIV");
+		risques.getThesaurusValues().add(hiv);
+		contexte.getChampEntites().add(risques);
+		values = importManager.extractValuesForOneThesaurus(champEntiteDao.findById(247), it.getBanque());
+		assertTrue(values.size() == 1);
+		assertNotNull(values.get("HIV"));
 	}
 }

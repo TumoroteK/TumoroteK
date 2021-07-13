@@ -15,6 +15,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
+import fr.aphp.tumorotek.model.contexte.gatsbi.ContexteType;
 
 @JsonPropertyOrder({
 	"contexteId",
@@ -32,6 +33,15 @@ public class ContexteDTO extends Contexte implements Serializable {
 
 	private List<ParametrageDTO> parametrageDTOs = new ArrayList<ParametrageDTO>();
 	private List<ChampEntiteDTO> champEntiteDTOs = new ArrayList<ChampEntiteDTO>();
+	
+	@JsonProperty
+	public String getType() {
+		return super.getContexteType().getType();
+	}
+	
+	public void setType(String t) {
+		super.setContexteType(ContexteType.getByType(t));
+	}
 
 	@JsonProperty("parametrages")
 	public List<ParametrageDTO> getParametrageDTOs() {

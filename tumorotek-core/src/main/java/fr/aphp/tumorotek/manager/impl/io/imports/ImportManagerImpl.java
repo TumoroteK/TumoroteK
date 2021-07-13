@@ -46,6 +46,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -58,6 +59,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -112,6 +114,7 @@ import fr.aphp.tumorotek.manager.qualite.ObjetNonConformeManager;
 import fr.aphp.tumorotek.manager.stockage.EmplacementManager;
 import fr.aphp.tumorotek.manager.systeme.EntiteManager;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
+import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.code.CodeAssigne;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
@@ -127,6 +130,7 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Service;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.io.export.Champ;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
@@ -142,7 +146,7 @@ import fr.aphp.tumorotek.utils.Utils;
 /**
  * 
  * @author Mathieu BARTHELEMY
- * @version 2.2.3-genno
+ * @version 2.3.0-gatsbi
  */
 public class ImportManagerImpl implements ImportManager
 {
@@ -404,6 +408,18 @@ public class ImportManagerImpl implements ImportManager
 		Hashtable<String, Object> values = new Hashtable<String, Object>();
 
 		if(champEntite != null){
+			
+			List<Integer> thesValueIds = null;
+			// prépare le filtre les valeurs de thésaurus par leur ids suivant les restrictions gatsbi
+			if (banque.getEtude() != null) {
+				Contexte contexte = banque.getEtude().getContexteForEntite(translateChpIdToFindContexteEntite(champEntite.getId()));
+				if (contexte != null) { 
+					thesValueIds = contexte
+						.getThesaurusValuesForChampEntiteId(translateChpIdToMatchGatsbiContexte(champEntite.getId()))
+							.stream().map(v -> v.getThesaurusId()).collect(Collectors.toList());			
+				}
+			}
+			
 			if(!champEntite.getNom().matches("Conforme.*Raison")){
 				// creation de la requête permettant de récupérer toutes
 				// les valeurs du thésaurus
@@ -468,7 +484,7 @@ public class ImportManagerImpl implements ImportManager
 					// ajout de l'objet de la valeur string dans la
 					// hashtable
 					if(value != null && !values.containsKey(value)){
-						values.put(value, objets.get(i));
+						valuesPut(values, value, objets.get(i), thesValueIds);
 					}
 				}
 			}else{ //non conformites
@@ -482,12 +498,76 @@ public class ImportManagerImpl implements ImportManager
 					NonConformite nc;
 					while(ncfs.hasNext()){
 						nc = ncfs.next();
-						values.put(nc.getNom().toLowerCase(), nc);
+						valuesPut(values, nc.getNom().toLowerCase(), nc, thesValueIds);
 					}
 				}
 			}
 		}
 		return values;
+	}
+	
+	/**
+	 * Hackish méthode pour retrouver la valeur entite_id 
+	 * à partir du champ_entite_id utilisé par importManager 
+	 * qui correspond au QUERY_CHAMP_ID
+	 * @param id
+	 * @return id
+	 */
+	private Integer translateChpIdToFindContexteEntite(Integer id) {
+
+		// prelevement
+		if (Arrays.asList(111, 113, 116, 144, 118, 247, 257).contains(id))
+			return 2;
+
+		return id;
+	}
+
+	/**
+	 * Hackish méthode pour retrouver le champ_entite_id envoyé 
+	 * par le Contexte à partir du champ_entite_id utilisé par importManager 
+	 * qui correspond au QUERY_CHAMP_ID
+	 * @param id
+	 * @return id
+	 */
+	private Integer translateChpIdToMatchGatsbiContexte(Integer id) {
+		
+		// retrouve le chpId à partir du query champ id
+		// prelevement 
+		if (id == 111) return 24; // nature
+		if (id == 113) return 26; // consent type
+		if (id == 116) return 31; // prelevement type
+		if (id == 144) return 32; // condit type
+		if (id == 118) return 33; // condit milieu
+		if (id == 247) return 249; // risques 		
+		// non conformites raisons car chpId uniquement sur booleen dans Gatsbi
+		if (id == 257) return 256;
+		if (id == 243) return 261;
+		if (id == 244) return 262;
+		if (id == 251) return 263;
+		if (id == 252) return 264;		
+		
+		return id;
+	}
+
+
+	/**
+	 * Ajoute la valeur de thésaurus si elle est configurée par le gestionnaire Gatsbi.
+	 * @since 2.3.0-gatsbi
+	 * @param values
+	 * @param key
+	 * @param val
+	 * @param allowedIds
+	 */
+	private void valuesPut(Hashtable<String, Object> values, String key, Object val, List<Integer> allowedIds) {
+		if (val != null) {
+			if (val instanceof TKThesaurusObject) { // le filtre gatsbi s'applique
+				if (allowedIds == null || allowedIds.contains(((TKThesaurusObject) val).getId())) {
+					values.put(key, val);
+				}
+			} else { // val instanceof Service/Collaborateur/Transporteur
+				values.put(key, val);
+			}
+		}
 	}
 
 	@Override

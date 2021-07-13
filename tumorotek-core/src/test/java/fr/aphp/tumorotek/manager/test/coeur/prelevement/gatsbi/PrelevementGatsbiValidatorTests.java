@@ -70,7 +70,7 @@ public class PrelevementGatsbiValidatorTests extends AbstractManagerTest4
 	@Before
 	public void setUp() {
 		contexte = new Contexte();  
-		contexte.setType(ContexteType.PRELEVEMENT);
+		contexte.setContexteType(ContexteType.PRELEVEMENT);
 		contexte.setContexteLibelle("test_contexte");
 		Banque bank = new Banque();
 		Etude etude = new Etude();
@@ -81,7 +81,7 @@ public class PrelevementGatsbiValidatorTests extends AbstractManagerTest4
 	}
 
 	@Test
-	public void whenGastbiApplies_ThenPrelevementNatureAndConsentTypeAreNotRequiredAnymore() {
+	public void checkRequiredObjectsAndValidate_shouldNotFailIfNatureAndConsentTypeAreNotRequiredAnymore_whenGastbiApplies() {
 
 		// given
 		ChampEntite nature = new ChampEntite();
@@ -107,7 +107,7 @@ public class PrelevementGatsbiValidatorTests extends AbstractManagerTest4
 	}
 
 	@Test
-	public void whenGastbiApplies_ThenPrelevementNatureMayBeRequired() {
+	public void checkRequiredObjectsAndValidate_shouldFailIfNatureIsRequired_whenGastbiApplies() {
 		// given
 		ChampEntite nature = new ChampEntite();
 		nature.setChampId(24);
@@ -129,7 +129,7 @@ public class PrelevementGatsbiValidatorTests extends AbstractManagerTest4
 	}
 
 	@Test
-	public void whenGastbiApplies_ThenConsentTypeMayBeRequired() {
+	public void checkRequiredObjectsAndValidate_shouldFailIfConsentTypeIsRequired_whenGastbiApplies() {
 		// given
 		ChampEntite consentType = new ChampEntite();
 		consentType.setChampId(26);
@@ -151,7 +151,7 @@ public class PrelevementGatsbiValidatorTests extends AbstractManagerTest4
 	}
 
 	@Test
-	public void whenGatsbiApplies_ThenValidation_addErrorForMappedRequiredField() {
+	public void checkRequiredObjectsAndValidate_shouldFailAndThrowErrorForEachRequiredField_whenGastbiApplies() {
 		// given
 		List<Integer> ids = Arrays.asList(45, 44, 30, 31, 249, 29, 28, 32, 34, 33, 27, 35, 36, 37, 38, 39, 40, 256);
 		addChampEntiteAsObligatoireToContexte(ids);  
