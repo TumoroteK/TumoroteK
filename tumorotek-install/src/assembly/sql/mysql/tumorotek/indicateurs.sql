@@ -52,6 +52,8 @@ CREATE PROCEDURE stats_TER_(IN name_Proc varchar(50), IN date_debut DATE, IN dat
       then CALL stats_count_prepacomplexes(date_debut, date_fin, sModeleId);
       WHEN name_Proc = "count_prepasimples"
       then CALL stats_count_prepasimples(date_debut, date_fin, sModeleId);
+      WHEN name_Proc = "count_prel_raison_nonconf"
+      then CALL stats_count_prel_raison_nonconf(date_debut, date_fin, sModeleId);
     ELSE 
         BEGIN
             SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Procedure not found !!'; 
