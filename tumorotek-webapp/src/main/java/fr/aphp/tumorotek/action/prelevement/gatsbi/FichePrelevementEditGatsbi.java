@@ -18,7 +18,8 @@ import org.zkoss.zul.Messagebox;
 import fr.aphp.tumorotek.action.patient.ResumePatient;
 import fr.aphp.tumorotek.action.prelevement.FichePrelevementEdit;
 import fr.aphp.tumorotek.model.coeur.prelevement.LaboInter;
-import fr.aphp.tumorotek.webapp.gatsbi.client.json.ContexteDTO;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  *
@@ -43,7 +44,7 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit {
 	// @wire
 	private Groupbox groupPrlvt;
 
-	private ContexteDTO c;
+	private Contexte c;
 
 
 	@Override
@@ -54,7 +55,8 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit {
 			itemDivs.addAll(GatsbiController.wireItemDivsFromMainComponent(gatsbiContainer));
 			blockDivs.addAll(GatsbiController.wireBlockDivsFromMainComponent(gatsbiContainer));
 
-			c = GatsbiController.mockOneContexte();
+		    c = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
+
 
 			GatsbiController.showOrhideItems(itemDivs, blockDivs, c); // TODO replace by collection.contexte
 			GatsbiController.switchItemsRequiredOrNot(itemDivs, c, reqListboxes, 

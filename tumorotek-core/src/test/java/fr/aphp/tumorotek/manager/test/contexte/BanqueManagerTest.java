@@ -678,7 +678,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
          banqueManager.createOrUpdateObjectManager(b, null, null, null, null, null, null, null, null, null, null, null, null,
             null, null, null, u, null, "creation", null);
       }catch(final RequiredObjectIsNullException re){
-         assertTrue(re.getMessage().equals("Banque: Plateforme est " + "null lors de l'opération de creation"));
+         assertTrue(re.getMessage().equals("Banque: Plateforme " + "manquant(e) lors de l'opération de creation"));
       }
 
       //required contexte
@@ -686,7 +686,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
          banqueManager.createOrUpdateObjectManager(b, pf, null, null, null, null, null, null, null, null, null, null, null, null,
             null, null, u, null, "creation", null);
       }catch(final RequiredObjectIsNullException re){
-         assertTrue(re.getMessage().equals("Banque: Contexte est " + "null lors de l'opération de creation"));
+         assertTrue(re.getMessage().equals("Banque: Contexte " + "manquant(e) lors de l'opération de creation"));
       }
 
       //validation

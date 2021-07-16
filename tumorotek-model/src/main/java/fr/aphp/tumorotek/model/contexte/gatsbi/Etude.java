@@ -79,7 +79,7 @@ public class Etude implements Serializable {
 	public Etude(){}
 	
 	@Id
-	@Column(name = "ETUDE_ID", unique = true, nullable = false)
+	@Column(name = "GATSBY_ETUDE_ID", unique = true, nullable = false)
 	public Integer getEtudeId() {
 		return etudeId;
 	}
@@ -177,7 +177,7 @@ public class Etude implements Serializable {
 	@Transient
 	public Contexte getContexteForEntite(Integer entiteId) {
 		for (Contexte c : contextes) {
-			if (c.getType().getEntiteId().equals(entiteId)) {
+			if (c.getContexteType().getEntiteId().equals(entiteId)) {
 				return c;
 			}
 		}

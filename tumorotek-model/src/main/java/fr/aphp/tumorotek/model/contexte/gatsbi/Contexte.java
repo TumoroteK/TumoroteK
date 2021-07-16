@@ -50,9 +50,24 @@ public class Contexte implements Serializable {
 	private ContexteType contexteType;
 	private Boolean archive;
 	private Boolean siteInter = true;
-	private List<Parametrage> parametrages = new ArrayList<Parametrage>();
-	private List<ChampEntite> champEntites = new ArrayList<ChampEntite>();
+	protected List<Parametrage> parametrages = new ArrayList<Parametrage>();
+	protected List<ChampEntite> champEntites = new ArrayList<ChampEntite>();
 	
+	public Contexte() {
+	}
+	
+	public Contexte(Integer contexteId, String contexteLibelle, ContexteType contexteType, Boolean archive,
+			Boolean siteInter, List<Parametrage> parametrages, List<ChampEntite> champEntites) {
+		super();
+		this.contexteId = contexteId;
+		this.contexteLibelle = contexteLibelle;
+		this.contexteType = contexteType;
+		this.archive = archive;
+		this.siteInter = siteInter;
+		this.parametrages = parametrages;
+		this.champEntites = champEntites;
+	}
+
 	public Integer getContexteId() {
 		return contexteId;
 	}

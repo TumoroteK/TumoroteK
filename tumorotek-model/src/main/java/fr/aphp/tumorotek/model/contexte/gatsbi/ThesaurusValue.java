@@ -49,6 +49,19 @@ public class ThesaurusValue implements Serializable {
 	private String thesaurusValue;
 	private Integer position;
 	
+	public ThesaurusValue() {
+	}
+	
+	public ThesaurusValue(Integer champId, Integer templateThesaurusId, Integer thesaurusId, String thesaurusValue,
+			Integer position) {
+		super();
+		this.champId = champId;
+		this.templateThesaurusId = templateThesaurusId;
+		this.thesaurusId = thesaurusId;
+		this.thesaurusValue = thesaurusValue;
+		this.position = position;
+	}
+
 	public Integer getChampId() {
 		return champId;
 	}

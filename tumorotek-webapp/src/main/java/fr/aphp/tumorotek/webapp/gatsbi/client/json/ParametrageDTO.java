@@ -38,15 +38,44 @@ package fr.aphp.tumorotek.webapp.gatsbi.client.json;
 
 import java.io.Serializable;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
 import fr.aphp.tumorotek.model.contexte.gatsbi.Parametrage;
+
 
 @JsonPropertyOrder({
 	"parametrageId",
 	"parametrageLibelle"
 })
-public class ParametrageDTO extends Parametrage implements Serializable {
+public class ParametrageDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	private Integer parametrageId;
+	private String parametrageLibelle;
+	
+	@JsonProperty
+	public Integer getParametrageId() {
+		return this.parametrageId;
+	}
+	
+	public void setParametrageId(Integer parametrageId) {
+		this.parametrageId = parametrageId;
+	}
+	
+	@JsonProperty
+	public String getParametrageLibelle() {
+		return this.parametrageLibelle;
+	}
+	
+	public void setParametrageLibelle(String parametrageLibelle) {
+		this.parametrageLibelle = parametrageLibelle;
+	}
+	
+	@JsonIgnore
+	public Parametrage toParametrage() {
+		return new Parametrage(parametrageId, parametrageLibelle);
+	}
 }

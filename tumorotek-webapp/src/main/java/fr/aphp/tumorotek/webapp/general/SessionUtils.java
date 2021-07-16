@@ -45,6 +45,7 @@ import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.interfacage.Emetteur;
 import fr.aphp.tumorotek.model.interfacage.Recepteur;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
@@ -212,6 +213,34 @@ public final class SessionUtils {
          contexte = EContexte.valueOf(((Banque) Sessions.getCurrent().getAttribute("Banque")).getContexte().getNom());
       }
       return contexte;
+   }
+   
+   /**
+    * @version 2.3.0-gatsbi
+    * @return Contexte gatsbi
+    */
+   public static List<Contexte> getGatsbiContextes() {
+	   List<Contexte> contextes = new ArrayList<Contexte>();
+	   if (null != Sessions.getCurrent().getAttribute("Banque") 
+			   && ((Banque) Sessions.getCurrent().getAttribute("Banque")).getEtude() != null) {
+		   contextes.addAll(((Banque) Sessions.getCurrent().getAttribute("Banque"))
+	        		 .getEtude().getContextes());
+	   }
+	  return contextes;
+   }
+   
+   /**
+    * @version 2.3.0-gatsbi
+    * @return Contexte gatsbi
+    */
+   public static Contexte getCurrentGatsbiContexteForEntiteId(Integer eId) {
+	   Contexte gatsbiContexte = null;
+	   if (null != Sessions.getCurrent().getAttribute("Banque") 
+			   && ((Banque) Sessions.getCurrent().getAttribute("Banque")).getEtude() != null) {
+		   gatsbiContexte = ((Banque) Sessions.getCurrent().getAttribute("Banque"))
+	        		 .getEtude().getContexteForEntite(eId);
+	   }
+	  return gatsbiContexte;
    }
 
    /**

@@ -39,6 +39,7 @@ package fr.aphp.tumorotek.webapp.gatsbi.client.json;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
@@ -55,11 +56,81 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite;
 	"visible", 
 	"rThesauruses"
 })
-public class ChampEntiteDTO extends ChampEntite implements Serializable {
+public class ChampEntiteDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
+	private Integer champId;
+	private Integer champOrdre;
+	private Integer contexteChampEntiteId;
+	private String dateFormat;
+	private String isChampReferToThesaurus;
+	private Boolean obligatoire = false;
+	private Boolean visible = true;
 	private List<ThesaurusValueDTO> thesaurusValueDTOs = new ArrayList<ThesaurusValueDTO>();
+	
+	@JsonProperty
+	public Integer getChampId() {
+		return champId;
+	}
+	
+	public void setChampId(Integer _i) {
+		this.champId = _i;
+	}
+	
+	@JsonProperty
+	public Integer getChampOrdre() {
+		return champOrdre;
+	}
+	
+	public void setChampOrdre(Integer _o) {
+		this.champOrdre = _o;
+	}
+	
+	@JsonProperty
+	public Integer getContexteChampEntiteId() {
+		return contexteChampEntiteId;
+	}
+	
+	public void setContexteChampEntiteId(Integer _c) {
+		this.contexteChampEntiteId = _c;
+	}
+	
+	@JsonProperty
+	public String getDateFormat() {
+		return dateFormat;
+	}
+
+	public void setDateFormat(String _d) {
+		this.dateFormat = _d;
+	}
+
+	@JsonProperty
+	public String getIsChampReferToThesaurus() {
+		return isChampReferToThesaurus;
+	}
+	
+	public void setIsChampReferToThesaurus(String _f) {
+		this.isChampReferToThesaurus = _f;
+	}
+	
+	@JsonProperty
+	public Boolean getObligatoire() {
+		return obligatoire;
+	}
+	
+	public void setObligatoire(Boolean _o) {
+		this.obligatoire = _o;
+	}
+	
+	@JsonProperty
+	public Boolean getVisible() {
+		return visible;
+	}
+	
+	public void setVisible(Boolean _v) {
+		this.visible = _v;
+	}
 	
 	@JsonProperty("rThesauruses")
 	public List<ThesaurusValueDTO> getThesaurusValueDTOs() {
@@ -68,7 +139,14 @@ public class ChampEntiteDTO extends ChampEntite implements Serializable {
 	
 	public void setThesaurusValueDTOs(List<ThesaurusValueDTO> _v) {
 		this.thesaurusValueDTOs = _v;
-		this.getThesaurusValues().clear();
-		this.getThesaurusValues().addAll(_v);
+	}
+	
+	public ChampEntite toChampEntite() {
+		return new ChampEntite(champId, champOrdre, contexteChampEntiteId, 
+			dateFormat, isChampReferToThesaurus, obligatoire, visible, 
+			thesaurusValueDTOs
+				.stream().map(v -> v.toThesaurusValue())
+				.collect(Collectors.toList())
+			);
 	}
 }

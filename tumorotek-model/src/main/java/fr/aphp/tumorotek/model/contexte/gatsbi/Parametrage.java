@@ -46,6 +46,12 @@ public class Parametrage implements Serializable {
 	private Integer parametrageId;
 	private String parametrageLibelle;
 	
+	public Parametrage(Integer parametrageId, String parametrageLibelle) {
+		super();
+		this.parametrageId = parametrageId;
+		this.parametrageLibelle = parametrageLibelle;
+	}
+
 	public Integer getParametrageId() {
 		return parametrageId;
 	}

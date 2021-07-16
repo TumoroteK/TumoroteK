@@ -45,7 +45,7 @@
 						</div>
 						<div id="departBlockDivContainer" class="block-container">
 							<div class="item item-wide" id="congPrelDiv"><!-- Congelation au prélèvement -->
-								<custom-attributes champId="267" />
+								<custom-attributes champId="269" />
 								<div class="row-container">
 									<label id="congDepartLabel"
 										value="${c:l('Champ.Prelevement.CongDepart')}"
@@ -397,7 +397,7 @@
 								</div>
 							</div>
 							<div class="item item-wide" id="congBiothequeDiv"><!-- Congelation à la biothèque -->
-								<custom-attributes champId="268" />
+								<custom-attributes champId="270" />
 								<div class="row-container">
 									<label id="congArriveeLabel"
 										value="${c:l('Champ.Prelevement.CongArrivee')}"

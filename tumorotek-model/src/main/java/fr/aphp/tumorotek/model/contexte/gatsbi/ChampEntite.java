@@ -54,6 +54,23 @@ public class ChampEntite implements Serializable {
 	private Boolean visible = true;
 	private List<ThesaurusValue> thesaurusValues = new ArrayList<ThesaurusValue>();
 	
+	public ChampEntite() {
+	}
+	
+	public ChampEntite(Integer champId, Integer champOrdre, Integer contexteChampEntiteId, String dateFormat,
+			String isChampReferToThesaurus, Boolean obligatoire, Boolean visible,
+			List<ThesaurusValue> thesaurusValues) {
+		super();
+		this.champId = champId;
+		this.champOrdre = champOrdre;
+		this.contexteChampEntiteId = contexteChampEntiteId;
+		this.dateFormat = dateFormat;
+		this.isChampReferToThesaurus = isChampReferToThesaurus;
+		this.obligatoire = obligatoire;
+		this.visible = visible;
+		this.thesaurusValues = thesaurusValues;
+	}
+
 	public Integer getChampId() {
 		return champId;
 	}
@@ -65,6 +82,7 @@ public class ChampEntite implements Serializable {
 	public Integer getChampOrdre() {
 		return champOrdre;
 	}
+	
 	public void setChampOrdre(Integer _o) {
 		this.champOrdre = _o;
 	}

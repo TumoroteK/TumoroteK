@@ -253,7 +253,7 @@
 								</div>
 							</div>
 							<div class="item item-wide" id="congPrelDiv"><!-- Congelation au prélèvement -->
-								<custom-attributes champId="267" />
+								<custom-attributes champId="269" />
 								<div width="25px" height="25px" style="background: url(${c:encodeURL('/images/icones/freeze.png')})" id="congDepartImg" />
 								<label id="congDepartLabel" value="" sclass="formValue" style="font-weight: bold; width: 100%" />
 							</div>
@@ -456,7 +456,7 @@
 									sclass="formValue" />	
 							</div>
 							<div class="item item-wide" id="congBiothequeDiv"><!-- Congelation biotheque -->
-								<custom-attributes champId="268" />
+								<custom-attributes champId="270" />
 								<div width="25px" height="25px" style="background: url(${c:encodeURL('/images/icones/freeze.png')})" 
 											id="congArriveeImg" />
 								<label id="congArriveeLabel" sclass="formValue" style="font-weight: bold; width: 100%" />

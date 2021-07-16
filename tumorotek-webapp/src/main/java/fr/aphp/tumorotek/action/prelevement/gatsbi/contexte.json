@@ -112,8 +112,8 @@
         "champOrdre": 8,
         "contexteChampEntiteId": 18,
         "isChampReferToThesaurus": "risque",
-        "obligatoire": false,
-		"visible": false,
+        "obligatoire": true,
+		"visible": true,
         "rThesauruses": [
 		{
             "champId": 249,
@@ -204,7 +204,7 @@
       },
       {
 	"__comment": "Cong prel",  
-        "champId": 267,
+        "champId": 269,
         "champOrdre": 16,
         "contexteChampEntiteId": 26,
         "obligatoire": false,
@@ -279,7 +279,7 @@
       },
       {
 	"__comment": "Cong Arrivee",  
-        "champId": 268,
+        "champId": 270,
         "champOrdre": 24,
         "contexteChampEntiteId": 26,
         "obligatoire": false,

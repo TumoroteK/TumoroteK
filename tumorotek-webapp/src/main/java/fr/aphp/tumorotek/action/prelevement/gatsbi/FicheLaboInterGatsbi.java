@@ -14,7 +14,8 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Messagebox;
 
 import fr.aphp.tumorotek.action.prelevement.FicheLaboInter;
-import fr.aphp.tumorotek.webapp.gatsbi.client.json.ContexteDTO;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  *
@@ -36,13 +37,13 @@ public class FicheLaboInterGatsbi extends FicheLaboInter {
 	private List<Combobox> reqComboboxes = new ArrayList<Combobox>();
 	private List<Div> reqConformeDivs = new ArrayList<Div>();
 	
-	private ContexteDTO c;
+	private Contexte c;
 
 	@Override
 	public void doAfterCompose(final Component comp) throws Exception{
 		super.doAfterCompose(comp);
 				
-		c = GatsbiController.mockOneContexte(); // TODO replace by collection.contexte
+	    c = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
 
 		try {
 			List<Div> itemDivs = GatsbiController.wireItemDivsFromMainComponent(gatsbiContainer);

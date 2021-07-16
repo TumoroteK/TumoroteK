@@ -44,7 +44,8 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Messagebox;
 
 import fr.aphp.tumorotek.action.prelevement.FicheModifMultiPrelevement;
-import fr.aphp.tumorotek.webapp.gatsbi.client.json.ContexteDTO;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  *
@@ -62,7 +63,7 @@ public class FicheModifMultiPrelevementGatsbi extends FicheModifMultiPrelevement
 	
 	private Div gatsbiContainer;
 
-	private ContexteDTO c;
+	private Contexte c;
 	List<Div> itemDivs  = new ArrayList<Div>();
 	List<Div> blockDivs  = new ArrayList<Div>();
 	
@@ -74,7 +75,7 @@ public class FicheModifMultiPrelevementGatsbi extends FicheModifMultiPrelevement
 			itemDivs.addAll(GatsbiController.wireItemDivsFromMainComponent(gatsbiContainer));
 			blockDivs.addAll(GatsbiController.wireBlockDivsFromMainComponent(gatsbiContainer));
 
-			c = GatsbiController.mockOneContexte();
+		    c = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
 
 			GatsbiController.showOrhideItems(itemDivs, blockDivs, c); // TODO replace by collection.contexte
 			// GatsbiController.switchItemsRequiredOrNot(itemDivs, c, reqListboxes, 

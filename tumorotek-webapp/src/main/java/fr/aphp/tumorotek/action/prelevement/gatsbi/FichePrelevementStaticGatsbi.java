@@ -11,7 +11,8 @@ import org.zkoss.zul.Groupbox;
 
 import fr.aphp.tumorotek.action.patient.ResumePatient;
 import fr.aphp.tumorotek.action.prelevement.FichePrelevementStatic;
-import fr.aphp.tumorotek.webapp.gatsbi.client.json.ContexteDTO;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  *
@@ -37,7 +38,7 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
       List<Div> itemDivs = GatsbiController.wireItemDivsFromMainComponent(gatsbiContainer);
       List<Div> blockDivs = GatsbiController.wireBlockDivsFromMainComponent(gatsbiContainer);
 
-      ContexteDTO c = GatsbiController.mockOneContexte();
+      Contexte c = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
       
       GatsbiController.showOrhideItems(itemDivs, blockDivs, c); // TODO replace by collection.contexte
       

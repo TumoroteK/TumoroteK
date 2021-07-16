@@ -42,24 +42,17 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
-import fr.aphp.tumorotek.webapp.gatsbi.client.json.ContexteDTO;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
- * @version 2.2.3-gatsbi
+ * @version 2.3.0-gatsbi
  * @author Mathieu BARTHELEMY
  *
  */
 public class ImportColonneRowRenderer implements RowRenderer<ImportColonne> {
-	
-	// @since 2.2.3-gatsbi
-	private ContexteDTO c;
-	
-	public ImportColonneRowRenderer(ContexteDTO c) {
-		this.c = c;
-	}
 
 	@Override
 	public void render(final Row row, final ImportColonne data, final int index) throws Exception {
@@ -148,6 +141,10 @@ public class ImportColonneRowRenderer implements RowRenderer<ImportColonne> {
 		Boolean ob = false;
 		if (colonne.getChamp() != null) {
 			if (colonne.getChamp().getChampEntite() != null) {
+				// @since 2.3.0-gatsbi
+				// vérifie si contexte Gatsbi s'applique
+				Contexte c = SessionUtils.getCurrentGatsbiContexteForEntiteId(colonne.getChamp()
+						.getChampEntite().getEntite().getEntiteId());
 				if (c == null) { // TK-defaut
 					ob = !colonne.getChamp().getChampEntite().isNullable();
 				} else { // gatsbi

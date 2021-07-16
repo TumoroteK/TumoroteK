@@ -16,7 +16,7 @@ import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.action.recherche.FicheRechercheAvancee;
 import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
-import fr.aphp.tumorotek.webapp.gatsbi.client.json.ContexteDTO;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  *
@@ -37,8 +37,6 @@ public class FicheRechercheAvanceeGatsbi extends FicheRechercheAvancee {
 	List<Div> itemDivs = new ArrayList<Div>();
 	List<Div> blockDivs = new ArrayList<Div>();
 
-	private ContexteDTO c;
-
 	@Override
 	public void doAfterCompose(final Component comp) throws Exception{
 		super.doAfterCompose(comp);
@@ -46,12 +44,11 @@ public class FicheRechercheAvanceeGatsbi extends FicheRechercheAvancee {
 		itemDivs.addAll(GatsbiController.wireItemDivsFromMainComponent(gatsbiContainer));
 		blockDivs.addAll(GatsbiController.wireBlockDivsFromMainComponent(gatsbiContainer));
 
-		c = GatsbiController.mockOneContexte();
-
-		GatsbiController.showOrhideItems(itemDivs, blockDivs, c); // TODO replace by collection.contexte
+		GatsbiController.showOrhideItems(itemDivs, blockDivs, SessionUtils.getGatsbiContextes());
 		
 		// hide group labo Inter
-		groupLaboInters.setVisible(c.getSiteInter());
+		groupLaboInters.setVisible(SessionUtils.getCurrentGatsbiContexteForEntiteId(2) != null 
+				&& SessionUtils.getCurrentGatsbiContexteForEntiteId(2).getSiteInter());
 	}
 	
 	/**
@@ -61,7 +58,7 @@ public class FicheRechercheAvanceeGatsbi extends FicheRechercheAvancee {
 	@Override
 	protected void applyThesaurusRestrictions() {
 		try {
-			GatsbiController.appliThesaurusValues(itemDivs, c, this);
+			GatsbiController.appliThesaurusValues(itemDivs, SessionUtils.getGatsbiContextes(), this);
 		} catch (Exception e) {
 			log.debug(e);
 			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);

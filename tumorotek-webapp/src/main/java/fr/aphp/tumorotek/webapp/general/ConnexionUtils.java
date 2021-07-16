@@ -345,10 +345,10 @@ public final class ConnexionUtils
 	private static void doGastbi(Banque bank) {
 		// gastbi TESTS
 		try {
-			ContexteDTO c = GatsbiController.mockOneContexte();
+			ContexteDTO c = GatsbiController.mockOneContexteTEST();
 
 			Etude e = new Etude();
-			e.addToContextes(c);
+			e.addToContextes(c.toContexte());
 
 			bank.setEtude(e);
 		} catch (IOException e) {

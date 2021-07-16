@@ -72,11 +72,13 @@ import fr.aphp.tumorotek.action.imports.ImportColonneDecorator;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.model.TKThesaurusObject;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.contexte.gatsbi.ThesaurusValue;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.webapp.gatsbi.client.json.ContexteDTO;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 public class GatsbiController {
 	
@@ -178,7 +180,7 @@ public class GatsbiController {
 			.collect(Collectors.toList());
 	}
 	
-	public static void showOrhideItems(List<Div> items, List<Div> blocks, ContexteDTO c) {
+	public static void showOrhideItems(List<Div> items, List<Div> blocks, Contexte c) {
 		log.debug("showing or hiding items");
 		if (items != null && c != null) {
 			
@@ -209,7 +211,7 @@ public class GatsbiController {
 				.anyMatch(c -> c.isVisible()));
 	}
 	
-	public static void switchItemsRequiredOrNot(List<Div> items, ContexteDTO c, List<Listbox> lboxes, List<Combobox> cboxes, 
+	public static void switchItemsRequiredOrNot(List<Div> items, Contexte c, List<Listbox> lboxes, List<Combobox> cboxes, 
 																								List<Div> reqConformeDivs) {
 		log.debug("switch items required or not");
 		if (items != null && c != null) {
@@ -252,8 +254,23 @@ public class GatsbiController {
 		}
 	}
 	
+	/**
+	 * Applique la methode 'showOrHide' sur un set entier de 
+	 * contextes Patient, Maladie, Prélèvement, Echantillon, Dérivé
+	 * @param itemDivs
+	 * @param blockDivs
+	 * @param contextes
+	 */
+	public static void showOrhideItems(List<Div> itemDivs, List<Div> blockDivs, List<Contexte> contextes) {
+		for (Contexte c : contextes) {
+			if (c != null) {
+				showOrhideItems(itemDivs, blockDivs, c);
+			}
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
-	public static void appliThesaurusValues(List<Div> items, ContexteDTO contexte, AbstractController controller) 
+	public static void appliThesaurusValues(List<Div> items, Contexte contexte, AbstractController controller) 
 			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		log.debug("applying thesaurus values");
 		if (items != null && contexte != null) {
@@ -290,7 +307,26 @@ public class GatsbiController {
 		}
 	}
 	
-	public static <T> List<T> filterExistingListModel(ContexteDTO contexte, List<T> lModel, Integer chpId) {
+	/**
+	 * Applique la methode 'appliThesaurusValues' sur un set entier de 
+	 * contextes Patient, Maladie, Prélèvement, Echantillon, Dérivé
+	 * @param items
+	 * @param contextes
+	 * @param controller
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalAccessException 
+	 */
+	public static void appliThesaurusValues(List<Div> items, List<Contexte> contextes, AbstractController controller) 
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		for (Contexte c : contextes) {
+			if (c != null) {
+				appliThesaurusValues(items, c, controller);
+			}
+		}
+	}
+	
+	public static <T> List<T> filterExistingListModel(Contexte contexte, List<T> lModel, Integer chpId) {
 		
 		List<ThesaurusValue> values = contexte.getThesaurusValuesForChampEntiteId(chpId);
 		Collections.sort(values, Comparator.comparing(ThesaurusValue::getPosition, 
@@ -400,9 +436,12 @@ public class GatsbiController {
 	// imports
 	public static List<ChampEntite> 
 		findByEntiteImportAndIsNullableManager(final Entite entite, final Boolean canImport, 
-				final Boolean isNullable, final ContexteDTO contexte) {
+				final Boolean isNullable) {
 		
 		final List<ChampEntite> chpE = new ArrayList<ChampEntite>();
+		
+		final Contexte contexte = 
+			SessionUtils.getCurrentGatsbiContexteForEntiteId(entite.getEntiteId());
 		
 		if (contexte == null) { // TK defaut
 			chpE.addAll(ManagerLocator.getChampEntiteManager()
@@ -432,18 +471,21 @@ public class GatsbiController {
 	}
 	
 	public static List<ImportColonneDecorator> decorateImportColonnes(final List<ImportColonne> cols,
-			final boolean isSubderive, final ContexteDTO contexte) {
+			final boolean isSubderive) {
 		
 		List<ImportColonneDecorator> decos = ImportColonneDecorator.decorateListe(cols, isSubderive);
 		
 		// surcharge la propriété deletable suivant le contexte gastby
-		if (contexte != null) {
-			decos.forEach(d -> d.setCanDelete(!contexte.isChampIdRequired(d.getColonne().getChamp().getChampEntite().getId())));
+		Contexte c;
+		for (ImportColonneDecorator deco : decos) {
+			c = SessionUtils
+				.getCurrentGatsbiContexteForEntiteId(deco.getColonne()
+					.getChamp().getChampEntite().getEntite().getEntiteId());
+			deco.setCanDelete(!c.isChampIdRequired(deco.getColonne().getChamp().getChampEntite().getId()));
 		}
 		return decos;
-
 	}
-	
+		
 	// prelevement specific
 	public static void addPrelevementComplementaryIds(List<Integer> ids) {
 		// unite quantite
@@ -453,7 +495,7 @@ public class GatsbiController {
 	
 	
 	// test only
-	public static ContexteDTO mockOneContexte() throws JsonParseException, JsonMappingException, IOException {
+	public static ContexteDTO mockOneContexteTEST() throws JsonParseException, JsonMappingException, IOException {
 		  
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -463,5 +505,4 @@ public class GatsbiController {
 		   
 		   return cont;
 	   }
-
 }
