@@ -29,8 +29,8 @@
         "champOrdre": 2,
         "contexteChampEntiteId": 12,
         "isChampReferToThesaurus": "nature",
-        "obligatoire": true,
-	    "visible": true,
+        "obligatoire": false,
+	    "visible": false,
         "rThesauruses": [
           {
             "champId": 24,
@@ -61,7 +61,7 @@
         "champId": 44,
         "champOrdre": 4,
         "contexteChampEntiteId": 14,
-        "obligatoire": true,
+        "obligatoire": false,
         "visible": false
       },
       {
@@ -79,8 +79,8 @@
         "champOrdre": 6,
         "contexteChampEntiteId": 16,
         "isChampReferToThesaurus": "prelevement_type",
-        "obligatoire": false,
-	    "visible": true,
+        "obligatoire": true,
+	    "visible": false,
         "rThesauruses": [
           {
             "champId": 31,
@@ -113,7 +113,7 @@
         "contexteChampEntiteId": 18,
         "isChampReferToThesaurus": "risque",
         "obligatoire": true,
-		"visible": true,
+		"visible": false,
         "rThesauruses": [
 		{
             "champId": 249,
@@ -164,7 +164,7 @@
         "champOrdre": 13,
         "contexteChampEntiteId": 22,
         "isChampReferToThesaurus": "condit_milieu",
-        "obligatoire": false,
+        "obligatoire": true,
 		"visible": false,
         "rThesauruses": [
           {
@@ -182,7 +182,7 @@
         "contexteChampEntiteId": 24,
         "isChampReferToThesaurus": "consent_type",
         "obligatoire": false,
-		"visible": true,
+		"visible": false,
         "rThesauruses": [
           {
             "champId": 26,
@@ -200,7 +200,7 @@
         "contexteChampEntiteId": 25,
         "dateFormat": "dd/MM/yyyy",
         "obligatoire": false,
-        "visible": true
+        "visible": false
       },
       {
 	"__comment": "Cong prel",  
@@ -208,7 +208,7 @@
         "champOrdre": 16,
         "contexteChampEntiteId": 26,
         "obligatoire": false,
-        "visible": true
+        "visible": false
       },
       {
 	"__comment": "Date Depart",  
@@ -265,9 +265,9 @@
         "champId": 256,
         "champOrdre": 23,
         "contexteChampEntiteId": 34,
-        "obligatoire": false,
+        "obligatoire": true,
         "isChampReferToThesaurus": "non_conformite_arrivee",
-        "visible": false,
+        "visible": true,
         "rThesauruses": [
           {
             "champId": 257,
@@ -283,7 +283,7 @@
         "champOrdre": 24,
         "contexteChampEntiteId": 26,
         "obligatoire": false,
-        "visible": true
+        "visible": false
       }
    ]
 }

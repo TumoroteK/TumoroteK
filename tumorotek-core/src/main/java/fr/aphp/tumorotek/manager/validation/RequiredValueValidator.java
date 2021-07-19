@@ -106,7 +106,9 @@ public class RequiredValueValidator implements Validator {
 	public List<String> translateChpIdToFieldName() {
 		List<String> fNames = new ArrayList<String>();
 		for(Integer chpId : requiredFieldChpIds) {
-			fNames.add(chpIdNameMap.get(chpId));
+			if (chpIdNameMap.containsKey(chpId)) {
+				fNames.add(chpIdNameMap.get(chpId));
+			}
 		}
 		return fNames;
 	}

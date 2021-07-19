@@ -43,7 +43,9 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
       GatsbiController.showOrhideItems(itemDivs, blockDivs, c); // TODO replace by collection.contexte
       
    // prelevement specific
-      groupLaboInter.setVisible(c.getSiteInter());
+      if (groupLaboInter != null) {
+    	  groupLaboInter.setVisible(c!= null && c.getSiteInter());
+      }
       
       hideEmptyGroupboxes();
    }

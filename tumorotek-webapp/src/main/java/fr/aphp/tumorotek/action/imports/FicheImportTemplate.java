@@ -1127,7 +1127,8 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 		Clients.clearBusy();
 	}
 
-	public void onClick$importer(){
+	public void onClick$importer(){		
+		
 		Media[] medias;
 		// fileInputStream = null;
 		// fileInputStreamCorrectif = null;
@@ -1186,6 +1187,11 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 			// Workbook wb = null;
 			sheetName = e.getData() == null ? uploadedWb.getSheetAt(0).getSheetName() : (String) e.getData();
 			try{
+				
+				// gatsbi: contextes ajoutés à la banque lors de la connexion 
+				// doit parvenir aux procédures d'import du core
+				this.importTemplate.setBanque(SessionUtils.getCurrentBanque(sessionScope));
+				
 				if(importTemplate.getDeriveParentEntite() == null){
 					historique = ManagerLocator.getImportManager().importFileManager(this.importTemplate,
 							SessionUtils.getLoggedUser(sessionScope),

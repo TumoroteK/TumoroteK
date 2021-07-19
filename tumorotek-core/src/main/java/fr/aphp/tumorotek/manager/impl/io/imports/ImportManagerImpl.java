@@ -1661,7 +1661,7 @@ public class ImportManagerImpl implements ImportManager
 
 							// create
 							if(prlvt.getPrelevementId() == null){
-								prelevementManager.createObjectWithNonConformitesManager(prlvt, prlvt.getBanque(), prlvt.getNature(),
+								prelevementManager.createObjectWithNonConformitesManager(prlvt, null, prlvt.getNature(),
 										prlvt.getMaladie(), prlvt.getConsentType(), prlvt.getPreleveur(), prlvt.getServicePreleveur(),
 										prlvt.getPrelevementType(), prlvt.getConditType(), prlvt.getConditMilieu(), prlvt.getTransporteur(),
 										prlvt.getOperateur(), prlvt.getQuantiteUnite(), null, !toUpdate.isEmpty() ? toUpdate : null,

@@ -76,7 +76,7 @@ public class ThesaurusValueDTO implements Serializable {
 	
 	@JsonIgnore
 	public ThesaurusValue toThesaurusValue() {
-		return new ThesaurusValue(champId, templateThesaurusId, templateThesaurusId, thesaurusValue, position);
+		return new ThesaurusValue(champId, templateThesaurusId, thesaurusId, thesaurusValue, position);
 	}
 	
 	

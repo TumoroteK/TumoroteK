@@ -347,10 +347,7 @@ public final class ConnexionUtils
 		try {
 			ContexteDTO c = GatsbiController.mockOneContexteTEST();
 
-			Etude e = new Etude();
-			e.addToContextes(c.toContexte());
-
-			bank.setEtude(e);
+			bank.getEtude().addToContextes(c.toContexte());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
