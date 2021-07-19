@@ -63,6 +63,7 @@ import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.constraints.ConstWord;
 import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
 import fr.aphp.tumorotek.action.imports.ImportChampDecorator;
+import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.manager.ConfigManager;
 import fr.aphp.tumorotek.manager.coeur.annotation.ChampAnnotationManager;
@@ -83,6 +84,8 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * Classe gérant la création et l'édition des lignes d'une étiquette.
  * Créée le 15/06/2011.
  * @author Pierre VENTADOUR.
+ * 
+ * @version 2.3.0-gatsbi
  *
  */
 public class FicheLigneEtiquetteModale extends AbstractFicheCombineController
@@ -476,7 +479,9 @@ public class FicheLigneEtiquetteModale extends AbstractFicheCombineController
       if(selectedEntite != null){
 
          final List<AbstractTKChamp> listChamps = new ArrayList<>();
-         final List<ChampEntite> ces = ManagerLocator.getChampEntiteManager().findByEntiteAndImportManager(selectedEntite, true);
+         // @since gatsbi
+         // final List<ChampEntite> ces = ManagerLocator.getChampEntiteManager().findByEntiteAndImportManager(selectedEntite, true);
+         final List<ChampEntite> ces = GatsbiController.findByEntiteImportAndIsNullableManager(selectedEntite, true, null);
          final List<ChampAnnotation> chAnnoList =
             ManagerLocator.getManager(ChampAnnotationManager.class).findByEntiteManager(selectedEntite);
          final List<ChampDelegue> chDelegueList = ManagerLocator.getManager(ChampDelegueManager.class)
