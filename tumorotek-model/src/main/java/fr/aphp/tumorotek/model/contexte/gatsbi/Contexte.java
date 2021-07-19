@@ -196,5 +196,14 @@ public class Contexte implements Serializable {
 			}
 		}
 		return false;
+	}
+	
+	public boolean isChampIdVisible(Integer id) {
+		for (ChampEntite c : champEntites) {
+			if (c.getChampId().equals(id)) {
+				return c.getVisible();
+			}
+		}
+		return true;
 	}	
 }

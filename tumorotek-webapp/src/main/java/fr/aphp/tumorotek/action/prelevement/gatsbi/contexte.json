@@ -129,7 +129,7 @@
         "champOrdre": 9,
         "contexteChampEntiteId": 20,
         "obligatoire": false,
-        "visible": false
+        "visible": true
       },
       {
 	"__comment": "Preleveur",

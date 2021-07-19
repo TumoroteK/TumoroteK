@@ -488,7 +488,7 @@ public class GatsbiController {
 		
 	// prelevement specific
 	public static void addPrelevementComplementaryIds(List<Integer> ids) {
-		// unite quantite
+
 		if (ids.contains(40)) ids.add(41); // unite adds unite id
 		if (ids.contains(256)) ids.add(257); // non conformite adds raisons no conf
 	}
