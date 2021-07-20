@@ -505,4 +505,21 @@ public class GatsbiController {
 		   
 		   return cont;
 	   }
+
+	/**
+	 * Vérifie la visbilité d'un champ entité en 
+	 *  - retrouvant le contexte
+	 *  - puis la visibilité du champ
+	 * @param c ChampEntite
+	 * @return visibilité
+	 */
+	public static boolean isChampEntiteVisible(ChampEntite c) {
+		if (c != null) {
+			Contexte contexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(c.getEntite().getEntiteId());
+			if (contexte != null) {
+				return contexte.isChampIdVisible(c.getId());
+			}
+		}
+		return true;
+	}
 }

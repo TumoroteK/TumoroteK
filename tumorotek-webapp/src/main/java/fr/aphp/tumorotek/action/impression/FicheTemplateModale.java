@@ -130,7 +130,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * Controlleur de la fiche template d'impression dans l'application
  * 
  * @author 
- * @version 2.2.0
+ * @version 2.3.0-gatsbi
  */
 public class FicheTemplateModale extends AbstractImpressionController
 {
@@ -282,14 +282,20 @@ public class FicheTemplateModale extends AbstractImpressionController
 				}else{
 					final BlocImpressionDecorator deco = new BlocImpressionDecorator(bloc.getBlocImpression(), null, template,
 							SessionUtils.getCurrentContexte());
-					blocImpressionsDecorated.add(deco);
-					++i;
+					 // @since gatsbi, n'ajoute pas un bloc impression duquel tous les champs seraient invisibles
+			         if (!deco.isEmpty()) {
+			        	 blocImpressionsDecorated.add(deco);
+			         }
+			        ++i;
 				}
 			}else if(bloc != null){
 				// s'il ne reste que des blocs
 				final BlocImpressionDecorator deco = new BlocImpressionDecorator(bloc.getBlocImpression(), null, template, 
 						SessionUtils.getCurrentContexte());
-				blocImpressionsDecorated.add(deco);
+				// @since gatsbi, n'ajoute pas un bloc impression duquel tous les champs seraient invisibles
+		        if (!deco.isEmpty()) {
+		        	blocImpressionsDecorated.add(deco);
+		        }
 				++i;
 			}else if(anno != null){
 				// s'il ne reste que des annotations
@@ -1283,7 +1289,7 @@ public class FicheTemplateModale extends AbstractImpressionController
 		}
 
 		if(prelevement.getQuantiteUnite() != null){
-			tmp = tmp + prelevement.getQuantiteUnite().getUnite();
+			tmp = tmp + prelevement.getQuantiteUnite().getNom();
 		}
 		final CoupleValeur cp6 = new CoupleValeur(Labels.getLabel("Champ.Prelevement.Quantite"), tmp);
 		// conforme à l'arrivée
@@ -1430,7 +1436,7 @@ public class FicheTemplateModale extends AbstractImpressionController
 	public void createBlocPrincipalEchantillon(final Echantillon echantillon){
 		final CoupleValeur cp1 = new CoupleValeur(Labels.getLabel("Champ.Echantillon.Code"), echantillon.getCode());
 		final CoupleValeur cp2 =
-				new CoupleValeur(Labels.getLabel("Champ.Echantillon.EchantillonType"), echantillon.getEchantillonType().getType());
+				new CoupleValeur(Labels.getLabel("Champ.Echantillon.EchantillonType"), echantillon.getEchantillonType().getNom());
 		final LigneParagraphe li1 = new LigneParagraphe("li1", new CoupleValeur[] {cp1, cp2});
 		final Paragraphe par1 =
 				new Paragraphe(Labels.getLabel("bloc.echantillon.principal"), new LigneParagraphe[] {li1}, null, null, null);
@@ -1717,7 +1723,7 @@ public class FicheTemplateModale extends AbstractImpressionController
 	 */
 	public void createBlocPrincipalProdDerive(final ProdDerive derive){
 		final CoupleValeur cp1 = new CoupleValeur(Labels.getLabel("Champ.ProdDerive.Code"), derive.getCode());
-		final CoupleValeur cp2 = new CoupleValeur(Labels.getLabel("Champ.ProdDerive.ProdType"), derive.getProdType().getType());
+		final CoupleValeur cp2 = new CoupleValeur(Labels.getLabel("Champ.ProdDerive.ProdType"), derive.getProdType().getNom());
 		final LigneParagraphe li1 = new LigneParagraphe("li1", new CoupleValeur[] {cp1, cp2});
 		final Paragraphe par1 =
 				new Paragraphe(Labels.getLabel("bloc.prodDerive.principal"), new LigneParagraphe[] {li1}, null, null, null);
@@ -1752,7 +1758,7 @@ public class FicheTemplateModale extends AbstractImpressionController
 				final CoupleValeur cp1 = new CoupleValeur(Labels.getLabel("Champ.Prelevement.Code"), parentPrlvt.getCode());
 				// type
 				final CoupleValeur cp2 =
-						new CoupleValeur(Labels.getLabel("Champ.Prelevement.Nature"), parentPrlvt.getNature().getNature());
+						new CoupleValeur(Labels.getLabel("Champ.Prelevement.Nature"), parentPrlvt.getNature().getNom());
 				li1 = new LigneParagraphe("", new CoupleValeur[] {cp1, cp2});
 
 				// date
@@ -1779,7 +1785,7 @@ public class FicheTemplateModale extends AbstractImpressionController
 					sb.append("-");
 				}
 				if(parentPrlvt.getQuantiteUnite() != null){
-					sb.append(parentPrlvt.getQuantiteUnite().getUnite());
+					sb.append(parentPrlvt.getQuantiteUnite().getNom());
 				}else{
 					sb.append("-");
 				}
@@ -1796,7 +1802,7 @@ public class FicheTemplateModale extends AbstractImpressionController
 				final CoupleValeur cp1 = new CoupleValeur(Labels.getLabel("Champ.Echantillon.Code"), parentEchan.getCode());
 				// type
 				final CoupleValeur cp2 =
-						new CoupleValeur(Labels.getLabel("Champ.Echantillon.EchantillonType"), parentEchan.getEchantillonType().getType());
+						new CoupleValeur(Labels.getLabel("Champ.Echantillon.EchantillonType"), parentEchan.getEchantillonType().getNom());
 				li1 = new LigneParagraphe("", new CoupleValeur[] {cp1, cp2});
 
 				// emplacement
@@ -1841,7 +1847,7 @@ public class FicheTemplateModale extends AbstractImpressionController
 				final CoupleValeur cp1 = new CoupleValeur(Labels.getLabel("Champ.ProdDerive.Code"), parentDerive.getCode());
 				// type
 				final CoupleValeur cp2 =
-						new CoupleValeur(Labels.getLabel("Champ.ProdDerive.ProdType"), parentDerive.getProdType().getType());
+						new CoupleValeur(Labels.getLabel("Champ.ProdDerive.ProdType"), parentDerive.getProdType().getNom());
 				li1 = new LigneParagraphe("", new CoupleValeur[] {cp1, cp2});
 
 				// emplacement
@@ -1864,7 +1870,7 @@ public class FicheTemplateModale extends AbstractImpressionController
 					sb.append("-");
 				}
 				if(parentDerive.getQuantiteUnite() != null){
-					sb.append(parentDerive.getQuantiteUnite().getUnite());
+					sb.append(parentDerive.getQuantiteUnite().getNom());
 				}else{
 					sb.append("-");
 				}
@@ -1889,7 +1895,7 @@ public class FicheTemplateModale extends AbstractImpressionController
 				sb.append("-");
 			}
 			if(derive.getTransformation().getQuantiteUnite() != null){
-				sb.append(derive.getTransformation().getQuantiteUnite().getUnite());
+				sb.append(derive.getTransformation().getQuantiteUnite().getNom());
 			}else{
 				sb.append("-");
 			}
@@ -1961,7 +1967,7 @@ public class FicheTemplateModale extends AbstractImpressionController
 		final CoupleValeur cp5 = new CoupleValeur(Labels.getLabel("Champ.ProdDerive.DateStock"), tmp);
 		// qualite
 		if(derive.getProdQualite() != null){
-			tmp = derive.getProdQualite().getProdQualite();
+			tmp = derive.getProdQualite().getNom();
 		}else{
 			tmp = "";
 		}
@@ -2287,7 +2293,7 @@ public class FicheTemplateModale extends AbstractImpressionController
 
 		// Examen
 		if(cession.getCessionExamen() != null){
-			tmp = cession.getCessionExamen().getExamen();
+			tmp = cession.getCessionExamen().getNom();
 		}else{
 			tmp = "";
 		}
@@ -2424,7 +2430,7 @@ public class FicheTemplateModale extends AbstractImpressionController
 
 		// DestructionMotif
 		if(cession.getDestructionMotif() != null){
-			tmp = cession.getDestructionMotif().getMotif();
+			tmp = cession.getDestructionMotif().getNom();
 		}else{
 			tmp = "";
 		}
@@ -2866,15 +2872,15 @@ public class FicheTemplateModale extends AbstractImpressionController
 						val.append("-");
 					}
 				}else if(champs.get(j).getNom().equals("NatureId")){
-					val.append(prlvt.getNature().getNature());
+					val.append(prlvt.getNature().getNom());
 				}else if(champs.get(j).getNom().equals("PrelevementTypeId")){
 					if(prlvt.getPrelevementType() != null){
-						val.append(prlvt.getPrelevementType().getType());
+						val.append(prlvt.getPrelevementType().getNom());
 					}else{
 						val.append("-");
 					}
 				}else if(champs.get(j).getNom().equals("ConsentTypeId")){
-					val.append(prlvt.getConsentType().getType());
+					val.append(prlvt.getConsentType().getNom());
 				}else if(champs.get(j).getNom().equals("NbEchantillons")){
 					val.append(PrelevementUtils.getNbEchanRestants(prlvt) + "/"
 							+ ManagerLocator.getPrelevementManager().getEchantillonsManager(prlvt).size());
@@ -2962,7 +2968,7 @@ public class FicheTemplateModale extends AbstractImpressionController
 					val.append(ObjectTypesFormatters.dateRenderer2(echan.getDateStock()));
 				}else if(champs.get(j).getNom().equals("EchantillonTypeId")){
 					if(echan.getEchantillonType() != null){
-						val.append(echan.getEchantillonType().getType());
+						val.append(echan.getEchantillonType().getNom());
 					}else{
 						val.append("-");
 					}
@@ -3006,7 +3012,7 @@ public class FicheTemplateModale extends AbstractImpressionController
 					val.append(renderer.getDelaiCgl(echan));
 				}else if(champs.get(j).getNom().equals("EchanQualiteId")){
 					if(echan.getEchanQualite() != null){
-						val.append(echan.getEchanQualite().getEchanQualite());
+						val.append(echan.getEchanQualite().getNom());
 					}else{
 						val.append("-");
 					}
@@ -3078,7 +3084,7 @@ public class FicheTemplateModale extends AbstractImpressionController
 					}
 				}else if(champs.get(j).getNom().equals("ProdTypeId")){
 					if(prod.getProdType() != null){
-						val.append(prod.getProdType().getType());
+						val.append(prod.getProdType().getNom());
 					}else{
 						val.append("-");
 					}

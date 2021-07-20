@@ -1069,8 +1069,13 @@ public class FicheTemplate extends AbstractImpressionController
       for(int i = 0; i < blocImpressions.size(); i++){
          final BlocImpressionDecorator deco = new BlocImpressionDecorator(blocImpressions.get(i), null, 
         		 template, SessionUtils.getCurrentContexte());
-         blocImpressionsDecorated.add(deco);
+         
+         // @since gatsbi, n'ajoute pas un bloc impression duquel tous les champs seraient invisibles
+         if (!deco.isEmpty()) {
+        	 blocImpressionsDecorated.add(deco);
+         }
       }
+      
 
       // on récupère toutes les tables d'annotations pour
       // l'entité et la banque

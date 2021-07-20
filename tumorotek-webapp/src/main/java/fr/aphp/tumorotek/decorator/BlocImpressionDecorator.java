@@ -43,6 +43,7 @@ import java.util.Set;
 import org.zkoss.util.resource.Labels;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
+import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
 import fr.aphp.tumorotek.model.contexte.EContexte;
@@ -61,6 +62,8 @@ import fr.aphp.tumorotek.model.io.export.ChampEntite;
  * 
  * @author Pierre VENTADOUR
  * @author Mathieu BARTHELEMY
+ * 
+ * @version 2.3.0-gatsbi
  *
  */
 public class BlocImpressionDecorator
@@ -229,6 +232,10 @@ public class BlocImpressionDecorator
 			  }
     	  }
       }
+            
+      // @since gatsbi intercepte et filtre les champs
+      champs.removeIf(c -> !GatsbiController.isChampEntiteVisible(c));
+      champEntites.removeIf(c -> !GatsbiController.isChampEntiteVisible(c));
 
       final Iterator<ChampEntite> it = champs.iterator();
       int i = 0;
@@ -375,6 +382,14 @@ public class BlocImpressionDecorator
 
    public void setChampEntites(final List<ChampEntite> champE){
       this.champEntites = champE;
+   }
+   
+   /**
+    * @since 2.3.0-gatsbi
+    * @return
+    */
+   public boolean isEmpty() {
+	   return champEntites.isEmpty();
    }
 
 }
