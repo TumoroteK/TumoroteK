@@ -21,7 +21,9 @@
         "champOrdre": 1,
         "contexteChampEntiteId": 11,
         "obligatoire": true,
-        "visible": true
+        "visible": true,
+        "inTableau": false,
+	    "ordreTableau": 99
       },
       {
 	"__comment": "nature",
@@ -30,7 +32,8 @@
         "contexteChampEntiteId": 12,
         "isChampReferToThesaurus": "nature",
         "obligatoire": false,
-	    "visible": false,
+	    "visible": true,
+	    "inTableau": true,
         "rThesauruses": [
           {
             "champId": 24,
@@ -54,7 +57,9 @@
         "champOrdre": 3,
         "contexteChampEntiteId": 13,
         "obligatoire": false,
-        "visible": false
+        "visible": true,
+        "inTableau": true,
+	    "ordreTableau": 25
       },
       {
 	"__comment": "nda",
@@ -62,7 +67,9 @@
         "champOrdre": 4,
         "contexteChampEntiteId": 14,
         "obligatoire": false,
-        "visible": false
+        "visible": true,
+        "inTableau": true,
+	    "ordreTableau": 24
       },
       {
 	"__comment": "Date prelevement",
@@ -71,7 +78,9 @@
         "contexteChampEntiteId": 15,
         "dateFormat": "dd/MM/yyyy",
         "obligatoire": true,
-        "visible": false
+        "visible": true,
+        "inTableau": true,
+	    "ordreTableau": 23
       },
       {
 	"__comment": "Type prelevement",
@@ -80,7 +89,9 @@
         "contexteChampEntiteId": 16,
         "isChampReferToThesaurus": "prelevement_type",
         "obligatoire": true,
-	    "visible": false,
+	    "visible": true,
+	    "inTableau": true,
+	    "ordreTableau": 22,
         "rThesauruses": [
           {
             "champId": 31,
@@ -104,7 +115,9 @@
         "champOrdre": 7,
         "contexteChampEntiteId": 17,
         "obligatoire": false,
-        "visible": false
+        "visible": true,
+        "inTableau": true,
+	    "ordreTableau": 21
       },
       {
 	"__comment": "Risques",
@@ -114,6 +127,8 @@
         "isChampReferToThesaurus": "risque",
         "obligatoire": true,
 		"visible": false,
+		"inTableau": true,
+	    "ordreTableau": 20,
         "rThesauruses": [
 		{
             "champId": 249,
@@ -129,7 +144,9 @@
         "champOrdre": 9,
         "contexteChampEntiteId": 20,
         "obligatoire": false,
-        "visible": true
+        "visible": true,
+        "inTableau": true,
+	    "ordreTableau": 19
       },
       {
 	"__comment": "Preleveur",
@@ -137,7 +154,9 @@
         "champOrdre": 10,
         "contexteChampEntiteId": 19,
         "obligatoire": false,
-        "visible": false
+        "visible": true,
+        "inTableau": true,
+	    "ordreTableau": 18
       },
       {
 	"__comment": "Condit Type",
@@ -147,6 +166,8 @@
         "isChampReferToThesaurus": "condit_type",
         "obligatoire": false,
 		"visible": false,
+		"inTableau": true,
+	    "ordreTableau": 17,
         "rThesauruses": [
         ]
       },
@@ -156,7 +177,9 @@
         "champOrdre": 12,
         "contexteChampEntiteId": 23,
         "obligatoire": false,
-        "visible": false
+        "visible": true,
+        "inTableau": true,
+	    "ordreTableau": 16
       },
       {
 	"__comment": "Condit Milieu",
@@ -166,6 +189,8 @@
         "isChampReferToThesaurus": "condit_milieu",
         "obligatoire": true,
 		"visible": false,
+		"inTableau": true,
+	    "ordreTableau": 15,
         "rThesauruses": [
           {
             "champId": 33,
@@ -183,6 +208,8 @@
         "isChampReferToThesaurus": "consent_type",
         "obligatoire": false,
 		"visible": false,
+		"inTableau": true,
+	    "ordreTableau": 14,
         "rThesauruses": [
           {
             "champId": 26,
@@ -200,7 +227,9 @@
         "contexteChampEntiteId": 25,
         "dateFormat": "dd/MM/yyyy",
         "obligatoire": false,
-        "visible": false
+        "visible": true,
+        "inTableau": true,
+	    "ordreTableau": 13
       },
       {
 	"__comment": "Cong prel",  
@@ -208,7 +237,9 @@
         "champOrdre": 16,
         "contexteChampEntiteId": 26,
         "obligatoire": false,
-        "visible": false
+        "visible": true,
+        "inTableau": true,
+	    "ordreTableau": 12
       },
       {
 	"__comment": "Date Depart",  
@@ -217,7 +248,9 @@
         "contexteChampEntiteId": 26,
         "dateFormat": "dd/MM/yyyy",
         "obligatoire": false,
-        "visible": false
+        "visible": true,
+        "inTableau": true,
+	    "ordreTableau": 11
       },
       {
 	"__comment": "Transporteur",
@@ -225,7 +258,9 @@
         "champOrdre": 18,
         "contexteChampEntiteId": 28,
         "obligatoire": false,
-        "visible": false
+        "visible": true,
+        "inTableau": true,
+	    "ordreTableau": 10
       },
       {
 	"__comment": "Temp transp",
@@ -233,7 +268,9 @@
         "champOrdre": 19,
         "contexteChampEntiteId": 29,
         "obligatoire": false,
-        "visible": false
+        "visible": true,
+        "inTableau": true,
+	    "ordreTableau": 9
       },
       {
 	"__comment": "Date Arrivee",        
@@ -242,7 +279,9 @@
         "contexteChampEntiteId": 30,
         "dateFormat": "dd/MM/yyyy",
         "obligatoire": false,
-        "visible": false
+        "visible": true,
+        "inTableau": true,
+	    "ordreTableau": 8
       },
       {
 	"__comment": "Operateur", 
@@ -250,7 +289,9 @@
         "champOrdre": 21,
         "contexteChampEntiteId": 31,
         "obligatoire": false,
-        "visible": false
+        "visible": true,
+        "inTableau": true,
+	    "ordreTableau": 7
       },
       {
 	"__comment": "Quantite", 
@@ -258,7 +299,9 @@
         "champOrdre": 22,
         "contexteChampEntiteId": 32,
         "obligatoire": false,
-        "visible": false
+        "visible": true,
+        "inTableau": true,
+	    "ordreTableau": 6
       },
       {
 	"__comment": "Non conformite Arrivee",  
@@ -268,6 +311,8 @@
         "obligatoire": true,
         "isChampReferToThesaurus": "non_conformite_arrivee",
         "visible": true,
+        "inTableau": true,
+	    "ordreTableau": 5,
         "rThesauruses": [
           {
             "champId": 257,
@@ -283,7 +328,9 @@
         "champOrdre": 24,
         "contexteChampEntiteId": 26,
         "obligatoire": false,
-        "visible": false
+        "visible": true,
+        "inTableau": true,
+	    "ordreTableau": 4
       }
    ]
 }

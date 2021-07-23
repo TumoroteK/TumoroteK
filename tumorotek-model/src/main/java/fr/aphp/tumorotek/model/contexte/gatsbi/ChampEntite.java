@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ChampEntite implements Serializable {
+public class ChampEntite implements Serializable, Comparable<ChampEntite> {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -52,13 +52,16 @@ public class ChampEntite implements Serializable {
 	private String isChampReferToThesaurus;
 	private Boolean obligatoire = false;
 	private Boolean visible = true;
+	private Boolean inTableau = false;
+	private Integer ordreTableau;
 	private List<ThesaurusValue> thesaurusValues = new ArrayList<ThesaurusValue>();
 	
 	public ChampEntite() {
 	}
 	
 	public ChampEntite(Integer champId, Integer champOrdre, Integer contexteChampEntiteId, String dateFormat,
-			String isChampReferToThesaurus, Boolean obligatoire, Boolean visible,
+			String isChampReferToThesaurus, Boolean obligatoire, Boolean visible, 
+			Boolean inTableau, Integer ordreTableau,
 			List<ThesaurusValue> thesaurusValues) {
 		super();
 		this.champId = champId;
@@ -68,6 +71,8 @@ public class ChampEntite implements Serializable {
 		this.isChampReferToThesaurus = isChampReferToThesaurus;
 		this.obligatoire = obligatoire;
 		this.visible = visible;
+		this.inTableau = inTableau;
+		this.ordreTableau = ordreTableau;
 		this.thesaurusValues = thesaurusValues;
 	}
 
@@ -112,7 +117,7 @@ public class ChampEntite implements Serializable {
 	}
 	
 	public Boolean getObligatoire() {
-		return obligatoire;
+		return obligatoire != null && obligatoire;
 	}
 	
 	public void setObligatoire(Boolean _o) {
@@ -120,7 +125,7 @@ public class ChampEntite implements Serializable {
 	}
 	
 	public Boolean getVisible() {
-		return visible;
+		return visible != null && visible;
 	}
 	
 	public void setVisible(Boolean _v) {
@@ -135,6 +140,22 @@ public class ChampEntite implements Serializable {
 		this.thesaurusValues = _v;
 	}
 	
+	public Boolean getInTableau() {
+		return inTableau != null && inTableau;
+	}
+
+	public void setInTableau(Boolean _i) {
+		this.inTableau = _i;
+	}
+
+	public Integer getOrdreTableau() {
+		return ordreTableau;
+	}
+
+	public void setOrdreTableau(Integer _o) {
+		this.ordreTableau = _o;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == this) {
@@ -155,5 +176,17 @@ public class ChampEntite implements Serializable {
         int result = 1;
     	result = prime * result + ((champId == null) ? 0 : champId.hashCode());
     	return result;
+	}
+
+	@Override
+	public int compareTo(ChampEntite arg0) {
+		if (ordreTableau != null && arg0 != null && arg0.getOrdreTableau() != null) {
+			return ordreTableau.compareTo(arg0.getOrdreTableau());
+		} else if (ordreTableau == null) {
+			return 1;
+		} else if (arg0 == null || arg0.getOrdreTableau() == null) {
+			return -1; // nulls last
+		}
+		return 0;
 	}
 }

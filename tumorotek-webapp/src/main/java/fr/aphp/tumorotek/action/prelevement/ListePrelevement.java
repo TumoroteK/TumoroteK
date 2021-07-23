@@ -86,13 +86,13 @@ public class ListePrelevement extends AbstractListeController2
    private List<Prelevement> selectedObjects = new ArrayList<>();
 
    // Critères de recherche.
-   private Radio codePrlvt;
-   private Radio patientPrlvt;
-   private Textbox codeBoxPrlvt;
-   private Textbox nomPatientPrlvt;
-   private Column nbEchantillonsColumn;
+   protected Radio codePrlvt;
+   protected Radio patientPrlvt;
+   protected Textbox codeBoxPrlvt;
+   protected Textbox nomPatientPrlvt;
+   protected Column nbEchantillonsColumn;
 
-   private Button findDossierExterne;
+   protected Button findDossierExterne;
 
    // Variables formulaire pour les critères.
    private String searchCode;
@@ -102,8 +102,8 @@ public class ListePrelevement extends AbstractListeController2
    private boolean canAccessPatient;
 
    protected PrelevementRowRenderer listObjectsRenderer = new PrelevementRowRenderer(true, false);
-   private PrelevementsNbEchantillonsComparator comparatorAsc = new PrelevementsNbEchantillonsComparator(true);
-   private PrelevementsNbEchantillonsComparator comparatorDesc = new PrelevementsNbEchantillonsComparator(false);
+   protected PrelevementsNbEchantillonsComparator comparatorAsc = new PrelevementsNbEchantillonsComparator(true);
+   protected PrelevementsNbEchantillonsComparator comparatorDesc = new PrelevementsNbEchantillonsComparator(false);
 
    public String getSearchCode(){
       return searchCode;
@@ -129,6 +129,16 @@ public class ListePrelevement extends AbstractListeController2
       if(arg != null && arg.containsKey("renderer")){
          setListObjectsRenderer((TKSelectObjectRenderer<? extends TKdataObject>) arg.get("renderer"));
       }
+      
+	// @since gatsbi
+	try {
+		drawColumnsForVisibleChampEntites();
+	} catch (Exception e) {
+		// une erreur inattendue levée dans la récupération 
+		// ou le rendu d'une propriété prel
+		// va arrêter le rendu du reste du tableau
+		throw new RuntimeException(e);
+	}
 
       nbEchantillonsColumn.setSortAscending(comparatorAsc);
       nbEchantillonsColumn.setSortDescending(comparatorDesc);
@@ -136,6 +146,15 @@ public class ListePrelevement extends AbstractListeController2
       setOnGetEventName("onGetPrelevementsFromSelection");
 
       listObjectsRenderer.setEmetteurs(SessionUtils.getEmetteursInterfacages(sessionScope));
+   }
+   
+   /**
+    * Cette méthode de dessin dynamique des colonnes est surchargée 
+    * par Gatsbi
+    * @since 2.3.0-gatsbi
+    */
+	protected void drawColumnsForVisibleChampEntites() 
+			throws ClassNotFoundException, InstantiationException, IllegalAccessException {
    }
 
    public void setListObjectsRenderer(final TKSelectObjectRenderer<? extends TKdataObject> listObjectsRenderer){

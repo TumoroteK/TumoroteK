@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.model.contexte.gatsbi;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -206,4 +207,18 @@ public class Contexte implements Serializable {
 		}
 		return true;
 	}	
+	
+	public List<Integer> getChampEntiteInTableauOrdered() {	
+		List<Integer> ids = new ArrayList<Integer>();
+		
+		Collections.sort(champEntites);
+		
+		for (ChampEntite c : champEntites) {
+			if (c.getVisible() && c.getInTableau()) {
+				ids.add(c.getChampId());
+			}
+		}		
+		return ids;
+	}
+	
 }

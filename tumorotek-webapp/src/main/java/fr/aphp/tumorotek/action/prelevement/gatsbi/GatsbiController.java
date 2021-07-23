@@ -123,7 +123,6 @@ public class GatsbiController {
 		"consentTypeDiv",
 		"consentDateDiv",
 		// transfert site stockage
-		"congPrelDiv",
 		"dateDepartDiv",
 		"transporteurDiv",
 		"tempTranspDiv",

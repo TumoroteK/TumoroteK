@@ -474,7 +474,9 @@ public abstract class AbstractListeController2 extends AbstractController
 			disableObjetsSelectionItems(true);
 
 			getListObjectsRenderer().setCheckAll(false);
-			checkAll.setChecked(false);
+			if (checkAll != null) {
+				checkAll.setChecked(false);
+			}
 			checkOrNotAllElements(false);
 		}
 	}

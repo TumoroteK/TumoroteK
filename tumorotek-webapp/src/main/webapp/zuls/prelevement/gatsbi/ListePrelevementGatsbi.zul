@@ -1,40 +1,41 @@
 <!--
-	* Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
-    * dsi-projet.tk@aphp.fr
-	* 
-	* Ce logiciel est un programme informatique servant à la gestion de 
-	* l'activité de biobanques. 
-	*
-	* Ce logiciel est régi par la licence CeCILL soumise au droit français
-	* et respectant les principes de diffusion des logiciels libres. Vous 
-	* pouvez utiliser, modifier et/ou redistribuer ce programme sous les 
-	* conditions de la licence CeCILL telle que diffusée par le CEA, le 
-	* CNRS et l'INRIA sur le site "http://www.cecill.info". 
-	* En contrepartie de l'accessibilité au code source et des droits de   
-	* copie, de modification et de redistribution accordés par cette 
-	* licence, il n'est offert aux utilisateurs qu'une garantie limitée. 
-	* Pour les mêmes raisons, seule une responsabilité restreinte pèse sur 
-	* l'auteur du programme, le titulaire des droits patrimoniaux et les 
-	* concédants successifs.
-	*
-	* A cet égard  l'attention de l'utilisateur est attirée sur les 
-	* risques associés au chargement,  à l'utilisation,  à la modification 
-	* et/ou au  développement et à la reproduction du logiciel par 
-	* l'utilisateur étant donné sa spécificité de logiciel libre, qui peut 
-	* le rendre complexe à manipuler et qui le réserve donc à des 	
-	* développeurs et des professionnels  avertis possédant  des 
-	* connaissances  informatiques approfondies.  Les utilisateurs sont 
-	* donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
-	* besoins dans des conditions permettant d'assurer la sécurité de leurs
-	* systèmes et ou de leurs données et, plus généralement, à l'utiliser 
-	* et l'exploiter dans les mêmes conditions de sécurité. 
-	*	
-	* Le fait que vous puissiez accéder à cet en-tête signifie que vous 
-	* avez pris connaissance de la licence CeCILL, et que vous en avez 
-	* accepté les termes. 
+ * Copyright ou © ou Copr. Assistance Publique des Hôpitaux de 
+ * PARIS et SESAN
+ * projet-tk@sesan.fr
+ *
+ * Ce logiciel est un programme informatique servant à la gestion de
+ * l'activité de biobanques.
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le
+ * CNRS et l'INRIA sur le site "http://www.cecill.info".
+ * En contrepartie de l'accessibilité au code source et des droits de
+ * copie, de modification et de redistribution accordés par cette
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée.
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les
+ * risques associés au chargement,  à l'utilisation,  à la modification
+ * et/ou au  développement et à la reproduction du logiciel par
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut
+ * le rendre complexe à manipuler et qui le réserve donc à des
+ * développeurs et des professionnels  avertis possédant  des
+ * connaissances  informatiques approfondies.  Les utilisateurs sont
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser
+ * et l'exploiter dans les mêmes conditions de sécurité.
+ *
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous
+ * avez pris connaissance de la licence CeCILL, et que vous en avez
+ * accepté les termes.
 -->
 <window id="lwinPrelevement" border="none"
-	apply="fr.aphp.tumorotek.action.prelevement.ListePrelevement">
+	apply="fr.aphp.tumorotek.action.prelevement.gatsbi.ListePrelevementGatsbi">
 	<panel border="none" sclass="fichePanelv2" collapsible="true"
 		id="listPanel">
 		<panelchildren id="scrollPan">
@@ -46,42 +47,8 @@
 					load-after='findByListCodes.onClick,
 					findByListPatients.onClick'}"
 				rowRenderer="${lwinPrelevement$composer.listObjectsRenderer}">
-				<columns menupopup="auto" sizable="true" width="100%">
-					<column width="40px">
-						<checkbox id="checkAll" />
-					</column>
-					<column width="70px" align="center" />
-					<column label="${c:l('general.code')}"
-						sort="auto(code)" />
-					<column label="${c:l('Entite.Banque')}" 
-						visible="@{lwinPrelevement$composer.isTtesCollection}" />
-					<column label="${c:l('prelevement.patient')}"
-						sort="auto(maladie.patient.nom)" />
-					<column label="${c:l('Champ.Patient.Nip')}" visible="false" />
-					<column label="${c:l('prelevement.maladie')}"
-						visible="@{lwinPrelevement$composer.banqueDefMaladies}"
-						width="150px" />
-					<column
-						label="${c:l('prelevement.datePrelevementCourt')}"
-						sort="auto(datePrelevement)" />
-					<column
-						label="${c:l('Champ.Prelevement.Nature.Nature')}"
-						sort="auto(nature.nom)" />
-					<column label="${c:l('general.diagnostic')}" />
-					<column align="center" sort="auto"
-						id="nbEchantillonsColumn">
-						<vbox align="center">
-							<label
-								value="${c:l('prelevement.nbEchantillons')}"
-								style="font-weight : bold;font-family: Verdana, Arial, Helvetica, sans-serif;" />
-							<label
-								value="${c:l('prelevement.restants.total.stockes')}"
-								style="font-weight : bold;font-family: Verdana, Arial, Helvetica, sans-serif;" />
-						</vbox>
-					</column>
-					<column
-						label="${c:l('Champ.Prelevement.ConsentType')}"
-						sort="auto(consentType.nom)" />
+				<columns id="gridColumns" menupopup="auto" sizable="true" width="100%">
+					
 				</columns>
 				<rows>
 					<row self="@{each='currPrelevement'}"

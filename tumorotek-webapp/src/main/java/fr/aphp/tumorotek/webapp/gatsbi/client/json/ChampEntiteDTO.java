@@ -54,6 +54,8 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite;
 	"isChampReferToThesaurus",
 	"obligatoire",
 	"visible", 
+	"inTableau",
+	"ordreTableau",
 	"rThesauruses"
 })
 public class ChampEntiteDTO implements Serializable {
@@ -67,6 +69,8 @@ public class ChampEntiteDTO implements Serializable {
 	private String isChampReferToThesaurus;
 	private Boolean obligatoire = false;
 	private Boolean visible = true;
+	private Boolean inTableau = false;
+	private Integer ordreTableau;
 	private List<ThesaurusValueDTO> thesaurusValueDTOs = new ArrayList<ThesaurusValueDTO>();
 	
 	@JsonProperty
@@ -132,6 +136,24 @@ public class ChampEntiteDTO implements Serializable {
 		this.visible = _v;
 	}
 	
+	@JsonProperty
+	public Boolean getInTableau() {
+		return inTableau;
+	}
+
+	public void setInTableau(Boolean _t) {
+		this.inTableau = _t;
+	}
+
+	@JsonProperty
+	public Integer getOrdreTableau() {
+		return ordreTableau;
+	}
+
+	public void setOrdreTableau(Integer _o) {
+		this.ordreTableau = _o;
+	}
+
 	@JsonProperty("rThesauruses")
 	public List<ThesaurusValueDTO> getThesaurusValueDTOs() {
 		return thesaurusValueDTOs;
@@ -144,6 +166,7 @@ public class ChampEntiteDTO implements Serializable {
 	public ChampEntite toChampEntite() {
 		return new ChampEntite(champId, champOrdre, contexteChampEntiteId, 
 			dateFormat, isChampReferToThesaurus, obligatoire, visible, 
+			inTableau, ordreTableau,
 			thesaurusValueDTOs
 				.stream().map(v -> v.toThesaurusValue())
 				.collect(Collectors.toList())

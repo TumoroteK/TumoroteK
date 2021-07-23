@@ -35,10 +35,13 @@
  **/
 package fr.aphp.tumorotek.decorator;
 
+import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Hbox;
@@ -50,7 +53,10 @@ import org.zkoss.zul.Vbox;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.controller.AbstractController;
+import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.TKdataObject;
+import fr.aphp.tumorotek.model.contexte.Collaborateur;
+import fr.aphp.tumorotek.model.systeme.Unite;
 
 /**
  * Classe parente des renderers utilisés dans les listes d'affichages des
@@ -61,158 +67,312 @@ import fr.aphp.tumorotek.model.TKdataObject;
  *
  * @author mathieu
  * @since 2.0.10
- * @version 2.2.0
+ * @version 2.3.0-gatsbi
  *
  */
 public class TKSelectObjectRenderer<T extends TKdataObject> implements RowRenderer<T>
 {
 
-   private boolean selectionMode = true;
-   private boolean checkAll = false;
-   protected boolean anonyme = false;
-   private boolean ttesCollections = false;
-   private List<? extends Object> selectedObjects;
+	private boolean selectionMode = true;
+	private boolean checkAll = false;
+	protected boolean anonyme = false;
+	private boolean ttesCollections = false;
+	private List<? extends Object> selectedObjects;
 
-   public TKSelectObjectRenderer(){
-      super();
-   }
+	public TKSelectObjectRenderer(){
+		super();
+	}
 
-   @Override
-   public void render(final Row row, final TKdataObject data, final int index){
-      drawCheckbox(row, data, index);
-   }
-   
-   /**
-    * Dessine la checkbox
-    * @param row
-    * @param data
-    * @param index
-    * @since 2.2.0
-    */
-   protected void drawCheckbox(final Row row, final TKdataObject data, final int index){
-      if(selectionMode){
-         // checkbox
-         final Checkbox check = new Checkbox();
-         if(checkAll || (selectedObjects != null && selectedObjects.contains(data))){
-            check.setChecked(true);
-         }
-         check.addForward("onCheck", check.getParent(), "onCheckObject", data);
-         check.setParent(row);
-      }
-   }
+	@Override
+	public void render(final Row row, final TKdataObject data, final int index){
+		drawCheckbox(row, data, index);
+	}
 
-   /**
-    * Récupère la date de création système du patient.
-    * @param Parent
-    * @return Date de création.
-    */
-   protected String getDateCreation(final Object obj){
-      final Calendar date = ManagerLocator.getOperationManager().findDateCreationManager(obj);
-      if(date != null){
-         return ObjectTypesFormatters.dateRenderer2(date);
-      }
-      return null;
-   }
+	/**
+	 * Dessine la checkbox
+	 * @param row
+	 * @param data
+	 * @param index
+	 * @since 2.2.0
+	 */
+	protected void drawCheckbox(final Row row, final TKdataObject data, final int index){
+		if(selectionMode){
+			// checkbox
+			final Checkbox check = new Checkbox();
+			if(checkAll || (selectedObjects != null && selectedObjects.contains(data))){
+				check.setChecked(true);
+			}
+			check.addForward("onCheck", check.getParent(), "onCheckObject", data);
+			check.setParent(row);
+		}
+	}
 
-   /**
-    * Crée un bloc anonyme pour cacher la valeur d'un champ.
-    * @return
-    */
-   protected Label createAnonymeBlock(){
-      final Label anonymeLabel = new Label();
-      AbstractController.makeLabelAnonyme(anonymeLabel, false);
+	/**
+	 * Récupère la date de création système du patient.
+	 * @param Parent
+	 * @return Date de création.
+	 */
+	protected String getDateCreation(final Object obj){
+		final Calendar date = ManagerLocator.getOperationManager().findDateCreationManager(obj);
+		if(date != null){
+			return ObjectTypesFormatters.dateRenderer2(date);
+		}
+		return null;
+	}
 
-      return anonymeLabel;
-   }
+	/**
+	 * Crée un bloc anonyme pour cacher la valeur d'un champ.
+	 * @return
+	 */
+	protected Label createAnonymeBlock(){
+		final Label anonymeLabel = new Label();
+		AbstractController.makeLabelAnonyme(anonymeLabel, false);
 
-   /**
-    * Crée un lien anonyme pour cacher la valeur d'un champ.
-    * @return
-    */
-   protected Label createAnonymeLink(){
+		return anonymeLabel;
+	}
 
-      final Label anonymeLabel = new Label();
-      AbstractController.makeLabelAnonyme(anonymeLabel, true);
+	/**
+	 * Crée un lien anonyme pour cacher la valeur d'un champ.
+	 * @return
+	 */
+	protected Label createAnonymeLink(){
 
-      return anonymeLabel;
-   }
+		final Label anonymeLabel = new Label();
+		AbstractController.makeLabelAnonyme(anonymeLabel, true);
 
-   /**
-    * Dessine dans un label le ou les libelles 
-    * l'utilisation d'un tooltip pour afficher la totalité.
-    * @param
-    * @param row Parent
-    */
-   protected void drawListLabel(final List<String> liste, final Row row, final Component parent){
+		return anonymeLabel;
+	}
 
-      if(!liste.isEmpty()){
-         final Label label1 = new Label(liste.get(0));
-         // dessine le label avec un lien vers popup 
-         if(liste.size() > 1){
-            final Hbox labelAndLinkBox = new Hbox();
-            labelAndLinkBox.setSpacing("5px");
-            final Label moreLabel = new Label("...");
-            moreLabel.setClass("formLink");
-            final Popup popUp = new Popup();
-            popUp.setParent(parent);
-            final Iterator<String> it = liste.iterator();
-            String label = null;
-            Label libelleStaticLabel = null;
-            final Vbox popupVbox = new Vbox();
-            while(it.hasNext()){
-               label = it.next();
-               libelleStaticLabel = new Label(label);
-               libelleStaticLabel.setSclass("formValue");
+	/**
+	 * Dessine dans un label le ou les libelles 
+	 * l'utilisation d'un tooltip pour afficher la totalité.
+	 * @param
+	 * @param row Parent
+	 */
+	protected void drawListLabel(final List<String> liste, final Row row, final Component parent){
 
-               popupVbox.appendChild(libelleStaticLabel);
-            }
-            popUp.appendChild(popupVbox);
-            moreLabel.setTooltip(popUp);
-            labelAndLinkBox.appendChild(label1);
-            labelAndLinkBox.appendChild(moreLabel);
-            labelAndLinkBox.setParent(row);
-         }else{
-            label1.setParent(row);
-         }
-      }else{
-         new Label().setParent(row);
-      }
-   }
+		if(!liste.isEmpty()){
+			final Label label1 = new Label(liste.get(0));
+			// dessine le label avec un lien vers popup 
+			if(liste.size() > 1){
+				final Hbox labelAndLinkBox = new Hbox();
+				labelAndLinkBox.setSpacing("5px");
+				final Label moreLabel = new Label("...");
+				moreLabel.setClass("formLink");
+				final Popup popUp = new Popup();
+				popUp.setParent(parent);
+				final Iterator<String> it = liste.iterator();
+				String label = null;
+				Label libelleStaticLabel = null;
+				final Vbox popupVbox = new Vbox();
+				while(it.hasNext()){
+					label = it.next();
+					libelleStaticLabel = new Label(label);
+					libelleStaticLabel.setSclass("formValue");
 
-   public boolean isSelectionMode(){
-      return selectionMode;
-   }
+					popupVbox.appendChild(libelleStaticLabel);
+				}
+				popUp.appendChild(popupVbox);
+				moreLabel.setTooltip(popUp);
+				labelAndLinkBox.appendChild(label1);
+				labelAndLinkBox.appendChild(moreLabel);
+				labelAndLinkBox.setParent(row);
+			}else{
+				label1.setParent(row);
+			}
+		}else{
+			new Label().setParent(row);
+		}
+	}
 
-   public void setSelectionMode(final boolean selection){
-      this.selectionMode = selection;
-   }
+	public boolean isSelectionMode(){
+		return selectionMode;
+	}
 
-   public boolean isCheckAll(){
-      return checkAll;
-   }
+	public void setSelectionMode(final boolean selection){
+		this.selectionMode = selection;
+	}
 
-   public void setCheckAll(final boolean check){
-      this.checkAll = check;
-   }
+	public boolean isCheckAll(){
+		return checkAll;
+	}
 
-   public boolean isAnonyme(){
-      return anonyme;
-   }
+	public void setCheckAll(final boolean check){
+		this.checkAll = check;
+	}
 
-   public void setAnonyme(final boolean ano){
-      this.anonyme = ano;
-   }
+	public boolean isAnonyme(){
+		return anonyme;
+	}
 
-   public boolean isTtesCollections(){
-      return ttesCollections;
-   }
+	public void setAnonyme(final boolean ano){
+		this.anonyme = ano;
+	}
 
-   public void setTtesCollections(final boolean c){
-      this.ttesCollections = c;
-   }
+	public boolean isTtesCollections(){
+		return ttesCollections;
+	}
 
-   public void setSelectedObjects(final List<? extends Object> s){
-      this.selectedObjects = s;
-   }
+	public void setTtesCollections(final boolean c){
+		this.ttesCollections = c;
+	}
 
+	public void setSelectedObjects(final List<? extends Object> s){
+		this.selectedObjects = s;
+	}
+
+	/**
+	 * Methode de rendu générique d'une proprité d'un objet de type 
+	 * alphanumérique sous la forme d'une chaine de caractère, 
+	 * sans formatage
+	 * @param row
+	 * @param TK data object
+	 * @param propName
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 * @throws NoSuchMethodException
+	 * @since 2.3.0-gatsbi
+	 */
+	protected void renderAlphanumPropertyAsStringNoFormat(Row row, T obj, String propName) 
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		String value = (String) PropertyUtils.getSimpleProperty(obj, propName);
+		if (value != null) {
+			new Label(value).setParent(row);
+		} else {
+			new Label().setParent(row);
+		}
+	}
+
+	/**
+	 * Methode de rendu générique d'une proprité d'un objet de type 
+	 * datetime sous la forme d'une chaine de caractère, 
+	 * @param row
+	 * @param TK data object
+	 * @param propName
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 * @throws NoSuchMethodException
+	 * @since 2.3.0-gatsbi
+	 */
+	protected void renderDateProperty(Row row, T obj, String propName) 
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		Object dateValue = PropertyUtils.getSimpleProperty(obj, propName);
+		if (dateValue != null) {
+			new Label(ObjectTypesFormatters.dateRenderer2(dateValue)).setParent(row);
+		} else {
+			new Label().setParent(row);
+		}
+	}
+
+	/**
+	 * Methode de rendu générique d'une proprité d'un objet de type 
+	 * TKThesaurusObject sous la forme d'une chaine de caractère, 
+	 * @param row
+	 * @param TK data object
+	 * @param propName
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 * @throws NoSuchMethodException
+	 * @since 2.3.0-gatsbi
+	 */
+	protected void renderThesObjectProperty(Row row, T obj, String propName) 
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		TKThesaurusObject thesObjValue = (TKThesaurusObject) PropertyUtils.getSimpleProperty(obj, propName);
+		if (thesObjValue != null) {
+			new Label(thesObjValue.getNom()).setParent(row);
+		} else {
+			new Label().setParent(row);
+		}
+	}
+	
+	/**
+	 * Methode de rendu générique d'une proprité d'un objet de type 
+	 * Booléen sous la forme d'une chaine de caractère, 
+	 * @param row
+	 * @param TK data object
+	 * @param propName
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 * @throws NoSuchMethodException
+	 * @since 2.3.0-gatsbi
+	 */
+	protected void renderBoolProperty(Row row, T obj, String propName) 
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		Boolean boolValue = (Boolean) PropertyUtils.getSimpleProperty(obj, propName);
+		if (boolValue != null) {
+			new Label(ObjectTypesFormatters.booleanLitteralFormatter(boolValue)).setParent(row);
+		} else {
+			new Label().setParent(row);
+		}
+	}
+	
+	/**
+	 * Methode de rendu générique d'une proprité d'un objet de type 
+	 * Number sous la forme d'une chaine de caractère, 
+	 * @param row
+	 * @param TK data object
+	 * @param propName
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 * @throws NoSuchMethodException
+	 * @throws ParseException 
+	 * @since 2.3.0-gatsbi
+	 */
+	protected void renderNumberProperty(Row row, T obj, String propName) 
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException {
+		Number numValue = (Number) PropertyUtils.getSimpleProperty(obj, propName);
+		if (numValue != null) {
+			new Label(ObjectTypesFormatters.formatAnyNumber(numValue)).setParent(row);
+		} else {
+			new Label().setParent(row);
+		}
+	}
+	
+	/**
+	 * Methode de rendu générique d'une proprité d'un objet de type 
+	 * Collaborateur sous la forme d'une chaine de caractère, 
+	 * @param row
+	 * @param TK data object
+	 * @param propName
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 * @throws NoSuchMethodException
+	 * @since 2.3.0-gatsbi
+	 */
+	protected void renderCollaborateurProperty(Row row, T obj, String propName) 
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		Collaborateur collValue = (Collaborateur) PropertyUtils.getSimpleProperty(obj, propName);
+		if (collValue != null) {
+			new Label(collValue.getNomAndPrenom()).setParent(row);
+		} else {
+			new Label().setParent(row);
+		}
+	}
+	
+	/**
+	 * Methode de rendu générique d'une proprité d'un objet de type 
+	 * Quantite (Number) + Unite sous la forme d'une chaine de caractère, 
+	 * @param row
+	 * @param TK data object
+	 * @param propName
+	 * @param unite propName
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 * @throws NoSuchMethodException
+	 * @throws ParseException 
+	 * @since 2.3.0-gatsbi
+	 */
+	protected void renderQuantiteProperty(Row row, T obj, String propName, String unitePropName) 
+			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException {
+
+		Number qteValue = (Number) PropertyUtils.getSimpleProperty(obj, propName);
+		Unite uValue = (Unite) PropertyUtils.getSimpleProperty(obj, unitePropName);
+		
+		if (qteValue != null) {
+			new Label(ObjectTypesFormatters.formatAnyNumber(qteValue)
+				.concat(uValue != null ? " ".concat(uValue.getNom()) : "")).setParent(row);
+		} else {
+			new Label().setParent(row);
+		}
+	}
 }

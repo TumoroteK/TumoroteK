@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.decorator;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -45,6 +46,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
+
+import javax.swing.text.NumberFormatter;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
@@ -156,6 +159,23 @@ public final class ObjectTypesFormatters
       DecimalFormat dEn = new DecimalFormat("###.###", dfs);
       return dEn.format(d);
    }
+   
+   /**
+    * @since 2.3.0-gatsbi
+    * @param number
+    * @return
+    * @throws ParseException
+    */
+	public static String formatAnyNumber(Number number) throws ParseException {
+		if (number != null) {
+			if (number instanceof Integer) {
+				return ((Integer) number).toString();
+			} else if (number instanceof Double) {
+				return doubleLitteralFormatter((Double) number);
+			}
+		}
+		return new NumberFormatter().valueToString(number);
+	}
 
    /**
     * Arrondi d'un double avec n éléments après la virgule.

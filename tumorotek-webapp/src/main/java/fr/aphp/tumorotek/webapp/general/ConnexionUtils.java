@@ -47,6 +47,8 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.zkoss.util.resource.Labels;
@@ -317,7 +319,11 @@ public final class ConnexionUtils
 		if(bank != null){
 			// gatsbi TODO remplacer par call webservice Contexte depuis Etude
 			if (bank.getEtude() != null) {
-				doGastbi(bank);
+				try {
+					doGastbi(bank);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
 			}
 
 			session.setAttribute("Banque", bank);
@@ -342,15 +348,9 @@ public final class ConnexionUtils
 
 	}
 
-	private static void doGastbi(Banque bank) {
+	private static void doGastbi(Banque bank) throws JsonParseException, JsonMappingException, IOException {
 		// gastbi TESTS
-		try {
-			ContexteDTO c = GatsbiController.mockOneContexteTEST();
-
-			bank.getEtude().addToContextes(c.toContexte());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		ContexteDTO c = GatsbiController.mockOneContexteTEST();
+		bank.getEtude().addToContextes(c.toContexte());
 	} 
 }
