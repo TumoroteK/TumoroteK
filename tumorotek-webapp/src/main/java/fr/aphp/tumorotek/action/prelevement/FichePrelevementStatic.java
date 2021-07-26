@@ -1198,5 +1198,4 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
          getObjectTabController().onEditDone(getObject());
       }
    }
-
 }

@@ -37,6 +37,9 @@
 package fr.aphp.tumorotek.webapp.gatsbi.client.json;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
@@ -44,10 +47,10 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
 import fr.aphp.tumorotek.model.contexte.gatsbi.Parametrage;
 
-
 @JsonPropertyOrder({
 	"parametrageId",
-	"parametrageLibelle"
+	"parametrageLibelle",
+	"templateParametrages"
 })
 public class ParametrageDTO implements Serializable {
 
@@ -55,6 +58,8 @@ public class ParametrageDTO implements Serializable {
 	
 	private Integer parametrageId;
 	private String parametrageLibelle;
+	private List<ParametrageValueDTO> parametrageValueDTOs = 
+							new ArrayList<ParametrageValueDTO>();
 	
 	@JsonProperty
 	public Integer getParametrageId() {
@@ -74,8 +79,19 @@ public class ParametrageDTO implements Serializable {
 		this.parametrageLibelle = parametrageLibelle;
 	}
 	
+	@JsonProperty("templateParametrages")
+	public List<ParametrageValueDTO> getParametrageValueDTOs() {
+		return parametrageValueDTOs;
+	}
+
+	public void setParametrageValueDTOs(List<ParametrageValueDTO> parametrageValueDTOs) {
+		this.parametrageValueDTOs = parametrageValueDTOs;
+	}
+
 	@JsonIgnore
 	public Parametrage toParametrage() {
-		return new Parametrage(parametrageId, parametrageLibelle);
+		return new Parametrage(parametrageId, parametrageLibelle, 
+			parametrageValueDTOs.stream().map(v -> v.toParametrageValue())
+					.collect(Collectors.toList()));
 	}
 }

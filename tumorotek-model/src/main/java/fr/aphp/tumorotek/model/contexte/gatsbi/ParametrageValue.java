@@ -37,49 +37,35 @@
 package fr.aphp.tumorotek.model.contexte.gatsbi;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
-public class Parametrage implements Serializable {
+public class ParametrageValue implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Integer parametrageId;
-	private String parametrageLibelle;
-	private List<ParametrageValue> parametrageValues = new ArrayList<ParametrageValue>();
+	private Integer champId;
+	private String defaultValue;
 	
-	public Parametrage(Integer parametrageId, String parametrageLibelle, List<ParametrageValue> _v) {
+	public ParametrageValue(Integer _c, String _v) {
 		super();
-		this.parametrageId = parametrageId;
-		this.parametrageLibelle = parametrageLibelle;
-		if (_v != null) {
-			this.parametrageValues.addAll(_v);
-		}
+		this.champId = _c;
+		this.defaultValue = _v;
 	}
 
-	public Integer getParametrageId() {
-		return parametrageId;
-	}
-	
-	public void setParametrageId(Integer _i) {
-		this.parametrageId = _i;
-	}
-	
-	public String getParametrageLibelle() {
-		return parametrageLibelle;
-	}
-	
-	public void setParametrageLibelle(String _l) {
-		this.parametrageLibelle = _l;
+	public Integer getChampId() {
+		return champId;
 	}
 
-	public List<ParametrageValue> getParametrageValues() {
-		return parametrageValues;
+	public void setChampId(Integer _c) {
+		this.champId = _c;
 	}
 
-	public void setParametrageValues(List<ParametrageValue> _v) {
-		this.parametrageValues = _v;
+	public String getDefaultValue() {
+		return defaultValue;
+	}
+
+	public void setDefaultValue(String _v) {
+		this.defaultValue = _v;
 	}
 
 	@Override
@@ -91,16 +77,16 @@ public class Parametrage implements Serializable {
             return false;
         }
 
-        Parametrage param = (Parametrage) obj;
+        ParametrageValue param = (ParametrageValue) obj;
 
-        return Objects.equals(parametrageId, param.getParametrageId());
+        return Objects.equals(champId, param.getChampId());
 	}
 	
 	@Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-    	result = prime * result + ((parametrageId == null) ? 0 : parametrageId.hashCode());
+    	result = prime * result + ((champId == null) ? 0 : champId.hashCode());
     	return result;
 	}
 }

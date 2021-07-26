@@ -35,7 +35,6 @@
  **/
 package fr.aphp.tumorotek.webapp.general;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -47,8 +46,6 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.zkoss.util.resource.Labels;
@@ -59,7 +56,6 @@ import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.model.coeur.annotation.Catalogue;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
-import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 import fr.aphp.tumorotek.model.interfacage.Emetteur;
 import fr.aphp.tumorotek.model.interfacage.Recepteur;
 import fr.aphp.tumorotek.model.qualite.OperationType;
@@ -69,7 +65,6 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.param.TumorotekProperties;
 import fr.aphp.tumorotek.utils.Utils;
-import fr.aphp.tumorotek.webapp.gatsbi.client.json.ContexteDTO;
 
 /**
  * Regroupe les méthodes utilisées après la connexion de l'utilisateur.
@@ -320,7 +315,7 @@ public final class ConnexionUtils
 			// gatsbi TODO remplacer par call webservice Contexte depuis Etude
 			if (bank.getEtude() != null) {
 				try {
-					doGastbi(bank);
+					GatsbiController.doGastbiContexte(bank);
 				} catch (Exception e) {
 					throw new RuntimeException(e);
 				}
@@ -343,14 +338,5 @@ public final class ConnexionUtils
 
 		// gestion des interfaçages
 		ConnexionUtils.initInterfacages(pf, sessionScp);
-
-
-
-	}
-
-	private static void doGastbi(Banque bank) throws JsonParseException, JsonMappingException, IOException {
-		// gastbi TESTS
-		ContexteDTO c = GatsbiController.mockOneContexteTEST();
-		bank.getEtude().addToContextes(c.toContexte());
 	} 
 }

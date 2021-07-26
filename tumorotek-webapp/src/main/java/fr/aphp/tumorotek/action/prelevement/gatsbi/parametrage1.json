@@ -1,0 +1,202 @@
+{
+	"archive": false,
+	"parametrageId": 1,
+	"parametrageLibelle": "[MEL] Sang",
+	"plateformeId": {
+		"nom": "CRB EST",
+		"plateformeId": 1
+	},
+	"templateParametrages": [
+		{
+			"contexteChampEntiteId": {
+				"__comment": "code",
+				"champId": 23
+			},
+			"defaultValue": "",
+			"templateParametrageId": 1
+		},
+		{
+			"contexteChampEntiteId": {
+				"__comment": "numero labo",
+				"champId": 45
+			},
+			"defaultValue": "NUMLABO1",
+			"templateParametrageId": 2
+		},
+		{
+			"contexteChampEntiteId": {
+				"__comment": "nature",
+				"champId": 24
+			},
+			"defaultValue": "SANG",
+			"templateParametrageId": 2
+		},
+		{
+			"contexteChampEntiteId": {
+				"__comment": "nda",
+				"champId": 44
+			},
+			"defaultValue": "NDA345",
+			"templateParametrageId": 2
+		},
+		{
+			"contexteChampEntiteId": {
+				"__comment": "Date prelevement",
+				"champId": 30
+			},
+			"defaultValue": "20210724123456",
+			"templateParametrageId": 3
+		},
+		{
+			"contexteChampEntiteId": {
+				"__comment": "Type prelevement",
+				"champId": 31
+			},
+			"defaultValue": "BIOPSIE",
+			"templateParametrageId": 3
+		},
+		{
+			"contexteChampEntiteId": {
+				"__comment": "Sterile",
+				"champId": 47
+			},
+			"defaultValue": "1",
+			"templateParametrageId": 3
+		},
+		{
+			"contexteChampEntiteId": {
+				"__comment": "Risques",
+				"champId": 249
+			},
+			"defaultValue": "",
+			"templateParametrageId": 3
+		},
+		{
+			"contexteChampEntiteId": {
+				"__comment": "Service preleveur",
+				"champId": 29
+			},
+			"defaultValue": "1",
+			"templateParametrageId": 3
+		},
+		{
+			"contexteChampEntiteId": {
+				"__comment": "Preleveur",
+				"champId": 28
+			},
+			"defaultValue": "2",
+			"templateParametrageId": 3
+		},
+		{
+			"contexteChampEntiteId": {
+				"__comment": "Condit Type",
+				"champId": 32
+			},
+			"templateParametrageId": 3
+		},
+		{
+			"contexteChampEntiteId": {
+				"__comment": "Condit Nbr",
+				"champId": 34
+			},
+			"defaultValue": "10",
+			"templateParametrageId": 3
+		},
+		{
+			"contexteChampEntiteId": {
+				"__comment": "Condit Milieu",
+				"champId": 33
+			},
+			"defaultValue": "SEC",
+			"templateParametrageId": 3
+		},
+		{
+			"contexteChampEntiteId": {
+				"__comment": "Consent Type",
+				"champId": 26
+			},
+			"defaultValue": "EN ATTENTE",
+			"templateParametrageId": 3
+		},
+		{
+			"contexteChampEntiteId": {
+				"__comment": "Consent Date",
+				"champId": 27
+			},
+			"defaultValue": "20210724",
+			"templateParametrageId": 3
+		},
+		{
+			"contexteChampEntiteId": {
+				"__comment": "Cong prel",
+				"champId": 269
+			},
+			"defaultValue": "1",
+			"templateParametrageId": 3
+		},
+		{
+			"contexteChampEntiteId": {
+				"__comment": "Date Depart",
+				"champId": 35
+			},
+			"defaultValue": "20210724133456",
+			"templateParametrageId": 3
+		},
+		{
+			"contexteChampEntiteId": {
+				"__comment": "Transporteur",
+				"champId": 36
+			},
+			"defaultValue": "HOPITAL ST LOUIS - ANAPATH",
+			"templateParametrageId": 3
+		},
+		{
+			"contexteChampEntiteId": {
+				"__comment": "Temp transp",
+				"champId": 37
+			},
+			"defaultValue": "-2.32",
+			"templateParametrageId": 3
+		},
+		{
+			"contexteChampEntiteId": {
+				"__comment": "Date Arrivee",
+				"champId": 38
+			},
+			"defaultValue": "20210724143456",
+			"templateParametrageId": 3
+		},
+		{
+			"contexteChampEntiteId": {
+				"__comment": "Operateur",
+				"champId": 39
+			},
+			"defaultValue": "2",
+			"templateParametrageId": 3
+		},
+		{
+			"contexteChampEntiteId": {
+				"__comment": "Quantite",
+				"champId": 40
+			},
+			"defaultValue": "25.22",
+			"templateParametrageId": 3
+		},
+		{
+			"contexteChampEntiteId": {
+				"__comment": "Quantite unite",
+				"champId": 41
+			},
+			"defaultValue": "µg",
+			"templateParametrageId": 3
+		},
+		{
+			"contexteChampEntiteId": {
+				"__comment": "Cong arrivee",
+				"champId": 270
+			},
+			"defaultValue": "0",
+			"templateParametrageId": 3
+		}
+	]
+}

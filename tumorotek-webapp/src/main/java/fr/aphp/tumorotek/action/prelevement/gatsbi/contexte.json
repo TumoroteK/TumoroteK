@@ -126,7 +126,7 @@
         "contexteChampEntiteId": 18,
         "isChampReferToThesaurus": "risque",
         "obligatoire": true,
-		"visible": false,
+		"visible": true,
 		"inTableau": true,
 	    "ordreTableau": 20,
         "rThesauruses": [
@@ -165,7 +165,7 @@
         "contexteChampEntiteId": 21,
         "isChampReferToThesaurus": "condit_type",
         "obligatoire": false,
-		"visible": false,
+		"visible": true,
 		"inTableau": true,
 	    "ordreTableau": 17,
         "rThesauruses": [
@@ -188,7 +188,7 @@
         "contexteChampEntiteId": 22,
         "isChampReferToThesaurus": "condit_milieu",
         "obligatoire": true,
-		"visible": false,
+		"visible": true,
 		"inTableau": true,
 	    "ordreTableau": 15,
         "rThesauruses": [
@@ -207,7 +207,7 @@
         "contexteChampEntiteId": 24,
         "isChampReferToThesaurus": "consent_type",
         "obligatoire": false,
-		"visible": false,
+		"visible": true,
 		"inTableau": true,
 	    "ordreTableau": 14,
         "rThesauruses": [

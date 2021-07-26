@@ -71,7 +71,6 @@ import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
 import fr.aphp.tumorotek.action.echantillon.EchantillonController;
 import fr.aphp.tumorotek.action.echantillon.FicheMultiEchantillons;
 import fr.aphp.tumorotek.action.patient.PatientController;
-import fr.aphp.tumorotek.action.prelevement.gatsbi.PrelevementRowRendererGatsbi;
 import fr.aphp.tumorotek.action.prelevement.serotk.FichePrelevementEditSero;
 import fr.aphp.tumorotek.action.prelevement.serotk.FichePrelevementStaticSero;
 import fr.aphp.tumorotek.action.prelevement.serotk.ListePrelevementSero;

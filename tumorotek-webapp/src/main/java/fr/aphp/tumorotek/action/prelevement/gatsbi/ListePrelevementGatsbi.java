@@ -36,8 +36,15 @@
  **/
 package fr.aphp.tumorotek.action.prelevement.gatsbi;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
@@ -45,9 +52,9 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Vbox;
 
 import fr.aphp.tumorotek.action.prelevement.ListePrelevement;
-import fr.aphp.tumorotek.decorator.TKSelectObjectRenderer;
-import fr.aphp.tumorotek.model.TKdataObject;
+import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
+import fr.aphp.tumorotek.webapp.gatsbi.client.json.ParametrageDTO;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 public class ListePrelevementGatsbi extends ListePrelevement {
@@ -223,5 +230,42 @@ public class ListePrelevementGatsbi extends ListePrelevement {
 		col.setParent(gridColumns);
 
 		return col;
+	}
+	
+	/**
+	 * Gatsbi surcharge pour intercaler une modale de sélection 
+	 * des parametrages proposés par le contexte.
+	 * @param click event 
+	 */
+	@Override
+	public void onClick$addNew(final Event event) throws Exception {
+		
+		final Map<String, Object> args = new HashMap<String, Object>();
+        args.put("contexte", contexte);
+        args.put("parent", self);
+        Executions.createComponents("/zuls/gatsbi/SelectParametrageModale.zul", null, args);		
+	}
+	
+	/**
+	 * Un parametrage a été sélectionné.
+	 * @param param
+	 * @throws Exception 
+	 */
+	@SuppressWarnings("unchecked")
+	public void onGetSelectedParametrage(ForwardEvent evt) throws Exception {
+		
+		// TODO Http client
+		ParametrageDTO parametrageDTO = null;
+		try {
+			parametrageDTO = GatsbiController.doGastbiParametrage(((Map<String, Integer>) evt.getOrigin().getData()).get("paramId"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		ResultatInjection inject = GatsbiController
+			.injectGatsbiObject(parametrageDTO, SessionUtils.getCurrentBanque(sessionScope));
+		
+		super.onClick$addNew(null);
+		Events.postEvent("onGatsbiParamSelected", getObjectTabController().getFicheEdit().getSelfComponent(), inject);
 	}
 }

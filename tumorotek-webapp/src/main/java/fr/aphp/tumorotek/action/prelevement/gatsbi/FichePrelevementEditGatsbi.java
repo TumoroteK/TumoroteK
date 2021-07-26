@@ -41,6 +41,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Div;
@@ -164,6 +166,13 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit {
 
 			Clients.clearBusy();
 		}
-
+	}
+	
+	/**
+	 * Surcharge pour gérer la redirection d'évènement.
+	 */
+	@Override
+	public void onGetInjectionDossierExterneDone(Event e) {
+		super.onGetInjectionDossierExterneDone(((ForwardEvent) e).getOrigin());
 	}
 }

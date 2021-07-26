@@ -35,7 +35,8 @@
  * accepté les termes.
 -->
 <window id="lwinPrelevement" border="none"
-	apply="fr.aphp.tumorotek.action.prelevement.gatsbi.ListePrelevementGatsbi">
+	apply="fr.aphp.tumorotek.action.prelevement.gatsbi.ListePrelevementGatsbi"
+	forward="onSelectParametrage=onGetSelectedParametrage">
 	<panel border="none" sclass="fichePanelv2" collapsible="true"
 		id="listPanel">
 		<panelchildren id="scrollPan">

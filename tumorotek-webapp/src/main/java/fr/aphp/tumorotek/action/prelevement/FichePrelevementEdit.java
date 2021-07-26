@@ -1534,16 +1534,19 @@ public class FichePrelevementEdit extends AbstractFicheEditController
             getObjectTabController().getFicheAnnotation().switchToStaticOrEditMode(false, false);
          }
 
-         // initialize le referenceur
-         ((ReferenceurPatient) referenceur.getAttributeOrFellow("winRefPatient$composer", true))
-         .setPatientAndMaladieFromOutSideReferenceur(newPat, newObj.getMaladie(), newObj.getPatientNda());
+         if (newObj.getMaladie() != null) { // initialize le referenceur
+        	 ((ReferenceurPatient) referenceur.getAttributeOrFellow("winRefPatient$composer", true))
+        	 	.setPatientAndMaladieFromOutSideReferenceur(newPat, newObj.getMaladie(), newObj.getPatientNda());
+         }
 
          getBinder().loadComponent(self);
 
          // ajout opération consultation
-         ManagerLocator.getConsultationIntfManager().createObjectManager(res.getDossierExterne().getIdentificationDossier(),
-            Calendar.getInstance(), res.getDossierExterne().getEmetteur().getIdentification(),
-            SessionUtils.getLoggedUser(sessionScope));
+         if (res.getDossierExterne() != null) {
+	         ManagerLocator.getConsultationIntfManager().createObjectManager(res.getDossierExterne().getIdentificationDossier(),
+	            Calendar.getInstance(), res.getDossierExterne().getEmetteur().getIdentification(),
+	            SessionUtils.getLoggedUser(sessionScope));
+         }
       }
    }
 

@@ -34,52 +34,49 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.model.contexte.gatsbi;
+package fr.aphp.tumorotek.webapp.gatsbi.client.json;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
-public class Parametrage implements Serializable {
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.annotate.JsonPropertyOrder;
+
+import fr.aphp.tumorotek.model.contexte.gatsbi.ParametrageValue;
+
+@JsonPropertyOrder({
+	"contexteChampEntiteId",
+	"defaultValue"
+})
+public class ParametrageValueDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Integer parametrageId;
-	private String parametrageLibelle;
-	private List<ParametrageValue> parametrageValues = new ArrayList<ParametrageValue>();
+	private Integer champId;
+	private String defaultValue;
+
+	@JsonProperty("contexteChampEntiteId")
+	public void unpackChampIdFromNestedObject(Map<String, Object> chpE) {
+	    champId = (Integer) chpE.get("champId");
+	}
 	
-	public Parametrage(Integer parametrageId, String parametrageLibelle, List<ParametrageValue> _v) {
-		super();
-		this.parametrageId = parametrageId;
-		this.parametrageLibelle = parametrageLibelle;
-		if (_v != null) {
-			this.parametrageValues.addAll(_v);
-		}
+	public Integer getChampId() {
+		return this.champId;
 	}
 
-	public Integer getParametrageId() {
-		return parametrageId;
-	}
-	
-	public void setParametrageId(Integer _i) {
-		this.parametrageId = _i;
-	}
-	
-	public String getParametrageLibelle() {
-		return parametrageLibelle;
-	}
-	
-	public void setParametrageLibelle(String _l) {
-		this.parametrageLibelle = _l;
+	public void setChampId(Integer _c) {
+		this.champId = _c;
 	}
 
-	public List<ParametrageValue> getParametrageValues() {
-		return parametrageValues;
+	@JsonProperty("defaultValue")
+	public String getDefaultValue() {
+		return defaultValue;
 	}
 
-	public void setParametrageValues(List<ParametrageValue> _v) {
-		this.parametrageValues = _v;
+	public void setDefaultValue(String _v) {
+		this.defaultValue = _v;
 	}
 
 	@Override
@@ -91,16 +88,21 @@ public class Parametrage implements Serializable {
             return false;
         }
 
-        Parametrage param = (Parametrage) obj;
+        ParametrageValueDTO param = (ParametrageValueDTO) obj;
 
-        return Objects.equals(parametrageId, param.getParametrageId());
+        return Objects.equals(champId, param.getChampId());
 	}
 	
 	@Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-    	result = prime * result + ((parametrageId == null) ? 0 : parametrageId.hashCode());
+    	result = prime * result + ((champId == null) ? 0 : champId.hashCode());
     	return result;
+	}
+	
+	@JsonIgnore
+	public ParametrageValue toParametrageValue() {
+		return new ParametrageValue(champId, defaultValue); 
 	}
 }
