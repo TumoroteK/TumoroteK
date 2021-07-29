@@ -7,13 +7,20 @@
 		"plateformeId": 1
 	},
 	"templateParametrages": [
-	{
+		{
 			"contexteChampEntiteId": {
 				"__comment": "nature",
 				"champId": 24
 			},
 			"defaultValue": "SANG",
 			"templateParametrageId": 2
+		},{
+			"contexteChampEntiteId": {
+				"__comment": "Risques",
+				"champId": 249
+			},
+			"defaultValue": "HIV;GRIPPE A",
+			"templateParametrageId": 3
 		}
 	]
 }

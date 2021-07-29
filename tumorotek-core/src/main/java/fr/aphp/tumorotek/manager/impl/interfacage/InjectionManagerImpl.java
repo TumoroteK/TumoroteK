@@ -44,8 +44,10 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -521,7 +523,15 @@ public class InjectionManagerImpl implements InjectionManager
 							if(valeurExterne.getValeur() != null && !valeurExterne.getValeur().equals("")){
 								// si le champ de la colonne est un thésaurus
 								if(champ.getQueryChamp() != null){
-									value = extractValueForOneThesaurus(champ.getQueryChamp(), banque, valeurExterne.getValeur());
+									if (champ.getDataType().getDataTypeId() != 10) { // tous types sauf liste multiple
+										value = extractValueForOneThesaurus(champ.getQueryChamp(), banque, valeurExterne.getValeur());
+									} else {
+										Set<Object> values = new HashSet<Object>();
+										for(String val : valeurExterne.getValeur().split(";")) {
+											values.add(extractValueForOneThesaurus(champ.getQueryChamp(), banque, val));
+										}
+										value = values;
+									}
 								}else{
 									value = valeurExterne.getValeur();
 								}

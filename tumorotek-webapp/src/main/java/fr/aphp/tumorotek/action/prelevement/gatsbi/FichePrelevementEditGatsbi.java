@@ -100,6 +100,10 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit {
 			GatsbiController.appliThesaurusValues(itemDivs, c, this);
 
 			hideEmptyGroupboxes();
+			
+			// setRows ne marche pas ?
+			// seul moyen trouvé pour augmenter hauteur et voir tous les items de la listbox
+			risquesBox.setHeight(c.getThesaurusValuesForChampEntiteId(249).size() * 25 + "px");
 
 		} catch (Exception e) {
 			log.debug(e);

@@ -36,15 +36,22 @@
  **/
 package fr.aphp.tumorotek.action.prelevement.gatsbi;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Groupbox;
 
 import fr.aphp.tumorotek.action.patient.ResumePatient;
 import fr.aphp.tumorotek.action.prelevement.FichePrelevementStatic;
+import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
+import fr.aphp.tumorotek.webapp.gatsbi.client.json.ParametrageDTO;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -63,6 +70,8 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
    private Div gatsbiContainer;
    
    private Groupbox groupPrlvt;
+   
+   private Contexte c;
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
@@ -71,7 +80,7 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
       List<Div> itemDivs = GatsbiController.wireItemDivsFromMainComponent(gatsbiContainer);
       List<Div> blockDivs = GatsbiController.wireBlockDivsFromMainComponent(gatsbiContainer);
 
-      Contexte c = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
+      c = SessionUtils.getCurrentGatsbiContexteForEntiteId(2);
       
       GatsbiController.showOrhideItems(itemDivs, blockDivs, c); // TODO replace by collection.contexte
       
@@ -79,7 +88,6 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
       if (groupLaboInter != null) {
     	  groupLaboInter.setVisible(c!= null && c.getSiteInter());
       }
-      
       hideEmptyGroupboxes();
    }
       
@@ -100,4 +108,47 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
 	   ((Groupbox) this.groupPatient).setOpen(b);
 	   ((Groupbox) this.groupPatient).setClosable(b);
    }
+   
+   //TODO: ces deux méthodes sont factorisables avec 
+   // celles de ListePrelevementGatsbi
+   
+	/**
+	 * Gatsbi surcharge pour intercaler une modale de sélection 
+	 * des parametrages proposés par le contexte.
+	 * @param click event 
+	 */
+	@Override
+	public void onClick$addNew() {		
+		final Map<String, Object> args = new HashMap<String, Object>();
+       args.put("contexte", c);
+       args.put("parent", self);
+       Executions.createComponents("/zuls/gatsbi/SelectParametrageModale.zul", null, args);		
+	}
+	
+	/**
+	 * Un parametrage a été sélectionné.
+	 * @param param
+	 * @throws Exception 
+	 */
+	@SuppressWarnings("unchecked")
+	public void onGetSelectedParametrage(ForwardEvent evt) throws Exception {
+		
+		// TODO Http client
+		ParametrageDTO parametrageDTO = null;
+		try {
+			parametrageDTO = GatsbiController.doGastbiParametrage(((Map<String, Integer>) evt.getOrigin().getData()).get("paramId"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		ResultatInjection inject = GatsbiController
+			.injectGatsbiObject(parametrageDTO, SessionUtils.getCurrentBanque(sessionScope));
+		
+		super.onClick$addNew();
+		
+		if (inject != null) {
+			Events.postEvent("onGatsbiParamSelected", getObjectTabController().getFicheEdit().getSelfComponent(), inject);
+		}
+	}
+	
 }

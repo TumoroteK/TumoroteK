@@ -38,7 +38,9 @@
 
 <style src="/css/gatsbi.css" />
 
-<window id="fwinPrelevementStatic" border="none" apply="fr.aphp.tumorotek.action.prelevement.gatsbi.FichePrelevementStaticGatsbi">
+<window id="fwinPrelevementStatic" border="none" 
+		apply="fr.aphp.tumorotek.action.prelevement.gatsbi.FichePrelevementStaticGatsbi"
+		forward="onSelectParametrage=onGetSelectedParametrage">
 	<panel collapsible="false" title="${c:l('fichePrelevement.panel.title')}"
 	 sclass="fichePanelv2" id="winPanel" closable="true">
 		<panelchildren style="overflow-y:scroll" id="panelChildrenWithScroll">

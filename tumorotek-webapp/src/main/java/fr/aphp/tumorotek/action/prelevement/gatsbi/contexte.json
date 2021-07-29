@@ -135,6 +135,12 @@
             "templateThesaurusId": 5,
             "thesaurusId": 1,
             "thesaurusValue": "HIV"
+          },
+          {
+            "champId": 249,
+            "templateThesaurusId": 5,
+            "thesaurusId": 2,
+            "thesaurusValue": "GRIPPE A"
           }
 		]     
 	  },

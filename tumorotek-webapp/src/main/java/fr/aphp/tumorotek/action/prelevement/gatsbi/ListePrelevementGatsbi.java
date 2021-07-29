@@ -266,6 +266,9 @@ public class ListePrelevementGatsbi extends ListePrelevement {
 			.injectGatsbiObject(parametrageDTO, SessionUtils.getCurrentBanque(sessionScope));
 		
 		super.onClick$addNew(null);
-		Events.postEvent("onGatsbiParamSelected", getObjectTabController().getFicheEdit().getSelfComponent(), inject);
+		
+		if (inject != null) {
+			Events.postEvent("onGatsbiParamSelected", getObjectTabController().getFicheEdit().getSelfComponent(), inject);
+		}
 	}
 }

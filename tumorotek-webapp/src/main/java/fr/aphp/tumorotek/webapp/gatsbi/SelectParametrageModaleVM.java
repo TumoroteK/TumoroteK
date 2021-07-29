@@ -36,7 +36,9 @@
  **/
 package fr.aphp.tumorotek.webapp.gatsbi;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.zkoss.bind.annotation.AfterCompose;
@@ -81,7 +83,10 @@ public class SelectParametrageModaleVM {
 	@Init
 	public void init(@ExecutionArgParam("contexte") Contexte _c, 
 			@ExecutionArgParam("parent") final Component _p){
-		parametrages = new SimpleListModel<Parametrage>(_c.getParametrages());
+		List<Parametrage> params = new ArrayList<Parametrage>();
+		params.add(0, new Parametrage(null, Labels.getLabel("general.new"), null));
+		params.addAll(_c.getParametrages());
+		parametrages = new SimpleListModel<Parametrage>(params);
 		entiteLabel = Labels.getLabel("Entite.".concat(_c.getContexteType().getType()));
 		parent = _p;
 	}
