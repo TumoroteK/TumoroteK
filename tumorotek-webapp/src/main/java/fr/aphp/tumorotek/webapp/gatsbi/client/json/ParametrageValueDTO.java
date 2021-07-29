@@ -56,10 +56,12 @@ public class ParametrageValueDTO implements Serializable {
 	
 	private Integer champId;
 	private String defaultValue;
+	private String isChampReferToThesaurus;
 
 	@JsonProperty("contexteChampEntiteId")
 	public void unpackChampIdFromNestedObject(Map<String, Object> chpE) {
 	    champId = (Integer) chpE.get("champId");
+		isChampReferToThesaurus = (String) chpE.get("isChampReferToThesaurus");
 	}
 	
 	public Integer getChampId() {
@@ -77,6 +79,14 @@ public class ParametrageValueDTO implements Serializable {
 
 	public void setDefaultValue(String _v) {
 		this.defaultValue = _v;
+	}
+	
+	public String getIsChampReferToThesaurus() {
+		return isChampReferToThesaurus;
+	}
+	
+	public void setIsChampReferToThesaurus(String _t) {
+		this.isChampReferToThesaurus = _t;
 	}
 
 	@Override
@@ -103,6 +113,6 @@ public class ParametrageValueDTO implements Serializable {
 	
 	@JsonIgnore
 	public ParametrageValue toParametrageValue() {
-		return new ParametrageValue(champId, defaultValue); 
+		return new ParametrageValue(champId, defaultValue, isChampReferToThesaurus); 
 	}
 }

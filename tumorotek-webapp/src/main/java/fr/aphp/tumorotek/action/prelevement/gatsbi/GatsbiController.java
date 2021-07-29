@@ -279,7 +279,7 @@ public class GatsbiController {
 
 	@SuppressWarnings("unchecked")
 	public static void appliThesaurusValues(List<Div> items, Contexte contexte, AbstractController controller) 
-			throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+			throws TKException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		log.debug("applying thesaurus values");
 		if (items != null && contexte != null) {
 
@@ -334,7 +334,7 @@ public class GatsbiController {
 		}
 	}
 
-	public static <T> List<T> filterExistingListModel(Contexte contexte, List<T> lModel, Integer chpId) {
+	public static <T> List<T> filterExistingListModel(Contexte contexte, List<T> lModel, Integer chpId) throws TKException {
 
 		List<ThesaurusValue> values = contexte.getThesaurusValuesForChampEntiteId(chpId);
 		Collections.sort(values, Comparator.comparing(ThesaurusValue::getPosition, 
@@ -574,7 +574,7 @@ public class GatsbiController {
 	 * @param banque
 	 * @return
 	 */
-	public static ResultatInjection injectGatsbiObject(ParametrageDTO param, Banque banque) {
+	public static ResultatInjection injectGatsbiObject(Contexte contexte, ParametrageDTO param, Banque banque) {
 		
 		// repose sur InjectionManager comme interfaçages
 		// crée dossier externe pour le transport des données
@@ -588,6 +588,15 @@ public class GatsbiController {
 			ValeurExterne val;
 			for (ParametrageValueDTO value : param.getParametrageValueDTOs()) {
 				if(!StringUtils.isBlank(value.getDefaultValue())) {
+					if (value.getIsChampReferToThesaurus() != null) { // thesaurus value check!
+						boolean valueFound = contexte
+							.getThesaurusValuesForChampEntiteId(value.getChampId())
+								.stream().map(v -> v.getThesaurusValue())
+								.anyMatch(v -> v.equals(value.getDefaultValue()));
+						if (!valueFound) {
+							throw new TKException("gatsbi.thesaurus.value.notfound", value.getDefaultValue());
+						}
+					}
 					val = new ValeurExterne();
 					val.setChampEntiteId(value.getChampId());
 					val.setValeur(value.getDefaultValue());

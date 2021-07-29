@@ -44,11 +44,13 @@ public class ParametrageValue implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private Integer champId;
+	private String isChampReferToThesaurus;
 	private String defaultValue;
 	
-	public ParametrageValue(Integer _c, String _v) {
+	public ParametrageValue(Integer _c, String _v, String _t) {
 		super();
 		this.champId = _c;
+		this.isChampReferToThesaurus = _t;
 		this.defaultValue = _v;
 	}
 
@@ -66,6 +68,14 @@ public class ParametrageValue implements Serializable {
 
 	public void setDefaultValue(String _v) {
 		this.defaultValue = _v;
+	}
+	
+	public String getIsChampReferToThesaurus() {
+		return isChampReferToThesaurus;
+	}
+	
+	public void setIsChampReferToThesaurus(String _f) {
+		this.isChampReferToThesaurus = _f;
 	}
 
 	@Override

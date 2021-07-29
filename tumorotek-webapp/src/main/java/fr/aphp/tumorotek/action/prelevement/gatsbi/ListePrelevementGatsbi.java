@@ -49,6 +49,7 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Vbox;
 
 import fr.aphp.tumorotek.action.prelevement.ListePrelevement;
@@ -254,21 +255,25 @@ public class ListePrelevementGatsbi extends ListePrelevement {
 	@SuppressWarnings("unchecked")
 	public void onGetSelectedParametrage(ForwardEvent evt) throws Exception {
 		
-		// TODO Http client
-		ParametrageDTO parametrageDTO = null;
 		try {
-			parametrageDTO = GatsbiController.doGastbiParametrage(((Map<String, Integer>) evt.getOrigin().getData()).get("paramId"));
+			// TODO Http client
+			ParametrageDTO parametrageDTO = null;
+			try {
+				parametrageDTO = GatsbiController.doGastbiParametrage(((Map<String, Integer>) evt.getOrigin().getData()).get("paramId"));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			ResultatInjection inject = GatsbiController
+				.injectGatsbiObject(contexte, parametrageDTO, SessionUtils.getCurrentBanque(sessionScope));
+			
+			super.onClick$addNew(null);
+			
+			if (inject != null) {
+				Events.postEvent("onGatsbiParamSelected", getObjectTabController().getFicheEdit().getSelfComponent(), inject);
+			}
 		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		ResultatInjection inject = GatsbiController
-			.injectGatsbiObject(parametrageDTO, SessionUtils.getCurrentBanque(sessionScope));
-		
-		super.onClick$addNew(null);
-		
-		if (inject != null) {
-			Events.postEvent("onGatsbiParamSelected", getObjectTabController().getFicheEdit().getSelfComponent(), inject);
+			Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
 		}
 	}
 }

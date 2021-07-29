@@ -45,6 +45,7 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Messagebox;
 
 import fr.aphp.tumorotek.action.prelevement.FicheModifMultiPrelevement;
+import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
@@ -89,7 +90,7 @@ public class FicheModifMultiPrelevementGatsbi extends FicheModifMultiPrelevement
 	}
 	
 	@Override
-	protected List<Object> applyAnyThesaurusRestriction(List<Object> thObjs, Integer chpId) {
+	protected List<Object> applyAnyThesaurusRestriction(List<Object> thObjs, Integer chpId) throws TKException {
 		return GatsbiController.filterExistingListModel(c, thObjs, chpId);
 	}
 	

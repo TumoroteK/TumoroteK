@@ -10,9 +10,10 @@
 		{
 			"contexteChampEntiteId": {
 				"__comment": "nature",
+				"isChampReferToThesaurus": "nature",
 				"champId": 24
 			},
-			"defaultValue": "SANG",
+			"defaultValue": "LIQUIDE D'ASCITE",
 			"templateParametrageId": 2
 		},{
 			"contexteChampEntiteId": {
