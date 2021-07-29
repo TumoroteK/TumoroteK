@@ -43,6 +43,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -78,6 +79,7 @@ import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Parametrage;
 import fr.aphp.tumorotek.model.contexte.gatsbi.ThesaurusValue;
 import fr.aphp.tumorotek.model.interfacage.BlocExterne;
 import fr.aphp.tumorotek.model.interfacage.ValeurExterne;
@@ -574,7 +576,7 @@ public class GatsbiController {
 	 * @param banque
 	 * @return
 	 */
-	public static ResultatInjection injectGatsbiObject(Contexte contexte, ParametrageDTO param, Banque banque) {
+	public static ResultatInjection injectGatsbiObject(Contexte contexte, ParametrageDTO param, Banque banque, Consumer<Parametrage> validator) {
 		
 		// repose sur InjectionManager comme interfaçages
 		// crée dossier externe pour le transport des données
@@ -584,6 +586,10 @@ public class GatsbiController {
 		prelevement.setBanque(banque);
 		
 		if (param != null) {
+			
+			// apply specific validation
+			validator.accept(param.toParametrage());
+			
 			BlocExterne blocPrel = new BlocExterne();
 			ValeurExterne val;
 			for (ParametrageValueDTO value : param.getParametrageValueDTOs()) {

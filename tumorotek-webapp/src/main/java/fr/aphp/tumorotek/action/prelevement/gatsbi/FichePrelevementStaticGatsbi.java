@@ -39,6 +39,7 @@ package fr.aphp.tumorotek.action.prelevement.gatsbi;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -50,8 +51,10 @@ import org.zkoss.zul.Messagebox;
 
 import fr.aphp.tumorotek.action.patient.ResumePatient;
 import fr.aphp.tumorotek.action.prelevement.FichePrelevementStatic;
+import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Parametrage;
 import fr.aphp.tumorotek.webapp.gatsbi.client.json.ParametrageDTO;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
@@ -142,8 +145,18 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
 				e.printStackTrace();
 			}
 			
+			Consumer<Parametrage> validator = p -> {
+				// cong depart OU cong arrivee
+				if (p.getDefaultValuesForChampEntiteId(269) != null 
+						&& p.getDefaultValuesForChampEntiteId(269).contentEquals("1")
+					&& p.getDefaultValuesForChampEntiteId(270) != null 
+						&& p.getDefaultValuesForChampEntiteId(270).contentEquals("1")) {
+					throw new TKException("gatsbi.illegal.parametrage.prelevement.cong");
+				}			
+			};
+			
 			ResultatInjection inject = GatsbiController
-				.injectGatsbiObject(c, parametrageDTO, SessionUtils.getCurrentBanque(sessionScope));
+				.injectGatsbiObject(c, parametrageDTO, SessionUtils.getCurrentBanque(sessionScope), validator);
 			
 			super.onClick$addNew();
 			

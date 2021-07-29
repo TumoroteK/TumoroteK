@@ -103,4 +103,14 @@ public class Parametrage implements Serializable {
     	result = prime * result + ((parametrageId == null) ? 0 : parametrageId.hashCode());
     	return result;
 	}
+	
+	public String getDefaultValuesForChampEntiteId(Integer id) {
+		
+		for (ParametrageValue v : parametrageValues) {
+			if (v.getChampId().equals(id)) {
+				return v.getDefaultValue();
+			}
+		}
+		return null;
+	}
 }
