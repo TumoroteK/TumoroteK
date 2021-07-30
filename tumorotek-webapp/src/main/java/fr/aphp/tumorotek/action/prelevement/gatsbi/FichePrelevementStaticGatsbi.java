@@ -55,6 +55,7 @@ import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Parametrage;
+import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.webapp.gatsbi.client.json.ParametrageDTO;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
@@ -137,26 +138,25 @@ public class FichePrelevementStaticGatsbi extends FichePrelevementStatic {
 	@SuppressWarnings("unchecked")
 	public void onGetSelectedParametrage(ForwardEvent evt) throws Exception {
 		try {
-			// TODO Http client
-			ParametrageDTO parametrageDTO = null;
-			try {
-				parametrageDTO = GatsbiController.doGastbiParametrage(((Map<String, Integer>) evt.getOrigin().getData()).get("paramId"));
-			} catch (Exception e) {
-				e.printStackTrace();
+			ResultatInjection inject = null;
+			if (((Map<String, Integer>) evt.getOrigin().getData()).get("paramId") != null) {
+				ParametrageDTO parametrageDTO = 
+					GatsbiController.doGastbiParametrage(
+						((Map<String, Integer>) evt.getOrigin().getData()).get("paramId"));
+	
+				Consumer<Parametrage> validator = p -> {
+					// cong depart OU cong arrivee
+					if (p.getDefaultValuesForChampEntiteId(269) != null 
+							&& p.getDefaultValuesForChampEntiteId(269).contentEquals("1")
+						&& p.getDefaultValuesForChampEntiteId(270) != null 
+							&& p.getDefaultValuesForChampEntiteId(270).contentEquals("1")) {
+						throw new TKException("gatsbi.illegal.parametrage.prelevement.cong");
+					}			
+				};
+				
+				inject = GatsbiController
+					.injectGatsbiObject(c, parametrageDTO, SessionUtils.getCurrentBanque(sessionScope), validator);
 			}
-			
-			Consumer<Parametrage> validator = p -> {
-				// cong depart OU cong arrivee
-				if (p.getDefaultValuesForChampEntiteId(269) != null 
-						&& p.getDefaultValuesForChampEntiteId(269).contentEquals("1")
-					&& p.getDefaultValuesForChampEntiteId(270) != null 
-						&& p.getDefaultValuesForChampEntiteId(270).contentEquals("1")) {
-					throw new TKException("gatsbi.illegal.parametrage.prelevement.cong");
-				}			
-			};
-			
-			ResultatInjection inject = GatsbiController
-				.injectGatsbiObject(c, parametrageDTO, SessionUtils.getCurrentBanque(sessionScope), validator);
 			
 			super.onClick$addNew();
 			

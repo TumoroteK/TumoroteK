@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
@@ -58,6 +59,7 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.ChampEntite;
 	"ordreTableau",
 	"rThesauruses"
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ChampEntiteDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;

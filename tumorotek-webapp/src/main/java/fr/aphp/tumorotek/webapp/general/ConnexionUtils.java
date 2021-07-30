@@ -311,8 +311,9 @@ public final class ConnexionUtils
 		final Map<String, Object> sessionScp = session.getAttributes();
 		sessionScp.put("User", user);
 		sessionScp.put("Plateforme", pf);
-		if(bank != null){
-			// gatsbi TODO remplacer par call webservice Contexte depuis Etude
+		if(bank != null){	
+			
+			// gatsbi si bank est liée à une étude	
 			if (bank.getEtude() != null) {
 				try {
 					GatsbiController.doGastbiContexte(bank);
@@ -320,7 +321,7 @@ public final class ConnexionUtils
 					throw new RuntimeException(e);
 				}
 			}
-
+			
 			session.setAttribute("Banque", bank);
 			final List<Banque> banks = new ArrayList<>();
 			banks.add(bank);

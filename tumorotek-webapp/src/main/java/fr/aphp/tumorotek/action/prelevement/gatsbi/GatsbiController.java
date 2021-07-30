@@ -54,6 +54,8 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.DeserializationConfig.Feature;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -86,7 +88,9 @@ import fr.aphp.tumorotek.model.interfacage.ValeurExterne;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
 import fr.aphp.tumorotek.model.systeme.Entite;
+import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.webapp.gatsbi.client.json.ContexteDTO;
+import fr.aphp.tumorotek.webapp.gatsbi.client.json.EtudeDTO;
 import fr.aphp.tumorotek.webapp.gatsbi.client.json.ParametrageDTO;
 import fr.aphp.tumorotek.webapp.gatsbi.client.json.ParametrageValueDTO;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
@@ -553,9 +557,23 @@ public class GatsbiController {
 	 * @throws IOException
 	 */
 	public static void doGastbiContexte(Banque bank) throws JsonParseException, JsonMappingException, IOException {
-		// gastbi TESTS
-		ContexteDTO c = GatsbiController.mockOneContexteTEST();
-		bank.getEtude().addToContextes(c.toContexte());
+				
+		UriComponentsBuilder etudeURIBld =
+			UriComponentsBuilder.fromUriString(
+				TkParam.GATSBI_URL_BASE.getValue().concat(TkParam.GATSBI_URL_ETUDE_PATH.getValue()));
+				
+		UriComponentsBuilder contexteURIBld =
+				UriComponentsBuilder.fromUriString(
+					TkParam.GATSBI_URL_BASE.getValue().concat(TkParam.GATSBI_URL_CONTEXTE_PATH.getValue()));
+		
+		RestTemplate restTemplate = new RestTemplate();
+		EtudeDTO etude = restTemplate.getForObject(etudeURIBld.build(false).expand(bank.getEtude().getEtudeId()).toUri(), 
+			EtudeDTO.class);		
+		
+		for (ContexteDTO rCont : etude.getrContextes()) {
+			bank.getEtude().addToContextes(restTemplate.getForObject(contexteURIBld.build(false).expand(bank.getEtude().getEtudeId(), rCont.getType()).toUri(), 
+					ContexteDTO.class).toContexte());
+		}
 	}
 
 	/**
@@ -566,8 +584,13 @@ public class GatsbiController {
 	 * @throws IOException
 	 */
 	public static ParametrageDTO doGastbiParametrage(Integer pId) throws JsonParseException, JsonMappingException, IOException {
-		// gastbi TESTS
-		return GatsbiController.mockOneParametrageTEST(pId);
+		
+		UriComponentsBuilder parametrageURIBld =
+				UriComponentsBuilder.fromUriString(
+					TkParam.GATSBI_URL_BASE.getValue().concat(TkParam.GATSBI_URL_PARAMETRAGE_PATH.getValue()));
+		
+		RestTemplate restTemplate = new RestTemplate();
+		return restTemplate.getForObject(parametrageURIBld.build(false).expand(pId).toUri(), ParametrageDTO.class);
 	}
 	
 	/**

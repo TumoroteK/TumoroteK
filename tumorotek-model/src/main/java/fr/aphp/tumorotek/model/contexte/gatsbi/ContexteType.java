@@ -70,7 +70,7 @@ public enum ContexteType {
     
     public static ContexteType getByType(String _s) {
         for(ContexteType ref : values()) {
-            if(ref.type.equals(_s)) return ref;
+            if(ref.type.equalsIgnoreCase(_s)) return ref;
         }
         return null;
     }

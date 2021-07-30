@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
@@ -52,6 +53,7 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.Parametrage;
 	"parametrageLibelle",
 	"templateParametrages"
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ParametrageDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;

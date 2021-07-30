@@ -259,26 +259,25 @@ public class ListePrelevementGatsbi extends ListePrelevement {
 	public void onGetSelectedParametrage(ForwardEvent evt) throws Exception {
 		
 		try {
-			// TODO Http client
-			ParametrageDTO parametrageDTO = null;
-			try {
-				parametrageDTO = GatsbiController.doGastbiParametrage(((Map<String, Integer>) evt.getOrigin().getData()).get("paramId"));
-			} catch (Exception e) {
-				e.printStackTrace();
+			ResultatInjection inject = null;
+			if (((Map<String, Integer>) evt.getOrigin().getData()).get("paramId") != null) {
+				ParametrageDTO parametrageDTO = 
+						GatsbiController.doGastbiParametrage(
+							((Map<String, Integer>) evt.getOrigin().getData()).get("paramId"));
+				
+				Consumer<Parametrage> validator = p -> {
+					// cong depart OU cong arrivee
+					if (p.getDefaultValuesForChampEntiteId(269) != null 
+							&& p.getDefaultValuesForChampEntiteId(269).contentEquals("1")
+						&& p.getDefaultValuesForChampEntiteId(270) != null 
+							&& p.getDefaultValuesForChampEntiteId(270).contentEquals("1")) {
+						throw new TKException("gatsbi.illegal.parametrage.prelevement.cong");
+					}			
+				};
+				
+				inject = GatsbiController
+					.injectGatsbiObject(contexte, parametrageDTO, SessionUtils.getCurrentBanque(sessionScope), validator);
 			}
-			
-			Consumer<Parametrage> validator = p -> {
-				// cong depart OU cong arrivee
-				if (p.getDefaultValuesForChampEntiteId(269) != null 
-						&& p.getDefaultValuesForChampEntiteId(269).contentEquals("1")
-					&& p.getDefaultValuesForChampEntiteId(270) != null 
-						&& p.getDefaultValuesForChampEntiteId(270).contentEquals("1")) {
-					throw new TKException("gatsbi.illegal.parametrage.prelevement.cong");
-				}			
-			};
-			
-			ResultatInjection inject = GatsbiController
-				.injectGatsbiObject(contexte, parametrageDTO, SessionUtils.getCurrentBanque(sessionScope), validator);
 			
 			super.onClick$addNew(null);
 			

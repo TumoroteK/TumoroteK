@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 
@@ -16,12 +17,10 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 	"titre",
 	"acronyme",
 	"archive",
-	// "dateDebut", 
-	// "dateFin",
-	// "plateformeId",
 	"rContextes"
 })
-public class Etude implements Serializable {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class EtudeDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -85,7 +84,7 @@ public class Etude implements Serializable {
             return false;
         }
 
-        Etude etude = (Etude) obj;
+        EtudeDTO etude = (EtudeDTO) obj;
 
         return Objects.equals(titre, etude.getTitre());
 	}
