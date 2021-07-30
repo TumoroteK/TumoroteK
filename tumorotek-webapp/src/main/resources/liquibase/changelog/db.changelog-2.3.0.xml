@@ -56,8 +56,9 @@
         </preConditions>
         <comment>Ajout contexte nommé GATBSI</comment>
         <insert tableName="CONTEXTE">
-        	<column name="CONTEXTE_ID" value="3"/>
+        	<column name="CONTEXTE_ID" value="4"/>
             <column name="NOM" value="GATSBI"/>
+            <column name="LIBELLE" value="Gatsbi"/>
         </insert>
     </changeSet>
     <changeSet id="${project.artifactId}-7" author="MB" runAlways="true" context="*">
@@ -100,8 +101,5 @@
         </addColumn>
         <addForeignKeyConstraint constraintName="FK_BANQUE_ETUDE_ID" referencedTableName="GATSBY_ETUDE" baseColumnNames="ETUDE_ID" baseTableName="BANQUE"
                                  referencedColumnNames="GATSBY_ETUDE_ID"/>
-    </changeSet>
-    
-        
-    
+    </changeSet> 
 </databaseChangeLog>

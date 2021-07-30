@@ -251,8 +251,23 @@
 								<listitem self="@{each='contexte'}" value="contexte" />
 							</listbox>
 						</div>
-						<label value="${c:l('ficheBanque.contexte.catalogues')}" sclass="formLabel"/>	
-						<div>
+						<label value="${c:l('gatsbi.etudes')}" sclass="formLabel" 
+							visible="@{fwinBanque$composer.gatsbiSelected, load-after='contexteBox.onSelect'}" />
+						<div visible="@{fwinBanque$composer.gatsbiSelected, load-after='contexteBox.onSelect'}">
+							<label id="etudeLabel" 
+								value="@{fwinBanque$composer.etude}" sclass="formValue" />
+							<listbox id="etudeBox" mold="select" rows="1"
+								model="@{fwinBanque$composer.etudes, load-after='editC.onClick, addNewC.onClick'}"
+								selectedItem="@{fwinBanque$composer.banque.etude}"
+								visible="false">
+								<listitem self="@{each='etude'}" value="etude">
+									<listcell label="@{etude.titre}" />
+								</listitem>
+							</listbox>
+						</div>
+						<label value="${c:l('ficheBanque.contexte.catalogues')}" sclass="formLabel" 
+							visible="@{fwinBanque$composer.notGatsbiSelected, load-after='contexteBox.onSelect'}" />	
+						<div visible="@{fwinBanque$composer.notGatsbiSelected, load-after='contexteBox.onSelect'}">
 							<grid fixedLayout="true" id="gridCatalogues"
 								model="@{fwinBanque$composer.selectedCatalogues}"
 									sclass="gridForm1"

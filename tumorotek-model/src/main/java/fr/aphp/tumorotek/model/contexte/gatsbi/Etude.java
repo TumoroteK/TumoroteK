@@ -45,6 +45,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -64,6 +66,10 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 @Entity
 @Immutable
 @Table(name = "GATSBY_ETUDE")
+@NamedQueries(value = {
+	@NamedQuery(name = "Etude.findByPfOrder", 
+		query = "SELECT e FROM Etude e " + "WHERE e.plateforme = ?1 ORDER BY e.titre"),
+})
 public class Etude implements Serializable {
 
 	private static final long serialVersionUID = 86784231547511654L;

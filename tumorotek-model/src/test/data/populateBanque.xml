@@ -12253,4 +12253,28 @@
 			<value>DIAMIC</value>
 		</row>
 	</table>
+	<table name="GATSBY_ETUDE">
+		<column>GATSBY_ETUDE_ID</column>
+		<column>TITRE</column>
+		<column>ACRONYME</column>
+		<column>PLATEFORME_ID</column>
+		<row>
+			<value>1</value>
+			<value>A-ETUDE-PF1</value>
+			<value>AEP</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>2</value>
+			<value>C-ETUDE-PF1</value>
+			<value>CEP</value>
+			<value>1</value>
+		</row>
+		<row>
+			<value>3</value>
+			<value>B-ETUDE-PF1</value>
+			<value>BEP</value>
+			<value>1</value>
+		</row>
+	</table>
 </dataset>

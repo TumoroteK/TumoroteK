@@ -2121,4 +2121,14 @@
 	<!-- Package administration -->
 	<bean id="parametresManager" class="fr.aphp.tumorotek.manager.impl.administration.ParametresManagerImpl" />
 
+	<!--  gatsbi -->
+	<!-- Package procedure -->
+	<bean id="etudeManager" parent="txProxyTemplate">
+		<property name="target">
+			<bean class="fr.aphp.tumorotek.manager.impl.contexte.gatsbi.EtudeManagerImpl">
+				<property name="etudeDao" ref="etudeDao" />
+			</bean>
+		</property>
+	</bean>
+
 </beans>

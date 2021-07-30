@@ -106,6 +106,7 @@ import fr.aphp.tumorotek.manager.context.ServiceManager;
 import fr.aphp.tumorotek.manager.context.SpecialiteManager;
 import fr.aphp.tumorotek.manager.context.TitreManager;
 import fr.aphp.tumorotek.manager.context.TransporteurManager;
+import fr.aphp.tumorotek.manager.context.gatsbi.EtudeManager;
 import fr.aphp.tumorotek.manager.dto.EchantillonDTOManager;
 import fr.aphp.tumorotek.manager.etiquettes.TumoBarcodePrinter;
 import fr.aphp.tumorotek.manager.etiquettes.TumoPrinterUtilsManager;
@@ -916,5 +917,11 @@ public final class ManagerLocator
    public static EchantillonDTOManager getEchantillonDTOManager(){
       return (EchantillonDTOManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("echantillonDTOManager");
    }
-
+   
+   /**
+    * @since 2.30-gatsbi
+    */
+   public static EtudeManager getEtudeManager(){
+      return (EtudeManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("etudeManager");
+   }
 }

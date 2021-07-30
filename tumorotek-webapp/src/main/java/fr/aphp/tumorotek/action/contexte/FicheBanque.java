@@ -113,6 +113,7 @@ import fr.aphp.tumorotek.model.contexte.BanqueTableCodage;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Contexte;
 import fr.aphp.tumorotek.model.contexte.Service;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 import fr.aphp.tumorotek.model.systeme.Couleur;
 import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
 import fr.aphp.tumorotek.model.utilisateur.Profil;
@@ -129,7 +130,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * vers la fiche détaille du profil.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.1
+ * @version 2.3.0-gatsbi
  */
 public class FicheBanque extends AbstractFicheCombineController
 {
@@ -150,6 +151,7 @@ public class FicheBanque extends AbstractFicheCombineController
    private Label defautCodeLabel;
    private Label autoCrossLabel;
    private Label contexteLabel;
+   private Label etudeLabel;
    private Label couleurEchanLabel;
    private Label couleurDeriveLabel;
    private Menubar menuBar;
@@ -173,6 +175,7 @@ public class FicheBanque extends AbstractFicheCombineController
    private Textbox defautCodeBox;
    private Checkbox autoCrossBox;
    private Listbox contexteBox;
+   private Listbox etudeBox;
    private Listbox couleurEchanBox;
    private Listbox couleurDeriveBox;
 
@@ -225,6 +228,8 @@ public class FicheBanque extends AbstractFicheCombineController
    private Contexte selectedContexte;
    private final List<Catalogue> catalogues = new ArrayList<>();
    private final List<Catalogue> selectedCatalogues = new ArrayList<>();
+   
+   private List<Etude> etudes = new ArrayList<Etude>();
 
    private final List<ProfilUtilisateur> profilUtilisateurs = new ArrayList<>();
    private final Set<Utilisateur> updatedUtilisateurs = new HashSet<>();
@@ -264,11 +269,13 @@ public class FicheBanque extends AbstractFicheCombineController
       // Initialisation des listes de composants
       setObjLabelsComponents(
          new Component[] {this.nomLabel, this.idLabel, this.descrLabel, this.proprioLabel, this.respLabel, this.contactLabel,
-            this.defMaladieLabel, this.defautLibLabel, this.defautCodeLabel, this.autoCrossLabel, this.contexteLabel,
+            this.defMaladieLabel, this.defautLibLabel, this.defautCodeLabel, this.autoCrossLabel, 
+            this.contexteLabel, this.etudeLabel,
             this.couleurEchanLabel, this.couleurDeriveLabel, this.menuBar, this.gridCatalogues, this.archiveLabel});
 
       setObjBoxsComponents(new Component[] {this.nomBox, this.idBox, this.descrBox, this.proprioBox, this.respBoxDiv,
-         this.contactBoxDiv, this.defMaladieBox, this.defautLibBox, this.defautCodeBox, this.autoCrossBox, this.contexteBox,
+         this.contactBoxDiv, this.defMaladieBox, this.defautLibBox, this.defautCodeBox, this.autoCrossBox, 
+         this.contexteBox, this.etudeBox,
          this.couleurEchanBox, this.couleurDeriveBox,
          //this.checkCataCol,
          this.cataloguesBox, this.archiveBox});
@@ -1044,6 +1051,9 @@ public class FicheBanque extends AbstractFicheCombineController
          couleurs.add(new Couleur());
          couleurs.addAll(ManagerLocator.getCouleurManager().findAllObjectsManager());
       }
+      
+      // gatsbi etude
+      etudes.addAll(ManagerLocator.getEtudeManager().findByPfOrderManager(SessionUtils.getCurrentPlateforme()));
 
       initAssociations();
 
@@ -2301,4 +2311,25 @@ public class FicheBanque extends AbstractFicheCombineController
       utilisateursData.clearSelection();
    }
 
+   /********************** Gatsbi ************************/
+	public List<Etude> getEtudes() {
+		return etudes;
+	}
+	
+	public boolean getGatsbiSelected() {
+		return selectedContexte != null 
+			&& selectedContexte.getNom() != null 
+			&& selectedContexte.getNom().equals("GATSBI");
+	}
+	
+	public boolean getNotGatsbiSelected() {
+		return !getGatsbiSelected();
+	}
+	
+	public String getEtude(){
+	      if(banque != null && banque.getEtude() != null){
+	         return banque.getEtude().getTitre();
+	      }
+	      return null;
+	   }
 }

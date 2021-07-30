@@ -342,6 +342,9 @@
                         <!-- Package stats -->
                         <!-- <include>**/IndicateurManagerTest.java</include> -->
                         <!-- <include>**/SModeleManagerTest.java</include> -->
+                        
+                        <!-- Gatsbi -->
+                        <include>**/EtudeManagerTest.java</include>
                     </includes>
                 </configuration>
             </plugin>
