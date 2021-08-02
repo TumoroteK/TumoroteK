@@ -233,7 +233,7 @@
 					</row>
 					<group id="groupContexte" label="${c:l('ficheBanque.contexte.contexteCatalogues')}" open="true" />
 					<!-- Contexte -->
-					<row>
+					<row spans="1,1,2">
 						<hbox>
 							<label value="${c:l('Champ.Banque.Contexte')}" sclass="formLabel"/>
 							<label id="contexteRequired" value="*" sclass="requiredMark"
@@ -251,46 +251,56 @@
 								<listitem self="@{each='contexte'}" value="contexte" />
 							</listbox>
 						</div>
-						<label value="${c:l('gatsbi.etudes')}" sclass="formLabel" 
-							visible="@{fwinBanque$composer.gatsbiSelected, load-after='contexteBox.onSelect'}" />
-						<div visible="@{fwinBanque$composer.gatsbiSelected, load-after='contexteBox.onSelect'}">
-							<label id="etudeLabel" 
-								value="@{fwinBanque$composer.etude}" sclass="formValue" />
-							<listbox id="etudeBox" mold="select" rows="1"
-								model="@{fwinBanque$composer.etudes, load-after='editC.onClick, addNewC.onClick'}"
-								selectedItem="@{fwinBanque$composer.banque.etude}"
-								visible="false">
-								<listitem self="@{each='etude'}" value="etude">
-									<listcell label="@{etude.titre}" />
-								</listitem>
-							</listbox>
-						</div>
-						<label value="${c:l('ficheBanque.contexte.catalogues')}" sclass="formLabel" 
-							visible="@{fwinBanque$composer.notGatsbiSelected, load-after='contexteBox.onSelect'}" />	
-						<div visible="@{fwinBanque$composer.notGatsbiSelected, load-after='contexteBox.onSelect'}">
-							<grid fixedLayout="true" id="gridCatalogues"
-								model="@{fwinBanque$composer.selectedCatalogues}"
-									sclass="gridForm1"
-								rowRenderer="${fwinBanque$composer.catalogueRenderer}">
-								<columns>
-										<column />
-								</columns>
-								<rows>
-									<row self="@{each='catalogue'}" value="catalogue" />
-								</rows>
-							</grid>
-							<grid fixedLayout="true" id="cataloguesBox"
-								model="@{fwinBanque$composer.catalogues, load-after='contexteBox.onSelect'}"
-									sclass="gridForm1"
-								rowRenderer="${fwinBanque$composer.catalogueRenderer}">
-								<columns>
-										<column id="selboxCheckboxColumn" width="30px" />
-										<column />
-								</columns>
-								<rows id="catRows">
-									<row self="@{each='catalogue'}" value="catalogue" />
-								</rows>
-							</grid>
+						<div>
+							<hlayout visible="@{fwinBanque$composer.gatsbiSelected, load-after='contexteBox.onSelect'}" 
+									sclass="z-valign-middle">
+								<hlayout>
+									<label value="${c:l('gatsbi.etudes')}" sclass="formLabel" width="150px" />
+									<label id="etudeRequired" value="*" sclass="requiredMark"
+									visible="false"/>
+								</hlayout>
+								<div style="padding-left: 10px">
+									<label id="etudeLabel" 
+										value="@{fwinBanque$composer.selectedEtude.titre}" sclass="formValue" />
+									<listbox id="etudeBox" mold="select" rows="1"
+										model="@{fwinBanque$composer.etudes, load-after='editC.onClick, addNewC.onClick'}"
+										selectedItem="@{fwinBanque$composer.selectedEtude}"
+										visible="false">
+										<listitem self="@{each='etude'}" value="etude">
+											<listcell label="@{etude.titre}" />
+										</listitem>
+									</listbox>
+								</div>
+							</hlayout>
+							<hlayout visible="@{fwinBanque$composer.notGatsbiSelected, load-after='contexteBox.onSelect'}"
+									sclass="z-valign-middle">
+								<label value="${c:l('ficheBanque.contexte.catalogues')}" sclass="formLabel" width="150px" />	
+								<div style="padding-left: 10px">
+									<grid fixedLayout="true" id="gridCatalogues"
+										model="@{fwinBanque$composer.selectedCatalogues}"
+											sclass="gridForm1"
+										rowRenderer="${fwinBanque$composer.catalogueRenderer}">
+										<columns>
+												<column />
+										</columns>
+										<rows>
+											<row self="@{each='catalogue'}" value="catalogue" />
+										</rows>
+									</grid>
+									<grid fixedLayout="true" id="cataloguesBox"
+										model="@{fwinBanque$composer.catalogues, load-after='contexteBox.onSelect'}"
+											sclass="gridForm1"
+										rowRenderer="${fwinBanque$composer.catalogueRenderer}">
+										<columns>
+												<column id="selboxCheckboxColumn" width="30px" />
+												<column />
+										</columns>
+										<rows id="catRows">
+											<row self="@{each='catalogue'}" value="catalogue" />
+										</rows>
+									</grid>
+								</div>
+							</hlayout>
 						</div>
 					</row>
 					<group label="${c:l('ficheBanque.utilisateurs')}" id="groupProfilUtilisateurs">

@@ -176,6 +176,7 @@ public class FicheBanque extends AbstractFicheCombineController
    private Checkbox autoCrossBox;
    private Listbox contexteBox;
    private Listbox etudeBox;
+   private Label etudeRequired;
    private Listbox couleurEchanBox;
    private Listbox couleurDeriveBox;
 
@@ -230,7 +231,9 @@ public class FicheBanque extends AbstractFicheCombineController
    private final List<Catalogue> selectedCatalogues = new ArrayList<>();
    
    private List<Etude> etudes = new ArrayList<Etude>();
+   private Etude selectedEtude;
 
+   
    private final List<ProfilUtilisateur> profilUtilisateurs = new ArrayList<>();
    private final Set<Utilisateur> updatedUtilisateurs = new HashSet<>();
    private ProfilUtilisateurRowRenderer profilUtilisateurRowRenderer = new ProfilUtilisateurRowRenderer(false);
@@ -280,7 +283,7 @@ public class FicheBanque extends AbstractFicheCombineController
          //this.checkCataCol,
          this.cataloguesBox, this.archiveBox});
 
-      setRequiredMarks(new Component[] {this.nomRequired, this.contexteRequired});
+      setRequiredMarks(new Component[] {this.nomRequired, this.contexteRequired, this.etudeRequired});
 
       drawActionsForBanques();
 
@@ -495,6 +498,10 @@ public class FicheBanque extends AbstractFicheCombineController
       // empeche modification contexte
       contexteLabel.setVisible(true);
       contexteBox.setVisible(false);
+      
+      // empeche modification etude
+      etudeLabel.setVisible(true);
+      etudeBox.setVisible(false);
 
       //affiche le formulaire d'jout d'utilisateurs
       gridAjoutUtilisateur.setVisible(true);
@@ -571,6 +578,10 @@ public class FicheBanque extends AbstractFicheCombineController
       final List<CouleurEntiteType> coulTypes = new ArrayList<>();
       coulTypes.addAll(coulTypesEchan);
       coulTypes.addAll(coulTypesDerives);
+      
+      if (getGatsbiSelected()) {
+    	  this.banque.setEtude(selectedEtude);
+      }
 
       ManagerLocator.getBanqueManager().createOrUpdateObjectManager(banque, SessionUtils.getPlateforme(sessionScope),
          selectedContexte, selectedService, selectedCollaborateur, selectedContact,
@@ -619,6 +630,16 @@ public class FicheBanque extends AbstractFicheCombineController
          throw new WrongValueException(contexteBox, Labels.getLabel("validation.syntax.empty"));
       }
 
+      if(getGatsbiSelected()) {
+    	  if (selectedEtude != null && selectedEtude.getEtudeId() != null) {
+    		  Clients.clearWrongValue(etudeBox);
+	       } else {
+	          Clients.scrollIntoView(etudeBox);
+	          throw new WrongValueException(etudeBox, Labels.getLabel("validation.syntax.empty"));
+	       }
+      }
+
+      
       Clients.showBusy(Labels.getLabel("ficheBanque.modification.encours"));
       Events.echoEvent("onLaterCreate", self, null);
    }
@@ -902,6 +923,10 @@ public class FicheBanque extends AbstractFicheCombineController
       if(selectedContexte != null && selectedContexte.getContexteId() == null){
          selectedContexte = null;
       }
+      
+      if(selectedEtude != null && selectedEtude.getEtudeId() == null){
+    	  selectedEtude = null;
+       }
 
       // Catalogues
       banque.getCatalogues().clear();
@@ -1053,7 +1078,10 @@ public class FicheBanque extends AbstractFicheCombineController
       }
       
       // gatsbi etude
-      etudes.addAll(ManagerLocator.getEtudeManager().findByPfOrderManager(SessionUtils.getCurrentPlateforme()));
+      if (etudes.isEmpty()) {
+    	  etudes.addAll(ManagerLocator.getEtudeManager()
+    			  .findByPfOrderManager(SessionUtils.getCurrentPlateforme()));
+      }
 
       initAssociations();
 
@@ -1094,6 +1122,7 @@ public class FicheBanque extends AbstractFicheCombineController
       tablesAnnoCess.clear();
 
       selectedContexte = null;
+      selectedEtude = null;
       selectedEchanCouleur = null;
       selectedDeriveCouleur = null;
       selectedCollaborateur = null;
@@ -1108,6 +1137,8 @@ public class FicheBanque extends AbstractFicheCombineController
             catalogues.addAll(ManagerLocator.getContexteManager().getCataloguesManager(selectedContexte));
          }
          selectedCatalogues.addAll(ManagerLocator.getCatalogueManager().findByAssignedBanqueManager(banque));
+         
+         selectedEtude = this.banque.getEtude();
 
          if(this.banque.getCollaborateur() != null){
             selectedCollaborateur = this.banque.getCollaborateur();
@@ -2332,4 +2363,12 @@ public class FicheBanque extends AbstractFicheCombineController
 	      }
 	      return null;
 	   }
+
+	public Etude getSelectedEtude() {
+		return selectedEtude;
+	}
+
+	public void setSelectedEtude(Etude _e) {
+		this.selectedEtude = _e;
+	}
 }

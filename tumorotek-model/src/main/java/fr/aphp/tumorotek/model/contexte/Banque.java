@@ -141,7 +141,6 @@ import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
 	@NamedQuery(name = "Banque.findByConteneur",
 		query = "SELECT b FROM Banque b " + "JOIN b.conteneurs c " + "WHERE c = ?1")}
 )
-
 public class Banque implements TKFantomableObject, TKdataObject, java.io.Serializable, Comparable<Object>
 {
 
@@ -678,6 +677,7 @@ public class Banque implements TKFantomableObject, TKdataObject, java.io.Seriali
       clone.setTemplates(getTemplates());
       clone.setCatalogues(getCatalogues());
       clone.setSModeles(getSModeles());
+      clone.setEtude(getEtude());
 
       return clone;
    }
