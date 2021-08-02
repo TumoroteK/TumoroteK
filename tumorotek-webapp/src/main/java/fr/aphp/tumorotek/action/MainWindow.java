@@ -83,6 +83,7 @@ import fr.aphp.tumorotek.action.io.RechercheComplexeController;
 import fr.aphp.tumorotek.action.io.RechercheController;
 import fr.aphp.tumorotek.action.io.RequeteController;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
+import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.action.recherche.historique.SearchHistory;
 import fr.aphp.tumorotek.action.stockage.StockageController;
 import fr.aphp.tumorotek.action.utilisateur.FicheUtilisateurModale;
@@ -107,7 +108,7 @@ import fr.aphp.tumorotek.webapp.general.ext.ResourceRequest;
 /**
  * 
  * @author Mathieu BARTHELEMY
- * @version 2.2.3-genno
+ * @version 2.3.0-gatsbi
  *
  */
 public class MainWindow extends GenericForwardComposer<Component>
@@ -378,6 +379,17 @@ public class MainWindow extends GenericForwardComposer<Component>
          setSelectedBanque(bank);
          mainBinder.loadComponent(self.getFellow("main").getFellow("mainBanquesListBox"));
       }
+      
+      // @since 2.3.0-gatsbi
+      // gatsbi si bank est liée à une étude	
+		if (bank.getEtude() != null) {
+			try {
+				GatsbiController.doGastbiContexte(bank);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+      
       if(!selectedBanque.equals(toutesColl)){
          sessionScope.put("Banque", selectedBanque);
          final List<Banque> bks = new ArrayList<>();

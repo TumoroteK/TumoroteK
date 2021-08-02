@@ -121,7 +121,7 @@ import fr.aphp.tumorotek.utils.Utils;
  *
  * @author Pierre Ventadour
  * @author Mathieu BARTHELEMY
- * @version 2.2.1
+ * @version 2.3.0-gatsbi
  *
  */
 public class BanqueManagerImpl implements BanqueManager
@@ -1000,7 +1000,14 @@ public class BanqueManagerImpl implements BanqueManager
          adminBanks.addAll(findByUtilisateurIsAdminManager(u, p.getBanque().getPlateforme())
         		 .stream().filter(b -> b.getContexte().equals(p.getBanque().getContexte()))
         		 	.collect(Collectors.toList()));
-
+         
+         // @since 2.3.0-gatsbi
+         // filtre gatsbi même étude
+         // banque de contexte non gatsbi sont déja filtrées
+         if (p.getBanque().getEtude() != null) {
+        	adminBanks.removeIf(b -> !p.getBanque().getEtude().equals(b.getEtude())); 
+         } 
+        
          // deuxieme restriction sur les banques - conteneurs.
          final List<TKAnnotableObject> children = prelevementManager.getPrelevementChildrenManager(p);
          final Set<Banque> contBanks = new HashSet<>();
@@ -1026,6 +1033,7 @@ public class BanqueManagerImpl implements BanqueManager
             contBanks.remove(p.getBanque());
             banks.addAll(CollectionUtils.intersection(new ArrayList<>(contBanks), adminBanks));
          }else{
+        	adminBanks.remove(p.getBanque());
             banks.addAll(adminBanks);
          }
          Collections.sort(banks);

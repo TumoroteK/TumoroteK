@@ -565,13 +565,20 @@ public class GatsbiController {
 		UriComponentsBuilder contexteURIBld =
 				UriComponentsBuilder.fromUriString(
 					TkParam.GATSBI_URL_BASE.getValue().concat(TkParam.GATSBI_URL_CONTEXTE_PATH.getValue()));
+	
+		log.debug("fetch etude from URL:" 
+			+ (etudeURIBld.build(false).expand(bank.getEtude().getEtudeId())).toUriString());
 		
 		RestTemplate restTemplate = new RestTemplate();
 		EtudeDTO etude = restTemplate.getForObject(etudeURIBld.build(false).expand(bank.getEtude().getEtudeId()).toUri(), 
 			EtudeDTO.class);		
 		
+		
 		for (ContexteDTO rCont : etude.getrContextes()) {
-			bank.getEtude().addToContextes(restTemplate.getForObject(contexteURIBld.build(false).expand(bank.getEtude().getEtudeId(), rCont.getType()).toUri(), 
+			log.debug("fetch contexte from URL:" 
+				+ (contexteURIBld.build(false).expand(bank.getEtude().getEtudeId(), rCont.getType())).toUriString());
+			bank.getEtude().addToContextes(restTemplate.getForObject(
+				contexteURIBld.build(false).expand(bank.getEtude().getEtudeId(), rCont.getType()).toUri(), 
 					ContexteDTO.class).toContexte());
 		}
 	}

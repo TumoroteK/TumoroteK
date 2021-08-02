@@ -1034,19 +1034,29 @@ public class PrelevementManagerImpl implements PrelevementManager
       
       if(nature != null){
          prelevement.setNature(natureDao.mergeObject(nature));
-      }else if(prelevement.getNature() == null 
-    		 && (prelevement.getBanque().getEtude() == null || requiredChampEntiteId.contains(24))) {   	 
-         log.warn("Objet obligatoire Nature manquant" + " lors de la " + operation + " d'un Prelevement");
-         throw new RequiredObjectIsNullException("Prelevement", operation, "Nature");
+      }else { // valeur passée est nulle
+    	 if (prelevement.getBanque().getEtude() == null || requiredChampEntiteId.contains(24)) { // obligatoire! 
+    		 if (prelevement.getNature() == null) {
+    			 log.warn("Objet obligatoire Nature manquant" + " lors de la " + operation + " d'un Prelevement");
+    			 throw new RequiredObjectIsNullException("Prelevement", operation, "Nature");
+    		 }
+    	 } else { // gastbi contexte non obligatoire
+    		 prelevement.setNature(null);
+    	 }
       }
 
       if(consentType != null) {
          prelevement.setConsentType(consentTypeDao.mergeObject(consentType));
-      } else if(prelevement.getConsentType() == null 
-    		 && (prelevement.getBanque().getEtude() == null || requiredChampEntiteId.contains(26))) {  	 
-         log.warn("Objet obligatoire ConsentType manquant" + " lors de la " + operation + " d'un Prelevement");
-         throw new RequiredObjectIsNullException("Prelevement", operation, "ConsentType");
-      }
+      } else { // valeur passée est nulle
+    	  if(prelevement.getBanque().getEtude() == null || requiredChampEntiteId.contains(26)) { // obligatoire!
+    		  if (prelevement.getConsentType() == null) {
+    			  log.warn("Objet obligatoire ConsentType manquant" + " lors de la " + operation + " d'un Prelevement");
+    		      throw new RequiredObjectIsNullException("Prelevement", operation, "ConsentType");
+    		  }
+    	  } else { // gastbi contexte non obligatoire
+        	  prelevement.setConsentType(null);
+          }
+      } 
 
       // Maladie non required mais utilise dans validation
       if(maladie != null){

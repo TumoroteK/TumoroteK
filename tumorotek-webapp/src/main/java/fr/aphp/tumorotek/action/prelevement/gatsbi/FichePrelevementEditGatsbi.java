@@ -40,7 +40,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zk.ui.util.Clients;
@@ -179,4 +181,16 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit {
 	public void onGetInjectionDossierExterneDone(Event e) {
 		super.onGetInjectionDossierExterneDone(((ForwardEvent) e).getOrigin());
 	}
+	
+	/**
+	 * Plus d'obligation
+	 */
+	@Override
+	public void onSelect$naturesBoxPrlvt(){
+	}
+
+	@Override
+   public void onSelect$consentTypesBoxPrlvt(){
+   }
+
 }
