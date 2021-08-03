@@ -66,8 +66,6 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.qualite.Operation;
 import fr.aphp.tumorotek.model.qualite.OperationType;
-import fr.aphp.tumorotek.model.utilisateur.Profil;
-import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.param.TumorotekProperties;
@@ -408,23 +406,13 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
 			final Set<Plateforme> pfs = ManagerLocator.getUtilisateurManager().getPlateformesManager(user);
 			// si l'utilisateur n'est admin de la plateforme
 			if(!pfs.contains(selectedPlateforme) && !user.isSuperAdmin()){
-				// on va récupérer les profils du user pour chaque
-				// banque
-				final List<Profil> profils = new ArrayList<>();
-				for(int i = 0; i < banques.size(); i++){
-					final List<ProfilUtilisateur> liste =
-							ManagerLocator.getProfilUtilisateurManager().findByUtilisateurBanqueManager(user, banques.get(i));
-
-					for(int j = 0; j < liste.size(); j++){
-						if(!profils.contains(liste.get(j).getProfil())){
-							profils.add(liste.get(j).getProfil());
-						}
-					}
-				}
-
+				
+				// @since 2.2.4.1
+				// compte le nombre de profils d'accès différents par contexte cette plateforme
 				// si les profils sont différents, il n'a pas accès à
 				// l'option "Toutes collections"
-				if(profils.size() != 1){
+				if(ManagerLocator.getProfilUtilisateurManager()
+					.countDistinctProfilForUserAndPlateformeGroupedByContexteManager(user, selectedPlateforme) != 1L){
 					can = false;
 				}
 			}
