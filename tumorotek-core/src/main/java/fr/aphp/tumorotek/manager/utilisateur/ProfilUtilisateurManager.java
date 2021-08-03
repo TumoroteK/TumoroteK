@@ -36,8 +36,8 @@
 package fr.aphp.tumorotek.manager.utilisateur;
 
 import java.util.List;
-
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.utilisateur.Profil;
 import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
 import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateurPK;
@@ -49,7 +49,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Interface créée le 19/05/2010.
  *
  * @author Pierre Ventadour
- * @version 2.1
+ * @version 2.2.4.1
  *
  */
 public interface ProfilUtilisateurManager
@@ -167,5 +167,16 @@ public interface ProfilUtilisateurManager
     * de la base de données.
     */
    void removeObjectManager(ProfilUtilisateur profilUtilisateur);
-
+   
+   /**
+    * Compte pour un utilisateur le nombre de profils différents qui lui sont attribués 
+    * pour accéder aux banques de chaque contexte, pour une plateforme donnée.
+    * Cette méthode permet de visualiser rapidement, si le nombre de profils est supérieur à 1,
+    * si l'utilisateur pourra accéder en mode 'toutes collections'.
+    * @param u utilisateur
+    * @param p plateforme
+    * @return nombre de profils d'accès distincts
+    * @since 2.2.4.1
+    */
+   Long countDistinctProfilForUserAndPlateformeGroupedByContexteManager(Utilisateur u, Plateforme p);
 }

@@ -58,9 +58,11 @@ import fr.aphp.tumorotek.model.contexte.Banque;
  * Classe créée le 17/09/09.
  *
  * @author Pierre Ventadour
+ * @author Mathieu BARTHELEMY
+ * 
  * @see http://boris.kirzner.info/blog/archives/2008/07/19/
  * hibernate-annotations-the-many-to-many-association-with-composite-key/
- * @version 2.1
+ * @version 2.2.4.1
  *
  */
 @Entity
@@ -85,7 +87,11 @@ import fr.aphp.tumorotek.model.contexte.Banque;
       @NamedQuery(name = "ProfilUtilisateur.findByUtilisateurBanque",
          query = "SELECT p FROM ProfilUtilisateur p " + "WHERE p.pk.utilisateur = ?1 AND p.pk.banque = ?2"),
       @NamedQuery(name = "ProfilUtilisateur.findByBanqueProfil",
-         query = "SELECT p FROM ProfilUtilisateur p " + "WHERE p.pk.banque = ?1 AND p.pk.profil = ?2")})
+         query = "SELECT p FROM ProfilUtilisateur p " + "WHERE p.pk.banque = ?1 AND p.pk.profil = ?2"),
+      @NamedQuery(name = "ProfilUtilisateur.findCountDistinctProfilForUserAndPlateformeGroupedByContexte",
+      	 query = "SELECT count(distinct p.pk.profil) FROM ProfilUtilisateur p JOIN p.pk.banque b "
+      	 	+ "WHERE p.pk.utilisateur = ?1 AND b.plateforme = ?2 AND b.contexte.nom not like 'GATSBI'")
+})
 public class ProfilUtilisateur implements Serializable, Comparable<ProfilUtilisateur>
 {
 
