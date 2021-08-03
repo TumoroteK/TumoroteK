@@ -42,7 +42,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -98,7 +97,6 @@ import fr.aphp.tumorotek.model.interfacage.scan.ScanTerminale;
 import fr.aphp.tumorotek.model.qualite.OperationType;
 import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
 import fr.aphp.tumorotek.model.utilisateur.Profil;
-import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.webapp.general.ConnexionUtils;
 import fr.aphp.tumorotek.webapp.general.MainTabbox;
@@ -286,7 +284,7 @@ public class MainWindow extends GenericForwardComposer<Component>
 
       // init des banques
       banques = ManagerLocator.getUtilisateurManager().getAvailableBanquesByPlateformeManager(user, pf, false);
-      if(canAccessToutesCollections(user, pf)){
+      if(ConnexionUtils.canAccessToutesCollections(banques, pf, user)){
          toutesColl = new Banque();
          toutesColl.setNom(Labels.getLabel("select.banque.toutesCollection"));
          toutesColl.setPlateforme(pf);
@@ -301,46 +299,6 @@ public class MainWindow extends GenericForwardComposer<Component>
          selectedBanque = null;
          // selectedBanque = banques.get(0);
       }
-   }
-
-   /**
-    * Test si l'utilisateur a accès à l'option "Toutes collections".
-    * 
-    * @return True s'il a accès.
-    */
-   public boolean canAccessToutesCollections(final Utilisateur user, final Plateforme pf){
-      boolean can = true;
-
-      // s'il y a plusieurs banques disponibles
-      if(banques.size() > 1){
-         final Set<Plateforme> pfs = ManagerLocator.getUtilisateurManager().getPlateformesManager(user);
-         // si l'utilisateur n'est admin de la plateforme
-         if(!pfs.contains(pf) && !user.isSuperAdmin()){
-            // on va récupérer les profils du user pour chaque
-            // banque
-            final List<Profil> profils = new ArrayList<>();
-            for(int i = 0; i < banques.size(); i++){
-               final List<ProfilUtilisateur> liste =
-                  ManagerLocator.getProfilUtilisateurManager().findByUtilisateurBanqueManager(user, banques.get(i));
-
-               for(int j = 0; j < liste.size(); j++){
-                  if(!profils.contains(liste.get(j).getProfil())){
-                     profils.add(liste.get(j).getProfil());
-                  }
-               }
-            }
-
-            // si les profils sont différents, il n'a pas accès à
-            // l'option "Toutes collections"
-            if(profils.size() != 1){
-               can = false;
-            }
-         }
-      }else{
-         can = false;
-      }
-
-      return can;
    }
 
    public void resetMainBanquesListBox(){
@@ -836,7 +794,7 @@ public class MainWindow extends GenericForwardComposer<Component>
       // pour chaque association, on l'ajoute dans l'hashtable
       for(int i = 0; i < couleurs.size(); i++){
          final CouleurEntiteType couleur = couleurs.get(i);
-         echantillonTypesCouleur.put(couleur.getEchantillonType().getType(), couleur.getCouleur().getCouleur());
+         echantillonTypesCouleur.put(couleur.getEchantillonType().getNom(), couleur.getCouleur().getCouleur());
       }
 
       prodDeriveTypesCouleur = new Hashtable<>();
@@ -845,7 +803,7 @@ public class MainWindow extends GenericForwardComposer<Component>
       // pour chaque association, on l'ajoute dans l'hashtable
       for(int i = 0; i < couleurs.size(); i++){
          final CouleurEntiteType couleur = couleurs.get(i);
-         prodDeriveTypesCouleur.put(couleur.getProdType().getType(), couleur.getCouleur().getCouleur());
+         prodDeriveTypesCouleur.put(couleur.getProdType().getNom(), couleur.getCouleur().getCouleur());
       }
    }
 

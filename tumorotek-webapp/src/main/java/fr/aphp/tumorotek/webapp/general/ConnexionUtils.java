@@ -340,4 +340,35 @@ public final class ConnexionUtils
 		// gestion des interfaçages
 		ConnexionUtils.initInterfacages(pf, sessionScp);
 	} 
+	
+
+	/**
+	 * Test si l'utilisateur a accès à l'option "Toutes collections".
+	 * @return True s'il a accès.
+	 * @since 2.2.4 méthode migrée en static utils car appelé par deux SelectBanqueController et MainWindow
+	 */
+	public static boolean canAccessToutesCollections(List<Banque> banques, Plateforme pf, Utilisateur user){
+		boolean can = true;
+
+		// s'il y a plusieurs banques disponibles
+		if(banques.size() > 1){
+			final Set<Plateforme> pfs = ManagerLocator.getUtilisateurManager().getPlateformesManager(user);
+			// si l'utilisateur n'est admin de la plateforme
+			if(!pfs.contains(pf) && !user.isSuperAdmin()){
+				
+				// @since 2.2.4.1
+				// compte le nombre de profils d'accès différents par contexte cette plateforme
+				// si les profils sont différents, il n'a pas accès à
+				// l'option "Toutes collections"
+				if(ManagerLocator.getProfilUtilisateurManager()
+					.countDistinctProfilForUserAndPlateformeGroupedByContexteManager(user, pf) != 1L){
+					can = false;
+				}
+			}
+		}else{
+			can = false;
+		}
+
+		return can;
+	}
 }
