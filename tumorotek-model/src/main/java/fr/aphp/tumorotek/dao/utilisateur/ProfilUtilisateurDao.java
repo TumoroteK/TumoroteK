@@ -40,6 +40,7 @@ import fr.aphp.tumorotek.dao.GenericDaoJpa;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.utilisateur.Profil;
+import fr.aphp.tumorotek.model.utilisateur.ProfilByEtudeCount;
 import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
 import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateurPK;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
@@ -52,7 +53,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * @author Pierre Ventadour
  * @author Mathieu BARTHELEMY
  * 
- * @version 2.2.4.1
+ * @version 2.3.0-gatsbi
  *
  */
 public interface ProfilUtilisateurDao extends GenericDaoJpa<ProfilUtilisateur, ProfilUtilisateurPK>
@@ -133,4 +134,16 @@ public interface ProfilUtilisateurDao extends GenericDaoJpa<ProfilUtilisateur, P
     * @since 2.2.4.1
     */
    List<Long> findCountDistinctProfilForUserAndPlateformeGroupedByContexte(Utilisateur u, Plateforme p);
+   
+   /**
+    * Compte pour un utilisateur le nombre de profils différents qui lui sont attribués 
+    * pour accéder aux banques d'une même étude (donc de contexte GATSBI) pour une plateforme donnée.
+    * Cette méthode permet de visualiser rapidement, si le nombre de profils est supérieur à 1,
+    * si l'utilisateur pourra accéder en mode 'toutes collections' pour chacune de ces études
+    * @param u utilisateur
+    * @param p plateforme
+    * @return nombre de profils d'accès distincts
+    * @since 2.3.0-gatsbi
+    */
+   List<ProfilByEtudeCount> findCountDistinctProfilForUserAndPlateformeGroupedByEtude(Utilisateur u, Plateforme p);
 }

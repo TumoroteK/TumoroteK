@@ -65,6 +65,7 @@ import fr.aphp.tumorotek.dao.contexte.CollaborateurDao;
 import fr.aphp.tumorotek.dao.contexte.ContexteDao;
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
 import fr.aphp.tumorotek.dao.contexte.ServiceDao;
+import fr.aphp.tumorotek.dao.contexte.gatsbi.EtudeDao;
 import fr.aphp.tumorotek.dao.stockage.ConteneurDao;
 import fr.aphp.tumorotek.dao.systeme.CouleurDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
@@ -113,6 +114,7 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Contexte;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.contexte.Service;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 import fr.aphp.tumorotek.model.io.export.Affichage;
 import fr.aphp.tumorotek.model.qualite.Operation;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
@@ -131,7 +133,7 @@ import fr.aphp.tumorotek.utils.Utils;
  * Classe créée le 01/10/09.
  *
  * @author Pierre Ventadour.
- * @version 2.1
+ * @version 2.3.0-gatsbi
  *
  */
 public class BanqueManagerTest extends AbstractManagerTest4
@@ -201,6 +203,8 @@ public class BanqueManagerTest extends AbstractManagerTest4
    private ProfilUtilisateurDao profilUtilisateurDao;
    @Autowired
    private UtilisateurManager utilisateurManager;
+   @Autowired
+   private EtudeDao etudeDao;
    
    public BanqueManagerTest(){}
 
@@ -1505,8 +1509,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       assertTrue(banks.contains(banqueManager.findByIdManager(2)));
       p = prelevementManager.findByIdManager(3);
       banks = banqueManager.findBanqueForSwitchManager(p, u);
-      assertTrue(banks.size() == 2);
-      assertTrue(banks.contains(banqueManager.findByIdManager(2)));
+      assertTrue(banks.size() == 1);
       assertTrue(banks.contains(banqueManager.findByIdManager(1)));
       banks = banqueManager.findBanqueForSwitchManager(p, null);
       assertTrue(banks.size() == 0);
@@ -1588,4 +1591,19 @@ public class BanqueManagerTest extends AbstractManagerTest4
       banks = banqueManager.findByConteneurManager(null);
       assertTrue(banks.isEmpty());
    }
+   
+   @Test
+   public void testFindByEtudeManager(){
+
+      final Etude e1 = etudeDao.findById(1);
+      List<Banque> banks = banqueManager.findByEtudeManager(e1);
+      assertTrue(banks.isEmpty());
+
+      final Etude e2 = etudeDao.findById(2);
+      banks = banqueManager.findByEtudeManager(e2);
+      assertTrue(banks.isEmpty());
+
+      banks = banqueManager.findByEtudeManager(null);
+      assertTrue(banks.isEmpty());
+   }  
 }

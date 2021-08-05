@@ -44,6 +44,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.contexte.Service;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
@@ -55,7 +56,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Date: 09/09/2009
  *
  * @author Pierre Ventadour, Mathieu BARTHELEMY
- * @version 2.2.1
+ * @version 2.3.0-gatsbi
  */
 public interface BanqueDao extends GenericDaoJpa<Banque, Integer>
 {
@@ -202,4 +203,13 @@ public interface BanqueDao extends GenericDaoJpa<Banque, Integer>
 	 * @since 2.2.1
 	 */
 	List<Banque> findByConteneur(Conteneur cont);
+	
+	/**
+	 * Recherche toutes les banques pour l'étude passée 
+	 * en paramètre
+	 * @param étude
+	 * @return liste de banques 
+	 * @since 2.3.0-gatsbi
+	 */
+	List<Banque> findByEtude(Etude etude);
 }

@@ -48,6 +48,7 @@ import fr.aphp.tumorotek.dao.utilisateur.ProfilUtilisateurDao;
 import fr.aphp.tumorotek.dao.utilisateur.UtilisateurDao;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.utilisateur.Profil;
+import fr.aphp.tumorotek.model.utilisateur.ProfilByEtudeCount;
 import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
 import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateurPK;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
@@ -58,7 +59,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * du domaine ProfilUtilisateur.
  *
  * @author Pierre Ventadour.
- * @version 2.2.4.1
+ * @version 2.3.0-gatsbi
  *
  */
 @TransactionConfiguration(defaultRollback = false)
@@ -467,37 +468,65 @@ public class ProfilUtilisateurDaoTest extends AbstractDaoTest
 	/**
 	 * @since 2.2.4.1
 	 */
-	public void testCountDistinctProfilForUserAndPlateformeGroupedByContexte(){
+	public void testFindCountDistinctProfilForUserAndPlateformeGroupedByContexte(){
 
 		List<Long> counts = profilUtilisateurDao
-			.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(utilisateurDao.findById(1), 
-					plateformeDao.findById(1));
+				.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(utilisateurDao.findById(1), 
+						plateformeDao.findById(1));
 		assertTrue(counts.get(0) == 1L);
-	
+
 		counts = profilUtilisateurDao
-			.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(utilisateurDao.findById(3), 
-					plateformeDao.findById(1));
+				.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(utilisateurDao.findById(3), 
+						plateformeDao.findById(1));
 		assertTrue(counts.get(0) == 2L);
-		
+
 		counts = profilUtilisateurDao
-			.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(utilisateurDao.findById(3), 
-					plateformeDao.findById(2));
+				.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(utilisateurDao.findById(3), 
+						plateformeDao.findById(2));
 		assertTrue(counts.get(0) == 0L);
-		
+
 		counts = profilUtilisateurDao
-			.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(utilisateurDao.findById(4), 
+				.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(utilisateurDao.findById(4), 
 						plateformeDao.findById(1));
 		assertTrue(counts.get(0) == 0L);
 
 		// nulls
 		counts = profilUtilisateurDao
-			.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(null, 
+				.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(null, 
 						plateformeDao.findById(1));
 		assertTrue(counts.get(0) == 0L);
 
 		counts = profilUtilisateurDao
-			.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(utilisateurDao.findById(1), 
+				.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(utilisateurDao.findById(1), 
 						null);
 		assertTrue(counts.get(0) == 0L);
+	}
+
+	/**
+	 * @since 2.3.0-gatsbi
+	 */
+	public void testFindCountDistinctProfilForUserAndPlateformeGroupedByEtude(){
+
+		List<ProfilByEtudeCount> counts = profilUtilisateurDao
+				.findCountDistinctProfilForUserAndPlateformeGroupedByEtude(utilisateurDao.findById(1), 
+						plateformeDao.findById(1));
+		assertTrue(counts.size() == 0);
+
+		counts = profilUtilisateurDao
+				.findCountDistinctProfilForUserAndPlateformeGroupedByEtude(utilisateurDao.findById(1), 
+						plateformeDao.findById(2));
+		assertTrue(counts.size() == 0);
+
+
+		// nulls
+		counts = profilUtilisateurDao
+				.findCountDistinctProfilForUserAndPlateformeGroupedByEtude(null, 
+						plateformeDao.findById(1));
+		assertTrue(counts.size() == 0);
+
+		counts = profilUtilisateurDao
+				.findCountDistinctProfilForUserAndPlateformeGroupedByEtude(utilisateurDao.findById(1), 
+						null);
+		assertTrue(counts.size() == 0);
 	}
 }

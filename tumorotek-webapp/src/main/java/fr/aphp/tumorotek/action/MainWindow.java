@@ -82,7 +82,6 @@ import fr.aphp.tumorotek.action.io.RechercheComplexeController;
 import fr.aphp.tumorotek.action.io.RechercheController;
 import fr.aphp.tumorotek.action.io.RequeteController;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
-import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.action.recherche.historique.SearchHistory;
 import fr.aphp.tumorotek.action.stockage.StockageController;
 import fr.aphp.tumorotek.action.utilisateur.FicheUtilisateurModale;
@@ -92,6 +91,7 @@ import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 import fr.aphp.tumorotek.model.interfacage.Emetteur;
 import fr.aphp.tumorotek.model.interfacage.scan.ScanTerminale;
 import fr.aphp.tumorotek.model.qualite.OperationType;
@@ -127,7 +127,6 @@ public class MainWindow extends GenericForwardComposer<Component>
    private Banque selectedBanque;
    // = ManagerLocator
    // .getBanqueManager().findAllObjectsManager().get(0);
-   private Banque toutesColl = null;
 
    private Integer screenHeight = 800;
    private Integer screenWidth = 1280;
@@ -284,16 +283,16 @@ public class MainWindow extends GenericForwardComposer<Component>
 
       // init des banques
       banques = ManagerLocator.getUtilisateurManager().getAvailableBanquesByPlateformeManager(user, pf, false);
-      if(ConnexionUtils.canAccessToutesCollections(banques, pf, user)){
-         toutesColl = new Banque();
-         toutesColl.setNom(Labels.getLabel("select.banque.toutesCollection"));
-         toutesColl.setPlateforme(pf);
-         banques.add(toutesColl);
-      }
-
+      ConnexionUtils.initToutesCollectionsAccesses(banques, pf, user);
       if(sessionScope.containsKey("Banque")){
          selectedBanque = (Banque) sessionScope.get("Banque");
       }else if(sessionScope.containsKey("ToutesCollections")){
+    	  Banque toutesColl = ConnexionUtils.initFakeToutesCollBankItem(pf);
+    		Etude etude = ((Banque) ((List<?>) sessionScope.get("ToutesCollections")).get(0)).getEtude();
+    	 if (etude != null) { // gatsbi etude
+			toutesColl.setNom(Labels.getLabel("select.banque.toutesCollection.gatsbi", 
+														new String[] {etude.getTitre()}));
+    	 }
          selectedBanque = toutesColl;
       }else{
          selectedBanque = null;
@@ -338,39 +337,28 @@ public class MainWindow extends GenericForwardComposer<Component>
          mainBinder.loadComponent(self.getFellow("main").getFellow("mainBanquesListBox"));
       }
       
-      // @since 2.3.0-gatsbi
-      // gatsbi si bank est liée à une étude	
-		if (bank.getEtude() != null) {
-			try {
-				GatsbiController.doGastbiContexte(bank);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
+      // user et plateforme peuvent être null car
+      // ne seront jamais mis à jour depuis MainWindow update banque
+      ConnexionUtils.selectConnection(null, null, selectedBanque, banques, session);
       
-      if(!selectedBanque.equals(toutesColl)){
-         sessionScope.put("Banque", selectedBanque);
-         final List<Banque> bks = new ArrayList<>();
-         bks.add(bank);
-         ConnexionUtils.setSessionCatalogues(bks, sessionScope);
-         updateDroitsForSelectedBanque(selectedBanque);
-         sessionScope.remove("ToutesCollections");
-      }else{
-         final List<Banque> bksList = new ArrayList<>();
-         bksList.addAll(banques);
-         bksList.remove(toutesColl);
-         ConnexionUtils.setSessionCatalogues(bksList, sessionScope);
-         sessionScope.put("ToutesCollections", bksList);
-         // car tous les droits sont identiques
-         updateDroitsForSelectedBanque(bksList.get(0));
-         sessionScope.remove("Banque");
 
-         /*
-          * sessionScope.put("Admin", true); sessionScope.remove("AdminPF");
-          * sessionScope.put("ToutesCollections", banquesAdmin);
-          * sessionScope.remove("Banque");
-          */
-      }
+//      if(!selectedBanque.equals(toutesColl)){
+//         sessionScope.put("Banque", selectedBanque);
+//         final List<Banque> bks = new ArrayList<>();
+//         bks.add(bank);
+//         ConnexionUtils.setSessionCatalogues(bks, sessionScope);
+//         updateDroitsForSelectedBanque(selectedBanque);
+//         sessionScope.remove("ToutesCollections");
+//      }else{
+//         final List<Banque> bksList = new ArrayList<>();
+//         bksList.addAll(banques);
+//         bksList.remove(toutesColl);
+//         ConnexionUtils.setSessionCatalogues(bksList, sessionScope);
+//         sessionScope.put("ToutesCollections", bksList);
+//         // car tous les droits sont identiques
+//         updateDroitsForSelectedBanque(bksList.get(0));
+//         sessionScope.remove("Banque");
+//      }
 
       resetControllers();
       initAvailableTabsNames();
@@ -380,11 +368,8 @@ public class MainWindow extends GenericForwardComposer<Component>
    }
 
    public void updateSelectedBanqueToutesColl() throws Exception{
-      if(toutesColl != null){
-         updateSelectedBanque(toutesColl);
-      }else{
-         throw new Exception();
-      }
+	   updateSelectedBanque(ConnexionUtils
+			  .initFakeToutesCollBankItem(SessionUtils.getCurrentPlateforme()));
    }
 
    private void resetControllers(){

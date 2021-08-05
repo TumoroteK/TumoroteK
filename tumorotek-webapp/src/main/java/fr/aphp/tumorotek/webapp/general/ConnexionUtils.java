@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -56,6 +57,7 @@ import fr.aphp.tumorotek.action.prelevement.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.model.coeur.annotation.Catalogue;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 import fr.aphp.tumorotek.model.interfacage.Emetteur;
 import fr.aphp.tumorotek.model.interfacage.Recepteur;
 import fr.aphp.tumorotek.model.qualite.OperationType;
@@ -309,8 +311,13 @@ public final class ConnexionUtils
 	public static void initConnection(final Utilisateur user, final Plateforme pf, final Banque bank, final List<Banque> banques,
 			final Session session){
 		final Map<String, Object> sessionScp = session.getAttributes();
-		sessionScp.put("User", user);
-		sessionScp.put("Plateforme", pf);
+		if (user != null) {
+			sessionScp.put("User", user);
+		}
+		if (pf != null) {
+			sessionScp.put("Plateforme", pf);
+		}
+				
 		if(bank != null){	
 			
 			// gatsbi si bank est liée à une étude	
@@ -331,6 +338,16 @@ public final class ConnexionUtils
 		}else{ // toutes collections
 			// suppose que l'utilisateur ne peut pas être admin
 			// sur banques de différentes plateformes
+			
+			// gatsbi si bank est liée à une étude	
+			if (banques.get(0).getEtude() != null) {
+				try {
+					GatsbiController.doGastbiContexte(banques.get(0));
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
+			}
+		
 			sessionScp.put("ToutesCollections", banques);
 			ConnexionUtils.setSessionCatalogues(banques, sessionScp);
 			ConnexionUtils.generateDroitsForSelectedBanque(banques.get(0), pf, user, sessionScp);
@@ -346,14 +363,23 @@ public final class ConnexionUtils
 	 * Test si l'utilisateur a accès à l'option "Toutes collections".
 	 * @return True s'il a accès.
 	 * @since 2.2.4 méthode migrée en static utils car appelé par deux SelectBanqueController et MainWindow
+	 * @since 2.3.0 GATSBI impose un lien Toutes collection potentiellement par étude
 	 */
-	public static boolean canAccessToutesCollections(List<Banque> banques, Plateforme pf, Utilisateur user){
-		boolean can = true;
+	public static void initToutesCollectionsAccesses(List<Banque> banques, Plateforme pf, Utilisateur user){
 
+		final Set<Plateforme> pfs = ManagerLocator.getUtilisateurManager().getPlateformesManager(user);
+
+		
+		// contextes non GATSBI
 		// s'il y a plusieurs banques disponibles
-		if(banques.size() > 1){
-			final Set<Plateforme> pfs = ManagerLocator.getUtilisateurManager().getPlateformesManager(user);
+		long noGatsbiBanksCC = banques.stream().filter(b -> b.getEtude() == null).count();
+		
+		if(noGatsbiBanksCC > 1){
+			
+			boolean canTtesCollNoGATSBI = true;
+	
 			// si l'utilisateur n'est admin de la plateforme
+			// compte les profils distincts pour contexte non GATSBI
 			if(!pfs.contains(pf) && !user.isSuperAdmin()){
 				
 				// @since 2.2.4.1
@@ -362,13 +388,109 @@ public final class ConnexionUtils
 				// l'option "Toutes collections"
 				if(ManagerLocator.getProfilUtilisateurManager()
 					.countDistinctProfilForUserAndPlateformeGroupedByContexteManager(user, pf) != 1L){
-					can = false;
+					canTtesCollNoGATSBI = false;
 				}
 			}
-		}else{
-			can = false;
+			
+			// ajout toutes collections non GATSBI
+			if (canTtesCollNoGATSBI) {
+				banques.add(initFakeToutesCollBankItem(pf));
+			}
+		} // else no gatsbi banques max one! 
+		
+		// GATSBI
+		
+		Map<Etude, Long> profilByEtudeCountForUser = ManagerLocator.getProfilUtilisateurManager()
+			.countDistinctProfilForUserAndPlateformeGroupedByEtudeManager(user, pf);
+		
+		Map<Etude, List<Banque>> etudeBanksMap = 
+			banques.stream().filter(b -> b.getEtude() != null).collect(Collectors.groupingBy(Banque::getEtude));
+		
+		for(Etude etude : etudeBanksMap.keySet()) {
+			// s'il y a plusieurs banques disponibles pour l'étude
+			if(etudeBanksMap.get(etude).size() > 1){
+				
+				boolean canTtesCollEtude = true;
+		
+				// si l'utilisateur n'est admin de la plateforme
+				// compte les profils distincts pour l'étude non GATSBI
+				if(!pfs.contains(pf) && !user.isSuperAdmin()){
+					
+					// compte le nombre de profils d'accès différents par contexte cette étude
+					// si les profils sont différents, il n'a pas accès à
+					// l'option "Toutes collections"
+					if(profilByEtudeCountForUser.get(etude) != 1L){
+						canTtesCollEtude = false;
+					}
+				}
+				
+				// ajout toutes collections non GATSBI
+				if (canTtesCollEtude) {
+					Banque toutesCollEtude = initFakeToutesCollBankItem(pf);
+					toutesCollEtude.setEtude(etude);
+					toutesCollEtude.setNom(Labels.getLabel("select.banque.toutesCollection.gatsbi", new String[] {etude.getTitre()}));
+					banques.add(toutesCollEtude);
+				}
+			} // else gatsbi banques max one pour cette étude! 		
 		}
-
-		return can;
 	}
+	
+	/**
+	 * Choix dans la liste d'une collection, toutes collections hors GATSBI, 
+	 * ou de toutes collections étude GATSBI
+	 * Fatcorisation car utilisée depuis SelectBanqueController et MainWindow
+	 * @param user
+	 * @param selectedPlateforme
+	 * @param selectedBanque
+	 * @param banques
+	 * @param session
+	 * @since 2.3.0-gatsbi
+	 */
+	public static void selectConnection(Utilisateur user, 
+			 Plateforme selectedPlateforme, 
+			 final Banque selectedBanque, 
+			final List<Banque> banques,
+			final Session session) {
+		
+		if (user == null) {
+			user = (Utilisateur) session.getAttribute("User");
+		}
+		if (selectedPlateforme == null) {
+			selectedPlateforme = (Plateforme) session.getAttribute("Plateforme");
+		}
+		
+		Banque toutesColl = initFakeToutesCollBankItem(selectedPlateforme);
+		
+		if (selectedBanque.getBanqueId() != null) { // choix d'une banque existantes (donc pas ttesColl)
+			ConnexionUtils.initConnection(user, selectedPlateforme, selectedBanque, banques, session);
+		} else if (selectedBanque.equals(toutesColl)) { // toutes collections hors GATSBI
+			final List<Banque> bksList = new ArrayList<>();
+			bksList.addAll(banques);
+			bksList.remove(toutesColl);
+			ConnexionUtils.initConnection(user, selectedPlateforme, null, 
+				banques.stream().filter(b -> b.getBanqueId() != null && b.getEtude() == null)
+					.collect(Collectors.toList()), 
+				session);
+		} else { // toutes collections etude GATSBI
+			ConnexionUtils.initConnection(user, selectedPlateforme, null, 
+				banques.stream().filter(b -> b.getBanqueId() != null && b.getEtude() != null 
+					&& b.getEtude().equals(selectedBanque.getEtude())).collect(Collectors.toList()),
+				session);
+		}
+	}
+	
+	/**
+	 * Produit la collecion virtuelle banque_id = null qui va correspondre 
+	 * à l'item 'Toutes collections' proposé dans le choix des banques.
+	 * Le nom de cette banque sera modifié par ajout de l'étude GATSBI si le regroupement 
+	 * des banques se fait en toutes collections.
+	 * @param pf
+	 * @return
+	 */
+	public static Banque initFakeToutesCollBankItem(Plateforme pf) {
+		Banque toutesColl = new Banque();
+		toutesColl.setNom(Labels.getLabel("select.banque.toutesCollection"));
+		toutesColl.setPlateforme(pf);
+		return toutesColl;
+	} 
 }

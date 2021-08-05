@@ -90,7 +90,6 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
 
 	private List<Banque> banques = new ArrayList<>();
 	private Banque selectedBanque;
-	private Banque toutesColl = null;
 	private List<Plateforme> plateformes = new ArrayList<>();
 	private Plateforme selectedPlateforme;
 	private Utilisateur user;
@@ -126,11 +125,8 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
 		//user = getLoggedUtilisateur();
 		user = ConnexionUtils.getLoggedUtilisateur();
 		initWindow();
-		if(ConnexionUtils.canAccessToutesCollections(banques, selectedPlateforme, user)){
-			toutesColl = new Banque();
-			toutesColl.setNom(Labels.getLabel("select.banque.toutesCollection"));
-			banques.add(toutesColl);
-		}
+
+		ConnexionUtils.initToutesCollectionsAccesses(banques, selectedPlateforme, user);
 	}
 
 	public void initWindow(){
@@ -294,49 +290,21 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
 	 */
 	public void onClick$validate(){
 		if(selectedBanque != null){
-			if(!selectedBanque.equals(toutesColl)){
-				ConnexionUtils.initConnection(user, selectedPlateforme, selectedBanque, banques, session);
-				//				sessionScope.put("Banque", selectedBanque);
-				//				//setSessionCatalogues(selectedBanque, sessionScope);		
-				//				//generateDroitsForSelectedBanque(selectedBanque);
-				//				ConnexionUtils.setSessionCatalogues(
-				//						selectedBanque, sessionScope);
-				//				ConnexionUtils.generateDroitsForSelectedBanque(
-				//						selectedBanque, user, sessionScope);
-				//				sessionScope.remove("ToutesCollections");
-			}else{
-				final List<Banque> bksList = new ArrayList<>();
-				bksList.addAll(banques);
-				bksList.remove(toutesColl);
-				ConnexionUtils.initConnection(user, selectedPlateforme, null, bksList, session);
-				//				// suppose que l'utilisateur ne peut pas être admin
-				//				// sur banques de différentes plateformes
-				//				List<Banque> bksList = new ArrayList<Banque>();
-				//				bksList.addAll(banques);
-				//				bksList.remove(toutesColl);
-				//				sessionScope.put("ToutesCollections", bksList);
-				//				//generateDroitsForSelectedBanque(banques.get(0));
-				//				ConnexionUtils.generateDroitsForSelectedBanque(
-				//						banques.get(0), user, sessionScope);
-				//				sessionScope.remove("Banque");
-			}
-			//			
-			//			// gestion des interfaçages
-			//			ConnexionUtils.initInterfacages(selectedPlateforme, sessionScope);
 
-			   Executions.sendRedirect("/zuls/main/main.zul");
-	      }else{
-	         // cas admin première installation aucune collection
-	    	 // et TK-27 plateforme nouvellement créée par adminPF
-	         if(user.isSuperAdmin() || ManagerLocator
-	        		 .getUtilisateurManager().getPlateformesManager(user).contains(selectedPlateforme)){
-	            final Map<String, Object> sessionScp = session.getAttributes();
-	            sessionScp.put("User", user);
-	            sessionScp.put("Plateforme", selectedPlateforme);
-	            ConnexionUtils.generateDroitsForSelectedBanque(null, selectedPlateforme, user, sessionScope);
-	            Executions.sendRedirect("/zuls/main/main.zul");
-	         }
-	      }
+			ConnexionUtils.selectConnection(user, selectedPlateforme, selectedBanque, banques, session);
+			Executions.sendRedirect("/zuls/main/main.zul");
+		}else{
+			// cas admin première installation aucune collection
+			// et TK-27 plateforme nouvellement créée par adminPF
+			if(user.isSuperAdmin() || ManagerLocator
+					.getUtilisateurManager().getPlateformesManager(user).contains(selectedPlateforme)){
+				final Map<String, Object> sessionScp = session.getAttributes();
+				sessionScp.put("User", user);
+				sessionScp.put("Plateforme", selectedPlateforme);
+				ConnexionUtils.generateDroitsForSelectedBanque(null, selectedPlateforme, user, sessionScope);
+				Executions.sendRedirect("/zuls/main/main.zul");
+			}
+		}
 	}
 
 	public void onClientInfo$winSelectBanque(final ClientInfoEvent event){
@@ -360,30 +328,26 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
 		this.selectedBanque = selected;
 	}
 
-   /**
-    * Filtre les banques par plateforme.
-    * @param event Event : seléction sur la liste plateformesBox.
-    * @throws Exception
-    */
-   public void onSelect$plateformesBox(final Event event) throws Exception{
-      if(selectedPlateforme != null){
-         banques = ManagerLocator.getUtilisateurManager().getAvailableBanquesByPlateformeManager(user, selectedPlateforme, false);
-      }else{
-         banques = new ArrayList<>();
-      }
-      
-      if(ConnexionUtils.canAccessToutesCollections(banques, selectedPlateforme, user)) {
-			toutesColl = new Banque();
-			toutesColl.setNom(Labels.getLabel("select.banque.toutesCollection"));
-			banques.add(toutesColl);
+	/**
+	 * Filtre les banques par plateforme.
+	 * @param event Event : seléction sur la liste plateformesBox.
+	 * @throws Exception
+	 */
+	public void onSelect$plateformesBox(final Event event) throws Exception{
+		if(selectedPlateforme != null){
+			banques = ManagerLocator.getUtilisateurManager().getAvailableBanquesByPlateformeManager(user, selectedPlateforme, false);
+		}else{
+			banques = new ArrayList<>();
 		}
+
+		ConnexionUtils.initToutesCollectionsAccesses(banques, selectedPlateforme, user);
 
 		if(banques.size() > 0){
 			selectedBanque = banques.get(0);
 		}else{
 			selectedBanque = null;
 		}
-   }
+	}
 
 	public Utilisateur getUser(){
 		return user;

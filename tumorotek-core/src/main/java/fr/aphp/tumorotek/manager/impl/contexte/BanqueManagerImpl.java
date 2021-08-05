@@ -102,6 +102,7 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Contexte;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.contexte.Service;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 import fr.aphp.tumorotek.model.impression.Template;
 import fr.aphp.tumorotek.model.imprimante.Imprimante;
 import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
@@ -1049,4 +1050,8 @@ public class BanqueManagerImpl implements BanqueManager
 		return new ArrayList<Banque>();
 	}
 
+	@Override
+	public List<Banque> findByEtudeManager(Etude e) {
+		return banqueDao.findByEtude(e);
+	}
 }

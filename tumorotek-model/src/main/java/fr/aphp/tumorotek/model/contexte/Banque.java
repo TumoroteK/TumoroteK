@@ -139,8 +139,11 @@ import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
    @NamedQuery(name = "Banque.findByTableAnnotation",
       query = "SELECT b FROM Banque b " + "JOIN b.tableAnnotationBanques t " + "WHERE t.pk.tableAnnotation = ?1"),
 	@NamedQuery(name = "Banque.findByConteneur",
-		query = "SELECT b FROM Banque b " + "JOIN b.conteneurs c " + "WHERE c = ?1")}
-)
+		query = "SELECT b FROM Banque b " + "JOIN b.conteneurs c " + "WHERE c = ?1"),
+	@NamedQuery(name = "Banque.findByEtude",
+		query = "SELECT b FROM Banque b WHERE b.etude = ?1")
+
+})
 public class Banque implements TKFantomableObject, TKdataObject, java.io.Serializable, Comparable<Object>
 {
 

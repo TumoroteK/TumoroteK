@@ -49,6 +49,7 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Contexte;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.contexte.Service;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 import fr.aphp.tumorotek.model.imprimante.Imprimante;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.systeme.Couleur;
@@ -65,223 +66,232 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Cession au travers de la banque.
  *
  * @author Pierre Ventadour
- * @version 2.2.1
+ * @version 2.3.0-gatsbi
  *
  */
 public interface BanqueManager
 {
 
-   /**
-    * Recherche une Banque dont l'identifiant est passé en paramètre.
-    * @param banqueId Identifiant de la banque que l'on recherche.
-    * @return Une Banque.
-    */
-   Banque findByIdManager(Integer banqueId);
+	/**
+	 * Recherche une Banque dont l'identifiant est passé en paramètre.
+	 * @param banqueId Identifiant de la banque que l'on recherche.
+	 * @return Une Banque.
+	 */
+	Banque findByIdManager(Integer banqueId);
 
-   /**
-    * Recherche toutes les banques présentes dans la base.
-    * @return Liste de Banques.
-    */
-   List<Banque> findAllObjectsManager();
+	/**
+	 * Recherche toutes les banques présentes dans la base.
+	 * @return Liste de Banques.
+	 */
+	List<Banque> findAllObjectsManager();
 
-   /**
-    * Recherche les prélèvements liés à la banque passée en paramètre.
-    * @param banque Banque pour laquellle on recherche des prélèvements.
-    * @return Liste de Prelevements.
-    */
-   Set<Prelevement> getPrelevementsManager(Banque banque);
+	/**
+	 * Recherche les prélèvements liés à la banque passée en paramètre.
+	 * @param banque Banque pour laquellle on recherche des prélèvements.
+	 * @return Liste de Prelevements.
+	 */
+	Set<Prelevement> getPrelevementsManager(Banque banque);
 
-   /**
-    * Recherche les échantillons liés à la banque passée en paramètre.
-    * @param banque Banque pour laquellle on recherche des échantillons.
-    * @return Liste d'Echantillons.
-    */
-   Set<Echantillon> getEchantillonsManager(Banque banque);
+	/**
+	 * Recherche les échantillons liés à la banque passée en paramètre.
+	 * @param banque Banque pour laquellle on recherche des échantillons.
+	 * @return Liste d'Echantillons.
+	 */
+	Set<Echantillon> getEchantillonsManager(Banque banque);
 
-   /**
-    * Recherche les produit dérivés liés à la banque passée en paramètre.
-    * @param banque Banque pour laquellle on recherche des produits dérivés.
-    * @return Liste de ProdDerives.
-    */
-   Set<ProdDerive> getProdDerivesManager(Banque banque);
+	/**
+	 * Recherche les produit dérivés liés à la banque passée en paramètre.
+	 * @param banque Banque pour laquellle on recherche des produits dérivés.
+	 * @return Liste de ProdDerives.
+	 */
+	Set<ProdDerive> getProdDerivesManager(Banque banque);
 
-   /**
-    * Recherche les Services de stockage liés à la banque passée en paramètre.
-    * @param banque Banque pour laquellle on recherche des produits dérivés.
-    * @return Liste de Services.
-    */
-   Set<Service> getServicesStockageManager(Banque banque);
+	/**
+	 * Recherche les Services de stockage liés à la banque passée en paramètre.
+	 * @param banque Banque pour laquellle on recherche des produits dérivés.
+	 * @return Liste de Services.
+	 */
+	Set<Service> getServicesStockageManager(Banque banque);
 
-   /**
-    * Trouve les catalogues associés au contexte auquel la banque
-    * appartient.
-    * @param banqueId
-    * @return list Catalogue
-    */
-   List<Catalogue> findContexteCataloguesManager(Integer banqueId);
+	/**
+	 * Trouve les catalogues associés au contexte auquel la banque
+	 * appartient.
+	 * @param banqueId
+	 * @return list Catalogue
+	 */
+	List<Catalogue> findContexteCataloguesManager(Integer banqueId);
 
-   /**
-    * Trouve les banques pour lesquelles l'utilisateur a un droit de
-    * consultation sur l'entité spécifiée pour la plateforme spécifiée. 
-    * Tient compte des banques sur lesquelles l'utilisateur a un droit d'admin.
-    * @param utilisateur
-    * @param entite
-    * @param plateforme
-    * @version 2.0.13
-    */
-   List<Banque> findByEntiteConsultByUtilisateurManager(Utilisateur usr, Entite entite, Plateforme pf);
+	/**
+	 * Trouve les banques pour lesquelles l'utilisateur a un droit de
+	 * consultation sur l'entité spécifiée pour la plateforme spécifiée. 
+	 * Tient compte des banques sur lesquelles l'utilisateur a un droit d'admin.
+	 * @param utilisateur
+	 * @param entite
+	 * @param plateforme
+	 * @version 2.0.13
+	 */
+	List<Banque> findByEntiteConsultByUtilisateurManager(Utilisateur usr, Entite entite, Plateforme pf);
 
-   /**
-    * Trouve les banques pour lesquelles l'utilisateur a un droit de
-    * modification sur l'entité spécifiée pour une plateforme spécifiée.
-    * Tient compte des banques sur lesquelles l'utilisateur 
-    * a un droit d'admin.
-    * @param utilisateur
-    * @param entite
-    * @param plateforme
-    */
-   List<Banque> findByEntiteModifByUtilisateurManager(Utilisateur usr, Entite entite, Plateforme pf);
+	/**
+	 * Trouve les banques pour lesquelles l'utilisateur a un droit de
+	 * modification sur l'entité spécifiée pour une plateforme spécifiée.
+	 * Tient compte des banques sur lesquelles l'utilisateur 
+	 * a un droit d'admin.
+	 * @param utilisateur
+	 * @param entite
+	 * @param plateforme
+	 */
+	List<Banque> findByEntiteModifByUtilisateurManager(Utilisateur usr, Entite entite, Plateforme pf);
 
-   /**
-    * Trouve les banques définissant un 'autoriseCrossPatient' true ou 
-    * false. 
-    * @param autoriseCrossPatient
-    */
-   List<Banque> findByAutoriseCrossPatientManager(boolean cross);
+	/**
+	 * Trouve les banques définissant un 'autoriseCrossPatient' true ou 
+	 * false. 
+	 * @param autoriseCrossPatient
+	 */
+	List<Banque> findByAutoriseCrossPatientManager(boolean cross);
 
-   /**
-    * Trouve les banques pour lesquelles l'utilisateur a un droit
-    * d'administrateur pour la plateforme spécifiée.
-    * @param user
-    * @param plateforme
-    */
-   List<Banque> findByUtilisateurIsAdminManager(Utilisateur usr, Plateforme pf);
+	/**
+	 * Trouve les banques pour lesquelles l'utilisateur a un droit
+	 * d'administrateur pour la plateforme spécifiée.
+	 * @param user
+	 * @param plateforme
+	 */
+	List<Banque> findByUtilisateurIsAdminManager(Utilisateur usr, Plateforme pf);
 
-   /**
-    * Trouve les banques pour lesquelles l'utilisateur a un droit
-    * en fonction d'une plateforme.
-    */
-   List<Banque> findByUtilisateurAndPFManager(Utilisateur usr, Plateforme pf);
+	/**
+	 * Trouve les banques pour lesquelles l'utilisateur a un droit
+	 * en fonction d'une plateforme.
+	 */
+	List<Banque> findByUtilisateurAndPFManager(Utilisateur usr, Plateforme pf);
 
-   /**
-    * Trouve les banques appartenant à la plateforme, avec un filtre 
-    * sur le statut archivé d'une banque.
-    * Renvoie toutes les banques si filtre archive = null
-    * @param pltf
-    * @param archive
-    * @return liste de banques.
-    * @version 2.1
-    */
-   List<Banque> findByPlateformeAndArchiveManager(Plateforme pltf, Boolean archive);
+	/**
+	 * Trouve les banques appartenant à la plateforme, avec un filtre 
+	 * sur le statut archivé d'une banque.
+	 * Renvoie toutes les banques si filtre archive = null
+	 * @param pltf
+	 * @param archive
+	 * @return liste de banques.
+	 * @version 2.1
+	 */
+	List<Banque> findByPlateformeAndArchiveManager(Plateforme pltf, Boolean archive);
 
-   /**
-    * Enregistre ou modifie un objet Banque dans la base de données.
-    * @param banque 
-    * @param plateforme
-    * @param service Service propriétaire
-    * @param responsable Collaborateur 
-    * @param conteneurs Liste de conteneurs associés
-    * @param codifications Liste de codifications associées
-    * @param tables Liste de TableAnnotations Patient associées
-    * @param tables Liste de TableAnnotations Prelevement associées
-    * @param tables Liste de TableAnnotations Echantillon associées
-    * @param tables Liste de TableAnnotations Derives associées
-    * @param tables Liste de TableAnnotations Cession associées
-    * @param coulTypes Liste de CouleurEntiteType associées
-    * @param couleur associée au stockage échantillon
-    * @param couleur associée au stockage dérivés
-    * @param utilisateur Utilisateur réalisant l'opération
-    * @param operation creation/modification
-    * @param base directory pour créer dossiers sytèmes associés.
-    */
-   void createOrUpdateObjectManager(Banque banque, Plateforme pf, Contexte contexte, Service service, Collaborateur responsable,
-      Collaborateur contact, List<Conteneur> conteneurs, List<BanqueTableCodage> codifications,
-      List<TableAnnotation> tablesPatient, List<TableAnnotation> tablesPrlvt, List<TableAnnotation> tablesEchan,
-      List<TableAnnotation> tablesDerive, List<TableAnnotation> tablesCess, List<CouleurEntiteType> coulTypes,
-      Couleur couleurEchan, Couleur couleurDerive, Utilisateur utilisateur, Set<Utilisateur> utilisateursList, String operation, String basedir);
+	/**
+	 * Enregistre ou modifie un objet Banque dans la base de données.
+	 * @param banque 
+	 * @param plateforme
+	 * @param service Service propriétaire
+	 * @param responsable Collaborateur 
+	 * @param conteneurs Liste de conteneurs associés
+	 * @param codifications Liste de codifications associées
+	 * @param tables Liste de TableAnnotations Patient associées
+	 * @param tables Liste de TableAnnotations Prelevement associées
+	 * @param tables Liste de TableAnnotations Echantillon associées
+	 * @param tables Liste de TableAnnotations Derives associées
+	 * @param tables Liste de TableAnnotations Cession associées
+	 * @param coulTypes Liste de CouleurEntiteType associées
+	 * @param couleur associée au stockage échantillon
+	 * @param couleur associée au stockage dérivés
+	 * @param utilisateur Utilisateur réalisant l'opération
+	 * @param operation creation/modification
+	 * @param base directory pour créer dossiers sytèmes associés.
+	 */
+	void createOrUpdateObjectManager(Banque banque, Plateforme pf, Contexte contexte, Service service, Collaborateur responsable,
+			Collaborateur contact, List<Conteneur> conteneurs, List<BanqueTableCodage> codifications,
+			List<TableAnnotation> tablesPatient, List<TableAnnotation> tablesPrlvt, List<TableAnnotation> tablesEchan,
+			List<TableAnnotation> tablesDerive, List<TableAnnotation> tablesCess, List<CouleurEntiteType> coulTypes,
+			Couleur couleurEchan, Couleur couleurDerive, Utilisateur utilisateur, Set<Utilisateur> utilisateursList, String operation, String basedir);
 
-   /**
-    * Recherche la présence de doublon d'un objet Banque.
-    * @param banque
-    * @return true si doublon
-    */
-   boolean findDoublonManager(Banque banque);
+	/**
+	 * Recherche la présence de doublon d'un objet Banque.
+	 * @param banque
+	 * @return true si doublon
+	 */
+	boolean findDoublonManager(Banque banque);
 
-   /**
-    * Supprime la banque et ses opérations associées du système.
-    * @param comments commentaires liés à la suppression
-    * @param Utilisateur réalisant la suppression.
-    * @param base directory pour effacer dossiers sytèmes associés.
-    * @param boolean force true pour forcer la suppression de la banque.
-    */
-   void removeObjectManager(Banque banque, String comments, Utilisateur user, String basedir, boolean force);
+	/**
+	 * Supprime la banque et ses opérations associées du système.
+	 * @param comments commentaires liés à la suppression
+	 * @param Utilisateur réalisant la suppression.
+	 * @param base directory pour effacer dossiers sytèmes associés.
+	 * @param boolean force true pour forcer la suppression de la banque.
+	 */
+	void removeObjectManager(Banque banque, String comments, Utilisateur user, String basedir, boolean force);
 
-   //	/**
-   //	 * Recherche les codifications liées à la banque passée en paramètre.
-   //	 * @param banque Banque pour laquelle on recherche des codifications.
-   //	 * @return Liste de TableCodage.
-   //	 */
-   //	Set<TableCodage> getTablesCodageManager(Banque banque);
+	//	/**
+	//	 * Recherche les codifications liées à la banque passée en paramètre.
+	//	 * @param banque Banque pour laquelle on recherche des codifications.
+	//	 * @return Liste de TableCodage.
+	//	 */
+	//	Set<TableCodage> getTablesCodageManager(Banque banque);
 
-   /**
-    * Recherche les conteneurs liés à la banque passée en paramètre.
-    * @param banque Banque pour laquelle on recherche des conteneurs.
-    * @return Liste de Conteneur.
-    */
-   Set<Conteneur> getConteneursManager(Banque banque);
+	/**
+	 * Recherche les conteneurs liés à la banque passée en paramètre.
+	 * @param banque Banque pour laquelle on recherche des conteneurs.
+	 * @return Liste de Conteneur.
+	 */
+	Set<Conteneur> getConteneursManager(Banque banque);
 
-   /**
-    * Recherche toutes les banques sur lesquelles l'utilisateur 
-    * passé en paramètre a un profil assigné. Les banques sont 
-    * retournées ordonnées par leur nom.
-    * @param u Utilisateur
-    * @return liste de banques 
-    */
-   List<Banque> findByProfilUtilisateurManager(Utilisateur u);
+	/**
+	 * Recherche toutes les banques sur lesquelles l'utilisateur 
+	 * passé en paramètre a un profil assigné. Les banques sont 
+	 * retournées ordonnées par leur nom.
+	 * @param u Utilisateur
+	 * @return liste de banques 
+	 */
+	List<Banque> findByProfilUtilisateurManager(Utilisateur u);
 
-   /**
-    * Recherche toutes les associations entre une banque et les tables de 
-    * codifications qui lui ont été associées.
-    * @param banque
-    * @return liste BanqueTableCodage.
-    */
-   List<BanqueTableCodage> getBanqueTableCodageByBanqueManager(Banque banque);
+	/**
+	 * Recherche toutes les associations entre une banque et les tables de 
+	 * codifications qui lui ont été associées.
+	 * @param banque
+	 * @return liste BanqueTableCodage.
+	 */
+	List<BanqueTableCodage> getBanqueTableCodageByBanqueManager(Banque banque);
 
-   /**
-    * Recherche les imprimantes liées à la banque passée en paramètre.
-    * @param banque Banque pour laquelle on recherche des imprimantes.
-    * @return Set d'Imrpimantes.
-    */
-   Set<Imprimante> getImprimantesManager(Banque banque);
+	/**
+	 * Recherche les imprimantes liées à la banque passée en paramètre.
+	 * @param banque Banque pour laquelle on recherche des imprimantes.
+	 * @return Set d'Imrpimantes.
+	 */
+	Set<Imprimante> getImprimantesManager(Banque banque);
 
-   /**
-    * Vérifie si la banque est référencée par du matériel bioogique ou 
-    * de tracabilité (prélèvements, échantillons, dérivés, cessions).
-    * Si c'est le cas la banque n'est pas supprimable.
-    * @param bank
-    * @return true 
-    */
-   boolean isReferencedObjectManager(Banque bank);
+	/**
+	 * Vérifie si la banque est référencée par du matériel bioogique ou 
+	 * de tracabilité (prélèvements, échantillons, dérivés, cessions).
+	 * Si c'est le cas la banque n'est pas supprimable.
+	 * @param bank
+	 * @return true 
+	 */
+	boolean isReferencedObjectManager(Banque bank);
 
-   /**
-    * Trouve une liste de banque d'accueil possible à un utilisateur 
-    * pour la migration du  prelevement passe en paramètre. 
-    * Les banques doivent être administrées par l'utilisateur 
-    * et partager les conteneurs des emplacements attribués 
-    * aux objets issus du prelevement.
-    * @since 2.2.1 les banques doivent être de même contexte
-    * @param p Prelevement
-    * @param utilisateur 
-    * @return liste de Banque
-    */
-   List<Banque> findBanqueForSwitchManager(Prelevement p, Utilisateur u);
+	/**
+	 * Trouve une liste de banque d'accueil possible à un utilisateur 
+	 * pour la migration du  prelevement passe en paramètre. 
+	 * Les banques doivent être administrées par l'utilisateur 
+	 * et partager les conteneurs des emplacements attribués 
+	 * aux objets issus du prelevement.
+	 * @since 2.2.1 les banques doivent être de même contexte
+	 * @param p Prelevement
+	 * @param utilisateur 
+	 * @return liste de Banque
+	 */
+	List<Banque> findBanqueForSwitchManager(Prelevement p, Utilisateur u);
 
-   /**
+	/**
 	 * Recherche toutes les banques donnant l'accès au 
 	 * conteneur passé en paramètre.  
 	 * @param conteneur
 	 * @return liste de banques 
 	 * @since 2.2.1
 	 */
-   List<Banque> findByConteneurManager(Conteneur c1);
+	List<Banque> findByConteneurManager(Conteneur c1);
+
+	/**
+	 * Recherche toutes les banques donnant l'accès au 
+	 * conteneur passé en paramètre.  
+	 * @param etude
+	 * @return liste de banques 
+	 * @since 2.3.0-gatsbi
+	 */
+	List<Banque> findByEtudeManager(Etude e);
 }

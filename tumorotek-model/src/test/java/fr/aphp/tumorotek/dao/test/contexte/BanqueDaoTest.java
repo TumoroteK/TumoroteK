@@ -46,6 +46,7 @@ import fr.aphp.tumorotek.dao.contexte.CollaborateurDao;
 import fr.aphp.tumorotek.dao.contexte.ContexteDao;
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
 import fr.aphp.tumorotek.dao.contexte.ServiceDao;
+import fr.aphp.tumorotek.dao.contexte.gatsbi.EtudeDao;
 import fr.aphp.tumorotek.dao.stockage.ConteneurDao;
 import fr.aphp.tumorotek.dao.systeme.CouleurDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
@@ -59,6 +60,7 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Contexte;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.contexte.Service;
+import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.systeme.Couleur;
 import fr.aphp.tumorotek.model.systeme.Entite;
@@ -69,7 +71,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Classe de test pour le DAO BanqueDao et le bean du domaine Banque.
  *
  * @author Pierre Ventadour.
- * @version 2.2.1
+ * @version 2.3.0-gatsbi
  *
  */
 public class BanqueDaoTest extends AbstractDaoTest
@@ -85,6 +87,7 @@ public class BanqueDaoTest extends AbstractDaoTest
    private EntiteDao entiteDao;
    private TableAnnotationDao tableAnnotationDao;
    private ConteneurDao conteneurDao;
+   private EtudeDao etudeDao;
 
    private final String updatedNom = "Banque mise a jour";
 
@@ -129,7 +132,11 @@ public class BanqueDaoTest extends AbstractDaoTest
 
    public void setConteneurDao(ConteneurDao cDao) {
 	this.conteneurDao = cDao;
-}
+	}
+	
+	public void setEtudeDao(EtudeDao _e) {
+		this.etudeDao = _e;
+	}
 
 /**
     * Test l'appel de la méthode findAll().
@@ -643,5 +650,23 @@ public class BanqueDaoTest extends AbstractDaoTest
 
       banks = banqueDao.findByConteneur(null);
       assertEquals(0, banks.size());
+   }
+   
+   /**
+    * @since 2.3.0-gatsbi
+    */
+   @Test
+   public void testFindByEtude(){
+
+      final Etude e1 = etudeDao.findById(1);
+      List<Banque> banks = banqueDao.findByEtude(e1);
+      assertTrue(banks.isEmpty());
+
+      final Etude e2 = etudeDao.findById(2);
+      banks = banqueDao.findByEtude(e2);
+      assertTrue(banks.isEmpty());
+
+      banks = banqueDao.findByEtude(null);
+      assertTrue(banks.isEmpty());
    }
 }
