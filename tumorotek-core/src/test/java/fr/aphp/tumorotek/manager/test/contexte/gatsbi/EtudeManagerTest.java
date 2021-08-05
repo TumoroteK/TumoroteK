@@ -73,10 +73,10 @@ public class EtudeManagerTest extends AbstractManagerTest4
    public void testFindByPfOrderManager(){
       Plateforme pf = plateformeDao.findById(1);
       List<Etude> list = etudeManager.findByPfOrderManager(pf);
-      assertTrue(list.size() == 3);
+      assertTrue(list.size() == 2);
       assertTrue(list.get(0).getAcronyme().equals("AEP"));
       assertTrue(list.get(1).getAcronyme().equals("BEP"));
-      assertTrue(list.get(2).getAcronyme().equals("CEP"));
+      // assertTrue(list.get(2).getAcronyme().equals("CEP")); archived
       pf = plateformeDao.findById(2);
       list = etudeManager.findByPfOrderManager(pf);
       assertTrue(list.isEmpty());

@@ -68,7 +68,7 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 @Table(name = "GATSBY_ETUDE")
 @NamedQueries(value = {
 	@NamedQuery(name = "Etude.findByPfOrder", 
-		query = "SELECT e FROM Etude e " + "WHERE e.plateforme = ?1 ORDER BY e.titre"),
+		query = "SELECT e FROM Etude e " + "WHERE e.plateforme = ?1 AND archive = 0 ORDER BY e.titre")
 })
 public class Etude implements Serializable {
 
@@ -80,6 +80,7 @@ public class Etude implements Serializable {
 	private Plateforme plateforme;
 	private String titre;
 	private String acronyme;
+	private Boolean archive;
 	private List<Contexte> contextes = new ArrayList<Contexte>();
 
 	public Etude(){}
@@ -120,6 +121,14 @@ public class Etude implements Serializable {
 	
 	public void setAcronyme(String acronyme) {
 		this.acronyme = acronyme;
+	}
+
+	public Boolean getArchive() {
+		return archive;
+	}
+
+	public void setArchive(Boolean _a) {
+		this.archive = _a;
 	}
 
 	@Transient

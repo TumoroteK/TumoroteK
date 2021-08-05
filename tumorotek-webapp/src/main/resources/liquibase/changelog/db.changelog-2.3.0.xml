@@ -80,6 +80,9 @@
             <column name="ACRONYME" type="VARCHAR(5)">
                 <constraints nullable="false"/>
             </column>
+            <column name="ARCHIVE" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
             <column name="PLATEFORME_ID" type="INT"/>
         </createTable>
 
