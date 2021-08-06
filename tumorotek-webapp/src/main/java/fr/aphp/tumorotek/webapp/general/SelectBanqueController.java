@@ -42,7 +42,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -127,7 +126,7 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
 		//user = getLoggedUtilisateur();
 		user = ConnexionUtils.getLoggedUtilisateur();
 		initWindow();
-		if(canAccessToutesCollections()){
+		if(ConnexionUtils.canAccessToutesCollections(banques, selectedPlateforme, user)){
 			toutesColl = new Banque();
 			toutesColl.setNom(Labels.getLabel("select.banque.toutesCollection"));
 			banques.add(toutesColl);
@@ -373,7 +372,7 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
          banques = new ArrayList<>();
       }
       
-      if(canAccessToutesCollections()){
+      if(ConnexionUtils.canAccessToutesCollections(banques, selectedPlateforme, user)) {
 			toutesColl = new Banque();
 			toutesColl.setNom(Labels.getLabel("select.banque.toutesCollection"));
 			banques.add(toutesColl);
@@ -392,35 +391,6 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
 
 	public void setUser(final Utilisateur u){
 		this.user = u;
-	}
-
-	/**
-	 * Test si l'utilisateur a accès à l'option "Toutes collections".
-	 * @return True s'il a accès.
-	 */
-	public boolean canAccessToutesCollections(){
-		boolean can = true;
-
-		// s'il y a plusieurs banques disponibles
-		if(banques.size() > 1){
-			final Set<Plateforme> pfs = ManagerLocator.getUtilisateurManager().getPlateformesManager(user);
-			// si l'utilisateur n'est admin de la plateforme
-			if(!pfs.contains(selectedPlateforme) && !user.isSuperAdmin()){
-				
-				// @since 2.2.4.1
-				// compte le nombre de profils d'accès différents par contexte cette plateforme
-				// si les profils sont différents, il n'a pas accès à
-				// l'option "Toutes collections"
-				if(ManagerLocator.getProfilUtilisateurManager()
-					.countDistinctProfilForUserAndPlateformeGroupedByContexteManager(user, selectedPlateforme) != 1L){
-					can = false;
-				}
-			}
-		}else{
-			can = false;
-		}
-
-		return can;
 	}
 
 	public static void setTheme(final Execution exe, final String theme){
