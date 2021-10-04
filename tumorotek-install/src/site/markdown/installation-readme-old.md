@@ -1,5 +1,5 @@
-#### Installation de TumoroteK version 2.2.4-SNAPSHOT
-![TumoroteK version 2.2.4-SNAPSHOT](https://img.shields.io/badge/TumoroteK-2.2.4-SNAPSHOT-brightgreen.svg "TumoroteK version 2.2.4-SNAPSHOT")
+#### Installation de TumoroteK version 2.2.3-fix302
+![TumoroteK version 2.2.3-fix302](https://img.shields.io/badge/TumoroteK-2.2.3-fix302-brightgreen.svg "TumoroteK version 2.2.3-fix302")
 ![Java version 8](https://img.shields.io/badge/Java->=_8-blue.svg "Java version 8")
 ![Apache Tomcat version 7](https://img.shields.io/badge/Apache_Tomcat->=_7-yellow.svg "Apache Tomcat version 7")
 
@@ -21,7 +21,7 @@ sous Unix, dans la variable `CATALINA_OPTS`, par l'intermédiaire du script de d
 ***
 
 ##### Télécharger puis dézipper le package d'installation :
-[Dossier d'installation](https://github.com/TumoroteK/TumoroteK/releases/download/v2.2.4-SNAPSHOT/tumorotek-install-2.2.4-SNAPSHOT.zip)
+[Dossier d'installation](https://github.com/TumoroteK/TumoroteK/releases/download/v2.2.3-fix302/tumorotek-install-2.2.3-fix302.zip)
 
 
 ##### Mise en place des bases de données UTF-8 :
@@ -89,7 +89,7 @@ sous Unix, dans la variable `CATALINA_OPTS`, par l'intermédiaire du script de d
 
 ##### Déploiement de l'application TumoroteK
 - Arrêter le service Apache Tomcat  
-- Déplacer la web archive `tumorotek##2.2.4-SNAPSHOT.war` dans le dossier `<PATH_TOMCAT>/webapps`
+- Déplacer la web archive `tumorotek##2.2.3-fix302.war` dans le dossier `<PATH_TOMCAT>/webapps`
 - Déplacer le contenu du dossier `localhost` dans le dossier `<PATH_TOMCAT>/conf/Catalina/localhost`  
 - Démarrer le service Apache Tomcat
 - Vérifier le bon déploiement de l'application `tumorotek` dans l'interface Manager du Tomcat `http://<SERVEUR>:8080/manager/html`
@@ -161,7 +161,7 @@ sous Unix, dans la variable `CATALINA_OPTS`, par l'intermédiaire du script de d
 
 7. Niveaux de logs Log4j
     
-    Se référer à la documentation Log4j pour l'édition du fichier `<TOMCAT_PATH>/webapps/tumorotek##2.2.4-SNAPSHOT/WEB-INF/classes/log4j.properties`
+    Se référer à la documentation Log4j pour l'édition du fichier `<TOMCAT_PATH>/webapps/tumorotek##2.2.3-fix302/WEB-INF/classes/log4j.properties`
     
     - Démarrer l'application `tumorotek` dans l'interface Manager du Tomcat `http://<SERVEUR>:8080/manager/html`
 
