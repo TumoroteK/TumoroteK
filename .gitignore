@@ -40,5 +40,3 @@ tumorotek-core/src/test/java/fr/aphp/tumorotek/manager/test/xml/testBoite.html
 tumorotek-core/src/test/java/fr/aphp/tumorotek/manager/test/xml/testContenu.html
 tumorotek-core/src/test/java/fr/aphp/tumorotek/manager/test/xml/test.pdf
 target/checkout/
-
-*/bin
