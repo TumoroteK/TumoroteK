@@ -37,32 +37,45 @@ package fr.aphp.tumorotek.dao.stockage;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.stockage.TerminaleType;
 
-public interface TerminaleTypeDao extends GenericDaoJpa<TerminaleType, Integer>
-{
+/**
+ *
+ * @version 2.3
+ *
+ */
+@Repository
+public interface TerminaleTypeDao extends CrudRepository<TerminaleType, Integer> {
+	
+	/**
+	 * Recherche toutes les TerminaleTypes ordonnées.
+	 * 
+	 * @return Liste ordonnée de TerminaleTypes.
+	 */
+	@Query("SELECT t FROM TerminaleType t ORDER BY t.type")
+	List<TerminaleType> findByOrder();
 
-   /**
-    * Recherche toutes les TerminaleTypes ordonnées.
-    * @return Liste ordonnée de TerminaleTypes.
-    */
-   List<TerminaleType> findByOrder();
+	/**
+	 * Recherche tous les TerminaleTypes sauf celui dont l'identifiant est passé en
+	 * paramètre.
+	 * 
+	 * @param id Identifiant du TerminaleType à exclure.
+	 * @return Liste de TerminaleTypes.
+	 */
+	@Query("SELECT t FROM TerminaleType t WHERE t.terminaleTypeId != ?1")
+	List<TerminaleType> findByExcludedId(Integer id);
 
-   /**
-    * Recherche tous les TerminaleTypes sauf celui dont
-    * l'identifiant est passé en paramètre.
-    * @param id Identifiant du TerminaleType à exclure.
-    * @return Liste de TerminaleTypes.
-    */
-   List<TerminaleType> findByExcludedId(Integer id);
-
-   /**
-    * Recherche tous les TerminaleTypes dont le type est
-    * égale au paramètre.
-    * @param type Type des TerminaleTypes recherchés.
-    * @return Liste de TerminaleTypes.
-    */
-   List<TerminaleType> findByType(String type);
+	/**
+	 * Recherche tous les TerminaleTypes dont le type est égale au paramètre.
+	 * 
+	 * @param type Type des TerminaleTypes recherchés.
+	 * @return Liste de TerminaleTypes.
+	 */
+	@Query("SELECT t FROM TerminaleType t WHERE t.type = ?1")
+	List<TerminaleType> findByType(String type);
 
 }

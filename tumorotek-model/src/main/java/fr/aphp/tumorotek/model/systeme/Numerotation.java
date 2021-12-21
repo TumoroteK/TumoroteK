@@ -64,20 +64,20 @@ import fr.aphp.tumorotek.model.contexte.Banque;
  * Date: 15/09/2009
  *
  * @author Mathieu Barthelemy
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "NUMEROTATION")
-@NamedQueries(value = {
-   @NamedQuery(name = "Numerotation.findByEntite", query = "SELECT n FROM Numerotation n" + " WHERE n.entite = ?1"),
-   @NamedQuery(name = "Numerotation.findByBanques",
-      query = "SELECT n FROM Numerotation n" + " WHERE n.banque in (?1)" + " ORDER BY n.banque, n.entite"),
-   @NamedQuery(name = "Numerotation.findByBanqueAndEntite",
-      query = "SELECT n FROM Numerotation n" + " WHERE n.banque = ?1 AND n.entite = ?2"),
-   @NamedQuery(name = "Numerotation.findByBanqueSelectEntite",
-      query = "SELECT n.entite FROM Numerotation n" + " WHERE n.banque = ?1"),
-   @NamedQuery(name = "Numerotation.findByExcludedId", query = "SELECT n FROM Numerotation n" + " WHERE n.numerotationId != ?1")})
+//@NamedQueries(value = {
+//   @NamedQuery(name = "Numerotation.findByEntite", query = "SELECT n FROM Numerotation n" + " WHERE n.entite = ?1"),
+//   @NamedQuery(name = "Numerotation.findByBanques",
+//      query = "SELECT n FROM Numerotation n" + " WHERE n.banque in (?1)" + " ORDER BY n.banque, n.entite"),
+//   @NamedQuery(name = "Numerotation.findByBanqueAndEntite",
+//      query = "SELECT n FROM Numerotation n" + " WHERE n.banque = ?1 AND n.entite = ?2"),
+//   @NamedQuery(name = "Numerotation.findByBanqueSelectEntite",
+//      query = "SELECT n.entite FROM Numerotation n" + " WHERE n.banque = ?1"),
+//   @NamedQuery(name = "Numerotation.findByExcludedId", query = "SELECT n FROM Numerotation n" + " WHERE n.numerotationId != ?1")})
 public class Numerotation implements TKdataObject, Serializable
 {
 

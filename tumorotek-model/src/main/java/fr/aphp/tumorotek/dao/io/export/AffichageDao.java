@@ -37,64 +37,78 @@ package fr.aphp.tumorotek.dao.io.export;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.io.export.Affichage;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 /**
  *
- * Interface pour le DAO du bean de domaine Affichage.
- * Interface créée le 23/10/09.
+ * Interface pour le DAO du bean de domaine Affichage. Interface créée le
+ * 23/10/09.
  *
  * @author Maxime GOUSSEAU
- * @version 2.0
+ * @version 2.3
  */
-public interface AffichageDao extends GenericDaoJpa<Affichage, Integer>
-{
+@Repository
+public interface AffichageDao extends CrudRepository<Affichage, Integer> {
 
-   /**
-    * Recherche les Affichages d'un Utilisateur.
-    * @param utilisateur : Utilisateur dont on veut connaître les Affichages.
-    * @return la liste des Affichages de l'Utilisateur
-    */
-   List<Affichage> findByUtilisateur(Utilisateur utilisateur);
+	/**
+	 * Recherche les Affichages d'un Utilisateur.
+	 * 
+	 * @param utilisateur : Utilisateur dont on veut connaître les Affichages.
+	 * @return la liste des Affichages de l'Utilisateur
+	 */
+	@Query("SELECT a FROM Affichage a WHERE " + "a.createur = ?1")
+	List<Affichage> findByUtilisateur(Utilisateur utilisateur);
 
-   /**
-   * Recherche les Affichages d'une Banque.
-   * @param banque Banque dont on veut connaître les Affichages.
-   * @return la liste des Affichages de la Banque.
-   */
-   List<Affichage> findByBanque(Banque banque);
+	/**
+	 * Recherche les Affichages d'une Banque.
+	 * 
+	 * @param banque Banque dont on veut connaître les Affichages.
+	 * @return la liste des Affichages de la Banque.
+	 */
+	@Query("SELECT a FROM Affichage a WHERE " + "a.banque = ?1 " + "ORDER BY a.intitule")
+	List<Affichage> findByBanque(Banque banque);
 
-   /**
-   * Recherche les Affichages pour plusieurs Banques.
-   * @param banques Liste de Banques dont on veut connaître les Affichages.
-   * @return la liste des Affichages des Banques.
-   */
-   List<Affichage> findByBanqueInList(List<Banque> banques);
+	/**
+	 * Recherche les Affichages pour plusieurs Banques.
+	 * 
+	 * @param banques Liste de Banques dont on veut connaître les Affichages.
+	 * @return la liste des Affichages des Banques.
+	 */
+	@Query("SELECT a FROM Affichage a WHERE " + "a.banque in (?1) " + "ORDER BY a.intitule")
+	List<Affichage> findByBanqueInList(List<Banque> banques);
 
-   /**
-   * Recherche les Affichages d'un intitulé.
-   * @param intitulé : intitulé dont on veut connaître les Affichages.
-   * @return la liste des Affichages de l'intitulé
-   */
-   List<Affichage> findByIntitule(String intitule);
+	/**
+	 * Recherche les Affichages d'un intitulé.
+	 * 
+	 * @param intitulé : intitulé dont on veut connaître les Affichages.
+	 * @return la liste des Affichages de l'intitulé
+	 */
+	@Query("SELECT a FROM Affichage a " + "WHERE a.intitule like ?1")
+	List<Affichage> findByIntitule(String intitule);
 
-   /**
-   * Recherche les Affichages d'un utilisateur par intitulé.
-   * @param intitulé : intitulé dont on veut connaître les Affichages.
-   * @param utilisateur : Utilisateur ayant créé les Affichages.
-   * @return la liste des Affichages de l'intitulé
-   */
-   List<Affichage> findByIntituleUtilisateur(String intitule, Utilisateur utilisateur);
+	/**
+	 * Recherche les Affichages d'un utilisateur par intitulé.
+	 * 
+	 * @param intitulé    : intitulé dont on veut connaître les Affichages.
+	 * @param utilisateur : Utilisateur ayant créé les Affichages.
+	 * @return la liste des Affichages de l'intitulé
+	 */
+	@Query("SELECT a FROM Affichage a " + "WHERE a.intitule like ?1 " + "AND a.createur = ?2")
+	List<Affichage> findByIntituleUtilisateur(String intitule, Utilisateur utilisateur);
 
-   /**
-   * Recherche tous les Affichages, sauf celui dont l'id est passé 
-   * en paramètre.
-   * @param affichageId Identifiant de l'Affichage que l'on souhaite
-   * exclure de la liste retournée.
-   * @return une liste d'Affichages.
-   */
-   List<Affichage> findByExcludedId(Integer affichageId);
+	/**
+	 * Recherche tous les Affichages, sauf celui dont l'id est passé en paramètre.
+	 * 
+	 * @param affichageId Identifiant de l'Affichage que l'on souhaite exclure de la
+	 *                    liste retournée.
+	 * @return une liste d'Affichages.
+	 */
+	@Query("SELECT a FROM Affichage a " + "WHERE a.affichageId != ?1")
+	List<Affichage> findByExcludedId(Integer affichageId);
 }

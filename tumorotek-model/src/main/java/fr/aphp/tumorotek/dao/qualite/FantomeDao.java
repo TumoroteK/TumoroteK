@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.qualite;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.qualite.Fantome;
 
 /**
@@ -46,17 +49,19 @@ import fr.aphp.tumorotek.model.qualite.Fantome;
  * Date: 15/10/2010
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface FantomeDao extends GenericDaoJpa<Fantome, Integer>
-{
+@Repository
+public interface FantomeDao extends CrudRepository<Fantome, Integer> {
 
-   /**
-    * Recherche une liste de fantomes par leur nom.
-    * @param nom
-    * @return liste de fantomes.
-    */
-   List<Fantome> findByNom(String nom);
+	/**
+	 * Recherche une liste de fantomes par leur nom.
+	 * 
+	 * @param nom
+	 * @return liste de fantomes.
+	 */
+	@Query("SELECT f FROM Fantome f WHERE f.nom like ?1")
+	List<Fantome> findByNom(String nom);
 
 }

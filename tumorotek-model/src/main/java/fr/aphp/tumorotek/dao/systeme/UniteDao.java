@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.systeme;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.systeme.Unite;
 
 /**
@@ -45,30 +48,32 @@ import fr.aphp.tumorotek.model.systeme.Unite;
  * Interface pour le DAO du bean de domaine Unite.
  *
  * @author Pierre Ventadour
- * @version 10/09/2009
+ * @version 2.3
  *
  */
-public interface UniteDao extends GenericDaoJpa<Unite, Integer>
-{
+@Repository
+public interface UniteDao extends CrudRepository<Unite, Integer> {
 
-   /**
-    * Recherche les unités dont la valeur est égale au paramètre.
-    * @param unite Unitée recherchée.
-    * @return une liste d'unités.
-    */
-   List<Unite> findByUnite(String unite);
+	/**
+	 * Recherche les unités dont la valeur est égale au paramètre.
+	 * @param unite Unitée recherchée.
+	 * @return une liste d'unités.
+	 */
+	@Query("SELECT u FROM Unite u WHERE u.nom like ?1")
+	List<Unite> findByUnite(String unite);
 
-   /**
-    * Recherche les unités dont le type est égal au paramètre.
-    * @param type Type recherché pour les unités.
-    * @return une liste d'unités.
-    */
-   List<Unite> findByTypeWithOrder(String type);
+	/**
+	 * Recherche les unités dont le type est égal au paramètre.
+	 * @param type Type recherché pour les unités.
+	 * @return une liste d'unités.
+	 */
+	@Query("SELECT u FROM Unite u WHERE u.type like ?1 " + "ORDER BY u.nom")
+	List<Unite> findByTypeWithOrder(String type);
 
-   /**
-    * Recherche toutes les Unite ordonnées.
-    * @return Liste ordonnée de Unites.
-    */
-   List<Unite> findByOrder();
-
+	/**
+	 * Recherche toutes les Unite ordonnées.
+	 * @return Liste ordonnée de Unites.
+	 */
+	@Query("SELECT u FROM Unite u ORDER BY u.nom")
+	List<Unite> findByOrder();
 }

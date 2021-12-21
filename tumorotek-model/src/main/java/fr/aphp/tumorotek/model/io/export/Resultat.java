@@ -55,13 +55,13 @@ import org.hibernate.annotations.GenericGenerator;
  * Classe créée le 23/10/09.
  *
  * @author Maxime GOUSSEAU
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "RESULTAT")
-@NamedQueries(
-   value = {@NamedQuery(name = "Resultat.findByAffichage", query = "SELECT a.resultats FROM Affichage a " + "where a = ?1")})
+//@NamedQueries(
+//   value = {@NamedQuery(name = "Resultat.findByAffichage", query = "SELECT a.resultats FROM Affichage a " + "where a = ?1")})
 public class Resultat implements Comparable<Resultat>
 {
 

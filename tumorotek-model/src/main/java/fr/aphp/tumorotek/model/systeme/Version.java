@@ -59,11 +59,11 @@ import org.hibernate.annotations.GenericGenerator;
  */
 @Entity
 @Table(name = "VERSION")
-@NamedQueries(value = {@NamedQuery(name = "Version.findByVersion", query = "SELECT v FROM Version v WHERE v.version = ?1"),
-   @NamedQuery(name = "Version.findByDate", query = "SELECT v FROM Version v WHERE v.date = ?1"),
-   @NamedQuery(name = "Version.findByDateChronologique", query = "SELECT v FROM Version v ORDER BY v.date ASC"),
-   @NamedQuery(name = "Version.findByDateAntiChronologique", query = "SELECT v FROM Version v ORDER BY v.date DESC"),
-   @NamedQuery(name = "Version.findDoublon", query = "SELECT v FROM Version v WHERE v.version = ?1 AND v.date = ?2")})
+//@NamedQueries(value = {@NamedQuery(name = "Version.findByVersion", query = "SELECT v FROM Version v WHERE v.version = ?1"),
+//   @NamedQuery(name = "Version.findByDate", query = "SELECT v FROM Version v WHERE v.date = ?1"),
+//   @NamedQuery(name = "Version.findByDateChronologique", query = "SELECT v FROM Version v ORDER BY v.date ASC"),
+//   @NamedQuery(name = "Version.findByDateAntiChronologique", query = "SELECT v FROM Version v ORDER BY v.date DESC"),
+//   @NamedQuery(name = "Version.findDoublon", query = "SELECT v FROM Version v WHERE v.version = ?1 AND v.date = ?2")})
 public class Version implements Serializable
 {
    private Integer versionId;

@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.systeme;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.systeme.Fichier;
@@ -48,45 +51,51 @@ import fr.aphp.tumorotek.model.systeme.Fichier;
  * Interface créée le 10/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface FichierDao extends GenericDaoJpa<Fichier, Integer>
-{
+@Repository
+public interface FichierDao extends CrudRepository<Fichier, Integer> {
 
-   /**
-    * Recherche les Fichiers dont la valeur est égale au paramètre.
-    * @param path .
-    * @return une liste de Fichiers.
-    */
-   List<Fichier> findByPath(String path);
+	/**
+	 * Recherche les Fichiers dont la valeur est égale au paramètre.
+	 * @param path .
+	 * @return une liste de Fichiers.
+	 */
+	@Query("SELECT f FROM Fichier f WHERE f.path like ?1")
+	List<Fichier> findByPath(String path);
 
-   /**
-    * Recherche le Fichier dont qui est lié à léchantillon passé 
-    * en paramètre. 
-    * @param echantillonId Identifiant de l'échantillon pour lequel 
-    * on recherche un Fichier.
-    * @return une liste de Fichiers.
-    */
-   List<Fichier> findByEchantillonId(Integer echantillonId);
+	/**
+	 * Recherche le Fichier dont qui est lié à léchantillon passé 
+	 * en paramètre. 
+	 * @param echantillonId Identifiant de l'échantillon pour lequel 
+	 * on recherche un Fichier.
+	 * @return une liste de Fichiers.
+	 */
+	@Query("SELECT f FROM Fichier f " + "WHERE f.echantillon.echantillonId = ?1")
+	List<Fichier> findByEchantillonId(Integer echantillonId);
 
-   /**
-    * Recherche tous les Fichier ordonnés.
-    * @return Liste ordonnée de Fichiers.
-    */
-   List<Fichier> findByOrder();
+	/**
+	 * Recherche tous les Fichier ordonnés.
+	 * @return Liste ordonnée de Fichiers.
+	 */
+	@Query("SELECT f FROM Fichier f ORDER BY f.path")
+	List<Fichier> findByOrder();
 
-   /**
-    * Recherche tous les fichiers sauf celui dont l'id est passé 
-    * en paramètre.
-    * @param fichierId Identifiant du fichier que l'on souhaite
-    * exclure de la liste retournée.
-    * @return une liste de Fichier.
-    */
-   List<Fichier> findByExcludedId(Integer fichierId);
+	/**
+	 * Recherche tous les fichiers sauf celui dont l'id est passé 
+	 * en paramètre.
+	 * @param fichierId Identifiant du fichier que l'on souhaite
+	 * exclure de la liste retournée.
+	 * @return une liste de Fichier.
+	 */
+	@Query("SELECT f FROM Fichier f WHERE f.fichierId != ?1")
+	List<Fichier> findByExcludedId(Integer fichierId);
 
-   List<Echantillon> findFilesSharingPathForEchans(String path);
+	@Query("SELECT e FROM Echantillon e " + "WHERE e.crAnapath.path = ?1")
+	List<Echantillon> findFilesSharingPathForEchans(String path);
 
-   List<AnnotationValeur> findFilesSharingPathForAnnos(String path);
+	@Query("SELECT a FROM AnnotationValeur a " + "WHERE a.fichier.path = ?1")
+	List<AnnotationValeur> findFilesSharingPathForAnnos(String path);
 
 }

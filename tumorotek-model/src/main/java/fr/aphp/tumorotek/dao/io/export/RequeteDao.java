@@ -37,65 +37,79 @@ package fr.aphp.tumorotek.dao.io.export;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.io.export.Requete;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 /**
  *
- * Interface pour le DAO du bean de domaine Requete.
- * Interface créée le 23/10/09.
+ * Interface pour le DAO du bean de domaine Requete. Interface créée le
+ * 23/10/09.
  *
  * @author Maxime GOUSSEAU
- * @version 2.0
+ * @version 2.3
  */
-public interface RequeteDao extends GenericDaoJpa<Requete, Integer>
-{
+@Repository
+public interface RequeteDao extends CrudRepository<Requete, Integer> {
 
-   /**
-    * Recherche les requêtes d'un utilisateur.
-    * @param utilisateur : utilisateur dont on veut connaître les requêtes.
-    * @return la liste des requêtes de l'utilisateur
-    */
-   List<Requete> findByUtilisateur(Utilisateur utilisateur);
+	/**
+	 * Recherche les requêtes d'un utilisateur.
+	 * 
+	 * @param utilisateur : utilisateur dont on veut connaître les requêtes.
+	 * @return la liste des requêtes de l'utilisateur
+	 */
+	@Query("SELECT r FROM Requete r WHERE r.createur = ?1")
+	List<Requete> findByUtilisateur(Utilisateur utilisateur);
 
-   /**
-   * Recherche les requêtes d'une Banque.
-   * @param banque Banque dont on veut connaître les requêtes.
-   * @return la liste des requêtes de la Banque.
-   */
-   List<Requete> findByBanque(Banque banque);
+	/**
+	 * Recherche les requêtes d'une Banque.
+	 * 
+	 * @param banque Banque dont on veut connaître les requêtes.
+	 * @return la liste des requêtes de la Banque.
+	 */
+	@Query("SELECT r FROM Requete r WHERE r.banque = ?1 ORDER BY r.intitule")
+	List<Requete> findByBanque(Banque banque);
 
-   /**
-   * Recherche les Requetes pour plusieurs Banques.
-   * @param banques Liste de Banques dont on veut connaître les Requetes.
-   * @return la liste des Requetes des Banques.
-   */
-   List<Requete> findByBanqueInList(List<Banque> banques);
+	/**
+	 * Recherche les Requetes pour plusieurs Banques.
+	 * 
+	 * @param banques Liste de Banques dont on veut connaître les Requetes.
+	 * @return la liste des Requetes des Banques.
+	 */
+	@Query("SELECT r FROM Requete r WHERE r.banque in (?1) ORDER BY r.intitule")
+	List<Requete> findByBanqueInList(List<Banque> banques);
 
-   /**
-   * Recherche toutes les Requetes, sauf celle dont l'id est passé 
-   * en paramètre.
-   * @param requeteId Identifiant de la Requete que l'on souhaite
-   * exclure de la liste retournée.
-   * @return une liste de Requetes.
-   */
-   List<Requete> findByExcludedId(Integer requeteId);
+	/**
+	 * Recherche toutes les Requetes, sauf celle dont l'id est passé en paramètre.
+	 * 
+	 * @param requeteId Identifiant de la Requete que l'on souhaite exclure de la
+	 *                  liste retournée.
+	 * @return une liste de Requetes.
+	 */
+	@Query("SELECT r FROM Requete r WHERE r.requeteId != ?1")
+	List<Requete> findByExcludedId(Integer requeteId);
 
-   /**
-    * Recherche les requêtes d'un intitulé.
-    * @param intitulé : intitulé dont on veut connaître les requêtes.
-    * @return la liste des requêtes de l'intitulé
-    */
-   List<Requete> findByIntitule(String intitule);
+	/**
+	 * Recherche les requêtes d'un intitulé.
+	 * 
+	 * @param intitulé : intitulé dont on veut connaître les requêtes.
+	 * @return la liste des requêtes de l'intitulé
+	 */
+	@Query("SELECT r FROM Requete r WHERE r.intitule like ?1")
+	List<Requete> findByIntitule(String intitule);
 
-   /**
-    * Recherche les Requetes d'un utilisateur par intitulé.
-    * @param intitulé : intitulé dont on veut connaître les Requetes.
-    * @param utilisateur : Utilisateur ayant créé les Requetes.
-    * @return la liste des Requetes de l'intitulé
-    */
-   List<Requete> findByIntituleUtilisateur(String intitule, Utilisateur utilisateur);
+	/**
+	 * Recherche les Requetes d'un utilisateur par intitulé.
+	 * 
+	 * @param intitulé    : intitulé dont on veut connaître les Requetes.
+	 * @param utilisateur : Utilisateur ayant créé les Requetes.
+	 * @return la liste des Requetes de l'intitulé
+	 */
+	@Query("SELECT r FROM Requete r WHERE r.intitule like ?1 AND r.createur = ?2")
+	List<Requete> findByIntituleUtilisateur(String intitule, Utilisateur utilisateur);
 
 }

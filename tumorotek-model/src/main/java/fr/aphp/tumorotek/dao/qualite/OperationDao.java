@@ -38,7 +38,10 @@ package fr.aphp.tumorotek.dao.qualite;
 import java.util.Calendar;
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.qualite.Operation;
 import fr.aphp.tumorotek.model.qualite.OperationType;
 import fr.aphp.tumorotek.model.systeme.Entite;
@@ -50,81 +53,98 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Date: 28/09/2009
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface OperationDao extends GenericDaoJpa<Operation, Integer>
-{
+@Repository
+public interface OperationDao extends CrudRepository<Operation, Integer> {
 
-   /**
-    * Recherche toutes les operations sauf celles dont l'id est passé 
-    * en paramètre.
-    * @param OperationId Identifiant de l'operation que l'on souhaite
-    * exclure de la liste retournée.
-    * @return une liste de Operation.
-    */
-   List<Operation> findByExcludedId(Integer operationId);
+	/**
+	 * Recherche toutes les operations sauf celles dont l'id est passé en paramètre.
+	 * 
+	 * @param OperationId Identifiant de l'operation que l'on souhaite exclure de la
+	 *                    liste retournée.
+	 * @return une liste de Operation.
+	 */
+	@Query("SELECT o FROM Operation o WHERE o.operationId != ?1")
+	List<Operation> findByExcludedId(Integer operationId);
 
-   /**
-    * Recherche les operations par objetId et entite.
-    * @param objetId Integer.
-    * @param entite Entite
-    * @return Liste des Operation.
-    */
-   List<Operation> findByObjetIdAndEntite(Integer objetId, Entite entite);
+	/**
+	 * Recherche les operations par objetId et entite.
+	 * 
+	 * @param objetId Integer.
+	 * @param entite  Entite
+	 * @return Liste des Operation.
+	 */
+	@Query("SELECT o FROM Operation o WHERE o.objetId = ?1 AND o.entite = ?2 ORDER BY o.date, o.operationId")
+	List<Operation> findByObjetIdAndEntite(Integer objetId, Entite entite);
 
-   /**
-    * Recherche les operations par objetId et entite pour afficher
-    * l'historique : les opérations de type login et logout sont
-    * exclues de cette recherche.
-    * @param objetId Integer.
-    * @param entite Entite
-    * @return Liste des Operation.
-    */
-   List<Operation> findByObjetIdAndEntiteForHistorique(Integer objetId, Entite entite);
+	/**
+	 * Recherche les operations par objetId et entite pour afficher l'historique :
+	 * les opérations de type login et logout sont exclues de cette recherche.
+	 * 
+	 * @param objetId Integer.
+	 * @param entite  Entite
+	 * @return Liste des Operation.
+	 */
+	@Query("SELECT o FROM Operation o WHERE o.objetId = ?1 AND o.entite = ?2 AND o.operationType.nom != 'Login' "
+			+ "AND o.operationType.nom != 'Logout' ORDER BY o.date, o.operationId")
+	List<Operation> findByObjetIdAndEntiteForHistorique(Integer objetId, Entite entite);
 
-   /**
-    * Recherche les operations par leur utilisateur.
-    * @param utilisateur Utilisateur.
-    * @return Liste des Operation.
-    */
-   List<Operation> findByUtilisateur(Utilisateur utilisateur);
+	/**
+	 * Recherche les operations par leur utilisateur.
+	 * 
+	 * @param utilisateur Utilisateur.
+	 * @return Liste des Operation.
+	 */
+	@Query("SELECT o FROM Operation o WHERE o.utilisateur = ?1")
+	List<Operation> findByUtilisateur(Utilisateur utilisateur);
 
-   /**
-    * Recherche les operations par objetId, entite et operationType.
-    * @param objetId Integer.
-    * @param entite Entite.
-    * @param operationType OperationType.
-    * @return Liste des Operation.
-    */
-   List<Operation> findByObjetIdEntiteAndOperationType(Integer objetId, Entite entite, OperationType operationType);
+	/**
+	 * Recherche les operations par objetId, entite et operationType.
+	 * 
+	 * @param objetId       Integer.
+	 * @param entite        Entite.
+	 * @param operationType OperationType.
+	 * @return Liste des Operation.
+	 */
+	@Query("SELECT o FROM Operation o WHERE o.objetId = ?1 AND o.entite = ?2 AND o.operationType = ?3")
+	List<Operation> findByObjetIdEntiteAndOperationType(Integer objetId, Entite entite, OperationType operationType);
 
-   /**
-    * Recherche les opérations faites à une date.
-    * @param date date recherchée.
-    * @return Liste d'opérations.
-    */
-   List<Operation> findByDate(Calendar date);
+	/**
+	 * Recherche les opérations faites à une date.
+	 * 
+	 * @param date date recherchée.
+	 * @return Liste d'opérations.
+	 */
+	@Query("SELECT o FROM Operation o WHERE o.date = ?1")
+	List<Operation> findByDate(Calendar date);
 
-   /**
-    * Recherche les opérations faites après une date.
-    * @param date date recherchée.
-    * @return Liste d'opérations.
-    */
-   List<Operation> findByAfterDate(Calendar date);
+	/**
+	 * Recherche les opérations faites après une date.
+	 * 
+	 * @param date date recherchée.
+	 * @return Liste d'opérations.
+	 */
+	@Query("SELECT o FROM Operation o WHERE o.date >= ?1 order by o.date")
+	List<Operation> findByAfterDate(Calendar date);
 
-   /**
-    * Recherche les opérations faites avant une date.
-    * @param date date recherchée.
-    * @return Liste d'opérations.
-    */
-   List<Operation> findByBeforeDate(Calendar date);
+	/**
+	 * Recherche les opérations faites avant une date.
+	 * 
+	 * @param date date recherchée.
+	 * @return Liste d'opérations.
+	 */
+	@Query("SELECT o FROM Operation o WHERE o.date <= ?1 order by o.date")
+	List<Operation> findByBeforeDate(Calendar date);
 
-   /**
-    * Recherche les opérations faites entre deux dates.
-    * @param date date recherchée.
-    * @return Liste d'opérations.
-    */
-   List<Operation> findByBetweenDates(Calendar date1, Calendar date2);
+	/**
+	 * Recherche les opérations faites entre deux dates.
+	 * 
+	 * @param date date recherchée.
+	 * @return Liste d'opérations.
+	 */
+	@Query("SELECT o FROM Operation o WHERE o.date >= ?1 AND o.date <= ?2 order by o.date")
+	List<Operation> findByBetweenDates(Calendar date1, Calendar date2);
 
 }

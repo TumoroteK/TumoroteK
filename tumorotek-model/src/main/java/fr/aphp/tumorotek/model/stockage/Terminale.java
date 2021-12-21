@@ -67,42 +67,42 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * Classe créée le 14/09/09.
  *
  * @author Maxime Gousseau
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "TERMINALE")
-@NamedQueries(
-   value = {
-      @NamedQuery(name = "Terminale.findByEnceinteWithOrder",
-         query = "SELECT t FROM Terminale t " + "WHERE t.enceinte = ?1 " + "ORDER BY t.position"),
-      @NamedQuery(name = "Terminale.findByEnceinteAndNom",
-         query = "SELECT t FROM Terminale t " + "WHERE t.enceinte = ?1 " + "AND t.nom = ?2"),
-      @NamedQuery(name = "Terminale.findByEnceinteAndPosition",
-         query = "SELECT t FROM Terminale t " + "WHERE t.enceinte = ?1 " + "AND t.position = ?2"),
-      @NamedQuery(name = "Terminale.findByEnceinteAndPositionExcludedId",
-         query = "SELECT t FROM Terminale t " + "WHERE t.enceinte = ?1 " + "AND t.position = ?2 " + "AND t.terminaleId != ?3"),
-      @NamedQuery(name = "Terminale.findByExcludedIdEnceinte",
-         query = "SELECT t FROM Terminale t " + "WHERE t.terminaleId != ?1 " + "AND t.enceinte = ?2"),
-      @NamedQuery(name = "Terminale.findByTwoExcludedIdsWithEnceinte",
-         query = "SELECT t FROM Terminale t " + "WHERE t.terminaleId != ?1 " + "AND t.terminaleId != ?2 "
-            + "AND t.enceinte = ?3"),
-      @NamedQuery(name = "Terminale.findNumberTerminalesForEnceinte",
-         query = "SELECT count(t) FROM Terminale t " + "WHERE t.enceinte = ?1"),
-      @NamedQuery(name = "Terminale.findByNom", query = "SELECT t FROM Terminale t WHERE t.nom = ?1"),
-      @NamedQuery(name = "Terminale.findByAlias", query = "SELECT t FROM Terminale t WHERE t.alias = ?1"),
-      @NamedQuery(name = "Terminale.findByArchive", query = "SELECT t FROM Terminale t WHERE t.archive = ?1"),
-      @NamedQuery(name = "Terminale.findByTerminaleType", query = "SELECT t FROM Terminale t " + "WHERE t.terminaleType = ?1"),
-      @NamedQuery(name = "Terminale.findByEnceinte", query = "SELECT t FROM Terminale t " + "WHERE t.enceinte= ?1"),
-      @NamedQuery(name = "Terminale.findByBanque", query = "SELECT t FROM Terminale t WHERE t.banque = ?1"),
-      @NamedQuery(name = "Terminale.findByEntite", query = "SELECT t FROM Terminale t WHERE t.entite= ?1"),
-      @NamedQuery(name = "Terminale.findByTerminaleNumerotation",
-         query = "SELECT t FROM Terminale t " + "WHERE t.terminaleNumerotation = ?1"),
-      @NamedQuery(name = "Terminale.findDoublon", query = "SELECT t FROM Terminale t WHERE t.nom = ?1" + " AND t.enceinte = ?2"),
-      @NamedQuery(name = "Terminale.findByIdWithFetch",
-         query = "SELECT t FROM Terminale t LEFT JOIN FETCH " + "t.terminaleType LEFT JOIN FETCH t.enceinte "
-            + "LEFT JOIN FETCH t.banque LEFT JOIN FETCH t.entite " + "LEFT JOIN FETCH t.terminaleNumerotation "
-            + "WHERE t.terminaleId = ?1")})
+//@NamedQueries(
+//   value = {
+//      @NamedQuery(name = "Terminale.findByEnceinteWithOrder",
+//         query = "SELECT t FROM Terminale t " + "WHERE t.enceinte = ?1 " + "ORDER BY t.position"),
+//      @NamedQuery(name = "Terminale.findByEnceinteAndNom",
+//         query = "SELECT t FROM Terminale t " + "WHERE t.enceinte = ?1 " + "AND t.nom = ?2"),
+//      @NamedQuery(name = "Terminale.findByEnceinteAndPosition",
+//         query = "SELECT t FROM Terminale t " + "WHERE t.enceinte = ?1 " + "AND t.position = ?2"),
+//      @NamedQuery(name = "Terminale.findByEnceinteAndPositionExcludedId",
+//         query = "SELECT t FROM Terminale t " + "WHERE t.enceinte = ?1 " + "AND t.position = ?2 " + "AND t.terminaleId != ?3"),
+//      @NamedQuery(name = "Terminale.findByExcludedIdEnceinte",
+//         query = "SELECT t FROM Terminale t " + "WHERE t.terminaleId != ?1 " + "AND t.enceinte = ?2"),
+//      @NamedQuery(name = "Terminale.findByTwoExcludedIdsWithEnceinte",
+//         query = "SELECT t FROM Terminale t " + "WHERE t.terminaleId != ?1 " + "AND t.terminaleId != ?2 "
+//            + "AND t.enceinte = ?3"),
+//      @NamedQuery(name = "Terminale.findNumberTerminalesForEnceinte",
+//         query = "SELECT count(t) FROM Terminale t " + "WHERE t.enceinte = ?1"),
+//      @NamedQuery(name = "Terminale.findByNom", query = "SELECT t FROM Terminale t WHERE t.nom = ?1"),
+//      @NamedQuery(name = "Terminale.findByAlias", query = "SELECT t FROM Terminale t WHERE t.alias = ?1"),
+//      @NamedQuery(name = "Terminale.findByArchive", query = "SELECT t FROM Terminale t WHERE t.archive = ?1"),
+//      @NamedQuery(name = "Terminale.findByTerminaleType", query = "SELECT t FROM Terminale t " + "WHERE t.terminaleType = ?1"),
+//      @NamedQuery(name = "Terminale.findByEnceinte", query = "SELECT t FROM Terminale t " + "WHERE t.enceinte= ?1"),
+//      @NamedQuery(name = "Terminale.findByBanque", query = "SELECT t FROM Terminale t WHERE t.banque = ?1"),
+//      @NamedQuery(name = "Terminale.findByEntite", query = "SELECT t FROM Terminale t WHERE t.entite= ?1"),
+//      @NamedQuery(name = "Terminale.findByTerminaleNumerotation",
+//         query = "SELECT t FROM Terminale t " + "WHERE t.terminaleNumerotation = ?1"),
+//      @NamedQuery(name = "Terminale.findDoublon", query = "SELECT t FROM Terminale t WHERE t.nom = ?1" + " AND t.enceinte = ?2"),
+//      @NamedQuery(name = "Terminale.findByIdWithFetch",
+//         query = "SELECT t FROM Terminale t LEFT JOIN FETCH " + "t.terminaleType LEFT JOIN FETCH t.enceinte "
+//            + "LEFT JOIN FETCH t.banque LEFT JOIN FETCH t.entite " + "LEFT JOIN FETCH t.terminaleNumerotation "
+//            + "WHERE t.terminaleId = ?1")})
 public class Terminale implements TKdataObject, TKFantomableObject, Serializable
 {
 

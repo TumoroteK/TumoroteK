@@ -52,12 +52,12 @@ import org.hibernate.annotations.GenericGenerator;
  * Objet persistant mappant la table GROUPEMENT. Classe créée le 23/10/09.
  *
  * @author Maxime GOUSSEAU
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "GROUPEMENT")
-@NamedQueries(value = {@NamedQuery(name = "Groupement.findEnfants", query = "SELECT g FROM Groupement g WHERE parent = ?1")})
+// @NamedQueries(value = {@NamedQuery(name = "Groupement.findEnfants", query = "SELECT g FROM Groupement g WHERE parent = ?1")})
 public class Groupement
 {
 

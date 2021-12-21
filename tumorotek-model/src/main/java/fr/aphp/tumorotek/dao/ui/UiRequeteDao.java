@@ -37,40 +37,46 @@ package fr.aphp.tumorotek.dao.ui;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.ui.UiRequete;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 /**
  *
- * nterface pour le DAO du bean de domaine UI_REQUETE.
+ * Interface pour le DAO du bean de domaine UI_REQUETE.
  * Classe créée le 16/07/14.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.11
+ * @version 2.3
  *
  */
-public interface UiRequeteDao extends GenericDaoJpa<UiRequete, Integer> //FIXME Class non utilisée ?? A quoi sert-elle ?
+@Repository
+public interface UiRequeteDao extends CrudRepository<UiRequete, Integer> //FIXME Class non utilisée ?? A quoi sert-elle ?
 {
 
-   /**
-    * Recherche les requetes enregistrées par un utilisateur pour un 
-    * onglet (entite)
-    * @param u Utilisateur
-    * @param e Entite
-    * @return liste de UiRequetes
-    */
-   public List<UiRequete> findByUtilisateurAndEntite(Utilisateur u, Entite e);
+	/**
+	 * Recherche les requetes enregistrées par un utilisateur pour un 
+	 * onglet (entite)
+	 * @param u Utilisateur
+	 * @param e Entite
+	 * @return liste de UiRequetes
+	 */
+	@Query("SELECT u FROM UiRequete u WHERE u.utilisateur = ?1 " + " AND u.entite = ?2 ORDER BY ordre")
+	public List<UiRequete> findByUtilisateurAndEntite(Utilisateur u, Entite e);
 
-   /**
-    * Recherche les requetes enregistrées par un utilisateur pour un 
-    * onglet (entite) et un nom spécifiés.
-    * Methode utilisée dans la recherche de doublons.
-    * @param u Utilisateur
-    * @param e Entite
-    * @param String nom 
-    * @return liste de UiRequetes
-    */
-   public List<UiRequete> findByNomUtilisateurAndEntite(Utilisateur u, Entite e, String nom);
+	/**
+	 * Recherche les requetes enregistrées par un utilisateur pour un 
+	 * onglet (entite) et un nom spécifiés.
+	 * Methode utilisée dans la recherche de doublons.
+	 * @param u Utilisateur
+	 * @param e Entite
+	 * @param String nom 
+	 * @return liste de UiRequetes
+	 */
+	@Query("SELECT u FROM UiRequete u WHERE u.utilisateur = ?1 " + " AND u.entite = ?2 AND u.nom = ?3 ORDER BY ordre")
+	public List<UiRequete> findByNomUtilisateurAndEntite(Utilisateur u, Entite e, String nom);
 }

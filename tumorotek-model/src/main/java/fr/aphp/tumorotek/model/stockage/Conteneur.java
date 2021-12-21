@@ -75,45 +75,45 @@ import fr.aphp.tumorotek.model.contexte.Service;
  */
 @Entity
 @Table(name = "CONTENEUR")
-@NamedQueries(
-   value = {
-      @NamedQuery(name = "Conteneur.findByBanqueIdWithOrder",
-         query = "SELECT c FROM Conteneur c left join c.banques b " + "WHERE b.banqueId = ?1 AND c.archive = 0"
-            + "ORDER BY c.nom"),
-      @NamedQuery(name = "Conteneur.findByBanqueIdAndCode",
-         query = "SELECT c FROM Conteneur c left join c.banques b " + "WHERE b.banqueId = ?1 AND c.archive = 0 "
-            + "AND c.code = ?2"),
-      @NamedQuery(name = "Conteneur.findByBanqueIdWithExcludedId",
-         query = "SELECT c FROM Conteneur c left join c.banques b " + "WHERE b.banqueId = ?1 " + "AND c.conteneurId != ?2"),
-      @NamedQuery(name = "Conteneur.findByPlateformeOrigWithOrder",
-         query = "SELECT c FROM Conteneur c " + "WHERE c.plateformeOrig = ?1 AND c.archive = 0 " + "ORDER BY c.code"),
-      @NamedQuery(name = "Conteneur.findByExcludedId",
-         query = "SELECT c FROM Conteneur c " + "WHERE c.conteneurId != ?1 AND c.archive = 0 "),
-      @NamedQuery(name = "Conteneur.findByCode", query = "SELECT c FROM Conteneur c WHERE c.code = ?1 AND c.archive = 0"),
-      @NamedQuery(name = "Conteneur.findByNom", query = "SELECT c FROM Conteneur c WHERE c.nom = ?1 AND c.archive = 0"),
-      @NamedQuery(name = "Conteneur.findByTemp", query = "SELECT c FROM Conteneur c WHERE c.temp = ?1 AND c.archive = 0"),
-      @NamedQuery(name = "Conteneur.findByPiece", query = "SELECT c FROM Conteneur c WHERE c.piece = ?1 AND c.archive = 0"),
-      @NamedQuery(name = "Conteneur.findByNbrNiv", query = "SELECT c FROM Conteneur c WHERE c.nbrNiv = ?1 AND c.archive = 0"),
-      @NamedQuery(name = "Conteneur.findByNbrEnc", query = "SELECT c FROM Conteneur c WHERE c.nbrEnc = ?1 AND c.archive = 0"),
-      @NamedQuery(name = "Conteneur.findByDescription",
-         query = "SELECT c FROM Conteneur c WHERE c.description = ?1 AND c.archive = 0"),
-      @NamedQuery(name = "Conteneur.findByArchive", query = "SELECT c FROM Conteneur c WHERE c.archive = ?1"),
-      @NamedQuery(name = "Conteneur.findByConteneurType",
-         query = "SELECT c FROM Conteneur c " + "WHERE c.conteneurType = ?1 AND c.archive = 0"),
-      /*@NamedQuery(name = "Conteneur.findByService", 
-      	query = "SELECT c FROM Conteneur c " 
-      		+ "WHERE c.service= ?1 AND c.archive = 0"),*/
-      @NamedQuery(name = "Conteneur.findDoublon",
-         query = "SELECT c FROM Conteneur c " + "WHERE c.code = ?1 AND c.service= ?2 AND c.archive = 0"),
-      @NamedQuery(name = "Conteneur.findByPartage",
-         query = "SELECT c FROM Conteneur c " + "JOIN c.conteneurPlateformes p WHERE p.pk.plateforme = ?1 "
-            + "AND p.partage = ?2 " + "AND c.archive = 0 ORDER by c.nom"),
-      @NamedQuery(name = "Conteneur.findByIdWithFetch",
-         query = "SELECT c FROM Conteneur c LEFT JOIN FETCH " + "c.conteneurType LEFT JOIN FETCH c.service "
-            + "WHERE c.conteneurId = ?1 AND archive = 0"),
-      @NamedQuery(name = "Conteneur.findByService", query = "SELECT c FROM Conteneur c " + "WHERE c.service = ?1"),
-      @NamedQuery(name = "Conteneur.findTempForEmplacementId",
-         query = "SELECT c.temp FROM Conteneur c " + "WHERE c.conteneurId = get_conteneur(?)")})
+//@NamedQueries(
+//   value = {
+//      @NamedQuery(name = "Conteneur.findByBanqueIdWithOrder",
+//         query = "SELECT c FROM Conteneur c left join c.banques b " + "WHERE b.banqueId = ?1 AND c.archive = 0"
+//            + "ORDER BY c.nom"),
+//      @NamedQuery(name = "Conteneur.findByBanqueIdAndCode",
+//         query = "SELECT c FROM Conteneur c left join c.banques b " + "WHERE b.banqueId = ?1 AND c.archive = 0 "
+//            + "AND c.code = ?2"),
+//      @NamedQuery(name = "Conteneur.findByBanqueIdWithExcludedId",
+//         query = "SELECT c FROM Conteneur c left join c.banques b " + "WHERE b.banqueId = ?1 " + "AND c.conteneurId != ?2"),
+//      @NamedQuery(name = "Conteneur.findByPlateformeOrigWithOrder",
+//         query = "SELECT c FROM Conteneur c " + "WHERE c.plateformeOrig = ?1 AND c.archive = 0 " + "ORDER BY c.code"),
+//      @NamedQuery(name = "Conteneur.findByExcludedId",
+//         query = "SELECT c FROM Conteneur c " + "WHERE c.conteneurId != ?1 AND c.archive = 0 "),
+//      @NamedQuery(name = "Conteneur.findByCode", query = "SELECT c FROM Conteneur c WHERE c.code = ?1 AND c.archive = 0"),
+//      @NamedQuery(name = "Conteneur.findByNom", query = "SELECT c FROM Conteneur c WHERE c.nom = ?1 AND c.archive = 0"),
+//      @NamedQuery(name = "Conteneur.findByTemp", query = "SELECT c FROM Conteneur c WHERE c.temp = ?1 AND c.archive = 0"),
+//      @NamedQuery(name = "Conteneur.findByPiece", query = "SELECT c FROM Conteneur c WHERE c.piece = ?1 AND c.archive = 0"),
+//      @NamedQuery(name = "Conteneur.findByNbrNiv", query = "SELECT c FROM Conteneur c WHERE c.nbrNiv = ?1 AND c.archive = 0"),
+//      @NamedQuery(name = "Conteneur.findByNbrEnc", query = "SELECT c FROM Conteneur c WHERE c.nbrEnc = ?1 AND c.archive = 0"),
+//      @NamedQuery(name = "Conteneur.findByDescription",
+//         query = "SELECT c FROM Conteneur c WHERE c.description = ?1 AND c.archive = 0"),
+//      @NamedQuery(name = "Conteneur.findByArchive", query = "SELECT c FROM Conteneur c WHERE c.archive = ?1"),
+//      @NamedQuery(name = "Conteneur.findByConteneurType",
+//         query = "SELECT c FROM Conteneur c " + "WHERE c.conteneurType = ?1 AND c.archive = 0"),
+//      /*@NamedQuery(name = "Conteneur.findByService", 
+//      	query = "SELECT c FROM Conteneur c " 
+//      		+ "WHERE c.service= ?1 AND c.archive = 0"),*/
+//      @NamedQuery(name = "Conteneur.findDoublon",
+//         query = "SELECT c FROM Conteneur c " + "WHERE c.code = ?1 AND c.service= ?2 AND c.archive = 0"),
+//      @NamedQuery(name = "Conteneur.findByPartage",
+//         query = "SELECT c FROM Conteneur c " + "JOIN c.conteneurPlateformes p WHERE p.pk.plateforme = ?1 "
+//            + "AND p.partage = ?2 " + "AND c.archive = 0 ORDER by c.nom"),
+//      @NamedQuery(name = "Conteneur.findByIdWithFetch",
+//         query = "SELECT c FROM Conteneur c LEFT JOIN FETCH " + "c.conteneurType LEFT JOIN FETCH c.service "
+//            + "WHERE c.conteneurId = ?1 AND archive = 0"),
+//      @NamedQuery(name = "Conteneur.findByService", query = "SELECT c FROM Conteneur c " + "WHERE c.service = ?1"),
+//      @NamedQuery(name = "Conteneur.findTempForEmplacementId",
+//         query = "SELECT c.temp FROM Conteneur c " + "WHERE c.conteneurId = get_conteneur(?1)")})
 public class Conteneur implements TKdataObject, TKFantomableObject, Serializable
 {
 

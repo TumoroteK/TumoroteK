@@ -45,8 +45,6 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -62,7 +60,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
  * 
  * @see http://boris.kirzner.info/blog/archives/2008/07/19/
  * hibernate-annotations-the-many-to-many-association-with-composite-key/
- * @version 2.2.4.1
+ * @version 2.3
  *
  */
 @Entity
@@ -70,28 +68,28 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 @AssociationOverrides({@AssociationOverride(name = "pk.profil", joinColumns = @JoinColumn(name = "PROFIL_ID")),
    @AssociationOverride(name = "pk.utilisateur", joinColumns = @JoinColumn(name = "UTILISATEUR_ID")),
    @AssociationOverride(name = "pk.banque", joinColumns = @JoinColumn(name = "BANQUE_ID"))})
-@NamedQueries(
-   value = {@NamedQuery(name = "ProfilUtilisateur.findDoublon", query = "SELECT p FROM ProfilUtilisateur p " + "WHERE p.pk = ?1"),
-      @NamedQuery(name = "ProfilUtilisateur.findByExcludedPK", query = "SELECT p FROM ProfilUtilisateur p " + "WHERE p.pk != ?1"),
-      @NamedQuery(name = "ProfilUtilisateur.findByProfil",
-         query = "SELECT p FROM ProfilUtilisateur p " + "WHERE p.pk.profil = ?1 AND p.pk.utilisateur.archive = ?2"
-            + " ORDER BY p.pk.utilisateur.login"),
-      @NamedQuery(name = "ProfilUtilisateur.findByUtilisateur",
-         query = "SELECT p FROM ProfilUtilisateur p " + "WHERE p.pk.utilisateur = ?1 AND p.pk.banque.archive = ?2 "
-            + "order by p.pk.banque.nom"),
-      @NamedQuery(name = "ProfilUtilisateur.findByBanque",
-         query = "SELECT p FROM ProfilUtilisateur p " + "WHERE p.pk.banque = ?1 AND p.pk.utilisateur.archive = ?2 "
-            + "ORDER BY p.pk.utilisateur.login"),
-      @NamedQuery(name = "ProfilUtilisateur.findByUtilisateurProfil",
-         query = "SELECT p FROM ProfilUtilisateur p " + "WHERE p.pk.utilisateur = ?1 AND p.pk.profil = ?2"),
-      @NamedQuery(name = "ProfilUtilisateur.findByUtilisateurBanque",
-         query = "SELECT p FROM ProfilUtilisateur p " + "WHERE p.pk.utilisateur = ?1 AND p.pk.banque = ?2"),
-      @NamedQuery(name = "ProfilUtilisateur.findByBanqueProfil",
-         query = "SELECT p FROM ProfilUtilisateur p " + "WHERE p.pk.banque = ?1 AND p.pk.profil = ?2"),
-      @NamedQuery(name = "ProfilUtilisateur.findCountDistinctProfilForUserAndPlateformeGroupedByContexte",
-      	 query = "SELECT count(distinct p.pk.profil) FROM ProfilUtilisateur p JOIN p.pk.banque b "
-      	 	+ "WHERE p.pk.utilisateur = ?1 AND b.plateforme = ?2 AND b.contexte.nom not like 'GATSBI'")
-})
+//@NamedQueries(
+//   value = {@NamedQuery(name = "ProfilUtilisateur.findDoublon", query = "SELECT p FROM ProfilUtilisateur p " + "WHERE p.pk = ?1"),
+//      @NamedQuery(name = "ProfilUtilisateur.findByExcludedPK", query = "SELECT p FROM ProfilUtilisateur p " + "WHERE p.pk != ?1"),
+//      @NamedQuery(name = "ProfilUtilisateur.findByProfil",
+//         query = "SELECT p FROM ProfilUtilisateur p " + "WHERE p.pk.profil = ?1 AND p.pk.utilisateur.archive = ?2"
+//            + " ORDER BY p.pk.utilisateur.login"),
+//      @NamedQuery(name = "ProfilUtilisateur.findByUtilisateur",
+//         query = "SELECT p FROM ProfilUtilisateur p " + "WHERE p.pk.utilisateur = ?1 AND p.pk.banque.archive = ?2 "
+//            + "order by p.pk.banque.nom"),
+//      @NamedQuery(name = "ProfilUtilisateur.findByBanque",
+//         query = "SELECT p FROM ProfilUtilisateur p " + "WHERE p.pk.banque = ?1 AND p.pk.utilisateur.archive = ?2 "
+//            + "ORDER BY p.pk.utilisateur.login"),
+//      @NamedQuery(name = "ProfilUtilisateur.findByUtilisateurProfil",
+//         query = "SELECT p FROM ProfilUtilisateur p " + "WHERE p.pk.utilisateur = ?1 AND p.pk.profil = ?2"),
+//      @NamedQuery(name = "ProfilUtilisateur.findByUtilisateurBanque",
+//         query = "SELECT p FROM ProfilUtilisateur p " + "WHERE p.pk.utilisateur = ?1 AND p.pk.banque = ?2"),
+//      @NamedQuery(name = "ProfilUtilisateur.findByBanqueProfil",
+//         query = "SELECT p FROM ProfilUtilisateur p " + "WHERE p.pk.banque = ?1 AND p.pk.profil = ?2"),
+//      @NamedQuery(name = "ProfilUtilisateur.findCountDistinctProfilForUserAndPlateformeGroupedByContexte",
+//      	 query = "SELECT count(distinct p.pk.profil) FROM ProfilUtilisateur p JOIN p.pk.banque b "
+//      	 	+ "WHERE p.pk.utilisateur = ?1 AND b.plateforme = ?2 AND b.contexte.nom not like 'GATSBI'")
+//})
 public class ProfilUtilisateur implements Serializable, Comparable<ProfilUtilisateur>
 {
 

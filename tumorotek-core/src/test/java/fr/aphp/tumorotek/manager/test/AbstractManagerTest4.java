@@ -51,10 +51,10 @@ import fr.aphp.tumorotek.dao.qualite.FantomeDao;
 import fr.aphp.tumorotek.manager.qualite.OperationManager;
 import fr.aphp.tumorotek.model.TKFantomableObject;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(
-		locations = {"classpath:applicationContextDaoBase-test-mysql.xml", "classpath:applicationContextManagerBase.xml"})
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class})
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(
+//		locations = {"classpath:applicationContextDaoBase-test-mysql.xml", "classpath:applicationContextManagerBase.xml"})
+//@TestExecutionListeners({DependencyInjectionTestExecutionListener.class})
 public abstract class AbstractManagerTest4
 {
 

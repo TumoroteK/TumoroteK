@@ -37,39 +37,44 @@ package fr.aphp.tumorotek.dao.interfacage.scan;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.interfacage.scan.ScanDevice;
 import fr.aphp.tumorotek.model.interfacage.scan.ScanTerminale;
 
 /**
  *
- * Interface pour le DAO du bean de domaine ScanTerminale.
- * Interface créée le 24/04/2016.
- * Persiste un scan d'une boite sous la forme d'une entrée ScanTerminale +
- * liste de ScanTube.
+ * Interface pour le DAO du bean de domaine ScanTerminale. Interface créée le
+ * 24/04/2016. Persiste un scan d'une boite sous la forme d'une entrée
+ * ScanTerminale + liste de ScanTube.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.1
+ * @version 2.3
  *
  */
-public interface ScanTerminaleDao extends GenericDaoJpa<ScanTerminale, Integer>
-{
+@Repository
+public interface ScanTerminaleDao extends CrudRepository<ScanTerminale, Integer> {
 
-   /**
-    * Renvoie les scans de boites pour le scanner passé en paramètre dans l'ordre 
-    * inverse de leur création (du plus récent au plus ancien)
-    * @param scanDevice scanner
-    * @return List<ScanTerminale>
-    */
-   public List<ScanTerminale> findByScanDevice(ScanDevice device);
+	/**
+	 * Renvoie les scans de boites pour le scanner passé en paramètre dans l'ordre
+	 * inverse de leur création (du plus récent au plus ancien)
+	 * 
+	 * @param scanDevice scanner
+	 * @return List<ScanTerminale>
+	 */
+	@Query("SELECT s FROM ScanTerminale s WHERE s.scanDevice = ?1 " + "order by s.dateScan DESC")
+	public List<ScanTerminale> findByScanDevice(ScanDevice device);
 
-   /**
-    * Renvoie le liste des codes correspondant au tubes scannées pour la 
-    * boite passée en paramètre.
-    * @param sT scanTerminale
-    * @return List<String> codes
-    */
-
-   public List<String> findTKObjectCodes(ScanTerminale sT);
+	/**
+	 * Renvoie le liste des codes correspondant au tubes scannées pour la boite
+	 * passée en paramètre.
+	 * 
+	 * @param sT scanTerminale
+	 * @return List<String> codes
+	 */
+	@Query("SELECT t.code FROM ScanTube t WHERE t.scanTerminale = ?1 " + "and t.code is not null order by t.code")
+	public List<String> findTKObjectCodes(ScanTerminale sT);
 
 }

@@ -2,7 +2,6 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:camel="http://camel.apache.org/schema/spring"
     xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://camel.apache.org/schema/spring 
@@ -51,7 +50,9 @@
 	   				<simple>${file:ext} == 'hl7'</simple>
 	   				<convertBodyTo type="java.lang.String" />
 	   				<process ref="gennoFixProcessor" />
-	   				<unmarshal ref="myHl7"   />
+	   				<unmarshal>
+	   					<custom ref="myHl7" />
+	   				</unmarshal>
 	   				<log message="${header.CamelHL7MessageType}" loggingLevel="DEBUG" logName="fr.aphp.tumorotek.interfacage" />
 	   				<choice>
 			   			<when>

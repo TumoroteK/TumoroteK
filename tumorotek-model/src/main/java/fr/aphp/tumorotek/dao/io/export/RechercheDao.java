@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.io.export;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.io.export.Affichage;
 import fr.aphp.tumorotek.model.io.export.Recherche;
 import fr.aphp.tumorotek.model.io.export.Requete;
@@ -45,74 +48,89 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 /**
  *
- * Interface pour le DAO du bean de domaine Recherche.
- * Interface créée le 25/02/10.
+ * Interface pour le DAO du bean de domaine Recherche. Interface créée le
+ * 25/02/10.
  *
  * @author Maxime GOUSSEAU
- * @version 2.0
+ * @version 2.3
+ *
  */
-public interface RechercheDao extends GenericDaoJpa<Recherche, Integer>
-{
+@Repository
+public interface RechercheDao extends CrudRepository<Recherche, Integer> {
 
-   /**
-    * Recherche les Recherches d'un utilisateur.
-    * @param utilisateur : utilisateur dont on veut connaître les Recherches.
-    * @return la liste des Recherches de l'utilisateur
-    */
-   List<Recherche> findByUtilisateur(Utilisateur utilisateur);
+	/**
+	 * Recherche les Recherches d'un utilisateur.
+	 * 
+	 * @param utilisateur : utilisateur dont on veut connaître les Recherches.
+	 * @return la liste des Recherches de l'utilisateur
+	 */
+	@Query("SELECT r FROM Recherche r WHERE " + "r.createur = ?1")
+	List<Recherche> findByUtilisateur(Utilisateur utilisateur);
 
-   /**
-   * Recherche les Recherches d'une banque.
-   * @param banqueId Id de la banque dont on veut connaître 
-   * les Recherches.
-   * @return la liste des Recherches de la banque.
-   */
-   List<Recherche> findByBanqueId(Integer banqueId);
+	/**
+	 * Recherche les Recherches d'une banque.
+	 * 
+	 * @param banqueId Id de la banque dont on veut connaître les Recherches.
+	 * @return la liste des Recherches de la banque.
+	 */
+	@Query("SELECT r FROM Recherche r " + "left join r.banques b " + "WHERE b.banqueId = ?1")
+	List<Recherche> findByBanqueId(Integer banqueId);
 
-   /**
-   * Recherche les Recherches pour plusieurs Banques.
-   * @param banquesId Liste d'Ids de Banques dont on veut 
-   * connaître les Recherches.
-   * @return la liste des Recherches des Banques.
-   */
-   List<Recherche> findByBanqueIdinList(List<Integer> banquesId);
+	/**
+	 * Recherche les Recherches pour plusieurs Banques.
+	 * 
+	 * @param banquesId Liste d'Ids de Banques dont on veut connaître les
+	 *                  Recherches.
+	 * @return la liste des Recherches des Banques.
+	 */
+	@Query("SELECT distinct(r) FROM Recherche r " + "left join r.banques b " + "WHERE b.banqueId in (?1)")
+	List<Recherche> findByBanqueIdinList(List<Integer> banquesId);
 
-   /**
-   * Recherche les Recherches d'un intitulé.
-   * @param intitule : intitulé dont on veut connaître les Recherches.
-   * @return la liste des Recherches de l'intitulé
-   */
-   List<Recherche> findByIntitule(String intitule);
+	/**
+	 * Recherche les Recherches d'un intitulé.
+	 * 
+	 * @param intitule : intitulé dont on veut connaître les Recherches.
+	 * @return la liste des Recherches de l'intitulé
+	 */
+	@Query("SELECT r FROM Recherche r " + "WHERE r.intitule like ?1")
+	List<Recherche> findByIntitule(String intitule);
 
-   /**
-   * Recherche les Recherches d'un utilisateur par intitulé.
-   * @param intitulé : intitulé dont on veut connaître les Recherches.
-   * @param utilisateur : Utilisateur ayant créé les Recherches.
-   * @return la liste des Recherches de l'intitulé
-   */
-   List<Recherche> findByIntituleUtilisateur(String intitule, Utilisateur utilisateur);
+	/**
+	 * Recherche les Recherches d'un utilisateur par intitulé.
+	 * 
+	 * @param intitulé    : intitulé dont on veut connaître les Recherches.
+	 * @param utilisateur : Utilisateur ayant créé les Recherches.
+	 * @return la liste des Recherches de l'intitulé
+	 */
+	@Query("SELECT r FROM Recherche r " + "WHERE r.intitule like ?1 " + "AND r.createur = ?2")
+	List<Recherche> findByIntituleUtilisateur(String intitule, Utilisateur utilisateur);
 
-   /**
-   * Recherche les Recherches à partir d'un Affichage.
-   * @param affichage : Affichage dont on veut connaître les Recherches.
-   * @return la liste des Recherches d'un affichage
-   */
-   List<Recherche> findByAffichage(Affichage affichage);
+	/**
+	 * Recherche les Recherches à partir d'un Affichage.
+	 * 
+	 * @param affichage : Affichage dont on veut connaître les Recherches.
+	 * @return la liste des Recherches d'un affichage
+	 */
+	@Query("SELECT r FROM Recherche r " + "WHERE r.affichage = ?1")
+	List<Recherche> findByAffichage(Affichage affichage);
 
-   /**
-   * Recherche les Recherches à partir d'une Requête.
-   * @param requete : Requête dont on veut connaître les Recherches.
-   * @return la liste des Recherches d'une Requête
-   */
-   List<Recherche> findByRequete(Requete requete);
+	/**
+	 * Recherche les Recherches à partir d'une Requête.
+	 * 
+	 * @param requete : Requête dont on veut connaître les Recherches.
+	 * @return la liste des Recherches d'une Requête
+	 */
+	@Query("SELECT r FROM Recherche r " + "WHERE r.requete = ?1")
+	List<Recherche> findByRequete(Requete requete);
 
-   /**
-   * Recherche toutes les Recherches, sauf celle dont l'id est passé 
-   * en paramètre.
-   * @param rechercheId Identifiant de la Recherche que l'on souhaite
-   * exclure de la liste retournée.
-   * @return une liste de Recherches.
-   */
-   List<Recherche> findByExcludedId(Integer rechercheId);
+	/**
+	 * Recherche toutes les Recherches, sauf celle dont l'id est passé en paramètre.
+	 * 
+	 * @param rechercheId Identifiant de la Recherche que l'on souhaite exclure de
+	 *                    la liste retournée.
+	 * @return une liste de Recherches.
+	 */
+	@Query("SELECT r FROM Recherche r " + "WHERE r.rechercheId != ?1")
+	List<Recherche> findByExcludedId(Integer rechercheId);
 
 }

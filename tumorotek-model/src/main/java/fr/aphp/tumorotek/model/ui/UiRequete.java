@@ -46,8 +46,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -63,16 +61,16 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Classe créée le 16/07/14.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.11
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "UI_REQUETE")
-@NamedQueries(value = {
-   @NamedQuery(name = "UiRequete.findByUtilisateurAndEntite",
-      query = "SELECT u FROM UiRequete u WHERE u.utilisateur = ?1 " + " AND u.entite = ?2 ORDER BY ordre"),
-   @NamedQuery(name = "UiRequete.findByNomUtilisateurAndEntite",
-      query = "SELECT u FROM UiRequete u WHERE u.utilisateur = ?1 " + " AND u.entite = ?2 AND u.nom = ?3 ORDER BY ordre")})
+//@NamedQueries(value = {
+//   @NamedQuery(name = "UiRequete.findByUtilisateurAndEntite",
+//      query = "SELECT u FROM UiRequete u WHERE u.utilisateur = ?1 " + " AND u.entite = ?2 ORDER BY ordre"),
+//   @NamedQuery(name = "UiRequete.findByNomUtilisateurAndEntite",
+//      query = "SELECT u FROM UiRequete u WHERE u.utilisateur = ?1 " + " AND u.entite = ?2 AND u.nom = ?3 ORDER BY ordre")})
 public class UiRequete implements java.io.Serializable //FIXME Class non utilisée ?? A quoi sert-elle ? Elle n'est pas créée en base non plus.
 {
 

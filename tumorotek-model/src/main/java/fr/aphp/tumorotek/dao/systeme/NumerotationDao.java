@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.systeme;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.systeme.Numerotation;
@@ -49,42 +52,45 @@ import fr.aphp.tumorotek.model.systeme.Numerotation;
  * Date: 18/01/2011.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  */
-public interface NumerotationDao extends GenericDaoJpa<Numerotation, Integer>
-{
+@Repository
+public interface NumerotationDao extends CrudRepository<Numerotation, Integer> {
 
-   /**
-    * Recherche les numérotations des banques passées en
-    * paramètres.
-    * @param banques Liste de banques.
-    * @return Liste de numérotations.
-    */
-   List<Numerotation> findByBanques(List<Banque> banques);
+	/**
+	 * Recherche les numérotations des banques passées en
+	 * paramètres.
+	 * @param banques Liste de banques.
+	 * @return Liste de numérotations.
+	 */
+	@Query("SELECT n FROM Numerotation n" + " WHERE n.banque in (?1)" + " ORDER BY n.banque, n.entite")
+	List<Numerotation> findByBanques(List<Banque> banques);
 
-   /**
-    * Recherche les numérotations de la banques et de l'entité
-    * passées en paramètres.
-    * @param banque Banque.
-    * @param entite Entite.
-    * @return Liste de numérotations.
-    */
-   List<Numerotation> findByBanqueAndEntite(Banque banque, Entite entite);
+	/**
+	 * Recherche les numérotations de la banques et de l'entité
+	 * passées en paramètres.
+	 * @param banque Banque.
+	 * @param entite Entite.
+	 * @return Liste de numérotations.
+	 */
+	@Query("SELECT n FROM Numerotation n" + " WHERE n.banque = ?1 AND n.entite = ?2")
+	List<Numerotation> findByBanqueAndEntite(Banque banque, Entite entite);
 
-   /**
-    * Recherche les entités des banques passées en paramètres
-    * qui ont des numérotations.
-    * @param banque Banque.
-    * @return Liste d'Entites.
-    */
-   List<Entite> findByBanqueSelectEntite(Banque banque);
+	/**
+	 * Recherche les entités des banques passées en paramètres
+	 * qui ont des numérotations.
+	 * @param banque Banque.
+	 * @return Liste d'Entites.
+	 */
+	@Query("SELECT n.entite FROM Numerotation n" + " WHERE n.banque = ?1")
+	List<Entite> findByBanqueSelectEntite(Banque banque);
 
-   /**
-    * Recherche les numérotations dont l'id est différent de celui
-    * passé en paramètre.
-    * @param id Identifiant à exclure.
-    * @return Liste de numérotations.
-    */
-   List<Numerotation> findByExcludedId(Integer id);
-
+	/**
+	 * Recherche les numérotations dont l'id est différent de celui
+	 * passé en paramètre.
+	 * @param id Identifiant à exclure.
+	 * @return Liste de numérotations.
+	 */
+	@Query("SELECT n FROM Numerotation n" + " WHERE n.numerotationId != ?1")
+	List<Numerotation> findByExcludedId(Integer id);
 }

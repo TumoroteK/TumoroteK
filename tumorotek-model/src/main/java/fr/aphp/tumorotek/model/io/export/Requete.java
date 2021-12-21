@@ -63,21 +63,21 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Classe créée le 23/10/09.
  *
  * @author Maxime GOUSSEAU
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "REQUETE")
-@NamedQueries(
-   value = {@NamedQuery(name = "Requete.findByUtilisateur", query = "SELECT r FROM Requete r WHERE " + "r.createur = ?1"),
-      @NamedQuery(name = "Requete.findByBanque",
-         query = "SELECT r FROM Requete r WHERE " + "r.banque = ?1 " + "ORDER BY r.intitule"),
-      @NamedQuery(name = "Requete.findByBanqueInList",
-         query = "SELECT r FROM Requete r WHERE " + "r.banque in (?1) " + "ORDER BY r.intitule"),
-      @NamedQuery(name = "Requete.findByIntitule", query = "SELECT r FROM Requete r " + "WHERE r.intitule like ?1"),
-      @NamedQuery(name = "Requete.findByIntituleUtilisateur",
-         query = "SELECT r FROM Requete r " + "WHERE r.intitule like ?1 " + "AND r.createur = ?2"),
-      @NamedQuery(name = "Requete.findByExcludedId", query = "SELECT r FROM Requete r " + "WHERE r.requeteId != ?1")})
+//@NamedQueries(
+//   value = {@NamedQuery(name = "Requete.findByUtilisateur", query = "SELECT r FROM Requete r WHERE " + "r.createur = ?1"),
+//      @NamedQuery(name = "Requete.findByBanque",
+//         query = "SELECT r FROM Requete r WHERE " + "r.banque = ?1 " + "ORDER BY r.intitule"),
+//      @NamedQuery(name = "Requete.findByBanqueInList",
+//         query = "SELECT r FROM Requete r WHERE " + "r.banque in (?1) " + "ORDER BY r.intitule"),
+//      @NamedQuery(name = "Requete.findByIntitule", query = "SELECT r FROM Requete r " + "WHERE r.intitule like ?1"),
+//      @NamedQuery(name = "Requete.findByIntituleUtilisateur",
+//         query = "SELECT r FROM Requete r " + "WHERE r.intitule like ?1 " + "AND r.createur = ?2"),
+//      @NamedQuery(name = "Requete.findByExcludedId", query = "SELECT r FROM Requete r " + "WHERE r.requeteId != ?1")})
 public class Requete implements TKdataObject, Comparable<Requete>
 {
 

@@ -35,19 +35,21 @@
  **/
 package fr.aphp.tumorotek.dao.interfacage.scan;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.interfacage.scan.ScanDevice;
 
 /**
  *
- * Interface pour le DAO du bean de domaine ScanDevice.
- * Interface créée le 24/04/2016.
+ * Interface pour le DAO du bean de domaine ScanDevice. Interface créée le
+ * 24/04/2016.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.1
+ * @version 2.3
  *
  */
-public interface ScanDeviceDao extends GenericDaoJpa<ScanDevice, Integer>
-{
+@Repository
+public interface ScanDeviceDao extends CrudRepository<ScanDevice, Integer> {
 
 }

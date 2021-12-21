@@ -54,35 +54,35 @@ import fr.aphp.tumorotek.model.io.export.Champ;
  * Objet persistant mappant la table IMPORT_COLONNE. Classe créée le 24/01/11.
  *
  * @author Pierre VENTADOUR
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "IMPORT_COLONNE")
-@NamedQueries(value = {
-		@NamedQuery(name = "ImportColonne.findByTemplateWithOrder", query = "SELECT i FROM ImportColonne i "
-				+ "WHERE i.importTemplate = ?1 ORDER BY i.ordre"),
-		@NamedQuery(name = "ImportColonne.findByTemplateWithOrderSelectNom", query = "SELECT i.nom FROM ImportColonne i "
-				+ "WHERE i.importTemplate = ?1 ORDER BY i.ordre"),
-		@NamedQuery(name = "ImportColonne.findByTemplateAndEntite", query = "SELECT i FROM ImportColonne i "
-				+ "WHERE i.importTemplate = ?1 AND i.champ.champEntite.entite = ?2 ORDER BY i.ordre"),
-		@NamedQuery(name = "ImportColonne.findByTemplateAndEntiteDelegue", query = "SELECT i FROM ImportColonne i "
-				+ "WHERE i.importTemplate = ?1 AND i.champ.champDelegue.entite = ?2 ORDER BY i.ordre"),
-		@NamedQuery(name = "ImportColonne.findByTemplateAndAnnotationEntite", query = "SELECT i FROM ImportColonne i "
-				+ "WHERE i.importTemplate = ?1 " + "AND i.champ.champAnnotation.tableAnnotation.entite = ?2 "
-				+ "ORDER BY i.ordre"),
-		@NamedQuery(name = "ImportColonne.findByTemplateAndDataType", query = "SELECT i FROM ImportColonne i "
-				+ "WHERE i.importTemplate = ?1 " + "AND i.champ.champEntite.dataType = ?2 " + "ORDER BY i.ordre"),
-		@NamedQuery(name = "ImportColonne.findByTemplateAndThesaurus", query = "SELECT i FROM ImportColonne i "
-				+ "WHERE i.importTemplate = ?1 " + "AND i.champ.champEntite.queryChamp is not null "
-				+ "ORDER BY i.ordre"),
-		@NamedQuery(name = "ImportColonne.findByTemplateAndAnnotationDatatype", query = "SELECT i FROM ImportColonne i "
-				+ "WHERE i.importTemplate = ?1 " + "AND i.champ.champAnnotation.dataType = ?2 " + "ORDER BY i.ordre"),
-		@NamedQuery(name = "ImportColonne.findByExcludedIdWithTemplate", query = "SELECT i FROM ImportColonne i "
-				+ "WHERE i.importColonneId != ?1 " + "AND i.importTemplate = ?2"),
-		@NamedQuery(name = "ImportColonne"
-				+ ".findByExcludedIdWithTemplateSelectNom", query = "SELECT i.nom FROM ImportColonne i "
-						+ "WHERE i.importColonneId != ?1 " + "AND i.importTemplate = ?2") })
+//@NamedQueries(value = {
+//		@NamedQuery(name = "ImportColonne.findByTemplateWithOrder", query = "SELECT i FROM ImportColonne i "
+//				+ "WHERE i.importTemplate = ?1 ORDER BY i.ordre"),
+//		@NamedQuery(name = "ImportColonne.findByTemplateWithOrderSelectNom", query = "SELECT i.nom FROM ImportColonne i "
+//				+ "WHERE i.importTemplate = ?1 ORDER BY i.ordre"),
+//		@NamedQuery(name = "ImportColonne.findByTemplateAndEntite", query = "SELECT i FROM ImportColonne i "
+//				+ "WHERE i.importTemplate = ?1 AND i.champ.champEntite.entite = ?2 ORDER BY i.ordre"),
+//		@NamedQuery(name = "ImportColonne.findByTemplateAndEntiteDelegue", query = "SELECT i FROM ImportColonne i "
+//				+ "WHERE i.importTemplate = ?1 AND i.champ.champDelegue.entite = ?2 ORDER BY i.ordre"),
+//		@NamedQuery(name = "ImportColonne.findByTemplateAndAnnotationEntite", query = "SELECT i FROM ImportColonne i "
+//				+ "WHERE i.importTemplate = ?1 " + "AND i.champ.champAnnotation.tableAnnotation.entite = ?2 "
+//				+ "ORDER BY i.ordre"),
+//		@NamedQuery(name = "ImportColonne.findByTemplateAndDataType", query = "SELECT i FROM ImportColonne i "
+//				+ "WHERE i.importTemplate = ?1 " + "AND i.champ.champEntite.dataType = ?2 " + "ORDER BY i.ordre"),
+//		@NamedQuery(name = "ImportColonne.findByTemplateAndThesaurus", query = "SELECT i FROM ImportColonne i "
+//				+ "WHERE i.importTemplate = ?1 " + "AND i.champ.champEntite.queryChamp is not null "
+//				+ "ORDER BY i.ordre"),
+//		@NamedQuery(name = "ImportColonne.findByTemplateAndAnnotationDatatype", query = "SELECT i FROM ImportColonne i "
+//				+ "WHERE i.importTemplate = ?1 " + "AND i.champ.champAnnotation.dataType = ?2 " + "ORDER BY i.ordre"),
+//		@NamedQuery(name = "ImportColonne.findByExcludedIdWithTemplate", query = "SELECT i FROM ImportColonne i "
+//				+ "WHERE i.importColonneId != ?1 " + "AND i.importTemplate = ?2"),
+//		@NamedQuery(name = "ImportColonne"
+//				+ ".findByExcludedIdWithTemplateSelectNom", query = "SELECT i.nom FROM ImportColonne i "
+//						+ "WHERE i.importColonneId != ?1 " + "AND i.importTemplate = ?2") })
 public class ImportColonne implements java.io.Serializable {
 
 	private static final long serialVersionUID = -1118923775227753390L;

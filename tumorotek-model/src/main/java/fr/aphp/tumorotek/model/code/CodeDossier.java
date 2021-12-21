@@ -36,18 +36,24 @@
 package fr.aphp.tumorotek.model.code;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
@@ -67,167 +73,167 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 @Entity
 @Table(name = "CODE_DOSSIER")
 @NamedQueries(
-   value = {
-      @NamedQuery(name = "CodeDossier.findByNomLike",
-         query = "SELECT c FROM CodeDossier c WHERE c.nom like ?1 " + "AND c.banque = ?2"),
-      @NamedQuery(name = "CodeDossier.findByCodeDossierParent",
-         query = "SELECT c FROM CodeDossier c " + "WHERE c.dossierParent = ?1"),
-      @NamedQuery(name = "CodeDossier.findByRootCodeDossierUtilisateur",
-         query = "SELECT c FROM CodeDossier c " + "WHERE c.dossierParent is null " + "AND c.banque = ?1 AND c.codeSelect = 0"),
-      @NamedQuery(name = "CodeDossier.findByRootCodeDossierSelect",
-         query = "SELECT c FROM CodeDossier c " + "WHERE c.dossierParent is null " + "AND c.banque = ?2 AND c.utilisateur = ?1 "
-            + "AND c.codeSelect = 1"),
-      @NamedQuery(name = "CodeDossier.findBySelectUtilisateurAndBanque",
-         query = "SELECT c FROM CodeDossier c " + "WHERE c.utilisateur = ?1 AND c.banque = ?2 " + "AND c.codeSelect = 1"),
-      @NamedQuery(name = "CodeDossier.findByUtilisateurAndBanque",
-         query = "SELECT c FROM CodeDossier c " + "WHERE c.utilisateur = ?1 AND c.banque = ?2 " + "AND c.codeSelect = 0"),
-      @NamedQuery(name = "CodeDossier.findByRootDossierBanque",
-         query = "SELECT c FROM CodeDossier c " + "WHERE c.dossierParent is null " + "AND c.banque = ?1 "
-            + "AND c.codeSelect = ?2"),
-      @NamedQuery(name = "CodeDossier.findByExcludedId", query = "SELECT c FROM CodeDossier c " + "WHERE c.codeDossierId != ?1")})
+		value = {
+				@NamedQuery(name = "CodeDossier.findByNomLike",
+						query = "SELECT c FROM CodeDossier c WHERE c.nom like ?1 " + "AND c.banque = ?2"),
+				@NamedQuery(name = "CodeDossier.findByCodeDossierParent",
+				query = "SELECT c FROM CodeDossier c " + "WHERE c.dossierParent = ?1"),
+				@NamedQuery(name = "CodeDossier.findByRootCodeDossierUtilisateur",
+				query = "SELECT c FROM CodeDossier c " + "WHERE c.dossierParent is null " + "AND c.banque = ?1 AND c.codeSelect = 0"),
+				@NamedQuery(name = "CodeDossier.findByRootCodeDossierSelect",
+				query = "SELECT c FROM CodeDossier c " + "WHERE c.dossierParent is null " + "AND c.banque = ?2 AND c.utilisateur = ?1 "
+						+ "AND c.codeSelect = 1"),
+				@NamedQuery(name = "CodeDossier.findBySelectUtilisateurAndBanque",
+				query = "SELECT c FROM CodeDossier c " + "WHERE c.utilisateur = ?1 AND c.banque = ?2 " + "AND c.codeSelect = 1"),
+				@NamedQuery(name = "CodeDossier.findByUtilisateurAndBanque",
+				query = "SELECT c FROM CodeDossier c " + "WHERE c.utilisateur = ?1 AND c.banque = ?2 " + "AND c.codeSelect = 0"),
+				@NamedQuery(name = "CodeDossier.findByRootDossierBanque",
+				query = "SELECT c FROM CodeDossier c " + "WHERE c.dossierParent is null " + "AND c.banque = ?1 "
+						+ "AND c.codeSelect = ?2"),
+				@NamedQuery(name = "CodeDossier.findByExcludedId", query = "SELECT c FROM CodeDossier c " + "WHERE c.codeDossierId != ?1")})
 public class CodeDossier implements Serializable
 {
 
-   private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-   private Integer codeDossierId;
-   private String nom;
-   private String description;
-   private Boolean codeSelect;
-   private CodeDossier dossierParent;
-   private Utilisateur utilisateur;
-   private Banque banque;
+	private Integer codeDossierId;
+	private String nom;
+	private String description;
+	private Boolean codeSelect;
+	private CodeDossier dossierParent;
+	private Utilisateur utilisateur;
+	private Banque banque;
 
-   public CodeDossier(){}
+	public CodeDossier(){}
 
-   @Id
-   @Column(name = "CODE_DOSSIER_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getCodeDossierId(){
-      return codeDossierId;
-   }
+	@Id
+	@Column(name = "CODE_DOSSIER_ID", unique = true, nullable = false)
+	@GeneratedValue(generator = "autoincrement")
+	@GenericGenerator(name = "autoincrement", strategy = "increment")
+	public Integer getCodeDossierId(){
+		return codeDossierId;
+	}
 
-   public void setCodeDossierId(final Integer cDosId){
-      this.codeDossierId = cDosId;
-   }
+	public void setCodeDossierId(final Integer cDosId){
+		this.codeDossierId = cDosId;
+	}
 
-   @Column(name = "NOM", nullable = false, length = 25)
-   public String getNom(){
-      return nom;
-   }
+	@Column(name = "NOM", nullable = false, length = 25)
+	public String getNom(){
+		return nom;
+	}
 
-   public void setNom(final String n){
-      this.nom = n;
-   }
+	public void setNom(final String n){
+		this.nom = n;
+	}
 
-   @Column(name = "DESCRIPTION", length = 100)
-   public String getDescription(){
-      return description;
-   }
+	@Column(name = "DESCRIPTION", length = 100)
+	public String getDescription(){
+		return description;
+	}
 
-   public void setDescription(final String descr){
-      this.description = descr;
-   }
+	public void setDescription(final String descr){
+		this.description = descr;
+	}
 
-   @Column(name = "CODESELECT", nullable = false)
-   public Boolean getCodeSelect(){
-      return codeSelect;
-   }
+	@Column(name = "CODESELECT", nullable = false)
+	public Boolean getCodeSelect(){
+		return codeSelect;
+	}
 
-   public void setCodeSelect(final Boolean codeSel){
-      this.codeSelect = codeSel;
-   }
+	public void setCodeSelect(final Boolean codeSel){
+		this.codeSelect = codeSel;
+	}
 
-   @ManyToOne
-   @JoinColumn(name = "DOSSIER_PARENT_ID", nullable = true)
-   public CodeDossier getDossierParent(){
-      return dossierParent;
-   }
+	@ManyToOne
+	@JoinColumn(name = "DOSSIER_PARENT_ID", nullable = true)
+	public CodeDossier getDossierParent(){
+		return dossierParent;
+	}
 
-   public void setDossierParent(final CodeDossier dosParent){
-      this.dossierParent = dosParent;
-   }
+	public void setDossierParent(final CodeDossier dosParent){
+		this.dossierParent = dosParent;
+	}
 
-   @ManyToOne
-   @JoinColumn(name = "UTILISATEUR_ID", nullable = true)
-   public Utilisateur getUtilisateur(){
-      return utilisateur;
-   }
+	@ManyToOne
+	@JoinColumn(name = "UTILISATEUR_ID", nullable = true)
+	public Utilisateur getUtilisateur(){
+		return utilisateur;
+	}
 
-   public void setUtilisateur(final Utilisateur u){
-      this.utilisateur = u;
-   }
+	public void setUtilisateur(final Utilisateur u){
+		this.utilisateur = u;
+	}
 
-   @ManyToOne
-   @JoinColumn(name = "BANQUE_ID", nullable = true)
-   public Banque getBanque(){
-      return banque;
-   }
+	@ManyToOne
+	@JoinColumn(name = "BANQUE_ID", nullable = true)
+	public Banque getBanque(){
+		return banque;
+	}
 
-   public void setBanque(final Banque bank){
-      this.banque = bank;
-   }
+	public void setBanque(final Banque bank){
+		this.banque = bank;
+	}
 
-   @Override
-   public boolean equals(final Object obj){
+	@Override
+	public boolean equals(final Object obj){
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final CodeDossier test = (CodeDossier) obj;
-      return ((this.nom == test.nom || (this.nom != null && this.nom.equals(test.nom)))
-         && (this.utilisateur == test.utilisateur || (this.utilisateur != null && this.utilisateur.equals(test.utilisateur)))
-         && (this.banque == test.banque || (this.banque != null && this.banque.equals(test.banque))));
-   }
+		if(this == obj){
+			return true;
+		}
+		if((obj == null) || obj.getClass() != this.getClass()){
+			return false;
+		}
+		final CodeDossier test = (CodeDossier) obj;
+		return ((this.nom == test.nom || (this.nom != null && this.nom.equals(test.nom)))
+				&& (this.utilisateur == test.utilisateur || (this.utilisateur != null && this.utilisateur.equals(test.utilisateur)))
+				&& (this.banque == test.banque || (this.banque != null && this.banque.equals(test.banque))));
+	}
 
-   @Override
-   public int hashCode(){
+	@Override
+	public int hashCode(){
 
-      int hash = 7;
-      int hashNom = 0;
-      int hashBanque = 0;
-      int hashUtilisateur = 0;
+		int hash = 7;
+		int hashNom = 0;
+		int hashBanque = 0;
+		int hashUtilisateur = 0;
 
-      if(this.nom != null){
-         hashNom = this.nom.hashCode();
-      }
-      if(this.banque != null){
-         hashBanque = this.banque.hashCode();
-      }
-      if(this.utilisateur != null){
-         hashUtilisateur = this.utilisateur.hashCode();
-      }
+		if(this.nom != null){
+			hashNom = this.nom.hashCode();
+		}
+		if(this.banque != null){
+			hashBanque = this.banque.hashCode();
+		}
+		if(this.utilisateur != null){
+			hashUtilisateur = this.utilisateur.hashCode();
+		}
 
-      hash = 7 * hash + hashNom;
-      hash = 7 * hash + hashBanque;
-      hash = 7 * hash + hashUtilisateur;
+		hash = 7 * hash + hashNom;
+		hash = 7 * hash + hashBanque;
+		hash = 7 * hash + hashUtilisateur;
 
-      return hash;
-   }
+		return hash;
+	}
 
-   @Override
-   public String toString(){
-      if(this.nom != null){
-         return "{CodeDossier: " + this.nom + "}";
-      }
-      return "{Empty CodeDossier}";
-   }
+	@Override
+	public String toString(){
+		if(this.nom != null){
+			return "{CodeDossier: " + this.nom + "}";
+		}
+		return "{Empty CodeDossier}";
+	}
 
-   @Override
-   public CodeDossier clone(){
-      final CodeDossier clone = new CodeDossier();
-      clone.setCodeDossierId(this.getCodeDossierId());
-      clone.setNom(this.getNom());
-      clone.setCodeSelect(this.getCodeSelect());
-      clone.setDescription(this.getDescription());
-      clone.setDossierParent(this.getDossierParent());
-      clone.setUtilisateur(this.getUtilisateur());
-      clone.setBanque(this.getBanque());
+	@Override
+	public CodeDossier clone(){
+		final CodeDossier clone = new CodeDossier();
+		clone.setCodeDossierId(this.getCodeDossierId());
+		clone.setNom(this.getNom());
+		clone.setCodeSelect(this.getCodeSelect());
+		clone.setDescription(this.getDescription());
+		clone.setDossierParent(this.getDossierParent());
+		clone.setUtilisateur(this.getUtilisateur());
+		clone.setBanque(this.getBanque());
 
-      return clone;
-   }
+		return clone;
+	}
 }

@@ -59,13 +59,13 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * Classe créée le 08/11/11.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "CONFORMITE_TYPE")
-@NamedQueries(value = {@NamedQuery(name = "ConformiteType.findByEntiteAndType",
-   query = "SELECT c FROM ConformiteType c " + "WHERE c.conformiteType like ?1 " + "AND c.entite = ?2")})
+//@NamedQueries(value = {@NamedQuery(name = "ConformiteType.findByEntiteAndType",
+//   query = "SELECT c FROM ConformiteType c " + "WHERE c.conformiteType like ?1 " + "AND c.entite = ?2")})
 public class ConformiteType implements java.io.Serializable
 {
 

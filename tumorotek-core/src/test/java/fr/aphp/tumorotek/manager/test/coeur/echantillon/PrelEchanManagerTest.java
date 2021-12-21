@@ -95,41 +95,41 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class PrelEchanManagerTest extends AbstractManagerTest4
 {
 
-   @Autowired
+//   @Autowired
    private PrelEchansManager prelEchansManager;
-   @Autowired
+//   @Autowired
    private PrelevementManager prelevementManager;
-   @Autowired
+//   @Autowired
    private EchantillonManager echantillonManager;
-   @Autowired
+//   @Autowired
    private EchantillonDTOManager echantillonDTOManager;
-   @Autowired
+//   @Autowired
    private BanqueDao banqueDao;
-   @Autowired
+//   @Autowired
    private UtilisateurDao utilisateurDao;
-   @Autowired
+//   @Autowired
    private EchantillonTypeDao echantillonTypeDao;
-   @Autowired
+//   @Autowired
    private NatureDao natureDao;
-   @Autowired
+//   @Autowired
    private ConsentTypeDao consentTypeDao;
-   @Autowired
+//   @Autowired
    private EmplacementManager emplacementManager;
-   @Autowired
+//   @Autowired
    private MaladieManager maladieManager;
-   @Autowired
+//   @Autowired
    private PatientManager patientManager;
-   @Autowired
+//   @Autowired
    private CodeAssigneManager codeAssigneManager;
-   @Autowired
+//   @Autowired
    private NonConformiteDao nonConformiteDao;
-   @Autowired
+ //  @Autowired
    private ObjetNonConformeManager objetNonConformeManager;
-   @Autowired
+//   @Autowired
    private TerminaleDao terminaleDao;
    // @Autowired
    // private EntiteDao entiteDao;
-   @Autowired
+//   @Autowired
    private FichierManager fichierManager;
 
    private Patient pat;

@@ -43,8 +43,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -61,14 +59,14 @@ import fr.aphp.tumorotek.model.stockage.Terminale;
  * Classe créée le 29/04/10.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "COULEUR")
-@NamedQueries(value = {@NamedQuery(name = "Couleur.findByCouleur", query = "SELECT c FROM Couleur c WHERE c.couleur like ?1"),
-   @NamedQuery(name = "Couleur.findByVisotube",
-      query = "SELECT c FROM Couleur c " + "WHERE c.ordreVisotube is not null " + "ORDER BY c.ordreVisotube")})
+//@NamedQueries(value = {@NamedQuery(name = "Couleur.findByCouleur", query = "SELECT c FROM Couleur c WHERE c.couleur like ?1"),
+//   @NamedQuery(name = "Couleur.findByVisotube",
+//      query = "SELECT c FROM Couleur c " + "WHERE c.ordreVisotube is not null " + "ORDER BY c.ordreVisotube")})
 public class Couleur implements Serializable
 {
 

@@ -37,68 +37,85 @@ package fr.aphp.tumorotek.dao.stockage;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.stockage.Enceinte;
 import fr.aphp.tumorotek.model.stockage.Incident;
 import fr.aphp.tumorotek.model.stockage.Terminale;
 
-public interface IncidentDao extends GenericDaoJpa<Incident, Integer>
-{
+/**
+ *
+ * @version 2.3
+ *
+ */
+@Repository
+public interface IncidentDao extends CrudRepository<Incident, Integer> {
 
-   /**
-    * Recherche tous les incidents d'un conteneur ordonnés par date.
-    * @param conteneur
-    * @return Liste ordonnée des incidents d'un conteneur.
-    */
-   List<Incident> findByConteneurOrderByDate(Conteneur conteneur);
+	/**
+	 * Recherche tous les incidents d'un conteneur ordonnés par date.
+	 * 
+	 * @param conteneur
+	 * @return Liste ordonnée des incidents d'un conteneur.
+	 */
+	@Query("SELECT i FROM Incident i WHERE i.conteneur = ?1 ORDER BY i.date")
+	List<Incident> findByConteneurOrderByDate(Conteneur conteneur);
 
-   /**
-    * Recherche tous les incidents d'une enceinte ordonnés par date.
-    * @param enceinte
-    * @return Liste ordonnée des incidents d'une enceinte.
-    * @since 2.0.10
-    */
-   List<Incident> findByEnceinte(Enceinte enceinte);
+	/**
+	 * Recherche tous les incidents d'une enceinte ordonnés par date.
+	 * 
+	 * @param enceinte
+	 * @return Liste ordonnée des incidents d'une enceinte.
+	 * @since 2.0.10
+	 */
+	@Query("SELECT i FROM Incident i WHERE i.enceinte = ?1 ORDER BY i.date")
+	List<Incident> findByEnceinte(Enceinte enceinte);
 
-   /**
-    * Recherche tous les incidents d'une terminale ordonnés par date.
-    * @param terminale
-    * @return Liste ordonnée des incidents d'une terminale.
-    * @since 2.0.10
-    */
-   List<Incident> findByTerminale(Terminale terminale);
+	/**
+	 * Recherche tous les incidents d'une terminale ordonnés par date.
+	 * 
+	 * @param terminale
+	 * @return Liste ordonnée des incidents d'une terminale.
+	 * @since 2.0.10
+	 */
+	@Query("SELECT i FROM Incident i WHERE i.terminale = ?1 ORDER BY i.date")
+	List<Incident> findByTerminale(Terminale terminale);
 
-   /**
-    * Recherche tous les Incidents d'un conteneur sauf celui dont 
-    * l'identifiant est passé en paramètre.
-    * @param incidentId Identifiant de l'incident que l'on souhaite 
-    * exclure.
-    * @param conteneur Conteneur des incidents recherchés.
-    * @return une liste d'Incidents.
-    */
-   List<Incident> findByExcludedIdAndConteneur(Integer incidentId, Conteneur conteneur);
+	/**
+	 * Recherche tous les Incidents d'un conteneur sauf celui dont l'identifiant est
+	 * passé en paramètre.
+	 * 
+	 * @param incidentId Identifiant de l'incident que l'on souhaite exclure.
+	 * @param conteneur  Conteneur des incidents recherchés.
+	 * @return une liste d'Incidents.
+	 */
+	@Query("SELECT i FROM Incident i WHERE i.incidentId != ?1 AND i.conteneur = ?2")
+	List<Incident> findByExcludedIdAndConteneur(Integer incidentId, Conteneur conteneur);
 
-   /**
-    * Recherche tous les Incidents d'une enceinte sauf celui dont 
-    * l'identifiant est passé en paramètre.
-    * @param incidentId Identifiant de l'incident que l'on souhaite 
-    * exclure.
-    * @param enceinte des incidents recherchés.
-    * @return une liste d'Incidents.
-    * @since 2.0.10
-    */
-   List<Incident> findByExcludedIdAndEnceinte(Integer incidentId, Enceinte enceinte);
+	/**
+	 * Recherche tous les Incidents d'une enceinte sauf celui dont l'identifiant est
+	 * passé en paramètre.
+	 * 
+	 * @param incidentId Identifiant de l'incident que l'on souhaite exclure.
+	 * @param enceinte   des incidents recherchés.
+	 * @return une liste d'Incidents.
+	 * @since 2.0.10
+	 */
+	@Query("SELECT i FROM Incident i WHERE i.incidentId != ?1 AND i.enceinte = ?2")
+	List<Incident> findByExcludedIdAndEnceinte(Integer incidentId, Enceinte enceinte);
 
-   /**
-    * Recherche tous les Incidents d'une terminale sauf celui dont 
-    * l'identifiant est passé en paramètre.
-    * @param incidentId Identifiant de l'incident que l'on souhaite 
-    * exclure.
-    * @param terminale des incidents recherchés.
-    * @return une liste d'Incidents.
-    * @since 2.0.10
-    */
-   List<Incident> findByExcludedIdAndTerminale(Integer incidentId, Terminale terminale);
+	/**
+	 * Recherche tous les Incidents d'une terminale sauf celui dont l'identifiant
+	 * est passé en paramètre.
+	 * 
+	 * @param incidentId Identifiant de l'incident que l'on souhaite exclure.
+	 * @param terminale  des incidents recherchés.
+	 * @return une liste d'Incidents.
+	 * @since 2.0.10
+	 */
+	@Query("SELECT i FROM Incident i WHERE i.incidentId != ?1 AND i.terminale = ?2")
+	List<Incident> findByExcludedIdAndTerminale(Integer incidentId, Terminale terminale);
 
 }

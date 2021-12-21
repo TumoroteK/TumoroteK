@@ -235,6 +235,10 @@ public class Export extends Thread
 
 	@Override
 	public void run(){
+		
+		log.debug("export thread id: " + getId());
+		log.debug("export thread name: " + getName());
+		
 		// if MySQL maybe add zeroDateTimeBehavior=convertToNull
 		final String dbUrl = Utils.getDatabaseURL();
 		final String dbClass = Utils.getDriverClass();
@@ -266,18 +270,23 @@ public class Export extends Thread
 			//		+ ((double) (endTime - startTime) / 1000000000.0));
 
 		}catch(final ClassNotFoundException e){
-			log.error(e);
+			log.debug(e);
+			log.error(e.getMessage());
 		}catch(final DesktopUnavailableException e){
-			e.printStackTrace();
+			log.debug(e);
+			log.error(e.getMessage());
 		}catch(final InterruptedException e){
+			log.debug(e);
 			log.warn(e.getMessage());
-		}catch(final Exception e){
-			log.error(e);
-			e.printStackTrace();
+		    interrupt();//preserve the message
+		}catch(final Throwable t){
+			log.error(t.getMessage());
+			log.debug(t);
 			try{
-				setExportDetails(0, 0, 0, null, null, e);
+				setExportDetails(0, 0, 0, null, null, new RuntimeException(t.getMessage()));
 			}catch(DesktopUnavailableException | InterruptedException e1){}
 		}finally{
+			log.debug("is export thread " + getName() + " interrupted: " + isInterrupted());
 			closeAll(true);
 		}
 

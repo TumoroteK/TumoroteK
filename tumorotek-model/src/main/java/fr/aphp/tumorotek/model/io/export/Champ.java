@@ -65,12 +65,12 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * Classe créée le 23/10/09.
  *
  * @author Maxime GOUSSEAU
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "CHAMP")
-@NamedQueries(value = {@NamedQuery(name = "Champ.findEnfants", query = "SELECT c FROM Champ c WHERE champParent = ?1")})
+// @NamedQueries(value = {@NamedQuery(name = "Champ.findEnfants", query = "SELECT c FROM Champ c WHERE champParent = ?1")})
 public class Champ implements Comparable<Champ>
 {
 

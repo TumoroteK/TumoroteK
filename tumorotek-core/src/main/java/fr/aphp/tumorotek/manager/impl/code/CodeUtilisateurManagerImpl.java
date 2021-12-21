@@ -41,6 +41,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -140,7 +141,8 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
          if(!exactMatch){
             code = "%" + code + "%";
          }
-         codes.addAll(codeUtilisateurDao.findByCodeLike(code, banks));
+         // codes.addAll(codeUtilisateurDao.findByCodeLike(code, banks));
+         codes.addAll(codeUtilisateurDao.findByCodeLikeAndBanqueId(code, banks.stream().map(Banque::getBanqueId).collect(Collectors.toList())));
       }
       return codes;
    }

@@ -35,18 +35,20 @@
  **/
 package fr.aphp.tumorotek.dao.io.export;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.io.export.Combinaison;
 
 /**
  *
- * Interface pour le DAO du bean de domaine Combinaison.
- * Interface créée le 23/10/09.
+ * Interface pour le DAO du bean de domaine Combinaison. Interface créée le
+ * 23/10/09.
  *
  * @author Maxime GOUSSEAU
- * @version 2.0
+ * @version 2.3
  */
-public interface CombinaisonDao extends GenericDaoJpa<Combinaison, Integer>
-{
+@Repository
+public interface CombinaisonDao extends CrudRepository<Combinaison, Integer> {
 
 }

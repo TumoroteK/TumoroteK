@@ -47,7 +47,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
+// import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.zkoss.util.resource.Labels;
@@ -537,8 +537,9 @@ public final class ObjectTypesFormatters
     * @return Mot de passe encrypté.
     */
    public static String getEncodedPassword(final String pwd){
-      final Md5PasswordEncoder encoder = new Md5PasswordEncoder();
-      return encoder.encodePassword(pwd, null);
+    //  final Md5PasswordEncoder encoder = new Md5PasswordEncoder();
+    //  return encoder.encodePassword(pwd, null);
+	return pwd;
    }
 
    /**

@@ -64,16 +64,16 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  * 12/03/13.
  *
  * @author Marc DESCHAMPS
- * @version 2.1
+ * @version 2.3
  *
  */
 
 @Entity
 @Table(name = "STATS_MODELE")
-@NamedQueries(value = {
-   @NamedQuery(name = "SModele.findByPlateforme", query = "SELECT m FROM SModele m WHERE m.plateforme = ?1 " + "ORDER BY m.nom"),
-   @NamedQuery(name = "SModele.findByNomAndPlateforme", query = "SELECT m FROM SModele m WHERE m.nom = ?1 AND m.plateforme = ?2"),
-   @NamedQuery(name = "SModele.findByExcludedId", query = "SELECT m FROM SModele m WHERE m.smodeleId != ?1")})
+//@NamedQueries(value = {
+//   @NamedQuery(name = "SModele.findByPlateforme", query = "SELECT m FROM SModele m WHERE m.plateforme = ?1 " + "ORDER BY m.nom"),
+//   @NamedQuery(name = "SModele.findByNomAndPlateforme", query = "SELECT m FROM SModele m WHERE m.nom = ?1 AND m.plateforme = ?2"),
+//   @NamedQuery(name = "SModele.findByExcludedId", query = "SELECT m FROM SModele m WHERE m.smodeleId != ?1")})
 public class SModele implements Serializable, Comparable<SModele>
 {
 

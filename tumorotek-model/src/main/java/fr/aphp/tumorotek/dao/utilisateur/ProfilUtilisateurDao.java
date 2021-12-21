@@ -36,7 +36,11 @@
 package fr.aphp.tumorotek.dao.utilisateur;
 
 import java.util.List;
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.utilisateur.Profil;
@@ -52,11 +56,11 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * @author Pierre Ventadour
  * @author Mathieu BARTHELEMY
  * 
- * @version 2.2.4.1
+ * @version 2.3
  *
  */
-public interface ProfilUtilisateurDao extends GenericDaoJpa<ProfilUtilisateur, ProfilUtilisateurPK>
-{
+@Repository
+public interface ProfilUtilisateurDao extends CrudRepository<ProfilUtilisateur, ProfilUtilisateurPK> {
 
    /**
     * Recherche les ProfilUtilisateurs sauf celui dont la clé 
@@ -64,6 +68,7 @@ public interface ProfilUtilisateurDao extends GenericDaoJpa<ProfilUtilisateur, P
     * @param pk ProfilUtilisateurPK.
     * @return une liste de ProfilUtilisateurs.
     */
+			      @Query("SELECT p FROM ProfilUtilisateur p " + "WHERE p.pk != ?1")
    List<ProfilUtilisateur> findByExcludedPK(ProfilUtilisateurPK pk);
 
    /**
@@ -73,6 +78,8 @@ public interface ProfilUtilisateurDao extends GenericDaoJpa<ProfilUtilisateur, P
     * @return une liste de ProfilUtilisateurs.
     * @version 2.1
     */
+			      @Query("SELECT p FROM ProfilUtilisateur p " + "WHERE p.pk.profil = ?1 AND p.pk.utilisateur.archive = ?2"
+				            + " ORDER BY p.pk.utilisateur.login")
    List<ProfilUtilisateur> findByProfil(Profil profil, boolean archive);
 
    /**
@@ -83,6 +90,8 @@ public interface ProfilUtilisateurDao extends GenericDaoJpa<ProfilUtilisateur, P
     * @return une liste de ProfilUtilisateurs.
     * @version 2.1
     */
+			      @Query("SELECT p FROM ProfilUtilisateur p " + "WHERE p.pk.utilisateur = ?1 AND p.pk.banque.archive = ?2 "
+				            + "order by p.pk.banque.nom")
    List<ProfilUtilisateur> findByUtilisateur(Utilisateur utilisateur, boolean archive);
 
    /**
@@ -93,6 +102,8 @@ public interface ProfilUtilisateurDao extends GenericDaoJpa<ProfilUtilisateur, P
     * @return une liste de ProfilUtilisateurs.
     * @version 2.1
     */
+			      @Query("SELECT p FROM ProfilUtilisateur p " + "WHERE p.pk.banque = ?1 AND p.pk.utilisateur.archive = ?2 "
+				            + "ORDER BY p.pk.utilisateur.login")
    List<ProfilUtilisateur> findByBanque(Banque banque, Boolean archive);
 
    /**
@@ -102,6 +113,7 @@ public interface ProfilUtilisateurDao extends GenericDaoJpa<ProfilUtilisateur, P
     * @param profil Profil des ProfilUtilisateurs recherchés.
     * @return Liste ordonnée de ProfilUtilisateurs.
     */
+			      @Query("SELECT p FROM ProfilUtilisateur p " + "WHERE p.pk.utilisateur = ?1 AND p.pk.profil = ?2")
    List<ProfilUtilisateur> findByUtilisateurProfil(Utilisateur utilisateur, Profil profil);
 
    /**
@@ -111,6 +123,7 @@ public interface ProfilUtilisateurDao extends GenericDaoJpa<ProfilUtilisateur, P
     * @param banque Banque des ProfilUtilisateurs recherchés.
     * @return Liste ordonnée de ProfilUtilisateurs.
     */
+			      @Query("SELECT p FROM ProfilUtilisateur p " + "WHERE p.pk.utilisateur = ?1 AND p.pk.banque = ?2")
    List<ProfilUtilisateur> findByUtilisateurBanque(Utilisateur utilisateur, Banque banque);
 
    /**
@@ -120,6 +133,7 @@ public interface ProfilUtilisateurDao extends GenericDaoJpa<ProfilUtilisateur, P
     * @param profil Profil des ProfilUtilisateurs recherchés.
     * @return Liste ordonnée de ProfilUtilisateurs.
     */
+   @Query("SELECT p FROM ProfilUtilisateur p " + "WHERE p.pk.banque = ?1 AND p.pk.profil = ?2")
    List<ProfilUtilisateur> findByBanqueProfil(Banque banque, Profil profil);
    
    /**
@@ -130,7 +144,9 @@ public interface ProfilUtilisateurDao extends GenericDaoJpa<ProfilUtilisateur, P
     * @param u utilisateur
     * @param p plateforme
     * @return nombre de profils d'accès distincts
-    * @since 2.2.4.1
+    * @since TK-305
     */
+   @Query("SELECT count(distinct p.pk.profil) FROM ProfilUtilisateur p JOIN p.pk.banque b "
+     	 	+ "WHERE p.pk.utilisateur = ?1 AND b.plateforme = ?2 AND b.contexte.nom not like 'GATSBI'")
    List<Long> findCountDistinctProfilForUserAndPlateformeGroupedByContexte(Utilisateur u, Plateforme p);
 }

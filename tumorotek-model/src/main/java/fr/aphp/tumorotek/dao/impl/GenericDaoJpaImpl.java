@@ -40,12 +40,13 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.orm.jpa.JpaCallback;
-import org.springframework.orm.jpa.support.JpaDaoSupport;
+// import org.springframework.orm.jpa.JpaCallback;
+// import org.springframework.orm.jpa.support.JpaDaoSupport;
 
 import fr.aphp.tumorotek.dao.FinderExecutor;
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
@@ -60,143 +61,157 @@ import fr.aphp.tumorotek.dao.GenericDaoJpa;
  * @version 09/09/2009
  *
  */
-public class GenericDaoJpaImpl<T, PK extends Serializable> extends JpaDaoSupport implements GenericDaoJpa<T, PK>, FinderExecutor
-{
+public class GenericDaoJpaImpl<T, PK extends Serializable> implements GenericDaoJpa<T, PK>, FinderExecutor {
 
-   private static Log log = LogFactory.getLog(GenericDaoJpa.class);
+	private static Log log = LogFactory.getLog(GenericDaoJpa.class);
 
-   //@PersistenceContext
-   //private EntityManager em;
-   //private EntityManagerFactory entityManagerFactory;
+	// @PersistenceContext(unitName="simple-jpa")
+	private EntityManager entityManager;
+	private EntityManagerFactory entityManagerFactory;
 
-   /** Classe de l'objet. */
-   private final Class<T> type;
+	public void setEntityManagerFactory(EntityManagerFactory _e) {
+		this.entityManagerFactory = _e;
+		entityManager = entityManagerFactory.createEntityManager();
+	}
 
-   /**
-    * Constructor.
-    * @param t est la classe de l'objet.
-    */
-   public GenericDaoJpaImpl(final Class<T> t){
-      this.type = t;
-      //em = entityManagerFactory.createEntityManager();
-   }
+	/** Classe de l'objet. */
+	private Class<T> type;
+	
+	public GenericDaoJpaImpl(){
+	}
 
-   /**
-    * Renvoie la classe de l'objet.
-    * @return la classe de l'objet.
-    */
-   public Class<T> getType(){
-      return type;
-   }
+	/**
+	 * Constructor.
+	 * @param t est la classe de l'objet.
+	 */
+	public GenericDaoJpaImpl(final Class<T> t){
+		this.type = t;
+	}
 
-   //	public void setType(Class<T> type) {
-   //		this.type = type;
-   //	}
+	/**
+	 * Renvoie la classe de l'objet.
+	 * @return la classe de l'objet.
+	 */
+	public Class<T> getType(){
+		return type;
+	}
 
-   //	public EntityManager getEm() {
-   //		return em;
-   //	}
-   //
-   //	public void setEm(EntityManager em) {
-   //		this.em = em;
-   //	}
+	//	public void setType(Class<T> type) {
+	//		this.type = type;
+	//	}
 
-   /** 
-    * Persist une instance d'objet dans la base de données.
-    * @param o est  une instance de l'objet à créer.
-    */
-   @Override
-   public void createObject(final T o){
-      //return (PK) getSession().save(o);
-      //em.persist(o);
-      //em.persist(o);
-      if(o != null){
-         getJpaTemplate().persist(o);
-      }else{
-         log.debug("Tentative de creation d'un objet null");
-      }
-   }
+	//	public EntityManager getEm() {
+	//		return em;
+	//	}
+	//
+	//	public void setEm(EntityManager em) {
+	//		this.em = em;
+	//	}
 
-   /** 
-    *   Retrouve un objet qui était persistant dans la base de données en
-    *   utilisant sa clé primaire.
-    *   @param id est la clé primaire de l'objet.
-    *   @return l'objet.
-    */
-   @Override
-   public T findById(final PK id){
-      //return (T) getSession().get(type, id);
-      //System.out.println("********---------"+em.isOpen());
-      //return (T) em.find(type, id);
-      if(id != null){
-         return getJpaTemplate().find(type, id);
-      }
+	/** 
+	 * Persist une instance d'objet dans la base de données.
+	 * @param o est  une instance de l'objet à créer.
+	 */
+	@Override
+	public void createObject(final T o){
+		//return (PK) getSession().save(o);
+		//em.persist(o);
+		//em.persist(o);
+		if(o != null){
+			// getJpaTemplate().persist(o);
+			entityManager.persist(o);
+		}else{
+			log.debug("Tentative de creation d'un objet null");
+		}
+	}
 
-         log.debug("FindById avec PK null");
-      return null;
-   }
+	/** 
+	 *   Retrouve un objet qui était persistant dans la base de données en
+	 *   utilisant sa clé primaire.
+	 *   @param id est la clé primaire de l'objet.
+	 *   @return l'objet.
+	 */
+	@Override
+	public T findById(final PK id){
+		//return (T) getSession().get(type, id);
+		//System.out.println("********---------"+em.isOpen());
+		//return (T) em.find(type, id);
+		if(id != null){
+			return entityManager.find(type, id);
 
-   /**
-    * Sauvegarde les modifications apportées à un objet persistant.
-    * @param o est l'objet à mettre à jour dans la base
-    * de données. 
-    */
-   @Override
-   public void updateObject(final T o){
-      //getSession().update(o);
-      //em.merge(o);
-      if(o != null){
-         getJpaTemplate().merge(o);
-      }else{
-         log.debug("Tentative de modification d'un objet null");
-      }
-   }
+			// return getJpaTemplate().find(type, id);
+		}
 
-   @Override
-   public T mergeObject(final T o){
-      if(o != null){
-         return getJpaTemplate().merge(o);
-      }
+		log.debug("FindById avec PK null");
+		return null;
+	}
 
-         log.debug("Tentative de merge d'un objet null");
-      return null;
-   }
+	/**
+	 * Sauvegarde les modifications apportées à un objet persistant.
+	 * @param o est l'objet à mettre à jour dans la base
+	 * de données. 
+	 */
+	@Override
+	public void updateObject(final T o){
+		//getSession().update(o);
+		//em.merge(o);
+		if(o != null){
+			// getJpaTemplate().merge(o);
+			entityManager.merge(o);
+		}else{
+			log.debug("Tentative de modification d'un objet null");
+		}
+	}
 
-   /**  
-    * Supprime un objet de la base de données.
-    * @param id est la clé primaire de l'objet à supprimer. 
-    */
-   @Override
-   public void removeObject(final PK id){
-      //getSession().delete(o);
-      /*T o = em.find(type, id);
+	@Override
+	public T mergeObject(final T o){
+		if(o != null){
+			// return getJpaTemplate().merge(o);
+			return entityManager.merge(o);
+		}
+
+		log.debug("Tentative de merge d'un objet null");
+		return null;
+	}
+
+	/**  
+	 * Supprime un objet de la base de données.
+	 * @param id est la clé primaire de l'objet à supprimer. 
+	 */
+	@Override
+	public void removeObject(final PK id){
+		//getSession().delete(o);
+		/*T o = em.find(type, id);
       em.remove(o);*/
-      if(id != null){
-         final T o = getJpaTemplate().find(type, id);
-         if(o != null){
-            getJpaTemplate().remove(o);
-         }else{
-            log.debug("Tentative de suppression d'un objet null");
-         }
-      }else{
-         log.debug("Tentative de suppression d'un objet dont Id null");
-      }
-   }
+		if(id != null){
+			// final T o = getJpaTemplate().find(type, id);
+			final T o = entityManager.find(type, id);
+			if(o != null){
+				// getJpaTemplate().remove(o);
+				entityManager.remove(o);
+			}else{
+				log.debug("Tentative de suppression d'un objet null");
+			}
+		}else{
+			log.debug("Tentative de suppression d'un objet dont Id null");
+		}
+	}
 
-   /**
-    * Renvoie tous les objets d'une certaine table présents dans la base
-    * de données.
-    * @return tous les objets d'une table.
-    */
-   @Override
-   public List<T> findAll(){
-      
-      final List<T> list = getJpaTemplate().find("select p from " + type.getSimpleName() + " p");
-      /**
-       * Essai avec JpaCallBack mais getJpaTemplate().
-       * find(query) est tout aussi efficace!
-       */
-      /*List<T> list = (List<T>) getJpaTemplate().execute(new JpaCallback() {
+	/**
+	 * Renvoie tous les objets d'une certaine table présents dans la base
+	 * de données.
+	 * @return tous les objets d'une table.
+	 */
+	@Override
+	public List<T> findAll(){
+
+		// final List<T> list = getJpaTemplate().find("select p from " + type.getSimpleName() + " p");
+		final List<T> list = entityManager.createQuery("select p from " + type.getSimpleName() + " p", type).getResultList();
+		/**
+		 * Essai avec JpaCallBack mais getJpaTemplate().
+		 * find(query) est tout aussi efficace!
+		 */
+		/*List<T> list = (List<T>) getJpaTemplate().execute(new JpaCallback() {
       	public Object doInJpa(final EntityManager em) 
       		throws javax.persistence.PersistenceException {
       		StringBuilder queryStr = new StringBuilder();
@@ -206,51 +221,58 @@ public class GenericDaoJpaImpl<T, PK extends Serializable> extends JpaDaoSupport
       		//if (ordClause.length() > 0) {
       		//	queryStr.append(" em ORDER BY ");
       		//}
-      		
+
       		logger.debug(queryStr.toString());
-      		
+
       		System.out.println(em.getDelegate().getClass().getName());
-      		
+
       		final Query query = em.createQuery(queryStr.toString());
       		return query.getResultList();
       	}
       });*/
-      return list;
-   }
+		return list;
+	}
 
-   /**
-    * Exécute une méthode de type findBy qui correspond à une requête SELECT
-    * avec paramètres sur la base de données.
-    * @param method est la requête à exécuter.
-    * @param queryArgs sont les arguments de a requête.
-    * @return une liste d'objets résultants de la requête.
-    */
-   
-   @Override
-   public List<T> executeFinder(final Method method, final Object[] queryArgs){
-      final String queryName = queryNameFromMethod(method);
-      
-      final List<T> list = (List<T>) getJpaTemplate().execute(new JpaCallback<Object>()
-      {
-         @Override
-         public Object doInJpa(final EntityManager em){
-            final Query query = em.createNamedQuery(queryName);
-            for(int i = 0; i < queryArgs.length; ++i){
-               query.setParameter(i + 1, queryArgs[i]);
-            }
-            return query.getResultList();
-         }
-      });
-      return list;
-   }
+	/**
+	 * Exécute une méthode de type findBy qui correspond à une requête SELECT
+	 * avec paramètres sur la base de données.
+	 * @param method est la requête à exécuter.
+	 * @param queryArgs sont les arguments de a requête.
+	 * @return une liste d'objets résultants de la requête.
+	 */
 
-   /**
-    * Renvoie le nom de la NamedQuery pour la méthode passée en paramètre.
-    * @param finderMethod est la méthode qui contient la requête.
-    * @return le nom de la NamedQuery.
-    */
-   public String queryNameFromMethod(final Method finderMethod){
-      return type.getSimpleName() + "." + finderMethod.getName();
-   }
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<T> executeFinder(final Method method, final Object[] queryArgs){
+		final String queryName = queryNameFromMethod(method);
+						
+		final Query query = entityManager.createNamedQuery(queryName, type);
+		for(int i = 0; i < queryArgs.length; ++i){
+			query.setParameter(i + 1, queryArgs[i]);
+		}
+		return query.getResultList();
 
+
+//		final List<T> list = (List<T>) getJpaTemplate().execute(new JpaCallback<Object>()
+//		{
+//			@Override
+//			public Object doInJpa(final EntityManager em){
+//				final Query query = em.createNamedQuery(queryName);
+//				for(int i = 0; i < queryArgs.length; ++i){
+//					query.setParameter(i + 1, queryArgs[i]);
+//				}
+//				return query.getResultList();
+//			}
+//		});
+//		return list;
+	}
+
+	/**
+	 * Renvoie le nom de la NamedQuery pour la méthode passée en paramètre.
+	 * @param finderMethod est la méthode qui contient la requête.
+	 * @return le nom de la NamedQuery.
+	 */
+	public String queryNameFromMethod(final Method finderMethod){
+		return type.getSimpleName() + "." + finderMethod.getName();
+	}
 }

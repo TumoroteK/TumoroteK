@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.utilisateur;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.qualite.OperationType;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.utilisateur.DroitObjet;
@@ -50,43 +53,45 @@ import fr.aphp.tumorotek.model.utilisateur.Profil;
  * Interface créée le 18/05/2010.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface DroitObjetDao extends GenericDaoJpa<DroitObjet, DroitObjetPK>
-{
+@Repository
+public interface DroitObjetDao extends CrudRepository<DroitObjet, Integer> {	
+	/**
+	 * Recherche les DroitObjets sauf celui dont la clé primaire est
+	 * passé en paramètre.
+	 * @param pk DroitObjetPK.
+	 * @return une liste de DroitObjets.
+	 */
+	@Query("SELECT d FROM DroitObjet d " + "WHERE d.pk != ?1")
+	List<DroitObjet> findByExcludedPK(DroitObjetPK pk);
 
-   /**
-    * Recherche les DroitObjets sauf celui dont la clé primaire est
-    * passé en paramètre.
-    * @param pk DroitObjetPK.
-    * @return une liste de DroitObjets.
-    */
-   List<DroitObjet> findByExcludedPK(DroitObjetPK pk);
+	/**
+	 * Recherche les DroitObjets dont le Profil est égale au paramètre.
+	 * @param profil Profil des DroitObjets recherchés.
+	 * @return une liste de DroitObjets.
+	 */
+	@Query("SELECT d FROM DroitObjet d " + "WHERE d.pk.profil = ?1")
+	List<DroitObjet> findByProfil(Profil profil);
 
-   /**
-    * Recherche les DroitObjets dont le Profil est égale au paramètre.
-    * @param profil Profil des DroitObjets recherchés.
-    * @return une liste de DroitObjets.
-    */
-   List<DroitObjet> findByProfil(Profil profil);
+	/**
+	 * Recherche tous les DroitObjets ppur un couple de valeurs Profil
+	 * et entité.
+	 * @param profil Profil des DroitObjet recherchés.
+	 * @param entite Entite des DroitObjet recherchés.
+	 * @return Liste ordonnée de DroitObjets.
+	 */
+	@Query("SELECT d FROM DroitObjet d " + "WHERE d.pk.profil = ?1 AND d.pk.entite = ?2")
+	List<DroitObjet> findByProfilEntite(Profil profil, Entite entite);
 
-   /**
-    * Recherche tous les DroitObjets ppur un couple de valeurs Profil
-    * et entité.
-    * @param profil Profil des DroitObjet recherchés.
-    * @param entite Entite des DroitObjet recherchés.
-    * @return Liste ordonnée de DroitObjets.
-    */
-   List<DroitObjet> findByProfilEntite(Profil profil, Entite entite);
-
-   /**
-    * Recherche tous les DroitObjets ppur un couple de valeurs Profil
-    * et OperationType.
-    * @param profil Profil des DroitObjet recherchés.
-    * @param operationType OperationType des DroitObjet recherchés.
-    * @return Liste ordonnée de DroitObjets.
-    */
-   List<DroitObjet> findByProfilOperation(Profil profil, OperationType operationType);
-
+	/**
+	 * Recherche tous les DroitObjets ppur un couple de valeurs Profil
+	 * et OperationType.
+	 * @param profil Profil des DroitObjet recherchés.
+	 * @param operationType OperationType des DroitObjet recherchés.
+	 * @return Liste ordonnée de DroitObjets.
+	 */
+	@Query("SELECT d FROM DroitObjet d " + "WHERE d.pk.profil = ?1 " + "AND d.pk.operationType = ?2")
+	List<DroitObjet> findByProfilOperation(Profil profil, OperationType operationType);
 }

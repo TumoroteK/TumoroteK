@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.systeme;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.systeme.Temperature;
 
 /**
@@ -47,16 +50,17 @@ import fr.aphp.tumorotek.model.systeme.Temperature;
  * Date: 07/07/2010.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  */
-public interface TemperatureDao extends GenericDaoJpa<Temperature, Integer>
-{
-
+@Repository
+public interface TemperatureDao extends CrudRepository<Temperature, Integer> {
+	
    /**
     * Recherche les températures sauf celle dont l'id est en paramètre.
     * @param temperatureId Id de la teméprature à exclure.
     * @return Liste de Températures.
     */
+	@Query( "SELECT t FROM Temperature t " + "WHERE t.temperatureId != ?1")
    List<Temperature> findByExcludedId(Integer temperatureId);
 
 }

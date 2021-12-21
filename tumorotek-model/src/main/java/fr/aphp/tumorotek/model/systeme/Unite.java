@@ -71,9 +71,9 @@ import fr.aphp.tumorotek.model.coeur.prodderive.Transformation;
 @AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "UNITE_ID")),
    @AttributeOverride(name = "nom", column = @Column(name = "UNITE", nullable = false, length = 200))})
 @GenericGenerator(name = "autoincrement", strategy = "increment")
-@NamedQueries(value = {@NamedQuery(name = "Unite.findByUnite", query = "SELECT u FROM Unite u WHERE u.nom like ?1"),
-   @NamedQuery(name = "Unite.findByTypeWithOrder", query = "SELECT u FROM Unite u WHERE u.type like ?1 " + "ORDER BY u.nom"),
-   @NamedQuery(name = "Unite.findByOrder", query = "SELECT u FROM Unite u ORDER BY u.nom")})
+//@NamedQueries(value = {@NamedQuery(name = "Unite.findByUnite", query = "SELECT u FROM Unite u WHERE u.nom like ?1"),
+//   @NamedQuery(name = "Unite.findByTypeWithOrder", query = "SELECT u FROM Unite u WHERE u.type like ?1 " + "ORDER BY u.nom"),
+//   @NamedQuery(name = "Unite.findByOrder", query = "SELECT u FROM Unite u ORDER BY u.nom")})
 public class Unite extends AbstractThesaurusObject implements java.io.Serializable
 {
 

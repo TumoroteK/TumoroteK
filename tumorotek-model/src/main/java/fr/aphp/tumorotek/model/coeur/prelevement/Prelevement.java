@@ -166,8 +166,8 @@ import fr.aphp.tumorotek.model.utils.Utils;
          + "AND p.banque in (?2)"),
    @NamedQuery(name = "Prelevement.findByEtablissementNom",
       query = "SELECT DISTINCT e FROM Prelevement e WHERE " + "e.servicePreleveur.etablissement.nom like ?1 "
-         + "AND e.banque in (?2) " + "UNION SELECT DISTINCT e FROM Prelevement e WHERE "
-         + "e.preleveur.etablissement.nom like ?1 " + "AND e.banque in (?2)"),
+         + "AND e.banque in (?2)"), // + " UNION SELECT DISTINCT e FROM Prelevement e WHERE "
+        // + "e.preleveur.etablissement.nom like ?1 " + "AND e.banque in (?2)"),
    @NamedQuery(name = "Prelevement.findByEtablissementVide",
       query = "SELECT DISTINCT e FROM Prelevement e " + "LEFT OUTER JOIN e.preleveur as p " + "WHERE e.servicePreleveur is null "
          + "AND (p is null OR " + "p.etablissement is null) " + "AND e.banque in (?1)"),

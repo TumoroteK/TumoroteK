@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.io.imports;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
 
@@ -48,24 +51,28 @@ import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
  * Date: 24/01/2011
  *
  * @author Pierre VENTADOUR
- * @version 2.0
+ * @version 2.3
  */
-public interface ImportTemplateDao extends GenericDaoJpa<ImportTemplate, Integer>
-{
+@Repository
+public interface ImportTemplateDao extends CrudRepository<ImportTemplate, Integer> {
 
-   /**
-    * Recherche les ImportTemplates d'une banque ordonnés par nom.
-    * @param banque Banque des Imprtemplates.
-    * @return Liste d'ImportTemplate.
-    */
-   List<ImportTemplate> findByBanqueWithOrder(Banque banque);
+	/**
+	 * Recherche les ImportTemplates d'une banque ordonnés par nom.
+	 * 
+	 * @param banque Banque des Imprtemplates.
+	 * @return Liste d'ImportTemplate.
+	 */
+	@Query("SELECT i FROM ImportTemplate i " + "WHERE i.banque = ?1 ORDER BY i.nom")
+	List<ImportTemplate> findByBanqueWithOrder(Banque banque);
 
-   /**
-    * Recherche les ImportTemplates dont l'id est différent de celui
-    * passé en paramètres.
-    * @param excludedId Id à exclure.
-    * @return Liste d'ImportTemplate.
-    */
-   List<ImportTemplate> findByExcludedId(Integer excludedId);
+	/**
+	 * Recherche les ImportTemplates dont l'id est différent de celui passé en
+	 * paramètres.
+	 * 
+	 * @param excludedId Id à exclure.
+	 * @return Liste d'ImportTemplate.
+	 */
+	@Query("SELECT i FROM ImportTemplate i " + "WHERE i.importTemplateId != ?1")
+	List<ImportTemplate> findByExcludedId(Integer excludedId);
 
 }

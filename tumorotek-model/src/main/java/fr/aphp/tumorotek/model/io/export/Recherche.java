@@ -61,23 +61,23 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Objet persistant mappant la table RECHERCHE. Classe créée le 25/02/10.
  *
  * @author Maxime GOUSSEAU
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "RECHERCHE")
-@NamedQueries(
-   value = {@NamedQuery(name = "Recherche.findByUtilisateur", query = "SELECT r FROM Recherche r WHERE " + "r.createur = ?1"),
-      @NamedQuery(name = "Recherche.findByExcludedId", query = "SELECT r FROM Recherche r " + "WHERE r.rechercheId != ?1"),
-      @NamedQuery(name = "Recherche.findByAffichage", query = "SELECT r FROM Recherche r " + "WHERE r.affichage = ?1"),
-      @NamedQuery(name = "Recherche.findByRequete", query = "SELECT r FROM Recherche r " + "WHERE r.requete = ?1"),
-      @NamedQuery(name = "Recherche.findByIntituleUtilisateur",
-         query = "SELECT r FROM Recherche r " + "WHERE r.intitule like ?1 " + "AND r.createur = ?2"),
-      @NamedQuery(name = "Recherche.findByIntitule", query = "SELECT r FROM Recherche r " + "WHERE r.intitule like ?1"),
-      @NamedQuery(name = "Recherche.findByBanqueId",
-         query = "SELECT r FROM Recherche r " + "left join r.banques b " + "WHERE b.banqueId = ?1"),
-      @NamedQuery(name = "Recherche.findByBanqueIdinList",
-         query = "SELECT distinct(r) FROM Recherche r " + "left join r.banques b " + "WHERE b.banqueId in (?1)")})
+//@NamedQueries(
+//   value = {@NamedQuery(name = "Recherche.findByUtilisateur", query = "SELECT r FROM Recherche r WHERE " + "r.createur = ?1"),
+//      @NamedQuery(name = "Recherche.findByExcludedId", query = "SELECT r FROM Recherche r " + "WHERE r.rechercheId != ?1"),
+//      @NamedQuery(name = "Recherche.findByAffichage", query = "SELECT r FROM Recherche r " + "WHERE r.affichage = ?1"),
+//      @NamedQuery(name = "Recherche.findByRequete", query = "SELECT r FROM Recherche r " + "WHERE r.requete = ?1"),
+//      @NamedQuery(name = "Recherche.findByIntituleUtilisateur",
+//         query = "SELECT r FROM Recherche r " + "WHERE r.intitule like ?1 " + "AND r.createur = ?2"),
+//      @NamedQuery(name = "Recherche.findByIntitule", query = "SELECT r FROM Recherche r " + "WHERE r.intitule like ?1"),
+//      @NamedQuery(name = "Recherche.findByBanqueId",
+//         query = "SELECT r FROM Recherche r " + "left join r.banques b " + "WHERE b.banqueId = ?1"),
+//      @NamedQuery(name = "Recherche.findByBanqueIdinList",
+//         query = "SELECT distinct(r) FROM Recherche r " + "left join r.banques b " + "WHERE b.banqueId in (?1)")})
 public class Recherche implements TKdataObject, Comparable<Recherche>
 {
 

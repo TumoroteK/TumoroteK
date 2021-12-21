@@ -4,8 +4,6 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 		http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<import resource="applicationContextInterceptor.xml" />
-
 	<bean id="uiRequeteDao" parent="abstractDao">
 		<property name="proxyInterfaces">
 			<value>fr.aphp.tumorotek.dao.ui.UiRequeteDao

@@ -67,21 +67,21 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Classe créée le 23/10/09.
  *
  * @author Maxime GOUSSEAU
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "AFFICHAGE")
-@NamedQueries(
-   value = {@NamedQuery(name = "Affichage.findByUtilisateur", query = "SELECT a FROM Affichage a WHERE " + "a.createur = ?1"),
-      @NamedQuery(name = "Affichage.findByBanque",
-         query = "SELECT a FROM Affichage a WHERE " + "a.banque = ?1 " + "ORDER BY a.intitule"),
-      @NamedQuery(name = "Affichage.findByBanqueInList",
-         query = "SELECT a FROM Affichage a WHERE " + "a.banque in (?1) " + "ORDER BY a.intitule"),
-      @NamedQuery(name = "Affichage.findByIntitule", query = "SELECT a FROM Affichage a " + "WHERE a.intitule like ?1"),
-      @NamedQuery(name = "Affichage.findByIntituleUtilisateur",
-         query = "SELECT a FROM Affichage a " + "WHERE a.intitule like ?1 " + "AND a.createur = ?2"),
-      @NamedQuery(name = "Affichage.findByExcludedId", query = "SELECT a FROM Affichage a " + "WHERE a.affichageId != ?1")})
+//@NamedQueries(
+//   value = {@NamedQuery(name = "Affichage.findByUtilisateur", query = "SELECT a FROM Affichage a WHERE " + "a.createur = ?1"),
+//      @NamedQuery(name = "Affichage.findByBanque",
+//         query = "SELECT a FROM Affichage a WHERE " + "a.banque = ?1 " + "ORDER BY a.intitule"),
+//      @NamedQuery(name = "Affichage.findByBanqueInList",
+//         query = "SELECT a FROM Affichage a WHERE " + "a.banque in (?1) " + "ORDER BY a.intitule"),
+//      @NamedQuery(name = "Affichage.findByIntitule", query = "SELECT a FROM Affichage a " + "WHERE a.intitule like ?1"),
+//      @NamedQuery(name = "Affichage.findByIntituleUtilisateur",
+//         query = "SELECT a FROM Affichage a " + "WHERE a.intitule like ?1 " + "AND a.createur = ?2"),
+//      @NamedQuery(name = "Affichage.findByExcludedId", query = "SELECT a FROM Affichage a " + "WHERE a.affichageId != ?1")})
 public class Affichage implements TKdataObject, Comparable<Affichage>
 {
 

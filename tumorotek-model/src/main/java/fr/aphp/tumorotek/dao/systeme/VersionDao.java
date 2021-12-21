@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.systeme;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.systeme.Version;
 
 /**
@@ -47,21 +50,23 @@ import fr.aphp.tumorotek.model.systeme.Version;
  * Date: 26/05/2011
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  */
-public interface VersionDao extends GenericDaoJpa<Version, Integer>
-{
 
-   /**
-    * Recherche toutes les versions de façon chronologique.
-    * @return Liste de Versions.
-    */
-   List<Version> findByDateChronologique();
+@Repository
+public interface VersionDao extends CrudRepository<Version, Integer> {
 
-   /**
-    * Recherche toutes les versions de façon anti chronologique.
-    * @return Liste de Versions.
-    */
-   List<Version> findByDateAntiChronologique();
+	/**
+	 * Recherche toutes les versions de façon chronologique.
+	 * @return Liste de Versions.
+	 */
+	@Query("SELECT v FROM Version v ORDER BY v.date ASC")
+	List<Version> findByDateChronologique();
 
+	/**
+	 * Recherche toutes les versions de façon anti chronologique.
+	 * @return Liste de Versions.
+	 */
+	@Query("SELECT v FROM Version v ORDER BY v.date DESC")
+	List<Version> findByDateAntiChronologique();
 }

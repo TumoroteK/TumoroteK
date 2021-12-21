@@ -6,11 +6,11 @@
              xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xmlns:aop="http://www.springframework.org/schema/aop"
              xsi:schemaLocation="http://www.springframework.org/schema/beans
-           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/beans/spring-beans.xsd
 	       http://www.springframework.org/schema/aop   
-		   http://www.springframework.org/schema/aop/spring-aop-3.0.xsd                        
+		   http://www.springframework.org/schema/aop/spring-aop.xsd                        
            http://www.springframework.org/schema/security
-           http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+           http://www.springframework.org/schema/security/spring-security.xsd">
 
     <!-- ====================================================== -->
     <!--      For catching the @Secured annotation methods      -->
@@ -97,7 +97,8 @@
 
 		<!-- Authentification par la base de données -->
         <authentication-provider user-service-ref="customUserDetailsService">
-            <password-encoder hash="md5"/>
+        	<password-encoder ref="passwordEncoder"/>
+ <!--           <password-encoder hash="md5"/> -->
         </authentication-provider>
         
     </authentication-manager>
@@ -140,8 +141,11 @@
     <!--          The Password Encoder who works in the         -->
     <!--             one-time-password mechanism.               -->
     <!-- ====================================================== -->
-    <beans:bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder">
+    <!-- <beans:bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"> -->
+    <!-- </beans:bean> -->
+    <beans:bean id="passwordEncoder" class="fr.aphp.tumorotek.encoder.Md5PasswordEncoder">
     </beans:bean>
+    
 
     <!-- ====================================================== -->
     <!--         Here, only for showing in the console          -->

@@ -47,8 +47,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -71,14 +69,14 @@ import fr.aphp.tumorotek.model.utilisateur.DroitObjet;
  * Classe créée le 11/09/09.
  *
  * @author Maxime Gousseau
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "ENTITE")
-@NamedQueries(value = {@NamedQuery(name = "Entite.findByNom", query = "SELECT e FROM Entite e WHERE e.nom like ?1"),
-   @NamedQuery(name = "Entite.findByMasc", query = "SELECT e FROM Entite e WHERE e.masc = ?1"), //FIXME Query non présente dans EntiteDao
-   @NamedQuery(name = "Entite.findAnnotables", query = "SELECT e FROM Entite e WHERE e.annotable = 1 " + "order by e.entiteId")})
+//@NamedQueries(value = {@NamedQuery(name = "Entite.findByNom", query = "SELECT e FROM Entite e WHERE e.nom like ?1"),
+//   @NamedQuery(name = "Entite.findByMasc", query = "SELECT e FROM Entite e WHERE e.masc = ?1"), //FIXME Query non présente dans EntiteDao
+//   @NamedQuery(name = "Entite.findAnnotables", query = "SELECT e FROM Entite e WHERE e.annotable = 1 " + "order by e.entiteId")})
 public class Entite implements Serializable
 {
 

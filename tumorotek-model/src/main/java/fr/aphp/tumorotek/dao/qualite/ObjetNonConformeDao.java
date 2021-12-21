@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.qualite;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.qualite.ConformiteType;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
 import fr.aphp.tumorotek.model.qualite.ObjetNonConforme;
@@ -45,48 +48,57 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 
 /**
  *
- * Interface pour le DAO du bean de domaine OBJET_NON_CONFORME.
- * Interface créée le 08/11/11.
+ * Interface pour le DAO du bean de domaine OBJET_NON_CONFORME. Interface créée
+ * le 08/11/11.
  *
  * @author Pierre VENTADOUR
- * @version 2.0.10
+ * @version 2.3
  *
  */
-public interface ObjetNonConformeDao extends GenericDaoJpa<ObjetNonConforme, Integer>
-{
+@Repository
+public interface ObjetNonConformeDao extends CrudRepository<ObjetNonConforme, Integer> {
 
-   /**
-    * Recherche les ObjetNonConformes d'un objet.
-    * @param objetId Identifiant de l'objet.
-    * @param entite Entite de l'objet.
-    * @return Une liste de ObjetNonConformes.
-    */
-   List<ObjetNonConforme> findByObjetAndEntite(Integer objetId, Entite entite);
+	/**
+	 * Recherche les ObjetNonConformes d'un objet.
+	 * 
+	 * @param objetId Identifiant de l'objet.
+	 * @param entite  Entite de l'objet.
+	 * @return Une liste de ObjetNonConformes.
+	 */
+	@Query("SELECT o FROM ObjetNonConforme o WHERE o.objetId = ?1 AND o.entite = ?2")
+	List<ObjetNonConforme> findByObjetAndEntite(Integer objetId, Entite entite);
 
-   /**
-    * Recherche les ObjetNonConformes d'un objet en fct du
-    * type de la non conformité.
-    * @param objetId Identifiant de l'objet.
-    * @param entite Entite de l'objet.
-    * @param type Type de la non conformité.
-    * @return Une liste de ObjetNonConformes.
-    */
-   List<ObjetNonConforme> findByObjetEntiteAndType(Integer objetId, Entite entite, ConformiteType type);
+	/**
+	 * Recherche les ObjetNonConformes d'un objet en fct du type de la non
+	 * conformité.
+	 * 
+	 * @param objetId Identifiant de l'objet.
+	 * @param entite  Entite de l'objet.
+	 * @param type    Type de la non conformité.
+	 * @return Une liste de ObjetNonConformes.
+	 */
+	@Query("SELECT o FROM ObjetNonConforme o WHERE o.objetId = ?1 AND o.entite = ?2 "
+			+ "AND o.nonConformite.conformiteType = ?3 ORDER BY o.nonConformite.nom")
+	List<ObjetNonConforme> findByObjetEntiteAndType(Integer objetId, Entite entite, ConformiteType type);
 
-   /**
-    * Recherche les ObjetNonConformes pour une non conformité.
-    * @param nonConformite Non Conformité des objets.
-    * @return Une liste de ObjetNonConforme.
-    */
-   List<ObjetNonConforme> findByNonConformite(NonConformite nonConformite);
+	/**
+	 * Recherche les ObjetNonConformes pour une non conformité.
+	 * 
+	 * @param nonConformite Non Conformité des objets.
+	 * @return Une liste de ObjetNonConforme.
+	 */
+	@Query("SELECT o FROM ObjetNonConforme o WHERE o.nonConformite = ?1")
+	List<ObjetNonConforme> findByNonConformite(NonConformite nonConformite);
 
-   /**
-    * Renvoie tous les ids objets qui référencent au moins une des 
-    * non conformites passées dans la liste en paramètre
-    * @param noconfs
-    * @return liste integer
-    * @since 2.0.10
-    */
-   List<Integer> findObjetIdsByNonConformites(List<NonConformite> noconfs);
+	/**
+	 * Renvoie tous les ids objets qui référencent au moins une des non conformites
+	 * passées dans la liste en paramètre
+	 * 
+	 * @param noconfs
+	 * @return liste integer
+	 * @since 2.0.10
+	 */
+	@Query("SELECT distinct o.objetId FROM ObjetNonConforme o LEFT JOIN o.nonConformite n WHERE n in (?1)")
+	List<Integer> findObjetIdsByNonConformites(List<NonConformite> noconfs);
 
 }

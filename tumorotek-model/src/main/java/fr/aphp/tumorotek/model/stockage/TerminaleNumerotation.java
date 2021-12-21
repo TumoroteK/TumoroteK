@@ -56,15 +56,15 @@ import org.hibernate.annotations.GenericGenerator;
  * Classe créée le 11/09/09.
  *
  * @author Maxime Gousseau
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "TERMINALE_NUMEROTATION")
-@NamedQueries(value = {
-   @NamedQuery(name = "TerminaleNumerotation.findByLigne", query = "SELECT t FROM TerminaleNumerotation t WHERE t.ligne = ?1"),
-   @NamedQuery(name = "TerminaleNumerotation.findByColonne",
-      query = "SELECT t FROM TerminaleNumerotation t " + "WHERE t.colonne = ?1")})
+//@NamedQueries(value = {
+//   @NamedQuery(name = "TerminaleNumerotation.findByLigne", query = "SELECT t FROM TerminaleNumerotation t WHERE t.ligne = ?1"),
+//   @NamedQuery(name = "TerminaleNumerotation.findByColonne",
+//      query = "SELECT t FROM TerminaleNumerotation t " + "WHERE t.colonne = ?1")})
 public class TerminaleNumerotation implements Serializable
 {
 

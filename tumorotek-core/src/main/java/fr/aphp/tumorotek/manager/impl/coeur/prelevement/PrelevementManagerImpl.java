@@ -52,7 +52,7 @@ import javax.persistence.TypedQuery;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.collection.PersistentSet;
+import org.hibernate.collection.internal.PersistentSet;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonDao;

@@ -49,7 +49,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Interface créée le 19/05/2010.
  *
  * @author Pierre Ventadour
- * @version 2.2.4.1
+ * @version TK-305
  *
  */
 public interface ProfilUtilisateurManager
@@ -176,7 +176,7 @@ public interface ProfilUtilisateurManager
     * @param u utilisateur
     * @param p plateforme
     * @return nombre de profils d'accès distincts
-    * @since 2.2.4.1
+    * @since TK-305
     */
    Long countDistinctProfilForUserAndPlateformeGroupedByContexteManager(Utilisateur u, Plateforme p);
 }

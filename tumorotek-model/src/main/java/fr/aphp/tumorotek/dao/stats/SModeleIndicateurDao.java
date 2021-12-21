@@ -35,20 +35,22 @@
  **/
 package fr.aphp.tumorotek.dao.stats;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.stats.SModeleIndicateur;
 import fr.aphp.tumorotek.model.stats.SModeleIndicateurPK;
 
 /**
  *
- * Interface pour le DAO du bean de domaine SModeleIndicateur.
- * Interface créée le 28/04/2015.
+ * Interface pour le DAO du bean de domaine SModeleIndicateur. Interface créée
+ * le 28/04/2015.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.12
+ * @version 2.3
  *
  */
-public interface SModeleIndicateurDao extends GenericDaoJpa<SModeleIndicateur, SModeleIndicateurPK>
-{
+@Repository
+public interface SModeleIndicateurDao extends CrudRepository<SModeleIndicateur, SModeleIndicateurPK> {
 
 }

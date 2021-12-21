@@ -11,11 +11,10 @@ import java.util.ResourceBundle;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
-import org.springframework.security.authentication.encoding.PasswordEncoder;
+// import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.GrantedAuthorityImpl;
+// import org.springframework.security.core.authority.GrantedAuthorityImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.zkoss.zk.ui.Component;
@@ -211,8 +210,9 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
       if(login != null && pass != null){
 
          // on transforme le mdp en MD5
-         final PasswordEncoder encoder = new Md5PasswordEncoder();
-         final String pwd = encoder.encodePassword(pass, null);
+         // final PasswordEncoder encoder = new Md5PasswordEncoder();
+         // final String pwd = encoder.encodePassword(pass, null);
+    	String pwd = pass;
 
          if(ManagerLocator.getUtilisateurManager().findByLoginPasswordAndArchiveManager(login, pwd, false).size() > 0){
             ok = true;
@@ -232,14 +232,18 @@ public class ConnexionCrf extends GenericForwardComposer<Component>
       return ok;
    }
 
-   private Collection<? extends GrantedAuthority> getAuthorities(final boolean isAdmin){
-      final List<GrantedAuthority> authList = new ArrayList<>(2);
-      authList.add(new GrantedAuthorityImpl("ROLE_USER"));
-      if(isAdmin){
-         authList.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
-      }
-      return authList;
-   }
+private Collection<? extends GrantedAuthority> getAuthorities(boolean b) {
+	return null;
+}
+
+//   private Collection<? extends GrantedAuthority> getAuthorities(final boolean isAdmin){
+//      final List<GrantedAuthority> authList = new ArrayList<>(2);
+//      authList.add(new GrantedAuthorityImpl("ROLE_USER"));
+//      if(isAdmin){
+//         authList.add(new GrantedAuthorityImpl("ROLE_ADMIN"));
+//      }
+//      return authList;
+//   }
 
    /**
     * Valide la page et redirige vers TumoroteK.

@@ -45,8 +45,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -61,18 +59,18 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  * Classe créée le 17/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.1
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "PROFIL")
-@NamedQueries(value = {@NamedQuery(name = "Profil.findByOrder", query = "SELECT p FROM Profil p ORDER BY p.nom"),
-   @NamedQuery(name = "Profil.findByNom", query = "SELECT p FROM Profil p WHERE p.nom like ?1"),
-   @NamedQuery(name = "Profil.findByAnonyme", query = "SELECT p FROM Profil p " + "WHERE p.anonyme = ?1"),
-   @NamedQuery(name = "Profil.findByDoublon", query = "SELECT p FROM Profil p " + "WHERE p.nom = ?1 AND p.anonyme = ?2"),
-   @NamedQuery(name = "Profil.findByExcludedId", query = "SELECT p FROM Profil p " + "WHERE p.profilId != ?1"),
-   @NamedQuery(name = "Profil.findByPlateformeAndArchive",
-      query = "SELECT p FROM Profil p " + "WHERE p.plateforme = ?1 AND p.archive = ?2 " + "ORDER BY p.nom")})
+//@NamedQueries(value = {@NamedQuery(name = "Profil.findByOrder", query = "SELECT p FROM Profil p ORDER BY p.nom"),
+//   @NamedQuery(name = "Profil.findByNom", query = "SELECT p FROM Profil p WHERE p.nom like ?1"),
+//   @NamedQuery(name = "Profil.findByAnonyme", query = "SELECT p FROM Profil p " + "WHERE p.anonyme = ?1"),
+//   @NamedQuery(name = "Profil.findByDoublon", query = "SELECT p FROM Profil p " + "WHERE p.nom = ?1 AND p.anonyme = ?2"),
+//   @NamedQuery(name = "Profil.findByExcludedId", query = "SELECT p FROM Profil p " + "WHERE p.profilId != ?1"),
+//   @NamedQuery(name = "Profil.findByPlateformeAndArchive",
+//      query = "SELECT p FROM Profil p " + "WHERE p.plateforme = ?1 AND p.archive = ?2 " + "ORDER BY p.nom")})
 public class Profil implements TKdataObject, Serializable, Comparable<Profil>
 {
 

@@ -37,69 +37,84 @@ package fr.aphp.tumorotek.dao.stockage;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.stockage.Emplacement;
 import fr.aphp.tumorotek.model.stockage.Terminale;
 import fr.aphp.tumorotek.model.systeme.Entite;
 
 /**
  *
- * Interface pour le DAO du bean de domaine Emplacement.
- * Interface créée le 29/09/09.
+ * Interface pour le DAO du bean de domaine Emplacement. Interface créée le
+ * 29/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.1.1
+ * @version 2.3
  *
  */
-public interface EmplacementDao extends GenericDaoJpa<Emplacement, Integer>
-{
+@Repository
+public interface EmplacementDao extends CrudRepository<Emplacement, Integer> {
 
-   /**
-    * Recherche tous les Emplacements d'une terminale.
-    * @param terminale Terminale des emplacements recherchés.
-    * @return Liste ordonnée d'Emplacements.
-    */
-   List<Emplacement> findByTerminaleWithOrder(Terminale terminale);
+	/**
+	 * Recherche tous les Emplacements d'une terminale.
+	 * 
+	 * @param terminale Terminale des emplacements recherchés.
+	 * @return Liste ordonnée d'Emplacements.
+	 */
+	@Query("SELECT e FROM Emplacement e " + "WHERE e.terminale = ?1 " + "ORDER BY e.position")
+	List<Emplacement> findByTerminaleWithOrder(Terminale terminale);
 
-   /**
-    * Recherche tous les Emplacements d'une terminale, vide ou non.
-    * @param terminale Terminale des emplacements recherchés.
-    * @param vide True ou False.
-    * @return Liste ordonnée d'Emplacements.
-    */
-   List<Emplacement> findByTerminaleAndVide(Terminale terminale, boolean vide);
+	/**
+	 * Recherche tous les Emplacements d'une terminale, vide ou non.
+	 * 
+	 * @param terminale Terminale des emplacements recherchés.
+	 * @param vide      True ou False.
+	 * @return Liste ordonnée d'Emplacements.
+	 */
+	@Query("SELECT e FROM Emplacement e " + "WHERE e.terminale = ?1 " + "AND e.vide = ?2 "
+			+ "ORDER BY e.position, e.entite.entiteId, e.objetId")
+	List<Emplacement> findByTerminaleAndVide(Terminale terminale, boolean vide);
 
-   /**
-    * Compte tous les Emplacements d'une terminale, vide ou non.
-    * @param terminale Terminale des emplacements recherchés.
-    * @param vide True ou False.
-    * @return Nombre d'Emplacements.
-    */
-   List<Long> findByCountTerminaleAndVide(Terminale terminale, boolean vide);
+	/**
+	 * Compte tous les Emplacements d'une terminale, vide ou non.
+	 * 
+	 * @param terminale Terminale des emplacements recherchés.
+	 * @param vide      True ou False.
+	 * @return Nombre d'Emplacements.
+	 */
+	@Query("SELECT count(e) FROM Emplacement e " + "WHERE e.terminale = ?1 " + "AND e.vide = ?2")
+	List<Long> findByCountTerminaleAndVide(Terminale terminale, boolean vide);
 
-   /**
-    * Recherche tous les Enceintes pour un couple objetId/Entité.
-    * @param objetId Identifiant de l'objet.
-    * @param entite Entité de l'objet.
-    * @return Liste d'Emplacements.
-    */
-   List<Emplacement> findByObjetIdEntite(Integer objetId, Entite entite);
+	/**
+	 * Recherche tous les Enceintes pour un couple objetId/Entité.
+	 * 
+	 * @param objetId Identifiant de l'objet.
+	 * @param entite  Entité de l'objet.
+	 * @return Liste d'Emplacements.
+	 */
+	@Query("SELECT e FROM Emplacement e " + "WHERE e.objetId = ?1 " + "AND e.entite = ?2")
+	List<Emplacement> findByObjetIdEntite(Integer objetId, Entite entite);
 
-   /**
-    * Recherche tous les Emplacements d'une Terminale et pour une
-    * position donnée.
-    * @param terminale Terminale des emplacements recherchés.
-    * @param position Position pour laquelle on recherche un emplacement.
-    * @return Liste d'Emplacements.
-    */
-   List<Emplacement> findByTerminaleAndPosition(Terminale terminale, Integer position);
+	/**
+	 * Recherche tous les Emplacements d'une Terminale et pour une position donnée.
+	 * 
+	 * @param terminale Terminale des emplacements recherchés.
+	 * @param position  Position pour laquelle on recherche un emplacement.
+	 * @return Liste d'Emplacements.
+	 */
+	@Query("SELECT e FROM Emplacement e " + "WHERE e.terminale = ?1 " + "AND e.position = ?2")
+	List<Emplacement> findByTerminaleAndPosition(Terminale terminale, Integer position);
 
-   /**
-    * Recherche les Emplacements d'une terminale,
-    * sauf celui dont l'identifiant est en paramètre.
-    * @param emplacementId Identifiant de l'emplacement à exclure.
-    * @param terminale Terminale des emplacements recherchés.
-    * @return Liste d'Emplacements.
-    */
-   List<Emplacement> findByExcludedIdTerminale(Integer emplacementId, Terminale terminale);
+	/**
+	 * Recherche les Emplacements d'une terminale, sauf celui dont l'identifiant est
+	 * en paramètre.
+	 * 
+	 * @param emplacementId Identifiant de l'emplacement à exclure.
+	 * @param terminale     Terminale des emplacements recherchés.
+	 * @return Liste d'Emplacements.
+	 */
+	@Query("SELECT e FROM Emplacement e " + "WHERE e.emplacementId != ?1 " + "AND e.terminale = ?2")
+	List<Emplacement> findByExcludedIdTerminale(Integer emplacementId, Terminale terminale);
 }

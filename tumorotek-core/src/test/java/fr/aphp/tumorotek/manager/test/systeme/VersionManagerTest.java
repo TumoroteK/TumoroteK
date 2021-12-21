@@ -42,7 +42,12 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 import fr.aphp.tumorotek.manager.systeme.VersionManager;
 import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
@@ -57,7 +62,13 @@ import fr.aphp.tumorotek.model.systeme.Version;
  * @version 2.0
  *
  */
-public class VersionManagerTest extends AbstractManagerTest4
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(
+		locations = {"classpath:applicationContextInterceptor.xml", 
+					"classpath:applicationContextDao-test-mysql.xml", 
+					"classpath:applicationContextManager.xml"})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class})
+public class VersionManagerTest // extends AbstractManagerTest4
 {
 
    @Autowired

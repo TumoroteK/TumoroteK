@@ -125,4 +125,6 @@ public interface CodeUtilisateurDao extends GenericDaoJpa<CodeUtilisateur, Integ
     * @return liste de codes utilisateurs
     */
    List<CodeUtilisateur> findByTranscodage(TableCodage table, Integer codeId, List<Banque> banks);
+   
+   List<CodeUtilisateur> findByCodeLikeAndBanqueId(String code, List<Integer> ids);
 }

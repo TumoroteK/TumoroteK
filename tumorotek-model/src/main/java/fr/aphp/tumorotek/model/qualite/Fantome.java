@@ -58,12 +58,12 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * Date: 15/12/2010
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "FANTOME")
-@NamedQueries(value = {@NamedQuery(name = "Fantome.findByNom", query = "SELECT f FROM Fantome f WHERE f.nom like ?1")})
+// @NamedQueries(value = {@NamedQuery(name = "Fantome.findByNom", query = "SELECT f FROM Fantome f WHERE f.nom like ?1")})
 public class Fantome
 {
 

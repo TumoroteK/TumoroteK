@@ -35,10 +35,17 @@
  **/
 package fr.aphp.tumorotek.dao.stockage;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.stockage.TerminaleNumerotation;
 
-public interface TerminaleNumerotationDao extends GenericDaoJpa<TerminaleNumerotation, Integer>
-{
+/**
+ *
+ * @version 2.3
+ *
+ */
+@Repository
+public interface TerminaleNumerotationDao extends CrudRepository<TerminaleNumerotation, Integer> {
 
 }

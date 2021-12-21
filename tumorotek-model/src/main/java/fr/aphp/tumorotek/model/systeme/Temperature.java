@@ -53,13 +53,13 @@ import org.hibernate.annotations.GenericGenerator;
  * Classe créée le 07/07/2010.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "TEMPERATURE")
-@NamedQueries(value = {
-   @NamedQuery(name = "Temperature.findByExcludedId", query = "SELECT t FROM Temperature t " + "WHERE t.temperatureId != ?1")})
+//@NamedQueries(value = {
+//   @NamedQuery(name = "Temperature.findByExcludedId", query = "SELECT t FROM Temperature t " + "WHERE t.temperatureId != ?1")})
 public class Temperature implements Serializable
 {
 

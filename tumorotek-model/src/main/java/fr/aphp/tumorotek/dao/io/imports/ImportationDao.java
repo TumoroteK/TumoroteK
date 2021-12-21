@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.io.imports;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.io.imports.ImportHistorique;
 import fr.aphp.tumorotek.model.io.imports.Importation;
 import fr.aphp.tumorotek.model.systeme.Entite;
@@ -49,31 +52,38 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * Date: 09/02/2011
  *
  * @author Pierre VENTADOUR
- * @version 2.0
+ * @version 2.3
+ * 
  */
-public interface ImportationDao extends GenericDaoJpa<Importation, Integer>
-{
+@Repository
+public interface ImportationDao extends CrudRepository<Importation, Integer> {
 
-   /**
-    * Recherche les Importations d'un ImportHistorique.
-    * @param importHistorique ImportHistorique.
-    * @return Liste d'Importation.
-    */
-   List<Importation> findByHistorique(ImportHistorique importHistorique);
+	/**
+	 * Recherche les Importations d'un ImportHistorique.
+	 * 
+	 * @param importHistorique ImportHistorique.
+	 * @return Liste d'Importation.
+	 */
+	@Query("SELECT i FROM Importation i WHERE i.importHistorique = ?1")
+	List<Importation> findByHistorique(ImportHistorique importHistorique);
 
-   /**
-    * Recherche les Importations d'un ImportHistorique et d'une Entité.
-    * @param importHistorique ImportHistorique.
-    * @param entite Entite.
-    * @return Liste d'Importation.
-    */
-   List<Importation> findByHistoriqueAndEntite(ImportHistorique importHistorique, Entite entite);
+	/**
+	 * Recherche les Importations d'un ImportHistorique et d'une Entité.
+	 * 
+	 * @param importHistorique ImportHistorique.
+	 * @param entite           Entite.
+	 * @return Liste d'Importation.
+	 */
+	@Query("SELECT i FROM Importation i WHERE i.importHistorique = ?1 AND i.entite = ?2 ORDER BY i.objetId")
+	List<Importation> findByHistoriqueAndEntite(ImportHistorique importHistorique, Entite entite);
 
-   /**
-    * Recherche les Importations d'une Entité et pour un id.
-    * @param entite Entite.
-    * @param objetId Identifiant.
-    * @return Liste d'Importation.
-    */
-   List<Importation> findByEntiteAndObjetId(Entite entite, Integer objetId);
+	/**
+	 * Recherche les Importations d'une Entité et pour un id.
+	 * 
+	 * @param entite  Entite.
+	 * @param objetId Identifiant.
+	 * @return Liste d'Importation.
+	 */
+	@Query("SELECT i FROM Importation i WHERE i.entite = ?1 AND i.objetId = ?2")
+	List<Importation> findByEntiteAndObjetId(Entite entite, Integer objetId);
 }

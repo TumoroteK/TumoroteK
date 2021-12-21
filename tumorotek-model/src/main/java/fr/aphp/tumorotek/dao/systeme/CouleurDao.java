@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.systeme;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.systeme.Couleur;
 
 /**
@@ -47,23 +50,24 @@ import fr.aphp.tumorotek.model.systeme.Couleur;
  * Date: 29/04/2010
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  */
-public interface CouleurDao extends GenericDaoJpa<Couleur, Integer>
-{
+@Repository
+public interface CouleurDao extends CrudRepository<Couleur, Integer> {
 
-   /**
-    * Recherche les couleurs dont la couleur est égale au paramètre.
-    * @param couleur Couleur pour laquelle on recherche des Couleurs.
-    * @return Liste de Couleurs.
-    */
-   List<Couleur> findByCouleur(String couleur);
+	/**
+	 * Recherche les couleurs dont la couleur est égale au paramètre.
+	 * @param couleur Couleur pour laquelle on recherche des Couleurs.
+	 * @return Liste de Couleurs.
+	 */
+	@Query("SELECT c FROM Couleur c WHERE c.couleur like ?1")
+	List<Couleur> findByCouleur(String couleur);
 
-   /**
-    * Recherche les couleurs dont la couleur est utilisée par un
-    * visotube.
-    * @return Liste de Couleurs.
-    */
-   List<Couleur> findByVisotube();
-
+	/**
+	 * Recherche les couleurs dont la couleur est utilisée par un
+	 * visotube.
+	 * @return Liste de Couleurs.
+	 */
+	@Query("SELECT c FROM Couleur c " + "WHERE c.ordreVisotube is not null " + "ORDER BY c.ordreVisotube")
+	List<Couleur> findByVisotube();
 }

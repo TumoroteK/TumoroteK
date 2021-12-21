@@ -56,17 +56,17 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * Classe créée le 08/02/2011.
  *
  * @author Pierre VENATDOUR
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "IMPORTATION")
-@NamedQueries(value = {
-   @NamedQuery(name = "Importation.findByHistorique", query = "SELECT i FROM Importation i " + "WHERE i.importHistorique = ?1"),
-   @NamedQuery(name = "Importation.findByHistoriqueAndEntite",
-      query = "SELECT i FROM Importation i " + "WHERE i.importHistorique = ?1 " + "AND i.entite = ?2 ORDER BY i.objetId"),
-   @NamedQuery(name = "Importation.findByEntiteAndObjetId",
-      query = "SELECT i FROM Importation i " + "WHERE i.entite = ?1 " + "AND i.objetId = ?2")})
+//@NamedQueries(value = {
+//   @NamedQuery(name = "Importation.findByHistorique", query = "SELECT i FROM Importation i " + "WHERE i.importHistorique = ?1"),
+//   @NamedQuery(name = "Importation.findByHistoriqueAndEntite",
+//      query = "SELECT i FROM Importation i " + "WHERE i.importHistorique = ?1 " + "AND i.entite = ?2 ORDER BY i.objetId"),
+//   @NamedQuery(name = "Importation.findByEntiteAndObjetId",
+//      query = "SELECT i FROM Importation i " + "WHERE i.entite = ?1 " + "AND i.objetId = ?2")})
 public class Importation implements java.io.Serializable
 {
 

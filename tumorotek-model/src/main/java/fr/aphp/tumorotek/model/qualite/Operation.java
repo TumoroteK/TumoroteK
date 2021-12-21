@@ -70,21 +70,21 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  */
 @Entity
 @Table(name = "OPERATION")
-@NamedQueries(value = {
-   @NamedQuery(name = "Operation.findByObjetIdAndEntite",
-      query = "SELECT o FROM Operation o WHERE o.objetId = ?1 AND" + " o.entite = ?2 ORDER BY o.date, o.operationId"),
-   @NamedQuery(name = "Operation.findByObjetIdAndEntiteForHistorique",
-      query = "SELECT o FROM Operation o WHERE o.objetId = ?1 AND" + " o.entite = ?2 AND o.operationType.nom != 'Login' "
-         + "AND o.operationType.nom != 'Logout' " + "ORDER BY o.date, o.operationId"),
-   @NamedQuery(name = "Operation.findByUtilisateur", query = "SELECT o FROM Operation o WHERE o.utilisateur = ?1"),
-   @NamedQuery(name = "Operation.findByExcludedId", query = "SELECT o FROM Operation o " + "WHERE o.operationId != ?1"),
-   @NamedQuery(name = "Operation.findByDate", query = "SELECT o FROM Operation o " + "WHERE o.date = ?1"),
-   @NamedQuery(name = "Operation.findByAfterDate", query = "SELECT o FROM Operation o " + "WHERE o.date >= ?1 order by o.date"),
-   @NamedQuery(name = "Operation.findByBeforeDate", query = "SELECT o FROM Operation o " + "WHERE o.date <= ?1 order by o.date"),
-   @NamedQuery(name = "Operation.findByBetweenDates",
-      query = "SELECT o FROM Operation o " + "WHERE o.date >= ?1 AND o.date <= ?2 order by o.date"),
-   @NamedQuery(name = "Operation.findByObjetIdEntiteAndOperationType",
-      query = "SELECT o FROM Operation o WHERE o.objetId = ?1 AND" + " o.entite = ?2 AND o.operationType = ?3")})
+//@NamedQueries(value = {
+//   @NamedQuery(name = "Operation.findByObjetIdAndEntite",
+//      query = "SELECT o FROM Operation o WHERE o.objetId = ?1 AND" + " o.entite = ?2 ORDER BY o.date, o.operationId"),
+//   @NamedQuery(name = "Operation.findByObjetIdAndEntiteForHistorique",
+//      query = "SELECT o FROM Operation o WHERE o.objetId = ?1 AND" + " o.entite = ?2 AND o.operationType.nom != 'Login' "
+//         + "AND o.operationType.nom != 'Logout' " + "ORDER BY o.date, o.operationId"),
+//   @NamedQuery(name = "Operation.findByUtilisateur", query = "SELECT o FROM Operation o WHERE o.utilisateur = ?1"),
+//   @NamedQuery(name = "Operation.findByExcludedId", query = "SELECT o FROM Operation o " + "WHERE o.operationId != ?1"),
+//   @NamedQuery(name = "Operation.findByDate", query = "SELECT o FROM Operation o " + "WHERE o.date = ?1"),
+//   @NamedQuery(name = "Operation.findByAfterDate", query = "SELECT o FROM Operation o " + "WHERE o.date >= ?1 order by o.date"),
+//   @NamedQuery(name = "Operation.findByBeforeDate", query = "SELECT o FROM Operation o " + "WHERE o.date <= ?1 order by o.date"),
+//   @NamedQuery(name = "Operation.findByBetweenDates",
+//      query = "SELECT o FROM Operation o " + "WHERE o.date >= ?1 AND o.date <= ?2 order by o.date"),
+//   @NamedQuery(name = "Operation.findByObjetIdEntiteAndOperationType",
+//      query = "SELECT o FROM Operation o WHERE o.objetId = ?1 AND" + " o.entite = ?2 AND o.operationType = ?3")})
 public class Operation implements Serializable
 {
 

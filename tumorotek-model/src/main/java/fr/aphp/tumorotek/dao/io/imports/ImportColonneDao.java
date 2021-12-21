@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.io.imports;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.coeur.annotation.DataType;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
 import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
@@ -50,91 +53,118 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * Date: 24/01/2011.
  *
  * @author Pierre VENTADOUR
- * @version 2.2.1
+ * @version 2.3
  */
-public interface ImportColonneDao extends GenericDaoJpa<ImportColonne, Integer>
-{
+@Repository
+public interface ImportColonneDao extends CrudRepository<ImportColonne, Integer> {
 
-   /**
-    * Recherche les ImportColonnes de l'ImportTemplate.
-    * @param importTemplate Template.
-    * @return Liste d'ImportColonnes.
-    */
-   List<ImportColonne> findByTemplateWithOrder(ImportTemplate importTemplate);
+	/**
+	 * Recherche les ImportColonnes de l'ImportTemplate.
+	 * 
+	 * @param importTemplate Template.
+	 * @return Liste d'ImportColonnes.
+	 */
+	@Query("SELECT i FROM ImportColonne i " + "WHERE i.importTemplate = ?1 ORDER BY i.ordre")
+	List<ImportColonne> findByTemplateWithOrder(ImportTemplate importTemplate);
 
-   /**
-    * Recherche les ImportColonnes de l'ImportTemplate et de l'entité.
-    * @param importTemplate Template.
-    * @param entite Entité.
-    * @return Liste d'ImportColonnes.
-    */
-   List<ImportColonne> findByTemplateAndEntite(ImportTemplate importTemplate, Entite entite);
-   
-   /**
-    * Recherche les ImportColonnes de l'ImportTemplate et de l'entité pour les champs delegues
-    * contextuels.
-    * @param importTemplate Template.
-    * @param entite Entité.
-    * @return Liste d'ImportColonnes.
-    * @since 2.2.1
-    */
-   List<ImportColonne> findByTemplateAndEntiteDelegue(ImportTemplate importTemplate, Entite entite);
+	/**
+	 * Recherche les ImportColonnes de l'ImportTemplate et de l'entité.
+	 * 
+	 * @param importTemplate Template.
+	 * @param entite         Entité.
+	 * @return Liste d'ImportColonnes.
+	 */
+	@Query("SELECT i FROM ImportColonne i "
+			+ "WHERE i.importTemplate = ?1 AND i.champ.champEntite.entite = ?2 ORDER BY i.ordre")
+	List<ImportColonne> findByTemplateAndEntite(ImportTemplate importTemplate, Entite entite);
 
-   /**
-    * Recherche les ImportColonnes de l'ImportTemplate et du datatype.
-    * @param importTemplate Template.
-    * @param dataType DataType.
-    * @return Liste d'ImportColonnes.
-    */
-   List<ImportColonne> findByTemplateAndDataType(ImportTemplate importTemplate, DataType dataType);
+	/**
+	 * Recherche les ImportColonnes de l'ImportTemplate et de l'entité pour les
+	 * champs delegues contextuels.
+	 * 
+	 * @param importTemplate Template.
+	 * @param entite         Entité.
+	 * @return Liste d'ImportColonnes.
+	 * @since 2.2.1
+	 */
+	@Query("SELECT i FROM ImportColonne i "
+			+ "WHERE i.importTemplate = ?1 AND i.champ.champDelegue.entite = ?2 ORDER BY i.ordre")
+	List<ImportColonne> findByTemplateAndEntiteDelegue(ImportTemplate importTemplate, Entite entite);
 
-   /**
-    * Recherche les ImportColonnes dont l'id est différent de celui passé
-    * en paramètres.
-    * @param excludedId Id à exclure.
-    * @param importTemplate Template.
-    * @return Liste d'ImportColonne.
-    */
-   List<ImportColonne> findByExcludedIdWithTemplate(Integer excludedId, ImportTemplate importTemplate);
+	/**
+	 * Recherche les ImportColonnes de l'ImportTemplate et du datatype.
+	 * 
+	 * @param importTemplate Template.
+	 * @param dataType       DataType.
+	 * @return Liste d'ImportColonnes.
+	 */
+	@Query("SELECT i FROM ImportColonne i "
+			+ "WHERE i.importTemplate = ?1 AND i.champ.champEntite.dataType = ?2 ORDER BY i.ordre")
+	List<ImportColonne> findByTemplateAndDataType(ImportTemplate importTemplate, DataType dataType);
 
-   /**
-    * Recherche les ImportColonnes de l'ImportTemplate qui sont des thésuarus.
-    * @param importTemplate Template.
-    * @return Liste d'ImportColonnes.
-    */
-   List<ImportColonne> findByTemplateAndThesaurus(ImportTemplate importTemplate);
+	/**
+	 * Recherche les ImportColonnes dont l'id est différent de celui passé en
+	 * paramètres.
+	 * 
+	 * @param excludedId     Id à exclure.
+	 * @param importTemplate Template.
+	 * @return Liste d'ImportColonne.
+	 */
+	@Query("SELECT i FROM ImportColonne i " + "WHERE i.importColonneId != ?1 AND i.importTemplate = ?2")
+	List<ImportColonne> findByExcludedIdWithTemplate(Integer excludedId, ImportTemplate importTemplate);
 
-   /**
-    * Recherche les ImportColonnes de l'ImportTemplate et de l'entité (pour
-    * celles liées à un ChampAnnotation).
-    * @param importTemplate Template.
-    * @param entite Entité.
-    * @return Liste d'ImportColonnes.
-    */
-   List<ImportColonne> findByTemplateAndAnnotationEntite(ImportTemplate importTemplate, Entite entite);
+	/**
+	 * Recherche les ImportColonnes de l'ImportTemplate qui sont des thésuarus.
+	 * 
+	 * @param importTemplate Template.
+	 * @return Liste d'ImportColonnes.
+	 */
+	@Query("SELECT i FROM ImportColonne i "
+			+ "WHERE i.importTemplate = ?1 AND i.champ.champEntite.queryChamp is not null " + "ORDER BY i.ordre")
+	List<ImportColonne> findByTemplateAndThesaurus(ImportTemplate importTemplate);
 
-   /**
-    * Recherche les ImportColonnes de l'ImportTemplate et du datatype (pour
-    * celles liées à un ChampAnnotation).
-    * @param importTemplate Template.
-    * @param dataType DataType.
-    * @return Liste d'ImportColonnes.
-    */
-   List<ImportColonne> findByTemplateAndAnnotationDatatype(ImportTemplate importTemplate, DataType dataType);
+	/**
+	 * Recherche les ImportColonnes de l'ImportTemplate et de l'entité (pour celles
+	 * liées à un ChampAnnotation).
+	 * 
+	 * @param importTemplate Template.
+	 * @param entite         Entité.
+	 * @return Liste d'ImportColonnes.
+	 */
+	@Query("SELECT i FROM ImportColonne i "
+			+ "WHERE i.importTemplate = ?1 AND i.champ.champAnnotation.tableAnnotation.entite = ?2 "
+			+ "ORDER BY i.ordre")
+	List<ImportColonne> findByTemplateAndAnnotationEntite(ImportTemplate importTemplate, Entite entite);
 
-   /**
-    * Recherche les ImportColonnes de l'ImportTemplate.
-    * @param importTemplate Template.
-    * @return Liste de noms d'ImportColonnes.
-    */
-   List<String> findByTemplateWithOrderSelectNom(ImportTemplate importTemplate);
+	/**
+	 * Recherche les ImportColonnes de l'ImportTemplate et du datatype (pour celles
+	 * liées à un ChampAnnotation).
+	 * 
+	 * @param importTemplate Template.
+	 * @param dataType       DataType.
+	 * @return Liste d'ImportColonnes.
+	 */
+	@Query("SELECT i FROM ImportColonne i "
+			+ "WHERE i.importTemplate = ?1 AND i.champ.champAnnotation.dataType = ?2 ORDER BY i.ordre")
+	List<ImportColonne> findByTemplateAndAnnotationDatatype(ImportTemplate importTemplate, DataType dataType);
 
-   /**
-    * Recherche les ImportColonnes dont l'id est différent de celui passé
-    * en paramètres.
-    * @param excludedId Id à exclure.
-    * @param importTemplate Template.
-    * @return Liste de noms d'ImportColonne.
-    */
-   List<String> findByExcludedIdWithTemplateSelectNom(Integer excludedId, ImportTemplate importTemplate);
+	/**
+	 * Recherche les ImportColonnes de l'ImportTemplate.
+	 * 
+	 * @param importTemplate Template.
+	 * @return Liste de noms d'ImportColonnes.
+	 */
+	@Query("SELECT i.nom FROM ImportColonne i " + "WHERE i.importTemplate = ?1 ORDER BY i.ordre")
+	List<String> findByTemplateWithOrderSelectNom(ImportTemplate importTemplate);
+
+	/**
+	 * Recherche les ImportColonnes dont l'id est différent de celui passé en
+	 * paramètres.
+	 * 
+	 * @param excludedId     Id à exclure.
+	 * @param importTemplate Template.
+	 * @return Liste de noms d'ImportColonne.
+	 */
+	@Query("SELECT i.nom FROM ImportColonne i " + "WHERE i.importColonneId != ?1 AND i.importTemplate = ?2")
+	List<String> findByExcludedIdWithTemplateSelectNom(Integer excludedId, ImportTemplate importTemplate);
 }

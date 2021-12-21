@@ -67,16 +67,16 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 @AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "ENCEINTE_TYPE_ID")),
    @AttributeOverride(name = "nom", column = @Column(name = "TYPE", nullable = false, length = 200))})
 @GenericGenerator(name = "autoincrement", strategy = "increment")
-@NamedQueries(value = {
-   @NamedQuery(name = "EnceinteType.findByTypeAndPf",
-      query = "SELECT e FROM EnceinteType e " + "WHERE e.nom = ?1 and e.plateforme = ?2"),
-   @NamedQuery(name = "EnceinteType.findByExcludedId", query = "SELECT e FROM EnceinteType e " + "WHERE e.id != ?1"),
-   @NamedQuery(name = "EnceinteType.findByPfOrder",
-      query = "SELECT e FROM EnceinteType e " + "WHERE e.plateforme = ?1 ORDER BY e.nom"),
-   @NamedQuery(name = "EnceinteType.findByOrder",
-   query = "SELECT e FROM EnceinteType e ORDER BY e.nom"),
-   @NamedQuery(name = "EnceinteType.findByOrderExceptBoite",
-      query = "SELECT e FROM EnceinteType e " + "WHERE e.nom != 'BOITE' AND e.plateforme = ?1 " + "ORDER BY e.nom")})
+//@NamedQueries(value = {
+//   @NamedQuery(name = "EnceinteType.findByTypeAndPf",
+//      query = "SELECT e FROM EnceinteType e " + "WHERE e.nom = ?1 and e.plateforme = ?2"),
+//   @NamedQuery(name = "EnceinteType.findByExcludedId", query = "SELECT e FROM EnceinteType e " + "WHERE e.id != ?1"),
+//   @NamedQuery(name = "EnceinteType.findByPfOrder",
+//      query = "SELECT e FROM EnceinteType e " + "WHERE e.plateforme = ?1 ORDER BY e.nom"),
+//   @NamedQuery(name = "EnceinteType.findByOrder",
+//   query = "SELECT e FROM EnceinteType e ORDER BY e.nom"),
+//   @NamedQuery(name = "EnceinteType.findByOrderExceptBoite",
+//      query = "SELECT e FROM EnceinteType e " + "WHERE e.nom != 'BOITE' AND e.plateforme = ?1 " + "ORDER BY e.nom")})
 public class EnceinteType extends AbstractPfDependantThesaurusObject implements Serializable
 {
 

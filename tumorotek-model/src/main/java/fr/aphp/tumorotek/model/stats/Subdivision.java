@@ -59,15 +59,15 @@ import fr.aphp.tumorotek.model.io.export.ChampEntite;
  * 25/07/2015.
  *
  * @author Marc DESCHAMPS
- * @version 2.0.12
+ * @version 2.3
  *
  */
 
 @Entity
 @Table(name = "SUBDIVISION")
-@NamedQueries(
-   value = {@NamedQuery(name = "Subdivision.findByModele", query = "SELECT distinct s FROM Subdivision s JOIN s.indicateurs i "
-      + "JOIN i.sModeleIndicateurs m " + "WHERE m.pk.sModele = ?1")})
+//@NamedQueries(
+//   value = {@NamedQuery(name = "Subdivision.findByModele", query = "SELECT distinct s FROM Subdivision s JOIN s.indicateurs i "
+//      + "JOIN i.sModeleIndicateurs m " + "WHERE m.pk.sModele = ?1")})
 public class Subdivision implements Serializable
 {
 

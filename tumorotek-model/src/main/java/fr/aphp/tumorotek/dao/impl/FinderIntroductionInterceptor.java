@@ -76,7 +76,6 @@ public class FinderIntroductionInterceptor implements IntroductionInterceptor
     * @return true ou false.
     */
    @Override
-
    public boolean implementsInterface(final Class<?> intf){
       //logger.debug("Intercepted class type: " + intf.getCanonicalName());
       //logger.debug("intf.isInterface() = " + intf.isInterface());

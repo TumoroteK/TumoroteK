@@ -58,19 +58,19 @@ import fr.aphp.tumorotek.model.TKdataObject;
  * Classe créée le 11/09/09.
  *
  * @author Maxime Gousseau
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "TERMINALE_TYPE")
-@NamedQueries(value = {@NamedQuery(name = "TerminaleType.findByType", query = "SELECT t FROM TerminaleType t WHERE t.type = ?1"),
-   @NamedQuery(name = "TerminaleType.findByNbPlaces", query = "SELECT t FROM TerminaleType t WHERE t.nbPlaces = ?1"),
-   @NamedQuery(name = "TerminaleType.findByHauteur", query = "SELECT t FROM TerminaleType t WHERE t.hauteur = ?1"),
-   @NamedQuery(name = "TerminaleType.findByLongueur", query = "SELECT t FROM TerminaleType t WHERE t.longueur = ?1"),
-   @NamedQuery(name = "TerminaleType.findByScheme", query = "SELECT t FROM TerminaleType t WHERE t.scheme = ?1"),
-   @NamedQuery(name = "TerminaleType.findByExcludedId",
-      query = "SELECT t FROM TerminaleType t " + "WHERE t.terminaleTypeId != ?1"),
-   @NamedQuery(name = "TerminaleType.findByOrder", query = "SELECT t FROM TerminaleType t " + "ORDER BY t.type")})
+//@NamedQueries(value = {@NamedQuery(name = "TerminaleType.findByType", query = "SELECT t FROM TerminaleType t WHERE t.type = ?1"),
+//   @NamedQuery(name = "TerminaleType.findByNbPlaces", query = "SELECT t FROM TerminaleType t WHERE t.nbPlaces = ?1"),
+//   @NamedQuery(name = "TerminaleType.findByHauteur", query = "SELECT t FROM TerminaleType t WHERE t.hauteur = ?1"),
+//   @NamedQuery(name = "TerminaleType.findByLongueur", query = "SELECT t FROM TerminaleType t WHERE t.longueur = ?1"),
+//   @NamedQuery(name = "TerminaleType.findByScheme", query = "SELECT t FROM TerminaleType t WHERE t.scheme = ?1"),
+//   @NamedQuery(name = "TerminaleType.findByExcludedId",
+//      query = "SELECT t FROM TerminaleType t " + "WHERE t.terminaleTypeId != ?1"),
+//   @NamedQuery(name = "TerminaleType.findByOrder", query = "SELECT t FROM TerminaleType t " + "ORDER BY t.type")})
 public class TerminaleType implements TKdataObject, Serializable
 {
 

@@ -42,6 +42,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -87,7 +88,10 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
    @NamedQuery(name = "CodeUtilisateur.findByExcludedId",
       query = "SELECT c FROM CodeUtilisateur c " + "WHERE c.codeUtilisateurId != ?1"),
    @NamedQuery(name = "CodeUtilisateur.findByTranscodage", query = "SELECT c FROM CodeUtilisateur c " + "JOIN c.transcodes t "
-      + "WHERE t.tableCodage = ?1 AND t.codeId = ?2 " + "AND c.banque in (?3) ORDER BY c.code")})
+      + "WHERE t.tableCodage = ?1 AND t.codeId = ?2 " + "AND c.banque in (?3) ORDER BY c.code"),
+   @NamedQuery(name = "CodeUtilisateur.findByCodeLikeAndBanqueId",
+   	query = "SELECT c FROM CodeUtilisateur c WHERE c.code like ?1 " + "AND c.banque.banqueId in (?2)")
+   })
 public class CodeUtilisateur implements CodeCommon, Serializable
 {
 

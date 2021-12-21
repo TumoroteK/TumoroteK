@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.qualite;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.qualite.ConformiteType;
@@ -45,41 +48,48 @@ import fr.aphp.tumorotek.model.qualite.NonConformite;
 
 /**
  *
- * Interface pour le DAO du bean de domaine NON_CONFORMITE.
- * Interface créée le 08/11/11.
+ * Interface pour le DAO du bean de domaine NON_CONFORMITE. Interface créée le
+ * 08/11/11.
  *
  * @author Pierre VENTADOUR
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface NonConformiteDao extends GenericDaoJpa<NonConformite, Integer>, PfDependantTKThesaurusDao<NonConformite>
-{
+@Repository
+public interface NonConformiteDao
+		extends CrudRepository<NonConformite, Integer>, PfDependantTKThesaurusDao<NonConformite> {
 
-   /**
-    * Recherche les NonConformites d'une plateforme en fct de son type
-    * de conformité.
-    * @param conformiteType Type de conformité.
-    * @param plateforme Plateforme.
-    * @return Une liste de NonConformites.
-    */
-   List<NonConformite> findByTypeAndPf(ConformiteType conformiteType, Plateforme plateforme);
+	/**
+	 * Recherche les NonConformites d'une plateforme en fct de son type de
+	 * conformité.
+	 * 
+	 * @param conformiteType Type de conformité.
+	 * @param plateforme     Plateforme.
+	 * @return Une liste de NonConformites.
+	 */
+	@Query("SELECT n FROM NonConformite n WHERE n.conformiteType = ?1 AND n.plateforme = ?2 ORDER BY n.nom")
+	List<NonConformite> findByTypeAndPf(ConformiteType conformiteType, Plateforme plateforme);
 
-   /**
-    * Recherche les NonConformites d'une plateforme en fct de son type
-    * de conformité et de son nom.
-    * @param conformiteType Type de conformité.
-    * @param plateforme Plateforme.
-    * @param nom Nom de la non conformité.
-    * @return Une liste de NonConformites.
-    */
-   List<NonConformite> findByTypePfAndNom(ConformiteType conformiteType, Plateforme plateforme, String nom);
+	/**
+	 * Recherche les NonConformites d'une plateforme en fct de son type de
+	 * conformité et de son nom.
+	 * 
+	 * @param conformiteType Type de conformité.
+	 * @param plateforme     Plateforme.
+	 * @param nom            Nom de la non conformité.
+	 * @return Une liste de NonConformites.
+	 */
+	@Query("SELECT n FROM NonConformite n WHERE n.conformiteType = ?1 AND n.plateforme = ?2 "
+			+ "AND n.nom like ?3 ORDER BY n.nom")
+	List<NonConformite> findByTypePfAndNom(ConformiteType conformiteType, Plateforme plateforme, String nom);
 
-   /**
-    * Recherche les NonConformites sauf celle dont l'id est passé en
-    * paramètre.
-    * @param excludedId Id du NonConformite à exclure.
-    * @return Une liste de NonConformites.
-    */
-   List<NonConformite> findByExcludedId(Integer excludedId);
+	/**
+	 * Recherche les NonConformites sauf celle dont l'id est passé en paramètre.
+	 * 
+	 * @param excludedId Id du NonConformite à exclure.
+	 * @return Une liste de NonConformites.
+	 */
+	@Query("SELECT n FROM NonConformite n WHERE n.id != ?1")
+	List<NonConformite> findByExcludedId(Integer excludedId);
 
 }

@@ -330,7 +330,7 @@ public final class ConnexionUtils
 	/**
 	 * Test si l'utilisateur a accès à l'option "Toutes collections".
 	 * @return True s'il a accès.
-	 * @since 2.2.4 méthode migrée en static utils car appelé par deux SelectBanqueController et MainWindow
+	 * @since 2.2.3-fix305 méthode migrée en static utils car appelé par deux SelectBanqueController et MainWindow
 	 */
 	public static boolean canAccessToutesCollections(List<Banque> banques, Plateforme pf, Utilisateur user){
 		boolean can = true;
@@ -341,7 +341,7 @@ public final class ConnexionUtils
 			// si l'utilisateur n'est admin de la plateforme
 			if(!pfs.contains(pf) && !user.isSuperAdmin()){
 				
-				// @since 2.2.4.1
+				// @since TK-305
 				// compte le nombre de profils d'accès différents par contexte cette plateforme
 				// si les profils sont différents, il n'a pas accès à
 				// l'option "Toutes collections"

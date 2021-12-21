@@ -65,25 +65,25 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * Classe créée le 25/11/09.
  *
  * @author Maxime GOUSSEAU
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "CHAMP_ENTITE")
 @GenericGenerator(name = "seqGenerator", strategy = "increment")
 @AttributeOverride(name="id", column=@Column(name = "CHAMP_ENTITE_ID", unique = true, nullable = false))
-@NamedQueries(value = {@NamedQuery(name = "ChampEntite.findByEntite", query = "SELECT c FROM ChampEntite c WHERE c.entite = ?1"),
-   @NamedQuery(name = "ChampEntite.findByEntiteAndImport",
-      query = "SELECT c FROM ChampEntite c " + "WHERE c.entite = ?1 " + "AND c.canImport = ?2 ORDER BY c.id"),
-   @NamedQuery(name = "ChampEntite.findByEntiteImportObligatoire",
-      query = "SELECT c FROM ChampEntite c " + "WHERE c.entite = ?1 " + "AND c.canImport = ?2 " + "AND c.nullable = ?3"),
-   @NamedQuery(name = "ChampEntite.findByEntiteAndNom",
-      query = "SELECT c FROM ChampEntite c " + "WHERE c.entite = ?1 AND c.nom = ?2"),
-   @NamedQuery(name = "ChampEntite.findByImportTemplateAndEntite",
-      query = "SELECT c.champEntite FROM ImportColonne i " + "JOIN i.champ c WHERE i.importTemplate = ?1 "
-         + "AND c.champEntite.entite = ?2"),
-   @NamedQuery(name = "ChampEntite.findByEntiteAndImportAndDataType",
-      query = "SELECT c FROM ChampEntite c " + "WHERE c.entite = ?1 " + "AND c.canImport = ?2 " + "AND c.dataType in ?3")})
+//@NamedQueries(value = {@NamedQuery(name = "ChampEntite.findByEntite", query = "SELECT c FROM ChampEntite c WHERE c.entite = ?1"),
+//   @NamedQuery(name = "ChampEntite.findByEntiteAndImport",
+//      query = "SELECT c FROM ChampEntite c " + "WHERE c.entite = ?1 " + "AND c.canImport = ?2 ORDER BY c.id"),
+//   @NamedQuery(name = "ChampEntite.findByEntiteImportObligatoire",
+//      query = "SELECT c FROM ChampEntite c " + "WHERE c.entite = ?1 " + "AND c.canImport = ?2 " + "AND c.nullable = ?3"),
+//   @NamedQuery(name = "ChampEntite.findByEntiteAndNom",
+//      query = "SELECT c FROM ChampEntite c " + "WHERE c.entite = ?1 AND c.nom = ?2"),
+//   @NamedQuery(name = "ChampEntite.findByImportTemplateAndEntite",
+//      query = "SELECT c.champEntite FROM ImportColonne i " + "JOIN i.champ c WHERE i.importTemplate = ?1 "
+//         + "AND c.champEntite.entite = ?2"),
+//   @NamedQuery(name = "ChampEntite.findByEntiteAndImportAndDataType",
+//      query = "SELECT c FROM ChampEntite c " + "WHERE c.entite = ?1 " + "AND c.canImport = ?2 " + "AND c.dataType in ?3")})
 
 public class ChampEntite extends AbstractTKChamp implements Comparable<ChampEntite>
 {

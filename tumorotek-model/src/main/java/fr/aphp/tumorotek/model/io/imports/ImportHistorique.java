@@ -64,19 +64,19 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Classe créée le 08/02/2011.
  *
  * @author Pierre VENATDOUR
- * @version 2.0.10.3
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "IMPORT_HISTORIQUE")
-@NamedQueries(value = {
-   @NamedQuery(name = "ImportHistorique.findByTemplateWithOrder",
-      query = "SELECT i FROM ImportHistorique i " + "WHERE i.importTemplate = ?1 ORDER BY i.date desc"),
-   @NamedQuery(name = "ImportHistorique.findByExcludedId",
-      query = "SELECT i FROM ImportHistorique i " + "WHERE i.importHistoriqueId != ?1"),
-   @NamedQuery(name = "ImportHistorique.findPrelevementByImportHistorique",
-      query = "SELECT p FROM Prelevement p, Importation i " + " WHERE i.objetId = p.prelevementId" + " AND i.entite.entiteId = 2"
-         + " AND i.importHistorique = ?1" + " ORDER BY p.prelevementId"),})
+//@NamedQueries(value = {
+//   @NamedQuery(name = "ImportHistorique.findByTemplateWithOrder",
+//      query = "SELECT i FROM ImportHistorique i " + "WHERE i.importTemplate = ?1 ORDER BY i.date desc"),
+//   @NamedQuery(name = "ImportHistorique.findByExcludedId",
+//      query = "SELECT i FROM ImportHistorique i " + "WHERE i.importHistoriqueId != ?1"),
+//   @NamedQuery(name = "ImportHistorique.findPrelevementByImportHistorique",
+//      query = "SELECT p FROM Prelevement p, Importation i " + " WHERE i.objetId = p.prelevementId" + " AND i.entite.entiteId = 2"
+//         + " AND i.importHistorique = ?1" + " ORDER BY p.prelevementId"),})
 public class ImportHistorique implements java.io.Serializable, TKdataObject
 {
 

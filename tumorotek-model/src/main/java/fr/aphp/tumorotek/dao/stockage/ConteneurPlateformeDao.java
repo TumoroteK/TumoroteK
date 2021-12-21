@@ -35,18 +35,21 @@
  **/
 package fr.aphp.tumorotek.dao.stockage;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.stockage.ConteneurPlateforme;
 import fr.aphp.tumorotek.model.stockage.ConteneurPlateformePK;
 
 /**
  *
- * Interface pour le DAO du bean de domaine ConteneurPlateforme.
- * Interface créée le 02/12/2013.
+ * Interface pour le DAO du bean de domaine ConteneurPlateforme. Interface créée
+ * le 02/12/2013.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.10
+ * @version 2.3
  *
  */
-public interface ConteneurPlateformeDao extends GenericDaoJpa<ConteneurPlateforme, ConteneurPlateformePK>
-{}
+@Repository
+public interface ConteneurPlateformeDao extends CrudRepository<ConteneurPlateforme, ConteneurPlateformePK> {
+}

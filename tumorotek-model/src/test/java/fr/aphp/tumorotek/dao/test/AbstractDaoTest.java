@@ -35,7 +35,15 @@
  **/
 package fr.aphp.tumorotek.dao.test;
 
-import org.springframework.test.jpa.AbstractJpaTests;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+
+// import org.springframework.test.jpa.AbstractJpaTests;
+
 
 /**
  *
@@ -45,8 +53,24 @@ import org.springframework.test.jpa.AbstractJpaTests;
  * @version 09/09/2009
  *
  */
-public abstract class AbstractDaoTest extends AbstractJpaTests
+public abstract class AbstractDaoTest // extends AbstractJpaTests
 {
+	
+	protected void assertTrue(boolean condition) {
+		org.junit.Assert.assertTrue(condition);
+	}
+	
+	protected void assertFalse(boolean condition) {
+		org.junit.Assert.assertFalse(condition);
+	}
+	
+	protected void assertNull(Object obj) {
+		org.junit.Assert.assertNull(obj);
+	}
+	
+	protected void assertNotNull(Object obj) {
+		org.junit.Assert.assertNotNull(obj);
+	}
 
    /***/
    //private EntityManagerFactory entityManagerFactory;
@@ -55,10 +79,10 @@ public abstract class AbstractDaoTest extends AbstractJpaTests
     * Référence la configuration >Spring pour les tests.
     * @return l'emplacement du fichier de configuration de Spring. 
     */
-   @Override
-   protected String[] getConfigLocations(){
-      return new String[] {"applicationContextDao-test-mysql.xml"};
-   }
+//   @Override
+//   protected String[] getConfigLocations(){
+//      return new String[] {"applicationContextDao-test-mysql.xml"};
+//   }
 
    /**
     * Spring injectera automatiquement le SessionFactory au lancement.

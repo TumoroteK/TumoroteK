@@ -4,10 +4,8 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 		http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-	<import resource="applicationContextInterceptor.xml" />
-
 	<bean id="abstractDaoTargetCodes" class="fr.aphp.tumorotek.dao.impl.GenericDaoJpaImpl"
-		abstract="true">
+ 		abstract="true">
 		<property name="entityManagerFactory">
 			<ref bean="entityManagerFactoryCodes" />
 		</property>

@@ -67,30 +67,30 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  */
 @Entity
 @Table(name = "EMPLACEMENT")
-@NamedQueries(value = {
-   @NamedQuery(name = "Emplacement.findByTerminaleWithOrder",
-      query = "SELECT e FROM Emplacement e " + "WHERE e.terminale = ?1 " + "ORDER BY e.position"),
-   @NamedQuery(name = "Emplacement.findByTerminaleAndVide",
-      query = "SELECT e FROM Emplacement e " + "WHERE e.terminale = ?1 " + "AND e.vide = ?2 "
-         + "ORDER BY e.position, e.entite.entiteId, e.objetId"),
-   @NamedQuery(name = "Emplacement.findByCountTerminaleAndVide",
-      query = "SELECT count(e) FROM Emplacement e " + "WHERE e.terminale = ?1 " + "AND e.vide = ?2"),
-   @NamedQuery(name = "Emplacement.findByObjetIdEntite",
-      query = "SELECT e FROM Emplacement e " + "WHERE e.objetId = ?1 " + "AND e.entite = ?2"),
-   @NamedQuery(name = "Emplacement.findByTerminaleAndPosition",
-      query = "SELECT e FROM Emplacement e " + "WHERE e.terminale = ?1 " + "AND e.position = ?2"),
-   @NamedQuery(name = "Emplacement.findByExcludedIdTerminale",
-      query = "SELECT e FROM Emplacement e " + "WHERE e.emplacementId != ?1 " + "AND e.terminale = ?2"),
-   @NamedQuery(name = "Emplacement.findByObjetId", query = "SELECT e FROM Emplacement e WHERE e.objetId = ?1"),
-   @NamedQuery(name = "Emplacement.findByEntite", query = "SELECT e FROM Emplacement e WHERE e.entite = ?1"),
-   @NamedQuery(name = "Emplacement.findByVide", query = "SELECT e FROM Emplacement e WHERE e.vide = ?1"),
-   @NamedQuery(name = "Emplacement.findByAdrp", query = "SELECT e FROM Emplacement e WHERE e.adrp = ?1"),
-   @NamedQuery(name = "Emplacement.findDouplon", query = "SELECT e FROM Emplacement e WHERE e.adrl = ?1"),
-   @NamedQuery(name = "Emplacement.findByIdWithFetch",
-      query = "SELECT e FROM Emplacement e LEFT JOIN FETCH " + "e.terminale WHERE e.emplacementId = ?1")
-   // @NamedQuery(name = "Emplacement.getAdrl", 
-   //	query = "SELECT function('get_adrl', 1)")
-})
+//@NamedQueries(value = {
+//   @NamedQuery(name = "Emplacement.findByTerminaleWithOrder",
+//      query = "SELECT e FROM Emplacement e " + "WHERE e.terminale = ?1 " + "ORDER BY e.position"),
+//   @NamedQuery(name = "Emplacement.findByTerminaleAndVide",
+//      query = "SELECT e FROM Emplacement e " + "WHERE e.terminale = ?1 " + "AND e.vide = ?2 "
+//         + "ORDER BY e.position, e.entite.entiteId, e.objetId"),
+//   @NamedQuery(name = "Emplacement.findByCountTerminaleAndVide",
+//      query = "SELECT count(e) FROM Emplacement e " + "WHERE e.terminale = ?1 " + "AND e.vide = ?2"),
+//   @NamedQuery(name = "Emplacement.findByObjetIdEntite",
+//      query = "SELECT e FROM Emplacement e " + "WHERE e.objetId = ?1 " + "AND e.entite = ?2"),
+//   @NamedQuery(name = "Emplacement.findByTerminaleAndPosition",
+//      query = "SELECT e FROM Emplacement e " + "WHERE e.terminale = ?1 " + "AND e.position = ?2"),
+//   @NamedQuery(name = "Emplacement.findByExcludedIdTerminale",
+//      query = "SELECT e FROM Emplacement e " + "WHERE e.emplacementId != ?1 " + "AND e.terminale = ?2"),
+//   @NamedQuery(name = "Emplacement.findByObjetId", query = "SELECT e FROM Emplacement e WHERE e.objetId = ?1"),
+//   @NamedQuery(name = "Emplacement.findByEntite", query = "SELECT e FROM Emplacement e WHERE e.entite = ?1"),
+//   @NamedQuery(name = "Emplacement.findByVide", query = "SELECT e FROM Emplacement e WHERE e.vide = ?1"),
+//   @NamedQuery(name = "Emplacement.findByAdrp", query = "SELECT e FROM Emplacement e WHERE e.adrp = ?1"),
+//   @NamedQuery(name = "Emplacement.findDouplon", query = "SELECT e FROM Emplacement e WHERE e.adrl = ?1"),
+//   @NamedQuery(name = "Emplacement.findByIdWithFetch",
+//      query = "SELECT e FROM Emplacement e LEFT JOIN FETCH " + "e.terminale WHERE e.emplacementId = ?1")
+//   // @NamedQuery(name = "Emplacement.getAdrl", 
+//   //	query = "SELECT function('get_adrl', 1)")
+//})
 public class Emplacement implements Serializable
 {
 

@@ -37,25 +37,29 @@ package fr.aphp.tumorotek.dao.io.export;
 
 import java.util.ArrayList;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.io.export.Champ;
 
 /**
  *
- * Interface pour le DAO du bean de domaine Champ.
- * Interface créée le 23/10/09.
+ * Interface pour le DAO du bean de domaine Champ. Interface créée le 23/10/09.
  *
  * @author Maxime GOUSSEAU
- * @version 2.0
+ * @version 2.3
  */
-public interface ChampDao extends GenericDaoJpa<Champ, Integer>
-{
+@Repository
+public interface ChampDao extends CrudRepository<Champ, Integer> {
 
-   /**
-     * Retourne la liste des champs enfants d'un champ.
-     * @param champ : le champ parent
-     * @return la list des champs enfants
-     */
-   ArrayList<Champ> findEnfants(Champ champ);
+	/**
+	 * Retourne la liste des champs enfants d'un champ.
+	 * 
+	 * @param champ : le champ parent
+	 * @return la list des champs enfants
+	 */
+	@Query("SELECT c FROM Champ c WHERE champParent = ?1")
+	ArrayList<Champ> findEnfants(Champ champ);
 
 }

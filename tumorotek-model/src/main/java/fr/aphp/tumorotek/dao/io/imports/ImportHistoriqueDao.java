@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.io.imports;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.io.imports.ImportHistorique;
 import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
@@ -49,34 +52,41 @@ import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
  * Date: 09/02/2011
  *
  * @author Pierre VENTADOUR
- * @version 2.0.10.3
+ * @version 2.3
  */
-public interface ImportHistoriqueDao extends GenericDaoJpa<ImportHistorique, Integer>
-{
+@Repository
+public interface ImportHistoriqueDao extends CrudRepository<ImportHistorique, Integer> {
 
-   /**
-    * Recherche les ImportHistoriques d'un ImportTemplate ordonnés par date.
-    * Ordre descendant.
-    * @param importTemplate ImportTemplate.
-    * @return Liste d'ImportHistoriques.
-    */
-   List<ImportHistorique> findByTemplateWithOrder(ImportTemplate importTemplate);
+	/**
+	 * Recherche les ImportHistoriques d'un ImportTemplate ordonnés par date. Ordre
+	 * descendant.
+	 * 
+	 * @param importTemplate ImportTemplate.
+	 * @return Liste d'ImportHistoriques.
+	 */
+	@Query("SELECT i FROM ImportHistorique i " + "WHERE i.importTemplate = ?1 ORDER BY i.date desc")
+	List<ImportHistorique> findByTemplateWithOrder(ImportTemplate importTemplate);
 
-   /**
-    * Recherche les ImportHistoriques dont l'id est différent de celui
-    * passé en paramètres.
-    * @param excludedId Id à exclure.
-    * @return Liste d'ImportHistoriques.
-    */
-   List<ImportHistorique> findByExcludedId(Integer excludedId);
+	/**
+	 * Recherche les ImportHistoriques dont l'id est différent de celui passé en
+	 * paramètres.
+	 * 
+	 * @param excludedId Id à exclure.
+	 * @return Liste d'ImportHistoriques.
+	 */
+	@Query("SELECT i FROM ImportHistorique i " + "WHERE i.importHistoriqueId != ?1")
+	List<ImportHistorique> findByExcludedId(Integer excludedId);
 
-   /**
-    * Recherche les prélevements importés pour une opération d'import dont 
-    * l'historique est passé en paramètre.
-    * @param hist ImportHistorique
-    * @return liste de Prelevement
-    * @since 2.0.10.3
-    */
-   List<Prelevement> findPrelevementByImportHistorique(ImportHistorique hist);
+	/**
+	 * Recherche les prélevements importés pour une opération d'import dont
+	 * l'historique est passé en paramètre.
+	 * 
+	 * @param hist ImportHistorique
+	 * @return liste de Prelevement
+	 * @since 2.0.10.3
+	 */
+	@Query("SELECT p FROM Prelevement p, Importation i " + " WHERE i.objetId = p.prelevementId"
+			+ " AND i.entite.entiteId = 2" + " AND i.importHistorique = ?1" + " ORDER BY p.prelevementId")
+	List<Prelevement> findPrelevementByImportHistorique(ImportHistorique hist);
 
 }

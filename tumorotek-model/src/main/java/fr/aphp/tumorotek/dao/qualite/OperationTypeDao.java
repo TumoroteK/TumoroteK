@@ -37,28 +37,32 @@ package fr.aphp.tumorotek.dao.qualite;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.qualite.OperationType;
 
 /**
- * Interface pour le DAO du bean de domaine OperationType.
- * Représente table SYSTEME.
+ * Interface pour le DAO du bean de domaine OperationType. Représente table
+ * SYSTEME.
  *
  * Date: 13/10/2009
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface OperationTypeDao extends GenericDaoJpa<OperationType, Integer>
-{
+@Repository
+public interface OperationTypeDao extends CrudRepository<OperationType, Integer> {
 
-   /**
-    * Recherche les types d'operation dont le nom
-    * est 'like' le paramètre.
-    * @param nom String nom du type d'operation recherche.
-    * @return Liste d'OperationType.
-    */
-   List<OperationType> findByNom(String nom);
+	/**
+	 * Recherche les types d'operation dont le nom est 'like' le paramètre.
+	 * 
+	 * @param nom String nom du type d'operation recherche.
+	 * @return Liste d'OperationType.
+	 */
+	@Query("SELECT o FROM OperationType o WHERE o.nom like ?1")
+	List<OperationType> findByNom(String nom);
 
 }

@@ -64,13 +64,13 @@ import fr.aphp.tumorotek.model.utilisateur.DroitObjet;
  * Date: 17/09/2009
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.13.1
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "OPERATION_TYPE")
-@NamedQueries(
-   value = {@NamedQuery(name = "OperationType.findByNom", query = "SELECT o FROM OperationType o WHERE o.nom like ?1")})
+//@NamedQueries(
+//   value = {@NamedQuery(name = "OperationType.findByNom", query = "SELECT o FROM OperationType o WHERE o.nom like ?1")})
 public class OperationType implements Serializable
 {
 

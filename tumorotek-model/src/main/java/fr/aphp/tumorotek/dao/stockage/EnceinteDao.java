@@ -37,148 +37,177 @@ package fr.aphp.tumorotek.dao.stockage;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.stockage.Enceinte;
 
 /**
  *
- * Interface pour le DAO du bean de domaine Enceinte.
- * Interface créée le 18/03/10.
+ * Interface pour le DAO du bean de domaine Enceinte. Interface créée le
+ * 18/03/10.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface EnceinteDao extends GenericDaoJpa<Enceinte, Integer>
-{
+@Repository
+public interface EnceinteDao extends CrudRepository<Enceinte, Integer> {
 
-   /**
-    * Recherche toutes les Enceintes d'un conteneur ordonnées.
-    * @param conteneur Conteneur des enceintes recherchées.
-    * @return Liste ordonnée d'Enceintes.
-    */
-   List<Enceinte> findByConteneurWithOrder(Conteneur conteneur);
+	/**
+	 * Recherche toutes les Enceintes d'un conteneur ordonnées.
+	 * 
+	 * @param conteneur Conteneur des enceintes recherchées.
+	 * @return Liste ordonnée d'Enceintes.
+	 */
+	@Query("SELECT e FROM Enceinte e WHERE e.conteneur = ?1 ORDER BY e.position")
+	List<Enceinte> findByConteneurWithOrder(Conteneur conteneur);
 
-   /**
-    * Recherche toutes les Enceintes filles d'une Enceinte.
-    * @param enceinte Enceinte mère des Enceintes recherchées.
-    * @return Liste ordonnée d'Enceintes.
-    */
-   List<Enceinte> findByEnceintePereWithOrder(Enceinte enceinte);
+	/**
+	 * Recherche toutes les Enceintes filles d'une Enceinte.
+	 * 
+	 * @param enceinte Enceinte mère des Enceintes recherchées.
+	 * @return Liste ordonnée d'Enceintes.
+	 */
+	@Query("SELECT e FROM Enceinte e WHERE e.enceintePere = ?1 ORDER BY e.position")
+	List<Enceinte> findByEnceintePereWithOrder(Enceinte enceinte);
 
-   /**
-    * Recherche tous les noms d'Enceintes d'un conteneur.
-    * @param conteneur Conteneur des enceintes recherchées.
-    * @return Liste ordonnée des noms d'Enceintes.
-    */
-   List<String> findByConteneurSelectNom(Conteneur conteneur);
+	/**
+	 * Recherche tous les noms d'Enceintes d'un conteneur.
+	 * 
+	 * @param conteneur Conteneur des enceintes recherchées.
+	 * @return Liste ordonnée des noms d'Enceintes.
+	 */
+	@Query("SELECT e.nom FROM Enceinte e WHERE e.conteneur = ?1 ORDER BY e.position")
+	List<String> findByConteneurSelectNom(Conteneur conteneur);
 
-   /**
-    * Recherche tous les noms d'Enceintes filles d'une Enceinte.
-    * @param enceinte Enceinte mère des Enceintes recherchées.
-    * @return Liste ordonnée de noms d'Enceintes.
-    */
-   List<String> findByEnceintePereSelectNom(Enceinte enceinte);
+	/**
+	 * Recherche tous les noms d'Enceintes filles d'une Enceinte.
+	 * 
+	 * @param enceinte Enceinte mère des Enceintes recherchées.
+	 * @return Liste ordonnée de noms d'Enceintes.
+	 */
+	@Query("SELECT e.nom FROM Enceinte e WHERE e.enceintePere = ?1 ORDER BY e.position")
+	List<String> findByEnceintePereSelectNom(Enceinte enceinte);
 
-   /**
-    * Recherche le nombre d'Enceintes filles d'une Enceinte.
-    * @param enceinte Enceinte mère des Enceintes recherchées.
-    * @return Nombre d'Enceintes filles.
-    */
-   List<Long> findNumberEnceinteFilles(Enceinte enceinte);
+	/**
+	 * Recherche le nombre d'Enceintes filles d'une Enceinte.
+	 * 
+	 * @param enceinte Enceinte mère des Enceintes recherchées.
+	 * @return Nombre d'Enceintes filles.
+	 */
+	@Query("SELECT count(e) FROM Enceinte e WHERE e.enceintePere = ?1")
+	List<Long> findNumberEnceinteFilles(Enceinte enceinte);
 
-   /**
-    * Recherche toutes les enceintes d'une Enceinte et pour une
-    * position donnée.
-    * @param enceintePere Enceinte père des enceintes recherchées.
-    * @param position Position pour laquelle on recherche une enceinte.
-    * @return Liste d'Enceintes.
-    */
-   List<Enceinte> findByEnceintePereAndPosition(Enceinte enceintePere, Integer position);
+	/**
+	 * Recherche toutes les enceintes d'une Enceinte et pour une position donnée.
+	 * 
+	 * @param enceintePere Enceinte père des enceintes recherchées.
+	 * @param position     Position pour laquelle on recherche une enceinte.
+	 * @return Liste d'Enceintes.
+	 */
+	@Query("SELECT e FROM Enceinte e WHERE e.enceintePere = ?1 AND e.position = ?2")
+	List<Enceinte> findByEnceintePereAndPosition(Enceinte enceintePere, Integer position);
 
-   /**
-    * Recherche toutes les enceintes d'une Enceinte pour une
-    * position donnée, sauf celle dont d'id est en paramètre.
-    * @param enceintePere Enceinte père des enceintes recherchées.
-    * @param position Position pour laquelle on recherche une enceinte.
-    * @param enceinteId Id de l'enceinte à exclure.
-    * @return Liste d'Enceintes.
-    */
-   List<Enceinte> findByEnceintePereAndPositionExcludedId(Enceinte enceintePere, Integer position, Integer enceinteId);
+	/**
+	 * Recherche toutes les enceintes d'une Enceinte pour une position donnée, sauf
+	 * celle dont d'id est en paramètre.
+	 * 
+	 * @param enceintePere Enceinte père des enceintes recherchées.
+	 * @param position     Position pour laquelle on recherche une enceinte.
+	 * @param enceinteId   Id de l'enceinte à exclure.
+	 * @return Liste d'Enceintes.
+	 */
+	@Query("SELECT e FROM Enceinte e WHERE e.enceintePere = ?1 AND e.position = ?2 AND e.enceinteId != ?3")
+	List<Enceinte> findByEnceintePereAndPositionExcludedId(Enceinte enceintePere, Integer position, Integer enceinteId);
 
-   /**
-    * Recherche toutes les enceintes d'un conteneur our une
-    * position donnée.
-    * @param conteneur Conteneur des enceintes recherchées.
-    * @param position Position pour laquelle on recherche une enceinte.
-    * @return Liste d'Enceintes.
-    */
-   List<Enceinte> findByConteneurAndPosition(Conteneur conteneur, Integer position);
+	/**
+	 * Recherche toutes les enceintes d'un conteneur our une position donnée.
+	 * 
+	 * @param conteneur Conteneur des enceintes recherchées.
+	 * @param position  Position pour laquelle on recherche une enceinte.
+	 * @return Liste d'Enceintes.
+	 */
+	@Query("SELECT e FROM Enceinte e WHERE e.conteneur = ?1 AND e.position = ?2")
+	List<Enceinte> findByConteneurAndPosition(Conteneur conteneur, Integer position);
 
-   /**
-    * Recherche toutes les enceintes d'un Conteneur pour une
-    * position donnée, sauf celle dont d'id est en paramètre.
-    * @param conteneur Conteneur des enceintes recherchées.
-    * @param position Position pour laquelle on recherche une enceinte.
-    * @param enceinteId Id de l'enceinte à exclure.
-    * @return Liste d'Enceintes.
-    */
-   List<Enceinte> findByConteneurAndPositionExcludedId(Conteneur conteneur, Integer position, Integer enceinteId);
+	/**
+	 * Recherche toutes les enceintes d'un Conteneur pour une position donnée, sauf
+	 * celle dont d'id est en paramètre.
+	 * 
+	 * @param conteneur  Conteneur des enceintes recherchées.
+	 * @param position   Position pour laquelle on recherche une enceinte.
+	 * @param enceinteId Id de l'enceinte à exclure.
+	 * @return Liste d'Enceintes.
+	 */
+	@Query("SELECT e FROM Enceinte e WHERE e.conteneur = ?1 AND e.position = ?2 AND e.enceinteId != ?3")
+	List<Enceinte> findByConteneurAndPositionExcludedId(Conteneur conteneur, Integer position, Integer enceinteId);
 
-   /**
-    * Recherche les Enceintes d'un conteneur,
-    * sauf celle dont l'identifiant est en paramètre.
-    * @param enceinteId Identifiant de l'enceinte à exclure.
-    * @param conteneur Conteneur des enceintes recherchées.
-    * @return Liste d'Enceintes.
-    */
-   List<Enceinte> findByExcludedIdWithConteneur(Integer enceinteId, Conteneur conteneur);
+	/**
+	 * Recherche les Enceintes d'un conteneur, sauf celle dont l'identifiant est en
+	 * paramètre.
+	 * 
+	 * @param enceinteId Identifiant de l'enceinte à exclure.
+	 * @param conteneur  Conteneur des enceintes recherchées.
+	 * @return Liste d'Enceintes.
+	 */
+	@Query("SELECT e FROM Enceinte e WHERE e.enceinteId != ?1 AND e.conteneur = ?2")
+	List<Enceinte> findByExcludedIdWithConteneur(Integer enceinteId, Conteneur conteneur);
 
-   /**
-    * Recherche les Enceintes d'un conteneur,
-    * sauf celles dont les identifiants sont en paramètre.
-    * @param enceinteId Identifiant d'une enceinte à exclure.
-    * @param enceinteId2 Identifiant d'une enceinte à exclure.
-    * @param conteneur Conteneur des enceintes recherchées.
-    * @return Liste d'Enceintes.
-    */
-   List<Enceinte> findByTwoExcludedIdsWithConteneur(Integer enceinteId, Integer enceinteId2, Conteneur conteneur);
+	/**
+	 * Recherche les Enceintes d'un conteneur, sauf celles dont les identifiants
+	 * sont en paramètre.
+	 * 
+	 * @param enceinteId  Identifiant d'une enceinte à exclure.
+	 * @param enceinteId2 Identifiant d'une enceinte à exclure.
+	 * @param conteneur   Conteneur des enceintes recherchées.
+	 * @return Liste d'Enceintes.
+	 */
+	@Query("SELECT e FROM Enceinte e WHERE e.enceinteId != ?1 AND e.enceinteId != ?2 AND e.conteneur = ?3")
+	List<Enceinte> findByTwoExcludedIdsWithConteneur(Integer enceinteId, Integer enceinteId2, Conteneur conteneur);
 
-   /**
-    * Recherche les Enceintes d'une enceinte mère,
-    * sauf celle dont l'identifiants est en paramètre.
-    * @param enceinteId Identifiant d'une enceinte à exclure.
-    * @param enceinte Enceinte mère des Enceintes recherchées.
-    * @return Liste d'Enceintes.
-    */
-   List<Enceinte> findByExcludedIdWithEnceinte(Integer enceinteId, Enceinte enceinte);
+	/**
+	 * Recherche les Enceintes d'une enceinte mère, sauf celle dont l'identifiants
+	 * est en paramètre.
+	 * 
+	 * @param enceinteId Identifiant d'une enceinte à exclure.
+	 * @param enceinte   Enceinte mère des Enceintes recherchées.
+	 * @return Liste d'Enceintes.
+	 */
+	@Query("SELECT e FROM Enceinte e WHERE e.enceinteId != ?1 AND e.enceintePere = ?2")
+	List<Enceinte> findByExcludedIdWithEnceinte(Integer enceinteId, Enceinte enceinte);
 
-   /**
-    * Recherche les Enceintes d'une enceinte mère,
-    * sauf celles dont les identifiants sont en paramètre.
-    * @param enceinteId Identifiant d'une enceinte à exclure.
-    * @param enceinteId2 Identifiant d'une enceinte à exclure.
-    * @param enceinte Enceinte mère des Enceintes recherchées.
-    * @return Liste d'Enceintes.
-    */
-   List<Enceinte> findByTwoExcludedIdsWithEnceinte(Integer enceinteId, Integer enceinteId2, Enceinte enceinte);
+	/**
+	 * Recherche les Enceintes d'une enceinte mère, sauf celles dont les
+	 * identifiants sont en paramètre.
+	 * 
+	 * @param enceinteId  Identifiant d'une enceinte à exclure.
+	 * @param enceinteId2 Identifiant d'une enceinte à exclure.
+	 * @param enceinte    Enceinte mère des Enceintes recherchées.
+	 * @return Liste d'Enceintes.
+	 */
+	@Query("SELECT e FROM Enceinte e WHERE e.enceinteId != ?1 AND e.enceinteId != ?2 AND e.enceintePere = ?3")
+	List<Enceinte> findByTwoExcludedIdsWithEnceinte(Integer enceinteId, Integer enceinteId2, Enceinte enceinte);
 
-   /**
-    * Recherche les Enceintes d'un conteneur en fct de leur
-    * nom.
-    * @param conteneur Conteneur des enceintes recherchées.
-    * @param nom Nom de l'enceinte.
-    * @return Liste ordonnée d'Enceintes.
-    */
-   List<Enceinte> findByConteneurAndNom(Conteneur conteneur, String nom);
+	/**
+	 * Recherche les Enceintes d'un conteneur en fct de leur nom.
+	 * 
+	 * @param conteneur Conteneur des enceintes recherchées.
+	 * @param nom       Nom de l'enceinte.
+	 * @return Liste ordonnée d'Enceintes.
+	 */
+	@Query("SELECT e FROM Enceinte e WHERE e.conteneur= ?1 AND e.nom = ?2")
+	List<Enceinte> findByConteneurAndNom(Conteneur conteneur, String nom);
 
-   /**
-    * Recherche les Enceintes filles d'une Enceinte en fct de
-    * leur nom.
-    * @param enceinte Enceinte mère des Enceintes recherchées.
-    * @param nom Nom de l'enceinte.
-    * @return Liste ordonnée d'Enceintes.
-    */
-   List<Enceinte> findByEnceintePereAndNom(Enceinte enceinte, String nom);
+	/**
+	 * Recherche les Enceintes filles d'une Enceinte en fct de leur nom.
+	 * 
+	 * @param enceinte Enceinte mère des Enceintes recherchées.
+	 * @param nom      Nom de l'enceinte.
+	 * @return Liste ordonnée d'Enceintes.
+	 */
+	@Query("SELECT e FROM Enceinte e WHERE e.enceintePere= ?1 AND e.nom = ?2")
+	List<Enceinte> findByEnceintePereAndNom(Enceinte enceinte, String nom);
 }

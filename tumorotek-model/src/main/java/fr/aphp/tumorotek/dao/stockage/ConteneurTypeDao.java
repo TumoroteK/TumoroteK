@@ -37,19 +37,31 @@ package fr.aphp.tumorotek.dao.stockage;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
 import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.stockage.ConteneurType;
 
-public interface ConteneurTypeDao extends GenericDaoJpa<ConteneurType, Integer>, PfDependantTKThesaurusDao<ConteneurType>
-{
+/**
+ *
+ * @author Mathieu BARTHELEMY
+ * @version 2.3
+ *
+ */
+@Repository
+public interface ConteneurTypeDao
+		extends GenericDaoJpa<ConteneurType, Integer>, PfDependantTKThesaurusDao<ConteneurType> {
 
-   /**
-    * Recherche tous les ConteneurTypes sauf celui dont
-    * l'identifiant est passé en paramètre.
-    * @param id Identifiant du ConteneurType à exclure.
-    * @return Liste de ConteneurTypes.
-    */
-   List<ConteneurType> findByExcludedId(Integer id);
+	/**
+	 * Recherche tous les ConteneurTypes sauf celui dont l'identifiant est passé en
+	 * paramètre.
+	 * 
+	 * @param id Identifiant du ConteneurType à exclure.
+	 * @return Liste de ConteneurTypes.
+	 */
+	@Query("SELECT c FROM ConteneurType c " + "WHERE c.id != ?1")
+	List<ConteneurType> findByExcludedId(Integer id);
 
 }

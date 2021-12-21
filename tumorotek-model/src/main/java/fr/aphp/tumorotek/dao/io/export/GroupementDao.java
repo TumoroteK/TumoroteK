@@ -37,25 +37,30 @@ package fr.aphp.tumorotek.dao.io.export;
 
 import java.util.ArrayList;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.io.export.Groupement;
 
 /**
  *
- * Interface pour le DAO du bean de domaine Groupement.
- * Interface créée le 23/10/09.
+ * Interface pour le DAO du bean de domaine Groupement. Interface créée le
+ * 23/10/09.
  *
  * @author Maxime GOUSSEAU
- * @version 2.0
+ * @version 2.3
  */
-public interface GroupementDao extends GenericDaoJpa<Groupement, Integer>
-{
+@Repository
+public interface GroupementDao extends CrudRepository<Groupement, Integer> {
 
-   /**
-    * Retourne la liste des groupement enfants d'un groupement.
-    * @param groupement : le groupement parent
-    * @return la list des groupements enfants
-    */
-   ArrayList<Groupement> findEnfants(Groupement groupement);
+	/**
+	 * Retourne la liste des groupement enfants d'un groupement.
+	 * 
+	 * @param groupement : le groupement parent
+	 * @return la list des groupements enfants
+	 */
+	@Query("SELECT g FROM Groupement g WHERE parent = ?1")
+	ArrayList<Groupement> findEnfants(Groupement groupement);
 
 }

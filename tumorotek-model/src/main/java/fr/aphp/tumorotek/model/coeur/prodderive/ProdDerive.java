@@ -123,7 +123,7 @@ import fr.aphp.tumorotek.model.utils.Utils;
    @NamedQuery(name = "ProdDerive.findByBanques",
       query = "SELECT p FROM ProdDerive p WHERE p.banque in (?1) " + "ORDER BY p.banque, p.code"),
    @NamedQuery(name = "ProdDerive.findByTerminaleDirect",
-      query = "SELECT p FROM ProdDerive p " + "WHERE p.emplacement.terminale = ?1)"),
+      query = "SELECT p FROM ProdDerive p " + "WHERE p.emplacement.terminale = ?1"),
    @NamedQuery(name = "ProdDerive.findByParentAndType",
       query = "SELECT p FROM ProdDerive p " + "WHERE p.transformation.objetId = ?1 " + "AND p.transformation.entite = ?2 "
          + "AND p.prodType.nom like ?3"),

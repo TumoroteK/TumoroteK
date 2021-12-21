@@ -41,8 +41,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -58,20 +56,20 @@ import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
  * Classe créée le 10/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "FICHIER")
-@NamedQueries(value = {@NamedQuery(name = "Fichier.findByPath", query = "SELECT f FROM Fichier f WHERE f.path like ?1"),
-   @NamedQuery(name = "Fichier.findByEchantillonId",
-      query = "SELECT f FROM Fichier f " + "WHERE f.echantillon.echantillonId = ?1"),
-   @NamedQuery(name = "Fichier.findFilesSharingPathForEchans",
-      query = "SELECT e FROM Echantillon e " + "WHERE e.crAnapath.path = ?1"),
-   @NamedQuery(name = "Fichier.findFilesSharingPathForAnnos",
-      query = "SELECT a FROM AnnotationValeur a " + "WHERE a.fichier.path = ?1"),
-   @NamedQuery(name = "Fichier.findByExcludedId", query = "SELECT f FROM Fichier f WHERE f.fichierId != ?1"),
-   @NamedQuery(name = "Fichier.findByOrder", query = "SELECT f FROM Fichier f ORDER BY f.path")})
+//@NamedQueries(value = {@NamedQuery(name = "Fichier.findByPath", query = "SELECT f FROM Fichier f WHERE f.path like ?1"),
+//   @NamedQuery(name = "Fichier.findByEchantillonId",
+//      query = "SELECT f FROM Fichier f " + "WHERE f.echantillon.echantillonId = ?1"),
+//   @NamedQuery(name = "Fichier.findFilesSharingPathForEchans",
+//      query = "SELECT e FROM Echantillon e " + "WHERE e.crAnapath.path = ?1"),
+//   @NamedQuery(name = "Fichier.findFilesSharingPathForAnnos",
+//      query = "SELECT a FROM AnnotationValeur a " + "WHERE a.fichier.path = ?1"),
+//   @NamedQuery(name = "Fichier.findByExcludedId", query = "SELECT f FROM Fichier f WHERE f.fichierId != ?1"),
+//   @NamedQuery(name = "Fichier.findByOrder", query = "SELECT f FROM Fichier f ORDER BY f.path")})
 public class Fichier implements java.io.Serializable
 {
 

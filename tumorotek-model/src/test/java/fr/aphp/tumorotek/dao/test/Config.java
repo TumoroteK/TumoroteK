@@ -33,22 +33,15 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.dao.report;
+package fr.aphp.tumorotek.dao.test;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-/**
- *
- * Interface pour le DAO de reporting constituant le bilan
- * d'activités INCa.
- *
- * Date: 01/12/2010
- *
- * @author Mathieu BARTHELEMY
- * @version 2.0
- *
- */
-public interface INCaReport extends GenericDaoJpa<Object, Integer>
-{
-
+@Configuration
+@ImportResource(locations = {"classpath:spring-jpa-test-mysql.xml"})
+@EnableJpaRepositories(basePackages = {"fr.aphp.tumorotek.dao.utilisateur"}, entityManagerFactoryRef = "entityManagerFactory")
+public class Config {
+	
 }

@@ -37,25 +37,30 @@ package fr.aphp.tumorotek.dao.io.export;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.io.export.Affichage;
 import fr.aphp.tumorotek.model.io.export.Resultat;
 
 /**
  *
- * Interface pour le DAO du bean de domaine Resultat.
- * Interface créée le 23/10/09.
+ * Interface pour le DAO du bean de domaine Resultat. Interface créée le
+ * 23/10/09.
  *
  * @author Maxime GOUSSEAU
- * @version 2.0
+ * @version 2.3
  */
-public interface ResultatDao extends GenericDaoJpa<Resultat, Integer>
-{
+@Repository
+public interface ResultatDao extends CrudRepository<Resultat, Integer> {
 
-   /**
-    * Recherche les résultats d'un affichage.
-    * @param affichage : affichage dont on souhaite connaître les résultats.
-    * @return une liste de résultats.
-    */
-   List<Resultat> findByAffichage(Affichage affichage);
+	/**
+	 * Recherche les résultats d'un affichage.
+	 * 
+	 * @param affichage : affichage dont on souhaite connaître les résultats.
+	 * @return une liste de résultats.
+	 */
+	@Query("SELECT a.resultats FROM Affichage a " + "where a = ?1")
+	List<Resultat> findByAffichage(Affichage affichage);
 }

@@ -59,20 +59,20 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * 12/03/2013.
  *
  * @author Marc DESCHAMPS
- * @version 2.0.12
+ * @version 2.3
  *
  */
 
 @Entity
 @Table(name = "STATS_INDICATEUR")
-@NamedQueries(value = {
-   @NamedQuery(name = "Indicateur.findBySModele",
-      query = "SELECT i FROM Indicateur i JOIN " + "i.sModeleIndicateurs s WHERE s.pk.sModele = ?1 ORDER BY s.ordre"),
-   @NamedQuery(name = "Indicateur.findNullSubvivisionIndicateurs",
-      query = "SELECT i FROM Indicateur i WHERE i.subdivision is null " + " ORDER BY i.indicateurId"),
-   @NamedQuery(name = "Indicateur.findByExcludedId", query = "SELECT i FROM Indicateur i WHERE i.indicateurId != ?1"),
-   @NamedQuery(name = "Indicateur.findByEntite", query = "SELECT i FROM Indicateur i WHERE i.entite = ?1"),
-   @NamedQuery(name = "Indicateur.findBySubdivision", query = "SELECT i FROM Indicateur i WHERE i.subdivision = ?1")})
+//@NamedQueries(value = {
+//   @NamedQuery(name = "Indicateur.findBySModele",
+//      query = "SELECT i FROM Indicateur i JOIN " + "i.sModeleIndicateurs s WHERE s.pk.sModele = ?1 ORDER BY s.ordre"),
+//   @NamedQuery(name = "Indicateur.findNullSubvivisionIndicateurs",
+//      query = "SELECT i FROM Indicateur i WHERE i.subdivision is null " + " ORDER BY i.indicateurId"),
+//   @NamedQuery(name = "Indicateur.findByExcludedId", query = "SELECT i FROM Indicateur i WHERE i.indicateurId != ?1"),
+//   @NamedQuery(name = "Indicateur.findByEntite", query = "SELECT i FROM Indicateur i WHERE i.entite = ?1"),
+//   @NamedQuery(name = "Indicateur.findBySubdivision", query = "SELECT i FROM Indicateur i WHERE i.subdivision = ?1")})
 public class Indicateur implements Serializable, Comparable<Object>
 {
 

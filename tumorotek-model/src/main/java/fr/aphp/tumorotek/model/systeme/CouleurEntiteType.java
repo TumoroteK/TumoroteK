@@ -43,8 +43,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -59,19 +57,19 @@ import fr.aphp.tumorotek.model.contexte.Banque;
  * Classe créée le 29/04/10.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "COULEUR_ENTITE_TYPE")
-@NamedQueries(value = {
-   @NamedQuery(name = "CouleurEntiteType.findByBanque", query = "SELECT c FROM CouleurEntiteType c WHERE c.banque like ?1"),
-   @NamedQuery(name = "CouleurEntiteType.findByBanqueAllEchanType",
-      query = "SELECT c FROM CouleurEntiteType c " + "WHERE c.banque like ?1 AND c.prodType is null"),
-   @NamedQuery(name = "CouleurEntiteType.findByBanqueAllProdType",
-      query = "SELECT c FROM CouleurEntiteType c " + "WHERE c.banque like ?1 AND c.echantillonType is null"),
-   @NamedQuery(name = "CouleurEntiteType.findByExcludedId",
-      query = "SELECT c FROM CouleurEntiteType c " + "WHERE c.couleurEntiteTypeId != ?1")})
+//@NamedQueries(value = {
+//   @NamedQuery(name = "CouleurEntiteType.findByBanque", query = "SELECT c FROM CouleurEntiteType c WHERE c.banque like ?1"),
+//   @NamedQuery(name = "CouleurEntiteType.findByBanqueAllEchanType",
+//      query = "SELECT c FROM CouleurEntiteType c " + "WHERE c.banque like ?1 AND c.prodType is null"),
+//   @NamedQuery(name = "CouleurEntiteType.findByBanqueAllProdType",
+//      query = "SELECT c FROM CouleurEntiteType c " + "WHERE c.banque like ?1 AND c.echantillonType is null"),
+//   @NamedQuery(name = "CouleurEntiteType.findByExcludedId",
+//      query = "SELECT c FROM CouleurEntiteType c " + "WHERE c.couleurEntiteTypeId != ?1")})
 public class CouleurEntiteType implements Serializable
 {
 

@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.systeme;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
 
@@ -48,37 +51,45 @@ import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
  * Date: 29/04/2010
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  */
-public interface CouleurEntiteTypeDao extends GenericDaoJpa<CouleurEntiteType, Integer>
-{
+@Repository
+public interface CouleurEntiteTypeDao extends CrudRepository<CouleurEntiteType, Integer> {
 
-   /**
-    * Recherche les couleurs définies pour une banque.
-    * @param banque Banque pour laquelle on cherche des couleurs.
-    * @return Liste de CouleurEntiteType.
-    */
-   List<CouleurEntiteType> findByBanque(Banque banque);
+	/**
+	 * Recherche les couleurs définies pour une banque.
+	 * 
+	 * @param banque Banque pour laquelle on cherche des couleurs.
+	 * @return Liste de CouleurEntiteType.
+	 */
+	@Query("SELECT c FROM CouleurEntiteType c WHERE c.banque like ?1")
+	List<CouleurEntiteType> findByBanque(Banque banque);
 
-   /**
-    * Recherche les couleurs pour les EchantillonType d'une banque.
-    * @param banque Banque pour laquelle on cherche des couleurs.
-    * @return Liste de CouleurEntiteType.
-    */
-   List<CouleurEntiteType> findByBanqueAllEchanType(Banque banque);
+	/**
+	 * Recherche les couleurs pour les EchantillonType d'une banque.
+	 * 
+	 * @param banque Banque pour laquelle on cherche des couleurs.
+	 * @return Liste de CouleurEntiteType.
+	 */
+	@Query("SELECT c FROM CouleurEntiteType c " + "WHERE c.banque like ?1 AND c.prodType is null")
+	List<CouleurEntiteType> findByBanqueAllEchanType(Banque banque);
 
-   /**
-    * Recherche les couleurs pour les ProdType d'une banque.
-    * @param banque Banque pour laquelle on cherche des couleurs.
-    * @return Liste de CouleurEntiteType.
-    */
-   List<CouleurEntiteType> findByBanqueAllProdType(Banque banque);
+	/**
+	 * Recherche les couleurs pour les ProdType d'une banque.
+	 * 
+	 * @param banque Banque pour laquelle on cherche des couleurs.
+	 * @return Liste de CouleurEntiteType.
+	 */
+	@Query("SELECT c FROM CouleurEntiteType c " + "WHERE c.banque like ?1 AND c.echantillonType is null")
+	List<CouleurEntiteType> findByBanqueAllProdType(Banque banque);
 
-   /**
-    * Recherche les CouleurEntiteType sauf celle dont l'id est en paramètre.
-    * @param id Identifiant de la CouleurEntiteType à exclure
-    * @return Liste de CouleurEntiteType.
-    */
-   List<CouleurEntiteType> findByExcludedId(Integer id);
+	/**
+	 * Recherche les CouleurEntiteType sauf celle dont l'id est en paramètre.
+	 * 
+	 * @param id Identifiant de la CouleurEntiteType à exclure
+	 * @return Liste de CouleurEntiteType.
+	 */
+	@Query("SELECT c FROM CouleurEntiteType c " + "WHERE c.couleurEntiteTypeId != ?1")
+	List<CouleurEntiteType> findByExcludedId(Integer id);
 
 }

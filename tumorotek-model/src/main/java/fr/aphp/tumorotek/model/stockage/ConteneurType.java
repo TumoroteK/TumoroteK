@@ -67,12 +67,12 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
    @AttributeOverride(name = "nom", column = @Column(name = "TYPE", nullable = false, length = 200))})
 @GenericGenerator(name = "autoincrement", strategy = "increment")
 @Table(name = "CONTENEUR_TYPE")
-@NamedQueries(value = {@NamedQuery(name = "ConteneurType.findByType", query = "SELECT c FROM ConteneurType c WHERE c.nom = ?1"),
-   @NamedQuery(name = "ConteneurType.findByExcludedId", query = "SELECT c FROM ConteneurType c " + "WHERE c.id != ?1"),
-   @NamedQuery(name = "ConteneurType.findByPfOrder",
-      query = "SELECT c FROM ConteneurType c " + "WHERE c.plateforme = ?1 ORDER BY c.nom"),
-   @NamedQuery(name = "ConteneurType.findByOrder",
-   query = "SELECT c FROM ConteneurType c ORDER BY c.nom")})
+//@NamedQueries(value = {@NamedQuery(name = "ConteneurType.findByType", query = "SELECT c FROM ConteneurType c WHERE c.nom = ?1"),
+//   @NamedQuery(name = "ConteneurType.findByExcludedId", query = "SELECT c FROM ConteneurType c " + "WHERE c.id != ?1"),
+//   @NamedQuery(name = "ConteneurType.findByPfOrder",
+//      query = "SELECT c FROM ConteneurType c " + "WHERE c.plateforme = ?1 ORDER BY c.nom"),
+//   @NamedQuery(name = "ConteneurType.findByOrder",
+//   query = "SELECT c FROM ConteneurType c ORDER BY c.nom")})
 public class ConteneurType extends AbstractPfDependantThesaurusObject implements Serializable
 {
 

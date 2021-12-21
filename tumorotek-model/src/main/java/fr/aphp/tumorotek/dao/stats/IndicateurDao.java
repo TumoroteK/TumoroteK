@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.stats;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.stats.Indicateur;
 import fr.aphp.tumorotek.model.stats.SModele;
 import fr.aphp.tumorotek.model.stats.Subdivision;
@@ -47,49 +50,56 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * Interface du indicateur DAO.
  *
  * @author jhusson
- * @version 2.0.12
+ * @version 2.3
  *
  */
+@Repository
+public interface IndicateurDao extends CrudRepository<Indicateur, Integer> {
 
-public interface IndicateurDao extends GenericDaoJpa<Indicateur, Integer>
-{
+	/**
+	 * Recherche les indicateurs du modele.
+	 * 
+	 * @param modele SModele.
+	 * @return Une liste d'indicateurs.
+	 */
+	@Query("SELECT i FROM Indicateur i JOIN i.sModeleIndicateurs s WHERE s.pk.sModele = ?1 ORDER BY s.ordre")
+	List<Indicateur> findBySModele(SModele modele);
 
-   /**
-    * Recherche les indicateurs du modele.
-    * @param modele SModele.
-    * @return Une liste d'indicateurs.
-    */
-   List<Indicateur> findBySModele(SModele modele);
+	/**
+	 * Recherche les requetes/indicateur qui seront proposés par defaut car non
+	 * associés à une subdivision
+	 * 
+	 * @return Une liste de indicateur.
+	 */
+	@Query("SELECT i FROM Indicateur i WHERE i.subdivision is null  ORDER BY i.indicateurId")
+	List<Indicateur> findNullSubvivisionIndicateurs();
 
-   /**
-    * Recherche les requetes/indicateur qui seront proposés par defaut 
-    * car non associés à une subdivision
-    * @return Une liste de indicateur.
-    */
-   List<Indicateur> findNullSubvivisionIndicateurs();
+	/**
+	 * Recherche les indicateur dont l'identifiant est différent de celui passé en
+	 * paramètre.
+	 * 
+	 * @param indicateurID Identifiant du indicateur à exclure.
+	 * @return Une liste de indicateur.
+	 */
+	@Query("SELECT i FROM Indicateur i WHERE i.indicateurId != ?1")
+	List<Indicateur> findByExcludedId(Integer indicateurID);
 
-   /**
-    * Recherche les indicateur dont l'identifiant est différent
-    * de celui passé en paramètre.
-    * @param indicateurID Identifiant du indicateur à exclure.
-    * @return Une liste de indicateur.
-    */
-   List<Indicateur> findByExcludedId(Integer indicateurID);
+	/**
+	 * Recherche les indicateur dont l'entite est passée en parametre
+	 * 
+	 * @param EntiteID entite du indicateur.
+	 * @return Une liste de indicateur.
+	 */
+	@Query("SELECT i FROM Indicateur i WHERE i.entite = ?1")
+	List<Indicateur> findByEntite(Entite entite);
 
-   /**
-    * Recherche les indicateur dont l'entite est passée
-    * en parametre
-    * @param EntiteID entite du indicateur.
-    * @return Une liste de indicateur.
-    */
-   List<Indicateur> findByEntite(Entite entite);
-
-   /**
-    * Recherche les indicateur dont la subdivision est passée
-    * en parametre
-    * @param SubdivisionID subdivision du indicateur.
-    * @return Une liste de indicateur.
-    */
-   List<Indicateur> findBySubdivision(Subdivision subdivision);
+	/**
+	 * Recherche les indicateur dont la subdivision est passée en parametre
+	 * 
+	 * @param SubdivisionID subdivision du indicateur.
+	 * @return Une liste de indicateur.
+	 */
+	@Query("SELECT i FROM Indicateur i WHERE i.subdivision = ?1")
+	List<Indicateur> findBySubdivision(Subdivision subdivision);
 
 }

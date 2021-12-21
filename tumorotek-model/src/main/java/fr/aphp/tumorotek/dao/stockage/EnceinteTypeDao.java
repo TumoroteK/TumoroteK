@@ -37,36 +37,50 @@ package fr.aphp.tumorotek.dao.stockage;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.stockage.EnceinteType;
 
-public interface EnceinteTypeDao extends GenericDaoJpa<EnceinteType, Integer>, PfDependantTKThesaurusDao<EnceinteType>
-{
+/**
+ *
+ * @version 2.3
+ *
+ */
+@Repository
+public interface EnceinteTypeDao
+		extends CrudRepository<EnceinteType, Integer>, PfDependantTKThesaurusDao<EnceinteType> {
 
-   /**
-    * Recherche toutes les EnceinteTypes ordonnées sauf le type BOITE.
-    * @param plateforme
-    * @return Liste ordonnée de EnceinteTypes.
-    */
-   List<EnceinteType> findByOrderExceptBoite(Plateforme pf);
+	/**
+	 * Recherche toutes les EnceinteTypes ordonnées sauf le type BOITE.
+	 * 
+	 * @param plateforme
+	 * @return Liste ordonnée de EnceinteTypes.
+	 */
+	@Query("SELECT e FROM EnceinteType e WHERE e.nom != 'BOITE' AND e.plateforme = ?1 ORDER BY e.nom")
+	List<EnceinteType> findByOrderExceptBoite(Plateforme pf);
 
-   /**
-    * Recherche tous les EnceinteTypes sauf celui dont
-    * l'identifiant est passé en paramètre.
-    * @param id Identifiant de l'EnceinteType à exclure.
-    * @return Liste de EnceinteTypes.
-    */
-   List<EnceinteType> findByExcludedId(Integer id);
+	/**
+	 * Recherche tous les EnceinteTypes sauf celui dont l'identifiant est passé en
+	 * paramètre.
+	 * 
+	 * @param id Identifiant de l'EnceinteType à exclure.
+	 * @return Liste de EnceinteTypes.
+	 */
+	@Query("SELECT e FROM EnceinteType e WHERE e.id != ?1")
+	List<EnceinteType> findByExcludedId(Integer id);
 
-   /**
-    * Recherche tous les EnceinteTypes dont le type est
-    * égale au paramètre.
-    * @param type Type des EnceinteTypes recherchées.
-    * @param plateforme Plateforme des EnceinteTypes recherchées.
-    * @return Liste de EnceinteTypes.
-    */
-   List<EnceinteType> findByTypeAndPf(String type, Plateforme plateforme);
+	/**
+	 * Recherche tous les EnceinteTypes dont le type est égale au paramètre.
+	 * 
+	 * @param type       Type des EnceinteTypes recherchées.
+	 * @param plateforme Plateforme des EnceinteTypes recherchées.
+	 * @return Liste de EnceinteTypes.
+	 */
+	@Query("SELECT e FROM EnceinteType e WHERE e.nom = ?1 and e.plateforme = ?2")
+	List<EnceinteType> findByTypeAndPf(String type, Plateforme plateforme);
 
 }

@@ -56,21 +56,21 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * Classe créée le 08/11/11.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "OBJET_NON_CONFORME")
-@NamedQueries(value = {
-   @NamedQuery(name = "ObjetNonConforme" + ".findByObjetAndEntite",
-      query = "SELECT o FROM ObjetNonConforme o " + "WHERE o.objetId = ?1 " + "AND o.entite = ?2"),
-   @NamedQuery(name = "ObjetNonConforme.findByObjetEntiteAndType",
-      query = "SELECT o FROM ObjetNonConforme o " + "WHERE o.objetId = ?1 " + "AND o.entite = ?2 "
-         + "AND o.nonConformite.conformiteType = ?3 " + "ORDER BY o.nonConformite.nom"),
-   @NamedQuery(name = "ObjetNonConforme.findByNonConformite",
-      query = "SELECT o FROM ObjetNonConforme o " + "WHERE o.nonConformite = ?1"),
-   @NamedQuery(name = "ObjetNonConforme.findObjetIdsByNonConformites",
-      query = "SELECT distinct o.objetId FROM ObjetNonConforme o " + "LEFT JOIN o.nonConformite n WHERE n in (?1)")})
+//@NamedQueries(value = {
+//   @NamedQuery(name = "ObjetNonConforme" + ".findByObjetAndEntite",
+//      query = "SELECT o FROM ObjetNonConforme o " + "WHERE o.objetId = ?1 " + "AND o.entite = ?2"),
+//   @NamedQuery(name = "ObjetNonConforme.findByObjetEntiteAndType",
+//      query = "SELECT o FROM ObjetNonConforme o " + "WHERE o.objetId = ?1 " + "AND o.entite = ?2 "
+//         + "AND o.nonConformite.conformiteType = ?3 " + "ORDER BY o.nonConformite.nom"),
+//   @NamedQuery(name = "ObjetNonConforme.findByNonConformite",
+//      query = "SELECT o FROM ObjetNonConforme o " + "WHERE o.nonConformite = ?1"),
+//   @NamedQuery(name = "ObjetNonConforme.findObjetIdsByNonConformites",
+//      query = "SELECT distinct o.objetId FROM ObjetNonConforme o " + "LEFT JOIN o.nonConformite n WHERE n in (?1)")})
 public class ObjetNonConforme implements java.io.Serializable
 {
 

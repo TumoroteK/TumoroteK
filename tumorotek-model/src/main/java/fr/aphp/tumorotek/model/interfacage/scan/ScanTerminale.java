@@ -62,20 +62,20 @@ import org.hibernate.annotations.GenericGenerator;
  * Classe créée le 24/04/2016.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.1
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "SCAN_TERMINALE")
-@NamedQueries(value = {
-   @NamedQuery(name = "ScanTerminale.findByScanDevice",
-      query = "SELECT s FROM ScanTerminale s WHERE s.scanDevice = ? " + "order by s.dateScan DESC"),
-   @NamedQuery(name = "ScanTerminale.findTKObjectCodes",
-      query = "SELECT t.code FROM ScanTube t WHERE t.scanTerminale = ? " + "and t.code is not null order by t.code")
-   //	@NamedQuery(name = "ScanTerminale.findTKObjectEmplacements", 
-   //		query = "SELECT e FROM Emplacement e WHERE t.scanTerminale = ? "
-   //		+ "and t.code is not null order by t.code"),
-})
+//@NamedQueries(value = {
+//   @NamedQuery(name = "ScanTerminale.findByScanDevice",
+//      query = "SELECT s FROM ScanTerminale s WHERE s.scanDevice = ?1 " + "order by s.dateScan DESC"),
+//   @NamedQuery(name = "ScanTerminale.findTKObjectCodes",
+//      query = "SELECT t.code FROM ScanTube t WHERE t.scanTerminale = ?1 " + "and t.code is not null order by t.code")
+//   //	@NamedQuery(name = "ScanTerminale.findTKObjectEmplacements", 
+//   //		query = "SELECT e FROM Emplacement e WHERE t.scanTerminale = ? "
+//   //		+ "and t.code is not null order by t.code"),
+//})
 public class ScanTerminale implements java.io.Serializable
 {
 

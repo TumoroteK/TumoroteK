@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.systeme;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.systeme.Entite;
 
 /**
@@ -46,23 +49,24 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * Interface créée le 29/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface EntiteDao extends GenericDaoJpa<Entite, Integer>
-{
+@Repository
+public interface EntiteDao extends CrudRepository<Entite, Integer> {
 
-   /**
-    * Recherche les entités dont le nom est égal au paramètre.
-    * @param nom Nom de l'entité recherchée.
-    * @return une liste d'entités.
-    */
-   List<Entite> findByNom(String nom);
+	/**
+	 * Recherche les entités dont le nom est égal au paramètre.
+	 * @param nom Nom de l'entité recherchée.
+	 * @return une liste d'entités.
+	 */
+	@Query("SELECT e FROM Entite e WHERE e.nom like ?1")
+	List<Entite> findByNom(String nom);
 
-   /**
-    * Recherche les entités annotables.
-    * @return une liste d'entités.
-    */
-   List<Entite> findAnnotables();
-
+	/**
+	 * Recherche les entités annotables.
+	 * @return une liste d'entités.
+	 */
+	@Query("SELECT e FROM Entite e WHERE e.annotable = 1 " + "order by e.entiteId")
+	List<Entite> findAnnotables();
 }

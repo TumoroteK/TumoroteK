@@ -136,7 +136,7 @@ import fr.aphp.tumorotek.model.utils.Utils;
    @NamedQuery(name = "Echantillon.findByBanques",
       query = "SELECT e FROM Echantillon e WHERE e.banque in (?1) " + "ORDER BY e.banque, e.code"),
    @NamedQuery(name = "Echantillon.findByTerminaleDirect",
-      query = "SELECT e FROM Echantillon e " + "WHERE e.emplacement.terminale = ?1)"),
+      query = "SELECT e FROM Echantillon e " + "WHERE e.emplacement.terminale = ?1"),
    @NamedQuery(name = "Echantillon.findByMaladieAndType",
       query = "SELECT e FROM Echantillon e " + "WHERE e.prelevement.maladie = ?1 " + "AND e.echantillonType.nom like ?2 "
          + "AND e.prelevement.datePrelevement = ?3"),

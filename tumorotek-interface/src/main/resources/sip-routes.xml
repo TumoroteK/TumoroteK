@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:camel="http://camel.apache.org/schema/spring"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://camel.apache.org/schema/spring 
-       http://camel.apache.org/schema/spring/camel-spring.xsd">
+    xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       	http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
 
 	<!-- global GILDA error handling -->
 	<errorHandler id="sipErrorHandler" xmlns="http://camel.apache.org/schema/spring"
@@ -54,7 +52,9 @@
 	            			<convertBodyTo type="java.lang.String" />
 	            		</otherwise>
 	            	</choice>
-	   				<unmarshal ref="myHl7"   />
+	   				<unmarshal>
+	   					<custom ref="myHl7" />
+	   				</unmarshal>
 	   				<to uri="direct:sip-handle" />
 	   			</otherwise>
 	   		</choice>

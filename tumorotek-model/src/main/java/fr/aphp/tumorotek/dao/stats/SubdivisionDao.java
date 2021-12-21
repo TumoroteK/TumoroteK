@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.stats;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.stats.SModele;
 import fr.aphp.tumorotek.model.stats.Subdivision;
 
@@ -45,12 +48,13 @@ import fr.aphp.tumorotek.model.stats.Subdivision;
  * Interface du Subdivision DAO.
  *
  * @author mdeschamps
- * @version 2.0.12
+ * @version 2.3
  *
  */
+@Repository
+public interface SubdivisionDao extends CrudRepository<Subdivision, Integer> {
 
-public interface SubdivisionDao extends GenericDaoJpa<Subdivision, Integer>
-{
-
-   public List<Subdivision> findByModele(SModele sM);
+	@Query("SELECT distinct s FROM Subdivision s JOIN s.indicateurs i JOIN i.sModeleIndicateurs m "
+			+ "WHERE m.pk.sModele = ?1")
+	public List<Subdivision> findByModele(SModele sM);
 }

@@ -37,28 +37,33 @@ package fr.aphp.tumorotek.dao.qualite;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.qualite.ConformiteType;
 import fr.aphp.tumorotek.model.systeme.Entite;
 
 /**
  *
- * Interface pour le DAO du bean de domaine CONFORMITE_TYPE.
- * Interface créée le 08/11/11.
+ * Interface pour le DAO du bean de domaine CONFORMITE_TYPE. Interface créée le
+ * 08/11/11.
  *
  * @author Pierre VENTADOUR
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface ConformiteTypeDao extends GenericDaoJpa<ConformiteType, Integer>
-{
+@Repository
+public interface ConformiteTypeDao extends CrudRepository<ConformiteType, Integer> {
 
-   /**
-    * Recherche les ConformiteTypes en fct de son nom.
-    * @param type Type des ConformiteTypes recherchées.
-    * @param entite concernée
-    * @return Une liste de ConformiteTypes.
-    */
-   List<ConformiteType> findByEntiteAndType(String type, Entite e);
+	/**
+	 * Recherche les ConformiteTypes en fct de son nom.
+	 * 
+	 * @param type   Type des ConformiteTypes recherchées.
+	 * @param entite concernée
+	 * @return Une liste de ConformiteTypes.
+	 */
+	@Query("SELECT c FROM ConformiteType c " + "WHERE c.conformiteType like ?1 " + "AND c.entite = ?2")
+	List<ConformiteType> findByEntiteAndType(String type, Entite e);
 
 }

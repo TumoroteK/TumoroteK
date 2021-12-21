@@ -37,7 +37,9 @@ package fr.aphp.tumorotek.dao.utilisateur;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.utilisateur.Profil;
 
@@ -46,41 +48,43 @@ import fr.aphp.tumorotek.model.utilisateur.Profil;
  * Interface pour le DAO du bean de domaine Profil.
  *
  * @author Pierre Ventadour
- * @version 2.1.
+ * @version 2.3
  *
  */
-public interface ProfilDao extends GenericDaoJpa<Profil, Integer>
-{
+public interface ProfilDao extends CrudRepository<Profil, Integer> {
 
-   /**
-    * Recherche tous les Profils ordonnés par nom.
-    * @return Une liste ordonnéee de Profils.
-    */
-   List<Profil> findByOrder();
+	/**
+	 * Recherche tous les Profils ordonnés par nom.
+	 * @return Une liste ordonnéee de Profils.
+	 */
+	@Query("SELECT p FROM Profil p ORDER BY p.nom")
+	List<Profil> findByOrder();
 
-   /**
-    * Recherche les Profils dont le nom est égal au paramètre.
-    * @param nom Nom pour lequel on recherche des Profils.
-    * @return Une liste de Profils.
-    */
-   List<Profil> findByNom(String nom);
+	/**
+	 * Recherche les Profils dont le nom est égal au paramètre.
+	 * @param nom Nom pour lequel on recherche des Profils.
+	 * @return Une liste de Profils.
+	 */
+	@Query("SELECT p FROM Profil p WHERE p.nom like ?1")
+	List<Profil> findByNom(String nom);
 
-   /**
-    * Recherche les Profils dont l'identifiant est différent
-    * de celui passé en paramètre.
-    * @param profilId Identifiant du Profil à exclure.
-    * @return Une liste de Profils.
-    */
-   List<Profil> findByExcludedId(Integer profilId);
+	/**
+	 * Recherche les Profils dont l'identifiant est différent
+	 * de celui passé en paramètre.
+	 * @param profilId Identifiant du Profil à exclure.
+	 * @return Une liste de Profils.
+	 */
+	@Query("SELECT p FROM Profil p WHERE p.profilId != ?1")
+	List<Profil> findByExcludedId(Integer profilId);
 
-   /**
-    * Recherche les profils pour la plateforme passée en paramètre,
-    * et filtre si archivés ou non.
-    * @param pf Plateforme
-    * @param archive boolean
-    * @return List<Profil>
-    * @since 2.1
-    */
-   List<Profil> findByPlateformeAndArchive(Plateforme pf, Boolean archive);
-
+	/**
+	 * Recherche les profils pour la plateforme passée en paramètre,
+	 * et filtre si archivés ou non.
+	 * @param pf Plateforme
+	 * @param archive boolean
+	 * @return List<Profil>
+	 * @since 2.1
+	 */
+	@Query("SELECT p FROM Profil p WHERE p.plateforme = ?1 AND p.archive = ?2 ORDER BY p.nom")
+	List<Profil> findByPlateformeAndArchive(Plateforme pf, Boolean archive);
 }

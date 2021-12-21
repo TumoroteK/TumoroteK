@@ -37,89 +37,105 @@ package fr.aphp.tumorotek.dao.stockage;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.stockage.Enceinte;
 import fr.aphp.tumorotek.model.stockage.Terminale;
 
 /**
  *
- * Interface pour le DAO du bean de domaine Terminale.
- * Interface créée le 18/03/10.
+ * Interface pour le DAO du bean de domaine Terminale. Interface créée le
+ * 18/03/10.
  *
  * @author Pierre Ventadour
- * @version 2.2.2-diamic
+ * @version 2.3
  *
  */
-public interface TerminaleDao extends GenericDaoJpa<Terminale, Integer>
-{
+@Repository
+public interface TerminaleDao extends CrudRepository<Terminale, Integer> {
+	
+	/**
+	 * Recherche toutes les Terminales d'une Enceinte.
+	 * 
+	 * @param enceinte Enceinte mère des Terminales recherchées.
+	 * @return Liste ordonnée de Terminales.
+	 */
+	@Query("SELECT t FROM Terminale t WHERE t.enceinte = ?1 ORDER BY t.position")
+	List<Terminale> findByEnceinteWithOrder(Enceinte enceinte);
 
-   /**
-    * Recherche toutes les Terminales d'une Enceinte.
-    * @param enceinte Enceinte mère des Terminales recherchées.
-    * @return Liste ordonnée de Terminales.
-    */
-   List<Terminale> findByEnceinteWithOrder(Enceinte enceinte);
+	/**
+	 * Recherche le nombre de Terminales d'une Enceinte.
+	 * 
+	 * @param enceinte Enceinte mère des Terminales recherchées.
+	 * @return Nombre de Terminales filles.
+	 */
+	@Query("SELECT count(t) FROM Terminale t WHERE t.enceinte = ?1")
+	List<Long> findNumberTerminalesForEnceinte(Enceinte enceinte);
 
-   /**
-    * Recherche le nombre de Terminales d'une Enceinte.
-    * @param enceinte Enceinte mère des Terminales recherchées.
-    * @return Nombre de Terminales filles.
-    */
-   List<Long> findNumberTerminalesForEnceinte(Enceinte enceinte);
+	/**
+	 * Recherche toutes les Terminales d'une Enceinte pour une position donnée sauf
+	 * celle dont l'identifiant est en paramètre.
+	 * 
+	 * @param Enceinte    enceinte des terminales recherchées.
+	 * @param position    Position pour laquelle on recherche une terminale.
+	 * @param terminaleId Id de la terminale à exclure.
+	 * @return Liste de Terminales.
+	 */
+	@Query("SELECT t FROM Terminale t WHERE t.enceinte = ?1 AND t.position = ?2 AND t.terminaleId != ?3")
+	List<Terminale> findByEnceinteAndPositionExcludedId(Enceinte enceinte, Integer position, Integer terminaleId);
 
-   /**
-    * Recherche toutes les Terminales d'une Enceinte pour une
-    * position donnée sauf celle dont l'identifiant est en
-    * paramètre.
-    * @param Enceinte enceinte des terminales recherchées.
-    * @param position Position pour laquelle on recherche une terminale.
-    * @param terminaleId Id de la terminale à exclure.
-    * @return Liste de Terminales.
-    */
-   List<Terminale> findByEnceinteAndPositionExcludedId(Enceinte enceinte, Integer position, Integer terminaleId);
+	/**
+	 * Recherche toutes les Terminales d'une Enceinte et pour une position donnée.
+	 * 
+	 * @param Enceinte enceinte des terminales recherchées.
+	 * @param position Position pour laquelle on recherche une terminale.
+	 * @return Liste de Terminales.
+	 */
+	@Query("SELECT t FROM Terminale t WHERE t.enceinte = ?1 AND t.position = ?2")
+	List<Terminale> findByEnceinteAndPosition(Enceinte enceinte, Integer position);
 
-   /**
-    * Recherche toutes les Terminales d'une Enceinte et pour une
-    * position donnée.
-    * @param Enceinte enceinte des terminales recherchées.
-    * @param position Position pour laquelle on recherche une terminale.
-    * @return Liste de Terminales.
-    */
-   List<Terminale> findByEnceinteAndPosition(Enceinte enceinte, Integer position);
+	/**
+	 * Recherche toutes les Terminales d'une Enceinte pour un nom donné.
+	 * 
+	 * @param Enceinte enceinte des terminales recherchées.
+	 * @param nom      Nom pour leaquel on recherche une terminale.
+	 * @return Liste de Terminales.
+	 */
+	@Query("SELECT t FROM Terminale t WHERE t.enceinte = ?1 AND t.nom = ?2")
+	List<Terminale> findByEnceinteAndNom(Enceinte enceinte, String nom);
 
-   /**
-    * Recherche toutes les Terminales d'une Enceinte pour un
-    * nom donné.
-    * @param Enceinte enceinte des terminales recherchées.
-    * @param nom Nom pour leaquel on recherche une terminale.
-    * @return Liste de Terminales.
-    */
-   List<Terminale> findByEnceinteAndNom(Enceinte enceinte, String nom);
+	/**
+	 * Recherche les Terminales d'une enceinte mère, sauf celle dont l'identifiant
+	 * est en paramètre.
+	 * 
+	 * @param terminaleId Identifiant de la Terminale à exclure.
+	 * @param enceinte    Enceinte mère des Terminales recherchées.
+	 * @return Liste de Terminale.
+	 */
+	@Query("SELECT t FROM Terminale t WHERE t.terminaleId != ?1 AND t.enceinte = ?2")
+	List<Terminale> findByExcludedIdEnceinte(Integer terminaleId, Enceinte enceinte);
 
-   /**
-    * Recherche les Terminales d'une enceinte mère,
-    * sauf celle dont l'identifiant est en paramètre.
-    * @param terminaleId Identifiant de la Terminale à exclure.
-    * @param enceinte Enceinte mère des Terminales recherchées.
-    * @return Liste de Terminale.
-    */
-   List<Terminale> findByExcludedIdEnceinte(Integer terminaleId, Enceinte enceinte);
+	/**
+	 * Recherche les terminales d'une enceinte, sauf celles dont les identifiants
+	 * sont en paramètre.
+	 * 
+	 * @param terminaleId  Identifiant d'une terminale à exclure.
+	 * @param terminaleId2 Identifiant d'une terminale à exclure.
+	 * @param enceinte     Enceinte mère des terminales recherchées.
+	 * @return Liste de terminales.
+	 */
+	@Query("SELECT t FROM Terminale t WHERE t.terminaleId != ?1 AND t.terminaleId != ?2 AND t.enceinte = ?3")
+	List<Terminale> findByTwoExcludedIdsWithEnceinte(Integer terminaleId, Integer terminaleId2, Enceinte enceinte);
 
-   /**
-    * Recherche les terminales d'une enceinte,
-    * sauf celles dont les identifiants sont en paramètre.
-    * @param terminaleId Identifiant d'une terminale à exclure.
-    * @param terminaleId2 Identifiant d'une terminale à exclure.
-    * @param enceinte Enceinte mère des terminales recherchées.
-    * @return Liste de terminales.
-    */
-   List<Terminale> findByTwoExcludedIdsWithEnceinte(Integer terminaleId, Integer terminaleId2, Enceinte enceinte);
-   
-   /**
-    * Recherche les terminales dont l'alias égale la valeur passée en paramètre
-    * @param alias
-    * @return liste terminale
-    * @since 2.2.2-diamic
-    */
-   List<Terminale> findByAlias(String alias);
+	/**
+	 * Recherche les terminales dont l'alias égale la valeur passée en paramètre
+	 * 
+	 * @param alias
+	 * @return liste terminale
+	 * @since 2.2.2-diamic
+	 */
+	@Query("SELECT t FROM Terminale t WHERE t.alias = ?1")
+	List<Terminale> findByAlias(String alias);
 }

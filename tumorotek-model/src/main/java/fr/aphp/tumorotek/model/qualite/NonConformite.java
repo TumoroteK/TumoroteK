@@ -61,22 +61,22 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
  * Classe créée le 08/11/11.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "NON_CONFORMITE")
 @AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "NON_CONFORMITE_ID"))})
 @GenericGenerator(name = "autoincrement", strategy = "increment")
-@NamedQueries(
-   value = {@NamedQuery(name = "NonConformite.findByPfOrder", query = "FROM NonConformite n WHERE n.plateforme=?1 ORDER BY n.nom"),
-      @NamedQuery(name = "NonConformite.findByOrder", query = "FROM NonConformite n ORDER BY n.nom"),
-      @NamedQuery(name = "NonConformite.findByTypeAndPf",
-         query = "SELECT n FROM NonConformite n " + "WHERE n.conformiteType = ?1 " + "AND n.plateforme = ?2 " + "ORDER BY n.nom"),
-      @NamedQuery(name = "NonConformite.findByTypePfAndNom",
-         query = "SELECT n FROM NonConformite n " + "WHERE n.conformiteType = ?1 " + "AND n.plateforme = ?2 "
-            + "AND n.nom like ?3 " + "ORDER BY n.nom"),
-      @NamedQuery(name = "NonConformite.findByExcludedId", query = "SELECT n FROM NonConformite n " + "WHERE n.id != ?1")})
+//@NamedQueries(
+//   value = {@NamedQuery(name = "NonConformite.findByPfOrder", query = "FROM NonConformite n WHERE n.plateforme=?1 ORDER BY n.nom"),
+//      @NamedQuery(name = "NonConformite.findByOrder", query = "FROM NonConformite n ORDER BY n.nom"),
+//      @NamedQuery(name = "NonConformite.findByTypeAndPf",
+//         query = "SELECT n FROM NonConformite n " + "WHERE n.conformiteType = ?1 " + "AND n.plateforme = ?2 " + "ORDER BY n.nom"),
+//      @NamedQuery(name = "NonConformite.findByTypePfAndNom",
+//         query = "SELECT n FROM NonConformite n " + "WHERE n.conformiteType = ?1 " + "AND n.plateforme = ?2 "
+//            + "AND n.nom like ?3 " + "ORDER BY n.nom"),
+//      @NamedQuery(name = "NonConformite.findByExcludedId", query = "SELECT n FROM NonConformite n " + "WHERE n.id != ?1")})
 public class NonConformite extends AbstractPfDependantThesaurusObject implements Serializable
 {
 

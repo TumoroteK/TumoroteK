@@ -64,27 +64,27 @@ import fr.aphp.tumorotek.model.cession.Retour;
  * Classe créée le 11/09/09, modifiée le 11/10/2013
  *
  * @author Maxime Gousseau
- * @version 2.0.10
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "INCIDENT")
-@NamedQueries(value = {@NamedQuery(name = "Incident.findByNom", query = "SELECT i FROM Incident i WHERE i.nom = ?1"),
-   @NamedQuery(name = "Incident.findByDate", query = "SELECT i FROM Incident i WHERE i.date = ?1"),
-   @NamedQuery(name = "Incident.findByDescription", query = "SELECT i FROM Incident i WHERE i.description = ?1"),
-   @NamedQuery(name = "Incident.findByConteneurOrderByDate",
-      query = "SELECT i FROM Incident i " + "WHERE i.conteneur = ?1 " + "ORDER BY i.date"),
-   @NamedQuery(name = "Incident.findByEnceinte",
-      query = "SELECT i FROM Incident i " + "WHERE i.enceinte = ?1 " + "ORDER BY i.date"),
-   @NamedQuery(name = "Incident.findByTerminale",
-      query = "SELECT i FROM Incident i " + "WHERE i.terminale = ?1 " + "ORDER BY i.date"),
-   @NamedQuery(name = "Incident.findDoublon", query = "SELECT i FROM Incident i WHERE i.nom = ?1" + " AND i.date = ?2"),
-   @NamedQuery(name = "Incident.findByExcludedIdAndConteneur",
-      query = "SELECT i FROM Incident i " + "WHERE i.incidentId != ?1 " + "AND i.conteneur = ?2"),
-   @NamedQuery(name = "Incident.findByExcludedIdAndEnceinte",
-      query = "SELECT i FROM Incident i " + "WHERE i.incidentId != ?1 " + "AND i.enceinte = ?2"),
-   @NamedQuery(name = "Incident.findByExcludedIdAndTerminale",
-      query = "SELECT i FROM Incident i " + "WHERE i.incidentId != ?1 " + "AND i.terminale = ?2"),})
+//@NamedQueries(value = {@NamedQuery(name = "Incident.findByNom", query = "SELECT i FROM Incident i WHERE i.nom = ?1"),
+//   @NamedQuery(name = "Incident.findByDate", query = "SELECT i FROM Incident i WHERE i.date = ?1"),
+//   @NamedQuery(name = "Incident.findByDescription", query = "SELECT i FROM Incident i WHERE i.description = ?1"),
+//   @NamedQuery(name = "Incident.findByConteneurOrderByDate",
+//      query = "SELECT i FROM Incident i " + "WHERE i.conteneur = ?1 " + "ORDER BY i.date"),
+//   @NamedQuery(name = "Incident.findByEnceinte",
+//      query = "SELECT i FROM Incident i " + "WHERE i.enceinte = ?1 " + "ORDER BY i.date"),
+//   @NamedQuery(name = "Incident.findByTerminale",
+//      query = "SELECT i FROM Incident i " + "WHERE i.terminale = ?1 " + "ORDER BY i.date"),
+//   @NamedQuery(name = "Incident.findDoublon", query = "SELECT i FROM Incident i WHERE i.nom = ?1" + " AND i.date = ?2"),
+//   @NamedQuery(name = "Incident.findByExcludedIdAndConteneur",
+//      query = "SELECT i FROM Incident i " + "WHERE i.incidentId != ?1 " + "AND i.conteneur = ?2"),
+//   @NamedQuery(name = "Incident.findByExcludedIdAndEnceinte",
+//      query = "SELECT i FROM Incident i " + "WHERE i.incidentId != ?1 " + "AND i.enceinte = ?2"),
+//   @NamedQuery(name = "Incident.findByExcludedIdAndTerminale",
+//      query = "SELECT i FROM Incident i " + "WHERE i.incidentId != ?1 " + "AND i.terminale = ?2"),})
 public class Incident implements Serializable
 {
 

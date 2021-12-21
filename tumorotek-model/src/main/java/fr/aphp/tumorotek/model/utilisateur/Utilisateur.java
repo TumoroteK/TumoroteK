@@ -49,8 +49,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -58,6 +56,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.GenericGenerator;
 
 import fr.aphp.tumorotek.model.TKdataObject;
+import fr.aphp.tumorotek.model.code.CodeDossier;
 import fr.aphp.tumorotek.model.code.CodeSelect;
 import fr.aphp.tumorotek.model.code.CodeUtilisateur;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
@@ -75,40 +74,40 @@ import fr.aphp.tumorotek.model.imprimante.AffectationImprimante;
  * utilisateurs pas encore archivés alors que timeout dépassé.
  *
  * @author Pierre Ventadour
- * @version 2.2.1
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "UTILISATEUR")
-@NamedQueries(value = {
-		@NamedQuery(name = "Utilisateur.findByLogin", query = "SELECT u FROM Utilisateur u WHERE u.login = ?1 " + "ORDER BY archive"),
-		@NamedQuery(name = "Utilisateur.findByLoginAndArchive",
-		query = "SELECT u FROM Utilisateur u " + "WHERE u.login = ?1 AND u.archive = ?2 AND u.superAdmin = 0 "
-				+ "AND u.plateformeOrig in (?3)"),
-		@NamedQuery(name = "Utilisateur.findByArchive",
-		query = "SELECT u FROM Utilisateur u " + "WHERE u.archive = ?1 AND u.superAdmin = 0 " + "AND u.plateformeOrig in (?2)"),
-		@NamedQuery(name = "Utilisateur.findByEmail", query = "SELECT u FROM Utilisateur u WHERE u.email = ?1"),
-		@NamedQuery(name = "Utilisateur.findByTimeOut", query = "SELECT u FROM Utilisateur u WHERE u.timeOut = ?1"),
-		@NamedQuery(name = "Utilisateur.findByTimeOutBefore",
-		query = "SELECT u FROM Utilisateur u WHERE u.archive = 0 " + "and u.timeOut < ?1"),
-		@NamedQuery(name = "Utilisateur.findByTimeOutAfter", query = "SELECT u FROM Utilisateur u WHERE u.timeOut > ?1"),
-		@NamedQuery(name = "Utilisateur.findByCollaborateur", query = "SELECT u FROM Utilisateur u " + "WHERE u.collaborateur = ?1"),
-		@NamedQuery(name = "Utilisateur.findByIdWithFetch",
-		query = "SELECT u FROM Utilisateur u LEFT JOIN FETCH " + "u.collaborateur WHERE u.utilisateurId = ?1"),
-		@NamedQuery(name = "Utilisateur.findByExcludedId", query = "SELECT u FROM Utilisateur u " + "WHERE u.utilisateurId != ?1"),
-		@NamedQuery(name = "Utilisateur.findByOrder",
-		query = "SELECT u FROM Utilisateur u WHERE superAdmin = 0 " + "ORDER BY u.login"),
-		@NamedQuery(name = "Utilisateur.findByOrderWithArchiveExcludeSuperAdmin",
-		query = "SELECT u FROM Utilisateur u " + "WHERE u.archive = ?1 and u.superAdmin = 0 " + "AND u.plateformeOrig in (?2) "
-				+ "ORDER BY u.login"),
-		@NamedQuery(name = "Utilisateur.findByOrderWithArchiveIncludeSuperAdmin",
-		query = "SELECT u FROM Utilisateur u " + "WHERE u.archive = ?1 and ( u.plateformeOrig in (?2) OR (u.superAdmin = 1 ))"
-				+ "ORDER BY u.login"),
-		@NamedQuery(name = "Utilisateur.findByLoginPassAndArchive",
-		query = "SELECT u FROM Utilisateur u " + "WHERE u.login = ?1 " + "AND u.password = ?2 " + "AND u.archive = ?3"),
-		@NamedQuery(name = "Utilisateur.findBySuperAndArchive",
-		query = "SELECT u FROM Utilisateur u " + "WHERE  u.archive = ?1 and u.superAdmin = ?2 order by u.login")
-})
+//@NamedQueries(value = {
+//		@NamedQuery(name = "Utilisateur.findByLogin", query = "SELECT u FROM Utilisateur u WHERE u.login = ?1 " + "ORDER BY archive"),
+//		@NamedQuery(name = "Utilisateur.findByLoginAndArchive",
+//		query = "SELECT u FROM Utilisateur u " + "WHERE u.login = ?1 AND u.archive = ?2 AND u.superAdmin = 0 "
+//				+ "AND u.plateformeOrig in (?3)"),
+//		@NamedQuery(name = "Utilisateur.findByArchive",
+//		query = "SELECT u FROM Utilisateur u " + "WHERE u.archive = ?1 AND u.superAdmin = 0 " + "AND u.plateformeOrig in (?2)"),
+//		@NamedQuery(name = "Utilisateur.findByEmail", query = "SELECT u FROM Utilisateur u WHERE u.email = ?1"),
+//		@NamedQuery(name = "Utilisateur.findByTimeOut", query = "SELECT u FROM Utilisateur u WHERE u.timeOut = ?1"),
+//		@NamedQuery(name = "Utilisateur.findByTimeOutBefore",
+//		query = "SELECT u FROM Utilisateur u WHERE u.archive = 0 " + "and u.timeOut < ?1"),
+//		@NamedQuery(name = "Utilisateur.findByTimeOutAfter", query = "SELECT u FROM Utilisateur u WHERE u.timeOut > ?1"),
+//		@NamedQuery(name = "Utilisateur.findByCollaborateur", query = "SELECT u FROM Utilisateur u " + "WHERE u.collaborateur = ?1"),
+//		@NamedQuery(name = "Utilisateur.findByIdWithFetch",
+//		query = "SELECT u FROM Utilisateur u LEFT JOIN FETCH " + "u.collaborateur WHERE u.utilisateurId = ?1"),
+//		@NamedQuery(name = "Utilisateur.findByExcludedId", query = "SELECT u FROM Utilisateur u " + "WHERE u.utilisateurId != ?1"),
+//		@NamedQuery(name = "Utilisateur.findByOrder",
+//		query = "SELECT u FROM Utilisateur u WHERE superAdmin = 0 " + "ORDER BY u.login"),
+//		@NamedQuery(name = "Utilisateur.findByOrderWithArchiveExcludeSuperAdmin",
+//		query = "SELECT u FROM Utilisateur u " + "WHERE u.archive = ?1 and u.superAdmin = 0 " + "AND u.plateformeOrig in (?2) "
+//				+ "ORDER BY u.login"),
+//		@NamedQuery(name = "Utilisateur.findByOrderWithArchiveIncludeSuperAdmin",
+//		query = "SELECT u FROM Utilisateur u " + "WHERE u.archive = ?1 and ( u.plateformeOrig in (?2) OR (u.superAdmin = 1 ))"
+//				+ "ORDER BY u.login"),
+//		@NamedQuery(name = "Utilisateur.findByLoginPassAndArchive",
+//		query = "SELECT u FROM Utilisateur u " + "WHERE u.login = ?1 " + "AND u.password = ?2 " + "AND u.archive = ?3"),
+//		@NamedQuery(name = "Utilisateur.findBySuperAndArchive",
+//		query = "SELECT u FROM Utilisateur u " + "WHERE  u.archive = ?1 and u.superAdmin = ?2 order by u.login")
+//})
 public class Utilisateur implements TKdataObject, java.io.Serializable, Comparable<Utilisateur>
 {
 
@@ -130,6 +129,8 @@ public class Utilisateur implements TKdataObject, java.io.Serializable, Comparab
 	private Set<ProfilUtilisateur> profilUtilisateurs = new HashSet<>();
 	private Set<Plateforme> plateformes = new HashSet<>();
 	private Set<AffectationImprimante> affectationImprimantes = new HashSet<>();
+	
+	private Set<CodeDossier> codeDossiers = new HashSet<CodeDossier>();
 
 	/** Constructeur par défaut. */
 	public Utilisateur(){}
@@ -245,6 +246,15 @@ public class Utilisateur implements TKdataObject, java.io.Serializable, Comparab
 		this.codeUtilisateurs = codes;
 	}
 
+	@OneToMany(mappedBy = "utilisateur")
+	public Set<CodeDossier> getCodeDossiers() {
+		return codeDossiers;
+	}
+
+	public void setCodeDossiers(Set<CodeDossier> codeDossiers) {
+		this.codeDossiers = codeDossiers;
+	}
+
 	@OneToMany(mappedBy = "pk.utilisateur", fetch=FetchType.EAGER)
 	public Set<ProfilUtilisateur> getProfilUtilisateurs(){
 		return profilUtilisateurs;
@@ -352,6 +362,7 @@ public class Utilisateur implements TKdataObject, java.io.Serializable, Comparab
 		clone.setSuperAdmin(this.superAdmin);
 		clone.setCodeSelects(this.codeSelects);
 		clone.setCodeUtilisateurs(this.codeUtilisateurs);
+		clone.setCodeDossiers(this.codeDossiers);
 		clone.setProfilUtilisateurs(this.profilUtilisateurs);
 		clone.setPlateformes(this.plateformes);
 		clone.setAffectationImprimantes(this.affectationImprimantes);

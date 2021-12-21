@@ -63,16 +63,16 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * Classe créée le 24/01/2011.
  *
  * @author Pierre VENATDOUR
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "IMPORT_TEMPLATE")
-@NamedQueries(value = {
-   @NamedQuery(name = "ImportTemplate.findByBanqueWithOrder",
-      query = "SELECT i FROM ImportTemplate i " + "WHERE i.banque = ?1 ORDER BY i.nom"),
-   @NamedQuery(name = "ImportTemplate.findByExcludedId",
-      query = "SELECT i FROM ImportTemplate i " + "WHERE i.importTemplateId != ?1")})
+//@NamedQueries(value = {
+//   @NamedQuery(name = "ImportTemplate.findByBanqueWithOrder",
+//      query = "SELECT i FROM ImportTemplate i " + "WHERE i.banque = ?1 ORDER BY i.nom"),
+//   @NamedQuery(name = "ImportTemplate.findByExcludedId",
+//      query = "SELECT i FROM ImportTemplate i " + "WHERE i.importTemplateId != ?1")})
 public class ImportTemplate implements java.io.Serializable, TKdataObject
 {
 

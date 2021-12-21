@@ -79,7 +79,7 @@ import fr.aphp.tumorotek.model.coeur.patient.Patient;
    @NamedQuery(name = "PatientSip.findFirst",
       query = "SELECT p FROM PatientSip p " + "where p.dateCreation = (select min(dateCreation) " + "from PatientSip)"),
    @NamedQuery(name = "PatientSip.findByNumeroSejour",
-      query = "SELECT distinct p FROM PatientSip p " + "JOIN p.sejours s " + "where s.numero like ?")})
+      query = "SELECT distinct p FROM PatientSip p " + "JOIN p.sejours s " + "where s.numero like ?1")})
 public class PatientSip
 {
 

@@ -45,8 +45,6 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -61,7 +59,7 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * @author Pierre Ventadour
  * @see http://boris.kirzner.info/blog/archives/2008/07/19/
  * hibernate-annotations-the-many-to-many-association-with-composite-key/
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
@@ -69,13 +67,13 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 @AssociationOverrides({@AssociationOverride(name = "pk.profil", joinColumns = @JoinColumn(name = "PROFIL_ID")),
    @AssociationOverride(name = "pk.entite", joinColumns = @JoinColumn(name = "ENTITE_ID")),
    @AssociationOverride(name = "pk.operationType", joinColumns = @JoinColumn(name = "OPERATION_TYPE_ID"))})
-@NamedQueries(value = {@NamedQuery(name = "DroitObjet.findByDoublon", query = "SELECT d FROM DroitObjet d WHERE d.pk = ?1"),
-   @NamedQuery(name = "DroitObjet.findByExcludedPK", query = "SELECT d FROM DroitObjet d " + "WHERE d.pk != ?1"),
-   @NamedQuery(name = "DroitObjet.findByProfil", query = "SELECT d FROM DroitObjet d " + "WHERE d.pk.profil = ?1"),
-   @NamedQuery(name = "DroitObjet.findByProfilEntite",
-      query = "SELECT d FROM DroitObjet d " + "WHERE d.pk.profil = ?1 AND d.pk.entite = ?2"),
-   @NamedQuery(name = "DroitObjet.findByProfilOperation",
-      query = "SELECT d FROM DroitObjet d " + "WHERE d.pk.profil = ?1 " + "AND d.pk.operationType = ?2")})
+//@NamedQueries(value = {@NamedQuery(name = "DroitObjet.findByDoublon", query = "SELECT d FROM DroitObjet d WHERE d.pk = ?1"),
+//   @NamedQuery(name = "DroitObjet.findByExcludedPK", query = "SELECT d FROM DroitObjet d " + "WHERE d.pk != ?1"),
+//   @NamedQuery(name = "DroitObjet.findByProfil", query = "SELECT d FROM DroitObjet d " + "WHERE d.pk.profil = ?1"),
+//   @NamedQuery(name = "DroitObjet.findByProfilEntite",
+//      query = "SELECT d FROM DroitObjet d " + "WHERE d.pk.profil = ?1 AND d.pk.entite = ?2"),
+//   @NamedQuery(name = "DroitObjet.findByProfilOperation",
+//      query = "SELECT d FROM DroitObjet d " + "WHERE d.pk.profil = ?1 " + "AND d.pk.operationType = ?2")})
 public class DroitObjet implements Serializable
 {
 

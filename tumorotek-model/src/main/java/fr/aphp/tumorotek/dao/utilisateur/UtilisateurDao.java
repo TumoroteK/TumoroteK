@@ -38,7 +38,10 @@ package fr.aphp.tumorotek.dao.utilisateur;
 import java.util.Date;
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
@@ -48,23 +51,25 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Interface pour le DAO du bean de domaine Utilisateur.
  *
  * @author Pierre Ventadour
- * @version 2.2.1
+ * @version 2.3
  *
  */
-public interface UtilisateurDao extends GenericDaoJpa<Utilisateur, Integer>
-{
+@Repository
+public interface UtilisateurDao extends CrudRepository<Utilisateur, Integer> {
 
    /**
     * Recherche les utilisateurs en les ordonnants par login.
     * @return une liste d'utilisateurs ordonnée.
     */
-   List<Utilisateur> findByOrder();
+	@Query("SELECT u FROM Utilisateur u WHERE superAdmin = 0 " + "ORDER BY u.login")
+	List<Utilisateur> findByOrder();
 
    /**
     * Recherche les utilisateurs dont le login est égal au paramètre.
     * @param login Login pour lequel on recherche des utilisateurs.
     * @return une liste d'utilisateurs.
     */
+	@Query("SELECT u FROM Utilisateur u WHERE u.login = ?1 " + "ORDER BY archive")
    List<Utilisateur> findByLogin(String login);
 
    /**
@@ -74,6 +79,8 @@ public interface UtilisateurDao extends GenericDaoJpa<Utilisateur, Integer>
     * @param pfs plateformes d'origine
     * @return une liste d'utilisateurs.
     */
+	@Query("SELECT u FROM Utilisateur u " + "WHERE u.login = ?1 AND u.archive = ?2 AND u.superAdmin = 0 "
+	+ "AND u.plateformeOrig in (?3)")
    List<Utilisateur> findByLoginAndArchive(String login, boolean archive, List<Plateforme> pfs);
 
    /**
@@ -82,6 +89,7 @@ public interface UtilisateurDao extends GenericDaoJpa<Utilisateur, Integer>
     * @param pfs plateformes d'origine
     * @return une liste d'utilisateurs.
     */
+	@Query("SELECT u FROM Utilisateur u " + "WHERE u.archive = ?1 AND u.superAdmin = 0 " + "AND u.plateformeOrig in (?2)")
    List<Utilisateur> findByArchive(boolean archive, List<Plateforme> pfs);
 
    /**
@@ -89,13 +97,15 @@ public interface UtilisateurDao extends GenericDaoJpa<Utilisateur, Integer>
     * @param email Email de l'utilisateur.
     * @return une liste d'utilisateurs.
     */
-   List<Utilisateur> findByEmail(String email);
+	@Query("SELECT u FROM Utilisateur u WHERE u.email = ?1")
+	List<Utilisateur> findByEmail(String email);
 
    /**
     * Recherche les utilisateurs dont le timeout est passé en paramètre.
     * @param timeOut Date.
     * @return une liste d'utilisateurs.
     */
+	@Query("SELECT u FROM Utilisateur u WHERE u.timeOut = ?1")
    List<Utilisateur> findByTimeOut(Date timeOut);
 
    /**
@@ -105,6 +115,7 @@ public interface UtilisateurDao extends GenericDaoJpa<Utilisateur, Integer>
     * @return une liste d'utilisateurs.
     * @version 2.0.13
     */
+	@Query("SELECT u FROM Utilisateur u WHERE u.archive = 0 " + "and u.timeOut < ?1")
    List<Utilisateur> findByTimeOutBefore(Date timeOut);
 
    /**
@@ -113,6 +124,7 @@ public interface UtilisateurDao extends GenericDaoJpa<Utilisateur, Integer>
     * @param timeOut Date.
     * @return une liste d'utilisateurs.
     */
+	@Query("SELECT u FROM Utilisateur u WHERE u.timeOut > ?1")
    List<Utilisateur> findByTimeOutAfter(Date timeOut);
 
    /**
@@ -120,6 +132,7 @@ public interface UtilisateurDao extends GenericDaoJpa<Utilisateur, Integer>
     * @param Collaborateur pour lequel on recherche des utilisateurs.
     * @return une liste de utilisateurs.
     */
+	@Query("SELECT u FROM Utilisateur u " + "WHERE u.collaborateur = ?1")
    List<Utilisateur> findByCollaborateur(Collaborateur collaborateur);
 
    /**
@@ -129,6 +142,7 @@ public interface UtilisateurDao extends GenericDaoJpa<Utilisateur, Integer>
     * @param utilisateurId Identifiant de l'utilisateur recherché.
     * @return un utilisateur.
     */
+	@Query("SELECT u FROM Utilisateur u LEFT JOIN FETCH " + "u.collaborateur WHERE u.utilisateurId = ?1")
    List<Utilisateur> findByIdWithFetch(Integer utilisateurId);
 
    /**
@@ -137,6 +151,7 @@ public interface UtilisateurDao extends GenericDaoJpa<Utilisateur, Integer>
     * @param utilisateurId Identifiant de l'utilisateur à exclure.
     * @return un utilisateur.
     */
+   @Query("SELECT u FROM Utilisateur u " + "WHERE u.utilisateurId != ?1")
    List<Utilisateur> findByExcludedId(Integer utilisateurId);
 
    /**
@@ -145,6 +160,8 @@ public interface UtilisateurDao extends GenericDaoJpa<Utilisateur, Integer>
     * @param pfs plateformes d'origine
     * @return une liste d'utilisateurs.
     */
+   @Query("SELECT u FROM Utilisateur u " + "WHERE u.archive = ?1 and u.superAdmin = 0 " + "AND u.plateformeOrig in (?2) "
+	+ "ORDER BY u.login")
    List<Utilisateur> findByOrderWithArchiveExcludeSuperAdmin(boolean archive, List<Plateforme> pfs);
    
    /**
@@ -153,6 +170,8 @@ public interface UtilisateurDao extends GenericDaoJpa<Utilisateur, Integer>
     * @param pfs plateformes d'origine
     * @return une liste d'utilisateurs.
     */
+   @Query("SELECT u FROM Utilisateur u " + "WHERE u.archive = ?1 and ( u.plateformeOrig in (?2) OR (u.superAdmin = 1 ))"
+	+ "ORDER BY u.login")
    List<Utilisateur> findByOrderWithArchiveIncludeSuperAdmin(boolean archive, List<Plateforme> pfs);
    
    /**
@@ -162,6 +181,7 @@ public interface UtilisateurDao extends GenericDaoJpa<Utilisateur, Integer>
     * @param password Mdp pour lequel on recherche des utilisateurs.
     * @return une liste d'utilisateurs.
     */
+   @Query("SELECT u FROM Utilisateur u " + "WHERE u.login = ?1 " + "AND u.password = ?2 " + "AND u.archive = ?3")
    List<Utilisateur> findByLoginPassAndArchive(String login, String password, boolean archive);
    
    /**
@@ -171,6 +191,7 @@ public interface UtilisateurDao extends GenericDaoJpa<Utilisateur, Integer>
     * @return une liste d'utilisateurs.
     * @since 2.2.1
     */
+   @Query("SELECT u FROM Utilisateur u " + "WHERE  u.archive = ?1 and u.superAdmin = ?2 order by u.login")
    List<Utilisateur> findBySuperAndArchive(boolean archive, boolean isSuper);
 
 
