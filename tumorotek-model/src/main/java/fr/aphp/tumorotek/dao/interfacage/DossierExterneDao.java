@@ -37,93 +37,122 @@ package fr.aphp.tumorotek.dao.interfacage;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.interfacage.DossierExterne;
 import fr.aphp.tumorotek.model.interfacage.Emetteur;
 
 /**
  *
- * Interface pour le DAO du bean de domaine DOSSIER_EXTERNE.
- * Interface créée le 04/10/11.
+ * Interface pour le DAO du bean de domaine DOSSIER_EXTERNE. Interface créée le
+ * 04/10/11.
  *
  * @author Pierre VENTADOUR
- * @version 2.1
+ * @version 2.3
  *
  */
-public interface DossierExterneDao extends GenericDaoJpa<DossierExterne, Integer>
-{
+@Repository
+public interface DossierExterneDao extends CrudRepository<DossierExterne, Integer> {
 
-   /**
-    * Recherche les Dossiers externes d'un emetteur ordonnés par date.
-    * @param emetteur Emetteur.
-    * @return Une liste de dossiers.
-    */
-   List<DossierExterne> findByEmetteur(Emetteur emetteur);
+	/**
+	 * Recherche les Dossiers externes d'un emetteur ordonnés par date.
+	 * 
+	 * @param emetteur Emetteur.
+	 * @return Une liste de dossiers.
+	 */
+	@Query("SELECT d FROM DossierExterne d WHERE d.emetteur = ?1 ORDER BY d.dateOperation")
+	List<DossierExterne> findByEmetteur(Emetteur emetteur);
 
-   /**
-    * Recherche les dossiers d'un émetteur par identification.
-    * @param emetteur Emetteur des dossiers recherchés.
-    * @param identification Identification des emetteurs recherchés.
-    * @return Une liste de dossiers.
-    */
-   List<DossierExterne> findByEmetteurAndIdentification(Emetteur emetteur, String identification);
+	/**
+	 * Recherche les dossiers d'un émetteur par identification.
+	 * 
+	 * @param emetteur       Emetteur des dossiers recherchés.
+	 * @param identification Identification des emetteurs recherchés.
+	 * @return Une liste de dossiers.
+	 */
+	@Query("SELECT d FROM DossierExterne d WHERE d.emetteur = ?1 AND d.identificationDossier like ?2 "
+			+ "ORDER BY d.dateOperation")
+	List<DossierExterne> findByEmetteurAndIdentification(Emetteur emetteur, String identification);
 
-   /**
-    * Recherche les dossiers par identification.
-    * @param identification Identification des emetteurs recherchés.
-    * @return Une liste de dossiers.
-    */
-   List<DossierExterne> findByIdentification(String identification);
+	/**
+	 * Recherche les dossiers par identification.
+	 * 
+	 * @param identification Identification des emetteurs recherchés.
+	 * @return Une liste de dossiers.
+	 */
+	@Query("SELECT d FROM DossierExterne d WHERE d.identificationDossier like ?1")
+	List<DossierExterne> findByIdentification(String identification);
 
-   /**
-    * Recherche les dossiers d'émetteurs par identification.
-    * @param emetteurs Liste des Emetteurs des dossiers recherchés.
-    * @param identification Identification des emetteurs recherchés.
-    * @return Une liste de dossiers.
-    */
-   List<DossierExterne> findByEmetteurInListAndIdentification(List<Emetteur> emetteurs, String identification);
+	/**
+	 * Recherche les dossiers d'émetteurs par identification.
+	 * 
+	 * @param emetteurs      Liste des Emetteurs des dossiers recherchés.
+	 * @param identification Identification des emetteurs recherchés.
+	 * @return Une liste de dossiers.
+	 */
+	@Query("SELECT d FROM DossierExterne d WHERE d.emetteur in (?1) AND d.identificationDossier like ?2 "
+			+ "ORDER BY d.dateOperation")
+	List<DossierExterne> findByEmetteurInListAndIdentification(List<Emetteur> emetteurs, String identification);
 
-   List<String> findByEmetteurInListSelectIdentification(List<Emetteur> emetteurs);
+	@Query("SELECT d.identificationDossier FROM DossierExterne d WHERE d.emetteur in (?1)")
+	List<String> findByEmetteurInListSelectIdentification(List<Emetteur> emetteurs);
 
-   /**
-    * Compte le nombre d'entrees dans la table.
-    * @return une liste avec un seul élément = compte.
-    * @since 2.1
-    */
-   List<Long> findCountAll();
+	/**
+	 * Compte le nombre d'entrees dans la table.
+	 * 
+	 * @return une liste avec un seul élément = compte.
+	 * @since 2.1
+	 */
+	@Query("SELECT count(d) FROM DossierExterne d")
+	List<Long> findCountAll();
 
-   /**
-    * Renvoie le premier objet enregistré.
-    * @return firstDossierExterne
-    * @since 2.1
-    */
-   List<DossierExterne> findFirst();
+	/**
+	 * Renvoie le premier objet enregistré.
+	 * 
+	 * @return firstDossierExterne
+	 * @since 2.1
+	 */
+	@Query("SELECT d FROM DossierExterne d "
+			+ "where d.dateOperation = (select min(dateOperation) from DossierExterne)")
+	List<DossierExterne> findFirst();
 
-   /**
-    * Renvoie les dossiers externes partageant une valeur externe.
-    * Utilisé par GENNO pour regrouper les dérivés enfants avec le dossier parent.
-    * @param emetteur
-    * @param champ entite id
-    * @param valeur 
-    * @return liste de dossiers
-    * @since 2.2.3-genno
-    */
-   List<DossierExterne> findChildrenByEmetteurValeur(Emetteur _e, Integer _c, String valeur);
-   
-   /**
-    * Renvoie les dossiers externes corrspondant à une entité.
-    * @param emetteur
-    * @param entite id
-    * @return liste de dossiers
-    * @since 2.2.3-genno
-    */
-   List<DossierExterne> findByEmetteurAndEntite(Emetteur _e, Integer _i);
-   
-   /**
-    * Renvoie les dossiers externes corrspondant à une entité nulle.
-    * @param emetteur
-    * @return liste de dossiers
-    * @since 2.2.3-genno
-    */
-   List<DossierExterne> findByEmetteurAndEntiteNull(Emetteur _e);
+	/**
+	 * Renvoie les dossiers externes partageant une valeur externe. Utilisé par
+	 * GENNO pour regrouper les dérivés enfants avec le dossier parent.
+	 * 
+	 * @param emetteur
+	 * @param champ    entite id
+	 * @param valeur
+	 * @return liste de dossiers
+	 * @since 2.2.3-genno
+	 */
+	@Query("SELECT distinct d FROM ValeurExterne v "
+			+ "JOIN v.blocExterne.dossierExterne d WHERE d.emetteur = ?1 AND v.champEntiteId = ?2 "
+			+ "AND v.valeur like ?3 AND d.entiteId is not null ORDER BY d.identificationDossier")
+	List<DossierExterne> findChildrenByEmetteurValeur(Emetteur _e, Integer _c, String valeur);
+
+	/**
+	 * Renvoie les dossiers externes corrspondant à une entité.
+	 * 
+	 * @param emetteur
+	 * @param entite   id
+	 * @return liste de dossiers
+	 * @since 2.2.3-genno
+	 */
+	@Query("SELECT distinct d FROM DossierExterne d "
+			+ "WHERE d.emetteur = ?1 AND d.entiteId = ?2 ORDER BY d.identificationDossier")
+	List<DossierExterne> findByEmetteurAndEntite(Emetteur _e, Integer _i);
+
+	/**
+	 * Renvoie les dossiers externes corrspondant à une entité nulle.
+	 * 
+	 * @param emetteur
+	 * @return liste de dossiers
+	 * @since 2.2.3-genno
+	 */
+	@Query("SELECT distinct d FROM DossierExterne d "
+			+ "WHERE d.emetteur = ?1 AND d.entiteId is null ORDER BY d.identificationDossier")
+	List<DossierExterne> findByEmetteurAndEntiteNull(Emetteur _e);
 }

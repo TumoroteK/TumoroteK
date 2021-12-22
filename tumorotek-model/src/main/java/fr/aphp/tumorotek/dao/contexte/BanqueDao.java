@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.contexte;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.coeur.annotation.Catalogue;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -55,151 +58,193 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Date: 09/09/2009
  *
  * @author Pierre Ventadour, Mathieu BARTHELEMY
- * @version 2.2.1
+ * @version 2.3
  */
-public interface BanqueDao extends GenericDaoJpa<Banque, Integer>
-{
+@Repository
+public interface BanqueDao extends CrudRepository<Banque, Integer> {
 
 	/**
 	 * Recherche les banques dont le nom est égal au paramètre.
+	 * 
 	 * @param nom pour lequel on recherche des banques.
 	 * @return une liste de banques.
 	 */
+	@Query("SELECT b FROM Banque b WHERE b.nom = ?1")
 	List<Banque> findByNom(String nom);
 
 	/**
 	 * Recherche les banques dont l'identification est égale au paramètre.
+	 * 
 	 * @param identification pour laquelle on recherche des banques.
 	 * @return une liste banques.
 	 */
+	@Query("SELECT b FROM Banque b WHERE b.identification = ?1")
 	List<Banque> findByIdentification(String identification);
 
 	/**
 	 * Recherche les banques qui autorisent les cross ref pour les patients.
+	 * 
 	 * @param autoriseCrossPatient .
 	 * @return une liste de banques.
 	 */
+	@Query("SELECT b FROM Banque b WHERE b.autoriseCrossPatient = ?1")
 	List<Banque> findByAutoriseCrossPatient(boolean autoriseCrossPatient);
 
 	/**
 	 * Recherche les banques archivées.
+	 * 
 	 * @param archive .
 	 * @return une liste de banques.
 	 */
+	@Query("SELECT b FROM Banque b WHERE b.archive = ?1")
 	List<Banque> findByArchive(boolean archive);
 
 	/**
 	 * Recherche les banques dont le collaborateur est passé en paramètre.
+	 * 
 	 * @param collaborateur pour lequel on recherche des banques.
 	 * @return une liste de banques.
 	 */
+	@Query("SELECT b FROM Banque b WHERE b.collaborateur = ?1")
 	List<Banque> findByCollaborateur(Collaborateur c);
 
 	/**
 	 * Recherche les banques dont le propriétaire est passé en paramètre.
+	 * 
 	 * @param service proprietaire pour lequel on recherche des banques.
 	 * @return une liste de banques.
 	 */
+	@Query("SELECT b FROM Banque b WHERE b.proprietaire = ?1")
 	List<Banque> findByProprietaire(Service proprietaire);
 
 	/**
-	 * Recherche les banques dont la plateforme est passée en paramètre.
-	 * Filtre sur le statut archivé.
+	 * Recherche les banques dont la plateforme est passée en paramètre. Filtre sur
+	 * le statut archivé.
+	 * 
 	 * @param plateforme pour laquelle on recherche des banques.
-	 * @param archive true/false
+	 * @param archive    true/false
 	 * @return une liste de banques.
 	 * @version 2.1
 	 */
+	@Query("SELECT b FROM Banque b WHERE b.plateforme = ?1 AND b.archive = ?2 ORDER BY b.nom")
 	List<Banque> findByPlateformeAndArchive(Plateforme plateforme, boolean archive);
 
 	/**
-	 * Recherche la banque dont l'identifiant passé en paramètre.
-	 * Les associations avec les tables COLLABORATEUR, SERVICE ET
-	 * PLATEFORME seront chargées par l'intermédiaire d'un fetch.
+	 * Recherche la banque dont l'identifiant passé en paramètre. Les associations
+	 * avec les tables COLLABORATEUR, SERVICE ET PLATEFORME seront chargées par
+	 * l'intermédiaire d'un fetch.
+	 * 
 	 * @param banqueId est l'identifiant du collaborateur recherché.
 	 * @return un collaborateur.
 	 */
+	@Query("SELECT b FROM Banque b LEFT JOIN FETCH b.collaborateur LEFT JOIN FETCH b.proprietaire "
+			+ "LEFT JOIN FETCH b.plateforme WHERE b.banqueId = ?1")
 	List<Banque> findByIdWithFetch(Integer banqueId);
 
 	/**
 	 * Recherche toutes les Banques ordonnées.
+	 * 
 	 * @return Liste ordonnée de Banques.
 	 */
+	@Query("SELECT b FROM Banque b ORDER BY b.nom")
 	List<Banque> findByOrder();
 
 	/**
-	 * Trouve les catalogues associés au contexte auquel la banque
-	 * appartient.
+	 * Trouve les catalogues associés au contexte auquel la banque appartient.
+	 * 
 	 * @param banqueId
 	 * @return list Catalogue
 	 */
+	@Query("SELECT b.contexte.catalogues FROM Banque b WHERE b.banqueId = ?1")
 	List<Catalogue> findContexteCatalogues(Integer banqueId);
 
 	/**
-	 * Trouve les banques pour lesquelles l'utilisateur a un droit de
-	 * consultation sur l'entité spécifiée pour la plateforme spécifiée.
+	 * Trouve les banques pour lesquelles l'utilisateur a un droit de consultation
+	 * sur l'entité spécifiée pour la plateforme spécifiée.
+	 * 
 	 * @param user
 	 * @param entite
 	 * @param pf
 	 * @return list BANQUE
 	 */
+	@Query("SELECT b FROM Banque b join b.profilUtilisateurs as profilU join profilU.pk.profil as profil "
+			+ "join profil.droitObjets as droit WHERE b.plateforme = ?3 AND profilU.pk.utilisateur = ?1 "
+			+ "AND droit.pk.entite = ?2 AND droit.pk.operationType.nom = 'Consultation' AND b.archive = 0")
 	List<Banque> findByEntiteConsultByUtilisateur(Utilisateur usr, Entite entite, Plateforme pf);
 
 	/**
-	 * Trouve les banques pour lesquelles l'utilisateur a un droit de
-	 * modification sur l'entité spécifiée pour la plateforme spécifiée.
+	 * Trouve les banques pour lesquelles l'utilisateur a un droit de modification
+	 * sur l'entité spécifiée pour la plateforme spécifiée.
+	 * 
 	 * @param user
 	 * @param entite
 	 * @param pf
 	 * @return list BANQUE
 	 */
+	@Query("SELECT b FROM Banque b join b.profilUtilisateurs as profilU join profilU.pk.profil as profil "
+			+ "join profil.droitObjets as droit WHERE b.plateforme = ?3 AND profilU.pk.utilisateur = ?1 "
+			+ "AND droit.pk.entite = ?2 AND droit.pk.operationType.nom = 'Modification' AND b.archive = 0 "
+			+ "ORDER by b.nom")
 	List<Banque> findByEntiteModifByUtilisateur(Utilisateur usr, Entite entite, Plateforme pf);
 
 	/**
-	 * Trouve les banques pour lesquelles l'utilisateur a un droit
-	 * d'administrateur pour une plateforme passée en paramètres.
+	 * Trouve les banques pour lesquelles l'utilisateur a un droit d'administrateur
+	 * pour une plateforme passée en paramètres.
+	 * 
 	 * @return liste de BANQUE
 	 */
+	@Query("SELECT distinct b FROM Banque b left join b.profilUtilisateurs as profilU "
+			+ "left join profilU.pk.profil as profil join b.plateforme.utilisateurs as us WHERE b.plateforme = ?2 "
+			+ "AND b.archive = 0 AND ((profilU.pk.utilisateur = ?1 AND profil.admin=1) OR us = ?1) " + "ORDER BY b.nom")
 	List<Banque> findByUtilisateurIsAdmin(Utilisateur usr, Plateforme pf);
 
 	/**
-	 * Trouve les banques pour lesquelles l'utilisateur a un droit en
-	 * fonction d'une plateforme.
+	 * Trouve les banques pour lesquelles l'utilisateur a un droit en fonction d'une
+	 * plateforme.
 	 */
+	@Query("SELECT distinct b FROM Banque b left join b.profilUtilisateurs as profilU "
+			+ "left join profilU.pk.profil as profil join b.plateforme.utilisateurs as us WHERE b.plateforme = ?2 "
+			+ "AND b.archive = 0 AND (profilU.pk.utilisateur = ?1 OR us = ?1) ORDER BY b.nom")
 	List<Banque> findByUtilisateurAndPF(Utilisateur usr, Plateforme pf);
 
 	/**
-	 * Recherche toutes les banques sauf celle dont l'id est passé 
-	 * en paramètre.
-	 * @param banqueId Identifiant de la abnque que l'on souhaite
-	 * exclure de la liste retournée.
+	 * Recherche toutes les banques sauf celle dont l'id est passé en paramètre.
+	 * 
+	 * @param banqueId Identifiant de la abnque que l'on souhaite exclure de la
+	 *                 liste retournée.
 	 * @return une liste de banques.
 	 */
+	@Query("SELECT b FROM Banque b WHERE b.banqueId != ?1")
 	List<Banque> findByExcludedId(Integer banqueId);
 
 	/**
-	 * Recherche toutes les banques sur lesquelles l'utilisateur 
-	 * passé en paramètre a un profil assigné. Les banques sont 
-	 * retournées ordonnées par leur nom.
+	 * Recherche toutes les banques sur lesquelles l'utilisateur passé en paramètre
+	 * a un profil assigné. Les banques sont retournées ordonnées par leur nom.
+	 * 
 	 * @param u Utilisateur
-	 * @return liste de banques 
+	 * @return liste de banques
 	 */
+	@Query("SELECT b FROM Banque b join b.profilUtilisateurs as profilU join profilU.pk.profil as profil "
+			+ "WHERE profilU.pk.utilisateur = ?1 ORDER BY b.nom")
 	List<Banque> findByProfilUtilisateur(Utilisateur u);
 
 	/**
-	 * Recherche toutes les banques pour auxquelles la table 
-	 * d'annotation a été passée en paramètres.
+	 * Recherche toutes les banques pour auxquelles la table d'annotation a été
+	 * passée en paramètres.
+	 * 
 	 * @param table TableAnnotation
-	 * @return liste de banques 
+	 * @return liste de banques
 	 */
+	@Query("SELECT b FROM Banque b JOIN b.tableAnnotationBanques t WHERE t.pk.tableAnnotation = ?1")
 	List<Banque> findByTableAnnotation(TableAnnotation table);
 
 	/**
-	 * Recherche toutes les banques donnant l'accès au 
-	 * conteneur passé en paramètre.  
+	 * Recherche toutes les banques donnant l'accès au conteneur passé en paramètre.
+	 * 
 	 * @param conteneur
-	 * @return liste de banques 
+	 * @return liste de banques
 	 * @since 2.2.1
 	 */
+	@Query("SELECT b FROM Banque b JOIN b.conteneurs c WHERE c = ?1")
 	List<Banque> findByConteneur(Conteneur cont);
 }

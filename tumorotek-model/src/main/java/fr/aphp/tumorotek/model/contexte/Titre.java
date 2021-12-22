@@ -54,15 +54,15 @@ import org.hibernate.annotations.GenericGenerator;
  * Classe créée le 09/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "TITRE")
-@NamedQueries(value = {@NamedQuery(name = "Titre.findByTitre", query = "SELECT t FROM Titre t WHERE t.titre like ?1"),
-   @NamedQuery(name = "Titre.findByCollaborateurId",
-      query = "SELECT t FROM Titre t " + "left JOIN t.collaborateurs c " + "WHERE c.collaborateurId = ?1"),
-   @NamedQuery(name = "Titre.findByOrder", query = "SELECT t FROM Titre t ORDER BY t.titre")})
+//@NamedQueries(value = {@NamedQuery(name = "Titre.findByTitre", query = "SELECT t FROM Titre t WHERE t.titre like ?1"),
+//   @NamedQuery(name = "Titre.findByCollaborateurId",
+//      query = "SELECT t FROM Titre t " + "left JOIN t.collaborateurs c " + "WHERE c.collaborateurId = ?1"),
+//   @NamedQuery(name = "Titre.findByOrder", query = "SELECT t FROM Titre t ORDER BY t.titre")})
 public class Titre implements java.io.Serializable
 {
 

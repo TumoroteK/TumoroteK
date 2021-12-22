@@ -53,17 +53,17 @@ import org.hibernate.annotations.GenericGenerator;
  * Classe créée le 08/10/2014.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.10.3
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "RECEPTEUR")
-@NamedQueries(value = {
-   @NamedQuery(name = "Recepteur.findByLogicielAndIdentification",
-      query = "SELECT r FROM Recepteur r " + "WHERE r.logiciel = ?1 " + "AND r.identification like ?2 "
-         + "ORDER BY r.identification"),
-   @NamedQuery(name = "Recepteur.findByIdInList",
-      query = "SELECT r FROM Recepteur r " + "WHERE r.recepteurId in (?1) " + "ORDER BY r.identification")})
+//@NamedQueries(value = {
+//   @NamedQuery(name = "Recepteur.findByLogicielAndIdentification",
+//      query = "SELECT r FROM Recepteur r " + "WHERE r.logiciel = ?1 " + "AND r.identification like ?2 "
+//         + "ORDER BY r.identification"),
+//   @NamedQuery(name = "Recepteur.findByIdInList",
+//      query = "SELECT r FROM Recepteur r " + "WHERE r.recepteurId in (?1) " + "ORDER BY r.identification")})
 public class Recepteur implements java.io.Serializable
 {
 

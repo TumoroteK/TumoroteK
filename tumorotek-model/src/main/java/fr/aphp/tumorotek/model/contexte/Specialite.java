@@ -58,18 +58,18 @@ import fr.aphp.tumorotek.model.AbstractThesaurusObject;
  * Classe créée le 09/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "SPECIALITE")
 @AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "SPECIALITE_ID"))})
 @GenericGenerator(name = "autoincrement", strategy = "increment")
-@NamedQueries(value = {@NamedQuery(name = "Specialite.findByNom", query = "SELECT s FROM Specialite s WHERE s.nom like ?1"),
-   @NamedQuery(name = "Specialite.findByCollaborateurId",
-      query = "SELECT s FROM Specialite s " + "left join s.collaborateurs c " + "WHERE c.collaborateurId = ?1"),
-   @NamedQuery(name = "Specialite.findByExcludedId", query = "SELECT s FROM Specialite s " + "WHERE s.id != ?1"),
-   @NamedQuery(name = "Specialite.findByOrder", query = "SELECT s FROM Specialite s ORDER BY s.nom")})
+//@NamedQueries(value = {@NamedQuery(name = "Specialite.findByNom", query = "SELECT s FROM Specialite s WHERE s.nom like ?1"),
+//   @NamedQuery(name = "Specialite.findByCollaborateurId",
+//      query = "SELECT s FROM Specialite s " + "left join s.collaborateurs c " + "WHERE c.collaborateurId = ?1"),
+//   @NamedQuery(name = "Specialite.findByExcludedId", query = "SELECT s FROM Specialite s " + "WHERE s.id != ?1"),
+//   @NamedQuery(name = "Specialite.findByOrder", query = "SELECT s FROM Specialite s ORDER BY s.nom")})
 public class Specialite extends AbstractThesaurusObject implements Serializable
 {
 

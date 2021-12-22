@@ -74,63 +74,63 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Classe créée le 09/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "COLLABORATEUR")
-@NamedQueries(value = {@NamedQuery(name = "Collaborateur.findByOrder", query = "SELECT c FROM Collaborateur c ORDER BY c.nom"),
-   @NamedQuery(name = "Collaborateur.findByNom", query = "SELECT c FROM Collaborateur c WHERE c.nom like ?1"),
-   @NamedQuery(name = "Collaborateur.findByPrenom", query = "SELECT c FROM Collaborateur c WHERE c.prenom like ?1"),
-   @NamedQuery(name = "Collaborateur.findByArchive",
-      query = "SELECT c FROM Collaborateur c WHERE c.archive " + "= ?1 ORDER BY c.nom, c.prenom"),
-   @NamedQuery(name = "Collaborateur.findByExcludedId",
-      query = "SELECT c FROM Collaborateur c " + "WHERE c.collaborateurId != ?1"),
-   @NamedQuery(name = "Collaborateur.findCountByServiceId",
-      query = "SELECT count(c) FROM Collaborateur c " + "left join c.services s " + "WHERE s.serviceId = ?1"),
-   //		@NamedQuery(name = "Collaborateur.findByCoordonnee", 
-   //				query = "SELECT c FROM Collaborateur c " 
-   //					+ "WHERE c.coordonnee = ?1"),
-   @NamedQuery(name = "Collaborateur.findByEtablissement",
-      query = "SELECT c FROM Collaborateur c " + "WHERE c.etablissement = ?1"),
-   @NamedQuery(name = "Collaborateur.findByEtablissementWithOrder",
-      query = "SELECT c FROM Collaborateur c " + "WHERE c.etablissement = ?1 " + "ORDER BY c.nom, c.prenom"),
-   @NamedQuery(name = "Collaborateur.findByEtablissementArchiveWithOrder",
-      query = "SELECT c FROM Collaborateur c " + "WHERE c.etablissement = ?1 " + "AND c.archive = ?2 "
-         + "ORDER BY c.nom, c.prenom"),
-   @NamedQuery(name = "Collaborateur.findBySpecialite", query = "SELECT c FROM Collaborateur c " + "WHERE c.specialite = ?1"),
-   @NamedQuery(name = "Collaborateur.findByTitre", query = "SELECT c FROM Collaborateur c " + "WHERE c.titre = ?1"),
-   @NamedQuery(name = "Collaborateur.findByServiceIdWithOrder",
-      query = "SELECT c FROM Collaborateur c " + "left join c.services s " + "WHERE s.serviceId = ?1 "
-         + "ORDER BY c.nom, c.prenom"),
-   @NamedQuery(name = "Collaborateur.findByServiceIdArchiveWithOrder",
-      query = "SELECT c FROM Collaborateur c " + "left join c.services s " + "WHERE s.serviceId = ?1 " + "AND c.archive = ?2 "
-         + "ORDER BY c.nom, c.prenom"),
-   @NamedQuery(name = "Collaborateur.findByServiceId",
-      query = "SELECT c FROM Collaborateur c " + "left join c.services s " + "WHERE s.serviceId = ?1"),
-   @NamedQuery(name = "Collaborateur.findByPlateformeId",
-      query = "SELECT c FROM Collaborateur c " + "left join c.plateformes p " + "WHERE p.plateformeId = ?1"),
-   @NamedQuery(name = "Collaborateur.findByBanqueId",
-      query = "SELECT c FROM Collaborateur c " + "left join c.banques b " + "WHERE b.banqueId = ?1"),
-   @NamedQuery(name = "Collaborateur.findByUtilisateurId",
-      query = "SELECT c FROM Collaborateur c " + "left join c.utilisateurs u " + "WHERE u.utilisateurId = ?1"),
-   @NamedQuery(name = "Collaborateur.findByCollaborateurWithoutService",
-      query = "SELECT c FROM Collaborateur c " + "left JOIN c.services s WHERE s is null"),
-   @NamedQuery(name = "Collaborateur.findByEtablissementNoService",
-      query = "SELECT c FROM Collaborateur c " + "left JOIN c.services s WHERE s is null " + "AND c.etablissement = ?1"),
-   @NamedQuery(name = "Collaborateur.findByCollaborateurWithoutServiceAndArchive",
-      query = "SELECT c FROM Collaborateur c " + "left JOIN c.services s WHERE s is null " + "AND c.archive = ?1"),
-   @NamedQuery(name = "Collaborateur.findByIdWithFetch",
-      query = "SELECT c FROM Collaborateur c LEFT JOIN FETCH " + "c.etablissement LEFT JOIN FETCH c.coordonnees "
-         + "LEFT JOIN FETCH c.specialite LEFT JOIN FETCH c.titre " + "WHERE c.collaborateurId = ?1"),
-   @NamedQuery(name = "Collaborateur.findCountByEtablissement",
-      query = "SELECT count(c) FROM Collaborateur c " + "WHERE c.etablissement = (?1)"),
-   /*	@NamedQuery(name = "Collaborateur.findByVilleLikeManager", 
-   				query = "SELECT c FROM Collaborateur c " 
-   					+ "WHERE c.coordonnee.ville like ?1 " 
-   					+ "ORDER BY c.nom")*/
-   @NamedQuery(name = "Collaborateur.findByVille",
-      query = "SELECT c FROM Collaborateur c " + "left join c.coordonnees s " + "WHERE s.ville like ?1 " + "ORDER BY c.nom")})
+//@NamedQueries(value = {@NamedQuery(name = "Collaborateur.findByOrder", query = "SELECT c FROM Collaborateur c ORDER BY c.nom"),
+//   @NamedQuery(name = "Collaborateur.findByNom", query = "SELECT c FROM Collaborateur c WHERE c.nom like ?1"),
+//   @NamedQuery(name = "Collaborateur.findByPrenom", query = "SELECT c FROM Collaborateur c WHERE c.prenom like ?1"),
+//   @NamedQuery(name = "Collaborateur.findByArchive",
+//      query = "SELECT c FROM Collaborateur c WHERE c.archive " + "= ?1 ORDER BY c.nom, c.prenom"),
+//   @NamedQuery(name = "Collaborateur.findByExcludedId",
+//      query = "SELECT c FROM Collaborateur c " + "WHERE c.collaborateurId != ?1"),
+//   @NamedQuery(name = "Collaborateur.findCountByServiceId",
+//      query = "SELECT count(c) FROM Collaborateur c " + "left join c.services s " + "WHERE s.serviceId = ?1"),
+//   //		@NamedQuery(name = "Collaborateur.findByCoordonnee", 
+//   //				query = "SELECT c FROM Collaborateur c " 
+//   //					+ "WHERE c.coordonnee = ?1"),
+//   @NamedQuery(name = "Collaborateur.findByEtablissement",
+//      query = "SELECT c FROM Collaborateur c " + "WHERE c.etablissement = ?1"),
+//   @NamedQuery(name = "Collaborateur.findByEtablissementWithOrder",
+//      query = "SELECT c FROM Collaborateur c " + "WHERE c.etablissement = ?1 " + "ORDER BY c.nom, c.prenom"),
+//   @NamedQuery(name = "Collaborateur.findByEtablissementArchiveWithOrder",
+//      query = "SELECT c FROM Collaborateur c " + "WHERE c.etablissement = ?1 " + "AND c.archive = ?2 "
+//         + "ORDER BY c.nom, c.prenom"),
+//   @NamedQuery(name = "Collaborateur.findBySpecialite", query = "SELECT c FROM Collaborateur c " + "WHERE c.specialite = ?1"),
+//   @NamedQuery(name = "Collaborateur.findByTitre", query = "SELECT c FROM Collaborateur c " + "WHERE c.titre = ?1"),
+//   @NamedQuery(name = "Collaborateur.findByServiceIdWithOrder",
+//      query = "SELECT c FROM Collaborateur c " + "left join c.services s " + "WHERE s.serviceId = ?1 "
+//         + "ORDER BY c.nom, c.prenom"),
+//   @NamedQuery(name = "Collaborateur.findByServiceIdArchiveWithOrder",
+//      query = "SELECT c FROM Collaborateur c " + "left join c.services s " + "WHERE s.serviceId = ?1 " + "AND c.archive = ?2 "
+//         + "ORDER BY c.nom, c.prenom"),
+//   @NamedQuery(name = "Collaborateur.findByServiceId",
+//      query = "SELECT c FROM Collaborateur c " + "left join c.services s " + "WHERE s.serviceId = ?1"),
+//   @NamedQuery(name = "Collaborateur.findByPlateformeId",
+//      query = "SELECT c FROM Collaborateur c " + "left join c.plateformes p " + "WHERE p.plateformeId = ?1"),
+//   @NamedQuery(name = "Collaborateur.findByBanqueId",
+//      query = "SELECT c FROM Collaborateur c " + "left join c.banques b " + "WHERE b.banqueId = ?1"),
+//   @NamedQuery(name = "Collaborateur.findByUtilisateurId",
+//      query = "SELECT c FROM Collaborateur c " + "left join c.utilisateurs u " + "WHERE u.utilisateurId = ?1"),
+//   @NamedQuery(name = "Collaborateur.findByCollaborateurWithoutService",
+//      query = "SELECT c FROM Collaborateur c " + "left JOIN c.services s WHERE s is null"),
+//   @NamedQuery(name = "Collaborateur.findByEtablissementNoService",
+//      query = "SELECT c FROM Collaborateur c " + "left JOIN c.services s WHERE s is null " + "AND c.etablissement = ?1"),
+//   @NamedQuery(name = "Collaborateur.findByCollaborateurWithoutServiceAndArchive",
+//      query = "SELECT c FROM Collaborateur c " + "left JOIN c.services s WHERE s is null " + "AND c.archive = ?1"),
+//   @NamedQuery(name = "Collaborateur.findByIdWithFetch",
+//      query = "SELECT c FROM Collaborateur c LEFT JOIN FETCH " + "c.etablissement LEFT JOIN FETCH c.coordonnees "
+//         + "LEFT JOIN FETCH c.specialite LEFT JOIN FETCH c.titre " + "WHERE c.collaborateurId = ?1"),
+//   @NamedQuery(name = "Collaborateur.findCountByEtablissement",
+//      query = "SELECT count(c) FROM Collaborateur c " + "WHERE c.etablissement = (?1)"),
+//   /*	@NamedQuery(name = "Collaborateur.findByVilleLikeManager", 
+//   				query = "SELECT c FROM Collaborateur c " 
+//   					+ "WHERE c.coordonnee.ville like ?1 " 
+//   					+ "ORDER BY c.nom")*/
+//   @NamedQuery(name = "Collaborateur.findByVille",
+//      query = "SELECT c FROM Collaborateur c " + "left join c.coordonnees s " + "WHERE s.ville like ?1 " + "ORDER BY c.nom")})
 public class Collaborateur implements TKdataObject, TKFantomableObject, java.io.Serializable
 {
 

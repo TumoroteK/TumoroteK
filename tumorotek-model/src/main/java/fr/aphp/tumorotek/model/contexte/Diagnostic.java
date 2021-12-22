@@ -60,7 +60,7 @@ import fr.aphp.tumorotek.model.coeur.patient.serotk.MaladieSero;
  * Classe créée le 05/06/2018
  *
  * @author Answald Bournique
- * @version 2.2.0
+ * @version 2.3
  * @since 2.2.0
  *
  */
@@ -68,11 +68,11 @@ import fr.aphp.tumorotek.model.coeur.patient.serotk.MaladieSero;
 @Table(name = "DIAGNOSTIC")
 @AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "DIAGNOSTIC_ID"))})
 @GenericGenerator(name = "autoincrement", strategy = "increment")
-@NamedQueries(value = {
-   @NamedQuery(name = "Diagnostic.findByNom", query = "SELECT p FROM Diagnostic p WHERE p.nom like ?1 " + "order by p.nom"),
-   @NamedQuery(name = "Diagnostic.findByExcludedId", query = "SELECT p FROM Diagnostic p " + "WHERE p.id != ?1"),
-   @NamedQuery(name = "Diagnostic.findByOrder", query = "SELECT p FROM Diagnostic p " + "ORDER BY p.nom"), 
-   @NamedQuery(name = "Diagnostic.findByPfOrder", query = "SELECT p FROM Diagnostic p " + "WHERE p.plateforme = ?1 ORDER BY p.nom")})
+//@NamedQueries(value = {
+//   @NamedQuery(name = "Diagnostic.findByNom", query = "SELECT p FROM Diagnostic p WHERE p.nom like ?1 " + "order by p.nom"),
+//   @NamedQuery(name = "Diagnostic.findByExcludedId", query = "SELECT p FROM Diagnostic p " + "WHERE p.id != ?1"),
+//   @NamedQuery(name = "Diagnostic.findByOrder", query = "SELECT p FROM Diagnostic p " + "ORDER BY p.nom"), 
+//   @NamedQuery(name = "Diagnostic.findByPfOrder", query = "SELECT p FROM Diagnostic p " + "WHERE p.plateforme = ?1 ORDER BY p.nom")})
 public class Diagnostic extends AbstractPfDependantThesaurusObject implements Serializable
 {
 

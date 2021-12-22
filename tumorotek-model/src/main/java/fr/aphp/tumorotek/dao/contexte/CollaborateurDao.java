@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.contexte;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Etablissement;
 import fr.aphp.tumorotek.model.contexte.Specialite;
@@ -50,192 +53,240 @@ import fr.aphp.tumorotek.model.contexte.Titre;
  * Date: 09/09/2009
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  */
-public interface CollaborateurDao extends GenericDaoJpa<Collaborateur, Integer>
-{
+@Repository
+public interface CollaborateurDao extends CrudRepository<Collaborateur, Integer> {
 
-   /**
-    * Recherche tous les collaborateurs ordonnés par nom.
-    * @return une liste ordonnée de collaborateurs.
-    */
-   List<Collaborateur> findByOrder();
+	/**
+	 * Recherche tous les collaborateurs ordonnés par nom.
+	 * 
+	 * @return une liste ordonnée de collaborateurs.
+	 */
+	@Query("SELECT c FROM Collaborateur c ORDER BY c.nom")
+	List<Collaborateur> findByOrder();
 
-   /**
-    * Recherche les collaborateurs dont le nom est égal au paramètre.
-    * @param nom pour lequel on recherche des collaborateurs.
-    * @return une liste de collaborateurs.
-    */
-   List<Collaborateur> findByNom(String nom);
+	/**
+	 * Recherche les collaborateurs dont le nom est égal au paramètre.
+	 * 
+	 * @param nom pour lequel on recherche des collaborateurs.
+	 * @return une liste de collaborateurs.
+	 */
+	@Query("SELECT c FROM Collaborateur c WHERE c.nom like ?1")
+	List<Collaborateur> findByNom(String nom);
 
-   /**
-    * Recherche les collaborateurs dont le prénom est égal au paramètre.
-    * @param prenom pour lequel on recherche des collaborateurs.
-    * @return une liste de collaborateurs.
-    */
-   List<Collaborateur> findByPrenom(String prenom);
+	/**
+	 * Recherche les collaborateurs dont le prénom est égal au paramètre.
+	 * 
+	 * @param prenom pour lequel on recherche des collaborateurs.
+	 * @return une liste de collaborateurs.
+	 */
+	@Query("SELECT c FROM Collaborateur c WHERE c.prenom like ?1")
+	List<Collaborateur> findByPrenom(String prenom);
 
-   /**
-    * Recherche les collaborateurs archivés.
-    * @param archive .
-    * @return une liste de collaborateurs ordonnée.
-    */
-   List<Collaborateur> findByArchive(boolean archive);
+	/**
+	 * Recherche les collaborateurs archivés.
+	 * 
+	 * @param archive .
+	 * @return une liste de collaborateurs ordonnée.
+	 */
+	@Query("SELECT c FROM Collaborateur c WHERE c.archive = ?1 ORDER BY c.nom, c.prenom")
+	List<Collaborateur> findByArchive(boolean archive);
 
-   //	/**
-   //	 * Recherche les collaborateurs dont les coordonnées sont 
-   //	 * passées en paramètre.
-   //	 * @param coordonneeId pour lesquelles on recherche des collaborateurs.
-   //	 * @return une liste de collaborateurs.
-   //	 */
-   //	List<Collaborateur> findByCoordonneeId(Integer coordonneeId);
+	// /**
+	// * Recherche les collaborateurs dont les coordonnées sont
+	// * passées en paramètre.
+	// * @param coordonneeId pour lesquelles on recherche des collaborateurs.
+	// * @return une liste de collaborateurs.
+	// */
+	// List<Collaborateur> findByCoordonneeId(Integer coordonneeId);
 
-   /**
-    * Recherche tous les collaborateurs sauf celui dont l'id est passé 
-    * en paramètre.
-    * @param collaborateurId Identifiant du collaborateur que l'on souhaite
-    * exclure de la liste retournée.
-    * @return une liste de collaborateurs.
-    */
-   List<Collaborateur> findByExcludedId(Integer collaborateurId);
+	/**
+	 * Recherche tous les collaborateurs sauf celui dont l'id est passé en
+	 * paramètre.
+	 * 
+	 * @param collaborateurId Identifiant du collaborateur que l'on souhaite exclure
+	 *                        de la liste retournée.
+	 * @return une liste de collaborateurs.
+	 */
+	@Query("SELECT c FROM Collaborateur c WHERE c.collaborateurId != ?1")
+	List<Collaborateur> findByExcludedId(Integer collaborateurId);
 
-   /**
-    * Recherche les collaborateurs dont l'établissement est passé en paramètre.
-    * @param etablissement Etablissement pour lequel on recherche 
-    * des collaborateurs.
-    * @return une liste de collaborateurs.
-    */
-   List<Collaborateur> findByEtablissement(Etablissement etablissement);
+	/**
+	 * Recherche les collaborateurs dont l'établissement est passé en paramètre.
+	 * 
+	 * @param etablissement Etablissement pour lequel on recherche des
+	 *                      collaborateurs.
+	 * @return une liste de collaborateurs.
+	 */
+	@Query("SELECT c FROM Collaborateur c WHERE c.etablissement = ?1")
+	List<Collaborateur> findByEtablissement(Etablissement etablissement);
 
-   /**
-    * Recherche les collaborateurs ordonnées par nom dont l'établissement 
-    * est passé en paramètre.
-    * @param etablissement Etablissement pour lequel on recherche 
-    * des collaborateurs.
-    * @return une liste ordonnée de collaborateurs.
-    */
-   List<Collaborateur> findByEtablissementWithOrder(Etablissement etablissement);
+	/**
+	 * Recherche les collaborateurs ordonnées par nom dont l'établissement est passé
+	 * en paramètre.
+	 * 
+	 * @param etablissement Etablissement pour lequel on recherche des
+	 *                      collaborateurs.
+	 * @return une liste ordonnée de collaborateurs.
+	 */
+	@Query("SELECT c FROM Collaborateur c WHERE c.etablissement = ?1 ORDER BY c.nom, c.prenom")
+	List<Collaborateur> findByEtablissementWithOrder(Etablissement etablissement);
 
-   /**
-    * Recherche les collaborateurs ordonnées par nom dont l'établissement 
-    * est passé en paramètre et sont archivés ou non.
-    * @param etablissement Etablissement pour lequel on recherche 
-    * des collaborateurs.
-    * @param archive True si le collaborateur est inactif.
-    * @return une liste ordonnée de collaborateurs.
-    */
-   List<Collaborateur> findByEtablissementArchiveWithOrder(Etablissement etablissement, boolean archive);
+	/**
+	 * Recherche les collaborateurs ordonnées par nom dont l'établissement est passé
+	 * en paramètre et sont archivés ou non.
+	 * 
+	 * @param etablissement Etablissement pour lequel on recherche des
+	 *                      collaborateurs.
+	 * @param archive       True si le collaborateur est inactif.
+	 * @return une liste ordonnée de collaborateurs.
+	 */
+	@Query("SELECT c FROM Collaborateur c WHERE c.etablissement = ?1 AND c.archive = ?2 " + "ORDER BY c.nom, c.prenom")
+	List<Collaborateur> findByEtablissementArchiveWithOrder(Etablissement etablissement, boolean archive);
 
-   /**
-    * Recherche les collaborateurs dont la spécialité est passée en paramètre.
-    * @param specialite pour laquelle on recherche des collaborateurs.
-    * @return une liste de collaborateurs.
-    */
-   List<Collaborateur> findBySpecialite(Specialite spec);
+	/**
+	 * Recherche les collaborateurs dont la spécialité est passée en paramètre.
+	 * 
+	 * @param specialite pour laquelle on recherche des collaborateurs.
+	 * @return une liste de collaborateurs.
+	 */
+	@Query("SELECT c FROM Collaborateur c WHERE c.specialite = ?1")
+	List<Collaborateur> findBySpecialite(Specialite spec);
 
-   /**
-    * Recherche les collaborateurs dont le titre est passé en paramètre.
-    * @param titre pour lequel on recherche des collaborateurs.
-    * @return une liste de collaborateurs.
-    */
-   List<Collaborateur> findByTitre(Titre t);
+	/**
+	 * Recherche les collaborateurs dont le titre est passé en paramètre.
+	 * 
+	 * @param titre pour lequel on recherche des collaborateurs.
+	 * @return une liste de collaborateurs.
+	 */
+	@Query("SELECT c FROM Collaborateur c WHERE c.titre = ?1")
+	List<Collaborateur> findByTitre(Titre t);
 
-   /**
-    * Recherche les collaborateurs dont un service est passé en paramètre.
-    * @param serviceId pour lequel on recherche des collaborateurs.
-    * @return une liste de collaborateurs.
-    */
-   List<Collaborateur> findByServiceId(Integer serviceId);
+	/**
+	 * Recherche les collaborateurs dont un service est passé en paramètre.
+	 * 
+	 * @param serviceId pour lequel on recherche des collaborateurs.
+	 * @return une liste de collaborateurs.
+	 */
+	@Query("SELECT c FROM Collaborateur c left join c.services s WHERE s.serviceId = ?1")
+	List<Collaborateur> findByServiceId(Integer serviceId);
 
-   /**
-    * Recherche les collaborateurs dont un service est passé en paramètre.
-    * @param serviceId pour lequel on recherche des collaborateurs.
-    * @return une liste de collaborateurs.
-    */
-   List<Long> findCountByServiceId(Integer serviceId);
+	/**
+	 * Recherche les collaborateurs dont un service est passé en paramètre.
+	 * 
+	 * @param serviceId pour lequel on recherche des collaborateurs.
+	 * @return une liste de collaborateurs.
+	 */
+	@Query("SELECT count(c) FROM Collaborateur c left join c.services s WHERE s.serviceId = ?1")
+	List<Long> findCountByServiceId(Integer serviceId);
 
-   /**
-    * Recherche les collaborateurs ordonnés par nom et prénom 
-    * dont un service est passé en paramètre.
-    * @param serviceId pour lequel on recherche des collaborateurs.
-    * @return une liste ordonnée de collaborateurs.
-    */
-   List<Collaborateur> findByServiceIdWithOrder(Integer serviceId);
+	/**
+	 * Recherche les collaborateurs ordonnés par nom et prénom dont un service est
+	 * passé en paramètre.
+	 * 
+	 * @param serviceId pour lequel on recherche des collaborateurs.
+	 * @return une liste ordonnée de collaborateurs.
+	 */
+	@Query("SELECT c FROM Collaborateur c left join c.services s WHERE s.serviceId = ?1 " + "ORDER BY c.nom, c.prenom")
+	List<Collaborateur> findByServiceIdWithOrder(Integer serviceId);
 
-   /**
-    * Recherche les collaborateurs ordonnés par nom et prénom 
-    * dont un service est passé en paramètre qui sont archivés ou non.
-    * @param serviceId pour lequel on recherche des collaborateurs.
-    * @param archive True si le collaborateur est inactif.
-    * @return une liste ordonnée de collaborateurs.
-    */
-   List<Collaborateur> findByServiceIdArchiveWithOrder(Integer serviceId, boolean archive);
+	/**
+	 * Recherche les collaborateurs ordonnés par nom et prénom dont un service est
+	 * passé en paramètre qui sont archivés ou non.
+	 * 
+	 * @param serviceId pour lequel on recherche des collaborateurs.
+	 * @param archive   True si le collaborateur est inactif.
+	 * @return une liste ordonnée de collaborateurs.
+	 */
+	@Query("SELECT c FROM Collaborateur c left join c.services s WHERE s.serviceId = ?1 AND c.archive = ?2 "
+			+ "ORDER BY c.nom, c.prenom")
+	List<Collaborateur> findByServiceIdArchiveWithOrder(Integer serviceId, boolean archive);
 
-   /**
-    * Recherche les collaborateurs dont une plateforme est passée en paramètre.
-    * @param plateformeId pour laquelle on recherche des collaborateurs.
-    * @return une liste de collaborateurs.
-    */
-   List<Collaborateur> findByPlateformeId(Integer plateformeId);
+	/**
+	 * Recherche les collaborateurs dont une plateforme est passée en paramètre.
+	 * 
+	 * @param plateformeId pour laquelle on recherche des collaborateurs.
+	 * @return une liste de collaborateurs.
+	 */
+	@Query("SELECT c FROM Collaborateur c left join c.plateformes p WHERE p.plateformeId = ?1")
+	List<Collaborateur> findByPlateformeId(Integer plateformeId);
 
-   /**
-    * Recherche les collaborateurs dont une banque est passée en paramètre.
-    * @param banqueId pour laquelle on recherche des collaborateurs.
-    * @return une liste de collaborateurs.
-    */
-   List<Collaborateur> findByBanqueId(Integer banqueId);
+	/**
+	 * Recherche les collaborateurs dont une banque est passée en paramètre.
+	 * 
+	 * @param banqueId pour laquelle on recherche des collaborateurs.
+	 * @return une liste de collaborateurs.
+	 */
+	@Query("SELECT c FROM Collaborateur c left join c.banques b WHERE b.banqueId = ?1")
+	List<Collaborateur> findByBanqueId(Integer banqueId);
 
-   /**
-    * Recherche les collaborateurs dont un utilisateur est passé en paramètre.
-    * @param utilisateurId pour lequel on recherche des collaborateurs.
-    * @return une liste de collaborateurs.
-    */
-   List<Collaborateur> findByUtilisateurId(Integer utilisateurId);
+	/**
+	 * Recherche les collaborateurs dont un utilisateur est passé en paramètre.
+	 * 
+	 * @param utilisateurId pour lequel on recherche des collaborateurs.
+	 * @return une liste de collaborateurs.
+	 */
+	@Query("SELECT c FROM Collaborateur c left join c.utilisateurs u WHERE u.utilisateurId = ?1")
+	List<Collaborateur> findByUtilisateurId(Integer utilisateurId);
 
-   /**
-    * Recherche le collaborateur dont l'identifiant passé en paramètre.
-    * Les associations avec les tables ETABLISSEMENT, COORDONNEE, SPECIALITE,
-    * TITRE seront chargées par l'intermédiaire d'un fetch.
-    * @param collaborateurId est l'identifiant du collaborateur recherché.
-    * @return un collaborateur.
-    */
-   List<Collaborateur> findByIdWithFetch(Integer collaborateurId);
+	/**
+	 * Recherche le collaborateur dont l'identifiant passé en paramètre. Les
+	 * associations avec les tables ETABLISSEMENT, COORDONNEE, SPECIALITE, TITRE
+	 * seront chargées par l'intermédiaire d'un fetch.
+	 * 
+	 * @param collaborateurId est l'identifiant du collaborateur recherché.
+	 * @return un collaborateur.
+	 */
+	@Query("SELECT c FROM Collaborateur c LEFT JOIN FETCH c.etablissement LEFT JOIN FETCH c.coordonnees "
+			+ "LEFT JOIN FETCH c.specialite LEFT JOIN FETCH c.titre WHERE c.collaborateurId = ?1")
+	List<Collaborateur> findByIdWithFetch(Integer collaborateurId);
 
-   /**
-    * Recherche les collaborateurs qui n'ont pas de services.
-    * @return une liste de collaborateurs.
-    */
-   List<Collaborateur> findByCollaborateurWithoutService();
+	/**
+	 * Recherche les collaborateurs qui n'ont pas de services.
+	 * 
+	 * @return une liste de collaborateurs.
+	 */
+	@Query("SELECT c FROM Collaborateur c left JOIN c.services s WHERE s is null")
+	List<Collaborateur> findByCollaborateurWithoutService();
 
-   /**
-    * Recherche les collaborateurs qui n'ont pas de services et qui sont
-    * archivés ou non.
-    * @param archive True si le collaborateur est inactif.
-    * @return une liste de collaborateurs.
-    */
-   List<Collaborateur> findByCollaborateurWithoutServiceAndArchive(boolean archive);
+	/**
+	 * Recherche les collaborateurs qui n'ont pas de services et qui sont archivés
+	 * ou non.
+	 * 
+	 * @param archive True si le collaborateur est inactif.
+	 * @return une liste de collaborateurs.
+	 */
+	@Query("SELECT c FROM Collaborateur c left JOIN c.services s WHERE s is null AND c.archive = ?1")
+	List<Collaborateur> findByCollaborateurWithoutServiceAndArchive(boolean archive);
 
-   /**
-    * Recherche les collaborateurs qui n'ont pas de services pour 
-    * un établissement donné.
-    * @param établissement
-    * @return une liste de collaborateurs.
-    */
-   List<Collaborateur> findByEtablissementNoService(Etablissement etab);
+	/**
+	 * Recherche les collaborateurs qui n'ont pas de services pour un établissement
+	 * donné.
+	 * 
+	 * @param établissement
+	 * @return une liste de collaborateurs.
+	 */
+	@Query("SELECT c FROM Collaborateur c left JOIN c.services s WHERE s is null AND c.etablissement = ?1")
+	List<Collaborateur> findByEtablissementNoService(Etablissement etab);
 
-   /**
-    * Recherche les collaborateurs dont l'etablissement est passé en paramètre.
-    * @param serviceId pour lequel on recherche des collaborateurs.
-    * @return une liste de collaborateurs.
-    */
-   List<Long> findCountByEtablissement(Etablissement etal);
+	/**
+	 * Recherche les collaborateurs dont l'etablissement est passé en paramètre.
+	 * 
+	 * @param serviceId pour lequel on recherche des collaborateurs.
+	 * @return une liste de collaborateurs.
+	 */
+	@Query("SELECT count(c) FROM Collaborateur c WHERE c.etablissement = (?1)")
+	List<Long> findCountByEtablissement(Etablissement etal);
 
-   /**
-    * Recherche une liste de collaborateurs dont la ville contient
-    * le nom est passé en paramètre.
-    * @param non de la ville pour laquelle on recherche des Collaborateurs.
-    * @return Liste de Collaborateurs.
-    */
-   List<Collaborateur> findByVille(String ville);
+	/**
+	 * Recherche une liste de collaborateurs dont la ville contient le nom est passé
+	 * en paramètre.
+	 * 
+	 * @param non de la ville pour laquelle on recherche des Collaborateurs.
+	 * @return Liste de Collaborateurs.
+	 */
+	@Query("SELECT c FROM Collaborateur c left join c.coordonnees s WHERE s.ville like ?1 ORDER BY c.nom")
+	List<Collaborateur> findByVille(String ville);
 
 }

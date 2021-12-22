@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.contexte;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.dao.TKThesaurusDao;
 import fr.aphp.tumorotek.model.contexte.Specialite;
 
@@ -47,40 +50,49 @@ import fr.aphp.tumorotek.model.contexte.Specialite;
  * Date: 09/09/2009
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface SpecialiteDao extends GenericDaoJpa<Specialite, Integer>, TKThesaurusDao<Specialite>
-{
+@Repository
+public interface SpecialiteDao extends CrudRepository<Specialite, Integer>, TKThesaurusDao<Specialite> {
 
-   /**
-    * Recherche les spécialités dont le nom est égal au paramètre.
-    * @param nom pour lequel on recherche des spécialités.
-    * @return une liste de spécialités.
-    */
-   List<Specialite> findByNom(String nom);
+	/**
+	 * Recherche les spécialités dont le nom est égal au paramètre.
+	 * 
+	 * @param nom pour lequel on recherche des spécialités.
+	 * @return une liste de spécialités.
+	 */
+	@Query("SELECT s FROM Specialite s WHERE s.nom like ?1")
+	List<Specialite> findByNom(String nom);
 
-   /**
-    * Recherche la spécialité associée au collaborateur dont l'id est
-    * passé en paramètre.
-    * @param collaborateurId est l'id du collaborateur pour lequel on recherche
-    * les spécialités.
-    * @return une liste de spécialités (de taille 1).
-    */
-   List<Specialite> findByCollaborateurId(Integer collaborateurId);
+	/**
+	 * Recherche la spécialité associée au collaborateur dont l'id est passé en
+	 * paramètre.
+	 * 
+	 * @param collaborateurId est l'id du collaborateur pour lequel on recherche les
+	 *                        spécialités.
+	 * @return une liste de spécialités (de taille 1).
+	 */
+	@Query("SELECT s FROM Specialite s left join s.collaborateurs c WHERE c.collaborateurId = ?1")
+	List<Specialite> findByCollaborateurId(Integer collaborateurId);
 
-   /**
-    * Recherche toutes les Specialites ordonnées.
-    * @return Liste ordonnée de Specialites.
-    */
-   List<Specialite> findByOrder();
+	/**
+	 * Recherche toutes les Specialites ordonnées.
+	 * 
+	 * @return Liste ordonnée de Specialites.
+	 */
+	@Override
+	@Query("SELECT s FROM Specialite s ORDER BY s.nom")
+	List<Specialite> findByOrder();
 
-   /**
-    * Recherche toutes les Specialites sauf celle dont
-    * l'identifiant est passé en paramètre.
-    * @param id Identifiant de la Specialite à exclure.
-    * @return Liste de Specialites.
-    */
-   List<Specialite> findByExcludedId(Integer id);
+	/**
+	 * Recherche toutes les Specialites sauf celle dont l'identifiant est passé en
+	 * paramètre.
+	 * 
+	 * @param id Identifiant de la Specialite à exclure.
+	 * @return Liste de Specialites.
+	 */
+	@Query("SELECT s FROM Specialite s WHERE s.id != ?1")
+	List<Specialite> findByExcludedId(Integer id);
 
 }

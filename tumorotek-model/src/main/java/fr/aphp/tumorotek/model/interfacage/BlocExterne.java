@@ -57,16 +57,16 @@ import org.hibernate.annotations.GenericGenerator;
  * Classe créée le 05/10/11.
  *
  * @author Pierre Ventadour
- * @version 2.1
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "BLOC_EXTERNE")
-@NamedQueries(value = {
-   @NamedQuery(name = "BlocExterne.findByDossierExterne",
-      query = "SELECT b FROM BlocExterne b " + "WHERE b.dossierExterne = ?1 " + "ORDER BY b.ordre"),
-   @NamedQuery(name = "BlocExterne.findByDossierExterneAndEntite",
-      query = "SELECT b FROM BlocExterne b " + "WHERE b.dossierExterne = ?1 " + "AND b.entiteId = ?2 " + "ORDER BY b.ordre")})
+//@NamedQueries(value = {
+//   @NamedQuery(name = "BlocExterne.findByDossierExterne",
+//      query = "SELECT b FROM BlocExterne b " + "WHERE b.dossierExterne = ?1 " + "ORDER BY b.ordre"),
+//   @NamedQuery(name = "BlocExterne.findByDossierExterneAndEntite",
+//      query = "SELECT b FROM BlocExterne b " + "WHERE b.dossierExterne = ?1 " + "AND b.entiteId = ?2 " + "ORDER BY b.ordre")})
 public class BlocExterne implements java.io.Serializable
 {
 

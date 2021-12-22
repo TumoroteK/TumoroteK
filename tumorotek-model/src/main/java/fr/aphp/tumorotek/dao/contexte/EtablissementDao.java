@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.contexte;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.contexte.Categorie;
 import fr.aphp.tumorotek.model.contexte.Coordonnee;
 import fr.aphp.tumorotek.model.contexte.Etablissement;
@@ -48,110 +51,132 @@ import fr.aphp.tumorotek.model.contexte.Etablissement;
  * Date: 09/09/2009
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface EtablissementDao extends GenericDaoJpa<Etablissement, Integer>
-{
+@Repository
+public interface EtablissementDao extends CrudRepository<Etablissement, Integer> {
 
-   /**
-    * Recherche tous les établissements ordonnés par nom.
-    * @return une liste ordonnée d'établissements.
-    */
-   List<Etablissement> findByOrder();
+	/**
+	 * Recherche tous les établissements ordonnés par nom.
+	 * 
+	 * @return une liste ordonnée d'établissements.
+	 */
+	@Query("SELECT e FROM Etablissement e ORDER BY e.nom")
+	List<Etablissement> findByOrder();
 
-   /**
-    * Recherche les établissements dont le nom est égal au paramètre.
-    * @param nom pour lequel on recherche des établissements.
-    * @return une liste d'établissements.
-    */
-   List<Etablissement> findByNom(String nom);
+	/**
+	 * Recherche les établissements dont le nom est égal au paramètre.
+	 * 
+	 * @param nom pour lequel on recherche des établissements.
+	 * @return une liste d'établissements.
+	 */
+	@Query("SELECT e FROM Etablissement e WHERE e.nom like ?1 ORDER BY e.nom")
+	List<Etablissement> findByNom(String nom);
 
-   /**
-    * Recherche les établissements dont le finess est égal au paramètre.
-    * @param finess pour lequel on recherche des établissements.
-    * @return une liste d'établissements.
-    */
-   List<Etablissement> findByFiness(String finess);
+	/**
+	 * Recherche les établissements dont le finess est égal au paramètre.
+	 * 
+	 * @param finess pour lequel on recherche des établissements.
+	 * @return une liste d'établissements.
+	 */
+	@Query("SELECT e FROM Etablissement e WHERE e.finess like ?1")
+	List<Etablissement> findByFiness(String finess);
 
-   /**
-    * Recherche les établissements qui sont locaux.
-    * @param local .
-    * @return une liste d'établissements.
-    */
-   List<Etablissement> findByLocal(boolean local);
+	/**
+	 * Recherche les établissements qui sont locaux.
+	 * 
+	 * @param local .
+	 * @return une liste d'établissements.
+	 */
+	@Query("SELECT e FROM Etablissement e WHERE e.local = ?1")
+	List<Etablissement> findByLocal(boolean local);
 
-   /**
-    * Recherche les établissements archivés.
-    * @param archive .
-    * @return une liste d'établissements.
-    */
-   List<Etablissement> findByArchiveWithOrder(boolean archive);
+	/**
+	 * Recherche les établissements archivés.
+	 * 
+	 * @param archive .
+	 * @return une liste d'établissements.
+	 */
+	@Query("SELECT e FROM Etablissement e WHERE e.archive = ?1 ORDER BY e.nom")
+	List<Etablissement> findByArchiveWithOrder(boolean archive);
 
-   /**
-    * Recherche les établissements dont les coordonnées 
-    * sont passées en paramètre.
-    * @param coordonnee pour lesquelles on recherche un établissement.
-    * @return une liste d'établissements.
-    */
-   List<Etablissement> findByCoordonnee(Coordonnee coordonnee);
+	/**
+	 * Recherche les établissements dont les coordonnées sont passées en paramètre.
+	 * 
+	 * @param coordonnee pour lesquelles on recherche un établissement.
+	 * @return une liste d'établissements.
+	 */
+	@Query("SELECT e FROM Etablissement e WHERE e.coordonnee = ?1")
+	List<Etablissement> findByCoordonnee(Coordonnee coordonnee);
 
-   /**
-    * Recherche les établissements dont la ville
-    * est passée en paramètre.
-    * @param ville Ville pour laquelle on recherche des établissements.
-    * @return une liste d'établissements.
-    */
-   List<Etablissement> findByVille(String ville);
+	/**
+	 * Recherche les établissements dont la ville est passée en paramètre.
+	 * 
+	 * @param ville Ville pour laquelle on recherche des établissements.
+	 * @return une liste d'établissements.
+	 */
+	@Query("SELECT e FROM Etablissement e WHERE e.coordonnee.ville like ?1 ORDER BY e.nom")
+	List<Etablissement> findByVille(String ville);
 
-   /**
-    * Recherche les établissements dont la catégorie est passée en paramètre.
-    * @param categorie pour laquelle on recherche des établissements.
-    * @return une liste d'établissements.
-    */
-   List<Etablissement> findByCategorie(Categorie categorie);
+	/**
+	 * Recherche les établissements dont la catégorie est passée en paramètre.
+	 * 
+	 * @param categorie pour laquelle on recherche des établissements.
+	 * @return une liste d'établissements.
+	 */
+	@Query("SELECT e FROM Etablissement e WHERE e.categorie = ?1")
+	List<Etablissement> findByCategorie(Categorie categorie);
 
-   /**
-    * Recherche l'établissement dont l'identifiant passé en paramètre.
-    * Les associations avec les tables CATEGORIE et COORDONNEE seront chargées
-    * gpar l'intermédiaire d'un fetch.
-    * @param etablissementId est l'identifiant de l'établissement recherché.
-    * @return un établissement.
-    */
-   List<Etablissement> findByIdWithFetch(Integer etablissementId);
+	/**
+	 * Recherche l'établissement dont l'identifiant passé en paramètre. Les
+	 * associations avec les tables CATEGORIE et COORDONNEE seront chargées gpar
+	 * l'intermédiaire d'un fetch.
+	 * 
+	 * @param etablissementId est l'identifiant de l'établissement recherché.
+	 * @return un établissement.
+	 */
+	@Query("SELECT e FROM Etablissement e LEFT JOIN FETCH e.categorie LEFT JOIN FETCH e.coordonnee "
+			+ "WHERE e.etablissementId = ?1")
+	List<Etablissement> findByIdWithFetch(Integer etablissementId);
 
-   /**
-    * Recherche l'établisseent associé au service dont l'id est
-    * passé en paramètre.
-    * @param serviceId est l'id du service pour lequel on recherche
-    * les établissements.
-    * @return une liste d'établissements (de taille 1).
-    */
-   List<Etablissement> findByServiceId(Integer serviceId);
+	/**
+	 * Recherche l'établisseent associé au service dont l'id est passé en paramètre.
+	 * 
+	 * @param serviceId est l'id du service pour lequel on recherche les
+	 *                  établissements.
+	 * @return une liste d'établissements (de taille 1).
+	 */
+	@Query("SELECT e FROM Etablissement e left join e.services s WHERE s.serviceId = ?1")
+	List<Etablissement> findByServiceId(Integer serviceId);
 
-   /**
-    * Recherche l'établisseent associé au collaborateur dont l'id est
-    * passé en paramètre.
-    * @param collaborateurId est l'id du collaborateur pour lequel on recherche
-    * les établissements.
-    * @return une liste d'établissements (de taille 1).
-    */
-   List<Etablissement> findByCollaborateurId(Integer collaborateurId);
+	/**
+	 * Recherche l'établisseent associé au collaborateur dont l'id est passé en
+	 * paramètre.
+	 * 
+	 * @param collaborateurId est l'id du collaborateur pour lequel on recherche les
+	 *                        établissements.
+	 * @return une liste d'établissements (de taille 1).
+	 */
+	@Query("SELECT e FROM Etablissement e left join e.collaborateurs c WHERE c.collaborateurId = ?1")
+	List<Etablissement> findByCollaborateurId(Integer collaborateurId);
 
-   /**
-    * Recherche tous les établissements sauf celui dont l'id est passé 
-    * en paramètre.
-    * @param etablissementId Identifiant de l'établissement que l'on souhaite
-    * exclure de la liste retournée.
-    * @return une liste d'Etablissements.
-    */
-   List<Etablissement> findByExcludedId(Integer etablissementId);
+	/**
+	 * Recherche tous les établissements sauf celui dont l'id est passé en
+	 * paramètre.
+	 * 
+	 * @param etablissementId Identifiant de l'établissement que l'on souhaite
+	 *                        exclure de la liste retournée.
+	 * @return une liste d'Etablissements.
+	 */
+	@Query("SELECT e FROM Etablissement e WHERE e.etablissementId != ?1")
+	List<Etablissement> findByExcludedId(Integer etablissementId);
 
-   /**
-    * Recherche le nombre de services de l'etablissement est passé 
-    * en paramètre.
-    * @param etablissementId Identifiant de l'établissement.
-    * @return une liste sercice.
-    */
-   List<Long> findCountByServiceIdManager(Etablissement eta);
+	/**
+	 * Recherche le nombre de services de l'etablissement est passé en paramètre.
+	 * 
+	 * @param etablissementId Identifiant de l'établissement.
+	 * @return une liste sercice.
+	 */
+	List<Long> findCountByServiceIdManager(Etablissement eta);
 }

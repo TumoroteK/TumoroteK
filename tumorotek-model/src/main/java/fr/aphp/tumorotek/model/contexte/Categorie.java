@@ -59,18 +59,18 @@ import fr.aphp.tumorotek.model.AbstractThesaurusObject;
  * Classe créée le 09/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "CATEGORIE")
 @AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "CATEGORIE_ID"))})
 @GenericGenerator(name = "autoincrement", strategy = "increment")
-@NamedQueries(value = {@NamedQuery(name = "Categorie.findByNom", query = "SELECT c FROM Categorie c WHERE c.nom like ?1"),
-   @NamedQuery(name = "Categorie.findByEtablissementId",
-      query = "SELECT c FROM Categorie c " + "left join c.etablissements e " + "WHERE e.etablissementId = ?1"),
-   @NamedQuery(name = "Categorie.findByExcludedId", query = "SELECT c FROM Categorie c " + "WHERE c.id != ?1"),
-   @NamedQuery(name = "Categorie.findByOrder", query = "SELECT c FROM Categorie c ORDER BY c.nom")})
+//@NamedQueries(value = {@NamedQuery(name = "Categorie.findByNom", query = "SELECT c FROM Categorie c WHERE c.nom like ?1"),
+//   @NamedQuery(name = "Categorie.findByEtablissementId",
+//      query = "SELECT c FROM Categorie c " + "left join c.etablissements e " + "WHERE e.etablissementId = ?1"),
+//   @NamedQuery(name = "Categorie.findByExcludedId", query = "SELECT c FROM Categorie c " + "WHERE c.id != ?1"),
+//   @NamedQuery(name = "Categorie.findByOrder", query = "SELECT c FROM Categorie c ORDER BY c.nom")})
 public class Categorie  extends AbstractThesaurusObject implements Serializable
 {
 

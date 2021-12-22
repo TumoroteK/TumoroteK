@@ -37,35 +37,42 @@ package fr.aphp.tumorotek.dao.interfacage;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.interfacage.Logiciel;
 import fr.aphp.tumorotek.model.interfacage.Recepteur;
 
 /**
  *
- * Interface pour le DAO du bean de domaine RECEPTEUR.
- * Interface créée le 08/10/2014.
+ * Interface pour le DAO du bean de domaine RECEPTEUR. Interface créée le
+ * 08/10/2014.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.10.3
+ * @version 2.3
  *
  */
-public interface RecepteurDao extends GenericDaoJpa<Recepteur, Integer>
-{
+@Repository
+public interface RecepteurDao extends CrudRepository<Recepteur, Integer> {
 
-   /**
-    * Recherche les Recpteurs d'un logiciel par identification.
-    * @param logiciel Logiciel des recepteurs recherchés.
-    * @param identification Identification des recepteurs recherchés.
-    * @return Une liste de Recepteurs.
-    */
-   List<Recepteur> findByLogicielAndIdentification(Logiciel logiciel, String identification);
+	/**
+	 * Recherche les Recpteurs d'un logiciel par identification.
+	 * 
+	 * @param logiciel       Logiciel des recepteurs recherchés.
+	 * @param identification Identification des recepteurs recherchés.
+	 * @return Une liste de Recepteurs.
+	 */
+	@Query("SELECT r FROM Recepteur r " + "WHERE r.logiciel = ?1 " + "AND r.identification like ?2 "
+			+ "ORDER BY r.identification")
+	List<Recepteur> findByLogicielAndIdentification(Logiciel logiciel, String identification);
 
-   /**
-    * Recherche les Recepteurs dont les identifiants sont passés en
-    * paramètre.
-    * @param ids Liste d'identifiants.
-    * @return Liste de Recepteurs.
-    */
-   List<Recepteur> findByIdInList(List<Integer> ids);
+	/**
+	 * Recherche les Recepteurs dont les identifiants sont passés en paramètre.
+	 * 
+	 * @param ids Liste d'identifiants.
+	 * @return Liste de Recepteurs.
+	 */
+	@Query("SELECT r FROM Recepteur r " + "WHERE r.recepteurId in (?1) " + "ORDER BY r.identification")
+	List<Recepteur> findByIdInList(List<Integer> ids);
 }

@@ -64,35 +64,35 @@ import org.hibernate.annotations.GenericGenerator;
  * @author Pierre Ventadour
  * @author Mathieu BARTHELEMY
  * 
- * @version 2.2.3-genno
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "DOSSIER_EXTERNE")
-@NamedQueries(value = {
-	@NamedQuery(name = "DossierExterne.findByEmetteur",
-			query = "SELECT d FROM DossierExterne d " + "WHERE d.emetteur = ?1 " + "ORDER BY d.dateOperation"),
-	@NamedQuery(name = "DossierExterne.findByEmetteurAndIdentification",
-	query = "SELECT d FROM DossierExterne d " + "WHERE d.emetteur = ?1 " + "AND d.identificationDossier like ?2 "
-			+ "ORDER BY d.dateOperation"),
-	@NamedQuery(name = "DossierExterne" + ".findByEmetteurInListAndIdentification",
-	query = "SELECT d FROM DossierExterne d " + "WHERE d.emetteur in (?1) " + "AND d.identificationDossier like ?2 "
-			+ "ORDER BY d.dateOperation"),
-	@NamedQuery(name = "DossierExterne" + ".findByEmetteurInListSelectIdentification",
-	query = "SELECT d.identificationDossier " + "FROM DossierExterne d " + "WHERE d.emetteur in (?1)"),
-	@NamedQuery(name = "DossierExterne.findByIdentification",
-	query = "SELECT d FROM DossierExterne d " + "WHERE d.identificationDossier like ?1"),
-	@NamedQuery(name = "DossierExterne.findCountAll", query = "SELECT count(d) FROM DossierExterne d"),
-	@NamedQuery(name = "DossierExterne.findFirst", query = "SELECT d FROM DossierExterne d "
-			+ "where d.dateOperation = (select min(dateOperation) " + "from DossierExterne)"),
-	@NamedQuery(name = "DossierExterne.findByEmetteurAndEntite", query = "SELECT distinct d FROM DossierExterne d "
-			+ "WHERE d.emetteur = ?1 AND d.entiteId = ?2 ORDER BY d.identificationDossier"),
-	@NamedQuery(name = "DossierExterne.findByEmetteurAndEntiteNull", query = "SELECT distinct d FROM DossierExterne d "
-			+ "WHERE d.emetteur = ?1 AND d.entiteId is null ORDER BY d.identificationDossier"),
-	@NamedQuery(name = "DossierExterne.findChildrenByEmetteurValeur", query = "SELECT distinct d FROM ValeurExterne v "
-			+ "JOIN v.blocExterne.dossierExterne d WHERE d.emetteur = ?1 AND v.champEntiteId = ?2 "
-			+ "AND v.valeur like ?3 AND d.entiteId is not null ORDER BY d.identificationDossier")
-})
+//@NamedQueries(value = {
+//	@NamedQuery(name = "DossierExterne.findByEmetteur",
+//			query = "SELECT d FROM DossierExterne d " + "WHERE d.emetteur = ?1 " + "ORDER BY d.dateOperation"),
+//	@NamedQuery(name = "DossierExterne.findByEmetteurAndIdentification",
+//	query = "SELECT d FROM DossierExterne d " + "WHERE d.emetteur = ?1 " + "AND d.identificationDossier like ?2 "
+//			+ "ORDER BY d.dateOperation"),
+//	@NamedQuery(name = "DossierExterne" + ".findByEmetteurInListAndIdentification",
+//	query = "SELECT d FROM DossierExterne d " + "WHERE d.emetteur in (?1) " + "AND d.identificationDossier like ?2 "
+//			+ "ORDER BY d.dateOperation"),
+//	@NamedQuery(name = "DossierExterne" + ".findByEmetteurInListSelectIdentification",
+//	query = "SELECT d.identificationDossier " + "FROM DossierExterne d " + "WHERE d.emetteur in (?1)"),
+//	@NamedQuery(name = "DossierExterne.findByIdentification",
+//	query = "SELECT d FROM DossierExterne d " + "WHERE d.identificationDossier like ?1"),
+//	@NamedQuery(name = "DossierExterne.findCountAll", query = "SELECT count(d) FROM DossierExterne d"),
+//	@NamedQuery(name = "DossierExterne.findFirst", query = "SELECT d FROM DossierExterne d "
+//			+ "where d.dateOperation = (select min(dateOperation) " + "from DossierExterne)"),
+//	@NamedQuery(name = "DossierExterne.findByEmetteurAndEntite", query = "SELECT distinct d FROM DossierExterne d "
+//			+ "WHERE d.emetteur = ?1 AND d.entiteId = ?2 ORDER BY d.identificationDossier"),
+//	@NamedQuery(name = "DossierExterne.findByEmetteurAndEntiteNull", query = "SELECT distinct d FROM DossierExterne d "
+//			+ "WHERE d.emetteur = ?1 AND d.entiteId is null ORDER BY d.identificationDossier"),
+//	@NamedQuery(name = "DossierExterne.findChildrenByEmetteurValeur", query = "SELECT distinct d FROM ValeurExterne v "
+//			+ "JOIN v.blocExterne.dossierExterne d WHERE d.emetteur = ?1 AND v.champEntiteId = ?2 "
+//			+ "AND v.valeur like ?3 AND d.entiteId is not null ORDER BY d.identificationDossier")
+//})
 public class DossierExterne implements java.io.Serializable
 {
 

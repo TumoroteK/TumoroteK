@@ -56,12 +56,12 @@ import org.hibernate.annotations.GenericGenerator;
  * Classe créée le 14/12/2010.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "IMPRIMANTE_API")
-@NamedQueries(value = {@NamedQuery(name = "ImprimanteApi.findByOrder", query = "SELECT i FROM ImprimanteApi i ORDER BY i.nom")})
+//@NamedQueries(value = {@NamedQuery(name = "ImprimanteApi.findByOrder", query = "SELECT i FROM ImprimanteApi i ORDER BY i.nom")})
 public class ImprimanteApi implements Serializable
 {
 

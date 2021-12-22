@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.impression;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.impression.BlocImpression;
 import fr.aphp.tumorotek.model.impression.ChampImprime;
 import fr.aphp.tumorotek.model.impression.ChampImprimePK;
@@ -45,39 +48,44 @@ import fr.aphp.tumorotek.model.impression.Template;
 
 /**
  *
- * Interface pour le DAO du bean de domaine ChampImprime.
- * Interface créée le 23/07/2010.
+ * Interface pour le DAO du bean de domaine ChampImprime. Interface créée le
+ * 23/07/2010.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface ChampImprimeDao extends GenericDaoJpa<ChampImprime, ChampImprimePK>
-{
+@Repository
+public interface ChampImprimeDao extends CrudRepository<ChampImprime, ChampImprimePK> {
 
-   /**
-    * Recherche les ChampImprimes dont le template 
-    * est égal au paramètre.
-    * @param template Template du ChampImprime recherché.
-    * @return une liste de ChampImprimes.
-    */
-   List<ChampImprime> findByTemplate(Template template);
+	/**
+	 * Recherche les ChampImprimes dont le template est égal au paramètre.
+	 * 
+	 * @param template Template du ChampImprime recherché.
+	 * @return une liste de ChampImprimes.
+	 */
+	@Query("SELECT c FROM ChampImprime c WHERE c.pk.template = ?1 ORDER BY c.ordre")
+	List<ChampImprime> findByTemplate(Template template);
 
-   /**
-    * Recherche les ChampImprimes dont le template et le bloc
-    * sont égaux aux paramètres.
-    * @param template Template du ChampImprime recherché.
-    * @param bloc BlocImpression du ChampImprime recherché.
-    * @return une liste de ChampImprimes.
-    */
-   List<ChampImprime> findByTemplateAndBloc(Template template, BlocImpression bloc);
+	/**
+	 * Recherche les ChampImprimes dont le template et le bloc sont égaux aux
+	 * paramètres.
+	 * 
+	 * @param template Template du ChampImprime recherché.
+	 * @param bloc     BlocImpression du ChampImprime recherché.
+	 * @return une liste de ChampImprimes.
+	 */
+	@Query("SELECT c FROM ChampImprime c WHERE c.pk.template = ?1 AND c.pk.blocImpression = ?2 " + "ORDER BY c.ordre")
+	List<ChampImprime> findByTemplateAndBloc(Template template, BlocImpression bloc);
 
-   /**
-    * Recherche les ChampImprimes dont la clé est différente
-    * de celle passée en paramètre.
-    * @param pk Pk du ChampImprime recherché.
-    * @return une liste de ChampImprimes.
-    */
-   List<ChampImprime> findByExcludedPK(ChampImprimePK pk);
+	/**
+	 * Recherche les ChampImprimes dont la clé est différente de celle passée en
+	 * paramètre.
+	 * 
+	 * @param pk Pk du ChampImprime recherché.
+	 * @return une liste de ChampImprimes.
+	 */
+	@Query("SELECT c FROM ChampImprime c WHERE c.pk != ?1")
+	List<ChampImprime> findByExcludedPK(ChampImprimePK pk);
 
 }

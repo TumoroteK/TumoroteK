@@ -60,14 +60,14 @@ import fr.aphp.tumorotek.model.io.export.Champ;
  * Classe créée le 16/01/2018.
  *
  * @author Answald Bournique
- * @version 2.2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "CLE_IMPRESSION")
-@NamedQueries(value = {@NamedQuery(name = "CleImpression.findByName", query = "SELECT c FROM CleImpression c WHERE c.nom = ?1"),
-//   @NamedQuery(name = "CleImpression.findByTemplate", query = "SELECT c FROM CleImpression c WHERE c.template = ?1"),
-   @NamedQuery(name = "CleImpression.findByChamp", query = "SELECT c FROM CleImpression c WHERE c.champ = ?1")})
+//@NamedQueries(value = {@NamedQuery(name = "CleImpression.findByName", query = "SELECT c FROM CleImpression c WHERE c.nom = ?1"),
+////   @NamedQuery(name = "CleImpression.findByTemplate", query = "SELECT c FROM CleImpression c WHERE c.template = ?1"),
+//   @NamedQuery(name = "CleImpression.findByChamp", query = "SELECT c FROM CleImpression c WHERE c.champ = ?1")})
 public class CleImpression implements Serializable
 {
 

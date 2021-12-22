@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.contexte;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.contexte.Contexte;
 
 /**
@@ -47,30 +50,36 @@ import fr.aphp.tumorotek.model.contexte.Contexte;
  * Date: 09/09/2009
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  */
-public interface ContexteDao extends GenericDaoJpa<Contexte, Integer>
-{
+@Repository
+public interface ContexteDao extends CrudRepository<Contexte, Integer> {
 
-   /**
-    * Recherche les contextes dont le nom est égal au paramètre.
-    * @param nom pour lequel on recherche des contextes.
-    * @return une liste de contextes.
-    */
-   List<Contexte> findByNom(String nom);
+	/**
+	 * Recherche les contextes dont le nom est égal au paramètre.
+	 * 
+	 * @param nom pour lequel on recherche des contextes.
+	 * @return une liste de contextes.
+	 */
+	@Query("SELECT c FROM Contexte c WHERE c.nom = ?1")
+	List<Contexte> findByNom(String nom);
 
-   /**
-    * Recherche les contextes dont la banque est égale au paramètre.
-    * @param banqueId est la clé primaire de la banque pour laquelle on 
-    * recherche des contextes.
-    * @return une liste de contextes.
-    */
-   List<Contexte> findByBanqueId(Integer banqueId);
+	/**
+	 * Recherche les contextes dont la banque est égale au paramètre.
+	 * 
+	 * @param banqueId est la clé primaire de la banque pour laquelle on recherche
+	 *                 des contextes.
+	 * @return une liste de contextes.
+	 */
+	@Query("SELECT c FROM Contexte c left join c.banques b WHERE b.banqueId = ?1")
+	List<Contexte> findByBanqueId(Integer banqueId);
 
-   /**
-    * Recherche tous les Contextes ordonnés.
-    * @return Liste ordonnée de Contextes.
-    */
-   List<Contexte> findByOrder();
+	/**
+	 * Recherche tous les Contextes ordonnés.
+	 * 
+	 * @return Liste ordonnée de Contextes.
+	 */
+	@Query("SELECT c FROM Contexte c ORDER BY c.nom")
+	List<Contexte> findByOrder();
 
 }

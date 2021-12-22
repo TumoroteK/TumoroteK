@@ -69,38 +69,38 @@ import fr.aphp.tumorotek.model.stockage.Conteneur;
  * Classe créée le 09/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "SERVICE")
-@NamedQueries(value = {@NamedQuery(name = "Service.findByNom", query = "SELECT s FROM Service s WHERE s.nom like ?1"),
-   @NamedQuery(name = "Service.findByOrder", query = "SELECT s FROM Service s ORDER BY s.etablissement.nom, s.nom"),
-   @NamedQuery(name = "Service.findByArchiveWithOrder",
-      query = "SELECT s FROM Service s WHERE s.archive = ?1 " + "ORDER BY s.nom"),
-   @NamedQuery(name = "Service.findByCoordonnee", query = "SELECT s FROM Service s " + "WHERE s.coordonnee = ?1"),
-   @NamedQuery(name = "Service.findByEtablissement", query = "SELECT s FROM Service s " + "WHERE s.etablissement = ?1"),
-   @NamedQuery(name = "Service.findByEtablissementWithOrder",
-      query = "SELECT s FROM Service s " + "WHERE s.etablissement = ?1 " + "ORDER BY s.nom"),
-   @NamedQuery(name = "Service.findByEtablissementArchiveWithOrder",
-      query = "SELECT s FROM Service s " + "WHERE s.etablissement = ?1 " + "AND s.archive =?2 " + "ORDER BY s.nom"),
-   @NamedQuery(name = "Service.findByCollaborateurId",
-      query = "SELECT s FROM Service s " + "join s.collaborateurs c " + "WHERE c.collaborateurId = ?1"),
-   @NamedQuery(name = "Service.findByCollaborateurIdAndArchive",
-      query = "SELECT s FROM Service s " + "left join s.collaborateurs c " + "WHERE c.collaborateurId = ?1 "
-         + "AND s.archive =?2"),
-   @NamedQuery(name = "Service.findCountByEtablissementId",
-      query = "SELECT count(s) FROM Service s " + "left join s.etablissement e " + "WHERE e.etablissementId = (?1)"),
-   //		@NamedQuery(name = "Service.findByBanqueId", 
-   //				query = "SELECT s FROM Service s " 
-   //					+ "WHERE s.banques.banqueId = ?1"),
-   @NamedQuery(name = "Service.findByBanquePossedeesId",
-      query = "SELECT s FROM Service s " + "left join s.banquesPossedees b " + "WHERE b.banqueId = ?1"),
-   @NamedQuery(name = "Service.findByIdWithFetch",
-      query = "SELECT s FROM Service s LEFT JOIN FETCH " + "s.etablissement LEFT JOIN FETCH s.coordonnee "
-         + "WHERE s.serviceId = ?1"),
-   @NamedQuery(name = "Service.findByExcludedId", query = "SELECT s FROM Service s " + "WHERE s.serviceId != ?1"), @NamedQuery(
-      name = "Service.findByVille", query = "SELECT s FROM Service s " + "WHERE s.coordonnee.ville like ?1 " + "ORDER BY s.nom")})
+//@NamedQueries(value = {@NamedQuery(name = "Service.findByNom", query = "SELECT s FROM Service s WHERE s.nom like ?1"),
+//   @NamedQuery(name = "Service.findByOrder", query = "SELECT s FROM Service s ORDER BY s.etablissement.nom, s.nom"),
+//   @NamedQuery(name = "Service.findByArchiveWithOrder",
+//      query = "SELECT s FROM Service s WHERE s.archive = ?1 " + "ORDER BY s.nom"),
+//   @NamedQuery(name = "Service.findByCoordonnee", query = "SELECT s FROM Service s " + "WHERE s.coordonnee = ?1"),
+//   @NamedQuery(name = "Service.findByEtablissement", query = "SELECT s FROM Service s " + "WHERE s.etablissement = ?1"),
+//   @NamedQuery(name = "Service.findByEtablissementWithOrder",
+//      query = "SELECT s FROM Service s " + "WHERE s.etablissement = ?1 " + "ORDER BY s.nom"),
+//   @NamedQuery(name = "Service.findByEtablissementArchiveWithOrder",
+//      query = "SELECT s FROM Service s " + "WHERE s.etablissement = ?1 " + "AND s.archive =?2 " + "ORDER BY s.nom"),
+//   @NamedQuery(name = "Service.findByCollaborateurId",
+//      query = "SELECT s FROM Service s " + "join s.collaborateurs c " + "WHERE c.collaborateurId = ?1"),
+//   @NamedQuery(name = "Service.findByCollaborateurIdAndArchive",
+//      query = "SELECT s FROM Service s " + "left join s.collaborateurs c " + "WHERE c.collaborateurId = ?1 "
+//         + "AND s.archive =?2"),
+//   @NamedQuery(name = "Service.findCountByEtablissementId",
+//      query = "SELECT count(s) FROM Service s " + "left join s.etablissement e " + "WHERE e.etablissementId = (?1)"),
+//   //		@NamedQuery(name = "Service.findByBanqueId", 
+//   //				query = "SELECT s FROM Service s " 
+//   //					+ "WHERE s.banques.banqueId = ?1"),
+//   @NamedQuery(name = "Service.findByBanquePossedeesId",
+//      query = "SELECT s FROM Service s " + "left join s.banquesPossedees b " + "WHERE b.banqueId = ?1"),
+//   @NamedQuery(name = "Service.findByIdWithFetch",
+//      query = "SELECT s FROM Service s LEFT JOIN FETCH " + "s.etablissement LEFT JOIN FETCH s.coordonnee "
+//         + "WHERE s.serviceId = ?1"),
+//   @NamedQuery(name = "Service.findByExcludedId", query = "SELECT s FROM Service s " + "WHERE s.serviceId != ?1"), @NamedQuery(
+//      name = "Service.findByVille", query = "SELECT s FROM Service s " + "WHERE s.coordonnee.ville like ?1 " + "ORDER BY s.nom")})
 public class Service implements TKdataObject, TKFantomableObject, java.io.Serializable
 {
 

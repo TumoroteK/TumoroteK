@@ -58,21 +58,21 @@ import org.hibernate.annotations.GenericGenerator;
  * Classe créée le 01/10/11.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "EMETTEUR")
-@NamedQueries(value = {@NamedQuery(name = "Emetteur.findByOrder", query = "SELECT e FROM Emetteur e ORDER BY e.identification"),
-   @NamedQuery(name = "Emetteur.findByLogiciel",
-      query = "SELECT e FROM Emetteur e " + "WHERE e.logiciel = ?1 " + "ORDER BY e.identification"),
-   @NamedQuery(name = "Emetteur.findByLogicielAndIdentification",
-      query = "SELECT e FROM Emetteur e " + "WHERE e.logiciel = ?1 " + "AND e.identification like ?2 "
-         + "ORDER BY e.identification"),
-   @NamedQuery(name = "Emetteur.findByIdInList",
-      query = "SELECT e FROM Emetteur e " + "WHERE e.emetteurId in (?1) " + "ORDER BY e.identification"),
-   @NamedQuery(name = "Emetteur.findByIdentificationAndService",
-      query = "SELECT e FROM Emetteur e " + "WHERE e.identification = ?1 " + "AND e.service = ?2")})
+//@NamedQueries(value = {@NamedQuery(name = "Emetteur.findByOrder", query = "SELECT e FROM Emetteur e ORDER BY e.identification"),
+//   @NamedQuery(name = "Emetteur.findByLogiciel",
+//      query = "SELECT e FROM Emetteur e " + "WHERE e.logiciel = ?1 " + "ORDER BY e.identification"),
+//   @NamedQuery(name = "Emetteur.findByLogicielAndIdentification",
+//      query = "SELECT e FROM Emetteur e " + "WHERE e.logiciel = ?1 " + "AND e.identification like ?2 "
+//         + "ORDER BY e.identification"),
+//   @NamedQuery(name = "Emetteur.findByIdInList",
+//      query = "SELECT e FROM Emetteur e " + "WHERE e.emetteurId in (?1) " + "ORDER BY e.identification"),
+//   @NamedQuery(name = "Emetteur.findByIdentificationAndService",
+//      query = "SELECT e FROM Emetteur e " + "WHERE e.identification = ?1 " + "AND e.service = ?2")})
 public class Emetteur implements java.io.Serializable
 {
 

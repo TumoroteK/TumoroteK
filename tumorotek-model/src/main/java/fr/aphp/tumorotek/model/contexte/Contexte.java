@@ -57,15 +57,15 @@ import fr.aphp.tumorotek.model.coeur.annotation.Catalogue;
  * Classe créée le 09/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "CONTEXTE")
-@NamedQueries(value = {@NamedQuery(name = "Contexte.findByNom", query = "SELECT c FROM Contexte c WHERE c.nom = ?1"),
-   @NamedQuery(name = "Contexte.findByBanqueId",
-      query = "SELECT c FROM Contexte c " + "left join c.banques b " + "WHERE b.banqueId = ?1"),
-   @NamedQuery(name = "Contexte.findByOrder", query = "SELECT c FROM Contexte c ORDER BY c.nom")})
+//@NamedQueries(value = {@NamedQuery(name = "Contexte.findByNom", query = "SELECT c FROM Contexte c WHERE c.nom = ?1"),
+//   @NamedQuery(name = "Contexte.findByBanqueId",
+//      query = "SELECT c FROM Contexte c " + "left join c.banques b " + "WHERE b.banqueId = ?1"),
+//   @NamedQuery(name = "Contexte.findByOrder", query = "SELECT c FROM Contexte c ORDER BY c.nom")})
 public class Contexte implements java.io.Serializable
 {
 

@@ -62,17 +62,17 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  * Classe créée le 17/03/11.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "MODELE")
-@NamedQueries(value = {
-   @NamedQuery(name = "Modele.findByPlateforme",
-      query = "SELECT m FROM Modele m " + "WHERE m.plateforme = ?1 " + "ORDER BY m.nom"),
-   @NamedQuery(name = "Modele.findByNomAndPlateforme",
-      query = "SELECT m FROM Modele m " + "WHERE m.nom = ?1 AND m.plateforme = ?2"),
-   @NamedQuery(name = "Modele.findByExcludedId", query = "SELECT m FROM Modele m " + "WHERE m.modeleId != ?1")})
+//@NamedQueries(value = {
+//   @NamedQuery(name = "Modele.findByPlateforme",
+//      query = "SELECT m FROM Modele m " + "WHERE m.plateforme = ?1 " + "ORDER BY m.nom"),
+//   @NamedQuery(name = "Modele.findByNomAndPlateforme",
+//      query = "SELECT m FROM Modele m " + "WHERE m.nom = ?1 AND m.plateforme = ?2"),
+//   @NamedQuery(name = "Modele.findByExcludedId", query = "SELECT m FROM Modele m " + "WHERE m.modeleId != ?1")})
 public class Modele implements TKdataObject, Serializable
 {
 

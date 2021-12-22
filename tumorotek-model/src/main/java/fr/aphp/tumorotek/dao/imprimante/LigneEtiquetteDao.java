@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.imprimante;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.imprimante.LigneEtiquette;
 import fr.aphp.tumorotek.model.imprimante.Modele;
 
@@ -46,17 +49,19 @@ import fr.aphp.tumorotek.model.imprimante.Modele;
  * Interface pour le DAO du bean de domaine LigneEtiquette.
  *
  * @author Pierre Ventadour
- * @version 08/06/2011
+ * @version 2.3
  *
  */
-public interface LigneEtiquetteDao extends GenericDaoJpa<LigneEtiquette, Integer>
-{
+@Repository
+public interface LigneEtiquetteDao extends CrudRepository<LigneEtiquette, Integer> {
 
-   /**
-    * Recherche les LigneEtiquettes d'un modèle.
-    * @param modele Modele.
-    * @return Une liste de LigneEtiquettes.
-    */
-   List<LigneEtiquette> findByModele(Modele modele);
+	/**
+	 * Recherche les LigneEtiquettes d'un modèle.
+	 * 
+	 * @param modele Modele.
+	 * @return Une liste de LigneEtiquettes.
+	 */
+	@Query("SELECT l FROM LigneEtiquette l " + "WHERE l.modele = ?1 " + "ORDER BY l.ordre")
+	List<LigneEtiquette> findByModele(Modele modele);
 
 }

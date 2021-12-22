@@ -62,25 +62,25 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  * Classe créée le 17/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0.11
+ * @version 2.3
  * @since 2.0.11 adresse IP et resolution pour RAW printing
  *
  */
 @Entity
 @Table(name = "IMPRIMANTE")
-@NamedQueries(value = {@NamedQuery(name = "Imprimante.findByNom", query = "SELECT i FROM Imprimante i WHERE i.nom = ?1"),
-   @NamedQuery(name = "Imprimante.findByAbscisse", query = "SELECT i FROM Imprimante i WHERE i.abscisse = ?1"),
-   @NamedQuery(name = "Imprimante.findByOrdonnee", query = "SELECT i FROM Imprimante i WHERE i.ordonnee = ?1"),
-   @NamedQuery(name = "Imprimante.findByLargeur", query = "SELECT i FROM Imprimante i WHERE i.largeur = ?1"),
-   @NamedQuery(name = "Imprimante.findByLongueur", query = "SELECT i FROM Imprimante i WHERE i.longueur = ?1"),
-   @NamedQuery(name = "Imprimante.findByOrientation", query = "SELECT i FROM Imprimante i WHERE i.orientation = ?1"),
-   @NamedQuery(name = "Imprimante.findByPlateforme",
-      query = "SELECT i FROM Imprimante i " + "WHERE i.plateforme = ?1 " + "ORDER BY i.nom"),
-   @NamedQuery(name = "Imprimante.findByPlateformeSelectNom",
-      query = "SELECT i.nom FROM Imprimante i " + "WHERE i.plateforme = ?1 " + "ORDER BY i.nom"),
-   @NamedQuery(name = "Imprimante.findByNomAndPlateforme",
-      query = "SELECT i FROM Imprimante i " + "WHERE i.nom = ?1 AND i.plateforme = ?2"),
-   @NamedQuery(name = "Imprimante.findByExcludedId", query = "SELECT i FROM Imprimante i " + "WHERE i.imprimanteId != ?1")})
+//@NamedQueries(value = {@NamedQuery(name = "Imprimante.findByNom", query = "SELECT i FROM Imprimante i WHERE i.nom = ?1"),
+//   @NamedQuery(name = "Imprimante.findByAbscisse", query = "SELECT i FROM Imprimante i WHERE i.abscisse = ?1"),
+//   @NamedQuery(name = "Imprimante.findByOrdonnee", query = "SELECT i FROM Imprimante i WHERE i.ordonnee = ?1"),
+//   @NamedQuery(name = "Imprimante.findByLargeur", query = "SELECT i FROM Imprimante i WHERE i.largeur = ?1"),
+//   @NamedQuery(name = "Imprimante.findByLongueur", query = "SELECT i FROM Imprimante i WHERE i.longueur = ?1"),
+//   @NamedQuery(name = "Imprimante.findByOrientation", query = "SELECT i FROM Imprimante i WHERE i.orientation = ?1"),
+//   @NamedQuery(name = "Imprimante.findByPlateforme",
+//      query = "SELECT i FROM Imprimante i " + "WHERE i.plateforme = ?1 " + "ORDER BY i.nom"),
+//   @NamedQuery(name = "Imprimante.findByPlateformeSelectNom",
+//      query = "SELECT i.nom FROM Imprimante i " + "WHERE i.plateforme = ?1 " + "ORDER BY i.nom"),
+//   @NamedQuery(name = "Imprimante.findByNomAndPlateforme",
+//      query = "SELECT i FROM Imprimante i " + "WHERE i.nom = ?1 AND i.plateforme = ?2"),
+//   @NamedQuery(name = "Imprimante.findByExcludedId", query = "SELECT i FROM Imprimante i " + "WHERE i.imprimanteId != ?1")})
 public class Imprimante implements TKdataObject, Serializable
 {
 

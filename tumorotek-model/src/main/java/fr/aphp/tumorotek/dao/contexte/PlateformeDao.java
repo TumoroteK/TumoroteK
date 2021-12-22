@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.contexte;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 
@@ -48,62 +51,74 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  * Date: 09/09/2009
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface PlateformeDao extends GenericDaoJpa<Plateforme, Integer>
-{
+@Repository
+public interface PlateformeDao extends CrudRepository<Plateforme, Integer> {
 
-   /**
-    * Recherche les plateformes dont le nom est égal au paramètre.
-    * @param nom pour lequel on recherche des plateformes.
-    * @return une liste de plateformes.
-    */
-   List<Plateforme> findByNom(String nom);
+	/**
+	 * Recherche les plateformes dont le nom est égal au paramètre.
+	 * 
+	 * @param nom pour lequel on recherche des plateformes.
+	 * @return une liste de plateformes.
+	 */
+	@Query("SELECT p FROM Plateforme p WHERE p.nom = ?1")
+	List<Plateforme> findByNom(String nom);
 
-   /**
-    * Recherche les plateformes dont l'alias est égal au paramètre.
-    * @param alias pour lequel on recherche des plateformes.
-    * @return une liste de plateformes.
-    */
-   List<Plateforme> findByAlias(String alias);
+	/**
+	 * Recherche les plateformes dont l'alias est égal au paramètre.
+	 * 
+	 * @param alias pour lequel on recherche des plateformes.
+	 * @return une liste de plateformes.
+	 */
+	@Query("SELECT p FROM Plateforme p WHERE p.alias = ?1")
+	List<Plateforme> findByAlias(String alias);
 
-   /**
-    * Recherche les plateformes dont le collaborateur est passé en paramètre.
-    * @param collaborateur pour lequel on recherche des plateformes.
-    * @return une liste de plateformes.
-    */
-   List<Plateforme> findByCollaborateur(Collaborateur collaborateur);
+	/**
+	 * Recherche les plateformes dont le collaborateur est passé en paramètre.
+	 * 
+	 * @param collaborateur pour lequel on recherche des plateformes.
+	 * @return une liste de plateformes.
+	 */
+	@Query("SELECT p FROM Plateforme p WHERE p.collaborateur = ?1")
+	List<Plateforme> findByCollaborateur(Collaborateur collaborateur);
 
-   /**
-    * Recherche les plateformes dont une banque est passée en paramètre.
-    * @param banqueId pour laquelle on recherche des plateformes.
-    * @return une liste de plateformes.
-    */
-   List<Plateforme> findByBanqueId(Integer banqueId);
+	/**
+	 * Recherche les plateformes dont une banque est passée en paramètre.
+	 * 
+	 * @param banqueId pour laquelle on recherche des plateformes.
+	 * @return une liste de plateformes.
+	 */
+	@Query("SELECT p FROM Plateforme p left join p.banques b WHERE b.banqueId = ?1")
+	List<Plateforme> findByBanqueId(Integer banqueId);
 
-   /**
-    * Recherche la plateforme dont l'identifiant passé en paramètre.
-    * L'association avec la table COLLABORATEUR sera chargée par 
-    * l'intermédiaire 
-    * d'un fetch.
-    * @param plateformeId est l'identifiant de la plateforme recherchée.
-    * @return une plateforme.
-    */
-   List<Plateforme> findByIdWithFetch(Integer plateformeId);
+	/**
+	 * Recherche la plateforme dont l'identifiant passé en paramètre. L'association
+	 * avec la table COLLABORATEUR sera chargée par l'intermédiaire d'un fetch.
+	 * 
+	 * @param plateformeId est l'identifiant de la plateforme recherchée.
+	 * @return une plateforme.
+	 */
+	@Query("SELECT p FROM Plateforme p LEFT JOIN FETCH p.collaborateur WHERE p.plateformeId = ?1")
+	List<Plateforme> findByIdWithFetch(Integer plateformeId);
 
-   /**
-    * Recherche les plateformes dont l'identifiant est différent
-    * de celui passé en paramètre.
-    * @param plateformeId est l'identifiant de la plateforme exclue.
-    * @return une liste de plateformes.
-    */
-   List<Plateforme> findByExcludedId(Integer plateformeId);
+	/**
+	 * Recherche les plateformes dont l'identifiant est différent de celui passé en
+	 * paramètre.
+	 * 
+	 * @param plateformeId est l'identifiant de la plateforme exclue.
+	 * @return une liste de plateformes.
+	 */
+	@Query("SELECT p FROM Plateforme p WHERE p.plateformeId != ?1")
+	List<Plateforme> findByExcludedId(Integer plateformeId);
 
-   /**
-    * Recherche toutes les Plateformes ordonnées.
-    * @return Liste ordonnée de Plateformes.
-    */
-   List<Plateforme> findByOrder();
+	/**
+	 * Recherche toutes les Plateformes ordonnées.
+	 * 
+	 * @return Liste ordonnée de Plateformes.
+	 */
+	@Query("SELECT p FROM Plateforme p ORDER BY p.nom")
+	List<Plateforme> findByOrder();
 
 }

@@ -38,39 +38,51 @@ package fr.aphp.tumorotek.dao.interfacage;
 import java.util.Calendar;
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.interfacage.ConsultationIntf;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 /**
  *
- * Interface pour le DAO du bean de domaine CONSULTATION_INTF.
- * Interface créée le 25/02/2016.
+ * Interface pour le DAO du bean de domaine CONSULTATION_INTF. Interface créée
+ * le 25/02/2016.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.13.1
+ * @version 2.3
  *
  */
-public interface ConsultationIntfDao extends GenericDaoJpa<ConsultationIntf, Integer>
-{
+@Repository
+public interface ConsultationIntfDao extends CrudRepository<ConsultationIntf, Integer> {
 
-   /**
-    * Recherche les Consultations par un utilisateur dans une fourchette de date.
-    * @return Une liste de consultations.
-    */
-   List<ConsultationIntf> findByUtilisateurInDates(Utilisateur u, Calendar date1, Calendar date2);
+	/**
+	 * Recherche les Consultations par un utilisateur dans une fourchette de date.
+	 * 
+	 * @return Une liste de consultations.
+	 */
+	@Query("SELECT c FROM ConsultationIntf c "
+			+ "WHERE c.utilisateur = ?1 and c.date >= ?2 AND c.date <= ?3 order by c.date")
+	List<ConsultationIntf> findByUtilisateurInDates(Utilisateur u, Calendar date1, Calendar date2);
 
-   /**
-    * Recherche les Consultations par emetteur dans une fourchette de date.
-    * @return Une liste de consultations.
-    */
-   List<ConsultationIntf> findByEmetteurInDates(String e, Calendar date1, Calendar date2);
+	/**
+	 * Recherche les Consultations par emetteur dans une fourchette de date.
+	 * 
+	 * @return Une liste de consultations.
+	 */
+	@Query("SELECT c FROM ConsultationIntf c "
+			+ "WHERE c.emetteurIdent like ?1 and c.date >= ?2 AND c.date <= ?3 order by c.date")
+	List<ConsultationIntf> findByEmetteurInDates(String e, Calendar date1, Calendar date2);
 
-   /**
-    * Recherche les Consultations par emetteur et utilisateur 
-    * dans une fourchette de date.
-    * @return Une liste de consultations.
-    */
-   List<ConsultationIntf> findByUtilisateurEmetteurInDates(Utilisateur u, String e, Calendar date1, Calendar date2);
+	/**
+	 * Recherche les Consultations par emetteur et utilisateur dans une fourchette
+	 * de date.
+	 * 
+	 * @return Une liste de consultations.
+	 */
+	@Query("SELECT c FROM ConsultationIntf c "
+			+ "WHERE c.utilisateur = ?1 and c.emetteurIdent like ?2 and c.date >= ?3 AND c.date <= ?4 order by c.date")
+	List<ConsultationIntf> findByUtilisateurEmetteurInDates(Utilisateur u, String e, Calendar date1, Calendar date2);
 
 }

@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.contexte;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.contexte.Titre;
 
 /**
@@ -47,32 +50,37 @@ import fr.aphp.tumorotek.model.contexte.Titre;
  * Date: 09/09/2009
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface TitreDao extends GenericDaoJpa<Titre, Integer>
-{
+@Repository
+public interface TitreDao extends CrudRepository<Titre, Integer> {
 
-   /**
-    * Recherche les titres dont le nom est égal au paramètre.
-    * @param titre pour lequel on recherche des titres.
-    * @return une liste de titres.
-    */
-   List<Titre> findByTitre(String titre);
+	/**
+	 * Recherche les titres dont le nom est égal au paramètre.
+	 * 
+	 * @param titre pour lequel on recherche des titres.
+	 * @return une liste de titres.
+	 */
+	@Query("SELECT t FROM Titre t WHERE t.titre like ?1")
+	List<Titre> findByTitre(String titre);
 
-   /**
-    * Recherche le titre associé au collaborateur dont l'id est
-    * passé en paramètre.
-    * @param collaborateurId est l'id du collaborateur pour lequel on recherche
-    * les titres.
-    * @return une liste de titres (de taille 1).
-    */
-   List<Titre> findByCollaborateurId(Integer collaborateurId);
+	/**
+	 * Recherche le titre associé au collaborateur dont l'id est passé en paramètre.
+	 * 
+	 * @param collaborateurId est l'id du collaborateur pour lequel on recherche les
+	 *                        titres.
+	 * @return une liste de titres (de taille 1).
+	 */
+	@Query("SELECT t FROM Titre t left JOIN t.collaborateurs c WHERE c.collaborateurId = ?1")
+	List<Titre> findByCollaborateurId(Integer collaborateurId);
 
-   /**
-    * Recherche tous les Titres ordonnés.
-    * @return Liste ordonnée de Titres.
-    */
-   List<Titre> findByOrder();
+	/**
+	 * Recherche tous les Titres ordonnés.
+	 * 
+	 * @return Liste ordonnée de Titres.
+	 */
+	@Query("SELECT t FROM Titre t ORDER BY t.titre")
+	List<Titre> findByOrder();
 
 }

@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.contexte;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.dao.TKThesaurusDao;
 import fr.aphp.tumorotek.model.contexte.Categorie;
 
@@ -48,38 +51,47 @@ import fr.aphp.tumorotek.model.contexte.Categorie;
  * Date: 09/09/2009
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  */
-public interface CategorieDao extends GenericDaoJpa<Categorie, Integer>, TKThesaurusDao<Categorie>
-{
+@Repository
+public interface CategorieDao extends CrudRepository<Categorie, Integer>, TKThesaurusDao<Categorie> {
 
-   /**
-    * Recherche les catégories dont le nom est égal au paramètre.
-    * @param nom pour lequel on recherche des catégories.
-    * @return une liste de catégories.
-    */
-   List<Categorie> findByNom(String nom);
+	/**
+	 * Recherche les catégories dont le nom est égal au paramètre.
+	 * 
+	 * @param nom pour lequel on recherche des catégories.
+	 * @return une liste de catégories.
+	 */
+	@Query("SELECT c FROM Categorie c WHERE c.nom like ?1")
+	List<Categorie> findByNom(String nom);
 
-   /**
-    * Recherche les catégories dont l'établissement est égal au paramètre.
-    * @param etabId est la clé primaire de l'établissement pour lequel on 
-    * recherche des catégories.
-    * @return une liste de catégories.
-    */
-   List<Categorie> findByEtablissementId(Integer etabId);
+	/**
+	 * Recherche les catégories dont l'établissement est égal au paramètre.
+	 * 
+	 * @param etabId est la clé primaire de l'établissement pour lequel on recherche
+	 *               des catégories.
+	 * @return une liste de catégories.
+	 */
+	@Query("SELECT c FROM Categorie c left join c.etablissements e WHERE e.etablissementId = ?1")
+	List<Categorie> findByEtablissementId(Integer etabId);
 
-   /**
-    * Recherche toutes les Categories ordonnées.
-    * @return Liste ordonnée de Categories.
-    */
-   List<Categorie> findByOrder();
+	/**
+	 * Recherche toutes les Categories ordonnées.
+	 * 
+	 * @return Liste ordonnée de Categories.
+	 */
+	@Override
+	@Query("SELECT c FROM Categorie c ORDER BY c.nom")
+	List<Categorie> findByOrder();
 
-   /**
-    * Recherche toutes les Categories sauf celle dont
-    * l'identifiant est passé en paramètre.
-    * @param id Identifiant de la Categorie à exclure.
-    * @return Liste de Categories.
-    */
-   List<Categorie> findByExcludedId(Integer id);
+	/**
+	 * Recherche toutes les Categories sauf celle dont l'identifiant est passé en
+	 * paramètre.
+	 * 
+	 * @param id Identifiant de la Categorie à exclure.
+	 * @return Liste de Categories.
+	 */
+	@Query("SELECT c FROM Categorie c WHERE c.id != ?1")
+	List<Categorie> findByExcludedId(Integer id);
 
 }

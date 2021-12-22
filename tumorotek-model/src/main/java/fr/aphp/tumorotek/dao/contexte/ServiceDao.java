@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.contexte;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.contexte.Coordonnee;
 import fr.aphp.tumorotek.model.contexte.Etablissement;
 import fr.aphp.tumorotek.model.contexte.Service;
@@ -49,118 +52,144 @@ import fr.aphp.tumorotek.model.contexte.Service;
  * Date: 09/09/2009
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface ServiceDao extends GenericDaoJpa<Service, Integer>
-{
+@Repository
+public interface ServiceDao extends CrudRepository<Service, Integer> {
 
-   /**
-    * Recherche tous les services ordonnés par nom.
-    * @return une liste ordonnée de services.
-    */
-   List<Service> findByOrder();
+	/**
+	 * Recherche tous les services ordonnés par nom.
+	 * 
+	 * @return une liste ordonnée de services.
+	 */
+	@Query("SELECT s FROM Service s ORDER BY s.etablissement.nom, s.nom")
+	List<Service> findByOrder();
 
-   /**
-    * Recherche les services dont le nom est égal au paramètre.
-    * @param nom pour lequel on recherche des services.
-    * @return une liste de services.
-    */
-   List<Service> findByNom(String nom);
+	/**
+	 * Recherche les services dont le nom est égal au paramètre.
+	 * 
+	 * @param nom pour lequel on recherche des services.
+	 * @return une liste de services.
+	 */
+	@Query("SELECT s FROM Service s WHERE s.nom like ?1")
+	List<Service> findByNom(String nom);
 
-   /**
-    * Recherche les services archivés.
-    * @param archive .
-    * @return une liste de services.
-    */
-   List<Service> findByArchiveWithOrder(boolean archive);
+	/**
+	 * Recherche les services archivés.
+	 * 
+	 * @param archive .
+	 * @return une liste de services.
+	 */
+	@Query("SELECT s FROM Service s WHERE s.archive = ?1 ORDER BY s.nom")
+	List<Service> findByArchiveWithOrder(boolean archive);
 
-   /**
-    * Recherche les services dont les coordonnées sont passées en paramètre.
-    * @param coordonnee pour lesquelles on recherche des services.
-    * @return une liste de services.
-    */
-   List<Service> findByCoordonnee(Coordonnee coordonnee);
+	/**
+	 * Recherche les services dont les coordonnées sont passées en paramètre.
+	 * 
+	 * @param coordonnee pour lesquelles on recherche des services.
+	 * @return une liste de services.
+	 */
+	@Query("SELECT s FROM Service s WHERE s.coordonnee = ?1")
+	List<Service> findByCoordonnee(Coordonnee coordonnee);
 
-   /**
-    * Recherche les services dont l'établissement est passé en paramètre.
-    * @param etablissement pour lequel on recherche des services.
-    * @return une liste de services.
-    */
-   List<Service> findByEtablissement(Etablissement etablissement);
+	/**
+	 * Recherche les services dont l'établissement est passé en paramètre.
+	 * 
+	 * @param etablissement pour lequel on recherche des services.
+	 * @return une liste de services.
+	 */
+	@Query("SELECT s FROM Service s WHERE s.etablissement = ?1")
+	List<Service> findByEtablissement(Etablissement etablissement);
 
-   /**
-    * Recherche les services dont l'établissement est passé en paramètre.
-    * Ces services sont renvoyés ordonnés.
-    * @param etablissement pour lequel on recherche des services.
-    * @return une liste ordonnée de services.
-    */
-   List<Service> findByEtablissementWithOrder(Etablissement etablissement);
+	/**
+	 * Recherche les services dont l'établissement est passé en paramètre. Ces
+	 * services sont renvoyés ordonnés.
+	 * 
+	 * @param etablissement pour lequel on recherche des services.
+	 * @return une liste ordonnée de services.
+	 */
+	@Query("SELECT s FROM Service s WHERE s.etablissement = ?1 ORDER BY s.nom")
+	List<Service> findByEtablissementWithOrder(Etablissement etablissement);
 
-   /**
-    * Recherche les services archivés ou non dont l'établissement est passé 
-    * en paramètre. Ces services sont renvoyés ordonnés.
-    * @param etablissement pour lequel on recherche des services.
-    * @param archive True : renvoie les services archivés.
-    * @return une liste ordonnée de services.
-    */
-   List<Service> findByEtablissementArchiveWithOrder(Etablissement etablissement, boolean archive);
+	/**
+	 * Recherche les services archivés ou non dont l'établissement est passé en
+	 * paramètre. Ces services sont renvoyés ordonnés.
+	 * 
+	 * @param etablissement pour lequel on recherche des services.
+	 * @param archive       True : renvoie les services archivés.
+	 * @return une liste ordonnée de services.
+	 */
+	@Query("SELECT s FROM Service s WHERE s.etablissement = ?1 AND s.archive =?2 ORDER BY s.nom")
+	List<Service> findByEtablissementArchiveWithOrder(Etablissement etablissement, boolean archive);
 
-   /**
-    * Recherche les services dont un collaborateur est passé en paramètre.
-    * @param collaborateurId pour lequel on recherche des services.
-    * @return une liste de services.
-    */
-   List<Service> findByCollaborateurId(Integer collaborateurId);
+	/**
+	 * Recherche les services dont un collaborateur est passé en paramètre.
+	 * 
+	 * @param collaborateurId pour lequel on recherche des services.
+	 * @return une liste de services.
+	 */
+	@Query("SELECT s FROM Service s join s.collaborateurs c WHERE c.collaborateurId = ?1")
+	List<Service> findByCollaborateurId(Integer collaborateurId);
 
-   /**
-    * Recherche les services dont un collaborateur est passé en paramètre
-    * et qui sont archivés ou non.
-    * @param collaborateurId pour lequel on recherche des services.
-    * @param archive True : renvoie les services archivés.
-    * @return une liste de services.
-    */
-   List<Service> findByCollaborateurIdAndArchive(Integer collaborateurId, boolean archive);
+	/**
+	 * Recherche les services dont un collaborateur est passé en paramètre et qui
+	 * sont archivés ou non.
+	 * 
+	 * @param collaborateurId pour lequel on recherche des services.
+	 * @param archive         True : renvoie les services archivés.
+	 * @return une liste de services.
+	 */
+	@Query("SELECT s FROM Service s left join s.collaborateurs c WHERE c.collaborateurId = ?1 " + "AND s.archive =?2")
+	List<Service> findByCollaborateurIdAndArchive(Integer collaborateurId, boolean archive);
 
-   /**
-    * Recherche les services dont une banque est passée en paramètre.
-    * @param banqueId pour laquelle on recherche des services.
-    * @return une liste de services.
-    */
-   List<Service> findByBanquePossedeesId(Integer banqueId);
+	/**
+	 * Recherche les services dont une banque est passée en paramètre.
+	 * 
+	 * @param banqueId pour laquelle on recherche des services.
+	 * @return une liste de services.
+	 */
+	@Query("SELECT s FROM Service s left join s.banquesPossedees b WHERE b.banqueId = ?1")
+	List<Service> findByBanquePossedeesId(Integer banqueId);
 
-   /**
-    * Recherche le services dont l'identifiant passé en paramètre.
-    * Les associations avec les tables ETABLISSEMENT et 
-    * COORDONNEE seront chargées
-    * par l'intermédiaire d'un fetch.
-    * @param serviceId est l'identifiant dU service recherché.
-    * @return un service.
-    */
-   List<Service> findByIdWithFetch(Integer serviceId);
+	/**
+	 * Recherche le services dont l'identifiant passé en paramètre. Les associations
+	 * avec les tables ETABLISSEMENT et COORDONNEE seront chargées par
+	 * l'intermédiaire d'un fetch.
+	 * 
+	 * @param serviceId est l'identifiant dU service recherché.
+	 * @return un service.
+	 */
+	@Query("SELECT s FROM Service s LEFT JOIN FETCH s.etablissement LEFT JOIN FETCH s.coordonnee "
+			+ "WHERE s.serviceId = ?1")
+	List<Service> findByIdWithFetch(Integer serviceId);
 
-   /**
-    * Recherche tous les services sauf celui dont l'id est passé 
-    * en paramètre.
-    * @param serviceId Identifiant du Service que l'on souhaite
-    * exclure de la liste retournée.
-    * @return une liste de Services.
-    */
-   List<Service> findByExcludedId(Integer serviceId);
+	/**
+	 * Recherche tous les services sauf celui dont l'id est passé en paramètre.
+	 * 
+	 * @param serviceId Identifiant du Service que l'on souhaite exclure de la liste
+	 *                  retournée.
+	 * @return une liste de Services.
+	 */
+	@Query("SELECT s FROM Service s WHERE s.serviceId != ?1")
+	List<Service> findByExcludedId(Integer serviceId);
 
-   /**
-    * Compte tous les services rattachés à l'établissement dont l'id est passé
-    * en paramètre.
-    * @param etablissementId Identifiant de l'établissement.
-    * @return une liste de Services.
-    */
-   List<Long> findCountByEtablissementId(Integer etabissementId);
+	/**
+	 * Compte tous les services rattachés à l'établissement dont l'id est passé en
+	 * paramètre.
+	 * 
+	 * @param etablissementId Identifiant de l'établissement.
+	 * @return une liste de Services.
+	 */
+	@Query("SELECT count(s) FROM Service s left join s.etablissement e WHERE e.etablissementId = (?1)")
+	List<Long> findCountByEtablissementId(Integer etabissementId);
 
-   /**
-    * Recherche les Services dont la ville
-    * est passée en paramètre.
-    * @param ville Ville pour laquelle on recherche des services.
-    * @return une liste de Services.
-    */
-   List<Service> findByVille(String ville);
+	/**
+	 * Recherche les Services dont la ville est passée en paramètre.
+	 * 
+	 * @param ville Ville pour laquelle on recherche des services.
+	 * @return une liste de Services.
+	 */
+	@Query("SELECT s FROM Service s WHERE s.coordonnee.ville like ?1 ORDER BY s.nom")
+	List<Service> findByVille(String ville);
 }

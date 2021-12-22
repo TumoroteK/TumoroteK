@@ -37,35 +37,43 @@ package fr.aphp.tumorotek.dao.interfacage;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.interfacage.BlocExterne;
 import fr.aphp.tumorotek.model.interfacage.DossierExterne;
 
 /**
  *
- * Interface pour le DAO du bean de domaine BlocExterne.
- * Interface créée le 05/10/11.
+ * Interface pour le DAO du bean de domaine BlocExterne. Interface créée le
+ * 05/10/11.
  *
  * @author Pierre VENTADOUR
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface BlocExterneDao extends GenericDaoJpa<BlocExterne, Integer>
-{
+@Repository
+public interface BlocExterneDao extends CrudRepository<BlocExterne, Integer> {
 
-   /**
-    * Recherche les BlocExternes d'un dossier.
-    * @param dossierExterne DossierExterne.
-    * @return Une liste de BlocExternes.
-    */
-   List<BlocExterne> findByDossierExterne(DossierExterne dossierExterne);
+	/**
+	 * Recherche les BlocExternes d'un dossier.
+	 * 
+	 * @param dossierExterne DossierExterne.
+	 * @return Une liste de BlocExternes.
+	 */
+	@Query("SELECT b FROM BlocExterne b " + "WHERE b.dossierExterne = ?1 " + "ORDER BY b.ordre")
+	List<BlocExterne> findByDossierExterne(DossierExterne dossierExterne);
 
-   /**
-    * Recherche les BlocExternes d'un dossier et d'une entité.
-    * @param dossierExterne DossierExterne des blocs recherchés.
-    * @param entiteId Id de l'entité des blocs recherchés.
-    * @return Une liste de BlocExternes.
-    */
-   List<BlocExterne> findByDossierExterneAndEntite(DossierExterne dossierExterne, Integer entiteId);
+	/**
+	 * Recherche les BlocExternes d'un dossier et d'une entité.
+	 * 
+	 * @param dossierExterne DossierExterne des blocs recherchés.
+	 * @param entiteId       Id de l'entité des blocs recherchés.
+	 * @return Une liste de BlocExternes.
+	 */
+	@Query("SELECT b FROM BlocExterne b " + "WHERE b.dossierExterne = ?1 " + "AND b.entiteId = ?2 "
+			+ "ORDER BY b.ordre")
+	List<BlocExterne> findByDossierExterneAndEntite(DossierExterne dossierExterne, Integer entiteId);
 
 }

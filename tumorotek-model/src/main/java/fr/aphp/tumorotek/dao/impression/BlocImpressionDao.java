@@ -37,27 +37,32 @@ package fr.aphp.tumorotek.dao.impression;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.impression.BlocImpression;
 import fr.aphp.tumorotek.model.systeme.Entite;
 
 /**
  *
- * Interface pour le DAO du bean de domaine BlocImpression.
- * Interface créée le 22/07/2010.
+ * Interface pour le DAO du bean de domaine BlocImpression. Interface créée le
+ * 22/07/2010.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface BlocImpressionDao extends GenericDaoJpa<BlocImpression, Integer>
-{
+@Repository
+public interface BlocImpressionDao extends CrudRepository<BlocImpression, Integer> {
 
-   /**
-    * Recherche les BlocImpressions dont l'entité est égale au paramètre.
-    * @param entite Entité du bloc recherché.
-    * @return une liste de BlocImpressions.
-    */
-   List<BlocImpression> findByEntite(Entite entite);
+	/**
+	 * Recherche les BlocImpressions dont l'entité est égale au paramètre.
+	 * 
+	 * @param entite Entité du bloc recherché.
+	 * @return une liste de BlocImpressions.
+	 */
+	@Query("SELECT b FROM BlocImpression b WHERE b.entite = ?1 ORDER BY b.ordre")
+	List<BlocImpression> findByEntite(Entite entite);
 
 }

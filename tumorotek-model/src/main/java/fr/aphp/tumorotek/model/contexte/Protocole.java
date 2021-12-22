@@ -61,18 +61,18 @@ import fr.aphp.tumorotek.model.coeur.prelevement.delegate.PrelevementSero;
  * Classe créée le 09/01/12.
  *
  * @author MAthieu BARTHELEMY
- * @version 2.0.6
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "PROTOCOLE")
 @AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "PROTOCOLE_ID"))})
 @GenericGenerator(name = "autoincrement", strategy = "increment")
-@NamedQueries(value = {
-   @NamedQuery(name = "Protocole.findByNom", query = "SELECT p FROM Protocole p WHERE p.nom like ?1 " + "order by p.nom"),
-   @NamedQuery(name = "Protocole.findByExcludedId", query = "SELECT p FROM Protocole p " + "WHERE p.id != ?1"),
-   @NamedQuery(name = "Protocole.findByPfOrder", query = "SELECT p FROM Protocole p " + "WHERE p.plateforme = ?1 ORDER BY p.nom"),
-   @NamedQuery(name = "Protocole.findByOrder", query = "SELECT p FROM Protocole p ORDER BY p.nom")})
+//@NamedQueries(value = {
+//   @NamedQuery(name = "Protocole.findByNom", query = "SELECT p FROM Protocole p WHERE p.nom like ?1 " + "order by p.nom"),
+//   @NamedQuery(name = "Protocole.findByExcludedId", query = "SELECT p FROM Protocole p " + "WHERE p.id != ?1"),
+//   @NamedQuery(name = "Protocole.findByPfOrder", query = "SELECT p FROM Protocole p " + "WHERE p.plateforme = ?1 ORDER BY p.nom"),
+//   @NamedQuery(name = "Protocole.findByOrder", query = "SELECT p FROM Protocole p ORDER BY p.nom")})
 public class Protocole extends AbstractPfDependantThesaurusObject implements Serializable
 {
 

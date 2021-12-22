@@ -60,7 +60,7 @@ import fr.aphp.tumorotek.model.io.export.ChampEntite;
  * @author Pierre Ventadour
  * @see http://boris.kirzner.info/blog/archives/2008/07/19/
  * hibernate-annotations-the-many-to-many-association-with-composite-key/
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
@@ -70,10 +70,10 @@ import fr.aphp.tumorotek.model.io.export.ChampEntite;
       joinColumns = @JoinColumn(name = "CHAMP_ENTITE_ID", referencedColumnName = "CHAMP_ENTITE_ID")),
    @AssociationOverride(name = "pk.blocImpression",
       joinColumns = @JoinColumn(name = "BLOC_IMPRESSION_ID", referencedColumnName = "BLOC_IMPRESSION_ID"))})
-@NamedQueries(value = {
-   @NamedQuery(name = "ChampEntiteBloc." + "findByBlocImpression",
-      query = "SELECT c FROM ChampEntiteBloc c " + "WHERE c.pk.blocImpression = ?1 " + "ORDER BY c.ordre"),
-   @NamedQuery(name = "ChampEntiteBloc." + "findByExcludedPK", query = "SELECT c FROM ChampEntiteBloc c " + "WHERE c.pk != ?1")})
+//@NamedQueries(value = {
+//   @NamedQuery(name = "ChampEntiteBloc." + "findByBlocImpression",
+//      query = "SELECT c FROM ChampEntiteBloc c " + "WHERE c.pk.blocImpression = ?1 " + "ORDER BY c.ordre"),
+//   @NamedQuery(name = "ChampEntiteBloc." + "findByExcludedPK", query = "SELECT c FROM ChampEntiteBloc c " + "WHERE c.pk != ?1")})
 public class ChampEntiteBloc implements Serializable
 {
 

@@ -62,7 +62,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * @author Pierre Ventadour
  * @see http://boris.kirzner.info/blog/archives/2008/07/19/
  * hibernate-annotations-the-many-to-many-association-with-composite-key/
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
@@ -70,11 +70,11 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 @AssociationOverrides({@AssociationOverride(name = "pk.utilisateur", joinColumns = @JoinColumn(name = "UTILISATEUR_ID")),
    @AssociationOverride(name = "pk.banque", joinColumns = @JoinColumn(name = "BANQUE_ID")),
    @AssociationOverride(name = "pk.imprimante", joinColumns = @JoinColumn(name = "IMPRIMANTE_ID"))})
-@NamedQueries(value = {
-   @NamedQuery(name = "AffectationImprimante.findByExcludedPK",
-      query = "SELECT a FROM AffectationImprimante a " + "WHERE a.pk != ?1"),
-   @NamedQuery(name = "AffectationImprimante.findByBanqueUtilisateur",
-      query = "SELECT a FROM AffectationImprimante a " + "WHERE a.pk.banque = ?1 AND a.pk.utilisateur = ?2")})
+//@NamedQueries(value = {
+//   @NamedQuery(name = "AffectationImprimante.findByExcludedPK",
+//      query = "SELECT a FROM AffectationImprimante a " + "WHERE a.pk != ?1"),
+//   @NamedQuery(name = "AffectationImprimante.findByBanqueUtilisateur",
+//      query = "SELECT a FROM AffectationImprimante a " + "WHERE a.pk.banque = ?1 AND a.pk.utilisateur = ?2")})
 public class AffectationImprimante implements Serializable
 {
 

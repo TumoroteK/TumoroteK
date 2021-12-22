@@ -88,58 +88,58 @@ import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
  * Classe créée le 09/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.2.1
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "BANQUE")
-@NamedQueries(value = {@NamedQuery(name = "Banque.findByNom", query = "SELECT b FROM Banque b WHERE b.nom = ?1"),
-   @NamedQuery(name = "Banque.findByIdentification", query = "SELECT b FROM Banque b WHERE b.identification = ?1"),
-   @NamedQuery(name = "Banque.findByAutoriseCrossPatient",
-      query = "SELECT b FROM Banque b " + "WHERE b.autoriseCrossPatient = ?1"),
-   @NamedQuery(name = "Banque.findByArchive", query = "SELECT b FROM Banque b WHERE b.archive = ?1"),
-   @NamedQuery(name = "Banque.findByCollaborateur", query = "SELECT b FROM Banque b " + "WHERE b.collaborateur = ?1"),
-   @NamedQuery(name = "Banque.findByProprietaire", query = "SELECT b FROM Banque b " + "WHERE b.proprietaire = ?1"),
-   //		@NamedQuery(name = "Banque.findByServiceId", 
-   //				query = "SELECT b FROM Banque b " 
-   //					+ "WHERE b.services.serviceId = ?1"),
-   @NamedQuery(name = "Banque.findByPlateformeAndArchive",
-      query = "SELECT b FROM Banque b " + "WHERE b.plateforme = ?1 AND b.archive = ?2 " + "ORDER BY b.nom"),
-   @NamedQuery(name = "Banque.findByIdWithFetch",
-      query = "SELECT b FROM Banque b LEFT JOIN FETCH " + "b.collaborateur LEFT JOIN FETCH b.proprietaire "
-         + "LEFT JOIN FETCH b.plateforme WHERE b.banqueId = ?1"),
-   @NamedQuery(name = "Banque.findByOrder", query = "SELECT b FROM Banque b ORDER BY b.nom"),
-   @NamedQuery(name = "Banque.findByRechercheId",
-      query = "SELECT b FROM Banque b " + "left join b.recherches r " + "WHERE r.rechercheId = ?1"),
-   @NamedQuery(name = "Banque.findContexteCatalogues",
-      query = "SELECT b.contexte.catalogues FROM Banque b " + "WHERE b.banqueId = ?1"),
-   @NamedQuery(name = "Banque.findByEntiteConsultByUtilisateur",
-      query = "SELECT b FROM Banque b " + "join b.profilUtilisateurs as profilU " + "join profilU.pk.profil as profil "
-         + "join profil.droitObjets as droit " + "WHERE b.plateforme = ?3 AND " + "profilU.pk.utilisateur = ?1 "
-         + "AND droit.pk.entite = ?2 " + "AND droit.pk.operationType.nom = 'Consultation' " + "AND b.archive = 0"),
-   @NamedQuery(name = "Banque.findByEntiteModifByUtilisateur",
-      query = "SELECT b FROM Banque b " + "join b.profilUtilisateurs as profilU " + "join profilU.pk.profil as profil "
-         + "join profil.droitObjets as droit " + "WHERE b.plateforme = ?3 AND " + "profilU.pk.utilisateur = ?1 "
-         + "AND droit.pk.entite = ?2 " + "AND droit.pk.operationType.nom = 'Modification' " + "AND b.archive = 0 "
-         + "ORDER by b.nom"),
-   @NamedQuery(name = "Banque.findByUtilisateurIsAdmin",
-      query = "SELECT distinct b FROM Banque b " + "left join b.profilUtilisateurs as profilU "
-         + "left join profilU.pk.profil as profil " + "join b.plateforme.utilisateurs as us " + "WHERE b.plateforme = ?2 "
-         + "AND b.archive = 0 " + "AND ((profilU.pk.utilisateur = ?1 " + "AND profil.admin=1) " + "OR us = ?1) "
-         + "ORDER BY b.nom"),
-   @NamedQuery(name = "Banque.findByUtilisateurAndPF",
-      query = "SELECT distinct b FROM Banque b " + "left join b.profilUtilisateurs as profilU "
-         + "left join profilU.pk.profil as profil " + "join b.plateforme.utilisateurs as us " + "WHERE b.plateforme = ?2 "
-         + "AND b.archive = 0 " + "AND (profilU.pk.utilisateur = ?1 OR us = ?1) " + "ORDER BY b.nom"),
-   @NamedQuery(name = "Banque.findByProfilUtilisateur",
-      query = "SELECT b FROM Banque b " + "join b.profilUtilisateurs as profilU " + "join profilU.pk.profil as profil "
-         + "WHERE profilU.pk.utilisateur = ?1 " + "ORDER BY b.nom"),
-   @NamedQuery(name = "Banque.findByExcludedId", query = "SELECT b FROM Banque b " + "WHERE b.banqueId != ?1"),
-   @NamedQuery(name = "Banque.findByTableAnnotation",
-      query = "SELECT b FROM Banque b " + "JOIN b.tableAnnotationBanques t " + "WHERE t.pk.tableAnnotation = ?1"),
-	@NamedQuery(name = "Banque.findByConteneur",
-		query = "SELECT b FROM Banque b " + "JOIN b.conteneurs c " + "WHERE c = ?1")}
-)
+//@NamedQueries(value = {@NamedQuery(name = "Banque.findByNom", query = "SELECT b FROM Banque b WHERE b.nom = ?1"),
+//   @NamedQuery(name = "Banque.findByIdentification", query = "SELECT b FROM Banque b WHERE b.identification = ?1"),
+//   @NamedQuery(name = "Banque.findByAutoriseCrossPatient",
+//      query = "SELECT b FROM Banque b " + "WHERE b.autoriseCrossPatient = ?1"),
+//   @NamedQuery(name = "Banque.findByArchive", query = "SELECT b FROM Banque b WHERE b.archive = ?1"),
+//   @NamedQuery(name = "Banque.findByCollaborateur", query = "SELECT b FROM Banque b " + "WHERE b.collaborateur = ?1"),
+//   @NamedQuery(name = "Banque.findByProprietaire", query = "SELECT b FROM Banque b " + "WHERE b.proprietaire = ?1"),
+//   //		@NamedQuery(name = "Banque.findByServiceId", 
+//   //				query = "SELECT b FROM Banque b " 
+//   //					+ "WHERE b.services.serviceId = ?1"),
+//   @NamedQuery(name = "Banque.findByPlateformeAndArchive",
+//      query = "SELECT b FROM Banque b " + "WHERE b.plateforme = ?1 AND b.archive = ?2 " + "ORDER BY b.nom"),
+//   @NamedQuery(name = "Banque.findByIdWithFetch",
+//      query = "SELECT b FROM Banque b LEFT JOIN FETCH " + "b.collaborateur LEFT JOIN FETCH b.proprietaire "
+//         + "LEFT JOIN FETCH b.plateforme WHERE b.banqueId = ?1"),
+//   @NamedQuery(name = "Banque.findByOrder", query = "SELECT b FROM Banque b ORDER BY b.nom"),
+//   @NamedQuery(name = "Banque.findByRechercheId",
+//      query = "SELECT b FROM Banque b " + "left join b.recherches r " + "WHERE r.rechercheId = ?1"),
+//   @NamedQuery(name = "Banque.findContexteCatalogues",
+//      query = "SELECT b.contexte.catalogues FROM Banque b " + "WHERE b.banqueId = ?1"),
+//   @NamedQuery(name = "Banque.findByEntiteConsultByUtilisateur",
+//      query = "SELECT b FROM Banque b " + "join b.profilUtilisateurs as profilU " + "join profilU.pk.profil as profil "
+//         + "join profil.droitObjets as droit " + "WHERE b.plateforme = ?3 AND " + "profilU.pk.utilisateur = ?1 "
+//         + "AND droit.pk.entite = ?2 " + "AND droit.pk.operationType.nom = 'Consultation' " + "AND b.archive = 0"),
+//   @NamedQuery(name = "Banque.findByEntiteModifByUtilisateur",
+//      query = "SELECT b FROM Banque b " + "join b.profilUtilisateurs as profilU " + "join profilU.pk.profil as profil "
+//         + "join profil.droitObjets as droit " + "WHERE b.plateforme = ?3 AND " + "profilU.pk.utilisateur = ?1 "
+//         + "AND droit.pk.entite = ?2 " + "AND droit.pk.operationType.nom = 'Modification' " + "AND b.archive = 0 "
+//         + "ORDER by b.nom"),
+//   @NamedQuery(name = "Banque.findByUtilisateurIsAdmin",
+//      query = "SELECT distinct b FROM Banque b " + "left join b.profilUtilisateurs as profilU "
+//         + "left join profilU.pk.profil as profil " + "join b.plateforme.utilisateurs as us " + "WHERE b.plateforme = ?2 "
+//         + "AND b.archive = 0 " + "AND ((profilU.pk.utilisateur = ?1 " + "AND profil.admin=1) " + "OR us = ?1) "
+//         + "ORDER BY b.nom"),
+//   @NamedQuery(name = "Banque.findByUtilisateurAndPF",
+//      query = "SELECT distinct b FROM Banque b " + "left join b.profilUtilisateurs as profilU "
+//         + "left join profilU.pk.profil as profil " + "join b.plateforme.utilisateurs as us " + "WHERE b.plateforme = ?2 "
+//         + "AND b.archive = 0 " + "AND (profilU.pk.utilisateur = ?1 OR us = ?1) " + "ORDER BY b.nom"),
+//   @NamedQuery(name = "Banque.findByProfilUtilisateur",
+//      query = "SELECT b FROM Banque b " + "join b.profilUtilisateurs as profilU " + "join profilU.pk.profil as profil "
+//         + "WHERE profilU.pk.utilisateur = ?1 " + "ORDER BY b.nom"),
+//   @NamedQuery(name = "Banque.findByExcludedId", query = "SELECT b FROM Banque b " + "WHERE b.banqueId != ?1"),
+//   @NamedQuery(name = "Banque.findByTableAnnotation",
+//      query = "SELECT b FROM Banque b " + "JOIN b.tableAnnotationBanques t " + "WHERE t.pk.tableAnnotation = ?1"),
+//	@NamedQuery(name = "Banque.findByConteneur",
+//		query = "SELECT b FROM Banque b " + "JOIN b.conteneurs c " + "WHERE c = ?1")}
+//)
 
 public class Banque implements TKFantomableObject, TKdataObject, java.io.Serializable, Comparable<Object>
 {

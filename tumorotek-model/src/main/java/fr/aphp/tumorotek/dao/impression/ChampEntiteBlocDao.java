@@ -37,37 +37,43 @@ package fr.aphp.tumorotek.dao.impression;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.impression.BlocImpression;
 import fr.aphp.tumorotek.model.impression.ChampEntiteBloc;
 import fr.aphp.tumorotek.model.impression.ChampEntiteBlocPK;
 
 /**
  *
- * Interface pour le DAO du bean de domaine ChampEntiteBloc.
- * Interface créée le 30/07/2010.
+ * Interface pour le DAO du bean de domaine ChampEntiteBloc. Interface créée le
+ * 30/07/2010.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface ChampEntiteBlocDao extends GenericDaoJpa<ChampEntiteBloc, ChampEntiteBlocPK>
-{
+@Repository
+public interface ChampEntiteBlocDao extends CrudRepository<ChampEntiteBloc, ChampEntiteBlocPK> {
 
-   /**
-    * Recherche les ChampEntiteBlocs dont le bloc 
-    * est égal au paramètre.
-    * @param bloc BlocImpression du bloc recherché.
-    * @return une liste de ChampEntiteBloc.
-    */
-   List<ChampEntiteBloc> findByBlocImpression(BlocImpression bloc);
+	/**
+	 * Recherche les ChampEntiteBlocs dont le bloc est égal au paramètre.
+	 * 
+	 * @param bloc BlocImpression du bloc recherché.
+	 * @return une liste de ChampEntiteBloc.
+	 */
+	@Query("SELECT c FROM ChampEntiteBloc c " + "WHERE c.pk.blocImpression = ?1 " + "ORDER BY c.ordre")
+	List<ChampEntiteBloc> findByBlocImpression(BlocImpression bloc);
 
-   /**
-    * Recherche les ChampEntiteBlocs dont la clé est différente
-    * de celle passée en paramètre.
-    * @param pk Pk du ChampEntiteBloc recherché.
-    * @return une liste de ChampEntiteBlocs.
-    */
-   List<ChampEntiteBloc> findByExcludedPK(ChampEntiteBlocPK pk);
+	/**
+	 * Recherche les ChampEntiteBlocs dont la clé est différente de celle passée en
+	 * paramètre.
+	 * 
+	 * @param pk Pk du ChampEntiteBloc recherché.
+	 * @return une liste de ChampEntiteBlocs.
+	 */
+	@Query("SELECT c FROM ChampEntiteBloc c " + "WHERE c.pk != ?1")
+	List<ChampEntiteBloc> findByExcludedPK(ChampEntiteBlocPK pk);
 
 }

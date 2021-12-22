@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.imprimante;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.imprimante.Imprimante;
 
@@ -49,37 +52,45 @@ import fr.aphp.tumorotek.model.imprimante.Imprimante;
  * @version 18/03/2011
  *
  */
-public interface ImprimanteDao extends GenericDaoJpa<Imprimante, Integer>
-{
+@Repository
+public interface ImprimanteDao extends CrudRepository<Imprimante, Integer> {
 
-   /**
-    * Recherche les Imprimante d'une plateforme.
-    * @param plateforme Plateforme.
-    * @return Une liste d'Imprimantes.
-    */
-   List<Imprimante> findByPlateforme(Plateforme plateforme);
+	/**
+	 * Recherche les Imprimante d'une plateforme.
+	 * 
+	 * @param plateforme Plateforme.
+	 * @return Une liste d'Imprimantes.
+	 */
+	@Query("SELECT i FROM Imprimante i WHERE i.plateforme = ?1 ORDER BY i.nom")
+	List<Imprimante> findByPlateforme(Plateforme plateforme);
 
-   /**
-    * Recherche les Imprimantes d'une plateforme en fct de son nom.
-    * @param nom nom de l'imprimante.
-    * @param plateforme Plateforme.
-    * @return Une liste d'Imprimantes.
-    */
-   List<Imprimante> findByNomAndPlateforme(String nom, Plateforme plateforme);
+	/**
+	 * Recherche les Imprimantes d'une plateforme en fct de son nom.
+	 * 
+	 * @param nom        nom de l'imprimante.
+	 * @param plateforme Plateforme.
+	 * @return Une liste d'Imprimantes.
+	 */
+	@Query("SELECT i FROM Imprimante i WHERE i.nom = ?1 AND i.plateforme = ?2")
+	List<Imprimante> findByNomAndPlateforme(String nom, Plateforme plateforme);
 
-   /**
-    * Recherche les noms d'Imprimantes d'une plateforme.
-    * @param plateforme Plateforme.
-    * @return Une liste de noms.
-    */
-   List<String> findByPlateformeSelectNom(Plateforme plateforme);
+	/**
+	 * Recherche les noms d'Imprimantes d'une plateforme.
+	 * 
+	 * @param plateforme Plateforme.
+	 * @return Une liste de noms.
+	 */
+	@Query("SELECT i.nom FROM Imprimante i WHERE i.plateforme = ?1 ORDER BY i.nom")
+	List<String> findByPlateformeSelectNom(Plateforme plateforme);
 
-   /**
-    * Recherche les Imprimantes dont l'identifiant est différent
-    * de celui passé en paramètre.
-    * @param utilisateurId Identifiant de l'Imprimante à exclure.
-    * @return Une liste d'Imprimantes.
-    */
-   List<Imprimante> findByExcludedId(Integer imprimanteId);
+	/**
+	 * Recherche les Imprimantes dont l'identifiant est différent de celui passé en
+	 * paramètre.
+	 * 
+	 * @param utilisateurId Identifiant de l'Imprimante à exclure.
+	 * @return Une liste d'Imprimantes.
+	 */
+	@Query("SELECT i FROM Imprimante i WHERE i.imprimanteId != ?1")
+	List<Imprimante> findByExcludedId(Integer imprimanteId);
 
 }

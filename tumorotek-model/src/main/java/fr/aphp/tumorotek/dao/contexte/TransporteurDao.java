@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.contexte;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.contexte.Coordonnee;
 import fr.aphp.tumorotek.model.contexte.Transporteur;
 
@@ -47,65 +50,74 @@ import fr.aphp.tumorotek.model.contexte.Transporteur;
  * Date: 09/09/2009
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface TransporteurDao extends GenericDaoJpa<Transporteur, Integer>
-{
+@Repository
+public interface TransporteurDao extends CrudRepository<Transporteur, Integer> {
+	/**
+	 * Recherche les transporteurs dont le nom est égal au paramètre.
+	 * 
+	 * @param nom pour lequel on recherche des transporteurs.
+	 * @return une liste de transporteurs.
+	 */
+	@Query("SELECT t FROM Transporteur t WHERE t.nom = ?1")
+	List<Transporteur> findByNom(String nom);
 
-   /**
-    * Recherche les transporteurs dont le nom est égal au paramètre.
-    * @param nom pour lequel on recherche des transporteurs.
-    * @return une liste de transporteurs.
-    */
-   List<Transporteur> findByNom(String nom);
+	/**
+	 * Recherche les transporteurs dont le nom du contact est donné en paramètre.
+	 * 
+	 * @param contactNom du contact pour lequel on recherche des transporteurs.
+	 * @return une liste de transporteurs.
+	 */
+	@Query("SELECT t FROM Transporteur t WHERE t.contactNom = ?1")
+	List<Transporteur> findByContactNom(String contactNom);
 
-   /**
-    * Recherche les transporteurs dont le nom du contact est 
-    * donné en paramètre.
-    * @param contactNom du contact pour lequel on recherche des 
-    * transporteurs.
-    * @return une liste de transporteurs.
-    */
-   List<Transporteur> findByContactNom(String contactNom);
+	/**
+	 * Recherche les transporteurs archivés.
+	 * 
+	 * @param archive .
+	 * @return une liste de transporteurs.
+	 */
+	@Query("SELECT t FROM Transporteur t WHERE t.archive = ?1 ORDER BY t.nom")
+	List<Transporteur> findByArchive(boolean archive);
 
-   /**
-    * Recherche les transporteurs archivés.
-    * @param archive .
-    * @return une liste de transporteurs.
-    */
-   List<Transporteur> findByArchive(boolean archive);
+	/**
+	 * Recherche les transporteurs dont les coordonnées sont passées en paramètre.
+	 * 
+	 * @param coordonnee pour lesquelles on recherche des transporteurs.
+	 * @return une liste transporteurs.
+	 */
+	@Query("SELECT t FROM Transporteur t WHERE t.coordonnee = ?1")
+	List<Transporteur> findByCoordonnee(Coordonnee coordonnee);
 
-   /**
-    * Recherche les transporteurs dont les coordonnées sont passées 
-    * en paramètre.
-    * @param coordonnee pour lesquelles on recherche des transporteurs.
-    * @return une liste transporteurs.
-    */
-   List<Transporteur> findByCoordonnee(Coordonnee coordonnee);
+	/**
+	 * Recherche le transporteur dont l'identifiant est passé en paramètre.
+	 * L'association avec la table COORDONNEE sera chargée par l'intermédiaire d'un
+	 * fetch.
+	 * 
+	 * @param transporteurId est l'identifiant du transporteur recherché.
+	 * @return un transporteur.
+	 */
+	@Query("SELECT t FROM Transporteur t LEFT JOIN FETCH t.coordonnee WHERE t.transporteurId = ?1")
+	List<Transporteur> findByIdWithFetch(Integer transporteurId);
 
-   /**
-    * Recherche le transporteur dont l'identifiant est passé en paramètre.
-    * L'association avec la table COORDONNEE sera chargée
-    * par l'intermédiaire d'un fetch.
-    * @param transporteurId est l'identifiant du transporteur recherché.
-    * @return un transporteur.
-    */
-   List<Transporteur> findByIdWithFetch(Integer transporteurId);
+	/**
+	 * Recherche tous les Transporteurs ordonnés.
+	 * 
+	 * @return Liste ordonnée de Transporteurs.
+	 */
+	@Query("SELECT t FROM Transporteur t ORDER BY t.nom")
+	List<Transporteur> findByOrder();
 
-   /**
-    * Recherche tous les Transporteurs ordonnés.
-    * @return Liste ordonnée de Transporteurs.
-    */
-   List<Transporteur> findByOrder();
-
-   /**
-    * Recherche tous les transporteurs sauf celui dont l'id est passé 
-    * en paramètre.
-    * @param transporteurId Identifiant du transporteur que l'on souhaite
-    * exclure de la liste retournée.
-    * @return une liste de transporteurs.
-    */
-   List<Transporteur> findByExcludedId(Integer transporteurId);
+	/**
+	 * Recherche tous les transporteurs sauf celui dont l'id est passé en paramètre.
+	 * 
+	 * @param transporteurId Identifiant du transporteur que l'on souhaite exclure
+	 *                       de la liste retournée.
+	 * @return une liste de transporteurs.
+	 */
+	@Query("SELECT t FROM Transporteur t WHERE t.transporteurId != ?1")
+	List<Transporteur> findByExcludedId(Integer transporteurId);
 
 }

@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.imprimante;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.imprimante.Modele;
 
@@ -46,33 +49,39 @@ import fr.aphp.tumorotek.model.imprimante.Modele;
  * Interface pour le DAO du bean de domaine Modele.
  *
  * @author Pierre Ventadour
- * @version 18/03/2011
+ * @version 2.3
  *
  */
-public interface ModeleDao extends GenericDaoJpa<Modele, Integer>
-{
+@Repository
+public interface ModeleDao extends CrudRepository<Modele, Integer> {
 
-   /**
-    * Recherche les Modeles d'une plateforme.
-    * @param plateforme Plateforme.
-    * @return Une liste de Modeles.
-    */
-   List<Modele> findByPlateforme(Plateforme plateforme);
+	/**
+	 * Recherche les Modeles d'une plateforme.
+	 * 
+	 * @param plateforme Plateforme.
+	 * @return Une liste de Modeles.
+	 */
+	@Query("SELECT m FROM Modele m WHERE m.plateforme = ?1 ORDER BY m.nom")
+	List<Modele> findByPlateforme(Plateforme plateforme);
 
-   /**
-    * Recherche les Modeles d'une plateforme en fct de son nom.
-    * @param nom nom de l'imprimante.
-    * @param plateforme Plateforme.
-    * @return Une liste de Modeles.
-    */
-   List<Modele> findByNomAndPlateforme(String nom, Plateforme plateforme);
+	/**
+	 * Recherche les Modeles d'une plateforme en fct de son nom.
+	 * 
+	 * @param nom        nom de l'imprimante.
+	 * @param plateforme Plateforme.
+	 * @return Une liste de Modeles.
+	 */
+	@Query("SELECT m FROM Modele m WHERE m.nom = ?1 AND m.plateforme = ?2")
+	List<Modele> findByNomAndPlateforme(String nom, Plateforme plateforme);
 
-   /**
-    * Recherche les Modeles dont l'identifiant est différent
-    * de celui passé en paramètre.
-    * @param modeleId Identifiant du Modele à exclure.
-    * @return Une liste de Modeles.
-    */
-   List<Modele> findByExcludedId(Integer modeleId);
+	/**
+	 * Recherche les Modeles dont l'identifiant est différent de celui passé en
+	 * paramètre.
+	 * 
+	 * @param modeleId Identifiant du Modele à exclure.
+	 * @return Une liste de Modeles.
+	 */
+	@Query("SELECT m FROM Modele m WHERE m.modeleId != ?1")
+	List<Modele> findByExcludedId(Integer modeleId);
 
 }

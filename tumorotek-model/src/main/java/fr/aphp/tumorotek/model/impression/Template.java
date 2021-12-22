@@ -69,18 +69,18 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * Classe créée le 21/07/2010.
  *
  * @author Pierre Ventadour.
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "TEMPLATE")
-@NamedQueries(value = {
-   @NamedQuery(name = "Template.findByBanque",
-      query = "SELECT t FROM Template t " + "WHERE t.banque = ?1 " + "ORDER BY t.entite, t.nom"),
-   @NamedQuery(name = "Template.findByBanqueEntite",
-      query = "SELECT t FROM Template t " + "WHERE t.banque = ?1 AND t.entite = ?2 " + "ORDER BY t.nom"),
-   @NamedQuery(name = "Template.findByExcludedId",
-      query = "SELECT t FROM Template t " + "WHERE t.banque = ?1 AND t.templateId != ?2")})
+//@NamedQueries(value = {
+//   @NamedQuery(name = "Template.findByBanque",
+//      query = "SELECT t FROM Template t " + "WHERE t.banque = ?1 " + "ORDER BY t.entite, t.nom"),
+//   @NamedQuery(name = "Template.findByBanqueEntite",
+//      query = "SELECT t FROM Template t " + "WHERE t.banque = ?1 AND t.entite = ?2 " + "ORDER BY t.nom"),
+//   @NamedQuery(name = "Template.findByExcludedId",
+//      query = "SELECT t FROM Template t " + "WHERE t.banque = ?1 AND t.templateId != ?2")})
 public class Template extends Object implements TKdataObject, Serializable
 {
 

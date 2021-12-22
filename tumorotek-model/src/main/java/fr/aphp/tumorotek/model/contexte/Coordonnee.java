@@ -57,29 +57,29 @@ import org.hibernate.annotations.GenericGenerator;
  * Classe créée le 09/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "COORDONNEE")
-@NamedQueries(value = {@NamedQuery(name = "Coordonnee.findByAdresse", query = "SELECT c FROM Coordonnee c WHERE c.adresse = ?1"),
-   @NamedQuery(name = "Coordonnee.findByCp", query = "SELECT c FROM Coordonnee c WHERE c.cp = ?1"),
-   @NamedQuery(name = "Coordonnee.findByVille", query = "SELECT c FROM Coordonnee c WHERE c.ville = ?1"),
-   @NamedQuery(name = "Coordonnee.findByPays", query = "SELECT c FROM Coordonnee c WHERE c.pays = ?1"),
-   //		@NamedQuery(name = "Coordonnee.findByEtablissement", 
-   //			query = "SELECT c FROM Coordonnee c WHERE c.etablissement = ?1"),
-   //		@NamedQuery(name = "Coordonnee.findByService", 
-   //			query = "SELECT c FROM Coordonnee c WHERE " 
-   //				+ "c.service = ?1"),
-   //		@NamedQuery(name = "Coordonnee.findByTransporteur", 
-   //			query = "SELECT c FROM Coordonnee c WHERE " 
-   //				+ "c.transporteur = ?1"),
-   @NamedQuery(name = "Coordonnee.findByCollaborateurId",
-      query = "SELECT c FROM Coordonnee c " + "left join c.collaborateurs o " + "WHERE o.collaborateurId = ?1"),
-   @NamedQuery(name = "Coordonnee.findByCollaborateurIdAndExcludedId",
-      query = "SELECT c FROM Coordonnee c " + "left join c.collaborateurs o " + "WHERE o.collaborateurId = ?1 "
-         + "AND c.coordonneeId != ?2"),
-   @NamedQuery(name = "Coordonnee.findByExcludedId", query = "SELECT c FROM Coordonnee c " + "WHERE c.coordonneeId != ?1")})
+//@NamedQueries(value = {@NamedQuery(name = "Coordonnee.findByAdresse", query = "SELECT c FROM Coordonnee c WHERE c.adresse = ?1"),
+//   @NamedQuery(name = "Coordonnee.findByCp", query = "SELECT c FROM Coordonnee c WHERE c.cp = ?1"),
+//   @NamedQuery(name = "Coordonnee.findByVille", query = "SELECT c FROM Coordonnee c WHERE c.ville = ?1"),
+//   @NamedQuery(name = "Coordonnee.findByPays", query = "SELECT c FROM Coordonnee c WHERE c.pays = ?1"),
+//   //		@NamedQuery(name = "Coordonnee.findByEtablissement", 
+//   //			query = "SELECT c FROM Coordonnee c WHERE c.etablissement = ?1"),
+//   //		@NamedQuery(name = "Coordonnee.findByService", 
+//   //			query = "SELECT c FROM Coordonnee c WHERE " 
+//   //				+ "c.service = ?1"),
+//   //		@NamedQuery(name = "Coordonnee.findByTransporteur", 
+//   //			query = "SELECT c FROM Coordonnee c WHERE " 
+//   //				+ "c.transporteur = ?1"),
+//   @NamedQuery(name = "Coordonnee.findByCollaborateurId",
+//      query = "SELECT c FROM Coordonnee c " + "left join c.collaborateurs o " + "WHERE o.collaborateurId = ?1"),
+//   @NamedQuery(name = "Coordonnee.findByCollaborateurIdAndExcludedId",
+//      query = "SELECT c FROM Coordonnee c " + "left join c.collaborateurs o " + "WHERE o.collaborateurId = ?1 "
+//         + "AND c.coordonneeId != ?2"),
+//   @NamedQuery(name = "Coordonnee.findByExcludedId", query = "SELECT c FROM Coordonnee c " + "WHERE c.coordonneeId != ?1")})
 public class Coordonnee implements java.io.Serializable
 {
 

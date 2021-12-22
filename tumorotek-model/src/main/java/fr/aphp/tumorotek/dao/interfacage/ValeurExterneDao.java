@@ -37,34 +37,42 @@ package fr.aphp.tumorotek.dao.interfacage;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.interfacage.BlocExterne;
 import fr.aphp.tumorotek.model.interfacage.DossierExterne;
 import fr.aphp.tumorotek.model.interfacage.ValeurExterne;
 
 /**
  *
- * Interface pour le DAO du bean de domaine ValeurExterne.
- * Interface créée le 05/10/11.
+ * Interface pour le DAO du bean de domaine ValeurExterne. Interface créée le
+ * 05/10/11.
  *
  * @author Pierre VENTADOUR
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface ValeurExterneDao extends GenericDaoJpa<ValeurExterne, Integer>
-{
+@Repository
+public interface ValeurExterneDao extends CrudRepository<ValeurExterne, Integer> {
 
-   /**
-    * Recherche les ValeurExternes d'un BlocExterne.
-    * @param blocExterne BlocExterne.
-    * @return Une liste de ValeurExternes.
-    */
-   List<ValeurExterne> findByBlocExterne(BlocExterne blocExterne);
+	/**
+	 * Recherche les ValeurExternes d'un BlocExterne.
+	 * 
+	 * @param blocExterne BlocExterne.
+	 * @return Une liste de ValeurExternes.
+	 */
+	@Query("SELECT v FROM ValeurExterne v " + "WHERE v.blocExterne = ?1")
+	List<ValeurExterne> findByBlocExterne(BlocExterne blocExterne);
 
-   /**
-    * Recherche une valeur externe pour un dossier par champEntiteId et entiteId.
-    * @param blocExterne BlocExterne.
-    * @return Une liste de ValeurExternes.
-    */
-   List<ValeurExterne> findByDossierChampEntiteIdAndBlocEntiteId(DossierExterne dos, Integer chpId, Integer eId);
+	/**
+	 * Recherche une valeur externe pour un dossier par champEntiteId et entiteId.
+	 * 
+	 * @param blocExterne BlocExterne.
+	 * @return Une liste de ValeurExternes.
+	 */
+	@Query("SELECT v FROM ValeurExterne v JOIN v.blocExterne b join b.dossierExterne d "
+			+ "WHERE d = ?1  AND v.champEntiteId = ?2 AND b.entiteId = ?3")
+	List<ValeurExterne> findByDossierChampEntiteIdAndBlocEntiteId(DossierExterne dos, Integer chpId, Integer eId);
 }

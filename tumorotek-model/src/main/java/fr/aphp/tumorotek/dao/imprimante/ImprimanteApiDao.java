@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.imprimante;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.imprimante.ImprimanteApi;
 
 /**
@@ -45,16 +48,18 @@ import fr.aphp.tumorotek.model.imprimante.ImprimanteApi;
  * Interface pour le DAO du bean de domaine ImprimanteApi.
  *
  * @author Pierre Ventadour
- * @version 18/03/2011
+ * @version 2.3
  *
  */
-public interface ImprimanteApiDao extends GenericDaoJpa<ImprimanteApi, Integer>
-{
+@Repository
+public interface ImprimanteApiDao extends CrudRepository<ImprimanteApi, Integer> {
 
-   /**
-    * Recherche les ImprimanteApis ordonnées par nom.
-    * @return Une liste de ImprimanteApis.
-    */
-   List<ImprimanteApi> findByOrder();
+	/**
+	 * Recherche les ImprimanteApis ordonnées par nom.
+	 * 
+	 * @return Une liste de ImprimanteApis.
+	 */
+	@Query("SELECT i FROM ImprimanteApi i ORDER BY i.nom")
+	List<ImprimanteApi> findByOrder();
 
 }

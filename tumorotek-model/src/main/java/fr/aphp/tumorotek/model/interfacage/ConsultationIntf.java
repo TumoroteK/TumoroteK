@@ -62,21 +62,21 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Date: 22/02/2016
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.13.1
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "CONSULTATION_INTF")
-@NamedQueries(
-   value = {
-      @NamedQuery(name = "ConsultationIntf.findByUtilisateurInDates",
-         query = "SELECT c FROM ConsultationIntf c "
-            + "WHERE c.utilisateur = ?1 and c.date >= ?2 AND c.date <= ?3 order by c.date"),
-      @NamedQuery(name = "ConsultationIntf.findByEmetteurInDates",
-         query = "SELECT c FROM ConsultationIntf c "
-            + "WHERE c.emetteurIdent like ?1 and c.date >= ?2 AND c.date <= ?3 order by c.date"),
-      @NamedQuery(name = "ConsultationIntf.findByUtilisateurEmetteurInDates", query = "SELECT c FROM ConsultationIntf c "
-         + "WHERE c.utilisateur = ?1 and c.emetteurIdent like ?2 and c.date >= ?3 AND c.date <= ?4 order by c.date"),})
+//@NamedQueries(
+//   value = {
+//      @NamedQuery(name = "ConsultationIntf.findByUtilisateurInDates",
+//         query = "SELECT c FROM ConsultationIntf c "
+//            + "WHERE c.utilisateur = ?1 and c.date >= ?2 AND c.date <= ?3 order by c.date"),
+//      @NamedQuery(name = "ConsultationIntf.findByEmetteurInDates",
+//         query = "SELECT c FROM ConsultationIntf c "
+//            + "WHERE c.emetteurIdent like ?1 and c.date >= ?2 AND c.date <= ?3 order by c.date"),
+//      @NamedQuery(name = "ConsultationIntf.findByUtilisateurEmetteurInDates", query = "SELECT c FROM ConsultationIntf c "
+//         + "WHERE c.utilisateur = ?1 and c.emetteurIdent like ?2 and c.date >= ?3 AND c.date <= ?4 order by c.date"),})
 public class ConsultationIntf implements Serializable
 {
 

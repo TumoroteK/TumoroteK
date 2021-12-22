@@ -37,25 +37,30 @@ package fr.aphp.tumorotek.dao.interfacage;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.interfacage.Logiciel;
 
 /**
  *
- * Interface pour le DAO du bean de domaine LOGICIEL.
- * Interface créée le 04/10/11.
+ * Interface pour le DAO du bean de domaine LOGICIEL. Interface créée le
+ * 04/10/11.
  *
  * @author Pierre VENTADOUR
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface LogicielDao extends GenericDaoJpa<Logiciel, Integer>
-{
+@Repository
+public interface LogicielDao extends CrudRepository<Logiciel, Integer> {
 
-   /**
-    * Recherche les Logiciels ordonnés par nom.
-    * @return Une liste de Logiciel.
-    */
-   List<Logiciel> findByOrder();
+	/**
+	 * Recherche les Logiciels ordonnés par nom.
+	 * 
+	 * @return Une liste de Logiciel.
+	 */
+	@Query("SELECT l FROM Logiciel l ORDER BY l.nom")
+	List<Logiciel> findByOrder();
 
 }

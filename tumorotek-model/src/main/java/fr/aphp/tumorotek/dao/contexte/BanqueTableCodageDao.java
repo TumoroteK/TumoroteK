@@ -37,28 +37,33 @@ package fr.aphp.tumorotek.dao.contexte;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.BanqueTableCodage;
 import fr.aphp.tumorotek.model.contexte.BanqueTableCodagePK;
 
 /**
  *
- * Interface pour le DAO du bean de domaine BanqueTableCodage.
- * Interface créée le 28/10/09.
+ * Interface pour le DAO du bean de domaine BanqueTableCodage. Interface créée
+ * le 28/10/09.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface BanqueTableCodageDao extends GenericDaoJpa<BanqueTableCodage, BanqueTableCodagePK>
-{
+@Repository
+public interface BanqueTableCodageDao extends CrudRepository<BanqueTableCodage, BanqueTableCodagePK> {
 
-   /**
-    * Recherche toutes les associations entre une banque et les tables de 
-    * codifications qui lui ont été associées.
-    * @param banque
-    * @return liste BanqueTableCodage.
-    */
-   List<BanqueTableCodage> findByBanque(Banque banque);
+	/**
+	 * Recherche toutes les associations entre une banque et les tables de
+	 * codifications qui lui ont été associées.
+	 * 
+	 * @param banque
+	 * @return liste BanqueTableCodage.
+	 */
+	@Query("SELECT b FROM BanqueTableCodage b WHERE b.pk.banque = ?1 ORDER BY b.pk.tableCodage.nom")
+	List<BanqueTableCodage> findByBanque(Banque banque);
 }

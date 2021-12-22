@@ -56,8 +56,8 @@ import fr.aphp.tumorotek.model.code.TableCodage;
    @AssociationOverride(name = "pk.banque", joinColumns = @JoinColumn(name = "BANQUE_ID", referencedColumnName = "BANQUE_ID")),
    @AssociationOverride(name = "pk.tableCodage",
       joinColumns = @JoinColumn(name = "TABLE_CODAGE_ID", referencedColumnName = "TABLE_CODAGE_ID"))})
-@NamedQueries(value = {@NamedQuery(name = "BanqueTableCodage.findByBanque",
-   query = "SELECT b FROM BanqueTableCodage b " + "WHERE b.pk.banque = ?1 ORDER BY b.pk.tableCodage.nom")})
+//@NamedQueries(value = {@NamedQuery(name = "BanqueTableCodage.findByBanque",
+//   query = "SELECT b FROM BanqueTableCodage b " + "WHERE b.pk.banque = ?1 ORDER BY b.pk.tableCodage.nom")})
 public class BanqueTableCodage
 {
 	private BanqueTableCodagePK pk = new BanqueTableCodagePK();

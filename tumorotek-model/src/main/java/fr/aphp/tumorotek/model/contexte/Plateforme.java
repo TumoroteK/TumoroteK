@@ -69,20 +69,20 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Classe créée le 09/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "PLATEFORME")
-@NamedQueries(value = {@NamedQuery(name = "Plateforme.findByNom", query = "SELECT p FROM Plateforme p WHERE p.nom = ?1"),
-   @NamedQuery(name = "Plateforme.findByAlias", query = "SELECT p FROM Plateforme p WHERE p.alias = ?1"),
-   @NamedQuery(name = "Plateforme.findByCollaborateur", query = "SELECT p FROM Plateforme p " + "WHERE p.collaborateur = ?1"),
-   @NamedQuery(name = "Plateforme.findByBanqueId",
-      query = "SELECT p FROM Plateforme p " + "left join p.banques b " + "WHERE b.banqueId = ?1"),
-   @NamedQuery(name = "Plateforme.findByIdWithFetch",
-      query = "SELECT p FROM Plateforme p LEFT JOIN FETCH " + "p.collaborateur WHERE p.plateformeId = ?1"),
-   @NamedQuery(name = "Plateforme.findByOrder", query = "SELECT p FROM Plateforme p ORDER BY p.nom"),
-   @NamedQuery(name = "Plateforme.findByExcludedId", query = "SELECT p FROM Plateforme p " + "WHERE p.plateformeId != ?1")})
+//@NamedQueries(value = {@NamedQuery(name = "Plateforme.findByNom", query = "SELECT p FROM Plateforme p WHERE p.nom = ?1"),
+//   @NamedQuery(name = "Plateforme.findByAlias", query = "SELECT p FROM Plateforme p WHERE p.alias = ?1"),
+//   @NamedQuery(name = "Plateforme.findByCollaborateur", query = "SELECT p FROM Plateforme p " + "WHERE p.collaborateur = ?1"),
+//   @NamedQuery(name = "Plateforme.findByBanqueId",
+//      query = "SELECT p FROM Plateforme p " + "left join p.banques b " + "WHERE b.banqueId = ?1"),
+//   @NamedQuery(name = "Plateforme.findByIdWithFetch",
+//      query = "SELECT p FROM Plateforme p LEFT JOIN FETCH " + "p.collaborateur WHERE p.plateformeId = ?1"),
+//   @NamedQuery(name = "Plateforme.findByOrder", query = "SELECT p FROM Plateforme p ORDER BY p.nom"),
+//   @NamedQuery(name = "Plateforme.findByExcludedId", query = "SELECT p FROM Plateforme p " + "WHERE p.plateformeId != ?1")})
 public class Plateforme implements java.io.Serializable, TKFantomableObject, TKdataObject, Comparable<Plateforme>
 {
 

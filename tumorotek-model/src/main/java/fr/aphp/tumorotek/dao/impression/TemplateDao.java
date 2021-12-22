@@ -37,44 +37,53 @@ package fr.aphp.tumorotek.dao.impression;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.impression.Template;
 import fr.aphp.tumorotek.model.systeme.Entite;
 
 /**
  *
- * Interface pour le DAO du bean de domaine Template.
- * Interface créée le 22/07/2010.
+ * Interface pour le DAO du bean de domaine Template. Interface créée le
+ * 22/07/2010.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface TemplateDao extends GenericDaoJpa<Template, Integer>
-{
+@Repository
+public interface TemplateDao extends CrudRepository<Template, Integer> {
 
-   /**
-    * Recherche les Templates dont la banque est égale au paramètre.
-    * @param banque Banque du Template recherché.
-    * @return une liste de Templates.
-    */
-   List<Template> findByBanque(Banque banque);
+	/**
+	 * Recherche les Templates dont la banque est égale au paramètre.
+	 * 
+	 * @param banque Banque du Template recherché.
+	 * @return une liste de Templates.
+	 */
+	@Query("SELECT t FROM Template t WHERE t.banque = ?1 ORDER BY t.entite, t.nom")
+	List<Template> findByBanque(Banque banque);
 
-   /**
-    * Recherche les Templates dont l'entité et la banque sont égales
-    * aux paramètres.
-    * @param banque Banque du Template recherché.
-    * @param entite Entité du Template recherché.
-    * @return une liste de Templates.
-    */
-   List<Template> findByBanqueEntite(Banque banque, Entite entite);
+	/**
+	 * Recherche les Templates dont l'entité et la banque sont égales aux
+	 * paramètres.
+	 * 
+	 * @param banque Banque du Template recherché.
+	 * @param entite Entité du Template recherché.
+	 * @return une liste de Templates.
+	 */
+	@Query("SELECT t FROM Template t WHERE t.banque = ?1 AND t.entite = ?2 ORDER BY t.nom")
+	List<Template> findByBanqueEntite(Banque banque, Entite entite);
 
-   /**
-    * Recherche les Templates dont l'id est différent au paramètre.
-    * @param templateId Id du template à exclure.
-    * @return une liste de Templates.
-    */
-   List<Template> findByExcludedId(Banque banque, Integer templateId);
+	/**
+	 * Recherche les Templates dont l'id est différent au paramètre.
+	 * 
+	 * @param templateId Id du template à exclure.
+	 * @return une liste de Templates.
+	 */
+	@Query("SELECT t FROM Template t WHERE t.banque = ?1 AND t.templateId != ?2")
+	List<Template> findByExcludedId(Banque banque, Integer templateId);
 
 }

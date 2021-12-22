@@ -37,56 +37,68 @@ package fr.aphp.tumorotek.dao.interfacage;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.interfacage.Emetteur;
 import fr.aphp.tumorotek.model.interfacage.Logiciel;
 
 /**
  *
- * Interface pour le DAO du bean de domaine EMETTEUR.
- * Interface créée le 04/10/11.
+ * Interface pour le DAO du bean de domaine EMETTEUR. Interface créée le
+ * 04/10/11.
  *
  * @author Pierre VENTADOUR
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface EmetteurDao extends GenericDaoJpa<Emetteur, Integer>
-{
+@Repository
+public interface EmetteurDao extends CrudRepository<Emetteur, Integer> {
 
-   /**
-    * Recherche les Emetteurs ordonnés par identification.
-    * @return Une liste d'Emetteurs.
-    */
-   List<Emetteur> findByOrder();
+	/**
+	 * Recherche les Emetteurs ordonnés par identification.
+	 * 
+	 * @return Une liste d'Emetteurs.
+	 */
+	@Query("SELECT e FROM Emetteur e ORDER BY e.identification")
+	List<Emetteur> findByOrder();
 
-   /**
-    * Recherche les Emetteurs d'un logiciel ordonnés par identification.
-    * @param logiciel Logiciel.
-    * @return Une liste d'Emetteurs.
-    */
-   List<Emetteur> findByLogiciel(Logiciel logiciel);
+	/**
+	 * Recherche les Emetteurs d'un logiciel ordonnés par identification.
+	 * 
+	 * @param logiciel Logiciel.
+	 * @return Une liste d'Emetteurs.
+	 */
+	@Query("SELECT e FROM Emetteur e WHERE e.logiciel = ?1 ORDER BY e.identification")
+	List<Emetteur> findByLogiciel(Logiciel logiciel);
 
-   /**
-    * Recherche les Emetteurs d'un logiciel par identification.
-    * @param logiciel Logiciel des emetteurs recherchés.
-    * @param identification Identification des emetteurs recherchés.
-    * @return Une liste d'Emetteurs.
-    */
-   List<Emetteur> findByLogicielAndIdentification(Logiciel logiciel, String identification);
+	/**
+	 * Recherche les Emetteurs d'un logiciel par identification.
+	 * 
+	 * @param logiciel       Logiciel des emetteurs recherchés.
+	 * @param identification Identification des emetteurs recherchés.
+	 * @return Une liste d'Emetteurs.
+	 */
+	@Query("SELECT e FROM Emetteur e WHERE e.logiciel = ?1 AND e.identification like ?2 " + "ORDER BY e.identification")
+	List<Emetteur> findByLogicielAndIdentification(Logiciel logiciel, String identification);
 
-   /**
-    * Recherche les Emetteurs par identification et service.
-    * @param identification Identification des emetteurs recherchés.
-    * @param service Service des emetteurs recherchés.
-    * @return Une liste d'Emetteurs.
-    */
-   List<Emetteur> findByIdentificationAndService(String identification, String service);
+	/**
+	 * Recherche les Emetteurs par identification et service.
+	 * 
+	 * @param identification Identification des emetteurs recherchés.
+	 * @param service        Service des emetteurs recherchés.
+	 * @return Une liste d'Emetteurs.
+	 */
+	@Query("SELECT e FROM Emetteur e WHERE e.identification = ?1 AND e.service = ?2")
+	List<Emetteur> findByIdentificationAndService(String identification, String service);
 
-   /**
-    * Recherche les Emetteurs dont les identifiants sont passés en
-    * paramètre.
-    * @param ids Liste d'identifiants.
-    * @return Liste d'Emetteurs.
-    */
-   List<Emetteur> findByIdInList(List<Integer> ids);
+	/**
+	 * Recherche les Emetteurs dont les identifiants sont passés en paramètre.
+	 * 
+	 * @param ids Liste d'identifiants.
+	 * @return Liste d'Emetteurs.
+	 */
+	@Query("SELECT e FROM Emetteur e WHERE e.emetteurId in (?1) ORDER BY e.identification")
+	List<Emetteur> findByIdInList(List<Integer> ids);
 }

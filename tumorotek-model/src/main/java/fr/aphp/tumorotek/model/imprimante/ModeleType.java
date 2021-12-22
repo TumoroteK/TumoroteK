@@ -56,12 +56,12 @@ import org.hibernate.annotations.GenericGenerator;
  * Classe créée le 17/03/2011.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "MODELE_TYPE")
-@NamedQueries(value = {@NamedQuery(name = "ModeleType.findByOrder", query = "SELECT m FROM ModeleType m ORDER BY m.type")})
+//@NamedQueries(value = {@NamedQuery(name = "ModeleType.findByOrder", query = "SELECT m FROM ModeleType m ORDER BY m.type")})
 public class ModeleType implements Serializable
 {
 

@@ -58,7 +58,7 @@ import javax.persistence.Transient;
  * @author Pierre Ventadour
  * @see http://boris.kirzner.info/blog/archives/2008/07/19/
  * hibernate-annotations-the-many-to-many-association-with-composite-key/
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
@@ -68,11 +68,11 @@ import javax.persistence.Transient;
       joinColumns = @JoinColumn(name = "TEMPLATE_ID", referencedColumnName = "TEMPLATE_ID")),
    @AssociationOverride(name = "pk.blocImpression",
       joinColumns = @JoinColumn(name = "BLOC_IMPRESSION_ID", referencedColumnName = "BLOC_IMPRESSION_ID"))})
-@NamedQueries(value = {
-   @NamedQuery(name = "BlocImpressionTemplate." + "findByTemplate",
-      query = "SELECT b FROM BlocImpressionTemplate b " + "WHERE b.pk.template = ?1 " + "ORDER BY b.ordre"),
-   @NamedQuery(name = "BlocImpressionTemplate." + "findByExcludedPK",
-      query = "SELECT b FROM BlocImpressionTemplate b " + "WHERE b.pk != ?1")})
+//@NamedQueries(value = {
+//   @NamedQuery(name = "BlocImpressionTemplate." + "findByTemplate",
+//      query = "SELECT b FROM BlocImpressionTemplate b " + "WHERE b.pk.template = ?1 " + "ORDER BY b.ordre"),
+//   @NamedQuery(name = "BlocImpressionTemplate." + "findByExcludedPK",
+//      query = "SELECT b FROM BlocImpressionTemplate b " + "WHERE b.pk != ?1")})
 public class BlocImpressionTemplate implements Serializable
 {
 

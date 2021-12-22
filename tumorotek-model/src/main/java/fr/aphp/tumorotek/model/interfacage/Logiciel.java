@@ -56,12 +56,12 @@ import org.hibernate.annotations.GenericGenerator;
  * Classe créée le 01/10/11.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "LOGICIEL")
-@NamedQueries(value = {@NamedQuery(name = "Logiciel.findByOrder", query = "SELECT l FROM Logiciel l ORDER BY l.nom")})
+// @NamedQueries(value = {@NamedQuery(name = "Logiciel.findByOrder", query = "SELECT l FROM Logiciel l ORDER BY l.nom")})
 public class Logiciel implements java.io.Serializable
 {
 

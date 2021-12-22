@@ -60,7 +60,7 @@ import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
  * @author Pierre Ventadour
  * @see http://boris.kirzner.info/blog/archives/2008/07/19/
  * hibernate-annotations-the-many-to-many-association-with-composite-key/
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
@@ -70,11 +70,11 @@ import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
       joinColumns = @JoinColumn(name = "TEMPLATE_ID", referencedColumnName = "TEMPLATE_ID")),
    @AssociationOverride(name = "pk.tableAnnotation",
       joinColumns = @JoinColumn(name = "TABLE_ANNOTATION_ID", referencedColumnName = "TABLE_ANNOTATION_ID"))})
-@NamedQueries(value = {
-   @NamedQuery(name = "TableAnnotationTemplate." + "findByTemplate",
-      query = "SELECT t FROM TableAnnotationTemplate t " + "WHERE t.pk.template = ?1 " + "ORDER BY t.ordre"),
-   @NamedQuery(name = "TableAnnotationTemplate." + "findByExcludedPK",
-      query = "SELECT t FROM TableAnnotationTemplate t " + "WHERE t.pk != ?1")})
+//@NamedQueries(value = {
+//   @NamedQuery(name = "TableAnnotationTemplate." + "findByTemplate",
+//      query = "SELECT t FROM TableAnnotationTemplate t " + "WHERE t.pk.template = ?1 " + "ORDER BY t.ordre"),
+//   @NamedQuery(name = "TableAnnotationTemplate." + "findByExcludedPK",
+//      query = "SELECT t FROM TableAnnotationTemplate t " + "WHERE t.pk != ?1")})
 public class TableAnnotationTemplate implements Serializable
 {
 

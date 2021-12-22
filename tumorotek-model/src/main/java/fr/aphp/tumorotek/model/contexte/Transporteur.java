@@ -65,20 +65,20 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
  * Classe créée le 09/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "TRANSPORTEUR")
-@NamedQueries(value = {@NamedQuery(name = "Transporteur.findByNom", query = "SELECT t FROM Transporteur t WHERE t.nom = ?1"),
-   @NamedQuery(name = "Transporteur.findByContactNom", query = "SELECT t FROM Transporteur t WHERE t.contactNom = ?1"),
-   @NamedQuery(name = "Transporteur.findByArchive",
-      query = "SELECT t FROM Transporteur t WHERE t.archive = ?1" + " ORDER BY t.nom"),
-   @NamedQuery(name = "Transporteur.findByCoordonnee", query = "SELECT t FROM Transporteur t " + "WHERE t.coordonnee = ?1"),
-   @NamedQuery(name = "Transporteur.findByIdWithFetch",
-      query = "SELECT t FROM Transporteur t LEFT JOIN FETCH " + "t.coordonnee WHERE t.transporteurId = ?1"),
-   @NamedQuery(name = "Transporteur.findByExcludedId", query = "SELECT t FROM Transporteur t " + "WHERE t.transporteurId != ?1"),
-   @NamedQuery(name = "Transporteur.findByOrder", query = "SELECT t FROM Transporteur t ORDER BY t.nom")})
+//@NamedQueries(value = {@NamedQuery(name = "Transporteur.findByNom", query = "SELECT t FROM Transporteur t WHERE t.nom = ?1"),
+//   @NamedQuery(name = "Transporteur.findByContactNom", query = "SELECT t FROM Transporteur t WHERE t.contactNom = ?1"),
+//   @NamedQuery(name = "Transporteur.findByArchive",
+//      query = "SELECT t FROM Transporteur t WHERE t.archive = ?1" + " ORDER BY t.nom"),
+//   @NamedQuery(name = "Transporteur.findByCoordonnee", query = "SELECT t FROM Transporteur t " + "WHERE t.coordonnee = ?1"),
+//   @NamedQuery(name = "Transporteur.findByIdWithFetch",
+//      query = "SELECT t FROM Transporteur t LEFT JOIN FETCH " + "t.coordonnee WHERE t.transporteurId = ?1"),
+//   @NamedQuery(name = "Transporteur.findByExcludedId", query = "SELECT t FROM Transporteur t " + "WHERE t.transporteurId != ?1"),
+//   @NamedQuery(name = "Transporteur.findByOrder", query = "SELECT t FROM Transporteur t ORDER BY t.nom")})
 public class Transporteur implements TKFantomableObject, TKdataObject, Serializable
 {
 

@@ -61,13 +61,13 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * Classe créée le 21/07/2010.
  *
  * @author Pierre Ventadour.
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "BLOC_IMPRESSION")
-@NamedQueries(value = {@NamedQuery(name = "BlocImpression.findByEntite",
-   query = "SELECT b FROM BlocImpression b WHERE b.entite = ?1 " + "ORDER BY b.ordre")})
+//@NamedQueries(value = {@NamedQuery(name = "BlocImpression.findByEntite",
+//   query = "SELECT b FROM BlocImpression b WHERE b.entite = ?1 " + "ORDER BY b.ordre")})
 public class BlocImpression implements Serializable
 {
 

@@ -37,37 +37,43 @@ package fr.aphp.tumorotek.dao.impression;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.impression.BlocImpressionTemplate;
 import fr.aphp.tumorotek.model.impression.BlocImpressionTemplatePK;
 import fr.aphp.tumorotek.model.impression.Template;
 
 /**
  *
- * Interface pour le DAO du bean de domaine BlocImpressionTemplate.
- * Interface créée le 23/07/2010.
+ * Interface pour le DAO du bean de domaine BlocImpressionTemplate. Interface
+ * créée le 23/07/2010.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface BlocImpressionTemplateDao extends GenericDaoJpa<BlocImpressionTemplate, BlocImpressionTemplatePK>
-{
+@Repository
+public interface BlocImpressionTemplateDao extends CrudRepository<BlocImpressionTemplate, BlocImpressionTemplatePK> {
 
-   /**
-    * Recherche les BlocImpressionTemplates dont le template 
-    * est égal au paramètre.
-    * @param template Template du bloc recherché.
-    * @return une liste de BlocImpressionTemplates.
-    */
-   List<BlocImpressionTemplate> findByTemplate(Template template);
+	/**
+	 * Recherche les BlocImpressionTemplates dont le template est égal au paramètre.
+	 * 
+	 * @param template Template du bloc recherché.
+	 * @return une liste de BlocImpressionTemplates.
+	 */
+	@Query("SELECT b FROM BlocImpressionTemplate b WHERE b.pk.template = ?1 ORDER BY b.ordre")
+	List<BlocImpressionTemplate> findByTemplate(Template template);
 
-   /**
-    * Recherche les BlocImpressionTemplates dont la clé est différente
-    * de celle passée en paramètre.
-    * @param pk Pk du bloc recherché.
-    * @return une liste de BlocImpressionTemplates.
-    */
-   List<BlocImpressionTemplate> findByExcludedPK(BlocImpressionTemplatePK pk);
+	/**
+	 * Recherche les BlocImpressionTemplates dont la clé est différente de celle
+	 * passée en paramètre.
+	 * 
+	 * @param pk Pk du bloc recherché.
+	 * @return une liste de BlocImpressionTemplates.
+	 */
+	@Query("SELECT b FROM BlocImpressionTemplate b WHERE b.pk != ?1")
+	List<BlocImpressionTemplate> findByExcludedPK(BlocImpressionTemplatePK pk);
 
 }

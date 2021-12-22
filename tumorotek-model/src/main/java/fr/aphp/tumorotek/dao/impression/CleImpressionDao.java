@@ -37,42 +37,48 @@ package fr.aphp.tumorotek.dao.impression;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.impression.CleImpression;
-import fr.aphp.tumorotek.model.impression.Template;
 import fr.aphp.tumorotek.model.io.export.Champ;
 
 /**
  *
- * Interface pour le DAO du bean de domaine CleImpression.
- * Classe créée le 16/01/2018.
+ * Interface pour le DAO du bean de domaine CleImpression. Classe créée le
+ * 16/01/2018.
  *
  * @author Answald Bournique
- * @version 2.2.0
+ * @version 2.3
  *
  */
-public interface CleImpressionDao extends GenericDaoJpa<CleImpression, Integer>
-{
+@Repository
+public interface CleImpressionDao extends CrudRepository<CleImpression, Integer> {
+	/**
+	 * Recherche les CleImpressions dont le nom est égale au paramètre.
+	 * 
+	 * @param nom nom de la clé recherchée.
+	 * @return une liste de CleImpressions.
+	 */
+	@Query("SELECT c FROM CleImpression c WHERE c.nom = ?1")
+	List<CleImpression> findByName(String nom);
 
-   /**
-    * Recherche les CleImpressions dont le nom est égale au paramètre.
-    * @param nom nom de la clé recherchée.
-    * @return une liste de CleImpressions.
-    */
-   List<CleImpression> findByName(String nom);
+	/**
+	 * Recherche les CleImpressions dont le champ est égal au paramètre.
+	 * 
+	 * @param champ champ de la clé recherchée.
+	 * @return une liste de CleImpressions.
+	 */
+	@Query("SELECT c FROM CleImpression c WHERE c.champ = ?1")
+	List<CleImpression> findByChamp(Champ champ);
 
-   /**
-    * Recherche les CleImpressions dont le champ est égal au paramètre.
-    * @param champ champ de la clé recherchée.
-    * @return une liste de CleImpressions.
-    */
-   List<CleImpression> findByChamp(Champ champ);
-
-   /**
-    * Recherche les CleImpressions dont le template est égale au paramètre.
-    * @param template template de la clé recherchée.
-    * @return une liste de CleImpressions.
-    */
-   List<CleImpression> findByTemplate(Template template);
+//   /**
+//    * Recherche les CleImpressions dont le template est égale au paramètre.
+//    * @param template template de la clé recherchée.
+//    * @return une liste de CleImpressions.
+//    */
+//	@Query("SELECT c FROM CleImpression c WHERE c.template = ?1")
+//   List<CleImpression> findByTemplate(Template template);
 
 }

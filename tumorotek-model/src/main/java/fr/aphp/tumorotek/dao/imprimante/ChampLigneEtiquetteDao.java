@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.imprimante;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.imprimante.ChampLigneEtiquette;
 import fr.aphp.tumorotek.model.imprimante.LigneEtiquette;
 import fr.aphp.tumorotek.model.systeme.Entite;
@@ -47,24 +50,29 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * Interface pour le DAO du bean de domaine ChampLigneEtiquette.
  *
  * @author Pierre Ventadour
- * @version 08/06/2011
+ * @version 2.3
  *
  */
-public interface ChampLigneEtiquetteDao extends GenericDaoJpa<ChampLigneEtiquette, Integer>
-{
+@Repository
+public interface ChampLigneEtiquetteDao extends CrudRepository<ChampLigneEtiquette, Integer> {
 
-   /**
-    * Recherche les ChampLigneEtiquette d'une ligne.
-    * @param ligneEtiquette LigneEtiquette.
-    * @return Une liste de ChampLigneEtiquettes.
-    */
-   List<ChampLigneEtiquette> findByLigneEtiquette(LigneEtiquette ligneEtiquette);
+	/**
+	 * Recherche les ChampLigneEtiquette d'une ligne.
+	 * 
+	 * @param ligneEtiquette LigneEtiquette.
+	 * @return Une liste de ChampLigneEtiquettes.
+	 */
+	@Query("SELECT c FROM ChampLigneEtiquette c " + "WHERE c.ligneEtiquette = ?1 " + "ORDER BY c.ordre")
+	List<ChampLigneEtiquette> findByLigneEtiquette(LigneEtiquette ligneEtiquette);
 
-   /**
-    * Recherche les ChampLigneEtiquettes d'une ligne et d'une entité.
-    * @param ligneEtiquette LigneEtiquette.
-    * @param entite Entite.
-    * @return Une liste de ChampLigneEtiquettes.
-    */
-   List<ChampLigneEtiquette> findByLigneEtiquetteAndEntite(LigneEtiquette ligneEtiquette, Entite entite);
+	/**
+	 * Recherche les ChampLigneEtiquettes d'une ligne et d'une entité.
+	 * 
+	 * @param ligneEtiquette LigneEtiquette.
+	 * @param entite         Entite.
+	 * @return Une liste de ChampLigneEtiquettes.
+	 */
+	@Query("SELECT c FROM ChampLigneEtiquette c " + "WHERE c.ligneEtiquette = ?1 " + "AND c.entite = ?2 "
+			+ "ORDER BY c.ordre")
+	List<ChampLigneEtiquette> findByLigneEtiquetteAndEntite(LigneEtiquette ligneEtiquette, Entite entite);
 }

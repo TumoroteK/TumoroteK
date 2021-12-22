@@ -37,35 +37,51 @@ package fr.aphp.tumorotek.dao.contexte;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.contexte.Protocole;
 
 /**
  *
- * Interface pour le DAO du bean de domaine Protocole.
- * Interface créée le 22/01/12.
+ * Interface pour le DAO du bean de domaine Protocole. Interface créée le
+ * 22/01/12.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.6
+ * @version 2.3
  *
  */
-public interface ProtocoleDao extends GenericDaoJpa<Protocole, Integer>, PfDependantTKThesaurusDao<Protocole>
-{
+@Repository
+public interface ProtocoleDao extends CrudRepository<Protocole, Integer>, PfDependantTKThesaurusDao<Protocole> {
 
-   /**
-    * Recherche les protocoles dont le nom 
-    * est 'like' le nom des protocoles recherchés.
-    * @return Liste des types de conditionnement.
-    */
-   List<Protocole> findByNom(String nom);
+	/**
+	 * Recherche les protocoles dont le nom est 'like' le nom des protocoles
+	 * recherchés.
+	 * 
+	 * @return Liste des types de conditionnement.
+	 */
+	@Query("SELECT p FROM Protocole p WHERE p.nom like ?1 order by p.nom")
+	List<Protocole> findByNom(String nom);
 
-   /**
-    * Recherche tous les Protocoles sauf celui dont
-    * l'identifiant est passé en paramètre.
-    * @param id Identifiant du Protcole à exclure.
-    * @return Liste de Protoccoles.
-    */
-   List<Protocole> findByExcludedId(Integer id);
+	/**
+	 * Recherche tous les Protocoles sauf celui dont l'identifiant est passé en
+	 * paramètre.
+	 * 
+	 * @param id Identifiant du Protcole à exclure.
+	 * @return Liste de Protoccoles.
+	 */
+	@Query("SELECT p FROM Protocole p WHERE p.id != ?1")
+	List<Protocole> findByExcludedId(Integer id);
+
+	@Override
+	@Query("SELECT p FROM Protocole p ORDER BY p.nom")
+	List<Protocole> findByOrder();
+
+	@Override
+	@Query("SELECT p FROM Protocole p WHERE p.plateforme = ?1 ORDER BY p.nom")
+	List<Protocole> findByPfOrder(Plateforme p);
 
 }

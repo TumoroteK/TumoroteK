@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.imprimante;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.imprimante.AffectationImprimante;
 import fr.aphp.tumorotek.model.imprimante.AffectationImprimantePK;
@@ -45,31 +48,35 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 /**
  *
- * Interface pour le DAO du bean de domaine AffectationImprimante.
- * Interface créée le 21/03/2011.
+ * Interface pour le DAO du bean de domaine AffectationImprimante. Interface
+ * créée le 21/03/2011.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface AffectationImprimanteDao extends GenericDaoJpa<AffectationImprimante, AffectationImprimantePK>
-{
+@Repository
+public interface AffectationImprimanteDao extends CrudRepository<AffectationImprimante, AffectationImprimantePK> {
 
-   /**
-    * Recherche les AffectationImprimantes sauf celui dont la clé 
-    * primaire est passée en paramètre.
-    * @param pk AffectationImprimantePK.
-    * @return une liste de AffectationImprimantes.
-    */
-   List<AffectationImprimante> findByExcludedPK(AffectationImprimantePK pk);
+	/**
+	 * Recherche les AffectationImprimantes sauf celui dont la clé primaire est
+	 * passée en paramètre.
+	 * 
+	 * @param pk AffectationImprimantePK.
+	 * @return une liste de AffectationImprimantes.
+	 */
+	@Query("SELECT a FROM AffectationImprimante a " + "WHERE a.pk != ?1")
+	List<AffectationImprimante> findByExcludedPK(AffectationImprimantePK pk);
 
-   /**
-    * Recherche les AffectationImprimantes dont la banque et l'utilisateur
-    * sont passés en paramètres.
-    * @param banque Banque des AffectationImprimantes recherchés.
-    * @param utilisateur Utilisateur des AffectationImprimante.
-    * @return une liste de AffectationImprimantes.
-    */
-   List<AffectationImprimante> findByBanqueUtilisateur(Banque banque, Utilisateur utilisateur);
+	/**
+	 * Recherche les AffectationImprimantes dont la banque et l'utilisateur sont
+	 * passés en paramètres.
+	 * 
+	 * @param banque      Banque des AffectationImprimantes recherchés.
+	 * @param utilisateur Utilisateur des AffectationImprimante.
+	 * @return une liste de AffectationImprimantes.
+	 */
+	@Query("SELECT a FROM AffectationImprimante a " + "WHERE a.pk.banque = ?1 AND a.pk.utilisateur = ?2")
+	List<AffectationImprimante> findByBanqueUtilisateur(Banque banque, Utilisateur utilisateur);
 
 }

@@ -58,16 +58,16 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * Classe créée le 07/06/11.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "CHAMP_LIGNE_ETIQUETTE")
-@NamedQueries(value = {
-   @NamedQuery(name = "ChampLigneEtiquette.findByLigneEtiquette",
-      query = "SELECT c FROM ChampLigneEtiquette c " + "WHERE c.ligneEtiquette = ?1 " + "ORDER BY c.ordre"),
-   @NamedQuery(name = "ChampLigneEtiquette.findByLigneEtiquetteAndEntite", query = "SELECT c FROM ChampLigneEtiquette c "
-      + "WHERE c.ligneEtiquette = ?1 " + "AND c.entite = ?2 " + "ORDER BY c.ordre")})
+//@NamedQueries(value = {
+//   @NamedQuery(name = "ChampLigneEtiquette.findByLigneEtiquette",
+//      query = "SELECT c FROM ChampLigneEtiquette c " + "WHERE c.ligneEtiquette = ?1 " + "ORDER BY c.ordre"),
+//   @NamedQuery(name = "ChampLigneEtiquette.findByLigneEtiquetteAndEntite", query = "SELECT c FROM ChampLigneEtiquette c "
+//      + "WHERE c.ligneEtiquette = ?1 " + "AND c.entite = ?2 " + "ORDER BY c.ordre")})
 public class ChampLigneEtiquette implements Serializable
 {
 

@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.imprimante;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.imprimante.ModeleType;
 
 /**
@@ -45,16 +48,18 @@ import fr.aphp.tumorotek.model.imprimante.ModeleType;
  * Interface pour le DAO du bean de domaine ModeleType.
  *
  * @author Pierre Ventadour
- * @version 18/03/2011
+ * @version 2.3
  *
  */
-public interface ModeleTypeDao extends GenericDaoJpa<ModeleType, Integer>
-{
+@Repository
+public interface ModeleTypeDao extends CrudRepository<ModeleType, Integer> {
 
-   /**
-    * Recherche les ModeleTypes ordonnés par nom.
-    * @return Une liste de ModeleTypes.
-    */
-   List<ModeleType> findByOrder();
+	/**
+	 * Recherche les ModeleTypes ordonnés par nom.
+	 * 
+	 * @return Une liste de ModeleTypes.
+	 */
+	@Query("SELECT m FROM ModeleType m ORDER BY m.type")
+	List<ModeleType> findByOrder();
 
 }

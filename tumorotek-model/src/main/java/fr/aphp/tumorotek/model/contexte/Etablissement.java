@@ -63,30 +63,30 @@ import fr.aphp.tumorotek.model.cession.Contrat;
  * Classe créée le 09/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "ETABLISSEMENT")
-@NamedQueries(value = {@NamedQuery(name = "Etablissement.findByOrder", query = "SELECT e FROM Etablissement e ORDER BY e.nom"),
-   @NamedQuery(name = "Etablissement.findByNom", query = "SELECT e FROM Etablissement e WHERE e.nom like ?1 " + "ORDER BY e.nom"),
-   @NamedQuery(name = "Etablissement.findByFiness", query = "SELECT e FROM Etablissement e WHERE e.finess like ?1"),
-   @NamedQuery(name = "Etablissement.findByLocal", query = "SELECT e FROM Etablissement e WHERE e.local = ?1"),
-   @NamedQuery(name = "Etablissement.findByArchiveWithOrder",
-      query = "SELECT e FROM Etablissement e WHERE e.archive = ?1 " + "ORDER BY e.nom"),
-   @NamedQuery(name = "Etablissement.findByCoordonnee", query = "SELECT e FROM Etablissement e " + "WHERE e.coordonnee = ?1"),
-   @NamedQuery(name = "Etablissement.findByVille",
-      query = "SELECT e FROM Etablissement e " + "WHERE e.coordonnee.ville like ?1 " + "ORDER BY e.nom"),
-   @NamedQuery(name = "Etablissement.findByCategorie", query = "SELECT e FROM Etablissement e " + "WHERE e.categorie = ?1"),
-   @NamedQuery(name = "Etablissement.findByIdWithFetch",
-      query = "SELECT e FROM Etablissement e LEFT JOIN FETCH " + "e.categorie LEFT JOIN FETCH e.coordonnee "
-         + "WHERE e.etablissementId = ?1"),
-   @NamedQuery(name = "Etablissement.findByServiceId",
-      query = "SELECT e FROM Etablissement e " + "left join e.services s " + "WHERE s.serviceId = ?1"),
-   @NamedQuery(name = "Etablissement.findByCollaborateurId",
-      query = "SELECT e FROM Etablissement e " + "left join e.collaborateurs c " + "WHERE c.collaborateurId = ?1"),
-   @NamedQuery(name = "Etablissement.findByExcludedId",
-      query = "SELECT e FROM Etablissement e " + "WHERE e.etablissementId != ?1")})
+//@NamedQueries(value = {@NamedQuery(name = "Etablissement.findByOrder", query = "SELECT e FROM Etablissement e ORDER BY e.nom"),
+//   @NamedQuery(name = "Etablissement.findByNom", query = "SELECT e FROM Etablissement e WHERE e.nom like ?1 " + "ORDER BY e.nom"),
+//   @NamedQuery(name = "Etablissement.findByFiness", query = "SELECT e FROM Etablissement e WHERE e.finess like ?1"),
+//   @NamedQuery(name = "Etablissement.findByLocal", query = "SELECT e FROM Etablissement e WHERE e.local = ?1"),
+//   @NamedQuery(name = "Etablissement.findByArchiveWithOrder",
+//      query = "SELECT e FROM Etablissement e WHERE e.archive = ?1 " + "ORDER BY e.nom"),
+//   @NamedQuery(name = "Etablissement.findByCoordonnee", query = "SELECT e FROM Etablissement e " + "WHERE e.coordonnee = ?1"),
+//   @NamedQuery(name = "Etablissement.findByVille",
+//      query = "SELECT e FROM Etablissement e " + "WHERE e.coordonnee.ville like ?1 " + "ORDER BY e.nom"),
+//   @NamedQuery(name = "Etablissement.findByCategorie", query = "SELECT e FROM Etablissement e " + "WHERE e.categorie = ?1"),
+//   @NamedQuery(name = "Etablissement.findByIdWithFetch",
+//      query = "SELECT e FROM Etablissement e LEFT JOIN FETCH " + "e.categorie LEFT JOIN FETCH e.coordonnee "
+//         + "WHERE e.etablissementId = ?1"),
+//   @NamedQuery(name = "Etablissement.findByServiceId",
+//      query = "SELECT e FROM Etablissement e " + "left join e.services s " + "WHERE s.serviceId = ?1"),
+//   @NamedQuery(name = "Etablissement.findByCollaborateurId",
+//      query = "SELECT e FROM Etablissement e " + "left join e.collaborateurs c " + "WHERE c.collaborateurId = ?1"),
+//   @NamedQuery(name = "Etablissement.findByExcludedId",
+//      query = "SELECT e FROM Etablissement e " + "WHERE e.etablissementId != ?1")})
 public class Etablissement implements TKdataObject, TKFantomableObject, java.io.Serializable
 {
 

@@ -37,36 +37,52 @@ package fr.aphp.tumorotek.dao.contexte;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.contexte.Diagnostic;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
  *
- * Interface pour le DAO du bean de domaine Diagnostic.
- * Interface créée le 05/06/2018
+ * Interface pour le DAO du bean de domaine Diagnostic. Interface créée le
+ * 05/06/2018
  *
  * @author Answald Bournique
- * @version 2.2.0
+ * @version 2.3
  * @since 2.2.0
  *
  */
-public interface DiagnosticDao extends GenericDaoJpa<Diagnostic, Integer>, PfDependantTKThesaurusDao<Diagnostic>
-{
+@Repository
+public interface DiagnosticDao extends CrudRepository<Diagnostic, Integer>, PfDependantTKThesaurusDao<Diagnostic> {
 
-   /**
-    * Recherche les diagnostics dont le nom 
-    * est 'like' le nom des diagnostics recherchés.
-    * @return Liste des types de conditionnement.
-    */
-   List<Diagnostic> findByNom(String nom);
+	/**
+	 * Recherche les diagnostics dont le nom est 'like' le nom des diagnostics
+	 * recherchés.
+	 * 
+	 * @return Liste des types de conditionnement.
+	 */
+	@Query("SELECT p FROM Diagnostic p WHERE p.nom like ?1 order by p.nom")
+	List<Diagnostic> findByNom(String nom);
 
-   /**
-    * Recherche tous les Diagnostics sauf celui dont
-    * l'identifiant est passé en paramètre.
-    * @param id Identifiant du Protcole à exclure.
-    * @return Liste de Protoccoles.
-    */
-   List<Diagnostic> findByExcludedId(Integer id);
+	/**
+	 * Recherche tous les Diagnostics sauf celui dont l'identifiant est passé en
+	 * paramètre.
+	 * 
+	 * @param id Identifiant du Protcole à exclure.
+	 * @return Liste de Protoccoles.
+	 */
+	@Query("SELECT p FROM Diagnostic p WHERE p.id != ?1")
+	List<Diagnostic> findByExcludedId(Integer id);
+
+	@Override
+	@Query("SELECT p FROM Diagnostic p ORDER BY p.nom")
+	List<Diagnostic> findByOrder();
+
+	@Override
+	@Query("SELECT p FROM Diagnostic p WHERE p.plateforme = ?1 ORDER BY p.nom")
+	List<Diagnostic> findByPfOrder(Plateforme pf);
 
 }

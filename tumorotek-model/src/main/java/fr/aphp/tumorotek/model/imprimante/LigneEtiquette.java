@@ -61,13 +61,13 @@ import fr.aphp.tumorotek.model.TKdataObject;
  * Classe créée le 07/06/11.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "LIGNE_ETIQUETTE")
-@NamedQueries(value = {@NamedQuery(name = "LigneEtiquette.findByModele",
-   query = "SELECT l FROM LigneEtiquette l " + "WHERE l.modele = ?1 " + "ORDER BY l.ordre")})
+//@NamedQueries(value = {@NamedQuery(name = "LigneEtiquette.findByModele",
+//   query = "SELECT l FROM LigneEtiquette l " + "WHERE l.modele = ?1 " + "ORDER BY l.ordre")})
 public class LigneEtiquette implements TKdataObject, Serializable
 {
 

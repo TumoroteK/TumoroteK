@@ -37,37 +37,44 @@ package fr.aphp.tumorotek.dao.impression;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.impression.TableAnnotationTemplate;
 import fr.aphp.tumorotek.model.impression.TableAnnotationTemplatePK;
 import fr.aphp.tumorotek.model.impression.Template;
 
 /**
  *
- * Interface pour le DAO du bean de domaine TableAnnotationTemplate.
- * Interface créée le 30/07/2010.
+ * Interface pour le DAO du bean de domaine TableAnnotationTemplate. Interface
+ * créée le 30/07/2010.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface TableAnnotationTemplateDao extends GenericDaoJpa<TableAnnotationTemplate, TableAnnotationTemplatePK>
-{
+@Repository
+public interface TableAnnotationTemplateDao extends CrudRepository<TableAnnotationTemplate, TableAnnotationTemplatePK> {
 
-   /**
-    * Recherche les TableAnnotationTemplates dont le template 
-    * est égal au paramètre.
-    * @param template Template du bloc recherché.
-    * @return une liste de TableAnnotationTemplates.
-    */
-   List<TableAnnotationTemplate> findByTemplate(Template template);
+	/**
+	 * Recherche les TableAnnotationTemplates dont le template est égal au
+	 * paramètre.
+	 * 
+	 * @param template Template du bloc recherché.
+	 * @return une liste de TableAnnotationTemplates.
+	 */
+	@Query("SELECT t FROM TableAnnotationTemplate t WHERE t.pk.template = ?1 ORDER BY t.ordre")
+	List<TableAnnotationTemplate> findByTemplate(Template template);
 
-   /**
-    * Recherche les TableAnnotationTemplates dont la clé est différente
-    * de celle passée en paramètre.
-    * @param pk Pk du TableAnnotationTemplate recherché.
-    * @return une liste de TableAnnotationTemplates.
-    */
-   List<TableAnnotationTemplate> findByExcludedPK(TableAnnotationTemplatePK pk);
+	/**
+	 * Recherche les TableAnnotationTemplates dont la clé est différente de celle
+	 * passée en paramètre.
+	 * 
+	 * @param pk Pk du TableAnnotationTemplate recherché.
+	 * @return une liste de TableAnnotationTemplates.
+	 */
+	@Query("SELECT t FROM TableAnnotationTemplate t WHERE t.pk != ?1")
+	List<TableAnnotationTemplate> findByExcludedPK(TableAnnotationTemplatePK pk);
 
 }

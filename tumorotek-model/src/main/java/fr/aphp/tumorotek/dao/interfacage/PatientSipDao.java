@@ -37,52 +37,65 @@ package fr.aphp.tumorotek.dao.interfacage;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.interfacage.PatientSip;
 
 /**
  *
- * Interface pour le DAO du bean de domaine PatientSip.
- * Interface créée le 15/04/11.
+ * Interface pour le DAO du bean de domaine PatientSip. Interface créée le
+ * 15/04/11.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface PatientSipDao extends GenericDaoJpa<PatientSip, Integer>
-{
+@Repository
+public interface PatientSipDao extends CrudRepository<PatientSip, Integer> {
 
-   /**
-    * Recherche les patients dont le NIP est 'like' le paramètre.
-    * @param nip NIP des patients recherchés.
-    * @return Liste de PatientSips.
-    */
-   List<PatientSip> findByNip(String nip);
+	/**
+	 * Recherche les patients dont le NIP est 'like' le paramètre.
+	 * 
+	 * @param nip NIP des patients recherchés.
+	 * @return Liste de PatientSips.
+	 */
+	@Query("SELECT p FROM PatientSip p WHERE p.nip like ?1")
+	List<PatientSip> findByNip(String nip);
 
-   /**
-    * Recherche les patients dont le nom est 'like' le paramètre.
-    * @param nom Nom des patients recherchés.
-    * @return Liste de PatientSips.
-    */
-   List<PatientSip> findByNom(String nom);
+	/**
+	 * Recherche les patients dont le nom est 'like' le paramètre.
+	 * 
+	 * @param nom Nom des patients recherchés.
+	 * @return Liste de PatientSips.
+	 */
+	@Query("SELECT p FROM PatientSip p WHERE p.nom like ?1 OR p.nomNaissance like ?1")
+	List<PatientSip> findByNom(String nom);
 
-   /**
-    * Compte le nombre d'entrees dans la table.
-    * @return une liste avec un seul élément = compte.
-    */
-   List<Long> findCountAll();
+	/**
+	 * Compte le nombre d'entrees dans la table.
+	 * 
+	 * @return une liste avec un seul élément = compte.
+	 */
+	@Query("SELECT count(p) FROM PatientSip p")
+	List<Long> findCountAll();
 
-   /**
-    * Renvoie le premier objet enregistré.
-    * @return
-    */
-   List<PatientSip> findFirst();
+	/**
+	 * Renvoie le premier objet enregistré.
+	 * 
+	 * @return
+	 */
+	@Query("SELECT p FROM PatientSip p where p.dateCreation = (select min(dateCreation) from PatientSip)")
+	List<PatientSip> findFirst();
 
-   /**
-    * Recherche les patients temporaire associé au numéro 
-    * de séjour passé en paramètre.
-    * @param String numero de sejour.
-    * @return Liste de PatientSips. 
-    */
-   List<PatientSip> findByNumeroSejour(String numero);
+	/**
+	 * Recherche les patients temporaire associé au numéro de séjour passé en
+	 * paramètre.
+	 * 
+	 * @param String numero de sejour.
+	 * @return Liste de PatientSips.
+	 */
+	@Query("SELECT distinct p FROM PatientSip p JOIN p.sejours s where s.numero like ?1")
+	List<PatientSip> findByNumeroSejour(String numero);
 }

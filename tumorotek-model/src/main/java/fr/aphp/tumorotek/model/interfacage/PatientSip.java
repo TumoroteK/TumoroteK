@@ -67,19 +67,19 @@ import fr.aphp.tumorotek.model.coeur.patient.Patient;
  * Classe créée le 14/04/11.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.13.3
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "PATIENT_SIP")
-@NamedQueries(value = {@NamedQuery(name = "PatientSip.findByNip", query = "SELECT p FROM PatientSip p WHERE p.nip like ?1"),
-   @NamedQuery(name = "PatientSip.findByNom",
-      query = "SELECT p FROM PatientSip p WHERE p.nom like ?1 " + "OR p.nomNaissance like ?1"),
-   @NamedQuery(name = "PatientSip.findCountAll", query = "SELECT count(p) FROM PatientSip p"),
-   @NamedQuery(name = "PatientSip.findFirst",
-      query = "SELECT p FROM PatientSip p " + "where p.dateCreation = (select min(dateCreation) " + "from PatientSip)"),
-   @NamedQuery(name = "PatientSip.findByNumeroSejour",
-      query = "SELECT distinct p FROM PatientSip p " + "JOIN p.sejours s " + "where s.numero like ?1")})
+//@NamedQueries(value = {@NamedQuery(name = "PatientSip.findByNip", query = "SELECT p FROM PatientSip p WHERE p.nip like ?1"),
+//   @NamedQuery(name = "PatientSip.findByNom",
+//      query = "SELECT p FROM PatientSip p WHERE p.nom like ?1 " + "OR p.nomNaissance like ?1"),
+//   @NamedQuery(name = "PatientSip.findCountAll", query = "SELECT count(p) FROM PatientSip p"),
+//   @NamedQuery(name = "PatientSip.findFirst",
+//      query = "SELECT p FROM PatientSip p " + "where p.dateCreation = (select min(dateCreation) " + "from PatientSip)"),
+//   @NamedQuery(name = "PatientSip.findByNumeroSejour",
+//      query = "SELECT distinct p FROM PatientSip p " + "JOIN p.sejours s " + "where s.numero like ?1")})
 public class PatientSip
 {
 
