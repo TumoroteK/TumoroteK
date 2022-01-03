@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.coeur.prelevement;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.coeur.prelevement.LaboInter;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
@@ -50,65 +53,77 @@ import fr.aphp.tumorotek.model.contexte.Transporteur;
  * Date: 28/09/2009
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface LaboInterDao extends GenericDaoJpa<LaboInter, Integer>
-{
+@Repository
+public interface LaboInterDao extends CrudRepository<LaboInter, Integer> {
 
-   /**
-    * Recherche tous les labo intermediaires sauf celui dont l'id est passé 
-    * en paramètre.
-    * @param laboInterId Identifiant du labo que l'on souhaite
-    * exclure de la liste retournée.
-    * @return une liste de LaboInter.
-    */
-   List<LaboInter> findByExcludedId(Integer laboInterId);
+	/**
+	 * Recherche tous les labo intermediaires sauf celui dont l'id est passé en
+	 * paramètre.
+	 * 
+	 * @param laboInterId Identifiant du labo que l'on souhaite exclure de la liste
+	 *                    retournée.
+	 * @return une liste de LaboInter.
+	 */
+	@Query("SELECT l FROM LaboInter l WHERE l.laboInterId != ?1")
+	List<LaboInter> findByExcludedId(Integer laboInterId);
 
-   /**
-    * Recherche les labos intermediaires par leur transporteur.
-    * @param transporteur Transporteur.
-    * @return Liste des labos intermediaires.
-    */
-   List<LaboInter> findByTransporteur(Transporteur transporteur);
+	/**
+	 * Recherche les labos intermediaires par leur transporteur.
+	 * 
+	 * @param transporteur Transporteur.
+	 * @return Liste des labos intermediaires.
+	 */
+	@Query("SELECT l FROM LaboInter l WHERE l.transporteur = ?1")
+	List<LaboInter> findByTransporteur(Transporteur transporteur);
 
-   /**
-    * Recherche les labos intermediaires par leur service.
-    * @param service Service.
-    * @return Liste des labos intermediaires.
-    */
-   List<LaboInter> findByService(Service service);
+	/**
+	 * Recherche les labos intermediaires par leur service.
+	 * 
+	 * @param service Service.
+	 * @return Liste des labos intermediaires.
+	 */
+	@Query("SELECT l FROM LaboInter l WHERE l.service = ?1")
+	List<LaboInter> findByService(Service service);
 
-   /**
-    * Recherche les labos intermediaires par leur collaborateur.
-    * @param collaborateur Collaborateur.
-    * @return Liste des labos intermediaires.
-    */
-   List<LaboInter> findByCollaborateur(Collaborateur collaborateur);
+	/**
+	 * Recherche les labos intermediaires par leur collaborateur.
+	 * 
+	 * @param collaborateur Collaborateur.
+	 * @return Liste des labos intermediaires.
+	 */
+	@Query("SELECT l FROM LaboInter l WHERE l.collaborateur = ?1")
+	List<LaboInter> findByCollaborateur(Collaborateur collaborateur);
 
-   /**
-    * Recherche les labos intermediaires par leur prelevement.
-    * Ces labos seront ordonnés par ordre.
-    * @param prelevement Prelevement.
-    * @return Liste ordonnée de labos intermediaires.
-    */
-   List<LaboInter> findByPrelevementWithOrder(Prelevement prelevement);
+	/**
+	 * Recherche les labos intermediaires par leur prelevement. Ces labos seront
+	 * ordonnés par ordre.
+	 * 
+	 * @param prelevement Prelevement.
+	 * @return Liste ordonnée de labos intermediaires.
+	 */
+	@Query("SELECT l FROM LaboInter l WHERE l.prelevement = ?1 ORDER BY l.ordre")
+	List<LaboInter> findByPrelevementWithOrder(Prelevement prelevement);
 
-   /**
-    * Recherche les ordres des labos intermediaires par leur 
-    * prelevement.
-    * @param prelevement Prelevement.
-    * @return Liste d'ordres de labos intermediaires.
-    */
-   List<Integer> findByPrelevementWithOnlyOrder(Prelevement prelevement);
+	/**
+	 * Recherche les ordres des labos intermediaires par leur prelevement.
+	 * 
+	 * @param prelevement Prelevement.
+	 * @return Liste d'ordres de labos intermediaires.
+	 */
+	@Query("SELECT l.ordre FROM LaboInter l WHERE l.prelevement = ?1 ")
+	List<Integer> findByPrelevementWithOnlyOrder(Prelevement prelevement);
 
-   /**
-    * Recherche les ordres des labos intermediaires par leur 
-    * prelevement. Ne retourne pas l'ordre du labo dont l'id est passé 
-    * en paramètre.
-    * @param prelevement Prelevement.
-    * @param laboInterId Identifiant du labo à ignorer.
-    * @return Liste d'ordres de labos intermediaires.
-    */
-   List<Integer> findByPrelevementWithOnlyOrderAndExcludedId(Prelevement prelevement, Integer laboInterId);
+	/**
+	 * Recherche les ordres des labos intermediaires par leur prelevement. Ne
+	 * retourne pas l'ordre du labo dont l'id est passé en paramètre.
+	 * 
+	 * @param prelevement Prelevement.
+	 * @param laboInterId Identifiant du labo à ignorer.
+	 * @return Liste d'ordres de labos intermediaires.
+	 */
+	@Query("SELECT l.ordre FROM LaboInter l WHERE l.prelevement = ?1 AND l.laboInterId != ?2")
+	List<Integer> findByPrelevementWithOnlyOrderAndExcludedId(Prelevement prelevement, Integer laboInterId);
 }

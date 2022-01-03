@@ -46,8 +46,6 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -61,20 +59,20 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
  * Classe créée le 17/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "RISQUE")
 @AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "RISQUE_ID"))})
 @GenericGenerator(name = "autoincrement", strategy = "increment")
-@NamedQueries(value = {@NamedQuery(name = "Risque.findByNom", query = "SELECT r FROM Risque r WHERE r.nom like ?1"),
-   @NamedQuery(name = "Risque.findByInfectieux", query = "SELECT r FROM Risque r WHERE r.infectieux = ?1"),
-   @NamedQuery(name = "Risque.findByPrelevementId",
-      query = "SELECT r FROM Risque r " + "left join r.prelevements p " + "WHERE p.prelevementId = ?1"),
-   @NamedQuery(name = "Risque.findByExcludedId", query = "SELECT r FROM Risque r " + "WHERE r.id != ?1"),
-   @NamedQuery(name = "Risque.findByPfOrder", query = "SELECT r FROM Risque r " + "WHERE r.plateforme = ?1 ORDER BY r.nom"),
-   @NamedQuery(name = "Risque.findByOrder", query = "SELECT r FROM Risque r ORDER BY r.nom")})
+//@NamedQueries(value = {@NamedQuery(name = "Risque.findByNom", query = "SELECT r FROM Risque r WHERE r.nom like ?1"),
+//   @NamedQuery(name = "Risque.findByInfectieux", query = "SELECT r FROM Risque r WHERE r.infectieux = ?1"),
+//   @NamedQuery(name = "Risque.findByPrelevementId",
+//      query = "SELECT r FROM Risque r " + "left join r.prelevements p " + "WHERE p.prelevementId = ?1"),
+//   @NamedQuery(name = "Risque.findByExcludedId", query = "SELECT r FROM Risque r " + "WHERE r.id != ?1"),
+//   @NamedQuery(name = "Risque.findByPfOrder", query = "SELECT r FROM Risque r " + "WHERE r.plateforme = ?1 ORDER BY r.nom"),
+//   @NamedQuery(name = "Risque.findByOrder", query = "SELECT r FROM Risque r ORDER BY r.nom")})
 public class Risque extends AbstractPfDependantThesaurusObject implements Serializable
 {
 

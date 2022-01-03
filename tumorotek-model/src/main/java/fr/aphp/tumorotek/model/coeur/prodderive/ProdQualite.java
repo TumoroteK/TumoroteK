@@ -43,8 +43,6 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -59,7 +57,7 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
  * Classe créée le 14/09/09.
  *
  * @author Maxime Gousseau
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
@@ -67,15 +65,15 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 @AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "PROD_QUALITE_ID")),
    @AttributeOverride(name = "nom", column = @Column(name = "PROD_QUALITE", nullable = false, length = 200))})
 @GenericGenerator(name = "autoincrement", strategy = "increment")
-@NamedQueries(
-   value = {@NamedQuery(name = "ProdQualite.findByProdQualite", query = "SELECT p FROM ProdQualite p WHERE p.nom like ?1"),
-      @NamedQuery(name = "ProdQualite.findByProdDeriveId",
-         query = "SELECT p FROM ProdQualite p " + "left join p.prodDerives d " + "WHERE d.prodDeriveId = ?1"),
-      @NamedQuery(name = "ProdQualite.findByExcludedId", query = "SELECT p FROM ProdQualite p " + "WHERE p.id != ?1"),
-      @NamedQuery(name = "ProdQualite.findByPfOrder",
-         query = "SELECT p FROM ProdQualite p " + "WHERE p.plateforme = ?1 ORDER BY p.nom"),
-      @NamedQuery(name = "ProdQualite.findByOrder",
-      query = "SELECT p FROM ProdQualite p ORDER BY p.nom")})
+//@NamedQueries(
+//   value = {@NamedQuery(name = "ProdQualite.findByProdQualite", query = "SELECT p FROM ProdQualite p WHERE p.nom like ?1"),
+//      @NamedQuery(name = "ProdQualite.findByProdDeriveId",
+//         query = "SELECT p FROM ProdQualite p " + "left join p.prodDerives d " + "WHERE d.prodDeriveId = ?1"),
+//      @NamedQuery(name = "ProdQualite.findByExcludedId", query = "SELECT p FROM ProdQualite p " + "WHERE p.id != ?1"),
+//      @NamedQuery(name = "ProdQualite.findByPfOrder",
+//         query = "SELECT p FROM ProdQualite p " + "WHERE p.plateforme = ?1 ORDER BY p.nom"),
+//      @NamedQuery(name = "ProdQualite.findByOrder",
+//      query = "SELECT p FROM ProdQualite p ORDER BY p.nom")})
 public class ProdQualite extends AbstractPfDependantThesaurusObject implements Serializable
 {
 

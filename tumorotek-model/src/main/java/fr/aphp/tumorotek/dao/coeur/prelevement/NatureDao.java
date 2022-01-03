@@ -37,36 +37,50 @@ package fr.aphp.tumorotek.dao.coeur.prelevement;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.coeur.prelevement.Nature;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
  *
- * Interface pour le DAO du bean de domaine Nature (de prelevement).
- * Interface créée le 29/09/09.
+ * Interface pour le DAO du bean de domaine Nature (de prelevement). Interface
+ * créée le 29/09/09.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface NatureDao extends GenericDaoJpa<Nature, Integer>, PfDependantTKThesaurusDao<Nature>
-{
+@Repository
+public interface NatureDao extends CrudRepository<Nature, Integer>, PfDependantTKThesaurusDao<Nature> {
 
-   /**
-    * Recherche les natures de prelevement dont la nature 
-    * est 'like' le paramètre.
-    * @param nature Nature de prelevements recherchées.
-    * @return Liste de natures de prelevements.
-    */
-   List<Nature> findByNature(String nature);
+	/**
+	 * Recherche les natures de prelevement dont la nature est 'like' le paramètre.
+	 * 
+	 * @param nature Nature de prelevements recherchées.
+	 * @return Liste de natures de prelevements.
+	 */
+	@Query("SELECT n FROM Nature n WHERE n.nom like ?1")
+	List<Nature> findByNature(String nature);
 
-   /**
-    * Recherche tous les natures de prelevement sauf celui dont
-    * l'identifiant est passé en paramètre.
-    * @param id Identifiant de la nature à exclure.
-    * @return Liste de natures de prelevements.
-    */
-   List<Nature> findByExcludedId(Integer id);
+	/**
+	 * Recherche tous les natures de prelevement sauf celui dont l'identifiant est
+	 * passé en paramètre.
+	 * 
+	 * @param id Identifiant de la nature à exclure.
+	 * @return Liste de natures de prelevements.
+	 */
+	@Query("SELECT n FROM Nature n WHERE n.id != ?1")
+	List<Nature> findByExcludedId(Integer id);
 
+	@Override
+	@Query("SELECT n FROM Nature n ORDER BY n.nom")
+	List<Nature> findByOrder();
+
+	@Override
+	@Query("SELECT n FROM Nature n WHERE n.plateforme = ?1 ORDER BY n.nom")
+	List<Nature> findByPfOrder(Plateforme pf);
 }

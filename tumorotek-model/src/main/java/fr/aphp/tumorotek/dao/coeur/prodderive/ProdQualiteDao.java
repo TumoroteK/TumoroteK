@@ -37,45 +37,61 @@ package fr.aphp.tumorotek.dao.coeur.prodderive;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdQualite;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
  *
- * Interface pour le DAO du bean de domaine ProdQualite.
- * Interface créée le 25/09/09.
+ * Interface pour le DAO du bean de domaine ProdQualite. Interface créée le
+ * 25/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface ProdQualiteDao extends GenericDaoJpa<ProdQualite, Integer>, PfDependantTKThesaurusDao<ProdQualite>
-{
+@Repository
+public interface ProdQualiteDao extends CrudRepository<ProdQualite, Integer>, PfDependantTKThesaurusDao<ProdQualite> {
 
-   /**
-    * Recherche les qualité de produits dérivés dont la 
-    * valeur est égale au paramètre.
-    * @param qualite est la qualite du produit dérivé.
-    * @return une liste de qualités.
-    */
-   List<ProdQualite> findByProdQualite(String qualite);
+	/**
+	 * Recherche les qualité de produits dérivés dont la valeur est égale au
+	 * paramètre.
+	 * 
+	 * @param qualite est la qualite du produit dérivé.
+	 * @return une liste de qualités.
+	 */
+	@Query("SELECT p FROM ProdQualite p WHERE p.nom like ?1")
+	List<ProdQualite> findByProdQualite(String qualite);
 
-   /**
-    * Recherche la qualité qui est liée au produit dérivé passé 
-    * en paramètre. 
-    * @param prodDeriveId Identifiant du produit dérivé pour lequel 
-    * on recherche une qualité.
-    * @return une liste de qualités.
-    */
-   List<ProdQualite> findByProdDeriveId(Integer prodDeriveId);
+	/**
+	 * Recherche la qualité qui est liée au produit dérivé passé en paramètre.
+	 * 
+	 * @param prodDeriveId Identifiant du produit dérivé pour lequel on recherche
+	 *                     une qualité.
+	 * @return une liste de qualités.
+	 */
+	@Query("SELECT p FROM ProdQualite p left join p.prodDerives d WHERE d.prodDeriveId = ?1")
+	List<ProdQualite> findByProdDeriveId(Integer prodDeriveId);
 
-   /**
-    * Recherche toutes les ProdQualites sauf celui dont
-    * l'identifiant est passé en paramètre.
-    * @param id Identifiant de la ProdQualite à exclure.
-    * @return Liste de ProdQualites.
-    */
-   List<ProdQualite> findByExcludedId(Integer id);
+	/**
+	 * Recherche toutes les ProdQualites sauf celui dont l'identifiant est passé en
+	 * paramètre.
+	 * 
+	 * @param id Identifiant de la ProdQualite à exclure.
+	 * @return Liste de ProdQualites.
+	 */
+	@Query("SELECT p FROM ProdQualite p WHERE p.id != ?1")
+	List<ProdQualite> findByExcludedId(Integer id);
 
+	@Override
+	@Query("SELECT p FROM ProdQualite p WHERE p.plateforme = ?1 ORDER BY p.nom")
+	List<ProdQualite> findByPfOrder(Plateforme pf);
+
+	@Override
+	@Query("SELECT p FROM ProdQualite p ORDER BY p.nom")
+	List<ProdQualite> findByOrder();
 }

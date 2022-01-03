@@ -37,42 +37,59 @@ package fr.aphp.tumorotek.dao.coeur.prelevement;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
  *
- * Interface pour le DAO du bean de domaine Risque.
- * Interface créée le 29/09/09.
+ * Interface pour le DAO du bean de domaine Risque. Interface créée le 29/09/09.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface RisqueDao extends GenericDaoJpa<Risque, Integer>, PfDependantTKThesaurusDao<Risque>
-{
+@Repository
+public interface RisqueDao extends CrudRepository<Risque, Integer>, PfDependantTKThesaurusDao<Risque> {
 
-   /**
-    * Recherche les risques dont le nom est 'like' le paramètre.
-    * @param nom Nom des risques recherchées.
-    * @return Liste de risques.
-    */
-   List<Risque> findByNom(String nom);
+	/**
+	 * Recherche les risques dont le nom est 'like' le paramètre.
+	 * 
+	 * @param nom Nom des risques recherchées.
+	 * @return Liste de risques.
+	 */
+	@Query("SELECT r FROM Risque r WHERE r.nom like ?1")
+	List<Risque> findByNom(String nom);
 
-   /**
-    * Recherche les risques selon leur infectiosite.
-    * @param inf Boolean infectieux.
-    * @return Liste de risques.
-    */
-   List<Risque> findByInfectieux(Boolean inf);
+	/**
+	 * Recherche les risques selon leur infectiosite.
+	 * 
+	 * @param inf Boolean infectieux.
+	 * @return Liste de risques.
+	 */
+	@Query("SELECT r FROM Risque r WHERE r.infectieux = ?1")
+	List<Risque> findByInfectieux(Boolean inf);
 
-   /**
-    * Recherche tous les Risques sauf celui dont
-    * l'identifiant est passé en paramètre.
-    * @param id Identifiant du Risque à exclure.
-    * @return Liste de Risques.
-    */
-   List<Risque> findByExcludedId(Integer id);
+	/**
+	 * Recherche tous les Risques sauf celui dont l'identifiant est passé en
+	 * paramètre.
+	 * 
+	 * @param id Identifiant du Risque à exclure.
+	 * @return Liste de Risques.
+	 */
+	@Query("SELECT r FROM Risque r WHERE r.id != ?1")
+	List<Risque> findByExcludedId(Integer id);
+
+	@Override
+	@Query("SELECT r FROM Risque r ORDER BY r.nom")
+	List<Risque> findByOrder();
+
+	@Override
+	@Query("SELECT r FROM Risque r WHERE r.plateforme = ?1 ORDER BY r.nom")
+	List<Risque> findByPfOrder(Plateforme pf);
 
 }

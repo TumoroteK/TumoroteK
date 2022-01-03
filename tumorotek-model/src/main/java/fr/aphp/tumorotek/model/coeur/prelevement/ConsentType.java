@@ -43,8 +43,6 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -59,7 +57,7 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
  * Classe créée le 14/09/09.
  *
  * @author Maxime Gousseau
- * @version 2.0.13
+ * @version 2.3
  *
  */
 @Entity
@@ -67,11 +65,11 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 @AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "CONSENT_TYPE_ID")),
    @AttributeOverride(name = "nom", column = @Column(name = "TYPE", nullable = false, length = 200))})
 @GenericGenerator(name = "autoincrement", strategy = "increment")
-@NamedQueries(value = {@NamedQuery(name = "ConsentType.findByType", query = "SELECT c FROM ConsentType c WHERE c.nom like ?1"),
-   @NamedQuery(name = "ConsentType.findByExcludedId", query = "SELECT c FROM ConsentType c " + "WHERE c.id != ?1"),
-   @NamedQuery(name = "ConsentType.findByPfOrder",
-      query = "SELECT c FROM ConsentType c " + "WHERE c.plateforme = ?1 ORDER BY c.nom"),
-   @NamedQuery(name = "ConsentType.findByOrder", query = "FROM ConsentType c ORDER BY c.nom")})
+//@NamedQueries(value = {@NamedQuery(name = "ConsentType.findByType", query = "SELECT c FROM ConsentType c WHERE c.nom like ?1"),
+//   @NamedQuery(name = "ConsentType.findByExcludedId", query = "SELECT c FROM ConsentType c " + "WHERE c.id != ?1"),
+//   @NamedQuery(name = "ConsentType.findByPfOrder",
+//      query = "SELECT c FROM ConsentType c " + "WHERE c.plateforme = ?1 ORDER BY c.nom"),
+//   @NamedQuery(name = "ConsentType.findByOrder", query = "FROM ConsentType c ORDER BY c.nom")})
 public class ConsentType extends AbstractPfDependantThesaurusObject implements Serializable, Comparable<ConsentType>
 {
 

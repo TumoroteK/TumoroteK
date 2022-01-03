@@ -37,44 +37,61 @@ package fr.aphp.tumorotek.dao.coeur.prelevement;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.coeur.prelevement.PrelevementType;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
  *
- * Interface pour le DAO du bean de domaine PrelevementType.
- * Interface créée le 30/09/09.
+ * Interface pour le DAO du bean de domaine PrelevementType. Interface créée le
+ * 30/09/09.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface PrelevementTypeDao extends GenericDaoJpa<PrelevementType, Integer>, PfDependantTKThesaurusDao<PrelevementType>
-{
+@Repository
+public interface PrelevementTypeDao
+		extends CrudRepository<PrelevementType, Integer>, PfDependantTKThesaurusDao<PrelevementType> {
 
-   /**
-    * Recherche les types de prelevement dont le type 
-    * est 'like' le paramètre.
-    * @param type Type de prelevement recherchés.
-    * @return Liste des types de prelevement.
-    */
-   List<PrelevementType> findByType(String type);
+	/**
+	 * Recherche les types de prelevement dont le type est 'like' le paramètre.
+	 * 
+	 * @param type Type de prelevement recherchés.
+	 * @return Liste des types de prelevement.
+	 */
+	@Query("SELECT p FROM PrelevementType p WHERE p.nom like ?1")
+	List<PrelevementType> findByType(String type);
 
-   /**
-    * Recherche les types de prelevement dont la catégorie Inca est égale
-    * au paramètre.
-    * @param cat Catégorie Inca des prelevements recherchés.
-    * @return Liste de types de prelevements.
-    */
-   List<PrelevementType> findByIncaCat(String cat);
+	/**
+	 * Recherche les types de prelevement dont la catégorie Inca est égale au
+	 * paramètre.
+	 * 
+	 * @param cat Catégorie Inca des prelevements recherchés.
+	 * @return Liste de types de prelevements.
+	 */
+	@Query("SELECT p FROM PrelevementType p WHERE p.incaCat = ?1")
+	List<PrelevementType> findByIncaCat(String cat);
 
-   /**
-    * Recherche tous les PrelevementType de prelevement sauf 
-    * celui dont l'identifiant est passé en paramètre.
-    * @param id Identifiant du PrelevementType à exclure.
-    * @return Liste de PrelevementTypes de prelevements.
-    */
-   List<PrelevementType> findByExcludedId(Integer id);
+	/**
+	 * Recherche tous les PrelevementType de prelevement sauf celui dont
+	 * l'identifiant est passé en paramètre.
+	 * 
+	 * @param id Identifiant du PrelevementType à exclure.
+	 * @return Liste de PrelevementTypes de prelevements.
+	 */
+	@Query("SELECT p FROM PrelevementType p WHERE p.id != ?1")
+	List<PrelevementType> findByExcludedId(Integer id);
 
+	@Override
+	@Query("SELECT p FROM PrelevementType p ORDER BY p.nom")
+	List<PrelevementType> findByOrder();
+
+	@Override
+	@Query("SELECT p FROM PrelevementType p WHERE p.plateforme = ?1 ORDER BY p.nom")
+	List<PrelevementType> findByPfOrder(Plateforme pf);
 }

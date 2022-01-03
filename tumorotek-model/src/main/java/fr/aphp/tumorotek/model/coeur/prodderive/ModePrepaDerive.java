@@ -43,8 +43,6 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -59,20 +57,20 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
  * Classe créée le 05/01/2011.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "MODE_PREPA_DERIVE")
 @AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "MODE_PREPA_DERIVE_ID"))})
 @GenericGenerator(name = "autoincrement", strategy = "increment")
-@NamedQueries(
-   value = {@NamedQuery(name = "ModePrepaDerive.findByNom", query = "SELECT m FROM ModePrepaDerive m WHERE m.nom like ?1"),
-      @NamedQuery(name = "ModePrepaDerive.findByExcludedId", query = "SELECT m FROM ModePrepaDerive m " + "WHERE m.id != ?1"),
-      @NamedQuery(name = "ModePrepaDerive.findByPfOrder",
-         query = "SELECT m FROM ModePrepaDerive m " + "WHERE m.plateforme = ?1 ORDER BY m.nom"),
-   @NamedQuery(name = "ModePrepaDerive.findByOrder",
-      query = "SELECT m FROM ModePrepaDerive m ORDER BY m.nom")})
+//@NamedQueries(
+//   value = {@NamedQuery(name = "ModePrepaDerive.findByNom", query = "SELECT m FROM ModePrepaDerive m WHERE m.nom like ?1"),
+//      @NamedQuery(name = "ModePrepaDerive.findByExcludedId", query = "SELECT m FROM ModePrepaDerive m " + "WHERE m.id != ?1"),
+//      @NamedQuery(name = "ModePrepaDerive.findByPfOrder",
+//         query = "SELECT m FROM ModePrepaDerive m " + "WHERE m.plateforme = ?1 ORDER BY m.nom"),
+//   @NamedQuery(name = "ModePrepaDerive.findByOrder",
+//      query = "SELECT m FROM ModePrepaDerive m ORDER BY m.nom")})
 public class ModePrepaDerive extends AbstractPfDependantThesaurusObject implements Serializable
 {
    private static final long serialVersionUID = 5348645345465465L;

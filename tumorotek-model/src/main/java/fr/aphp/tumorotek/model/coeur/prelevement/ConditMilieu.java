@@ -43,8 +43,6 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -59,7 +57,7 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
  * Classe créée le 14/09/09.
  *
  * @author Maxime Gousseau
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
@@ -67,13 +65,13 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 @AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "CONDIT_MILIEU_ID")),
    @AttributeOverride(name = "nom", column = @Column(name = "MILIEU", nullable = false, length = 200))})
 @GenericGenerator(name = "autoincrement", strategy = "increment")
-@NamedQueries(
-   value = {@NamedQuery(name = "ConditMilieu.findByMilieu", query = "SELECT c FROM ConditMilieu c WHERE c.nom like ?1"),
-      @NamedQuery(name = "ConditMilieu.findByExcludedId", query = "SELECT c FROM ConditMilieu c " + "WHERE c.id != ?1"),
-      @NamedQuery(name = "ConditMilieu.findByPfOrder",
-         query = "SELECT c FROM ConditMilieu c " + "WHERE c.plateforme = ?1 ORDER BY c.nom"),
-      @NamedQuery(name = "ConditMilieu.findByOrder",
-         query = "FROM ConditMilieu c ORDER BY c.nom")})
+//@NamedQueries(
+//   value = {@NamedQuery(name = "ConditMilieu.findByMilieu", query = "SELECT c FROM ConditMilieu c WHERE c.nom like ?1"),
+//      @NamedQuery(name = "ConditMilieu.findByExcludedId", query = "SELECT c FROM ConditMilieu c " + "WHERE c.id != ?1"),
+//      @NamedQuery(name = "ConditMilieu.findByPfOrder",
+//         query = "SELECT c FROM ConditMilieu c " + "WHERE c.plateforme = ?1 ORDER BY c.nom"),
+//      @NamedQuery(name = "ConditMilieu.findByOrder",
+//         query = "FROM ConditMilieu c ORDER BY c.nom")})
 
 public class ConditMilieu extends AbstractPfDependantThesaurusObject implements Serializable
 {

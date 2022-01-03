@@ -51,8 +51,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
@@ -84,111 +82,111 @@ import fr.aphp.tumorotek.model.utils.Utils;
  *
  *
  * @author Maxime Gousseau
- * @version 2.1
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "PRELEVEMENT")
-@NamedQueries(value = {@NamedQuery(name = "Prelevement.findByCode", query = "SELECT p FROM Prelevement p WHERE p.code like ?1"),
-   @NamedQuery(name = "Prelevement.findByCodeOrNumLaboWithBanque",
-      query = "SELECT p FROM Prelevement p WHERE (p.code like ?1 " + "OR p.numeroLabo like ?1) " + "AND p.banque = ?2"),
-   @NamedQuery(name = "Prelevement.findByCodeInPlateforme",
-      query = "SELECT p FROM Prelevement p WHERE p.code like ?1 " + "AND p.banque.plateforme = ?2"),
-   @NamedQuery(name = "Prelevement" + ".findByCodeOrNumLaboWithBanqueReturnIds",
-      query = "SELECT p.prelevementId FROM Prelevement p " + "WHERE (p.code like ?1 " + "OR p.numeroLabo like ?1) "
-         + "AND p.banque = ?2"),
-   @NamedQuery(name = "Prelevement.findByConsentDateAfterDate", query = "SELECT p FROM Prelevement p WHERE p.consentDate >= ?1"),
-   @NamedQuery(name = "Prelevement.findByDatePrelevementAfterDate",
-      query = "SELECT p FROM Prelevement p " + "WHERE p.datePrelevement >= ?1"),
-   @NamedQuery(name = "Prelevement" + ".findByDatePrelevementAfterDateWithBanque",
-      query = "SELECT p FROM Prelevement p " + "WHERE p.datePrelevement >= ?1 " + "AND p.banque = ?2"),
-   //		@NamedQuery(name = "Prelevement.findByDateCongelationAfterDate", 
-   //			query = "SELECT p FROM Prelevement p " 
-   @NamedQuery(name = "Prelevement.findByNature", query = "SELECT p FROM Prelevement p WHERE p.nature = ?1"),
-   @NamedQuery(name = "Prelevement.findByPrelevementType",
-      query = "SELECT p FROM Prelevement p " + "WHERE p.prelevementType = ?1"),
-   @NamedQuery(name = "Prelevement.findByConsentType", query = "SELECT p FROM Prelevement p " + "WHERE p.consentType = ?1"),
-   @NamedQuery(name = "Prelevement.findByExcludedIdCodes",
-      query = "SELECT p.code FROM Prelevement p " + "WHERE p.prelevementId != ?1 and p.banque = ?2"),
-   @NamedQuery(name = "Prelevement.findByNdaLike", query = "SELECT p FROM Prelevement p WHERE p.patientNda like ?1"),
-   @NamedQuery(name = "Prelevement.findByBanqueSelectCode", query = "SELECT p.code FROM Prelevement p " + "WHERE p.banque = ?1"),
-   @NamedQuery(name = "Prelevement.findByBanqueSelectNda",
-      query = "SELECT p.patientNda FROM Prelevement p " + "WHERE p.banque = ?1 AND p.patientNda is not null "
-         + "ORDER BY p.patientNda"),
-   @NamedQuery(name = "Prelevement.findByMaladieLibelleLike",
-      query = "SELECT p FROM Prelevement p " + "WHERE p.maladie.libelle like ?1"),
-   @NamedQuery(name = "Prelevement.findByMaladieAndBanque",
-      query = "SELECT p FROM Prelevement p " + "WHERE p.maladie= ?1 and p.banque = ?2 " + "ORDER BY p.datePrelevement"),
-   @NamedQuery(name = "Prelevement.findByMaladieAndOtherBanques",
-      query = "SELECT p FROM Prelevement p " + "WHERE p.maladie= ?1 and p.banque != ?2 " + "ORDER BY p.datePrelevement"),
-   @NamedQuery(name = "Prelevement.findByBanques",
-      query = "SELECT p FROM Prelevement p WHERE p.banque in (?1) " + "ORDER BY p.banque, p.datePrelevement"),
-   @NamedQuery(name = "Prelevement.findByPatient",
-      query = "SELECT p FROM Prelevement p " + "join p.maladie m " + "WHERE m.patient = ?1"),
-   @NamedQuery(name = "Prelevement.findByNumberEchantillons",
-      query = "SELECT p FROM Prelevement p " + "WHERE (select count(e) From Echantillon e " + "WHERE e.prelevement=p) = ?1"),
-   @NamedQuery(name = "Prelevement.findByMaladieAndNature",
-      query = "SELECT p FROM Prelevement p " + "WHERE p.maladie = ?1 " + "AND p.nature.nom like ?2 "
-         + "AND p.datePrelevement = ?3"),
-   @NamedQuery(name = "Prelevement.findCountEclConsentByDates",
-      query = "SELECT count(distinct p) FROM Prelevement p, " + "Operation o " + "WHERE p.prelevementId = o.objetId "
-         + "AND o.entite.nom = 'Prelevement' " + "AND o.operationType.nom = 'Creation' " + "AND p.consentType in (?1) "
-         + "AND o.date >= ?2 AND o.date <= ?3 " + "AND p.banque in (?4) "),
-   @NamedQuery(name = "Prelevement.findAssociatePrelsOfType",
-      query = "SELECT p FROM Prelevement p " + "WHERE p.maladie = ?1 " + "AND p.nature in (?2) " + "AND p.banque in (?3)"),
-   @NamedQuery(name = "Prelevement.findByOrganeByDates",
-      query = "SELECT distinct p FROM Prelevement p, " + "Operation o " + "JOIN p.echantillons e " + "JOIN e.codesAssignes c "
-         + "WHERE p.prelevementId = o.objetId " + "AND o.entite.nom = 'Prelevement' " + "AND o.operationType.nom = 'Creation' "
-         + "AND (c.code in (?1) " + "OR c.libelle in (?1)) " + "AND c.isOrgane = 1 " + "AND o.date >= ?2 AND o.date <= ?3 "
-         + "AND p.banque in (?4) "),
-   @NamedQuery(name = "Prelevement.findByOrganeByDatesConsent",
-      query = "SELECT distinct p FROM Prelevement p, " + "Operation o " + "JOIN p.echantillons e " + "JOIN e.codesAssignes c "
-         + "WHERE p.prelevementId = o.objetId " + "AND o.entite.nom = 'Prelevement' " + "AND o.operationType.nom = 'Creation' "
-         + "AND (c.code in (?1) " + "OR c.libelle in (?1)) " + "AND o.date >= ?2 AND o.date <= ?3 " + "AND c.isOrgane = 1 "
-         + "AND p.banque in (?4) " + "AND p.consentType in (?5)"),
-   @NamedQuery(name = "Prelevement.findByPatientNomReturnIds",
-      query = "SELECT p.prelevementId FROM Prelevement p " + "JOIN p.maladie as m " + "JOIN m.patient as pat "
-         + "WHERE (pat.nom like ?1 OR pat.nip like ?1) AND p.banque = ?2"),
-   @NamedQuery(name = "Prelevement.findByIdInList", query = "SELECT p FROM Prelevement p " + "WHERE p.prelevementId in (?1)"),
-   @NamedQuery(name = "Prelevement.findByBanquesAllIds",
-      query = "SELECT p.prelevementId FROM Prelevement p " + "WHERE p.banque in (?1)"),
-   @NamedQuery(name = "Prelevement.findByEchantillonId",
-      query = "SELECT e.prelevement FROM Echantillon e " + "WHERE e.echantillonId = ?1"),
-   @NamedQuery(name = "Prelevement.findByCodesAndBanquesInList",
-      query = "SELECT p FROM Prelevement p " + "WHERE (p.code in (?1) OR p.numeroLabo in (?1)) AND p.banque in (?2)"),
-   @NamedQuery(name = "Prelevement.findByComDiag",
-      query = "SELECT p FROM Prelevement p " + "JOIN p.delegate s " + "WHERE s.libelle like ?1 AND p.banque in (?2)"),
-   @NamedQuery(name = "Prelevement.findByPatientNomOrNipInList",
-      query = "SELECT p.prelevementId FROM Prelevement p " + "JOIN p.maladie as m " + "JOIN m.patient as pat "
-         + "WHERE (pat.nom in (?1) or pat.nip in (?1)) " + "AND p.banque in (?2)"),
-   @NamedQuery(name = "Prelevement" + ".findByCodeOrNumLaboInListWithBanque",
-      query = "SELECT p.prelevementId FROM Prelevement p " + "WHERE (p.code in (?1) " + "OR p.numeroLabo in (?1)) "
-         + "AND p.banque in (?2)"),
-   @NamedQuery(name = "Prelevement.findByEtablissementNom",
-      query = "SELECT DISTINCT e FROM Prelevement e WHERE " + "e.servicePreleveur.etablissement.nom like ?1 "
-         + "AND e.banque in (?2)"), // + " UNION SELECT DISTINCT e FROM Prelevement e WHERE "
-        // + "e.preleveur.etablissement.nom like ?1 " + "AND e.banque in (?2)"),
-   @NamedQuery(name = "Prelevement.findByEtablissementVide",
-      query = "SELECT DISTINCT e FROM Prelevement e " + "LEFT OUTER JOIN e.preleveur as p " + "WHERE e.servicePreleveur is null "
-         + "AND (p is null OR " + "p.etablissement is null) " + "AND e.banque in (?1)"),
-   @NamedQuery(name = "Prelevement.findByPreleveur", query = "SELECT e FROM Prelevement e " + "WHERE e.preleveur = (?1)"),
-   @NamedQuery(name = "Prelevement.findCountCreatedByCollaborateur",
-      query = "SELECT count(p) FROM Prelevement p, Operation o " + "WHERE p.prelevementId = o.objetId "
-         + "and p.preleveur = (?1) " + "AND o.operationType.nom = 'Creation' " + "AND o.entite.nom = 'Prelevement'"),
-   @NamedQuery(name = "Prelevement.findCountByService",
-      query = "SELECT count(p) FROM Prelevement p " + "WHERE p.servicePreleveur = (?1)"),
-   @NamedQuery(name = "Prelevement.findCountByPreleveur",
-      query = "SELECT count(p) FROM Prelevement p" + " WHERE p.preleveur = ?1"),
-   @NamedQuery(name = "Prelevement.findByOperateur", query = "SELECT e FROM Prelevement e " + "WHERE e.operateur = (?1)"),
-   @NamedQuery(name = "Prelevement.findByService", query = "SELECT e FROM Prelevement e " + "WHERE e.servicePreleveur = (?1)"),
-   @NamedQuery(name = "Prelevement.findByPatientAndBanques",
-      query = "SELECT e FROM Prelevement e " + "WHERE e.maladie.patient = ?1 AND e.banque in (?2)"),
-   @NamedQuery(name = "Prelevement.findByEtablissementLaboInter", 
-   		query = "SELECT DISTINCT e FROM Prelevement e JOIN e.laboInters l where l.service.etablissement = (?1) AND e.banque in (?2)"),
-   @NamedQuery(name = "Prelevement.findByServiceLaboInter", 
-		query = "SELECT DISTINCT e FROM Prelevement e JOIN e.laboInters l where l.service = (?1) AND e.banque in (?2)"), 
-   @NamedQuery(name = "Prelevement.findByCollaborateurLaboInter", 
-		query = "SELECT DISTINCT e FROM Prelevement e JOIN e.laboInters l where l.collaborateur = (?1) AND e.banque in (?2)")})
+//@NamedQueries(value = {@NamedQuery(name = "Prelevement.findByCode", query = "SELECT p FROM Prelevement p WHERE p.code like ?1"),
+//   @NamedQuery(name = "Prelevement.findByCodeOrNumLaboWithBanque",
+//      query = "SELECT p FROM Prelevement p WHERE (p.code like ?1 " + "OR p.numeroLabo like ?1) " + "AND p.banque = ?2"),
+//   @NamedQuery(name = "Prelevement.findByCodeInPlateforme",
+//      query = "SELECT p FROM Prelevement p WHERE p.code like ?1 " + "AND p.banque.plateforme = ?2"),
+//   @NamedQuery(name = "Prelevement" + ".findByCodeOrNumLaboWithBanqueReturnIds",
+//      query = "SELECT p.prelevementId FROM Prelevement p " + "WHERE (p.code like ?1 " + "OR p.numeroLabo like ?1) "
+//         + "AND p.banque = ?2"),
+//   @NamedQuery(name = "Prelevement.findByConsentDateAfterDate", query = "SELECT p FROM Prelevement p WHERE p.consentDate >= ?1"),
+//   @NamedQuery(name = "Prelevement.findByDatePrelevementAfterDate",
+//      query = "SELECT p FROM Prelevement p " + "WHERE p.datePrelevement >= ?1"),
+//   @NamedQuery(name = "Prelevement" + ".findByDatePrelevementAfterDateWithBanque",
+//      query = "SELECT p FROM Prelevement p " + "WHERE p.datePrelevement >= ?1 " + "AND p.banque = ?2"),
+//   //		@NamedQuery(name = "Prelevement.findByDateCongelationAfterDate", 
+//   //			query = "SELECT p FROM Prelevement p " 
+//   @NamedQuery(name = "Prelevement.findByNature", query = "SELECT p FROM Prelevement p WHERE p.nature = ?1"),
+//   @NamedQuery(name = "Prelevement.findByPrelevementType",
+//      query = "SELECT p FROM Prelevement p " + "WHERE p.prelevementType = ?1"),
+//   @NamedQuery(name = "Prelevement.findByConsentType", query = "SELECT p FROM Prelevement p " + "WHERE p.consentType = ?1"),
+//   @NamedQuery(name = "Prelevement.findByExcludedIdCodes",
+//      query = "SELECT p.code FROM Prelevement p " + "WHERE p.prelevementId != ?1 and p.banque = ?2"),
+//   @NamedQuery(name = "Prelevement.findByNdaLike", query = "SELECT p FROM Prelevement p WHERE p.patientNda like ?1"),
+//   @NamedQuery(name = "Prelevement.findByBanqueSelectCode", query = "SELECT p.code FROM Prelevement p " + "WHERE p.banque = ?1"),
+//   @NamedQuery(name = "Prelevement.findByBanqueSelectNda",
+//      query = "SELECT p.patientNda FROM Prelevement p " + "WHERE p.banque = ?1 AND p.patientNda is not null "
+//         + "ORDER BY p.patientNda"),
+//   @NamedQuery(name = "Prelevement.findByMaladieLibelleLike",
+//      query = "SELECT p FROM Prelevement p " + "WHERE p.maladie.libelle like ?1"),
+//   @NamedQuery(name = "Prelevement.findByMaladieAndBanque",
+//      query = "SELECT p FROM Prelevement p " + "WHERE p.maladie= ?1 and p.banque = ?2 " + "ORDER BY p.datePrelevement"),
+//   @NamedQuery(name = "Prelevement.findByMaladieAndOtherBanques",
+//      query = "SELECT p FROM Prelevement p " + "WHERE p.maladie= ?1 and p.banque != ?2 " + "ORDER BY p.datePrelevement"),
+//   @NamedQuery(name = "Prelevement.findByBanques",
+//      query = "SELECT p FROM Prelevement p WHERE p.banque in (?1) " + "ORDER BY p.banque, p.datePrelevement"),
+//   @NamedQuery(name = "Prelevement.findByPatient",
+//      query = "SELECT p FROM Prelevement p " + "join p.maladie m " + "WHERE m.patient = ?1"),
+//   @NamedQuery(name = "Prelevement.findByNumberEchantillons",
+//      query = "SELECT p FROM Prelevement p " + "WHERE (select count(e) From Echantillon e " + "WHERE e.prelevement=p) = ?1"),
+//   @NamedQuery(name = "Prelevement.findByMaladieAndNature",
+//      query = "SELECT p FROM Prelevement p " + "WHERE p.maladie = ?1 " + "AND p.nature.nom like ?2 "
+//         + "AND p.datePrelevement = ?3"),
+//   @NamedQuery(name = "Prelevement.findCountEclConsentByDates",
+//      query = "SELECT count(distinct p) FROM Prelevement p, " + "Operation o " + "WHERE p.prelevementId = o.objetId "
+//         + "AND o.entite.nom = 'Prelevement' " + "AND o.operationType.nom = 'Creation' " + "AND p.consentType in (?1) "
+//         + "AND o.date >= ?2 AND o.date <= ?3 " + "AND p.banque in (?4) "),
+//   @NamedQuery(name = "Prelevement.findAssociatePrelsOfType",
+//      query = "SELECT p FROM Prelevement p " + "WHERE p.maladie = ?1 " + "AND p.nature in (?2) " + "AND p.banque in (?3)"),
+//   @NamedQuery(name = "Prelevement.findByOrganeByDates",
+//      query = "SELECT distinct p FROM Prelevement p, " + "Operation o " + "JOIN p.echantillons e " + "JOIN e.codesAssignes c "
+//         + "WHERE p.prelevementId = o.objetId " + "AND o.entite.nom = 'Prelevement' " + "AND o.operationType.nom = 'Creation' "
+//         + "AND (c.code in (?1) " + "OR c.libelle in (?1)) " + "AND c.isOrgane = 1 " + "AND o.date >= ?2 AND o.date <= ?3 "
+//         + "AND p.banque in (?4) "),
+//   @NamedQuery(name = "Prelevement.findByOrganeByDatesConsent",
+//      query = "SELECT distinct p FROM Prelevement p, " + "Operation o " + "JOIN p.echantillons e " + "JOIN e.codesAssignes c "
+//         + "WHERE p.prelevementId = o.objetId " + "AND o.entite.nom = 'Prelevement' " + "AND o.operationType.nom = 'Creation' "
+//         + "AND (c.code in (?1) " + "OR c.libelle in (?1)) " + "AND o.date >= ?2 AND o.date <= ?3 " + "AND c.isOrgane = 1 "
+//         + "AND p.banque in (?4) " + "AND p.consentType in (?5)"),
+//   @NamedQuery(name = "Prelevement.findByPatientNomReturnIds",
+//      query = "SELECT p.prelevementId FROM Prelevement p " + "JOIN p.maladie as m " + "JOIN m.patient as pat "
+//         + "WHERE (pat.nom like ?1 OR pat.nip like ?1) AND p.banque = ?2"),
+//   @NamedQuery(name = "Prelevement.findByIdInList", query = "SELECT p FROM Prelevement p " + "WHERE p.prelevementId in (?1)"),
+//   @NamedQuery(name = "Prelevement.findByBanquesAllIds",
+//      query = "SELECT p.prelevementId FROM Prelevement p " + "WHERE p.banque in (?1)"),
+//   @NamedQuery(name = "Prelevement.findByEchantillonId",
+//      query = "SELECT e.prelevement FROM Echantillon e " + "WHERE e.echantillonId = ?1"),
+//   @NamedQuery(name = "Prelevement.findByCodesAndBanquesInList",
+//      query = "SELECT p FROM Prelevement p " + "WHERE (p.code in (?1) OR p.numeroLabo in (?1)) AND p.banque in (?2)"),
+//   @NamedQuery(name = "Prelevement.findByComDiag",
+//      query = "SELECT p FROM Prelevement p " + "JOIN p.delegate s " + "WHERE s.libelle like ?1 AND p.banque in (?2)"),
+//   @NamedQuery(name = "Prelevement.findByPatientNomOrNipInList",
+//      query = "SELECT p.prelevementId FROM Prelevement p " + "JOIN p.maladie as m " + "JOIN m.patient as pat "
+//         + "WHERE (pat.nom in (?1) or pat.nip in (?1)) " + "AND p.banque in (?2)"),
+//   @NamedQuery(name = "Prelevement" + ".findByCodeOrNumLaboInListWithBanque",
+//      query = "SELECT p.prelevementId FROM Prelevement p " + "WHERE (p.code in (?1) " + "OR p.numeroLabo in (?1)) "
+//         + "AND p.banque in (?2)"),
+//   @NamedQuery(name = "Prelevement.findByEtablissementNom",
+//      query = "SELECT DISTINCT e FROM Prelevement e WHERE " + "e.servicePreleveur.etablissement.nom like ?1 "
+//         + "AND e.banque in (?2)"), // + " UNION SELECT DISTINCT e FROM Prelevement e WHERE "
+//        // + "e.preleveur.etablissement.nom like ?1 " + "AND e.banque in (?2)"),
+//   @NamedQuery(name = "Prelevement.findByEtablissementVide",
+//      query = "SELECT DISTINCT e FROM Prelevement e " + "LEFT OUTER JOIN e.preleveur as p " + "WHERE e.servicePreleveur is null "
+//         + "AND (p is null OR " + "p.etablissement is null) " + "AND e.banque in (?1)"),
+//   @NamedQuery(name = "Prelevement.findByPreleveur", query = "SELECT e FROM Prelevement e " + "WHERE e.preleveur = (?1)"),
+//   @NamedQuery(name = "Prelevement.findCountCreatedByCollaborateur",
+//      query = "SELECT count(p) FROM Prelevement p, Operation o " + "WHERE p.prelevementId = o.objetId "
+//         + "and p.preleveur = (?1) " + "AND o.operationType.nom = 'Creation' " + "AND o.entite.nom = 'Prelevement'"),
+//   @NamedQuery(name = "Prelevement.findCountByService",
+//      query = "SELECT count(p) FROM Prelevement p " + "WHERE p.servicePreleveur = (?1)"),
+//   @NamedQuery(name = "Prelevement.findCountByPreleveur",
+//      query = "SELECT count(p) FROM Prelevement p" + " WHERE p.preleveur = ?1"),
+//   @NamedQuery(name = "Prelevement.findByOperateur", query = "SELECT e FROM Prelevement e " + "WHERE e.operateur = (?1)"),
+//   @NamedQuery(name = "Prelevement.findByService", query = "SELECT e FROM Prelevement e " + "WHERE e.servicePreleveur = (?1)"),
+//   @NamedQuery(name = "Prelevement.findByPatientAndBanques",
+//      query = "SELECT e FROM Prelevement e " + "WHERE e.maladie.patient = ?1 AND e.banque in (?2)"),
+//   @NamedQuery(name = "Prelevement.findByEtablissementLaboInter", 
+//   		query = "SELECT DISTINCT e FROM Prelevement e JOIN e.laboInters l where l.service.etablissement = (?1) AND e.banque in (?2)"),
+//   @NamedQuery(name = "Prelevement.findByServiceLaboInter", 
+//		query = "SELECT DISTINCT e FROM Prelevement e JOIN e.laboInters l where l.service = (?1) AND e.banque in (?2)"), 
+//   @NamedQuery(name = "Prelevement.findByCollaborateurLaboInter", 
+//		query = "SELECT DISTINCT e FROM Prelevement e JOIN e.laboInters l where l.collaborateur = (?1) AND e.banque in (?2)")})
 public class Prelevement extends TKDelegetableObject<Prelevement> implements TKAnnotableObject, Serializable
 {
 
@@ -714,7 +712,8 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
       return code;
    }
 
-   @OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "delegator",
+   @Override
+@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "delegator",
       targetEntity = AbstractPrelevementDelegate.class)
    public TKDelegateObject<Prelevement> getDelegate(){
       return delegate;

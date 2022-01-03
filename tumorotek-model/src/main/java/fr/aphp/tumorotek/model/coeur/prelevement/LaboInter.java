@@ -45,8 +45,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -63,46 +61,46 @@ import fr.aphp.tumorotek.model.contexte.Transporteur;
  * Classe créée le 17/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "LABO_INTER")
-@NamedQueries(
-   value = {@NamedQuery(name = "LaboInter.findByExcludedId", query = "SELECT l FROM LaboInter l " + "WHERE l.laboInterId != ?1"),
-      //		@NamedQuery(name = "LaboInter.findByOrdre",
-      //			query = "SELECT l FROM LaboInter l WHERE l.ordre = ?1"),
-      //		@NamedQuery(name = "LaboInter.findByDateArrivee", 
-      //			query = "SELECT l FROM LaboInter l WHERE l.dateArrivee = ?1"),
-      //		@NamedQuery(name = "LaboInter.findByDateDepart", 
-      //				query = "SELECT l FROM LaboInter l " 
-      //					+ "WHERE l.dateDepart = ?1"), 
-      //		@NamedQuery(name = "LaboInter.findByConservTemp", 
-      //				query = "SELECT l FROM LaboInter l WHERE l.conservTemp = ?1"),
-      //		@NamedQuery(name = "LaboInter.findByTransportTemp", 
-      //				query = "SELECT l FROM LaboInter l " 
-      //					+ "WHERE l.transportTemp = ?1"),
-      //		@NamedQuery(name = "LaboInter.findBySterile", 
-      //				query = "SELECT l FROM LaboInter l " 
-      //					+ "WHERE l.sterile = ?1"),
-      @NamedQuery(name = "LaboInter.findByService", query = "SELECT l FROM LaboInter l " + "WHERE l.service = ?1"),
-      @NamedQuery(name = "LaboInter.findByTransporteur", query = "SELECT l FROM LaboInter l " + "WHERE l.transporteur = ?1"),
-      @NamedQuery(name = "LaboInter.findByCollaborateur", query = "SELECT l FROM LaboInter l " + "WHERE l.collaborateur = ?1"),
-      @NamedQuery(name = "LaboInter.findByPrelevementWithOrder",
-         query = "SELECT l FROM LaboInter l " + "WHERE l.prelevement = ?1 " + "ORDER BY l.ordre"),
-      @NamedQuery(name = "LaboInter.findByPrelevementWithOnlyOrder",
-         query = "SELECT l.ordre FROM LaboInter l " + "WHERE l.prelevement = ?1 "),
-      @NamedQuery(name = "LaboInter.findByPrelevementWithOnlyOrderAndExcludedId",
-         query = "SELECT l.ordre FROM LaboInter l " + "WHERE l.prelevement = ?1 " + "AND l.laboInterId != ?2")
-   //		@NamedQuery(name = "LaboInter.findByProprietaire", 
-   //				query = "SELECT l FROM LaboInter l " 
-   //					+ "WHERE l.prelevement = ?1"),
-   //		@NamedQuery(name = "LaboInter.findByIdWithFetch", 
-   //				query = "SELECT l FROM LaboInter l LEFT JOIN FETCH " 
-   //					+ "l.collaborateur LEFT JOIN FETCH l.service " 
-   //					+ "LEFT JOIN FETCH l.transporteur LEFT JOIN FETCH " 
-   //					+ "l.prelevement WHERE l.laboInterId = ?1"),
-   })
+//@NamedQueries(
+//   value = {@NamedQuery(name = "LaboInter.findByExcludedId", query = "SELECT l FROM LaboInter l " + "WHERE l.laboInterId != ?1"),
+//      //		@NamedQuery(name = "LaboInter.findByOrdre",
+//      //			query = "SELECT l FROM LaboInter l WHERE l.ordre = ?1"),
+//      //		@NamedQuery(name = "LaboInter.findByDateArrivee", 
+//      //			query = "SELECT l FROM LaboInter l WHERE l.dateArrivee = ?1"),
+//      //		@NamedQuery(name = "LaboInter.findByDateDepart", 
+//      //				query = "SELECT l FROM LaboInter l " 
+//      //					+ "WHERE l.dateDepart = ?1"), 
+//      //		@NamedQuery(name = "LaboInter.findByConservTemp", 
+//      //				query = "SELECT l FROM LaboInter l WHERE l.conservTemp = ?1"),
+//      //		@NamedQuery(name = "LaboInter.findByTransportTemp", 
+//      //				query = "SELECT l FROM LaboInter l " 
+//      //					+ "WHERE l.transportTemp = ?1"),
+//      //		@NamedQuery(name = "LaboInter.findBySterile", 
+//      //				query = "SELECT l FROM LaboInter l " 
+//      //					+ "WHERE l.sterile = ?1"),
+//      @NamedQuery(name = "LaboInter.findByService", query = "SELECT l FROM LaboInter l " + "WHERE l.service = ?1"),
+//      @NamedQuery(name = "LaboInter.findByTransporteur", query = "SELECT l FROM LaboInter l " + "WHERE l.transporteur = ?1"),
+//      @NamedQuery(name = "LaboInter.findByCollaborateur", query = "SELECT l FROM LaboInter l " + "WHERE l.collaborateur = ?1"),
+//      @NamedQuery(name = "LaboInter.findByPrelevementWithOrder",
+//         query = "SELECT l FROM LaboInter l " + "WHERE l.prelevement = ?1 " + "ORDER BY l.ordre"),
+//      @NamedQuery(name = "LaboInter.findByPrelevementWithOnlyOrder",
+//         query = "SELECT l.ordre FROM LaboInter l " + "WHERE l.prelevement = ?1 "),
+//      @NamedQuery(name = "LaboInter.findByPrelevementWithOnlyOrderAndExcludedId",
+//         query = "SELECT l.ordre FROM LaboInter l " + "WHERE l.prelevement = ?1 " + "AND l.laboInterId != ?2")
+//   //		@NamedQuery(name = "LaboInter.findByProprietaire", 
+//   //				query = "SELECT l FROM LaboInter l " 
+//   //					+ "WHERE l.prelevement = ?1"),
+//   //		@NamedQuery(name = "LaboInter.findByIdWithFetch", 
+//   //				query = "SELECT l FROM LaboInter l LEFT JOIN FETCH " 
+//   //					+ "l.collaborateur LEFT JOIN FETCH l.service " 
+//   //					+ "LEFT JOIN FETCH l.transporteur LEFT JOIN FETCH " 
+//   //					+ "l.prelevement WHERE l.laboInterId = ?1"),
+//   })
 public class LaboInter implements Serializable
 {
 

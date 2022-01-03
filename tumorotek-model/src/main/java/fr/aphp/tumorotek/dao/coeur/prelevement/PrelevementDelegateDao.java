@@ -35,14 +35,16 @@
  **/
 package fr.aphp.tumorotek.dao.coeur.prelevement;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.coeur.prelevement.delegate.AbstractPrelevementDelegate;
 
 /**
  * @author Gille Chapelot
- *
+ * @version 2.3
  */
-public interface PrelevementDelegateDao extends GenericDaoJpa<AbstractPrelevementDelegate, Integer>
-{
+@Repository
+public interface PrelevementDelegateDao extends CrudRepository<AbstractPrelevementDelegate, Integer> {
 
 }

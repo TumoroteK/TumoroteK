@@ -46,8 +46,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.PreRemove;
@@ -71,18 +69,18 @@ import fr.aphp.tumorotek.model.utils.Utils;
  */
 @Entity
 @Table(name = "TRANSFORMATION")
-@NamedQueries(
-   value = {@NamedQuery(name = "Transformation.findByObjetId", query = "SELECT t FROM Transformation t WHERE t.objetId = ?1"),
-      @NamedQuery(name = "Transformation.findByExcludedId",
-         query = "SELECT t FROM Transformation t " + "WHERE t.transformationId != ?1"),
-      @NamedQuery(name = "Transformation.findByEntite", query = "SELECT t FROM Transformation t " + "WHERE t.entite = ?1"),
-      @NamedQuery(name = "Transformation.findByEntiteObjet",
-         query = "SELECT t FROM Transformation t " + "WHERE t.entite = ?1 AND t.objetId = ?2"),
-      @NamedQuery(name = "Transformation.findByQuantite", query = "SELECT t FROM Transformation t WHERE t.quantite = ?1"),
-      @NamedQuery(name = "Transformation.findByQuantiteUnite",
-         query = "SELECT t FROM Transformation t " + "WHERE t.quantiteUnite = ?1"),
-      @NamedQuery(name = "Transformation.findByProdDeriveId",
-         query = "SELECT t FROM Transformation t " + "left join t.prodDerives p " + "WHERE p.prodDeriveId = ?1")})
+//@NamedQueries(
+//   value = {@NamedQuery(name = "Transformation.findByObjetId", query = "SELECT t FROM Transformation t WHERE t.objetId = ?1"),
+//      @NamedQuery(name = "Transformation.findByExcludedId",
+//         query = "SELECT t FROM Transformation t " + "WHERE t.transformationId != ?1"),
+//      @NamedQuery(name = "Transformation.findByEntite", query = "SELECT t FROM Transformation t " + "WHERE t.entite = ?1"),
+//      @NamedQuery(name = "Transformation.findByEntiteObjet",
+//         query = "SELECT t FROM Transformation t " + "WHERE t.entite = ?1 AND t.objetId = ?2"),
+//      @NamedQuery(name = "Transformation.findByQuantite", query = "SELECT t FROM Transformation t WHERE t.quantite = ?1"),
+//      @NamedQuery(name = "Transformation.findByQuantiteUnite",
+//         query = "SELECT t FROM Transformation t " + "WHERE t.quantiteUnite = ?1"),
+//      @NamedQuery(name = "Transformation.findByProdDeriveId",
+//         query = "SELECT t FROM Transformation t " + "left join t.prodDerives p " + "WHERE p.prodDeriveId = ?1")})
 public class Transformation implements Serializable
 {
 

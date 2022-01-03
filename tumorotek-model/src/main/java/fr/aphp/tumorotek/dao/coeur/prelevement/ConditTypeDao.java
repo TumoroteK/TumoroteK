@@ -37,35 +37,50 @@ package fr.aphp.tumorotek.dao.coeur.prelevement;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.coeur.prelevement.ConditType;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
  *
- * Interface pour le DAO du bean de domaine ConditType.
- * Interface créée le 29/09/09.
+ * Interface pour le DAO du bean de domaine ConditType. Interface créée le
+ * 29/09/09.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface ConditTypeDao extends GenericDaoJpa<ConditType, Integer>, PfDependantTKThesaurusDao<ConditType>
-{
+@Repository
+public interface ConditTypeDao extends CrudRepository<ConditType, Integer>, PfDependantTKThesaurusDao<ConditType> {
 
-   /**
-    * Recherche les types de conditionnement dont le type 
-    * est 'like' le paramètre.
-    * @param type Type des conditionnements recherchés.
-    * @return Liste des types de conditionnement.
-    */
-   List<ConditType> findByType(String type);
+	/**
+	 * Recherche les types de conditionnement dont le type est 'like' le paramètre.
+	 * 
+	 * @param type Type des conditionnements recherchés.
+	 * @return Liste des types de conditionnement.
+	 */
+	@Query("SELECT c FROM ConditType c WHERE c.nom like ?1")
+	List<ConditType> findByType(String type);
 
-   /**
-    * Recherche tous les ConditTypes sauf celui dont
-    * l'identifiant est passé en paramètre.
-    * @param id Identifiant du ConditType à exclure.
-    * @return Liste de ConditTypes.
-    */
-   List<ConditType> findByExcludedId(Integer id);
+	/**
+	 * Recherche tous les ConditTypes sauf celui dont l'identifiant est passé en
+	 * paramètre.
+	 * 
+	 * @param id Identifiant du ConditType à exclure.
+	 * @return Liste de ConditTypes.
+	 */
+	@Query("SELECT c FROM ConditType c WHERE c.id != ?1")
+	List<ConditType> findByExcludedId(Integer id);
+
+	@Override
+	@Query("SELECT c FROM ConditType c WHERE c.plateforme = ?1 ORDER BY c.nom")
+	List<ConditType> findByPfOrder(Plateforme pf);
+
+	@Override
+	@Query("FROM ConditType c ORDER BY c.nom")
+	List<ConditType> findByOrder();
 }

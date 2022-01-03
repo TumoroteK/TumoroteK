@@ -37,36 +37,53 @@ package fr.aphp.tumorotek.dao.coeur.prelevement;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.coeur.prelevement.ConditMilieu;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
  *
- * Interface pour le DAO du bean de domaine ConditMilieu.
- * Interface créée le 29/09/09.
+ * Interface pour le DAO du bean de domaine ConditMilieu. Interface créée le
+ * 29/09/09.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface ConditMilieuDao extends GenericDaoJpa<ConditMilieu, Integer>, PfDependantTKThesaurusDao<ConditMilieu>
-{
+@Repository
+public interface ConditMilieuDao
+		extends CrudRepository<ConditMilieu, Integer>, PfDependantTKThesaurusDao<ConditMilieu> {
 
-   /**
-    * Recherche les milieux de conditionnement dont le milieu 
-    * est 'like' le paramètre.
-    * @param milieu Milieu des conditionnements recherchés.
-    * @return Liste de conditionnements de milieu.
-    */
-   List<ConditMilieu> findByMilieu(String milieu);
+	/**
+	 * Recherche les milieux de conditionnement dont le milieu est 'like' le
+	 * paramètre.
+	 * 
+	 * @param milieu Milieu des conditionnements recherchés.
+	 * @return Liste de conditionnements de milieu.
+	 */
+	@Query("SELECT c FROM ConditMilieu c WHERE c.nom like ?1")
+	List<ConditMilieu> findByMilieu(String milieu);
 
-   /**
-    * Recherche tous les ConditMilieus sauf celui dont
-    * l'identifiant est passé en paramètre.
-    * @param id Identifiant du ConditMilieu à exclure.
-    * @return Liste de ConditMilieus.
-    */
-   List<ConditMilieu> findByExcludedId(Integer id);
+	/**
+	 * Recherche tous les ConditMilieus sauf celui dont l'identifiant est passé en
+	 * paramètre.
+	 * 
+	 * @param id Identifiant du ConditMilieu à exclure.
+	 * @return Liste de ConditMilieus.
+	 */
+	@Query("SELECT c FROM ConditMilieu c WHERE c.id != ?1")
+	List<ConditMilieu> findByExcludedId(Integer id);
+
+	@Override
+	@Query("SELECT c FROM ConditMilieu c WHERE c.plateforme = ?1 ORDER BY c.nom")
+	List<ConditMilieu> findByPfOrder(Plateforme pf);
+
+	@Override
+	@Query("FROM ConditMilieu c ORDER BY c.nom")
+	List<ConditMilieu> findByOrder();
 
 }

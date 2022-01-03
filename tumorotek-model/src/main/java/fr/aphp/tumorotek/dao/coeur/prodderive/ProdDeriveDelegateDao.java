@@ -35,14 +35,17 @@
  **/
 package fr.aphp.tumorotek.dao.coeur.prodderive;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.coeur.prodderive.delegate.AbstractProdDeriveDelegate;
 
 /**
  * @author Gille Chapelot
+ * @version 2.3
  *
  */
-public interface ProdDeriveDelegateDao extends GenericDaoJpa<AbstractProdDeriveDelegate, Integer>
-{
+@Repository
+public interface ProdDeriveDelegateDao extends CrudRepository<AbstractProdDeriveDelegate, Integer> {
 
 }

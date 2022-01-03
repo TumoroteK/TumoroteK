@@ -37,37 +37,44 @@ package fr.aphp.tumorotek.dao.coeur.prodderive;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.coeur.prodderive.Transformation;
 import fr.aphp.tumorotek.model.systeme.Entite;
 
 /**
  *
- * Interface pour le DAO du bean de domaine Transformation.
- * Interface créée le 25/09/09.
+ * Interface pour le DAO du bean de domaine Transformation. Interface créée le
+ * 25/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface TransformationDao extends GenericDaoJpa<Transformation, Integer>
-{
+@Repository
+public interface TransformationDao extends CrudRepository<Transformation, Integer> {
 
-   /**
-    * Recherche la transformation qui est issue d'une entité et d'un ojet.
-    * @param entite Entite dont est issue la transformation
-    * @param objetId Identifiant de l'objet dont est issue la transformation.
-    * @return une liste de transformation.
-    */
-   List<Transformation> findByEntiteObjet(Entite entite, Integer objetId);
+	/**
+	 * Recherche la transformation qui est issue d'une entité et d'un ojet.
+	 * 
+	 * @param entite  Entite dont est issue la transformation
+	 * @param objetId Identifiant de l'objet dont est issue la transformation.
+	 * @return une liste de transformation.
+	 */
+	@Query("SELECT t FROM Transformation t WHERE t.entite = ?1 AND t.objetId = ?2")
+	List<Transformation> findByEntiteObjet(Entite entite, Integer objetId);
 
-   /**
-    * Recherche toutes les Transformations, sauf celle dont l'id est passé 
-    * en paramètre.
-    * @param transformationId Identifiant de la Transformation que l'on 
-    * souhaite exclure de la liste retournée.
-    * @return une liste de Transformation.
-    */
-   List<Transformation> findByExcludedId(Integer transformationId);
+	/**
+	 * Recherche toutes les Transformations, sauf celle dont l'id est passé en
+	 * paramètre.
+	 * 
+	 * @param transformationId Identifiant de la Transformation que l'on souhaite
+	 *                         exclure de la liste retournée.
+	 * @return une liste de Transformation.
+	 */
+	@Query("SELECT t FROM Transformation t WHERE t.transformationId != ?1")
+	List<Transformation> findByExcludedId(Integer transformationId);
 
 }

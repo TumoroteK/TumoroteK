@@ -37,35 +37,51 @@ package fr.aphp.tumorotek.dao.coeur.prodderive;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.coeur.prodderive.ModePrepaDerive;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
  *
- * Interface pour le DAO du bean de domaine ModePrepaDerive.
- * Interface créée le 05/01/2011.
+ * Interface pour le DAO du bean de domaine ModePrepaDerive. Interface créée le
+ * 05/01/2011.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface ModePrepaDeriveDao extends GenericDaoJpa<ModePrepaDerive, Integer>, PfDependantTKThesaurusDao<ModePrepaDerive>
-{
+@Repository
+public interface ModePrepaDeriveDao
+		extends CrudRepository<ModePrepaDerive, Integer>, PfDependantTKThesaurusDao<ModePrepaDerive> {
 
-   /**
-    * Recherche les mode de préparation dont le nom est égal au paramètre.
-    * @param nom Nom pour lequel on recherche des modes de préparation.
-    * @return une liste de modes de préparation.
-    */
-   List<ModePrepaDerive> findByNom(String nom);
+	/**
+	 * Recherche les mode de préparation dont le nom est égal au paramètre.
+	 * 
+	 * @param nom Nom pour lequel on recherche des modes de préparation.
+	 * @return une liste de modes de préparation.
+	 */
+	@Query("SELECT m FROM ModePrepaDerive m WHERE m.nom like ?1")
+	List<ModePrepaDerive> findByNom(String nom);
 
-   /**
-    * Recherche tous les ModePrepaDerive sauf celui dont
-    * l'identifiant est passé en paramètre.
-    * @param id Identifiant du ModePrepaDerive à exclure.
-    * @return Liste de ModePrepaDerives.
-    */
-   List<ModePrepaDerive> findByExcludedId(Integer id);
+	/**
+	 * Recherche tous les ModePrepaDerive sauf celui dont l'identifiant est passé en
+	 * paramètre.
+	 * 
+	 * @param id Identifiant du ModePrepaDerive à exclure.
+	 * @return Liste de ModePrepaDerives.
+	 */
+	@Query("SELECT m FROM ModePrepaDerive m WHERE m.id != ?1")
+	List<ModePrepaDerive> findByExcludedId(Integer id);
 
+	@Override
+	@Query("SELECT m FROM ModePrepaDerive m WHERE m.plateforme = ?1 ORDER BY m.nom")
+	List<ModePrepaDerive> findByPfOrder(Plateforme pf);
+
+	@Override
+	@Query("SELECT m FROM ModePrepaDerive m ORDER BY m.nom")
+	List<ModePrepaDerive> findByOrder();
 }

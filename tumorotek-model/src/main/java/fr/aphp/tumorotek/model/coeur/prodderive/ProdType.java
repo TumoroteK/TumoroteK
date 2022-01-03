@@ -43,8 +43,6 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -60,7 +58,7 @@ import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
  * Classe créée le 11/09/09.
  *
  * @author Maxime Gousseau
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
@@ -68,12 +66,12 @@ import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
 @AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "PROD_TYPE_ID")),
    @AttributeOverride(name = "nom", column = @Column(name = "TYPE", nullable = false, length = 200))})
 @GenericGenerator(name = "autoincrement", strategy = "increment")
-@NamedQueries(value = {@NamedQuery(name = "ProdType.findByType", query = "SELECT p FROM ProdType p WHERE p.nom like ?1"),
-   @NamedQuery(name = "ProdType.findByProdDeriveId",
-      query = "SELECT p FROM ProdType p " + "left join p.prodDerives d " + "WHERE d.prodDeriveId = ?1"),
-   @NamedQuery(name = "ProdType.findByExcludedId", query = "SELECT p FROM ProdType p " + "WHERE p.id != ?1"),
-   @NamedQuery(name = "ProdType.findByPfOrder", query = "SELECT p FROM ProdType p " + "WHERE p.plateforme = ?1 ORDER BY p.nom"),
-   @NamedQuery(name = "ProdType.findByOrder", query = "SELECT p FROM ProdType p ORDER BY p.nom")})
+//@NamedQueries(value = {@NamedQuery(name = "ProdType.findByType", query = "SELECT p FROM ProdType p WHERE p.nom like ?1"),
+//   @NamedQuery(name = "ProdType.findByProdDeriveId",
+//      query = "SELECT p FROM ProdType p " + "left join p.prodDerives d " + "WHERE d.prodDeriveId = ?1"),
+//   @NamedQuery(name = "ProdType.findByExcludedId", query = "SELECT p FROM ProdType p " + "WHERE p.id != ?1"),
+//   @NamedQuery(name = "ProdType.findByPfOrder", query = "SELECT p FROM ProdType p " + "WHERE p.plateforme = ?1 ORDER BY p.nom"),
+//   @NamedQuery(name = "ProdType.findByOrder", query = "SELECT p FROM ProdType p ORDER BY p.nom")})
 public class ProdType extends AbstractPfDependantThesaurusObject implements Serializable
 {
 
@@ -92,7 +90,8 @@ public class ProdType extends AbstractPfDependantThesaurusObject implements Seri
     * @deprecated Utiliser {@link #getId()}
     * @return
     */
-   @Transient
+   @Deprecated
+@Transient
    public Integer getProdTypeId(){
       return this.getId();
    }
@@ -101,14 +100,16 @@ public class ProdType extends AbstractPfDependantThesaurusObject implements Seri
     * @deprecated Utiliser {@link #setId(Integer)}
     * @return
     */
-   public void setProdTypeId(final Integer id){
+   @Deprecated
+public void setProdTypeId(final Integer id){
       this.setId(id);
    }
 
    /**
     * @deprecated Utiliser {@link #getNom()}
     */
-   @Transient
+   @Deprecated
+@Transient
    public String getType(){
       return this.getNom();
    }
@@ -116,7 +117,8 @@ public class ProdType extends AbstractPfDependantThesaurusObject implements Seri
    /**
     * @deprecated Utiliser {@link #setNom(String)}
     */
-   public void setType(final String t){
+   @Deprecated
+public void setType(final String t){
       this.setNom(t);
    }
 

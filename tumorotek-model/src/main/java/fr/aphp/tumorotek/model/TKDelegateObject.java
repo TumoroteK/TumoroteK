@@ -66,7 +66,8 @@ public abstract class TKDelegateObject<T>
    /**
     * @since 2.2.3-rc1
     */
-   public abstract TKDelegateObject<T> clone();
+   @Override
+public abstract TKDelegateObject<T> clone();
 
    @Override
    public String toString(){

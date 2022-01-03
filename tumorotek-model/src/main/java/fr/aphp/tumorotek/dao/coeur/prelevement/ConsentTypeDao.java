@@ -37,36 +37,50 @@ package fr.aphp.tumorotek.dao.coeur.prelevement;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.coeur.prelevement.ConsentType;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
  *
- * Interface pour le DAO du bean de domaine ConsentType.
- * Interface créée le 29/09/09.
+ * Interface pour le DAO du bean de domaine ConsentType. Interface créée le
+ * 29/09/09.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface ConsentTypeDao extends GenericDaoJpa<ConsentType, Integer>, PfDependantTKThesaurusDao<ConsentType>
-{
+@Repository
+public interface ConsentTypeDao extends CrudRepository<ConsentType, Integer>, PfDependantTKThesaurusDao<ConsentType> {
 
-   /**
-    * Recherche les types de consentement dont le type 
-    * est 'like' le paramètre.
-    * @param type Type des conditionnements recherchés.
-    * @return Liste des types de conditionnement.
-    */
-   List<ConsentType> findByType(String type);
+	/**
+	 * Recherche les types de consentement dont le type est 'like' le paramètre.
+	 * 
+	 * @param type Type des conditionnements recherchés.
+	 * @return Liste des types de conditionnement.
+	 */
+	@Query("SELECT c FROM ConsentType c WHERE c.nom like ?1")
+	List<ConsentType> findByType(String type);
 
-   /**
-    * Recherche tous les ConsentTypes sauf celui dont
-    * l'identifiant est passé en paramètre.
-    * @param id Identifiant du ConsentType à exclure.
-    * @return Liste de ConsentTypes.
-    */
-   List<ConsentType> findByExcludedId(Integer id);
+	/**
+	 * Recherche tous les ConsentTypes sauf celui dont l'identifiant est passé en
+	 * paramètre.
+	 * 
+	 * @param id Identifiant du ConsentType à exclure.
+	 * @return Liste de ConsentTypes.
+	 */
+	@Query("SELECT c FROM ConsentType c WHERE c.id != ?1")
+	List<ConsentType> findByExcludedId(Integer id);
 
+	@Override
+	@Query("SELECT c FROM ConsentType c WHERE c.plateforme = ?1 ORDER BY c.nom")
+	List<ConsentType> findByPfOrder(Plateforme pf);
+
+	@Override
+	@Query("FROM ConsentType c ORDER BY c.nom")
+	List<ConsentType> findByOrder();
 }
