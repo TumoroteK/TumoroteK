@@ -42,127 +42,126 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 /**
  *
- * Objet persistant mappant la table CIM_LIBELLE.
- * Classe créée le 11/09/09.
+ * Objet persistant mappant la table CIM_LIBELLE. Classe créée le 11/09/09.
  *
  * @author Maxime Gousseau
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "CIM_LIBELLE")
-@NamedQueries(
-   value = {@NamedQuery(name = "CimLibelle.findByLibelleLike", query = "SELECT c FROM CimLibelle c WHERE c.libelle like ?1")})
-public class CimLibelle implements Serializable
-{
+//@NamedQueries(
+//   value = {@NamedQuery(name = "CimLibelle.findByLibelleLike", query = "SELECT c FROM CimLibelle c WHERE c.libelle like ?1")})
+public class CimLibelle implements Serializable {
 
-   private static final long serialVersionUID = -5425665238563681260L;
+	private static final long serialVersionUID = -5425665238563681260L;
 
-   private Integer lid;
-   private String source;
-   private String valid;
-   private String libelle;
+	private Integer lid;
+	private String source;
+	private String valid;
+	private String libelle;
 
-   private CimMaster cimMaster;
+	private CimMaster cimMaster;
 
-   /** Constrcteur par défaut. */
-   public CimLibelle(){}
+	/** Constrcteur par défaut. */
+	public CimLibelle() {
+	}
 
-   @Override
-   public String toString(){
-      return "{CimLibelle: " + this.libelle + "}";
-   }
+	@Override
+	public String toString() {
+		return "{CimLibelle: " + this.libelle + "}";
+	}
 
-   @Id
-   @Column(name = "LID", unique = true, nullable = false)
-   public Integer getLid(){
-      return this.lid;
-   }
+	@Id
+	@Column(name = "LID", unique = true, nullable = false)
+	public Integer getLid() {
+		return this.lid;
+	}
 
-   public void setLid(final Integer id){
-      this.lid = id;
-   }
+	public void setLid(final Integer id) {
+		this.lid = id;
+	}
 
-   @Column(name = "SOURCE", nullable = true, length = 2)
-   public String getSource(){
-      return this.source;
-   }
+	@Column(name = "SOURCE", nullable = true, length = 2)
+	public String getSource() {
+		return this.source;
+	}
 
-   public void setSource(final String sour){
-      this.source = sour;
-   }
+	public void setSource(final String sour) {
+		this.source = sour;
+	}
 
-   @Column(name = "VALID", nullable = true, length = 1)
-   public String getValid(){
-      return this.valid;
-   }
+	@Column(name = "VALID", nullable = true, length = 1)
+	public String getValid() {
+		return this.valid;
+	}
 
-   public void setValid(final String val){
-      this.valid = val;
-   }
+	public void setValid(final String val) {
+		this.valid = val;
+	}
 
-   @Column(name = "LIBELLE", nullable = true)
-   //@Lob
-   public String getLibelle(){
-      return this.libelle;
-   }
+	@Column(name = "LIBELLE", nullable = true)
+	// @Lob
+	public String getLibelle() {
+		return this.libelle;
+	}
 
-   public void setLibelle(final String lib){
-      this.libelle = lib;
-   }
+	public void setLibelle(final String lib) {
+		this.libelle = lib;
+	}
 
-   @ManyToOne
-   @JoinColumn(name = "SID", nullable = true)
-   public CimMaster getCimMaster(){
-      return this.cimMaster;
-   }
+	@ManyToOne
+	@JoinColumn(name = "SID", nullable = true)
+	public CimMaster getCimMaster() {
+		return this.cimMaster;
+	}
 
-   public void setCimMaster(final CimMaster s){
-      this.cimMaster = s;
-   }
+	public void setCimMaster(final CimMaster s) {
+		this.cimMaster = s;
+	}
 
-   /**
-    * 2 CIM sont considérés comme égaux s'ils ont le même LID.
-    * @param obj est le libelle CIM à tester.
-    * @return true si les libelle CIMs sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 CIM sont considérés comme égaux s'ils ont le même LID.
+	 * 
+	 * @param obj est le libelle CIM à tester.
+	 * @return true si les libelle CIMs sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final CimLibelle test = (CimLibelle) obj;
-      if(this.lid != null){
-         return this.lid.equals(test.lid);
-      } //impossible
-      return false;
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || obj.getClass() != this.getClass()) {
+			return false;
+		}
+		final CimLibelle test = (CimLibelle) obj;
+		if (this.lid != null) {
+			return this.lid.equals(test.lid);
+		} // impossible
+		return false;
+	}
 
-   /**
-    * Le hashcode est calculé sur le LID.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-      int hash = 7;
-      int hashLID = 0;
+	/**
+	 * Le hashcode est calculé sur le LID.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		int hashLID = 0;
 
-      if(this.lid != null){
-         hashLID = this.lid.hashCode();
-      }
+		if (this.lid != null) {
+			hashLID = this.lid.hashCode();
+		}
 
-      hash = 31 * hash + hashLID;
+		hash = 31 * hash + hashLID;
 
-      return hash;
-   }
+		return hash;
+	}
 }

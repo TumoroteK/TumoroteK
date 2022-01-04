@@ -42,93 +42,94 @@ import javax.persistence.ManyToOne;
 
 /**
  *
- * Embedded Id pour la table PATIENT_LIEN.
- * Classe créée le 29/10/09.
+ * Embedded Id pour la table PATIENT_LIEN. Classe créée le 29/10/09.
  *
  * @author Mathieu BARTHELEMY
  * @see http://boris.kirzner.info/blog/archives/2008/07/19/
- * hibernate-annotations-the-many-to-many-association-with-composite-key/
+ *      hibernate-annotations-the-many-to-many-association-with-composite-key/
  * @version 2.0
  *
  */
 @Embeddable
-public class PatientLienPK implements Serializable
-{
+public class PatientLienPK implements Serializable {
 
-   private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-   private Patient patient1;
-   private Patient patient2;
+	private Patient patient1;
+	private Patient patient2;
 
-   /** Constructeur par défaut. */
-   public PatientLienPK(){}
+	/** Constructeur par défaut. */
+	public PatientLienPK() {
+	}
 
-   public PatientLienPK(final Patient p1, final Patient p2){
-      this.patient1 = p1;
-      this.patient2 = p2;
-   }
+	public PatientLienPK(final Patient p1, final Patient p2) {
+		this.patient1 = p1;
+		this.patient2 = p2;
+	}
 
-   @ManyToOne(targetEntity = Patient.class)
-   public Patient getPatient1(){
-      return patient1;
-   }
+	@ManyToOne(targetEntity = Patient.class)
+	public Patient getPatient1() {
+		return patient1;
+	}
 
-   public void setPatient1(final Patient p1){
-      this.patient1 = p1;
-   }
+	public void setPatient1(final Patient p1) {
+		this.patient1 = p1;
+	}
 
-   @ManyToOne(targetEntity = Patient.class)
-   public Patient getPatient2(){
-      return patient2;
-   }
+	@ManyToOne(targetEntity = Patient.class)
+	public Patient getPatient2() {
+		return patient2;
+	}
 
-   public void setPatient2(final Patient p2){
-      this.patient2 = p2;
-   }
+	public void setPatient2(final Patient p2) {
+		this.patient2 = p2;
+	}
 
-   /**
-    * 2 PKs sont considérés comme égales si elles sont composees 
-    * des mêmes clés.
-    * @param obj est la PK à tester.
-    * @return true si les PK sont egales.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 PKs sont considérés comme égales si elles sont composees des mêmes clés.
+	 * 
+	 * @param obj est la PK à tester.
+	 * @return true si les PK sont egales.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final PatientLienPK test = (PatientLienPK) obj;
-      return (((this.patient1 != null && (this.patient1.equals(test.patient1)) || this.patient1 == test.patient1)
-         && ((this.patient2 != null && this.patient2.equals(test.patient2)) || this.patient2 == test.patient2))
-         // teste l'inverse
-         || ((this.patient1 != null && (this.patient1.equals(test.patient2)) || this.patient1 == test.patient2)
-            && ((this.patient2 != null && this.patient2.equals(test.patient1)) || this.patient2 == test.patient1)));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || obj.getClass() != this.getClass()) {
+			return false;
+		}
+		final PatientLienPK test = (PatientLienPK) obj;
+		return (((this.patient1 != null && (this.patient1.equals(test.patient1)) || this.patient1 == test.patient1)
+				&& ((this.patient2 != null && this.patient2.equals(test.patient2)) || this.patient2 == test.patient2))
+				// teste l'inverse
+				|| ((this.patient1 != null && (this.patient1.equals(test.patient2)) || this.patient1 == test.patient2)
+						&& ((this.patient2 != null && this.patient2.equals(test.patient1))
+								|| this.patient2 == test.patient1)));
+	}
 
-   /**
-    * Le hashcode est calculé sur les clés.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-      //int hash = 7;
-      int hashPatient1 = 0;
-      int hashPatient2 = 0;
+	/**
+	 * Le hashcode est calculé sur les clés.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
+		// int hash = 7;
+		int hashPatient1 = 0;
+		int hashPatient2 = 0;
 
-      if(this.patient1 != null){
-         hashPatient1 = this.patient1.hashCode();
-      }
-      if(this.patient2 != null){
-         hashPatient2 = this.patient2.hashCode();
-      }
+		if (this.patient1 != null) {
+			hashPatient1 = this.patient1.hashCode();
+		}
+		if (this.patient2 != null) {
+			hashPatient2 = this.patient2.hashCode();
+		}
 
-      //hash = 7 * hash + hashPatient1;
-      //hash = 7 * hash + hashPatient2;
+		// hash = 7 * hash + hashPatient1;
+		// hash = 7 * hash + hashPatient2;
 
-      return hashPatient1 + hashPatient2;
-   }
+		return hashPatient1 + hashPatient2;
+	}
 }

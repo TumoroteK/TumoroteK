@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.cession;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.cession.CederObjet;
 import fr.aphp.tumorotek.model.cession.CederObjetPK;
 import fr.aphp.tumorotek.model.cession.Cession;
@@ -46,98 +49,118 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 
 /**
  *
- * Interface pour le DAO du bean de domaine CederObjet.
- * Interface créée le 26/01/10.
+ * Interface pour le DAO du bean de domaine CederObjet. Interface créée le
+ * 26/01/10.
  *
  * @author Pierre Ventadour
- * @version 2.1.1
+ * @version 2.3
  *
  */
-public interface CederObjetDao extends GenericDaoJpa<CederObjet, CederObjetPK>
-{
+@Repository
+public interface CederObjetDao extends CrudRepository<CederObjet, CederObjetPK> {
 
-   /**
-    * Recherche les CederObjets sauf celui dont la clé primaire est
-    * passé en paramètre.
-    * @param pk CederObjetPK.
-    * @return une liste de CederObjets.
-    */
-   List<CederObjet> findByExcludedPK(CederObjetPK pk);
+	/**
+	 * Recherche les CederObjets sauf celui dont la clé primaire est passé en
+	 * paramètre.
+	 * 
+	 * @param pk CederObjetPK.
+	 * @return une liste de CederObjets.
+	 */
+	@Query("SELECT c FROM CederObjet c WHERE c.pk != ?1")
+	List<CederObjet> findByExcludedPK(CederObjetPK pk);
 
-   /**
-    * Recherche les CederObjets dont l'entité est égale au paramètre.
-    * @param entite Entite des CederObjets recherchés.
-    * @return une liste de CederObjets.
-    */
-   List<CederObjet> findByEntite(Entite entite);
+	/**
+	 * Recherche les CederObjets dont l'entité est égale au paramètre.
+	 * 
+	 * @param entite Entite des CederObjets recherchés.
+	 * @return une liste de CederObjets.
+	 */
+	@Query("SELECT c FROM CederObjet c WHERE c.pk.entite = ?1")
+	List<CederObjet> findByEntite(Entite entite);
 
-   /**
-    * Recherche touss les CederObjet ppur un couple de valeurs entité
-    * et objetId.
-    * @param entite Entite des CederObjets recherchés.
-    * @param objetId Identifiant de l'obejt.
-    * @return Liste ordonnée de CederObjets.
-    */
-   List<CederObjet> findByEntiteObjet(Entite entite, Integer objetId);
-   
-   /**
-    * Recherche touss les CederObjet ppur un couple de valeurs entité
-    * et objetId.
-    * @param entite Entite des CederObjets recherchés.
-    * @param objetId Identifiant de l'obejt.
-    * @param statut statut de l'oobjet cédé
-    * @return Liste ordonnée de CederObjets.
-    */
-   List<CederObjet> findByEntiteObjetStatut(Entite entite, Integer objetId, ECederObjetStatut statut);
+	/**
+	 * Recherche touss les CederObjet ppur un couple de valeurs entité et objetId.
+	 * 
+	 * @param entite  Entite des CederObjets recherchés.
+	 * @param objetId Identifiant de l'obejt.
+	 * @return Liste ordonnée de CederObjets.
+	 */
+	@Query("SELECT c FROM CederObjet c WHERE c.pk.entite = ?1 AND c.pk.objetId = ?2")
+	List<CederObjet> findByEntiteObjet(Entite entite, Integer objetId);
 
-   /**
-    * Recherche les CederObjets par objetId.
-    * @param objetId Integer.
-    * @return Liste des CederObjets.
-    */
-   List<CederObjet> findByObjetId(Integer objetId);
+	/**
+	 * Recherche touss les CederObjet ppur un couple de valeurs entité et objetId.
+	 * 
+	 * @param entite  Entite des CederObjets recherchés.
+	 * @param objetId Identifiant de l'obejt.
+	 * @param statut  statut de l'oobjet cédé
+	 * @return Liste ordonnée de CederObjets.
+	 */
+	@Query("SELECT c FROM CederObjet c WHERE c.pk.entite = ?1 AND c.pk.objetId = ?2 AND c.statut = ?3")
+	List<CederObjet> findByEntiteObjetStatut(Entite entite, Integer objetId, ECederObjetStatut statut);
 
-   /**
-    * Recherche les CederObjets dont la cession et l'entité sont
-    * passées en paramètres.
-    * @param cession Cession des CederObjets recherchés.
-    * @param entite Entite des CederObjets recherchés.
-    * @return une liste de CederObjet.
-    */
-   List<CederObjet> findByCessionEntite(Cession cession, Entite entite);
+	/**
+	 * Recherche les CederObjets par objetId.
+	 * 
+	 * @param objetId Integer.
+	 * @return Liste des CederObjets.
+	 */
+	@Query("SELECT c FROM CederObjet c WHERE c.pk.objetId = ?1")
+	List<CederObjet> findByObjetId(Integer objetId);
 
-   /**
-    * Compte les echantillons ou dérivés impliqués dans la session.
-    * @param cess
-    * @param entite 
-    * @return le compte
-    * @since 2.0.10
-    */
-   List<Long> findObjectsCessedCount(Cession cess, Entite entite);
+	/**
+	 * Recherche les CederObjets dont la cession et l'entité sont passées en
+	 * paramètres.
+	 * 
+	 * @param cession Cession des CederObjets recherchés.
+	 * @param entite  Entite des CederObjets recherchés.
+	 * @return une liste de CederObjet.
+	 */
+	@Query("SELECT c FROM CederObjet c WHERE c.pk.cession = ?1 AND c.pk.entite = ?2")
+	List<CederObjet> findByCessionEntite(Cession cession, Entite entite);
 
-   /**
-    * Renvoies les codes des échantillons cédés pour une cession.
-    * @param Cession cess
-    * @return List<String> codes
-    * @since 2.0.10
-    */
-   List<String> findCodesEchantillonByCession(Cession cess);
+	/**
+	 * Compte les echantillons ou dérivés impliqués dans la session.
+	 * 
+	 * @param cess
+	 * @param entite
+	 * @return le compte
+	 * @since 2.0.10
+	 */
+	@Query("SELECT count(c.pk.objetId) FROM CederObjet c WHERE c.pk.cession = ?1 and c.pk.entite = ?2")
+	List<Long> findObjectsCessedCount(Cession cess, Entite entite);
 
-   /**
-    * Renvoies les codes des dérivés cédés pour une cession.
-    * @param Cession cess
-    * @return List<String> codes
-    * @since 2.0.10
-    */
-   List<String> findCodesDeriveByCession(Cession cess);
+	/**
+	 * Renvoies les codes des échantillons cédés pour une cession.
+	 * 
+	 * @param Cession cess
+	 * @return List<String> codes
+	 * @since 2.0.10
+	 */
+	@Query("SELECT e.code FROM CederObjet c, Echantillon e WHERE c.pk.objetId = e.echantillonId "
+			+ "AND c.pk.cession = ?1 AND c.pk.entite.entiteId = 3 ORDER BY e.code")
+	List<String> findCodesEchantillonByCession(Cession cess);
 
-   /**
-    * Compte les cession auxquelles a participé l'objet passé  
-    * passée en paramètre sous la forme id + entite
-    * @param parent id Integer
-    * @param Entite
-    * @return long
-    * @since 2.1.1
-    */
-   List<Long> findCountObjCession(Integer pId, Entite entite);
+	/**
+	 * Renvoies les codes des dérivés cédés pour une cession.
+	 * 
+	 * @param Cession cess
+	 * @return List<String> codes
+	 * @since 2.0.10
+	 */
+	@Query("SELECT e.code FROM CederObjet c, ProdDerive e WHERE c.pk.objetId = e.prodDeriveId "
+			+ "AND c.pk.cession = ?1 AND c.pk.entite.entiteId = 8 ORDER BY e.code")
+	List<String> findCodesDeriveByCession(Cession cess);
+
+	/**
+	 * Compte les cession auxquelles a participé l'objet passé passée en paramètre
+	 * sous la forme id + entite
+	 * 
+	 * @param parent id Integer
+	 * @param Entite
+	 * @return long
+	 * @since 2.1.1
+	 */
+	@Query("SELECT count(c.pk.cession) FROM CederObjet c WHERE c.pk.objetId = ?1 AND c.pk.entite = ?2")
+	List<Long> findCountObjCession(Integer pId, Entite entite);
 }

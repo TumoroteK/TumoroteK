@@ -37,36 +37,52 @@ package fr.aphp.tumorotek.dao.cession;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.cession.DestructionMotif;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
  *
- * Interface pour le DAO du bean de domaine DestructionMotif.
- * Interface créée le 25/01/10.
+ * Interface pour le DAO du bean de domaine DestructionMotif. Interface créée le
+ * 25/01/10.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface DestructionMotifDao extends GenericDaoJpa<DestructionMotif, Integer>, PfDependantTKThesaurusDao<DestructionMotif>
-{
+@Repository
+public interface DestructionMotifDao
+		extends CrudRepository<DestructionMotif, Integer>, PfDependantTKThesaurusDao<DestructionMotif> {
 
-   /**
-    * Recherche les DestructionMotifs dont le motif
-    * est égal au paramètre.
-    * @param motif Motif de destruction.
-    * @return une liste de DestructionMotifs.
-    */
-   List<DestructionMotif> findByMotif(String motif);
+	/**
+	 * Recherche les DestructionMotifs dont le motif est égal au paramètre.
+	 * 
+	 * @param motif Motif de destruction.
+	 * @return une liste de DestructionMotifs.
+	 */
+	@Query("SELECT d FROM DestructionMotif d WHERE d.nom like ?1")
+	List<DestructionMotif> findByMotif(String motif);
 
-   /**
-    * Recherche tous les DestructionMotifs sauf celui dont
-    * l'identifiant est passé en paramètre.
-    * @param id Identifiant du DestructionMotif à exclure.
-    * @return Liste de DestructionMotifs.
-    */
-   List<DestructionMotif> findByExcludedId(Integer id);
+	/**
+	 * Recherche tous les DestructionMotifs sauf celui dont l'identifiant est passé
+	 * en paramètre.
+	 * 
+	 * @param id Identifiant du DestructionMotif à exclure.
+	 * @return Liste de DestructionMotifs.
+	 */
+	@Query("SELECT d FROM DestructionMotif d WHERE d.id != ?1")
+	List<DestructionMotif> findByExcludedId(Integer id);
+
+	@Override
+	@Query("SELECT d FROM DestructionMotif d ORDER BY d.nom")
+	List<DestructionMotif> findByOrder();
+
+	@Override
+	@Query("SELECT d FROM DestructionMotif d WHERE d.plateforme = ?1 ORDER BY d.nom")
+	List<DestructionMotif> findByPfOrder(Plateforme pf);
 
 }

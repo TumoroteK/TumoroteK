@@ -37,49 +37,57 @@ package fr.aphp.tumorotek.dao.annotation;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.annotation.Item;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
  *
- * Interface pour le DAO du bean de domaine Item.
- * Interface créée le 01/02/10.
+ * Interface pour le DAO du bean de domaine Item. Interface créée le 01/02/10.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface ItemDao extends GenericDaoJpa<Item, Integer>
-{
+@Repository
+public interface ItemDao extends CrudRepository<Item, Integer> {
 
-   /**
-    * Recherche les items assignés au champ spécifié en paramètre.
-    * Les champs retournés sont triés par lable.
-    * @param champAnnotation.
-    * @return Liste de Item.
-    */
-   List<Item> findByChamp(ChampAnnotation champ);
+	/**
+	 * Recherche les items assignés au champ spécifié en paramètre. Les champs
+	 * retournés sont triés par lable.
+	 * 
+	 * @param champAnnotation.
+	 * @return Liste de Item.
+	 */
+	@Query("SELECT i FROM Item i WHERE i.champAnnotation = ?1 ORDER BY i.label")
+	List<Item> findByChamp(ChampAnnotation champ);
 
-   /**
-    * Recherche tous les items sauf celui dont l'id est passé 
-    * en paramètre.
-    * @param itemId Identifiant de l'item que l'on souhaite
-    * exclure de la liste retournée.
-    * @return une liste de Item.
-    */
-   List<Item> findByExcludedId(Integer itemId);
+	/**
+	 * Recherche tous les items sauf celui dont l'id est passé en paramètre.
+	 * 
+	 * @param itemId Identifiant de l'item que l'on souhaite exclure de la liste
+	 *               retournée.
+	 * @return une liste de Item.
+	 */
+	@Query("SELECT i FROM Item i WHERE i.itemId != ?1")
+	List<Item> findByExcludedId(Integer itemId);
 
-   /**
-    * Recherche tous les items pour le champ et la plateforme 
-    * passées en paramètres. Méthode utilisée pour les thesaurus 
-    * catalogues modifiables par l'utilisateur. Renvoie aussi les items 
-    * associée à ce champ et a une plateforme null.
-    * @param champ annotation
-    * @param plateforme 
-    * @return une liste de Item.
-    */
-   List<Item> findByChampAndPlateforme(ChampAnnotation chp, Plateforme pf);
+	/**
+	 * Recherche tous les items pour le champ et la plateforme passées en
+	 * paramètres. Méthode utilisée pour les thesaurus catalogues modifiables par
+	 * l'utilisateur. Renvoie aussi les items associée à ce champ et a une
+	 * plateforme null.
+	 * 
+	 * @param champ      annotation
+	 * @param plateforme
+	 * @return une liste de Item.
+	 */
+	@Query("SELECT i FROM Item i WHERE i.champAnnotation = ?1 AND (i.plateforme = ?2 OR i.plateforme is null) "
+			+ "ORDER BY i.itemId")
+	List<Item> findByChampAndPlateforme(ChampAnnotation chp, Plateforme pf);
 
 }

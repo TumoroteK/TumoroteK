@@ -37,44 +37,61 @@ package fr.aphp.tumorotek.dao.cession;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.cession.CessionExamen;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
  *
- * Interface pour le DAO du bean de domaine CessionExamen.
- * Interface créée le 25/01/10.
+ * Interface pour le DAO du bean de domaine CessionExamen. Interface créée le
+ * 25/01/10.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface CessionExamenDao extends GenericDaoJpa<CessionExamen, Integer>, PfDependantTKThesaurusDao<CessionExamen>
-{
+@Repository
+public interface CessionExamenDao
+		extends CrudRepository<CessionExamen, Integer>, PfDependantTKThesaurusDao<CessionExamen> {
 
-   /**
-    * Recherche les CessionExamens dont la 
-    * valeur est égale au paramètre.
-    * @param examen Valeur examen de la CessionExamen recherchée.
-    * @return une liste de CessionExamens.
-    */
-   List<CessionExamen> findByExamen(String examen);
+	/**
+	 * Recherche les CessionExamens dont la valeur est égale au paramètre.
+	 * 
+	 * @param examen Valeur examen de la CessionExamen recherchée.
+	 * @return une liste de CessionExamens.
+	 */
+	@Query("SELECT c FROM CessionExamen c WHERE c.nom like ?1")
+	List<CessionExamen> findByExamen(String examen);
 
-   /**
-    * Recherche les CessionExamens dont la 
-    * valeur est égale au paramètre.
-    * @param examenEn Valeur en anglais de la CessionExamen recherchée.
-    * @return une liste de CessionExamens.
-    */
-   List<CessionExamen> findByExamenEn(String examenEn);
+	/**
+	 * Recherche les CessionExamens dont la valeur est égale au paramètre.
+	 * 
+	 * @param examenEn Valeur en anglais de la CessionExamen recherchée.
+	 * @return une liste de CessionExamens.
+	 */
+	@Query("SELECT c FROM CessionExamen c WHERE c.examenEn like ?1")
+	List<CessionExamen> findByExamenEn(String examenEn);
 
-   /**
-    * Recherche tous les CessionExamens sauf celui dont
-    * l'identifiant est passé en paramètre.
-    * @param id Identifiant du CessionExamen à exclure.
-    * @return Liste de CessionExamens.
-    */
-   List<CessionExamen> findByExcludedId(Integer id);
+	/**
+	 * Recherche tous les CessionExamens sauf celui dont l'identifiant est passé en
+	 * paramètre.
+	 * 
+	 * @param id Identifiant du CessionExamen à exclure.
+	 * @return Liste de CessionExamens.
+	 */
+	@Query("SELECT c FROM CessionExamen c WHERE c.id != ?1")
+	List<CessionExamen> findByExcludedId(Integer id);
+
+	@Override
+	@Query("FROM CessionExamen c ORDER BY c.nom")
+	List<CessionExamen> findByOrder();
+
+	@Override
+	@Query("SELECT c FROM CessionExamen c WHERE c.plateforme = ?1 ORDER BY c.nom")
+	List<CessionExamen> findByPfOrder(Plateforme pf);
 
 }

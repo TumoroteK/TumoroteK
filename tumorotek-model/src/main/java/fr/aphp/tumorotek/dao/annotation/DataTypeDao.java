@@ -37,32 +37,39 @@ package fr.aphp.tumorotek.dao.annotation;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.coeur.annotation.DataType;
 
 /**
  *
- * Interface pour le DAO du bean de domaine DataType.
- * Interface créée le 26/11/09.
+ * Interface pour le DAO du bean de domaine DataType. Interface créée le
+ * 26/11/09.
  *
  * @author Maxime GOUSSEAU
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface DataTypeDao extends GenericDaoJpa<DataType, Integer>
-{
+@Repository
+public interface DataTypeDao extends CrudRepository<DataType, Integer> {
 
-   /**
-    * Recherche les DataTypes dont le type est 'like' le paramètre.
-    * @param type Type de DataTypes recherchés.
-    * @return Liste de DataTypes.
-    */
-   List<DataType> findByType(String type);
-   
-   /**
-    * Recherche les DataTypes dont le type est 'like' le paramètre.
-    * @param type Type de DataTypes recherchés.
-    * @return Liste de DataTypes.
-    */
-   List<DataType> findByTypes(List<String> typeList);
+	/**
+	 * Recherche les DataTypes dont le type est 'like' le paramètre.
+	 * 
+	 * @param type Type de DataTypes recherchés.
+	 * @return Liste de DataTypes.
+	 */
+	@Query("SELECT d FROM DataType d WHERE d.type = ?1")
+	List<DataType> findByType(String type);
+
+	/**
+	 * Recherche les DataTypes dont le type est 'like' le paramètre.
+	 * 
+	 * @param type Type de DataTypes recherchés.
+	 * @return Liste de DataTypes.
+	 */
+	@Query("SELECT d FROM DataType d WHERE d.type in ?1")
+	List<DataType> findByTypes(List<String> typeList);
 }

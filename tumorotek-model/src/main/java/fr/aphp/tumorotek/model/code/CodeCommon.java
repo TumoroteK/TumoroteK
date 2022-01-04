@@ -36,40 +36,38 @@
 package fr.aphp.tumorotek.model.code;
 
 /**
- * Interface dictant les methodes communes aux deux beans Codes ADICAP,
- * CIM, CIMO et codes utilisateurs.<br> L'implémentation de
- * cette interface permet
- * aux instances de ces classes de partager différents comportement
- * comme la validation...<br>
+ * Interface dictant les methodes communes aux deux beans Codes ADICAP, CIM,
+ * CIMO et codes utilisateurs.<br>
+ * L'implémentation de cette interface permet aux instances de ces classes de
+ * partager différents comportement comme la validation...<br>
  * Date: 21/05/10
  *
  * @author mathieu
  * @version 2.0
  */
-public interface CodeCommon
-{
+public interface CodeCommon {
 
-   Integer getCodeId();
+	Integer getCodeId();
 
-   void setCodeId(Integer id);
+	void setCodeId(Integer id);
 
-   String getCode();
+	String getCode();
 
-   void setCode(String code);
+	void setCode(String code);
 
-   String getLibelle();
+	String getLibelle();
 
-   void setLibelle(String lib);
+	void setLibelle(String lib);
 
-   void setCodeSelect(CodeSelect s);
+	void setCodeSelect(CodeSelect s);
 
-   CodeSelect getCodeSelect();
+	CodeSelect getCodeSelect();
 
-   @Override
-   boolean equals(Object code);
+	@Override
+	boolean equals(Object code);
 
-   CodeCommon clone();
+	CodeCommon clone();
 
-   @Override
-   int hashCode();
+	@Override
+	int hashCode();
 }

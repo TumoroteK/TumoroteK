@@ -43,8 +43,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -61,99 +59,106 @@ import org.hibernate.annotations.GenericGenerator;
  */
 @Entity
 @Table(name = "DATA_TYPE")
-@NamedQueries(value = {@NamedQuery(name = "DataType.findByType", query = "SELECT d FROM DataType d WHERE d.type = ?1"),
-   @NamedQuery(name = "DataType.findByTypes", query = "SELECT d FROM DataType d WHERE d.type in ?1")})
-public class DataType implements Serializable
-{ /* TODO Pourquoi ne pas simplement utiliser un ENUM, plutôt que de faire des appels en base non pertinents ? De plus ces datatype ne sont absolument pas modifiables.
-  Cela éviterai également les erreurs lors des tests equals (cf. "text" vs "texte") + on connaitrait exactement les types disponibles et utilisés. */
+//@NamedQueries(value = {@NamedQuery(name = "DataType.findByType", query = "SELECT d FROM DataType d WHERE d.type = ?1"),
+//   @NamedQuery(name = "DataType.findByTypes", query = "SELECT d FROM DataType d WHERE d.type in ?1")})
+public class DataType implements Serializable { /*
+												 * TODO Pourquoi ne pas simplement utiliser un ENUM, plutôt que de faire
+												 * des appels en base non pertinents ? De plus ces datatype ne sont
+												 * absolument pas modifiables. Cela éviterai également les erreurs lors
+												 * des tests equals (cf. "text" vs "texte") + on connaitrait exactement
+												 * les types disponibles et utilisés.
+												 */
 
-   private static final long serialVersionUID = 4677080789317418835L;
+	private static final long serialVersionUID = 4677080789317418835L;
 
-   private Integer dataTypeId;
-   private String type;
-   private Set<ChampAnnotation> champAnnotations = new HashSet<>();
+	private Integer dataTypeId;
+	private String type;
+	private Set<ChampAnnotation> champAnnotations = new HashSet<>();
 
-   /** Constructeur par défaut. */
-   public DataType(){}
+	/** Constructeur par défaut. */
+	public DataType() {
+	}
 
-   @Id
-   @Column(name = "DATA_TYPE_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getDataTypeId(){
-      return this.dataTypeId;
-   }
+	@Id
+	@Column(name = "DATA_TYPE_ID", unique = true, nullable = false)
+	@GeneratedValue(generator = "autoincrement")
+	@GenericGenerator(name = "autoincrement", strategy = "increment")
+	public Integer getDataTypeId() {
+		return this.dataTypeId;
+	}
 
-   public void setDataTypeId(final Integer id){
-      this.dataTypeId = id;
-   }
+	public void setDataTypeId(final Integer id) {
+		this.dataTypeId = id;
+	}
 
-   @Column(name = "TYPE", nullable = false, length = 10)
-   public String getType(){
-      return this.type;
-   }
+	@Column(name = "TYPE", nullable = false, length = 10)
+	public String getType() {
+		return this.type;
+	}
 
-   public void setType(final String t){
-      this.type = t;
-   }
+	public void setType(final String t) {
+		this.type = t;
+	}
 
-   @OneToMany(mappedBy = "dataType")
-   public Set<ChampAnnotation> getChampAnnotations(){
-      return this.champAnnotations;
-   }
+	@OneToMany(mappedBy = "dataType")
+	public Set<ChampAnnotation> getChampAnnotations() {
+		return this.champAnnotations;
+	}
 
-   public void setChampAnnotations(final Set<ChampAnnotation> chps){
-      this.champAnnotations = chps;
-   }
+	public void setChampAnnotations(final Set<ChampAnnotation> chps) {
+		this.champAnnotations = chps;
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      if(this.type != null){
-         return "{" + this.type + "}";
-      }
-      return "{Empty DataType}";
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		if (this.type != null) {
+			return "{" + this.type + "}";
+		}
+		return "{Empty DataType}";
+	}
 
-   /**
-    * 2 data-types sont consideres comme egaux si ils ont le même type.
-    * @param obj est le data-type à tester.
-    * @return true si les data-types sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 data-types sont consideres comme egaux si ils ont le même type.
+	 * 
+	 * @param obj est le data-type à tester.
+	 * @return true si les data-types sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || obj.getClass() != this.getClass()) {
+			return false;
+		}
 
-      final DataType test = (DataType) obj;
+		final DataType test = (DataType) obj;
 
-      return ((this.type == test.type || (this.type != null && this.type.equals(test.type))));
-   }
+		return ((this.type == test.type || (this.type != null && this.type.equals(test.type))));
+	}
 
-   /**
-    * Le hashcode est calculé sur le type.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+	/**
+	 * Le hashcode est calculé sur le type.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-      int hash = 7;
-      int hashType = 0;
+		int hash = 7;
+		int hashType = 0;
 
-      if(this.type != null){
-         hashType = this.type.hashCode();
-      }
+		if (this.type != null) {
+			hashType = this.type.hashCode();
+		}
 
-      hash = 31 * hash + hashType;
+		hash = 31 * hash + hashType;
 
-      return hash;
+		return hash;
 
-   }
+	}
 }

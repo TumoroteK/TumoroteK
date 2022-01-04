@@ -37,24 +37,30 @@ package fr.aphp.tumorotek.dao.code;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.code.TableCodage;
 
 /**
  *
- * Interface pour le DAO du bean de domaine TableCodes.
- * Interface créée le 22/09/09.
+ * Interface pour le DAO du bean de domaine TableCodes. Interface créée le
+ * 22/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface TableCodageDao extends GenericDaoJpa<TableCodage, Integer>
-{
-   /**
-    * Recherche les TableCodes dont le nom est égal au paramètre.
-    * @param nom Nom pour lequel on recherche des TableCodes.
-    * @return Liste de TableCodes.
-    */
-   List<TableCodage> findByNom(String nom);
+@Repository
+public interface TableCodageDao extends CrudRepository<TableCodage, Integer> {
+
+	/**
+	 * Recherche les TableCodes dont le nom est égal au paramètre.
+	 * 
+	 * @param nom Nom pour lequel on recherche des TableCodes.
+	 * @return Liste de TableCodes.
+	 */
+	@Query("SELECT t FROM TableCodage t WHERE t.nom = ?1")
+	List<TableCodage> findByNom(String nom);
 }

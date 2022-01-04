@@ -52,11 +52,11 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 
 /**
  *
- * Objet persistant mappant la table TABLE_ANNOTATION_BANQUE.
- * Classe créée le 29/01/10.
- * Crée par Mathieu pour utiliser la clef composite
+ * Objet persistant mappant la table TABLE_ANNOTATION_BANQUE. Classe créée le
+ * 29/01/10. Crée par Mathieu pour utiliser la clef composite
+ * 
  * @see http://boris.kirzner.info/blog/archives/2008/07/19/*%20
- * 		hibernate-annotations-the-many-to-many-association-with-composite-key/
+ *      hibernate-annotations-the-many-to-many-association-with-composite-key/
  *
  * @author Mathieu BARTHELEMY
  * @version 2.0
@@ -65,101 +65,102 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 @Entity
 @Table(name = "TABLE_ANNOTATION_BANQUE")
 @AssociationOverrides({
-   @AssociationOverride(name = "pk.banque", joinColumns = @JoinColumn(name = "BANQUE_ID", referencedColumnName = "BANQUE_ID")),
-   @AssociationOverride(name = "pk.tableAnnotation",
-      joinColumns = @JoinColumn(name = "TABLE_ANNOTATION_ID", referencedColumnName = "TABLE_ANNOTATION_ID"))})
+		@AssociationOverride(name = "pk.banque", joinColumns = @JoinColumn(name = "BANQUE_ID", referencedColumnName = "BANQUE_ID")),
+		@AssociationOverride(name = "pk.tableAnnotation", joinColumns = @JoinColumn(name = "TABLE_ANNOTATION_ID", referencedColumnName = "TABLE_ANNOTATION_ID")) })
 @AttributeOverride(column = @Column(name = "ORDRE"), name = "ordre")
-public class TableAnnotationBanque implements Serializable
-{
+public class TableAnnotationBanque implements Serializable {
 
-   private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-   private Integer ordre;
-   private TableAnnotationBanquePK pk = new TableAnnotationBanquePK();
+	private Integer ordre;
+	private TableAnnotationBanquePK pk = new TableAnnotationBanquePK();
 
-   /** Constructeur par défaut. */
-   public TableAnnotationBanque(){}
+	/** Constructeur par défaut. */
+	public TableAnnotationBanque() {
+	}
 
-   @Override
-   public String toString(){
-      if(this.getTableAnnotation() != null && this.getBanque() != null){
-         return "{" + this.getTableAnnotation() + " - " + this.getBanque() + "}";
-      }
-      return "{Empty TableAnnotationBanque}";
-   }
+	@Override
+	public String toString() {
+		if (this.getTableAnnotation() != null && this.getBanque() != null) {
+			return "{" + this.getTableAnnotation() + " - " + this.getBanque() + "}";
+		}
+		return "{Empty TableAnnotationBanque}";
+	}
 
-   @EmbeddedId
-   @AttributeOverrides({@AttributeOverride(name = "banque", column = @Column(name = "BANQUE_ID")),
-      @AttributeOverride(name = "tableAnnotation", column = @Column(name = "TABLE_ANNOTATION_ID"))})
-   public TableAnnotationBanquePK getPk(){
-      return pk;
-   }
+	@EmbeddedId
+	@AttributeOverrides({ @AttributeOverride(name = "banque", column = @Column(name = "BANQUE_ID")),
+			@AttributeOverride(name = "tableAnnotation", column = @Column(name = "TABLE_ANNOTATION_ID")) })
+	public TableAnnotationBanquePK getPk() {
+		return pk;
+	}
 
-   public void setPk(final TableAnnotationBanquePK tbk){
-      this.pk = tbk;
-   }
+	public void setPk(final TableAnnotationBanquePK tbk) {
+		this.pk = tbk;
+	}
 
-   @JoinColumn(name = "ORDRE", nullable = false)
-   public Integer getOrdre(){
-      return this.ordre;
-   }
+	@JoinColumn(name = "ORDRE", nullable = false)
+	public Integer getOrdre() {
+		return this.ordre;
+	}
 
-   public void setOrdre(final Integer o){
-      this.ordre = o;
-   }
+	public void setOrdre(final Integer o) {
+		this.ordre = o;
+	}
 
-   @Transient
-   public Banque getBanque(){
-      return this.pk.getBanque();
-   }
+	@Transient
+	public Banque getBanque() {
+		return this.pk.getBanque();
+	}
 
-   public void setBanque(final Banque bank){
-      this.pk.setBanque(bank);
-   }
+	public void setBanque(final Banque bank) {
+		this.pk.setBanque(bank);
+	}
 
-   @Transient
-   public TableAnnotation getTableAnnotation(){
-      return this.pk.getTableAnnotation();
-   }
+	@Transient
+	public TableAnnotation getTableAnnotation() {
+		return this.pk.getTableAnnotation();
+	}
 
-   public void setTableAnnotation(final TableAnnotation tab){
-      this.pk.setTableAnnotation(tab);
-   }
+	public void setTableAnnotation(final TableAnnotation tab) {
+		this.pk.setTableAnnotation(tab);
+	}
 
-   /**
-    * 2 liens sont considérés comme égaux s'ils ont la même pk.
-    * @param obj est le lien à tester.
-    * @return true si les liens sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 liens sont considérés comme égaux s'ils ont la même pk.
+	 * 
+	 * @param obj est le lien à tester.
+	 * @return true si les liens sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final TableAnnotationBanque test = (TableAnnotationBanque) obj;
-      return (this.pk != null && (this.pk == test.pk || this.pk.equals(test.pk)));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || obj.getClass() != this.getClass()) {
+			return false;
+		}
+		final TableAnnotationBanque test = (TableAnnotationBanque) obj;
+		return (this.pk != null && (this.pk == test.pk || this.pk.equals(test.pk)));
+	}
 
-   /**
-    * Le hashcode est calculé sur la pk.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+	/**
+	 * Le hashcode est calculé sur la pk.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-      int hash = 7;
-      int hashPk = 0;
+		int hash = 7;
+		int hashPk = 0;
 
-      if(this.pk != null){
-         hashPk = this.pk.hashCode();
-      }
+		if (this.pk != null) {
+			hashPk = this.pk.hashCode();
+		}
 
-      hash = 7 * hash + hashPk;
+		hash = 7 * hash + hashPk;
 
-      return hash;
-   }
+		return hash;
+	}
 }

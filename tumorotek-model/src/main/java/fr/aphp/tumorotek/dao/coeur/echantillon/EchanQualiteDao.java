@@ -37,45 +37,62 @@ package fr.aphp.tumorotek.dao.coeur.echantillon;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.coeur.echantillon.EchanQualite;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
  *
- * Interface pour le DAO du bean de domaine EchanQualite.
- * Interface créée le 10/09/09.
+ * Interface pour le DAO du bean de domaine EchanQualite. Interface créée le
+ * 10/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface EchanQualiteDao extends GenericDaoJpa<EchanQualite, Integer>, PfDependantTKThesaurusDao<EchanQualite>
-{
+@Repository
+public interface EchanQualiteDao
+		extends CrudRepository<EchanQualite, Integer>, PfDependantTKThesaurusDao<EchanQualite> {
 
-   /**
-    * Recherche les qualité d'échantillon dont la 
-    * valeur est égale au paramètre.
-    * @param qualite est la qualite de l'echantillon.
-    * @return une liste de qualités.
-    */
-   List<EchanQualite> findByQualite(String qualite);
+	/**
+	 * Recherche les qualité d'échantillon dont la valeur est égale au paramètre.
+	 * 
+	 * @param qualite est la qualite de l'echantillon.
+	 * @return une liste de qualités.
+	 */
+	@Query("SELECT e FROM EchanQualite e WHERE e.nom like ?1")
+	List<EchanQualite> findByQualite(String qualite);
 
-   /**
-    * Recherche la qualité qui est liée à léchantillon passé 
-    * en paramètre. 
-    * @param echantillonId Identifiant de l'échantillon pour lequel 
-    * on recherche une qualité.
-    * @return une liste de qualités.
-    */
-   List<EchanQualite> findByEchantillonId(Integer echantillonId);
+	/**
+	 * Recherche la qualité qui est liée à léchantillon passé en paramètre.
+	 * 
+	 * @param echantillonId Identifiant de l'échantillon pour lequel on recherche
+	 *                      une qualité.
+	 * @return une liste de qualités.
+	 */
+	@Query("SELECT e FROM EchanQualite e left join e.echantillons h WHERE h.echantillonId = ?1")
+	List<EchanQualite> findByEchantillonId(Integer echantillonId);
 
-   /**
-    * Recherche tous les EchanQualites sauf celui dont
-    * l'identifiant est passé en paramètre.
-    * @param id Identifiant de l'EchanQualite à exclure.
-    * @return Liste de EchanQualites.
-    */
-   List<EchanQualite> findByExcludedId(Integer id);
+	/**
+	 * Recherche tous les EchanQualites sauf celui dont l'identifiant est passé en
+	 * paramètre.
+	 * 
+	 * @param id Identifiant de l'EchanQualite à exclure.
+	 * @return Liste de EchanQualites.
+	 */
+	@Query("SELECT e FROM EchanQualite e WHERE e.id != ?1")
+	List<EchanQualite> findByExcludedId(Integer id);
+
+	@Override
+	@Query("SELECT e FROM EchanQualite e ORDER BY e.nom")
+	List<EchanQualite> findByOrder();
+
+	@Override
+	@Query("SELECT e FROM EchanQualite e WHERE e.plateforme = ?1 ORDER BY e.nom")
+	List<EchanQualite> findByPfOrder(Plateforme pf);
 
 }

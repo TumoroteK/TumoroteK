@@ -37,42 +37,51 @@ package fr.aphp.tumorotek.dao.code;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.code.CimMaster;
 
 /**
  *
- * Interface pour le DAO du bean de domaine CimoMaster.
- * Interface créée le 21/09/09.
+ * Interface pour le DAO du bean de domaine CimoMaster. Interface créée le
+ * 21/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface CimMasterDao extends GenericDaoJpa<CimMaster, Integer>
-{
+@Repository
+public interface CimMasterDao extends CrudRepository<CimMaster, Integer> {
 
-   /**
-    * Recherche les codes CimMasters dont le code est like celui passé
-    * en paramètre.
-    * @param code Code pour lequel on recherche des codes CimMasters.
-    * @return une liste de codes CimMasters.
-    */
-   List<CimMaster> findByCodeLike(String code);
+	/**
+	 * Recherche les codes CimMasters dont le code est like celui passé en
+	 * paramètre.
+	 * 
+	 * @param code Code pour lequel on recherche des codes CimMasters.
+	 * @return une liste de codes CimMasters.
+	 */
+	@Query("SELECT c FROM CimMaster c WHERE c.code like ?1")
+	List<CimMaster> findByCodeLike(String code);
 
-   /**
-    * Recherche les codes CimMasters dont le libellé est like celui passé en
-    * paramètre.
-    * @param libelle Description du code Cim que l'on recherche.
-    * @return une liste de codes Cim.
-    */
-   List<CimMaster> findByLibelleLike(String libelle);
+	/**
+	 * Recherche les codes CimMasters dont le libellé est like celui passé en
+	 * paramètre.
+	 * 
+	 * @param libelle Description du code Cim que l'on recherche.
+	 * @return une liste de codes Cim.
+	 */
+	@Query("SELECT c FROM CimMaster c WHERE c.libelle like ?1")
+	List<CimMaster> findByLibelleLike(String libelle);
 
-   /**
-    * Recherche les codes CimMasters dont le level égale celui passé
-    * en paramètre. Permet de récupérer les codes de niveau 1.
-    * @param level Level pour lequel on recupere les codes.
-    * @return une liste de codes CimMasters.
-    */
-   List<CimMaster> findByLevel(Integer level);
+	/**
+	 * Recherche les codes CimMasters dont le level égale celui passé en paramètre.
+	 * Permet de récupérer les codes de niveau 1.
+	 * 
+	 * @param level Level pour lequel on recupere les codes.
+	 * @return une liste de codes CimMasters.
+	 */
+	@Query("SELECT c FROM CimMaster c WHERE c.level = ?1")
+	List<CimMaster> findByLevel(Integer level);
 }

@@ -37,79 +37,97 @@ package fr.aphp.tumorotek.dao.coeur.patient;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 
 /**
  *
- * Interface pour le DAO du bean de domaine Maladie.
- * Interface créée le 02/10/09.
+ * Interface pour le DAO du bean de domaine Maladie. Interface créée le
+ * 02/10/09.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.2.3-genno
+ * @version 2.3
  *
  */
-public interface MaladieDao extends GenericDaoJpa<Maladie, Integer>
-{
+@Repository
+public interface MaladieDao extends CrudRepository<Maladie, Integer> {
 
-   /**
-    * Recherche les maladies dont le libelle est 'like' le paramètre.
-    * @param libelle Libelle des maladies recherchées.
-    * @return Liste de Maladies.
-    */
-   List<Maladie> findByLibelle(String libelle);
-   
-   /**
-    * Recherche les maladies dont le libelle correspond à celui 
-    * fourni en paramètre pour un patient donnée.
-    * @param libelle Libelle des maladies recherchées.
-    * @param patient Patient
-    * @return Liste de Maladies.
-    * @since 2.2.3-genno
-    */
-   List<Maladie> findByLibelleAndPatient(String libelle, Patient patient);
+	/**
+	 * Recherche les maladies dont le libelle est 'like' le paramètre.
+	 * 
+	 * @param libelle Libelle des maladies recherchées.
+	 * @return Liste de Maladies.
+	 */
+	@Query("SELECT m FROM Maladie m WHERE m.libelle like ?1")
+	List<Maladie> findByLibelle(String libelle);
 
-   /**
-    * Recherche les maladies dont le code est 'like' le paramètre.
-    * @param code Code des maladies recherchées.
-    * @return Liste de Maladies.
-    */
-   List<Maladie> findByCode(String code);
+	/**
+	 * Recherche les maladies dont le libelle correspond à celui fourni en paramètre
+	 * pour un patient donnée.
+	 * 
+	 * @param libelle Libelle des maladies recherchées.
+	 * @param patient Patient
+	 * @return Liste de Maladies.
+	 * @since 2.2.3-genno
+	 */
+	@Query("SELECT m FROM Maladie m WHERE m.libelle like ?1 " + "AND m.patient = ?2")
+	List<Maladie> findByLibelleAndPatient(String libelle, Patient patient);
 
-   /**
-    * Recherche toutes les maladies sauf celle dont l'id est passé 
-    * en paramètre.
-    * @param maladieId Identifiant de la maladie que l'on souhaite
-    * exclure de la liste retournée.
-    * @param libelle pour reduire la liste d'objets retournés.
-    * @return une liste de Maladie.
-    */
-   List<Maladie> findByExcludedId(Integer maladieId, String libelle);
+	/**
+	 * Recherche les maladies dont le code est 'like' le paramètre.
+	 * 
+	 * @param code Code des maladies recherchées.
+	 * @return Liste de Maladies.
+	 */
+	@Query("SELECT m FROM Maladie m WHERE m.code like ?1")
+	List<Maladie> findByCode(String code);
 
-   /**
-    * Recherche les maladies assignées au patient.
-    * @param patient
-    * @return une liste de Maladie.
-    */
-   List<Maladie> findByPatient(Patient patient);
+	/**
+	 * Recherche toutes les maladies sauf celle dont l'id est passé en paramètre.
+	 * 
+	 * @param maladieId Identifiant de la maladie que l'on souhaite exclure de la
+	 *                  liste retournée.
+	 * @param libelle   pour reduire la liste d'objets retournés.
+	 * @return une liste de Maladie.
+	 */
+	@Query("SELECT m FROM Maladie m WHERE m.maladieId != ?1 AND m.libelle = ?2")
+	List<Maladie> findByExcludedId(Integer maladieId, String libelle);
 
-   /**
-    * Recherche les maladies assignées au patient uniquement 
-    * par l'utilisateur, et non pas par le systeme dans le cadre
-    * de collection de prélèvements qui ne définissent pas de maladies.
-    * @param patient
-    * @return une liste de Maladie.
-    */
-   List<Maladie> findByPatientNoSystem(Patient patient);
+	/**
+	 * Recherche les maladies assignées au patient.
+	 * 
+	 * @param patient
+	 * @return une liste de Maladie.
+	 */
+	@Query("SELECT m FROM Maladie m WHERE m.patient = ?1 ORDER BY m.dateDebut, m.dateDiagnostic")
+	List<Maladie> findByPatient(Patient patient);
 
-   List<Maladie> findByCollaborateurId(Integer collaborateurId);
+	/**
+	 * Recherche les maladies assignées au patient uniquement par l'utilisateur, et
+	 * non pas par le systeme dans le cadre de collection de prélèvements qui ne
+	 * définissent pas de maladies.
+	 * 
+	 * @param patient
+	 * @return une liste de Maladie.
+	 */
+	@Query("SELECT m FROM Maladie m WHERE m.patient = ?1 AND m.systemeDefaut = 0 "
+			+ "ORDER BY m.dateDebut, m.dateDiagnostic, m.maladieId")
+	List<Maladie> findByPatientNoSystem(Patient patient);
 
-   /**
-    * Compte les maladies pour le médecin référent passé en paramètre.
-    * @param Collaborateur 
-    * @return long
-    */
-   List<Long> findCountByReferent(Collaborateur referent);
+	@Query("SELECT m FROM Maladie m LEFT JOIN m.collaborateurs o WHERE o.collaborateurId = ?1")
+	List<Maladie> findByCollaborateurId(Integer collaborateurId);
+
+	/**
+	 * Compte les maladies pour le médecin référent passé en paramètre.
+	 * 
+	 * @param Collaborateur
+	 * @return long
+	 */
+	@Query("SELECT count(m) FROM Maladie m JOIN m.collaborateurs c WHERE c = ?1")
+	List<Long> findCountByReferent(Collaborateur referent);
 }

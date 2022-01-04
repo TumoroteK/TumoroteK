@@ -35,18 +35,21 @@
  **/
 package fr.aphp.tumorotek.dao.coeur.patient;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.coeur.patient.PatientLien;
 import fr.aphp.tumorotek.model.coeur.patient.PatientLienPK;
 
 /**
  *
- * Interface pour le DAO du bean de domaine PatientLien.
- * Interface créée le 28/10/09.
+ * Interface pour le DAO du bean de domaine PatientLien. Interface créée le
+ * 28/10/09.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface PatientLienDao extends GenericDaoJpa<PatientLien, PatientLienPK>
-{}
+@Repository
+public interface PatientLienDao extends CrudRepository<PatientLien, PatientLienPK> {
+}

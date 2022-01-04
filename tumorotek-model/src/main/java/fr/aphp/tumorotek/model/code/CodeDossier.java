@@ -42,8 +42,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -52,39 +50,37 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 /**
  *
- * Objet persistant mappant la table CODE_DOSSIER.
- * Enregistrement des dossiers permettant d'organiser les codes personnels
- * aux utilisateur et les 'favoris'.
+ * Objet persistant mappant la table CODE_DOSSIER. Enregistrement des dossiers
+ * permettant d'organiser les codes personnels aux utilisateur et les 'favoris'.
  *
  * Classe créée le 19/05/10.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "CODE_DOSSIER")
-@NamedQueries(
-		value = {
-				@NamedQuery(name = "CodeDossier.findByNomLike",
-						query = "SELECT c FROM CodeDossier c WHERE c.nom like ?1 " + "AND c.banque = ?2"),
-				@NamedQuery(name = "CodeDossier.findByCodeDossierParent",
-				query = "SELECT c FROM CodeDossier c " + "WHERE c.dossierParent = ?1"),
-				@NamedQuery(name = "CodeDossier.findByRootCodeDossierUtilisateur",
-				query = "SELECT c FROM CodeDossier c " + "WHERE c.dossierParent is null " + "AND c.banque = ?1 AND c.codeSelect = 0"),
-				@NamedQuery(name = "CodeDossier.findByRootCodeDossierSelect",
-				query = "SELECT c FROM CodeDossier c " + "WHERE c.dossierParent is null " + "AND c.banque = ?2 AND c.utilisateur = ?1 "
-						+ "AND c.codeSelect = 1"),
-				@NamedQuery(name = "CodeDossier.findBySelectUtilisateurAndBanque",
-				query = "SELECT c FROM CodeDossier c " + "WHERE c.utilisateur = ?1 AND c.banque = ?2 " + "AND c.codeSelect = 1"),
-				@NamedQuery(name = "CodeDossier.findByUtilisateurAndBanque",
-				query = "SELECT c FROM CodeDossier c " + "WHERE c.utilisateur = ?1 AND c.banque = ?2 " + "AND c.codeSelect = 0"),
-				@NamedQuery(name = "CodeDossier.findByRootDossierBanque",
-				query = "SELECT c FROM CodeDossier c " + "WHERE c.dossierParent is null " + "AND c.banque = ?1 "
-						+ "AND c.codeSelect = ?2"),
-				@NamedQuery(name = "CodeDossier.findByExcludedId", query = "SELECT c FROM CodeDossier c " + "WHERE c.codeDossierId != ?1")})
-public class CodeDossier implements Serializable
-{
+//@NamedQueries(
+//		value = {
+//				@NamedQuery(name = "CodeDossier.findByNomLike",
+//						query = "SELECT c FROM CodeDossier c WHERE c.nom like ?1 " + "AND c.banque = ?2"),
+//				@NamedQuery(name = "CodeDossier.findByCodeDossierParent",
+//				query = "SELECT c FROM CodeDossier c " + "WHERE c.dossierParent = ?1"),
+//				@NamedQuery(name = "CodeDossier.findByRootCodeDossierUtilisateur",
+//				query = "SELECT c FROM CodeDossier c " + "WHERE c.dossierParent is null " + "AND c.banque = ?1 AND c.codeSelect = 0"),
+//				@NamedQuery(name = "CodeDossier.findByRootCodeDossierSelect",
+//				query = "SELECT c FROM CodeDossier c " + "WHERE c.dossierParent is null " + "AND c.banque = ?2 AND c.utilisateur = ?1 "
+//						+ "AND c.codeSelect = 1"),
+//				@NamedQuery(name = "CodeDossier.findBySelectUtilisateurAndBanque",
+//				query = "SELECT c FROM CodeDossier c " + "WHERE c.utilisateur = ?1 AND c.banque = ?2 " + "AND c.codeSelect = 1"),
+//				@NamedQuery(name = "CodeDossier.findByUtilisateurAndBanque",
+//				query = "SELECT c FROM CodeDossier c " + "WHERE c.utilisateur = ?1 AND c.banque = ?2 " + "AND c.codeSelect = 0"),
+//				@NamedQuery(name = "CodeDossier.findByRootDossierBanque",
+//				query = "SELECT c FROM CodeDossier c " + "WHERE c.dossierParent is null " + "AND c.banque = ?1 "
+//						+ "AND c.codeSelect = ?2"),
+//				@NamedQuery(name = "CodeDossier.findByExcludedId", query = "SELECT c FROM CodeDossier c " + "WHERE c.codeDossierId != ?1")})
+public class CodeDossier implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -96,107 +92,109 @@ public class CodeDossier implements Serializable
 	private Utilisateur utilisateur;
 	private Banque banque;
 
-	public CodeDossier(){}
+	public CodeDossier() {
+	}
 
 	@Id
 	@Column(name = "CODE_DOSSIER_ID", unique = true, nullable = false)
 	@GeneratedValue(generator = "autoincrement")
 	@GenericGenerator(name = "autoincrement", strategy = "increment")
-	public Integer getCodeDossierId(){
+	public Integer getCodeDossierId() {
 		return codeDossierId;
 	}
 
-	public void setCodeDossierId(final Integer cDosId){
+	public void setCodeDossierId(final Integer cDosId) {
 		this.codeDossierId = cDosId;
 	}
 
 	@Column(name = "NOM", nullable = false, length = 25)
-	public String getNom(){
+	public String getNom() {
 		return nom;
 	}
 
-	public void setNom(final String n){
+	public void setNom(final String n) {
 		this.nom = n;
 	}
 
 	@Column(name = "DESCRIPTION", length = 100)
-	public String getDescription(){
+	public String getDescription() {
 		return description;
 	}
 
-	public void setDescription(final String descr){
+	public void setDescription(final String descr) {
 		this.description = descr;
 	}
 
 	@Column(name = "CODESELECT", nullable = false)
-	public Boolean getCodeSelect(){
+	public Boolean getCodeSelect() {
 		return codeSelect;
 	}
 
-	public void setCodeSelect(final Boolean codeSel){
+	public void setCodeSelect(final Boolean codeSel) {
 		this.codeSelect = codeSel;
 	}
 
 	@ManyToOne
 	@JoinColumn(name = "DOSSIER_PARENT_ID", nullable = true)
-	public CodeDossier getDossierParent(){
+	public CodeDossier getDossierParent() {
 		return dossierParent;
 	}
 
-	public void setDossierParent(final CodeDossier dosParent){
+	public void setDossierParent(final CodeDossier dosParent) {
 		this.dossierParent = dosParent;
 	}
 
 	@ManyToOne
 	@JoinColumn(name = "UTILISATEUR_ID", nullable = true)
-	public Utilisateur getUtilisateur(){
+	public Utilisateur getUtilisateur() {
 		return utilisateur;
 	}
 
-	public void setUtilisateur(final Utilisateur u){
+	public void setUtilisateur(final Utilisateur u) {
 		this.utilisateur = u;
 	}
 
 	@ManyToOne
 	@JoinColumn(name = "BANQUE_ID", nullable = true)
-	public Banque getBanque(){
+	public Banque getBanque() {
 		return banque;
 	}
 
-	public void setBanque(final Banque bank){
+	public void setBanque(final Banque bank) {
 		this.banque = bank;
 	}
 
 	@Override
-	public boolean equals(final Object obj){
+	public boolean equals(final Object obj) {
 
-		if(this == obj){
+		if (this == obj) {
 			return true;
 		}
-		if((obj == null) || obj.getClass() != this.getClass()){
+		if ((obj == null) || obj.getClass() != this.getClass()) {
 			return false;
 		}
 		final CodeDossier test = (CodeDossier) obj;
 		return ((this.nom == test.nom || (this.nom != null && this.nom.equals(test.nom)))
-				&& (this.utilisateur == test.utilisateur || (this.utilisateur != null && this.utilisateur.equals(test.utilisateur)))
+				&& (this.utilisateur == test.utilisateur
+						|| (this.utilisateur != null && this.utilisateur.equals(test.utilisateur)))
 				&& (this.banque == test.banque || (this.banque != null && this.banque.equals(test.banque))));
 	}
 
 	@Override
-	public int hashCode(){
+	public int hashCode() {
 
 		int hash = 7;
 		int hashNom = 0;
 		int hashBanque = 0;
 		int hashUtilisateur = 0;
 
-		if(this.nom != null){
+		if (this.nom != null) {
 			hashNom = this.nom.hashCode();
 		}
-		if(this.banque != null){
+		if (this.banque != null) {
 			hashBanque = this.banque.hashCode();
 		}
-		if(this.utilisateur != null){
+		if (this.utilisateur != null) {
 			hashUtilisateur = this.utilisateur.hashCode();
 		}
 
@@ -208,15 +206,15 @@ public class CodeDossier implements Serializable
 	}
 
 	@Override
-	public String toString(){
-		if(this.nom != null){
+	public String toString() {
+		if (this.nom != null) {
 			return "{CodeDossier: " + this.nom + "}";
 		}
 		return "{Empty CodeDossier}";
 	}
 
 	@Override
-	public CodeDossier clone(){
+	public CodeDossier clone() {
 		final CodeDossier clone = new CodeDossier();
 		clone.setCodeDossierId(this.getCodeDossierId());
 		clone.setNom(this.getNom());

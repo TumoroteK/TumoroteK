@@ -37,32 +37,39 @@ package fr.aphp.tumorotek.dao.cession;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.cession.CessionType;
 
 /**
  *
- * Interface pour le DAO du bean de domaine CessionType.
- * Interface créée le 25/01/10.
+ * Interface pour le DAO du bean de domaine CessionType. Interface créée le
+ * 25/01/10.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface CessionTypeDao extends GenericDaoJpa<CessionType, Integer>
-{
+@Repository
+public interface CessionTypeDao extends CrudRepository<CessionType, Integer> {
 
-   /**
-    * Recherche les CessionTypes dont le type est égal au paramètre.
-    * @param type Type du CessionType recherché.
-    * @return une liste de CessionTypes.
-    */
-   List<CessionType> findByType(String type);
+	/**
+	 * Recherche les CessionTypes dont le type est égal au paramètre.
+	 * 
+	 * @param type Type du CessionType recherché.
+	 * @return une liste de CessionTypes.
+	 */
+	@Query("SELECT c FROM CessionType c WHERE c.type like ?1")
+	List<CessionType> findByType(String type);
 
-   /**
-    * Recherche tous les CessionTypes ordonnés.
-    * @return Liste ordonnée de CessionTypes.
-    */
-   List<CessionType> findByOrder();
+	/**
+	 * Recherche tous les CessionTypes ordonnés.
+	 * 
+	 * @return Liste ordonnée de CessionTypes.
+	 */
+	@Query("SELECT c FROM CessionType c ORDER BY c.type")
+	List<CessionType> findByOrder();
 
 }

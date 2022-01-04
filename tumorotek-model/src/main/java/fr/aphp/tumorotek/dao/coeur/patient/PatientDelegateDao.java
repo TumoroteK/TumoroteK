@@ -35,15 +35,18 @@
  **/
 package fr.aphp.tumorotek.dao.coeur.patient;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.TKDelegateObject;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 
 /**
  * @author Gille Chapelot
+ * @version 2.3
  *
  */
-public interface PatientDelegateDao extends GenericDaoJpa<TKDelegateObject<Patient>, Integer>
-{
+@Repository
+public interface PatientDelegateDao extends CrudRepository<TKDelegateObject<Patient>, Integer> {
 
 }

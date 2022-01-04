@@ -37,75 +37,88 @@ package fr.aphp.tumorotek.dao.code;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.code.Adicap;
 import fr.aphp.tumorotek.model.code.AdicapGroupe;
 
 /**
  *
- * Interface pour le DAO du bean de domaine Adicap.
- * Interface créée le 22/09/09.
+ * Interface pour le DAO du bean de domaine Adicap. Interface créée le 22/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface AdicapDao extends GenericDaoJpa<Adicap, Integer>
-{
+@Repository
+public interface AdicapDao extends CrudRepository<Adicap, Integer> {
 
-   /**
-    * Recherche les codes Adicap dont le code est like celui passé
-    * en paramètre.
-    * @param code Code pour lequel on recherche des codes Adicap.
-    * @return Liste de codes Adicap.
-    */
-   List<Adicap> findByCodeLike(String code);
+	/**
+	 * Recherche les codes Adicap dont le code est like celui passé en paramètre.
+	 * 
+	 * @param code Code pour lequel on recherche des codes Adicap.
+	 * @return Liste de codes Adicap.
+	 */
+	@Query("SELECT a FROM Adicap a WHERE a.code like ?1")
+	List<Adicap> findByCodeLike(String code);
 
-   /**
-    * Recherche les codes Adicap dont le libellé est like celui passé en
-    * paramètre.
-    * @param libelle Description du code Adicap que l'on recherche.
-    * @return une liste de codes Adicap.
-    */
-   List<Adicap> findByLibelleLike(String libelle);
+	/**
+	 * Recherche les codes Adicap dont le libellé est like celui passé en paramètre.
+	 * 
+	 * @param libelle Description du code Adicap que l'on recherche.
+	 * @return une liste de codes Adicap.
+	 */
+	@Query("SELECT a FROM Adicap a WHERE a.libelle like ?1")
+	List<Adicap> findByLibelleLike(String libelle);
 
-   /**
-    * Recherche les codes Adicap dont le groupe est passé en paramètre.
-    * Ne renvoie que les codes de premier niveau (cad adicapParent = null)
-    * @param groupe contenant les codes.
-    * @return une liste de codes Adicap.
-    */
-   List<Adicap> findByAdicapGroupeNullParent(AdicapGroupe groupe);
+	/**
+	 * Recherche les codes Adicap dont le groupe est passé en paramètre. Ne renvoie
+	 * que les codes de premier niveau (cad adicapParent = null)
+	 * 
+	 * @param groupe contenant les codes.
+	 * @return une liste de codes Adicap.
+	 */
+	@Query("SELECT a FROM Adicap a WHERE a.adicapGroupe = ?1 AND a.adicapParent is null")
+	List<Adicap> findByAdicapGroupeNullParent(AdicapGroupe groupe);
 
-   /**
-    * Recherche les codes Adicap dont le groupe est passé en paramètre.
-    * @param groupe contenant les codes.
-    * @param codeOrLibelle
-    * @return une liste de codes Adicap.
-    */
-   List<Adicap> findByAdicapGroupeAndCodeOrLibelle(AdicapGroupe groupe, String codeOrLibelle);
+	/**
+	 * Recherche les codes Adicap dont le groupe est passé en paramètre.
+	 * 
+	 * @param groupe        contenant les codes.
+	 * @param codeOrLibelle
+	 * @return une liste de codes Adicap.
+	 */
+	@Query("SELECT a FROM Adicap a WHERE a.adicapGroupe = ?1 AND (a.code like ?2 OR a.libelle like ?2)")
+	List<Adicap> findByAdicapGroupeAndCodeOrLibelle(AdicapGroupe groupe, String codeOrLibelle);
 
-   /**
-    * Recherche les codes Adicap dont la morpho est passée en paramètre.
-    * @param isMorpho Vrai ou faux.
-    * @return une liste de codes Adicap.
-    */
-   List<Adicap> findByMorpho(Boolean isMorpho);
+	/**
+	 * Recherche les codes Adicap dont la morpho est passée en paramètre.
+	 * 
+	 * @param isMorpho Vrai ou faux.
+	 * @return une liste de codes Adicap.
+	 */
+	@Query("SELECT a FROM Adicap a WHERE a.morpho = ?1")
+	List<Adicap> findByMorpho(Boolean isMorpho);
 
-   /**
-    * Recherche les enfants du code Adicap passé en paramètre.
-    * @param parent code Adicap pour lequel on 
-    * recherche les enfants.
-    * @return une liste de codes Adicap.
-    */
-   List<Adicap> findByAdicapParentAndCodeOrLibelle(Adicap parent, String codeOrLibelle);
+	/**
+	 * Recherche les enfants du code Adicap passé en paramètre.
+	 * 
+	 * @param parent code Adicap pour lequel on recherche les enfants.
+	 * @return une liste de codes Adicap.
+	 */
+	@Query("SELECT a FROM Adicap a WHERE a.adicapParent = ?1 AND (a.code like ?2 OR a.libelle like ?2)")
+	List<Adicap> findByAdicapParentAndCodeOrLibelle(Adicap parent, String codeOrLibelle);
 
-   /**
-    * Recherche les codes ADICAP dans un dictionnaire par son code 
-    * ou son libellé LIKE.
-    * @param grp Dico ADICAP
-    * @param codeOrLibelle
-    * @return liste de codes Adicap
-    */
-   List<Adicap> findByDicoAndCodeOrLibelle(AdicapGroupe grp, String codeOrLibelle);
+	/**
+	 * Recherche les codes ADICAP dans un dictionnaire par son code ou son libellé
+	 * LIKE.
+	 * 
+	 * @param grp           Dico ADICAP
+	 * @param codeOrLibelle
+	 * @return liste de codes Adicap
+	 */
+	@Query("SELECT a FROM Adicap a WHERE a.adicapGroupe = ?1 AND (a.code like ?2 OR a.libelle like ?2)")
+	List<Adicap> findByDicoAndCodeOrLibelle(AdicapGroupe grp, String codeOrLibelle);
 }

@@ -46,8 +46,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -55,213 +53,212 @@ import javax.persistence.Transient;
 
 /**
  *
- * Objet persistant mappant la table ADICAP.
- * Classe créée le 11/09/09.
+ * Objet persistant mappant la table ADICAP. Classe créée le 11/09/09.
  *
  * @author Maxime Gousseau
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "ADICAP")
-@NamedQueries(value = {@NamedQuery(name = "Adicap.findByCodeLike", query = "SELECT a FROM Adicap a WHERE a.code like ?1"),
-   @NamedQuery(name = "Adicap.findByLibelleLike", query = "SELECT a FROM Adicap a WHERE a.libelle like ?1"),
-   @NamedQuery(name = "Adicap.findByAdicapGroupeNullParent",
-      query = "SELECT a FROM Adicap a WHERE a.adicapGroupe = ?1" + " AND a.adicapParent is null"),
-   @NamedQuery(name = "Adicap.findByAdicapGroupeAndCodeOrLibelle",
-      query = "SELECT a FROM Adicap a WHERE a.adicapGroupe = ?1 " + "AND (a.code like ?2 OR a.libelle like ?2)"),
-   @NamedQuery(name = "Adicap.findByMorpho", query = "SELECT a FROM Adicap a WHERE a.morpho = ?1"),
-   @NamedQuery(name = "Adicap.findByAdicapParentAndCodeOrLibelle",
-      query = "SELECT a FROM Adicap a " + "WHERE a.adicapParent = ?1 " + "AND (a.code like ?2 OR a.libelle like ?2)"),
-   @NamedQuery(name = "Adicap.findByDicoAndCodeOrLibelle",
-      query = "SELECT a FROM Adicap a WHERE a.adicapGroupe = ?1 " + " AND (a.code like ?2 OR a.libelle like ?2)")})
-public class Adicap implements CodeCommon, Serializable
-{
+//@NamedQueries(value = {@NamedQuery(name = "Adicap.findByCodeLike", query = "SELECT a FROM Adicap a WHERE a.code like ?1"),
+//   @NamedQuery(name = "Adicap.findByLibelleLike", query = "SELECT a FROM Adicap a WHERE a.libelle like ?1"),
+//   @NamedQuery(name = "Adicap.findByAdicapGroupeNullParent",
+//      query = "SELECT a FROM Adicap a WHERE a.adicapGroupe = ?1" + " AND a.adicapParent is null"),
+//   @NamedQuery(name = "Adicap.findByAdicapGroupeAndCodeOrLibelle",
+//      query = "SELECT a FROM Adicap a WHERE a.adicapGroupe = ?1 " + "AND (a.code like ?2 OR a.libelle like ?2)"),
+//   @NamedQuery(name = "Adicap.findByMorpho", query = "SELECT a FROM Adicap a WHERE a.morpho = ?1"),
+//   @NamedQuery(name = "Adicap.findByAdicapParentAndCodeOrLibelle",
+//      query = "SELECT a FROM Adicap a " + "WHERE a.adicapParent = ?1 " + "AND (a.code like ?2 OR a.libelle like ?2)"),
+//   @NamedQuery(name = "Adicap.findByDicoAndCodeOrLibelle",
+//      query = "SELECT a FROM Adicap a WHERE a.adicapGroupe = ?1 " + " AND (a.code like ?2 OR a.libelle like ?2)")})
+public class Adicap implements CodeCommon, Serializable {
 
-   private static final long serialVersionUID = -8442052205622516619L;
+	private static final long serialVersionUID = -8442052205622516619L;
 
-   private Integer adicapId;
-   private String code;
-   private String libelle;
-   private AdicapGroupe adicapGroupe;
-   private Boolean morpho;
-   private Adicap adicapParent;
+	private Integer adicapId;
+	private String code;
+	private String libelle;
+	private AdicapGroupe adicapGroupe;
+	private Boolean morpho;
+	private Adicap adicapParent;
 
-   private Set<Adicap> adicaps = new HashSet<>();
-   private Set<CimoMorpho> cimoMorphos = new HashSet<>();
-   private Set<CimMaster> cimMasters = new HashSet<>();
+	private Set<Adicap> adicaps = new HashSet<>();
+	private Set<CimoMorpho> cimoMorphos = new HashSet<>();
+	private Set<CimMaster> cimMasters = new HashSet<>();
 
-   private CodeSelect codeSelect;
+	private CodeSelect codeSelect;
 
-   /** Constructeur par défaut. */
-   public Adicap(){}
+	/** Constructeur par défaut. */
+	public Adicap() {
+	}
 
-   @Override
-   public String toString(){
-      return "{Adicap: " + this.code + "}";
-   }
+	@Override
+	public String toString() {
+		return "{Adicap: " + this.code + "}";
+	}
 
-   @Id
-   @Column(name = "ADICAP_ID", unique = true, nullable = false)
-   public Integer getAdicapId(){
-      return this.adicapId;
-   }
+	@Id
+	@Column(name = "ADICAP_ID", unique = true, nullable = false)
+	public Integer getAdicapId() {
+		return this.adicapId;
+	}
 
-   public void setAdicapId(final Integer id){
-      this.adicapId = id;
-   }
+	public void setAdicapId(final Integer id) {
+		this.adicapId = id;
+	}
 
-   @Override
-   @Column(name = "CODE", nullable = false, length = 50)
-   public String getCode(){
-      return this.code;
-   }
+	@Override
+	@Column(name = "CODE", nullable = false, length = 50)
+	public String getCode() {
+		return this.code;
+	}
 
-   @Override
-   public void setCode(final String c){
-      this.code = c;
-   }
+	@Override
+	public void setCode(final String c) {
+		this.code = c;
+	}
 
-   @Override
-   @Column(name = "LIBELLE", nullable = false, length = 255)
-   public String getLibelle(){
-      return this.libelle;
-   }
+	@Override
+	@Column(name = "LIBELLE", nullable = false, length = 255)
+	public String getLibelle() {
+		return this.libelle;
+	}
 
-   @Override
-   public void setLibelle(final String lib){
-      this.libelle = lib;
-   }
+	@Override
+	public void setLibelle(final String lib) {
+		this.libelle = lib;
+	}
 
-   @ManyToOne
-   @JoinColumn(name = "ADICAP_GROUPE_ID")
-   public AdicapGroupe getAdicapGroupe(){
-      return this.adicapGroupe;
-   }
+	@ManyToOne
+	@JoinColumn(name = "ADICAP_GROUPE_ID")
+	public AdicapGroupe getAdicapGroupe() {
+		return this.adicapGroupe;
+	}
 
-   public void setAdicapGroupe(final AdicapGroupe parent){
-      this.adicapGroupe = parent;
-   }
+	public void setAdicapGroupe(final AdicapGroupe parent) {
+		this.adicapGroupe = parent;
+	}
 
-   @Column(name = "MORPHO", nullable = true)
-   public Boolean getMorpho(){
-      return this.morpho;
-   }
+	@Column(name = "MORPHO", nullable = true)
+	public Boolean getMorpho() {
+		return this.morpho;
+	}
 
-   public void setMorpho(final Boolean morph){
-      this.morpho = morph;
-   }
+	public void setMorpho(final Boolean morph) {
+		this.morpho = morph;
+	}
 
-   @ManyToOne
-   @JoinColumn(name = "ADICAP_PARENT_ID", nullable = true)
-   public Adicap getAdicapParent(){
-      return this.adicapParent;
-   }
+	@ManyToOne
+	@JoinColumn(name = "ADICAP_PARENT_ID", nullable = true)
+	public Adicap getAdicapParent() {
+		return this.adicapParent;
+	}
 
-   public void setAdicapParent(final Adicap topo){
-      this.adicapParent = topo;
-   }
+	public void setAdicapParent(final Adicap topo) {
+		this.adicapParent = topo;
+	}
 
-   @OneToMany(mappedBy = "adicapParent")
-   @OrderBy("adicapId")
-   public Set<Adicap> getAdicaps(){
-      return this.adicaps;
-   }
+	@OneToMany(mappedBy = "adicapParent")
+	@OrderBy("adicapId")
+	public Set<Adicap> getAdicaps() {
+		return this.adicaps;
+	}
 
-   public void setAdicaps(final Set<Adicap> adis){
-      this.adicaps = adis;
-   }
+	public void setAdicaps(final Set<Adicap> adis) {
+		this.adicaps = adis;
+	}
 
-   @ManyToMany(targetEntity = CimoMorpho.class)
-   @JoinTable(name = "ADICAPCIMO_MORPHO", joinColumns = @JoinColumn(name = "ADICAP_ID"),
-      inverseJoinColumns = @JoinColumn(name = "CIMO_MORPHO_ID"))
-   public Set<CimoMorpho> getCimoMorphos(){
-      return this.cimoMorphos;
-   }
+	@ManyToMany(targetEntity = CimoMorpho.class)
+	@JoinTable(name = "ADICAPCIMO_MORPHO", joinColumns = @JoinColumn(name = "ADICAP_ID"), inverseJoinColumns = @JoinColumn(name = "CIMO_MORPHO_ID"))
+	public Set<CimoMorpho> getCimoMorphos() {
+		return this.cimoMorphos;
+	}
 
-   public void setCimoMorphos(final Set<CimoMorpho> cimoMorphs){
-      this.cimoMorphos = cimoMorphs;
-   }
+	public void setCimoMorphos(final Set<CimoMorpho> cimoMorphs) {
+		this.cimoMorphos = cimoMorphs;
+	}
 
-   @ManyToMany(mappedBy = "adicaps", targetEntity = CimMaster.class)
-   public Set<CimMaster> getCimMasters(){
-      return this.cimMasters;
-   }
+	@ManyToMany(mappedBy = "adicaps", targetEntity = CimMaster.class)
+	public Set<CimMaster> getCimMasters() {
+		return this.cimMasters;
+	}
 
-   public void setCimMasters(final Set<CimMaster> cims){
-      this.cimMasters = cims;
-   }
+	public void setCimMasters(final Set<CimMaster> cims) {
+		this.cimMasters = cims;
+	}
 
-   /**
-    * 2 adicaps sont considérés comme égaux s'ils ont le ID.
-    * Les codes ne seront pas enregistres par l'interface mais 
-    * directement dans la base de donnees donc impossibilite
-    * de ne pas avoir ID assigne de maniere unique.
-    * @param obj est l'adicap à tester.
-    * @return true si les adicaps sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 adicaps sont considérés comme égaux s'ils ont le ID. Les codes ne seront
+	 * pas enregistres par l'interface mais directement dans la base de donnees donc
+	 * impossibilite de ne pas avoir ID assigne de maniere unique.
+	 * 
+	 * @param obj est l'adicap à tester.
+	 * @return true si les adicaps sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      // instanceOf est utilise plutot que != a cause des instances
-      // Adicap$$EnhancerByCGLIB qui sont crées par lors du fetch par 
-      // la relation manyToAny
-      if((obj == null) || !(obj instanceof Adicap)){
-         return false;
-      }
-      final Adicap test = (Adicap) obj;
-      if(this.getAdicapId() != null){
-         // utilisation get car Adicap$$EnhancerByCGLIB proxy
-         return this.getAdicapId().equals(test.getAdicapId());
-      }
-      return false;
-   }
+		if (this == obj) {
+			return true;
+		}
+		// instanceOf est utilise plutot que != a cause des instances
+		// Adicap$$EnhancerByCGLIB qui sont crées par lors du fetch par
+		// la relation manyToAny
+		if ((obj == null) || !(obj instanceof Adicap)) {
+			return false;
+		}
+		final Adicap test = (Adicap) obj;
+		if (this.getAdicapId() != null) {
+			// utilisation get car Adicap$$EnhancerByCGLIB proxy
+			return this.getAdicapId().equals(test.getAdicapId());
+		}
+		return false;
+	}
 
-   /**
-    * Le hashcode est calculé sur l'ID.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-      int hash = 7;
-      int hashID = 0;
+	/**
+	 * Le hashcode est calculé sur l'ID.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		int hashID = 0;
 
-      if(this.adicapId != null){
-         hashID = this.adicapId.hashCode();
-      }
+		if (this.adicapId != null) {
+			hashID = this.adicapId.hashCode();
+		}
 
-      hash = 31 * hash + hashID;
+		hash = 31 * hash + hashID;
 
-      return hash;
-   }
+		return hash;
+	}
 
-   @Override
-   public Adicap clone(){
-      return this;
-   }
+	@Override
+	public Adicap clone() {
+		return this;
+	}
 
-   @Override
-   @Transient
-   public Integer getCodeId(){
-      return getAdicapId();
-   }
+	@Override
+	@Transient
+	public Integer getCodeId() {
+		return getAdicapId();
+	}
 
-   @Override
-   public void setCodeId(final Integer id){
-      this.adicapId = id;
-   }
+	@Override
+	public void setCodeId(final Integer id) {
+		this.adicapId = id;
+	}
 
-   @Override
-   @Transient
-   public CodeSelect getCodeSelect(){
-      return codeSelect;
-   }
+	@Override
+	@Transient
+	public CodeSelect getCodeSelect() {
+		return codeSelect;
+	}
 
-   @Override
-   public void setCodeSelect(final CodeSelect s){
-      codeSelect = s;
-   }
+	@Override
+	public void setCodeSelect(final CodeSelect s) {
+		codeSelect = s;
+	}
 }

@@ -37,26 +37,30 @@ package fr.aphp.tumorotek.dao.code;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.code.CimLibelle;
 
 /**
  *
- * Interface pour le DAO du bean de domaine CimLibelle.
- * Interface créée le 21/09/09.
+ * Interface pour le DAO du bean de domaine CimLibelle. Interface créée le
+ * 21/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface CimLibelleDao extends GenericDaoJpa<CimLibelle, Integer>
-{
+@Repository
+public interface CimLibelleDao extends CrudRepository<CimLibelle, Integer> {
 
-   /**
-    * Recherche les libellés CIM dont le libellé est like celui passé 
-    * en paramètre.
-    * @param libelle Libelle pour lequel on recherche des libellés CIM.
-    * @return une liste de libellés CIM.
-    */
-   List<CimLibelle> findByLibelleLike(String libelle);
+	/**
+	 * Recherche les libellés CIM dont le libellé est like celui passé en paramètre.
+	 * 
+	 * @param libelle Libelle pour lequel on recherche des libellés CIM.
+	 * @return une liste de libellés CIM.
+	 */
+	@Query("SELECT c FROM CimLibelle c WHERE c.libelle like ?1")
+	List<CimLibelle> findByLibelleLike(String libelle);
 }

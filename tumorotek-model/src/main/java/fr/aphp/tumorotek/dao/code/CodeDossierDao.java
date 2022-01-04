@@ -37,88 +37,106 @@ package fr.aphp.tumorotek.dao.code;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.code.CodeDossier;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 /**
  *
- * Interface pour le DAO du bean de domaine CodeDossier.
- * Interface créée le 19/05/10.
+ * Interface pour le DAO du bean de domaine CodeDossier. Interface créée le
+ * 19/05/10.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface CodeDossierDao extends GenericDaoJpa<CodeDossier, Integer>
-{
+@Repository
+public interface CodeDossierDao extends CrudRepository<CodeDossier, Integer> {
 
-   /**
-    * Recherche les dossiers dont le nom est like celui 
-    * passé en paramètre.
-    * @param nom pour lequel on recherche des dossiers de codes utilisateurs.
-    * @param banque
-    * @return Liste de CodeDossier.
-    */
-   List<CodeDossier> findByNomLike(String code, Banque bank);
+	/**
+	 * Recherche les dossiers dont le nom est like celui passé en paramètre.
+	 * 
+	 * @param nom    pour lequel on recherche des dossiers de codes utilisateurs.
+	 * @param banque
+	 * @return Liste de CodeDossier.
+	 */
+	@Query("SELECT c FROM CodeDossier c WHERE c.nom like ?1 AND c.banque = ?2")
+	List<CodeDossier> findByNomLike(String code, Banque bank);
 
-   /**
-    * Recherche tous les dossiers contenus dans un dossier.
-    * @param codeDossier
-    * @return Liste de CodeDossier.
-    */
-   List<CodeDossier> findByCodeDossierParent(CodeDossier codeDossier);
+	/**
+	 * Recherche tous les dossiers contenus dans un dossier.
+	 * 
+	 * @param codeDossier
+	 * @return Liste de CodeDossier.
+	 */
+	@Query("SELECT c FROM CodeDossier c WHERE c.dossierParent = ?1")
+	List<CodeDossier> findByCodeDossierParent(CodeDossier codeDossier);
 
-   /**
-    * Recherche tous les dossiers des Codeutilisateur à la racine 
-    * pour une banque donnée.
-    * @param banque
-    * @return Liste de CodeDossier.
-    */
-   List<CodeDossier> findByRootCodeDossierUtilisateur(Banque bank);
+	/**
+	 * Recherche tous les dossiers des Codeutilisateur à la racine pour une banque
+	 * donnée.
+	 * 
+	 * @param banque
+	 * @return Liste de CodeDossier.
+	 */
+	@Query("SELECT c FROM CodeDossier c WHERE c.dossierParent is null AND c.banque = ?1 AND c.codeSelect = 0")
+	List<CodeDossier> findByRootCodeDossierUtilisateur(Banque bank);
 
-   /**
-    * Recherche tous les dossiers des CodeSelect à la racine 
-    * pour une banque et un utilisateur donnés.
-    * @param utilisateur
-    * @param banque
-    * @return Liste de CodeDossier.
-    */
-   List<CodeDossier> findByRootCodeDossierSelect(Utilisateur u, Banque bank);
+	/**
+	 * Recherche tous les dossiers des CodeSelect à la racine pour une banque et un
+	 * utilisateur donnés.
+	 * 
+	 * @param utilisateur
+	 * @param banque
+	 * @return Liste de CodeDossier.
+	 */
+	@Query("SELECT c FROM CodeDossier c WHERE c.dossierParent is null AND c.banque = ?2 AND c.utilisateur = ?1 "
+			+ "AND c.codeSelect = 1")
+	List<CodeDossier> findByRootCodeDossierSelect(Utilisateur u, Banque bank);
 
-   /**
-    * Recherche les dossiers de codes ajoutés au favoris 
-    * pour l'utilisateur et la banque passées en paramètres.
-    * @param l'utilisateur pour lequel on recherche des dossiers.
-    * @param la banque
-    * @return une liste de CodeDossiers.
-    */
-   List<CodeDossier> findBySelectUtilisateurAndBanque(Utilisateur u, Banque b);
+	/**
+	 * Recherche les dossiers de codes ajoutés au favoris pour l'utilisateur et la
+	 * banque passées en paramètres.
+	 * 
+	 * @param l'utilisateur pour lequel on recherche des dossiers.
+	 * @param la            banque
+	 * @return une liste de CodeDossiers.
+	 */
+	@Query("SELECT c FROM CodeDossier c WHERE c.utilisateur = ?1 AND c.banque = ?2 AND c.codeSelect = 1")
+	List<CodeDossier> findBySelectUtilisateurAndBanque(Utilisateur u, Banque b);
 
-   /**
-    * Recherche les dossiers de codes utilisateurs
-    * pour l'utilisateur et la banque passées en paramètres.
-    * @param l'utilisateur pour lequel on recherche des dossiers.
-    * @param la banque
-    * @return une liste de CodeDossiers.
-    */
-   List<CodeDossier> findByUtilisateurAndBanque(Utilisateur u, Banque b);
+	/**
+	 * Recherche les dossiers de codes utilisateurs pour l'utilisateur et la banque
+	 * passées en paramètres.
+	 * 
+	 * @param l'utilisateur pour lequel on recherche des dossiers.
+	 * @param la            banque
+	 * @return une liste de CodeDossiers.
+	 */
+	@Query("SELECT c FROM CodeDossier c WHERE c.utilisateur = ?1 AND c.banque = ?2 AND c.codeSelect = 0")
+	List<CodeDossier> findByUtilisateurAndBanque(Utilisateur u, Banque b);
 
-   /**
-    * Recherche tous les dossiers sauf celui dont l'id est passé 
-    * en paramètre.
-    * @param codeDossierId Identifiant du dossier que l'on souhaite
-    * exclure de la liste retournée.
-    * @return une liste de CodeDossiers.
-    */
-   List<CodeDossier> findByExcludedId(Integer codeDossierId);
+	/**
+	 * Recherche tous les dossiers sauf celui dont l'id est passé en paramètre.
+	 * 
+	 * @param codeDossierId Identifiant du dossier que l'on souhaite exclure de la
+	 *                      liste retournée.
+	 * @return une liste de CodeDossiers.
+	 */
+	@Query("SELECT c FROM CodeDossier c WHERE c.codeDossierId != ?1")
+	List<CodeDossier> findByExcludedId(Integer codeDossierId);
 
-   /**
-    * Recherche tous les dossiers de codes favoris ou utilisateur définis 
-    * pour une banque à la racine de l'arborescence.
-    * @param banque Banque
-    * @return une liste de CodeDossier.
-    */
-   List<CodeDossier> findByRootDossierBanque(Banque bank, Boolean select);
+	/**
+	 * Recherche tous les dossiers de codes favoris ou utilisateur définis pour une
+	 * banque à la racine de l'arborescence.
+	 * 
+	 * @param banque Banque
+	 * @return une liste de CodeDossier.
+	 */
+	@Query("SELECT c FROM CodeDossier c WHERE c.dossierParent is null AND c.banque = ?1 " + "AND c.codeSelect = ?2")
+	List<CodeDossier> findByRootDossierBanque(Banque bank, Boolean select);
 }

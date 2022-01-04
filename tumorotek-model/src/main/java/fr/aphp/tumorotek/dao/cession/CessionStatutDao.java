@@ -37,32 +37,39 @@ package fr.aphp.tumorotek.dao.cession;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.cession.CessionStatut;
 
 /**
  *
- * Interface pour le DAO du bean de domaine CessionStatut.
- * Interface créée le 25/01/10.
+ * Interface pour le DAO du bean de domaine CessionStatut. Interface créée le
+ * 25/01/10.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface CessionStatutDao extends GenericDaoJpa<CessionStatut, Integer>
-{
+@Repository
+public interface CessionStatutDao extends CrudRepository<CessionStatut, Integer> {
 
-   /**
-    * Recherche les CessionStatuts dont le statut est égal au paramètre.
-    * @param statut Statut de la CessionStatut recherchée.
-    * @return une liste de CessionStatuts.
-    */
-   List<CessionStatut> findByStatut(String statut);
+	/**
+	 * Recherche les CessionStatuts dont le statut est égal au paramètre.
+	 * 
+	 * @param statut Statut de la CessionStatut recherchée.
+	 * @return une liste de CessionStatuts.
+	 */
+	@Query("SELECT c FROM CessionStatut c WHERE c.statut like ?1")
+	List<CessionStatut> findByStatut(String statut);
 
-   /**
-    * Recherche toutes les CessionStatuts ordonnées.
-    * @return Liste ordonnée de CessionStatuts.
-    */
-   List<CessionStatut> findByOrder();
+	/**
+	 * Recherche toutes les CessionStatuts ordonnées.
+	 * 
+	 * @return Liste ordonnée de CessionStatuts.
+	 */
+	@Query("SELECT c FROM CessionStatut c ORDER BY c.statut")
+	List<CessionStatut> findByOrder();
 
 }

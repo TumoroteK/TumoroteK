@@ -35,14 +35,16 @@
  **/
 package fr.aphp.tumorotek.dao.cession;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.cession.delegate.AbstractCessionDelegate;
 
 /**
  * @author Gille Chapelot
- *
+ * @version 2.3
  */
-public interface CessionDelegateDao extends GenericDaoJpa<AbstractCessionDelegate, Integer>
-{
+@Repository
+public interface CessionDelegateDao extends CrudRepository<AbstractCessionDelegate, Integer> {
 
 }

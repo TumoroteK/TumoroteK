@@ -52,11 +52,11 @@ import javax.persistence.Transient;
 
 /**
  *
- * Objet persistant mappant la table PATIENT_LIEN.
- * Classe créée le 14/09/09.
+ * Objet persistant mappant la table PATIENT_LIEN. Classe créée le 14/09/09.
  * Modifiée par Mathieu pour créer la clef composite
+ * 
  * @see http://boris.kirzner.info/blog/archives/2008/07/19/*%20
- * 		hibernate-annotations-the-many-to-many-association-with-composite-key/
+ *      hibernate-annotations-the-many-to-many-association-with-composite-key/
  *
  * @author Maxime Gousseau
  * @version 2.0
@@ -65,103 +65,103 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "PATIENT_LIEN")
 @AssociationOverrides({
-   @AssociationOverride(name = "pk.patient1",
-      joinColumns = @JoinColumn(name = "PATIENT1_ID", referencedColumnName = "PATIENT_ID")),
-   @AssociationOverride(name = "pk.patient2",
-      joinColumns = @JoinColumn(name = "PATIENT2_ID", referencedColumnName = "PATIENT_ID"))})
+		@AssociationOverride(name = "pk.patient1", joinColumns = @JoinColumn(name = "PATIENT1_ID", referencedColumnName = "PATIENT_ID")),
+		@AssociationOverride(name = "pk.patient2", joinColumns = @JoinColumn(name = "PATIENT2_ID", referencedColumnName = "PATIENT_ID")) })
 @AttributeOverride(column = @Column(name = "LIEN_FAMILIAL_ID"), name = "lienFamilial")
-public class PatientLien implements Serializable
-{
+public class PatientLien implements Serializable {
 
-   private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-   private LienFamilial lienFamilial;
-   private PatientLienPK pk = new PatientLienPK();
+	private LienFamilial lienFamilial;
+	private PatientLienPK pk = new PatientLienPK();
 
-   /** Constructeur par défaut. */
-   public PatientLien(){}
+	/** Constructeur par défaut. */
+	public PatientLien() {
+	}
 
-   @Override
-   public String toString(){
-      if(this.lienFamilial != null && this.getPatient1() != null && this.getPatient2() != null){
-         return "{" + this.getPatient1() + " - " + this.lienFamilial + " - " + this.getPatient2() + "}";
-      }
-      return "{Empty PatientLien}";
-   }
+	@Override
+	public String toString() {
+		if (this.lienFamilial != null && this.getPatient1() != null && this.getPatient2() != null) {
+			return "{" + this.getPatient1() + " - " + this.lienFamilial + " - " + this.getPatient2() + "}";
+		}
+		return "{Empty PatientLien}";
+	}
 
-   @EmbeddedId
-   @AttributeOverrides({@AttributeOverride(name = "patient1", column = @Column(name = "PATIENT1_ID")),
-      @AttributeOverride(name = "patient2", column = @Column(name = "PATIENT2_ID"))})
-   public PatientLienPK getPk(){
-      return pk;
-   }
+	@EmbeddedId
+	@AttributeOverrides({ @AttributeOverride(name = "patient1", column = @Column(name = "PATIENT1_ID")),
+			@AttributeOverride(name = "patient2", column = @Column(name = "PATIENT2_ID")) })
+	public PatientLienPK getPk() {
+		return pk;
+	}
 
-   public void setPk(final PatientLienPK ppk){
-      this.pk = ppk;
-   }
+	public void setPk(final PatientLienPK ppk) {
+		this.pk = ppk;
+	}
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-   @JoinColumn(name = "LIEN_FAMILIAL_ID", nullable = false)
-   public LienFamilial getLienFamilial(){
-      return this.lienFamilial;
-   }
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinColumn(name = "LIEN_FAMILIAL_ID", nullable = false)
+	public LienFamilial getLienFamilial() {
+		return this.lienFamilial;
+	}
 
-   public void setLienFamilial(final LienFamilial l1){
-      this.lienFamilial = l1;
-   }
+	public void setLienFamilial(final LienFamilial l1) {
+		this.lienFamilial = l1;
+	}
 
-   @Transient
-   public Patient getPatient1(){
-      return this.getPk().getPatient1();
-   }
+	@Transient
+	public Patient getPatient1() {
+		return this.getPk().getPatient1();
+	}
 
-   public void setPatient1(final Patient pat1){
-      this.getPk().setPatient1(pat1);
-   }
+	public void setPatient1(final Patient pat1) {
+		this.getPk().setPatient1(pat1);
+	}
 
-   @Transient
-   public Patient getPatient2(){
-      return this.getPk().getPatient2();
-   }
+	@Transient
+	public Patient getPatient2() {
+		return this.getPk().getPatient2();
+	}
 
-   public void setPatient2(final Patient pat2){
-      this.getPk().setPatient2(pat2);
-   }
+	public void setPatient2(final Patient pat2) {
+		this.getPk().setPatient2(pat2);
+	}
 
-   /**
-    * 2 liens sont considérés comme égaux s'ils ont la même pk.
-    * @param obj est le lien à tester.
-    * @return true si les liens sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 liens sont considérés comme égaux s'ils ont la même pk.
+	 * 
+	 * @param obj est le lien à tester.
+	 * @return true si les liens sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final PatientLien test = (PatientLien) obj;
-      return (this.pk != null && (this.pk == test.pk || this.pk.equals(test.pk)));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || obj.getClass() != this.getClass()) {
+			return false;
+		}
+		final PatientLien test = (PatientLien) obj;
+		return (this.pk != null && (this.pk == test.pk || this.pk.equals(test.pk)));
+	}
 
-   /**
-    * Le hashcode est calculé sur la pk.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+	/**
+	 * Le hashcode est calculé sur la pk.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-      int hash = 7;
-      int hashPk = 0;
+		int hash = 7;
+		int hashPk = 0;
 
-      if(this.pk != null){
-         hashPk = this.pk.hashCode();
-      }
+		if (this.pk != null) {
+			hashPk = this.pk.hashCode();
+		}
 
-      hash = 7 * hash + hashPk;
+		hash = 7 * hash + hashPk;
 
-      return hash;
-   }
+		return hash;
+	}
 }

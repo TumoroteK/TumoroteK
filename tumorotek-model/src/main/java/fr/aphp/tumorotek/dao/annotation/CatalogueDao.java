@@ -37,29 +37,35 @@ package fr.aphp.tumorotek.dao.annotation;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.coeur.annotation.Catalogue;
 import fr.aphp.tumorotek.model.contexte.Banque;
 
 /**
  *
- * Interface pour le DAO du bean de domaine CATALOGUE.
- * Interface créée le 18/03/10.
+ * Interface pour le DAO du bean de domaine CATALOGUE. Interface créée le
+ * 18/03/10.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface CatalogueDao extends GenericDaoJpa<Catalogue, Integer>
-{
+@Repository
+public interface CatalogueDao extends CrudRepository<Catalogue, Integer> {
 
-   List<String> findNoms();
+	@Query("SELECT c.nom FROM Catalogue c order by c.nom")
+	List<String> findNoms();
 
-   /**
-    * Recherche les catalogues dont les tables d'annotations systeme 
-    * ont été assignées à la banque passée en paramètre.
-    * @param b Banque
-    * @return liste de Catalogue
-    */
-   List<Catalogue> findByAssignedBanque(Banque b);
+	/**
+	 * Recherche les catalogues dont les tables d'annotations systeme ont été
+	 * assignées à la banque passée en paramètre.
+	 * 
+	 * @param b Banque
+	 * @return liste de Catalogue
+	 */
+	@Query("SELECT b.catalogues FROM Banque b WHERE b = ?1")
+	List<Catalogue> findByAssignedBanque(Banque b);
 }

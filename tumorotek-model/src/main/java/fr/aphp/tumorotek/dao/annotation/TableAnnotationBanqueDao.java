@@ -35,18 +35,21 @@
  **/
 package fr.aphp.tumorotek.dao.annotation;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotationBanque;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotationBanquePK;
 
 /**
  *
- * Interface pour le DAO du bean de domaine TableAnnotationBanque.
- * Interface créée le 29/01/10.
+ * Interface pour le DAO du bean de domaine TableAnnotationBanque. Interface
+ * créée le 29/01/10.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface TableAnnotationBanqueDao extends GenericDaoJpa<TableAnnotationBanque, TableAnnotationBanquePK>
-{}
+@Repository
+public interface TableAnnotationBanqueDao extends CrudRepository<TableAnnotationBanque, TableAnnotationBanquePK> {
+}

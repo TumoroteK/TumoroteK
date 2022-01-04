@@ -45,8 +45,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
@@ -70,242 +68,241 @@ import fr.aphp.tumorotek.model.io.export.Champ;
  */
 @Entity
 @Table(name = "CHAMP_ANNOTATION")
-@GenericGenerator(name="seqGenerator", strategy="increment")
-@AttributeOverride(name="id", column=@Column(name = "CHAMP_ANNOTATION_ID", unique = true, nullable = false))
-@NamedQueries(value = {
-   @NamedQuery(name = "ChampAnnotation.findByNom",
-      query = "SELECT c FROM ChampAnnotation c WHERE c.nom like ?1" + " ORDER BY c.nom"),
-   @NamedQuery(name = "ChampAnnotation.findByTable",
-      query = "SELECT c FROM ChampAnnotation c " + "WHERE c.tableAnnotation = ?1 ORDER BY c.ordre"),
-   @NamedQuery(name = "ChampAnnotation.findByTableAndType",
-      query = "SELECT c FROM ChampAnnotation c " + "WHERE c.tableAnnotation = ?1 " + "ANd c.dataType = ?2 ORDER BY c.ordre"),
-   @NamedQuery(name = "ChampAnnotation.findByExcludedId",
-      query = "SELECT c FROM ChampAnnotation c WHERE " + "c.id != ?1"),
-   @NamedQuery(name = "ChampAnnotation.findByEditByCatalogue",
-      query = "SELECT c FROM ChampAnnotation c " + "WHERE c.edit = 1 " + "AND c.tableAnnotation = ?1 " + "ORDER BY c.ordre"),
-   @NamedQuery(name = "ChampAnnotation.findImportColonnesByChampAnnotation",
-      query = "SELECT i FROM ImportColonne i WHERE " + "i.champ.champAnnotation = ?1"),
-   @NamedQuery(name = "ChampAnnotation.findChpLEtiquetteByChampAnnotation",
-      query = "SELECT c FROM ChampLigneEtiquette c WHERE " + "c.champ.champAnnotation = ?1"),
-   @NamedQuery(name = "ChampAnnotation.findCriteresByChampAnnotation",
-      query = "SELECT c FROM Critere c WHERE " + "c.champ.champAnnotation = ?1"),
-   @NamedQuery(name = "ChampAnnotation.findResultatsByChampAnnotation",
-      query = "SELECT r FROM Resultat r WHERE " + "r.champ.champAnnotation = ?1"),
-   @NamedQuery(name = "ChampAnnotation.findByImportTemplateAndEntite", query = "SELECT c.champAnnotation FROM ImportColonne i "
-      + "JOIN i.champ c WHERE i.importTemplate = ?1 " + "AND c.champAnnotation.tableAnnotation.entite = ?2"),
-   @NamedQuery(name = "ChampAnnotation.findByTableAndDataType",
-   query = "SELECT c FROM ChampAnnotation c " + "WHERE c.tableAnnotation = ?1 AND c.dataType in ?2 ORDER BY c.ordre")})
-public class ChampAnnotation extends AbstractTKChamp implements TKFantomableObject, Serializable
-{
+@GenericGenerator(name = "seqGenerator", strategy = "increment")
+@AttributeOverride(name = "id", column = @Column(name = "CHAMP_ANNOTATION_ID", unique = true, nullable = false))
+//@NamedQueries(value = {
+//   @NamedQuery(name = "ChampAnnotation.findByNom",
+//      query = "SELECT c FROM ChampAnnotation c WHERE c.nom like ?1" + " ORDER BY c.nom"),
+//   @NamedQuery(name = "ChampAnnotation.findByTable",
+//      query = "SELECT c FROM ChampAnnotation c " + "WHERE c.tableAnnotation = ?1 ORDER BY c.ordre"),
+//   @NamedQuery(name = "ChampAnnotation.findByTableAndType",
+//      query = "SELECT c FROM ChampAnnotation c " + "WHERE c.tableAnnotation = ?1 " + "ANd c.dataType = ?2 ORDER BY c.ordre"),
+//   @NamedQuery(name = "ChampAnnotation.findByExcludedId",
+//      query = "SELECT c FROM ChampAnnotation c WHERE " + "c.id != ?1"),
+//   @NamedQuery(name = "ChampAnnotation.findByEditByCatalogue",
+//      query = "SELECT c FROM ChampAnnotation c " + "WHERE c.edit = 1 " + "AND c.tableAnnotation = ?1 " + "ORDER BY c.ordre"),
+//   @NamedQuery(name = "ChampAnnotation.findImportColonnesByChampAnnotation",
+//      query = "SELECT i FROM ImportColonne i WHERE " + "i.champ.champAnnotation = ?1"),
+//   @NamedQuery(name = "ChampAnnotation.findChpLEtiquetteByChampAnnotation",
+//      query = "SELECT c FROM ChampLigneEtiquette c WHERE " + "c.champ.champAnnotation = ?1"),
+//   @NamedQuery(name = "ChampAnnotation.findCriteresByChampAnnotation",
+//      query = "SELECT c FROM Critere c WHERE " + "c.champ.champAnnotation = ?1"),
+//   @NamedQuery(name = "ChampAnnotation.findResultatsByChampAnnotation",
+//      query = "SELECT r FROM Resultat r WHERE " + "r.champ.champAnnotation = ?1"),
+//   @NamedQuery(name = "ChampAnnotation.findByImportTemplateAndEntite", query = "SELECT c.champAnnotation FROM ImportColonne i "
+//      + "JOIN i.champ c WHERE i.importTemplate = ?1 " + "AND c.champAnnotation.tableAnnotation.entite = ?2"),
+//   @NamedQuery(name = "ChampAnnotation.findByTableAndDataType",
+//   query = "SELECT c FROM ChampAnnotation c " + "WHERE c.tableAnnotation = ?1 AND c.dataType in ?2 ORDER BY c.ordre")})
+public class ChampAnnotation extends AbstractTKChamp implements TKFantomableObject, Serializable {
 
-   private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-   private Boolean combine;
-   private Integer ordre;
-   private Boolean edit = true;
-   private TableAnnotation tableAnnotation;
-   private ChampCalcule champCalcule;
+	private Boolean combine;
+	private Integer ordre;
+	private Boolean edit = true;
+	private TableAnnotation tableAnnotation;
+	private ChampCalcule champCalcule;
 
-   private Set<AnnotationDefaut> annotationDefauts = new HashSet<>();
-   private Set<Item> items = new HashSet<>();
-   private Set<AnnotationValeur> annotationValeurs = new HashSet<>();
-   private Set<Champ> champs = new HashSet<>();
+	private Set<AnnotationDefaut> annotationDefauts = new HashSet<>();
+	private Set<Item> items = new HashSet<>();
+	private Set<AnnotationValeur> annotationValeurs = new HashSet<>();
+	private Set<Champ> champs = new HashSet<>();
 
-   /** Constructeur par défaut. */
-   public ChampAnnotation(){}
+	/** Constructeur par défaut. */
+	public ChampAnnotation() {
+	}
 
-   
-   /**
-    * @deprecated
-    * Utiliser {@link #getId()}
-    */
-   @Transient
-   @Deprecated
-   public Integer getChampAnnotationId(){
-      return this.getId();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getId()}
+	 */
+	@Transient
+	@Deprecated
+	public Integer getChampAnnotationId() {
+		return this.getId();
+	}
 
-   /**
-    * @deprecated
-    * Utiliser {@link #setId(Integer)}
-    */
-   @Deprecated
-   public void setChampAnnotationId(final Integer id){
-      this.setId(id);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setId(Integer)}
+	 */
+	@Deprecated
+	public void setChampAnnotationId(final Integer id) {
+		this.setId(id);
+	}
 
-   @Column(name = "COMBINE", nullable = true)
-   public Boolean getCombine(){
-      return this.combine;
-   }
+	@Column(name = "COMBINE", nullable = true)
+	public Boolean getCombine() {
+		return this.combine;
+	}
 
-   public void setCombine(final Boolean b){
-      this.combine = b;
-   }
+	public void setCombine(final Boolean b) {
+		this.combine = b;
+	}
 
-   @Column(name = "ORDRE", nullable = false, length = 3)
-   public Integer getOrdre(){
-      return ordre;
-   }
+	@Column(name = "ORDRE", nullable = false, length = 3)
+	public Integer getOrdre() {
+		return ordre;
+	}
 
-   public void setOrdre(final Integer o){
-      this.ordre = o;
-   }
+	public void setOrdre(final Integer o) {
+		this.ordre = o;
+	}
 
-   @Column(name = "EDIT", nullable = true)
-   public Boolean getEdit(){
-      return edit;
-   }
+	@Column(name = "EDIT", nullable = true)
+	public Boolean getEdit() {
+		return edit;
+	}
 
-   public void setEdit(final Boolean e){
-      this.edit = e;
-   }
+	public void setEdit(final Boolean e) {
+		this.edit = e;
+	}
 
-   @ManyToOne
-   @JoinColumn(name = "TABLE_ANNOTATION_ID", nullable = false)
-   public TableAnnotation getTableAnnotation(){
-      return this.tableAnnotation;
-   }
+	@ManyToOne
+	@JoinColumn(name = "TABLE_ANNOTATION_ID", nullable = false)
+	public TableAnnotation getTableAnnotation() {
+		return this.tableAnnotation;
+	}
 
-   public void setTableAnnotation(final TableAnnotation table){
-      this.tableAnnotation = table;
-   }
+	public void setTableAnnotation(final TableAnnotation table) {
+		this.tableAnnotation = table;
+	}
 
-   @OneToOne(mappedBy = "champAnnotation", cascade = {CascadeType.REMOVE})
-   public ChampCalcule getChampCalcule(){
-      return this.champCalcule;
-   }
+	@OneToOne(mappedBy = "champAnnotation", cascade = { CascadeType.REMOVE })
+	public ChampCalcule getChampCalcule() {
+		return this.champCalcule;
+	}
 
-   public void setChampCalcule(ChampCalcule champCalcule){
-      this.champCalcule = champCalcule;
-   }
+	public void setChampCalcule(ChampCalcule champCalcule) {
+		this.champCalcule = champCalcule;
+	}
 
-   @OneToMany(mappedBy = "champAnnotation", cascade = {CascadeType.REMOVE})
-   public Set<AnnotationDefaut> getAnnotationDefauts(){
-      return this.annotationDefauts;
-   }
+	@OneToMany(mappedBy = "champAnnotation", cascade = { CascadeType.REMOVE })
+	public Set<AnnotationDefaut> getAnnotationDefauts() {
+		return this.annotationDefauts;
+	}
 
-   public void setAnnotationDefauts(final Set<AnnotationDefaut> defauts){
-      this.annotationDefauts = defauts;
-   }
+	public void setAnnotationDefauts(final Set<AnnotationDefaut> defauts) {
+		this.annotationDefauts = defauts;
+	}
 
-   @OneToMany(mappedBy = "champAnnotation", cascade = {CascadeType.REMOVE})
-   @OrderBy("label")
-   public Set<Item> getItems(){
-      return this.items;
-   }
+	@OneToMany(mappedBy = "champAnnotation", cascade = { CascadeType.REMOVE })
+	@OrderBy("label")
+	public Set<Item> getItems() {
+		return this.items;
+	}
 
-   public void setItems(final Set<Item> its){
-      this.items = its;
-   }
+	public void setItems(final Set<Item> its) {
+		this.items = its;
+	}
 
-   @OneToMany(mappedBy = "champAnnotation", cascade = {CascadeType.REMOVE})
-   public Set<AnnotationValeur> getAnnotationValeurs(){
-      return this.annotationValeurs;
-   }
+	@OneToMany(mappedBy = "champAnnotation", cascade = { CascadeType.REMOVE })
+	public Set<AnnotationValeur> getAnnotationValeurs() {
+		return this.annotationValeurs;
+	}
 
-   public void setAnnotationValeurs(final Set<AnnotationValeur> valeurs){
-      this.annotationValeurs = valeurs;
-   }
+	public void setAnnotationValeurs(final Set<AnnotationValeur> valeurs) {
+		this.annotationValeurs = valeurs;
+	}
 
-   @OneToMany(mappedBy = "champAnnotation", cascade = {CascadeType.REMOVE})
-   public Set<Champ> getChamps(){
-      return champs;
-   }
+	@OneToMany(mappedBy = "champAnnotation", cascade = { CascadeType.REMOVE })
+	public Set<Champ> getChamps() {
+		return champs;
+	}
 
-   public void setChamps(final Set<Champ> cs){
-      this.champs = cs;
-   }
+	public void setChamps(final Set<Champ> cs) {
+		this.champs = cs;
+	}
 
-   /**
-    * 2 champs sont consideres comme egaux si ils ont le même nom
-    * et la même reference vers la table d'annotation à 
-    * laquelle ils appartiennent. Le systeme bloquera l'enregistrement 
-    * de deux champ de même nom (quelque soit leur type)
-    * dans une même table. 
-    * @param obj est le champ à tester.
-    * @return true si les champs sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 champs sont consideres comme egaux si ils ont le même nom et la même
+	 * reference vers la table d'annotation à laquelle ils appartiennent. Le systeme
+	 * bloquera l'enregistrement de deux champ de même nom (quelque soit leur type)
+	 * dans une même table.
+	 * 
+	 * @param obj est le champ à tester.
+	 * @return true si les champs sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || obj.getClass() != this.getClass()) {
+			return false;
+		}
 
-      final ChampAnnotation test = (ChampAnnotation) obj;
-      return ((this.getNom() == test.getNom() || (this.getNom() != null && this.getNom().equals(test.getNom())))
-         && (this.tableAnnotation == test.tableAnnotation
-            || (this.tableAnnotation != null && this.tableAnnotation.equals(test.tableAnnotation))));
-   }
+		final ChampAnnotation test = (ChampAnnotation) obj;
+		return ((this.getNom() == test.getNom() || (this.getNom() != null && this.getNom().equals(test.getNom())))
+				&& (this.tableAnnotation == test.tableAnnotation
+						|| (this.tableAnnotation != null && this.tableAnnotation.equals(test.tableAnnotation))));
+	}
 
-   /**
-    * Le hashcode est calculé sur le nom du champ_annotation et sur 
-    * la reference vers la table d'annotation.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+	/**
+	 * Le hashcode est calculé sur le nom du champ_annotation et sur la reference
+	 * vers la table d'annotation.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-      int hash = 7;
-      int hashNom = 0;
-      int hasTableId = 0;
+		int hash = 7;
+		int hashNom = 0;
+		int hasTableId = 0;
 
-      if(this.getNom() != null){
-         hashNom = this.getNom().hashCode();
-      }
-      if(this.tableAnnotation != null){
-         hasTableId = this.tableAnnotation.hashCode();
-      }
+		if (this.getNom() != null) {
+			hashNom = this.getNom().hashCode();
+		}
+		if (this.tableAnnotation != null) {
+			hasTableId = this.tableAnnotation.hashCode();
+		}
 
-      hash = 31 * hash + hashNom;
-      hash = 31 * hash + hasTableId;
+		hash = 31 * hash + hashNom;
+		hash = 31 * hash + hasTableId;
 
-      return hash;
-   }
+		return hash;
+	}
 
-   @Override
-   public String toString(){
-      if(this.tableAnnotation != null && this.getNom() != null){
-         return "{ChampAnnotation: " + this.tableAnnotation.getNom() + "." + this.getNom() + "}";
-      }
-      
-      return "{Empty ChampAnnotation}";
-   }
+	@Override
+	public String toString() {
+		if (this.tableAnnotation != null && this.getNom() != null) {
+			return "{ChampAnnotation: " + this.tableAnnotation.getNom() + "." + this.getNom() + "}";
+		}
 
-   /**
-    * Cree un clone de l'objet.
-    * @return clone ChampAnnotation
-    */
-   @Override
-   public ChampAnnotation clone(){
-      final ChampAnnotation clone = new ChampAnnotation();
-      clone.setId(this.getId());
-      clone.setNom(this.getNom());
-      clone.setDataType(this.getDataType());
-      clone.setOrdre(this.ordre);
-      clone.setCombine(this.combine);
-      clone.setEdit(getEdit());
-      clone.setTableAnnotation(this.tableAnnotation);
-      clone.setAnnotationDefauts(this.annotationDefauts);
-      clone.setAnnotationValeurs(this.annotationValeurs);
-      clone.setItems(this.items);
-      clone.setChampCalcule(this.champCalcule);
-      return clone;
-   }
+		return "{Empty ChampAnnotation}";
+	}
 
-   @Override
-   public String entiteNom(){
-      return "ChampAnnotation";
-   }
+	/**
+	 * Cree un clone de l'objet.
+	 * 
+	 * @return clone ChampAnnotation
+	 */
+	@Override
+	public ChampAnnotation clone() {
+		final ChampAnnotation clone = new ChampAnnotation();
+		clone.setId(this.getId());
+		clone.setNom(this.getNom());
+		clone.setDataType(this.getDataType());
+		clone.setOrdre(this.ordre);
+		clone.setCombine(this.combine);
+		clone.setEdit(getEdit());
+		clone.setTableAnnotation(this.tableAnnotation);
+		clone.setAnnotationDefauts(this.annotationDefauts);
+		clone.setAnnotationValeurs(this.annotationValeurs);
+		clone.setItems(this.items);
+		clone.setChampCalcule(this.champCalcule);
+		return clone;
+	}
 
-   @Override
-   @Transient
-   public String getPhantomData(){
-      return getNom();
-   }
+	@Override
+	public String entiteNom() {
+		return "ChampAnnotation";
+	}
+
+	@Override
+	@Transient
+	public String getPhantomData() {
+		return getNom();
+	}
 
 }

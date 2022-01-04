@@ -43,8 +43,6 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -56,181 +54,182 @@ import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
 
 /**
  *
- * Objet persistant mappant la table ECHANTILLON_TYPE.
- * Classe créée le 10/09/09.
+ * Objet persistant mappant la table ECHANTILLON_TYPE. Classe créée le 10/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "ECHANTILLON_TYPE")
-@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "ECHANTILLON_TYPE_ID")),
-   @AttributeOverride(name = "nom", column = @Column(name = "TYPE", nullable = false, length = 200))})
+@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "ECHANTILLON_TYPE_ID")),
+		@AttributeOverride(name = "nom", column = @Column(name = "TYPE", nullable = false, length = 200)) })
 @GenericGenerator(name = "autoincrement", strategy = "increment")
-@NamedQueries(
-   value = {@NamedQuery(name = "EchantillonType.findByType", query = "SELECT e FROM EchantillonType e WHERE e.nom like ?1"),
-      @NamedQuery(name = "EchantillonType.findByIncaCat", query = "SELECT e FROM EchantillonType e " + "WHERE e.incaCat like ?1"),
-      @NamedQuery(name = "EchantillonType.findByEchantillonId",
-         query = "SELECT e FROM EchantillonType e " + "left join e.echantillons h " + "WHERE h.echantillonId = ?1"),
-      @NamedQuery(name = "EchantillonType.findByExcludedId", query = "SELECT e FROM EchantillonType e " + "WHERE e.id != ?1"),
-      @NamedQuery(name = "EchantillonType.findByPfOrder",
-         query = "SELECT e FROM EchantillonType e " + "WHERE e.plateforme = ?1 ORDER BY e.nom"),
-      @NamedQuery(name = "EchantillonType.findByOrder",
-      query = "SELECT e FROM EchantillonType e ORDER BY e.nom")})
-public class EchantillonType extends AbstractPfDependantThesaurusObject implements Serializable
-{
+//@NamedQueries(
+//   value = {@NamedQuery(name = "EchantillonType.findByType", query = "SELECT e FROM EchantillonType e WHERE e.nom like ?1"),
+//      @NamedQuery(name = "EchantillonType.findByIncaCat", query = "SELECT e FROM EchantillonType e " + "WHERE e.incaCat like ?1"),
+//      @NamedQuery(name = "EchantillonType.findByEchantillonId",
+//         query = "SELECT e FROM EchantillonType e " + "left join e.echantillons h " + "WHERE h.echantillonId = ?1"),
+//      @NamedQuery(name = "EchantillonType.findByExcludedId", query = "SELECT e FROM EchantillonType e " + "WHERE e.id != ?1"),
+//      @NamedQuery(name = "EchantillonType.findByPfOrder",
+//         query = "SELECT e FROM EchantillonType e " + "WHERE e.plateforme = ?1 ORDER BY e.nom"),
+//      @NamedQuery(name = "EchantillonType.findByOrder",
+//      query = "SELECT e FROM EchantillonType e ORDER BY e.nom")})
+public class EchantillonType extends AbstractPfDependantThesaurusObject implements Serializable {
 
-   private static final long serialVersionUID = 47864535434464543L;
+	private static final long serialVersionUID = 47864535434464543L;
 
-   private String incaCat;
+	private String incaCat;
 
-   private Set<Echantillon> echantillons;
-   private Set<CouleurEntiteType> couleurEntiteTypes = new HashSet<>();
+	private Set<Echantillon> echantillons;
+	private Set<CouleurEntiteType> couleurEntiteTypes = new HashSet<>();
 
-   /** Constructeur. */
-   public EchantillonType(){
-      echantillons = new HashSet<>();
-   }
+	/** Constructeur. */
+	public EchantillonType() {
+		echantillons = new HashSet<>();
+	}
 
-   /**
-    * Constructeur avec paramètres.
-    * @param id .
-    * @param t .
-    * @param inca .
-    */
-   public EchantillonType(final Integer id, final String t, final String inca){
-      this.setId(id);
-      this.setNom(t);
-      this.incaCat = inca;
-   }
+	/**
+	 * Constructeur avec paramètres.
+	 * 
+	 * @param id   .
+	 * @param t    .
+	 * @param inca .
+	 */
+	public EchantillonType(final Integer id, final String t, final String inca) {
+		this.setId(id);
+		this.setNom(t);
+		this.incaCat = inca;
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getId()}
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public Integer getEchantillonTypeId(){
-      return this.getId();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getId()}
+	 * @return
+	 */
+	@Deprecated
+	@Transient
+	public Integer getEchantillonTypeId() {
+		return this.getId();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setId(Integer)}
-    * @return
-    */
-   @Deprecated
-   public void setEchantillonTypeId(final Integer eId){
-      this.setId(eId);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setId(Integer)}
+	 * @return
+	 */
+	@Deprecated
+	public void setEchantillonTypeId(final Integer eId) {
+		this.setId(eId);
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getNom()}
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public String getType(){
-      return this.getNom();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getNom()}
+	 * @return
+	 */
+	@Deprecated
+	@Transient
+	public String getType() {
+		return this.getNom();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setNom(String)}
-    * @param t
-    */
-   @Deprecated
-   public void setType(final String t){
-      this.setNom(t);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setNom(String)}
+	 * @param t
+	 */
+	@Deprecated
+	public void setType(final String t) {
+		this.setNom(t);
+	}
 
-   @Column(name = "INCA_CAT", nullable = true, length = 10)
-   public String getIncaCat(){
-      return incaCat;
-   }
+	@Column(name = "INCA_CAT", nullable = true, length = 10)
+	public String getIncaCat() {
+		return incaCat;
+	}
 
-   public void setIncaCat(final String inca){
-      this.incaCat = inca;
-   }
+	public void setIncaCat(final String inca) {
+		this.incaCat = inca;
+	}
 
-   @OneToMany(mappedBy = "echantillonType")
-   public Set<Echantillon> getEchantillons(){
-      return echantillons;
-   }
+	@OneToMany(mappedBy = "echantillonType")
+	public Set<Echantillon> getEchantillons() {
+		return echantillons;
+	}
 
-   public void setEchantillons(final Set<Echantillon> echants){
-      this.echantillons = echants;
-   }
+	public void setEchantillons(final Set<Echantillon> echants) {
+		this.echantillons = echants;
+	}
 
-   @OneToMany(mappedBy = "echantillonType")
-   public Set<CouleurEntiteType> getCouleurEntiteTypes(){
-      return couleurEntiteTypes;
-   }
+	@OneToMany(mappedBy = "echantillonType")
+	public Set<CouleurEntiteType> getCouleurEntiteTypes() {
+		return couleurEntiteTypes;
+	}
 
-   public void setCouleurEntiteTypes(final Set<CouleurEntiteType> cTypes){
-      this.couleurEntiteTypes = cTypes;
-   }
+	public void setCouleurEntiteTypes(final Set<CouleurEntiteType> cTypes) {
+		this.couleurEntiteTypes = cTypes;
+	}
 
-   /**
-    * 2 objets sont considérés comme égaux s'ils ont le même type et
-    * la même catégorie inca.
-    * @param obj est l'objet à tester.
-    * @return true si les objets sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 objets sont considérés comme égaux s'ils ont le même type et la même
+	 * catégorie inca.
+	 * 
+	 * @param obj est l'objet à tester.
+	 * @return true si les objets sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final EchantillonType test = (EchantillonType) obj;
-      return ((this.getNom() == test.getNom() || (this.getNom() != null && this.getNom().equals(test.getNom())))
-         && (this.incaCat == test.incaCat || (this.incaCat != null && this.incaCat.equals(test.incaCat)))
-         && (this.getPlateforme() == test.getPlateforme()
-            || (this.getPlateforme() != null && this.getPlateforme().equals(test.getPlateforme()))));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || obj.getClass() != this.getClass()) {
+			return false;
+		}
+		final EchantillonType test = (EchantillonType) obj;
+		return ((this.getNom() == test.getNom() || (this.getNom() != null && this.getNom().equals(test.getNom())))
+				&& (this.incaCat == test.incaCat || (this.incaCat != null && this.incaCat.equals(test.incaCat)))
+				&& (this.getPlateforme() == test.getPlateforme()
+						|| (this.getPlateforme() != null && this.getPlateforme().equals(test.getPlateforme()))));
+	}
 
-   /**
-    * Le hashcode est calculé sur les attributs type et incaCat.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+	/**
+	 * Le hashcode est calculé sur les attributs type et incaCat.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-      int hash = 7;
-      int hashType = 0;
-      int hashIncaCat = 0;
-      int hashPF = 0;
+		int hash = 7;
+		int hashType = 0;
+		int hashIncaCat = 0;
+		int hashPF = 0;
 
-      if(this.getNom() != null){
-         hashType = this.getNom().hashCode();
-      }
-      if(this.incaCat != null){
-         hashIncaCat = this.incaCat.hashCode();
-      }
-      if(this.getPlateforme() != null){
-         hashPF = this.getPlateforme().hashCode();
-      }
+		if (this.getNom() != null) {
+			hashType = this.getNom().hashCode();
+		}
+		if (this.incaCat != null) {
+			hashIncaCat = this.incaCat.hashCode();
+		}
+		if (this.getPlateforme() != null) {
+			hashPF = this.getPlateforme().hashCode();
+		}
 
-      hash = 31 * hash + hashType;
-      hash = 31 * hash + hashIncaCat;
-      hash = 31 * hash + hashPF;
+		hash = 31 * hash + hashType;
+		hash = 31 * hash + hashIncaCat;
+		hash = 31 * hash + hashPF;
 
-      return hash;
+		return hash;
 
-   }
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      if(this.getNom() != null){
-         return "{" + this.getNom() + "}";
-      }
-      return "{Empty EchantillonType}";
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		if (this.getNom() != null) {
+			return "{" + this.getNom() + "}";
+		}
+		return "{Empty EchantillonType}";
+	}
 
 }

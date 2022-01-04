@@ -43,8 +43,6 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -55,103 +53,102 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 
 /**
  *
- * Objet persistant mappant la table CESSION_EXAMEN.
- * Classe créée le 11/09/09.
+ * Objet persistant mappant la table CESSION_EXAMEN. Classe créée le 11/09/09.
  *
  * @author Maxime Gousseau
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "CESSION_EXAMEN")
-@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "CESSION_EXAMEN_ID")),
-   @AttributeOverride(name = "nom", column = @Column(name = "EXAMEN", nullable = false, length = 200))})
+@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "CESSION_EXAMEN_ID")),
+		@AttributeOverride(name = "nom", column = @Column(name = "EXAMEN", nullable = false, length = 200)) })
 @GenericGenerator(name = "autoincrement", strategy = "increment")
-@NamedQueries(
-   value = {@NamedQuery(name = "CessionExamen.findByExamen", query = "SELECT c FROM CessionExamen c WHERE c.nom like ?1"),
-      @NamedQuery(name = "CessionExamen.findByExamenEn", query = "SELECT c FROM CessionExamen c " + "WHERE c.examenEn like ?1"),
-      @NamedQuery(name = "CessionExamen.findByExcludedId", query = "SELECT c FROM CessionExamen c " + "WHERE c.id != ?1"),
-      @NamedQuery(name = "CessionExamen.findByPfOrder",
-         query = "SELECT c FROM CessionExamen c WHERE c.plateforme = ?1 ORDER BY c.nom"),
-      @NamedQuery(name = "CessionExamen.findByOrder", query = "FROM CessionExamen c ORDER BY c.nom")})
-public class CessionExamen extends AbstractPfDependantThesaurusObject implements Serializable
-{
+//@NamedQueries(
+//   value = {@NamedQuery(name = "CessionExamen.findByExamen", query = "SELECT c FROM CessionExamen c WHERE c.nom like ?1"),
+//      @NamedQuery(name = "CessionExamen.findByExamenEn", query = "SELECT c FROM CessionExamen c " + "WHERE c.examenEn like ?1"),
+//      @NamedQuery(name = "CessionExamen.findByExcludedId", query = "SELECT c FROM CessionExamen c " + "WHERE c.id != ?1"),
+//      @NamedQuery(name = "CessionExamen.findByPfOrder",
+//         query = "SELECT c FROM CessionExamen c WHERE c.plateforme = ?1 ORDER BY c.nom"),
+//      @NamedQuery(name = "CessionExamen.findByOrder", query = "FROM CessionExamen c ORDER BY c.nom")})
+public class CessionExamen extends AbstractPfDependantThesaurusObject implements Serializable {
 
-   private static final long serialVersionUID = -6437415927205983957L;
+	private static final long serialVersionUID = -6437415927205983957L;
 
-   private String examenEn;
-   private Set<Cession> cessions = new HashSet<>();
+	private String examenEn;
+	private Set<Cession> cessions = new HashSet<>();
 
-   /**
-    * Constructeur par défaut
-    */
-   public CessionExamen(){}
+	/**
+	 * Constructeur par défaut
+	 */
+	public CessionExamen() {
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getId()}
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public Integer getCessionExamenId(){
-      return this.getId();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getId()}
+	 * @return
+	 */
+	@Deprecated
+	@Transient
+	public Integer getCessionExamenId() {
+		return this.getId();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setId(Integer)}
-    * @return
-    */
-   @Deprecated
-   public void setCessionExamenId(final Integer id){
-      this.setId(id);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setId(Integer)}
+	 * @return
+	 */
+	@Deprecated
+	public void setCessionExamenId(final Integer id) {
+		this.setId(id);
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getNom()}
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public String getExamen(){
-      return this.getNom();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getNom()}
+	 * @return
+	 */
+	@Deprecated
+	@Transient
+	public String getExamen() {
+		return this.getNom();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setNom(String)}
-    * @param ex
-    */
-   @Deprecated
-   public void setExamen(final String ex){
-      this.setNom(ex);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setNom(String)}
+	 * @param ex
+	 */
+	@Deprecated
+	public void setExamen(final String ex) {
+		this.setNom(ex);
+	}
 
-   @Column(name = "EXAMEN_EN", nullable = true, length = 50)
-   public String getExamenEn(){
-      return this.examenEn;
-   }
+	@Column(name = "EXAMEN_EN", nullable = true, length = 50)
+	public String getExamenEn() {
+		return this.examenEn;
+	}
 
-   public void setExamenEn(final String exEn){
-      this.examenEn = exEn;
-   }
+	public void setExamenEn(final String exEn) {
+		this.examenEn = exEn;
+	}
 
-   @OneToMany(mappedBy = "cessionExamen")
-   public Set<Cession> getCessions(){
-      return this.cessions;
-   }
+	@OneToMany(mappedBy = "cessionExamen")
+	public Set<Cession> getCessions() {
+		return this.cessions;
+	}
 
-   public void setCessions(final Set<Cession> cess){
-      this.cessions = cess;
-   }
+	public void setCessions(final Set<Cession> cess) {
+		this.cessions = cess;
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      if(this.getNom() != null){
-         return "{" + this.getNom() + "}";
-      }
-      return "{Empty CessionExamen}";
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		if (this.getNom() != null) {
+			return "{" + this.getNom() + "}";
+		}
+		return "{Empty CessionExamen}";
+	}
 
 }

@@ -37,25 +37,30 @@ package fr.aphp.tumorotek.dao.code;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.code.AdicapGroupe;
 
 /**
  *
- * Interface pour le DAO du bean de domaine AdicapGroupe.
- * Interface créée le 02/06/10.
+ * Interface pour le DAO du bean de domaine AdicapGroupe. Interface créée le
+ * 02/06/10.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface AdicapGroupeDao extends GenericDaoJpa<AdicapGroupe, Integer>
-{
+@Repository
+public interface AdicapGroupeDao extends CrudRepository<AdicapGroupe, Integer> {
 
-   /**
-    * Recherche les groupes de codes Adicap de premier niveau
-    * cad les dictionnaires.
-    * @return une liste de AdicapGroupe.
-    */
-   List<AdicapGroupe> findDictionnaires();
+	/**
+	 * Recherche les groupes de codes Adicap de premier niveau cad les
+	 * dictionnaires.
+	 * 
+	 * @return une liste de AdicapGroupe.
+	 */
+	@Query("SELECT a FROM AdicapGroupe a WHERE a.groupeParent is null")
+	List<AdicapGroupe> findDictionnaires();
 }

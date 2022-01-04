@@ -43,8 +43,6 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -55,92 +53,92 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 
 /**
  *
- * Objet persistant mappant la table DESTRUCTION_MOTIF.
- * Classe créée le 11/09/09.
+ * Objet persistant mappant la table DESTRUCTION_MOTIF. Classe créée le
+ * 11/09/09.
  *
  * @author Maxime Gousseau
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "DESTRUCTION_MOTIF")
-@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "DESTRUCTION_MOTIF_ID")),
-   @AttributeOverride(name = "nom", column = @Column(name = "MOTIF", nullable = false, length = 200))})
+@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "DESTRUCTION_MOTIF_ID")),
+		@AttributeOverride(name = "nom", column = @Column(name = "MOTIF", nullable = false, length = 200)) })
 @GenericGenerator(name = "autoincrement", strategy = "increment")
-@NamedQueries(
-   value = {@NamedQuery(name = "DestructionMotif.findByMotif", query = "SELECT d FROM DestructionMotif d WHERE d.nom like ?1"),
-      @NamedQuery(name = "DestructionMotif.findByExcludedId",
-         query = "SELECT d FROM DestructionMotif d " + "WHERE d.id != ?1"),
-      @NamedQuery(name = "DestructionMotif.findByPfOrder",
-         query = "SELECT d FROM DestructionMotif d " + "WHERE d.plateforme = ?1 ORDER BY d.nom"),
-      @NamedQuery(name = "DestructionMotif.findByOrder",
-      query = "SELECT d FROM DestructionMotif d ORDER BY d.nom")})
-public class DestructionMotif extends AbstractPfDependantThesaurusObject implements Serializable
-{
+//@NamedQueries(
+//   value = {@NamedQuery(name = "DestructionMotif.findByMotif", query = "SELECT d FROM DestructionMotif d WHERE d.nom like ?1"),
+//      @NamedQuery(name = "DestructionMotif.findByExcludedId",
+//         query = "SELECT d FROM DestructionMotif d " + "WHERE d.id != ?1"),
+//      @NamedQuery(name = "DestructionMotif.findByPfOrder",
+//         query = "SELECT d FROM DestructionMotif d " + "WHERE d.plateforme = ?1 ORDER BY d.nom"),
+//      @NamedQuery(name = "DestructionMotif.findByOrder",
+//      query = "SELECT d FROM DestructionMotif d ORDER BY d.nom")})
+public class DestructionMotif extends AbstractPfDependantThesaurusObject implements Serializable {
 
-   private static final long serialVersionUID = -3784391207102019937L;
+	private static final long serialVersionUID = -3784391207102019937L;
 
-   private Set<Cession> cessions = new HashSet<>();
+	private Set<Cession> cessions = new HashSet<>();
 
-   /** Constructeur par défaut. */
-   public DestructionMotif(){}
+	/** Constructeur par défaut. */
+	public DestructionMotif() {
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getId()}
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public Integer getDestructionMotifId(){
-      return this.getId();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getId()}
+	 * @return
+	 */
+	@Deprecated
+	@Transient
+	public Integer getDestructionMotifId() {
+		return this.getId();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setId(Integer)}
-    * @return
-    */
-   @Deprecated
-   public void setDestructionMotifId(final Integer id){
-      this.setId(id);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setId(Integer)}
+	 * @return
+	 */
+	@Deprecated
+	public void setDestructionMotifId(final Integer id) {
+		this.setId(id);
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getNom()}
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public String getMotif(){
-      return this.getNom();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getNom()}
+	 * @return
+	 */
+	@Deprecated
+	@Transient
+	public String getMotif() {
+		return this.getNom();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setNom(String)}
-    * @param m
-    */
-   @Deprecated
-   public void setMotif(final String m){
-      this.setNom(m);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setNom(String)}
+	 * @param m
+	 */
+	@Deprecated
+	public void setMotif(final String m) {
+		this.setNom(m);
+	}
 
-   @OneToMany(mappedBy = "destructionMotif")
-   public Set<Cession> getCessions(){
-      return this.cessions;
-   }
+	@OneToMany(mappedBy = "destructionMotif")
+	public Set<Cession> getCessions() {
+		return this.cessions;
+	}
 
-   public void setCessions(final Set<Cession> cess){
-      this.cessions = cess;
-   }
+	public void setCessions(final Set<Cession> cess) {
+		this.cessions = cess;
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      if(this.getNom() != null){
-         return "{" + this.getNom() + "}";
-      }
-      return "{Empty DestructionMotif}";
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		if (this.getNom() != null) {
+			return "{" + this.getNom() + "}";
+		}
+		return "{Empty DestructionMotif}";
+	}
 
 }

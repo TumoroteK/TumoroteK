@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.code;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.code.CodeDossier;
 import fr.aphp.tumorotek.model.code.CodeUtilisateur;
 import fr.aphp.tumorotek.model.code.TableCodage;
@@ -46,85 +49,103 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 /**
  *
- * Interface pour le DAO du bean de domaine CodeUtilisateur.
- * Interface créée le 24/09/09.
+ * Interface pour le DAO du bean de domaine CodeUtilisateur. Interface créée le
+ * 24/09/09.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface CodeUtilisateurDao extends GenericDaoJpa<CodeUtilisateur, Integer>
-{
+@Repository
+public interface CodeUtilisateurDao extends CrudRepository<CodeUtilisateur, Integer> {
 
-   /**
-    * Recherche les codes utilisateurs dont le code est like celui 
-    * passé en paramètre.
-    * @param code Code pour lequel on recherche des codes utilisateurs.
-    * @param liste de banques
-    * @return Liste de CodeUtilisateurs.
-    */
-   List<CodeUtilisateur> findByCodeLike(String code, List<Banque> banks);
+	/**
+	 * Recherche les codes utilisateurs dont le code est like celui passé en
+	 * paramètre.
+	 * 
+	 * @param code  Code pour lequel on recherche des codes utilisateurs.
+	 * @param liste de banques
+	 * @return Liste de CodeUtilisateurs.
+	 */
+	@Query("SELECT c FROM CodeUtilisateur c WHERE c.code like ?1 AND c.banque in (?2)")
+	List<CodeUtilisateur> findByCodeLike(String code, List<Banque> banks);
 
-   /**
-    * Recherche les codes utilisateurs dont le libelle est like celui 
-    * passé en paramètre.
-    * @param libelle pour lequel on recherche des codes utilisateurs.
-    * @param banque
-    * @return Liste de CodeUtilisateurs.
-    */
-   List<CodeUtilisateur> findByLibelleLike(String libelle, List<Banque> banks);
+	/**
+	 * Recherche les codes utilisateurs dont le libelle est like celui passé en
+	 * paramètre.
+	 * 
+	 * @param libelle pour lequel on recherche des codes utilisateurs.
+	 * @param banque
+	 * @return Liste de CodeUtilisateurs.
+	 */
+	@Query("SELECT c FROM CodeUtilisateur c WHERE c.libelle like ?1 AND c.banque in (?2)")
+	List<CodeUtilisateur> findByLibelleLike(String libelle, List<Banque> banks);
 
-   /**
-    * Recherche les codes utilisateurs pour l'utilisateur et la banque 
-    * passées en paramètres.
-    * @param l'utilisateur pour lequel on recherche des codes.
-    * @param la banque
-    * @return une liste de CodeUtilisateurs.
-    */
-   List<CodeUtilisateur> findByUtilisateurAndBanque(Utilisateur u, Banque b);
+	/**
+	 * Recherche les codes utilisateurs pour l'utilisateur et la banque passées en
+	 * paramètres.
+	 * 
+	 * @param l'utilisateur pour lequel on recherche des codes.
+	 * @param la            banque
+	 * @return une liste de CodeUtilisateurs.
+	 */
+	@Query("SELECT c FROM CodeUtilisateur c WHERE c.utilisateur = ?1 AND c.banque = ?2")
+	List<CodeUtilisateur> findByUtilisateurAndBanque(Utilisateur u, Banque b);
 
-   /**
-    * Recherche tous les codes utilisateurs contenu dans un dossier.
-    * @param codeDossier
-    * @return une liste de CodeUtilisateurs.
-    */
-   List<CodeUtilisateur> findByCodeDossier(CodeDossier codeDossier);
+	/**
+	 * Recherche tous les codes utilisateurs contenu dans un dossier.
+	 * 
+	 * @param codeDossier
+	 * @return une liste de CodeUtilisateurs.
+	 */
+	@Query("SELECT c FROM CodeUtilisateur c WHERE c.codeDossier = ?1")
+	List<CodeUtilisateur> findByCodeDossier(CodeDossier codeDossier);
 
-   /**
-    * Recherche tous les codes utilisateurs non contenu dans un dossier 
-    * pour la banque spécifiée.
-    * @param banque
-    * @return une liste de CodeUtilisateurs.
-    */
-   List<CodeUtilisateur> findByRootDossier(Banque bank);
+	/**
+	 * Recherche tous les codes utilisateurs non contenu dans un dossier pour la
+	 * banque spécifiée.
+	 * 
+	 * @param banque
+	 * @return une liste de CodeUtilisateurs.
+	 */
+	@Query("SELECT c FROM CodeUtilisateur c WHERE c.codeDossier is null AND c.codeParent is null "
+			+ "AND c.banque = ?1 ORDER BY c.codeUtilisateurId")
+	List<CodeUtilisateur> findByRootDossier(Banque bank);
 
-   /**
-    * Recherche tous les codes utilisateurs heritant d'un code parent.
-    * @param Codeutilisateur parent
-    * @return une liste de CodeUtilisateurs.
-    */
-   List<CodeUtilisateur> findByCodeParent(CodeUtilisateur parent);
+	/**
+	 * Recherche tous les codes utilisateurs heritant d'un code parent.
+	 * 
+	 * @param Codeutilisateur parent
+	 * @return une liste de CodeUtilisateurs.
+	 */
+	@Query("SELECT c FROM CodeUtilisateur c WHERE c.codeParent = ?1")
+	List<CodeUtilisateur> findByCodeParent(CodeUtilisateur parent);
 
-   /**
-    * Recherche tous les codes utilisateurs sauf celui dont l'id est passé 
-    * en paramètre.
-    * @param codeUtilisateurId Identifiant du code que l'on souhaite
-    * exclure de la liste retournée.
-    * @return une liste de CodeUtilisateurs.
-    */
-   List<CodeUtilisateur> findByExcludedId(Integer codeUtilisateurId);
+	/**
+	 * Recherche tous les codes utilisateurs sauf celui dont l'id est passé en
+	 * paramètre.
+	 * 
+	 * @param codeUtilisateurId Identifiant du code que l'on souhaite exclure de la
+	 *                          liste retournée.
+	 * @return une liste de CodeUtilisateurs.
+	 */
+	@Query("SELECT c FROM CodeUtilisateur c WHERE c.codeUtilisateurId != ?1")
+	List<CodeUtilisateur> findByExcludedId(Integer codeUtilisateurId);
 
-   /**
-    * Recherche les codes utilisateurs issus du transcodage 
-    * en passant la table et le codeId du code dont on cherche 
-    * les transcodes enregistrés dans les 
-    * codes utilisateurs.
-    * @param table
-    * @param codeId
-    * @param list banques auxquelles doivent appartenir les codes utilisateurs.
-    * @return liste de codes utilisateurs
-    */
-   List<CodeUtilisateur> findByTranscodage(TableCodage table, Integer codeId, List<Banque> banks);
-   
-   List<CodeUtilisateur> findByCodeLikeAndBanqueId(String code, List<Integer> ids);
+	/**
+	 * Recherche les codes utilisateurs issus du transcodage en passant la table et
+	 * le codeId du code dont on cherche les transcodes enregistrés dans les codes
+	 * utilisateurs.
+	 * 
+	 * @param table
+	 * @param codeId
+	 * @param list   banques auxquelles doivent appartenir les codes utilisateurs.
+	 * @return liste de codes utilisateurs
+	 */
+	@Query("SELECT c FROM CodeUtilisateur c JOIN c.transcodes t "
+			+ "WHERE t.tableCodage = ?1 AND t.codeId = ?2 AND c.banque in (?3) ORDER BY c.code")
+	List<CodeUtilisateur> findByTranscodage(TableCodage table, Integer codeId, List<Banque> banks);
+
+	@Query("SELECT c FROM CodeUtilisateur c WHERE c.code like ?1 AND c.banque.banqueId in (?2)")
+	List<CodeUtilisateur> findByCodeLikeAndBanqueId(String code, List<Integer> ids);
 }

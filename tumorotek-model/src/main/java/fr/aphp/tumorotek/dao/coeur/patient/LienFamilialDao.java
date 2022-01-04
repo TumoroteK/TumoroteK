@@ -37,34 +37,40 @@ package fr.aphp.tumorotek.dao.coeur.patient;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.coeur.patient.LienFamilial;
 
 /**
  *
- * Interface pour le DAO du bean de domaine LienFamilial.
- * Interface créée le 28/10/09.
+ * Interface pour le DAO du bean de domaine LienFamilial. Interface créée le
+ * 28/10/09.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface LienFamilialDao extends GenericDaoJpa<LienFamilial, Integer>
-{
+@Repository
+public interface LienFamilialDao extends CrudRepository<LienFamilial, Integer> {
 
-   /**
-    * Recherche tous les liens sauf celui dont l'id est passé 
-    * en paramètre.
-    * @param lienFamilialId Identifiant du lien que l'on souhaite
-    * exclure de la liste retournée.
-    * @return une liste de LienFamilial.
-    */
-   List<LienFamilial> findByExcludedId(Integer lienFamilialId);
+	/**
+	 * Recherche tous les liens sauf celui dont l'id est passé en paramètre.
+	 * 
+	 * @param lienFamilialId Identifiant du lien que l'on souhaite exclure de la
+	 *                       liste retournée.
+	 * @return une liste de LienFamilial.
+	 */
+	@Query("SELECT l FROM LienFamilial l WHERE l.lienFamilialId != ?1")
+	List<LienFamilial> findByExcludedId(Integer lienFamilialId);
 
-   /**
-    * Recherche les types de liens dont le nom est 'like' le paramètre.
-    * @param nom Nom des types de liens familiaux recherchées.
-    * @return Liste de liens.
-    */
-   List<LienFamilial> findByNom(String nom);
+	/**
+	 * Recherche les types de liens dont le nom est 'like' le paramètre.
+	 * 
+	 * @param nom Nom des types de liens familiaux recherchées.
+	 * @return Liste de liens.
+	 */
+	@Query("SELECT l FROM LienFamilial l WHERE l.nom like ?1")
+	List<LienFamilial> findByNom(String nom);
 }

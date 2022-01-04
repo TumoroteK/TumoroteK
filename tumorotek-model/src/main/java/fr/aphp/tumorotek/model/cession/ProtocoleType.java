@@ -43,8 +43,6 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -55,8 +53,7 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 
 /**
  *
- * Objet persistant mappant la table PROTOCOLE_TYPE.
- * Classe créée le 17/09/09.
+ * Objet persistant mappant la table PROTOCOLE_TYPE. Classe créée le 17/09/09.
  *
  * @author Pierre Ventadour
  * @version 2.0
@@ -64,81 +61,83 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
  */
 @Entity
 @Table(name = "PROTOCOLE_TYPE")
-@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "PROTOCOLE_TYPE_ID")),
-   @AttributeOverride(name = "nom", column = @Column(name = "TYPE", nullable = false, length = 200))})
+@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "PROTOCOLE_TYPE_ID")),
+		@AttributeOverride(name = "nom", column = @Column(name = "TYPE", nullable = false, length = 200)) })
 @GenericGenerator(name = "autoincrement", strategy = "increment")
-@NamedQueries(
-   value = {@NamedQuery(name = "ProtocoleType.findByType", query = "SELECT p FROM ProtocoleType p WHERE p.nom like ?1"),
-      @NamedQuery(name = "ProtocoleType.findByDoublon", query = "SELECT p FROM ProtocoleType p WHERE p.nom = ?1"),
-      @NamedQuery(name = "ProtocoleType.findByExcludedId",
-         query = "SELECT p FROM ProtocoleType p " + "WHERE p.id != ?1"),
-      @NamedQuery(name = "ProtocoleType.findByPfOrder",
-         query = "SELECT p FROM ProtocoleType p " + "WHERE p.plateforme = ?1 ORDER BY p.nom"),
-      @NamedQuery(name = "ProtocoleType.findByOrder",
-      query = "SELECT p FROM ProtocoleType p ORDER BY p.nom")})
-public class ProtocoleType extends AbstractPfDependantThesaurusObject implements Serializable
-{
+//@NamedQueries(
+//   value = {@NamedQuery(name = "ProtocoleType.findByType", query = "SELECT p FROM ProtocoleType p WHERE p.nom like ?1"),
+//      @NamedQuery(name = "ProtocoleType.findByDoublon", query = "SELECT p FROM ProtocoleType p WHERE p.nom = ?1"),
+//      @NamedQuery(name = "ProtocoleType.findByExcludedId",
+//         query = "SELECT p FROM ProtocoleType p " + "WHERE p.id != ?1"),
+//      @NamedQuery(name = "ProtocoleType.findByPfOrder",
+//         query = "SELECT p FROM ProtocoleType p " + "WHERE p.plateforme = ?1 ORDER BY p.nom"),
+//      @NamedQuery(name = "ProtocoleType.findByOrder",
+//      query = "SELECT p FROM ProtocoleType p ORDER BY p.nom")})
+public class ProtocoleType extends AbstractPfDependantThesaurusObject implements Serializable {
 
-   private Set<Contrat> contrats = new HashSet<>();
+	private Set<Contrat> contrats = new HashSet<>();
 
-   private static final long serialVersionUID = 5468431531654L;
+	private static final long serialVersionUID = 5468431531654L;
 
-   /** Constructeur par défaut. */
-   public ProtocoleType(){
-      super();
-   }
+	/** Constructeur par défaut. */
+	public ProtocoleType() {
+		super();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getId()}
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public Integer getProtocoleTypeId(){
-      return this.getId();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getId()}
+	 * @return
+	 */
+	@Deprecated
+	@Transient
+	public Integer getProtocoleTypeId() {
+		return this.getId();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setId(Integer)}
-    * @return
-    */
-   public void setProtocoleTypeId(final Integer id){
-      this.setId(id);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setId(Integer)}
+	 * @return
+	 */
+	@Deprecated
+	public void setProtocoleTypeId(final Integer id) {
+		this.setId(id);
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getNom()}
-    */
-   @Transient
-   public String getType(){
-      return this.getNom();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getNom()}
+	 */
+	@Deprecated
+	@Transient
+	public String getType() {
+		return this.getNom();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setNom(String)}
-    */
-   public void setType(final String t){
-      this.setNom(t);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setNom(String)}
+	 */
+	@Deprecated
+	public void setType(final String t) {
+		this.setNom(t);
+	}
 
-   @OneToMany(mappedBy = "protocoleType")
-   public Set<Contrat> getContrats(){
-      return this.contrats;
-   }
+	@OneToMany(mappedBy = "protocoleType")
+	public Set<Contrat> getContrats() {
+		return this.contrats;
+	}
 
-   public void setContrats(final Set<Contrat> conts){
-      this.contrats = conts;
-   }
+	public void setContrats(final Set<Contrat> conts) {
+		this.contrats = conts;
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      if(this.getNom() != null){
-         return "{" + this.getNom() + "}";
-      }
-      return "{Empty ProtocoleType}";
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		if (this.getNom() != null) {
+			return "{" + this.getNom() + "}";
+		}
+		return "{Empty ProtocoleType}";
+	}
 
 }

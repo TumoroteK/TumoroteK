@@ -43,8 +43,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -54,8 +52,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 /**
  *
- * Objet persistant mappant la table CODE_SELECT.
- * Classe créée le 17/09/09.
+ * Objet persistant mappant la table CODE_SELECT. Classe créée le 17/09/09.
  *
  * @author Pierre Ventadour
  * @version 2.0
@@ -63,153 +60,156 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  */
 @Entity
 @Table(name = "CODE_SELECT")
-@NamedQueries(value = {
-   @NamedQuery(name = "CodeSelect.findByUtilisateurAndBanque",
-      query = "SELECT c FROM CodeSelect c " + "WHERE c.utilisateur = ?1 AND c.banque = ?2"),
-   @NamedQuery(name = "CodeSelect.findByBanque",
-      query = "SELECT c FROM CodeSelect c " + "WHERE c.banque = ?1 " + "ORDER BY c.codeSelectId"),
-   @NamedQuery(name = "CodeSelect.findByCodeDossier",
-      query = "SELECT c FROM CodeSelect c WHERE c.codeDossier = ?1 " + "ORDER BY c.codeSelectId"),
-   @NamedQuery(name = "CodeSelect.findByRootDossier",
-      query = "SELECT c FROM CodeSelect c WHERE c.codeDossier is null " + "AND c.utilisateur= ?1 AND c.banque = ?2 "
-         + "ORDER BY c.codeSelectId"),
-   @NamedQuery(name = "CodeSelect.findByRootDossierAndBanque",
-      query = "SELECT c FROM CodeSelect c WHERE c.codeDossier is null " + "AND c.banque = ?1 " + "ORDER BY c.codeSelectId"),
-   @NamedQuery(name = "CodeSelect.findByExcludedId", query = "SELECT c FROM CodeSelect c " + "WHERE c.codeSelectId != ?1")})
-public class CodeSelect implements Serializable
-{
+//@NamedQueries(value = {
+//   @NamedQuery(name = "CodeSelect.findByUtilisateurAndBanque",
+//      query = "SELECT c FROM CodeSelect c " + "WHERE c.utilisateur = ?1 AND c.banque = ?2"),
+//   @NamedQuery(name = "CodeSelect.findByBanque",
+//      query = "SELECT c FROM CodeSelect c " + "WHERE c.banque = ?1 " + "ORDER BY c.codeSelectId"),
+//   @NamedQuery(name = "CodeSelect.findByCodeDossier",
+//      query = "SELECT c FROM CodeSelect c WHERE c.codeDossier = ?1 " + "ORDER BY c.codeSelectId"),
+//   @NamedQuery(name = "CodeSelect.findByRootDossier",
+//      query = "SELECT c FROM CodeSelect c WHERE c.codeDossier is null " + "AND c.utilisateur= ?1 AND c.banque = ?2 "
+//         + "ORDER BY c.codeSelectId"),
+//   @NamedQuery(name = "CodeSelect.findByRootDossierAndBanque",
+//      query = "SELECT c FROM CodeSelect c WHERE c.codeDossier is null " + "AND c.banque = ?1 " + "ORDER BY c.codeSelectId"),
+//   @NamedQuery(name = "CodeSelect.findByExcludedId", query = "SELECT c FROM CodeSelect c " + "WHERE c.codeSelectId != ?1")})
+public class CodeSelect implements Serializable {
 
-   private static final long serialVersionUID = 478456654635153L;
+	private static final long serialVersionUID = 478456654635153L;
 
-   private Integer codeSelectId;
-   private Integer codeId;
-   private TableCodage tableCodage;
-   private Utilisateur utilisateur;
-   private Banque banque;
-   private CodeDossier codeDossier;
+	private Integer codeSelectId;
+	private Integer codeId;
+	private TableCodage tableCodage;
+	private Utilisateur utilisateur;
+	private Banque banque;
+	private CodeDossier codeDossier;
 
-   /** Constructeur par défaut. */
-   public CodeSelect(){}
+	/** Constructeur par défaut. */
+	public CodeSelect() {
+	}
 
-   @Override
-   public String toString(){
-      return "{CodeSelect: " + this.tableCodage.getNom() + "." + this.codeId + "}";
-   }
+	@Override
+	public String toString() {
+		return "{CodeSelect: " + this.tableCodage.getNom() + "." + this.codeId + "}";
+	}
 
-   @Id
-   @Column(name = "CODE_SELECT_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getCodeSelectId(){
-      return this.codeSelectId;
-   }
+	@Id
+	@Column(name = "CODE_SELECT_ID", unique = true, nullable = false)
+	@GeneratedValue(generator = "autoincrement")
+	@GenericGenerator(name = "autoincrement", strategy = "increment")
+	public Integer getCodeSelectId() {
+		return this.codeSelectId;
+	}
 
-   public void setCodeSelectId(final Integer id){
-      this.codeSelectId = id;
-   }
+	public void setCodeSelectId(final Integer id) {
+		this.codeSelectId = id;
+	}
 
-   @Column(name = "CODE_ID", nullable = false)
-   public Integer getCodeId(){
-      return this.codeId;
-   }
+	@Column(name = "CODE_ID", nullable = false)
+	public Integer getCodeId() {
+		return this.codeId;
+	}
 
-   public void setCodeId(final Integer code){
-      this.codeId = code;
-   }
+	public void setCodeId(final Integer code) {
+		this.codeId = code;
+	}
 
-   @ManyToOne
-   @JoinColumn(name = "TABLE_CODAGE_ID", nullable = false)
-   public TableCodage getTableCodage(){
-      return this.tableCodage;
-   }
+	@ManyToOne
+	@JoinColumn(name = "TABLE_CODAGE_ID", nullable = false)
+	public TableCodage getTableCodage() {
+		return this.tableCodage;
+	}
 
-   public void setTableCodage(final TableCodage table){
-      this.tableCodage = table;
-   }
+	public void setTableCodage(final TableCodage table) {
+		this.tableCodage = table;
+	}
 
-   @ManyToOne
-   @JoinColumn(name = "UTILISATEUR_ID", nullable = false)
-   public Utilisateur getUtilisateur(){
-      return this.utilisateur;
-   }
+	@ManyToOne
+	@JoinColumn(name = "UTILISATEUR_ID", nullable = false)
+	public Utilisateur getUtilisateur() {
+		return this.utilisateur;
+	}
 
-   public void setUtilisateur(final Utilisateur util){
-      this.utilisateur = util;
-   }
+	public void setUtilisateur(final Utilisateur util) {
+		this.utilisateur = util;
+	}
 
-   @ManyToOne
-   @JoinColumn(name = "BANQUE_ID", nullable = false)
-   public Banque getBanque(){
-      return this.banque;
-   }
+	@ManyToOne
+	@JoinColumn(name = "BANQUE_ID", nullable = false)
+	public Banque getBanque() {
+		return this.banque;
+	}
 
-   public void setBanque(final Banque bank){
-      this.banque = bank;
-   }
+	public void setBanque(final Banque bank) {
+		this.banque = bank;
+	}
 
-   @ManyToOne
-   @JoinColumn(name = "CODE_DOSSIER_ID", nullable = true)
-   public CodeDossier getCodeDossier(){
-      return codeDossier;
-   }
+	@ManyToOne
+	@JoinColumn(name = "CODE_DOSSIER_ID", nullable = true)
+	public CodeDossier getCodeDossier() {
+		return codeDossier;
+	}
 
-   public void setCodeDossier(final CodeDossier dos){
-      this.codeDossier = dos;
-   }
+	public void setCodeDossier(final CodeDossier dos) {
+		this.codeDossier = dos;
+	}
 
-   /**
-    * 2 codes select sont considérés comme égaux s'ils ont les mêmes
-    * attributs.
-    * @param obj est le code à tester.
-    * @return true si les codes sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 codes select sont considérés comme égaux s'ils ont les mêmes attributs.
+	 * 
+	 * @param obj est le code à tester.
+	 * @return true si les codes sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final CodeSelect test = (CodeSelect) obj;
-      return ((this.codeId == test.codeId || (this.codeId != null && this.codeId.equals(test.codeId)))
-         && (this.banque == test.banque || (this.banque != null && this.banque.equals(test.banque)))
-         && (this.tableCodage == test.tableCodage || (this.tableCodage != null && this.tableCodage.equals(test.tableCodage)))
-         && (this.utilisateur == test.utilisateur || (this.utilisateur != null && this.utilisateur.equals(test.utilisateur))));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || obj.getClass() != this.getClass()) {
+			return false;
+		}
+		final CodeSelect test = (CodeSelect) obj;
+		return ((this.codeId == test.codeId || (this.codeId != null && this.codeId.equals(test.codeId)))
+				&& (this.banque == test.banque || (this.banque != null && this.banque.equals(test.banque)))
+				&& (this.tableCodage == test.tableCodage
+						|| (this.tableCodage != null && this.tableCodage.equals(test.tableCodage)))
+				&& (this.utilisateur == test.utilisateur
+						|| (this.utilisateur != null && this.utilisateur.equals(test.utilisateur))));
+	}
 
-   /**
-    * Le hashcode est calculé sur tous les attributs.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+	/**
+	 * Le hashcode est calculé sur tous les attributs.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-      int hash = 7;
-      int hashCode = 0;
-      int hashBanque = 0;
-      int hashTable = 0;
-      int hashUtilisateur = 0;
+		int hash = 7;
+		int hashCode = 0;
+		int hashBanque = 0;
+		int hashTable = 0;
+		int hashUtilisateur = 0;
 
-      if(this.codeId != null){
-         hashCode = this.codeId.hashCode();
-      }
-      if(this.banque != null){
-         hashBanque = this.banque.hashCode();
-      }
-      if(this.tableCodage != null){
-         hashTable = this.tableCodage.hashCode();
-      }
-      if(this.utilisateur != null){
-         hashUtilisateur = this.utilisateur.hashCode();
-      }
+		if (this.codeId != null) {
+			hashCode = this.codeId.hashCode();
+		}
+		if (this.banque != null) {
+			hashBanque = this.banque.hashCode();
+		}
+		if (this.tableCodage != null) {
+			hashTable = this.tableCodage.hashCode();
+		}
+		if (this.utilisateur != null) {
+			hashUtilisateur = this.utilisateur.hashCode();
+		}
 
-      hash = 7 * hash + hashCode;
-      hash = 7 * hash + hashBanque;
-      hash = 7 * hash + hashTable;
-      hash = 7 * hash + hashUtilisateur;
+		hash = 7 * hash + hashCode;
+		hash = 7 * hash + hashBanque;
+		hash = 7 * hash + hashTable;
+		hash = 7 * hash + hashUtilisateur;
 
-      return hash;
-   }
+		return hash;
+	}
 }

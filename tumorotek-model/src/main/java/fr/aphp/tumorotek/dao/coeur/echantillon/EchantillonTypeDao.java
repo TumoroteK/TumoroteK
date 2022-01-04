@@ -37,52 +37,72 @@ package fr.aphp.tumorotek.dao.coeur.echantillon;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.coeur.echantillon.EchantillonType;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
  *
- * Interface pour le DAO du bean de domaine EchantillonType.
- * Interface créée le 10/09/09.
+ * Interface pour le DAO du bean de domaine EchantillonType. Interface créée le
+ * 10/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface EchantillonTypeDao extends GenericDaoJpa<EchantillonType, Integer>, PfDependantTKThesaurusDao<EchantillonType>
-{
+@Repository
+public interface EchantillonTypeDao
+		extends CrudRepository<EchantillonType, Integer>, PfDependantTKThesaurusDao<EchantillonType> {
 
-   /**
-    * Recherche les types d'échantillon dont le type est égal au paramètre.
-    * @param type Type des échantillons recherchés.
-    * @return Liste de types d'échantillons.
-    */
-   List<EchantillonType> findByType(String type);
+	/**
+	 * Recherche les types d'échantillon dont le type est égal au paramètre.
+	 * 
+	 * @param type Type des échantillons recherchés.
+	 * @return Liste de types d'échantillons.
+	 */
+	@Query("SELECT e FROM EchantillonType e WHERE e.nom like ?1")
+	List<EchantillonType> findByType(String type);
 
-   /**
-    * Recherche les types d'échantillon dont la catégorie Inca est égale
-    * au paramètre.
-    * @param cat Catégorie Inca des échantillons recherchés.
-    * @return Liste de types d'échantillons.
-    */
-   List<EchantillonType> findByIncaCat(String cat);
+	/**
+	 * Recherche les types d'échantillon dont la catégorie Inca est égale au
+	 * paramètre.
+	 * 
+	 * @param cat Catégorie Inca des échantillons recherchés.
+	 * @return Liste de types d'échantillons.
+	 */
+	@Query("SELECT e FROM EchantillonType e WHERE e.incaCat like ?1")
+	List<EchantillonType> findByIncaCat(String cat);
 
-   /**
-    * Recherche le type qui est lié à l'échantillon passé 
-    * en paramètre. 
-    * @param echantillonId Identifiant de l'échantillon pour lequel 
-    * on recherche un type.
-    * @return Liste d'EchantillonTypes.
-    */
-   List<EchantillonType> findByEchantillonId(Integer echantillonId);
+	/**
+	 * Recherche le type qui est lié à l'échantillon passé en paramètre.
+	 * 
+	 * @param echantillonId Identifiant de l'échantillon pour lequel on recherche un
+	 *                      type.
+	 * @return Liste d'EchantillonTypes.
+	 */
+	@Query("SELECT e FROM EchantillonType e left join e.echantillons h WHERE h.echantillonId = ?1")
+	List<EchantillonType> findByEchantillonId(Integer echantillonId);
 
-   /**
-    * Recherche tous les EchantillonType sauf celui dont
-    * l'identifiant est passé en paramètre.
-    * @param id Identifiant de l'EchantillonType à exclure.
-    * @return Liste de EchantillonTypes.
-    */
-   List<EchantillonType> findByExcludedId(Integer id);
+	/**
+	 * Recherche tous les EchantillonType sauf celui dont l'identifiant est passé en
+	 * paramètre.
+	 * 
+	 * @param id Identifiant de l'EchantillonType à exclure.
+	 * @return Liste de EchantillonTypes.
+	 */
+	@Query("SELECT e FROM EchantillonType e WHERE e.id != ?1")
+	List<EchantillonType> findByExcludedId(Integer id);
+
+	@Override
+	@Query("SELECT e FROM EchantillonType e ORDER BY e.nom")
+	List<EchantillonType> findByOrder();
+
+	@Override
+	@Query("SELECT e FROM EchantillonType e WHERE e.plateforme = ?1 ORDER BY e.nom")
+	List<EchantillonType> findByPfOrder(Plateforme pf);
 
 }

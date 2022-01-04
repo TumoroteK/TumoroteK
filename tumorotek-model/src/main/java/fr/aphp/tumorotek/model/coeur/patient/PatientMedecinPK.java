@@ -44,92 +44,92 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
 
 /**
  *
- * Embedded Id pour la table PATIENT_MEDECIN.
- * Classe créée le 29/10/09.
+ * Embedded Id pour la table PATIENT_MEDECIN. Classe créée le 29/10/09.
  *
  * @author Mathieu BARTHELEMY
  * @see http://boris.kirzner.info/blog/archives/2008/07/19/
- * hibernate-annotations-the-many-to-many-association-with-composite-key/
+ *      hibernate-annotations-the-many-to-many-association-with-composite-key/
  * @version 2.0
  *
  */
 @Embeddable
-public class PatientMedecinPK implements Serializable
-{
+public class PatientMedecinPK implements Serializable {
 
-   private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-   private Collaborateur collaborateur;
-   private Patient patient;
+	private Collaborateur collaborateur;
+	private Patient patient;
 
-   /** Constructeur par défaut. */
-   public PatientMedecinPK(){}
+	/** Constructeur par défaut. */
+	public PatientMedecinPK() {
+	}
 
-   public PatientMedecinPK(final Collaborateur c, final Patient p){
-      this.collaborateur = c;
-      this.patient = p;
-   }
+	public PatientMedecinPK(final Collaborateur c, final Patient p) {
+		this.collaborateur = c;
+		this.patient = p;
+	}
 
-   @ManyToOne(targetEntity = Collaborateur.class)
-   public Collaborateur getCollaborateur(){
-      return this.collaborateur;
-   }
+	@ManyToOne(targetEntity = Collaborateur.class)
+	public Collaborateur getCollaborateur() {
+		return this.collaborateur;
+	}
 
-   public void setCollaborateur(final Collaborateur c){
-      this.collaborateur = c;
-   }
+	public void setCollaborateur(final Collaborateur c) {
+		this.collaborateur = c;
+	}
 
-   @ManyToOne(targetEntity = Patient.class)
-   public Patient getPatient(){
-      return patient;
-   }
+	@ManyToOne(targetEntity = Patient.class)
+	public Patient getPatient() {
+		return patient;
+	}
 
-   public void setPatient(final Patient p){
-      this.patient = p;
-   }
+	public void setPatient(final Patient p) {
+		this.patient = p;
+	}
 
-   /**
-    * 2 PKs sont considérés comme égales si elles sont composees 
-    * des mêmes clés.
-    * @param obj est la PK à tester.
-    * @return true si les PK sont egales.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 PKs sont considérés comme égales si elles sont composees des mêmes clés.
+	 * 
+	 * @param obj est la PK à tester.
+	 * @return true si les PK sont egales.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final PatientMedecinPK test = (PatientMedecinPK) obj;
-      return (((this.collaborateur != null && (this.collaborateur.equals(test.collaborateur))
-         || this.collaborateur == test.collaborateur)
-         && ((this.patient != null && this.patient.equals(test.patient)) || this.patient == test.patient)));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || obj.getClass() != this.getClass()) {
+			return false;
+		}
+		final PatientMedecinPK test = (PatientMedecinPK) obj;
+		return (((this.collaborateur != null && (this.collaborateur.equals(test.collaborateur))
+				|| this.collaborateur == test.collaborateur)
+				&& ((this.patient != null && this.patient.equals(test.patient)) || this.patient == test.patient)));
+	}
 
-   /**
-    * Le hashcode est calculé sur les clés.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-      //int hash = 7;
-      int hashCollaborateur = 0;
-      int hashPatient = 0;
+	/**
+	 * Le hashcode est calculé sur les clés.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
+		// int hash = 7;
+		int hashCollaborateur = 0;
+		int hashPatient = 0;
 
-      if(this.collaborateur != null){
-         hashCollaborateur = this.collaborateur.hashCode();
-      }
-      if(this.patient != null){
-         hashPatient = this.patient.hashCode();
-      }
+		if (this.collaborateur != null) {
+			hashCollaborateur = this.collaborateur.hashCode();
+		}
+		if (this.patient != null) {
+			hashPatient = this.patient.hashCode();
+		}
 
-      //hash = 7 * hash + hashPatient1;
-      //hash = 7 * hash + hashPatient2;
+		// hash = 7 * hash + hashPatient1;
+		// hash = 7 * hash + hashPatient2;
 
-      return hashCollaborateur + hashPatient;
-   }
+		return hashCollaborateur + hashPatient;
+	}
 
 }

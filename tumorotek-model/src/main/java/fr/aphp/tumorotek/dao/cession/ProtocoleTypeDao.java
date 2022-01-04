@@ -37,35 +37,52 @@ package fr.aphp.tumorotek.dao.cession;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.cession.ProtocoleType;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
  *
- * Interface pour le DAO du bean de domaine ProtocoleType.
- * Interface créée le 25/01/10.
+ * Interface pour le DAO du bean de domaine ProtocoleType. Interface créée le
+ * 25/01/10.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface ProtocoleTypeDao extends GenericDaoJpa<ProtocoleType, Integer>, PfDependantTKThesaurusDao<ProtocoleType>
-{
+@Repository
+public interface ProtocoleTypeDao
+		extends CrudRepository<ProtocoleType, Integer>, PfDependantTKThesaurusDao<ProtocoleType> {
 
-   /**
-    * Recherche les ProtocoleTypes dont le type est égal au paramètre.
-    * @param type Type du ProtocoleType recherché.
-    * @return une liste de ProtocoleTypes.
-    */
-   List<ProtocoleType> findByType(String type);
+	/**
+	 * Recherche les ProtocoleTypes dont le type est égal au paramètre.
+	 * 
+	 * @param type Type du ProtocoleType recherché.
+	 * @return une liste de ProtocoleTypes.
+	 */
+	@Query("SELECT p FROM ProtocoleType p WHERE p.nom like ?1")
+	List<ProtocoleType> findByType(String type);
 
-   /**
-    * Recherche tous les ProtocoleTypes sauf celui dont
-    * l'identifiant est passé en paramètre.
-    * @param id Identifiant du ProtocoleType à exclure.
-    * @return Liste de ProtocoleTypes.
-    */
-   List<ProtocoleType> findByExcludedId(Integer id);
+	@Override
+	@Query("SELECT p FROM ProtocoleType p ORDER BY p.nom")
+	List<ProtocoleType> findByOrder();
+
+	@Override
+	@Query("SELECT p FROM ProtocoleType p WHERE p.plateforme = ?1 ORDER BY p.nom")
+	List<ProtocoleType> findByPfOrder(Plateforme pf);
+
+	/**
+	 * Recherche tous les ProtocoleTypes sauf celui dont l'identifiant est passé en
+	 * paramètre.
+	 * 
+	 * @param id Identifiant du ProtocoleType à exclure.
+	 * @return Liste de ProtocoleTypes.
+	 */
+	@Query("SELECT p FROM ProtocoleType p WHERE p.id != ?1")
+	List<ProtocoleType> findByExcludedId(Integer id);
 
 }

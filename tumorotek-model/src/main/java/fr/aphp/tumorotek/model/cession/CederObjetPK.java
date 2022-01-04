@@ -45,119 +45,120 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 
 /**
  *
- * Embedded Id pour la table CEDER_OBJET.
- * Classe créée le 22/09/09.
+ * Embedded Id pour la table CEDER_OBJET. Classe créée le 22/09/09.
  *
  * @author Mathieu BARTHELEMY
  * @see http://boris.kirzner.info/blog/archives/2008/07/19/
- * hibernate-annotations-the-many-to-many-association-with-composite-key/
+ *      hibernate-annotations-the-many-to-many-association-with-composite-key/
  * @version 2.0
  *
  */
 @Embeddable
-public class CederObjetPK implements Serializable
-{
+public class CederObjetPK implements Serializable {
 
-   private static final long serialVersionUID = 4888881853949416299L;
+	private static final long serialVersionUID = 4888881853949416299L;
 
-   private Cession cession;
-   private Entite entite;
-   private Integer objetId;
+	private Cession cession;
+	private Entite entite;
+	private Integer objetId;
 
-   /** Constructeur par défaut. */
-   public CederObjetPK(){}
+	/** Constructeur par défaut. */
+	public CederObjetPK() {
+	}
 
-   public CederObjetPK(final Cession cess, final Entite ent, final Integer id){
-      this.cession = cess;
-      this.entite = ent;
-      this.objetId = id;
-   }
+	public CederObjetPK(final Cession cess, final Entite ent, final Integer id) {
+		this.cession = cess;
+		this.entite = ent;
+		this.objetId = id;
+	}
 
-   @ManyToOne(targetEntity = Cession.class)
-   public Cession getCession(){
-      return cession;
-   }
+	@ManyToOne(targetEntity = Cession.class)
+	public Cession getCession() {
+		return cession;
+	}
 
-   public void setCession(final Cession cess){
-      this.cession = cess;
-   }
+	public void setCession(final Cession cess) {
+		this.cession = cess;
+	}
 
-   @ManyToOne(targetEntity = Entite.class)
-   public Entite getEntite(){
-      return entite;
-   }
+	@ManyToOne(targetEntity = Entite.class)
+	public Entite getEntite() {
+		return entite;
+	}
 
-   public void setEntite(final Entite en){
-      this.entite = en;
-   }
+	public void setEntite(final Entite en) {
+		this.entite = en;
+	}
 
-   @Column(name = "OBJET_ID", nullable = false)
-   public Integer getObjetId(){
-      return objetId;
-   }
+	@Column(name = "OBJET_ID", nullable = false)
+	public Integer getObjetId() {
+		return objetId;
+	}
 
-   public void setObjetId(final Integer objId){
-      this.objetId = objId;
-   }
+	public void setObjetId(final Integer objId) {
+		this.objetId = objId;
+	}
 
-   /**
-    * 2 PKs sont considérés comme égales si elles sont composees 
-    * des mêmes clés.
-    * @param obj est la PK à tester.
-    * @return true si les PK sont egales.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 PKs sont considérés comme égales si elles sont composees des mêmes clés.
+	 * 
+	 * @param obj est la PK à tester.
+	 * @return true si les PK sont egales.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final CederObjetPK test = (CederObjetPK) obj;
-      return ((this.cession == test.cession || (this.cession != null && this.cession.equals(test.cession)))
-         && (this.entite == test.entite || (this.entite != null && this.entite.equals(test.entite)))
-         && (this.objetId == test.objetId || (this.objetId != null && this.objetId.equals(test.objetId))));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || obj.getClass() != this.getClass()) {
+			return false;
+		}
+		final CederObjetPK test = (CederObjetPK) obj;
+		return ((this.cession == test.cession || (this.cession != null && this.cession.equals(test.cession)))
+				&& (this.entite == test.entite || (this.entite != null && this.entite.equals(test.entite)))
+				&& (this.objetId == test.objetId || (this.objetId != null && this.objetId.equals(test.objetId))));
+	}
 
-   /**
-    * Le hashcode est calculé sur les clés.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-      int hash = 7;
-      int hashCession = 0;
-      int hashEntite = 0;
-      int hashObjet = 0;
+	/**
+	 * Le hashcode est calculé sur les clés.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		int hashCession = 0;
+		int hashEntite = 0;
+		int hashObjet = 0;
 
-      if(this.cession != null){
-         hashCession = this.cession.hashCode();
-      }
-      if(this.entite != null){
-         hashEntite = this.entite.hashCode();
-      }
-      if(this.objetId != null){
-         hashObjet = this.objetId.hashCode();
-      }
+		if (this.cession != null) {
+			hashCession = this.cession.hashCode();
+		}
+		if (this.entite != null) {
+			hashEntite = this.entite.hashCode();
+		}
+		if (this.objetId != null) {
+			hashObjet = this.objetId.hashCode();
+		}
 
-      hash = 7 * hash + hashCession;
-      hash = 7 * hash + hashEntite;
-      hash = 7 * hash + hashObjet;
+		hash = 7 * hash + hashCession;
+		hash = 7 * hash + hashEntite;
+		hash = 7 * hash + hashObjet;
 
-      return hash;
-   }
+		return hash;
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      if(this.entite != null && this.cession != null && this.objetId != null){
-         return "{" + cession.toString() + " (Cession), " + entite.toString() + " (Entite), " + objetId + " (ObjetId)}";
-      }
-      return "{Empty CederObjetPK}";
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		if (this.entite != null && this.cession != null && this.objetId != null) {
+			return "{" + cession.toString() + " (Cession), " + entite.toString() + " (Entite), " + objetId
+					+ " (ObjetId)}";
+		}
+		return "{Empty CederObjetPK}";
+	}
 
 }

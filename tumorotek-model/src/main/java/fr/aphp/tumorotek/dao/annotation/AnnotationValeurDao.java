@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.annotation;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.annotation.Item;
@@ -47,70 +50,84 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 
 /**
  *
- * Interface pour le DAO du bean de domaine AnnotationValeur.
- * Interface créée le 01/02/10.
+ * Interface pour le DAO du bean de domaine AnnotationValeur. Interface créée le
+ * 01/02/10.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.12
+ * @version 2.3
  *
  */
-public interface AnnotationValeurDao extends GenericDaoJpa<AnnotationValeur, Integer>
-{
+@Repository
+public interface AnnotationValeurDao extends CrudRepository<AnnotationValeur, Integer> {
 
-   /**
-    * Recherche les valeurs assignées a l'objet pour le champ spécifiés 
-    * en paramètre.
-    * @param champAnnotation
-    * @param objetId
-    * @return Liste de AnnotationDefaut.
-    */
-   List<AnnotationValeur> findByChampAndObjetId(ChampAnnotation champ, Integer objetId);
+	/**
+	 * Recherche les valeurs assignées a l'objet pour le champ spécifiés en
+	 * paramètre.
+	 * 
+	 * @param champAnnotation
+	 * @param objetId
+	 * @return Liste de AnnotationDefaut.
+	 */
+	@Query("SELECT a FROM AnnotationValeur a WHERE a.champAnnotation = ?1 AND a.objetId = ?2")
+	List<AnnotationValeur> findByChampAndObjetId(ChampAnnotation champ, Integer objetId);
 
-   /**
-    * Recherche toutes les valeurs pour le champ et l'objet 
-    * sauf celle dont l'id est passé en paramètre.
-    * @param champAnnotation
-    * @param objetId
-    * @param annotationValeurId Identifiant de la valeur que l'on souhaite
-    * exclure de la liste retournée.
-    * @return Liste de AnnotationValeur.
-    */
-   List<AnnotationValeur> findByExcludedId(ChampAnnotation champ, Integer objetId, Integer annotationValeurId);
+	/**
+	 * Recherche toutes les valeurs pour le champ et l'objet sauf celle dont l'id
+	 * est passé en paramètre.
+	 * 
+	 * @param champAnnotation
+	 * @param objetId
+	 * @param annotationValeurId Identifiant de la valeur que l'on souhaite exclure
+	 *                           de la liste retournée.
+	 * @return Liste de AnnotationValeur.
+	 */
+	@Query("SELECT a FROM AnnotationValeur a WHERE a.champAnnotation = ?1 AND a.objetId = ?2 "
+			+ "AND a.annotationValeurId != ?3")
+	List<AnnotationValeur> findByExcludedId(ChampAnnotation champ, Integer objetId, Integer annotationValeurId);
 
-   /**
-    * Recherche toutes les valeurs spécifiées pour une table d'annotations
-    * et pour une banque. 
-    * Cette requete a pour objectif de retourner toutes les valeurs qui seront
-    * supprimées avec la suppression de la référence de ta table vers la
-    * banque.
-    * @param table TableAnnotation
-    * @param banque Banque
-    * @return Liste de AnnotationValeur.
-    */
-   List<AnnotationValeur> findByTableAndBanque(TableAnnotation table, Banque bank);
+	/**
+	 * Recherche toutes les valeurs spécifiées pour une table d'annotations et pour
+	 * une banque. Cette requete a pour objectif de retourner toutes les valeurs qui
+	 * seront supprimées avec la suppression de la référence de ta table vers la
+	 * banque.
+	 * 
+	 * @param table  TableAnnotation
+	 * @param banque Banque
+	 * @return Liste de AnnotationValeur.
+	 */
+	@Query("SELECT a FROM AnnotationValeur a JOIN a.champAnnotation c WHERE c.tableAnnotation = ?1 AND a.banque = ?2")
+	List<AnnotationValeur> findByTableAndBanque(TableAnnotation table, Banque bank);
 
-   /**
-    * Recherche toutes les valeurs d'annotations pour un objet donné en passant
-    * l'id de objet et son entité.
-    * @param objetId
-    * @param Entité ent
-    * @return Liste de AnnotationValeur.
-    */
-   List<AnnotationValeur> findByObjectIdAndEntite(Integer objetId, Entite ent);
+	/**
+	 * Recherche toutes les valeurs d'annotations pour un objet donné en passant
+	 * l'id de objet et son entité.
+	 * 
+	 * @param objetId
+	 * @param Entité  ent
+	 * @return Liste de AnnotationValeur.
+	 */
+	@Query("SELECT a FROM AnnotationValeur a join a.champAnnotation as chp join chp.tableAnnotation as tbl "
+			+ "WHERE a.objetId = ?1 AND tbl.entite = ?2 ORDER BY a.champAnnotation.id")
+	List<AnnotationValeur> findByObjectIdAndEntite(Integer objetId, Entite ent);
 
-   /**
-    * Compte les valeurs d'annotations referencant l'item passé en paramètre.
-    * @param item
-    * @return compte
-    */
-   List<Long> findCountByItem(Item item);
+	/**
+	 * Compte les valeurs d'annotations referencant l'item passé en paramètre.
+	 * 
+	 * @param item
+	 * @return compte
+	 */
+	@Query("SELECT count(a) FROM AnnotationValeur a WHERE a.item = ?1")
+	List<Long> findCountByItem(Item item);
 
-   /**
-    * Compte les valeurs d'annotations renseignée pour une banque et une 
-    * table annotation passées en paramètres.
-    * @param tab TableAnnotation
-    * @param banque Banque
-    * @return compte
-    */
-   List<Long> findCountByTableAnnotationBanque(TableAnnotation tab, Banque b);
+	/**
+	 * Compte les valeurs d'annotations renseignée pour une banque et une table
+	 * annotation passées en paramètres.
+	 * 
+	 * @param tab    TableAnnotation
+	 * @param banque Banque
+	 * @return compte
+	 */
+	@Query("SELECT count(a) FROM AnnotationValeur a "
+			+ "JOIN a.champAnnotation c WHERE c.tableAnnotation = ?1 AND a.banque = ?2")
+	List<Long> findCountByTableAnnotationBanque(TableAnnotation tab, Banque b);
 }

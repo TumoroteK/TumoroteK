@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.code;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.code.CodeDossier;
 import fr.aphp.tumorotek.model.code.CodeSelect;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -45,65 +48,75 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 /**
  *
- * Interface pour le DAO du bean de domaine CodeSelect.
- * Interface créée le 18/09/09.
+ * Interface pour le DAO du bean de domaine CodeSelect. Interface créée le
+ * 18/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface CodeSelectDao extends GenericDaoJpa<CodeSelect, Integer>
-{
+@Repository
+public interface CodeSelectDao extends CrudRepository<CodeSelect, Integer> {
 
-   /**
-    * Recherche les CodeSelects dont l'utilisateur et la banque sont 
-    * passés en paramètres.
-    * @param l'utilisateur pour lequel on recherche des CodeSelects.
-    * @param la banque pour laquelle on recherche des CodeSelects.
-    * @return une liste de CodeSelects.
-    */
-   List<CodeSelect> findByUtilisateurAndBanque(Utilisateur u, Banque b);
+	/**
+	 * Recherche les CodeSelects dont l'utilisateur et la banque sont passés en
+	 * paramètres.
+	 * 
+	 * @param l'utilisateur pour lequel on recherche des CodeSelects.
+	 * @param la            banque pour laquelle on recherche des CodeSelects.
+	 * @return une liste de CodeSelects.
+	 */
+	@Query("SELECT c FROM CodeSelect c WHERE c.utilisateur = ?1 AND c.banque = ?2")
+	List<CodeSelect> findByUtilisateurAndBanque(Utilisateur u, Banque b);
 
-   /**
-    * Recherche les CodeSelects dont la banque est 
-    * est passée en paramètre.
-    * @param la banque pour laquelle on recherche des CodeSelects.
-    * @return une liste de CodeSelects.
-    */
-   List<CodeSelect> findByBanque(Banque b);
+	/**
+	 * Recherche les CodeSelects dont la banque est est passée en paramètre.
+	 * 
+	 * @param la banque pour laquelle on recherche des CodeSelects.
+	 * @return une liste de CodeSelects.
+	 */
+	@Query("SELECT c FROM CodeSelect c WHERE c.banque = ?1 ORDER BY c.codeSelectId")
+	List<CodeSelect> findByBanque(Banque b);
 
-   /**
-    * Recherche tous les codes favoris contenu dans un dossier.
-    * @param codeDossier
-    * @return une liste de CodeSelects.
-    */
-   List<CodeSelect> findByCodeDossier(CodeDossier codeDossier);
+	/**
+	 * Recherche tous les codes favoris contenu dans un dossier.
+	 * 
+	 * @param codeDossier
+	 * @return une liste de CodeSelects.
+	 */
+	@Query("SELECT c FROM CodeSelect c WHERE c.codeDossier = ?1 ORDER BY c.codeSelectId")
+	List<CodeSelect> findByCodeDossier(CodeDossier codeDossier);
 
-   /**
-    * Recherche tous les codes favoris non contenu dans un dossier 
-    * pour la banque spécifiée.
-    * Par defaut un utilisateur enregistre des favoris pour une 
-    * banque donnée.
-    * @param utilisateur
-    * @param banque
-    * @return une liste de CodeSelects.
-    */
-   List<CodeSelect> findByRootDossier(Utilisateur u, Banque bank);
+	/**
+	 * Recherche tous les codes favoris non contenu dans un dossier pour la banque
+	 * spécifiée. Par defaut un utilisateur enregistre des favoris pour une banque
+	 * donnée.
+	 * 
+	 * @param utilisateur
+	 * @param banque
+	 * @return une liste de CodeSelects.
+	 */
+	@Query("SELECT c FROM CodeSelect c WHERE c.codeDossier is null AND c.utilisateur= ?1 AND c.banque = ?2 "
+			+ "ORDER BY c.codeSelectId")
+	List<CodeSelect> findByRootDossier(Utilisateur u, Banque bank);
 
-   /**
-    * Recherche tous les codes favoris sauf celui dont l'id est passé 
-    * en paramètre.
-    * @param codeSelectId Identifiant du code que l'on souhaite
-    * exclure de la liste retournée.
-    * @return une liste de CodeSelects.
-    */
-   List<CodeSelect> findByExcludedId(Integer codeSelectId);
+	/**
+	 * Recherche tous les codes favoris sauf celui dont l'id est passé en paramètre.
+	 * 
+	 * @param codeSelectId Identifiant du code que l'on souhaite exclure de la liste
+	 *                     retournée.
+	 * @return une liste de CodeSelects.
+	 */
+	@Query("SELECT c FROM CodeSelect c WHERE c.codeSelectId != ?1")
+	List<CodeSelect> findByExcludedId(Integer codeSelectId);
 
-   /**
-    * Recherche tous les codes favoris définis pour une banque à la racine
-    *  de l'arborescence.
-    * @param banque Banque
-    * @return une liste de CodeSelects.
-    */
-   List<CodeSelect> findByRootDossierAndBanque(Banque bank);
+	/**
+	 * Recherche tous les codes favoris définis pour une banque à la racine de
+	 * l'arborescence.
+	 * 
+	 * @param banque Banque
+	 * @return une liste de CodeSelects.
+	 */
+	@Query("SELECT c FROM CodeSelect c WHERE c.codeDossier is null AND c.banque = ?1 ORDER BY c.codeSelectId")
+	List<CodeSelect> findByRootDossierAndBanque(Banque bank);
 }

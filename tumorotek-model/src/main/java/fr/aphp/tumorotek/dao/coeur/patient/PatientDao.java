@@ -39,7 +39,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
@@ -47,213 +50,269 @@ import fr.aphp.tumorotek.model.contexte.Etablissement;
 
 /**
  *
- * Interface pour le DAO du bean de domaine Patient.
- * Interface créée le 28/10/09.
+ * Interface pour le DAO du bean de domaine Patient. Interface créée le
+ * 28/10/09.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface PatientDao extends GenericDaoJpa<Patient, Integer>
-{
+@Repository
+public interface PatientDao extends CrudRepository<Patient, Integer> {
 
-   /**
-    * Recherche les patients dont le NIP est 'like' le paramètre.
-    * @param nip NIP des patients recherchés.
-    * @return Liste de Patients.
-    */
-   List<Patient> findByNip(String nip);
+	/**
+	 * Recherche les patients dont le NIP est 'like' le paramètre.
+	 * 
+	 * @param nip NIP des patients recherchés.
+	 * @return Liste de Patients.
+	 */
+	@Query("SELECT p FROM Patient p WHERE p.nip like ?1")
+	List<Patient> findByNip(String nip);
 
-   /**
-    * Recherche les patients dont le NIP est 'like' le 1er paramètre
-    * et dont l'identifiant est différent du 2eme parametre.
-    * @param nip NIP des patients recherchés.
-    * @param id Identifiant à exclure.
-    * @return Liste de Patients.
-    */
-   List<Patient> findByNipWithExcludedId(String nip, Integer id);
+	/**
+	 * Recherche les patients dont le NIP est 'like' le 1er paramètre et dont
+	 * l'identifiant est différent du 2eme parametre.
+	 * 
+	 * @param nip NIP des patients recherchés.
+	 * @param id  Identifiant à exclure.
+	 * @return Liste de Patients.
+	 */
+	@Query("SELECT p FROM Patient p WHERE p.nip like ?1 AND p.patientId != ?2")
+	List<Patient> findByNipWithExcludedId(String nip, Integer id);
 
-   /**
-    * Recherche les patients dont le nom est 'like' le paramètre.
-    * @param nom Nom des patients recherchés.
-    * @return Liste de Patients.
-    */
-   List<Patient> findByNom(String nom);
+	/**
+	 * Recherche les patients dont le nom est 'like' le paramètre.
+	 * 
+	 * @param nom Nom des patients recherchés.
+	 * @return Liste de Patients.
+	 */
+	@Query("SELECT p FROM Patient p WHERE p.nom like ?1 OR p.nomNaissance like ?1")
+	List<Patient> findByNom(String nom);
 
-   /**
-    * Recherche les ids des patients dont le NIP est 'like' le paramètre et
-    * ayant des prélèvements dans les banques passées en paramètre.
-    * @param nip NIP des patients recherchés.
-    * @param Liste de banques.
-    * @return Liste de Patients.
-    */
-   List<Integer> findByNipReturnIds(String nip, List<Banque> banques);
+	/**
+	 * Recherche les ids des patients dont le NIP est 'like' le paramètre et ayant
+	 * des prélèvements dans les banques passées en paramètre.
+	 * 
+	 * @param nip   NIP des patients recherchés.
+	 * @param Liste de banques.
+	 * @return Liste de Patients.
+	 */
+	@Query("SELECT distinct(p.patientId) FROM Patient p JOIN p.maladies m JOIN m.prelevements prlvts "
+			+ "WHERE p.nip like ?1 AND prlvts.banque in (?2)")
+	List<Integer> findByNipReturnIds(String nip, List<Banque> banques);
 
-   /**
-    * Recherche les ids des patients dont le nom est 'like' le paramètre et
-    * ayant des prélèvements dans les banques passées en paramètre.
-    * @param nom Nom des patients recherchés.
-    * @param Liste de banques.
-    * @return Liste de Patients.
-    */
-   List<Integer> findByNomReturnIds(String nom, List<Banque> banques);
+	/**
+	 * Recherche les ids des patients dont le nom est 'like' le paramètre et ayant
+	 * des prélèvements dans les banques passées en paramètre.
+	 * 
+	 * @param nom   Nom des patients recherchés.
+	 * @param Liste de banques.
+	 * @return Liste de Patients.
+	 */
+	@Query("SELECT distinct(p.patientId) FROM Patient p JOIN p.maladies m JOIN m.prelevements prlvts "
+			+ "WHERE (p.nom like ?1 OR p.nomNaissance like ?1) AND prlvts.banque in (?2)")
+	List<Integer> findByNomReturnIds(String nom, List<Banque> banques);
 
-   /**
-    * Recherche les patients dont la date de naissance égale celle
-    * passee en parametre.
-    * @param date Date de naissance des patients recherchés.
-    * @return Liste de Patients.
-    */
-   List<Patient> findByDateNaissance(Date date);
+	/**
+	 * Recherche les patients dont la date de naissance égale celle passee en
+	 * parametre.
+	 * 
+	 * @param date Date de naissance des patients recherchés.
+	 * @return Liste de Patients.
+	 */
+	@Query("SELECT p FROM Patient p WHERE p.dateNaissance = ?1")
+	List<Patient> findByDateNaissance(Date date);
 
-   /**
-    * Recherche les patients enregistrés comme incomplets par le système.
-    * @return Liste de Patients.
-    */
-   List<Patient> findByEtatIncomplet();
+	/**
+	 * Recherche les patients enregistrés comme incomplets par le système.
+	 * 
+	 * @return Liste de Patients.
+	 */
+	@Query("SELECT p FROM Patient p WHERE p.etatIncomplet = true")
+	List<Patient> findByEtatIncomplet();
 
-   /**
-    * Recherche tous les patients sauf celui dont l'id est passé 
-    * en paramètre.
-    * @param patientId Identifiant du patient que l'on souhaite
-    * exclure de la liste retournée.
-    * @param nom pour reduire la liste d'objets retournés.
-    * @return une liste de Patient.
-    */
-   List<Patient> findByExcludedId(Integer patientId, String nom);
+	/**
+	 * Recherche tous les patients sauf celui dont l'id est passé en paramètre.
+	 * 
+	 * @param patientId Identifiant du patient que l'on souhaite exclure de la liste
+	 *                  retournée.
+	 * @param nom       pour reduire la liste d'objets retournés.
+	 * @return une liste de Patient.
+	 */
+	@Query("SELECT p FROM Patient p WHERE p.patientId != ?1 and p.nom = ?2")
+	List<Patient> findByExcludedId(Integer patientId, String nom);
 
-   /**
-    * Recherche les patients dont l'id est dans la liste.
-    * @param ids Liste d'identifiants.
-    * @return Liste de Patients.
-    */
-   List<Patient> findByIdInList(List<Integer> ids);
+	/**
+	 * Recherche les patients dont l'id est dans la liste.
+	 * 
+	 * @param ids Liste d'identifiants.
+	 * @return Liste de Patients.
+	 */
+	@Query("SELECT p FROM Patient p WHERE p.patientId in (?1)")
+	List<Patient> findByIdInList(List<Integer> ids);
 
-   /**
-    * Recherche tous les nips des patients.
-    * @return une liste de nips.
-    */
-   List<String> findAllNips();
+	/**
+	 * Recherche tous les nips des patients.
+	 * 
+	 * @return une liste de nips.
+	 */
+	@Query("SELECT p.nip FROM Patient p where p.nip is not null ORDER BY p.nip")
+	List<String> findAllNips();
 
-   /**
-    * Recherche tous les noms des patients.
-    * @return une liste de noms.
-    */
-   List<String> findAllNoms();
+	/**
+	 * Recherche tous les noms des patients.
+	 * 
+	 * @return une liste de noms.
+	 */
+	@Query("SELECT p.nom FROM Patient p ORDER BY p.nom")
+	List<String> findAllNoms();
 
-   /**
-    * Compte toutes les maladies d'un patient.
-    * @param pat
-    * @return compte
-    */
-   List<Long> findCountMaladies(Patient pat);
+	/**
+	 * Compte toutes les maladies d'un patient.
+	 * 
+	 * @param pat
+	 * @return compte
+	 */
+	@Query("SELECT count(m) FROM Maladie m WHERE m.patient = ?1")
+	List<Long> findCountMaladies(Patient pat);
 
-   /**
-    * Compte tous les prelevements d'un patient pour une banque.
-    * @param pat
-    * @param banque
-    * @return compte
-    */
-   List<Long> findCountPrelevementsByBanque(Patient pat, Banque bank);
+	/**
+	 * Compte tous les prelevements d'un patient pour une banque.
+	 * 
+	 * @param pat
+	 * @param banque
+	 * @return compte
+	 */
+	@Query("SELECT count(p) FROM Prelevement p WHERE p.maladie.patient = ?1 and p.banque = ?2")
+	List<Long> findCountPrelevementsByBanque(Patient pat, Banque bank);
 
-   /**
-    * Compte tous les prelevements d'un patient.
-    * @param pat
-    * @return compte
-    */
-   List<Long> findCountPrelevements(Patient pat);
+	/**
+	 * Compte tous les prelevements d'un patient.
+	 * 
+	 * @param pat
+	 * @return compte
+	 */
+	@Query("SELECT count(p) FROM Prelevement p WHERE p.maladie.patient = ?1")
+	List<Long> findCountPrelevements(Patient pat);
 
-   /**
-    * Compte les patient qui ont été enregistrés par le système suite
-    * à un prélèvements enregistré dans une des banques passées en paramètres.
-    * La date utilisée comme référence est celle d'enregistrement du patient 
-    * dans le système.
-    * @param cal1
-    * @param cal2
-    * @param banks
-    * @return compte
-    */
-   List<Long> findCountPrelevedByDatesSaisie(Calendar cal1, Calendar cal2, List<Banque> banks);
+	/**
+	 * Compte les patient qui ont été enregistrés par le système suite à un
+	 * prélèvements enregistré dans une des banques passées en paramètres. La date
+	 * utilisée comme référence est celle d'enregistrement du patient dans le
+	 * système.
+	 * 
+	 * @param cal1
+	 * @param cal2
+	 * @param banks
+	 * @return compte
+	 */
+	@Query("SELECT count(distinct p) FROM Patient p, Operation o JOIN p.maladies m JOIN m.prelevements r "
+			+ "WHERE p.patientId = o.objetId AND o.entite.nom = 'Patient' AND o.operationType.nom = 'Creation' "
+			+ "AND o.date >= ?1 AND o.date <= ?2 AND r.banque in (?3)")
+	List<Long> findCountPrelevedByDatesSaisie(Calendar cal1, Calendar cal2, List<Banque> banks);
 
-   /**
-    * Compte les patient qui ont été enregistrés par le système suite
-    * à un prélèvements enregistré dans une des banques passées en paramètres.
-    * La date utilisée comme référence est celle de prélèvement.
-    * @param cal1
-    * @param cal2
-    * @param banks
-    * @return compte
-    */
-   List<Long> findCountPrelevedByDatesPrel(Calendar cal1, Calendar cal2, List<Banque> banks);
+	/**
+	 * Compte les patient qui ont été enregistrés par le système suite à un
+	 * prélèvements enregistré dans une des banques passées en paramètres. La date
+	 * utilisée comme référence est celle de prélèvement.
+	 * 
+	 * @param cal1
+	 * @param cal2
+	 * @param banks
+	 * @return compte
+	 */
+	@Query("SELECT count(distinct p) FROM Patient p JOIN p.maladies m JOIN m.prelevements r "
+			+ "WHERE r.datePrelevement >= ?1 AND r.datePrelevement <= ?2 AND r.banque in (?3)")
+	List<Long> findCountPrelevedByDatesPrel(Calendar cal1, Calendar cal2, List<Banque> banks);
 
-   /**
-    * Compte les patient qui ont été enregistrés par le système suite
-    * à un prélèvements enregistré dans une des banques passées en paramètres.
-    * La date utilisée comme référence est celle d'enregistrement du patient 
-    * dans le système.
-    * Une liste d'établissement est passée en paramètre 
-    * pour exclure tous les échantillons techniqués dans ces derniers (pour 
-    * compter les échantillons extérieurs aux établissement 
-    * locaux par exemple).
-    * @param cal1
-    * @param cal2
-    * @param banks
-    * @param etabs
-    * @return compte
-    */
-   List<Long> findCountPrelevedByDatesSaisieExt(Calendar cal1, Calendar cal2, List<Banque> banks, List<Etablissement> etabs);
+	/**
+	 * Compte les patient qui ont été enregistrés par le système suite à un
+	 * prélèvements enregistré dans une des banques passées en paramètres. La date
+	 * utilisée comme référence est celle d'enregistrement du patient dans le
+	 * système. Une liste d'établissement est passée en paramètre pour exclure tous
+	 * les échantillons techniqués dans ces derniers (pour compter les échantillons
+	 * extérieurs aux établissement locaux par exemple).
+	 * 
+	 * @param cal1
+	 * @param cal2
+	 * @param banks
+	 * @param etabs
+	 * @return compte
+	 */
+	@Query("SELECT count(distinct p) FROM Patient p, Operation o JOIN p.maladies m JOIN m.prelevements r "
+			+ "WHERE p.patientId = o.objetId AND o.entite.nom = 'Patient' AND o.operationType.nom = 'Creation' "
+			+ "AND o.date >= ?1 AND o.date <= ?2 AND r.banque in (?3) AND (r.servicePreleveur is null "
+			+ "OR r.servicePreleveur.etablissement not in (?4))")
+	List<Long> findCountPrelevedByDatesSaisieExt(Calendar cal1, Calendar cal2, List<Banque> banks,
+			List<Etablissement> etabs);
 
-   /**
-    * Compte les patient qui ont été enregistrés par le système suite
-    * à un prélèvements enregistré dans une des banques passées en paramètres.
-    * La date utilisée comme référence est celle de prélèvement.
-    * Une liste d'établissement est passée en paramètre 
-    * pour exclure tous les échantillons techniqués dans ces derniers (pour 
-    * compter les échantillons extérieurs aux établissement 
-    * locaux par exemple).
-    * @param cal1
-    * @param cal2
-    * @param banks
-    * @param etabs
-    * @return compte
-    */
-   List<Long> findCountPrelevedByDatesPrelExt(Calendar cal1, Calendar cal2, List<Banque> banks, List<Etablissement> etabs);
+	/**
+	 * Compte les patient qui ont été enregistrés par le système suite à un
+	 * prélèvements enregistré dans une des banques passées en paramètres. La date
+	 * utilisée comme référence est celle de prélèvement. Une liste d'établissement
+	 * est passée en paramètre pour exclure tous les échantillons techniqués dans
+	 * ces derniers (pour compter les échantillons extérieurs aux établissement
+	 * locaux par exemple).
+	 * 
+	 * @param cal1
+	 * @param cal2
+	 * @param banks
+	 * @param etabs
+	 * @return compte
+	 */
+	@Query("SELECT count(distinct p) FROM Patient p JOIN p.maladies m JOIN m.prelevements r "
+			+ "WHERE r.datePrelevement >= ?1 AND r.datePrelevement <= ?2 AND r.banque in (?3) "
+			+ "AND (r.servicePreleveur is null OR r.servicePreleveur.etablissement not in (?4))")
+	List<Long> findCountPrelevedByDatesPrelExt(Calendar cal1, Calendar cal2, List<Banque> banks,
+			List<Etablissement> etabs);
 
-   /**
-    * Recherche tous les ids des patients de la base.
-    * @return Liste d'identifiants.
-    */
-   List<Integer> findByAllIds();
+	/**
+	 * Recherche tous les ids des patients de la base.
+	 * 
+	 * @return Liste d'identifiants.
+	 */
+	@Query("SELECT p.patientId FROM Patient p")
+	List<Integer> findByAllIds();
 
-   /**
-    * Recherche tous les ids des patients de la base ayant des prélèvements
-    * dans les banques passées en paramètre.
-    * @param Liste de banques.
-    * @return Liste d'identifiants.
-    */
-   List<Integer> findByAllIdsWithBanques(List<Banque> banques);
+	/**
+	 * Recherche tous les ids des patients de la base ayant des prélèvements dans
+	 * les banques passées en paramètre.
+	 * 
+	 * @param Liste de banques.
+	 * @return Liste d'identifiants.
+	 */
+	@Query("SELECT distinct(p.patientId) FROM Patient p JOIN p.maladies m JOIN m.prelevements prlvts "
+			+ "where prlvts.banque in (?1)")
+	List<Integer> findByAllIdsWithBanques(List<Banque> banques);
 
-   /**
-    * Recherche les patients Ids dont le nom est dans la liste.
-    * @param criteres Criteres pour lesquels on recherche des patients.
-    * @param banques Banques auxquelles appartiennent les patients.
-    * @return une liste d'ids.
-    */
-   List<Integer> findByNomInList(List<String> criteres, List<Banque> banques);
+	/**
+	 * Recherche les patients Ids dont le nom est dans la liste.
+	 * 
+	 * @param criteres Criteres pour lesquels on recherche des patients.
+	 * @param banques  Banques auxquelles appartiennent les patients.
+	 * @return une liste d'ids.
+	 */
+	@Query("SELECT distinct(p.patientId) FROM Patient p JOIN p.maladies m JOIN m.prelevements prlvts "
+			+ "WHERE p.nom in (?1) AND prlvts.banque in (?2)")
+	List<Integer> findByNomInList(List<String> criteres, List<Banque> banques);
 
-   /**
-    * Recherche les patients Ids dont le nip est dans la liste.
-    * @param criteres Criteres pour lesquels on recherche des patients.
-    * @param banques Banques auxquelles appartiennent les patients.
-    * @return une liste d'ids.
-    */
-   List<Integer> findByNipInList(List<String> criteres, List<Banque> banques);
+	/**
+	 * Recherche les patients Ids dont le nip est dans la liste.
+	 * 
+	 * @param criteres Criteres pour lesquels on recherche des patients.
+	 * @param banques  Banques auxquelles appartiennent les patients.
+	 * @return une liste d'ids.
+	 */
+	@Query("SELECT distinct(p.patientId) FROM Patient p JOIN p.maladies m JOIN m.prelevements prlvts "
+			+ "WHERE p.nip in (?1) AND prlvts.banque in (?2)")
+	List<Integer> findByNipInList(List<String> criteres, List<Banque> banques);
 
-   /**
-    * Compte les patients pour le médecin référent passé en paramètre.
-    * @param Collaborateur 
-    * @return long
-    */
-   List<Long> findCountByReferent(Collaborateur referent);
-
+	/**
+	 * Compte les patients pour le médecin référent passé en paramètre.
+	 * 
+	 * @param Collaborateur
+	 * @return long
+	 */
+	@Query("SELECT count(p) FROM Patient p JOIN p.patientMedecins o WHERE o.pk.collaborateur = ?1")
+	List<Long> findCountByReferent(Collaborateur referent);
 }

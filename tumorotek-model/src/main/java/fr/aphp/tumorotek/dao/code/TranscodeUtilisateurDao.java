@@ -35,18 +35,20 @@
  **/
 package fr.aphp.tumorotek.dao.code;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.code.TranscodeUtilisateur;
 
 /**
  *
- * Interface pour le DAO du bean de domaine TranscodeUtilisateur.
- * Utilisée juste pour la mtehdoe remove.
- * Interface créée le 22/06/10.
+ * Interface pour le DAO du bean de domaine TranscodeUtilisateur. Utilisée juste
+ * pour la mtehdoe remove. Interface créée le 22/06/10.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface TranscodeUtilisateurDao extends GenericDaoJpa<TranscodeUtilisateur, Integer>
-{}
+@Repository
+public interface TranscodeUtilisateurDao extends CrudRepository<TranscodeUtilisateur, Integer> {
+}

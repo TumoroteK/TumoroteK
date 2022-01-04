@@ -37,37 +37,44 @@ package fr.aphp.tumorotek.dao.annotation;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationDefaut;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 
 /**
  *
- * Interface pour le DAO du bean de domaine AnnotationDefaut.
- * Interface créée le 01/02/10.
+ * Interface pour le DAO du bean de domaine AnnotationDefaut. Interface créée le
+ * 01/02/10.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface AnnotationDefautDao extends GenericDaoJpa<AnnotationDefaut, Integer>
-{
+@Repository
+public interface AnnotationDefautDao extends CrudRepository<AnnotationDefaut, Integer> {
 
-   /**
-    * Recherche les valeurs défaut assignées au champ spécifié en paramètre.
-    * Les valeurs retournés sont triés par id (=ordre de creation).
-    * @param champAnnotation.
-    * @return Liste de AnnotationDefaut.
-    */
-   List<AnnotationDefaut> findByChamp(ChampAnnotation champ);
+	/**
+	 * Recherche les valeurs défaut assignées au champ spécifié en paramètre. Les
+	 * valeurs retournés sont triés par id (=ordre de creation).
+	 * 
+	 * @param champAnnotation.
+	 * @return Liste de AnnotationDefaut.
+	 */
+	@Query("SELECT a FROM AnnotationDefaut a WHERE a.champAnnotation = ?1 ORDER BY a.annotationDefautId")
+	List<AnnotationDefaut> findByChamp(ChampAnnotation champ);
 
-   /**
-    * Recherche toutes les valeurs défaut sauf celle dont l'id est passé 
-    * en paramètre.
-    * @param annotationDefautId Identifiant de la valeur que l'on souhaite
-    * exclure de la liste retournée.
-    * @return Liste de AnnotationDefaut.
-    */
-   List<AnnotationDefaut> findByExcludedId(Integer annotationDefautId);
+	/**
+	 * Recherche toutes les valeurs défaut sauf celle dont l'id est passé en
+	 * paramètre.
+	 * 
+	 * @param annotationDefautId Identifiant de la valeur que l'on souhaite exclure
+	 *                           de la liste retournée.
+	 * @return Liste de AnnotationDefaut.
+	 */
+	@Query("SELECT a FROM AnnotationDefaut a WHERE a.annotationDefautId != ?1")
+	List<AnnotationDefaut> findByExcludedId(Integer annotationDefautId);
 
 }

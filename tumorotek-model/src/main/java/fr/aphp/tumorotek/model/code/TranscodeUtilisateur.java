@@ -49,8 +49,8 @@ import org.hibernate.annotations.GenericGenerator;
 
 /**
  *
- * Objet persistant mappant la table TRANSCODE_UTILISATEUR.
- * Classe créée le 22/06/10.
+ * Objet persistant mappant la table TRANSCODE_UTILISATEUR. Classe créée le
+ * 22/06/10.
  *
  * @author Mathieu BARTHELEMY
  * @version 2.0
@@ -59,110 +59,112 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Table(name = "TRANSCODE_UTILISATEUR")
 
-public class TranscodeUtilisateur implements Serializable
-{
+public class TranscodeUtilisateur implements Serializable {
 
-   private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-   private Integer transcodeUtilisateurId;
-   private CodeUtilisateur codeUtilisateur;
-   private Integer codeId;
-   private TableCodage tableCodage;
+	private Integer transcodeUtilisateurId;
+	private CodeUtilisateur codeUtilisateur;
+	private Integer codeId;
+	private TableCodage tableCodage;
 
-   /** Constructeur par défaut. */
-   public TranscodeUtilisateur(){}
+	/** Constructeur par défaut. */
+	public TranscodeUtilisateur() {
+	}
 
-   @Id
-   @Column(name = "TRANSCODE_UTILISATEUR_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getTranscodeUtilisateurId(){
-      return this.transcodeUtilisateurId;
-   }
+	@Id
+	@Column(name = "TRANSCODE_UTILISATEUR_ID", unique = true, nullable = false)
+	@GeneratedValue(generator = "autoincrement")
+	@GenericGenerator(name = "autoincrement", strategy = "increment")
+	public Integer getTranscodeUtilisateurId() {
+		return this.transcodeUtilisateurId;
+	}
 
-   public void setTranscodeUtilisateurId(final Integer id){
-      this.transcodeUtilisateurId = id;
-   }
+	public void setTranscodeUtilisateurId(final Integer id) {
+		this.transcodeUtilisateurId = id;
+	}
 
-   @ManyToOne
-   @JoinColumn(name = "CODE_UTILISATEUR_ID", nullable = false)
-   public CodeUtilisateur getCodeUtilisateur(){
-      return codeUtilisateur;
-   }
+	@ManyToOne
+	@JoinColumn(name = "CODE_UTILISATEUR_ID", nullable = false)
+	public CodeUtilisateur getCodeUtilisateur() {
+		return codeUtilisateur;
+	}
 
-   public void setCodeUtilisateur(final CodeUtilisateur codeU){
-      this.codeUtilisateur = codeU;
-   }
+	public void setCodeUtilisateur(final CodeUtilisateur codeU) {
+		this.codeUtilisateur = codeU;
+	}
 
-   @Column(name = "CODE_ID", nullable = false)
-   public Integer getCodeId(){
-      return codeId;
-   }
+	@Column(name = "CODE_ID", nullable = false)
+	public Integer getCodeId() {
+		return codeId;
+	}
 
-   public void setCodeId(final Integer c){
-      this.codeId = c;
-   }
+	public void setCodeId(final Integer c) {
+		this.codeId = c;
+	}
 
-   @ManyToOne
-   @JoinColumn(name = "TABLE_CODAGE_ID", nullable = false)
-   public TableCodage getTableCodage(){
-      return this.tableCodage;
-   }
+	@ManyToOne
+	@JoinColumn(name = "TABLE_CODAGE_ID", nullable = false)
+	public TableCodage getTableCodage() {
+		return this.tableCodage;
+	}
 
-   public void setTableCodage(final TableCodage c){
-      this.tableCodage = c;
-   }
+	public void setTableCodage(final TableCodage c) {
+		this.tableCodage = c;
+	}
 
-   /**
-    * 2 transcodes sont considérés comme égaux s'ils ont les mêmes
-    * valeurs de clefs etrangères.
-    * @param obj est le code à tester.
-    * @return true si les codes sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 transcodes sont considérés comme égaux s'ils ont les mêmes valeurs de clefs
+	 * etrangères.
+	 * 
+	 * @param obj est le code à tester.
+	 * @return true si les codes sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final TranscodeUtilisateur test = (TranscodeUtilisateur) obj;
-      return ((this.codeId == test.codeId || (this.codeId != null && this.codeId.equals(test.codeId)))
-         && (this.codeUtilisateur == test.codeUtilisateur
-            || (this.codeUtilisateur != null && this.codeUtilisateur.equals(test.codeUtilisateur)))
-         && (this.tableCodage == test.tableCodage || (this.tableCodage != null && this.tableCodage.equals(test.tableCodage))));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || obj.getClass() != this.getClass()) {
+			return false;
+		}
+		final TranscodeUtilisateur test = (TranscodeUtilisateur) obj;
+		return ((this.codeId == test.codeId || (this.codeId != null && this.codeId.equals(test.codeId)))
+				&& (this.codeUtilisateur == test.codeUtilisateur
+						|| (this.codeUtilisateur != null && this.codeUtilisateur.equals(test.codeUtilisateur)))
+				&& (this.tableCodage == test.tableCodage
+						|| (this.tableCodage != null && this.tableCodage.equals(test.tableCodage))));
+	}
 
-   /**
-    * Le hashcode est calculé sur les attributs code, table
-    * codage et echantillon.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+	/**
+	 * Le hashcode est calculé sur les attributs code, table codage et echantillon.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-      int hash = 7;
-      int hashCode = 0;
-      int hashCodeUtilisateur = 0;
-      int hashTable = 0;
+		int hash = 7;
+		int hashCode = 0;
+		int hashCodeUtilisateur = 0;
+		int hashTable = 0;
 
-      if(this.codeId != null){
-         hashCode = this.codeId.hashCode();
-      }
-      if(this.codeUtilisateur != null){
-         hashCodeUtilisateur = this.codeUtilisateur.hashCode();
-      }
-      if(this.tableCodage != null){
-         hashTable = this.tableCodage.hashCode();
-      }
+		if (this.codeId != null) {
+			hashCode = this.codeId.hashCode();
+		}
+		if (this.codeUtilisateur != null) {
+			hashCodeUtilisateur = this.codeUtilisateur.hashCode();
+		}
+		if (this.tableCodage != null) {
+			hashTable = this.tableCodage.hashCode();
+		}
 
-      hash = 31 * hash + hashCode;
-      hash = 31 * hash + hashCodeUtilisateur;
-      hash = 31 * hash + hashTable;
+		hash = 31 * hash + hashCode;
+		hash = 31 * hash + hashCodeUtilisateur;
+		hash = 31 * hash + hashTable;
 
-      return hash;
+		return hash;
 
-   }
+	}
 }

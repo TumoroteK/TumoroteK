@@ -72,245 +72,244 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 @Entity
 @Table(name = "TABLE_ANNOTATION")
 @NamedQueries(value = {
-   @NamedQuery(name = "TableAnnotation.findByNom",
-      query = "SELECT t FROM TableAnnotation t WHERE t.nom like ?1" + " ORDER BY t.nom"),
-   @NamedQuery(name = "TableAnnotation.findByEntiteAndBanque",
-      query = "SELECT t FROM TableAnnotation t" + " JOIN t.tableAnnotationBanques b" + " WHERE t.entite = ?1 AND b.pk.banque = ?2"
-         + " ORDER BY b.ordre"),
-   @NamedQuery(name = "TableAnnotation.findByEntiteBanqueAndCatalogue",
-      query = "SELECT t FROM TableAnnotation t" + " JOIN t.tableAnnotationBanques b" + " WHERE t.entite = ?1 AND b.pk.banque = ?2"
-         + " AND t.catalogue.nom like ?3" + " ORDER BY b.ordre"),
-   @NamedQuery(name = "TableAnnotation.findByEntiteAndPlateforme",
-      query = "SELECT t FROM TableAnnotation t" + " WHERE t.entite = ?1 AND t.plateforme = ?2 " + "AND t.catalogue is null "
-         + "ORDER BY t.nom"),
-   @NamedQuery(name = "TableAnnotation" + ".findMaxOrdreForBanqueAndEntite",
-      query = "SELECT max(b.ordre) FROM TableAnnotationBanque b" + " JOIN b.pk.tableAnnotation t"
-         + " WHERE t.entite = ?1 AND b.pk.banque = ?2"),
-   //			@NamedQuery(name = "TableAnnotation.findDoublon", 
-   //				query = "SELECT t FROM TableAnnotation t WHERE t.nom = ?1 "
-   //							+ "AND t.entite = ?2")
-   @NamedQuery(name = "TableAnnotation.findByExcludedId",
-      query = "SELECT t FROM TableAnnotation t WHERE " + "t.tableAnnotationId != ?1"),
-   @NamedQuery(name = "TableAnnotation.findByPlateforme",
-      query = "SELECT t from TableAnnotation t " + "WHERE t.plateforme = ?1 " + "order by t.nom"),
-   @NamedQuery(name = "TableAnnotation.findByCatalogues",
-      query = "SELECT t from TableAnnotation t " + "WHERE t.catalogue in (?1) "
-         + "ORDER BY t.entite.entiteId, t.tableAnnotationId"),
-   @NamedQuery(name = "TableAnnotation.findByBanques", query = "SELECT distinct t from TableAnnotation t "
-      + "JOIN t.tableAnnotationBanques tabs " + "WHERE tabs.pk.banque in (?1) "
-      //				+ "AND t.catalogue is null "
-      + "ORDER BY t.entite.entiteId, t.nom"),
-   @NamedQuery(name = "TableAnnotation.findByCatalogueAndChpEdit", query = "SELECT distinct t FROM TableAnnotation t "
-      + "JOIN t.champAnnotations c " + "WHERE t.catalogue = ?1 " + "AND c.edit = 1 " + "ORDER BY t.entite.entiteId")})
+		@NamedQuery(name = "TableAnnotation.findByNom", query = "SELECT t FROM TableAnnotation t WHERE t.nom like ?1"
+				+ " ORDER BY t.nom"),
+		@NamedQuery(name = "TableAnnotation.findByEntiteAndBanque", query = "SELECT t FROM TableAnnotation t"
+				+ " JOIN t.tableAnnotationBanques b" + " WHERE t.entite = ?1 AND b.pk.banque = ?2"
+				+ " ORDER BY b.ordre"),
+		@NamedQuery(name = "TableAnnotation.findByEntiteBanqueAndCatalogue", query = "SELECT t FROM TableAnnotation t"
+				+ " JOIN t.tableAnnotationBanques b" + " WHERE t.entite = ?1 AND b.pk.banque = ?2"
+				+ " AND t.catalogue.nom like ?3" + " ORDER BY b.ordre"),
+		@NamedQuery(name = "TableAnnotation.findByEntiteAndPlateforme", query = "SELECT t FROM TableAnnotation t"
+				+ " WHERE t.entite = ?1 AND t.plateforme = ?2 " + "AND t.catalogue is null " + "ORDER BY t.nom"),
+		@NamedQuery(name = "TableAnnotation"
+				+ ".findMaxOrdreForBanqueAndEntite", query = "SELECT max(b.ordre) FROM TableAnnotationBanque b"
+						+ " JOIN b.pk.tableAnnotation t" + " WHERE t.entite = ?1 AND b.pk.banque = ?2"),
+		// @NamedQuery(name = "TableAnnotation.findDoublon",
+		// query = "SELECT t FROM TableAnnotation t WHERE t.nom = ?1 "
+		// + "AND t.entite = ?2")
+		@NamedQuery(name = "TableAnnotation.findByExcludedId", query = "SELECT t FROM TableAnnotation t WHERE "
+				+ "t.tableAnnotationId != ?1"),
+		@NamedQuery(name = "TableAnnotation.findByPlateforme", query = "SELECT t from TableAnnotation t "
+				+ "WHERE t.plateforme = ?1 " + "order by t.nom"),
+		@NamedQuery(name = "TableAnnotation.findByCatalogues", query = "SELECT t from TableAnnotation t "
+				+ "WHERE t.catalogue in (?1) " + "ORDER BY t.entite.entiteId, t.tableAnnotationId"),
+		@NamedQuery(name = "TableAnnotation.findByBanques", query = "SELECT distinct t from TableAnnotation t "
+				+ "JOIN t.tableAnnotationBanques tabs " + "WHERE tabs.pk.banque in (?1) "
+				// + "AND t.catalogue is null "
+				+ "ORDER BY t.entite.entiteId, t.nom"),
+		@NamedQuery(name = "TableAnnotation.findByCatalogueAndChpEdit", query = "SELECT distinct t FROM TableAnnotation t "
+				+ "JOIN t.champAnnotations c " + "WHERE t.catalogue = ?1 " + "AND c.edit = 1 "
+				+ "ORDER BY t.entite.entiteId") })
+public class TableAnnotation implements TKFantomableObject, TKdataObject, Serializable {
+	private static final long serialVersionUID = 1L;
 
-public class TableAnnotation implements TKFantomableObject, TKdataObject, Serializable
-{
-   private static final long serialVersionUID = 1L;
+	private Integer tableAnnotationId;
+	private String nom;
+	private String description;
+	private Entite entite;
+	private Catalogue catalogue;
+	private Plateforme plateforme;
 
-   private Integer tableAnnotationId;
-   private String nom;
-   private String description;
-   private Entite entite;
-   private Catalogue catalogue;
-   private Plateforme plateforme;
+	private Set<ChampAnnotation> champAnnotations = new HashSet<>();
+	private Set<TableAnnotationBanque> tableAnnotationBanques = new HashSet<>();
+	private Set<TableAnnotationTemplate> tableAnnotationTemplates = new HashSet<>();
 
-   private Set<ChampAnnotation> champAnnotations = new HashSet<>();
-   private Set<TableAnnotationBanque> tableAnnotationBanques = new HashSet<>();
-   private Set<TableAnnotationTemplate> tableAnnotationTemplates = new HashSet<>();
+	/**
+	 * Constructeur par défaut.
+	 */
+	public TableAnnotation() {
+	}
 
-   /**
-    * Constructeur par défaut.
-    */
-   public TableAnnotation(){}
+	@Id
+	@Column(name = "TABLE_ANNOTATION_ID", unique = true, nullable = false)
+	@GeneratedValue(generator = "autoincrement")
+	@GenericGenerator(name = "autoincrement", strategy = "increment")
+	public Integer getTableAnnotationId() {
+		return this.tableAnnotationId;
+	}
 
-   @Id
-   @Column(name = "TABLE_ANNOTATION_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getTableAnnotationId(){
-      return this.tableAnnotationId;
-   }
+	public void setTableAnnotationId(final Integer id) {
+		this.tableAnnotationId = id;
+	}
 
-   public void setTableAnnotationId(final Integer id){
-      this.tableAnnotationId = id;
-   }
+	@Column(name = "NOM", nullable = false, length = 50)
+	public String getNom() {
+		return this.nom;
+	}
 
-   @Column(name = "NOM", nullable = false, length = 50)
-   public String getNom(){
-      return this.nom;
-   }
+	public void setNom(final String n) {
+		this.nom = n;
+	}
 
-   public void setNom(final String n){
-      this.nom = n;
-   }
+	// @Lob
+	@Column(name = "DESCRIPTION", nullable = true)
+	public String getDescription() {
+		return this.description;
+	}
 
-   //@Lob
-   @Column(name = "DESCRIPTION", nullable = true)
-   public String getDescription(){
-      return this.description;
-   }
+	public void setDescription(final String descr) {
+		this.description = descr;
+	}
 
-   public void setDescription(final String descr){
-      this.description = descr;
-   }
+	@ManyToOne
+	@JoinColumn(name = "ENTITE_ID", nullable = false)
+	public Entite getEntite() {
+		return this.entite;
+	}
 
-   @ManyToOne
-   @JoinColumn(name = "ENTITE_ID", nullable = false)
-   public Entite getEntite(){
-      return this.entite;
-   }
+	public void setEntite(final Entite en) {
+		this.entite = en;
+	}
 
-   public void setEntite(final Entite en){
-      this.entite = en;
-   }
+	@ManyToOne
+	@JoinColumn(name = "CATALOGUE_ID", nullable = true)
+	public Catalogue getCatalogue() {
+		return catalogue;
+	}
 
-   @ManyToOne
-   @JoinColumn(name = "CATALOGUE_ID", nullable = true)
-   public Catalogue getCatalogue(){
-      return catalogue;
-   }
+	public void setCatalogue(final Catalogue cata) {
+		this.catalogue = cata;
+	}
 
-   public void setCatalogue(final Catalogue cata){
-      this.catalogue = cata;
-   }
+	@ManyToOne
+	@JoinColumn(name = "PLATEFORME_ID", nullable = true)
+	public Plateforme getPlateforme() {
+		return plateforme;
+	}
 
-   @ManyToOne
-   @JoinColumn(name = "PLATEFORME_ID", nullable = true)
-   public Plateforme getPlateforme(){
-      return plateforme;
-   }
+	public void setPlateforme(final Plateforme pf) {
+		this.plateforme = pf;
+	}
 
-   public void setPlateforme(final Plateforme pf){
-      this.plateforme = pf;
-   }
+	@OneToMany(mappedBy = "tableAnnotation")
+	@OrderBy("ordre")
+	public Set<ChampAnnotation> getChampAnnotations() {
+		return this.champAnnotations;
+	}
 
-   @OneToMany(mappedBy = "tableAnnotation")
-   @OrderBy("ordre")
-   public Set<ChampAnnotation> getChampAnnotations(){
-      return this.champAnnotations;
-   }
+	public void setChampAnnotations(final Set<ChampAnnotation> chps) {
+		this.champAnnotations = chps;
+	}
 
-   public void setChampAnnotations(final Set<ChampAnnotation> chps){
-      this.champAnnotations = chps;
-   }
+	@OneToMany(mappedBy = "pk.tableAnnotation", cascade = { CascadeType.REMOVE })
+	@OrderBy("ordre")
+	public Set<TableAnnotationBanque> getTableAnnotationBanques() {
+		return this.tableAnnotationBanques;
+	}
 
-   @OneToMany(mappedBy = "pk.tableAnnotation", cascade = {CascadeType.REMOVE})
-   @OrderBy("ordre")
-   public Set<TableAnnotationBanque> getTableAnnotationBanques(){
-      return this.tableAnnotationBanques;
-   }
+	public void setTableAnnotationBanques(final Set<TableAnnotationBanque> tabs) {
+		this.tableAnnotationBanques = tabs;
+	}
 
-   public void setTableAnnotationBanques(final Set<TableAnnotationBanque> tabs){
-      this.tableAnnotationBanques = tabs;
-   }
+	@OneToMany(mappedBy = "pk.tableAnnotation", cascade = { CascadeType.REMOVE })
+	public Set<TableAnnotationTemplate> getTableAnnotationTemplates() {
+		return tableAnnotationTemplates;
+	}
 
-   @OneToMany(mappedBy = "pk.tableAnnotation", cascade = {CascadeType.REMOVE})
-   public Set<TableAnnotationTemplate> getTableAnnotationTemplates(){
-      return tableAnnotationTemplates;
-   }
+	public void setTableAnnotationTemplates(final Set<TableAnnotationTemplate> tables) {
+		this.tableAnnotationTemplates = tables;
+	}
 
-   public void setTableAnnotationTemplates(final Set<TableAnnotationTemplate> tables){
-      this.tableAnnotationTemplates = tables;
-   }
+	/**
+	 * 2 tables sont considerees comme egales si ils ont le même nom et la même
+	 * reference vers l'entite. Les tables annotations sont partagees par le systeme
+	 * donc ce dernier bloquera l'enregistrement de deux tables ayant le même nom
+	 * pour la même entité pour une même plateforme.
+	 *
+	 * @param obj est la table à tester.
+	 * @return true si les tables sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-   /**
-    * 2 tables sont considerees comme egales si ils ont le même nom
-    * et la même reference vers l'entite. Les tables annotations sont partagees
-    * par le systeme donc ce dernier bloquera l'enregistrement de deux tables
-    * ayant le même nom pour la même entité pour une même plateforme.
-    *
-    * @param obj est la table à tester.
-    * @return true si les tables sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || obj.getClass() != this.getClass()) {
+			return false;
+		}
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
+		final TableAnnotation test = (TableAnnotation) obj;
 
-      final TableAnnotation test = (TableAnnotation) obj;
+		return ((this.nom == test.nom || (this.nom != null && this.nom.equals(test.nom)))
+				&& (this.entite == test.entite || (this.entite != null && this.entite.equals(test.entite)))
+				&& (this.plateforme == test.plateforme
+						|| (this.plateforme != null && this.plateforme.equals(test.plateforme))));
+	}
 
-      return ((this.nom == test.nom || (this.nom != null && this.nom.equals(test.nom)))
-         && (this.entite == test.entite || (this.entite != null && this.entite.equals(test.entite)))
-         && (this.plateforme == test.plateforme || (this.plateforme != null && this.plateforme.equals(test.plateforme))));
-   }
+	/**
+	 * Le hashcode est calculé sur le nom de la table et l'id de l'entite à laquelle
+	 * la table est attribuee..
+	 *
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-   /**
-    * Le hashcode est calculé sur le nom de la table et l'id de l'entite
-    * à laquelle la table est attribuee..
-    *
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+		int hash = 7;
+		int hashNom = 0;
+		int hashEntite = 0;
+		int hashPF = 0;
 
-      int hash = 7;
-      int hashNom = 0;
-      int hashEntite = 0;
-      int hashPF = 0;
+		if (this.nom != null) {
+			hashNom = this.nom.hashCode();
+		}
+		if (this.entite != null) {
+			hashEntite = this.entite.hashCode();
+		}
+		if (this.plateforme != null) {
+			hashPF = this.plateforme.hashCode();
+		}
 
-      if(this.nom != null){
-         hashNom = this.nom.hashCode();
-      }
-      if(this.entite != null){
-         hashEntite = this.entite.hashCode();
-      }
-      if(this.plateforme != null){
-         hashPF = this.plateforme.hashCode();
-      }
+		hash = 31 * hash + hashNom;
+		hash = 31 * hash + hashEntite;
+		hash = 31 * hash + hashPF;
 
-      hash = 31 * hash + hashNom;
-      hash = 31 * hash + hashEntite;
-      hash = 31 * hash + hashPF;
+		return hash;
+	}
 
-      return hash;
-   }
+	@Override
+	public String toString() {
+		if (this.entite != null && this.nom != null) {
+			return "{" + this.entite.getNom() + "." + this.nom + "}";
+		}
+		return "{Empty TableAnnotation}";
+	}
 
-   @Override
-   public String toString(){
-      if(this.entite != null && this.nom != null){
-         return "{" + this.entite.getNom() + "." + this.nom + "}";
-      }
-      return "{Empty TableAnnotation}";
-   }
+	/**
+	 * Cree un clone de l'objet.
+	 *
+	 * @return clone TableAnnotation
+	 */
+	@Override
+	public TableAnnotation clone() {
+		final TableAnnotation clone = new TableAnnotation();
+		clone.setTableAnnotationId(this.tableAnnotationId);
+		clone.setNom(this.nom);
+		clone.setDescription(this.description);
+		clone.setCatalogue(this.catalogue);
+		clone.setEntite(this.entite);
+		clone.setChampAnnotations(this.getChampAnnotations());
+		clone.setPlateforme(getPlateforme());
 
-   /**
-    * Cree un clone de l'objet.
-    *
-    * @return clone TableAnnotation
-    */
-   @Override
-   public TableAnnotation clone(){
-      final TableAnnotation clone = new TableAnnotation();
-      clone.setTableAnnotationId(this.tableAnnotationId);
-      clone.setNom(this.nom);
-      clone.setDescription(this.description);
-      clone.setCatalogue(this.catalogue);
-      clone.setEntite(this.entite);
-      clone.setChampAnnotations(this.getChampAnnotations());
-      clone.setPlateforme(getPlateforme());
+		return clone;
+	}
 
-      return clone;
-   }
+	@Override
+	@Transient
+	public Integer listableObjectId() {
+		return getTableAnnotationId();
+	}
 
-   @Override
-   @Transient
-   public Integer listableObjectId(){
-      return getTableAnnotationId();
-   }
+	@Override
+	public String entiteNom() {
+		return "TableAnnotation";
+	}
 
-   @Override
-   public String entiteNom(){
-      return "TableAnnotation";
-   }
-
-   @Override
-   @Transient
-   public String getPhantomData(){
-      return getNom();
-   }
+	@Override
+	@Transient
+	public String getPhantomData() {
+		return getNom();
+	}
 }

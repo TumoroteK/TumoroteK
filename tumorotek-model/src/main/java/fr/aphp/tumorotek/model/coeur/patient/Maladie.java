@@ -49,8 +49,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
@@ -69,256 +67,256 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
 
 /**
  *
- * Objet persistant mappant la table MALADIE.
- * Classe créée le 14/09/09.
+ * Objet persistant mappant la table MALADIE. Classe créée le 14/09/09.
  *
  * @author Maxime Gousseau
- * @version 2.2.3-genno
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "MALADIE")
-@NamedQueries(value = {@NamedQuery(name = "Maladie.findByLibelle", query = "SELECT m FROM Maladie m WHERE m.libelle like ?1"),
-   @NamedQuery(name = "Maladie.findByCode", query = "SELECT m FROM Maladie m WHERE m.code like ?1"),
-   @NamedQuery(name = "Maladie.findByExcludedId",
-      query = "SELECT m FROM Maladie m WHERE m.maladieId != ?1" + " AND m.libelle = ?2"),
-   @NamedQuery(name = "Maladie.findByPatient",
-      query = "SELECT m FROM Maladie m WHERE m.patient = ?1" + " ORDER BY m.dateDebut, m.dateDiagnostic"),
-   @NamedQuery(name = "Maladie.findByPatientNoSystem",
-      query = "SELECT m FROM Maladie m " + "WHERE m.patient = ?1 AND m.systemeDefaut = 0 "
-         + "ORDER BY m.dateDebut, m.dateDiagnostic, m.maladieId"),
-   @NamedQuery(name = "Maladie.findByCollaborateurId",
-      query = "SELECT m FROM Maladie m " + "LEFT JOIN m.collaborateurs o " + "WHERE o.collaborateurId = ?1"),
-   @NamedQuery(name = "Maladie.findCountByReferent",
-      query = "SELECT count(m) FROM Maladie m " + "JOIN m.collaborateurs c " + "WHERE c = ?1"), 
-   @NamedQuery(name = "Maladie.findByLibelleAndPatient", query = "SELECT m FROM Maladie m WHERE m.libelle like ?1 " 
-		 + 	"AND m.patient = ?2")
-})
-public class Maladie extends TKDelegetableObject<Maladie> implements TKdataObject, TKFantomableObject, Serializable
-{
+//@NamedQueries(value = {@NamedQuery(name = "Maladie.findByLibelle", query = "SELECT m FROM Maladie m WHERE m.libelle like ?1"),
+//   @NamedQuery(name = "Maladie.findByCode", query = "SELECT m FROM Maladie m WHERE m.code like ?1"),
+//   @NamedQuery(name = "Maladie.findByExcludedId",
+//      query = "SELECT m FROM Maladie m WHERE m.maladieId != ?1" + " AND m.libelle = ?2"),
+//   @NamedQuery(name = "Maladie.findByPatient",
+//      query = "SELECT m FROM Maladie m WHERE m.patient = ?1" + " ORDER BY m.dateDebut, m.dateDiagnostic"),
+//   @NamedQuery(name = "Maladie.findByPatientNoSystem",
+//      query = "SELECT m FROM Maladie m " + "WHERE m.patient = ?1 AND m.systemeDefaut = 0 "
+//         + "ORDER BY m.dateDebut, m.dateDiagnostic, m.maladieId"),
+//   @NamedQuery(name = "Maladie.findByCollaborateurId",
+//      query = "SELECT m FROM Maladie m " + "LEFT JOIN m.collaborateurs o " + "WHERE o.collaborateurId = ?1"),
+//   @NamedQuery(name = "Maladie.findCountByReferent",
+//      query = "SELECT count(m) FROM Maladie m " + "JOIN m.collaborateurs c " + "WHERE c = ?1"), 
+//   @NamedQuery(name = "Maladie.findByLibelleAndPatient", query = "SELECT m FROM Maladie m WHERE m.libelle like ?1 " 
+//		 + 	"AND m.patient = ?2")
+//})
+public class Maladie extends TKDelegetableObject<Maladie> implements TKdataObject, TKFantomableObject, Serializable {
 
-   private static final long serialVersionUID = 4092522013404060267L;
+	private static final long serialVersionUID = 4092522013404060267L;
 
-   private Integer maladieId;
-   private Patient patient;
-   private String libelle;
-   private String code;
-   private Date dateDiagnostic;
-   private Date dateDebut;
-   private Boolean systemeDefaut = false;
+	private Integer maladieId;
+	private Patient patient;
+	private String libelle;
+	private String code;
+	private Date dateDiagnostic;
+	private Date dateDebut;
+	private Boolean systemeDefaut = false;
 
-   private Set<Prelevement> prelevements = new HashSet<>();
-   private Set<Collaborateur> collaborateurs = new HashSet<>();
+	private Set<Prelevement> prelevements = new HashSet<>();
+	private Set<Collaborateur> collaborateurs = new HashSet<>();
 
-   private TKDelegateObject<Maladie> delegate;
+	private TKDelegateObject<Maladie> delegate;
 
-   /** Constructeur par défaut. */
-   public Maladie(){}
+	/** Constructeur par défaut. */
+	public Maladie() {
+	}
 
-   @Override
-   public String toString(){
-      if(this.libelle != null){
-         return "{" + this.libelle + "}";
-      }
-      return "{Empty Maladie}";
-   }
+	@Override
+	public String toString() {
+		if (this.libelle != null) {
+			return "{" + this.libelle + "}";
+		}
+		return "{Empty Maladie}";
+	}
 
-   @Id
-   @Column(name = "MALADIE_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getMaladieId(){
-      return this.maladieId;
-   }
+	@Id
+	@Column(name = "MALADIE_ID", unique = true, nullable = false)
+	@GeneratedValue(generator = "autoincrement")
+	@GenericGenerator(name = "autoincrement", strategy = "increment")
+	public Integer getMaladieId() {
+		return this.maladieId;
+	}
 
-   public void setMaladieId(final Integer id){
-      this.maladieId = id;
-   }
+	public void setMaladieId(final Integer id) {
+		this.maladieId = id;
+	}
 
-   @ManyToOne(cascade = {CascadeType.REFRESH})
-   @JoinColumn(name = "PATIENT_ID", nullable = false)
-   public Patient getPatient(){
-      return this.patient;
-   }
+	@ManyToOne(cascade = { CascadeType.REFRESH })
+	@JoinColumn(name = "PATIENT_ID", nullable = false)
+	public Patient getPatient() {
+		return this.patient;
+	}
 
-   public void setPatient(final Patient p){
-      this.patient = p;
-   }
+	public void setPatient(final Patient p) {
+		this.patient = p;
+	}
 
-   @Column(name = "LIBELLE", nullable = false, length = 300)
-   public String getLibelle(){
-      return this.libelle;
-   }
+	@Column(name = "LIBELLE", nullable = false, length = 300)
+	public String getLibelle() {
+		return this.libelle;
+	}
 
-   public void setLibelle(final String lib){
-      this.libelle = lib;
-   }
+	public void setLibelle(final String lib) {
+		this.libelle = lib;
+	}
 
-   @Column(name = "CODE", nullable = true, length = 50)
-   public String getCode(){
-      return this.code;
-   }
+	@Column(name = "CODE", nullable = true, length = 50)
+	public String getCode() {
+		return this.code;
+	}
 
-   public void setCode(final String c){
-      this.code = c;
-   }
+	public void setCode(final String c) {
+		this.code = c;
+	}
 
-   @Column(name = "DATE_DIAGNOSTIC", nullable = true)
-   public Date getDateDiagnostic(){
-      if(dateDiagnostic != null){
-         return new Date(dateDiagnostic.getTime());
-      }
-      return null;
-   }
+	@Column(name = "DATE_DIAGNOSTIC", nullable = true)
+	public Date getDateDiagnostic() {
+		if (dateDiagnostic != null) {
+			return new Date(dateDiagnostic.getTime());
+		}
+		return null;
+	}
 
-   public void setDateDiagnostic(final Date date){
-      if(date != null){
-         this.dateDiagnostic = new Date(date.getTime());
-      }else{
-         this.dateDiagnostic = null;
-      }
-   }
+	public void setDateDiagnostic(final Date date) {
+		if (date != null) {
+			this.dateDiagnostic = new Date(date.getTime());
+		} else {
+			this.dateDiagnostic = null;
+		}
+	}
 
-   @Column(name = "DATE_DEBUT", nullable = true)
-   public Date getDateDebut(){
-      if(dateDebut != null){
-         return new Date(dateDebut.getTime());
-      }
-      return null;
-   }
+	@Column(name = "DATE_DEBUT", nullable = true)
+	public Date getDateDebut() {
+		if (dateDebut != null) {
+			return new Date(dateDebut.getTime());
+		}
+		return null;
+	}
 
-   public void setDateDebut(final Date date){
-      if(date != null){
-         this.dateDebut = new Date(date.getTime());
-      }else{
-         this.dateDebut = null;
-      }
-   }
+	public void setDateDebut(final Date date) {
+		if (date != null) {
+			this.dateDebut = new Date(date.getTime());
+		} else {
+			this.dateDebut = null;
+		}
+	}
 
-   @Column(name = "SYSTEME_DEFAUT", nullable = false)
-   public Boolean getSystemeDefaut(){
-      return systemeDefaut;
-   }
+	@Column(name = "SYSTEME_DEFAUT", nullable = false)
+	public Boolean getSystemeDefaut() {
+		return systemeDefaut;
+	}
 
-   public void setSystemeDefaut(final Boolean sysDefaut){
-      this.systemeDefaut = sysDefaut;
-   }
+	public void setSystemeDefaut(final Boolean sysDefaut) {
+		this.systemeDefaut = sysDefaut;
+	}
 
-   @OneToMany(mappedBy = "maladie")
-   @OrderBy("datePrelevement")
-   public Set<Prelevement> getPrelevements(){
-      return prelevements;
-   }
+	@OneToMany(mappedBy = "maladie")
+	@OrderBy("datePrelevement")
+	public Set<Prelevement> getPrelevements() {
+		return prelevements;
+	}
 
-   public void setPrelevements(final Set<Prelevement> prelevs){
-      this.prelevements = prelevs;
-   }
+	public void setPrelevements(final Set<Prelevement> prelevs) {
+		this.prelevements = prelevs;
+	}
 
-   @ManyToMany(targetEntity = Collaborateur.class, cascade = {CascadeType.MERGE})
-   @JoinTable(name = "MALADIE_MEDECIN", joinColumns = @JoinColumn(name = "MALADIE_ID"),
-      inverseJoinColumns = @JoinColumn(name = "COLLABORATEUR_ID"))
-   public Set<Collaborateur> getCollaborateurs(){
-      return collaborateurs;
-   }
+	@ManyToMany(targetEntity = Collaborateur.class, cascade = { CascadeType.MERGE })
+	@JoinTable(name = "MALADIE_MEDECIN", joinColumns = @JoinColumn(name = "MALADIE_ID"), inverseJoinColumns = @JoinColumn(name = "COLLABORATEUR_ID"))
+	public Set<Collaborateur> getCollaborateurs() {
+		return collaborateurs;
+	}
 
-   public void setCollaborateurs(final Set<Collaborateur> collabs){
-      this.collaborateurs = collabs;
-   }
+	public void setCollaborateurs(final Set<Collaborateur> collabs) {
+		this.collaborateurs = collabs;
+	}
 
-   /**
-    * 2 maladies sont considérées comme égales si elles ont le même
-    * libelle et le même patient et la même date diagnostic.
-    * @param obj est la maladie à tester.
-    * @return true si les maladie sont égales.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 maladies sont considérées comme égales si elles ont le même libelle et le
+	 * même patient et la même date diagnostic.
+	 * 
+	 * @param obj est la maladie à tester.
+	 * @return true si les maladie sont égales.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final Maladie test = (Maladie) obj;
-      return (((this.libelle != null && this.libelle.equalsIgnoreCase(test.libelle)) || this.libelle == test.libelle)
-         && ((this.patient != null && this.patient.equals(test.patient)) || this.patient == test.patient)
-         && ((this.dateDiagnostic != null && this.dateDiagnostic.equals(test.dateDiagnostic))
-            || this.dateDiagnostic == test.dateDiagnostic));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || obj.getClass() != this.getClass()) {
+			return false;
+		}
+		final Maladie test = (Maladie) obj;
+		return (((this.libelle != null && this.libelle.equalsIgnoreCase(test.libelle)) || this.libelle == test.libelle)
+				&& ((this.patient != null && this.patient.equals(test.patient)) || this.patient == test.patient)
+				&& ((this.dateDiagnostic != null && this.dateDiagnostic.equals(test.dateDiagnostic))
+						|| this.dateDiagnostic == test.dateDiagnostic));
+	}
 
-   /**
-    * Le hashcode est calculé sur les attributs libelle et patient
-    * et dateDiagnostic.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+	/**
+	 * Le hashcode est calculé sur les attributs libelle et patient et
+	 * dateDiagnostic.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-      int hash = 7;
-      int hashLibelle = 0;
-      int hashPatient = 0;
-      int hashDateDiag = 0;
+		int hash = 7;
+		int hashLibelle = 0;
+		int hashPatient = 0;
+		int hashDateDiag = 0;
 
-      if(this.libelle != null){
-         hashLibelle = this.libelle.hashCode();
-      }
-      if(this.patient != null){
-         hashPatient = this.patient.hashCode();
-      }
-      if(this.dateDiagnostic != null){
-         hashDateDiag = this.dateDiagnostic.hashCode();
-      }
+		if (this.libelle != null) {
+			hashLibelle = this.libelle.hashCode();
+		}
+		if (this.patient != null) {
+			hashPatient = this.patient.hashCode();
+		}
+		if (this.dateDiagnostic != null) {
+			hashDateDiag = this.dateDiagnostic.hashCode();
+		}
 
-      hash = 31 * hash + hashLibelle;
-      hash = 31 * hash + hashPatient;
-      hash = 31 * hash + hashDateDiag;
+		hash = 31 * hash + hashLibelle;
+		hash = 31 * hash + hashPatient;
+		hash = 31 * hash + hashDateDiag;
 
-      return hash;
-   }
+		return hash;
+	}
 
-   @Override
-   public Maladie clone(){
-      final Maladie clone = new Maladie();
-      clone.setMaladieId(this.maladieId);
-      clone.setPatient(this.patient);
-      clone.setLibelle(this.libelle);
-      clone.setCode(this.code);
-      clone.setDateDebut(this.dateDebut);
-      clone.setDateDiagnostic(this.dateDiagnostic);
-      clone.setCollaborateurs(this.collaborateurs);
-      clone.setPrelevements(this.prelevements);
-      clone.setSystemeDefaut(getSystemeDefaut());
+	@Override
+	public Maladie clone() {
+		final Maladie clone = new Maladie();
+		clone.setMaladieId(this.maladieId);
+		clone.setPatient(this.patient);
+		clone.setLibelle(this.libelle);
+		clone.setCode(this.code);
+		clone.setDateDebut(this.dateDebut);
+		clone.setDateDiagnostic(this.dateDiagnostic);
+		clone.setCollaborateurs(this.collaborateurs);
+		clone.setPrelevements(this.prelevements);
+		clone.setSystemeDefaut(getSystemeDefaut());
 
-      clone.setDelegate(getDelegate());
-      
-      return clone;
-   }
+		clone.setDelegate(getDelegate());
 
-   @Override
-   @Transient
-   public String getPhantomData(){
-      return getPatient().getPhantomData() + ": " + this.libelle;
-   }
+		return clone;
+	}
 
-   @Override
-   public String entiteNom(){
-      return "Maladie";
-   }
+	@Override
+	@Transient
+	public String getPhantomData() {
+		return getPatient().getPhantomData() + ": " + this.libelle;
+	}
 
-   @OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "delegator",
-		      targetEntity = AbstractMaladieDelegate.class)
-   public TKDelegateObject<Maladie> getDelegate(){
-      return delegate;
-   }
-   
-   @Override
-   public void setDelegate(TKDelegateObject<Maladie> delegate){
-      this.delegate = delegate;
-   }
+	@Override
+	public String entiteNom() {
+		return "Maladie";
+	}
 
-   @Override
-   public Integer listableObjectId(){
-      return getMaladieId();
-   }
+	@Override
+	@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "delegator", targetEntity = AbstractMaladieDelegate.class)
+	public TKDelegateObject<Maladie> getDelegate() {
+		return delegate;
+	}
+
+	@Override
+	public void setDelegate(TKDelegateObject<Maladie> delegate) {
+		this.delegate = delegate;
+	}
+
+	@Override
+	public Integer listableObjectId() {
+		return getMaladieId();
+	}
 }

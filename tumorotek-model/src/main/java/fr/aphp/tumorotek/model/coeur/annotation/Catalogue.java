@@ -45,8 +45,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -59,140 +57,141 @@ import fr.aphp.tumorotek.model.contexte.Contexte;
  * Date: 18/03/2010
  *
  * @author Mathieu Barthelemy
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "CATALOGUE")
-@NamedQueries(value = {@NamedQuery(name = "Catalogue.findNoms", query = "SELECT c.nom FROM Catalogue c order by c.nom"),
-   @NamedQuery(name = "Catalogue.findByAssignedBanque", query = "SELECT b.catalogues FROM Banque b " + "WHERE b = ?1")})
-public class Catalogue implements Serializable
-{
+//@NamedQueries(value = {@NamedQuery(name = "Catalogue.findNoms", query = "SELECT c.nom FROM Catalogue c order by c.nom"),
+//   @NamedQuery(name = "Catalogue.findByAssignedBanque", query = "SELECT b.catalogues FROM Banque b " + "WHERE b = ?1")})
+public class Catalogue implements Serializable {
 
-   private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-   private Integer catalogueId;
-   private String nom;
-   private String description;
-   private String icone;
+	private Integer catalogueId;
+	private String nom;
+	private String description;
+	private String icone;
 
-   private Set<TableAnnotation> tableAnnotations = new HashSet<>();
-   private Set<Contexte> contextes = new HashSet<>();
-   private Set<Banque> banques = new HashSet<>();
+	private Set<TableAnnotation> tableAnnotations = new HashSet<>();
+	private Set<Contexte> contextes = new HashSet<>();
+	private Set<Banque> banques = new HashSet<>();
 
-   /** Constructeur par défaut. */
-   public Catalogue(){}
+	/** Constructeur par défaut. */
+	public Catalogue() {
+	}
 
-   @Id
-   @Column(name = "CATALOGUE_ID", unique = true, nullable = false)
-   public Integer getCatalogueId(){
-      return catalogueId;
-   }
+	@Id
+	@Column(name = "CATALOGUE_ID", unique = true, nullable = false)
+	public Integer getCatalogueId() {
+		return catalogueId;
+	}
 
-   public void setCatalogueId(final Integer catId){
-      this.catalogueId = catId;
-   }
+	public void setCatalogueId(final Integer catId) {
+		this.catalogueId = catId;
+	}
 
-   @Column(name = "NOM", nullable = false, length = 25)
-   public String getNom(){
-      return nom;
-   }
+	@Column(name = "NOM", nullable = false, length = 25)
+	public String getNom() {
+		return nom;
+	}
 
-   public void setNom(final String n){
-      this.nom = n;
-   }
+	public void setNom(final String n) {
+		this.nom = n;
+	}
 
-   @Column(name = "DESCRIPTION", nullable = true, length = 250)
-   public String getDescription(){
-      return description;
-   }
+	@Column(name = "DESCRIPTION", nullable = true, length = 250)
+	public String getDescription() {
+		return description;
+	}
 
-   public void setDescription(final String descr){
-      this.description = descr;
-   }
+	public void setDescription(final String descr) {
+		this.description = descr;
+	}
 
-   @Column(name = "ICONE", nullable = true, length = 100)
-   public String getIcone(){
-      return this.icone;
-   }
+	@Column(name = "ICONE", nullable = true, length = 100)
+	public String getIcone() {
+		return this.icone;
+	}
 
-   public void setIcone(final String path){
-      this.icone = path;
-   }
+	public void setIcone(final String path) {
+		this.icone = path;
+	}
 
-   @ManyToMany(targetEntity = Contexte.class)
-   @JoinTable(name = "CATALOGUE_CONTEXTE", joinColumns = @JoinColumn(name = "CATALOGUE_ID"),
-      inverseJoinColumns = @JoinColumn(name = "CONTEXTE_ID"))
-   public Set<Contexte> getContextes(){
-      return contextes;
-   }
+	@ManyToMany(targetEntity = Contexte.class)
+	@JoinTable(name = "CATALOGUE_CONTEXTE", joinColumns = @JoinColumn(name = "CATALOGUE_ID"), inverseJoinColumns = @JoinColumn(name = "CONTEXTE_ID"))
+	public Set<Contexte> getContextes() {
+		return contextes;
+	}
 
-   public void setContextes(final Set<Contexte> conts){
-      this.contextes = conts;
-   }
+	public void setContextes(final Set<Contexte> conts) {
+		this.contextes = conts;
+	}
 
-   @OneToMany(mappedBy = "catalogue")
-   public Set<TableAnnotation> getTableAnnotations(){
-      return tableAnnotations;
-   }
+	@OneToMany(mappedBy = "catalogue")
+	public Set<TableAnnotation> getTableAnnotations() {
+		return tableAnnotations;
+	}
 
-   public void setTableAnnotations(final Set<TableAnnotation> tabs){
-      this.tableAnnotations = tabs;
-   }
+	public void setTableAnnotations(final Set<TableAnnotation> tabs) {
+		this.tableAnnotations = tabs;
+	}
 
-   @ManyToMany(mappedBy = "catalogues", targetEntity = Banque.class)
-   public Set<Banque> getBanques(){
-      return banques;
-   }
+	@ManyToMany(mappedBy = "catalogues", targetEntity = Banque.class)
+	public Set<Banque> getBanques() {
+		return banques;
+	}
 
-   public void setBanques(final Set<Banque> b){
-      this.banques = b;
-   }
+	public void setBanques(final Set<Banque> b) {
+		this.banques = b;
+	}
 
-   /**
-    * 2 catalogues sont consideres comme egaux si ils ont le même nom.
-    * @param obj est le catalogue à tester.
-    * @return true si les catalogues sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 catalogues sont consideres comme egaux si ils ont le même nom.
+	 * 
+	 * @param obj est le catalogue à tester.
+	 * @return true si les catalogues sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || obj.getClass() != this.getClass()) {
+			return false;
+		}
 
-      final Catalogue test = (Catalogue) obj;
+		final Catalogue test = (Catalogue) obj;
 
-      return ((this.nom == test.nom || (this.nom != null && this.nom.equals(test.nom))));
-   }
+		return ((this.nom == test.nom || (this.nom != null && this.nom.equals(test.nom))));
+	}
 
-   /**
-    * Le hashcode est calculé sur le nom.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+	/**
+	 * Le hashcode est calculé sur le nom.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-      int hash = 7;
-      int hashNom = 0;
+		int hash = 7;
+		int hashNom = 0;
 
-      if(this.nom != null){
-         hashNom = this.nom.hashCode();
-      }
+		if (this.nom != null) {
+			hashNom = this.nom.hashCode();
+		}
 
-      hash = 31 * hash + hashNom;
+		hash = 31 * hash + hashNom;
 
-      return hash;
-   }
+		return hash;
+	}
 
-   @Override
-   public String toString(){
-      if(this.nom != null){
-         return "{" + this.nom + "}";
-      }
-      return "{Empty Catalogue}";
-   }
+	@Override
+	public String toString() {
+		if (this.nom != null) {
+			return "{" + this.nom + "}";
+		}
+		return "{Empty Catalogue}";
+	}
 }

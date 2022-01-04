@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.code;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.code.CodeAssigne;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
@@ -45,92 +48,111 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 
 /**
  *
- * Interface pour le DAO du bean de domaine CodeAssigne.
- * Interface créée le 21/09/09.
+ * Interface pour le DAO du bean de domaine CodeAssigne. Interface créée le
+ * 21/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface CodeAssigneDao extends GenericDaoJpa<CodeAssigne, Integer>
-{
+@Repository
+public interface CodeAssigneDao extends CrudRepository<CodeAssigne, Integer> {
 
-   /**
-    * Recherche les codes assignes dont le code like celui passe en
-    *  paramètre.
-    * @param code Code pour lequel on recherche des codes assignes.
-    * @return une liste de codes assignes.
-    */
-   List<CodeAssigne> findByCodeLike(String code);
+	/**
+	 * Recherche les codes assignes dont le code like celui passe en paramètre.
+	 * 
+	 * @param code Code pour lequel on recherche des codes assignes.
+	 * @return une liste de codes assignes.
+	 */
+	@Query("SELECT c FROM CodeAssigne c WHERE c.code like ?1")
+	List<CodeAssigne> findByCodeLike(String code);
 
-   /**
-    * Recherche les codes assignes dont le libelle like celui passe en
-    *  paramètre.
-    * @param code libelle pour lequel on recherche des codes assignes.
-    * @return une liste de codes assignes.
-    */
-   List<CodeAssigne> findByLibelleLike(String code);
+	/**
+	 * Recherche les codes assignes dont le libelle like celui passe en paramètre.
+	 * 
+	 * @param code libelle pour lequel on recherche des codes assignes.
+	 * @return une liste de codes assignes.
+	 */
+	@Query("SELECT c FROM CodeAssigne c WHERE c.libelle like ?1")
+	List<CodeAssigne> findByLibelleLike(String code);
 
-   /**
-    * Recherche les codes qui sont assignes comme type lésionnel/morpho 
-    * pour l'échantillon.
-    * @param echantillon.
-    * @return une liste de codes assignes.
-    */
-   List<CodeAssigne> findCodesMorphoByEchantillon(Echantillon echan);
+	/**
+	 * Recherche les codes qui sont assignes comme type lésionnel/morpho pour
+	 * l'échantillon.
+	 * 
+	 * @param echantillon.
+	 * @return une liste de codes assignes.
+	 */
+	@Query("SELECT c FROM CodeAssigne c WHERE c.echantillon = ?1 AND c.isMorpho = 1 ORDER BY c.ordre")
+	List<CodeAssigne> findCodesMorphoByEchantillon(Echantillon echan);
 
-   /**
-    * Recherche les codes qui sont assignes pour definir l'organes 
-    * dont est issu l'échantillon.
-    * @param echantillon.
-    * @return une liste de codes assignes.
-    */
-   List<CodeAssigne> findCodesOrganeByEchantillon(Echantillon echan);
+	/**
+	 * Recherche les codes qui sont assignes pour definir l'organes dont est issu
+	 * l'échantillon.
+	 * 
+	 * @param echantillon.
+	 * @return une liste de codes assignes.
+	 */
+	@Query("SELECT c FROM CodeAssigne c WHERE c.echantillon = ?1 AND c.isOrgane = 1 ORDER BY c.ordre")
+	List<CodeAssigne> findCodesOrganeByEchantillon(Echantillon echan);
 
-   /**
-    * Recherche tous les codes assignes sauf celui dont l'id
-    *  est passé en paramètres.
-    * @param codeAssigneId Identifiant du code que l'on souhaite
-    * exclure de la liste retournée.
-    * @param code pour filtrer le nombre de codes retournés
-    * @param echantillon pour filtrer le nombre de codes retournés
-    * @return une liste de CodeAssignes.
-    */
-   List<CodeAssigne> findByExcludedId(Integer codeAssigneId, String code, Echantillon echan);
+	/**
+	 * Recherche tous les codes assignes sauf celui dont l'id est passé en
+	 * paramètres.
+	 * 
+	 * @param codeAssigneId Identifiant du code que l'on souhaite exclure de la
+	 *                      liste retournée.
+	 * @param code          pour filtrer le nombre de codes retournés
+	 * @param echantillon   pour filtrer le nombre de codes retournés
+	 * @return une liste de CodeAssignes.
+	 */
+	@Query("SELECT c FROM CodeAssigne c WHERE c.codeAssigneId != ?1 and c.code = ?2 AND c.echantillon = ?3")
+	List<CodeAssigne> findByExcludedId(Integer codeAssigneId, String code, Echantillon echan);
 
-   /**
-    * Recherche les codes lésionels assignes exportes pour 
-    * chacun des echantillons issus du prélèvement passé en paramètre.
-    * Ordonne les codes suivant id des échantillons.
-    * @param prel Prelevement
-    * @return une liste de CodeAssignes.
-    */
-   List<CodeAssigne> findCodesLesExportedByPrelevement(Prelevement prel);
+	/**
+	 * Recherche les codes lésionels assignes exportes pour chacun des echantillons
+	 * issus du prélèvement passé en paramètre. Ordonne les codes suivant id des
+	 * échantillons.
+	 * 
+	 * @param prel Prelevement
+	 * @return une liste de CodeAssignes.
+	 */
+	@Query("SELECT c FROM CodeAssigne c WHERE c.echantillon.prelevement = ?1 AND c.export = 1 AND c.isMorpho = 1"
+			+ "ORDER BY c.echantillon.echantillonId")
+	List<CodeAssigne> findCodesLesExportedByPrelevement(Prelevement prel);
 
-   /**
-    * Recherche les codes organes assignes exportes pour 
-    * chacun des echantillons issus du prélèvement passé en paramètre.
-    * Ordonne les codes suivant id des échantillons.
-    * @param prel Prelevement
-    * @return une liste de CodeAssignes.
-    */
-   List<CodeAssigne> findCodesOrgExportedByPrelevement(Prelevement prel);
+	/**
+	 * Recherche les codes organes assignes exportes pour chacun des echantillons
+	 * issus du prélèvement passé en paramètre. Ordonne les codes suivant id des
+	 * échantillons.
+	 * 
+	 * @param prel Prelevement
+	 * @return une liste de CodeAssignes.
+	 */
+	@Query("SELECT c FROM CodeAssigne c WHERE c.echantillon.prelevement = ?1 AND c.export = 1 AND c.isOrgane = 1"
+			+ "ORDER BY c.echantillon.echantillonId")
+	List<CodeAssigne> findCodesOrgExportedByPrelevement(Prelevement prel);
 
-   /**
-    * Recherche les codes organes assignes exportes pour 
-    * chacun des echantillons issus du patient passé en paramètre.
-    * Ordonne les codes suivant id des échantillons.
-    * @param pat Patient
-    * @return une liste de CodeAssignes.
-    */
-   List<CodeAssigne> findCodesOrgExportedByPatient(Patient pat);
+	/**
+	 * Recherche les codes organes assignes exportes pour chacun des echantillons
+	 * issus du patient passé en paramètre. Ordonne les codes suivant id des
+	 * échantillons.
+	 * 
+	 * @param pat Patient
+	 * @return une liste de CodeAssignes.
+	 */
+	@Query("SELECT c FROM CodeAssigne c WHERE c.echantillon.prelevement.maladie.patient = ?1 "
+			+ "AND c.export = 1 AND c.isOrgane = 1ORDER BY c.echantillon.echantillonId")
+	List<CodeAssigne> findCodesOrgExportedByPatient(Patient pat);
 
-   /**
-    * Recherche tous les codes assignes pour un code et un echantillon. 
-    * Permet une recherche de doublons efficace.
-    * @param code pour filtrer le nombre de codes retournés
-    * @param echantillon pour filtrer le nombre de codes retournés
-    * @return une liste de CodeAssignes.
-    */
-   List<CodeAssigne> findByCodeAndEchantillon(String code, Echantillon echan);
+	/**
+	 * Recherche tous les codes assignes pour un code et un echantillon. Permet une
+	 * recherche de doublons efficace.
+	 * 
+	 * @param code        pour filtrer le nombre de codes retournés
+	 * @param echantillon pour filtrer le nombre de codes retournés
+	 * @return une liste de CodeAssignes.
+	 */
+	@Query("SELECT c FROM CodeAssigne c WHERE c.code like ?1  AND c.echantillon = ?2")
+	List<CodeAssigne> findByCodeAndEchantillon(String code, Echantillon echan);
 }

@@ -41,50 +41,51 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 
 /**
  * Interface dictant les methodes communes aux deux beans AnnotationDefaut et
- * AnnotationValeur.<br> L'implémentation de cette interface permet
- * aux instances de ces deux classes de partager différents comportement
- * comme la validation...<br>
+ * AnnotationValeur.<br>
+ * L'implémentation de cette interface permet aux instances de ces deux classes
+ * de partager différents comportement comme la validation...<br>
  * Date: 06/02/10
  *
  * @author mathieu
  * @version 2.0
  */
-public abstract class AnnotationCommon
-{
+public abstract class AnnotationCommon {
 
-   public abstract String getAlphanum();
+	public abstract String getAlphanum();
 
-   public abstract void setAlphanum(String alpha);
+	public abstract void setAlphanum(String alpha);
 
-   public abstract String getTexte();
+	public abstract String getTexte();
 
-   public abstract void setTexte(String tex);
+	public abstract void setTexte(String tex);
 
-   public abstract Calendar getDate();
+	public abstract Calendar getDate();
 
-   public abstract void setDate(Calendar d);
+	public abstract void setDate(Calendar d);
 
-   public abstract Boolean getBool();
+	public abstract Boolean getBool();
 
-   public abstract void setBool(Boolean b);
+	public abstract void setBool(Boolean b);
 
-   public abstract Item getItem();
+	public abstract Item getItem();
 
-   public abstract void setItem(Item it);
+	public abstract void setItem(Item it);
 
-   public abstract Banque getBanque();
+	public abstract Banque getBanque();
 
-   public abstract void setBanque(Banque bank);
+	public abstract void setBanque(Banque bank);
 
-   public abstract ChampAnnotation getChampAnnotation();
+	public abstract ChampAnnotation getChampAnnotation();
 
-   public abstract void setChampAnnotation(ChampAnnotation champ);
+	public abstract void setChampAnnotation(ChampAnnotation champ);
 
-   /**
-    * Indique si l'objet ne contient aucune valeur.
-    * @return true si objet 'vide'.
-    */
-   public boolean isEmpty(){
-      return (getAlphanum() == null && getBool() == null && getDate() == null && getTexte() == null && getItem() == null);
-   }
+	/**
+	 * Indique si l'objet ne contient aucune valeur.
+	 * 
+	 * @return true si objet 'vide'.
+	 */
+	public boolean isEmpty() {
+		return (getAlphanum() == null && getBool() == null && getDate() == null && getTexte() == null
+				&& getItem() == null);
+	}
 }

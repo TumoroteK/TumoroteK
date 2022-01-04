@@ -43,8 +43,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -52,108 +50,109 @@ import org.hibernate.annotations.GenericGenerator;
 
 /**
  *
- * Objet persistant mappant la table CESSION_STATUT.
- * Classe créée le 11/09/09.
+ * Objet persistant mappant la table CESSION_STATUT. Classe créée le 11/09/09.
  *
  * @author Maxime Gousseau
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "CESSION_STATUT")
-@NamedQueries(
-   value = {@NamedQuery(name = "CessionStatut.findByStatut", query = "SELECT c FROM CessionStatut c " + "WHERE c.statut like ?1"),
-      @NamedQuery(name = "CessionStatut.findByOrder", query = "SELECT c FROM CessionStatut c " + "ORDER BY c.statut")})
-public class CessionStatut implements Serializable
-{
+//@NamedQueries(
+//   value = {@NamedQuery(name = "CessionStatut.findByStatut", query = "SELECT c FROM CessionStatut c " + "WHERE c.statut like ?1"),
+//      @NamedQuery(name = "CessionStatut.findByOrder", query = "SELECT c FROM CessionStatut c " + "ORDER BY c.statut")})
+public class CessionStatut implements Serializable {
 
-   private static final long serialVersionUID = -1503913295196145334L;
+	private static final long serialVersionUID = -1503913295196145334L;
 
-   private Integer cessionStatutId;
-   private String statut;
+	private Integer cessionStatutId;
+	private String statut;
 
-   private Set<Cession> cessions = new HashSet<>();
+	private Set<Cession> cessions = new HashSet<>();
 
-   /** Constructeur par défaut. */
-   public CessionStatut(){}
+	/** Constructeur par défaut. */
+	public CessionStatut() {
+	}
 
-   @Id
-   @Column(name = "CESSION_STATUT_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getCessionStatutId(){
-      return this.cessionStatutId;
-   }
+	@Id
+	@Column(name = "CESSION_STATUT_ID", unique = true, nullable = false)
+	@GeneratedValue(generator = "autoincrement")
+	@GenericGenerator(name = "autoincrement", strategy = "increment")
+	public Integer getCessionStatutId() {
+		return this.cessionStatutId;
+	}
 
-   public void setCessionStatutId(final Integer id){
-      this.cessionStatutId = id;
-   }
+	public void setCessionStatutId(final Integer id) {
+		this.cessionStatutId = id;
+	}
 
-   @Column(name = "STATUT", nullable = false, length = 15)
-   public String getStatut(){
-      return this.statut;
-   }
+	@Column(name = "STATUT", nullable = false, length = 15)
+	public String getStatut() {
+		return this.statut;
+	}
 
-   public void setStatut(final String s){
-      this.statut = s;
-   }
+	public void setStatut(final String s) {
+		this.statut = s;
+	}
 
-   @OneToMany(mappedBy = "cessionStatut")
-   public Set<Cession> getCessions(){
-      return this.cessions;
-   }
+	@OneToMany(mappedBy = "cessionStatut")
+	public Set<Cession> getCessions() {
+		return this.cessions;
+	}
 
-   public void setCessions(final Set<Cession> cess){
-      this.cessions = cess;
-   }
+	public void setCessions(final Set<Cession> cess) {
+		this.cessions = cess;
+	}
 
-   /**
-    * 2 objets sont considérés comme égaux s'ils ont le même statut.
-    * @param obj est l'objet à tester.
-    * @return true si les objets sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 objets sont considérés comme égaux s'ils ont le même statut.
+	 * 
+	 * @param obj est l'objet à tester.
+	 * @return true si les objets sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final CessionStatut test = (CessionStatut) obj;
-      if(this.statut == null){
-         return (test.statut == null);
-      }
-      return (this.statut.equals(test.statut));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || obj.getClass() != this.getClass()) {
+			return false;
+		}
+		final CessionStatut test = (CessionStatut) obj;
+		if (this.statut == null) {
+			return (test.statut == null);
+		}
+		return (this.statut.equals(test.statut));
+	}
 
-   /**
-    * Le hashcode est calculé sur l'attribut statut.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-      int hash = 7;
-      int hashStatut = 0;
+	/**
+	 * Le hashcode est calculé sur l'attribut statut.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		int hashStatut = 0;
 
-      if(this.statut != null){
-         hashStatut = this.statut.hashCode();
-      }
+		if (this.statut != null) {
+			hashStatut = this.statut.hashCode();
+		}
 
-      hash = 31 * hash + hashStatut;
+		hash = 31 * hash + hashStatut;
 
-      return hash;
-   }
+		return hash;
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      if(this.statut != null){
-         return "{" + this.statut + "}";
-      }
-      return "{Empty CessionStatut}";
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		if (this.statut != null) {
+			return "{" + this.statut + "}";
+		}
+		return "{Empty CessionStatut}";
+	}
 }

@@ -52,11 +52,11 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
 
 /**
  *
- * Objet persistant mappant la table PATIENT_MEDECIN.
- * Classe créée le 14/09/09.
+ * Objet persistant mappant la table PATIENT_MEDECIN. Classe créée le 14/09/09.
  * Modifiée par Mathieu pour créer la clef composite
+ * 
  * @see http://boris.kirzner.info/blog/archives/2008/07/19/*%20
- * 		hibernate-annotations-the-many-to-many-association-with-composite-key/
+ *      hibernate-annotations-the-many-to-many-association-with-composite-key/
  *
  * @author Maxime Gousseau
  * @version 2.0
@@ -64,108 +64,105 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
  */
 @Entity
 @Table(name = "PATIENT_MEDECIN")
-/*@NamedQueries(value = {@NamedQuery(name = "PatientMedecin.findByCollaborateur",
-query = "SELECT p FROM PatientMedecin p "
-	+ "WHERE p.collaborateur = ?1")})*/
 @AssociationOverrides({
-   @AssociationOverride(name = "pk.collaborateur",
-      joinColumns = @JoinColumn(name = "COLLABORATEUR_ID", referencedColumnName = "COLLABORATEUR_ID")),
-   @AssociationOverride(name = "pk.patient",
-      joinColumns = @JoinColumn(name = "PATIENT_ID", referencedColumnName = "PATIENT_ID"))})
+		@AssociationOverride(name = "pk.collaborateur", joinColumns = @JoinColumn(name = "COLLABORATEUR_ID", referencedColumnName = "COLLABORATEUR_ID")),
+		@AssociationOverride(name = "pk.patient", joinColumns = @JoinColumn(name = "PATIENT_ID", referencedColumnName = "PATIENT_ID")) })
 //@AttributeOverride(column =
 //	@Column(name = "ORDRE"), name = "ordre")
-public class PatientMedecin implements Serializable
-{
+public class PatientMedecin implements Serializable {
 
-   private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-   private Integer ordre;
-   private PatientMedecinPK pk = new PatientMedecinPK();
+	private Integer ordre;
+	private PatientMedecinPK pk = new PatientMedecinPK();
 
-   /** Constructeur par défaut. */
-   public PatientMedecin(){}
+	/** Constructeur par défaut. */
+	public PatientMedecin() {
+	}
 
-   @Override
-   public String toString(){
-      if(this.getPatient() != null && this.getCollaborateur() != null){
-         return "{" + this.getPatient() + " - " + this.getCollaborateur() + "}";
-      }
-      return "{Empty PatientMedecin}";
-   }
+	@Override
+	public String toString() {
+		if (this.getPatient() != null && this.getCollaborateur() != null) {
+			return "{" + this.getPatient() + " - " + this.getCollaborateur() + "}";
+		}
+		return "{Empty PatientMedecin}";
+	}
 
-   @EmbeddedId
-   @AttributeOverrides({@AttributeOverride(name = "collaborateur", column = @Column(name = "COLLABORATEUR_ID")),
-      @AttributeOverride(name = "patient", column = @Column(name = "PATIENT_ID"))})
-   public PatientMedecinPK getPk(){
-      return pk;
-   }
+	@EmbeddedId
+	@AttributeOverrides({ @AttributeOverride(name = "collaborateur", column = @Column(name = "COLLABORATEUR_ID")),
+			@AttributeOverride(name = "patient", column = @Column(name = "PATIENT_ID")) })
+	public PatientMedecinPK getPk() {
+		return pk;
+	}
 
-   public void setPk(final PatientMedecinPK pmk){
-      this.pk = pmk;
-   }
+	public void setPk(final PatientMedecinPK pmk) {
+		this.pk = pmk;
+	}
 
-   //@JoinColumn(name = "ORDRE", nullable = false)
-   @Column(name = "ORDRE", nullable = false)
-   public Integer getOrdre(){
-      return this.ordre;
-   }
+	// @JoinColumn(name = "ORDRE", nullable = false)
+	@Column(name = "ORDRE", nullable = false)
+	public Integer getOrdre() {
+		return this.ordre;
+	}
 
-   public void setOrdre(final Integer o){
-      this.ordre = o;
-   }
+	public void setOrdre(final Integer o) {
+		this.ordre = o;
+	}
 
-   @Transient
-   public Collaborateur getCollaborateur(){
-      return this.pk.getCollaborateur();
-   }
+	@Transient
+	public Collaborateur getCollaborateur() {
+		return this.pk.getCollaborateur();
+	}
 
-   public void setCollaborateur(final Collaborateur coll){
-      this.pk.setCollaborateur(coll);
-   }
+	public void setCollaborateur(final Collaborateur coll) {
+		this.pk.setCollaborateur(coll);
+	}
 
-   @Transient
-   public Patient getPatient(){
-      return this.pk.getPatient();
-   }
+	@Transient
+	public Patient getPatient() {
+		return this.pk.getPatient();
+	}
 
-   public void setPatient(final Patient pat){
-      this.pk.setPatient(pat);
-   }
+	public void setPatient(final Patient pat) {
+		this.pk.setPatient(pat);
+	}
 
-   /**
-    * 2 liens sont considérés comme égaux s'ils ont la même pk.
-    * @param obj est le lien à tester.
-    * @return true si les liens sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 liens sont considérés comme égaux s'ils ont la même pk.
+	 * 
+	 * @param obj est le lien à tester.
+	 * @return true si les liens sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final PatientMedecin test = (PatientMedecin) obj;
-      return (this.pk != null && (this.pk == test.pk || this.pk.equals(test.pk)));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || obj.getClass() != this.getClass()) {
+			return false;
+		}
+		final PatientMedecin test = (PatientMedecin) obj;
+		return (this.pk != null && (this.pk == test.pk || this.pk.equals(test.pk)));
+	}
 
-   /**
-    * Le hashcode est calculé sur la pk.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+	/**
+	 * Le hashcode est calculé sur la pk.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-      int hash = 7;
-      int hashPk = 0;
+		int hash = 7;
+		int hashPk = 0;
 
-      if(this.pk != null){
-         hashPk = this.pk.hashCode();
-      }
+		if (this.pk != null) {
+			hashPk = this.pk.hashCode();
+		}
 
-      hash = 7 * hash + hashPk;
+		hash = 7 * hash + hashPk;
 
-      return hash;
-   }
+		return hash;
+	}
 }

@@ -37,43 +37,52 @@ package fr.aphp.tumorotek.dao.code;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.code.CimoMorpho;
 
 /**
  *
- * Interface pour le DAO du bean de domaine CimoMorpho.
- * Interface créée le 21/09/09.
+ * Interface pour le DAO du bean de domaine CimoMorpho. Interface créée le
+ * 21/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface CimoMorphoDao extends GenericDaoJpa<CimoMorpho, Integer>
-{
+@Repository
+public interface CimoMorphoDao extends CrudRepository<CimoMorpho, Integer> {
 
-   /**
-    * Recherche les codes CimoMorphos dont le code est like celui passé 
-    * en paramètre.
-    * @param code Code pour lequel on recherche des codes CimoMorphos.
-    * @return une liste de codes CimoMorphos.
-    */
-   List<CimoMorpho> findByCodeLike(String code);
+	/**
+	 * Recherche les codes CimoMorphos dont le code est like celui passé en
+	 * paramètre.
+	 * 
+	 * @param code Code pour lequel on recherche des codes CimoMorphos.
+	 * @return une liste de codes CimoMorphos.
+	 */
+	@Query("SELECT c FROM CimoMorpho c WHERE c.code like ?1")
+	List<CimoMorpho> findByCodeLike(String code);
 
-   /**
-    * Recherche les codes CimoMorphos dont le libellé est like celui passé
-    * en paramètre.
-    * @param libelle Libelle pour lequel on recherche des codes CimoMorphos.
-    * @return une liste de codes CimoMorphos.
-    */
-   List<CimoMorpho> findByLibelleLike(String libelle);
+	/**
+	 * Recherche les codes CimoMorphos dont le libellé est like celui passé en
+	 * paramètre.
+	 * 
+	 * @param libelle Libelle pour lequel on recherche des codes CimoMorphos.
+	 * @return une liste de codes CimoMorphos.
+	 */
+	@Query("SELECT c FROM CimoMorpho c WHERE c.libelle like ?1")
+	List<CimoMorpho> findByLibelleLike(String libelle);
 
-   /**
-    * Recherche les codes CimoMorphos dont la référence est like celle 
-    * passée en paramètre.
-    * @param cimRef Référence des codes CimoMorphos que l'on recherche.
-    * @return une liste de codes CimoMorphos.
-    */
-   List<CimoMorpho> findByCimRefLike(String cimRef);
+	/**
+	 * Recherche les codes CimoMorphos dont la référence est like celle passée en
+	 * paramètre.
+	 * 
+	 * @param cimRef Référence des codes CimoMorphos que l'on recherche.
+	 * @return une liste de codes CimoMorphos.
+	 */
+	@Query("SELECT c FROM CimoMorpho c WHERE c.cimRef like ?1")
+	List<CimoMorpho> findByCimRefLike(String cimRef);
 
 }

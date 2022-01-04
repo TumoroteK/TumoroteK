@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.coeur;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 
 /**
@@ -45,23 +48,27 @@ import fr.aphp.tumorotek.model.coeur.ObjetStatut;
  * Interface pour le DAO du bean de domaine ObjetStatut.
  *
  * @author Pierre Ventadour
- * @version 10/09/2009
- *
+ * @version 2.3
+ * 
  */
-public interface ObjetStatutDao extends GenericDaoJpa<ObjetStatut, Integer>
-{
+@Repository
+public interface ObjetStatutDao extends CrudRepository<ObjetStatut, Integer> {
 
-   /**
-    * Recherche les statuts d'objet dont le statut est égal au paramètre.
-    * @param statut Statut des objets que l'on recherche..
-    * @return une liste de statuts d'objets.
-    */
-   List<ObjetStatut> findByStatut(String statut);
+	/**
+	 * Recherche les statuts d'objet dont le statut est égal au paramètre.
+	 * 
+	 * @param statut Statut des objets que l'on recherche..
+	 * @return une liste de statuts d'objets.
+	 */
+	@Query("SELECT o FROM ObjetStatut o WHERE o.statut like ?1")
+	List<ObjetStatut> findByStatut(String statut);
 
-   /**
-    * Recherche tous les ObjetStatuts ordonnés.
-    * @return Liste ordonnée de ObjetStatuts.
-    */
-   List<ObjetStatut> findByOrder();
+	/**
+	 * Recherche tous les ObjetStatuts ordonnés.
+	 * 
+	 * @return Liste ordonnée de ObjetStatuts.
+	 */
+	@Query("SELECT o FROM ObjetStatut o ORDER BY o.statut")
+	List<ObjetStatut> findByOrder();
 
 }

@@ -37,52 +37,71 @@ package fr.aphp.tumorotek.dao.coeur.echantillon;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
 import fr.aphp.tumorotek.model.coeur.echantillon.ModePrepa;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
  *
- * Interface pour le DAO du bean de domaine ModePrepa.
- * Interface créée le 10/09/09.
+ * Interface pour le DAO du bean de domaine ModePrepa. Interface créée le
+ * 10/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface ModePrepaDao extends GenericDaoJpa<ModePrepa, Integer>, PfDependantTKThesaurusDao<ModePrepa>
-{
+@Repository
+public interface ModePrepaDao extends CrudRepository<ModePrepa, Integer>, PfDependantTKThesaurusDao<ModePrepa> {
 
-   /**
-    * Recherche les mode de préparation dont le nom est égal au paramètre.
-    * @param nom Nom pour lequel on recherche des modes de préparation.
-    * @return une liste de modes de préparation.
-    */
-   List<ModePrepa> findByNom(String nom);
+	/**
+	 * Recherche les mode de préparation dont le nom est égal au paramètre.
+	 * 
+	 * @param nom Nom pour lequel on recherche des modes de préparation.
+	 * @return une liste de modes de préparation.
+	 */
+	@Query("SELECT m FROM ModePrepa m WHERE m.nom like ?1")
+	List<ModePrepa> findByNom(String nom);
 
-   /**
-    * Recherche les mode de préparation dont le nom est égal au paramètre.
-    * @param nomEn Nom anglais pour lequel on recherche des modes 
-    * de préparation.
-    * @return une liste de modes de préparation.
-    */
-   List<ModePrepa> findByNomEn(String nomEn);
+	/**
+	 * Recherche les mode de préparation dont le nom est égal au paramètre.
+	 * 
+	 * @param nomEn Nom anglais pour lequel on recherche des modes de préparation.
+	 * @return une liste de modes de préparation.
+	 */
+	@Query("SELECT m FROM ModePrepa m WHERE m.nomEn like ?1")
+	List<ModePrepa> findByNomEn(String nomEn);
 
-   /**
-    * Recherche le mode de préparation qui est lié à l'échantillon passé 
-    * en paramètre. 
-    * @param echantillonId Identifiant de l'échantillon pour lequel 
-    * on recherche un mode de préparation.
-    * @return une liste de ModePrepas.
-    */
-   List<ModePrepa> findByEchantillonId(Integer echantillonId);
+	/**
+	 * Recherche le mode de préparation qui est lié à l'échantillon passé en
+	 * paramètre.
+	 * 
+	 * @param echantillonId Identifiant de l'échantillon pour lequel on recherche un
+	 *                      mode de préparation.
+	 * @return une liste de ModePrepas.
+	 */
+	@Query("SELECT m FROM ModePrepa m left join m.echantillons e WHERE e.echantillonId = ?1")
+	List<ModePrepa> findByEchantillonId(Integer echantillonId);
 
-   /**
-    * Recherche tous les ModePrepas sauf celui dont
-    * l'identifiant est passé en paramètre.
-    * @param id Identifiant du ModePrepa à exclure.
-    * @return Liste de ModePrepas.
-    */
-   List<ModePrepa> findByExcludedId(Integer id);
+	/**
+	 * Recherche tous les ModePrepas sauf celui dont l'identifiant est passé en
+	 * paramètre.
+	 * 
+	 * @param id Identifiant du ModePrepa à exclure.
+	 * @return Liste de ModePrepas.
+	 */
+	@Query("SELECT m FROM ModePrepa m WHERE m.id != ?1")
+	List<ModePrepa> findByExcludedId(Integer id);
+
+	@Override
+	@Query("SELECT m FROM ModePrepa m ORDER BY m.nom")
+	List<ModePrepa> findByOrder();
+
+	@Override
+	@Query("SELECT m FROM ModePrepa m WHERE m.plateforme = ?1 ORDER BY m.nom")
+	List<ModePrepa> findByPfOrder(Plateforme pf);
 
 }

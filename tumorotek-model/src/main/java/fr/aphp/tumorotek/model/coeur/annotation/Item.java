@@ -46,8 +46,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -61,192 +59,195 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  * Date: 15/09/2009
  *
  * @author Mathieu Barthelemy
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "ITEM")
-@NamedQueries(value = {
-   @NamedQuery(name = "Item.findByChamp", query = "SELECT i FROM Item i WHERE i.champAnnotation = ?1" + " ORDER BY i.label"),
-   @NamedQuery(name = "Item.findByChampAndPlateforme",
-      query = "SELECT i FROM Item i WHERE i.champAnnotation = ?1 " + "AND (i.plateforme = ?2 OR i.plateforme is null) "
-         + "ORDER BY i.itemId"),
-   //			@NamedQuery(name = "Item.findDoublon", 
-   //				query = "SELECT i FROM Item i WHERE i.label = ?1" 
-   //					+ " AND i.champAnnotation = ?2") 
-   @NamedQuery(name = "Item.findByExcludedId", query = "SELECT i FROM Item i WHERE i.itemId != ?1")})
-public class Item implements Serializable
-{
+//@NamedQueries(value = {
+//   @NamedQuery(name = "Item.findByChamp", query = "SELECT i FROM Item i WHERE i.champAnnotation = ?1" + " ORDER BY i.label"),
+//   @NamedQuery(name = "Item.findByChampAndPlateforme",
+//      query = "SELECT i FROM Item i WHERE i.champAnnotation = ?1 " + "AND (i.plateforme = ?2 OR i.plateforme is null) "
+//         + "ORDER BY i.itemId"),
+//   //			@NamedQuery(name = "Item.findDoublon", 
+//   //				query = "SELECT i FROM Item i WHERE i.label = ?1" 
+//   //					+ " AND i.champAnnotation = ?2") 
+//   @NamedQuery(name = "Item.findByExcludedId", query = "SELECT i FROM Item i WHERE i.itemId != ?1")})
+public class Item implements Serializable {
 
-   private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-   private Integer itemId;
-   private String label;
-   private String valeur;
-   private ChampAnnotation champAnnotation;
-   private Plateforme plateforme;
+	private Integer itemId;
+	private String label;
+	private String valeur;
+	private ChampAnnotation champAnnotation;
+	private Plateforme plateforme;
 
-   private Set<AnnotationDefaut> annotationDefauts = new HashSet<>();
-   private Set<AnnotationValeur> annotationValeurs = new HashSet<>();
+	private Set<AnnotationDefaut> annotationDefauts = new HashSet<>();
+	private Set<AnnotationValeur> annotationValeurs = new HashSet<>();
 
-   /** Constructeur par défaut. */
-   public Item(){}
+	/** Constructeur par défaut. */
+	public Item() {
+	}
 
-   @Id
-   @Column(name = "ITEM_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getItemId(){
-      return this.itemId;
-   }
+	@Id
+	@Column(name = "ITEM_ID", unique = true, nullable = false)
+	@GeneratedValue(generator = "autoincrement")
+	@GenericGenerator(name = "autoincrement", strategy = "increment")
+	public Integer getItemId() {
+		return this.itemId;
+	}
 
-   public void setItemId(final Integer id){
-      this.itemId = id;
-   }
+	public void setItemId(final Integer id) {
+		this.itemId = id;
+	}
 
-   @Column(name = "LABEL", nullable = false, length = 100)
-   public String getLabel(){
-      return this.label;
-   }
+	@Column(name = "LABEL", nullable = false, length = 100)
+	public String getLabel() {
+		return this.label;
+	}
 
-   public void setLabel(final String l){
-      this.label = l;
-   }
+	public void setLabel(final String l) {
+		this.label = l;
+	}
 
-   @Column(name = "VALEUR", nullable = true, length = 100)
-   public String getValeur(){
-      return this.valeur;
-   }
+	@Column(name = "VALEUR", nullable = true, length = 100)
+	public String getValeur() {
+		return this.valeur;
+	}
 
-   public void setValeur(final String v){
-      this.valeur = v;
-   }
+	public void setValeur(final String v) {
+		this.valeur = v;
+	}
 
-   @ManyToOne
-   @JoinColumn(name = "CHAMP_ANNOTATION_ID", nullable = false)
-   public ChampAnnotation getChampAnnotation(){
-      return this.champAnnotation;
-   }
+	@ManyToOne
+	@JoinColumn(name = "CHAMP_ANNOTATION_ID", nullable = false)
+	public ChampAnnotation getChampAnnotation() {
+		return this.champAnnotation;
+	}
 
-   public void setChampAnnotation(final ChampAnnotation chp){
-      this.champAnnotation = chp;
-   }
+	public void setChampAnnotation(final ChampAnnotation chp) {
+		this.champAnnotation = chp;
+	}
 
-   @ManyToOne
-   @JoinColumn(name = "PLATEFORME_ID", nullable = true)
-   public Plateforme getPlateforme(){
-      return plateforme;
-   }
+	@ManyToOne
+	@JoinColumn(name = "PLATEFORME_ID", nullable = true)
+	public Plateforme getPlateforme() {
+		return plateforme;
+	}
 
-   public void setPlateforme(final Plateforme pf){
-      this.plateforme = pf;
-   }
+	public void setPlateforme(final Plateforme pf) {
+		this.plateforme = pf;
+	}
 
-   @OneToMany(mappedBy = "item", cascade = {CascadeType.REMOVE})
-   public Set<AnnotationDefaut> getAnnotationDefauts(){
-      return this.annotationDefauts;
-   }
+	@OneToMany(mappedBy = "item", cascade = { CascadeType.REMOVE })
+	public Set<AnnotationDefaut> getAnnotationDefauts() {
+		return this.annotationDefauts;
+	}
 
-   public void setAnnotationDefauts(final Set<AnnotationDefaut> defauts){
-      this.annotationDefauts = defauts;
-   }
+	public void setAnnotationDefauts(final Set<AnnotationDefaut> defauts) {
+		this.annotationDefauts = defauts;
+	}
 
-   @OneToMany(mappedBy = "item", cascade = {CascadeType.ALL})
-   public Set<AnnotationValeur> getAnnotationValeurs(){
-      return this.annotationValeurs;
-   }
+	@OneToMany(mappedBy = "item", cascade = { CascadeType.ALL })
+	public Set<AnnotationValeur> getAnnotationValeurs() {
+		return this.annotationValeurs;
+	}
 
-   public void setAnnotationValeurs(final Set<AnnotationValeur> valeurs){
-      this.annotationValeurs = valeurs;
-   }
+	public void setAnnotationValeurs(final Set<AnnotationValeur> valeurs) {
+		this.annotationValeurs = valeurs;
+	}
 
-   /**
-    * 2 items sont consideres comme egaux si ils ont le même label 
-    * et la même reference vers le champ annotation.
-    * @param obj est l'item à tester.
-    * @return true si les items sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 items sont consideres comme egaux si ils ont le même label et la même
+	 * reference vers le champ annotation.
+	 * 
+	 * @param obj est l'item à tester.
+	 * @return true si les items sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || obj.getClass() != this.getClass()) {
+			return false;
+		}
 
-      final Item test = (Item) obj;
-      if(this.itemId != null && this.itemId.equals(test.itemId)){
-         return true;
-      }
+		final Item test = (Item) obj;
+		if (this.itemId != null && this.itemId.equals(test.itemId)) {
+			return true;
+		}
 
-      return ((this.label == test.label || (this.label != null && this.label.equals(test.label)))
-         && (this.champAnnotation == test.champAnnotation
-            || (this.champAnnotation != null && this.champAnnotation.equals(test.champAnnotation)))
-         && (this.plateforme == test.plateforme || (this.plateforme != null && this.plateforme.equals(test.plateforme))));
-   }
+		return ((this.label == test.label || (this.label != null && this.label.equals(test.label)))
+				&& (this.champAnnotation == test.champAnnotation
+						|| (this.champAnnotation != null && this.champAnnotation.equals(test.champAnnotation)))
+				&& (this.plateforme == test.plateforme
+						|| (this.plateforme != null && this.plateforme.equals(test.plateforme))));
+	}
 
-   /**
-    * Le hashcode est calculé sur le label et l'id du champ_annotation.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+	/**
+	 * Le hashcode est calculé sur le label et l'id du champ_annotation.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-      int hash = 7;
-      int hashLabel = 0;
-      int hasChampId = 0;
-      int hasPF = 0;
+		int hash = 7;
+		int hashLabel = 0;
+		int hasChampId = 0;
+		int hasPF = 0;
 
-      if(this.itemId != null){
-         return 31 * hash + this.itemId.hashCode();
-      }
+		if (this.itemId != null) {
+			return 31 * hash + this.itemId.hashCode();
+		}
 
-      if(this.label != null){
-         hashLabel = this.label.hashCode();
-      }
-      if(this.champAnnotation != null){
-         hasChampId = this.champAnnotation.hashCode();
-      }
-      if(this.plateforme != null){
-         hasPF = this.plateforme.hashCode();
-      }
+		if (this.label != null) {
+			hashLabel = this.label.hashCode();
+		}
+		if (this.champAnnotation != null) {
+			hasChampId = this.champAnnotation.hashCode();
+		}
+		if (this.plateforme != null) {
+			hasPF = this.plateforme.hashCode();
+		}
 
-      hash = 31 * hash + hashLabel;
-      hash = 31 * hash + hasChampId;
-      hash = 31 * hash + hasPF;
+		hash = 31 * hash + hashLabel;
+		hash = 31 * hash + hasChampId;
+		hash = 31 * hash + hasPF;
 
-      return hash;
-   }
+		return hash;
+	}
 
-   @Override
-   public String toString(){
-      if(this.champAnnotation != null && this.label != null){
-         return "{Thesaurus Item: " + this.champAnnotation.getNom() + "." + this.label + "}";
-      }
-      return "{Empty Item}";
-   }
+	@Override
+	public String toString() {
+		if (this.champAnnotation != null && this.label != null) {
+			return "{Thesaurus Item: " + this.champAnnotation.getNom() + "." + this.label + "}";
+		}
+		return "{Empty Item}";
+	}
 
-   /**
-    * Clone un item (deep copy).
-    */
-   @Override
-   public Item clone(){
-      final Item clone = new Item();
-      clone.setItemId(this.itemId);
-      clone.setLabel(this.label);
-      clone.setValeur(this.valeur);
-      clone.setChampAnnotation(this.champAnnotation);
-      clone.setAnnotationDefauts(this.annotationDefauts);
-      clone.setAnnotationValeurs(this.annotationValeurs);
-      clone.setPlateforme(getPlateforme());
-      return clone;
-   }
+	/**
+	 * Clone un item (deep copy).
+	 */
+	@Override
+	public Item clone() {
+		final Item clone = new Item();
+		clone.setItemId(this.itemId);
+		clone.setLabel(this.label);
+		clone.setValeur(this.valeur);
+		clone.setChampAnnotation(this.champAnnotation);
+		clone.setAnnotationDefauts(this.annotationDefauts);
+		clone.setAnnotationValeurs(this.annotationValeurs);
+		clone.setPlateforme(getPlateforme());
+		return clone;
+	}
 
-   //	@Override
-   //	public String getPhantomDatat() {
-   //		return this.champAnnotation.getNom() + "." + this.label;
-   //	}
+	// @Override
+	// public String getPhantomDatat() {
+	// return this.champAnnotation.getNom() + "." + this.label;
+	// }
 
 }

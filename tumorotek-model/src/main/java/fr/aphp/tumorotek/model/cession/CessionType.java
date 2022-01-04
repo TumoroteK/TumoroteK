@@ -43,8 +43,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -52,108 +50,109 @@ import org.hibernate.annotations.GenericGenerator;
 
 /**
  *
- * Objet persistant mappant la table CESSION_TYPE.
- * Classe créée le 11/09/09.
+ * Objet persistant mappant la table CESSION_TYPE. Classe créée le 11/09/09.
  *
  * @author Maxime Gousseau
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "CESSION_TYPE")
-@NamedQueries(value = {@NamedQuery(name = "CessionType.findByType", query = "SELECT c FROM CessionType c WHERE c.type like ?1"),
-   @NamedQuery(name = "CessionType.findByOrder", query = "SELECT c FROM CessionType c " + "ORDER BY c.type")})
-public class CessionType implements Serializable
-{
+//@NamedQueries(value = {@NamedQuery(name = "CessionType.findByType", query = "SELECT c FROM CessionType c WHERE c.type like ?1"),
+//   @NamedQuery(name = "CessionType.findByOrder", query = "SELECT c FROM CessionType c " + "ORDER BY c.type")})
+public class CessionType implements Serializable {
 
-   private static final long serialVersionUID = 8525570559901326749L;
+	private static final long serialVersionUID = 8525570559901326749L;
 
-   private Integer cessionTypeId;
-   private String type;
+	private Integer cessionTypeId;
+	private String type;
 
-   private Set<Cession> cessions = new HashSet<>();
+	private Set<Cession> cessions = new HashSet<>();
 
-   /** Constructeur par défaut. */
-   public CessionType(){}
+	/** Constructeur par défaut. */
+	public CessionType() {
+	}
 
-   @Id
-   @Column(name = "CESSION_TYPE_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getCessionTypeId(){
-      return this.cessionTypeId;
-   }
+	@Id
+	@Column(name = "CESSION_TYPE_ID", unique = true, nullable = false)
+	@GeneratedValue(generator = "autoincrement")
+	@GenericGenerator(name = "autoincrement", strategy = "increment")
+	public Integer getCessionTypeId() {
+		return this.cessionTypeId;
+	}
 
-   public void setCessionTypeId(final Integer id){
-      this.cessionTypeId = id;
-   }
+	public void setCessionTypeId(final Integer id) {
+		this.cessionTypeId = id;
+	}
 
-   @Column(name = "TYPE", nullable = false, length = 15)
-   public String getType(){
-      return this.type;
-   }
+	@Column(name = "TYPE", nullable = false, length = 15)
+	public String getType() {
+		return this.type;
+	}
 
-   public void setType(final String t){
-      this.type = t;
-   }
+	public void setType(final String t) {
+		this.type = t;
+	}
 
-   @OneToMany(mappedBy = "cessionType")
-   public Set<Cession> getCessions(){
-      return this.cessions;
-   }
+	@OneToMany(mappedBy = "cessionType")
+	public Set<Cession> getCessions() {
+		return this.cessions;
+	}
 
-   public void setCessions(final Set<Cession> cess){
-      this.cessions = cess;
-   }
+	public void setCessions(final Set<Cession> cess) {
+		this.cessions = cess;
+	}
 
-   /**
-    * 2 objets sont considérés comme égaux s'ils ont le même type.
-    * @param obj est l'objet à tester.
-    * @return true si les objets sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 objets sont considérés comme égaux s'ils ont le même type.
+	 * 
+	 * @param obj est l'objet à tester.
+	 * @return true si les objets sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final CessionType test = (CessionType) obj;
-      if(this.type == null){
-         return (test.type == null);
-      }
-      return (this.type.equals(test.type));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || obj.getClass() != this.getClass()) {
+			return false;
+		}
+		final CessionType test = (CessionType) obj;
+		if (this.type == null) {
+			return (test.type == null);
+		}
+		return (this.type.equals(test.type));
+	}
 
-   /**
-    * Le hashcode est calculé sur l'attribut type.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-      int hash = 7;
-      int hashType = 0;
+	/**
+	 * Le hashcode est calculé sur l'attribut type.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		int hashType = 0;
 
-      if(this.type != null){
-         hashType = this.type.hashCode();
-      }
+		if (this.type != null) {
+			hashType = this.type.hashCode();
+		}
 
-      hash = 31 * hash + hashType;
+		hash = 31 * hash + hashType;
 
-      return hash;
-   }
+		return hash;
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      if(this.type != null){
-         return "{" + this.type + "}";
-      }
-      return "{Empty CessionType}";
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		if (this.type != null) {
+			return "{" + this.type + "}";
+		}
+		return "{Empty CessionType}";
+	}
 
 }

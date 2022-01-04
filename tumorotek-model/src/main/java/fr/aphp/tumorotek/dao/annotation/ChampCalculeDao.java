@@ -37,29 +37,34 @@ package fr.aphp.tumorotek.dao.annotation;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampCalcule;
 
 /**
  * 
- * Interface pour le DAO du bean de domaine ChampCalcule.
- * Interface créée le 19/02/2018
+ * Interface pour le DAO du bean de domaine ChampCalcule. Interface créée le
+ * 19/02/2018
  * 
  * @author Answald Bournique
- * @version 2.2.0
+ * @version 2.3
  * @since 2.2.0
  *
  */
-public interface ChampCalculeDao extends GenericDaoJpa<ChampCalcule, Integer>
-{
+@Repository
+public interface ChampCalculeDao extends CrudRepository<ChampCalcule, Integer> {
 
-   /**
-    * Recherche les items assignés au champ spécifié en paramètre.
-    * Les champs retournés sont triés par table.
-    * @param champAnnotation.
-    * @return Liste de Item.
-    */
-   List<ChampCalcule> findByChampAnnotation(ChampAnnotation champ);
+	/**
+	 * Recherche les items assignés au champ spécifié en paramètre. Les champs
+	 * retournés sont triés par table.
+	 * 
+	 * @param champAnnotation.
+	 * @return Liste de Item.
+	 */
+	@Query("SELECT c FROM ChampCalcule c WHERE c.champAnnotation = ?1")
+	List<ChampCalcule> findByChampAnnotation(ChampAnnotation champ);
 
 }

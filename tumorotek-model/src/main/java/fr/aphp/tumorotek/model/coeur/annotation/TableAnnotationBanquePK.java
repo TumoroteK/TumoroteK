@@ -44,89 +44,89 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 
 /**
  *
- * Embedded Id pour la table TABLE_ANNOTATION_BANQUE.
- * Classe créée le 29/01/10.
+ * Embedded Id pour la table TABLE_ANNOTATION_BANQUE. Classe créée le 29/01/10.
  *
  * @author Mathieu BARTHELEMY
  * @see http://boris.kirzner.info/blog/archives/2008/07/19/
- * hibernate-annotations-the-many-to-many-association-with-composite-key/
+ *      hibernate-annotations-the-many-to-many-association-with-composite-key/
  * @version 2.0
  *
  */
 @Embeddable
-public class TableAnnotationBanquePK implements Serializable
-{
+public class TableAnnotationBanquePK implements Serializable {
 
-   private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-   private Banque banque;
-   private TableAnnotation tableAnnotation;
+	private Banque banque;
+	private TableAnnotation tableAnnotation;
 
-   /** Constructeur par défaut. */
-   public TableAnnotationBanquePK(){}
+	/** Constructeur par défaut. */
+	public TableAnnotationBanquePK() {
+	}
 
-   public TableAnnotationBanquePK(final Banque b, final TableAnnotation t){
-      this.banque = b;
-      this.tableAnnotation = t;
-   }
+	public TableAnnotationBanquePK(final Banque b, final TableAnnotation t) {
+		this.banque = b;
+		this.tableAnnotation = t;
+	}
 
-   @ManyToOne(targetEntity = Banque.class)
-   public Banque getBanque(){
-      return this.banque;
-   }
+	@ManyToOne(targetEntity = Banque.class)
+	public Banque getBanque() {
+		return this.banque;
+	}
 
-   public void setBanque(final Banque b){
-      this.banque = b;
-   }
+	public void setBanque(final Banque b) {
+		this.banque = b;
+	}
 
-   @ManyToOne(targetEntity = TableAnnotation.class)
-   public TableAnnotation getTableAnnotation(){
-      return this.tableAnnotation;
-   }
+	@ManyToOne(targetEntity = TableAnnotation.class)
+	public TableAnnotation getTableAnnotation() {
+		return this.tableAnnotation;
+	}
 
-   public void setTableAnnotation(final TableAnnotation t){
-      this.tableAnnotation = t;
-   }
+	public void setTableAnnotation(final TableAnnotation t) {
+		this.tableAnnotation = t;
+	}
 
-   /**
-    * 2 PKs sont considérés comme égales si elles sont composees 
-    * des mêmes clés.
-    * @param obj est la PK à tester.
-    * @return true si les PK sont egales.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 PKs sont considérés comme égales si elles sont composees des mêmes clés.
+	 * 
+	 * @param obj est la PK à tester.
+	 * @return true si les PK sont egales.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final TableAnnotationBanquePK test = (TableAnnotationBanquePK) obj;
-      return (((this.banque != null && (this.banque.equals(test.banque)) || this.banque == test.banque)
-         && ((this.tableAnnotation != null && this.tableAnnotation.equals(test.tableAnnotation))
-            || this.tableAnnotation == test.tableAnnotation)));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || obj.getClass() != this.getClass()) {
+			return false;
+		}
+		final TableAnnotationBanquePK test = (TableAnnotationBanquePK) obj;
+		return (((this.banque != null && (this.banque.equals(test.banque)) || this.banque == test.banque)
+				&& ((this.tableAnnotation != null && this.tableAnnotation.equals(test.tableAnnotation))
+						|| this.tableAnnotation == test.tableAnnotation)));
+	}
 
-   /**
-    * Le hashcode est calculé sur les clés.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-      //int hash = 7;
-      int hashBanque = 0;
-      int hashTableAnnotation = 0;
+	/**
+	 * Le hashcode est calculé sur les clés.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
+		// int hash = 7;
+		int hashBanque = 0;
+		int hashTableAnnotation = 0;
 
-      if(this.banque != null){
-         hashBanque = this.banque.hashCode();
-      }
-      if(this.tableAnnotation != null){
-         hashTableAnnotation = this.tableAnnotation.hashCode();
-      }
+		if (this.banque != null) {
+			hashBanque = this.banque.hashCode();
+		}
+		if (this.tableAnnotation != null) {
+			hashTableAnnotation = this.tableAnnotation.hashCode();
+		}
 
-      return hashBanque + hashTableAnnotation;
-   }
+		return hashBanque + hashTableAnnotation;
+	}
 
 }

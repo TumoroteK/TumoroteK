@@ -37,7 +37,10 @@ package fr.aphp.tumorotek.dao.annotation;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.annotation.DataType;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
@@ -50,102 +53,124 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 
 /**
  *
- * Interface pour le DAO du bean de domaine ChampAnnotation.
- * Interface créée le 28/01/10.
+ * Interface pour le DAO du bean de domaine ChampAnnotation. Interface créée le
+ * 28/01/10.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface ChampAnnotationDao extends GenericDaoJpa<ChampAnnotation, Integer>
-{
+@Repository
+public interface ChampAnnotationDao extends CrudRepository<ChampAnnotation, Integer> {
 
-   /**
-    * Recherche les champs dont le nom est 'like' le paramètre.
-    * Les champs retournés sont triés par nom.
-    * @param nom Nom des champs recherchés.
-    * @return Liste de ChampAnnotation.
-    */
-   List<ChampAnnotation> findByNom(String nom);
+	/**
+	 * Recherche les champs dont le nom est 'like' le paramètre. Les champs
+	 * retournés sont triés par nom.
+	 * 
+	 * @param nom Nom des champs recherchés.
+	 * @return Liste de ChampAnnotation.
+	 */
+	@Query("SELECT c FROM ChampAnnotation c WHERE c.nom like ?1 ORDER BY c.nom")
+	List<ChampAnnotation> findByNom(String nom);
 
-   /**
-    * Recherche les champs dont la table est passée en paramètre.
-    * Les champs retournés sont triés par leur ordre.
-    * @param table TableAnnotation à laquelle les champs appartiennent.
-    * @return Liste de ChampAnnotation.
-    */
-   List<ChampAnnotation> findByTable(TableAnnotation table);
-   
-   /**
-    * Recherche les champs dont la table et les datatypes sont passés en paramètre.
-    * Les champs retournés sont triés par leur ordre.
-    * @param table TableAnnotation à laquelle les champs appartiennent.
-    * @param dataTypeList liste de datatypes souhaités
-    * @return Liste de ChampAnnotation.
-    */
-   List<ChampAnnotation> findByTableAndDataType(TableAnnotation table, List<DataType> dataTypeList);
+	/**
+	 * Recherche les champs dont la table est passée en paramètre. Les champs
+	 * retournés sont triés par leur ordre.
+	 * 
+	 * @param table TableAnnotation à laquelle les champs appartiennent.
+	 * @return Liste de ChampAnnotation.
+	 */
+	@Query("SELECT c FROM ChampAnnotation c WHERE c.tableAnnotation = ?1 ORDER BY c.ordre")
+	List<ChampAnnotation> findByTable(TableAnnotation table);
 
-   /**
-    * Recherche tous les champs sauf celui dont l'id est passé 
-    * en paramètre.
-    * @param champAnnotationId Identifiant du champ que l'on souhaite
-    * exclure de la liste retournée.
-    * @return une liste de Champs.
-    */
-   List<ChampAnnotation> findByExcludedId(Integer champAnnotationId);
+	/**
+	 * Recherche les champs dont la table et les datatypes sont passés en paramètre.
+	 * Les champs retournés sont triés par leur ordre.
+	 * 
+	 * @param table        TableAnnotation à laquelle les champs appartiennent.
+	 * @param dataTypeList liste de datatypes souhaités
+	 * @return Liste de ChampAnnotation.
+	 */
+	@Query("SELECT c FROM ChampAnnotation c WHERE c.tableAnnotation = ?1 AND c.dataType in ?2 ORDER BY c.ordre")
+	List<ChampAnnotation> findByTableAndDataType(TableAnnotation table, List<DataType> dataTypeList);
 
-   /**
-    * Recherche tous les champs qui sont editables par l'utilisateur 
-    * pour la table passée en paramètre.
-    * @param tableAnnotation
-    * @return une liste de Champs.
-    */
-   List<ChampAnnotation> findByEditByCatalogue(TableAnnotation tab);
+	/**
+	 * Recherche tous les champs sauf celui dont l'id est passé en paramètre.
+	 * 
+	 * @param champAnnotationId Identifiant du champ que l'on souhaite exclure de la
+	 *                          liste retournée.
+	 * @return une liste de Champs.
+	 */
+	@Query("SELECT c FROM ChampAnnotation c WHERE c.id != ?1")
+	List<ChampAnnotation> findByExcludedId(Integer champAnnotationId);
 
-   /**
-    * Trouve les champs d'une table en fonction de leur types.
-    * @param table annotation
-    * @param data type recherché
-    * @return liste de champ annotation du type demandé.
-    */
-   List<ChampAnnotation> findByTableAndType(TableAnnotation table, DataType type);
+	/**
+	 * Recherche tous les champs qui sont editables par l'utilisateur pour la table
+	 * passée en paramètre.
+	 * 
+	 * @param tableAnnotation
+	 * @return une liste de Champs.
+	 */
+	@Query("SELECT c FROM ChampAnnotation c WHERE c.edit = 1 AND c.tableAnnotation = ?1 ORDER BY c.ordre")
+	List<ChampAnnotation> findByEditByCatalogue(TableAnnotation tab);
 
-   /**
-    * Recherche les critères associés à un champ annotation.
-    * @param champ annotation
-    * @return une liste de critères.
-    */
-   List<Critere> findCriteresByChampAnnotation(ChampAnnotation chp);
+	/**
+	 * Trouve les champs d'une table en fonction de leur types.
+	 * 
+	 * @param table annotation
+	 * @param data  type recherché
+	 * @return liste de champ annotation du type demandé.
+	 */
+	@Query("SELECT c FROM ChampAnnotation c WHERE c.tableAnnotation = ?1 ANd c.dataType = ?2 ORDER BY c.ordre")
+	List<ChampAnnotation> findByTableAndType(TableAnnotation table, DataType type);
 
-   /**
-    * Recherche les résultats associés à un champ annotation.
-    * @param champ annotation
-    * @return une liste de résultats.
-    */
-   List<Resultat> findResultatsByChampAnnotation(ChampAnnotation chp);
+	/**
+	 * Recherche les critères associés à un champ annotation.
+	 * 
+	 * @param champ annotation
+	 * @return une liste de critères.
+	 */
+	@Query("SELECT c FROM Critere c WHERE c.champ.champAnnotation = ?1")
+	List<Critere> findCriteresByChampAnnotation(ChampAnnotation chp);
 
-   /**
-    * Recherche les ChampLigneEtiquettes associées à un champ annotation.
-    * @param champ annotation
-    * @return une liste de ChampLigneEtiquettes.
-    */
-   List<ChampLigneEtiquette> findChpLEtiquetteByChampAnnotation(ChampAnnotation chp);
+	/**
+	 * Recherche les résultats associés à un champ annotation.
+	 * 
+	 * @param champ annotation
+	 * @return une liste de résultats.
+	 */
+	@Query("SELECT r FROM Resultat r WHERE r.champ.champAnnotation = ?1")
+	List<Resultat> findResultatsByChampAnnotation(ChampAnnotation chp);
 
-   /**
-    * Recherche les colonnes associées à un champ annotation.
-    * @param champ annotation
-    * @return une liste d'ImportColonne.
-    */
-   List<ImportColonne> findImportColonnesByChampAnnotation(ChampAnnotation chp);
+	/**
+	 * Recherche les ChampLigneEtiquettes associées à un champ annotation.
+	 * 
+	 * @param champ annotation
+	 * @return une liste de ChampLigneEtiquettes.
+	 */
+	@Query("SELECT c FROM ChampLigneEtiquette c WHERE c.champ.champAnnotation = ?1")
+	List<ChampLigneEtiquette> findChpLEtiquetteByChampAnnotation(ChampAnnotation chp);
 
-   /**
-    * Recherche tous les champs annotations associés à un template 
-    * d'importation pour une entité.
-    * @param template
-    * @param entite
-    * @return List ChampAnnotation
-    * @since 2.0.12
-    */
-   List<ChampAnnotation> findByImportTemplateAndEntite(ImportTemplate ip, Entite e);
+	/**
+	 * Recherche les colonnes associées à un champ annotation.
+	 * 
+	 * @param champ annotation
+	 * @return une liste d'ImportColonne.
+	 */
+	@Query("SELECT i FROM ImportColonne i WHERE i.champ.champAnnotation = ?1")
+	List<ImportColonne> findImportColonnesByChampAnnotation(ChampAnnotation chp);
+
+	/**
+	 * Recherche tous les champs annotations associés à un template d'importation
+	 * pour une entité.
+	 * 
+	 * @param template
+	 * @param entite
+	 * @return List ChampAnnotation
+	 * @since 2.0.12
+	 */
+	@Query("SELECT c.champAnnotation FROM ImportColonne i "
+			+ "JOIN i.champ c WHERE i.importTemplate = ?1 AND c.champAnnotation.tableAnnotation.entite = ?2")
+	List<ChampAnnotation> findByImportTemplateAndEntite(ImportTemplate ip, Entite e);
 
 }

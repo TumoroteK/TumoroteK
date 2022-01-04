@@ -45,8 +45,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -55,139 +53,140 @@ import org.hibernate.annotations.GenericGenerator;
 
 /**
  *
- * Objet persistant mappant la table LIEN_FAMILIAL.
- * Classe créée le 14/09/09.
+ * Objet persistant mappant la table LIEN_FAMILIAL. Classe créée le 14/09/09.
  *
  * @author Maxime Gousseau
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "LIEN_FAMILIAL")
-@NamedQueries(value = {@NamedQuery(name = "LienFamilial.findByNom", query = "SELECT l FROM LienFamilial l WHERE l.nom like ?1"),
-   //		@NamedQuery(name = "LienFamilial.findByReciproque", 
-   //			query = "SELECT l FROM LienFamilial l WHERE l.reciproque = ?1"),
-   //		@NamedQuery(name = "LienFamilial.findByAscendant", 
-   //			query = "SELECT l FROM LienFamilial l WHERE l.ascendant = ?1")
-   @NamedQuery(name = "LienFamilial.findByExcludedId", query = "SELECT l FROM LienFamilial l " + "WHERE l.lienFamilialId != ?1")})
-public class LienFamilial implements Serializable
-{
+//@NamedQueries(value = {@NamedQuery(name = "LienFamilial.findByNom", query = "SELECT l FROM LienFamilial l WHERE l.nom like ?1"),
+//   //		@NamedQuery(name = "LienFamilial.findByReciproque", 
+//   //			query = "SELECT l FROM LienFamilial l WHERE l.reciproque = ?1"),
+//   //		@NamedQuery(name = "LienFamilial.findByAscendant", 
+//   //			query = "SELECT l FROM LienFamilial l WHERE l.ascendant = ?1")
+//   @NamedQuery(name = "LienFamilial.findByExcludedId", query = "SELECT l FROM LienFamilial l " + "WHERE l.lienFamilialId != ?1")})
+public class LienFamilial implements Serializable {
 
-   private static final long serialVersionUID = 1819985582518503182L;
+	private static final long serialVersionUID = 1819985582518503182L;
 
-   private Integer lienFamilialId;
-   private String nom;
-   private LienFamilial reciproque;
-   private Boolean ascendant;
+	private Integer lienFamilialId;
+	private String nom;
+	private LienFamilial reciproque;
+	private Boolean ascendant;
 
-   private Set<PatientLien> patientLiens = new HashSet<>();
-   //private Set<PatientLien> patientLiens2 = new HashSet<PatientLien>();
+	private Set<PatientLien> patientLiens = new HashSet<>();
+	// private Set<PatientLien> patientLiens2 = new HashSet<PatientLien>();
 
-   /** Constructeur par défaut. */
-   public LienFamilial(){}
+	/** Constructeur par défaut. */
+	public LienFamilial() {
+	}
 
-   @Override
-   public String toString(){
-      if(this.nom != null){
-         return "{" + this.nom + "}";
-      }else{
-         return "{Empty LienFamilial}";
-      }
-   }
+	@Override
+	public String toString() {
+		if (this.nom != null) {
+			return "{" + this.nom + "}";
+		} else {
+			return "{Empty LienFamilial}";
+		}
+	}
 
-   @Id
-   @Column(name = "LIEN_FAMILIAL_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getLienFamilialId(){
-      return this.lienFamilialId;
-   }
+	@Id
+	@Column(name = "LIEN_FAMILIAL_ID", unique = true, nullable = false)
+	@GeneratedValue(generator = "autoincrement")
+	@GenericGenerator(name = "autoincrement", strategy = "increment")
+	public Integer getLienFamilialId() {
+		return this.lienFamilialId;
+	}
 
-   public void setLienFamilialId(final Integer id){
-      this.lienFamilialId = id;
-   }
+	public void setLienFamilialId(final Integer id) {
+		this.lienFamilialId = id;
+	}
 
-   @Column(name = "NOM", nullable = false, length = 20)
-   public String getNom(){
-      return this.nom;
-   }
+	@Column(name = "NOM", nullable = false, length = 20)
+	public String getNom() {
+		return this.nom;
+	}
 
-   public void setNom(final String n){
-      this.nom = n;
-   }
+	public void setNom(final String n) {
+		this.nom = n;
+	}
 
-   @OneToOne(cascade = {CascadeType.ALL})
-   @JoinColumn(name = "RECIPROQUE_ID", nullable = true)
-   public LienFamilial getReciproque(){
-      return this.reciproque;
-   }
+	@OneToOne(cascade = { CascadeType.ALL })
+	@JoinColumn(name = "RECIPROQUE_ID", nullable = true)
+	public LienFamilial getReciproque() {
+		return this.reciproque;
+	}
 
-   public void setReciproque(final LienFamilial rec){
-      this.reciproque = rec;
-   }
+	public void setReciproque(final LienFamilial rec) {
+		this.reciproque = rec;
+	}
 
-   @Column(name = "ASCENDANT", nullable = true)
-   public Boolean getAscendant(){
-      return this.ascendant;
-   }
+	@Column(name = "ASCENDANT", nullable = true)
+	public Boolean getAscendant() {
+		return this.ascendant;
+	}
 
-   public void setAscendant(final Boolean asc){
-      this.ascendant = asc;
-   }
+	public void setAscendant(final Boolean asc) {
+		this.ascendant = asc;
+	}
 
-   @OneToMany(mappedBy = "lienFamilial")
-   public Set<PatientLien> getPatientLiens(){
-      return this.patientLiens;
-   }
+	@OneToMany(mappedBy = "lienFamilial")
+	public Set<PatientLien> getPatientLiens() {
+		return this.patientLiens;
+	}
 
-   public void setPatientLiens(final Set<PatientLien> patientLs){
-      this.patientLiens = patientLs;
-   }
+	public void setPatientLiens(final Set<PatientLien> patientLs) {
+		this.patientLiens = patientLs;
+	}
 
-   //	@OneToMany(mappedBy = "lien2")
-   //	public Set<PatientLien> getPatientLiens2() {
-   //		return this.patientLiens2;
-   //	}
-   //
-   //	public void setPatientLiens2(Set<PatientLien> patientLs2) {
-   //		this.patientLiens2 = patientLs2;
-   //	}
+	// @OneToMany(mappedBy = "lien2")
+	// public Set<PatientLien> getPatientLiens2() {
+	// return this.patientLiens2;
+	// }
+	//
+	// public void setPatientLiens2(Set<PatientLien> patientLs2) {
+	// this.patientLiens2 = patientLs2;
+	// }
 
-   /**
-    * 2 liens sont considérés comme égaux s'ils ont le même nom.
-    * @param obj est le lien à tester.
-    * @return true si les liens sont égaux.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 liens sont considérés comme égaux s'ils ont le même nom.
+	 * 
+	 * @param obj est le lien à tester.
+	 * @return true si les liens sont égaux.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final LienFamilial test = (LienFamilial) obj;
-      return ((this.nom != null && this.nom.equals(test.nom)) || this.nom == test.nom);
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || obj.getClass() != this.getClass()) {
+			return false;
+		}
+		final LienFamilial test = (LienFamilial) obj;
+		return ((this.nom != null && this.nom.equals(test.nom)) || this.nom == test.nom);
+	}
 
-   /**
-    * Le hashcode est calculé sur l'attribut nom.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
+	/**
+	 * Le hashcode est calculé sur l'attribut nom.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
 
-      int hash = 7;
-      int hashNom = 0;
+		int hash = 7;
+		int hashNom = 0;
 
-      if(this.nom != null){
-         hashNom = this.nom.hashCode();
-      }
+		if (this.nom != null) {
+			hashNom = this.nom.hashCode();
+		}
 
-      hash = 31 * hash + hashNom;
+		hash = 31 * hash + hashNom;
 
-      return hash;
+		return hash;
 
-   }
+	}
 }

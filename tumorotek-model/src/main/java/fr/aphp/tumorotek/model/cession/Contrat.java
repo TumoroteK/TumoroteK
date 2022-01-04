@@ -47,8 +47,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -64,333 +62,335 @@ import fr.aphp.tumorotek.model.contexte.Service;
 
 /**
  *
- * Objet persistant mappant la table Contrat.
- * Classe créée le 03/03/10.
+ * Objet persistant mappant la table Contrat. Classe créée le 03/03/10.
  *
  * @author Pierre Ventadour.
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "CONTRAT")
-@NamedQueries(value = {@NamedQuery(name = "Contrat.findByNumero", query = "SELECT m FROM Contrat m WHERE m.numero like ?1"),
-   @NamedQuery(name = "Contrat.findByPlateforme",
-      query = "SELECT c FROM Contrat c " + "WHERE c.plateforme = ?1 ORDER BY c.numero"),
-   @NamedQuery(name = "Contrat.findByOrder", query = "SELECT m FROM Contrat m " + "ORDER BY m.numero"),
-   @NamedQuery(name = "Contrat.findByExcludedId", query = "SELECT m FROM Contrat m WHERE m.contratId != ?1"),
-   @NamedQuery(name = "Contrat.findByCollaborateur", query = "SELECT m FROM Contrat m WHERE m.collaborateur = ?1"),
-   @NamedQuery(name = "Contrat.findByService", query = "SELECT m FROM Contrat m WHERE m.service = ?1"),
-   @NamedQuery(name = "Contrat.findByEtablissement", query = "SELECT m FROM Contrat m WHERE m.etablissement = ?1")})
-public class Contrat implements TKdataObject, TKFantomableObject, Serializable
-{
+//@NamedQueries(value = {@NamedQuery(name = "Contrat.findByNumero", query = "SELECT m FROM Contrat m WHERE m.numero like ?1"),
+//   @NamedQuery(name = "Contrat.findByPlateforme",
+//      query = "SELECT c FROM Contrat c " + "WHERE c.plateforme = ?1 ORDER BY c.numero"),
+//   @NamedQuery(name = "Contrat.findByOrder", query = "SELECT m FROM Contrat m " + "ORDER BY m.numero"),
+//   @NamedQuery(name = "Contrat.findByExcludedId", query = "SELECT m FROM Contrat m WHERE m.contratId != ?1"),
+//   @NamedQuery(name = "Contrat.findByCollaborateur", query = "SELECT m FROM Contrat m WHERE m.collaborateur = ?1"),
+//   @NamedQuery(name = "Contrat.findByService", query = "SELECT m FROM Contrat m WHERE m.service = ?1"),
+//   @NamedQuery(name = "Contrat.findByEtablissement", query = "SELECT m FROM Contrat m WHERE m.etablissement = ?1")})
+public class Contrat implements TKdataObject, TKFantomableObject, Serializable {
 
-   private static final long serialVersionUID = -1166135996929457768L;
+	private static final long serialVersionUID = -1166135996929457768L;
 
-   private Integer contratId;
-   private String numero;
-   private Date dateDemandeCession;
-   private Date dateValidation;
-   private Date dateDemandeRedaction;
-   private Date dateEnvoiContrat;
-   private Date dateSignature;
-   private String titreProjet;
-   private String description;
-   private Float montant;
+	private Integer contratId;
+	private String numero;
+	private Date dateDemandeCession;
+	private Date dateValidation;
+	private Date dateDemandeRedaction;
+	private Date dateEnvoiContrat;
+	private Date dateSignature;
+	private String titreProjet;
+	private String description;
+	private Float montant;
 
-   private Plateforme plateforme;
-   private ProtocoleType protocoleType;
-   private Service service;
-   private Collaborateur collaborateur;
-   private Etablissement etablissement;
+	private Plateforme plateforme;
+	private ProtocoleType protocoleType;
+	private Service service;
+	private Collaborateur collaborateur;
+	private Etablissement etablissement;
 
-   private Set<Cession> cessions = new HashSet<>();
+	private Set<Cession> cessions = new HashSet<>();
 
-   /** Constructeur par défaut. */
-   public Contrat(){
-      super();
-      cessions = new HashSet<>();
-   }
+	/** Constructeur par défaut. */
+	public Contrat() {
+		super();
+		cessions = new HashSet<>();
+	}
 
-   @Id
-   @Column(name = "CONTRAT_ID", unique = true, nullable = false)
-   @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
-   public Integer getContratId(){
-      return this.contratId;
-   }
+	@Id
+	@Column(name = "CONTRAT_ID", unique = true, nullable = false)
+	@GeneratedValue(generator = "autoincrement")
+	@GenericGenerator(name = "autoincrement", strategy = "increment")
+	public Integer getContratId() {
+		return this.contratId;
+	}
 
-   public void setContratId(final Integer id){
-      this.contratId = id;
-   }
+	public void setContratId(final Integer id) {
+		this.contratId = id;
+	}
 
-   @Column(name = "NUMERO", nullable = false, length = 50)
-   public String getNumero(){
-      return this.numero;
-   }
+	@Column(name = "NUMERO", nullable = false, length = 50)
+	public String getNumero() {
+		return this.numero;
+	}
 
-   public void setNumero(final String num){
-      this.numero = num;
-   }
+	public void setNumero(final String num) {
+		this.numero = num;
+	}
 
-   @Column(name = "DATE_DEMANDE_CESSION", nullable = true)
-   public Date getDateDemandeCession(){
-      if(dateDemandeCession != null){
-         return new Date(dateDemandeCession.getTime());
-      }
-      return null;
-   }
+	@Column(name = "DATE_DEMANDE_CESSION", nullable = true)
+	public Date getDateDemandeCession() {
+		if (dateDemandeCession != null) {
+			return new Date(dateDemandeCession.getTime());
+		}
+		return null;
+	}
 
-   public void setDateDemandeCession(final Date date){
-      if(date != null){
-         this.dateDemandeCession = new Date(date.getTime());
-      }else{
-         this.dateDemandeCession = null;
-      }
-   }
+	public void setDateDemandeCession(final Date date) {
+		if (date != null) {
+			this.dateDemandeCession = new Date(date.getTime());
+		} else {
+			this.dateDemandeCession = null;
+		}
+	}
 
-   @Column(name = "DATE_VALIDATION", nullable = true)
-   public Date getDateValidation(){
-      if(dateValidation != null){
-         return new Date(dateValidation.getTime());
-      }
-      return null;
-   }
+	@Column(name = "DATE_VALIDATION", nullable = true)
+	public Date getDateValidation() {
+		if (dateValidation != null) {
+			return new Date(dateValidation.getTime());
+		}
+		return null;
+	}
 
-   public void setDateValidation(final Date date){
-      if(date != null){
-         this.dateValidation = new Date(date.getTime());
-      }else{
-         this.dateValidation = null;
-      }
-   }
+	public void setDateValidation(final Date date) {
+		if (date != null) {
+			this.dateValidation = new Date(date.getTime());
+		} else {
+			this.dateValidation = null;
+		}
+	}
 
-   @Column(name = "DATE_DEMANDE_REDACTION", nullable = true)
-   public Date getDateDemandeRedaction(){
-      if(dateDemandeRedaction != null){
-         return new Date(dateDemandeRedaction.getTime());
-      }
-      return null;
-   }
+	@Column(name = "DATE_DEMANDE_REDACTION", nullable = true)
+	public Date getDateDemandeRedaction() {
+		if (dateDemandeRedaction != null) {
+			return new Date(dateDemandeRedaction.getTime());
+		}
+		return null;
+	}
 
-   public void setDateDemandeRedaction(final Date date){
-      if(date != null){
-         this.dateDemandeRedaction = new Date(date.getTime());
-      }else{
-         this.dateDemandeRedaction = null;
-      }
-   }
+	public void setDateDemandeRedaction(final Date date) {
+		if (date != null) {
+			this.dateDemandeRedaction = new Date(date.getTime());
+		} else {
+			this.dateDemandeRedaction = null;
+		}
+	}
 
-   @Column(name = "DATE_ENVOI_CONTRAT", nullable = true)
-   public Date getDateEnvoiContrat(){
-      if(dateEnvoiContrat != null){
-         return new Date(dateEnvoiContrat.getTime());
-      }
-      return null;
-   }
+	@Column(name = "DATE_ENVOI_CONTRAT", nullable = true)
+	public Date getDateEnvoiContrat() {
+		if (dateEnvoiContrat != null) {
+			return new Date(dateEnvoiContrat.getTime());
+		}
+		return null;
+	}
 
-   public void setDateEnvoiContrat(final Date date){
-      if(date != null){
-         this.dateEnvoiContrat = new Date(date.getTime());
-      }else{
-         this.dateEnvoiContrat = null;
-      }
-   }
+	public void setDateEnvoiContrat(final Date date) {
+		if (date != null) {
+			this.dateEnvoiContrat = new Date(date.getTime());
+		} else {
+			this.dateEnvoiContrat = null;
+		}
+	}
 
-   @Column(name = "DATE_SIGNATURE", nullable = true)
-   public Date getDateSignature(){
-      if(dateSignature != null){
-         return new Date(dateSignature.getTime());
-      }
-      return null;
-   }
+	@Column(name = "DATE_SIGNATURE", nullable = true)
+	public Date getDateSignature() {
+		if (dateSignature != null) {
+			return new Date(dateSignature.getTime());
+		}
+		return null;
+	}
 
-   public void setDateSignature(final Date date){
-      if(date != null){
-         this.dateSignature = new Date(date.getTime());
-      }else{
-         this.dateSignature = null;
-      }
-   }
+	public void setDateSignature(final Date date) {
+		if (date != null) {
+			this.dateSignature = new Date(date.getTime());
+		} else {
+			this.dateSignature = null;
+		}
+	}
 
-   @Column(name = "TITRE_PROJET", nullable = true, length = 100)
-   public String getTitreProjet(){
-      return this.titreProjet;
-   }
+	@Column(name = "TITRE_PROJET", nullable = true, length = 100)
+	public String getTitreProjet() {
+		return this.titreProjet;
+	}
 
-   public void setTitreProjet(final String titre){
-      this.titreProjet = titre;
-   }
+	public void setTitreProjet(final String titre) {
+		this.titreProjet = titre;
+	}
 
-   @Column(name = "DESCRIPTION", nullable = true)
-   public String getDescription(){
-      return this.description;
-   }
+	@Column(name = "DESCRIPTION", nullable = true)
+	public String getDescription() {
+		return this.description;
+	}
 
-   public void setDescription(final String desc){
-      this.description = desc;
-   }
+	public void setDescription(final String desc) {
+		this.description = desc;
+	}
 
-   @ManyToOne
-   @JoinColumn(name = "PLATEFORME_ID", nullable = false)
-   public Plateforme getPlateforme(){
-      return plateforme;
-   }
+	@ManyToOne
+	@JoinColumn(name = "PLATEFORME_ID", nullable = false)
+	public Plateforme getPlateforme() {
+		return plateforme;
+	}
 
-   public void setPlateforme(final Plateforme p){
-      this.plateforme = p;
-   }
+	public void setPlateforme(final Plateforme p) {
+		this.plateforme = p;
+	}
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-   @JoinColumn(name = "PROTOCOLE_TYPE_ID", nullable = true)
-   public ProtocoleType getProtocoleType(){
-      return this.protocoleType;
-   }
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinColumn(name = "PROTOCOLE_TYPE_ID", nullable = true)
+	public ProtocoleType getProtocoleType() {
+		return this.protocoleType;
+	}
 
-   public void setProtocoleType(final ProtocoleType protocole){
-      this.protocoleType = protocole;
-   }
+	public void setProtocoleType(final ProtocoleType protocole) {
+		this.protocoleType = protocole;
+	}
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-   @JoinColumn(name = "SERVICE_ID", nullable = true)
-   public Service getService(){
-      return this.service;
-   }
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinColumn(name = "SERVICE_ID", nullable = true)
+	public Service getService() {
+		return this.service;
+	}
 
-   public void setService(final Service serv){
-      this.service = serv;
-   }
+	public void setService(final Service serv) {
+		this.service = serv;
+	}
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-   @JoinColumn(name = "COLLABORATEUR_ID", nullable = true)
-   public Collaborateur getCollaborateur(){
-      return this.collaborateur;
-   }
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinColumn(name = "COLLABORATEUR_ID", nullable = true)
+	public Collaborateur getCollaborateur() {
+		return this.collaborateur;
+	}
 
-   public void setCollaborateur(final Collaborateur collab){
-      this.collaborateur = collab;
-   }
+	public void setCollaborateur(final Collaborateur collab) {
+		this.collaborateur = collab;
+	}
 
-   @Column(name = "MONTANT", nullable = true)
-   public Float getMontant(){
-      return montant;
-   }
+	@Column(name = "MONTANT", nullable = true)
+	public Float getMontant() {
+		return montant;
+	}
 
-   public void setMontant(final Float m){
-      this.montant = m;
-   }
+	public void setMontant(final Float m) {
+		this.montant = m;
+	}
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-   @JoinColumn(name = "ETABLISSEMENT_ID", nullable = true)
-   public Etablissement getEtablissement(){
-      return etablissement;
-   }
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@JoinColumn(name = "ETABLISSEMENT_ID", nullable = true)
+	public Etablissement getEtablissement() {
+		return etablissement;
+	}
 
-   public void setEtablissement(final Etablissement e){
-      this.etablissement = e;
-   }
+	public void setEtablissement(final Etablissement e) {
+		this.etablissement = e;
+	}
 
-   @OneToMany(mappedBy = "contrat")
-   public Set<Cession> getCessions(){
-      return this.cessions;
-   }
+	@OneToMany(mappedBy = "contrat")
+	public Set<Cession> getCessions() {
+		return this.cessions;
+	}
 
-   public void setCessions(final Set<Cession> cess){
-      this.cessions = cess;
-   }
+	public void setCessions(final Set<Cession> cess) {
+		this.cessions = cess;
+	}
 
-   /**
-    * 2 contrats sont considérés comme égaux s'ils ont le même numéro.
-    * @param obj est le Contrat à tester.
-    * @return true si les Contrats sont égales.
-    */
-   @Override
-   public boolean equals(final Object obj){
+	/**
+	 * 2 contrats sont considérés comme égaux s'ils ont le même numéro.
+	 * 
+	 * @param obj est le Contrat à tester.
+	 * @return true si les Contrats sont égales.
+	 */
+	@Override
+	public boolean equals(final Object obj) {
 
-      if(this == obj){
-         return true;
-      }
-      if((obj == null) || obj.getClass() != this.getClass()){
-         return false;
-      }
-      final Contrat test = (Contrat) obj;
-      return ((this.numero == test.numero || (this.numero != null && this.numero.equals(test.numero)))
-         && (this.plateforme == test.plateforme || (this.plateforme != null && this.plateforme.equals(test.plateforme))));
-   }
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || obj.getClass() != this.getClass()) {
+			return false;
+		}
+		final Contrat test = (Contrat) obj;
+		return ((this.numero == test.numero || (this.numero != null && this.numero.equals(test.numero)))
+				&& (this.plateforme == test.plateforme
+						|| (this.plateforme != null && this.plateforme.equals(test.plateforme))));
+	}
 
-   /**
-    * Le hashcode est calculé sur l'attribut numero.
-    * @return la valeur du hashcode.
-    */
-   @Override
-   public int hashCode(){
-      int hash = 7;
-      int hashNom = 0;
-      int hashPf = 0;
+	/**
+	 * Le hashcode est calculé sur l'attribut numero.
+	 * 
+	 * @return la valeur du hashcode.
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		int hashNom = 0;
+		int hashPf = 0;
 
-      if(this.numero != null){
-         hashNom = this.numero.hashCode();
-      }
-      if(this.plateforme != null){
-         hashPf = this.plateforme.hashCode();
-      }
+		if (this.numero != null) {
+			hashNom = this.numero.hashCode();
+		}
+		if (this.plateforme != null) {
+			hashPf = this.plateforme.hashCode();
+		}
 
-      hash = 31 * hash + hashNom;
-      hash = 31 * hash + hashPf;
+		hash = 31 * hash + hashNom;
+		hash = 31 * hash + hashPf;
 
-      return hash;
-   }
+		return hash;
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      if(this.numero != null && this.plateforme != null){
-         return "{" + this.numero + ", " + plateforme.getNom() + "(Plateforme)}";
-      }
-      return "{Empty Contrat}";
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		if (this.numero != null && this.plateforme != null) {
+			return "{" + this.numero + ", " + plateforme.getNom() + "(Plateforme)}";
+		}
+		return "{Empty Contrat}";
+	}
 
-   /**
-    * Cree un clone de l'objet.
-    * @return clone echantillon
-    */
-   @Override
-   public Contrat clone(){
-      final Contrat clone = new Contrat();
+	/**
+	 * Cree un clone de l'objet.
+	 * 
+	 * @return clone echantillon
+	 */
+	@Override
+	public Contrat clone() {
+		final Contrat clone = new Contrat();
 
-      clone.setContratId(this.getContratId());
-      clone.setPlateforme(this.getPlateforme());
-      clone.setNumero(this.getNumero());
-      clone.setDateDemandeCession(this.getDateDemandeCession());
-      clone.setDateValidation(this.getDateValidation());
-      clone.setDateDemandeRedaction(this.getDateDemandeRedaction());
-      clone.setDateEnvoiContrat(this.getDateEnvoiContrat());
-      clone.setDateSignature(this.getDateSignature());
-      clone.setTitreProjet(this.getTitreProjet());
-      clone.setCollaborateur(this.getCollaborateur());
-      clone.setService(this.getService());
-      clone.setProtocoleType(this.getProtocoleType());
-      clone.setDescription(this.getDescription());
-      clone.setEtablissement(this.getEtablissement());
-      clone.setMontant(this.getMontant());
+		clone.setContratId(this.getContratId());
+		clone.setPlateforme(this.getPlateforme());
+		clone.setNumero(this.getNumero());
+		clone.setDateDemandeCession(this.getDateDemandeCession());
+		clone.setDateValidation(this.getDateValidation());
+		clone.setDateDemandeRedaction(this.getDateDemandeRedaction());
+		clone.setDateEnvoiContrat(this.getDateEnvoiContrat());
+		clone.setDateSignature(this.getDateSignature());
+		clone.setTitreProjet(this.getTitreProjet());
+		clone.setCollaborateur(this.getCollaborateur());
+		clone.setService(this.getService());
+		clone.setProtocoleType(this.getProtocoleType());
+		clone.setDescription(this.getDescription());
+		clone.setEtablissement(this.getEtablissement());
+		clone.setMontant(this.getMontant());
 
-      return clone;
-   }
+		return clone;
+	}
 
-   @Override
-   public String entiteNom(){
-      return "Contrat";
-   }
+	@Override
+	public String entiteNom() {
+		return "Contrat";
+	}
 
-   @Override
-   @Transient
-   public String getPhantomData(){
-      return getNumero();
-   }
+	@Override
+	@Transient
+	public String getPhantomData() {
+		return getNumero();
+	}
 
-   @Override
-   public Integer listableObjectId(){
-      return getContratId();
-   }
+	@Override
+	public Integer listableObjectId() {
+		return getContratId();
+	}
 }

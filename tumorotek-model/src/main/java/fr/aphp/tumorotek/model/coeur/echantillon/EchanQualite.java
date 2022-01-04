@@ -42,8 +42,6 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -54,105 +52,104 @@ import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 
 /**
  *
- * Objet persistant mappant la table ECHAN_QUALITE.
- * Classe créée le 10/09/09.
+ * Objet persistant mappant la table ECHAN_QUALITE. Classe créée le 10/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "ECHAN_QUALITE")
-@AttributeOverrides({@AttributeOverride(name = "id", column = @Column(name = "ECHAN_QUALITE_ID")),
-   @AttributeOverride(name = "nom", column = @Column(name = "ECHAN_QUALITE", nullable = false, length = 200))})
+@AttributeOverrides({ @AttributeOverride(name = "id", column = @Column(name = "ECHAN_QUALITE_ID")),
+		@AttributeOverride(name = "nom", column = @Column(name = "ECHAN_QUALITE", nullable = false, length = 200)) })
 @GenericGenerator(name = "autoincrement", strategy = "increment")
-@NamedQueries(
-   value = {@NamedQuery(name = "EchanQualite.findByQualite", query = "SELECT e FROM EchanQualite e " + "WHERE e.nom like ?1"),
-      @NamedQuery(name = "EchanQualite.findByEchantillonId",
-         query = "SELECT e FROM EchanQualite e " + "left join e.echantillons h " + "WHERE h.echantillonId = ?1"),
-      @NamedQuery(name = "EchanQualite.findByExcludedId", query = "SELECT e FROM EchanQualite e " + "WHERE e.id != ?1"),
-      @NamedQuery(name = "EchanQualite.findByPfOrder",
-         query = "SELECT e FROM EchanQualite e " + "WHERE e.plateforme = ?1 ORDER BY e.nom"),
-      @NamedQuery(name = "EchanQualite.findByOrder",
-      query = "SELECT e FROM EchanQualite e ORDER BY e.nom")})
-public class EchanQualite extends AbstractPfDependantThesaurusObject implements java.io.Serializable
-{
+//@NamedQueries(
+//   value = {@NamedQuery(name = "EchanQualite.findByQualite", query = "SELECT e FROM EchanQualite e " + "WHERE e.nom like ?1"),
+//      @NamedQuery(name = "EchanQualite.findByEchantillonId",
+//         query = "SELECT e FROM EchanQualite e " + "left join e.echantillons h " + "WHERE h.echantillonId = ?1"),
+//      @NamedQuery(name = "EchanQualite.findByExcludedId", query = "SELECT e FROM EchanQualite e " + "WHERE e.id != ?1"),
+//      @NamedQuery(name = "EchanQualite.findByPfOrder",
+//         query = "SELECT e FROM EchanQualite e " + "WHERE e.plateforme = ?1 ORDER BY e.nom"),
+//      @NamedQuery(name = "EchanQualite.findByOrder",
+//      query = "SELECT e FROM EchanQualite e ORDER BY e.nom")})
+public class EchanQualite extends AbstractPfDependantThesaurusObject implements java.io.Serializable {
 
-   private static final long serialVersionUID = 768431365534341L;
+	private static final long serialVersionUID = 768431365534341L;
 
-   private Set<Echantillon> echantillons;
+	private Set<Echantillon> echantillons;
 
-   /** Constructeur par défaut. */
-   public EchanQualite(){
-      echantillons = new HashSet<>();
-   }
+	/** Constructeur par défaut. */
+	public EchanQualite() {
+		echantillons = new HashSet<>();
+	}
 
-   /**
-    * Constructeur avec paramètres.
-    * @param id .
-    * @param q .
-    */
-   public EchanQualite(final Integer id, final String q){
-      this.setId(id);
-      this.setNom(q);
-   }
+	/**
+	 * Constructeur avec paramètres.
+	 * 
+	 * @param id .
+	 * @param q  .
+	 */
+	public EchanQualite(final Integer id, final String q) {
+		this.setId(id);
+		this.setNom(q);
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getId()}
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public Integer getEchanQualiteId(){
-      return this.getId();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getId()}
+	 * @return
+	 */
+	@Deprecated
+	@Transient
+	public Integer getEchanQualiteId() {
+		return this.getId();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setId(Integer)}
-    * @return
-    */
-   @Deprecated
-   public void setEchanQualiteId(final Integer eId){
-      this.setId(eId);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setId(Integer)}
+	 * @return
+	 */
+	@Deprecated
+	public void setEchanQualiteId(final Integer eId) {
+		this.setId(eId);
+	}
 
-   /**
-    * @deprecated Utiliser {@link #getNom()}
-    * @return
-    */
-   @Deprecated
-   @Transient
-   public String getEchanQualite(){
-      return this.getNom();
-   }
+	/**
+	 * @deprecated Utiliser {@link #getNom()}
+	 * @return
+	 */
+	@Deprecated
+	@Transient
+	public String getEchanQualite() {
+		return this.getNom();
+	}
 
-   /**
-    * @deprecated Utiliser {@link #setNom(String)}
-    * @param q
-    */
-   @Deprecated
-   public void setEchanQualite(final String q){
-      this.setNom(q);
-   }
+	/**
+	 * @deprecated Utiliser {@link #setNom(String)}
+	 * @param q
+	 */
+	@Deprecated
+	public void setEchanQualite(final String q) {
+		this.setNom(q);
+	}
 
-   @OneToMany(mappedBy = "echanQualite")
-   public Set<Echantillon> getEchantillons(){
-      return echantillons;
-   }
+	@OneToMany(mappedBy = "echanQualite")
+	public Set<Echantillon> getEchantillons() {
+		return echantillons;
+	}
 
-   public void setEchantillons(final Set<Echantillon> echants){
-      this.echantillons = echants;
-   }
+	public void setEchantillons(final Set<Echantillon> echants) {
+		this.echantillons = echants;
+	}
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
-   public String toString(){
-      if(this.getNom() != null){
-         return "{" + this.getNom() + "}";
-      }
-      return "{Empty EchanQualite}";
-   }
+	/**
+	 * Méthode surchargeant le toString() de l'objet.
+	 */
+	@Override
+	public String toString() {
+		if (this.getNom() != null) {
+			return "{" + this.getNom() + "}";
+		}
+		return "{Empty EchanQualite}";
+	}
 
 }

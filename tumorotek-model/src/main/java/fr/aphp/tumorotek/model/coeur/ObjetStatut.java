@@ -44,8 +44,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -61,14 +59,14 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
  * Classe créée le 09/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "OBJET_STATUT")
-@NamedQueries(
-   value = {@NamedQuery(name = "ObjetStatut.findByStatut", query = "SELECT o FROM ObjetStatut o WHERE o.statut like ?1"),
-      @NamedQuery(name = "ObjetStatut.findByOrder", query = "SELECT o FROM ObjetStatut o ORDER BY o.statut")})
+//@NamedQueries(
+//   value = {@NamedQuery(name = "ObjetStatut.findByStatut", query = "SELECT o FROM ObjetStatut o WHERE o.statut like ?1"),
+//      @NamedQuery(name = "ObjetStatut.findByOrder", query = "SELECT o FROM ObjetStatut o ORDER BY o.statut")})
 public class ObjetStatut implements java.io.Serializable
 {
 
