@@ -62,10 +62,13 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class AffichageDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private AffichageDao affichageDao;
-   private UtilisateurDao utilisateurDao;
-   private BanqueDao banqueDao;
+
+   @Autowired
+ AffichageDao affichageDao;
+   @Autowired
+ UtilisateurDao utilisateurDao;
+   @Autowired
+ BanqueDao banqueDao;
 
    /** Constructeur. */
    public AffichageDaoTest(){}
@@ -74,7 +77,8 @@ public class AffichageDaoTest extends AbstractDaoTest
     * Setter du bean AffichageDao.
     * @param aDao est le bean Dao.
     */
-   public void setAffichageDao(final AffichageDao aDao){
+   @Test
+public void setAffichageDao(final AffichageDao aDao){
       this.affichageDao = aDao;
    }
 
@@ -82,15 +86,18 @@ public class AffichageDaoTest extends AbstractDaoTest
     * Setter du bean UtilisateurDao.
     * @param uDao est le bean Dao.
     */
-   public void setUtilisateurDao(final UtilisateurDao uDao){
+   @Test
+public void setUtilisateurDao(final UtilisateurDao uDao){
       this.utilisateurDao = uDao;
    }
 
-   public void setBanqueDao(final BanqueDao bDao){
+   @Test
+public void setBanqueDao(final BanqueDao bDao){
       this.banqueDao = bDao;
    }
 
-   public void testFindByBanque(){
+   @Test
+public void testFindByBanque(){
       final Banque b1 = banqueDao.findById(1);
       List<Affichage> liste = affichageDao.findByBanque(b1);
       assertTrue(liste.size() == 3);
@@ -107,7 +114,8 @@ public class AffichageDaoTest extends AbstractDaoTest
       assertTrue(liste.size() == 0);
    }
 
-   public void testFindByBanqueInList(){
+   @Test
+public void testFindByBanqueInList(){
       final List<Banque> bks = new ArrayList<>();
       final Banque b1 = banqueDao.findById(1);
       bks.add(b1);
@@ -126,8 +134,9 @@ public class AffichageDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findAffichagesByUtilisateur().
     */
-   public void testFindAffichagesByUtilisateur() throws Exception{
-      final List<Utilisateur> utilisateurs = this.utilisateurDao.findAll();
+   @Test
+public void testFindAffichagesByUtilisateur() throws Exception{
+      final List<Utilisateur> utilisateurs = this.IterableUtils.toList(utilisateurDao.findAll());
       final Iterator<Utilisateur> itUtil = utilisateurs.iterator();
       while(itUtil.hasNext()){
          final Utilisateur utilisateur = itUtil.next();
@@ -142,7 +151,8 @@ public class AffichageDaoTest extends AbstractDaoTest
    /**
    * Test l'appel de la méthode findByIntituleUtilisateur().
    */
-   public void testFindByIntituleUtilisateur() throws Exception{
+   @Test
+public void testFindByIntituleUtilisateur() throws Exception{
       final Utilisateur u1 = utilisateurDao.findById(1);
       final Utilisateur u2 = utilisateurDao.findById(2);
       List<Affichage> liste = affichageDao.findByIntituleUtilisateur("Essen%", u1);
@@ -164,8 +174,9 @@ public class AffichageDaoTest extends AbstractDaoTest
    /**
    * Test l'appel de la méthode findByExcludedId().
    */
-   public void testFindByExcludedId(){
-      final List<Affichage> liste = affichageDao.findAll();
+   @Test
+public void testFindByExcludedId(){
+      final List<Affichage> liste = IterableUtils.toList(affichageDao.findAll());
       final Iterator<Affichage> it = liste.iterator();
       while(it.hasNext()){
          final Affichage temp = it.next();
@@ -182,7 +193,8 @@ public class AffichageDaoTest extends AbstractDaoTest
    * @throws Exception lance une exception en cas de problème lors du CRUD.
    */
    @Rollback(false)
-   public void testCrudAffichage() throws Exception{
+   @Test
+public void testCrudAffichage() throws Exception{
       final Utilisateur createur = this.utilisateurDao.findById(3);
       final String intitule = "intitule";
       final Integer nbLignes = new Integer(25);
@@ -196,8 +208,8 @@ public class AffichageDaoTest extends AbstractDaoTest
 
       // Test de l'insertion
       Integer idObject = new Integer(-1);
-      this.affichageDao.createObject(a);
-      final List<Affichage> affichages = this.affichageDao.findAll();
+      this.affichageDao.save(a);
+      final List<Affichage> affichages = this.IterableUtils.toList(affichageDao.findAll());
       final Iterator<Affichage> itAffichage = affichages.iterator();
       boolean found = false;
       while(itAffichage.hasNext()){
@@ -232,7 +244,7 @@ public class AffichageDaoTest extends AbstractDaoTest
       a2.setNbLignes(updatedNbLignes);
       a2.setBanque(updatedBanque);
 
-      this.affichageDao.updateObject(a2);
+      this.affichageDao.save(a2);
       assertNotNull(this.affichageDao.findById(idObject).getIntitule());
       assertTrue(this.affichageDao.findById(idObject).getIntitule().equals(updatedIntitule));
       assertNotNull(this.affichageDao.findById(idObject).getCreateur());
@@ -242,7 +254,7 @@ public class AffichageDaoTest extends AbstractDaoTest
       assertNotNull(this.affichageDao.findById(idObject).getBanque());
       assertTrue(this.affichageDao.findById(idObject).getBanque().equals(updatedBanque));
       // Test de la délétion
-      this.affichageDao.removeObject(idObject);
+      this.affichageDao.deleteById(idObject);
       assertNull(this.affichageDao.findById(idObject));
 
    }
@@ -250,7 +262,8 @@ public class AffichageDaoTest extends AbstractDaoTest
    /**
     * test toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final Affichage a1 = affichageDao.findById(1);
       assertTrue(a1.toString().equals("{" + a1.getIntitule() + "}"));
 
@@ -261,7 +274,8 @@ public class AffichageDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       //On boucle sur les 4 possibilités
       for(int i = 0; i < Math.pow(2, 2); i++){
          final Affichage affichage1 = new Affichage();
@@ -287,7 +301,8 @@ public class AffichageDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       //On boucle sur les 4 possibilités
       for(int i = 0; i < Math.pow(2, 2); i++){
          final Affichage affichage = new Affichage();

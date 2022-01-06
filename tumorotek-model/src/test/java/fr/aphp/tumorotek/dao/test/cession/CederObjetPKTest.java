@@ -37,7 +37,19 @@ package fr.aphp.tumorotek.dao.test.cession;
 
 import java.text.ParseException;
 
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.cession.CessionDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
@@ -55,25 +67,31 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * @version 25/01/2010
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class CederObjetPKTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private CessionDao cessionDao;
-   /** Bean Dao. */
-   private EntiteDao entiteDao;
+
+   @Autowired
+ CessionDao cessionDao;
+
+   @Autowired
+ EntiteDao entiteDao;
 
    /** Constructeur. */
    public CederObjetPKTest(){
 
    }
 
-   public void setCessionDao(final CessionDao cDao){
+   @Test
+public void setCessionDao(final CessionDao cDao){
       this.cessionDao = cDao;
    }
 
-   public void setEntiteDao(final EntiteDao eDao){
+   @Test
+public void setEntiteDao(final EntiteDao eDao){
       this.entiteDao = eDao;
    }
 
@@ -81,7 +99,8 @@ public class CederObjetPKTest extends AbstractDaoTest
     * Test de la méthode surchargée "equals".
     * @throws ParseException 
     */
-   public void testEquals() throws ParseException{
+   @Test
+public void testEquals() throws ParseException{
       final CederObjetPK pk1 = new CederObjetPK();
       final CederObjetPK pk2 = new CederObjetPK();
 
@@ -104,7 +123,8 @@ public class CederObjetPKTest extends AbstractDaoTest
     * Test de la méthode surchargée "hashcode".
     * @throws ParseException 
     */
-   public void testHashCode() throws ParseException{
+   @Test
+public void testHashCode() throws ParseException{
       final CederObjetPK pk1 = new CederObjetPK();
       final CederObjetPK pk2 = new CederObjetPK();
 
@@ -121,7 +141,8 @@ public class CederObjetPKTest extends AbstractDaoTest
       assertTrue(hash == pk1.hashCode());
    }
 
-   private void populateClefsToTestEqualsAndHashCode() throws ParseException{
+   @Autowired
+ void populateClefsToTestEqualsAndHashCode() throws ParseException{
 
       final Integer objetId1 = 1;
       final Integer objetId2 = 2;
@@ -173,7 +194,8 @@ public class CederObjetPKTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final Integer objetId1 = 1;
       final Cession c1 = cessionDao.findById(1);
       final Entite e1 = entiteDao.findById(3);

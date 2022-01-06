@@ -35,13 +35,6 @@
  **/
 package fr.aphp.tumorotek.dao.test;
 
-import org.junit.runner.RunWith;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
-import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
-
 // import org.springframework.test.jpa.AbstractJpaTests;
 
 
@@ -71,9 +64,14 @@ public abstract class AbstractDaoTest // extends AbstractJpaTests
 	protected void assertNotNull(Object obj) {
 		org.junit.Assert.assertNotNull(obj);
 	}
+	
+	protected void assertEquals(Object o1, Object o2) {
+		org.junit.Assert.assertEquals(o1, o2);
+	}
 
    /***/
-   //private EntityManagerFactory entityManagerFactory;
+   //@Autowired
+ // EntityManagerFactory entityManagerFactory;
 
    /**
     * Référence la configuration >Spring pour les tests.
@@ -88,7 +86,8 @@ public abstract class AbstractDaoTest // extends AbstractJpaTests
     * Spring injectera automatiquement le SessionFactory au lancement.
     * @param factory est l'EntityManagerFactory utilisé dans les tests.
     */
-   /*public void setEntityManagerFactory(EntityManagerFactory factory) {
+   /*@Test
+public void setEntityManagerFactory(EntityManagerFactory factory) {
    	this.entityManagerFactory = factory;
    }*/
 

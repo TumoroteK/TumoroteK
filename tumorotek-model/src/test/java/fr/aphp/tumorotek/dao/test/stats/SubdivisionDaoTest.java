@@ -37,7 +37,16 @@ package fr.aphp.tumorotek.dao.test.stats;
 
 import java.util.List;
 
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
 
 import fr.aphp.tumorotek.dao.stats.SModeleDao;
 import fr.aphp.tumorotek.dao.stats.SubdivisionDao;
@@ -47,63 +56,58 @@ import fr.aphp.tumorotek.model.stats.Subdivision;
 
 /**
  *
- * Classe de test pour le DAO Subdivision et le
- * bean du domaine Subdivision.
- * Date:  24/07/2015
+ * Classe de test pour le DAO Subdivision et le bean du domaine Subdivision.
+ * Date: 24/07/2015
  *
  * @author Marc Deschamps
  * @version 2.0.10
  *
  */
-@TransactionConfiguration(defaultRollback = false)
-public class SubdivisionDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class SubdivisionDaoTest extends AbstractDaoTest {
 
-   private SubdivisionDao subdivisionDao;
-   private SModeleDao sModeleDao;
+	@Autowired
+	SubdivisionDao subdivisionDao;
 
-   public void setSubdivisionDao(final SubdivisionDao s){
-      this.subdivisionDao = s;
-   }
+	@Autowired
+	SModeleDao sModeleDao;
 
-   public void setsModeleDao(final SModeleDao s){
-      this.sModeleDao = s;
-   }
+	public SubdivisionDaoTest() {
+	}
 
-   public SubdivisionDaoTest(){}
+	/**
+	 * Test l'appel de la méthode findById().
+	 */
+	@Test
+	public void testFindById() {
+		Subdivision s = subdivisionDao.findById(1).get();
+		assertNotNull(s);
+		assertTrue(s.getNom().equals("nature"));
 
-   /**
-    * Test l'appel de la méthode findById().
-    */
-   public void testFindById(){
-      Subdivision s = subdivisionDao.findById(1);
-      assertNotNull(s);
-      assertTrue(s.getNom().equals("nature"));
+		assertFalse(subdivisionDao.findById(100).isPresent());
+	}
 
-      s = subdivisionDao.findById(100);
-      assertNull(s);
+	/**
+	 * Test l'appel de la méthode findAll().
+	 */
+	@Test
+	public void testFindAll() {
+		final List<Subdivision> liste = IterableUtils.toList(IterableUtils.toList(subdivisionDao.findAll()));
+		assertTrue(liste.size() == 3);
+	}
 
-      s = subdivisionDao.findById(null);
-      assertNull(s);
-   }
+	@Test
+	public void testFindByModele() {
+		final SModele sM1 = sModeleDao.findById(1).get();
+		final List<Subdivision> subdivs = subdivisionDao.findByModele(sM1);
+		assertTrue(subdivs.size() == 1);
+		assertTrue(subdivs.contains(subdivisionDao.findById(1).get()));
+		final SModele sM2 = sModeleDao.findById(2).get();
+		assertTrue(subdivisionDao.findByModele(sM2).isEmpty());
+		assertTrue(subdivisionDao.findByModele(null).isEmpty());
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   public void testFindAll(){
-      final List<Subdivision> liste = subdivisionDao.findAll();
-      assertTrue(liste.size() == 3);
-   }
-
-   public void testFindByModele(){
-      final SModele sM1 = sModeleDao.findById(1);
-      final List<Subdivision> subdivs = subdivisionDao.findByModele(sM1);
-      assertTrue(subdivs.size() == 1);
-      assertTrue(subdivs.contains(subdivisionDao.findById(1)));
-      final SModele sM2 = sModeleDao.findById(2);
-      assertTrue(subdivisionDao.findByModele(sM2).isEmpty());
-      assertTrue(subdivisionDao.findByModele(null).isEmpty());
-
-   }
+	}
 
 }

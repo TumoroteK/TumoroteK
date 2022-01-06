@@ -92,4 +92,11 @@ public interface NonConformiteDao
 	@Query("SELECT n FROM NonConformite n WHERE n.id != ?1")
 	List<NonConformite> findByExcludedId(Integer excludedId);
 
+	@Override
+	@Query("FROM NonConformite n ORDER BY n.nom")
+	List<NonConformite> findByOrder();
+
+	@Override
+	@Query("FROM NonConformite n WHERE n.plateforme=?1 ORDER BY n.nom")
+	List<NonConformite> findByPfOrder(Plateforme pf);
 }

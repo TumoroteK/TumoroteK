@@ -60,30 +60,36 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 public class ProdQualiteDaoTest extends AbstractDaoTest
 {
 
-   private ProdQualiteDao prodQualiteDao;
-   private PlateformeDao plateformeDao;
+   @Autowired
+ ProdQualiteDao prodQualiteDao;
+   @Autowired
+ PlateformeDao plateformeDao;
 
    public ProdQualiteDaoTest(){
 
    }
 
-   public void setProdQualiteDao(final ProdQualiteDao pDao){
+   @Test
+public void setProdQualiteDao(final ProdQualiteDao pDao){
       this.prodQualiteDao = pDao;
    }
 
-   public void setPlateformeDao(final PlateformeDao pDao){
+   @Test
+public void setPlateformeDao(final PlateformeDao pDao){
       this.plateformeDao = pDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAll(){
-      final List<ProdQualite> qualites = prodQualiteDao.findAll();
+   @Test
+public void testReadAll(){
+      final List<ProdQualite> qualites = IterableUtils.toList(prodQualiteDao.findAll());
       assertTrue(qualites.size() == 3);
    }
 
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
       List<? extends TKThesaurusObject> list = prodQualiteDao.findByPfOrder(pf);
       assertTrue(list.size() == 2);
@@ -98,7 +104,8 @@ public class ProdQualiteDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByProdQualite().
     */
-   public void testFindByProdQualite(){
+   @Test
+public void testFindByProdQualite(){
       List<ProdQualite> qualites = prodQualiteDao.findByProdQualite("NECROSE");
       assertTrue(qualites.size() == 1);
       qualites = prodQualiteDao.findByProdQualite("MELANGE");
@@ -108,7 +115,8 @@ public class ProdQualiteDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByProdDeriveId().
     */
-   public void testFindByProdDeriveId(){
+   @Test
+public void testFindByProdDeriveId(){
       List<ProdQualite> qualites = prodQualiteDao.findByProdDeriveId(1);
       assertTrue(qualites.size() == 1);
       assertTrue(qualites.get(0).getProdQualiteId() == 1);
@@ -119,7 +127,8 @@ public class ProdQualiteDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<ProdQualite> liste = prodQualiteDao.findByExcludedId(1);
       assertTrue(liste.size() == 2);
       final ProdQualite qualite = liste.get(0);
@@ -135,14 +144,15 @@ public class ProdQualiteDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas d'erreur.
     */
    @Rollback(false)
-   public void testCrudProdQualite() throws Exception{
+   @Test
+public void testCrudProdQualite() throws Exception{
 
       final ProdQualite p = new ProdQualite();
       final String updatedQualite = "MAJ";
       p.setPlateforme(plateformeDao.findById(1));
       p.setProdQualite("QUALITE");
       // Test de l'insertion
-      prodQualiteDao.createObject(p);
+      prodQualiteDao.save(p);
       assertEquals(new Integer(4), p.getProdQualiteId());
 
       // Test de la mise à jour
@@ -150,11 +160,11 @@ public class ProdQualiteDaoTest extends AbstractDaoTest
       assertNotNull(p2);
       assertTrue(p2.getProdQualite().equals("QUALITE"));
       p2.setProdQualite(updatedQualite);
-      prodQualiteDao.updateObject(p2);
+      prodQualiteDao.save(p2);
       assertTrue(prodQualiteDao.findById(new Integer(4)).getProdQualite().equals(updatedQualite));
 
       // Test de la délétion
-      prodQualiteDao.removeObject(new Integer(4));
+      prodQualiteDao.deleteById(new Integer(4));
       assertNull(prodQualiteDao.findById(new Integer(4)));
 
    }
@@ -162,7 +172,8 @@ public class ProdQualiteDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String qualite = "Qualite";
       final String qualite2 = "Qualite2";
       final ProdQualite p1 = new ProdQualite();
@@ -208,7 +219,8 @@ public class ProdQualiteDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String qualite = "Qualite";
       final ProdQualite p1 = new ProdQualite();
       p1.setProdQualite(qualite);
@@ -239,7 +251,8 @@ public class ProdQualiteDaoTest extends AbstractDaoTest
    /**
     * test toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final ProdQualite p1 = prodQualiteDao.findById(1);
       assertTrue(p1.toString().equals("{" + p1.getProdQualite() + "}"));
 

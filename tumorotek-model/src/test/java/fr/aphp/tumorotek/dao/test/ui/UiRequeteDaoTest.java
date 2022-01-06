@@ -62,31 +62,40 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 //@RunWith(SpringRunner.class)
 //@ContextConfiguration(locations = {"classpath:applicationContextInterceptor.xml", "classpath:spring-jpa-test-mysql.xml", "classpath:applicationContextDao.xml" }) 
 //@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
-// @TransactionConfiguration(defaultRollback = false)
+// @RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class UiRequeteDaoTest extends AbstractDaoTest {
 
-   private UiRequeteDao uiRequeteDao;
-   private EntiteDao entiteDao;
-   private UtilisateurDao utilisateurDao;
+   @Autowired
+ UiRequeteDao uiRequeteDao;
+   @Autowired
+ EntiteDao entiteDao;
+   @Autowired
+ UtilisateurDao utilisateurDao;
 
    public UiRequeteDaoTest(){
 
    }
 
-   public void setUiRequeteDao(final UiRequeteDao u){
+   @Test
+public void setUiRequeteDao(final UiRequeteDao u){
       this.uiRequeteDao = u;
    }
 
-   public void setEntiteDao(final EntiteDao e){
+   @Test
+public void setEntiteDao(final EntiteDao e){
       this.entiteDao = e;
    }
 
-   public void setUtilisateurDao(final UtilisateurDao t){
+   @Test
+public void setUtilisateurDao(final UtilisateurDao t){
       this.utilisateurDao = t;
    }
 
    @Test
-   public void testFindById(){
+   @Test
+public void testFindById(){
       UiRequete r = uiRequeteDao.findById(1);
       assertNotNull(r);
 
@@ -94,12 +103,14 @@ public class UiRequeteDaoTest extends AbstractDaoTest {
       assertNull(r);
    }
 
-   public void testFindAll(){
-      final List<UiRequete> liste = uiRequeteDao.findAll();
+   @Test
+public void testFindAll(){
+      final List<UiRequete> liste = IterableUtils.toList(uiRequeteDao.findAll());
       assertTrue(liste.size() == 4);
    }
 
-   public void testFindByUtilisateurAndEntite(){
+   @Test
+public void testFindByUtilisateurAndEntite(){
       List<UiRequete> reqs = uiRequeteDao.findByUtilisateurAndEntite(utilisateurDao.findById(1), entiteDao.findById(2));
       assertTrue(reqs.size() == 3);
       assertTrue(reqs.get(0).getOrdre() == 1);
@@ -118,7 +129,8 @@ public class UiRequeteDaoTest extends AbstractDaoTest {
       assertTrue(reqs.isEmpty());
    }
 
-   public void testFindByNomUtilisateurAndEntite(){
+   @Test
+public void testFindByNomUtilisateurAndEntite(){
       List<UiRequete> reqs =
          uiRequeteDao.findByNomUtilisateurAndEntite(utilisateurDao.findById(1), entiteDao.findById(2), "REQ1");
       assertTrue(reqs.size() == 1);
@@ -140,7 +152,8 @@ public class UiRequeteDaoTest extends AbstractDaoTest {
    }
 
    @Rollback(false)
-   public void testCrud() throws Exception{
+   @Test
+public void testCrud() throws Exception{
 
       final UiRequete r1 = new UiRequete(null, utilisateurDao.findById(2), entiteDao.findById(8), "TESTREQ", 2);
 
@@ -150,7 +163,7 @@ public class UiRequeteDaoTest extends AbstractDaoTest {
       r1.getUiCompValues().add(u2);
 
       // Test de l'insertion
-      uiRequeteDao.createObject(r1);
+      uiRequeteDao.save(r1);
       final Integer idR1 = r1.getUiRequeteId();
       assertNotNull(idR1);
 
@@ -181,7 +194,7 @@ public class UiRequeteDaoTest extends AbstractDaoTest {
       r2.getUiCompValues().add(v2);
       r2.getUiCompValues().add(u3);
 
-      uiRequeteDao.updateObject(r2);
+      uiRequeteDao.save(r2);
 
       final UiRequete r3 = uiRequeteDao.findById(idR1);
       assertTrue(r3.getUtilisateur().getUtilisateurId() == 2);
@@ -210,13 +223,14 @@ public class UiRequeteDaoTest extends AbstractDaoTest {
       assertNull(v3.getTextValue());
 
       // Test de la délétion
-      uiRequeteDao.removeObject(idR1);
+      uiRequeteDao.deleteById(idR1);
       assertNull(uiRequeteDao.findById(idR1));
 
       testFindAll();
    }
 
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String n1 = "nom1";
       final String n2 = "nom2";
       final Utilisateur u1 = utilisateurDao.findById(1);
@@ -308,7 +322,8 @@ public class UiRequeteDaoTest extends AbstractDaoTest {
       assertFalse(r1.equals(c3));
    }
 
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String n1 = "nom1";
       final String n2 = "nom2";
       final Utilisateur u1 = utilisateurDao.findById(1);
@@ -393,7 +408,8 @@ public class UiRequeteDaoTest extends AbstractDaoTest {
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
   //    assertTrue(uiRequeteDao.findById(1).toString().equals("{REQ1, Prelevement}"));
       assertTrue(new UiRequete().toString().equals("{Empty UiRequete}"));
    }

@@ -38,7 +38,19 @@ package fr.aphp.tumorotek.dao.test.cession;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.cession.ProtocoleTypeDao;
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
@@ -57,38 +69,47 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  * @version 25/01/2010
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class ProtocoleTypeDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private ProtocoleTypeDao protocoleTypeDao;
-   private PlateformeDao plateformeDao;
 
-   private final String updatedType = "Mis a jour";
+   @Autowired
+ ProtocoleTypeDao protocoleTypeDao;
+   @Autowired
+ PlateformeDao plateformeDao;
+
+   @Autowired
+ final String updatedType = "Mis a jour";
 
    /** Constructeur. */
    public ProtocoleTypeDaoTest(){
 
    }
 
-   public void setProtocoleTypeDao(final ProtocoleTypeDao pDao){
+   @Test
+public void setProtocoleTypeDao(final ProtocoleTypeDao pDao){
       this.protocoleTypeDao = pDao;
    }
 
-   public void setPlateformeDao(final PlateformeDao pDao){
+   @Test
+public void setPlateformeDao(final PlateformeDao pDao){
       this.plateformeDao = pDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllProtocoleTypes(){
-      final List<ProtocoleType> liste = protocoleTypeDao.findAll();
+   @Test
+public void testReadAllProtocoleTypes(){
+      final List<ProtocoleType> liste = IterableUtils.toList(protocoleTypeDao.findAll());
       assertTrue(liste.size() == 2);
    }
 
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
       List<? extends TKThesaurusObject> list = protocoleTypeDao.findByPfOrder(pf);
       assertTrue(list.size() == 2);
@@ -103,7 +124,8 @@ public class ProtocoleTypeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByType().
     */
-   public void testFindByType(){
+   @Test
+public void testFindByType(){
       List<ProtocoleType> liste = protocoleTypeDao.findByType("RECHERCHE");
       assertTrue(liste.size() == 1);
 
@@ -121,7 +143,8 @@ public class ProtocoleTypeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<ProtocoleType> liste = protocoleTypeDao.findByExcludedId(1);
       assertTrue(liste.size() == 1);
       final ProtocoleType type = liste.get(0);
@@ -137,13 +160,14 @@ public class ProtocoleTypeDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas d'erreur.
     */
    @Rollback(false)
-   public void testCrudProtocoleType() throws Exception{
+   @Test
+public void testCrudProtocoleType() throws Exception{
 
       final ProtocoleType pt = new ProtocoleType();
       pt.setPlateforme(plateformeDao.findById(1));
       pt.setType("TEST");
       // Test de l'insertion
-      protocoleTypeDao.createObject(pt);
+      protocoleTypeDao.save(pt);
       assertEquals(new Integer(3), pt.getProtocoleTypeId());
 
       // Test de la mise à jour
@@ -151,11 +175,11 @@ public class ProtocoleTypeDaoTest extends AbstractDaoTest
       assertNotNull(pt2);
       assertTrue(pt2.getType().equals("TEST"));
       pt2.setType(updatedType);
-      protocoleTypeDao.updateObject(pt2);
+      protocoleTypeDao.save(pt2);
       assertTrue(protocoleTypeDao.findById(new Integer(3)).getType().equals(updatedType));
 
       // Test de la délétion
-      protocoleTypeDao.removeObject(new Integer(3));
+      protocoleTypeDao.deleteById(new Integer(3));
       assertNull(protocoleTypeDao.findById(new Integer(3)));
 
    }
@@ -163,7 +187,8 @@ public class ProtocoleTypeDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String type = "TYPE";
       final String type2 = "TYPE2";
       final ProtocoleType pt1 = new ProtocoleType();
@@ -209,7 +234,8 @@ public class ProtocoleTypeDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String type = "TYPE";
       final ProtocoleType pt1 = new ProtocoleType();
       pt1.setType(type);
@@ -240,7 +266,8 @@ public class ProtocoleTypeDaoTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final ProtocoleType pt1 = protocoleTypeDao.findById(1);
       assertTrue(pt1.toString().equals("{" + pt1.getType() + "}"));
 

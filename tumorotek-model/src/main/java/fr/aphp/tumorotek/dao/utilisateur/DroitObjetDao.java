@@ -57,7 +57,7 @@ import fr.aphp.tumorotek.model.utilisateur.Profil;
  *
  */
 @Repository
-public interface DroitObjetDao extends CrudRepository<DroitObjet, Integer> {	
+public interface DroitObjetDao extends CrudRepository<DroitObjet, DroitObjetPK> {	
 	/**
 	 * Recherche les DroitObjets sauf celui dont la clé primaire est
 	 * passé en paramètre.

@@ -35,6 +35,8 @@
  **/
 package fr.aphp.tumorotek.dao.test;
 
+import org.junit.Test;
+
 import fr.aphp.tumorotek.model.utils.Utils;
 
 public class UtilsTest extends AbstractDaoTest
@@ -44,7 +46,8 @@ public class UtilsTest extends AbstractDaoTest
 
    }
 
-   public void testFloor(){
+   @Test
+public void testFloor(){
       assertTrue(Utils.floor((float) 15.45545, 2) == (float) 15.46);
       assertTrue(Utils.floor((float) 15.45645, 1) == (float) 15.5);
       assertTrue(Utils.floor((float) 15.45545, 0) == 15);

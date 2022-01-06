@@ -37,8 +37,19 @@ package fr.aphp.tumorotek.dao.test.stats;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
 
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
 import fr.aphp.tumorotek.dao.stats.IndicateurDao;
@@ -51,167 +62,164 @@ import fr.aphp.tumorotek.model.stats.SModele;
 import fr.aphp.tumorotek.model.stats.SModeleIndicateur;
 import fr.aphp.tumorotek.model.stats.SModeleIndicateurPK;
 
-@TransactionConfiguration(defaultRollback = false)
-public class SModeleDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class SModeleDaoTest extends AbstractDaoTest {
 
-   private SModeleDao sModeleDao;
-   private PlateformeDao plateformeDao;
-   private IndicateurDao indicateurDao;
-   private SModeleIndicateurDao sModeleIndicateurDao;
+	@Autowired
+	SModeleDao sModeleDao;
 
-   public SModeleDaoTest(){
+	@Autowired
+	PlateformeDao plateformeDao;
 
-   }
+	@Autowired
+	IndicateurDao indicateurDao;
 
-   public void setSModeleDao(final SModeleDao mDao){
-      this.sModeleDao = mDao;
-   }
+	@Autowired
+	SModeleIndicateurDao sModeleIndicateurDao;
 
-   public void setPlateformeDao(final PlateformeDao plateformeDao){
-      this.plateformeDao = plateformeDao;
-   }
+	/**
+	 * Test l'appel de la méthode findAll().
+	 */
+	@Test
+	public void testReadAll() {
+		final List<SModele> liste = IterableUtils.toList(IterableUtils.toList(sModeleDao.findAll()));
+		assertTrue(liste.size() == 3);
+	}
 
-   public void setIndicateurDao(final IndicateurDao i){
-      this.indicateurDao = i;
-   }
+	@Test
+	public void testFindById() {
+		SModele sm = sModeleDao.findById(1).get();
+		assertNotNull(sm);
+		assertTrue(sm.getNom().equals("MOD1"));
+	}
 
-   public void setsModeleIndicateurDao(final SModeleIndicateurDao s){
-      this.sModeleIndicateurDao = s;
-   }
+	@Test
+	public void testFindByPlateforme() {
+		final Plateforme pf1 = plateformeDao.findById(1).get();
+		List<SModele> sms = sModeleDao.findByPlateforme(pf1);
+		assertTrue(sms.size() == 2);
+		assertTrue(sms.contains(sModeleDao.findById(1).get()));
+		assertTrue(sms.contains(sModeleDao.findById(2).get()));
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   public void testReadAll(){
-      final List<SModele> liste = sModeleDao.findAll();
-      assertTrue(liste.size() == 3);
-   }
+		final Plateforme pf2 = plateformeDao.findById(2).get();
+		sms = sModeleDao.findByPlateforme(pf2);
+		assertTrue(sms.size() == 1);
+		assertTrue(sms.contains(sModeleDao.findById(3).get()));
 
-   public void testFindById(){
-      SModele sm = sModeleDao.findById(1);
-      assertNotNull(sm);
-      assertTrue(sm.getNom().equals("MOD1"));
-      sm = sModeleDao.findById(null);
-      assertNull(sm);
-   }
+		sms = sModeleDao.findByPlateforme(null);
+		assertTrue(sms.isEmpty());
+	}
 
-   public void testFindByPlateforme(){
-      final Plateforme pf1 = plateformeDao.findById(1);
-      List<SModele> sms = sModeleDao.findByPlateforme(pf1);
-      assertTrue(sms.size() == 2);
-      assertTrue(sms.contains(sModeleDao.findById(1)));
-      assertTrue(sms.contains(sModeleDao.findById(2)));
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'un modèle.
+	 * 
+	 * @throws Exception lance une exception en cas d'erreur.
+	 */
+	@Transactional
+	@Rollback(false)
+	@Test
+	public void testCrud() throws Exception {
+		final Plateforme pf = plateformeDao.findById(1).get();
+		final SModele m1 = new SModele();
+		m1.setNom("TEST");
+		m1.setPlateforme(pf);
+		m1.setDescription("Une courte description");
 
-      final Plateforme pf2 = plateformeDao.findById(2);
-      sms = sModeleDao.findByPlateforme(pf2);
-      assertTrue(sms.size() == 1);
-      assertTrue(sms.contains(sModeleDao.findById(3)));
+		final SModeleIndicateur smi1 = new SModeleIndicateur();
+		final SModeleIndicateurPK smi1PK = new SModeleIndicateurPK();
+		smi1PK.setsModele(m1);
+		smi1PK.setIndicateur(indicateurDao.findById(2).get());
+		smi1.setPk(smi1PK);
+		smi1.setOrdre(1);
 
-      sms = sModeleDao.findByPlateforme(null);
-      assertTrue(sms.isEmpty());
-   }
+		final SModeleIndicateur smi2 = new SModeleIndicateur();
+		final SModeleIndicateurPK smi2PK = new SModeleIndicateurPK();
+		smi2PK.setsModele(m1);
+		smi2PK.setIndicateur(indicateurDao.findById(1).get());
+		smi2.setPk(smi2PK);
+		smi2.setOrdre(2);
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression d'un modèle.
-    * @throws Exception lance une exception en cas d'erreur.
-    */
-   @Rollback(false)
-   public void testCrud() throws Exception{
-      final Plateforme pf = plateformeDao.findById(1);
-      final SModele m1 = new SModele();
-      m1.setNom("TEST");
-      m1.setPlateforme(pf);
-      m1.setDescription("Une courte description");
+		m1.getSModeleIndicateurs().add(smi1);
+		m1.getSModeleIndicateurs().add(smi2);
 
-      final SModeleIndicateur smi1 = new SModeleIndicateur();
-      final SModeleIndicateurPK smi1PK = new SModeleIndicateurPK();
-      smi1PK.setsModele(m1);
-      smi1PK.setIndicateur(indicateurDao.findById(2));
-      smi1.setPk(smi1PK);
-      smi1.setOrdre(1);
+		// Test de l'insertion
+		sModeleDao.save(m1);
+		assertNotNull(m1.getSmodeleId());
 
-      final SModeleIndicateur smi2 = new SModeleIndicateur();
-      final SModeleIndicateurPK smi2PK = new SModeleIndicateurPK();
-      smi2PK.setsModele(m1);
-      smi2PK.setIndicateur(indicateurDao.findById(1));
-      smi2.setPk(smi2PK);
-      smi2.setOrdre(2);
+		final Integer sModId = m1.getSmodeleId();
 
-      m1.getSModeleIndicateurs().add(smi1);
-      m1.getSModeleIndicateurs().add(smi2);
+		final SModele m2 = sModeleDao.findById(sModId).get();
+		// Vérification des données entrées dans la base
+		assertNotNull(m2);
+		assertTrue(m2.getPlateforme().equals(pf));
+		assertTrue(m2.getNom().equals("TEST"));
+		assertTrue(m2.getDescription().equals("Une courte description"));
+		assertTrue(m2.getSModeleIndicateurs().size() == 2);
 
-      // Test de l'insertion
-      sModeleDao.createObject(m1);
-      assertNotNull(m1.getSmodeleId());
+		List<Indicateur> indics = indicateurDao.findBySModele(m2);
+		assertTrue(indics.size() == 2);
+		assertTrue(indics.get(1).equals(indicateurDao.findById(1).get()));
+		assertTrue(indics.get(0).equals(indicateurDao.findById(2).get()));
 
-      final Integer sModId = m1.getSmodeleId();
+		// Test de la mise à jour
+		m2.getSModeleIndicateurs().remove(smi1);
+		sModeleIndicateurDao.deleteById(smi1PK);
 
-      final SModele m2 = sModeleDao.findById(sModId);
-      // Vérification des données entrées dans la base
-      assertNotNull(m2);
-      assertTrue(m2.getPlateforme().equals(pf));
-      assertTrue(m2.getNom().equals("TEST"));
-      assertTrue(m2.getDescription().equals("Une courte description"));
-      assertTrue(m2.getSModeleIndicateurs().size() == 2);
+		m2.setNom("UP");
+		m2.setDescription("auttro");
 
-      List<Indicateur> indics = indicateurDao.findBySModele(m2);
-      assertTrue(indics.size() == 2);
-      assertTrue(indics.get(1).equals(indicateurDao.findById(1)));
-      assertTrue(indics.get(0).equals(indicateurDao.findById(2)));
+		sModeleDao.save(m2);
 
-      // Test de la mise à jour
-      m2.getSModeleIndicateurs().remove(smi1);
-      sModeleIndicateurDao.removeObject(smi1PK);
+		final SModele m3 = sModeleDao.findById(sModId).get();
+		// Vérification des données entrées dans la base
+		assertNotNull(m3);
+		assertTrue(m3.getPlateforme().equals(pf));
+		assertTrue(m3.getNom().equals("UP"));
+		assertTrue(m3.getDescription().equals("auttro"));
+		assertTrue(m3.getSModeleIndicateurs().size() == 1);
 
-      m2.setNom("UP");
-      m2.setDescription("auttro");
+		indics = indicateurDao.findBySModele(m3);
+		assertTrue(indics.size() == 1);
+		assertTrue(indics.get(0).equals(indicateurDao.findById(1).get()));
 
-      sModeleDao.updateObject(m2);
+		// Test de la délétion
+		sModeleDao.deleteById(sModId);
+		assertFalse(sModeleDao.findById(sModId).isPresent());
 
-      final SModele m3 = sModeleDao.findById(sModId);
-      // Vérification des données entrées dans la base
-      assertNotNull(m3);
-      assertTrue(m3.getPlateforme().equals(pf));
-      assertTrue(m3.getNom().equals("UP"));
-      assertTrue(m3.getDescription().equals("auttro"));
-      assertTrue(m3.getSModeleIndicateurs().size() == 1);
+		testReadAll();
+	}
 
-      indics = indicateurDao.findBySModele(m3);
-      assertTrue(indics.size() == 1);
-      assertTrue(indics.get(0).equals(indicateurDao.findById(1)));
+	/**
+	 * Test de la methode surchargee equals
+	 */
+	@Test
+	public void testEquals() {
 
-      // Test de la délétion
-      sModeleDao.removeObject(sModId);
-      assertNull(sModeleDao.findById(sModId));
+	}
 
-      testReadAll();
-   }
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
+	}
 
-   /** 
-    * Test de la methode surchargee equals
-    */
-   public void testEquals(){
+	/**
+	 * Test la méthode toString.
+	 */
+	@Test
+	public void testToString() {
 
-   }
+	}
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   public void testHashCode(){}
+	/**
+	 * Test la méthode clone.
+	 */
+	@Test
+	public void testClone() {
 
-   /**
-    * Test la méthode toString.
-    */
-   public void testToString(){
-
-   }
-
-   /**
-    * Test la méthode clone.
-    */
-   public void testClone(){
-
-   }
+	}
 
 }

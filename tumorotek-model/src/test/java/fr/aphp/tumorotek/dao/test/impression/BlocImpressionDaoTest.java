@@ -37,7 +37,19 @@ package fr.aphp.tumorotek.dao.test.impression;
 
 import java.util.List;
 
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.impression.BlocImpressionDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
@@ -55,39 +67,47 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * @version 22/07/2010.
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class BlocImpressionDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private BlocImpressionDao blocImpressionDao;
-   /** Bean Dao. */
-   private EntiteDao entiteDao;
+
+   @Autowired
+ BlocImpressionDao blocImpressionDao;
+
+   @Autowired
+ EntiteDao entiteDao;
 
    public BlocImpressionDaoTest(){
 
    }
 
-   public void setBlocImpressionDao(final BlocImpressionDao bDao){
+   @Test
+public void setBlocImpressionDao(final BlocImpressionDao bDao){
       this.blocImpressionDao = bDao;
    }
 
-   public void setEntiteDao(final EntiteDao eDao){
+   @Test
+public void setEntiteDao(final EntiteDao eDao){
       this.entiteDao = eDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAll(){
-      final List<BlocImpression> liste = blocImpressionDao.findAll();
+   @Test
+public void testReadAll(){
+      final List<BlocImpression> liste = IterableUtils.toList(blocImpressionDao.findAll());
       assertTrue(liste.size() > 0);
    }
 
    /**
     * Test l'appel de la méthode findByEntite().
     */
-   public void testFindByEntite(){
+   @Test
+public void testFindByEntite(){
       final Entite e1 = entiteDao.findById(48);
       List<BlocImpression> liste = blocImpressionDao.findByEntite(e1);
       assertTrue(liste.size() == 0);
@@ -104,7 +124,8 @@ public class BlocImpressionDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String nom1 = "nom";
       final String nom2 = "nom2";
       final Entite e1 = entiteDao.findById(1);
@@ -164,7 +185,8 @@ public class BlocImpressionDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String nom1 = "nom";
       final String nom2 = "nom2";
       final Entite e1 = entiteDao.findById(1);
@@ -202,7 +224,8 @@ public class BlocImpressionDaoTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final BlocImpression b1 = blocImpressionDao.findById(1);
       assertTrue(b1.toString().equals("{" + b1.getNom() + "}"));
 

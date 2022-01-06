@@ -64,40 +64,52 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class CodeSelectDaoTest extends AbstractDaoTest
 {
 
-   private CodeSelectDao codeSelectDao;
-   private UtilisateurDao utilisateurDao;
-   private BanqueDao banqueDao;
-   private TableCodageDao tableCodesDao;
-   private CodeDossierDao codeDossierDao;
+   @Autowired
+ CodeSelectDao codeSelectDao;
+   @Autowired
+ UtilisateurDao utilisateurDao;
+   @Autowired
+ BanqueDao banqueDao;
+   @Autowired
+ TableCodageDao tableCodesDao;
+   @Autowired
+ CodeDossierDao codeDossierDao;
 
    public CodeSelectDaoTest(){}
 
-   public void setCodeSelectDao(final CodeSelectDao cDao){
+   @Test
+public void setCodeSelectDao(final CodeSelectDao cDao){
       this.codeSelectDao = cDao;
    }
 
-   public void setUtilisateurDao(final UtilisateurDao uDao){
+   @Test
+public void setUtilisateurDao(final UtilisateurDao uDao){
       this.utilisateurDao = uDao;
    }
 
-   public void setBanqueDao(final BanqueDao bDao){
+   @Test
+public void setBanqueDao(final BanqueDao bDao){
       this.banqueDao = bDao;
    }
 
-   public void setTableCodageDao(final TableCodageDao tCDao){
+   @Test
+public void setTableCodageDao(final TableCodageDao tCDao){
       this.tableCodesDao = tCDao;
    }
 
-   public void setCodeDossierDao(final CodeDossierDao cDao){
+   @Test
+public void setCodeDossierDao(final CodeDossierDao cDao){
       this.codeDossierDao = cDao;
    }
 
-   public void testReadAllCodes(){
-      final List<CodeSelect> codeSelects = codeSelectDao.findAll();
+   @Test
+public void testReadAllCodes(){
+      final List<CodeSelect> codeSelects = IterableUtils.toList(codeSelectDao.findAll());
       assertTrue(codeSelects.size() == 5);
    }
 
-   public void testFindByUtilisateurAndBanque(){
+   @Test
+public void testFindByUtilisateurAndBanque(){
       Utilisateur u = utilisateurDao.findById(1);
       Banque b = banqueDao.findById(1);
       List<CodeSelect> codeSelects = codeSelectDao.findByUtilisateurAndBanque(u, b);
@@ -110,7 +122,8 @@ public class CodeSelectDaoTest extends AbstractDaoTest
       assertTrue(codeSelects.size() == 1);
    }
 
-   public void testFindByBanque(){
+   @Test
+public void testFindByBanque(){
       Banque b = banqueDao.findById(1);
       List<CodeSelect> codeSelects = codeSelectDao.findByBanque(b);
       assertTrue(codeSelects.size() == 3);
@@ -122,7 +135,8 @@ public class CodeSelectDaoTest extends AbstractDaoTest
       assertTrue(codeSelects.size() == 0);
    }
 
-   public void testFindByCodeDossier(){
+   @Test
+public void testFindByCodeDossier(){
       CodeDossier dos = codeDossierDao.findById(3);
       List<CodeSelect> codes = codeSelectDao.findByCodeDossier(dos);
       assertTrue(codes.size() == 2);
@@ -131,14 +145,16 @@ public class CodeSelectDaoTest extends AbstractDaoTest
       assertTrue(codes.size() == 0);
    }
 
-   public void testFindByRootDossier(){
+   @Test
+public void testFindByRootDossier(){
       final Banque b = banqueDao.findById(1);
       final Utilisateur u = utilisateurDao.findById(1);
       final List<CodeSelect> codes = codeSelectDao.findByRootDossier(u, b);
       assertTrue(codes.size() == 1);
    }
 
-   public void findByExcludedId(){
+   @Test
+public void findByExcludedId(){
       final CodeSelect c = codeSelectDao.findById(1);
       List<CodeSelect> codes = codeSelectDao.findByExcludedId(c.getCodeSelectId());
       assertTrue(codes.size() == 4);
@@ -151,7 +167,8 @@ public class CodeSelectDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
    @Rollback(false)
-   public void testCrud() throws Exception{
+   @Test
+public void testCrud() throws Exception{
       final CodeSelect c = new CodeSelect();
 
       final Utilisateur u = utilisateurDao.findById(2);
@@ -164,7 +181,7 @@ public class CodeSelectDaoTest extends AbstractDaoTest
       c.setCodeId(5);
       c.setCodeDossier(dos);
       // Test de l'insertion
-      codeSelectDao.createObject(c);
+      codeSelectDao.save(c);
       assertEquals(new Integer(6), c.getCodeSelectId());
 
       // Test de la mise à jour
@@ -175,11 +192,11 @@ public class CodeSelectDaoTest extends AbstractDaoTest
       assertNotNull(c2.getUtilisateur());
       assertNotNull(c2.getTableCodage());
       c2.setCodeId(1);
-      codeSelectDao.updateObject(c2);
+      codeSelectDao.save(c2);
       assertTrue(codeSelectDao.findById(new Integer(6)).getCodeId() == 1);
 
       // Test de la délétion
-      codeSelectDao.removeObject(new Integer(6));
+      codeSelectDao.deleteById(new Integer(6));
       assertNull(codeSelectDao.findById(new Integer(6)));
 
    }
@@ -187,7 +204,8 @@ public class CodeSelectDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final Integer id1 = 1;
       final Integer id2 = 2;
       final Utilisateur u1 = utilisateurDao.findById(1);
@@ -259,7 +277,8 @@ public class CodeSelectDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
 
       final Utilisateur u = utilisateurDao.findById(2);
       final Banque b = banqueDao.findById(1);
@@ -292,7 +311,8 @@ public class CodeSelectDaoTest extends AbstractDaoTest
 
    }
 
-   public void testToString(){
+   @Test
+public void testToString(){
       final CodeSelect a = new CodeSelect();
       final TableCodage t = tableCodesDao.findById(1);
       a.setTableCodage(t);
@@ -300,7 +320,8 @@ public class CodeSelectDaoTest extends AbstractDaoTest
       assertTrue(a.toString().equals("{CodeSelect: ADICAP.33}"));
    }
 
-   public void testFindByRootDossierAndBanque(){
+   @Test
+public void testFindByRootDossierAndBanque(){
       Banque b = banqueDao.findById(1);
       List<CodeSelect> codes = codeSelectDao.findByRootDossierAndBanque(b);
       assertTrue(codes.size() == 1);

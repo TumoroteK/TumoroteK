@@ -65,15 +65,20 @@ public class ServiceDaoTest extends AbstractDaoTest
 {
 
    /** Bean Dao ServiceDao. */
-   private ServiceDao serviceDao;
+   @Autowired
+ ServiceDao serviceDao;
    /** Bean Dao EtablissementDao. */
-   private EtablissementDao etablissementDao;
+   @Autowired
+ EtablissementDao etablissementDao;
    /** Bean Dao CollaborateurDao. */
-   private CollaborateurDao collaborateurDao;
+   @Autowired
+ CollaborateurDao collaborateurDao;
    /** Bean Dao CoordonneeDao. */
-   private CoordonneeDao coordonneeDao;
+   @Autowired
+ CoordonneeDao coordonneeDao;
    /** valeur du nom pour la maj. */
-   private final String updatedNom = "Service mis a jour";
+   @Autowired
+ final String updatedNom = "Service mis a jour";
 
    /** Constructeur. */
    public ServiceDaoTest(){
@@ -84,7 +89,8 @@ public class ServiceDaoTest extends AbstractDaoTest
     * Setter du bean Dao ServiceDao.
     * @param sDao est le bean Dao.
     */
-   public void setServiceDao(final ServiceDao sDao){
+   @Test
+public void setServiceDao(final ServiceDao sDao){
       this.serviceDao = sDao;
    }
 
@@ -92,7 +98,8 @@ public class ServiceDaoTest extends AbstractDaoTest
     * Setter du bean Dao EtablissementDao.
     * @param eDao est le bean Dao.
     */
-   public void setEtablissementDao(final EtablissementDao eDao){
+   @Test
+public void setEtablissementDao(final EtablissementDao eDao){
       this.etablissementDao = eDao;
    }
 
@@ -100,7 +107,8 @@ public class ServiceDaoTest extends AbstractDaoTest
     * Setter du bean Dao CoordonneeDao.
     * @param cDao est le bean Dao.
     */
-   public void setCoordonneeDao(final CoordonneeDao cDao){
+   @Test
+public void setCoordonneeDao(final CoordonneeDao cDao){
       this.coordonneeDao = cDao;
    }
 
@@ -108,22 +116,25 @@ public class ServiceDaoTest extends AbstractDaoTest
     * Setter du bean Dao CollaborateurDao.
     * @param cDao est le bean Dao.
     */
-   public void setCollaborateurDao(final CollaborateurDao cDao){
+   @Test
+public void setCollaborateurDao(final CollaborateurDao cDao){
       this.collaborateurDao = cDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllServices(){
-      final List<Service> services = serviceDao.findAll();
+   @Test
+public void testReadAllServices(){
+      final List<Service> services = IterableUtils.toList(serviceDao.findAll());
       assertTrue(services.size() == 4);
    }
 
    /**
     * Test l'appel de la méthode findByOrder().
     */
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       final List<Service> services = serviceDao.findByOrder();
       assertTrue(services.size() == 4);
       assertTrue(services.get(1).getNom().equals("ANAPATH"));
@@ -135,7 +146,8 @@ public class ServiceDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByNom().
     */
-   public void testFindByNom(){
+   @Test
+public void testFindByNom(){
       List<Service> services = serviceDao.findByNom("HEMATO");
       assertTrue(services.size() == 1);
       services = serviceDao.findByNom("TEST");
@@ -147,7 +159,8 @@ public class ServiceDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByArchiveWithOrder().
     */
-   public void testFindByArchiveWithOrder(){
+   @Test
+public void testFindByArchiveWithOrder(){
       List<Service> services = serviceDao.findByArchiveWithOrder(false);
       assertTrue(services.size() == 3);
       assertTrue(services.get(0).getNom().equals("ANAPATH"));
@@ -159,7 +172,8 @@ public class ServiceDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByCoordonnee().
     */
-   public void testFindByCoordonnee(){
+   @Test
+public void testFindByCoordonnee(){
       Coordonnee c = coordonneeDao.findById(1);
       List<Service> services = serviceDao.findByCoordonnee(c);
       assertTrue(services.size() == 1);
@@ -171,7 +185,8 @@ public class ServiceDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByEtablissement().
     */
-   public void testFindByEtablissement(){
+   @Test
+public void testFindByEtablissement(){
       Etablissement e = etablissementDao.findById(2);
       List<Service> services = serviceDao.findByEtablissement(e);
       assertTrue(services.size() == 1);
@@ -183,7 +198,8 @@ public class ServiceDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByEtablissementWithOrder().
     */
-   public void testFindByEtablissementWithOrder(){
+   @Test
+public void testFindByEtablissementWithOrder(){
       Etablissement e = etablissementDao.findById(1);
       List<Service> services = serviceDao.findByEtablissementWithOrder(e);
       assertTrue(services.size() == 3);
@@ -197,7 +213,8 @@ public class ServiceDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByEtablissementArchiveWithOrder().
     */
-   public void testFindByEtablissementArchiveWithOrder(){
+   @Test
+public void testFindByEtablissementArchiveWithOrder(){
       Etablissement e = etablissementDao.findById(1);
       List<Service> services = serviceDao.findByEtablissementArchiveWithOrder(e, false);
       assertTrue(services.size() == 2);
@@ -215,7 +232,8 @@ public class ServiceDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByCollaborateurId().
     */
-   public void testFindByCollaborateurId(){
+   @Test
+public void testFindByCollaborateurId(){
       List<Service> services = serviceDao.findByCollaborateurId(1);
       assertTrue(services.size() == 1);
       services = serviceDao.findByCollaborateurId(3);
@@ -227,7 +245,8 @@ public class ServiceDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByCollaborateurIdAndArchive().
     */
-   public void testFindByCollaborateurIdAndArchived(){
+   @Test
+public void testFindByCollaborateurIdAndArchived(){
       List<Service> services = serviceDao.findByCollaborateurIdAndArchive(1, false);
       assertTrue(services.size() == 1);
 
@@ -250,7 +269,8 @@ public class ServiceDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByBanquePossedeesId().
     */
-   public void testFindByBanquePossedeesId(){
+   @Test
+public void testFindByBanquePossedeesId(){
       List<Service> services = serviceDao.findByBanquePossedeesId(1);
       assertTrue(services.size() == 1);
       services = serviceDao.findByBanquePossedeesId(5);
@@ -263,7 +283,8 @@ public class ServiceDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByIdWithFetch().
     */
-   public void testFindByIdWithFetch(){
+   @Test
+public void testFindByIdWithFetch(){
       final List<Service> services = serviceDao.findByIdWithFetch(1);
       final Service service = services.get(0);
       assertNotNull(service);
@@ -274,7 +295,8 @@ public class ServiceDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<Service> list = serviceDao.findByExcludedId(1);
       assertTrue(list.size() == 3);
 
@@ -287,7 +309,8 @@ public class ServiceDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas d'erreur sur les données.
     */
    @Rollback(false)
-   public void testCrudService() throws Exception{
+   @Test
+public void testCrudService() throws Exception{
 
       final Service s = new Service();
       final Etablissement e = etablissementDao.findById(2);
@@ -307,7 +330,7 @@ public class ServiceDaoTest extends AbstractDaoTest
       s.setEtablissement(e);
       s.getCollaborateurs().add(c);
       // Test de l'insertion
-      serviceDao.createObject(s);
+      serviceDao.save(s);
       assertEquals(new Integer(5), s.getServiceId());
 
       // Test de la mise à jour
@@ -318,11 +341,11 @@ public class ServiceDaoTest extends AbstractDaoTest
       //assertNotNull(s2.getCoordonnee());
       assertNotNull(s2.getEtablissement());
       s2.setNom(updatedNom);
-      serviceDao.updateObject(s2);
+      serviceDao.save(s2);
       assertTrue(serviceDao.findById(new Integer(5)).getNom().equals(updatedNom));
 
       // Test de la délétion
-      serviceDao.removeObject(new Integer(5));
+      serviceDao.deleteById(new Integer(5));
       assertNull(serviceDao.findById(new Integer(5)));
 
    }
@@ -330,7 +353,8 @@ public class ServiceDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String nom = "Service1";
       final String nom2 = "Service2";
       final Etablissement e1 = etablissementDao.findById(1);
@@ -376,13 +400,14 @@ public class ServiceDaoTest extends AbstractDaoTest
       s2 = serviceDao.findById(2);
       s1.setNom(s2.getNom());
       s1.setEtablissement(s2.getEtablissement());
-      assertTrue(serviceDao.findAll().contains(s1));
+      assertTrue(IterableUtils.toList(serviceDao.findAll()).contains(s1));
    }
 
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String nom = "Service1";
       final String nom2 = "Service2";
       final Etablissement e1 = etablissementDao.findById(1);
@@ -420,7 +445,8 @@ public class ServiceDaoTest extends AbstractDaoTest
    /**
     * Test la méthode clone.
     */
-   public void testClone(){
+   @Test
+public void testClone(){
       final Service s1 = serviceDao.findById(1);
       final Service s2 = s1.clone();
       assertTrue(s1.equals(s2));

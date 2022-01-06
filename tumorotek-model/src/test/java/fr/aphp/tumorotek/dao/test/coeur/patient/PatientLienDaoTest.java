@@ -64,9 +64,12 @@ public class PatientLienDaoTest extends AbstractDaoTest
 {
 
    /** Beans Dao. */
-   private PatientLienDao patientLienDao;
-   private PatientDao patientDao;
-   private LienFamilialDao lienDao;
+   @Autowired
+ PatientLienDao patientLienDao;
+   @Autowired
+ PatientDao patientDao;
+   @Autowired
+ LienFamilialDao lienDao;
 
    /**
     * Constructeur.
@@ -77,22 +80,26 @@ public class PatientLienDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param mDao est le bean Dao.
     */
-   public void setPatientLienDao(final PatientLienDao mDao){
+   @Test
+public void setPatientLienDao(final PatientLienDao mDao){
       this.patientLienDao = mDao;
    }
 
-   public void setPatientDao(final PatientDao pDao){
+   @Test
+public void setPatientDao(final PatientDao pDao){
       this.patientDao = pDao;
    }
 
-   public void setLienDao(final LienFamilialDao lDao){
+   @Test
+public void setLienDao(final LienFamilialDao lDao){
       this.lienDao = lDao;
    }
 
    /**
     * Test l'appel de la méthode toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final PatientLienPK pk = new PatientLienPK(patientDao.findById(2), patientDao.findById(5));
       PatientLien pl1 = patientLienDao.findById(pk);
       assertTrue(
@@ -111,8 +118,9 @@ public class PatientLienDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllPatientLiens(){
-      final List<PatientLien> patientLiens = patientLienDao.findAll();
+   @Test
+public void testReadAllPatientLiens(){
+      final List<PatientLien> patientLiens = IterableUtils.toList(patientLienDao.findAll());
       assertTrue(patientLiens.size() == 2);
    }
 
@@ -123,7 +131,8 @@ public class PatientLienDaoTest extends AbstractDaoTest
     *
     **/
    @Rollback(false)
-   public void testCrudLienFamilial(){
+   @Test
+public void testCrudLienFamilial(){
       final PatientLien pl = new PatientLien();
       final Patient p1 = patientDao.findById(1);
       final Patient p2 = patientDao.findById(3);
@@ -132,8 +141,8 @@ public class PatientLienDaoTest extends AbstractDaoTest
       pl.setPatient2(p1);
       pl.setLienFamilial(l1);
       // Test de l'insertion
-      patientLienDao.createObject(pl);
-      assertTrue(patientLienDao.findAll().size() == 3);
+      patientLienDao.save(pl);
+      assertTrue(IterableUtils.toList(patientLienDao.findAll()).size() == 3);
       // Test de la mise à jour
       final PatientLienPK pk = new PatientLienPK();
       pk.setPatient1(p2);
@@ -148,11 +157,11 @@ public class PatientLienDaoTest extends AbstractDaoTest
       //pl2.setPatient1(p3);
       //pl2.setPatient2(p2);
       pl2.setLienFamilial(l2);
-      patientLienDao.updateObject(pl2);
+      patientLienDao.save(pl2);
       assertTrue(patientLienDao.findById(pk).equals(pl2));
       assertTrue(patientLienDao.findById(pk).getLienFamilial().equals(l2));
       // Test de la délétion
-      patientLienDao.removeObject(pk);
+      patientLienDao.deleteById(pk);
       assertNull(patientLienDao.findById(pk));
    }
 
@@ -160,7 +169,8 @@ public class PatientLienDaoTest extends AbstractDaoTest
     * Test de la méthode surchargée "equals".
     * @throws ParseException 
     */
-   public void testEquals() throws ParseException{
+   @Test
+public void testEquals() throws ParseException{
 
       final PatientLien pl1 = new PatientLien();
       final PatientLien pl2 = new PatientLien();
@@ -184,7 +194,8 @@ public class PatientLienDaoTest extends AbstractDaoTest
     * Test de la méthode surchargée "hashcode".
     * @throws ParseException 
     */
-   public void testHashCode() throws ParseException{
+   @Test
+public void testHashCode() throws ParseException{
       final PatientLien pl1 = new PatientLien();
       final PatientLien pl2 = new PatientLien();
       final PatientLien r3 = new PatientLien();
@@ -206,7 +217,8 @@ public class PatientLienDaoTest extends AbstractDaoTest
       assertTrue(hash == pl1.hashCode());
    }
 
-   private void populateClefsToTestEqualsAndHashCode(final PatientLien pl1, final PatientLien pl2) throws ParseException{
+   @Autowired
+ void populateClefsToTestEqualsAndHashCode(final PatientLien pl1, final PatientLien pl2) throws ParseException{
 
       final Patient p1 = patientDao.findById(1);
       final Patient p2 = patientDao.findById(2);

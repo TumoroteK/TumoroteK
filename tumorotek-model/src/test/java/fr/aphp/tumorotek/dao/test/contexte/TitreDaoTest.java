@@ -57,10 +57,12 @@ import fr.aphp.tumorotek.model.contexte.Titre;
 public class TitreDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private TitreDao titreDao;
+
+   @Autowired
+ TitreDao titreDao;
    /** valeur du nom pour la maj. */
-   private final String updatedNom = "Tit2";
+   @Autowired
+ final String updatedNom = "Tit2";
 
    /** Constructeur par défaut. */
    public TitreDaoTest(){
@@ -71,22 +73,25 @@ public class TitreDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param tDao est le bean Dao.
     */
-   public void setTitreDao(final TitreDao tDao){
+   @Test
+public void setTitreDao(final TitreDao tDao){
       this.titreDao = tDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllTitres(){
-      final List<Titre> titres = titreDao.findAll();
+   @Test
+public void testReadAllTitres(){
+      final List<Titre> titres = IterableUtils.toList(titreDao.findAll());
       assertTrue(titres.size() == 5);
    }
 
    /**
     * Test l'appel de la méthode findByOrder().
     */
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       final List<Titre> list = titreDao.findByOrder();
       assertTrue(list.size() == 5);
       assertTrue(list.get(0).getTitre().equals("DR"));
@@ -95,7 +100,8 @@ public class TitreDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByNom().
     */
-   public void testFindByTitre(){
+   @Test
+public void testFindByTitre(){
       List<Titre> titres = titreDao.findByTitre("PR");
       assertTrue(titres.size() == 1);
       assertTrue(titres.get(0).getTitreId() == 1);
@@ -106,7 +112,8 @@ public class TitreDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByCollaborateurId().
     */
-   public void testFindByCollaborateurId(){
+   @Test
+public void testFindByCollaborateurId(){
       List<Titre> titres = titreDao.findByCollaborateurId(4);
       assertTrue(titres.size() == 1);
       assertTrue(titres.get(0).getTitreId() == 1);
@@ -119,12 +126,13 @@ public class TitreDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception.
     */
    @Rollback(false)
-   public void testCrudTitre() throws Exception{
+   @Test
+public void testCrudTitre() throws Exception{
 
       final Titre t = new Titre();
       t.setTitre("TIT");
       // Test de l'insertion
-      titreDao.createObject(t);
+      titreDao.save(t);
       assertEquals(new Integer(6), t.getTitreId());
 
       // Test de la mise à jour
@@ -132,11 +140,11 @@ public class TitreDaoTest extends AbstractDaoTest
       assertNotNull(t2);
       assertTrue(t2.getTitre().equals("TIT"));
       t2.setTitre(updatedNom);
-      titreDao.updateObject(t2);
+      titreDao.save(t2);
       assertTrue(titreDao.findById(new Integer(6)).getTitre().equals(updatedNom));
 
       // Test de la délétion
-      titreDao.removeObject(new Integer(6));
+      titreDao.deleteById(new Integer(6));
       assertNull(titreDao.findById(new Integer(6)));
 
    }
@@ -144,7 +152,8 @@ public class TitreDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String titre = "Titre";
       final String titre2 = "Titre2";
       final Titre t1 = new Titre();
@@ -181,7 +190,8 @@ public class TitreDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String titre = "Titre";
       final Titre t1 = new Titre();
       t1.setTitreId(1);

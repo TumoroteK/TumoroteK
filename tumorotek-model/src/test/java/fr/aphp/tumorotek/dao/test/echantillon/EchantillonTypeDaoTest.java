@@ -38,7 +38,19 @@ package fr.aphp.tumorotek.dao.test.echantillon;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonTypeDao;
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
@@ -57,15 +69,20 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  * @version 10/09/2009
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class EchantillonTypeDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private EchantillonTypeDao echantillonTypeDao;
-   private PlateformeDao plateformeDao;
 
-   private final String updatedType = "Type mis a jour";
+   @Autowired
+ EchantillonTypeDao echantillonTypeDao;
+   @Autowired
+ PlateformeDao plateformeDao;
+
+   @Autowired
+ final String updatedType = "Type mis a jour";
 
    /** Constructeur. */
    public EchantillonTypeDaoTest(){
@@ -76,23 +93,27 @@ public class EchantillonTypeDaoTest extends AbstractDaoTest
     * Setter du bean EchantillonTypeDao.
     * @param eDao est le bean Dao.
     */
-   public void setEchantillonTypeDao(final EchantillonTypeDao eDao){
+   @Test
+public void setEchantillonTypeDao(final EchantillonTypeDao eDao){
       this.echantillonTypeDao = eDao;
    }
 
-   public void setPlateformeDao(final PlateformeDao pfDao){
+   @Test
+public void setPlateformeDao(final PlateformeDao pfDao){
       this.plateformeDao = pfDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllObjetTypes(){
-      final List<EchantillonType> types = echantillonTypeDao.findAll();
+   @Test
+public void testReadAllObjetTypes(){
+      final List<EchantillonType> types = IterableUtils.toList(echantillonTypeDao.findAll());
       assertTrue(types.size() == 4);
    }
 
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
       List<? extends TKThesaurusObject> list = echantillonTypeDao.findByPfOrder(pf);
       assertTrue(list.size() == 3);
@@ -107,7 +128,8 @@ public class EchantillonTypeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByType().
     */
-   public void testFindByType(){
+   @Test
+public void testFindByType(){
       List<EchantillonType> types = echantillonTypeDao.findByType("ADN");
       assertTrue(types.size() == 1);
       types = echantillonTypeDao.findByType("ARN");
@@ -117,7 +139,8 @@ public class EchantillonTypeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByIncaCat().
     */
-   public void testFindByIncaCat(){
+   @Test
+public void testFindByIncaCat(){
       List<EchantillonType> types = echantillonTypeDao.findByIncaCat("CAT1");
       assertTrue(types.size() == 1);
       types = echantillonTypeDao.findByIncaCat("CAT");
@@ -127,7 +150,8 @@ public class EchantillonTypeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByEchantillonId().
     */
-   public void testFindByEchantillonId(){
+   @Test
+public void testFindByEchantillonId(){
       List<EchantillonType> types = echantillonTypeDao.findByEchantillonId(1);
       assertTrue(types.size() == 1);
       assertTrue(types.get(0).getEchantillonTypeId() == 1);
@@ -138,7 +162,8 @@ public class EchantillonTypeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<EchantillonType> liste = echantillonTypeDao.findByExcludedId(1);
       assertTrue(liste.size() == 3);
       final EchantillonType type = liste.get(0);
@@ -155,7 +180,8 @@ public class EchantillonTypeDaoTest extends AbstractDaoTest
     * @throws Exception Lance une exception en cas d'eereur.
     */
    @Rollback(false)
-   public void testCrudEchanType() throws Exception{
+   @Test
+public void testCrudEchanType() throws Exception{
 
       final EchantillonType e = new EchantillonType();
 
@@ -163,7 +189,7 @@ public class EchantillonTypeDaoTest extends AbstractDaoTest
       e.setIncaCat("CAT10");
       e.setPlateforme(plateformeDao.findById(1));
       // Test de l'insertion
-      echantillonTypeDao.createObject(e);
+      echantillonTypeDao.save(e);
       assertEquals(new Integer(5), e.getEchantillonTypeId());
 
       // Test de la mise à jour
@@ -172,11 +198,11 @@ public class EchantillonTypeDaoTest extends AbstractDaoTest
       assertTrue(e2.getType().equals("TYPE"));
       assertTrue(e2.getIncaCat().equals("CAT10"));
       e2.setType(updatedType);
-      echantillonTypeDao.updateObject(e2);
+      echantillonTypeDao.save(e2);
       assertTrue(echantillonTypeDao.findById(new Integer(5)).getType().equals(updatedType));
 
       // Test de la délétion
-      echantillonTypeDao.removeObject(new Integer(5));
+      echantillonTypeDao.deleteById(new Integer(5));
       assertNull(echantillonTypeDao.findById(new Integer(5)));
 
    }
@@ -184,7 +210,8 @@ public class EchantillonTypeDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String type = "Type1";
       final String type2 = "Type2";
       final String inca = "INCA1";
@@ -256,7 +283,8 @@ public class EchantillonTypeDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String type = "Type1";
       final String inca = "INCA1";
       final EchantillonType e1 = new EchantillonType(1, type, inca);
@@ -284,7 +312,8 @@ public class EchantillonTypeDaoTest extends AbstractDaoTest
    /**
     * Test toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final EchantillonType type1 = echantillonTypeDao.findById(1);
       assertTrue(type1.toString().equals("{" + type1.getType() + "}"));
 

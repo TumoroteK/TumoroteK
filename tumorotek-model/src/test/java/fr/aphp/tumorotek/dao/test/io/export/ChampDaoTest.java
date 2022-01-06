@@ -62,10 +62,13 @@ import fr.aphp.tumorotek.model.io.export.ChampEntite;
 public class ChampDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private ChampDao champDao;
-   private ChampEntiteDao champEntiteDao;
-   private ChampAnnotationDao champAnnotationDao;
+
+   @Autowired
+ ChampDao champDao;
+   @Autowired
+ ChampEntiteDao champEntiteDao;
+   @Autowired
+ ChampAnnotationDao champAnnotationDao;
 
    /** Constructeur. */
    public ChampDaoTest(){}
@@ -74,7 +77,8 @@ public class ChampDaoTest extends AbstractDaoTest
     * Setter du bean ChampDao.
     * @param cDao est le bean Dao.
     */
-   public void setChampDao(final ChampDao cDao){
+   @Test
+public void setChampDao(final ChampDao cDao){
       this.champDao = cDao;
    }
 
@@ -82,7 +86,8 @@ public class ChampDaoTest extends AbstractDaoTest
     * Setter du bean ChampEntiteDao.
     * @param ceDao est le bean Dao.
     */
-   public void setChampEntiteDao(final ChampEntiteDao ceDao){
+   @Test
+public void setChampEntiteDao(final ChampEntiteDao ceDao){
       this.champEntiteDao = ceDao;
    }
 
@@ -90,7 +95,8 @@ public class ChampDaoTest extends AbstractDaoTest
     * Setter du bean ChampAnnotationDao.
     * @param caDao est le bean Dao.
     */
-   public void setChampAnnotationDao(final ChampAnnotationDao caDao){
+   @Test
+public void setChampAnnotationDao(final ChampAnnotationDao caDao){
       this.champAnnotationDao = caDao;
    }
 
@@ -100,7 +106,8 @@ public class ChampDaoTest extends AbstractDaoTest
    * @throws Exception lance une exception en cas de problème lors du CRUD.
    */
    @Rollback(false)
-   public void testCrudChamp() throws Exception{
+   @Test
+public void testCrudChamp() throws Exception{
       final int champEntiteId = 200;
 
       final ChampAnnotation champAnnotation = null;
@@ -112,8 +119,8 @@ public class ChampDaoTest extends AbstractDaoTest
 
       // Test de l'insertion
       Integer idObject = new Integer(-1);
-      this.champDao.createObject(c);
-      final List<Champ> champs = this.champDao.findAll();
+      this.champDao.save(c);
+      final List<Champ> champs = this.IterableUtils.toList(champDao.findAll());
       final Iterator<Champ> itChamp = champs.iterator();
       boolean found = false;
       while(itChamp.hasNext()){
@@ -144,7 +151,7 @@ public class ChampDaoTest extends AbstractDaoTest
       c2.setChampAnnotation(updatedChampAnnotation);
       c2.setChampEntite(updatedChampEntite);
 
-      this.champDao.updateObject(c2);
+      this.champDao.save(c2);
       if(this.champDao.findById(idObject).getChampAnnotation() != null){
          assertTrue(this.champDao.findById(idObject).getChampAnnotation().equals(updatedChampAnnotation));
       }else{
@@ -156,14 +163,15 @@ public class ChampDaoTest extends AbstractDaoTest
          assertNull(updatedChampEntite);
       }
       // Test de la délétion
-      this.champDao.removeObject(idObject);
+      this.champDao.deleteById(idObject);
       assertNull(this.champDao.findById(idObject));
    }
 
    /**
     * test toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final Champ c1 = champDao.findById(2);
       assertTrue(c1.toString().equals("Echantillon.Quantite"));
 
@@ -174,7 +182,8 @@ public class ChampDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       //On boucle sur les 4 possibilités
       for(int i = 0; i < Math.pow(2, 2); i++){
          final Champ champ1 = new Champ();
@@ -200,7 +209,8 @@ public class ChampDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       //On boucle sur les 4 possibilités
       for(int i = 0; i < Math.pow(2, 2); i++){
          final Champ champ = new Champ();

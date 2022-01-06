@@ -37,7 +37,17 @@ package fr.aphp.tumorotek.dao.test.systeme;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
 
 import fr.aphp.tumorotek.dao.systeme.TemperatureDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
@@ -53,128 +63,128 @@ import fr.aphp.tumorotek.model.systeme.Temperature;
  * @version 2.0
  *
  */
-public class TemperatureDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class TemperatureDaoTest extends AbstractDaoTest {
 
-   /** Bean Dao. */
-   private TemperatureDao temperatureDao;
+	@Autowired
+	TemperatureDao temperatureDao;
 
-   public TemperatureDaoTest(){
+	/**
+	 * Test l'appel de la méthode findAll().
+	 */
+	@Test
+	public void testFindAll() {
+		final List<Temperature> liste = IterableUtils.toList(IterableUtils.toList(temperatureDao.findAll()));
+		assertTrue(liste.size() == 5);
+	}
 
-   }
+	/**
+	 * Test l'appel de la méthode findByExcludedId().
+	 */
+	@Test
+	public void testFindByExcludedId() {
+		List<Temperature> liste = temperatureDao.findByExcludedId(1);
+		assertTrue(liste.size() == 4);
 
-   public void setTemperatureDao(final TemperatureDao tDao){
-      this.temperatureDao = tDao;
-   }
+		liste = temperatureDao.findByExcludedId(10);
+		assertTrue(liste.size() == 5);
+	}
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   public void testFindAll(){
-      final List<Temperature> liste = temperatureDao.findAll();
-      assertTrue(liste.size() == 5);
-   }
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'une température.
+	 * 
+	 * @throws Exception lance une exception en cas de problème lors du CRUD.
+	 */
+	@Rollback(false)
+	@Test
+	public void testCrudCouleur() throws Exception {
+		final Temperature t = new Temperature();
 
-   /**
-    * Test l'appel de la méthode findByExcludedId().
-    */
-   public void testFindByExcludedId(){
-      List<Temperature> liste = temperatureDao.findByExcludedId(1);
-      assertTrue(liste.size() == 4);
+		final Float temp = new Float(50);
+		final Float tempUp = new Float(70);
+		t.setTemperature(temp);
+		// Test de l'insertion
+		temperatureDao.save(t);
+		assertEquals(new Integer(6), t.getTemperatureId());
 
-      liste = temperatureDao.findByExcludedId(10);
-      assertTrue(liste.size() == 5);
-   }
+		// Test de la mise à jour
+		final Temperature t2 = temperatureDao.findById(new Integer(6)).get();
+		assertNotNull(t2);
+		assertTrue(t2.getTemperature().equals(temp));
+		t2.setTemperature(tempUp);
+		temperatureDao.save(t2);
+		assertTrue(temperatureDao.findById(new Integer(6)).get().getTemperature().equals(tempUp));
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression d'une température.
-    * @throws Exception lance une exception en cas de problème lors du CRUD.
-    */
-   @Rollback(false)
-   public void testCrudCouleur() throws Exception{
-      final Temperature t = new Temperature();
+		// Test de la délétion
+		temperatureDao.deleteById(new Integer(6));
+		assertFalse(temperatureDao.findById(new Integer(6)).isPresent());
 
-      final Float temp = new Float(50);
-      final Float tempUp = new Float(70);
-      t.setTemperature(temp);
-      // Test de l'insertion
-      temperatureDao.createObject(t);
-      assertEquals(new Integer(6), t.getTemperatureId());
+	}
 
-      // Test de la mise à jour
-      final Temperature t2 = temperatureDao.findById(new Integer(6));
-      assertNotNull(t2);
-      assertTrue(t2.getTemperature().equals(temp));
-      t2.setTemperature(tempUp);
-      temperatureDao.updateObject(t2);
-      assertTrue(temperatureDao.findById(new Integer(6)).getTemperature().equals(tempUp));
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final Float temp1 = new Float(50);
+		final Float temp2 = new Float(70);
+		final Temperature t1 = new Temperature();
+		t1.setTemperature(temp1);
+		final Temperature t2 = new Temperature();
+		t2.setTemperature(temp1);
 
-      // Test de la délétion
-      temperatureDao.removeObject(new Integer(6));
-      assertNull(temperatureDao.findById(new Integer(6)));
+		// L'objet 1 n'est pas égal à null
+		assertFalse(t1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(t1.equals(t1));
+		// 2 objets sont égaux entre eux
+		assertTrue(t1.equals(t2));
+		assertTrue(t2.equals(t1));
 
-   }
+		// Vérification de la différenciation de 2 objets
+		t2.setTemperature(temp2);
+		assertFalse(t1.equals(t2));
+		assertFalse(t2.equals(t1));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   public void testEquals(){
-      final Float temp1 = new Float(50);
-      final Float temp2 = new Float(70);
-      final Temperature t1 = new Temperature();
-      t1.setTemperature(temp1);
-      final Temperature t2 = new Temperature();
-      t2.setTemperature(temp1);
+		t2.setTemperature(null);
+		assertFalse(t1.equals(t2));
+		assertFalse(t2.equals(t1));
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(t1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(t1.equals(t1));
-      // 2 objets sont égaux entre eux
-      assertTrue(t1.equals(t2));
-      assertTrue(t2.equals(t1));
+		t1.setTemperature(null);
+		assertTrue(t1.equals(t2));
+		t2.setTemperature(temp1);
+		assertFalse(t1.equals(t2));
 
-      // Vérification de la différenciation de 2 objets
-      t2.setTemperature(temp2);
-      assertFalse(t1.equals(t2));
-      assertFalse(t2.equals(t1));
+		final Banque b = new Banque();
+		assertFalse(t1.equals(b));
 
-      t2.setTemperature(null);
-      assertFalse(t1.equals(t2));
-      assertFalse(t2.equals(t1));
+	}
 
-      t1.setTemperature(null);
-      assertTrue(t1.equals(t2));
-      t2.setTemperature(temp1);
-      assertFalse(t1.equals(t2));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
+		final Float temp1 = new Float(50);
+		final Temperature t1 = new Temperature();
+		t1.setTemperature(temp1);
+		final Temperature t2 = new Temperature();
+		t2.setTemperature(temp1);
+		final Temperature t3 = new Temperature();
+		t3.setTemperature(null);
+		assertTrue(t3.hashCode() > 0);
 
-      final Banque b = new Banque();
-      assertFalse(t1.equals(b));
+		final int hash = t1.hashCode();
+		// 2 objets égaux ont le même hashcode
+		assertTrue(t1.hashCode() == t2.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		assertTrue(hash == t1.hashCode());
+		assertTrue(hash == t1.hashCode());
+		assertTrue(hash == t1.hashCode());
+		assertTrue(hash == t1.hashCode());
 
-   }
-
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   public void testHashCode(){
-      final Float temp1 = new Float(50);
-      final Temperature t1 = new Temperature();
-      t1.setTemperature(temp1);
-      final Temperature t2 = new Temperature();
-      t2.setTemperature(temp1);
-      final Temperature t3 = new Temperature();
-      t3.setTemperature(null);
-      assertTrue(t3.hashCode() > 0);
-
-      final int hash = t1.hashCode();
-      // 2 objets égaux ont le même hashcode
-      assertTrue(t1.hashCode() == t2.hashCode());
-      // un même objet garde le même hashcode dans le temps
-      assertTrue(hash == t1.hashCode());
-      assertTrue(hash == t1.hashCode());
-      assertTrue(hash == t1.hashCode());
-      assertTrue(hash == t1.hashCode());
-
-   }
+	}
 
 }

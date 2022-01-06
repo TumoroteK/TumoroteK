@@ -59,13 +59,17 @@ public class EtablissementDaoTest extends AbstractDaoTest
 {
 
    /** Bean Dao EtablissementDao. */
-   private EtablissementDao etablissementDao;
+   @Autowired
+ EtablissementDao etablissementDao;
    /** Bean Dao CoordonneeDao. */
-   private CoordonneeDao coordonneeDao;
+   @Autowired
+ CoordonneeDao coordonneeDao;
    /** Bean Dao CategorieDao. */
-   private CategorieDao categorieDao;
+   @Autowired
+ CategorieDao categorieDao;
    /** valeur du nom pour la maj. */
-   private final String updatedNom = "Etab mis a jour";
+   @Autowired
+ final String updatedNom = "Etab mis a jour";
 
    /** Constructeur. */
    public EtablissementDaoTest(){
@@ -76,7 +80,8 @@ public class EtablissementDaoTest extends AbstractDaoTest
     * Setter du bean Dao EtablissementDao.
     * @param eDao est le bean Dao.
     */
-   public void setEtablissementDao(final EtablissementDao eDao){
+   @Test
+public void setEtablissementDao(final EtablissementDao eDao){
       this.etablissementDao = eDao;
    }
 
@@ -84,7 +89,8 @@ public class EtablissementDaoTest extends AbstractDaoTest
     * Setter du bean Dao CoordonneeDao.
     * @param cDao est le bean Dao.
     */
-   public void setCoordonneeDao(final CoordonneeDao cDao){
+   @Test
+public void setCoordonneeDao(final CoordonneeDao cDao){
       this.coordonneeDao = cDao;
    }
 
@@ -92,22 +98,25 @@ public class EtablissementDaoTest extends AbstractDaoTest
     * Setter du bean Dao CategorieDao.
     * @param cDao est le bean Dao.
     */
-   public void setCategorieDao(final CategorieDao cDao){
+   @Test
+public void setCategorieDao(final CategorieDao cDao){
       this.categorieDao = cDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllEtablissements(){
-      final List<Etablissement> etabs = etablissementDao.findAll();
+   @Test
+public void testReadAllEtablissements(){
+      final List<Etablissement> etabs = IterableUtils.toList(etablissementDao.findAll());
       assertTrue(etabs.size() == 4);
    }
 
    /**
     * Test l'appel de la méthode findByOrder().
     */
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       final List<Etablissement> etabs = etablissementDao.findByOrder();
       assertTrue(etabs.size() == 4);
       assertTrue(etabs.get(0).getNom().equals("BEAUVAIS CH"));
@@ -117,7 +126,8 @@ public class EtablissementDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByNom().
     */
-   public void testFindByNom(){
+   @Test
+public void testFindByNom(){
       List<Etablissement> etabs = etablissementDao.findByNom("SAINT LOUIS");
       assertTrue(etabs.size() == 1);
       etabs = etablissementDao.findByNom("BICHAT");
@@ -130,7 +140,8 @@ public class EtablissementDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByVille().
     */
-   public void testFindByVille(){
+   @Test
+public void testFindByVille(){
       List<Etablissement> etabs = etablissementDao.findByVille("PARIS");
       assertTrue(etabs.size() == 1);
       etabs = etablissementDao.findByVille("BEAU");
@@ -143,7 +154,8 @@ public class EtablissementDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByFiness().
     */
-   public void testFindByFiness(){
+   @Test
+public void testFindByFiness(){
       List<Etablissement> etabs = etablissementDao.findByFiness("1111");
       assertTrue(etabs.size() == 1);
       etabs = etablissementDao.findByFiness("548969125");
@@ -155,7 +167,8 @@ public class EtablissementDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByLocal().
     */
-   public void testFindByLocal(){
+   @Test
+public void testFindByLocal(){
       final List<Etablissement> etabs = etablissementDao.findByLocal(true);
       assertTrue(etabs.size() == 2);
    }
@@ -163,7 +176,8 @@ public class EtablissementDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByArchiveWithOrder().
     */
-   public void testFindByArchiveWithOrder(){
+   @Test
+public void testFindByArchiveWithOrder(){
       List<Etablissement> etabs = etablissementDao.findByArchiveWithOrder(false);
       assertTrue(etabs.size() == 3);
       assertTrue(etabs.get(0).getNom().equals("BEAUVAIS CH"));
@@ -175,7 +189,8 @@ public class EtablissementDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByCoordonneeId().
     */
-   public void testFindByCoordonnee(){
+   @Test
+public void testFindByCoordonnee(){
       Coordonnee c = coordonneeDao.findById(1);
       List<Etablissement> etabs = etablissementDao.findByCoordonnee(c);
       assertTrue(etabs.size() == 1);
@@ -187,7 +202,8 @@ public class EtablissementDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByCategorie().
     */
-   public void testFindByCategorie(){
+   @Test
+public void testFindByCategorie(){
       Categorie c = categorieDao.findById(1);
       List<Etablissement> etabs = etablissementDao.findByCategorie(c);
       assertTrue(etabs.size() == 3);
@@ -199,7 +215,8 @@ public class EtablissementDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByIdWithFetch().
     */
-   public void testFindByIdWithFetch(){
+   @Test
+public void testFindByIdWithFetch(){
       final List<Etablissement> etabs = etablissementDao.findByIdWithFetch(1);
       final Etablissement etab = etabs.get(0);
       assertNotNull(etab);
@@ -210,7 +227,8 @@ public class EtablissementDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByServiceId().
     */
-   public void testFindByServiceId(){
+   @Test
+public void testFindByServiceId(){
       List<Etablissement> etabs = etablissementDao.findByServiceId(1);
       assertTrue(etabs.size() == 1);
       assertTrue(etabs.get(0).getEtablissementId() == 1);
@@ -221,7 +239,8 @@ public class EtablissementDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByCollaborateurId().
     */
-   public void testFindByCollaborateurId(){
+   @Test
+public void testFindByCollaborateurId(){
       List<Etablissement> etabs = etablissementDao.findByCollaborateurId(3);
       assertTrue(etabs.size() == 1);
       assertTrue(etabs.get(0).getEtablissementId() == 1);
@@ -232,7 +251,8 @@ public class EtablissementDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<Etablissement> list = etablissementDao.findByExcludedId(1);
       assertTrue(list.size() == 3);
 
@@ -245,7 +265,8 @@ public class EtablissementDaoTest extends AbstractDaoTest
     * @throws Exception en cas d'erreur dans le traitement des données.
     */
    //@Rollback(false)
-   public void testCrudEtablissement() throws Exception{
+   @Test
+public void testCrudEtablissement() throws Exception{
 
       final Etablissement e = new Etablissement();
       //Coordonnee c = coordonneeDao.findById(5);
@@ -261,7 +282,7 @@ public class EtablissementDaoTest extends AbstractDaoTest
       //e.setCoordonnee(c);
       e.setCategorie(cat);
       // Test de l'insertion
-      etablissementDao.createObject(e);
+      etablissementDao.save(e);
       assertEquals(new Integer(5), e.getEtablissementId());
 
       // Test de la mise à jour
@@ -274,11 +295,11 @@ public class EtablissementDaoTest extends AbstractDaoTest
       assertNotNull(e2.getCategorie());
       //assertNotNull(e2.getCoordonnee());
       e2.setNom(updatedNom);
-      etablissementDao.updateObject(e2);
+      etablissementDao.save(e2);
       assertTrue(etablissementDao.findById(new Integer(5)).getNom().equals(updatedNom));
 
       // Test de la délétion
-      etablissementDao.removeObject(5);
+      etablissementDao.deleteById(5);
       assertNull(etablissementDao.findById(new Integer(5)));
 
    }
@@ -286,7 +307,8 @@ public class EtablissementDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String nom = "Etab";
       final String nom2 = "Etab2";
       final String finess = "Finess";
@@ -357,14 +379,15 @@ public class EtablissementDaoTest extends AbstractDaoTest
       final Etablissement et2 = new Etablissement();
       et2.setNom(e.getNom());
       et2.setFiness(e.getFiness());
-      assertTrue(etablissementDao.findAll().contains(et2));
+      assertTrue(IterableUtils.toList(etablissementDao.findAll()).contains(et2));
 
    }
 
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String nom = "Etab";
       final String finess = "Finess";
       final Etablissement e1 = new Etablissement();
@@ -398,7 +421,8 @@ public class EtablissementDaoTest extends AbstractDaoTest
    /**
     * test toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final Etablissement e1 = etablissementDao.findById(1);
       assertTrue(e1.toString().equals("{" + e1.getNom() + "}"));
 
@@ -409,7 +433,8 @@ public class EtablissementDaoTest extends AbstractDaoTest
    /**
     * Test la méthode clone.
     */
-   public void testClone(){
+   @Test
+public void testClone(){
       final Etablissement e1 = etablissementDao.findById(1);
       final Etablissement e2 = e1.clone();
       assertTrue(e1.equals(e2));

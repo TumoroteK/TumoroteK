@@ -38,7 +38,19 @@ package fr.aphp.tumorotek.dao.test.cession;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.cession.CessionStatutDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
@@ -54,36 +66,43 @@ import fr.aphp.tumorotek.model.contexte.Categorie;
  * @version 25/01/2010
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class CessionStatutDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private CessionStatutDao cessionStatutDao;
+
+   @Autowired
+ CessionStatutDao cessionStatutDao;
    /** valeur du nom pour la maj. */
-   private final String updatedStatut = "Mis a jour";
+   @Autowired
+ final String updatedStatut = "Mis a jour";
 
    /** Constructeur. */
    public CessionStatutDaoTest(){
 
    }
 
-   public void setCessionStatutDao(final CessionStatutDao cDao){
+   @Test
+public void setCessionStatutDao(final CessionStatutDao cDao){
       this.cessionStatutDao = cDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllCessionStatuts(){
-      final List<CessionStatut> liste = cessionStatutDao.findAll();
+   @Test
+public void testReadAllCessionStatuts(){
+      final List<CessionStatut> liste = IterableUtils.toList(cessionStatutDao.findAll());
       assertTrue(liste.size() == 3);
    }
 
    /**
     * Test l'appel de la méthode findByOrder().
     */
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       final List<CessionStatut> list = cessionStatutDao.findByOrder();
       assertTrue(list.size() == 3);
       assertTrue(list.get(1).getStatut().equals("REFUSEE"));
@@ -92,7 +111,8 @@ public class CessionStatutDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByStatut().
     */
-   public void testFindByStatut(){
+   @Test
+public void testFindByStatut(){
       List<CessionStatut> liste = cessionStatutDao.findByStatut("VALIDEE");
       assertTrue(liste.size() == 1);
 
@@ -112,13 +132,14 @@ public class CessionStatutDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas d'erreur.
     */
    @Rollback(false)
-   public void testCrudCessionStatut() throws Exception{
+   @Test
+public void testCrudCessionStatut() throws Exception{
 
       final CessionStatut cs = new CessionStatut();
 
       cs.setStatut("TEST");
       // Test de l'insertion
-      cessionStatutDao.createObject(cs);
+      cessionStatutDao.save(cs);
       assertEquals(new Integer(4), cs.getCessionStatutId());
 
       // Test de la mise à jour
@@ -126,11 +147,11 @@ public class CessionStatutDaoTest extends AbstractDaoTest
       assertNotNull(cs2);
       assertTrue(cs2.getStatut().equals("TEST"));
       cs2.setStatut(updatedStatut);
-      cessionStatutDao.updateObject(cs2);
+      cessionStatutDao.save(cs2);
       assertTrue(cessionStatutDao.findById(new Integer(4)).getStatut().equals(updatedStatut));
 
       // Test de la délétion
-      cessionStatutDao.removeObject(new Integer(4));
+      cessionStatutDao.deleteById(new Integer(4));
       assertNull(cessionStatutDao.findById(new Integer(4)));
 
    }
@@ -138,7 +159,8 @@ public class CessionStatutDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String statut = "STATUT";
       final String statut2 = "STATUT2";
       final CessionStatut cs1 = new CessionStatut();
@@ -175,7 +197,8 @@ public class CessionStatutDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String statut = "STATUT";
       final CessionStatut cs1 = new CessionStatut();
       cs1.setStatut(statut);
@@ -199,7 +222,8 @@ public class CessionStatutDaoTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final CessionStatut cs1 = cessionStatutDao.findById(1);
       assertTrue(cs1.toString().equals("{" + cs1.getStatut() + "}"));
 

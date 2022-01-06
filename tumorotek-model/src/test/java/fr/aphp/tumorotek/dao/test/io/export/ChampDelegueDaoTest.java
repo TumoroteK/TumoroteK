@@ -60,13 +60,16 @@ public class ChampDelegueDaoTest extends AbstractInMemoryTests
 {
 
    @Autowired
-   private ChampDelegueDao champDelegueDao;
+   @Autowired
+ ChampDelegueDao champDelegueDao;
 
    @Autowired
-   private EntiteDao entiteDao;
+   @Autowired
+ EntiteDao entiteDao;
 
    @Test
-   public void testFindByEntiteAndContexte(){
+   @Test
+public void testFindByEntiteAndContexte(){
 
       final Entite entite = entiteDao.findByNom("Prelevement").get(0);
 
@@ -80,7 +83,8 @@ public class ChampDelegueDaoTest extends AbstractInMemoryTests
    }
 
    @Test
-   public void testFindByNomAndEntiteAndContexte(){
+   @Test
+public void testFindByNomAndEntiteAndContexte(){
 
       final String nomChamp = "Diagnostic";
       final Entite entite = entiteDao.findByNom("Maladie").get(0);

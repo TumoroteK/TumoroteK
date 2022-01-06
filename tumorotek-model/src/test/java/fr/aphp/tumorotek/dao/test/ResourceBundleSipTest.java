@@ -2,15 +2,17 @@ package fr.aphp.tumorotek.dao.test;
 
 import java.util.ResourceBundle;
 
+import org.junit.Test;
+
 import fr.aphp.tumorotek.model.bundles.ResourceBundleSip;
 
 public class ResourceBundleSipTest extends AbstractDaoTest
 {
 
    /** Bean. */
-   private ResourceBundleSip resourceBundleSip;
+ ResourceBundleSip resourceBundleSip;
 
-   public void setResourceBundleSip(final ResourceBundleSip r){
+public void setResourceBundleSip(final ResourceBundleSip r){
       this.resourceBundleSip = r;
    }
 
@@ -18,13 +20,15 @@ public class ResourceBundleSipTest extends AbstractDaoTest
 
    }
 
-   public void testDoesResourceBundleExists(){
+   @Test
+public void testDoesResourceBundleExists(){
       assertTrue(resourceBundleSip.doesResourceBundleExists("serveur_Identites.properties"));
       assertFalse(resourceBundleSip.doesResourceBundleExists("blabla"));
       assertFalse(resourceBundleSip.doesResourceBundleExists(null));
    }
 
-   public void testGetResourceBundle(){
+   @Test
+public void testGetResourceBundle(){
       ResourceBundle bundle = resourceBundleSip.getResourceBundle("serveur_Identites.properties");
       assertTrue(bundle.getString("DBMS").equals("ORACLE"));
 

@@ -37,7 +37,15 @@ package fr.aphp.tumorotek.dao.test.utilisateur;
 
 import java.text.ParseException;
 
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
 
 import fr.aphp.tumorotek.dao.qualite.OperationTypeDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
@@ -57,173 +65,166 @@ import fr.aphp.tumorotek.model.utilisateur.Profil;
  * @version 18/05/2010
  *
  */
-@TransactionConfiguration(defaultRollback = false)
-public class DroitObjetPKTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class DroitObjetPKTest extends AbstractDaoTest {
 
-   /** Bean Dao. */
-   private ProfilDao profilDao;
-   /** Bean Dao. */
-   private EntiteDao entiteDao;
-   /** Bean Dao. */
-   private OperationTypeDao operationTypeDao;
+	@Autowired
+	ProfilDao profilDao;
 
-   /** Constructeur. */
-   public DroitObjetPKTest(){
+	@Autowired
+	EntiteDao entiteDao;
 
-   }
+	@Autowired
+	OperationTypeDao operationTypeDao;
 
-   public void setProfilDao(final ProfilDao pDao){
-      this.profilDao = pDao;
-   }
+	/**
+	 * Test de la méthode surchargée "equals".
+	 * 
+	 * @throws ParseException
+	 */
+	@Test
+	public void testEquals() throws ParseException {
+		final DroitObjetPK pk1 = new DroitObjetPK();
+		final DroitObjetPK pk2 = new DroitObjetPK();
 
-   public void setOperationTypeDao(final OperationTypeDao oDao){
-      this.operationTypeDao = oDao;
-   }
+		// L'objet 1 n'est pas égal à null
+		assertFalse(pk1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(pk1.equals(pk1));
 
-   public void setEntiteDao(final EntiteDao eDao){
-      this.entiteDao = eDao;
-   }
+		/* null */
+		assertTrue(pk1.equals(pk2));
+		assertTrue(pk2.equals(pk1));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    * @throws ParseException 
-    */
-   public void testEquals() throws ParseException{
-      final DroitObjetPK pk1 = new DroitObjetPK();
-      final DroitObjetPK pk2 = new DroitObjetPK();
+		populateClefsToTestEqualsAndHashCode();
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(pk1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(pk1.equals(pk1));
+		final Categorie c3 = new Categorie();
+		assertFalse(pk1.equals(c3));
+	}
 
-      /*null*/
-      assertTrue(pk1.equals(pk2));
-      assertTrue(pk2.equals(pk1));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 * 
+	 * @throws ParseException
+	 */
+	@Test
+	public void testHashCode() throws ParseException {
+		final DroitObjetPK pk1 = new DroitObjetPK();
+		final DroitObjetPK pk2 = new DroitObjetPK();
 
-      populateClefsToTestEqualsAndHashCode();
+		/* null */
+		assertTrue(pk1.hashCode() == pk2.hashCode());
 
-      final Categorie c3 = new Categorie();
-      assertFalse(pk1.equals(c3));
-   }
+		populateClefsToTestEqualsAndHashCode();
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    * @throws ParseException 
-    */
-   public void testHashCode() throws ParseException{
-      final DroitObjetPK pk1 = new DroitObjetPK();
-      final DroitObjetPK pk2 = new DroitObjetPK();
+		// un même objet garde le même hashcode dans le temps
+		final int hash = pk1.hashCode();
+		assertTrue(hash == pk1.hashCode());
+		assertTrue(hash == pk1.hashCode());
+		assertTrue(hash == pk1.hashCode());
+		assertTrue(hash == pk1.hashCode());
+	}
 
-      /*null*/
-      assertTrue(pk1.hashCode() == pk2.hashCode());
+	@Autowired
+	void populateClefsToTestEqualsAndHashCode() throws ParseException {
 
-      populateClefsToTestEqualsAndHashCode();
+		final Profil p1 = profilDao.findById(1).get();
+		final Profil p2 = profilDao.findById(2).get();
+		final Profil p3 = profilDao.findById(1).get();
+		final Profil[] profilsId = new Profil[] { null, p1, p2, p3 };
+		final OperationType o1 = operationTypeDao.findById(1).get();
+		final OperationType o2 = operationTypeDao.findById(2).get();
+		final OperationType o3 = operationTypeDao.findById(1).get();
+		final OperationType[] operations = new OperationType[] { null, o1, o2, o3 };
+		final Entite e1 = entiteDao.findById(3).get();
+		final Entite e2 = entiteDao.findById(8).get();
+		final Entite e3 = entiteDao.findById(3).get();
+		final Entite[] entites = new Entite[] { null, e1, e2, e3 };
 
-      // un même objet garde le même hashcode dans le temps
-      final int hash = pk1.hashCode();
-      assertTrue(hash == pk1.hashCode());
-      assertTrue(hash == pk1.hashCode());
-      assertTrue(hash == pk1.hashCode());
-      assertTrue(hash == pk1.hashCode());
-   }
+		final DroitObjetPK pk1 = new DroitObjetPK();
+		final DroitObjetPK pk2 = new DroitObjetPK();
 
-   private void populateClefsToTestEqualsAndHashCode() throws ParseException{
+		for (int i = 0; i < profilsId.length; i++) {
+			for (int j = 0; j < operations.length; j++) {
+				for (int j2 = 0; j2 < entites.length; j2++) {
 
-      final Profil p1 = profilDao.findById(1);
-      final Profil p2 = profilDao.findById(2);
-      final Profil p3 = profilDao.findById(1);
-      final Profil[] profilsId = new Profil[] {null, p1, p2, p3};
-      final OperationType o1 = operationTypeDao.findById(1);
-      final OperationType o2 = operationTypeDao.findById(2);
-      final OperationType o3 = operationTypeDao.findById(1);
-      final OperationType[] operations = new OperationType[] {null, o1, o2, o3};
-      final Entite e1 = entiteDao.findById(3);
-      final Entite e2 = entiteDao.findById(8);
-      final Entite e3 = entiteDao.findById(3);
-      final Entite[] entites = new Entite[] {null, e1, e2, e3};
+					for (int k = 0; k < profilsId.length; k++) {
+						for (int l = 0; l < operations.length; l++) {
+							for (int l2 = 0; l2 < entites.length; l2++) {
 
-      final DroitObjetPK pk1 = new DroitObjetPK();
-      final DroitObjetPK pk2 = new DroitObjetPK();
+								pk1.setProfil(profilsId[i]);
+								pk1.setOperationType(operations[j]);
+								pk1.setEntite(entites[j2]);
 
-      for(int i = 0; i < profilsId.length; i++){
-         for(int j = 0; j < operations.length; j++){
-            for(int j2 = 0; j2 < entites.length; j2++){
+								pk2.setProfil(profilsId[k]);
+								pk2.setOperationType(operations[l]);
+								pk2.setEntite(entites[l2]);
 
-               for(int k = 0; k < profilsId.length; k++){
-                  for(int l = 0; l < operations.length; l++){
-                     for(int l2 = 0; l2 < entites.length; l2++){
+								if (((i == k) || (i + k == 4)) && ((j == l) || (j + l == 4))
+										&& ((j2 == l2) || (j2 + l2 == 4))) {
+									assertTrue(pk1.equals(pk2));
+									assertTrue(pk1.hashCode() == pk2.hashCode());
+								} else {
+									assertFalse(pk1.equals(pk2));
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 
-                        pk1.setProfil(profilsId[i]);
-                        pk1.setOperationType(operations[j]);
-                        pk1.setEntite(entites[j2]);
+	}
 
-                        pk2.setProfil(profilsId[k]);
-                        pk2.setOperationType(operations[l]);
-                        pk2.setEntite(entites[l2]);
+	/**
+	 * Test la méthode toString.
+	 */
+	@Test
+	public void testToString() {
+		final Profil p1 = profilDao.findById(1).get();
+		final OperationType o1 = operationTypeDao.findById(1).get();
+		final Entite e1 = entiteDao.findById(3).get();
+		final DroitObjetPK pk1 = new DroitObjetPK();
+		pk1.setProfil(p1);
+		pk1.setEntite(e1);
+		pk1.setOperationType(o1);
 
-                        if(((i == k) || (i + k == 4)) && ((j == l) || (j + l == 4)) && ((j2 == l2) || (j2 + l2 == 4))){
-                           assertTrue(pk1.equals(pk2));
-                           assertTrue(pk1.hashCode() == pk2.hashCode());
-                        }else{
-                           assertFalse(pk1.equals(pk2));
-                        }
-                     }
-                  }
-               }
-            }
-         }
-      }
+		assertTrue(pk1.toString().equals("{" + pk1.getProfil().toString() + " (Profil), " + pk1.getEntite().toString()
+				+ " (Entite), " + pk1.getOperationType() + " (OperationType)}"));
 
-   }
+		pk1.setProfil(null);
+		assertTrue(pk1.toString().equals("{Empty DroitObjetPK}"));
+		pk1.setProfil(p1);
 
-   /**
-    * Test la méthode toString.
-    */
-   public void testToString(){
-      final Profil p1 = profilDao.findById(1);
-      final OperationType o1 = operationTypeDao.findById(1);
-      final Entite e1 = entiteDao.findById(3);
-      final DroitObjetPK pk1 = new DroitObjetPK();
-      pk1.setProfil(p1);
-      pk1.setEntite(e1);
-      pk1.setOperationType(o1);
+		pk1.setEntite(null);
+		assertTrue(pk1.toString().equals("{Empty DroitObjetPK}"));
+		pk1.setEntite(e1);
 
-      assertTrue(pk1.toString().equals("{" + pk1.getProfil().toString() + " (Profil), " + pk1.getEntite().toString()
-         + " (Entite), " + pk1.getOperationType() + " (OperationType)}"));
+		pk1.setOperationType(null);
+		assertTrue(pk1.toString().equals("{Empty DroitObjetPK}"));
+		pk1.setOperationType(o1);
 
-      pk1.setProfil(null);
-      assertTrue(pk1.toString().equals("{Empty DroitObjetPK}"));
-      pk1.setProfil(p1);
+		pk1.setProfil(null);
+		pk1.setEntite(null);
+		assertTrue(pk1.toString().equals("{Empty DroitObjetPK}"));
+		pk1.setEntite(e1);
+		pk1.setProfil(p1);
 
-      pk1.setEntite(null);
-      assertTrue(pk1.toString().equals("{Empty DroitObjetPK}"));
-      pk1.setEntite(e1);
+		pk1.setEntite(null);
+		pk1.setOperationType(null);
+		assertTrue(pk1.toString().equals("{Empty DroitObjetPK}"));
+		pk1.setOperationType(o1);
+		pk1.setEntite(e1);
 
-      pk1.setOperationType(null);
-      assertTrue(pk1.toString().equals("{Empty DroitObjetPK}"));
-      pk1.setOperationType(o1);
+		pk1.setProfil(null);
+		pk1.setOperationType(null);
+		assertTrue(pk1.toString().equals("{Empty DroitObjetPK}"));
+		pk1.setOperationType(o1);
 
-      pk1.setProfil(null);
-      pk1.setEntite(null);
-      assertTrue(pk1.toString().equals("{Empty DroitObjetPK}"));
-      pk1.setEntite(e1);
-      pk1.setProfil(p1);
-
-      pk1.setEntite(null);
-      pk1.setOperationType(null);
-      assertTrue(pk1.toString().equals("{Empty DroitObjetPK}"));
-      pk1.setOperationType(o1);
-      pk1.setEntite(e1);
-
-      pk1.setProfil(null);
-      pk1.setOperationType(null);
-      assertTrue(pk1.toString().equals("{Empty DroitObjetPK}"));
-      pk1.setOperationType(o1);
-
-      final DroitObjetPK pk2 = new DroitObjetPK();
-      assertTrue(pk2.toString().equals("{Empty DroitObjetPK}"));
-   }
+		final DroitObjetPK pk2 = new DroitObjetPK();
+		assertTrue(pk2.toString().equals("{Empty DroitObjetPK}"));
+	}
 
 }

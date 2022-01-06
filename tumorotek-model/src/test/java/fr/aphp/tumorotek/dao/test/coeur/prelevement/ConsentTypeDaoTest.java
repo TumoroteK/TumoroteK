@@ -60,12 +60,15 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 public class ConsentTypeDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private ConsentTypeDao consentTypeDao;
-   private PlateformeDao plateformeDao;
+
+   @Autowired
+ ConsentTypeDao consentTypeDao;
+   @Autowired
+ PlateformeDao plateformeDao;
 
    /** Valeur du type pour la maj. */
-   private final String updatedType = "Type mis a jour";
+   @Autowired
+ final String updatedType = "Type mis a jour";
 
    /**
     * Constructeur.
@@ -76,18 +79,21 @@ public class ConsentTypeDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param ctDao est le bean Dao.
     */
-   public void setConsentTypeDao(final ConsentTypeDao ctDao){
+   @Test
+public void setConsentTypeDao(final ConsentTypeDao ctDao){
       this.consentTypeDao = ctDao;
    }
 
-   public void setPlateformeDao(final PlateformeDao pfDao){
+   @Test
+public void setPlateformeDao(final PlateformeDao pfDao){
       this.plateformeDao = pfDao;
    }
 
    /**
     * Test l'appel de la méthode toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       ConsentType ct1 = consentTypeDao.findById(1);
       assertTrue(ct1.toString().equals("{" + ct1.getNom() + "}"));
       ct1 = new ConsentType();
@@ -97,12 +103,14 @@ public class ConsentTypeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllConsentType(){
-      final List<ConsentType> types = consentTypeDao.findAll();
+   @Test
+public void testReadAllConsentType(){
+      final List<ConsentType> types = IterableUtils.toList(consentTypeDao.findAll());
       assertTrue(types.size() == 3);
    }
 
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
       List<? extends TKThesaurusObject> list = consentTypeDao.findByPfOrder(pf);
       assertTrue(list.size() == 2);
@@ -117,7 +125,8 @@ public class ConsentTypeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByType().
     */
-   public void testFindByType(){
+   @Test
+public void testFindByType(){
       List<ConsentType> types = consentTypeDao.findByType("EN ATTENTE");
       assertTrue(types.size() == 1);
       types = consentTypeDao.findByType("INCONNU");
@@ -134,12 +143,13 @@ public class ConsentTypeDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
    @Rollback(false)
-   public void testCrudConsentType() throws Exception{
+   @Test
+public void testCrudConsentType() throws Exception{
       final ConsentType ct = new ConsentType();
       ct.setNom("INCONNU");
       ct.setPlateforme(plateformeDao.findById(1));
       // Test de l'insertion
-      consentTypeDao.createObject(ct);
+      consentTypeDao.save(ct);
       assertEquals(new Integer(4), ct.getId());
 
       // Test de la mise à jour
@@ -147,18 +157,19 @@ public class ConsentTypeDaoTest extends AbstractDaoTest
       assertNotNull(ct2);
       assertTrue(ct2.getNom().equals("INCONNU"));
       ct2.setNom(updatedType);
-      consentTypeDao.updateObject(ct2);
+      consentTypeDao.save(ct2);
       assertTrue(consentTypeDao.findById(new Integer(4)).getNom().equals(updatedType));
 
       // Test de la délétion
-      consentTypeDao.removeObject(new Integer(4));
+      consentTypeDao.deleteById(new Integer(4));
       assertNull(consentTypeDao.findById(new Integer(4)));
    }
 
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String type = "Type";
       final String type2 = "Type2";
       final ConsentType ct1 = new ConsentType();
@@ -209,7 +220,8 @@ public class ConsentTypeDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String type = "Type";
       final ConsentType ct1 = new ConsentType();
       ct1.setId(1);

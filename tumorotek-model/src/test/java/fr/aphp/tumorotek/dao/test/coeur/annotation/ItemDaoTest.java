@@ -65,34 +65,44 @@ public class ItemDaoTest extends AbstractDaoTest
 {
 
    /** Beans Dao. */
-   private ItemDao itemDao;
-   private ChampAnnotationDao champAnnotationDao;
-   private DataTypeDao dataTypeDao;
-   private TableAnnotationDao tableAnnotationDao;
-   private PlateformeDao plateformeDao;
+   @Autowired
+ ItemDao itemDao;
+   @Autowired
+ ChampAnnotationDao champAnnotationDao;
+   @Autowired
+ DataTypeDao dataTypeDao;
+   @Autowired
+ TableAnnotationDao tableAnnotationDao;
+   @Autowired
+ PlateformeDao plateformeDao;
 
    /**
     * Constructeur.
     */
    public ItemDaoTest(){}
 
-   public void setItemDao(final ItemDao iDao){
+   @Test
+public void setItemDao(final ItemDao iDao){
       this.itemDao = iDao;
    }
 
-   public void setChampAnnotationDao(final ChampAnnotationDao cDao){
+   @Test
+public void setChampAnnotationDao(final ChampAnnotationDao cDao){
       this.champAnnotationDao = cDao;
    }
 
-   public void setTableAnnotationDao(final TableAnnotationDao taDao){
+   @Test
+public void setTableAnnotationDao(final TableAnnotationDao taDao){
       this.tableAnnotationDao = taDao;
    }
 
-   public void setDataTypeDao(final DataTypeDao dtDao){
+   @Test
+public void setDataTypeDao(final DataTypeDao dtDao){
       this.dataTypeDao = dtDao;
    }
 
-   public void setPlateformeDao(final PlateformeDao pDao){
+   @Test
+public void setPlateformeDao(final PlateformeDao pDao){
       this.plateformeDao = pDao;
    }
 
@@ -100,7 +110,8 @@ public class ItemDaoTest extends AbstractDaoTest
     * Test la méthode toString.
     * @throws ParseException 
     */
-   public void testToString() throws ParseException{
+   @Test
+public void testToString() throws ParseException{
       final Item i1 = itemDao.findById(1);
       assertTrue(i1.toString().equals("{Thesaurus Item: Thes1.item1-1}"));
 
@@ -116,12 +127,14 @@ public class ItemDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllItems(){
-      final List<Item> items = itemDao.findAll();
+   @Test
+public void testReadAllItems(){
+      final List<Item> items = IterableUtils.toList(itemDao.findAll());
       assertTrue(items.size() == 87);
    }
 
-   public void testFindByChamp(){
+   @Test
+public void testFindByChamp(){
       List<Item> items = itemDao.findByChamp(champAnnotationDao.findById(12));
       assertTrue(items.size() == 3);
       items = itemDao.findByChamp(champAnnotationDao.findById(1));
@@ -133,7 +146,8 @@ public class ItemDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       final Item i1 = itemDao.findById(1);
       List<Item> items = itemDao.findByExcludedId(1);
       assertTrue(items.size() == 86);
@@ -148,7 +162,8 @@ public class ItemDaoTest extends AbstractDaoTest
     * Test l'insertion, la mise à jour et la suppression d'un Item.
     */
    @Rollback(false)
-   public void testCrudItem(){
+   @Test
+public void testCrudItem(){
 
       // creation d'un thes avec cascade sur items
       final ChampAnnotation thes = new ChampAnnotation();
@@ -159,7 +174,7 @@ public class ItemDaoTest extends AbstractDaoTest
       thes.setOrdre(1);
 
       // Test de l'insertion a partir du champ
-      champAnnotationDao.createObject(thes);
+      champAnnotationDao.save(thes);
       assertNotNull(thes.getId());
 
       final Integer maxId = thes.getId();
@@ -173,7 +188,7 @@ public class ItemDaoTest extends AbstractDaoTest
       i3.setLabel("new");
       i3.setValeur("newVal");
       i3.setChampAnnotation(thes2);
-      itemDao.createObject(i3);
+      itemDao.save(i3);
       assertTrue(i3.getItemId() == 88);
       assertTrue(itemDao.findByChamp(thes2).size() == 1);
       assertTrue(itemDao.findById(88).getLabel().equals("new"));
@@ -183,24 +198,25 @@ public class ItemDaoTest extends AbstractDaoTest
       i3.setLabel("staple");
       i3.setValeur(null);
 
-      itemDao.updateObject(i3);
+      itemDao.save(i3);
       assertTrue(itemDao.findByChamp(thes2).size() == 1);
       assertTrue(itemDao.findById(88).getLabel().equals("staple"));
       assertNull(itemDao.findById(88).getValeur());
 
       // Test de la délétion
-      itemDao.removeObject(new Integer(88));
+      itemDao.deleteById(new Integer(88));
       assertNull(itemDao.findById(new Integer(88)));
       // cascade
-      champAnnotationDao.removeObject(maxId);
+      champAnnotationDao.deleteById(maxId);
       testReadAllItems();
-      assertTrue(champAnnotationDao.findAll().size() == 48);
+      assertTrue(IterableUtils.toList(champAnnotationDao.findAll()).size() == 48);
    }
 
    /**
     * Test des méthodes surchargées "equals" et hashcode.
     */
-   public void testEqualsAndHashCode(){
+   @Test
+public void testEqualsAndHashCode(){
       final Item i1 = new Item();
       final Item i2 = new Item();
       assertFalse(i1.equals(null));
@@ -286,7 +302,8 @@ public class ItemDaoTest extends AbstractDaoTest
       assertFalse(i1.equals(c));
    }
 
-   public void testClone(){
+   @Test
+public void testClone(){
       final Item i = itemDao.findById(1);
       final Item i2 = i.clone();
       assertTrue(i.equals(i2));
@@ -322,7 +339,8 @@ public class ItemDaoTest extends AbstractDaoTest
       }
    }
 
-   public void testFindByChampAndPlateforme(){
+   @Test
+public void testFindByChampAndPlateforme(){
       Plateforme pf = plateformeDao.findById(1);
       ChampAnnotation c = champAnnotationDao.findById(38);
       assertTrue(itemDao.findByChampAndPlateforme(c, pf).isEmpty());

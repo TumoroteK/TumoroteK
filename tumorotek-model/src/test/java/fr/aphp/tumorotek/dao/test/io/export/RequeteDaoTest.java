@@ -75,17 +75,27 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class RequeteDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private RequeteDao requeteDao;
-   private GroupementDao groupementDao;
-   private UtilisateurDao utilisateurDao;
-   private CritereDao critereDao;
-   private ChampDao champDao;
-   private CombinaisonDao combinaisonDao;
-   private EntiteDao entiteDao;
-   private ChampEntiteDao champEntiteDao;
-   private DataTypeDao dataTypeDao;
-   private BanqueDao banqueDao;
+
+   @Autowired
+ RequeteDao requeteDao;
+   @Autowired
+ GroupementDao groupementDao;
+   @Autowired
+ UtilisateurDao utilisateurDao;
+   @Autowired
+ CritereDao critereDao;
+   @Autowired
+ ChampDao champDao;
+   @Autowired
+ CombinaisonDao combinaisonDao;
+   @Autowired
+ EntiteDao entiteDao;
+   @Autowired
+ ChampEntiteDao champEntiteDao;
+   @Autowired
+ DataTypeDao dataTypeDao;
+   @Autowired
+ BanqueDao banqueDao;
 
    /** Constructeur. */
    public RequeteDaoTest(){}
@@ -94,7 +104,8 @@ public class RequeteDaoTest extends AbstractDaoTest
     * Setter du bean RequeteDao.
     * @param rDao est le bean Dao.
     */
-   public void setRequeteDao(final RequeteDao rDao){
+   @Test
+public void setRequeteDao(final RequeteDao rDao){
       this.requeteDao = rDao;
    }
 
@@ -102,7 +113,8 @@ public class RequeteDaoTest extends AbstractDaoTest
     * Setter du bean GroupementDao.
     * @param gDao est le bean Dao.
     */
-   public void setGroupementDao(final GroupementDao gDao){
+   @Test
+public void setGroupementDao(final GroupementDao gDao){
       this.groupementDao = gDao;
    }
 
@@ -110,7 +122,8 @@ public class RequeteDaoTest extends AbstractDaoTest
     * Setter du bean UtilisateurDao.
     * @param uDao est le bean Dao.
     */
-   public void setUtilisateurDao(final UtilisateurDao uDao){
+   @Test
+public void setUtilisateurDao(final UtilisateurDao uDao){
       this.utilisateurDao = uDao;
    }
 
@@ -118,7 +131,8 @@ public class RequeteDaoTest extends AbstractDaoTest
     * Setter du bean CritereDao.
     * @param cDao est le bean Dao.
     */
-   public void setCritereDao(final CritereDao cDao){
+   @Test
+public void setCritereDao(final CritereDao cDao){
       this.critereDao = cDao;
    }
 
@@ -126,7 +140,8 @@ public class RequeteDaoTest extends AbstractDaoTest
     * Setter du bean ChampDao.
     * @param cDao est le bean Dao.
     */
-   public void setChampDao(final ChampDao cDao){
+   @Test
+public void setChampDao(final ChampDao cDao){
       this.champDao = cDao;
    }
 
@@ -134,7 +149,8 @@ public class RequeteDaoTest extends AbstractDaoTest
     * Setter du bean CombinaisonDao.
     * @param cDao est le bean Dao.
     */
-   public void setCombinaisonDao(final CombinaisonDao cDao){
+   @Test
+public void setCombinaisonDao(final CombinaisonDao cDao){
       this.combinaisonDao = cDao;
    }
 
@@ -142,7 +158,8 @@ public class RequeteDaoTest extends AbstractDaoTest
     * Setter du bean EntiteDao.
     * @param cDao est le bean Dao.
     */
-   public void setEntiteDao(final EntiteDao eDao){
+   @Test
+public void setEntiteDao(final EntiteDao eDao){
       this.entiteDao = eDao;
    }
 
@@ -150,7 +167,8 @@ public class RequeteDaoTest extends AbstractDaoTest
     * Setter du bean ChampEntiteDao.
     * @param ceDao est le bean Dao.
     */
-   public void setChampEntiteDao(final ChampEntiteDao ceDao){
+   @Test
+public void setChampEntiteDao(final ChampEntiteDao ceDao){
       this.champEntiteDao = ceDao;
    }
 
@@ -158,15 +176,18 @@ public class RequeteDaoTest extends AbstractDaoTest
     * Setter du bean DataTypeDao.
     * @param ceDao est le bean Dao.
     */
-   public void setDataTypeDao(final DataTypeDao dtDao){
+   @Test
+public void setDataTypeDao(final DataTypeDao dtDao){
       this.dataTypeDao = dtDao;
    }
 
-   public void setBanqueDao(final BanqueDao bDao){
+   @Test
+public void setBanqueDao(final BanqueDao bDao){
       this.banqueDao = bDao;
    }
 
-   public void testFindByBanque(){
+   @Test
+public void testFindByBanque(){
       final Banque b1 = banqueDao.findById(1);
       List<Requete> liste = requeteDao.findByBanque(b1);
       assertTrue(liste.size() == 3);
@@ -183,7 +204,8 @@ public class RequeteDaoTest extends AbstractDaoTest
       assertTrue(liste.size() == 0);
    }
 
-   public void testFindByBanqueInList(){
+   @Test
+public void testFindByBanqueInList(){
       final List<Banque> bks = new ArrayList<>();
       final Banque b1 = banqueDao.findById(1);
       bks.add(b1);
@@ -202,8 +224,9 @@ public class RequeteDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findRequetesByUtilisateurId().
     */
-   public void testFindRequetesByUtilisateurId() throws Exception{
-      final List<Utilisateur> utilisateurs = this.utilisateurDao.findAll();
+   @Test
+public void testFindRequetesByUtilisateurId() throws Exception{
+      final List<Utilisateur> utilisateurs = this.IterableUtils.toList(utilisateurDao.findAll());
       final Iterator<Utilisateur> itUtilisateur = utilisateurs.iterator();
       while(itUtilisateur.hasNext()){
          final Utilisateur utilisateur = itUtilisateur.next();
@@ -218,7 +241,8 @@ public class RequeteDaoTest extends AbstractDaoTest
    /**
    * Test l'appel de la méthode findByIntituleUtilisateur().
    */
-   public void testFindByIntituleUtilisateur() throws Exception{
+   @Test
+public void testFindByIntituleUtilisateur() throws Exception{
       final Utilisateur u1 = utilisateurDao.findById(1);
       final Utilisateur u2 = utilisateurDao.findById(2);
       List<Requete> liste = requeteDao.findByIntituleUtilisateur("Echantillon%", u1);
@@ -243,45 +267,46 @@ public class RequeteDaoTest extends AbstractDaoTest
    * @throws Exception lance une exception en cas de problème lors du CRUD.
    */
    @Rollback(false)
-   public void testCrudRequete() throws Exception{
+   @Test
+public void testCrudRequete() throws Exception{
       final Utilisateur createur = this.utilisateurDao.findById(3);
       DataType dataType = dataTypeDao.findById(3);
       ChampEntite chEntite = new ChampEntite(entiteDao.findById(5), "champEntite1", dataType, true, true, null, false, null);
-      this.champEntiteDao.createObject(chEntite);
+      this.champEntiteDao.save(chEntite);
       final int idChEn1 = chEntite.getId();
       final Champ ch1 = new Champ(chEntite);
-      this.champDao.createObject(ch1);
+      this.champDao.save(ch1);
       final int idCh1 = ch1.getChampId();
       dataType = dataTypeDao.findById(2);
       chEntite = new ChampEntite(entiteDao.findById(5), "champEntite1", dataType, true, true, null, false, null);
-      this.champEntiteDao.createObject(chEntite);
+      this.champEntiteDao.save(chEntite);
       final int idChEn2 = chEntite.getId();
       final Champ ch2 = new Champ(chEntite);
-      this.champDao.createObject(ch2);
+      this.champDao.save(ch2);
       final int idCh2 = ch2.getChampId();
 
       final Combinaison cb1 = new Combinaison(ch1, "+", ch2);
-      this.combinaisonDao.createObject(cb1);
+      this.combinaisonDao.save(cb1);
       final int idCb1 = cb1.getCombinaisonId();
 
       final Critere cr1 = new Critere(ch1, "<", "3");
-      this.critereDao.createObject(cr1);
+      this.critereDao.save(cr1);
       final int idCr1 = cr1.getCritereId();
       final Critere cr2 = new Critere(cb1, "=", "val2");
-      this.critereDao.createObject(cr2);
+      this.critereDao.save(cr2);
       final int idCr2 = cr2.getCritereId();
       final Critere cr3 = new Critere(ch1, "=", "test");
-      this.critereDao.createObject(cr3);
+      this.critereDao.save(cr3);
       final int idCr3 = cr3.getCritereId();
 
       final Groupement g1 = new Groupement(null, cr3, "and", null);
-      this.groupementDao.createObject(g1);
+      this.groupementDao.save(g1);
       final int idG1 = g1.getGroupementId();
       final Groupement g2 = new Groupement(cr1, cr2, "or", g1);
-      this.groupementDao.createObject(g2);
+      this.groupementDao.save(g2);
       final int idG2 = g2.getGroupementId();
       final Groupement g3 = new Groupement(cr1, cr2, "and", null);
-      this.groupementDao.createObject(g3);
+      this.groupementDao.save(g3);
       final int idG3 = g3.getGroupementId();
 
       final Groupement groupementRacine = this.groupementDao.findById(idG1);
@@ -296,8 +321,8 @@ public class RequeteDaoTest extends AbstractDaoTest
 
       Integer idObject = new Integer(-1);
       // Test de l'insertion
-      this.requeteDao.createObject(r);
-      final List<Requete> requetes = this.requeteDao.findAll();
+      this.requeteDao.save(r);
+      final List<Requete> requetes = this.IterableUtils.toList(requeteDao.findAll());
       final Iterator<Requete> itRequete = requetes.iterator();
       boolean found = false;
       while(itRequete.hasNext()){
@@ -332,7 +357,7 @@ public class RequeteDaoTest extends AbstractDaoTest
       r2.setIntitule(updatedIntitule);
       r2.setBanque(updatedBanque);
 
-      this.requeteDao.updateObject(r2);
+      this.requeteDao.save(r2);
       assertNotNull(updatedCreateur);
       assertTrue(this.requeteDao.findById(idObject).getCreateur().equals(updatedCreateur));
       assertNotNull(updatedGroupementRacine);
@@ -342,27 +367,28 @@ public class RequeteDaoTest extends AbstractDaoTest
       assertNotNull(this.requeteDao.findById(idObject).getBanque());
       assertTrue(this.requeteDao.findById(idObject).getBanque().equals(updatedBanque));
       // Test de la délétion
-      this.requeteDao.removeObject(idObject);
+      this.requeteDao.deleteById(idObject);
       assertNull(this.requeteDao.findById(idObject));
 
       //On supprime les éléments créés
-      this.groupementDao.removeObject(idG3);
-      this.groupementDao.removeObject(idG2);
-      this.groupementDao.removeObject(idG1);
-      this.critereDao.removeObject(idCr3);
-      this.critereDao.removeObject(idCr2);
-      this.critereDao.removeObject(idCr1);
-      this.combinaisonDao.removeObject(idCb1);
-      this.champDao.removeObject(idCh2);
-      this.champDao.removeObject(idCh1);
-      this.champEntiteDao.removeObject(idChEn2);
-      this.champEntiteDao.removeObject(idChEn1);
+      this.groupementDao.deleteById(idG3);
+      this.groupementDao.deleteById(idG2);
+      this.groupementDao.deleteById(idG1);
+      this.critereDao.deleteById(idCr3);
+      this.critereDao.deleteById(idCr2);
+      this.critereDao.deleteById(idCr1);
+      this.combinaisonDao.deleteById(idCb1);
+      this.champDao.deleteById(idCh2);
+      this.champDao.deleteById(idCh1);
+      this.champEntiteDao.deleteById(idChEn2);
+      this.champEntiteDao.deleteById(idChEn1);
    }
 
    /**
     * test toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final Requete r1 = requeteDao.findById(1);
       assertTrue(r1.toString().equals("{" + r1.getIntitule() + "}"));
 
@@ -373,7 +399,8 @@ public class RequeteDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       //On boucle sur les 4 possibilités
       for(int i = 0; i < Math.pow(2, 2); i++){
          final Requete requete1 = new Requete();
@@ -399,7 +426,8 @@ public class RequeteDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       //On boucle sur les 4 possibilités
       for(int i = 0; i < Math.pow(2, 2); i++){
          final Requete requete = new Requete();

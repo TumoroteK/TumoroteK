@@ -38,7 +38,19 @@ package fr.aphp.tumorotek.dao.test.imprimante;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.imprimante.ChampLigneEtiquetteDao;
 import fr.aphp.tumorotek.dao.imprimante.LigneEtiquetteDao;
@@ -60,43 +72,54 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * @version 08/06/2011
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class ChampLigneEtiquetteDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private ChampLigneEtiquetteDao champLigneEtiquetteDao;
-   /** Bean Dao. */
-   private EntiteDao entiteDao;
-   /** Bean Dao. */
-   private LigneEtiquetteDao ligneEtiquetteDao;
-   /** Bean Dao. */
-   private ChampDao champDao;
+
+   @Autowired
+ ChampLigneEtiquetteDao champLigneEtiquetteDao;
+
+   @Autowired
+ EntiteDao entiteDao;
+
+   @Autowired
+ LigneEtiquetteDao ligneEtiquetteDao;
+
+   @Autowired
+ ChampDao champDao;
 
    public ChampLigneEtiquetteDaoTest(){
 
    }
 
-   public void setChampLigneEtiquetteDao(final ChampLigneEtiquetteDao cDao){
+   @Test
+public void setChampLigneEtiquetteDao(final ChampLigneEtiquetteDao cDao){
       this.champLigneEtiquetteDao = cDao;
    }
 
-   public void setEntiteDao(final EntiteDao eDao){
+   @Test
+public void setEntiteDao(final EntiteDao eDao){
       this.entiteDao = eDao;
    }
 
-   public void setLigneEtiquetteDao(final LigneEtiquetteDao lDao){
+   @Test
+public void setLigneEtiquetteDao(final LigneEtiquetteDao lDao){
       this.ligneEtiquetteDao = lDao;
    }
 
-   public void setChampDao(final ChampDao cDao){
+   @Test
+public void setChampDao(final ChampDao cDao){
       this.champDao = cDao;
    }
 
    /**
     * Test l'appel de la méthode findById().
     */
-   public void testFindById(){
+   @Test
+public void testFindById(){
       final ChampLigneEtiquette cle = champLigneEtiquetteDao.findById(1);
       assertNotNull(cle);
 
@@ -107,15 +130,17 @@ public class ChampLigneEtiquetteDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAll(){
-      final List<ChampLigneEtiquette> liste = champLigneEtiquetteDao.findAll();
+   @Test
+public void testReadAll(){
+      final List<ChampLigneEtiquette> liste = IterableUtils.toList(champLigneEtiquetteDao.findAll());
       assertTrue(liste.size() == 10);
    }
 
    /**
     * Test l'appel de la méthode findByLigneEtiquette().
     */
-   public void testFindByLigneEtiquette(){
+   @Test
+public void testFindByLigneEtiquette(){
       final LigneEtiquette le1 = ligneEtiquetteDao.findById(1);
       List<ChampLigneEtiquette> liste = champLigneEtiquetteDao.findByLigneEtiquette(le1);
       assertTrue(liste.size() == 2);
@@ -131,7 +156,8 @@ public class ChampLigneEtiquetteDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByLigneEtiquetteAndEntite().
     */
-   public void testFindByLigneEtiquetteAndEntite(){
+   @Test
+public void testFindByLigneEtiquetteAndEntite(){
       final LigneEtiquette le1 = ligneEtiquetteDao.findById(1);
       final LigneEtiquette le7 = ligneEtiquetteDao.findById(7);
       final Entite e3 = entiteDao.findById(3);
@@ -164,7 +190,8 @@ public class ChampLigneEtiquetteDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas d'erreur.
     */
    @Rollback(false)
-   public void testCrud() throws Exception{
+   @Test
+public void testCrud() throws Exception{
 
       final LigneEtiquette le = ligneEtiquetteDao.findById(6);
       final Champ c = champDao.findById(142);
@@ -177,7 +204,7 @@ public class ChampLigneEtiquetteDaoTest extends AbstractDaoTest
       cle.setExpReg("EXP");
 
       // Test de l'insertion
-      champLigneEtiquetteDao.createObject(cle);
+      champLigneEtiquetteDao.save(cle);
       assertEquals(new Integer(11), cle.getChampLigneEtiquetteId());
 
       final ChampLigneEtiquette cle2 = champLigneEtiquetteDao.findById(new Integer(11));
@@ -192,19 +219,20 @@ public class ChampLigneEtiquetteDaoTest extends AbstractDaoTest
       // Test de la mise à jour
       cle2.setOrdre(2);
       cle2.setExpReg("REG");
-      champLigneEtiquetteDao.updateObject(cle2);
+      champLigneEtiquetteDao.save(cle2);
       assertTrue(champLigneEtiquetteDao.findById(new Integer(11)).getOrdre() == 2);
       assertTrue(champLigneEtiquetteDao.findById(new Integer(11)).getExpReg().equals("REG"));
 
       // Test de la délétion
-      champLigneEtiquetteDao.removeObject(new Integer(11));
+      champLigneEtiquetteDao.deleteById(new Integer(11));
       assertNull(champLigneEtiquetteDao.findById(new Integer(11)));
    }
 
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final Integer o1 = 1;
       final Integer o2 = 2;
       final LigneEtiquette le1 = ligneEtiquetteDao.findById(1);
@@ -275,7 +303,8 @@ public class ChampLigneEtiquetteDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final Integer o1 = 1;
       final Integer o2 = 2;
       final LigneEtiquette le1 = ligneEtiquetteDao.findById(1);
@@ -333,7 +362,8 @@ public class ChampLigneEtiquetteDaoTest extends AbstractDaoTest
    /**
     * test toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final ChampLigneEtiquette cle1 = champLigneEtiquetteDao.findById(1);
       assertTrue(cle1.toString().equals("{" + cle1.getOrdre() + ", " + cle1.getLigneEtiquette().getOrdre() + "(LigneEtiquette) "
          + cle1.getEntite().getNom() + "(Entite)}"));
@@ -345,7 +375,8 @@ public class ChampLigneEtiquetteDaoTest extends AbstractDaoTest
    /**
     * Test la méthode clone.
     */
-   public void testClone(){
+   @Test
+public void testClone(){
       final ChampLigneEtiquette cle1 = champLigneEtiquetteDao.findById(1);
       ChampLigneEtiquette cle2 = new ChampLigneEtiquette();
       cle2 = cle1.clone();

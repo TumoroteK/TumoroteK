@@ -37,8 +37,19 @@ package fr.aphp.tumorotek.dao.test.utilisateur;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
 
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
@@ -49,332 +60,335 @@ import fr.aphp.tumorotek.model.utilisateur.Profil;
 
 /**
  *
- * Classe de test pour le DAO ProfilDao et le bean
- * du domaine Profil.
+ * Classe de test pour le DAO ProfilDao et le bean du domaine Profil.
  *
  * @author Pierre Ventadour.
  * @version 18/05/2010
  * @version 2.1
  *
  */
-@TransactionConfiguration(defaultRollback = false)
-public class ProfilDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class ProfilDaoTest extends AbstractDaoTest {
 
-   private ProfilDao profilDao;
-   private PlateformeDao plateformeDao;
+	@Autowired
+	ProfilDao profilDao;
+	@Autowired
+	PlateformeDao plateformeDao;
 
-   public ProfilDaoTest(){
+	/**
+	 * Test l'appel de la méthode findAll().
+	 */
+	@Test
+	public void testReadAll() {
+		final List<Profil> liste = IterableUtils.toList(IterableUtils.toList(profilDao.findAll()));
+		assertTrue(liste.size() == 5);
+	}
 
-   }
+	/**
+	 * Test l'appel de la méthode findByOrder().
+	 */
+	@Test
+	public void testFindByOrder() {
+		final List<Profil> liste = profilDao.findByOrder();
+		assertTrue(liste.size() == 5);
+		assertTrue(liste.get(0).getNom().equals("ADMINISTRATEUR DE COLLECTION"));
+		assertTrue(liste.get(0).getAccesAdministration());
+	}
 
-   public void setProfilDao(final ProfilDao pDao){
-      this.profilDao = pDao;
-   }
+	/**
+	 * Test l'appel de la méthode findByNom().
+	 */
+	@Test
+	public void testFindByNom() {
 
-   public void setPlateformeDao(final PlateformeDao p){
-      this.plateformeDao = p;
-   }
+		List<Profil> liste = profilDao.findByNom("CONSULTATION");
+		assertTrue(liste.size() == 1);
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   public void testReadAll(){
-      final List<Profil> liste = profilDao.findAll();
-      assertTrue(liste.size() == 5);
-   }
+		liste = profilDao.findByNom("GESTION");
+		assertTrue(liste.size() == 0);
 
-   /**
-    * Test l'appel de la méthode findByOrder().
-    */
-   public void testFindByOrder(){
-      final List<Profil> liste = profilDao.findByOrder();
-      assertTrue(liste.size() == 5);
-      assertTrue(liste.get(0).getNom().equals("ADMINISTRATEUR DE COLLECTION"));
-      assertTrue(liste.get(0).getAccesAdministration());
-   }
+		liste = profilDao.findByNom("GESTION%");
+		assertTrue(liste.size() == 2);
 
-   /**
-    * Test l'appel de la méthode findByNom().
-    */
-   public void testFindByNom(){
+		liste = profilDao.findByNom("");
+		assertTrue(liste.size() == 0);
 
-      List<Profil> liste = profilDao.findByNom("CONSULTATION");
-      assertTrue(liste.size() == 1);
+		liste = profilDao.findByNom("%");
+		assertTrue(liste.size() == 5);
 
-      liste = profilDao.findByNom("GESTION");
-      assertTrue(liste.size() == 0);
+		liste = profilDao.findByNom(null);
+		assertTrue(liste.size() == 0);
+	}
 
-      liste = profilDao.findByNom("GESTION%");
-      assertTrue(liste.size() == 2);
+	/**
+	 * Test l'appel de la méthode findByExcludedId().
+	 */
+	@Test
+	public void testFindByExcludedId() {
+		List<Profil> liste = profilDao.findByExcludedId(1);
+		assertTrue(liste.size() == 4);
 
-      liste = profilDao.findByNom("");
-      assertTrue(liste.size() == 0);
+		liste = profilDao.findByExcludedId(10);
+		assertTrue(liste.size() == 5);
 
-      liste = profilDao.findByNom("%");
-      assertTrue(liste.size() == 5);
+		liste = profilDao.findByExcludedId(null);
+		assertTrue(liste.size() == 0);
+	}
 
-      liste = profilDao.findByNom(null);
-      assertTrue(liste.size() == 0);
-   }
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'un profil.
+	 * 
+	 * @throws Exception lance une exception en cas d'erreur.
+	 * @version 2.1
+	 */
+	@Rollback(false)
+	@Test
+	public void testCrud() throws Exception {
 
-   /**
-    * Test l'appel de la méthode findByExcludedId().
-    */
-   public void testFindByExcludedId(){
-      List<Profil> liste = profilDao.findByExcludedId(1);
-      assertTrue(liste.size() == 4);
+		final Profil p = new Profil();
+		p.setNom("NOM");
+		p.setAnonyme(false);
+		p.setAdmin(true);
+		p.setAccesAdministration(true);
+		p.setProfilExport(1);
+		p.setPlateforme(plateformeDao.findById(2).get());
 
-      liste = profilDao.findByExcludedId(10);
-      assertTrue(liste.size() == 5);
+		// Test de l'insertion
+		profilDao.save(p);
+		assertNotNull(p.getProfilId());
 
-      liste = profilDao.findByExcludedId(null);
-      assertTrue(liste.size() == 0);
-   }
+		final Integer pId = p.getProfilId();
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression d'un profil.
-    * @throws Exception lance une exception en cas d'erreur.
-    * @version 2.1
-    */
-   @Rollback(false)
-   public void testCrud() throws Exception{
+		final Profil p2 = profilDao.findById(pId).get();
+		// Vérification des données entrées dans la base
+		assertNotNull(p2);
+		assertTrue(p2.getNom().equals("NOM"));
+		assertFalse(p2.getAnonyme());
+		assertTrue(p2.getAccesAdministration());
+		assertTrue(p2.getProfilExport() == 1);
+		// @since 2.1
+		assertFalse(p2.isArchive());
+		assertTrue(p2.getPlateforme().equals(plateformeDao.findById(2).get()));
 
-      final Profil p = new Profil();
-      p.setNom("NOM");
-      p.setAnonyme(false);
-      p.setAdmin(true);
-      p.setAccesAdministration(true);
-      p.setProfilExport(1);
-      p.setPlateforme(plateformeDao.findById(2));
+		// Test de la mise à jour
+		p2.setNom("UP");
+		p2.setAnonyme(true);
+		p2.setAccesAdministration(false);
+		p2.setProfilExport(2);
+		p2.setArchive(true);
+		p2.setPlateforme(plateformeDao.findById(1).get());
+		profilDao.save(p2);
+		assertTrue(profilDao.findById(pId).get().getNom().equals("UP"));
+		assertTrue(profilDao.findById(pId).get().getProfilExport() == 2);
+		assertTrue(profilDao.findById(pId).get().getAnonyme());
+		assertFalse(profilDao.findById(pId).get().getAccesAdministration());
+		assertTrue(profilDao.findById(pId).get().isArchive());
+		assertTrue(p2.getPlateforme().equals(plateformeDao.findById(1).get()));
 
-      // Test de l'insertion
-      profilDao.createObject(p);
-      assertNotNull(p.getProfilId());
+		// Test de la délétion
+		profilDao.deleteById(pId);
+		assertFalse(profilDao.findById(pId).isPresent());
+	}
 
-      final Integer pId = p.getProfilId();
+	/**
+	 * Test de la méthode surchargée "equals".
+	 * 
+	 * @version 2.1
+	 */
+	@Test
+	public void testEquals() {
+		final String nom = "NOM";
+		final String nom2 = "NOM2";
+		final Plateforme pf1 = plateformeDao.findById(1).get();
+		final Plateforme pf2 = plateformeDao.findById(2).get();
 
-      final Profil p2 = profilDao.findById(pId);
-      // Vérification des données entrées dans la base
-      assertNotNull(p2);
-      assertTrue(p2.getNom().equals("NOM"));
-      assertFalse(p2.getAnonyme());
-      assertTrue(p2.getAccesAdministration());
-      assertTrue(p2.getProfilExport() == 1);
-      // @since 2.1
-      assertFalse(p2.isArchive());
-      assertTrue(p2.getPlateforme().equals(plateformeDao.findById(2)));
+		final Profil p1 = new Profil();
+		p1.setNom(nom);
+		p1.setPlateforme(pf1);
+		final Profil p2 = new Profil();
+		p2.setNom(nom);
+		p2.setPlateforme(pf1);
 
-      // Test de la mise à jour
-      p2.setNom("UP");
-      p2.setAnonyme(true);
-      p2.setAccesAdministration(false);
-      p2.setProfilExport(2);
-      p2.setArchive(true);
-      p2.setPlateforme(plateformeDao.findById(1));
-      profilDao.updateObject(p2);
-      assertTrue(profilDao.findById(pId).getNom().equals("UP"));
-      assertTrue(profilDao.findById(pId).getProfilExport() == 2);
-      assertTrue(profilDao.findById(pId).getAnonyme());
-      assertFalse(profilDao.findById(pId).getAccesAdministration());
-      assertTrue(profilDao.findById(pId).isArchive());
-      assertTrue(p2.getPlateforme().equals(plateformeDao.findById(1)));
+		// L'objet 1 n'est pas égal à null
+		assertFalse(p1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(p1.equals(p1));
+		// 2 objets sont égaux entre eux
+		assertTrue(p1.equals(p2));
+		assertTrue(p2.equals(p1));
 
-      // Test de la délétion
-      profilDao.removeObject(pId);
-      assertNull(profilDao.findById(pId));
-   }
+		p1.setNom(null);
+		p1.setPlateforme(null);
+		p2.setNom(null);
+		p2.setPlateforme(null);
+		assertTrue(p1.equals(p2));
+		p1.setNom(nom);
+		assertFalse(p1.equals(p2));
+		p2.setNom(nom);
+		assertTrue(p1.equals(p2));
+		p2.setNom(nom2);
+		assertFalse(p1.equals(p2));
+		p2.setNom("NOM");
+		assertTrue(p1.equals(p2));
+		p2.setNom(null);
+		assertFalse(p1.equals(p2));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    * @version 2.1
-    */
-   public void testEquals(){
-      final String nom = "NOM";
-      final String nom2 = "NOM2";
-      final Plateforme pf1 = plateformeDao.findById(1);
-      final Plateforme pf2 = plateformeDao.findById(2);
+		p1.setPlateforme(pf1);
+		p1.setNom(null);
+		p2.setPlateforme(pf1);
+		assertTrue(p1.equals(p2));
+		p2.setPlateforme(pf2);
+		assertFalse(p1.equals(p2));
+		p2.setPlateforme(null);
+		assertFalse(p1.equals(p2));
+		final Plateforme newPF = new Plateforme();
+		newPF.setNom("PLATEFORME 1");
+		p2.setPlateforme(newPF);
+		assertTrue(p1.equals(p2));
 
-      final Profil p1 = new Profil();
-      p1.setNom(nom);
-      p1.setPlateforme(pf1);
-      final Profil p2 = new Profil();
-      p2.setNom(nom);
-      p2.setPlateforme(pf1);
+		final Categorie c3 = new Categorie();
+		assertFalse(p1.equals(c3));
+	}
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(p1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(p1.equals(p1));
-      // 2 objets sont égaux entre eux
-      assertTrue(p1.equals(p2));
-      assertTrue(p2.equals(p1));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
+		final String nom1 = "NOM";
+		final String nom2 = "NOM2";
+		final Plateforme pf1 = plateformeDao.findById(1).get();
+		final Plateforme pf2 = plateformeDao.findById(2).get();
 
-      p1.setNom(null);
-      p1.setPlateforme(null);
-      p2.setNom(null);
-      p2.setPlateforme(null);
-      assertTrue(p1.equals(p2));
-      p1.setNom(nom);
-      assertFalse(p1.equals(p2));
-      p2.setNom(nom);
-      assertTrue(p1.equals(p2));
-      p2.setNom(nom2);
-      assertFalse(p1.equals(p2));
-      p2.setNom("NOM");
-      assertTrue(p1.equals(p2));
-      p2.setNom(null);
-      assertFalse(p1.equals(p2));
+		final Profil p1 = new Profil();
+		final Profil p2 = new Profil();
+		assertTrue(p1.hashCode() > 0);
 
-      p1.setPlateforme(pf1);
-      p1.setNom(null);
-      p2.setPlateforme(pf1);
-      assertTrue(p1.equals(p2));
-      p2.setPlateforme(pf2);
-      assertFalse(p1.equals(p2));
-      p2.setPlateforme(null);
-      assertFalse(p1.equals(p2));
-      final Plateforme newPF = new Plateforme();
-      newPF.setNom("PLATEFORME 1");
-      p2.setPlateforme(newPF);
-      assertTrue(p1.equals(p2));
+		// null
+		assertTrue(p1.hashCode() == p2.hashCode());
 
-      final Categorie c3 = new Categorie();
-      assertFalse(p1.equals(c3));
-   }
+		// Nom
+		p2.setNom(nom1);
+		assertFalse(p1.hashCode() == p2.hashCode());
+		p1.setNom(nom2);
+		assertFalse(p1.hashCode() == p2.hashCode());
+		p1.setNom(nom1);
+		assertTrue(p1.hashCode() == p2.hashCode());
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   public void testHashCode(){
-      final String nom1 = "NOM";
-      final String nom2 = "NOM2";
-      final Plateforme pf1 = plateformeDao.findById(1);
-      final Plateforme pf2 = plateformeDao.findById(2);
+		// Plateforme
+		p2.setPlateforme(pf1);
+		assertFalse(p1.hashCode() == p2.hashCode());
+		p1.setPlateforme(pf2);
+		assertFalse(p1.hashCode() == p2.hashCode());
+		p1.setPlateforme(pf1);
+		assertTrue(p1.hashCode() == p2.hashCode());
 
-      final Profil p1 = new Profil();
-      final Profil p2 = new Profil();
-      assertTrue(p1.hashCode() > 0);
+		// un même objet garde le même hashcode dans le temps
+		final int hash = p1.hashCode();
+		assertTrue(hash == p1.hashCode());
+		assertTrue(hash == p1.hashCode());
+		assertTrue(hash == p1.hashCode());
+		assertTrue(hash == p1.hashCode());
+	}
 
-      //null
-      assertTrue(p1.hashCode() == p2.hashCode());
+	/**
+	 * Test la méthode toString.
+	 */
+	@Test
+	public void testToString() {
+		final Profil p1 = profilDao.findById(1).get();
+		assertTrue(p1.toString().equals("{" + p1.getNom() + "}"));
 
-      //Nom
-      p2.setNom(nom1);
-      assertFalse(p1.hashCode() == p2.hashCode());
-      p1.setNom(nom2);
-      assertFalse(p1.hashCode() == p2.hashCode());
-      p1.setNom(nom1);
-      assertTrue(p1.hashCode() == p2.hashCode());
+		final Profil p2 = new Profil();
+		assertTrue(p2.toString().equals("{Empty Profil}"));
+	}
 
-      //Plateforme
-      p2.setPlateforme(pf1);
-      assertFalse(p1.hashCode() == p2.hashCode());
-      p1.setPlateforme(pf2);
-      assertFalse(p1.hashCode() == p2.hashCode());
-      p1.setPlateforme(pf1);
-      assertTrue(p1.hashCode() == p2.hashCode());
+	/**
+	 * Test la méthode clone.
+	 */
+	@Test
+	@Transactional
+	public void testClone() {
+		final Profil p1 = profilDao.findById(1).get();
+		Profil p2 = new Profil();
+		p2 = p1.clone();
 
-      // un même objet garde le même hashcode dans le temps
-      final int hash = p1.hashCode();
-      assertTrue(hash == p1.hashCode());
-      assertTrue(hash == p1.hashCode());
-      assertTrue(hash == p1.hashCode());
-      assertTrue(hash == p1.hashCode());
-   }
+		assertTrue(p1.equals(p2));
 
-   /**
-    * Test la méthode toString.
-    */
-   public void testToString(){
-      final Profil p1 = profilDao.findById(1);
-      assertTrue(p1.toString().equals("{" + p1.getNom() + "}"));
+		if (p1.getProfilId() != null) {
+			assertTrue(p1.getProfilId() == p2.getProfilId());
+		} else {
+			assertNull(p2.getProfilId());
+		}
 
-      final Profil p2 = new Profil();
-      assertTrue(p2.toString().equals("{Empty Profil}"));
-   }
+		if (p1.getNom() != null) {
+			assertTrue(p1.getNom().equals(p2.getNom()));
+		} else {
+			assertNull(p2.getNom());
+		}
 
-   /**
-    * Test la méthode clone.
-    */
-   public void testClone(){
-      final Profil p1 = profilDao.findById(1);
-      Profil p2 = new Profil();
-      p2 = p1.clone();
+		if (p1.getAnonyme() != null) {
+			assertTrue(p1.getAnonyme().equals(p2.getAnonyme()));
+		} else {
+			assertNull(p2.getAnonyme());
+		}
 
-      assertTrue(p1.equals(p2));
+		if (p1.getAccesAdministration() != null) {
+			assertTrue(p1.getAccesAdministration().equals(p2.getAccesAdministration()));
+		} else {
+			assertNull(p2.getAccesAdministration());
+		}
 
-      if(p1.getProfilId() != null){
-         assertTrue(p1.getProfilId() == p2.getProfilId());
-      }else{
-         assertNull(p2.getProfilId());
-      }
+		if (p1.getDroitObjets() != null) {
+			assertTrue(p1.getDroitObjets().equals(p2.getDroitObjets()));
+		} else {
+			assertNull(p2.getDroitObjets());
+		}
 
-      if(p1.getNom() != null){
-         assertTrue(p1.getNom().equals(p2.getNom()));
-      }else{
-         assertNull(p2.getNom());
-      }
+		if (p1.getProfilUtilisateurs() != null) {
+			assertTrue(p1.getProfilUtilisateurs().equals(p2.getProfilUtilisateurs()));
+		} else {
+			assertNull(p2.getProfilUtilisateurs());
+		}
 
-      if(p1.getAnonyme() != null){
-         assertTrue(p1.getAnonyme().equals(p2.getAnonyme()));
-      }else{
-         assertNull(p2.getAnonyme());
-      }
+		if (p1.getProfilExport() != null) {
+			assertTrue(p1.getProfilExport() == p2.getProfilExport());
+		} else {
+			assertNull(p2.getProfilExport());
+		}
+	}
 
-      if(p1.getAccesAdministration() != null){
-         assertTrue(p1.getAccesAdministration().equals(p2.getAccesAdministration()));
-      }else{
-         assertNull(p2.getAccesAdministration());
-      }
+	/**
+	 * @since 2.1
+	 */
+	@Test
+	public void testFindByPlateformeAndArchive() {
 
-      if(p1.getDroitObjets() != null){
-         assertTrue(p1.getDroitObjets().equals(p2.getDroitObjets()));
-      }else{
-         assertNull(p2.getDroitObjets());
-      }
+		final Plateforme pf1 = plateformeDao.findById(1).get();
+		final Plateforme pf2 = plateformeDao.findById(2).get();
 
-      if(p1.getProfilUtilisateurs() != null){
-         assertTrue(p1.getProfilUtilisateurs().equals(p2.getProfilUtilisateurs()));
-      }else{
-         assertNull(p2.getProfilUtilisateurs());
-      }
+		List<Profil> profils = profilDao.findByPlateformeAndArchive(pf1, false);
+		assertTrue(profils.size() == 3);
+		assertTrue(profils.get(0).getProfilId() == 4);
 
-      if(p1.getProfilExport() != null){
-         assertTrue(p1.getProfilExport() == p2.getProfilExport());
-      }else{
-         assertNull(p2.getProfilExport());
-      }
-   }
+		profils = profilDao.findByPlateformeAndArchive(pf1, true);
+		assertTrue(profils.size() == 1);
+		assertTrue(profils.get(0).getProfilId() == 3);
 
-   /**
-    * @since 2.1
-    */
-   public void testFindByPlateformeAndArchive(){
+		profils = profilDao.findByPlateformeAndArchive(pf2, false);
+		assertTrue(profils.size() == 1);
+		assertTrue(profils.get(0).getProfilId() == 5);
 
-      final Plateforme pf1 = plateformeDao.findById(1);
-      final Plateforme pf2 = plateformeDao.findById(2);
+		profils = profilDao.findByPlateformeAndArchive(pf2, true);
+		assertTrue(profils.size() == 0);
 
-      List<Profil> profils = profilDao.findByPlateformeAndArchive(pf1, false);
-      assertTrue(profils.size() == 3);
-      assertTrue(profils.get(0).getProfilId() == 4);
+		profils = profilDao.findByPlateformeAndArchive(pf1, null);
+		assertTrue(profils.size() == 0);
 
-      profils = profilDao.findByPlateformeAndArchive(pf1, true);
-      assertTrue(profils.size() == 1);
-      assertTrue(profils.get(0).getProfilId() == 3);
-
-      profils = profilDao.findByPlateformeAndArchive(pf2, false);
-      assertTrue(profils.size() == 1);
-      assertTrue(profils.get(0).getProfilId() == 5);
-
-      profils = profilDao.findByPlateformeAndArchive(pf2, true);
-      assertTrue(profils.size() == 0);
-
-      profils = profilDao.findByPlateformeAndArchive(pf1, null);
-      assertTrue(profils.size() == 0);
-
-      profils = profilDao.findByPlateformeAndArchive(null, true);
-      assertTrue(profils.size() == 0);
-   }
+		profils = profilDao.findByPlateformeAndArchive(null, true);
+		assertTrue(profils.size() == 0);
+	}
 
 }

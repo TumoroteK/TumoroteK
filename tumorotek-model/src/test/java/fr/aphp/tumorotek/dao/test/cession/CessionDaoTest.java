@@ -42,7 +42,19 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.cession.CessionDao;
 import fr.aphp.tumorotek.dao.cession.CessionExamenDao;
@@ -79,87 +91,116 @@ import fr.aphp.tumorotek.model.contexte.Transporteur;
  * @version 2.1
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class CessionDaoTest extends AbstractDaoTest
 {
 
-   private CessionDao cessionDao;
-   private BanqueDao banqueDao;
-   private CessionTypeDao cessionTypeDao;
-   private CessionExamenDao cessionExamenDao;
-   private ContratDao contratDao;
-   private CollaborateurDao collaborateurDao;
-   private ServiceDao serviceDao;
-   private CessionStatutDao cessionStatutDao;
-   private TransporteurDao transporteurDao;
-   private DestructionMotifDao destructionMotifDao;
-   private PlateformeDao plateformeDao;
+   @Autowired
+ CessionDao cessionDao;
+   @Autowired
+ BanqueDao banqueDao;
+   @Autowired
+ CessionTypeDao cessionTypeDao;
+   @Autowired
+ CessionExamenDao cessionExamenDao;
+   @Autowired
+ ContratDao contratDao;
+   @Autowired
+ CollaborateurDao collaborateurDao;
+   @Autowired
+ ServiceDao serviceDao;
+   @Autowired
+ CessionStatutDao cessionStatutDao;
+   @Autowired
+ TransporteurDao transporteurDao;
+   @Autowired
+ DestructionMotifDao destructionMotifDao;
+   @Autowired
+ PlateformeDao plateformeDao;
 
-   private final String updatedNumero = "999";
-   private EntiteDao entiteDao;
+   @Autowired
+ final String updatedNumero = "999";
+   @Autowired
+ EntiteDao entiteDao;
 
    public CessionDaoTest(){}
 
-   public void setCessionDao(final CessionDao cDao){
+   @Test
+public void setCessionDao(final CessionDao cDao){
       this.cessionDao = cDao;
    }
 
-   public void setBanqueDao(final BanqueDao bDao){
+   @Test
+public void setBanqueDao(final BanqueDao bDao){
       this.banqueDao = bDao;
    }
 
-   public void setCessionTypeDao(final CessionTypeDao dao){
+   @Test
+public void setCessionTypeDao(final CessionTypeDao dao){
       this.cessionTypeDao = dao;
    }
 
-   public void setCessionExamenDao(final CessionExamenDao dao){
+   @Test
+public void setCessionExamenDao(final CessionExamenDao dao){
       this.cessionExamenDao = dao;
    }
 
-   public void setContratDao(final ContratDao dao){
+   @Test
+public void setContratDao(final ContratDao dao){
       this.contratDao = dao;
    }
 
-   public void setCollaborateurDao(final CollaborateurDao dao){
+   @Test
+public void setCollaborateurDao(final CollaborateurDao dao){
       this.collaborateurDao = dao;
    }
 
-   public void setServiceDao(final ServiceDao dao){
+   @Test
+public void setServiceDao(final ServiceDao dao){
       this.serviceDao = dao;
    }
 
-   public void setCessionStatutDao(final CessionStatutDao dao){
+   @Test
+public void setCessionStatutDao(final CessionStatutDao dao){
       this.cessionStatutDao = dao;
    }
 
-   public void setTransporteurDao(final TransporteurDao dao){
+   @Test
+public void setTransporteurDao(final TransporteurDao dao){
       this.transporteurDao = dao;
    }
 
-   public void setDestructionMotifDao(final DestructionMotifDao dao){
+   @Test
+public void setDestructionMotifDao(final DestructionMotifDao dao){
       this.destructionMotifDao = dao;
    }
 
-   public void setEntiteDao(final EntiteDao eDao){
+   @Test
+public void setEntiteDao(final EntiteDao eDao){
       this.entiteDao = eDao;
    }
 
-   public void setPlateformeDao(final PlateformeDao p){
+   @Test
+public void setPlateformeDao(final PlateformeDao p){
       this.plateformeDao = p;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllCessions(){
-      final List<Cession> liste = cessionDao.findAll();
+   @Test
+public void testReadAllCessions(){
+      final List<Cession> liste = IterableUtils.toList(cessionDao.findAll());
       assertTrue(liste.size() == 4);
    }
 
    /**
     * Test l'appel de la méthode findByNumero().
     */
-   public void testFindByNumero(){
+   @Test
+public void testFindByNumero(){
       List<Cession> liste = cessionDao.findByNumero("55");
       assertTrue(liste.size() == 1);
 
@@ -174,7 +215,8 @@ public class CessionDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByNumeroWithBanqueReturnIds().
     */
-   public void testFindByNumeroWithBanqueReturnIds(){
+   @Test
+public void testFindByNumeroWithBanqueReturnIds(){
       final Banque b1 = banqueDao.findById(1);
       final Banque b2 = banqueDao.findById(2);
       final List<Banque> banks = new ArrayList<>();
@@ -206,7 +248,8 @@ public class CessionDaoTest extends AbstractDaoTest
    /**
     * @since 2.1
     */
-   public void testFindByNumeroInPlateforme(){
+   @Test
+public void testFindByNumeroInPlateforme(){
       final Plateforme p1 = plateformeDao.findById(1);
       List<Cession> cess = cessionDao.findByNumeroInPlateforme("55", p1);
       assertTrue(cess.size() == 1);
@@ -241,7 +284,8 @@ public class CessionDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByBanqueWithOrder().
     */
-   public void testFindByBanqueWithOrder(){
+   @Test
+public void testFindByBanqueWithOrder(){
       final Banque b1 = banqueDao.findById(1);
       final Banque b2 = banqueDao.findById(2);
       final Banque b3 = banqueDao.findById(3);
@@ -257,7 +301,8 @@ public class CessionDaoTest extends AbstractDaoTest
       assertTrue(liste.size() == 0);
    }
 
-   public void testFindByBanques(){
+   @Test
+public void testFindByBanques(){
       final List<Banque> banks = new java.util.ArrayList<>();
       banks.add(banqueDao.findById(1));
       banks.add(banqueDao.findById(2));
@@ -265,7 +310,8 @@ public class CessionDaoTest extends AbstractDaoTest
       assertTrue(res.size() == 4);
    }
 
-   public void testFindByBanquesAllIds(){
+   @Test
+public void testFindByBanquesAllIds(){
       final List<Banque> banks = new java.util.ArrayList<>();
       banks.add(banqueDao.findById(1));
       banks.add(banqueDao.findById(2));
@@ -273,7 +319,8 @@ public class CessionDaoTest extends AbstractDaoTest
       assertTrue(res.size() == 4);
    }
 
-   public void testFindByIdInList(){
+   @Test
+public void testFindByIdInList(){
       final List<Integer> ids = new ArrayList<>();
       ids.add(1);
       ids.add(2);
@@ -289,7 +336,8 @@ public class CessionDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByContrat().
     */
-   public void testFindByContrat(){
+   @Test
+public void testFindByContrat(){
       final Contrat contrat1 = contratDao.findById(1);
       final Contrat contrat2 = contratDao.findById(2);
       final Contrat contrat3 = contratDao.findById(3);
@@ -308,7 +356,8 @@ public class CessionDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedIdNumeros().
     */
-   public void testFindByExcludedIdNumeros(){
+   @Test
+public void testFindByExcludedIdNumeros(){
       final Banque b1 = banqueDao.findById(1);
       final Banque b2 = banqueDao.findById(2);
       final Banque b3 = banqueDao.findById(3);
@@ -344,7 +393,8 @@ public class CessionDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByBanqueSelectNumero().
     */
-   public void testFindByBanqueSelectNumero(){
+   @Test
+public void testFindByBanqueSelectNumero(){
       final Banque b1 = banqueDao.findById(1);
       final Banque b2 = banqueDao.findById(2);
       final Banque b3 = banqueDao.findById(3);
@@ -363,7 +413,8 @@ public class CessionDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByCessionStatutAndBanqueReturnIds().
     */
-   public void testFindByCessionStatutAndBanqueReturnIds(){
+   @Test
+public void testFindByCessionStatutAndBanqueReturnIds(){
       final Banque b1 = banqueDao.findById(1);
       final Banque b2 = banqueDao.findById(2);
       final List<Banque> banks = new ArrayList<>();
@@ -396,7 +447,8 @@ public class CessionDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByEtatIncompletAndBanquesReturnIds().
     */
-   public void testFindByEtatIncompletAndBanquesReturnIds(){
+   @Test
+public void testFindByEtatIncompletAndBanquesReturnIds(){
       final Banque b1 = banqueDao.findById(1);
       final Banque b2 = banqueDao.findById(2);
       final List<Banque> banks = new ArrayList<>();
@@ -424,7 +476,8 @@ public class CessionDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas d'erreur.
     */
    @Rollback(false)
-   public void testCrudCession() throws Exception{
+   @Test
+public void testCrudCession() throws Exception{
 
       final Banque b = banqueDao.findById(1);
       final CessionType cessType = cessionTypeDao.findById(1);
@@ -467,7 +520,7 @@ public class CessionDaoTest extends AbstractDaoTest
       //c.setArchive(true);
 
       // Test de l'insertion
-      cessionDao.createObject(c);
+      cessionDao.save(c);
       assertEquals(new Integer(5), c.getCessionId());
 
       // Test de la mise à jour
@@ -499,12 +552,12 @@ public class CessionDaoTest extends AbstractDaoTest
 
       c2.setNumero(updatedNumero);
       c2.setDemandeDate(upDate);
-      cessionDao.updateObject(c2);
+      cessionDao.save(c2);
       assertTrue(cessionDao.findById(new Integer(5)).getNumero() == updatedNumero);
       assertTrue(cessionDao.findById(new Integer(5)).getDemandeDate().equals(upDate));
 
       // Test de la délétion
-      cessionDao.removeObject(new Integer(5));
+      cessionDao.deleteById(new Integer(5));
       assertNull(cessionDao.findById(new Integer(5)));
 
    }
@@ -512,7 +565,8 @@ public class CessionDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String num = "1";
       final String num2 = "2";
       final Banque b1 = banqueDao.findById(1);
@@ -572,7 +626,8 @@ public class CessionDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String num = "1";
       final String num2 = "2";
       final Banque b1 = banqueDao.findById(1);
@@ -610,7 +665,8 @@ public class CessionDaoTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final Cession c1 = cessionDao.findById(1);
       assertTrue(c1.toString().equals("{" + c1.getNumero() + "}"));
       assertTrue(c1.listableObjectId().equals(new Integer(1)));
@@ -623,7 +679,8 @@ public class CessionDaoTest extends AbstractDaoTest
    /**
     * Test la méthode clone.
     */
-   public void testClone(){
+   @Test
+public void testClone(){
       final Cession c1 = cessionDao.findById(1);
       Cession c2 = new Cession();
       c2 = c1.clone();

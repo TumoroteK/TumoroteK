@@ -37,7 +37,17 @@ package fr.aphp.tumorotek.dao.test.systeme;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
 
 import fr.aphp.tumorotek.dao.systeme.CouleurDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
@@ -46,155 +56,155 @@ import fr.aphp.tumorotek.model.systeme.Couleur;
 
 /**
  *
- * Classe de test pour le DAO CouleurDao et le bean du domaine Couleur.
- * Classe de test créée le 29/04/10.
+ * Classe de test pour le DAO CouleurDao et le bean du domaine Couleur. Classe
+ * de test créée le 29/04/10.
  *
  * @author Pierre Ventadour.
  * @version 2.0
  *
  */
-public class CouleurDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class CouleurDaoTest extends AbstractDaoTest {
 
-   /** Bean Dao. */
-   private CouleurDao couleurDao;
+	@Autowired
+	CouleurDao couleurDao;
 
-   /** Valeur du nom pour la maj. */
-   private final String updatedCouleur = "ROSE";
+	/** Valeur du nom pour la maj. */
+	private String updatedCouleur = "ROSE";
 
-   /**
-    * Constructeur.
-    */
-   public CouleurDaoTest(){}
+	/**
+	 * Test l'appel de la méthode findAll().
+	 */
+	@Test
+	public void testFindAll() {
+		final List<Couleur> liste = IterableUtils.toList(IterableUtils.toList(couleurDao.findAll()));
+		assertTrue(liste.size() == 15);
+	}
 
-   public void setCouleurDao(final CouleurDao cDao){
-      this.couleurDao = cDao;
-   }
+	/**
+	 * Test l'appel de la méthode findByCouleur().
+	 */
+	@Test
+	public void testFindByCouleur() {
+		List<Couleur> liste = couleurDao.findByCouleur("VERT");
+		assertTrue(liste.size() == 1);
+		liste = couleurDao.findByCouleur("BLABLA");
+		assertTrue(liste.size() == 0);
+		liste = couleurDao.findByCouleur("VE%");
+		assertTrue(liste.size() == 1);
+	}
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   public void testFindAll(){
-      final List<Couleur> liste = couleurDao.findAll();
-      assertTrue(liste.size() == 15);
-   }
+	/**
+	 * Test l'appel de la méthode findByVisotube().
+	 */
+	@Test
+	public void testFindByVisotube() {
+		final List<Couleur> liste = couleurDao.findByVisotube();
+		assertTrue(liste.size() == 12);
+		assertTrue(liste.get(0).getCouleur().equals("TRANSPARENT"));
+		assertTrue(liste.get(4).getCouleur().equals("VERT"));
+		assertTrue(liste.get(11).getCouleur().equals("PISTACHE"));
+	}
 
-   /**
-    * Test l'appel de la méthode findByCouleur().
-    */
-   public void testFindByCouleur(){
-      List<Couleur> liste = couleurDao.findByCouleur("VERT");
-      assertTrue(liste.size() == 1);
-      liste = couleurDao.findByCouleur("BLABLA");
-      assertTrue(liste.size() == 0);
-      liste = couleurDao.findByCouleur("VE%");
-      assertTrue(liste.size() == 1);
-   }
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'une couleur.
+	 * 
+	 * @throws Exception lance une exception en cas de problème lors du CRUD.
+	 */
+	@Rollback(false)
+	@Test
+	public void testCrudCouleur() throws Exception {
+		final Couleur c = new Couleur();
 
-   /**
-    * Test l'appel de la méthode findByVisotube().
-    */
-   public void testFindByVisotube(){
-      final List<Couleur> liste = couleurDao.findByVisotube();
-      assertTrue(liste.size() == 12);
-      assertTrue(liste.get(0).getCouleur().equals("TRANSPARENT"));
-      assertTrue(liste.get(4).getCouleur().equals("VERT"));
-      assertTrue(liste.get(11).getCouleur().equals("PISTACHE"));
-   }
+		c.setCouleur("NOIR");
+		c.setHexa("#000000");
+		c.setOrdreVisotube(21);
+		// Test de l'insertion
+		couleurDao.save(c);
+		assertEquals(new Integer(16), c.getCouleurId());
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression d'une couleur.
-    * @throws Exception lance une exception en cas de problème lors du CRUD.
-    */
-   @Rollback(false)
-   public void testCrudCouleur() throws Exception{
-      final Couleur c = new Couleur();
+		// Test de la mise à jour
+		final Couleur c2 = couleurDao.findById(new Integer(16)).get();
+		assertNotNull(c2);
+		assertTrue(c2.getCouleur().equals("NOIR"));
+		assertTrue(c2.getHexa().equals("#000000"));
+		assertTrue(c2.getHexaCssStyle().equals("color: #000000"));
+		assertTrue(c2.getCouleurMinCase().equals("noir"));
+		assertTrue(c2.getOrdreVisotube() == 21);
+		c2.setCouleur(updatedCouleur);
+		couleurDao.save(c2);
+		assertTrue(couleurDao.findById(new Integer(16)).get().getCouleur().equals(updatedCouleur));
 
-      c.setCouleur("NOIR");
-      c.setHexa("#000000");
-      c.setOrdreVisotube(21);
-      // Test de l'insertion
-      couleurDao.createObject(c);
-      assertEquals(new Integer(16), c.getCouleurId());
+		// Test de la délétion
+		couleurDao.deleteById(new Integer(16));
+		assertFalse(couleurDao.findById(new Integer(16)).isPresent());
 
-      // Test de la mise à jour
-      final Couleur c2 = couleurDao.findById(new Integer(16));
-      assertNotNull(c2);
-      assertTrue(c2.getCouleur().equals("NOIR"));
-      assertTrue(c2.getHexa().equals("#000000"));
-      assertTrue(c2.getHexaCssStyle().equals("color: #000000"));
-      assertTrue(c2.getCouleurMinCase().equals("noir"));
-      assertTrue(c2.getOrdreVisotube() == 21);
-      c2.setCouleur(updatedCouleur);
-      couleurDao.updateObject(c2);
-      assertTrue(couleurDao.findById(new Integer(16)).getCouleur().equals(updatedCouleur));
+	}
 
-      // Test de la délétion
-      couleurDao.removeObject(new Integer(16));
-      assertNull(couleurDao.findById(new Integer(16)));
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final String couleur = "NOIR";
+		final String couleur2 = "ROSE";
+		final Couleur c1 = new Couleur();
+		c1.setCouleur(couleur);
+		final Couleur c2 = new Couleur();
+		c2.setCouleur(couleur);
 
-   }
+		// L'objet 1 n'est pas égal à null
+		assertFalse(c1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(c1.equals(c1));
+		// 2 objets sont égaux entre eux
+		assertTrue(c1.equals(c2));
+		assertTrue(c2.equals(c1));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   public void testEquals(){
-      final String couleur = "NOIR";
-      final String couleur2 = "ROSE";
-      final Couleur c1 = new Couleur();
-      c1.setCouleur(couleur);
-      final Couleur c2 = new Couleur();
-      c2.setCouleur(couleur);
+		// Vérification de la différenciation de 2 objets
+		c2.setCouleur(couleur2);
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(c1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(c1.equals(c1));
-      // 2 objets sont égaux entre eux
-      assertTrue(c1.equals(c2));
-      assertTrue(c2.equals(c1));
+		c2.setCouleur(null);
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
 
-      // Vérification de la différenciation de 2 objets
-      c2.setCouleur(couleur2);
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
+		c1.setCouleur(null);
+		assertTrue(c1.equals(c2));
+		c2.setCouleur(couleur);
+		assertFalse(c1.equals(c2));
 
-      c2.setCouleur(null);
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
+		final Banque b = new Banque();
+		assertFalse(c1.equals(b));
 
-      c1.setCouleur(null);
-      assertTrue(c1.equals(c2));
-      c2.setCouleur(couleur);
-      assertFalse(c1.equals(c2));
+	}
 
-      final Banque b = new Banque();
-      assertFalse(c1.equals(b));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
+		final String couleur = "NOIR";
+		final Couleur c1 = new Couleur();
+		c1.setCouleur(couleur);
+		final Couleur c2 = new Couleur();
+		c2.setCouleur(couleur);
+		final Couleur c3 = new Couleur();
+		c3.setCouleur(null);
+		assertTrue(c3.hashCode() > 0);
 
-   }
+		final int hash = c1.hashCode();
+		// 2 objets égaux ont le même hashcode
+		assertTrue(c1.hashCode() == c2.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		assertTrue(hash == c1.hashCode());
+		assertTrue(hash == c1.hashCode());
+		assertTrue(hash == c1.hashCode());
+		assertTrue(hash == c1.hashCode());
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   public void testHashCode(){
-      final String couleur = "NOIR";
-      final Couleur c1 = new Couleur();
-      c1.setCouleur(couleur);
-      final Couleur c2 = new Couleur();
-      c2.setCouleur(couleur);
-      final Couleur c3 = new Couleur();
-      c3.setCouleur(null);
-      assertTrue(c3.hashCode() > 0);
-
-      final int hash = c1.hashCode();
-      // 2 objets égaux ont le même hashcode
-      assertTrue(c1.hashCode() == c2.hashCode());
-      // un même objet garde le même hashcode dans le temps
-      assertTrue(hash == c1.hashCode());
-      assertTrue(hash == c1.hashCode());
-      assertTrue(hash == c1.hashCode());
-      assertTrue(hash == c1.hashCode());
-
-   }
+	}
 
 }

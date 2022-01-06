@@ -38,7 +38,19 @@ package fr.aphp.tumorotek.dao.test.interfacage;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.interfacage.BlocExterneDao;
 import fr.aphp.tumorotek.dao.interfacage.DossierExterneDao;
@@ -58,12 +70,17 @@ import fr.aphp.tumorotek.model.interfacage.ValeurExterne;
  * @version 05/10/2011
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class ValeurExterneDaoTest extends AbstractDaoTest
 {
-   private ValeurExterneDao valeurExterneDao;
-   private BlocExterneDao blocExterneDao;
-   private DossierExterneDao dossierExterneDao;
+   @Autowired
+ ValeurExterneDao valeurExterneDao;
+   @Autowired
+ BlocExterneDao blocExterneDao;
+   @Autowired
+ DossierExterneDao dossierExterneDao;
 
    public ValeurExterneDaoTest(){
 
@@ -74,30 +91,35 @@ public class ValeurExterneDaoTest extends AbstractDaoTest
       return new String[] {"applicationContextDao-interfacages-test-mysql.xml"};
    }
 
-   public void setValeurExterneDao(final ValeurExterneDao vDao){
+   @Test
+public void setValeurExterneDao(final ValeurExterneDao vDao){
       this.valeurExterneDao = vDao;
    }
 
-   public void setBlocExterneDao(final BlocExterneDao bDao){
+   @Test
+public void setBlocExterneDao(final BlocExterneDao bDao){
       this.blocExterneDao = bDao;
    }
 
-   public void setDossierExterneDao(DossierExterneDao _d) {
+   @Test
+public void setDossierExterneDao(DossierExterneDao _d) {
 	  this.dossierExterneDao = _d;
    }
 
 /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAll(){
-      final List<ValeurExterne> liste = valeurExterneDao.findAll();
+   @Test
+public void testReadAll(){
+      final List<ValeurExterne> liste = IterableUtils.toList(valeurExterneDao.findAll());
       assertTrue(liste.size() >= 10);
    }
 
    /**
     * Test l'appel de la méthode findByBlocExterne().
     */
-   public void testFindByBlocExterne(){
+   @Test
+public void testFindByBlocExterne(){
       final BlocExterne b1 = blocExterneDao.findById(1);
       List<ValeurExterne> liste = valeurExterneDao.findByBlocExterne(b1);
       assertTrue(liste.size() == 4);
@@ -111,15 +133,16 @@ public class ValeurExterneDaoTest extends AbstractDaoTest
    }
 
    @Rollback(false)
-   public void testCrud() throws Exception{
+   @Test
+public void testCrud() throws Exception{
 
       final BlocExterne b1 = blocExterneDao.findById(1);
       final ValeurExterne v1 = new ValeurExterne();
       v1.setBlocExterne(b1);
 
       // Test de l'insertion
-      final Integer id = valeurExterneDao.findAll().size() + 1;
-      valeurExterneDao.createObject(v1);
+      final Integer id = IterableUtils.toList(valeurExterneDao.findAll()).size() + 1;
+      valeurExterneDao.save(v1);
       assertEquals(new Integer(id), v1.getValeurExterneId());
 
       final ValeurExterne v2 = valeurExterneDao.findById(new Integer(id));
@@ -135,21 +158,22 @@ public class ValeurExterneDaoTest extends AbstractDaoTest
       v2.setChampAnnotationId(1);
       v2.setChampEntiteId(2);
       v2.setContenu("CONTENT...".getBytes());
-      valeurExterneDao.updateObject(v2);
+      valeurExterneDao.save(v2);
       assertTrue(valeurExterneDao.findById(new Integer(id)).getValeur().equals("VALEUR"));
       assertTrue(valeurExterneDao.findById(new Integer(id)).getChampAnnotationId() == 1);
       assertTrue(valeurExterneDao.findById(new Integer(id)).getChampEntiteId() == 2);
       assertEquals(new String(valeurExterneDao.findById(new Integer(id)).getContenu()), "CONTENT...");
 
       // Test de la délétion
-      valeurExterneDao.removeObject(new Integer(id));
+      valeurExterneDao.deleteById(new Integer(id));
       assertNull(valeurExterneDao.findById(new Integer(id)));
    }
 
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final Integer c1 = 1;
       final Integer c2 = 2;
       final Integer a1 = 1;
@@ -204,7 +228,8 @@ public class ValeurExterneDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final Integer c1 = 1;
       final Integer c2 = 2;
       final Integer a1 = 1;
@@ -249,7 +274,8 @@ public class ValeurExterneDaoTest extends AbstractDaoTest
    /**
     * test toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final ValeurExterne v1 = valeurExterneDao.findById(1);
       assertTrue(v1.toString().equals("{" + v1.getChampEntiteId() + "(ChampEntite), " + v1.getChampAnnotationId()
          + "(ChampAnnotation), " + v1.getBlocExterne().toString() + "(BlocExterne)}"));
@@ -258,7 +284,8 @@ public class ValeurExterneDaoTest extends AbstractDaoTest
       assertTrue(v2.toString().equals("{Empty ValeurExterne}"));
    }
    
-   public void testFindByDossierChampEntiteIdAndBlocEntiteId() {
+   @Test
+public void testFindByDossierChampEntiteIdAndBlocEntiteId() {
 	  DossierExterne dos = dossierExterneDao.findById(4);
       List<ValeurExterne> liste = valeurExterneDao
     		  .findByDossierChampEntiteIdAndBlocEntiteId(dos, 44, 2);

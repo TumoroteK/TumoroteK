@@ -38,6 +38,16 @@ package fr.aphp.tumorotek.dao.test.stockage;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
 
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
 import fr.aphp.tumorotek.dao.stockage.ConteneurTypeDao;
@@ -47,177 +57,176 @@ import fr.aphp.tumorotek.model.contexte.Categorie;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.stockage.ConteneurType;
 
-public class ConteneurTypeDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class ConteneurTypeDaoTest extends AbstractDaoTest {
 
-   /** Bean Dao. */
-   private ConteneurTypeDao conteneurTypeDao;
-   private PlateformeDao plateformeDao;
+	@Autowired
+	ConteneurTypeDao conteneurTypeDao;
 
-   private final String updatedType = "Mis a jour";
+	@Autowired
+	PlateformeDao plateformeDao;
 
-   /** Constructeur. */
-   public ConteneurTypeDaoTest(){
+	private String updatedType = "Mis a jour";
 
-   }
+	/**
+	 * Test l'appel de la méthode findAll().
+	 */
+	@Test
+	public void testReadAlls() {
+		final List<ConteneurType> liste = IterableUtils.toList(IterableUtils.toList(conteneurTypeDao.findAll()));
+		assertTrue(liste.size() == 3);
+	}
 
-   public void setConteneurTypeDao(final ConteneurTypeDao cDao){
-      this.conteneurTypeDao = cDao;
-   }
+	@Test
+	public void testFindByOrder() {
+		Plateforme pf = plateformeDao.findById(1).get();
+		List<? extends TKThesaurusObject> list = conteneurTypeDao.findByPfOrder(pf);
+		assertTrue(list.size() == 3);
+		assertTrue(list.get(0).getNom().equals("CONGELATEUR"));
+		pf = plateformeDao.findById(2).get();
+		list = conteneurTypeDao.findByPfOrder(pf);
+		assertTrue(list.size() == 0);
+		list = conteneurTypeDao.findByPfOrder(null);
+		assertTrue(list.size() == 0);
+	}
 
-   public void setPlateformeDao(final PlateformeDao pfDao){
-      this.plateformeDao = pfDao;
-   }
+	/**
+	 * Test l'appel de la méthode findByExcludedId().
+	 */
+	@Test
+	public void testFindByExcludedId() {
+		List<ConteneurType> liste = conteneurTypeDao.findByExcludedId(1);
+		assertTrue(liste.size() == 2);
+		final ConteneurType type = liste.get(0);
+		assertNotNull(type);
+		assertTrue(type.getId() == 2);
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   public void testReadAlls(){
-      final List<ConteneurType> liste = conteneurTypeDao.findAll();
-      assertTrue(liste.size() == 3);
-   }
+		liste = conteneurTypeDao.findByExcludedId(15);
+		assertTrue(liste.size() == 3);
+	}
 
-   public void testFindByOrder(){
-      Plateforme pf = plateformeDao.findById(1);
-      List<? extends TKThesaurusObject> list = conteneurTypeDao.findByPfOrder(pf);
-      assertTrue(list.size() == 3);
-      assertTrue(list.get(0).getNom().equals("CONGELATEUR"));
-      pf = plateformeDao.findById(2);
-      list = conteneurTypeDao.findByPfOrder(pf);
-      assertTrue(list.size() == 0);
-      list = conteneurTypeDao.findByPfOrder(null);
-      assertTrue(list.size() == 0);
-   }
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'un CessionExamen.
+	 * 
+	 * @throws Exception lance une exception en cas d'erreur.
+	 */
+	@Rollback(false)
+	@Test
+	public void testCrud() throws Exception {
 
-   /**
-    * Test l'appel de la méthode findByExcludedId().
-    */
-   public void testFindByExcludedId(){
-      List<ConteneurType> liste = conteneurTypeDao.findByExcludedId(1);
-      assertTrue(liste.size() == 2);
-      final ConteneurType type = liste.get(0);
-      assertNotNull(type);
-      assertTrue(type.getConteneurTypeId() == 2);
+		final ConteneurType ct = new ConteneurType();
+		ct.setPlateforme(plateformeDao.findById(1).get());
+		ct.setNom("Type");
+		// Test de l'insertion
+		conteneurTypeDao.save(ct);
+		assertEquals(new Integer(4), ct.getId());
 
-      liste = conteneurTypeDao.findByExcludedId(15);
-      assertTrue(liste.size() == 3);
-   }
+		// Test de la mise à jour
+		final ConteneurType ct2 = conteneurTypeDao.findById(new Integer(4)).get();
+		assertNotNull(ct2);
+		assertTrue(ct2.getNom().equals("Type"));
+		ct2.setNom(updatedType);
+		conteneurTypeDao.save(ct2);
+		assertTrue(conteneurTypeDao.findById(new Integer(4)).get().getNom().equals(updatedType));
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression d'un CessionExamen.
-    * @throws Exception lance une exception en cas d'erreur.
-    */
-   @Rollback(false)
-   public void testCrud() throws Exception{
+		// Test de la délétion
+		conteneurTypeDao.deleteById(new Integer(4));
+		assertFalse(conteneurTypeDao.findById(new Integer(4)).isPresent());
 
-      final ConteneurType ct = new ConteneurType();
-      ct.setPlateforme(plateformeDao.findById(1));
-      ct.setType("Type");
-      // Test de l'insertion
-      conteneurTypeDao.createObject(ct);
-      assertEquals(new Integer(4), ct.getConteneurTypeId());
+	}
 
-      // Test de la mise à jour
-      final ConteneurType ct2 = conteneurTypeDao.findById(new Integer(4));
-      assertNotNull(ct2);
-      assertTrue(ct2.getType().equals("Type"));
-      ct2.setType(updatedType);
-      conteneurTypeDao.updateObject(ct2);
-      assertTrue(conteneurTypeDao.findById(new Integer(4)).getType().equals(updatedType));
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final String type = "TYPE";
+		final String type2 = "TYPE2";
+		final ConteneurType ct1 = new ConteneurType();
+		ct1.setNom(type);
+		final ConteneurType ct2 = new ConteneurType();
+		ct2.setNom(type);
 
-      // Test de la délétion
-      conteneurTypeDao.removeObject(new Integer(4));
-      assertNull(conteneurTypeDao.findById(new Integer(4)));
+		// L'objet 1 n'est pas égal à null
+		assertFalse(ct1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(ct1.equals(ct1));
+		// 2 objets sont égaux entre eux
+		assertTrue(ct1.equals(ct2));
+		assertTrue(ct2.equals(ct1));
 
-   }
+		// Vérification de la différenciation de 2 objets
+		ct2.setNom(type2);
+		assertFalse(ct1.equals(ct2));
+		assertFalse(ct2.equals(ct1));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   public void testEquals(){
-      final String type = "TYPE";
-      final String type2 = "TYPE2";
-      final ConteneurType ct1 = new ConteneurType();
-      ct1.setType(type);
-      final ConteneurType ct2 = new ConteneurType();
-      ct2.setType(type);
+		ct2.setNom(null);
+		assertFalse(ct1.equals(ct2));
+		assertFalse(ct2.equals(ct1));
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(ct1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(ct1.equals(ct1));
-      // 2 objets sont égaux entre eux
-      assertTrue(ct1.equals(ct2));
-      assertTrue(ct2.equals(ct1));
+		ct1.setNom(null);
+		assertTrue(ct1.equals(ct2));
+		ct2.setNom(type2);
+		assertFalse(ct1.equals(ct2));
 
-      // Vérification de la différenciation de 2 objets
-      ct2.setType(type2);
-      assertFalse(ct1.equals(ct2));
-      assertFalse(ct2.equals(ct1));
+		// plateforme
+		final Plateforme pf1 = plateformeDao.findById(1).get();
+		final Plateforme pf2 = plateformeDao.findById(2).get();
+		ct1.setNom(ct2.getNom());
+		ct1.setPlateforme(pf1);
+		ct2.setPlateforme(pf1);
+		assertTrue(ct1.equals(ct2));
+		ct2.setPlateforme(pf2);
+		assertFalse(ct1.equals(ct2));
 
-      ct2.setType(null);
-      assertFalse(ct1.equals(ct2));
-      assertFalse(ct2.equals(ct1));
+		final Categorie c = new Categorie();
+		assertFalse(ct1.equals(c));
+	}
 
-      ct1.setType(null);
-      assertTrue(ct1.equals(ct2));
-      ct2.setType(type2);
-      assertFalse(ct1.equals(ct2));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
+		final String type = "TYPE";
+		final ConteneurType ct1 = new ConteneurType();
+		ct1.setNom(type);
+		final ConteneurType ct2 = new ConteneurType();
+		ct2.setNom(type);
+		final ConteneurType ct3 = new ConteneurType();
+		ct3.setNom(type);
+		assertTrue(ct3.hashCode() > 0);
 
-      //plateforme
-      final Plateforme pf1 = plateformeDao.findById(1);
-      final Plateforme pf2 = plateformeDao.findById(2);
-      ct1.setType(ct2.getType());
-      ct1.setPlateforme(pf1);
-      ct2.setPlateforme(pf1);
-      assertTrue(ct1.equals(ct2));
-      ct2.setPlateforme(pf2);
-      assertFalse(ct1.equals(ct2));
+		final Plateforme pf1 = plateformeDao.findById(1).get();
+		final Plateforme pf2 = plateformeDao.findById(2).get();
+		ct1.setPlateforme(pf1);
+		ct2.setPlateforme(pf1);
+		ct3.setPlateforme(pf2);
 
-      final Categorie c = new Categorie();
-      assertFalse(ct1.equals(c));
-   }
+		final int hash = ct1.hashCode();
+		// 2 objets égaux ont le même hashcode
+		assertTrue(ct1.hashCode() == ct2.hashCode());
+		assertFalse(ct1.hashCode() == ct3.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		assertTrue(hash == ct1.hashCode());
+		assertTrue(hash == ct1.hashCode());
+		assertTrue(hash == ct1.hashCode());
+		assertTrue(hash == ct1.hashCode());
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   public void testHashCode(){
-      final String type = "TYPE";
-      final ConteneurType ct1 = new ConteneurType();
-      ct1.setType(type);
-      final ConteneurType ct2 = new ConteneurType();
-      ct2.setType(type);
-      final ConteneurType ct3 = new ConteneurType();
-      ct3.setType(type);
-      assertTrue(ct3.hashCode() > 0);
+	}
 
-      final Plateforme pf1 = plateformeDao.findById(1);
-      final Plateforme pf2 = plateformeDao.findById(2);
-      ct1.setPlateforme(pf1);
-      ct2.setPlateforme(pf1);
-      ct3.setPlateforme(pf2);
+	/**
+	 * Test la méthode toString.
+	 */
+	@Test
+	public void testToString() {
+		final ConteneurType ct1 = conteneurTypeDao.findById(1).get();
+		assertTrue(ct1.toString().equals("{" + ct1.getNom() + "}"));
 
-      final int hash = ct1.hashCode();
-      // 2 objets égaux ont le même hashcode
-      assertTrue(ct1.hashCode() == ct2.hashCode());
-      assertFalse(ct1.hashCode() == ct3.hashCode());
-      // un même objet garde le même hashcode dans le temps
-      assertTrue(hash == ct1.hashCode());
-      assertTrue(hash == ct1.hashCode());
-      assertTrue(hash == ct1.hashCode());
-      assertTrue(hash == ct1.hashCode());
-
-   }
-
-   /**
-    * Test la méthode toString.
-    */
-   public void testToString(){
-      final ConteneurType ct1 = conteneurTypeDao.findById(1);
-      assertTrue(ct1.toString().equals("{" + ct1.getType() + "}"));
-
-      final ConteneurType ct2 = new ConteneurType();
-      assertTrue(ct2.toString().equals("{Empty ConteneurType}"));
-   }
+		final ConteneurType ct2 = new ConteneurType();
+		assertTrue(ct2.toString().equals("{Empty ConteneurType}"));
+	}
 
 }

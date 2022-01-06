@@ -68,31 +68,41 @@ import fr.aphp.tumorotek.model.io.imports.ImportColonne;
 public class ChampAnnotationDaoTest extends AbstractDaoTest
 {
 
-   private ChampAnnotationDao champAnnotationDao;
-   private TableAnnotationDao tableAnnotationDao;
-   private DataTypeDao dataTypeDao;
-   private EntiteDao entiteDao;
-   private ImportTemplateDao importTemplateDao;
+   @Autowired
+ ChampAnnotationDao champAnnotationDao;
+   @Autowired
+ TableAnnotationDao tableAnnotationDao;
+   @Autowired
+ DataTypeDao dataTypeDao;
+   @Autowired
+ EntiteDao entiteDao;
+   @Autowired
+ ImportTemplateDao importTemplateDao;
 
    public ChampAnnotationDaoTest(){}
 
-   public void setChampAnnotationDao(final ChampAnnotationDao cDao){
+   @Test
+public void setChampAnnotationDao(final ChampAnnotationDao cDao){
       this.champAnnotationDao = cDao;
    }
 
-   public void setDataTypeDao(final DataTypeDao dtDao){
+   @Test
+public void setDataTypeDao(final DataTypeDao dtDao){
       this.dataTypeDao = dtDao;
    }
 
-   public void setTableAnnotationDao(final TableAnnotationDao tDao){
+   @Test
+public void setTableAnnotationDao(final TableAnnotationDao tDao){
       this.tableAnnotationDao = tDao;
    }
 
-   public void setEntiteDao(final EntiteDao e){
+   @Test
+public void setEntiteDao(final EntiteDao e){
       this.entiteDao = e;
    }
 
-   public void setImportTemplateDao(final ImportTemplateDao i){
+   @Test
+public void setImportTemplateDao(final ImportTemplateDao i){
       this.importTemplateDao = i;
    }
 
@@ -100,7 +110,8 @@ public class ChampAnnotationDaoTest extends AbstractDaoTest
     * Test la méthode toString.
     * @throws ParseException 
     */
-   public void testToString() throws ParseException{
+   @Test
+public void testToString() throws ParseException{
       final ChampAnnotation c1 = champAnnotationDao.findById(1);
       assertTrue(c1.toString().equals("{ChampAnnotation: TABLE_PAT1.Alphanum1}"));
 
@@ -116,12 +127,14 @@ public class ChampAnnotationDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllChamps(){
-      final List<ChampAnnotation> champs = champAnnotationDao.findAll();
+   @Test
+public void testReadAllChamps(){
+      final List<ChampAnnotation> champs = IterableUtils.toList(champAnnotationDao.findAll());
       assertTrue(champs.size() == 48);
    }
 
-   public void testFindByNom(){
+   @Test
+public void testFindByNom(){
       List<ChampAnnotation> champs = champAnnotationDao.findByNom("Bool%");
       assertTrue(champs.size() == 3);
       champs = champAnnotationDao.findByNom("Test%");
@@ -130,7 +143,8 @@ public class ChampAnnotationDaoTest extends AbstractDaoTest
       assertTrue(champs.size() == 0);
    }
 
-   public void testFindByTable(){
+   @Test
+public void testFindByTable(){
       TableAnnotation t = tableAnnotationDao.findById(3);
       List<ChampAnnotation> champs = champAnnotationDao.findByTable(t);
       assertTrue(champs.size() == 5);
@@ -154,7 +168,8 @@ public class ChampAnnotationDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       final ChampAnnotation c1 = champAnnotationDao.findById(1);
       List<ChampAnnotation> champs = champAnnotationDao.findByExcludedId(1);
       assertTrue(champs.size() == 47);
@@ -169,7 +184,8 @@ public class ChampAnnotationDaoTest extends AbstractDaoTest
     * Test l'insertion, la mise à jour et la suppression d'un ChampAnnotation.
     */
    @Rollback(false)
-   public void testCrudChampAnnotation(){
+   @Test
+public void testCrudChampAnnotation(){
 
       final ChampAnnotation champ = new ChampAnnotation();
       champ.setNom("testAnno");
@@ -181,7 +197,7 @@ public class ChampAnnotationDaoTest extends AbstractDaoTest
       // ajouter valeurs par défaut testées dans AnnotationDefautDaoTest
 
       // Test de l'insertion
-      champAnnotationDao.createObject(champ);
+      champAnnotationDao.save(champ);
       assertNotNull(champ.getId());
 
       final Integer maxId = champ.getId();
@@ -200,14 +216,14 @@ public class ChampAnnotationDaoTest extends AbstractDaoTest
       champ2.setOrdre(4);
       champ2.setCombine(false);
 
-      champAnnotationDao.updateObject(champ2);
+      champAnnotationDao.save(champ2);
 
       assertTrue(champAnnotationDao.findById(maxId).getNom().equals("testAnno2"));
       assertTrue(champAnnotationDao.findById(maxId).getOrdre() == 4);
       assertFalse(champAnnotationDao.findById(maxId).getCombine());
 
       // Test de la délétion
-      champAnnotationDao.removeObject(maxId);
+      champAnnotationDao.deleteById(maxId);
       assertNull(champAnnotationDao.findById(maxId));
       testReadAllChamps();
    }
@@ -215,7 +231,8 @@ public class ChampAnnotationDaoTest extends AbstractDaoTest
    /**
     * Test des méthodes surchargées "equals" et hashcode.
     */
-   public void testEqualsAndHashCode(){
+   @Test
+public void testEqualsAndHashCode(){
       final ChampAnnotation c1 = new ChampAnnotation();
       final ChampAnnotation c2 = new ChampAnnotation();
       assertFalse(c1.equals(null));
@@ -276,7 +293,8 @@ public class ChampAnnotationDaoTest extends AbstractDaoTest
       assertFalse(c1.equals(c));
    }
 
-   public void testClone(){
+   @Test
+public void testClone(){
       final ChampAnnotation c = champAnnotationDao.findById(1);
       final ChampAnnotation c2 = c.clone();
       assertTrue(c.equals(c2));
@@ -330,7 +348,8 @@ public class ChampAnnotationDaoTest extends AbstractDaoTest
       assertTrue(c.getEdit().equals(c2.getEdit()));
    }
 
-   public void testFindByEditByCatalogue(){
+   @Test
+public void testFindByEditByCatalogue(){
       TableAnnotation t = tableAnnotationDao.findById(1);
       List<ChampAnnotation> chps = champAnnotationDao.findByEditByCatalogue(t);
       assertTrue(chps.size() == 2);
@@ -342,7 +361,8 @@ public class ChampAnnotationDaoTest extends AbstractDaoTest
       assertTrue(chps.get(1).getNom().equals("Thes1"));
    }
 
-   public void testFindChampsFichiersByTable(){
+   @Test
+public void testFindChampsFichiersByTable(){
       final TableAnnotation t = tableAnnotationDao.findById(7);
       DataType dt = dataTypeDao.findById(7);
       List<ChampAnnotation> chps = champAnnotationDao.findByTableAndType(t, dt);
@@ -356,7 +376,8 @@ public class ChampAnnotationDaoTest extends AbstractDaoTest
       assertTrue(chps.size() == 0);
    }
 
-   public void testFindCriteresByChampAnnotation(){
+   @Test
+public void testFindCriteresByChampAnnotation(){
       final ChampAnnotation c1 = champAnnotationDao.findById(1);
       List<Critere> res = champAnnotationDao.findCriteresByChampAnnotation(c1);
       assertTrue(res.isEmpty());
@@ -364,7 +385,8 @@ public class ChampAnnotationDaoTest extends AbstractDaoTest
       assertTrue(res.isEmpty());
    }
 
-   public void testFindResultatsByChampAnnotation(){
+   @Test
+public void testFindResultatsByChampAnnotation(){
       final ChampAnnotation c1 = champAnnotationDao.findById(1);
       List<Resultat> res = champAnnotationDao.findResultatsByChampAnnotation(c1);
       assertTrue(res.isEmpty());
@@ -372,7 +394,8 @@ public class ChampAnnotationDaoTest extends AbstractDaoTest
       assertTrue(res.isEmpty());
    }
 
-   public void testFindImportColonnesByChampAnnotation(){
+   @Test
+public void testFindImportColonnesByChampAnnotation(){
       ChampAnnotation c = champAnnotationDao.findById(1);
       List<ImportColonne> res = champAnnotationDao.findImportColonnesByChampAnnotation(c);
       assertTrue(res.isEmpty());
@@ -383,7 +406,8 @@ public class ChampAnnotationDaoTest extends AbstractDaoTest
       assertTrue(res.isEmpty());
    }
 
-   public void testFindByChpLEtiquetteChampAnnotation(){
+   @Test
+public void testFindByChpLEtiquetteChampAnnotation(){
       final ChampAnnotation c1 = champAnnotationDao.findById(1);
       List<ChampLigneEtiquette> res = champAnnotationDao.findChpLEtiquetteByChampAnnotation(c1);
       assertTrue(res.isEmpty());
@@ -391,7 +415,8 @@ public class ChampAnnotationDaoTest extends AbstractDaoTest
       assertTrue(res.isEmpty());
    }
 
-   public void testfindByImportTemplateAndEntite(){
+   @Test
+public void testfindByImportTemplateAndEntite(){
       List<ChampAnnotation> chpA =
          champAnnotationDao.findByImportTemplateAndEntite(importTemplateDao.findById(1), entiteDao.findById(2));
       assertTrue(chpA.size() == 5);

@@ -57,23 +57,28 @@ import fr.aphp.tumorotek.model.contexte.Categorie;
 public class CatalogueDaoTest extends AbstractDaoTest
 {
 
-   private CatalogueDao catalogueDao;
-   private BanqueDao banqueDao;
+   @Autowired
+ CatalogueDao catalogueDao;
+   @Autowired
+ BanqueDao banqueDao;
 
    /**
     * Constructeur.
     */
    public CatalogueDaoTest(){}
 
-   public void setCatalogueDao(final CatalogueDao cDao){
+   @Test
+public void setCatalogueDao(final CatalogueDao cDao){
       this.catalogueDao = cDao;
    }
 
-   public void setBanqueDao(final BanqueDao bDao){
+   @Test
+public void setBanqueDao(final BanqueDao bDao){
       this.banqueDao = bDao;
    }
 
-   public void testFindNoms(){
+   @Test
+public void testFindNoms(){
       final List<String> noms = catalogueDao.findNoms();
       assertTrue(noms.size() == 4);
       assertTrue(noms.get(1).equals("INCa"));
@@ -81,7 +86,8 @@ public class CatalogueDaoTest extends AbstractDaoTest
       assertTrue(noms.get(3).equals("TVGSO"));
    }
 
-   public void testToString(){
+   @Test
+public void testToString(){
       Catalogue c1 = catalogueDao.findById(1);
       assertTrue(c1.toString().equals("{" + c1.getNom() + "}"));
 
@@ -89,7 +95,8 @@ public class CatalogueDaoTest extends AbstractDaoTest
       assertTrue(c1.toString().equals("{Empty Catalogue}"));
    }
 
-   public void testFindByAssignedBanque(){
+   @Test
+public void testFindByAssignedBanque(){
       final Banque b1 = banqueDao.findById(1);
       List<Catalogue> catas = catalogueDao.findByAssignedBanque(b1);
       assertTrue(catas.size() == 2);
@@ -106,7 +113,8 @@ public class CatalogueDaoTest extends AbstractDaoTest
    /**
     * Test des méthodes surchargées "equals" et hashcode.
     */
-   public void testEqualsAndHashCode(){
+   @Test
+public void testEqualsAndHashCode(){
       final Catalogue c1 = new Catalogue();
       final Catalogue c2 = new Catalogue();
       assertFalse(c1.equals(null));

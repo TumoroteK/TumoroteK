@@ -59,13 +59,17 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 public class RisqueDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private RisqueDao risqueDao;
-   private PlateformeDao plateformeDao;
+
+   @Autowired
+ RisqueDao risqueDao;
+   @Autowired
+ PlateformeDao plateformeDao;
 
    /** Valeur du risque pour la maj. */
-   private final String updatedNom = "Nom mis a jour";
-   private final Boolean updatedInfectieux = new Boolean(false);
+   @Autowired
+ final String updatedNom = "Nom mis a jour";
+   @Autowired
+ final Boolean updatedInfectieux = new Boolean(false);
 
    /**
     * Constructeur.
@@ -76,18 +80,21 @@ public class RisqueDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param tDao est le bean Dao.
     */
-   public void setRisqueDao(final RisqueDao tDao){
+   @Test
+public void setRisqueDao(final RisqueDao tDao){
       this.risqueDao = tDao;
    }
 
-   public void setPlateformeDao(final PlateformeDao pDao){
+   @Test
+public void setPlateformeDao(final PlateformeDao pDao){
       this.plateformeDao = pDao;
    }
 
    /**
     * Test l'appel de la méthode toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       Risque r1 = risqueDao.findById(1);
       assertTrue(r1.toString().equals("{" + r1.getNom() + "}"));
       r1 = new Risque();
@@ -97,12 +104,14 @@ public class RisqueDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllRisques(){
-      final List<Risque> risques = risqueDao.findAll();
+   @Test
+public void testReadAllRisques(){
+      final List<Risque> risques = IterableUtils.toList(risqueDao.findAll());
       assertTrue(risques.size() == 3);
    }
 
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
       List<Risque> list = risqueDao.findByPfOrder(pf);
       assertTrue(list.size() == 2);
@@ -117,7 +126,8 @@ public class RisqueDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByNom().
     */
-   public void testFindByNom(){
+   @Test
+public void testFindByNom(){
       List<Risque> risques = risqueDao.findByNom("GRIPPE A");
       assertTrue(risques.size() == 1);
       risques = risqueDao.findByNom("HERPES");
@@ -131,7 +141,8 @@ public class RisqueDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByInfectieux().
     */
-   public void testFindByInfectieux(){
+   @Test
+public void testFindByInfectieux(){
       List<Risque> risques = risqueDao.findByInfectieux(true);
       assertTrue(risques.size() == 2);
       risques = risqueDao.findByInfectieux(false);
@@ -141,7 +152,8 @@ public class RisqueDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<Risque> liste = risqueDao.findByExcludedId(1);
       assertTrue(liste.size() == 2);
       final Risque risque = liste.get(0);
@@ -158,13 +170,14 @@ public class RisqueDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
    @Rollback(false)
-   public void testCrudRisque() throws Exception{
+   @Test
+public void testCrudRisque() throws Exception{
       final Risque r = new Risque();
       r.setNom("HERPES");
       r.setInfectieux(true);
       r.setPlateforme(plateformeDao.findById(1));
       // Test de l'insertion
-      risqueDao.createObject(r);
+      risqueDao.save(r);
       assertEquals(new Integer(4), r.getId());
 
       // Test de la mise à jour
@@ -174,12 +187,12 @@ public class RisqueDaoTest extends AbstractDaoTest
       assertTrue(r2.getInfectieux());
       r2.setNom(updatedNom);
       r2.setInfectieux(updatedInfectieux);
-      risqueDao.updateObject(r2);
+      risqueDao.save(r2);
       assertTrue(risqueDao.findById(new Integer(4)).getNom().equals(updatedNom));
       assertTrue(risqueDao.findById(new Integer(4)).getInfectieux().equals(updatedInfectieux));
 
       // Test de la délétion
-      risqueDao.removeObject(new Integer(4));
+      risqueDao.deleteById(new Integer(4));
       assertNull(risqueDao.findById(new Integer(4)));
 
    }
@@ -187,7 +200,8 @@ public class RisqueDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
 
       final Risque r1 = new Risque();
       final Risque r2 = new Risque();
@@ -232,7 +246,8 @@ public class RisqueDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
 
       final Risque r1 = new Risque();
       r1.setId(1);

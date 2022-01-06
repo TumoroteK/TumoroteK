@@ -67,29 +67,39 @@ import fr.aphp.tumorotek.model.contexte.Protocole;
 public class PrelevementDelegateDaoTest extends AbstractDaoTest //FIXME non lancé dans maven surefire ?
 {
 
-   private NatureDao natureDao;
-   private PrelevementDao prelevementDao;
-   private BanqueDao banqueDao;
-   private ConsentTypeDao consentTypeDao;
-   private ProtocoleDao protocoleDao;
+   @Autowired
+ NatureDao natureDao;
+   @Autowired
+ PrelevementDao prelevementDao;
+   @Autowired
+ BanqueDao banqueDao;
+   @Autowired
+ ConsentTypeDao consentTypeDao;
+   @Autowired
+ ProtocoleDao protocoleDao;
 
-   public void setPrelevementDao(final PrelevementDao pDao){
+   @Test
+public void setPrelevementDao(final PrelevementDao pDao){
       this.prelevementDao = pDao;
    }
 
-   public void setNatureDao(final NatureDao nDao){
+   @Test
+public void setNatureDao(final NatureDao nDao){
       this.natureDao = nDao;
    }
 
-   public void setConsentTypeDao(final ConsentTypeDao ctDao){
+   @Test
+public void setConsentTypeDao(final ConsentTypeDao ctDao){
       this.consentTypeDao = ctDao;
    }
 
-   public void setProtocoleDao(final ProtocoleDao pDao){
+   @Test
+public void setProtocoleDao(final ProtocoleDao pDao){
       this.protocoleDao = pDao;
    }
 
-   public void setBanqueDao(final BanqueDao bDao){
+   @Test
+public void setBanqueDao(final BanqueDao bDao){
       this.banqueDao = bDao;
    }
 
@@ -101,7 +111,8 @@ public class PrelevementDelegateDaoTest extends AbstractDaoTest //FIXME non lanc
    /**
     * Test l'appel de la méthode toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       AbstractPrelevementDelegate p2 = prelevementDao.findById(2).getPrelevementSero();
       assertTrue(p2.toString().equals("{PRLVT2}." + PrelevementSero.class.getSimpleName()));
    }
@@ -112,7 +123,8 @@ public class PrelevementDelegateDaoTest extends AbstractDaoTest //FIXME non lanc
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
    @Rollback(false)
-   public void testCrudPrelAndDelegate() throws Exception{
+   @Test
+public void testCrudPrelAndDelegate() throws Exception{
 
       Prelevement p = new Prelevement();
 
@@ -127,14 +139,14 @@ public class PrelevementDelegateDaoTest extends AbstractDaoTest //FIXME non lanc
 
       final PrelevementSero ps1 = new PrelevementSero();
       ps1.setLibelle("SERO1");
-      List<Protocole> protos = protocoleDao.findAll();
+      List<Protocole> protos = IterableUtils.toList(protocoleDao.findAll());
       ps1.setProtocoles(new HashSet<>(protos));
       ps1.setDelegator(p);
       p.setDelegate(ps1);
 
       // Test de l'insertion
-      prelevementDao.createObject(p);
-      assertTrue(prelevementDao.findAll().size() == 6);
+      prelevementDao.save(p);
+      assertTrue(IterableUtils.toList(prelevementDao.findAll()).size() == 6);
 
       p = prelevementDao.findByCode("prelDel1").get(0);
       assertNotNull(p.getPrelevementSero());
@@ -145,8 +157,8 @@ public class PrelevementDelegateDaoTest extends AbstractDaoTest //FIXME non lanc
       protos = protocoleDao.findByNom("OFSEP");
       ps2.setProtocoles(new HashSet<>(protos));
 
-      prelevementDao.updateObject(p);
-      assertTrue(prelevementDao.findAll().size() == 6);
+      prelevementDao.save(p);
+      assertTrue(IterableUtils.toList(prelevementDao.findAll()).size() == 6);
 
       // Test de la mise à jour
       p = prelevementDao.findByCode("prelDel1").get(0);
@@ -159,15 +171,16 @@ public class PrelevementDelegateDaoTest extends AbstractDaoTest //FIXME non lanc
       // Test de la délétion
       p.setDelegate(null);
       p.setCode("updated");
-      prelevementDao.updateObject(p);
+      prelevementDao.save(p);
       p = prelevementDao.findByCode("updated").get(0);
       assertTrue(p.getPrelevementSero() == null);
 
-      prelevementDao.removeObject(p.getPrelevementId());
-      assertTrue(prelevementDao.findAll().size() == 5);
+      prelevementDao.deleteById(p.getPrelevementId());
+      assertTrue(IterableUtils.toList(prelevementDao.findAll()).size() == 5);
    }
 
-   public void testIsEmpty(){
+   @Test
+public void testIsEmpty(){
       final PrelevementSero pSero = new PrelevementSero();
       assertTrue(pSero.isEmpty());
       pSero.setLibelle("libelle");
@@ -186,7 +199,8 @@ public class PrelevementDelegateDaoTest extends AbstractDaoTest //FIXME non lanc
     * Test des méthodes surchargées "equals" et hashcode pour
     * la table transcodeUtilisateur.
     */
-   public void testEqualsAndHashCode(){
+   @Test
+public void testEqualsAndHashCode(){
       final AbstractPrelevementDelegate p1 = new PrelevementSero();
       final AbstractPrelevementDelegate p2 = new PrelevementSero();
       assertFalse(p1.equals(null));

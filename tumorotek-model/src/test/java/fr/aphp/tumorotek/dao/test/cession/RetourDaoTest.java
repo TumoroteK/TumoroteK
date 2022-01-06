@@ -65,50 +65,63 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 public class RetourDaoTest extends AbstractDaoTest
 {
 
-   private RetourDao retourDao;
-   private EntiteDao entiteDao;
-   private CollaborateurDao collaborateurDao;
-   private TransformationDao transformationDao;
-   private ObjetStatutDao objetStatutDao;
+   @Autowired
+ RetourDao retourDao;
+   @Autowired
+ EntiteDao entiteDao;
+   @Autowired
+ CollaborateurDao collaborateurDao;
+   @Autowired
+ TransformationDao transformationDao;
+   @Autowired
+ ObjetStatutDao objetStatutDao;
 
    /** Constructeur. */
    public RetourDaoTest(){}
 
-   public void setRetourDao(final RetourDao rDao){
+   @Test
+public void setRetourDao(final RetourDao rDao){
       this.retourDao = rDao;
    }
 
-   public void setEntiteDao(final EntiteDao eDao){
+   @Test
+public void setEntiteDao(final EntiteDao eDao){
       this.entiteDao = eDao;
    }
 
-   public void setCollaborateurDao(final CollaborateurDao cDao){
+   @Test
+public void setCollaborateurDao(final CollaborateurDao cDao){
       this.collaborateurDao = cDao;
    }
 
-   public void setTransformationDao(final TransformationDao tDao){
+   @Test
+public void setTransformationDao(final TransformationDao tDao){
       this.transformationDao = tDao;
    }
 
-   public void setObjetStatutDao(final ObjetStatutDao oDao){
+   @Test
+public void setObjetStatutDao(final ObjetStatutDao oDao){
       this.objetStatutDao = oDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllRetours(){
-      final List<Retour> retours = retourDao.findAll();
+   @Test
+public void testReadAllRetours(){
+      final List<Retour> retours = IterableUtils.toList(retourDao.findAll());
       assertTrue(retours.size() == 8);
    }
 
-   public void testFindByMaxId(){
+   @Test
+public void testFindByMaxId(){
       final List<Integer> res = retourDao.findByMaxId();
       assertTrue(res.size() == 1);
       assertTrue(res.get(0) == 8);
    }
 
-   public void testFindByObject(){
+   @Test
+public void testFindByObject(){
       Entite e = entiteDao.findByNom("Echantillon").get(0);
       List<Retour> retours = retourDao.findByObject(1, e);
       assertTrue(retours.size() == 5);
@@ -124,7 +137,8 @@ public class RetourDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<Retour> retours = retourDao.findByExcludedId(1, 1, entiteDao.findById(3));
       assertTrue(retours.size() == 4);
       retours = retourDao.findByExcludedId(9, 1, entiteDao.findById(3));
@@ -138,7 +152,8 @@ public class RetourDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas d'erreur.
     */
    @Rollback(false)
-   public void testCrudRetour() throws Exception{
+   @Test
+public void testCrudRetour() throws Exception{
 
       final String adrl1 = "CC1.R1.T1.BT1.77";
       final String adrl2 = "CC1.R1.T1.BT2.5";
@@ -158,8 +173,8 @@ public class RetourDaoTest extends AbstractDaoTest
       retour.setObjetStatut(objetStatutDao.findById(4));
 
       // Test de l'insertion
-      retourDao.createObject(retour);
-      assertTrue(retourDao.findAll().size() == 9);
+      retourDao.save(retour);
+      assertTrue(IterableUtils.toList(retourDao.findAll()).size() == 9);
 
       final Integer rId = retour.getRetourId();
 
@@ -195,7 +210,7 @@ public class RetourDaoTest extends AbstractDaoTest
       retour2.setOldEmplacementAdrl(adrl2);
       retour2.setObjetStatut(objetStatutDao.findById(2));
 
-      retourDao.updateObject(retour2);
+      retourDao.save(retour2);
 
       assertNotNull(retourDao.findById(rId).getDateSortie());
       assertNotNull(retourDao.findById(rId).getDateRetour());
@@ -208,7 +223,7 @@ public class RetourDaoTest extends AbstractDaoTest
       assertTrue(retour2.getObjetStatut().getStatut().equals("EPUISE"));
 
       // Test de la délétion
-      retourDao.removeObject(rId);
+      retourDao.deleteById(rId);
       assertNull(retourDao.findById(rId));
       testReadAllRetours();
 
@@ -218,7 +233,8 @@ public class RetourDaoTest extends AbstractDaoTest
     * Test de la méthode surchargée "equals".
     * @throws ParseException 
     */
-   public void testEqualsAndHashCode() throws ParseException{
+   @Test
+public void testEqualsAndHashCode() throws ParseException{
       final Retour r1 = new Retour();
       final Retour r2 = new Retour();
       assertFalse(r1.equals(null));
@@ -313,7 +329,8 @@ public class RetourDaoTest extends AbstractDaoTest
     * Test la méthode toString.
     * @throws ParseException 
     */
-   public void testToString() throws ParseException{
+   @Test
+public void testToString() throws ParseException{
       final Retour r1 = retourDao.findById(1);
       assertTrue(r1.toString().equals("{Echantillon:1 01/01/2010 00:00:00}"));
 
@@ -328,7 +345,8 @@ public class RetourDaoTest extends AbstractDaoTest
       assertTrue(r2.toString().equals("{Empty Retour}"));
    }
 
-   public void testClone(){
+   @Test
+public void testClone(){
       final Retour r2 = retourDao.findById(2);
       final Retour clone = r2.clone();
       assertTrue(clone.getRetourId().equals(r2.getRetourId()));
@@ -350,7 +368,8 @@ public class RetourDaoTest extends AbstractDaoTest
 
    }
 
-   public void testFindByObjDates() throws ParseException{
+   @Test
+public void testFindByObjDates() throws ParseException{
       final Calendar cal = Calendar.getInstance();
       cal.setTime(new SimpleDateFormat("dd/MM/yyyy hh:mm").parse("06/01/2010 12:12"));
       List<Retour> rs = retourDao.findByObjDates(cal, 1, entiteDao.findById(3), -1);
@@ -383,7 +402,8 @@ public class RetourDaoTest extends AbstractDaoTest
       assertTrue(rs.isEmpty());
    }
 
-   public void testFindObjIdsByDatesAndEntite() throws ParseException{
+   @Test
+public void testFindObjIdsByDatesAndEntite() throws ParseException{
       final Calendar cal = Calendar.getInstance();
       cal.setTime(new SimpleDateFormat("dd/MM/yyyy hh:mm").parse("06/01/2010 12:12"));
       List<Integer> rs = retourDao.findObjIdsByDatesAndEntite(cal, entiteDao.findById(3));
@@ -411,7 +431,8 @@ public class RetourDaoTest extends AbstractDaoTest
       assertTrue(rs.isEmpty());
    }
 
-   public void testFindByObjInsideDates() throws ParseException{
+   @Test
+public void testFindByObjInsideDates() throws ParseException{
       final Calendar cal1 = Calendar.getInstance();
       cal1.setTime(new SimpleDateFormat("dd/MM/yyyy hh:mm").parse("06/01/2010 12:12"));
       final Calendar cal2 = Calendar.getInstance();
@@ -454,7 +475,8 @@ public class RetourDaoTest extends AbstractDaoTest
       assertTrue(rs.isEmpty());
    }
 
-   public void testFindObjIdsInsideDatesEntite() throws ParseException{
+   @Test
+public void testFindObjIdsInsideDatesEntite() throws ParseException{
       final Calendar cal1 = Calendar.getInstance();
       cal1.setTime(new SimpleDateFormat("dd/MM/yyyy hh:mm").parse("31/12/2009 12:12"));
       final Calendar cal2 = Calendar.getInstance();
@@ -489,7 +511,8 @@ public class RetourDaoTest extends AbstractDaoTest
       assertTrue(rs.isEmpty());
    }
 
-   public void testFindByObjectDateRetourEmpty(){
+   @Test
+public void testFindByObjectDateRetourEmpty(){
       final List<Integer> objetsIds = new ArrayList<>();
 
       objetsIds.add(1);
@@ -502,7 +525,8 @@ public class RetourDaoTest extends AbstractDaoTest
       assertTrue(rets.isEmpty());
    }
 
-   public void testFindByObjectAndImpact(){
+   @Test
+public void testFindByObjectAndImpact(){
       List<Retour> impacts = retourDao.findByObjectAndImpact(1, entiteDao.findById(3), true);
       assertTrue(impacts.size() == 3);
       impacts = retourDao.findByObjectAndImpact(1, entiteDao.findById(3), false);

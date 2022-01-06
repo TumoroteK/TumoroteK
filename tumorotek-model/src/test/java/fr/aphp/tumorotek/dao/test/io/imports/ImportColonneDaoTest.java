@@ -63,48 +63,60 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  */
 public class ImportColonneDaoTest extends AbstractDaoTest {
 
-	private ImportColonneDao importColonneDao;
-	private ImportTemplateDao importTemplateDao;
-	private ChampDao champDao;
-	private EntiteDao entiteDao;
-	private DataTypeDao dataTypeDao;
+	@Autowired
+ ImportColonneDao importColonneDao;
+	@Autowired
+ ImportTemplateDao importTemplateDao;
+	@Autowired
+ ChampDao champDao;
+	@Autowired
+ EntiteDao entiteDao;
+	@Autowired
+ DataTypeDao dataTypeDao;
 
 	public ImportColonneDaoTest() {
 
 	}
 
-	public void setImportColonneDao(final ImportColonneDao i) {
+	@Test
+public void setImportColonneDao(final ImportColonneDao i) {
 		this.importColonneDao = i;
 	}
 
-	public void setImportTemplateDao(final ImportTemplateDao iDao) {
+	@Test
+public void setImportTemplateDao(final ImportTemplateDao iDao) {
 		this.importTemplateDao = iDao;
 	}
 
-	public void setChampDao(final ChampDao cDao) {
+	@Test
+public void setChampDao(final ChampDao cDao) {
 		this.champDao = cDao;
 	}
 
-	public void setEntiteDao(final EntiteDao eDao) {
+	@Test
+public void setEntiteDao(final EntiteDao eDao) {
 		this.entiteDao = eDao;
 	}
 
-	public void setDataTypeDao(final DataTypeDao dDao) {
+	@Test
+public void setDataTypeDao(final DataTypeDao dDao) {
 		this.dataTypeDao = dDao;
 	}
 
 	/**
 	 * Test l'appel de la méthode findAll().
 	 */
-	public void testReadAll() {
-		final List<ImportColonne> entites = importColonneDao.findAll();
+	@Test
+public void testReadAll() {
+		final List<ImportColonne> entites = IterableUtils.toList(importColonneDao.findAll());
 		assertTrue(entites.size() == 103);
 	}
 
 	/**
 	 * Test l'appel de la méthode findByTemplateWithOrder().
 	 */
-	public void testFindByTemplateWithOrder() {
+	@Test
+public void testFindByTemplateWithOrder() {
 		final ImportTemplate it1 = importTemplateDao.findById(1);
 		List<ImportColonne> liste = importColonneDao.findByTemplateWithOrder(it1);
 		assertTrue(liste.size() == 31);
@@ -124,7 +136,8 @@ public class ImportColonneDaoTest extends AbstractDaoTest {
 	/**
 	 * Test l'appel de la méthode findByTemplateWithOrderSelectNom().
 	 */
-	public void testFindByTemplateWithOrderSelectNom() {
+	@Test
+public void testFindByTemplateWithOrderSelectNom() {
 		final ImportTemplate it1 = importTemplateDao.findById(1);
 		List<String> liste = importColonneDao.findByTemplateWithOrderSelectNom(it1);
 		assertTrue(liste.size() == 31);
@@ -144,7 +157,8 @@ public class ImportColonneDaoTest extends AbstractDaoTest {
 	/**
 	 * Test l'appel de la méthode findByTemplateAndEntite().
 	 */
-	public void testFindByTemplateAndEntite() {
+	@Test
+public void testFindByTemplateAndEntite() {
 		final ImportTemplate it1 = importTemplateDao.findById(1);
 		final Entite e1 = entiteDao.findById(1);
 		final Entite e10 = entiteDao.findById(10);
@@ -171,7 +185,8 @@ public class ImportColonneDaoTest extends AbstractDaoTest {
 		assertTrue(liste.size() == 0);
 	}
 
-	public void testFindByTemplateAndEntiteDelegue() {
+	@Test
+public void testFindByTemplateAndEntiteDelegue() {
 		final ImportTemplate it1 = importTemplateDao.findById(1);
 		final Entite e2 = entiteDao.findById(2);
 		assertTrue(importColonneDao.findByTemplateAndEntiteDelegue(it1, e2).isEmpty());
@@ -180,7 +195,8 @@ public class ImportColonneDaoTest extends AbstractDaoTest {
 	/**
 	 * Test l'appel de la méthode findByTemplateAndEntite().
 	 */
-	public void testFindByTemplateAndAnnotationEntite() {
+	@Test
+public void testFindByTemplateAndAnnotationEntite() {
 		final ImportTemplate it1 = importTemplateDao.findById(1);
 		final Entite e2 = entiteDao.findById(2);
 		final Entite e10 = entiteDao.findById(10);
@@ -210,7 +226,8 @@ public class ImportColonneDaoTest extends AbstractDaoTest {
 	/**
 	 * Test l'appel de la méthode findByTemplateAndDataType().
 	 */
-	public void testFindByTemplateAndDataType() {
+	@Test
+public void testFindByTemplateAndDataType() {
 		final ImportTemplate it1 = importTemplateDao.findById(1);
 		final DataType d1 = dataTypeDao.findById(1);
 		final DataType d7 = dataTypeDao.findById(7);
@@ -240,7 +257,8 @@ public class ImportColonneDaoTest extends AbstractDaoTest {
 	/**
 	 * Test l'appel de la méthode findByTemplateAndAnnotationDatatype().
 	 */
-	public void testFindByTemplateAndAnnotationDatatype() {
+	@Test
+public void testFindByTemplateAndAnnotationDatatype() {
 		final ImportTemplate it1 = importTemplateDao.findById(1);
 		final DataType d1 = dataTypeDao.findById(1);
 		final DataType d7 = dataTypeDao.findById(7);
@@ -270,7 +288,8 @@ public class ImportColonneDaoTest extends AbstractDaoTest {
 	/**
 	 * Test l'appel de la méthode findByExcludedIdWithTemplate().
 	 */
-	public void testFindByExcludedIdWithTemplate() {
+	@Test
+public void testFindByExcludedIdWithTemplate() {
 		final ImportTemplate it1 = importTemplateDao.findById(1);
 		List<ImportColonne> liste = importColonneDao.findByExcludedIdWithTemplate(1, it1);
 		assertTrue(liste.size() == 30);
@@ -297,7 +316,8 @@ public class ImportColonneDaoTest extends AbstractDaoTest {
 	/**
 	 * Test l'appel de la méthode findByExcludedIdWithTemplateSelectNom().
 	 */
-	public void testFindByExcludedIdWithTemplateSelectNom() {
+	@Test
+public void testFindByExcludedIdWithTemplateSelectNom() {
 		final ImportTemplate it1 = importTemplateDao.findById(1);
 		List<String> liste = importColonneDao.findByExcludedIdWithTemplateSelectNom(1, it1);
 		assertTrue(liste.size() == 30);
@@ -324,7 +344,8 @@ public class ImportColonneDaoTest extends AbstractDaoTest {
 	/**
 	 * Test l'appel de la méthode findByTemplateAndThesaurus().
 	 */
-	public void testFindByTemplateAndThesaurus() {
+	@Test
+public void testFindByTemplateAndThesaurus() {
 		final ImportTemplate it1 = importTemplateDao.findById(1);
 		List<ImportColonne> liste = importColonneDao.findByTemplateAndThesaurus(it1);
 		assertTrue(liste.size() == 8);
@@ -348,7 +369,8 @@ public class ImportColonneDaoTest extends AbstractDaoTest {
 	 *             lance une exception en cas d'erreur.
 	 */
 	@Rollback(false)
-	public void testCrud() throws Exception {
+	@Test
+public void testCrud() throws Exception {
 
 		final ImportTemplate it = importTemplateDao.findById(2);
 		final ImportColonne ic = new ImportColonne();
@@ -362,7 +384,7 @@ public class ImportColonneDaoTest extends AbstractDaoTest {
 		ic.setOrdre(1);
 
 		// Test de l'insertion
-		importColonneDao.createObject(ic);
+		importColonneDao.save(ic);
 		assertNotNull(ic.getImportColonneId());
 
 		final Integer iId = ic.getImportColonneId();
@@ -376,18 +398,19 @@ public class ImportColonneDaoTest extends AbstractDaoTest {
 		assertTrue(ic2.getOrdre() == 1);
 
 		ic2.setNom(nomUp);
-		importColonneDao.updateObject(ic2);
+		importColonneDao.save(ic2);
 		assertTrue(importColonneDao.findById(iId).getNom().equals(nomUp));
 
 		// Test de la délétion
-		importColonneDao.removeObject(iId);
+		importColonneDao.deleteById(iId);
 		assertNull(importColonneDao.findById(iId));
 	}
 
 	/**
 	 * Test de la méthode surchargée "equals".
 	 */
-	public void testEquals() {
+	@Test
+public void testEquals() {
 		final String nom = "nom";
 		final String nom2 = "nom2";
 		final ImportTemplate it1 = importTemplateDao.findById(1);
@@ -463,7 +486,8 @@ public class ImportColonneDaoTest extends AbstractDaoTest {
 	/**
 	 * Test de la méthode surchargée "hashcode".
 	 */
-	public void testHashCode() {
+	@Test
+public void testHashCode() {
 		final String nom = "nom";
 		final String nom2 = "nom2";
 		final ImportTemplate it1 = importTemplateDao.findById(1);
@@ -511,7 +535,8 @@ public class ImportColonneDaoTest extends AbstractDaoTest {
 	/**
 	 * Test la méthode toString.
 	 */
-	public void testToString() {
+	@Test
+public void testToString() {
 		final ImportColonne ic1 = importColonneDao.findById(1);
 		assertTrue(ic1.toString()
 				.equals("{" + ic1.getNom() + ", " + ic1.getImportTemplate().getNom() + "(ImportTemplate)}"));
@@ -523,7 +548,8 @@ public class ImportColonneDaoTest extends AbstractDaoTest {
 	/**
 	 * Test la méthode clone.
 	 */
-	public void testClone() {
+	@Test
+public void testClone() {
 		final ImportColonne ic1 = importColonneDao.findById(1);
 		ImportColonne ic2 = new ImportColonne();
 		ic2 = ic1.clone();

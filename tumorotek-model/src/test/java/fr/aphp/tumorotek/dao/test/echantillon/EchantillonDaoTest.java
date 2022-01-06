@@ -89,80 +89,108 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 public class EchantillonDaoTest extends AbstractDaoTest
 {
 
-   private EchantillonDao echantillonDao;
-   private PrelevementDao prelevementDao;
-   private BanqueDao banqueDao;
-   private ObjetStatutDao objetStatutDao;
-   private EchantillonTypeDao echantillonTypeDao;
-   private EchanQualiteDao echanQualiteDao;
-   private ModePrepaDao modePrepaDao;
-   private EntiteDao entiteDao;
-   private TerminaleDao terminaleDao;
-   private EtablissementDao etablissementDao;
-   private CessionTypeDao cessionTypeDao;
-   private MaladieDao maladieDao;
-   private PlateformeDao plateformeDao;
+   @Autowired
+ EchantillonDao echantillonDao;
+   @Autowired
+ PrelevementDao prelevementDao;
+   @Autowired
+ BanqueDao banqueDao;
+   @Autowired
+ ObjetStatutDao objetStatutDao;
+   @Autowired
+ EchantillonTypeDao echantillonTypeDao;
+   @Autowired
+ EchanQualiteDao echanQualiteDao;
+   @Autowired
+ ModePrepaDao modePrepaDao;
+   @Autowired
+ EntiteDao entiteDao;
+   @Autowired
+ TerminaleDao terminaleDao;
+   @Autowired
+ EtablissementDao etablissementDao;
+   @Autowired
+ CessionTypeDao cessionTypeDao;
+   @Autowired
+ MaladieDao maladieDao;
+   @Autowired
+ PlateformeDao plateformeDao;
 
    public EchantillonDaoTest(){}
 
-   public void setEchantillonDao(final EchantillonDao eDao){
+   @Test
+public void setEchantillonDao(final EchantillonDao eDao){
       this.echantillonDao = eDao;
    }
 
-   public void setPrelevementDao(final PrelevementDao pDao){
+   @Test
+public void setPrelevementDao(final PrelevementDao pDao){
       this.prelevementDao = pDao;
    }
 
-   public void setObjetStatutDao(final ObjetStatutDao oDao){
+   @Test
+public void setObjetStatutDao(final ObjetStatutDao oDao){
       this.objetStatutDao = oDao;
    }
 
-   public void setEchantillonTypeDao(final EchantillonTypeDao eDao){
+   @Test
+public void setEchantillonTypeDao(final EchantillonTypeDao eDao){
       this.echantillonTypeDao = eDao;
    }
 
-   public void setEchanQualiteDao(final EchanQualiteDao eDao){
+   @Test
+public void setEchanQualiteDao(final EchanQualiteDao eDao){
       this.echanQualiteDao = eDao;
    }
 
-   public void setModePrepaDao(final ModePrepaDao mDao){
+   @Test
+public void setModePrepaDao(final ModePrepaDao mDao){
       this.modePrepaDao = mDao;
    }
 
-   public void setBanqueDao(final BanqueDao bDao){
+   @Test
+public void setBanqueDao(final BanqueDao bDao){
       this.banqueDao = bDao;
    }
 
-   public void setEntiteDao(final EntiteDao eDao){
+   @Test
+public void setEntiteDao(final EntiteDao eDao){
       this.entiteDao = eDao;
    }
 
-   public void setCessionTypeDao(final CessionTypeDao cDao){
+   @Test
+public void setCessionTypeDao(final CessionTypeDao cDao){
       this.cessionTypeDao = cDao;
    }
 
-   public void setTerminaleDao(final TerminaleDao tDao){
+   @Test
+public void setTerminaleDao(final TerminaleDao tDao){
       this.terminaleDao = tDao;
    }
 
-   public void setEtablissementDao(final EtablissementDao eDao){
+   @Test
+public void setEtablissementDao(final EtablissementDao eDao){
       this.etablissementDao = eDao;
    }
 
-   public void setMaladieDao(final MaladieDao mDao){
+   @Test
+public void setMaladieDao(final MaladieDao mDao){
       this.maladieDao = mDao;
    }
 
-   public void setPlateformeDao(final PlateformeDao p){
+   @Test
+public void setPlateformeDao(final PlateformeDao p){
       this.plateformeDao = p;
    }
 
-   public void testReadAllCategories(){
-      final List<Echantillon> echans = echantillonDao.findAll();
+   @Test
+public void testReadAllCategories(){
+      final List<Echantillon> echans = IterableUtils.toList(echantillonDao.findAll());
       assertTrue(echans.size() == 4);
    }
 
-   public void testFindByBanques(){
+   @Test
+public void testFindByBanques(){
       final List<Banque> banks = new java.util.ArrayList<>();
       banks.add(banqueDao.findById(1));
       banks.add(banqueDao.findById(2));
@@ -170,7 +198,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
       assertTrue(res.size() == 4);
    }
 
-   public void testFindByBanquesAllIds(){
+   @Test
+public void testFindByBanquesAllIds(){
       final List<Banque> banks = new java.util.ArrayList<>();
       banks.add(banqueDao.findById(1));
       banks.add(banqueDao.findById(2));
@@ -178,7 +207,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
       assertTrue(res.size() == 4);
    }
 
-   public void testFindByIds(){
+   @Test
+public void testFindByIds(){
       final List<Integer> ids = new java.util.ArrayList<>();
       ids.add(1);
       ids.add(2);
@@ -194,7 +224,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByCode().
     */
-   public void testFindByCode(){
+   @Test
+public void testFindByCode(){
       List<Echantillon> echans = echantillonDao.findByCode("EHT.1");
       assertTrue(echans.size() == 1);
       echans = echantillonDao.findByCode("PTRA");
@@ -208,7 +239,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByCodeWithBanque().
     */
-   public void testFindByCodeWithBanque(){
+   @Test
+public void testFindByCodeWithBanque(){
       final Banque b1 = banqueDao.findById(1);
       final Banque b2 = banqueDao.findById(2);
       List<Echantillon> echans = echantillonDao.findByCodeWithBanque("EHT.1", b1);
@@ -228,7 +260,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
    /**
     * @since 2.1
     */
-   public void testFindByCodeInPlateforme(){
+   @Test
+public void testFindByCodeInPlateforme(){
       final Plateforme p1 = plateformeDao.findById(1);
       List<Echantillon> echans = echantillonDao.findByCodeInPlateforme("PTRA.1", p1);
       assertTrue(echans.size() == 1);
@@ -265,7 +298,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByCodeWithBanqueReturnIds().
     */
-   public void testFindByCodeWithBanqueReturnIds(){
+   @Test
+public void testFindByCodeWithBanqueReturnIds(){
       final Banque b1 = banqueDao.findById(1);
       final Banque b2 = banqueDao.findById(2);
       List<Integer> echans = echantillonDao.findByCodeWithBanqueReturnIds("EHT.1", b1);
@@ -286,7 +320,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
     * Test l'appel de la méthode findByDateStockAfterDate().
     * throws Exception Lance une exception en cas d'erreur.
     */
-   public void testFindByDateStockAfterDate() throws Exception{
+   @Test
+public void testFindByDateStockAfterDate() throws Exception{
       final Calendar search = Calendar.getInstance();
       search.setTime(new SimpleDateFormat("dd/MM/yyyy").parse("15/01/2009"));
       List<Echantillon> echans = echantillonDao.findByDateStockAfterDate(search);
@@ -300,7 +335,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
     * Test l'appel de la méthode findByDateStockAfterDateWithBanque().
     * throws Exception Lance une exception en cas d'erreur.
     */
-   public void testFindByDateStockAfterDateWithBanque() throws Exception{
+   @Test
+public void testFindByDateStockAfterDateWithBanque() throws Exception{
       final Banque b1 = banqueDao.findById(1);
       final Calendar search = Calendar.getInstance();
       search.setTime(new SimpleDateFormat("dd/MM/yyyy").parse("01/01/2008"));
@@ -320,7 +356,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedIdCodes().
     */
-   public void testFindByExcludedIdCodes(){
+   @Test
+public void testFindByExcludedIdCodes(){
       final Banque b = banqueDao.findById(1);
       List<String> codes = echantillonDao.findByExcludedIdCodes(1, b);
       assertTrue(codes.size() == 2);
@@ -333,7 +370,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByObjetStatut().
     */
-   public void testFindByObjetStatut(){
+   @Test
+public void testFindByObjetStatut(){
       ObjetStatut obj = objetStatutDao.findById(1);
       List<Echantillon> echans = echantillonDao.findByObjetStatut(obj);
       assertTrue(echans.size() == 2);
@@ -345,7 +383,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByEchanQualite().
     */
-   public void testFindByEchanQualite(){
+   @Test
+public void testFindByEchanQualite(){
       EchanQualite qualite = echanQualiteDao.findById(1);
       List<Echantillon> echans = echantillonDao.findByEchanQualite(qualite);
       assertTrue(echans.size() == 3);
@@ -357,7 +396,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByEchantillonType().
     */
-   public void testFindByEchantillonType(){
+   @Test
+public void testFindByEchantillonType(){
       EchantillonType type = echantillonTypeDao.findById(1);
       List<Echantillon> echans = echantillonDao.findByEchantillonType(type);
       assertTrue(echans.size() == 3);
@@ -369,7 +409,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
    //	/**
    //	 * Test l'appel de la méthode findByCrAnapath().
    //	 */
-   //	public void testFindByCrAnapath() {
+   //	@Test
+public void testFindByCrAnapath() {
    //		Fichier anapath = fichierDao.findById(1);
    //		List<Echantillon> echans = echantillonDao.findByCrAnapath(anapath);
    //		assertTrue(echans.size() == 1);
@@ -381,7 +422,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByModePrepa().
     */
-   public void testFindByModePrepa(){
+   @Test
+public void testFindByModePrepa(){
       final ModePrepa mode = modePrepaDao.findById(1);
       List<Echantillon> echans = echantillonDao.findByModePrepa(mode);
       assertTrue(echans.size() == 2);
@@ -393,7 +435,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByPrelevement().
     */
-   public void testFindByPrelevement(){
+   @Test
+public void testFindByPrelevement(){
       Prelevement prlvt = prelevementDao.findById(1);
       List<Echantillon> echans = echantillonDao.findByPrelevement(prlvt);
       assertTrue(echans.size() == 2);
@@ -405,7 +448,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByPatientNomReturnIds().
     */
-   public void testFindByPatientNomReturnIds(){
+   @Test
+public void testFindByPatientNomReturnIds(){
       final Banque b1 = banqueDao.findById(1);
       List<Integer> echans = echantillonDao.findByPatientNomReturnIds("DELPHINO", b1);
       assertTrue(echans.size() == 3);
@@ -433,7 +477,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findRestantsByPrelevement().
     */
-   public void testFindRestantsByPrelevement(){
+   @Test
+public void testFindRestantsByPrelevement(){
       Prelevement prlvt = prelevementDao.findById(1);
       List<Echantillon> echans = echantillonDao.findRestantsByPrelevement(prlvt);
       assertTrue(echans.size() == 1);
@@ -448,7 +493,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByPrelevementAndStatut().
     */
-   public void testFindByPrelevementAndStatut(){
+   @Test
+public void testFindByPrelevementAndStatut(){
       Prelevement prlvt = prelevementDao.findById(1);
       final ObjetStatut statut = objetStatutDao.findById(1);
       List<Echantillon> echans = echantillonDao.findByPrelevementAndStatut(prlvt, statut);
@@ -467,7 +513,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByBanqueSelectCode().
     */
-   public void testFindByBanqueSelectCode(){
+   @Test
+public void testFindByBanqueSelectCode(){
       final Banque b1 = banqueDao.findById(1);
       List<String> codes = echantillonDao.findByBanqueSelectCode(b1);
       assertTrue(codes.size() == 3);
@@ -481,7 +528,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByBanqueAndQuantiteSelectCode().
     */
-   public void testFindByBanqueAndQuantiteSelectCode(){
+   @Test
+public void testFindByBanqueAndQuantiteSelectCode(){
       final Banque b1 = banqueDao.findById(1);
       List<String> codes = echantillonDao.findByBanqueAndQuantiteSelectCode(b1);
       assertTrue(codes.size() == 2);
@@ -495,7 +543,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByBanqueStatutSelectCode().
     */
-   public void testFindByBanqueStatutSelectCode(){
+   @Test
+public void testFindByBanqueStatutSelectCode(){
       final Banque b1 = banqueDao.findById(1);
       final ObjetStatut o1 = objetStatutDao.findById(1);
       List<String> codes = echantillonDao.findByBanqueStatutSelectCode(b1, o1);
@@ -527,7 +576,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByBanqueInListStatutSelectCode().
     */
-   public void findByBanqueInListStatutSelectCode(){
+   @Test
+public void findByBanqueInListStatutSelectCode(){
       final Banque b1 = banqueDao.findById(1);
       final Banque b2 = banqueDao.findById(2);
       final ObjetStatut o1 = objetStatutDao.findById(1);
@@ -564,7 +614,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByTerminale().
     */
-   public void testFindByTerminale(){
+   @Test
+public void testFindByTerminale(){
       Entite entite = entiteDao.findByNom("Echantillon").get(0);
       final Terminale term1 = terminaleDao.findById(1);
       List<Echantillon> echans = echantillonDao.findByTerminale(entite, term1);
@@ -592,7 +643,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByTerminaleDirect().
     */
-   public void testFindByTerminaleDirect(){
+   @Test
+public void testFindByTerminaleDirect(){
       final Terminale term1 = terminaleDao.findById(1);
       List<Echantillon> echans = echantillonDao.findByTerminaleDirect(term1);
       assertTrue(echans.size() == 1);
@@ -605,7 +657,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
       assertTrue(echans.size() == 0);
    }
 
-   public void testFindByPatientNomOrNipInList(){
+   @Test
+public void testFindByPatientNomOrNipInList(){
       List<String> criteres = new ArrayList<>();
       criteres.add("DELPHINO");
       criteres.add("MAYER");
@@ -630,7 +683,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
       assertTrue(liste.size() == 3);
    }
 
-   public void testFindByCodeOrNumLaboInListWithBanque(){
+   @Test
+public void testFindByCodeOrNumLaboInListWithBanque(){
       List<String> criteres = new ArrayList<>();
       criteres.add("PTRA.1");
       criteres.add("PTRA.2");
@@ -665,7 +719,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
    @Rollback(false)
-   public void testCrud() throws Exception{
+   @Test
+public void testCrud() throws Exception{
       final Echantillon e = new Echantillon();
       final String codeUpdated = "CodeUp";
       final ObjetStatut statut = objetStatutDao.findById(1);
@@ -687,7 +742,7 @@ public class EchantillonDaoTest extends AbstractDaoTest
       e.setQuantite((float) 15.4587);
       e.setQuantiteInit((float) 18.1122);
       // Test de l'insertion
-      echantillonDao.createObject(e);
+      echantillonDao.save(e);
 
       assertNotNull(e.getEchantillonId());
       final Integer echanId = e.getEchantillonId();
@@ -709,7 +764,7 @@ public class EchantillonDaoTest extends AbstractDaoTest
       e2.setConformeCession(false);
       e2.setQuantite(null);
       e2.setQuantiteInit(null);
-      echantillonDao.updateObject(e2);
+      echantillonDao.save(e2);
       assertTrue(echantillonDao.findById(echanId).getCode().equals(codeUpdated));
       assertFalse(echantillonDao.findById(echanId).getSterile());
       assertFalse(echantillonDao.findById(echanId).getConformeTraitement());
@@ -718,7 +773,7 @@ public class EchantillonDaoTest extends AbstractDaoTest
       assertNull(echantillonDao.findById(echanId).getQuantiteInit());
 
       // Test de la délétion
-      echantillonDao.removeObject(echanId);
+      echantillonDao.deleteById(echanId);
       assertNull(echantillonDao.findById(echanId));
 
    }
@@ -726,7 +781,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String code1 = "code1";
       final String code2 = "code2";
       final Banque b1 = banqueDao.findById(1);
@@ -787,7 +843,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String code1 = "code1";
       final Banque b1 = banqueDao.findById(1);
       final Echantillon e1 = new Echantillon();
@@ -815,7 +872,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
    /**
     * Test le toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final Echantillon echan1 = echantillonDao.findById(1);
       assertTrue(echan1.toString().equals("{" + echan1.getCode() + "}"));
       assertTrue(echan1.listableObjectId().equals(new Integer(1)));
@@ -827,7 +885,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
    /**
     * Test la méthode clone.
     */
-   public void testClone(){
+   @Test
+public void testClone(){
 
       final Echantillon e1 = echantillonDao.findById(1);
       final ByteArrayInputStream bais = new ByteArrayInputStream(new byte[] {});
@@ -979,7 +1038,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
       }
    }
 
-   public void testNewEchantillon(){
+   @Test
+public void testNewEchantillon(){
       final Echantillon echan1 = echantillonDao.findById(1);
       assertFalse(echan1.newEchantillon());
 
@@ -987,7 +1047,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
       assertTrue(newEchan.newEchantillon());
    }
 
-   public void testCountCongelesByDates() throws ParseException{
+   @Test
+public void testCountCongelesByDates() throws ParseException{
       final Calendar d1 = Calendar.getInstance();
       d1.setTime(new SimpleDateFormat("dd/MM/yyyy").parse("31/10/2008"));
       final Calendar d2 = Calendar.getInstance();
@@ -1022,7 +1083,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
 
    }
 
-   public void testFindByMaladieAndType() throws ParseException{
+   @Test
+public void testFindByMaladieAndType() throws ParseException{
       final Maladie m4 = maladieDao.findById(4);
       final Calendar cal = Calendar.getInstance();
       cal.setTime(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("06/09/1983 10:00:00"));
@@ -1050,7 +1112,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
       assertTrue(liste.size() == 0);
    }
 
-   public void testCountCongelesByDatesExt() throws ParseException{
+   @Test
+public void testCountCongelesByDatesExt() throws ParseException{
       final Calendar d1 = Calendar.getInstance();
       d1.setTime(new SimpleDateFormat("dd/MM/yyyy").parse("31/10/2008"));
       final Calendar d2 = Calendar.getInstance();
@@ -1081,7 +1144,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
       assertTrue(res.get(0) == 0);
    }
 
-   public void testFindCountEchansByCessTypes() throws ParseException{
+   @Test
+public void testFindCountEchansByCessTypes() throws ParseException{
       Date d1 = new SimpleDateFormat("dd/MM/yyyy").parse("12/11/2009");
       final Date d2 = new SimpleDateFormat("dd/MM/yyyy").parse("14/11/2009");
       final List<Banque> banks = new ArrayList<>();
@@ -1109,7 +1173,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
       assertTrue(res.get(0) == 0);
    }
 
-   public void testFindAssociateEchansOfType(){
+   @Test
+public void testFindAssociateEchansOfType(){
       final List<Banque> banks = new ArrayList<>();
       final Banque b1 = banqueDao.findById(1);
       banks.add(b1);
@@ -1151,7 +1216,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
       assertTrue(res.size() == 2);
    }
 
-   public void testFindCountByPrelevement(){
+   @Test
+public void testFindCountByPrelevement(){
       final Prelevement p1 = prelevementDao.findById(1);
       List<Long> res = echantillonDao.findCountByPrelevement(p1);
       assertTrue(res.get(0) == 2);
@@ -1169,7 +1235,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
       assertTrue(res.get(0) == 0);
    }
 
-   public void testFindCountRestantsByPrelevement(){
+   @Test
+public void testFindCountRestantsByPrelevement(){
       final Prelevement p1 = prelevementDao.findById(1);
       List<Long> res = echantillonDao.findCountRestantsByPrelevement(p1);
       assertTrue(res.get(0) == 1);
@@ -1187,7 +1254,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
       assertTrue(res.get(0) == 0);
    }
 
-   public void testFindCountByPrelevementAndStockeReserve(){
+   @Test
+public void testFindCountByPrelevementAndStockeReserve(){
       final Prelevement p1 = prelevementDao.findById(1);
       List<Long> res = echantillonDao.findCountByPrelevementAndStockeReserve(p1);
       assertTrue(res.get(0) == 2);
@@ -1205,7 +1273,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
       assertTrue(res.get(0) == 0);
    }
 
-   public void testSortByCode(){
+   @Test
+public void testSortByCode(){
       final Echantillon e1 = new Echantillon();
       e1.setCode("TEST.1");
       final Echantillon e2 = new Echantillon();
@@ -1250,7 +1319,8 @@ public class EchantillonDaoTest extends AbstractDaoTest
       assertTrue(echans.get(9).equals(e5));
    }
 
-   public void testFindByEmplacementDao(){
+   @Test
+public void testFindByEmplacementDao(){
       List<Echantillon> echans = echantillonDao.findByEmplacement(terminaleDao.findById(1), 3);
       assertTrue(echans.size() == 1);
       assertTrue(echans.contains(echantillonDao.findById(2)));

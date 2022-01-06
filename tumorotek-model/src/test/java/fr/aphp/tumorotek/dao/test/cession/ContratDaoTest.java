@@ -40,7 +40,19 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.cession.ContratDao;
 import fr.aphp.tumorotek.dao.cession.ProtocoleTypeDao;
@@ -66,66 +78,83 @@ import fr.aphp.tumorotek.model.contexte.Service;
  * @version 25/01/2010
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class ContratDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private ContratDao contratDao;
-   /** Bean Dao. */
-   private CollaborateurDao collaborateurDao;
-   /** Bean Dao. */
-   private ServiceDao serviceDao;
-   /** Bean Dao. */
-   private ProtocoleTypeDao protocoleTypeDao;
-   /** Bean Dao. */
-   private EtablissementDao etablissementDao;
-   /** Bean Dao. */
-   private PlateformeDao plateformeDao;
+
+   @Autowired
+ ContratDao contratDao;
+
+   @Autowired
+ CollaborateurDao collaborateurDao;
+
+   @Autowired
+ ServiceDao serviceDao;
+
+   @Autowired
+ ProtocoleTypeDao protocoleTypeDao;
+
+   @Autowired
+ EtablissementDao etablissementDao;
+
+   @Autowired
+ PlateformeDao plateformeDao;
    /** valeur du nom pour la maj. */
-   private final String updatedNumero = "Mis a jour";
+   @Autowired
+ final String updatedNumero = "Mis a jour";
 
    /** Constructeur. */
    public ContratDaoTest(){
 
    }
 
-   public void setContratDao(final ContratDao cDao){
+   @Test
+public void setContratDao(final ContratDao cDao){
       this.contratDao = cDao;
    }
 
-   public void setCollaborateurDao(final CollaborateurDao dao){
+   @Test
+public void setCollaborateurDao(final CollaborateurDao dao){
       this.collaborateurDao = dao;
    }
 
-   public void setServiceDao(final ServiceDao dao){
+   @Test
+public void setServiceDao(final ServiceDao dao){
       this.serviceDao = dao;
    }
 
-   public void setProtocoleTypeDao(final ProtocoleTypeDao dao){
+   @Test
+public void setProtocoleTypeDao(final ProtocoleTypeDao dao){
       this.protocoleTypeDao = dao;
    }
 
-   public void setEtablissementDao(final EtablissementDao eDao){
+   @Test
+public void setEtablissementDao(final EtablissementDao eDao){
       this.etablissementDao = eDao;
    }
 
-   public void setPlateformeDao(final PlateformeDao pDao){
+   @Test
+public void setPlateformeDao(final PlateformeDao pDao){
       this.plateformeDao = pDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllContrats(){
-      final List<Contrat> liste = contratDao.findAll();
+   @Test
+public void testReadAllContrats(){
+      final List<Contrat> liste = IterableUtils.toList(contratDao.findAll());
       assertTrue(liste.size() == 4);
    }
 
    /**
     * Test l'appel de la méthode findByNumero().
     */
-   public void testFindByNumero(){
+   @Test
+public void testFindByNumero(){
       List<Contrat> liste = contratDao.findByNumero("CONTRAT 78551269");
       assertTrue(liste.size() == 1);
 
@@ -143,7 +172,8 @@ public class ContratDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByOrder().
     */
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       final List<Contrat> liste = contratDao.findByOrder();
       assertTrue(liste.size() == 4);
       assertTrue(liste.get(0).getContratId().equals(3));
@@ -152,7 +182,8 @@ public class ContratDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByBanqueIdWithOrder().
     */
-   public void testFindByBanqueIdWithOrder(){
+   @Test
+public void testFindByBanqueIdWithOrder(){
       final Plateforme pf1 = plateformeDao.findById(1);
       List<Contrat> liste = contratDao.findByPlateforme(pf1);
       assertTrue(liste.size() == 3);
@@ -168,7 +199,8 @@ public class ContratDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<Contrat> liste = contratDao.findByExcludedId(1);
       assertTrue(liste.size() == 3);
 
@@ -184,7 +216,8 @@ public class ContratDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas d'erreur.
     */
    @Rollback(false)
-   public void testCrud() throws Exception{
+   @Test
+public void testCrud() throws Exception{
 
       final Contrat contrat = new Contrat();
       final Collaborateur collab = collaborateurDao.findById(1);
@@ -215,7 +248,7 @@ public class ContratDaoTest extends AbstractDaoTest
       contrat.setEtablissement(etab);
       contrat.setMontant(montant);
       // Test de l'insertion
-      contratDao.createObject(contrat);
+      contratDao.save(contrat);
       assertEquals(new Integer(5), contrat.getContratId());
 
       // Test de la mise à jour
@@ -238,11 +271,11 @@ public class ContratDaoTest extends AbstractDaoTest
       assertTrue(contrat2.getMontant().equals(montant));
       contrat2.setNumero(updatedNumero);
       contrat2.setDateSignature(upSignature);
-      contratDao.updateObject(contrat2);
+      contratDao.save(contrat2);
       assertTrue(contratDao.findById(new Integer(5)).getNumero().equals(updatedNumero));
       assertTrue(contratDao.findById(new Integer(5)).getDateSignature().equals(upSignature));
       // Test de la délétion
-      contratDao.removeObject(new Integer(5));
+      contratDao.deleteById(new Integer(5));
       assertNull(contratDao.findById(new Integer(5)));
 
    }
@@ -250,7 +283,8 @@ public class ContratDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String num = "NUM";
       final String num2 = "NUM2";
       final Plateforme pf1 = plateformeDao.findById(1);
@@ -296,7 +330,8 @@ public class ContratDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String num = "NUM";
       final String num2 = "NUM2";
       final Plateforme pf1 = plateformeDao.findById(1);
@@ -337,7 +372,8 @@ public class ContratDaoTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final Contrat contrat1 = contratDao.findById(1);
       assertTrue(
          contrat1.toString().equals("{" + contrat1.getNumero() + ", " + contrat1.getPlateforme().getNom() + "(Plateforme)}"));
@@ -349,7 +385,8 @@ public class ContratDaoTest extends AbstractDaoTest
    /**
     * Test la méthode clone.
     */
-   public void testClone(){
+   @Test
+public void testClone(){
       final Contrat contrat1 = contratDao.findById(1);
       Contrat contrat2 = new Contrat();
       contrat2 = contrat1.clone();

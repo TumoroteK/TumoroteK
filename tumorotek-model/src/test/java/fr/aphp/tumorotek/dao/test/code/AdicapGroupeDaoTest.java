@@ -46,7 +46,8 @@ import fr.aphp.tumorotek.model.contexte.Categorie;
 public class AdicapGroupeDaoTest extends AbstractDaoTest
 {
 
-   private AdicapGroupeDao adicapGroupeDao;
+   @Autowired
+ AdicapGroupeDao adicapGroupeDao;
 
    /**
     * Constructeur.
@@ -58,19 +59,22 @@ public class AdicapGroupeDaoTest extends AbstractDaoTest
       return new String[] {"applicationContextDao-codes-test-mysql.xml"};
    }
 
-   public void setAdicapGroupeDao(final AdicapGroupeDao agDao){
+   @Test
+public void setAdicapGroupeDao(final AdicapGroupeDao agDao){
       this.adicapGroupeDao = agDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllAdicapGroupes(){
-      final List<AdicapGroupe> adicapGroupes = adicapGroupeDao.findAll();
+   @Test
+public void testReadAllAdicapGroupes(){
+      final List<AdicapGroupe> adicapGroupes = IterableUtils.toList(adicapGroupeDao.findAll());
       assertTrue(adicapGroupes.size() == 58);
    }
 
-   public void testFindDictionnaires(){
+   @Test
+public void testFindDictionnaires(){
       final List<AdicapGroupe> adicapGroupes = adicapGroupeDao.findDictionnaires();
       assertTrue(adicapGroupes.size() == 8);
    }
@@ -78,7 +82,8 @@ public class AdicapGroupeDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final Integer id1 = 1;
       final Integer id2 = 2;
       final AdicapGroupe a1 = new AdicapGroupe();
@@ -112,7 +117,8 @@ public class AdicapGroupeDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
 
       final Integer id1 = 1;
       final AdicapGroupe a1 = new AdicapGroupe();
@@ -134,7 +140,8 @@ public class AdicapGroupeDaoTest extends AbstractDaoTest
 
    }
 
-   public void testToString(){
+   @Test
+public void testToString(){
       final Adicap a = new Adicap();
       a.setCode("Disease");
       assertTrue(a.toString().equals("{Adicap: Disease}"));

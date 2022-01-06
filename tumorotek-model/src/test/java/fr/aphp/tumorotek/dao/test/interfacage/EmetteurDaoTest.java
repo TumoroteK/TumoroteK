@@ -39,7 +39,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.interfacage.EmetteurDao;
 import fr.aphp.tumorotek.dao.interfacage.LogicielDao;
@@ -56,14 +68,18 @@ import fr.aphp.tumorotek.model.interfacage.Logiciel;
  * @version 04/10/2011
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class EmetteurDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private EmetteurDao emetteurDao;
-   /** Bean Dao. */
-   private LogicielDao logicielDao;
+
+   @Autowired
+ EmetteurDao emetteurDao;
+
+   @Autowired
+ LogicielDao logicielDao;
 
    public EmetteurDaoTest(){
 
@@ -74,18 +90,21 @@ public class EmetteurDaoTest extends AbstractDaoTest
       return new String[] {"applicationContextDao-interfacages-test-mysql.xml"};
    }
 
-   public void setEmetteurDao(final EmetteurDao eDao){
+   @Test
+public void setEmetteurDao(final EmetteurDao eDao){
       this.emetteurDao = eDao;
    }
 
-   public void setLogicielDao(final LogicielDao lDao){
+   @Test
+public void setLogicielDao(final LogicielDao lDao){
       this.logicielDao = lDao;
    }
 
    /**
     * Test l'appel de la méthode findByOrder().
     */
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       final List<Emetteur> liste = emetteurDao.findByOrder();
       assertTrue(liste.size() == 3);
       assertTrue(liste.get(0).getIdentification().equals("Apix Anapath"));
@@ -94,15 +113,17 @@ public class EmetteurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAll(){
-      final List<Emetteur> liste = emetteurDao.findAll();
+   @Test
+public void testReadAll(){
+      final List<Emetteur> liste = IterableUtils.toList(emetteurDao.findAll());
       assertTrue(liste.size() == 3);
    }
 
    /**
     * Test l'appel de la méthode findByLogiciel().
     */
-   public void testFindByLogiciel(){
+   @Test
+public void testFindByLogiciel(){
       final Logiciel l1 = logicielDao.findById(1);
       List<Emetteur> liste = emetteurDao.findByLogiciel(l1);
       assertTrue(liste.size() == 2);
@@ -118,7 +139,8 @@ public class EmetteurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByLogicielAndIdentification().
     */
-   public void testFindByLogicielAndIdentification(){
+   @Test
+public void testFindByLogicielAndIdentification(){
       final Logiciel l1 = logicielDao.findById(1);
       List<Emetteur> liste = emetteurDao.findByLogicielAndIdentification(l1, "Apix Anapath");
       assertTrue(liste.size() == 1);
@@ -140,7 +162,8 @@ public class EmetteurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByIdentificationAndService().
     */
-   public void testFindByIdentificationAndService(){
+   @Test
+public void testFindByIdentificationAndService(){
       List<Emetteur> liste = emetteurDao.findByIdentificationAndService("Apix Anapath", "ANAP");
       assertTrue(liste.size() == 1);
 
@@ -157,7 +180,8 @@ public class EmetteurDaoTest extends AbstractDaoTest
       assertTrue(liste.size() == 0);
    }
 
-   public void testFindByIdInList(){
+   @Test
+public void testFindByIdInList(){
       final List<Integer> ids = new ArrayList<>();
       ids.add(1);
       List<Emetteur> liste = emetteurDao.findByIdInList(ids);
@@ -174,7 +198,8 @@ public class EmetteurDaoTest extends AbstractDaoTest
    }
 
    @Rollback(false)
-   public void testCrud() throws Exception{
+   @Test
+public void testCrud() throws Exception{
 
       final Emetteur e1 = new Emetteur();
       final Logiciel log = logicielDao.findById(1);
@@ -182,7 +207,7 @@ public class EmetteurDaoTest extends AbstractDaoTest
       e1.setIdentification("ID");
 
       // Test de l'insertion
-      emetteurDao.createObject(e1);
+      emetteurDao.save(e1);
       assertEquals(new Integer(4), e1.getEmetteurId());
 
       final Emetteur e2 = emetteurDao.findById(new Integer(4));
@@ -197,20 +222,21 @@ public class EmetteurDaoTest extends AbstractDaoTest
       e2.setIdentification("ID2");
       e2.setService("SERV");
       e2.setObservations("OBS");
-      emetteurDao.updateObject(e2);
+      emetteurDao.save(e2);
       assertTrue(emetteurDao.findById(new Integer(4)).getIdentification().equals("ID2"));
       assertTrue(emetteurDao.findById(new Integer(4)).getService().equals("SERV"));
       assertTrue(emetteurDao.findById(new Integer(4)).getObservations().equals("OBS"));
 
       // Test de la délétion
-      emetteurDao.removeObject(new Integer(4));
+      emetteurDao.deleteById(new Integer(4));
       assertNull(emetteurDao.findById(new Integer(4)));
    }
 
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String nom = "id1";
       final String nom2 = "id2";
       final Logiciel log1 = logicielDao.findById(1);
@@ -270,7 +296,8 @@ public class EmetteurDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String nom = "id1";
       final String nom2 = "id2";
       final Logiciel log1 = logicielDao.findById(1);
@@ -308,7 +335,8 @@ public class EmetteurDaoTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final Emetteur e1 = emetteurDao.findById(1);
       assertTrue(e1.toString().equals("{" + e1.getIdentification() + ", " + e1.getLogiciel().getNom() + "(Logiciel)}"));
 

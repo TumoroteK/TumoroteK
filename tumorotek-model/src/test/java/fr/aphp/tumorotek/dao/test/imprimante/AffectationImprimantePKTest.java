@@ -37,7 +37,19 @@ package fr.aphp.tumorotek.dao.test.imprimante;
 
 import java.text.ParseException;
 
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.imprimante.ImprimanteDao;
@@ -57,30 +69,38 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * @version 21/03/2011.
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class AffectationImprimantePKTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private UtilisateurDao utilisateurDao;
-   /** Bean Dao. */
-   private BanqueDao banqueDao;
-   /** Bean Dao. */
-   private ImprimanteDao imprimanteDao;
+
+   @Autowired
+ UtilisateurDao utilisateurDao;
+
+   @Autowired
+ BanqueDao banqueDao;
+
+   @Autowired
+ ImprimanteDao imprimanteDao;
 
    public AffectationImprimantePKTest(){
 
    }
 
-   public void setUtilisateurDao(final UtilisateurDao uDao){
+   @Test
+public void setUtilisateurDao(final UtilisateurDao uDao){
       this.utilisateurDao = uDao;
    }
 
-   public void setBanqueDao(final BanqueDao bDao){
+   @Test
+public void setBanqueDao(final BanqueDao bDao){
       this.banqueDao = bDao;
    }
 
-   public void setImprimanteDao(final ImprimanteDao iDao){
+   @Test
+public void setImprimanteDao(final ImprimanteDao iDao){
       this.imprimanteDao = iDao;
    }
 
@@ -88,7 +108,8 @@ public class AffectationImprimantePKTest extends AbstractDaoTest
     * Test de la méthode surchargée "equals".
     * @throws ParseException 
     */
-   public void testEquals() throws ParseException{
+   @Test
+public void testEquals() throws ParseException{
       final AffectationImprimantePK pk1 = new AffectationImprimantePK();
       final AffectationImprimantePK pk2 = new AffectationImprimantePK();
 
@@ -111,7 +132,8 @@ public class AffectationImprimantePKTest extends AbstractDaoTest
     * Test de la méthode surchargée "hashcode".
     * @throws ParseException 
     */
-   public void testHashCode() throws ParseException{
+   @Test
+public void testHashCode() throws ParseException{
       final AffectationImprimantePK pk1 = new AffectationImprimantePK();
       final AffectationImprimantePK pk2 = new AffectationImprimantePK();
 
@@ -128,7 +150,8 @@ public class AffectationImprimantePKTest extends AbstractDaoTest
       assertTrue(hash == pk1.hashCode());
    }
 
-   private void populateClefsToTestEqualsAndHashCode() throws ParseException{
+   @Autowired
+ void populateClefsToTestEqualsAndHashCode() throws ParseException{
 
       final Imprimante i1 = imprimanteDao.findById(1);
       final Imprimante i2 = imprimanteDao.findById(2);
@@ -177,7 +200,8 @@ public class AffectationImprimantePKTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final Imprimante i1 = imprimanteDao.findById(1);
       final Utilisateur u1 = utilisateurDao.findById(1);
       final Banque b1 = banqueDao.findById(1);

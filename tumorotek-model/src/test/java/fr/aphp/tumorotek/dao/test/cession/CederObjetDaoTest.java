@@ -39,7 +39,19 @@ import java.text.ParseException;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.cession.CederObjetDao;
 import fr.aphp.tumorotek.dao.cession.CessionDao;
@@ -62,47 +74,59 @@ import fr.aphp.tumorotek.model.systeme.Unite;
  * @version 25/01/2010
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class CederObjetDaoTest extends AbstractDaoTest
 {
 
-   private CederObjetDao cederObjetDao;
-   private CessionDao cessionDao;
-   private UniteDao uniteDao;
-   private EntiteDao entiteDao;
+   @Autowired
+ CederObjetDao cederObjetDao;
+   @Autowired
+ CessionDao cessionDao;
+   @Autowired
+ UniteDao uniteDao;
+   @Autowired
+ EntiteDao entiteDao;
 
    public CederObjetDaoTest(){
 
    }
 
-   public void setCederObjetDao(final CederObjetDao dao){
+   @Test
+public void setCederObjetDao(final CederObjetDao dao){
       this.cederObjetDao = dao;
    }
 
-   public void setCessionDao(final CessionDao dao){
+   @Test
+public void setCessionDao(final CessionDao dao){
       this.cessionDao = dao;
    }
 
-   public void setUniteDao(final UniteDao dao){
+   @Test
+public void setUniteDao(final UniteDao dao){
       this.uniteDao = dao;
    }
 
-   public void setEntiteDao(final EntiteDao eDao){
+   @Test
+public void setEntiteDao(final EntiteDao eDao){
       this.entiteDao = eDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAll(){
-      final List<CederObjet> liste = cederObjetDao.findAll();
+   @Test
+public void testReadAll(){
+      final List<CederObjet> liste = IterableUtils.toList(cederObjetDao.findAll());
       assertTrue(liste.size() == 6);
    }
 
    /**
     * Test l'appel de la méthode findById().
     */
-   public void testFindById(){
+   @Test
+public void testFindById(){
       final Cession c1 = cessionDao.findById(1);
       final Entite e1 = entiteDao.findById(3);
       CederObjetPK pk = new CederObjetPK(c1, e1, 1);
@@ -118,7 +142,8 @@ public class CederObjetDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedPK().
     */
-   public void testFindByExcludedPK(){
+   @Test
+public void testFindByExcludedPK(){
       final Cession c1 = cessionDao.findById(1);
       final Entite e1 = entiteDao.findById(3);
       CederObjetPK pk = cederObjetDao.findById(new CederObjetPK(c1, e1, 1)).getPk();
@@ -135,7 +160,8 @@ public class CederObjetDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByEntite().
     */
-   public void testFindByEntite(){
+   @Test
+public void testFindByEntite(){
       final Entite e1 = entiteDao.findById(3);
       final Entite e2 = entiteDao.findById(2);
 
@@ -149,7 +175,8 @@ public class CederObjetDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByObjetId().
     */
-   public void testFindByObjetId(){
+   @Test
+public void testFindByObjetId(){
       List<CederObjet> liste = cederObjetDao.findByObjetId(1);
       assertTrue(liste.size() == 3);
 
@@ -166,7 +193,8 @@ public class CederObjetDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByEntiteObjet().
     */
-   public void testFindByEntiteObjet(){
+   @Test
+public void testFindByEntiteObjet(){
       final Entite e1 = entiteDao.findById(3);
       final Entite e2 = entiteDao.findById(2);
 
@@ -192,7 +220,8 @@ public class CederObjetDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByCessionEntite().
     */
-   public void testFindByCessionEntite(){
+   @Test
+public void testFindByCessionEntite(){
       final Entite e1 = entiteDao.findById(3);
       final Entite e2 = entiteDao.findById(2);
       final Cession c1 = cessionDao.findById(1);
@@ -224,7 +253,8 @@ public class CederObjetDaoTest extends AbstractDaoTest
     *
     **/
    @Rollback(false)
-   public void testCrudCederObjet(){
+   @Test
+public void testCrudCederObjet(){
 
       final CederObjet co = new CederObjet();
       final Cession c = cessionDao.findById(1);
@@ -242,8 +272,8 @@ public class CederObjetDaoTest extends AbstractDaoTest
       //co.setVolumeUnite(u);
 
       // Test de l'insertion
-      cederObjetDao.createObject(co);
-      assertTrue(cederObjetDao.findAll().size() == 7);
+      cederObjetDao.save(co);
+      assertTrue(IterableUtils.toList(cederObjetDao.findAll()).size() == 7);
 
       // Test de la mise à jour
       final CederObjetPK pk = new CederObjetPK();
@@ -260,12 +290,12 @@ public class CederObjetDaoTest extends AbstractDaoTest
 
       //update
       co2.setQuantite(upValue);
-      cederObjetDao.updateObject(co2);
+      cederObjetDao.save(co2);
       assertTrue(cederObjetDao.findById(pk).equals(co2));
       assertTrue(cederObjetDao.findById(pk).getQuantite() == (float) 10.636);
 
       // Test de la délétion
-      cederObjetDao.removeObject(pk);
+      cederObjetDao.deleteById(pk);
       assertNull(cederObjetDao.findById(pk));
    }
 
@@ -273,7 +303,8 @@ public class CederObjetDaoTest extends AbstractDaoTest
     * Test de la méthode surchargée "equals".
     * @throws ParseException 
     */
-   public void testEquals() throws ParseException{
+   @Test
+public void testEquals() throws ParseException{
 
       final CederObjet co1 = new CederObjet();
       final CederObjet co2 = new CederObjet();
@@ -297,7 +328,8 @@ public class CederObjetDaoTest extends AbstractDaoTest
     * Test de la méthode surchargée "hashcode".
     * @throws ParseException 
     */
-   public void testHashCode() throws ParseException{
+   @Test
+public void testHashCode() throws ParseException{
       final CederObjet co1 = new CederObjet();
       final CederObjet co2 = new CederObjet();
       final CederObjet co3 = new CederObjet();
@@ -319,7 +351,8 @@ public class CederObjetDaoTest extends AbstractDaoTest
       assertTrue(hash == co1.hashCode());
    }
 
-   private void populateClefsToTestEqualsAndHashCode(final CederObjet co1, final CederObjet co2) throws ParseException{
+   @Autowired
+ void populateClefsToTestEqualsAndHashCode(final CederObjet co1, final CederObjet co2) throws ParseException{
 
       final Cession c1 = cessionDao.findById(1);
       final Entite e1 = entiteDao.findById(3);
@@ -347,7 +380,8 @@ public class CederObjetDaoTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final Cession c1 = cessionDao.findById(1);
       final Entite e1 = entiteDao.findById(3);
       final CederObjetPK pk = new CederObjetPK(c1, e1, 1);
@@ -363,7 +397,8 @@ public class CederObjetDaoTest extends AbstractDaoTest
    /**
     * Test la méthode clone.
     */
-   public void testClone(){
+   @Test
+public void testClone(){
       final Cession c1 = cessionDao.findById(1);
       final Entite e1 = entiteDao.findById(3);
       final CederObjetPK pk = new CederObjetPK(c1, e1, 1);
@@ -406,7 +441,8 @@ public class CederObjetDaoTest extends AbstractDaoTest
 
    }
 
-   public void testCountObjectCessed(){
+   @Test
+public void testCountObjectCessed(){
       final Entite e1 = entiteDao.findById(3);
       final Entite e2 = entiteDao.findById(2);
       final Entite e8 = entiteDao.findById(8);
@@ -438,7 +474,8 @@ public class CederObjetDaoTest extends AbstractDaoTest
       assertTrue(count == 0);
    }
 
-   public void testFindCodesEchantillonByCession(){
+   @Test
+public void testFindCodesEchantillonByCession(){
 
       final Cession c1 = cessionDao.findById(1);
       final Cession c2 = cessionDao.findById(2);
@@ -461,7 +498,8 @@ public class CederObjetDaoTest extends AbstractDaoTest
       assertTrue(codes.isEmpty());
    }
 
-   public void testFindCodesDeriveByCession(){
+   @Test
+public void testFindCodesDeriveByCession(){
 
       final Cession c1 = cessionDao.findById(1);
       final Cession c2 = cessionDao.findById(2);
@@ -481,7 +519,8 @@ public class CederObjetDaoTest extends AbstractDaoTest
       assertTrue(codes.isEmpty());
    }
 
-   public void testFindCountObjCession(){
+   @Test
+public void testFindCountObjCession(){
       // nulls
       Long cc = cederObjetDao.findCountObjCession(null, null).get(0);
       assertTrue(cc.longValue() == 0);

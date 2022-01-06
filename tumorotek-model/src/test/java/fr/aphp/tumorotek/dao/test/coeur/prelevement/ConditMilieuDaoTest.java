@@ -60,12 +60,15 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 public class ConditMilieuDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private ConditMilieuDao conditMilieuDao;
-   private PlateformeDao plateformeDao;
+
+   @Autowired
+ ConditMilieuDao conditMilieuDao;
+   @Autowired
+ PlateformeDao plateformeDao;
 
    /** Valeur du milieu pour la maj. */
-   private final String updatedMilieu = "Milieu mis a jour";
+   @Autowired
+ final String updatedMilieu = "Milieu mis a jour";
 
    /**
     * Constructeur.
@@ -76,18 +79,21 @@ public class ConditMilieuDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param ctDao est le bean Dao.
     */
-   public void setConditMilieuDao(final ConditMilieuDao ctDao){
+   @Test
+public void setConditMilieuDao(final ConditMilieuDao ctDao){
       this.conditMilieuDao = ctDao;
    }
 
-   public void setPlateformeDao(final PlateformeDao pfDao){
+   @Test
+public void setPlateformeDao(final PlateformeDao pfDao){
       this.plateformeDao = pfDao;
    }
 
    /**
     * Test l'appel de la méthode toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       ConditMilieu cm1 = conditMilieuDao.findById(1);
       assertTrue(cm1.toString().equals("{" + cm1.getNom() + "}"));
       cm1 = new ConditMilieu();
@@ -97,12 +103,14 @@ public class ConditMilieuDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllConditMilieu(){
-      final List<ConditMilieu> milieux = conditMilieuDao.findAll();
+   @Test
+public void testReadAllConditMilieu(){
+      final List<ConditMilieu> milieux = IterableUtils.toList(conditMilieuDao.findAll());
       assertTrue(milieux.size() == 2);
    }
 
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
       List<? extends TKThesaurusObject> list = conditMilieuDao.findByPfOrder(pf);
       assertTrue(list.size() == 1);
@@ -117,7 +125,8 @@ public class ConditMilieuDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByMilieu().
     */
-   public void testFindByMilieu(){
+   @Test
+public void testFindByMilieu(){
       List<ConditMilieu> milieux = conditMilieuDao.findByMilieu("HEPARINE");
       assertTrue(milieux.size() == 1);
       milieux = conditMilieuDao.findByMilieu("EDTA");
@@ -134,13 +143,14 @@ public class ConditMilieuDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
    @Rollback(false)
-   public void testCrudConditMilieu() throws Exception{
+   @Test
+public void testCrudConditMilieu() throws Exception{
       final ConditMilieu ct = new ConditMilieu();
 
       ct.setNom("EDTA");
       ct.setPlateforme(plateformeDao.findById(1));
       // Test de l'insertion
-      conditMilieuDao.createObject(ct);
+      conditMilieuDao.save(ct);
       assertEquals(new Integer(3), ct.getId());
 
       // Test de la mise à jour
@@ -148,11 +158,11 @@ public class ConditMilieuDaoTest extends AbstractDaoTest
       assertNotNull(ct2);
       assertTrue(ct2.getNom().equals("EDTA"));
       ct2.setNom(updatedMilieu);
-      conditMilieuDao.updateObject(ct2);
+      conditMilieuDao.save(ct2);
       assertTrue(conditMilieuDao.findById(new Integer(3)).getNom().equals(updatedMilieu));
 
       // Test de la délétion
-      conditMilieuDao.removeObject(new Integer(3));
+      conditMilieuDao.deleteById(new Integer(3));
       assertNull(conditMilieuDao.findById(new Integer(3)));
 
    }
@@ -160,7 +170,8 @@ public class ConditMilieuDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String milieu = "Milieu";
       final String milieu2 = "Milieu2";
       final ConditMilieu ct1 = new ConditMilieu();
@@ -211,7 +222,8 @@ public class ConditMilieuDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String milieu = "Milieu";
       final ConditMilieu ct1 = new ConditMilieu();
       ct1.setId(1);

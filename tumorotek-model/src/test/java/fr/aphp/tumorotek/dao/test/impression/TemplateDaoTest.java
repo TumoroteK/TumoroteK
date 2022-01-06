@@ -40,7 +40,19 @@ import static fr.aphp.tumorotek.model.impression.ETemplateType.BLOC;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.impression.TemplateDao;
@@ -60,45 +72,55 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * @version 23/07/2010
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class TemplateDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private TemplateDao templateDao;
-   /** Bean Dao. */
-   private BanqueDao banqueDao;
-   /** Bean Dao. */
-   private EntiteDao entiteDao;
+
+   @Autowired
+ TemplateDao templateDao;
+
+   @Autowired
+ BanqueDao banqueDao;
+
+   @Autowired
+ EntiteDao entiteDao;
 
    public TemplateDaoTest(){
 
    }
 
-   public void setTemplateDao(final TemplateDao tDao){
+   @Test
+public void setTemplateDao(final TemplateDao tDao){
       this.templateDao = tDao;
    }
 
-   public void setBanqueDao(final BanqueDao bDao){
+   @Test
+public void setBanqueDao(final BanqueDao bDao){
       this.banqueDao = bDao;
    }
 
-   public void setEntiteDao(final EntiteDao eDao){
+   @Test
+public void setEntiteDao(final EntiteDao eDao){
       this.entiteDao = eDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAll(){
-      final List<Template> liste = templateDao.findAll();
+   @Test
+public void testReadAll(){
+      final List<Template> liste = IterableUtils.toList(templateDao.findAll());
       assertTrue(liste.size() == 3);
    }
 
    /**
     * Test l'appel de la méthode findByBanque().
     */
-   public void testFindByBanque(){
+   @Test
+public void testFindByBanque(){
       final Banque b1 = banqueDao.findById(1);
       List<Template> liste = templateDao.findByBanque(b1);
       assertTrue(liste.size() == 2);
@@ -115,7 +137,8 @@ public class TemplateDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByBanqueEntite().
     */
-   public void testFindByBanqueEntite(){
+   @Test
+public void testFindByBanqueEntite(){
       final Banque b1 = banqueDao.findById(1);
       final Banque b3 = banqueDao.findById(3);
       final Entite e1 = entiteDao.findById(1);
@@ -143,7 +166,8 @@ public class TemplateDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       final Banque b1 = banqueDao.findById(1);
       final Banque b3 = banqueDao.findById(3);
 
@@ -177,7 +201,8 @@ public class TemplateDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas d'erreur.
     */
    @Rollback(false)
-   public void testCrud() throws Exception{
+   @Test
+public void testCrud() throws Exception{
 
       final Banque b = banqueDao.findById(1);
       final Entite e = entiteDao.findById(2);
@@ -194,7 +219,7 @@ public class TemplateDaoTest extends AbstractDaoTest
       t.setPiedPage("PIED");
 
       // Test de l'insertion
-      templateDao.createObject(t);
+      templateDao.save(t);
       assertEquals(new Integer(4), t.getTemplateId());
 
       // Test de la mise à jour
@@ -208,18 +233,19 @@ public class TemplateDaoTest extends AbstractDaoTest
       assertTrue(t2.getPiedPage().equals("PIED"));
 
       t2.setNom(nomUp);
-      templateDao.updateObject(t2);
+      templateDao.save(t2);
       assertTrue(templateDao.findById(new Integer(4)).getNom().equals(nomUp));
 
       // Test de la délétion
-      templateDao.removeObject(new Integer(4));
+      templateDao.deleteById(new Integer(4));
       assertNull(templateDao.findById(new Integer(4)));
    }
 
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String nom = "nom";
       final String nom2 = "nom2";
       final Banque b1 = banqueDao.findById(1);
@@ -279,7 +305,8 @@ public class TemplateDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String nom = "nom";
       final String nom2 = "nom2";
       final Banque b1 = banqueDao.findById(1);
@@ -317,7 +344,8 @@ public class TemplateDaoTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final Template t1 = templateDao.findById(1);
       assertTrue(t1.toString().equals("{" + t1.getNom() + "}"));
 
@@ -328,7 +356,8 @@ public class TemplateDaoTest extends AbstractDaoTest
    /**
     * Test la méthode clone.
     */
-   public void testClone(){
+   @Test
+public void testClone(){
       final Template t1 = templateDao.findById(1);
       Template t2 = new Template();
       t2 = t1.clone();

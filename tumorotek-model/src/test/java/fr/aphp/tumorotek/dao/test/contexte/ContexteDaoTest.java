@@ -55,11 +55,13 @@ import fr.aphp.tumorotek.model.contexte.Contexte;
 public class ContexteDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private ContexteDao contexteDao;
+
+   @Autowired
+ ContexteDao contexteDao;
 
    /** Valeur du nom pour la maj. */
-   private final String updatedNom = "Contexte mis a jour";
+   @Autowired
+ final String updatedNom = "Contexte mis a jour";
 
    /**
     * Constructeur.
@@ -70,22 +72,25 @@ public class ContexteDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param cDao est le bean Dao.
     */
-   public void setContexteDao(final ContexteDao cDao){
+   @Test
+public void setContexteDao(final ContexteDao cDao){
       this.contexteDao = cDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllContextes(){
-      final List<Contexte> contextes = contexteDao.findAll();
+   @Test
+public void testReadAllContextes(){
+      final List<Contexte> contextes = IterableUtils.toList(contexteDao.findAll());
       assertTrue(contextes.size() == 2);
    }
 
    /**
     * Test l'appel de la méthode findByOrder().
     */
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       final List<Contexte> list = contexteDao.findByOrder();
       assertTrue(list.size() == 2);
       assertTrue(list.get(0).getNom().equals("DEFAUT"));
@@ -94,7 +99,8 @@ public class ContexteDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByNom().
     */
-   public void testFindByNom(){
+   @Test
+public void testFindByNom(){
       List<Contexte> contextes = contexteDao.findByNom("DEFAUT");
       assertTrue(contextes.size() == 1);
       contextes = contexteDao.findByNom("CAT5");
@@ -104,7 +110,8 @@ public class ContexteDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByBanqueId().
     */
-   public void testFindByBanqueId(){
+   @Test
+public void testFindByBanqueId(){
       List<Contexte> contextes = contexteDao.findByBanqueId(1);
       assertTrue(contextes.size() == 1);
       contextes = contexteDao.findByBanqueId(4);
@@ -116,12 +123,13 @@ public class ContexteDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
    @Rollback(false)
-   public void testCrudCategorie() throws Exception{
+   @Test
+public void testCrudCategorie() throws Exception{
       final Contexte c = new Contexte();
 
       c.setNom("CAT3");
       // Test de l'insertion
-      contexteDao.createObject(c);
+      contexteDao.save(c);
       assertEquals(new Integer(3), c.getContexteId());
 
       // Test de la mise à jour
@@ -129,11 +137,11 @@ public class ContexteDaoTest extends AbstractDaoTest
       assertNotNull(c2);
       assertTrue(c2.getNom().equals("CAT3"));
       c2.setNom(updatedNom);
-      contexteDao.updateObject(c2);
+      contexteDao.save(c2);
       assertTrue(contexteDao.findById(new Integer(3)).getNom().equals(updatedNom));
 
       // Test de la délétion
-      contexteDao.removeObject(new Integer(3));
+      contexteDao.deleteById(new Integer(3));
       assertNull(contexteDao.findById(new Integer(3)));
 
    }
@@ -141,7 +149,8 @@ public class ContexteDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String nom = "Categorie";
       final String nom2 = "Categorie2";
       final Contexte c1 = new Contexte();
@@ -179,7 +188,8 @@ public class ContexteDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String nom = "Contexte";
       final Contexte c1 = new Contexte();
       c1.setContexteId(1);

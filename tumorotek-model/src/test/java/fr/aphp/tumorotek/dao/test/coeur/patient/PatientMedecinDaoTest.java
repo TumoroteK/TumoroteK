@@ -64,31 +64,38 @@ public class PatientMedecinDaoTest extends AbstractDaoTest
 {
 
    /** Beans Dao. */
-   private PatientMedecinDao patientMedecinDao;
-   private PatientDao patientDao;
-   private CollaborateurDao collaborateurDao;
+   @Autowired
+ PatientMedecinDao patientMedecinDao;
+   @Autowired
+ PatientDao patientDao;
+   @Autowired
+ CollaborateurDao collaborateurDao;
 
    /**
     * Constructeur.
     */
    public PatientMedecinDaoTest(){}
 
-   public void setPatientMedecinDao(final PatientMedecinDao mDao){
+   @Test
+public void setPatientMedecinDao(final PatientMedecinDao mDao){
       this.patientMedecinDao = mDao;
    }
 
-   public void setPatientDao(final PatientDao pDao){
+   @Test
+public void setPatientDao(final PatientDao pDao){
       this.patientDao = pDao;
    }
 
-   public void setCollaborateurDao(final CollaborateurDao cDao){
+   @Test
+public void setCollaborateurDao(final CollaborateurDao cDao){
       this.collaborateurDao = cDao;
    }
 
    /**
     * Test l'appel de la méthode toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final PatientMedecinPK pk = new PatientMedecinPK(collaborateurDao.findById(1), patientDao.findById(1));
       PatientMedecin pm1 = patientMedecinDao.findById(pk);
       assertTrue(pm1.toString().equals("{" + pm1.getPatient() + " - " + pm1.getCollaborateur() + "}"));
@@ -104,8 +111,9 @@ public class PatientMedecinDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllPatientMedecins(){
-      final List<PatientMedecin> patientMedecins = patientMedecinDao.findAll();
+   @Test
+public void testReadAllPatientMedecins(){
+      final List<PatientMedecin> patientMedecins = IterableUtils.toList(patientMedecinDao.findAll());
       assertTrue(patientMedecins.size() == 3);
    }
 
@@ -116,7 +124,8 @@ public class PatientMedecinDaoTest extends AbstractDaoTest
     *
     **/
    @Rollback(false)
-   public void testCrudLienFamilial(){
+   @Test
+public void testCrudLienFamilial(){
       final PatientMedecin pm = new PatientMedecin();
       final Patient p1 = patientDao.findById(2);
       final Collaborateur c1 = collaborateurDao.findById(4);
@@ -124,8 +133,8 @@ public class PatientMedecinDaoTest extends AbstractDaoTest
       pm.setCollaborateur(c1);
       pm.setOrdre(1);
       // Test de l'insertion
-      patientMedecinDao.createObject(pm);
-      assertTrue(patientMedecinDao.findAll().size() == 4);
+      patientMedecinDao.save(pm);
+      assertTrue(IterableUtils.toList(patientMedecinDao.findAll()).size() == 4);
       // Test de la mise à jour
       final PatientMedecinPK pk = new PatientMedecinPK();
       pk.setPatient(p1);
@@ -137,11 +146,11 @@ public class PatientMedecinDaoTest extends AbstractDaoTest
       assertTrue(pm2.getOrdre().equals(1));
       //update
       pm2.setOrdre(2);
-      patientMedecinDao.updateObject(pm2);
+      patientMedecinDao.save(pm2);
       assertTrue(patientMedecinDao.findById(pk).equals(pm2));
       assertTrue(patientMedecinDao.findById(pk).getOrdre().equals(2));
       // Test de la délétion
-      patientMedecinDao.removeObject(pk);
+      patientMedecinDao.deleteById(pk);
       assertNull(patientMedecinDao.findById(pk));
    }
 
@@ -149,7 +158,8 @@ public class PatientMedecinDaoTest extends AbstractDaoTest
     * Test de la méthode surchargée "equals".
     * @throws ParseException 
     */
-   public void testEquals() throws ParseException{
+   @Test
+public void testEquals() throws ParseException{
 
       final PatientMedecin pm1 = new PatientMedecin();
       final PatientMedecin pm2 = new PatientMedecin();
@@ -173,7 +183,8 @@ public class PatientMedecinDaoTest extends AbstractDaoTest
     * Test de la méthode surchargée "hashcode".
     * @throws ParseException 
     */
-   public void testHashCode() throws ParseException{
+   @Test
+public void testHashCode() throws ParseException{
       final PatientMedecin pm1 = new PatientMedecin();
       final PatientMedecin pm2 = new PatientMedecin();
       final PatientMedecin pm3 = new PatientMedecin();
@@ -195,7 +206,8 @@ public class PatientMedecinDaoTest extends AbstractDaoTest
       assertTrue(hash == pm1.hashCode());
    }
 
-   private void populateClefsToTestEqualsAndHashCode(final PatientMedecin pm1, final PatientMedecin pm2) throws ParseException{
+   @Autowired
+ void populateClefsToTestEqualsAndHashCode(final PatientMedecin pm1, final PatientMedecin pm2) throws ParseException{
 
       final Patient p1 = patientDao.findById(1);
       final Patient p2 = patientDao.findById(2);

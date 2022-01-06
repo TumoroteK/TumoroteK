@@ -38,7 +38,19 @@ package fr.aphp.tumorotek.dao.test.cession;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.cession.CessionTypeDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
@@ -54,36 +66,43 @@ import fr.aphp.tumorotek.model.contexte.Categorie;
  * @version 25/01/2010
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class CessionTypeDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private CessionTypeDao cessionTypeDao;
+
+   @Autowired
+ CessionTypeDao cessionTypeDao;
    /** valeur du nom pour la maj. */
-   private final String updatedType = "Mis a jour";
+   @Autowired
+ final String updatedType = "Mis a jour";
 
    /** Constructeur. */
    public CessionTypeDaoTest(){
 
    }
 
-   public void setCessionTypeDao(final CessionTypeDao cDao){
+   @Test
+public void setCessionTypeDao(final CessionTypeDao cDao){
       this.cessionTypeDao = cDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllCessionTypes(){
-      final List<CessionType> liste = cessionTypeDao.findAll();
+   @Test
+public void testReadAllCessionTypes(){
+      final List<CessionType> liste = IterableUtils.toList(cessionTypeDao.findAll());
       assertTrue(liste.size() == 3);
    }
 
    /**
     * Test l'appel de la méthode findByOrder().
     */
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       final List<CessionType> liste = cessionTypeDao.findByOrder();
       assertTrue(liste.size() == 3);
       assertTrue(liste.get(0).getType().equals("Destruction"));
@@ -92,7 +111,8 @@ public class CessionTypeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExamen().
     */
-   public void testFindByExamen(){
+   @Test
+public void testFindByExamen(){
       List<CessionType> liste = cessionTypeDao.findByType("SANITAIRE");
       assertTrue(liste.size() == 1);
 
@@ -112,13 +132,14 @@ public class CessionTypeDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas d'erreur.
     */
    @Rollback(false)
-   public void testCrudCessionType() throws Exception{
+   @Test
+public void testCrudCessionType() throws Exception{
 
       final CessionType ct = new CessionType();
 
       ct.setType("TEST");
       // Test de l'insertion
-      cessionTypeDao.createObject(ct);
+      cessionTypeDao.save(ct);
       assertEquals(new Integer(4), ct.getCessionTypeId());
 
       // Test de la mise à jour
@@ -126,11 +147,11 @@ public class CessionTypeDaoTest extends AbstractDaoTest
       assertNotNull(ct2);
       assertTrue(ct2.getType().equals("TEST"));
       ct2.setType(updatedType);
-      cessionTypeDao.updateObject(ct2);
+      cessionTypeDao.save(ct2);
       assertTrue(cessionTypeDao.findById(new Integer(4)).getType().equals(updatedType));
 
       // Test de la délétion
-      cessionTypeDao.removeObject(new Integer(4));
+      cessionTypeDao.deleteById(new Integer(4));
       assertNull(cessionTypeDao.findById(new Integer(4)));
 
    }
@@ -138,7 +159,8 @@ public class CessionTypeDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String type = "TYPE";
       final String type2 = "TYPE2";
       final CessionType ct1 = new CessionType();
@@ -175,7 +197,8 @@ public class CessionTypeDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String type = "TYPE";
       final CessionType ct1 = new CessionType();
       ct1.setType(type);
@@ -199,7 +222,8 @@ public class CessionTypeDaoTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final CessionType ct1 = cessionTypeDao.findById(1);
       assertTrue(ct1.toString().equals("{" + ct1.getType() + "}"));
 

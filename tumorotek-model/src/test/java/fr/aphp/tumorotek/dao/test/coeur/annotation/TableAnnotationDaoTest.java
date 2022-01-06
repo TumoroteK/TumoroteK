@@ -73,39 +73,51 @@ public class TableAnnotationDaoTest extends AbstractDaoTest
 {
 
    /** Beans Dao. */
-   private TableAnnotationDao tableAnnotationDao;
-   private TableAnnotationBanqueDao tableAnnotationBanqueDao;
-   private EntiteDao entiteDao;
-   private BanqueDao banqueDao;
-   private CatalogueDao catalogueDao;
-   private PlateformeDao plateformeDao;
+   @Autowired
+ TableAnnotationDao tableAnnotationDao;
+   @Autowired
+ TableAnnotationBanqueDao tableAnnotationBanqueDao;
+   @Autowired
+ EntiteDao entiteDao;
+   @Autowired
+ BanqueDao banqueDao;
+   @Autowired
+ CatalogueDao catalogueDao;
+   @Autowired
+ PlateformeDao plateformeDao;
 
    /**
     * Constructeur.
     */
    public TableAnnotationDaoTest(){}
 
-   public void setTableAnnotationDao(final TableAnnotationDao tDao){
+   @Test
+public void setTableAnnotationDao(final TableAnnotationDao tDao){
       this.tableAnnotationDao = tDao;
    }
 
-   public void setEntiteDao(final EntiteDao eDao){
+   @Test
+public void setEntiteDao(final EntiteDao eDao){
       this.entiteDao = eDao;
    }
 
-   public void setBanqueDao(final BanqueDao bDao){
+   @Test
+public void setBanqueDao(final BanqueDao bDao){
       this.banqueDao = bDao;
    }
 
-   public void setCatalogueDao(final CatalogueDao cataDao){
+   @Test
+public void setCatalogueDao(final CatalogueDao cataDao){
       this.catalogueDao = cataDao;
    }
 
-   public void setPlateformeDao(final PlateformeDao pfDao){
+   @Test
+public void setPlateformeDao(final PlateformeDao pfDao){
       this.plateformeDao = pfDao;
    }
 
-   public void setTableAnnotationBanqueDao(final TableAnnotationBanqueDao tabDao){
+   @Test
+public void setTableAnnotationBanqueDao(final TableAnnotationBanqueDao tabDao){
       this.tableAnnotationBanqueDao = tabDao;
    }
 
@@ -113,7 +125,8 @@ public class TableAnnotationDaoTest extends AbstractDaoTest
     * Test la méthode toString.
     * @throws ParseException 
     */
-   public void testToString() throws ParseException{
+   @Test
+public void testToString() throws ParseException{
       final TableAnnotation t1 = tableAnnotationDao.findById(1);
       assertTrue(t1.toString().equals("{Patient.TABLE_PAT1}"));
 
@@ -129,12 +142,14 @@ public class TableAnnotationDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllTables(){
-      final List<TableAnnotation> tabs = tableAnnotationDao.findAll();
+   @Test
+public void testReadAllTables(){
+      final List<TableAnnotation> tabs = IterableUtils.toList(tableAnnotationDao.findAll());
       assertTrue(tabs.size() == 11);
    }
 
-   public void testFindByNom(){
+   @Test
+public void testFindByNom(){
       List<TableAnnotation> tabs = tableAnnotationDao.findByNom("TABLE_ECHAN%");
       assertTrue(tabs.size() == 2);
       tabs = tableAnnotationDao.findByNom("PREL%");
@@ -143,7 +158,8 @@ public class TableAnnotationDaoTest extends AbstractDaoTest
       assertTrue(tabs.size() == 0);
    }
 
-   public void testFindByEntiteAndBanque(){
+   @Test
+public void testFindByEntiteAndBanque(){
       Entite e = entiteDao.findByNom("Echantillon").get(0);
       Banque b = banqueDao.findById(1);
       List<TableAnnotation> tabs = tableAnnotationDao.findByEntiteAndBanque(e, b);
@@ -168,7 +184,8 @@ public class TableAnnotationDaoTest extends AbstractDaoTest
 
    }
 
-   public void testFindByEntiteBanqueAndCatalogue(){
+   @Test
+public void testFindByEntiteBanqueAndCatalogue(){
       final Entite e = entiteDao.findByNom("Echantillon").get(0);
       Banque b = banqueDao.findById(1);
       List<TableAnnotation> tabs = tableAnnotationDao.findByEntiteBanqueAndCatalogue(e, b, "INCa");
@@ -190,7 +207,8 @@ public class TableAnnotationDaoTest extends AbstractDaoTest
 
    }
 
-   public void testFindByEntite(){
+   @Test
+public void testFindByEntite(){
       Entite e = entiteDao.findByNom("Echantillon").get(0);
       final Plateforme pf1 = plateformeDao.findById(1);
       List<TableAnnotation> tabs = tableAnnotationDao.findByEntiteAndPlateforme(e, pf1);
@@ -210,7 +228,8 @@ public class TableAnnotationDaoTest extends AbstractDaoTest
       assertTrue(tabs.size() == 0);
    }
 
-   public void testFindMaxOrdreForBanqueAndEntite(){
+   @Test
+public void testFindMaxOrdreForBanqueAndEntite(){
       Entite e = entiteDao.findByNom("Echantillon").get(0);
       Banque b = banqueDao.findById(1);
       List<Integer> maxOrdre = tableAnnotationDao.findMaxOrdreForBanqueAndEntite(e, b);
@@ -232,7 +251,8 @@ public class TableAnnotationDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       final TableAnnotation t1 = tableAnnotationDao.findById(1);
       List<TableAnnotation> tabs = tableAnnotationDao.findByExcludedId(1);
       assertTrue(tabs.size() == 10);
@@ -243,7 +263,8 @@ public class TableAnnotationDaoTest extends AbstractDaoTest
       assertTrue(tabs.size() == 0);
    }
 
-   public void testFindByPlateforme(){
+   @Test
+public void testFindByPlateforme(){
       final Plateforme pf1 = plateformeDao.findById(1);
       List<TableAnnotation> tabs = tableAnnotationDao.findByPlateforme(pf1);
       assertTrue(tabs.size() == 5);
@@ -252,7 +273,8 @@ public class TableAnnotationDaoTest extends AbstractDaoTest
       assertTrue(tabs.size() == 0);
    }
 
-   public void testFindByBanques(){
+   @Test
+public void testFindByBanques(){
       final List<Banque> banks = new ArrayList<>();
       banks.add(banqueDao.findById(1));
       List<TableAnnotation> tabs = tableAnnotationDao.findByBanques(banks);
@@ -271,7 +293,8 @@ public class TableAnnotationDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas d'erreur.
     */
    @Rollback(false)
-   public void testCrudTableAnnotation(){
+   @Test
+public void testCrudTableAnnotation(){
 
       final TableAnnotation table = new TableAnnotation();
       table.setNom("testTable");
@@ -293,7 +316,7 @@ public class TableAnnotationDaoTest extends AbstractDaoTest
       table.setTableAnnotationBanques(tabs);
 
       // Test de l'insertion
-      tableAnnotationDao.createObject(table);
+      tableAnnotationDao.save(table);
       assertTrue(table.getTableAnnotationId().equals(12));
 
       // Test de la mise à jour
@@ -320,7 +343,7 @@ public class TableAnnotationDaoTest extends AbstractDaoTest
       table2.getTableAnnotationBanques().add(tableAnnotationBanqueDao.mergeObject(tab3));
       //table2.setTableAnnotationBanques(tabs);
 
-      tableAnnotationDao.updateObject(table2);
+      tableAnnotationDao.save(table2);
 
       assertTrue(tableAnnotationDao.findById(12).getNom().equals("test2"));
       assertNull(tableAnnotationDao.findById(12).getDescription());
@@ -332,7 +355,7 @@ public class TableAnnotationDaoTest extends AbstractDaoTest
       assertTrue(table2.getTableAnnotationBanques().contains(tab1));
 
       // Test de la délétion
-      tableAnnotationDao.removeObject(new Integer(12));
+      tableAnnotationDao.deleteById(new Integer(12));
       assertNull(tableAnnotationDao.findById(new Integer(12)));
       testReadAllTables();
    }
@@ -340,7 +363,8 @@ public class TableAnnotationDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEqualsAndHashCode(){
+   @Test
+public void testEqualsAndHashCode(){
       final TableAnnotation t1 = new TableAnnotation();
       final TableAnnotation t2 = new TableAnnotation();
       assertFalse(t1.equals(null));
@@ -423,7 +447,8 @@ public class TableAnnotationDaoTest extends AbstractDaoTest
       assertFalse(t1.equals(c));
    }
 
-   public void testClone(){
+   @Test
+public void testClone(){
       final TableAnnotation t = tableAnnotationDao.findById(1);
       final TableAnnotation t2 = t.clone();
       assertTrue(t.equals(t2));
@@ -465,7 +490,8 @@ public class TableAnnotationDaoTest extends AbstractDaoTest
       }
    }
 
-   public void testFindByCatalogues(){
+   @Test
+public void testFindByCatalogues(){
       final Catalogue c = catalogueDao.findById(1);
       final List<Catalogue> catas = new ArrayList<>();
       catas.add(c);
@@ -480,7 +506,8 @@ public class TableAnnotationDaoTest extends AbstractDaoTest
       assertTrue(tabs.get(1).getNom().equals("INCa-Patient-Tabac"));
    }
 
-   public void testFindByCatalogueAndChpEdit(){
+   @Test
+public void testFindByCatalogueAndChpEdit(){
       final Catalogue c = catalogueDao.findById(1);
       final List<TableAnnotation> tabs = tableAnnotationDao.findByCatalogueAndChpEdit(c);
       assertTrue(tabs.size() == 3);

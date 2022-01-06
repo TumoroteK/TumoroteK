@@ -37,7 +37,19 @@ package fr.aphp.tumorotek.dao.test.imprimante;
 
 import java.util.List;
 
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.imprimante.ImprimanteApiDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
@@ -52,33 +64,39 @@ import fr.aphp.tumorotek.model.imprimante.ImprimanteApi;
  * @version 18/03/2011
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class ImprimanteApiDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private ImprimanteApiDao imprimanteApiDao;
+
+   @Autowired
+ ImprimanteApiDao imprimanteApiDao;
 
    public ImprimanteApiDaoTest(){
 
    }
 
-   public void setImprimanteApiDao(final ImprimanteApiDao iDao){
+   @Test
+public void setImprimanteApiDao(final ImprimanteApiDao iDao){
       this.imprimanteApiDao = iDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAll(){
-      final List<ImprimanteApi> liste = imprimanteApiDao.findAll();
+   @Test
+public void testReadAll(){
+      final List<ImprimanteApi> liste = IterableUtils.toList(imprimanteApiDao.findAll());
       assertTrue(liste.size() == 2);
    }
 
    /**
     * Test l'appel de la méthode findByOrder().
     */
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       final List<ImprimanteApi> liste = imprimanteApiDao.findByOrder();
       assertTrue(liste.size() == 2);
       assertTrue(liste.get(0).getNom().equals("mbio"));
@@ -87,7 +105,8 @@ public class ImprimanteApiDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String nom = "test";
       final String nom2 = "test2";
       final ImprimanteApi ia1 = new ImprimanteApi();
@@ -122,7 +141,8 @@ public class ImprimanteApiDaoTest extends AbstractDaoTest
     * Test de la méthode surchargée "hashcode".
     * @throws Exception Lance une exception.
     */
-   public void testHashCode() throws Exception{
+   @Test
+public void testHashCode() throws Exception{
       final String nom = "test";
       final ImprimanteApi ia1 = new ImprimanteApi();
       ia1.setNom(nom);
@@ -146,7 +166,8 @@ public class ImprimanteApiDaoTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final ImprimanteApi ia1 = imprimanteApiDao.findById(1);
       assertTrue(ia1.toString().equals("{" + ia1.getNom() + "}"));
 

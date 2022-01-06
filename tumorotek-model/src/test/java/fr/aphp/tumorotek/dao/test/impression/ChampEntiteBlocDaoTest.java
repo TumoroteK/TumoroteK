@@ -39,7 +39,19 @@ import java.text.ParseException;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.impression.BlocImpressionDao;
 import fr.aphp.tumorotek.dao.impression.ChampEntiteBlocDao;
@@ -60,45 +72,55 @@ import fr.aphp.tumorotek.model.io.export.ChampEntite;
  * @version 30/07/2010
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class ChampEntiteBlocDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private ChampEntiteBlocDao champEntiteBlocDao;
-   /** Bean Dao. */
-   private ChampEntiteDao champEntiteDao;
-   /** Bean Dao. */
-   private BlocImpressionDao blocImpressionDao;
+
+   @Autowired
+ ChampEntiteBlocDao champEntiteBlocDao;
+
+   @Autowired
+ ChampEntiteDao champEntiteDao;
+
+   @Autowired
+ BlocImpressionDao blocImpressionDao;
 
    public ChampEntiteBlocDaoTest(){
 
    }
 
-   public void setChampEntiteBlocDao(final ChampEntiteBlocDao cDao){
+   @Test
+public void setChampEntiteBlocDao(final ChampEntiteBlocDao cDao){
       this.champEntiteBlocDao = cDao;
    }
 
-   public void setChampEntiteDao(final ChampEntiteDao cDao){
+   @Test
+public void setChampEntiteDao(final ChampEntiteDao cDao){
       this.champEntiteDao = cDao;
    }
 
-   public void setBlocImpressionDao(final BlocImpressionDao bDao){
+   @Test
+public void setBlocImpressionDao(final BlocImpressionDao bDao){
       this.blocImpressionDao = bDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAll(){
-      final List<ChampEntiteBloc> liste = champEntiteBlocDao.findAll();
+   @Test
+public void testReadAll(){
+      final List<ChampEntiteBloc> liste = IterableUtils.toList(champEntiteBlocDao.findAll());
       assertTrue(liste.size() > 0);
    }
 
    /**
     * Test l'appel de la méthode findById().
     */
-   public void testFindById(){
+   @Test
+public void testFindById(){
       final BlocImpression b1 = blocImpressionDao.findById(1);
       final ChampEntite ce23 = champEntiteDao.findById(23);
       ChampEntiteBlocPK pk = new ChampEntiteBlocPK(b1, ce23);
@@ -115,24 +137,26 @@ public class ChampEntiteBlocDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedPK().
     */
-   public void testFindByExcludedPK(){
+   @Test
+public void testFindByExcludedPK(){
       final BlocImpression b1 = blocImpressionDao.findById(1);
       final ChampEntite ce23 = champEntiteDao.findById(23);
       ChampEntiteBlocPK pk = new ChampEntiteBlocPK(b1, ce23);
 
       List<ChampEntiteBloc> liste = champEntiteBlocDao.findByExcludedPK(pk);
-      assertTrue(liste.size() == champEntiteBlocDao.findAll().size() - 1);
+      assertTrue(liste.size() == IterableUtils.toList(champEntiteBlocDao.findAll()).size() - 1);
 
       final ChampEntite ce1 = champEntiteDao.findById(1);
       pk = new ChampEntiteBlocPK(b1, ce1);
       liste = champEntiteBlocDao.findByExcludedPK(pk);
-      assertTrue(liste.size() == champEntiteBlocDao.findAll().size());
+      assertTrue(liste.size() == IterableUtils.toList(champEntiteBlocDao.findAll()).size());
    }
 
    /**
     * Test l'appel de la méthode findByBlocImpression().
     */
-   public void testFindByBlocImpression(){
+   @Test
+public void testFindByBlocImpression(){
       final BlocImpression b1 = blocImpressionDao.findById(1);
       List<ChampEntiteBloc> liste = champEntiteBlocDao.findByBlocImpression(b1);
       assertTrue(liste.size() == 3);
@@ -147,7 +171,8 @@ public class ChampEntiteBlocDaoTest extends AbstractDaoTest
     * d'un BlocImpressionTemplate.
     **/
    @Rollback(false)
-   public void testCrud(){
+   @Test
+public void testCrud(){
 
       final ChampEntiteBloc ceb = new ChampEntiteBloc();
       final BlocImpression b1 = blocImpressionDao.findById(1);
@@ -160,7 +185,7 @@ public class ChampEntiteBlocDaoTest extends AbstractDaoTest
       ceb.setOrdre(ordre);
 
       // Test de l'insertion
-      champEntiteBlocDao.createObject(ceb);
+      champEntiteBlocDao.save(ceb);
 
       // Test de la mise à jour
       final ChampEntiteBlocPK pk = new ChampEntiteBlocPK();
@@ -174,12 +199,12 @@ public class ChampEntiteBlocDaoTest extends AbstractDaoTest
 
       //update
       ceb2.setOrdre(ordreUp);
-      champEntiteBlocDao.updateObject(ceb2);
+      champEntiteBlocDao.save(ceb2);
       assertTrue(champEntiteBlocDao.findById(pk).equals(ceb2));
       assertTrue(champEntiteBlocDao.findById(pk).getOrdre() == ordreUp);
 
       // Test de la délétion
-      champEntiteBlocDao.removeObject(pk);
+      champEntiteBlocDao.deleteById(pk);
       assertNull(champEntiteBlocDao.findById(pk));
    }
 
@@ -187,7 +212,8 @@ public class ChampEntiteBlocDaoTest extends AbstractDaoTest
     * Test de la méthode surchargée "equals".
     * @throws ParseException 
     */
-   public void testEquals() throws ParseException{
+   @Test
+public void testEquals() throws ParseException{
 
       final ChampEntiteBloc ceb1 = new ChampEntiteBloc();
       final ChampEntiteBloc ceb2 = new ChampEntiteBloc();
@@ -211,7 +237,8 @@ public class ChampEntiteBlocDaoTest extends AbstractDaoTest
     * Test de la méthode surchargée "hashcode".
     * @throws ParseException 
     */
-   public void testHashCode() throws ParseException{
+   @Test
+public void testHashCode() throws ParseException{
       final ChampEntiteBloc ceb1 = new ChampEntiteBloc();
       final ChampEntiteBloc ceb2 = new ChampEntiteBloc();
       final ChampEntiteBloc ceb3 = new ChampEntiteBloc();
@@ -233,7 +260,8 @@ public class ChampEntiteBlocDaoTest extends AbstractDaoTest
       assertTrue(hash == ceb1.hashCode());
    }
 
-   private void populateClefsToTestEqualsAndHashCode(final ChampEntiteBloc ceb1, final ChampEntiteBloc ceb2)
+   @Autowired
+ void populateClefsToTestEqualsAndHashCode(final ChampEntiteBloc ceb1, final ChampEntiteBloc ceb2)
       throws ParseException{
 
       final BlocImpression b1 = blocImpressionDao.findById(1);
@@ -263,7 +291,8 @@ public class ChampEntiteBlocDaoTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final BlocImpression b1 = blocImpressionDao.findById(1);
       final ChampEntite ce1 = champEntiteDao.findById(23);
       final ChampEntiteBlocPK pk1 = new ChampEntiteBlocPK(b1, ce1);
@@ -279,7 +308,8 @@ public class ChampEntiteBlocDaoTest extends AbstractDaoTest
    /**
     * Test la méthode clone.
     */
-   public void testClone(){
+   @Test
+public void testClone(){
       final BlocImpression b1 = blocImpressionDao.findById(1);
       final ChampEntite ce1 = champEntiteDao.findById(23);
       final ChampEntiteBlocPK pk1 = new ChampEntiteBlocPK(b1, ce1);

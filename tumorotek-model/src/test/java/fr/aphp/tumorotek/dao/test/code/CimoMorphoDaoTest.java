@@ -55,8 +55,9 @@ import fr.aphp.tumorotek.model.contexte.Categorie;
 public class CimoMorphoDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private CimoMorphoDao cimoMorphoDao;
+
+   @Autowired
+ CimoMorphoDao cimoMorphoDao;
 
    /**
     * Constructeur.
@@ -72,33 +73,38 @@ public class CimoMorphoDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param cDao est le bean Dao.
     */
-   public void setCimoMorphoDao(final CimoMorphoDao cDao){
+   @Test
+public void setCimoMorphoDao(final CimoMorphoDao cDao){
       this.cimoMorphoDao = cDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllCategories(){
-      final List<CimoMorpho> cimos = cimoMorphoDao.findAll();
+   @Test
+public void testReadAllCategories(){
+      final List<CimoMorpho> cimos = IterableUtils.toList(cimoMorphoDao.findAll());
       assertTrue(cimos.size() == 1161);
    }
 
-   public void testFindByCodeLike(){
+   @Test
+public void testFindByCodeLike(){
       List<CimoMorpho> cimos = cimoMorphoDao.findByCodeLike("%D0-%");
       assertTrue(cimos.size() == 6);
       cimos = cimoMorphoDao.findByCodeLike("TEST");
       assertTrue(cimos.size() == 0);
    }
 
-   public void testFindByLibelleLike(){
+   @Test
+public void testFindByLibelleLike(){
       List<CimoMorpho> cimos = cimoMorphoDao.findByLibelleLike("%naevus%");
       assertTrue(cimos.size() == 8);
       cimos = cimoMorphoDao.findByLibelleLike("TEST");
       assertTrue(cimos.size() == 0);
    }
 
-   public void testFindByCimRefLike(){
+   @Test
+public void testFindByCimRefLike(){
       List<CimoMorpho> cimos = cimoMorphoDao.findByCimRefLike("%C44%");
       assertTrue(cimos.size() == 79);
       cimos = cimoMorphoDao.findByCimRefLike("TEST");
@@ -108,7 +114,8 @@ public class CimoMorphoDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final Integer id1 = 1;
       final Integer id2 = 2;
       final CimoMorpho c1 = new CimoMorpho();
@@ -142,7 +149,8 @@ public class CimoMorphoDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
 
       final String code1 = "C1";
       final CimoMorpho c1 = new CimoMorpho();
@@ -163,7 +171,8 @@ public class CimoMorphoDaoTest extends AbstractDaoTest
       assertTrue(hash == c1.hashCode());
    }
 
-   public void testToString(){
+   @Test
+public void testToString(){
       final CimoMorpho a = new CimoMorpho();
       a.setCode("12.12");
       assertTrue(a.toString().equals("{CimoMorpho: 12.12}"));

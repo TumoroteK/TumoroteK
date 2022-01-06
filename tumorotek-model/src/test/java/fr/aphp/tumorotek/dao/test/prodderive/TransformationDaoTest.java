@@ -59,33 +59,39 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 public class TransformationDaoTest extends AbstractDaoTest
 {
 
-   private TransformationDao transformationDao;
-   private EntiteDao entiteDao;
+   @Autowired
+ TransformationDao transformationDao;
+   @Autowired
+ EntiteDao entiteDao;
 
    public TransformationDaoTest(){
 
    }
 
-   public void setTransformationDao(final TransformationDao tDao){
+   @Test
+public void setTransformationDao(final TransformationDao tDao){
       this.transformationDao = tDao;
    }
 
-   public void setEntiteDao(final EntiteDao eDao){
+   @Test
+public void setEntiteDao(final EntiteDao eDao){
       this.entiteDao = eDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAll(){
-      final List<Transformation> transfos = transformationDao.findAll();
+   @Test
+public void testReadAll(){
+      final List<Transformation> transfos = IterableUtils.toList(transformationDao.findAll());
       assertTrue(transfos.size() == 5);
    }
 
    /**
     * Test l'appel de la méthode findByEntiteObjet().
     */
-   public void testFindByEntiteObjet(){
+   @Test
+public void testFindByEntiteObjet(){
       final Entite e = entiteDao.findById(3);
       List<Transformation> transfos = transformationDao.findByEntiteObjet(e, 1);
       assertTrue(transfos.size() == 2);
@@ -96,7 +102,8 @@ public class TransformationDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<Transformation> transfos = transformationDao.findByExcludedId(1);
       assertTrue(transfos.size() == 4);
 
@@ -109,7 +116,8 @@ public class TransformationDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas d'erreur.
     */
    @Rollback(false)
-   public void testCrud() throws Exception{
+   @Test
+public void testCrud() throws Exception{
 
       final Transformation t = new Transformation();
       final Entite e = entiteDao.findById(1);
@@ -120,7 +128,7 @@ public class TransformationDaoTest extends AbstractDaoTest
       t.setQuantite(null);
 
       // Test de l'insertion
-      transformationDao.createObject(t);
+      transformationDao.save(t);
       assertEquals(new Integer(6), t.getTransformationId());
 
       // Test de la mise à jour
@@ -130,12 +138,12 @@ public class TransformationDaoTest extends AbstractDaoTest
       assertNotNull(t2);
       assertTrue(t2.getObjetId() == 1);
       t2.setObjetId(objId);
-      transformationDao.updateObject(t2);
+      transformationDao.save(t2);
       assertTrue(transformationDao.findById(new Integer(6)).getObjetId() == objId);
       assertTrue(transformationDao.findById(new Integer(6)).getQuantite() == (float) 15.146);
 
       // Test de la délétion
-      transformationDao.removeObject(new Integer(6));
+      transformationDao.deleteById(new Integer(6));
       assertNull(transformationDao.findById(new Integer(6)));
 
    }
@@ -143,7 +151,8 @@ public class TransformationDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final Integer objId1 = 1;
       final Integer objId2 = 2;
       final Entite e1 = entiteDao.findById(3);
@@ -204,7 +213,8 @@ public class TransformationDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final Integer objId1 = 1;
       final Entite e1 = entiteDao.findById(3);
       final Transformation t1 = new Transformation();
@@ -232,7 +242,8 @@ public class TransformationDaoTest extends AbstractDaoTest
    /**
     * test toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final Transformation t1 = transformationDao.findById(1);
       assertTrue(t1.toString().equals("{" + t1.getObjetId() + ", " + t1.getEntite().toString() + "(Entite)}"));
 
@@ -243,7 +254,8 @@ public class TransformationDaoTest extends AbstractDaoTest
    /**
     * Test la méthode clone.
     */
-   public void testClone(){
+   @Test
+public void testClone(){
       final Transformation t1 = transformationDao.findById(1);
       final Transformation t2 = t1.clone();
       assertTrue(t1.equals(t2));

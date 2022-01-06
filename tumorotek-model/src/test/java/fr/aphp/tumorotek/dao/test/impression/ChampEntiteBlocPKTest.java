@@ -37,7 +37,19 @@ package fr.aphp.tumorotek.dao.test.impression;
 
 import java.text.ParseException;
 
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.impression.BlocImpressionDao;
 import fr.aphp.tumorotek.dao.io.export.ChampEntiteDao;
@@ -55,24 +67,30 @@ import fr.aphp.tumorotek.model.io.export.ChampEntite;
  * @version 22/07/2010
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class ChampEntiteBlocPKTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private BlocImpressionDao blocImpressionDao;
-   /** Bean Dao. */
-   private ChampEntiteDao champEntiteDao;
+
+   @Autowired
+ BlocImpressionDao blocImpressionDao;
+
+   @Autowired
+ ChampEntiteDao champEntiteDao;
 
    public ChampEntiteBlocPKTest(){
 
    }
 
-   public void setBlocImpressionDao(final BlocImpressionDao bDao){
+   @Test
+public void setBlocImpressionDao(final BlocImpressionDao bDao){
       this.blocImpressionDao = bDao;
    }
 
-   public void setChampEntiteDao(final ChampEntiteDao cDao){
+   @Test
+public void setChampEntiteDao(final ChampEntiteDao cDao){
       this.champEntiteDao = cDao;
    }
 
@@ -80,7 +98,8 @@ public class ChampEntiteBlocPKTest extends AbstractDaoTest
     * Test de la méthode surchargée "equals".
     * @throws ParseException 
     */
-   public void testEquals() throws ParseException{
+   @Test
+public void testEquals() throws ParseException{
       final ChampEntiteBlocPK pk1 = new ChampEntiteBlocPK();
       final ChampEntiteBlocPK pk2 = new ChampEntiteBlocPK();
 
@@ -103,7 +122,8 @@ public class ChampEntiteBlocPKTest extends AbstractDaoTest
     * Test de la méthode surchargée "hashcode".
     * @throws ParseException 
     */
-   public void testHashCode() throws ParseException{
+   @Test
+public void testHashCode() throws ParseException{
       final ChampEntiteBlocPK pk1 = new ChampEntiteBlocPK();
       final ChampEntiteBlocPK pk2 = new ChampEntiteBlocPK();
 
@@ -120,7 +140,8 @@ public class ChampEntiteBlocPKTest extends AbstractDaoTest
       assertTrue(hash == pk1.hashCode());
    }
 
-   private void populateClefsToTestEqualsAndHashCode() throws ParseException{
+   @Autowired
+ void populateClefsToTestEqualsAndHashCode() throws ParseException{
 
       final BlocImpression bi1 = blocImpressionDao.findById(1);
       final BlocImpression bi2 = blocImpressionDao.findById(2);
@@ -160,7 +181,8 @@ public class ChampEntiteBlocPKTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final BlocImpression bi1 = blocImpressionDao.findById(1);
       final ChampEntite c1 = champEntiteDao.findById(1);
       final ChampEntiteBlocPK pk1 = new ChampEntiteBlocPK();

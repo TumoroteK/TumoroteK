@@ -62,30 +62,39 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 public class ChampEntiteDaoTest extends AbstractDaoTest
 {
 
-   private EntiteDao entiteDao;
-   private ChampEntiteDao champEntiteDao;
-   private DataTypeDao dataTypeDao;
-   private ImportTemplateDao importTemplateDao;
+   @Autowired
+ EntiteDao entiteDao;
+   @Autowired
+ ChampEntiteDao champEntiteDao;
+   @Autowired
+ DataTypeDao dataTypeDao;
+   @Autowired
+ ImportTemplateDao importTemplateDao;
 
    public ChampEntiteDaoTest(){}
 
-   public void setEntiteDao(final EntiteDao eDao){
+   @Test
+public void setEntiteDao(final EntiteDao eDao){
       this.entiteDao = eDao;
    }
 
-   public void setChampEntiteDao(final ChampEntiteDao ceDao){
+   @Test
+public void setChampEntiteDao(final ChampEntiteDao ceDao){
       this.champEntiteDao = ceDao;
    }
 
-   public void setDataTypeDao(final DataTypeDao dtDao){
+   @Test
+public void setDataTypeDao(final DataTypeDao dtDao){
       this.dataTypeDao = dtDao;
    }
 
-   public void setImportTemplateDao(final ImportTemplateDao itDao){
+   @Test
+public void setImportTemplateDao(final ImportTemplateDao itDao){
       this.importTemplateDao = itDao;
    }
 
-   public void testFindByEntiteAndNom(){
+   @Test
+public void testFindByEntiteAndNom(){
       final Entite e1 = entiteDao.findById(1);
       List<ChampEntite> liste = champEntiteDao.findByEntiteAndNom(e1, "Nom");
       assertTrue(liste.size() == 1);
@@ -103,7 +112,8 @@ public class ChampEntiteDaoTest extends AbstractDaoTest
       assertTrue(liste.size() == 0);
    }
 
-   public void testFindByEntiteAndImport(){
+   @Test
+public void testFindByEntiteAndImport(){
       final Entite e1 = entiteDao.findById(1);
       List<ChampEntite> liste = champEntiteDao.findByEntiteAndImport(e1, false);
       assertTrue(liste.size() == 5);
@@ -121,7 +131,8 @@ public class ChampEntiteDaoTest extends AbstractDaoTest
       assertTrue(liste.size() == 0);
    }
 
-   public void testFindByEntiteImportObligatoire(){
+   @Test
+public void testFindByEntiteImportObligatoire(){
       final Entite e1 = entiteDao.findById(1);
       List<ChampEntite> liste = champEntiteDao.findByEntiteImportObligatoire(e1, true, false);
       assertTrue(liste.size() == 5);
@@ -145,7 +156,8 @@ public class ChampEntiteDaoTest extends AbstractDaoTest
    * @throws Exception lance une exception en cas de problème lors du CRUD.
    */
    @Rollback(false)
-   public void testCrudChamp() throws Exception{
+   @Test
+public void testCrudChamp() throws Exception{
       final boolean nullable = true;
       final int entiteId = 3;
       final int dataTypeId = 3;
@@ -167,8 +179,8 @@ public class ChampEntiteDaoTest extends AbstractDaoTest
 
       // Test de l'insertion
       Integer idObject = new Integer(-1);
-      this.champEntiteDao.createObject(c);
-      final List<ChampEntite> champEntites = this.champEntiteDao.findAll();
+      this.champEntiteDao.save(c);
+      final List<ChampEntite> champEntites = this.IterableUtils.toList(champEntiteDao.findAll());
       final Iterator<ChampEntite> itChampEntites = champEntites.iterator();
       boolean found = false;
       while(itChampEntites.hasNext()){
@@ -217,7 +229,7 @@ public class ChampEntiteDaoTest extends AbstractDaoTest
       c2.setValeurDefaut(updatedValeurDefaut);
       c2.setNom(updatedNom);
 
-      this.champEntiteDao.updateObject(c2);
+      this.champEntiteDao.save(c2);
       assertNotNull(this.champEntiteDao.findById(idObject).getEntite());
       assertTrue(this.champEntiteDao.findById(idObject).getEntite().equals(updatedEntite));
       assertNotNull(this.champEntiteDao.findById(idObject).isNullable());
@@ -234,14 +246,15 @@ public class ChampEntiteDaoTest extends AbstractDaoTest
       assertNotNull(this.champEntiteDao.findById(idObject).getNom());
       assertTrue(this.champEntiteDao.findById(idObject).getNom().equals(updatedNom));
       // Test de la délétion
-      this.champEntiteDao.removeObject(idObject);
+      this.champEntiteDao.deleteById(idObject);
       assertNull(this.champEntiteDao.findById(idObject));
    }
 
    /**
     * test toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final ChampEntite c1 = champEntiteDao.findById(1);
       assertTrue(c1.toString().equals("{" + c1.getNom() + "}"));
 
@@ -252,7 +265,8 @@ public class ChampEntiteDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       //On boucle sur les 4 possibilités
       for(int i = 0; i < Math.pow(2, 2); i++){
          final ChampEntite champ1 = new ChampEntite();
@@ -278,7 +292,8 @@ public class ChampEntiteDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       //On boucle sur les 4 possibilités
       for(int i = 0; i < Math.pow(2, 2); i++){
          final ChampEntite champ = new ChampEntite();
@@ -307,7 +322,8 @@ public class ChampEntiteDaoTest extends AbstractDaoTest
       }
    }
 
-   public void testFindByImportTemplate(){
+   @Test
+public void testFindByImportTemplate(){
       List<ChampEntite> chpE = champEntiteDao.findByImportTemplateAndEntite(importTemplateDao.findById(1), entiteDao.findById(1));
       assertTrue(chpE.size() == 6);
       assertTrue(chpE.contains(champEntiteDao.findById(2)));

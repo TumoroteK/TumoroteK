@@ -54,6 +54,14 @@ import fr.aphp.tumorotek.model.stockage.EnceinteType;
 public interface EnceinteTypeDao
 		extends CrudRepository<EnceinteType, Integer>, PfDependantTKThesaurusDao<EnceinteType> {
 
+	@Override
+	@Query("SELECT e FROM EnceinteType e ORDER BY e.nom")
+	List<EnceinteType> findByOrder();
+
+	@Override
+	@Query("SELECT e FROM EnceinteType e WHERE e.plateforme = ?1 ORDER BY e.nom")
+	List<EnceinteType> findByPfOrder(Plateforme pf);
+
 	/**
 	 * Recherche toutes les EnceinteTypes ordonnées sauf le type BOITE.
 	 * 

@@ -79,70 +79,92 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 public class ProdDeriveDaoTest extends AbstractDaoTest
 {
 
-   private ProdDeriveDao prodDeriveDao;
-   private ProdQualiteDao prodQualiteDao;
-   private ProdTypeDao prodTypeDao;
-   private TransformationDao transformationDao;
-   private ObjetStatutDao objetStatutDao;
-   private BanqueDao banqueDao;
-   private EntiteDao entiteDao;
-   private TerminaleDao terminaleDao;
-   private ModePrepaDeriveDao modePrepaDeriveDao;
-   private PlateformeDao plateformeDao;
+   @Autowired
+ ProdDeriveDao prodDeriveDao;
+   @Autowired
+ ProdQualiteDao prodQualiteDao;
+   @Autowired
+ ProdTypeDao prodTypeDao;
+   @Autowired
+ TransformationDao transformationDao;
+   @Autowired
+ ObjetStatutDao objetStatutDao;
+   @Autowired
+ BanqueDao banqueDao;
+   @Autowired
+ EntiteDao entiteDao;
+   @Autowired
+ TerminaleDao terminaleDao;
+   @Autowired
+ ModePrepaDeriveDao modePrepaDeriveDao;
+   @Autowired
+ PlateformeDao plateformeDao;
 
    public ProdDeriveDaoTest(){
 
    }
 
-   public void setProdDeriveDao(final ProdDeriveDao pDao){
+   @Test
+public void setProdDeriveDao(final ProdDeriveDao pDao){
       this.prodDeriveDao = pDao;
    }
 
-   public void setProdQualiteDao(final ProdQualiteDao pDao){
+   @Test
+public void setProdQualiteDao(final ProdQualiteDao pDao){
       this.prodQualiteDao = pDao;
    }
 
-   public void setProdTypeDao(final ProdTypeDao pDao){
+   @Test
+public void setProdTypeDao(final ProdTypeDao pDao){
       this.prodTypeDao = pDao;
    }
 
-   public void setTransformationDao(final TransformationDao tDao){
+   @Test
+public void setTransformationDao(final TransformationDao tDao){
       this.transformationDao = tDao;
    }
 
-   public void setObjetStatutDao(final ObjetStatutDao oDao){
+   @Test
+public void setObjetStatutDao(final ObjetStatutDao oDao){
       this.objetStatutDao = oDao;
    }
 
-   public void setBanqueDao(final BanqueDao bDao){
+   @Test
+public void setBanqueDao(final BanqueDao bDao){
       this.banqueDao = bDao;
    }
 
-   public void setEntiteDao(final EntiteDao eDao){
+   @Test
+public void setEntiteDao(final EntiteDao eDao){
       this.entiteDao = eDao;
    }
 
-   public void setTerminaleDao(final TerminaleDao tDao){
+   @Test
+public void setTerminaleDao(final TerminaleDao tDao){
       this.terminaleDao = tDao;
    }
 
-   public void setModePrepaDeriveDao(final ModePrepaDeriveDao mDao){
+   @Test
+public void setModePrepaDeriveDao(final ModePrepaDeriveDao mDao){
       this.modePrepaDeriveDao = mDao;
    }
 
-   public void setPlateformeDao(final PlateformeDao pDao){
+   @Test
+public void setPlateformeDao(final PlateformeDao pDao){
       this.plateformeDao = pDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllCategories(){
-      final List<ProdDerive> derives = prodDeriveDao.findAll();
+   @Test
+public void testReadAllCategories(){
+      final List<ProdDerive> derives = IterableUtils.toList(prodDeriveDao.findAll());
       assertTrue(derives.size() == 4);
    }
 
-   public void testFindByBanques(){
+   @Test
+public void testFindByBanques(){
       final List<Banque> banks = new java.util.ArrayList<>();
       banks.add(banqueDao.findById(1));
       banks.add(banqueDao.findById(2));
@@ -150,7 +172,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
       assertTrue(res.size() == 4);
    }
 
-   public void testFindByBanquesAllIds(){
+   @Test
+public void testFindByBanquesAllIds(){
       final List<Banque> banks = new java.util.ArrayList<>();
       banks.add(banqueDao.findById(1));
       banks.add(banqueDao.findById(2));
@@ -161,7 +184,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByCode().
     */
-   public void testFindByCode(){
+   @Test
+public void testFindByCode(){
       List<ProdDerive> derives = prodDeriveDao.findByCode("EHT.1.1");
       assertTrue(derives.size() == 1);
 
@@ -178,7 +202,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByCodeOrLaboWithBanque().
     */
-   public void testFindByCodeOrLaboWithBanque(){
+   @Test
+public void testFindByCodeOrLaboWithBanque(){
       final Banque b1 = banqueDao.findById(1);
       final Banque b2 = banqueDao.findById(2);
 
@@ -210,7 +235,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
    /**
     * @since 2.1
     */
-   public void testFindByCodeInPlateforme(){
+   @Test
+public void testFindByCodeInPlateforme(){
       final Plateforme p1 = plateformeDao.findById(1);
       List<ProdDerive> ders = prodDeriveDao.findByCodeInPlateforme("PTRA.1.1", p1);
       assertTrue(ders.size() == 1);
@@ -255,7 +281,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByCodeOrLaboWithBanqueReturnIds().
     */
-   public void testFindByCodeOrLaboWithBanqueReturnIds(){
+   @Test
+public void testFindByCodeOrLaboWithBanqueReturnIds(){
       final Banque b1 = banqueDao.findById(1);
       final Banque b2 = banqueDao.findById(2);
 
@@ -287,7 +314,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByCodeLabo().
     */
-   public void testFindByCodeLabo(){
+   @Test
+public void testFindByCodeLabo(){
       List<ProdDerive> derives = prodDeriveDao.findByCodeLabo("LABO_EHT");
       assertTrue(derives.size() == 1);
 
@@ -302,7 +330,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
     * Test l'appel de la méthode findByDateStockAfterDate().
     * throws Exception Lance une exception en cas d'erreur.
     */
-   public void testFindByDateStockAfterDate() throws Exception{
+   @Test
+public void testFindByDateStockAfterDate() throws Exception{
       final Calendar search = Calendar.getInstance();
       search.setTime(new SimpleDateFormat("dd/MM/yyyy").parse("15/01/2009"));
       List<ProdDerive> derives = prodDeriveDao.findByDateStockAfterDate(search);
@@ -317,7 +346,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
     * Test l'appel de la méthode findByDateTransformationAfterDate().
     * throws Exception Lance une exception en cas d'erreur.
     */
-   public void testFindByDateTransformationAfterDate() throws Exception{
+   @Test
+public void testFindByDateTransformationAfterDate() throws Exception{
       final Calendar search = Calendar.getInstance();
       search.setTime(new SimpleDateFormat("dd/MM/yyyy").parse("15/01/2009"));
       List<ProdDerive> derives = prodDeriveDao.findByDateTransformationAfterDate(search);
@@ -335,7 +365,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
     * Test l'appel de la méthode findByDateTransformationAfterDateWithBanque().
     * throws Exception Lance une exception en cas d'erreur.
     */
-   public void testFindByDateTransformationAfterDateWithBanque() throws Exception{
+   @Test
+public void testFindByDateTransformationAfterDateWithBanque() throws Exception{
       final Banque b1 = banqueDao.findById(1);
 
       final Calendar search = Calendar.getInstance();
@@ -357,7 +388,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedIdCodes().
     */
-   public void testFindByExcludedIdCodes(){
+   @Test
+public void testFindByExcludedIdCodes(){
       final Banque b = banqueDao.findById(1);
       List<String> codes = prodDeriveDao.findByExcludedIdCodes(1, b);
       assertTrue(codes.size() == 2);
@@ -370,7 +402,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByIdInList().
     */
-   public void testFindByIdInList(){
+   @Test
+public void testFindByIdInList(){
       final List<Integer> ids = new ArrayList<>();
       ids.add(1);
       ids.add(2);
@@ -386,7 +419,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByObjetStatut().
     */
-   public void testFindByObjetStatut(){
+   @Test
+public void testFindByObjetStatut(){
       ObjetStatut obj = objetStatutDao.findById(1);
       List<ProdDerive> derives = prodDeriveDao.findByObjetStatut(obj);
       assertTrue(derives.size() == 3);
@@ -399,7 +433,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByProdType().
     */
-   public void testFindByProdType(){
+   @Test
+public void testFindByProdType(){
       ProdType type = prodTypeDao.findById(1);
       List<ProdDerive> derives = prodDeriveDao.findByProdType(type);
       assertTrue(derives.size() == 2);
@@ -412,7 +447,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByModePrepaDerive().
     */
-   public void testFindByModePrepaDerive(){
+   @Test
+public void testFindByModePrepaDerive(){
       ModePrepaDerive m1 = modePrepaDeriveDao.findById(1);
       List<ProdDerive> derives = prodDeriveDao.findByModePrepaDerive(m1);
       assertTrue(derives.size() == 2);
@@ -425,7 +461,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByProdQualite().
     */
-   public void testFindByProdQualite(){
+   @Test
+public void testFindByProdQualite(){
       ProdQualite qualite = prodQualiteDao.findById(1);
       List<ProdDerive> derives = prodDeriveDao.findByProdQualite(qualite);
       assertTrue(derives.size() == 3);
@@ -438,7 +475,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByTransformation().
     */
-   public void testFindByTransformation(){
+   @Test
+public void testFindByTransformation(){
       Transformation transfo = transformationDao.findById(1);
       List<ProdDerive> derives = prodDeriveDao.findByTransformation(transfo);
       assertTrue(derives.size() == 1);
@@ -451,7 +489,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByBanqueSelectCode().
     */
-   public void testFindByBanqueSelectCode(){
+   @Test
+public void testFindByBanqueSelectCode(){
       final Banque b1 = banqueDao.findById(1);
       List<String> codes = prodDeriveDao.findByBanqueSelectCode(b1);
       assertTrue(codes.size() == 3);
@@ -465,7 +504,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByBanqueAndQuantiteSelectCode().
     */
-   public void testFindByBanqueAndQuantiteSelectCode(){
+   @Test
+public void testFindByBanqueAndQuantiteSelectCode(){
       final Banque b1 = banqueDao.findById(1);
       List<String> codes = prodDeriveDao.findByBanqueAndQuantiteSelectCode(b1);
       assertTrue(codes.size() == 2);
@@ -479,7 +519,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByBanqueStatutSelectCode().
     */
-   public void testFindByBanqueStatutSelectCode(){
+   @Test
+public void testFindByBanqueStatutSelectCode(){
       final Banque b1 = banqueDao.findById(1);
       final ObjetStatut o1 = objetStatutDao.findById(1);
       List<String> codes = prodDeriveDao.findByBanqueStatutSelectCode(b1, o1);
@@ -511,7 +552,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByBanqueInListStatutSelectCode().
     */
-   public void testFindByBanqueInListStatutSelectCode(){
+   @Test
+public void testFindByBanqueInListStatutSelectCode(){
       final Banque b1 = banqueDao.findById(1);
       final Banque b2 = banqueDao.findById(2);
       final List<Banque> banques = new ArrayList<>();
@@ -542,7 +584,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByTerminale().
     */
-   public void testFindByTerminale(){
+   @Test
+public void testFindByTerminale(){
       Entite entite = entiteDao.findByNom("ProdDerive").get(0);
       final Terminale term1 = terminaleDao.findById(1);
       List<ProdDerive> liste = prodDeriveDao.findByTerminale(entite, term1);
@@ -570,7 +613,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByTerminaleDirect().
     */
-   public void testFindByTerminaleDirect(){
+   @Test
+public void testFindByTerminaleDirect(){
       final Terminale term1 = terminaleDao.findById(1);
       List<ProdDerive> liste = prodDeriveDao.findByTerminaleDirect(term1);
       assertTrue(liste.size() == 2);
@@ -587,7 +631,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByParentAndType().
     */
-   public void testFindByParentAndType(){
+   @Test
+public void testFindByParentAndType(){
       Entite entite = entiteDao.findByNom("Echantillon").get(0);
       List<ProdDerive> derives = prodDeriveDao.findByParentAndType(1, entite, "ADN");
       assertTrue(derives.size() == 1);
@@ -615,7 +660,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
       assertTrue(derives.size() == 0);
    }
 
-   public void testFindByParent(){
+   @Test
+public void testFindByParent(){
       Entite entite = entiteDao.findByNom("Echantillon").get(0);
       List<ProdDerive> derives = prodDeriveDao.findByParent(1, entite);
       assertTrue(derives.size() == 1);
@@ -640,7 +686,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByEchantillonPatientNomReturnIds().
     */
-   public void testFindByEchantillonPatientNomReturnIds(){
+   @Test
+public void testFindByEchantillonPatientNomReturnIds(){
       final Banque b1 = banqueDao.findById(1);
       List<Integer> derives = prodDeriveDao.findByEchantillonPatientNomReturnIds("DELPHINO", b1);
       assertTrue(derives.size() == 1);
@@ -671,7 +718,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByPrelevementPatientNomreturnIds().
     */
-   public void testFindByPrelevementPatientNomreturnIds(){
+   @Test
+public void testFindByPrelevementPatientNomreturnIds(){
       final Banque b1 = banqueDao.findById(1);
       List<Integer> derives = prodDeriveDao.findByPrelevementPatientNomreturnIds("DELPHINO", b1);
       assertTrue(derives.size() == 1);
@@ -683,7 +731,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
       assertTrue(derives.size() == 0);
    }
 
-   public void testFindByCodeInListWithBanque(){
+   @Test
+public void testFindByCodeInListWithBanque(){
       List<String> criteres = new ArrayList<>();
       criteres.add("PTRA.1.1");
       criteres.add("PTRA.1.2");
@@ -712,7 +761,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
       assertTrue(liste.get(0)[1].equals("PTRA.1.1"));
    }
 
-   public void testFindByEchantillonPatientNomInListReturnIds(){
+   @Test
+public void testFindByEchantillonPatientNomInListReturnIds(){
       List<String> criteres = new ArrayList<>();
       criteres.add("DELPHINO");
       criteres.add("MAYER");
@@ -737,7 +787,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
       assertTrue(liste.size() == 1);
    }
 
-   public void testFindByPrelevementPatientNomInListreturnIds(){
+   @Test
+public void testFindByPrelevementPatientNomInListreturnIds(){
       List<String> criteres = new ArrayList<>();
       criteres.add("DELPHINO");
       criteres.add("MAYER");
@@ -767,7 +818,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
    @Rollback(false)
-   public void testCrud() throws Exception{
+   @Test
+public void testCrud() throws Exception{
       final ProdDerive p = new ProdDerive();
       final String codeUpdated = "CodeUp";
       final ObjetStatut statut = objetStatutDao.findById(1);
@@ -793,7 +845,7 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
       p.setConformeCession(true);
       p.setConformeTraitement(true);
       // Test de l'insertion
-      prodDeriveDao.createObject(p);
+      prodDeriveDao.save(p);
       assertEquals(new Integer(5), p.getProdDeriveId());
 
       // Test de la mise à jour
@@ -814,7 +866,7 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
       p.setConc(null);
       p.setQuantiteInit(null);
       p.setQuantite(null);
-      prodDeriveDao.updateObject(p2);
+      prodDeriveDao.save(p2);
       assertTrue(prodDeriveDao.findById(new Integer(5)).getCode().equals(codeUpdated));
       assertNull(prodDeriveDao.findById(new Integer(5)).getVolume());
       assertNull(prodDeriveDao.findById(new Integer(5)).getVolumeInit());
@@ -823,14 +875,15 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
       assertNull(prodDeriveDao.findById(new Integer(5)).getQuantiteInit());
 
       // Test de la délétion
-      prodDeriveDao.removeObject(new Integer(5));
+      prodDeriveDao.deleteById(new Integer(5));
       assertNull(prodDeriveDao.findById(new Integer(5)));
    }
 
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String code1 = "code1";
       final String code2 = "code2";
       final Banque b1 = banqueDao.findById(1);
@@ -891,7 +944,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String code1 = "code1";
       final Banque b1 = banqueDao.findById(1);
       final ProdDerive p1 = new ProdDerive();
@@ -919,7 +973,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
    /**
     * Test toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final ProdDerive p1 = prodDeriveDao.findById(1);
       assertTrue(p1.toString().equals("{" + p1.getCode() + "}"));
       assertTrue(p1.listableObjectId().equals(new Integer(1)));
@@ -931,7 +986,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
    /**
     * Test la méthode clone.
     */
-   public void testClone(){
+   @Test
+public void testClone(){
       final ProdDerive p1 = prodDeriveDao.findById(1);
       final ProdDerive p2 = p1.clone();
       assertTrue(p1.equals(p2));
@@ -1064,7 +1120,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
 
    }
 
-   public void testSortByCode(){
+   @Test
+public void testSortByCode(){
       final ProdDerive p1 = new ProdDerive();
       p1.setCode("TEST.1");
       final ProdDerive p2 = new ProdDerive();
@@ -1109,7 +1166,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
       assertTrue(prods.get(9).equals(p8));
    }
 
-   public void testFindByEmplacementDao(){
+   @Test
+public void testFindByEmplacementDao(){
       List<ProdDerive> derives = prodDeriveDao.findByEmplacement(terminaleDao.findById(1), 1);
       assertTrue(derives.size() == 1);
       assertTrue(derives.contains(prodDeriveDao.findById(1)));
@@ -1121,7 +1179,8 @@ public class ProdDeriveDaoTest extends AbstractDaoTest
       assertTrue(derives.isEmpty());
    }
 
-   public void testFindCountByParent(){
+   @Test
+public void testFindCountByParent(){
       // nulls
       Long cc = prodDeriveDao.findCountByParent(null, null).get(0);
       assertTrue(cc.longValue() == 0);

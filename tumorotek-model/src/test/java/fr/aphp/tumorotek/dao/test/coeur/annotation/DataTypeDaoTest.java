@@ -56,7 +56,8 @@ public class DataTypeDaoTest extends AbstractDaoTest
 {
 
    /** Beans Dao. */
-   private DataTypeDao dataTypeDao;
+   @Autowired
+ DataTypeDao dataTypeDao;
 
    /**
     * Constructeur.
@@ -67,14 +68,16 @@ public class DataTypeDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param dtDao est le bean Dao.
     */
-   public void setDataTypeDao(final DataTypeDao dtDao){
+   @Test
+public void setDataTypeDao(final DataTypeDao dtDao){
       this.dataTypeDao = dtDao;
    }
 
    /**
     * Test l'appel de la méthode toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       DataType dt1 = dataTypeDao.findById(1);
       assertTrue(dt1.toString().equals("{" + dt1.getType() + "}"));
 
@@ -82,7 +85,8 @@ public class DataTypeDaoTest extends AbstractDaoTest
       assertTrue(dt1.toString().equals("{Empty DataType}"));
    }
 
-   public void testFindByType(){
+   @Test
+public void testFindByType(){
       List<DataType> dataTypes = dataTypeDao.findByType("alphanum");
       assertTrue(dataTypes.size() == 1);
       dataTypes = dataTypeDao.findByType("toto");
@@ -98,7 +102,8 @@ public class DataTypeDaoTest extends AbstractDaoTest
    /**
     * Test des méthodes surchargées "equals" et hashcode.
     */
-   public void testEqualsAndHashCode(){
+   @Test
+public void testEqualsAndHashCode(){
       final DataType dt1 = new DataType();
       final DataType dt2 = new DataType();
       assertFalse(dt1.equals(null));
@@ -137,7 +142,8 @@ public class DataTypeDaoTest extends AbstractDaoTest
    //	 * Test de la méthode surchargée "hashcode".
    //	 * @throws ParseException 
    //	 */
-   //	public void testHashCode() throws ParseException {
+   //	@Test
+public void testHashCode() throws ParseException {
    //
    //		DataType dt1 = new DataType();
    //		dt1.setDataTypeId(1);

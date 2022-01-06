@@ -38,7 +38,19 @@ package fr.aphp.tumorotek.dao.test.imprimante;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.imprimante.LigneEtiquetteDao;
 import fr.aphp.tumorotek.dao.imprimante.ModeleDao;
@@ -55,31 +67,38 @@ import fr.aphp.tumorotek.model.imprimante.Modele;
  * @version 08/06/2011
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class LigneEtiquetteDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private LigneEtiquetteDao ligneEtiquetteDao;
-   /** Bean Dao. */
-   private ModeleDao modeleDao;
+
+   @Autowired
+ LigneEtiquetteDao ligneEtiquetteDao;
+
+   @Autowired
+ ModeleDao modeleDao;
 
    public LigneEtiquetteDaoTest(){
 
    }
 
-   public void setLigneEtiquetteDao(final LigneEtiquetteDao lDao){
+   @Test
+public void setLigneEtiquetteDao(final LigneEtiquetteDao lDao){
       this.ligneEtiquetteDao = lDao;
    }
 
-   public void setModeleDao(final ModeleDao mDao){
+   @Test
+public void setModeleDao(final ModeleDao mDao){
       this.modeleDao = mDao;
    }
 
    /**
     * Test l'appel de la méthode findById().
     */
-   public void testFindById(){
+   @Test
+public void testFindById(){
       final LigneEtiquette le = ligneEtiquetteDao.findById(1);
       assertNotNull(le);
 
@@ -90,15 +109,17 @@ public class LigneEtiquetteDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAll(){
-      final List<LigneEtiquette> liste = ligneEtiquetteDao.findAll();
+   @Test
+public void testReadAll(){
+      final List<LigneEtiquette> liste = IterableUtils.toList(ligneEtiquetteDao.findAll());
       assertTrue(liste.size() == 7);
    }
 
    /**
     * Test l'appel de la méthode findByModele().
     */
-   public void testFindByModele(){
+   @Test
+public void testFindByModele(){
       final Modele m2 = modeleDao.findById(2);
       List<LigneEtiquette> liste = ligneEtiquetteDao.findByModele(m2);
       assertTrue(liste.size() == 7);
@@ -116,7 +137,8 @@ public class LigneEtiquetteDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas d'erreur.
     */
    @Rollback(false)
-   public void testCrud() throws Exception{
+   @Test
+public void testCrud() throws Exception{
 
       final Modele m1 = modeleDao.findById(1);
       final LigneEtiquette le = new LigneEtiquette();
@@ -130,7 +152,7 @@ public class LigneEtiquetteDaoTest extends AbstractDaoTest
       le.setSize(10);
 
       // Test de l'insertion
-      ligneEtiquetteDao.createObject(le);
+      ligneEtiquetteDao.save(le);
       assertEquals(new Integer(8), le.getLigneEtiquetteId());
 
       final LigneEtiquette le2 = ligneEtiquetteDao.findById(new Integer(8));
@@ -148,19 +170,20 @@ public class LigneEtiquetteDaoTest extends AbstractDaoTest
       // Test de la mise à jour
       le2.setOrdre(2);
       le2.setIsBarcode(false);
-      ligneEtiquetteDao.updateObject(le2);
+      ligneEtiquetteDao.save(le2);
       assertTrue(ligneEtiquetteDao.findById(new Integer(8)).getOrdre() == 2);
       assertFalse(ligneEtiquetteDao.findById(new Integer(8)).getIsBarcode());
 
       // Test de la délétion
-      ligneEtiquetteDao.removeObject(new Integer(8));
+      ligneEtiquetteDao.deleteById(new Integer(8));
       assertNull(ligneEtiquetteDao.findById(new Integer(8)));
    }
 
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final Integer o1 = 1;
       final Integer o2 = 2;
       final Modele m1 = modeleDao.findById(1);
@@ -220,7 +243,8 @@ public class LigneEtiquetteDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final Integer o1 = 1;
       final Integer o2 = 2;
       final Modele m1 = modeleDao.findById(1);
@@ -258,7 +282,8 @@ public class LigneEtiquetteDaoTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final LigneEtiquette l1 = ligneEtiquetteDao.findById(1);
       assertTrue(l1.toString().equals("{" + l1.getOrdre() + ", " + l1.getModele().getNom() + "(Modele)}"));
 
@@ -269,7 +294,8 @@ public class LigneEtiquetteDaoTest extends AbstractDaoTest
    /**
     * Test la méthode clone.
     */
-   public void testClone(){
+   @Test
+public void testClone(){
       final LigneEtiquette l1 = ligneEtiquetteDao.findById(1);
       LigneEtiquette l2 = new LigneEtiquette();
       l2 = l1.clone();

@@ -60,9 +60,11 @@ import fr.aphp.tumorotek.model.contexte.Protocole;
 public class ProtocoleDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private ProtocoleDao protocoleDao;
-   private PlateformeDao plateformeDao;
+
+   @Autowired
+ ProtocoleDao protocoleDao;
+   @Autowired
+ PlateformeDao plateformeDao;
 
    /**
     * Constructeur.
@@ -73,18 +75,21 @@ public class ProtocoleDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param ctDao est le bean Dao.
     */
-   public void setProtocoleDao(final ProtocoleDao pDao){
+   @Test
+public void setProtocoleDao(final ProtocoleDao pDao){
       this.protocoleDao = pDao;
    }
 
-   public void setPlateformeDao(final PlateformeDao pDao){
+   @Test
+public void setPlateformeDao(final PlateformeDao pDao){
       this.plateformeDao = pDao;
    }
 
    /**
     * Test l'appel de la méthode toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       Protocole p1 = protocoleDao.findById(1);
       assertTrue(p1.toString().equals("{" + p1.getNom() + "}"));
       p1 = new Protocole();
@@ -94,12 +99,14 @@ public class ProtocoleDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllProtocole(){
-      final List<Protocole> types = protocoleDao.findAll();
+   @Test
+public void testReadAllProtocole(){
+      final List<Protocole> types = IterableUtils.toList(protocoleDao.findAll());
       assertTrue(types.size() == 3);
    }
 
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
       List<? extends TKThesaurusObject> list = protocoleDao.findByPfOrder(pf);
       assertTrue(list.size() == 2);
@@ -111,7 +118,8 @@ public class ProtocoleDaoTest extends AbstractDaoTest
       assertTrue(list.size() == 0);
    }
 
-   public void testFindByNom(){
+   @Test
+public void testFindByNom(){
       List<Protocole> types = protocoleDao.findByNom("TYSABRI");
       assertTrue(types.size() == 1);
       types = protocoleDao.findByNom("EDMUS");
@@ -128,12 +136,13 @@ public class ProtocoleDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
    @Rollback(false)
-   public void testCrudProtocole() throws Exception{
+   @Test
+public void testCrudProtocole() throws Exception{
       final Protocole p = new Protocole();
       p.setNom("MELBASE");
       p.setPlateforme(plateformeDao.findById(1));
       // Test de l'insertion
-      protocoleDao.createObject(p);
+      protocoleDao.save(p);
       assertEquals(new Integer(4), p.getProtocoleId());
 
       // Test de la mise à jour
@@ -141,18 +150,19 @@ public class ProtocoleDaoTest extends AbstractDaoTest
       assertNotNull(p2);
       assertTrue(p2.getNom().equals("MELBASE"));
       p2.setNom("XEOGR");
-      protocoleDao.updateObject(p2);
+      protocoleDao.save(p2);
       assertTrue(protocoleDao.findById(new Integer(4)).getNom().equals("XEOGR"));
 
       // Test de la délétion
-      protocoleDao.removeObject(new Integer(4));
+      protocoleDao.deleteById(new Integer(4));
       assertNull(protocoleDao.findById(new Integer(4)));
    }
 
    /**
     * Test des méthodes surchargées "equals" et hashcode.
     */
-   public void testEqualsAndHashCode(){
+   @Test
+public void testEqualsAndHashCode(){
       final Protocole p1 = new Protocole();
       final Protocole p2 = new Protocole();
       assertFalse(p1.equals(null));

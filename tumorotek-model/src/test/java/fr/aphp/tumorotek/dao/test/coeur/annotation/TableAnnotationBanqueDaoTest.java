@@ -62,31 +62,38 @@ public class TableAnnotationBanqueDaoTest extends AbstractDaoTest
 {
 
    /** Beans Dao. */
-   private TableAnnotationBanqueDao tableAnnotationBanqueDao;
-   private BanqueDao banqueDao;
-   private TableAnnotationDao tableAnnotationDao;
+   @Autowired
+ TableAnnotationBanqueDao tableAnnotationBanqueDao;
+   @Autowired
+ BanqueDao banqueDao;
+   @Autowired
+ TableAnnotationDao tableAnnotationDao;
 
    /**
     * Constructeur.
     */
    public TableAnnotationBanqueDaoTest(){}
 
-   public void setTableAnnotationBanqueDao(final TableAnnotationBanqueDao tabDao){
+   @Test
+public void setTableAnnotationBanqueDao(final TableAnnotationBanqueDao tabDao){
       this.tableAnnotationBanqueDao = tabDao;
    }
 
-   public void setBanqueDao(final BanqueDao bDao){
+   @Test
+public void setBanqueDao(final BanqueDao bDao){
       this.banqueDao = bDao;
    }
 
-   public void setTableAnnotationDao(final TableAnnotationDao tDao){
+   @Test
+public void setTableAnnotationDao(final TableAnnotationDao tDao){
       this.tableAnnotationDao = tDao;
    }
 
    /**
     * Test l'appel de la méthode toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final TableAnnotationBanquePK pk = new TableAnnotationBanquePK(banqueDao.findById(1), tableAnnotationDao.findById(1));
       TableAnnotationBanque tab1 = tableAnnotationBanqueDao.findById(pk);
       assertTrue(tab1.toString().equals("{" + tab1.getTableAnnotation() + " - " + tab1.getBanque() + "}"));
@@ -102,8 +109,9 @@ public class TableAnnotationBanqueDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllTableAnnotations(){
-      final List<TableAnnotationBanque> tableAnnotationBanques = tableAnnotationBanqueDao.findAll();
+   @Test
+public void testReadAllTableAnnotations(){
+      final List<TableAnnotationBanque> tableAnnotationBanques = IterableUtils.toList(tableAnnotationBanqueDao.findAll());
       assertTrue(tableAnnotationBanques.size() == 11);
    }
 
@@ -113,7 +121,8 @@ public class TableAnnotationBanqueDaoTest extends AbstractDaoTest
     *
     **/
    @Rollback(false)
-   public void testTableAnnotationBanque(){
+   @Test
+public void testTableAnnotationBanque(){
       final TableAnnotationBanque tab = new TableAnnotationBanque();
       final TableAnnotation t1 = tableAnnotationDao.findById(2);
       final Banque b1 = banqueDao.findById(4);
@@ -121,8 +130,8 @@ public class TableAnnotationBanqueDaoTest extends AbstractDaoTest
       tab.setBanque(b1);
       tab.setOrdre(3);
       // Test de l'insertion
-      tableAnnotationBanqueDao.createObject(tab);
-      assertTrue(tableAnnotationBanqueDao.findAll().size() == 12);
+      tableAnnotationBanqueDao.save(tab);
+      assertTrue(IterableUtils.toList(tableAnnotationBanqueDao.findAll()).size() == 12);
       // Test de la mise à jour
       final TableAnnotationBanquePK pk = new TableAnnotationBanquePK();
       pk.setTableAnnotation(t1);
@@ -134,18 +143,19 @@ public class TableAnnotationBanqueDaoTest extends AbstractDaoTest
       assertTrue(tab2.getOrdre().equals(3));
       //update
       tab2.setOrdre(2);
-      tableAnnotationBanqueDao.updateObject(tab2);
+      tableAnnotationBanqueDao.save(tab2);
       assertTrue(tableAnnotationBanqueDao.findById(pk).equals(tab2));
       assertTrue(tableAnnotationBanqueDao.findById(pk).getOrdre().equals(2));
       // Test de la délétion
-      tableAnnotationBanqueDao.removeObject(pk);
+      tableAnnotationBanqueDao.deleteById(pk);
       assertNull(tableAnnotationBanqueDao.findById(pk));
    }
 
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
 
       final TableAnnotationBanque tab1 = new TableAnnotationBanque();
       final TableAnnotationBanque tab2 = new TableAnnotationBanque();
@@ -168,7 +178,8 @@ public class TableAnnotationBanqueDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final TableAnnotationBanque tab1 = new TableAnnotationBanque();
       final TableAnnotationBanque tab2 = new TableAnnotationBanque();
       final TableAnnotationBanque tab3 = new TableAnnotationBanque();
@@ -190,7 +201,8 @@ public class TableAnnotationBanqueDaoTest extends AbstractDaoTest
       assertTrue(hash == tab1.hashCode());
    }
 
-   private void populateClefsToTestEqualsAndHashCode(final TableAnnotationBanque tab1, final TableAnnotationBanque tab2){
+   @Autowired
+ void populateClefsToTestEqualsAndHashCode(final TableAnnotationBanque tab1, final TableAnnotationBanque tab2){
 
       final TableAnnotation t1 = tableAnnotationDao.findById(1);
       final TableAnnotation t2 = tableAnnotationDao.findById(2);

@@ -65,14 +65,19 @@ import fr.aphp.tumorotek.model.contexte.Categorie;
 public class CodeAssigneDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private CodeAssigneDao codeAssigneDao;
-   /** Bean Dao. */
-   private EchantillonDao echantillonDao;
-   /** Bean Dao. */
-   private TableCodageDao tableCodageDao;
-   private PrelevementDao prelevementDao;
-   private PatientDao patientDao;
+
+   @Autowired
+ CodeAssigneDao codeAssigneDao;
+
+   @Autowired
+ EchantillonDao echantillonDao;
+
+   @Autowired
+ TableCodageDao tableCodageDao;
+   @Autowired
+ PrelevementDao prelevementDao;
+   @Autowired
+ PatientDao patientDao;
 
    /**
     * Constructeur.
@@ -83,7 +88,8 @@ public class CodeAssigneDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param cDao est le bean Dao.
     */
-   public void setCodeAssigneDao(final CodeAssigneDao cDao){
+   @Test
+public void setCodeAssigneDao(final CodeAssigneDao cDao){
       this.codeAssigneDao = cDao;
    }
 
@@ -91,7 +97,8 @@ public class CodeAssigneDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param eDao est le bean Dao.
     */
-   public void setEchantillonDao(final EchantillonDao eDao){
+   @Test
+public void setEchantillonDao(final EchantillonDao eDao){
       this.echantillonDao = eDao;
    }
 
@@ -99,34 +106,40 @@ public class CodeAssigneDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param tDao est le bean Dao.
     */
-   public void setTableCodageDao(final TableCodageDao tDao){
+   @Test
+public void setTableCodageDao(final TableCodageDao tDao){
       this.tableCodageDao = tDao;
    }
 
-   public void setPrelevementDao(final PrelevementDao pDao){
+   @Test
+public void setPrelevementDao(final PrelevementDao pDao){
       this.prelevementDao = pDao;
    }
 
-   public void setPatientDao(final PatientDao pDao){
+   @Test
+public void setPatientDao(final PatientDao pDao){
       this.patientDao = pDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllCategories(){
-      final List<CodeAssigne> codediags = codeAssigneDao.findAll();
+   @Test
+public void testReadAllCategories(){
+      final List<CodeAssigne> codediags = IterableUtils.toList(codeAssigneDao.findAll());
       assertTrue(codediags.size() == 5);
    }
 
-   public void testFindByCodeLike(){
+   @Test
+public void testFindByCodeLike(){
       List<CodeAssigne> codes = codeAssigneDao.findByCodeLike("BL%");
       assertTrue(codes.size() == 2);
       codes = codeAssigneDao.findByCodeLike("D5-22050");
       assertTrue(codes.size() == 1);
    }
 
-   public void testFindByCodeAndEchantillon(){
+   @Test
+public void testFindByCodeAndEchantillon(){
       final Echantillon e1 = echantillonDao.findById(1);
       List<CodeAssigne> codes = codeAssigneDao.findByCodeAndEchantillon("BL%", e1);
       assertTrue(codes.size() == 2);
@@ -143,14 +156,16 @@ public class CodeAssigneDaoTest extends AbstractDaoTest
       assertTrue(codes.size() == 0);
    }
 
-   public void testFindByLibelleLike(){
+   @Test
+public void testFindByLibelleLike(){
       List<CodeAssigne> codes = codeAssigneDao.findByLibelleLike("Langue%");
       assertTrue(codes.size() == 3);
       codes = codeAssigneDao.findByLibelleLike("Langue2");
       assertTrue(codes.size() == 1);
    }
 
-   public void testFindCodesMorphoByEchantillon(){
+   @Test
+public void testFindCodesMorphoByEchantillon(){
       Echantillon e = echantillonDao.findById(1);
       List<CodeAssigne> codeOrganes = codeAssigneDao.findCodesMorphoByEchantillon(e);
       assertTrue(codeOrganes.size() == 3);
@@ -162,7 +177,8 @@ public class CodeAssigneDaoTest extends AbstractDaoTest
       assertTrue(codeOrganes.size() == 0);
    }
 
-   public void testFindCodesOrganeByEchantillon(){
+   @Test
+public void testFindCodesOrganeByEchantillon(){
       Echantillon e = echantillonDao.findById(1);
       List<CodeAssigne> codeOrganes = codeAssigneDao.findCodesOrganeByEchantillon(e);
       assertTrue(codeOrganes.size() == 2);
@@ -173,7 +189,8 @@ public class CodeAssigneDaoTest extends AbstractDaoTest
       assertTrue(codeOrganes.size() == 0);
    }
 
-   public void findByExcludedId(){
+   @Test
+public void findByExcludedId(){
       final CodeAssigne c = codeAssigneDao.findById(1);
       List<CodeAssigne> codes = codeAssigneDao.findByExcludedId(c.getCodeAssigneId(), c.getCode(), c.getEchantillon());
       assertTrue(codes.size() == 0);
@@ -186,7 +203,8 @@ public class CodeAssigneDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
    @Rollback(false)
-   public void testCrud() throws Exception{
+   @Test
+public void testCrud() throws Exception{
       final CodeAssigne c = new CodeAssigne();
       final String codeUpdated = "UPDATED";
 
@@ -199,7 +217,7 @@ public class CodeAssigneDaoTest extends AbstractDaoTest
       c.setIsOrgane(false);
       c.setIsMorpho(true);
       // Test de l'insertion
-      codeAssigneDao.createObject(c);
+      codeAssigneDao.save(c);
       assertNotNull(c.getCodeAssigneId());
 
       final Integer cId = c.getCodeAssigneId();
@@ -213,16 +231,17 @@ public class CodeAssigneDaoTest extends AbstractDaoTest
       assertTrue(c2.getOrdre() == 1);
       assertFalse(c2.getExport());
       c2.setCode(codeUpdated);
-      codeAssigneDao.updateObject(c2);
+      codeAssigneDao.save(c2);
       assertTrue(codeAssigneDao.findById(cId).getCode().equals(codeUpdated));
 
       // Test de la délétion
-      codeAssigneDao.removeObject(cId);
+      codeAssigneDao.deleteById(cId);
       assertNull(codeAssigneDao.findById(cId));
 
    }
 
-   public void testEqualsAndHashCode(){
+   @Test
+public void testEqualsAndHashCode(){
       final CodeAssigne c1 = new CodeAssigne();
       final CodeAssigne c2 = new CodeAssigne();
       assertFalse(c1.equals(null));
@@ -386,7 +405,8 @@ public class CodeAssigneDaoTest extends AbstractDaoTest
       assertFalse(c1.equals(c));
    }
 
-   public void testToString(){
+   @Test
+public void testToString(){
       final CodeAssigne c = new CodeAssigne();
       assertTrue(c.toString().equals("{Empty CodeAssigne}"));
       c.setCode("CodeAss");
@@ -399,7 +419,8 @@ public class CodeAssigneDaoTest extends AbstractDaoTest
       assertTrue(c.toString().equals("{CodeDiag: CodeAss}"));
    }
 
-   public void testClone(){
+   @Test
+public void testClone(){
       final CodeAssigne c = codeAssigneDao.findById(2);
       //c.setEchanExpLes(echantillonDao.findById(3));
       //c.setEchanExpOrg(echantillonDao.findById(3));
@@ -421,7 +442,8 @@ public class CodeAssigneDaoTest extends AbstractDaoTest
       assertTrue(clone.getExport().equals(c.getExport()));
    }
 
-   public void testFindCodeLesExportedByPrelevement(){
+   @Test
+public void testFindCodeLesExportedByPrelevement(){
       final Prelevement p1 = prelevementDao.findById(1);
       List<CodeAssigne> codes = codeAssigneDao.findCodesLesExportedByPrelevement(p1);
       assertTrue(codes.size() == 1);
@@ -431,7 +453,8 @@ public class CodeAssigneDaoTest extends AbstractDaoTest
       assertTrue(codes.size() == 0);
    }
 
-   public void testFindCodeOrgExportedByPrelevement(){
+   @Test
+public void testFindCodeOrgExportedByPrelevement(){
       final Prelevement p1 = prelevementDao.findById(1);
       List<CodeAssigne> codes = codeAssigneDao.findCodesOrgExportedByPrelevement(p1);
       assertTrue(codes.size() == 1);
@@ -441,7 +464,8 @@ public class CodeAssigneDaoTest extends AbstractDaoTest
       assertTrue(codes.size() == 0);
    }
 
-   public void testFindCodeOrgExportedByPatient(){
+   @Test
+public void testFindCodeOrgExportedByPatient(){
       final Patient p3 = patientDao.findById(3);
       List<CodeAssigne> codes = codeAssigneDao.findCodesOrgExportedByPatient(p3);
       assertTrue(codes.size() == 1);

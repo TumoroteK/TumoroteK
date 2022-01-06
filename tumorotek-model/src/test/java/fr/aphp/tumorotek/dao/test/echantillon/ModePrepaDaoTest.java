@@ -38,7 +38,19 @@ package fr.aphp.tumorotek.dao.test.echantillon;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.coeur.echantillon.ModePrepaDao;
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
@@ -56,15 +68,20 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  * @version 10/09/2009
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class ModePrepaDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private ModePrepaDao modePrepaDao;
-   private PlateformeDao plateformeDao;
 
-   private final String updatedNom = "Prepa mis a jour";
+   @Autowired
+ ModePrepaDao modePrepaDao;
+   @Autowired
+ PlateformeDao plateformeDao;
+
+   @Autowired
+ final String updatedNom = "Prepa mis a jour";
 
    /** Constructeur. */
    public ModePrepaDaoTest(){
@@ -75,23 +92,27 @@ public class ModePrepaDaoTest extends AbstractDaoTest
     * Setter du bean ModePrepaDao.
     * @param mDao est le bean Dao.
     */
-   public void setModePrepaDao(final ModePrepaDao mDao){
+   @Test
+public void setModePrepaDao(final ModePrepaDao mDao){
       this.modePrepaDao = mDao;
    }
 
-   public void setPlateformeDao(final PlateformeDao pfDao){
+   @Test
+public void setPlateformeDao(final PlateformeDao pfDao){
       this.plateformeDao = pfDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllModePrepas(){
-      final List<ModePrepa> modes = modePrepaDao.findAll();
+   @Test
+public void testReadAllModePrepas(){
+      final List<ModePrepa> modes = IterableUtils.toList(modePrepaDao.findAll());
       assertTrue(modes.size() == 4);
    }
 
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
       List<? extends TKThesaurusObject> list = modePrepaDao.findByPfOrder(pf);
       assertTrue(list.size() == 3);
@@ -106,7 +127,8 @@ public class ModePrepaDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByNom().
     */
-   public void testFindByNom(){
+   @Test
+public void testFindByNom(){
       List<ModePrepa> modes = modePrepaDao.findByNom("PREPA1");
       assertTrue(modes.size() == 1);
       modes = modePrepaDao.findByNom("PREPA");
@@ -116,7 +138,8 @@ public class ModePrepaDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByNomEn().
     */
-   public void testFindByNomEn(){
+   @Test
+public void testFindByNomEn(){
       List<ModePrepa> modes = modePrepaDao.findByNomEn("PREPA_EN1");
       assertTrue(modes.size() == 1);
       modes = modePrepaDao.findByNomEn("EN");
@@ -126,7 +149,8 @@ public class ModePrepaDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByEchantillonId().
     */
-   public void testFindByEchantillonId(){
+   @Test
+public void testFindByEchantillonId(){
       List<ModePrepa> modes = modePrepaDao.findByEchantillonId(1);
       assertTrue(modes.size() == 1);
       modes = modePrepaDao.findByEchantillonId(4);
@@ -137,7 +161,8 @@ public class ModePrepaDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<ModePrepa> liste = modePrepaDao.findByExcludedId(1);
       assertTrue(liste.size() == 3);
       final ModePrepa mode = liste.get(0);
@@ -153,7 +178,8 @@ public class ModePrepaDaoTest extends AbstractDaoTest
     * @throws Exception Lance une exception.
     */
    @Rollback(false)
-   public void testCrudModePrepa() throws Exception{
+   @Test
+public void testCrudModePrepa() throws Exception{
 
       final ModePrepa m = new ModePrepa();
 
@@ -161,7 +187,7 @@ public class ModePrepaDaoTest extends AbstractDaoTest
       m.setNomEn("PREPA_EN");
       m.setPlateforme(plateformeDao.findById(1));
       // Test de l'insertion
-      modePrepaDao.createObject(m);
+      modePrepaDao.save(m);
       assertEquals(new Integer(5), m.getModePrepaId());
 
       // Test de la mise à jour
@@ -170,11 +196,11 @@ public class ModePrepaDaoTest extends AbstractDaoTest
       assertTrue(m2.getNom().equals("PREPA"));
       assertTrue(m2.getNomEn().equals("PREPA_EN"));
       m2.setNom(updatedNom);
-      modePrepaDao.updateObject(m2);
+      modePrepaDao.save(m2);
       assertTrue(modePrepaDao.findById(new Integer(5)).getNom().equals(updatedNom));
 
       // Test de la délétion
-      modePrepaDao.removeObject(new Integer(5));
+      modePrepaDao.deleteById(new Integer(5));
       assertNull(modePrepaDao.findById(new Integer(5)));
 
    }
@@ -182,7 +208,8 @@ public class ModePrepaDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String nom = "Nom";
       final String nom2 = "Nom2";
       final ModePrepa m1 = new ModePrepa();
@@ -228,7 +255,8 @@ public class ModePrepaDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String nom = "nom";
       final ModePrepa m1 = new ModePrepa(1, nom, null);
       final ModePrepa m2 = new ModePrepa(2, nom, null);
@@ -256,7 +284,8 @@ public class ModePrepaDaoTest extends AbstractDaoTest
    /**
     * Test toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final ModePrepa m1 = modePrepaDao.findById(1);
       assertTrue(m1.toString().equals("{" + m1.getNom() + "}"));
 

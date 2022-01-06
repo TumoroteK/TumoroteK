@@ -75,74 +75,97 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class BanqueDaoTest extends AbstractDaoTest
 {
 
-   private BanqueDao banqueDao;
-   private CollaborateurDao collaborateurDao;
-   private ServiceDao serviceDao;
-   private PlateformeDao plateformeDao;
-   private ContexteDao contexteDao;
-   private CouleurDao couleurDao;
-   private UtilisateurDao utilisateurDao;
-   private EntiteDao entiteDao;
-   private TableAnnotationDao tableAnnotationDao;
-   private ConteneurDao conteneurDao;
+   @Autowired
+ BanqueDao banqueDao;
+   @Autowired
+ CollaborateurDao collaborateurDao;
+   @Autowired
+ ServiceDao serviceDao;
+   @Autowired
+ PlateformeDao plateformeDao;
+   @Autowired
+ ContexteDao contexteDao;
+   @Autowired
+ CouleurDao couleurDao;
+   @Autowired
+ UtilisateurDao utilisateurDao;
+   @Autowired
+ EntiteDao entiteDao;
+   @Autowired
+ TableAnnotationDao tableAnnotationDao;
+   @Autowired
+ ConteneurDao conteneurDao;
 
-   private final String updatedNom = "Banque mise a jour";
+   @Autowired
+ final String updatedNom = "Banque mise a jour";
 
    /** Constructeur. */
    public BanqueDaoTest(){}
 
-   public void setBanqueDao(final BanqueDao bDao){
+   @Test
+public void setBanqueDao(final BanqueDao bDao){
       this.banqueDao = bDao;
    }
 
-   public void setCollaborateurDao(final CollaborateurDao cDao){
+   @Test
+public void setCollaborateurDao(final CollaborateurDao cDao){
       this.collaborateurDao = cDao;
    }
 
-   public void setServiceDao(final ServiceDao sDao){
+   @Test
+public void setServiceDao(final ServiceDao sDao){
       this.serviceDao = sDao;
    }
 
-   public void setPlateformeDao(final PlateformeDao pDao){
+   @Test
+public void setPlateformeDao(final PlateformeDao pDao){
       this.plateformeDao = pDao;
    }
 
-   public void setContexteDao(final ContexteDao cDao){
+   @Test
+public void setContexteDao(final ContexteDao cDao){
       this.contexteDao = cDao;
    }
 
-   public void setCouleurDao(final CouleurDao cDao){
+   @Test
+public void setCouleurDao(final CouleurDao cDao){
       this.couleurDao = cDao;
    }
 
-   public void setUtilisateurDao(final UtilisateurDao uDao){
+   @Test
+public void setUtilisateurDao(final UtilisateurDao uDao){
       this.utilisateurDao = uDao;
    }
 
-   public void setEntiteDao(final EntiteDao eDao){
+   @Test
+public void setEntiteDao(final EntiteDao eDao){
       this.entiteDao = eDao;
    }
 
-   public void setTableAnnotationDao(final TableAnnotationDao tDao){
+   @Test
+public void setTableAnnotationDao(final TableAnnotationDao tDao){
       this.tableAnnotationDao = tDao;
    }
 
-   public void setConteneurDao(ConteneurDao cDao) {
+   @Test
+public void setConteneurDao(ConteneurDao cDao) {
 	this.conteneurDao = cDao;
 }
 
 /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllBanques(){
-      final List<Banque> banques = banqueDao.findAll();
+   @Test
+public void testReadAllBanques(){
+      final List<Banque> banques = IterableUtils.toList(banqueDao.findAll());
       assertTrue(banques.size() == 4);
    }
 
    /**
     * Test l'appel de la méthode findByOrder().
     */
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       final List<Banque> list = banqueDao.findByOrder();
       assertTrue(list.size() == 4);
       assertTrue(list.get(0).getNom().equals("BANQUE1"));
@@ -151,7 +174,8 @@ public class BanqueDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByNom().
     */
-   public void testFindByNom(){
+   @Test
+public void testFindByNom(){
       List<Banque> banques = banqueDao.findByNom("BANQUE1");
       assertTrue(banques.size() == 1);
       banques = banqueDao.findByNom("BICHAT");
@@ -161,7 +185,8 @@ public class BanqueDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByIdentification().
     */
-   public void testFindByIdentification(){
+   @Test
+public void testFindByIdentification(){
       List<Banque> banques = banqueDao.findByIdentification("B1");
       assertTrue(banques.size() == 1);
       banques = banqueDao.findByIdentification("548969125");
@@ -171,7 +196,8 @@ public class BanqueDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByAutoriseCrossPatient().
     */
-   public void testFindByAutoriseCrossPatient(){
+   @Test
+public void testFindByAutoriseCrossPatient(){
       final List<Banque> banques = banqueDao.findByAutoriseCrossPatient(true);
       assertTrue(banques.size() == 2);
    }
@@ -179,7 +205,8 @@ public class BanqueDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByArchive().
     */
-   public void testFindByArchive(){
+   @Test
+public void testFindByArchive(){
       final List<Banque> banques = banqueDao.findByArchive(false);
       assertTrue(banques.size() == 3);
    }
@@ -187,7 +214,8 @@ public class BanqueDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByCollaborateur().
     */
-   public void testFindByCollaborateur(){
+   @Test
+public void testFindByCollaborateur(){
       Collaborateur c = collaborateurDao.findById(1);
       List<Banque> banques = banqueDao.findByCollaborateur(c);
       assertTrue(banques.size() == 1);
@@ -199,7 +227,8 @@ public class BanqueDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByProprietaire().
     */
-   public void testFindByProprietaire(){
+   @Test
+public void testFindByProprietaire(){
       Service s = serviceDao.findById(1);
       List<Banque> banques = banqueDao.findByProprietaire(s);
       assertTrue(banques.size() == 2);
@@ -215,7 +244,8 @@ public class BanqueDaoTest extends AbstractDaoTest
     * Test l'appel de la méthode findByPlateformeAndArchive().
     * @version 2.1
     */
-   public void testFindByPlateforme(){
+   @Test
+public void testFindByPlateforme(){
       Plateforme pf = plateformeDao.findById(1);
       List<Banque> banques = banqueDao.findByPlateformeAndArchive(pf, false);
       assertTrue(banques.size() == 3);
@@ -240,7 +270,8 @@ public class BanqueDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByIdWithFetch().
     */
-   public void testFindByIdWithFetch(){
+   @Test
+public void testFindByIdWithFetch(){
       final List<Banque> banques = banqueDao.findByIdWithFetch(3);
       final Banque banque = banques.get(0);
       assertNotNull(banque);
@@ -254,7 +285,8 @@ public class BanqueDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas d'erreur sur les données.
     */
    @Rollback(false)
-   public void testCrudBanque() throws Exception{
+   @Test
+public void testCrudBanque() throws Exception{
       final Banque b = new Banque();
       final Collaborateur c = collaborateurDao.findById(1);
       final Service s2 = serviceDao.findById(2);
@@ -279,7 +311,7 @@ public class BanqueDaoTest extends AbstractDaoTest
       b.setEchantillonCouleur(coul1);
       b.setProdDeriveCouleur(coul2);
       // Test de l'insertion
-      banqueDao.createObject(b);
+      banqueDao.save(b);
       assertEquals(new Integer(5), b.getBanqueId());
 
       // Test de la mise à jour
@@ -304,12 +336,12 @@ public class BanqueDaoTest extends AbstractDaoTest
       assertNotNull(b2.getProdDeriveCouleur());
       b2.setNom(updatedNom);
       b2.setArchive(true);
-      banqueDao.updateObject(b2);
+      banqueDao.save(b2);
       assertTrue(banqueDao.findById(b2.getBanqueId()).getNom().equals(updatedNom));
       assertTrue(banqueDao.findById(b2.getBanqueId()).getArchive());
 
       // Test de la délétion
-      banqueDao.removeObject(new Integer(5));
+      banqueDao.deleteById(new Integer(5));
       assertNull(banqueDao.findById(new Integer(5)));
 
    }
@@ -317,7 +349,8 @@ public class BanqueDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String nom = "Banque1";
       final String nom2 = "Banque2";
       final Plateforme pf1 = plateformeDao.findById(1);
@@ -364,7 +397,8 @@ public class BanqueDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String nom = "Banque1";
       final String nom2 = "Banque2";
       final Plateforme pf1 = plateformeDao.findById(1);
@@ -405,7 +439,8 @@ public class BanqueDaoTest extends AbstractDaoTest
    /**
     * Test la méthode clone.
     */
-   public void testClone(){
+   @Test
+public void testClone(){
       Banque c1 = banqueDao.findById(3);
       Banque c2 = c1.clone();
       assertTrue(c1.equals(c2));
@@ -502,13 +537,15 @@ public class BanqueDaoTest extends AbstractDaoTest
       assertTrue(c2.getDefautMaladieCode().equals(c1.getDefautMaladieCode()));
    }
 
-   public void testFindContexteCatalogues(){
+   @Test
+public void testFindContexteCatalogues(){
       final List<Catalogue> cats = banqueDao.findContexteCatalogues(1);
       assertTrue(cats.size() == 4);
       assertTrue(cats.get(0).getNom().equals("INCa"));
    }
 
-   public void testFindByEntiteConsultByUtilisateur(){
+   @Test
+public void testFindByEntiteConsultByUtilisateur(){
       Utilisateur utilisateur = utilisateurDao.findById(2);
       final Plateforme pf = plateformeDao.findById(1);
       final Entite prel = entiteDao.findById(2);
@@ -526,7 +563,8 @@ public class BanqueDaoTest extends AbstractDaoTest
       assertTrue(banks.size() == 0);
    }
 
-   public void testFindByEntiteModifByUtilisateur(){
+   @Test
+public void testFindByEntiteModifByUtilisateur(){
       Utilisateur utilisateur = utilisateurDao.findById(2);
       final Plateforme pf = plateformeDao.findById(1);
       final Entite prel = entiteDao.findById(2);
@@ -544,7 +582,8 @@ public class BanqueDaoTest extends AbstractDaoTest
       assertTrue(banks.size() == 0);
    }
 
-   public void testFindByUtilisateurIsAdmin(){
+   @Test
+public void testFindByUtilisateurIsAdmin(){
       Utilisateur utilisateur = utilisateurDao.findById(1);
       Plateforme pf = plateformeDao.findById(1);
       List<Banque> banks = banqueDao.findByUtilisateurIsAdmin(utilisateur, pf);
@@ -568,7 +607,8 @@ public class BanqueDaoTest extends AbstractDaoTest
       assertTrue(banks.size() == 3);
    }
 
-   public void testFindByUtilisateurAndPF(){
+   @Test
+public void testFindByUtilisateurAndPF(){
       Utilisateur utilisateur = utilisateurDao.findById(1);
       final Plateforme pf1 = plateformeDao.findById(1);
       final Plateforme pf2 = plateformeDao.findById(2);
@@ -592,7 +632,8 @@ public class BanqueDaoTest extends AbstractDaoTest
       assertTrue(banks.size() == 0);
    }
 
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<Banque> banques = banqueDao.findByExcludedId(1);
       assertTrue(banques.size() == 3);
 
@@ -600,7 +641,8 @@ public class BanqueDaoTest extends AbstractDaoTest
       assertTrue(banques.size() == 4);
    }
 
-   public void testFindByProfilUtilisateur(){
+   @Test
+public void testFindByProfilUtilisateur(){
       final Utilisateur u1 = utilisateurDao.findById(1);
       List<Banque> banks = banqueDao.findByProfilUtilisateur(u1);
       assertTrue(banks.size() == 3);
@@ -618,7 +660,8 @@ public class BanqueDaoTest extends AbstractDaoTest
       assertTrue(banks.size() == 0);
    }
 
-   public void testFindByTableAnnotation(){
+   @Test
+public void testFindByTableAnnotation(){
       TableAnnotation t = tableAnnotationDao.findById(1);
       List<Banque> banks = banqueDao.findByTableAnnotation(t);
       assertTrue(banks.size() == 1);
@@ -631,7 +674,8 @@ public class BanqueDaoTest extends AbstractDaoTest
    }
    
    @Test
-   public void testFindByConteneur(){
+   @Test
+public void testFindByConteneur(){
 
       final Conteneur c1 = conteneurDao.findById(1);
       List<Banque> banks = banqueDao.findByConteneur(c1);

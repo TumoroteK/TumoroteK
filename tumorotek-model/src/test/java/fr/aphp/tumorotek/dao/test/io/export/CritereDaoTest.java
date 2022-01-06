@@ -63,28 +63,36 @@ import fr.aphp.tumorotek.model.io.export.Critere;
 public class CritereDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private CritereDao critereDao;
-   private ChampDao champDao;
-   private CombinaisonDao combinaisonDao;
-   private ChampEntiteDao champEntiteDao;
+
+   @Autowired
+ CritereDao critereDao;
+   @Autowired
+ ChampDao champDao;
+   @Autowired
+ CombinaisonDao combinaisonDao;
+   @Autowired
+ ChampEntiteDao champEntiteDao;
 
    /** Constructeur. */
    public CritereDaoTest(){}
 
-   public void setCritereDao(final CritereDao cDao){
+   @Test
+public void setCritereDao(final CritereDao cDao){
       this.critereDao = cDao;
    }
 
-   public void setChampDao(final ChampDao cDao){
+   @Test
+public void setChampDao(final ChampDao cDao){
       this.champDao = cDao;
    }
 
-   public void setCombinaisonDao(final CombinaisonDao coDao){
+   @Test
+public void setCombinaisonDao(final CombinaisonDao coDao){
       this.combinaisonDao = coDao;
    }
 
-   public void setChampEntiteDao(final ChampEntiteDao ceDao){
+   @Test
+public void setChampEntiteDao(final ChampEntiteDao ceDao){
       this.champEntiteDao = ceDao;
    }
 
@@ -94,29 +102,30 @@ public class CritereDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
    @Rollback(false)
-   public void testCrudCritere() throws Exception{
+   @Test
+public void testCrudCritere() throws Exception{
       final String operateur = "=";
       final String valeur = "valeur";
 
       ChampEntite champEntite = this.champEntiteDao.findById(55);
       Champ ch = new Champ(champEntite);
-      this.champDao.createObject(ch);
+      this.champDao.save(ch);
       final int idCh1 = ch.getChampId();
       champEntite = this.champEntiteDao.findById(22);
       ch = new Champ(champEntite);
-      this.champDao.createObject(ch);
+      this.champDao.save(ch);
       final int idCh2 = ch.getChampId();
       champEntite = this.champEntiteDao.findById(44);
       ch = new Champ(champEntite);
-      this.champDao.createObject(ch);
+      this.champDao.save(ch);
       final int idCh3 = ch.getChampId();
       champEntite = this.champEntiteDao.findById(22);
       ch = new Champ(champEntite);
-      this.champDao.createObject(ch);
+      this.champDao.save(ch);
       final int idCh4 = ch.getChampId();
       champEntite = this.champEntiteDao.findById(21);
       ch = new Champ(champEntite);
-      this.champDao.createObject(ch);
+      this.champDao.save(ch);
       final int idCh = ch.getChampId();
 
       final Champ champ1 = this.champDao.findById(idCh1);
@@ -127,10 +136,10 @@ public class CritereDaoTest extends AbstractDaoTest
 
       //On crée les combinaisons
       Combinaison co = new Combinaison(champ1, "+", champ2);
-      this.combinaisonDao.createObject(co);
+      this.combinaisonDao.save(co);
       final int idCo1 = co.getCombinaisonId();
       co = new Combinaison(champ3, "-", champ4);
-      this.combinaisonDao.createObject(co);
+      this.combinaisonDao.save(co);
       final int idCo2 = co.getCombinaisonId();
 
       final Combinaison combinaison = this.combinaisonDao.findById(idCo1);
@@ -144,8 +153,8 @@ public class CritereDaoTest extends AbstractDaoTest
 
       // Test de l'insertion
       Integer idObject = new Integer(-1);
-      this.critereDao.createObject(c);
-      final List<Critere> criteres = this.critereDao.findAll();
+      this.critereDao.save(c);
+      final List<Critere> criteres = this.IterableUtils.toList(critereDao.findAll());
       final Iterator<Critere> itCritere = criteres.iterator();
       boolean found = false;
       while(itCritere.hasNext()){
@@ -178,7 +187,7 @@ public class CritereDaoTest extends AbstractDaoTest
 
       champEntite = this.champEntiteDao.findById(33);
       final Champ updatedChamp = new Champ(champEntite);
-      this.champDao.createObject(updatedChamp);
+      this.champDao.save(updatedChamp);
       final int idChUpd = updatedChamp.getChampId();
       final String updatedOperateur = "!=";
       final Combinaison updatedCombinaison = this.combinaisonDao.findById(idCo2);
@@ -189,7 +198,7 @@ public class CritereDaoTest extends AbstractDaoTest
       c2.setCombinaison(updatedCombinaison);
       c2.setValeur(updatedValeur);
 
-      this.critereDao.updateObject(c2);
+      this.critereDao.save(c2);
       assertNotNull(this.critereDao.findById(idObject).getOperateur());
       assertTrue(this.critereDao.findById(idObject).getOperateur().equals(updatedOperateur));
       if(this.critereDao.findById(idObject).getChamp() != null){
@@ -205,20 +214,21 @@ public class CritereDaoTest extends AbstractDaoTest
       assertNotNull(this.critereDao.findById(idObject).getValeur());
       assertTrue(this.critereDao.findById(idObject).getValeur().equals(updatedValeur));
       // Test de la délétion
-      this.critereDao.removeObject(idObject);
+      this.critereDao.deleteById(idObject);
       assertNull(this.critereDao.findById(idObject));
 
       //On supprime tous les éléments créés
-      this.combinaisonDao.removeObject(idCo1);
-      this.combinaisonDao.removeObject(idCo2);
-      this.champDao.removeObject(idCh);
-      this.champDao.removeObject(idChUpd);
+      this.combinaisonDao.deleteById(idCo1);
+      this.combinaisonDao.deleteById(idCo2);
+      this.champDao.deleteById(idCh);
+      this.champDao.deleteById(idChUpd);
    }
 
    /**
     * test toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final Critere c1 = critereDao.findById(1);
       assertTrue(c1.toString().equals(c1.getChamp().toString() + " " + c1.getOperateur() + " " + c1.getValeur()));
 
@@ -229,7 +239,8 @@ public class CritereDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       //On boucle sur les 16 possibilités
       for(int i = 0; i < Math.pow(2, 4); i++){
          final Critere critere1 = new Critere();
@@ -269,7 +280,8 @@ public class CritereDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       //On boucle sur les 16 possibilités
       for(int i = 0; i < Math.pow(2, 4); i++){
          final Critere critere = new Critere();

@@ -57,11 +57,13 @@ import fr.aphp.tumorotek.model.contexte.Specialite;
 public class SpecialiteDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private SpecialiteDao specialiteDao;
+
+   @Autowired
+ SpecialiteDao specialiteDao;
 
    /** valeur du nom pour la maj. */
-   private final String updatedNom = "Spe mise a jour";
+   @Autowired
+ final String updatedNom = "Spe mise a jour";
 
    /** Constructeur par défaut. **/
    public SpecialiteDaoTest(){
@@ -72,22 +74,25 @@ public class SpecialiteDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param sDao est le bean Dao.
     */
-   public void setSpecialiteDao(final SpecialiteDao sDao){
+   @Test
+public void setSpecialiteDao(final SpecialiteDao sDao){
       this.specialiteDao = sDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllSpecialites(){
-      final List<Specialite> specialites = specialiteDao.findAll();
+   @Test
+public void testReadAllSpecialites(){
+      final List<Specialite> specialites = IterableUtils.toList(specialiteDao.findAll());
       assertTrue(specialites.size() == 5);
    }
 
    /**
     * Test l'appel de la méthode findByOrder().
     */
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       final List<Specialite> list = specialiteDao.findByOrder();
       assertTrue(list.size() == 5);
       assertTrue(list.get(1).getNom().equals("BIOCHIMIE"));
@@ -96,7 +101,8 @@ public class SpecialiteDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByNom().
     */
-   public void testFindByNom(){
+   @Test
+public void testFindByNom(){
       List<Specialite> specialites = specialiteDao.findByNom("DERMATOLOGIE");
       assertTrue(specialites.size() == 1);
       specialites = specialiteDao.findByNom("SPE5");
@@ -106,7 +112,8 @@ public class SpecialiteDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByCollaborateurId().
     */
-   public void testFindByCollaborateurId(){
+   @Test
+public void testFindByCollaborateurId(){
       List<Specialite> specialites = specialiteDao.findByCollaborateurId(6);
       assertTrue(specialites.size() == 1);
       assertTrue(specialites.get(0).getSpecialiteId() == 1);
@@ -117,7 +124,8 @@ public class SpecialiteDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<Specialite> liste = specialiteDao.findByExcludedId(1);
       assertTrue(liste.size() == 4);
       final Specialite spe = liste.get(0);
@@ -133,12 +141,13 @@ public class SpecialiteDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception sur le traitement des données.
     */
    @Rollback(false)
-   public void testCrudSpecialite() throws Exception{
+   @Test
+public void testCrudSpecialite() throws Exception{
 
       final Specialite s = new Specialite();
       s.setNom("NEW SPE");
       // Test de l'insertion
-      specialiteDao.createObject(s);
+      specialiteDao.save(s);
       assertEquals(new Integer(6), s.getSpecialiteId());
 
       // Test de la mise à jour
@@ -146,11 +155,11 @@ public class SpecialiteDaoTest extends AbstractDaoTest
       assertNotNull(s2);
       assertTrue(s2.getNom().equals("NEW SPE"));
       s2.setNom(updatedNom);
-      specialiteDao.updateObject(s2);
+      specialiteDao.save(s2);
       assertTrue(specialiteDao.findById(new Integer(6)).getNom().equals(updatedNom));
 
       // Test de la délétion
-      specialiteDao.removeObject(new Integer(6));
+      specialiteDao.deleteById(new Integer(6));
       assertNull(specialiteDao.findById(new Integer(6)));
 
    }
@@ -158,7 +167,8 @@ public class SpecialiteDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String nom = "Nom1";
       final String nom2 = "Nom2";
       final Specialite s1 = new Specialite();
@@ -195,7 +205,8 @@ public class SpecialiteDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String nom = "Nom1";
       final Specialite s1 = new Specialite();
       s1.setSpecialiteId(1);

@@ -37,8 +37,17 @@ package fr.aphp.tumorotek.dao.test.systeme;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
 
 import fr.aphp.tumorotek.dao.coeur.ObjetStatutDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
@@ -53,146 +62,143 @@ import fr.aphp.tumorotek.model.contexte.Categorie;
  * @version 10/09/2009
  *
  */
-@TransactionConfiguration(defaultRollback = false)
-public class ObjetStatutDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class ObjetStatutDaoTest extends AbstractDaoTest {
 
-   /** Bean Dao. */
-   private ObjetStatutDao objetStatutDao;
-   /** valeur du nom pour la maj. */
-   private final String updatedNom = "Stat mis a jour";
+	@Autowired
+	ObjetStatutDao objetStatutDao;
 
-   /** Constructeur. */
-   public ObjetStatutDaoTest(){
+	/** valeur du nom pour la maj. */
+	private String updatedNom = "Stat mis a jour";
 
-   }
+	/**
+	 * Test l'appel de la méthode findAll().
+	 */
+	@Test
+	public void testReadAllObjetStatuts() {
+		final List<ObjetStatut> objets = IterableUtils.toList(IterableUtils.toList(objetStatutDao.findAll()));
+		assertTrue(objets.size() == 6);
+	}
 
-   /**
-    * Setter du bean ObjetStatutDao.
-    * @param oDao est le bean Dao.
-    */
-   public void setObjetStatutDao(final ObjetStatutDao oDao){
-      this.objetStatutDao = oDao;
-   }
+	/**
+	 * Test l'appel de la méthode findByOrder().
+	 */
+	@Test
+	public void testFindByOrder() {
+		final List<ObjetStatut> list = objetStatutDao.findByOrder();
+		assertTrue(list.size() == 6);
+		assertTrue(list.get(0).getStatut().equals("DETRUIT"));
+	}
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   public void testReadAllObjetStatuts(){
-      final List<ObjetStatut> objets = objetStatutDao.findAll();
-      assertTrue(objets.size() == 6);
-   }
+	/**
+	 * Test l'appel de la méthode findByStatut().
+	 */
+	@Test
+	public void testFindByStatut() {
+		List<ObjetStatut> objets = objetStatutDao.findByStatut("STOCKE");
+		assertTrue(objets.size() == 1);
+		objets = objetStatutDao.findByStatut("CEDE");
+		assertTrue(objets.size() == 0);
+	}
 
-   /**
-    * Test l'appel de la méthode findByOrder().
-    */
-   public void testFindByOrder(){
-      final List<ObjetStatut> list = objetStatutDao.findByOrder();
-      assertTrue(list.size() == 6);
-      assertTrue(list.get(0).getStatut().equals("DETRUIT"));
-   }
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'un ObjetStatut.
+	 * 
+	 * @throws Exception Lance une exception.
+	 */
+	@Rollback(false)
+	@Test
+	public void testCrudObjetStatut() throws Exception {
 
-   /**
-    * Test l'appel de la méthode findByStatut().
-    */
-   public void testFindByStatut(){
-      List<ObjetStatut> objets = objetStatutDao.findByStatut("STOCKE");
-      assertTrue(objets.size() == 1);
-      objets = objetStatutDao.findByStatut("CEDE");
-      assertTrue(objets.size() == 0);
-   }
+		final ObjetStatut o = new ObjetStatut();
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression d'un ObjetStatut.
-    * @throws Exception Lance une exception.
-    */
-   @Rollback(false)
-   public void testCrudObjetStatut() throws Exception{
+		o.setStatut("CEDE");
+		// Test de l'insertion
+		objetStatutDao.save(o);
+		assertEquals(new Integer(7), o.getObjetStatutId());
 
-      final ObjetStatut o = new ObjetStatut();
+		// Test de la mise à jour
+		final ObjetStatut o2 = objetStatutDao.findById(new Integer(7)).get();
+		assertNotNull(o2);
+		assertTrue(o2.getStatut().equals("CEDE"));
+		o2.setStatut(updatedNom);
+		objetStatutDao.save(o2);
+		assertTrue(objetStatutDao.findById(new Integer(7)).get().getStatut().equals(updatedNom));
 
-      o.setStatut("CEDE");
-      // Test de l'insertion
-      objetStatutDao.createObject(o);
-      assertEquals(new Integer(7), o.getObjetStatutId());
+		// Test de la délétion
+		objetStatutDao.deleteById(new Integer(7));
+		assertFalse(objetStatutDao.findById(new Integer(7)).isPresent());
 
-      // Test de la mise à jour
-      final ObjetStatut o2 = objetStatutDao.findById(new Integer(7));
-      assertNotNull(o2);
-      assertTrue(o2.getStatut().equals("CEDE"));
-      o2.setStatut(updatedNom);
-      objetStatutDao.updateObject(o2);
-      assertTrue(objetStatutDao.findById(new Integer(7)).getStatut().equals(updatedNom));
+	}
 
-      // Test de la délétion
-      objetStatutDao.removeObject(new Integer(7));
-      assertNull(objetStatutDao.findById(new Integer(7)));
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final String statut = "cede";
+		final String statut2 = "non cede";
+		final ObjetStatut o1 = new ObjetStatut();
+		o1.setStatut(statut);
+		final ObjetStatut o2 = new ObjetStatut();
+		o2.setStatut(statut);
 
-   }
+		// L'objet 1 n'est pas égal à null
+		assertFalse(o1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(o1.equals(o1));
+		// 2 objets sont égaux entre eux
+		assertTrue(o1.equals(o2));
+		assertTrue(o2.equals(o1));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   public void testEquals(){
-      final String statut = "cede";
-      final String statut2 = "non cede";
-      final ObjetStatut o1 = new ObjetStatut();
-      o1.setStatut(statut);
-      final ObjetStatut o2 = new ObjetStatut();
-      o2.setStatut(statut);
+		// Vérification de la différenciation de 2 objets
+		o2.setStatut(statut2);
+		assertFalse(o1.equals(o2));
+		assertFalse(o2.equals(o1));
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(o1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(o1.equals(o1));
-      // 2 objets sont égaux entre eux
-      assertTrue(o1.equals(o2));
-      assertTrue(o2.equals(o1));
+		o2.setStatut(null);
+		assertFalse(o1.equals(o2));
+		assertFalse(o2.equals(o1));
+		o1.setStatut(null);
+		assertTrue(o1.equals(o2));
+		o2.setStatut(statut);
+		assertFalse(o1.equals(o2));
 
-      // Vérification de la différenciation de 2 objets
-      o2.setStatut(statut2);
-      assertFalse(o1.equals(o2));
-      assertFalse(o2.equals(o1));
+		final Categorie c = new Categorie();
+		assertFalse(o1.equals(c));
+	}
 
-      o2.setStatut(null);
-      assertFalse(o1.equals(o2));
-      assertFalse(o2.equals(o1));
-      o1.setStatut(null);
-      assertTrue(o1.equals(o2));
-      o2.setStatut(statut);
-      assertFalse(o1.equals(o2));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
+		final String statut = "cede";
+		final ObjetStatut o1 = new ObjetStatut(1, statut);
+		final ObjetStatut o2 = new ObjetStatut(2, statut);
+		final ObjetStatut o3 = new ObjetStatut(3, null);
+		assertTrue(o3.hashCode() > 0);
 
-      final Categorie c = new Categorie();
-      assertFalse(o1.equals(c));
-   }
+		final int hash = o1.hashCode();
+		// 2 objets égaux ont le même hashcode
+		assertTrue(o1.hashCode() == o2.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		assertTrue(hash == o1.hashCode());
+		assertTrue(hash == o1.hashCode());
+		assertTrue(hash == o1.hashCode());
+		assertTrue(hash == o1.hashCode());
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   public void testHashCode(){
-      final String statut = "cede";
-      final ObjetStatut o1 = new ObjetStatut(1, statut);
-      final ObjetStatut o2 = new ObjetStatut(2, statut);
-      final ObjetStatut o3 = new ObjetStatut(3, null);
-      assertTrue(o3.hashCode() > 0);
+	}
 
-      final int hash = o1.hashCode();
-      // 2 objets égaux ont le même hashcode
-      assertTrue(o1.hashCode() == o2.hashCode());
-      // un même objet garde le même hashcode dans le temps
-      assertTrue(hash == o1.hashCode());
-      assertTrue(hash == o1.hashCode());
-      assertTrue(hash == o1.hashCode());
-      assertTrue(hash == o1.hashCode());
+	@Test
+	public void testToString() {
+		final ObjetStatut obj = objetStatutDao.findById(1).get();
+		assertTrue(obj.toString().equals("{" + obj.getStatut() + "}"));
 
-   }
-
-   public void testToString(){
-      final ObjetStatut obj = objetStatutDao.findById(1);
-      assertTrue(obj.toString().equals("{" + obj.getStatut() + "}"));
-
-      final ObjetStatut obj2 = new ObjetStatut();
-      assertTrue(obj2.toString().equals("{Empty ObjetStatut}"));
-   }
+		final ObjetStatut obj2 = new ObjetStatut();
+		assertTrue(obj2.toString().equals("{Empty ObjetStatut}"));
+	}
 
 }

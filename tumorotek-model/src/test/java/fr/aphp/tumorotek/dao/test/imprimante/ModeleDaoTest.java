@@ -38,7 +38,19 @@ package fr.aphp.tumorotek.dao.test.imprimante;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
 import fr.aphp.tumorotek.dao.imprimante.ModeleDao;
@@ -57,45 +69,55 @@ import fr.aphp.tumorotek.model.imprimante.ModeleType;
  * @version 18/03/2011
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class ModeleDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private ModeleDao modeleDao;
-   /** Bean Dao. */
-   private ModeleTypeDao modeleTypeDao;
-   /** Bean Dao. */
-   private PlateformeDao plateformeDao;
+
+   @Autowired
+ ModeleDao modeleDao;
+
+   @Autowired
+ ModeleTypeDao modeleTypeDao;
+
+   @Autowired
+ PlateformeDao plateformeDao;
 
    public ModeleDaoTest(){
 
    }
 
-   public void setModeleDao(final ModeleDao mDao){
+   @Test
+public void setModeleDao(final ModeleDao mDao){
       this.modeleDao = mDao;
    }
 
-   public void setModeleTypeDao(final ModeleTypeDao mDao){
+   @Test
+public void setModeleTypeDao(final ModeleTypeDao mDao){
       this.modeleTypeDao = mDao;
    }
 
-   public void setPlateformeDao(final PlateformeDao pDao){
+   @Test
+public void setPlateformeDao(final PlateformeDao pDao){
       this.plateformeDao = pDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAll(){
-      final List<Modele> liste = modeleDao.findAll();
+   @Test
+public void testReadAll(){
+      final List<Modele> liste = IterableUtils.toList(modeleDao.findAll());
       assertTrue(liste.size() == 3);
    }
 
    /**
     * Test l'appel de la méthode findByPlateforme().
     */
-   public void testFindByPlateforme(){
+   @Test
+public void testFindByPlateforme(){
       final Plateforme pf1 = plateformeDao.findById(1);
       List<Modele> liste = modeleDao.findByPlateforme(pf1);
       assertTrue(liste.size() == 3);
@@ -111,7 +133,8 @@ public class ModeleDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByNomAndPlateforme().
     */
-   public void testFindByNomAndPlateforme(){
+   @Test
+public void testFindByNomAndPlateforme(){
       final Plateforme pf1 = plateformeDao.findById(1);
       List<Modele> liste = modeleDao.findByNomAndPlateforme("NBT", pf1);
       assertTrue(liste.size() == 1);
@@ -133,7 +156,8 @@ public class ModeleDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<Modele> liste = modeleDao.findByExcludedId(1);
       assertTrue(liste.size() == 2);
 
@@ -146,7 +170,8 @@ public class ModeleDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas d'erreur.
     */
    @Rollback(false)
-   public void testCrud() throws Exception{
+   @Test
+public void testCrud() throws Exception{
 
       final ModeleType mt = modeleTypeDao.findById(1);
       final Plateforme pf = plateformeDao.findById(1);
@@ -159,7 +184,7 @@ public class ModeleDaoTest extends AbstractDaoTest
       m1.setIsQRCode(false);
 
       // Test de l'insertion
-      modeleDao.createObject(m1);
+      modeleDao.save(m1);
       assertEquals(new Integer(4), m1.getModeleId());
 
       final Modele m2 = modeleDao.findById(new Integer(4));
@@ -175,12 +200,12 @@ public class ModeleDaoTest extends AbstractDaoTest
       // Test de la mise à jour
       m2.setNom("UP");
       m2.setIsQRCode(true);
-      modeleDao.updateObject(m2);
+      modeleDao.save(m2);
       assertTrue(modeleDao.findById(new Integer(4)).getNom().equals("UP"));
       assertTrue(m2.getIsQRCode());
 
       // Test de la délétion
-      modeleDao.removeObject(new Integer(4));
+      modeleDao.deleteById(new Integer(4));
       assertNull(modeleDao.findById(new Integer(4)));
 
    }
@@ -188,7 +213,8 @@ public class ModeleDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String nom = "imp1";
       final String nom2 = "imp2";
       final Plateforme pf1 = plateformeDao.findById(1);
@@ -248,7 +274,8 @@ public class ModeleDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String nom = "imp1";
       final String nom2 = "imp2";
       final Plateforme pf1 = plateformeDao.findById(1);
@@ -286,7 +313,8 @@ public class ModeleDaoTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final Modele m1 = modeleDao.findById(1);
       assertTrue(m1.toString().equals("{" + m1.getNom() + ", " + m1.getPlateforme().getNom() + "(Plateforme)}"));
 
@@ -297,7 +325,8 @@ public class ModeleDaoTest extends AbstractDaoTest
    /**
     * Test la méthode clone.
     */
-   public void testClone(){
+   @Test
+public void testClone(){
       final Modele m1 = modeleDao.findById(1);
       Modele m2 = new Modele();
       m2 = m1.clone();

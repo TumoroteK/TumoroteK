@@ -70,48 +70,60 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class ImportHistoriqueDaoTest extends AbstractDaoTest
 {
 
-   private ImportHistoriqueDao importHistoriqueDao;
-   private ImportTemplateDao importTemplateDao;
-   private ImportationDao importationDao;
-   private EntiteDao entiteDao;
-   private UtilisateurDao utilisateurDao;
+   @Autowired
+ ImportHistoriqueDao importHistoriqueDao;
+   @Autowired
+ ImportTemplateDao importTemplateDao;
+   @Autowired
+ ImportationDao importationDao;
+   @Autowired
+ EntiteDao entiteDao;
+   @Autowired
+ UtilisateurDao utilisateurDao;
 
    public ImportHistoriqueDaoTest(){
 
    }
 
-   public void setImportHistoriqueDao(final ImportHistoriqueDao iDao){
+   @Test
+public void setImportHistoriqueDao(final ImportHistoriqueDao iDao){
       this.importHistoriqueDao = iDao;
    }
 
-   public void setImportTemplateDao(final ImportTemplateDao iDao){
+   @Test
+public void setImportTemplateDao(final ImportTemplateDao iDao){
       this.importTemplateDao = iDao;
    }
 
-   public void setImportationDao(final ImportationDao iDao){
+   @Test
+public void setImportationDao(final ImportationDao iDao){
       this.importationDao = iDao;
    }
 
-   public void setEntiteDao(final EntiteDao eDao){
+   @Test
+public void setEntiteDao(final EntiteDao eDao){
       this.entiteDao = eDao;
    }
 
-   public void setUtilisateurDao(final UtilisateurDao uDao){
+   @Test
+public void setUtilisateurDao(final UtilisateurDao uDao){
       this.utilisateurDao = uDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAll(){
-      final List<ImportHistorique> liste = importHistoriqueDao.findAll();
+   @Test
+public void testReadAll(){
+      final List<ImportHistorique> liste = IterableUtils.toList(importHistoriqueDao.findAll());
       assertTrue(liste.size() == 3);
    }
 
    /**
     * Test l'appel de la méthode findByTemplateWithOrder().
     */
-   public void testFindByTemplateWithOrder(){
+   @Test
+public void testFindByTemplateWithOrder(){
       final ImportTemplate it1 = importTemplateDao.findById(1);
       List<ImportHistorique> liste = importHistoriqueDao.findByTemplateWithOrder(it1);
       assertTrue(liste.size() == 2);
@@ -132,7 +144,8 @@ public class ImportHistoriqueDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<ImportHistorique> liste = importHistoriqueDao.findByExcludedId(1);
       assertTrue(liste.size() == 2);
 
@@ -146,7 +159,8 @@ public class ImportHistoriqueDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas d'erreur.
     */
    @Rollback(false)
-   public void testCrud() throws Exception{
+   @Test
+public void testCrud() throws Exception{
 
       final Entite e3 = entiteDao.findById(3);
       final ImportTemplate it = importTemplateDao.findById(1);
@@ -172,9 +186,9 @@ public class ImportHistoriqueDaoTest extends AbstractDaoTest
       ih1.setImportations(imports);
 
       // Test de l'insertion
-      importHistoriqueDao.createObject(ih1);
+      importHistoriqueDao.save(ih1);
       assertEquals(new Integer(4), ih1.getImportHistoriqueId());
-      assertTrue(importationDao.findAll().size() == 4);
+      assertTrue(IterableUtils.toList(importationDao.findAll()).size() == 4);
 
       // Test de la mise à jour
       final ImportHistorique ih2 = importHistoriqueDao.findById(new Integer(4));
@@ -186,20 +200,21 @@ public class ImportHistoriqueDaoTest extends AbstractDaoTest
 
       final Calendar cal2 = Calendar.getInstance();
       ih2.setDate(cal2);
-      importHistoriqueDao.updateObject(ih2);
+      importHistoriqueDao.save(ih2);
       assertTrue(importHistoriqueDao.findById(new Integer(4)).getDate().equals(cal2));
       assertTrue(importHistoriqueDao.findById(new Integer(4)).getImportations().size() == 2);
 
       // Test de la délétion
-      importHistoriqueDao.removeObject(new Integer(4));
+      importHistoriqueDao.deleteById(new Integer(4));
       assertNull(importHistoriqueDao.findById(new Integer(4)));
-      assertTrue(importationDao.findAll().size() == 2);
+      assertTrue(IterableUtils.toList(importationDao.findAll()).size() == 2);
    }
 
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final Calendar cal1 = Calendar.getInstance();
       final Calendar cal2 = Calendar.getInstance();
       cal2.add(Calendar.MONTH, 1);
@@ -256,7 +271,8 @@ public class ImportHistoriqueDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final Calendar cal1 = Calendar.getInstance();
       final Calendar cal2 = Calendar.getInstance();
       cal2.add(Calendar.MONTH, 1);
@@ -295,7 +311,8 @@ public class ImportHistoriqueDaoTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final ImportHistorique ih1 = importHistoriqueDao.findById(1);
       assertTrue(ih1.toString().equals("{" + ih1.getDate() + ", " + ih1.getImportTemplate().getNom() + "(ImportTemplate)}"));
 
@@ -306,7 +323,8 @@ public class ImportHistoriqueDaoTest extends AbstractDaoTest
    /**
     * Test la méthode clone.
     */
-   public void testClone(){
+   @Test
+public void testClone(){
       final ImportHistorique ih1 = importHistoriqueDao.findById(1);
       ImportHistorique ih2 = new ImportHistorique();
       ih2 = ih1.clone();
@@ -344,7 +362,8 @@ public class ImportHistoriqueDaoTest extends AbstractDaoTest
       }
    }
 
-   public void testFindPrelevementByImportHistorique(){
+   @Test
+public void testFindPrelevementByImportHistorique(){
       final ImportHistorique ih1 = importHistoriqueDao.findById(1);
       final List<Prelevement> prels = new ArrayList<>();
       prels.addAll(importHistoriqueDao.findPrelevementByImportHistorique(ih1));

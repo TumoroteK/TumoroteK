@@ -55,8 +55,9 @@ import fr.aphp.tumorotek.model.contexte.Categorie;
 public class CimMasterDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private CimMasterDao cimMasterDao;
+
+   @Autowired
+ CimMasterDao cimMasterDao;
 
    /**
     * Constructeur.
@@ -72,33 +73,38 @@ public class CimMasterDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param cDao est le bean Dao.
     */
-   public void setCimMasterDao(final CimMasterDao cDao){
+   @Test
+public void setCimMasterDao(final CimMasterDao cDao){
       this.cimMasterDao = cDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllMasters(){
-      final List<CimMaster> cims = cimMasterDao.findAll();
+   @Test
+public void testReadAllMasters(){
+      final List<CimMaster> cims = IterableUtils.toList(cimMasterDao.findAll());
       assertTrue(cims.size() == 19178);
    }
 
-   public void testFindByCode(){
+   @Test
+public void testFindByCode(){
       List<CimMaster> cims = cimMasterDao.findByCodeLike("%A00%");
       assertTrue(cims.size() == 6);
       cims = cimMasterDao.findByCodeLike("TEST");
       assertTrue(cims.size() == 0);
    }
 
-   public void testFindByLibelle(){
+   @Test
+public void testFindByLibelle(){
       List<CimMaster> cims = cimMasterDao.findByLibelleLike("%shigell%");
       assertTrue(cims.size() == 7);
       cims = cimMasterDao.findByLibelleLike("PEARL");
       assertTrue(cims.size() == 0);
    }
 
-   public void testFindByLevel(){
+   @Test
+public void testFindByLevel(){
       List<CimMaster> cims = cimMasterDao.findByLevel(1);
       assertTrue(cims.size() == 21);
       cims = cimMasterDao.findByLevel(40);
@@ -108,7 +114,8 @@ public class CimMasterDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final Integer id1 = 1;
       final Integer id2 = 2;
       final CimMaster c1 = new CimMaster();
@@ -142,7 +149,8 @@ public class CimMasterDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
 
       final String code1 = "C1";
       final CimMaster c1 = new CimMaster();
@@ -163,7 +171,8 @@ public class CimMasterDaoTest extends AbstractDaoTest
       assertTrue(hash == c1.hashCode());
    }
 
-   public void testToString(){
+   @Test
+public void testToString(){
       final CimMaster a = new CimMaster();
       a.setCode("12.12");
       assertTrue(a.toString().equals("{CimMaster: 12.12}"));

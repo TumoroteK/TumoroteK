@@ -39,7 +39,19 @@ import java.text.ParseException;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.annotation.TableAnnotationDao;
 import fr.aphp.tumorotek.dao.impression.TableAnnotationTemplateDao;
@@ -60,45 +72,55 @@ import fr.aphp.tumorotek.model.impression.Template;
  * @version 30/07/2010
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class TableAnnotationTemplateDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private TableAnnotationTemplateDao tableAnnotationTemplateDao;
-   /** Bean Dao. */
-   private TableAnnotationDao tableAnnotationDao;
-   /** Bean Dao. */
-   private TemplateDao templateDao;
+
+   @Autowired
+ TableAnnotationTemplateDao tableAnnotationTemplateDao;
+
+   @Autowired
+ TableAnnotationDao tableAnnotationDao;
+
+   @Autowired
+ TemplateDao templateDao;
 
    public TableAnnotationTemplateDaoTest(){
 
    }
 
-   public void setTableAnnotationTemplateDao(final TableAnnotationTemplateDao tDao){
+   @Test
+public void setTableAnnotationTemplateDao(final TableAnnotationTemplateDao tDao){
       this.tableAnnotationTemplateDao = tDao;
    }
 
-   public void setTableAnnotationDao(final TableAnnotationDao tDao){
+   @Test
+public void setTableAnnotationDao(final TableAnnotationDao tDao){
       this.tableAnnotationDao = tDao;
    }
 
-   public void setTemplateDao(final TemplateDao tDao){
+   @Test
+public void setTemplateDao(final TemplateDao tDao){
       this.templateDao = tDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAll(){
-      final List<TableAnnotationTemplate> liste = tableAnnotationTemplateDao.findAll();
+   @Test
+public void testReadAll(){
+      final List<TableAnnotationTemplate> liste = IterableUtils.toList(tableAnnotationTemplateDao.findAll());
       assertTrue(liste.size() == 1);
    }
 
    /**
     * Test l'appel de la méthode findById().
     */
-   public void testFindById(){
+   @Test
+public void testFindById(){
       final TableAnnotation ta1 = tableAnnotationDao.findById(2);
       final Template t1 = templateDao.findById(1);
       TableAnnotationTemplatePK pk = new TableAnnotationTemplatePK(t1, ta1);
@@ -115,7 +137,8 @@ public class TableAnnotationTemplateDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedPK().
     */
-   public void testFindByExcludedPK(){
+   @Test
+public void testFindByExcludedPK(){
       final TableAnnotation ta1 = tableAnnotationDao.findById(1);
       final Template t1 = templateDao.findById(1);
       TableAnnotationTemplatePK pk = new TableAnnotationTemplatePK(t1, ta1);
@@ -132,7 +155,8 @@ public class TableAnnotationTemplateDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByTemplate().
     */
-   public void testFindByTemplate(){
+   @Test
+public void testFindByTemplate(){
       final Template t1 = templateDao.findById(1);
       List<TableAnnotationTemplate> liste = tableAnnotationTemplateDao.findByTemplate(t1);
       assertTrue(liste.size() == 1);
@@ -147,7 +171,8 @@ public class TableAnnotationTemplateDaoTest extends AbstractDaoTest
     * d'un BlocImpressionTemplate.
     **/
    @Rollback(false)
-   public void testCrud(){
+   @Test
+public void testCrud(){
 
       final TableAnnotationTemplate tat = new TableAnnotationTemplate();
       final TableAnnotation ta1 = tableAnnotationDao.findById(1);
@@ -160,8 +185,8 @@ public class TableAnnotationTemplateDaoTest extends AbstractDaoTest
       tat.setOrdre(ordre);
 
       // Test de l'insertion
-      tableAnnotationTemplateDao.createObject(tat);
-      assertTrue(tableAnnotationTemplateDao.findAll().size() == 2);
+      tableAnnotationTemplateDao.save(tat);
+      assertTrue(IterableUtils.toList(tableAnnotationTemplateDao.findAll()).size() == 2);
 
       // Test de la mise à jour
       final TableAnnotationTemplatePK pk = new TableAnnotationTemplatePK();
@@ -175,22 +200,23 @@ public class TableAnnotationTemplateDaoTest extends AbstractDaoTest
 
       //update
       tat2.setOrdre(ordreUp);
-      tableAnnotationTemplateDao.updateObject(tat2);
+      tableAnnotationTemplateDao.save(tat2);
       assertTrue(tableAnnotationTemplateDao.findById(pk).equals(tat2));
       assertTrue(tableAnnotationTemplateDao.findById(pk).getOrdre() == ordreUp);
-      assertTrue(tableAnnotationTemplateDao.findAll().size() == 2);
+      assertTrue(IterableUtils.toList(tableAnnotationTemplateDao.findAll()).size() == 2);
 
       // Test de la délétion
-      tableAnnotationTemplateDao.removeObject(pk);
+      tableAnnotationTemplateDao.deleteById(pk);
       assertNull(tableAnnotationTemplateDao.findById(pk));
-      assertTrue(tableAnnotationTemplateDao.findAll().size() == 1);
+      assertTrue(IterableUtils.toList(tableAnnotationTemplateDao.findAll()).size() == 1);
    }
 
    /**
     * Test de la méthode surchargée "equals".
     * @throws ParseException 
     */
-   public void testEquals() throws ParseException{
+   @Test
+public void testEquals() throws ParseException{
 
       final TableAnnotationTemplate tat1 = new TableAnnotationTemplate();
       final TableAnnotationTemplate tat2 = new TableAnnotationTemplate();
@@ -214,7 +240,8 @@ public class TableAnnotationTemplateDaoTest extends AbstractDaoTest
     * Test de la méthode surchargée "hashcode".
     * @throws ParseException 
     */
-   public void testHashCode() throws ParseException{
+   @Test
+public void testHashCode() throws ParseException{
       final TableAnnotationTemplate tat1 = new TableAnnotationTemplate();
       final TableAnnotationTemplate tat2 = new TableAnnotationTemplate();
       final TableAnnotationTemplate tat3 = new TableAnnotationTemplate();
@@ -236,7 +263,8 @@ public class TableAnnotationTemplateDaoTest extends AbstractDaoTest
       assertTrue(hash == tat1.hashCode());
    }
 
-   private void populateClefsToTestEqualsAndHashCode(final TableAnnotationTemplate tat1, final TableAnnotationTemplate tat2)
+   @Autowired
+ void populateClefsToTestEqualsAndHashCode(final TableAnnotationTemplate tat1, final TableAnnotationTemplate tat2)
       throws ParseException{
 
       final TableAnnotation ta1 = tableAnnotationDao.findById(1);
@@ -266,7 +294,8 @@ public class TableAnnotationTemplateDaoTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final TableAnnotation ta1 = tableAnnotationDao.findById(2);
       final Template t1 = templateDao.findById(1);
       final TableAnnotationTemplatePK pk = new TableAnnotationTemplatePK(t1, ta1);
@@ -282,7 +311,8 @@ public class TableAnnotationTemplateDaoTest extends AbstractDaoTest
    /**
     * Test la méthode clone.
     */
-   public void testClone(){
+   @Test
+public void testClone(){
       final TableAnnotation ta1 = tableAnnotationDao.findById(2);
       final Template t1 = templateDao.findById(1);
       final TableAnnotationTemplatePK pk = new TableAnnotationTemplatePK(t1, ta1);

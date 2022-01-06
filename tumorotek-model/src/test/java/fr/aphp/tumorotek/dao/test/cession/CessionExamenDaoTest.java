@@ -37,12 +37,19 @@ package fr.aphp.tumorotek.dao.test.cession;
 
 import java.util.List;
 
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import fr.aphp.tumorotek.dao.cession.CessionExamenDao;
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
+import fr.aphp.tumorotek.dao.test.Config;
 import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.cession.CessionExamen;
 import fr.aphp.tumorotek.model.contexte.Categorie;
@@ -57,39 +64,50 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  * @version 25/01/2010
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class}) 
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class CessionExamenDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private CessionExamenDao cessionExamenDao;
-   private PlateformeDao plateformeDao;
+   @Autowired
+   @Autowired
+ CessionExamenDao cessionExamenDao;
+   
+   @Autowired
+   @Autowired
+ PlateformeDao plateformeDao;
 
    /** valeur du nom pour la maj. */
-   private final String updatedExamen = "Mis a jour";
+   @Autowired
+ final String updatedExamen = "Mis a jour";
 
    /** Constructeur. */
    public CessionExamenDaoTest(){
 
    }
 
-   public void setCessionExamenDao(final CessionExamenDao cDao){
+   @Test
+public void setCessionExamenDao(final CessionExamenDao cDao){
       this.cessionExamenDao = cDao;
    }
 
-   public void setPlateformeDao(final PlateformeDao pDao){
+   @Test
+public void setPlateformeDao(final PlateformeDao pDao){
       this.plateformeDao = pDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllCessionExamens(){
-      final List<CessionExamen> qualites = cessionExamenDao.findAll();
+   @Test
+public void testReadAllCessionExamens(){
+      final List<CessionExamen> qualites = IterableUtils.toList(cessionExamenDao.findAll());
       assertTrue(qualites.size() == 4);
    }
 
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
       List<? extends TKThesaurusObject> list = cessionExamenDao.findByPfOrder(pf);
       assertTrue(list.size() == 3);
@@ -104,7 +122,8 @@ public class CessionExamenDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExamen().
     */
-   public void testFindByExamen(){
+   @Test
+public void testFindByExamen(){
       List<CessionExamen> liste = cessionExamenDao.findByExamen("ANALYSE 1");
       assertTrue(liste.size() == 1);
 
@@ -122,7 +141,8 @@ public class CessionExamenDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExamenEn().
     */
-   public void testFindByExamenEn(){
+   @Test
+public void testFindByExamenEn(){
       List<CessionExamen> liste = cessionExamenDao.findByExamenEn("ANALYSE_EN 1");
       assertTrue(liste.size() == 1);
 
@@ -140,7 +160,8 @@ public class CessionExamenDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<CessionExamen> liste = cessionExamenDao.findByExcludedId(1);
       assertTrue(liste.size() == 3);
       final CessionExamen exam = liste.get(0);
@@ -156,14 +177,15 @@ public class CessionExamenDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas d'erreur.
     */
    @Rollback(false)
-   public void testCrudCessionExamen() throws Exception{
+   @Test
+public void testCrudCessionExamen() throws Exception{
 
       final CessionExamen ce = new CessionExamen();
 
       ce.setNom("TEST");
       ce.setPlateforme(plateformeDao.findById(1));
       // Test de l'insertion
-      cessionExamenDao.createObject(ce);
+      cessionExamenDao.save(ce);
       assertEquals(new Integer(5), ce.getId());
 
       // Test de la mise à jour
@@ -171,11 +193,11 @@ public class CessionExamenDaoTest extends AbstractDaoTest
       assertNotNull(ce2);
       assertTrue(ce2.getNom().equals("TEST"));
       ce2.setNom(updatedExamen);
-      cessionExamenDao.updateObject(ce2);
+      cessionExamenDao.save(ce2);
       assertTrue(cessionExamenDao.findById(new Integer(5)).getNom().equals(updatedExamen));
 
       // Test de la délétion
-      cessionExamenDao.removeObject(new Integer(5));
+      cessionExamenDao.deleteById(new Integer(5));
       assertNull(cessionExamenDao.findById(new Integer(5)));
 
    }
@@ -183,7 +205,8 @@ public class CessionExamenDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String exam = "EXAM";
       final String exam2 = "EXAM2";
       final CessionExamen ce1 = new CessionExamen();
@@ -229,7 +252,8 @@ public class CessionExamenDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String exam = "Exam";
       final CessionExamen ce1 = new CessionExamen();
       ce1.setNom(exam);
@@ -261,7 +285,8 @@ public class CessionExamenDaoTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final CessionExamen ce1 = cessionExamenDao.findById(1);
       assertTrue(ce1.toString().equals("{" + ce1.getNom() + "}"));
 

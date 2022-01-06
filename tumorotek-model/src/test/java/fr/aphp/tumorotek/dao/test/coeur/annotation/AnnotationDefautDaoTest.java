@@ -71,39 +71,51 @@ public class AnnotationDefautDaoTest extends AbstractDaoTest
 {
 
    /** Beans Dao. */
-   private AnnotationDefautDao annotationDefautDao;
-   private ItemDao itemDao;
-   private ChampAnnotationDao champAnnotationDao;
-   private TableAnnotationDao tableAnnotationDao;
-   private DataTypeDao dataTypeDao;
-   private BanqueDao banqueDao;
+   @Autowired
+ AnnotationDefautDao annotationDefautDao;
+   @Autowired
+ ItemDao itemDao;
+   @Autowired
+ ChampAnnotationDao champAnnotationDao;
+   @Autowired
+ TableAnnotationDao tableAnnotationDao;
+   @Autowired
+ DataTypeDao dataTypeDao;
+   @Autowired
+ BanqueDao banqueDao;
 
    /**
     * Constructeur.
     */
    public AnnotationDefautDaoTest(){}
 
-   public void setItemDao(final ItemDao iDao){
+   @Test
+public void setItemDao(final ItemDao iDao){
       this.itemDao = iDao;
    }
 
-   public void setDataTypeDao(final DataTypeDao dtDao){
+   @Test
+public void setDataTypeDao(final DataTypeDao dtDao){
       this.dataTypeDao = dtDao;
    }
 
-   public void setChampAnnotationDao(final ChampAnnotationDao cDao){
+   @Test
+public void setChampAnnotationDao(final ChampAnnotationDao cDao){
       this.champAnnotationDao = cDao;
    }
 
-   public void setTableAnnotationDao(final TableAnnotationDao taDao){
+   @Test
+public void setTableAnnotationDao(final TableAnnotationDao taDao){
       this.tableAnnotationDao = taDao;
    }
 
-   public void setAnnotationDefautDao(final AnnotationDefautDao adDao){
+   @Test
+public void setAnnotationDefautDao(final AnnotationDefautDao adDao){
       this.annotationDefautDao = adDao;
    }
 
-   public void setBanqueDao(final BanqueDao bDao){
+   @Test
+public void setBanqueDao(final BanqueDao bDao){
       this.banqueDao = bDao;
    }
 
@@ -111,7 +123,8 @@ public class AnnotationDefautDaoTest extends AbstractDaoTest
     * Test la méthode toString.
     * @throws ParseException 
     */
-   public void testToString() throws ParseException{
+   @Test
+public void testToString() throws ParseException{
       final AnnotationDefaut ad1 = annotationDefautDao.findById(1);
       assertTrue(ad1.toString().equals("{Defaut: Alphanum1.AlphanumDefaut1}"));
       final AnnotationDefaut ad2 = new AnnotationDefaut();
@@ -136,12 +149,14 @@ public class AnnotationDefautDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllDefauts(){
-      final List<AnnotationDefaut> defauts = annotationDefautDao.findAll();
+   @Test
+public void testReadAllDefauts(){
+      final List<AnnotationDefaut> defauts = IterableUtils.toList(annotationDefautDao.findAll());
       assertTrue(defauts.size() == 11);
    }
 
-   public void testFindByChamp(){
+   @Test
+public void testFindByChamp(){
       List<AnnotationDefaut> defauts = annotationDefautDao.findByChamp(champAnnotationDao.findById(12));
       assertTrue(defauts.size() == 2);
       defauts = annotationDefautDao.findByChamp(champAnnotationDao.findById(8));
@@ -153,7 +168,8 @@ public class AnnotationDefautDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       final AnnotationDefaut ad1 = annotationDefautDao.findById(1);
       List<AnnotationDefaut> defauts = annotationDefautDao.findByExcludedId(1);
       assertTrue(defauts.size() == 10);
@@ -168,7 +184,8 @@ public class AnnotationDefautDaoTest extends AbstractDaoTest
     * Test l'insertion, la mise à jour et la suppression d'un Item.
     */
    @Rollback(false)
-   public void testCrudDefaut(){
+   @Test
+public void testCrudDefaut(){
 
       // creation d'un Alphanum avec valeur par defaut
       final ChampAnnotation alpha = new ChampAnnotation();
@@ -187,13 +204,13 @@ public class AnnotationDefautDaoTest extends AbstractDaoTest
       alpha.setAnnotationDefauts(ads);
 
       // Test de l'insertion a partir du champ
-      champAnnotationDao.createObject(alpha);
+      champAnnotationDao.save(alpha);
       assertNotNull(alpha.getId());
 
       final Integer maxId = alpha.getId();
 
       // Test de l'insertion
-      annotationDefautDao.createObject(ad1);
+      annotationDefautDao.save(ad1);
       final ChampAnnotation alpha2 = champAnnotationDao.findById(maxId);
       assertNotNull(alpha2);
       final Set<AnnotationDefaut> defauts = alpha2.getAnnotationDefauts();
@@ -201,9 +218,9 @@ public class AnnotationDefautDaoTest extends AbstractDaoTest
       assertTrue(defauts.toArray()[0].equals(ad1));
 
       // Test de la délétion cascade
-      champAnnotationDao.removeObject(maxId);
+      champAnnotationDao.deleteById(maxId);
       testReadAllDefauts();
-      assertTrue(champAnnotationDao.findAll().size() == 48);
+      assertTrue(IterableUtils.toList(champAnnotationDao.findAll()).size() == 48);
 
       // creation de valeurs par défaut pour un thésaurus
       final AnnotationDefaut ad2 = new AnnotationDefaut();
@@ -211,7 +228,7 @@ public class AnnotationDefautDaoTest extends AbstractDaoTest
       ad2.setChampAnnotation(champAnnotationDao.findById(12));
       ad2.setObligatoire(false);
 
-      annotationDefautDao.createObject(ad2);
+      annotationDefautDao.save(ad2);
       assertTrue(ad2.getAnnotationDefautId() == 13);
       assertTrue(annotationDefautDao.findByChamp(champAnnotationDao.findById(12)).size() == 3);
       assertTrue(annotationDefautDao.findById(13).getItem().equals(itemDao.findById(3)));
@@ -220,13 +237,13 @@ public class AnnotationDefautDaoTest extends AbstractDaoTest
       // update
       ad2.setObligatoire(true);
 
-      annotationDefautDao.updateObject(ad2);
+      annotationDefautDao.save(ad2);
       assertTrue(ad2.getAnnotationDefautId() == 13);
       assertTrue(annotationDefautDao.findById(13).getItem().equals(itemDao.findById(3)));
       assertTrue(annotationDefautDao.findById(13).getObligatoire());
 
       // Test de la délétion
-      annotationDefautDao.removeObject(new Integer(13));
+      annotationDefautDao.deleteById(new Integer(13));
       assertNull(annotationDefautDao.findById(new Integer(13)));
       testReadAllDefauts();
    }
@@ -234,7 +251,8 @@ public class AnnotationDefautDaoTest extends AbstractDaoTest
    /**
     * Test des méthodes surchargées "equals" et hashcode.
     */
-   public void testEqualsAndHashCode(){
+   @Test
+public void testEqualsAndHashCode(){
       final AnnotationDefaut ad1 = new AnnotationDefaut();
       final AnnotationDefaut ad2 = new AnnotationDefaut();
       assertFalse(ad1.equals(null));
@@ -324,7 +342,8 @@ public class AnnotationDefautDaoTest extends AbstractDaoTest
       assertFalse(ad1.equals(c));
    }
 
-   public void testClone() throws ParseException{
+   @Test
+public void testClone() throws ParseException{
       final AnnotationDefaut ad1 = annotationDefautDao.findById(1);
       // rempli pour contourner les nulls
       ad1.setAlphanum("zert");

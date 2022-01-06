@@ -55,8 +55,9 @@ import fr.aphp.tumorotek.model.contexte.Categorie;
 public class CimLibelleDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private CimLibelleDao cimLibelleDao;
+
+   @Autowired
+ CimLibelleDao cimLibelleDao;
 
    /**
     * Constructeur.
@@ -72,19 +73,22 @@ public class CimLibelleDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param cDao est le bean Dao.
     */
-   public void setCimLibelleDao(final CimLibelleDao cDao){
+   @Test
+public void setCimLibelleDao(final CimLibelleDao cDao){
       this.cimLibelleDao = cDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllLibelles(){
-      final List<CimLibelle> cims = cimLibelleDao.findAll();
+   @Test
+public void testReadAllLibelles(){
+      final List<CimLibelle> cims = IterableUtils.toList(cimLibelleDao.findAll());
       assertTrue(cims.size() == 32652);
    }
 
-   public void testFindByLibelleLike(){
+   @Test
+public void testFindByLibelleLike(){
       List<CimLibelle> cims = cimLibelleDao.findByLibelleLike("%shigello%");
       assertTrue(cims.size() == 7);
       cims = cimLibelleDao.findByLibelleLike("TEST");
@@ -94,7 +98,8 @@ public class CimLibelleDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final Integer id1 = 1;
       final Integer id2 = 2;
       final CimLibelle c1 = new CimLibelle();
@@ -128,7 +133,8 @@ public class CimLibelleDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
 
       final String lib1 = "lib1";
       final CimLibelle c1 = new CimLibelle();
@@ -149,7 +155,8 @@ public class CimLibelleDaoTest extends AbstractDaoTest
 
    }
 
-   public void testToString(){
+   @Test
+public void testToString(){
       final CimLibelle a = new CimLibelle();
       a.setLibelle("Disease");
       assertTrue(a.toString().equals("{CimLibelle: Disease}"));

@@ -70,12 +70,18 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class CodeUtilisateurDaoTest extends AbstractDaoTest
 {
 
-   private CodeUtilisateurDao codeUtilisateurDao;
-   private UtilisateurDao utilisateurDao;
-   private BanqueDao banqueDao;
-   private CodeDossierDao codeDossierDao;
-   private TableCodageDao tableCodageDao;
-   private CodeSelectDao codeSelectDao;
+   @Autowired
+ CodeUtilisateurDao codeUtilisateurDao;
+   @Autowired
+ UtilisateurDao utilisateurDao;
+   @Autowired
+ BanqueDao banqueDao;
+   @Autowired
+ CodeDossierDao codeDossierDao;
+   @Autowired
+ TableCodageDao tableCodageDao;
+   @Autowired
+ CodeSelectDao codeSelectDao;
 
    /**
     * Constructeur.
@@ -86,7 +92,8 @@ public class CodeUtilisateurDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param cDao est le bean Dao.
     */
-   public void setCodeUtilisateurDao(final CodeUtilisateurDao cDao){
+   @Test
+public void setCodeUtilisateurDao(final CodeUtilisateurDao cDao){
       this.codeUtilisateurDao = cDao;
    }
 
@@ -94,7 +101,8 @@ public class CodeUtilisateurDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param uDao est le bean Dao.
     */
-   public void setUtilisateurDao(final UtilisateurDao uDao){
+   @Test
+public void setUtilisateurDao(final UtilisateurDao uDao){
       this.utilisateurDao = uDao;
    }
 
@@ -102,31 +110,37 @@ public class CodeUtilisateurDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param bDao est le bean Dao.
     */
-   public void setBanqueDao(final BanqueDao bDao){
+   @Test
+public void setBanqueDao(final BanqueDao bDao){
       this.banqueDao = bDao;
    }
 
-   public void setCodeDossierDao(final CodeDossierDao cDosDao){
+   @Test
+public void setCodeDossierDao(final CodeDossierDao cDosDao){
       this.codeDossierDao = cDosDao;
    }
 
-   public void setTableCodageDao(final TableCodageDao tCDao){
+   @Test
+public void setTableCodageDao(final TableCodageDao tCDao){
       this.tableCodageDao = tCDao;
    }
 
-   public void setCodeSelectDao(final CodeSelectDao cDao){
+   @Test
+public void setCodeSelectDao(final CodeSelectDao cDao){
       this.codeSelectDao = cDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllCodes(){
-      final List<CodeUtilisateur> codes = codeUtilisateurDao.findAll();
+   @Test
+public void testReadAllCodes(){
+      final List<CodeUtilisateur> codes = IterableUtils.toList(codeUtilisateurDao.findAll());
       assertTrue(codes.size() == 6);
    }
 
-   public void testFindByCodeLike(){
+   @Test
+public void testFindByCodeLike(){
       final Banque b1 = banqueDao.findById(1);
       final Banque b2 = banqueDao.findById(2);
       final List<Banque> banks = new ArrayList<>();
@@ -140,7 +154,8 @@ public class CodeUtilisateurDaoTest extends AbstractDaoTest
       assertTrue(codes.size() == 6);
    }
 
-   public void testFindByLibelleLike(){
+   @Test
+public void testFindByLibelleLike(){
       final Banque b1 = banqueDao.findById(1);
       final Banque b2 = banqueDao.findById(2);
       final List<Banque> banks = new ArrayList<>();
@@ -154,7 +169,8 @@ public class CodeUtilisateurDaoTest extends AbstractDaoTest
       assertTrue(codes.size() == 5);
    }
 
-   public void testFindByUtilisateurAndBanque(){
+   @Test
+public void testFindByUtilisateurAndBanque(){
       Utilisateur u = utilisateurDao.findById(1);
       Banque b = banqueDao.findById(1);
       List<CodeUtilisateur> codes = codeUtilisateurDao.findByUtilisateurAndBanque(u, b);
@@ -167,7 +183,8 @@ public class CodeUtilisateurDaoTest extends AbstractDaoTest
       assertTrue(codes.size() == 1);
    }
 
-   public void testFindByCodeDossier(){
+   @Test
+public void testFindByCodeDossier(){
       CodeDossier dos = codeDossierDao.findById(2);
       List<CodeUtilisateur> codes = codeUtilisateurDao.findByCodeDossier(dos);
       assertTrue(codes.size() == 2);
@@ -176,13 +193,15 @@ public class CodeUtilisateurDaoTest extends AbstractDaoTest
       assertTrue(codes.size() == 0);
    }
 
-   public void testFindByRootDossier(){
+   @Test
+public void testFindByRootDossier(){
       final Banque b = banqueDao.findById(1);
       final List<CodeUtilisateur> codes = codeUtilisateurDao.findByRootDossier(b);
       assertTrue(codes.size() == 1);
    }
 
-   public void testFindByCodeParent(){
+   @Test
+public void testFindByCodeParent(){
       CodeUtilisateur c = codeUtilisateurDao.findById(4);
       List<CodeUtilisateur> codes = codeUtilisateurDao.findByCodeParent(c);
       assertTrue(codes.size() == 2);
@@ -191,7 +210,8 @@ public class CodeUtilisateurDaoTest extends AbstractDaoTest
       assertTrue(codes.size() == 0);
    }
 
-   public void findByExcludedId(){
+   @Test
+public void findByExcludedId(){
       final CodeUtilisateur c = codeUtilisateurDao.findById(1);
       List<CodeUtilisateur> codes = codeUtilisateurDao.findByExcludedId(c.getCodeUtilisateurId());
       assertTrue(codes.size() == 5);
@@ -199,12 +219,14 @@ public class CodeUtilisateurDaoTest extends AbstractDaoTest
       assertTrue(codes.size() == 6);
    }
 
-   public void testTranscode(){
+   @Test
+public void testTranscode(){
       final CodeUtilisateur c1 = codeUtilisateurDao.findById(1);
       assertTrue(c1.getTranscodes().size() == 3);
    }
 
-   public void testFindByTranscodage(){
+   @Test
+public void testFindByTranscodage(){
       final List<Banque> banks = new ArrayList<>();
       final Banque b1 = banqueDao.findById(1);
       final Banque b2 = banqueDao.findById(2);
@@ -236,7 +258,8 @@ public class CodeUtilisateurDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
    @Rollback(false)
-   public void testCrud() throws Exception{
+   @Test
+public void testCrud() throws Exception{
       final CodeUtilisateur c = new CodeUtilisateur();
 
       final Utilisateur u = utilisateurDao.findById(2);
@@ -263,7 +286,7 @@ public class CodeUtilisateurDaoTest extends AbstractDaoTest
       c.setTranscodes(codes);
 
       // Test de l'insertion
-      codeUtilisateurDao.createObject(c);
+      codeUtilisateurDao.save(c);
       assertEquals(new Integer(7), c.getCodeUtilisateurId());
 
       assertTrue(codeUtilisateurDao.findById(new Integer(7)).getTranscodes().size() == 2);
@@ -285,13 +308,13 @@ public class CodeUtilisateurDaoTest extends AbstractDaoTest
       //		codes.add(tr3);
       //		c2.setTranscodes(codes);
 
-      codeUtilisateurDao.updateObject(c2);
+      codeUtilisateurDao.save(c2);
       assertTrue(codeUtilisateurDao.findById(new Integer(7)).getCode() == "update");
       //		assertTrue(codeUtilisateurDao.
       //				findById(new Integer(7)).getTranscodes().size() == 1);
 
       // Test de la délétion
-      codeUtilisateurDao.removeObject(new Integer(7));
+      codeUtilisateurDao.deleteById(new Integer(7));
       assertNull(codeUtilisateurDao.findById(new Integer(7)));
       testReadAllCodes();
    }
@@ -299,7 +322,8 @@ public class CodeUtilisateurDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String code1 = "code1";
       final String code2 = "code2";
       final Utilisateur u1 = utilisateurDao.findById(1);
@@ -358,7 +382,8 @@ public class CodeUtilisateurDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
 
       final Utilisateur u = utilisateurDao.findById(2);
       final Banque b = banqueDao.findById(1);
@@ -390,7 +415,8 @@ public class CodeUtilisateurDaoTest extends AbstractDaoTest
       assertTrue(hash == c1.hashCode());
    }
 
-   public void testToString(){
+   @Test
+public void testToString(){
       CodeUtilisateur c1 = codeUtilisateurDao.findById(1);
       assertTrue(c1.toString().equals("{CodeUtilisateur: " + c1.getCode() + "}"));
 
@@ -398,7 +424,8 @@ public class CodeUtilisateurDaoTest extends AbstractDaoTest
       assertTrue(c1.toString().equals("{Empty CodeUtilisateur}"));
    }
 
-   public void testClone(){
+   @Test
+public void testClone(){
       final CodeUtilisateur c1 = codeUtilisateurDao.findById(1);
       c1.setCodeParent(codeUtilisateurDao.findById(2)); // pour eviter null
       c1.setCodeSelect(codeSelectDao.findById(3));
@@ -421,7 +448,8 @@ public class CodeUtilisateurDaoTest extends AbstractDaoTest
     * Test des méthodes surchargées "equals" et hashcode pour
     * la table transcodeUtilisateur.
     */
-   public void testEqualsAndHashCodeTranscodeUtilisateur(){
+   @Test
+public void testEqualsAndHashCodeTranscodeUtilisateur(){
       final TranscodeUtilisateur tr1 = new TranscodeUtilisateur();
       final TranscodeUtilisateur tr2 = new TranscodeUtilisateur();
       assertFalse(tr1.equals(null));

@@ -172,11 +172,11 @@ public interface EtablissementDao extends CrudRepository<Etablissement, Integer>
 	@Query("SELECT e FROM Etablissement e WHERE e.etablissementId != ?1")
 	List<Etablissement> findByExcludedId(Integer etablissementId);
 
-	/**
-	 * Recherche le nombre de services de l'etablissement est passé en paramètre.
-	 * 
-	 * @param etablissementId Identifiant de l'établissement.
-	 * @return une liste sercice.
-	 */
-	List<Long> findCountByServiceIdManager(Etablissement eta);
+//	/**
+//	 * Recherche le nombre de services de l'etablissement est passé en paramètre.
+//	 * 
+//	 * @param etablissementId Identifiant de l'établissement.
+//	 * @return une liste sercice.
+//	 */
+//	List<Long> findCountByServiceIdManager(Etablissement eta);
 }

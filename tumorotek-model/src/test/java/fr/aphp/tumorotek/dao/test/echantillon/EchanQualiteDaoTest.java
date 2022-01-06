@@ -38,7 +38,19 @@ package fr.aphp.tumorotek.dao.test.echantillon;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchanQualiteDao;
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
@@ -57,15 +69,20 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  * @version 10/09/2009
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class EchanQualiteDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private EchanQualiteDao echanQualiteDao;
-   private PlateformeDao plateformeDao;
 
-   private final String updatedNom = "Stat mis a jour";
+   @Autowired
+ EchanQualiteDao echanQualiteDao;
+   @Autowired
+ PlateformeDao plateformeDao;
+
+   @Autowired
+ final String updatedNom = "Stat mis a jour";
 
    /** Constructeur. */
    public EchanQualiteDaoTest(){
@@ -76,23 +93,27 @@ public class EchanQualiteDaoTest extends AbstractDaoTest
     * Setter du bean EchanQualiteDao.
     * @param eDao est le bean Dao.
     */
-   public void setEchanQualiteDao(final EchanQualiteDao eDao){
+   @Test
+public void setEchanQualiteDao(final EchanQualiteDao eDao){
       this.echanQualiteDao = eDao;
    }
 
-   public void setPlateformeDao(final PlateformeDao pfDao){
+   @Test
+public void setPlateformeDao(final PlateformeDao pfDao){
       this.plateformeDao = pfDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllEchanQualites(){
-      final List<EchanQualite> qualites = echanQualiteDao.findAll();
+   @Test
+public void testReadAllEchanQualites(){
+      final List<EchanQualite> qualites = IterableUtils.toList(echanQualiteDao.findAll());
       assertTrue(qualites.size() == 3);
    }
 
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
       List<? extends TKThesaurusObject> list = echanQualiteDao.findByPfOrder(pf);
       assertTrue(list.size() == 2);
@@ -107,7 +128,8 @@ public class EchanQualiteDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByQualite().
     */
-   public void testFindByQualite(){
+   @Test
+public void testFindByQualite(){
       List<EchanQualite> qualites = echanQualiteDao.findByQualite("MELANGE MO");
       assertTrue(qualites.size() == 1);
       qualites = echanQualiteDao.findByQualite("MELANGE");
@@ -117,7 +139,8 @@ public class EchanQualiteDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByEchantillonId().
     */
-   public void testFindByEchantillonId(){
+   @Test
+public void testFindByEchantillonId(){
       List<EchanQualite> qualites = echanQualiteDao.findByEchantillonId(1);
       assertTrue(qualites.size() == 1);
       assertTrue(qualites.get(0).getEchanQualiteId() == 1);
@@ -128,7 +151,8 @@ public class EchanQualiteDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<EchanQualite> liste = echanQualiteDao.findByExcludedId(1);
       assertTrue(liste.size() == 2);
       final EchanQualite qualite = liste.get(0);
@@ -144,14 +168,15 @@ public class EchanQualiteDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas d'erreur.
     */
    @Rollback(false)
-   public void testCrudEchanQualite() throws Exception{
+   @Test
+public void testCrudEchanQualite() throws Exception{
 
       final EchanQualite e = new EchanQualite();
 
       e.setEchanQualite("MELANGE");
       e.setPlateforme(plateformeDao.findById(1));
       // Test de l'insertion
-      echanQualiteDao.createObject(e);
+      echanQualiteDao.save(e);
       assertEquals(new Integer(4), e.getEchanQualiteId());
 
       // Test de la mise à jour
@@ -159,11 +184,11 @@ public class EchanQualiteDaoTest extends AbstractDaoTest
       assertNotNull(e2);
       assertTrue(e2.getEchanQualite().equals("MELANGE"));
       e2.setEchanQualite(updatedNom);
-      echanQualiteDao.updateObject(e2);
+      echanQualiteDao.save(e2);
       assertTrue(echanQualiteDao.findById(new Integer(4)).getEchanQualite().equals(updatedNom));
 
       // Test de la délétion
-      echanQualiteDao.removeObject(new Integer(4));
+      echanQualiteDao.deleteById(new Integer(4));
       assertNull(echanQualiteDao.findById(new Integer(4)));
 
    }
@@ -171,7 +196,8 @@ public class EchanQualiteDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String qualite = "Qualite";
       final String qualite2 = "Qualite2";
       final EchanQualite e1 = new EchanQualite();
@@ -217,7 +243,8 @@ public class EchanQualiteDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String qualite = "Qualite";
       final EchanQualite e1 = new EchanQualite(1, qualite);
       e1.setEchanQualite(qualite);
@@ -247,7 +274,8 @@ public class EchanQualiteDaoTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final EchanQualite qual1 = echanQualiteDao.findById(1);
       assertTrue(qual1.toString().equals("{" + qual1.getEchanQualite() + "}"));
 

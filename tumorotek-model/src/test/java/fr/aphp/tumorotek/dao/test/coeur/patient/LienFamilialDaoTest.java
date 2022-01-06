@@ -57,8 +57,9 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 public class LienFamilialDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private LienFamilialDao lienDao;
+
+   @Autowired
+ LienFamilialDao lienDao;
 
    /**
     * Constructeur.
@@ -69,14 +70,16 @@ public class LienFamilialDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param lDao est le bean Dao.
     */
-   public void setLienFamilialDao(final LienFamilialDao lDao){
+   @Test
+public void setLienFamilialDao(final LienFamilialDao lDao){
       this.lienDao = lDao;
    }
 
    /**
     * Test l'appel de la méthode toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       LienFamilial l1 = lienDao.findById(1);
       assertTrue(l1.toString().equals("{" + l1.getNom() + "}"));
       l1 = new LienFamilial();
@@ -86,15 +89,17 @@ public class LienFamilialDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllLienFamilials(){
-      final List<LienFamilial> liens = lienDao.findAll();
+   @Test
+public void testReadAllLienFamilials(){
+      final List<LienFamilial> liens = IterableUtils.toList(lienDao.findAll());
       assertTrue(liens.size() == 6);
    }
 
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<LienFamilial> prels = lienDao.findByExcludedId(1);
       assertTrue(prels.size() == 5);
       prels = lienDao.findByExcludedId(8);
@@ -106,7 +111,8 @@ public class LienFamilialDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByNom().
     */
-   public void testFindByNom(){
+   @Test
+public void testFindByNom(){
       List<LienFamilial> liens = lienDao.findByNom("%Pere%");
       assertTrue(liens.size() == 2);
       liens = lienDao.findByNom("Niece");
@@ -123,13 +129,14 @@ public class LienFamilialDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
    @Rollback(false)
-   public void testCrudLienFamilial() throws Exception{
+   @Test
+public void testCrudLienFamilial() throws Exception{
       final LienFamilial r = new LienFamilial();
       r.setNom("Neveu-Tante");
       r.setReciproque(lienDao.findByNom("Tante-Neveu").get(0));
       r.setAscendant(true);
       // Test de l'insertion
-      lienDao.createObject(r);
+      lienDao.save(r);
       assertEquals(new Integer(7), r.getLienFamilialId());
 
       // Test de la mise à jour
@@ -141,20 +148,21 @@ public class LienFamilialDaoTest extends AbstractDaoTest
       l2.setNom("GandPere-PetitFils");
       l2.setReciproque(null);
       l2.setAscendant(false);
-      lienDao.updateObject(l2);
+      lienDao.save(l2);
       assertTrue(lienDao.findById(new Integer(7)).getNom().equals("GandPere-PetitFils"));
       assertTrue(lienDao.findById(new Integer(7)).getReciproque() == null);
       assertFalse(lienDao.findById(new Integer(7)).getAscendant());
 
       // Test de la délétion
-      lienDao.removeObject(new Integer(7));
+      lienDao.deleteById(new Integer(7));
       assertNull(lienDao.findById(new Integer(7)));
    }
 
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
 
       final LienFamilial l1 = new LienFamilial();
       final LienFamilial l2 = new LienFamilial();
@@ -192,7 +200,8 @@ public class LienFamilialDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
 
       final LienFamilial l1 = new LienFamilial();
       l1.setLienFamilialId(1);

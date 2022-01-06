@@ -47,9 +47,11 @@ import fr.aphp.tumorotek.model.contexte.Categorie;
 public class AdicapDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private AdicapDao adicapDao;
-   private AdicapGroupeDao adicapGroupeDao;
+
+   @Autowired
+ AdicapDao adicapDao;
+   @Autowired
+ AdicapGroupeDao adicapGroupeDao;
 
    /**
     * Constructeur.
@@ -65,24 +67,28 @@ public class AdicapDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param aDao est le bean Dao.
     */
-   public void setAdicapDao(final AdicapDao aDao){
+   @Test
+public void setAdicapDao(final AdicapDao aDao){
       this.adicapDao = aDao;
    }
 
-   public void setAdicapGroupeDao(final AdicapGroupeDao agDao){
+   @Test
+public void setAdicapGroupeDao(final AdicapGroupeDao agDao){
       this.adicapGroupeDao = agDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllAdicaps(){
-      final List<Adicap> adicaps = adicapDao.findAll();
+   @Test
+public void testReadAllAdicaps(){
+      final List<Adicap> adicaps = IterableUtils.toList(adicapDao.findAll());
       //assertTrue(!adicaps.isEmpty());
       assertEquals(8906, adicaps.size()); // JDI : 8906 dans ma table, est-ce grave?
    }
 
-   public void testFindByCode(){
+   @Test
+public void testFindByCode(){
       List<Adicap> adicaps = adicapDao.findByCodeLike("%AF%");
       assertTrue(adicaps.size() == 11);
       adicaps = adicapDao.findByCodeLike("BN");
@@ -92,14 +98,16 @@ public class AdicapDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByLibelle().
     */
-   public void testFindByLibelle(){
+   @Test
+public void testFindByLibelle(){
       List<Adicap> adicaps = adicapDao.findByLibelleLike("%ADENOSE%");
       assertTrue(adicaps.size() == 6);
       adicaps = adicapDao.findByLibelleLike("PEARL");
       assertTrue(adicaps.size() == 0);
    }
 
-   public void testFindByAdicapGroupe(){
+   @Test
+public void testFindByAdicapGroupe(){
       final AdicapGroupe d1 = adicapGroupeDao.findById(1);
       List<Adicap> adicaps = adicapDao.findByAdicapGroupeNullParent(d1);
       assertTrue(adicaps.size() == 19);
@@ -118,7 +126,8 @@ public class AdicapDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByMorpho().
     */
-   public void testFindByMorpho(){
+   @Test
+public void testFindByMorpho(){
       List<Adicap> adicaps = adicapDao.findByMorpho(true);
       //assertTrue(!adicaps.isEmpty());
       assertEquals(1448, adicaps.size()); // JDI : 1448 dans ma table, est-ce grave?
@@ -126,7 +135,8 @@ public class AdicapDaoTest extends AbstractDaoTest
       assertTrue(adicaps.size() == 0);
    }
 
-   public void testFindByTopoParent(){
+   @Test
+public void testFindByTopoParent(){
       final Adicap parent = adicapDao.findById(42);
       List<Adicap> adicaps = adicapDao.findByAdicapParentAndCodeOrLibelle(parent, "%");
       assertTrue(adicaps.size() == 8);
@@ -143,7 +153,8 @@ public class AdicapDaoTest extends AbstractDaoTest
       assertTrue(adicapDao.findByAdicapParentAndCodeOrLibelle(parent, null).isEmpty());
    }
 
-   public void testFindByAdicapGroupeAndCodeOrLibelle(){
+   @Test
+public void testFindByAdicapGroupeAndCodeOrLibelle(){
       List<Adicap> adicaps = adicapDao.findByAdicapGroupeAndCodeOrLibelle(adicapGroupeDao.findById(2), "%");
       assertTrue(adicaps.size() == 22);
       adicaps = adicapDao.findByAdicapGroupeAndCodeOrLibelle(adicapGroupeDao.findById(2), "%CYTO%");
@@ -159,7 +170,8 @@ public class AdicapDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final Integer id1 = 1;
       final Integer id2 = 2;
       final Adicap a1 = new Adicap();
@@ -193,7 +205,8 @@ public class AdicapDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
 
       final Integer id1 = 1;
       final Adicap a1 = new Adicap();
@@ -215,13 +228,15 @@ public class AdicapDaoTest extends AbstractDaoTest
 
    }
 
-   public void testToString(){
+   @Test
+public void testToString(){
       final Adicap a = new Adicap();
       a.setCode("Disease");
       assertTrue(a.toString().equals("{Adicap: Disease}"));
    }
 
-   public void testFindByDicoAndCodeOrLibelle(){
+   @Test
+public void testFindByDicoAndCodeOrLibelle(){
       AdicapGroupe g = adicapGroupeDao.findById(6);
       List<Adicap> adicaps = adicapDao.findByDicoAndCodeOrLibelle(g, "BD0%");
       assertTrue(adicaps.size() == 37);

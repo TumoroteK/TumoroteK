@@ -37,7 +37,19 @@ package fr.aphp.tumorotek.dao.test.imprimante;
 
 import java.util.List;
 
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.imprimante.ModeleTypeDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
@@ -52,33 +64,39 @@ import fr.aphp.tumorotek.model.imprimante.ModeleType;
  * @version 18/03/2011
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class ModeleTypeDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private ModeleTypeDao modeleTypeDao;
+
+   @Autowired
+ ModeleTypeDao modeleTypeDao;
 
    public ModeleTypeDaoTest(){
 
    }
 
-   public void setModeleTypeDao(final ModeleTypeDao mDao){
+   @Test
+public void setModeleTypeDao(final ModeleTypeDao mDao){
       this.modeleTypeDao = mDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAll(){
-      final List<ModeleType> liste = modeleTypeDao.findAll();
+   @Test
+public void testReadAll(){
+      final List<ModeleType> liste = IterableUtils.toList(modeleTypeDao.findAll());
       assertTrue(liste.size() == 2);
    }
 
    /**
     * Test l'appel de la méthode findByOrder().
     */
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       final List<ModeleType> liste = modeleTypeDao.findByOrder();
       assertTrue(liste.size() == 2);
       assertTrue(liste.get(0).getType().equals("Etiquettes"));
@@ -87,7 +105,8 @@ public class ModeleTypeDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String nom = "test";
       final String nom2 = "test2";
       final ModeleType mt1 = new ModeleType();
@@ -122,7 +141,8 @@ public class ModeleTypeDaoTest extends AbstractDaoTest
     * Test de la méthode surchargée "hashcode".
     * @throws Exception Lance une exception.
     */
-   public void testHashCode() throws Exception{
+   @Test
+public void testHashCode() throws Exception{
       final String nom = "test";
       final ModeleType mt1 = new ModeleType();
       mt1.setType(nom);
@@ -146,7 +166,8 @@ public class ModeleTypeDaoTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final ModeleType mt1 = modeleTypeDao.findById(1);
       assertTrue(mt1.toString().equals("{" + mt1.getType() + "}"));
 

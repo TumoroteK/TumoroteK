@@ -59,15 +59,23 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class ResultatDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private ResultatDao resultatDao;
-   private ChampDao champDao;
-   private AffichageDao affichageDao;
-   private EntiteDao entiteDao;
-   private ChampEntiteDao champEntiteDao;
-   private UtilisateurDao utilisateurDao;
-   private DataTypeDao dataTypeDao;
-   private BanqueDao banqueDao;
+
+   @Autowired
+ ResultatDao resultatDao;
+   @Autowired
+ ChampDao champDao;
+   @Autowired
+ AffichageDao affichageDao;
+   @Autowired
+ EntiteDao entiteDao;
+   @Autowired
+ ChampEntiteDao champEntiteDao;
+   @Autowired
+ UtilisateurDao utilisateurDao;
+   @Autowired
+ DataTypeDao dataTypeDao;
+   @Autowired
+ BanqueDao banqueDao;
 
    /** Constructeur. */
    public ResultatDaoTest(){}
@@ -76,7 +84,8 @@ public class ResultatDaoTest extends AbstractDaoTest
     * Setter du bean ResultatDao.
     * @param rDao est le bean Dao.
     */
-   public void setResultatDao(final ResultatDao rDao){
+   @Test
+public void setResultatDao(final ResultatDao rDao){
       this.resultatDao = rDao;
    }
 
@@ -84,7 +93,8 @@ public class ResultatDaoTest extends AbstractDaoTest
     * Setter du bean ChampDao.
     * @param cDao est le bean Dao.
     */
-   public void setChampDao(final ChampDao cDao){
+   @Test
+public void setChampDao(final ChampDao cDao){
       this.champDao = cDao;
    }
 
@@ -92,7 +102,8 @@ public class ResultatDaoTest extends AbstractDaoTest
     * Setter du bean AffichageDao.
     * @param aDao est le bean Dao.
     */
-   public void setAffichageDao(final AffichageDao aDao){
+   @Test
+public void setAffichageDao(final AffichageDao aDao){
       this.affichageDao = aDao;
    }
 
@@ -100,7 +111,8 @@ public class ResultatDaoTest extends AbstractDaoTest
     * Setter du bean EntiteDao.
     * @param aDao est le bean Dao.
     */
-   public void setEntiteDao(final EntiteDao eDao){
+   @Test
+public void setEntiteDao(final EntiteDao eDao){
       this.entiteDao = eDao;
    }
 
@@ -108,7 +120,8 @@ public class ResultatDaoTest extends AbstractDaoTest
     * Setter du bean ChampEntiteDao.
     * @param ceDao est le bean Dao.
     */
-   public void setChampEntiteDao(final ChampEntiteDao ceDao){
+   @Test
+public void setChampEntiteDao(final ChampEntiteDao ceDao){
       this.champEntiteDao = ceDao;
    }
 
@@ -116,7 +129,8 @@ public class ResultatDaoTest extends AbstractDaoTest
     * Setter du bean DataTypeDao.
     * @param dtDao est le bean Dao.
     */
-   public void setDataTypeDao(final DataTypeDao dtDao){
+   @Test
+public void setDataTypeDao(final DataTypeDao dtDao){
       this.dataTypeDao = dtDao;
    }
 
@@ -124,19 +138,22 @@ public class ResultatDaoTest extends AbstractDaoTest
     * Setter du bean UtilisateurDao.
     * @param uDao est le bean Dao.
     */
-   public void setUtilisateurDao(final UtilisateurDao uDao){
+   @Test
+public void setUtilisateurDao(final UtilisateurDao uDao){
       this.utilisateurDao = uDao;
    }
 
-   public void setBanqueDao(final BanqueDao bDao){
+   @Test
+public void setBanqueDao(final BanqueDao bDao){
       this.banqueDao = bDao;
    }
 
    /**
     * Test l'appel de la méthode findByAffichage().
     */
-   public void testFindByAffichage() throws Exception{
-      final List<Affichage> affichages = this.affichageDao.findAll();
+   @Test
+public void testFindByAffichage() throws Exception{
+      final List<Affichage> affichages = this.IterableUtils.toList(affichageDao.findAll());
       final Iterator<Affichage> itAff = affichages.iterator();
       while(itAff.hasNext()){
          final Affichage affichage = itAff.next();
@@ -164,7 +181,8 @@ public class ResultatDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
    @Rollback(false)
-   public void testCrudResultat() throws Exception{
+   @Test
+public void testCrudResultat() throws Exception{
       final String format = "format";
       final String nomColonne = "nomColonne";
       final Integer position = new Integer(3);
@@ -174,17 +192,17 @@ public class ResultatDaoTest extends AbstractDaoTest
       DataType dataType = dataTypeDao.findById(3);
 
       ChampEntite chEntite = new ChampEntite(entiteDao.findById(2), "champEntite1", dataType, false, true, "000-0", false, null);
-      champEntiteDao.createObject(chEntite);
+      champEntiteDao.save(chEntite);
       final int idChEn1 = chEntite.getId();
       Champ ch = new Champ(chEntite);
-      champDao.createObject(ch);
+      champDao.save(ch);
       final int idCh1 = ch.getChampId();
       dataType = dataTypeDao.findById(2);
       chEntite = new ChampEntite(entiteDao.findById(1), "champEntite2", dataType, false, false, null, false, null);
-      champEntiteDao.createObject(chEntite);
+      champEntiteDao.save(chEntite);
       final int idChEn2 = chEntite.getId();
       ch = new Champ(chEntite);
-      champDao.createObject(ch);
+      champDao.save(ch);
       final int idCh2 = ch.getChampId();
 
       final Champ champ = champDao.findById(idCh1);
@@ -192,18 +210,18 @@ public class ResultatDaoTest extends AbstractDaoTest
       final Utilisateur ut = new Utilisateur();
       ut.setLogin("login");
       ut.setPassword("pass");
-      utilisateurDao.createObject(ut);
+      utilisateurDao.save(ut);
       final int idU = ut.getUtilisateurId();
 
       final Utilisateur utilisateur = utilisateurDao.findById(idU);
 
       Affichage a = new Affichage("affichage", utilisateur, 25);
       a.setBanque(banqueDao.findById(1));
-      this.affichageDao.createObject(a);
+      this.affichageDao.save(a);
       final int idA1 = a.getAffichageId();
       a = new Affichage("affichage2", utilisateur, 35);
       a.setBanque(banqueDao.findById(1));
-      this.affichageDao.createObject(a);
+      this.affichageDao.save(a);
       final int idA2 = a.getAffichageId();
 
       final Affichage affichage = this.affichageDao.findById(idA1);
@@ -219,8 +237,8 @@ public class ResultatDaoTest extends AbstractDaoTest
 
       // Test de l'insertion
       Integer idObject = new Integer(-1);
-      resultatDao.createObject(r);
-      final List<Resultat> resultats = resultatDao.findAll();
+      resultatDao.save(r);
+      final List<Resultat> resultats = IterableUtils.toList(resultatDao.findAll());
       final Iterator<Resultat> itResultat = resultats.iterator();
       boolean found = false;
       while(itResultat.hasNext()){
@@ -269,7 +287,7 @@ public class ResultatDaoTest extends AbstractDaoTest
       r2.setOrdreTri(updatedOrdreTri);
       r2.setAffichage(updatedAffichage);
 
-      resultatDao.updateObject(r2);
+      resultatDao.save(r2);
       assertTrue(resultatDao.findById(idObject).getChamp().equals(updatedChamp));
       if(resultatDao.findById(idObject).getFormat() != null){
          assertTrue(resultatDao.findById(idObject).getFormat().equals(updatedFormat));
@@ -287,23 +305,24 @@ public class ResultatDaoTest extends AbstractDaoTest
       assertNotNull(resultatDao.findById(idObject).getAffichage());
       assertTrue(resultatDao.findById(idObject).getAffichage().equals(updatedAffichage));
       // Test de la délétion
-      resultatDao.removeObject(idObject);
+      resultatDao.deleteById(idObject);
       assertNull(resultatDao.findById(idObject));
 
       //On supprime les éléments créés
-      this.affichageDao.removeObject(idA1);
-      this.affichageDao.removeObject(idA2);
-      this.champDao.removeObject(idCh1);
-      this.champDao.removeObject(idCh2);
-      this.champEntiteDao.removeObject(idChEn1);
-      this.champEntiteDao.removeObject(idChEn2);
-      this.utilisateurDao.removeObject(idU);
+      this.affichageDao.deleteById(idA1);
+      this.affichageDao.deleteById(idA2);
+      this.champDao.deleteById(idCh1);
+      this.champDao.deleteById(idCh2);
+      this.champEntiteDao.deleteById(idChEn1);
+      this.champEntiteDao.deleteById(idChEn2);
+      this.utilisateurDao.deleteById(idU);
    }
 
    /**
     * test toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final Resultat r1 = resultatDao.findById(1);
       assertTrue(r1.toString().equals("{" + r1.getResultatId() + "}"));
 
@@ -314,7 +333,8 @@ public class ResultatDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       //On boucle sur les 4 possibilités
       for(int i = 0; i < Math.pow(2, 2); i++){
          final Resultat resultat1 = new Resultat();
@@ -340,7 +360,8 @@ public class ResultatDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       //On boucle sur les 8 possibilités
       for(int i = 0; i < Math.pow(2, 2); i++){
          final Resultat resultat = new Resultat();

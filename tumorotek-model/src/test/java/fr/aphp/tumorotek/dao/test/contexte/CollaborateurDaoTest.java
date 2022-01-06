@@ -70,19 +70,26 @@ public class CollaborateurDaoTest extends AbstractDaoTest
 {
 
    /** Bean Dao CollaborateurDao. */
-   private CollaborateurDao collaborateurDao;
+   @Autowired
+ CollaborateurDao collaborateurDao;
    /** Bean Dao EtablissementDao. */
-   private EtablissementDao etablissementDao;
+   @Autowired
+ EtablissementDao etablissementDao;
    /** Bean Dao CoordonneeDao. */
-   private CoordonneeDao coordonneeDao;
+   @Autowired
+ CoordonneeDao coordonneeDao;
    /** Bean Dao SpecialiteDao. */
-   private SpecialiteDao specialiteDao;
+   @Autowired
+ SpecialiteDao specialiteDao;
    /** Bean Dao TitreDao. */
-   private TitreDao titreDao;
+   @Autowired
+ TitreDao titreDao;
    /** Bean Dao ServiceDao. */
-   private ServiceDao serviceDao;
+   @Autowired
+ ServiceDao serviceDao;
    /** valeur du nom pour la maj. */
-   private final String updatedNom = "Coll mis a jour";
+   @Autowired
+ final String updatedNom = "Coll mis a jour";
 
    /** Constructeur. */
    public CollaborateurDaoTest(){}
@@ -91,7 +98,8 @@ public class CollaborateurDaoTest extends AbstractDaoTest
     * Setter du bean Dao CollaborateurDao.
     * @param cDao est le bean Dao.
     */
-   public void setCollaborateurDao(final CollaborateurDao cDao){
+   @Test
+public void setCollaborateurDao(final CollaborateurDao cDao){
       this.collaborateurDao = cDao;
    }
 
@@ -99,7 +107,8 @@ public class CollaborateurDaoTest extends AbstractDaoTest
     * Setter du bean Dao EtablissementDao.
     * @param eDao est le bean Dao.
     */
-   public void setEtablissementDao(final EtablissementDao eDao){
+   @Test
+public void setEtablissementDao(final EtablissementDao eDao){
       this.etablissementDao = eDao;
    }
 
@@ -107,7 +116,8 @@ public class CollaborateurDaoTest extends AbstractDaoTest
     * Setter du bean Dao CoordonneeDao.
     * @param cDao est le bean Dao.
     */
-   public void setCoordonneeDao(final CoordonneeDao cDao){
+   @Test
+public void setCoordonneeDao(final CoordonneeDao cDao){
       this.coordonneeDao = cDao;
    }
 
@@ -115,7 +125,8 @@ public class CollaborateurDaoTest extends AbstractDaoTest
     * Setter du bean Dao SpecialiteDao.
     * @param sDao est le bean Dao.
     */
-   public void setSpecialiteDao(final SpecialiteDao sDao){
+   @Test
+public void setSpecialiteDao(final SpecialiteDao sDao){
       this.specialiteDao = sDao;
    }
 
@@ -123,7 +134,8 @@ public class CollaborateurDaoTest extends AbstractDaoTest
     * Setter du bean Dao TitreDao.
     * @param tDao est le bean Dao.
     */
-   public void setTitreDao(final TitreDao tDao){
+   @Test
+public void setTitreDao(final TitreDao tDao){
       this.titreDao = tDao;
    }
 
@@ -131,22 +143,25 @@ public class CollaborateurDaoTest extends AbstractDaoTest
     * Setter du bean Dao ServiceDao.
     * @param sDao est le bean Dao.
     */
-   public void setServiceDao(final ServiceDao sDao){
+   @Test
+public void setServiceDao(final ServiceDao sDao){
       this.serviceDao = sDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllCollaborateurs(){
-      final List<Collaborateur> collaborateurs = collaborateurDao.findAll();
+   @Test
+public void testReadAllCollaborateurs(){
+      final List<Collaborateur> collaborateurs = IterableUtils.toList(collaborateurDao.findAll());
       assertTrue(collaborateurs.size() == 6);
    }
 
    /**
     * Test l'appel de la méthode findByOrder().
     */
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       final List<Collaborateur> collaborateurs = collaborateurDao.findByOrder();
       assertTrue(collaborateurs.size() == 6);
       assertTrue(collaborateurs.get(0).getNom().equals("DUFAY"));
@@ -156,7 +171,8 @@ public class CollaborateurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByNom().
     */
-   public void testFindByNom(){
+   @Test
+public void testFindByNom(){
       List<Collaborateur> collaborateurs = collaborateurDao.findByNom("VIAL");
       assertTrue(collaborateurs.size() == 1);
       assertTrue(collaborateurs.get(0).getNom().equals("VIAL"));
@@ -170,7 +186,8 @@ public class CollaborateurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByPrenom().
     */
-   public void testFindByPrenom(){
+   @Test
+public void testFindByPrenom(){
       List<Collaborateur> collaborateurs = collaborateurDao.findByPrenom("PIERRE");
       assertTrue(collaborateurs.size() == 1);
       assertTrue(collaborateurs.get(0).getPrenom().equals("PIERRE"));
@@ -181,7 +198,8 @@ public class CollaborateurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByArchive().
     */
-   public void testFindByArchive(){
+   @Test
+public void testFindByArchive(){
       final List<Collaborateur> collaborateurs = collaborateurDao.findByArchive(false);
       assertTrue(collaborateurs.size() == 4);
    }
@@ -189,7 +207,8 @@ public class CollaborateurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<Collaborateur> collaborateurs = collaborateurDao.findByExcludedId(1);
       assertTrue(collaborateurs.size() == 5);
 
@@ -200,7 +219,8 @@ public class CollaborateurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByEtablissement().
     */
-   public void testFindByEtablissement(){
+   @Test
+public void testFindByEtablissement(){
       final Etablissement etab1 = etablissementDao.findById(3);
       List<Collaborateur> collaborateurs = collaborateurDao.findByEtablissement(etab1);
       assertTrue(collaborateurs.size() == 2);
@@ -212,7 +232,8 @@ public class CollaborateurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByEtablissementWithOrder().
     */
-   public void testFindByEtablissementWithOrder(){
+   @Test
+public void testFindByEtablissementWithOrder(){
       final Etablissement etab1 = etablissementDao.findById(1);
       List<Collaborateur> collaborateurs = collaborateurDao.findByEtablissementWithOrder(etab1);
       assertTrue(collaborateurs.size() == 3);
@@ -227,7 +248,8 @@ public class CollaborateurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByEtablissementArchiveWithOrder().
     */
-   public void testFindByEtablissementArchiveWithOrder(){
+   @Test
+public void testFindByEtablissementArchiveWithOrder(){
       final Etablissement etab1 = etablissementDao.findById(1);
       List<Collaborateur> collaborateurs = collaborateurDao.findByEtablissementArchiveWithOrder(etab1, false);
       assertTrue(collaborateurs.size() == 2);
@@ -252,7 +274,8 @@ public class CollaborateurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findBySpecialite().
     */
-   public void testFindBySpecialite(){
+   @Test
+public void testFindBySpecialite(){
       Specialite s = specialiteDao.findById(1);
       List<Collaborateur> collaborateurs = collaborateurDao.findBySpecialite(s);
       assertTrue(collaborateurs.size() == 3);
@@ -264,7 +287,8 @@ public class CollaborateurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByTitre().
     */
-   public void testFindByTitre(){
+   @Test
+public void testFindByTitre(){
       Titre t = titreDao.findById(2);
       List<Collaborateur> collaborateurs = collaborateurDao.findByTitre(t);
       assertTrue(collaborateurs.size() == 1);
@@ -276,7 +300,8 @@ public class CollaborateurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByServiceId().
     */
-   public void testFindByServiceId(){
+   @Test
+public void testFindByServiceId(){
       List<Collaborateur> collaborateurs = collaborateurDao.findByServiceId(1);
       assertTrue(collaborateurs.size() == 2);
       collaborateurs = collaborateurDao.findByServiceId(2);
@@ -288,7 +313,8 @@ public class CollaborateurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByServiceIdWithOrder().
     */
-   public void testFindByServiceIdWithOrder(){
+   @Test
+public void testFindByServiceIdWithOrder(){
       List<Collaborateur> collaborateurs = collaborateurDao.findByServiceIdWithOrder(1);
       assertTrue(collaborateurs.size() == 2);
       assertTrue(collaborateurs.get(0).getNom().equals("DUFAY"));
@@ -304,7 +330,8 @@ public class CollaborateurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByServiceIdArchiveWithOrder().
     */
-   public void testFindByServiceIdArchiveWithOrder(){
+   @Test
+public void testFindByServiceIdArchiveWithOrder(){
       List<Collaborateur> collaborateurs = collaborateurDao.findByServiceIdArchiveWithOrder(1, false);
       assertTrue(collaborateurs.size() == 2);
       assertTrue(collaborateurs.get(0).getNom().equals("DUFAY"));
@@ -326,12 +353,14 @@ public class CollaborateurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByCollaborateurWithoutService().
     */
-   public void testFindByCollaborateurWithoutService(){
+   @Test
+public void testFindByCollaborateurWithoutService(){
       final List<Collaborateur> collaborateurs = collaborateurDao.findByCollaborateurWithoutService();
       assertTrue(collaborateurs.size() == 3);
    }
 
-   public void testFindByEtablissementNoService(){
+   @Test
+public void testFindByEtablissementNoService(){
       Etablissement e = etablissementDao.findById(3);
       List<Collaborateur> collaborateurs = collaborateurDao.findByEtablissementNoService(e);
       assertTrue(collaborateurs.size() == 2);
@@ -348,7 +377,8 @@ public class CollaborateurDaoTest extends AbstractDaoTest
     * Test l'appel de la méthode 
     * findByCollaborateurWithoutServiceAndArchive().
     */
-   public void testFindByCollaborateurWithoutServiceAndArchive(){
+   @Test
+public void testFindByCollaborateurWithoutServiceAndArchive(){
       List<Collaborateur> collaborateurs = collaborateurDao.findByCollaborateurWithoutServiceAndArchive(false);
       assertTrue(collaborateurs.size() == 2);
 
@@ -359,7 +389,8 @@ public class CollaborateurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByPlateformeId().
     */
-   public void testFindByPlateformeId(){
+   @Test
+public void testFindByPlateformeId(){
       List<Collaborateur> collaborateurs = collaborateurDao.findByPlateformeId(1);
       assertTrue(collaborateurs.size() == 1);
       collaborateurs = collaborateurDao.findByPlateformeId(3);
@@ -369,7 +400,8 @@ public class CollaborateurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByBanqueId().
     */
-   public void testFindByBanqueId(){
+   @Test
+public void testFindByBanqueId(){
       List<Collaborateur> collaborateurs = collaborateurDao.findByBanqueId(1);
       assertTrue(collaborateurs.size() == 1);
       collaborateurs = collaborateurDao.findByBanqueId(5);
@@ -379,7 +411,8 @@ public class CollaborateurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByUtilisateurId().
     */
-   public void testFindByUtilisateurId(){
+   @Test
+public void testFindByUtilisateurId(){
       List<Collaborateur> collaborateurs = collaborateurDao.findByUtilisateurId(1);
       assertTrue(collaborateurs.size() == 1);
       collaborateurs = collaborateurDao.findByUtilisateurId(5);
@@ -389,7 +422,8 @@ public class CollaborateurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByIdWithFetch().
     */
-   public void testFindByIdWithFetch(){
+   @Test
+public void testFindByIdWithFetch(){
       final List<Collaborateur> collaborateurs = collaborateurDao.findByIdWithFetch(5);
       final Collaborateur collaborateur = collaborateurs.get(0);
       assertNotNull(collaborateur);
@@ -404,7 +438,8 @@ public class CollaborateurDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas d'erreur sur les données. 
     */
    @Rollback(false)
-   public void testCrudCollaborateur() throws Exception{
+   @Test
+public void testCrudCollaborateur() throws Exception{
 
       final Collaborateur c = new Collaborateur();
       final Etablissement etab = etablissementDao.findById(1);
@@ -430,9 +465,9 @@ public class CollaborateurDaoTest extends AbstractDaoTest
       c.setTitre(titre);
       c.getServices().add(serv);
       // Test de l'insertion
-      collaborateurDao.createObject(c);
+      collaborateurDao.save(c);
       assertEquals(new Integer(7), c.getCollaborateurId());
-      assertTrue(coordonneeDao.findAll().size() == 6);
+      assertTrue(IterableUtils.toList(coordonneeDao.findAll()).size() == 6);
 
       // Test de la mise à jour
       final Collaborateur c2 = collaborateurDao.findById(new Integer(7));
@@ -445,22 +480,23 @@ public class CollaborateurDaoTest extends AbstractDaoTest
       //assertTrue(c2.getServices().iterator().hasNext());
       c2.setNom(updatedNom);
       c2.getServices().add(serv2);
-      collaborateurDao.updateObject(c2);
+      collaborateurDao.save(c2);
       assertTrue(collaborateurDao.findById(new Integer(7)).getNom().equals(updatedNom));
       assertTrue(collaborateurDao.findById(new Integer(7)).getServices().size() == 2);
       // Test de la délétion
       final Coordonnee coord = c2.getCoordonnees().iterator().next();
       c2.getCoordonnees().remove(coord);
-      coordonneeDao.removeObject(coord.getCoordonneeId());
-      assertTrue(coordonneeDao.findAll().size() == 5);
-      collaborateurDao.removeObject(c2.getCollaborateurId());
+      coordonneeDao.deleteById(coord.getCoordonneeId());
+      assertTrue(IterableUtils.toList(coordonneeDao.findAll()).size() == 5);
+      collaborateurDao.deleteById(c2.getCollaborateurId());
       testFindByExcludedId();
    }
 
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String nom = "Coll1";
       final String nom2 = "Coll2";
       final String prenom = "Pre1";
@@ -518,7 +554,8 @@ public class CollaborateurDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String nom = "Coll1";
       final String nom2 = "Coll2";
       final String prenom = "Pre1";
@@ -566,7 +603,8 @@ public class CollaborateurDaoTest extends AbstractDaoTest
    /**
     * test toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final Collaborateur c1 = collaborateurDao.findById(1);
       assertTrue(c1.toString().equals("{" + c1.getNom() + "}"));
 
@@ -577,7 +615,8 @@ public class CollaborateurDaoTest extends AbstractDaoTest
    /**
     * test méthod nomAndPrenom().
     */
-   public void testNomAndPrenom(){
+   @Test
+public void testNomAndPrenom(){
       final Collaborateur c1 = collaborateurDao.findById(1);
       assertTrue(c1.getNomAndPrenom().equals(c1.getNom() + " " + c1.getPrenom()));
 
@@ -588,7 +627,8 @@ public class CollaborateurDaoTest extends AbstractDaoTest
    /**
     * Test la méthode clone.
     */
-   public void testClone(){
+   @Test
+public void testClone(){
       final Collaborateur c1 = collaborateurDao.findById(1);
       final Collaborateur c2 = c1.clone();
       assertTrue(c1.equals(c2));

@@ -39,7 +39,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.interfacage.LogicielDao;
 import fr.aphp.tumorotek.dao.interfacage.RecepteurDao;
@@ -57,12 +69,16 @@ import fr.aphp.tumorotek.model.interfacage.Recepteur;
  * @version 2.0.10.3
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class RecepteurDaoTest extends AbstractDaoTest
 {
 
-   private RecepteurDao recepteurDao;
-   private LogicielDao logicielDao;
+   @Autowired
+ RecepteurDao recepteurDao;
+   @Autowired
+ LogicielDao logicielDao;
 
    public RecepteurDaoTest(){
 
@@ -73,23 +89,27 @@ public class RecepteurDaoTest extends AbstractDaoTest
       return new String[] {"applicationContextDao-interfacages-test-mysql.xml"};
    }
 
-   public void setRecepteurDao(final RecepteurDao eDao){
+   @Test
+public void setRecepteurDao(final RecepteurDao eDao){
       this.recepteurDao = eDao;
    }
 
-   public void setLogicielDao(final LogicielDao lDao){
+   @Test
+public void setLogicielDao(final LogicielDao lDao){
       this.logicielDao = lDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAll(){
-      final List<Recepteur> liste = recepteurDao.findAll();
+   @Test
+public void testReadAll(){
+      final List<Recepteur> liste = IterableUtils.toList(recepteurDao.findAll());
       assertTrue(liste.size() == 2);
    }
 
-   public void testFindByLogicielAndIdentification(){
+   @Test
+public void testFindByLogicielAndIdentification(){
       final Logiciel l2 = logicielDao.findById(2);
       List<Recepteur> liste = recepteurDao.findByLogicielAndIdentification(l2, "DIAMIC-ACK");
       assertTrue(liste.size() == 1);
@@ -111,7 +131,8 @@ public class RecepteurDaoTest extends AbstractDaoTest
       assertTrue(liste.size() == 0);
    }
 
-   public void testFindByIdInList(){
+   @Test
+public void testFindByIdInList(){
       final List<Integer> ids = new ArrayList<>();
       ids.add(1);
       List<Recepteur> liste = recepteurDao.findByIdInList(ids);
@@ -129,7 +150,8 @@ public class RecepteurDaoTest extends AbstractDaoTest
    }
 
    @Rollback(false)
-   public void testCrud() throws Exception{
+   @Test
+public void testCrud() throws Exception{
 
       final Recepteur e1 = new Recepteur();
       final Logiciel log = logicielDao.findById(1);
@@ -137,7 +159,7 @@ public class RecepteurDaoTest extends AbstractDaoTest
       e1.setIdentification("ID");
 
       // Test de l'insertion
-      recepteurDao.createObject(e1);
+      recepteurDao.save(e1);
       assertNotNull(e1.getRecepteurId());
 
       final Recepteur e2 = recepteurDao.findById(e1.getRecepteurId());
@@ -151,17 +173,18 @@ public class RecepteurDaoTest extends AbstractDaoTest
       e2.setIdentification("ID2");
       e2.setObservations("OBS");
       e2.setLogiciel(logicielDao.findById(3));
-      recepteurDao.updateObject(e2);
+      recepteurDao.save(e2);
       assertTrue(recepteurDao.findById(e1.getRecepteurId()).getIdentification().equals("ID2"));
       assertTrue(recepteurDao.findById(e1.getRecepteurId()).getObservations().equals("OBS"));
       assertTrue(recepteurDao.findById(e1.getRecepteurId()).getLogiciel().getLogicielId() == 3);
 
       // Test de la délétion
-      recepteurDao.removeObject(e1.getRecepteurId());
+      recepteurDao.deleteById(e1.getRecepteurId());
       assertNull(recepteurDao.findById(e1.getRecepteurId()));
    }
 
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String nom = "id1";
       final String nom2 = "id2";
       final Logiciel log1 = logicielDao.findById(1);
@@ -218,7 +241,8 @@ public class RecepteurDaoTest extends AbstractDaoTest
       assertFalse(e1.equals(c3));
    }
 
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String nom = "id1";
       final String nom2 = "id2";
       final Logiciel log1 = logicielDao.findById(1);
@@ -256,7 +280,8 @@ public class RecepteurDaoTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final Recepteur e1 = recepteurDao.findById(1);
       assertTrue(e1.toString().equals("{" + e1.getIdentification() + ", " + e1.getLogiciel().getNom() + "(Logiciel)}"));
 

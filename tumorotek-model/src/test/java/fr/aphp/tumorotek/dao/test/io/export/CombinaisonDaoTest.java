@@ -64,12 +64,17 @@ import fr.aphp.tumorotek.model.io.export.Combinaison;
 public class CombinaisonDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private CombinaisonDao combinaisonDao;
-   private ChampDao champDao;
-   private EntiteDao entiteDao;
-   private ChampEntiteDao champEntiteDao;
-   private DataTypeDao dataTypeDao;
+
+   @Autowired
+ CombinaisonDao combinaisonDao;
+   @Autowired
+ ChampDao champDao;
+   @Autowired
+ EntiteDao entiteDao;
+   @Autowired
+ ChampEntiteDao champEntiteDao;
+   @Autowired
+ DataTypeDao dataTypeDao;
 
    /** Constructeur. */
    public CombinaisonDaoTest(){}
@@ -78,7 +83,8 @@ public class CombinaisonDaoTest extends AbstractDaoTest
     * Setter du bean CombinaisonDao.
     * @param oDao est le bean Dao.
     */
-   public void setCombinaisonDao(final CombinaisonDao oDao){
+   @Test
+public void setCombinaisonDao(final CombinaisonDao oDao){
       this.combinaisonDao = oDao;
    }
 
@@ -86,7 +92,8 @@ public class CombinaisonDaoTest extends AbstractDaoTest
     * Setter du bean ChampDao.
     * @param cDao est le bean Dao.
     */
-   public void setChampDao(final ChampDao cDao){
+   @Test
+public void setChampDao(final ChampDao cDao){
       this.champDao = cDao;
    }
 
@@ -94,7 +101,8 @@ public class CombinaisonDaoTest extends AbstractDaoTest
     * Setter du bean EntiteDao.
     * @param cDao est le bean Dao.
     */
-   public void setEntiteDao(final EntiteDao eDao){
+   @Test
+public void setEntiteDao(final EntiteDao eDao){
       this.entiteDao = eDao;
    }
 
@@ -102,7 +110,8 @@ public class CombinaisonDaoTest extends AbstractDaoTest
     * Setter du bean EntiteDao.
     * @param cDao est le bean Dao.
     */
-   public void setChampEntiteDao(final ChampEntiteDao ceDao){
+   @Test
+public void setChampEntiteDao(final ChampEntiteDao ceDao){
       this.champEntiteDao = ceDao;
    }
 
@@ -110,7 +119,8 @@ public class CombinaisonDaoTest extends AbstractDaoTest
     * Setter du bean DataTypeDao.
     * @param dtDao est le bean Dao.
     */
-   public void setDataTypeDao(final DataTypeDao dtDao){
+   @Test
+public void setDataTypeDao(final DataTypeDao dtDao){
       this.dataTypeDao = dtDao;
    }
 
@@ -120,21 +130,22 @@ public class CombinaisonDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
    @Rollback(false)
-   public void testCrudCombinaison() throws Exception{
+   @Test
+public void testCrudCombinaison() throws Exception{
       DataType dataType = dataTypeDao.findById(2);
       ChampEntite chEntite =
          new ChampEntite(this.entiteDao.findById(2), "champEntite1", dataType, false, true, "000-0", false, null);
-      this.champEntiteDao.createObject(chEntite);
+      this.champEntiteDao.save(chEntite);
       final int idChEn1 = chEntite.getId();
       Champ ch = new Champ(chEntite);
-      this.champDao.createObject(ch);
+      this.champDao.save(ch);
       final int id1 = ch.getChampId();
       dataType = dataTypeDao.findById(1);
       chEntite = new ChampEntite(this.entiteDao.findById(1), "champEntite2", dataType, false, false, null, false, null);
-      this.champEntiteDao.createObject(chEntite);
+      this.champEntiteDao.save(chEntite);
       final int idChEn2 = chEntite.getId();
       ch = new Champ(chEntite);
-      this.champDao.createObject(ch);
+      this.champDao.save(ch);
       final int id2 = ch.getChampId();
 
       final Champ champ1 = this.champDao.findById(id1);
@@ -149,8 +160,8 @@ public class CombinaisonDaoTest extends AbstractDaoTest
 
       // Test de l'insertion
       Integer idObject = new Integer(-1);
-      this.combinaisonDao.createObject(c);
-      final List<Combinaison> combinaisons = this.combinaisonDao.findAll();
+      this.combinaisonDao.save(c);
+      final List<Combinaison> combinaisons = this.IterableUtils.toList(combinaisonDao.findAll());
       final Iterator<Combinaison> itCombinaison = combinaisons.iterator();
       boolean found = false;
       while(itCombinaison.hasNext()){
@@ -181,7 +192,7 @@ public class CombinaisonDaoTest extends AbstractDaoTest
       c2.setChamp2(updatedChamp2);
       c2.setOperateur(updatedOperateur);
 
-      this.combinaisonDao.updateObject(c2);
+      this.combinaisonDao.save(c2);
       assertNotNull(this.combinaisonDao.findById(idObject).getChamp1());
       assertTrue(this.combinaisonDao.findById(idObject).getChamp1().equals(updatedChamp1));
       assertNotNull(this.combinaisonDao.findById(idObject).getChamp2());
@@ -190,20 +201,21 @@ public class CombinaisonDaoTest extends AbstractDaoTest
       assertTrue(this.combinaisonDao.findById(idObject).getOperateur().equals(updatedOperateur));
 
       // Test de la délétion
-      this.combinaisonDao.removeObject(idObject);
+      this.combinaisonDao.deleteById(idObject);
       assertNull(this.combinaisonDao.findById(idObject));
 
       //On supprimé les éléments créés
-      this.champDao.removeObject(id1);
-      this.champDao.removeObject(id2);
-      this.champEntiteDao.removeObject(idChEn1);
-      this.champEntiteDao.removeObject(idChEn2);
+      this.champDao.deleteById(id1);
+      this.champDao.deleteById(id2);
+      this.champEntiteDao.deleteById(idChEn1);
+      this.champEntiteDao.deleteById(idChEn2);
    }
 
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       //On boucle sur les 8 possibilités
       for(int i = 0; i < Math.pow(2, 3); i++){
          final Combinaison combinaison1 = new Combinaison();
@@ -237,7 +249,8 @@ public class CombinaisonDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       //On boucle sur les 8 possibilités
       for(int i = 0; i < Math.pow(2, 3); i++){
          final Combinaison combinaison = new Combinaison();
@@ -278,7 +291,8 @@ public class CombinaisonDaoTest extends AbstractDaoTest
    /**
     * test toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final Combinaison c1 = combinaisonDao.findById(1);
       if(c1.getChamp1() != null && c1.getChamp2() != null && c1.getOperateur() != null){
          assertTrue(c1.toString().equals(c1.getChamp1().toString() + " " + c1.getOperateur() + " " + c1.getChamp2()));

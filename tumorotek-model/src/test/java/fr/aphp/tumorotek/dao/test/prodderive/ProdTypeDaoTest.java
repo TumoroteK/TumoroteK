@@ -60,30 +60,36 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 public class ProdTypeDaoTest extends AbstractDaoTest
 {
 
-   private ProdTypeDao prodTypeDao;
-   private PlateformeDao plateformeDao;
+   @Autowired
+ ProdTypeDao prodTypeDao;
+   @Autowired
+ PlateformeDao plateformeDao;
 
    public ProdTypeDaoTest(){
 
    }
 
-   public void setProdTypeDao(final ProdTypeDao pDao){
+   @Test
+public void setProdTypeDao(final ProdTypeDao pDao){
       this.prodTypeDao = pDao;
    }
 
-   public void setPlateformeDao(final PlateformeDao pfDao){
+   @Test
+public void setPlateformeDao(final PlateformeDao pfDao){
       this.plateformeDao = pfDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAll(){
-      final List<ProdType> types = prodTypeDao.findAll();
+   @Test
+public void testReadAll(){
+      final List<ProdType> types = IterableUtils.toList(prodTypeDao.findAll());
       assertTrue(types.size() == 3);
    }
 
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
       List<? extends TKThesaurusObject> list = prodTypeDao.findByPfOrder(pf);
       assertTrue(list.size() == 3);
@@ -98,7 +104,8 @@ public class ProdTypeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByType().
     */
-   public void testFindByType(){
+   @Test
+public void testFindByType(){
       List<ProdType> types = prodTypeDao.findByType("ADN");
       assertTrue(types.size() == 1);
       types = prodTypeDao.findByType("RNA");
@@ -108,7 +115,8 @@ public class ProdTypeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByProdDeriveId().
     */
-   public void testFindByProdDeriveId(){
+   @Test
+public void testFindByProdDeriveId(){
       List<ProdType> types = prodTypeDao.findByProdDeriveId(1);
       assertTrue(types.size() == 1);
       assertTrue(types.get(0).getProdTypeId() == 1);
@@ -119,7 +127,8 @@ public class ProdTypeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<ProdType> liste = prodTypeDao.findByExcludedId(1);
       assertTrue(liste.size() == 2);
       final ProdType type = liste.get(0);
@@ -135,14 +144,15 @@ public class ProdTypeDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas d'erreur.
     */
    @Rollback(false)
-   public void testCrudProdQualite() throws Exception{
+   @Test
+public void testCrudProdQualite() throws Exception{
 
       final ProdType p = new ProdType();
       final String updatedType = "MAJ";
       p.setPlateforme(plateformeDao.findById(1));
       p.setType("TYPE");
       // Test de l'insertion
-      prodTypeDao.createObject(p);
+      prodTypeDao.save(p);
       assertEquals(new Integer(4), p.getProdTypeId());
 
       // Test de la mise à jour
@@ -150,11 +160,11 @@ public class ProdTypeDaoTest extends AbstractDaoTest
       assertNotNull(p2);
       assertTrue(p2.getType().equals("TYPE"));
       p2.setType(updatedType);
-      prodTypeDao.updateObject(p2);
+      prodTypeDao.save(p2);
       assertTrue(prodTypeDao.findById(new Integer(4)).getType().equals(updatedType));
 
       // Test de la délétion
-      prodTypeDao.removeObject(new Integer(4));
+      prodTypeDao.deleteById(new Integer(4));
       assertNull(prodTypeDao.findById(new Integer(4)));
 
    }
@@ -162,7 +172,8 @@ public class ProdTypeDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String type = "Type";
       final String type2 = "Type2";
       final ProdType p1 = new ProdType();
@@ -208,7 +219,8 @@ public class ProdTypeDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String type = "Type";
       final ProdType p1 = new ProdType();
       p1.setType(type);
@@ -239,7 +251,8 @@ public class ProdTypeDaoTest extends AbstractDaoTest
    /**
     * test toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final ProdType p1 = prodTypeDao.findById(1);
       assertTrue(p1.toString().equals("{" + p1.getType() + "}"));
 

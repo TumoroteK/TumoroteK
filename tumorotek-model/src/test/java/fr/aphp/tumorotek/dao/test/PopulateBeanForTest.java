@@ -52,7 +52,7 @@ import org.apache.commons.beanutils.BeanUtils;
 public final class PopulateBeanForTest
 {
 
-   private PopulateBeanForTest(){}
+ PopulateBeanForTest(){}
 
    /**
     * Remplit un bean du domaine à partir d'un fichier.
@@ -97,7 +97,8 @@ public final class PopulateBeanForTest
    //	 * @param resource a resource bundle to convert.
    //	 * @return Map a map version of the resource bundle.
    //	 */
-   //	private static Map<String, String> convertResourceBundleToMap(
+   //	@Autowired
+   // static Map<String, String> convertResourceBundleToMap(
    //			ResourceBundle resource) {
    //		Map<String, String> map = new HashMap<String, String>();
    //		Enumeration<String> keys = resource.getKeys();

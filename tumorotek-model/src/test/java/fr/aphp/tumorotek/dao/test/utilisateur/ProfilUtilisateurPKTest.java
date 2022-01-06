@@ -37,10 +37,18 @@ package fr.aphp.tumorotek.dao.test.utilisateur;
 
 import java.text.ParseException;
 
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
+import fr.aphp.tumorotek.dao.test.Config;
 import fr.aphp.tumorotek.dao.utilisateur.ProfilDao;
 import fr.aphp.tumorotek.dao.utilisateur.UtilisateurDao;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -57,172 +65,153 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * @version 18/05/2010.
  *
  */
-@TransactionConfiguration(defaultRollback = false)
-public class ProfilUtilisateurPKTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class ProfilUtilisateurPKTest extends AbstractDaoTest {
 
-   /** Bean Dao. */
-   private UtilisateurDao utilisateurDao;
-   /** Bean Dao. */
-   private BanqueDao banqueDao;
-   /** Bean Dao. */
-   private ProfilDao profilDao;
+	@Autowired
+	UtilisateurDao utilisateurDao;
 
-   public ProfilUtilisateurPKTest(){
+	@Autowired
+	BanqueDao banqueDao;
 
-   }
+	@Autowired
+	ProfilDao profilDao;
 
-   public void setUtilisateurDao(final UtilisateurDao uDao){
-      this.utilisateurDao = uDao;
-   }
+	@Test
+	public void testEquals() throws ParseException {
+		final ProfilUtilisateurPK pk1 = new ProfilUtilisateurPK();
+		final ProfilUtilisateurPK pk2 = new ProfilUtilisateurPK();
 
-   public void setBanqueDao(final BanqueDao bDao){
-      this.banqueDao = bDao;
-   }
+		// L'objet 1 n'est pas égal à null
+		assertFalse(pk1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(pk1.equals(pk1));
 
-   public void setProfilDao(final ProfilDao pDao){
-      this.profilDao = pDao;
-   }
+		/* null */
+		assertTrue(pk1.equals(pk2));
+		assertTrue(pk2.equals(pk1));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    * @throws ParseException 
-    */
-   public void testEquals() throws ParseException{
-      final ProfilUtilisateurPK pk1 = new ProfilUtilisateurPK();
-      final ProfilUtilisateurPK pk2 = new ProfilUtilisateurPK();
+		populateClefsToTestEqualsAndHashCode();
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(pk1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(pk1.equals(pk1));
+		final Categorie c3 = new Categorie();
+		assertFalse(pk1.equals(c3));
+	}
 
-      /*null*/
-      assertTrue(pk1.equals(pk2));
-      assertTrue(pk2.equals(pk1));
+	@Test
+	public void testHashCode() throws ParseException {
+		final ProfilUtilisateurPK pk1 = new ProfilUtilisateurPK();
+		final ProfilUtilisateurPK pk2 = new ProfilUtilisateurPK();
 
-      populateClefsToTestEqualsAndHashCode();
+		/* null */
+		assertTrue(pk1.hashCode() == pk2.hashCode());
 
-      final Categorie c3 = new Categorie();
-      assertFalse(pk1.equals(c3));
-   }
+		populateClefsToTestEqualsAndHashCode();
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    * @throws ParseException 
-    */
-   public void testHashCode() throws ParseException{
-      final ProfilUtilisateurPK pk1 = new ProfilUtilisateurPK();
-      final ProfilUtilisateurPK pk2 = new ProfilUtilisateurPK();
+		// un même objet garde le même hashcode dans le temps
+		final int hash = pk1.hashCode();
+		assertTrue(hash == pk1.hashCode());
+		assertTrue(hash == pk1.hashCode());
+		assertTrue(hash == pk1.hashCode());
+		assertTrue(hash == pk1.hashCode());
+	}
 
-      /*null*/
-      assertTrue(pk1.hashCode() == pk2.hashCode());
+	@Autowired
+	void populateClefsToTestEqualsAndHashCode() throws ParseException {
 
-      populateClefsToTestEqualsAndHashCode();
+		final Profil p1 = profilDao.findById(1).get();
+		final Profil p2 = profilDao.findById(2).get();
+		final Profil p3 = profilDao.findById(1).get();
+		final Profil[] profilsId = new Profil[] { null, p1, p2, p3 };
+		final Utilisateur u1 = utilisateurDao.findById(1).get();
+		final Utilisateur u2 = utilisateurDao.findById(2).get();
+		final Utilisateur u3 = utilisateurDao.findById(1).get();
+		final Utilisateur[] utilisateurs = new Utilisateur[] { null, u1, u2, u3 };
+		final Banque b1 = banqueDao.findById(1).get();
+		final Banque b2 = banqueDao.findById(2).get();
+		final Banque b3 = banqueDao.findById(1).get();
+		final Banque[] banques = new Banque[] { null, b1, b2, b3 };
 
-      // un même objet garde le même hashcode dans le temps
-      final int hash = pk1.hashCode();
-      assertTrue(hash == pk1.hashCode());
-      assertTrue(hash == pk1.hashCode());
-      assertTrue(hash == pk1.hashCode());
-      assertTrue(hash == pk1.hashCode());
-   }
+		final ProfilUtilisateurPK pk1 = new ProfilUtilisateurPK();
+		final ProfilUtilisateurPK pk2 = new ProfilUtilisateurPK();
 
-   private void populateClefsToTestEqualsAndHashCode() throws ParseException{
+		for (int i = 0; i < profilsId.length; i++) {
+			for (int j = 0; j < utilisateurs.length; j++) {
+				for (int j2 = 0; j2 < banques.length; j2++) {
 
-      final Profil p1 = profilDao.findById(1);
-      final Profil p2 = profilDao.findById(2);
-      final Profil p3 = profilDao.findById(1);
-      final Profil[] profilsId = new Profil[] {null, p1, p2, p3};
-      final Utilisateur u1 = utilisateurDao.findById(1);
-      final Utilisateur u2 = utilisateurDao.findById(2);
-      final Utilisateur u3 = utilisateurDao.findById(1);
-      final Utilisateur[] utilisateurs = new Utilisateur[] {null, u1, u2, u3};
-      final Banque b1 = banqueDao.findById(1);
-      final Banque b2 = banqueDao.findById(2);
-      final Banque b3 = banqueDao.findById(1);
-      final Banque[] banques = new Banque[] {null, b1, b2, b3};
+					for (int k = 0; k < profilsId.length; k++) {
+						for (int l = 0; l < utilisateurs.length; l++) {
+							for (int l2 = 0; l2 < banques.length; l2++) {
 
-      final ProfilUtilisateurPK pk1 = new ProfilUtilisateurPK();
-      final ProfilUtilisateurPK pk2 = new ProfilUtilisateurPK();
+								pk1.setProfil(profilsId[i]);
+								pk1.setUtilisateur(utilisateurs[j]);
+								pk1.setBanque(banques[j2]);
 
-      for(int i = 0; i < profilsId.length; i++){
-         for(int j = 0; j < utilisateurs.length; j++){
-            for(int j2 = 0; j2 < banques.length; j2++){
+								pk2.setProfil(profilsId[k]);
+								pk2.setUtilisateur(utilisateurs[l]);
+								pk2.setBanque(banques[l2]);
 
-               for(int k = 0; k < profilsId.length; k++){
-                  for(int l = 0; l < utilisateurs.length; l++){
-                     for(int l2 = 0; l2 < banques.length; l2++){
+								if (((i == k) || (i + k == 4)) && ((j == l) || (j + l == 4))
+										&& ((j2 == l2) || (j2 + l2 == 4))) {
+									assertTrue(pk1.equals(pk2));
+									assertTrue(pk1.hashCode() == pk2.hashCode());
+								} else {
+									assertFalse(pk1.equals(pk2));
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 
-                        pk1.setProfil(profilsId[i]);
-                        pk1.setUtilisateur(utilisateurs[j]);
-                        pk1.setBanque(banques[j2]);
+	}
 
-                        pk2.setProfil(profilsId[k]);
-                        pk2.setUtilisateur(utilisateurs[l]);
-                        pk2.setBanque(banques[l2]);
+	@Test
+	public void testToString() {
+		final Profil p1 = profilDao.findById(1).get();
+		final Utilisateur u1 = utilisateurDao.findById(1).get();
+		final Banque b1 = banqueDao.findById(1).get();
+		final ProfilUtilisateurPK pk1 = new ProfilUtilisateurPK();
+		pk1.setProfil(p1);
+		pk1.setUtilisateur(u1);
+		pk1.setBanque(b1);
 
-                        if(((i == k) || (i + k == 4)) && ((j == l) || (j + l == 4)) && ((j2 == l2) || (j2 + l2 == 4))){
-                           assertTrue(pk1.equals(pk2));
-                           assertTrue(pk1.hashCode() == pk2.hashCode());
-                        }else{
-                           assertFalse(pk1.equals(pk2));
-                        }
-                     }
-                  }
-               }
-            }
-         }
-      }
+		assertTrue(pk1.toString().equals("{" + pk1.getProfil().toString() + " (Profil), "
+				+ pk1.getUtilisateur().toString() + " (Utilisateur), " + pk1.getBanque() + " (Banque)}"));
 
-   }
+		pk1.setProfil(null);
+		assertTrue(pk1.toString().equals("{Empty ProfilUtilisateurPK}"));
+		pk1.setProfil(p1);
 
-   /**
-    * Test la méthode toString.
-    */
-   public void testToString(){
-      final Profil p1 = profilDao.findById(1);
-      final Utilisateur u1 = utilisateurDao.findById(1);
-      final Banque b1 = banqueDao.findById(1);
-      final ProfilUtilisateurPK pk1 = new ProfilUtilisateurPK();
-      pk1.setProfil(p1);
-      pk1.setUtilisateur(u1);
-      pk1.setBanque(b1);
+		pk1.setUtilisateur(null);
+		assertTrue(pk1.toString().equals("{Empty ProfilUtilisateurPK}"));
+		pk1.setUtilisateur(u1);
 
-      assertTrue(pk1.toString().equals("{" + pk1.getProfil().toString() + " (Profil), " + pk1.getUtilisateur().toString()
-         + " (Utilisateur), " + pk1.getBanque() + " (Banque)}"));
+		pk1.setBanque(null);
+		assertTrue(pk1.toString().equals("{Empty ProfilUtilisateurPK}"));
+		pk1.setBanque(b1);
 
-      pk1.setProfil(null);
-      assertTrue(pk1.toString().equals("{Empty ProfilUtilisateurPK}"));
-      pk1.setProfil(p1);
+		pk1.setProfil(null);
+		pk1.setUtilisateur(null);
+		assertTrue(pk1.toString().equals("{Empty ProfilUtilisateurPK}"));
+		pk1.setUtilisateur(u1);
+		pk1.setProfil(p1);
 
-      pk1.setUtilisateur(null);
-      assertTrue(pk1.toString().equals("{Empty ProfilUtilisateurPK}"));
-      pk1.setUtilisateur(u1);
+		pk1.setUtilisateur(null);
+		pk1.setBanque(null);
+		assertTrue(pk1.toString().equals("{Empty ProfilUtilisateurPK}"));
+		pk1.setBanque(b1);
+		pk1.setUtilisateur(u1);
 
-      pk1.setBanque(null);
-      assertTrue(pk1.toString().equals("{Empty ProfilUtilisateurPK}"));
-      pk1.setBanque(b1);
+		pk1.setProfil(null);
+		pk1.setBanque(null);
+		assertTrue(pk1.toString().equals("{Empty ProfilUtilisateurPK}"));
+		pk1.setBanque(b1);
 
-      pk1.setProfil(null);
-      pk1.setUtilisateur(null);
-      assertTrue(pk1.toString().equals("{Empty ProfilUtilisateurPK}"));
-      pk1.setUtilisateur(u1);
-      pk1.setProfil(p1);
-
-      pk1.setUtilisateur(null);
-      pk1.setBanque(null);
-      assertTrue(pk1.toString().equals("{Empty ProfilUtilisateurPK}"));
-      pk1.setBanque(b1);
-      pk1.setUtilisateur(u1);
-
-      pk1.setProfil(null);
-      pk1.setBanque(null);
-      assertTrue(pk1.toString().equals("{Empty ProfilUtilisateurPK}"));
-      pk1.setBanque(b1);
-
-      final ProfilUtilisateurPK pk2 = new ProfilUtilisateurPK();
-      assertTrue(pk2.toString().equals("{Empty ProfilUtilisateurPK}"));
-   }
+		final ProfilUtilisateurPK pk2 = new ProfilUtilisateurPK();
+		assertTrue(pk2.toString().equals("{Empty ProfilUtilisateurPK}"));
+	}
 
 }

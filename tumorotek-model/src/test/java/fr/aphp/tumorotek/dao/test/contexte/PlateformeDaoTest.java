@@ -61,11 +61,14 @@ public class PlateformeDaoTest extends AbstractDaoTest
 {
 
    /** Bean Dao PlateformeDao. */
-   private PlateformeDao plateformeDao;
+   @Autowired
+ PlateformeDao plateformeDao;
    /** Bean Dao CollaborateurDao. */
-   private CollaborateurDao collaborateurDao;
+   @Autowired
+ CollaborateurDao collaborateurDao;
    /** valeur du nom pour la maj. */
-   private final String updatedNom = "PF mis a jour";
+   @Autowired
+ final String updatedNom = "PF mis a jour";
 
    /** Constructeur. */
    public PlateformeDaoTest(){
@@ -76,7 +79,8 @@ public class PlateformeDaoTest extends AbstractDaoTest
     * Setter du bean Dao PlateformeDao.
     * @param pDao est le bean Dao.
     */
-   public void setPlateformeDao(final PlateformeDao pDao){
+   @Test
+public void setPlateformeDao(final PlateformeDao pDao){
       this.plateformeDao = pDao;
    }
 
@@ -84,22 +88,25 @@ public class PlateformeDaoTest extends AbstractDaoTest
     * Setter du bean Dao CollaborateurDao.
     * @param cDao est le bean Dao.
     */
-   public void setCollaborateurDao(final CollaborateurDao cDao){
+   @Test
+public void setCollaborateurDao(final CollaborateurDao cDao){
       this.collaborateurDao = cDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllPlateformes(){
-      final List<Plateforme> plateformes = plateformeDao.findAll();
+   @Test
+public void testReadAllPlateformes(){
+      final List<Plateforme> plateformes = IterableUtils.toList(plateformeDao.findAll());
       assertTrue(plateformes.size() == 2);
    }
 
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<Plateforme> plateformes = plateformeDao.findByExcludedId(1);
       assertTrue(plateformes.size() == 1);
       plateformes = plateformeDao.findByExcludedId(10);
@@ -109,7 +116,8 @@ public class PlateformeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByOrder().
     */
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       final List<Plateforme> list = plateformeDao.findByOrder();
       assertTrue(list.size() == 2);
       assertTrue(list.get(0).getNom().equals("PLATEFORME 1"));
@@ -118,7 +126,8 @@ public class PlateformeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByNom().
     */
-   public void testFindByNom(){
+   @Test
+public void testFindByNom(){
       List<Plateforme> plateformes = plateformeDao.findByNom("PLATEFORME 1");
       assertTrue(plateformes.size() == 1);
       plateformes = plateformeDao.findByNom("PLATEFORME 15");
@@ -128,7 +137,8 @@ public class PlateformeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByAlias().
     */
-   public void testFindByAlias(){
+   @Test
+public void testFindByAlias(){
       List<Plateforme> plateformes = plateformeDao.findByAlias("PF2");
       assertTrue(plateformes.size() == 1);
       plateformes = plateformeDao.findByAlias("PF5");
@@ -138,7 +148,8 @@ public class PlateformeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByCollaborateur().
     */
-   public void testFindByCollaborateur(){
+   @Test
+public void testFindByCollaborateur(){
       Collaborateur c = collaborateurDao.findById(1);
       List<Plateforme> plateformes = plateformeDao.findByCollaborateur(c);
       assertTrue(plateformes.size() == 1);
@@ -150,7 +161,8 @@ public class PlateformeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByBanqueId().
     */
-   public void testFindByBanqueId(){
+   @Test
+public void testFindByBanqueId(){
       List<Plateforme> plateformes = plateformeDao.findByBanqueId(1);
       assertTrue(plateformes.size() == 1);
       plateformes = plateformeDao.findByBanqueId(5);
@@ -160,7 +172,8 @@ public class PlateformeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByIdWithFetch().
     */
-   public void testFindByIdWithFetch(){
+   @Test
+public void testFindByIdWithFetch(){
       final List<Plateforme> plateformes = plateformeDao.findByIdWithFetch(1);
       final Plateforme plateforme = plateformes.get(0);
       assertNotNull(plateforme);
@@ -172,7 +185,8 @@ public class PlateformeDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas d'erreurs sur les données.
     */
    @Rollback(false)
-   public void testCrudPlateforme() throws Exception{
+   @Test
+public void testCrudPlateforme() throws Exception{
 
       final Plateforme p = new Plateforme();
       final Collaborateur c = collaborateurDao.findById(3);
@@ -185,7 +199,7 @@ public class PlateformeDaoTest extends AbstractDaoTest
       }
       p.setCollaborateur(c);
       // Test de l'insertion
-      plateformeDao.createObject(p);
+      plateformeDao.save(p);
       assertEquals(new Integer(3), p.getPlateformeId());
 
       // Test de la mise à jour
@@ -195,11 +209,11 @@ public class PlateformeDaoTest extends AbstractDaoTest
       assertTrue(p2.getAlias().equals("PF3"));
       assertNotNull(p2.getCollaborateur());
       p2.setNom(updatedNom);
-      plateformeDao.updateObject(p2);
+      plateformeDao.save(p2);
       assertTrue(plateformeDao.findById(new Integer(3)).getNom().equals(updatedNom));
 
       // Test de la délétion
-      plateformeDao.removeObject(new Integer(3));
+      plateformeDao.deleteById(new Integer(3));
       assertNull(plateformeDao.findById(new Integer(3)));
 
    }
@@ -207,7 +221,8 @@ public class PlateformeDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String nom = "PF1";
       final String nom2 = "PF2";
       final Plateforme p1 = new Plateforme();
@@ -245,7 +260,8 @@ public class PlateformeDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String nom = "PF1";
       final Plateforme p1 = new Plateforme(1, nom, "");
       p1.setNom(nom);
@@ -269,7 +285,8 @@ public class PlateformeDaoTest extends AbstractDaoTest
    /**
     * Test la méthode clone.
     */
-   public void testClone(){
+   @Test
+public void testClone(){
       final Plateforme pf1 = plateformeDao.findById(1);
       final Plateforme pf2 = pf1.clone();
       assertTrue(pf1.equals(pf2));

@@ -63,9 +63,12 @@ public class MaladieDaoTest extends AbstractDaoTest
 {
 
    /** Beans Dao. */
-   private MaladieDao maladieDao;
-   private PatientDao patientDao;
-   //private EntiteDao entiteDao;
+   @Autowired
+ MaladieDao maladieDao;
+   @Autowired
+ PatientDao patientDao;
+   //@Autowired
+ EntiteDao entiteDao;
 
    /**
     * Constructeur.
@@ -76,22 +79,26 @@ public class MaladieDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param mDao est le bean Dao.
     */
-   public void setMaladieDao(final MaladieDao mDao){
+   @Test
+public void setMaladieDao(final MaladieDao mDao){
       this.maladieDao = mDao;
    }
 
-   public void setPatientDao(final PatientDao pDao){
+   @Test
+public void setPatientDao(final PatientDao pDao){
       this.patientDao = pDao;
    }
 
-   //	public void setEntiteDao(EntiteDao eDao) {
+   //	@Test
+public void setEntiteDao(EntiteDao eDao) {
    //		this.entiteDao = eDao;
    //	}
 
    /**
     * Test l'appel de la méthode toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       Maladie m1 = maladieDao.findById(1);
       assertTrue(m1.toString().equals("{" + m1.getLibelle() + "}"));
       //		assertTrue(m1.listableObjectId().equals(new Integer(1)));
@@ -104,15 +111,17 @@ public class MaladieDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllMaladies(){
-      final List<Maladie> maladies = maladieDao.findAll();
+   @Test
+public void testReadAllMaladies(){
+      final List<Maladie> maladies = IterableUtils.toList(maladieDao.findAll());
       assertTrue(maladies.size() == 6);
    }
 
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<Maladie> maladies = maladieDao.findByExcludedId(1, "Non precise");
       assertTrue(maladies.size() == 0);
       maladies = maladieDao.findByExcludedId(8, "Fracture");
@@ -126,7 +135,8 @@ public class MaladieDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByLibelle().
     */
-   public void testFindByLibelle(){
+   @Test
+public void testFindByLibelle(){
       List<Maladie> maladies = maladieDao.findByLibelle("Addiction%");
       assertTrue(maladies.size() == 2);
       maladies = maladieDao.findByLibelle("Grippe A");
@@ -141,7 +151,8 @@ public class MaladieDaoTest extends AbstractDaoTest
     * Test l'appel de la méthode findByLibelle().
     * @since 2.2.3-genno
     */
-   public void testFindByLibelleAndPatient() {
+   @Test
+public void testFindByLibelleAndPatient() {
 	  Patient pat3 = patientDao.findById(3);
       List<Maladie> maladies = maladieDao.findByLibelleAndPatient("Addiction%", pat3);
       assertTrue(maladies.size() == 2);
@@ -158,7 +169,8 @@ public class MaladieDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByCode().
     */
-   public void testFindByCode(){
+   @Test
+public void testFindByCode(){
       List<Maladie> maladies = maladieDao.findByCode("C%");
       assertTrue(maladies.size() == 2);
       maladies = maladieDao.findByCode("D12");
@@ -175,7 +187,8 @@ public class MaladieDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
    @Rollback(false)
-   public void testCrudMaladie() throws Exception{
+   @Test
+public void testCrudMaladie() throws Exception{
       final Maladie m = new Maladie();
       final Patient p1 = patientDao.findById(1);
       m.setPatient(p1);
@@ -186,8 +199,8 @@ public class MaladieDaoTest extends AbstractDaoTest
       final Date debut = new SimpleDateFormat("dd/MM/yyyy").parse("01/11/2004");
       m.setDateDebut(debut);
       // Test de l'insertion
-      maladieDao.createObject(m);
-      assertTrue(maladieDao.findAll().size() == 7);
+      maladieDao.save(m);
+      assertTrue(IterableUtils.toList(maladieDao.findAll()).size() == 7);
 
       // Test de la mise à jour
       final Integer mId = m.getMaladieId();
@@ -205,7 +218,7 @@ public class MaladieDaoTest extends AbstractDaoTest
       m.setCode(null);
       m.setDateDiagnostic(null);
       m.setDateDebut(null);
-      maladieDao.updateObject(m2);
+      maladieDao.save(m2);
       assertTrue(maladieDao.findById(mId).getPatient().equals(p2));
       assertNull(maladieDao.findById(mId).getCode());
       assertTrue(maladieDao.findById(mId).getLibelle().equals("Lupus"));
@@ -213,7 +226,7 @@ public class MaladieDaoTest extends AbstractDaoTest
       assertNull(maladieDao.findById(mId).getDateDiagnostic());
 
       // Test de la délétion
-      maladieDao.removeObject(new Integer(mId));
+      maladieDao.deleteById(new Integer(mId));
       assertNull(maladieDao.findById(new Integer(mId)));
    }
 
@@ -221,7 +234,8 @@ public class MaladieDaoTest extends AbstractDaoTest
     * Test de la méthode surchargée "equals".
     * @throws ParseException 
     */
-   public void testEquals() throws ParseException{
+   @Test
+public void testEquals() throws ParseException{
 
       final Maladie m1 = new Maladie();
       final Maladie m2 = new Maladie();
@@ -245,7 +259,8 @@ public class MaladieDaoTest extends AbstractDaoTest
     * Test de la méthode surchargée "hashcode".
     * @throws ParseException 
     */
-   public void testHashCode() throws ParseException{
+   @Test
+public void testHashCode() throws ParseException{
 
       final Maladie m1 = new Maladie();
       m1.setMaladieId(1);
@@ -271,7 +286,8 @@ public class MaladieDaoTest extends AbstractDaoTest
       assertTrue(hash == m1.hashCode());
    }
 
-   private void populateClefsToTestEqualsAndHashCode(final Maladie m1, final Maladie m2) throws ParseException{
+   @Autowired
+ void populateClefsToTestEqualsAndHashCode(final Maladie m1, final Maladie m2) throws ParseException{
       final String[] libelles = new String[] {null, "libelle1", "libelle2", "libelle1"};
 
       final Patient p1 = patientDao.findById(1);
@@ -309,7 +325,8 @@ public class MaladieDaoTest extends AbstractDaoTest
       assertTrue(m1.hashCode() == m2.hashCode());
    }
 
-   public void testClone(){
+   @Test
+public void testClone(){
       final Maladie m = maladieDao.findById(1);
       final Maladie m2 = m.clone();
       assertTrue(m.equals(m2));
@@ -343,7 +360,8 @@ public class MaladieDaoTest extends AbstractDaoTest
       assertTrue(m.getDelegate().equals(m2.getDelegate()));
    }
 
-   public void testFindByPatient(){
+   @Test
+public void testFindByPatient(){
       final Patient p = patientDao.findById(3);
       List<Maladie> mals = maladieDao.findByPatient(p);
       assertTrue(mals.size() == 3);
@@ -356,7 +374,8 @@ public class MaladieDaoTest extends AbstractDaoTest
       assertTrue(mals.size() == 0);
    }
 
-   public void testFindByPatientNoSystem(){
+   @Test
+public void testFindByPatientNoSystem(){
       final Patient p = patientDao.findById(3);
       List<Maladie> mals = maladieDao.findByPatientNoSystem(p);
       assertTrue(mals.size() == 2);

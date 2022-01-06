@@ -58,24 +58,32 @@ import fr.aphp.tumorotek.model.contexte.Categorie;
 public class MaladieDelegateDaoTest extends AbstractDaoTest //FIXME non lancé dans maven surefire ?
 {
 
-   private MaladieDao maladieDao;
-   // private ContexteDao contexteDao;
-   private PatientDao patientDao;
-   private DiagnosticDao diagnosticDao;
+   @Autowired
+ MaladieDao maladieDao;
+   // @Autowired
+ ContexteDao contexteDao;
+   @Autowired
+ PatientDao patientDao;
+   @Autowired
+ DiagnosticDao diagnosticDao;
 
-//   public void setContexteDao(final ContexteDao ceDao){
+//   @Test
+public void setContexteDao(final ContexteDao ceDao){
 //      this.contexteDao = ceDao;
 //   }
 
-   public void setMaladieDao(final MaladieDao maladieDao){
+   @Test
+public void setMaladieDao(final MaladieDao maladieDao){
       this.maladieDao = maladieDao;
    }
 
-   public void setPatientDao(final PatientDao pDao){
+   @Test
+public void setPatientDao(final PatientDao pDao){
       this.patientDao = pDao;
    }
    
-   public void setDiagnosticDao(DiagnosticDao diagnosticDao){
+   @Test
+public void setDiagnosticDao(DiagnosticDao diagnosticDao){
       this.diagnosticDao = diagnosticDao;
    }
 
@@ -87,7 +95,8 @@ public class MaladieDelegateDaoTest extends AbstractDaoTest //FIXME non lancé d
    /**
     * Test l'appel de la méthode toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       TKDelegateObject<Maladie> p1 = maladieDao.findById(4).getDelegate();
       assertTrue(p1.toString().equals("{Addiction medocs}.MaladieSero"));
       p1 = new MaladieSero();
@@ -100,7 +109,8 @@ public class MaladieDelegateDaoTest extends AbstractDaoTest //FIXME non lancé d
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
    @Rollback(false)
-   public void testCrudMaladieAndDelegate() throws Exception{
+   @Test
+public void testCrudMaladieAndDelegate() throws Exception{
 
       Maladie m = new Maladie();
 
@@ -117,8 +127,8 @@ public class MaladieDelegateDaoTest extends AbstractDaoTest //FIXME non lancé d
       m.setDelegate(ms1);
 
       // Test de l'insertion
-      maladieDao.createObject(m);
-      assertTrue(maladieDao.findAll().size() == 7);
+      maladieDao.save(m);
+      assertTrue(IterableUtils.toList(maladieDao.findAll()).size() == 7);
 
       m = maladieDao.findByCode("C12.13").get(0);
       assertNotNull(m.getDelegate());
@@ -127,8 +137,8 @@ public class MaladieDelegateDaoTest extends AbstractDaoTest //FIXME non lancé d
 
       ms2.setDiagnostic(diagnosticDao.findById(1));
 
-      maladieDao.updateObject(m);
-      assertTrue(maladieDao.findAll().size() == 7);
+      maladieDao.save(m);
+      assertTrue(IterableUtils.toList(maladieDao.findAll()).size() == 7);
 
       // Test de la mise à jour
       m = maladieDao.findByCode("C12.13").get(0);
@@ -139,15 +149,16 @@ public class MaladieDelegateDaoTest extends AbstractDaoTest //FIXME non lancé d
       // Test de la délétion
       m.setDelegate(null);
       m.setCode("updated");
-      maladieDao.updateObject(m);
+      maladieDao.save(m);
       m = maladieDao.findByCode("updated").get(0);
       assertTrue(m.getDelegate() == null);
 
-      maladieDao.removeObject(m.getMaladieId());
-      assertTrue(maladieDao.findAll().size() == 6);
+      maladieDao.deleteById(m.getMaladieId());
+      assertTrue(IterableUtils.toList(maladieDao.findAll()).size() == 6);
    }
 
-   public void testIsEmpty(){
+   @Test
+public void testIsEmpty(){
       final MaladieSero mSero = new MaladieSero();
       assertTrue(mSero.isEmpty());
       mSero.setDiagnostic(diagnosticDao.findById(1));
@@ -160,7 +171,8 @@ public class MaladieDelegateDaoTest extends AbstractDaoTest //FIXME non lancé d
     * Test des méthodes surchargées "equals" et hashcode pour
     * la table transcodeUtilisateur.
     */
-   public void testEqualsAndHashCode(){
+   @Test
+public void testEqualsAndHashCode(){
       final MaladieSero m1 = new MaladieSero();
       final MaladieSero m2 = new MaladieSero();
       assertFalse(m1.equals(null));

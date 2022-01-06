@@ -63,28 +63,35 @@ public class BanqueTableCodageDaoTest extends AbstractDaoTest
 {
 
    /** Beans Dao. */
-   private BanqueTableCodageDao banqueTableCodageDao;
-   private BanqueDao banqueDao;
-   private TableCodageDao tableCodageDao;
+   @Autowired
+ BanqueTableCodageDao banqueTableCodageDao;
+   @Autowired
+ BanqueDao banqueDao;
+   @Autowired
+ TableCodageDao tableCodageDao;
 
    /**
     * Constructeur.
     */
    public BanqueTableCodageDaoTest(){}
 
-   public void setBanqueTableCodageDao(final BanqueTableCodageDao b){
+   @Test
+public void setBanqueTableCodageDao(final BanqueTableCodageDao b){
       this.banqueTableCodageDao = b;
    }
 
-   public void setBanqueDao(final BanqueDao b){
+   @Test
+public void setBanqueDao(final BanqueDao b){
       this.banqueDao = b;
    }
 
-   public void setTableCodageDao(final TableCodageDao t){
+   @Test
+public void setTableCodageDao(final TableCodageDao t){
       this.tableCodageDao = t;
    }
 
-   public void testFindByBanque(){
+   @Test
+public void testFindByBanque(){
       final Banque b1 = banqueDao.findById(1);
       List<BanqueTableCodage> btcs = banqueTableCodageDao.findByBanque(b1);
       assertTrue(btcs.size() == 2);
@@ -103,7 +110,8 @@ public class BanqueTableCodageDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final BanqueTableCodagePK pk = new BanqueTableCodagePK(banqueDao.findById(1), tableCodageDao.findById(1));
       BanqueTableCodage btc1 = banqueTableCodageDao.findById(pk);
       assertTrue(btc1.toString().equals("{" + btc1.getBanque().getNom() + " - " + btc1.getTableCodage().getNom() + "}"));
@@ -116,8 +124,9 @@ public class BanqueTableCodageDaoTest extends AbstractDaoTest
       assertTrue(btc1.toString().equals("ADICAP 5.03"));
    }
 
-   public void testReadAllBanqueTableCodage(){
-      final List<BanqueTableCodage> btcs = banqueTableCodageDao.findAll();
+   @Test
+public void testReadAllBanqueTableCodage(){
+      final List<BanqueTableCodage> btcs = IterableUtils.toList(banqueTableCodageDao.findAll());
       assertTrue(btcs.size() == 3);
    }
 
@@ -128,7 +137,8 @@ public class BanqueTableCodageDaoTest extends AbstractDaoTest
     *
     **/
    @Rollback(false)
-   public void testCrud(){
+   @Test
+public void testCrud(){
       final BanqueTableCodage btc = new BanqueTableCodage();
       final Banque b2 = banqueDao.findById(2);
       final TableCodage t3 = tableCodageDao.findById(3);
@@ -136,8 +146,8 @@ public class BanqueTableCodageDaoTest extends AbstractDaoTest
       btc.setTableCodage(t3);
       btc.setLibelleExport(true);
       // Test de l'insertion
-      banqueTableCodageDao.createObject(btc);
-      assertTrue(banqueTableCodageDao.findAll().size() == 4);
+      banqueTableCodageDao.save(btc);
+      assertTrue(IterableUtils.toList(banqueTableCodageDao.findAll()).size() == 4);
       // Test de la mise à jour
       final BanqueTableCodagePK pk = new BanqueTableCodagePK();
       pk.setBanque(b2);
@@ -149,15 +159,16 @@ public class BanqueTableCodageDaoTest extends AbstractDaoTest
       assertTrue(btc2.getLibelleExport());
       //update
       btc2.setLibelleExport(false);
-      banqueTableCodageDao.updateObject(btc2);
+      banqueTableCodageDao.save(btc2);
       assertTrue(banqueTableCodageDao.findById(pk).equals(btc2));
       assertFalse(banqueTableCodageDao.findById(pk).getLibelleExport());
       // Test de la délétion
-      banqueTableCodageDao.removeObject(pk);
+      banqueTableCodageDao.deleteById(pk);
       assertNull(banqueTableCodageDao.findById(pk));
    }
 
-   public void testEqualsAndHashCodeTranscodeUtilisateur(){
+   @Test
+public void testEqualsAndHashCodeTranscodeUtilisateur(){
       final BanqueTableCodage btc1 = new BanqueTableCodage();
       final BanqueTableCodage btc2 = new BanqueTableCodage();
       assertFalse(btc1.equals(null));

@@ -41,7 +41,19 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.interfacage.ConsultationIntfDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
@@ -58,12 +70,16 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * @version 2.0.13.1
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class ConsultationIntfDaoTest extends AbstractDaoTest
 {
 
-   private ConsultationIntfDao consultationIntfDao;
-   private UtilisateurDao utilisateurDao;
+   @Autowired
+ ConsultationIntfDao consultationIntfDao;
+   @Autowired
+ UtilisateurDao utilisateurDao;
 
    public ConsultationIntfDaoTest(){
 
@@ -74,20 +90,24 @@ public class ConsultationIntfDaoTest extends AbstractDaoTest
       return new String[] {"applicationContextDao-test-mysql.xml"};
    }
 
-   public void setConsultationIntfDao(final ConsultationIntfDao c){
+   @Test
+public void setConsultationIntfDao(final ConsultationIntfDao c){
       this.consultationIntfDao = c;
    }
 
-   public void setUtilisateurDao(final UtilisateurDao u){
+   @Test
+public void setUtilisateurDao(final UtilisateurDao u){
       this.utilisateurDao = u;
    }
 
-   public void testReadAll(){
-      final List<ConsultationIntf> liste = consultationIntfDao.findAll();
+   @Test
+public void testReadAll(){
+      final List<ConsultationIntf> liste = IterableUtils.toList(consultationIntfDao.findAll());
       assertTrue(liste.size() == 4);
    }
 
-   public void testFindByUtilisateurInDates() throws ParseException{
+   @Test
+public void testFindByUtilisateurInDates() throws ParseException{
       final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
       final Utilisateur u1 = utilisateurDao.findById(1);
       final Calendar c1 = Calendar.getInstance();
@@ -111,7 +131,8 @@ public class ConsultationIntfDaoTest extends AbstractDaoTest
       assertTrue(liste.size() == 0);
    }
 
-   public void testFindByEmetteurInDates() throws ParseException{
+   @Test
+public void testFindByEmetteurInDates() throws ParseException{
       final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
       final Calendar c1 = Calendar.getInstance();
       c1.setTime(sdf.parse("20/04/2015 12:12:00"));
@@ -137,7 +158,8 @@ public class ConsultationIntfDaoTest extends AbstractDaoTest
       assertTrue(liste.size() == 0);
    }
 
-   public void testFindByUtilisateurEmetteurInDates() throws ParseException{
+   @Test
+public void testFindByUtilisateurEmetteurInDates() throws ParseException{
       final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
       final Utilisateur u1 = utilisateurDao.findById(1);
       final Calendar c1 = Calendar.getInstance();
@@ -171,7 +193,8 @@ public class ConsultationIntfDaoTest extends AbstractDaoTest
    }
 
    @Rollback(false)
-   public void testCrud() throws Exception{
+   @Test
+public void testCrud() throws Exception{
 
       final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 
@@ -184,11 +207,11 @@ public class ConsultationIntfDaoTest extends AbstractDaoTest
       c1.setDate(c);
       c1.setUtilisateur(u1);
 
-      final int totSize = consultationIntfDao.findAll().size();
+      final int totSize = IterableUtils.toList(consultationIntfDao.findAll()).size();
 
       // Test de l'insertion
-      consultationIntfDao.createObject(c1);
-      assertTrue(consultationIntfDao.findAll().size() == totSize + 1);
+      consultationIntfDao.save(c1);
+      assertTrue(IterableUtils.toList(consultationIntfDao.findAll()).size() == totSize + 1);
       assertTrue(c1.getConsultationIntfId() != null);
 
       final ConsultationIntf c2 = consultationIntfDao.findById(c1.getConsultationIntfId());
@@ -200,7 +223,7 @@ public class ConsultationIntfDaoTest extends AbstractDaoTest
       assertTrue(c2.getUtilisateur().equals(u1));
 
       // Test de la délétion
-      consultationIntfDao.removeObject(c2.getConsultationIntfId());
+      consultationIntfDao.deleteById(c2.getConsultationIntfId());
       assertNull(consultationIntfDao.findById(c2.getConsultationIntfId()));
 
       testReadAll();
@@ -210,7 +233,8 @@ public class ConsultationIntfDaoTest extends AbstractDaoTest
     * Test de la méthode surchargée "equals".
     * @throws ParseException 
     */
-   public void testEquals() throws ParseException{
+   @Test
+public void testEquals() throws ParseException{
 
       final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 
@@ -287,7 +311,8 @@ public class ConsultationIntfDaoTest extends AbstractDaoTest
       assertFalse(ci1.equals(c3));
    }
 
-   public void testHashCode() throws ParseException{
+   @Test
+public void testHashCode() throws ParseException{
 
       final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 

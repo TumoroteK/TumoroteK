@@ -57,11 +57,13 @@ import fr.aphp.tumorotek.model.contexte.Categorie;
 public class TableCodageDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private TableCodageDao tableCodageDao;
+
+   @Autowired
+ TableCodageDao tableCodageDao;
 
    /** Valeur du nom pour la maj. */
-   private final String updatedNom = "Table maj";
+   @Autowired
+ final String updatedNom = "Table maj";
 
    /**
     * Constructeur.
@@ -72,22 +74,25 @@ public class TableCodageDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param tDao est le bean Dao.
     */
-   public void setTableCodageDao(final TableCodageDao tDao){
+   @Test
+public void setTableCodageDao(final TableCodageDao tDao){
       this.tableCodageDao = tDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAlltableCodes(){
-      final List<TableCodage> tables = tableCodageDao.findAll();
+   @Test
+public void testReadAlltableCodes(){
+      final List<TableCodage> tables = IterableUtils.toList(tableCodageDao.findAll());
       assertTrue(tables.size() == 5);
    }
 
    /**
     * Test l'appel de la méthode findByNom().
     */
-   public void testFindByNom(){
+   @Test
+public void testFindByNom(){
       List<TableCodage> tables = tableCodageDao.findByNom("ADICAP");
       assertTrue(tables.size() == 1);
       tables = tableCodageDao.findByNom("TEST");
@@ -97,7 +102,8 @@ public class TableCodageDaoTest extends AbstractDaoTest
    //	/**
    //	 * Test l'appel de la méthode findByDoublon().
    //	 */
-   //	public void testFindByDoublon() {
+   //	@Test
+public void testFindByDoublon() {
    //		List<TableCodage> tables = tableCodageDao.findByDoublon("CIM_MASTER");
    //		assertTrue(tables.size() == 1);
    //		tables = tableCodageDao.findByDoublon("CIMO");
@@ -109,12 +115,13 @@ public class TableCodageDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
    @Rollback(false)
-   public void testCrud() throws Exception{
+   @Test
+public void testCrud() throws Exception{
       final TableCodage t = new TableCodage();
 
       t.setNom("CIMO");
       // Test de l'insertion
-      tableCodageDao.createObject(t);
+      tableCodageDao.save(t);
       assertEquals(new Integer(6), t.getTableCodageId());
 
       // Test de la mise à jour
@@ -122,11 +129,11 @@ public class TableCodageDaoTest extends AbstractDaoTest
       assertNotNull(t2);
       assertTrue(t2.getNom().equals("CIMO"));
       t2.setNom(updatedNom);
-      tableCodageDao.updateObject(t2);
+      tableCodageDao.save(t2);
       assertTrue(tableCodageDao.findById(new Integer(6)).getNom().equals(updatedNom));
 
       // Test de la délétion
-      tableCodageDao.removeObject(new Integer(6));
+      tableCodageDao.deleteById(new Integer(6));
       assertNull(tableCodageDao.findById(new Integer(6)));
 
    }
@@ -134,7 +141,8 @@ public class TableCodageDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String nom = "Table1";
       final String nom2 = "Table2";
       final TableCodage t1 = new TableCodage();
@@ -171,7 +179,8 @@ public class TableCodageDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String nom = "Table";
       final TableCodage t1 = new TableCodage();
       t1.setNom(nom);
@@ -191,7 +200,8 @@ public class TableCodageDaoTest extends AbstractDaoTest
       assertTrue(hash == t1.hashCode());
    }
 
-   public void testClone(){
+   @Test
+public void testClone(){
       final TableCodage t1 = tableCodageDao.findById(1);
       t1.setVersion("12"); // pour eviter null
       final TableCodage clone = t1.clone();
@@ -203,7 +213,8 @@ public class TableCodageDaoTest extends AbstractDaoTest
       assertTrue(clone.getCodeSelects().equals(t1.getCodeSelects()));
    }
 
-   public void testToString(){
+   @Test
+public void testToString(){
       final TableCodage t1 = tableCodageDao.findById(1);
       assertTrue(t1.toString().equals("ADICAP 5.03"));
    }

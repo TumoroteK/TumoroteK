@@ -38,7 +38,19 @@ package fr.aphp.tumorotek.dao.test.interfacage;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.interfacage.BlocExterneDao;
 import fr.aphp.tumorotek.dao.interfacage.DossierExterneDao;
@@ -56,14 +68,18 @@ import fr.aphp.tumorotek.model.interfacage.DossierExterne;
  * @version 05/10/2011
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class BlocExterneDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private BlocExterneDao blocExterneDao;
-   /** Bean Dao. */
-   private DossierExterneDao dossierExterneDao;
+
+   @Autowired
+ BlocExterneDao blocExterneDao;
+
+   @Autowired
+ DossierExterneDao dossierExterneDao;
 
    public BlocExterneDaoTest(){
 
@@ -74,26 +90,30 @@ public class BlocExterneDaoTest extends AbstractDaoTest
       return new String[] {"applicationContextDao-interfacages-test-mysql.xml"};
    }
 
-   public void setBlocExterneDao(final BlocExterneDao bDao){
+   @Test
+public void setBlocExterneDao(final BlocExterneDao bDao){
       this.blocExterneDao = bDao;
    }
 
-   public void setDossierExterneDao(final DossierExterneDao dDao){
+   @Test
+public void setDossierExterneDao(final DossierExterneDao dDao){
       this.dossierExterneDao = dDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAll(){
-      final List<BlocExterne> liste = blocExterneDao.findAll();
+   @Test
+public void testReadAll(){
+      final List<BlocExterne> liste = IterableUtils.toList(blocExterneDao.findAll());
       assertTrue(liste.size() >= 9);
    }
 
    /**
     * Test l'appel de la méthode findByDossierExterne().
     */
-   public void testFindByDossierExterne(){
+   @Test
+public void testFindByDossierExterne(){
       final DossierExterne d1 = dossierExterneDao.findById(1);
       List<BlocExterne> liste = blocExterneDao.findByDossierExterne(d1);
       assertTrue(liste.size() == 4);
@@ -109,7 +129,8 @@ public class BlocExterneDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByDossierExterneAndEntite().
     */
-   public void testFindByDossierExterneAndEntite(){
+   @Test
+public void testFindByDossierExterneAndEntite(){
       final DossierExterne d1 = dossierExterneDao.findById(1);
       List<BlocExterne> liste = blocExterneDao.findByDossierExterneAndEntite(d1, 3);
       assertTrue(liste.size() == 2);
@@ -129,7 +150,8 @@ public class BlocExterneDaoTest extends AbstractDaoTest
    }
 
    @Rollback(false)
-   public void testCrud() throws Exception{
+   @Test
+public void testCrud() throws Exception{
 
       final BlocExterne b1 = new BlocExterne();
       final DossierExterne d1 = dossierExterneDao.findById(1);
@@ -137,9 +159,9 @@ public class BlocExterneDaoTest extends AbstractDaoTest
       b1.setEntiteId(1);
       b1.setOrdre(2);
 
-      final Integer id = blocExterneDao.findAll().size() + 1;
+      final Integer id = IterableUtils.toList(blocExterneDao.findAll()).size() + 1;
       // Test de l'insertion
-      blocExterneDao.createObject(b1);
+      blocExterneDao.save(b1);
       assertEquals(new Integer(id), b1.getBlocExterneId());
 
       final BlocExterne b2 = blocExterneDao.findById(new Integer(id));
@@ -152,19 +174,20 @@ public class BlocExterneDaoTest extends AbstractDaoTest
       // Test de la mise à jour
       b2.setEntiteId(3);
       b2.setOrdre(5);
-      blocExterneDao.updateObject(b2);
+      blocExterneDao.save(b2);
       assertTrue(blocExterneDao.findById(new Integer(id)).getEntiteId() == 3);
       assertTrue(blocExterneDao.findById(new Integer(id)).getOrdre() == 5);
 
       // Test de la délétion
-      blocExterneDao.removeObject(new Integer(id));
+      blocExterneDao.deleteById(new Integer(id));
       assertNull(blocExterneDao.findById(new Integer(id)));
    }
 
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final Integer o1 = 1;
       final Integer o2 = 2;
       final DossierExterne d1 = dossierExterneDao.findById(1);
@@ -221,7 +244,8 @@ public class BlocExterneDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final Integer o1 = 1;
       final Integer o2 = 2;
       final DossierExterne d1 = dossierExterneDao.findById(1);
@@ -267,7 +291,8 @@ public class BlocExterneDaoTest extends AbstractDaoTest
    /**
     * test toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final BlocExterne b1 = blocExterneDao.findById(1);
       assertTrue(b1.toString().equals("{" + b1.getOrdre() + ", " + b1.getEntiteId() + "(Entite) "
          + b1.getDossierExterne().getIdentificationDossier() + "(DossierExterne)}"));

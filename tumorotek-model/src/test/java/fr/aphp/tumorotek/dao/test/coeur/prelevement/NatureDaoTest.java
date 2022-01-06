@@ -60,12 +60,15 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 public class NatureDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private NatureDao natureDao;
-   private PlateformeDao plateformeDao;
+
+   @Autowired
+ NatureDao natureDao;
+   @Autowired
+ PlateformeDao plateformeDao;
 
    /** Valeur du nature pour la maj. */
-   private final String updatedNature = "Nature mis a jour";
+   @Autowired
+ final String updatedNature = "Nature mis a jour";
 
    /**
     * Constructeur.
@@ -76,18 +79,21 @@ public class NatureDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param nDao est le bean Dao.
     */
-   public void setNomDao(final NatureDao nDao){
+   @Test
+public void setNomDao(final NatureDao nDao){
       this.natureDao = nDao;
    }
 
-   public void setPlateformeDao(final PlateformeDao pDao){
+   @Test
+public void setPlateformeDao(final PlateformeDao pDao){
       this.plateformeDao = pDao;
    }
 
    /**
     * Test l'appel de la méthode toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       Nature n1 = natureDao.findById(1);
       assertTrue(n1.toString().equals("{" + n1.getNom() + "}"));
       n1 = new Nature();
@@ -97,12 +103,14 @@ public class NatureDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllNatures(){
-      final List<Nature> natures = natureDao.findAll();
+   @Test
+public void testReadAllNatures(){
+      final List<Nature> natures = IterableUtils.toList(natureDao.findAll());
       assertTrue(natures.size() == 4);
    }
 
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
       List<? extends TKThesaurusObject> list = natureDao.findByPfOrder(pf);
       assertTrue(list.size() == 3);
@@ -117,7 +125,8 @@ public class NatureDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByNature().
     */
-   public void testFindByNature(){
+   @Test
+public void testFindByNature(){
       List<Nature> natures = natureDao.findByNature("LIQUIDE D'ASCITE");
       assertTrue(natures.size() == 1);
       natures = natureDao.findByNature("URINES");
@@ -131,7 +140,8 @@ public class NatureDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<Nature> liste = natureDao.findByExcludedId(1);
       assertTrue(liste.size() == 3);
       final Nature nature = liste.get(0);
@@ -148,12 +158,13 @@ public class NatureDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
    @Rollback(false)
-   public void testCrudNature() throws Exception{
+   @Test
+public void testCrudNature() throws Exception{
       final Nature n = new Nature();
       n.setNom("URINES");
       n.setPlateforme(plateformeDao.findById(1));
       // Test de l'insertion
-      natureDao.createObject(n);
+      natureDao.save(n);
       assertEquals(new Integer(5), n.getId());
 
       // Test de la mise à jour
@@ -161,11 +172,11 @@ public class NatureDaoTest extends AbstractDaoTest
       assertNotNull(n2);
       assertTrue(n2.getNom().equals("URINES"));
       n2.setNom(updatedNature);
-      natureDao.updateObject(n2);
+      natureDao.save(n2);
       assertTrue(natureDao.findById(new Integer(5)).getNom().equals(updatedNature));
 
       // Test de la délétion
-      natureDao.removeObject(new Integer(5));
+      natureDao.deleteById(new Integer(5));
       assertNull(natureDao.findById(new Integer(5)));
 
    }
@@ -173,7 +184,8 @@ public class NatureDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String nature = "Nature";
       final String nature2 = "Nature2";
       final Plateforme pf1 = plateformeDao.findById(1);
@@ -224,7 +236,8 @@ public class NatureDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String nature = "Nature";
       final Nature n1 = new Nature();
       n1.setId(1);
@@ -258,7 +271,8 @@ public class NatureDaoTest extends AbstractDaoTest
    /**
     * Test la méthode clone.
     */
-   public void testClone(){
+   @Test
+public void testClone(){
       final Nature n1 = natureDao.findById(1);
       final Nature n2 = n1.clone();
 

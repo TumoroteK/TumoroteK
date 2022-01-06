@@ -61,13 +61,15 @@ public class CleImpressionDaoTest extends AbstractInMemoryTests
 {
 
    @Autowired
-   private CleImpressionDao cleImpressionDao;
+   @Autowired
+ CleImpressionDao cleImpressionDao;
 
    @Test
-   public void testCreate(){
+   @Test
+public void testCreate(){
       final CleImpression cleImp1 = new CleImpression();
       cleImp1.setNom("[[cle1]]");
-      cleImpressionDao.createObject(cleImp1);
+      cleImpressionDao.save(cleImp1);
 
       final Integer cleId = cleImp1.getCleId();
       final CleImpression insertedCle = cleImpressionDao.findById(cleId);
@@ -76,16 +78,17 @@ public class CleImpressionDaoTest extends AbstractInMemoryTests
    }
 
    @Test
-   public void testUpdate(){
+   @Test
+public void testUpdate(){
       final String cleNom = "[[cle1]]";
       final CleImpression cleImp1 = new CleImpression();
       cleImp1.setNom("[[cle1]]");
-      cleImpressionDao.createObject(cleImp1);
+      cleImpressionDao.save(cleImp1);
 
       final Integer cleId = cleImp1.getCleId();
       final CleImpression insertedCle = cleImpressionDao.findById(cleId);
       insertedCle.setNom("[[cle2]]");
-      cleImpressionDao.updateObject(insertedCle);
+      cleImpressionDao.save(insertedCle);
 
       final CleImpression modifiedCle = cleImpressionDao.findById(cleId);
 
@@ -93,31 +96,33 @@ public class CleImpressionDaoTest extends AbstractInMemoryTests
    }
 
    @Test
-   public void testDelete(){
+   @Test
+public void testDelete(){
       final CleImpression cleImp1 = new CleImpression();
       cleImp1.setNom("[[cle1]]");
-      cleImpressionDao.createObject(cleImp1);
+      cleImpressionDao.save(cleImp1);
 
       final Integer cleId = cleImp1.getCleId();
-      cleImpressionDao.removeObject(cleId);
+      cleImpressionDao.deleteById(cleId);
       final CleImpression insertedCle = cleImpressionDao.findById(cleId);
 
       Assert.assertEquals(null, insertedCle);
    }
 
    @Test
-   public void testFindByName(){
+   @Test
+public void testFindByName(){
       final CleImpression cleImp1 = new CleImpression();
       cleImp1.setNom("[[cle1]]");
-      cleImpressionDao.createObject(cleImp1);
+      cleImpressionDao.save(cleImp1);
 
       final CleImpression cleImp2 = new CleImpression();
       cleImp2.setNom("[[cle1]]");
-      cleImpressionDao.createObject(cleImp2);
+      cleImpressionDao.save(cleImp2);
 
       final CleImpression cleImp3 = new CleImpression();
       cleImp3.setNom("[[cle1]]");
-      cleImpressionDao.createObject(cleImp3);
+      cleImpressionDao.save(cleImp3);
 
       final List<CleImpression> cleList = cleImpressionDao.findByName("[[cle1]]");
 
@@ -125,7 +130,8 @@ public class CleImpressionDaoTest extends AbstractInMemoryTests
    }
 
    @Test
-   public void zDBIntegrity(){
+   @Test
+public void zDBIntegrity(){
       final List<CleImpression> cleList = cleImpressionDao.findByName("[[cle1]]");
       cleList.addAll(cleImpressionDao.findByName("[[cle2]]"));
 

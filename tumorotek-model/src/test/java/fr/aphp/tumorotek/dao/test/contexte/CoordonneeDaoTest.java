@@ -59,14 +59,19 @@ import fr.aphp.tumorotek.model.contexte.Coordonnee;
 public class CoordonneeDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private CoordonneeDao coordonneeDao;
-   //	private EtablissementDao etablissementDao;
-   //	private ServiceDao serviceDao;
-   //	private TransporteurDao transporteur;
+
+   @Autowired
+ CoordonneeDao coordonneeDao;
+   //	@Autowired
+ EtablissementDao etablissementDao;
+   //	@Autowired
+ ServiceDao serviceDao;
+   //	@Autowired
+ TransporteurDao transporteur;
 
    /** valeur du nom pour la maj. */
-   private final String updatedAdr = "Adr mise a jour";
+   @Autowired
+ final String updatedAdr = "Adr mise a jour";
 
    /** Constructeur. */
    public CoordonneeDaoTest(){
@@ -77,7 +82,8 @@ public class CoordonneeDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param cDao est le bean Dao.
     */
-   public void setCoordonneeDao(final CoordonneeDao cDao){
+   @Test
+public void setCoordonneeDao(final CoordonneeDao cDao){
       this.coordonneeDao = cDao;
    }
 
@@ -85,7 +91,8 @@ public class CoordonneeDaoTest extends AbstractDaoTest
    //	 * Setter du bean etablissementDao.
    //	 * @param eDao est le bean Dao.
    //	 */
-   //	public void setEtablissementDao(EtablissementDao eDao) {
+   //	@Test
+public void setEtablissementDao(EtablissementDao eDao) {
    //		this.etablissementDao = eDao;
    //	}
    //	
@@ -93,7 +100,8 @@ public class CoordonneeDaoTest extends AbstractDaoTest
    //	 * Setter du bean serviceDao.
    //	 * @param sDao est le bean Dao.
    //	 */
-   //	public void setServiceDao(ServiceDao sDao) {
+   //	@Test
+public void setServiceDao(ServiceDao sDao) {
    //		this.serviceDao = sDao;
    //	}
    //	
@@ -101,22 +109,25 @@ public class CoordonneeDaoTest extends AbstractDaoTest
    //	 * Setter du bean transporteurDao.
    //	 * @param tDao est le bean Dao.
    //	 */
-   //	public void setTransporteurDao(TransporteurDao tDao) {
+   //	@Test
+public void setTransporteurDao(TransporteurDao tDao) {
    //		this.transporteurDao = tDao;
    //	}
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllCoordonnees(){
-      final List<Coordonnee> coordonnees = coordonneeDao.findAll();
+   @Test
+public void testReadAllCoordonnees(){
+      final List<Coordonnee> coordonnees = IterableUtils.toList(coordonneeDao.findAll());
       assertTrue(coordonnees.size() == 5);
    }
 
    /**
     * Test l'appel de la méthode findByAdresse().
     */
-   public void testFindByAdresse(){
+   @Test
+public void testFindByAdresse(){
       List<Coordonnee> coordonnees = coordonneeDao.findByAdresse("40 rue Worth");
       assertTrue(coordonnees.size() == 1);
       //pour verifier que la relation one-to-one fonctionne
@@ -128,7 +139,8 @@ public class CoordonneeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByCp().
     */
-   public void testFindByCp(){
+   @Test
+public void testFindByCp(){
       List<Coordonnee> coordonnees = coordonneeDao.findByCp("75010");
       assertTrue(coordonnees.size() == 1);
       coordonnees = coordonneeDao.findByCp("43100");
@@ -138,7 +150,8 @@ public class CoordonneeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByVille().
     */
-   public void testFindByVille(){
+   @Test
+public void testFindByVille(){
       List<Coordonnee> coordonnees = coordonneeDao.findByVille("PARIS");
       assertTrue(coordonnees.size() == 1);
       coordonnees = coordonneeDao.findByVille("LILLE");
@@ -148,7 +161,8 @@ public class CoordonneeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByPays().
     */
-   public void testFindByPays(){
+   @Test
+public void testFindByPays(){
       List<Coordonnee> coordonnees = coordonneeDao.findByPays("FRANCE");
       assertTrue(coordonnees.size() == 5);
       coordonnees = coordonneeDao.findByPays("ITALIE");
@@ -158,7 +172,8 @@ public class CoordonneeDaoTest extends AbstractDaoTest
    //	/**
    //	 * Test l'appel de la méthode findByEtablissement().
    //	 */
-   //	public void testFindByEtablissement() {
+   //	@Test
+public void testFindByEtablissement() {
    //		Etablissement e = etablissementDao.findById(1);
    //		List<Coordonnee> coordonnees = coordonneeDao.findByEtablissement(e);
    //		assertTrue(coordonnees.size() == 1);
@@ -170,7 +185,8 @@ public class CoordonneeDaoTest extends AbstractDaoTest
    //	/**
    //	 * Test l'appel de la méthode findByService().
    //	 */
-   //	public void testFindByServiceId() {
+   //	@Test
+public void testFindByServiceId() {
    //		Service s = serviceDao.findById(1);
    //		List<Coordonnee> coordonnees = coordonneeDao.findByService(s);
    //		assertTrue(coordonnees.size() == 1);
@@ -183,7 +199,8 @@ public class CoordonneeDaoTest extends AbstractDaoTest
    //	/**
    //	 * Test l'appel de la méthode findByTransporteur().
    //	 */
-   //	public void testFindByTransporteur() {
+   //	@Test
+public void testFindByTransporteur() {
    //		Transporteur t = transporteur.findById(1);
    //		List<Coordonnee> coordonnees = coordonneeDao.findByTransporteur(t);
    //		assertTrue(coordonnees.size() == 1);
@@ -196,7 +213,8 @@ public class CoordonneeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByCollaborateurId().
     */
-   public void testFindByCollaborateurId(){
+   @Test
+public void testFindByCollaborateurId(){
       List<Coordonnee> coordonnees = coordonneeDao.findByCollaborateurId(4);
       assertTrue(coordonnees.size() == 1);
       assertTrue(coordonnees.get(0).getCoordonneeId().equals(3));
@@ -207,7 +225,8 @@ public class CoordonneeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByCollaborateurIdAndExcludedId().
     */
-   public void testFindByCollaborateurIdAndExcludedId(){
+   @Test
+public void testFindByCollaborateurIdAndExcludedId(){
       List<Coordonnee> coordonnees = coordonneeDao.findByCollaborateurIdAndExcludedId(4, 3);
       assertTrue(coordonnees.size() == 0);
 
@@ -222,7 +241,8 @@ public class CoordonneeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<Coordonnee> list = coordonneeDao.findByExcludedId(1);
       assertTrue(list.size() == 4);
 
@@ -235,7 +255,8 @@ public class CoordonneeDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas d'eereur sur les données.
     */
    @Rollback(false)
-   public void testCrudCoordonnee() throws Exception{
+   @Test
+public void testCrudCoordonnee() throws Exception{
 
       final Coordonnee c = new Coordonnee();
 
@@ -247,9 +268,9 @@ public class CoordonneeDaoTest extends AbstractDaoTest
          System.out.println(exc.getMessage());
       }
       // Test de l'insertion
-      coordonneeDao.createObject(c);
+      coordonneeDao.save(c);
       final int id = c.getCoordonneeId();
-      assertTrue(coordonneeDao.findAll().size() == 6);
+      assertTrue(IterableUtils.toList(coordonneeDao.findAll()).size() == 6);
 
       // Test de l'update
       final Coordonnee c2 = coordonneeDao.findById(id);
@@ -263,18 +284,19 @@ public class CoordonneeDaoTest extends AbstractDaoTest
       assertTrue(c2.getFax().equals("0145454545"));
       assertTrue(c2.getMail().equals("mail@mail.fr"));
       c2.setAdresse(updatedAdr);
-      coordonneeDao.updateObject(c2);
+      coordonneeDao.save(c2);
       assertTrue(c2.getAdresse().equals(updatedAdr));
 
       // Test de la délétion
-      coordonneeDao.removeObject(id);
+      coordonneeDao.deleteById(id);
       assertNull(coordonneeDao.findById(id));
    }
 
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String adresse = "Adresse1";
       final String adresse2 = "Adresse2";
       final String ville = "PARIS";
@@ -319,7 +341,8 @@ public class CoordonneeDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String adresse = "Adresse1";
       final String cp = "75000";
       final String ville = "PARIS";
@@ -364,7 +387,8 @@ public class CoordonneeDaoTest extends AbstractDaoTest
    /**
     * Test la méthode clone.
     */
-   public void testClone(){
+   @Test
+public void testClone(){
       final Coordonnee c1 = coordonneeDao.findById(1);
       final Coordonnee c2 = c1.clone();
       assertTrue(c1.equals(c2));

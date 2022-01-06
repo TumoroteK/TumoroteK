@@ -37,9 +37,18 @@ package fr.aphp.tumorotek.dao.test.utilisateur;
 
 import java.text.ParseException;
 import java.util.List;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
 
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
@@ -54,83 +63,72 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 /**
  *
- * Classe de test pour le DAO ProfilUtilisateurDao et le bean
- * du domaine ProfilUtilisateur.
+ * Classe de test pour le DAO ProfilUtilisateurDao et le bean du domaine
+ * ProfilUtilisateur.
  *
  * @author Pierre Ventadour.
- * @version 2.2.4.1
+ * @version 2.3
  *
  */
-@TransactionConfiguration(defaultRollback = false)
-public class ProfilUtilisateurDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class ProfilUtilisateurDaoTest extends AbstractDaoTest {
 
-	private ProfilUtilisateurDao profilUtilisateurDao;
-	private UtilisateurDao utilisateurDao;
-	private BanqueDao banqueDao;
-	private ProfilDao profilDao;
-	private PlateformeDao plateformeDao;
-
-	public ProfilUtilisateurDaoTest(){
-
-	}
-
-	public void setProfilUtilisateurDao(final ProfilUtilisateurDao pDao){
-		this.profilUtilisateurDao = pDao;
-	}
-
-	public void setUtilisateurDao(final UtilisateurDao uDao){
-		this.utilisateurDao = uDao;
-	}
-
-	public void setBanqueDao(final BanqueDao bDao){
-		this.banqueDao = bDao;
-	}
-
-	public void setProfilDao(final ProfilDao pDao){
-		this.profilDao = pDao;
-	}
-
-	public void setPlateformeDao(PlateformeDao pDao) {
-		this.plateformeDao = pDao;
-	}
+	@Autowired
+	ProfilUtilisateurDao profilUtilisateurDao;
+	
+	@Autowired
+	UtilisateurDao utilisateurDao;
+	
+	@Autowired
+	BanqueDao banqueDao;
+	
+	@Autowired
+	ProfilDao profilDao;
+	
+	@Autowired
+	PlateformeDao plateformeDao;
 
 	/**
 	 * Test l'appel de la méthode findAll().
 	 */
-	public void testReadAll(){
-		final List<ProfilUtilisateur> liste = profilUtilisateurDao.findAll();
+	@Test
+	public void testReadAll() {
+		final List<ProfilUtilisateur> liste = IterableUtils
+				.toList(IterableUtils.toList(profilUtilisateurDao.findAll()));
 		assertTrue(liste.size() == 8);
 	}
 
 	/**
 	 * Test l'appel de la méthode findById().
 	 */
-	public void testFindById(){
-		final Profil p1 = profilDao.findById(1);
-		final Utilisateur u3 = utilisateurDao.findById(3);
-		final Utilisateur u4 = utilisateurDao.findById(4);
-		final Banque b1 = banqueDao.findById(1);
-		final Banque b2 = banqueDao.findById(2);
+	@Test
+	public void testFindById() {
+		final Profil p1 = profilDao.findById(1).get();
+		final Utilisateur u3 = utilisateurDao.findById(3).get();
+		final Utilisateur u4 = utilisateurDao.findById(4).get();
+		final Banque b1 = banqueDao.findById(1).get();
+		final Banque b2 = banqueDao.findById(2).get();
 		ProfilUtilisateurPK pk = new ProfilUtilisateurPK(p1, u3, b2);
 
-		ProfilUtilisateur po = profilUtilisateurDao.findById(pk);
+		ProfilUtilisateur po = profilUtilisateurDao.findById(pk).get();
 		assertNotNull(po);
 
 		pk = new ProfilUtilisateurPK(p1, u4, b1);
-		po = profilUtilisateurDao.findById(pk);
-		assertNull(po);
+		assertFalse(profilUtilisateurDao.findById(pk).isPresent());
 	}
 
 	/**
 	 * Test l'appel de la méthode findByExcludedPK().
 	 */
-	public void testFindByExcludedPK(){
-		final Profil p1 = profilDao.findById(1);
-		final Utilisateur u3 = utilisateurDao.findById(3);
-		final Utilisateur u4 = utilisateurDao.findById(4);
-		final Banque b1 = banqueDao.findById(1);
-		final Banque b2 = banqueDao.findById(2);
+	@Test
+	public void testFindByExcludedPK() {
+		final Profil p1 = profilDao.findById(1).get();
+		final Utilisateur u3 = utilisateurDao.findById(3).get();
+		final Utilisateur u4 = utilisateurDao.findById(4).get();
+		final Banque b1 = banqueDao.findById(1).get();
+		final Banque b2 = banqueDao.findById(2).get();
 		ProfilUtilisateurPK pk = new ProfilUtilisateurPK(p1, u3, b2);
 
 		List<ProfilUtilisateur> liste = profilUtilisateurDao.findByExcludedPK(pk);
@@ -143,12 +141,14 @@ public class ProfilUtilisateurDaoTest extends AbstractDaoTest
 
 	/**
 	 * Test l'appel de la méthode findByProfil().
+	 * 
 	 * @version 2.1
 	 */
-	public void testFindByProfil(){
-		final Profil p1 = profilDao.findById(1);
-		final Profil p3 = profilDao.findById(3);
-		final Profil p4 = profilDao.findById(4);
+	@Test
+	public void testFindByProfil() {
+		final Profil p1 = profilDao.findById(1).get();
+		final Profil p3 = profilDao.findById(3).get();
+		final Profil p4 = profilDao.findById(4).get();
 
 		List<ProfilUtilisateur> liste = profilUtilisateurDao.findByProfil(p1, false);
 		assertTrue(liste.size() == 0);
@@ -178,9 +178,10 @@ public class ProfilUtilisateurDaoTest extends AbstractDaoTest
 	/**
 	 * Test l'appel de la méthode findByUtilisateur().
 	 */
-	public void testFindByUtilisateur(){
-		final Utilisateur u2 = utilisateurDao.findById(2);
-		final Utilisateur u4 = utilisateurDao.findById(4);
+	@Test
+	public void testFindByUtilisateur() {
+		final Utilisateur u2 = utilisateurDao.findById(2).get();
+		final Utilisateur u4 = utilisateurDao.findById(4).get();
 
 		List<ProfilUtilisateur> liste = profilUtilisateurDao.findByUtilisateur(u2, false);
 		assertTrue(liste.size() == 2);
@@ -204,9 +205,10 @@ public class ProfilUtilisateurDaoTest extends AbstractDaoTest
 	/**
 	 * @version 2.1
 	 */
-	public void testFindByBanque(){
-		final Banque b1 = banqueDao.findById(1);
-		final Banque b3 = banqueDao.findById(3);
+	@Test
+	public void testFindByBanque() {
+		final Banque b1 = banqueDao.findById(1).get();
+		final Banque b3 = banqueDao.findById(3).get();
 
 		List<ProfilUtilisateur> liste = profilUtilisateurDao.findByBanque(b1, false);
 		assertTrue(liste.size() == 2);
@@ -230,11 +232,12 @@ public class ProfilUtilisateurDaoTest extends AbstractDaoTest
 	/**
 	 * Test l'appel de la méthode findByUtilisateurProfil().
 	 */
-	public void testFindByUtilisateurProfil(){
-		final Profil p2 = profilDao.findById(2);
-		final Profil p4 = profilDao.findById(4);
-		final Utilisateur u2 = utilisateurDao.findById(2);
-		final Utilisateur u4 = utilisateurDao.findById(4);
+	@Test
+	public void testFindByUtilisateurProfil() {
+		final Profil p2 = profilDao.findById(2).get();
+		final Profil p4 = profilDao.findById(4).get();
+		final Utilisateur u2 = utilisateurDao.findById(2).get();
+		final Utilisateur u4 = utilisateurDao.findById(4).get();
 
 		List<ProfilUtilisateur> liste = profilUtilisateurDao.findByUtilisateurProfil(u2, p2);
 		assertTrue(liste.size() == 2);
@@ -258,11 +261,12 @@ public class ProfilUtilisateurDaoTest extends AbstractDaoTest
 	/**
 	 * Test l'appel de la méthode findByUtilisateurBanque().
 	 */
-	public void testFindByUtilisateurBanque(){
-		final Banque b1 = banqueDao.findById(1);
-		final Banque b3 = banqueDao.findById(3);
-		final Utilisateur u2 = utilisateurDao.findById(2);
-		final Utilisateur u4 = utilisateurDao.findById(4);
+	@Test
+	public void testFindByUtilisateurBanque() {
+		final Banque b1 = banqueDao.findById(1).get();
+		final Banque b3 = banqueDao.findById(3).get();
+		final Utilisateur u2 = utilisateurDao.findById(2).get();
+		final Utilisateur u4 = utilisateurDao.findById(4).get();
 
 		List<ProfilUtilisateur> liste = profilUtilisateurDao.findByUtilisateurBanque(u2, b1);
 		assertTrue(liste.size() == 1);
@@ -286,11 +290,12 @@ public class ProfilUtilisateurDaoTest extends AbstractDaoTest
 	/**
 	 * Test l'appel de la méthode findByBanqueProfil().
 	 */
-	public void testFindByBanqueProfil(){
-		final Profil p2 = profilDao.findById(2);
-		final Profil p4 = profilDao.findById(4);
-		final Banque b1 = banqueDao.findById(1);
-		final Banque b3 = banqueDao.findById(3);
+	@Test
+	public void testFindByBanqueProfil() {
+		final Profil p2 = profilDao.findById(2).get();
+		final Profil p4 = profilDao.findById(4).get();
+		final Banque b1 = banqueDao.findById(1).get();
+		final Banque b3 = banqueDao.findById(3).get();
 
 		List<ProfilUtilisateur> liste = profilUtilisateurDao.findByBanqueProfil(b1, p2);
 		assertTrue(liste.size() == 1);
@@ -312,46 +317,48 @@ public class ProfilUtilisateurDaoTest extends AbstractDaoTest
 	}
 
 	/**
-	 * Test l'insertion, la mise à jour et la suppression 
-	 * d'un ProfilUtilisateur.
+	 * Test l'insertion, la mise à jour et la suppression d'un ProfilUtilisateur.
 	 **/
 	@Rollback(false)
-	public void testCrud(){
+	@Test
+	public void testCrud() {
 
 		final ProfilUtilisateur po = new ProfilUtilisateur();
-		final Profil p = profilDao.findById(1);
-		final Banque b3 = banqueDao.findById(3);
-		final Utilisateur u4 = utilisateurDao.findById(4);
+		final Profil p = profilDao.findById(1).get();
+		final Banque b3 = banqueDao.findById(3).get();
+		final Utilisateur u4 = utilisateurDao.findById(4).get();
 
 		po.setProfil(p);
 		po.setUtilisateur(u4);
 		po.setBanque(b3);
 
 		// Test de l'insertion
-		profilUtilisateurDao.createObject(po);
-		assertTrue(profilUtilisateurDao.findAll().size() == 9);
+		profilUtilisateurDao.save(po);
+		assertTrue(IterableUtils.toList(IterableUtils.toList(profilUtilisateurDao.findAll())).size() == 9);
 
 		// Test de la mise à jour
 		final ProfilUtilisateurPK pk = new ProfilUtilisateurPK();
 		pk.setProfil(p);
 		pk.setUtilisateur(u4);
 		pk.setBanque(b3);
-		final ProfilUtilisateur poUp = profilUtilisateurDao.findById(pk);
+		final ProfilUtilisateur poUp = profilUtilisateurDao.findById(pk).get();
 		assertNotNull(poUp);
 		assertNotNull(poUp.getProfil());
 		assertNotNull(poUp.getBanque());
 		assertNotNull(poUp.getUtilisateur());
 
 		// Test de la délétion
-		profilUtilisateurDao.removeObject(pk);
-		assertNull(profilUtilisateurDao.findById(pk));
+		profilUtilisateurDao.deleteById(pk);
+		assertFalse(profilUtilisateurDao.findById(pk).isPresent());
 	}
 
 	/**
 	 * Test de la méthode surchargée "equals".
-	 * @throws ParseException 
+	 * 
+	 * @throws ParseException
 	 */
-	public void testEquals() throws ParseException{
+	@Test
+	public void testEquals() throws ParseException {
 
 		final ProfilUtilisateur po1 = new ProfilUtilisateur();
 		final ProfilUtilisateur po2 = new ProfilUtilisateur();
@@ -366,16 +373,18 @@ public class ProfilUtilisateurDaoTest extends AbstractDaoTest
 
 		populateClefsToTestEqualsAndHashCode(po1, po2);
 
-		//dummy test
+		// dummy test
 		final Banque b = new Banque();
 		assertFalse(po1.equals(b));
 	}
 
 	/**
 	 * Test de la méthode surchargée "hashcode".
-	 * @throws ParseException 
+	 * 
+	 * @throws ParseException
 	 */
-	public void testHashCode() throws ParseException{
+	@Test
+	public void testHashCode() throws ParseException {
 		final ProfilUtilisateur po1 = new ProfilUtilisateur();
 		final ProfilUtilisateur po2 = new ProfilUtilisateur();
 		final ProfilUtilisateur po3 = new ProfilUtilisateur();
@@ -384,7 +393,7 @@ public class ProfilUtilisateurDaoTest extends AbstractDaoTest
 		assertTrue(po2.hashCode() == po3.hashCode());
 		assertTrue(po3.hashCode() > 0);
 
-		//teste dans methode precedente
+		// teste dans methode precedente
 		populateClefsToTestEqualsAndHashCode(po1, po2);
 
 		final int hash = po1.hashCode();
@@ -398,27 +407,27 @@ public class ProfilUtilisateurDaoTest extends AbstractDaoTest
 	}
 
 	private void populateClefsToTestEqualsAndHashCode(final ProfilUtilisateur po1, final ProfilUtilisateur po2)
-			throws ParseException{
+			throws ParseException {
 
-		final Profil p = profilDao.findById(1);
-		final Banque b = banqueDao.findById(3);
-		final Utilisateur u3 = utilisateurDao.findById(3);
-		final Utilisateur u4 = utilisateurDao.findById(4);
+		final Profil p = profilDao.findById(1).get();
+		final Banque b = banqueDao.findById(3).get();
+		final Utilisateur u3 = utilisateurDao.findById(3).get();
+		final Utilisateur u4 = utilisateurDao.findById(4).get();
 		final ProfilUtilisateurPK pk1 = new ProfilUtilisateurPK(p, u3, b);
 		final ProfilUtilisateurPK pk2 = new ProfilUtilisateurPK(p, u4, b);
 		final ProfilUtilisateurPK pk3 = new ProfilUtilisateurPK(p, u3, b);
-		final ProfilUtilisateurPK[] pks = new ProfilUtilisateurPK[] {null, pk1, pk2, pk3};
+		final ProfilUtilisateurPK[] pks = new ProfilUtilisateurPK[] { null, pk1, pk2, pk3 };
 
-		for(int i = 0; i < pks.length; i++){
-			for(int k = 0; k < pks.length; k++){
+		for (int i = 0; i < pks.length; i++) {
+			for (int k = 0; k < pks.length; k++) {
 
 				po1.setPk(pks[i]);
 				po2.setPk(pks[k]);
 
-				if(((i == k) || (i + k == 4))){
+				if (((i == k) || (i + k == 4))) {
 					assertTrue(po1.equals(po2));
 					assertTrue(po1.hashCode() == po2.hashCode());
-				}else{
+				} else {
 					assertFalse(po1.equals(po2));
 				}
 			}
@@ -428,12 +437,13 @@ public class ProfilUtilisateurDaoTest extends AbstractDaoTest
 	/**
 	 * Test la méthode toString.
 	 */
-	public void testToString(){
-		final Profil p = profilDao.findById(4);
-		final Banque b = banqueDao.findById(1);
-		final Utilisateur u = utilisateurDao.findById(1);
+	@Test
+	public void testToString() {
+		final Profil p = profilDao.findById(4).get();
+		final Banque b = banqueDao.findById(1).get();
+		final Utilisateur u = utilisateurDao.findById(1).get();
 		final ProfilUtilisateurPK pk1 = new ProfilUtilisateurPK(p, u, b);
-		final ProfilUtilisateur po1 = profilUtilisateurDao.findById(pk1);
+		final ProfilUtilisateur po1 = profilUtilisateurDao.findById(pk1).get();
 
 		assertTrue(po1.toString().equals("{" + po1.getPk().toString() + "}"));
 
@@ -445,21 +455,22 @@ public class ProfilUtilisateurDaoTest extends AbstractDaoTest
 	/**
 	 * Test la méthode clone.
 	 */
-	public void testClone(){
-		final Profil p = profilDao.findById(4);
-		final Banque b = banqueDao.findById(1);
-		final Utilisateur u = utilisateurDao.findById(1);
+	@Test
+	public void testClone() {
+		final Profil p = profilDao.findById(4).get();
+		final Banque b = banqueDao.findById(1).get();
+		final Utilisateur u = utilisateurDao.findById(1).get();
 		final ProfilUtilisateurPK pk1 = new ProfilUtilisateurPK(p, u, b);
-		final ProfilUtilisateur po1 = profilUtilisateurDao.findById(pk1);
+		final ProfilUtilisateur po1 = profilUtilisateurDao.findById(pk1).get();
 
 		ProfilUtilisateur po2 = new ProfilUtilisateur();
 		po2 = po1.clone();
 
 		assertTrue(po1.equals(po2));
 
-		if(po1.getPk() != null){
+		if (po1.getPk() != null) {
 			assertTrue(po1.getPk().equals(po2.getPk()));
-		}else{
+		} else {
 			assertNull(po2.getPk());
 		}
 	}
@@ -467,37 +478,32 @@ public class ProfilUtilisateurDaoTest extends AbstractDaoTest
 	/**
 	 * @since 2.2.4.1
 	 */
-	public void testCountDistinctProfilForUserAndPlateformeGroupedByContexte(){
+	@Test
+	public void testCountDistinctProfilForUserAndPlateformeGroupedByContexte() {
 
-		List<Long> counts = profilUtilisateurDao
-			.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(utilisateurDao.findById(1), 
-					plateformeDao.findById(1));
+		List<Long> counts = profilUtilisateurDao.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(
+				utilisateurDao.findById(1).get(), plateformeDao.findById(1).get());
 		assertTrue(counts.get(0) == 1L);
-	
-		counts = profilUtilisateurDao
-			.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(utilisateurDao.findById(3), 
-					plateformeDao.findById(1));
+
+		counts = profilUtilisateurDao.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(
+				utilisateurDao.findById(3).get(), plateformeDao.findById(1).get());
 		assertTrue(counts.get(0) == 2L);
-		
-		counts = profilUtilisateurDao
-			.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(utilisateurDao.findById(3), 
-					plateformeDao.findById(2));
+
+		counts = profilUtilisateurDao.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(
+				utilisateurDao.findById(3).get(), plateformeDao.findById(2).get());
 		assertTrue(counts.get(0) == 0L);
-		
-		counts = profilUtilisateurDao
-			.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(utilisateurDao.findById(4), 
-						plateformeDao.findById(1));
+
+		counts = profilUtilisateurDao.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(
+				utilisateurDao.findById(4).get(), plateformeDao.findById(1).get());
 		assertTrue(counts.get(0) == 0L);
 
 		// nulls
-		counts = profilUtilisateurDao
-			.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(null, 
-						plateformeDao.findById(1));
+		counts = profilUtilisateurDao.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(null,
+				plateformeDao.findById(1).get());
 		assertTrue(counts.get(0) == 0L);
 
 		counts = profilUtilisateurDao
-			.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(utilisateurDao.findById(1), 
-						null);
+				.findCountDistinctProfilForUserAndPlateformeGroupedByContexte(utilisateurDao.findById(1).get(), null);
 		assertTrue(counts.get(0) == 0L);
 	}
 }

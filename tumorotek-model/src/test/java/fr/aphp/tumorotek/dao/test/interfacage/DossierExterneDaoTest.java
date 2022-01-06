@@ -41,7 +41,19 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.interfacage.DossierExterneDao;
 import fr.aphp.tumorotek.dao.interfacage.EmetteurDao;
@@ -56,12 +68,16 @@ import fr.aphp.tumorotek.model.interfacage.Emetteur;
  * @version 2.2.3-genno
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class DossierExterneDaoTest extends AbstractDaoTest
 {
 
-	private DossierExterneDao dossierExterneDao;
-	private EmetteurDao emetteurDao;
+	@Autowired
+ DossierExterneDao dossierExterneDao;
+	@Autowired
+ EmetteurDao emetteurDao;
 
 	public DossierExterneDaoTest(){
 
@@ -74,26 +90,30 @@ public class DossierExterneDaoTest extends AbstractDaoTest
 			};
 	}
 
-	public void setDossierExterneDao(final DossierExterneDao dDao){
+	@Test
+public void setDossierExterneDao(final DossierExterneDao dDao){
 		this.dossierExterneDao = dDao;
 	}
 
-	public void setEmetteurDao(final EmetteurDao eDao){
+	@Test
+public void setEmetteurDao(final EmetteurDao eDao){
 		this.emetteurDao = eDao;
 	}
 
 	/**
 	 * Test l'appel de la méthode findAll().
 	 */
-	public void testReadAll(){
-		final List<DossierExterne> liste = dossierExterneDao.findAll();
+	@Test
+public void testReadAll(){
+		final List<DossierExterne> liste = IterableUtils.toList(dossierExterneDao.findAll());
 		assertTrue(liste.size() == 6);
 	}
 
 	/**
 	 * Test l'appel de la méthode findByEmetteur().
 	 */
-	public void testFindByEmetteur(){
+	@Test
+public void testFindByEmetteur(){
 		final Emetteur e1 = emetteurDao.findById(1);
 		List<DossierExterne> liste = dossierExterneDao.findByEmetteur(e1);
 		assertTrue(liste.size() == 0);
@@ -115,7 +135,8 @@ public class DossierExterneDaoTest extends AbstractDaoTest
 	/**
 	 * Test l'appel de la méthode findByEmetteurAndIdentification().
 	 */
-	public void testFindByEmetteurAndIdentification(){
+	@Test
+public void testFindByEmetteurAndIdentification(){
 		final Emetteur e2 = emetteurDao.findById(2);
 		List<DossierExterne> liste = dossierExterneDao.findByEmetteurAndIdentification(e2, "758910000");
 		assertTrue(liste.size() == 1);
@@ -137,7 +158,8 @@ public class DossierExterneDaoTest extends AbstractDaoTest
 	/**
 	 * Test l'appel de la méthode findByIdentification().
 	 */
-	public void testFindByIdentification(){
+	@Test
+public void testFindByIdentification(){
 		List<DossierExterne> liste = dossierExterneDao.findByIdentification("758910000");
 		assertTrue(liste.size() == 1);
 
@@ -154,7 +176,8 @@ public class DossierExterneDaoTest extends AbstractDaoTest
 	/**
 	 * Test l'appel de la méthode findByEmetteurInListAndIdentification().
 	 */
-	public void testFindByEmetteurInListAndIdentification(){
+	@Test
+public void testFindByEmetteurInListAndIdentification(){
 		List<Emetteur> emetteurs = new ArrayList<>();
 		final Emetteur e2 = emetteurDao.findById(2);
 		emetteurs.add(e2);
@@ -182,7 +205,8 @@ public class DossierExterneDaoTest extends AbstractDaoTest
 		assertTrue(liste.size() == 0);
 	}
 
-	public void testFindByEmetteurInListSelectIdentification(){
+	@Test
+public void testFindByEmetteurInListSelectIdentification(){
 		List<Emetteur> emetteurs = new ArrayList<>();
 		emetteurs.add(emetteurDao.findById(2));
 		emetteurs.add(emetteurDao.findById(3));
@@ -202,7 +226,8 @@ public class DossierExterneDaoTest extends AbstractDaoTest
 	}
 
 	@Rollback(false)
-	public void testCrud() throws Exception{
+	@Test
+public void testCrud() throws Exception{
 
 		final Emetteur e = emetteurDao.findById(1);
 		final DossierExterne d1 = new DossierExterne();
@@ -210,7 +235,7 @@ public class DossierExterneDaoTest extends AbstractDaoTest
 		d1.setIdentificationDossier("XXXXX");
 
 		// Test de l'insertion
-		dossierExterneDao.createObject(d1);
+		dossierExterneDao.save(d1);
 		assertEquals(new Integer(7), d1.getDossierExterneId());
 
 		final DossierExterne d2 = dossierExterneDao.findById(new Integer(7));
@@ -227,20 +252,21 @@ public class DossierExterneDaoTest extends AbstractDaoTest
 		date.setTime(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse("17/09/2006 12:12:23"));
 		d2.setDateOperation(date);
 		d2.setOperation("OP");
-		dossierExterneDao.updateObject(d2);
+		dossierExterneDao.save(d2);
 		assertTrue(dossierExterneDao.findById(new Integer(7)).getIdentificationDossier().equals("YYYY"));
 		assertTrue(dossierExterneDao.findById(new Integer(7)).getDateOperation().equals(date));
 		assertTrue(dossierExterneDao.findById(new Integer(7)).getOperation().equals("OP"));
 
 		// Test de la délétion
-		dossierExterneDao.removeObject(new Integer(7));
+		dossierExterneDao.deleteById(new Integer(7));
 		assertNull(dossierExterneDao.findById(new Integer(7)));
 	}
 
 	/**
 	 * Test de la méthode surchargée "equals".
 	 */
-	public void testEquals(){
+	@Test
+public void testEquals(){
 		final String nom = "id1";
 		final String nom2 = "id2";
 		final Emetteur e1 = emetteurDao.findById(1);
@@ -300,7 +326,8 @@ public class DossierExterneDaoTest extends AbstractDaoTest
 	/**
 	 * Test de la méthode surchargée "hashcode".
 	 */
-	public void testHashCode(){
+	@Test
+public void testHashCode(){
 		final String nom = "id1";
 		final String nom2 = "id2";
 		final Emetteur e1 = emetteurDao.findById(1);
@@ -338,7 +365,8 @@ public class DossierExterneDaoTest extends AbstractDaoTest
 	/**
 	 * Test la méthode toString.
 	 */
-	public void testToString(){
+	@Test
+public void testToString(){
 		final DossierExterne d1 = dossierExterneDao.findById(1);
 		assertTrue(
 				d1.toString().equals("{" + d1.getIdentificationDossier() + ", " + d1.getEmetteur().getIdentification() + "(Emetteur)}"));
@@ -350,7 +378,8 @@ public class DossierExterneDaoTest extends AbstractDaoTest
 	/**
 	 * @since 2.1
 	 */
-	public void testFindCountAll(){
+	@Test
+public void testFindCountAll(){
 		assertTrue(dossierExterneDao.findCountAll().size() == 1);
 		assertTrue(dossierExterneDao.findCountAll().get(0) == 6);
 	}
@@ -358,7 +387,8 @@ public class DossierExterneDaoTest extends AbstractDaoTest
 	/**
 	 * @since 2.1
 	 */
-	public void testFindFirst(){
+	@Test
+public void testFindFirst(){
 		final List<DossierExterne> first = dossierExterneDao.findFirst();
 		assertTrue(first.size() == 1);
 		assertTrue(first.get(0).getDossierExterneId() == 6);
@@ -367,7 +397,8 @@ public class DossierExterneDaoTest extends AbstractDaoTest
 	/**
 	 * @since 2.2.3-genno
 	 */
-	public void testFindChildrenByEmetteurValeur(){
+	@Test
+public void testFindChildrenByEmetteurValeur(){
 		
 		// toujours vide car pas de dossiers entite id not null
 		
@@ -393,7 +424,8 @@ public class DossierExterneDaoTest extends AbstractDaoTest
 	/**
 	 * @since 2.2.3-genno
 	 */
-	public void testFindByEmetteurAndEntite(){
+	@Test
+public void testFindByEmetteurAndEntite(){
 		Emetteur emet = emetteurDao.findById(2);
 		List<DossierExterne> dos = dossierExterneDao.findByEmetteurAndEntite(emet, 8);
 		assertTrue(dos.isEmpty());
@@ -412,7 +444,8 @@ public class DossierExterneDaoTest extends AbstractDaoTest
 	/**
 	 * @since 2.2.3-genno
 	 */
-	public void testFindByEmetteurAndEntiteNull(){
+	@Test
+public void testFindByEmetteurAndEntiteNull(){
 		List<DossierExterne> dos = dossierExterneDao
 				.findByEmetteurAndEntiteNull(emetteurDao.findById(2));
 		assertTrue(dos.size() == 4);

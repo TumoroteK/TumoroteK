@@ -94,94 +94,129 @@ import fr.aphp.tumorotek.model.systeme.Unite;
 public class PrelevementDaoTest extends AbstractDaoTest
 {
 
-   private PrelevementDao prelevementDao;
-   private BanqueDao banqueDao;
-   private NatureDao natureDao;
-   private MaladieDao maladieDao;
-   private ConsentTypeDao consentTypeDao;
-   private CollaborateurDao collaborateurDao;
-   private ServiceDao serviceDao;
-   private PrelevementTypeDao prelevementTypeDao;
-   private ConditTypeDao conditTypeDao;
-   private ConditMilieuDao conditMilieuDao;
-   private UniteDao uniteDao;
-   private TransporteurDao transporteurDao;
-   private EntiteDao entiteDao;
-   private PatientDao patientDao;
-   private RisqueDao risqueDao;
-   private PlateformeDao plateformeDao;
-   private EtablissementDao etablissementDao;
+   @Autowired
+ PrelevementDao prelevementDao;
+   @Autowired
+ BanqueDao banqueDao;
+   @Autowired
+ NatureDao natureDao;
+   @Autowired
+ MaladieDao maladieDao;
+   @Autowired
+ ConsentTypeDao consentTypeDao;
+   @Autowired
+ CollaborateurDao collaborateurDao;
+   @Autowired
+ ServiceDao serviceDao;
+   @Autowired
+ PrelevementTypeDao prelevementTypeDao;
+   @Autowired
+ ConditTypeDao conditTypeDao;
+   @Autowired
+ ConditMilieuDao conditMilieuDao;
+   @Autowired
+ UniteDao uniteDao;
+   @Autowired
+ TransporteurDao transporteurDao;
+   @Autowired
+ EntiteDao entiteDao;
+   @Autowired
+ PatientDao patientDao;
+   @Autowired
+ RisqueDao risqueDao;
+   @Autowired
+ PlateformeDao plateformeDao;
+   @Autowired
+ EtablissementDao etablissementDao;
 
    public PrelevementDaoTest(){}
 
-   public void setPrelevementDao(final PrelevementDao pDao){
+   @Test
+public void setPrelevementDao(final PrelevementDao pDao){
       this.prelevementDao = pDao;
    }
 
-   public void setNatureDao(final NatureDao nDao){
+   @Test
+public void setNatureDao(final NatureDao nDao){
       this.natureDao = nDao;
    }
 
-   public void setMaladieDao(final MaladieDao mDao){
+   @Test
+public void setMaladieDao(final MaladieDao mDao){
       this.maladieDao = mDao;
    }
 
-   public void setConsentTypeDao(final ConsentTypeDao ctDao){
+   @Test
+public void setConsentTypeDao(final ConsentTypeDao ctDao){
       this.consentTypeDao = ctDao;
    }
 
-   public void setCollaborateurDao(final CollaborateurDao cDao){
+   @Test
+public void setCollaborateurDao(final CollaborateurDao cDao){
       this.collaborateurDao = cDao;
    }
 
-   public void setServiceDao(final ServiceDao sDao){
+   @Test
+public void setServiceDao(final ServiceDao sDao){
       this.serviceDao = sDao;
    }
 
-   public void setPrelevementTypeDao(final PrelevementTypeDao ptDao){
+   @Test
+public void setPrelevementTypeDao(final PrelevementTypeDao ptDao){
       this.prelevementTypeDao = ptDao;
    }
 
-   public void setConditTypeDao(final ConditTypeDao ctDao){
+   @Test
+public void setConditTypeDao(final ConditTypeDao ctDao){
       this.conditTypeDao = ctDao;
    }
 
-   public void setConditMilieuDao(final ConditMilieuDao cmDao){
+   @Test
+public void setConditMilieuDao(final ConditMilieuDao cmDao){
       this.conditMilieuDao = cmDao;
    }
 
-   public void setUniteDao(final UniteDao uDao){
+   @Test
+public void setUniteDao(final UniteDao uDao){
       this.uniteDao = uDao;
    }
 
-   public void setTransporteurDao(final TransporteurDao tDao){
+   @Test
+public void setTransporteurDao(final TransporteurDao tDao){
       this.transporteurDao = tDao;
    }
 
-   public void setBanqueDao(final BanqueDao bDao){
+   @Test
+public void setBanqueDao(final BanqueDao bDao){
       this.banqueDao = bDao;
    }
 
-   public void setEntiteDao(final EntiteDao eDao){
+   @Test
+public void setEntiteDao(final EntiteDao eDao){
       this.entiteDao = eDao;
    }
 
-   public void setPatientDao(final PatientDao pDao){
+   @Test
+public void setPatientDao(final PatientDao pDao){
       this.patientDao = pDao;
    }
 
-   public void setPlateformeDao(final PlateformeDao pfDao){
+   @Test
+public void setPlateformeDao(final PlateformeDao pfDao){
       this.plateformeDao = pfDao;
    }
 
-   public void setRisqueDao(final RisqueDao rDao){
+   @Test
+public void setRisqueDao(final RisqueDao rDao){
       this.risqueDao = rDao;
    }
 
-   public void setEtablissementDao(EtablissementDao eDao) {
+   @Test
+public void setEtablissementDao(EtablissementDao eDao) {
 	this.etablissementDao = eDao;
 }
 
+@Test
 public void testFindByNumberEchantillons(){
       final Long nb = new Long(2);
       List<Prelevement> liste = prelevementDao.findByNumberEchantillons(nb);
@@ -194,15 +229,17 @@ public void testFindByNumberEchantillons(){
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testFindAllPrelevements(){
-      final List<Prelevement> prels = prelevementDao.findAll();
+   @Test
+public void testFindAllPrelevements(){
+      final List<Prelevement> prels = IterableUtils.toList(prelevementDao.findAll());
       assertTrue(prels.size() == 5);
    }
 
    /**
     * Test l'appel de la méthode findByExcludedIdCodes().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       final Banque b = banqueDao.findById(1);
       List<String> codes = prelevementDao.findByExcludedIdCodes(1, b);
       assertTrue(codes.size() == 2);
@@ -216,7 +253,8 @@ public void testFindByNumberEchantillons(){
    /**
     * Test l'appel de la méthode findByIdInList().
     */
-   public void testFindByIdInList(){
+   @Test
+public void testFindByIdInList(){
       List<Integer> ids = new ArrayList<>();
       ids.add(1);
       ids.add(2);
@@ -238,7 +276,8 @@ public void testFindByNumberEchantillons(){
    /**
     * Test l'appel de la méthode findByCode().
     */
-   public void testFindByCode(){
+   @Test
+public void testFindByCode(){
       List<Prelevement> prels = prelevementDao.findByCode("PRLVT1");
       assertTrue(prels.size() == 1);
       prels = prelevementDao.findByCode("PTRA");
@@ -252,7 +291,8 @@ public void testFindByNumberEchantillons(){
    /**
     * Test l'appel de la méthode findByCodeOrNumLaboWithBanque().
     */
-   public void testFindByCodeOrNumLaboWithBanque(){
+   @Test
+public void testFindByCodeOrNumLaboWithBanque(){
       final Banque b1 = banqueDao.findById(1);
       List<Prelevement> prels = prelevementDao.findByCodeOrNumLaboWithBanque("PRLVT1", b1);
       assertTrue(prels.size() == 1);
@@ -291,7 +331,8 @@ public void testFindByNumberEchantillons(){
    /**
     * @since 2.1
     */
-   public void testFindByCodeInPlateforme(){
+   @Test
+public void testFindByCodeInPlateforme(){
       final Plateforme p1 = plateformeDao.findById(1);
       List<Prelevement> prels = prelevementDao.findByCodeInPlateforme("PRLVT1", p1);
       assertTrue(prels.size() == 1);
@@ -334,7 +375,8 @@ public void testFindByNumberEchantillons(){
    /**
     * Test l'appel de la méthode findByCodeOrNumLaboWithBanqueReturnIds().
     */
-   public void testFindByCodeOrNumLaboWithBanqueReturnIds(){
+   @Test
+public void testFindByCodeOrNumLaboWithBanqueReturnIds(){
       final Banque b1 = banqueDao.findById(1);
       List<Integer> prels = prelevementDao.findByCodeOrNumLaboWithBanqueReturnIds("PRLVT1", b1);
       assertTrue(prels.size() == 1);
@@ -372,7 +414,8 @@ public void testFindByNumberEchantillons(){
    /**
     * Test l'appel de la méthode toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       Prelevement p1 = prelevementDao.findById(1);
       assertTrue(p1.toString().equals("{" + p1.getCode() + "}"));
       assertTrue(p1.listableObjectId().equals(new Integer(1)));
@@ -385,7 +428,8 @@ public void testFindByNumberEchantillons(){
     * Test l'appel de la méthode findByDatePrelevementAfterDate().
     * throws Exception Lance une exception en cas d'erreur.
     */
-   public void testFindByDatePrelevementAfterDate() throws Exception{
+   @Test
+public void testFindByDatePrelevementAfterDate() throws Exception{
       final Calendar sDate = Calendar.getInstance();
       sDate.setTime(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse("07/09/1983 12:12:23"));
       List<Prelevement> prels = prelevementDao.findByDatePrelevementAfterDate(sDate);
@@ -401,7 +445,8 @@ public void testFindByNumberEchantillons(){
     * Test l'appel de la méthode findByDatePrelevementAfterDateWithBanque().
     * throws Exception Lance une exception en cas d'erreur.
     */
-   public void testFindByDatePrelevementAfterDateWithBanque() throws Exception{
+   @Test
+public void testFindByDatePrelevementAfterDateWithBanque() throws Exception{
       final Banque b1 = banqueDao.findById(1);
       final Calendar sDate = Calendar.getInstance();
       sDate.setTime(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse("07/09/1983 00:00:01"));
@@ -424,7 +469,8 @@ public void testFindByNumberEchantillons(){
     * Test l'appel de la méthode findByConsentDateAfterDate().
     * throws Exception Lance une exception en cas d'erreur.
     */
-   public void testFindByConsentDateAfterDate() throws Exception{
+   @Test
+public void testFindByConsentDateAfterDate() throws Exception{
       Date search = new SimpleDateFormat("dd/MM/yyyy").parse("07/09/1983");
       List<Prelevement> prels = prelevementDao.findByConsentDateAfterDate(search);
       assertTrue(prels.size() == 1);
@@ -439,7 +485,8 @@ public void testFindByNumberEchantillons(){
    //	 * Test l'appel de la méthode findByDateCongelationAfterDate().
    //	 * throws Exception Lance une exception en cas d'erreur.
    //	 */
-   //	public void testFindByDateCongelationAfterDate() throws Exception {
+   //	@Test
+public void testFindByDateCongelationAfterDate() throws Exception {
    //		Date search = new SimpleDateFormat("dd/MM/yyyy").parse("17/09/1983");
    //		List<Prelevement> prels = prelevementDao.
    //		findByDateCongelationAfterDate(search);
@@ -454,7 +501,8 @@ public void testFindByNumberEchantillons(){
    /**
     * Test l'appel de la méthode findByPrelevementType().
     */
-   public void testFindByPrelevementType(){
+   @Test
+public void testFindByPrelevementType(){
       PrelevementType type = prelevementTypeDao.findById(1);
       List<Prelevement> prels = prelevementDao.findByPrelevementType(type);
       assertTrue(prels.size() == 3);
@@ -468,7 +516,8 @@ public void testFindByNumberEchantillons(){
    /**
     * Test l'appel de la méthode findByNature().
     */
-   public void testFindByNature(){
+   @Test
+public void testFindByNature(){
       Nature nature = natureDao.findById(1);
       List<Prelevement> prels = prelevementDao.findByNature(nature);
       assertTrue(prels.size() == 2);
@@ -482,7 +531,8 @@ public void testFindByNumberEchantillons(){
    /**
     * Test l'appel de la méthode findByConsenType().
     */
-   public void testFindByConsentType(){
+   @Test
+public void testFindByConsentType(){
       ConsentType type = consentTypeDao.findById(3);
       List<Prelevement> prels = prelevementDao.findByConsentType(type);
       assertTrue(prels.size() == 3);
@@ -496,7 +546,8 @@ public void testFindByNumberEchantillons(){
    /**
     * Test l'appel de la méthode findByMaladieLibelle().
     */
-   public void testFindByMaladieLibelleLike(){
+   @Test
+public void testFindByMaladieLibelleLike(){
       List<Prelevement> prels = prelevementDao.findByMaladieLibelleLike("Addiction coco");
       assertTrue(prels.size() == 1);
       prels = prelevementDao.findByMaladieLibelleLike("Addiction%");
@@ -510,7 +561,8 @@ public void testFindByNumberEchantillons(){
    /**
     * Test l'appel de la méthode findBynda().
     */
-   public void testFindByNdaLike(){
+   @Test
+public void testFindByNdaLike(){
       List<Prelevement> prels = prelevementDao.findByNdaLike("NDA65");
       assertTrue(prels.size() == 1);
       prels = prelevementDao.findByNdaLike("NDA%");
@@ -524,7 +576,8 @@ public void testFindByNumberEchantillons(){
    /**
     * Test l'appel de la méthode findByBanqueSelectCode().
     */
-   public void testFindByBanqueSelectCode(){
+   @Test
+public void testFindByBanqueSelectCode(){
       final Banque b1 = banqueDao.findById(1);
       List<String> codes = prelevementDao.findByBanqueSelectCode(b1);
       assertTrue(codes.size() == 3);
@@ -538,14 +591,16 @@ public void testFindByNumberEchantillons(){
    /**
     * Test l'appel de la méthode findByBanqueSelectNda().
     */
-   public void testFindByBanqueSelectNda(){
+   @Test
+public void testFindByBanqueSelectNda(){
       final Banque b1 = banqueDao.findById(1);
       final List<String> ndas = prelevementDao.findByBanqueSelectNda(b1);
       assertTrue(ndas.size() == 1);
       assertTrue(ndas.get(0).equals("NDA234"));
    }
 
-   public void testFindByMaladieAndBanque(){
+   @Test
+public void testFindByMaladieAndBanque(){
       Banque b1 = banqueDao.findById(1);
       final Maladie m1 = maladieDao.findById(4);
       List<Prelevement> prels = prelevementDao.findByMaladieAndBanque(m1, b1);
@@ -556,7 +611,8 @@ public void testFindByNumberEchantillons(){
       assertTrue(prels.size() == 0);
    }
 
-   public void testFindByMaladieAndOtherBanques(){
+   @Test
+public void testFindByMaladieAndOtherBanques(){
       final Banque b1 = banqueDao.findById(1);
       Maladie m1 = maladieDao.findById(4);
       List<Prelevement> prels = prelevementDao.findByMaladieAndOtherBanques(m1, b1);
@@ -569,7 +625,8 @@ public void testFindByNumberEchantillons(){
       assertTrue(prels.size() == 0);
    }
 
-   public void testFindByPatient(){
+   @Test
+public void testFindByPatient(){
       Patient p = patientDao.findById(3);
       List<Prelevement> prels = prelevementDao.findByPatient(p);
       assertTrue(prels.size() == 3);
@@ -578,7 +635,8 @@ public void testFindByNumberEchantillons(){
       assertTrue(prels.size() == 0);
    }
 
-   public void testFindByPatientNomNip(){
+   @Test
+public void testFindByPatientNomNip(){
       final Banque b1 = banqueDao.findById(1);
       List<Integer> prels = prelevementDao.findByPatientNomReturnIds("DELPHINO", b1);
       assertTrue(prels.size() == 2);
@@ -603,7 +661,8 @@ public void testFindByNumberEchantillons(){
       assertTrue(prels.size() == 0);
    }
 
-   public void testFindByCodesAndBanquesInList(){
+   @Test
+public void testFindByCodesAndBanquesInList(){
       List<Banque> bks = new ArrayList<>();
       bks.add(banqueDao.findById(1));
       bks.add(banqueDao.findById(2));
@@ -650,7 +709,8 @@ public void testFindByNumberEchantillons(){
       assertTrue(liste.size() == 2);
    }
 
-   public void testFindByPatientNomOrNipInList(){
+   @Test
+public void testFindByPatientNomOrNipInList(){
       List<String> criteres = new ArrayList<>();
       criteres.add("DELPHINO");
       criteres.add("MAYER");
@@ -679,7 +739,8 @@ public void testFindByNumberEchantillons(){
       assertTrue(liste.size() == 3);
    }
 
-   public void testFindByCodeOrNumLaboInListWithBanque(){
+   @Test
+public void testFindByCodeOrNumLaboInListWithBanque(){
       List<String> criteres = new ArrayList<>();
       criteres.add("PRLVT1");
       criteres.add("PRLVT2");
@@ -713,7 +774,8 @@ public void testFindByNumberEchantillons(){
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
    @Rollback(false)
-   public void testCrudPrelevement() throws Exception{
+   @Test
+public void testCrudPrelevement() throws Exception{
       final Prelevement p = new Prelevement();
 
       /*Champs obligatoires*/
@@ -777,7 +839,7 @@ public void testFindByNumberEchantillons(){
       p.setRisques(risks);
 
       // Test de l'insertion
-      prelevementDao.createObject(p);
+      prelevementDao.save(p);
       final Integer prelId = p.getPrelevementId();
       assertNotNull(prelId);
 
@@ -868,7 +930,7 @@ public void testFindByNumberEchantillons(){
       p2.setQuantite((float) 12.55544);
 
       //test l'update
-      prelevementDao.updateObject(p2);
+      prelevementDao.save(p2);
       assertTrue(prelevementDao.findById(prelId).getBanque().equals(b2));
       assertTrue(prelevementDao.findById(prelId).getCode() == "pre55");
       assertTrue(prelevementDao.findById(prelId).getNature().equals(n2));
@@ -901,7 +963,7 @@ public void testFindByNumberEchantillons(){
       assertTrue(p2.getQuantite() == (float) 12.555);
 
       // Test de la délétion
-      prelevementDao.removeObject(prelId);
+      prelevementDao.deleteById(prelId);
       assertNull(prelevementDao.findById(prelId));
 
    }
@@ -909,7 +971,8 @@ public void testFindByNumberEchantillons(){
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final Prelevement p1 = new Prelevement();
       final Prelevement p2 = new Prelevement();
 
@@ -957,7 +1020,8 @@ public void testFindByNumberEchantillons(){
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final Prelevement p1 = new Prelevement();
       p1.setPrelevementId(1);
       final Prelevement p2 = new Prelevement();
@@ -1001,7 +1065,8 @@ public void testFindByNumberEchantillons(){
    /**
     * Test la méthode clone.
     */
-   public void testClone(){
+   @Test
+public void testClone(){
       final Prelevement p1 = prelevementDao.findById(1);
       final Prelevement p2 = p1.clone();
       assertTrue(p1.equals(p2));
@@ -1162,7 +1227,8 @@ public void testFindByNumberEchantillons(){
 
    }
 
-   public void testFindByBanques(){
+   @Test
+public void testFindByBanques(){
       final List<Banque> banks = new java.util.ArrayList<>();
       banks.add(banqueDao.findById(1));
       banks.add(banqueDao.findById(2));
@@ -1170,7 +1236,8 @@ public void testFindByNumberEchantillons(){
       assertTrue(res.size() == 4);
    }
 
-   public void testFindByBanquesAllIds(){
+   @Test
+public void testFindByBanquesAllIds(){
       final List<Banque> banks = new java.util.ArrayList<>();
       banks.add(banqueDao.findById(1));
       banks.add(banqueDao.findById(2));
@@ -1178,7 +1245,8 @@ public void testFindByNumberEchantillons(){
       assertTrue(res.size() == 4);
    }
 
-   public void testFindCountEclConsentByDates() throws ParseException{
+   @Test
+public void testFindCountEclConsentByDates() throws ParseException{
       final Calendar d1 = Calendar.getInstance();
       d1.setTime(new SimpleDateFormat("dd/MM/yyyy").parse("31/12/1999"));
       final Calendar d2 = Calendar.getInstance();
@@ -1220,7 +1288,8 @@ public void testFindByNumberEchantillons(){
       assertTrue(res.get(0) == 3);
    }
 
-   public void testFindCountByOrganeByDates() throws ParseException{
+   @Test
+public void testFindCountByOrganeByDates() throws ParseException{
       final Calendar d1 = Calendar.getInstance();
       d1.setTime(new SimpleDateFormat("dd/MM/yyyy").parse("31/12/1999"));
       final Calendar d2 = Calendar.getInstance();
@@ -1261,7 +1330,8 @@ public void testFindByNumberEchantillons(){
       assertTrue(res.size() == 0);
    }
 
-   public void testFindCountByOrganeByDatesConsent() throws ParseException{
+   @Test
+public void testFindCountByOrganeByDatesConsent() throws ParseException{
       final Calendar d1 = Calendar.getInstance();
       d1.setTime(new SimpleDateFormat("dd/MM/yyyy").parse("31/12/1999"));
       final Calendar d2 = Calendar.getInstance();
@@ -1297,7 +1367,8 @@ public void testFindByNumberEchantillons(){
       assertTrue(res.size() == 1);
    }
 
-   public void testFindAssociatePrelsOfType(){
+   @Test
+public void testFindAssociatePrelsOfType(){
       final List<Banque> banks = new ArrayList<>();
       final Banque b1 = banqueDao.findById(1);
       banks.add(b1);
@@ -1327,7 +1398,8 @@ public void testFindByNumberEchantillons(){
       assertTrue(res.size() == 0);
    }
 
-   public void testFindByMaladieAndNature() throws ParseException{
+   @Test
+public void testFindByMaladieAndNature() throws ParseException{
       final Maladie m4 = maladieDao.findById(4);
       final Calendar cal = Calendar.getInstance();
       cal.setTime(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse("06/09/1983 10:00:00"));
@@ -1355,7 +1427,8 @@ public void testFindByNumberEchantillons(){
       assertTrue(prels.size() == 0);
    }
 
-   public void testFindByEchantillonId(){
+   @Test
+public void testFindByEchantillonId(){
       List<Prelevement> prels = prelevementDao.findByEchantillonId(1);
       assertTrue(prels.size() == 1);
       assertTrue(prels.get(0).equals(prelevementDao.findById(1)));
@@ -1368,7 +1441,8 @@ public void testFindByNumberEchantillons(){
       assertTrue(prels.size() == 0);
    }
 
-   public void testFindByComDiag(){
+   @Test
+public void testFindByComDiag(){
       final List<Banque> banks = new ArrayList<>();
       final Banque b1 = banqueDao.findById(1);
       banks.add(b1);
@@ -1383,20 +1457,23 @@ public void testFindByNumberEchantillons(){
       assertTrue(prels.size() == 1);
    }
 
-   public void testFindByEtablissementNom(){
+   @Test
+public void testFindByEtablissementNom(){
       final List<Banque> banks = banqueDao.findByNom("BANQUE1");
       final List<Prelevement> prels = prelevementDao.findByEtablissementNom("%SAINT%", banks);
       assertFalse(prels.isEmpty());
    }
 
-   public void testFindByEtablissementVide(){
+   @Test
+public void testFindByEtablissementVide(){
       final List<Banque> banks = banqueDao.findByNom("BANQUE1");
       final List<Prelevement> prels = prelevementDao.findByEtablissementVide(banks);
       assertTrue(prels.size() == 1);
       assertTrue(prels.contains(prelevementDao.findById(4)));
    }
 
-   public void testFindByPatientAndBanques(){
+   @Test
+public void testFindByPatientAndBanques(){
 
       final List<Banque> banks = new ArrayList<>();
       banks.add(banqueDao.findById(1));
@@ -1444,7 +1521,8 @@ public void testFindByNumberEchantillons(){
    /**
     * @since 2.2.1
     */
-   public void testFindByEtablissementLaboInter(){
+   @Test
+public void testFindByEtablissementLaboInter(){
 	   
 	   final List<Banque> banks = new ArrayList<>();
 	   banks.add(banqueDao.findById(1));
@@ -1464,7 +1542,8 @@ public void testFindByNumberEchantillons(){
    /**
     * @since 2.2.1
     */
-   public void testFindByServiceLaboInter(){
+   @Test
+public void testFindByServiceLaboInter(){
 	   
 	   final List<Banque> banks = new ArrayList<>();
 	   banks.add(banqueDao.findById(1));
@@ -1484,7 +1563,8 @@ public void testFindByNumberEchantillons(){
    /**
     * @since 2.2.1
     */
-   public void testFindByOperateurLaboInter(){
+   @Test
+public void testFindByOperateurLaboInter(){
 	   
 	   final List<Banque> banks = new ArrayList<>();
 	   banks.add(banqueDao.findById(1));

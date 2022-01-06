@@ -68,14 +68,20 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class RechercheDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private RechercheDao rechercheDao;
-   private UtilisateurDao utilisateurDao;
-   private RequeteDao requeteDao;
-   private AffichageDao affichageDao;
-   private BanqueDao banqueDao;
 
-   private EntityManagerFactory entityManagerFactory;
+   @Autowired
+ RechercheDao rechercheDao;
+   @Autowired
+ UtilisateurDao utilisateurDao;
+   @Autowired
+ RequeteDao requeteDao;
+   @Autowired
+ AffichageDao affichageDao;
+   @Autowired
+ BanqueDao banqueDao;
+
+   @Autowired
+ EntityManagerFactory entityManagerFactory;
 
    /** Constructeur. */
    public RechercheDaoTest(){}
@@ -84,7 +90,8 @@ public class RechercheDaoTest extends AbstractDaoTest
     * Setter du bean RechercheDao.
     * @param aDao est le bean Dao.
     */
-   public void setRechercheDao(final RechercheDao aDao){
+   @Test
+public void setRechercheDao(final RechercheDao aDao){
       this.rechercheDao = aDao;
    }
 
@@ -92,7 +99,8 @@ public class RechercheDaoTest extends AbstractDaoTest
     * Setter du bean UtilisateurDao.
     * @param uDao est le bean Dao.
     */
-   public void setUtilisateurDao(final UtilisateurDao uDao){
+   @Test
+public void setUtilisateurDao(final UtilisateurDao uDao){
       this.utilisateurDao = uDao;
    }
 
@@ -100,7 +108,8 @@ public class RechercheDaoTest extends AbstractDaoTest
     * Setter du bean AffichageDao.
     * @param aDao est le bean Dao.
     */
-   public void setAffichageDao(final AffichageDao aDao){
+   @Test
+public void setAffichageDao(final AffichageDao aDao){
       this.affichageDao = aDao;
    }
 
@@ -108,7 +117,8 @@ public class RechercheDaoTest extends AbstractDaoTest
     * Setter du bean RequeteDao.
     * @param rDao est le bean Dao.
     */
-   public void setRequeteDao(final RequeteDao rDao){
+   @Test
+public void setRequeteDao(final RequeteDao rDao){
       this.requeteDao = rDao;
    }
 
@@ -116,16 +126,19 @@ public class RechercheDaoTest extends AbstractDaoTest
     * Setter du bean BanqueDao.
     * @param bDao est le bean Dao.
     */
-   public void setBanqueDao(final BanqueDao bDao){
+   @Test
+public void setBanqueDao(final BanqueDao bDao){
       this.banqueDao = bDao;
    }
 
    @Override
-   public void setEntityManagerFactory(final EntityManagerFactory ef){
+   @Test
+public void setEntityManagerFactory(final EntityManagerFactory ef){
       this.entityManagerFactory = ef;
    }
 
-   public void testFindByBanqueId(){
+   @Test
+public void testFindByBanqueId(){
       List<Recherche> liste = rechercheDao.findByBanqueId(1);
       assertTrue(liste.size() == 3);
 
@@ -136,7 +149,8 @@ public class RechercheDaoTest extends AbstractDaoTest
       assertTrue(liste.size() == 0);
    }
 
-   public void testFindByBanqueInList(){
+   @Test
+public void testFindByBanqueInList(){
       final List<Integer> bks = new ArrayList<>();
       bks.add(1);
       List<Recherche> liste = rechercheDao.findByBanqueIdinList(bks);
@@ -153,8 +167,9 @@ public class RechercheDaoTest extends AbstractDaoTest
    /**
    * Test l'appel de la méthode findRecherchesByUtilisateur().
    */
-   public void testFindRecherchesByUtilisateur() throws Exception{
-      final List<Utilisateur> utilisateurs = this.utilisateurDao.findAll();
+   @Test
+public void testFindRecherchesByUtilisateur() throws Exception{
+      final List<Utilisateur> utilisateurs = this.IterableUtils.toList(utilisateurDao.findAll());
       final Iterator<Utilisateur> itUtil = utilisateurs.iterator();
       while(itUtil.hasNext()){
          final Utilisateur utilisateur = itUtil.next();
@@ -169,8 +184,9 @@ public class RechercheDaoTest extends AbstractDaoTest
    /**
    * Test l'appel de la méthode findByExcludedId().
    */
-   public void testFindByExcludedId(){
-      final List<Recherche> liste = rechercheDao.findAll();
+   @Test
+public void testFindByExcludedId(){
+      final List<Recherche> liste = IterableUtils.toList(rechercheDao.findAll());
       final Iterator<Recherche> it = liste.iterator();
       while(it.hasNext()){
          final Recherche temp = it.next();
@@ -181,7 +197,8 @@ public class RechercheDaoTest extends AbstractDaoTest
 
    }
 
-   public void testFindByRequete(){
+   @Test
+public void testFindByRequete(){
       final Requete r1 = requeteDao.findById(1);
       List<Recherche> liste = rechercheDao.findByRequete(r1);
       assertTrue(liste.size() == 0);
@@ -197,7 +214,8 @@ public class RechercheDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByIntituleUtilisateur().
     */
-   public void testFindByIntituleUtilisateur() throws Exception{
+   @Test
+public void testFindByIntituleUtilisateur() throws Exception{
       final Utilisateur u1 = utilisateurDao.findById(1);
       final Utilisateur u2 = utilisateurDao.findById(2);
       List<Recherche> liste = rechercheDao.findByIntituleUtilisateur("Aff%", u1);
@@ -222,7 +240,8 @@ public class RechercheDaoTest extends AbstractDaoTest
    * @throws Exception lance une exception en cas de problème lors du CRUD.
    */
    @Rollback(false)
-   public void testCrudRecherche() throws Exception{
+   @Test
+public void testCrudRecherche() throws Exception{
       final int idCreateur = 3;
       final int idRequete = 3;
       final int idAffichage = 2;
@@ -246,8 +265,8 @@ public class RechercheDaoTest extends AbstractDaoTest
 
       // Test de l'insertion
       Integer idObject = new Integer(-1);
-      this.rechercheDao.createObject(r);
-      final List<Recherche> recherches = this.rechercheDao.findAll();
+      this.rechercheDao.save(r);
+      final List<Recherche> recherches = this.IterableUtils.toList(rechercheDao.findAll());
       final Iterator<Recherche> itRecherche = recherches.iterator();
       boolean found = false;
       while(itRecherche.hasNext()){
@@ -296,7 +315,7 @@ public class RechercheDaoTest extends AbstractDaoTest
       r2.setBanques(updatedBanques);
       r2.setRequete(updatedRequete);
 
-      this.rechercheDao.updateObject(r2);
+      this.rechercheDao.save(r2);
       assertNotNull(this.rechercheDao.findById(idObject).getIntitule());
       assertTrue(this.rechercheDao.findById(idObject).getIntitule().equals(updatedIntitule));
       assertNotNull(this.rechercheDao.findById(idObject).getCreateur());
@@ -308,7 +327,7 @@ public class RechercheDaoTest extends AbstractDaoTest
       assertNotNull(this.rechercheDao.findById(idObject).getBanques());
       assertTrue(this.rechercheDao.findById(idObject).getBanques().equals(updatedBanques));
       // Test de la délétion
-      this.rechercheDao.removeObject(idObject);
+      this.rechercheDao.deleteById(idObject);
       assertNull(this.rechercheDao.findById(idObject));
 
    }
@@ -316,7 +335,8 @@ public class RechercheDaoTest extends AbstractDaoTest
    /**
     * test toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final Recherche r1 = rechercheDao.findById(1);
       assertTrue(r1.toString().equals(r1.getIntitule()));
 
@@ -327,7 +347,8 @@ public class RechercheDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       //On boucle sur les 32 possibilités
       for(int i = 0; i < Math.pow(2, 4); i++){
          final Recherche recherche1 = new Recherche();
@@ -368,7 +389,8 @@ public class RechercheDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       //On boucle sur les 32 possibilités
       for(int i = 0; i < Math.pow(2, 4); i++){
          final Recherche recherche = new Recherche();

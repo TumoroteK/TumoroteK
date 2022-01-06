@@ -76,44 +76,58 @@ public class AnnotationValeurDaoTest extends AbstractDaoTest
 {
 
    /** Beans Dao. */
-   private AnnotationValeurDao annotationValeurDao;
-   private ItemDao itemDao;
-   private ChampAnnotationDao champAnnotationDao;
-   private BanqueDao banqueDao;
-   private TableAnnotationDao tableAnnotationDao;
-   private FichierDao fichierDao;
-   private EntiteDao entiteDao;
+   @Autowired
+ AnnotationValeurDao annotationValeurDao;
+   @Autowired
+ ItemDao itemDao;
+   @Autowired
+ ChampAnnotationDao champAnnotationDao;
+   @Autowired
+ BanqueDao banqueDao;
+   @Autowired
+ TableAnnotationDao tableAnnotationDao;
+   @Autowired
+ FichierDao fichierDao;
+   @Autowired
+ EntiteDao entiteDao;
 
    /**
     * Constructeur.
     */
    public AnnotationValeurDaoTest(){}
 
-   public void setItemDao(final ItemDao iDao){
+   @Test
+public void setItemDao(final ItemDao iDao){
       this.itemDao = iDao;
    }
 
-   public void setChampAnnotationDao(final ChampAnnotationDao cDao){
+   @Test
+public void setChampAnnotationDao(final ChampAnnotationDao cDao){
       this.champAnnotationDao = cDao;
    }
 
-   public void setAnnotationDefautDao(final AnnotationValeurDao avDao){
+   @Test
+public void setAnnotationDefautDao(final AnnotationValeurDao avDao){
       this.annotationValeurDao = avDao;
    }
 
-   public void setBanqueDao(final BanqueDao bDao){
+   @Test
+public void setBanqueDao(final BanqueDao bDao){
       this.banqueDao = bDao;
    }
 
-   public void setTableAnnotationDao(final TableAnnotationDao tabDao){
+   @Test
+public void setTableAnnotationDao(final TableAnnotationDao tabDao){
       this.tableAnnotationDao = tabDao;
    }
 
-   public void setFichierDao(final FichierDao fDao){
+   @Test
+public void setFichierDao(final FichierDao fDao){
       this.fichierDao = fDao;
    }
 
-   public void setEntiteDao(final EntiteDao eDao){
+   @Test
+public void setEntiteDao(final EntiteDao eDao){
       this.entiteDao = eDao;
    }
 
@@ -121,7 +135,8 @@ public class AnnotationValeurDaoTest extends AbstractDaoTest
     * Test la méthode toString.
     * @throws ParseException 
     */
-   public void testToString() throws ParseException{
+   @Test
+public void testToString() throws ParseException{
       final AnnotationValeur av1 = annotationValeurDao.findById(1);
       assertTrue(av1.toString().equals("{Valeur: Alphanum1.AlphanumValue1}"));
       final AnnotationValeur av2 = new AnnotationValeur();
@@ -152,12 +167,14 @@ public class AnnotationValeurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllValeurs(){
-      final List<AnnotationValeur> valeurs = annotationValeurDao.findAll();
+   @Test
+public void testReadAllValeurs(){
+      final List<AnnotationValeur> valeurs = IterableUtils.toList(annotationValeurDao.findAll());
       assertTrue(valeurs.size() == 12);
    }
 
-   public void testFindByChampAndObjetId(){
+   @Test
+public void testFindByChampAndObjetId(){
       List<AnnotationValeur> valeurs = annotationValeurDao.findByChampAndObjetId(champAnnotationDao.findById(12), 1);
       assertTrue(valeurs.size() == 2);
       valeurs = annotationValeurDao.findByChampAndObjetId(champAnnotationDao.findById(8), 1);
@@ -168,7 +185,8 @@ public class AnnotationValeurDaoTest extends AbstractDaoTest
       assertTrue(valeurs.size() == 0);
    }
 
-   public void testFindByTableAndBanque(){
+   @Test
+public void testFindByTableAndBanque(){
       List<AnnotationValeur> valeurs =
          annotationValeurDao.findByTableAndBanque(tableAnnotationDao.findById(3), banqueDao.findById(1));
       assertTrue(valeurs.size() == 3);
@@ -183,7 +201,8 @@ public class AnnotationValeurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       final AnnotationValeur av1 = annotationValeurDao.findById(1);
       List<AnnotationValeur> valeurs = annotationValeurDao.findByExcludedId(av1.getChampAnnotation(), av1.getObjetId(), 1);
       assertTrue(valeurs.size() == 0);
@@ -199,14 +218,15 @@ public class AnnotationValeurDaoTest extends AbstractDaoTest
     * Test l'insertion, la mise à jour et la suppression d'un Item.
     */
    @Rollback(false)
-   public void testCrudValeur(){
+   @Test
+public void testCrudValeur(){
       final AnnotationValeur av2 = new AnnotationValeur();
       av2.setObjetId(2);
       av2.setChampAnnotation(champAnnotationDao.findById(2));
       av2.setAlphanum("val1");
       av2.setBanque(banqueDao.findById(1));
 
-      annotationValeurDao.createObject(av2);
+      annotationValeurDao.save(av2);
       assertNotNull(av2.getAnnotationValeurId());
 
       final Integer aId = av2.getAnnotationValeurId();
@@ -217,12 +237,12 @@ public class AnnotationValeurDaoTest extends AbstractDaoTest
       // update
       av2.setAlphanum("val2");
 
-      annotationValeurDao.updateObject(av2);
+      annotationValeurDao.save(av2);
       assertTrue(av2.getAnnotationValeurId() == aId);
       assertTrue(annotationValeurDao.findById(aId).getAlphanum().equals("val2"));
 
       // Test de la délétion
-      annotationValeurDao.removeObject(aId);
+      annotationValeurDao.deleteById(aId);
       assertNull(annotationValeurDao.findById(aId));
       testReadAllValeurs();
    }
@@ -230,7 +250,8 @@ public class AnnotationValeurDaoTest extends AbstractDaoTest
    /**
     * Test des méthodes surchargées "equals" et hashcode.
     */
-   public void testEqualsAndHashCode(){
+   @Test
+public void testEqualsAndHashCode(){
       final AnnotationValeur av1 = new AnnotationValeur();
       final AnnotationValeur av2 = new AnnotationValeur();
       assertFalse(av1.equals(null));
@@ -341,7 +362,8 @@ public class AnnotationValeurDaoTest extends AbstractDaoTest
       assertFalse(av1.equals(c));
    }
 
-   public void testIsEmpty() throws ParseException{
+   @Test
+public void testIsEmpty() throws ParseException{
       final AnnotationValeur av1 = new AnnotationValeur();
       assertTrue(av1.isEmpty());
       av1.setChampAnnotation(champAnnotationDao.findById(1));
@@ -368,7 +390,8 @@ public class AnnotationValeurDaoTest extends AbstractDaoTest
       assertTrue(av1.isEmpty());
    }
 
-   public void testClone() throws IOException{
+   @Test
+public void testClone() throws IOException{
       final AnnotationValeur av1 = annotationValeurDao.findById(5);
       // rempli pour contourner les nulls
       av1.setAlphanum("zert");
@@ -406,7 +429,8 @@ public class AnnotationValeurDaoTest extends AbstractDaoTest
       assertNull(clone.getFichier());
    }
 
-   public void testFindByObjectIdAndEntite(){
+   @Test
+public void testFindByObjectIdAndEntite(){
       List<AnnotationValeur> vals =
          annotationValeurDao.findByObjectIdAndEntite(new Integer(1), entiteDao.findByNom("Echantillon").get(0));
       assertTrue(vals.size() == 6);
@@ -418,7 +442,8 @@ public class AnnotationValeurDaoTest extends AbstractDaoTest
       assertTrue(vals.size() == 0);
    }
 
-   public void testFormateAnnotationValeur(){
+   @Test
+public void testFormateAnnotationValeur(){
       final AnnotationValeur av1 = annotationValeurDao.findById(1);
       assertTrue(av1.formateAnnotationValeur().equals("AlphanumValue1"));
 
@@ -442,7 +467,8 @@ public class AnnotationValeurDaoTest extends AbstractDaoTest
       assertTrue(av10.formateAnnotationValeur().equals("nom1"));
    }
 
-   public void testFindCountByItem(){
+   @Test
+public void testFindCountByItem(){
       Item i = itemDao.findById(5);
       List<Long> count = annotationValeurDao.findCountByItem(i);
       assertTrue(count.get(0) == 1);
@@ -451,7 +477,8 @@ public class AnnotationValeurDaoTest extends AbstractDaoTest
       assertTrue(count.get(0) == 0);
    }
 
-   public void testFindCountByTableAnnotationBanque(){
+   @Test
+public void testFindCountByTableAnnotationBanque(){
       final TableAnnotation t3 = tableAnnotationDao.findById(3);
       final Banque b1 = banqueDao.findById(1);
       List<Long> count = annotationValeurDao.findCountByTableAnnotationBanque(t3, b1);
@@ -471,7 +498,8 @@ public class AnnotationValeurDaoTest extends AbstractDaoTest
 
    }
 
-   public void testGetValeur() throws ParseException{
+   @Test
+public void testGetValeur() throws ParseException{
       final AnnotationValeur av = new AnnotationValeur();
       final DataType type = new DataType();
       final ChampAnnotation chp = new ChampAnnotation();

@@ -61,10 +61,13 @@ import fr.aphp.tumorotek.model.io.export.Groupement;
 public class GroupementDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private GroupementDao groupementDao;
-   private CritereDao critereDao;
-   private ChampDao champDao;
+
+   @Autowired
+ GroupementDao groupementDao;
+   @Autowired
+ CritereDao critereDao;
+   @Autowired
+ ChampDao champDao;
 
    /** Constructeur. */
    public GroupementDaoTest(){}
@@ -73,7 +76,8 @@ public class GroupementDaoTest extends AbstractDaoTest
     * Setter du bean GroupementDao.
     * @param gDao est le bean Dao.
     */
-   public void setGroupementDao(final GroupementDao gDao){
+   @Test
+public void setGroupementDao(final GroupementDao gDao){
       this.groupementDao = gDao;
    }
 
@@ -81,7 +85,8 @@ public class GroupementDaoTest extends AbstractDaoTest
     * Setter du bean CritereDao.
     * @param cDao est le bean Dao.
     */
-   public void setCritereDao(final CritereDao cDao){
+   @Test
+public void setCritereDao(final CritereDao cDao){
       this.critereDao = cDao;
    }
 
@@ -89,12 +94,14 @@ public class GroupementDaoTest extends AbstractDaoTest
     * Setter du bean ChampDao.
     * @param cDao est le bean Dao.
     */
-   public void setChampDao(final ChampDao cDao){
+   @Test
+public void setChampDao(final ChampDao cDao){
       this.champDao = cDao;
    }
 
-   public void testFindEnfants() throws Exception{
-      final List<Groupement> parents = this.groupementDao.findAll();
+   @Test
+public void testFindEnfants() throws Exception{
+      final List<Groupement> parents = this.IterableUtils.toList(groupementDao.findAll());
       final Iterator<Groupement> itParents = parents.iterator();
       while(itParents.hasNext()){
          final Groupement parent = itParents.next();
@@ -112,13 +119,14 @@ public class GroupementDaoTest extends AbstractDaoTest
    * @throws Exception lance une exception en cas de problème lors du CRUD.
    */
    @Rollback(false)
-   public void testCrudGroupement() throws Exception{
+   @Test
+public void testCrudGroupement() throws Exception{
       /** Create. */
       Critere c = new Critere(this.champDao.findById(3), "!=", "toto");
-      this.critereDao.createObject(c);
+      this.critereDao.save(c);
       final int id1 = c.getCritereId();
       c = new Critere(this.champDao.findById(4), "=", "tti");
-      this.critereDao.createObject(c);
+      this.critereDao.save(c);
       final int id2 = c.getCritereId();
 
       final String condition = "and";
@@ -134,8 +142,8 @@ public class GroupementDaoTest extends AbstractDaoTest
 
       Integer idObject = new Integer(-1);
       // Test de l'insertion
-      this.groupementDao.createObject(g);
-      final List<Groupement> groupements = this.groupementDao.findAll();
+      this.groupementDao.save(g);
+      final List<Groupement> groupements = this.IterableUtils.toList(groupementDao.findAll());
       final Iterator<Groupement> itGroupement = groupements.iterator();
       boolean found = false;
       while(itGroupement.hasNext()){
@@ -179,7 +187,7 @@ public class GroupementDaoTest extends AbstractDaoTest
       g2.setCritere2(updatedCritere2);
       g2.setParent(updatedParent);
 
-      this.groupementDao.updateObject(g2);
+      this.groupementDao.save(g2);
       assertNotNull(this.groupementDao.findById(idObject).getOperateur());
       assertTrue(this.groupementDao.findById(idObject).getOperateur().equals(updatedCondition));
       if(this.groupementDao.findById(idObject).getCritere1() != null){
@@ -199,18 +207,19 @@ public class GroupementDaoTest extends AbstractDaoTest
       }
 
       /** Delete. */
-      this.groupementDao.removeObject(idObject);
+      this.groupementDao.deleteById(idObject);
       assertNull(this.groupementDao.findById(idObject));
 
       //On supprime les éléments créés
-      this.critereDao.removeObject(id1);
-      this.critereDao.removeObject(id2);
+      this.critereDao.deleteById(id1);
+      this.critereDao.deleteById(id2);
    }
 
    /**
     * test toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final Groupement g1 = groupementDao.findById(1);
       assertTrue(g1.toString().equals("{" + g1.getGroupementId() + "}"));
 
@@ -221,7 +230,8 @@ public class GroupementDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       //On boucle sur les 16 possibilités
       for(int i = 0; i < Math.pow(2, 4); i++){
          final Groupement groupement1 = new Groupement();
@@ -261,7 +271,8 @@ public class GroupementDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       //On boucle sur les 16 possibilités
       for(int i = 0; i < Math.pow(2, 4); i++){
          final Groupement groupement = new Groupement();

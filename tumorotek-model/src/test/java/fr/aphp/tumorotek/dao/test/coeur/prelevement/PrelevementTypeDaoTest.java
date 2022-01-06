@@ -60,13 +60,17 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 public class PrelevementTypeDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private PrelevementTypeDao prelevementTypeDao;
-   private PlateformeDao plateformeDao;
+
+   @Autowired
+ PrelevementTypeDao prelevementTypeDao;
+   @Autowired
+ PlateformeDao plateformeDao;
 
    /** Valeur du type pour la maj. */
-   private final String updatedType = "Type mis a jour";
-   private final String updatedInca = "M";
+   @Autowired
+ final String updatedType = "Type mis a jour";
+   @Autowired
+ final String updatedInca = "M";
 
    /**
     * Constructeur.
@@ -77,18 +81,21 @@ public class PrelevementTypeDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param tDao est le bean Dao.
     */
-   public void setPrelevementTypeDao(final PrelevementTypeDao tDao){
+   @Test
+public void setPrelevementTypeDao(final PrelevementTypeDao tDao){
       this.prelevementTypeDao = tDao;
    }
 
-   public void setPlateformeDao(final PlateformeDao pfDao){
+   @Test
+public void setPlateformeDao(final PlateformeDao pfDao){
       this.plateformeDao = pfDao;
    }
 
    /**
     * Test l'appel de la méthode toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       PrelevementType pt1 = prelevementTypeDao.findById(1);
       assertTrue(pt1.toString().equals("{" + pt1.getNom() + ", " + pt1.getIncaCat() + "}"));
       pt1 = new PrelevementType();
@@ -98,12 +105,14 @@ public class PrelevementTypeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllTypes(){
-      final List<PrelevementType> types = prelevementTypeDao.findAll();
+   @Test
+public void testReadAllTypes(){
+      final List<PrelevementType> types = IterableUtils.toList(prelevementTypeDao.findAll());
       assertTrue(types.size() == 4);
    }
 
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
       List<? extends TKThesaurusObject> list = prelevementTypeDao.findByPfOrder(pf);
       assertTrue(list.size() == 3);
@@ -118,7 +127,8 @@ public class PrelevementTypeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByType().
     */
-   public void testFindByType(){
+   @Test
+public void testFindByType(){
       List<PrelevementType> types = prelevementTypeDao.findByType("BIOPSIE");
       assertTrue(types.size() == 1);
       types = prelevementTypeDao.findByType("PIECE OPERATOIRE");
@@ -132,7 +142,8 @@ public class PrelevementTypeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByIncaCat().
     */
-   public void testFindByIncaCat(){
+   @Test
+public void testFindByIncaCat(){
       List<PrelevementType> types = prelevementTypeDao.findByIncaCat("P");
       assertTrue(types.size() == 2);
       types = prelevementTypeDao.findByType("O");
@@ -142,7 +153,8 @@ public class PrelevementTypeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<PrelevementType> liste = prelevementTypeDao.findByExcludedId(1);
       assertTrue(liste.size() == 3);
       final PrelevementType type = liste.get(0);
@@ -159,13 +171,14 @@ public class PrelevementTypeDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
    @Rollback(false)
-   public void testCrudPrelevementType() throws Exception{
+   @Test
+public void testCrudPrelevementType() throws Exception{
       final PrelevementType t = new PrelevementType();
       t.setNom("PIECE OPERATOIRE");
       t.setIncaCat("O");
       t.setPlateforme(plateformeDao.findById(1));
       // Test de l'insertion
-      prelevementTypeDao.createObject(t);
+      prelevementTypeDao.save(t);
       assertEquals(new Integer(5), t.getId());
 
       // Test de la mise à jour
@@ -175,12 +188,12 @@ public class PrelevementTypeDaoTest extends AbstractDaoTest
       assertTrue(t2.getIncaCat().equals("O"));
       t2.setNom(updatedType);
       t2.setIncaCat(updatedInca);
-      prelevementTypeDao.updateObject(t2);
+      prelevementTypeDao.save(t2);
       assertTrue(prelevementTypeDao.findById(new Integer(5)).getNom().equals(updatedType));
       assertTrue(prelevementTypeDao.findById(new Integer(5)).getIncaCat().equals(updatedInca));
 
       // Test de la délétion
-      prelevementTypeDao.removeObject(new Integer(5));
+      prelevementTypeDao.deleteById(new Integer(5));
       assertNull(prelevementTypeDao.findById(new Integer(5)));
 
    }
@@ -188,7 +201,8 @@ public class PrelevementTypeDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String type = "Type";
       final String type2 = "Type2";
       final String inca = "I";
@@ -247,7 +261,8 @@ public class PrelevementTypeDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String type = "Type";
       final String inca = "Inca";
       final PrelevementType t1 = new PrelevementType();

@@ -38,7 +38,19 @@ package fr.aphp.tumorotek.dao.test.interfacage;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.interfacage.LogicielDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
@@ -53,12 +65,15 @@ import fr.aphp.tumorotek.model.interfacage.Logiciel;
  * @version 04/10/2011
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class LogicielDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private LogicielDao logicielDao;
+
+   @Autowired
+ LogicielDao logicielDao;
 
    public LogicielDaoTest(){
 
@@ -69,35 +84,39 @@ public class LogicielDaoTest extends AbstractDaoTest
       return new String[] {"applicationContextDao-interfacages-test-mysql.xml"};
    }
 
-   public void setLogicielDao(final LogicielDao lDao){
+   @Test
+public void setLogicielDao(final LogicielDao lDao){
       this.logicielDao = lDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAll(){
-      final List<Logiciel> liste = logicielDao.findAll();
+   @Test
+public void testReadAll(){
+      final List<Logiciel> liste = IterableUtils.toList(logicielDao.findAll());
       assertTrue(liste.size() == 3);
    }
 
    /**
     * Test l'appel de la méthode findByOrder().
     */
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       final List<Logiciel> liste = logicielDao.findByOrder();
       assertTrue(liste.size() == 3);
       assertTrue(liste.get(0).getNom().equals("APIX"));
    }
 
    @Rollback(false)
-   public void testCrud() throws Exception{
+   @Test
+public void testCrud() throws Exception{
 
       final Logiciel log = new Logiciel();
       log.setNom("TEST");
 
       // Test de l'insertion
-      logicielDao.createObject(log);
+      logicielDao.save(log);
       assertEquals(new Integer(4), log.getLogicielId());
 
       final Logiciel log2 = logicielDao.findById(new Integer(4));
@@ -111,20 +130,21 @@ public class LogicielDaoTest extends AbstractDaoTest
       log2.setNom("UP");
       log2.setEditeur("EDIT");
       log2.setVersion("2.0");
-      logicielDao.updateObject(log2);
+      logicielDao.save(log2);
       assertTrue(logicielDao.findById(new Integer(4)).getNom().equals("UP"));
       assertTrue(logicielDao.findById(new Integer(4)).getEditeur().equals("EDIT"));
       assertTrue(logicielDao.findById(new Integer(4)).getVersion().equals("2.0"));
 
       // Test de la délétion
-      logicielDao.removeObject(new Integer(4));
+      logicielDao.deleteById(new Integer(4));
       assertNull(logicielDao.findById(new Integer(4)));
    }
 
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String nom = "NOM";
       final String nom2 = "NOM2";
       final Logiciel l1 = new Logiciel();
@@ -161,7 +181,8 @@ public class LogicielDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String nom = "NOM";
       final Logiciel l1 = new Logiciel();
       l1.setNom(nom);
@@ -186,7 +207,8 @@ public class LogicielDaoTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final Logiciel l1 = logicielDao.findById(1);
       assertTrue(l1.toString().equals("{" + l1.getNom() + "}"));
 

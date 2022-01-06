@@ -39,7 +39,19 @@ import java.text.ParseException;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.impression.BlocImpressionDao;
 import fr.aphp.tumorotek.dao.impression.BlocImpressionTemplateDao;
@@ -60,45 +72,55 @@ import fr.aphp.tumorotek.model.impression.Template;
  * @version 23/07/2010
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class BlocImpressionTemplateDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private BlocImpressionTemplateDao blocImpressionTemplateDao;
-   /** Bean Dao. */
-   private TemplateDao templateDao;
-   /** Bean Dao. */
-   private BlocImpressionDao blocImpressionDao;
+
+   @Autowired
+ BlocImpressionTemplateDao blocImpressionTemplateDao;
+
+   @Autowired
+ TemplateDao templateDao;
+
+   @Autowired
+ BlocImpressionDao blocImpressionDao;
 
    public BlocImpressionTemplateDaoTest(){
 
    }
 
-   public void setBlocImpressionTemplateDao(final BlocImpressionTemplateDao bDao){
+   @Test
+public void setBlocImpressionTemplateDao(final BlocImpressionTemplateDao bDao){
       this.blocImpressionTemplateDao = bDao;
    }
 
-   public void setTemplateDao(final TemplateDao tDao){
+   @Test
+public void setTemplateDao(final TemplateDao tDao){
       this.templateDao = tDao;
    }
 
-   public void setBlocImpressionDao(final BlocImpressionDao bDao){
+   @Test
+public void setBlocImpressionDao(final BlocImpressionDao bDao){
       this.blocImpressionDao = bDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAll(){
-      final List<BlocImpressionTemplate> liste = blocImpressionTemplateDao.findAll();
+   @Test
+public void testReadAll(){
+      final List<BlocImpressionTemplate> liste = IterableUtils.toList(blocImpressionTemplateDao.findAll());
       assertTrue(liste.size() == 4);
    }
 
    /**
     * Test l'appel de la méthode findById().
     */
-   public void testFindById(){
+   @Test
+public void testFindById(){
       final BlocImpression b1 = blocImpressionDao.findById(1);
       final Template t1 = templateDao.findById(1);
       BlocImpressionTemplatePK pk = new BlocImpressionTemplatePK(t1, b1);
@@ -115,7 +137,8 @@ public class BlocImpressionTemplateDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedPK().
     */
-   public void testFindByExcludedPK(){
+   @Test
+public void testFindByExcludedPK(){
       final BlocImpression b1 = blocImpressionDao.findById(1);
       final Template t1 = templateDao.findById(1);
       BlocImpressionTemplatePK pk = new BlocImpressionTemplatePK(t1, b1);
@@ -132,7 +155,8 @@ public class BlocImpressionTemplateDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByTemplate().
     */
-   public void testFindByTemplate(){
+   @Test
+public void testFindByTemplate(){
       final Template t1 = templateDao.findById(1);
       List<BlocImpressionTemplate> liste = blocImpressionTemplateDao.findByTemplate(t1);
       assertTrue(liste.size() == 4);
@@ -147,7 +171,8 @@ public class BlocImpressionTemplateDaoTest extends AbstractDaoTest
     * d'un BlocImpressionTemplate.
     **/
    @Rollback(false)
-   public void testCrud(){
+   @Test
+public void testCrud(){
 
       final BlocImpressionTemplate bit = new BlocImpressionTemplate();
       final BlocImpression b1 = blocImpressionDao.findById(4);
@@ -160,8 +185,8 @@ public class BlocImpressionTemplateDaoTest extends AbstractDaoTest
       bit.setOrdre(ordre);
 
       // Test de l'insertion
-      blocImpressionTemplateDao.createObject(bit);
-      assertTrue(blocImpressionTemplateDao.findAll().size() == 5);
+      blocImpressionTemplateDao.save(bit);
+      assertTrue(IterableUtils.toList(blocImpressionTemplateDao.findAll()).size() == 5);
 
       // Test de la mise à jour
       final BlocImpressionTemplatePK pk = new BlocImpressionTemplatePK();
@@ -175,22 +200,23 @@ public class BlocImpressionTemplateDaoTest extends AbstractDaoTest
 
       //update
       bit2.setOrdre(ordreUp);
-      blocImpressionTemplateDao.updateObject(bit2);
+      blocImpressionTemplateDao.save(bit2);
       assertTrue(blocImpressionTemplateDao.findById(pk).equals(bit2));
       assertTrue(blocImpressionTemplateDao.findById(pk).getOrdre() == ordreUp);
-      assertTrue(blocImpressionTemplateDao.findAll().size() == 5);
+      assertTrue(IterableUtils.toList(blocImpressionTemplateDao.findAll()).size() == 5);
 
       // Test de la délétion
-      blocImpressionTemplateDao.removeObject(pk);
+      blocImpressionTemplateDao.deleteById(pk);
       assertNull(blocImpressionTemplateDao.findById(pk));
-      assertTrue(blocImpressionTemplateDao.findAll().size() == 4);
+      assertTrue(IterableUtils.toList(blocImpressionTemplateDao.findAll()).size() == 4);
    }
 
    /**
     * Test de la méthode surchargée "equals".
     * @throws ParseException 
     */
-   public void testEquals() throws ParseException{
+   @Test
+public void testEquals() throws ParseException{
 
       final BlocImpressionTemplate bit1 = new BlocImpressionTemplate();
       final BlocImpressionTemplate bit2 = new BlocImpressionTemplate();
@@ -214,7 +240,8 @@ public class BlocImpressionTemplateDaoTest extends AbstractDaoTest
     * Test de la méthode surchargée "hashcode".
     * @throws ParseException 
     */
-   public void testHashCode() throws ParseException{
+   @Test
+public void testHashCode() throws ParseException{
       final BlocImpressionTemplate bit1 = new BlocImpressionTemplate();
       final BlocImpressionTemplate bit2 = new BlocImpressionTemplate();
       final BlocImpressionTemplate bit3 = new BlocImpressionTemplate();
@@ -236,7 +263,8 @@ public class BlocImpressionTemplateDaoTest extends AbstractDaoTest
       assertTrue(hash == bit1.hashCode());
    }
 
-   private void populateClefsToTestEqualsAndHashCode(final BlocImpressionTemplate bit1, final BlocImpressionTemplate bit2)
+   @Autowired
+ void populateClefsToTestEqualsAndHashCode(final BlocImpressionTemplate bit1, final BlocImpressionTemplate bit2)
       throws ParseException{
 
       final BlocImpression b1 = blocImpressionDao.findById(1);
@@ -266,7 +294,8 @@ public class BlocImpressionTemplateDaoTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final BlocImpression b1 = blocImpressionDao.findById(1);
       final Template t1 = templateDao.findById(1);
       final BlocImpressionTemplatePK pk1 = new BlocImpressionTemplatePK(t1, b1);
@@ -282,7 +311,8 @@ public class BlocImpressionTemplateDaoTest extends AbstractDaoTest
    /**
     * Test la méthode clone.
     */
-   public void testClone(){
+   @Test
+public void testClone(){
       final BlocImpression b1 = blocImpressionDao.findById(1);
       final Template t1 = templateDao.findById(1);
       final BlocImpressionTemplatePK pk1 = new BlocImpressionTemplatePK(t1, b1);

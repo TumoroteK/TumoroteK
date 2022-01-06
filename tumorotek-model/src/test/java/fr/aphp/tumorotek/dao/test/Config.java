@@ -35,13 +35,18 @@
  **/
 package fr.aphp.tumorotek.dao.test;
 
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
 @ImportResource(locations = {"classpath:spring-jpa-test-mysql.xml"})
-@EnableJpaRepositories(basePackages = {"fr.aphp.tumorotek.dao.utilisateur"}, entityManagerFactoryRef = "entityManagerFactory")
+@EnableJpaRepositories(
+	basePackages = {"fr.aphp.tumorotek.dao"},
+	excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = "fr.aphp.tumorotek.dao.(code|interfacage).*"),
+	entityManagerFactoryRef = "entityManagerFactory")
 public class Config {
 	
 }

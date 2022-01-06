@@ -56,11 +56,13 @@ import fr.aphp.tumorotek.model.contexte.Categorie;
 public class CategorieDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private CategorieDao categorieDao;
+
+   @Autowired
+ CategorieDao categorieDao;
 
    /** Valeur du nom pour la maj. */
-   private final String updatedNom = "Cat mis a jour";
+   @Autowired
+ final String updatedNom = "Cat mis a jour";
 
    /**
     * Constructeur.
@@ -71,22 +73,25 @@ public class CategorieDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param cDao est le bean Dao.
     */
-   public void setCategorieDaoJpa(final CategorieDao cDao){
+   @Test
+public void setCategorieDaoJpa(final CategorieDao cDao){
       this.categorieDao = cDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllCategories(){
-      final List<Categorie> categories = categorieDao.findAll();
+   @Test
+public void testReadAllCategories(){
+      final List<Categorie> categories = IterableUtils.toList(categorieDao.findAll());
       assertTrue(categories.size() == 2);
    }
 
    /**
     * Test l'appel de la méthode findByOrder().
     */
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       final List<Categorie> list = categorieDao.findByOrder();
       assertTrue(list.size() == 2);
       assertTrue(list.get(0).getNom().equals("CAT1"));
@@ -95,7 +100,8 @@ public class CategorieDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByNom().
     */
-   public void testFindByNom(){
+   @Test
+public void testFindByNom(){
       List<Categorie> categories = categorieDao.findByNom("CAT1");
       assertTrue(categories.size() == 1);
       categories = categorieDao.findByNom("CAT5");
@@ -107,7 +113,8 @@ public class CategorieDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByEtablissementId().
     */
-   public void testFindByEtablissementId(){
+   @Test
+public void testFindByEtablissementId(){
       List<Categorie> categories = categorieDao.findByEtablissementId(1);
       assertTrue(categories.size() == 1);
       categories = categorieDao.findByEtablissementId(4);
@@ -117,7 +124,8 @@ public class CategorieDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<Categorie> liste = categorieDao.findByExcludedId(1);
       assertTrue(liste.size() == 1);
       final Categorie cat = liste.get(0);
@@ -133,12 +141,13 @@ public class CategorieDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
    @Rollback(false)
-   public void testCrudCategorie() throws Exception{
+   @Test
+public void testCrudCategorie() throws Exception{
       final Categorie c = new Categorie();
 
       c.setNom("CAT3");
       // Test de l'insertion
-      categorieDao.createObject(c);
+      categorieDao.save(c);
       assertEquals(new Integer(3), c.getId());
 
       // Test de la mise à jour
@@ -146,11 +155,11 @@ public class CategorieDaoTest extends AbstractDaoTest
       assertNotNull(c2);
       assertTrue(c2.getNom().equals("CAT3"));
       c2.setNom(updatedNom);
-      categorieDao.updateObject(c2);
+      categorieDao.save(c2);
       assertTrue(categorieDao.findById(new Integer(3)).getNom().equals(updatedNom));
 
       // Test de la délétion
-      categorieDao.removeObject(new Integer(3));
+      categorieDao.deleteById(new Integer(3));
       assertNull(categorieDao.findById(new Integer(3)));
 
    }
@@ -158,7 +167,8 @@ public class CategorieDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String nom = "Categorie";
       final String nom2 = "Categorie2";
       final Categorie c1 = new Categorie();
@@ -196,7 +206,8 @@ public class CategorieDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String nom = "Categorie";
       final Categorie c1 = new Categorie();
       c1.setId(1);

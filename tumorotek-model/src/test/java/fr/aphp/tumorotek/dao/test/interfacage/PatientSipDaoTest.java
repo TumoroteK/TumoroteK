@@ -70,31 +70,36 @@ public class PatientSipDaoTest extends AbstractDaoTest
       return new String[] {"applicationContextDao-interfacages-test-mysql.xml"};
    }
 
-   /** Bean Dao. */
-   private PatientSipDao patientSipDao;
+
+   @Autowired
+ PatientSipDao patientSipDao;
 
    /**
     * Constructeur.
     */
    public PatientSipDaoTest(){}
 
-   public void setPatientSipDao(final PatientSipDao pDao){
+   @Test
+public void setPatientSipDao(final PatientSipDao pDao){
       this.patientSipDao = pDao;
    }
 
-   public void testToString(){
+   @Test
+public void testToString(){
       PatientSip p1 = patientSipDao.findById(1);
       assertTrue(p1.toString().equals("{" + p1.getNip() + " " + p1.getNom() + "}"));
       p1 = new PatientSip();
       assertTrue(p1.toString().equals("{Empty PatientSip}"));
    }
 
-   public void testReadAllPatientSips(){
-      final List<PatientSip> patients = patientSipDao.findAll();
+   @Test
+public void testReadAllPatientSips(){
+      final List<PatientSip> patients = IterableUtils.toList(patientSipDao.findAll());
       assertTrue(patients.size() == 3);
    }
 
-   public void testFindByNip(){
+   @Test
+public void testFindByNip(){
       List<PatientSip> patients = patientSipDao.findByNip("666");
       assertTrue(patients.size() == 1);
       patients = patientSipDao.findByNip("K12");
@@ -105,7 +110,8 @@ public class PatientSipDaoTest extends AbstractDaoTest
       assertTrue(patients.size() == 0);
    }
 
-   public void testFindByNom(){
+   @Test
+public void testFindByNom(){
       List<PatientSip> patients = patientSipDao.findByNom("Lucifer");
       assertTrue(patients.size() == 1);
       patients = patientSipDao.findByNom("SIMPSON");
@@ -122,7 +128,8 @@ public class PatientSipDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
    @Rollback(false)
-   public void testCrudPatientSip() throws Exception{
+   @Test
+public void testCrudPatientSip() throws Exception{
       final PatientSip p = new PatientSip();
       p.setNip("113");
       p.setNom("Winch");
@@ -155,9 +162,9 @@ public class PatientSipDaoTest extends AbstractDaoTest
       p.setSejours(sejs);
 
       // Test de l'insertion
-      patientSipDao.createObject(p);
+      patientSipDao.save(p);
       assertNotNull(p.getPatientSipId());
-      assertEquals(4, patientSipDao.findAll().size());
+      assertEquals(4, IterableUtils.toList(patientSipDao.findAll()).size());
 
       // Test de la mise à jour
       final PatientSip p2 = patientSipDao.findById(p.getPatientSipId());
@@ -194,9 +201,9 @@ public class PatientSipDaoTest extends AbstractDaoTest
       p2.getSejours().add(s3);
 
       p.setDateModification(cal2);
-      patientSipDao.updateObject(p2);
+      patientSipDao.save(p2);
 
-      assertTrue(patientSipDao.findAll().size() == 4);
+      assertTrue(IterableUtils.toList(patientSipDao.findAll()).size() == 4);
       final int id = p.getPatientSipId();
       assertTrue(patientSipDao.findById(id).getNip().equals("113"));
       assertTrue(patientSipDao.findById(id).getNom().equals("Rey mysterio"));
@@ -213,13 +220,14 @@ public class PatientSipDaoTest extends AbstractDaoTest
       assertTrue(patientSipDao.findByNumeroSejour("88889999").size() == 1);
 
       // Test de la délétion
-      patientSipDao.removeObject(id);
+      patientSipDao.deleteById(id);
       assertNull(patientSipDao.findById(id));
-      assertTrue(patientSipDao.findAll().size() == 3);
+      assertTrue(IterableUtils.toList(patientSipDao.findAll()).size() == 3);
       assertTrue(patientSipDao.findByNumeroSejour("88889999").isEmpty());
    }
 
-   public void testFindByNumeroSejour(){
+   @Test
+public void testFindByNumeroSejour(){
       List<PatientSip> sips = patientSipDao.findByNumeroSejour("13562717");
       assertTrue(sips.isEmpty());
       sips = patientSipDao.findByNumeroSejour(null);
@@ -240,7 +248,8 @@ public class PatientSipDaoTest extends AbstractDaoTest
     * Test des méthodes surchargées "equals" et hashcode pour
     * la table transcodeUtilisateur.
     */
-   public void testEqualsAndHashCode(){
+   @Test
+public void testEqualsAndHashCode(){
       final PatientSip p1 = new PatientSip();
       final PatientSip p2 = new PatientSip();
       assertFalse(p1.equals(null));
@@ -275,7 +284,8 @@ public class PatientSipDaoTest extends AbstractDaoTest
       assertFalse(p1.equals(c));
    }
 
-   public void testClone(){
+   @Test
+public void testClone(){
       final PatientSip p = patientSipDao.findById(1);
       final PatientSip p2 = p.clone();
       assertTrue(p.equals(p2));
@@ -294,18 +304,21 @@ public class PatientSipDaoTest extends AbstractDaoTest
       assertNull(p2.getDateModification());
    }
 
-   public void testFindCountAll(){
+   @Test
+public void testFindCountAll(){
       assertTrue(patientSipDao.findCountAll().size() == 1);
       assertTrue(patientSipDao.findCountAll().get(0) == 3);
    }
 
-   public void testFindFirst(){
+   @Test
+public void testFindFirst(){
       final List<PatientSip> first = patientSipDao.findFirst();
       assertTrue(first.size() == 1);
       assertTrue(first.get(0).getPatientSipId() == 1);
    }
 
-   public void testToPatient() throws ParseException{
+   @Test
+public void testToPatient() throws ParseException{
       final PatientSip p = new PatientSip();
       p.setNip("123");
       p.setNom("TEST");

@@ -40,7 +40,19 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.interfacage.scan.ScanDeviceDao;
 import fr.aphp.tumorotek.dao.interfacage.scan.ScanTerminaleDao;
@@ -57,12 +69,16 @@ import fr.aphp.tumorotek.model.interfacage.scan.ScanTube;
  * @version 2.1
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class ScanTerminaleDaoTest extends AbstractDaoTest
 {
 
-   private ScanTerminaleDao scanTerminaleDao;
-   private ScanDeviceDao scanDeviceDao;
+   @Autowired
+ ScanTerminaleDao scanTerminaleDao;
+   @Autowired
+ ScanDeviceDao scanDeviceDao;
 
    public ScanTerminaleDaoTest(){}
 
@@ -71,7 +87,8 @@ public class ScanTerminaleDaoTest extends AbstractDaoTest
       return new String[] {"applicationContextDao-interfacages-test-mysql.xml"};
    }
 
-   public void setScanTerminaleDao(final ScanTerminaleDao _s){
+   @Test
+public void setScanTerminaleDao(final ScanTerminaleDao _s){
       this.scanTerminaleDao = _s;
    }
 
@@ -80,7 +97,8 @@ public class ScanTerminaleDaoTest extends AbstractDaoTest
    }
 
    @Rollback(false)
-   public void testCrudScanTerminale() throws Exception{
+   @Test
+public void testCrudScanTerminale() throws Exception{
 
       final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 
@@ -112,15 +130,15 @@ public class ScanTerminaleDaoTest extends AbstractDaoTest
       t3.setCol("08");
       st1.addTube(t3);
 
-      final int totSize = scanTerminaleDao.findAll().size();
+      final int totSize = IterableUtils.toList(scanTerminaleDao.findAll()).size();
 
       // test findByScanDevice
       assertTrue(scanTerminaleDao.findByScanDevice(null).isEmpty());
       assertTrue(scanTerminaleDao.findByScanDevice(visionMate).isEmpty());
 
       // Test de l'insertion
-      scanTerminaleDao.createObject(st1);
-      assertTrue(scanTerminaleDao.findAll().size() == totSize + 1);
+      scanTerminaleDao.save(st1);
+      assertTrue(IterableUtils.toList(scanTerminaleDao.findAll()).size() == totSize + 1);
       assertTrue(st1.getScanTerminaleId() != null);
       assertTrue(scanTerminaleDao.findByScanDevice(visionMate).size() == 1);
       // test findTkCodes
@@ -149,17 +167,18 @@ public class ScanTerminaleDaoTest extends AbstractDaoTest
       assertTrue(st2.getScanTubes().get(2).getPosition() == 58);
 
       // Test de la délétion
-      scanTerminaleDao.removeObject(st2.getScanTerminaleId());
+      scanTerminaleDao.deleteById(st2.getScanTerminaleId());
       assertNull(scanTerminaleDao.findById(st2.getScanTerminaleId()));
 
-      assertTrue(scanTerminaleDao.findAll().size() == totSize);
+      assertTrue(IterableUtils.toList(scanTerminaleDao.findAll()).size() == totSize);
    }
 
    //	/**
    //	 * Test de la méthode surchargée "equals".
    //	 * @throws ParseException 
    //	 */
-   //	public void testEquals() throws ParseException {
+   //	@Test
+public void testEquals() throws ParseException {
    //		
    //		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
    //
@@ -236,7 +255,8 @@ public class ScanTerminaleDaoTest extends AbstractDaoTest
    //		assertFalse(ci1.equals(c3));
    //	}
    //	
-   //	public void testHashCode() throws ParseException {
+   //	@Test
+public void testHashCode() throws ParseException {
    //		
    //		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
    //		

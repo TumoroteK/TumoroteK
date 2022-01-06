@@ -38,166 +38,177 @@ package fr.aphp.tumorotek.dao.test.stockage;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
 
 import fr.aphp.tumorotek.dao.stockage.TerminaleNumerotationDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
 import fr.aphp.tumorotek.model.contexte.Categorie;
 import fr.aphp.tumorotek.model.stockage.TerminaleNumerotation;
 
-public class TerminaleNumerotationDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class TerminaleNumerotationDaoTest extends AbstractDaoTest {
 
-   /** Bean Dao. */
-   private TerminaleNumerotationDao terminaleNumerotationDao;
-   /** valeur du nom pour la maj. */
-   private final String updated = "UP";
+	@Autowired
+	TerminaleNumerotationDao terminaleNumerotationDao;
 
-   /** Constructeur. */
-   public TerminaleNumerotationDaoTest(){
+	/** valeur du nom pour la maj. */
+	private String updated = "UP";
 
-   }
+	/**
+	 * Test l'appel de la méthode findAll().
+	 */
+	@Test
+	public void testReadAlls() {
+		final List<TerminaleNumerotation> liste = IterableUtils
+				.toList(IterableUtils.toList(terminaleNumerotationDao.findAll()));
+		assertTrue(liste.size() == 5);
+	}
 
-   public void setTerminaleNumerotationDao(final TerminaleNumerotationDao tDao){
-      this.terminaleNumerotationDao = tDao;
-   }
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'un CessionExamen.
+	 * 
+	 * @throws Exception lance une exception en cas d'erreur.
+	 */
+	@Rollback(false)
+	@Test
+	public void testCrud() throws Exception {
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   public void testReadAlls(){
-      final List<TerminaleNumerotation> liste = terminaleNumerotationDao.findAll();
-      assertTrue(liste.size() == 5);
-   }
+		final TerminaleNumerotation tn = new TerminaleNumerotation();
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression d'un CessionExamen.
-    * @throws Exception lance une exception en cas d'erreur.
-    */
-   @Rollback(false)
-   public void testCrud() throws Exception{
+		tn.setLigne("CAR");
+		tn.setColonne("CAR");
+		// Test de l'insertion
+		terminaleNumerotationDao.save(tn);
+		assertEquals(new Integer(6), tn.getTerminaleNumerotationId());
 
-      final TerminaleNumerotation tn = new TerminaleNumerotation();
+		// Test de la mise à jour
+		final TerminaleNumerotation tn2 = terminaleNumerotationDao.findById(new Integer(6)).get();
+		assertNotNull(tn2);
+		assertTrue(tn2.getLigne().equals("CAR"));
+		tn2.setLigne(updated);
+		terminaleNumerotationDao.save(tn2);
+		assertTrue(terminaleNumerotationDao.findById(new Integer(6)).get().getLigne().equals(updated));
 
-      tn.setLigne("CAR");
-      tn.setColonne("CAR");
-      // Test de l'insertion
-      terminaleNumerotationDao.createObject(tn);
-      assertEquals(new Integer(6), tn.getTerminaleNumerotationId());
+		// Test de la délétion
+		terminaleNumerotationDao.deleteById(new Integer(6));
+		assertFalse(terminaleNumerotationDao.findById(new Integer(6)).isPresent());
 
-      // Test de la mise à jour
-      final TerminaleNumerotation tn2 = terminaleNumerotationDao.findById(new Integer(6));
-      assertNotNull(tn2);
-      assertTrue(tn2.getLigne().equals("CAR"));
-      tn2.setLigne(updated);
-      terminaleNumerotationDao.updateObject(tn2);
-      assertTrue(terminaleNumerotationDao.findById(new Integer(6)).getLigne().equals(updated));
+	}
 
-      // Test de la délétion
-      terminaleNumerotationDao.removeObject(new Integer(6));
-      assertNull(terminaleNumerotationDao.findById(new Integer(6)));
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final String ligne = "L1";
+		final String ligne2 = "L2";
+		final String col1 = "C1";
+		final String col2 = "C2";
+		final TerminaleNumerotation tn1 = new TerminaleNumerotation();
+		TerminaleNumerotation tn2 = new TerminaleNumerotation();
 
-   }
+		// L'objet 1 n'est pas égal à null
+		assertFalse(tn1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(tn1.equals(tn1));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   public void testEquals(){
-      final String ligne = "L1";
-      final String ligne2 = "L2";
-      final String col1 = "C1";
-      final String col2 = "C2";
-      final TerminaleNumerotation tn1 = new TerminaleNumerotation();
-      TerminaleNumerotation tn2 = new TerminaleNumerotation();
+		/* null */
+		assertTrue(tn1.equals(tn2));
+		assertTrue(tn2.equals(tn1));
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(tn1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(tn1.equals(tn1));
+		/* Nom */
+		tn2.setLigne(ligne);
+		assertFalse(tn1.equals(tn2));
+		assertFalse(tn2.equals(tn1));
+		tn1.setLigne(ligne2);
+		assertFalse(tn1.equals(tn2));
+		assertFalse(tn2.equals(tn1));
+		tn1.setLigne(ligne);
+		assertTrue(tn1.equals(tn2));
+		assertTrue(tn2.equals(tn1));
 
-      /*null*/
-      assertTrue(tn1.equals(tn2));
-      assertTrue(tn2.equals(tn1));
+		/* Etablissement */
+		tn2.setColonne(col1);
+		assertFalse(tn1.equals(tn2));
+		assertFalse(tn2.equals(tn1));
+		tn1.setColonne(col2);
+		assertFalse(tn1.equals(tn2));
+		assertFalse(tn2.equals(tn1));
+		tn1.setColonne(col1);
+		assertTrue(tn1.equals(tn2));
+		assertTrue(tn2.equals(tn1));
 
-      /*Nom*/
-      tn2.setLigne(ligne);
-      assertFalse(tn1.equals(tn2));
-      assertFalse(tn2.equals(tn1));
-      tn1.setLigne(ligne2);
-      assertFalse(tn1.equals(tn2));
-      assertFalse(tn2.equals(tn1));
-      tn1.setLigne(ligne);
-      assertTrue(tn1.equals(tn2));
-      assertTrue(tn2.equals(tn1));
+		final Categorie c3 = new Categorie();
+		assertFalse(tn1.equals(c3));
 
-      /*Etablissement*/
-      tn2.setColonne(col1);
-      assertFalse(tn1.equals(tn2));
-      assertFalse(tn2.equals(tn1));
-      tn1.setColonne(col2);
-      assertFalse(tn1.equals(tn2));
-      assertFalse(tn2.equals(tn1));
-      tn1.setColonne(col1);
-      assertTrue(tn1.equals(tn2));
-      assertTrue(tn2.equals(tn1));
+		// teste doublons
+		tn2 = terminaleNumerotationDao.findById(2).get();
+		tn1.setLigne(tn2.getLigne());
+		tn1.setColonne(tn2.getColonne());
+		assertTrue(IterableUtils.toList(IterableUtils.toList(terminaleNumerotationDao.findAll())).contains(tn1));
+	}
 
-      final Categorie c3 = new Categorie();
-      assertFalse(tn1.equals(c3));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
+		final String ligne = "L1";
+		final String ligne2 = "L2";
+		final String col1 = "C1";
+		final String col2 = "C2";
+		final TerminaleNumerotation tn1 = new TerminaleNumerotation();
+		final TerminaleNumerotation tn2 = new TerminaleNumerotation();
 
-      //teste doublons
-      tn2 = terminaleNumerotationDao.findById(2);
-      tn1.setLigne(tn2.getLigne());
-      tn1.setColonne(tn2.getColonne());
-      assertTrue(terminaleNumerotationDao.findAll().contains(tn1));
-   }
+		/* null */
+		assertTrue(tn1.hashCode() == tn2.hashCode());
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   public void testHashCode(){
-      final String ligne = "L1";
-      final String ligne2 = "L2";
-      final String col1 = "C1";
-      final String col2 = "C2";
-      final TerminaleNumerotation tn1 = new TerminaleNumerotation();
-      final TerminaleNumerotation tn2 = new TerminaleNumerotation();
+		/* Nom */
+		tn2.setLigne(ligne);
+		assertFalse(tn1.hashCode() == tn2.hashCode());
+		tn1.setLigne(ligne2);
+		assertFalse(tn1.hashCode() == tn2.hashCode());
+		tn1.setLigne(ligne);
+		assertTrue(tn1.hashCode() == tn2.hashCode());
 
-      /*null*/
-      assertTrue(tn1.hashCode() == tn2.hashCode());
+		/* Specialite */
+		tn2.setColonne(col1);
+		assertFalse(tn1.hashCode() == tn2.hashCode());
+		tn1.setColonne(col2);
+		assertFalse(tn1.hashCode() == tn2.hashCode());
+		tn1.setColonne(col1);
+		assertTrue(tn1.hashCode() == tn2.hashCode());
 
-      /*Nom*/
-      tn2.setLigne(ligne);
-      assertFalse(tn1.hashCode() == tn2.hashCode());
-      tn1.setLigne(ligne2);
-      assertFalse(tn1.hashCode() == tn2.hashCode());
-      tn1.setLigne(ligne);
-      assertTrue(tn1.hashCode() == tn2.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		final int hash = tn1.hashCode();
+		assertTrue(hash == tn1.hashCode());
+		assertTrue(hash == tn1.hashCode());
+		assertTrue(hash == tn1.hashCode());
+		assertTrue(hash == tn1.hashCode());
 
-      /*Specialite*/
-      tn2.setColonne(col1);
-      assertFalse(tn1.hashCode() == tn2.hashCode());
-      tn1.setColonne(col2);
-      assertFalse(tn1.hashCode() == tn2.hashCode());
-      tn1.setColonne(col1);
-      assertTrue(tn1.hashCode() == tn2.hashCode());
+	}
 
-      // un même objet garde le même hashcode dans le temps
-      final int hash = tn1.hashCode();
-      assertTrue(hash == tn1.hashCode());
-      assertTrue(hash == tn1.hashCode());
-      assertTrue(hash == tn1.hashCode());
-      assertTrue(hash == tn1.hashCode());
+	/**
+	 * Test la méthode toString.
+	 */
+	@Test
+	public void testToString() {
+		final TerminaleNumerotation ct1 = terminaleNumerotationDao.findById(1).get();
+		assertTrue(ct1.toString().equals("{" + ct1.getLigne() + " " + ct1.getColonne() + "}"));
 
-   }
-
-   /**
-    * Test la méthode toString.
-    */
-   public void testToString(){
-      final TerminaleNumerotation ct1 = terminaleNumerotationDao.findById(1);
-      assertTrue(ct1.toString().equals("{" + ct1.getLigne() + " " + ct1.getColonne() + "}"));
-
-      final TerminaleNumerotation ct2 = new TerminaleNumerotation();
-      assertTrue(ct2.toString().equals("{Empty TerminaleNumerotation}"));
-   }
+		final TerminaleNumerotation ct2 = new TerminaleNumerotation();
+		assertTrue(ct2.toString().equals("{Empty TerminaleNumerotation}"));
+	}
 
 }

@@ -66,34 +66,43 @@ import fr.aphp.tumorotek.model.contexte.Etablissement;
 public class PatientDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private PatientDao patientDao;
-   private EntiteDao entiteDao;
-   private BanqueDao banqueDao;
-   private EtablissementDao etablissementDao;
+
+   @Autowired
+ PatientDao patientDao;
+   @Autowired
+ EntiteDao entiteDao;
+   @Autowired
+ BanqueDao banqueDao;
+   @Autowired
+ EtablissementDao etablissementDao;
 
    /**
     * Constructeur.
     */
    public PatientDaoTest(){}
 
-   public void setPatientDao(final PatientDao pDao){
+   @Test
+public void setPatientDao(final PatientDao pDao){
       this.patientDao = pDao;
    }
 
-   public void setEntiteDao(final EntiteDao eDao){
+   @Test
+public void setEntiteDao(final EntiteDao eDao){
       this.entiteDao = eDao;
    }
 
-   public void setBanqueDao(final BanqueDao bDao){
+   @Test
+public void setBanqueDao(final BanqueDao bDao){
       this.banqueDao = bDao;
    }
 
-   public void setEtablissementDao(final EtablissementDao eDao){
+   @Test
+public void setEtablissementDao(final EtablissementDao eDao){
       this.etablissementDao = eDao;
    }
 
-   public void testToString(){
+   @Test
+public void testToString(){
       Patient p1 = patientDao.findById(1);
       assertTrue(p1.toString().equals("{" + p1.getNom() + " " + p1.getPrenom() + "}"));
       assertTrue(p1.listableObjectId().equals(new Integer(1)));
@@ -104,17 +113,20 @@ public class PatientDaoTest extends AbstractDaoTest
       assertTrue(p1.toString().equals("{Empty Patient}"));
    }
 
-   public void testReadAllPatients(){
-      final List<Patient> patients = patientDao.findAll();
+   @Test
+public void testReadAllPatients(){
+      final List<Patient> patients = IterableUtils.toList(patientDao.findAll());
       assertTrue(patients.size() == 5);
    }
 
-   public void testFindByAllIds(){
+   @Test
+public void testFindByAllIds(){
       final List<Integer> ids = patientDao.findByAllIds();
       assertTrue(ids.size() == 5);
    }
 
-   public void testFindByAllIdsWithBanques(){
+   @Test
+public void testFindByAllIdsWithBanques(){
       final List<Banque> bks = new ArrayList<>();
       bks.add(banqueDao.findById(1));
 
@@ -129,7 +141,8 @@ public class PatientDaoTest extends AbstractDaoTest
       assertTrue(ids.size() == 0);
    }
 
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<Patient> patients = patientDao.findByExcludedId(1, "MAYER");
       assertTrue(patients.size() == 0);
       patients = patientDao.findByExcludedId(8, "MAYER");
@@ -140,7 +153,8 @@ public class PatientDaoTest extends AbstractDaoTest
       assertTrue(patients.size() == 0);
    }
 
-   public void testFindByIdInList(){
+   @Test
+public void testFindByIdInList(){
       final List<Integer> ids = new ArrayList<>();
       ids.add(1);
       ids.add(2);
@@ -153,7 +167,8 @@ public class PatientDaoTest extends AbstractDaoTest
       assertTrue(patients.size() == 0);
    }
 
-   public void testFindByNip(){
+   @Test
+public void testFindByNip(){
       List<Patient> patients = patientDao.findByNip("876%");
       assertTrue(patients.size() == 2);
       patients = patientDao.findByNip("K12");
@@ -164,7 +179,8 @@ public class PatientDaoTest extends AbstractDaoTest
       assertTrue(patients.size() == 0);
    }
 
-   public void testFindByNipWithExcludedId(){
+   @Test
+public void testFindByNipWithExcludedId(){
       List<Patient> patients = patientDao.findByNipWithExcludedId("876%", 1);
       assertTrue(patients.size() == 2);
       patients = patientDao.findByNipWithExcludedId("876%", 3);
@@ -179,7 +195,8 @@ public class PatientDaoTest extends AbstractDaoTest
       assertTrue(patients.size() == 0);
    }
 
-   public void testFindByNom(){
+   @Test
+public void testFindByNom(){
       List<Patient> patients = patientDao.findByNom("MA%");
       assertTrue(patients.size() == 2);
       patients = patientDao.findByNom("SIMPSON");
@@ -190,7 +207,8 @@ public class PatientDaoTest extends AbstractDaoTest
       assertTrue(patients.size() == 0);
    }
 
-   public void testFindByNipReturnIds(){
+   @Test
+public void testFindByNipReturnIds(){
       final List<Banque> bks = new ArrayList<>();
       bks.add(banqueDao.findById(1));
       List<Integer> patients = patientDao.findByNipReturnIds("876%", bks);
@@ -213,7 +231,8 @@ public class PatientDaoTest extends AbstractDaoTest
       assertTrue(patients.size() == 0);
    }
 
-   public void testFindByNomReturnIds(){
+   @Test
+public void testFindByNomReturnIds(){
       final List<Banque> bks = new ArrayList<>();
       bks.add(banqueDao.findById(1));
       List<Integer> patients = patientDao.findByNomReturnIds("MA%", bks);
@@ -242,7 +261,8 @@ public class PatientDaoTest extends AbstractDaoTest
       assertTrue(patients.size() == 0);
    }
 
-   public void testFindByDateNaissance() throws ParseException{
+   @Test
+public void testFindByDateNaissance() throws ParseException{
       Date search = new SimpleDateFormat("dd/MM/yyyy").parse("14/12/1971");
       List<Patient> patients = patientDao.findByDateNaissance(search);
       assertTrue(patients.size() == 1);
@@ -253,7 +273,8 @@ public class PatientDaoTest extends AbstractDaoTest
       assertTrue(patients.size() == 0);
    }
 
-   public void testFindByIncomplet(){
+   @Test
+public void testFindByIncomplet(){
       final List<Patient> patients = patientDao.findByEtatIncomplet();
       assertTrue(patients.size() == 1);
    }
@@ -261,7 +282,8 @@ public class PatientDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findAllNips().
     */
-   public void testFindAllNips(){
+   @Test
+public void testFindAllNips(){
       final List<String> nips = patientDao.findAllNips();
       assertTrue(nips.size() == 4);
       assertTrue(nips.get(0).equals("0987"));
@@ -271,14 +293,16 @@ public class PatientDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findAllNoms().
     */
-   public void testFindAllNoms(){
+   @Test
+public void testFindAllNoms(){
       final List<String> noms = patientDao.findAllNoms();
       assertTrue(noms.size() == 5);
       assertTrue(noms.get(0).equals("DELPHINO"));
       assertTrue(noms.get(4).equals("SOLIS"));
    }
 
-   public void testFindByNomInList(){
+   @Test
+public void testFindByNomInList(){
       List<String> criteres = new ArrayList<>();
       criteres.add("DELPHINO");
       criteres.add("MAYER");
@@ -296,7 +320,8 @@ public class PatientDaoTest extends AbstractDaoTest
       assertTrue(liste.size() == 1);
    }
 
-   public void testFindByNipInList(){
+   @Test
+public void testFindByNipInList(){
       List<String> criteres = new ArrayList<>();
       criteres.add("12");
       criteres.add("0987");
@@ -320,7 +345,8 @@ public class PatientDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
    @Rollback(false)
-   public void testCrudPatient() throws Exception{
+   @Test
+public void testCrudPatient() throws Exception{
       final Patient p = new Patient();
       p.setNip("13z");
       p.setNom("SIMPSON");
@@ -337,7 +363,7 @@ public class PatientDaoTest extends AbstractDaoTest
       p.setEtatIncomplet(false);
       p.setArchive(false);
       // Test de l'insertion
-      patientDao.createObject(p);
+      patientDao.save(p);
       assertEquals(new Integer(6), p.getPatientId());
 
       // Test de la mise à jour
@@ -369,7 +395,7 @@ public class PatientDaoTest extends AbstractDaoTest
       p.setDateDeces(deces);
       p.setEtatIncomplet(null);
       p.setArchive(null);
-      patientDao.updateObject(p2);
+      patientDao.save(p2);
       assertNull(patientDao.findById(6).getNip());
       assertTrue(patientDao.findById(6).getNom().equals("Rey mysterio"));
       assertNull(patientDao.findById(6).getNomNaissance());
@@ -384,7 +410,7 @@ public class PatientDaoTest extends AbstractDaoTest
       assertNull(patientDao.findById(6).getArchive());
 
       // Test de la délétion
-      patientDao.removeObject(new Integer(6));
+      patientDao.deleteById(new Integer(6));
       assertNull(patientDao.findById(new Integer(6)));
    }
 
@@ -392,7 +418,8 @@ public class PatientDaoTest extends AbstractDaoTest
     * Test de la méthode surchargée "equals".
     * @throws ParseException 
     */
-   public void testEquals() throws ParseException{
+   @Test
+public void testEquals() throws ParseException{
 
       final Patient p1 = new Patient();
       final Patient p2 = new Patient();
@@ -416,7 +443,8 @@ public class PatientDaoTest extends AbstractDaoTest
     * Test de la méthode surchargée "hashcode".
     * @throws ParseException 
     */
-   public void testHashCode() throws ParseException{
+   @Test
+public void testHashCode() throws ParseException{
 
       final Patient p1 = new Patient();
       p1.setPatientId(1);
@@ -442,7 +470,8 @@ public class PatientDaoTest extends AbstractDaoTest
       assertTrue(hash == p1.hashCode());
    }
 
-   private void populateClefsToTestEqualsAndHashCode(final Patient p1, final Patient p2) throws ParseException{
+   @Autowired
+ void populateClefsToTestEqualsAndHashCode(final Patient p1, final Patient p2) throws ParseException{
       final String[] noms = new String[] {null, "nom1", "nom2", "nom1"};
       final String[] prenoms = new String[] {null, "prenom1", "prenom2", "prenom1"};
       final Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse("13/10/2006");
@@ -484,7 +513,8 @@ public class PatientDaoTest extends AbstractDaoTest
       }
    }
 
-   public void testClone(){
+   @Test
+public void testClone(){
       final Patient p = patientDao.findById(1);
       final Patient p2 = p.clone();
       assertTrue(p.equals(p2));
@@ -560,7 +590,8 @@ public class PatientDaoTest extends AbstractDaoTest
       }
    }
 
-   public void testFindCountMaladies(){
+   @Test
+public void testFindCountMaladies(){
       Patient p = patientDao.findById(1);
       assertTrue(patientDao.findCountMaladies(p).get(0).equals(new Long(2)));
       p = patientDao.findById(2);
@@ -571,7 +602,8 @@ public class PatientDaoTest extends AbstractDaoTest
     * Teste en parallele findCountPrelevements 
     * et findCountPrelevementsByBanque.
     */
-   public void testFindCountPrelevementsByBanqueOrNot(){
+   @Test
+public void testFindCountPrelevementsByBanqueOrNot(){
       Patient p = patientDao.findById(3);
       final Banque b = banqueDao.findById(1);
       assertTrue(patientDao.findCountPrelevements(p).get(0).equals(new Long(3)));
@@ -584,7 +616,8 @@ public class PatientDaoTest extends AbstractDaoTest
       assertTrue(patientDao.findCountPrelevementsByBanque(p, b).get(0).equals(new Long(0)));
    }
 
-   public void testFindCountPrelevedByDatesSaisie() throws ParseException{
+   @Test
+public void testFindCountPrelevedByDatesSaisie() throws ParseException{
       final Calendar d1 = Calendar.getInstance();
       d1.setTime(new SimpleDateFormat("dd/MM/yyyy").parse("31/06/2009"));
       final Calendar d2 = Calendar.getInstance();
@@ -616,7 +649,8 @@ public class PatientDaoTest extends AbstractDaoTest
       assertTrue(res.get(0) == 2);
    }
 
-   public void testFindCountPrelevedByDatesPrel() throws ParseException{
+   @Test
+public void testFindCountPrelevedByDatesPrel() throws ParseException{
       final Calendar d1 = Calendar.getInstance();
       d1.setTime(new SimpleDateFormat("dd/MM/yyyy").parse("31/06/1983"));
       final Calendar d2 = Calendar.getInstance();
@@ -648,7 +682,8 @@ public class PatientDaoTest extends AbstractDaoTest
       assertTrue(res.get(0) == 0);
    }
 
-   public void testFindCountPrelevedByDatesSaisieExt() throws ParseException{
+   @Test
+public void testFindCountPrelevedByDatesSaisieExt() throws ParseException{
       final Calendar d1 = Calendar.getInstance();
       d1.setTime(new SimpleDateFormat("dd/MM/yyyy").parse("31/10/2009"));
       final Calendar d2 = Calendar.getInstance();
@@ -677,7 +712,8 @@ public class PatientDaoTest extends AbstractDaoTest
       assertTrue(res.get(0) == 0);
    }
 
-   public void testFindCountPrelevedByDatesPrelExt() throws ParseException{
+   @Test
+public void testFindCountPrelevedByDatesPrelExt() throws ParseException{
       final Calendar d1 = Calendar.getInstance();
       d1.setTime(new SimpleDateFormat("dd/MM/yyyy").parse("31/06/1983"));
       final Calendar d2 = Calendar.getInstance();

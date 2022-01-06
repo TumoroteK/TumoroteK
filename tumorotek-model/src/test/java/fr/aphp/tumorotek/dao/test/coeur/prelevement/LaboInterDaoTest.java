@@ -69,18 +69,27 @@ import fr.aphp.tumorotek.model.contexte.Transporteur;
 public class LaboInterDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private LaboInterDao laboInterDao;
-   private PrelevementDao prelevementDao;
-   private TransporteurDao transporteurDao;
-   private CollaborateurDao collaborateurDao;
-   private ServiceDao serviceDao;
+
+   @Autowired
+ LaboInterDao laboInterDao;
+   @Autowired
+ PrelevementDao prelevementDao;
+   @Autowired
+ TransporteurDao transporteurDao;
+   @Autowired
+ CollaborateurDao collaborateurDao;
+   @Autowired
+ ServiceDao serviceDao;
 
    /** Valeurs des proprietes du labo pour la maj. */
-   private final Integer ordreUpdated = 2;
-   private final Boolean sterileUpdated = false;
-   private final Float conserTempUpdated = new Float(25.0);
-   private final Float transportTempUpdated = new Float(25.0);
+   @Autowired
+ final Integer ordreUpdated = 2;
+   @Autowired
+ final Boolean sterileUpdated = false;
+   @Autowired
+ final Float conserTempUpdated = new Float(25.0);
+   @Autowired
+ final Float transportTempUpdated = new Float(25.0);
 
    /**
     * Constructeur.
@@ -91,31 +100,37 @@ public class LaboInterDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param lDao est le bean Dao.
     */
-   public void setLaboInterDao(final LaboInterDao lDao){
+   @Test
+public void setLaboInterDao(final LaboInterDao lDao){
       this.laboInterDao = lDao;
    }
 
-   public void setPrelevementDao(final PrelevementDao pDao){
+   @Test
+public void setPrelevementDao(final PrelevementDao pDao){
       this.prelevementDao = pDao;
    }
 
-   public void setTransporteurDao(final TransporteurDao tDao){
+   @Test
+public void setTransporteurDao(final TransporteurDao tDao){
       this.transporteurDao = tDao;
    }
 
-   public void setCollaborateurDao(final CollaborateurDao cDao){
+   @Test
+public void setCollaborateurDao(final CollaborateurDao cDao){
       this.collaborateurDao = cDao;
    }
 
-   public void setServiceDao(final ServiceDao sDao){
+   @Test
+public void setServiceDao(final ServiceDao sDao){
       this.serviceDao = sDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllLabos(){
-      final List<LaboInter> labos = laboInterDao.findAll();
+   @Test
+public void testReadAllLabos(){
+      final List<LaboInter> labos = IterableUtils.toList(laboInterDao.findAll());
       assertTrue(labos.size() == 3);
 
       // sort list
@@ -128,7 +143,8 @@ public class LaboInterDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       LaboInter l1 = laboInterDao.findById(1);
       assertTrue(l1.toString().equals("{" + l1.getPrelevement().getCode() + ", " + l1.getOrdre().toString() + "}"));
       l1 = new LaboInter();
@@ -138,7 +154,8 @@ public class LaboInterDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<LaboInter> labos = laboInterDao.findByExcludedId(1);
       assertTrue(labos.size() == 2);
 
@@ -149,7 +166,8 @@ public class LaboInterDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByTransporteur().
     */
-   public void testFindByTransporteur(){
+   @Test
+public void testFindByTransporteur(){
       Transporteur t = transporteurDao.findById(1);
       List<LaboInter> labos = laboInterDao.findByTransporteur(t);
       assertTrue(labos.size() == 2);
@@ -161,7 +179,8 @@ public class LaboInterDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByCollaborateur().
     */
-   public void testFindByCollaborateur(){
+   @Test
+public void testFindByCollaborateur(){
       Collaborateur c = collaborateurDao.findById(2);
       List<LaboInter> labos = laboInterDao.findByCollaborateur(c);
       assertTrue(labos.size() == 3);
@@ -173,7 +192,8 @@ public class LaboInterDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByService().
     */
-   public void testFindByService(){
+   @Test
+public void testFindByService(){
       Service s = serviceDao.findById(2);
       List<LaboInter> labos = laboInterDao.findByService(s);
       assertTrue(labos.size() == 1);
@@ -185,7 +205,8 @@ public class LaboInterDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByPrelevementWithOrder().
     */
-   public void testFindByPrelevementWithOrder(){
+   @Test
+public void testFindByPrelevementWithOrder(){
       Prelevement p = prelevementDao.findById(1);
       List<LaboInter> labos = laboInterDao.findByPrelevementWithOrder(p);
       assertTrue(labos.size() == 3);
@@ -199,7 +220,8 @@ public class LaboInterDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByPrelevementWithOnlyOrder().
     */
-   public void testFindByPrelevementWithOnlyOrder(){
+   @Test
+public void testFindByPrelevementWithOnlyOrder(){
       Prelevement p = prelevementDao.findById(1);
       List<Integer> labos = laboInterDao.findByPrelevementWithOnlyOrder(p);
       assertTrue(labos.size() == 3);
@@ -213,7 +235,8 @@ public class LaboInterDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByPrelevementWithOnlyOrderAndExcludedId().
     */
-   public void testFindByPrelevementWithOnlyOrderAndExcludedId(){
+   @Test
+public void testFindByPrelevementWithOnlyOrderAndExcludedId(){
       Prelevement p = prelevementDao.findById(1);
       List<Integer> labos = laboInterDao.findByPrelevementWithOnlyOrderAndExcludedId(p, 1);
       assertTrue(labos.size() == 2);
@@ -230,7 +253,8 @@ public class LaboInterDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
    @Rollback(false)
-   public void testCrudLaboInter() throws Exception{
+   @Test
+public void testCrudLaboInter() throws Exception{
       final LaboInter l = new LaboInter();
       final Prelevement p = prelevementDao.findById(2);
       l.setPrelevement(p);
@@ -253,7 +277,7 @@ public class LaboInterDaoTest extends AbstractDaoTest
       l.setTransporteur(t);
 
       // Test de l'insertion
-      laboInterDao.createObject(l);
+      laboInterDao.save(l);
       assertEquals(new Integer(4), l.getLaboInterId());
 
       // Test de la mise à jour
@@ -291,7 +315,7 @@ public class LaboInterDaoTest extends AbstractDaoTest
       l2.setCollaborateur(c2);
       final Transporteur t2 = transporteurDao.findById(2);
       l2.setTransporteur(t2);
-      laboInterDao.updateObject(l2);
+      laboInterDao.save(l2);
       assertTrue(laboInterDao.findById(new Integer(4)).getPrelevement().equals(p2));
       assertTrue(laboInterDao.findById(new Integer(4)).getOrdre() == ordreUpdated);
       assertTrue(laboInterDao.findById(new Integer(4)).getService().equals(s2));
@@ -305,7 +329,7 @@ public class LaboInterDaoTest extends AbstractDaoTest
       assertTrue(laboInterDao.findById(new Integer(4)).getTransporteur().equals(t2));
 
       // Test de la délétion
-      laboInterDao.removeObject(new Integer(4));
+      laboInterDao.deleteById(new Integer(4));
       assertNull(laboInterDao.findById(new Integer(4)));
 
    }
@@ -313,7 +337,8 @@ public class LaboInterDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final LaboInter l1 = new LaboInter();
       final LaboInter l2 = new LaboInter();
 
@@ -359,7 +384,8 @@ public class LaboInterDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final LaboInter l1 = new LaboInter();
       l1.setLaboInterId(1);
       final LaboInter l2 = new LaboInter();

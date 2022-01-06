@@ -61,30 +61,38 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public class CodeDossierDaoTest extends AbstractDaoTest
 {
 
-   private CodeDossierDao codeDossierDao;
-   private UtilisateurDao utilisateurDao;
-   private BanqueDao banqueDao;
+   @Autowired
+ CodeDossierDao codeDossierDao;
+   @Autowired
+ UtilisateurDao utilisateurDao;
+   @Autowired
+ BanqueDao banqueDao;
 
    public CodeDossierDaoTest(){}
 
-   public void setUtilisateurDao(final UtilisateurDao uDao){
+   @Test
+public void setUtilisateurDao(final UtilisateurDao uDao){
       this.utilisateurDao = uDao;
    }
 
-   public void setBanqueDao(final BanqueDao bDao){
+   @Test
+public void setBanqueDao(final BanqueDao bDao){
       this.banqueDao = bDao;
    }
 
-   public void setCodeDossierDao(final CodeDossierDao cDosDao){
+   @Test
+public void setCodeDossierDao(final CodeDossierDao cDosDao){
       this.codeDossierDao = cDosDao;
    }
 
-   public void testReadAllCodeDossiers(){
-      final List<CodeDossier> codes = codeDossierDao.findAll();
+   @Test
+public void testReadAllCodeDossiers(){
+      final List<CodeDossier> codes = IterableUtils.toList(codeDossierDao.findAll());
       assertTrue(codes.size() == 4);
    }
 
-   public void testFindByNomLike(){
+   @Test
+public void testFindByNomLike(){
       final Banque b = banqueDao.findById(1);
       List<CodeDossier> doss = codeDossierDao.findByNomLike("DossierU%", b);
       assertTrue(doss.size() == 2);
@@ -92,7 +100,8 @@ public class CodeDossierDaoTest extends AbstractDaoTest
       assertTrue(doss.size() == 0);
    }
 
-   public void findByCodeDossierParent(){
+   @Test
+public void findByCodeDossierParent(){
       CodeDossier dos = codeDossierDao.findById(1);
       List<CodeDossier> doss = codeDossierDao.findByCodeDossierParent(dos);
       assertTrue(doss.size() == 1);
@@ -101,13 +110,15 @@ public class CodeDossierDaoTest extends AbstractDaoTest
       assertTrue(doss.size() == 0);
    }
 
-   public void findByRootCodeDossierUtilisateur(){
+   @Test
+public void findByRootCodeDossierUtilisateur(){
       final Banque b = banqueDao.findById(1);
       final List<CodeDossier> doss = codeDossierDao.findByRootCodeDossierUtilisateur(b);
       assertTrue(doss.size() == 2);
    }
 
-   public void findByRootCodeDossierSelect(){
+   @Test
+public void findByRootCodeDossierSelect(){
       final Banque b = banqueDao.findById(1);
       Utilisateur u = utilisateurDao.findById(1);
       List<CodeDossier> doss = codeDossierDao.findByRootCodeDossierSelect(u, b);
@@ -118,7 +129,8 @@ public class CodeDossierDaoTest extends AbstractDaoTest
       assertTrue(doss.size() == 0);
    }
 
-   public void testFindBySelectUtilisateurAndBanque(){
+   @Test
+public void testFindBySelectUtilisateurAndBanque(){
       Utilisateur u = utilisateurDao.findById(1);
       final Banque b = banqueDao.findById(1);
       List<CodeDossier> doss = codeDossierDao.findBySelectUtilisateurAndBanque(u, b);
@@ -128,7 +140,8 @@ public class CodeDossierDaoTest extends AbstractDaoTest
       assertTrue(doss.size() == 0);
    }
 
-   public void testFindByUtilisateurAndBanque(){
+   @Test
+public void testFindByUtilisateurAndBanque(){
       Utilisateur u = utilisateurDao.findById(1);
       Banque b = banqueDao.findById(1);
       List<CodeDossier> doss = codeDossierDao.findByUtilisateurAndBanque(u, b);
@@ -141,7 +154,8 @@ public class CodeDossierDaoTest extends AbstractDaoTest
       assertTrue(doss.size() == 0);
    }
 
-   public void findByExcludedId(){
+   @Test
+public void findByExcludedId(){
       final CodeDossier c = codeDossierDao.findById(1);
       List<CodeDossier> doss = codeDossierDao.findByExcludedId(c.getCodeDossierId());
       assertTrue(doss.size() == 3);
@@ -154,7 +168,8 @@ public class CodeDossierDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
    @Rollback(false)
-   public void testCrud() throws Exception{
+   @Test
+public void testCrud() throws Exception{
       final CodeDossier c = new CodeDossier();
 
       final Utilisateur u = utilisateurDao.findById(1);
@@ -166,7 +181,7 @@ public class CodeDossierDaoTest extends AbstractDaoTest
       c.setDossierParent(dos);
       c.setCodeSelect(true);
       // Test de l'insertion
-      codeDossierDao.createObject(c);
+      codeDossierDao.save(c);
       assertEquals(new Integer(5), c.getCodeDossierId());
 
       // Test de la mise à jour
@@ -179,11 +194,11 @@ public class CodeDossierDaoTest extends AbstractDaoTest
       assertNotNull(c2.getDossierParent().equals(dos));
       c2.setNom("update");
       c2.setDossierParent(null);
-      codeDossierDao.updateObject(c2);
+      codeDossierDao.save(c2);
       assertTrue(codeDossierDao.findById(new Integer(5)).getNom() == "update");
 
       // Test de la délétion
-      codeDossierDao.removeObject(new Integer(5));
+      codeDossierDao.deleteById(new Integer(5));
       assertNull(codeDossierDao.findById(new Integer(5)));
 
    }
@@ -191,7 +206,8 @@ public class CodeDossierDaoTest extends AbstractDaoTest
    /**
     * Test des méthodes surchargées "equals" et hashcode.
     */
-   public void testEqualsAndHashCode(){
+   @Test
+public void testEqualsAndHashCode(){
       final CodeDossier c1 = new CodeDossier();
       final CodeDossier c2 = new CodeDossier();
       assertFalse(c1.equals(null));
@@ -274,7 +290,8 @@ public class CodeDossierDaoTest extends AbstractDaoTest
       assertFalse(c1.equals(c));
    }
 
-   public void testToString(){
+   @Test
+public void testToString(){
       CodeDossier c1 = codeDossierDao.findById(1);
       assertTrue(c1.toString().equals("{CodeDossier: " + c1.getNom() + "}"));
 
@@ -282,7 +299,8 @@ public class CodeDossierDaoTest extends AbstractDaoTest
       assertTrue(c1.toString().equals("{Empty CodeDossier}"));
    }
 
-   public void testClone(){
+   @Test
+public void testClone(){
       final CodeDossier c1 = codeDossierDao.findById(1);
       c1.setDossierParent(codeDossierDao.findById(2)); // pour eviter null
       final CodeDossier clone = c1.clone();
@@ -297,7 +315,8 @@ public class CodeDossierDaoTest extends AbstractDaoTest
       assertEquals(c1.getCodeSelect(), clone.getCodeSelect());
    }
 
-   public void testFindByRootDossierBanque(){
+   @Test
+public void testFindByRootDossierBanque(){
       Banque b = banqueDao.findById(1);
       List<CodeDossier> doss = codeDossierDao.findByRootDossierBanque(b, true);
       assertTrue(doss.size() == 1);

@@ -39,7 +39,19 @@ import java.text.ParseException;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.imprimante.AffectationImprimanteDao;
@@ -63,57 +75,71 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * @version 21/03/2011.
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class AffectationImprimanteDaoTest extends AbstractDaoTest
 {
 
-   /** Bean DAO. */
-   private AffectationImprimanteDao affectationImprimanteDao;
-   /** Bean DAO. */
-   private UtilisateurDao utilisateurDao;
-   /** Bean DAO. */
-   private BanqueDao banqueDao;
-   /** Bean DAO. */
-   private ImprimanteDao imprimanteDao;
-   /** Bean DAO. */
-   private ModeleDao modeleDao;
+
+   @Autowired
+ AffectationImprimanteDao affectationImprimanteDao;
+
+   @Autowired
+ UtilisateurDao utilisateurDao;
+
+   @Autowired
+ BanqueDao banqueDao;
+
+   @Autowired
+ ImprimanteDao imprimanteDao;
+
+   @Autowired
+ ModeleDao modeleDao;
 
    public AffectationImprimanteDaoTest(){
 
    }
 
-   public void setAffectationImprimanteDao(final AffectationImprimanteDao aDao){
+   @Test
+public void setAffectationImprimanteDao(final AffectationImprimanteDao aDao){
       this.affectationImprimanteDao = aDao;
    }
 
-   public void setUtilisateurDao(final UtilisateurDao uDao){
+   @Test
+public void setUtilisateurDao(final UtilisateurDao uDao){
       this.utilisateurDao = uDao;
    }
 
-   public void setBanqueDao(final BanqueDao bDao){
+   @Test
+public void setBanqueDao(final BanqueDao bDao){
       this.banqueDao = bDao;
    }
 
-   public void setImprimanteDao(final ImprimanteDao iDao){
+   @Test
+public void setImprimanteDao(final ImprimanteDao iDao){
       this.imprimanteDao = iDao;
    }
 
-   public void setModeleDao(final ModeleDao mDao){
+   @Test
+public void setModeleDao(final ModeleDao mDao){
       this.modeleDao = mDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAll(){
-      final List<AffectationImprimante> liste = affectationImprimanteDao.findAll();
+   @Test
+public void testReadAll(){
+      final List<AffectationImprimante> liste = IterableUtils.toList(affectationImprimanteDao.findAll());
       assertTrue(liste.size() == 4);
    }
 
    /**
     * Test l'appel de la méthode findById().
     */
-   public void testFindById(){
+   @Test
+public void testFindById(){
       final Imprimante i1 = imprimanteDao.findById(1);
       final Utilisateur u1 = utilisateurDao.findById(1);
       final Banque b1 = banqueDao.findById(1);
@@ -131,7 +157,8 @@ public class AffectationImprimanteDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedPK().
     */
-   public void testFindByExcludedPK(){
+   @Test
+public void testFindByExcludedPK(){
       final Imprimante i1 = imprimanteDao.findById(1);
       final Utilisateur u1 = utilisateurDao.findById(1);
       final Banque b1 = banqueDao.findById(1);
@@ -149,7 +176,8 @@ public class AffectationImprimanteDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByBanqueUtilisateur().
     */
-   public void testFindByUtilisateurBanque(){
+   @Test
+public void testFindByUtilisateurBanque(){
       final Banque b1 = banqueDao.findById(1);
       final Banque b3 = banqueDao.findById(3);
       final Utilisateur u1 = utilisateurDao.findById(1);
@@ -179,7 +207,8 @@ public class AffectationImprimanteDaoTest extends AbstractDaoTest
     * d'un ProfilUtilisateur.
     **/
    @Rollback(false)
-   public void testCrud(){
+   @Test
+public void testCrud(){
 
       final AffectationImprimante ai = new AffectationImprimante();
       final Imprimante i1 = imprimanteDao.findById(1);
@@ -193,8 +222,8 @@ public class AffectationImprimanteDaoTest extends AbstractDaoTest
       ai.setModele(null);
 
       // Test de l'insertion
-      affectationImprimanteDao.createObject(ai);
-      assertTrue(affectationImprimanteDao.findAll().size() == 5);
+      affectationImprimanteDao.save(ai);
+      assertTrue(IterableUtils.toList(affectationImprimanteDao.findAll()).size() == 5);
 
       // Test de la mise à jour
       final AffectationImprimantePK pk = new AffectationImprimantePK();
@@ -208,7 +237,7 @@ public class AffectationImprimanteDaoTest extends AbstractDaoTest
       assertNotNull(aiUp.getUtilisateur());
       assertNull(aiUp.getModele());
       aiUp.setModele(m1);
-      affectationImprimanteDao.updateObject(aiUp);
+      affectationImprimanteDao.save(aiUp);
       final AffectationImprimante aiTest = affectationImprimanteDao.findById(pk);
       assertNotNull(aiTest);
       assertNotNull(aiTest.getImprimante());
@@ -217,7 +246,7 @@ public class AffectationImprimanteDaoTest extends AbstractDaoTest
       assertNotNull(aiTest.getModele());
 
       // Test de la délétion
-      affectationImprimanteDao.removeObject(pk);
+      affectationImprimanteDao.deleteById(pk);
       assertNull(affectationImprimanteDao.findById(pk));
    }
 
@@ -225,7 +254,8 @@ public class AffectationImprimanteDaoTest extends AbstractDaoTest
     * Test de la méthode surchargée "equals".
     * @throws ParseException 
     */
-   public void testEquals() throws ParseException{
+   @Test
+public void testEquals() throws ParseException{
 
       final AffectationImprimante ai1 = new AffectationImprimante();
       final AffectationImprimante ai2 = new AffectationImprimante();
@@ -249,7 +279,8 @@ public class AffectationImprimanteDaoTest extends AbstractDaoTest
     * Test de la méthode surchargée "hashcode".
     * @throws ParseException 
     */
-   public void testHashCode() throws ParseException{
+   @Test
+public void testHashCode() throws ParseException{
       final AffectationImprimante ai1 = new AffectationImprimante();
       final AffectationImprimante ai2 = new AffectationImprimante();
       final AffectationImprimante ai3 = new AffectationImprimante();
@@ -271,7 +302,8 @@ public class AffectationImprimanteDaoTest extends AbstractDaoTest
       assertTrue(hash == ai1.hashCode());
    }
 
-   private void populateClefsToTestEqualsAndHashCode(final AffectationImprimante ai1, final AffectationImprimante ai2)
+   @Autowired
+ void populateClefsToTestEqualsAndHashCode(final AffectationImprimante ai1, final AffectationImprimante ai2)
       throws ParseException{
 
       final Imprimante i1 = imprimanteDao.findById(1);
@@ -302,7 +334,8 @@ public class AffectationImprimanteDaoTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final Imprimante i1 = imprimanteDao.findById(1);
       final Banque b = banqueDao.findById(1);
       final Utilisateur u1 = utilisateurDao.findById(1);
@@ -319,7 +352,8 @@ public class AffectationImprimanteDaoTest extends AbstractDaoTest
    /**
     * Test la méthode clone.
     */
-   public void testClone(){
+   @Test
+public void testClone(){
       final Imprimante i1 = imprimanteDao.findById(1);
       final Banque b = banqueDao.findById(1);
       final Utilisateur u1 = utilisateurDao.findById(1);

@@ -38,7 +38,19 @@ package fr.aphp.tumorotek.dao.test.imprimante;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
 import fr.aphp.tumorotek.dao.imprimante.ImprimanteApiDao;
@@ -57,42 +69,52 @@ import fr.aphp.tumorotek.model.imprimante.ImprimanteApi;
  * @version 2.0.11
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class ImprimanteDaoTest extends AbstractDaoTest
 {
 
-   private ImprimanteDao imprimanteDao;
-   private ImprimanteApiDao imprimanteApiDao;
-   private PlateformeDao plateformeDao;
+   @Autowired
+ ImprimanteDao imprimanteDao;
+   @Autowired
+ ImprimanteApiDao imprimanteApiDao;
+   @Autowired
+ PlateformeDao plateformeDao;
 
    public ImprimanteDaoTest(){
 
    }
 
-   public void setImprimanteDao(final ImprimanteDao iDao){
+   @Test
+public void setImprimanteDao(final ImprimanteDao iDao){
       this.imprimanteDao = iDao;
    }
 
-   public void setImprimanteApiDao(final ImprimanteApiDao iDao){
+   @Test
+public void setImprimanteApiDao(final ImprimanteApiDao iDao){
       this.imprimanteApiDao = iDao;
    }
 
-   public void setPlateformeDao(final PlateformeDao pDao){
+   @Test
+public void setPlateformeDao(final PlateformeDao pDao){
       this.plateformeDao = pDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAll(){
-      final List<Imprimante> liste = imprimanteDao.findAll();
+   @Test
+public void testReadAll(){
+      final List<Imprimante> liste = IterableUtils.toList(imprimanteDao.findAll());
       assertTrue(liste.size() == 2);
    }
 
    /**
     * Test l'appel de la méthode findByPlateforme().
     */
-   public void testFindByPlateforme(){
+   @Test
+public void testFindByPlateforme(){
       final Plateforme pf1 = plateformeDao.findById(1);
       List<Imprimante> liste = imprimanteDao.findByPlateforme(pf1);
       assertTrue(liste.size() == 2);
@@ -108,7 +130,8 @@ public class ImprimanteDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByNomAndPlateforme().
     */
-   public void testFindByNomAndPlateforme(){
+   @Test
+public void testFindByNomAndPlateforme(){
       final Plateforme pf1 = plateformeDao.findById(1);
       List<Imprimante> liste = imprimanteDao.findByNomAndPlateforme("PDF", pf1);
       assertTrue(liste.size() == 1);
@@ -130,7 +153,8 @@ public class ImprimanteDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByPlateformeSelectNom().
     */
-   public void testFindByPlateformeSelectNom(){
+   @Test
+public void testFindByPlateformeSelectNom(){
       final Plateforme pf1 = plateformeDao.findById(1);
       List<String> liste = imprimanteDao.findByPlateformeSelectNom(pf1);
       assertTrue(liste.size() == 2);
@@ -147,7 +171,8 @@ public class ImprimanteDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<Imprimante> liste = imprimanteDao.findByExcludedId(1);
       assertTrue(liste.size() == 1);
 
@@ -160,7 +185,8 @@ public class ImprimanteDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas d'erreur.
     */
    @Rollback(false)
-   public void testCrud() throws Exception{
+   @Test
+public void testCrud() throws Exception{
 
       final ImprimanteApi ia = imprimanteApiDao.findById(1);
       final Plateforme pf = plateformeDao.findById(1);
@@ -179,7 +205,7 @@ public class ImprimanteDaoTest extends AbstractDaoTest
       i1.setPort(12012);
 
       // Test de l'insertion
-      imprimanteDao.createObject(i1);
+      imprimanteDao.save(i1);
       assertEquals(new Integer(3), i1.getImprimanteId());
 
       final Imprimante i2 = imprimanteDao.findById(new Integer(3));
@@ -200,11 +226,11 @@ public class ImprimanteDaoTest extends AbstractDaoTest
 
       // Test de la mise à jour
       i2.setNom("UP");
-      imprimanteDao.updateObject(i2);
+      imprimanteDao.save(i2);
       assertTrue(imprimanteDao.findById(new Integer(3)).getNom().equals("UP"));
 
       // Test de la délétion
-      imprimanteDao.removeObject(new Integer(3));
+      imprimanteDao.deleteById(new Integer(3));
       assertNull(imprimanteDao.findById(new Integer(3)));
 
    }
@@ -212,7 +238,8 @@ public class ImprimanteDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String nom = "imp1";
       final String nom2 = "imp2";
       final Plateforme pf1 = plateformeDao.findById(1);
@@ -272,7 +299,8 @@ public class ImprimanteDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String nom = "imp1";
       final String nom2 = "imp2";
       final Plateforme pf1 = plateformeDao.findById(1);
@@ -310,7 +338,8 @@ public class ImprimanteDaoTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final Imprimante i1 = imprimanteDao.findById(1);
       assertTrue(i1.toString().equals("{" + i1.getNom() + ", " + i1.getPlateforme().getNom() + "(Plateforme)}"));
 
@@ -321,7 +350,8 @@ public class ImprimanteDaoTest extends AbstractDaoTest
    /**
     * Test la méthode clone.
     */
-   public void testClone(){
+   @Test
+public void testClone(){
       final Imprimante i1 = imprimanteDao.findById(1);
       Imprimante i2 = new Imprimante();
       i2 = i1.clone();

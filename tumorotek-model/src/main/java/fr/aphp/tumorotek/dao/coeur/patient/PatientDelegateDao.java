@@ -46,7 +46,7 @@ import fr.aphp.tumorotek.model.coeur.patient.Patient;
  * @version 2.3
  *
  */
-@Repository
-public interface PatientDelegateDao extends CrudRepository<TKDelegateObject<Patient>, Integer> {
+// @Repository
+public interface PatientDelegateDao { // extends CrudRepository<TKDelegateObject<Patient>, Integer> {
 
 }

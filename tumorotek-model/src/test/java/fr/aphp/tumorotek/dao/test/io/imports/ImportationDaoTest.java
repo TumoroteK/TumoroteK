@@ -61,38 +61,46 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 public class ImportationDaoTest extends AbstractDaoTest
 {
 
-   private ImportHistoriqueDao importHistoriqueDao;
-   private ImportationDao importationDao;
-   private EntiteDao entiteDao;
+   @Autowired
+ ImportHistoriqueDao importHistoriqueDao;
+   @Autowired
+ ImportationDao importationDao;
+   @Autowired
+ EntiteDao entiteDao;
 
    public ImportationDaoTest(){
 
    }
 
-   public void setImportHistoriqueDao(final ImportHistoriqueDao iDao){
+   @Test
+public void setImportHistoriqueDao(final ImportHistoriqueDao iDao){
       this.importHistoriqueDao = iDao;
    }
 
-   public void setImportationDao(final ImportationDao iDao){
+   @Test
+public void setImportationDao(final ImportationDao iDao){
       this.importationDao = iDao;
    }
 
-   public void setEntiteDao(final EntiteDao eDao){
+   @Test
+public void setEntiteDao(final EntiteDao eDao){
       this.entiteDao = eDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAll(){
-      final List<Importation> liste = importationDao.findAll();
+   @Test
+public void testReadAll(){
+      final List<Importation> liste = IterableUtils.toList(importationDao.findAll());
       assertTrue(liste.size() == 2);
    }
 
    /**
     * Test l'appel de la méthode findByHistorique().
     */
-   public void testFindByHistorique(){
+   @Test
+public void testFindByHistorique(){
       final ImportHistorique ih1 = importHistoriqueDao.findById(1);
       List<Importation> liste = importationDao.findByHistorique(ih1);
       assertTrue(liste.size() == 2);
@@ -108,7 +116,8 @@ public class ImportationDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByHistoriqueAndEntite().
     */
-   public void testFindByHistoriqueAndEntite(){
+   @Test
+public void testFindByHistoriqueAndEntite(){
       final ImportHistorique ih1 = importHistoriqueDao.findById(1);
       final Entite e1 = entiteDao.findById(1);
       final Entite e2 = entiteDao.findById(2);
@@ -136,7 +145,8 @@ public class ImportationDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByEntiteAndObjetId().
     */
-   public void testFindByEntiteAndObjetId(){
+   @Test
+public void testFindByEntiteAndObjetId(){
       final Entite e1 = entiteDao.findById(1);
       final Entite e3 = entiteDao.findById(3);
       List<Importation> liste = importationDao.findByEntiteAndObjetId(e1, 1);
@@ -161,7 +171,8 @@ public class ImportationDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas d'erreur.
     */
    @Rollback(false)
-   public void testCrud() throws Exception{
+   @Test
+public void testCrud() throws Exception{
 
       final ImportHistorique ih = importHistoriqueDao.findById(1);
       final Entite e1 = entiteDao.findById(1);
@@ -171,9 +182,9 @@ public class ImportationDaoTest extends AbstractDaoTest
       i1.setObjetId(2);
 
       // Test de l'insertion
-      importationDao.createObject(i1);
+      importationDao.save(i1);
       final Integer id = i1.getImportationId();
-      assertTrue(importationDao.findAll().size() == 3);
+      assertTrue(IterableUtils.toList(importationDao.findAll()).size() == 3);
 
       // Test de la mise à jour
       final Importation i2 = importationDao.findById(id);
@@ -183,18 +194,19 @@ public class ImportationDaoTest extends AbstractDaoTest
       assertTrue(i2.getObjetId() == 2);
 
       i2.setObjetId(3);
-      importationDao.updateObject(i2);
+      importationDao.save(i2);
       assertTrue(importationDao.findById(id).getObjetId() == 3);
 
       // Test de la délétion
-      importationDao.removeObject(id);
+      importationDao.deleteById(id);
       assertNull(importationDao.findById(id));
    }
 
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final Integer o1 = 1;
       final Integer o2 = 2;
       final Entite e1 = entiteDao.findById(1);
@@ -252,7 +264,8 @@ public class ImportationDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final Integer o1 = 1;
       final Integer o2 = 2;
       final Entite e1 = entiteDao.findById(1);
@@ -300,7 +313,8 @@ public class ImportationDaoTest extends AbstractDaoTest
    /**
     * test toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final Importation i1 = importationDao.findById(1);
       assertTrue(i1.toString().equals(
          "{" + i1.getObjetId() + ", " + i1.getEntite().getNom() + "(Entite) " + i1.getImportHistorique().toString() + "}"));
@@ -312,7 +326,8 @@ public class ImportationDaoTest extends AbstractDaoTest
    /**
     * Test la méthode clone.
     */
-   public void testClone(){
+   @Test
+public void testClone(){
       final Importation i1 = importationDao.findById(1);
       final Importation i2 = i1.clone();
       assertTrue(i1.equals(i2));

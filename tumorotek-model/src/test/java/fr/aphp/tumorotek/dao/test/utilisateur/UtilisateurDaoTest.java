@@ -38,19 +38,15 @@ package fr.aphp.tumorotek.dao.test.utilisateur;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.sql.DataSource;
 import javax.transaction.Transactional;
 
-import org.hibernate.jpa.internal.util.ConfigurationHelper;
+import org.apache.commons.collections4.IterableUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -58,9 +54,9 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import fr.aphp.tumorotek.dao.contexte.CollaborateurDao;
+import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
 import fr.aphp.tumorotek.dao.test.Config;
-import fr.aphp.tumorotek.dao.utilisateur.PlateformeDao;
 import fr.aphp.tumorotek.dao.utilisateur.UtilisateurDao;
 import fr.aphp.tumorotek.model.contexte.Categorie;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
@@ -76,46 +72,39 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  *
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {Config.class}) 
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
-// @TransactionConfiguration(defaultRollback = false)
-public class UtilisateurDaoTest extends AbstractDaoTest
-{
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class UtilisateurDaoTest extends AbstractDaoTest {
 
 	@Autowired
 	DataSource datasource;
-	
+
 	@Autowired
 	UtilisateurDao utilisateurDao;
-	
+
 	@Autowired
-	private CollaborateurDao collaborateurDao;
-	
+	CollaborateurDao collaborateurDao;
+
 	@Autowired
-	private PlateformeDao plateformeDao;
+	PlateformeDao plateformeDao;
 
 	/** valeur du login pour la maj. */
-	private final String updatedLogin = "Login mis a jour";
+	private String updatedLogin = "Login mis a jour";
 
-	/** Constructeur. */
-	public UtilisateurDaoTest(){
-
+	/**
+	 * Test l'appel de la méthode findAll().
+	 */
+	@Test
+	public void testReadAllUtilisateurs() {
+		final List<Utilisateur> utilisateurs = IterableUtils.toList(IterableUtils.toList(utilisateurDao.findAll()));
+		assertTrue(utilisateurs.size() == 5);
 	}
-
-//	/**
-//	 * Test l'appel de la méthode findAll().
-//	 */
-//	@Test
-//	public void testReadAllUtilisateurs(){
-//		final Iterator<Utilisateur> utilisateurs = utilisateurDao.findAll();
-//		assertTrue(utilisateurs.size() == 5);
-//	}
 
 	/**
 	 * Test l'appel de la méthode findByOrder().
 	 */
 	@Test
-	public void testFindByOrder(){
+	public void testFindByOrder() {
 		final List<Utilisateur> utilisateurs = utilisateurDao.findByOrder();
 		assertTrue(utilisateurs.size() == 4);
 		assertTrue(utilisateurs.get(0).getLogin().equals("USER1"));
@@ -125,7 +114,7 @@ public class UtilisateurDaoTest extends AbstractDaoTest
 	 * Test l'appel de la méthode findByLogin().
 	 */
 	@Test
-	public void testFindByLogin(){
+	public void testFindByLogin() {
 		List<Utilisateur> utilisateurs = utilisateurDao.findByLogin("USER1");
 		assertTrue(utilisateurs.size() == 1);
 		utilisateurs = utilisateurDao.findByLogin("USER");
@@ -136,7 +125,7 @@ public class UtilisateurDaoTest extends AbstractDaoTest
 	 * Test l'appel de la méthode findByLoginAndArchive().
 	 */
 	@Test
-	public void testFindByLoginAndArchive(){
+	public void testFindByLoginAndArchive() {
 		final List<Plateforme> pfs = new ArrayList<>();
 		pfs.add(plateformeDao.findById(1).get());
 		List<Utilisateur> utilisateurs = utilisateurDao.findByLoginAndArchive("USER1", false, pfs);
@@ -160,7 +149,7 @@ public class UtilisateurDaoTest extends AbstractDaoTest
 	 * Test l'appel de la méthode findByArchive().
 	 */
 	@Test
-	public void testFindByArchive(){
+	public void testFindByArchive() {
 		final List<Plateforme> pfs = new ArrayList<>();
 		pfs.add(plateformeDao.findById(1).get());
 		List<Utilisateur> utilisateurs = utilisateurDao.findByArchive(false, pfs);
@@ -174,7 +163,7 @@ public class UtilisateurDaoTest extends AbstractDaoTest
 	 * Test l'appel de la méthode findByOrderWithArchiveExcludeSuperAdmin().
 	 */
 	@Test
-	public void testFindByOrderWithArchiveExcludeSuperAdmin(){
+	public void testFindByOrderWithArchiveExcludeSuperAdmin() {
 
 		final List<Plateforme> pfs = new ArrayList<>();
 
@@ -192,7 +181,7 @@ public class UtilisateurDaoTest extends AbstractDaoTest
 	 * Test l'appel de la méthode findByOrderWithArchiveIcludeSuperAdmin().
 	 */
 	@Test
-	public void testFindByOrderWithArchiveIncludeSuperAdmin(){
+	public void testFindByOrderWithArchiveIncludeSuperAdmin() {
 
 		final List<Plateforme> pfs = new ArrayList<>();
 
@@ -210,7 +199,7 @@ public class UtilisateurDaoTest extends AbstractDaoTest
 	 * Test l'appel de la méthode findByEmail().
 	 */
 	@Test
-	public void testFindByEmail(){
+	public void testFindByEmail() {
 		List<Utilisateur> utilisateurs = utilisateurDao.findByEmail("mail2@yahoo.fr");
 		assertTrue(utilisateurs.size() == 1);
 		utilisateurs = utilisateurDao.findByEmail("mail@mail.fr");
@@ -219,10 +208,11 @@ public class UtilisateurDaoTest extends AbstractDaoTest
 
 	/**
 	 * Test l'appel de la méthode findByTimeOut().
+	 * 
 	 * @throws Exception Lance une exception en cas d'erreur.
 	 */
 	@Test
-	public void testFindByTimeOut() throws Exception{
+	public void testFindByTimeOut() throws Exception {
 		Date search = new SimpleDateFormat("dd/MM/yyyy").parse("01/12/2025");
 		List<Utilisateur> utilisateurs = utilisateurDao.findByTimeOut(search);
 		assertTrue(utilisateurs.size() == 2);
@@ -233,10 +223,11 @@ public class UtilisateurDaoTest extends AbstractDaoTest
 
 	/**
 	 * Test l'appel de la méthode findByTimeOutBefore().
+	 * 
 	 * @throws Exception Lance une exception en cas d'erreur.
 	 */
 	@Test
-	public void testFindByTimeOutBefore() throws Exception{
+	public void testFindByTimeOutBefore() throws Exception {
 		Date search = new SimpleDateFormat("dd/MM/yyyy").parse("21/06/2011");
 		List<Utilisateur> utilisateurs = utilisateurDao.findByTimeOutBefore(search);
 		assertTrue(utilisateurs.size() == 1);
@@ -247,15 +238,16 @@ public class UtilisateurDaoTest extends AbstractDaoTest
 		search = new SimpleDateFormat("dd/MM/yyyy").parse("12/03/2050");
 		utilisateurs = utilisateurDao.findByTimeOutBefore(search);
 		assertTrue(utilisateurs.size() == 4);
-		assertFalse(utilisateurs.contains(utilisateurDao.findById(3)));
+		assertFalse(utilisateurs.contains(utilisateurDao.findById(3).get()));
 	}
 
 	/**
 	 * Test l'appel de la méthode findByTimeOutAfter().
+	 * 
 	 * @throws Exception Lance une exception en cas d'erreur.
 	 */
 	@Test
-	public void testFindByTimeOutAfter() throws Exception{
+	public void testFindByTimeOutAfter() throws Exception {
 		Date search = new SimpleDateFormat("dd/MM/yyyy").parse("21/06/2011");
 		List<Utilisateur> utilisateurs = utilisateurDao.findByTimeOutAfter(search);
 		assertTrue(utilisateurs.size() == 3);
@@ -268,7 +260,7 @@ public class UtilisateurDaoTest extends AbstractDaoTest
 	 * Test l'appel de la méthode findByCollaborateurId().
 	 */
 	@Test
-	public void testFindByCollaborateur(){
+	public void testFindByCollaborateur() {
 		final Collaborateur c = collaborateurDao.findById(1).get();
 		List<Utilisateur> utilisateurs = utilisateurDao.findByCollaborateur(c);
 		assertTrue(utilisateurs.size() == 1);
@@ -281,7 +273,7 @@ public class UtilisateurDaoTest extends AbstractDaoTest
 	 * Test l'appel de la méthode findByIdWithFetch().
 	 */
 	@Test
-	public void testFindByIdWithFetch(){
+	public void testFindByIdWithFetch() {
 		List<Utilisateur> utilisateurs = utilisateurDao.findByIdWithFetch(3);
 		Utilisateur utilisateur = utilisateurs.get(0);
 		assertNotNull(utilisateur);
@@ -297,7 +289,7 @@ public class UtilisateurDaoTest extends AbstractDaoTest
 	 * Test l'appel de la méthode findByExcludedId().
 	 */
 	@Test
-	public void testFindByExcludedId(){
+	public void testFindByExcludedId() {
 		List<Utilisateur> utilisateurs = utilisateurDao.findByExcludedId(1);
 		assertTrue(utilisateurs.size() == 4);
 		final Utilisateur utilisateur = utilisateurs.get(0);
@@ -309,15 +301,16 @@ public class UtilisateurDaoTest extends AbstractDaoTest
 	}
 
 	@Test
-	public void testFindByLoginPassAndArchive(){
-		List<Utilisateur> utilisateurs =
-				utilisateurDao.findByLoginPassAndArchive("USER5", "b383bb08bd750d8ef04d034ad648a208", false);
+	public void testFindByLoginPassAndArchive() {
+		List<Utilisateur> utilisateurs = utilisateurDao.findByLoginPassAndArchive("USER5",
+				"b383bb08bd750d8ef04d034ad648a208", false);
 		assertTrue(utilisateurs.size() == 1);
 
 		utilisateurs = utilisateurDao.findByLoginPassAndArchive("USER6", "b383bb08bd750d8ef04d034ad648a208", false);
 		assertTrue(utilisateurs.size() == 0);
 
-		utilisateurs = utilisateurDao.findByLoginPassAndArchive("USER5", "b383bb08bd750d8ef04d034ad648a208qcqsc", false);
+		utilisateurs = utilisateurDao.findByLoginPassAndArchive("USER5", "b383bb08bd750d8ef04d034ad648a208qcqsc",
+				false);
 		assertTrue(utilisateurs.size() == 0);
 
 		utilisateurs = utilisateurDao.findByLoginPassAndArchive("USER5", "b383bb08bd750d8ef04d034ad648a208", true);
@@ -326,11 +319,12 @@ public class UtilisateurDaoTest extends AbstractDaoTest
 
 	/**
 	 * Test l'insertion, la mise à jour et la suppression d'un utilisateur.
+	 * 
 	 * @throws Exception Lance une exception en cas d'erreur.
 	 */
 	@Test
 	@Transactional
-	public void testCrudUtilisateur() throws Exception{
+	public void testCrudUtilisateur() throws Exception {
 
 		final Utilisateur u = new Utilisateur();
 		final Collaborateur c = collaborateurDao.findById(4).get();
@@ -342,8 +336,8 @@ public class UtilisateurDaoTest extends AbstractDaoTest
 //			System.out.println(exc.getMessage());
 //		}
 		u.setLogin("new user");
-		u.setPassword("new pass"); 
-		u.setArchive(false); 
+		u.setPassword("new pass");
+		u.setArchive(false);
 		u.setLdap(false);
 		u.setEmail("mail@gmail.com");
 		u.setTimeOut(new SimpleDateFormat("dd/MM/yyyy").parse("25/11/2011"));
@@ -374,7 +368,7 @@ public class UtilisateurDaoTest extends AbstractDaoTest
 
 		// Test de la délétion
 		utilisateurDao.deleteById(id);
-		assertNull(utilisateurDao.findById(id));
+		assertFalse(utilisateurDao.findById(id).isPresent());
 
 	}
 
@@ -382,7 +376,7 @@ public class UtilisateurDaoTest extends AbstractDaoTest
 	 * Test de la méthode surchargée "equals".
 	 */
 	@Test
-	public void testEquals(){
+	public void testEquals() {
 		final String login = "login";
 		final String login2 = "login2";
 		final Utilisateur u1 = new Utilisateur();
@@ -415,10 +409,11 @@ public class UtilisateurDaoTest extends AbstractDaoTest
 
 	/**
 	 * Test de la méthode surchargée "hashcode".
+	 * 
 	 * @throws Exception Lance une exception.
 	 */
 	@Test
-	public void testHashCode() throws Exception{
+	public void testHashCode() throws Exception {
 		final String login = "login";
 		final Utilisateur u1 = new Utilisateur();
 		u1.setLogin(login);
@@ -443,7 +438,7 @@ public class UtilisateurDaoTest extends AbstractDaoTest
 	 * Test la méthode toString.
 	 */
 	@Test
-	public void testToString(){
+	public void testToString() {
 		final Utilisateur u1 = utilisateurDao.findById(1).get();
 		assertTrue(u1.toString().equals("{" + u1.getLogin() + "}"));
 
@@ -455,86 +450,87 @@ public class UtilisateurDaoTest extends AbstractDaoTest
 	 * Test la méthode clone.
 	 */
 	@Test
-	public void testClone(){
+	@Transactional
+	public void testClone() {
 		final Utilisateur u1 = utilisateurDao.findById(1).get();
 		Utilisateur u2 = new Utilisateur();
 		u2 = u1.clone();
 
 		assertTrue(u1.equals(u2));
 
-		if(u1.getUtilisateurId() != null){
+		if (u1.getUtilisateurId() != null) {
 			assertTrue(u1.getUtilisateurId() == u2.getUtilisateurId());
-		}else{
+		} else {
 			assertNull(u2.getUtilisateurId());
 		}
 
-		if(u1.getLogin() != null){
+		if (u1.getLogin() != null) {
 			assertTrue(u1.getLogin().equals(u2.getLogin()));
-		}else{
+		} else {
 			assertNull(u2.getLogin());
 		}
 
-		if(u1.getPassword() != null){
+		if (u1.getPassword() != null) {
 			assertTrue(u1.getPassword().equals(u2.getPassword()));
-		}else{
+		} else {
 			assertNull(u2.getPassword());
 		}
 
 		assertTrue(u1.isArchive() == u2.isArchive());
 
-		if(u1.isLdap()){
+		if (u1.isLdap()) {
 			assertTrue(u2.isLdap());
-		}else{
+		} else {
 			assertFalse(u2.isLdap());
 		}
 
-		if(u1.getEmail() != null){
+		if (u1.getEmail() != null) {
 			assertTrue(u1.getEmail().equals(u2.getEmail()));
-		}else{
+		} else {
 			assertNull(u2.getEmail());
 		}
 
-		if(u1.getTimeOut() != null){
+		if (u1.getTimeOut() != null) {
 			assertTrue(u1.getTimeOut().equals(u2.getTimeOut()));
-		}else{
+		} else {
 			assertNull(u2.getTimeOut());
 		}
 
-		if(u1.getCollaborateur() != null){
+		if (u1.getCollaborateur() != null) {
 			assertTrue(u1.getCollaborateur().equals(u2.getCollaborateur()));
-		}else{
+		} else {
 			assertNull(u2.getCollaborateur());
 		}
 
 		assertTrue(u1.isSuperAdmin() == u2.isSuperAdmin());
 
-		if(u1.getCodeSelects() != null){
+		if (u1.getCodeSelects() != null) {
 			assertTrue(u1.getCodeSelects().equals(u2.getCodeSelects()));
-		}else{
+		} else {
 			assertNull(u2.getCodeSelects());
 		}
 
-		if(u1.getCodeUtilisateurs() != null){
+		if (u1.getCodeUtilisateurs() != null) {
 			assertTrue(u1.getCodeUtilisateurs().equals(u2.getCodeUtilisateurs()));
-		}else{
+		} else {
 			assertNull(u2.getCodeUtilisateurs());
 		}
 
-		if(u1.getProfilUtilisateurs() != null){
+		if (u1.getProfilUtilisateurs() != null) {
 			assertTrue(u1.getProfilUtilisateurs().equals(u2.getProfilUtilisateurs()));
-		}else{
+		} else {
 			assertNull(u2.getProfilUtilisateurs());
 		}
 
-		if(u1.getPlateformes() != null){
+		if (u1.getPlateformes() != null) {
 			assertTrue(u1.getPlateformes().equals(u2.getPlateformes()));
-		}else{
+		} else {
 			assertNull(u2.getPlateformes());
 		}
 
-		if(u1.getAffectationImprimantes() != null){
+		if (u1.getAffectationImprimantes() != null) {
 			assertTrue(u1.getAffectationImprimantes().equals(u2.getAffectationImprimantes()));
-		}else{
+		} else {
 			assertNull(u2.getAffectationImprimantes());
 		}
 		assertTrue(u1.getPlateformeOrig().equals(u2.getPlateformeOrig()));
@@ -545,12 +541,11 @@ public class UtilisateurDaoTest extends AbstractDaoTest
 	 * @since 2.2.1
 	 */
 	@Test
-	public void testFindSuperAndArchive(){
-		List<Utilisateur> utilisateurs =
-				utilisateurDao.findBySuperAndArchive(true, true);
+	public void testFindSuperAndArchive() {
+		List<Utilisateur> utilisateurs = utilisateurDao.findBySuperAndArchive(true, true);
 		assertTrue(utilisateurs.isEmpty());
 
-		utilisateurs =  utilisateurDao.findBySuperAndArchive(false, true);
+		utilisateurs = utilisateurDao.findBySuperAndArchive(false, true);
 		assertTrue(utilisateurs.size() == 1);
 		assertTrue(utilisateurs.get(0).getUtilisateurId() == 5);
 

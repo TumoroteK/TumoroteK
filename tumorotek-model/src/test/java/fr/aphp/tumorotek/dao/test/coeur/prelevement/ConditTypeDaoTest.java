@@ -60,12 +60,15 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 public class ConditTypeDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private ConditTypeDao conditTypeDao;
-   private PlateformeDao plateformeDao;
+
+   @Autowired
+ ConditTypeDao conditTypeDao;
+   @Autowired
+ PlateformeDao plateformeDao;
 
    /** Valeur du type pour la maj. */
-   private final String updatedType = "Type mis a jour";
+   @Autowired
+ final String updatedType = "Type mis a jour";
 
    /**
     * Constructeur.
@@ -76,18 +79,21 @@ public class ConditTypeDaoTest extends AbstractDaoTest
     * Setter du bean Dao.
     * @param ctDao est le bean Dao.
     */
-   public void setConditTypeDao(final ConditTypeDao ctDao){
+   @Test
+public void setConditTypeDao(final ConditTypeDao ctDao){
       this.conditTypeDao = ctDao;
    }
 
-   public void setPlateformeDao(final PlateformeDao pDao){
+   @Test
+public void setPlateformeDao(final PlateformeDao pDao){
       this.plateformeDao = pDao;
    }
 
    /**
     * Test l'appel de la méthode toString().
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       ConditType ct1 = conditTypeDao.findById(1);
       assertTrue(ct1.toString().equals("{" + ct1.getNom() + "}"));
       ct1 = new ConditType();
@@ -97,12 +103,14 @@ public class ConditTypeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllConditType(){
-      final List<ConditType> types = conditTypeDao.findAll();
+   @Test
+public void testReadAllConditType(){
+      final List<ConditType> types = IterableUtils.toList(conditTypeDao.findAll());
       assertTrue(types.size() == 2);
    }
 
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
       List<? extends TKThesaurusObject> list = conditTypeDao.findByPfOrder(pf);
       assertTrue(list.size() == 1);
@@ -117,7 +125,8 @@ public class ConditTypeDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByType().
     */
-   public void testFindByType(){
+   @Test
+public void testFindByType(){
       List<ConditType> types = conditTypeDao.findByType("TUBE");
       assertTrue(types.size() == 1);
       types = conditTypeDao.findByType("AUTRE");
@@ -134,12 +143,13 @@ public class ConditTypeDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
    @Rollback(false)
-   public void testCrudConditType() throws Exception{
+   @Test
+public void testCrudConditType() throws Exception{
       final ConditType ct = new ConditType();
       ct.setNom("AUTRE");
       ct.setPlateforme(plateformeDao.findById(1));
       // Test de l'insertion
-      conditTypeDao.createObject(ct);
+      conditTypeDao.save(ct);
       assertEquals(new Integer(3), ct.getId());
 
       // Test de la mise à jour
@@ -147,18 +157,19 @@ public class ConditTypeDaoTest extends AbstractDaoTest
       assertNotNull(ct2);
       assertTrue(ct2.getNom().equals("AUTRE"));
       ct2.setNom(updatedType);
-      conditTypeDao.updateObject(ct2);
+      conditTypeDao.save(ct2);
       assertTrue(conditTypeDao.findById(new Integer(3)).getNom().equals(updatedType));
 
       // Test de la délétion
-      conditTypeDao.removeObject(new Integer(3));
+      conditTypeDao.deleteById(new Integer(3));
       assertNull(conditTypeDao.findById(new Integer(3)));
    }
 
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String type = "Type";
       final String type2 = "Type2";
       final ConditType ct1 = new ConditType();
@@ -209,7 +220,8 @@ public class ConditTypeDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String type = "Type";
       final ConditType ct1 = new ConditType();
       ct1.setId(1);

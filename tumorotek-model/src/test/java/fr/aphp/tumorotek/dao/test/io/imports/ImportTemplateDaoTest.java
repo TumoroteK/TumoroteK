@@ -63,38 +63,46 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 public class ImportTemplateDaoTest extends AbstractDaoTest
 {
 
-   private ImportTemplateDao importTemplateDao;
-   private BanqueDao banqueDao;
-   private EntiteDao entiteDao;
+   @Autowired
+ ImportTemplateDao importTemplateDao;
+   @Autowired
+ BanqueDao banqueDao;
+   @Autowired
+ EntiteDao entiteDao;
 
    public ImportTemplateDaoTest(){
 
    }
 
-   public void setImportTemplateDao(final ImportTemplateDao i){
+   @Test
+public void setImportTemplateDao(final ImportTemplateDao i){
       this.importTemplateDao = i;
    }
 
-   public void setBanqueDao(final BanqueDao bDao){
+   @Test
+public void setBanqueDao(final BanqueDao bDao){
       this.banqueDao = bDao;
    }
 
-   public void setEntiteDao(final EntiteDao eDao){
+   @Test
+public void setEntiteDao(final EntiteDao eDao){
       this.entiteDao = eDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAll(){
-      final List<ImportTemplate> liste = importTemplateDao.findAll();
+   @Test
+public void testReadAll(){
+      final List<ImportTemplate> liste = IterableUtils.toList(importTemplateDao.findAll());
       assertTrue(liste.size() == 4);
    }
 
    /**
     * Test l'appel de la méthode findByBanqueWithOrder().
     */
-   public void testFindByBanqueWithOrder(){
+   @Test
+public void testFindByBanqueWithOrder(){
       final Banque b1 = banqueDao.findById(1);
       List<ImportTemplate> liste = importTemplateDao.findByBanqueWithOrder(b1);
       assertTrue(liste.size() == 3);
@@ -115,7 +123,8 @@ public class ImportTemplateDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<ImportTemplate> liste = importTemplateDao.findByExcludedId(1);
       assertTrue(liste.size() == 3);
 
@@ -129,7 +138,8 @@ public class ImportTemplateDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas d'erreur.
     */
    @Rollback(false)
-   public void testCrud() throws Exception{
+   @Test
+public void testCrud() throws Exception{
 
       Integer tpId;
 
@@ -152,7 +162,7 @@ public class ImportTemplateDaoTest extends AbstractDaoTest
       it.setEntites(entites);
 
       // Test de l'insertion
-      importTemplateDao.createObject(it);
+      importTemplateDao.save(it);
       tpId = it.getImportTemplateId();
       assertNotNull(tpId);
 
@@ -173,20 +183,21 @@ public class ImportTemplateDaoTest extends AbstractDaoTest
       entites.add(e3);
       entites.add(e4);
       it2.setEntites(entites);
-      importTemplateDao.updateObject(it2);
+      importTemplateDao.save(it2);
       assertTrue(importTemplateDao.findById(tpId).getNom().equals(nomUp));
       assertTrue(importTemplateDao.findById(tpId).getEntites().size() == 3);
       assertTrue(it2.getDeriveParentEntite().equals(e3));
 
       // Test de la délétion
-      importTemplateDao.removeObject(new Integer(5));
+      importTemplateDao.deleteById(new Integer(5));
       assertNull(importTemplateDao.findById(new Integer(5)));
    }
 
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String nom = "nom";
       final String nom2 = "nom2";
       final Banque b1 = banqueDao.findById(1);
@@ -246,7 +257,8 @@ public class ImportTemplateDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String nom = "nom";
       final String nom2 = "nom2";
       final Banque b1 = banqueDao.findById(1);
@@ -284,7 +296,8 @@ public class ImportTemplateDaoTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final ImportTemplate t1 = importTemplateDao.findById(1);
       assertTrue(t1.toString().equals("{" + t1.getNom() + ", " + t1.getBanque().getNom() + "(Banque)}"));
 
@@ -295,7 +308,8 @@ public class ImportTemplateDaoTest extends AbstractDaoTest
    /**
     * Test la méthode clone.
     */
-   public void testClone(){
+   @Test
+public void testClone(){
       final ImportTemplate t1 = importTemplateDao.findById(1);
       ImportTemplate t2 = new ImportTemplate();
       t2 = t1.clone();

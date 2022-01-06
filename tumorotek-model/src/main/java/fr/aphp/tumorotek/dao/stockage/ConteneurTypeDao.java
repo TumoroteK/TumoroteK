@@ -38,10 +38,11 @@ package fr.aphp.tumorotek.dao.stockage;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import fr.aphp.tumorotek.dao.GenericDaoJpa;
 import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.stockage.ConteneurType;
 
 /**
@@ -52,7 +53,15 @@ import fr.aphp.tumorotek.model.stockage.ConteneurType;
  */
 @Repository
 public interface ConteneurTypeDao
-		extends GenericDaoJpa<ConteneurType, Integer>, PfDependantTKThesaurusDao<ConteneurType> {
+		extends CrudRepository<ConteneurType, Integer>, PfDependantTKThesaurusDao<ConteneurType> {
+
+	@Override
+	@Query("SELECT c FROM ConteneurType c ORDER BY c.nom")
+	List<ConteneurType> findByOrder();
+
+	@Override
+	@Query("SELECT c FROM ConteneurType c " + "WHERE c.plateforme = ?1 ORDER BY c.nom")
+	List<ConteneurType> findByPfOrder(Plateforme pf);
 
 	/**
 	 * Recherche tous les ConteneurTypes sauf celui dont l'identifiant est passé en

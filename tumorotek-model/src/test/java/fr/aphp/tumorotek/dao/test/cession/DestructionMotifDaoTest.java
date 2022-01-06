@@ -38,7 +38,19 @@ package fr.aphp.tumorotek.dao.test.cession;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
+
 
 import fr.aphp.tumorotek.dao.cession.DestructionMotifDao;
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
@@ -57,38 +69,47 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  * @version 25/01/2010
  *
  */
-@TransactionConfiguration(defaultRollback = false)
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {Config.class})
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
 public class DestructionMotifDaoTest extends AbstractDaoTest
 {
 
-   /** Bean Dao. */
-   private DestructionMotifDao destructionMotifDao;
-   private PlateformeDao plateformeDao;
 
-   private final String updatedMotif = "Mis a jour";
+   @Autowired
+ DestructionMotifDao destructionMotifDao;
+   @Autowired
+ PlateformeDao plateformeDao;
+
+   @Autowired
+ final String updatedMotif = "Mis a jour";
 
    /** Constructeur. */
    public DestructionMotifDaoTest(){
 
    }
 
-   public void setDestructionMotifDao(final DestructionMotifDao dDao){
+   @Test
+public void setDestructionMotifDao(final DestructionMotifDao dDao){
       this.destructionMotifDao = dDao;
    }
 
-   public void setPlateformeDao(final PlateformeDao pDao){
+   @Test
+public void setPlateformeDao(final PlateformeDao pDao){
       this.plateformeDao = pDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllDestructionMotifs(){
-      final List<DestructionMotif> liste = destructionMotifDao.findAll();
+   @Test
+public void testReadAllDestructionMotifs(){
+      final List<DestructionMotif> liste = IterableUtils.toList(destructionMotifDao.findAll());
       assertTrue(liste.size() == 3);
    }
 
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       Plateforme pf = plateformeDao.findById(1);
       List<? extends TKThesaurusObject> list = destructionMotifDao.findByPfOrder(pf);
       assertTrue(list.size() == 2);
@@ -103,7 +124,8 @@ public class DestructionMotifDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByMotif().
     */
-   public void testFindByMotif(){
+   @Test
+public void testFindByMotif(){
       List<DestructionMotif> liste = destructionMotifDao.findByMotif("INUTILISABLE");
       assertTrue(liste.size() == 1);
 
@@ -121,7 +143,8 @@ public class DestructionMotifDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByExcludedId().
     */
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<DestructionMotif> liste = destructionMotifDao.findByExcludedId(1);
       assertTrue(liste.size() == 2);
       final DestructionMotif motif = liste.get(0);
@@ -137,13 +160,14 @@ public class DestructionMotifDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas d'erreur.
     */
    @Rollback(false)
-   public void testCrudDestructionMotif() throws Exception{
+   @Test
+public void testCrudDestructionMotif() throws Exception{
 
       final DestructionMotif de = new DestructionMotif();
       de.setPlateforme(plateformeDao.findById(1));
       de.setMotif("TEST");
       // Test de l'insertion
-      destructionMotifDao.createObject(de);
+      destructionMotifDao.save(de);
       assertEquals(new Integer(4), de.getDestructionMotifId());
 
       // Test de la mise à jour
@@ -151,11 +175,11 @@ public class DestructionMotifDaoTest extends AbstractDaoTest
       assertNotNull(de2);
       assertTrue(de2.getMotif().equals("TEST"));
       de2.setMotif(updatedMotif);
-      destructionMotifDao.updateObject(de2);
+      destructionMotifDao.save(de2);
       assertTrue(destructionMotifDao.findById(new Integer(4)).getMotif().equals(updatedMotif));
 
       // Test de la délétion
-      destructionMotifDao.removeObject(new Integer(4));
+      destructionMotifDao.deleteById(new Integer(4));
       assertNull(destructionMotifDao.findById(new Integer(4)));
 
    }
@@ -163,7 +187,8 @@ public class DestructionMotifDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String motif = "MOTIF";
       final String motif2 = "MOTIF2";
       final DestructionMotif de1 = new DestructionMotif();
@@ -209,7 +234,8 @@ public class DestructionMotifDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String motif = "MOTIF";
       final DestructionMotif de1 = new DestructionMotif();
       de1.setMotif(motif);
@@ -240,7 +266,8 @@ public class DestructionMotifDaoTest extends AbstractDaoTest
    /**
     * Test la méthode toString.
     */
-   public void testToString(){
+   @Test
+public void testToString(){
       final DestructionMotif de1 = destructionMotifDao.findById(1);
       assertTrue(de1.toString().equals("{" + de1.getMotif() + "}"));
 

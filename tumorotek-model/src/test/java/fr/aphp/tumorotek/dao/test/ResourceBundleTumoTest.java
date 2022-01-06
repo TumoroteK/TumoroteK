@@ -2,29 +2,32 @@ package fr.aphp.tumorotek.dao.test;
 
 import java.util.ResourceBundle;
 
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import fr.aphp.tumorotek.model.bundles.ResourceBundleTumo;
 
 public class ResourceBundleTumoTest extends AbstractDaoTest //FIXME Class de test non utilisée/executée ?
 {
 
    /** Bean. */
-   private ResourceBundleTumo resourceBundleTumo;
+   @Autowired
+ ResourceBundleTumo resourceBundleTumo;
 
-   public void setResourceBundleTumo(final ResourceBundleTumo r){
-      this.resourceBundleTumo = r;
-   }
 
    public ResourceBundleTumoTest(){
 
    }
 
-   public void testDoesResourceBundleExists(){
+   @Test
+public void testDoesResourceBundleExists(){
       assertTrue(resourceBundleTumo.doesResourceBundleExists("tumorotek.properties"));
       assertFalse(resourceBundleTumo.doesResourceBundleExists("blabla"));
       assertFalse(resourceBundleTumo.doesResourceBundleExists(null));
    }
 
-   public void testGetResourceBundle(){
+   @Test
+public void testGetResourceBundle(){
       ResourceBundle bundle = resourceBundleTumo.getResourceBundle("tumorotek.properties");
       assertTrue(bundle.getString("tk.filesystem").equals("/home/mathieu/TKtest/"));
 

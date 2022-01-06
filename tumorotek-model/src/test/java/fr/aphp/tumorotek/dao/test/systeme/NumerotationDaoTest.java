@@ -39,7 +39,17 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
 
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
@@ -50,310 +60,313 @@ import fr.aphp.tumorotek.model.contexte.Categorie;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.systeme.Numerotation;
 
-public class NumerotationDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class NumerotationDaoTest extends AbstractDaoTest {
 
-   /** Bean Dao. */
-   private NumerotationDao numerotationDao;
-   private BanqueDao banqueDao;
-   private EntiteDao entiteDao;
+	@Autowired
+	NumerotationDao numerotationDao;
 
-   public NumerotationDaoTest(){
+	@Autowired
+	BanqueDao banqueDao;
 
-   }
+	@Autowired
+	EntiteDao entiteDao;
 
-   public void setNumerotationDao(final NumerotationDao nDao){
-      this.numerotationDao = nDao;
-   }
+	/**
+	 * Test l'appel de la méthode findAll().
+	 */
+	@Test
+	public void testReadAlls() {
+		final List<Numerotation> liste = IterableUtils.toList(IterableUtils.toList(numerotationDao.findAll()));
+		assertTrue(liste.size() == 3);
+	}
 
-   public void setBanqueDao(final BanqueDao bDao){
-      this.banqueDao = bDao;
-   }
+	@Test
+	public void testFindByBanques() {
+		final Banque b1 = banqueDao.findById(1).get();
+		final Banque b2 = banqueDao.findById(2).get();
+		final Banque b3 = banqueDao.findById(3).get();
+		List<Banque> banques = new ArrayList<>();
+		banques.add(b1);
+		banques.add(b2);
 
-   public void setEntiteDao(final EntiteDao eDao){
-      this.entiteDao = eDao;
-   }
+		List<Numerotation> liste = numerotationDao.findByBanques(banques);
+		assertTrue(liste.size() == 3);
+		assertTrue(liste.get(0).getCodeFormula().equals("PRLVT[]"));
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   public void testReadAlls(){
-      final List<Numerotation> liste = numerotationDao.findAll();
-      assertTrue(liste.size() == 3);
-   }
+		banques = new ArrayList<>();
+		banques.add(b3);
+		liste = numerotationDao.findByBanques(banques);
+		assertTrue(liste.size() == 0);
 
-   public void testFindByBanques(){
-      final Banque b1 = banqueDao.findById(1);
-      final Banque b2 = banqueDao.findById(2);
-      final Banque b3 = banqueDao.findById(3);
-      List<Banque> banques = new ArrayList<>();
-      banques.add(b1);
-      banques.add(b2);
+		liste = numerotationDao.findByBanques(null);
+		assertTrue(liste.size() == 0);
+	}
 
-      List<Numerotation> liste = numerotationDao.findByBanques(banques);
-      assertTrue(liste.size() == 3);
-      assertTrue(liste.get(0).getCodeFormula().equals("PRLVT[]"));
+	@Test
+	public void testFindByBanqueAndEntite() {
+		final Banque b1 = banqueDao.findById(1).get();
+		final Banque b2 = banqueDao.findById(2).get();
+		final Entite e1 = entiteDao.findById(1).get();
+		final Entite e2 = entiteDao.findById(2).get();
 
-      banques = new ArrayList<>();
-      banques.add(b3);
-      liste = numerotationDao.findByBanques(banques);
-      assertTrue(liste.size() == 0);
+		List<Numerotation> liste = numerotationDao.findByBanqueAndEntite(b1, e2);
+		assertTrue(liste.size() == 1);
+		assertTrue(liste.get(0).getCodeFormula().equals("PRLVT[]"));
 
-      liste = numerotationDao.findByBanques(null);
-      assertTrue(liste.size() == 0);
-   }
+		liste = numerotationDao.findByBanqueAndEntite(b2, e2);
+		assertTrue(liste.size() == 0);
 
-   public void testFindByBanqueAndEntite(){
-      final Banque b1 = banqueDao.findById(1);
-      final Banque b2 = banqueDao.findById(2);
-      final Entite e1 = entiteDao.findById(1);
-      final Entite e2 = entiteDao.findById(2);
+		liste = numerotationDao.findByBanqueAndEntite(b1, e1);
+		assertTrue(liste.size() == 0);
 
-      List<Numerotation> liste = numerotationDao.findByBanqueAndEntite(b1, e2);
-      assertTrue(liste.size() == 1);
-      assertTrue(liste.get(0).getCodeFormula().equals("PRLVT[]"));
+		liste = numerotationDao.findByBanqueAndEntite(null, e1);
+		assertTrue(liste.size() == 0);
 
-      liste = numerotationDao.findByBanqueAndEntite(b2, e2);
-      assertTrue(liste.size() == 0);
+		liste = numerotationDao.findByBanqueAndEntite(b1, null);
+		assertTrue(liste.size() == 0);
 
-      liste = numerotationDao.findByBanqueAndEntite(b1, e1);
-      assertTrue(liste.size() == 0);
+		liste = numerotationDao.findByBanqueAndEntite(null, null);
+		assertTrue(liste.size() == 0);
+	}
 
-      liste = numerotationDao.findByBanqueAndEntite(null, e1);
-      assertTrue(liste.size() == 0);
+	@Test
+	public void testFindByBanqueSelectEntite() {
+		final Banque b1 = banqueDao.findById(1).get();
+		final Banque b2 = banqueDao.findById(2).get();
+		final Banque b3 = banqueDao.findById(3).get();
 
-      liste = numerotationDao.findByBanqueAndEntite(b1, null);
-      assertTrue(liste.size() == 0);
+		List<Entite> liste = numerotationDao.findByBanqueSelectEntite(b1);
+		assertTrue(liste.size() == 2);
 
-      liste = numerotationDao.findByBanqueAndEntite(null, null);
-      assertTrue(liste.size() == 0);
-   }
+		liste = numerotationDao.findByBanqueSelectEntite(b2);
+		assertTrue(liste.size() == 1);
 
-   public void testFindByBanqueSelectEntite(){
-      final Banque b1 = banqueDao.findById(1);
-      final Banque b2 = banqueDao.findById(2);
-      final Banque b3 = banqueDao.findById(3);
+		liste = numerotationDao.findByBanqueSelectEntite(b3);
+		assertTrue(liste.size() == 0);
 
-      List<Entite> liste = numerotationDao.findByBanqueSelectEntite(b1);
-      assertTrue(liste.size() == 2);
+		liste = numerotationDao.findByBanqueSelectEntite(null);
+		assertTrue(liste.size() == 0);
+	}
 
-      liste = numerotationDao.findByBanqueSelectEntite(b2);
-      assertTrue(liste.size() == 1);
+	@Test
+	public void testFindByExcludedId() {
+		List<Numerotation> liste = numerotationDao.findByExcludedId(2);
+		assertTrue(liste.size() == 2);
 
-      liste = numerotationDao.findByBanqueSelectEntite(b3);
-      assertTrue(liste.size() == 0);
+		liste = numerotationDao.findByExcludedId(25);
+		assertTrue(liste.size() == 3);
+	}
 
-      liste = numerotationDao.findByBanqueSelectEntite(null);
-      assertTrue(liste.size() == 0);
-   }
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'une Numerotation.
+	 * 
+	 * @throws Exception lance une exception en cas d'erreur.
+	 */
+	@Rollback(false)
+	@Test
+	public void testCrud() throws Exception {
 
-   public void testFindByExcludedId(){
-      List<Numerotation> liste = numerotationDao.findByExcludedId(2);
-      assertTrue(liste.size() == 2);
+		final Numerotation num = new Numerotation();
+		final Banque b = banqueDao.findById(1).get();
+		final Entite e = entiteDao.findById(1).get();
 
-      liste = numerotationDao.findByExcludedId(25);
-      assertTrue(liste.size() == 3);
-   }
+		final String code1 = "XXX[]";
+		final String code2 = "XXX[]XXX";
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression d'une Numerotation.
-    * @throws Exception lance une exception en cas d'erreur.
-    */
-   @Rollback(false)
-   public void testCrud() throws Exception{
+		num.setBanque(b);
+		num.setEntite(e);
+		num.setCodeFormula(code1);
+		num.setCurrentIncrement(5);
+		num.setStartIncrement(1);
+		num.setNbChiffres(5);
+		num.setZeroFill(true);
 
-      final Numerotation num = new Numerotation();
-      final Banque b = banqueDao.findById(1);
-      final Entite e = entiteDao.findById(1);
+		// Test de l'insertion
+		numerotationDao.save(num);
+		assertEquals(new Integer(4), num.getNumerotationId());
 
-      final String code1 = "XXX[]";
-      final String code2 = "XXX[]XXX";
+		// Test de la mise à jour
+		final Numerotation num2 = numerotationDao.findById(new Integer(4)).get();
+		assertNotNull(num2);
+		assertNotNull(num2.getBanque());
+		assertNotNull(num2.getEntite());
+		assertTrue(num2.getCodeFormula().equals(code1));
+		assertTrue(num2.getCurrentIncrement() == 5);
+		assertTrue(num2.getStartIncrement() == 1);
+		assertTrue(num2.getNbChiffres() == 5);
+		assertTrue(num2.getZeroFill());
+		num2.setCodeFormula(code2);
+		numerotationDao.save(num2);
+		assertTrue(numerotationDao.findById(new Integer(4)).get().getCodeFormula().equals(code2));
 
-      num.setBanque(b);
-      num.setEntite(e);
-      num.setCodeFormula(code1);
-      num.setCurrentIncrement(5);
-      num.setStartIncrement(1);
-      num.setNbChiffres(5);
-      num.setZeroFill(true);
+		// Test de la délétion
+		numerotationDao.deleteById(new Integer(4));
+		assertFalse(numerotationDao.findById(new Integer(4)).isPresent());
+	}
 
-      // Test de l'insertion
-      numerotationDao.createObject(num);
-      assertEquals(new Integer(4), num.getNumerotationId());
+	/**
+	 * Test de la méthode surchargée "equals".
+	 * 
+	 * @throws ParseException
+	 */
+	@Test
+	public void testEquals() throws ParseException {
+		final Banque b1 = banqueDao.findById(1).get();
+		final Banque b2 = banqueDao.findById(2).get();
+		final Entite e1 = entiteDao.findById(1).get();
+		final Entite e2 = entiteDao.findById(2).get();
+		final Numerotation n1 = new Numerotation();
+		final Numerotation n2 = new Numerotation();
 
-      // Test de la mise à jour
-      final Numerotation num2 = numerotationDao.findById(new Integer(4));
-      assertNotNull(num2);
-      assertNotNull(num2.getBanque());
-      assertNotNull(num2.getEntite());
-      assertTrue(num2.getCodeFormula().equals(code1));
-      assertTrue(num2.getCurrentIncrement() == 5);
-      assertTrue(num2.getStartIncrement() == 1);
-      assertTrue(num2.getNbChiffres() == 5);
-      assertTrue(num2.getZeroFill());
-      num2.setCodeFormula(code2);
-      numerotationDao.updateObject(num2);
-      assertTrue(numerotationDao.findById(new Integer(4)).getCodeFormula().equals(code2));
+		// L'objet 1 n'est pas égal à null
+		assertFalse(n1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(n1.equals(n1));
 
-      // Test de la délétion
-      numerotationDao.removeObject(new Integer(4));
-      assertNull(numerotationDao.findById(new Integer(4)));
-   }
+		/* null */
+		assertTrue(n1.equals(n2));
+		assertTrue(n2.equals(n1));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    * @throws ParseException 
-    */
-   public void testEquals() throws ParseException{
-      final Banque b1 = banqueDao.findById(1);
-      final Banque b2 = banqueDao.findById(2);
-      final Entite e1 = entiteDao.findById(1);
-      final Entite e2 = entiteDao.findById(2);
-      final Numerotation n1 = new Numerotation();
-      final Numerotation n2 = new Numerotation();
+		/* Banque */
+		n2.setBanque(b1);
+		assertFalse(n1.equals(n2));
+		assertFalse(n2.equals(n1));
+		n1.setBanque(b2);
+		assertFalse(n1.equals(n2));
+		assertFalse(n2.equals(n1));
+		n1.setBanque(b1);
+		assertTrue(n1.equals(n2));
+		assertTrue(n2.equals(n1));
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(n1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(n1.equals(n1));
+		/* Prenom */
+		n2.setEntite(e1);
+		assertFalse(n1.equals(n2));
+		assertFalse(n2.equals(n1));
+		n1.setEntite(e2);
+		assertFalse(n1.equals(n2));
+		assertFalse(n2.equals(n1));
+		n1.setEntite(e1);
+		assertTrue(n1.equals(n2));
 
-      /*null*/
-      assertTrue(n1.equals(n2));
-      assertTrue(n2.equals(n1));
+		final Categorie c3 = new Categorie();
+		assertFalse(n1.equals(c3));
+	}
 
-      /*Banque*/
-      n2.setBanque(b1);
-      assertFalse(n1.equals(n2));
-      assertFalse(n2.equals(n1));
-      n1.setBanque(b2);
-      assertFalse(n1.equals(n2));
-      assertFalse(n2.equals(n1));
-      n1.setBanque(b1);
-      assertTrue(n1.equals(n2));
-      assertTrue(n2.equals(n1));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 * 
+	 * @throws ParseException
+	 */
+	@Test
+	public void testHashCode() throws ParseException {
+		final Banque b1 = banqueDao.findById(1).get();
+		final Banque b2 = banqueDao.findById(2).get();
+		final Entite e1 = entiteDao.findById(1).get();
+		final Entite e2 = entiteDao.findById(2).get();
+		final Numerotation n1 = new Numerotation();
+		final Numerotation n2 = new Numerotation();
 
-      /*Prenom*/
-      n2.setEntite(e1);
-      assertFalse(n1.equals(n2));
-      assertFalse(n2.equals(n1));
-      n1.setEntite(e2);
-      assertFalse(n1.equals(n2));
-      assertFalse(n2.equals(n1));
-      n1.setEntite(e1);
-      assertTrue(n1.equals(n2));
+		/* null */
+		assertTrue(n1.hashCode() == n2.hashCode());
 
-      final Categorie c3 = new Categorie();
-      assertFalse(n1.equals(c3));
-   }
+		/* Nom */
+		n2.setBanque(b1);
+		assertFalse(n1.hashCode() == n2.hashCode());
+		n1.setBanque(b2);
+		assertFalse(n1.hashCode() == n2.hashCode());
+		n1.setBanque(b1);
+		assertTrue(n1.hashCode() == n2.hashCode());
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    * @throws ParseException 
-    */
-   public void testHashCode() throws ParseException{
-      final Banque b1 = banqueDao.findById(1);
-      final Banque b2 = banqueDao.findById(2);
-      final Entite e1 = entiteDao.findById(1);
-      final Entite e2 = entiteDao.findById(2);
-      final Numerotation n1 = new Numerotation();
-      final Numerotation n2 = new Numerotation();
+		/* Prenom */
+		n2.setEntite(e1);
+		assertFalse(n1.hashCode() == n2.hashCode());
+		n1.setEntite(e2);
+		assertFalse(n1.hashCode() == n2.hashCode());
+		n1.setEntite(e1);
+		assertTrue(n1.hashCode() == n2.hashCode());
 
-      /*null*/
-      assertTrue(n1.hashCode() == n2.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		final int hash = n1.hashCode();
+		assertTrue(hash == n1.hashCode());
+		assertTrue(hash == n1.hashCode());
+		assertTrue(hash == n1.hashCode());
+		assertTrue(hash == n1.hashCode());
+	}
 
-      /*Nom*/
-      n2.setBanque(b1);
-      assertFalse(n1.hashCode() == n2.hashCode());
-      n1.setBanque(b2);
-      assertFalse(n1.hashCode() == n2.hashCode());
-      n1.setBanque(b1);
-      assertTrue(n1.hashCode() == n2.hashCode());
+	/**
+	 * Test la méthode toString.
+	 */
+	@Test
+	public void testToString() {
+		final Numerotation n1 = numerotationDao.findById(1).get();
+		assertTrue(n1.toString().equals("{" + n1.getCodeFormula() + "}"));
 
-      /*Prenom*/
-      n2.setEntite(e1);
-      assertFalse(n1.hashCode() == n2.hashCode());
-      n1.setEntite(e2);
-      assertFalse(n1.hashCode() == n2.hashCode());
-      n1.setEntite(e1);
-      assertTrue(n1.hashCode() == n2.hashCode());
+		final Numerotation n2 = new Numerotation();
+		assertTrue(n2.toString().equals("{Empty Numerotation}"));
+	}
 
-      // un même objet garde le même hashcode dans le temps
-      final int hash = n1.hashCode();
-      assertTrue(hash == n1.hashCode());
-      assertTrue(hash == n1.hashCode());
-      assertTrue(hash == n1.hashCode());
-      assertTrue(hash == n1.hashCode());
-   }
+	/**
+	 * Test la méthode clone.
+	 */
+	@Test
+	public void testClone() {
+		final Numerotation num1 = numerotationDao.findById(1).get();
+		Numerotation num2 = new Numerotation();
+		num2 = num1.clone();
 
-   /**
-    * Test la méthode toString.
-    */
-   public void testToString(){
-      final Numerotation n1 = numerotationDao.findById(1);
-      assertTrue(n1.toString().equals("{" + n1.getCodeFormula() + "}"));
+		assertTrue(num1.equals(num2));
 
-      final Numerotation n2 = new Numerotation();
-      assertTrue(n2.toString().equals("{Empty Numerotation}"));
-   }
+		if (num1.getNumerotationId() != null) {
+			assertTrue(num1.getNumerotationId() == num2.getNumerotationId());
+		} else {
+			assertNull(num2.getNumerotationId());
+		}
 
-   /**
-    * Test la méthode clone.
-    */
-   public void testClone(){
-      final Numerotation num1 = numerotationDao.findById(1);
-      Numerotation num2 = new Numerotation();
-      num2 = num1.clone();
+		if (num1.getBanque() != null) {
+			assertTrue(num1.getBanque().equals(num2.getBanque()));
+		} else {
+			assertNull(num2.getBanque());
+		}
 
-      assertTrue(num1.equals(num2));
+		if (num1.getEntite() != null) {
+			assertTrue(num1.getEntite().equals(num2.getEntite()));
+		} else {
+			assertNull(num2.getEntite());
+		}
 
-      if(num1.getNumerotationId() != null){
-         assertTrue(num1.getNumerotationId() == num2.getNumerotationId());
-      }else{
-         assertNull(num2.getNumerotationId());
-      }
+		if (num1.getCodeFormula() != null) {
+			assertTrue(num1.getCodeFormula().equals(num2.getCodeFormula()));
+		} else {
+			assertNull(num2.getCodeFormula());
+		}
 
-      if(num1.getBanque() != null){
-         assertTrue(num1.getBanque().equals(num2.getBanque()));
-      }else{
-         assertNull(num2.getBanque());
-      }
+		if (num1.getCurrentIncrement() != null) {
+			assertTrue(num1.getCurrentIncrement() == num2.getCurrentIncrement());
+		} else {
+			assertNull(num2.getCurrentIncrement());
+		}
 
-      if(num1.getEntite() != null){
-         assertTrue(num1.getEntite().equals(num2.getEntite()));
-      }else{
-         assertNull(num2.getEntite());
-      }
+		if (num1.getStartIncrement() != null) {
+			assertTrue(num1.getStartIncrement() == num2.getStartIncrement());
+		} else {
+			assertNull(num2.getStartIncrement());
+		}
 
-      if(num1.getCodeFormula() != null){
-         assertTrue(num1.getCodeFormula().equals(num2.getCodeFormula()));
-      }else{
-         assertNull(num2.getCodeFormula());
-      }
+		if (num1.getNbChiffres() != null) {
+			assertTrue(num1.getNbChiffres() == num2.getNbChiffres());
+		} else {
+			assertNull(num2.getNbChiffres());
+		}
 
-      if(num1.getCurrentIncrement() != null){
-         assertTrue(num1.getCurrentIncrement() == num2.getCurrentIncrement());
-      }else{
-         assertNull(num2.getCurrentIncrement());
-      }
+		if (num1.getZeroFill() != null) {
+			assertTrue(num1.getZeroFill().equals(num2.getZeroFill()));
+		} else {
+			assertNull(num2.getZeroFill());
+		}
 
-      if(num1.getStartIncrement() != null){
-         assertTrue(num1.getStartIncrement() == num2.getStartIncrement());
-      }else{
-         assertNull(num2.getStartIncrement());
-      }
-
-      if(num1.getNbChiffres() != null){
-         assertTrue(num1.getNbChiffres() == num2.getNbChiffres());
-      }else{
-         assertNull(num2.getNbChiffres());
-      }
-
-      if(num1.getZeroFill() != null){
-         assertTrue(num1.getZeroFill().equals(num2.getZeroFill()));
-      }else{
-         assertNull(num2.getZeroFill());
-      }
-
-   }
+	}
 
 }

@@ -62,11 +62,14 @@ public class TransporteurDaoTest extends AbstractDaoTest
 {
 
    /** Bean Dao TransporteurDao. */
-   private TransporteurDao transporteurDao;
+   @Autowired
+ TransporteurDao transporteurDao;
    /** Bean Dao CoordonneeDao. */
-   private CoordonneeDao coordonneeDao;
+   @Autowired
+ CoordonneeDao coordonneeDao;
    /** valeur du nom pour la maj. */
-   private final String updatedNom = "Transporteur mis a jour";
+   @Autowired
+ final String updatedNom = "Transporteur mis a jour";
 
    /** Constructeur. */
    public TransporteurDaoTest(){
@@ -77,7 +80,8 @@ public class TransporteurDaoTest extends AbstractDaoTest
     * Setter du bean Dao TransporteurDao.
     * @param tDao est le bean Dao.
     */
-   public void setTransporteurDao(final TransporteurDao tDao){
+   @Test
+public void setTransporteurDao(final TransporteurDao tDao){
       this.transporteurDao = tDao;
    }
 
@@ -85,19 +89,22 @@ public class TransporteurDaoTest extends AbstractDaoTest
     * Setter du bean Dao CoordonneeDao.
     * @param cDao est le bean Dao.
     */
-   public void setCoordonneeDao(final CoordonneeDao cDao){
+   @Test
+public void setCoordonneeDao(final CoordonneeDao cDao){
       this.coordonneeDao = cDao;
    }
 
    /**
     * Test l'appel de la méthode findAll().
     */
-   public void testReadAllTransorteurs(){
-      final List<Transporteur> transporteurs = transporteurDao.findAll();
+   @Test
+public void testReadAllTransorteurs(){
+      final List<Transporteur> transporteurs = IterableUtils.toList(transporteurDao.findAll());
       assertTrue(transporteurs.size() == 3);
    }
 
-   public void testFindByExcludedId(){
+   @Test
+public void testFindByExcludedId(){
       List<Transporteur> transporteurs = transporteurDao.findByExcludedId(1);
       assertTrue(transporteurs.size() == 2);
 
@@ -108,7 +115,8 @@ public class TransporteurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByOrder().
     */
-   public void testFindByOrder(){
+   @Test
+public void testFindByOrder(){
       final List<Transporteur> list = transporteurDao.findByOrder();
       assertTrue(list.size() == 3);
       assertTrue(list.get(0).getNom().equals("HOPITAL ST LOUIS - ANAPATH"));
@@ -117,7 +125,8 @@ public class TransporteurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByNom().
     */
-   public void testFindByNom(){
+   @Test
+public void testFindByNom(){
       List<Transporteur> transporteurs = transporteurDao.findByNom("HOPITAL ST LOUIS - ANAPATH");
       assertTrue(transporteurs.size() == 1);
       transporteurs = transporteurDao.findByNom("BICHAT");
@@ -127,7 +136,8 @@ public class TransporteurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByContactNom().
     */
-   public void testfindByContactNom(){
+   @Test
+public void testfindByContactNom(){
       List<Transporteur> transporteurs = transporteurDao.findByContactNom("ME PISSANERO");
       assertTrue(transporteurs.size() == 1);
       transporteurs = transporteurDao.findByContactNom("TEST");
@@ -137,7 +147,8 @@ public class TransporteurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByArchive().
     */
-   public void testFindByArchive(){
+   @Test
+public void testFindByArchive(){
       final List<Transporteur> transporteurs = transporteurDao.findByArchive(false);
       assertTrue(transporteurs.size() == 2);
    }
@@ -145,7 +156,8 @@ public class TransporteurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByCoordonnee().
     */
-   public void testFindByCoordonnee(){
+   @Test
+public void testFindByCoordonnee(){
       Coordonnee c = coordonneeDao.findById(1);
       List<Transporteur> transporteurs = transporteurDao.findByCoordonnee(c);
       assertTrue(transporteurs.size() == 1);
@@ -157,7 +169,8 @@ public class TransporteurDaoTest extends AbstractDaoTest
    /**
     * Test l'appel de la méthode findByIdWithFetch().
     */
-   public void testFindByIdWithFetch(){
+   @Test
+public void testFindByIdWithFetch(){
       final List<Transporteur> transporteurs = transporteurDao.findByIdWithFetch(1);
       assertTrue(transporteurs.size() == 1);
       final Transporteur transporteur = transporteurs.get(0);
@@ -170,7 +183,8 @@ public class TransporteurDaoTest extends AbstractDaoTest
     * @throws Exception lance une exception en cas d'erreurs sur les données.
     */
    @Rollback(false)
-   public void testTransporteur() throws Exception{
+   @Test
+public void testTransporteur() throws Exception{
 
       final Transporteur t = new Transporteur();
       //Coordonnee c = coordonneeDao.findById(7);
@@ -186,7 +200,7 @@ public class TransporteurDaoTest extends AbstractDaoTest
       }
       //t.setCoordonnee(c);
       // Test de l'insertion
-      transporteurDao.createObject(t);
+      transporteurDao.save(t);
 
       // Test de la mise à jour
       final Transporteur t2 = transporteurDao.findById(t.getTransporteurId());
@@ -199,11 +213,11 @@ public class TransporteurDaoTest extends AbstractDaoTest
       assertTrue(t2.getContactMail().equals("toto@yahoo.fr"));
       //assertNotNull(t2.getCoordonnee());
       t2.setNom(updatedNom);
-      transporteurDao.updateObject(t2);
+      transporteurDao.save(t2);
       assertTrue(transporteurDao.findById(t2.getTransporteurId()).getNom().equals(updatedNom));
 
       // Test de la délétion
-      transporteurDao.removeObject(t2.getTransporteurId());
+      transporteurDao.deleteById(t2.getTransporteurId());
       assertNull(transporteurDao.findById(t2.getTransporteurId()));
 
    }
@@ -211,7 +225,8 @@ public class TransporteurDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "equals".
     */
-   public void testEquals(){
+   @Test
+public void testEquals(){
       final String nom = "Nom";
       final String nom2 = "Nom2";
       final String cnom = "Contact Nom";
@@ -255,7 +270,8 @@ public class TransporteurDaoTest extends AbstractDaoTest
    /**
     * Test de la méthode surchargée "hashcode".
     */
-   public void testHashCode(){
+   @Test
+public void testHashCode(){
       final String nom = "Nom";
       final String cnom = "Contact Nom";
       final String cPrenom = "Prenom";
@@ -296,7 +312,8 @@ public class TransporteurDaoTest extends AbstractDaoTest
    /**
     * Test la méthode clone.
     */
-   public void testClone(){
+   @Test
+public void testClone(){
       final Transporteur t1 = transporteurDao.findById(1);
       final Transporteur t2 = t1.clone();
       assertTrue(t1.equals(t2));

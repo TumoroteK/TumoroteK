@@ -40,6 +40,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
+
 import fr.aphp.tumorotek.dao.systeme.VersionDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
 import fr.aphp.tumorotek.model.contexte.Categorie;
@@ -47,148 +58,150 @@ import fr.aphp.tumorotek.model.systeme.Version;
 
 /**
  *
- * Classe de test pour le DAO VersionDao et le bean du domaine Version.
- * Classe de test créée le 26/05/2011.
+ * Classe de test pour le DAO VersionDao et le bean du domaine Version. Classe
+ * de test créée le 26/05/2011.
  *
  * @author Pierre Ventadour.
  * @version 2.0
  *
  */
-public class VersionDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class VersionDaoTest extends AbstractDaoTest {
 
-   /** Bean Dao. */
-   private VersionDao versionDao;
+	@Autowired
+	VersionDao versionDao;
 
-   public VersionDaoTest(){
+	/**
+	 * Test l'appel de la méthode findAll().
+	 */
+	@Test
+	public void testFindAll() {
+		final List<Version> liste = IterableUtils.toList(IterableUtils.toList(versionDao.findAll()));
+		assertTrue(liste.size() == 3);
+	}
 
-   }
+	/**
+	 * Test l'appel de la méthode findByDateChronologique().
+	 */
+	@Test
+	public void testFindByDateChronologique() {
+		final List<Version> liste = versionDao.findByDateChronologique();
+		assertTrue(liste.size() == 3);
+		assertTrue(liste.get(0).getVersion().equals("2.0 beta 1"));
+	}
 
-   public void setVersionDao(final VersionDao vDao){
-      this.versionDao = vDao;
-   }
+	/**
+	 * Test l'appel de la méthode findByDateAntiChronologique().
+	 */
+	@Test
+	public void testFindByDateAntiChronologique() {
+		final List<Version> liste = versionDao.findByDateAntiChronologique();
+		assertTrue(liste.size() == 3);
+		assertTrue(liste.get(0).getVersion().equals("2.0"));
+	}
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   public void testFindAll(){
-      final List<Version> liste = versionDao.findAll();
-      assertTrue(liste.size() == 3);
-   }
+	/**
+	 * Test de la méthode surchargée "equals".
+	 * 
+	 * @throws ParseException
+	 */
+	@Test
+	public void testEquals() throws ParseException {
+		final String nom = "1.0";
+		final String nom2 = "2.0";
+		final Date d1 = new SimpleDateFormat("dd/MM/yyyy").parse("01/09/2009");
+		final Date d2 = new SimpleDateFormat("dd/MM/yyyy").parse("10/09/2009");
+		final Version v1 = new Version();
+		final Version v2 = new Version();
 
-   /**
-    * Test l'appel de la méthode findByDateChronologique().
-    */
-   public void testFindByDateChronologique(){
-      final List<Version> liste = versionDao.findByDateChronologique();
-      assertTrue(liste.size() == 3);
-      assertTrue(liste.get(0).getVersion().equals("2.0 beta 1"));
-   }
+		// L'objet 1 n'est pas égal à null
+		assertFalse(v1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(v1.equals(v1));
 
-   /**
-    * Test l'appel de la méthode findByDateAntiChronologique().
-    */
-   public void testFindByDateAntiChronologique(){
-      final List<Version> liste = versionDao.findByDateAntiChronologique();
-      assertTrue(liste.size() == 3);
-      assertTrue(liste.get(0).getVersion().equals("2.0"));
-   }
+		/* null */
+		assertTrue(v1.equals(v2));
+		assertTrue(v2.equals(v1));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    * @throws ParseException 
-    */
-   public void testEquals() throws ParseException{
-      final String nom = "1.0";
-      final String nom2 = "2.0";
-      final Date d1 = new SimpleDateFormat("dd/MM/yyyy").parse("01/09/2009");
-      final Date d2 = new SimpleDateFormat("dd/MM/yyyy").parse("10/09/2009");
-      final Version v1 = new Version();
-      final Version v2 = new Version();
+		/* Version */
+		v2.setVersion(nom);
+		assertFalse(v1.equals(v2));
+		assertFalse(v2.equals(v1));
+		v1.setVersion(nom2);
+		assertFalse(v1.equals(v2));
+		assertFalse(v2.equals(v1));
+		v1.setVersion(nom);
+		assertTrue(v1.equals(v2));
+		assertTrue(v2.equals(v1));
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(v1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(v1.equals(v1));
+		/* Date */
+		v2.setDate(d1);
+		assertFalse(v1.equals(v2));
+		assertFalse(v2.equals(v1));
+		v1.setDate(d2);
+		assertFalse(v1.equals(v2));
+		assertFalse(v2.equals(v1));
+		v1.setDate(d1);
+		assertTrue(v1.equals(v2));
 
-      /*null*/
-      assertTrue(v1.equals(v2));
-      assertTrue(v2.equals(v1));
+		final Categorie c3 = new Categorie();
+		assertFalse(v1.equals(c3));
+	}
 
-      /*Version*/
-      v2.setVersion(nom);
-      assertFalse(v1.equals(v2));
-      assertFalse(v2.equals(v1));
-      v1.setVersion(nom2);
-      assertFalse(v1.equals(v2));
-      assertFalse(v2.equals(v1));
-      v1.setVersion(nom);
-      assertTrue(v1.equals(v2));
-      assertTrue(v2.equals(v1));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 * 
+	 * @throws ParseException
+	 */
+	@Test
+	public void testHashCode() throws ParseException {
+		final String nom = "1.0";
+		final String nom2 = "2.0";
+		final Date d1 = new SimpleDateFormat("dd/MM/yyyy").parse("01/09/2009");
+		final Date d2 = new SimpleDateFormat("dd/MM/yyyy").parse("10/09/2009");
+		final Version v1 = new Version();
+		final Version v2 = new Version();
 
-      /*Date*/
-      v2.setDate(d1);
-      assertFalse(v1.equals(v2));
-      assertFalse(v2.equals(v1));
-      v1.setDate(d2);
-      assertFalse(v1.equals(v2));
-      assertFalse(v2.equals(v1));
-      v1.setDate(d1);
-      assertTrue(v1.equals(v2));
+		/* null */
+		assertTrue(v1.hashCode() == v2.hashCode());
 
-      final Categorie c3 = new Categorie();
-      assertFalse(v1.equals(c3));
-   }
+		/* Nom */
+		v2.setVersion(nom);
+		assertFalse(v1.hashCode() == v2.hashCode());
+		v1.setVersion(nom2);
+		assertFalse(v1.hashCode() == v2.hashCode());
+		v1.setVersion(nom);
+		assertTrue(v1.hashCode() == v2.hashCode());
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    * @throws ParseException 
-    */
-   public void testHashCode() throws ParseException{
-      final String nom = "1.0";
-      final String nom2 = "2.0";
-      final Date d1 = new SimpleDateFormat("dd/MM/yyyy").parse("01/09/2009");
-      final Date d2 = new SimpleDateFormat("dd/MM/yyyy").parse("10/09/2009");
-      final Version v1 = new Version();
-      final Version v2 = new Version();
+		/* Prenom */
+		v2.setDate(d1);
+		assertFalse(v1.hashCode() == v2.hashCode());
+		v1.setDate(d2);
+		assertFalse(v1.hashCode() == v2.hashCode());
+		v1.setDate(d1);
+		assertTrue(v1.hashCode() == v2.hashCode());
 
-      /*null*/
-      assertTrue(v1.hashCode() == v2.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		final int hash = v1.hashCode();
+		assertTrue(hash == v1.hashCode());
+		assertTrue(hash == v1.hashCode());
+		assertTrue(hash == v1.hashCode());
+		assertTrue(hash == v1.hashCode());
 
-      /*Nom*/
-      v2.setVersion(nom);
-      assertFalse(v1.hashCode() == v2.hashCode());
-      v1.setVersion(nom2);
-      assertFalse(v1.hashCode() == v2.hashCode());
-      v1.setVersion(nom);
-      assertTrue(v1.hashCode() == v2.hashCode());
+	}
 
-      /*Prenom*/
-      v2.setDate(d1);
-      assertFalse(v1.hashCode() == v2.hashCode());
-      v1.setDate(d2);
-      assertFalse(v1.hashCode() == v2.hashCode());
-      v1.setDate(d1);
-      assertTrue(v1.hashCode() == v2.hashCode());
+	/**
+	 * Test la méthode toString.
+	 */
+	@Test
+	public void testToString() {
+		final Version v1 = versionDao.findById(1).get();
+		assertTrue(v1.toString().equals("{" + v1.getVersion() + " " + v1.getDate() + "}"));
 
-      // un même objet garde le même hashcode dans le temps
-      final int hash = v1.hashCode();
-      assertTrue(hash == v1.hashCode());
-      assertTrue(hash == v1.hashCode());
-      assertTrue(hash == v1.hashCode());
-      assertTrue(hash == v1.hashCode());
-
-   }
-
-   /**
-    * Test la méthode toString.
-    */
-   public void testToString(){
-      final Version v1 = versionDao.findById(1);
-      assertTrue(v1.toString().equals("{" + v1.getVersion() + " " + v1.getDate() + "}"));
-
-      final Version v2 = new Version();
-      assertTrue(v2.toString().equals("{Empty Version}"));
-   }
+		final Version v2 = new Version();
+		assertTrue(v2.toString().equals("{Empty Version}"));
+	}
 
 }
