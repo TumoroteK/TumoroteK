@@ -218,7 +218,7 @@ public void testTransporteur() throws Exception{
 
       // Test de la délétion
       transporteurDao.deleteById(t2.getTransporteurId());
-      assertNull(transporteurDao.findById(t2.getTransporteurId()));
+      assertFalse(transporteurDao.findById(t2.getTransporteurId()).isPresent());
 
    }
 

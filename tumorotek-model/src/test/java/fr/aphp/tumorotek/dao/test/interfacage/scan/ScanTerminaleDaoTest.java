@@ -168,7 +168,7 @@ public void testCrudScanTerminale() throws Exception{
 
       // Test de la délétion
       scanTerminaleDao.deleteById(st2.getScanTerminaleId());
-      assertNull(scanTerminaleDao.findById(st2.getScanTerminaleId()));
+      assertFalse(scanTerminaleDao.findById(st2.getScanTerminaleId()).isPresent());
 
       assertTrue(IterableUtils.toList(scanTerminaleDao.findAll()).size() == totSize);
    }

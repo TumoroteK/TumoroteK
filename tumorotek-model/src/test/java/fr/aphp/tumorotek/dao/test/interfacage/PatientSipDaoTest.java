@@ -207,13 +207,13 @@ public void testCrudPatientSip() throws Exception{
       final int id = p.getPatientSipId();
       assertTrue(patientSipDao.findById(id).getNip().equals("113"));
       assertTrue(patientSipDao.findById(id).getNom().equals("Rey mysterio"));
-      assertNull(patientSipDao.findById(id).getNomNaissance());
+      assertFalse(patientSipDao.findById(id).getNomNaissance().isPresent());
       assertTrue(patientSipDao.findById(id).getPrenom().equals("Junior"));
       assertTrue(patientSipDao.findById(id).getDateNaissance().equals(date));
       assertTrue(patientSipDao.findById(id).getVilleNaissance().equals("Mexico city"));
       assertTrue(patientSipDao.findById(id).getPaysNaissance().equals("MEXICO"));
       assertTrue(patientSipDao.findById(id).getPatientEtat().equals("V"));
-      assertNull(patientSipDao.findById(id).getDateEtat());
+      assertFalse(patientSipDao.findById(id).getDateEtat().isPresent());
       assertTrue(patientSipDao.findById(id).getDateCreation().equals(cal));
       assertTrue(patientSipDao.findById(id).getDateModification().equals(cal2));
       assertTrue(patientSipDao.findById(id).getSejours().size() == 3);
@@ -221,7 +221,7 @@ public void testCrudPatientSip() throws Exception{
 
       // Test de la délétion
       patientSipDao.deleteById(id);
-      assertNull(patientSipDao.findById(id));
+      assertFalse(patientSipDao.findById(id).isPresent());
       assertTrue(IterableUtils.toList(patientSipDao.findAll()).size() == 3);
       assertTrue(patientSipDao.findByNumeroSejour("88889999").isEmpty());
    }

@@ -180,7 +180,7 @@ public void testCrud() throws Exception{
 
       // Test de la délétion
       blocExterneDao.deleteById(new Integer(id));
-      assertNull(blocExterneDao.findById(new Integer(id)));
+      assertFalse(blocExterneDao.findById(new Integer(id)).isPresent());
    }
 
    /**

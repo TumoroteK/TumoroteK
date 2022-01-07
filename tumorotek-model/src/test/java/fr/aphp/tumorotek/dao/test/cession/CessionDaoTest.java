@@ -558,7 +558,7 @@ public void testCrudCession() throws Exception{
 
       // Test de la délétion
       cessionDao.deleteById(new Integer(5));
-      assertNull(cessionDao.findById(new Integer(5)));
+      assertFalse(cessionDao.findById(new Integer(5)).isPresent());
 
    }
 

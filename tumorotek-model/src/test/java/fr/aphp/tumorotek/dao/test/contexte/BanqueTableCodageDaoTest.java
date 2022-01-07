@@ -164,7 +164,7 @@ public void testCrud(){
       assertFalse(banqueTableCodageDao.findById(pk).getLibelleExport());
       // Test de la délétion
       banqueTableCodageDao.deleteById(pk);
-      assertNull(banqueTableCodageDao.findById(pk));
+      assertFalse(banqueTableCodageDao.findById(pk).isPresent());
    }
 
    @Test

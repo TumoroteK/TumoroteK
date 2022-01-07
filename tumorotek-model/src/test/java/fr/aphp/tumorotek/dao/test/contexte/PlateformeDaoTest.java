@@ -214,7 +214,7 @@ public void testCrudPlateforme() throws Exception{
 
       // Test de la délétion
       plateformeDao.deleteById(new Integer(3));
-      assertNull(plateformeDao.findById(new Integer(3)));
+      assertFalse(plateformeDao.findById(new Integer(3)).isPresent());
 
    }
 

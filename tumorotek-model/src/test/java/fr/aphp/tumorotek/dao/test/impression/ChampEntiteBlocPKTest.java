@@ -37,19 +37,15 @@ package fr.aphp.tumorotek.dao.test.impression;
 
 import java.text.ParseException;
 
-import org.apache.commons.collections4.IterableUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import fr.aphp.tumorotek.dao.test.Config;
-
-
 
 import fr.aphp.tumorotek.dao.impression.BlocImpressionDao;
 import fr.aphp.tumorotek.dao.io.export.ChampEntiteDao;
@@ -68,144 +64,130 @@ import fr.aphp.tumorotek.model.io.export.ChampEntite;
  *
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {Config.class})
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
-public class ChampEntiteBlocPKTest extends AbstractDaoTest
-{
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class ChampEntiteBlocPKTest extends AbstractDaoTest {
 
+	@Autowired
+	BlocImpressionDao blocImpressionDao;
 
-   @Autowired
- BlocImpressionDao blocImpressionDao;
+	@Autowired
+	ChampEntiteDao champEntiteDao;
 
-   @Autowired
- ChampEntiteDao champEntiteDao;
+	/**
+	 * Test de la méthode surchargée "equals".
+	 * 
+	 * @throws ParseException
+	 */
+	@Test
+	public void testEquals() throws ParseException {
+		final ChampEntiteBlocPK pk1 = new ChampEntiteBlocPK();
+		final ChampEntiteBlocPK pk2 = new ChampEntiteBlocPK();
 
-   public ChampEntiteBlocPKTest(){
+		// L'objet 1 n'est pas égal à null
+		assertFalse(pk1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(pk1.equals(pk1));
 
-   }
+		/* null */
+		assertTrue(pk1.equals(pk2));
+		assertTrue(pk2.equals(pk1));
 
-   @Test
-public void setBlocImpressionDao(final BlocImpressionDao bDao){
-      this.blocImpressionDao = bDao;
-   }
+		populateClefsToTestEqualsAndHashCode();
 
-   @Test
-public void setChampEntiteDao(final ChampEntiteDao cDao){
-      this.champEntiteDao = cDao;
-   }
+		final Categorie c3 = new Categorie();
+		assertFalse(pk1.equals(c3));
+	}
 
-   /**
-    * Test de la méthode surchargée "equals".
-    * @throws ParseException 
-    */
-   @Test
-public void testEquals() throws ParseException{
-      final ChampEntiteBlocPK pk1 = new ChampEntiteBlocPK();
-      final ChampEntiteBlocPK pk2 = new ChampEntiteBlocPK();
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 * 
+	 * @throws ParseException
+	 */
+	@Test
+	public void testHashCode() throws ParseException {
+		final ChampEntiteBlocPK pk1 = new ChampEntiteBlocPK();
+		final ChampEntiteBlocPK pk2 = new ChampEntiteBlocPK();
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(pk1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(pk1.equals(pk1));
+		/* null */
+		assertTrue(pk1.hashCode() == pk2.hashCode());
 
-      /*null*/
-      assertTrue(pk1.equals(pk2));
-      assertTrue(pk2.equals(pk1));
+		populateClefsToTestEqualsAndHashCode();
 
-      populateClefsToTestEqualsAndHashCode();
+		// un même objet garde le même hashcode dans le temps
+		final int hash = pk1.hashCode();
+		assertTrue(hash == pk1.hashCode());
+		assertTrue(hash == pk1.hashCode());
+		assertTrue(hash == pk1.hashCode());
+		assertTrue(hash == pk1.hashCode());
+	}
 
-      final Categorie c3 = new Categorie();
-      assertFalse(pk1.equals(c3));
-   }
+	@Autowired
+	void populateClefsToTestEqualsAndHashCode() throws ParseException {
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    * @throws ParseException 
-    */
-   @Test
-public void testHashCode() throws ParseException{
-      final ChampEntiteBlocPK pk1 = new ChampEntiteBlocPK();
-      final ChampEntiteBlocPK pk2 = new ChampEntiteBlocPK();
+		final BlocImpression bi1 = blocImpressionDao.findById(1).get();
+		final BlocImpression bi2 = blocImpressionDao.findById(2).get();
+		final BlocImpression bi3 = blocImpressionDao.findById(1).get();
+		final BlocImpression[] blocs = new BlocImpression[] { null, bi1, bi2, bi3 };
+		final ChampEntite c1 = champEntiteDao.findById(1).get();
+		final ChampEntite c2 = champEntiteDao.findById(2).get();
+		final ChampEntite c3 = champEntiteDao.findById(1).get();
+		final ChampEntite[] champs = new ChampEntite[] { null, c1, c2, c3 };
 
-      /*null*/
-      assertTrue(pk1.hashCode() == pk2.hashCode());
+		final ChampEntiteBlocPK pk1 = new ChampEntiteBlocPK();
+		final ChampEntiteBlocPK pk2 = new ChampEntiteBlocPK();
 
-      populateClefsToTestEqualsAndHashCode();
+		for (int i = 0; i < blocs.length; i++) {
+			for (int j = 0; j < champs.length; j++) {
+				for (int k = 0; k < blocs.length; k++) {
+					for (int l = 0; l < champs.length; l++) {
 
-      // un même objet garde le même hashcode dans le temps
-      final int hash = pk1.hashCode();
-      assertTrue(hash == pk1.hashCode());
-      assertTrue(hash == pk1.hashCode());
-      assertTrue(hash == pk1.hashCode());
-      assertTrue(hash == pk1.hashCode());
-   }
+						pk1.setBlocImpression(blocs[i]);
+						pk1.setChampEntite(champs[j]);
 
-   @Autowired
- void populateClefsToTestEqualsAndHashCode() throws ParseException{
+						pk2.setBlocImpression(blocs[k]);
+						pk2.setChampEntite(champs[l]);
 
-      final BlocImpression bi1 = blocImpressionDao.findById(1);
-      final BlocImpression bi2 = blocImpressionDao.findById(2);
-      final BlocImpression bi3 = blocImpressionDao.findById(1);
-      final BlocImpression[] blocs = new BlocImpression[] {null, bi1, bi2, bi3};
-      final ChampEntite c1 = champEntiteDao.findById(1);
-      final ChampEntite c2 = champEntiteDao.findById(2);
-      final ChampEntite c3 = champEntiteDao.findById(1);
-      final ChampEntite[] champs = new ChampEntite[] {null, c1, c2, c3};
+						if (((i == k) || (i + k == 4)) && ((j == l) || (j + l == 4))) {
+							assertTrue(pk1.equals(pk2));
+							assertTrue(pk1.hashCode() == pk2.hashCode());
+						} else {
+							assertFalse(pk1.equals(pk2));
+						}
+					}
+				}
+			}
+		}
+	}
 
-      final ChampEntiteBlocPK pk1 = new ChampEntiteBlocPK();
-      final ChampEntiteBlocPK pk2 = new ChampEntiteBlocPK();
+	/**
+	 * Test la méthode toString.
+	 */
+	@Test
+	public void testToString() {
+		final BlocImpression bi1 = blocImpressionDao.findById(1).get();
+		final ChampEntite c1 = champEntiteDao.findById(1).get();
+		final ChampEntiteBlocPK pk1 = new ChampEntiteBlocPK();
+		pk1.setBlocImpression(bi1);
+		pk1.setChampEntite(c1);
 
-      for(int i = 0; i < blocs.length; i++){
-         for(int j = 0; j < champs.length; j++){
-            for(int k = 0; k < blocs.length; k++){
-               for(int l = 0; l < champs.length; l++){
+		assertTrue(pk1.toString().equals("{" + pk1.getChampEntite().toString() + " (ChampEntite), "
+				+ pk1.getBlocImpression().toString() + " (BlocImpression)}"));
 
-                  pk1.setBlocImpression(blocs[i]);
-                  pk1.setChampEntite(champs[j]);
+		pk1.setBlocImpression(null);
+		assertTrue(pk1.toString().equals("{Empty ChampEntiteBlocPK}"));
+		pk1.setBlocImpression(bi1);
 
-                  pk2.setBlocImpression(blocs[k]);
-                  pk2.setChampEntite(champs[l]);
+		pk1.setChampEntite(null);
+		assertTrue(pk1.toString().equals("{Empty ChampEntiteBlocPK}"));
+		pk1.setChampEntite(c1);
 
-                  if(((i == k) || (i + k == 4)) && ((j == l) || (j + l == 4))){
-                     assertTrue(pk1.equals(pk2));
-                     assertTrue(pk1.hashCode() == pk2.hashCode());
-                  }else{
-                     assertFalse(pk1.equals(pk2));
-                  }
-               }
-            }
-         }
-      }
-   }
+		pk1.setBlocImpression(null);
+		pk1.setChampEntite(null);
+		assertTrue(pk1.toString().equals("{Empty ChampEntiteBlocPK}"));
 
-   /**
-    * Test la méthode toString.
-    */
-   @Test
-public void testToString(){
-      final BlocImpression bi1 = blocImpressionDao.findById(1);
-      final ChampEntite c1 = champEntiteDao.findById(1);
-      final ChampEntiteBlocPK pk1 = new ChampEntiteBlocPK();
-      pk1.setBlocImpression(bi1);
-      pk1.setChampEntite(c1);
-
-      assertTrue(pk1.toString().equals(
-         "{" + pk1.getChampEntite().toString() + " (ChampEntite), " + pk1.getBlocImpression().toString() + " (BlocImpression)}"));
-
-      pk1.setBlocImpression(null);
-      assertTrue(pk1.toString().equals("{Empty ChampEntiteBlocPK}"));
-      pk1.setBlocImpression(bi1);
-
-      pk1.setChampEntite(null);
-      assertTrue(pk1.toString().equals("{Empty ChampEntiteBlocPK}"));
-      pk1.setChampEntite(c1);
-
-      pk1.setBlocImpression(null);
-      pk1.setChampEntite(null);
-      assertTrue(pk1.toString().equals("{Empty ChampEntiteBlocPK}"));
-
-      final ChampEntiteBlocPK pk2 = new ChampEntiteBlocPK();
-      assertTrue(pk2.toString().equals("{Empty ChampEntiteBlocPK}"));
-   }
+		final ChampEntiteBlocPK pk2 = new ChampEntiteBlocPK();
+		assertTrue(pk2.toString().equals("{Empty ChampEntiteBlocPK}"));
+	}
 
 }

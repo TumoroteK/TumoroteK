@@ -137,7 +137,7 @@ public void testCrud() throws Exception{
 
       // Test de la délétion
       logicielDao.deleteById(new Integer(4));
-      assertNull(logicielDao.findById(new Integer(4)));
+      assertFalse(logicielDao.findById(new Integer(4)).isPresent());
    }
 
    /**

@@ -145,7 +145,7 @@ public void testCrudTitre() throws Exception{
 
       // Test de la délétion
       titreDao.deleteById(new Integer(6));
-      assertNull(titreDao.findById(new Integer(6)));
+      assertFalse(titreDao.findById(new Integer(6)).isPresent());
 
    }
 

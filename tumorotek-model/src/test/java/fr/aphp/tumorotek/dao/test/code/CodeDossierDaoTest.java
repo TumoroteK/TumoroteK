@@ -199,7 +199,7 @@ public void testCrud() throws Exception{
 
       // Test de la délétion
       codeDossierDao.deleteById(new Integer(5));
-      assertNull(codeDossierDao.findById(new Integer(5)));
+      assertFalse(codeDossierDao.findById(new Integer(5)).isPresent());
 
    }
 

@@ -964,7 +964,7 @@ public void testCrudPrelevement() throws Exception{
 
       // Test de la délétion
       prelevementDao.deleteById(prelId);
-      assertNull(prelevementDao.findById(prelId));
+      assertFalse(prelevementDao.findById(prelId).isPresent());
 
    }
 

@@ -37,18 +37,25 @@ package fr.aphp.tumorotek.dao.io.export;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.io.export.ChampDelegue;
 import fr.aphp.tumorotek.model.systeme.Entite;
 
 /**
  * @author Gille Chapelot
+ * @version 2.3
  *
  */
-public interface ChampDelegueDao {
+@Repository
+public interface ChampDelegueDao extends CrudRepository<ChampDelegue, Integer>{
 
+	@Query("FROM ChampDelegue cd WHERE cd.entite=?1 AND cd.contexte=?2")
 	List<ChampDelegue> findByEntiteAndContexte(Entite entite, EContexte contexte);
 
+	@Query("FROM ChampDelegue cd WHERE cd.nom=?1 AND cd.entite=?2 AND cd.contexte=?3")
 	List<ChampDelegue> findByNomAndEntiteAndContexte(String nom, Entite entite, EContexte contexte);
-
 }

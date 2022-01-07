@@ -296,7 +296,7 @@ public void testCrudCederObjet(){
 
       // Test de la délétion
       cederObjetDao.deleteById(pk);
-      assertNull(cederObjetDao.findById(pk));
+      assertFalse(cederObjetDao.findById(pk).isPresent());
    }
 
    /**

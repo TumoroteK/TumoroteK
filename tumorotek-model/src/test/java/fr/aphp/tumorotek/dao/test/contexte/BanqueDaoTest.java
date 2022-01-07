@@ -342,7 +342,7 @@ public void testCrudBanque() throws Exception{
 
       // Test de la délétion
       banqueDao.deleteById(new Integer(5));
-      assertNull(banqueDao.findById(new Integer(5)));
+      assertFalse(banqueDao.findById(new Integer(5)).isPresent());
 
    }
 

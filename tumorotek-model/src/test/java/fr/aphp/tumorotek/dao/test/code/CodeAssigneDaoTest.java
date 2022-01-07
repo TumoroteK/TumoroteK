@@ -236,7 +236,7 @@ public void testCrud() throws Exception{
 
       // Test de la délétion
       codeAssigneDao.deleteById(cId);
-      assertNull(codeAssigneDao.findById(cId));
+      assertFalse(codeAssigneDao.findById(cId).isPresent());
 
    }
 

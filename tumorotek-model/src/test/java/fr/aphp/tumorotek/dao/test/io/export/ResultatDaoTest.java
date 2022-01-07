@@ -38,7 +38,19 @@ package fr.aphp.tumorotek.dao.test.io.export;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
 
 import fr.aphp.tumorotek.dao.annotation.DataTypeDao;
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
@@ -56,337 +68,278 @@ import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.export.Resultat;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
-public class ResultatDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class ResultatDaoTest extends AbstractDaoTest {
 
+	@Autowired
+	ResultatDao resultatDao;
 
-   @Autowired
- ResultatDao resultatDao;
-   @Autowired
- ChampDao champDao;
-   @Autowired
- AffichageDao affichageDao;
-   @Autowired
- EntiteDao entiteDao;
-   @Autowired
- ChampEntiteDao champEntiteDao;
-   @Autowired
- UtilisateurDao utilisateurDao;
-   @Autowired
- DataTypeDao dataTypeDao;
-   @Autowired
- BanqueDao banqueDao;
+	@Autowired
+	ChampDao champDao;
 
-   /** Constructeur. */
-   public ResultatDaoTest(){}
+	@Autowired
+	AffichageDao affichageDao;
 
-   /**
-    * Setter du bean ResultatDao.
-    * @param rDao est le bean Dao.
-    */
-   @Test
-public void setResultatDao(final ResultatDao rDao){
-      this.resultatDao = rDao;
-   }
+	@Autowired
+	EntiteDao entiteDao;
 
-   /**
-    * Setter du bean ChampDao.
-    * @param cDao est le bean Dao.
-    */
-   @Test
-public void setChampDao(final ChampDao cDao){
-      this.champDao = cDao;
-   }
+	@Autowired
+	ChampEntiteDao champEntiteDao;
 
-   /**
-    * Setter du bean AffichageDao.
-    * @param aDao est le bean Dao.
-    */
-   @Test
-public void setAffichageDao(final AffichageDao aDao){
-      this.affichageDao = aDao;
-   }
+	@Autowired
+	UtilisateurDao utilisateurDao;
 
-   /**
-    * Setter du bean EntiteDao.
-    * @param aDao est le bean Dao.
-    */
-   @Test
-public void setEntiteDao(final EntiteDao eDao){
-      this.entiteDao = eDao;
-   }
+	@Autowired
+	DataTypeDao dataTypeDao;
 
-   /**
-    * Setter du bean ChampEntiteDao.
-    * @param ceDao est le bean Dao.
-    */
-   @Test
-public void setChampEntiteDao(final ChampEntiteDao ceDao){
-      this.champEntiteDao = ceDao;
-   }
+	@Autowired
+	BanqueDao banqueDao;
 
-   /**
-    * Setter du bean DataTypeDao.
-    * @param dtDao est le bean Dao.
-    */
-   @Test
-public void setDataTypeDao(final DataTypeDao dtDao){
-      this.dataTypeDao = dtDao;
-   }
+	/**
+	 * Test l'appel de la méthode findByAffichage().
+	 */
+	@Test
+	@Transactional
+	public void testFindByAffichage() throws Exception {
+		final List<Affichage> affichages = IterableUtils.toList(this.affichageDao.findAll());
+		final Iterator<Affichage> itAff = affichages.iterator();
+		while (itAff.hasNext()) {
+			final Affichage affichage = itAff.next();
+			final List<Resultat> resultats = this.resultatDao.findByAffichage(affichage);
+			assertTrue(affichage.getResultats().size() == resultats.size());
+			final Iterator<Resultat> it = resultats.iterator();
+			while (it.hasNext()) {
+				final Resultat resultat = it.next();
+				boolean found = false;
+				final Iterator<Resultat> it2 = affichage.getResultats().iterator();
+				while (it2.hasNext()) {
+					if (resultat.equals(it2.next())) {
+						found = true;
+						break;
+					}
+				}
+				assertTrue(found);
+			}
+		}
+	}
 
-   /**
-    * Setter du bean UtilisateurDao.
-    * @param uDao est le bean Dao.
-    */
-   @Test
-public void setUtilisateurDao(final UtilisateurDao uDao){
-      this.utilisateurDao = uDao;
-   }
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'un resultat.
+	 * 
+	 * @throws Exception lance une exception en cas de problème lors du CRUD.
+	 */
+	@Test
+	@Transactional
+	@Rollback(false)
+	public void testCrudResultat() throws Exception {
+		final String format = "format";
+		final String nomColonne = "nomColonne";
+		final Integer position = new Integer(3);
+		final boolean tri = false;
+		final Integer ordreTri = new Integer(3);
 
-   @Test
-public void setBanqueDao(final BanqueDao bDao){
-      this.banqueDao = bDao;
-   }
+		DataType dataType = dataTypeDao.findById(3).get();
 
-   /**
-    * Test l'appel de la méthode findByAffichage().
-    */
-   @Test
-public void testFindByAffichage() throws Exception{
-      final List<Affichage> affichages = this.IterableUtils.toList(affichageDao.findAll());
-      final Iterator<Affichage> itAff = affichages.iterator();
-      while(itAff.hasNext()){
-         final Affichage affichage = itAff.next();
-         final List<Resultat> resultats = this.resultatDao.findByAffichage(affichage);
-         assertTrue(affichage.getResultats().size() == resultats.size());
-         final Iterator<Resultat> it = resultats.iterator();
-         while(it.hasNext()){
-            final Resultat resultat = it.next();
-            boolean found = false;
-            final Iterator<Resultat> it2 = affichage.getResultats().iterator();
-            while(it2.hasNext()){
-               if(resultat.equals(it2.next())){
-                  found = true;
-                  break;
-               }
-            }
-            assertTrue(found);
-         }
-      }
-   }
+		ChampEntite chEntite = new ChampEntite(entiteDao.findById(2).get(), "champEntite1", dataType, false, true,
+				"000-0", false, null);
+		champEntiteDao.save(chEntite);
+		final int idChEn1 = chEntite.getId();
+		Champ ch = new Champ(chEntite);
+		champDao.save(ch);
+		final int idCh1 = ch.getChampId();
+		dataType = dataTypeDao.findById(2).get();
+		chEntite = new ChampEntite(entiteDao.findById(1).get(), "champEntite2", dataType, false, false, null, false,
+				null);
+		champEntiteDao.save(chEntite);
+		final int idChEn2 = chEntite.getId();
+		ch = new Champ(chEntite);
+		champDao.save(ch);
+		final int idCh2 = ch.getChampId();
 
-   /**
-     * Test l'insertion, la mise à jour et la suppression 
-    * d'un resultat.
-    * @throws Exception lance une exception en cas de problème lors du CRUD.
-    */
-   @Rollback(false)
-   @Test
-public void testCrudResultat() throws Exception{
-      final String format = "format";
-      final String nomColonne = "nomColonne";
-      final Integer position = new Integer(3);
-      final boolean tri = false;
-      final Integer ordreTri = new Integer(3);
+		final Champ champ = champDao.findById(idCh1).get();
 
-      DataType dataType = dataTypeDao.findById(3);
+		final Utilisateur ut = new Utilisateur();
+		ut.setLogin("login");
+		ut.setPassword("pass");
+		utilisateurDao.save(ut);
+		final int idU = ut.getUtilisateurId();
 
-      ChampEntite chEntite = new ChampEntite(entiteDao.findById(2), "champEntite1", dataType, false, true, "000-0", false, null);
-      champEntiteDao.save(chEntite);
-      final int idChEn1 = chEntite.getId();
-      Champ ch = new Champ(chEntite);
-      champDao.save(ch);
-      final int idCh1 = ch.getChampId();
-      dataType = dataTypeDao.findById(2);
-      chEntite = new ChampEntite(entiteDao.findById(1), "champEntite2", dataType, false, false, null, false, null);
-      champEntiteDao.save(chEntite);
-      final int idChEn2 = chEntite.getId();
-      ch = new Champ(chEntite);
-      champDao.save(ch);
-      final int idCh2 = ch.getChampId();
+		final Utilisateur utilisateur = utilisateurDao.findById(idU).get();
 
-      final Champ champ = champDao.findById(idCh1);
+		Affichage a = new Affichage("affichage", utilisateur, 25);
+		a.setBanque(banqueDao.findById(1).get());
+		this.affichageDao.save(a);
+		final int idA1 = a.getAffichageId();
+		a = new Affichage("affichage2", utilisateur, 35);
+		a.setBanque(banqueDao.findById(1).get());
+		this.affichageDao.save(a);
+		final int idA2 = a.getAffichageId();
 
-      final Utilisateur ut = new Utilisateur();
-      ut.setLogin("login");
-      ut.setPassword("pass");
-      utilisateurDao.save(ut);
-      final int idU = ut.getUtilisateurId();
+		final Affichage affichage = this.affichageDao.findById(idA1).get();
 
-      final Utilisateur utilisateur = utilisateurDao.findById(idU);
+		final Resultat r = new Resultat();
+		r.setChamp(champ);
+		r.setFormat(format);
+		r.setNomColonne(nomColonne);
+		r.setPosition(position);
+		r.setTri(tri);
+		r.setOrdreTri(ordreTri);
+		r.setAffichage(affichage);
 
-      Affichage a = new Affichage("affichage", utilisateur, 25);
-      a.setBanque(banqueDao.findById(1));
-      this.affichageDao.save(a);
-      final int idA1 = a.getAffichageId();
-      a = new Affichage("affichage2", utilisateur, 35);
-      a.setBanque(banqueDao.findById(1));
-      this.affichageDao.save(a);
-      final int idA2 = a.getAffichageId();
+		// Test de l'insertion
+		Integer idObject = new Integer(-1);
+		resultatDao.save(r);
+		final List<Resultat> resultats = IterableUtils.toList(resultatDao.findAll());
+		final Iterator<Resultat> itResultat = resultats.iterator();
+		boolean found = false;
+		while (itResultat.hasNext()) {
+			final Resultat temp = itResultat.next();
+			if (temp.equals(r)) {
+				found = true;
+				idObject = temp.getResultatId();
+				break;
+			}
+		}
+		assertTrue(found);
 
-      final Affichage affichage = this.affichageDao.findById(idA1);
+		// Test de la mise à jour
+		final Resultat r2 = resultatDao.findById(idObject).get();
+		assertNotNull(r2);
+		assertTrue(r2.getChamp().equals(champ));
+		if (r2.getFormat() != null) {
+			assertTrue(r2.getFormat().equals(format));
+		} else {
+			assertNull(format);
+		}
+		assertNotNull(r2.getNomColonne());
+		assertTrue(r2.getNomColonne().equals(nomColonne));
+		assertNotNull(r2.getPosition());
+		assertTrue(r2.getPosition().equals(position));
+		assertNotNull(r2.getTri());
+		assertTrue(r2.getTri().equals(tri));
+		assertNotNull(r2.getOrdreTri());
+		assertTrue(r2.getOrdreTri().equals(ordreTri));
+		assertNotNull(r2.getAffichage());
+		assertTrue(r2.getAffichage().equals(affichage));
 
-      final Resultat r = new Resultat();
-      r.setChamp(champ);
-      r.setFormat(format);
-      r.setNomColonne(nomColonne);
-      r.setPosition(position);
-      r.setTri(tri);
-      r.setOrdreTri(ordreTri);
-      r.setAffichage(affichage);
+		final Champ updatedChamp = champDao.findById(idCh2).get();
+		final String updatedFormat = "format2";
+		final String updatedNomColonne = "nomColonne2";
+		final Integer updatedPosition = new Integer(2);
+		final boolean updatedTri = true;
+		final Integer updatedOrdreTri = new Integer(2);
+		final Affichage updatedAffichage = this.affichageDao.findById(idA2).get();
 
-      // Test de l'insertion
-      Integer idObject = new Integer(-1);
-      resultatDao.save(r);
-      final List<Resultat> resultats = IterableUtils.toList(resultatDao.findAll());
-      final Iterator<Resultat> itResultat = resultats.iterator();
-      boolean found = false;
-      while(itResultat.hasNext()){
-         final Resultat temp = itResultat.next();
-         if(temp.equals(r)){
-            found = true;
-            idObject = temp.getResultatId();
-            break;
-         }
-      }
-      assertTrue(found);
+		r2.setChamp(updatedChamp);
+		r2.setFormat(updatedFormat);
+		r2.setNomColonne(updatedNomColonne);
+		r2.setPosition(updatedPosition);
+		r2.setTri(updatedTri);
+		r2.setOrdreTri(updatedOrdreTri);
+		r2.setAffichage(updatedAffichage);
 
-      // Test de la mise à jour
-      final Resultat r2 = resultatDao.findById(idObject);
-      assertNotNull(r2);
-      assertTrue(r2.getChamp().equals(champ));
-      if(r2.getFormat() != null){
-         assertTrue(r2.getFormat().equals(format));
-      }else{
-         assertNull(format);
-      }
-      assertNotNull(r2.getNomColonne());
-      assertTrue(r2.getNomColonne().equals(nomColonne));
-      assertNotNull(r2.getPosition());
-      assertTrue(r2.getPosition().equals(position));
-      assertNotNull(r2.getTri());
-      assertTrue(r2.getTri().equals(tri));
-      assertNotNull(r2.getOrdreTri());
-      assertTrue(r2.getOrdreTri().equals(ordreTri));
-      assertNotNull(r2.getAffichage());
-      assertTrue(r2.getAffichage().equals(affichage));
+		resultatDao.save(r2);
+		assertTrue(resultatDao.findById(idObject).get().getChamp().equals(updatedChamp));
+		if (resultatDao.findById(idObject).get().getFormat() != null) {
+			assertTrue(resultatDao.findById(idObject).get().getFormat().equals(updatedFormat));
+		} else {
+			assertNull(updatedFormat);
+		}
+		assertNotNull(resultatDao.findById(idObject).get().getNomColonne());
+		assertTrue(resultatDao.findById(idObject).get().getNomColonne().equals(updatedNomColonne));
+		assertNotNull(resultatDao.findById(idObject).get().getPosition());
+		assertTrue(resultatDao.findById(idObject).get().getPosition().equals(updatedPosition));
+		assertNotNull(resultatDao.findById(idObject).get().getTri());
+		assertTrue(resultatDao.findById(idObject).get().getTri().equals(updatedTri));
+		assertNotNull(resultatDao.findById(idObject).get().getOrdreTri());
+		assertTrue(resultatDao.findById(idObject).get().getOrdreTri().equals(updatedOrdreTri));
+		assertNotNull(resultatDao.findById(idObject).get().getAffichage());
+		assertTrue(resultatDao.findById(idObject).get().getAffichage().equals(updatedAffichage));
+		// Test de la délétion
+		resultatDao.deleteById(idObject);
+		assertFalse(resultatDao.findById(idObject).isPresent());
 
-      final Champ updatedChamp = champDao.findById(idCh2);
-      final String updatedFormat = "format2";
-      final String updatedNomColonne = "nomColonne2";
-      final Integer updatedPosition = new Integer(2);
-      final boolean updatedTri = true;
-      final Integer updatedOrdreTri = new Integer(2);
-      final Affichage updatedAffichage = this.affichageDao.findById(idA2);
+		// On supprime les éléments créés
+		this.affichageDao.deleteById(idA1);
+		this.affichageDao.deleteById(idA2);
+		this.champDao.deleteById(idCh1);
+		this.champDao.deleteById(idCh2);
+		this.champEntiteDao.deleteById(idChEn1);
+		this.champEntiteDao.deleteById(idChEn2);
+		this.utilisateurDao.deleteById(idU);
+	}
 
-      r2.setChamp(updatedChamp);
-      r2.setFormat(updatedFormat);
-      r2.setNomColonne(updatedNomColonne);
-      r2.setPosition(updatedPosition);
-      r2.setTri(updatedTri);
-      r2.setOrdreTri(updatedOrdreTri);
-      r2.setAffichage(updatedAffichage);
+	/**
+	 * test toString().
+	 */
+	@Test
+	public void testToString() {
+		final Resultat r1 = resultatDao.findById(1).get();
+		assertTrue(r1.toString().equals("{" + r1.getResultatId() + "}"));
 
-      resultatDao.save(r2);
-      assertTrue(resultatDao.findById(idObject).getChamp().equals(updatedChamp));
-      if(resultatDao.findById(idObject).getFormat() != null){
-         assertTrue(resultatDao.findById(idObject).getFormat().equals(updatedFormat));
-      }else{
-         assertNull(updatedFormat);
-      }
-      assertNotNull(resultatDao.findById(idObject).getNomColonne());
-      assertTrue(resultatDao.findById(idObject).getNomColonne().equals(updatedNomColonne));
-      assertNotNull(resultatDao.findById(idObject).getPosition());
-      assertTrue(resultatDao.findById(idObject).getPosition().equals(updatedPosition));
-      assertNotNull(resultatDao.findById(idObject).getTri());
-      assertTrue(resultatDao.findById(idObject).getTri().equals(updatedTri));
-      assertNotNull(resultatDao.findById(idObject).getOrdreTri());
-      assertTrue(resultatDao.findById(idObject).getOrdreTri().equals(updatedOrdreTri));
-      assertNotNull(resultatDao.findById(idObject).getAffichage());
-      assertTrue(resultatDao.findById(idObject).getAffichage().equals(updatedAffichage));
-      // Test de la délétion
-      resultatDao.deleteById(idObject);
-      assertNull(resultatDao.findById(idObject));
+		final Resultat r2 = new Resultat();
+		assertTrue(r2.toString().equals("{Empty Resultat}"));
+	}
 
-      //On supprime les éléments créés
-      this.affichageDao.deleteById(idA1);
-      this.affichageDao.deleteById(idA2);
-      this.champDao.deleteById(idCh1);
-      this.champDao.deleteById(idCh2);
-      this.champEntiteDao.deleteById(idChEn1);
-      this.champEntiteDao.deleteById(idChEn2);
-      this.utilisateurDao.deleteById(idU);
-   }
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		// On boucle sur les 4 possibilités
+		for (int i = 0; i < Math.pow(2, 2); i++) {
+			final Resultat resultat1 = new Resultat();
+			final Resultat resultat2 = new Resultat();
+			String nomColonne = null;
+			if (i >= 2) {
+				nomColonne = "Nom de la colonne";
+			}
+			resultat1.setNomColonne(nomColonne);
+			resultat2.setNomColonne(nomColonne);
+			final int toTest = i % 2;
+			Affichage affichage = null;
+			if (toTest > 0) {
+				affichage = affichageDao.findById(3).get();
+			}
+			resultat1.setAffichage(affichage);
+			resultat2.setAffichage(affichage);
+			// On compare les 2 résultats
+			assertTrue(resultat1.equals(resultat2));
+		}
+	}
 
-   /**
-    * test toString().
-    */
-   @Test
-public void testToString(){
-      final Resultat r1 = resultatDao.findById(1);
-      assertTrue(r1.toString().equals("{" + r1.getResultatId() + "}"));
-
-      final Resultat r2 = new Resultat();
-      assertTrue(r2.toString().equals("{Empty Resultat}"));
-   }
-
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   @Test
-public void testEquals(){
-      //On boucle sur les 4 possibilités
-      for(int i = 0; i < Math.pow(2, 2); i++){
-         final Resultat resultat1 = new Resultat();
-         final Resultat resultat2 = new Resultat();
-         String nomColonne = null;
-         if(i >= 2){
-            nomColonne = "Nom de la colonne";
-         }
-         resultat1.setNomColonne(nomColonne);
-         resultat2.setNomColonne(nomColonne);
-         final int toTest = i % 2;
-         Affichage affichage = null;
-         if(toTest > 0){
-            affichage = affichageDao.findById(3);
-         }
-         resultat1.setAffichage(affichage);
-         resultat2.setAffichage(affichage);
-         //On compare les 2 résultats
-         assertTrue(resultat1.equals(resultat2));
-      }
-   }
-
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   @Test
-public void testHashCode(){
-      //On boucle sur les 8 possibilités
-      for(int i = 0; i < Math.pow(2, 2); i++){
-         final Resultat resultat = new Resultat();
-         int hash = 7;
-         String nomColonne = null;
-         int hashNomColonne = 0;
-         if(i >= 2){
-            nomColonne = "nomCol";
-            hashNomColonne = nomColonne.hashCode();
-         }
-         final int toTest = i % 2;
-         Affichage affichage = null;
-         int hashAffichage = 0;
-         if(toTest > 0){
-            affichage = affichageDao.findById(3);
-            hashAffichage = affichage.hashCode();
-         }
-         hash = 31 * hash + hashNomColonne;
-         hash = 31 * hash + hashAffichage;
-         resultat.setNomColonne(nomColonne);
-         resultat.setAffichage(affichage);
-         //On vérifie que le hashCode est bon
-         assertTrue(resultat.hashCode() == hash);
-         assertTrue(resultat.hashCode() == hash);
-         assertTrue(resultat.hashCode() == hash);
-      }
-   }
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
+		// On boucle sur les 8 possibilités
+		for (int i = 0; i < Math.pow(2, 2); i++) {
+			final Resultat resultat = new Resultat();
+			int hash = 7;
+			String nomColonne = null;
+			int hashNomColonne = 0;
+			if (i >= 2) {
+				nomColonne = "nomCol";
+				hashNomColonne = nomColonne.hashCode();
+			}
+			final int toTest = i % 2;
+			Affichage affichage = null;
+			int hashAffichage = 0;
+			if (toTest > 0) {
+				affichage = affichageDao.findById(3).get();
+				hashAffichage = affichage.hashCode();
+			}
+			hash = 31 * hash + hashNomColonne;
+			hash = 31 * hash + hashAffichage;
+			resultat.setNomColonne(nomColonne);
+			resultat.setAffichage(affichage);
+			// On vérifie que le hashCode est bon
+			assertTrue(resultat.hashCode() == hash);
+			assertTrue(resultat.hashCode() == hash);
+			assertTrue(resultat.hashCode() == hash);
+		}
+	}
 }

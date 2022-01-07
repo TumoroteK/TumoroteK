@@ -201,7 +201,7 @@ public void testCrudModePrepa() throws Exception{
 
       // Test de la délétion
       modePrepaDao.deleteById(new Integer(5));
-      assertNull(modePrepaDao.findById(new Integer(5)));
+      assertFalse(modePrepaDao.findById(new Integer(5)).isPresent());
 
    }
 

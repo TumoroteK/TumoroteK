@@ -259,7 +259,7 @@ public void testCrud() throws Exception{
 
 		// Test de la délétion
 		dossierExterneDao.deleteById(new Integer(7));
-		assertNull(dossierExterneDao.findById(new Integer(7)));
+		assertFalse(dossierExterneDao.findById(new Integer(7)).isPresent());
 	}
 
 	/**

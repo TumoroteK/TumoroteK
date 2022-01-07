@@ -134,7 +134,7 @@ public void testCrud() throws Exception{
 
       // Test de la délétion
       tableCodageDao.deleteById(new Integer(6));
-      assertNull(tableCodageDao.findById(new Integer(6)));
+      assertFalse(tableCodageDao.findById(new Integer(6)).isPresent());
 
    }
 

@@ -162,7 +162,7 @@ public void testCrudLienFamilial(){
       assertTrue(patientLienDao.findById(pk).getLienFamilial().equals(l2));
       // Test de la délétion
       patientLienDao.deleteById(pk);
-      assertNull(patientLienDao.findById(pk));
+      assertFalse(patientLienDao.findById(pk).isPresent());
    }
 
    /**

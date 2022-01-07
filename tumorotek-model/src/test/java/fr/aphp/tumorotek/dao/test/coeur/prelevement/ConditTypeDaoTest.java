@@ -162,7 +162,7 @@ public void testCrudConditType() throws Exception{
 
       // Test de la délétion
       conditTypeDao.deleteById(new Integer(3));
-      assertNull(conditTypeDao.findById(new Integer(3)));
+      assertFalse(conditTypeDao.findById(new Integer(3)).isPresent());
    }
 
    /**

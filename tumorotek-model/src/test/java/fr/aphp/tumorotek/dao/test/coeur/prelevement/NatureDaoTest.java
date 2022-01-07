@@ -177,7 +177,7 @@ public void testCrudNature() throws Exception{
 
       // Test de la délétion
       natureDao.deleteById(new Integer(5));
-      assertNull(natureDao.findById(new Integer(5)));
+      assertFalse(natureDao.findById(new Integer(5)).isPresent());
 
    }
 

@@ -42,15 +42,12 @@ import org.apache.commons.collections4.IterableUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import fr.aphp.tumorotek.dao.test.Config;
-
-
 
 import fr.aphp.tumorotek.dao.imprimante.ChampLigneEtiquetteDao;
 import fr.aphp.tumorotek.dao.imprimante.LigneEtiquetteDao;
@@ -65,359 +62,333 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 
 /**
  *
- * Classe de test pour le DAO ModeleDao et le bean du
- * domaine ChampLigneEtiquette.
+ * Classe de test pour le DAO ModeleDao et le bean du domaine
+ * ChampLigneEtiquette.
  *
  * @author Pierre Ventadour.
  * @version 08/06/2011
  *
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {Config.class})
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
-public class ChampLigneEtiquetteDaoTest extends AbstractDaoTest
-{
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class ChampLigneEtiquetteDaoTest extends AbstractDaoTest {
 
+	@Autowired
+	ChampLigneEtiquetteDao champLigneEtiquetteDao;
 
-   @Autowired
- ChampLigneEtiquetteDao champLigneEtiquetteDao;
+	@Autowired
+	EntiteDao entiteDao;
 
-   @Autowired
- EntiteDao entiteDao;
+	@Autowired
+	LigneEtiquetteDao ligneEtiquetteDao;
 
-   @Autowired
- LigneEtiquetteDao ligneEtiquetteDao;
+	@Autowired
+	ChampDao champDao;
 
-   @Autowired
- ChampDao champDao;
+	/**
+	 * Test l'appel de la méthode findById().
+	 */
+	@Test
+	public void testFindById() {
+		final ChampLigneEtiquette cle = champLigneEtiquetteDao.findById(1).get();
+		assertNotNull(cle);
 
-   public ChampLigneEtiquetteDaoTest(){
+		assertFalse(champLigneEtiquetteDao.findById(100).isPresent());
+	}
 
-   }
+	/**
+	 * Test l'appel de la méthode findAll().
+	 */
+	@Test
+	public void testReadAll() {
+		final List<ChampLigneEtiquette> liste = IterableUtils.toList(champLigneEtiquetteDao.findAll());
+		assertTrue(liste.size() == 10);
+	}
 
-   @Test
-public void setChampLigneEtiquetteDao(final ChampLigneEtiquetteDao cDao){
-      this.champLigneEtiquetteDao = cDao;
-   }
+	/**
+	 * Test l'appel de la méthode findByLigneEtiquette().
+	 */
+	@Test
+	public void testFindByLigneEtiquette() {
+		final LigneEtiquette le1 = ligneEtiquetteDao.findById(1).get();
+		List<ChampLigneEtiquette> liste = champLigneEtiquetteDao.findByLigneEtiquette(le1);
+		assertTrue(liste.size() == 2);
 
-   @Test
-public void setEntiteDao(final EntiteDao eDao){
-      this.entiteDao = eDao;
-   }
+		final LigneEtiquette le7 = ligneEtiquetteDao.findById(7).get();
+		liste = champLigneEtiquetteDao.findByLigneEtiquette(le7);
+		assertTrue(liste.size() == 0);
 
-   @Test
-public void setLigneEtiquetteDao(final LigneEtiquetteDao lDao){
-      this.ligneEtiquetteDao = lDao;
-   }
+		liste = champLigneEtiquetteDao.findByLigneEtiquette(null);
+		assertTrue(liste.size() == 0);
+	}
 
-   @Test
-public void setChampDao(final ChampDao cDao){
-      this.champDao = cDao;
-   }
+	/**
+	 * Test l'appel de la méthode findByLigneEtiquetteAndEntite().
+	 */
+	@Test
+	public void testFindByLigneEtiquetteAndEntite() {
+		final LigneEtiquette le1 = ligneEtiquetteDao.findById(1).get();
+		final LigneEtiquette le7 = ligneEtiquetteDao.findById(7).get();
+		final Entite e3 = entiteDao.findById(3).get();
+		final Entite e4 = entiteDao.findById(4).get();
+		final Entite e8 = entiteDao.findById(8).get();
+		List<ChampLigneEtiquette> liste = champLigneEtiquetteDao.findByLigneEtiquetteAndEntite(le1, e3);
+		assertTrue(liste.size() == 1);
 
-   /**
-    * Test l'appel de la méthode findById().
-    */
-   @Test
-public void testFindById(){
-      final ChampLigneEtiquette cle = champLigneEtiquetteDao.findById(1);
-      assertNotNull(cle);
+		liste = champLigneEtiquetteDao.findByLigneEtiquetteAndEntite(le1, e8);
+		assertTrue(liste.size() == 1);
 
-      final ChampLigneEtiquette cleNull = champLigneEtiquetteDao.findById(100);
-      assertNull(cleNull);
-   }
+		liste = champLigneEtiquetteDao.findByLigneEtiquetteAndEntite(le1, e4);
+		assertTrue(liste.size() == 0);
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   @Test
-public void testReadAll(){
-      final List<ChampLigneEtiquette> liste = IterableUtils.toList(champLigneEtiquetteDao.findAll());
-      assertTrue(liste.size() == 10);
-   }
+		liste = champLigneEtiquetteDao.findByLigneEtiquetteAndEntite(le7, e3);
+		assertTrue(liste.size() == 0);
 
-   /**
-    * Test l'appel de la méthode findByLigneEtiquette().
-    */
-   @Test
-public void testFindByLigneEtiquette(){
-      final LigneEtiquette le1 = ligneEtiquetteDao.findById(1);
-      List<ChampLigneEtiquette> liste = champLigneEtiquetteDao.findByLigneEtiquette(le1);
-      assertTrue(liste.size() == 2);
+		liste = champLigneEtiquetteDao.findByLigneEtiquetteAndEntite(null, e3);
+		assertTrue(liste.size() == 0);
 
-      final LigneEtiquette le7 = ligneEtiquetteDao.findById(7);
-      liste = champLigneEtiquetteDao.findByLigneEtiquette(le7);
-      assertTrue(liste.size() == 0);
+		liste = champLigneEtiquetteDao.findByLigneEtiquetteAndEntite(le1, null);
+		assertTrue(liste.size() == 0);
 
-      liste = champLigneEtiquetteDao.findByLigneEtiquette(null);
-      assertTrue(liste.size() == 0);
-   }
+		liste = champLigneEtiquetteDao.findByLigneEtiquetteAndEntite(null, null);
+		assertTrue(liste.size() == 0);
+	}
 
-   /**
-    * Test l'appel de la méthode findByLigneEtiquetteAndEntite().
-    */
-   @Test
-public void testFindByLigneEtiquetteAndEntite(){
-      final LigneEtiquette le1 = ligneEtiquetteDao.findById(1);
-      final LigneEtiquette le7 = ligneEtiquetteDao.findById(7);
-      final Entite e3 = entiteDao.findById(3);
-      final Entite e4 = entiteDao.findById(4);
-      final Entite e8 = entiteDao.findById(8);
-      List<ChampLigneEtiquette> liste = champLigneEtiquetteDao.findByLigneEtiquetteAndEntite(le1, e3);
-      assertTrue(liste.size() == 1);
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'une ligne.
+	 * 
+	 * @throws Exception lance une exception en cas d'erreur.
+	 */
+	@Rollback(false)
+	@Test
+	public void testCrud() throws Exception {
 
-      liste = champLigneEtiquetteDao.findByLigneEtiquetteAndEntite(le1, e8);
-      assertTrue(liste.size() == 1);
+		final LigneEtiquette le = ligneEtiquetteDao.findById(6).get();
+		final Champ c = champDao.findById(142).get();
+		final Entite e8 = entiteDao.findById(8).get();
+		final ChampLigneEtiquette cle = new ChampLigneEtiquette();
+		cle.setLigneEtiquette(le);
+		cle.setChamp(c);
+		cle.setEntite(e8);
+		cle.setOrdre(1);
+		cle.setExpReg("EXP");
 
-      liste = champLigneEtiquetteDao.findByLigneEtiquetteAndEntite(le1, e4);
-      assertTrue(liste.size() == 0);
+		// Test de l'insertion
+		champLigneEtiquetteDao.save(cle);
+		assertEquals(new Integer(11), cle.getChampLigneEtiquetteId());
 
-      liste = champLigneEtiquetteDao.findByLigneEtiquetteAndEntite(le7, e3);
-      assertTrue(liste.size() == 0);
+		final ChampLigneEtiquette cle2 = champLigneEtiquetteDao.findById(new Integer(11)).get();
+		// Vérification des données entrées dans la base
+		assertNotNull(cle2);
+		assertNotNull(cle2.getLigneEtiquette());
+		assertNotNull(cle2.getChamp());
+		assertNotNull(cle2.getEntite());
+		assertTrue(cle2.getOrdre() == 1);
+		assertTrue(cle2.getExpReg().equals("EXP"));
 
-      liste = champLigneEtiquetteDao.findByLigneEtiquetteAndEntite(null, e3);
-      assertTrue(liste.size() == 0);
+		// Test de la mise à jour
+		cle2.setOrdre(2);
+		cle2.setExpReg("REG");
+		champLigneEtiquetteDao.save(cle2);
+		assertTrue(champLigneEtiquetteDao.findById(new Integer(11)).get().getOrdre() == 2);
+		assertTrue(champLigneEtiquetteDao.findById(new Integer(11)).get().getExpReg().equals("REG"));
 
-      liste = champLigneEtiquetteDao.findByLigneEtiquetteAndEntite(le1, null);
-      assertTrue(liste.size() == 0);
+		// Test de la délétion
+		champLigneEtiquetteDao.deleteById(new Integer(11));
+		assertFalse(champLigneEtiquetteDao.findById(new Integer(11)).isPresent());
+	}
 
-      liste = champLigneEtiquetteDao.findByLigneEtiquetteAndEntite(null, null);
-      assertTrue(liste.size() == 0);
-   }
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final Integer o1 = 1;
+		final Integer o2 = 2;
+		final LigneEtiquette le1 = ligneEtiquetteDao.findById(1).get();
+		final LigneEtiquette le2 = ligneEtiquetteDao.findById(2).get();
+		final Champ c1 = champDao.findById(141).get();
+		final Champ c2 = champDao.findById(142).get();
+		final Entite e1 = entiteDao.findById(1).get();
+		final Entite e2 = entiteDao.findById(2).get();
+		final ChampLigneEtiquette cle1 = new ChampLigneEtiquette();
+		final ChampLigneEtiquette cle2 = new ChampLigneEtiquette();
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression d'une ligne.
-    * @throws Exception lance une exception en cas d'erreur.
-    */
-   @Rollback(false)
-   @Test
-public void testCrud() throws Exception{
+		// L'objet 1 n'est pas égal à null
+		assertFalse(cle1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(cle1.equals(cle1));
 
-      final LigneEtiquette le = ligneEtiquetteDao.findById(6);
-      final Champ c = champDao.findById(142);
-      final Entite e8 = entiteDao.findById(8);
-      final ChampLigneEtiquette cle = new ChampLigneEtiquette();
-      cle.setLigneEtiquette(le);
-      cle.setChamp(c);
-      cle.setEntite(e8);
-      cle.setOrdre(1);
-      cle.setExpReg("EXP");
+		/* null */
+		assertTrue(cle1.equals(cle2));
+		assertTrue(cle2.equals(cle1));
 
-      // Test de l'insertion
-      champLigneEtiquetteDao.save(cle);
-      assertEquals(new Integer(11), cle.getChampLigneEtiquetteId());
+		/* ordre */
+		cle2.setOrdre(o1);
+		assertFalse(cle1.equals(cle2));
+		assertFalse(cle2.equals(cle1));
+		cle1.setOrdre(o2);
+		assertFalse(cle1.equals(cle2));
+		assertFalse(cle2.equals(cle1));
+		cle1.setOrdre(o1);
+		assertTrue(cle1.equals(cle2));
+		assertTrue(cle2.equals(cle1));
 
-      final ChampLigneEtiquette cle2 = champLigneEtiquetteDao.findById(new Integer(11));
-      // Vérification des données entrées dans la base
-      assertNotNull(cle2);
-      assertNotNull(cle2.getLigneEtiquette());
-      assertNotNull(cle2.getChamp());
-      assertNotNull(cle2.getEntite());
-      assertTrue(cle2.getOrdre() == 1);
-      assertTrue(cle2.getExpReg().equals("EXP"));
+		/* ligne */
+		cle2.setLigneEtiquette(le1);
+		assertFalse(cle1.equals(cle2));
+		assertFalse(cle2.equals(cle1));
+		cle1.setLigneEtiquette(le2);
+		assertFalse(cle1.equals(cle2));
+		assertFalse(cle2.equals(cle1));
+		cle1.setLigneEtiquette(le1);
+		assertTrue(cle1.equals(cle2));
 
-      // Test de la mise à jour
-      cle2.setOrdre(2);
-      cle2.setExpReg("REG");
-      champLigneEtiquetteDao.save(cle2);
-      assertTrue(champLigneEtiquetteDao.findById(new Integer(11)).getOrdre() == 2);
-      assertTrue(champLigneEtiquetteDao.findById(new Integer(11)).getExpReg().equals("REG"));
+		/* champ */
+		cle2.setChamp(c1);
+		assertFalse(cle1.equals(cle2));
+		assertFalse(cle2.equals(cle1));
+		cle1.setChamp(c2);
+		assertFalse(cle1.equals(cle2));
+		assertFalse(cle2.equals(cle1));
+		cle1.setChamp(c1);
+		assertTrue(cle1.equals(cle2));
+		assertTrue(cle2.equals(cle1));
 
-      // Test de la délétion
-      champLigneEtiquetteDao.deleteById(new Integer(11));
-      assertNull(champLigneEtiquetteDao.findById(new Integer(11)));
-   }
+		/* Entite */
+		cle2.setEntite(e1);
+		assertFalse(cle1.equals(cle2));
+		assertFalse(cle2.equals(cle1));
+		cle1.setEntite(e2);
+		assertFalse(cle1.equals(cle2));
+		assertFalse(cle2.equals(cle1));
+		cle1.setEntite(e1);
+		assertTrue(cle1.equals(cle2));
+		assertTrue(cle2.equals(cle1));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   @Test
-public void testEquals(){
-      final Integer o1 = 1;
-      final Integer o2 = 2;
-      final LigneEtiquette le1 = ligneEtiquetteDao.findById(1);
-      final LigneEtiquette le2 = ligneEtiquetteDao.findById(2);
-      final Champ c1 = champDao.findById(141);
-      final Champ c2 = champDao.findById(142);
-      final Entite e1 = entiteDao.findById(1);
-      final Entite e2 = entiteDao.findById(2);
-      final ChampLigneEtiquette cle1 = new ChampLigneEtiquette();
-      final ChampLigneEtiquette cle2 = new ChampLigneEtiquette();
+		final Categorie c3 = new Categorie();
+		assertFalse(cle1.equals(c3));
+	}
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(cle1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(cle1.equals(cle1));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
+		final Integer o1 = 1;
+		final Integer o2 = 2;
+		final LigneEtiquette le1 = ligneEtiquetteDao.findById(1).get();
+		final LigneEtiquette le2 = ligneEtiquetteDao.findById(2).get();
+		final Champ c1 = champDao.findById(141).get();
+		final Champ c2 = champDao.findById(142).get();
+		final Entite e1 = entiteDao.findById(1).get();
+		final Entite e2 = entiteDao.findById(2).get();
+		final ChampLigneEtiquette cle1 = new ChampLigneEtiquette();
+		final ChampLigneEtiquette cle2 = new ChampLigneEtiquette();
 
-      /*null*/
-      assertTrue(cle1.equals(cle2));
-      assertTrue(cle2.equals(cle1));
+		/* null */
+		assertTrue(cle1.hashCode() == cle2.hashCode());
 
-      /*ordre*/
-      cle2.setOrdre(o1);
-      assertFalse(cle1.equals(cle2));
-      assertFalse(cle2.equals(cle1));
-      cle1.setOrdre(o2);
-      assertFalse(cle1.equals(cle2));
-      assertFalse(cle2.equals(cle1));
-      cle1.setOrdre(o1);
-      assertTrue(cle1.equals(cle2));
-      assertTrue(cle2.equals(cle1));
+		/* Ordre */
+		cle2.setOrdre(o1);
+		assertFalse(cle1.hashCode() == cle2.hashCode());
+		cle1.setOrdre(o2);
+		assertFalse(cle1.hashCode() == cle2.hashCode());
+		cle1.setOrdre(o1);
+		assertTrue(cle1.hashCode() == cle2.hashCode());
 
-      /*ligne*/
-      cle2.setLigneEtiquette(le1);
-      assertFalse(cle1.equals(cle2));
-      assertFalse(cle2.equals(cle1));
-      cle1.setLigneEtiquette(le2);
-      assertFalse(cle1.equals(cle2));
-      assertFalse(cle2.equals(cle1));
-      cle1.setLigneEtiquette(le1);
-      assertTrue(cle1.equals(cle2));
+		/* Ligne */
+		cle2.setLigneEtiquette(le1);
+		assertFalse(cle1.hashCode() == cle2.hashCode());
+		cle1.setLigneEtiquette(le2);
+		assertFalse(cle1.hashCode() == cle2.hashCode());
+		cle1.setLigneEtiquette(le1);
+		assertTrue(cle1.hashCode() == cle2.hashCode());
 
-      /*champ*/
-      cle2.setChamp(c1);
-      assertFalse(cle1.equals(cle2));
-      assertFalse(cle2.equals(cle1));
-      cle1.setChamp(c2);
-      assertFalse(cle1.equals(cle2));
-      assertFalse(cle2.equals(cle1));
-      cle1.setChamp(c1);
-      assertTrue(cle1.equals(cle2));
-      assertTrue(cle2.equals(cle1));
+		/* setChamp */
+		cle2.setChamp(c1);
+		assertFalse(cle1.hashCode() == cle2.hashCode());
+		cle1.setChamp(c2);
+		assertFalse(cle1.hashCode() == cle2.hashCode());
+		cle1.setChamp(c1);
+		assertTrue(cle1.hashCode() == cle2.hashCode());
 
-      /*Entite*/
-      cle2.setEntite(e1);
-      assertFalse(cle1.equals(cle2));
-      assertFalse(cle2.equals(cle1));
-      cle1.setEntite(e2);
-      assertFalse(cle1.equals(cle2));
-      assertFalse(cle2.equals(cle1));
-      cle1.setEntite(e1);
-      assertTrue(cle1.equals(cle2));
-      assertTrue(cle2.equals(cle1));
+		/* Entite */
+		cle2.setEntite(e1);
+		assertFalse(cle1.hashCode() == cle2.hashCode());
+		cle1.setEntite(e2);
+		assertFalse(cle1.hashCode() == cle2.hashCode());
+		cle1.setEntite(e1);
+		assertTrue(cle1.hashCode() == cle2.hashCode());
 
-      final Categorie c3 = new Categorie();
-      assertFalse(cle1.equals(c3));
-   }
+		// un même objet garde le même hashcode dans le temps
+		final int hash = cle1.hashCode();
+		assertTrue(hash == cle1.hashCode());
+		assertTrue(hash == cle1.hashCode());
+		assertTrue(hash == cle1.hashCode());
+		assertTrue(hash == cle1.hashCode());
+	}
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   @Test
-public void testHashCode(){
-      final Integer o1 = 1;
-      final Integer o2 = 2;
-      final LigneEtiquette le1 = ligneEtiquetteDao.findById(1);
-      final LigneEtiquette le2 = ligneEtiquetteDao.findById(2);
-      final Champ c1 = champDao.findById(141);
-      final Champ c2 = champDao.findById(142);
-      final Entite e1 = entiteDao.findById(1);
-      final Entite e2 = entiteDao.findById(2);
-      final ChampLigneEtiquette cle1 = new ChampLigneEtiquette();
-      final ChampLigneEtiquette cle2 = new ChampLigneEtiquette();
+	/**
+	 * test toString().
+	 */
+	@Test
+	public void testToString() {
+		final ChampLigneEtiquette cle1 = champLigneEtiquetteDao.findById(1).get();
+		assertTrue(cle1.toString().equals("{" + cle1.getOrdre() + ", " + cle1.getLigneEtiquette().getOrdre()
+				+ "(LigneEtiquette) " + cle1.getEntite().getNom() + "(Entite)}"));
 
-      /*null*/
-      assertTrue(cle1.hashCode() == cle2.hashCode());
+		final ChampLigneEtiquette cle2 = new ChampLigneEtiquette();
+		assertTrue(cle2.toString().equals("{Empty ChampLigneEtiquette}"));
+	}
 
-      /*Ordre*/
-      cle2.setOrdre(o1);
-      assertFalse(cle1.hashCode() == cle2.hashCode());
-      cle1.setOrdre(o2);
-      assertFalse(cle1.hashCode() == cle2.hashCode());
-      cle1.setOrdre(o1);
-      assertTrue(cle1.hashCode() == cle2.hashCode());
+	/**
+	 * Test la méthode clone.
+	 */
+	@Test
+	public void testClone() {
+		final ChampLigneEtiquette cle1 = champLigneEtiquetteDao.findById(1).get();
+		ChampLigneEtiquette cle2 = new ChampLigneEtiquette();
+		cle2 = cle1.clone();
 
-      /*Ligne*/
-      cle2.setLigneEtiquette(le1);
-      assertFalse(cle1.hashCode() == cle2.hashCode());
-      cle1.setLigneEtiquette(le2);
-      assertFalse(cle1.hashCode() == cle2.hashCode());
-      cle1.setLigneEtiquette(le1);
-      assertTrue(cle1.hashCode() == cle2.hashCode());
+		assertTrue(cle1.equals(cle2));
 
-      /*setChamp*/
-      cle2.setChamp(c1);
-      assertFalse(cle1.hashCode() == cle2.hashCode());
-      cle1.setChamp(c2);
-      assertFalse(cle1.hashCode() == cle2.hashCode());
-      cle1.setChamp(c1);
-      assertTrue(cle1.hashCode() == cle2.hashCode());
+		if (cle1.getChampLigneEtiquetteId() != null) {
+			assertTrue(cle1.getChampLigneEtiquetteId() == cle2.getChampLigneEtiquetteId());
+		} else {
+			assertNull(cle2.getChampLigneEtiquetteId());
+		}
 
-      /*Entite*/
-      cle2.setEntite(e1);
-      assertFalse(cle1.hashCode() == cle2.hashCode());
-      cle1.setEntite(e2);
-      assertFalse(cle1.hashCode() == cle2.hashCode());
-      cle1.setEntite(e1);
-      assertTrue(cle1.hashCode() == cle2.hashCode());
+		if (cle1.getOrdre() != null) {
+			assertTrue(cle1.getOrdre() == cle2.getOrdre());
+		} else {
+			assertNull(cle2.getOrdre());
+		}
 
-      // un même objet garde le même hashcode dans le temps
-      final int hash = cle1.hashCode();
-      assertTrue(hash == cle1.hashCode());
-      assertTrue(hash == cle1.hashCode());
-      assertTrue(hash == cle1.hashCode());
-      assertTrue(hash == cle1.hashCode());
-   }
+		if (cle1.getLigneEtiquette() != null) {
+			assertTrue(cle1.getLigneEtiquette().equals(cle2.getLigneEtiquette()));
+		} else {
+			assertNull(cle2.getLigneEtiquette());
+		}
 
-   /**
-    * test toString().
-    */
-   @Test
-public void testToString(){
-      final ChampLigneEtiquette cle1 = champLigneEtiquetteDao.findById(1);
-      assertTrue(cle1.toString().equals("{" + cle1.getOrdre() + ", " + cle1.getLigneEtiquette().getOrdre() + "(LigneEtiquette) "
-         + cle1.getEntite().getNom() + "(Entite)}"));
+		if (cle1.getChamp() != null) {
+			assertTrue(cle1.getChamp().equals(cle2.getChamp()));
+		} else {
+			assertNull(cle2.getChamp());
+		}
 
-      final ChampLigneEtiquette cle2 = new ChampLigneEtiquette();
-      assertTrue(cle2.toString().equals("{Empty ChampLigneEtiquette}"));
-   }
+		if (cle1.getEntite() != null) {
+			assertTrue(cle1.getEntite().equals(cle2.getEntite()));
+		} else {
+			assertNull(cle2.getEntite());
+		}
 
-   /**
-    * Test la méthode clone.
-    */
-   @Test
-public void testClone(){
-      final ChampLigneEtiquette cle1 = champLigneEtiquetteDao.findById(1);
-      ChampLigneEtiquette cle2 = new ChampLigneEtiquette();
-      cle2 = cle1.clone();
-
-      assertTrue(cle1.equals(cle2));
-
-      if(cle1.getChampLigneEtiquetteId() != null){
-         assertTrue(cle1.getChampLigneEtiquetteId() == cle2.getChampLigneEtiquetteId());
-      }else{
-         assertNull(cle2.getChampLigneEtiquetteId());
-      }
-
-      if(cle1.getOrdre() != null){
-         assertTrue(cle1.getOrdre() == cle2.getOrdre());
-      }else{
-         assertNull(cle2.getOrdre());
-      }
-
-      if(cle1.getLigneEtiquette() != null){
-         assertTrue(cle1.getLigneEtiquette().equals(cle2.getLigneEtiquette()));
-      }else{
-         assertNull(cle2.getLigneEtiquette());
-      }
-
-      if(cle1.getChamp() != null){
-         assertTrue(cle1.getChamp().equals(cle2.getChamp()));
-      }else{
-         assertNull(cle2.getChamp());
-      }
-
-      if(cle1.getEntite() != null){
-         assertTrue(cle1.getEntite().equals(cle2.getEntite()));
-      }else{
-         assertNull(cle2.getEntite());
-      }
-
-      if(cle1.getExpReg() != null){
-         assertTrue(cle1.getExpReg().equals(cle2.getExpReg()));
-      }else{
-         assertNull(cle2.getExpReg());
-      }
-   }
+		if (cle1.getExpReg() != null) {
+			assertTrue(cle1.getExpReg().equals(cle2.getExpReg()));
+		} else {
+			assertNull(cle2.getExpReg());
+		}
+	}
 
 }

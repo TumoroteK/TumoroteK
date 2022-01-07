@@ -189,7 +189,7 @@ public void testCrudEchanQualite() throws Exception{
 
       // Test de la délétion
       echanQualiteDao.deleteById(new Integer(4));
-      assertNull(echanQualiteDao.findById(new Integer(4)));
+      assertFalse(echanQualiteDao.findById(new Integer(4)).isPresent());
 
    }
 

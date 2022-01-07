@@ -43,15 +43,12 @@ import org.apache.commons.collections4.IterableUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import fr.aphp.tumorotek.dao.test.Config;
-
-
 
 import fr.aphp.tumorotek.dao.impression.BlocImpressionDao;
 import fr.aphp.tumorotek.dao.impression.BlocImpressionTemplateDao;
@@ -65,274 +62,253 @@ import fr.aphp.tumorotek.model.impression.Template;
 
 /**
  *
- * Classe de test pour le DAO BlocImpressionTemplateDao et le bean
- * du domaine BlocImpressionTemplate.
+ * Classe de test pour le DAO BlocImpressionTemplateDao et le bean du domaine
+ * BlocImpressionTemplate.
  *
  * @author Pierre Ventadour.
  * @version 23/07/2010
  *
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {Config.class})
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
-public class BlocImpressionTemplateDaoTest extends AbstractDaoTest
-{
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class BlocImpressionTemplateDaoTest extends AbstractDaoTest {
 
+	@Autowired
+	BlocImpressionTemplateDao blocImpressionTemplateDao;
 
-   @Autowired
- BlocImpressionTemplateDao blocImpressionTemplateDao;
+	@Autowired
+	TemplateDao templateDao;
 
-   @Autowired
- TemplateDao templateDao;
+	@Autowired
+	BlocImpressionDao blocImpressionDao;
 
-   @Autowired
- BlocImpressionDao blocImpressionDao;
+	/**
+	 * Test l'appel de la méthode findAll().
+	 */
+	@Test
+	public void testReadAll() {
+		final List<BlocImpressionTemplate> liste = IterableUtils.toList(blocImpressionTemplateDao.findAll());
+		assertTrue(liste.size() == 4);
+	}
 
-   public BlocImpressionTemplateDaoTest(){
+	/**
+	 * Test l'appel de la méthode findById().
+	 */
+	@Test
+	public void testFindById() {
+		final BlocImpression b1 = blocImpressionDao.findById(1).get();
+		final Template t1 = templateDao.findById(1).get();
+		BlocImpressionTemplatePK pk = new BlocImpressionTemplatePK(t1, b1);
 
-   }
+		BlocImpressionTemplate bit = blocImpressionTemplateDao.findById(pk).get();
+		assertNotNull(bit);
 
-   @Test
-public void setBlocImpressionTemplateDao(final BlocImpressionTemplateDao bDao){
-      this.blocImpressionTemplateDao = bDao;
-   }
+		final Template t2 = templateDao.findById(2).get();
+		pk = new BlocImpressionTemplatePK(t2, b1);
+		assertFalse(blocImpressionTemplateDao.findById(pk).isPresent());
+	}
 
-   @Test
-public void setTemplateDao(final TemplateDao tDao){
-      this.templateDao = tDao;
-   }
+	/**
+	 * Test l'appel de la méthode findByExcludedPK().
+	 */
+	@Test
+	public void testFindByExcludedPK() {
+		final BlocImpression b1 = blocImpressionDao.findById(1).get();
+		final Template t1 = templateDao.findById(1).get();
+		BlocImpressionTemplatePK pk = new BlocImpressionTemplatePK(t1, b1);
 
-   @Test
-public void setBlocImpressionDao(final BlocImpressionDao bDao){
-      this.blocImpressionDao = bDao;
-   }
+		List<BlocImpressionTemplate> liste = blocImpressionTemplateDao.findByExcludedPK(pk);
+		assertTrue(liste.size() == 3);
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   @Test
-public void testReadAll(){
-      final List<BlocImpressionTemplate> liste = IterableUtils.toList(blocImpressionTemplateDao.findAll());
-      assertTrue(liste.size() == 4);
-   }
+		final Template t2 = templateDao.findById(2).get();
+		pk = new BlocImpressionTemplatePK(t2, b1);
+		liste = blocImpressionTemplateDao.findByExcludedPK(pk);
+		assertTrue(liste.size() == 4);
+	}
 
-   /**
-    * Test l'appel de la méthode findById().
-    */
-   @Test
-public void testFindById(){
-      final BlocImpression b1 = blocImpressionDao.findById(1);
-      final Template t1 = templateDao.findById(1);
-      BlocImpressionTemplatePK pk = new BlocImpressionTemplatePK(t1, b1);
+	/**
+	 * Test l'appel de la méthode findByTemplate().
+	 */
+	@Test
+	public void testFindByTemplate() {
+		final Template t1 = templateDao.findById(1).get();
+		List<BlocImpressionTemplate> liste = blocImpressionTemplateDao.findByTemplate(t1);
+		assertTrue(liste.size() == 4);
 
-      BlocImpressionTemplate bit = blocImpressionTemplateDao.findById(pk);
-      assertNotNull(bit);
+		final Template t2 = templateDao.findById(2).get();
+		liste = blocImpressionTemplateDao.findByTemplate(t2);
+		assertTrue(liste.size() == 0);
+	}
 
-      final Template t2 = templateDao.findById(2);
-      pk = new BlocImpressionTemplatePK(t2, b1);
-      bit = blocImpressionTemplateDao.findById(pk);
-      assertNull(bit);
-   }
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'un
+	 * BlocImpressionTemplate.
+	 **/
+	@Rollback(false)
+	@Test
+	public void testCrud() {
 
-   /**
-    * Test l'appel de la méthode findByExcludedPK().
-    */
-   @Test
-public void testFindByExcludedPK(){
-      final BlocImpression b1 = blocImpressionDao.findById(1);
-      final Template t1 = templateDao.findById(1);
-      BlocImpressionTemplatePK pk = new BlocImpressionTemplatePK(t1, b1);
+		final BlocImpressionTemplate bit = new BlocImpressionTemplate();
+		final BlocImpression b1 = blocImpressionDao.findById(4).get();
+		final Template t1 = templateDao.findById(1).get();
+		final Integer ordre = 5;
+		final Integer ordreUp = 6;
 
-      List<BlocImpressionTemplate> liste = blocImpressionTemplateDao.findByExcludedPK(pk);
-      assertTrue(liste.size() == 3);
+		bit.setBlocImpression(b1);
+		bit.setTemplate(t1);
+		bit.setOrdre(ordre);
 
-      final Template t2 = templateDao.findById(2);
-      pk = new BlocImpressionTemplatePK(t2, b1);
-      liste = blocImpressionTemplateDao.findByExcludedPK(pk);
-      assertTrue(liste.size() == 4);
-   }
+		// Test de l'insertion
+		blocImpressionTemplateDao.save(bit);
+		assertTrue(IterableUtils.toList(blocImpressionTemplateDao.findAll()).size() == 5);
 
-   /**
-    * Test l'appel de la méthode findByTemplate().
-    */
-   @Test
-public void testFindByTemplate(){
-      final Template t1 = templateDao.findById(1);
-      List<BlocImpressionTemplate> liste = blocImpressionTemplateDao.findByTemplate(t1);
-      assertTrue(liste.size() == 4);
+		// Test de la mise à jour
+		final BlocImpressionTemplatePK pk = new BlocImpressionTemplatePK();
+		pk.setBlocImpression(b1);
+		pk.setTemplate(t1);
+		final BlocImpressionTemplate bit2 = blocImpressionTemplateDao.findById(pk).get();
+		assertNotNull(bit2);
+		assertTrue(bit2.getTemplate().equals(t1));
+		assertTrue(bit2.getBlocImpression().equals(b1));
+		assertTrue(bit2.getOrdre() == ordre);
 
-      final Template t2 = templateDao.findById(2);
-      liste = blocImpressionTemplateDao.findByTemplate(t2);
-      assertTrue(liste.size() == 0);
-   }
+		// update
+		bit2.setOrdre(ordreUp);
+		blocImpressionTemplateDao.save(bit2);
+		assertTrue(blocImpressionTemplateDao.findById(pk).get().equals(bit2));
+		assertTrue(blocImpressionTemplateDao.findById(pk).get().getOrdre() == ordreUp);
+		assertTrue(IterableUtils.toList(blocImpressionTemplateDao.findAll()).size() == 5);
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression 
-    * d'un BlocImpressionTemplate.
-    **/
-   @Rollback(false)
-   @Test
-public void testCrud(){
+		// Test de la délétion
+		blocImpressionTemplateDao.deleteById(pk);
+		assertFalse(blocImpressionTemplateDao.findById(pk).isPresent());
+		assertTrue(IterableUtils.toList(blocImpressionTemplateDao.findAll()).size() == 4);
+	}
 
-      final BlocImpressionTemplate bit = new BlocImpressionTemplate();
-      final BlocImpression b1 = blocImpressionDao.findById(4);
-      final Template t1 = templateDao.findById(1);
-      final Integer ordre = 5;
-      final Integer ordreUp = 6;
+	/**
+	 * Test de la méthode surchargée "equals".
+	 * 
+	 * @throws ParseException
+	 */
+	@Test
+	public void testEquals() throws ParseException {
 
-      bit.setBlocImpression(b1);
-      bit.setTemplate(t1);
-      bit.setOrdre(ordre);
+		final BlocImpressionTemplate bit1 = new BlocImpressionTemplate();
+		final BlocImpressionTemplate bit2 = new BlocImpressionTemplate();
 
-      // Test de l'insertion
-      blocImpressionTemplateDao.save(bit);
-      assertTrue(IterableUtils.toList(blocImpressionTemplateDao.findAll()).size() == 5);
+		// L'objet 1 n'est pas égal à null
+		assertFalse(bit1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(bit1.equals(bit1));
+		// 2 objets sont égaux entre eux
+		assertTrue(bit1.equals(bit2));
+		assertTrue(bit2.equals(bit1));
 
-      // Test de la mise à jour
-      final BlocImpressionTemplatePK pk = new BlocImpressionTemplatePK();
-      pk.setBlocImpression(b1);
-      pk.setTemplate(t1);
-      final BlocImpressionTemplate bit2 = blocImpressionTemplateDao.findById(pk);
-      assertNotNull(bit2);
-      assertTrue(bit2.getTemplate().equals(t1));
-      assertTrue(bit2.getBlocImpression().equals(b1));
-      assertTrue(bit2.getOrdre() == ordre);
+		populateClefsToTestEqualsAndHashCode(bit1, bit2);
 
-      //update
-      bit2.setOrdre(ordreUp);
-      blocImpressionTemplateDao.save(bit2);
-      assertTrue(blocImpressionTemplateDao.findById(pk).equals(bit2));
-      assertTrue(blocImpressionTemplateDao.findById(pk).getOrdre() == ordreUp);
-      assertTrue(IterableUtils.toList(blocImpressionTemplateDao.findAll()).size() == 5);
+		// dummy test
+		final Banque b = new Banque();
+		assertFalse(bit1.equals(b));
+	}
 
-      // Test de la délétion
-      blocImpressionTemplateDao.deleteById(pk);
-      assertNull(blocImpressionTemplateDao.findById(pk));
-      assertTrue(IterableUtils.toList(blocImpressionTemplateDao.findAll()).size() == 4);
-   }
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 * 
+	 * @throws ParseException
+	 */
+	@Test
+	public void testHashCode() throws ParseException {
+		final BlocImpressionTemplate bit1 = new BlocImpressionTemplate();
+		final BlocImpressionTemplate bit2 = new BlocImpressionTemplate();
+		final BlocImpressionTemplate bit3 = new BlocImpressionTemplate();
 
-   /**
-    * Test de la méthode surchargée "equals".
-    * @throws ParseException 
-    */
-   @Test
-public void testEquals() throws ParseException{
+		assertTrue(bit1.hashCode() == bit2.hashCode());
+		assertTrue(bit2.hashCode() == bit3.hashCode());
+		assertTrue(bit3.hashCode() > 0);
 
-      final BlocImpressionTemplate bit1 = new BlocImpressionTemplate();
-      final BlocImpressionTemplate bit2 = new BlocImpressionTemplate();
+		// teste dans methode precedente
+		populateClefsToTestEqualsAndHashCode(bit1, bit2);
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(bit1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(bit1.equals(bit1));
-      // 2 objets sont égaux entre eux
-      assertTrue(bit1.equals(bit2));
-      assertTrue(bit2.equals(bit1));
+		final int hash = bit1.hashCode();
+		// 2 objets égaux ont le même hashcode
+		assertTrue(bit1.hashCode() == bit2.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		assertTrue(hash == bit1.hashCode());
+		assertTrue(hash == bit1.hashCode());
+		assertTrue(hash == bit1.hashCode());
+		assertTrue(hash == bit1.hashCode());
+	}
 
-      populateClefsToTestEqualsAndHashCode(bit1, bit2);
+	private void populateClefsToTestEqualsAndHashCode(final BlocImpressionTemplate bit1,
+			final BlocImpressionTemplate bit2) throws ParseException {
 
-      //dummy test
-      final Banque b = new Banque();
-      assertFalse(bit1.equals(b));
-   }
+		final BlocImpression b1 = blocImpressionDao.findById(1).get();
+		final BlocImpression b2 = blocImpressionDao.findById(2).get();
+		final Template t1 = templateDao.findById(1).get();
+		final BlocImpressionTemplatePK pk1 = new BlocImpressionTemplatePK(t1, b1);
+		final BlocImpressionTemplatePK pk2 = new BlocImpressionTemplatePK(t1, b2);
+		final BlocImpressionTemplatePK pk3 = new BlocImpressionTemplatePK(t1, b1);
+		final BlocImpressionTemplatePK[] pks = new BlocImpressionTemplatePK[] { null, pk1, pk2, pk3 };
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    * @throws ParseException 
-    */
-   @Test
-public void testHashCode() throws ParseException{
-      final BlocImpressionTemplate bit1 = new BlocImpressionTemplate();
-      final BlocImpressionTemplate bit2 = new BlocImpressionTemplate();
-      final BlocImpressionTemplate bit3 = new BlocImpressionTemplate();
+		for (int i = 0; i < pks.length; i++) {
+			for (int k = 0; k < pks.length; k++) {
 
-      assertTrue(bit1.hashCode() == bit2.hashCode());
-      assertTrue(bit2.hashCode() == bit3.hashCode());
-      assertTrue(bit3.hashCode() > 0);
+				bit1.setPk(pks[i]);
+				bit2.setPk(pks[k]);
 
-      //teste dans methode precedente
-      populateClefsToTestEqualsAndHashCode(bit1, bit2);
+				if (((i == k) || (i + k == 4))) {
+					assertTrue(bit1.equals(bit2));
+					assertTrue(bit1.hashCode() == bit2.hashCode());
+				} else {
+					assertFalse(bit1.equals(bit2));
+				}
+			}
+		}
+	}
 
-      final int hash = bit1.hashCode();
-      // 2 objets égaux ont le même hashcode
-      assertTrue(bit1.hashCode() == bit2.hashCode());
-      // un même objet garde le même hashcode dans le temps
-      assertTrue(hash == bit1.hashCode());
-      assertTrue(hash == bit1.hashCode());
-      assertTrue(hash == bit1.hashCode());
-      assertTrue(hash == bit1.hashCode());
-   }
+	/**
+	 * Test la méthode toString.
+	 */
+	@Test
+	public void testToString() {
+		final BlocImpression b1 = blocImpressionDao.findById(1).get();
+		final Template t1 = templateDao.findById(1).get();
+		final BlocImpressionTemplatePK pk1 = new BlocImpressionTemplatePK(t1, b1);
+		final BlocImpressionTemplate bit1 = blocImpressionTemplateDao.findById(pk1).get();
 
-   @Autowired
- void populateClefsToTestEqualsAndHashCode(final BlocImpressionTemplate bit1, final BlocImpressionTemplate bit2)
-      throws ParseException{
+		assertTrue(bit1.toString().equals("{" + bit1.getPk().toString() + "}"));
 
-      final BlocImpression b1 = blocImpressionDao.findById(1);
-      final BlocImpression b2 = blocImpressionDao.findById(2);
-      final Template t1 = templateDao.findById(1);
-      final BlocImpressionTemplatePK pk1 = new BlocImpressionTemplatePK(t1, b1);
-      final BlocImpressionTemplatePK pk2 = new BlocImpressionTemplatePK(t1, b2);
-      final BlocImpressionTemplatePK pk3 = new BlocImpressionTemplatePK(t1, b1);
-      final BlocImpressionTemplatePK[] pks = new BlocImpressionTemplatePK[] {null, pk1, pk2, pk3};
+		final BlocImpressionTemplate bit2 = new BlocImpressionTemplate();
+		bit2.setPk(null);
+		assertTrue(bit2.toString().equals("{Empty BlocImpressionTemplate}"));
+	}
 
-      for(int i = 0; i < pks.length; i++){
-         for(int k = 0; k < pks.length; k++){
+	/**
+	 * Test la méthode clone.
+	 */
+	@Test
+	public void testClone() {
+		final BlocImpression b1 = blocImpressionDao.findById(1).get();
+		final Template t1 = templateDao.findById(1).get();
+		final BlocImpressionTemplatePK pk1 = new BlocImpressionTemplatePK(t1, b1);
+		final BlocImpressionTemplate bit1 = blocImpressionTemplateDao.findById(pk1).get();
 
-            bit1.setPk(pks[i]);
-            bit2.setPk(pks[k]);
+		BlocImpressionTemplate bit2 = new BlocImpressionTemplate();
+		bit2 = bit1.clone();
 
-            if(((i == k) || (i + k == 4))){
-               assertTrue(bit1.equals(bit2));
-               assertTrue(bit1.hashCode() == bit2.hashCode());
-            }else{
-               assertFalse(bit1.equals(bit2));
-            }
-         }
-      }
-   }
+		assertTrue(bit1.equals(bit2));
 
-   /**
-    * Test la méthode toString.
-    */
-   @Test
-public void testToString(){
-      final BlocImpression b1 = blocImpressionDao.findById(1);
-      final Template t1 = templateDao.findById(1);
-      final BlocImpressionTemplatePK pk1 = new BlocImpressionTemplatePK(t1, b1);
-      final BlocImpressionTemplate bit1 = blocImpressionTemplateDao.findById(pk1);
+		if (bit1.getPk() != null) {
+			assertTrue(bit1.getPk().equals(bit2.getPk()));
+		} else {
+			assertNull(bit2.getPk());
+		}
 
-      assertTrue(bit1.toString().equals("{" + bit1.getPk().toString() + "}"));
-
-      final BlocImpressionTemplate bit2 = new BlocImpressionTemplate();
-      bit2.setPk(null);
-      assertTrue(bit2.toString().equals("{Empty BlocImpressionTemplate}"));
-   }
-
-   /**
-    * Test la méthode clone.
-    */
-   @Test
-public void testClone(){
-      final BlocImpression b1 = blocImpressionDao.findById(1);
-      final Template t1 = templateDao.findById(1);
-      final BlocImpressionTemplatePK pk1 = new BlocImpressionTemplatePK(t1, b1);
-      final BlocImpressionTemplate bit1 = blocImpressionTemplateDao.findById(pk1);
-
-      BlocImpressionTemplate bit2 = new BlocImpressionTemplate();
-      bit2 = bit1.clone();
-
-      assertTrue(bit1.equals(bit2));
-
-      if(bit1.getPk() != null){
-         assertTrue(bit1.getPk().equals(bit2.getPk()));
-      }else{
-         assertNull(bit2.getPk());
-      }
-
-      if(bit1.getOrdre() != null){
-         assertTrue(bit1.getOrdre() == bit2.getOrdre());
-      }else{
-         assertNull(bit2.getOrdre());
-      }
-   }
+		if (bit1.getOrdre() != null) {
+			assertTrue(bit1.getOrdre() == bit2.getOrdre());
+		} else {
+			assertNull(bit2.getOrdre());
+		}
+	}
 }

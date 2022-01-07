@@ -37,19 +37,15 @@ package fr.aphp.tumorotek.dao.test.imprimante;
 
 import java.text.ParseException;
 
-import org.apache.commons.collections4.IterableUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import fr.aphp.tumorotek.dao.test.Config;
-
-
 
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.imprimante.ImprimanteDao;
@@ -70,163 +66,145 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  *
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {Config.class})
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
-public class AffectationImprimantePKTest extends AbstractDaoTest
-{
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class AffectationImprimantePKTest extends AbstractDaoTest {
 
+	@Autowired
+	UtilisateurDao utilisateurDao;
 
-   @Autowired
- UtilisateurDao utilisateurDao;
+	@Autowired
+	BanqueDao banqueDao;
 
-   @Autowired
- BanqueDao banqueDao;
+	@Autowired
+	ImprimanteDao imprimanteDao;
 
-   @Autowired
- ImprimanteDao imprimanteDao;
+	/**
+	 * Test de la méthode surchargée "equals".
+	 * 
+	 * @throws ParseException
+	 */
+	@Test
+	public void testEquals() throws ParseException {
+		final AffectationImprimantePK pk1 = new AffectationImprimantePK();
+		final AffectationImprimantePK pk2 = new AffectationImprimantePK();
 
-   public AffectationImprimantePKTest(){
+		// L'objet 1 n'est pas égal à null
+		assertFalse(pk1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(pk1.equals(pk1));
 
-   }
+		/* null */
+		assertTrue(pk1.equals(pk2));
+		assertTrue(pk2.equals(pk1));
 
-   @Test
-public void setUtilisateurDao(final UtilisateurDao uDao){
-      this.utilisateurDao = uDao;
-   }
+		populateClefsToTestEqualsAndHashCode();
 
-   @Test
-public void setBanqueDao(final BanqueDao bDao){
-      this.banqueDao = bDao;
-   }
+		final Categorie c3 = new Categorie();
+		assertFalse(pk1.equals(c3));
+	}
 
-   @Test
-public void setImprimanteDao(final ImprimanteDao iDao){
-      this.imprimanteDao = iDao;
-   }
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 * 
+	 * @throws ParseException
+	 */
+	@Test
+	public void testHashCode() throws ParseException {
+		final AffectationImprimantePK pk1 = new AffectationImprimantePK();
+		final AffectationImprimantePK pk2 = new AffectationImprimantePK();
 
-   /**
-    * Test de la méthode surchargée "equals".
-    * @throws ParseException 
-    */
-   @Test
-public void testEquals() throws ParseException{
-      final AffectationImprimantePK pk1 = new AffectationImprimantePK();
-      final AffectationImprimantePK pk2 = new AffectationImprimantePK();
+		/* null */
+		assertTrue(pk1.hashCode() == pk2.hashCode());
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(pk1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(pk1.equals(pk1));
+		populateClefsToTestEqualsAndHashCode();
 
-      /*null*/
-      assertTrue(pk1.equals(pk2));
-      assertTrue(pk2.equals(pk1));
+		// un même objet garde le même hashcode dans le temps
+		final int hash = pk1.hashCode();
+		assertTrue(hash == pk1.hashCode());
+		assertTrue(hash == pk1.hashCode());
+		assertTrue(hash == pk1.hashCode());
+		assertTrue(hash == pk1.hashCode());
+	}
 
-      populateClefsToTestEqualsAndHashCode();
+	@Autowired
+	void populateClefsToTestEqualsAndHashCode() throws ParseException {
 
-      final Categorie c3 = new Categorie();
-      assertFalse(pk1.equals(c3));
-   }
+		final Imprimante i1 = imprimanteDao.findById(1).get();
+		final Imprimante i2 = imprimanteDao.findById(2).get();
+		final Imprimante[] imprimantesId = new Imprimante[] { null, i1, i2 };
+		final Utilisateur u1 = utilisateurDao.findById(1).get();
+		final Utilisateur u2 = utilisateurDao.findById(2).get();
+		final Utilisateur u3 = utilisateurDao.findById(1).get();
+		final Utilisateur[] utilisateurs = new Utilisateur[] { null, u1, u2, u3 };
+		final Banque b1 = banqueDao.findById(1).get();
+		final Banque b2 = banqueDao.findById(2).get();
+		final Banque b3 = banqueDao.findById(1).get();
+		final Banque[] banques = new Banque[] { null, b1, b2, b3 };
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    * @throws ParseException 
-    */
-   @Test
-public void testHashCode() throws ParseException{
-      final AffectationImprimantePK pk1 = new AffectationImprimantePK();
-      final AffectationImprimantePK pk2 = new AffectationImprimantePK();
+		final AffectationImprimantePK pk1 = new AffectationImprimantePK();
+		final AffectationImprimantePK pk2 = new AffectationImprimantePK();
 
-      /*null*/
-      assertTrue(pk1.hashCode() == pk2.hashCode());
+		for (int i = 0; i < imprimantesId.length; i++) {
+			for (int j = 0; j < utilisateurs.length; j++) {
+				for (int j2 = 0; j2 < banques.length; j2++) {
+					for (int k = 0; k < imprimantesId.length; k++) {
+						for (int l = 0; l < utilisateurs.length; l++) {
+							for (int l2 = 0; l2 < banques.length; l2++) {
 
-      populateClefsToTestEqualsAndHashCode();
+								pk1.setImprimante(imprimantesId[i]);
+								pk1.setUtilisateur(utilisateurs[j]);
+								pk1.setBanque(banques[j2]);
 
-      // un même objet garde le même hashcode dans le temps
-      final int hash = pk1.hashCode();
-      assertTrue(hash == pk1.hashCode());
-      assertTrue(hash == pk1.hashCode());
-      assertTrue(hash == pk1.hashCode());
-      assertTrue(hash == pk1.hashCode());
-   }
+								pk2.setImprimante(imprimantesId[k]);
+								pk2.setUtilisateur(utilisateurs[l]);
+								pk2.setBanque(banques[l2]);
 
-   @Autowired
- void populateClefsToTestEqualsAndHashCode() throws ParseException{
+								if (((i == k) || (i + k == 4)) && ((j == l) || (j + l == 4))
+										&& ((j2 == l2) || (j2 + l2 == 4))) {
+									assertTrue(pk1.equals(pk2));
+									assertTrue(pk1.hashCode() == pk2.hashCode());
+								} else {
+									assertFalse(pk1.equals(pk2));
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 
-      final Imprimante i1 = imprimanteDao.findById(1);
-      final Imprimante i2 = imprimanteDao.findById(2);
-      final Imprimante[] imprimantesId = new Imprimante[] {null, i1, i2};
-      final Utilisateur u1 = utilisateurDao.findById(1);
-      final Utilisateur u2 = utilisateurDao.findById(2);
-      final Utilisateur u3 = utilisateurDao.findById(1);
-      final Utilisateur[] utilisateurs = new Utilisateur[] {null, u1, u2, u3};
-      final Banque b1 = banqueDao.findById(1);
-      final Banque b2 = banqueDao.findById(2);
-      final Banque b3 = banqueDao.findById(1);
-      final Banque[] banques = new Banque[] {null, b1, b2, b3};
+	/**
+	 * Test la méthode toString.
+	 */
+	@Test
+	public void testToString() {
+		final Imprimante i1 = imprimanteDao.findById(1).get();
+		final Utilisateur u1 = utilisateurDao.findById(1).get();
+		final Banque b1 = banqueDao.findById(1).get();
+		final AffectationImprimantePK pk1 = new AffectationImprimantePK();
+		pk1.setImprimante(i1);
+		pk1.setUtilisateur(u1);
+		pk1.setBanque(b1);
 
-      final AffectationImprimantePK pk1 = new AffectationImprimantePK();
-      final AffectationImprimantePK pk2 = new AffectationImprimantePK();
+		assertTrue(pk1.toString().equals("{" + pk1.getUtilisateur().toString() + " (Utilisateur), "
+				+ pk1.getBanque().toString() + " (Banque), " + pk1.getImprimante().toString() + " (Imprimante)}"));
 
-      for(int i = 0; i < imprimantesId.length; i++){
-         for(int j = 0; j < utilisateurs.length; j++){
-            for(int j2 = 0; j2 < banques.length; j2++){
-               for(int k = 0; k < imprimantesId.length; k++){
-                  for(int l = 0; l < utilisateurs.length; l++){
-                     for(int l2 = 0; l2 < banques.length; l2++){
+		pk1.setImprimante(null);
+		assertTrue(pk1.toString().equals("{Empty AffectationImprimantePK}"));
+		pk1.setImprimante(i1);
 
-                        pk1.setImprimante(imprimantesId[i]);
-                        pk1.setUtilisateur(utilisateurs[j]);
-                        pk1.setBanque(banques[j2]);
+		pk1.setUtilisateur(null);
+		assertTrue(pk1.toString().equals("{Empty AffectationImprimantePK}"));
+		pk1.setUtilisateur(u1);
 
-                        pk2.setImprimante(imprimantesId[k]);
-                        pk2.setUtilisateur(utilisateurs[l]);
-                        pk2.setBanque(banques[l2]);
+		pk1.setBanque(null);
+		assertTrue(pk1.toString().equals("{Empty AffectationImprimantePK}"));
+		pk1.setBanque(b1);
 
-                        if(((i == k) || (i + k == 4)) && ((j == l) || (j + l == 4)) && ((j2 == l2) || (j2 + l2 == 4))){
-                           assertTrue(pk1.equals(pk2));
-                           assertTrue(pk1.hashCode() == pk2.hashCode());
-                        }else{
-                           assertFalse(pk1.equals(pk2));
-                        }
-                     }
-                  }
-               }
-            }
-         }
-      }
-   }
-
-   /**
-    * Test la méthode toString.
-    */
-   @Test
-public void testToString(){
-      final Imprimante i1 = imprimanteDao.findById(1);
-      final Utilisateur u1 = utilisateurDao.findById(1);
-      final Banque b1 = banqueDao.findById(1);
-      final AffectationImprimantePK pk1 = new AffectationImprimantePK();
-      pk1.setImprimante(i1);
-      pk1.setUtilisateur(u1);
-      pk1.setBanque(b1);
-
-      assertTrue(pk1.toString().equals("{" + pk1.getUtilisateur().toString() + " (Utilisateur), " + pk1.getBanque().toString()
-         + " (Banque), " + pk1.getImprimante().toString() + " (Imprimante)}"));
-
-      pk1.setImprimante(null);
-      assertTrue(pk1.toString().equals("{Empty AffectationImprimantePK}"));
-      pk1.setImprimante(i1);
-
-      pk1.setUtilisateur(null);
-      assertTrue(pk1.toString().equals("{Empty AffectationImprimantePK}"));
-      pk1.setUtilisateur(u1);
-
-      pk1.setBanque(null);
-      assertTrue(pk1.toString().equals("{Empty AffectationImprimantePK}"));
-      pk1.setBanque(b1);
-
-      final AffectationImprimantePK pk2 = new AffectationImprimantePK();
-      assertTrue(pk2.toString().equals("{Empty AffectationImprimantePK}"));
-   }
+		final AffectationImprimantePK pk2 = new AffectationImprimantePK();
+		assertTrue(pk2.toString().equals("{Empty AffectationImprimantePK}"));
+	}
 
 }

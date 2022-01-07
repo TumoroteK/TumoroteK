@@ -166,7 +166,7 @@ public void testCrud() throws Exception{
 
       // Test de la délétion
       valeurExterneDao.deleteById(new Integer(id));
-      assertNull(valeurExterneDao.findById(new Integer(id)));
+      assertFalse(valeurExterneDao.findById(new Integer(id)).isPresent());
    }
 
    /**

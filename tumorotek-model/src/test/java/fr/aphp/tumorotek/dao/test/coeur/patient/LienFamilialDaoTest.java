@@ -155,7 +155,7 @@ public void testCrudLienFamilial() throws Exception{
 
       // Test de la délétion
       lienDao.deleteById(new Integer(7));
-      assertNull(lienDao.findById(new Integer(7)));
+      assertFalse(lienDao.findById(new Integer(7)).isPresent());
    }
 
    /**

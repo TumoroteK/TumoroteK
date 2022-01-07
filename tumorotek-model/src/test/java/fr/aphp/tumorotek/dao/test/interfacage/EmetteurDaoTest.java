@@ -229,7 +229,7 @@ public void testCrud() throws Exception{
 
       // Test de la délétion
       emetteurDao.deleteById(new Integer(4));
-      assertNull(emetteurDao.findById(new Integer(4)));
+      assertFalse(emetteurDao.findById(new Integer(4)).isPresent());
    }
 
    /**

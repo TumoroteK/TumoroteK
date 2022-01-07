@@ -180,7 +180,7 @@ public void testCrud() throws Exception{
 
       // Test de la délétion
       recepteurDao.deleteById(e1.getRecepteurId());
-      assertNull(recepteurDao.findById(e1.getRecepteurId()));
+      assertFalse(recepteurDao.findById(e1.getRecepteurId()).isPresent());
    }
 
    @Test

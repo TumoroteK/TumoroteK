@@ -44,15 +44,12 @@ import org.apache.commons.collections4.IterableUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import fr.aphp.tumorotek.dao.test.Config;
-
-
 
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.impression.TemplateDao;
@@ -65,346 +62,325 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 
 /**
  *
- * Classe de test pour le DAO TemplateDao et le bean
- * du domaine Template.
+ * Classe de test pour le DAO TemplateDao et le bean du domaine Template.
  *
  * @author Pierre Ventadour.
  * @version 23/07/2010
  *
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {Config.class})
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
-public class TemplateDaoTest extends AbstractDaoTest
-{
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class TemplateDaoTest extends AbstractDaoTest {
 
+	@Autowired
+	TemplateDao templateDao;
 
-   @Autowired
- TemplateDao templateDao;
+	@Autowired
+	BanqueDao banqueDao;
 
-   @Autowired
- BanqueDao banqueDao;
+	@Autowired
+	EntiteDao entiteDao;
 
-   @Autowired
- EntiteDao entiteDao;
+	/**
+	 * Test l'appel de la méthode findAll().
+	 */
+	@Test
+	public void testReadAll() {
+		final List<Template> liste = IterableUtils.toList(templateDao.findAll());
+		assertTrue(liste.size() == 3);
+	}
 
-   public TemplateDaoTest(){
+	/**
+	 * Test l'appel de la méthode findByBanque().
+	 */
+	@Test
+	public void testFindByBanque() {
+		final Banque b1 = banqueDao.findById(1).get();
+		List<Template> liste = templateDao.findByBanque(b1);
+		assertTrue(liste.size() == 2);
+		assertTrue(liste.get(0).getNom().equals("Fiche patient"));
 
-   }
+		final Banque b3 = banqueDao.findById(3).get();
+		liste = templateDao.findByBanque(b3);
+		assertTrue(liste.size() == 0);
 
-   @Test
-public void setTemplateDao(final TemplateDao tDao){
-      this.templateDao = tDao;
-   }
+		liste = templateDao.findByBanque(null);
+		assertTrue(liste.size() == 0);
+	}
 
-   @Test
-public void setBanqueDao(final BanqueDao bDao){
-      this.banqueDao = bDao;
-   }
+	/**
+	 * Test l'appel de la méthode findByBanqueEntite().
+	 */
+	@Test
+	public void testFindByBanqueEntite() {
+		final Banque b1 = banqueDao.findById(1).get();
+		final Banque b3 = banqueDao.findById(3).get();
+		final Entite e1 = entiteDao.findById(1).get();
+		final Entite e3 = entiteDao.findById(3).get();
+		List<Template> liste = templateDao.findByBanqueEntite(b1, e1);
+		assertTrue(liste.size() == 1);
+		assertTrue(liste.get(0).getNom().equals("Fiche patient"));
 
-   @Test
-public void setEntiteDao(final EntiteDao eDao){
-      this.entiteDao = eDao;
-   }
+		liste = templateDao.findByBanqueEntite(b1, e3);
+		assertTrue(liste.size() == 0);
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   @Test
-public void testReadAll(){
-      final List<Template> liste = IterableUtils.toList(templateDao.findAll());
-      assertTrue(liste.size() == 3);
-   }
+		liste = templateDao.findByBanqueEntite(b3, e1);
+		assertTrue(liste.size() == 0);
 
-   /**
-    * Test l'appel de la méthode findByBanque().
-    */
-   @Test
-public void testFindByBanque(){
-      final Banque b1 = banqueDao.findById(1);
-      List<Template> liste = templateDao.findByBanque(b1);
-      assertTrue(liste.size() == 2);
-      assertTrue(liste.get(0).getNom().equals("Fiche patient"));
+		liste = templateDao.findByBanqueEntite(null, e1);
+		assertTrue(liste.size() == 0);
 
-      final Banque b3 = banqueDao.findById(3);
-      liste = templateDao.findByBanque(b3);
-      assertTrue(liste.size() == 0);
+		liste = templateDao.findByBanqueEntite(b1, null);
+		assertTrue(liste.size() == 0);
 
-      liste = templateDao.findByBanque(null);
-      assertTrue(liste.size() == 0);
-   }
+		liste = templateDao.findByBanqueEntite(null, null);
+		assertTrue(liste.size() == 0);
+	}
 
-   /**
-    * Test l'appel de la méthode findByBanqueEntite().
-    */
-   @Test
-public void testFindByBanqueEntite(){
-      final Banque b1 = banqueDao.findById(1);
-      final Banque b3 = banqueDao.findById(3);
-      final Entite e1 = entiteDao.findById(1);
-      final Entite e3 = entiteDao.findById(3);
-      List<Template> liste = templateDao.findByBanqueEntite(b1, e1);
-      assertTrue(liste.size() == 1);
-      assertTrue(liste.get(0).getNom().equals("Fiche patient"));
+	/**
+	 * Test l'appel de la méthode findByExcludedId().
+	 */
+	@Test
+	public void testFindByExcludedId() {
+		final Banque b1 = banqueDao.findById(1).get();
+		final Banque b3 = banqueDao.findById(3).get();
 
-      liste = templateDao.findByBanqueEntite(b1, e3);
-      assertTrue(liste.size() == 0);
+		List<Template> liste = templateDao.findByExcludedId(b1, 1);
+		assertTrue(liste.size() == 1);
 
-      liste = templateDao.findByBanqueEntite(b3, e1);
-      assertTrue(liste.size() == 0);
+		liste = templateDao.findByExcludedId(b1, 15);
+		assertTrue(liste.size() == 2);
 
-      liste = templateDao.findByBanqueEntite(null, e1);
-      assertTrue(liste.size() == 0);
+		liste = templateDao.findByExcludedId(b3, 1);
+		assertTrue(liste.size() == 0);
 
-      liste = templateDao.findByBanqueEntite(b1, null);
-      assertTrue(liste.size() == 0);
+		liste = templateDao.findByExcludedId(null, 1);
+		assertTrue(liste.size() == 0);
 
-      liste = templateDao.findByBanqueEntite(null, null);
-      assertTrue(liste.size() == 0);
-   }
+		liste = templateDao.findByExcludedId(null, 15);
+		assertTrue(liste.size() == 0);
 
-   /**
-    * Test l'appel de la méthode findByExcludedId().
-    */
-   @Test
-public void testFindByExcludedId(){
-      final Banque b1 = banqueDao.findById(1);
-      final Banque b3 = banqueDao.findById(3);
+		liste = templateDao.findByExcludedId(b1, null);
+		assertTrue(liste.size() == 0);
 
-      List<Template> liste = templateDao.findByExcludedId(b1, 1);
-      assertTrue(liste.size() == 1);
+		liste = templateDao.findByExcludedId(b3, null);
+		assertTrue(liste.size() == 0);
 
-      liste = templateDao.findByExcludedId(b1, 15);
-      assertTrue(liste.size() == 2);
+		liste = templateDao.findByExcludedId(null, null);
+		assertTrue(liste.size() == 0);
+	}
 
-      liste = templateDao.findByExcludedId(b3, 1);
-      assertTrue(liste.size() == 0);
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'un Template.
+	 * 
+	 * @throws Exception lance une exception en cas d'erreur.
+	 */
+	@Rollback(false)
+	@Test
+	public void testCrud() throws Exception {
 
-      liste = templateDao.findByExcludedId(null, 1);
-      assertTrue(liste.size() == 0);
+		final Banque b = banqueDao.findById(1).get();
+		final Entite e = entiteDao.findById(2).get();
+		final Template t = new Template();
+		final String nom = "nom";
+		final String nomUp = "UPPP";
 
-      liste = templateDao.findByExcludedId(null, 15);
-      assertTrue(liste.size() == 0);
+		t.setType(BLOC);
+		t.setBanque(b);
+		t.setEntite(e);
+		t.setNom(nom);
+		t.setDescription("DESC");
+		t.setEnTete("TETE");
+		t.setPiedPage("PIED");
 
-      liste = templateDao.findByExcludedId(b1, null);
-      assertTrue(liste.size() == 0);
+		// Test de l'insertion
+		templateDao.save(t);
+		assertEquals(new Integer(4), t.getTemplateId());
 
-      liste = templateDao.findByExcludedId(b3, null);
-      assertTrue(liste.size() == 0);
+		// Test de la mise à jour
+		final Template t2 = templateDao.findById(new Integer(4)).get();
+		assertNotNull(t2);
+		assertNotNull(t2.getBanque());
+		assertNotNull(t2.getEntite());
+		assertTrue(t2.getNom().equals(nom));
+		assertTrue(t2.getDescription().equals("DESC"));
+		assertTrue(t2.getEnTete().equals("TETE"));
+		assertTrue(t2.getPiedPage().equals("PIED"));
 
-      liste = templateDao.findByExcludedId(null, null);
-      assertTrue(liste.size() == 0);
-   }
+		t2.setNom(nomUp);
+		templateDao.save(t2);
+		assertTrue(templateDao.findById(new Integer(4)).get().getNom().equals(nomUp));
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression d'un Template.
-    * @throws Exception lance une exception en cas d'erreur.
-    */
-   @Rollback(false)
-   @Test
-public void testCrud() throws Exception{
+		// Test de la délétion
+		templateDao.deleteById(new Integer(4));
+		assertFalse(templateDao.findById(new Integer(4)).isPresent());
+	}
 
-      final Banque b = banqueDao.findById(1);
-      final Entite e = entiteDao.findById(2);
-      final Template t = new Template();
-      final String nom = "nom";
-      final String nomUp = "UPPP";
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final String nom = "nom";
+		final String nom2 = "nom2";
+		final Banque b1 = banqueDao.findById(1).get();
+		final Banque b2 = banqueDao.findById(2).get();
+		final Template t1 = new Template();
+		final Template t2 = new Template();
+		t1.setNom(nom);
+		t1.setBanque(b1);
+		t2.setNom(nom);
+		t2.setBanque(b1);
 
-      t.setType(BLOC);
-      t.setBanque(b);
-      t.setEntite(e);
-      t.setNom(nom);
-      t.setDescription("DESC");
-      t.setEnTete("TETE");
-      t.setPiedPage("PIED");
+		// L'objet 1 n'est pas égal à null
+		assertFalse(t1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(t1.equals(t1));
+		// 2 objets sont égaux entre eux
+		assertTrue(t1.equals(t2));
+		assertTrue(t2.equals(t1));
 
-      // Test de l'insertion
-      templateDao.save(t);
-      assertEquals(new Integer(4), t.getTemplateId());
+		t1.setBanque(null);
+		t1.setNom(null);
+		t2.setBanque(null);
+		t2.setNom(null);
+		assertTrue(t1.equals(t2));
+		t2.setNom(nom);
+		assertFalse(t1.equals(t2));
+		t1.setNom(nom);
+		assertTrue(t1.equals(t2));
+		t2.setNom(nom2);
+		assertFalse(t1.equals(t2));
+		t2.setNom(null);
+		assertFalse(t1.equals(t2));
+		t2.setBanque(b1);
+		assertFalse(t1.equals(t2));
 
-      // Test de la mise à jour
-      final Template t2 = templateDao.findById(new Integer(4));
-      assertNotNull(t2);
-      assertNotNull(t2.getBanque());
-      assertNotNull(t2.getEntite());
-      assertTrue(t2.getNom().equals(nom));
-      assertTrue(t2.getDescription().equals("DESC"));
-      assertTrue(t2.getEnTete().equals("TETE"));
-      assertTrue(t2.getPiedPage().equals("PIED"));
+		t1.setBanque(b1);
+		t1.setNom(null);
+		t2.setNom(null);
+		t2.setBanque(b1);
+		assertTrue(t1.equals(t2));
+		t2.setBanque(b2);
+		assertFalse(t1.equals(t2));
+		t2.setNom(nom);
+		assertFalse(t1.equals(t2));
 
-      t2.setNom(nomUp);
-      templateDao.save(t2);
-      assertTrue(templateDao.findById(new Integer(4)).getNom().equals(nomUp));
+		// Vérification de la différenciation de 2 objets
+		t1.setNom(nom);
+		assertFalse(t1.equals(t2));
+		t2.setNom(nom2);
+		t2.setBanque(b1);
+		assertFalse(t1.equals(t2));
 
-      // Test de la délétion
-      templateDao.deleteById(new Integer(4));
-      assertNull(templateDao.findById(new Integer(4)));
-   }
+		final Categorie c3 = new Categorie();
+		assertFalse(t1.equals(c3));
+	}
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   @Test
-public void testEquals(){
-      final String nom = "nom";
-      final String nom2 = "nom2";
-      final Banque b1 = banqueDao.findById(1);
-      final Banque b2 = banqueDao.findById(2);
-      final Template t1 = new Template();
-      final Template t2 = new Template();
-      t1.setNom(nom);
-      t1.setBanque(b1);
-      t2.setNom(nom);
-      t2.setBanque(b1);
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
+		final String nom = "nom";
+		final String nom2 = "nom2";
+		final Banque b1 = banqueDao.findById(1).get();
+		final Banque b2 = banqueDao.findById(2).get();
+		final Template t1 = new Template();
+		final Template t2 = new Template();
+		// null
+		assertTrue(t1.hashCode() == t2.hashCode());
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(t1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(t1.equals(t1));
-      // 2 objets sont égaux entre eux
-      assertTrue(t1.equals(t2));
-      assertTrue(t2.equals(t1));
+		// Nom
+		t2.setNom(nom);
+		assertFalse(t1.hashCode() == t2.hashCode());
+		t1.setNom(nom2);
+		assertFalse(t1.hashCode() == t2.hashCode());
+		t1.setNom(nom);
+		assertTrue(t1.hashCode() == t2.hashCode());
 
-      t1.setBanque(null);
-      t1.setNom(null);
-      t2.setBanque(null);
-      t2.setNom(null);
-      assertTrue(t1.equals(t2));
-      t2.setNom(nom);
-      assertFalse(t1.equals(t2));
-      t1.setNom(nom);
-      assertTrue(t1.equals(t2));
-      t2.setNom(nom2);
-      assertFalse(t1.equals(t2));
-      t2.setNom(null);
-      assertFalse(t1.equals(t2));
-      t2.setBanque(b1);
-      assertFalse(t1.equals(t2));
+		// ProtocoleType
+		t2.setBanque(b1);
+		assertFalse(t1.hashCode() == t2.hashCode());
+		t1.setBanque(b2);
+		assertFalse(t1.hashCode() == t2.hashCode());
+		t1.setBanque(b1);
+		assertTrue(t1.hashCode() == t2.hashCode());
 
-      t1.setBanque(b1);
-      t1.setNom(null);
-      t2.setNom(null);
-      t2.setBanque(b1);
-      assertTrue(t1.equals(t2));
-      t2.setBanque(b2);
-      assertFalse(t1.equals(t2));
-      t2.setNom(nom);
-      assertFalse(t1.equals(t2));
+		// un même objet garde le même hashcode dans le temps
+		final int hash = t1.hashCode();
+		assertTrue(hash == t1.hashCode());
+		assertTrue(hash == t1.hashCode());
+		assertTrue(hash == t1.hashCode());
+		assertTrue(hash == t1.hashCode());
 
-      // Vérification de la différenciation de 2 objets
-      t1.setNom(nom);
-      assertFalse(t1.equals(t2));
-      t2.setNom(nom2);
-      t2.setBanque(b1);
-      assertFalse(t1.equals(t2));
+	}
 
-      final Categorie c3 = new Categorie();
-      assertFalse(t1.equals(c3));
-   }
+	/**
+	 * Test la méthode toString.
+	 */
+	@Test
+	public void testToString() {
+		final Template t1 = templateDao.findById(1).get();
+		assertTrue(t1.toString().equals("{" + t1.getNom() + "}"));
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   @Test
-public void testHashCode(){
-      final String nom = "nom";
-      final String nom2 = "nom2";
-      final Banque b1 = banqueDao.findById(1);
-      final Banque b2 = banqueDao.findById(2);
-      final Template t1 = new Template();
-      final Template t2 = new Template();
-      //null
-      assertTrue(t1.hashCode() == t2.hashCode());
+		final Template t2 = new Template();
+		assertTrue(t2.toString().equals("{Empty Template}"));
+	}
 
-      //Nom
-      t2.setNom(nom);
-      assertFalse(t1.hashCode() == t2.hashCode());
-      t1.setNom(nom2);
-      assertFalse(t1.hashCode() == t2.hashCode());
-      t1.setNom(nom);
-      assertTrue(t1.hashCode() == t2.hashCode());
+	/**
+	 * Test la méthode clone.
+	 */
+	@Test
+	public void testClone() {
+		final Template t1 = templateDao.findById(1).get();
+		Template t2 = new Template();
+		t2 = t1.clone();
 
-      //ProtocoleType
-      t2.setBanque(b1);
-      assertFalse(t1.hashCode() == t2.hashCode());
-      t1.setBanque(b2);
-      assertFalse(t1.hashCode() == t2.hashCode());
-      t1.setBanque(b1);
-      assertTrue(t1.hashCode() == t2.hashCode());
+		assertTrue(t1.equals(t2));
 
-      // un même objet garde le même hashcode dans le temps
-      final int hash = t1.hashCode();
-      assertTrue(hash == t1.hashCode());
-      assertTrue(hash == t1.hashCode());
-      assertTrue(hash == t1.hashCode());
-      assertTrue(hash == t1.hashCode());
+		if (t1.getTemplateId() != null) {
+			assertTrue(t1.getTemplateId() == t2.getTemplateId());
+		} else {
+			assertNull(t2.getTemplateId());
+		}
 
-   }
+		if (t1.getBanque() != null) {
+			assertTrue(t1.getBanque().equals(t2.getBanque()));
+		} else {
+			assertNull(t2.getBanque());
+		}
 
-   /**
-    * Test la méthode toString.
-    */
-   @Test
-public void testToString(){
-      final Template t1 = templateDao.findById(1);
-      assertTrue(t1.toString().equals("{" + t1.getNom() + "}"));
+		if (t1.getNom() != null) {
+			assertTrue(t1.getNom().equals(t2.getNom()));
+		} else {
+			assertNull(t2.getNom());
+		}
 
-      final Template t2 = new Template();
-      assertTrue(t2.toString().equals("{Empty Template}"));
-   }
+		if (t1.getEntite() != null) {
+			assertTrue(t1.getEntite().equals(t2.getEntite()));
+		} else {
+			assertNull(t2.getEntite());
+		}
 
-   /**
-    * Test la méthode clone.
-    */
-   @Test
-public void testClone(){
-      final Template t1 = templateDao.findById(1);
-      Template t2 = new Template();
-      t2 = t1.clone();
+		if (t1.getDescription() != null) {
+			assertTrue(t1.getDescription().equals(t2.getDescription()));
+		} else {
+			assertNull(t2.getDescription());
+		}
 
-      assertTrue(t1.equals(t2));
+		if (t1.getEnTete() != null) {
+			assertTrue(t1.getEnTete().equals(t2.getEnTete()));
+		} else {
+			assertNull(t2.getEnTete());
+		}
 
-      if(t1.getTemplateId() != null){
-         assertTrue(t1.getTemplateId() == t2.getTemplateId());
-      }else{
-         assertNull(t2.getTemplateId());
-      }
-
-      if(t1.getBanque() != null){
-         assertTrue(t1.getBanque().equals(t2.getBanque()));
-      }else{
-         assertNull(t2.getBanque());
-      }
-
-      if(t1.getNom() != null){
-         assertTrue(t1.getNom().equals(t2.getNom()));
-      }else{
-         assertNull(t2.getNom());
-      }
-
-      if(t1.getEntite() != null){
-         assertTrue(t1.getEntite().equals(t2.getEntite()));
-      }else{
-         assertNull(t2.getEntite());
-      }
-
-      if(t1.getDescription() != null){
-         assertTrue(t1.getDescription().equals(t2.getDescription()));
-      }else{
-         assertNull(t2.getDescription());
-      }
-
-      if(t1.getEnTete() != null){
-         assertTrue(t1.getEnTete().equals(t2.getEnTete()));
-      }else{
-         assertNull(t2.getEnTete());
-      }
-
-      if(t1.getPiedPage() != null){
-         assertTrue(t1.getPiedPage().equals(t2.getPiedPage()));
-      }else{
-         assertNull(t2.getPiedPage());
-      }
-   }
+		if (t1.getPiedPage() != null) {
+			assertTrue(t1.getPiedPage().equals(t2.getPiedPage()));
+		} else {
+			assertNull(t2.getPiedPage());
+		}
+	}
 
 }

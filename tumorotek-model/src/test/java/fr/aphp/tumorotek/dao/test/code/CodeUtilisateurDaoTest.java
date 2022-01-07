@@ -315,7 +315,7 @@ public void testCrud() throws Exception{
 
       // Test de la délétion
       codeUtilisateurDao.deleteById(new Integer(7));
-      assertNull(codeUtilisateurDao.findById(new Integer(7)));
+      assertFalse(codeUtilisateurDao.findById(new Integer(7)).isPresent());
       testReadAllCodes();
    }
 

@@ -396,22 +396,22 @@ public void testCrudPatient() throws Exception{
       p.setEtatIncomplet(null);
       p.setArchive(null);
       patientDao.save(p2);
-      assertNull(patientDao.findById(6).getNip());
+      assertFalse(patientDao.findById(6).getNip().isPresent());
       assertTrue(patientDao.findById(6).getNom().equals("Rey mysterio"));
-      assertNull(patientDao.findById(6).getNomNaissance());
+      assertFalse(patientDao.findById(6).getNomNaissance().isPresent());
       assertTrue(patientDao.findById(6).getPrenom().equals("Junior"));
-      assertNull(patientDao.findById(6).getDateNaissance());
-      assertNull(patientDao.findById(6).getVilleNaissance());
-      assertNull(patientDao.findById(6).getPaysNaissance());
+      assertFalse(patientDao.findById(6).getDateNaissance().isPresent());
+      assertFalse(patientDao.findById(6).getVilleNaissance().isPresent());
+      assertFalse(patientDao.findById(6).getPaysNaissance().isPresent());
       assertTrue(patientDao.findById(6).getPatientEtat().equals("D"));
-      assertNull(patientDao.findById(6).getDateEtat());
+      assertFalse(patientDao.findById(6).getDateEtat().isPresent());
       assertTrue(patientDao.findById(6).getDateDeces().equals(deces));
-      assertNull(patientDao.findById(6).getEtatIncomplet());
-      assertNull(patientDao.findById(6).getArchive());
+      assertFalse(patientDao.findById(6).getEtatIncomplet().isPresent());
+      assertFalse(patientDao.findById(6).getArchive().isPresent());
 
       // Test de la délétion
       patientDao.deleteById(new Integer(6));
-      assertNull(patientDao.findById(new Integer(6)));
+      assertFalse(patientDao.findById(new Integer(6)).isPresent());
    }
 
    /**

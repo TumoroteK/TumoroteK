@@ -243,7 +243,7 @@ public void testCrudValeur(){
 
       // Test de la délétion
       annotationValeurDao.deleteById(aId);
-      assertNull(annotationValeurDao.findById(aId));
+      assertFalse(annotationValeurDao.findById(aId).isPresent());
       testReadAllValeurs();
    }
 

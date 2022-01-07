@@ -41,33 +41,37 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
 
 import fr.aphp.tumorotek.dao.io.export.ChampDelegueDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
 import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.io.export.ChampDelegue;
 import fr.aphp.tumorotek.model.systeme.Entite;
-import fr.aphp.tumorotek.test.AbstractInMemoryTests;
 
 /**
  * @author Gille Chapelot
  *
  */
-@Transactional
-public class ChampDelegueDaoTest extends AbstractInMemoryTests
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class ChampDelegueDaoTest // extends AbstractInMemoryTests
 {
 
-   @Autowired
    @Autowired
  ChampDelegueDao champDelegueDao;
 
    @Autowired
-   @Autowired
  EntiteDao entiteDao;
 
-   @Test
    @Test
 public void testFindByEntiteAndContexte(){
 
@@ -82,7 +86,6 @@ public void testFindByEntiteAndContexte(){
 
    }
 
-   @Test
    @Test
 public void testFindByNomAndEntiteAndContexte(){
 

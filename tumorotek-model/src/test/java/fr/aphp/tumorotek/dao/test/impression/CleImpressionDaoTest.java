@@ -35,18 +35,26 @@
  **/
 package fr.aphp.tumorotek.dao.test.impression;
 
+import static org.junit.Assert.assertFalse;
+
 import java.util.List;
+
+import javax.transaction.Transactional;
 
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import fr.aphp.tumorotek.dao.impression.CleImpressionDao;
+import fr.aphp.tumorotek.dao.test.Config;
 import fr.aphp.tumorotek.model.impression.CleImpression;
-import fr.aphp.tumorotek.test.AbstractInMemoryTests;
 
 /**
  * Classe de test pour le DAO CleImpressionDao
@@ -55,86 +63,82 @@ import fr.aphp.tumorotek.test.AbstractInMemoryTests;
  * @version 2.2.0
  * @since 2.2.0
  */
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @Transactional
-public class CleImpressionDaoTest extends AbstractInMemoryTests
+public class CleImpressionDaoTest // extends AbstractInMemoryTests
 {
 
-   @Autowired
-   @Autowired
- CleImpressionDao cleImpressionDao;
+	@Autowired
+	CleImpressionDao cleImpressionDao;
 
-   @Test
-   @Test
-public void testCreate(){
-      final CleImpression cleImp1 = new CleImpression();
-      cleImp1.setNom("[[cle1]]");
-      cleImpressionDao.save(cleImp1);
+	@Test
+	public void testCreate() {
+		final CleImpression cleImp1 = new CleImpression();
+		cleImp1.setNom("[[cle1]]");
+		cleImpressionDao.save(cleImp1);
 
-      final Integer cleId = cleImp1.getCleId();
-      final CleImpression insertedCle = cleImpressionDao.findById(cleId);
+		final Integer cleId = cleImp1.getCleId();
+		final CleImpression insertedCle = cleImpressionDao.findById(cleId).get();
 
-      Assert.assertEquals(cleImp1, insertedCle);
-   }
+		Assert.assertEquals(cleImp1, insertedCle);
+	}
 
-   @Test
-   @Test
-public void testUpdate(){
-      final String cleNom = "[[cle1]]";
-      final CleImpression cleImp1 = new CleImpression();
-      cleImp1.setNom("[[cle1]]");
-      cleImpressionDao.save(cleImp1);
+	@Test
+	public void testUpdate() {
+		final String cleNom = "[[cle1]]";
+		final CleImpression cleImp1 = new CleImpression();
+		cleImp1.setNom("[[cle1]]");
+		cleImpressionDao.save(cleImp1);
 
-      final Integer cleId = cleImp1.getCleId();
-      final CleImpression insertedCle = cleImpressionDao.findById(cleId);
-      insertedCle.setNom("[[cle2]]");
-      cleImpressionDao.save(insertedCle);
+		final Integer cleId = cleImp1.getCleId();
+		final CleImpression insertedCle = cleImpressionDao.findById(cleId).get();
+		insertedCle.setNom("[[cle2]]");
+		cleImpressionDao.save(insertedCle);
 
-      final CleImpression modifiedCle = cleImpressionDao.findById(cleId);
+		final CleImpression modifiedCle = cleImpressionDao.findById(cleId).get();
 
-      Assert.assertNotEquals(cleNom, modifiedCle.getNom());
-   }
+		Assert.assertNotEquals(cleNom, modifiedCle.getNom());
+	}
 
-   @Test
-   @Test
-public void testDelete(){
-      final CleImpression cleImp1 = new CleImpression();
-      cleImp1.setNom("[[cle1]]");
-      cleImpressionDao.save(cleImp1);
+	@Test
+	public void testDelete() {
+		final CleImpression cleImp1 = new CleImpression();
+		cleImp1.setNom("[[cle1]]");
+		cleImpressionDao.save(cleImp1);
 
-      final Integer cleId = cleImp1.getCleId();
-      cleImpressionDao.deleteById(cleId);
-      final CleImpression insertedCle = cleImpressionDao.findById(cleId);
+		final Integer cleId = cleImp1.getCleId();
+		cleImpressionDao.deleteById(cleId);
+		assertFalse(cleImpressionDao.findById(cleId).isPresent());
 
-      Assert.assertEquals(null, insertedCle);
-   }
+	}
 
-   @Test
-   @Test
-public void testFindByName(){
-      final CleImpression cleImp1 = new CleImpression();
-      cleImp1.setNom("[[cle1]]");
-      cleImpressionDao.save(cleImp1);
+	@Test
+	public void testFindByName() {
+		final CleImpression cleImp1 = new CleImpression();
+		cleImp1.setNom("[[cle1]]");
+		cleImpressionDao.save(cleImp1);
 
-      final CleImpression cleImp2 = new CleImpression();
-      cleImp2.setNom("[[cle1]]");
-      cleImpressionDao.save(cleImp2);
+		final CleImpression cleImp2 = new CleImpression();
+		cleImp2.setNom("[[cle1]]");
+		cleImpressionDao.save(cleImp2);
 
-      final CleImpression cleImp3 = new CleImpression();
-      cleImp3.setNom("[[cle1]]");
-      cleImpressionDao.save(cleImp3);
+		final CleImpression cleImp3 = new CleImpression();
+		cleImp3.setNom("[[cle1]]");
+		cleImpressionDao.save(cleImp3);
 
-      final List<CleImpression> cleList = cleImpressionDao.findByName("[[cle1]]");
+		final List<CleImpression> cleList = cleImpressionDao.findByName("[[cle1]]");
 
-      Assert.assertEquals(3, cleList.size());
-   }
+		Assert.assertEquals(3, cleList.size());
+	}
 
-   @Test
-   @Test
-public void zDBIntegrity(){
-      final List<CleImpression> cleList = cleImpressionDao.findByName("[[cle1]]");
-      cleList.addAll(cleImpressionDao.findByName("[[cle2]]"));
+	@Test
+	public void zDBIntegrity() {
+		final List<CleImpression> cleList = cleImpressionDao.findByName("[[cle1]]");
+		cleList.addAll(cleImpressionDao.findByName("[[cle2]]"));
 
-      Assert.assertEquals(0, cleList.size());
-   }
+		Assert.assertEquals(0, cleList.size());
+	}
 }

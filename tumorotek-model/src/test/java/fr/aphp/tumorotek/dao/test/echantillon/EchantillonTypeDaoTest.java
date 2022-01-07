@@ -203,7 +203,7 @@ public void testCrudEchanType() throws Exception{
 
       // Test de la délétion
       echantillonTypeDao.deleteById(new Integer(5));
-      assertNull(echantillonTypeDao.findById(new Integer(5)));
+      assertFalse(echantillonTypeDao.findById(new Integer(5)).isPresent());
 
    }
 

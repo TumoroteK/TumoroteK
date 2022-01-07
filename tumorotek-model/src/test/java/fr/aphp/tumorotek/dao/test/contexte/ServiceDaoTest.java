@@ -346,7 +346,7 @@ public void testCrudService() throws Exception{
 
       // Test de la délétion
       serviceDao.deleteById(new Integer(5));
-      assertNull(serviceDao.findById(new Integer(5)));
+      assertFalse(serviceDao.findById(new Integer(5)).isPresent());
 
    }
 

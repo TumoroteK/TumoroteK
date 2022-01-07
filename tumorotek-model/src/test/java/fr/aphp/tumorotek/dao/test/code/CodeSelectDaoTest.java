@@ -197,7 +197,7 @@ public void testCrud() throws Exception{
 
       // Test de la délétion
       codeSelectDao.deleteById(new Integer(6));
-      assertNull(codeSelectDao.findById(new Integer(6)));
+      assertFalse(codeSelectDao.findById(new Integer(6)).isPresent());
 
    }
 

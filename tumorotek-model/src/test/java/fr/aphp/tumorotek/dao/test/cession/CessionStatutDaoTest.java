@@ -152,7 +152,7 @@ public void testCrudCessionStatut() throws Exception{
 
       // Test de la délétion
       cessionStatutDao.deleteById(new Integer(4));
-      assertNull(cessionStatutDao.findById(new Integer(4)));
+      assertFalse(cessionStatutDao.findById(new Integer(4)).isPresent());
 
    }
 

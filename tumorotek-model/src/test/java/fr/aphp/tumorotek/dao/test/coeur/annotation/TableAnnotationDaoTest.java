@@ -346,8 +346,8 @@ public void testCrudTableAnnotation(){
       tableAnnotationDao.save(table2);
 
       assertTrue(tableAnnotationDao.findById(12).getNom().equals("test2"));
-      assertNull(tableAnnotationDao.findById(12).getDescription());
-      assertNull(tableAnnotationDao.findById(12).getCatalogue());
+      assertFalse(tableAnnotationDao.findById(12).getDescription().isPresent());
+      assertFalse(tableAnnotationDao.findById(12).getCatalogue().isPresent());
       assertTrue(tableAnnotationDao.findById(12).getEntite().equals(entiteDao.findByNom("Conteneur").get(0)));
       assertTrue(table2.getTableAnnotationBanques().size() == 3);
       assertTrue(table2.getTableAnnotationBanques().contains(tab2));
@@ -356,7 +356,7 @@ public void testCrudTableAnnotation(){
 
       // Test de la délétion
       tableAnnotationDao.deleteById(new Integer(12));
-      assertNull(tableAnnotationDao.findById(new Integer(12)));
+      assertFalse(tableAnnotationDao.findById(new Integer(12)).isPresent());
       testReadAllTables();
    }
 

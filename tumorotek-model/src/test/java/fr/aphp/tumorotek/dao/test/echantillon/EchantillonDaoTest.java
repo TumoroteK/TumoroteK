@@ -769,12 +769,12 @@ public void testCrud() throws Exception{
       assertFalse(echantillonDao.findById(echanId).getSterile());
       assertFalse(echantillonDao.findById(echanId).getConformeTraitement());
       assertFalse(echantillonDao.findById(echanId).getConformeCession());
-      assertNull(echantillonDao.findById(echanId).getQuantite());
-      assertNull(echantillonDao.findById(echanId).getQuantiteInit());
+      assertFalse(echantillonDao.findById(echanId).getQuantite().isPresent());
+      assertFalse(echantillonDao.findById(echanId).getQuantiteInit().isPresent());
 
       // Test de la délétion
       echantillonDao.deleteById(echanId);
-      assertNull(echantillonDao.findById(echanId));
+      assertFalse(echantillonDao.findById(echanId).isPresent());
 
    }
 

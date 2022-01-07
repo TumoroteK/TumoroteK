@@ -201,11 +201,11 @@ public void testCrudItem(){
       itemDao.save(i3);
       assertTrue(itemDao.findByChamp(thes2).size() == 1);
       assertTrue(itemDao.findById(88).getLabel().equals("staple"));
-      assertNull(itemDao.findById(88).getValeur());
+      assertFalse(itemDao.findById(88).getValeur().isPresent());
 
       // Test de la délétion
       itemDao.deleteById(new Integer(88));
-      assertNull(itemDao.findById(new Integer(88)));
+      assertFalse(itemDao.findById(new Integer(88)).isPresent());
       // cascade
       champAnnotationDao.deleteById(maxId);
       testReadAllItems();

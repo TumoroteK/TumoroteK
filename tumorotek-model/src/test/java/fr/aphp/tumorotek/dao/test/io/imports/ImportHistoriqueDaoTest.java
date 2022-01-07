@@ -41,7 +41,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.transaction.Transactional;
+
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
 
 import fr.aphp.tumorotek.dao.io.imports.ImportHistoriqueDao;
 import fr.aphp.tumorotek.dao.io.imports.ImportTemplateDao;
@@ -59,325 +71,304 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 /**
  *
- * Classe de test pour le DAO ImportHistoriqueDao et le bean
- * du domaine ImportTemplate.
- * Classe créée le 09/02/2011.
+ * Classe de test pour le DAO ImportHistoriqueDao et le bean du domaine
+ * ImportTemplate. Classe créée le 09/02/2011.
  *
  * @author Pierre VENTADOUR
  * @version 2.0
  *
  */
-public class ImportHistoriqueDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class ImportHistoriqueDaoTest extends AbstractDaoTest {
 
-   @Autowired
- ImportHistoriqueDao importHistoriqueDao;
-   @Autowired
- ImportTemplateDao importTemplateDao;
-   @Autowired
- ImportationDao importationDao;
-   @Autowired
- EntiteDao entiteDao;
-   @Autowired
- UtilisateurDao utilisateurDao;
+	@Autowired
+	ImportHistoriqueDao importHistoriqueDao;
+	
+	@Autowired
+	ImportTemplateDao importTemplateDao;
+	
+	@Autowired
+	ImportationDao importationDao;
+	
+	@Autowired
+	EntiteDao entiteDao;
+	
+	@Autowired
+	UtilisateurDao utilisateurDao;
 
-   public ImportHistoriqueDaoTest(){
+	/**
+	 * Test l'appel de la méthode findAll().
+	 */
+	@Test
+	public void testReadAll() {
+		final List<ImportHistorique> liste = IterableUtils.toList(importHistoriqueDao.findAll());
+		assertTrue(liste.size() == 3);
+	}
 
-   }
+	/**
+	 * Test l'appel de la méthode findByTemplateWithOrder().
+	 */
+	@Test
+	public void testFindByTemplateWithOrder() {
+		final ImportTemplate it1 = importTemplateDao.findById(1).get();
+		List<ImportHistorique> liste = importHistoriqueDao.findByTemplateWithOrder(it1);
+		assertTrue(liste.size() == 2);
+		assertTrue(liste.get(1).getImportHistoriqueId() == 1);
 
-   @Test
-public void setImportHistoriqueDao(final ImportHistoriqueDao iDao){
-      this.importHistoriqueDao = iDao;
-   }
+		final ImportTemplate it2 = importTemplateDao.findById(2).get();
+		liste = importHistoriqueDao.findByTemplateWithOrder(it2);
+		assertTrue(liste.size() == 1);
 
-   @Test
-public void setImportTemplateDao(final ImportTemplateDao iDao){
-      this.importTemplateDao = iDao;
-   }
+		final ImportTemplate it3 = importTemplateDao.findById(3).get();
+		liste = importHistoriqueDao.findByTemplateWithOrder(it3);
+		assertTrue(liste.size() == 0);
 
-   @Test
-public void setImportationDao(final ImportationDao iDao){
-      this.importationDao = iDao;
-   }
+		liste = importHistoriqueDao.findByTemplateWithOrder(null);
+		assertTrue(liste.size() == 0);
+	}
 
-   @Test
-public void setEntiteDao(final EntiteDao eDao){
-      this.entiteDao = eDao;
-   }
+	/**
+	 * Test l'appel de la méthode findByExcludedId().
+	 */
+	@Test
+	public void testFindByExcludedId() {
+		List<ImportHistorique> liste = importHistoriqueDao.findByExcludedId(1);
+		assertTrue(liste.size() == 2);
 
-   @Test
-public void setUtilisateurDao(final UtilisateurDao uDao){
-      this.utilisateurDao = uDao;
-   }
+		liste = importHistoriqueDao.findByExcludedId(100);
+		assertTrue(liste.size() == 3);
+	}
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   @Test
-public void testReadAll(){
-      final List<ImportHistorique> liste = IterableUtils.toList(importHistoriqueDao.findAll());
-      assertTrue(liste.size() == 3);
-   }
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'un ImportTemplate.
+	 * 
+	 * @throws Exception lance une exception en cas d'erreur.
+	 */
+	@Transactional
+	@Test
+	@Rollback(false)
+	public void testCrud() throws Exception {
 
-   /**
-    * Test l'appel de la méthode findByTemplateWithOrder().
-    */
-   @Test
-public void testFindByTemplateWithOrder(){
-      final ImportTemplate it1 = importTemplateDao.findById(1);
-      List<ImportHistorique> liste = importHistoriqueDao.findByTemplateWithOrder(it1);
-      assertTrue(liste.size() == 2);
-      assertTrue(liste.get(1).getImportHistoriqueId() == 1);
+		final Entite e3 = entiteDao.findById(3).get();
+		final ImportTemplate it = importTemplateDao.findById(1).get();
+		final Utilisateur u = utilisateurDao.findById(1).get();
+		final Calendar cal = Calendar.getInstance();
 
-      final ImportTemplate it2 = importTemplateDao.findById(2);
-      liste = importHistoriqueDao.findByTemplateWithOrder(it2);
-      assertTrue(liste.size() == 1);
+		final ImportHistorique ih1 = new ImportHistorique();
+		ih1.setImportTemplate(it);
+		ih1.setUtilisateur(u);
+		ih1.setDate(cal);
 
-      final ImportTemplate it3 = importTemplateDao.findById(3);
-      liste = importHistoriqueDao.findByTemplateWithOrder(it3);
-      assertTrue(liste.size() == 0);
+		final Importation i1 = new Importation();
+		i1.setObjetId(1);
+		i1.setEntite(e3);
+		i1.setImportHistorique(ih1);
+		final Importation i2 = new Importation();
+		i2.setObjetId(2);
+		i2.setEntite(e3);
+		i2.setImportHistorique(ih1);
+		final Set<Importation> imports = new HashSet<>();
+		imports.add(i1);
+		imports.add(i2);
+		ih1.setImportations(imports);
 
-      liste = importHistoriqueDao.findByTemplateWithOrder(null);
-      assertTrue(liste.size() == 0);
-   }
+		// Test de l'insertion
+		importHistoriqueDao.save(ih1);
+		assertEquals(new Integer(4), ih1.getImportHistoriqueId());
+		assertTrue(IterableUtils.toList(importationDao.findAll()).size() == 4);
 
-   /**
-    * Test l'appel de la méthode findByExcludedId().
-    */
-   @Test
-public void testFindByExcludedId(){
-      List<ImportHistorique> liste = importHistoriqueDao.findByExcludedId(1);
-      assertTrue(liste.size() == 2);
+		// Test de la mise à jour
+		final ImportHistorique ih2 = importHistoriqueDao.findById(new Integer(4)).get();
+		assertNotNull(ih2);
+		assertNotNull(ih2.getImportTemplate());
+		assertNotNull(ih2.getUtilisateur());
+		assertTrue(ih2.getDate().equals(cal));
+		assertTrue(ih2.getImportations().size() == 2);
 
-      liste = importHistoriqueDao.findByExcludedId(100);
-      assertTrue(liste.size() == 3);
-   }
+		final Calendar cal2 = Calendar.getInstance();
+		ih2.setDate(cal2);
+		importHistoriqueDao.save(ih2);
+		assertTrue(importHistoriqueDao.findById(new Integer(4)).get().getDate().equals(cal2));
+		assertTrue(importHistoriqueDao.findById(new Integer(4)).get().getImportations().size() == 2);
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression 
-    * d'un ImportTemplate.
-    * @throws Exception lance une exception en cas d'erreur.
-    */
-   @Rollback(false)
-   @Test
-public void testCrud() throws Exception{
+		// Test de la délétion
+		importHistoriqueDao.deleteById(new Integer(4));
+		assertFalse(importHistoriqueDao.findById(new Integer(4)).isPresent());
+		assertTrue(IterableUtils.toList(importationDao.findAll()).size() == 2);
+	}
 
-      final Entite e3 = entiteDao.findById(3);
-      final ImportTemplate it = importTemplateDao.findById(1);
-      final Utilisateur u = utilisateurDao.findById(1);
-      final Calendar cal = Calendar.getInstance();
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final Calendar cal1 = Calendar.getInstance();
+		final Calendar cal2 = Calendar.getInstance();
+		cal2.add(Calendar.MONTH, 1);
+		final ImportTemplate t1 = importTemplateDao.findById(1).get();
+		final ImportTemplate t2 = importTemplateDao.findById(2).get();
+		final ImportHistorique ih1 = new ImportHistorique();
+		final ImportHistorique ih2 = new ImportHistorique();
 
-      final ImportHistorique ih1 = new ImportHistorique();
-      ih1.setImportTemplate(it);
-      ih1.setUtilisateur(u);
-      ih1.setDate(cal);
+		// L'objet 1 n'est pas égal à null
+		assertFalse(ih1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(ih1.equals(ih1));
+		// 2 objets sont égaux entre eux
+		assertTrue(ih1.equals(ih2));
+		assertTrue(ih2.equals(ih1));
 
-      final Importation i1 = new Importation();
-      i1.setObjetId(1);
-      i1.setEntite(e3);
-      i1.setImportHistorique(ih1);
-      final Importation i2 = new Importation();
-      i2.setObjetId(2);
-      i2.setEntite(e3);
-      i2.setImportHistorique(ih1);
-      final Set<Importation> imports = new HashSet<>();
-      imports.add(i1);
-      imports.add(i2);
-      ih1.setImportations(imports);
+		ih1.setImportTemplate(null);
+		ih1.setDate(null);
+		ih2.setImportTemplate(null);
+		ih2.setDate(null);
+		assertTrue(ih1.equals(ih2));
+		ih2.setDate(cal1);
+		assertFalse(ih1.equals(ih2));
+		ih1.setDate(cal1);
+		assertTrue(ih1.equals(ih2));
+		ih2.setDate(cal2);
+		assertFalse(ih1.equals(ih2));
+		ih2.setDate(null);
+		assertFalse(ih1.equals(ih2));
+		ih2.setImportTemplate(t1);
+		assertFalse(ih1.equals(ih2));
 
-      // Test de l'insertion
-      importHistoriqueDao.save(ih1);
-      assertEquals(new Integer(4), ih1.getImportHistoriqueId());
-      assertTrue(IterableUtils.toList(importationDao.findAll()).size() == 4);
+		ih1.setImportTemplate(t1);
+		ih1.setDate(null);
+		ih2.setDate(null);
+		ih2.setImportTemplate(t1);
+		assertTrue(ih1.equals(ih2));
+		ih2.setImportTemplate(t2);
+		assertFalse(ih1.equals(ih2));
+		ih2.setDate(cal1);
+		assertFalse(ih1.equals(ih2));
 
-      // Test de la mise à jour
-      final ImportHistorique ih2 = importHistoriqueDao.findById(new Integer(4));
-      assertNotNull(ih2);
-      assertNotNull(ih2.getImportTemplate());
-      assertNotNull(ih2.getUtilisateur());
-      assertTrue(ih2.getDate().equals(cal));
-      assertTrue(ih2.getImportations().size() == 2);
+		// Vérification de la différenciation de 2 objets
+		ih1.setDate(cal1);
+		assertFalse(ih1.equals(ih2));
+		ih2.setDate(cal2);
+		ih2.setImportTemplate(t1);
+		assertFalse(ih1.equals(ih2));
 
-      final Calendar cal2 = Calendar.getInstance();
-      ih2.setDate(cal2);
-      importHistoriqueDao.save(ih2);
-      assertTrue(importHistoriqueDao.findById(new Integer(4)).getDate().equals(cal2));
-      assertTrue(importHistoriqueDao.findById(new Integer(4)).getImportations().size() == 2);
+		final Categorie c3 = new Categorie();
+		assertFalse(ih1.equals(c3));
+	}
 
-      // Test de la délétion
-      importHistoriqueDao.deleteById(new Integer(4));
-      assertNull(importHistoriqueDao.findById(new Integer(4)));
-      assertTrue(IterableUtils.toList(importationDao.findAll()).size() == 2);
-   }
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
+		final Calendar cal1 = Calendar.getInstance();
+		final Calendar cal2 = Calendar.getInstance();
+		cal2.add(Calendar.MONTH, 1);
+		final ImportTemplate t1 = importTemplateDao.findById(1).get();
+		final ImportTemplate t2 = importTemplateDao.findById(2).get();
+		final ImportHistorique ih1 = new ImportHistorique();
+		final ImportHistorique ih2 = new ImportHistorique();
+		// null
+		assertTrue(ih1.hashCode() == ih2.hashCode());
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   @Test
-public void testEquals(){
-      final Calendar cal1 = Calendar.getInstance();
-      final Calendar cal2 = Calendar.getInstance();
-      cal2.add(Calendar.MONTH, 1);
-      final ImportTemplate t1 = importTemplateDao.findById(1);
-      final ImportTemplate t2 = importTemplateDao.findById(2);
-      final ImportHistorique ih1 = new ImportHistorique();
-      final ImportHistorique ih2 = new ImportHistorique();
+		// Nom
+		ih2.setDate(cal1);
+		assertFalse(ih1.hashCode() == ih2.hashCode());
+		ih1.setDate(cal2);
+		assertFalse(ih1.hashCode() == ih2.hashCode());
+		ih1.setDate(cal1);
+		assertTrue(ih1.hashCode() == ih2.hashCode());
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(ih1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(ih1.equals(ih1));
-      // 2 objets sont égaux entre eux
-      assertTrue(ih1.equals(ih2));
-      assertTrue(ih2.equals(ih1));
+		// ProtocoleType
+		ih2.setImportTemplate(t1);
+		assertFalse(ih1.hashCode() == ih2.hashCode());
+		ih1.setImportTemplate(t2);
+		assertFalse(ih1.hashCode() == ih2.hashCode());
+		ih1.setImportTemplate(t1);
+		assertTrue(ih1.hashCode() == ih2.hashCode());
 
-      ih1.setImportTemplate(null);
-      ih1.setDate(null);
-      ih2.setImportTemplate(null);
-      ih2.setDate(null);
-      assertTrue(ih1.equals(ih2));
-      ih2.setDate(cal1);
-      assertFalse(ih1.equals(ih2));
-      ih1.setDate(cal1);
-      assertTrue(ih1.equals(ih2));
-      ih2.setDate(cal2);
-      assertFalse(ih1.equals(ih2));
-      ih2.setDate(null);
-      assertFalse(ih1.equals(ih2));
-      ih2.setImportTemplate(t1);
-      assertFalse(ih1.equals(ih2));
+		// un même objet garde le même hashcode dans le temps
+		final int hash = ih1.hashCode();
+		assertTrue(hash == ih1.hashCode());
+		assertTrue(hash == ih1.hashCode());
+		assertTrue(hash == ih1.hashCode());
+		assertTrue(hash == ih1.hashCode());
 
-      ih1.setImportTemplate(t1);
-      ih1.setDate(null);
-      ih2.setDate(null);
-      ih2.setImportTemplate(t1);
-      assertTrue(ih1.equals(ih2));
-      ih2.setImportTemplate(t2);
-      assertFalse(ih1.equals(ih2));
-      ih2.setDate(cal1);
-      assertFalse(ih1.equals(ih2));
+	}
 
-      // Vérification de la différenciation de 2 objets
-      ih1.setDate(cal1);
-      assertFalse(ih1.equals(ih2));
-      ih2.setDate(cal2);
-      ih2.setImportTemplate(t1);
-      assertFalse(ih1.equals(ih2));
+	/**
+	 * Test la méthode toString.
+	 */
+	@Test
+	public void testToString() {
+		final ImportHistorique ih1 = importHistoriqueDao.findById(1).get();
+		assertTrue(ih1.toString()
+				.equals("{" + ih1.getDate() + ", " + ih1.getImportTemplate().getNom() + "(ImportTemplate)}"));
 
-      final Categorie c3 = new Categorie();
-      assertFalse(ih1.equals(c3));
-   }
+		final ImportHistorique ih2 = new ImportHistorique();
+		assertTrue(ih2.toString().equals("{Empty ImportHistorique}"));
+	}
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   @Test
-public void testHashCode(){
-      final Calendar cal1 = Calendar.getInstance();
-      final Calendar cal2 = Calendar.getInstance();
-      cal2.add(Calendar.MONTH, 1);
-      final ImportTemplate t1 = importTemplateDao.findById(1);
-      final ImportTemplate t2 = importTemplateDao.findById(2);
-      final ImportHistorique ih1 = new ImportHistorique();
-      final ImportHistorique ih2 = new ImportHistorique();
-      //null
-      assertTrue(ih1.hashCode() == ih2.hashCode());
+	/**
+	 * Test la méthode clone.
+	 */
+	@Test
+	@Transactional
+	public void testClone() {
+		final ImportHistorique ih1 = importHistoriqueDao.findById(1).get();
+		ImportHistorique ih2 = new ImportHistorique();
+		ih2 = ih1.clone();
 
-      //Nom
-      ih2.setDate(cal1);
-      assertFalse(ih1.hashCode() == ih2.hashCode());
-      ih1.setDate(cal2);
-      assertFalse(ih1.hashCode() == ih2.hashCode());
-      ih1.setDate(cal1);
-      assertTrue(ih1.hashCode() == ih2.hashCode());
+		assertTrue(ih1.equals(ih2));
 
-      //ProtocoleType
-      ih2.setImportTemplate(t1);
-      assertFalse(ih1.hashCode() == ih2.hashCode());
-      ih1.setImportTemplate(t2);
-      assertFalse(ih1.hashCode() == ih2.hashCode());
-      ih1.setImportTemplate(t1);
-      assertTrue(ih1.hashCode() == ih2.hashCode());
+		if (ih1.getImportHistoriqueId() != null) {
+			assertTrue(ih1.getImportHistoriqueId() == ih2.getImportHistoriqueId());
+		} else {
+			assertNull(ih2.getImportHistoriqueId());
+		}
 
-      // un même objet garde le même hashcode dans le temps
-      final int hash = ih1.hashCode();
-      assertTrue(hash == ih1.hashCode());
-      assertTrue(hash == ih1.hashCode());
-      assertTrue(hash == ih1.hashCode());
-      assertTrue(hash == ih1.hashCode());
+		if (ih1.getImportTemplate() != null) {
+			assertTrue(ih1.getImportTemplate().equals(ih2.getImportTemplate()));
+		} else {
+			assertNull(ih2.getImportTemplate());
+		}
 
-   }
+		if (ih1.getUtilisateur() != null) {
+			assertTrue(ih1.getUtilisateur().equals(ih2.getUtilisateur()));
+		} else {
+			assertNull(ih2.getUtilisateur());
+		}
 
-   /**
-    * Test la méthode toString.
-    */
-   @Test
-public void testToString(){
-      final ImportHistorique ih1 = importHistoriqueDao.findById(1);
-      assertTrue(ih1.toString().equals("{" + ih1.getDate() + ", " + ih1.getImportTemplate().getNom() + "(ImportTemplate)}"));
+		if (ih1.getDate() != null) {
+			assertTrue(ih1.getDate().equals(ih2.getDate()));
+		} else {
+			assertNull(ih2.getDate());
+		}
 
-      final ImportHistorique ih2 = new ImportHistorique();
-      assertTrue(ih2.toString().equals("{Empty ImportHistorique}"));
-   }
+		if (ih1.getImportations() != null) {
+			assertTrue(ih1.getImportations().equals(ih2.getImportations()));
+		} else {
+			assertNull(ih2.getImportations());
+		}
+	}
 
-   /**
-    * Test la méthode clone.
-    */
-   @Test
-public void testClone(){
-      final ImportHistorique ih1 = importHistoriqueDao.findById(1);
-      ImportHistorique ih2 = new ImportHistorique();
-      ih2 = ih1.clone();
+	@Test
+	public void testFindPrelevementByImportHistorique() {
+		final ImportHistorique ih1 = importHistoriqueDao.findById(1).get();
+		final List<Prelevement> prels = new ArrayList<>();
+		prels.addAll(importHistoriqueDao.findPrelevementByImportHistorique(ih1));
+		assertTrue(prels.size() == 1);
+		assertTrue(prels.get(0).getPrelevementId() == 4);
 
-      assertTrue(ih1.equals(ih2));
+		prels.clear();
 
-      if(ih1.getImportHistoriqueId() != null){
-         assertTrue(ih1.getImportHistoriqueId() == ih2.getImportHistoriqueId());
-      }else{
-         assertNull(ih2.getImportHistoriqueId());
-      }
+		prels.addAll(importHistoriqueDao.findPrelevementByImportHistorique(importHistoriqueDao.findById(2).get()));
+		assertTrue(prels.isEmpty());
 
-      if(ih1.getImportTemplate() != null){
-         assertTrue(ih1.getImportTemplate().equals(ih2.getImportTemplate()));
-      }else{
-         assertNull(ih2.getImportTemplate());
-      }
+		prels.addAll(importHistoriqueDao.findPrelevementByImportHistorique(null));
+		assertTrue(prels.isEmpty());
 
-      if(ih1.getUtilisateur() != null){
-         assertTrue(ih1.getUtilisateur().equals(ih2.getUtilisateur()));
-      }else{
-         assertNull(ih2.getUtilisateur());
-      }
-
-      if(ih1.getDate() != null){
-         assertTrue(ih1.getDate().equals(ih2.getDate()));
-      }else{
-         assertNull(ih2.getDate());
-      }
-
-      if(ih1.getImportations() != null){
-         assertTrue(ih1.getImportations().equals(ih2.getImportations()));
-      }else{
-         assertNull(ih2.getImportations());
-      }
-   }
-
-   @Test
-public void testFindPrelevementByImportHistorique(){
-      final ImportHistorique ih1 = importHistoriqueDao.findById(1);
-      final List<Prelevement> prels = new ArrayList<>();
-      prels.addAll(importHistoriqueDao.findPrelevementByImportHistorique(ih1));
-      assertTrue(prels.size() == 1);
-      assertTrue(prels.get(0).getPrelevementId() == 4);
-
-      prels.clear();
-
-      prels.addAll(importHistoriqueDao.findPrelevementByImportHistorique(importHistoriqueDao.findById(2)));
-      assertTrue(prels.isEmpty());
-
-      prels.addAll(importHistoriqueDao.findPrelevementByImportHistorique(null));
-      assertTrue(prels.isEmpty());
-
-   }
+	}
 
 }

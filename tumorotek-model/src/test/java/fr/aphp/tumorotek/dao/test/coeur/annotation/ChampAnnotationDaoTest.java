@@ -224,7 +224,7 @@ public void testCrudChampAnnotation(){
 
       // Test de la délétion
       champAnnotationDao.deleteById(maxId);
-      assertNull(champAnnotationDao.findById(maxId));
+      assertFalse(champAnnotationDao.findById(maxId).isPresent());
       testReadAllChamps();
    }
 

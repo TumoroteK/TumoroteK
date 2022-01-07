@@ -162,7 +162,7 @@ public void testCrudConsentType() throws Exception{
 
       // Test de la délétion
       consentTypeDao.deleteById(new Integer(4));
-      assertNull(consentTypeDao.findById(new Integer(4)));
+      assertFalse(consentTypeDao.findById(new Integer(4)).isPresent());
    }
 
    /**

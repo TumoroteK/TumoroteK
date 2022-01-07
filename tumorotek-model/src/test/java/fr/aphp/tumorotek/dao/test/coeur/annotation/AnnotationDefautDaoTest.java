@@ -244,7 +244,7 @@ public void testCrudDefaut(){
 
       // Test de la délétion
       annotationDefautDao.deleteById(new Integer(13));
-      assertNull(annotationDefautDao.findById(new Integer(13)));
+      assertFalse(annotationDefautDao.findById(new Integer(13)).isPresent());
       testReadAllDefauts();
    }
 

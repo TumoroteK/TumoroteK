@@ -43,15 +43,12 @@ import org.apache.commons.collections4.IterableUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import fr.aphp.tumorotek.dao.test.Config;
-
-
 
 import fr.aphp.tumorotek.dao.annotation.TableAnnotationDao;
 import fr.aphp.tumorotek.dao.impression.TableAnnotationTemplateDao;
@@ -65,275 +62,254 @@ import fr.aphp.tumorotek.model.impression.Template;
 
 /**
  *
- * Classe de test pour le DAO TableAnnotationTemplateDao et le bean
- * du domaine ChampEntiteBloc.
+ * Classe de test pour le DAO TableAnnotationTemplateDao et le bean du domaine
+ * ChampEntiteBloc.
  *
  * @author Pierre Ventadour.
  * @version 30/07/2010
  *
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {Config.class})
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
-public class TableAnnotationTemplateDaoTest extends AbstractDaoTest
-{
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class TableAnnotationTemplateDaoTest extends AbstractDaoTest {
 
+	@Autowired
+	TableAnnotationTemplateDao tableAnnotationTemplateDao;
 
-   @Autowired
- TableAnnotationTemplateDao tableAnnotationTemplateDao;
+	@Autowired
+	TableAnnotationDao tableAnnotationDao;
 
-   @Autowired
- TableAnnotationDao tableAnnotationDao;
+	@Autowired
+	TemplateDao templateDao;
 
-   @Autowired
- TemplateDao templateDao;
+	/**
+	 * Test l'appel de la méthode findAll().
+	 */
+	@Test
+	public void testReadAll() {
+		final List<TableAnnotationTemplate> liste = IterableUtils.toList(tableAnnotationTemplateDao.findAll());
+		assertTrue(liste.size() == 1);
+	}
 
-   public TableAnnotationTemplateDaoTest(){
+	/**
+	 * Test l'appel de la méthode findById().
+	 */
+	@Test
+	public void testFindById() {
+		final TableAnnotation ta1 = tableAnnotationDao.findById(2).get();
+		final Template t1 = templateDao.findById(1).get();
+		TableAnnotationTemplatePK pk = new TableAnnotationTemplatePK(t1, ta1);
 
-   }
+		TableAnnotationTemplate tat = tableAnnotationTemplateDao.findById(pk).get();
+		assertNotNull(tat);
 
-   @Test
-public void setTableAnnotationTemplateDao(final TableAnnotationTemplateDao tDao){
-      this.tableAnnotationTemplateDao = tDao;
-   }
+		final Template t2 = templateDao.findById(2).get();
+		pk = new TableAnnotationTemplatePK(t2, ta1);
+		assertFalse(tableAnnotationTemplateDao.findById(pk).isPresent());
+	}
 
-   @Test
-public void setTableAnnotationDao(final TableAnnotationDao tDao){
-      this.tableAnnotationDao = tDao;
-   }
+	/**
+	 * Test l'appel de la méthode findByExcludedPK().
+	 */
+	@Test
+	public void testFindByExcludedPK() {
+		final TableAnnotation ta1 = tableAnnotationDao.findById(1).get();
+		final Template t1 = templateDao.findById(1).get();
+		TableAnnotationTemplatePK pk = new TableAnnotationTemplatePK(t1, ta1);
 
-   @Test
-public void setTemplateDao(final TemplateDao tDao){
-      this.templateDao = tDao;
-   }
+		List<TableAnnotationTemplate> liste = tableAnnotationTemplateDao.findByExcludedPK(pk);
+		assertTrue(liste.size() == 1);
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   @Test
-public void testReadAll(){
-      final List<TableAnnotationTemplate> liste = IterableUtils.toList(tableAnnotationTemplateDao.findAll());
-      assertTrue(liste.size() == 1);
-   }
+		final TableAnnotation ta2 = tableAnnotationDao.findById(2).get();
+		pk = new TableAnnotationTemplatePK(t1, ta2);
+		liste = tableAnnotationTemplateDao.findByExcludedPK(pk);
+		assertTrue(liste.size() == 0);
+	}
 
-   /**
-    * Test l'appel de la méthode findById().
-    */
-   @Test
-public void testFindById(){
-      final TableAnnotation ta1 = tableAnnotationDao.findById(2);
-      final Template t1 = templateDao.findById(1);
-      TableAnnotationTemplatePK pk = new TableAnnotationTemplatePK(t1, ta1);
+	/**
+	 * Test l'appel de la méthode findByTemplate().
+	 */
+	@Test
+	public void testFindByTemplate() {
+		final Template t1 = templateDao.findById(1).get();
+		List<TableAnnotationTemplate> liste = tableAnnotationTemplateDao.findByTemplate(t1);
+		assertTrue(liste.size() == 1);
 
-      TableAnnotationTemplate tat = tableAnnotationTemplateDao.findById(pk);
-      assertNotNull(tat);
+		final Template t2 = templateDao.findById(2).get();
+		liste = tableAnnotationTemplateDao.findByTemplate(t2);
+		assertTrue(liste.size() == 0);
+	}
 
-      final Template t2 = templateDao.findById(2);
-      pk = new TableAnnotationTemplatePK(t2, ta1);
-      tat = tableAnnotationTemplateDao.findById(pk);
-      assertNull(tat);
-   }
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'un
+	 * BlocImpressionTemplate.
+	 **/
+	@Rollback(false)
+	@Test
+	public void testCrud() {
 
-   /**
-    * Test l'appel de la méthode findByExcludedPK().
-    */
-   @Test
-public void testFindByExcludedPK(){
-      final TableAnnotation ta1 = tableAnnotationDao.findById(1);
-      final Template t1 = templateDao.findById(1);
-      TableAnnotationTemplatePK pk = new TableAnnotationTemplatePK(t1, ta1);
+		final TableAnnotationTemplate tat = new TableAnnotationTemplate();
+		final TableAnnotation ta1 = tableAnnotationDao.findById(1).get();
+		final Template t1 = templateDao.findById(1).get();
+		final Integer ordre = 5;
+		final Integer ordreUp = 6;
 
-      List<TableAnnotationTemplate> liste = tableAnnotationTemplateDao.findByExcludedPK(pk);
-      assertTrue(liste.size() == 1);
+		tat.setTableAnnotation(ta1);
+		tat.setTemplate(t1);
+		tat.setOrdre(ordre);
 
-      final TableAnnotation ta2 = tableAnnotationDao.findById(2);
-      pk = new TableAnnotationTemplatePK(t1, ta2);
-      liste = tableAnnotationTemplateDao.findByExcludedPK(pk);
-      assertTrue(liste.size() == 0);
-   }
+		// Test de l'insertion
+		tableAnnotationTemplateDao.save(tat);
+		assertTrue(IterableUtils.toList(tableAnnotationTemplateDao.findAll()).size() == 2);
 
-   /**
-    * Test l'appel de la méthode findByTemplate().
-    */
-   @Test
-public void testFindByTemplate(){
-      final Template t1 = templateDao.findById(1);
-      List<TableAnnotationTemplate> liste = tableAnnotationTemplateDao.findByTemplate(t1);
-      assertTrue(liste.size() == 1);
+		// Test de la mise à jour
+		final TableAnnotationTemplatePK pk = new TableAnnotationTemplatePK();
+		pk.setTableAnnotation(ta1);
+		pk.setTemplate(t1);
+		final TableAnnotationTemplate tat2 = tableAnnotationTemplateDao.findById(pk).get();
+		assertNotNull(tat2);
+		assertTrue(tat2.getTemplate().equals(t1));
+		assertTrue(tat2.getTableAnnotation().equals(ta1));
+		assertTrue(tat2.getOrdre() == ordre);
 
-      final Template t2 = templateDao.findById(2);
-      liste = tableAnnotationTemplateDao.findByTemplate(t2);
-      assertTrue(liste.size() == 0);
-   }
+		// update
+		tat2.setOrdre(ordreUp);
+		tableAnnotationTemplateDao.save(tat2);
+		assertTrue(tableAnnotationTemplateDao.findById(pk).get().equals(tat2));
+		assertTrue(tableAnnotationTemplateDao.findById(pk).get().getOrdre() == ordreUp);
+		assertTrue(IterableUtils.toList(tableAnnotationTemplateDao.findAll()).size() == 2);
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression 
-    * d'un BlocImpressionTemplate.
-    **/
-   @Rollback(false)
-   @Test
-public void testCrud(){
+		// Test de la délétion
+		tableAnnotationTemplateDao.deleteById(pk);
+		assertFalse(tableAnnotationTemplateDao.findById(pk).isPresent());
+		assertTrue(IterableUtils.toList(tableAnnotationTemplateDao.findAll()).size() == 1);
+	}
 
-      final TableAnnotationTemplate tat = new TableAnnotationTemplate();
-      final TableAnnotation ta1 = tableAnnotationDao.findById(1);
-      final Template t1 = templateDao.findById(1);
-      final Integer ordre = 5;
-      final Integer ordreUp = 6;
+	/**
+	 * Test de la méthode surchargée "equals".
+	 * 
+	 * @throws ParseException
+	 */
+	@Test
+	public void testEquals() throws ParseException {
 
-      tat.setTableAnnotation(ta1);
-      tat.setTemplate(t1);
-      tat.setOrdre(ordre);
+		final TableAnnotationTemplate tat1 = new TableAnnotationTemplate();
+		final TableAnnotationTemplate tat2 = new TableAnnotationTemplate();
 
-      // Test de l'insertion
-      tableAnnotationTemplateDao.save(tat);
-      assertTrue(IterableUtils.toList(tableAnnotationTemplateDao.findAll()).size() == 2);
+		// L'objet 1 n'est pas égal à null
+		assertFalse(tat1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(tat1.equals(tat1));
+		// 2 objets sont égaux entre eux
+		assertTrue(tat1.equals(tat2));
+		assertTrue(tat2.equals(tat1));
 
-      // Test de la mise à jour
-      final TableAnnotationTemplatePK pk = new TableAnnotationTemplatePK();
-      pk.setTableAnnotation(ta1);
-      pk.setTemplate(t1);
-      final TableAnnotationTemplate tat2 = tableAnnotationTemplateDao.findById(pk);
-      assertNotNull(tat2);
-      assertTrue(tat2.getTemplate().equals(t1));
-      assertTrue(tat2.getTableAnnotation().equals(ta1));
-      assertTrue(tat2.getOrdre() == ordre);
+		populateClefsToTestEqualsAndHashCode(tat1, tat2);
 
-      //update
-      tat2.setOrdre(ordreUp);
-      tableAnnotationTemplateDao.save(tat2);
-      assertTrue(tableAnnotationTemplateDao.findById(pk).equals(tat2));
-      assertTrue(tableAnnotationTemplateDao.findById(pk).getOrdre() == ordreUp);
-      assertTrue(IterableUtils.toList(tableAnnotationTemplateDao.findAll()).size() == 2);
+		// dummy test
+		final Banque b = new Banque();
+		assertFalse(tat1.equals(b));
+	}
 
-      // Test de la délétion
-      tableAnnotationTemplateDao.deleteById(pk);
-      assertNull(tableAnnotationTemplateDao.findById(pk));
-      assertTrue(IterableUtils.toList(tableAnnotationTemplateDao.findAll()).size() == 1);
-   }
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 * 
+	 * @throws ParseException
+	 */
+	@Test
+	public void testHashCode() throws ParseException {
+		final TableAnnotationTemplate tat1 = new TableAnnotationTemplate();
+		final TableAnnotationTemplate tat2 = new TableAnnotationTemplate();
+		final TableAnnotationTemplate tat3 = new TableAnnotationTemplate();
 
-   /**
-    * Test de la méthode surchargée "equals".
-    * @throws ParseException 
-    */
-   @Test
-public void testEquals() throws ParseException{
+		assertTrue(tat1.hashCode() == tat2.hashCode());
+		assertTrue(tat2.hashCode() == tat3.hashCode());
+		assertTrue(tat3.hashCode() > 0);
 
-      final TableAnnotationTemplate tat1 = new TableAnnotationTemplate();
-      final TableAnnotationTemplate tat2 = new TableAnnotationTemplate();
+		// teste dans methode precedente
+		populateClefsToTestEqualsAndHashCode(tat1, tat2);
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(tat1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(tat1.equals(tat1));
-      // 2 objets sont égaux entre eux
-      assertTrue(tat1.equals(tat2));
-      assertTrue(tat2.equals(tat1));
+		final int hash = tat1.hashCode();
+		// 2 objets égaux ont le même hashcode
+		assertTrue(tat1.hashCode() == tat2.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		assertTrue(hash == tat1.hashCode());
+		assertTrue(hash == tat1.hashCode());
+		assertTrue(hash == tat1.hashCode());
+		assertTrue(hash == tat1.hashCode());
+	}
 
-      populateClefsToTestEqualsAndHashCode(tat1, tat2);
+	private void populateClefsToTestEqualsAndHashCode(final TableAnnotationTemplate tat1,
+			final TableAnnotationTemplate tat2) throws ParseException {
 
-      //dummy test
-      final Banque b = new Banque();
-      assertFalse(tat1.equals(b));
-   }
+		final TableAnnotation ta1 = tableAnnotationDao.findById(1).get();
+		final TableAnnotation ta2 = tableAnnotationDao.findById(2).get();
+		final Template t1 = templateDao.findById(1).get();
+		final TableAnnotationTemplatePK pk1 = new TableAnnotationTemplatePK(t1, ta1);
+		final TableAnnotationTemplatePK pk2 = new TableAnnotationTemplatePK(t1, ta2);
+		final TableAnnotationTemplatePK pk3 = new TableAnnotationTemplatePK(t1, ta1);
+		final TableAnnotationTemplatePK[] pks = new TableAnnotationTemplatePK[] { null, pk1, pk2, pk3 };
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    * @throws ParseException 
-    */
-   @Test
-public void testHashCode() throws ParseException{
-      final TableAnnotationTemplate tat1 = new TableAnnotationTemplate();
-      final TableAnnotationTemplate tat2 = new TableAnnotationTemplate();
-      final TableAnnotationTemplate tat3 = new TableAnnotationTemplate();
+		for (int i = 0; i < pks.length; i++) {
+			for (int k = 0; k < pks.length; k++) {
 
-      assertTrue(tat1.hashCode() == tat2.hashCode());
-      assertTrue(tat2.hashCode() == tat3.hashCode());
-      assertTrue(tat3.hashCode() > 0);
+				tat1.setPk(pks[i]);
+				tat2.setPk(pks[k]);
 
-      //teste dans methode precedente
-      populateClefsToTestEqualsAndHashCode(tat1, tat2);
+				if (((i == k) || (i + k == 4))) {
+					assertTrue(tat1.equals(tat2));
+					assertTrue(tat1.hashCode() == tat2.hashCode());
+				} else {
+					assertFalse(tat1.equals(tat2));
+				}
+			}
+		}
+	}
 
-      final int hash = tat1.hashCode();
-      // 2 objets égaux ont le même hashcode
-      assertTrue(tat1.hashCode() == tat2.hashCode());
-      // un même objet garde le même hashcode dans le temps
-      assertTrue(hash == tat1.hashCode());
-      assertTrue(hash == tat1.hashCode());
-      assertTrue(hash == tat1.hashCode());
-      assertTrue(hash == tat1.hashCode());
-   }
+	/**
+	 * Test la méthode toString.
+	 */
+	@Test
+	public void testToString() {
+		final TableAnnotation ta1 = tableAnnotationDao.findById(2).get();
+		final Template t1 = templateDao.findById(1).get();
+		final TableAnnotationTemplatePK pk = new TableAnnotationTemplatePK(t1, ta1);
+		final TableAnnotationTemplate tat1 = tableAnnotationTemplateDao.findById(pk).get();
 
-   @Autowired
- void populateClefsToTestEqualsAndHashCode(final TableAnnotationTemplate tat1, final TableAnnotationTemplate tat2)
-      throws ParseException{
+		assertTrue(tat1.toString().equals("{" + tat1.getPk().toString() + "}"));
 
-      final TableAnnotation ta1 = tableAnnotationDao.findById(1);
-      final TableAnnotation ta2 = tableAnnotationDao.findById(2);
-      final Template t1 = templateDao.findById(1);
-      final TableAnnotationTemplatePK pk1 = new TableAnnotationTemplatePK(t1, ta1);
-      final TableAnnotationTemplatePK pk2 = new TableAnnotationTemplatePK(t1, ta2);
-      final TableAnnotationTemplatePK pk3 = new TableAnnotationTemplatePK(t1, ta1);
-      final TableAnnotationTemplatePK[] pks = new TableAnnotationTemplatePK[] {null, pk1, pk2, pk3};
+		final TableAnnotationTemplate tat2 = new TableAnnotationTemplate();
+		tat2.setPk(null);
+		assertTrue(tat2.toString().equals("{Empty TableAnnotationTemplate}"));
+	}
 
-      for(int i = 0; i < pks.length; i++){
-         for(int k = 0; k < pks.length; k++){
+	/**
+	 * Test la méthode clone.
+	 */
+	@Test
+	public void testClone() {
+		final TableAnnotation ta1 = tableAnnotationDao.findById(2).get();
+		final Template t1 = templateDao.findById(1).get();
+		final TableAnnotationTemplatePK pk = new TableAnnotationTemplatePK(t1, ta1);
+		final TableAnnotationTemplate tat1 = tableAnnotationTemplateDao.findById(pk).get();
 
-            tat1.setPk(pks[i]);
-            tat2.setPk(pks[k]);
+		TableAnnotationTemplate tat2 = new TableAnnotationTemplate();
+		tat2 = tat1.clone();
 
-            if(((i == k) || (i + k == 4))){
-               assertTrue(tat1.equals(tat2));
-               assertTrue(tat1.hashCode() == tat2.hashCode());
-            }else{
-               assertFalse(tat1.equals(tat2));
-            }
-         }
-      }
-   }
+		assertTrue(tat1.equals(tat2));
 
-   /**
-    * Test la méthode toString.
-    */
-   @Test
-public void testToString(){
-      final TableAnnotation ta1 = tableAnnotationDao.findById(2);
-      final Template t1 = templateDao.findById(1);
-      final TableAnnotationTemplatePK pk = new TableAnnotationTemplatePK(t1, ta1);
-      final TableAnnotationTemplate tat1 = tableAnnotationTemplateDao.findById(pk);
+		if (tat1.getPk() != null) {
+			assertTrue(tat1.getPk().equals(tat2.getPk()));
+		} else {
+			assertNull(tat2.getPk());
+		}
 
-      assertTrue(tat1.toString().equals("{" + tat1.getPk().toString() + "}"));
-
-      final TableAnnotationTemplate tat2 = new TableAnnotationTemplate();
-      tat2.setPk(null);
-      assertTrue(tat2.toString().equals("{Empty TableAnnotationTemplate}"));
-   }
-
-   /**
-    * Test la méthode clone.
-    */
-   @Test
-public void testClone(){
-      final TableAnnotation ta1 = tableAnnotationDao.findById(2);
-      final Template t1 = templateDao.findById(1);
-      final TableAnnotationTemplatePK pk = new TableAnnotationTemplatePK(t1, ta1);
-      final TableAnnotationTemplate tat1 = tableAnnotationTemplateDao.findById(pk);
-
-      TableAnnotationTemplate tat2 = new TableAnnotationTemplate();
-      tat2 = tat1.clone();
-
-      assertTrue(tat1.equals(tat2));
-
-      if(tat1.getPk() != null){
-         assertTrue(tat1.getPk().equals(tat2.getPk()));
-      }else{
-         assertNull(tat2.getPk());
-      }
-
-      if(tat1.getOrdre() != null){
-         assertTrue(tat1.getOrdre() == tat2.getOrdre());
-      }else{
-         assertNull(tat2.getOrdre());
-      }
-   }
+		if (tat1.getOrdre() != null) {
+			assertTrue(tat1.getOrdre() == tat2.getOrdre());
+		} else {
+			assertNull(tat2.getOrdre());
+		}
+	}
 
 }

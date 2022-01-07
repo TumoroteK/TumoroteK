@@ -276,7 +276,7 @@ public void testCrud() throws Exception{
       assertTrue(contratDao.findById(new Integer(5)).getDateSignature().equals(upSignature));
       // Test de la délétion
       contratDao.deleteById(new Integer(5));
-      assertNull(contratDao.findById(new Integer(5)));
+      assertFalse(contratDao.findById(new Integer(5)).isPresent());
 
    }
 

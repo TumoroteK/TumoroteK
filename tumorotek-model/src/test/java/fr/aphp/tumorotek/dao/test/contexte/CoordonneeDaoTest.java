@@ -289,7 +289,7 @@ public void testCrudCoordonnee() throws Exception{
 
       // Test de la délétion
       coordonneeDao.deleteById(id);
-      assertNull(coordonneeDao.findById(id));
+      assertFalse(coordonneeDao.findById(id).isPresent());
    }
 
    /**

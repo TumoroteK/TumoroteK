@@ -160,7 +160,7 @@ public void testCrudSpecialite() throws Exception{
 
       // Test de la délétion
       specialiteDao.deleteById(new Integer(6));
-      assertNull(specialiteDao.findById(new Integer(6)));
+      assertFalse(specialiteDao.findById(new Integer(6)).isPresent());
 
    }
 

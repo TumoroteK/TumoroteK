@@ -41,15 +41,12 @@ import org.apache.commons.collections4.IterableUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import fr.aphp.tumorotek.dao.test.Config;
-
-
 
 import fr.aphp.tumorotek.dao.imprimante.ImprimanteApiDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
@@ -65,114 +62,104 @@ import fr.aphp.tumorotek.model.imprimante.ImprimanteApi;
  *
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {Config.class})
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
-public class ImprimanteApiDaoTest extends AbstractDaoTest
-{
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class ImprimanteApiDaoTest extends AbstractDaoTest {
 
+	@Autowired
+	ImprimanteApiDao imprimanteApiDao;
 
-   @Autowired
- ImprimanteApiDao imprimanteApiDao;
+	/**
+	 * Test l'appel de la méthode findAll().
+	 */
+	@Test
+	public void testReadAll() {
+		final List<ImprimanteApi> liste = IterableUtils.toList(imprimanteApiDao.findAll());
+		assertTrue(liste.size() == 2);
+	}
 
-   public ImprimanteApiDaoTest(){
+	/**
+	 * Test l'appel de la méthode findByOrder().
+	 */
+	@Test
+	public void testFindByOrder() {
+		final List<ImprimanteApi> liste = imprimanteApiDao.findByOrder();
+		assertTrue(liste.size() == 2);
+		assertTrue(liste.get(0).getNom().equals("mbio"));
+	}
 
-   }
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final String nom = "test";
+		final String nom2 = "test2";
+		final ImprimanteApi ia1 = new ImprimanteApi();
+		ia1.setNom(nom);
+		final ImprimanteApi ia2 = new ImprimanteApi();
+		ia2.setNom(nom);
 
-   @Test
-public void setImprimanteApiDao(final ImprimanteApiDao iDao){
-      this.imprimanteApiDao = iDao;
-   }
+		// L'objet 1 n'est pas égal à null
+		assertFalse(ia1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(ia1.equals(ia1));
+		// 2 objets sont égaux entre eux
+		assertTrue(ia1.equals(ia2));
+		assertTrue(ia2.equals(ia1));
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   @Test
-public void testReadAll(){
-      final List<ImprimanteApi> liste = IterableUtils.toList(imprimanteApiDao.findAll());
-      assertTrue(liste.size() == 2);
-   }
+		ia1.setNom(null);
+		ia2.setNom(null);
+		assertTrue(ia1.equals(ia2));
 
-   /**
-    * Test l'appel de la méthode findByOrder().
-    */
-   @Test
-public void testFindByOrder(){
-      final List<ImprimanteApi> liste = imprimanteApiDao.findByOrder();
-      assertTrue(liste.size() == 2);
-      assertTrue(liste.get(0).getNom().equals("mbio"));
-   }
+		ia2.setNom(nom);
+		assertFalse(ia1.equals(ia2));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   @Test
-public void testEquals(){
-      final String nom = "test";
-      final String nom2 = "test2";
-      final ImprimanteApi ia1 = new ImprimanteApi();
-      ia1.setNom(nom);
-      final ImprimanteApi ia2 = new ImprimanteApi();
-      ia2.setNom(nom);
+		ia1.setNom(nom);
+		ia2.setNom(nom2);
+		assertFalse(ia1.equals(ia2));
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(ia1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(ia1.equals(ia1));
-      // 2 objets sont égaux entre eux
-      assertTrue(ia1.equals(ia2));
-      assertTrue(ia2.equals(ia1));
+		final Categorie c = new Categorie();
+		assertFalse(ia1.equals(c));
+	}
 
-      ia1.setNom(null);
-      ia2.setNom(null);
-      assertTrue(ia1.equals(ia2));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 * 
+	 * @throws Exception Lance une exception.
+	 */
+	@Test
+	public void testHashCode() throws Exception {
+		final String nom = "test";
+		final ImprimanteApi ia1 = new ImprimanteApi();
+		ia1.setNom(nom);
+		final ImprimanteApi ia2 = new ImprimanteApi();
+		ia2.setNom(nom);
+		final ImprimanteApi ia3 = new ImprimanteApi();
 
-      ia2.setNom(nom);
-      assertFalse(ia1.equals(ia2));
+		assertTrue(ia3.hashCode() > 0);
 
-      ia1.setNom(nom);
-      ia2.setNom(nom2);
-      assertFalse(ia1.equals(ia2));
+		final int hash = ia1.hashCode();
+		// 2 objets égaux ont le même hashcode
+		assertTrue(ia1.hashCode() == ia2.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		assertTrue(hash == ia1.hashCode());
+		assertTrue(hash == ia1.hashCode());
+		assertTrue(hash == ia1.hashCode());
+		assertTrue(hash == ia1.hashCode());
 
-      final Categorie c = new Categorie();
-      assertFalse(ia1.equals(c));
-   }
+	}
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    * @throws Exception Lance une exception.
-    */
-   @Test
-public void testHashCode() throws Exception{
-      final String nom = "test";
-      final ImprimanteApi ia1 = new ImprimanteApi();
-      ia1.setNom(nom);
-      final ImprimanteApi ia2 = new ImprimanteApi();
-      ia2.setNom(nom);
-      final ImprimanteApi ia3 = new ImprimanteApi();
+	/**
+	 * Test la méthode toString.
+	 */
+	@Test
+	public void testToString() {
+		final ImprimanteApi ia1 = imprimanteApiDao.findById(1).get();
+		assertTrue(ia1.toString().equals("{" + ia1.getNom() + "}"));
 
-      assertTrue(ia3.hashCode() > 0);
-
-      final int hash = ia1.hashCode();
-      // 2 objets égaux ont le même hashcode
-      assertTrue(ia1.hashCode() == ia2.hashCode());
-      // un même objet garde le même hashcode dans le temps
-      assertTrue(hash == ia1.hashCode());
-      assertTrue(hash == ia1.hashCode());
-      assertTrue(hash == ia1.hashCode());
-      assertTrue(hash == ia1.hashCode());
-
-   }
-
-   /**
-    * Test la méthode toString.
-    */
-   @Test
-public void testToString(){
-      final ImprimanteApi ia1 = imprimanteApiDao.findById(1);
-      assertTrue(ia1.toString().equals("{" + ia1.getNom() + "}"));
-
-      final ImprimanteApi ia2 = new ImprimanteApi();
-      assertTrue(ia2.toString().equals("{Empty ImprimanteApi}"));
-   }
+		final ImprimanteApi ia2 = new ImprimanteApi();
+		assertTrue(ia2.toString().equals("{Empty ImprimanteApi}"));
+	}
 
 }

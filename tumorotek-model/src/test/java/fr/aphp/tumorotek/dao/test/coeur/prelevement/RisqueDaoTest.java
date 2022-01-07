@@ -193,7 +193,7 @@ public void testCrudRisque() throws Exception{
 
       // Test de la délétion
       risqueDao.deleteById(new Integer(4));
-      assertNull(risqueDao.findById(new Integer(4)));
+      assertFalse(risqueDao.findById(new Integer(4)).isPresent());
 
    }
 

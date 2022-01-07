@@ -160,7 +160,7 @@ public void testCrudCategorie() throws Exception{
 
       // Test de la délétion
       categorieDao.deleteById(new Integer(3));
-      assertNull(categorieDao.findById(new Integer(3)));
+      assertFalse(categorieDao.findById(new Integer(3)).isPresent());
 
    }
 

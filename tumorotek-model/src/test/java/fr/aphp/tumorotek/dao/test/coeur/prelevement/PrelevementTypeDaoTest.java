@@ -194,7 +194,7 @@ public void testCrudPrelevementType() throws Exception{
 
       // Test de la délétion
       prelevementTypeDao.deleteById(new Integer(5));
-      assertNull(prelevementTypeDao.findById(new Integer(5)));
+      assertFalse(prelevementTypeDao.findById(new Integer(5)).isPresent());
 
    }
 

@@ -41,15 +41,12 @@ import org.apache.commons.collections4.IterableUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import fr.aphp.tumorotek.dao.test.Config;
-
-
 
 import fr.aphp.tumorotek.dao.impression.BlocImpressionDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
@@ -60,177 +57,161 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 
 /**
  *
- * Classe de test pour le DAO BlocImpressionDao et le bean
- * du domaine BlocImpression.
+ * Classe de test pour le DAO BlocImpressionDao et le bean du domaine
+ * BlocImpression.
  *
  * @author Pierre Ventadour.
  * @version 22/07/2010.
  *
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {Config.class})
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
-public class BlocImpressionDaoTest extends AbstractDaoTest
-{
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class BlocImpressionDaoTest extends AbstractDaoTest {
 
+	@Autowired
+	BlocImpressionDao blocImpressionDao;
 
-   @Autowired
- BlocImpressionDao blocImpressionDao;
+	@Autowired
+	EntiteDao entiteDao;
 
-   @Autowired
- EntiteDao entiteDao;
+	/**
+	 * Test l'appel de la méthode findAll().
+	 */
+	@Test
+	public void testReadAll() {
+		final List<BlocImpression> liste = IterableUtils.toList(blocImpressionDao.findAll());
+		assertTrue(liste.size() > 0);
+	}
 
-   public BlocImpressionDaoTest(){
+	/**
+	 * Test l'appel de la méthode findByEntite().
+	 */
+	@Test
+	public void testFindByEntite() {
+		final Entite e1 = entiteDao.findById(48).get();
+		List<BlocImpression> liste = blocImpressionDao.findByEntite(e1);
+		assertTrue(liste.size() == 0);
 
-   }
+		final Entite e2 = entiteDao.findById(2).get();
+		liste = blocImpressionDao.findByEntite(e2);
+		assertTrue(liste.size() == 6);
 
-   @Test
-public void setBlocImpressionDao(final BlocImpressionDao bDao){
-      this.blocImpressionDao = bDao;
-   }
+		liste = blocImpressionDao.findByEntite(null);
+		assertTrue(liste.size() == 0);
 
-   @Test
-public void setEntiteDao(final EntiteDao eDao){
-      this.entiteDao = eDao;
-   }
+	}
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   @Test
-public void testReadAll(){
-      final List<BlocImpression> liste = IterableUtils.toList(blocImpressionDao.findAll());
-      assertTrue(liste.size() > 0);
-   }
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final String nom1 = "nom";
+		final String nom2 = "nom2";
+		final Entite e1 = entiteDao.findById(1).get();
+		final Entite e2 = entiteDao.findById(2).get();
+		final BlocImpression b1 = new BlocImpression();
+		final BlocImpression b2 = new BlocImpression();
+		b1.setNom(nom1);
+		b1.setEntite(e1);
+		b2.setNom(nom1);
+		b2.setEntite(e1);
 
-   /**
-    * Test l'appel de la méthode findByEntite().
-    */
-   @Test
-public void testFindByEntite(){
-      final Entite e1 = entiteDao.findById(48);
-      List<BlocImpression> liste = blocImpressionDao.findByEntite(e1);
-      assertTrue(liste.size() == 0);
+		// L'objet 1 n'est pas égal à null
+		assertFalse(b1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(b1.equals(b1));
+		// 2 objets sont égaux entre eux
+		assertTrue(b1.equals(b2));
+		assertTrue(b2.equals(b1));
 
-      final Entite e2 = entiteDao.findById(2);
-      liste = blocImpressionDao.findByEntite(e2);
-      assertTrue(liste.size() == 6);
+		b1.setEntite(null);
+		b1.setNom(null);
+		b2.setEntite(null);
+		b2.setNom(null);
+		assertTrue(b1.equals(b2));
+		b2.setNom(nom1);
+		assertFalse(b1.equals(b2));
+		b1.setNom(nom1);
+		assertTrue(b1.equals(b2));
+		b2.setNom(nom2);
+		assertFalse(b1.equals(b2));
+		b2.setNom(null);
+		assertFalse(b1.equals(b2));
+		b2.setEntite(e1);
+		assertFalse(b1.equals(b2));
 
-      liste = blocImpressionDao.findByEntite(null);
-      assertTrue(liste.size() == 0);
+		b1.setEntite(e1);
+		b1.setNom(null);
+		b2.setNom(null);
+		b2.setEntite(e1);
+		assertTrue(b1.equals(b2));
+		b2.setEntite(e2);
+		assertFalse(b1.equals(b2));
+		b2.setNom(nom1);
+		assertFalse(b1.equals(b2));
 
-   }
+		// Vérification de la différenciation de 2 objets
+		b1.setNom(nom1);
+		assertFalse(b1.equals(b2));
+		b2.setNom(nom2);
+		b2.setEntite(e1);
+		assertFalse(b1.equals(b2));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   @Test
-public void testEquals(){
-      final String nom1 = "nom";
-      final String nom2 = "nom2";
-      final Entite e1 = entiteDao.findById(1);
-      final Entite e2 = entiteDao.findById(2);
-      final BlocImpression b1 = new BlocImpression();
-      final BlocImpression b2 = new BlocImpression();
-      b1.setNom(nom1);
-      b1.setEntite(e1);
-      b2.setNom(nom1);
-      b2.setEntite(e1);
+		final Categorie c3 = new Categorie();
+		assertFalse(b1.equals(c3));
+	}
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(b1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(b1.equals(b1));
-      // 2 objets sont égaux entre eux
-      assertTrue(b1.equals(b2));
-      assertTrue(b2.equals(b1));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
+		final String nom1 = "nom";
+		final String nom2 = "nom2";
+		final Entite e1 = entiteDao.findById(1).get();
+		final Entite e2 = entiteDao.findById(2).get();
+		final BlocImpression b1 = new BlocImpression();
+		final BlocImpression b2 = new BlocImpression();
+		// null
+		assertTrue(b1.hashCode() == b2.hashCode());
 
-      b1.setEntite(null);
-      b1.setNom(null);
-      b2.setEntite(null);
-      b2.setNom(null);
-      assertTrue(b1.equals(b2));
-      b2.setNom(nom1);
-      assertFalse(b1.equals(b2));
-      b1.setNom(nom1);
-      assertTrue(b1.equals(b2));
-      b2.setNom(nom2);
-      assertFalse(b1.equals(b2));
-      b2.setNom(null);
-      assertFalse(b1.equals(b2));
-      b2.setEntite(e1);
-      assertFalse(b1.equals(b2));
+		// Nom
+		b2.setNom(nom1);
+		assertFalse(b1.hashCode() == b2.hashCode());
+		b1.setNom(nom2);
+		assertFalse(b1.hashCode() == b2.hashCode());
+		b1.setNom(nom1);
+		assertTrue(b1.hashCode() == b2.hashCode());
 
-      b1.setEntite(e1);
-      b1.setNom(null);
-      b2.setNom(null);
-      b2.setEntite(e1);
-      assertTrue(b1.equals(b2));
-      b2.setEntite(e2);
-      assertFalse(b1.equals(b2));
-      b2.setNom(nom1);
-      assertFalse(b1.equals(b2));
+		// ProtocoleType
+		b2.setEntite(e1);
+		assertFalse(b1.hashCode() == b2.hashCode());
+		b1.setEntite(e2);
+		assertFalse(b1.hashCode() == b2.hashCode());
+		b1.setEntite(e1);
+		assertTrue(b1.hashCode() == b2.hashCode());
 
-      // Vérification de la différenciation de 2 objets
-      b1.setNom(nom1);
-      assertFalse(b1.equals(b2));
-      b2.setNom(nom2);
-      b2.setEntite(e1);
-      assertFalse(b1.equals(b2));
+		// un même objet garde le même hashcode dans le temps
+		final int hash = b1.hashCode();
+		assertTrue(hash == b1.hashCode());
+		assertTrue(hash == b1.hashCode());
+		assertTrue(hash == b1.hashCode());
+		assertTrue(hash == b1.hashCode());
 
-      final Categorie c3 = new Categorie();
-      assertFalse(b1.equals(c3));
-   }
+	}
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   @Test
-public void testHashCode(){
-      final String nom1 = "nom";
-      final String nom2 = "nom2";
-      final Entite e1 = entiteDao.findById(1);
-      final Entite e2 = entiteDao.findById(2);
-      final BlocImpression b1 = new BlocImpression();
-      final BlocImpression b2 = new BlocImpression();
-      //null
-      assertTrue(b1.hashCode() == b2.hashCode());
+	/**
+	 * Test la méthode toString.
+	 */
+	@Test
+	public void testToString() {
+		final BlocImpression b1 = blocImpressionDao.findById(1).get();
+		assertTrue(b1.toString().equals("{" + b1.getNom() + "}"));
 
-      //Nom
-      b2.setNom(nom1);
-      assertFalse(b1.hashCode() == b2.hashCode());
-      b1.setNom(nom2);
-      assertFalse(b1.hashCode() == b2.hashCode());
-      b1.setNom(nom1);
-      assertTrue(b1.hashCode() == b2.hashCode());
-
-      //ProtocoleType
-      b2.setEntite(e1);
-      assertFalse(b1.hashCode() == b2.hashCode());
-      b1.setEntite(e2);
-      assertFalse(b1.hashCode() == b2.hashCode());
-      b1.setEntite(e1);
-      assertTrue(b1.hashCode() == b2.hashCode());
-
-      // un même objet garde le même hashcode dans le temps
-      final int hash = b1.hashCode();
-      assertTrue(hash == b1.hashCode());
-      assertTrue(hash == b1.hashCode());
-      assertTrue(hash == b1.hashCode());
-      assertTrue(hash == b1.hashCode());
-
-   }
-
-   /**
-    * Test la méthode toString.
-    */
-   @Test
-public void testToString(){
-      final BlocImpression b1 = blocImpressionDao.findById(1);
-      assertTrue(b1.toString().equals("{" + b1.getNom() + "}"));
-
-      final BlocImpression b2 = new BlocImpression();
-      assertTrue(b2.toString().equals("{Empty BlocImpression}"));
-   }
+		final BlocImpression b2 = new BlocImpression();
+		assertTrue(b2.toString().equals("{Empty BlocImpression}"));
+	}
 
 }

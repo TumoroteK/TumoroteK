@@ -180,7 +180,7 @@ public void testCrudDestructionMotif() throws Exception{
 
       // Test de la délétion
       destructionMotifDao.deleteById(new Integer(4));
-      assertNull(destructionMotifDao.findById(new Integer(4)));
+      assertFalse(destructionMotifDao.findById(new Integer(4)).isPresent());
 
    }
 

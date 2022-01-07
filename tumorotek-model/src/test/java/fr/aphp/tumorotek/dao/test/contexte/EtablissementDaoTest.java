@@ -300,7 +300,7 @@ public void testCrudEtablissement() throws Exception{
 
       // Test de la délétion
       etablissementDao.deleteById(5);
-      assertNull(etablissementDao.findById(new Integer(5)));
+      assertFalse(etablissementDao.findById(new Integer(5)).isPresent());
 
    }
 

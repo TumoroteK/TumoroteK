@@ -198,7 +198,7 @@ public void testCrudCessionExamen() throws Exception{
 
       // Test de la délétion
       cessionExamenDao.deleteById(new Integer(5));
-      assertNull(cessionExamenDao.findById(new Integer(5)));
+      assertFalse(cessionExamenDao.findById(new Integer(5)).isPresent());
 
    }
 

@@ -155,7 +155,7 @@ public void testCrudProtocole() throws Exception{
 
       // Test de la délétion
       protocoleDao.deleteById(new Integer(4));
-      assertNull(protocoleDao.findById(new Integer(4)));
+      assertFalse(protocoleDao.findById(new Integer(4)).isPresent());
    }
 
    /**

@@ -220,14 +220,14 @@ public void testCrudMaladie() throws Exception{
       m.setDateDebut(null);
       maladieDao.save(m2);
       assertTrue(maladieDao.findById(mId).getPatient().equals(p2));
-      assertNull(maladieDao.findById(mId).getCode());
+      assertFalse(maladieDao.findById(mId).getCode().isPresent());
       assertTrue(maladieDao.findById(mId).getLibelle().equals("Lupus"));
-      assertNull(maladieDao.findById(mId).getDateDebut());
-      assertNull(maladieDao.findById(mId).getDateDiagnostic());
+      assertFalse(maladieDao.findById(mId).getDateDebut().isPresent());
+      assertFalse(maladieDao.findById(mId).getDateDiagnostic().isPresent());
 
       // Test de la délétion
       maladieDao.deleteById(new Integer(mId));
-      assertNull(maladieDao.findById(new Integer(mId)));
+      assertFalse(maladieDao.findById(new Integer(mId)).isPresent());
    }
 
    /**

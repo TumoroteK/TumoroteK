@@ -216,15 +216,15 @@ public void testCrudRetour() throws Exception{
       assertNotNull(retourDao.findById(rId).getDateRetour());
       assertTrue(retourDao.findById(rId).getTempMoyenne().equals(new Float(22.69)));
       assertTrue(retourDao.findById(rId).getSterile());
-      assertNull(retourDao.findById(rId).getCollaborateur());
+      assertFalse(retourDao.findById(rId).getCollaborateur().isPresent());
       assertTrue(retourDao.findById(rId).getObservations().equals("sortie pour traitement"));
-      assertNull(retourDao.findById(rId).getTransformation());
+      assertFalse(retourDao.findById(rId).getTransformation().isPresent());
       assertTrue(retourDao.findById(rId).getOldEmplacementAdrl().equals(adrl2));
       assertTrue(retour2.getObjetStatut().getStatut().equals("EPUISE"));
 
       // Test de la délétion
       retourDao.deleteById(rId);
-      assertNull(retourDao.findById(rId));
+      assertFalse(retourDao.findById(rId).isPresent());
       testReadAllRetours();
 
    }

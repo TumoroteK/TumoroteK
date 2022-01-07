@@ -224,7 +224,7 @@ public void testCrud() throws Exception{
 
       // Test de la délétion
       uiRequeteDao.deleteById(idR1);
-      assertNull(uiRequeteDao.findById(idR1));
+      assertFalse(uiRequeteDao.findById(idR1).isPresent());
 
       testFindAll();
    }

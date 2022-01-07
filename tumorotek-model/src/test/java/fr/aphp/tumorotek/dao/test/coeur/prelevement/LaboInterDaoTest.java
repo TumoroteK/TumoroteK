@@ -330,7 +330,7 @@ public void testCrudLaboInter() throws Exception{
 
       // Test de la délétion
       laboInterDao.deleteById(new Integer(4));
-      assertNull(laboInterDao.findById(new Integer(4)));
+      assertFalse(laboInterDao.findById(new Integer(4)).isPresent());
 
    }
 

@@ -224,7 +224,7 @@ public void testCrud() throws Exception{
 
       // Test de la délétion
       consultationIntfDao.deleteById(c2.getConsultationIntfId());
-      assertNull(consultationIntfDao.findById(c2.getConsultationIntfId()));
+      assertFalse(consultationIntfDao.findById(c2.getConsultationIntfId()).isPresent());
 
       testReadAll();
    }

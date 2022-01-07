@@ -38,7 +38,17 @@ package fr.aphp.tumorotek.dao.test.io.export;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
 
 import fr.aphp.tumorotek.dao.annotation.DataTypeDao;
 import fr.aphp.tumorotek.dao.io.export.ChampEntiteDao;
@@ -51,302 +61,289 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 
 /**
  *
- * Classe de test pour le DAO ChampDao et le
- * bean du domaine Champ.
- * Classe de test créée le 25/11/09.
+ * Classe de test pour le DAO ChampDao et le bean du domaine Champ. Classe de
+ * test créée le 25/11/09.
  *
  * @author Maxime GOUSSEAU
  * @version 2.0
  *
  */
-public class ChampEntiteDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class ChampEntiteDaoTest extends AbstractDaoTest {
 
-   @Autowired
- EntiteDao entiteDao;
-   @Autowired
- ChampEntiteDao champEntiteDao;
-   @Autowired
- DataTypeDao dataTypeDao;
-   @Autowired
- ImportTemplateDao importTemplateDao;
+	@Autowired
+	EntiteDao entiteDao;
 
-   public ChampEntiteDaoTest(){}
+	@Autowired
+	ChampEntiteDao champEntiteDao;
 
-   @Test
-public void setEntiteDao(final EntiteDao eDao){
-      this.entiteDao = eDao;
-   }
+	@Autowired
+	DataTypeDao dataTypeDao;
 
-   @Test
-public void setChampEntiteDao(final ChampEntiteDao ceDao){
-      this.champEntiteDao = ceDao;
-   }
+	@Autowired
+	ImportTemplateDao importTemplateDao;
 
-   @Test
-public void setDataTypeDao(final DataTypeDao dtDao){
-      this.dataTypeDao = dtDao;
-   }
+	@Test
+	public void testFindByEntiteAndNom() {
+		final Entite e1 = entiteDao.findById(1).get();
+		List<ChampEntite> liste = champEntiteDao.findByEntiteAndNom(e1, "Nom");
+		assertTrue(liste.size() == 1);
 
-   @Test
-public void setImportTemplateDao(final ImportTemplateDao itDao){
-      this.importTemplateDao = itDao;
-   }
+		liste = champEntiteDao.findByEntiteAndNom(e1, "aaaaaaaaa");
+		assertTrue(liste.size() == 0);
 
-   @Test
-public void testFindByEntiteAndNom(){
-      final Entite e1 = entiteDao.findById(1);
-      List<ChampEntite> liste = champEntiteDao.findByEntiteAndNom(e1, "Nom");
-      assertTrue(liste.size() == 1);
+		liste = champEntiteDao.findByEntiteAndNom(null, "aaaaaaaaa");
+		assertTrue(liste.size() == 0);
 
-      liste = champEntiteDao.findByEntiteAndNom(e1, "aaaaaaaaa");
-      assertTrue(liste.size() == 0);
+		liste = champEntiteDao.findByEntiteAndNom(e1, "");
+		assertTrue(liste.size() == 0);
 
-      liste = champEntiteDao.findByEntiteAndNom(null, "aaaaaaaaa");
-      assertTrue(liste.size() == 0);
+		liste = champEntiteDao.findByEntiteAndNom(e1, null);
+		assertTrue(liste.size() == 0);
+	}
 
-      liste = champEntiteDao.findByEntiteAndNom(e1, "");
-      assertTrue(liste.size() == 0);
+	@Test
+	public void testFindByEntiteAndImport() {
+		final Entite e1 = entiteDao.findById(1).get();
+		List<ChampEntite> liste = champEntiteDao.findByEntiteAndImport(e1, false);
+		assertTrue(liste.size() == 5);
 
-      liste = champEntiteDao.findByEntiteAndNom(e1, null);
-      assertTrue(liste.size() == 0);
-   }
+		liste = champEntiteDao.findByEntiteAndImport(e1, true);
+		assertTrue(liste.size() == 11);
 
-   @Test
-public void testFindByEntiteAndImport(){
-      final Entite e1 = entiteDao.findById(1);
-      List<ChampEntite> liste = champEntiteDao.findByEntiteAndImport(e1, false);
-      assertTrue(liste.size() == 5);
+		liste = champEntiteDao.findByEntiteAndImport(null, true);
+		assertTrue(liste.size() == 0);
 
-      liste = champEntiteDao.findByEntiteAndImport(e1, true);
-      assertTrue(liste.size() == 11);
+		liste = champEntiteDao.findByEntiteAndImport(e1, null);
+		assertTrue(liste.size() == 0);
 
-      liste = champEntiteDao.findByEntiteAndImport(null, true);
-      assertTrue(liste.size() == 0);
+		liste = champEntiteDao.findByEntiteAndImport(null, null);
+		assertTrue(liste.size() == 0);
+	}
 
-      liste = champEntiteDao.findByEntiteAndImport(e1, null);
-      assertTrue(liste.size() == 0);
+	@Test
+	public void testFindByEntiteImportObligatoire() {
+		final Entite e1 = entiteDao.findById(1).get();
+		List<ChampEntite> liste = champEntiteDao.findByEntiteImportObligatoire(e1, true, false);
+		assertTrue(liste.size() == 5);
 
-      liste = champEntiteDao.findByEntiteAndImport(null, null);
-      assertTrue(liste.size() == 0);
-   }
+		liste = champEntiteDao.findByEntiteImportObligatoire(e1, true, true);
+		assertTrue(liste.size() == 6);
 
-   @Test
-public void testFindByEntiteImportObligatoire(){
-      final Entite e1 = entiteDao.findById(1);
-      List<ChampEntite> liste = champEntiteDao.findByEntiteImportObligatoire(e1, true, false);
-      assertTrue(liste.size() == 5);
+		liste = champEntiteDao.findByEntiteImportObligatoire(null, true, true);
+		assertTrue(liste.size() == 0);
 
-      liste = champEntiteDao.findByEntiteImportObligatoire(e1, true, true);
-      assertTrue(liste.size() == 6);
+		liste = champEntiteDao.findByEntiteImportObligatoire(e1, null, true);
+		assertTrue(liste.size() == 0);
 
-      liste = champEntiteDao.findByEntiteImportObligatoire(null, true, true);
-      assertTrue(liste.size() == 0);
+		liste = champEntiteDao.findByEntiteImportObligatoire(e1, true, null);
+		assertTrue(liste.size() == 0);
+	}
 
-      liste = champEntiteDao.findByEntiteImportObligatoire(e1, null, true);
-      assertTrue(liste.size() == 0);
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'un champ.
+	 * 
+	 * @throws Exception lance une exception en cas de problème lors du CRUD.
+	 */
+	@Rollback(false)
+	@Test
+	public void testCrudChamp() throws Exception {
+		final boolean nullable = true;
+		final int entiteId = 3;
+		final int dataTypeId = 3;
+		final boolean unique = true;
+		final String valeurDefaut = "valeurDefaut";
+		final String nom = "nom";
 
-      liste = champEntiteDao.findByEntiteImportObligatoire(e1, true, null);
-      assertTrue(liste.size() == 0);
-   }
+		final Entite entite = this.entiteDao.findById(entiteId).get();
+		final DataType dataType = this.dataTypeDao.findById(dataTypeId).get();
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression 
-   * d'un champ.
-   * @throws Exception lance une exception en cas de problème lors du CRUD.
-   */
-   @Rollback(false)
-   @Test
-public void testCrudChamp() throws Exception{
-      final boolean nullable = true;
-      final int entiteId = 3;
-      final int dataTypeId = 3;
-      final boolean unique = true;
-      final String valeurDefaut = "valeurDefaut";
-      final String nom = "nom";
+		final ChampEntite c = new ChampEntite();
+		c.setEntite(entite);
+		c.setNullable(nullable);
+		c.setDataType(dataType);
+		c.setUnique(unique);
+		c.setValeurDefaut(valeurDefaut);
+		c.setNom(nom);
+		c.setCanImport(false);
 
-      final Entite entite = this.entiteDao.findById(entiteId);
-      final DataType dataType = this.dataTypeDao.findById(dataTypeId);
+		// Test de l'insertion
+		Integer idObject = new Integer(-1);
+		this.champEntiteDao.save(c);
+		final List<ChampEntite> champEntites = IterableUtils.toList(champEntiteDao.findAll());
+		final Iterator<ChampEntite> itChampEntites = champEntites.iterator();
+		boolean found = false;
+		while (itChampEntites.hasNext()) {
+			final ChampEntite temp = itChampEntites.next();
+			if (temp.equals(c)) {
+				found = true;
+				idObject = temp.getId();
+				break;
+			}
+		}
+		assertTrue(found);
 
-      final ChampEntite c = new ChampEntite();
-      c.setEntite(entite);
-      c.setNullable(nullable);
-      c.setDataType(dataType);
-      c.setUnique(unique);
-      c.setValeurDefaut(valeurDefaut);
-      c.setNom(nom);
-      c.setCanImport(false);
+		// Test de la mise à jour
+		final ChampEntite c2 = this.champEntiteDao.findById(idObject).get();
+		assertNotNull(c2);
+		assertNotNull(c2.getEntite());
+		assertTrue(c2.getEntite().equals(entite));
+		assertNotNull(c2.isNullable());
+		assertTrue(c2.isNullable().equals(nullable));
+		assertNotNull(c2.getDataType());
+		assertTrue(c2.getDataType().equals(dataType));
+		assertNotNull(c2.isUnique());
+		assertTrue(c2.isUnique().equals(unique));
+		if (c2.getValeurDefaut() != null) {
+			assertTrue(c2.getValeurDefaut().equals(valeurDefaut));
+		} else {
+			assertNull(valeurDefaut);
+		}
+		assertNotNull(c2.getNom());
+		assertTrue(c2.getNom().equals(nom));
 
-      // Test de l'insertion
-      Integer idObject = new Integer(-1);
-      this.champEntiteDao.save(c);
-      final List<ChampEntite> champEntites = this.IterableUtils.toList(champEntiteDao.findAll());
-      final Iterator<ChampEntite> itChampEntites = champEntites.iterator();
-      boolean found = false;
-      while(itChampEntites.hasNext()){
-         final ChampEntite temp = itChampEntites.next();
-         if(temp.equals(c)){
-            found = true;
-            idObject = temp.getId();
-            break;
-         }
-      }
-      assertTrue(found);
+		final boolean updatedNullable = false;
+		final int updatedEntiteId = 2;
+		final int updatedDataTypeId = 2;
+		final boolean updatedUnique = false;
+		final String updatedValeurDefaut = "valeurDefaut2";
+		final String updatedNom = "nom2";
 
-      // Test de la mise à jour
-      final ChampEntite c2 = this.champEntiteDao.findById(idObject);
-      assertNotNull(c2);
-      assertNotNull(c2.getEntite());
-      assertTrue(c2.getEntite().equals(entite));
-      assertNotNull(c2.isNullable());
-      assertTrue(c2.isNullable().equals(nullable));
-      assertNotNull(c2.getDataType());
-      assertTrue(c2.getDataType().equals(dataType));
-      assertNotNull(c2.isUnique());
-      assertTrue(c2.isUnique().equals(unique));
-      if(c2.getValeurDefaut() != null){
-         assertTrue(c2.getValeurDefaut().equals(valeurDefaut));
-      }else{
-         assertNull(valeurDefaut);
-      }
-      assertNotNull(c2.getNom());
-      assertTrue(c2.getNom().equals(nom));
+		final Entite updatedEntite = this.entiteDao.findById(updatedEntiteId).get();
+		final DataType updatedDataType = this.dataTypeDao.findById(updatedDataTypeId).get();
 
-      final boolean updatedNullable = false;
-      final int updatedEntiteId = 2;
-      final int updatedDataTypeId = 2;
-      final boolean updatedUnique = false;
-      final String updatedValeurDefaut = "valeurDefaut2";
-      final String updatedNom = "nom2";
+		c2.setEntite(updatedEntite);
+		c2.setNullable(updatedNullable);
+		c2.setDataType(updatedDataType);
+		c2.setUnique(updatedUnique);
+		c2.setValeurDefaut(updatedValeurDefaut);
+		c2.setNom(updatedNom);
 
-      final Entite updatedEntite = this.entiteDao.findById(updatedEntiteId);
-      final DataType updatedDataType = this.dataTypeDao.findById(updatedDataTypeId);
+		this.champEntiteDao.save(c2);
+		assertNotNull(this.champEntiteDao.findById(idObject).get().getEntite());
+		assertTrue(this.champEntiteDao.findById(idObject).get().getEntite().equals(updatedEntite));
+		assertNotNull(this.champEntiteDao.findById(idObject).get().isNullable());
+		assertTrue(this.champEntiteDao.findById(idObject).get().isNullable().equals(updatedNullable));
+		assertNotNull(this.champEntiteDao.findById(idObject).get().getDataType());
+		assertTrue(this.champEntiteDao.findById(idObject).get().getDataType().equals(updatedDataType));
+		assertNotNull(this.champEntiteDao.findById(idObject).get().isUnique());
+		assertTrue(this.champEntiteDao.findById(idObject).get().isUnique().equals(updatedUnique));
+		if (this.champEntiteDao.findById(idObject).get().getValeurDefaut() != null) {
+			assertTrue(this.champEntiteDao.findById(idObject).get().getValeurDefaut().equals(updatedValeurDefaut));
+		} else {
+			assertNull(updatedValeurDefaut);
+		}
+		assertNotNull(this.champEntiteDao.findById(idObject).get().getNom());
+		assertTrue(this.champEntiteDao.findById(idObject).get().getNom().equals(updatedNom));
+		// Test de la délétion
+		this.champEntiteDao.deleteById(idObject);
+		assertFalse(this.champEntiteDao.findById(idObject).isPresent());
+	}
 
-      c2.setEntite(updatedEntite);
-      c2.setNullable(updatedNullable);
-      c2.setDataType(updatedDataType);
-      c2.setUnique(updatedUnique);
-      c2.setValeurDefaut(updatedValeurDefaut);
-      c2.setNom(updatedNom);
+	/**
+	 * test toString().
+	 */
+	@Test
+	public void testToString() {
+		final ChampEntite c1 = champEntiteDao.findById(1).get();
+		assertTrue(c1.toString().equals("{" + c1.getNom() + "}"));
 
-      this.champEntiteDao.save(c2);
-      assertNotNull(this.champEntiteDao.findById(idObject).getEntite());
-      assertTrue(this.champEntiteDao.findById(idObject).getEntite().equals(updatedEntite));
-      assertNotNull(this.champEntiteDao.findById(idObject).isNullable());
-      assertTrue(this.champEntiteDao.findById(idObject).isNullable().equals(updatedNullable));
-      assertNotNull(this.champEntiteDao.findById(idObject).getDataType());
-      assertTrue(this.champEntiteDao.findById(idObject).getDataType().equals(updatedDataType));
-      assertNotNull(this.champEntiteDao.findById(idObject).isUnique());
-      assertTrue(this.champEntiteDao.findById(idObject).isUnique().equals(updatedUnique));
-      if(this.champEntiteDao.findById(idObject).getValeurDefaut() != null){
-         assertTrue(this.champEntiteDao.findById(idObject).getValeurDefaut().equals(updatedValeurDefaut));
-      }else{
-         assertNull(updatedValeurDefaut);
-      }
-      assertNotNull(this.champEntiteDao.findById(idObject).getNom());
-      assertTrue(this.champEntiteDao.findById(idObject).getNom().equals(updatedNom));
-      // Test de la délétion
-      this.champEntiteDao.deleteById(idObject);
-      assertNull(this.champEntiteDao.findById(idObject));
-   }
+		final ChampEntite c2 = new ChampEntite();
+		assertTrue(c2.toString().equals("{Empty ChampEntite}"));
+	}
 
-   /**
-    * test toString().
-    */
-   @Test
-public void testToString(){
-      final ChampEntite c1 = champEntiteDao.findById(1);
-      assertTrue(c1.toString().equals("{" + c1.getNom() + "}"));
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		// On boucle sur les 4 possibilités
+		for (int i = 0; i < Math.pow(2, 2); i++) {
+			final ChampEntite champ1 = new ChampEntite();
+			final ChampEntite champ2 = new ChampEntite();
+			Entite entite = null;
+			if (i >= 2) {
+				entite = entiteDao.findById(2).get();
+			}
+			champ1.setEntite(entite);
+			champ2.setEntite(entite);
+			String nom = null;
+			final int toTest = i % 2;
+			if (toTest > 0) {
+				nom = "Nom";
+			}
+			champ1.setNom(nom);
+			champ2.setNom(nom);
+			// On compare les 2 champs
+			assertTrue(champ1.equals(champ2));
+		}
+	}
 
-      final ChampEntite c2 = new ChampEntite();
-      assertTrue(c2.toString().equals("{Empty ChampEntite}"));
-   }
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
+		// On boucle sur les 4 possibilités
+		for (int i = 0; i < Math.pow(2, 2); i++) {
+			final ChampEntite champ = new ChampEntite();
+			int hash = 7;
+			Entite entite = null;
+			int hashEntite = 0;
+			if (i >= 2) {
+				entite = entiteDao.findById(3).get();
+				hashEntite = entite.hashCode();
+			}
+			final int toTest = i % 2;
+			String nom = null;
+			int hashNom = 0;
+			if (toTest > 0) {
+				nom = "Test";
+				hashNom = nom.hashCode();
+			}
+			hash = 31 * hash + hashEntite;
+			hash = 31 * hash + hashNom;
+			champ.setEntite(entite);
+			champ.setNom(nom);
+			// On vérifie que le hashCode est bon
+			assertTrue(champ.hashCode() == hash);
+			assertTrue(champ.hashCode() == hash);
+			assertTrue(champ.hashCode() == hash);
+		}
+	}
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   @Test
-public void testEquals(){
-      //On boucle sur les 4 possibilités
-      for(int i = 0; i < Math.pow(2, 2); i++){
-         final ChampEntite champ1 = new ChampEntite();
-         final ChampEntite champ2 = new ChampEntite();
-         Entite entite = null;
-         if(i >= 2){
-            entite = entiteDao.findById(2);
-         }
-         champ1.setEntite(entite);
-         champ2.setEntite(entite);
-         String nom = null;
-         final int toTest = i % 2;
-         if(toTest > 0){
-            nom = "Nom";
-         }
-         champ1.setNom(nom);
-         champ2.setNom(nom);
-         //On compare les 2 champs
-         assertTrue(champ1.equals(champ2));
-      }
-   }
-
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   @Test
-public void testHashCode(){
-      //On boucle sur les 4 possibilités
-      for(int i = 0; i < Math.pow(2, 2); i++){
-         final ChampEntite champ = new ChampEntite();
-         int hash = 7;
-         Entite entite = null;
-         int hashEntite = 0;
-         if(i >= 2){
-            entite = entiteDao.findById(3);
-            hashEntite = entite.hashCode();
-         }
-         final int toTest = i % 2;
-         String nom = null;
-         int hashNom = 0;
-         if(toTest > 0){
-            nom = "Test";
-            hashNom = nom.hashCode();
-         }
-         hash = 31 * hash + hashEntite;
-         hash = 31 * hash + hashNom;
-         champ.setEntite(entite);
-         champ.setNom(nom);
-         //On vérifie que le hashCode est bon
-         assertTrue(champ.hashCode() == hash);
-         assertTrue(champ.hashCode() == hash);
-         assertTrue(champ.hashCode() == hash);
-      }
-   }
-
-   @Test
-public void testFindByImportTemplate(){
-      List<ChampEntite> chpE = champEntiteDao.findByImportTemplateAndEntite(importTemplateDao.findById(1), entiteDao.findById(1));
-      assertTrue(chpE.size() == 6);
-      assertTrue(chpE.contains(champEntiteDao.findById(2)));
-      assertTrue(chpE.contains(champEntiteDao.findById(3)));
-      assertTrue(chpE.contains(champEntiteDao.findById(5)));
-      assertTrue(chpE.contains(champEntiteDao.findById(6)));
-      assertTrue(chpE.contains(champEntiteDao.findById(7)));
-      assertTrue(chpE.contains(champEntiteDao.findById(10)));
-      chpE = champEntiteDao.findByImportTemplateAndEntite(importTemplateDao.findById(3), entiteDao.findById(1));
-      assertTrue(chpE.size() == 3);
-      assertTrue(chpE.contains(champEntiteDao.findById(2)));
-      assertTrue(chpE.contains(champEntiteDao.findById(3)));
-      assertTrue(chpE.contains(champEntiteDao.findById(5)));
-      chpE = champEntiteDao.findByImportTemplateAndEntite(importTemplateDao.findById(1), entiteDao.findById(3));
-      assertTrue(chpE.size() == 8);
-      chpE = champEntiteDao.findByImportTemplateAndEntite(importTemplateDao.findById(2), entiteDao.findById(3));
-      assertTrue(chpE.size() == 0);
-      chpE = champEntiteDao.findByImportTemplateAndEntite(importTemplateDao.findById(1), entiteDao.findById(5));
-      assertTrue(chpE.size() == 0);
-      chpE = champEntiteDao.findByImportTemplateAndEntite(importTemplateDao.findById(1), null);
-      assertTrue(chpE.size() == 0);
-      chpE = champEntiteDao.findByImportTemplateAndEntite(null, entiteDao.findById(3));
-      assertTrue(chpE.size() == 0);
-   }
+	@Test
+	public void testFindByImportTemplate() {
+		List<ChampEntite> chpE = champEntiteDao.findByImportTemplateAndEntite(importTemplateDao.findById(1).get(),
+				entiteDao.findById(1).get());
+		assertTrue(chpE.size() == 6);
+		assertTrue(chpE.contains(champEntiteDao.findById(2).get()));
+		assertTrue(chpE.contains(champEntiteDao.findById(3).get()));
+		assertTrue(chpE.contains(champEntiteDao.findById(5).get()));
+		assertTrue(chpE.contains(champEntiteDao.findById(6).get()));
+		assertTrue(chpE.contains(champEntiteDao.findById(7).get()));
+		assertTrue(chpE.contains(champEntiteDao.findById(10).get()));
+		chpE = champEntiteDao.findByImportTemplateAndEntite(importTemplateDao.findById(3).get(),
+				entiteDao.findById(1).get());
+		assertTrue(chpE.size() == 3);
+		assertTrue(chpE.contains(champEntiteDao.findById(2).get()));
+		assertTrue(chpE.contains(champEntiteDao.findById(3).get()));
+		assertTrue(chpE.contains(champEntiteDao.findById(5).get()));
+		chpE = champEntiteDao.findByImportTemplateAndEntite(importTemplateDao.findById(1).get(),
+				entiteDao.findById(3).get());
+		assertTrue(chpE.size() == 8);
+		chpE = champEntiteDao.findByImportTemplateAndEntite(importTemplateDao.findById(2).get(),
+				entiteDao.findById(3).get());
+		assertTrue(chpE.size() == 0);
+		chpE = champEntiteDao.findByImportTemplateAndEntite(importTemplateDao.findById(1).get(),
+				entiteDao.findById(5).get());
+		assertTrue(chpE.size() == 0);
+		chpE = champEntiteDao.findByImportTemplateAndEntite(importTemplateDao.findById(1).get(), null);
+		assertTrue(chpE.size() == 0);
+		chpE = champEntiteDao.findByImportTemplateAndEntite(null, entiteDao.findById(3).get());
+		assertTrue(chpE.size() == 0);
+	}
 
 }

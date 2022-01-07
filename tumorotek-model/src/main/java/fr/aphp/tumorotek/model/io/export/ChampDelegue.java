@@ -43,8 +43,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -55,16 +53,17 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 
 /**
  * @author Gille Chapelot
+ * @version 2.3
  *
  */
 @Entity
 @Table(name = "CHAMP_DELEGUE")
 @GenericGenerator(name="seqGenerator", strategy="increment")
 @AttributeOverrides({@AttributeOverride(name="id", column=@Column(name="CHAMP_DELEGUE_ID"))})
-@NamedQueries({@NamedQuery(name = "ChampDelegue.findByEntiteAndContexte",
-query = "FROM ChampDelegue cd WHERE cd.entite=?1 AND cd.contexte=?2"),
-	@NamedQuery(name = "ChampDelegue.findByNomAndEntiteAndContexte",
-	query = "FROM ChampDelegue cd WHERE cd.nom=?1 AND cd.entite=?2 AND cd.contexte=?3")})
+//@NamedQueries({@NamedQuery(name = "ChampDelegue.findByEntiteAndContexte",
+//query = "FROM ChampDelegue cd WHERE cd.entite=?1 AND cd.contexte=?2"),
+//	@NamedQuery(name = "ChampDelegue.findByNomAndEntiteAndContexte",
+//	query = "FROM ChampDelegue cd WHERE cd.nom=?1 AND cd.entite=?2 AND cd.contexte=?3")})
 public class ChampDelegue extends AbstractTKChamp
 {
 

@@ -180,7 +180,7 @@ public void testCrudProtocoleType() throws Exception{
 
       // Test de la délétion
       protocoleTypeDao.deleteById(new Integer(3));
-      assertNull(protocoleTypeDao.findById(new Integer(3)));
+      assertFalse(protocoleTypeDao.findById(new Integer(3)).isPresent());
 
    }
 

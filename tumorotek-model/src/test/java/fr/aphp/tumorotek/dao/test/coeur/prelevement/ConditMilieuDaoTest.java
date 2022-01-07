@@ -163,7 +163,7 @@ public void testCrudConditMilieu() throws Exception{
 
       // Test de la délétion
       conditMilieuDao.deleteById(new Integer(3));
-      assertNull(conditMilieuDao.findById(new Integer(3)));
+      assertFalse(conditMilieuDao.findById(new Integer(3)).isPresent());
 
    }
 

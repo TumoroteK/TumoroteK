@@ -37,19 +37,15 @@ package fr.aphp.tumorotek.dao.test.impression;
 
 import java.text.ParseException;
 
-import org.apache.commons.collections4.IterableUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import fr.aphp.tumorotek.dao.test.Config;
-
-
 
 import fr.aphp.tumorotek.dao.impression.BlocImpressionDao;
 import fr.aphp.tumorotek.dao.impression.TemplateDao;
@@ -68,144 +64,130 @@ import fr.aphp.tumorotek.model.impression.Template;
  *
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {Config.class})
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
-public class BlocImpressionTemplatePKTest extends AbstractDaoTest
-{
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class BlocImpressionTemplatePKTest extends AbstractDaoTest {
 
+	@Autowired
+	BlocImpressionDao blocImpressionDao;
 
-   @Autowired
- BlocImpressionDao blocImpressionDao;
+	@Autowired
+	TemplateDao templateDao;
 
-   @Autowired
- TemplateDao templateDao;
+	/**
+	 * Test de la méthode surchargée "equals".
+	 * 
+	 * @throws ParseException
+	 */
+	@Test
+	public void testEquals() throws ParseException {
+		final BlocImpressionTemplatePK pk1 = new BlocImpressionTemplatePK();
+		final BlocImpressionTemplatePK pk2 = new BlocImpressionTemplatePK();
 
-   public BlocImpressionTemplatePKTest(){
+		// L'objet 1 n'est pas égal à null
+		assertFalse(pk1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(pk1.equals(pk1));
 
-   }
+		/* null */
+		assertTrue(pk1.equals(pk2));
+		assertTrue(pk2.equals(pk1));
 
-   @Test
-public void setBlocImpressionDao(final BlocImpressionDao bDao){
-      this.blocImpressionDao = bDao;
-   }
+		populateClefsToTestEqualsAndHashCode();
 
-   @Test
-public void setTemplateDao(final TemplateDao tDao){
-      this.templateDao = tDao;
-   }
+		final Categorie c3 = new Categorie();
+		assertFalse(pk1.equals(c3));
+	}
 
-   /**
-    * Test de la méthode surchargée "equals".
-    * @throws ParseException 
-    */
-   @Test
-public void testEquals() throws ParseException{
-      final BlocImpressionTemplatePK pk1 = new BlocImpressionTemplatePK();
-      final BlocImpressionTemplatePK pk2 = new BlocImpressionTemplatePK();
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 * 
+	 * @throws ParseException
+	 */
+	@Test
+	public void testHashCode() throws ParseException {
+		final BlocImpressionTemplatePK pk1 = new BlocImpressionTemplatePK();
+		final BlocImpressionTemplatePK pk2 = new BlocImpressionTemplatePK();
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(pk1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(pk1.equals(pk1));
+		/* null */
+		assertTrue(pk1.hashCode() == pk2.hashCode());
 
-      /*null*/
-      assertTrue(pk1.equals(pk2));
-      assertTrue(pk2.equals(pk1));
+		populateClefsToTestEqualsAndHashCode();
 
-      populateClefsToTestEqualsAndHashCode();
+		// un même objet garde le même hashcode dans le temps
+		final int hash = pk1.hashCode();
+		assertTrue(hash == pk1.hashCode());
+		assertTrue(hash == pk1.hashCode());
+		assertTrue(hash == pk1.hashCode());
+		assertTrue(hash == pk1.hashCode());
+	}
 
-      final Categorie c3 = new Categorie();
-      assertFalse(pk1.equals(c3));
-   }
+	@Autowired
+	void populateClefsToTestEqualsAndHashCode() throws ParseException {
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    * @throws ParseException 
-    */
-   @Test
-public void testHashCode() throws ParseException{
-      final BlocImpressionTemplatePK pk1 = new BlocImpressionTemplatePK();
-      final BlocImpressionTemplatePK pk2 = new BlocImpressionTemplatePK();
+		final BlocImpression bi1 = blocImpressionDao.findById(1).get();
+		final BlocImpression bi2 = blocImpressionDao.findById(2).get();
+		final BlocImpression bi3 = blocImpressionDao.findById(1).get();
+		final BlocImpression[] blocs = new BlocImpression[] { null, bi1, bi2, bi3 };
+		final Template t1 = templateDao.findById(1).get();
+		final Template t2 = templateDao.findById(2).get();
+		final Template t3 = templateDao.findById(1).get();
+		final Template[] templates = new Template[] { null, t1, t2, t3 };
 
-      /*null*/
-      assertTrue(pk1.hashCode() == pk2.hashCode());
+		final BlocImpressionTemplatePK pk1 = new BlocImpressionTemplatePK();
+		final BlocImpressionTemplatePK pk2 = new BlocImpressionTemplatePK();
 
-      populateClefsToTestEqualsAndHashCode();
+		for (int i = 0; i < blocs.length; i++) {
+			for (int j = 0; j < templates.length; j++) {
+				for (int k = 0; k < blocs.length; k++) {
+					for (int l = 0; l < templates.length; l++) {
 
-      // un même objet garde le même hashcode dans le temps
-      final int hash = pk1.hashCode();
-      assertTrue(hash == pk1.hashCode());
-      assertTrue(hash == pk1.hashCode());
-      assertTrue(hash == pk1.hashCode());
-      assertTrue(hash == pk1.hashCode());
-   }
+						pk1.setBlocImpression(blocs[i]);
+						pk1.setTemplate(templates[j]);
 
-   @Autowired
- void populateClefsToTestEqualsAndHashCode() throws ParseException{
+						pk2.setBlocImpression(blocs[k]);
+						pk2.setTemplate(templates[l]);
 
-      final BlocImpression bi1 = blocImpressionDao.findById(1);
-      final BlocImpression bi2 = blocImpressionDao.findById(2);
-      final BlocImpression bi3 = blocImpressionDao.findById(1);
-      final BlocImpression[] blocs = new BlocImpression[] {null, bi1, bi2, bi3};
-      final Template t1 = templateDao.findById(1);
-      final Template t2 = templateDao.findById(2);
-      final Template t3 = templateDao.findById(1);
-      final Template[] templates = new Template[] {null, t1, t2, t3};
+						if (((i == k) || (i + k == 4)) && ((j == l) || (j + l == 4))) {
+							assertTrue(pk1.equals(pk2));
+							assertTrue(pk1.hashCode() == pk2.hashCode());
+						} else {
+							assertFalse(pk1.equals(pk2));
+						}
+					}
+				}
+			}
+		}
+	}
 
-      final BlocImpressionTemplatePK pk1 = new BlocImpressionTemplatePK();
-      final BlocImpressionTemplatePK pk2 = new BlocImpressionTemplatePK();
+	/**
+	 * Test la méthode toString.
+	 */
+	@Test
+	public void testToString() {
+		final BlocImpression bi1 = blocImpressionDao.findById(1).get();
+		final Template t1 = templateDao.findById(1).get();
+		final BlocImpressionTemplatePK pk1 = new BlocImpressionTemplatePK();
+		pk1.setBlocImpression(bi1);
+		pk1.setTemplate(t1);
 
-      for(int i = 0; i < blocs.length; i++){
-         for(int j = 0; j < templates.length; j++){
-            for(int k = 0; k < blocs.length; k++){
-               for(int l = 0; l < templates.length; l++){
+		assertTrue(pk1.toString().equals("{" + pk1.getTemplate().toString() + " (Template), "
+				+ pk1.getBlocImpression().toString() + " (BlocImpression)}"));
 
-                  pk1.setBlocImpression(blocs[i]);
-                  pk1.setTemplate(templates[j]);
+		pk1.setBlocImpression(null);
+		assertTrue(pk1.toString().equals("{Empty BlocImpressionTemplatePK}"));
+		pk1.setBlocImpression(bi1);
 
-                  pk2.setBlocImpression(blocs[k]);
-                  pk2.setTemplate(templates[l]);
+		pk1.setTemplate(null);
+		assertTrue(pk1.toString().equals("{Empty BlocImpressionTemplatePK}"));
+		pk1.setTemplate(t1);
 
-                  if(((i == k) || (i + k == 4)) && ((j == l) || (j + l == 4))){
-                     assertTrue(pk1.equals(pk2));
-                     assertTrue(pk1.hashCode() == pk2.hashCode());
-                  }else{
-                     assertFalse(pk1.equals(pk2));
-                  }
-               }
-            }
-         }
-      }
-   }
+		pk1.setBlocImpression(null);
+		pk1.setTemplate(null);
+		assertTrue(pk1.toString().equals("{Empty BlocImpressionTemplatePK}"));
 
-   /**
-    * Test la méthode toString.
-    */
-   @Test
-public void testToString(){
-      final BlocImpression bi1 = blocImpressionDao.findById(1);
-      final Template t1 = templateDao.findById(1);
-      final BlocImpressionTemplatePK pk1 = new BlocImpressionTemplatePK();
-      pk1.setBlocImpression(bi1);
-      pk1.setTemplate(t1);
-
-      assertTrue(pk1.toString().equals(
-         "{" + pk1.getTemplate().toString() + " (Template), " + pk1.getBlocImpression().toString() + " (BlocImpression)}"));
-
-      pk1.setBlocImpression(null);
-      assertTrue(pk1.toString().equals("{Empty BlocImpressionTemplatePK}"));
-      pk1.setBlocImpression(bi1);
-
-      pk1.setTemplate(null);
-      assertTrue(pk1.toString().equals("{Empty BlocImpressionTemplatePK}"));
-      pk1.setTemplate(t1);
-
-      pk1.setBlocImpression(null);
-      pk1.setTemplate(null);
-      assertTrue(pk1.toString().equals("{Empty BlocImpressionTemplatePK}"));
-
-      final BlocImpressionTemplatePK pk2 = new BlocImpressionTemplatePK();
-      assertTrue(pk2.toString().equals("{Empty BlocImpressionTemplatePK}"));
-   }
+		final BlocImpressionTemplatePK pk2 = new BlocImpressionTemplatePK();
+		assertTrue(pk2.toString().equals("{Empty BlocImpressionTemplatePK}"));
+	}
 
 }

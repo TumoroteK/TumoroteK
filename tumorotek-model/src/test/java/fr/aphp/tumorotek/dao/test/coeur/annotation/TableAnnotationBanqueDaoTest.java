@@ -148,7 +148,7 @@ public void testTableAnnotationBanque(){
       assertTrue(tableAnnotationBanqueDao.findById(pk).getOrdre().equals(2));
       // Test de la délétion
       tableAnnotationBanqueDao.deleteById(pk);
-      assertNull(tableAnnotationBanqueDao.findById(pk));
+      assertFalse(tableAnnotationBanqueDao.findById(pk).isPresent());
    }
 
    /**
