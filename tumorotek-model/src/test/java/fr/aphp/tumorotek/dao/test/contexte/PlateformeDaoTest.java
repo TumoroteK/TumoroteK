@@ -37,7 +37,19 @@ package fr.aphp.tumorotek.dao.test.contexte;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.test.annotation.Rollback;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
 
 import fr.aphp.tumorotek.dao.contexte.CollaborateurDao;
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
@@ -57,293 +69,273 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
  * @version 2.0
  *
  */
-public class PlateformeDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class PlateformeDaoTest extends AbstractDaoTest {
 
-   /** Bean Dao PlateformeDao. */
-   @Autowired
- PlateformeDao plateformeDao;
-   /** Bean Dao CollaborateurDao. */
-   @Autowired
- CollaborateurDao collaborateurDao;
-   /** valeur du nom pour la maj. */
-   @Autowired
- final String updatedNom = "PF mis a jour";
+	@Autowired
+	PlateformeDao plateformeDao;
 
-   /** Constructeur. */
-   public PlateformeDaoTest(){
+	@Autowired
+	CollaborateurDao collaborateurDao;
 
-   }
+	private final String updatedNom = "PF mis a jour";
 
-   /**
-    * Setter du bean Dao PlateformeDao.
-    * @param pDao est le bean Dao.
-    */
-   @Test
-public void setPlateformeDao(final PlateformeDao pDao){
-      this.plateformeDao = pDao;
-   }
+	/**
+	 * Test l'appel de la méthode findAll().
+	 */
+	@Test
+	public void testReadAllPlateformes() {
+		final List<Plateforme> plateformes = IterableUtils.toList(plateformeDao.findAll());
+		assertTrue(plateformes.size() == 2);
+	}
 
-   /**
-    * Setter du bean Dao CollaborateurDao.
-    * @param cDao est le bean Dao.
-    */
-   @Test
-public void setCollaborateurDao(final CollaborateurDao cDao){
-      this.collaborateurDao = cDao;
-   }
+	/**
+	 * Test l'appel de la méthode findByExcludedId().
+	 */
+	@Test
+	public void testFindByExcludedId() {
+		List<Plateforme> plateformes = plateformeDao.findByExcludedId(1);
+		assertTrue(plateformes.size() == 1);
+		plateformes = plateformeDao.findByExcludedId(10);
+		assertTrue(plateformes.size() == 2);
+	}
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   @Test
-public void testReadAllPlateformes(){
-      final List<Plateforme> plateformes = IterableUtils.toList(plateformeDao.findAll());
-      assertTrue(plateformes.size() == 2);
-   }
+	/**
+	 * Test l'appel de la méthode findByOrder().
+	 */
+	@Test
+	public void testFindByOrder() {
+		final List<Plateforme> list = plateformeDao.findByOrder();
+		assertTrue(list.size() == 2);
+		assertTrue(list.get(0).getNom().equals("PLATEFORME 1"));
+	}
 
-   /**
-    * Test l'appel de la méthode findByExcludedId().
-    */
-   @Test
-public void testFindByExcludedId(){
-      List<Plateforme> plateformes = plateformeDao.findByExcludedId(1);
-      assertTrue(plateformes.size() == 1);
-      plateformes = plateformeDao.findByExcludedId(10);
-      assertTrue(plateformes.size() == 2);
-   }
+	/**
+	 * Test l'appel de la méthode findByNom().
+	 */
+	@Test
+	public void testFindByNom() {
+		List<Plateforme> plateformes = plateformeDao.findByNom("PLATEFORME 1");
+		assertTrue(plateformes.size() == 1);
+		plateformes = plateformeDao.findByNom("PLATEFORME 15");
+		assertTrue(plateformes.size() == 0);
+	}
 
-   /**
-    * Test l'appel de la méthode findByOrder().
-    */
-   @Test
-public void testFindByOrder(){
-      final List<Plateforme> list = plateformeDao.findByOrder();
-      assertTrue(list.size() == 2);
-      assertTrue(list.get(0).getNom().equals("PLATEFORME 1"));
-   }
+	/**
+	 * Test l'appel de la méthode findByAlias().
+	 */
+	@Test
+	public void testFindByAlias() {
+		List<Plateforme> plateformes = plateformeDao.findByAlias("PF2");
+		assertTrue(plateformes.size() == 1);
+		plateformes = plateformeDao.findByAlias("PF5");
+		assertTrue(plateformes.size() == 0);
+	}
 
-   /**
-    * Test l'appel de la méthode findByNom().
-    */
-   @Test
-public void testFindByNom(){
-      List<Plateforme> plateformes = plateformeDao.findByNom("PLATEFORME 1");
-      assertTrue(plateformes.size() == 1);
-      plateformes = plateformeDao.findByNom("PLATEFORME 15");
-      assertTrue(plateformes.size() == 0);
-   }
+	/**
+	 * Test l'appel de la méthode findByCollaborateur().
+	 */
+	@Test
+	public void testFindByCollaborateur() {
+		Collaborateur c = collaborateurDao.findById(1).get();
+		List<Plateforme> plateformes = plateformeDao.findByCollaborateur(c);
+		assertTrue(plateformes.size() == 1);
+		c = collaborateurDao.findById(3).get();
+		plateformes = plateformeDao.findByCollaborateur(c);
+		assertTrue(plateformes.size() == 0);
+	}
 
-   /**
-    * Test l'appel de la méthode findByAlias().
-    */
-   @Test
-public void testFindByAlias(){
-      List<Plateforme> plateformes = plateformeDao.findByAlias("PF2");
-      assertTrue(plateformes.size() == 1);
-      plateformes = plateformeDao.findByAlias("PF5");
-      assertTrue(plateformes.size() == 0);
-   }
+	/**
+	 * Test l'appel de la méthode findByBanqueId().
+	 */
+	@Test
+	public void testFindByBanqueId() {
+		List<Plateforme> plateformes = plateformeDao.findByBanqueId(1);
+		assertTrue(plateformes.size() == 1);
+		plateformes = plateformeDao.findByBanqueId(5);
+		assertTrue(plateformes.size() == 0);
+	}
 
-   /**
-    * Test l'appel de la méthode findByCollaborateur().
-    */
-   @Test
-public void testFindByCollaborateur(){
-      Collaborateur c = collaborateurDao.findById(1);
-      List<Plateforme> plateformes = plateformeDao.findByCollaborateur(c);
-      assertTrue(plateformes.size() == 1);
-      c = collaborateurDao.findById(3);
-      plateformes = plateformeDao.findByCollaborateur(c);
-      assertTrue(plateformes.size() == 0);
-   }
+	/**
+	 * Test l'appel de la méthode findByIdWithFetch().
+	 */
+	@Test
+	public void testFindByIdWithFetch() {
+		final List<Plateforme> plateformes = plateformeDao.findByIdWithFetch(1);
+		final Plateforme plateforme = plateformes.get(0);
+		assertNotNull(plateforme);
+		assertTrue(plateforme.getCollaborateur().getCollaborateurId() == 1);
+	}
 
-   /**
-    * Test l'appel de la méthode findByBanqueId().
-    */
-   @Test
-public void testFindByBanqueId(){
-      List<Plateforme> plateformes = plateformeDao.findByBanqueId(1);
-      assertTrue(plateformes.size() == 1);
-      plateformes = plateformeDao.findByBanqueId(5);
-      assertTrue(plateformes.size() == 0);
-   }
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'une plateforme.
+	 * 
+	 * @throws Exception lance une exception en cas d'erreurs sur les données.
+	 */
+	@Test
+	@Transactional
+	@Rollback(false)
+	public void testCrudPlateforme() throws Exception {
 
-   /**
-    * Test l'appel de la méthode findByIdWithFetch().
-    */
-   @Test
-public void testFindByIdWithFetch(){
-      final List<Plateforme> plateformes = plateformeDao.findByIdWithFetch(1);
-      final Plateforme plateforme = plateformes.get(0);
-      assertNotNull(plateforme);
-      assertTrue(plateforme.getCollaborateur().getCollaborateurId() == 1);
-   }
+		final Plateforme p = new Plateforme();
+		final Collaborateur c = collaborateurDao.findById(3).get();
+		// on remplit la nouvelle plateforme avec les données du fichier
+		// "plateforme.properties"
+		try {
+			PopulateBeanForTest.populateBean(p, "plateforme");
+		} catch (final Exception exc) {
+			System.out.println(exc.getMessage());
+		}
+		p.setCollaborateur(c);
+		// Test de l'insertion
+		plateformeDao.save(p);
+		assertEquals(new Integer(3), p.getPlateformeId());
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression d'une plateforme.
-    * @throws Exception lance une exception en cas d'erreurs sur les données.
-    */
-   @Rollback(false)
-   @Test
-public void testCrudPlateforme() throws Exception{
+		// Test de la mise à jour
+		final Plateforme p2 = plateformeDao.findById(new Integer(3)).get();
+		assertNotNull(p2);
+		assertTrue(p2.getNom().equals("Plateforme 3"));
+		assertTrue(p2.getAlias().equals("PF3"));
+		assertNotNull(p2.getCollaborateur());
+		p2.setNom(updatedNom);
+		plateformeDao.save(p2);
+		assertTrue(plateformeDao.findById(new Integer(3)).get().getNom().equals(updatedNom));
 
-      final Plateforme p = new Plateforme();
-      final Collaborateur c = collaborateurDao.findById(3);
-      // on remplit la nouvelle plateforme avec les données du fichier
-      // "plateforme.properties"
-      try{
-         PopulateBeanForTest.populateBean(p, "plateforme");
-      }catch(final Exception exc){
-         System.out.println(exc.getMessage());
-      }
-      p.setCollaborateur(c);
-      // Test de l'insertion
-      plateformeDao.save(p);
-      assertEquals(new Integer(3), p.getPlateformeId());
+		// Test de la délétion
+		plateformeDao.deleteById(new Integer(3));
+		assertFalse(plateformeDao.findById(new Integer(3)).isPresent());
+	}
 
-      // Test de la mise à jour
-      final Plateforme p2 = plateformeDao.findById(new Integer(3));
-      assertNotNull(p2);
-      assertTrue(p2.getNom().equals("Plateforme 3"));
-      assertTrue(p2.getAlias().equals("PF3"));
-      assertNotNull(p2.getCollaborateur());
-      p2.setNom(updatedNom);
-      plateformeDao.save(p2);
-      assertTrue(plateformeDao.findById(new Integer(3)).getNom().equals(updatedNom));
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final String nom = "PF1";
+		final String nom2 = "PF2";
+		final Plateforme p1 = new Plateforme();
+		p1.setNom(nom);
+		final Plateforme p2 = new Plateforme();
+		p2.setNom(nom);
 
-      // Test de la délétion
-      plateformeDao.deleteById(new Integer(3));
-      assertFalse(plateformeDao.findById(new Integer(3)).isPresent());
+		// L'objet 1 n'est pas égal à null
+		assertFalse(p1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(p1.equals(p1));
+		// 2 objets sont égaux entre eux
+		assertTrue(p1.equals(p2));
+		assertTrue(p2.equals(p1));
 
-   }
+		// Vérification de la différenciation de 2 objets
+		p2.setNom(nom2);
+		assertFalse(p1.equals(p2));
+		assertFalse(p2.equals(p1));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   @Test
-public void testEquals(){
-      final String nom = "PF1";
-      final String nom2 = "PF2";
-      final Plateforme p1 = new Plateforme();
-      p1.setNom(nom);
-      final Plateforme p2 = new Plateforme();
-      p2.setNom(nom);
+		p2.setNom(null);
+		assertFalse(p1.equals(p2));
+		assertFalse(p2.equals(p1));
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(p1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(p1.equals(p1));
-      // 2 objets sont égaux entre eux
-      assertTrue(p1.equals(p2));
-      assertTrue(p2.equals(p1));
+		p1.setNom(null);
+		assertTrue(p1.equals(p2));
+		p2.setNom(nom);
+		assertFalse(p1.equals(p2));
 
-      // Vérification de la différenciation de 2 objets
-      p2.setNom(nom2);
-      assertFalse(p1.equals(p2));
-      assertFalse(p2.equals(p1));
+		final Categorie c = new Categorie();
+		assertFalse(p1.equals(c));
 
-      p2.setNom(null);
-      assertFalse(p1.equals(p2));
-      assertFalse(p2.equals(p1));
+	}
 
-      p1.setNom(null);
-      assertTrue(p1.equals(p2));
-      p2.setNom(nom);
-      assertFalse(p1.equals(p2));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
+		final String nom = "PF1";
+		final Plateforme p1 = new Plateforme(1, nom, "");
+		p1.setNom(nom);
+		final Plateforme p2 = new Plateforme(2, nom, "");
+		p2.setNom(nom);
+		final Plateforme p3 = new Plateforme(3, nom, "");
+		p3.setNom(null);
+		assertTrue(p3.hashCode() > 0);
 
-      final Categorie c = new Categorie();
-      assertFalse(p1.equals(c));
+		final int hash = p1.hashCode();
+		// 2 objets égaux ont le même hashcode
+		assertTrue(p1.hashCode() == p2.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		assertTrue(hash == p1.hashCode());
+		assertTrue(hash == p1.hashCode());
+		assertTrue(hash == p1.hashCode());
+		assertTrue(hash == p1.hashCode());
 
-   }
+	}
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   @Test
-public void testHashCode(){
-      final String nom = "PF1";
-      final Plateforme p1 = new Plateforme(1, nom, "");
-      p1.setNom(nom);
-      final Plateforme p2 = new Plateforme(2, nom, "");
-      p2.setNom(nom);
-      final Plateforme p3 = new Plateforme(3, nom, "");
-      p3.setNom(null);
-      assertTrue(p3.hashCode() > 0);
+	/**
+	 * Test la méthode clone.
+	 */
+	@Test
+	@Transactional
+	@Rollback(false)
+	public void testClone() {
+		final Plateforme pf1 = plateformeDao.findById(1).get();
+		final Plateforme pf2 = pf1.clone();
+		assertTrue(pf1.equals(pf2));
 
-      final int hash = p1.hashCode();
-      // 2 objets égaux ont le même hashcode
-      assertTrue(p1.hashCode() == p2.hashCode());
-      // un même objet garde le même hashcode dans le temps
-      assertTrue(hash == p1.hashCode());
-      assertTrue(hash == p1.hashCode());
-      assertTrue(hash == p1.hashCode());
-      assertTrue(hash == p1.hashCode());
+		if (pf1.getPlateformeId() != null) {
+			assertTrue(pf1.getPlateformeId() == pf2.getPlateformeId());
+		} else {
+			assertNull(pf2.getPlateformeId());
+		}
 
-   }
+		if (pf1.getCollaborateur() != null) {
+			assertTrue(pf1.getCollaborateur().equals(pf2.getCollaborateur()));
+		} else {
+			assertNull(pf2.getCollaborateur());
+		}
 
-   /**
-    * Test la méthode clone.
-    */
-   @Test
-public void testClone(){
-      final Plateforme pf1 = plateformeDao.findById(1);
-      final Plateforme pf2 = pf1.clone();
-      assertTrue(pf1.equals(pf2));
+		if (pf1.getAlias() != null) {
+			assertTrue(pf1.getAlias().equals(pf2.getAlias()));
+		} else {
+			assertNull(pf2.getAlias());
+		}
 
-      if(pf1.getPlateformeId() != null){
-         assertTrue(pf1.getPlateformeId() == pf2.getPlateformeId());
-      }else{
-         assertNull(pf2.getPlateformeId());
-      }
+		if (pf1.getNom() != null) {
+			assertTrue(pf1.getNom().equals(pf2.getNom()));
+		} else {
+			assertNull(pf2.getNom());
+		}
 
-      if(pf1.getCollaborateur() != null){
-         assertTrue(pf1.getCollaborateur().equals(pf2.getCollaborateur()));
-      }else{
-         assertNull(pf2.getCollaborateur());
-      }
+		if (pf1.getBanques() != null) {
+			assertTrue(pf1.getBanques().equals(pf2.getBanques()));
+		} else {
+			assertNull(pf2.getBanques());
+		}
 
-      if(pf1.getAlias() != null){
-         assertTrue(pf1.getAlias().equals(pf2.getAlias()));
-      }else{
-         assertNull(pf2.getAlias());
-      }
+		if (pf1.getConteneurPlateformes() != null) {
+			assertTrue(pf1.getConteneurPlateformes().equals(pf2.getConteneurPlateformes()));
+		} else {
+			assertNull(pf2.getConteneurPlateformes());
+		}
 
-      if(pf1.getNom() != null){
-         assertTrue(pf1.getNom().equals(pf2.getNom()));
-      }else{
-         assertNull(pf2.getNom());
-      }
+		if (pf1.getUtilisateurs() != null) {
+			assertTrue(pf1.getUtilisateurs().equals(pf2.getUtilisateurs()));
+		} else {
+			assertNull(pf2.getUtilisateurs());
+		}
 
-      if(pf1.getBanques() != null){
-         assertTrue(pf1.getBanques().equals(pf2.getBanques()));
-      }else{
-         assertNull(pf2.getBanques());
-      }
+		if (pf1.getImprimantes() != null) {
+			assertTrue(pf1.getImprimantes().equals(pf2.getImprimantes()));
+		} else {
+			assertNull(pf2.getImprimantes());
+		}
 
-      if(pf1.getConteneurPlateformes() != null){
-         assertTrue(pf1.getConteneurPlateformes().equals(pf2.getConteneurPlateformes()));
-      }else{
-         assertNull(pf2.getConteneurPlateformes());
-      }
-
-      if(pf1.getUtilisateurs() != null){
-         assertTrue(pf1.getUtilisateurs().equals(pf2.getUtilisateurs()));
-      }else{
-         assertNull(pf2.getUtilisateurs());
-      }
-
-      if(pf1.getImprimantes() != null){
-         assertTrue(pf1.getImprimantes().equals(pf2.getImprimantes()));
-      }else{
-         assertNull(pf2.getImprimantes());
-      }
-
-      if(pf1.getModeles() != null){
-         assertTrue(pf1.getModeles().equals(pf2.getModeles()));
-      }else{
-         assertNull(pf2.getModeles());
-      }
-   }
+		if (pf1.getModeles() != null) {
+			assertTrue(pf1.getModeles().equals(pf2.getModeles()));
+		} else {
+			assertNull(pf2.getModeles());
+		}
+	}
 
 }

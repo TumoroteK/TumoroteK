@@ -38,6 +38,16 @@ package fr.aphp.tumorotek.dao.test.contexte;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
 
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
 import fr.aphp.tumorotek.dao.contexte.ProtocoleDao;
@@ -49,175 +59,157 @@ import fr.aphp.tumorotek.model.contexte.Protocole;
 
 /**
  *
- * Classe de test pour le DAO ProtocoleDao et le
- * bean du domaine Protocole.
+ * Classe de test pour le DAO ProtocoleDao et le bean du domaine Protocole.
  * Classe de test créée le 22/01/12.
  *
  * @author Mathieu BARTHELEMY
  * @version 2.0.6
  *
  */
-public class ProtocoleDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class ProtocoleDaoTest extends AbstractDaoTest {
 
+	@Autowired
+	ProtocoleDao protocoleDao;
 
-   @Autowired
- ProtocoleDao protocoleDao;
-   @Autowired
- PlateformeDao plateformeDao;
+	@Autowired
+	PlateformeDao plateformeDao;
 
-   /**
-    * Constructeur.
-    */
-   public ProtocoleDaoTest(){}
+	/**
+	 * Test l'appel de la méthode toString().
+	 */
+	@Test
+	public void testToString() {
+		Protocole p1 = protocoleDao.findById(1).get();
+		assertTrue(p1.toString().equals("{" + p1.getNom() + "}"));
+		p1 = new Protocole();
+		assertTrue(p1.toString().equals("{Empty Protocole}"));
+	}
 
-   /**
-    * Setter du bean Dao.
-    * @param ctDao est le bean Dao.
-    */
-   @Test
-public void setProtocoleDao(final ProtocoleDao pDao){
-      this.protocoleDao = pDao;
-   }
+	/**
+	 * Test l'appel de la méthode findAll().
+	 */
+	@Test
+	public void testReadAllProtocole() {
+		final List<Protocole> types = IterableUtils.toList(protocoleDao.findAll());
+		assertTrue(types.size() == 3);
+	}
 
-   @Test
-public void setPlateformeDao(final PlateformeDao pDao){
-      this.plateformeDao = pDao;
-   }
+	@Test
+	public void testFindByOrder() {
+		Plateforme pf = plateformeDao.findById(1).get();
+		List<? extends TKThesaurusObject> list = protocoleDao.findByPfOrder(pf);
+		assertTrue(list.size() == 2);
+		assertTrue(list.get(0).getNom().equals("OFSEP"));
+		pf = plateformeDao.findById(2).get();
+		list = protocoleDao.findByPfOrder(pf);
+		assertTrue(list.size() == 1);
+		list = protocoleDao.findByPfOrder(null);
+		assertTrue(list.size() == 0);
+	}
 
-   /**
-    * Test l'appel de la méthode toString().
-    */
-   @Test
-public void testToString(){
-      Protocole p1 = protocoleDao.findById(1);
-      assertTrue(p1.toString().equals("{" + p1.getNom() + "}"));
-      p1 = new Protocole();
-      assertTrue(p1.toString().equals("{Empty Protocole}"));
-   }
+	@Test
+	public void testFindByNom() {
+		List<Protocole> types = protocoleDao.findByNom("TYSABRI");
+		assertTrue(types.size() == 1);
+		types = protocoleDao.findByNom("EDMUS");
+		assertTrue(types.size() == 1);
+		types = protocoleDao.findByNom("OF%");
+		assertTrue(types.size() == 1);
+		types = protocoleDao.findByNom(null);
+		assertTrue(types.size() == 0);
+	}
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   @Test
-public void testReadAllProtocole(){
-      final List<Protocole> types = IterableUtils.toList(protocoleDao.findAll());
-      assertTrue(types.size() == 3);
-   }
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'un protcole.
+	 * 
+	 * @throws Exception lance une exception en cas de problème lors du CRUD.
+	 */
+	@Rollback(false)
+	@Test
+	public void testCrudProtocole() throws Exception {
+		final Protocole p = new Protocole();
+		p.setNom("MELBASE");
+		p.setPlateforme(plateformeDao.findById(1).get());
+		// Test de l'insertion
+		protocoleDao.save(p);
+		assertEquals(new Integer(4), p.getId());
 
-   @Test
-public void testFindByOrder(){
-      Plateforme pf = plateformeDao.findById(1);
-      List<? extends TKThesaurusObject> list = protocoleDao.findByPfOrder(pf);
-      assertTrue(list.size() == 2);
-      assertTrue(list.get(0).getNom().equals("OFSEP"));
-      pf = plateformeDao.findById(2);
-      list = protocoleDao.findByPfOrder(pf);
-      assertTrue(list.size() == 1);
-      list = protocoleDao.findByPfOrder(null);
-      assertTrue(list.size() == 0);
-   }
+		// Test de la mise à jour
+		final Protocole p2 = protocoleDao.findByNom("MELBASE").get(0);
+		assertNotNull(p2);
+		assertTrue(p2.getNom().equals("MELBASE"));
+		p2.setNom("XEOGR");
+		protocoleDao.save(p2);
+		assertTrue(protocoleDao.findById(new Integer(4)).get().getNom().equals("XEOGR"));
 
-   @Test
-public void testFindByNom(){
-      List<Protocole> types = protocoleDao.findByNom("TYSABRI");
-      assertTrue(types.size() == 1);
-      types = protocoleDao.findByNom("EDMUS");
-      assertTrue(types.size() == 1);
-      types = protocoleDao.findByNom("OF%");
-      assertTrue(types.size() == 1);
-      types = protocoleDao.findByNom(null);
-      assertTrue(types.size() == 0);
-   }
+		// Test de la délétion
+		protocoleDao.deleteById(new Integer(4));
+		assertFalse(protocoleDao.findById(new Integer(4)).isPresent());
+	}
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression 
-    * d'un protcole.
-    * @throws Exception lance une exception en cas de problème lors du CRUD.
-    */
-   @Rollback(false)
-   @Test
-public void testCrudProtocole() throws Exception{
-      final Protocole p = new Protocole();
-      p.setNom("MELBASE");
-      p.setPlateforme(plateformeDao.findById(1));
-      // Test de l'insertion
-      protocoleDao.save(p);
-      assertEquals(new Integer(4), p.getProtocoleId());
+	/**
+	 * Test des méthodes surchargées "equals" et hashcode.
+	 */
+	@Test
+	public void testEqualsAndHashCode() {
+		final Protocole p1 = new Protocole();
+		final Protocole p2 = new Protocole();
+		assertFalse(p1.equals(null));
+		assertNotNull(p2);
+		assertTrue(p1.equals(p1));
+		assertTrue(p1.equals(p2));
+		assertTrue(p1.hashCode() == p2.hashCode());
 
-      // Test de la mise à jour
-      final Protocole p2 = protocoleDao.findByNom("MELBASE").get(0);
-      assertNotNull(p2);
-      assertTrue(p2.getNom().equals("MELBASE"));
-      p2.setNom("XEOGR");
-      protocoleDao.save(p2);
-      assertTrue(protocoleDao.findById(new Integer(4)).getNom().equals("XEOGR"));
+		final String s1 = "nom1";
+		final String s2 = "nom2";
+		final String s3 = new String("nom2");
 
-      // Test de la délétion
-      protocoleDao.deleteById(new Integer(4));
-      assertFalse(protocoleDao.findById(new Integer(4)).isPresent());
-   }
+		p1.setNom(s1);
+		assertFalse(p1.equals(p2));
+		assertFalse(p2.equals(p1));
+		assertTrue(p1.hashCode() != p2.hashCode());
+		p2.setNom(s2);
+		assertFalse(p1.equals(p2));
+		assertFalse(p2.equals(p1));
+		assertTrue(p1.hashCode() != p2.hashCode());
+		p1.setNom(s2);
+		assertTrue(p1.equals(p2));
+		assertTrue(p2.equals(p1));
+		assertTrue(p1.hashCode() == p2.hashCode());
+		p1.setNom(s3);
+		assertTrue(p1.equals(p2));
+		assertTrue(p2.equals(p1));
+		assertTrue(p1.hashCode() == p2.hashCode());
 
-   /**
-    * Test des méthodes surchargées "equals" et hashcode.
-    */
-   @Test
-public void testEqualsAndHashCode(){
-      final Protocole p1 = new Protocole();
-      final Protocole p2 = new Protocole();
-      assertFalse(p1.equals(null));
-      assertNotNull(p2);
-      assertTrue(p1.equals(p1));
-      assertTrue(p1.equals(p2));
-      assertTrue(p1.hashCode() == p2.hashCode());
+		final Plateforme f1 = plateformeDao.findById(1).get();
+		final Plateforme f2 = plateformeDao.findById(2).get();
+		final Plateforme f3 = new Plateforme();
+		f3.setNom(f2.getNom());
+		assertTrue(f3.equals(f2));
 
-      final String s1 = "nom1";
-      final String s2 = "nom2";
-      final String s3 = new String("nom2");
+		p1.setPlateforme(f1);
+		assertFalse(p1.equals(p2));
+		assertFalse(p2.equals(p1));
+		assertTrue(p1.hashCode() != p2.hashCode());
+		p2.setPlateforme(f2);
+		assertFalse(p1.equals(p2));
+		assertFalse(p2.equals(p1));
+		assertTrue(p1.hashCode() != p2.hashCode());
+		p1.setPlateforme(f2);
+		assertTrue(p1.equals(p2));
+		assertTrue(p2.equals(p1));
+		assertTrue(p1.hashCode() == p2.hashCode());
+		p1.setPlateforme(f3);
+		assertTrue(p1.equals(p2));
+		assertTrue(p2.equals(p1));
+		assertTrue(p1.hashCode() == p2.hashCode());
 
-      p1.setNom(s1);
-      assertFalse(p1.equals(p2));
-      assertFalse(p2.equals(p1));
-      assertTrue(p1.hashCode() != p2.hashCode());
-      p2.setNom(s2);
-      assertFalse(p1.equals(p2));
-      assertFalse(p2.equals(p1));
-      assertTrue(p1.hashCode() != p2.hashCode());
-      p1.setNom(s2);
-      assertTrue(p1.equals(p2));
-      assertTrue(p2.equals(p1));
-      assertTrue(p1.hashCode() == p2.hashCode());
-      p1.setNom(s3);
-      assertTrue(p1.equals(p2));
-      assertTrue(p2.equals(p1));
-      assertTrue(p1.hashCode() == p2.hashCode());
-
-      final Plateforme f1 = plateformeDao.findById(1);
-      final Plateforme f2 = plateformeDao.findById(2);
-      final Plateforme f3 = new Plateforme();
-      f3.setNom(f2.getNom());
-      assertTrue(f3.equals(f2));
-
-      p1.setPlateforme(f1);
-      assertFalse(p1.equals(p2));
-      assertFalse(p2.equals(p1));
-      assertTrue(p1.hashCode() != p2.hashCode());
-      p2.setPlateforme(f2);
-      assertFalse(p1.equals(p2));
-      assertFalse(p2.equals(p1));
-      assertTrue(p1.hashCode() != p2.hashCode());
-      p1.setPlateforme(f2);
-      assertTrue(p1.equals(p2));
-      assertTrue(p2.equals(p1));
-      assertTrue(p1.hashCode() == p2.hashCode());
-      p1.setPlateforme(f3);
-      assertTrue(p1.equals(p2));
-      assertTrue(p2.equals(p1));
-      assertTrue(p1.hashCode() == p2.hashCode());
-
-      // dummy
-      final Categorie c = new Categorie();
-      assertFalse(p1.equals(c));
-   }
+		// dummy
+		final Categorie c = new Categorie();
+		assertFalse(p1.equals(c));
+	}
 
 }

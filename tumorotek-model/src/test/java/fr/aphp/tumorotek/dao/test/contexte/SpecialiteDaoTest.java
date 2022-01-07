@@ -38,6 +38,16 @@ package fr.aphp.tumorotek.dao.test.contexte;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
 
 import fr.aphp.tumorotek.dao.contexte.SpecialiteDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
@@ -54,179 +64,164 @@ import fr.aphp.tumorotek.model.contexte.Specialite;
  * @version 2.0
  *
  */
-public class SpecialiteDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class SpecialiteDaoTest extends AbstractDaoTest {
 
+	@Autowired
+	SpecialiteDao specialiteDao;
 
-   @Autowired
- SpecialiteDao specialiteDao;
+	private final String updatedNom = "Spe mise a jour";
 
-   /** valeur du nom pour la maj. */
-   @Autowired
- final String updatedNom = "Spe mise a jour";
+	/**
+	 * Test l'appel de la méthode findAll().
+	 */
+	@Test
+	public void testReadAllSpecialites() {
+		final List<Specialite> specialites = IterableUtils.toList(specialiteDao.findAll());
+		assertTrue(specialites.size() == 5);
+	}
 
-   /** Constructeur par défaut. **/
-   public SpecialiteDaoTest(){
+	/**
+	 * Test l'appel de la méthode findByOrder().
+	 */
+	@Test
+	public void testFindByOrder() {
+		final List<Specialite> list = specialiteDao.findByOrder();
+		assertTrue(list.size() == 5);
+		assertTrue(list.get(1).getNom().equals("BIOCHIMIE"));
+	}
 
-   }
+	/**
+	 * Test l'appel de la méthode findByNom().
+	 */
+	@Test
+	public void testFindByNom() {
+		List<Specialite> specialites = specialiteDao.findByNom("DERMATOLOGIE");
+		assertTrue(specialites.size() == 1);
+		specialites = specialiteDao.findByNom("SPE5");
+		assertTrue(specialites.size() == 0);
+	}
 
-   /**
-    * Setter du bean Dao.
-    * @param sDao est le bean Dao.
-    */
-   @Test
-public void setSpecialiteDao(final SpecialiteDao sDao){
-      this.specialiteDao = sDao;
-   }
+	/**
+	 * Test l'appel de la méthode findByCollaborateurId().
+	 */
+	@Test
+	public void testFindByCollaborateurId() {
+		List<Specialite> specialites = specialiteDao.findByCollaborateurId(6);
+		assertTrue(specialites.size() == 1);
+		assertTrue(specialites.get(0).getId() == 1);
+		specialites = specialiteDao.findByCollaborateurId(10);
+		assertTrue(specialites.size() == 0);
+	}
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   @Test
-public void testReadAllSpecialites(){
-      final List<Specialite> specialites = IterableUtils.toList(specialiteDao.findAll());
-      assertTrue(specialites.size() == 5);
-   }
+	/**
+	 * Test l'appel de la méthode findByExcludedId().
+	 */
+	@Test
+	public void testFindByExcludedId() {
+		List<Specialite> liste = specialiteDao.findByExcludedId(1);
+		assertTrue(liste.size() == 4);
+		final Specialite spe = liste.get(0);
+		assertNotNull(spe);
+		assertTrue(spe.getId() == 2);
 
-   /**
-    * Test l'appel de la méthode findByOrder().
-    */
-   @Test
-public void testFindByOrder(){
-      final List<Specialite> list = specialiteDao.findByOrder();
-      assertTrue(list.size() == 5);
-      assertTrue(list.get(1).getNom().equals("BIOCHIMIE"));
-   }
+		liste = specialiteDao.findByExcludedId(15);
+		assertTrue(liste.size() == 5);
+	}
 
-   /**
-    * Test l'appel de la méthode findByNom().
-    */
-   @Test
-public void testFindByNom(){
-      List<Specialite> specialites = specialiteDao.findByNom("DERMATOLOGIE");
-      assertTrue(specialites.size() == 1);
-      specialites = specialiteDao.findByNom("SPE5");
-      assertTrue(specialites.size() == 0);
-   }
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'une spécialité.
+	 * 
+	 * @throws Exception lance une exception sur le traitement des données.
+	 */
+	@Rollback(false)
+	@Test
+	public void testCrudSpecialite() throws Exception {
 
-   /**
-    * Test l'appel de la méthode findByCollaborateurId().
-    */
-   @Test
-public void testFindByCollaborateurId(){
-      List<Specialite> specialites = specialiteDao.findByCollaborateurId(6);
-      assertTrue(specialites.size() == 1);
-      assertTrue(specialites.get(0).getSpecialiteId() == 1);
-      specialites = specialiteDao.findByCollaborateurId(10);
-      assertTrue(specialites.size() == 0);
-   }
+		final Specialite s = new Specialite();
+		s.setNom("NEW SPE");
+		// Test de l'insertion
+		specialiteDao.save(s);
+		assertEquals(new Integer(6), s.getId());
 
-   /**
-    * Test l'appel de la méthode findByExcludedId().
-    */
-   @Test
-public void testFindByExcludedId(){
-      List<Specialite> liste = specialiteDao.findByExcludedId(1);
-      assertTrue(liste.size() == 4);
-      final Specialite spe = liste.get(0);
-      assertNotNull(spe);
-      assertTrue(spe.getSpecialiteId() == 2);
+		// Test de la mise à jour
+		final Specialite s2 = specialiteDao.findById(6).get();
+		assertNotNull(s2);
+		assertTrue(s2.getNom().equals("NEW SPE"));
+		s2.setNom(updatedNom);
+		specialiteDao.save(s2);
+		assertTrue(specialiteDao.findById(new Integer(6)).get().getNom().equals(updatedNom));
 
-      liste = specialiteDao.findByExcludedId(15);
-      assertTrue(liste.size() == 5);
-   }
+		// Test de la délétion
+		specialiteDao.deleteById(new Integer(6));
+		assertFalse(specialiteDao.findById(new Integer(6)).isPresent());
+	}
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression d'une spécialité.
-    * @throws Exception lance une exception sur le traitement des données.
-    */
-   @Rollback(false)
-   @Test
-public void testCrudSpecialite() throws Exception{
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final String nom = "Nom1";
+		final String nom2 = "Nom2";
+		final Specialite s1 = new Specialite();
+		s1.setNom(nom);
+		final Specialite s2 = new Specialite();
+		s2.setNom(nom);
 
-      final Specialite s = new Specialite();
-      s.setNom("NEW SPE");
-      // Test de l'insertion
-      specialiteDao.save(s);
-      assertEquals(new Integer(6), s.getSpecialiteId());
+		// L'objet 1 n'est pas égal à null
+		assertFalse(s1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(s1.equals(s1));
+		// 2 objets sont égaux entre eux
+		assertTrue(s1.equals(s2));
+		assertTrue(s2.equals(s1));
 
-      // Test de la mise à jour
-      final Specialite s2 = specialiteDao.findById(6);
-      assertNotNull(s2);
-      assertTrue(s2.getNom().equals("NEW SPE"));
-      s2.setNom(updatedNom);
-      specialiteDao.save(s2);
-      assertTrue(specialiteDao.findById(new Integer(6)).getNom().equals(updatedNom));
+		// Vérification de la différenciation de 2 objets
+		s2.setNom(nom2);
+		assertFalse(s1.equals(s2));
+		assertFalse(s2.equals(s1));
 
-      // Test de la délétion
-      specialiteDao.deleteById(new Integer(6));
-      assertFalse(specialiteDao.findById(new Integer(6)).isPresent());
+		s2.setNom(null);
+		assertFalse(s1.equals(s2));
+		assertFalse(s2.equals(s1));
+		s1.setNom(null);
+		assertTrue(s1.equals(s2));
+		s2.setNom(nom);
+		assertFalse(s1.equals(s2));
 
-   }
+		final Categorie c = new Categorie();
+		assertFalse(s1.equals(c));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   @Test
-public void testEquals(){
-      final String nom = "Nom1";
-      final String nom2 = "Nom2";
-      final Specialite s1 = new Specialite();
-      s1.setNom(nom);
-      final Specialite s2 = new Specialite();
-      s2.setNom(nom);
+	}
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(s1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(s1.equals(s1));
-      // 2 objets sont égaux entre eux
-      assertTrue(s1.equals(s2));
-      assertTrue(s2.equals(s1));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
+		final String nom = "Nom1";
+		final Specialite s1 = new Specialite();
+		s1.setId(1);
+		s1.setNom(nom);
+		final Specialite s2 = new Specialite();
+		s1.setId(2);
+		s2.setNom(nom);
+		final Specialite s3 = new Specialite();
+		s3.setNom(null);
+		assertTrue(s3.hashCode() > 0);
 
-      // Vérification de la différenciation de 2 objets
-      s2.setNom(nom2);
-      assertFalse(s1.equals(s2));
-      assertFalse(s2.equals(s1));
+		final int hash = s1.hashCode();
+		// 2 objets égaux ont le même hashcode
+		assertTrue(s1.hashCode() == s2.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		assertTrue(hash == s1.hashCode());
+		assertTrue(hash == s1.hashCode());
+		assertTrue(hash == s1.hashCode());
+		assertTrue(hash == s1.hashCode());
 
-      s2.setNom(null);
-      assertFalse(s1.equals(s2));
-      assertFalse(s2.equals(s1));
-      s1.setNom(null);
-      assertTrue(s1.equals(s2));
-      s2.setNom(nom);
-      assertFalse(s1.equals(s2));
-
-      final Categorie c = new Categorie();
-      assertFalse(s1.equals(c));
-
-   }
-
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   @Test
-public void testHashCode(){
-      final String nom = "Nom1";
-      final Specialite s1 = new Specialite();
-      s1.setSpecialiteId(1);
-      s1.setNom(nom);
-      final Specialite s2 = new Specialite();
-      s1.setSpecialiteId(2);
-      s2.setNom(nom);
-      final Specialite s3 = new Specialite();
-      s3.setNom(null);
-      assertTrue(s3.hashCode() > 0);
-
-      final int hash = s1.hashCode();
-      // 2 objets égaux ont le même hashcode
-      assertTrue(s1.hashCode() == s2.hashCode());
-      // un même objet garde le même hashcode dans le temps
-      assertTrue(hash == s1.hashCode());
-      assertTrue(hash == s1.hashCode());
-      assertTrue(hash == s1.hashCode());
-      assertTrue(hash == s1.hashCode());
-
-   }
+	}
 
 }

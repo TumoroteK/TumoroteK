@@ -38,6 +38,16 @@ package fr.aphp.tumorotek.dao.test.contexte;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
 
 import fr.aphp.tumorotek.dao.contexte.CategorieDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
@@ -53,182 +63,169 @@ import fr.aphp.tumorotek.model.contexte.Categorie;
  * @version 2.0
  *
  */
-public class CategorieDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class CategorieDaoTest extends AbstractDaoTest {
 
+	@Autowired
+	CategorieDao categorieDao;
 
-   @Autowired
- CategorieDao categorieDao;
+	/** Valeur du nom pour la maj. */
+	private final String updatedNom = "Cat mis a jour";
 
-   /** Valeur du nom pour la maj. */
-   @Autowired
- final String updatedNom = "Cat mis a jour";
+	/**
+	 * Test l'appel de la méthode findAll().
+	 */
+	@Test
+	public void testReadAllCategories() {
+		final List<Categorie> categories = IterableUtils.toList(categorieDao.findAll());
+		assertTrue(categories.size() == 2);
+	}
 
-   /**
-    * Constructeur.
-    */
-   public CategorieDaoTest(){}
+	/**
+	 * Test l'appel de la méthode findByOrder().
+	 */
+	@Test
+	public void testFindByOrder() {
+		final List<Categorie> list = categorieDao.findByOrder();
+		assertTrue(list.size() == 2);
+		assertTrue(list.get(0).getNom().equals("CAT1"));
+	}
 
-   /**
-    * Setter du bean Dao.
-    * @param cDao est le bean Dao.
-    */
-   @Test
-public void setCategorieDaoJpa(final CategorieDao cDao){
-      this.categorieDao = cDao;
-   }
+	/**
+	 * Test l'appel de la méthode findByNom().
+	 */
+	@Test
+	public void testFindByNom() {
+		List<Categorie> categories = categorieDao.findByNom("CAT1");
+		assertTrue(categories.size() == 1);
+		categories = categorieDao.findByNom("CAT5");
+		assertTrue(categories.size() == 0);
+		categories = categorieDao.findByNom("CA%");
+		assertTrue(categories.size() == 2);
+	}
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   @Test
-public void testReadAllCategories(){
-      final List<Categorie> categories = IterableUtils.toList(categorieDao.findAll());
-      assertTrue(categories.size() == 2);
-   }
+	/**
+	 * Test l'appel de la méthode findByEtablissementId().
+	 */
+	@Test
+	public void testFindByEtablissementId() {
+		List<Categorie> categories = categorieDao.findByEtablissementId(1);
+		assertTrue(categories.size() == 1);
+		categories = categorieDao.findByEtablissementId(4);
+		assertTrue(categories.size() == 1);
+	}
 
-   /**
-    * Test l'appel de la méthode findByOrder().
-    */
-   @Test
-public void testFindByOrder(){
-      final List<Categorie> list = categorieDao.findByOrder();
-      assertTrue(list.size() == 2);
-      assertTrue(list.get(0).getNom().equals("CAT1"));
-   }
+	/**
+	 * Test l'appel de la méthode findByExcludedId().
+	 */
+	@Test
+	public void testFindByExcludedId() {
+		List<Categorie> liste = categorieDao.findByExcludedId(1);
+		assertTrue(liste.size() == 1);
+		final Categorie cat = liste.get(0);
+		assertNotNull(cat);
+		assertTrue(cat.getId() == 2);
 
-   /**
-    * Test l'appel de la méthode findByNom().
-    */
-   @Test
-public void testFindByNom(){
-      List<Categorie> categories = categorieDao.findByNom("CAT1");
-      assertTrue(categories.size() == 1);
-      categories = categorieDao.findByNom("CAT5");
-      assertTrue(categories.size() == 0);
-      categories = categorieDao.findByNom("CA%");
-      assertTrue(categories.size() == 2);
-   }
+		liste = categorieDao.findByExcludedId(15);
+		assertTrue(liste.size() == 2);
+	}
 
-   /**
-    * Test l'appel de la méthode findByEtablissementId().
-    */
-   @Test
-public void testFindByEtablissementId(){
-      List<Categorie> categories = categorieDao.findByEtablissementId(1);
-      assertTrue(categories.size() == 1);
-      categories = categorieDao.findByEtablissementId(4);
-      assertTrue(categories.size() == 1);
-   }
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'une catégorie.
+	 * 
+	 * @throws Exception lance une exception en cas de problème lors du CRUD.
+	 */
+	@Rollback(false)
+	@Test
+	public void testCrudCategorie() throws Exception {
+		final Categorie c = new Categorie();
 
-   /**
-    * Test l'appel de la méthode findByExcludedId().
-    */
-   @Test
-public void testFindByExcludedId(){
-      List<Categorie> liste = categorieDao.findByExcludedId(1);
-      assertTrue(liste.size() == 1);
-      final Categorie cat = liste.get(0);
-      assertNotNull(cat);
-      assertTrue(cat.getId() == 2);
+		c.setNom("CAT3");
+		// Test de l'insertion
+		categorieDao.save(c);
+		assertEquals(new Integer(3), c.getId());
 
-      liste = categorieDao.findByExcludedId(15);
-      assertTrue(liste.size() == 2);
-   }
+		// Test de la mise à jour
+		final Categorie c2 = categorieDao.findById(new Integer(3)).get();
+		assertNotNull(c2);
+		assertTrue(c2.getNom().equals("CAT3"));
+		c2.setNom(updatedNom);
+		categorieDao.save(c2);
+		assertTrue(categorieDao.findById(new Integer(3)).get().getNom().equals(updatedNom));
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression d'une catégorie.
-    * @throws Exception lance une exception en cas de problème lors du CRUD.
-    */
-   @Rollback(false)
-   @Test
-public void testCrudCategorie() throws Exception{
-      final Categorie c = new Categorie();
+		// Test de la délétion
+		categorieDao.deleteById(new Integer(3));
+		assertFalse(categorieDao.findById(new Integer(3)).isPresent());
 
-      c.setNom("CAT3");
-      // Test de l'insertion
-      categorieDao.save(c);
-      assertEquals(new Integer(3), c.getId());
+	}
 
-      // Test de la mise à jour
-      final Categorie c2 = categorieDao.findById(new Integer(3));
-      assertNotNull(c2);
-      assertTrue(c2.getNom().equals("CAT3"));
-      c2.setNom(updatedNom);
-      categorieDao.save(c2);
-      assertTrue(categorieDao.findById(new Integer(3)).getNom().equals(updatedNom));
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final String nom = "Categorie";
+		final String nom2 = "Categorie2";
+		final Categorie c1 = new Categorie();
+		c1.setNom(nom);
+		final Categorie c2 = new Categorie();
+		c2.setNom(nom);
 
-      // Test de la délétion
-      categorieDao.deleteById(new Integer(3));
-      assertFalse(categorieDao.findById(new Integer(3)).isPresent());
+		// L'objet 1 n'est pas égal à null
+		assertFalse(c1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(c1.equals(c1));
+		// 2 objets sont égaux entre eux
+		assertTrue(c1.equals(c2));
+		assertTrue(c2.equals(c1));
 
-   }
+		// Vérification de la différenciation de 2 objets
+		c2.setNom(nom2);
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   @Test
-public void testEquals(){
-      final String nom = "Categorie";
-      final String nom2 = "Categorie2";
-      final Categorie c1 = new Categorie();
-      c1.setNom(nom);
-      final Categorie c2 = new Categorie();
-      c2.setNom(nom);
+		c2.setNom(null);
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(c1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(c1.equals(c1));
-      // 2 objets sont égaux entre eux
-      assertTrue(c1.equals(c2));
-      assertTrue(c2.equals(c1));
+		c1.setNom(null);
+		assertTrue(c1.equals(c2));
+		c2.setNom(nom);
+		assertFalse(c1.equals(c2));
 
-      // Vérification de la différenciation de 2 objets
-      c2.setNom(nom2);
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
+		final Banque b = new Banque();
+		assertFalse(c1.equals(b));
 
-      c2.setNom(null);
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
+	}
 
-      c1.setNom(null);
-      assertTrue(c1.equals(c2));
-      c2.setNom(nom);
-      assertFalse(c1.equals(c2));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
+		final String nom = "Categorie";
+		final Categorie c1 = new Categorie();
+		c1.setId(1);
+		c1.setNom(nom);
+		final Categorie c2 = new Categorie();
+		c2.setId(1);
+		c2.setNom(nom);
+		final Categorie c3 = new Categorie();
+		c3.setId(1);
+		c3.setNom(null);
+		assertTrue(c3.hashCode() > 0);
 
-      final Banque b = new Banque();
-      assertFalse(c1.equals(b));
+		final int hash = c1.hashCode();
+		// 2 objets égaux ont le même hashcode
+		assertTrue(c1.hashCode() == c2.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		assertTrue(hash == c1.hashCode());
+		assertTrue(hash == c1.hashCode());
+		assertTrue(hash == c1.hashCode());
+		assertTrue(hash == c1.hashCode());
 
-   }
-
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   @Test
-public void testHashCode(){
-      final String nom = "Categorie";
-      final Categorie c1 = new Categorie();
-      c1.setId(1);
-      c1.setNom(nom);
-      final Categorie c2 = new Categorie();
-      c2.setId(1);
-      c2.setNom(nom);
-      final Categorie c3 = new Categorie();
-      c3.setId(1);
-      c3.setNom(null);
-      assertTrue(c3.hashCode() > 0);
-
-      final int hash = c1.hashCode();
-      // 2 objets égaux ont le même hashcode
-      assertTrue(c1.hashCode() == c2.hashCode());
-      // un même objet garde le même hashcode dans le temps
-      assertTrue(hash == c1.hashCode());
-      assertTrue(hash == c1.hashCode());
-      assertTrue(hash == c1.hashCode());
-      assertTrue(hash == c1.hashCode());
-
-   }
+	}
 
 }

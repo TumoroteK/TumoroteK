@@ -37,7 +37,19 @@ package fr.aphp.tumorotek.dao.test.contexte;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.test.annotation.Rollback;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
 
 import fr.aphp.tumorotek.dao.contexte.CoordonneeDao;
 import fr.aphp.tumorotek.dao.contexte.TransporteurDao;
@@ -49,8 +61,8 @@ import fr.aphp.tumorotek.model.contexte.Transporteur;
 
 /**
  *
- * Classe de test pour le DAO TransporteurDao et le bean du
- * domaine Transporteur.
+ * Classe de test pour le DAO TransporteurDao et le bean du domaine
+ * Transporteur.
  *
  * Date: 09/09/2009
  *
@@ -58,315 +70,294 @@ import fr.aphp.tumorotek.model.contexte.Transporteur;
  * @version 2.0
  *
  */
-public class TransporteurDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class TransporteurDaoTest extends AbstractDaoTest {
 
-   /** Bean Dao TransporteurDao. */
-   @Autowired
- TransporteurDao transporteurDao;
-   /** Bean Dao CoordonneeDao. */
-   @Autowired
- CoordonneeDao coordonneeDao;
-   /** valeur du nom pour la maj. */
-   @Autowired
- final String updatedNom = "Transporteur mis a jour";
+	@Autowired
+	TransporteurDao transporteurDao;
 
-   /** Constructeur. */
-   public TransporteurDaoTest(){
+	@Autowired
+	CoordonneeDao coordonneeDao;
 
-   }
+	private final String updatedNom = "Transporteur mis a jour";
 
-   /**
-    * Setter du bean Dao TransporteurDao.
-    * @param tDao est le bean Dao.
-    */
-   @Test
-public void setTransporteurDao(final TransporteurDao tDao){
-      this.transporteurDao = tDao;
-   }
+	/**
+	 * Test l'appel de la méthode findAll().
+	 */
+	@Test
+	public void testReadAllTransorteurs() {
+		final List<Transporteur> transporteurs = IterableUtils.toList(transporteurDao.findAll());
+		assertTrue(transporteurs.size() == 3);
+	}
 
-   /**
-    * Setter du bean Dao CoordonneeDao.
-    * @param cDao est le bean Dao.
-    */
-   @Test
-public void setCoordonneeDao(final CoordonneeDao cDao){
-      this.coordonneeDao = cDao;
-   }
+	@Test
+	public void testFindByExcludedId() {
+		List<Transporteur> transporteurs = transporteurDao.findByExcludedId(1);
+		assertTrue(transporteurs.size() == 2);
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   @Test
-public void testReadAllTransorteurs(){
-      final List<Transporteur> transporteurs = IterableUtils.toList(transporteurDao.findAll());
-      assertTrue(transporteurs.size() == 3);
-   }
+		transporteurs = transporteurDao.findByExcludedId(10);
+		assertTrue(transporteurs.size() == 3);
+	}
 
-   @Test
-public void testFindByExcludedId(){
-      List<Transporteur> transporteurs = transporteurDao.findByExcludedId(1);
-      assertTrue(transporteurs.size() == 2);
+	/**
+	 * Test l'appel de la méthode findByOrder().
+	 */
+	@Test
+	public void testFindByOrder() {
+		final List<Transporteur> list = transporteurDao.findByOrder();
+		assertTrue(list.size() == 3);
+		assertTrue(list.get(0).getNom().equals("HOPITAL ST LOUIS - ANAPATH"));
+	}
 
-      transporteurs = transporteurDao.findByExcludedId(10);
-      assertTrue(transporteurs.size() == 3);
-   }
+	/**
+	 * Test l'appel de la méthode findByNom().
+	 */
+	@Test
+	public void testFindByNom() {
+		List<Transporteur> transporteurs = transporteurDao.findByNom("HOPITAL ST LOUIS - ANAPATH");
+		assertTrue(transporteurs.size() == 1);
+		transporteurs = transporteurDao.findByNom("BICHAT");
+		assertTrue(transporteurs.size() == 0);
+	}
 
-   /**
-    * Test l'appel de la méthode findByOrder().
-    */
-   @Test
-public void testFindByOrder(){
-      final List<Transporteur> list = transporteurDao.findByOrder();
-      assertTrue(list.size() == 3);
-      assertTrue(list.get(0).getNom().equals("HOPITAL ST LOUIS - ANAPATH"));
-   }
+	/**
+	 * Test l'appel de la méthode findByContactNom().
+	 */
+	@Test
+	public void testfindByContactNom() {
+		List<Transporteur> transporteurs = transporteurDao.findByContactNom("ME PISSANERO");
+		assertTrue(transporteurs.size() == 1);
+		transporteurs = transporteurDao.findByContactNom("TEST");
+		assertTrue(transporteurs.size() == 0);
+	}
 
-   /**
-    * Test l'appel de la méthode findByNom().
-    */
-   @Test
-public void testFindByNom(){
-      List<Transporteur> transporteurs = transporteurDao.findByNom("HOPITAL ST LOUIS - ANAPATH");
-      assertTrue(transporteurs.size() == 1);
-      transporteurs = transporteurDao.findByNom("BICHAT");
-      assertTrue(transporteurs.size() == 0);
-   }
+	/**
+	 * Test l'appel de la méthode findByArchive().
+	 */
+	@Test
+	public void testFindByArchive() {
+		final List<Transporteur> transporteurs = transporteurDao.findByArchive(false);
+		assertTrue(transporteurs.size() == 2);
+	}
 
-   /**
-    * Test l'appel de la méthode findByContactNom().
-    */
-   @Test
-public void testfindByContactNom(){
-      List<Transporteur> transporteurs = transporteurDao.findByContactNom("ME PISSANERO");
-      assertTrue(transporteurs.size() == 1);
-      transporteurs = transporteurDao.findByContactNom("TEST");
-      assertTrue(transporteurs.size() == 0);
-   }
+	/**
+	 * Test l'appel de la méthode findByCoordonnee().
+	 */
+	@Test
+	public void testFindByCoordonnee() {
+		Coordonnee c = coordonneeDao.findById(1).get();
+		List<Transporteur> transporteurs = transporteurDao.findByCoordonnee(c);
+		assertTrue(transporteurs.size() == 1);
+		c = coordonneeDao.findById(5).get();
+		transporteurs = transporteurDao.findByCoordonnee(c);
+		assertTrue(transporteurs.size() == 0);
+	}
 
-   /**
-    * Test l'appel de la méthode findByArchive().
-    */
-   @Test
-public void testFindByArchive(){
-      final List<Transporteur> transporteurs = transporteurDao.findByArchive(false);
-      assertTrue(transporteurs.size() == 2);
-   }
+	/**
+	 * Test l'appel de la méthode findByIdWithFetch().
+	 */
+	@Test
+	public void testFindByIdWithFetch() {
+		final List<Transporteur> transporteurs = transporteurDao.findByIdWithFetch(1);
+		assertTrue(transporteurs.size() == 1);
+		final Transporteur transporteur = transporteurs.get(0);
+		assertNotNull(transporteur);
+		assertTrue(transporteur.getCoordonnee().getCoordonneeId() == 1);
+	}
 
-   /**
-    * Test l'appel de la méthode findByCoordonnee().
-    */
-   @Test
-public void testFindByCoordonnee(){
-      Coordonnee c = coordonneeDao.findById(1);
-      List<Transporteur> transporteurs = transporteurDao.findByCoordonnee(c);
-      assertTrue(transporteurs.size() == 1);
-      c = coordonneeDao.findById(5);
-      transporteurs = transporteurDao.findByCoordonnee(c);
-      assertTrue(transporteurs.size() == 0);
-   }
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'un transporteur.
+	 * 
+	 * @throws Exception lance une exception en cas d'erreurs sur les données.
+	 */
+	@Test
+	@Transactional
+	@Rollback(false)
+	public void testTransporteur() throws Exception {
 
-   /**
-    * Test l'appel de la méthode findByIdWithFetch().
-    */
-   @Test
-public void testFindByIdWithFetch(){
-      final List<Transporteur> transporteurs = transporteurDao.findByIdWithFetch(1);
-      assertTrue(transporteurs.size() == 1);
-      final Transporteur transporteur = transporteurs.get(0);
-      assertNotNull(transporteur);
-      assertTrue(transporteur.getCoordonnee().getCoordonneeId() == 1);
-   }
+		final Transporteur t = new Transporteur();
+		// Coordonnee c = coordonneeDao.findById(7).get();
+		// Coordonnee c = new Coordonnee();
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression d'un transporteur.
-    * @throws Exception lance une exception en cas d'erreurs sur les données.
-    */
-   @Rollback(false)
-   @Test
-public void testTransporteur() throws Exception{
+		// on remplit le nouveau transporteur avec les données du fichier
+		// "transporteur.properties"
+		try {
+			PopulateBeanForTest.populateBean(t, "transporteur");
+			// PopulateBeanForTest.populateBean(c, "coordonnee");
+		} catch (final Exception exc) {
+			System.out.println(exc.getMessage());
+		}
+		// t.setCoordonnee(c);
+		// Test de l'insertion
+		transporteurDao.save(t);
 
-      final Transporteur t = new Transporteur();
-      //Coordonnee c = coordonneeDao.findById(7);
-      //Coordonnee c = new Coordonnee();
+		// Test de la mise à jour
+		final Transporteur t2 = transporteurDao.findById(t.getTransporteurId()).get();
+		assertNotNull(t2);
+		assertTrue(t2.getNom().equals("Nouveau transporteur"));
+		assertTrue(t2.getContactNom().equals("MR Test"));
+		assertTrue(t2.getContactPrenom().equals("Test"));
+		assertTrue(t2.getContactTel().equals("0145628975"));
+		assertTrue(t2.getContactFax().equals("0145628985"));
+		assertTrue(t2.getContactMail().equals("toto@yahoo.fr"));
+		// assertNotNull(t2.getCoordonnee());
+		t2.setNom(updatedNom);
+		transporteurDao.save(t2);
+		assertTrue(transporteurDao.findById(t2.getTransporteurId()).get().getNom().equals(updatedNom));
 
-      // on remplit le nouveau transporteur avec les données du fichier
-      // "transporteur.properties"
-      try{
-         PopulateBeanForTest.populateBean(t, "transporteur");
-         //PopulateBeanForTest.populateBean(c, "coordonnee");
-      }catch(final Exception exc){
-         System.out.println(exc.getMessage());
-      }
-      //t.setCoordonnee(c);
-      // Test de l'insertion
-      transporteurDao.save(t);
+		// Test de la délétion
+		transporteurDao.deleteById(t2.getTransporteurId());
+		assertFalse(transporteurDao.findById(t2.getTransporteurId()).isPresent());
 
-      // Test de la mise à jour
-      final Transporteur t2 = transporteurDao.findById(t.getTransporteurId());
-      assertNotNull(t2);
-      assertTrue(t2.getNom().equals("Nouveau transporteur"));
-      assertTrue(t2.getContactNom().equals("MR Test"));
-      assertTrue(t2.getContactPrenom().equals("Test"));
-      assertTrue(t2.getContactTel().equals("0145628975"));
-      assertTrue(t2.getContactFax().equals("0145628985"));
-      assertTrue(t2.getContactMail().equals("toto@yahoo.fr"));
-      //assertNotNull(t2.getCoordonnee());
-      t2.setNom(updatedNom);
-      transporteurDao.save(t2);
-      assertTrue(transporteurDao.findById(t2.getTransporteurId()).getNom().equals(updatedNom));
+	}
 
-      // Test de la délétion
-      transporteurDao.deleteById(t2.getTransporteurId());
-      assertFalse(transporteurDao.findById(t2.getTransporteurId()).isPresent());
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final String nom = "Nom";
+		final String nom2 = "Nom2";
+		final String cnom = "Contact Nom";
+		final String cnom2 = "Contact Nom2";
+		final Transporteur t1 = new Transporteur();
+		t1.setNom(nom);
+		t1.setContactNom(cnom);
+		final Transporteur t2 = new Transporteur();
+		t2.setNom(nom);
+		t2.setContactNom(cnom);
 
-   }
+		// L'objet 1 n'est pas égal à null
+		assertFalse(t1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(t1.equals(t1));
+		// 2 objets sont égaux entre eux
+		assertTrue(t1.equals(t2));
+		assertTrue(t2.equals(t1));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   @Test
-public void testEquals(){
-      final String nom = "Nom";
-      final String nom2 = "Nom2";
-      final String cnom = "Contact Nom";
-      final String cnom2 = "Contact Nom2";
-      final Transporteur t1 = new Transporteur();
-      t1.setNom(nom);
-      t1.setContactNom(cnom);
-      final Transporteur t2 = new Transporteur();
-      t2.setNom(nom);
-      t2.setContactNom(cnom);
+		// Vérification de la différenciation de 2 objets
+		t2.setNom(nom2);
+		assertFalse(t1.equals(t2));
+		assertFalse(t2.equals(t1));
+		t2.setNom(nom);
+		t2.setContactNom(cnom2);
+		assertFalse(t1.equals(t2));
+		assertFalse(t2.equals(t1));
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(t1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(t1.equals(t1));
-      // 2 objets sont égaux entre eux
-      assertTrue(t1.equals(t2));
-      assertTrue(t2.equals(t1));
+		t2.setContactNom(null);
+		assertFalse(t1.equals(t2));
+		assertFalse(t2.equals(t1));
+		t2.setNom(null);
+		t2.setContactNom(cnom);
+		assertFalse(t1.equals(t2));
+		assertFalse(t2.equals(t1));
 
-      // Vérification de la différenciation de 2 objets
-      t2.setNom(nom2);
-      assertFalse(t1.equals(t2));
-      assertFalse(t2.equals(t1));
-      t2.setNom(nom);
-      t2.setContactNom(cnom2);
-      assertFalse(t1.equals(t2));
-      assertFalse(t2.equals(t1));
+		final Categorie c3 = new Categorie();
+		assertFalse(t1.equals(c3));
+	}
 
-      t2.setContactNom(null);
-      assertFalse(t1.equals(t2));
-      assertFalse(t2.equals(t1));
-      t2.setNom(null);
-      t2.setContactNom(cnom);
-      assertFalse(t1.equals(t2));
-      assertFalse(t2.equals(t1));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
+		final String nom = "Nom";
+		final String cnom = "Contact Nom";
+		final String cPrenom = "Prenom";
+		final String tel = "546541313";
+		final String fax = "4453435131";
+		final String mail = "mail@mail.fr";
+		final Transporteur t1 = new Transporteur();
+		t1.setTransporteurId(1);
+		t1.setNom(nom);
+		t1.setContactNom(cnom);
+		t1.setContactPrenom(cPrenom);
+		t1.setContactTel(tel);
+		t1.setContactFax(fax);
+		t1.setContactMail(mail);
+		t1.setArchive(true);
+		final Transporteur t2 = new Transporteur();
+		t2.setNom(nom);
+		t2.setContactNom(cnom);
+		t2.setContactPrenom(cPrenom);
+		t2.setContactTel(tel);
+		t2.setContactFax(fax);
+		t2.setContactMail(mail);
+		t2.setArchive(true);
+		final Transporteur t3 = new Transporteur();
+		assertTrue(t3.hashCode() > 0);
 
-      final Categorie c3 = new Categorie();
-      assertFalse(t1.equals(c3));
-   }
+		final int hash = t1.hashCode();
+		// 2 objets égaux ont le même hashcode
+		assertTrue(t1.hashCode() == t2.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		assertTrue(hash == t1.hashCode());
+		assertTrue(hash == t1.hashCode());
+		assertTrue(hash == t1.hashCode());
+		assertTrue(hash == t1.hashCode());
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   @Test
-public void testHashCode(){
-      final String nom = "Nom";
-      final String cnom = "Contact Nom";
-      final String cPrenom = "Prenom";
-      final String tel = "546541313";
-      final String fax = "4453435131";
-      final String mail = "mail@mail.fr";
-      final Transporteur t1 = new Transporteur();
-      t1.setTransporteurId(1);
-      t1.setNom(nom);
-      t1.setContactNom(cnom);
-      t1.setContactPrenom(cPrenom);
-      t1.setContactTel(tel);
-      t1.setContactFax(fax);
-      t1.setContactMail(mail);
-      t1.setArchive(true);
-      final Transporteur t2 = new Transporteur();
-      t2.setNom(nom);
-      t2.setContactNom(cnom);
-      t2.setContactPrenom(cPrenom);
-      t2.setContactTel(tel);
-      t2.setContactFax(fax);
-      t2.setContactMail(mail);
-      t2.setArchive(true);
-      final Transporteur t3 = new Transporteur();
-      assertTrue(t3.hashCode() > 0);
+	}
 
-      final int hash = t1.hashCode();
-      // 2 objets égaux ont le même hashcode
-      assertTrue(t1.hashCode() == t2.hashCode());
-      // un même objet garde le même hashcode dans le temps
-      assertTrue(hash == t1.hashCode());
-      assertTrue(hash == t1.hashCode());
-      assertTrue(hash == t1.hashCode());
-      assertTrue(hash == t1.hashCode());
+	/**
+	 * Test la méthode clone.
+	 */
+	@Test
+	public void testClone() {
+		final Transporteur t1 = transporteurDao.findById(1).get();
+		final Transporteur t2 = t1.clone();
+		assertTrue(t1.equals(t2));
 
-   }
+		if (t1.getTransporteurId() != null) {
+			assertTrue(t1.getTransporteurId() == t2.getTransporteurId());
+		} else {
+			assertNull(t2.getTransporteurId());
+		}
 
-   /**
-    * Test la méthode clone.
-    */
-   @Test
-public void testClone(){
-      final Transporteur t1 = transporteurDao.findById(1);
-      final Transporteur t2 = t1.clone();
-      assertTrue(t1.equals(t2));
+		if (t1.getNom() != null) {
+			assertTrue(t1.getNom().equals(t2.getNom()));
+		} else {
+			assertNull(t2.getNom());
+		}
 
-      if(t1.getTransporteurId() != null){
-         assertTrue(t1.getTransporteurId() == t2.getTransporteurId());
-      }else{
-         assertNull(t2.getTransporteurId());
-      }
+		if (t1.getContactNom() != null) {
+			assertTrue(t1.getContactNom().equals(t2.getContactNom()));
+		} else {
+			assertNull(t2.getContactNom());
+		}
 
-      if(t1.getNom() != null){
-         assertTrue(t1.getNom().equals(t2.getNom()));
-      }else{
-         assertNull(t2.getNom());
-      }
+		if (t1.getContactPrenom() != null) {
+			assertTrue(t1.getContactPrenom().equals(t2.getContactPrenom()));
+		} else {
+			assertNull(t2.getContactPrenom());
+		}
 
-      if(t1.getContactNom() != null){
-         assertTrue(t1.getContactNom().equals(t2.getContactNom()));
-      }else{
-         assertNull(t2.getContactNom());
-      }
+		if (t1.getContactTel() != null) {
+			assertTrue(t1.getContactTel().equals(t2.getContactTel()));
+		} else {
+			assertNull(t2.getContactTel());
+		}
 
-      if(t1.getContactPrenom() != null){
-         assertTrue(t1.getContactPrenom().equals(t2.getContactPrenom()));
-      }else{
-         assertNull(t2.getContactPrenom());
-      }
+		if (t1.getContactFax() != null) {
+			assertTrue(t1.getContactFax().equals(t2.getContactFax()));
+		} else {
+			assertNull(t2.getContactFax());
+		}
 
-      if(t1.getContactTel() != null){
-         assertTrue(t1.getContactTel().equals(t2.getContactTel()));
-      }else{
-         assertNull(t2.getContactTel());
-      }
+		if (t1.getContactMail() != null) {
+			assertTrue(t1.getContactMail().equals(t2.getContactMail()));
+		} else {
+			assertNull(t2.getContactMail());
+		}
 
-      if(t1.getContactFax() != null){
-         assertTrue(t1.getContactFax().equals(t2.getContactFax()));
-      }else{
-         assertNull(t2.getContactFax());
-      }
+		if (t1.getCoordonnee() != null) {
+			assertTrue(t1.getCoordonnee().equals(t2.getCoordonnee()));
+		} else {
+			assertNull(t2.getCoordonnee());
+		}
 
-      if(t1.getContactMail() != null){
-         assertTrue(t1.getContactMail().equals(t2.getContactMail()));
-      }else{
-         assertNull(t2.getContactMail());
-      }
-
-      if(t1.getCoordonnee() != null){
-         assertTrue(t1.getCoordonnee().equals(t2.getCoordonnee()));
-      }else{
-         assertNull(t2.getCoordonnee());
-      }
-
-      assertTrue(t1.getArchive() == t2.getArchive());
-   }
+		assertTrue(t1.getArchive() == t2.getArchive());
+	}
 
 }
