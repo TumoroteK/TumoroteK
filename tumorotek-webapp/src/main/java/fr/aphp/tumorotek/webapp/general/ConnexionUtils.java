@@ -197,140 +197,163 @@ public final class ConnexionUtils
       // droits sur les Stockages
       operations.put("Stockage", ManagerLocator.getDroitObjetManager().getOperationsByProfilEntiteManager(profil, "Stockage"));
 
-      // droits sur les Annotations
-      /*operations.put("Annotation", ManagerLocator.getDroitObjetManager()
-      		.getOperationsByProfilEntiteManager(profil, "Annotation"));*/
+		// droits sur les Collaborateurs
+		operations.put("Collaborateur",
+				ManagerLocator.getDroitObjetManager().getOperationsByProfilEntiteManager(profil, "Collaborateur"));
 
-      // droits sur les Collaborateurs
-      operations.put("Collaborateur",
-         ManagerLocator.getDroitObjetManager().getOperationsByProfilEntiteManager(profil, "Collaborateur"));
+		// droits sur les Requetes
+		operations.put("Requete", ManagerLocator.getDroitObjetManager().getOperationsByProfilEntiteManager(profil, "Requete"));
 
-      // droits sur les Requetes
-      operations.put("Requete", ManagerLocator.getDroitObjetManager().getOperationsByProfilEntiteManager(profil, "Requete"));
+		return operations;
+	}
 
-      return operations;
-   }
+	public static void initInterfacages(final Plateforme pf, final Map<String, Object> sess){
+		// on récupère le bundle de paramétrage de l'application
+		ResourceBundle res = null;
+		if(ManagerLocator.getResourceBundleTumo().doesResourceBundleExists(TumorotekProperties.TUMO_PROPERTIES_FILENAME)){
+			res = ManagerLocator.getResourceBundleTumo().getResourceBundle(TumorotekProperties.TUMO_PROPERTIES_FILENAME);
+		}
 
-   public static void initInterfacages(final Plateforme pf, final Map<String, Object> sess){
-      // on récupère le bundle de paramétrage de l'application
-      ResourceBundle res = null;
-      if(ManagerLocator.getResourceBundleTumo().doesResourceBundleExists(TumorotekProperties.TUMO_PROPERTIES_FILENAME)){
-         res = ManagerLocator.getResourceBundleTumo().getResourceBundle(TumorotekProperties.TUMO_PROPERTIES_FILENAME);
-      }
+		// EMETTEURS
+		// on récupère la propriété définissant les interfaçages entrant
+		String interfacages = null;
+		if(null != res && res.containsKey(TkParam.INTERFACAGES.getKey())){
+			interfacages = res.getString(TkParam.INTERFACAGES.getKey());
+		}
+		Hashtable<Integer, List<Integer>> hashInterfacages = null;
+		if(interfacages != null && !interfacages.equals("") && !interfacages.equals("false")){
+			// extraction des interfaçages
+			hashInterfacages = Utils.extractAssosPlateformesEmetteursRecepteurs(interfacages);
+		}
+		// si des interfaçages sont définis pour la PF sélectionnée
+		if(hashInterfacages != null && hashInterfacages.containsKey(pf.getPlateformeId())){
+			final List<Integer> ids = hashInterfacages.get(pf.getPlateformeId());
+			final List<Emetteur> emetteurs = ManagerLocator.getEmetteurManager().findByIdinListManager(ids);
+			// on place les emetteurs dans la session
+			if(emetteurs.size() > 0){
+				sess.remove("Emetteurs");
+				sess.put("Emetteurs", emetteurs);
+			}else{
+				sess.remove("Emetteurs");
+			}
+		}
 
-      // EMETTEURS
-      // on récupère la propriété définissant les interfaçages entrant
-      String interfacages = null;
-      if(null != res && res.containsKey(TkParam.INTERFACAGES.getKey())){
-         interfacages = res.getString(TkParam.INTERFACAGES.getKey());
-      }
-      Hashtable<Integer, List<Integer>> hashInterfacages = null;
-      if(interfacages != null && !interfacages.equals("") && !interfacages.equals("false")){
-         // extraction des interfaçages
-         hashInterfacages = Utils.extractAssosPlateformesEmetteursRecepteurs(interfacages);
-      }
-      // si des interfaçages sont définis pour la PF sélectionnée
-      if(hashInterfacages != null && hashInterfacages.containsKey(pf.getPlateformeId())){
-         final List<Integer> ids = hashInterfacages.get(pf.getPlateformeId());
-         final List<Emetteur> emetteurs = ManagerLocator.getEmetteurManager().findByIdinListManager(ids);
-         // on place les emetteurs dans la session
-         if(emetteurs.size() > 0){
-            sess.remove("Emetteurs");
-            sess.put("Emetteurs", emetteurs);
-         }else{
-            sess.remove("Emetteurs");
-         }
-      }
+		// RECEPTEURS
+		// on récupère la propriété définissant les interfaçages sortant
+		interfacages = null;
+		hashInterfacages = null;
+		if(null != res && res.containsKey(TkParam.INTERFACAGES_OUT.getKey())){
+			interfacages = res.getString(TkParam.INTERFACAGES_OUT.getKey());
+		}
+		if(interfacages != null && !interfacages.equals("") && !interfacages.equals("false")){
+			// extraction des interfaçages
+			hashInterfacages = Utils.extractAssosPlateformesEmetteursRecepteurs(interfacages);
+		}
+		// si des interfaçages sont définis pour la PF sélectionnée
+		if(hashInterfacages != null && hashInterfacages.containsKey(pf.getPlateformeId())){
+			final List<Integer> ids = hashInterfacages.get(pf.getPlateformeId());
+			final List<Recepteur> recepteurs = ManagerLocator.getRecepteurManager().findByIdinListManager(ids);
+			// on place les emetteurs dans la session
+			if(recepteurs.size() > 0){
+				sess.remove("Recepteurs");
+				sess.put("Recepteurs", recepteurs);
+			}else{
+				sess.remove("Recepteurs");
+			}
+		}
+	}
 
-      // RECEPTEURS
-      // on récupère la propriété définissant les interfaçages sortant
-      interfacages = null;
-      hashInterfacages = null;
-      if(null != res && res.containsKey(TkParam.INTERFACAGES_OUT.getKey())){
-         interfacages = res.getString(TkParam.INTERFACAGES_OUT.getKey());
-      }
-      if(interfacages != null && !interfacages.equals("") && !interfacages.equals("false")){
-         // extraction des interfaçages
-         hashInterfacages = Utils.extractAssosPlateformesEmetteursRecepteurs(interfacages);
-      }
-      // si des interfaçages sont définis pour la PF sélectionnée
-      if(hashInterfacages != null && hashInterfacages.containsKey(pf.getPlateformeId())){
-         final List<Integer> ids = hashInterfacages.get(pf.getPlateformeId());
-         final List<Recepteur> recepteurs = ManagerLocator.getRecepteurManager().findByIdinListManager(ids);
-         // on place les emetteurs dans la session
-         if(recepteurs.size() > 0){
-            sess.remove("Recepteurs");
-            sess.put("Recepteurs", recepteurs);
-         }else{
-            sess.remove("Recepteurs");
-         }
-      }
-   }
+	/**
+	 * Méthode renvoyant l'utilisateur loggué.
+	 * @return Utilisateur loggué.
+	 */
+	public static Utilisateur getLoggedUtilisateur(){
+		final Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String username = null;
+		if(principal instanceof UserDetails){
+			username = ((UserDetails) principal).getUsername();
+		}else{
+			username = principal.toString();
+		}
+		List<Utilisateur> list = new ArrayList<>();
+		// if (us != null) {
+		list = ManagerLocator.getUtilisateurManager().findByLoginManager(username);
+		// }
 
-   /**
-    * Méthode renvoyant l'utilisateur loggué.
-    * @return Utilisateur loggué.
-    */
-   public static Utilisateur getLoggedUtilisateur(){
-      final Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-      String username = null;
-      if(principal instanceof UserDetails){
-         username = ((UserDetails) principal).getUsername();
-      }else{
-         username = principal.toString();
-      }
-      List<Utilisateur> list = new ArrayList<>();
-      // if (us != null) {
-      list = ManagerLocator.getUtilisateurManager().findByLoginManager(username);
-      // }
+		if(list.size() > 0){
+			return list.get(0);
+		}
+		return null;
+	}
 
-      if(list.size() > 0){
-         return list.get(0);
-      }
-      return null;
-   }
+	/**
+	 * Méthode renvoyant le login de l'utilisateur.
+	 * @return String login.
+	 */
+	public static String getLoggedLogin(){
+		final Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String username = null;
+		if(principal instanceof UserDetails){
+			username = ((UserDetails) principal).getUsername();
+		}else{
+			username = principal.toString();
+		}
+		return username;
+	}
 
-   /**
-    * Méthode renvoyant le login de l'utilisateur.
-    * @return String login.
-    */
-   public static String getLoggedLogin(){
-      final Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-      String username = null;
-      if(principal instanceof UserDetails){
-         username = ((UserDetails) principal).getUsername();
-      }else{
-         username = principal.toString();
-      }
-      return username;
-   }
+	public static void initConnection(final Utilisateur user, final Plateforme pf, final Banque bank, final List<Banque> banques,
+			final Session session){
+		final Map<String, Object> sessionScp = session.getAttributes();
+		sessionScp.put("User", user);
+		sessionScp.put("Plateforme", pf);
+		if(bank != null){	
+			session.setAttribute("Banque", bank);
+			final List<Banque> banks = new ArrayList<>();
+			banks.add(bank);
+			ConnexionUtils.setSessionCatalogues(banks, sessionScp);
+			ConnexionUtils.generateDroitsForSelectedBanque(bank, pf, user, sessionScp);
+			sessionScp.remove("ToutesCollections");
+		}else{ // toutes collections
+			// suppose que l'utilisateur ne peut pas être admin
+			// sur banques de différentes plateformes
+			sessionScp.put("ToutesCollections", banques);
+			ConnexionUtils.setSessionCatalogues(banques, sessionScp);
+			ConnexionUtils.generateDroitsForSelectedBanque(banques.get(0), pf, user, sessionScp);
+			sessionScp.remove("Banque");
+		}
 
-   public static void initConnection(final Utilisateur user, final Plateforme pf, final Banque bank, final List<Banque> banques,
-      final Session session){
-      final Map<String, Object> sessionScp = session.getAttributes();
-      sessionScp.put("User", user);
-      sessionScp.put("Plateforme", pf);
-      if(bank != null){
-         session.setAttribute("Banque", bank);
-         //setSessionCatalogues(selectedBanque, sessionScope);		
-         //generateDroitsForSelectedBanque(selectedBanque);
-         final List<Banque> banks = new ArrayList<>();
-         banks.add(bank);
-         ConnexionUtils.setSessionCatalogues(banks, sessionScp);
-         ConnexionUtils.generateDroitsForSelectedBanque(bank, pf, user, sessionScp);
-         sessionScp.remove("ToutesCollections");
-      }else{ // toutes collections
-         // suppose que l'utilisateur ne peut pas être admin
-         // sur banques de différentes plateformes
-         sessionScp.put("ToutesCollections", banques);
-         //generateDroitsForSelectedBanque(banques.get(0));
-         ConnexionUtils.setSessionCatalogues(banques, sessionScp);
-         ConnexionUtils.generateDroitsForSelectedBanque(banques.get(0), pf, user, sessionScp);
-         sessionScp.remove("Banque");
-      }
+		// gestion des interfaçages
+		ConnexionUtils.initInterfacages(pf, sessionScp);
+	} 
+	
 
-      // gestion des interfaçages
-      ConnexionUtils.initInterfacages(pf, sessionScp);
-   }
+	/**
+	 * Test si l'utilisateur a accès à l'option "Toutes collections".
+	 * @return True s'il a accès.
+	 * @since 2.2.4 méthode migrée en static utils car appelé par deux SelectBanqueController et MainWindow
+	 */
+	public static boolean canAccessToutesCollections(List<Banque> banques, Plateforme pf, Utilisateur user){
+		boolean can = true;
 
+		// s'il y a plusieurs banques disponibles
+		if(banques.size() > 1){
+			final Set<Plateforme> pfs = ManagerLocator.getUtilisateurManager().getPlateformesManager(user);
+			// si l'utilisateur n'est admin de la plateforme
+			if(!pfs.contains(pf) && !user.isSuperAdmin()){
+				
+				// @since 2.2.4.1
+				// compte le nombre de profils d'accès différents par contexte cette plateforme
+				// si les profils sont différents, il n'a pas accès à
+				// l'option "Toutes collections"
+				if(ManagerLocator.getProfilUtilisateurManager()
+					.countDistinctProfilForUserAndPlateformeGroupedByContexteManager(user, pf) != 1L){
+					can = false;
+				}
+			}
+		}else{
+			can = false;
+		}
+
+		return can;
+	}
 }

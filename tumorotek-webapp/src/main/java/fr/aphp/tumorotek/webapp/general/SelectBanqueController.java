@@ -42,7 +42,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -66,8 +65,6 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.qualite.Operation;
 import fr.aphp.tumorotek.model.qualite.OperationType;
-import fr.aphp.tumorotek.model.utilisateur.Profil;
-import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.param.TumorotekProperties;
@@ -129,7 +126,7 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
 		//user = getLoggedUtilisateur();
 		user = ConnexionUtils.getLoggedUtilisateur();
 		initWindow();
-		if(canAccessToutesCollections()){
+		if(ConnexionUtils.canAccessToutesCollections(banques, selectedPlateforme, user)){
 			toutesColl = new Banque();
 			toutesColl.setNom(Labels.getLabel("select.banque.toutesCollection"));
 			banques.add(toutesColl);
@@ -375,7 +372,7 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
          banques = new ArrayList<>();
       }
       
-      if(canAccessToutesCollections()){
+      if(ConnexionUtils.canAccessToutesCollections(banques, selectedPlateforme, user)) {
 			toutesColl = new Banque();
 			toutesColl.setNom(Labels.getLabel("select.banque.toutesCollection"));
 			banques.add(toutesColl);
@@ -394,45 +391,6 @@ public class SelectBanqueController extends GenericForwardComposer<Component>
 
 	public void setUser(final Utilisateur u){
 		this.user = u;
-	}
-
-	/**
-	 * Test si l'utilisateur a accès à l'option "Toutes collections".
-	 * @return True s'il a accès.
-	 */
-	public boolean canAccessToutesCollections(){
-		boolean can = true;
-
-		// s'il y a plusieurs banques disponibles
-		if(banques.size() > 1){
-			final Set<Plateforme> pfs = ManagerLocator.getUtilisateurManager().getPlateformesManager(user);
-			// si l'utilisateur n'est admin de la plateforme
-			if(!pfs.contains(selectedPlateforme) && !user.isSuperAdmin()){
-				// on va récupérer les profils du user pour chaque
-				// banque
-				final List<Profil> profils = new ArrayList<>();
-				for(int i = 0; i < banques.size(); i++){
-					final List<ProfilUtilisateur> liste =
-							ManagerLocator.getProfilUtilisateurManager().findByUtilisateurBanqueManager(user, banques.get(i));
-
-					for(int j = 0; j < liste.size(); j++){
-						if(!profils.contains(liste.get(j).getProfil())){
-							profils.add(liste.get(j).getProfil());
-						}
-					}
-				}
-
-				// si les profils sont différents, il n'a pas accès à
-				// l'option "Toutes collections"
-				if(profils.size() != 1){
-					can = false;
-				}
-			}
-		}else{
-			can = false;
-		}
-
-		return can;
 	}
 
 	public static void setTheme(final Execution exe, final String theme){

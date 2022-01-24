@@ -207,6 +207,8 @@ public class ListeStockages extends AbstractController
 		hideCompleteButton.setVisible(false);
 		hideCompleteTerminales = false;
 		
+		// ajoute une restriction complémentaire sur les 
+		// déplacements d'enceinte / terminales
 		removePlateformeRestrictedConteneurs(false);
 
 		restrictedBanqueDeplacement.clear();
@@ -236,7 +238,9 @@ public class ListeStockages extends AbstractController
 		updateAllConteneurs(false);
 		hideCompleteButton.setVisible(true);
 		
-		removePlateformeRestrictedConteneurs(true);
+		// @since TK-306 déplacé dans updateAllConteneurs
+		// afin que soit appliquée la restriction même après update conteneurs
+		// removePlateformeRestrictedConteneurs(true);
 	}
 	
 	/**
@@ -267,6 +271,9 @@ public class ListeStockages extends AbstractController
 			getConteneurs().removeAll(toRemove);
 		((StockageRootNode) ttm.getRoot()).readChildren();
 		rootNodes = ((StockageRootNode) ttm.getRoot()).getChildren();
+		
+		//TK-306 fix... nettoie la liste avant de rajouter sinon doublons ?!
+		getRootConteneurs().clear();
 		getRootConteneurs().addAll(((StockageRootNode) ttm.getRoot()).getConteneurs()); 
 	}
 
@@ -558,6 +565,12 @@ public class ListeStockages extends AbstractController
 		setSelectedEnceinte(null);
 		getRootConteneurs().clear();
 		getRootConteneurs().addAll(root.getConteneurs());
+		
+		//@since TK-306
+		// A TESTER
+		if (deplacementMode.equals("deplacementEmplacement")) {
+			removePlateformeRestrictedConteneurs(true);
+		}
 
 		restrictedBanqueDeplacement.clear();
 
