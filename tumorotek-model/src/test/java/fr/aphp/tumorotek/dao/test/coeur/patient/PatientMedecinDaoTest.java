@@ -38,12 +38,24 @@ package fr.aphp.tumorotek.dao.test.coeur.patient;
 import java.text.ParseException;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import fr.aphp.tumorotek.dao.coeur.patient.PatientDao;
 import fr.aphp.tumorotek.dao.coeur.patient.PatientMedecinDao;
 import fr.aphp.tumorotek.dao.contexte.CollaborateurDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
+import fr.aphp.tumorotek.dao.test.Config;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.patient.PatientMedecin;
 import fr.aphp.tumorotek.model.coeur.patient.PatientMedecinPK;
@@ -60,51 +72,36 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
  * @version 2.0
  *
  */
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
 public class PatientMedecinDaoTest extends AbstractDaoTest
 {
 
-   /** Beans Dao. */
    @Autowired
  PatientMedecinDao patientMedecinDao;
+   
    @Autowired
  PatientDao patientDao;
+   
    @Autowired
  CollaborateurDao collaborateurDao;
-
-   /**
-    * Constructeur.
-    */
-   public PatientMedecinDaoTest(){}
-
-   @Test
-public void setPatientMedecinDao(final PatientMedecinDao mDao){
-      this.patientMedecinDao = mDao;
-   }
-
-   @Test
-public void setPatientDao(final PatientDao pDao){
-      this.patientDao = pDao;
-   }
-
-   @Test
-public void setCollaborateurDao(final CollaborateurDao cDao){
-      this.collaborateurDao = cDao;
-   }
 
    /**
     * Test l'appel de la méthode toString().
     */
    @Test
 public void testToString(){
-      final PatientMedecinPK pk = new PatientMedecinPK(collaborateurDao.findById(1), patientDao.findById(1));
-      PatientMedecin pm1 = patientMedecinDao.findById(pk);
+      final PatientMedecinPK pk = 
+    		 new PatientMedecinPK(collaborateurDao.findById(1).get(), patientDao.findById(1).get());
+      PatientMedecin pm1 = patientMedecinDao.findById(pk).get();
       assertTrue(pm1.toString().equals("{" + pm1.getPatient() + " - " + pm1.getCollaborateur() + "}"));
       pm1 = new PatientMedecin();
       assertTrue(pm1.toString().equals("{Empty PatientMedecin}"));
-      pm1.setCollaborateur(collaborateurDao.findById(1));
+      pm1.setCollaborateur(collaborateurDao.findById(1).get());
       assertTrue(pm1.toString().equals("{Empty PatientMedecin}"));
       pm1.setCollaborateur(null);
-      pm1.setPatient(patientDao.findById(1));
+      pm1.setPatient(patientDao.findById(1).get());
       assertTrue(pm1.toString().equals("{Empty PatientMedecin}"));
    }
 
@@ -123,12 +120,13 @@ public void testReadAllPatientMedecins(){
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     *
     **/
-   @Rollback(false)
    @Test
+   @Transactional
+   @Rollback(false)
 public void testCrudLienFamilial(){
       final PatientMedecin pm = new PatientMedecin();
-      final Patient p1 = patientDao.findById(2);
-      final Collaborateur c1 = collaborateurDao.findById(4);
+      final Patient p1 = patientDao.findById(2).get();
+      final Collaborateur c1 = collaborateurDao.findById(4).get();
       pm.setPatient(p1);
       pm.setCollaborateur(c1);
       pm.setOrdre(1);
@@ -139,7 +137,7 @@ public void testCrudLienFamilial(){
       final PatientMedecinPK pk = new PatientMedecinPK();
       pk.setPatient(p1);
       pk.setCollaborateur(c1);
-      final PatientMedecin pm2 = patientMedecinDao.findById(pk);
+      final PatientMedecin pm2 = patientMedecinDao.findById(pk).get();
       assertNotNull(pm2);
       assertTrue(pm2.getPatient().equals(p1));
       assertTrue(pm2.getCollaborateur().equals(c1));
@@ -147,8 +145,8 @@ public void testCrudLienFamilial(){
       //update
       pm2.setOrdre(2);
       patientMedecinDao.save(pm2);
-      assertTrue(patientMedecinDao.findById(pk).equals(pm2));
-      assertTrue(patientMedecinDao.findById(pk).getOrdre().equals(2));
+      assertTrue(patientMedecinDao.findById(pk).get().equals(pm2));
+      assertTrue(patientMedecinDao.findById(pk).get().getOrdre().equals(2));
       // Test de la délétion
       patientMedecinDao.deleteById(pk);
       assertFalse(patientMedecinDao.findById(pk).isPresent());
@@ -206,16 +204,15 @@ public void testHashCode() throws ParseException{
       assertTrue(hash == pm1.hashCode());
    }
 
-   @Autowired
- void populateClefsToTestEqualsAndHashCode(final PatientMedecin pm1, final PatientMedecin pm2) throws ParseException{
+public void populateClefsToTestEqualsAndHashCode(final PatientMedecin pm1, final PatientMedecin pm2) throws ParseException{
 
-      final Patient p1 = patientDao.findById(1);
-      final Patient p2 = patientDao.findById(2);
-      final Patient p3 = patientDao.findById(1);
+      final Patient p1 = patientDao.findById(1).get();
+      final Patient p2 = patientDao.findById(2).get();
+      final Patient p3 = patientDao.findById(1).get();
       final Patient[] patients = new Patient[] {null, p1, p2, p3};
-      final Collaborateur c1 = collaborateurDao.findById(1);
-      final Collaborateur c2 = collaborateurDao.findById(2);
-      final Collaborateur c3 = collaborateurDao.findById(1);
+      final Collaborateur c1 = collaborateurDao.findById(1).get();
+      final Collaborateur c2 = collaborateurDao.findById(2).get();
+      final Collaborateur c3 = collaborateurDao.findById(1).get();
       final Collaborateur[] collabs = new Collaborateur[] {null, c1, c2, c3};
 
       PatientMedecinPK pk1 = new PatientMedecinPK();

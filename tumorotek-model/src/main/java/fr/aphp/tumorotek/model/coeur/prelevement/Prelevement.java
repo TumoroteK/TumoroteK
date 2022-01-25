@@ -713,7 +713,7 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
    }
 
    @Override
-@OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "delegator",
+   @OneToOne(optional = true, cascade = CascadeType.ALL, mappedBy = "delegator", orphanRemoval = true,
       targetEntity = AbstractPrelevementDelegate.class)
    public TKDelegateObject<Prelevement> getDelegate(){
       return delegate;
@@ -728,7 +728,7 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
    }
 
    @Override
-   public void setDelegate(TKDelegateObject<Prelevement> delegate){
-      this.delegate = delegate;
+   public void setDelegate(TKDelegateObject<Prelevement> _d) {
+	   this.delegate = _d;
    }
 }

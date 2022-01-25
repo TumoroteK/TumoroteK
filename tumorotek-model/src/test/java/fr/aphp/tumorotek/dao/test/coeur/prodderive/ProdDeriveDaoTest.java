@@ -838,11 +838,11 @@ public class ProdDeriveDaoTest extends AbstractDaoTest {
 		p.setQuantite(null);
 		prodDeriveDao.save(p2);
 		assertTrue(prodDeriveDao.findById(new Integer(5)).get().getCode().equals(codeUpdated));
-		assertFalse(prodDeriveDao.findById(new Integer(5)).get().getVolume().isPresent());
-		assertFalse(prodDeriveDao.findById(new Integer(5)).get().getVolumeInit().isPresent());
-		assertFalse(prodDeriveDao.findById(new Integer(5)).get().getConc().isPresent());
-		assertFalse(prodDeriveDao.findById(new Integer(5)).get().getQuantite().isPresent());
-		assertFalse(prodDeriveDao.findById(new Integer(5)).get().getQuantiteInit().isPresent());
+		assertNull(prodDeriveDao.findById(new Integer(5)).get().getVolume());
+		assertNull(prodDeriveDao.findById(new Integer(5)).get().getVolumeInit());
+		assertNull(prodDeriveDao.findById(new Integer(5)).get().getConc());
+		assertNull(prodDeriveDao.findById(new Integer(5)).get().getQuantite());
+		assertNull(prodDeriveDao.findById(new Integer(5)).get().getQuantiteInit());
 
 		// Test de la délétion
 		prodDeriveDao.deleteById(new Integer(5));

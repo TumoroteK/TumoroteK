@@ -37,10 +37,22 @@ package fr.aphp.tumorotek.dao.test.coeur.patient;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import fr.aphp.tumorotek.dao.coeur.patient.LienFamilialDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
+import fr.aphp.tumorotek.dao.test.Config;
 import fr.aphp.tumorotek.model.coeur.patient.LienFamilial;
 import fr.aphp.tumorotek.model.contexte.Banque;
 
@@ -54,33 +66,19 @@ import fr.aphp.tumorotek.model.contexte.Banque;
  * @version 2.0
  *
  */
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
 public class LienFamilialDaoTest extends AbstractDaoTest
 {
 
-
    @Autowired
- LienFamilialDao lienDao;
+   LienFamilialDao lienDao;
 
-   /**
-    * Constructeur.
-    */
-   public LienFamilialDaoTest(){}
 
-   /**
-    * Setter du bean Dao.
-    * @param lDao est le bean Dao.
-    */
-   @Test
-public void setLienFamilialDao(final LienFamilialDao lDao){
-      this.lienDao = lDao;
-   }
-
-   /**
-    * Test l'appel de la méthode toString().
-    */
    @Test
 public void testToString(){
-      LienFamilial l1 = lienDao.findById(1);
+      LienFamilial l1 = lienDao.findById(1).get();
       assertTrue(l1.toString().equals("{" + l1.getNom() + "}"));
       l1 = new LienFamilial();
       assertTrue(l1.toString().equals("{Empty LienFamilial}"));
@@ -128,8 +126,9 @@ public void testFindByNom(){
     * d'un lien.
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
-   @Rollback(false)
    @Test
+   @Transactional
+   @Rollback(false)
 public void testCrudLienFamilial() throws Exception{
       final LienFamilial r = new LienFamilial();
       r.setNom("Neveu-Tante");
@@ -140,7 +139,7 @@ public void testCrudLienFamilial() throws Exception{
       assertEquals(new Integer(7), r.getLienFamilialId());
 
       // Test de la mise à jour
-      final LienFamilial l2 = lienDao.findById(new Integer(7));
+      final LienFamilial l2 = lienDao.findById(new Integer(7)).get();
       assertNotNull(l2);
       assertTrue(l2.getNom().equals("Neveu-Tante"));
       assertTrue(l2.getReciproque().equals(lienDao.findByNom("Tante-Neveu").get(0)));
@@ -149,9 +148,9 @@ public void testCrudLienFamilial() throws Exception{
       l2.setReciproque(null);
       l2.setAscendant(false);
       lienDao.save(l2);
-      assertTrue(lienDao.findById(new Integer(7)).getNom().equals("GandPere-PetitFils"));
-      assertTrue(lienDao.findById(new Integer(7)).getReciproque() == null);
-      assertFalse(lienDao.findById(new Integer(7)).getAscendant());
+      assertTrue(lienDao.findById(new Integer(7)).get().getNom().equals("GandPere-PetitFils"));
+      assertTrue(lienDao.findById(new Integer(7)).get().getReciproque() == null);
+      assertFalse(lienDao.findById(new Integer(7)).get().getAscendant());
 
       // Test de la délétion
       lienDao.deleteById(new Integer(7));

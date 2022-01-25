@@ -35,12 +35,24 @@
  **/
 package fr.aphp.tumorotek.dao.test.coeur.patient;
 
+import javax.transaction.Transactional;
+
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import fr.aphp.tumorotek.dao.coeur.patient.MaladieDao;
 import fr.aphp.tumorotek.dao.coeur.patient.PatientDao;
 import fr.aphp.tumorotek.dao.contexte.DiagnosticDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
+import fr.aphp.tumorotek.dao.test.Config;
 import fr.aphp.tumorotek.model.TKDelegateObject;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.serotk.MaladieSero;
@@ -55,49 +67,28 @@ import fr.aphp.tumorotek.model.contexte.Categorie;
  * @version 2.2.3-rc1
  *
  */
-public class MaladieDelegateDaoTest extends AbstractDaoTest //FIXME non lancé dans maven surefire ?
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class MaladieDelegateDaoTest extends AbstractDaoTest
 {
 
    @Autowired
  MaladieDao maladieDao;
-   // @Autowired
- ContexteDao contexteDao;
+
    @Autowired
  PatientDao patientDao;
+   
    @Autowired
  DiagnosticDao diagnosticDao;
 
-//   @Test
-public void setContexteDao(final ContexteDao ceDao){
-//      this.contexteDao = ceDao;
-//   }
-
-   @Test
-public void setMaladieDao(final MaladieDao maladieDao){
-      this.maladieDao = maladieDao;
-   }
-
-   @Test
-public void setPatientDao(final PatientDao pDao){
-      this.patientDao = pDao;
-   }
-   
-   @Test
-public void setDiagnosticDao(DiagnosticDao diagnosticDao){
-      this.diagnosticDao = diagnosticDao;
-   }
-
-   /**
-    * Constructeur.
-    */
-   public MaladieDelegateDaoTest(){}
 
    /**
     * Test l'appel de la méthode toString().
     */
    @Test
 public void testToString(){
-      TKDelegateObject<Maladie> p1 = maladieDao.findById(4).getDelegate();
+      TKDelegateObject<Maladie> p1 = maladieDao.findById(4).get().getDelegate();
       assertTrue(p1.toString().equals("{Addiction medocs}.MaladieSero"));
       p1 = new MaladieSero();
       assertTrue(p1.toString().equals("{Empty delegate}"));
@@ -108,21 +99,22 @@ public void testToString(){
     * son delegate.
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
-   @Rollback(false)
    @Test
+   @Transactional
+   @Rollback(false)
 public void testCrudMaladieAndDelegate() throws Exception{
 
       Maladie m = new Maladie();
 
       /*Champs obligatoires*/
       m.setCode("C12.13");
-      m.setPatient(patientDao.findById(1));
+      m.setPatient(patientDao.findById(1).get());
       m.setLibelle("PROSTALGIE FUGACE");
       m.setSystemeDefaut(false);
 
       final MaladieSero ms1 = new MaladieSero();
-      // ms1.setContexte(contexteDao.findById(1));
-      ms1.setDiagnostic(diagnosticDao.findById(2));
+      // ms1.setContexte(contexteDao.findById(1)).get();
+      ms1.setDiagnostic(diagnosticDao.findById(2).get());
       ms1.setDelegator(m);
       m.setDelegate(ms1);
 
@@ -133,9 +125,9 @@ public void testCrudMaladieAndDelegate() throws Exception{
       m = maladieDao.findByCode("C12.13").get(0);
       assertNotNull(m.getDelegate());
       MaladieSero ms2 = (MaladieSero) m.getDelegate();
-      assertTrue(ms2.getDiagnostic().equals(diagnosticDao.findById(2)));
+      assertTrue(ms2.getDiagnostic().equals(diagnosticDao.findById(2).get()));
 
-      ms2.setDiagnostic(diagnosticDao.findById(1));
+      ms2.setDiagnostic(diagnosticDao.findById(1).get());
 
       maladieDao.save(m);
       assertTrue(IterableUtils.toList(maladieDao.findAll()).size() == 7);
@@ -144,7 +136,7 @@ public void testCrudMaladieAndDelegate() throws Exception{
       m = maladieDao.findByCode("C12.13").get(0);
       assertNotNull(m.getDelegate());
       ms2 = (MaladieSero) m.getDelegate();
-      assertTrue(ms2.getDiagnostic().equals(diagnosticDao.findById(1)));
+      assertTrue(ms2.getDiagnostic().equals(diagnosticDao.findById(1).get()));
 
       // Test de la délétion
       m.setDelegate(null);
@@ -161,7 +153,7 @@ public void testCrudMaladieAndDelegate() throws Exception{
 public void testIsEmpty(){
       final MaladieSero mSero = new MaladieSero();
       assertTrue(mSero.isEmpty());
-      mSero.setDiagnostic(diagnosticDao.findById(1));
+      mSero.setDiagnostic(diagnosticDao.findById(1).get());
       assertFalse(mSero.isEmpty());
       mSero.setDiagnostic(null);
       assertTrue(mSero.isEmpty());
@@ -181,15 +173,15 @@ public void testEqualsAndHashCode(){
       assertTrue(m1.equals(m2));
       assertTrue(m1.hashCode() == m2.hashCode());
 
-      m1.setDelegator(maladieDao.findById(1));
+      m1.setDelegator(maladieDao.findById(1).get());
       assertFalse(m1.equals(m2));
       assertFalse(m2.equals(m1));
       assertTrue(m1.hashCode() != m2.hashCode());
-      m2.setDelegator(maladieDao.findById(2));
+      m2.setDelegator(maladieDao.findById(2).get());
       assertFalse(m1.equals(m2));
       assertFalse(m2.equals(m1));
       assertTrue(m1.hashCode() != m2.hashCode());
-      m1.setDelegator(maladieDao.findById(2));
+      m1.setDelegator(maladieDao.findById(2).get());
       assertTrue(m1.equals(m2));
       assertTrue(m2.equals(m1));
       assertTrue(m1.hashCode() == m2.hashCode());

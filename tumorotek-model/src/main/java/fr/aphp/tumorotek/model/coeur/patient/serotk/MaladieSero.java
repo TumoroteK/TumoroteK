@@ -88,4 +88,8 @@ public class MaladieSero extends AbstractMaladieDelegate
 		clone.setDiagnostic(getDiagnostic());
 		return clone;
 	}
+   
+	@Override
+	public void removeAssociations() {	
+	}
 }

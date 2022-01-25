@@ -38,7 +38,19 @@ package fr.aphp.tumorotek.dao.test.coeur.prelevement;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.test.annotation.Rollback;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
 
 import fr.aphp.tumorotek.dao.coeur.prelevement.ConsentTypeDao;
 import fr.aphp.tumorotek.dao.coeur.prelevement.NatureDao;
@@ -57,173 +69,154 @@ import fr.aphp.tumorotek.model.contexte.Protocole;
 
 /**
  *
- * Classe de test pour la delegation des prélèvements.
- * Classe de test créée le 01/02/2012.
+ * Classe de test pour la delegation des prélèvements. Classe de test créée le
+ * 01/02/2012.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0.6
+ * @version 2.3
  *
  */
-public class PrelevementDelegateDaoTest extends AbstractDaoTest //FIXME non lancé dans maven surefire ?
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class PrelevementDelegateDaoTest extends AbstractDaoTest 
 {
 
-   @Autowired
- NatureDao natureDao;
-   @Autowired
- PrelevementDao prelevementDao;
-   @Autowired
- BanqueDao banqueDao;
-   @Autowired
- ConsentTypeDao consentTypeDao;
-   @Autowired
- ProtocoleDao protocoleDao;
+	@Autowired
+	NatureDao natureDao;
 
-   @Test
-public void setPrelevementDao(final PrelevementDao pDao){
-      this.prelevementDao = pDao;
-   }
+	@Autowired
+	PrelevementDao prelevementDao;
 
-   @Test
-public void setNatureDao(final NatureDao nDao){
-      this.natureDao = nDao;
-   }
+	@Autowired
+	BanqueDao banqueDao;
 
-   @Test
-public void setConsentTypeDao(final ConsentTypeDao ctDao){
-      this.consentTypeDao = ctDao;
-   }
+	@Autowired
+	ConsentTypeDao consentTypeDao;
 
-   @Test
-public void setProtocoleDao(final ProtocoleDao pDao){
-      this.protocoleDao = pDao;
-   }
+	@Autowired
+	ProtocoleDao protocoleDao;
 
-   @Test
-public void setBanqueDao(final BanqueDao bDao){
-      this.banqueDao = bDao;
-   }
+	@Test
+	public void testToString() {
+		AbstractPrelevementDelegate p2 = prelevementDao.findById(2).get().getPrelevementSero();
+		assertTrue(p2.toString().equals("{PRLVT2}." + PrelevementSero.class.getSimpleName()));
+	}
 
-   /**
-    * Constructeur.
-    */
-   public PrelevementDelegateDaoTest(){}
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'un prelevement avec son
+	 * delegate.
+	 * 
+	 * @throws Exception lance une exception en cas de problème lors du CRUD.
+	 */
+	@Test
+	@Transactional
+	@Rollback(false)
+	public void testCrudPrelAndDelegate() throws Exception {
 
-   /**
-    * Test l'appel de la méthode toString().
-    */
-   @Test
-public void testToString(){
-      AbstractPrelevementDelegate p2 = prelevementDao.findById(2).getPrelevementSero();
-      assertTrue(p2.toString().equals("{PRLVT2}." + PrelevementSero.class.getSimpleName()));
-   }
+		Prelevement p = new Prelevement();
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression d'un prelevement avec 
-    * son delegate.
-    * @throws Exception lance une exception en cas de problème lors du CRUD.
-    */
-   @Rollback(false)
-   @Test
-public void testCrudPrelAndDelegate() throws Exception{
+		/* Champs obligatoires */
+		final Banque b = banqueDao.findById(2).get();
+		p.setBanque(b);
+		p.setCode("prelDel1");
+		final Nature n = natureDao.findById(1).get();
+		p.setNature(n);
+		final ConsentType ct = consentTypeDao.findById(2).get();
+		p.setConsentType(ct);
 
-      Prelevement p = new Prelevement();
+		final PrelevementSero ps1 = new PrelevementSero();
+		ps1.setLibelle("SERO1");
+		List<Protocole> protos = IterableUtils.toList(protocoleDao.findAll());
+		ps1.setProtocoles(new HashSet<>(protos));
+		ps1.setDelegator(p);
+		p.setDelegate(ps1);
 
-      /*Champs obligatoires*/
-      final Banque b = banqueDao.findById(2);
-      p.setBanque(b);
-      p.setCode("prelDel1");
-      final Nature n = natureDao.findById(1);
-      p.setNature(n);
-      final ConsentType ct = consentTypeDao.findById(2);
-      p.setConsentType(ct);
+		// Test de l'insertion
+		prelevementDao.save(p);
+		assertTrue(IterableUtils.toList(prelevementDao.findAll()).size() == 6);
 
-      final PrelevementSero ps1 = new PrelevementSero();
-      ps1.setLibelle("SERO1");
-      List<Protocole> protos = IterableUtils.toList(protocoleDao.findAll());
-      ps1.setProtocoles(new HashSet<>(protos));
-      ps1.setDelegator(p);
-      p.setDelegate(ps1);
+		p = prelevementDao.findByCode("prelDel1").get(0);
+		assertNotNull(p.getPrelevementSero());
+		PrelevementSero ps2 = p.getPrelevementSero();
+		assertTrue(ps2.getLibelle().equals("SERO1"));
+		assertTrue(ps2.getProtocoles().size() == 3);
 
-      // Test de l'insertion
-      prelevementDao.save(p);
-      assertTrue(IterableUtils.toList(prelevementDao.findAll()).size() == 6);
+		protos = protocoleDao.findByNom("OFSEP");
+		ps2.setProtocoles(new HashSet<>(protos));
 
-      p = prelevementDao.findByCode("prelDel1").get(0);
-      assertNotNull(p.getPrelevementSero());
-      PrelevementSero ps2 = p.getPrelevementSero();
-      assertTrue(ps2.getLibelle().equals("SERO1"));
-      assertTrue(ps2.getProtocoles().size() == 3);
+		prelevementDao.save(p);
+		assertTrue(IterableUtils.toList(prelevementDao.findAll()).size() == 6);
 
-      protos = protocoleDao.findByNom("OFSEP");
-      ps2.setProtocoles(new HashSet<>(protos));
+		// Test de la mise à jour
+		p = prelevementDao.findByCode("prelDel1").get(0);
+		assertNotNull(p.getPrelevementSero());
+		ps2 = p.getPrelevementSero();
+		assertTrue(ps2.getLibelle().equals("SERO1"));
+		assertTrue(ps2.getProtocoles().size() == 1);
+		assertTrue(ps2.getProtocoles().iterator().next().getNom().equals("OFSEP"));
 
-      prelevementDao.save(p);
-      assertTrue(IterableUtils.toList(prelevementDao.findAll()).size() == 6);
+		// Test de la délétion
+		p.setCode("updated");
+		p.getDelegate().removeAssociations();
+		prelevementDao.save(p);
+		p = prelevementDao.findByCode("updated").get(0);
+		assertTrue(p.getPrelevementSero().getProtocoles().isEmpty());
 
-      // Test de la mise à jour
-      p = prelevementDao.findByCode("prelDel1").get(0);
-      assertNotNull(p.getPrelevementSero());
-      ps2 = p.getPrelevementSero();
-      assertTrue(ps2.getLibelle().equals("SERO1"));
-      assertTrue(ps2.getProtocoles().size() == 1);
-      assertTrue(ps2.getProtocoles().iterator().next().getNom().equals("OFSEP"));
+		p.setDelegate(null);
+		prelevementDao.save(p);
+		p = prelevementDao.findByCode("updated").get(0);
+		assertTrue(p.getPrelevementSero() == null);
 
-      // Test de la délétion
-      p.setDelegate(null);
-      p.setCode("updated");
-      prelevementDao.save(p);
-      p = prelevementDao.findByCode("updated").get(0);
-      assertTrue(p.getPrelevementSero() == null);
+		prelevementDao.deleteById(p.getPrelevementId());
+		assertTrue(IterableUtils.toList(prelevementDao.findAll()).size() == 5);
+	}
 
-      prelevementDao.deleteById(p.getPrelevementId());
-      assertTrue(IterableUtils.toList(prelevementDao.findAll()).size() == 5);
-   }
+	@Test
+	public void testIsEmpty() {
+		final PrelevementSero pSero = new PrelevementSero();
+		assertTrue(pSero.isEmpty());
+		pSero.setLibelle("libelle");
+		assertFalse(pSero.isEmpty());
+		pSero.setLibelle("");
+		assertTrue(pSero.isEmpty());
+		pSero.setLibelle(null);
+		assertTrue(pSero.isEmpty());
+		pSero.getProtocoles().add(new Protocole());
+		assertFalse(pSero.isEmpty());
+		pSero.setProtocoles(null);
+		assertTrue(pSero.isEmpty());
+	}
 
-   @Test
-public void testIsEmpty(){
-      final PrelevementSero pSero = new PrelevementSero();
-      assertTrue(pSero.isEmpty());
-      pSero.setLibelle("libelle");
-      assertFalse(pSero.isEmpty());
-      pSero.setLibelle("");
-      assertTrue(pSero.isEmpty());
-      pSero.setLibelle(null);
-      assertTrue(pSero.isEmpty());
-      pSero.getProtocoles().add(new Protocole());
-      assertFalse(pSero.isEmpty());
-      pSero.setProtocoles(null);
-      assertTrue(pSero.isEmpty());
-   }
+	/**
+	 * Test des méthodes surchargées "equals" et hashcode pour la table
+	 * transcodeUtilisateur.
+	 */
+	@Test
+	public void testEqualsAndHashCode() {
+		final AbstractPrelevementDelegate p1 = new PrelevementSero();
+		final AbstractPrelevementDelegate p2 = new PrelevementSero();
+		assertFalse(p1.equals(null));
+		assertNotNull(p2);
+		assertTrue(p1.equals(p2)); // FIXME false
+		assertTrue(p2.equals(p1));
+		assertTrue(p1.hashCode() == p2.hashCode());
 
-   /**
-    * Test des méthodes surchargées "equals" et hashcode pour
-    * la table transcodeUtilisateur.
-    */
-   @Test
-public void testEqualsAndHashCode(){
-      final AbstractPrelevementDelegate p1 = new PrelevementSero();
-      final AbstractPrelevementDelegate p2 = new PrelevementSero();
-      assertFalse(p1.equals(null));
-      assertNotNull(p2);
-      assertTrue(p1.equals(p2)); //FIXME false
-      assertTrue(p2.equals(p1));
-      assertTrue(p1.hashCode() == p2.hashCode());
+		p1.setDelegator(prelevementDao.findById(1).get());
+		assertFalse(p1.equals(p2));
+		assertFalse(p2.equals(p1));
+		assertTrue(p1.hashCode() != p2.hashCode());
+		p2.setDelegator(prelevementDao.findById(2).get());
+		assertFalse(p1.equals(p2));
+		assertFalse(p2.equals(p1));
+		assertTrue(p1.hashCode() != p2.hashCode());
+		p1.setDelegator(prelevementDao.findById(2).get());
+		assertTrue(p1.equals(p2));
+		assertTrue(p2.equals(p1));
+		assertTrue(p1.hashCode() == p2.hashCode());
 
-      p1.setDelegator(prelevementDao.findById(1));
-      assertFalse(p1.equals(p2));
-      assertFalse(p2.equals(p1));
-      assertTrue(p1.hashCode() != p2.hashCode());
-      p2.setDelegator(prelevementDao.findById(2));
-      assertFalse(p1.equals(p2));
-      assertFalse(p2.equals(p1));
-      assertTrue(p1.hashCode() != p2.hashCode());
-      p1.setDelegator(prelevementDao.findById(2));
-      assertTrue(p1.equals(p2));
-      assertTrue(p2.equals(p1));
-      assertTrue(p1.hashCode() == p2.hashCode());
-
-      // dummy
-      final Categorie c = new Categorie();
-      assertFalse(p1.equals(c));
-   }
+		// dummy
+		final Categorie c = new Categorie();
+		assertFalse(p1.equals(c));
+	}
 }

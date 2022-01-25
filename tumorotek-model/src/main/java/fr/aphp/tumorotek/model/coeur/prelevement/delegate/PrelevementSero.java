@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.model.coeur.prelevement.delegate;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -80,9 +81,10 @@ public class PrelevementSero extends AbstractPrelevementDelegate
       this.libelle = libelle;
    }
 
-   @ManyToMany(targetEntity = Protocole.class, fetch = FetchType.EAGER)
-   @JoinTable(name = "PRELEVEMENT_SERO_PROTOCOLE", joinColumns = @JoinColumn(name = "PRELEVEMENT_DELEGATE_ID"),
-      inverseJoinColumns = @JoinColumn(name = "PROTOCOLE_ID"))
+   @ManyToMany(targetEntity = Protocole.class, fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+   @JoinTable(name = "PRELEVEMENT_SERO_PROTOCOLE", 
+   		joinColumns = @JoinColumn(name = "PRELEVEMENT_DELEGATE_ID", referencedColumnName = "PRELEVEMENT_DELEGATE_ID"),
+   		inverseJoinColumns = @JoinColumn(name = "PROTOCOLE_ID", referencedColumnName = "PROTOCOLE_ID"))
    public Set<Protocole> getProtocoles(){
       return protocoles;
    }
@@ -104,4 +106,12 @@ public class PrelevementSero extends AbstractPrelevementDelegate
 		clone.getProtocoles().addAll(getProtocoles());
 		return clone;
 	}
+	
+	@Override
+    public void removeAssociations() {
+        for (Protocole p : protocoles) {
+        	p.getPrelevements().remove(this);
+        }
+        protocoles.clear();
+    }
 }

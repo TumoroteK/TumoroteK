@@ -82,4 +82,8 @@ public class PrelevementXeno extends AbstractPrelevementDelegate
 		clone.setSouris(getSouris());
 		return clone;
 	}
+
+	@Override
+	public void removeAssociations() {	
+	}
 }

@@ -40,11 +40,23 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import fr.aphp.tumorotek.dao.coeur.patient.MaladieDao;
 import fr.aphp.tumorotek.dao.coeur.patient.PatientDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
+import fr.aphp.tumorotek.dao.test.Config;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -59,47 +71,24 @@ import fr.aphp.tumorotek.model.contexte.Banque;
  * @version 2.2.3-genno
  *
  */
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
 public class MaladieDaoTest extends AbstractDaoTest
 {
 
-   /** Beans Dao. */
    @Autowired
  MaladieDao maladieDao;
+   
    @Autowired
  PatientDao patientDao;
-   //@Autowired
- EntiteDao entiteDao;
-
-   /**
-    * Constructeur.
-    */
-   public MaladieDaoTest(){}
-
-   /**
-    * Setter du bean Dao.
-    * @param mDao est le bean Dao.
-    */
-   @Test
-public void setMaladieDao(final MaladieDao mDao){
-      this.maladieDao = mDao;
-   }
-
-   @Test
-public void setPatientDao(final PatientDao pDao){
-      this.patientDao = pDao;
-   }
-
-   //	@Test
-public void setEntiteDao(EntiteDao eDao) {
-   //		this.entiteDao = eDao;
-   //	}
-
+   
    /**
     * Test l'appel de la méthode toString().
     */
    @Test
 public void testToString(){
-      Maladie m1 = maladieDao.findById(1);
+      Maladie m1 = maladieDao.findById(1).get();
       assertTrue(m1.toString().equals("{" + m1.getLibelle() + "}"));
       //		assertTrue(m1.listableObjectId().equals(new Integer(1)));
       //		assertTrue(m1.entiteNom()
@@ -153,14 +142,14 @@ public void testFindByLibelle(){
     */
    @Test
 public void testFindByLibelleAndPatient() {
-	  Patient pat3 = patientDao.findById(3);
+	  Patient pat3 = patientDao.findById(3).get();
       List<Maladie> maladies = maladieDao.findByLibelleAndPatient("Addiction%", pat3);
       assertTrue(maladies.size() == 2);
       maladies = maladieDao.findByLibelleAndPatient("Grippe A", pat3);
       assertTrue(maladies.size() == 0);
-      maladies = maladieDao.findByLibelleAndPatient("Addiction%", patientDao.findById(2));
+      maladies = maladieDao.findByLibelleAndPatient("Addiction%", patientDao.findById(2).get());
       assertTrue(maladies.size() == 0);
-      maladies = maladieDao.findByLibelleAndPatient(null, patientDao.findById(3));
+      maladies = maladieDao.findByLibelleAndPatient(null, patientDao.findById(3).get());
       assertTrue(maladies.size() == 0);
       maladies = maladieDao.findByLibelleAndPatient("Addiction%", null);
       assertTrue(maladies.size() == 0);
@@ -186,11 +175,12 @@ public void testFindByCode(){
     * d'un maladie.
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
-   @Rollback(false)
    @Test
+   @Transactional
+   @Rollback(false)
 public void testCrudMaladie() throws Exception{
       final Maladie m = new Maladie();
-      final Patient p1 = patientDao.findById(1);
+      final Patient p1 = patientDao.findById(1).get();
       m.setPatient(p1);
       m.setLibelle("Grippe A");
       m.setCode("N12.5");
@@ -204,7 +194,7 @@ public void testCrudMaladie() throws Exception{
 
       // Test de la mise à jour
       final Integer mId = m.getMaladieId();
-      final Maladie m2 = maladieDao.findById(mId);
+      final Maladie m2 = maladieDao.findById(mId).get();
       assertNotNull(m2);
       assertTrue(m2.getPatient().equals(p1));
       assertTrue(m2.getLibelle().equals("Grippe A"));
@@ -212,18 +202,18 @@ public void testCrudMaladie() throws Exception{
       assertTrue(m2.getDateDiagnostic().equals(diag));
       assertTrue(m2.getDateDebut().equals(debut));
       //update
-      final Patient p2 = patientDao.findById(2);
+      final Patient p2 = patientDao.findById(2).get();
       m.setPatient(p2);
       m.setLibelle("Lupus");
       m.setCode(null);
       m.setDateDiagnostic(null);
       m.setDateDebut(null);
       maladieDao.save(m2);
-      assertTrue(maladieDao.findById(mId).getPatient().equals(p2));
-      assertFalse(maladieDao.findById(mId).getCode().isPresent());
-      assertTrue(maladieDao.findById(mId).getLibelle().equals("Lupus"));
-      assertFalse(maladieDao.findById(mId).getDateDebut().isPresent());
-      assertFalse(maladieDao.findById(mId).getDateDiagnostic().isPresent());
+      assertTrue(maladieDao.findById(mId).get().getPatient().equals(p2));
+      assertFalse(maladieDao.findById(mId).get().getCode() != null);
+      assertTrue(maladieDao.findById(mId).get().getLibelle().equals("Lupus"));
+      assertFalse(maladieDao.findById(mId).get().getDateDebut() != null);
+      assertFalse(maladieDao.findById(mId).get().getDateDiagnostic() != null);
 
       // Test de la délétion
       maladieDao.deleteById(new Integer(mId));
@@ -286,13 +276,12 @@ public void testHashCode() throws ParseException{
       assertTrue(hash == m1.hashCode());
    }
 
-   @Autowired
- void populateClefsToTestEqualsAndHashCode(final Maladie m1, final Maladie m2) throws ParseException{
+ public void populateClefsToTestEqualsAndHashCode(final Maladie m1, final Maladie m2) throws ParseException{
       final String[] libelles = new String[] {null, "libelle1", "libelle2", "libelle1"};
 
-      final Patient p1 = patientDao.findById(1);
-      final Patient p2 = patientDao.findById(2);
-      final Patient p3 = patientDao.findById(1);
+      final Patient p1 = patientDao.findById(1).get();
+      final Patient p2 = patientDao.findById(2).get();
+      final Patient p3 = patientDao.findById(1).get();
       final Patient[] patients = new Patient[] {null, p1, p2, p3};
 
       for(int i = 0; i < libelles.length; i++){
@@ -327,7 +316,7 @@ public void testHashCode() throws ParseException{
 
    @Test
 public void testClone(){
-      final Maladie m = maladieDao.findById(1);
+      final Maladie m = maladieDao.findById(1).get();
       final Maladie m2 = m.clone();
       assertTrue(m.equals(m2));
       if(m.getMaladieId() != null){
@@ -362,13 +351,13 @@ public void testClone(){
 
    @Test
 public void testFindByPatient(){
-      final Patient p = patientDao.findById(3);
+      final Patient p = patientDao.findById(3).get();
       List<Maladie> mals = maladieDao.findByPatient(p);
       assertTrue(mals.size() == 3);
-      assertTrue(mals.get(0).equals(maladieDao.findById(6)));
-      assertTrue(mals.get(1).equals(maladieDao.findById(4)));
-      assertTrue(mals.get(2).equals(maladieDao.findById(3)));
-      mals = maladieDao.findByPatient(patientDao.findById(2));
+      assertTrue(mals.get(0).equals(maladieDao.findById(6).get()));
+      assertTrue(mals.get(1).equals(maladieDao.findById(4).get()));
+      assertTrue(mals.get(2).equals(maladieDao.findById(3).get()));
+      mals = maladieDao.findByPatient(patientDao.findById(2).get());
       assertTrue(mals.size() == 0);
       mals = maladieDao.findByPatient(null);
       assertTrue(mals.size() == 0);
@@ -376,12 +365,12 @@ public void testFindByPatient(){
 
    @Test
 public void testFindByPatientNoSystem(){
-      final Patient p = patientDao.findById(3);
+      final Patient p = patientDao.findById(3).get();
       List<Maladie> mals = maladieDao.findByPatientNoSystem(p);
       assertTrue(mals.size() == 2);
-      assertTrue(mals.contains(maladieDao.findById(3)));
-      assertTrue(mals.contains(maladieDao.findById(4)));
-      mals = maladieDao.findByPatientNoSystem(patientDao.findById(2));
+      assertTrue(mals.contains(maladieDao.findById(3).get()));
+      assertTrue(mals.contains(maladieDao.findById(4).get()));
+      mals = maladieDao.findByPatientNoSystem(patientDao.findById(2).get());
       assertTrue(mals.size() == 0);
       mals = maladieDao.findByPatientNoSystem(null);
       assertTrue(mals.size() == 0);

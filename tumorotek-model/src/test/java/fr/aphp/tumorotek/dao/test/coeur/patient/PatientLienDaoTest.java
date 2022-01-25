@@ -38,12 +38,24 @@ package fr.aphp.tumorotek.dao.test.coeur.patient;
 import java.text.ParseException;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import fr.aphp.tumorotek.dao.coeur.patient.LienFamilialDao;
 import fr.aphp.tumorotek.dao.coeur.patient.PatientDao;
 import fr.aphp.tumorotek.dao.coeur.patient.PatientLienDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
+import fr.aphp.tumorotek.dao.test.Config;
 import fr.aphp.tumorotek.model.coeur.patient.LienFamilial;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.patient.PatientLien;
@@ -60,58 +72,38 @@ import fr.aphp.tumorotek.model.contexte.Banque;
  * @version 2.0
  *
  */
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
 public class PatientLienDaoTest extends AbstractDaoTest
 {
 
-   /** Beans Dao. */
    @Autowired
  PatientLienDao patientLienDao;
+   
    @Autowired
  PatientDao patientDao;
+   
    @Autowired
  LienFamilialDao lienDao;
-
-   /**
-    * Constructeur.
-    */
-   public PatientLienDaoTest(){}
-
-   /**
-    * Setter du bean Dao.
-    * @param mDao est le bean Dao.
-    */
-   @Test
-public void setPatientLienDao(final PatientLienDao mDao){
-      this.patientLienDao = mDao;
-   }
-
-   @Test
-public void setPatientDao(final PatientDao pDao){
-      this.patientDao = pDao;
-   }
-
-   @Test
-public void setLienDao(final LienFamilialDao lDao){
-      this.lienDao = lDao;
-   }
 
    /**
     * Test l'appel de la méthode toString().
     */
    @Test
 public void testToString(){
-      final PatientLienPK pk = new PatientLienPK(patientDao.findById(2), patientDao.findById(5));
-      PatientLien pl1 = patientLienDao.findById(pk);
+      final PatientLienPK pk = new PatientLienPK(patientDao.findById(2).get(), patientDao.findById(5).get());
+      PatientLien pl1 = patientLienDao.findById(pk).get();
       assertTrue(
          pl1.toString().equals("{" + pl1.getPatient1() + " - " + pl1.getLienFamilial() + " - " + pl1.getPatient2() + "}"));
       pl1 = new PatientLien();
       assertTrue(pl1.toString().equals("{Empty PatientLien}"));
-      pl1.setPatient1(patientDao.findById(1));
+      pl1.setPatient1(patientDao.findById(1).get());
       assertTrue(pl1.toString().equals("{Empty PatientLien}"));
-      pl1.setLienFamilial(lienDao.findById(1));
+      pl1.setLienFamilial(lienDao.findById(1).get());
       assertTrue(pl1.toString().equals("{Empty PatientLien}"));
       pl1.setPatient1(null);
-      pl1.setPatient2(patientDao.findById(1));
+      pl1.setPatient2(patientDao.findById(1).get());
       assertTrue(pl1.toString().equals("{Empty PatientLien}"));
    }
 
@@ -130,13 +122,14 @@ public void testReadAllPatientLiens(){
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     *
     **/
-   @Rollback(false)
    @Test
+   @Transactional
+   @Rollback(false)
 public void testCrudLienFamilial(){
       final PatientLien pl = new PatientLien();
-      final Patient p1 = patientDao.findById(1);
-      final Patient p2 = patientDao.findById(3);
-      final LienFamilial l1 = lienDao.findById(2);
+      final Patient p1 = patientDao.findById(1).get();
+      final Patient p2 = patientDao.findById(3).get();
+      final LienFamilial l1 = lienDao.findById(2).get();
       pl.setPatient1(p2);
       pl.setPatient2(p1);
       pl.setLienFamilial(l1);
@@ -147,19 +140,19 @@ public void testCrudLienFamilial(){
       final PatientLienPK pk = new PatientLienPK();
       pk.setPatient1(p2);
       pk.setPatient2(p1);
-      final PatientLien pl2 = patientLienDao.findById(pk);
+      final PatientLien pl2 = patientLienDao.findById(pk).get();
       assertNotNull(pl2);
       assertTrue(pl2.getPatient1().equals(p2));
       assertTrue(pl2.getPatient2().equals(p1));
       assertTrue(pl2.getLienFamilial().equals(l1));
       //update
-      final LienFamilial l2 = lienDao.findById(3);
+      final LienFamilial l2 = lienDao.findById(3).get();
       //pl2.setPatient1(p3);
       //pl2.setPatient2(p2);
       pl2.setLienFamilial(l2);
       patientLienDao.save(pl2);
-      assertTrue(patientLienDao.findById(pk).equals(pl2));
-      assertTrue(patientLienDao.findById(pk).getLienFamilial().equals(l2));
+      assertTrue(patientLienDao.findById(pk).get().equals(pl2));
+      assertTrue(patientLienDao.findById(pk).get().getLienFamilial().equals(l2));
       // Test de la délétion
       patientLienDao.deleteById(pk);
       assertFalse(patientLienDao.findById(pk).isPresent());
@@ -217,12 +210,11 @@ public void testHashCode() throws ParseException{
       assertTrue(hash == pl1.hashCode());
    }
 
-   @Autowired
- void populateClefsToTestEqualsAndHashCode(final PatientLien pl1, final PatientLien pl2) throws ParseException{
+public void populateClefsToTestEqualsAndHashCode(final PatientLien pl1, final PatientLien pl2) throws ParseException{
 
-      final Patient p1 = patientDao.findById(1);
-      final Patient p2 = patientDao.findById(2);
-      final Patient p3 = patientDao.findById(1);
+      final Patient p1 = patientDao.findById(1).get();
+      final Patient p2 = patientDao.findById(2).get();
+      final Patient p3 = patientDao.findById(1).get();
       final Patient[] patients = new Patient[] {null, p1, p2, p3};
 
       PatientLienPK pk1 = new PatientLienPK();

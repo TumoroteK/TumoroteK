@@ -50,7 +50,6 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.GenericGenerator;
 
 import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
-import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.coeur.prelevement.delegate.PrelevementSero;
 
 /**
@@ -77,7 +76,7 @@ public class Protocole extends AbstractPfDependantThesaurusObject implements Ser
    private static final long serialVersionUID = 54864135646414L;
 
    private String description;
-   private Set<Prelevement> prelevements = new HashSet<>();
+   private Set<PrelevementSero> prelevements = new HashSet<>();
 
    /** Constructeur par défaut. */
    public Protocole(){}
@@ -111,11 +110,11 @@ public class Protocole extends AbstractPfDependantThesaurusObject implements Ser
    }
 
    @ManyToMany(mappedBy = "protocoles", targetEntity = PrelevementSero.class)
-   public Set<Prelevement> getPrelevements(){
+   public Set<PrelevementSero> getPrelevements(){
       return prelevements;
    }
 
-   public void setPrelevements(final Set<Prelevement> prelevements){
+   public void setPrelevements(final Set<PrelevementSero> prelevements){
       this.prelevements = prelevements;
    }
 
@@ -126,5 +125,4 @@ public class Protocole extends AbstractPfDependantThesaurusObject implements Ser
       }
       return "{Empty Protocole}";
    }
-
 }

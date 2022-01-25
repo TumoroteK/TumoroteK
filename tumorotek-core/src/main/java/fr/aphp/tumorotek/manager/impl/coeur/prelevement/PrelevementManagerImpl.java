@@ -1414,6 +1414,8 @@ public class PrelevementManagerImpl implements PrelevementManager
 
 		   //Suppression du délégué si la banque de destination n'est pas dans le même contexte que la banque d'origine
 		   if(!bank.getContexte().equals(prel.getBanque().getContexte())){
+			   // if delegate to many relationship is not empty, may throw a SQLException on foreign key
+			   prel.getDelegate().removeAssociations(); // may not work because delegate becomes null and removed as orphan  
 			   prel.setDelegate(null);
 		   }
 

@@ -330,7 +330,7 @@
 				commandes utiles pour nettoyer le contenu des bases de tests
 				mvn org.codehaus.mojo:dbunit-maven-plugin:1.0-beta-3:operation@clean-insert-tumorotek
 				mvn org.codehaus.mojo:dbunit-maven-plugin:1.0-beta-3:operation@clean-insert-tumorotek_interfacages
-				mvn org.codehaus.mojo:sql-maven-plugin:1.5:execute@table-champs-items (ajoute les champs INCas, utilisés dans les tests)
+				mvn org.codehaus.mojo:sql-maven-plugin:1.5:execute@table-champs-items
 				mvn org.codehaus.mojo:sql-maven-plugin:1.5:execute@tableAnnotationBanque
 				-->
 
@@ -441,6 +441,7 @@
 						<include>**/MaladieDaoTest.java</include>
 						<include>**/PatientLienDaoTest.java</include>
 						<include>**/PatientMedecinDaoTest.java</include>
+						<include>**/MaladieDelegateDaoTest.java</include>
 						<!-- Package coeur.prelevement -->
 						<include>**/ConditMilieuDaoTest.java</include>
 						<include>**/ConditTypeDaoTest.java</include>
@@ -450,6 +451,8 @@
 						<include>**/RisqueDaoTest.java</include>
 						<include>**/LaboInterDaoTest.java</include>
 						<include>**/PrelevementDaoTest.java</include>
+						<include>**/PrelevementDelegateDaoTest.java</include>
+					
 						<!-- Package qualite -->
 						<include>**/OperationDaoTest.java</include>
 						<include>**/OperationTypeDaoTest.java</include>

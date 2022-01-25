@@ -42,13 +42,25 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.transaction.Transactional;
+
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import fr.aphp.tumorotek.dao.coeur.patient.PatientDao;
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.contexte.EtablissementDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
+import fr.aphp.tumorotek.dao.test.Config;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Etablissement;
@@ -63,51 +75,31 @@ import fr.aphp.tumorotek.model.contexte.Etablissement;
  * @version 2.0
  *
  */
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
 public class PatientDaoTest extends AbstractDaoTest
 {
 
-
    @Autowired
  PatientDao patientDao;
+   
    @Autowired
  EntiteDao entiteDao;
+   
    @Autowired
  BanqueDao banqueDao;
+   
    @Autowired
  EtablissementDao etablissementDao;
 
-   /**
-    * Constructeur.
-    */
-   public PatientDaoTest(){}
-
-   @Test
-public void setPatientDao(final PatientDao pDao){
-      this.patientDao = pDao;
-   }
-
-   @Test
-public void setEntiteDao(final EntiteDao eDao){
-      this.entiteDao = eDao;
-   }
-
-   @Test
-public void setBanqueDao(final BanqueDao bDao){
-      this.banqueDao = bDao;
-   }
-
-   @Test
-public void setEtablissementDao(final EtablissementDao eDao){
-      this.etablissementDao = eDao;
-   }
-
    @Test
 public void testToString(){
-      Patient p1 = patientDao.findById(1);
+      Patient p1 = patientDao.findById(1).get();
       assertTrue(p1.toString().equals("{" + p1.getNom() + " " + p1.getPrenom() + "}"));
       assertTrue(p1.listableObjectId().equals(new Integer(1)));
       assertTrue(p1.entiteNom().equals(entiteDao.findByNom("Patient").get(0).getNom()));
-      p1 = patientDao.findById(5);
+      p1 = patientDao.findById(5).get();
       assertTrue(p1.toString().equals("{" + p1.getNom() + " prenom inconnu}"));
       p1 = new Patient();
       assertTrue(p1.toString().equals("{Empty Patient}"));
@@ -128,12 +120,12 @@ public void testFindByAllIds(){
    @Test
 public void testFindByAllIdsWithBanques(){
       final List<Banque> bks = new ArrayList<>();
-      bks.add(banqueDao.findById(1));
+      bks.add(banqueDao.findById(1).get());
 
       List<Integer> ids = patientDao.findByAllIdsWithBanques(bks);
       assertTrue(ids.size() == 1);
 
-      bks.add(banqueDao.findById(2));
+      bks.add(banqueDao.findById(2).get());
       ids = patientDao.findByAllIdsWithBanques(bks);
       assertTrue(ids.size() == 2);
 
@@ -210,7 +202,7 @@ public void testFindByNom(){
    @Test
 public void testFindByNipReturnIds(){
       final List<Banque> bks = new ArrayList<>();
-      bks.add(banqueDao.findById(1));
+      bks.add(banqueDao.findById(1).get());
       List<Integer> patients = patientDao.findByNipReturnIds("876%", bks);
       assertTrue(patients.size() == 1);
 
@@ -220,7 +212,7 @@ public void testFindByNipReturnIds(){
       patients = patientDao.findByNipReturnIds("876", bks);
       assertTrue(patients.size() == 1);
 
-      bks.add(banqueDao.findById(2));
+      bks.add(banqueDao.findById(2).get());
       patients = patientDao.findByNipReturnIds("%", bks);
       assertTrue(patients.size() == 2);
 
@@ -234,7 +226,7 @@ public void testFindByNipReturnIds(){
    @Test
 public void testFindByNomReturnIds(){
       final List<Banque> bks = new ArrayList<>();
-      bks.add(banqueDao.findById(1));
+      bks.add(banqueDao.findById(1).get());
       List<Integer> patients = patientDao.findByNomReturnIds("MA%", bks);
       assertTrue(patients.size() == 0);
 
@@ -247,7 +239,7 @@ public void testFindByNomReturnIds(){
       patients = patientDao.findByNomReturnIds("SIMPSON", bks);
       assertTrue(patients.size() == 0);
 
-      bks.add(banqueDao.findById(2));
+      bks.add(banqueDao.findById(2).get());
       patients = patientDao.findByNomReturnIds("MAYER", bks);
       assertTrue(patients.size() == 1);
 
@@ -308,8 +300,8 @@ public void testFindByNomInList(){
       criteres.add("MAYER");
       criteres.add("SOLIS");
       final List<Banque> banks = new ArrayList<>();
-      banks.add(banqueDao.findById(1));
-      banks.add(banqueDao.findById(2));
+      banks.add(banqueDao.findById(1).get());
+      banks.add(banqueDao.findById(2).get());
 
       List<Integer> liste = patientDao.findByNomInList(criteres, banks);
       assertTrue(liste.size() == 2);
@@ -327,8 +319,8 @@ public void testFindByNipInList(){
       criteres.add("0987");
       criteres.add("876");
       final List<Banque> banks = new ArrayList<>();
-      banks.add(banqueDao.findById(1));
-      banks.add(banqueDao.findById(2));
+      banks.add(banqueDao.findById(1).get());
+      banks.add(banqueDao.findById(2).get());
 
       List<Integer> liste = patientDao.findByNipInList(criteres, banks);
       assertTrue(liste.size() == 2);
@@ -344,8 +336,9 @@ public void testFindByNipInList(){
     * d'un patient.
     * @throws Exception lance une exception en cas de problème lors du CRUD.
     */
-   @Rollback(false)
    @Test
+   @Transactional
+   @Rollback(false)
 public void testCrudPatient() throws Exception{
       final Patient p = new Patient();
       p.setNip("13z");
@@ -367,7 +360,7 @@ public void testCrudPatient() throws Exception{
       assertEquals(new Integer(6), p.getPatientId());
 
       // Test de la mise à jour
-      final Patient p2 = patientDao.findById(new Integer(6));
+      final Patient p2 = patientDao.findById(new Integer(6)).get();
       assertNotNull(p2);
       assertTrue(p2.getNip().equals("13z"));
       assertTrue(p2.getNom().equals("SIMPSON"));
@@ -396,18 +389,18 @@ public void testCrudPatient() throws Exception{
       p.setEtatIncomplet(null);
       p.setArchive(null);
       patientDao.save(p2);
-      assertFalse(patientDao.findById(6).getNip().isPresent());
-      assertTrue(patientDao.findById(6).getNom().equals("Rey mysterio"));
-      assertFalse(patientDao.findById(6).getNomNaissance().isPresent());
-      assertTrue(patientDao.findById(6).getPrenom().equals("Junior"));
-      assertFalse(patientDao.findById(6).getDateNaissance().isPresent());
-      assertFalse(patientDao.findById(6).getVilleNaissance().isPresent());
-      assertFalse(patientDao.findById(6).getPaysNaissance().isPresent());
-      assertTrue(patientDao.findById(6).getPatientEtat().equals("D"));
-      assertFalse(patientDao.findById(6).getDateEtat().isPresent());
-      assertTrue(patientDao.findById(6).getDateDeces().equals(deces));
-      assertFalse(patientDao.findById(6).getEtatIncomplet().isPresent());
-      assertFalse(patientDao.findById(6).getArchive().isPresent());
+      assertFalse(patientDao.findById(6).get().getNip() != null);
+      assertTrue(patientDao.findById(6).get().getNom().equals("Rey mysterio"));
+      assertFalse(patientDao.findById(6).get().getNomNaissance() != null);
+      assertTrue(patientDao.findById(6).get().getPrenom().equals("Junior"));
+      assertFalse(patientDao.findById(6).get().getDateNaissance() != null);
+      assertFalse(patientDao.findById(6).get().getVilleNaissance() != null);
+      assertFalse(patientDao.findById(6).get().getPaysNaissance() != null);
+      assertTrue(patientDao.findById(6).get().getPatientEtat().equals("D"));
+      assertFalse(patientDao.findById(6).get().getDateEtat()!= null);
+      assertTrue(patientDao.findById(6).get().getDateDeces().equals(deces));
+      assertFalse(patientDao.findById(6).get().getEtatIncomplet() != null);
+      assertFalse(patientDao.findById(6).get().getArchive() != null);
 
       // Test de la délétion
       patientDao.deleteById(new Integer(6));
@@ -470,8 +463,7 @@ public void testHashCode() throws ParseException{
       assertTrue(hash == p1.hashCode());
    }
 
-   @Autowired
- void populateClefsToTestEqualsAndHashCode(final Patient p1, final Patient p2) throws ParseException{
+public void populateClefsToTestEqualsAndHashCode(final Patient p1, final Patient p2) throws ParseException{
       final String[] noms = new String[] {null, "nom1", "nom2", "nom1"};
       final String[] prenoms = new String[] {null, "prenom1", "prenom2", "prenom1"};
       final Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse("13/10/2006");
@@ -515,7 +507,7 @@ public void testHashCode() throws ParseException{
 
    @Test
 public void testClone(){
-      final Patient p = patientDao.findById(1);
+      final Patient p = patientDao.findById(1).get();
       final Patient p2 = p.clone();
       assertTrue(p.equals(p2));
       if(p.getPatientId() != null){
@@ -592,9 +584,9 @@ public void testClone(){
 
    @Test
 public void testFindCountMaladies(){
-      Patient p = patientDao.findById(1);
+      Patient p = patientDao.findById(1).get();
       assertTrue(patientDao.findCountMaladies(p).get(0).equals(new Long(2)));
-      p = patientDao.findById(2);
+      p = patientDao.findById(2).get();
       assertTrue(patientDao.findCountMaladies(p).get(0).equals(new Long(0)));
    }
 
@@ -604,14 +596,14 @@ public void testFindCountMaladies(){
     */
    @Test
 public void testFindCountPrelevementsByBanqueOrNot(){
-      Patient p = patientDao.findById(3);
-      final Banque b = banqueDao.findById(1);
+      Patient p = patientDao.findById(3).get();
+      final Banque b = banqueDao.findById(1).get();
       assertTrue(patientDao.findCountPrelevements(p).get(0).equals(new Long(3)));
       assertTrue(patientDao.findCountPrelevementsByBanque(p, b).get(0).equals(new Long(2)));
-      p = patientDao.findById(1);
+      p = patientDao.findById(1).get();
       assertTrue(patientDao.findCountPrelevements(p).get(0).equals(new Long(1)));
       assertTrue(patientDao.findCountPrelevementsByBanque(p, b).get(0).equals(new Long(0)));
-      p = patientDao.findById(2);
+      p = patientDao.findById(2).get();
       assertTrue(patientDao.findCountPrelevements(p).get(0).equals(new Long(0)));
       assertTrue(patientDao.findCountPrelevementsByBanque(p, b).get(0).equals(new Long(0)));
    }
@@ -623,13 +615,13 @@ public void testFindCountPrelevedByDatesSaisie() throws ParseException{
       final Calendar d2 = Calendar.getInstance();
       d2.setTime(new SimpleDateFormat("dd/MM/yyyy").parse("31/10/2009"));
       final List<Banque> banks = new ArrayList<>();
-      final Banque b1 = banqueDao.findById(1);
+      final Banque b1 = banqueDao.findById(1).get();
       banks.add(b1);
 
       List<Long> res = patientDao.findCountPrelevedByDatesSaisie(d1, d2, banks);
       assertTrue(res.get(0) == 0);
 
-      final Banque b2 = banqueDao.findById(2);
+      final Banque b2 = banqueDao.findById(2).get();
       banks.add(b2);
       res = patientDao.findCountPrelevedByDatesSaisie(d1, d2, banks);
       assertTrue(res.get(0) == 1);
@@ -643,7 +635,7 @@ public void testFindCountPrelevedByDatesSaisie() throws ParseException{
       res = patientDao.findCountPrelevedByDatesSaisie(d1, d2, banks);
       assertTrue(res.get(0) == 2);
 
-      final Banque b3 = banqueDao.findById(3);
+      final Banque b3 = banqueDao.findById(3).get();
       banks.add(b3);
       res = patientDao.findCountPrelevedByDatesSaisie(d1, d2, banks);
       assertTrue(res.get(0) == 2);
@@ -656,13 +648,13 @@ public void testFindCountPrelevedByDatesPrel() throws ParseException{
       final Calendar d2 = Calendar.getInstance();
       d2.setTime(new SimpleDateFormat("dd/MM/yyyy").parse("31/10/1983"));
       final List<Banque> banks = new ArrayList<>();
-      final Banque b1 = banqueDao.findById(1);
+      final Banque b1 = banqueDao.findById(1).get();
       banks.add(b1);
 
       List<Long> res = patientDao.findCountPrelevedByDatesPrel(d1, d2, banks);
       assertTrue(res.get(0) == 1);
 
-      final Banque b2 = banqueDao.findById(2);
+      final Banque b2 = banqueDao.findById(2).get();
       banks.add(b2);
       res = patientDao.findCountPrelevedByDatesPrel(d1, d2, banks);
       assertTrue(res.get(0) == 2);
@@ -671,7 +663,7 @@ public void testFindCountPrelevedByDatesPrel() throws ParseException{
       res = patientDao.findCountPrelevedByDatesPrel(d1, d2, banks);
       assertTrue(res.get(0) == 2);
 
-      final Banque b3 = banqueDao.findById(3);
+      final Banque b3 = banqueDao.findById(3).get();
       banks.add(b3);
       res = patientDao.findCountPrelevedByDatesPrel(d1, d2, banks);
       assertTrue(res.get(0) == 2);
@@ -689,17 +681,17 @@ public void testFindCountPrelevedByDatesSaisieExt() throws ParseException{
       final Calendar d2 = Calendar.getInstance();
       d2.setTime(new SimpleDateFormat("dd/MM/yyyy").parse("03/11/2009"));
       final List<Banque> banks = new ArrayList<>();
-      final Banque b1 = banqueDao.findById(1);
-      final Banque b2 = banqueDao.findById(2);
+      final Banque b1 = banqueDao.findById(1).get();
+      final Banque b2 = banqueDao.findById(2).get();
       banks.add(b1);
       banks.add(b2);
       final List<Etablissement> etabs = new ArrayList<>();
-      final Etablissement e4 = etablissementDao.findById(2);
+      final Etablissement e4 = etablissementDao.findById(2).get();
       etabs.add(e4);
       List<Long> res = patientDao.findCountPrelevedByDatesSaisieExt(d1, d2, banks, etabs);
       assertTrue(res.get(0) == 2);
 
-      final Etablissement e1 = etablissementDao.findById(1);
+      final Etablissement e1 = etablissementDao.findById(1).get();
       etabs.add(e1);
       res = patientDao.findCountPrelevedByDatesSaisieExt(d1, d2, banks, etabs);
       assertTrue(res.get(0) == 0);
@@ -719,12 +711,12 @@ public void testFindCountPrelevedByDatesPrelExt() throws ParseException{
       final Calendar d2 = Calendar.getInstance();
       d2.setTime(new SimpleDateFormat("dd/MM/yyyy").parse("15/09/1983"));
       final List<Banque> banks = new ArrayList<>();
-      final Banque b1 = banqueDao.findById(1);
-      final Banque b2 = banqueDao.findById(2);
+      final Banque b1 = banqueDao.findById(1).get();
+      final Banque b2 = banqueDao.findById(2).get();
       banks.add(b1);
       banks.add(b2);
       final List<Etablissement> etabs = new ArrayList<>();
-      final Etablissement e4 = etablissementDao.findById(2);
+      final Etablissement e4 = etablissementDao.findById(2).get();
       etabs.add(e4);
       List<Long> res = patientDao.findCountPrelevedByDatesPrelExt(d1, d2, banks, etabs);
       assertTrue(res.get(0) == 1);
@@ -733,7 +725,7 @@ public void testFindCountPrelevedByDatesPrelExt() throws ParseException{
       res = patientDao.findCountPrelevedByDatesPrelExt(d1, d2, banks, etabs);
       assertTrue(res.get(0) == 2);
 
-      final Etablissement e1 = etablissementDao.findById(1);
+      final Etablissement e1 = etablissementDao.findById(1).get();
       etabs.add(e1);
       res = patientDao.findCountPrelevedByDatesPrelExt(d1, d2, banks, etabs);
       assertTrue(res.get(0) == 0);

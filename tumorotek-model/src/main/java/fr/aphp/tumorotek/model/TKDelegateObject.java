@@ -63,6 +63,8 @@ public abstract class TKDelegateObject<T>
     */
    public abstract boolean isEmpty();
    
+   public abstract void removeAssociations();
+   
    /**
     * @since 2.2.3-rc1
     */

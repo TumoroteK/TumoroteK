@@ -38,6 +38,16 @@ package fr.aphp.tumorotek.dao.test.coeur.prelevement;
 import java.util.List;
 
 import org.springframework.test.annotation.Rollback;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
 
 import fr.aphp.tumorotek.dao.coeur.prelevement.ConsentTypeDao;
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
@@ -49,207 +59,185 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
  *
- * Classe de test pour le DAO ConsentTypeDao et le
- * bean du domaine ConsentType.
+ * Classe de test pour le DAO ConsentTypeDao et le bean du domaine ConsentType.
  * Classe de test créée le 01/10/09.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
-public class ConsentTypeDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class ConsentTypeDaoTest extends AbstractDaoTest {
 
+	@Autowired
+	ConsentTypeDao consentTypeDao;
 
-   @Autowired
- ConsentTypeDao consentTypeDao;
-   @Autowired
- PlateformeDao plateformeDao;
+	@Autowired
+	PlateformeDao plateformeDao;
 
-   /** Valeur du type pour la maj. */
-   @Autowired
- final String updatedType = "Type mis a jour";
+	/** Valeur du type pour la maj. */
+	final String updatedType = "Type mis a jour";
 
-   /**
-    * Constructeur.
-    */
-   public ConsentTypeDaoTest(){}
+	@Test
+	public void testToString() {
+		ConsentType ct1 = consentTypeDao.findById(1).get();
+		assertTrue(ct1.toString().equals("{" + ct1.getNom() + "}"));
+		ct1 = new ConsentType();
+		assertTrue(ct1.toString().equals("{Empty ConsentType}"));
+	}
 
-   /**
-    * Setter du bean Dao.
-    * @param ctDao est le bean Dao.
-    */
-   @Test
-public void setConsentTypeDao(final ConsentTypeDao ctDao){
-      this.consentTypeDao = ctDao;
-   }
+	/**
+	 * Test l'appel de la méthode findAll().
+	 */
+	@Test
+	public void testReadAllConsentType() {
+		final List<ConsentType> types = IterableUtils.toList(consentTypeDao.findAll());
+		assertTrue(types.size() == 3);
+	}
 
-   @Test
-public void setPlateformeDao(final PlateformeDao pfDao){
-      this.plateformeDao = pfDao;
-   }
+	@Test
+	public void testFindByOrder() {
+		Plateforme pf = plateformeDao.findById(1).get();
+		List<? extends TKThesaurusObject> list = consentTypeDao.findByPfOrder(pf);
+		assertTrue(list.size() == 2);
+		assertTrue(list.get(0).getNom().equals("DECEDE"));
+		pf = plateformeDao.findById(2).get();
+		list = consentTypeDao.findByPfOrder(pf);
+		assertTrue(list.size() == 1);
+		list = consentTypeDao.findByPfOrder(null);
+		assertTrue(list.size() == 0);
+	}
 
-   /**
-    * Test l'appel de la méthode toString().
-    */
-   @Test
-public void testToString(){
-      ConsentType ct1 = consentTypeDao.findById(1);
-      assertTrue(ct1.toString().equals("{" + ct1.getNom() + "}"));
-      ct1 = new ConsentType();
-      assertTrue(ct1.toString().equals("{Empty ConsentType}"));
-   }
+	/**
+	 * Test l'appel de la méthode findByType().
+	 */
+	@Test
+	public void testFindByType() {
+		List<ConsentType> types = consentTypeDao.findByType("EN ATTENTE");
+		assertTrue(types.size() == 1);
+		types = consentTypeDao.findByType("INCONNU");
+		assertTrue(types.size() == 0);
+		types = consentTypeDao.findByType("EN%");
+		assertTrue(types.size() == 1);
+		types = consentTypeDao.findByType(null);
+		assertTrue(types.size() == 0);
+	}
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   @Test
-public void testReadAllConsentType(){
-      final List<ConsentType> types = IterableUtils.toList(consentTypeDao.findAll());
-      assertTrue(types.size() == 3);
-   }
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'un type de consentement.
+	 * 
+	 * @throws Exception lance une exception en cas de problème lors du CRUD.
+	 */
+	@Rollback(false)
+	@Test
+	public void testCrudConsentType() throws Exception {
+		final ConsentType ct = new ConsentType();
+		ct.setNom("INCONNU");
+		ct.setPlateforme(plateformeDao.findById(1).get());
+		// Test de l'insertion
+		consentTypeDao.save(ct);
+		assertEquals(new Integer(4), ct.getId());
 
-   @Test
-public void testFindByOrder(){
-      Plateforme pf = plateformeDao.findById(1);
-      List<? extends TKThesaurusObject> list = consentTypeDao.findByPfOrder(pf);
-      assertTrue(list.size() == 2);
-      assertTrue(list.get(0).getNom().equals("DECEDE"));
-      pf = plateformeDao.findById(2);
-      list = consentTypeDao.findByPfOrder(pf);
-      assertTrue(list.size() == 1);
-      list = consentTypeDao.findByPfOrder(null);
-      assertTrue(list.size() == 0);
-   }
+		// Test de la mise à jour
+		final ConsentType ct2 = consentTypeDao.findById(new Integer(4)).get();
+		assertNotNull(ct2);
+		assertTrue(ct2.getNom().equals("INCONNU"));
+		ct2.setNom(updatedType);
+		consentTypeDao.save(ct2);
+		assertTrue(consentTypeDao.findById(new Integer(4)).get().getNom().equals(updatedType));
 
-   /**
-    * Test l'appel de la méthode findByType().
-    */
-   @Test
-public void testFindByType(){
-      List<ConsentType> types = consentTypeDao.findByType("EN ATTENTE");
-      assertTrue(types.size() == 1);
-      types = consentTypeDao.findByType("INCONNU");
-      assertTrue(types.size() == 0);
-      types = consentTypeDao.findByType("EN%");
-      assertTrue(types.size() == 1);
-      types = consentTypeDao.findByType(null);
-      assertTrue(types.size() == 0);
-   }
+		// Test de la délétion
+		consentTypeDao.deleteById(new Integer(4));
+		assertFalse(consentTypeDao.findById(new Integer(4)).isPresent());
+	}
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression 
-    * d'un type de consentement.
-    * @throws Exception lance une exception en cas de problème lors du CRUD.
-    */
-   @Rollback(false)
-   @Test
-public void testCrudConsentType() throws Exception{
-      final ConsentType ct = new ConsentType();
-      ct.setNom("INCONNU");
-      ct.setPlateforme(plateformeDao.findById(1));
-      // Test de l'insertion
-      consentTypeDao.save(ct);
-      assertEquals(new Integer(4), ct.getId());
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final String type = "Type";
+		final String type2 = "Type2";
+		final ConsentType ct1 = new ConsentType();
+		ct1.setNom(type);
+		final ConsentType ct2 = new ConsentType();
+		ct2.setNom(type);
 
-      // Test de la mise à jour
-      final ConsentType ct2 = consentTypeDao.findById(new Integer(4));
-      assertNotNull(ct2);
-      assertTrue(ct2.getNom().equals("INCONNU"));
-      ct2.setNom(updatedType);
-      consentTypeDao.save(ct2);
-      assertTrue(consentTypeDao.findById(new Integer(4)).getNom().equals(updatedType));
+		// L'objet 1 n'est pas égal à null
+		assertFalse(ct1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(ct1.equals(ct1));
+		// 2 objets sont égaux entre eux
+		assertTrue(ct1.equals(ct2));
+		assertTrue(ct2.equals(ct1));
 
-      // Test de la délétion
-      consentTypeDao.deleteById(new Integer(4));
-      assertFalse(consentTypeDao.findById(new Integer(4)).isPresent());
-   }
+		// Vérification de la différenciation de 2 objets
+		ct2.setNom(type2);
+		assertFalse(ct1.equals(ct2));
+		assertFalse(ct2.equals(ct1));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   @Test
-public void testEquals(){
-      final String type = "Type";
-      final String type2 = "Type2";
-      final ConsentType ct1 = new ConsentType();
-      ct1.setNom(type);
-      final ConsentType ct2 = new ConsentType();
-      ct2.setNom(type);
+		// passe la clef naturelle type a nulle pour un des objets
+		ct2.setNom(null);
+		assertFalse(ct1.equals(ct2));
+		assertFalse(ct2.equals(ct1));
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(ct1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(ct1.equals(ct1));
-      // 2 objets sont égaux entre eux
-      assertTrue(ct1.equals(ct2));
-      assertTrue(ct2.equals(ct1));
+		// passe la clef naturelle type a nulle pour l'autre objet
+		ct1.setNom(null);
+		assertTrue(ct1.equals(ct2));
+		ct2.setNom(type);
+		assertFalse(ct1.equals(ct2));
 
-      // Vérification de la différenciation de 2 objets
-      ct2.setNom(type2);
-      assertFalse(ct1.equals(ct2));
-      assertFalse(ct2.equals(ct1));
+		// plateforme
+		final Plateforme pf1 = plateformeDao.findById(1).get();
+		final Plateforme pf2 = plateformeDao.findById(2).get();
+		ct1.setNom(ct2.getNom());
+		ct1.setPlateforme(pf1);
+		ct2.setPlateforme(pf1);
+		assertTrue(ct1.equals(ct2));
+		ct2.setPlateforme(pf2);
+		assertFalse(ct1.equals(ct2));
 
-      //passe la clef naturelle type a nulle pour un des objets
-      ct2.setNom(null);
-      assertFalse(ct1.equals(ct2));
-      assertFalse(ct2.equals(ct1));
+		// dummy test
+		final Banque b = new Banque();
+		assertFalse(ct1.equals(b));
 
-      //passe la clef naturelle type a nulle pour l'autre objet
-      ct1.setNom(null);
-      assertTrue(ct1.equals(ct2));
-      ct2.setNom(type);
-      assertFalse(ct1.equals(ct2));
+	}
 
-      //plateforme
-      final Plateforme pf1 = plateformeDao.findById(1);
-      final Plateforme pf2 = plateformeDao.findById(2);
-      ct1.setNom(ct2.getNom());
-      ct1.setPlateforme(pf1);
-      ct2.setPlateforme(pf1);
-      assertTrue(ct1.equals(ct2));
-      ct2.setPlateforme(pf2);
-      assertFalse(ct1.equals(ct2));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
+		final String type = "Type";
+		final ConsentType ct1 = new ConsentType();
+		ct1.setId(1);
+		ct1.setNom(type);
+		final ConsentType ct2 = new ConsentType();
+		ct2.setId(2);
+		ct2.setNom(type);
+		final ConsentType ct3 = new ConsentType();
+		ct3.setId(3);
+		ct3.setNom(null);
+		assertTrue(ct3.hashCode() > 0);
 
-      //dummy test
-      final Banque b = new Banque();
-      assertFalse(ct1.equals(b));
+		final Plateforme pf1 = plateformeDao.findById(1).get();
+		final Plateforme pf2 = plateformeDao.findById(2).get();
+		ct1.setPlateforme(pf1);
+		ct2.setPlateforme(pf1);
+		ct3.setPlateforme(pf2);
 
-   }
+		final int hash = ct1.hashCode();
+		// 2 objets égaux ont le même hashcode
+		assertTrue(ct1.hashCode() == ct2.hashCode());
+		assertFalse(ct1.hashCode() == ct3.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		assertTrue(hash == ct1.hashCode());
+		assertTrue(hash == ct1.hashCode());
+		assertTrue(hash == ct1.hashCode());
+		assertTrue(hash == ct1.hashCode());
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   @Test
-public void testHashCode(){
-      final String type = "Type";
-      final ConsentType ct1 = new ConsentType();
-      ct1.setId(1);
-      ct1.setNom(type);
-      final ConsentType ct2 = new ConsentType();
-      ct2.setId(2);
-      ct2.setNom(type);
-      final ConsentType ct3 = new ConsentType();
-      ct3.setId(3);
-      ct3.setNom(null);
-      assertTrue(ct3.hashCode() > 0);
-
-      final Plateforme pf1 = plateformeDao.findById(1);
-      final Plateforme pf2 = plateformeDao.findById(2);
-      ct1.setPlateforme(pf1);
-      ct2.setPlateforme(pf1);
-      ct3.setPlateforme(pf2);
-
-      final int hash = ct1.hashCode();
-      // 2 objets égaux ont le même hashcode
-      assertTrue(ct1.hashCode() == ct2.hashCode());
-      assertFalse(ct1.hashCode() == ct3.hashCode());
-      // un même objet garde le même hashcode dans le temps
-      assertTrue(hash == ct1.hashCode());
-      assertTrue(hash == ct1.hashCode());
-      assertTrue(hash == ct1.hashCode());
-      assertTrue(hash == ct1.hashCode());
-
-   }
+	}
 
 }
