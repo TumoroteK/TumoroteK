@@ -42,16 +42,12 @@ import org.apache.commons.collections4.IterableUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
-import fr.aphp.tumorotek.dao.test.Config;
-
-
-
+import fr.aphp.tumorotek.dao.test.ConfigInterfacages;
 import fr.aphp.tumorotek.dao.interfacage.LogicielDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
 import fr.aphp.tumorotek.model.contexte.Categorie;
@@ -62,158 +58,139 @@ import fr.aphp.tumorotek.model.interfacage.Logiciel;
  * Classe de test pour le DAO LogicielDao et le bean du domaine Logiciel.
  *
  * @author Pierre Ventadour.
- * @version 04/10/2011
+ * @version 2.3
  *
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {Config.class})
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
-public class LogicielDaoTest extends AbstractDaoTest
-{
+@ContextConfiguration(classes = { ConfigInterfacages.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class LogicielDaoTest extends AbstractDaoTest {
 
+	@Autowired
+	LogicielDao logicielDao;
 
-   @Autowired
- LogicielDao logicielDao;
+	@Test
+	public void testReadAll() {
+		final List<Logiciel> liste = IterableUtils.toList(logicielDao.findAll());
+		assertTrue(liste.size() == 3);
+	}
 
-   public LogicielDaoTest(){
+	/**
+	 * Test l'appel de la méthode findByOrder().
+	 */
+	@Test
+	public void testFindByOrder() {
+		final List<Logiciel> liste = logicielDao.findByOrder();
+		assertTrue(liste.size() == 3);
+		assertTrue(liste.get(0).getNom().equals("APIX"));
+	}
 
-   }
+	@Rollback(false)
+	@Test
+	public void testCrud() throws Exception {
 
-   @Override
-   protected String[] getConfigLocations(){
-      return new String[] {"applicationContextDao-interfacages-test-mysql.xml"};
-   }
+		final Logiciel log = new Logiciel();
+		log.setNom("TEST");
 
-   @Test
-public void setLogicielDao(final LogicielDao lDao){
-      this.logicielDao = lDao;
-   }
+		// Test de l'insertion
+		logicielDao.save(log);
+		assertEquals(new Integer(4), log.getLogicielId());
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   @Test
-public void testReadAll(){
-      final List<Logiciel> liste = IterableUtils.toList(logicielDao.findAll());
-      assertTrue(liste.size() == 3);
-   }
+		final Logiciel log2 = logicielDao.findById(new Integer(4)).get();
+		// Vérification des données entrées dans la base
+		assertNotNull(log2);
+		assertTrue(log2.getNom().equals("TEST"));
+		assertNull(log2.getEditeur());
+		assertNull(log2.getVersion());
 
-   /**
-    * Test l'appel de la méthode findByOrder().
-    */
-   @Test
-public void testFindByOrder(){
-      final List<Logiciel> liste = logicielDao.findByOrder();
-      assertTrue(liste.size() == 3);
-      assertTrue(liste.get(0).getNom().equals("APIX"));
-   }
+		// Test de la mise à jour
+		log2.setNom("UP");
+		log2.setEditeur("EDIT");
+		log2.setVersion("2.0");
+		logicielDao.save(log2);
+		assertTrue(logicielDao.findById(new Integer(4)).get().getNom().equals("UP"));
+		assertTrue(logicielDao.findById(new Integer(4)).get().getEditeur().equals("EDIT"));
+		assertTrue(logicielDao.findById(new Integer(4)).get().getVersion().equals("2.0"));
 
-   @Rollback(false)
-   @Test
-public void testCrud() throws Exception{
+		// Test de la délétion
+		logicielDao.deleteById(new Integer(4));
+		assertFalse(logicielDao.findById(new Integer(4)).isPresent());
+	}
 
-      final Logiciel log = new Logiciel();
-      log.setNom("TEST");
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final String nom = "NOM";
+		final String nom2 = "NOM2";
+		final Logiciel l1 = new Logiciel();
+		l1.setNom(nom);
+		final Logiciel l2 = new Logiciel();
+		l2.setNom(nom);
 
-      // Test de l'insertion
-      logicielDao.save(log);
-      assertEquals(new Integer(4), log.getLogicielId());
+		// L'objet 1 n'est pas égal à null
+		assertFalse(l1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(l1.equals(l1));
+		// 2 objets sont égaux entre eux
+		assertTrue(l1.equals(l2));
+		assertTrue(l2.equals(l1));
 
-      final Logiciel log2 = logicielDao.findById(new Integer(4));
-      // Vérification des données entrées dans la base
-      assertNotNull(log2);
-      assertTrue(log2.getNom().equals("TEST"));
-      assertNull(log2.getEditeur());
-      assertNull(log2.getVersion());
+		// Vérification de la différenciation de 2 objets
+		l2.setNom(nom2);
+		assertFalse(l1.equals(l2));
+		assertFalse(l2.equals(l1));
 
-      // Test de la mise à jour
-      log2.setNom("UP");
-      log2.setEditeur("EDIT");
-      log2.setVersion("2.0");
-      logicielDao.save(log2);
-      assertTrue(logicielDao.findById(new Integer(4)).getNom().equals("UP"));
-      assertTrue(logicielDao.findById(new Integer(4)).getEditeur().equals("EDIT"));
-      assertTrue(logicielDao.findById(new Integer(4)).getVersion().equals("2.0"));
+		l2.setNom(null);
+		assertFalse(l1.equals(l2));
+		assertFalse(l2.equals(l1));
 
-      // Test de la délétion
-      logicielDao.deleteById(new Integer(4));
-      assertFalse(logicielDao.findById(new Integer(4)).isPresent());
-   }
+		l1.setNom(null);
+		assertTrue(l1.equals(l2));
+		l2.setNom(nom);
+		assertFalse(l1.equals(l2));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   @Test
-public void testEquals(){
-      final String nom = "NOM";
-      final String nom2 = "NOM2";
-      final Logiciel l1 = new Logiciel();
-      l1.setNom(nom);
-      final Logiciel l2 = new Logiciel();
-      l2.setNom(nom);
+		final Categorie c = new Categorie();
+		assertFalse(l1.equals(c));
+	}
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(l1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(l1.equals(l1));
-      // 2 objets sont égaux entre eux
-      assertTrue(l1.equals(l2));
-      assertTrue(l2.equals(l1));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
+		final String nom = "NOM";
+		final Logiciel l1 = new Logiciel();
+		l1.setNom(nom);
+		final Logiciel l2 = new Logiciel();
+		l2.setNom(nom);
+		final Logiciel l3 = new Logiciel();
+		l3.setNom(null);
+		assertTrue(l3.hashCode() > 0);
 
-      // Vérification de la différenciation de 2 objets
-      l2.setNom(nom2);
-      assertFalse(l1.equals(l2));
-      assertFalse(l2.equals(l1));
+		final int hash = l1.hashCode();
+		// 2 objets égaux ont le même hashcode
+		assertTrue(l1.hashCode() == l2.hashCode());
+		assertFalse(l1.hashCode() == l3.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		assertTrue(hash == l1.hashCode());
+		assertTrue(hash == l1.hashCode());
+		assertTrue(hash == l1.hashCode());
+		assertTrue(hash == l1.hashCode());
 
-      l2.setNom(null);
-      assertFalse(l1.equals(l2));
-      assertFalse(l2.equals(l1));
+	}
 
-      l1.setNom(null);
-      assertTrue(l1.equals(l2));
-      l2.setNom(nom);
-      assertFalse(l1.equals(l2));
+	/**
+	 * Test la méthode toString.
+	 */
+	@Test
+	public void testToString() {
+		final Logiciel l1 = logicielDao.findById(1).get();
+		assertTrue(l1.toString().equals("{" + l1.getNom() + "}"));
 
-      final Categorie c = new Categorie();
-      assertFalse(l1.equals(c));
-   }
-
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   @Test
-public void testHashCode(){
-      final String nom = "NOM";
-      final Logiciel l1 = new Logiciel();
-      l1.setNom(nom);
-      final Logiciel l2 = new Logiciel();
-      l2.setNom(nom);
-      final Logiciel l3 = new Logiciel();
-      l3.setNom(null);
-      assertTrue(l3.hashCode() > 0);
-
-      final int hash = l1.hashCode();
-      // 2 objets égaux ont le même hashcode
-      assertTrue(l1.hashCode() == l2.hashCode());
-      assertFalse(l1.hashCode() == l3.hashCode());
-      // un même objet garde le même hashcode dans le temps
-      assertTrue(hash == l1.hashCode());
-      assertTrue(hash == l1.hashCode());
-      assertTrue(hash == l1.hashCode());
-      assertTrue(hash == l1.hashCode());
-
-   }
-
-   /**
-    * Test la méthode toString.
-    */
-   @Test
-public void testToString(){
-      final Logiciel l1 = logicielDao.findById(1);
-      assertTrue(l1.toString().equals("{" + l1.getNom() + "}"));
-
-      final Logiciel l2 = new Logiciel();
-      assertTrue(l2.toString().equals("{Empty Logiciel}"));
-   }
+		final Logiciel l2 = new Logiciel();
+		assertTrue(l2.toString().equals("{Empty Logiciel}"));
+	}
 
 }

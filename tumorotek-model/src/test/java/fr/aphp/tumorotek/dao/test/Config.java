@@ -50,8 +50,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @ImportResource(locations = {"classpath:spring-jpa-test-mysql.xml"})
 @EnableJpaRepositories(
 	basePackages = {"fr.aphp.tumorotek.dao"},
-	excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = "fr.aphp.tumorotek.dao.(interfacage|code\\.(Cim|Adicap)).*"),
-	entityManagerFactoryRef = "entityManagerFactory")
+	excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, 
+		pattern = ".*(interfacage\\.scan|interfacage\\.(Logiciel|Emetteur|Recepteur|PatientSip|DossierExterne|BlocExterne|ValeurExterne)|code\\.(Cim|Adicap)).*"),
+	entityManagerFactoryRef = "entityManagerFactory",
+	transactionManagerRef = "transactionManager")
 public class Config {
 	
 }

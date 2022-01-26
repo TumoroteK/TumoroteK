@@ -42,16 +42,12 @@ import org.apache.commons.collections4.IterableUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
-import fr.aphp.tumorotek.dao.test.Config;
-
-
-
+import fr.aphp.tumorotek.dao.test.ConfigInterfacages;
 import fr.aphp.tumorotek.dao.interfacage.BlocExterneDao;
 import fr.aphp.tumorotek.dao.interfacage.DossierExterneDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
@@ -61,244 +57,219 @@ import fr.aphp.tumorotek.model.interfacage.DossierExterne;
 
 /**
  *
- * Classe de test pour le DAO BlocExterneDao
- * et le bean du domaine BlocExterne.
+ * Classe de test pour le DAO BlocExterneDao et le bean du domaine BlocExterne.
  *
  * @author Pierre Ventadour.
- * @version 05/10/2011
+ * @version 2.3
  *
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {Config.class})
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
-public class BlocExterneDaoTest extends AbstractDaoTest
-{
+@ContextConfiguration(classes = { ConfigInterfacages.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class BlocExterneDaoTest extends AbstractDaoTest {
 
+	@Autowired
+	BlocExterneDao blocExterneDao;
 
-   @Autowired
- BlocExterneDao blocExterneDao;
+	@Autowired
+	DossierExterneDao dossierExterneDao;
 
-   @Autowired
- DossierExterneDao dossierExterneDao;
+	@Test
+	public void testReadAll() {
+		final List<BlocExterne> liste = IterableUtils.toList(blocExterneDao.findAll());
+		assertTrue(liste.size() >= 9);
+	}
 
-   public BlocExterneDaoTest(){
+	/**
+	 * Test l'appel de la méthode findByDossierExterne().
+	 */
+	@Test
+	public void testFindByDossierExterne() {
+		final DossierExterne d1 = dossierExterneDao.findById(1).get();
+		List<BlocExterne> liste = blocExterneDao.findByDossierExterne(d1);
+		assertTrue(liste.size() == 4);
 
-   }
+		final DossierExterne d2 = dossierExterneDao.findById(2).get();
+		liste = blocExterneDao.findByDossierExterne(d2);
+		assertTrue(liste.size() == 0);
 
-   @Override
-   protected String[] getConfigLocations(){
-      return new String[] {"applicationContextDao-interfacages-test-mysql.xml"};
-   }
+		liste = blocExterneDao.findByDossierExterne(null);
+		assertTrue(liste.size() == 0);
+	}
 
-   @Test
-public void setBlocExterneDao(final BlocExterneDao bDao){
-      this.blocExterneDao = bDao;
-   }
+	/**
+	 * Test l'appel de la méthode findByDossierExterneAndEntite().
+	 */
+	@Test
+	public void testFindByDossierExterneAndEntite() {
+		final DossierExterne d1 = dossierExterneDao.findById(1).get();
+		List<BlocExterne> liste = blocExterneDao.findByDossierExterneAndEntite(d1, 3);
+		assertTrue(liste.size() == 2);
 
-   @Test
-public void setDossierExterneDao(final DossierExterneDao dDao){
-      this.dossierExterneDao = dDao;
-   }
+		liste = blocExterneDao.findByDossierExterneAndEntite(d1, 8);
+		assertTrue(liste.size() == 0);
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   @Test
-public void testReadAll(){
-      final List<BlocExterne> liste = IterableUtils.toList(blocExterneDao.findAll());
-      assertTrue(liste.size() >= 9);
-   }
+		final DossierExterne d2 = dossierExterneDao.findById(2).get();
+		liste = blocExterneDao.findByDossierExterneAndEntite(d2, 3);
+		assertTrue(liste.size() == 0);
 
-   /**
-    * Test l'appel de la méthode findByDossierExterne().
-    */
-   @Test
-public void testFindByDossierExterne(){
-      final DossierExterne d1 = dossierExterneDao.findById(1);
-      List<BlocExterne> liste = blocExterneDao.findByDossierExterne(d1);
-      assertTrue(liste.size() == 4);
+		liste = blocExterneDao.findByDossierExterneAndEntite(null, 3);
+		assertTrue(liste.size() == 0);
 
-      final DossierExterne d2 = dossierExterneDao.findById(2);
-      liste = blocExterneDao.findByDossierExterne(d2);
-      assertTrue(liste.size() == 0);
+		liste = blocExterneDao.findByDossierExterneAndEntite(d1, null);
+		assertTrue(liste.size() == 0);
+	}
 
-      liste = blocExterneDao.findByDossierExterne(null);
-      assertTrue(liste.size() == 0);
-   }
+	@Rollback(false)
+	@Test
+	public void testCrud() throws Exception {
 
-   /**
-    * Test l'appel de la méthode findByDossierExterneAndEntite().
-    */
-   @Test
-public void testFindByDossierExterneAndEntite(){
-      final DossierExterne d1 = dossierExterneDao.findById(1);
-      List<BlocExterne> liste = blocExterneDao.findByDossierExterneAndEntite(d1, 3);
-      assertTrue(liste.size() == 2);
+		final BlocExterne b1 = new BlocExterne();
+		final DossierExterne d1 = dossierExterneDao.findById(1).get();
+		b1.setDossierExterne(d1);
+		b1.setEntiteId(1);
+		b1.setOrdre(2);
 
-      liste = blocExterneDao.findByDossierExterneAndEntite(d1, 8);
-      assertTrue(liste.size() == 0);
+		final Integer id = IterableUtils.toList(blocExterneDao.findAll()).size() + 1;
+		// Test de l'insertion
+		blocExterneDao.save(b1);
+		assertEquals(new Integer(id), b1.getBlocExterneId());
 
-      final DossierExterne d2 = dossierExterneDao.findById(2);
-      liste = blocExterneDao.findByDossierExterneAndEntite(d2, 3);
-      assertTrue(liste.size() == 0);
+		final BlocExterne b2 = blocExterneDao.findById(new Integer(id)).get();
+		// Vérification des données entrées dans la base
+		assertNotNull(b2);
+		assertNotNull(b2.getDossierExterne());
+		assertTrue(b2.getEntiteId() == 1);
+		assertTrue(b2.getOrdre() == 2);
 
-      liste = blocExterneDao.findByDossierExterneAndEntite(null, 3);
-      assertTrue(liste.size() == 0);
+		// Test de la mise à jour
+		b2.setEntiteId(3);
+		b2.setOrdre(5);
+		blocExterneDao.save(b2);
+		assertTrue(blocExterneDao.findById(new Integer(id)).get().getEntiteId() == 3);
+		assertTrue(blocExterneDao.findById(new Integer(id)).get().getOrdre() == 5);
 
-      liste = blocExterneDao.findByDossierExterneAndEntite(d1, null);
-      assertTrue(liste.size() == 0);
-   }
+		// Test de la délétion
+		blocExterneDao.deleteById(new Integer(id));
+		assertFalse(blocExterneDao.findById(new Integer(id)).isPresent());
+	}
 
-   @Rollback(false)
-   @Test
-public void testCrud() throws Exception{
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final Integer o1 = 1;
+		final Integer o2 = 2;
+		final DossierExterne d1 = dossierExterneDao.findById(1).get();
+		final DossierExterne d2 = dossierExterneDao.findById(2).get();
+		final Integer e1 = 1;
+		final Integer e2 = 2;
+		final BlocExterne b1 = new BlocExterne();
+		final BlocExterne b2 = new BlocExterne();
 
-      final BlocExterne b1 = new BlocExterne();
-      final DossierExterne d1 = dossierExterneDao.findById(1);
-      b1.setDossierExterne(d1);
-      b1.setEntiteId(1);
-      b1.setOrdre(2);
+		// L'objet 1 n'est pas égal à null
+		assertFalse(b1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(b1.equals(b1));
 
-      final Integer id = IterableUtils.toList(blocExterneDao.findAll()).size() + 1;
-      // Test de l'insertion
-      blocExterneDao.save(b1);
-      assertEquals(new Integer(id), b1.getBlocExterneId());
+		/* null */
+		assertTrue(b1.equals(b2));
+		assertTrue(b2.equals(b1));
 
-      final BlocExterne b2 = blocExterneDao.findById(new Integer(id));
-      // Vérification des données entrées dans la base
-      assertNotNull(b2);
-      assertNotNull(b2.getDossierExterne());
-      assertTrue(b2.getEntiteId() == 1);
-      assertTrue(b2.getOrdre() == 2);
+		/* ordre */
+		b2.setOrdre(o1);
+		assertFalse(b1.equals(b2));
+		assertFalse(b2.equals(b1));
+		b1.setOrdre(o2);
+		assertFalse(b1.equals(b2));
+		assertFalse(b2.equals(b1));
+		b1.setOrdre(o1);
+		assertTrue(b1.equals(b2));
+		assertTrue(b2.equals(b1));
 
-      // Test de la mise à jour
-      b2.setEntiteId(3);
-      b2.setOrdre(5);
-      blocExterneDao.save(b2);
-      assertTrue(blocExterneDao.findById(new Integer(id)).getEntiteId() == 3);
-      assertTrue(blocExterneDao.findById(new Integer(id)).getOrdre() == 5);
+		/* entite */
+		b2.setEntiteId(e1);
+		assertFalse(b1.equals(b2));
+		assertFalse(b2.equals(b1));
+		b1.setEntiteId(e2);
+		assertFalse(b1.equals(b2));
+		assertFalse(b2.equals(b1));
+		b1.setEntiteId(e1);
+		assertTrue(b1.equals(b2));
 
-      // Test de la délétion
-      blocExterneDao.deleteById(new Integer(id));
-      assertFalse(blocExterneDao.findById(new Integer(id)).isPresent());
-   }
+		b2.setDossierExterne(d1);
+		assertFalse(b1.equals(b2));
+		assertFalse(b2.equals(b1));
+		b1.setDossierExterne(d2);
+		assertFalse(b1.equals(b2));
+		assertFalse(b2.equals(b1));
+		b1.setDossierExterne(d1);
+		assertTrue(b1.equals(b2));
+		assertTrue(b2.equals(b1));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   @Test
-public void testEquals(){
-      final Integer o1 = 1;
-      final Integer o2 = 2;
-      final DossierExterne d1 = dossierExterneDao.findById(1);
-      final DossierExterne d2 = dossierExterneDao.findById(2);
-      final Integer e1 = 1;
-      final Integer e2 = 2;
-      final BlocExterne b1 = new BlocExterne();
-      final BlocExterne b2 = new BlocExterne();
+		final Categorie c3 = new Categorie();
+		assertFalse(b1.equals(c3));
+	}
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(b1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(b1.equals(b1));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
+		final Integer o1 = 1;
+		final Integer o2 = 2;
+		final DossierExterne d1 = dossierExterneDao.findById(1).get();
+		final DossierExterne d2 = dossierExterneDao.findById(2).get();
+		final Integer e1 = 1;
+		final Integer e2 = 2;
+		final BlocExterne b1 = new BlocExterne();
+		final BlocExterne b2 = new BlocExterne();
 
-      /*null*/
-      assertTrue(b1.equals(b2));
-      assertTrue(b2.equals(b1));
+		/* null */
+		assertTrue(b1.hashCode() == b2.hashCode());
 
-      /*ordre*/
-      b2.setOrdre(o1);
-      assertFalse(b1.equals(b2));
-      assertFalse(b2.equals(b1));
-      b1.setOrdre(o2);
-      assertFalse(b1.equals(b2));
-      assertFalse(b2.equals(b1));
-      b1.setOrdre(o1);
-      assertTrue(b1.equals(b2));
-      assertTrue(b2.equals(b1));
+		/* Ordre */
+		b2.setOrdre(o1);
+		assertFalse(b1.hashCode() == b2.hashCode());
+		b1.setOrdre(o2);
+		assertFalse(b1.hashCode() == b2.hashCode());
+		b1.setOrdre(o1);
+		assertTrue(b1.hashCode() == b2.hashCode());
 
-      /*entite*/
-      b2.setEntiteId(e1);
-      assertFalse(b1.equals(b2));
-      assertFalse(b2.equals(b1));
-      b1.setEntiteId(e2);
-      assertFalse(b1.equals(b2));
-      assertFalse(b2.equals(b1));
-      b1.setEntiteId(e1);
-      assertTrue(b1.equals(b2));
+		b2.setEntiteId(e1);
+		assertFalse(b1.hashCode() == b2.hashCode());
+		b1.setEntiteId(e2);
+		assertFalse(b1.hashCode() == b2.hashCode());
+		b1.setEntiteId(e1);
+		assertTrue(b1.hashCode() == b2.hashCode());
 
-      b2.setDossierExterne(d1);
-      assertFalse(b1.equals(b2));
-      assertFalse(b2.equals(b1));
-      b1.setDossierExterne(d2);
-      assertFalse(b1.equals(b2));
-      assertFalse(b2.equals(b1));
-      b1.setDossierExterne(d1);
-      assertTrue(b1.equals(b2));
-      assertTrue(b2.equals(b1));
+		b2.setDossierExterne(d1);
+		assertFalse(b1.hashCode() == b2.hashCode());
+		b1.setDossierExterne(d2);
+		assertFalse(b1.hashCode() == b2.hashCode());
+		b1.setDossierExterne(d1);
+		assertTrue(b1.hashCode() == b2.hashCode());
 
-      final Categorie c3 = new Categorie();
-      assertFalse(b1.equals(c3));
-   }
+		// un même objet garde le même hashcode dans le temps
+		final int hash = b1.hashCode();
+		assertTrue(hash == b1.hashCode());
+		assertTrue(hash == b1.hashCode());
+		assertTrue(hash == b1.hashCode());
+		assertTrue(hash == b1.hashCode());
+	}
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   @Test
-public void testHashCode(){
-      final Integer o1 = 1;
-      final Integer o2 = 2;
-      final DossierExterne d1 = dossierExterneDao.findById(1);
-      final DossierExterne d2 = dossierExterneDao.findById(2);
-      final Integer e1 = 1;
-      final Integer e2 = 2;
-      final BlocExterne b1 = new BlocExterne();
-      final BlocExterne b2 = new BlocExterne();
+	/**
+	 * test toString().
+	 */
+	@Test
+	public void testToString() {
+		final BlocExterne b1 = blocExterneDao.findById(1).get();
+		assertTrue(b1.toString().equals("{" + b1.getOrdre() + ", " + b1.getEntiteId() + "(Entite) "
+				+ b1.getDossierExterne().getIdentificationDossier() + "(DossierExterne)}"));
 
-      /*null*/
-      assertTrue(b1.hashCode() == b2.hashCode());
-
-      /*Ordre*/
-      b2.setOrdre(o1);
-      assertFalse(b1.hashCode() == b2.hashCode());
-      b1.setOrdre(o2);
-      assertFalse(b1.hashCode() == b2.hashCode());
-      b1.setOrdre(o1);
-      assertTrue(b1.hashCode() == b2.hashCode());
-
-      b2.setEntiteId(e1);
-      assertFalse(b1.hashCode() == b2.hashCode());
-      b1.setEntiteId(e2);
-      assertFalse(b1.hashCode() == b2.hashCode());
-      b1.setEntiteId(e1);
-      assertTrue(b1.hashCode() == b2.hashCode());
-
-      b2.setDossierExterne(d1);
-      assertFalse(b1.hashCode() == b2.hashCode());
-      b1.setDossierExterne(d2);
-      assertFalse(b1.hashCode() == b2.hashCode());
-      b1.setDossierExterne(d1);
-      assertTrue(b1.hashCode() == b2.hashCode());
-
-      // un même objet garde le même hashcode dans le temps
-      final int hash = b1.hashCode();
-      assertTrue(hash == b1.hashCode());
-      assertTrue(hash == b1.hashCode());
-      assertTrue(hash == b1.hashCode());
-      assertTrue(hash == b1.hashCode());
-   }
-
-   /**
-    * test toString().
-    */
-   @Test
-public void testToString(){
-      final BlocExterne b1 = blocExterneDao.findById(1);
-      assertTrue(b1.toString().equals("{" + b1.getOrdre() + ", " + b1.getEntiteId() + "(Entite) "
-         + b1.getDossierExterne().getIdentificationDossier() + "(DossierExterne)}"));
-
-      final BlocExterne b2 = new BlocExterne();
-      assertTrue(b2.toString().equals("{Empty BlocExterne}"));
-   }
+		final BlocExterne b2 = new BlocExterne();
+		assertTrue(b2.toString().equals("{Empty BlocExterne}"));
+	}
 
 }
