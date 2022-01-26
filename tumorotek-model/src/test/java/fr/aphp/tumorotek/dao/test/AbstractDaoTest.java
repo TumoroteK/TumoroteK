@@ -35,18 +35,15 @@
  **/
 package fr.aphp.tumorotek.dao.test;
 
-// import org.springframework.test.jpa.AbstractJpaTests;
-
-
 /**
  *
- * Classe qui va gérer l'ensemble des tests sur les DAOs.
+ * rRaccourcis vers certaines assertions
  *
- * @author Pierre Ventadour
- * @version 09/09/2009
+ * @author Mathieu BARTHELEMY
+ * @version 2.3
  *
  */
-public abstract class AbstractDaoTest // extends AbstractJpaTests
+public abstract class AbstractDaoTest
 {
 	
 	protected void assertTrue(boolean condition) {
@@ -68,27 +65,4 @@ public abstract class AbstractDaoTest // extends AbstractJpaTests
 	protected void assertEquals(Object o1, Object o2) {
 		org.junit.Assert.assertEquals(o1, o2);
 	}
-
-   /***/
-   //@Autowired
- // EntityManagerFactory entityManagerFactory;
-
-   /**
-    * Référence la configuration >Spring pour les tests.
-    * @return l'emplacement du fichier de configuration de Spring. 
-    */
-//   @Override
-//   protected String[] getConfigLocations(){
-//      return new String[] {"applicationContextDao-test-mysql.xml"};
-//   }
-
-   /**
-    * Spring injectera automatiquement le SessionFactory au lancement.
-    * @param factory est l'EntityManagerFactory utilisé dans les tests.
-    */
-   /*@Test
-public void setEntityManagerFactory(EntityManagerFactory factory) {
-   	this.entityManagerFactory = factory;
-   }*/
-
 }

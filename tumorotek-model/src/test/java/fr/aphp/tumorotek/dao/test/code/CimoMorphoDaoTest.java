@@ -37,145 +37,134 @@ package fr.aphp.tumorotek.dao.test.code;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+
 import fr.aphp.tumorotek.dao.code.CimoMorphoDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
+import fr.aphp.tumorotek.dao.test.ConfigCodes;
 import fr.aphp.tumorotek.model.code.CimoMorpho;
 import fr.aphp.tumorotek.model.contexte.Categorie;
 
 /**
  *
- * Classe de test pour le DAO CimoMorphoDao et le bean du
- * domaine CimoMorpho.
+ * Classe de test pour le DAO CimoMorphoDao et le bean du domaine CimoMorpho.
  * Classe de test créée le 21/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public class CimoMorphoDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { ConfigCodes.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class CimoMorphoDaoTest extends AbstractDaoTest {
 
+	@Autowired
+	CimoMorphoDao cimoMorphoDao;
 
-   @Autowired
- CimoMorphoDao cimoMorphoDao;
+	@Test
+	public void testReadAllCategories() {
+		final List<CimoMorpho> cimos = IterableUtils.toList(cimoMorphoDao.findAll());
+		assertTrue(cimos.size() == 1161);
+	}
 
-   /**
-    * Constructeur.
-    */
-   public CimoMorphoDaoTest(){}
+	@Test
+	public void testFindByCodeLike() {
+		List<CimoMorpho> cimos = cimoMorphoDao.findByCodeLike("%D0-%");
+		assertTrue(cimos.size() == 6);
+		cimos = cimoMorphoDao.findByCodeLike("TEST");
+		assertTrue(cimos.size() == 0);
+	}
 
-   @Override
-   protected String[] getConfigLocations(){
-      return new String[] {"applicationContextDao-codes-test-mysql.xml"};
-   }
+	@Test
+	public void testFindByLibelleLike() {
+		List<CimoMorpho> cimos = cimoMorphoDao.findByLibelleLike("%naevus%");
+		assertTrue(cimos.size() == 8);
+		cimos = cimoMorphoDao.findByLibelleLike("TEST");
+		assertTrue(cimos.size() == 0);
+	}
 
-   /**
-    * Setter du bean Dao.
-    * @param cDao est le bean Dao.
-    */
-   @Test
-public void setCimoMorphoDao(final CimoMorphoDao cDao){
-      this.cimoMorphoDao = cDao;
-   }
+	@Test
+	public void testFindByCimRefLike() {
+		List<CimoMorpho> cimos = cimoMorphoDao.findByCimRefLike("%C44%");
+		assertTrue(cimos.size() == 79);
+		cimos = cimoMorphoDao.findByCimRefLike("TEST");
+		assertTrue(cimos.size() == 0);
+	}
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   @Test
-public void testReadAllCategories(){
-      final List<CimoMorpho> cimos = IterableUtils.toList(cimoMorphoDao.findAll());
-      assertTrue(cimos.size() == 1161);
-   }
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final Integer id1 = 1;
+		final Integer id2 = 2;
+		final CimoMorpho c1 = new CimoMorpho();
+		final CimoMorpho c2 = new CimoMorpho();
 
-   @Test
-public void testFindByCodeLike(){
-      List<CimoMorpho> cimos = cimoMorphoDao.findByCodeLike("%D0-%");
-      assertTrue(cimos.size() == 6);
-      cimos = cimoMorphoDao.findByCodeLike("TEST");
-      assertTrue(cimos.size() == 0);
-   }
+		// L'objet 1 n'est pas égal à null
+		assertFalse(c1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(c1.equals(c1));
 
-   @Test
-public void testFindByLibelleLike(){
-      List<CimoMorpho> cimos = cimoMorphoDao.findByLibelleLike("%naevus%");
-      assertTrue(cimos.size() == 8);
-      cimos = cimoMorphoDao.findByLibelleLike("TEST");
-      assertTrue(cimos.size() == 0);
-   }
+		/* null --> Ids ne pouvant etre nuls car table systemes */
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
 
-   @Test
-public void testFindByCimRefLike(){
-      List<CimoMorpho> cimos = cimoMorphoDao.findByCimRefLike("%C44%");
-      assertTrue(cimos.size() == 79);
-      cimos = cimoMorphoDao.findByCimRefLike("TEST");
-      assertTrue(cimos.size() == 0);
-   }
+		/* Id */
+		c2.setCimoMorphoId(id1);
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
+		c1.setCimoMorphoId(id2);
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
+		c1.setCimoMorphoId(id1);
+		assertTrue(c1.equals(c2));
+		assertTrue(c2.equals(c1));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   @Test
-public void testEquals(){
-      final Integer id1 = 1;
-      final Integer id2 = 2;
-      final CimoMorpho c1 = new CimoMorpho();
-      final CimoMorpho c2 = new CimoMorpho();
+		final Categorie c = new Categorie();
+		assertFalse(c1.equals(c));
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(c1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(c1.equals(c1));
+	}
 
-      /*null --> Ids ne pouvant etre nuls car table systemes*/
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
 
-      /*Id*/
-      c2.setCimoMorphoId(id1);
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
-      c1.setCimoMorphoId(id2);
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
-      c1.setCimoMorphoId(id1);
-      assertTrue(c1.equals(c2));
-      assertTrue(c2.equals(c1));
+		final String code1 = "C1";
+		final CimoMorpho c1 = new CimoMorpho();
+		c1.setCode(code1);
+		final CimoMorpho c2 = new CimoMorpho();
+		c2.setCode(code1);
+		final CimoMorpho c3 = new CimoMorpho();
+		c3.setCode(null);
+		assertTrue(c3.hashCode() > 0);
 
-      final Categorie c = new Categorie();
-      assertFalse(c1.equals(c));
+		final int hash = c1.hashCode();
+		// 2 objets égaux ont le même hashcode
+		assertTrue(c1.hashCode() == c2.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		assertTrue(hash == c1.hashCode());
+		assertTrue(hash == c1.hashCode());
+		assertTrue(hash == c1.hashCode());
+		assertTrue(hash == c1.hashCode());
+	}
 
-   }
-
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   @Test
-public void testHashCode(){
-
-      final String code1 = "C1";
-      final CimoMorpho c1 = new CimoMorpho();
-      c1.setCode(code1);
-      final CimoMorpho c2 = new CimoMorpho();
-      c2.setCode(code1);
-      final CimoMorpho c3 = new CimoMorpho();
-      c3.setCode(null);
-      assertTrue(c3.hashCode() > 0);
-
-      final int hash = c1.hashCode();
-      // 2 objets égaux ont le même hashcode
-      assertTrue(c1.hashCode() == c2.hashCode());
-      // un même objet garde le même hashcode dans le temps
-      assertTrue(hash == c1.hashCode());
-      assertTrue(hash == c1.hashCode());
-      assertTrue(hash == c1.hashCode());
-      assertTrue(hash == c1.hashCode());
-   }
-
-   @Test
-public void testToString(){
-      final CimoMorpho a = new CimoMorpho();
-      a.setCode("12.12");
-      assertTrue(a.toString().equals("{CimoMorpho: 12.12}"));
-   }
+	@Test
+	public void testToString() {
+		final CimoMorpho a = new CimoMorpho();
+		a.setCode("12.12");
+		assertTrue(a.toString().equals("{CimoMorpho: 12.12}"));
+	}
 
 }

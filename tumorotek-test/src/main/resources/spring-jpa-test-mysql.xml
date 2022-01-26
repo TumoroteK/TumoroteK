@@ -41,7 +41,6 @@
 				<property name="showSql" value="false" />
 				<property name="databasePlatform" value="org.hibernate.dialect.MySQLDialect" />
 <!-- 				<property name="databasePlatform" value="org.hibernate.dialect.Oracle9Dialect" /> -->
-
 			</bean>
 		</property>
 	</bean>

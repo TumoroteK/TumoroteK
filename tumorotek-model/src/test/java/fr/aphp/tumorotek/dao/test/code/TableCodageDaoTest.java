@@ -37,10 +37,22 @@ package fr.aphp.tumorotek.dao.test.code;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import fr.aphp.tumorotek.dao.code.TableCodageDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
+import fr.aphp.tumorotek.dao.test.Config;
 import fr.aphp.tumorotek.model.code.TableCodage;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Categorie;
@@ -51,172 +63,156 @@ import fr.aphp.tumorotek.model.contexte.Categorie;
  * Classe de test créée le 08/09/09.
  *
  * @author Pierre Ventadour.
- * @version 2.0
+ * @version 2.3
  *
  */
-public class TableCodageDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class TableCodageDaoTest extends AbstractDaoTest {
 
+	@Autowired
+	TableCodageDao tableCodageDao;
 
-   @Autowired
- TableCodageDao tableCodageDao;
+	final String updatedNom = "Table maj";
 
-   /** Valeur du nom pour la maj. */
-   @Autowired
- final String updatedNom = "Table maj";
+	@Test
+	public void testReadAlltableCodes() {
+		final List<TableCodage> tables = IterableUtils.toList(tableCodageDao.findAll());
+		assertTrue(tables.size() == 5);
+	}
 
-   /**
-    * Constructeur.
-    */
-   public TableCodageDaoTest(){}
+	/**
+	 * Test l'appel de la méthode findByNom().
+	 */
+	@Test
+	public void testFindByNom() {
+		List<TableCodage> tables = tableCodageDao.findByNom("ADICAP");
+		assertTrue(tables.size() == 1);
+		tables = tableCodageDao.findByNom("TEST");
+		assertTrue(tables.size() == 0);
+	}
 
-   /**
-    * Setter du bean Dao.
-    * @param tDao est le bean Dao.
-    */
-   @Test
-public void setTableCodageDao(final TableCodageDao tDao){
-      this.tableCodageDao = tDao;
-   }
+	// /**
+	// * Test l'appel de la méthode findByDoublon().
+	// */
+	// @Test
+	// public void testFindByDoublon() {
+	// List<TableCodage> tables = tableCodageDao.findByDoublon("CIM_MASTER");
+	// assertTrue(tables.size() == 1);
+	// tables = tableCodageDao.findByDoublon("CIMO");
+	// assertTrue(tables.size() == 0);
+	// }
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   @Test
-public void testReadAlltableCodes(){
-      final List<TableCodage> tables = IterableUtils.toList(tableCodageDao.findAll());
-      assertTrue(tables.size() == 5);
-   }
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'une TableCodage.
+	 * 
+	 * @throws Exception lance une exception en cas de problème lors du CRUD.
+	 */
+	@Rollback(false)
+	@Test
+	public void testCrud() throws Exception {
+		final TableCodage t = new TableCodage();
 
-   /**
-    * Test l'appel de la méthode findByNom().
-    */
-   @Test
-public void testFindByNom(){
-      List<TableCodage> tables = tableCodageDao.findByNom("ADICAP");
-      assertTrue(tables.size() == 1);
-      tables = tableCodageDao.findByNom("TEST");
-      assertTrue(tables.size() == 0);
-   }
+		t.setNom("CIMO");
+		// Test de l'insertion
+		tableCodageDao.save(t);
+		assertEquals(new Integer(6), t.getTableCodageId());
 
-   //	/**
-   //	 * Test l'appel de la méthode findByDoublon().
-   //	 */
-   //	@Test
-public void testFindByDoublon() {
-   //		List<TableCodage> tables = tableCodageDao.findByDoublon("CIM_MASTER");
-   //		assertTrue(tables.size() == 1);
-   //		tables = tableCodageDao.findByDoublon("CIMO");
-   //		assertTrue(tables.size() == 0);
-   //	}
+		// Test de la mise à jour
+		final TableCodage t2 = tableCodageDao.findById(new Integer(6)).get();
+		assertNotNull(t2);
+		assertTrue(t2.getNom().equals("CIMO"));
+		t2.setNom(updatedNom);
+		tableCodageDao.save(t2);
+		assertTrue(tableCodageDao.findById(new Integer(6)).get().getNom().equals(updatedNom));
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression d'une TableCodage.
-    * @throws Exception lance une exception en cas de problème lors du CRUD.
-    */
-   @Rollback(false)
-   @Test
-public void testCrud() throws Exception{
-      final TableCodage t = new TableCodage();
+		// Test de la délétion
+		tableCodageDao.deleteById(new Integer(6));
+		assertFalse(tableCodageDao.findById(new Integer(6)).isPresent());
 
-      t.setNom("CIMO");
-      // Test de l'insertion
-      tableCodageDao.save(t);
-      assertEquals(new Integer(6), t.getTableCodageId());
+	}
 
-      // Test de la mise à jour
-      final TableCodage t2 = tableCodageDao.findById(new Integer(6));
-      assertNotNull(t2);
-      assertTrue(t2.getNom().equals("CIMO"));
-      t2.setNom(updatedNom);
-      tableCodageDao.save(t2);
-      assertTrue(tableCodageDao.findById(new Integer(6)).getNom().equals(updatedNom));
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final String nom = "Table1";
+		final String nom2 = "Table2";
+		final TableCodage t1 = new TableCodage();
+		final TableCodage t2 = new TableCodage();
 
-      // Test de la délétion
-      tableCodageDao.deleteById(new Integer(6));
-      assertFalse(tableCodageDao.findById(new Integer(6)).isPresent());
+		// L'objet 1 n'est pas égal à null
+		assertFalse(t1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(t1.equals(t1));
 
-   }
+		/* null --> Ids ne pouvant etre nuls car table systemes */
+		assertFalse(t1.equals(t2));
+		assertFalse(t2.equals(t1));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   @Test
-public void testEquals(){
-      final String nom = "Table1";
-      final String nom2 = "Table2";
-      final TableCodage t1 = new TableCodage();
-      final TableCodage t2 = new TableCodage();
+		/* Id */
+		t2.setNom(nom);
+		assertFalse(t1.equals(t2));
+		assertFalse(t2.equals(t1));
+		t1.setNom(nom2);
+		assertFalse(t1.equals(t2));
+		assertFalse(t2.equals(t1));
+		t1.setNom(nom);
+		assertTrue(t1.equals(t2));
+		assertTrue(t2.equals(t1));
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(t1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(t1.equals(t1));
+		final Categorie c = new Categorie();
+		assertFalse(t1.equals(c));
 
-      /*null --> Ids ne pouvant etre nuls car table systemes*/
-      assertFalse(t1.equals(t2));
-      assertFalse(t2.equals(t1));
+		final Banque b = new Banque();
+		assertFalse(t1.equals(b));
 
-      /*Id*/
-      t2.setNom(nom);
-      assertFalse(t1.equals(t2));
-      assertFalse(t2.equals(t1));
-      t1.setNom(nom2);
-      assertFalse(t1.equals(t2));
-      assertFalse(t2.equals(t1));
-      t1.setNom(nom);
-      assertTrue(t1.equals(t2));
-      assertTrue(t2.equals(t1));
+	}
 
-      final Categorie c = new Categorie();
-      assertFalse(t1.equals(c));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
+		final String nom = "Table";
+		final TableCodage t1 = new TableCodage();
+		t1.setNom(nom);
+		final TableCodage t2 = new TableCodage();
+		t2.setNom(nom);
+		final TableCodage t3 = new TableCodage();
+		t3.setNom(null);
+		assertTrue(t3.hashCode() > 0);
 
-      final Banque b = new Banque();
-      assertFalse(t1.equals(b));
+		final int hash = t1.hashCode();
+		// 2 objets égaux ont le même hashcode
+		assertTrue(t1.hashCode() == t2.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		assertTrue(hash == t1.hashCode());
+		assertTrue(hash == t1.hashCode());
+		assertTrue(hash == t1.hashCode());
+		assertTrue(hash == t1.hashCode());
+	}
 
-   }
+	@Test
+	@Transactional
+	public void testClone() {
+		final TableCodage t1 = tableCodageDao.findById(1).get();
+		t1.setVersion("12"); // pour eviter null
+		final TableCodage clone = t1.clone();
+		assertTrue(t1.equals(clone));
+		assertTrue(clone.getTableCodageId().equals(t1.getTableCodageId()));
+		assertTrue(clone.getNom().equals(t1.getNom()));
+		assertTrue(clone.getVersion().equals(t1.getVersion()));
+		assertTrue(clone.getCodeAssignes().equals(t1.getCodeAssignes()));
+		assertTrue(clone.getCodeSelects().equals(t1.getCodeSelects()));
+	}
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   @Test
-public void testHashCode(){
-      final String nom = "Table";
-      final TableCodage t1 = new TableCodage();
-      t1.setNom(nom);
-      final TableCodage t2 = new TableCodage();
-      t2.setNom(nom);
-      final TableCodage t3 = new TableCodage();
-      t3.setNom(null);
-      assertTrue(t3.hashCode() > 0);
-
-      final int hash = t1.hashCode();
-      // 2 objets égaux ont le même hashcode
-      assertTrue(t1.hashCode() == t2.hashCode());
-      // un même objet garde le même hashcode dans le temps
-      assertTrue(hash == t1.hashCode());
-      assertTrue(hash == t1.hashCode());
-      assertTrue(hash == t1.hashCode());
-      assertTrue(hash == t1.hashCode());
-   }
-
-   @Test
-public void testClone(){
-      final TableCodage t1 = tableCodageDao.findById(1);
-      t1.setVersion("12"); // pour eviter null
-      final TableCodage clone = t1.clone();
-      assertTrue(t1.equals(clone));
-      assertTrue(clone.getTableCodageId().equals(t1.getTableCodageId()));
-      assertTrue(clone.getNom().equals(t1.getNom()));
-      assertTrue(clone.getVersion().equals(t1.getVersion()));
-      assertTrue(clone.getCodeAssignes().equals(t1.getCodeAssignes()));
-      assertTrue(clone.getCodeSelects().equals(t1.getCodeSelects()));
-   }
-
-   @Test
-public void testToString(){
-      final TableCodage t1 = tableCodageDao.findById(1);
-      assertTrue(t1.toString().equals("ADICAP 5.03"));
-   }
+	@Test
+	public void testToString() {
+		final TableCodage t1 = tableCodageDao.findById(1).get();
+		assertTrue(t1.toString().equals("ADICAP 5.03"));
+	}
 
 }

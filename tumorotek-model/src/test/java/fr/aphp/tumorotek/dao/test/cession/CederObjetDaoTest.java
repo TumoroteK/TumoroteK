@@ -324,7 +324,8 @@ public class CederObjetDaoTest extends AbstractDaoTest {
 		assertTrue(hash == co1.hashCode());
 	}
 
-	private void populateClefsToTestEqualsAndHashCode(final CederObjet co1, final CederObjet co2) throws ParseException {
+	private void populateClefsToTestEqualsAndHashCode(final CederObjet co1, final CederObjet co2)
+			throws ParseException {
 
 		final Cession c1 = cessionDao.findById(1).get();
 		final Entite e1 = entiteDao.findById(3).get();

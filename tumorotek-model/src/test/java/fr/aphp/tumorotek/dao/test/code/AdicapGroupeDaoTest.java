@@ -37,114 +37,113 @@ package fr.aphp.tumorotek.dao.test.code;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+
 import fr.aphp.tumorotek.dao.code.AdicapGroupeDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
+import fr.aphp.tumorotek.dao.test.ConfigCodes;
 import fr.aphp.tumorotek.model.code.Adicap;
 import fr.aphp.tumorotek.model.code.AdicapGroupe;
 import fr.aphp.tumorotek.model.contexte.Categorie;
 
-public class AdicapGroupeDaoTest extends AbstractDaoTest
-{
+/**
+ * @version 2.3
+ *
+ */
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { ConfigCodes.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class AdicapGroupeDaoTest extends AbstractDaoTest {
 
-   @Autowired
- AdicapGroupeDao adicapGroupeDao;
+	@Autowired
+	AdicapGroupeDao adicapGroupeDao;
 
-   /**
-    * Constructeur.
-    */
-   public AdicapGroupeDaoTest(){}
+	@Test
+	public void testReadAllAdicapGroupes() {
+		final List<AdicapGroupe> adicapGroupes = IterableUtils.toList(adicapGroupeDao.findAll());
+		assertTrue(adicapGroupes.size() == 58);
+	}
 
-   @Override
-   protected String[] getConfigLocations(){
-      return new String[] {"applicationContextDao-codes-test-mysql.xml"};
-   }
+	@Test
+	public void testFindDictionnaires() {
+		final List<AdicapGroupe> adicapGroupes = adicapGroupeDao.findDictionnaires();
+		assertTrue(adicapGroupes.size() == 8);
+	}
 
-   @Test
-public void setAdicapGroupeDao(final AdicapGroupeDao agDao){
-      this.adicapGroupeDao = agDao;
-   }
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final Integer id1 = 1;
+		final Integer id2 = 2;
+		final AdicapGroupe a1 = new AdicapGroupe();
+		final AdicapGroupe a2 = new AdicapGroupe();
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   @Test
-public void testReadAllAdicapGroupes(){
-      final List<AdicapGroupe> adicapGroupes = IterableUtils.toList(adicapGroupeDao.findAll());
-      assertTrue(adicapGroupes.size() == 58);
-   }
+		// L'objet 1 n'est pas égal à null
+		assertFalse(a1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(a1.equals(a1));
 
-   @Test
-public void testFindDictionnaires(){
-      final List<AdicapGroupe> adicapGroupes = adicapGroupeDao.findDictionnaires();
-      assertTrue(adicapGroupes.size() == 8);
-   }
+		/* null --> Ids ne pouvant etre nuls car table systemes */
+		assertFalse(a1.equals(a2));
+		assertFalse(a2.equals(a1));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   @Test
-public void testEquals(){
-      final Integer id1 = 1;
-      final Integer id2 = 2;
-      final AdicapGroupe a1 = new AdicapGroupe();
-      final AdicapGroupe a2 = new AdicapGroupe();
+		/* Id */
+		a2.setAdicapGroupeId(id1);
+		assertFalse(a1.equals(a2));
+		assertFalse(a2.equals(a1));
+		a1.setAdicapGroupeId(id2);
+		assertFalse(a1.equals(a2));
+		assertFalse(a2.equals(a1));
+		a1.setAdicapGroupeId(id1);
+		assertTrue(a1.equals(a2));
+		assertTrue(a2.equals(a1));
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(a1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(a1.equals(a1));
+		final Categorie c = new Categorie();
+		assertFalse(a1.equals(c));
 
-      /*null --> Ids ne pouvant etre nuls car table systemes*/
-      assertFalse(a1.equals(a2));
-      assertFalse(a2.equals(a1));
+	}
 
-      /*Id*/
-      a2.setAdicapGroupeId(id1);
-      assertFalse(a1.equals(a2));
-      assertFalse(a2.equals(a1));
-      a1.setAdicapGroupeId(id2);
-      assertFalse(a1.equals(a2));
-      assertFalse(a2.equals(a1));
-      a1.setAdicapGroupeId(id1);
-      assertTrue(a1.equals(a2));
-      assertTrue(a2.equals(a1));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
 
-      final Categorie c = new Categorie();
-      assertFalse(a1.equals(c));
+		final Integer id1 = 1;
+		final AdicapGroupe a1 = new AdicapGroupe();
+		a1.setAdicapGroupeId(id1);
+		final AdicapGroupe a2 = new AdicapGroupe();
+		a2.setAdicapGroupeId(id1);
+		final AdicapGroupe a3 = new AdicapGroupe();
+		a3.setAdicapGroupeId(null);
+		assertTrue(a3.hashCode() > 0);
 
-   }
+		final int hash = a1.hashCode();
+		// 2 objets égaux ont le même hashcode
+		assertTrue(a1.hashCode() == a2.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		assertTrue(hash == a1.hashCode());
+		assertTrue(hash == a1.hashCode());
+		assertTrue(hash == a1.hashCode());
+		assertTrue(hash == a1.hashCode());
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   @Test
-public void testHashCode(){
+	}
 
-      final Integer id1 = 1;
-      final AdicapGroupe a1 = new AdicapGroupe();
-      a1.setAdicapGroupeId(id1);
-      final AdicapGroupe a2 = new AdicapGroupe();
-      a2.setAdicapGroupeId(id1);
-      final AdicapGroupe a3 = new AdicapGroupe();
-      a3.setAdicapGroupeId(null);
-      assertTrue(a3.hashCode() > 0);
-
-      final int hash = a1.hashCode();
-      // 2 objets égaux ont le même hashcode
-      assertTrue(a1.hashCode() == a2.hashCode());
-      // un même objet garde le même hashcode dans le temps
-      assertTrue(hash == a1.hashCode());
-      assertTrue(hash == a1.hashCode());
-      assertTrue(hash == a1.hashCode());
-      assertTrue(hash == a1.hashCode());
-
-   }
-
-   @Test
-public void testToString(){
-      final Adicap a = new Adicap();
-      a.setCode("Disease");
-      assertTrue(a.toString().equals("{Adicap: Disease}"));
-   }
+	@Test
+	public void testToString() {
+		final Adicap a = new Adicap();
+		a.setCode("Disease");
+		assertTrue(a.toString().equals("{Adicap: Disease}"));
+	}
 
 }

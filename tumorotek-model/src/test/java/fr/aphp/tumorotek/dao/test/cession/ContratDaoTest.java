@@ -98,7 +98,7 @@ public class ContratDaoTest extends AbstractDaoTest {
 
 	@Autowired
 	PlateformeDao plateformeDao;
-	
+
 	final String updatedNumero = "Mis a jour";
 
 	@Test

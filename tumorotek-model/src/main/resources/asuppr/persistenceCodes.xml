@@ -5,21 +5,24 @@
    http://java.sun.com/xml/ns/persistence/persistence_1_0.xsd">    
     
     <persistence-unit name="pCodes">
-<!--        <provider>org.hibernate.ejb.HibernatePersistence</provider>-->
-
         <class>fr.aphp.tumorotek.model.code.Adicap</class>
         <class>fr.aphp.tumorotek.model.code.AdicapGroupe</class>
         <class>fr.aphp.tumorotek.model.code.CimLibelle</class>
         <class>fr.aphp.tumorotek.model.code.CimMaster</class>
         <class>fr.aphp.tumorotek.model.code.CimoMorpho</class>
-        
+        <class>fr.aphp.tumorotek.model.code.TableCodage
+        </class>
+        <class>fr.aphp.tumorotek.model.code.CodeDossier
+        </class>
+        <class>fr.aphp.tumorotek.model.code.CodeSelect
+        </class>
+        <class>fr.aphp.tumorotek.model.code.CodeAssigne
+        </class>
+        <class>fr.aphp.tumorotek.model.code.CodeUtilisateur
+        </class>
+        <class>fr.aphp.tumorotek.model.code.TranscodeUtilisateur
+        </class>
         <exclude-unlisted-classes/>
-        
-<!--        <properties>-->
-<!--            <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />-->
-<!--            <property name="hibernate.show_sql" value="true" />-->
-<!--            <property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider" />-->
-<!--        </properties>-->
     </persistence-unit>   
       
 </persistence>

@@ -37,145 +37,134 @@ package fr.aphp.tumorotek.dao.test.code;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+
 import fr.aphp.tumorotek.dao.code.CimMasterDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
+import fr.aphp.tumorotek.dao.test.ConfigCodes;
 import fr.aphp.tumorotek.model.code.CimMaster;
 import fr.aphp.tumorotek.model.contexte.Categorie;
 
 /**
  *
- * Classe de test pour le DAO CimMasterDao et le bean du
- * domaine CimMaster.
+ * Classe de test pour le DAO CimMasterDao et le bean du domaine CimMaster.
  * Classe de test créée le 21/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public class CimMasterDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { ConfigCodes.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class CimMasterDaoTest extends AbstractDaoTest {
 
+	@Autowired
+	CimMasterDao cimMasterDao;
 
-   @Autowired
- CimMasterDao cimMasterDao;
+	@Test
+	public void testReadAllMasters() {
+		final List<CimMaster> cims = IterableUtils.toList(cimMasterDao.findAll());
+		assertTrue(cims.size() == 19178);
+	}
 
-   /**
-    * Constructeur.
-    */
-   public CimMasterDaoTest(){}
+	@Test
+	public void testFindByCode() {
+		List<CimMaster> cims = cimMasterDao.findByCodeLike("%A00%");
+		assertTrue(cims.size() == 6);
+		cims = cimMasterDao.findByCodeLike("TEST");
+		assertTrue(cims.size() == 0);
+	}
 
-   @Override
-   protected String[] getConfigLocations(){
-      return new String[] {"applicationContextDao-codes-test-mysql.xml"};
-   }
+	@Test
+	public void testFindByLibelle() {
+		List<CimMaster> cims = cimMasterDao.findByLibelleLike("%shigell%");
+		assertTrue(cims.size() == 7);
+		cims = cimMasterDao.findByLibelleLike("PEARL");
+		assertTrue(cims.size() == 0);
+	}
 
-   /**
-    * Setter du bean Dao.
-    * @param cDao est le bean Dao.
-    */
-   @Test
-public void setCimMasterDao(final CimMasterDao cDao){
-      this.cimMasterDao = cDao;
-   }
+	@Test
+	public void testFindByLevel() {
+		List<CimMaster> cims = cimMasterDao.findByLevel(1);
+		assertTrue(cims.size() == 21);
+		cims = cimMasterDao.findByLevel(40);
+		assertTrue(cims.size() == 0);
+	}
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   @Test
-public void testReadAllMasters(){
-      final List<CimMaster> cims = IterableUtils.toList(cimMasterDao.findAll());
-      assertTrue(cims.size() == 19178);
-   }
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final Integer id1 = 1;
+		final Integer id2 = 2;
+		final CimMaster c1 = new CimMaster();
+		final CimMaster c2 = new CimMaster();
 
-   @Test
-public void testFindByCode(){
-      List<CimMaster> cims = cimMasterDao.findByCodeLike("%A00%");
-      assertTrue(cims.size() == 6);
-      cims = cimMasterDao.findByCodeLike("TEST");
-      assertTrue(cims.size() == 0);
-   }
+		// L'objet 1 n'est pas égal à null
+		assertFalse(c1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(c1.equals(c1));
 
-   @Test
-public void testFindByLibelle(){
-      List<CimMaster> cims = cimMasterDao.findByLibelleLike("%shigell%");
-      assertTrue(cims.size() == 7);
-      cims = cimMasterDao.findByLibelleLike("PEARL");
-      assertTrue(cims.size() == 0);
-   }
+		/* null --> Ids ne pouvant etre nuls car table systemes */
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
 
-   @Test
-public void testFindByLevel(){
-      List<CimMaster> cims = cimMasterDao.findByLevel(1);
-      assertTrue(cims.size() == 21);
-      cims = cimMasterDao.findByLevel(40);
-      assertTrue(cims.size() == 0);
-   }
+		/* Id */
+		c2.setSid(id1);
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
+		c1.setSid(id2);
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
+		c1.setSid(id1);
+		assertTrue(c1.equals(c2));
+		assertTrue(c2.equals(c1));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   @Test
-public void testEquals(){
-      final Integer id1 = 1;
-      final Integer id2 = 2;
-      final CimMaster c1 = new CimMaster();
-      final CimMaster c2 = new CimMaster();
+		final Categorie c = new Categorie();
+		assertFalse(c1.equals(c));
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(c1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(c1.equals(c1));
+	}
 
-      /*null --> Ids ne pouvant etre nuls car table systemes*/
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
 
-      /*Id*/
-      c2.setSid(id1);
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
-      c1.setSid(id2);
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
-      c1.setSid(id1);
-      assertTrue(c1.equals(c2));
-      assertTrue(c2.equals(c1));
+		final String code1 = "C1";
+		final CimMaster c1 = new CimMaster();
+		c1.setCode(code1);
+		final CimMaster c2 = new CimMaster();
+		c2.setCode(code1);
+		final CimMaster c3 = new CimMaster();
+		c3.setCode(null);
+		assertTrue(c3.hashCode() > 0);
 
-      final Categorie c = new Categorie();
-      assertFalse(c1.equals(c));
+		final int hash = c1.hashCode();
+		// 2 objets égaux ont le même hashcode
+		assertTrue(c1.hashCode() == c2.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		assertTrue(hash == c1.hashCode());
+		assertTrue(hash == c1.hashCode());
+		assertTrue(hash == c1.hashCode());
+		assertTrue(hash == c1.hashCode());
+	}
 
-   }
-
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   @Test
-public void testHashCode(){
-
-      final String code1 = "C1";
-      final CimMaster c1 = new CimMaster();
-      c1.setCode(code1);
-      final CimMaster c2 = new CimMaster();
-      c2.setCode(code1);
-      final CimMaster c3 = new CimMaster();
-      c3.setCode(null);
-      assertTrue(c3.hashCode() > 0);
-
-      final int hash = c1.hashCode();
-      // 2 objets égaux ont le même hashcode
-      assertTrue(c1.hashCode() == c2.hashCode());
-      // un même objet garde le même hashcode dans le temps
-      assertTrue(hash == c1.hashCode());
-      assertTrue(hash == c1.hashCode());
-      assertTrue(hash == c1.hashCode());
-      assertTrue(hash == c1.hashCode());
-   }
-
-   @Test
-public void testToString(){
-      final CimMaster a = new CimMaster();
-      a.setCode("12.12");
-      assertTrue(a.toString().equals("{CimMaster: 12.12}"));
-   }
+	@Test
+	public void testToString() {
+		final CimMaster a = new CimMaster();
+		a.setCode("12.12");
+		assertTrue(a.toString().equals("{CimMaster: 12.12}"));
+	}
 
 }

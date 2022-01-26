@@ -58,7 +58,6 @@ import org.hibernate.annotations.GenericGenerator;
  */
 @Entity
 @Table(name = "TRANSCODE_UTILISATEUR")
-
 public class TranscodeUtilisateur implements Serializable {
 
 	private static final long serialVersionUID = 1L;

@@ -37,129 +37,118 @@ package fr.aphp.tumorotek.dao.test.code;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+
 import fr.aphp.tumorotek.dao.code.CimLibelleDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
+import fr.aphp.tumorotek.dao.test.ConfigCodes;
 import fr.aphp.tumorotek.model.code.CimLibelle;
 import fr.aphp.tumorotek.model.contexte.Categorie;
 
 /**
  *
- * Classe de test pour le DAO CimLibelleoDao et le bean du
- * domaine CimLibelle.
+ * Classe de test pour le DAO CimLibelleoDao et le bean du domaine CimLibelle.
  * Classe de test créée le 21/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public class CimLibelleDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { ConfigCodes.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class CimLibelleDaoTest extends AbstractDaoTest {
 
+	@Autowired
+	CimLibelleDao cimLibelleDao;
 
-   @Autowired
- CimLibelleDao cimLibelleDao;
+	@Test
+	public void testReadAllLibelles() {
+		final List<CimLibelle> cims = IterableUtils.toList(cimLibelleDao.findAll());
+		assertTrue(cims.size() == 32652);
+	}
 
-   /**
-    * Constructeur.
-    */
-   public CimLibelleDaoTest(){}
+	@Test
+	public void testFindByLibelleLike() {
+		List<CimLibelle> cims = cimLibelleDao.findByLibelleLike("%shigello%");
+		assertTrue(cims.size() == 7);
+		cims = cimLibelleDao.findByLibelleLike("TEST");
+		assertTrue(cims.size() == 0);
+	}
 
-   @Override
-   protected String[] getConfigLocations(){
-      return new String[] {"applicationContextDao-codes-test-mysql.xml"};
-   }
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final Integer id1 = 1;
+		final Integer id2 = 2;
+		final CimLibelle c1 = new CimLibelle();
+		final CimLibelle c2 = new CimLibelle();
 
-   /**
-    * Setter du bean Dao.
-    * @param cDao est le bean Dao.
-    */
-   @Test
-public void setCimLibelleDao(final CimLibelleDao cDao){
-      this.cimLibelleDao = cDao;
-   }
+		// L'objet 1 n'est pas égal à null
+		assertFalse(c1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(c1.equals(c1));
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   @Test
-public void testReadAllLibelles(){
-      final List<CimLibelle> cims = IterableUtils.toList(cimLibelleDao.findAll());
-      assertTrue(cims.size() == 32652);
-   }
+		/* null --> Ids ne pouvant etre nuls car table systemes */
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
 
-   @Test
-public void testFindByLibelleLike(){
-      List<CimLibelle> cims = cimLibelleDao.findByLibelleLike("%shigello%");
-      assertTrue(cims.size() == 7);
-      cims = cimLibelleDao.findByLibelleLike("TEST");
-      assertTrue(cims.size() == 0);
-   }
+		/* Id */
+		c2.setLid(id1);
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
+		c1.setLid(id2);
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
+		c1.setLid(id1);
+		assertTrue(c1.equals(c2));
+		assertTrue(c2.equals(c1));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   @Test
-public void testEquals(){
-      final Integer id1 = 1;
-      final Integer id2 = 2;
-      final CimLibelle c1 = new CimLibelle();
-      final CimLibelle c2 = new CimLibelle();
+		final Categorie c = new Categorie();
+		assertFalse(c1.equals(c));
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(c1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(c1.equals(c1));
+	}
 
-      /*null --> Ids ne pouvant etre nuls car table systemes*/
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
 
-      /*Id*/
-      c2.setLid(id1);
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
-      c1.setLid(id2);
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
-      c1.setLid(id1);
-      assertTrue(c1.equals(c2));
-      assertTrue(c2.equals(c1));
+		final String lib1 = "lib1";
+		final CimLibelle c1 = new CimLibelle();
+		c1.setLibelle(lib1);
+		final CimLibelle c2 = new CimLibelle();
+		c2.setLibelle(lib1);
+		final CimLibelle c3 = new CimLibelle();
+		c3.setLibelle(null);
 
-      final Categorie c = new Categorie();
-      assertFalse(c1.equals(c));
+		final int hash = c1.hashCode();
+		// 2 objets égaux ont le même hashcode
+		assertTrue(c1.hashCode() == c2.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		assertTrue(hash == c1.hashCode());
+		assertTrue(hash == c1.hashCode());
+		assertTrue(hash == c1.hashCode());
+		assertTrue(hash == c1.hashCode());
 
-   }
+	}
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   @Test
-public void testHashCode(){
-
-      final String lib1 = "lib1";
-      final CimLibelle c1 = new CimLibelle();
-      c1.setLibelle(lib1);
-      final CimLibelle c2 = new CimLibelle();
-      c2.setLibelle(lib1);
-      final CimLibelle c3 = new CimLibelle();
-      c3.setLibelle(null);
-
-      final int hash = c1.hashCode();
-      // 2 objets égaux ont le même hashcode
-      assertTrue(c1.hashCode() == c2.hashCode());
-      // un même objet garde le même hashcode dans le temps
-      assertTrue(hash == c1.hashCode());
-      assertTrue(hash == c1.hashCode());
-      assertTrue(hash == c1.hashCode());
-      assertTrue(hash == c1.hashCode());
-
-   }
-
-   @Test
-public void testToString(){
-      final CimLibelle a = new CimLibelle();
-      a.setLibelle("Disease");
-      assertTrue(a.toString().equals("{CimLibelle: Disease}"));
-   }
+	@Test
+	public void testToString() {
+		final CimLibelle a = new CimLibelle();
+		a.setLibelle("Disease");
+		assertTrue(a.toString().equals("{CimLibelle: Disease}"));
+	}
 
 }

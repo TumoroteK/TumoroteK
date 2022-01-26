@@ -37,11 +37,21 @@ package fr.aphp.tumorotek.dao.test.code;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import fr.aphp.tumorotek.dao.code.CodeDossierDao;
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
+import fr.aphp.tumorotek.dao.test.Config;
 import fr.aphp.tumorotek.dao.utilisateur.UtilisateurDao;
 import fr.aphp.tumorotek.model.code.CodeDossier;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -50,288 +60,275 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 /**
  *
- * Classe de test pour le DAO CodeOossierDao et le
- * bean du domaine CodeDossier.
+ * Classe de test pour le DAO CodeOossierDao et le bean du domaine CodeDossier.
  * Classe de test créée le 19/05/10.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
-public class CodeDossierDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class CodeDossierDaoTest extends AbstractDaoTest {
 
-   @Autowired
- CodeDossierDao codeDossierDao;
-   @Autowired
- UtilisateurDao utilisateurDao;
-   @Autowired
- BanqueDao banqueDao;
+	@Autowired
+	CodeDossierDao codeDossierDao;
 
-   public CodeDossierDaoTest(){}
+	@Autowired
+	UtilisateurDao utilisateurDao;
 
-   @Test
-public void setUtilisateurDao(final UtilisateurDao uDao){
-      this.utilisateurDao = uDao;
-   }
+	@Autowired
+	BanqueDao banqueDao;
 
-   @Test
-public void setBanqueDao(final BanqueDao bDao){
-      this.banqueDao = bDao;
-   }
+	@Test
+	public void testReadAllCodeDossiers() {
+		final List<CodeDossier> codes = IterableUtils.toList(codeDossierDao.findAll());
+		assertTrue(codes.size() == 4);
+	}
 
-   @Test
-public void setCodeDossierDao(final CodeDossierDao cDosDao){
-      this.codeDossierDao = cDosDao;
-   }
+	@Test
+	public void testFindByNomLike() {
+		final Banque b = banqueDao.findById(1).get();
+		List<CodeDossier> doss = codeDossierDao.findByNomLike("DossierU%", b);
+		assertTrue(doss.size() == 2);
+		doss = codeDossierDao.findByNomLike("code4", b);
+		assertTrue(doss.size() == 0);
+	}
 
-   @Test
-public void testReadAllCodeDossiers(){
-      final List<CodeDossier> codes = IterableUtils.toList(codeDossierDao.findAll());
-      assertTrue(codes.size() == 4);
-   }
+	@Test
+	public void findByCodeDossierParent() {
+		CodeDossier dos = codeDossierDao.findById(1).get();
+		List<CodeDossier> doss = codeDossierDao.findByCodeDossierParent(dos);
+		assertTrue(doss.size() == 1);
+		dos = codeDossierDao.findById(3).get();
+		doss = codeDossierDao.findByCodeDossierParent(dos);
+		assertTrue(doss.size() == 0);
+	}
 
-   @Test
-public void testFindByNomLike(){
-      final Banque b = banqueDao.findById(1);
-      List<CodeDossier> doss = codeDossierDao.findByNomLike("DossierU%", b);
-      assertTrue(doss.size() == 2);
-      doss = codeDossierDao.findByNomLike("code4", b);
-      assertTrue(doss.size() == 0);
-   }
+	@Test
+	public void findByRootCodeDossierUtilisateur() {
+		final Banque b = banqueDao.findById(1).get();
+		final List<CodeDossier> doss = codeDossierDao.findByRootCodeDossierUtilisateur(b);
+		assertTrue(doss.size() == 2);
+	}
 
-   @Test
-public void findByCodeDossierParent(){
-      CodeDossier dos = codeDossierDao.findById(1);
-      List<CodeDossier> doss = codeDossierDao.findByCodeDossierParent(dos);
-      assertTrue(doss.size() == 1);
-      dos = codeDossierDao.findById(3);
-      doss = codeDossierDao.findByCodeDossierParent(dos);
-      assertTrue(doss.size() == 0);
-   }
+	@Test
+	public void findByRootCodeDossierSelect() {
+		final Banque b = banqueDao.findById(1).get();
+		Utilisateur u = utilisateurDao.findById(1).get();
+		List<CodeDossier> doss = codeDossierDao.findByRootCodeDossierSelect(u, b);
+		assertTrue(doss.size() == 1);
+		assertTrue(doss.get(0).getCodeDossierId() == 3);
+		u = utilisateurDao.findById(2).get();
+		doss = codeDossierDao.findByRootCodeDossierSelect(u, b);
+		assertTrue(doss.size() == 0);
+	}
 
-   @Test
-public void findByRootCodeDossierUtilisateur(){
-      final Banque b = banqueDao.findById(1);
-      final List<CodeDossier> doss = codeDossierDao.findByRootCodeDossierUtilisateur(b);
-      assertTrue(doss.size() == 2);
-   }
+	@Test
+	public void testFindBySelectUtilisateurAndBanque() {
+		Utilisateur u = utilisateurDao.findById(1).get();
+		final Banque b = banqueDao.findById(1).get();
+		List<CodeDossier> doss = codeDossierDao.findBySelectUtilisateurAndBanque(u, b);
+		assertTrue(doss.size() == 1);
+		u = utilisateurDao.findById(2).get();
+		doss = codeDossierDao.findBySelectUtilisateurAndBanque(u, b);
+		assertTrue(doss.size() == 0);
+	}
 
-   @Test
-public void findByRootCodeDossierSelect(){
-      final Banque b = banqueDao.findById(1);
-      Utilisateur u = utilisateurDao.findById(1);
-      List<CodeDossier> doss = codeDossierDao.findByRootCodeDossierSelect(u, b);
-      assertTrue(doss.size() == 1);
-      assertTrue(doss.get(0).getCodeDossierId() == 3);
-      u = utilisateurDao.findById(2);
-      doss = codeDossierDao.findByRootCodeDossierSelect(u, b);
-      assertTrue(doss.size() == 0);
-   }
+	@Test
+	public void testFindByUtilisateurAndBanque() {
+		Utilisateur u = utilisateurDao.findById(1).get();
+		Banque b = banqueDao.findById(1).get();
+		List<CodeDossier> doss = codeDossierDao.findByUtilisateurAndBanque(u, b);
+		assertTrue(doss.size() == 2);
+		u = utilisateurDao.findById(2).get();
+		doss = codeDossierDao.findByUtilisateurAndBanque(u, b);
+		assertTrue(doss.size() == 1);
+		b = banqueDao.findById(2).get();
+		doss = codeDossierDao.findByUtilisateurAndBanque(u, b);
+		assertTrue(doss.size() == 0);
+	}
 
-   @Test
-public void testFindBySelectUtilisateurAndBanque(){
-      Utilisateur u = utilisateurDao.findById(1);
-      final Banque b = banqueDao.findById(1);
-      List<CodeDossier> doss = codeDossierDao.findBySelectUtilisateurAndBanque(u, b);
-      assertTrue(doss.size() == 1);
-      u = utilisateurDao.findById(2);
-      doss = codeDossierDao.findBySelectUtilisateurAndBanque(u, b);
-      assertTrue(doss.size() == 0);
-   }
+	@Test
+	public void findByExcludedId() {
+		final CodeDossier c = codeDossierDao.findById(1).get();
+		List<CodeDossier> doss = codeDossierDao.findByExcludedId(c.getCodeDossierId());
+		assertTrue(doss.size() == 3);
+		doss = codeDossierDao.findByExcludedId(8);
+		assertTrue(doss.size() == 4);
+	}
 
-   @Test
-public void testFindByUtilisateurAndBanque(){
-      Utilisateur u = utilisateurDao.findById(1);
-      Banque b = banqueDao.findById(1);
-      List<CodeDossier> doss = codeDossierDao.findByUtilisateurAndBanque(u, b);
-      assertTrue(doss.size() == 2);
-      u = utilisateurDao.findById(2);
-      doss = codeDossierDao.findByUtilisateurAndBanque(u, b);
-      assertTrue(doss.size() == 1);
-      b = banqueDao.findById(2);
-      doss = codeDossierDao.findByUtilisateurAndBanque(u, b);
-      assertTrue(doss.size() == 0);
-   }
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'un dossier.
+	 * 
+	 * @throws Exception lance une exception en cas de problème lors du CRUD.
+	 */
+	@Rollback(false)
+	@Test
+	public void testCrud() throws Exception {
+		final CodeDossier c = new CodeDossier();
 
-   @Test
-public void findByExcludedId(){
-      final CodeDossier c = codeDossierDao.findById(1);
-      List<CodeDossier> doss = codeDossierDao.findByExcludedId(c.getCodeDossierId());
-      assertTrue(doss.size() == 3);
-      doss = codeDossierDao.findByExcludedId(8);
-      assertTrue(doss.size() == 0);
-   }
+		final Utilisateur u = utilisateurDao.findById(1).get();
+		final Banque b = banqueDao.findById(1).get();
+		final CodeDossier dos = codeDossierDao.findById(2).get();
+		c.setUtilisateur(u);
+		c.setBanque(b);
+		c.setNom("new dossier");
+		c.setDossierParent(dos);
+		c.setCodeSelect(true);
+		// Test de l'insertion
+		codeDossierDao.save(c);
+		assertEquals(new Integer(5), c.getCodeDossierId());
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression d'un dossier.
-    * @throws Exception lance une exception en cas de problème lors du CRUD.
-    */
-   @Rollback(false)
-   @Test
-public void testCrud() throws Exception{
-      final CodeDossier c = new CodeDossier();
+		// Test de la mise à jour
+		final CodeDossier c2 = codeDossierDao.findById(new Integer(5)).get();
+		assertNotNull(c2);
+		assertTrue(c2.getNom().equals("new dossier"));
+		assertTrue(c2.getCodeSelect());
+		assertNotNull(c2.getBanque());
+		assertNotNull(c2.getUtilisateur());
+		assertNotNull(c2.getDossierParent().equals(dos));
+		c2.setNom("update");
+		c2.setDossierParent(null);
+		codeDossierDao.save(c2);
+		assertTrue(codeDossierDao.findById(new Integer(5)).get().getNom().equals("update"));
 
-      final Utilisateur u = utilisateurDao.findById(1);
-      final Banque b = banqueDao.findById(1);
-      final CodeDossier dos = codeDossierDao.findById(2);
-      c.setUtilisateur(u);
-      c.setBanque(b);
-      c.setNom("new dossier");
-      c.setDossierParent(dos);
-      c.setCodeSelect(true);
-      // Test de l'insertion
-      codeDossierDao.save(c);
-      assertEquals(new Integer(5), c.getCodeDossierId());
+		// Test de la délétion
+		codeDossierDao.deleteById(new Integer(5));
+		assertFalse(codeDossierDao.findById(new Integer(5)).isPresent());
 
-      // Test de la mise à jour
-      final CodeDossier c2 = codeDossierDao.findById(new Integer(5));
-      assertNotNull(c2);
-      assertTrue(c2.getNom().equals("new dossier"));
-      assertTrue(c2.getCodeSelect());
-      assertNotNull(c2.getBanque());
-      assertNotNull(c2.getUtilisateur());
-      assertNotNull(c2.getDossierParent().equals(dos));
-      c2.setNom("update");
-      c2.setDossierParent(null);
-      codeDossierDao.save(c2);
-      assertTrue(codeDossierDao.findById(new Integer(5)).getNom() == "update");
+	}
 
-      // Test de la délétion
-      codeDossierDao.deleteById(new Integer(5));
-      assertFalse(codeDossierDao.findById(new Integer(5)).isPresent());
+	/**
+	 * Test des méthodes surchargées "equals" et hashcode.
+	 */
+	@Test
+	public void testEqualsAndHashCode() {
+		final CodeDossier c1 = new CodeDossier();
+		final CodeDossier c2 = new CodeDossier();
+		assertFalse(c1.equals(null));
+		assertNotNull(c2);
+		assertTrue(c1.equals(c1));
+		assertTrue(c1.equals(c2));
+		assertTrue(c1.hashCode() == c2.hashCode());
 
-   }
+		final String s1 = "nom1";
+		final String s2 = "nom2";
+		final String s3 = new String("nom2");
 
-   /**
-    * Test des méthodes surchargées "equals" et hashcode.
-    */
-   @Test
-public void testEqualsAndHashCode(){
-      final CodeDossier c1 = new CodeDossier();
-      final CodeDossier c2 = new CodeDossier();
-      assertFalse(c1.equals(null));
-      assertNotNull(c2);
-      assertTrue(c1.equals(c1));
-      assertTrue(c1.equals(c2));
-      assertTrue(c1.hashCode() == c2.hashCode());
+		c1.setNom(s1);
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
+		assertTrue(c1.hashCode() != c2.hashCode());
+		c2.setNom(s2);
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
+		assertTrue(c1.hashCode() != c2.hashCode());
+		c1.setNom(s2);
+		assertTrue(c1.equals(c2));
+		assertTrue(c2.equals(c1));
+		assertTrue(c1.hashCode() == c2.hashCode());
+		c1.setNom(s3);
+		assertTrue(c1.equals(c2));
+		assertTrue(c2.equals(c1));
+		assertTrue(c1.hashCode() == c2.hashCode());
 
-      final String s1 = "nom1";
-      final String s2 = "nom2";
-      final String s3 = new String("nom2");
+		final Utilisateur u1 = utilisateurDao.findById(1).get();
+		final Utilisateur u2 = utilisateurDao.findById(2).get();
+		final Utilisateur u3 = new Utilisateur();
+		u3.setLogin(u2.getLogin());
+		assertFalse(u1.equals(u2));
+		assertFalse(u1.hashCode() == u2.hashCode());
+		assertTrue(u2.equals(u3));
+		c1.setUtilisateur(u1);
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
+		assertTrue(c1.hashCode() != c2.hashCode());
+		c2.setUtilisateur(u2);
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
+		assertTrue(c1.hashCode() != c2.hashCode());
+		c1.setUtilisateur(u3);
+		assertTrue(c1.equals(c2));
+		assertTrue(c2.equals(c1));
+		assertTrue(c1.hashCode() == c2.hashCode());
+		c1.setUtilisateur(u2);
+		assertTrue(c1.equals(c2));
+		assertTrue(c2.equals(c1));
+		assertTrue(c1.hashCode() == c2.hashCode());
 
-      c1.setNom(s1);
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
-      assertTrue(c1.hashCode() != c2.hashCode());
-      c2.setNom(s2);
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
-      assertTrue(c1.hashCode() != c2.hashCode());
-      c1.setNom(s2);
-      assertTrue(c1.equals(c2));
-      assertTrue(c2.equals(c1));
-      assertTrue(c1.hashCode() == c2.hashCode());
-      c1.setNom(s3);
-      assertTrue(c1.equals(c2));
-      assertTrue(c2.equals(c1));
-      assertTrue(c1.hashCode() == c2.hashCode());
+		final Banque b1 = banqueDao.findById(1).get();
+		final Banque b2 = banqueDao.findById(2).get();
+		final Banque b3 = new Banque();
+		b3.setNom(b2.getNom());
+		b3.setPlateforme(b2.getPlateforme());
+		assertFalse(b1.equals(b2));
+		assertFalse(b1.hashCode() == u2.hashCode());
+		assertTrue(b2.equals(b3));
+		c1.setBanque(b1);
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
+		assertTrue(c1.hashCode() != c2.hashCode());
+		c2.setBanque(b2);
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
+		assertTrue(c1.hashCode() != c2.hashCode());
+		c1.setBanque(b3);
+		assertTrue(c1.equals(c2));
+		assertTrue(c2.equals(c1));
+		assertTrue(c1.hashCode() == c2.hashCode());
+		c1.setBanque(b2);
+		assertTrue(c1.equals(c2));
+		assertTrue(c2.equals(c1));
+		assertTrue(c1.hashCode() == c2.hashCode());
+		// dummy
+		final Categorie c = new Categorie();
+		assertFalse(c1.equals(c));
+	}
 
-      final Utilisateur u1 = utilisateurDao.findById(1);
-      final Utilisateur u2 = utilisateurDao.findById(2);
-      final Utilisateur u3 = new Utilisateur();
-      u3.setLogin(u2.getLogin());
-      assertFalse(u1.equals(u2));
-      assertFalse(u1.hashCode() == u2.hashCode());
-      assertTrue(u2.equals(u3));
-      c1.setUtilisateur(u1);
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
-      assertTrue(c1.hashCode() != c2.hashCode());
-      c2.setUtilisateur(u2);
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
-      assertTrue(c1.hashCode() != c2.hashCode());
-      c1.setUtilisateur(u3);
-      assertTrue(c1.equals(c2));
-      assertTrue(c2.equals(c1));
-      assertTrue(c1.hashCode() == c2.hashCode());
-      c1.setUtilisateur(u2);
-      assertTrue(c1.equals(c2));
-      assertTrue(c2.equals(c1));
-      assertTrue(c1.hashCode() == c2.hashCode());
+	@Test
+	public void testToString() {
+		CodeDossier c1 = codeDossierDao.findById(1).get();
+		assertTrue(c1.toString().equals("{CodeDossier: " + c1.getNom() + "}"));
 
-      final Banque b1 = banqueDao.findById(1);
-      final Banque b2 = banqueDao.findById(2);
-      final Banque b3 = new Banque();
-      b3.setNom(b2.getNom());
-      b3.setPlateforme(b2.getPlateforme());
-      assertFalse(b1.equals(b2));
-      assertFalse(b1.hashCode() == u2.hashCode());
-      assertTrue(b2.equals(b3));
-      c1.setBanque(b1);
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
-      assertTrue(c1.hashCode() != c2.hashCode());
-      c2.setBanque(b2);
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
-      assertTrue(c1.hashCode() != c2.hashCode());
-      c1.setBanque(b3);
-      assertTrue(c1.equals(c2));
-      assertTrue(c2.equals(c1));
-      assertTrue(c1.hashCode() == c2.hashCode());
-      c1.setBanque(b2);
-      assertTrue(c1.equals(c2));
-      assertTrue(c2.equals(c1));
-      assertTrue(c1.hashCode() == c2.hashCode());
-      // dummy
-      final Categorie c = new Categorie();
-      assertFalse(c1.equals(c));
-   }
+		c1 = new CodeDossier();
+		assertTrue(c1.toString().equals("{Empty CodeDossier}"));
+	}
 
-   @Test
-public void testToString(){
-      CodeDossier c1 = codeDossierDao.findById(1);
-      assertTrue(c1.toString().equals("{CodeDossier: " + c1.getNom() + "}"));
+	@Test
+	public void testClone() {
+		final CodeDossier c1 = codeDossierDao.findById(1).get();
+		c1.setDossierParent(codeDossierDao.findById(2).get()); // pour eviter null
+		final CodeDossier clone = c1.clone();
+		assertTrue(c1.equals(clone));
+		assertTrue(c1.hashCode() == clone.hashCode());
+		assertEquals(c1.getCodeDossierId(), clone.getCodeDossierId());
+		assertEquals(c1.getNom(), clone.getNom());
+		assertEquals(c1.getDescription(), clone.getDescription());
+		assertEquals(c1.getUtilisateur(), clone.getUtilisateur());
+		assertEquals(c1.getBanque(), clone.getBanque());
+		assertEquals(c1.getDossierParent(), clone.getDossierParent());
+		assertEquals(c1.getCodeSelect(), clone.getCodeSelect());
+	}
 
-      c1 = new CodeDossier();
-      assertTrue(c1.toString().equals("{Empty CodeDossier}"));
-   }
-
-   @Test
-public void testClone(){
-      final CodeDossier c1 = codeDossierDao.findById(1);
-      c1.setDossierParent(codeDossierDao.findById(2)); // pour eviter null
-      final CodeDossier clone = c1.clone();
-      assertTrue(c1.equals(clone));
-      assertTrue(c1.hashCode() == clone.hashCode());
-      assertEquals(c1.getCodeDossierId(), clone.getCodeDossierId());
-      assertEquals(c1.getNom(), clone.getNom());
-      assertEquals(c1.getDescription(), clone.getDescription());
-      assertEquals(c1.getUtilisateur(), clone.getUtilisateur());
-      assertEquals(c1.getBanque(), clone.getBanque());
-      assertEquals(c1.getDossierParent(), clone.getDossierParent());
-      assertEquals(c1.getCodeSelect(), clone.getCodeSelect());
-   }
-
-   @Test
-public void testFindByRootDossierBanque(){
-      Banque b = banqueDao.findById(1);
-      List<CodeDossier> doss = codeDossierDao.findByRootDossierBanque(b, true);
-      assertTrue(doss.size() == 1);
-      assertTrue(doss.get(0).getCodeDossierId() == 3);
-      doss = codeDossierDao.findByRootDossierBanque(b, false);
-      assertTrue(doss.size() == 2);
-      doss = codeDossierDao.findByRootDossierBanque(b, null);
-      assertTrue(doss.size() == 0);
-      b = banqueDao.findById(2);
-      doss = codeDossierDao.findByRootDossierBanque(b, false);
-      assertTrue(doss.size() == 0);
-      doss = codeDossierDao.findByRootDossierBanque(null, false);
-      assertTrue(doss.size() == 0);
-      doss = codeDossierDao.findByRootDossierBanque(b, false);
-      assertTrue(doss.size() == 0);
-   }
+	@Test
+	public void testFindByRootDossierBanque() {
+		Banque b = banqueDao.findById(1).get();
+		List<CodeDossier> doss = codeDossierDao.findByRootDossierBanque(b, true);
+		assertTrue(doss.size() == 1);
+		assertTrue(doss.get(0).getCodeDossierId() == 3);
+		doss = codeDossierDao.findByRootDossierBanque(b, false);
+		assertTrue(doss.size() == 2);
+		doss = codeDossierDao.findByRootDossierBanque(b, null);
+		assertTrue(doss.size() == 0);
+		b = banqueDao.findById(2).get();
+		doss = codeDossierDao.findByRootDossierBanque(b, false);
+		assertTrue(doss.size() == 0);
+		doss = codeDossierDao.findByRootDossierBanque(null, false);
+		assertTrue(doss.size() == 0);
+		doss = codeDossierDao.findByRootDossierBanque(b, false);
+		assertTrue(doss.size() == 0);
+	}
 
 }

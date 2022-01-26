@@ -37,217 +37,205 @@ package fr.aphp.tumorotek.dao.test.code;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+
 import fr.aphp.tumorotek.dao.code.AdicapDao;
 import fr.aphp.tumorotek.dao.code.AdicapGroupeDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
+import fr.aphp.tumorotek.dao.test.ConfigCodes;
 import fr.aphp.tumorotek.model.code.Adicap;
 import fr.aphp.tumorotek.model.code.AdicapGroupe;
 import fr.aphp.tumorotek.model.contexte.Categorie;
 
-public class AdicapDaoTest extends AbstractDaoTest
-{
+/**
+ * @version 2.3
+ *
+ */
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { ConfigCodes.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class AdicapDaoTest extends AbstractDaoTest {
 
+	@Autowired
+	AdicapDao adicapDao;
 
-   @Autowired
- AdicapDao adicapDao;
-   @Autowired
- AdicapGroupeDao adicapGroupeDao;
+	@Autowired
+	AdicapGroupeDao adicapGroupeDao;
 
-   /**
-    * Constructeur.
-    */
-   public AdicapDaoTest(){}
+	@Test
+	public void testReadAllAdicaps() {
+		final List<Adicap> adicaps = IterableUtils.toList(adicapDao.findAll());
+		// assertTrue(!adicaps.isEmpty());
+		assertEquals(8906, adicaps.size()); // JDI : 8906 dans ma table, est-ce grave?
+	}
 
-   @Override
-   protected String[] getConfigLocations(){
-      return new String[] {"applicationContextDao-codes-test-mysql.xml"};
-   }
+	@Test
+	public void testFindByCode() {
+		List<Adicap> adicaps = adicapDao.findByCodeLike("%AF%");
+		assertTrue(adicaps.size() == 11);
+		adicaps = adicapDao.findByCodeLike("BN");
+		assertTrue(adicaps.size() == 0);
+	}
 
-   /**
-    * Setter du bean Dao.
-    * @param aDao est le bean Dao.
-    */
-   @Test
-public void setAdicapDao(final AdicapDao aDao){
-      this.adicapDao = aDao;
-   }
+	/**
+	 * Test l'appel de la méthode findByLibelle().
+	 */
+	@Test
+	public void testFindByLibelle() {
+		List<Adicap> adicaps = adicapDao.findByLibelleLike("%ADENOSE%");
+		assertTrue(adicaps.size() == 6);
+		adicaps = adicapDao.findByLibelleLike("PEARL");
+		assertTrue(adicaps.size() == 0);
+	}
 
-   @Test
-public void setAdicapGroupeDao(final AdicapGroupeDao agDao){
-      this.adicapGroupeDao = agDao;
-   }
+	@Test
+	public void testFindByAdicapGroupe() {
+		final AdicapGroupe d1 = adicapGroupeDao.findById(1).get();
+		List<Adicap> adicaps = adicapDao.findByAdicapGroupeNullParent(d1);
+		assertTrue(adicaps.size() == 19);
+		final AdicapGroupe d3 = adicapGroupeDao.findById(3).get();
+		adicaps = adicapDao.findByAdicapGroupeNullParent(d3);
+		assertTrue(adicaps.size() == 18);
+		// teste le parent = null
+		final AdicapGroupe g43 = adicapGroupeDao.findById(43).get();
+		adicaps = adicapDao.findByAdicapGroupeNullParent(g43);
+		assertTrue(adicaps.size() == 7); // 10 dans le groupe
+		assertFalse(adicapGroupeDao.findById(400).isPresent());
+	}
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   @Test
-public void testReadAllAdicaps(){
-      final List<Adicap> adicaps = IterableUtils.toList(adicapDao.findAll());
-      //assertTrue(!adicaps.isEmpty());
-      assertEquals(8906, adicaps.size()); // JDI : 8906 dans ma table, est-ce grave?
-   }
+	/**
+	 * Test l'appel de la méthode findByMorpho().
+	 */
+	@Test
+	public void testFindByMorpho() {
+		List<Adicap> adicaps = adicapDao.findByMorpho(true);
+		// assertTrue(!adicaps.isEmpty());
+		assertEquals(1448, adicaps.size()); // JDI : 1448 dans ma table, est-ce grave?
+		adicaps = adicapDao.findByMorpho(false);
+		assertTrue(adicaps.size() == 0);
+	}
 
-   @Test
-public void testFindByCode(){
-      List<Adicap> adicaps = adicapDao.findByCodeLike("%AF%");
-      assertTrue(adicaps.size() == 11);
-      adicaps = adicapDao.findByCodeLike("BN");
-      assertTrue(adicaps.size() == 0);
-   }
+	@Test
+	public void testFindByTopoParent() {
+		final Adicap parent = adicapDao.findById(42).get();
+		List<Adicap> adicaps = adicapDao.findByAdicapParentAndCodeOrLibelle(parent, "%");
+		assertTrue(adicaps.size() == 8);
+		assertTrue(adicapDao.findByAdicapParentAndCodeOrLibelle(adicaps.get(7), "%").size() == 6);
+		assertTrue(adicapDao.findByAdicapParentAndCodeOrLibelle(adicaps.get(7), "").isEmpty());
+		adicaps = adicapDao.findByAdicapParentAndCodeOrLibelle(parent, "PHARYNX");
+		assertTrue(adicaps.size() == 1);
+		adicaps = adicapDao.findByAdicapParentAndCodeOrLibelle(parent, "%PHARYNX%");
+		assertTrue(adicaps.size() == 4);
+		final Adicap parent2 = adicapDao.findById(2).get();
+		adicaps = adicapDao.findByAdicapParentAndCodeOrLibelle(parent2, "%");
+		assertTrue(adicaps.size() == 0);
+		assertTrue(adicapDao.findByAdicapParentAndCodeOrLibelle(null, "%").isEmpty());
+		assertTrue(adicapDao.findByAdicapParentAndCodeOrLibelle(parent, null).isEmpty());
+	}
 
-   /**
-    * Test l'appel de la méthode findByLibelle().
-    */
-   @Test
-public void testFindByLibelle(){
-      List<Adicap> adicaps = adicapDao.findByLibelleLike("%ADENOSE%");
-      assertTrue(adicaps.size() == 6);
-      adicaps = adicapDao.findByLibelleLike("PEARL");
-      assertTrue(adicaps.size() == 0);
-   }
+	@Test
+	public void testFindByAdicapGroupeAndCodeOrLibelle() {
+		List<Adicap> adicaps = adicapDao.findByAdicapGroupeAndCodeOrLibelle(adicapGroupeDao.findById(2).get(), "%");
+		assertTrue(adicaps.size() == 22);
+		adicaps = adicapDao.findByAdicapGroupeAndCodeOrLibelle(adicapGroupeDao.findById(2).get(), "%CYTO%");
+		assertTrue(adicaps.size() == 4);
+		adicaps = adicapDao.findByAdicapGroupeAndCodeOrLibelle(adicapGroupeDao.findById(2).get(), "K");
+		assertTrue(adicaps.size() == 1);
+		assertTrue(adicapDao.findByAdicapGroupeAndCodeOrLibelle(adicapGroupeDao.findById(2).get(), "").isEmpty());
+		assertTrue(adicapDao.findByAdicapGroupeAndCodeOrLibelle(null, "").isEmpty());
+		assertTrue(adicapDao.findByAdicapGroupeAndCodeOrLibelle(adicapGroupeDao.findById(2).get(), null).isEmpty());
 
-   @Test
-public void testFindByAdicapGroupe(){
-      final AdicapGroupe d1 = adicapGroupeDao.findById(1);
-      List<Adicap> adicaps = adicapDao.findByAdicapGroupeNullParent(d1);
-      assertTrue(adicaps.size() == 19);
-      final AdicapGroupe d3 = adicapGroupeDao.findById(3);
-      adicaps = adicapDao.findByAdicapGroupeNullParent(d3);
-      assertTrue(adicaps.size() == 18);
-      // teste le  parent = null
-      final AdicapGroupe g43 = adicapGroupeDao.findById(43);
-      adicaps = adicapDao.findByAdicapGroupeNullParent(g43);
-      assertTrue(adicaps.size() == 7); // 10 dans le groupe
-      final AdicapGroupe nullGroupe = adicapGroupeDao.findById(400);
-      adicaps = adicapDao.findByAdicapGroupeNullParent(nullGroupe);
-      assertTrue(adicaps.size() == 0);
-   }
+	}
 
-   /**
-    * Test l'appel de la méthode findByMorpho().
-    */
-   @Test
-public void testFindByMorpho(){
-      List<Adicap> adicaps = adicapDao.findByMorpho(true);
-      //assertTrue(!adicaps.isEmpty());
-      assertEquals(1448, adicaps.size()); // JDI : 1448 dans ma table, est-ce grave?
-      adicaps = adicapDao.findByMorpho(false);
-      assertTrue(adicaps.size() == 0);
-   }
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final Integer id1 = 1;
+		final Integer id2 = 2;
+		final Adicap a1 = new Adicap();
+		final Adicap a2 = new Adicap();
 
-   @Test
-public void testFindByTopoParent(){
-      final Adicap parent = adicapDao.findById(42);
-      List<Adicap> adicaps = adicapDao.findByAdicapParentAndCodeOrLibelle(parent, "%");
-      assertTrue(adicaps.size() == 8);
-      assertTrue(adicapDao.findByAdicapParentAndCodeOrLibelle(adicaps.get(7), "%").size() == 6);
-      assertTrue(adicapDao.findByAdicapParentAndCodeOrLibelle(adicaps.get(7), "").isEmpty());
-      adicaps = adicapDao.findByAdicapParentAndCodeOrLibelle(parent, "PHARYNX");
-      assertTrue(adicaps.size() == 1);
-      adicaps = adicapDao.findByAdicapParentAndCodeOrLibelle(parent, "%PHARYNX%");
-      assertTrue(adicaps.size() == 4);
-      final Adicap parent2 = adicapDao.findById(2);
-      adicaps = adicapDao.findByAdicapParentAndCodeOrLibelle(parent2, "%");
-      assertTrue(adicaps.size() == 0);
-      assertTrue(adicapDao.findByAdicapParentAndCodeOrLibelle(null, "%").isEmpty());
-      assertTrue(adicapDao.findByAdicapParentAndCodeOrLibelle(parent, null).isEmpty());
-   }
+		// L'objet 1 n'est pas égal à null
+		assertFalse(a1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(a1.equals(a1));
 
-   @Test
-public void testFindByAdicapGroupeAndCodeOrLibelle(){
-      List<Adicap> adicaps = adicapDao.findByAdicapGroupeAndCodeOrLibelle(adicapGroupeDao.findById(2), "%");
-      assertTrue(adicaps.size() == 22);
-      adicaps = adicapDao.findByAdicapGroupeAndCodeOrLibelle(adicapGroupeDao.findById(2), "%CYTO%");
-      assertTrue(adicaps.size() == 4);
-      adicaps = adicapDao.findByAdicapGroupeAndCodeOrLibelle(adicapGroupeDao.findById(2), "K");
-      assertTrue(adicaps.size() == 1);
-      assertTrue(adicapDao.findByAdicapGroupeAndCodeOrLibelle(adicapGroupeDao.findById(2), "").isEmpty());
-      assertTrue(adicapDao.findByAdicapGroupeAndCodeOrLibelle(null, "").isEmpty());
-      assertTrue(adicapDao.findByAdicapGroupeAndCodeOrLibelle(adicapGroupeDao.findById(2), null).isEmpty());
+		/* null --> Ids ne pouvant etre nuls car table systemes */
+		assertFalse(a1.equals(a2));
+		assertFalse(a2.equals(a1));
 
-   }
+		/* Id */
+		a2.setAdicapId(id1);
+		assertFalse(a1.equals(a2));
+		assertFalse(a2.equals(a1));
+		a1.setAdicapId(id2);
+		assertFalse(a1.equals(a2));
+		assertFalse(a2.equals(a1));
+		a1.setAdicapId(id1);
+		assertTrue(a1.equals(a2));
+		assertTrue(a2.equals(a1));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   @Test
-public void testEquals(){
-      final Integer id1 = 1;
-      final Integer id2 = 2;
-      final Adicap a1 = new Adicap();
-      final Adicap a2 = new Adicap();
+		final Categorie c = new Categorie();
+		assertFalse(a1.equals(c));
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(a1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(a1.equals(a1));
+	}
 
-      /*null --> Ids ne pouvant etre nuls car table systemes*/
-      assertFalse(a1.equals(a2));
-      assertFalse(a2.equals(a1));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
 
-      /*Id*/
-      a2.setAdicapId(id1);
-      assertFalse(a1.equals(a2));
-      assertFalse(a2.equals(a1));
-      a1.setAdicapId(id2);
-      assertFalse(a1.equals(a2));
-      assertFalse(a2.equals(a1));
-      a1.setAdicapId(id1);
-      assertTrue(a1.equals(a2));
-      assertTrue(a2.equals(a1));
+		final Integer id1 = 1;
+		final Adicap a1 = new Adicap();
+		a1.setAdicapId(id1);
+		final Adicap a2 = new Adicap();
+		a2.setAdicapId(id1);
+		final Adicap a3 = new Adicap();
+		a3.setAdicapId(null);
+		assertTrue(a3.hashCode() > 0);
 
-      final Categorie c = new Categorie();
-      assertFalse(a1.equals(c));
+		final int hash = a1.hashCode();
+		// 2 objets égaux ont le même hashcode
+		assertTrue(a1.hashCode() == a2.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		assertTrue(hash == a1.hashCode());
+		assertTrue(hash == a1.hashCode());
+		assertTrue(hash == a1.hashCode());
+		assertTrue(hash == a1.hashCode());
 
-   }
+	}
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   @Test
-public void testHashCode(){
+	@Test
+	public void testToString() {
+		final Adicap a = new Adicap();
+		a.setCode("Disease");
+		assertTrue(a.toString().equals("{Adicap: Disease}"));
+	}
 
-      final Integer id1 = 1;
-      final Adicap a1 = new Adicap();
-      a1.setAdicapId(id1);
-      final Adicap a2 = new Adicap();
-      a2.setAdicapId(id1);
-      final Adicap a3 = new Adicap();
-      a3.setAdicapId(null);
-      assertTrue(a3.hashCode() > 0);
-
-      final int hash = a1.hashCode();
-      // 2 objets égaux ont le même hashcode
-      assertTrue(a1.hashCode() == a2.hashCode());
-      // un même objet garde le même hashcode dans le temps
-      assertTrue(hash == a1.hashCode());
-      assertTrue(hash == a1.hashCode());
-      assertTrue(hash == a1.hashCode());
-      assertTrue(hash == a1.hashCode());
-
-   }
-
-   @Test
-public void testToString(){
-      final Adicap a = new Adicap();
-      a.setCode("Disease");
-      assertTrue(a.toString().equals("{Adicap: Disease}"));
-   }
-
-   @Test
-public void testFindByDicoAndCodeOrLibelle(){
-      AdicapGroupe g = adicapGroupeDao.findById(6);
-      List<Adicap> adicaps = adicapDao.findByDicoAndCodeOrLibelle(g, "BD0%");
-      assertTrue(adicaps.size() == 37);
-      g = adicapGroupeDao.findById(3);
-      adicaps = adicapDao.findByDicoAndCodeOrLibelle(g, "BD0%");
-      assertTrue(adicaps.size() == 0);
-      adicaps = adicapDao.findByDicoAndCodeOrLibelle(g, "LANGUE");
-      assertTrue(adicaps.size() == 1);
-      adicaps = adicapDao.findByDicoAndCodeOrLibelle(g, null);
-      assertTrue(adicaps.size() == 0);
-      adicaps = adicapDao.findByDicoAndCodeOrLibelle(null, "BD0%");
-      assertTrue(adicaps.size() == 0);
-   }
+	@Test
+	public void testFindByDicoAndCodeOrLibelle() {
+		AdicapGroupe g = adicapGroupeDao.findById(6).get();
+		List<Adicap> adicaps = adicapDao.findByDicoAndCodeOrLibelle(g, "BD0%");
+		assertTrue(adicaps.size() == 37);
+		g = adicapGroupeDao.findById(3).get();
+		adicaps = adicapDao.findByDicoAndCodeOrLibelle(g, "BD0%");
+		assertTrue(adicaps.size() == 0);
+		adicaps = adicapDao.findByDicoAndCodeOrLibelle(g, "LANGUE");
+		assertTrue(adicaps.size() == 1);
+		adicaps = adicapDao.findByDicoAndCodeOrLibelle(g, null);
+		assertTrue(adicaps.size() == 0);
+		adicaps = adicapDao.findByDicoAndCodeOrLibelle(null, "BD0%");
+		assertTrue(adicaps.size() == 0);
+	}
 }

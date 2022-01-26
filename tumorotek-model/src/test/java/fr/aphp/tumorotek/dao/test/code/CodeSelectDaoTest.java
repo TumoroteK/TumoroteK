@@ -37,13 +37,23 @@ package fr.aphp.tumorotek.dao.test.code;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import fr.aphp.tumorotek.dao.code.CodeDossierDao;
 import fr.aphp.tumorotek.dao.code.CodeSelectDao;
 import fr.aphp.tumorotek.dao.code.TableCodageDao;
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
+import fr.aphp.tumorotek.dao.test.Config;
 import fr.aphp.tumorotek.dao.utilisateur.UtilisateurDao;
 import fr.aphp.tumorotek.model.code.CodeDossier;
 import fr.aphp.tumorotek.model.code.CodeSelect;
@@ -58,278 +68,258 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * Classe de test créée le 18/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public class CodeSelectDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class CodeSelectDaoTest extends AbstractDaoTest {
 
-   @Autowired
- CodeSelectDao codeSelectDao;
-   @Autowired
- UtilisateurDao utilisateurDao;
-   @Autowired
- BanqueDao banqueDao;
-   @Autowired
- TableCodageDao tableCodesDao;
-   @Autowired
- CodeDossierDao codeDossierDao;
+	@Autowired
+	CodeSelectDao codeSelectDao;
 
-   public CodeSelectDaoTest(){}
+	@Autowired
+	UtilisateurDao utilisateurDao;
 
-   @Test
-public void setCodeSelectDao(final CodeSelectDao cDao){
-      this.codeSelectDao = cDao;
-   }
+	@Autowired
+	BanqueDao banqueDao;
 
-   @Test
-public void setUtilisateurDao(final UtilisateurDao uDao){
-      this.utilisateurDao = uDao;
-   }
+	@Autowired
+	TableCodageDao tableCodesDao;
 
-   @Test
-public void setBanqueDao(final BanqueDao bDao){
-      this.banqueDao = bDao;
-   }
+	@Autowired
+	CodeDossierDao codeDossierDao;
 
-   @Test
-public void setTableCodageDao(final TableCodageDao tCDao){
-      this.tableCodesDao = tCDao;
-   }
+	@Test
+	public void testReadAllCodes() {
+		final List<CodeSelect> codeSelects = IterableUtils.toList(codeSelectDao.findAll());
+		assertTrue(codeSelects.size() == 5);
+	}
 
-   @Test
-public void setCodeDossierDao(final CodeDossierDao cDao){
-      this.codeDossierDao = cDao;
-   }
+	@Test
+	public void testFindByUtilisateurAndBanque() {
+		Utilisateur u = utilisateurDao.findById(1).get();
+		Banque b = banqueDao.findById(1).get();
+		List<CodeSelect> codeSelects = codeSelectDao.findByUtilisateurAndBanque(u, b);
+		assertTrue(codeSelects.size() == 3);
+		u = utilisateurDao.findById(2).get();
+		codeSelects = codeSelectDao.findByUtilisateurAndBanque(u, b);
+		assertTrue(codeSelects.size() == 0);
+		b = banqueDao.findById(2).get();
+		codeSelects = codeSelectDao.findByUtilisateurAndBanque(u, b);
+		assertTrue(codeSelects.size() == 1);
+	}
 
-   @Test
-public void testReadAllCodes(){
-      final List<CodeSelect> codeSelects = IterableUtils.toList(codeSelectDao.findAll());
-      assertTrue(codeSelects.size() == 5);
-   }
+	@Test
+	public void testFindByBanque() {
+		Banque b = banqueDao.findById(1).get();
+		List<CodeSelect> codeSelects = codeSelectDao.findByBanque(b);
+		assertTrue(codeSelects.size() == 3);
+		b = banqueDao.findById(2).get();
+		codeSelects = codeSelectDao.findByBanque(b);
+		assertTrue(codeSelects.size() == 1);
+		b = banqueDao.findById(4).get();
+		codeSelects = codeSelectDao.findByBanque(b);
+		assertTrue(codeSelects.size() == 0);
+	}
 
-   @Test
-public void testFindByUtilisateurAndBanque(){
-      Utilisateur u = utilisateurDao.findById(1);
-      Banque b = banqueDao.findById(1);
-      List<CodeSelect> codeSelects = codeSelectDao.findByUtilisateurAndBanque(u, b);
-      assertTrue(codeSelects.size() == 3);
-      u = utilisateurDao.findById(2);
-      codeSelects = codeSelectDao.findByUtilisateurAndBanque(u, b);
-      assertTrue(codeSelects.size() == 0);
-      b = banqueDao.findById(2);
-      codeSelects = codeSelectDao.findByUtilisateurAndBanque(u, b);
-      assertTrue(codeSelects.size() == 1);
-   }
+	@Test
+	public void testFindByCodeDossier() {
+		CodeDossier dos = codeDossierDao.findById(3).get();
+		List<CodeSelect> codes = codeSelectDao.findByCodeDossier(dos);
+		assertTrue(codes.size() == 2);
+		dos = codeDossierDao.findById(1).get();
+		codes = codeSelectDao.findByCodeDossier(dos);
+		assertTrue(codes.size() == 0);
+	}
 
-   @Test
-public void testFindByBanque(){
-      Banque b = banqueDao.findById(1);
-      List<CodeSelect> codeSelects = codeSelectDao.findByBanque(b);
-      assertTrue(codeSelects.size() == 3);
-      b = banqueDao.findById(2);
-      codeSelects = codeSelectDao.findByBanque(b);
-      assertTrue(codeSelects.size() == 1);
-      b = banqueDao.findById(4);
-      codeSelects = codeSelectDao.findByBanque(b);
-      assertTrue(codeSelects.size() == 0);
-   }
+	@Test
+	public void testFindByRootDossier() {
+		final Banque b = banqueDao.findById(1).get();
+		final Utilisateur u = utilisateurDao.findById(1).get();
+		final List<CodeSelect> codes = codeSelectDao.findByRootDossier(u, b);
+		assertTrue(codes.size() == 1);
+	}
 
-   @Test
-public void testFindByCodeDossier(){
-      CodeDossier dos = codeDossierDao.findById(3);
-      List<CodeSelect> codes = codeSelectDao.findByCodeDossier(dos);
-      assertTrue(codes.size() == 2);
-      dos = codeDossierDao.findById(1);
-      codes = codeSelectDao.findByCodeDossier(dos);
-      assertTrue(codes.size() == 0);
-   }
+	@Test
+	public void findByExcludedId() {
+		final CodeSelect c = codeSelectDao.findById(1).get();
+		List<CodeSelect> codes = codeSelectDao.findByExcludedId(c.getCodeSelectId());
+		assertTrue(codes.size() == 4);
+		codes = codeSelectDao.findByExcludedId(8);
+		assertTrue(codes.size() == 5);
+	}
 
-   @Test
-public void testFindByRootDossier(){
-      final Banque b = banqueDao.findById(1);
-      final Utilisateur u = utilisateurDao.findById(1);
-      final List<CodeSelect> codes = codeSelectDao.findByRootDossier(u, b);
-      assertTrue(codes.size() == 1);
-   }
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'un code select.
+	 * 
+	 * @throws Exception lance une exception en cas de problème lors du CRUD.
+	 */
+	@Rollback(false)
+	@Test
+	public void testCrud() throws Exception {
+		final CodeSelect c = new CodeSelect();
 
-   @Test
-public void findByExcludedId(){
-      final CodeSelect c = codeSelectDao.findById(1);
-      List<CodeSelect> codes = codeSelectDao.findByExcludedId(c.getCodeSelectId());
-      assertTrue(codes.size() == 4);
-      codes = codeSelectDao.findByExcludedId(8);
-      assertTrue(codes.size() == 5);
-   }
+		final Utilisateur u = utilisateurDao.findById(2).get();
+		final Banque b = banqueDao.findById(1).get();
+		final TableCodage tc = tableCodesDao.findById(3).get();
+		final CodeDossier dos = codeDossierDao.findById(3).get();
+		c.setUtilisateur(u);
+		c.setBanque(b);
+		c.setTableCodage(tc);
+		c.setCodeId(5);
+		c.setCodeDossier(dos);
+		// Test de l'insertion
+		codeSelectDao.save(c);
+		assertEquals(new Integer(6), c.getCodeSelectId());
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression d'un code select.
-    * @throws Exception lance une exception en cas de problème lors du CRUD.
-    */
-   @Rollback(false)
-   @Test
-public void testCrud() throws Exception{
-      final CodeSelect c = new CodeSelect();
+		// Test de la mise à jour
+		final CodeSelect c2 = codeSelectDao.findById(new Integer(6)).get();
+		assertNotNull(c2);
+		assertTrue(c2.getCodeId() == 5);
+		assertNotNull(c2.getBanque());
+		assertNotNull(c2.getUtilisateur());
+		assertNotNull(c2.getTableCodage());
+		c2.setCodeId(1);
+		codeSelectDao.save(c2);
+		assertTrue(codeSelectDao.findById(new Integer(6)).get().getCodeId() == 1);
 
-      final Utilisateur u = utilisateurDao.findById(2);
-      final Banque b = banqueDao.findById(1);
-      final TableCodage tc = tableCodesDao.findById(3);
-      final CodeDossier dos = codeDossierDao.findById(3);
-      c.setUtilisateur(u);
-      c.setBanque(b);
-      c.setTableCodage(tc);
-      c.setCodeId(5);
-      c.setCodeDossier(dos);
-      // Test de l'insertion
-      codeSelectDao.save(c);
-      assertEquals(new Integer(6), c.getCodeSelectId());
+		// Test de la délétion
+		codeSelectDao.deleteById(new Integer(6));
+		assertFalse(codeSelectDao.findById(new Integer(6)).isPresent());
 
-      // Test de la mise à jour
-      final CodeSelect c2 = codeSelectDao.findById(new Integer(6));
-      assertNotNull(c2);
-      assertTrue(c2.getCodeId() == 5);
-      assertNotNull(c2.getBanque());
-      assertNotNull(c2.getUtilisateur());
-      assertNotNull(c2.getTableCodage());
-      c2.setCodeId(1);
-      codeSelectDao.save(c2);
-      assertTrue(codeSelectDao.findById(new Integer(6)).getCodeId() == 1);
+	}
 
-      // Test de la délétion
-      codeSelectDao.deleteById(new Integer(6));
-      assertFalse(codeSelectDao.findById(new Integer(6)).isPresent());
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final Integer id1 = 1;
+		final Integer id2 = 2;
+		final Utilisateur u1 = utilisateurDao.findById(1).get();
+		final Utilisateur u2 = utilisateurDao.findById(2).get();
+		final Banque b1 = banqueDao.findById(1).get();
+		final Banque b2 = banqueDao.findById(2).get();
+		final TableCodage t1 = tableCodesDao.findById(1).get();
+		final TableCodage t2 = tableCodesDao.findById(2).get();
+		final CodeSelect c1 = new CodeSelect();
+		final CodeSelect c2 = new CodeSelect();
 
-   }
+		// L'objet 1 n'est pas égal à null
+		assertFalse(c1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(c1.equals(c1));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   @Test
-public void testEquals(){
-      final Integer id1 = 1;
-      final Integer id2 = 2;
-      final Utilisateur u1 = utilisateurDao.findById(1);
-      final Utilisateur u2 = utilisateurDao.findById(2);
-      final Banque b1 = banqueDao.findById(1);
-      final Banque b2 = banqueDao.findById(2);
-      final TableCodage t1 = tableCodesDao.findById(1);
-      final TableCodage t2 = tableCodesDao.findById(2);
-      final CodeSelect c1 = new CodeSelect();
-      final CodeSelect c2 = new CodeSelect();
+		/* null */
+		assertTrue(c1.equals(c2));
+		assertTrue(c2.equals(c1));
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(c1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(c1.equals(c1));
+		/* Code id */
+		c2.setCodeId(id1);
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
+		c1.setCodeId(id2);
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
+		c1.setCodeId(id1);
+		assertTrue(c1.equals(c2));
+		assertTrue(c2.equals(c1));
 
-      /*null*/
-      assertTrue(c1.equals(c2));
-      assertTrue(c2.equals(c1));
+		/* Utilisateur (code ids etant egaux) */
+		c2.setUtilisateur(u1);
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
+		c1.setUtilisateur(u2);
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
+		c1.setUtilisateur(u1);
+		assertTrue(c1.equals(c2));
+		assertTrue(c2.equals(c1));
 
-      /*Code id*/
-      c2.setCodeId(id1);
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
-      c1.setCodeId(id2);
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
-      c1.setCodeId(id1);
-      assertTrue(c1.equals(c2));
-      assertTrue(c2.equals(c1));
+		/* Banque (les premieres props etant egales) */
+		c2.setBanque(b1);
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
+		c1.setBanque(b2);
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
+		c1.setBanque(b1);
+		assertTrue(c1.equals(c2));
+		assertTrue(c2.equals(c1));
 
-      /*Utilisateur (code ids etant egaux)*/
-      c2.setUtilisateur(u1);
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
-      c1.setUtilisateur(u2);
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
-      c1.setUtilisateur(u1);
-      assertTrue(c1.equals(c2));
-      assertTrue(c2.equals(c1));
+		/* Table (les premieres props etant egales) */
+		c2.setTableCodage(t1);
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
+		c1.setTableCodage(t2);
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
+		c1.setTableCodage(t1);
+		assertTrue(c1.equals(c2));
+		assertTrue(c2.equals(c1));
 
-      /*Banque (les premieres props etant egales)*/
-      c2.setBanque(b1);
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
-      c1.setBanque(b2);
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
-      c1.setBanque(b1);
-      assertTrue(c1.equals(c2));
-      assertTrue(c2.equals(c1));
+		final Categorie c3 = new Categorie();
+		assertFalse(c1.equals(c3));
+	}
 
-      /*Table (les premieres props etant egales)*/
-      c2.setTableCodage(t1);
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
-      c1.setTableCodage(t2);
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
-      c1.setTableCodage(t1);
-      assertTrue(c1.equals(c2));
-      assertTrue(c2.equals(c1));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
 
-      final Categorie c3 = new Categorie();
-      assertFalse(c1.equals(c3));
-   }
+		final Utilisateur u = utilisateurDao.findById(2).get();
+		final Banque b = banqueDao.findById(1).get();
+		final TableCodage tc = tableCodesDao.findById(3).get();
+		final CodeSelect c1 = new CodeSelect();
+		c1.setUtilisateur(u);
+		c1.setBanque(b);
+		c1.setTableCodage(tc);
+		c1.setCodeId(5);
+		final CodeSelect c2 = new CodeSelect();
+		c2.setUtilisateur(u);
+		c2.setBanque(b);
+		c2.setTableCodage(tc);
+		c2.setCodeId(5);
+		final CodeSelect c3 = new CodeSelect();
+		c3.setUtilisateur(null);
+		c3.setBanque(null);
+		c3.setTableCodage(null);
+		c3.setCodeId(null);
+		assertTrue(c3.hashCode() > 0);
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   @Test
-public void testHashCode(){
+		final int hash = c1.hashCode();
+		// 2 objets égaux ont le même hashcode
+		assertTrue(c1.hashCode() == c2.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		assertTrue(hash == c1.hashCode());
+		assertTrue(hash == c1.hashCode());
+		assertTrue(hash == c1.hashCode());
+		assertTrue(hash == c1.hashCode());
 
-      final Utilisateur u = utilisateurDao.findById(2);
-      final Banque b = banqueDao.findById(1);
-      final TableCodage tc = tableCodesDao.findById(3);
-      final CodeSelect c1 = new CodeSelect();
-      c1.setUtilisateur(u);
-      c1.setBanque(b);
-      c1.setTableCodage(tc);
-      c1.setCodeId(5);
-      final CodeSelect c2 = new CodeSelect();
-      c2.setUtilisateur(u);
-      c2.setBanque(b);
-      c2.setTableCodage(tc);
-      c2.setCodeId(5);
-      final CodeSelect c3 = new CodeSelect();
-      c3.setUtilisateur(null);
-      c3.setBanque(null);
-      c3.setTableCodage(null);
-      c3.setCodeId(null);
-      assertTrue(c3.hashCode() > 0);
+	}
 
-      final int hash = c1.hashCode();
-      // 2 objets égaux ont le même hashcode
-      assertTrue(c1.hashCode() == c2.hashCode());
-      // un même objet garde le même hashcode dans le temps
-      assertTrue(hash == c1.hashCode());
-      assertTrue(hash == c1.hashCode());
-      assertTrue(hash == c1.hashCode());
-      assertTrue(hash == c1.hashCode());
+	@Test
+	public void testToString() {
+		final CodeSelect a = new CodeSelect();
+		final TableCodage t = tableCodesDao.findById(1).get();
+		a.setTableCodage(t);
+		a.setCodeId(33);
+		assertTrue(a.toString().equals("{CodeSelect: ADICAP.33}"));
+	}
 
-   }
-
-   @Test
-public void testToString(){
-      final CodeSelect a = new CodeSelect();
-      final TableCodage t = tableCodesDao.findById(1);
-      a.setTableCodage(t);
-      a.setCodeId(33);
-      assertTrue(a.toString().equals("{CodeSelect: ADICAP.33}"));
-   }
-
-   @Test
-public void testFindByRootDossierAndBanque(){
-      Banque b = banqueDao.findById(1);
-      List<CodeSelect> codes = codeSelectDao.findByRootDossierAndBanque(b);
-      assertTrue(codes.size() == 1);
-      b = banqueDao.findById(2);
-      codes = codeSelectDao.findByRootDossierAndBanque(b);
-      assertTrue(codes.size() == 1);
-      codes = codeSelectDao.findByRootDossierAndBanque(null);
-      assertTrue(codes.size() == 0);
-   }
+	@Test
+	public void testFindByRootDossierAndBanque() {
+		Banque b = banqueDao.findById(1).get();
+		List<CodeSelect> codes = codeSelectDao.findByRootDossierAndBanque(b);
+		assertTrue(codes.size() == 1);
+		b = banqueDao.findById(2).get();
+		codes = codeSelectDao.findByRootDossierAndBanque(b);
+		assertTrue(codes.size() == 1);
+		codes = codeSelectDao.findByRootDossierAndBanque(null);
+		assertTrue(codes.size() == 0);
+	}
 
 }
