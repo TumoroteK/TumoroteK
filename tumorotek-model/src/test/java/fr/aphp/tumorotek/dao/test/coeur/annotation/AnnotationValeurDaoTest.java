@@ -35,6 +35,8 @@
  **/
 package fr.aphp.tumorotek.dao.test.coeur.annotation;
 
+import static org.junit.Assert.assertArrayEquals;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.text.ParseException;
@@ -42,9 +44,18 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-import org.junit.Assert;
-import org.springframework.test.annotation.Rollback;
+import javax.transaction.Transactional;
 
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import fr.aphp.tumorotek.dao.annotation.AnnotationValeurDao;
 import fr.aphp.tumorotek.dao.annotation.ChampAnnotationDao;
 import fr.aphp.tumorotek.dao.annotation.ItemDao;
@@ -53,6 +64,7 @@ import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
 import fr.aphp.tumorotek.dao.systeme.FichierDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
+import fr.aphp.tumorotek.dao.test.Config;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.annotation.DataType;
@@ -64,483 +76,450 @@ import fr.aphp.tumorotek.model.systeme.Fichier;
 
 /**
  *
- * Classe de test pour le DAO AnnotationValeurDao et le
- * bean du domaine AnnotationValeur.
- * Classe de test créée le 01/02/10.
+ * Classe de test pour le DAO AnnotationValeurDao et le bean du domaine
+ * AnnotationValeur. Classe de test créée le 01/02/10.
  *
  * @author Mathieu BARTHELEMY
  * @version 2.1.1
  *
  */
-public class AnnotationValeurDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class AnnotationValeurDaoTest extends AbstractDaoTest {
 
-   /** Beans Dao. */
-   @Autowired
- AnnotationValeurDao annotationValeurDao;
-   @Autowired
- ItemDao itemDao;
-   @Autowired
- ChampAnnotationDao champAnnotationDao;
-   @Autowired
- BanqueDao banqueDao;
-   @Autowired
- TableAnnotationDao tableAnnotationDao;
-   @Autowired
- FichierDao fichierDao;
-   @Autowired
- EntiteDao entiteDao;
+	@Autowired
+	AnnotationValeurDao annotationValeurDao;
 
-   /**
-    * Constructeur.
-    */
-   public AnnotationValeurDaoTest(){}
+	@Autowired
+	ItemDao itemDao;
 
-   @Test
-public void setItemDao(final ItemDao iDao){
-      this.itemDao = iDao;
-   }
+	@Autowired
+	ChampAnnotationDao champAnnotationDao;
 
-   @Test
-public void setChampAnnotationDao(final ChampAnnotationDao cDao){
-      this.champAnnotationDao = cDao;
-   }
+	@Autowired
+	BanqueDao banqueDao;
 
-   @Test
-public void setAnnotationDefautDao(final AnnotationValeurDao avDao){
-      this.annotationValeurDao = avDao;
-   }
+	@Autowired
+	TableAnnotationDao tableAnnotationDao;
 
-   @Test
-public void setBanqueDao(final BanqueDao bDao){
-      this.banqueDao = bDao;
-   }
+	@Autowired
+	FichierDao fichierDao;
 
-   @Test
-public void setTableAnnotationDao(final TableAnnotationDao tabDao){
-      this.tableAnnotationDao = tabDao;
-   }
+	@Autowired
+	EntiteDao entiteDao;
 
-   @Test
-public void setFichierDao(final FichierDao fDao){
-      this.fichierDao = fDao;
-   }
+	@Test
+	public void testToString() throws ParseException {
+		final AnnotationValeur av1 = annotationValeurDao.findById(1).get();
+		assertTrue(av1.toString().equals("{Valeur: Alphanum1.AlphanumValue1}"));
+		final AnnotationValeur av2 = new AnnotationValeur();
+		assertTrue(av2.toString().equals("{Empty AnnotationValeur}"));
+		av2.setChampAnnotation(champAnnotationDao.findById(1).get());
+		assertTrue(av2.toString().equals("{Empty AnnotationValeur}"));
+		final Fichier f = new Fichier();
+		f.setNom("file1");
+		f.setPath("/file1");
+		av2.setFichier(f);
+		assertTrue(av2.toString().equals("{Valeur: Alphanum1.{/file1}}"));
+		av2.setItem(itemDao.findById(1).get());
+		assertTrue(av2.toString().equals("{Valeur: Alphanum1.item1-1}"));
+		av2.setTexte("You and me always");
+		assertTrue(av2.toString().equals("{Valeur: Alphanum1.You ...}"));
+		av2.setTexte("You");
+		assertTrue(av2.toString().equals("{Valeur: Alphanum1.You}"));
+		final Calendar sDate = Calendar.getInstance();
+		sDate.setTime(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse("12/02/2006 12:02:45"));
+		av2.setDate(sDate);
+		assertTrue(av2.toString().equals("{Valeur: Alphanum1.12/02/2006 12:02:45}"));
+		av2.setBool(true);
+		assertTrue(av2.toString().equals("{Valeur: Alphanum1.true}"));
+		av2.setAlphanum("Dogg");
+		assertTrue(av2.toString().equals("{Valeur: Alphanum1.Dogg}"));
+	}
 
-   @Test
-public void setEntiteDao(final EntiteDao eDao){
-      this.entiteDao = eDao;
-   }
+	/**
+	 * Test l'appel de la méthode findAll().
+	 */
+	@Test
+	public void testReadAllValeurs() {
+		final List<AnnotationValeur> valeurs = IterableUtils.toList(annotationValeurDao.findAll());
+		assertTrue(valeurs.size() == 12);
+	}
 
-   /**
-    * Test la méthode toString.
-    * @throws ParseException 
-    */
-   @Test
-public void testToString() throws ParseException{
-      final AnnotationValeur av1 = annotationValeurDao.findById(1);
-      assertTrue(av1.toString().equals("{Valeur: Alphanum1.AlphanumValue1}"));
-      final AnnotationValeur av2 = new AnnotationValeur();
-      assertTrue(av2.toString().equals("{Empty AnnotationValeur}"));
-      av2.setChampAnnotation(champAnnotationDao.findById(1));
-      assertTrue(av2.toString().equals("{Empty AnnotationValeur}"));
-      final Fichier f = new Fichier();
-      f.setNom("file1");
-      f.setPath("/file1");
-      av2.setFichier(f);
-      assertTrue(av2.toString().equals("{Valeur: Alphanum1.{/file1}}"));
-      av2.setItem(itemDao.findById(1));
-      assertTrue(av2.toString().equals("{Valeur: Alphanum1.item1-1}"));
-      av2.setTexte("You and me always");
-      assertTrue(av2.toString().equals("{Valeur: Alphanum1.You ...}"));
-      av2.setTexte("You");
-      assertTrue(av2.toString().equals("{Valeur: Alphanum1.You}"));
-      final Calendar sDate = Calendar.getInstance();
-      sDate.setTime(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse("12/02/2006 12:02:45"));
-      av2.setDate(sDate);
-      assertTrue(av2.toString().equals("{Valeur: Alphanum1.12/02/2006 12:02:45}"));
-      av2.setBool(true);
-      assertTrue(av2.toString().equals("{Valeur: Alphanum1.true}"));
-      av2.setAlphanum("Dogg");
-      assertTrue(av2.toString().equals("{Valeur: Alphanum1.Dogg}"));
-   }
+	@Test
+	public void testFindByChampAndObjetId() {
+		List<AnnotationValeur> valeurs = annotationValeurDao
+				.findByChampAndObjetId(champAnnotationDao.findById(12).get(), 1);
+		assertTrue(valeurs.size() == 2);
+		valeurs = annotationValeurDao.findByChampAndObjetId(champAnnotationDao.findById(8).get(), 1);
+		assertTrue(valeurs.size() == 0);
+		valeurs = annotationValeurDao.findByChampAndObjetId(champAnnotationDao.findById(4).get(), 3);
+		assertTrue(valeurs.size() == 0);
+		valeurs = annotationValeurDao.findByChampAndObjetId(null, null);
+		assertTrue(valeurs.size() == 0);
+	}
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   @Test
-public void testReadAllValeurs(){
-      final List<AnnotationValeur> valeurs = IterableUtils.toList(annotationValeurDao.findAll());
-      assertTrue(valeurs.size() == 12);
-   }
+	@Test
+	public void testFindByTableAndBanque() {
+		List<AnnotationValeur> valeurs = annotationValeurDao.findByTableAndBanque(tableAnnotationDao.findById(3).get(),
+				banqueDao.findById(1).get());
+		assertTrue(valeurs.size() == 3);
+		valeurs = annotationValeurDao.findByTableAndBanque(tableAnnotationDao.findById(3).get(),
+				banqueDao.findById(3).get());
+		assertTrue(valeurs.size() == 0);
+		valeurs = annotationValeurDao.findByTableAndBanque(tableAnnotationDao.findById(4).get(),
+				banqueDao.findById(1).get());
+		assertTrue(valeurs.size() == 0);
+		valeurs = annotationValeurDao.findByTableAndBanque(null, null);
+		assertTrue(valeurs.size() == 0);
+	}
 
-   @Test
-public void testFindByChampAndObjetId(){
-      List<AnnotationValeur> valeurs = annotationValeurDao.findByChampAndObjetId(champAnnotationDao.findById(12), 1);
-      assertTrue(valeurs.size() == 2);
-      valeurs = annotationValeurDao.findByChampAndObjetId(champAnnotationDao.findById(8), 1);
-      assertTrue(valeurs.size() == 0);
-      valeurs = annotationValeurDao.findByChampAndObjetId(champAnnotationDao.findById(4), 3);
-      assertTrue(valeurs.size() == 0);
-      valeurs = annotationValeurDao.findByChampAndObjetId(null, null);
-      assertTrue(valeurs.size() == 0);
-   }
+	/**
+	 * Test l'appel de la méthode findByExcludedId().
+	 */
+	@Test
+	public void testFindByExcludedId() {
+		final AnnotationValeur av1 = annotationValeurDao.findById(1).get();
+		List<AnnotationValeur> valeurs = annotationValeurDao.findByExcludedId(av1.getChampAnnotation(),
+				av1.getObjetId(), 1);
+		assertTrue(valeurs.size() == 0);
+		assertFalse(valeurs.contains(av1));
+		final AnnotationValeur av12 = annotationValeurDao.findById(12).get();
+		valeurs = annotationValeurDao.findByExcludedId(av12.getChampAnnotation(), av12.getObjetId(), 12);
+		assertTrue(valeurs.size() == 1);
+		valeurs = annotationValeurDao.findByExcludedId(null, null, null);
+		assertTrue(valeurs.size() == 0);
+	}
 
-   @Test
-public void testFindByTableAndBanque(){
-      List<AnnotationValeur> valeurs =
-         annotationValeurDao.findByTableAndBanque(tableAnnotationDao.findById(3), banqueDao.findById(1));
-      assertTrue(valeurs.size() == 3);
-      valeurs = annotationValeurDao.findByTableAndBanque(tableAnnotationDao.findById(3), banqueDao.findById(3));
-      assertTrue(valeurs.size() == 0);
-      valeurs = annotationValeurDao.findByTableAndBanque(tableAnnotationDao.findById(4), banqueDao.findById(1));
-      assertTrue(valeurs.size() == 0);
-      valeurs = annotationValeurDao.findByTableAndBanque(null, null);
-      assertTrue(valeurs.size() == 0);
-   }
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'un Item.
+	 */
+	@Test
+	@Transactional
+	@Rollback(false)
+	public void testCrudValeur() {
+		final AnnotationValeur av2 = new AnnotationValeur();
+		av2.setObjetId(2);
+		av2.setChampAnnotation(champAnnotationDao.findById(2).get());
+		av2.setAlphanum("val1");
+		av2.setBanque(banqueDao.findById(1).get());
 
-   /**
-    * Test l'appel de la méthode findByExcludedId().
-    */
-   @Test
-public void testFindByExcludedId(){
-      final AnnotationValeur av1 = annotationValeurDao.findById(1);
-      List<AnnotationValeur> valeurs = annotationValeurDao.findByExcludedId(av1.getChampAnnotation(), av1.getObjetId(), 1);
-      assertTrue(valeurs.size() == 0);
-      assertFalse(valeurs.contains(av1));
-      final AnnotationValeur av12 = annotationValeurDao.findById(12);
-      valeurs = annotationValeurDao.findByExcludedId(av12.getChampAnnotation(), av12.getObjetId(), 12);
-      assertTrue(valeurs.size() == 1);
-      valeurs = annotationValeurDao.findByExcludedId(null, null, null);
-      assertTrue(valeurs.size() == 0);
-   }
+		annotationValeurDao.save(av2);
+		assertNotNull(av2.getAnnotationValeurId());
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression d'un Item.
-    */
-   @Rollback(false)
-   @Test
-public void testCrudValeur(){
-      final AnnotationValeur av2 = new AnnotationValeur();
-      av2.setObjetId(2);
-      av2.setChampAnnotation(champAnnotationDao.findById(2));
-      av2.setAlphanum("val1");
-      av2.setBanque(banqueDao.findById(1));
+		final Integer aId = av2.getAnnotationValeurId();
 
-      annotationValeurDao.save(av2);
-      assertNotNull(av2.getAnnotationValeurId());
+		assertTrue(annotationValeurDao.findByChampAndObjetId(champAnnotationDao.findById(2).get(), 2).size() == 1);
+		assertTrue(annotationValeurDao.findById(aId).get().getAlphanum().equals("val1"));
 
-      final Integer aId = av2.getAnnotationValeurId();
+		// update
+		av2.setAlphanum("val2");
 
-      assertTrue(annotationValeurDao.findByChampAndObjetId(champAnnotationDao.findById(2), 2).size() == 1);
-      assertTrue(annotationValeurDao.findById(aId).getAlphanum().equals("val1"));
+		annotationValeurDao.save(av2);
+		assertTrue(av2.getAnnotationValeurId() == aId);
+		assertTrue(annotationValeurDao.findById(aId).get().getAlphanum().equals("val2"));
 
-      // update
-      av2.setAlphanum("val2");
+		// Test de la délétion
+		annotationValeurDao.deleteById(aId);
+		assertFalse(annotationValeurDao.findById(aId).isPresent());
+		testReadAllValeurs();
+	}
 
-      annotationValeurDao.save(av2);
-      assertTrue(av2.getAnnotationValeurId() == aId);
-      assertTrue(annotationValeurDao.findById(aId).getAlphanum().equals("val2"));
+	/**
+	 * Test des méthodes surchargées "equals" et hashcode.
+	 */
+	@Test
+	public void testEqualsAndHashCode() {
+		final AnnotationValeur av1 = new AnnotationValeur();
+		final AnnotationValeur av2 = new AnnotationValeur();
+		assertFalse(av1.equals(null));
+		assertNotNull(av2);
+		assertTrue(av1.equals(av1));
+		assertTrue(av1.equals(av2));
+		assertTrue(av1.hashCode() == av2.hashCode());
 
-      // Test de la délétion
-      annotationValeurDao.deleteById(aId);
-      assertFalse(annotationValeurDao.findById(aId).isPresent());
-      testReadAllValeurs();
-   }
+		final Integer i1 = new Integer(1);
+		final Integer i2 = new Integer(2);
+		final Integer i3 = new Integer(2);
 
-   /**
-    * Test des méthodes surchargées "equals" et hashcode.
-    */
-   @Test
-public void testEqualsAndHashCode(){
-      final AnnotationValeur av1 = new AnnotationValeur();
-      final AnnotationValeur av2 = new AnnotationValeur();
-      assertFalse(av1.equals(null));
-      assertNotNull(av2);
-      assertTrue(av1.equals(av1));
-      assertTrue(av1.equals(av2));
-      assertTrue(av1.hashCode() == av2.hashCode());
+		av1.setObjetId(i1);
+		assertFalse(av1.equals(av2));
+		assertFalse(av2.equals(av1));
+		assertTrue(av1.hashCode() != av2.hashCode());
+		av2.setObjetId(i2);
+		assertFalse(av1.equals(av2));
+		assertFalse(av2.equals(av1));
+		assertTrue(av1.hashCode() != av2.hashCode());
+		av1.setObjetId(i2);
+		assertTrue(av1.equals(av2));
+		assertTrue(av2.equals(av1));
+		assertTrue(av1.hashCode() == av2.hashCode());
+		av1.setObjetId(i3);
+		assertTrue(av1.equals(av2));
+		assertTrue(av2.equals(av1));
+		assertTrue(av1.hashCode() == av2.hashCode());
 
-      final Integer i1 = new Integer(1);
-      final Integer i2 = new Integer(2);
-      final Integer i3 = new Integer(2);
+		final ChampAnnotation c1 = champAnnotationDao.findById(1).get();
+		final ChampAnnotation c2 = champAnnotationDao.findById(2).get();
+		final ChampAnnotation c3 = new ChampAnnotation();
+		c3.setNom(c2.getNom());
+		c3.setTableAnnotation(c2.getTableAnnotation());
+		assertFalse(c1.equals(c2));
+		assertFalse(c1.hashCode() == c2.hashCode());
+		assertTrue(c2.equals(c3));
+		av1.setChampAnnotation(c1);
+		assertFalse(av1.equals(av2));
+		assertFalse(av2.equals(av1));
+		assertTrue(av1.hashCode() != av2.hashCode());
+		av2.setChampAnnotation(c2);
+		assertFalse(av1.equals(av2));
+		assertFalse(av2.equals(av1));
+		assertTrue(av1.hashCode() != av2.hashCode());
+		av1.setChampAnnotation(c3);
+		assertTrue(av1.equals(av2));
+		assertTrue(av2.equals(av1));
+		assertTrue(av1.hashCode() == av2.hashCode());
+		av1.setChampAnnotation(c2);
+		assertTrue(av1.equals(av2));
+		assertTrue(av2.equals(av1));
+		assertTrue(av1.hashCode() == av2.hashCode());
 
-      av1.setObjetId(i1);
-      assertFalse(av1.equals(av2));
-      assertFalse(av2.equals(av1));
-      assertTrue(av1.hashCode() != av2.hashCode());
-      av2.setObjetId(i2);
-      assertFalse(av1.equals(av2));
-      assertFalse(av2.equals(av1));
-      assertTrue(av1.hashCode() != av2.hashCode());
-      av1.setObjetId(i2);
-      assertTrue(av1.equals(av2));
-      assertTrue(av2.equals(av1));
-      assertTrue(av1.hashCode() == av2.hashCode());
-      av1.setObjetId(i3);
-      assertTrue(av1.equals(av2));
-      assertTrue(av2.equals(av1));
-      assertTrue(av1.hashCode() == av2.hashCode());
+		final Item it1 = itemDao.findById(1).get();
+		final Item it2 = itemDao.findById(2).get();
+		final Item it3 = new Item();
+		it3.setLabel(it2.getLabel());
+		it3.setChampAnnotation(it2.getChampAnnotation());
+		it3.setPlateforme(it2.getPlateforme());
+		assertFalse(it1.equals(i2));
+		assertFalse(it1.hashCode() == it2.hashCode());
+		assertTrue(it2.equals(it3));
+		av1.setItem(it1);
+		assertFalse(av1.equals(av2));
+		assertFalse(av2.equals(av1));
+		assertTrue(av1.hashCode() != av2.hashCode());
+		av2.setItem(it2);
+		assertFalse(av1.equals(av2));
+		assertFalse(av2.equals(av1));
+		assertTrue(av1.hashCode() != av2.hashCode());
+		av1.setItem(it3);
+		assertTrue(av1.equals(av2));
+		assertTrue(av2.equals(av1));
+		assertFalse(av1.hashCode() == av2.hashCode());
+		av1.setItem(it2);
+		assertTrue(av1.equals(av2));
+		assertTrue(av2.equals(av1));
+		assertTrue(av1.hashCode() == av2.hashCode());
 
-      final ChampAnnotation c1 = champAnnotationDao.findById(1);
-      final ChampAnnotation c2 = champAnnotationDao.findById(2);
-      final ChampAnnotation c3 = new ChampAnnotation();
-      c3.setNom(c2.getNom());
-      c3.setTableAnnotation(c2.getTableAnnotation());
-      assertFalse(c1.equals(c2));
-      assertFalse(c1.hashCode() == c2.hashCode());
-      assertTrue(c2.equals(c3));
-      av1.setChampAnnotation(c1);
-      assertFalse(av1.equals(av2));
-      assertFalse(av2.equals(av1));
-      assertTrue(av1.hashCode() != av2.hashCode());
-      av2.setChampAnnotation(c2);
-      assertFalse(av1.equals(av2));
-      assertFalse(av2.equals(av1));
-      assertTrue(av1.hashCode() != av2.hashCode());
-      av1.setChampAnnotation(c3);
-      assertTrue(av1.equals(av2));
-      assertTrue(av2.equals(av1));
-      assertTrue(av1.hashCode() == av2.hashCode());
-      av1.setChampAnnotation(c2);
-      assertTrue(av1.equals(av2));
-      assertTrue(av2.equals(av1));
-      assertTrue(av1.hashCode() == av2.hashCode());
+		final Banque b1 = banqueDao.findById(1).get();
+		final Banque b2 = banqueDao.findById(2).get();
+		final Banque b3 = new Banque();
+		b3.setNom(b2.getNom());
+		b3.setPlateforme(b2.getPlateforme());
+		assertFalse(b1.equals(b2));
+		assertFalse(b1.hashCode() == b2.hashCode());
+		assertTrue(b2.equals(b3));
+		av1.setBanque(b1);
+		assertFalse(av1.equals(av2));
+		assertFalse(av2.equals(av1));
+		assertTrue(av1.hashCode() != av2.hashCode());
+		av2.setBanque(b2);
+		assertFalse(av1.equals(av2));
+		assertFalse(av2.equals(av1));
+		assertTrue(av1.hashCode() != av2.hashCode());
+		av1.setBanque(b3);
+		assertTrue(av1.equals(av2));
+		assertTrue(av2.equals(av1));
+		assertTrue(av1.hashCode() == av2.hashCode());
+		av1.setBanque(b2);
+		assertTrue(av1.equals(av2));
+		assertTrue(av2.equals(av1));
+		assertTrue(av1.hashCode() == av2.hashCode());
 
-      final Item it1 = itemDao.findById(1);
-      final Item it2 = itemDao.findById(2);
-      final Item it3 = new Item();
-      it3.setLabel(it2.getLabel());
-      it3.setChampAnnotation(it2.getChampAnnotation());
-      it3.setPlateforme(it2.getPlateforme());
-      assertFalse(it1.equals(i2));
-      assertFalse(it1.hashCode() == it2.hashCode());
-      assertTrue(it2.equals(it3));
-      av1.setItem(it1);
-      assertFalse(av1.equals(av2));
-      assertFalse(av2.equals(av1));
-      assertTrue(av1.hashCode() != av2.hashCode());
-      av2.setItem(it2);
-      assertFalse(av1.equals(av2));
-      assertFalse(av2.equals(av1));
-      assertTrue(av1.hashCode() != av2.hashCode());
-      av1.setItem(it3);
-      assertTrue(av1.equals(av2));
-      assertTrue(av2.equals(av1));
-      assertFalse(av1.hashCode() == av2.hashCode());
-      av1.setItem(it2);
-      assertTrue(av1.equals(av2));
-      assertTrue(av2.equals(av1));
-      assertTrue(av1.hashCode() == av2.hashCode());
+		// dummy
+		final Categorie c = new Categorie();
+		assertFalse(av1.equals(c));
+	}
 
-      final Banque b1 = banqueDao.findById(1);
-      final Banque b2 = banqueDao.findById(2);
-      final Banque b3 = new Banque();
-      b3.setNom(b2.getNom());
-      b3.setPlateforme(b2.getPlateforme());
-      assertFalse(b1.equals(b2));
-      assertFalse(b1.hashCode() == b2.hashCode());
-      assertTrue(b2.equals(b3));
-      av1.setBanque(b1);
-      assertFalse(av1.equals(av2));
-      assertFalse(av2.equals(av1));
-      assertTrue(av1.hashCode() != av2.hashCode());
-      av2.setBanque(b2);
-      assertFalse(av1.equals(av2));
-      assertFalse(av2.equals(av1));
-      assertTrue(av1.hashCode() != av2.hashCode());
-      av1.setBanque(b3);
-      assertTrue(av1.equals(av2));
-      assertTrue(av2.equals(av1));
-      assertTrue(av1.hashCode() == av2.hashCode());
-      av1.setBanque(b2);
-      assertTrue(av1.equals(av2));
-      assertTrue(av2.equals(av1));
-      assertTrue(av1.hashCode() == av2.hashCode());
+	@Test
+	public void testIsEmpty() throws ParseException {
+		final AnnotationValeur av1 = new AnnotationValeur();
+		assertTrue(av1.isEmpty());
+		av1.setChampAnnotation(champAnnotationDao.findById(1).get());
+		av1.setObjetId(1);
+		av1.setBanque(banqueDao.findById(2).get());
+		assertTrue(av1.isEmpty());
+		av1.setAlphanum("ee");
+		assertFalse(av1.isEmpty());
+		av1.setAlphanum(null);
+		av1.setBool(true);
+		assertFalse(av1.isEmpty());
+		av1.setBool(null);
+		final Calendar sDate = Calendar.getInstance();
+		sDate.setTime(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse("12/02/2006 12:02:45"));
+		av1.setDate(sDate);
+		assertFalse(av1.isEmpty());
+		av1.setDate(null);
+		av1.setTexte("eee");
+		assertFalse(av1.isEmpty());
+		av1.setTexte(null);
+		av1.setItem(itemDao.findById(1).get());
+		assertFalse(av1.isEmpty());
+		av1.setItem(null);
+		assertTrue(av1.isEmpty());
+	}
 
-      // dummy
-      final Categorie c = new Categorie();
-      assertFalse(av1.equals(c));
-   }
+	@Test
+	public void testClone() throws IOException {
+		final AnnotationValeur av1 = annotationValeurDao.findById(5).get();
+		// rempli pour contourner les nulls
+		av1.setAlphanum("zert");
+		av1.setBool(true);
+		av1.setTexte("ee");
+		av1.setItem(itemDao.findById(1).get());
+		av1.setFichier(fichierDao.findById(1).get());
+		final byte[] byteArray = "erfr".getBytes();
+		final ByteArrayInputStream bais = new ByteArrayInputStream(byteArray);
+		av1.setStream(bais);
+		AnnotationValeur clone = av1.clone();
 
-   @Test
-public void testIsEmpty() throws ParseException{
-      final AnnotationValeur av1 = new AnnotationValeur();
-      assertTrue(av1.isEmpty());
-      av1.setChampAnnotation(champAnnotationDao.findById(1));
-      av1.setObjetId(1);
-      av1.setBanque(banqueDao.findById(2));
-      assertTrue(av1.isEmpty());
-      av1.setAlphanum("ee");
-      assertFalse(av1.isEmpty());
-      av1.setAlphanum(null);
-      av1.setBool(true);
-      assertFalse(av1.isEmpty());
-      av1.setBool(null);
-      final Calendar sDate = Calendar.getInstance();
-      sDate.setTime(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").parse("12/02/2006 12:02:45"));
-      av1.setDate(sDate);
-      assertFalse(av1.isEmpty());
-      av1.setDate(null);
-      av1.setTexte("eee");
-      assertFalse(av1.isEmpty());
-      av1.setTexte(null);
-      av1.setItem(itemDao.findById(1));
-      assertFalse(av1.isEmpty());
-      av1.setItem(null);
-      assertTrue(av1.isEmpty());
-   }
+		assertTrue(av1.equals(clone));
+		assertTrue(av1.hashCode() == clone.hashCode());
+		assertTrue(clone.getAnnotationValeurId().equals(av1.getAnnotationValeurId()));
+		assertTrue(clone.getChampAnnotation().equals(av1.getChampAnnotation()));
+		assertTrue(clone.getObjetId().equals(av1.getObjetId()));
+		assertTrue(clone.getAlphanum().equals(av1.getAlphanum()));
+		assertTrue(clone.getBool().equals(av1.getBool()));
+		assertTrue(clone.getDate().equals(av1.getDate()));
+		assertTrue(clone.getTexte().equals(av1.getTexte()));
+		assertTrue(clone.getItem().equals(av1.getItem()));
+		assertTrue(clone.getFichier().equals(av1.getFichier()));
+		// assertTrue(clone.getStream().equals(av1.getStream()));
+		final byte[] buffer = new byte[8192];
+		final byte[] buffer2 = new byte[8192];
+		while ((clone.getStream().read(buffer)) > 0) {
+			av1.getStream().read(buffer2);
+			assertArrayEquals(buffer, buffer2);
+		}
+		assertTrue(clone.getBanque().equals(av1.getBanque()));
 
-   @Test
-public void testClone() throws IOException{
-      final AnnotationValeur av1 = annotationValeurDao.findById(5);
-      // rempli pour contourner les nulls
-      av1.setAlphanum("zert");
-      av1.setBool(true);
-      av1.setTexte("ee");
-      av1.setItem(itemDao.findById(1));
-      av1.setFichier(fichierDao.findById(1));
-      final byte[] byteArray = "erfr".getBytes();
-      final ByteArrayInputStream bais = new ByteArrayInputStream(byteArray);
-      av1.setStream(bais);
-      AnnotationValeur clone = av1.clone();
+		av1.setFichier(null);
+		clone = av1.clone();
+		assertNull(clone.getFichier());
+	}
 
-      assertTrue(av1.equals(clone));
-      assertTrue(av1.hashCode() == clone.hashCode());
-      assertTrue(clone.getAnnotationValeurId().equals(av1.getAnnotationValeurId()));
-      assertTrue(clone.getChampAnnotation().equals(av1.getChampAnnotation()));
-      assertTrue(clone.getObjetId().equals(av1.getObjetId()));
-      assertTrue(clone.getAlphanum().equals(av1.getAlphanum()));
-      assertTrue(clone.getBool().equals(av1.getBool()));
-      assertTrue(clone.getDate().equals(av1.getDate()));
-      assertTrue(clone.getTexte().equals(av1.getTexte()));
-      assertTrue(clone.getItem().equals(av1.getItem()));
-      assertTrue(clone.getFichier().equals(av1.getFichier()));
-      // assertTrue(clone.getStream().equals(av1.getStream()));
-      final byte[] buffer = new byte[8192];
-      final byte[] buffer2 = new byte[8192];
-      while((clone.getStream().read(buffer)) > 0){
-         av1.getStream().read(buffer2);
-         Assert.assertArrayEquals(buffer, buffer2);
-      }
-      assertTrue(clone.getBanque().equals(av1.getBanque()));
+	@Test
+	public void testFindByObjectIdAndEntite() {
+		List<AnnotationValeur> vals = annotationValeurDao.findByObjectIdAndEntite(new Integer(1),
+				entiteDao.findByNom("Echantillon").get(0));
+		assertTrue(vals.size() == 6);
 
-      av1.setFichier(null);
-      clone = av1.clone();
-      assertNull(clone.getFichier());
-   }
+		vals = annotationValeurDao.findByObjectIdAndEntite(new Integer(1), entiteDao.findByNom("Patient").get(0));
+		assertTrue(vals.size() == 1);
 
-   @Test
-public void testFindByObjectIdAndEntite(){
-      List<AnnotationValeur> vals =
-         annotationValeurDao.findByObjectIdAndEntite(new Integer(1), entiteDao.findByNom("Echantillon").get(0));
-      assertTrue(vals.size() == 6);
+		vals = annotationValeurDao.findByObjectIdAndEntite(new Integer(3), entiteDao.findByNom("Echantillon").get(0));
+		assertTrue(vals.size() == 0);
+	}
 
-      vals = annotationValeurDao.findByObjectIdAndEntite(new Integer(1), entiteDao.findByNom("Patient").get(0));
-      assertTrue(vals.size() == 1);
+	@Test
+	public void testFormateAnnotationValeur() {
+		final AnnotationValeur av1 = annotationValeurDao.findById(1).get();
+		assertTrue(av1.formateAnnotationValeur().equals("AlphanumValue1"));
 
-      vals = annotationValeurDao.findByObjectIdAndEntite(new Integer(3), entiteDao.findByNom("Echantillon").get(0));
-      assertTrue(vals.size() == 0);
-   }
+		final AnnotationValeur av7 = annotationValeurDao.findById(7).get();
+		assertTrue(av7.formateAnnotationValeur().equals("textVal1"));
 
-   @Test
-public void testFormateAnnotationValeur(){
-      final AnnotationValeur av1 = annotationValeurDao.findById(1);
-      assertTrue(av1.formateAnnotationValeur().equals("AlphanumValue1"));
+		final AnnotationValeur av11 = annotationValeurDao.findById(11).get();
+		assertTrue(av11.formateAnnotationValeur().equals("http://google.com"));
 
-      final AnnotationValeur av7 = annotationValeurDao.findById(7);
-      assertTrue(av7.formateAnnotationValeur().equals("textVal1"));
+		final AnnotationValeur av5 = annotationValeurDao.findById(5).get();
+		assertTrue(av5.formateAnnotationValeur().equals("12/12/2002 10:00"));
 
-      final AnnotationValeur av11 = annotationValeurDao.findById(11);
-      assertTrue(av11.formateAnnotationValeur().equals("http://google.com"));
+		final AnnotationValeur av4 = annotationValeurDao.findById(4).get();
+		assertTrue(av4.formateAnnotationValeur().equals("Oui"));
 
-      final AnnotationValeur av5 = annotationValeurDao.findById(5);
-      assertTrue(av5.formateAnnotationValeur().equals("12/12/2002 10:00"));
+		final AnnotationValeur av8 = annotationValeurDao.findById(8).get();
+		assertTrue(av8.formateAnnotationValeur().equals("item1-1"));
 
-      final AnnotationValeur av4 = annotationValeurDao.findById(4);
-      assertTrue(av4.formateAnnotationValeur().equals("Oui"));
+		// @since 2.1 teste nom fichier
+		final AnnotationValeur av10 = annotationValeurDao.findById(10).get();
+		assertTrue(av10.formateAnnotationValeur().equals("nom1"));
+	}
 
-      final AnnotationValeur av8 = annotationValeurDao.findById(8);
-      assertTrue(av8.formateAnnotationValeur().equals("item1-1"));
+	@Test
+	public void testFindCountByItem() {
+		Item i = itemDao.findById(5).get();
+		List<Long> count = annotationValeurDao.findCountByItem(i);
+		assertTrue(count.get(0) == 1);
+		i = itemDao.findById(2).get();
+		count = annotationValeurDao.findCountByItem(i);
+		assertTrue(count.get(0) == 0);
+	}
 
-      // @since 2.1 teste nom fichier
-      final AnnotationValeur av10 = annotationValeurDao.findById(10);
-      assertTrue(av10.formateAnnotationValeur().equals("nom1"));
-   }
+	@Test
+	public void testFindCountByTableAnnotationBanque() {
+		final TableAnnotation t3 = tableAnnotationDao.findById(3).get();
+		final Banque b1 = banqueDao.findById(1).get();
+		List<Long> count = annotationValeurDao.findCountByTableAnnotationBanque(t3, b1);
+		assertTrue(count.get(0) == 3);
+		final Banque b2 = banqueDao.findById(2).get();
+		count = annotationValeurDao.findCountByTableAnnotationBanque(t3, b2);
+		assertTrue(count.get(0) == 2);
+		final TableAnnotation t5 = tableAnnotationDao.findById(5).get();
+		count = annotationValeurDao.findCountByTableAnnotationBanque(t5, b2);
+		assertTrue(count.get(0) == 0);
+		count = annotationValeurDao.findCountByTableAnnotationBanque(t5, b1);
+		assertTrue(count.get(0) == 3);
+		count = annotationValeurDao.findCountByTableAnnotationBanque(t5, null);
+		assertTrue(count.get(0) == 0);
+		count = annotationValeurDao.findCountByTableAnnotationBanque(null, b1);
+		assertTrue(count.get(0) == 0);
 
-   @Test
-public void testFindCountByItem(){
-      Item i = itemDao.findById(5);
-      List<Long> count = annotationValeurDao.findCountByItem(i);
-      assertTrue(count.get(0) == 1);
-      i = itemDao.findById(2);
-      count = annotationValeurDao.findCountByItem(i);
-      assertTrue(count.get(0) == 0);
-   }
+	}
 
-   @Test
-public void testFindCountByTableAnnotationBanque(){
-      final TableAnnotation t3 = tableAnnotationDao.findById(3);
-      final Banque b1 = banqueDao.findById(1);
-      List<Long> count = annotationValeurDao.findCountByTableAnnotationBanque(t3, b1);
-      assertTrue(count.get(0) == 3);
-      final Banque b2 = banqueDao.findById(2);
-      count = annotationValeurDao.findCountByTableAnnotationBanque(t3, b2);
-      assertTrue(count.get(0) == 2);
-      final TableAnnotation t5 = tableAnnotationDao.findById(5);
-      count = annotationValeurDao.findCountByTableAnnotationBanque(t5, b2);
-      assertTrue(count.get(0) == 0);
-      count = annotationValeurDao.findCountByTableAnnotationBanque(t5, b1);
-      assertTrue(count.get(0) == 3);
-      count = annotationValeurDao.findCountByTableAnnotationBanque(t5, null);
-      assertTrue(count.get(0) == 0);
-      count = annotationValeurDao.findCountByTableAnnotationBanque(null, b1);
-      assertTrue(count.get(0) == 0);
+	@Test
+	public void testGetValeur() throws ParseException {
+		final AnnotationValeur av = new AnnotationValeur();
+		final DataType type = new DataType();
+		final ChampAnnotation chp = new ChampAnnotation();
+		av.setChampAnnotation(chp);
+		chp.setDataType(type);
 
-   }
+		av.setAlphanum("test2");
+		av.setBool(true);
+		final Calendar cal = Calendar.getInstance();
+		cal.setTime(new SimpleDateFormat("dd/MM/yyyy").parse("22/01/1987"));
+		av.setDate(cal);
+		av.setTexte("texte");
+		final Fichier file = new Fichier();
+		file.setNom("file1");
+		av.setFichier(file);
+		final Item i = new Item();
+		i.setLabel("ite1");
+		av.setItem(i);
 
-   @Test
-public void testGetValeur() throws ParseException{
-      final AnnotationValeur av = new AnnotationValeur();
-      final DataType type = new DataType();
-      final ChampAnnotation chp = new ChampAnnotation();
-      av.setChampAnnotation(chp);
-      chp.setDataType(type);
-
-      av.setAlphanum("test2");
-      av.setBool(true);
-      final Calendar cal = Calendar.getInstance();
-      cal.setTime(new SimpleDateFormat("dd/MM/yyyy").parse("22/01/1987"));
-      av.setDate(cal);
-      av.setTexte("texte");
-      final Fichier file = new Fichier();
-      file.setNom("file1");
-      av.setFichier(file);
-      final Item i = new Item();
-      i.setLabel("ite1");
-      av.setItem(i);
-
-      type.setType("alphanum");
-      assertTrue(av.getValeur().equals("test2"));
-      type.setType("boolean");
-      assertTrue((Boolean) av.getValeur());
-      type.setType("date");
-      assertTrue(av.getValeur().equals(cal));
-      av.setAlphanum("12.33");
-      type.setType("num");
-      assertTrue(av.getValeur().equals(12.33));
-      type.setType("texte");
-      assertTrue(av.getValeur().equals("texte"));
-      type.setType("thesaurus");
-      assertTrue(av.getValeur().equals("ite1"));
-      type.setType("fichier");
-      assertTrue(av.getValeur().equals("file1"));
-      av.setAlphanum("test3");
-      type.setType("hyperlien");
-      assertTrue(av.getValeur().equals("test3"));
-      type.setType("thesaurusM");
-      assertTrue(av.getValeur().equals("ite1"));
-      type.setType("other");
-      assertNull(av.getValeur());
-   }
+		type.setType("alphanum");
+		assertTrue(av.getValeur().equals("test2"));
+		type.setType("boolean");
+		assertTrue((Boolean) av.getValeur());
+		type.setType("date");
+		assertTrue(av.getValeur().equals(cal));
+		av.setAlphanum("12.33");
+		type.setType("num");
+		assertTrue(av.getValeur().equals(12.33));
+		type.setType("texte");
+		assertTrue(av.getValeur().equals("texte"));
+		type.setType("thesaurus");
+		assertTrue(av.getValeur().equals("ite1"));
+		type.setType("fichier");
+		assertTrue(av.getValeur().equals("file1"));
+		av.setAlphanum("test3");
+		type.setType("hyperlien");
+		assertTrue(av.getValeur().equals("test3"));
+		type.setType("thesaurusM");
+		assertTrue(av.getValeur().equals("ite1"));
+		type.setType("other");
+		assertNull(av.getValeur());
+	}
 
 }

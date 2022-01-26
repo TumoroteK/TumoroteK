@@ -37,115 +37,113 @@ package fr.aphp.tumorotek.dao.test.coeur.annotation;
 
 import java.util.List;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+
 import fr.aphp.tumorotek.dao.annotation.CatalogueDao;
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
+import fr.aphp.tumorotek.dao.test.Config;
 import fr.aphp.tumorotek.model.coeur.annotation.Catalogue;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Categorie;
 
 /**
  *
- * Classe de test pour le DAO CatalogueDao et le
- * bean du domaine Catalogue.
+ * Classe de test pour le DAO CatalogueDao et le bean du domaine Catalogue.
  * Classe de test créée le 18/03/10.
  *
  * @author Mathieu BARTHELEMY
  * @version 2.0
  *
  */
-public class CatalogueDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class CatalogueDaoTest extends AbstractDaoTest {
 
-   @Autowired
- CatalogueDao catalogueDao;
-   @Autowired
- BanqueDao banqueDao;
+	@Autowired
 
-   /**
-    * Constructeur.
-    */
-   public CatalogueDaoTest(){}
+	CatalogueDao catalogueDao;
 
-   @Test
-public void setCatalogueDao(final CatalogueDao cDao){
-      this.catalogueDao = cDao;
-   }
+	@Autowired
+	BanqueDao banqueDao;
 
-   @Test
-public void setBanqueDao(final BanqueDao bDao){
-      this.banqueDao = bDao;
-   }
+	@Test
+	public void testFindNoms() {
+		final List<String> noms = catalogueDao.findNoms();
+		assertTrue(noms.size() == 4);
+		assertTrue(noms.get(1).equals("INCa"));
+		assertTrue(noms.get(2).equals("INCa-Tabac"));
+		assertTrue(noms.get(3).equals("TVGSO"));
+	}
 
-   @Test
-public void testFindNoms(){
-      final List<String> noms = catalogueDao.findNoms();
-      assertTrue(noms.size() == 4);
-      assertTrue(noms.get(1).equals("INCa"));
-      assertTrue(noms.get(2).equals("INCa-Tabac"));
-      assertTrue(noms.get(3).equals("TVGSO"));
-   }
+	@Test
+	public void testToString() {
+		Catalogue c1 = catalogueDao.findById(1).get();
+		assertTrue(c1.toString().equals("{" + c1.getNom() + "}"));
 
-   @Test
-public void testToString(){
-      Catalogue c1 = catalogueDao.findById(1);
-      assertTrue(c1.toString().equals("{" + c1.getNom() + "}"));
+		c1 = new Catalogue();
+		assertTrue(c1.toString().equals("{Empty Catalogue}"));
+	}
 
-      c1 = new Catalogue();
-      assertTrue(c1.toString().equals("{Empty Catalogue}"));
-   }
+	@Test
+	public void testFindByAssignedBanque() {
+		final Banque b1 = banqueDao.findById(1).get();
+		List<Catalogue> catas = catalogueDao.findByAssignedBanque(b1);
+		assertTrue(catas.size() == 2);
+		assertTrue(catas.get(0).getNom().equals("INCa"));
+		final Banque b2 = banqueDao.findById(2).get();
+		catas = catalogueDao.findByAssignedBanque(b2);
+		assertTrue(catas.size() == 1);
+		assertTrue(catas.get(0).getNom().equals("INCa"));
+		final Banque b4 = banqueDao.findById(4).get();
+		catas = catalogueDao.findByAssignedBanque(b4);
+		assertTrue(catas.size() == 0);
+	}
 
-   @Test
-public void testFindByAssignedBanque(){
-      final Banque b1 = banqueDao.findById(1);
-      List<Catalogue> catas = catalogueDao.findByAssignedBanque(b1);
-      assertTrue(catas.size() == 2);
-      assertTrue(catas.get(0).getNom().equals("INCa"));
-      final Banque b2 = banqueDao.findById(2);
-      catas = catalogueDao.findByAssignedBanque(b2);
-      assertTrue(catas.size() == 1);
-      assertTrue(catas.get(0).getNom().equals("INCa"));
-      final Banque b4 = banqueDao.findById(4);
-      catas = catalogueDao.findByAssignedBanque(b4);
-      assertTrue(catas.size() == 0);
-   }
+	/**
+	 * Test des méthodes surchargées "equals" et hashcode.
+	 */
+	@Test
+	public void testEqualsAndHashCode() {
+		final Catalogue c1 = new Catalogue();
+		final Catalogue c2 = new Catalogue();
+		assertFalse(c1.equals(null));
+		assertNotNull(c2);
+		assertTrue(c1.equals(c1));
+		assertTrue(c1.equals(c2));
+		assertTrue(c1.hashCode() == c2.hashCode());
 
-   /**
-    * Test des méthodes surchargées "equals" et hashcode.
-    */
-   @Test
-public void testEqualsAndHashCode(){
-      final Catalogue c1 = new Catalogue();
-      final Catalogue c2 = new Catalogue();
-      assertFalse(c1.equals(null));
-      assertNotNull(c2);
-      assertTrue(c1.equals(c1));
-      assertTrue(c1.equals(c2));
-      assertTrue(c1.hashCode() == c2.hashCode());
+		final String s1 = "cata1";
+		final String s2 = "cata2";
+		final String s3 = new String("cata2");
 
-      final String s1 = "cata1";
-      final String s2 = "cata2";
-      final String s3 = new String("cata2");
+		c1.setNom(s1);
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
+		assertTrue(c1.hashCode() != c2.hashCode());
+		c2.setNom(s2);
+		assertFalse(c1.equals(c2));
+		assertFalse(c2.equals(c1));
+		assertTrue(c1.hashCode() != c2.hashCode());
+		c1.setNom(s2);
+		assertTrue(c1.equals(c2));
+		assertTrue(c2.equals(c1));
+		assertTrue(c1.hashCode() == c2.hashCode());
+		c1.setNom(s3);
+		assertTrue(c1.equals(c2));
+		assertTrue(c2.equals(c1));
+		assertTrue(c1.hashCode() == c2.hashCode());
 
-      c1.setNom(s1);
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
-      assertTrue(c1.hashCode() != c2.hashCode());
-      c2.setNom(s2);
-      assertFalse(c1.equals(c2));
-      assertFalse(c2.equals(c1));
-      assertTrue(c1.hashCode() != c2.hashCode());
-      c1.setNom(s2);
-      assertTrue(c1.equals(c2));
-      assertTrue(c2.equals(c1));
-      assertTrue(c1.hashCode() == c2.hashCode());
-      c1.setNom(s3);
-      assertTrue(c1.equals(c2));
-      assertTrue(c2.equals(c1));
-      assertTrue(c1.hashCode() == c2.hashCode());
-
-      // dummy
-      final Categorie c = new Categorie();
-      assertFalse(c1.equals(c));
-   }
+		// dummy
+		final Categorie c = new Categorie();
+		assertFalse(c1.equals(c));
+	}
 }

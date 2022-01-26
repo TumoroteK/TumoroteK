@@ -37,133 +37,126 @@ package fr.aphp.tumorotek.dao.test.coeur.annotation;
 
 import java.util.List;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+
 import fr.aphp.tumorotek.dao.annotation.DataTypeDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
+import fr.aphp.tumorotek.dao.test.Config;
 import fr.aphp.tumorotek.model.coeur.annotation.DataType;
 import fr.aphp.tumorotek.model.contexte.Categorie;
 
 /**
  *
- * Classe de test pour le DAO DataTypeDao et le
- * bean du domaine DataType.
- * Classe de test créée le 26/11/09.
+ * Classe de test pour le DAO DataTypeDao et le bean du domaine DataType. Classe
+ * de test créée le 26/11/09.
  *
  * @author Maxime GOUSSEAU
  * @version 2.0
  *
  */
-public class DataTypeDaoTest extends AbstractDaoTest
-{
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class DataTypeDaoTest extends AbstractDaoTest {
 
-   /** Beans Dao. */
-   @Autowired
- DataTypeDao dataTypeDao;
+	@Autowired
+	DataTypeDao dataTypeDao;
 
-   /**
-    * Constructeur.
-    */
-   public DataTypeDaoTest(){}
+	@Test
+	public void testToString() {
+		DataType dt1 = dataTypeDao.findById(1).get();
+		assertTrue(dt1.toString().equals("{" + dt1.getType() + "}"));
 
-   /**
-    * Setter du bean Dao.
-    * @param dtDao est le bean Dao.
-    */
-   @Test
-public void setDataTypeDao(final DataTypeDao dtDao){
-      this.dataTypeDao = dtDao;
-   }
+		dt1 = new DataType();
+		assertTrue(dt1.toString().equals("{Empty DataType}"));
+	}
 
-   /**
-    * Test l'appel de la méthode toString().
-    */
-   @Test
-public void testToString(){
-      DataType dt1 = dataTypeDao.findById(1);
-      assertTrue(dt1.toString().equals("{" + dt1.getType() + "}"));
+	@Test
+	public void testFindByType() {
+		List<DataType> dataTypes = dataTypeDao.findByType("alphanum");
+		assertTrue(dataTypes.size() == 1);
+		dataTypes = dataTypeDao.findByType("toto");
+		assertTrue(dataTypes.size() == 0);
+		dataTypes = dataTypeDao.findByType("date");
+		assertTrue(dataTypes.size() == 1);
+		dataTypes = dataTypeDao.findByType("boolean");
+		assertTrue(dataTypes.size() == 1);
+		dataTypes = dataTypeDao.findByTypes(null);
+		assertTrue(dataTypes.size() == 0);
+	}
 
-      dt1 = new DataType();
-      assertTrue(dt1.toString().equals("{Empty DataType}"));
-   }
+	/**
+	 * Test des méthodes surchargées "equals" et hashcode.
+	 */
+	@Test
+	public void testEqualsAndHashCode() {
+		final DataType dt1 = new DataType();
+		final DataType dt2 = new DataType();
+		assertFalse(dt1.equals(null));
+		assertNotNull(dt2);
+		assertTrue(dt1.equals(dt1));
+		assertTrue(dt1.equals(dt2));
+		assertTrue(dt1.hashCode() == dt2.hashCode());
 
-   @Test
-public void testFindByType(){
-      List<DataType> dataTypes = dataTypeDao.findByType("alphanum");
-      assertTrue(dataTypes.size() == 1);
-      dataTypes = dataTypeDao.findByType("toto");
-      assertTrue(dataTypes.size() == 0);
-      dataTypes = dataTypeDao.findByType("date");
-      assertTrue(dataTypes.size() == 1);
-      dataTypes = dataTypeDao.findByType("boolean");
-      assertTrue(dataTypes.size() == 1);
-      dataTypes = dataTypeDao.findByTypes(null);
-      assertTrue(dataTypes.size() == 0);
-   }
+		final String s1 = "type1";
+		final String s2 = "type2";
+		final String s3 = new String("type2");
 
-   /**
-    * Test des méthodes surchargées "equals" et hashcode.
-    */
-   @Test
-public void testEqualsAndHashCode(){
-      final DataType dt1 = new DataType();
-      final DataType dt2 = new DataType();
-      assertFalse(dt1.equals(null));
-      assertNotNull(dt2);
-      assertTrue(dt1.equals(dt1));
-      assertTrue(dt1.equals(dt2));
-      assertTrue(dt1.hashCode() == dt2.hashCode());
+		dt1.setType(s1);
+		assertFalse(dt1.equals(dt2));
+		assertFalse(dt2.equals(dt1));
+		assertTrue(dt1.hashCode() != dt2.hashCode());
+		dt2.setType(s2);
+		assertFalse(dt1.equals(dt2));
+		assertFalse(dt2.equals(dt1));
+		assertTrue(dt1.hashCode() != dt2.hashCode());
+		dt1.setType(s2);
+		assertTrue(dt1.equals(dt2));
+		assertTrue(dt2.equals(dt1));
+		assertTrue(dt1.hashCode() == dt2.hashCode());
+		dt1.setType(s3);
+		assertTrue(dt1.equals(dt2));
+		assertTrue(dt2.equals(dt1));
+		assertTrue(dt1.hashCode() == dt2.hashCode());
 
-      final String s1 = "type1";
-      final String s2 = "type2";
-      final String s3 = new String("type2");
+		// dummy
+		final Categorie c = new Categorie();
+		assertFalse(dt1.equals(c));
+	}
 
-      dt1.setType(s1);
-      assertFalse(dt1.equals(dt2));
-      assertFalse(dt2.equals(dt1));
-      assertTrue(dt1.hashCode() != dt2.hashCode());
-      dt2.setType(s2);
-      assertFalse(dt1.equals(dt2));
-      assertFalse(dt2.equals(dt1));
-      assertTrue(dt1.hashCode() != dt2.hashCode());
-      dt1.setType(s2);
-      assertTrue(dt1.equals(dt2));
-      assertTrue(dt2.equals(dt1));
-      assertTrue(dt1.hashCode() == dt2.hashCode());
-      dt1.setType(s3);
-      assertTrue(dt1.equals(dt2));
-      assertTrue(dt2.equals(dt1));
-      assertTrue(dt1.hashCode() == dt2.hashCode());
-
-      // dummy
-      final Categorie c = new Categorie();
-      assertFalse(dt1.equals(c));
-   }
-
-   //	/**
-   //	 * Test de la méthode surchargée "hashcode".
-   //	 * @throws ParseException 
-   //	 */
-   //	@Test
-public void testHashCode() throws ParseException {
-   //
-   //		DataType dt1 = new DataType();
-   //		dt1.setDataTypeId(1);
-   //		DataType dt2 = new DataType();
-   //		dt2.setDataTypeId(2);
-   //		DataType dt3 = new DataType();
-   //		dt3.setDataTypeId(3);
-   //		
-   //		assertTrue(dt1.hashCode() == dt2.hashCode());
-   //		assertTrue(dt2.hashCode() == dt3.hashCode());
-   //		assertTrue(dt3.hashCode() > 0);
-   //		
-   //		int hash = dt1.hashCode();
-   //		// 2 objets égaux ont le même hashcode
-   //		assertTrue(dt1.hashCode() == dt2.hashCode());
-   //		// un même objet garde le même hashcode dans le temps
-   //		assertTrue(hash == dt1.hashCode());
-   //		assertTrue(hash == dt1.hashCode());
-   //		assertTrue(hash == dt1.hashCode());
-   //		assertTrue(hash == dt1.hashCode());
-   //	}
+	// /**
+	// * Test de la méthode surchargée "hashcode".
+	// * @throws ParseException
+	// */
+	// @Test
+	// public void testHashCode() throws ParseException {
+	//
+	// DataType dt1 = new DataType();
+	// dt1.setDataTypeId(1);
+	// DataType dt2 = new DataType();
+	// dt2.setDataTypeId(2);
+	// DataType dt3 = new DataType();
+	// dt3.setDataTypeId(3);
+	//
+	// assertTrue(dt1.hashCode() == dt2.hashCode());
+	// assertTrue(dt2.hashCode() == dt3.hashCode());
+	// assertTrue(dt3.hashCode() > 0);
+	//
+	// int hash = dt1.hashCode();
+	// // 2 objets égaux ont le même hashcode
+	// assertTrue(dt1.hashCode() == dt2.hashCode());
+	// // un même objet garde le même hashcode dans le temps
+	// assertTrue(hash == dt1.hashCode());
+	// assertTrue(hash == dt1.hashCode());
+	// assertTrue(hash == dt1.hashCode());
+	// assertTrue(hash == dt1.hashCode());
+	// }
 
 }
