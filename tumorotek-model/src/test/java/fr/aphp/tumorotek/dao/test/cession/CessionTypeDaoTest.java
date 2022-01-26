@@ -42,15 +42,12 @@ import org.apache.commons.collections4.IterableUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import fr.aphp.tumorotek.dao.test.Config;
-
-
 
 import fr.aphp.tumorotek.dao.cession.CessionTypeDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
@@ -59,176 +56,156 @@ import fr.aphp.tumorotek.model.contexte.Categorie;
 
 /**
  *
- * Classe de test pour le DAO CessionTypeDao et le bean
- * du domaine CessionType.
+ * Classe de test pour le DAO CessionTypeDao et le bean du domaine CessionType.
  *
  * @author Pierre Ventadour.
- * @version 25/01/2010
+ * @version 2.3
  *
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {Config.class})
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
-public class CessionTypeDaoTest extends AbstractDaoTest
-{
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class CessionTypeDaoTest extends AbstractDaoTest {
 
+	@Autowired
+	CessionTypeDao cessionTypeDao;
 
-   @Autowired
- CessionTypeDao cessionTypeDao;
-   /** valeur du nom pour la maj. */
-   @Autowired
- final String updatedType = "Mis a jour";
+	final String updatedType = "Mis a jour";
 
-   /** Constructeur. */
-   public CessionTypeDaoTest(){
+	@Test
+	public void testReadAllCessionTypes() {
+		final List<CessionType> liste = IterableUtils.toList(cessionTypeDao.findAll());
+		assertTrue(liste.size() == 3);
+	}
 
-   }
+	@Test
+	public void testFindByOrder() {
+		final List<CessionType> liste = cessionTypeDao.findByOrder();
+		assertTrue(liste.size() == 3);
+		assertTrue(liste.get(0).getType().equals("Destruction"));
+	}
 
-   @Test
-public void setCessionTypeDao(final CessionTypeDao cDao){
-      this.cessionTypeDao = cDao;
-   }
+	/**
+	 * Test l'appel de la méthode findByExamen().
+	 */
+	@Test
+	public void testFindByExamen() {
+		List<CessionType> liste = cessionTypeDao.findByType("SANITAIRE");
+		assertTrue(liste.size() == 1);
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   @Test
-public void testReadAllCessionTypes(){
-      final List<CessionType> liste = IterableUtils.toList(cessionTypeDao.findAll());
-      assertTrue(liste.size() == 3);
-   }
+		liste = cessionTypeDao.findByType("SAN");
+		assertTrue(liste.size() == 0);
 
-   /**
-    * Test l'appel de la méthode findByOrder().
-    */
-   @Test
-public void testFindByOrder(){
-      final List<CessionType> liste = cessionTypeDao.findByOrder();
-      assertTrue(liste.size() == 3);
-      assertTrue(liste.get(0).getType().equals("Destruction"));
-   }
+		liste = cessionTypeDao.findByType("SAN%");
+		assertTrue(liste.size() == 1);
 
-   /**
-    * Test l'appel de la méthode findByExamen().
-    */
-   @Test
-public void testFindByExamen(){
-      List<CessionType> liste = cessionTypeDao.findByType("SANITAIRE");
-      assertTrue(liste.size() == 1);
+		liste = cessionTypeDao.findByType(null);
+		assertTrue(liste.size() == 0);
 
-      liste = cessionTypeDao.findByType("SAN");
-      assertTrue(liste.size() == 0);
+	}
 
-      liste = cessionTypeDao.findByType("SAN%");
-      assertTrue(liste.size() == 1);
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'un CessionType.
+	 * 
+	 * @throws Exception lance une exception en cas d'erreur.
+	 */
+	@Rollback(false)
+	@Test
+	public void testCrudCessionType() throws Exception {
 
-      liste = cessionTypeDao.findByType(null);
-      assertTrue(liste.size() == 0);
+		final CessionType ct = new CessionType();
 
-   }
+		ct.setType("TEST");
+		// Test de l'insertion
+		cessionTypeDao.save(ct);
+		assertEquals(new Integer(4), ct.getCessionTypeId());
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression d'un CessionType.
-    * @throws Exception lance une exception en cas d'erreur.
-    */
-   @Rollback(false)
-   @Test
-public void testCrudCessionType() throws Exception{
+		// Test de la mise à jour
+		final CessionType ct2 = cessionTypeDao.findById(new Integer(4)).get();
+		assertNotNull(ct2);
+		assertTrue(ct2.getType().equals("TEST"));
+		ct2.setType(updatedType);
+		cessionTypeDao.save(ct2);
+		assertTrue(cessionTypeDao.findById(new Integer(4)).get().getType().equals(updatedType));
 
-      final CessionType ct = new CessionType();
+		// Test de la délétion
+		cessionTypeDao.deleteById(new Integer(4));
+		assertFalse(cessionTypeDao.findById(new Integer(4)).isPresent());
 
-      ct.setType("TEST");
-      // Test de l'insertion
-      cessionTypeDao.save(ct);
-      assertEquals(new Integer(4), ct.getCessionTypeId());
+	}
 
-      // Test de la mise à jour
-      final CessionType ct2 = cessionTypeDao.findById(new Integer(4));
-      assertNotNull(ct2);
-      assertTrue(ct2.getType().equals("TEST"));
-      ct2.setType(updatedType);
-      cessionTypeDao.save(ct2);
-      assertTrue(cessionTypeDao.findById(new Integer(4)).getType().equals(updatedType));
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final String type = "TYPE";
+		final String type2 = "TYPE2";
+		final CessionType ct1 = new CessionType();
+		ct1.setType(type);
+		final CessionType ct2 = new CessionType();
+		ct2.setType(type);
 
-      // Test de la délétion
-      cessionTypeDao.deleteById(new Integer(4));
-      assertFalse(cessionTypeDao.findById(new Integer(4)).isPresent());
+		// L'objet 1 n'est pas égal à null
+		assertFalse(ct1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(ct1.equals(ct1));
+		// 2 objets sont égaux entre eux
+		assertTrue(ct1.equals(ct2));
+		assertTrue(ct2.equals(ct1));
 
-   }
+		// Vérification de la différenciation de 2 objets
+		ct2.setType(type2);
+		assertFalse(ct1.equals(ct2));
+		assertFalse(ct2.equals(ct1));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   @Test
-public void testEquals(){
-      final String type = "TYPE";
-      final String type2 = "TYPE2";
-      final CessionType ct1 = new CessionType();
-      ct1.setType(type);
-      final CessionType ct2 = new CessionType();
-      ct2.setType(type);
+		ct2.setType(null);
+		assertFalse(ct1.equals(ct2));
+		assertFalse(ct2.equals(ct1));
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(ct1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(ct1.equals(ct1));
-      // 2 objets sont égaux entre eux
-      assertTrue(ct1.equals(ct2));
-      assertTrue(ct2.equals(ct1));
+		ct1.setType(null);
+		assertTrue(ct1.equals(ct2));
+		ct2.setType(type);
+		assertFalse(ct1.equals(ct2));
 
-      // Vérification de la différenciation de 2 objets
-      ct2.setType(type2);
-      assertFalse(ct1.equals(ct2));
-      assertFalse(ct2.equals(ct1));
+		final Categorie c = new Categorie();
+		assertFalse(ct1.equals(c));
+	}
 
-      ct2.setType(null);
-      assertFalse(ct1.equals(ct2));
-      assertFalse(ct2.equals(ct1));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
+		final String type = "TYPE";
+		final CessionType ct1 = new CessionType();
+		ct1.setType(type);
+		final CessionType ct2 = new CessionType();
+		ct2.setType(type);
+		final CessionType ct3 = new CessionType();
+		ct3.setType(null);
+		assertTrue(ct3.hashCode() > 0);
 
-      ct1.setType(null);
-      assertTrue(ct1.equals(ct2));
-      ct2.setType(type);
-      assertFalse(ct1.equals(ct2));
+		final int hash = ct1.hashCode();
+		// 2 objets égaux ont le même hashcode
+		assertTrue(ct1.hashCode() == ct2.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		assertTrue(hash == ct1.hashCode());
+		assertTrue(hash == ct1.hashCode());
+		assertTrue(hash == ct1.hashCode());
+		assertTrue(hash == ct1.hashCode());
 
-      final Categorie c = new Categorie();
-      assertFalse(ct1.equals(c));
-   }
+	}
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   @Test
-public void testHashCode(){
-      final String type = "TYPE";
-      final CessionType ct1 = new CessionType();
-      ct1.setType(type);
-      final CessionType ct2 = new CessionType();
-      ct2.setType(type);
-      final CessionType ct3 = new CessionType();
-      ct3.setType(null);
-      assertTrue(ct3.hashCode() > 0);
+	/**
+	 * Test la méthode toString.
+	 */
+	@Test
+	public void testToString() {
+		final CessionType ct1 = cessionTypeDao.findById(1).get();
+		assertTrue(ct1.toString().equals("{" + ct1.getType() + "}"));
 
-      final int hash = ct1.hashCode();
-      // 2 objets égaux ont le même hashcode
-      assertTrue(ct1.hashCode() == ct2.hashCode());
-      // un même objet garde le même hashcode dans le temps
-      assertTrue(hash == ct1.hashCode());
-      assertTrue(hash == ct1.hashCode());
-      assertTrue(hash == ct1.hashCode());
-      assertTrue(hash == ct1.hashCode());
-
-   }
-
-   /**
-    * Test la méthode toString.
-    */
-   @Test
-public void testToString(){
-      final CessionType ct1 = cessionTypeDao.findById(1);
-      assertTrue(ct1.toString().equals("{" + ct1.getType() + "}"));
-
-      final CessionType ct2 = new CessionType();
-      assertTrue(ct2.toString().equals("{Empty CessionType}"));
-   }
-
+		final CessionType ct2 = new CessionType();
+		assertTrue(ct2.toString().equals("{Empty CessionType}"));
+	}
 }

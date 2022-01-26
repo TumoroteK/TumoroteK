@@ -37,20 +37,19 @@ package fr.aphp.tumorotek.dao.test.cession;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.test.annotation.Rollback;
 import org.apache.commons.collections4.IterableUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import fr.aphp.tumorotek.dao.test.Config;
-
-
 
 import fr.aphp.tumorotek.dao.cession.DestructionMotifDao;
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
@@ -62,217 +61,199 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
  *
- * Classe de test pour le DAO DestructionMotifDao et le bean
- * du domaine DestructionMotif.
+ * Classe de test pour le DAO DestructionMotifDao et le bean du domaine
+ * DestructionMotif.
  *
  * @author Pierre Ventadour.
- * @version 25/01/2010
+ * @version 2.3
  *
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {Config.class})
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
-public class DestructionMotifDaoTest extends AbstractDaoTest
-{
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class DestructionMotifDaoTest extends AbstractDaoTest {
 
+	@Autowired
+	DestructionMotifDao destructionMotifDao;
 
-   @Autowired
- DestructionMotifDao destructionMotifDao;
-   @Autowired
- PlateformeDao plateformeDao;
+	@Autowired
+	PlateformeDao plateformeDao;
 
-   @Autowired
- final String updatedMotif = "Mis a jour";
+	final String updatedMotif = "Mis a jour";
 
-   /** Constructeur. */
-   public DestructionMotifDaoTest(){
+	@Test
+	public void testReadAllDestructionMotifs() {
+		final List<DestructionMotif> liste = IterableUtils.toList(destructionMotifDao.findAll());
+		assertTrue(liste.size() == 3);
+	}
 
-   }
+	@Test
+	public void testFindByOrder() {
+		Plateforme pf = plateformeDao.findById(1).get();
+		List<? extends TKThesaurusObject> list = destructionMotifDao.findByPfOrder(pf);
+		assertTrue(list.size() == 2);
+		assertTrue(list.get(0).getNom().equals("INUTILISABLE"));
+		pf = plateformeDao.findById(2).get();
+		list = destructionMotifDao.findByPfOrder(pf);
+		assertTrue(list.size() == 1);
+		list = destructionMotifDao.findByPfOrder(null);
+		assertTrue(list.size() == 0);
+	}
 
-   @Test
-public void setDestructionMotifDao(final DestructionMotifDao dDao){
-      this.destructionMotifDao = dDao;
-   }
+	/**
+	 * Test l'appel de la méthode findByMotif().
+	 */
+	@Test
+	public void testFindByMotif() {
+		List<DestructionMotif> liste = destructionMotifDao.findByMotif("INUTILISABLE");
+		assertTrue(liste.size() == 1);
 
-   @Test
-public void setPlateformeDao(final PlateformeDao pDao){
-      this.plateformeDao = pDao;
-   }
+		liste = destructionMotifDao.findByMotif("INUTIL");
+		assertTrue(liste.size() == 0);
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   @Test
-public void testReadAllDestructionMotifs(){
-      final List<DestructionMotif> liste = IterableUtils.toList(destructionMotifDao.findAll());
-      assertTrue(liste.size() == 3);
-   }
+		liste = destructionMotifDao.findByMotif("INUTIL%");
+		assertTrue(liste.size() == 1);
 
-   @Test
-public void testFindByOrder(){
-      Plateforme pf = plateformeDao.findById(1);
-      List<? extends TKThesaurusObject> list = destructionMotifDao.findByPfOrder(pf);
-      assertTrue(list.size() == 2);
-      assertTrue(list.get(0).getNom().equals("INUTILISABLE"));
-      pf = plateformeDao.findById(2);
-      list = destructionMotifDao.findByPfOrder(pf);
-      assertTrue(list.size() == 1);
-      list = destructionMotifDao.findByPfOrder(null);
-      assertTrue(list.size() == 0);
-   }
+		liste = destructionMotifDao.findByMotif(null);
+		assertTrue(liste.size() == 0);
 
-   /**
-    * Test l'appel de la méthode findByMotif().
-    */
-   @Test
-public void testFindByMotif(){
-      List<DestructionMotif> liste = destructionMotifDao.findByMotif("INUTILISABLE");
-      assertTrue(liste.size() == 1);
+	}
 
-      liste = destructionMotifDao.findByMotif("INUTIL");
-      assertTrue(liste.size() == 0);
+	/**
+	 * Test l'appel de la méthode findByExcludedId().
+	 */
+	@Test
+	public void testFindByExcludedId() {
+		List<DestructionMotif> liste = destructionMotifDao.findByExcludedId(1);
+		assertTrue(liste.size() == 2);
+		final DestructionMotif motif = liste.get(0);
+		assertNotNull(motif);
+		assertTrue(motif.getId() == 2);
 
-      liste = destructionMotifDao.findByMotif("INUTIL%");
-      assertTrue(liste.size() == 1);
+		liste = destructionMotifDao.findByExcludedId(15);
+		assertTrue(liste.size() == 3);
+	}
 
-      liste = destructionMotifDao.findByMotif(null);
-      assertTrue(liste.size() == 0);
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'un DestructionMotif.
+	 * 
+	 * @throws Exception lance une exception en cas d'erreur.
+	 */
+	@Test
+	@Transactional
+	@Rollback(false)
+	public void testCrudDestructionMotif() throws Exception {
 
-   }
+		final DestructionMotif de = new DestructionMotif();
+		de.setPlateforme(plateformeDao.findById(1).get());
+		de.setNom("TEST");
+		// Test de l'insertion
+		destructionMotifDao.save(de);
+		assertEquals(new Integer(4), de.getId());
 
-   /**
-    * Test l'appel de la méthode findByExcludedId().
-    */
-   @Test
-public void testFindByExcludedId(){
-      List<DestructionMotif> liste = destructionMotifDao.findByExcludedId(1);
-      assertTrue(liste.size() == 2);
-      final DestructionMotif motif = liste.get(0);
-      assertNotNull(motif);
-      assertTrue(motif.getDestructionMotifId() == 2);
+		// Test de la mise à jour
+		final DestructionMotif de2 = destructionMotifDao.findById(new Integer(4)).get();
+		assertNotNull(de2);
+		assertTrue(de2.getNom().equals("TEST"));
+		de2.setNom(updatedMotif);
+		destructionMotifDao.save(de2);
+		assertTrue(destructionMotifDao.findById(new Integer(4)).get().getNom().equals(updatedMotif));
 
-      liste = destructionMotifDao.findByExcludedId(15);
-      assertTrue(liste.size() == 3);
-   }
+		// Test de la délétion
+		destructionMotifDao.deleteById(new Integer(4));
+		assertFalse(destructionMotifDao.findById(new Integer(4)).isPresent());
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression d'un DestructionMotif.
-    * @throws Exception lance une exception en cas d'erreur.
-    */
-   @Rollback(false)
-   @Test
-public void testCrudDestructionMotif() throws Exception{
+	}
 
-      final DestructionMotif de = new DestructionMotif();
-      de.setPlateforme(plateformeDao.findById(1));
-      de.setMotif("TEST");
-      // Test de l'insertion
-      destructionMotifDao.save(de);
-      assertEquals(new Integer(4), de.getDestructionMotifId());
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final String motif = "MOTIF";
+		final String motif2 = "MOTIF2";
+		final DestructionMotif de1 = new DestructionMotif();
+		de1.setNom(motif);
+		final DestructionMotif de2 = new DestructionMotif();
+		de2.setNom(motif);
 
-      // Test de la mise à jour
-      final DestructionMotif de2 = destructionMotifDao.findById(new Integer(4));
-      assertNotNull(de2);
-      assertTrue(de2.getMotif().equals("TEST"));
-      de2.setMotif(updatedMotif);
-      destructionMotifDao.save(de2);
-      assertTrue(destructionMotifDao.findById(new Integer(4)).getMotif().equals(updatedMotif));
+		// L'objet 1 n'est pas égal à null
+		assertFalse(de1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(de1.equals(de1));
+		// 2 objets sont égaux entre eux
+		assertTrue(de1.equals(de2));
+		assertTrue(de2.equals(de1));
 
-      // Test de la délétion
-      destructionMotifDao.deleteById(new Integer(4));
-      assertFalse(destructionMotifDao.findById(new Integer(4)).isPresent());
+		// Vérification de la différenciation de 2 objets
+		de2.setNom(motif2);
+		assertFalse(de1.equals(de2));
+		assertFalse(de2.equals(de1));
 
-   }
+		de2.setNom(null);
+		assertFalse(de1.equals(de2));
+		assertFalse(de2.equals(de1));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   @Test
-public void testEquals(){
-      final String motif = "MOTIF";
-      final String motif2 = "MOTIF2";
-      final DestructionMotif de1 = new DestructionMotif();
-      de1.setMotif(motif);
-      final DestructionMotif de2 = new DestructionMotif();
-      de2.setMotif(motif);
+		de1.setNom(null);
+		assertTrue(de1.equals(de2));
+		de2.setNom(motif);
+		assertFalse(de1.equals(de2));
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(de1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(de1.equals(de1));
-      // 2 objets sont égaux entre eux
-      assertTrue(de1.equals(de2));
-      assertTrue(de2.equals(de1));
+		final Plateforme pf1 = plateformeDao.findById(1).get();
+		final Plateforme pf2 = plateformeDao.findById(2).get();
+		de1.setNom(de2.getNom());
+		de1.setPlateforme(pf1);
+		de2.setPlateforme(pf1);
+		assertTrue(de1.equals(de2));
+		de2.setPlateforme(pf2);
+		assertFalse(de1.equals(de2));
 
-      // Vérification de la différenciation de 2 objets
-      de2.setMotif(motif2);
-      assertFalse(de1.equals(de2));
-      assertFalse(de2.equals(de1));
+		final Categorie c = new Categorie();
+		assertFalse(de1.equals(c));
+	}
 
-      de2.setMotif(null);
-      assertFalse(de1.equals(de2));
-      assertFalse(de2.equals(de1));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
+		final String motif = "MOTIF";
+		final DestructionMotif de1 = new DestructionMotif();
+		de1.setNom(motif);
+		final DestructionMotif de2 = new DestructionMotif();
+		de2.setNom(motif);
+		final DestructionMotif de3 = new DestructionMotif();
+		de3.setNom(null);
+		assertTrue(de3.hashCode() > 0);
 
-      de1.setMotif(null);
-      assertTrue(de1.equals(de2));
-      de2.setMotif(motif);
-      assertFalse(de1.equals(de2));
+		final Plateforme pf1 = plateformeDao.findById(1).get();
+		final Plateforme pf2 = plateformeDao.findById(2).get();
+		de1.setPlateforme(pf1);
+		de2.setPlateforme(pf1);
+		de3.setPlateforme(pf2);
 
-      final Plateforme pf1 = plateformeDao.findById(1);
-      final Plateforme pf2 = plateformeDao.findById(2);
-      de1.setMotif(de2.getMotif());
-      de1.setPlateforme(pf1);
-      de2.setPlateforme(pf1);
-      assertTrue(de1.equals(de2));
-      de2.setPlateforme(pf2);
-      assertFalse(de1.equals(de2));
+		final int hash = de1.hashCode();
+		// 2 objets égaux ont le même hashcode
+		assertTrue(de1.hashCode() == de2.hashCode());
+		assertFalse(de1.hashCode() == de3.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		assertTrue(hash == de1.hashCode());
+		assertTrue(hash == de1.hashCode());
+		assertTrue(hash == de1.hashCode());
+		assertTrue(hash == de1.hashCode());
 
-      final Categorie c = new Categorie();
-      assertFalse(de1.equals(c));
-   }
+	}
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   @Test
-public void testHashCode(){
-      final String motif = "MOTIF";
-      final DestructionMotif de1 = new DestructionMotif();
-      de1.setMotif(motif);
-      final DestructionMotif de2 = new DestructionMotif();
-      de2.setMotif(motif);
-      final DestructionMotif de3 = new DestructionMotif();
-      de3.setMotif(null);
-      assertTrue(de3.hashCode() > 0);
+	/**
+	 * Test la méthode toString.
+	 */
+	@Test
+	public void testToString() {
+		final DestructionMotif de1 = destructionMotifDao.findById(1).get();
+		assertTrue(de1.toString().equals("{" + de1.getNom() + "}"));
 
-      final Plateforme pf1 = plateformeDao.findById(1);
-      final Plateforme pf2 = plateformeDao.findById(2);
-      de1.setPlateforme(pf1);
-      de2.setPlateforme(pf1);
-      de3.setPlateforme(pf2);
-
-      final int hash = de1.hashCode();
-      // 2 objets égaux ont le même hashcode
-      assertTrue(de1.hashCode() == de2.hashCode());
-      assertFalse(de1.hashCode() == de3.hashCode());
-      // un même objet garde le même hashcode dans le temps
-      assertTrue(hash == de1.hashCode());
-      assertTrue(hash == de1.hashCode());
-      assertTrue(hash == de1.hashCode());
-      assertTrue(hash == de1.hashCode());
-
-   }
-
-   /**
-    * Test la méthode toString.
-    */
-   @Test
-public void testToString(){
-      final DestructionMotif de1 = destructionMotifDao.findById(1);
-      assertTrue(de1.toString().equals("{" + de1.getMotif() + "}"));
-
-      final DestructionMotif de2 = new DestructionMotif();
-      assertTrue(de2.toString().equals("{Empty DestructionMotif}"));
-   }
+		final DestructionMotif de2 = new DestructionMotif();
+		assertTrue(de2.toString().equals("{Empty DestructionMotif}"));
+	}
 
 }

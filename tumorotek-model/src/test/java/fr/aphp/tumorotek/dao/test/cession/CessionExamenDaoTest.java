@@ -37,19 +37,23 @@ package fr.aphp.tumorotek.dao.test.cession;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
+import org.springframework.test.annotation.Rollback;
+import org.apache.commons.collections4.IterableUtils;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
+import fr.aphp.tumorotek.dao.test.Config;
 
 import fr.aphp.tumorotek.dao.cession.CessionExamenDao;
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
-import fr.aphp.tumorotek.dao.test.Config;
 import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.cession.CessionExamen;
 import fr.aphp.tumorotek.model.contexte.Categorie;
@@ -57,241 +61,220 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
  *
- * Classe de test pour le DAO CessionExamenDao et le bean
- * du domaine CessionExamen.
+ * Classe de test pour le DAO CessionExamenDao et le bean du domaine
+ * CessionExamen.
  *
  * @author Pierre Ventadour.
- * @version 25/01/2010
+ * @version 2.3
  *
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {Config.class}) 
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
-public class CessionExamenDaoTest extends AbstractDaoTest
-{
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class CessionExamenDaoTest extends AbstractDaoTest {
 
-   @Autowired
-   @Autowired
- CessionExamenDao cessionExamenDao;
-   
-   @Autowired
-   @Autowired
- PlateformeDao plateformeDao;
+	@Autowired
+	CessionExamenDao cessionExamenDao;
 
-   /** valeur du nom pour la maj. */
-   @Autowired
- final String updatedExamen = "Mis a jour";
+	@Autowired
+	PlateformeDao plateformeDao;
 
-   /** Constructeur. */
-   public CessionExamenDaoTest(){
+	final String updatedExamen = "Mis a jour";
 
-   }
+	@Test
+	public void testReadAllCessionExamens() {
+		final List<CessionExamen> qualites = IterableUtils.toList(cessionExamenDao.findAll());
+		assertTrue(qualites.size() == 4);
+	}
 
-   @Test
-public void setCessionExamenDao(final CessionExamenDao cDao){
-      this.cessionExamenDao = cDao;
-   }
+	@Test
+	public void testFindByOrder() {
+		Plateforme pf = plateformeDao.findById(1).get();
+		List<? extends TKThesaurusObject> list = cessionExamenDao.findByPfOrder(pf);
+		assertTrue(list.size() == 3);
+		assertTrue(list.get(0).getNom().equals("ANALYSE 1"));
+		pf = plateformeDao.findById(2).get();
+		list = cessionExamenDao.findByPfOrder(pf);
+		assertTrue(list.size() == 1);
+		list = cessionExamenDao.findByPfOrder(null);
+		assertTrue(list.size() == 0);
+	}
 
-   @Test
-public void setPlateformeDao(final PlateformeDao pDao){
-      this.plateformeDao = pDao;
-   }
+	/**
+	 * Test l'appel de la méthode findByExamen().
+	 */
+	@Test
+	public void testFindByExamen() {
+		List<CessionExamen> liste = cessionExamenDao.findByExamen("ANALYSE 1");
+		assertTrue(liste.size() == 1);
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   @Test
-public void testReadAllCessionExamens(){
-      final List<CessionExamen> qualites = IterableUtils.toList(cessionExamenDao.findAll());
-      assertTrue(qualites.size() == 4);
-   }
+		liste = cessionExamenDao.findByExamen("ANALY");
+		assertTrue(liste.size() == 0);
 
-   @Test
-public void testFindByOrder(){
-      Plateforme pf = plateformeDao.findById(1);
-      List<? extends TKThesaurusObject> list = cessionExamenDao.findByPfOrder(pf);
-      assertTrue(list.size() == 3);
-      assertTrue(list.get(0).getNom().equals("ANALYSE 1"));
-      pf = plateformeDao.findById(2);
-      list = cessionExamenDao.findByPfOrder(pf);
-      assertTrue(list.size() == 1);
-      list = cessionExamenDao.findByPfOrder(null);
-      assertTrue(list.size() == 0);
-   }
+		liste = cessionExamenDao.findByExamen("ANALY%");
+		assertTrue(liste.size() == 2);
 
-   /**
-    * Test l'appel de la méthode findByExamen().
-    */
-   @Test
-public void testFindByExamen(){
-      List<CessionExamen> liste = cessionExamenDao.findByExamen("ANALYSE 1");
-      assertTrue(liste.size() == 1);
+		liste = cessionExamenDao.findByExamen(null);
+		assertTrue(liste.size() == 0);
 
-      liste = cessionExamenDao.findByExamen("ANALY");
-      assertTrue(liste.size() == 0);
+	}
 
-      liste = cessionExamenDao.findByExamen("ANALY%");
-      assertTrue(liste.size() == 2);
+	/**
+	 * Test l'appel de la méthode findByExamenEn().
+	 */
+	@Test
+	public void testFindByExamenEn() {
+		List<CessionExamen> liste = cessionExamenDao.findByExamenEn("ANALYSE_EN 1");
+		assertTrue(liste.size() == 1);
 
-      liste = cessionExamenDao.findByExamen(null);
-      assertTrue(liste.size() == 0);
+		liste = cessionExamenDao.findByExamenEn("ANALY");
+		assertTrue(liste.size() == 0);
 
-   }
+		liste = cessionExamenDao.findByExamenEn("ANALY%");
+		assertTrue(liste.size() == 2);
 
-   /**
-    * Test l'appel de la méthode findByExamenEn().
-    */
-   @Test
-public void testFindByExamenEn(){
-      List<CessionExamen> liste = cessionExamenDao.findByExamenEn("ANALYSE_EN 1");
-      assertTrue(liste.size() == 1);
+		liste = cessionExamenDao.findByExamenEn(null);
+		assertTrue(liste.size() == 0);
 
-      liste = cessionExamenDao.findByExamenEn("ANALY");
-      assertTrue(liste.size() == 0);
+	}
 
-      liste = cessionExamenDao.findByExamenEn("ANALY%");
-      assertTrue(liste.size() == 2);
+	/**
+	 * Test l'appel de la méthode findByExcludedId().
+	 */
+	@Test
+	public void testFindByExcludedId() {
+		List<CessionExamen> liste = cessionExamenDao.findByExcludedId(1);
+		assertTrue(liste.size() == 3);
+		final CessionExamen exam = liste.get(0);
+		assertNotNull(exam);
+		assertTrue(exam.getId() == 2);
 
-      liste = cessionExamenDao.findByExamenEn(null);
-      assertTrue(liste.size() == 0);
+		liste = cessionExamenDao.findByExcludedId(15);
+		assertTrue(liste.size() == 4);
+	}
 
-   }
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'un CessionExamen.
+	 * 
+	 * @throws Exception lance une exception en cas d'erreur.
+	 */
+	@Test
+	@Transactional
+	@Rollback(false)
+	public void testCrudCessionExamen() throws Exception {
 
-   /**
-    * Test l'appel de la méthode findByExcludedId().
-    */
-   @Test
-public void testFindByExcludedId(){
-      List<CessionExamen> liste = cessionExamenDao.findByExcludedId(1);
-      assertTrue(liste.size() == 3);
-      final CessionExamen exam = liste.get(0);
-      assertNotNull(exam);
-      assertTrue(exam.getId() == 2);
+		final CessionExamen ce = new CessionExamen();
 
-      liste = cessionExamenDao.findByExcludedId(15);
-      assertTrue(liste.size() == 4);
-   }
+		ce.setNom("TEST");
+		ce.setPlateforme(plateformeDao.findById(1).get());
+		// Test de l'insertion
+		cessionExamenDao.save(ce);
+		assertEquals(new Integer(5), ce.getId());
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression d'un CessionExamen.
-    * @throws Exception lance une exception en cas d'erreur.
-    */
-   @Rollback(false)
-   @Test
-public void testCrudCessionExamen() throws Exception{
+		// Test de la mise à jour
+		final CessionExamen ce2 = cessionExamenDao.findById(new Integer(5)).get();
+		assertNotNull(ce2);
+		assertTrue(ce2.getNom().equals("TEST"));
+		ce2.setNom(updatedExamen);
+		cessionExamenDao.save(ce2);
+		assertTrue(cessionExamenDao.findById(new Integer(5)).get().getNom().equals(updatedExamen));
 
-      final CessionExamen ce = new CessionExamen();
+		// Test de la délétion
+		cessionExamenDao.deleteById(new Integer(5));
+		assertFalse(cessionExamenDao.findById(new Integer(5)).isPresent());
 
-      ce.setNom("TEST");
-      ce.setPlateforme(plateformeDao.findById(1));
-      // Test de l'insertion
-      cessionExamenDao.save(ce);
-      assertEquals(new Integer(5), ce.getId());
+	}
 
-      // Test de la mise à jour
-      final CessionExamen ce2 = cessionExamenDao.findById(new Integer(5));
-      assertNotNull(ce2);
-      assertTrue(ce2.getNom().equals("TEST"));
-      ce2.setNom(updatedExamen);
-      cessionExamenDao.save(ce2);
-      assertTrue(cessionExamenDao.findById(new Integer(5)).getNom().equals(updatedExamen));
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final String exam = "EXAM";
+		final String exam2 = "EXAM2";
+		final CessionExamen ce1 = new CessionExamen();
+		ce1.setNom(exam);
+		final CessionExamen ce2 = new CessionExamen();
+		ce2.setNom(exam);
 
-      // Test de la délétion
-      cessionExamenDao.deleteById(new Integer(5));
-      assertFalse(cessionExamenDao.findById(new Integer(5)).isPresent());
+		// L'objet 1 n'est pas égal à null
+		assertFalse(ce1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(ce1.equals(ce1));
+		// 2 objets sont égaux entre eux
+		assertTrue(ce1.equals(ce2));
+		assertTrue(ce2.equals(ce1));
 
-   }
+		// Vérification de la différenciation de 2 objets
+		ce2.setNom(exam2);
+		assertFalse(ce1.equals(ce2));
+		assertFalse(ce2.equals(ce1));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   @Test
-public void testEquals(){
-      final String exam = "EXAM";
-      final String exam2 = "EXAM2";
-      final CessionExamen ce1 = new CessionExamen();
-      ce1.setNom(exam);
-      final CessionExamen ce2 = new CessionExamen();
-      ce2.setNom(exam);
+		ce2.setNom(null);
+		assertFalse(ce1.equals(ce2));
+		assertFalse(ce2.equals(ce1));
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(ce1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(ce1.equals(ce1));
-      // 2 objets sont égaux entre eux
-      assertTrue(ce1.equals(ce2));
-      assertTrue(ce2.equals(ce1));
+		ce1.setNom(null);
+		assertTrue(ce1.equals(ce2));
+		ce2.setNom(exam);
+		assertFalse(ce1.equals(ce2));
 
-      // Vérification de la différenciation de 2 objets
-      ce2.setNom(exam2);
-      assertFalse(ce1.equals(ce2));
-      assertFalse(ce2.equals(ce1));
+		final Plateforme pf1 = plateformeDao.findById(1).get();
+		final Plateforme pf2 = plateformeDao.findById(2).get();
+		ce1.setNom(ce2.getNom());
+		ce1.setPlateforme(pf1);
+		ce2.setPlateforme(pf1);
+		assertTrue(ce1.equals(ce2));
+		ce2.setPlateforme(pf2);
+		assertFalse(ce1.equals(ce2));
 
-      ce2.setNom(null);
-      assertFalse(ce1.equals(ce2));
-      assertFalse(ce2.equals(ce1));
+		final Categorie c = new Categorie();
+		assertFalse(ce1.equals(c));
+	}
 
-      ce1.setNom(null);
-      assertTrue(ce1.equals(ce2));
-      ce2.setNom(exam);
-      assertFalse(ce1.equals(ce2));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
+		final String exam = "Exam";
+		final CessionExamen ce1 = new CessionExamen();
+		ce1.setNom(exam);
+		final CessionExamen ce2 = new CessionExamen();
+		ce2.setNom(exam);
+		final CessionExamen ce3 = new CessionExamen();
+		ce3.setNom(null);
+		ce3.setExamenEn(null);
+		assertTrue(ce3.hashCode() > 0);
 
-      final Plateforme pf1 = plateformeDao.findById(1);
-      final Plateforme pf2 = plateformeDao.findById(2);
-      ce1.setNom(ce2.getNom());
-      ce1.setPlateforme(pf1);
-      ce2.setPlateforme(pf1);
-      assertTrue(ce1.equals(ce2));
-      ce2.setPlateforme(pf2);
-      assertFalse(ce1.equals(ce2));
+		final Plateforme pf1 = plateformeDao.findById(1).get();
+		final Plateforme pf2 = plateformeDao.findById(2).get();
+		ce1.setPlateforme(pf1);
+		ce2.setPlateforme(pf1);
+		ce3.setPlateforme(pf2);
 
-      final Categorie c = new Categorie();
-      assertFalse(ce1.equals(c));
-   }
+		final int hash = ce1.hashCode();
+		// 2 objets égaux ont le même hashcode
+		assertTrue(ce1.hashCode() == ce2.hashCode());
+		assertFalse(ce1.hashCode() == ce3.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		assertTrue(hash == ce1.hashCode());
+		assertTrue(hash == ce1.hashCode());
+		assertTrue(hash == ce1.hashCode());
+		assertTrue(hash == ce1.hashCode());
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   @Test
-public void testHashCode(){
-      final String exam = "Exam";
-      final CessionExamen ce1 = new CessionExamen();
-      ce1.setNom(exam);
-      final CessionExamen ce2 = new CessionExamen();
-      ce2.setNom(exam);
-      final CessionExamen ce3 = new CessionExamen();
-      ce3.setNom(null);
-      ce3.setExamenEn(null);
-      assertTrue(ce3.hashCode() > 0);
+	}
 
-      final Plateforme pf1 = plateformeDao.findById(1);
-      final Plateforme pf2 = plateformeDao.findById(2);
-      ce1.setPlateforme(pf1);
-      ce2.setPlateforme(pf1);
-      ce3.setPlateforme(pf2);
+	/**
+	 * Test la méthode toString.
+	 */
+	@Test
+	public void testToString() {
+		final CessionExamen ce1 = cessionExamenDao.findById(1).get();
+		assertTrue(ce1.toString().equals("{" + ce1.getNom() + "}"));
 
-      final int hash = ce1.hashCode();
-      // 2 objets égaux ont le même hashcode
-      assertTrue(ce1.hashCode() == ce2.hashCode());
-      assertFalse(ce1.hashCode() == ce3.hashCode());
-      // un même objet garde le même hashcode dans le temps
-      assertTrue(hash == ce1.hashCode());
-      assertTrue(hash == ce1.hashCode());
-      assertTrue(hash == ce1.hashCode());
-      assertTrue(hash == ce1.hashCode());
-
-   }
-
-   /**
-    * Test la méthode toString.
-    */
-   @Test
-public void testToString(){
-      final CessionExamen ce1 = cessionExamenDao.findById(1);
-      assertTrue(ce1.toString().equals("{" + ce1.getNom() + "}"));
-
-      final CessionExamen ce2 = new CessionExamen();
-      assertTrue(ce2.toString().equals("{Empty CessionExamen}"));
-   }
+		final CessionExamen ce2 = new CessionExamen();
+		assertTrue(ce2.toString().equals("{Empty CessionExamen}"));
+	}
 
 }

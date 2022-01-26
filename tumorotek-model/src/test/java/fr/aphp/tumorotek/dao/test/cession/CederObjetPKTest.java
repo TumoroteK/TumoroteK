@@ -37,19 +37,15 @@ package fr.aphp.tumorotek.dao.test.cession;
 
 import java.text.ParseException;
 
-import org.apache.commons.collections4.IterableUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import fr.aphp.tumorotek.dao.test.Config;
-
-
 
 import fr.aphp.tumorotek.dao.cession.CessionDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
@@ -64,180 +60,157 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  * Classe de test pour le bean du domaine CederObjetPK.
  *
  * @author Pierre Ventadour.
- * @version 25/01/2010
+ * @version 2.3
  *
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {Config.class})
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
-public class CederObjetPKTest extends AbstractDaoTest
-{
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class CederObjetPKTest extends AbstractDaoTest {
 
+	@Autowired
+	CessionDao cessionDao;
 
-   @Autowired
- CessionDao cessionDao;
+	@Autowired
+	EntiteDao entiteDao;
 
-   @Autowired
- EntiteDao entiteDao;
+	@Test
+	public void testEquals() throws ParseException {
+		final CederObjetPK pk1 = new CederObjetPK();
+		final CederObjetPK pk2 = new CederObjetPK();
 
-   /** Constructeur. */
-   public CederObjetPKTest(){
+		// L'objet 1 n'est pas égal à null
+		assertFalse(pk1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(pk1.equals(pk1));
 
-   }
+		/* null */
+		assertTrue(pk1.equals(pk2));
+		assertTrue(pk2.equals(pk1));
 
-   @Test
-public void setCessionDao(final CessionDao cDao){
-      this.cessionDao = cDao;
-   }
+		populateClefsToTestEqualsAndHashCode();
 
-   @Test
-public void setEntiteDao(final EntiteDao eDao){
-      this.entiteDao = eDao;
-   }
+		final Categorie c3 = new Categorie();
+		assertFalse(pk1.equals(c3));
+	}
 
-   /**
-    * Test de la méthode surchargée "equals".
-    * @throws ParseException 
-    */
-   @Test
-public void testEquals() throws ParseException{
-      final CederObjetPK pk1 = new CederObjetPK();
-      final CederObjetPK pk2 = new CederObjetPK();
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 * 
+	 * @throws ParseException
+	 */
+	@Test
+	public void testHashCode() throws ParseException {
+		final CederObjetPK pk1 = new CederObjetPK();
+		final CederObjetPK pk2 = new CederObjetPK();
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(pk1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(pk1.equals(pk1));
+		/* null */
+		assertTrue(pk1.hashCode() == pk2.hashCode());
 
-      /*null*/
-      assertTrue(pk1.equals(pk2));
-      assertTrue(pk2.equals(pk1));
+		populateClefsToTestEqualsAndHashCode();
 
-      populateClefsToTestEqualsAndHashCode();
+		// un même objet garde le même hashcode dans le temps
+		final int hash = pk1.hashCode();
+		assertTrue(hash == pk1.hashCode());
+		assertTrue(hash == pk1.hashCode());
+		assertTrue(hash == pk1.hashCode());
+		assertTrue(hash == pk1.hashCode());
+	}
 
-      final Categorie c3 = new Categorie();
-      assertFalse(pk1.equals(c3));
-   }
+	private void populateClefsToTestEqualsAndHashCode() throws ParseException {
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    * @throws ParseException 
-    */
-   @Test
-public void testHashCode() throws ParseException{
-      final CederObjetPK pk1 = new CederObjetPK();
-      final CederObjetPK pk2 = new CederObjetPK();
+		final Integer objetId1 = 1;
+		final Integer objetId2 = 2;
+		final Integer objetId3 = 1;
+		final Integer[] objetsId = new Integer[] { null, objetId1, objetId2, objetId3 };
+		final Cession c1 = cessionDao.findById(1).get();
+		final Cession c2 = cessionDao.findById(2).get();
+		final Cession c3 = cessionDao.findById(1).get();
+		final Cession[] cessions = new Cession[] { null, c1, c2, c3 };
+		final Entite e1 = entiteDao.findById(3).get();
+		final Entite e2 = entiteDao.findById(8).get();
+		final Entite e3 = entiteDao.findById(3).get();
+		final Entite[] entites = new Entite[] { null, e1, e2, e3 };
 
-      /*null*/
-      assertTrue(pk1.hashCode() == pk2.hashCode());
+		final CederObjetPK pk1 = new CederObjetPK();
+		final CederObjetPK pk2 = new CederObjetPK();
 
-      populateClefsToTestEqualsAndHashCode();
+		for (int i = 0; i < objetsId.length; i++) {
+			for (int j = 0; j < cessions.length; j++) {
+				for (int j2 = 0; j2 < entites.length; j2++) {
 
-      // un même objet garde le même hashcode dans le temps
-      final int hash = pk1.hashCode();
-      assertTrue(hash == pk1.hashCode());
-      assertTrue(hash == pk1.hashCode());
-      assertTrue(hash == pk1.hashCode());
-      assertTrue(hash == pk1.hashCode());
-   }
+					for (int k = 0; k < objetsId.length; k++) {
+						for (int l = 0; l < cessions.length; l++) {
+							for (int l2 = 0; l2 < entites.length; l2++) {
 
-   @Autowired
- void populateClefsToTestEqualsAndHashCode() throws ParseException{
+								pk1.setObjetId(objetsId[i]);
+								pk1.setCession(cessions[j]);
+								pk1.setEntite(entites[j2]);
 
-      final Integer objetId1 = 1;
-      final Integer objetId2 = 2;
-      final Integer objetId3 = 1;
-      final Integer[] objetsId = new Integer[] {null, objetId1, objetId2, objetId3};
-      final Cession c1 = cessionDao.findById(1);
-      final Cession c2 = cessionDao.findById(2);
-      final Cession c3 = cessionDao.findById(1);
-      final Cession[] cessions = new Cession[] {null, c1, c2, c3};
-      final Entite e1 = entiteDao.findById(3);
-      final Entite e2 = entiteDao.findById(8);
-      final Entite e3 = entiteDao.findById(3);
-      final Entite[] entites = new Entite[] {null, e1, e2, e3};
+								pk2.setObjetId(objetsId[k]);
+								pk2.setCession(cessions[l]);
+								pk2.setEntite(entites[l2]);
 
-      final CederObjetPK pk1 = new CederObjetPK();
-      final CederObjetPK pk2 = new CederObjetPK();
+								if (((i == k) || (i + k == 4)) && ((j == l) || (j + l == 4))
+										&& ((j2 == l2) || (j2 + l2 == 4))) {
+									assertTrue(pk1.equals(pk2));
+									assertTrue(pk1.hashCode() == pk2.hashCode());
+								} else {
+									assertFalse(pk1.equals(pk2));
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 
-      for(int i = 0; i < objetsId.length; i++){
-         for(int j = 0; j < cessions.length; j++){
-            for(int j2 = 0; j2 < entites.length; j2++){
+	}
 
-               for(int k = 0; k < objetsId.length; k++){
-                  for(int l = 0; l < cessions.length; l++){
-                     for(int l2 = 0; l2 < entites.length; l2++){
+	@Test
+	public void testToString() {
+		final Integer objetId1 = 1;
+		final Cession c1 = cessionDao.findById(1).get();
+		final Entite e1 = entiteDao.findById(3).get();
+		final CederObjetPK pk1 = new CederObjetPK();
+		pk1.setObjetId(objetId1);
+		pk1.setEntite(e1);
+		pk1.setCession(c1);
 
-                        pk1.setObjetId(objetsId[i]);
-                        pk1.setCession(cessions[j]);
-                        pk1.setEntite(entites[j2]);
+		assertTrue(pk1.toString().equals("{" + pk1.getCession().toString() + " (Cession), " + pk1.getEntite().toString()
+				+ " (Entite), " + pk1.getObjetId() + " (ObjetId)}"));
 
-                        pk2.setObjetId(objetsId[k]);
-                        pk2.setCession(cessions[l]);
-                        pk2.setEntite(entites[l2]);
+		pk1.setObjetId(null);
+		assertTrue(pk1.toString().equals("{Empty CederObjetPK}"));
+		pk1.setObjetId(objetId1);
 
-                        if(((i == k) || (i + k == 4)) && ((j == l) || (j + l == 4)) && ((j2 == l2) || (j2 + l2 == 4))){
-                           assertTrue(pk1.equals(pk2));
-                           assertTrue(pk1.hashCode() == pk2.hashCode());
-                        }else{
-                           assertFalse(pk1.equals(pk2));
-                        }
-                     }
-                  }
-               }
-            }
-         }
-      }
+		pk1.setEntite(null);
+		assertTrue(pk1.toString().equals("{Empty CederObjetPK}"));
+		pk1.setEntite(e1);
 
-   }
+		pk1.setCession(null);
+		assertTrue(pk1.toString().equals("{Empty CederObjetPK}"));
+		pk1.setCession(c1);
 
-   /**
-    * Test la méthode toString.
-    */
-   @Test
-public void testToString(){
-      final Integer objetId1 = 1;
-      final Cession c1 = cessionDao.findById(1);
-      final Entite e1 = entiteDao.findById(3);
-      final CederObjetPK pk1 = new CederObjetPK();
-      pk1.setObjetId(objetId1);
-      pk1.setEntite(e1);
-      pk1.setCession(c1);
+		pk1.setObjetId(null);
+		pk1.setEntite(null);
+		assertTrue(pk1.toString().equals("{Empty CederObjetPK}"));
+		pk1.setEntite(e1);
+		pk1.setObjetId(objetId1);
 
-      assertTrue(pk1.toString().equals("{" + pk1.getCession().toString() + " (Cession), " + pk1.getEntite().toString()
-         + " (Entite), " + pk1.getObjetId() + " (ObjetId)}"));
+		pk1.setEntite(null);
+		pk1.setCession(null);
+		assertTrue(pk1.toString().equals("{Empty CederObjetPK}"));
+		pk1.setCession(c1);
+		pk1.setEntite(e1);
 
-      pk1.setObjetId(null);
-      assertTrue(pk1.toString().equals("{Empty CederObjetPK}"));
-      pk1.setObjetId(objetId1);
+		pk1.setObjetId(null);
+		pk1.setCession(null);
+		assertTrue(pk1.toString().equals("{Empty CederObjetPK}"));
+		pk1.setCession(c1);
 
-      pk1.setEntite(null);
-      assertTrue(pk1.toString().equals("{Empty CederObjetPK}"));
-      pk1.setEntite(e1);
-
-      pk1.setCession(null);
-      assertTrue(pk1.toString().equals("{Empty CederObjetPK}"));
-      pk1.setCession(c1);
-
-      pk1.setObjetId(null);
-      pk1.setEntite(null);
-      assertTrue(pk1.toString().equals("{Empty CederObjetPK}"));
-      pk1.setEntite(e1);
-      pk1.setObjetId(objetId1);
-
-      pk1.setEntite(null);
-      pk1.setCession(null);
-      assertTrue(pk1.toString().equals("{Empty CederObjetPK}"));
-      pk1.setCession(c1);
-      pk1.setEntite(e1);
-
-      pk1.setObjetId(null);
-      pk1.setCession(null);
-      assertTrue(pk1.toString().equals("{Empty CederObjetPK}"));
-      pk1.setCession(c1);
-
-      final CederObjetPK pk2 = new CederObjetPK();
-      assertTrue(pk2.toString().equals("{Empty CederObjetPK}"));
-   }
+		final CederObjetPK pk2 = new CederObjetPK();
+		assertTrue(pk2.toString().equals("{Empty CederObjetPK}"));
+	}
 
 }

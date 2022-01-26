@@ -37,20 +37,19 @@ package fr.aphp.tumorotek.dao.test.cession;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.test.annotation.Rollback;
 import org.apache.commons.collections4.IterableUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import fr.aphp.tumorotek.dao.test.Config;
-
-
 
 import fr.aphp.tumorotek.dao.cession.ProtocoleTypeDao;
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
@@ -62,217 +61,199 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
  *
- * Classe de test pour le DAO ProtocoleTypeDao et le bean
- * du domaine ProtocoleType.
+ * Classe de test pour le DAO ProtocoleTypeDao et le bean du domaine
+ * ProtocoleType.
  *
  * @author Pierre Ventadour.
- * @version 25/01/2010
+ * @version 2.3
  *
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {Config.class})
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
-public class ProtocoleTypeDaoTest extends AbstractDaoTest
-{
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class ProtocoleTypeDaoTest extends AbstractDaoTest {
 
+	@Autowired
+	ProtocoleTypeDao protocoleTypeDao;
 
-   @Autowired
- ProtocoleTypeDao protocoleTypeDao;
-   @Autowired
- PlateformeDao plateformeDao;
+	@Autowired
+	PlateformeDao plateformeDao;
 
-   @Autowired
- final String updatedType = "Mis a jour";
+	final String updatedType = "Mis a jour";
 
-   /** Constructeur. */
-   public ProtocoleTypeDaoTest(){
+	@Test
+	public void testReadAllProtocoleTypes() {
+		final List<ProtocoleType> liste = IterableUtils.toList(protocoleTypeDao.findAll());
+		assertTrue(liste.size() == 2);
+	}
 
-   }
+	@Test
+	public void testFindByOrder() {
+		Plateforme pf = plateformeDao.findById(1).get();
+		List<? extends TKThesaurusObject> list = protocoleTypeDao.findByPfOrder(pf);
+		assertTrue(list.size() == 2);
+		assertTrue(list.get(0).getNom().equals("RECHERCHE"));
+		pf = plateformeDao.findById(2).get();
+		list = protocoleTypeDao.findByPfOrder(pf);
+		assertTrue(list.size() == 0);
+		list = protocoleTypeDao.findByPfOrder(null);
+		assertTrue(list.size() == 0);
+	}
 
-   @Test
-public void setProtocoleTypeDao(final ProtocoleTypeDao pDao){
-      this.protocoleTypeDao = pDao;
-   }
+	/**
+	 * Test l'appel de la méthode findByType().
+	 */
+	@Test
+	public void testFindByType() {
+		List<ProtocoleType> liste = protocoleTypeDao.findByType("RECHERCHE");
+		assertTrue(liste.size() == 1);
 
-   @Test
-public void setPlateformeDao(final PlateformeDao pDao){
-      this.plateformeDao = pDao;
-   }
+		liste = protocoleTypeDao.findByType("REC");
+		assertTrue(liste.size() == 0);
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   @Test
-public void testReadAllProtocoleTypes(){
-      final List<ProtocoleType> liste = IterableUtils.toList(protocoleTypeDao.findAll());
-      assertTrue(liste.size() == 2);
-   }
+		liste = protocoleTypeDao.findByType("REC%");
+		assertTrue(liste.size() == 1);
 
-   @Test
-public void testFindByOrder(){
-      Plateforme pf = plateformeDao.findById(1);
-      List<? extends TKThesaurusObject> list = protocoleTypeDao.findByPfOrder(pf);
-      assertTrue(list.size() == 2);
-      assertTrue(list.get(0).getNom().equals("RECHERCHE"));
-      pf = plateformeDao.findById(2);
-      list = protocoleTypeDao.findByPfOrder(pf);
-      assertTrue(list.size() == 0);
-      list = protocoleTypeDao.findByPfOrder(null);
-      assertTrue(list.size() == 0);
-   }
+		liste = protocoleTypeDao.findByType(null);
+		assertTrue(liste.size() == 0);
 
-   /**
-    * Test l'appel de la méthode findByType().
-    */
-   @Test
-public void testFindByType(){
-      List<ProtocoleType> liste = protocoleTypeDao.findByType("RECHERCHE");
-      assertTrue(liste.size() == 1);
+	}
 
-      liste = protocoleTypeDao.findByType("REC");
-      assertTrue(liste.size() == 0);
+	/**
+	 * Test l'appel de la méthode findByExcludedId().
+	 */
+	@Test
+	public void testFindByExcludedId() {
+		List<ProtocoleType> liste = protocoleTypeDao.findByExcludedId(1);
+		assertTrue(liste.size() == 1);
+		final ProtocoleType type = liste.get(0);
+		assertNotNull(type);
+		assertTrue(type.getId() == 2);
 
-      liste = protocoleTypeDao.findByType("REC%");
-      assertTrue(liste.size() == 1);
+		liste = protocoleTypeDao.findByExcludedId(15);
+		assertTrue(liste.size() == 2);
+	}
 
-      liste = protocoleTypeDao.findByType(null);
-      assertTrue(liste.size() == 0);
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'un ProtocoleType.
+	 * 
+	 * @throws Exception lance une exception en cas d'erreur.
+	 */
+	@Test
+	@Transactional
+	@Rollback(false)
+	public void testCrudProtocoleType() throws Exception {
 
-   }
+		final ProtocoleType pt = new ProtocoleType();
+		pt.setPlateforme(plateformeDao.findById(1).get());
+		pt.setNom("TEST");
+		// Test de l'insertion
+		protocoleTypeDao.save(pt);
+		assertEquals(new Integer(3), pt.getId());
 
-   /**
-    * Test l'appel de la méthode findByExcludedId().
-    */
-   @Test
-public void testFindByExcludedId(){
-      List<ProtocoleType> liste = protocoleTypeDao.findByExcludedId(1);
-      assertTrue(liste.size() == 1);
-      final ProtocoleType type = liste.get(0);
-      assertNotNull(type);
-      assertTrue(type.getProtocoleTypeId() == 2);
+		// Test de la mise à jour
+		final ProtocoleType pt2 = protocoleTypeDao.findById(new Integer(3)).get();
+		assertNotNull(pt2);
+		assertTrue(pt2.getNom().equals("TEST"));
+		pt2.setNom(updatedType);
+		protocoleTypeDao.save(pt2);
+		assertTrue(protocoleTypeDao.findById(new Integer(3)).get().getNom().equals(updatedType));
 
-      liste = protocoleTypeDao.findByExcludedId(15);
-      assertTrue(liste.size() == 2);
-   }
+		// Test de la délétion
+		protocoleTypeDao.deleteById(new Integer(3));
+		assertFalse(protocoleTypeDao.findById(new Integer(3)).isPresent());
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression d'un ProtocoleType.
-    * @throws Exception lance une exception en cas d'erreur.
-    */
-   @Rollback(false)
-   @Test
-public void testCrudProtocoleType() throws Exception{
+	}
 
-      final ProtocoleType pt = new ProtocoleType();
-      pt.setPlateforme(plateformeDao.findById(1));
-      pt.setType("TEST");
-      // Test de l'insertion
-      protocoleTypeDao.save(pt);
-      assertEquals(new Integer(3), pt.getProtocoleTypeId());
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final String type = "TYPE";
+		final String type2 = "TYPE2";
+		final ProtocoleType pt1 = new ProtocoleType();
+		pt1.setNom(type);
+		final ProtocoleType pt2 = new ProtocoleType();
+		pt2.setNom(type);
 
-      // Test de la mise à jour
-      final ProtocoleType pt2 = protocoleTypeDao.findById(new Integer(3));
-      assertNotNull(pt2);
-      assertTrue(pt2.getType().equals("TEST"));
-      pt2.setType(updatedType);
-      protocoleTypeDao.save(pt2);
-      assertTrue(protocoleTypeDao.findById(new Integer(3)).getType().equals(updatedType));
+		// L'objet 1 n'est pas égal à null
+		assertFalse(pt1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(pt1.equals(pt1));
+		// 2 objets sont égaux entre eux
+		assertTrue(pt1.equals(pt2));
+		assertTrue(pt2.equals(pt1));
 
-      // Test de la délétion
-      protocoleTypeDao.deleteById(new Integer(3));
-      assertFalse(protocoleTypeDao.findById(new Integer(3)).isPresent());
+		// Vérification de la différenciation de 2 objets
+		pt2.setNom(type2);
+		assertFalse(pt1.equals(pt2));
+		assertFalse(pt2.equals(pt1));
 
-   }
+		pt2.setNom(null);
+		assertFalse(pt1.equals(pt2));
+		assertFalse(pt2.equals(pt1));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   @Test
-public void testEquals(){
-      final String type = "TYPE";
-      final String type2 = "TYPE2";
-      final ProtocoleType pt1 = new ProtocoleType();
-      pt1.setType(type);
-      final ProtocoleType pt2 = new ProtocoleType();
-      pt2.setType(type);
+		pt1.setNom(null);
+		assertTrue(pt1.equals(pt2));
+		pt2.setNom(type);
+		assertFalse(pt1.equals(pt2));
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(pt1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(pt1.equals(pt1));
-      // 2 objets sont égaux entre eux
-      assertTrue(pt1.equals(pt2));
-      assertTrue(pt2.equals(pt1));
+		final Plateforme pf1 = plateformeDao.findById(1).get();
+		final Plateforme pf2 = plateformeDao.findById(2).get();
+		pt1.setNom(pt2.getNom());
+		pt1.setPlateforme(pf1);
+		pt2.setPlateforme(pf1);
+		assertTrue(pt1.equals(pt2));
+		pt2.setPlateforme(pf2);
+		assertFalse(pt1.equals(pt2));
 
-      // Vérification de la différenciation de 2 objets
-      pt2.setType(type2);
-      assertFalse(pt1.equals(pt2));
-      assertFalse(pt2.equals(pt1));
+		final Categorie c = new Categorie();
+		assertFalse(pt1.equals(c));
+	}
 
-      pt2.setType(null);
-      assertFalse(pt1.equals(pt2));
-      assertFalse(pt2.equals(pt1));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
+		final String type = "TYPE";
+		final ProtocoleType pt1 = new ProtocoleType();
+		pt1.setNom(type);
+		final ProtocoleType pt2 = new ProtocoleType();
+		pt2.setNom(type);
+		final ProtocoleType pt3 = new ProtocoleType();
+		pt3.setNom(null);
+		assertTrue(pt3.hashCode() > 0);
 
-      pt1.setType(null);
-      assertTrue(pt1.equals(pt2));
-      pt2.setType(type);
-      assertFalse(pt1.equals(pt2));
+		final Plateforme pf1 = plateformeDao.findById(1).get();
+		final Plateforme pf2 = plateformeDao.findById(2).get();
+		pt1.setPlateforme(pf1);
+		pt2.setPlateforme(pf1);
+		pt3.setPlateforme(pf2);
 
-      final Plateforme pf1 = plateformeDao.findById(1);
-      final Plateforme pf2 = plateformeDao.findById(2);
-      pt1.setType(pt2.getType());
-      pt1.setPlateforme(pf1);
-      pt2.setPlateforme(pf1);
-      assertTrue(pt1.equals(pt2));
-      pt2.setPlateforme(pf2);
-      assertFalse(pt1.equals(pt2));
+		final int hash = pt1.hashCode();
+		// 2 objets égaux ont le même hashcode
+		assertTrue(pt1.hashCode() == pt2.hashCode());
+		assertFalse(pt1.hashCode() == pt3.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		assertTrue(hash == pt1.hashCode());
+		assertTrue(hash == pt1.hashCode());
+		assertTrue(hash == pt1.hashCode());
+		assertTrue(hash == pt1.hashCode());
 
-      final Categorie c = new Categorie();
-      assertFalse(pt1.equals(c));
-   }
+	}
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   @Test
-public void testHashCode(){
-      final String type = "TYPE";
-      final ProtocoleType pt1 = new ProtocoleType();
-      pt1.setType(type);
-      final ProtocoleType pt2 = new ProtocoleType();
-      pt2.setType(type);
-      final ProtocoleType pt3 = new ProtocoleType();
-      pt3.setType(null);
-      assertTrue(pt3.hashCode() > 0);
+	/**
+	 * Test la méthode toString.
+	 */
+	@Test
+	public void testToString() {
+		final ProtocoleType pt1 = protocoleTypeDao.findById(1).get();
+		assertTrue(pt1.toString().equals("{" + pt1.getNom() + "}"));
 
-      final Plateforme pf1 = plateformeDao.findById(1);
-      final Plateforme pf2 = plateformeDao.findById(2);
-      pt1.setPlateforme(pf1);
-      pt2.setPlateforme(pf1);
-      pt3.setPlateforme(pf2);
-
-      final int hash = pt1.hashCode();
-      // 2 objets égaux ont le même hashcode
-      assertTrue(pt1.hashCode() == pt2.hashCode());
-      assertFalse(pt1.hashCode() == pt3.hashCode());
-      // un même objet garde le même hashcode dans le temps
-      assertTrue(hash == pt1.hashCode());
-      assertTrue(hash == pt1.hashCode());
-      assertTrue(hash == pt1.hashCode());
-      assertTrue(hash == pt1.hashCode());
-
-   }
-
-   /**
-    * Test la méthode toString.
-    */
-   @Test
-public void testToString(){
-      final ProtocoleType pt1 = protocoleTypeDao.findById(1);
-      assertTrue(pt1.toString().equals("{" + pt1.getType() + "}"));
-
-      final ProtocoleType pt2 = new ProtocoleType();
-      assertTrue(pt2.toString().equals("{Empty ProtocoleType}"));
-   }
+		final ProtocoleType pt2 = new ProtocoleType();
+		assertTrue(pt2.toString().equals("{Empty ProtocoleType}"));
+	}
 
 }

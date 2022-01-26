@@ -42,15 +42,12 @@ import org.apache.commons.collections4.IterableUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import fr.aphp.tumorotek.dao.test.Config;
-
-
 
 import fr.aphp.tumorotek.dao.cession.CessionStatutDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
@@ -59,176 +56,161 @@ import fr.aphp.tumorotek.model.contexte.Categorie;
 
 /**
  *
- * Classe de test pour le DAO CessionStatutDao et le bean
- * du domaine CessionStatut.
+ * Classe de test pour le DAO CessionStatutDao et le bean du domaine
+ * CessionStatut.
  *
  * @author Pierre Ventadour.
- * @version 25/01/2010
+ * @version 2.3
  *
  */
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {Config.class})
-@TestExecutionListeners({DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class})
-public class CessionStatutDaoTest extends AbstractDaoTest
-{
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class CessionStatutDaoTest extends AbstractDaoTest {
 
+	@Autowired
+	CessionStatutDao cessionStatutDao;
 
-   @Autowired
- CessionStatutDao cessionStatutDao;
-   /** valeur du nom pour la maj. */
-   @Autowired
- final String updatedStatut = "Mis a jour";
+	final String updatedStatut = "Mis a jour";
 
-   /** Constructeur. */
-   public CessionStatutDaoTest(){
+	@Test
+	public void testReadAllCessionStatuts() {
+		final List<CessionStatut> liste = IterableUtils.toList(cessionStatutDao.findAll());
+		assertTrue(liste.size() == 3);
+	}
 
-   }
+	/**
+	 * Test l'appel de la méthode findByOrder().
+	 */
+	@Test
+	public void testFindByOrder() {
+		final List<CessionStatut> list = cessionStatutDao.findByOrder();
+		assertTrue(list.size() == 3);
+		assertTrue(list.get(1).getStatut().equals("REFUSEE"));
+	}
 
-   @Test
-public void setCessionStatutDao(final CessionStatutDao cDao){
-      this.cessionStatutDao = cDao;
-   }
+	/**
+	 * Test l'appel de la méthode findByStatut().
+	 */
+	@Test
+	public void testFindByStatut() {
+		List<CessionStatut> liste = cessionStatutDao.findByStatut("VALIDEE");
+		assertTrue(liste.size() == 1);
 
-   /**
-    * Test l'appel de la méthode findAll().
-    */
-   @Test
-public void testReadAllCessionStatuts(){
-      final List<CessionStatut> liste = IterableUtils.toList(cessionStatutDao.findAll());
-      assertTrue(liste.size() == 3);
-   }
+		liste = cessionStatutDao.findByStatut("VAL");
+		assertTrue(liste.size() == 0);
 
-   /**
-    * Test l'appel de la méthode findByOrder().
-    */
-   @Test
-public void testFindByOrder(){
-      final List<CessionStatut> list = cessionStatutDao.findByOrder();
-      assertTrue(list.size() == 3);
-      assertTrue(list.get(1).getStatut().equals("REFUSEE"));
-   }
+		liste = cessionStatutDao.findByStatut("VAL%");
+		assertTrue(liste.size() == 1);
 
-   /**
-    * Test l'appel de la méthode findByStatut().
-    */
-   @Test
-public void testFindByStatut(){
-      List<CessionStatut> liste = cessionStatutDao.findByStatut("VALIDEE");
-      assertTrue(liste.size() == 1);
+		liste = cessionStatutDao.findByStatut(null);
+		assertTrue(liste.size() == 0);
 
-      liste = cessionStatutDao.findByStatut("VAL");
-      assertTrue(liste.size() == 0);
+	}
 
-      liste = cessionStatutDao.findByStatut("VAL%");
-      assertTrue(liste.size() == 1);
+	/**
+	 * Test l'insertion, la mise à jour et la suppression d'un CessionExamen.
+	 * 
+	 * @throws Exception lance une exception en cas d'erreur.
+	 */
+	@Rollback(false)
+	@Test
+	public void testCrudCessionStatut() throws Exception {
 
-      liste = cessionStatutDao.findByStatut(null);
-      assertTrue(liste.size() == 0);
+		final CessionStatut cs = new CessionStatut();
 
-   }
+		cs.setStatut("TEST");
+		// Test de l'insertion
+		cessionStatutDao.save(cs);
+		assertEquals(new Integer(4), cs.getCessionStatutId());
 
-   /**
-    * Test l'insertion, la mise à jour et la suppression d'un CessionExamen.
-    * @throws Exception lance une exception en cas d'erreur.
-    */
-   @Rollback(false)
-   @Test
-public void testCrudCessionStatut() throws Exception{
+		// Test de la mise à jour
+		final CessionStatut cs2 = cessionStatutDao.findById(new Integer(4)).get();
+		assertNotNull(cs2);
+		assertTrue(cs2.getStatut().equals("TEST"));
+		cs2.setStatut(updatedStatut);
+		cessionStatutDao.save(cs2);
+		assertTrue(cessionStatutDao.findById(new Integer(4)).get().getStatut().equals(updatedStatut));
 
-      final CessionStatut cs = new CessionStatut();
+		// Test de la délétion
+		cessionStatutDao.deleteById(new Integer(4));
+		assertFalse(cessionStatutDao.findById(new Integer(4)).isPresent());
 
-      cs.setStatut("TEST");
-      // Test de l'insertion
-      cessionStatutDao.save(cs);
-      assertEquals(new Integer(4), cs.getCessionStatutId());
+	}
 
-      // Test de la mise à jour
-      final CessionStatut cs2 = cessionStatutDao.findById(new Integer(4));
-      assertNotNull(cs2);
-      assertTrue(cs2.getStatut().equals("TEST"));
-      cs2.setStatut(updatedStatut);
-      cessionStatutDao.save(cs2);
-      assertTrue(cessionStatutDao.findById(new Integer(4)).getStatut().equals(updatedStatut));
+	/**
+	 * Test de la méthode surchargée "equals".
+	 */
+	@Test
+	public void testEquals() {
+		final String statut = "STATUT";
+		final String statut2 = "STATUT2";
+		final CessionStatut cs1 = new CessionStatut();
+		cs1.setStatut(statut);
+		final CessionStatut cs2 = new CessionStatut();
+		cs2.setStatut(statut);
 
-      // Test de la délétion
-      cessionStatutDao.deleteById(new Integer(4));
-      assertFalse(cessionStatutDao.findById(new Integer(4)).isPresent());
+		// L'objet 1 n'est pas égal à null
+		assertFalse(cs1.equals(null));
+		// L'objet 1 est égale à lui même
+		assertTrue(cs1.equals(cs1));
+		// 2 objets sont égaux entre eux
+		assertTrue(cs1.equals(cs2));
+		assertTrue(cs2.equals(cs1));
 
-   }
+		// Vérification de la différenciation de 2 objets
+		cs2.setStatut(statut2);
+		assertFalse(cs1.equals(cs2));
+		assertFalse(cs2.equals(cs1));
 
-   /**
-    * Test de la méthode surchargée "equals".
-    */
-   @Test
-public void testEquals(){
-      final String statut = "STATUT";
-      final String statut2 = "STATUT2";
-      final CessionStatut cs1 = new CessionStatut();
-      cs1.setStatut(statut);
-      final CessionStatut cs2 = new CessionStatut();
-      cs2.setStatut(statut);
+		cs2.setStatut(null);
+		assertFalse(cs1.equals(cs2));
+		assertFalse(cs2.equals(cs1));
 
-      // L'objet 1 n'est pas égal à null
-      assertFalse(cs1.equals(null));
-      // L'objet 1 est égale à lui même
-      assertTrue(cs1.equals(cs1));
-      // 2 objets sont égaux entre eux
-      assertTrue(cs1.equals(cs2));
-      assertTrue(cs2.equals(cs1));
+		cs1.setStatut(null);
+		assertTrue(cs1.equals(cs2));
+		cs2.setStatut(statut2);
+		assertFalse(cs1.equals(cs2));
 
-      // Vérification de la différenciation de 2 objets
-      cs2.setStatut(statut2);
-      assertFalse(cs1.equals(cs2));
-      assertFalse(cs2.equals(cs1));
+		final Categorie c = new Categorie();
+		assertFalse(cs1.equals(c));
+	}
 
-      cs2.setStatut(null);
-      assertFalse(cs1.equals(cs2));
-      assertFalse(cs2.equals(cs1));
+	/**
+	 * Test de la méthode surchargée "hashcode".
+	 */
+	@Test
+	public void testHashCode() {
+		final String statut = "STATUT";
+		final CessionStatut cs1 = new CessionStatut();
+		cs1.setStatut(statut);
+		final CessionStatut cs2 = new CessionStatut();
+		cs2.setStatut(statut);
+		final CessionStatut cs3 = new CessionStatut();
+		cs3.setStatut(null);
+		assertTrue(cs3.hashCode() > 0);
 
-      cs1.setStatut(null);
-      assertTrue(cs1.equals(cs2));
-      cs2.setStatut(statut2);
-      assertFalse(cs1.equals(cs2));
+		final int hash = cs1.hashCode();
+		// 2 objets égaux ont le même hashcode
+		assertTrue(cs1.hashCode() == cs2.hashCode());
+		// un même objet garde le même hashcode dans le temps
+		assertTrue(hash == cs1.hashCode());
+		assertTrue(hash == cs1.hashCode());
+		assertTrue(hash == cs1.hashCode());
+		assertTrue(hash == cs1.hashCode());
 
-      final Categorie c = new Categorie();
-      assertFalse(cs1.equals(c));
-   }
+	}
 
-   /**
-    * Test de la méthode surchargée "hashcode".
-    */
-   @Test
-public void testHashCode(){
-      final String statut = "STATUT";
-      final CessionStatut cs1 = new CessionStatut();
-      cs1.setStatut(statut);
-      final CessionStatut cs2 = new CessionStatut();
-      cs2.setStatut(statut);
-      final CessionStatut cs3 = new CessionStatut();
-      cs3.setStatut(null);
-      assertTrue(cs3.hashCode() > 0);
+	/**
+	 * Test la méthode toString.
+	 */
+	@Test
+	public void testToString() {
+		final CessionStatut cs1 = cessionStatutDao.findById(1).get();
+		assertTrue(cs1.toString().equals("{" + cs1.getStatut() + "}"));
 
-      final int hash = cs1.hashCode();
-      // 2 objets égaux ont le même hashcode
-      assertTrue(cs1.hashCode() == cs2.hashCode());
-      // un même objet garde le même hashcode dans le temps
-      assertTrue(hash == cs1.hashCode());
-      assertTrue(hash == cs1.hashCode());
-      assertTrue(hash == cs1.hashCode());
-      assertTrue(hash == cs1.hashCode());
-
-   }
-
-   /**
-    * Test la méthode toString.
-    */
-   @Test
-public void testToString(){
-      final CessionStatut cs1 = cessionStatutDao.findById(1);
-      assertTrue(cs1.toString().equals("{" + cs1.getStatut() + "}"));
-
-      final CessionStatut cs2 = new CessionStatut();
-      assertTrue(cs2.toString().equals("{Empty CessionStatut}"));
-   }
+		final CessionStatut cs2 = new CessionStatut();
+		assertTrue(cs2.toString().equals("{Empty CessionStatut}"));
+	}
 
 }
