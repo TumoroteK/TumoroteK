@@ -54,7 +54,6 @@ import fr.aphp.tumorotek.dao.test.Config;
 import fr.aphp.tumorotek.dao.contexte.CollaborateurDao;
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
-import fr.aphp.tumorotek.dao.test.PopulateBeanForTest;
 import fr.aphp.tumorotek.model.contexte.Categorie;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
@@ -181,13 +180,8 @@ public class PlateformeDaoTest extends AbstractDaoTest {
 
 		final Plateforme p = new Plateforme();
 		final Collaborateur c = collaborateurDao.findById(3).get();
-		// on remplit la nouvelle plateforme avec les données du fichier
-		// "plateforme.properties"
-		try {
-			PopulateBeanForTest.populateBean(p, "plateforme");
-		} catch (final Exception exc) {
-			System.out.println(exc.getMessage());
-		}
+		p.setNom("Plateforme 3");
+		p.setAlias("PF3");
 		p.setCollaborateur(c);
 		// Test de l'insertion
 		plateformeDao.save(p);

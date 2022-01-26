@@ -54,7 +54,6 @@ import fr.aphp.tumorotek.dao.test.Config;
 import fr.aphp.tumorotek.dao.contexte.CoordonneeDao;
 import fr.aphp.tumorotek.dao.contexte.TransporteurDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
-import fr.aphp.tumorotek.dao.test.PopulateBeanForTest;
 import fr.aphp.tumorotek.model.contexte.Categorie;
 import fr.aphp.tumorotek.model.contexte.Coordonnee;
 import fr.aphp.tumorotek.model.contexte.Transporteur;
@@ -178,18 +177,15 @@ public class TransporteurDaoTest extends AbstractDaoTest {
 	public void testTransporteur() throws Exception {
 
 		final Transporteur t = new Transporteur();
-		// Coordonnee c = coordonneeDao.findById(7).get();
-		// Coordonnee c = new Coordonnee();
-
-		// on remplit le nouveau transporteur avec les données du fichier
-		// "transporteur.properties"
-		try {
-			PopulateBeanForTest.populateBean(t, "transporteur");
-			// PopulateBeanForTest.populateBean(c, "coordonnee");
-		} catch (final Exception exc) {
-			System.out.println(exc.getMessage());
-		}
-		// t.setCoordonnee(c);
+	
+		t.setNom("Nouveau transporteur");
+		t.setContactNom("MR Test");
+		t.setContactPrenom("Test");
+		t.setContactTel("0145628975");
+		t.setContactFax("0145628985");
+		t.setContactMail("toto@yahoo.fr");
+		t.setArchive(false);
+		
 		// Test de l'insertion
 		transporteurDao.save(t);
 

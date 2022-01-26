@@ -254,8 +254,8 @@
 		<class>fr.aphp.tumorotek.model.stats.Subdivision
         </class>
 		<class>fr.aphp.tumorotek.model.interfacage.ConsultationIntf</class>
-		<class>fr.aphp.tumorotek.model.ui.UiRequete</class>
-		<class>fr.aphp.tumorotek.model.ui.UiCompValue</class>
+		<!-- <class>fr.aphp.tumorotek.model.ui.UiRequete</class> -->
+		<!-- <class>fr.aphp.tumorotek.model.ui.UiCompValue</class> -->
 		<class>fr.aphp.tumorotek.model.coeur.echantillon.delegate.AbstractEchantillonDelegate</class>
 		<class>fr.aphp.tumorotek.model.coeur.prodderive.delegate.AbstractProdDeriveDelegate</class>
 		<class>fr.aphp.tumorotek.model.cession.delegate.AbstractCessionDelegate</class>

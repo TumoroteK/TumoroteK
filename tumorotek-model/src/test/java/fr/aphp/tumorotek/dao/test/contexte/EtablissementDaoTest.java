@@ -54,7 +54,6 @@ import fr.aphp.tumorotek.dao.contexte.CategorieDao;
 import fr.aphp.tumorotek.dao.contexte.CoordonneeDao;
 import fr.aphp.tumorotek.dao.contexte.EtablissementDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
-import fr.aphp.tumorotek.dao.test.PopulateBeanForTest;
 import fr.aphp.tumorotek.model.contexte.Categorie;
 import fr.aphp.tumorotek.model.contexte.Coordonnee;
 import fr.aphp.tumorotek.model.contexte.Etablissement;
@@ -254,14 +253,10 @@ public class EtablissementDaoTest extends AbstractDaoTest {
 		final Etablissement e = new Etablissement();
 		// Coordonnee c = coordonneeDao.findById(5).get();
 		final Categorie cat = categorieDao.findById(2).get();
-
-		// on remplit le nouvel établissement avec les données du fichier
-		// "etablissement.properties"
-		try {
-			PopulateBeanForTest.populateBean(e, "etablissement");
-		} catch (final Exception exc) {
-			System.out.println(exc.getMessage());
-		}
+		e.setNom("Etablissement");
+		e.setFiness("452323");
+		e.setLocal(false);
+		e.setArchive(false);
 		// e.setCoordonnee(c);
 		e.setCategorie(cat);
 		// Test de l'insertion

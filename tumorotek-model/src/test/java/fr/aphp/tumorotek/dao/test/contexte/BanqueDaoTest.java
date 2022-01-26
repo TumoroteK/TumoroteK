@@ -203,7 +203,7 @@ public class BanqueDaoTest extends AbstractDaoTest {
 		s = serviceDao.findById(4).get();
 		banques = banqueDao.findByProprietaire(s);
 		assertTrue(banques.size() == 1);
-		s = serviceDao.findById(5).get();
+		assertFalse(serviceDao.findById(5).isPresent());
 		banques = banqueDao.findByProprietaire(null);
 		assertTrue(banques.size() == 0);
 	}
@@ -229,9 +229,6 @@ public class BanqueDaoTest extends AbstractDaoTest {
 		assertTrue(banques.size() == 0);
 		banques = banqueDao.findByPlateformeAndArchive(pf, true);
 		assertTrue(banques.size() == 1);
-//		pf = plateformeDao.findById(3).get();
-//		banques = banqueDao.findByPlateformeAndArchive(pf, false);
-		assertTrue(banques.size() == 0);
 		banques = banqueDao.findByPlateformeAndArchive(null, false);
 		assertTrue(banques.size() == 0);
 	}

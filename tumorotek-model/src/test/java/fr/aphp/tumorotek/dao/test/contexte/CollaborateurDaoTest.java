@@ -60,7 +60,6 @@ import fr.aphp.tumorotek.dao.contexte.ServiceDao;
 import fr.aphp.tumorotek.dao.contexte.SpecialiteDao;
 import fr.aphp.tumorotek.dao.contexte.TitreDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
-import fr.aphp.tumorotek.dao.test.PopulateBeanForTest;
 import fr.aphp.tumorotek.model.contexte.Categorie;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Coordonnee;
@@ -407,14 +406,9 @@ public class CollaborateurDaoTest extends AbstractDaoTest {
 		final Specialite spe = specialiteDao.findById(5).get();
 		final Service serv = serviceDao.findById(1).get();
 		final Service serv2 = serviceDao.findById(2).get();
-
-		// on remplit le nouveau collaborateur avec les données du fichier
-		// "collaborateur.properties"
-		try {
-			PopulateBeanForTest.populateBean(c, "collaborateur");
-		} catch (final Exception exc) {
-			System.out.println(exc.getMessage());
-		}
+		c.setNom("New Coll");
+		c.setPrenom("New pre");
+		c.setArchive(false);
 		c.setCoordonnees(coords);
 		c.setEtablissement(etab);
 		c.setSpecialite(spe);

@@ -40,7 +40,6 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -48,7 +47,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
-import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -64,8 +62,8 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * @version 2.3
  *
  */
-@Entity
-@Table(name = "UI_REQUETE")
+// @Entity
+// @Table(name = "UI_REQUETE")
 //@NamedQueries(value = {
 //   @NamedQuery(name = "UiRequete.findByUtilisateurAndEntite",
 //      query = "SELECT u FROM UiRequete u WHERE u.utilisateur = ?1 " + " AND u.entite = ?2 ORDER BY ordre"),

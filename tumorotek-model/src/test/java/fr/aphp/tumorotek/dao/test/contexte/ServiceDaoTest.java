@@ -37,6 +37,8 @@ package fr.aphp.tumorotek.dao.test.contexte;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.test.annotation.Rollback;
 import org.apache.commons.collections4.IterableUtils;
 import org.junit.Test;
@@ -54,7 +56,6 @@ import fr.aphp.tumorotek.dao.contexte.CoordonneeDao;
 import fr.aphp.tumorotek.dao.contexte.EtablissementDao;
 import fr.aphp.tumorotek.dao.contexte.ServiceDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
-import fr.aphp.tumorotek.dao.test.PopulateBeanForTest;
 import fr.aphp.tumorotek.model.contexte.Categorie;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Coordonnee;
@@ -279,25 +280,16 @@ public class ServiceDaoTest extends AbstractDaoTest {
 	 * 
 	 * @throws Exception lance une exception en cas d'erreur sur les données.
 	 */
-	@Rollback(false)
 	@Test
+	@Transactional
+	@Rollback(false)
 	public void testCrudService() throws Exception {
 
 		final Service s = new Service();
 		final Etablissement e = etablissementDao.findById(2).get();
 		final Collaborateur c = collaborateurDao.findById(1).get();
-		// Coordonnee c = coordonneeDao.findById(6).get();
-		// Coordonnee c = new Coordonnee();
-
-		// on remplit le nouveau service avec les données du fichier
-		// "service.properties"
-		try {
-			PopulateBeanForTest.populateBean(s, "service");
-			// PopulateBeanForTest.populateBean(c, "coordonnee");
-		} catch (final Exception exc) {
-			System.out.println(exc.getMessage());
-		}
-		// s.setCoordonnee(c);
+		s.setNom("Service1");
+		s.setArchive(false);
 		s.setEtablissement(e);
 		s.getCollaborateurs().add(c);
 		// Test de l'insertion

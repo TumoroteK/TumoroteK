@@ -53,7 +53,6 @@ import fr.aphp.tumorotek.dao.test.Config;
 
 import fr.aphp.tumorotek.dao.contexte.CoordonneeDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
-import fr.aphp.tumorotek.dao.test.PopulateBeanForTest;
 import fr.aphp.tumorotek.model.contexte.Categorie;
 import fr.aphp.tumorotek.model.contexte.Coordonnee;
 
@@ -232,14 +231,14 @@ public class CoordonneeDaoTest extends AbstractDaoTest {
 	public void testCrudCoordonnee() throws Exception {
 
 		final Coordonnee c = new Coordonnee();
+		c.setAdresse("adresse de test");
+		c.setCp("75010");
+				c.setVille("PARIS");
+						c.setPays("FRANCE");
+								c.setTel("0155302658");
+										c.setFax("0145454545");
+												c.setMail("mail@mail.fr");
 
-		// on remplit la nouvelle coordonnee avec les données du fichier
-		// "coordonnee.properties"
-		try {
-			PopulateBeanForTest.populateBean(c, "coordonnee");
-		} catch (final Exception exc) {
-			System.out.println(exc.getMessage());
-		}
 		// Test de l'insertion
 		coordonneeDao.save(c);
 		final int id = c.getCoordonneeId();

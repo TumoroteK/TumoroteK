@@ -39,7 +39,6 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
 
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.ui.UiRequete;
@@ -54,7 +53,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
  * @version 2.3
  *
  */
-@Repository
+// @Repository
 public interface UiRequeteDao extends CrudRepository<UiRequete, Integer> //FIXME Class non utilisée ?? A quoi sert-elle ?
 {
 

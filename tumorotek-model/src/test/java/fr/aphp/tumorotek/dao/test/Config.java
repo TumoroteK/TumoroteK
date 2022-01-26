@@ -51,7 +51,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories(
 	basePackages = {"fr.aphp.tumorotek.dao"},
 	excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, 
-		pattern = ".*(interfacage\\.scan|interfacage\\.(Logiciel|Emetteur|Recepteur|PatientSip|DossierExterne|BlocExterne|ValeurExterne)|code\\.(Cim|Adicap)).*"),
+		pattern = ".*(UiRequete|interfacage\\.scan|interfacage\\.(Logiciel|Emetteur|Recepteur|PatientSip|DossierExterne|BlocExterne|ValeurExterne)|code\\.(Cim|Adicap)).*"),
 	entityManagerFactoryRef = "entityManagerFactory",
 	transactionManagerRef = "transactionManager")
 public class Config {
