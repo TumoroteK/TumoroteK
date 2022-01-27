@@ -94,7 +94,7 @@ public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
    @Override
    public List<ObjetNonConforme> findAllObjectsManager(){
       log.debug("Recherche de tous les ObjetNonConformes");
-      return objetNonConformeDao.findAll();
+      return IterableUtils.toList(objetNonConformeDao.findAll());
    }
 
    @Override
@@ -153,7 +153,7 @@ public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
    }
 
    @Override
-   public void createUpdateOrRemoveObjectManager(final Object obj, final NonConformite nonConformite, final String type){
+   public void createUpdateOrdeleteByIdManager(final Object obj, final NonConformite nonConformite, final String type){
       if(obj != null && type != null){
          // on va tester si une non conformité est déjà
          // définie pour cet objet
@@ -185,7 +185,7 @@ public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
             if(entite == null){
                throw new RequiredObjectIsNullException("ObjetNonConforme", "creation", "Entite");
             }else{
-               newObj.setEntite(entiteDao.mergeObject(entite));
+               newObj.setEntite(entiteDao.save(entite));
             }
             // si objetid null
             if(id == null){
@@ -199,10 +199,10 @@ public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
                throwConformiteTypeRuntimeException();
             }
 
-            newObj.setNonConformite(nonConformiteDao.mergeObject(nonConformite));
+            newObj.setNonConformite(nonConformiteDao.save(nonConformite));
 
             // création
-            objetNonConformeDao.createObject(newObj);
+            objetNonConformeDao.save(newObj);
             log.info("Enregistrement de l'objet ObjetNonConforme : " + newObj.toString());
             //				} 
             //				else {
@@ -212,11 +212,11 @@ public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
             //					
             //					// si la non conf a changée => update
             //					if (!nonConformite.equals(upObj.getNonConformite())) {
-            //						upObj.setNonConformite(nonConformiteDao.mergeObject(
+            //						upObj.setNonConformite(nonConformiteDao.save(
             //								nonConformite));
             //						
             //						// update
-            //						objetNonConformeDao.updateObject(upObj);
+            //						objetNonConformeDao.save(upObj);
             //						log.info("Modification de l'objet ObjetNonConforme : " 
             //								+ upObj.toString());
             //					}
@@ -224,7 +224,7 @@ public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
             //			} else {
             //				// suppression de tous les objs non conformes
             //				for (int i = 0; i < list.size(); i++) {
-            //					removeObjectManager(list.get(i));
+            //					deleteByIdManager(list.get(i));
             //				}
          }
       }
@@ -336,7 +336,7 @@ public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
                // suppression
                for(int i = 0; i < list.size(); i++){
                   if(!ncfs.contains(list.get(i).getNonConformite())){
-                     removeObjectManager(list.get(i));
+                     deleteByIdManager(list.get(i));
                   }else{
                      ncfs.remove(list.get(i).getNonConformite());
                   }
@@ -345,21 +345,21 @@ public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
             }
             // création des nouvelles non conformités
             for(final NonConformite nc : ncfs){
-               createUpdateOrRemoveObjectManager(obj, nc, type);
+               createUpdateOrdeleteByIdManager(obj, nc, type);
             }
          }else{
             // suppression de tous les objs non conformes
             for(int i = 0; i < list.size(); i++){
-               removeObjectManager(list.get(i));
+               deleteByIdManager(list.get(i));
             }
          }
       }
    }
 
    @Override
-   public void removeObjectManager(final ObjetNonConforme objetNonConforme){
+   public void deleteByIdManager(final ObjetNonConforme objetNonConforme){
       if(objetNonConforme != null){
-         objetNonConformeDao.removeObject(objetNonConforme.getObjetNonConformeId());
+         objetNonConformeDao.deleteById(objetNonConforme.getObjetNonConformeId());
          log.info("Suppression de l'objet ObjetNonConforme : " + objetNonConforme.toString());
       }
    }

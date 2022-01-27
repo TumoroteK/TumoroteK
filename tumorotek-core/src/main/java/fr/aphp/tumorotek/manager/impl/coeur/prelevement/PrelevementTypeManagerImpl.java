@@ -86,18 +86,18 @@ public class PrelevementTypeManagerImpl implements PrelevementTypeManager
    }
 
    @Override
-   public void createObjectManager(final PrelevementType obj){
+   public void saveManager(final PrelevementType obj){
 
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(obj.getPlateforme() == null){
          throw new RequiredObjectIsNullException("PrelevementType", "creation", "Plateforme");
       }
-      obj.setPlateforme(plateformeDao.mergeObject(obj.getPlateforme()));
+      obj.setPlateforme(plateformeDao.save(obj.getPlateforme()));
 
       BeanValidator.validateObject(obj, new Validator[] {prelevementTypeValidator});
       if(!findDoublonManager(obj)){
-         prelevementTypeDao.createObject(obj);
+         prelevementTypeDao.save(obj);
          log.info("Enregistrement objet PrelevementType " + obj.toString());
       }else{
          log.warn("Doublon lors creation objet PrelevementType " + obj.toString());
@@ -106,10 +106,10 @@ public class PrelevementTypeManagerImpl implements PrelevementTypeManager
    }
 
    @Override
-   public void updateObjectManager(final PrelevementType obj){
+   public void saveManager(final PrelevementType obj){
       BeanValidator.validateObject(obj, new Validator[] {prelevementTypeValidator});
       if(!findDoublonManager(obj)){
-         prelevementTypeDao.updateObject(obj);
+         prelevementTypeDao.save(obj);
          log.info("Modification objet PrelevementType " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet PrelevementType " + obj.toString());
@@ -127,9 +127,9 @@ public class PrelevementTypeManagerImpl implements PrelevementTypeManager
    }
 
    @Override
-   public void removeObjectManager(final PrelevementType obj){
+   public void deleteByIdManager(final PrelevementType obj){
       if(obj != null){
-         prelevementTypeDao.removeObject(obj.getId());
+         prelevementTypeDao.deleteById(obj.getId());
          log.info("Suppression objet PrelevementType " + obj.toString());
       }else{
          log.warn("Suppression d'un PrelevementType null");
@@ -141,7 +141,7 @@ public class PrelevementTypeManagerImpl implements PrelevementTypeManager
       if(o != null){
          final PrelevementType type = o;
          if(type.getId() == null){
-            return prelevementTypeDao.findAll().contains(type);
+            return IterableUtils.toList(prelevementTypeDao.findAll()).contains(type);
          }
          return prelevementTypeDao.findByExcludedId(type.getId()).contains(type);
       }
@@ -150,7 +150,7 @@ public class PrelevementTypeManagerImpl implements PrelevementTypeManager
 
    @Override
    public boolean isUsedObjectManager(final PrelevementType o){
-      final PrelevementType prelevementType = prelevementTypeDao.mergeObject(o);
+      final PrelevementType prelevementType = prelevementTypeDao.save(o);
       return prelevementType.getPrelevements().size() > 0;
    }
 

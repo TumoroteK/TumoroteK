@@ -119,7 +119,7 @@ public class MaladieManagerImpl implements MaladieManager
    }
 
    @Override
-   public void createOrUpdateObjectManager(Maladie maladie, final Patient patient, final List<Collaborateur> medecins,
+   public void createOrsaveManager(Maladie maladie, final Patient patient, final List<Collaborateur> medecins,
       final Utilisateur utilisateur, final String operation){
 
       if(operation == null){
@@ -133,13 +133,13 @@ public class MaladieManagerImpl implements MaladieManager
       if(!findDoublonManager(maladie, patient)){
          if((operation.equals("creation") || operation.equals("modification"))){
             if(operation.equals("creation")){
-               maladieDao.createObject(maladie);
+               maladieDao.save(maladie);
                log.info("Enregistrement objet Maladie " + maladie.toString());
                CreateOrUpdateUtilities.createAssociateOperation(maladie, operationManager,
                   operationTypeDao.findByNom("Creation").get(0), utilisateur);
             }else{
                
-               maladie = maladieDao.mergeObject(maladie);
+               maladie = maladieDao.save(maladie);
                log.info("Modification objet Maladie " + maladie.toString());
                CreateOrUpdateUtilities.createAssociateOperation(maladie, operationManager,
                   operationTypeDao.findByNom("Modification").get(0), utilisateur);
@@ -181,7 +181,7 @@ public class MaladieManagerImpl implements MaladieManager
 
    @Override
    public Set<Prelevement> getPrelevementsManager(Maladie maladie){
-      maladie = maladieDao.mergeObject(maladie);
+      maladie = maladieDao.save(maladie);
       final Set<Prelevement> prelevements = maladie.getPrelevements();
       prelevements.isEmpty(); // empechant LazyInitialisationException
       return prelevements;
@@ -190,7 +190,7 @@ public class MaladieManagerImpl implements MaladieManager
    @Override
    public List<Maladie> findAllObjectsManager(){
       log.debug("Recherche totalite des Maladie");
-      return maladieDao.findAll();
+      return IterableUtils.toList(maladieDao.findAll());
    }
 
    @Override
@@ -212,13 +212,13 @@ public class MaladieManagerImpl implements MaladieManager
    }
 
    @Override
-   public void removeObjectManager(final Maladie maladie, final String comments, final Utilisateur user){
+   public void deleteByIdManager(final Maladie maladie, final String comments, final Utilisateur user){
       if(maladie != null){
          if(!isUsedObjectManager(maladie)){
             //Supprime operations associes
             CreateOrUpdateUtilities.removeAssociateOperations(maladie, operationManager, comments, user);
 
-            maladieDao.removeObject(maladie.getMaladieId());
+            maladieDao.deleteById(maladie.getMaladieId());
             log.info("Suppression objet Maladie " + maladie.toString());
          }else{
             log.warn("Suppression Maladie " + maladie.toString() + " impossible car Objet est reference " + "(par Prelevement)");
@@ -248,7 +248,7 @@ public class MaladieManagerImpl implements MaladieManager
             // validation patient
             BeanValidator.validateObject(patient, new Validator[] {patientValidator});
          }
-         maladie.setPatient(patientDao.mergeObject(patient));
+         maladie.setPatient(patientDao.save(patient));
       }else if(maladie.getPatient() == null){
          log.warn("Objet obligatoire Patient manquant" + " lors de la " + operation + " d'une Maladie");
          throw new RequiredObjectIsNullException("Maladie", operation, "Patient");
@@ -262,7 +262,7 @@ public class MaladieManagerImpl implements MaladieManager
    public Set<Maladie> getMaladiesManager(Patient patient){
       Set<Maladie> maladies = new HashSet<>();
       if(patient != null && patient.getPatientId() != null){
-         patient = patientDao.mergeObject(patient);
+         patient = patientDao.save(patient);
          maladies = patient.getMaladies();
          maladies.isEmpty(); // operation LazyInitialisationExcep
       }
@@ -271,7 +271,7 @@ public class MaladieManagerImpl implements MaladieManager
 
    @Override
    public Set<Collaborateur> getCollaborateursManager(Maladie maladie){
-      maladie = maladieDao.mergeObject(maladie);
+      maladie = maladieDao.save(maladie);
       final Set<Collaborateur> collabs = maladie.getCollaborateurs();
       return collabs;
    }
@@ -302,7 +302,7 @@ public class MaladieManagerImpl implements MaladieManager
       // on parcourt la liste la liste des collaborateurs à retirer de
       // l'association
       for(int i = 0; i < collabsToRemove.size(); i++){
-         final Collaborateur coll = collaborateurDao.mergeObject(collabsToRemove.get(i));
+         final Collaborateur coll = collaborateurDao.save(collabsToRemove.get(i));
          // on retire le collaborateur de chaque coté de l'association
          coll.getMaladies().remove(mal);
          mal.getCollaborateurs().remove(coll);
@@ -316,8 +316,8 @@ public class MaladieManagerImpl implements MaladieManager
          // si un collaborateur n'était pas associé a la maladie
          if(!mal.getCollaborateurs().contains(collaborateurs.get(i))){
             // on ajoute le collaborateur des deux cotés de l'association
-            mal.getCollaborateurs().add(collaborateurDao.mergeObject(collaborateurs.get(i)));
-            collaborateurDao.mergeObject(collaborateurs.get(i)).getMaladies().add(mal);
+            mal.getCollaborateurs().add(collaborateurDao.save(collaborateurs.get(i)));
+            collaborateurDao.save(collaborateurs.get(i)).getMaladies().add(mal);
 
             log.debug("Ajout de l'association entre la maladie : " + mal.toString() + " et le collaborateur : "
                + collaborateurs.get(i).toString());

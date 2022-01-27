@@ -44,8 +44,8 @@ import org.zkoss.util.resource.Labels;
 
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.TKdataObject;
-import fr.aphp.tumorotek.model.cession.Retour;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
+import fr.aphp.tumorotek.model.coeur.cession.Retour;
 
 /**
  * Classe 'Decorateur' qui reprend les attributs de Retour.

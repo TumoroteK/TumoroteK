@@ -98,7 +98,7 @@ public class ProfilUtilisateurManagerImpl implements ProfilUtilisateurManager
 	@Override
 	public List<ProfilUtilisateur> findAllObjectsManager(){
 		log.debug("Recherche de tous les ProfilUtilisateurs");
-		return profilUtilisateurDao.findAll();
+		return IterableUtils.toList(profilUtilisateurDao.findAll());
 	}
 
 	@Override
@@ -106,7 +106,7 @@ public class ProfilUtilisateurManagerImpl implements ProfilUtilisateurManager
 		if(pk != null){
 			return profilUtilisateurDao.findByExcludedPK(pk);
 		}
-		return profilUtilisateurDao.findAll();
+		return IterableUtils.toList(profilUtilisateurDao.findAll());
 	}
 
 	@Override
@@ -207,27 +207,27 @@ public class ProfilUtilisateurManagerImpl implements ProfilUtilisateurManager
 	}
 
 	@Override
-	public void createObjectManager(final ProfilUtilisateur profilUtilisateur, final Utilisateur utilisateur, final Banque banque,
+	public void saveManager(final ProfilUtilisateur profilUtilisateur, final Utilisateur utilisateur, final Banque banque,
 			final Profil profil){
 
 		// validation de l'objet à créer
 		validateObjectManager(utilisateur, banque, profil);
 
-		profilUtilisateur.setProfil(profilDao.mergeObject(profil));
-		profilUtilisateur.setUtilisateur(utilisateurDao.mergeObject(utilisateur));
-		profilUtilisateur.setBanque(banqueDao.mergeObject(banque));
+		profilUtilisateur.setProfil(profilDao.save(profil));
+		profilUtilisateur.setUtilisateur(utilisateurDao.save(utilisateur));
+		profilUtilisateur.setBanque(banqueDao.save(banque));
 
 		// création
-		profilUtilisateurDao.createObject(profilUtilisateur);
+		profilUtilisateurDao.save(profilUtilisateur);
 
 		log.info("Enregistrement objet ProfilUtilisateur " + profilUtilisateur.toString());
 
 	}
 
 	@Override
-	public void removeObjectManager(final ProfilUtilisateur profilUtilisateur){
+	public void deleteByIdManager(final ProfilUtilisateur profilUtilisateur){
 		if(profilUtilisateur != null){
-			profilUtilisateurDao.removeObject(profilUtilisateur.getPk());
+			profilUtilisateurDao.deleteById(profilUtilisateur.getPk());
 			log.info("Suppression de l'objet ProfilUtilisateur : " + profilUtilisateur.toString());
 		}else{
 			log.warn("Suppression d'un ProfilUtilisateur null");

@@ -79,7 +79,7 @@ public interface ResultatManager
     * @param affichage Affichage du Résultat.
     * @param champ Champ du Résultat.
     */
-   void createObjectManager(Resultat resultat, Affichage affichage, Champ champ);
+   void saveManager(Resultat resultat, Affichage affichage, Champ champ);
 
    /**
     * Met à jour un Résultat en BDD.
@@ -87,13 +87,13 @@ public interface ResultatManager
     * @param affichage Affichage du Résultat.
     * @param champ Champ du Résultat.
     */
-   void updateObjectManager(Resultat resultat, Affichage affichage, Champ champ);
+   void saveManager(Resultat resultat, Affichage affichage, Champ champ);
 
    /**
     * Supprime un Résultat.
     * @param groupement Résultat à supprimer.
     */
-   void removeObjectManager(Resultat resultat);
+   void deleteByIdManager(Resultat resultat);
 
    /**
     * Recherche la liste des Résultats de l'Affichage passé en paramètre.

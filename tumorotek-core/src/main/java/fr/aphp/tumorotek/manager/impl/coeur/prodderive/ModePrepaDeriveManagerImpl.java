@@ -114,7 +114,7 @@ public class ModePrepaDeriveManagerImpl implements ModePrepaDeriveManager
       final ModePrepaDerive mode = obj;
       if(mode != null){
          if(mode.getId() == null){
-            return modePrepaDeriveDao.findAll().contains(mode);
+            return IterableUtils.toList(modePrepaDeriveDao.findAll()).contains(mode);
          }
          return modePrepaDeriveDao.findByExcludedId(mode.getId()).contains(mode);
       }
@@ -130,40 +130,40 @@ public class ModePrepaDeriveManagerImpl implements ModePrepaDeriveManager
    }
 
    @Override
-   public void createObjectManager(final ModePrepaDerive obj){
+   public void saveManager(final ModePrepaDerive obj){
       final ModePrepaDerive mode = obj;
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(mode.getPlateforme() == null){
          throw new RequiredObjectIsNullException("ModePrepaDerive", "creation", "Plateforme");
       }
-      mode.setPlateforme(plateformeDao.mergeObject(mode.getPlateforme()));
+      mode.setPlateforme(plateformeDao.save(mode.getPlateforme()));
 
       if(findDoublonManager(mode)){
          log.warn("Doublon lors de la creation de l'objet " + "ModePrepaDerive : " + mode.toString());
          throw new DoublonFoundException("ModePrepaDerive", "creation");
       }
       BeanValidator.validateObject(mode, new Validator[] {modePrepaDeriveValidator});
-      modePrepaDeriveDao.createObject(mode);
+      modePrepaDeriveDao.save(mode);
       log.info("Enregistrement de l'objet ModePrepaDerive : " + mode.toString());
    }
 
    @Override
-   public void updateObjectManager(final ModePrepaDerive obj){
+   public void saveManager(final ModePrepaDerive obj){
       final ModePrepaDerive mode = obj;
       if(findDoublonManager(mode)){
          log.warn("Doublon lors de la modification de l'objet " + "ModePrepaDerive : " + mode.toString());
          throw new DoublonFoundException("ModePrepaDerive", "modification");
       }
          BeanValidator.validateObject(mode, new Validator[] {modePrepaDeriveValidator});
-         modePrepaDeriveDao.updateObject(mode);
+         modePrepaDeriveDao.save(mode);
          log.info("Modification de l'objet ModePrepaDerive : " + mode.toString());
    }
 
    @Override
-   public void removeObjectManager(final ModePrepaDerive obj){
+   public void deleteByIdManager(final ModePrepaDerive obj){
       final ModePrepaDerive mode = obj;
-      modePrepaDeriveDao.removeObject(mode.getId());
+      modePrepaDeriveDao.deleteById(mode.getId());
       log.info("Suppression de l'objet ModePrepaDerive : " + mode.toString());
    }
 

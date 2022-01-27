@@ -189,7 +189,7 @@ public interface EmplacementManager
     * @param terminale Terminale de l'Emplacement.
     * @param entite Entite de l'objet se trouvant a cet Emplacement.
     */
-   void createObjectManager(Emplacement emplacement, Terminale terminale, Entite entite);
+   void saveManager(Emplacement emplacement, Terminale terminale, Entite entite);
 
    /**
     * Crée un ensemble d'emplacements pour une enceinte terminale.
@@ -206,13 +206,13 @@ public interface EmplacementManager
     * @param terminale Terminale de l'Emplacement.
     * @param entite Entite de l'objet se trouvant a cet Emplacement.
     */
-   void updateObjectManager(Emplacement emplacement, Terminale terminale, Entite entite);
+   void saveManager(Emplacement emplacement, Terminale terminale, Entite entite);
 
    /**
     * Supprime un Emplacement de la base de données.
     * @param emplacement Emplacement à supprimer de la base de données.
     */
-   void removeObjectManager(Emplacement emplacement);
+   void deleteByIdManager(Emplacement emplacement);
 
    /**
     * Cette méthode va changer l'adresse de plusieurs emplacements.

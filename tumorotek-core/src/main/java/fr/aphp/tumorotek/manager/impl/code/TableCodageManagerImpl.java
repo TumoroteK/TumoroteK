@@ -41,6 +41,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections4.IterableUtils;
+
 import fr.aphp.tumorotek.dao.code.TableCodageDao;
 import fr.aphp.tumorotek.manager.code.AdicapManager;
 import fr.aphp.tumorotek.manager.code.CimMasterManager;
@@ -64,10 +66,8 @@ import fr.aphp.tumorotek.model.contexte.Banque;
  * @version 2.0
  *
  */
-public class TableCodageManagerImpl implements TableCodageManager
+public class TableCodageManagerImpl // implements TableCodageManager
 {
-
-   // private Log log = LogFactory.getLog(TableCodageManager.class);
 
    private TableCodageDao tableCodageDao;
    private AdicapManager adicapManager;
@@ -97,7 +97,7 @@ public class TableCodageManagerImpl implements TableCodageManager
 
    @Override
    public List<TableCodage> findAllObjectsManager(){
-      return tableCodageDao.findAll();
+      return IterableUtils.toList(tableCodageDao.findAll());
    }
 
    @Override
@@ -173,7 +173,7 @@ public class TableCodageManagerImpl implements TableCodageManager
    //	public Set<Banque> getBanquesManager(TableCodage tab) {
    //		Set<Banque> banks = new HashSet<Banque>();
    //		if (tab != null) {
-   //			TableCodage table = tableCodageDao.mergeObject(tab);
+   //			TableCodage table = tableCodageDao.save(tab);
    //			banks = table.getBanques();
    //			banks.isEmpty(); // operation empechant LazyInitialisationException
    //		}

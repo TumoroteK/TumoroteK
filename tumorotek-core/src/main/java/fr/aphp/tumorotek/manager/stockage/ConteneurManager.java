@@ -167,7 +167,7 @@ public interface ConteneurManager
     * @param pf Plateforme origine
     * @version 2.0.10
     */
-   void createObjectManager(Conteneur conteneur, ConteneurType conteneurType, Service service, List<Banque> banques,
+   void saveManager(Conteneur conteneur, ConteneurType conteneurType, Service service, List<Banque> banques,
       List<Plateforme> plateformes, Utilisateur utilisateur, Plateforme pfOrig);
 
    /**
@@ -179,7 +179,7 @@ public interface ConteneurManager
     * @param plateformes Plateformes du Conteneur.
     * @param incidents Incident du Conteneur.
     */
-   void updateObjectManager(Conteneur conteneur, ConteneurType conteneurType, Service service, List<Banque> banques,
+   void saveManager(Conteneur conteneur, ConteneurType conteneurType, Service service, List<Banque> banques,
       List<Plateforme> plateformes, List<Incident> incidents, Utilisateur utilisateur);
 
    /**
@@ -191,7 +191,7 @@ public interface ConteneurManager
     * @since 2.0.10 si le conteneur fait reference à des évènements de 
     * stockage, il est automatiquement archivé.
     */
-   void removeObjectManager(Conteneur conteneur, String comments, Utilisateur user);
+   void deleteByIdManager(Conteneur conteneur, String comments, Utilisateur user);
 
    /**
     * Crée toute l'arborescence d'un conteneur : dès enceintes filles
@@ -277,7 +277,7 @@ public interface ConteneurManager
 	 * @param incidents
 	 * @param utilisateur
 	 */
-	void updateObjectWithConteneurPlateformesManager(Conteneur conteneur, ConteneurType conteneurType, Service service,
+	void saveWithConteneurPlateformesManager(Conteneur conteneur, ConteneurType conteneurType, Service service,
 			List<Banque> banques, List<ConteneurPlateforme> plateformes, List<Incident> incidents, Utilisateur utilisateur);
 
 	/**

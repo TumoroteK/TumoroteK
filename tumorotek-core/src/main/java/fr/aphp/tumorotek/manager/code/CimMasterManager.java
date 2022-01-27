@@ -35,54 +35,154 @@
  **/
 package fr.aphp.tumorotek.manager.code;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
+
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import fr.aphp.tumorotek.dao.code.CimMasterDao;
 import fr.aphp.tumorotek.model.code.Adicap;
 import fr.aphp.tumorotek.model.code.CimMaster;
 
 /**
  *
- * Interface pour le Manager du bean de domaine CimMaster.
- * Interface créée le 19/05/10.
+ * Interface pour le Manager du bean de domaine CimMaster. Interface créée le
+ * 19/05/10.
  *
  * @author Mathieu BARTHELEMY
  * @version 2.0
  *
  */
-public interface CimMasterManager extends CodeCommonManager<CimMaster>
-{
+@Service
+public class CimMasterManager implements CodeCommonManager<CimMaster> {
 
-   /**
-    * Recherche les enfants du code Cim passé en paramètre.
-    * Utilise le membre 'level' pour attaquer le bon
-    * membre 'id' et récupérer les codes de level sup + 1.
-    * Si parent = null, renvoie les codes de niveau 1.
-    * @param code Cim pour lequel on recherche les enfants.
-    * @return une liste de codes CimMaster.
-    */
-   List<CimMaster> findByCimParentManager(CimMaster parent);
+	private final Log log = LogFactory.getLog(CimMasterManager.class);
 
-   /**
-    * Recherche les codes ADICAP topo issus du transcodage du
-    * code Cim passé en paramètre.
-    * @param code cim qui sera transcodé
-    * @return Liste de codes Adicap
-    */
-   Set<Adicap> getAdicapsManager(CimMaster cim);
+	@Autowired
+	private CimMasterDao cimMasterDao;
 
-   /**
-    * Renvoie les codes CIM contenu dans l'arborescence dont la 
-    * racine est le code passé en paramètre.
-    * @param code CIM
-    * @return liste codes 'enfants'.
-    */
-   List<CimMaster> findChildrenCodesManager(CimMaster code);
+	@Autowired
+	private EntityManagerFactory entityManagerFactory;
 
-   /**
-    * Renvoie le code CIM correspondant à l'ID passé en paramètre.
-    * @param codeId
-    * @return code CIM
-    */
-   CimMaster findByIdManager(Integer codeId);
+	@Override
+	public List<CimMaster> findAllObjectsManager() {
+		return IterableUtils.toList(cimMasterDao.findAll());
+	}
+
+	@Override
+	public List<CimMaster> findByCodeLikeManager(String code, final boolean exactMatch) {
+		if (!exactMatch) {
+			code = "%" + code + "%";
+		}
+		log.debug("Recherche Cim par code: " + code + " exactMatch " + String.valueOf(exactMatch));
+		return cimMasterDao.findByCodeLike(code);
+	}
+
+	@Override
+	public List<CimMaster> findByLibelleLikeManager(String libelle, final boolean exactMatch) {
+		if (!exactMatch) {
+			libelle = "%" + libelle + "%";
+		}
+		log.debug("Recherche Cim par libelle: " + libelle + " exactMatch " + String.valueOf(exactMatch));
+		return cimMasterDao.findByLibelleLike(libelle);
+	}
+
+	/**
+	 * Recherche les enfants du code Cim passé en paramètre. Utilise le membre
+	 * 'level' pour attaquer le bon membre 'id' et récupérer les codes de level sup
+	 * + 1. Si parent = null, renvoie les codes de niveau 1.
+	 * 
+	 * @param code Cim pour lequel on recherche les enfants.
+	 * @return une liste de codes CimMaster.
+	 */
+	public List<CimMaster> findByCimParentManager(final CimMaster parent) {
+		List<CimMaster> cims = new ArrayList<>();
+		if (parent != null) {
+			if (parent.getLevel() < 7) { // ->| id7 ds codif
+				try {
+					final String idColname = "id" + parent.getLevel();
+					Integer levelId;
+
+					levelId = (Integer) PropertyUtils.getSimpleProperty(parent, idColname);
+					final StringBuffer sb = new StringBuffer();
+					sb.append("SELECT c FROM CimMaster c WHERE c.");
+					sb.append(idColname);
+					sb.append(" = ");
+					sb.append(levelId);
+					sb.append(" AND c.level = ");
+					sb.append(parent.getLevel() + 1);
+
+					final EntityManager em = entityManagerFactory.createEntityManager();
+					final TypedQuery<CimMaster> query = em.createQuery(sb.toString(), CimMaster.class);
+					cims = query.getResultList();
+				} catch (final Exception e) {
+					log.error("level cimMaster introuvable par PropertyUtils");
+				}
+			}
+		} else { // renvoie les codes de niveau 1
+			cims = cimMasterDao.findByLevel(1);
+		}
+
+		return cims;
+	}
+
+	/**
+	 * Recherche les codes ADICAP topo issus du transcodage du code Cim passé en
+	 * paramètre.
+	 * 
+	 * @param code cim qui sera transcodé
+	 * @return Liste de codes Adicap
+	 */
+	public Set<Adicap> getAdicapsManager(final CimMaster cim) {
+		Set<Adicap> adicaps = new HashSet<>();
+		final CimMaster cimM = cimMasterDao.save(cim);
+		adicaps = cimM.getAdicaps();
+		adicaps.size(); // operation empechant LazyInitialisationException
+		return adicaps;
+	}
+
+	/**
+	 * Renvoie les codes CIM contenu dans l'arborescence dont la racine est le code
+	 * passé en paramètre.
+	 * 
+	 * @param code CIM
+	 * @return liste codes 'enfants'.
+	 */
+	public List<CimMaster> findChildrenCodesManager(final CimMaster code) {
+		final List<CimMaster> codes = new ArrayList<>();
+		if (code != null) {
+			codes.add(code);
+			findRecursiveChildren(code, codes);
+		}
+		return codes;
+	}
+
+	private void findRecursiveChildren(final CimMaster parent, final List<CimMaster> codes) {
+		final List<CimMaster> children = findByCimParentManager(parent);
+		codes.addAll(children);
+		for (int i = 0; i < children.size(); i++) {
+			findRecursiveChildren(children.get(i), codes);
+		}
+	}
+
+	/**
+	 * Renvoie le code CIM correspondant à l'ID passé en paramètre.
+	 * 
+	 * @param codeId
+	 * @return code CIM
+	 */
+	public CimMaster findByIdManager(final Integer codeId) {
+		return cimMasterDao.findById(codeId).get();
+	}
 }

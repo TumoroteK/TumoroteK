@@ -84,7 +84,7 @@ public class TableAnnotationTemplateManagerImpl implements TableAnnotationTempla
    @Override
    public List<TableAnnotationTemplate> findAllObjectsManager(){
       log.debug("Recherche de tous les TableAnnotationTemplates");
-      return tableAnnotationTemplateDao.findAll();
+      return IterableUtils.toList(tableAnnotationTemplateDao.findAll());
    }
 
    @Override
@@ -92,7 +92,7 @@ public class TableAnnotationTemplateManagerImpl implements TableAnnotationTempla
       if(pk != null){
          return tableAnnotationTemplateDao.findByExcludedPK(pk);
       }else{
-         return tableAnnotationTemplateDao.findAll();
+         return IterableUtils.toList(tableAnnotationTemplateDao.findAll());
       }
    }
 
@@ -140,30 +140,30 @@ public class TableAnnotationTemplateManagerImpl implements TableAnnotationTempla
    }
 
    @Override
-   public void createObjectManager(final TableAnnotationTemplate tableAnnotationTemplate, final Template template,
+   public void saveManager(final TableAnnotationTemplate tableAnnotationTemplate, final Template template,
       final TableAnnotation tableAnnotation){
 
       // validation de l'objet à créer
       validateObjectManager(template, tableAnnotation);
 
-      tableAnnotationTemplate.setTemplate(templateDao.mergeObject(template));
-      tableAnnotationTemplate.setTableAnnotation(tableAnnotationDao.mergeObject(tableAnnotation));
+      tableAnnotationTemplate.setTemplate(templateDao.save(template));
+      tableAnnotationTemplate.setTableAnnotation(tableAnnotationDao.save(tableAnnotation));
 
       // création
-      tableAnnotationTemplateDao.createObject(tableAnnotationTemplate);
+      tableAnnotationTemplateDao.save(tableAnnotationTemplate);
 
       log.info("Enregistrement objet TableAnnotationTemplate " + tableAnnotationTemplate.toString());
    }
 
    @Override
-   public void updateObjectManager(final TableAnnotationTemplate tableAnnotationTemplate, final Template template,
+   public void saveManager(final TableAnnotationTemplate tableAnnotationTemplate, final Template template,
       final TableAnnotation tableAnnotation){
       //template required
       if(template == null){
          log.warn("Objet obligatoire Template manquant" + " lors de la validation d'un TableAnnotationTemplate");
          throw new RequiredObjectIsNullException("TableAnnotationTemplate", "modification", "Template");
       }else{
-         tableAnnotationTemplate.setTemplate(templateDao.mergeObject(template));
+         tableAnnotationTemplate.setTemplate(templateDao.save(template));
       }
 
       //tableAnnotation required
@@ -171,19 +171,19 @@ public class TableAnnotationTemplateManagerImpl implements TableAnnotationTempla
          log.warn("Objet obligatoire TableAnnotation manquant" + " lors de la validation d'un TableAnnotationTemplate");
          throw new RequiredObjectIsNullException("TableAnnotationTemplate", "modification", "TableAnnotation");
       }else{
-         tableAnnotationTemplate.setTableAnnotation(tableAnnotationDao.mergeObject(tableAnnotation));
+         tableAnnotationTemplate.setTableAnnotation(tableAnnotationDao.save(tableAnnotation));
       }
 
       // création
-      tableAnnotationTemplateDao.updateObject(tableAnnotationTemplate);
+      tableAnnotationTemplateDao.save(tableAnnotationTemplate);
 
       log.info("Enregistrement objet TableAnnotationTemplate " + tableAnnotationTemplate.toString());
    }
 
    @Override
-   public void removeObjectManager(final TableAnnotationTemplate tableAnnotationTemplate){
+   public void deleteByIdManager(final TableAnnotationTemplate tableAnnotationTemplate){
       if(tableAnnotationTemplate != null){
-         tableAnnotationTemplateDao.removeObject(tableAnnotationTemplate.getPk());
+         tableAnnotationTemplateDao.deleteById(tableAnnotationTemplate.getPk());
          log.info("Suppression de l'objet TableAnnotationTemplate : " + tableAnnotationTemplate.toString());
       }else{
          log.warn("Suppression d'un TableAnnotationTemplate null");

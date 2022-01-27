@@ -70,9 +70,9 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public interface AnnotationValeurManager
 {
 
-   void createObject(AnnotationValeur annoVal);
+   void save(AnnotationValeur annoVal);
 
-   void updateObject(AnnotationValeur annoVal);
+   void save(AnnotationValeur annoVal);
 
    /**
     * Persiste une instance afin de l'enregistrer dans la base de données.
@@ -88,7 +88,7 @@ public interface AnnotationValeurManager
     * @param filesCreated liste de fichier créés
     * @param filesToDelete liste de fichier à supprimer
     */
-   void createOrUpdateObjectManager(AnnotationValeur valeur, ChampAnnotation champ, TKAnnotableObject obj, Banque banque,
+   void createOrsaveManager(AnnotationValeur valeur, ChampAnnotation champ, TKAnnotableObject obj, Banque banque,
       Fichier fichier, Utilisateur utilisateur, String operation, String baseDir, List<File> filesCreated,
       List<File> filesToDelete);
 
@@ -134,7 +134,7 @@ public interface AnnotationValeurManager
     * @param table AnnotationValeur à supprimer de la base de données.
     * @param filesToDelete liste de fichier à supprimer
     */
-   void removeObjectManager(AnnotationValeur valeur, List<File> filesToDelete);
+   void deleteByIdManager(AnnotationValeur valeur, List<File> filesToDelete);
 
    /**
     * Recherche toutes les instances AnnotationValeur présentes dans la base.

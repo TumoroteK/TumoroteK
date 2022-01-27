@@ -47,7 +47,7 @@ import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.controller.AbstractListeController2;
 import fr.aphp.tumorotek.decorator.TKSelectObjectRenderer;
 import fr.aphp.tumorotek.model.TKdataObject;
-import fr.aphp.tumorotek.model.cession.Contrat;
+import fr.aphp.tumorotek.model.coeur.cession.Contrat;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 

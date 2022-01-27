@@ -103,7 +103,7 @@ public class EntiteManagerImpl implements EntiteManager
    @Override
    public List<Entite> findAllObjectsManager(){
       log.debug("Recherche de toutes les Entites");
-      return entiteDao.findAll();
+      return IterableUtils.toList(entiteDao.findAll());
    }
 
    @Override

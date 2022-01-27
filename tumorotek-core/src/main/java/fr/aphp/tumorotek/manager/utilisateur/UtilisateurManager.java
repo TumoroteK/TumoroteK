@@ -191,7 +191,7 @@ public interface UtilisateurManager
     * @param admin Utilisateur créant le nouveau compte.
     * @param plateforme origine du nouveau compte.
     */
-   void createObjectManager(Utilisateur utilisateur, Collaborateur collaborateur, List<ProfilUtilisateur> profils,
+   void saveManager(Utilisateur utilisateur, Collaborateur collaborateur, List<ProfilUtilisateur> profils,
       List<Plateforme> plateformes, Utilisateur admin, Plateforme origine);
 
    /**
@@ -202,7 +202,7 @@ public interface UtilisateurManager
     * @param plateformes Liste de Plateforme.
     * @param admin Utilisateur modifiant le compte.
     */
-   void updateObjectManager(Utilisateur utilisateur, Collaborateur collaborateur, List<ProfilUtilisateur> profils,
+   void saveManager(Utilisateur utilisateur, Collaborateur collaborateur, List<ProfilUtilisateur> profils,
       List<Plateforme> plateformes, Utilisateur admin, OperationType oType);
 
    /**
@@ -227,7 +227,7 @@ public interface UtilisateurManager
     * Supprime un Utilisateur de la base de données.
     * @param utilisateur Utilisateur à supprimer de la base de données.
     */
-   void removeObjectManager(Utilisateur utilisateur);
+   void deleteByIdManager(Utilisateur utilisateur);
 
    /**
     * Archive les utilisateurs pas encore archivés, dont le timeout a expiré.

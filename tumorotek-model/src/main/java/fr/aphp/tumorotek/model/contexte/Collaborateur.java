@@ -56,9 +56,9 @@ import org.hibernate.annotations.GenericGenerator;
 
 import fr.aphp.tumorotek.model.TKFantomableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
-import fr.aphp.tumorotek.model.cession.Cession;
-import fr.aphp.tumorotek.model.cession.Contrat;
-import fr.aphp.tumorotek.model.cession.Retour;
+import fr.aphp.tumorotek.model.coeur.cession.Cession;
+import fr.aphp.tumorotek.model.coeur.cession.Contrat;
+import fr.aphp.tumorotek.model.coeur.cession.Retour;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.PatientMedecin;

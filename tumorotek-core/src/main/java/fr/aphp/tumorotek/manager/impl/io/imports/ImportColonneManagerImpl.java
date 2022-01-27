@@ -97,7 +97,7 @@ public class ImportColonneManagerImpl implements ImportColonneManager
    @Override
    public List<ImportColonne> findAllObjectsManager(){
       log.debug("Recherche de tous les ImportColonnes.");
-      return importColonneDao.findAll();
+      return IterableUtils.toList(importColonneDao.findAll());
    }
 
    @Override
@@ -223,52 +223,52 @@ public class ImportColonneManagerImpl implements ImportColonneManager
    }
 
    @Override
-   public void createObjectManager(final ImportColonne importColonne, final ImportTemplate template, final Champ champ){
+   public void saveManager(final ImportColonne importColonne, final ImportTemplate template, final Champ champ){
 
       // validation de l'objet
       validateObjectManager(importColonne, template, champ, "creation");
 
-      importColonne.setImportTemplate(importTemplateDao.mergeObject(template));
+      importColonne.setImportTemplate(importTemplateDao.save(template));
 
-      champManager.createObjectManager(champ, null);
+      champManager.saveManager(champ, null);
       importColonne.setChamp(champ);
 
-      importColonneDao.createObject(importColonne);
+      importColonneDao.save(importColonne);
 
       log.info("Enregistrement objet ImportColonne " + importColonne.toString());
 
    }
 
    @Override
-   public void updateObjectManager(final ImportColonne importColonne, final ImportTemplate template, final Champ champ){
+   public void saveManager(final ImportColonne importColonne, final ImportTemplate template, final Champ champ){
 
       // validation de l'objet
       validateObjectManager(importColonne, template, champ, "modification");
 
-      importColonne.setImportTemplate(importTemplateDao.mergeObject(template));
+      importColonne.setImportTemplate(importTemplateDao.save(template));
 
       // si le champ n'existe pas, on le crée
       if(champ.getChampId() == null){
-         champManager.createObjectManager(champ, null);
+         champManager.saveManager(champ, null);
       }else{
-         champManager.updateObjectManager(champ, null);
+         champManager.saveManager(champ, null);
       }
       importColonne.setChamp(champ);
 
-      importColonneDao.updateObject(importColonne);
+      importColonneDao.save(importColonne);
 
       log.info("Enregistrement objet ImportColonne " + importColonne.toString());
 
    }
 
    @Override
-   public void removeObjectManager(final ImportColonne importColonne){
+   public void deleteByIdManager(final ImportColonne importColonne){
       if(importColonne != null){
          final Champ chp = importColonne.getChamp();
-         importColonneDao.removeObject(importColonne.getImportColonneId());
+         importColonneDao.deleteById(importColonne.getImportColonneId());
          log.info("Suppression de l'objet ImportColonne : " + importColonne.toString());
 
-         champManager.removeObjectManager(chp);
+         champManager.deleteByIdManager(chp);
       }else{
          log.warn("Suppression d'un ImportColonne null");
       }

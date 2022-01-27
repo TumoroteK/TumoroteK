@@ -37,7 +37,7 @@ package fr.aphp.tumorotek.manager.coeur.cession;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.model.cession.CessionType;
+import fr.aphp.tumorotek.model.coeur.cession.CessionType;
 
 /**
  *

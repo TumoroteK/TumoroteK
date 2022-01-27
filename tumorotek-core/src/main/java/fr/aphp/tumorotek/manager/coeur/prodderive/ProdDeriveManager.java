@@ -341,7 +341,7 @@ public interface ProdDeriveManager
     * @param base directory pour enregistrer un fichier associé 
     * dans le file system
     */
-   void createObjectManager(ProdDerive prodDerive, Banque banque, ProdType type, ObjetStatut statut, Collaborateur collab,
+   void saveManager(ProdDerive prodDerive, Banque banque, ProdType type, ObjetStatut statut, Collaborateur collab,
       Emplacement emplacement, Unite volumeUnite, Unite concUnite, Unite quantiteUnite, ModePrepaDerive modePrepaDerive,
       ProdQualite qualite, Transformation transfo, List<AnnotationValeur> listAnnoToCreateOrUpdate, List<File> filesCreated,
       Utilisateur utilisateur, boolean doValidation, String baseDir, boolean isImport);
@@ -368,7 +368,7 @@ public interface ProdDeriveManager
     * @param base directory pour enregistrer un fichier associé 
     * dans le file system
     */
-   void updateObjectManager(ProdDerive prodDerive, Banque banque, ProdType type, ObjetStatut statut, Collaborateur collab,
+   void saveManager(ProdDerive prodDerive, Banque banque, ProdType type, ObjetStatut statut, Collaborateur collab,
       Emplacement emplacement, Unite volumeUnite, Unite concUnite, Unite quantiteUnite, ModePrepaDerive modePrepaDerive,
       ProdQualite qualite, Transformation transfo, List<AnnotationValeur> listAnnoToCreateOrUpdate,
       List<AnnotationValeur> listAnnoToDelete, List<File> filesCreated, List<File> filesToDelete, 
@@ -402,7 +402,7 @@ public interface ProdDeriveManager
     * @throws ObjectUsedException si derive reference des derives
     * ou est référencé par des cessions.
     */
-   void removeObjectManager(ProdDerive prodDerive, String comments, Utilisateur user, List<File> filesToDelete);
+   void deleteByIdManager(ProdDerive prodDerive, String comments, Utilisateur user, List<File> filesToDelete);
 
    /**
     * Supprime un objet de la base de données et en cascade tous les objets 
@@ -413,7 +413,7 @@ public interface ProdDeriveManager
     * @param Utilisateur réalisant la suppression.
     * @param liste des fichiers à supprimer après transaction
     */
-   void removeObjectCascadeManager(ProdDerive derive, String comments, Utilisateur user, List<File> filesToDelete);
+   void deleteByIdCascadeManager(ProdDerive derive, String comments, Utilisateur user, List<File> filesToDelete);
 
    /**
     * Cree une liste de derives avec une liste d'annotations dont les 
@@ -499,7 +499,7 @@ public interface ProdDeriveManager
     * @throws DoublonFoundException Lance une exception si l'objet
     * est utilisé par des échantillons.
     */
-   void removeObjectCascadeManager(Transformation transformation, String comments, Utilisateur user, List<File> filesToDelete);
+   void deleteByIdCascadeManager(Transformation transformation, String comments, Utilisateur user, List<File> filesToDelete);
 
    /**
     * Recherche une liste de produits dérivés dont le code se trouve
@@ -521,7 +521,7 @@ public interface ProdDeriveManager
    List<Integer> findByPatientNomOrNipInListManager(List<String> criteres, List<Banque> banks);
 
    /**
-    * Surcharge du manager updateObject pour lui ajouter les non 
+    * Surcharge du manager save pour lui ajouter les non 
     * conformites.
     * @param prodDerive
     * @param banque
@@ -544,7 +544,7 @@ public interface ProdDeriveManager
     * @param noconfsTraitement
     * @param noconfsCession
     */
-   void updateObjectWithNonConformitesManager(ProdDerive prodDerive, Banque banque, ProdType type, ObjetStatut statut,
+   void saveWithNonConformitesManager(ProdDerive prodDerive, Banque banque, ProdType type, ObjetStatut statut,
       Collaborateur collab, Emplacement emplacement, Unite volumeUnite, Unite concUnite, Unite quantiteUnite,
       ModePrepaDerive modePrepaDerive, ProdQualite qualite, Transformation transfo,
       List<AnnotationValeur> listAnnoToCreateOrUpdate, List<AnnotationValeur> listAnnoToDelete, 
@@ -575,7 +575,7 @@ public interface ProdDeriveManager
     * @param noconfsCess
     * @since 2.0.10
     */
-   void createObjectWithNonConformitesManager(ProdDerive prodDerive, Banque banque, ProdType type, ObjetStatut statut,
+   void saveWithNonConformitesManager(ProdDerive prodDerive, Banque banque, ProdType type, ObjetStatut statut,
       Collaborateur collab, Emplacement emplacement, Unite volumeUnite, Unite concUnite, Unite quantiteUnite,
       ModePrepaDerive modePrepaDerive, ProdQualite qualite, Transformation transfo,
       List<AnnotationValeur> listAnnoToCreateOrUpdate, Utilisateur utilisateur, boolean doValidation,

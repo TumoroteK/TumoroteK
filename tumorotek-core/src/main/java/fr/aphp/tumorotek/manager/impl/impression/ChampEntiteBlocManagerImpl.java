@@ -76,7 +76,7 @@ public class ChampEntiteBlocManagerImpl implements ChampEntiteBlocManager
    @Override
    public List<ChampEntiteBloc> findAllObjectsManager(){
       log.debug("Recherche de tous les ChampEntiteBlocs.");
-      return champEntiteBlocDao.findAll();
+      return IterableUtils.toList(champEntiteBlocDao.findAll());
    }
 
    @Override

@@ -156,7 +156,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
    }
 
    @Override
-   public void createOrUpdateObjectManager(final TableAnnotation table, final Entite entite, final Catalogue catalogue,
+   public void createOrsaveManager(final TableAnnotation table, final Entite entite, final Catalogue catalogue,
       final List<ChampAnnotation> champs, final List<Banque> banques, final Banque current, final Utilisateur utilisateur,
       final String operation, final String baseDir, final Plateforme pf){
 
@@ -169,10 +169,10 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
 
       // merge non required
       if(catalogue != null){
-         table.setCatalogue(catalogueDao.mergeObject(catalogue));
+         table.setCatalogue(catalogueDao.save(catalogue));
       }
       if(pf != null){
-         table.setPlateforme(plateformeDao.mergeObject(pf));
+         table.setPlateforme(plateformeDao.save(pf));
       }
 
       //Doublon
@@ -180,12 +180,12 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
          if((operation.equals("creation") || operation.equals("modification"))){
             try{
                if(operation.equals("creation")){
-                  tableAnnotationDao.createObject(table);
+                  tableAnnotationDao.save(table);
                   log.info("Enregistrement objet TableAnnotation " + table.toString());
                   CreateOrUpdateUtilities.createAssociateOperation(table, operationManager,
                      operationTypeDao.findByNom("Creation").get(0), utilisateur);
                }else{
-                  tableAnnotationDao.updateObject(table);
+                  tableAnnotationDao.save(table);
                   log.info("Modification objet TableAnnotation " + table.toString());
                   CreateOrUpdateUtilities.createAssociateOperation(table, operationManager,
                      operationTypeDao.findByNom("Modification").get(0), utilisateur);
@@ -207,7 +207,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
                if(table.getTableAnnotationId() != null && operation.equals("creation")){
                   final List<TableAnnotationBanque> tabs = new ArrayList<>(table.getTableAnnotationBanques());
                   for(int i = 0; i < tabs.size(); i++){
-                     tableAnnotationBanqueDao.removeObject(tabs.get(i).getPk());
+                     tableAnnotationBanqueDao.deleteById(tabs.get(i).getPk());
                   }
                   table.getTableAnnotationBanques().clear();
                   table.setTableAnnotationId(null);
@@ -227,7 +227,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
    @Override
    public List<TableAnnotation> findAllObjectsManager(){
       log.debug("Recherche totalite des TableAnnotation");
-      return tableAnnotationDao.findAll();
+      return IterableUtils.toList(tableAnnotationDao.findAll());
    }
 
    @Override
@@ -255,7 +255,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
    @Override
    public boolean findDoublonManager(final TableAnnotation table){
       if(table.getTableAnnotationId() == null){
-         return tableAnnotationDao.findAll().contains(table);
+         return IterableUtils.toList(tableAnnotationDao.findAll()).contains(table);
       }
          return tableAnnotationDao.findByExcludedId(table.getTableAnnotationId()).contains(table);
       }
@@ -264,7 +264,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
    public Set<Banque> getBanquesManager(final TableAnnotation tab){
       final Set<Banque> banques = new HashSet<>();
       if(tab.getTableAnnotationId() != null){
-         final TableAnnotation table = tableAnnotationDao.mergeObject(tab);
+         final TableAnnotation table = tableAnnotationDao.save(tab);
          final Set<TableAnnotationBanque> tabs = table.getTableAnnotationBanques();
          final Iterator<TableAnnotationBanque> it = tabs.iterator();
          while(it.hasNext()){
@@ -279,7 +279,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
    public Set<TableAnnotationBanque> getTableAnnotationBanquesManager(final TableAnnotation tab){
       Set<TableAnnotationBanque> tabs = new HashSet<>();
       if(tab.getTableAnnotationId() != null){
-         final TableAnnotation table = tableAnnotationDao.mergeObject(tab);
+         final TableAnnotation table = tableAnnotationDao.save(tab);
          tabs = table.getTableAnnotationBanques();
          tabs.isEmpty(); // operation empechant LazyInitialisationException
       }
@@ -290,7 +290,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
    public Set<ChampAnnotation> getChampAnnotationsManager(final TableAnnotation tab){
       Set<ChampAnnotation> champs = new HashSet<>();
       if(tab.getTableAnnotationId() != null){
-         final TableAnnotation table = tableAnnotationDao.mergeObject(tab);
+         final TableAnnotation table = tableAnnotationDao.save(tab);
          champs = table.getChampAnnotations();
          champs.isEmpty(); // operation empechant LazyInitialisationException
       }
@@ -298,16 +298,16 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
    }
 
    @Override
-   public void removeObjectManager(final TableAnnotation table, final String comments, final Utilisateur usr,
+   public void deleteByIdManager(final TableAnnotation table, final String comments, final Utilisateur usr,
       final String baseDir){
       if(table != null){
          final Iterator<ChampAnnotation> it = getChampAnnotationsManager(table).iterator();
          while(it.hasNext()){
-            champAnnotationManager.removeObjectManager(it.next(), comments, usr, baseDir);
+            champAnnotationManager.deleteByIdManager(it.next(), comments, usr, baseDir);
          }
          table.setChampAnnotations(new HashSet<ChampAnnotation>());
 
-         tableAnnotationDao.removeObject(table.getTableAnnotationId());
+         tableAnnotationDao.deleteById(table.getTableAnnotationId());
          log.info("Suppression objet TableAnnotation " + table.toString());
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(table, operationManager, comments, usr);
@@ -327,7 +327,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
     */
    private void updateBanques(final TableAnnotation tableAnno, final List<Banque> banques, final String baseDir){
 
-      final TableAnnotation table = tableAnnotationDao.mergeObject(tableAnno);
+      final TableAnnotation table = tableAnnotationDao.save(tableAnno);
 
       final Iterator<TableAnnotationBanque> it = table.getTableAnnotationBanques().iterator();
 
@@ -346,10 +346,10 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
       // on parcourt la liste la liste des banques à retirer de
       // l'association
       for(int i = 0; i < banksToRemove.size(); i++){
-         final TableAnnotationBanque tab = tableAnnotationBanqueDao.mergeObject(banksToRemove.get(i));
+         final TableAnnotationBanque tab = tableAnnotationBanqueDao.save(banksToRemove.get(i));
          // on retire la TAB de l'association et on la supprime
          table.getTableAnnotationBanques().remove(tab);
-         tableAnnotationBanqueDao.removeObject(tab.getPk());
+         tableAnnotationBanqueDao.deleteById(tab.getPk());
 
          log.debug("Suppression de l'association entre la table : " + table.toString() + " et suppression de la relation avec"
             + " la banque: " + tab.getBanque().toString());
@@ -367,7 +367,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
          // si une banque n'était pas associé à la table
          if(!table.getTableAnnotationBanques().contains(newtab)){
             // on ajoute la banque dans l'association dans le bon ordre
-            table.getTableAnnotationBanques().add(tableAnnotationBanqueDao.mergeObject(newtab));
+            table.getTableAnnotationBanques().add(tableAnnotationBanqueDao.save(newtab));
 
             log.debug(
                "Ajout de l'association entre la table : " + table.toString() + " et la banque : " + banques.get(i).toString());
@@ -377,7 +377,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
          }else{ // on modifie l'ordre de la table present avec la liste
             newtab = tableAnnotationBanqueDao.findById(pk);
             // newtab.setOrdre(i + 1);
-            tableAnnotationBanqueDao.mergeObject(newtab);
+            tableAnnotationBanqueDao.save(newtab);
          }
       }
       // creation d'un dossier si table contient chp fichier
@@ -402,7 +402,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
       final List<File> filesToDelete = new ArrayList<>();
 
       for(int i = 0; i < valeurs.size(); i++){
-         annotationValeurManager.removeObjectManager(valeurs.get(i), filesToDelete);
+         annotationValeurManager.deleteByIdManager(valeurs.get(i), filesToDelete);
       }
       log.info("Suppression des valeurs d'annotation pour l'association" + " table " + tab.getTableAnnotation() + " et banque "
          + tab.getBanque());
@@ -427,7 +427,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
       //Entite required
       if(entite != null){
          // merge entite object
-         table.setEntite(entiteDao.mergeObject(entite));
+         table.setEntite(entiteDao.save(entite));
       }else if(table.getEntite() == null){
          log.warn("Objet obligatoire Entite manquant" + " lors de la " + operation + " de table annotation");
          throw new RequiredObjectIsNullException("TableAnnotation", operation, "Entite");
@@ -441,7 +441,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
    public void createOrUpdateChampsManager(final TableAnnotation tab, final List<ChampAnnotation> champs, final Utilisateur usr,
       final Banque current, final String baseDir){
 
-      final TableAnnotation table = tableAnnotationDao.mergeObject(tab);
+      final TableAnnotation table = tableAnnotationDao.save(tab);
 
       // realise une copie de la liste de champs pour rollback
       final List<ChampAnnotation> copies = new ArrayList<>();
@@ -480,7 +480,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
                champs.get(i).setChampCalcule(null);
             }
 
-            champAnnotationManager.createOrUpdateObjectManager(champs.get(i), table, null, its, defs, cc, usr, current, operation,
+            champAnnotationManager.createOrsaveManager(champs.get(i), table, null, its, defs, cc, usr, current, operation,
                baseDir);
 
             if(operation.equals("creation")){
@@ -514,7 +514,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
          i++;
          chp = it.next();
          chp.setOrdre(i);
-         champAnnotationDao.mergeObject(chp);
+         champAnnotationDao.save(chp);
       }
    }
 

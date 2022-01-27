@@ -69,7 +69,7 @@ import fr.aphp.tumorotek.action.utilisateur.ProfilExport;
 import fr.aphp.tumorotek.component.ProgressBarComponent;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.manager.ConfigManager;
-import fr.aphp.tumorotek.model.cession.Cession;
+import fr.aphp.tumorotek.model.coeur.cession.Cession;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Contexte;
 import fr.aphp.tumorotek.model.contexte.EContexte;

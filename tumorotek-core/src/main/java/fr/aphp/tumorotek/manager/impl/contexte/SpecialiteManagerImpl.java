@@ -123,7 +123,7 @@ public class SpecialiteManagerImpl implements SpecialiteManager
       if(o != null){
          final Specialite spe = o;
          if(spe.getId() == null){
-            return specialiteDao.findAll().contains(spe);
+            return IterableUtils.toList(specialiteDao.findAll()).contains(spe);
          }
          return specialiteDao.findByExcludedId(spe.getId()).contains(spe);
       }
@@ -132,15 +132,15 @@ public class SpecialiteManagerImpl implements SpecialiteManager
 
    @Override
    public boolean isUsedObjectManager(final Specialite obj){
-      final Specialite spe = specialiteDao.mergeObject(obj);
+      final Specialite spe = specialiteDao.save(obj);
       return spe.getCollaborateurs().size() > 0;
    }
 
    @Override
-   public void createObjectManager(final Specialite obj){
+   public void saveManager(final Specialite obj){
       BeanValidator.validateObject(obj, new Validator[] {specialiteValidator});
       if(!findDoublonManager(obj)){
-         specialiteDao.createObject(obj);
+         specialiteDao.save(obj);
          log.info("Enregistrement objet Specialite " + obj.toString());
       }else{
          log.warn("Doublon lors creation objet Specialite " + obj.toString());
@@ -149,10 +149,10 @@ public class SpecialiteManagerImpl implements SpecialiteManager
    }
 
    @Override
-   public void updateObjectManager(final Specialite obj){
+   public void saveManager(final Specialite obj){
       BeanValidator.validateObject(obj, new Validator[] {specialiteValidator});
       if(!findDoublonManager(obj)){
-         specialiteDao.updateObject(obj);
+         specialiteDao.save(obj);
          log.info("Modification objet Specialite " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet Specialite " + obj.toString());
@@ -161,9 +161,9 @@ public class SpecialiteManagerImpl implements SpecialiteManager
    }
 
    @Override
-   public void removeObjectManager(final Specialite obj){
+   public void deleteByIdManager(final Specialite obj){
       if(obj != null){
-         specialiteDao.removeObject(obj.getId());
+         specialiteDao.deleteById(obj.getId());
          log.info("Suppression objet Specialite " + obj.toString());
       }else{
          log.warn("Suppression d'une Specialite null");

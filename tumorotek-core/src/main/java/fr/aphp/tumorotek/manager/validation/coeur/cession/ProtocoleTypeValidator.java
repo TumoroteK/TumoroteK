@@ -40,7 +40,7 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.manager.validation.ValidationUtilities;
-import fr.aphp.tumorotek.model.cession.ProtocoleType;
+import fr.aphp.tumorotek.model.coeur.cession.ProtocoleType;
 
 /**
  * Validator pour le bean domaine ProtocoleType (de cession).<br>

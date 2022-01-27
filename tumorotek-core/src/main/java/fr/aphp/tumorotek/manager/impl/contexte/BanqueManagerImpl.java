@@ -85,7 +85,6 @@ import fr.aphp.tumorotek.manager.utilisateur.UtilisateurManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.contexte.BanqueValidator;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
-import fr.aphp.tumorotek.model.cession.Cession;
 import fr.aphp.tumorotek.model.code.CodeDossier;
 import fr.aphp.tumorotek.model.code.CodeSelect;
 import fr.aphp.tumorotek.model.code.CodeUtilisateur;
@@ -93,6 +92,7 @@ import fr.aphp.tumorotek.model.coeur.annotation.Catalogue;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotationBanque;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotationBanquePK;
+import fr.aphp.tumorotek.model.coeur.cession.Cession;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
@@ -296,7 +296,7 @@ public class BanqueManagerImpl implements BanqueManager
    @Override
    public Set<Prelevement> getPrelevementsManager(Banque banque){
       if(banque != null){
-         banque = banqueDao.mergeObject(banque);
+         banque = banqueDao.save(banque);
          final Set<Prelevement> prlvts = banque.getPrelevements();
          prlvts.size();
 
@@ -313,7 +313,7 @@ public class BanqueManagerImpl implements BanqueManager
    @Override
    public Set<Echantillon> getEchantillonsManager(Banque banque){
       if(banque != null){
-         banque = banqueDao.mergeObject(banque);
+         banque = banqueDao.save(banque);
          final Set<Echantillon> echans = banque.getEchantillons();
          echans.size();
 
@@ -330,7 +330,7 @@ public class BanqueManagerImpl implements BanqueManager
    @Override
    public Set<ProdDerive> getProdDerivesManager(Banque banque){
       if(banque != null){
-         banque = banqueDao.mergeObject(banque);
+         banque = banqueDao.save(banque);
          final Set<ProdDerive> derives = banque.getProdDerives();
          derives.size();
 
@@ -347,7 +347,7 @@ public class BanqueManagerImpl implements BanqueManager
    @Override
    public Set<Service> getServicesStockageManager(Banque banque){
       if(banque != null){
-         banque = banqueDao.mergeObject(banque);
+         banque = banqueDao.save(banque);
          final Set<Service> services = new HashSet<>();
          final Set<Conteneur> conts = banque.getConteneurs();
          final Iterator<Conteneur> itor = conts.iterator();
@@ -362,7 +362,7 @@ public class BanqueManagerImpl implements BanqueManager
    @Override
    public Set<Conteneur> getConteneursManager(Banque banque){
       if(banque != null){
-         banque = banqueDao.mergeObject(banque);
+         banque = banqueDao.save(banque);
          final Set<Conteneur> conts = banque.getConteneurs();
          conts.size();
          return conts;
@@ -441,7 +441,7 @@ public class BanqueManagerImpl implements BanqueManager
    }
 
    @Override
-   public void createOrUpdateObjectManager(final Banque banque, final Plateforme pf, final Contexte contexte,
+   public void createOrsaveManager(final Banque banque, final Plateforme pf, final Contexte contexte,
       final Service service, final Collaborateur responsable, final Collaborateur contact, final List<Conteneur> conteneurs,
       final List<BanqueTableCodage> codifications, final List<TableAnnotation> tablesPatient,
       final List<TableAnnotation> tablesPrlvt, final List<TableAnnotation> tablesEchan, final List<TableAnnotation> tablesDerive,
@@ -455,13 +455,13 @@ public class BanqueManagerImpl implements BanqueManager
 
       //Plateforme required
       if(pf != null){
-         banque.setPlateforme(plateformeDao.mergeObject(pf));
+         banque.setPlateforme(plateformeDao.save(pf));
       }else if(banque.getPlateforme() == null){
          log.warn("Objet obligatoire Plateforme manquant" + " lors de la " + operation + " d'une Banque");
          throw new RequiredObjectIsNullException("Banque", operation, "Plateforme");
       }
       if(contexte != null){
-         banque.setContexte(contexteDao.mergeObject(contexte));
+         banque.setContexte(contexteDao.save(contexte));
       }else if(banque.getContexte() == null){
          log.warn("Objet obligatoire Contexte manquant" + " lors de la " + operation + " d'une Banque");
          throw new RequiredObjectIsNullException("Banque", operation, "Contexte");
@@ -473,27 +473,27 @@ public class BanqueManagerImpl implements BanqueManager
       //Doublon
       if(!findDoublonManager(banque)){
          if(service != null){
-            banque.setProprietaire(serviceDao.mergeObject(service));
+            banque.setProprietaire(serviceDao.save(service));
          }else{
             banque.setProprietaire(null);
          }
          if(responsable != null){
-            banque.setCollaborateur(collaborateurDao.mergeObject(responsable));
+            banque.setCollaborateur(collaborateurDao.save(responsable));
          }else{
             banque.setCollaborateur(null);
          }
          if(contact != null){
-            banque.setContact(collaborateurDao.mergeObject(contact));
+            banque.setContact(collaborateurDao.save(contact));
          }else{
             banque.setContact(null);
          }
          if(couleurEchan != null){
-            banque.setEchantillonCouleur(couleurDao.mergeObject(couleurEchan));
+            banque.setEchantillonCouleur(couleurDao.save(couleurEchan));
          }else{
             banque.setEchantillonCouleur(null);
          }
          if(couleurDerive != null){
-            banque.setProdDeriveCouleur(couleurDao.mergeObject(couleurDerive));
+            banque.setProdDeriveCouleur(couleurDao.save(couleurDerive));
          }else{
             banque.setProdDeriveCouleur(null);
          }
@@ -504,7 +504,7 @@ public class BanqueManagerImpl implements BanqueManager
 
             try{
                if(operation.equals("creation")){
-                  banqueDao.createObject(banque);
+                  banqueDao.save(banque);
                   log.info("Enregistrement objet Banque " + banque.toString());
 
                   oType = operationTypeDao.findByNom("Creation").get(0);
@@ -512,7 +512,7 @@ public class BanqueManagerImpl implements BanqueManager
                   // creation filesystem
                   manageFileSystemForBanque(basedir, banque, false);
                }else{
-                  banqueDao.updateObject(banque);
+                  banqueDao.save(banque);
                   log.info("Modification objet Banque " + banque.toString());
 
                   oType = operationTypeDao.findByNom("Modification").get(0);
@@ -567,7 +567,7 @@ public class BanqueManagerImpl implements BanqueManager
                      List<ProfilUtilisateur> newProfils = new ArrayList<>(userToUpdate.getProfilUtilisateurs());
                      userToUpdate.setProfilUtilisateurs(new HashSet<>());
                      
-                     utilisateurManager.updateObjectManager(userToUpdate, userToUpdate.getCollaborateur(),
+                     utilisateurManager.saveManager(userToUpdate, userToUpdate.getCollaborateur(),
                         newProfils, new ArrayList<>(userToUpdate.getPlateformes()),
                         utilisateur, oType);
                      
@@ -604,7 +604,7 @@ public class BanqueManagerImpl implements BanqueManager
     */
    private void updateConteneurs(final Banque banque, final List<Conteneur> conteneurs){
 
-      final Banque bank = banqueDao.mergeObject(banque);
+      final Banque bank = banqueDao.save(banque);
 
       final Iterator<Conteneur> it = bank.getConteneurs().iterator();
       final List<Conteneur> contsToRemove = new ArrayList<>();
@@ -622,7 +622,7 @@ public class BanqueManagerImpl implements BanqueManager
       // on parcourt la liste la liste des conteneurs à retirer de
       // l'association
       for(int i = 0; i < contsToRemove.size(); i++){
-         final Conteneur cont = conteneurDao.mergeObject(contsToRemove.get(i));
+         final Conteneur cont = conteneurDao.save(contsToRemove.get(i));
          // on retire le conteneur de l'association
          // en prenant de soin de supprimer les réservations au niveau
          // des enceintes
@@ -637,7 +637,7 @@ public class BanqueManagerImpl implements BanqueManager
          // si un conteneur n'était pas associé à la banque
          if(!bank.getConteneurs().contains(conteneurs.get(i))){
             // on ajoute le conteneur dans l'association
-            bank.getConteneurs().add(conteneurDao.mergeObject(conteneurs.get(i)));
+            bank.getConteneurs().add(conteneurDao.save(conteneurs.get(i)));
 
             log.debug("Ajout de l'association entre la banque : " + bank.toString() + " et le conteneur : "
                + conteneurs.get(i).toString());
@@ -655,7 +655,7 @@ public class BanqueManagerImpl implements BanqueManager
     */
    private void updateCodifications(final Banque banque, final List<BanqueTableCodage> codifications){
 
-      final Banque bank = banqueDao.mergeObject(banque);
+      final Banque bank = banqueDao.save(banque);
 
       final Set<BanqueTableCodage> btc = bank.getBanqueTableCodages();
       final Iterator<BanqueTableCodage> it = btc.iterator();
@@ -674,10 +674,10 @@ public class BanqueManagerImpl implements BanqueManager
       // on parcourt la liste des tables à retirer de
       // l'association
       for(int i = 0; i < tableToRemove.size(); i++){
-         final BanqueTableCodage tab = banqueTableCodageDao.mergeObject(tableToRemove.get(i));
+         final BanqueTableCodage tab = banqueTableCodageDao.save(tableToRemove.get(i));
          // on retire la table de l'association
          bank.getBanqueTableCodages().remove(tab);
-         banqueTableCodageDao.removeObject(tab.getPk());
+         banqueTableCodageDao.deleteById(tab.getPk());
 
          log.debug(
             "Suppression de l'association entre la banque : " + bank.toString() + " et la codification : " + tab.toString());
@@ -689,7 +689,7 @@ public class BanqueManagerImpl implements BanqueManager
          // si une table n'était pas associée à la banque
          if(!bank.getBanqueTableCodages().contains(codifications.get(i))){
             // on ajoute la table dans l'association
-            bank.getBanqueTableCodages().add(banqueTableCodageDao.mergeObject(codifications.get(i)));
+            bank.getBanqueTableCodages().add(banqueTableCodageDao.save(codifications.get(i)));
 
             log.debug("Ajout de l'association entre la banque : " + banque.toString() + " et la codification : "
                + codifications.get(i).toString());
@@ -708,7 +708,7 @@ public class BanqueManagerImpl implements BanqueManager
     */
    private void updateTablesAnnot(final Banque banque, final List<TableAnnotation> tables, final List<TableAnnotation> inits){
 
-      final Banque bank = banqueDao.mergeObject(banque);
+      final Banque bank = banqueDao.save(banque);
 
       final Iterator<TableAnnotation> it = inits.iterator();
       final List<TableAnnotationBanque> tabsToRemove = new ArrayList<>();
@@ -735,10 +735,10 @@ public class BanqueManagerImpl implements BanqueManager
             throw new ExistingAnnotationValuesException(tabsToRemove.get(i).getTableAnnotation(), banque);
          }
 
-         final TableAnnotationBanque tab = tableAnnotationBanqueDao.mergeObject(tabsToRemove.get(i));
+         final TableAnnotationBanque tab = tableAnnotationBanqueDao.save(tabsToRemove.get(i));
          // on retire la table de l'association et on le supprime
          bank.getTableAnnotationBanques().remove(tab);
-         tableAnnotationBanqueDao.removeObject(tab.getPk());
+         tableAnnotationBanqueDao.deleteById(tab.getPk());
 
          log.debug("Suppression de l'association entre la banque : " + bank.toString() + " et suppression de la table : "
             + tab.toString());
@@ -753,14 +753,14 @@ public class BanqueManagerImpl implements BanqueManager
          // si une table n'était pas associée à la banque
          if(!bank.getTableAnnotationBanques().contains(tAb)){
             // on ajoute la table dans l'association dans le bon ordre
-            bank.getTableAnnotationBanques().add(tableAnnotationBanqueDao.mergeObject(tAb));
+            bank.getTableAnnotationBanques().add(tableAnnotationBanqueDao.save(tAb));
 
             log.debug(
                "Ajout de l'association entre la banque : " + bank.toString() + " et la table : " + tables.get(i).toString());
          }else{ // on modifie l'ordre de la table present avec la liste
             tAb = tableAnnotationBanqueDao.findById(pk);
             tAb.setOrdre(i + 1);
-            tableAnnotationBanqueDao.mergeObject(tAb);
+            tableAnnotationBanqueDao.save(tAb);
          }
       }
    }
@@ -775,7 +775,7 @@ public class BanqueManagerImpl implements BanqueManager
     */
    private void updateCoulTypes(final Banque banque, final List<CouleurEntiteType> coulTypes){
 
-      final Banque bank = banqueDao.mergeObject(banque);
+      final Banque bank = banqueDao.save(banque);
 
       final Iterator<CouleurEntiteType> it = bank.getCouleurEntiteTypes().iterator();
       final List<CouleurEntiteType> coulsToRemove = new ArrayList<>();
@@ -793,10 +793,10 @@ public class BanqueManagerImpl implements BanqueManager
       // on parcourt la liste des couleurs à retirer de
       // l'association
       for(int i = 0; i < coulsToRemove.size(); i++){
-         final CouleurEntiteType coul = couleurEntiteTypeDao.mergeObject(coulsToRemove.get(i));
+         final CouleurEntiteType coul = couleurEntiteTypeDao.save(coulsToRemove.get(i));
          // on retire la couleur de l'association et on supprime l'assoce
          bank.getCouleurEntiteTypes().remove(coul);
-         couleurEntiteTypeDao.removeObject(coul.getCouleurEntiteTypeId());
+         couleurEntiteTypeDao.deleteById(coul.getCouleurEntiteTypeId());
 
          log.debug("Suppression de l'association entre la banque : " + bank.toString() + " et suppression de la couleur "
             + " entite type : " + coul.toString());
@@ -808,35 +808,35 @@ public class BanqueManagerImpl implements BanqueManager
          if(!bank.getCouleurEntiteTypes().contains(coulTypes.get(i))){
             // on ajoute la couleur dans l'association
             coulTypes.get(i).setBanque(bank);
-            bank.getCouleurEntiteTypes().add(couleurEntiteTypeDao.mergeObject(coulTypes.get(i)));
+            bank.getCouleurEntiteTypes().add(couleurEntiteTypeDao.save(coulTypes.get(i)));
 
             log.debug("Ajout de l'association entre la banque : " + bank.toString() + " et la couleur entite type : "
                + coulTypes.get(i).toString());
          }else{ // on modifie la couleur
-            couleurEntiteTypeDao.mergeObject(coulTypes.get(i));
+            couleurEntiteTypeDao.save(coulTypes.get(i));
          }
       }
    }
 
    @Override
-   public void removeObjectManager(Banque banque, final String comments, final Utilisateur user, final String basedir,
+   public void deleteByIdManager(Banque banque, final String comments, final Utilisateur user, final String basedir,
       final boolean force){
       if(banque != null){
          if(!isReferencedObjectManager(banque) || force){
 
             final List<File> filesToDelete = new ArrayList<>();
 
-            banque = banqueDao.mergeObject(banque);
+            banque = banqueDao.save(banque);
 
             //remove cascade codes
             final Iterator<CodeSelect> codeSelIt = banque.getCodeSelects().iterator();
             while(codeSelIt.hasNext()){
-               codeSelectManager.removeObjectManager(codeSelIt.next());
+               codeSelectManager.deleteByIdManager(codeSelIt.next());
             }
             final Iterator<CodeUtilisateur> codeUIt = codeUtilisateurManager.findByRootDossierManager(banque).iterator();
 
             while(codeUIt.hasNext()){
-               codeUtilisateurManager.removeObjectManager(codeUIt.next());
+               codeUtilisateurManager.deleteByIdManager(codeUIt.next());
             }
             final List<CodeDossier> dossiers = new ArrayList<>();
             dossiers.addAll(codeDossierManager.findByRootDossierBanqueManager(banque, true));
@@ -844,31 +844,31 @@ public class BanqueManagerImpl implements BanqueManager
 
             final Iterator<CodeDossier> dosIt = dossiers.iterator();
             while(dosIt.hasNext()){
-               codeDossierManager.removeObjectManager(dosIt.next());
+               codeDossierManager.deleteByIdManager(dosIt.next());
             }
 
             final Iterator<ImportTemplate> impIt = banque.getImportTemplate().iterator();
             while(impIt.hasNext()){
-               importTemplateManager.removeObjectManager(impIt.next());
+               importTemplateManager.deleteByIdManager(impIt.next());
             }
 
             final Iterator<Template> tempIt = banque.getTemplates().iterator();
             while(tempIt.hasNext()){
-               templateManager.removeObjectManager(tempIt.next());
+               templateManager.deleteByIdManager(tempIt.next());
             }
 
             // suppression totale de la banque et son contenu
             if(force){
                final Iterator<Cession> cesIt = banque.getCessions().iterator();
                while(cesIt.hasNext()){
-                  cessionManager.removeObjectManager(cesIt.next(), "Cascade depuis suppression banque " + banque.getNom(), user,
+                  cessionManager.deleteByIdManager(cesIt.next(), "Cascade depuis suppression banque " + banque.getNom(), user,
                      filesToDelete);
                }
                banque.getCessions().clear();
 
                final Iterator<ProdDerive> derIt = banque.getProdDerives().iterator();
                while(derIt.hasNext()){
-                  prodDeriveManager.removeObjectCascadeManager(derIt.next(),
+                  prodDeriveManager.deleteByIdCascadeManager(derIt.next(),
                      "Cascade depuis suppression banque " + banque.getNom(), user, filesToDelete);
                }
                banque.getProdDerives().clear();
@@ -876,14 +876,14 @@ public class BanqueManagerImpl implements BanqueManager
                final Iterator<Echantillon> echanIt = banque.getEchantillons().iterator();
 
                while(echanIt.hasNext()){
-                  echantillonManager.removeObjectCascadeManager(echanIt.next(),
+                  echantillonManager.deleteByIdCascadeManager(echanIt.next(),
                      "Cascade depuis suppression banque " + banque.getNom(), user, filesToDelete);
                }
                banque.getEchantillons().clear();
 
                final Iterator<Prelevement> prelIt = banque.getPrelevements().iterator();
                while(prelIt.hasNext()){
-                  prelevementManager.removeObjectCascadeManager(prelIt.next(),
+                  prelevementManager.deleteByIdCascadeManager(prelIt.next(),
                      "Cascade depuis suppression banque " + banque.getNom(), user, filesToDelete);
                }
                banque.getPrelevements().clear();
@@ -900,7 +900,7 @@ public class BanqueManagerImpl implements BanqueManager
             //Supprime operations associes
             CreateOrUpdateUtilities.removeAssociateOperations(banque, operationManager, comments, user);
 
-            banqueDao.removeObject(banque.getBanqueId());
+            banqueDao.deleteById(banque.getBanqueId());
             log.info("Suppression objet Banque " + banque.toString());
 
             for (SModele mod : banque.getSModeles()) {
@@ -932,7 +932,7 @@ public class BanqueManagerImpl implements BanqueManager
    @Override
    public Set<Imprimante> getImprimantesManager(final Banque banque){
       if(banque != null){
-         //banque = banqueDao.mergeObject(banque);
+         //banque = banqueDao.save(banque);
          //Set<Imprimante> imps = banque.getImprimantes();
          //imps.size();		
          return new HashSet<>();
@@ -942,7 +942,7 @@ public class BanqueManagerImpl implements BanqueManager
 
    @Override
    public boolean isReferencedObjectManager(final Banque bank){
-      final Banque banque = banqueDao.mergeObject(bank);
+      final Banque banque = banqueDao.save(bank);
 
       return !banque.getPrelevements().isEmpty() || !banque.getEchantillons().isEmpty() || !banque.getProdDerives().isEmpty()
          || !banque.getCessions().isEmpty();

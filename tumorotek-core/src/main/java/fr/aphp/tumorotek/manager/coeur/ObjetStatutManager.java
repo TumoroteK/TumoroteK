@@ -97,7 +97,7 @@ public interface ObjetStatutManager
     * @throws DoublonFoundException Lance une exception si un doublon de
     * l'objet à créer se trouve déjà dans la base.
     */
-   void createObjectManager(ObjetStatut statut);
+   void saveManager(ObjetStatut statut);
 
    /**
     * Sauvegarde les modifications apportées à un objet persistant.
@@ -105,7 +105,7 @@ public interface ObjetStatutManager
     * @throws DoublonFoundException Lance une exception si un doublon de
     * l'objet à créer se trouve déjà dans la base.
     */
-   void updateObjectManager(ObjetStatut statut);
+   void saveManager(ObjetStatut statut);
 
    /**
     * Supprime un ObjetStatut de la base de données.
@@ -113,7 +113,7 @@ public interface ObjetStatutManager
     * @throws DoublonFoundException Lance une exception si l'objet
     * est utilisé par des échantillons.
     */
-   void removeObjectManager(ObjetStatut statut);
+   void deleteByIdManager(ObjetStatut statut);
 
    ObjetStatut findStatutForTKStockableObject(TKStockableObject tkobj);
 

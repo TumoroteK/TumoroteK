@@ -49,7 +49,7 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.GenericGenerator;
 
 import fr.aphp.tumorotek.model.AbstractThesaurusObject;
-import fr.aphp.tumorotek.model.cession.CederObjet;
+import fr.aphp.tumorotek.model.coeur.cession.CederObjet;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;

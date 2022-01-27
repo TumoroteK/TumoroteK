@@ -54,7 +54,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import fr.aphp.tumorotek.model.TKFantomableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
-import fr.aphp.tumorotek.model.cession.Contrat;
+import fr.aphp.tumorotek.model.coeur.cession.Contrat;
 import fr.aphp.tumorotek.model.imprimante.Imprimante;
 import fr.aphp.tumorotek.model.imprimante.Modele;
 import fr.aphp.tumorotek.model.qualite.NonConformite;

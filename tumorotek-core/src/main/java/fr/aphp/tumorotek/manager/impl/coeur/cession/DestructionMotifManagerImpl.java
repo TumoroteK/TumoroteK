@@ -42,14 +42,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
 
-import fr.aphp.tumorotek.dao.cession.DestructionMotifDao;
+import fr.aphp.tumorotek.dao.coeur.cession.DestructionMotifDao;
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
 import fr.aphp.tumorotek.manager.coeur.cession.DestructionMotifManager;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.cession.DestructionMotifValidator;
-import fr.aphp.tumorotek.model.cession.DestructionMotif;
+import fr.aphp.tumorotek.model.coeur.cession.DestructionMotif;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
@@ -133,7 +133,7 @@ public class DestructionMotifManagerImpl implements DestructionMotifManager
       if(o != null){
          final DestructionMotif motif = o;
          if(motif.getId() == null){
-            return destructionMotifDao.findAll().contains(motif);
+            return IterableUtils.toList(destructionMotifDao.findAll()).contains(motif);
          }
          return destructionMotifDao.findByExcludedId(motif.getId()).contains(motif);
       }
@@ -142,21 +142,21 @@ public class DestructionMotifManagerImpl implements DestructionMotifManager
 
    @Override
    public boolean isUsedObjectManager(final DestructionMotif obj){
-      final DestructionMotif motif = destructionMotifDao.mergeObject(obj);
+      final DestructionMotif motif = destructionMotifDao.save(obj);
       return motif.getCessions().size() > 0;
    }
 
    @Override
-   public void createObjectManager(final DestructionMotif obj){
+   public void saveManager(final DestructionMotif obj){
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(obj.getPlateforme() == null){
          throw new RequiredObjectIsNullException("DestructionMotif", "creation", "Plateforme");
       }
-      obj.setPlateforme(plateformeDao.mergeObject(obj.getPlateforme()));
+      obj.setPlateforme(plateformeDao.save(obj.getPlateforme()));
       BeanValidator.validateObject(obj, new Validator[] {destructionMotifValidator});
       if(!findDoublonManager(obj)){
-         destructionMotifDao.createObject(obj);
+         destructionMotifDao.save(obj);
          log.info("Enregistrement objet DestructionMotif " + obj.toString());
       }else{
          log.warn("Doublon lors creation objet DestructionMotif " + obj.toString());
@@ -165,10 +165,10 @@ public class DestructionMotifManagerImpl implements DestructionMotifManager
    }
 
    @Override
-   public void updateObjectManager(final DestructionMotif obj){
+   public void saveManager(final DestructionMotif obj){
       BeanValidator.validateObject(obj, new Validator[] {destructionMotifValidator});
       if(!findDoublonManager(obj)){
-         destructionMotifDao.updateObject(obj);
+         destructionMotifDao.save(obj);
          log.info("Modification objet DestructionMotif " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet DestructionMotif " + obj.toString());
@@ -177,9 +177,9 @@ public class DestructionMotifManagerImpl implements DestructionMotifManager
    }
 
    @Override
-   public void removeObjectManager(final DestructionMotif obj){
+   public void deleteByIdManager(final DestructionMotif obj){
       if(obj != null){
-         destructionMotifDao.removeObject(obj.getId());
+         destructionMotifDao.deleteById(obj.getId());
          log.info("Suppression objet DestructionMotif " + obj.toString());
       }else{
          log.warn("Suppression d'un DestructionMotif null");

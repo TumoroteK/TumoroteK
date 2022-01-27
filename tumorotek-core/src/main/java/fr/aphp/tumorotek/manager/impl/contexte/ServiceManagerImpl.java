@@ -62,8 +62,8 @@ import fr.aphp.tumorotek.manager.qualite.OperationManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.contexte.CoordonneeValidator;
 import fr.aphp.tumorotek.manager.validation.contexte.ServiceValidator;
-import fr.aphp.tumorotek.model.cession.Cession;
-import fr.aphp.tumorotek.model.cession.Contrat;
+import fr.aphp.tumorotek.model.coeur.cession.Cession;
+import fr.aphp.tumorotek.model.coeur.cession.Contrat;
 import fr.aphp.tumorotek.model.coeur.prelevement.LaboInter;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -157,7 +157,7 @@ public class ServiceManagerImpl implements ServiceManager
     */
    @Override
    public List<Service> findAllObjectsManager(){
-      return serviceDao.findAll();
+      return IterableUtils.toList(serviceDao.findAll());
    }
 
    @Override
@@ -241,7 +241,7 @@ public class ServiceManagerImpl implements ServiceManager
     */
    @Override
    public Set<Collaborateur> getCollaborateursManager(Service service){
-      service = serviceDao.mergeObject(service);
+      service = serviceDao.save(service);
       final Set<Collaborateur> collabs = service.getCollaborateurs();
       collabs.size();
 
@@ -288,7 +288,7 @@ public class ServiceManagerImpl implements ServiceManager
    public Boolean findDoublonManager(final Service service){
 
       if(service.getServiceId() == null){
-         return serviceDao.findAll().contains(service);
+         return IterableUtils.toList(serviceDao.findAll()).contains(service);
       }else{
          return serviceDao.findByExcludedId(service.getServiceId()).contains(service);
       }
@@ -303,7 +303,7 @@ public class ServiceManagerImpl implements ServiceManager
     * @param collaborateurs Collaborateurs associés au service.
     */
    @Override
-   public void createObjectManager(final Service service, final Coordonnee coordonnee, final Etablissement etablissement,
+   public void saveManager(final Service service, final Coordonnee coordonnee, final Etablissement etablissement,
       final List<Collaborateur> collaborateurs, final Utilisateur utilisateur, final boolean cascadeArchive){
 
       // On vérifie que l'établissement n'est pas null. Si c'est le 
@@ -312,7 +312,7 @@ public class ServiceManagerImpl implements ServiceManager
          log.warn("Objet obligatoire Etablissement manquant lors de " + "la creation " + "d'un objet Service");
          throw new RequiredObjectIsNullException("Service", "creation", "Etablissement");
       }else{
-         service.setEtablissement(etablissementDao.mergeObject(etablissement));
+         service.setEtablissement(etablissementDao.save(etablissement));
       }
 
       if(findDoublonManager(service)){
@@ -324,16 +324,16 @@ public class ServiceManagerImpl implements ServiceManager
          if(coordonnee != null){
             BeanValidator.validateObject(coordonnee, new Validator[] {coordonneeValidator});
             if(coordonnee.getCoordonneeId() == null){
-               coordonneeManager.createObjectManager(coordonnee, null);
+               coordonneeManager.saveManager(coordonnee, null);
             }else{
-               coordonneeManager.updateObjectManager(coordonnee, null, true);
+               coordonneeManager.saveManager(coordonnee, null, true);
             }
          } // else {
            //	service.setCoordonnee(null);
            // }
-         service.setCoordonnee(coordonneeDao.mergeObject(coordonnee));
+         service.setCoordonnee(coordonneeDao.save(coordonnee));
 
-         serviceDao.createObject(service);
+         serviceDao.save(service);
 
          if(collaborateurs != null){
             updateCollaborateurs(service, collaborateurs);
@@ -348,7 +348,7 @@ public class ServiceManagerImpl implements ServiceManager
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), service);
+         operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), service);
       }
 
    }
@@ -361,7 +361,7 @@ public class ServiceManagerImpl implements ServiceManager
     * @param collaborateurs Collaborateurs associés au service.
     */
    @Override
-   public void updateObjectManager(final Service service, final Coordonnee coordonnee, final Etablissement etablissement,
+   public void saveManager(final Service service, final Coordonnee coordonnee, final Etablissement etablissement,
       final List<Collaborateur> collaborateurs, final Utilisateur utilisateur, final boolean cascadeArchive,
       final boolean doValidation){
 
@@ -371,7 +371,7 @@ public class ServiceManagerImpl implements ServiceManager
          log.warn("Objet obligatoire Etablissement manquant lors de " + "la modification " + "d'un objet Service");
          throw new RequiredObjectIsNullException("Service", "modification", "Etablissement");
       }else{
-         service.setEtablissement(etablissementDao.mergeObject(etablissement));
+         service.setEtablissement(etablissementDao.save(etablissement));
       }
 
       if(findDoublonManager(service)){
@@ -387,16 +387,16 @@ public class ServiceManagerImpl implements ServiceManager
                BeanValidator.validateObject(coordonnee, new Validator[] {coordonneeValidator});
             }
             if(coordonnee.getCoordonneeId() == null){
-               coordonneeManager.createObjectManager(coordonnee, null);
+               coordonneeManager.saveManager(coordonnee, null);
             }else{
-               coordonneeManager.updateObjectManager(coordonnee, null, doValidation);
+               coordonneeManager.saveManager(coordonnee, null, doValidation);
             }
          } // else {
            //	service.setCoordonnee(null);
            //}
-         service.setCoordonnee(coordonneeDao.mergeObject(coordonnee));
+         service.setCoordonnee(coordonneeDao.save(coordonnee));
 
-         serviceDao.updateObject(service);
+         serviceDao.save(service);
 
          if(collaborateurs != null){
             updateCollaborateurs(service, collaborateurs);
@@ -411,7 +411,7 @@ public class ServiceManagerImpl implements ServiceManager
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
+         operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
             service);
       }
 
@@ -419,7 +419,7 @@ public class ServiceManagerImpl implements ServiceManager
 
    @Override
    public boolean isReferencedObjectManager(final Service srv){
-      final Service service = serviceDao.mergeObject(srv);
+      final Service service = serviceDao.save(srv);
 
       final Iterator<Collaborateur> collabsIt = service.getCollaborateurs().iterator();
       while(collabsIt.hasNext()){
@@ -439,12 +439,12 @@ public class ServiceManagerImpl implements ServiceManager
    }
 
    @Override
-   public void removeObjectManager(final Service service, final String comments, final Utilisateur user){
+   public void deleteByIdManager(final Service service, final String comments, final Utilisateur user){
 
       if(service != null){
          if(!isUsedObjectManager(service) && !isReferencedObjectManager(service)){
 
-            serviceDao.removeObject(service.getServiceId());
+            serviceDao.deleteById(service.getServiceId());
 
             //Supprime operations associes
             CreateOrUpdateUtilities.removeAssociateOperations(service, operationManager, comments, user);
@@ -472,7 +472,7 @@ public class ServiceManagerImpl implements ServiceManager
     */
    public void updateCollaborateurs(final Service service, final List<Collaborateur> collabs){
 
-      final Service serv = serviceDao.mergeObject(service);
+      final Service serv = serviceDao.save(service);
 
       final Iterator<Collaborateur> it = serv.getCollaborateurs().iterator();
       final List<Collaborateur> collabsToRemove = new ArrayList<>();
@@ -490,7 +490,7 @@ public class ServiceManagerImpl implements ServiceManager
       // on parcourt la liste la liste des collabs à retirer de
       // l'association
       for(int i = 0; i < collabsToRemove.size(); i++){
-         final Collaborateur collab = collaborateurDao.mergeObject(collabsToRemove.get(i));
+         final Collaborateur collab = collaborateurDao.save(collabsToRemove.get(i));
          // on retire le collab de chaque coté de l'association
          serv.getCollaborateurs().remove(collab);
          collab.getServices().remove(serv);
@@ -504,8 +504,8 @@ public class ServiceManagerImpl implements ServiceManager
          // si un collab n'était pas associé au service
          if(!serv.getCollaborateurs().contains(collabs.get(i))){
             // on ajoute le collab des deux cotés de l'association
-            serv.getCollaborateurs().add(collaborateurDao.mergeObject(collabs.get(i)));
-            collaborateurDao.mergeObject(collabs.get(i)).getServices().add(serv);
+            serv.getCollaborateurs().add(collaborateurDao.save(collabs.get(i)));
+            collaborateurDao.save(collabs.get(i)).getServices().add(serv);
 
             log.debug("Ajout de l'association entre le service : " + serv.toString() + " et le collaborateur : "
                + collabs.get(i).toString());
@@ -530,7 +530,7 @@ public class ServiceManagerImpl implements ServiceManager
                   }
                   // MAJ du collab
                   collab.setArchive(true);
-                  collaborateurManager.updateObjectManager(collab, collab.getTitre(), collab.getEtablissement(),
+                  collaborateurManager.saveManager(collab, collab.getTitre(), collab.getEtablissement(),
                      collab.getSpecialite(), null, coords, utilisateur, false);
                }
             }else{
@@ -544,7 +544,7 @@ public class ServiceManagerImpl implements ServiceManager
                   }
                   // MAJ du collab
                   collab.setArchive(false);
-                  collaborateurManager.updateObjectManager(collab, collab.getTitre(), collab.getEtablissement(),
+                  collaborateurManager.saveManager(collab, collab.getTitre(), collab.getEtablissement(),
                      collab.getSpecialite(), null, coords, utilisateur, false);
                }
             }
@@ -553,7 +553,7 @@ public class ServiceManagerImpl implements ServiceManager
    }
 
    @Override
-   public void removeObjectCascadeManager(final Service srv, final String comments, final Utilisateur user){
+   public void deleteByIdCascadeManager(final Service srv, final String comments, final Utilisateur user){
       if(srv != null){
          log.info("Suppression en cascade depuis objet Service " + srv.toString());
 
@@ -563,11 +563,11 @@ public class ServiceManagerImpl implements ServiceManager
          final Iterator<Collaborateur> collabsIt = collabs.iterator();
 
          while(collabsIt.hasNext()){
-            collaborateurManager.removeObjectCascadeManager(collabsIt.next(), srv, comments, user);
+            collaborateurManager.deleteByIdCascadeManager(collabsIt.next(), srv, comments, user);
          }
          srv.setCollaborateurs(new HashSet<Collaborateur>());
 
-         removeObjectManager(srv, comments, user);
+         deleteByIdManager(srv, comments, user);
       }
 
    }
@@ -646,9 +646,9 @@ public class ServiceManagerImpl implements ServiceManager
          // Operation FUSION attribuée à l'utilisateur actif
          final Operation fusionOp = new Operation();
          fusionOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.createObjectManager(fusionOp, user, operationTypeDao.findByNom("Fusion").get(0), sActif);
+         operationManager.saveManager(fusionOp, user, operationTypeDao.findByNom("Fusion").get(0), sActif);
 
-         removeObjectManager(sPassif, "fusion id: " + idActif + " ." + comments, user);
+         deleteByIdManager(sPassif, "fusion id: " + idActif + " ." + comments, user);
       }
    }
 }

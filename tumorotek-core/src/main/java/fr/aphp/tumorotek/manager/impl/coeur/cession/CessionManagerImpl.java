@@ -55,12 +55,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
 
-import fr.aphp.tumorotek.dao.cession.CessionDao;
-import fr.aphp.tumorotek.dao.cession.CessionExamenDao;
-import fr.aphp.tumorotek.dao.cession.CessionStatutDao;
-import fr.aphp.tumorotek.dao.cession.CessionTypeDao;
-import fr.aphp.tumorotek.dao.cession.ContratDao;
-import fr.aphp.tumorotek.dao.cession.DestructionMotifDao;
+import fr.aphp.tumorotek.dao.coeur.cession.CessionDao;
+import fr.aphp.tumorotek.dao.coeur.cession.CessionExamenDao;
+import fr.aphp.tumorotek.dao.coeur.cession.CessionStatutDao;
+import fr.aphp.tumorotek.dao.coeur.cession.CessionTypeDao;
+import fr.aphp.tumorotek.dao.coeur.cession.ContratDao;
+import fr.aphp.tumorotek.dao.coeur.cession.DestructionMotifDao;
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.contexte.CollaborateurDao;
 import fr.aphp.tumorotek.dao.contexte.ServiceDao;
@@ -76,14 +76,14 @@ import fr.aphp.tumorotek.manager.impl.coeur.CreateOrUpdateUtilities;
 import fr.aphp.tumorotek.manager.qualite.OperationManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.cession.CessionValidator;
-import fr.aphp.tumorotek.model.cession.CederObjet;
-import fr.aphp.tumorotek.model.cession.Cession;
-import fr.aphp.tumorotek.model.cession.CessionExamen;
-import fr.aphp.tumorotek.model.cession.CessionStatut;
-import fr.aphp.tumorotek.model.cession.CessionType;
-import fr.aphp.tumorotek.model.cession.Contrat;
-import fr.aphp.tumorotek.model.cession.DestructionMotif;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
+import fr.aphp.tumorotek.model.coeur.cession.CederObjet;
+import fr.aphp.tumorotek.model.coeur.cession.Cession;
+import fr.aphp.tumorotek.model.coeur.cession.CessionExamen;
+import fr.aphp.tumorotek.model.coeur.cession.CessionStatut;
+import fr.aphp.tumorotek.model.coeur.cession.CessionType;
+import fr.aphp.tumorotek.model.coeur.cession.Contrat;
+import fr.aphp.tumorotek.model.coeur.cession.DestructionMotif;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
@@ -216,7 +216,7 @@ public class CessionManagerImpl implements CessionManager
    @Override
    public List<Cession> findAllObjectsManager(){
       log.debug("Recherche de toutes les Cessions");
-      return cessionDao.findAll();
+      return IterableUtils.toList(cessionDao.findAll());
    }
 
    @Override
@@ -309,7 +309,7 @@ public class CessionManagerImpl implements CessionManager
    public Set<CederObjet> getCederObjetsManager(Cession cession){
 
       if(cession != null){
-         cession = cessionDao.mergeObject(cession);
+         cession = cessionDao.save(cession);
          final Set<CederObjet> ceders = cession.getCederObjets();
          ceders.size();
 
@@ -358,7 +358,7 @@ public class CessionManagerImpl implements CessionManager
    @Override
    public Boolean isUsedObjectManager(Cession cession){
       if(cession != null){
-         cession = cessionDao.mergeObject(cession);
+         cession = cessionDao.save(cession);
          int size = cession.getCederObjets().size();
          size = size + cession.getRetours().size();
          return (size > 0);
@@ -563,7 +563,7 @@ public class CessionManagerImpl implements CessionManager
 
       //Banque required
       if(banque != null){
-         cession.setBanque(banqueDao.mergeObject(banque));
+         cession.setBanque(banqueDao.save(banque));
       }else{
          log.warn("Objet obligatoire Banque manquant" + " lors de la " + operation + " d'une Cession");
          throw new RequiredObjectIsNullException("Cession", operation, "Banque");
@@ -571,7 +571,7 @@ public class CessionManagerImpl implements CessionManager
 
       //CessionType required
       if(cessionType != null){
-         cession.setCessionType(cessionTypeDao.mergeObject(cessionType));
+         cession.setCessionType(cessionTypeDao.save(cessionType));
       }else{
          log.warn("Objet obligatoire CessionType manquant" + " lors de la " + operation + " d'une Cession");
          throw new RequiredObjectIsNullException("Cession", operation, "CessionType");
@@ -579,7 +579,7 @@ public class CessionManagerImpl implements CessionManager
 
       //CessionStatut required
       if(cessionStatut != null){
-         cession.setCessionStatut(cessionStatutDao.mergeObject(cessionStatut));
+         cession.setCessionStatut(cessionStatutDao.save(cessionStatut));
       }else{
          log.warn("Objet obligatoire CessionStatut manquant" + " lors de la " + operation + " d'une Cession");
          throw new RequiredObjectIsNullException("Cession", operation, "CessionStatut");
@@ -603,20 +603,20 @@ public class CessionManagerImpl implements CessionManager
       final Collaborateur destinataire, final Service servDest, final Collaborateur demandeur, final Collaborateur executant,
       final Transporteur transporteur, final DestructionMotif destructionMotif, final Contrat contrat){
 
-      // cession.setDelegate( cessionDelegateDao.mergeObject( cession.getDelegate() ) );
-      cession.setCessionExamen(cessionExamenDao.mergeObject(cessionExamen));
-      cession.setDestinataire(collaborateurDao.mergeObject(destinataire));
-      cession.setServiceDest(serviceDao.mergeObject(servDest));
-      cession.setDemandeur(collaborateurDao.mergeObject(demandeur));
-      cession.setExecutant(collaborateurDao.mergeObject(executant));
-      cession.setTransporteur(transporteurDao.mergeObject(transporteur));
-      cession.setDestructionMotif(destructionMotifDao.mergeObject(destructionMotif));
-      cession.setContrat(contratDao.mergeObject(contrat));
+      // cession.setDelegate( cessionDelegateDao.save( cession.getDelegate() ) );
+      cession.setCessionExamen(cessionExamenDao.save(cessionExamen));
+      cession.setDestinataire(collaborateurDao.save(destinataire));
+      cession.setServiceDest(serviceDao.save(servDest));
+      cession.setDemandeur(collaborateurDao.save(demandeur));
+      cession.setExecutant(collaborateurDao.save(executant));
+      cession.setTransporteur(transporteurDao.save(transporteur));
+      cession.setDestructionMotif(destructionMotifDao.save(destructionMotif));
+      cession.setContrat(contratDao.save(contrat));
 
    }
 
    @Override
-   public void createObjectManager(final Cession cession, final Banque banque, final CessionType cessionType,
+   public void saveManager(final Cession cession, final Banque banque, final CessionType cessionType,
       final CessionExamen cessionExamen, final Contrat contrat, final Collaborateur destinataire, final Service servDest,
       final Collaborateur demandeur, final CessionStatut cessionStatut, final Collaborateur executant,
       final Transporteur transporteur, final DestructionMotif destructionMotif,
@@ -645,19 +645,19 @@ public class CessionManagerImpl implements CessionManager
          mergeNonRequiredObjects(cession, /*banque,*/ cessionExamen, destinataire, servDest, demandeur, executant, transporteur,
             destructionMotif, contrat);
 
-         cessionDao.createObject(cession);
+         cessionDao.save(cession);
          log.info("Enregistrement objet Cession " + cession.toString());
 
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), cession);
+         operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), cession);
 
          // enregistrements des cederobjets
          if(cederObjets != null){
             for(int i = 0; i < cederObjets.size(); i++){
                final CederObjet obj = cederObjets.get(i);
-               cederObjetManager.createObjectManager(obj, cession, obj.getEntite(), obj.getQuantiteUnite());
+               cederObjetManager.saveManager(obj, cession, obj.getEntite(), obj.getQuantiteUnite());
             }
          }
 
@@ -688,7 +688,7 @@ public class CessionManagerImpl implements CessionManager
    }
 
    @Override
-   public void updateObjectManager(final Cession cession, final Banque banque, final CessionType cessionType,
+   public void saveManager(final Cession cession, final Banque banque, final CessionType cessionType,
       final CessionExamen cessionExamen, final Contrat contrat, final Collaborateur destinataire, final Service servDest,
       final Collaborateur demandeur, final CessionStatut cessionStatut, final Collaborateur executant,
       final Transporteur transporteur, final DestructionMotif destructionMotif,
@@ -717,22 +717,22 @@ public class CessionManagerImpl implements CessionManager
          mergeNonRequiredObjects(cession, /*banque,*/ cessionExamen, destinataire, servDest, demandeur, executant, transporteur,
             destructionMotif, contrat);
 
-         cessionDao.updateObject(cession);
+         cessionDao.save(cession);
          log.info("Modification objet Cession " + cession.toString());
 
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
+         operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
             cession);
 
          // enregistrements des cederobjets
          if(cederObjets != null){
             for(final CederObjet obj : cederObjets){
                if(cederObjetManager.findByIdManager(obj.getPk()) == null){
-                  cederObjetManager.createObjectManager(obj, cession, obj.getEntite(), obj.getQuantiteUnite());
+                  cederObjetManager.saveManager(obj, cession, obj.getEntite(), obj.getQuantiteUnite());
                }else{
-                  cederObjetManager.updateObjectManager(obj, cession, obj.getEntite(), obj.getQuantiteUnite());
+                  cederObjetManager.saveManager(obj, cession, obj.getEntite(), obj.getQuantiteUnite());
                }
             }
 
@@ -741,7 +741,7 @@ public class CessionManagerImpl implements CessionManager
             final Set<CederObjet> oldCedes = getCederObjetsManager(cession);
             for(CederObjet tmp : oldCedes){
                if(!cederObjets.contains(tmp)){
-                  cederObjetManager.removeObjectManager(tmp);
+                  cederObjetManager.deleteByIdManager(tmp);
                }
             }
          }else{
@@ -749,7 +749,7 @@ public class CessionManagerImpl implements CessionManager
             // plus
             final Set<CederObjet> oldCedes = getCederObjetsManager(cession);
             for(CederObjet tmp : oldCedes){
-               cederObjetManager.removeObjectManager(tmp);
+               cederObjetManager.deleteByIdManager(tmp);
             }
          }
          // Annotations
@@ -793,7 +793,7 @@ public class CessionManagerImpl implements CessionManager
    }
 
    @Override
-   public void removeObjectManager(final Cession cession, final String comments, final Utilisateur usr,
+   public void deleteByIdManager(final Cession cession, final String comments, final Utilisateur usr,
       final List<File> filesToDelete){
       if(cession != null){
          // suppression des CederObjets
@@ -801,11 +801,11 @@ public class CessionManagerImpl implements CessionManager
          if(cederObjets != null){
             final Iterator<CederObjet> it = cederObjets.iterator();
             while(it.hasNext()){
-               cederObjetManager.removeObjectManager(it.next());
+               cederObjetManager.deleteByIdManager(it.next());
             }
          }
 
-         cessionDao.removeObject(cession.getCessionId());
+         cessionDao.deleteById(cession.getCessionId());
          log.info("Suppression de l'objet Cession : " + cession.toString());
 
          //Supprime operations associes
@@ -900,7 +900,7 @@ public class CessionManagerImpl implements CessionManager
          for(final Integer id : ids){
             c = findByIdManager(id);
             if(c != null){
-               removeObjectManager(c, comment, u, filesToDelete);
+               deleteByIdManager(c, comment, u, filesToDelete);
             }
          }
          //         if(filesToDelete != null){
@@ -920,7 +920,7 @@ public class CessionManagerImpl implements CessionManager
    public void applyScanCheckDateManager(final Cession cess, final Calendar scanDate){
       if(cess != null && cess.getCessionId() != null){
          cess.setLastScanCheckDate(scanDate);
-         cessionDao.updateObject(cess);
+         cessionDao.save(cess);
       }
    }
 }

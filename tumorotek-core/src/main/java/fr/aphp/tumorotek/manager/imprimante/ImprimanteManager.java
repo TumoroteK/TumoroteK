@@ -112,7 +112,7 @@ public interface ImprimanteManager
     * @param plateforme Plateforme de l'Imprimante.
     * @param imprimanteApi ImprimanteApi de l'Imprimante.
     */
-   void createObjectManager(Imprimante imprimante, Plateforme plateforme, ImprimanteApi imprimanteApi);
+   void saveManager(Imprimante imprimante, Plateforme plateforme, ImprimanteApi imprimanteApi);
 
    /**
     * Sauvegarde les modifications apportées à un objet persistant.
@@ -120,12 +120,12 @@ public interface ImprimanteManager
     * @param plateforme Plateforme de l'Imprimante.
     * @param imprimanteApi ImprimanteApi de l'Imprimante.
     */
-   void updateObjectManager(Imprimante imprimante, Plateforme plateforme, ImprimanteApi imprimanteApi);
+   void saveManager(Imprimante imprimante, Plateforme plateforme, ImprimanteApi imprimanteApi);
 
    /**
     * Supprime une Imprimante de la base de données.
     * @param imprimante Imprimante à supprimer de la base de données.
     */
-   void removeObjectManager(Imprimante imprimante);
+   void deleteByIdManager(Imprimante imprimante);
 
 }

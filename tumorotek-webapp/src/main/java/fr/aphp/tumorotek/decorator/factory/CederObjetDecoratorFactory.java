@@ -40,7 +40,7 @@ import java.util.List;
 
 import fr.aphp.tumorotek.decorator.CederObjetDecorator;
 import fr.aphp.tumorotek.model.TKStockableObject;
-import fr.aphp.tumorotek.model.cession.CederObjet;
+import fr.aphp.tumorotek.model.coeur.cession.CederObjet;
 
 /**
  *

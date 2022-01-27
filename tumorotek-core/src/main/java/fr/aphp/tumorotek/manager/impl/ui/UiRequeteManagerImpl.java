@@ -97,14 +97,14 @@ public class UiRequeteManagerImpl implements UiRequeteManager
    }
 
    @Override
-   public void createObjectManager(final String nom, final Utilisateur ut, final Entite et, final Integer ordre,
+   public void saveManager(final String nom, final Utilisateur ut, final Entite et, final Integer ordre,
       final List<UiCompValue> vals){
       final UiRequete requete = new UiRequete(null, ut, et, nom, ordre);
-      mergeObjectManager(requete, vals);
+      saveManager(requete, vals);
    }
 
    @Override
-   public void mergeObjectManager(final UiRequete requete, final List<UiCompValue> vals){
+   public void saveManager(final UiRequete requete, final List<UiCompValue> vals){
       if(requete != null){
          if(requete.getUtilisateur() == null){
             throw new RequiredObjectIsNullException("Utilisateur", "creation", "UiRequete");
@@ -127,18 +127,18 @@ public class UiRequeteManagerImpl implements UiRequeteManager
          }else{
             BeanValidator.validateObject(requete, new Validator[] {uiRequeteValidator});
             if(requete.getUiRequeteId() == null){
-               uiRequeteDao.createObject(requete);
+               uiRequeteDao.save(requete);
             }else{
-               uiRequeteDao.updateObject(requete);
+               uiRequeteDao.save(requete);
             }
          }
       }
    }
 
    @Override
-   public void removeObjectManager(final UiRequete requete){
+   public void deleteByIdManager(final UiRequete requete){
       if(requete != null){
-         uiRequeteDao.removeObject(requete.getUiRequeteId());
+         uiRequeteDao.deleteById(requete.getUiRequeteId());
       }
    }
 }

@@ -154,12 +154,12 @@ public class CritereManagerImpl implements CritereManager
          /*if (critere.getChamp().getChampAnnotation() != null) {
          	champ = new Champ(critere.getChamp()
          			.getChampAnnotation());
-         	champManager.createObjectManager(champ, champ
+         	champManager.saveManager(champ, champ
          		.getChampParent());
          } else {
          	champ = new Champ(critere.getChamp()
          			.getChampEntite());
-         	champManager.createObjectManager(champ, champ
+         	champManager.saveManager(champ, champ
          		.getChampParent());
          }*/
          temp = new Critere(champ, critere.getOperateur(), critere.getValeur());
@@ -168,7 +168,7 @@ public class CritereManagerImpl implements CritereManager
          temp = new Critere(combinaison, critere.getOperateur(), critere.getValeur());
       }
       BeanValidator.validateObject(critere, new Validator[] {critereValidator});
-      critereDao.createObject(temp);
+      critereDao.save(temp);
       return temp;
    }
 
@@ -179,7 +179,7 @@ public class CritereManagerImpl implements CritereManager
     * @param combinaison Combinaison du Critère.
     */
    @Override
-   public void createObjectManager(final Critere critere, Champ champ, Combinaison combinaison){
+   public void saveManager(final Critere critere, Champ champ, Combinaison combinaison){
       //On vérifie que le critère n'est pas nul
       if(critere == null){
          log.warn("Objet obligatoire Critere manquant lors " + "de la création d'un objet Critere");
@@ -187,22 +187,22 @@ public class CritereManagerImpl implements CritereManager
       }
       if(champ != null){
          if(champ.getChampId() != null){
-            champ = champDao.mergeObject(champ);
+            champ = champDao.save(champ);
          }else{
-            champManager.createObjectManager(champ, champ.getChampParent());
+            champManager.saveManager(champ, champ.getChampParent());
          }
       }
       critere.setChamp(champ);
       if(combinaison != null){
          if(combinaison.getCombinaisonId() != null){
-            combinaison = combinaisonDao.mergeObject(combinaison);
+            combinaison = combinaisonDao.save(combinaison);
          }else{
-            combinaisonDao.createObject(combinaison);
+            combinaisonDao.save(combinaison);
          }
       }
       critere.setCombinaison(combinaison);
       BeanValidator.validateObject(critere, new Validator[] {critereValidator});
-      critereDao.createObject(critere);
+      critereDao.save(critere);
    }
 
    /**
@@ -212,7 +212,7 @@ public class CritereManagerImpl implements CritereManager
     * @param combinaison Combinaison du Critère.
     */
    @Override
-   public void updateObjectManager(final Critere critere, Champ champ, Combinaison combinaison){
+   public void saveManager(final Critere critere, Champ champ, Combinaison combinaison){
       //On vérifie que le critère n'est pas nul
       if(critere == null){
          log.warn("Objet obligatoire Critere manquant lors " + "de la modification d'un objet Critere");
@@ -221,26 +221,26 @@ public class CritereManagerImpl implements CritereManager
       final Champ oldChamp = critere.getChamp();
       if(champ != null){
          if(champ.getChampId() != null){
-            champ = champDao.mergeObject(champ);
+            champ = champDao.save(champ);
          }else{
-            champManager.createObjectManager(champ, champ.getChampParent());
+            champManager.saveManager(champ, champ.getChampParent());
          }
       }
       critere.setChamp(champ);
       if(combinaison != null){
          if(combinaison.getCombinaisonId() != null){
-            combinaison = combinaisonDao.mergeObject(combinaison);
+            combinaison = combinaisonDao.save(combinaison);
          }else{
-            combinaisonDao.createObject(combinaison);
+            combinaisonDao.save(combinaison);
          }
       }
       critere.setCombinaison(combinaison);
       BeanValidator.validateObject(critere, new Validator[] {critereValidator});
-      critereDao.updateObject(critere);
+      critereDao.save(critere);
 
       // On supprime l'ancien champ
       if(oldChamp != null && oldChamp.getChampId() != null && !oldChamp.equals(critere.getChamp())){
-         champManager.removeObjectManager(oldChamp);
+         champManager.deleteByIdManager(oldChamp);
       }
    }
 
@@ -249,7 +249,7 @@ public class CritereManagerImpl implements CritereManager
     * @param critere Critère à supprimer.
     */
    @Override
-   public void removeObjectManager(final Critere critere){
+   public void deleteByIdManager(final Critere critere){
       //On vérifie que le critère n'est pas nul
       if(critere == null){
          log.warn("Objet obligatoire Critere manquant lors " + "de la suppression d'un objet Critere");
@@ -260,11 +260,11 @@ public class CritereManagerImpl implements CritereManager
          throw new SearchedObjectIdNotExistException("Critere", critere.getCritereId());
       }
       final Champ oldChamp = critere.getChamp();
-      critereDao.removeObject(critere.getCritereId());
+      critereDao.deleteById(critere.getCritereId());
 
       //On supprime le champ
       if(oldChamp != null){
-         champManager.removeObjectManager(oldChamp);
+         champManager.deleteByIdManager(oldChamp);
       }
    }
 
@@ -289,6 +289,6 @@ public class CritereManagerImpl implements CritereManager
     */
    @Override
    public List<Critere> findAllObjectsManager(){
-      return critereDao.findAll();
+      return IterableUtils.toList(critereDao.findAll());
    }
 }

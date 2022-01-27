@@ -134,15 +134,15 @@ public class OperationManagerImpl implements OperationManager
    }
 
    @Override
-   public void createObjectManager(final Operation operation, final Utilisateur utilisateur, final OperationType operationType,
+   public void saveManager(final Operation operation, final Utilisateur utilisateur, final OperationType operationType,
       final Object obj){
-      operation.setUtilisateur(utilisateurDao.mergeObject(utilisateur));
+      operation.setUtilisateur(utilisateurDao.save(utilisateur));
       //OperationType required
       if(operationType == null){
          log.warn("Objet obligatoire OperationType manquant" + " lors de la creation d'une Operation");
          throw new RequiredObjectIsNullException("Operation", "creation", "OperationType");
       }
-      operation.setOperationType(operationTypeDao.mergeObject(operationType));
+      operation.setOperationType(operationTypeDao.save(operationType));
       //Obj required
       if(obj == null){
          log.warn("Objet obligatoire Object manquant" + " lors de la creation d'une Operation");
@@ -167,7 +167,7 @@ public class OperationManagerImpl implements OperationManager
       //Validation
       BeanValidator.validateObject(obj, new Validator[] {operationValidator});
 
-      operationDao.createObject(operation);
+      operationDao.save(operation);
       log.debug("Enregistrement objet Operation " + obj.toString());
 
    }
@@ -175,7 +175,7 @@ public class OperationManagerImpl implements OperationManager
    @Override
    public List<Operation> findAllObjectsManager(){
       log.debug("Recherche totalite des Operation");
-      return operationDao.findAll();
+      return IterableUtils.toList(operationDao.findAll());
    }
 
    @Override
@@ -188,7 +188,7 @@ public class OperationManagerImpl implements OperationManager
 
    @Override
    public boolean findDoublonManager(final Operation operation){
-      return operationDao.findAll().contains(operation);
+      return IterableUtils.toList(operationDao.findAll()).contains(operation);
    }
 
    @Override
@@ -263,14 +263,14 @@ public class OperationManagerImpl implements OperationManager
    }
 
    @Override
-   public void removeObjectManager(final Operation operation){
+   public void deleteByIdManager(final Operation operation){
       if(operation != null){
          // suppression fantome en cascade
          if(operation.getOperationType().getNom().equals("Suppression")){
-            fantomeDao.removeObject(operation.getObjetId());
+            fantomeDao.deleteById(operation.getObjetId());
          }
 
-         operationDao.removeObject(operation.getOperationId());
+         operationDao.deleteById(operation.getOperationId());
          log.info("Suppression objet Operation " + operation.toString());
       }else{
          log.warn("Suppression d'une Operation null");
@@ -379,12 +379,12 @@ public class OperationManagerImpl implements OperationManager
       f.setNom(obj.getPhantomData());
       f.setCommentaires(comments);
       f.setEntite(entiteDao.findByNom(obj.entiteNom()).get(0));
-      fantomeDao.createObject(f);
+      fantomeDao.save(f);
 
       final Operation suppr = new Operation();
       suppr.setDate(Utils.getCurrentSystemCalendar());
 
-      createObjectManager(suppr, user, operationTypeDao.findByNom("Suppression").get(0), f);
+      saveManager(suppr, user, operationTypeDao.findByNom("Suppression").get(0), f);
    }
 
    @Override
@@ -392,7 +392,7 @@ public class OperationManagerImpl implements OperationManager
 
       //		List<Operation> ops = findByObjectManager(obj);
       //		for (int i = 0; i < ops.size(); i++) {
-      //			removeObjectManager(ops.get(i));
+      //			deleteByIdManager(ops.get(i));
       //		}
 
       if(obj instanceof TKFantomableObject){

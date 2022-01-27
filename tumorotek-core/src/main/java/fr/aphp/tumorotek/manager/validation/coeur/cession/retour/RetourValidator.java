@@ -7,7 +7,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.model.TKStockableObject;
-import fr.aphp.tumorotek.model.cession.Retour;
+import fr.aphp.tumorotek.model.coeur.cession.Retour;
 
 /**
  * Validator pour le bean domaine Retour.<br>

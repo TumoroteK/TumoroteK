@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.code;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -128,19 +129,19 @@ public class CodeDossierManagerImpl implements CodeDossierManager
       checkRequiredObjectsAndValidate(dos, bank, utilisateur, operation);
 
       if(parent != null){
-         dos.setDossierParent(codeDossierDao.mergeObject(parent));
+         dos.setDossierParent(codeDossierDao.save(parent));
       }
 
       //Doublon
       if(!findDoublonManager(dos)){
          if((operation.equals("creation") || operation.equals("modification"))){
             if(operation.equals("creation")){
-               codeDossierDao.createObject(dos);
+               codeDossierDao.save(dos);
                log.debug("Enregistrement objet CodeDossier " + dos.toString());
                CreateOrUpdateUtilities.createAssociateOperation(dos, operationManager,
                   operationTypeDao.findByNom("Creation").get(0), dos.getUtilisateur());
             }else{
-               codeDossierDao.updateObject(dos);
+               codeDossierDao.save(dos);
                log.debug("Modification objet CodeDossier " + dos.toString());
                CreateOrUpdateUtilities.createAssociateOperation(dos, operationManager,
                   operationTypeDao.findByNom("Modification").get(0), dos.getUtilisateur());
@@ -157,7 +158,7 @@ public class CodeDossierManagerImpl implements CodeDossierManager
 
    @Override
    public List<CodeDossier> findAllCodeDossiersManager(){
-      return codeDossierDao.findAll();
+      return IterableUtils.toList(codeDossierDao.findAll());
    }
 
    @Override
@@ -197,35 +198,35 @@ public class CodeDossierManagerImpl implements CodeDossierManager
    @Override
    public boolean findDoublonManager(final CodeDossier dos){
       if(dos.getCodeDossierId() == null){
-         return codeDossierDao.findAll().contains(dos);
+         return IterableUtils.toList(codeDossierDao.findAll()).contains(dos);
       }
       return codeDossierDao.findByExcludedId(dos.getCodeDossierId()).contains(dos);
    }
 
    @Override
-   public void removeObjectManager(final CodeDossier dos){
+   public void deleteByIdManager(final CodeDossier dos){
       if(dos != null){
 
          // supprime les codes
          if(!dos.getCodeSelect()){
             final Iterator<CodeUtilisateur> it = codeUtilisateurManager.findByCodeDossierManager(dos).iterator();
             while(it.hasNext()){
-               codeUtilisateurManager.removeObjectManager(it.next());
+               codeUtilisateurManager.deleteByIdManager(it.next());
             }
          }else{
             final Iterator<CodeSelect> it = codeSelectManager.findByCodeDossierManager(dos).iterator();
             while(it.hasNext()){
-               codeSelectManager.removeObjectManager(it.next());
+               codeSelectManager.deleteByIdManager(it.next());
             }
          }
 
          // supprime les sous-dossiers
          final Iterator<CodeDossier> itDos = findByCodeDossierParentManager(dos).iterator();
          while(itDos.hasNext()){
-            removeObjectManager(itDos.next());
+            deleteByIdManager(itDos.next());
          }
 
-         codeDossierDao.removeObject(dos.getCodeDossierId());
+         codeDossierDao.deleteById(dos.getCodeDossierId());
          log.info("Suppression objet CodeDossier " + dos.toString());
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(dos, operationManager);
@@ -248,7 +249,7 @@ public class CodeDossierManagerImpl implements CodeDossierManager
       //Banque required
       if(bank != null){
          // merge banque object
-         dos.setBanque(banqueDao.mergeObject(bank));
+         dos.setBanque(banqueDao.save(bank));
       }else if(dos.getBanque() == null){
          log.warn("Objet obligatoire Banque manquant" + " lors de la " + operation + " du code dossier");
          throw new RequiredObjectIsNullException("CodeDossier", operation, "Banque");
@@ -257,7 +258,7 @@ public class CodeDossierManagerImpl implements CodeDossierManager
       //Utilisateur required
       if(utilisateur != null){
          // merge utilisateur object
-         dos.setUtilisateur(utilisateurDao.mergeObject(utilisateur));
+         dos.setUtilisateur(utilisateurDao.save(utilisateur));
       }else if(dos.getUtilisateur() == null){
          log.warn("Objet obligatoire Utilisateur manquant" + " lors de la " + operation + " du code utilisateur");
          throw new RequiredObjectIsNullException("CodeDossier", operation, "Utilisateur");

@@ -108,7 +108,7 @@ public class EnceinteTypeManagerImpl implements EnceinteTypeManager
       if(o != null){
          final EnceinteType type = o;
          if(type.getId() == null){
-            return enceinteTypeDao.findAll().contains(type);
+            return IterableUtils.toList(enceinteTypeDao.findAll()).contains(type);
          }
          return enceinteTypeDao.findByExcludedId(type.getId()).contains(type);
       }
@@ -117,21 +117,21 @@ public class EnceinteTypeManagerImpl implements EnceinteTypeManager
 
    @Override
    public boolean isUsedObjectManager(final EnceinteType obj){
-      final EnceinteType type = enceinteTypeDao.mergeObject(obj);
+      final EnceinteType type = enceinteTypeDao.save(obj);
       return type.getEnceintes().size() > 0;
    }
 
    @Override
-   public void createObjectManager(final EnceinteType obj){
+   public void saveManager(final EnceinteType obj){
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(obj.getPlateforme() == null){
          throw new RequiredObjectIsNullException("Nature", "creation", "Plateforme");
       }
-      obj.setPlateforme(plateformeDao.mergeObject(obj.getPlateforme()));
+      obj.setPlateforme(plateformeDao.save(obj.getPlateforme()));
       BeanValidator.validateObject(obj, new Validator[] {enceinteTypeValidator});
       if(!findDoublonManager(obj)){
-         enceinteTypeDao.createObject(obj);
+         enceinteTypeDao.save(obj);
          log.info("Enregistrement objet EnceinteType " + obj.toString());
       }else{
          log.warn("Doublon lors creation objet EnceinteType " + obj.toString());
@@ -140,10 +140,10 @@ public class EnceinteTypeManagerImpl implements EnceinteTypeManager
    }
 
    @Override
-   public void updateObjectManager(final EnceinteType obj){
+   public void saveManager(final EnceinteType obj){
       BeanValidator.validateObject(obj, new Validator[] {enceinteTypeValidator});
       if(!findDoublonManager(obj)){
-         enceinteTypeDao.updateObject(obj);
+         enceinteTypeDao.save(obj);
          log.info("Modification objet EnceinteType " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet EnceinteType " + obj.toString());
@@ -152,10 +152,10 @@ public class EnceinteTypeManagerImpl implements EnceinteTypeManager
    }
 
    @Override
-   public void removeObjectManager(final EnceinteType obj){
+   public void deleteByIdManager(final EnceinteType obj){
       if(obj != null){
          if(!isUsedObjectManager(obj)){
-            enceinteTypeDao.removeObject(obj.getId());
+            enceinteTypeDao.deleteById(obj.getId());
             log.info("Suppression objet EnceinteType " + obj.toString());
          }else{
             log.warn("Suppression objet EnceinteType " + obj.toString() + " impossible car est reference " + "(par Enceinte)");

@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -131,7 +132,7 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
 
    @Override
    public List<CodeUtilisateur> findAllObjectsManager(){
-      return codeUtilisateurDao.findAll();
+      return IterableUtils.toList(codeUtilisateurDao.findAll());
    }
 
    @Override
@@ -182,7 +183,7 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
    @Override
    public boolean findDoublonManager(final CodeUtilisateur code){
       if(code.getCodeUtilisateurId() == null){
-         return codeUtilisateurDao.findAll().contains(code);
+         return IterableUtils.toList(codeUtilisateurDao.findAll()).contains(code);
       }
       return codeUtilisateurDao.findByExcludedId(code.getCodeUtilisateurId()).contains(code);
    }
@@ -191,7 +192,7 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
    public Set<CodeUtilisateur> getCodesUtilisateurManager(final CodeUtilisateur code){
       Set<CodeUtilisateur> codes = new HashSet<>();
       if(code.getCodeUtilisateurId() != null){
-         final CodeUtilisateur codeM = codeUtilisateurDao.mergeObject(code);
+         final CodeUtilisateur codeM = codeUtilisateurDao.save(code);
          codes = codeM.getCodesUtilisateur();
          codes.isEmpty(); // operation empechant LazyInitialisationException
       }
@@ -210,22 +211,22 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
 
       // merge non required
       if(dos != null){
-         code.setCodeDossier(codeDossierDao.mergeObject(dos));
+         code.setCodeDossier(codeDossierDao.save(dos));
       }
       if(parent != null){
-         code.setCodeParent(codeUtilisateurDao.mergeObject(parent));
+         code.setCodeParent(codeUtilisateurDao.save(parent));
       }
 
       //Doublon
       if(!findDoublonManager(code)){
          if((operation.equals("creation") || operation.equals("modification"))){
             if(operation.equals("creation")){
-               codeUtilisateurDao.createObject(code);
+               codeUtilisateurDao.save(code);
                log.info("Enregistrement objet CodeUtilisateur " + code.toString());
                CreateOrUpdateUtilities.createAssociateOperation(code, operationManager,
                   operationTypeDao.findByNom("Creation").get(0), code.getUtilisateur());
             }else{
-               codeUtilisateurDao.updateObject(code);
+               codeUtilisateurDao.save(code);
                log.info("Modification objet CodeUtilisateur " + code.toString());
                CreateOrUpdateUtilities.createAssociateOperation(code, operationManager,
                   operationTypeDao.findByNom("Modification").get(0), code.getUtilisateur());
@@ -255,7 +256,7 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
       //Banque required
       if(bank != null){
          // merge banque object
-         code.setBanque(banqueDao.mergeObject(bank));
+         code.setBanque(banqueDao.save(bank));
       }else if(code.getBanque() == null){
          log.warn("Objet obligatoire Banque manquant" + " lors de la " + operation + " du code utilisateur");
          throw new RequiredObjectIsNullException("CodeUtilisateur", operation, "Banque");
@@ -264,7 +265,7 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
       //Utilisateur required
       if(utilisateur != null){
          // merge utilisateur object
-         code.setUtilisateur(utilisateurDao.mergeObject(utilisateur));
+         code.setUtilisateur(utilisateurDao.save(utilisateur));
       }else if(code.getUtilisateur() == null){
          log.warn("Objet obligatoire Utilisateur manquant" + " lors de la " + operation + " du code utilisateur");
          throw new RequiredObjectIsNullException("CodeUtilisateur", operation, "Utilisateur");
@@ -275,14 +276,14 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
    }
 
    @Override
-   public void removeObjectManager(final CodeUtilisateur code){
+   public void deleteByIdManager(final CodeUtilisateur code){
       if(code != null){
          final Iterator<CodeUtilisateur> it = getCodesUtilisateurManager(code).iterator();
          while(it.hasNext()){
-            removeObjectManager(it.next());
+            deleteByIdManager(it.next());
          }
 
-         codeUtilisateurDao.removeObject(code.getCodeUtilisateurId());
+         codeUtilisateurDao.deleteById(code.getCodeUtilisateurId());
          log.info("Suppression objet CodeUtilisateur " + code.toString());
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(code, operationManager);
@@ -295,7 +296,7 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
    public Set<CodeCommon> getTranscodesManager(final CodeUtilisateur code, final List<TableCodage> tables){
       final Set<CodeCommon> codes = new HashSet<>();
       if(code != null && tables != null && !tables.isEmpty()){
-         final CodeUtilisateur cM = codeUtilisateurDao.mergeObject(code);
+         final CodeUtilisateur cM = codeUtilisateurDao.save(code);
          final Iterator<TranscodeUtilisateur> trsIt = cM.getTranscodes().iterator();
          TranscodeUtilisateur trU;
          while(trsIt.hasNext()){
@@ -318,7 +319,7 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
     */
    private void updateTranscodes(final CodeUtilisateur codeU, final Collection<CodeCommon> transcodes){
 
-      final CodeUtilisateur code = codeUtilisateurDao.mergeObject(codeU);
+      final CodeUtilisateur code = codeUtilisateurDao.save(codeU);
 
       final Set<TranscodeUtilisateur> codes = code.getTranscodes();
       final Set<TranscodeUtilisateur> codesToRemove = new HashSet<>();
@@ -344,7 +345,7 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
       while(it.hasNext()){
          final TranscodeUtilisateur toRemove = it.next();
          code.getTranscodes().remove(toRemove);
-         transcodeUtilisateurDao.removeObject(toRemove.getTranscodeUtilisateurId());
+         transcodeUtilisateurDao.deleteById(toRemove.getTranscodeUtilisateurId());
          log.debug("Suppression de l'association entre le code : " + code.toString() + " et le transcode : "
             + getCodeCommonFromTransCode(toRemove).toString());
       }
@@ -362,7 +363,7 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
 
          log.debug("Ajout de l'association entre le code : " + code.toString() + " et le transcode : " + c.toString());
       }
-      codeUtilisateurDao.updateObject(code);
+      codeUtilisateurDao.save(code);
    }
 
    /**
@@ -403,6 +404,6 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
 
    @Override
    public CodeUtilisateur findByIdManager(final Integer codeId){
-      return codeUtilisateurDao.findById(codeId);
+      return codeUtilisateurDao.findById(codeId).orElse(null);
    }
 }

@@ -62,7 +62,7 @@ public class DataTypeManagerImpl implements DataTypeManager
 
    @Override
    public List<DataType> findAllObjectsManager(){
-      return dataTypeDao.findAll();
+      return IterableUtils.toList(dataTypeDao.findAll());
    }
 
    @Override

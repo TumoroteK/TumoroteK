@@ -559,7 +559,8 @@
 						<include>**/IndicateurDaoTest.java</include>
 						<include>**/SModeleDaoTest.java</include>
 						<include>**/SubdivisionDaoTest.java</include>
-
+						
+						<include>**/TkResourceBundleHelperTest.java</include>
 					</includes>
 				</configuration>
 			</plugin>

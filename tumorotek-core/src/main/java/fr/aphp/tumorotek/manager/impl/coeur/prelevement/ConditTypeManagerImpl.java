@@ -86,18 +86,18 @@ public class ConditTypeManagerImpl implements ConditTypeManager
    }
 
    @Override
-   public void createObjectManager(final ConditType obj){
+   public void saveManager(final ConditType obj){
 
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(obj.getPlateforme() == null){
          throw new RequiredObjectIsNullException("ConditType", "creation", "Plateforme");
       }
-      obj.setPlateforme(plateformeDao.mergeObject(obj.getPlateforme()));
+      obj.setPlateforme(plateformeDao.save(obj.getPlateforme()));
 
       BeanValidator.validateObject(obj, new Validator[] {conditTypeValidator});
       if(!findDoublonManager(obj)){
-         conditTypeDao.createObject(obj);
+         conditTypeDao.save(obj);
          log.info("Enregistrement objet ConditType " + obj.toString());
       }else{
          log.warn("Doublon lors creation objet ConditType " + obj.toString());
@@ -106,10 +106,10 @@ public class ConditTypeManagerImpl implements ConditTypeManager
    }
 
    @Override
-   public void updateObjectManager(final ConditType obj){
+   public void saveManager(final ConditType obj){
       BeanValidator.validateObject(obj, new Validator[] {conditTypeValidator});
       if(!findDoublonManager(obj)){
-         conditTypeDao.updateObject(obj);
+         conditTypeDao.save(obj);
          log.info("Modification objet ConditType " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet ConditType " + obj.toString());
@@ -127,9 +127,9 @@ public class ConditTypeManagerImpl implements ConditTypeManager
    }
 
    @Override
-   public void removeObjectManager(final ConditType obj){
+   public void deleteByIdManager(final ConditType obj){
       if(obj != null){
-         conditTypeDao.removeObject(obj.getId());
+         conditTypeDao.deleteById(obj.getId());
          log.info("Suppression objet ConditType " + obj.toString());
       }else{
          log.warn("Suppression d'un ConditType null");
@@ -141,7 +141,7 @@ public class ConditTypeManagerImpl implements ConditTypeManager
       if(o != null){
          final ConditType type = o;
          if(type.getId() == null){
-            return conditTypeDao.findAll().contains(type);
+            return IterableUtils.toList(conditTypeDao.findAll()).contains(type);
          }
          return conditTypeDao.findByExcludedId(type.getId()).contains(type);
       }
@@ -150,7 +150,7 @@ public class ConditTypeManagerImpl implements ConditTypeManager
 
    @Override
    public boolean isUsedObjectManager(final ConditType o){
-      final ConditType conditType = conditTypeDao.mergeObject(o);
+      final ConditType conditType = conditTypeDao.save(o);
       return conditType.getPrelevements().size() > 0;
    }
 

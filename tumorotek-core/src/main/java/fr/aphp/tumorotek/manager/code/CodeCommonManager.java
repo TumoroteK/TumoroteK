@@ -40,38 +40,38 @@ import java.util.List;
 import fr.aphp.tumorotek.model.code.CodeCommon;
 
 /**
- * Interface regroupant les methodes communes aux codifications médicales.
- * Date: 21/05/2010
+ * Interface regroupant les methodes communes aux codifications médicales. Date:
+ * 21/05/2010
  *
  * @author Mathieu BARTHELEMT
  * @version 2.0
  *
  */
-public interface CodeCommonManager<T extends CodeCommon>
-{
+public interface CodeCommonManager<T extends CodeCommon> {
 
-   /**
-    * Recherche toutes les instances de codes présentes dans la codification.
-    * @return List contenant les codes.
-    */
-   List<T> findAllObjectsManager();
+	/**
+	 * Recherche toutes les instances de codes présentes dans la codification.
+	 * 
+	 * @return List contenant les codes.
+	 */
+	List<T> findAllObjectsManager();
 
-   /**
-    * Recherche les codes dont le code est like celui passé
-    * en paramètre.
-    * @param code Code pour lequel on recherche des codes.
-    * @param boolean exactMatch
-    * @return Liste de codes.
-    */
-   List<T> findByCodeLikeManager(String code, boolean exactMatch);
+	/**
+	 * Recherche les codes dont le code est like celui passé en paramètre.
+	 * 
+	 * @param code    Code pour lequel on recherche des codes.
+	 * @param boolean exactMatch
+	 * @return Liste de codes.
+	 */
+	List<T> findByCodeLikeManager(String code, boolean exactMatch);
 
-   /**
-    * Recherche les codes dont le libellé est like celui passé en
-    * paramètre.
-    * @param libelle Description du code que l'on recherche.
-    * @param boolean exactMatch
-    * @return une liste de codes.
-    */
-   List<T> findByLibelleLikeManager(String libelle, boolean exactMatch);
+	/**
+	 * Recherche les codes dont le libellé est like celui passé en paramètre.
+	 * 
+	 * @param libelle Description du code que l'on recherche.
+	 * @param boolean exactMatch
+	 * @return une liste de codes.
+	 */
+	List<T> findByLibelleLikeManager(String libelle, boolean exactMatch);
 
 }

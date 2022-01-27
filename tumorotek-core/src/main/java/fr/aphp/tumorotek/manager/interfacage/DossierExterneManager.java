@@ -89,14 +89,14 @@ public interface DossierExterneManager
     * @param max taille table pour First In First Out
     * @version 2.1
     */
-   void createObjectManager(DossierExterne dossierExterne, Emetteur emetteur, List<BlocExterne> blocExternes,
+   void saveManager(DossierExterne dossierExterne, Emetteur emetteur, List<BlocExterne> blocExternes,
       Hashtable<BlocExterne, List<ValeurExterne>> valeurExternes, int max);
 
    /**
     * Supprime un dossier.
     * @param dossierExterne Dossier à supprimer.
     */
-   void removeObjectManager(DossierExterne dossierExterne);
+   void deleteByIdManager(DossierExterne dossierExterne);
    
    /**
     * Recherche tous les DossierExternes contenant une valeur externe 'like" la valeur 

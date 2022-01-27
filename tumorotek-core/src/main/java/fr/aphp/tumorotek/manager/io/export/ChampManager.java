@@ -69,32 +69,32 @@ public interface ChampManager
     * @param champ Champ à créer.
     * @param parent Champ parent de la reqûete.
     */
-   void createObjectManager(Champ champ, Champ parent);
+   void saveManager(Champ champ, Champ parent);
    
    /**
     * Créé un Champ en BDD.
     * @param champ Champ à créer.
     */
-   void createObjectManager(Champ champ);
+   void saveManager(Champ champ);
 
    /**
     * Met à jour un Champ en BDD.
     * @param champ Champ à mettre à jour.
     * @param parent Champ parent du Champ à mettre à jour.
     */
-   void updateObjectManager(Champ champ, Champ parent);
+   void saveManager(Champ champ, Champ parent);
    
    /**
     * Met à jour un Champ en BDD.
     * @param champ Champ à mettre à jour.
     */
-   void updateObjectManager(Champ champ);
+   void saveManager(Champ champ);
 
    /**
     * Supprime un Champ et son parent d'abord.
     * @param champ Champ à supprimer.
     */
-   void removeObjectManager(Champ champ);
+   void deleteByIdManager(Champ champ);
 
    /**
     * Copie un Champ et son parent d'abord.

@@ -42,7 +42,7 @@ import java.util.List;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.TKdataObject;
-import fr.aphp.tumorotek.model.cession.Contrat;
+import fr.aphp.tumorotek.model.coeur.cession.Contrat;
 
 /**
  * Classe 'Decorateur' qui reprend les attributs de Contrat.

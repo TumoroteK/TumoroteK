@@ -114,14 +114,14 @@ public interface ImportHistoriqueManager
     * @param utilisateur Utilisateur.
     * @param importations Importations réalisées lors de l'historique.
     */
-   void createObjectManager(ImportHistorique importHistorique, ImportTemplate importTemplate, Utilisateur utilisateur,
+   void saveManager(ImportHistorique importHistorique, ImportTemplate importTemplate, Utilisateur utilisateur,
       List<Importation> importations);
 
    /**
     * Supprime un ImportHistorique de la base de données.
     * @param importHistorique Objet à supprimer de la base de données.
     */
-   void removeObjectManager(ImportHistorique importHistorique);
+   void deleteByIdManager(ImportHistorique importHistorique);
 
    /**
     * Supprime une Importation de la base de données.

@@ -175,7 +175,7 @@ public class PatientManagerImpl implements PatientManager
    }
 
    @Override
-   public void createOrUpdateObjectManager(final Patient patient, final List<Maladie> maladies,
+   public void createOrsaveManager(final Patient patient, final List<Maladie> maladies,
       final List<Collaborateur> medecins, final List<PatientLien> patientLiens,
       final List<AnnotationValeur> listAnnoToCreateOrUpdate, final List<AnnotationValeur> listAnnoToDelete,
       final List<File> filesCreated, final List<File> filesToDelete, final Utilisateur utilisateur, final String operation,
@@ -198,15 +198,15 @@ public class PatientManagerImpl implements PatientManager
             OperationType oType;
 
             if(operation.equals("creation")){
-               patientDao.createObject(patient);
+               patientDao.save(patient);
                log.info("Enregistrement objet Patient " + patient.toString());
 
                oType = operationTypeDao.findByNom("Creation").get(0);
             }else{
 
-               // patient.setDelegate(patientDelegateDao.mergeObject(patient.getDelegate()));
+               // patient.setDelegate(patientDelegateDao.save(patient.getDelegate()));
 
-               patientDao.updateObject(patient);
+               patientDao.save(patient);
                log.info("Modification objet Patient " + patient.toString());
 
                if(operation.equals("modification")){
@@ -335,7 +335,7 @@ public class PatientManagerImpl implements PatientManager
    @Override
    public List<Patient> findAllObjectsManager(){
       log.debug("Recherche totalite des Patients");
-      return patientDao.findAll();
+      return IterableUtils.toList(patientDao.findAll());
    }
 
    @Override
@@ -488,7 +488,7 @@ public class PatientManagerImpl implements PatientManager
    }
 
    @Override
-   public void removeObjectManager(final Patient patient, final String comments, final Utilisateur user,
+   public void deleteByIdManager(final Patient patient, final String comments, final Utilisateur user,
       final List<File> filesToDelete){
       if(patient != null){
          if(!isUsedObjectManager(patient)){
@@ -496,10 +496,10 @@ public class PatientManagerImpl implements PatientManager
             // Supprime les maladies associées
             final Iterator<Maladie> malsIt = maladieManager.findByPatientManager(patient).iterator();
             while(malsIt.hasNext()){
-               maladieManager.removeObjectManager(malsIt.next(), comments, user);
+               maladieManager.deleteByIdManager(malsIt.next(), comments, user);
             }
 
-            patientDao.removeObject(patient.getPatientId());
+            patientDao.deleteById(patient.getPatientId());
             log.info("Suppression objet Patient " + patient.toString());
 
             //Supprime operations associes
@@ -521,7 +521,7 @@ public class PatientManagerImpl implements PatientManager
 
    @Override
    public Set<PatientMedecin> getPatientMedecinsManager(Patient patient){
-      patient = patientDao.mergeObject(patient);
+      patient = patientDao.save(patient);
       final Set<PatientMedecin> medecins = patient.getPatientMedecins();
       medecins.isEmpty(); // operation empechant LazyInitialisationException
       return medecins;
@@ -531,7 +531,7 @@ public class PatientManagerImpl implements PatientManager
    public List<Collaborateur> getMedecinsManager(Patient patient){
       final List<Collaborateur> colls = new ArrayList<>();
       if(patient != null){
-         patient = patientDao.mergeObject(patient);
+         patient = patientDao.save(patient);
          final LinkedHashSet<PatientMedecin> medecins = new LinkedHashSet<>(patient.getPatientMedecins());
          final Iterator<PatientMedecin> it = medecins.iterator();
          while(it.hasNext()){
@@ -546,7 +546,7 @@ public class PatientManagerImpl implements PatientManager
    public Set<PatientLien> getPatientLiensManager(Patient patient){
       final Set<PatientLien> liens = new HashSet<>();
       if(patient != null){
-         patient = patientDao.mergeObject(patient);
+         patient = patientDao.save(patient);
          liens.addAll(patient.getPatientLiens());
          liens.addAll(patient.getPatientLiens2());
          liens.isEmpty(); // operation empechant LazyInitialisationException
@@ -564,7 +564,7 @@ public class PatientManagerImpl implements PatientManager
     */
    private void updateMaladies(final Patient patient, final List<Maladie> maladies){
 
-      final Patient pat = patientDao.mergeObject(patient);
+      final Patient pat = patientDao.save(patient);
 
       final Iterator<Maladie> it = pat.getMaladies().iterator();
       final List<Maladie> malsToRemove = new ArrayList<>();
@@ -582,10 +582,10 @@ public class PatientManagerImpl implements PatientManager
       // on parcourt la liste la liste des maladies à retirer de
       // l'association
       for(int i = 0; i < malsToRemove.size(); i++){
-         final Maladie mal = maladieDao.mergeObject(malsToRemove.get(i));
+         final Maladie mal = maladieDao.save(malsToRemove.get(i));
          // on retire la maladie de l'association et on la supprime
          pat.getMaladies().remove(mal);
-         maladieDao.removeObject(mal.getMaladieId());
+         maladieDao.deleteById(mal.getMaladieId());
 
          log.debug("Suppression de l'association entre le patient : " + pat.toString() + " et suppression de la maladie : "
             + mal.toString());
@@ -596,7 +596,7 @@ public class PatientManagerImpl implements PatientManager
          // si une maladie n'était pas associé au patient
          if(!pat.getMaladies().contains(maladies.get(i))){
             // on ajoute la maladie à l'association
-            pat.getMaladies().add(maladieDao.mergeObject(maladies.get(i)));
+            pat.getMaladies().add(maladieDao.save(maladies.get(i)));
 
             log.debug(
                "Ajout de l'association entre le patient : " + pat.toString() + " et la maladie : " + maladies.get(i).toString());
@@ -614,7 +614,7 @@ public class PatientManagerImpl implements PatientManager
     */
    private void updateMedecins(final Patient patient, final List<Collaborateur> collaborateurs){
 
-      final Patient pat = patientDao.mergeObject(patient);
+      final Patient pat = patientDao.save(patient);
 
       final Iterator<PatientMedecin> it = pat.getPatientMedecins().iterator();
       final List<PatientMedecin> medsToRemove = new ArrayList<>();
@@ -632,10 +632,10 @@ public class PatientManagerImpl implements PatientManager
       // on parcourt la liste la liste des medecins à retirer de
       // l'association
       for(int i = 0; i < medsToRemove.size(); i++){
-         final PatientMedecin med = patientMedecinDao.mergeObject(medsToRemove.get(i));
+         final PatientMedecin med = patientMedecinDao.save(medsToRemove.get(i));
          // on retire le medecin de l'association et on le supprime
          pat.getPatientMedecins().remove(med);
-         patientMedecinDao.removeObject(med.getPk());
+         patientMedecinDao.deleteById(med.getPk());
 
          log.debug("Suppression de l'association entre le patient : " + pat.toString() + " et suppression du medecin : "
             + med.toString());
@@ -650,14 +650,14 @@ public class PatientManagerImpl implements PatientManager
          // si un medecin n'était pas associé au patient
          if(!pat.getPatientMedecins().contains(pm)){
             // on ajoute le medecin dans l'association dans le bon ordre
-            pat.getPatientMedecins().add(patientMedecinDao.mergeObject(pm));
+            pat.getPatientMedecins().add(patientMedecinDao.save(pm));
 
             log.debug("Ajout de l'association entre le patient : " + pat.toString() + " et le medecin : "
                + collaborateurs.get(i).toString());
          }else{ // on modifie l'ordre du medecin present avec la liste
             pm = patientMedecinDao.findById(pk);
             pm.setOrdre(i + 1);
-            patientMedecinDao.mergeObject(pm);
+            patientMedecinDao.save(pm);
          }
       }
    }
@@ -672,7 +672,7 @@ public class PatientManagerImpl implements PatientManager
     */
    private void updateLiens(final Patient patient, final List<PatientLien> liens){
 
-      final Patient pat = patientDao.mergeObject(patient);
+      final Patient pat = patientDao.save(patient);
       Patient pat2;
 
       final Iterator<PatientLien> it = pat.getPatientLiens().iterator();
@@ -691,12 +691,12 @@ public class PatientManagerImpl implements PatientManager
       // on parcourt la liste la liste des liens à retirer de
       // l'association
       for(int i = 0; i < liensToRemove.size(); i++){
-         final PatientLien lien = patientLienDao.mergeObject(liensToRemove.get(i));
+         final PatientLien lien = patientLienDao.save(liensToRemove.get(i));
          // on retire le lien de l'association et on le supprime
          pat2 = lien.getPatient2();
          pat.getPatientLiens().remove(lien);
          pat2.getPatientLiens2().remove(lien);
-         patientLienDao.removeObject(lien.getPk());
+         patientLienDao.deleteById(lien.getPk());
 
          log.debug(
             "Suppression de l'association entre le patient : " + pat.toString() + " et suppression du lien : " + lien.toString());
@@ -713,8 +713,8 @@ public class PatientManagerImpl implements PatientManager
             lien.setPk(pk);
             lien.setLienFamilial(liens.get(i).getLienFamilial());
             // on ajoute le lien dans l'association
-            pat.getPatientLiens().add(patientLienDao.mergeObject(lien));
-            //				patientDao.mergeObject((liens.get(i).getPatient2()))
+            pat.getPatientLiens().add(patientLienDao.save(lien));
+            //				patientDao.save((liens.get(i).getPatient2()))
             //									.getPatientLiens2().add(liens.get(i));
 
             log.debug("Ajout de l'association entre le patient : " + pat.toString() + " et le lien : " + liens.get(i).toString());
@@ -845,7 +845,7 @@ public class PatientManagerImpl implements PatientManager
       for(int i = 0; i < patients.size(); i++){
          final Patient pat = patients.get(i);
          try{
-            createOrUpdateObjectManager(pat, null, null, null, null, null, null, null, utilisateur, "modifMulti", baseDir, false);
+            createOrsaveManager(pat, null, null, null, null, null, null, null, utilisateur, "modifMulti", baseDir, false);
          }catch(final RuntimeException e){
             if(e instanceof TKException){
                ((TKException) e).setEntiteObjetException("Patient");
@@ -1001,7 +1001,7 @@ public class PatientManagerImpl implements PatientManager
          }
 
          // mise a jour du Patient actif
-         createOrUpdateObjectManager(patient, null, medsA, liensA, valeursAConserver, null, null, null, u, "fusion", null, false);
+         createOrsaveManager(patient, null, medsA, liensA, valeursAConserver, null, null, null, u, "fusion", null, false);
 
          // recuperation des maladies
          final Set<Maladie> malP = maladieManager.getMaladiesManager(passif);
@@ -1017,14 +1017,14 @@ public class PatientManagerImpl implements PatientManager
             prelsIt = maladieManager.getPrelevementsManager(maladie).iterator();
             maladie.setPatient(patient); // pour appliquer equals()
             if(!malA.contains(maladie)){ // ajoute la maladie
-               maladieDao.updateObject(maladie);
+               maladieDao.save(maladie);
             }else{ // ajoute prelevements a la maladie existante
                final int index = malA.indexOf(maladie);
                maladie.setPatient(passif); //recupere son patient
                while(prelsIt.hasNext()){
                   prel = prelsIt.next();
                   prel.setMaladie(malA.get(index));
-                  prelevementDao.updateObject(prel);
+                  prelevementDao.save(prel);
                }
                maladie.getPrelevements().clear();
                malsToRemove.add(maladie);
@@ -1033,11 +1033,11 @@ public class PatientManagerImpl implements PatientManager
 
          // fantomization (oh le beau mot) du passif
          for(int i = 0; i < malsToRemove.size(); i++){
-            maladieManager.removeObjectManager(malsToRemove.get(i), comments, u);
+            maladieManager.deleteByIdManager(malsToRemove.get(i), comments, u);
          }
 
          // remove patient et objets associes
-         patientDao.removeObject(passif.getPatientId());
+         patientDao.deleteById(passif.getPatientId());
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(passif, operationManager, comments, u);
 
@@ -1085,7 +1085,7 @@ public class PatientManagerImpl implements PatientManager
          for(final Integer id : ids){
             p = findByIdManager(id);
             if(p != null){
-               removeObjectManager(p, comment, u, filesToDelete);
+               deleteByIdManager(p, comment, u, filesToDelete);
             }
          }
          for(final File f : filesToDelete){

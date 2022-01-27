@@ -124,7 +124,7 @@ public class CategorieManagerImpl implements CategorieManager
       if(o != null){
          final Categorie cat = o;
          if(cat.getId() == null){
-            return categorieDao.findAll().contains(cat);
+            return IterableUtils.toList(categorieDao.findAll()).contains(cat);
          }
             return categorieDao.findByExcludedId(cat.getId()).contains(cat);
       }
@@ -133,15 +133,15 @@ public class CategorieManagerImpl implements CategorieManager
 
    @Override
    public boolean isUsedObjectManager(final Categorie obj){
-      final Categorie cat = categorieDao.mergeObject(obj);
+      final Categorie cat = categorieDao.save(obj);
       return cat.getEtablissements().size() > 0;
    }
 
    @Override
-   public void createObjectManager(final Categorie obj){
+   public void saveManager(final Categorie obj){
       BeanValidator.validateObject(obj, new Validator[] {categorieValidator});
       if(!findDoublonManager(obj)){
-         categorieDao.createObject(obj);
+         categorieDao.save(obj);
          log.info("Enregistrement objet Categorie " + obj.toString());
       }else{
          log.warn("Doublon lors creation objet Categorie " + obj.toString());
@@ -150,10 +150,10 @@ public class CategorieManagerImpl implements CategorieManager
    }
 
    @Override
-   public void updateObjectManager(final Categorie obj){
+   public void saveManager(final Categorie obj){
       BeanValidator.validateObject(obj, new Validator[] {categorieValidator});
       if(!findDoublonManager(obj)){
-         categorieDao.updateObject(obj);
+         categorieDao.save(obj);
          log.info("Modification objet Categorie " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet Categorie " + obj.toString());
@@ -162,9 +162,9 @@ public class CategorieManagerImpl implements CategorieManager
    }
 
    @Override
-   public void removeObjectManager(final Categorie obj){
+   public void deleteByIdManager(final Categorie obj){
       if(obj != null){
-         categorieDao.removeObject(obj.getId());
+         categorieDao.deleteById(obj.getId());
          log.info("Suppression objet Categorie " + obj.toString());
       }else{
          log.warn("Suppression d'une Categorie null");

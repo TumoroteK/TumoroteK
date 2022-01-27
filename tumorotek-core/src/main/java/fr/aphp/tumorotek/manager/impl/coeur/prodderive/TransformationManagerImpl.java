@@ -130,7 +130,7 @@ public class TransformationManagerImpl implements TransformationManager
    @Override
    public List<Transformation> findAllObjectsManager(){
       log.debug("Recherche de toutes les Transformations");
-      return transformationDao.findAll();
+      return IterableUtils.toList(transformationDao.findAll());
    }
 
    /**
@@ -197,7 +197,7 @@ public class TransformationManagerImpl implements TransformationManager
    @Override
    public Boolean findDoublonManager(final Transformation transformation){
       if(transformation.getTransformationId() == null){
-         return transformationDao.findAll().contains(transformation);
+         return IterableUtils.toList(transformationDao.findAll()).contains(transformation);
       }else{
          return transformationDao.findByExcludedId(transformation.getTransformationId()).contains(transformation);
       }
@@ -224,18 +224,18 @@ public class TransformationManagerImpl implements TransformationManager
     * l'objet à créer se trouve déjà dans la base.
     */
    @Override
-   public void createObjectManager(final Transformation transformation, final Entite entite, final Unite quantiteUnite){
+   public void saveManager(final Transformation transformation, final Entite entite, final Unite quantiteUnite){
       // On vérifie que l'entité n'est pas null. Si c'est le cas on envoie
       // une exception
       if(entite == null){
          log.warn("Objet obligatoire Entite manquant lors de la creation " + "d'un objet Transformation");
          throw new RequiredObjectIsNullException("Transformation", "creation", "Entite");
       }else{
-         transformation.setEntite(entiteDao.mergeObject(entite));
+         transformation.setEntite(entiteDao.save(entite));
       }
       // On vérifie que l'unité de quantité n'est pas null
       if(quantiteUnite != null){
-         transformation.setQuantiteUnite(uniteDao.mergeObject(quantiteUnite));
+         transformation.setQuantiteUnite(uniteDao.save(quantiteUnite));
       }else{
          transformation.setQuantiteUnite(null);
       }
@@ -253,7 +253,7 @@ public class TransformationManagerImpl implements TransformationManager
       	throw new DoublonFoundException("Transformation", "creation");
       } else {*/
       BeanValidator.validateObject(transformation, new Validator[] {transformationValidator});
-      transformationDao.createObject(transformation);
+      transformationDao.save(transformation);
       log.info("Enregistrement de l'objet Transformation : " + transformation.toString());
       //}
 
@@ -268,7 +268,7 @@ public class TransformationManagerImpl implements TransformationManager
     * l'objet à créer se trouve déjà dans la base.
     */
    @Override
-   public void updateObjectManager(final Transformation transformation, final Entite entite, final Unite quantiteUnite){
+   public void saveManager(final Transformation transformation, final Entite entite, final Unite quantiteUnite){
 
       // On vérifie que l'entité n'est pas null. Si c'est le cas on envoie
       // une exception
@@ -276,11 +276,11 @@ public class TransformationManagerImpl implements TransformationManager
          log.warn("Objet obligatoire Entite manquant lors de la modif " + "d'un objet Transformation");
          throw new RequiredObjectIsNullException("Transformation", "modification", "Entite");
       }else{
-         transformation.setEntite(entiteDao.mergeObject(entite));
+         transformation.setEntite(entiteDao.save(entite));
       }
       // On vérifie que l'unité de quantité n'est pas null
       if(quantiteUnite != null){
-         transformation.setQuantiteUnite(uniteDao.mergeObject(quantiteUnite));
+         transformation.setQuantiteUnite(uniteDao.save(quantiteUnite));
       }else{
          transformation.setQuantiteUnite(null);
       }
@@ -298,20 +298,20 @@ public class TransformationManagerImpl implements TransformationManager
       	throw new DoublonFoundException("Transformation", "modification");
       } else {*/
       BeanValidator.validateObject(transformation, new Validator[] {transformationValidator});
-      transformationDao.updateObject(transformation);
+      transformationDao.save(transformation);
       log.info("Modification de l'objet Transformation : " + transformation.toString());
       //}
    }
 
    @Override
-   public void removeObjectManager(final Transformation transformation, final String comments, final Utilisateur user){
+   public void deleteByIdManager(final Transformation transformation, final String comments, final Utilisateur user){
       //		if (isUsedObjectManager(transformation)) {
       //			log.warn("Objet utilisé lors de la suppression de l'objet " 
       //					+ "Transformation : " + transformation.toString());
       //			throw new ObjectUsedException("Transformation", "suppression");
       //		} else {
 
-      transformationDao.removeObject(transformation.getTransformationId());
+      transformationDao.deleteById(transformation.getTransformationId());
 
       log.info("Suppression de l'objet Transformation : " + transformation.toString());
    }

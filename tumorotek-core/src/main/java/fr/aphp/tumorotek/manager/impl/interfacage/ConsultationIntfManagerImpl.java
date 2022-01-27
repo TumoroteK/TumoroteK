@@ -89,7 +89,7 @@ public class ConsultationIntfManagerImpl implements ConsultationIntfManager
    }
 
    @Override
-   public void createObjectManager(final String _i, final Calendar _c, final String _e, final Utilisateur u){
+   public void saveManager(final String _i, final Calendar _c, final String _e, final Utilisateur u){
 
       final ConsultationIntf consult = new ConsultationIntf();
       consult.setIdentification(_i);
@@ -97,13 +97,13 @@ public class ConsultationIntfManagerImpl implements ConsultationIntfManager
       consult.setEmetteurIdent(_e);
       consult.setDate(_c);
 
-      consultationIntfDao.createObject(consult);
+      consultationIntfDao.save(consult);
    }
 
    @Override
-   public void removeObjectManager(final ConsultationIntf c){
+   public void deleteByIdManager(final ConsultationIntf c){
       if(c != null){
-         consultationIntfDao.removeObject(c.getConsultationIntfId());
+         consultationIntfDao.deleteById(c.getConsultationIntfId());
       }
    }
 

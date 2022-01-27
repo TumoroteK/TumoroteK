@@ -106,7 +106,7 @@ public class ChampEntiteManagerImpl implements ChampEntiteManager
    @Override
    public List<ChampEntite> findAllObjectsManager(){
       log.debug("Recherche de tous les ChampEntites");
-      return champEntiteDao.findAll();
+      return IterableUtils.toList(champEntiteDao.findAll());
    }
 
    /**

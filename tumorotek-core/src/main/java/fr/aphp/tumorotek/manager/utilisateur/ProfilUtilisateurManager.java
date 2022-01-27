@@ -159,14 +159,14 @@ public interface ProfilUtilisateurManager
     * @param banque Banque  du ProfilUtilisateur.
     * @param profil Profil du ProfilUtilisateur.
     */
-   void createObjectManager(ProfilUtilisateur profilUtilisateur, Utilisateur utilisateur, Banque banque, Profil profil);
+   void saveManager(ProfilUtilisateur profilUtilisateur, Utilisateur utilisateur, Banque banque, Profil profil);
 
    /**
     * Supprime un ProfilUtilisateur de la base de données.
     * @param profilUtilisateur ProfilUtilisateur à supprimer 
     * de la base de données.
     */
-   void removeObjectManager(ProfilUtilisateur profilUtilisateur);
+   void deleteByIdManager(ProfilUtilisateur profilUtilisateur);
    
    /**
     * Compte pour un utilisateur le nombre de profils différents qui lui sont attribués 

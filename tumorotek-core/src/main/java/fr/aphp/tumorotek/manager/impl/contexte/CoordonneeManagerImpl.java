@@ -115,7 +115,7 @@ public class CoordonneeManagerImpl implements CoordonneeManager
    @Override
    public List<Coordonnee> findAllObjectsManager(){
       log.debug("Recherche toutes les coordonnees");
-      return coordonneeDao.findAll();
+      return IterableUtils.toList(coordonneeDao.findAll());
    }
 
    /**
@@ -128,7 +128,7 @@ public class CoordonneeManagerImpl implements CoordonneeManager
    @Override
    public Set<Collaborateur> getCollaborateursManager(Coordonnee coordonnee){
       if(coordonnee != null){
-         coordonnee = coordonneeDao.mergeObject(coordonnee);
+         coordonnee = coordonneeDao.save(coordonnee);
          final Set<Collaborateur> collabs = coordonnee.getCollaborateurs();
          collabs.size();
          return collabs;
@@ -208,21 +208,21 @@ public class CoordonneeManagerImpl implements CoordonneeManager
     * coordonnée.
     */
    @Override
-   public void createObjectManager(final Coordonnee coordonnee, final List<Collaborateur> collaborateurs){
+   public void saveManager(final Coordonnee coordonnee, final List<Collaborateur> collaborateurs){
 
       BeanValidator.validateObject(coordonnee, new Validator[] {coordonneeValidator});
 
       if(collaborateurs != null){
          coordonnee.setCollaborateurs(new HashSet<Collaborateur>());
          for(int i = 0; i < collaborateurs.size(); i++){
-            coordonnee.getCollaborateurs().add(collaborateurDao.mergeObject(collaborateurs.get(i)));
+            coordonnee.getCollaborateurs().add(collaborateurDao.save(collaborateurs.get(i)));
          }
       }
       //		} else {
       //			coordonnee.setCollaborateurs(null);
       //		}
 
-      coordonneeDao.createObject(coordonnee);
+      coordonneeDao.save(coordonnee);
 
       log.info("Enregistrement de l'objet Coordonnee : " + coordonnee.toString());
 
@@ -235,9 +235,9 @@ public class CoordonneeManagerImpl implements CoordonneeManager
     * coordonnée.
     */
    @Override
-   public void updateObjectManager(Coordonnee coordonnee, final List<Collaborateur> collaborateurs, final boolean doValidation){
+   public void saveManager(Coordonnee coordonnee, final List<Collaborateur> collaborateurs, final boolean doValidation){
 
-      coordonnee = coordonneeDao.mergeObject(coordonnee);
+      coordonnee = coordonneeDao.save(coordonnee);
       if(doValidation){
          BeanValidator.validateObject(coordonnee, new Validator[] {coordonneeValidator});
       }
@@ -245,14 +245,14 @@ public class CoordonneeManagerImpl implements CoordonneeManager
       if(collaborateurs != null){
          coordonnee.setCollaborateurs(new HashSet<Collaborateur>());
          for(int i = 0; i < collaborateurs.size(); i++){
-            coordonnee.getCollaborateurs().add(collaborateurDao.mergeObject(collaborateurs.get(i)));
+            coordonnee.getCollaborateurs().add(collaborateurDao.save(collaborateurs.get(i)));
          }
       }
       // else {
       //	coordonnee.setCollaborateurs(null);
       //}
 
-      coordonneeDao.updateObject(coordonnee);
+      coordonneeDao.save(coordonnee);
 
       log.info("Enregistrement de l'objet Coordonnee : " + coordonnee.toString());
 
@@ -263,18 +263,18 @@ public class CoordonneeManagerImpl implements CoordonneeManager
     * @param coordonnee Coordonnee à supprimer de la base de données.
     */
    @Override
-   public void removeObjectManager(Coordonnee coordonnee){
+   public void deleteByIdManager(Coordonnee coordonnee){
 
-      coordonnee = coordonneeDao.mergeObject(coordonnee);
+      coordonnee = coordonneeDao.save(coordonnee);
       if(coordonnee.getCollaborateurs() != null){
          final Iterator<Collaborateur> it = coordonnee.getCollaborateurs().iterator();
          while(it.hasNext()){
-            final Collaborateur tmp = collaborateurDao.mergeObject(it.next());
+            final Collaborateur tmp = collaborateurDao.save(it.next());
             tmp.getCoordonnees().remove(coordonnee);
          }
       }
 
-      coordonneeDao.removeObject(coordonnee.getCoordonneeId());
+      coordonneeDao.deleteById(coordonnee.getCoordonneeId());
       log.info("Suppression de l'objet Coordonnee : " + coordonnee.toString());
 
    }

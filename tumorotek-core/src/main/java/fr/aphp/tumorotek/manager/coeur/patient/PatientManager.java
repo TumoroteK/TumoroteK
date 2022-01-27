@@ -92,7 +92,7 @@ public interface PatientManager
     * @param base directory pour enregistrer un fichier associé 
     * dans le file system
     */
-   void createOrUpdateObjectManager(Patient patient, List<Maladie> maladies, List<Collaborateur> medecins,
+   void createOrsaveManager(Patient patient, List<Maladie> maladies, List<Collaborateur> medecins,
       List<PatientLien> patientLiens, List<AnnotationValeur> listAnnoToCreateOrUpdate, List<AnnotationValeur> listAnnoToDelete,
       List<File> filesCreated, List<File> filesToDelete, Utilisateur utilisateur, String operation, String baseDir,
       boolean isImport);
@@ -114,7 +114,7 @@ public interface PatientManager
     * @param Utilisateur réalisant la suppression.
     * @param filesToDelete liste de fichier à supprimer
     */
-   void removeObjectManager(Patient patient, String comments, Utilisateur user, List<File> filesToDelete);
+   void deleteByIdManager(Patient patient, String comments, Utilisateur user, List<File> filesToDelete);
 
    /**
     * Recherche les medecins liés au patient passée en paramètre.

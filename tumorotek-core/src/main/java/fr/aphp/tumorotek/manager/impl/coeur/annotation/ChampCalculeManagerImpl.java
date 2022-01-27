@@ -109,7 +109,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
    }
 
    @Override
-   public void createObjectManager(final ChampCalcule champCalcule){
+   public void saveManager(final ChampCalcule champCalcule){
       // On vérifie que le groupement n'est pas nul
       if(champCalcule == null){
          log.warn("Objet obligatoire ChampCalcule manquant lors " + "de la création d'un objet ChampCalcule");
@@ -119,7 +119,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
       // On enregsitre d'abord les champs associés
       createChampsAssocies(champCalcule);
 
-      champCalculeDao.createObject(champCalcule);
+      champCalculeDao.save(champCalcule);
    }
 
    /**
@@ -128,15 +128,15 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
     */
    private void createChampsAssocies(ChampCalcule champCalcule){
       if(null != champCalcule.getChamp1()){
-         champManager.createObjectManager(champCalcule.getChamp1());
+         champManager.saveManager(champCalcule.getChamp1());
       }
       if(null != champCalcule.getChamp2()){
-         champManager.createObjectManager(champCalcule.getChamp2());
+         champManager.saveManager(champCalcule.getChamp2());
       }
    }
 
    @Override
-   public void updateObjectManager(final ChampCalcule champCalcule){
+   public void saveManager(final ChampCalcule champCalcule){
       //On vérifie que le groupement n'est pas nul
       if(champCalcule == null){
          log.warn("Objet obligatoire ChampCalcule manquant lors " + "de la modification d'un objet ChampCalcule");
@@ -146,7 +146,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
       //On met à jour les champs associés
       updateChampsAssocies(champCalcule);
 
-      champCalculeDao.updateObject(champCalcule);
+      champCalculeDao.save(champCalcule);
    }
 
    /**
@@ -168,17 +168,17 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
     */
    private void updateChampAssocie(Champ newChamp, Champ oldChamp){
       if(null == newChamp && null != oldChamp){ // Suppression du champ
-         champManager.removeObjectManager(oldChamp);
+         champManager.deleteByIdManager(oldChamp);
       }else if(null != newChamp && null == oldChamp){ // Nouveau champ
-         champManager.createObjectManager(newChamp);
+         champManager.saveManager(newChamp);
       }else if(null != newChamp && null != oldChamp){ // Mise à jour Champ
          newChamp.setChampId(oldChamp.getChampId());
-         champManager.updateObjectManager(newChamp);
+         champManager.saveManager(newChamp);
       }
    }
 
    @Override
-   public void removeObjectManager(final ChampCalcule champCalcule){
+   public void deleteByIdManager(final ChampCalcule champCalcule){
       // On vérifie que le champ n'est pas nul
       if(champCalcule == null){
          log.warn("Objet obligatoire ChampCalcule manquant lors " + "de la suppression d'un objet ChampCalcule");
@@ -192,7 +192,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
       removeChampsAssocies(champCalcule);
 
       // On supprime le champCalcule
-      champCalculeDao.removeObject(champCalcule.getChampCalculeId());
+      champCalculeDao.deleteById(champCalcule.getChampCalculeId());
    }
 
    /**
@@ -201,13 +201,13 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
     */
    private void removeChampsAssocies(ChampCalcule champCalcule){
       if(null != champCalcule.getChamp1()){
-         champManager.removeObjectManager(champCalcule.getChamp1());
-         //         champCalcule.setChamp1(champDao.mergeObject(champCalcule.getChamp1()));
+         champManager.deleteByIdManager(champCalcule.getChamp1());
+         //         champCalcule.setChamp1(champDao.save(champCalcule.getChamp1()));
       }
 
       if(null != champCalcule.getChamp2()){
-         champManager.removeObjectManager(champCalcule.getChamp2());
-         //         champCalcule.setChamp2(champDao.mergeObject(champCalcule.getChamp2()));
+         champManager.deleteByIdManager(champCalcule.getChamp2());
+         //         champCalcule.setChamp2(champDao.save(champCalcule.getChamp2()));
       }
    }
 
@@ -244,7 +244,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
 
    @Override
    public List<ChampCalcule> findAllObjectsManager(){
-      return champCalculeDao.findAll();
+      return IterableUtils.toList(champCalculeDao.findAll());
    }
 
    @Override

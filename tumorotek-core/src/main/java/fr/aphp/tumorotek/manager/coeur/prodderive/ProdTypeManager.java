@@ -92,7 +92,7 @@ public interface ProdTypeManager extends PfDependantTKThesaurusManager<ProdType>
    //	 * @throws DoublonFoundException Lance une exception si un doublon de
    //	 * l'objet à créer se trouve déjà dans la base.
    //	 */
-   //	void createObjectManager(ProdType type);
+   //	void saveManager(ProdType type);
    //	
    //	/**
    //	 * Sauvegarde les modifications apportées à un objet persistant.
@@ -100,7 +100,7 @@ public interface ProdTypeManager extends PfDependantTKThesaurusManager<ProdType>
    //	 * @throws DoublonFoundException Lance une exception si un doublon de
    //	 * l'objet à créer se trouve déjà dans la base.
    //	 */
-   //	void updateObjectManager(ProdType type);
+   //	void saveManager(ProdType type);
    //	
    //	/**
    //	 * Supprime un ProdType de la base de données.
@@ -108,6 +108,6 @@ public interface ProdTypeManager extends PfDependantTKThesaurusManager<ProdType>
    //	 * @throws DoublonFoundException Lance une exception si l'objet
    //	 * est utilisé par des échantillons.
    //	 */
-   //	void removeObjectManager(ProdType type);
+   //	void deleteByIdManager(ProdType type);
 
 }

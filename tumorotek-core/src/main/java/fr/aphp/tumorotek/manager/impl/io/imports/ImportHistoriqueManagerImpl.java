@@ -98,7 +98,7 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
    @Override
    public List<ImportHistorique> findAllObjectsManager(){
       log.debug("Recherche de tous les ImportHistoriques.");
-      return importHistoriqueDao.findAll();
+      return IterableUtils.toList(importHistoriqueDao.findAll());
    }
 
    @Override
@@ -167,11 +167,11 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
    }
 
    @Override
-   public void createObjectManager(final ImportHistorique importHistorique, final ImportTemplate importTemplate,
+   public void saveManager(final ImportHistorique importHistorique, final ImportTemplate importTemplate,
       final Utilisateur utilisateur, final List<Importation> importations){
       // importTemplate required
       if(importTemplate != null){
-         importHistorique.setImportTemplate(importTemplateDao.mergeObject(importTemplate));
+         importHistorique.setImportTemplate(importTemplateDao.save(importTemplate));
       }else{
          log.warn("Objet obligatoire ImportTemplate manquant" + " lors de la création d'un ImportHistorique");
          throw new RequiredObjectIsNullException("ImportHistorique", "creation", "importTemplate");
@@ -179,7 +179,7 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
 
       // utilisateur required
       if(utilisateur != null){
-         importHistorique.setUtilisateur(utilisateurDao.mergeObject(utilisateur));
+         importHistorique.setUtilisateur(utilisateurDao.save(utilisateur));
       }else{
          log.warn("Objet obligatoire Utilisateur manquant" + " lors de la création d'un ImportHistorique");
          throw new RequiredObjectIsNullException("Utilisateur", "creation", "importTemplate");
@@ -190,19 +190,19 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
          for(int i = 0; i < importations.size(); i++){
             final Importation imp = importations.get(i);
             imp.setImportHistorique(importHistorique);
-            imp.setEntite(entiteDao.mergeObject(imp.getEntite()));
+            imp.setEntite(entiteDao.save(imp.getEntite()));
             importHistorique.getImportations().add(imp);
          }
       }
 
-      importHistoriqueDao.createObject(importHistorique);
+      importHistoriqueDao.save(importHistorique);
       log.info("Enregistrement objet ImportHistorique " + importHistorique.toString());
    }
 
    @Override
-   public void removeObjectManager(final ImportHistorique importHistorique){
+   public void deleteByIdManager(final ImportHistorique importHistorique){
       if(importHistorique != null){
-         importHistoriqueDao.removeObject(importHistorique.getImportHistoriqueId());
+         importHistoriqueDao.deleteById(importHistorique.getImportHistoriqueId());
          log.info("Suppression de l'objet ImportHistorique : " + importHistorique.toString());
       }else{
          log.warn("Suppression d'un ImportHistorique null");
@@ -212,7 +212,7 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
    @Override
    public void removeImportationManager(final Importation importation){
       if(importation != null){
-         importationDao.removeObject(importation.getImportationId());
+         importationDao.deleteById(importation.getImportationId());
          log.info("Suppression de l'objet Importation : " + importation.toString());
       }else{
          log.warn("Suppression d'un Importation null");

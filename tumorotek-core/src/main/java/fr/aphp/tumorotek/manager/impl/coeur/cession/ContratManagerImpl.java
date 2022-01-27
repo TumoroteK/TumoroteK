@@ -42,9 +42,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
 
-import fr.aphp.tumorotek.dao.cession.CessionDao;
-import fr.aphp.tumorotek.dao.cession.ContratDao;
-import fr.aphp.tumorotek.dao.cession.ProtocoleTypeDao;
+import fr.aphp.tumorotek.dao.coeur.cession.CessionDao;
+import fr.aphp.tumorotek.dao.coeur.cession.ContratDao;
+import fr.aphp.tumorotek.dao.coeur.cession.ProtocoleTypeDao;
 import fr.aphp.tumorotek.dao.contexte.CollaborateurDao;
 import fr.aphp.tumorotek.dao.contexte.EtablissementDao;
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
@@ -58,9 +58,9 @@ import fr.aphp.tumorotek.manager.impl.coeur.CreateOrUpdateUtilities;
 import fr.aphp.tumorotek.manager.qualite.OperationManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.cession.ContratValidator;
-import fr.aphp.tumorotek.model.cession.Cession;
-import fr.aphp.tumorotek.model.cession.Contrat;
-import fr.aphp.tumorotek.model.cession.ProtocoleType;
+import fr.aphp.tumorotek.model.coeur.cession.Cession;
+import fr.aphp.tumorotek.model.coeur.cession.Contrat;
+import fr.aphp.tumorotek.model.coeur.cession.ProtocoleType;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Etablissement;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
@@ -174,7 +174,7 @@ public class ContratManagerImpl implements ContratManager
    @Override
    public List<Contrat> findAllObjectsManager(){
       log.debug("Recherche de tous les Mtas");
-      return contratDao.findAll();
+      return IterableUtils.toList(contratDao.findAll());
    }
 
    /**
@@ -234,7 +234,7 @@ public class ContratManagerImpl implements ContratManager
    public Boolean findDoublonManager(final Contrat contrat){
       if(contrat != null){
          if(contrat.getContratId() == null){
-            return contratDao.findAll().contains(contrat);
+            return IterableUtils.toList(contratDao.findAll()).contains(contrat);
          }
          return contratDao.findByExcludedId(contrat.getContratId()).contains(contrat);
       }
@@ -263,22 +263,22 @@ public class ContratManagerImpl implements ContratManager
     * @param protocoleType ProtocoleType du contrat.
     */
    @Override
-   public void createObjectManager(final Contrat contrat, final Collaborateur collaborateur, final Service service,
+   public void saveManager(final Contrat contrat, final Collaborateur collaborateur, final Service service,
       final Etablissement etablissement, final ProtocoleType protocoleType, final Plateforme plateforme,
       final Utilisateur utilisateur){
 
       //plateforme required
       if(plateforme != null){
-         contrat.setPlateforme(plateformeDao.mergeObject(plateforme));
+         contrat.setPlateforme(plateformeDao.save(plateforme));
       }else{
          log.warn("Objet obligatoire Plateforme manquant" + " lors de la création d'un Contrat");
          throw new RequiredObjectIsNullException("Contrat", "Creation", "Plateforme");
       }
 
-      contrat.setCollaborateur(collaborateurDao.mergeObject(collaborateur));
-      contrat.setService(serviceDao.mergeObject(service));
-      contrat.setEtablissement(etablissementDao.mergeObject(etablissement));
-      contrat.setProtocoleType(protocoleTypeDao.mergeObject(protocoleType));
+      contrat.setCollaborateur(collaborateurDao.save(collaborateur));
+      contrat.setService(serviceDao.save(service));
+      contrat.setEtablissement(etablissementDao.save(etablissement));
+      contrat.setProtocoleType(protocoleTypeDao.save(protocoleType));
 
       // Test s'il y a des doublons
       if(findDoublonManager(contrat)){
@@ -289,14 +289,14 @@ public class ContratManagerImpl implements ContratManager
       // validation du Contrat
       BeanValidator.validateObject(contrat, new Validator[] {contratValidator});
 
-      contratDao.createObject(contrat);
+      contratDao.save(contrat);
 
       log.info("Enregistrement de l'objet Contrat : " + contrat.toString());
 
       //Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
       creationOp.setDate(Utils.getCurrentSystemCalendar());
-      operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), contrat);
+      operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), contrat);
    }
 
    /**
@@ -307,22 +307,22 @@ public class ContratManagerImpl implements ContratManager
     * @param protocoleType ProtocoleType du contrat.
     */
    @Override
-   public void updateObjectManager(final Contrat contrat, final Collaborateur collaborateur, final Service service,
+   public void saveManager(final Contrat contrat, final Collaborateur collaborateur, final Service service,
       final Etablissement etablissement, final ProtocoleType protocoleType, final Plateforme plateforme,
       final Utilisateur utilisateur){
 
       //plateforme required
       if(plateforme != null){
-         contrat.setPlateforme(plateformeDao.mergeObject(plateforme));
+         contrat.setPlateforme(plateformeDao.save(plateforme));
       }else{
          log.warn("Objet obligatoire Plateforme manquant" + " lors de la modification d'un Contrat");
          throw new RequiredObjectIsNullException("Contrat", "modification", "Plateforme");
       }
 
-      contrat.setCollaborateur(collaborateurDao.mergeObject(collaborateur));
-      contrat.setService(serviceDao.mergeObject(service));
-      contrat.setEtablissement(etablissementDao.mergeObject(etablissement));
-      contrat.setProtocoleType(protocoleTypeDao.mergeObject(protocoleType));
+      contrat.setCollaborateur(collaborateurDao.save(collaborateur));
+      contrat.setService(serviceDao.save(service));
+      contrat.setEtablissement(etablissementDao.save(etablissement));
+      contrat.setProtocoleType(protocoleTypeDao.save(protocoleType));
 
       // Test s'il y a des doublons
       if(findDoublonManager(contrat)){
@@ -332,18 +332,18 @@ public class ContratManagerImpl implements ContratManager
       // validation du Contrat
       BeanValidator.validateObject(contrat, new Validator[] {contratValidator});
 
-      contratDao.updateObject(contrat);
+      contratDao.save(contrat);
 
       log.info("Modification de l'objet Contrat : " + contrat.toString());
 
       //Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
       creationOp.setDate(Utils.getCurrentSystemCalendar());
-      operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0), contrat);
+      operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0), contrat);
    }
 
    @Override
-   public void removeObjectManager(final Contrat contrat, final String comments, final Utilisateur u){
+   public void deleteByIdManager(final Contrat contrat, final String comments, final Utilisateur u){
       if(contrat != null){
          if(isUsedObjectManager(contrat)){
             log.warn("Objet utilisé lors de la suppression de l'objet " + "Contrat : " + contrat.toString());
@@ -353,7 +353,7 @@ public class ContratManagerImpl implements ContratManager
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(contrat, operationManager, comments, u);
 
-         contratDao.removeObject(contrat.getContratId());
+         contratDao.deleteById(contrat.getContratId());
          log.info("Suppression de l'objet Contrat : " + contrat.toString());
       }else{
          log.warn("Suppression d'un Contrat null");

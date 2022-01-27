@@ -102,20 +102,20 @@ public interface CouleurEntiteTypeManager
     * Persist une instance de CouleurEntiteType dans la base de données.
     * @param couleurEntiteType Nouvelle instance de l'objet à créer.
     */
-   void createObjectManager(CouleurEntiteType couleurEntiteType, Couleur couleur, Banque banque, EchantillonType echantillonType,
+   void saveManager(CouleurEntiteType couleurEntiteType, Couleur couleur, Banque banque, EchantillonType echantillonType,
       ProdType prodType);
 
    /**
     * Sauvegarde les modifications apportées à un objet persistant.
     * @param couleurEntiteType Objet à persister.
     */
-   void updateObjectManager(CouleurEntiteType couleurEntiteType, Couleur couleur, Banque banque, EchantillonType echantillonType,
+   void saveManager(CouleurEntiteType couleurEntiteType, Couleur couleur, Banque banque, EchantillonType echantillonType,
       ProdType prodType);
 
    /**
     * Supprime un Incident de la base de données.
     * @param incident Incident à supprimer de la base de données.
     */
-   void removeObjectManager(CouleurEntiteType couleurEntiteType);
+   void deleteByIdManager(CouleurEntiteType couleurEntiteType);
 
 }

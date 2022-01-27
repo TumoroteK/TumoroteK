@@ -68,7 +68,7 @@ public class CouleurManagerImpl implements CouleurManager
 
    @Override
    public List<Couleur> findAllObjectsManager(){
-      return couleurDao.findAll();
+      return IterableUtils.toList(couleurDao.findAll());
    }
 
    @Override

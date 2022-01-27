@@ -75,7 +75,7 @@ public class ConformiteTypeManagerImpl implements ConformiteTypeManager
    @Override
    public List<ConformiteType> findAllObjectsManager(){
       log.debug("Recherche de tous les ConformiteTypes");
-      return conformiteTypeDao.findAll();
+      return IterableUtils.toList(conformiteTypeDao.findAll());
    }
 
    @Override

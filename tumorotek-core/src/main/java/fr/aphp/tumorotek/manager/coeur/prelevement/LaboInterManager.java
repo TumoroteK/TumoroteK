@@ -70,7 +70,7 @@ public interface LaboInterManager
     * @param collaborateur Collaborateur associe
     * @param transporteur Transporteur associe
     */
-   void createObjectManager(LaboInter labo, Prelevement prelevement, Service service, Collaborateur collaborateur,
+   void saveManager(LaboInter labo, Prelevement prelevement, Service service, Collaborateur collaborateur,
       Transporteur transporteur, boolean doValidation);
 
    /**
@@ -81,7 +81,7 @@ public interface LaboInterManager
     * @param collaborateur Collaborateur associe
     * @param transporteur Transporteur associe
     */
-   void updateObjectManager(LaboInter obj, Prelevement prelevement, Service service, Collaborateur collaborateur,
+   void saveManager(LaboInter obj, Prelevement prelevement, Service service, Collaborateur collaborateur,
       Transporteur transporteur, boolean doValidation);
 
    /**
@@ -97,7 +97,7 @@ public interface LaboInterManager
     * Supprime un objet de la base de données.
     * @param labo LaboInter à supprimer de la base de données.
     */
-   void removeObjectManager(LaboInter obj);
+   void deleteByIdManager(LaboInter obj);
 
    /**
     * Recherche toutes les instances de LaboInter présentes dans la base.

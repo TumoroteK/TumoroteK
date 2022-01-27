@@ -144,7 +144,7 @@ public class EchantillonTypeManagerImpl implements EchantillonTypeManager
     */
    @Override
    public Set<Echantillon> getEchantillonsManager(EchantillonType type){
-      type = echantillonTypeDao.mergeObject(type);
+      type = echantillonTypeDao.save(type);
       final Set<Echantillon> echans = type.getEchantillons();
       echans.size();
       return echans;
@@ -175,7 +175,7 @@ public class EchantillonTypeManagerImpl implements EchantillonTypeManager
       final EchantillonType type = obj;
       if(type != null){
          if(type.getId() == null){
-            return echantillonTypeDao.findAll().contains(type);
+            return IterableUtils.toList(echantillonTypeDao.findAll()).contains(type);
          }
          return echantillonTypeDao.findByExcludedId(type.getId()).contains(type);
       }
@@ -190,7 +190,7 @@ public class EchantillonTypeManagerImpl implements EchantillonTypeManager
    }
 
    @Override
-   public void createObjectManager(final EchantillonType obj){
+   public void saveManager(final EchantillonType obj){
 
       final EchantillonType type = obj;
 
@@ -199,19 +199,19 @@ public class EchantillonTypeManagerImpl implements EchantillonTypeManager
       if(type.getPlateforme() == null){
          throw new RequiredObjectIsNullException("EchantillonType", "creation", "Plateforme");
       }
-      type.setPlateforme(plateformeDao.mergeObject(type.getPlateforme()));
+      type.setPlateforme(plateformeDao.save(type.getPlateforme()));
 
       if(findDoublonManager(type)){
          log.warn("Doublon lors de la creation de l'objet " + "EchantillonType : " + type.toString());
          throw new DoublonFoundException("EchantillonType", "creation");
       }
       BeanValidator.validateObject(type, new Validator[] {echantillonTypeValidator});
-      echantillonTypeDao.createObject(type);
+      echantillonTypeDao.save(type);
       log.info("Enregistrement de l'objet EchantillonType : " + type.toString());
    }
 
    @Override
-   public void updateObjectManager(final EchantillonType obj){
+   public void saveManager(final EchantillonType obj){
 
       final EchantillonType type = obj;
 
@@ -220,18 +220,18 @@ public class EchantillonTypeManagerImpl implements EchantillonTypeManager
          throw new DoublonFoundException("EchantillonType", "modification");
       }
       BeanValidator.validateObject(type, new Validator[] {echantillonTypeValidator});
-      echantillonTypeDao.updateObject(type);
+      echantillonTypeDao.save(type);
       log.info("Modification de l'objet EchantillonType : " + type.toString());
    }
 
    @Override
-   public void removeObjectManager(final EchantillonType obj){
+   public void deleteByIdManager(final EchantillonType obj){
       final EchantillonType type = obj;
       if(isUsedObjectManager(type)){
          log.warn("Objet utilisé lors de la suppression de l'objet " + "EchantillonType : " + type.toString());
          throw new ObjectUsedException("EchantillonType", "suppression");
       }
-      echantillonTypeDao.removeObject(type.getId());
+      echantillonTypeDao.deleteById(type.getId());
       log.info("Suppression de l'objet EchantillonType : " + type.toString());
    }
 

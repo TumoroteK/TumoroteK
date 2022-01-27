@@ -206,7 +206,7 @@ public interface TerminaleManager
     * @param terminaleNumerotation Numerotation de la Terminale.
     * @param couleur Couleur à appliquer à la boite.
     */
-   void createObjectManager(Terminale terminale, Enceinte enceinte, TerminaleType terminaleType, Banque banque, Entite entite,
+   void saveManager(Terminale terminale, Enceinte enceinte, TerminaleType terminaleType, Banque banque, Entite entite,
       TerminaleNumerotation terminaleNumerotation, Couleur couleur, Utilisateur utilisateur);
 
    /**
@@ -249,7 +249,7 @@ public interface TerminaleManager
     * @param operations
     * @version 2.0.10
     */
-   void updateObjectManager(Terminale terminale, Enceinte enceinte, TerminaleType terminaleType, Banque banque, Entite entite,
+   void saveManager(Terminale terminale, Enceinte enceinte, TerminaleType terminaleType, Banque banque, Entite entite,
       TerminaleNumerotation terminaleNumerotation, Couleur couleur, List<Incident> incidents, Utilisateur utilisateur,
       List<OperationType> operations);
 
@@ -259,7 +259,7 @@ public interface TerminaleManager
     * @param comments commentaires liés à la suppression
     * @param Utilisateur réalisant la suppression.
     */
-   void removeObjectManager(Terminale terminale, String comments, Utilisateur user);
+   void deleteByIdManager(Terminale terminale, String comments, Utilisateur user);
 
    /**
     * Cette méthode échange les positions de 2 Terminales.

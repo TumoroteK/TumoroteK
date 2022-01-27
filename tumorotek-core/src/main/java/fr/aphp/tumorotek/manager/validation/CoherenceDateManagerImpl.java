@@ -418,7 +418,7 @@ public class CoherenceDateManagerImpl implements CoherenceDateManager
                   ref = ((Echantillon) parent).getDateStock();
                   code = "date.validation.infDateStockEchan";
                }else{
-                  final Prelevement prel = echantillonDao.mergeObject((Echantillon) parent).getPrelevement();
+                  final Prelevement prel = echantillonDao.save((Echantillon) parent).getPrelevement();
                   if(prel != null){
                      return findAntRefDateInPrelevementManager(prel, true);
                   }

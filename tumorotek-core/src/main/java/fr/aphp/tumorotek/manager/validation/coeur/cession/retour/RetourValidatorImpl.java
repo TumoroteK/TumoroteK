@@ -43,12 +43,12 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
-import fr.aphp.tumorotek.dao.cession.RetourDao;
+import fr.aphp.tumorotek.dao.coeur.cession.RetourDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
 import fr.aphp.tumorotek.manager.exception.ObjectStatutException;
 import fr.aphp.tumorotek.manager.systeme.EntiteManager;
 import fr.aphp.tumorotek.model.TKStockableObject;
-import fr.aphp.tumorotek.model.cession.Retour;
+import fr.aphp.tumorotek.model.coeur.cession.Retour;
 
 public class RetourValidatorImpl implements RetourValidator
 {

@@ -52,8 +52,8 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import fr.aphp.tumorotek.model.cession.CederObjet;
-import fr.aphp.tumorotek.model.cession.Retour;
+import fr.aphp.tumorotek.model.coeur.cession.CederObjet;
+import fr.aphp.tumorotek.model.coeur.cession.Retour;
 import fr.aphp.tumorotek.model.coeur.prodderive.Transformation;
 import fr.aphp.tumorotek.model.imprimante.ChampLigneEtiquette;
 import fr.aphp.tumorotek.model.io.imports.ImportTemplate;

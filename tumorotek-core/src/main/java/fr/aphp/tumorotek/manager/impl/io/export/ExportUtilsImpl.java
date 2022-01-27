@@ -67,11 +67,11 @@ import fr.aphp.tumorotek.manager.qualite.ObjetNonConformeManager;
 import fr.aphp.tumorotek.manager.qualite.OperationManager;
 import fr.aphp.tumorotek.manager.systeme.EntiteManager;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
-import fr.aphp.tumorotek.model.cession.CederObjet;
-import fr.aphp.tumorotek.model.cession.Cession;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
+import fr.aphp.tumorotek.model.coeur.cession.CederObjet;
+import fr.aphp.tumorotek.model.coeur.cession.Cession;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
@@ -420,7 +420,7 @@ public class ExportUtilsImpl implements ExportUtils
       if(user != null){
          final Operation exportOp = new Operation();
          exportOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.createObjectManager(exportOp, user, operationTypeDao.findByNom("Export").get(0), maladie.getPatient());
+         operationManager.saveManager(exportOp, user, operationTypeDao.findByNom("Export").get(0), maladie.getPatient());
       }
    }
 
@@ -645,7 +645,7 @@ public class ExportUtilsImpl implements ExportUtils
       if(user != null){
          final Operation exportOp = new Operation();
          exportOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.createObjectManager(exportOp, user, operationTypeDao.findByNom("Export").get(0), prelevement);
+         operationManager.saveManager(exportOp, user, operationTypeDao.findByNom("Export").get(0), prelevement);
       }
    }
 
@@ -804,7 +804,7 @@ public class ExportUtilsImpl implements ExportUtils
       if(user != null){
          final Operation exportOp = new Operation();
          exportOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.createObjectManager(exportOp, user, operationTypeDao.findByNom("Export").get(0), echantillon);
+         operationManager.saveManager(exportOp, user, operationTypeDao.findByNom("Export").get(0), echantillon);
       }
    }
 
@@ -970,7 +970,7 @@ public class ExportUtilsImpl implements ExportUtils
       if(user != null){
          final Operation exportOp = new Operation();
          exportOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.createObjectManager(exportOp, user, operationTypeDao.findByNom("Export").get(0), derive);
+         operationManager.saveManager(exportOp, user, operationTypeDao.findByNom("Export").get(0), derive);
       }
    }
 
@@ -1114,7 +1114,7 @@ public class ExportUtilsImpl implements ExportUtils
       if(user != null){
          final Operation exportOp = new Operation();
          exportOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.createObjectManager(exportOp, user, operationTypeDao.findByNom("Export").get(0), cession);
+         operationManager.saveManager(exportOp, user, operationTypeDao.findByNom("Export").get(0), cession);
       }
    }
 

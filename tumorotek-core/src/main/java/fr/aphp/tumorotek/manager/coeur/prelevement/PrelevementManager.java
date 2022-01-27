@@ -99,7 +99,7 @@ public interface PrelevementManager
     * @param base directory pour enregistrer un fichier associé 
     * dans le file system
     */
-   void createObjectManager(Prelevement prelevement, Banque banque, Nature nature, Maladie maladie, ConsentType consentType,
+   void saveManager(Prelevement prelevement, Banque banque, Nature nature, Maladie maladie, ConsentType consentType,
       Collaborateur preleveur, Service servicePreleveur, PrelevementType prelevementType, ConditType conditType,
       ConditMilieu conditMilieu, Transporteur transporteur, Collaborateur operateur, Unite quantiteUnite,
       List<LaboInter> laboInters, List<AnnotationValeur> listAnnoToCreateOrUpdate, List<File> filesCreated,
@@ -133,7 +133,7 @@ public interface PrelevementManager
     * dans le file system
     * @param boolean multiple si modification multiple
     */
-   void updateObjectManager(Prelevement prelevement, Banque banque, Nature nature, Maladie maladie, ConsentType consentType,
+   void saveManager(Prelevement prelevement, Banque banque, Nature nature, Maladie maladie, ConsentType consentType,
       Collaborateur preleveur, Service servicePreleveur, PrelevementType prelevementType, ConditType conditType,
       ConditMilieu conditMilieu, Transporteur transporteur, Collaborateur operateur, Unite quantiteUnite,
       List<LaboInter> laboInters, List<AnnotationValeur> listAnnoToCreateOrUpdate, List<AnnotationValeur> listAnnoToDelete,
@@ -166,7 +166,7 @@ public interface PrelevementManager
     * @param Utilisateur réalisant la suppression.
     * @param liste des fichiers à supprimer après transaction
     */
-   void removeObjectManager(Prelevement prelevement, String comments, Utilisateur u, List<File> filesToDelete);
+   void deleteByIdManager(Prelevement prelevement, String comments, Utilisateur u, List<File> filesToDelete);
 
    /**
     * Supprime un objet de la base de données et en cascade tous les objets 
@@ -177,7 +177,7 @@ public interface PrelevementManager
     * @param Utilisateur réalisant la suppression
     * @param liste des fichiers à supprimer après transaction
     */
-   void removeObjectCascadeManager(Prelevement prelevement, String comments, Utilisateur user, List<File> filesToDelete);
+   void deleteByIdCascadeManager(Prelevement prelevement, String comments, Utilisateur user, List<File> filesToDelete);
 
    /**
     * Recherche toutes les instances de Prelevement présentes dans la base.
@@ -596,7 +596,7 @@ public interface PrelevementManager
    List<Prelevement> findByDossierExternesManager(List<Banque> banques, List<Emetteur> emetteurs);
 
    /**
-    * Surcharge du manager createObject pour lui ajouter les non 
+    * Surcharge du manager save pour lui ajouter les non 
     * conformites.
     * @param prelevement
     * @param banque
@@ -619,14 +619,14 @@ public interface PrelevementManager
     * @param isImport
     * @param noconfs
     */
-   void createObjectWithNonConformitesManager(Prelevement prelevement, Banque banque, Nature nature, Maladie maladie,
+   void saveWithNonConformitesManager(Prelevement prelevement, Banque banque, Nature nature, Maladie maladie,
       ConsentType consentType, Collaborateur preleveur, Service servicePreleveur, PrelevementType prelevementType,
       ConditType conditType, ConditMilieu conditMilieu, Transporteur transporteur, Collaborateur operateur, Unite quantiteUnite,
       List<LaboInter> laboInters, List<AnnotationValeur> listAnnoToCreateOrUpdate, Utilisateur utilisateur, boolean doValidation,
       String baseDir, boolean isImport, List<NonConformite> noconfs);
 
    /**
-    * Surcharge du manager updateObject pour lui ajouter les non 
+    * Surcharge du manager save pour lui ajouter les non 
     * conformites.
     * @param prelevement
     * @param banque
@@ -651,7 +651,7 @@ public interface PrelevementManager
     * @param multiple
     * @param noconfs
     */
-   void updateObjectWithNonConformitesManager(Prelevement prelevement, Banque banque, Nature nature, Maladie maladie,
+   void saveWithNonConformitesManager(Prelevement prelevement, Banque banque, Nature nature, Maladie maladie,
       ConsentType consentType, Collaborateur preleveur, Service servicePreleveur, PrelevementType prelevementType,
       ConditType conditType, ConditMilieu conditMilieu, Transporteur transporteur, Collaborateur operateur, Unite quantiteUnite,
       List<LaboInter> laboInters, List<AnnotationValeur> listAnnoToCreateOrUpdate, List<AnnotationValeur> listAnnoToDelete,

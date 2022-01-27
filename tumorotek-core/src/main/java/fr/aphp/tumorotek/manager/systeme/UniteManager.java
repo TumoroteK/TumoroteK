@@ -105,7 +105,7 @@ public interface UniteManager
     * @throws DoublonFoundException Lance une exception si un doublon de
     * l'objet à créer se trouve déjà dans la base.
     */
-   void createObjectManager(Unite unite);
+   void saveManager(Unite unite);
 
    /**
     * Sauvegarde les modifications apportées à un objet persistant.
@@ -113,7 +113,7 @@ public interface UniteManager
     * @throws DoublonFoundException Lance une exception si un doublon de
     * l'objet à créer se trouve déjà dans la base.
     */
-   void updateObjectManager(Unite unite);
+   void saveManager(Unite unite);
 
    /**
     * Supprime une Unite de la base de données.
@@ -121,6 +121,6 @@ public interface UniteManager
     * @throws DoublonFoundException Lance une exception si l'objet
     * est utilisé par des échantillons.
     */
-   void removeObjectManager(Unite unite);
+   void deleteByIdManager(Unite unite);
 
 }

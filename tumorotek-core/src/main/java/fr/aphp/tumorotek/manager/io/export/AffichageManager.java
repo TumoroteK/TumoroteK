@@ -88,20 +88,20 @@ public interface AffichageManager
     * @param resultats Liste de Resultats à associer.
     * @param createur Utilisateur qui créé l'Affichage.
     */
-   void createObjectManager(Affichage affichage, List<Resultat> resultats, Utilisateur createur, Banque banque);
+   void saveManager(Affichage affichage, List<Resultat> resultats, Utilisateur createur, Banque banque);
 
    /**
     * Met à jour un Affichage en BDD.
     * @param affichage Affichage à mettre à jour.
     * @param resultats Liste de Resultats à associer.
     */
-   void updateObjectManager(Affichage affichage, List<Resultat> resultats, List<Resultat> resultatsToRemove);
+   void saveManager(Affichage affichage, List<Resultat> resultats, List<Resultat> resultatsToRemove);
 
    /**
     * Supprimme un Affichage en BDD.
     * @param affichage Affichage à supprimer.
     */
-   void removeObjectManager(Affichage affichage);
+   void deleteByIdManager(Affichage affichage);
 
    /**
     * Associe un nouveau Résultat à un Affichage en BDD.

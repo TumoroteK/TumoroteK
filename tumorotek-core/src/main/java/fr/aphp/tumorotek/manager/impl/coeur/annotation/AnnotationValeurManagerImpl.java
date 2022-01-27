@@ -144,17 +144,17 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
    }
 
    @Override
-   public void createObject(AnnotationValeur annoVal){
-      annotationValeurDao.createObject(annoVal);
+   public void save(AnnotationValeur annoVal){
+      annotationValeurDao.save(annoVal);
    }
 
    @Override
-   public void updateObject(AnnotationValeur annoVal){
-      annotationValeurDao.updateObject(annoVal);
+   public void save(AnnotationValeur annoVal){
+      annotationValeurDao.save(annoVal);
    }
 
    @Override
-   public void createOrUpdateObjectManager(final AnnotationValeur valeur, final ChampAnnotation champ,
+   public void createOrsaveManager(final AnnotationValeur valeur, final ChampAnnotation champ,
       final TKAnnotableObject obj, final Banque banque, final Fichier fichier, final Utilisateur utilisateur,
       final String operation, final String baseDir, final List<File> filesCreated, final List<File> filesToDelete){
 
@@ -175,7 +175,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
             try{
                if(operation.equals("creation")){
 
-                  annotationValeurDao.createObject(valeur);
+                  annotationValeurDao.save(valeur);
                   log.info("Enregistrement objet AnnotationValeur " + valeur.toString());
 
                   CreateOrUpdateUtilities.createAssociateOperation(valeur, operationManager,
@@ -183,7 +183,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
 
                }else{
 
-                  annotationValeurDao.updateObject(valeur);
+                  annotationValeurDao.save(valeur);
                   log.info("Modification objet AnnotationValeur " + valeur.toString());
                   CreateOrUpdateUtilities.createAssociateOperation(valeur, operationManager,
                      operationTypeDao.findByNom("Modification").get(0), utilisateur);
@@ -193,7 +193,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
                   fichierManager.createOrUpdateFileForObject(valeur, fichier, valeur.getStream(),
                      Utils.writeAnnoFilePath(baseDir, valeur.getBanque(), valeur.getChampAnnotation(), fichier), filesCreated,
                      filesToDelete);
-                  annotationValeurDao.updateObject(valeur);
+                  annotationValeurDao.save(valeur);
                }
 
             }catch(final RuntimeException re){
@@ -242,7 +242,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
             // et rollback transaction... 
             // attention, de fait l'objet 
             // dans l'interface conserve id = null
-            createOrUpdateObjectManager(clone, null, obj, null, clone.getFichier(), utilisateur, annotOperation, baseDir,
+            createOrsaveManager(clone, null, obj, null, clone.getFichier(), utilisateur, annotOperation, baseDir,
                filesCreated, filesToDelete);
             valeursCreatedUpdated.add(clone);
          }
@@ -325,7 +325,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
    @Override
    public List<AnnotationValeur> findAllObjectsManager(){
       log.debug("Recherche totalite des AnnotationValeur");
-      return annotationValeurDao.findAll();
+      return IterableUtils.toList(annotationValeurDao.findAll());
    }
 
    @Override
@@ -403,7 +403,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
       // ChampAnnotation required
       if(champ != null){
          // merge dataType object
-         valeur.setChampAnnotation(champAnnotationDao.mergeObject(champ));
+         valeur.setChampAnnotation(champAnnotationDao.save(champ));
       }else if(valeur.getChampAnnotation() == null){
          log.warn("Objet obligatoire ChampAnnotation manquant lors de la " + operation + " de valeur annotation");
          throw new RequiredObjectIsNullException("AnnotationValeur", operation, "ChampAnnotation");
@@ -419,7 +419,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
 
       // banque required
       if(banque != null){
-         valeur.setBanque(banqueDao.mergeObject(banque));
+         valeur.setBanque(banqueDao.save(banque));
       }else if(valeur.getBanque() == null){
          log.warn("Objet obligatoire Banque manquant lors de la " + operation + " de valeur annotation");
          throw new RequiredObjectIsNullException("AnnotationValeur", operation, "Banque");
@@ -441,16 +441,16 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
    }
 
    @Override
-   public void removeObjectManager(final AnnotationValeur valeur, final List<File> filesToDelete){
+   public void deleteByIdManager(final AnnotationValeur valeur, final List<File> filesToDelete){
       if(valeur != null){
-         annotationValeurDao.removeObject(valeur.getAnnotationValeurId());
+         annotationValeurDao.deleteById(valeur.getAnnotationValeurId());
          log.info("Suppression objet AnnotationValeur " + valeur.toString());
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(valeur, operationManager);
 
          // suppression du fichier associé base et systeme
          if(valeur.getFichier() != null){
-            fichierManager.removeObjectManager(valeur.getFichier(), filesToDelete);
+            fichierManager.deleteByIdManager(valeur.getFichier(), filesToDelete);
          }
 
       }else{
@@ -462,7 +462,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
    public void removeAnnotationValeurListManager(final List<AnnotationValeur> valeurs, final List<File> filesToDelete){
       if(valeurs != null){
          for(AnnotationValeur valeur : valeurs){
-            removeObjectManager(valeur, filesToDelete);
+            deleteByIdManager(valeur, filesToDelete);
          }
       }
    }
@@ -530,7 +530,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
          for(int i = 0; i < annos.size(); i++){
             if(sharedByBanques.contains(annos.get(i).getChampAnnotation().getTableAnnotation())){
                annos.get(i).setBanque(bank);
-               annotationValeurDao.updateObject(annos.get(i));
+               annotationValeurDao.save(annos.get(i));
                
                // fichier?
                if (filesToMove != null && annos.get(i)
@@ -539,7 +539,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
                }
                
             }else{
-               removeObjectManager(annos.get(i), filesToDelete);
+               deleteByIdManager(annos.get(i), filesToDelete);
             }
          }
       }
@@ -569,7 +569,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
                valeur.setStream(null);
             }
 
-            createOrUpdateObjectManager(valeur, champ, objs.get(i), banque, annoFile, u, "creation", baseDir, filesCreated, null);
+            createOrsaveManager(valeur, champ, objs.get(i), banque, annoFile, u, "creation", baseDir, filesCreated, null);
 
             // recuperation dataType & path premier enregistrement
             if(i == 0){

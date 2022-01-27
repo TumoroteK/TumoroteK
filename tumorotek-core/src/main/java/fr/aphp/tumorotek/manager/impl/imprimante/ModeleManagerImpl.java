@@ -110,7 +110,7 @@ public class ModeleManagerImpl implements ModeleManager
    @Override
    public List<Modele> findAllObjectsManager(){
       log.debug("Recherche de tous les Modeles");
-      return modeleDao.findAll();
+      return IterableUtils.toList(modeleDao.findAll());
    }
 
    @Override
@@ -136,7 +136,7 @@ public class ModeleManagerImpl implements ModeleManager
    public Boolean findDoublonManager(final Modele modele){
       if(modele != null){
          if(modele.getModeleId() == null){
-            return modeleDao.findAll().contains(modele);
+            return IterableUtils.toList(modeleDao.findAll()).contains(modele);
          }else{
             return modeleDao.findByExcludedId(modele.getModeleId()).contains(modele);
          }
@@ -148,7 +148,7 @@ public class ModeleManagerImpl implements ModeleManager
    @Override
    public Boolean isUsedObjectManager(Modele modele){
       if(modele != null && modele.getModeleId() != null){
-         modele = modeleDao.mergeObject(modele);
+         modele = modeleDao.save(modele);
          return (modele.getAffectationImprimantes().size() > 0);
       }else{
          return false;
@@ -156,12 +156,12 @@ public class ModeleManagerImpl implements ModeleManager
    }
 
    @Override
-   public void createObjectManager(final Modele modele, final Plateforme plateforme, final ModeleType modeleType,
+   public void saveManager(final Modele modele, final Plateforme plateforme, final ModeleType modeleType,
       final List<LigneEtiquette> ligneEtiquettes,
       final Hashtable<LigneEtiquette, List<ChampLigneEtiquette>> champLigneEtiquettes){
       // plateforme required
       if(plateforme != null){
-         modele.setPlateforme(plateformeDao.mergeObject(plateforme));
+         modele.setPlateforme(plateformeDao.save(plateforme));
       }else{
          log.warn("Objet obligatoire Plateforme manquant" + " lors de la création d'un Modele");
          throw new RequiredObjectIsNullException("Modele", "creation", "Plateforme");
@@ -169,7 +169,7 @@ public class ModeleManagerImpl implements ModeleManager
 
       // modeleType required
       if(modeleType != null){
-         modele.setModeleType(modeleTypeDao.mergeObject(modeleType));
+         modele.setModeleType(modeleTypeDao.save(modeleType));
       }else{
          log.warn("Objet obligatoire ModeleType manquant" + " lors de la création d'un Modele");
          throw new RequiredObjectIsNullException("Modele", "creation", "ModeleType");
@@ -196,7 +196,7 @@ public class ModeleManagerImpl implements ModeleManager
             }
          }
 
-         modeleDao.createObject(modele);
+         modeleDao.save(modele);
 
          updateAssociations(modele, ligneEtiquettes, null, champLigneEtiquettes, null);
 
@@ -205,13 +205,13 @@ public class ModeleManagerImpl implements ModeleManager
    }
 
    @Override
-   public void updateObjectManager(final Modele modele, final Plateforme plateforme, final ModeleType modeleType,
+   public void saveManager(final Modele modele, final Plateforme plateforme, final ModeleType modeleType,
       final List<LigneEtiquette> ligneEtiquettesToCreate, final List<LigneEtiquette> ligneEtiquettesToremove,
       final Hashtable<LigneEtiquette, List<ChampLigneEtiquette>> champLigneEtiquettesToCreate,
       final Hashtable<LigneEtiquette, List<ChampLigneEtiquette>> champLigneEtiquettesToRemove){
       // plateforme required
       if(plateforme != null){
-         modele.setPlateforme(plateformeDao.mergeObject(plateforme));
+         modele.setPlateforme(plateformeDao.save(plateforme));
       }else{
          log.warn("Objet obligatoire Plateforme manquant" + " lors de la modification d'un Modele");
          throw new RequiredObjectIsNullException("Modele", "modification", "Plateforme");
@@ -219,7 +219,7 @@ public class ModeleManagerImpl implements ModeleManager
 
       // modeleType required
       if(modeleType != null){
-         modele.setModeleType(modeleTypeDao.mergeObject(modeleType));
+         modele.setModeleType(modeleTypeDao.save(modeleType));
       }else{
          log.warn("Objet obligatoire ModeleType manquant" + " lors de la modification d'un Modele");
          throw new RequiredObjectIsNullException("Modele", "modification", "ModeleType");
@@ -246,7 +246,7 @@ public class ModeleManagerImpl implements ModeleManager
             }
          }
 
-         modeleDao.updateObject(modele);
+         modeleDao.save(modele);
 
          updateAssociations(modele, ligneEtiquettesToCreate, ligneEtiquettesToremove, champLigneEtiquettesToCreate,
             champLigneEtiquettesToRemove);
@@ -256,15 +256,15 @@ public class ModeleManagerImpl implements ModeleManager
    }
 
    @Override
-   public void removeObjectManager(final Modele modele){
+   public void deleteByIdManager(final Modele modele){
       if(modele != null){
          // suppression des lignes
          final List<LigneEtiquette> lignes = ligneEtiquetteManager.findByModeleManager(modele);
          for(int i = 0; i < lignes.size(); i++){
-            ligneEtiquetteManager.removeObjectManager(lignes.get(i));
+            ligneEtiquetteManager.deleteByIdManager(lignes.get(i));
          }
 
-         modeleDao.removeObject(modele.getModeleId());
+         modeleDao.deleteById(modele.getModeleId());
          log.info("Suppression de l'objet Modele : " + modele.toString());
       }else{
          log.warn("Suppression d'un Modele null");
@@ -287,7 +287,7 @@ public class ModeleManagerImpl implements ModeleManager
       if(ligneEtiquettesToremove != null){
          // suppression des lignes
          for(int i = 0; i < ligneEtiquettesToremove.size(); i++){
-            ligneEtiquetteManager.removeObjectManager(ligneEtiquettesToremove.get(i));
+            ligneEtiquetteManager.deleteByIdManager(ligneEtiquettesToremove.get(i));
          }
       }
 
@@ -304,7 +304,7 @@ public class ModeleManagerImpl implements ModeleManager
 
             // création d'une nouvelle ligne
             if(ligneEtiquettesToCreate.get(i).getLigneEtiquetteId() == null){
-               ligneEtiquetteManager.createObjectManager(ligneEtiquettesToCreate.get(i), modele, champs);
+               ligneEtiquetteManager.saveManager(ligneEtiquettesToCreate.get(i), modele, champs);
             }else{ //update de la ligne
                // on récup les champs à supprimer
                List<ChampLigneEtiquette> champsToRmv = new ArrayList<>();
@@ -314,7 +314,7 @@ public class ModeleManagerImpl implements ModeleManager
                   champsToRmv = null;
                }
                // update
-               ligneEtiquetteManager.updateObjectManager(ligneEtiquettesToCreate.get(i), modele, champs, champsToRmv);
+               ligneEtiquetteManager.saveManager(ligneEtiquettesToCreate.get(i), modele, champs, champsToRmv);
             }
          }
       }

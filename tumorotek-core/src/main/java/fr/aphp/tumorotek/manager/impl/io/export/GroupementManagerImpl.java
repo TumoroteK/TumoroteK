@@ -148,7 +148,7 @@ public class GroupementManagerImpl implements GroupementManager
     *            Groupement parent de la reqûete.
     */
    @Override
-   public void createObjectManager(final Groupement groupement, Critere critere1, Critere critere2, final String operateur,
+   public void saveManager(final Groupement groupement, Critere critere1, Critere critere2, final String operateur,
       Groupement parent){
       // On vérifie que le groupement n'est pas nul
       if(groupement == null){
@@ -166,31 +166,31 @@ public class GroupementManagerImpl implements GroupementManager
       // On enregsitre d'abord son parent
       if(parent != null){
          if(parent.getGroupementId() != null){
-            parent = groupementDao.mergeObject(parent);
+            parent = groupementDao.save(parent);
          }else{
-            createObjectManager(parent, parent.getCritere1(), parent.getCritere2(), parent.getOperateur(), parent.getParent());
+            saveManager(parent, parent.getCritere1(), parent.getCritere2(), parent.getOperateur(), parent.getParent());
          }
       }
       groupement.setParent(parent);
       if(critere1 != null){
          if(critere1.getCritereId() != null){
-            critere1 = critereDao.mergeObject(critere1);
+            critere1 = critereDao.save(critere1);
          }else{
-            critereManager.createObjectManager(critere1, critere1.getChamp(), critere1.getCombinaison());
+            critereManager.saveManager(critere1, critere1.getChamp(), critere1.getCombinaison());
          }
       }
       groupement.setCritere1(critere1);
       if(critere2 != null){
          if(critere2.getCritereId() != null){
-            critere2 = critereDao.mergeObject(critere2);
+            critere2 = critereDao.save(critere2);
          }else{
-            critereManager.createObjectManager(critere2, critere2.getChamp(), critere2.getCombinaison());
+            critereManager.saveManager(critere2, critere2.getChamp(), critere2.getCombinaison());
          }
       }
       groupement.setCritere2(critere2);
       groupement.setOperateur(operateur);
       BeanValidator.validateObject(groupement, new Validator[] {groupementValidator});
-      groupementDao.createObject(groupement);
+      groupementDao.save(groupement);
    }
 
    /**
@@ -208,7 +208,7 @@ public class GroupementManagerImpl implements GroupementManager
     *            Groupement parent de la reqûete.
     */
    @Override
-   public void updateObjectManager(final Groupement groupement, Critere critere1, Critere critere2, final String operateur,
+   public void saveManager(final Groupement groupement, Critere critere1, Critere critere2, final String operateur,
       Groupement parent){
       //On vérifie que le groupement n'est pas nul
       if(groupement == null){
@@ -218,39 +218,39 @@ public class GroupementManagerImpl implements GroupementManager
       // On met à jour d'abord son parent
       if(parent != null){
          if(parent.getGroupementId() != null){
-            parent = groupementDao.mergeObject(parent);
+            parent = groupementDao.save(parent);
          }else{
-            updateObjectManager(parent, parent.getCritere1(), parent.getCritere2(), parent.getOperateur(), parent.getParent());
+            saveManager(parent, parent.getCritere1(), parent.getCritere2(), parent.getOperateur(), parent.getParent());
          }
       }
       groupement.setParent(parent);
       if(critere1 != null){
          if(groupement.getCritere1() != null && groupement.getCritere1().getCritereId() != null
             && !groupement.getCritere1().getCritereId().equals(critere1.getCritereId())){
-            critereDao.removeObject(groupement.getCritere1().getCritereId());
+            critereDao.deleteById(groupement.getCritere1().getCritereId());
          }
          if(critere1.getCritereId() != null){
-            critere1 = critereDao.mergeObject(critere1);
+            critere1 = critereDao.save(critere1);
          }else{
-            critereManager.createObjectManager(critere1, critere1.getChamp(), critere1.getCombinaison());
+            critereManager.saveManager(critere1, critere1.getChamp(), critere1.getCombinaison());
          }
       }
       groupement.setCritere1(critere1);
       if(critere2 != null){
          if(groupement.getCritere2() != null && groupement.getCritere2().getCritereId() != null
             && !groupement.getCritere2().getCritereId().equals(critere2.getCritereId())){
-            critereDao.removeObject(groupement.getCritere2().getCritereId());
+            critereDao.deleteById(groupement.getCritere2().getCritereId());
          }
          if(critere2.getCritereId() != null){
-            critere2 = critereDao.mergeObject(critere2);
+            critere2 = critereDao.save(critere2);
          }else{
-            critereManager.createObjectManager(critere2, critere2.getChamp(), critere2.getCombinaison());
+            critereManager.saveManager(critere2, critere2.getChamp(), critere2.getCombinaison());
          }
       }
       groupement.setCritere2(critere2);
       groupement.setOperateur(operateur);
       BeanValidator.validateObject(groupement, new Validator[] {groupementValidator});
-      groupementDao.updateObject(groupement);
+      groupementDao.save(groupement);
    }
 
    /**
@@ -260,7 +260,7 @@ public class GroupementManagerImpl implements GroupementManager
     *            Groupement à supprimer.
     */
    @Override
-   public void removeObjectManager(final Groupement groupement){
+   public void deleteByIdManager(final Groupement groupement){
       // On vérifie que le groupement n'est pas nul
       if(groupement == null){
          log.warn("Objet obligatoire Groupement manquant lors " + "de la suppression d'un objet Groupement");
@@ -275,21 +275,21 @@ public class GroupementManagerImpl implements GroupementManager
       final Iterator<Groupement> it = enfants.iterator();
       while(it.hasNext()){
          final Groupement temp = it.next();
-         removeObjectManager(temp);
+         deleteByIdManager(temp);
       }
 
       // On supprime les criteres
       final Critere oldCritere1 = groupement.getCritere1();
       final Critere oldCritere2 = groupement.getCritere2();
       // On supprime le groupement
-      groupementDao.removeObject(groupement.getGroupementId());
+      groupementDao.deleteById(groupement.getGroupementId());
 
       // On supprime les criteres
       if(oldCritere1 != null){
-         critereManager.removeObjectManager(oldCritere1);
+         critereManager.deleteByIdManager(oldCritere1);
       }
       if(oldCritere2 != null){
-         critereManager.removeObjectManager(oldCritere2);
+         critereManager.deleteByIdManager(oldCritere2);
       }
    }
 
@@ -369,7 +369,7 @@ public class GroupementManagerImpl implements GroupementManager
     */
    @Override
    public List<Groupement> findAllObjectsManager(){
-      return groupementDao.findAll();
+      return IterableUtils.toList(groupementDao.findAll());
    }
 
    /**
@@ -488,7 +488,7 @@ public class GroupementManagerImpl implements GroupementManager
       }
       temp = new Groupement(critere1, critere2, groupement.getOperateur(), parent);
       BeanValidator.validateObject(temp, new Validator[] {groupementValidator});
-      groupementDao.createObject(temp);
+      groupementDao.save(temp);
 
       // On copie ses enfants
       final Iterator<Groupement> it = findEnfantsManager(temp).iterator();

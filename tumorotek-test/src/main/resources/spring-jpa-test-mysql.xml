@@ -45,18 +45,16 @@
 		</property>
 	</bean>
 
+<!-- 	<bean id="resourceBundleSip" class="fr.aphp.tumorotek.model.bundles.ResourceBundleSipImpl"> -->
+<!-- 		<property name="sipPath" value="src/test/resources/tomcat/conf/Catalina/localhost/sip/" /> -->
+<!-- 	</bean> -->
 
-
-	<bean id="resourceBundleSip" class="fr.aphp.tumorotek.model.bundles.ResourceBundleSipImpl">
-		<property name="sipPath" value="src/test/resources/tomcat/conf/Catalina/localhost/sip/" />
-	</bean>
-
-	<bean id="resourceBundleMbio" class="fr.aphp.tumorotek.model.bundles.ResourceBundleMbioImpl">
-		<property name="mbioPath" value="src/test/resources/tomcat/conf/Catalina/localhost/mbio/" />
-	</bean>
-	<bean id="resourceBundleTumo" class="fr.aphp.tumorotek.model.bundles.ResourceBundleTumoImpl">
-		<property name="tumoPropertiesPath" value="src/test/resources/tomcat/conf/Catalina/localhost/" />
-	</bean>
+<!-- 	<bean id="resourceBundleMbio" class="fr.aphp.tumorotek.model.bundles.ResourceBundleMbioImpl"> -->
+<!-- 		<property name="mbioPath" value="src/test/resources/tomcat/conf/Catalina/localhost/mbio/" /> -->
+<!-- 	</bean> -->
+<!-- 	<bean id="resourceBundleTumo" class="fr.aphp.tumorotek.model.bundles.ResourceBundleTumoImpl"> -->
+<!-- 		<property name="tumoPropertiesPath" value="src/test/resources/tomcat/conf/Catalina/localhost/" /> -->
+<!-- 	</bean> -->
 
 	<!-- le gestionnaire de transactions... utilisé dans les tests par AbstractDaoTest -->
 	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">

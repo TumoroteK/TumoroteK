@@ -103,7 +103,7 @@ public interface PlateformeManager
     * @param admin Utilisateur modifiant la plateforme.
     * @return updated plateforme
     */
-   Plateforme updateObjectManager(Plateforme plateforme, Collaborateur collaborateur, List<Utilisateur> utilisateurs,
+   Plateforme saveManager(Plateforme plateforme, Collaborateur collaborateur, List<Utilisateur> utilisateurs,
       List<Conteneur> conteneurs, Utilisateur admin);
 
    /**
@@ -116,7 +116,7 @@ public interface PlateformeManager
     * @param basedir Tk base system directory
     * @return plateforme créée
     */
-   Plateforme createObjectManager(Plateforme plateforme, Collaborateur collaborateur, List<Utilisateur> utilisateurs,
+   Plateforme saveManager(Plateforme plateforme, Collaborateur collaborateur, List<Utilisateur> utilisateurs,
 		Utilisateur admin, String baseDir);
 
    /**
@@ -134,5 +134,5 @@ public interface PlateformeManager
     * @param plateforme
     * 
    	*/
-   void removeObjectManager(Plateforme pf, String comments, Utilisateur user, String basedir);
+   void deleteByIdManager(Plateforme pf, String comments, Utilisateur user, String basedir);
 }

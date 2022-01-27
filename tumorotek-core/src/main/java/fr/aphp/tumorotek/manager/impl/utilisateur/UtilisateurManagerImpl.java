@@ -200,7 +200,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 	public Boolean findDoublonManager(final Utilisateur utilisateur){
 		if(utilisateur != null){
 			if(utilisateur.getUtilisateurId() == null){
-				return utilisateurDao.findAll().contains(utilisateur);
+				return IterableUtils.toList(utilisateurDao.findAll()).contains(utilisateur);
 			}else{
 				return utilisateurDao.findByExcludedId(utilisateur.getUtilisateurId()).contains(utilisateur);
 			}
@@ -212,7 +212,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 	@Override
 	public Boolean isUsedObjectManager(Utilisateur utilisateur){
 		if(utilisateur != null && utilisateur.getUtilisateurId() != null){
-			utilisateur = utilisateurDao.mergeObject(utilisateur);
+			utilisateur = utilisateurDao.save(utilisateur);
 			return (operationManager.findByUtilisateurManager(utilisateur).size() > 0);
 		}else{
 			return false;
@@ -220,13 +220,13 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 	}
 
 	@Override
-	public void createObjectManager(final Utilisateur utilisateur, final Collaborateur collaborateur,
+	public void saveManager(final Utilisateur utilisateur, final Collaborateur collaborateur,
 			final List<ProfilUtilisateur> profils, final List<Plateforme> plateformes, final Utilisateur admin,
 			final Plateforme origine){
 
 		//Doublon
 		if(!findDoublonManager(utilisateur)){
-			utilisateur.setCollaborateur(collaborateurDao.mergeObject(collaborateur));
+			utilisateur.setCollaborateur(collaborateurDao.save(collaborateur));
 			utilisateur.setPlateformeOrig(origine);
 
 			// validation due l'utilisateur
@@ -241,13 +241,13 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 				}
 			}
 
-			utilisateurDao.createObject(utilisateur);
+			utilisateurDao.save(utilisateur);
 			log.info("Enregistrement objet Utilisateur " + utilisateur.toString());
 
 			//Enregistrement de l'operation associee
 			final Operation creationOp = new Operation();
 			creationOp.setDate(Utils.getCurrentSystemCalendar());
-			operationManager.createObjectManager(creationOp, admin, operationTypeDao.findByNom("Creation").get(0), utilisateur);
+			operationManager.saveManager(creationOp, admin, operationTypeDao.findByNom("Creation").get(0), utilisateur);
 
 			// enregistrements des profils
 			updateProfilsAndPlateformes(utilisateur, profils, profils, plateformes);
@@ -260,14 +260,14 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 	}
 
 	@Override
-	public void updateObjectManager(final Utilisateur utilisateur, final Collaborateur collaborateur,
+	public void saveManager(final Utilisateur utilisateur, final Collaborateur collaborateur,
 			final List<ProfilUtilisateur> profils, final List<Plateforme> plateformes, final Utilisateur admin,
 			final OperationType oType){
 
 		final List<ProfilUtilisateur> profilsToCreate = new ArrayList<>();
 		//Doublon
 		if(!findDoublonManager(utilisateur)){
-			utilisateur.setCollaborateur(collaborateurDao.mergeObject(collaborateur));
+			utilisateur.setCollaborateur(collaborateurDao.save(collaborateur));
 
 			// validation due l'utilisateur
 			BeanValidator.validateObject(utilisateur, new Validator[] {utilisateurValidator});
@@ -284,13 +284,13 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 				}
 			}
 
-			utilisateurDao.updateObject(utilisateur);
+			utilisateurDao.save(utilisateur);
 			log.info("Enregistrement objet Utilisateur " + utilisateur.toString());
 
 			//Enregistrement de l'operation associee
 			final Operation creationOp = new Operation();
 			creationOp.setDate(Utils.getCurrentSystemCalendar());
-			operationManager.createObjectManager(creationOp, admin, oType, utilisateur);
+			operationManager.saveManager(creationOp, admin, oType, utilisateur);
 
 			// enregistrements des profils
 			updateProfilsAndPlateformes(utilisateur, profils, profilsToCreate, plateformes);
@@ -314,7 +314,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 	 */
 	public void updateProfilsAndPlateformes(final Utilisateur utilisateur, final List<ProfilUtilisateur> profils,
 			final List<ProfilUtilisateur> profilsToCreate, final List<Plateforme> plateformes){
-		final Utilisateur util = utilisateurDao.mergeObject(utilisateur);
+		final Utilisateur util = utilisateurDao.save(utilisateur);
 
 		List<ProfilUtilisateur> oldProfils = new ArrayList<>();
 		final List<ProfilUtilisateur> profilsToRemove = new ArrayList<>();
@@ -327,14 +327,14 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 			}
 
 			for(int i = 0; i < profilsToRemove.size(); i++){
-				profilUtilisateurManager.removeObjectManager(profilsToRemove.get(i));
+				profilUtilisateurManager.deleteByIdManager(profilsToRemove.get(i));
 			}
 
 			if(profilsToCreate != null){
 				// enregistrements des profilsutilisateurs
 				for(int i = 0; i < profilsToCreate.size(); i++){
 					final ProfilUtilisateur obj = profilsToCreate.get(i);
-					profilUtilisateurManager.createObjectManager(obj, utilisateur, obj.getBanque(), obj.getProfil());
+					profilUtilisateurManager.saveManager(obj, utilisateur, obj.getBanque(), obj.getProfil());
 				}
 			}
 		}
@@ -356,7 +356,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 			// on parcourt la liste des Plateformes à retirer de
 			// l'association
 			for(int i = 0; i < pfsToRemove.size(); i++){
-				final Plateforme pf = plateformeDao.mergeObject(pfsToRemove.get(i));
+				final Plateforme pf = plateformeDao.save(pfsToRemove.get(i));
 				// on retire la pf de chaque coté de l'association
 				util.getPlateformes().remove(pf);
 				pf.getUtilisateurs().remove(util);
@@ -370,8 +370,8 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 				// si une plateforme n'était pas associé a l'utilisateur
 				if(!util.getPlateformes().contains(plateformes.get(i))){
 					// on ajoute la plateforme des deux cotés de l'association
-					util.getPlateformes().add(plateformeDao.mergeObject(plateformes.get(i)));
-					plateformeDao.mergeObject(plateformes.get(i)).getUtilisateurs().add(util);
+					util.getPlateformes().add(plateformeDao.save(plateformes.get(i)));
+					plateformeDao.save(plateformes.get(i)).getUtilisateurs().add(util);
 
 					log.debug("Ajout de l'association entre " + "l'utilisateur : " + util.toString() + " et la plateforme : "
 							+ plateformes.get(i).toString());
@@ -393,7 +393,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 				utilisateur.setTimeOut(cal.getTime());
 			}
 
-			utilisateurDao.mergeObject(utilisateur);
+			utilisateurDao.save(utilisateur);
 			// si jamais l'utilisateur réalisant la modif
 			// correspondant à celui dont on change le mdp
 			// on met à jour l'admin pour que les modifs ne
@@ -404,7 +404,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 			}
 			final Operation creationOp = new Operation();
 			creationOp.setDate(Utils.getCurrentSystemCalendar());
-			operationManager.createObjectManager(creationOp, admin, operationTypeDao.findByNom("Modification").get(0), utilisateur);
+			operationManager.saveManager(creationOp, admin, operationTypeDao.findByNom("Modification").get(0), utilisateur);
 		}
 
 		return utilisateur;
@@ -414,46 +414,46 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 	public void archiveUtilisateurManager(final Utilisateur utilisateur, final Utilisateur admin){
 		if(utilisateur != null && admin != null){
 			utilisateur.setArchive(true);
-			utilisateurDao.mergeObject(utilisateur);
+			utilisateurDao.save(utilisateur);
 
 			final Operation creationOp = new Operation();
 			creationOp.setDate(Utils.getCurrentSystemCalendar());
-			operationManager.createObjectManager(creationOp, admin, operationTypeDao.findByNom("Archivage").get(0), utilisateur);
+			operationManager.saveManager(creationOp, admin, operationTypeDao.findByNom("Archivage").get(0), utilisateur);
 		}
 	}
 
 	@Override
-	public void removeObjectManager(final Utilisateur utilisateur){
+	public void deleteByIdManager(final Utilisateur utilisateur){
 		if(utilisateur != null){
 			if(isUsedObjectManager(utilisateur)){
 				log.warn("Objet utilisé lors de la suppression de l'objet " + "Utilisateur : " + utilisateur.toString());
 				throw new ObjectUsedException("utilisateur.suppression.impossible", false);
 			}else{
-				// utilisateur = utilisateurDao.mergeObject(utilisateur);
+				// utilisateur = utilisateurDao.save(utilisateur);
 				// suppression des ProfilsUtilisateur
 				final List<ProfilUtilisateur> objets = profilUtilisateurManager.findByUtilisateurManager(utilisateur, null);
 				for(int i = 0; i < objets.size(); i++){
-					profilUtilisateurManager.removeObjectManager(objets.get(i));
+					profilUtilisateurManager.deleteByIdManager(objets.get(i));
 				}
 				//remove cascade codes
 				//				Iterator<CodeSelect> codeSelIt =
 				//									utilisateur.getCodeSelects().iterator();
 				//				while (codeSelIt.hasNext()) {
-				//					codeSelectManager.removeObjectManager(codeSelIt.next());
+				//					codeSelectManager.deleteByIdManager(codeSelIt.next());
 				//				}
 				//				Iterator<CodeUtilisateur> codeUIt =
 				//								utilisateur.getCodeUtilisateurs().iterator();
 				//				while (codeUIt.hasNext()) {
-				//					codeUtilisateurManager.removeObjectManager(codeUIt.next());
+				//					codeUtilisateurManager.deleteByIdManager(codeUIt.next());
 				//				}
 
-				utilisateurDao.removeObject(utilisateur.getUtilisateurId());
+				utilisateurDao.deleteById(utilisateur.getUtilisateurId());
 				log.info("Suppression de l'objet Utilisateur : " + utilisateur.toString());
 
 				//Supprime operations associes
 				final List<Operation> ops = operationManager.findByObjectManager(utilisateur);
 				for(int i = 0; i < ops.size(); i++){
-					operationManager.removeObjectManager(ops.get(i));
+					operationManager.deleteByIdManager(ops.get(i));
 				}
 			}
 		}else{

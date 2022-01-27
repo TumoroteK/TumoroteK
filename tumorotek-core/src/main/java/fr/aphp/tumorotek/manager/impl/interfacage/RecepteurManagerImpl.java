@@ -67,7 +67,7 @@ public class RecepteurManagerImpl implements RecepteurManager
 
    @Override
    public List<Recepteur> findAllObjectsManager(){
-      return recepteurDao.findAll();
+      return IterableUtils.toList(recepteurDao.findAll());
    }
 
    @Override
@@ -87,7 +87,7 @@ public class RecepteurManagerImpl implements RecepteurManager
          }else{
             r.setEnvoiNum(null);
          }
-         recepteurDao.updateObject(r);
+         recepteurDao.save(r);
       }
    }
 }

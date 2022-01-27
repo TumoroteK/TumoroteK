@@ -101,7 +101,7 @@ public class ChampImprimeManagerImpl implements ChampImprimeManager
    @Override
    public List<ChampImprime> findAllObjectsManager(){
       log.debug("Recherche de tous les ChampImprimes");
-      return champImprimeDao.findAll();
+      return IterableUtils.toList(champImprimeDao.findAll());
    }
 
    @Override
@@ -109,7 +109,7 @@ public class ChampImprimeManagerImpl implements ChampImprimeManager
       if(pk != null){
          return champImprimeDao.findByExcludedPK(pk);
       }
-      return champImprimeDao.findAll();
+      return IterableUtils.toList(champImprimeDao.findAll());
    }
 
    @Override
@@ -168,23 +168,23 @@ public class ChampImprimeManagerImpl implements ChampImprimeManager
    }
 
    @Override
-   public void createObjectManager(final ChampImprime champImprime, final Template template, final ChampEntite champEntite,
+   public void saveManager(final ChampImprime champImprime, final Template template, final ChampEntite champEntite,
       final BlocImpression bloc){
       // validation de l'objet à créer
       validateObjectManager(template, champEntite, bloc);
 
-      champImprime.setTemplate(templateDao.mergeObject(template));
-      champImprime.setChampEntite(champEntiteDao.mergeObject(champEntite));
-      champImprime.setBlocImpression(blocImpressionDao.mergeObject(bloc));
+      champImprime.setTemplate(templateDao.save(template));
+      champImprime.setChampEntite(champEntiteDao.save(champEntite));
+      champImprime.setBlocImpression(blocImpressionDao.save(bloc));
 
       // création
-      champImprimeDao.createObject(champImprime);
+      champImprimeDao.save(champImprime);
 
       log.info("Enregistrement objet ChampImprime " + champImprime.toString());
    }
 
    @Override
-   public void updateObjectManager(final ChampImprime champImprime, final Template template, final ChampEntite champEntite,
+   public void saveManager(final ChampImprime champImprime, final Template template, final ChampEntite champEntite,
       final BlocImpression bloc){
 
       //template required
@@ -192,33 +192,33 @@ public class ChampImprimeManagerImpl implements ChampImprimeManager
          log.warn("Objet obligatoire Template manquant" + " lors de la validation d'un ChampImprime");
          throw new RequiredObjectIsNullException("ChampImprime", "modification", "Template");
       }
-      champImprime.setTemplate(templateDao.mergeObject(template));
+      champImprime.setTemplate(templateDao.save(template));
 
       //champEntite required
       if(champEntite == null){
          log.warn("Objet obligatoire ChampEntite manquant" + " lors de la validation d'un ChampImprime");
          throw new RequiredObjectIsNullException("ChampImprime", "modification", "ChampEntite");
       }
-      champImprime.setChampEntite(champEntiteDao.mergeObject(champEntite));
+      champImprime.setChampEntite(champEntiteDao.save(champEntite));
 
       //bloc required
       if(bloc == null){
          log.warn("Objet obligatoire BlocImpression manquant" + " lors de la validation d'un ChampImprime");
          throw new RequiredObjectIsNullException("ChampImprime", "modification", "BlocImpression");
       }
-      champImprime.setBlocImpression(blocImpressionDao.mergeObject(bloc));
+      champImprime.setBlocImpression(blocImpressionDao.save(bloc));
 
       // création
-      champImprimeDao.updateObject(champImprime);
+      champImprimeDao.save(champImprime);
 
       log.info("Enregistrement objet ChampImprime " + champImprime.toString());
 
    }
 
    @Override
-   public void removeObjectManager(final ChampImprime champImprime){
+   public void deleteByIdManager(final ChampImprime champImprime){
       if(champImprime != null){
-         champImprimeDao.removeObject(champImprime.getPk());
+         champImprimeDao.deleteById(champImprime.getPk());
          log.info("Suppression de l'objet ChampImprime : " + champImprime.toString());
       }else{
          log.warn("Suppression d'un ChampImprime null");

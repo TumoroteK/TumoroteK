@@ -68,7 +68,7 @@ import fr.aphp.tumorotek.manager.impl.xml.ListeSignature;
 import fr.aphp.tumorotek.manager.impl.xml.Signatures;
 import fr.aphp.tumorotek.manager.impl.xml.ValeursSignatures;
 import fr.aphp.tumorotek.model.TKdataObject;
-import fr.aphp.tumorotek.model.cession.Cession;
+import fr.aphp.tumorotek.model.coeur.cession.Cession;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Coordonnee;
 import fr.aphp.tumorotek.model.contexte.Service;

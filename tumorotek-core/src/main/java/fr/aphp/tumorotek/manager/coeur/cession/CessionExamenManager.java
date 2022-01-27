@@ -38,7 +38,7 @@ package fr.aphp.tumorotek.manager.coeur.cession;
 import java.util.List;
 
 import fr.aphp.tumorotek.manager.PfDependantTKThesaurusManager;
-import fr.aphp.tumorotek.model.cession.CessionExamen;
+import fr.aphp.tumorotek.model.coeur.cession.CessionExamen;
 
 /**
  *

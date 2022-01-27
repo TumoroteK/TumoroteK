@@ -742,7 +742,7 @@ public class InjectionManagerImpl implements InjectionManager
 				for(int i = 0; i < liste.size(); i++){
 					Patient p = liste.get(i);
 					if(!p.getClass().getSimpleName().equals("Patient")){
-						p = patientDao.mergeObject(liste.get(i));
+						p = patientDao.save(liste.get(i));
 					}
 					if(patient.equals(p)){
 						patient = p;
@@ -758,7 +758,7 @@ public class InjectionManagerImpl implements InjectionManager
 					for(int i = 0; i < mals.size(); i++){
 						Maladie m = mals.get(i);
 						if(!m.getClass().getSimpleName().equals("Maladie")){
-							m = maladieDao.mergeObject(mals.get(i));
+							m = maladieDao.save(mals.get(i));
 						}
 						if(maladie.equals(m)){
 							maladie = m;
@@ -840,7 +840,7 @@ public class InjectionManagerImpl implements InjectionManager
 				newPrel.getMaladie().getPatient().setPatientEtat("V");
 			}
 			
-			prelevementManager.createObjectWithNonConformitesManager(newPrel, banque, newPrel.getNature(), 
+			prelevementManager.saveWithNonConformitesManager(newPrel, banque, newPrel.getNature(), 
 				newPrel.getMaladie(), newPrel.getConsentType(), newPrel.getPreleveur(), newPrel.getServicePreleveur(), 
 				newPrel.getPrelevementType(), newPrel.getConditType(), newPrel.getConditMilieu(), newPrel.getTransporteur(), 
 				newPrel.getOperateur(), newPrel.getQuantiteUnite(), null, // labo inter forcément nulls par transmission !?
@@ -856,9 +856,9 @@ public class InjectionManagerImpl implements InjectionManager
 			// si tout s'est bien passé = suppression
 			// car ces transactions ne seront pas rollbackées 
 			// si une erreur survient (car pas le même entityManager)
-			dossierExterneManager.removeObjectManager(dossier);
+			dossierExterneManager.deleteByIdManager(dossier);
 			for (DossierExterne dE : derivesDos) {		
-				dossierExterneManager.removeObjectManager(dE);
+				dossierExterneManager.deleteByIdManager(dE);
 			}
 		}
 	}
@@ -883,7 +883,7 @@ public class InjectionManagerImpl implements InjectionManager
 						ObjetStatut statut = resDer.getProdDerive().getEmplacement() != null ? 
 							objetStatutDao.findByStatut("STOCKE").get(0) : objetStatutDao.findByStatut("NON STOCKE").get(0);
 		
-						prodDeriveManager.createObjectWithNonConformitesManager(resDer.getProdDerive(), banque, 
+						prodDeriveManager.saveWithNonConformitesManager(resDer.getProdDerive(), banque, 
 							resDer.getProdDerive().getProdType(), statut, resDer.getProdDerive().getCollaborateur(), 
 							resDer.getProdDerive().getEmplacement(), resDer.getProdDerive().getVolumeUnite(), 
 							resDer.getProdDerive().getConcUnite(), resDer.getProdDerive().getQuantiteUnite(), 
@@ -1043,7 +1043,7 @@ public class InjectionManagerImpl implements InjectionManager
 						ObjetStatut statut = resDer.getProdDerive().getEmplacement() != null ? 
 							objetStatutDao.findByStatut("STOCKE").get(0) : objetStatutDao.findByStatut("NON STOCKE").get(0);
 		
-						prodDeriveManager.createObjectWithNonConformitesManager(resDer.getProdDerive(), prel.getBanque(), 
+						prodDeriveManager.saveWithNonConformitesManager(resDer.getProdDerive(), prel.getBanque(), 
 							resDer.getProdDerive().getProdType(), statut, resDer.getProdDerive().getCollaborateur(), 
 							resDer.getProdDerive().getEmplacement(), resDer.getProdDerive().getVolumeUnite(), 
 							resDer.getProdDerive().getConcUnite(), resDer.getProdDerive().getQuantiteUnite(), 
@@ -1062,7 +1062,7 @@ public class InjectionManagerImpl implements InjectionManager
 			
 			// si tout s'est bien passé = suppression
 			for (DossierExterne dos : childrenDossierToSync) {
-				dossierExterneManager.removeObjectManager(dos);
+				dossierExterneManager.deleteByIdManager(dos);
 			}
 		}
 		return isAnyParentPrelSynced;

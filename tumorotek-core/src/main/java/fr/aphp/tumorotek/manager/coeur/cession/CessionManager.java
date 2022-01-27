@@ -41,14 +41,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import fr.aphp.tumorotek.model.cession.CederObjet;
-import fr.aphp.tumorotek.model.cession.Cession;
-import fr.aphp.tumorotek.model.cession.CessionExamen;
-import fr.aphp.tumorotek.model.cession.CessionStatut;
-import fr.aphp.tumorotek.model.cession.CessionType;
-import fr.aphp.tumorotek.model.cession.Contrat;
-import fr.aphp.tumorotek.model.cession.DestructionMotif;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
+import fr.aphp.tumorotek.model.coeur.cession.CederObjet;
+import fr.aphp.tumorotek.model.coeur.cession.Cession;
+import fr.aphp.tumorotek.model.coeur.cession.CessionExamen;
+import fr.aphp.tumorotek.model.coeur.cession.CessionStatut;
+import fr.aphp.tumorotek.model.coeur.cession.CessionType;
+import fr.aphp.tumorotek.model.coeur.cession.Contrat;
+import fr.aphp.tumorotek.model.coeur.cession.DestructionMotif;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
@@ -211,7 +211,7 @@ public interface CessionManager
     * @param base directory pour enregistrer un fichier associé 
     * dans le file system
     */
-   void createObjectManager(Cession cession, Banque banque, CessionType cessionType, CessionExamen cessionExamen, Contrat mta,
+   void saveManager(Cession cession, Banque banque, CessionType cessionType, CessionExamen cessionExamen, Contrat mta,
       Collaborateur destinataire, Service servDest, Collaborateur demandeur, CessionStatut cessionStatut, Collaborateur executant,
       Transporteur transporteur, DestructionMotif destructionMotif, List<AnnotationValeur> listAnnoToCreateOrUpdate,
       List<File> filesCreated, Utilisateur utilisateur, List<CederObjet> cederObjets, String baseDir);
@@ -239,7 +239,7 @@ public interface CessionManager
     * @param base directory pour enregistrer un fichier associé 
     * dans le file system
     */
-   void updateObjectManager(Cession cession, Banque banque, CessionType cessionType, CessionExamen cessionExamen, Contrat mta,
+   void saveManager(Cession cession, Banque banque, CessionType cessionType, CessionExamen cessionExamen, Contrat mta,
       Collaborateur destinataire, Service servDest, Collaborateur demandeur, CessionStatut cessionStatut, Collaborateur executant,
       Transporteur transporteur, DestructionMotif destructionMotif, List<AnnotationValeur> listAnnoToCreateOrUpdate,
       List<AnnotationValeur> listAnnoToDelete, List<File> filesCreated, List<File> filesToDelete, Utilisateur utilisateur,
@@ -252,7 +252,7 @@ public interface CessionManager
     * @param Utilisateur réalisant la suppression.
     * @param filesToDelete liste de fichier à supprimer
     */
-   void removeObjectManager(Cession cession, String comments, Utilisateur usr, List<File> filesToDelete);
+   void deleteByIdManager(Cession cession, String comments, Utilisateur usr, List<File> filesToDelete);
 
    /**
     * Recherche les cessions dont l'id se trouve dans la liste.

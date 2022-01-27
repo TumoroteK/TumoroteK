@@ -39,8 +39,8 @@ import java.util.List;
 
 import fr.aphp.tumorotek.manager.impl.coeur.cession.OldEmplTrace;
 import fr.aphp.tumorotek.model.TKStockableObject;
-import fr.aphp.tumorotek.model.cession.Cession;
-import fr.aphp.tumorotek.model.cession.Retour;
+import fr.aphp.tumorotek.model.coeur.cession.Cession;
+import fr.aphp.tumorotek.model.coeur.cession.Retour;
 import fr.aphp.tumorotek.model.coeur.prodderive.Transformation;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.stockage.Emplacement;
@@ -86,7 +86,7 @@ public interface RetourManager
     * @param utilisateur Utilisateur realisant la creation
     * @param operation String creation / modification
     */
-   void createOrUpdateObjectManager(Retour retour, TKStockableObject objet, Emplacement emplacement, Collaborateur collborateur,
+   void createOrsaveManager(Retour retour, TKStockableObject objet, Emplacement emplacement, Collaborateur collborateur,
       Cession cession, Transformation transformation, Incident incident, Utilisateur utilisateur, String operation);
 
    /**
@@ -108,7 +108,7 @@ public interface RetourManager
     * Supprime un objet Retour de la base de données.
     * @param retour Retour à supprimer de la base de données.
     */
-   void removeObjectManager(Retour retour);
+   void deleteByIdManager(Retour retour);
 
    /**
     * Recherche tous les Retour enregistrés pour un objet Echantillon

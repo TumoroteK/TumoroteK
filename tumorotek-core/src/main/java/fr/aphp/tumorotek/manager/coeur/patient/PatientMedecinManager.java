@@ -65,7 +65,7 @@ public interface PatientMedecinManager
     * @param ordre lien familial associee (non null)	 
     * @param operation String creation / modification
     */
-   void createOrUpdateObjectManager(PatientMedecin medecin, Patient patient, Collaborateur collaborateur, String operation);
+   void createOrsaveManager(PatientMedecin medecin, Patient patient, Collaborateur collaborateur, String operation);
 
    /**
     * Cherche les doublons en se basant sur la methode equals()
@@ -79,5 +79,5 @@ public interface PatientMedecinManager
     * Supprime un objet de la base de données.
     * @param medecin PatientMedecin à supprimer de la base de données.
     */
-   void removeObjectManager(PatientMedecin medecin);
+   void deleteByIdManager(PatientMedecin medecin);
 }

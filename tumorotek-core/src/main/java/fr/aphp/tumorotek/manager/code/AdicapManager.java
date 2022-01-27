@@ -35,9 +35,19 @@
  **/
 package fr.aphp.tumorotek.manager.code;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import fr.aphp.tumorotek.dao.code.AdicapDao;
+import fr.aphp.tumorotek.dao.code.AdicapGroupeDao;
 import fr.aphp.tumorotek.model.code.Adicap;
 import fr.aphp.tumorotek.model.code.AdicapGroupe;
 import fr.aphp.tumorotek.model.code.CimMaster;
@@ -45,86 +55,241 @@ import fr.aphp.tumorotek.model.code.CimoMorpho;
 
 /**
  *
- * Interface pour le Manager du bean de domaine Adicap.
- * Interface créée le 19/05/10.
+ * Interface pour le Manager du bean de domaine Adicap. Interface créée le
+ * 19/05/10.
  *
  * @author Mathieu BARTHELEMY
  * @version 2.0
  *
  */
-public interface AdicapManager extends CodeCommonManager<Adicap>
-{
+@Service
+public class AdicapManager implements CodeCommonManager<Adicap> {
 
-   /**
-    * Recherche les codes Adicap dont le groupe est passé en paramètre.
-    * @param groupe Adicap pour lequel on recherche des codes Adicap.
-    * @return une liste de codes Adicap.
-    */
-   List<Adicap> findByAdicapGroupeManager(AdicapGroupe groupe);
+	private final Log log = LogFactory.getLog(AdicapManager.class);
 
-   /**
-    * Recherche les codes Adicap dont la morpho est passée en paramètre.
-    * @param isMorpho Vrai ou faux.
-    * @return une liste de codes Adicap.
-    */
-   List<Adicap> findByMorphoManager(Boolean isMorpho);
+	@Autowired
+	private AdicapDao adicapDao;
 
-   /**
-    * Recherche les enfants du code Adicap passé en paramètre.
-    * @param code Adicap topo pour lequel on recherche les enfants.
-    * @param si recherche parent en mode topographie (dico8)
-    * @return une liste de codes Adicap.
-    */
-   List<Adicap> findByAdicapParentManager(Adicap parent, Boolean isTopo);
+	@Autowired
+	private AdicapGroupeDao adicapGroupeDao;
 
-   /**
-    * Recherche les codes Cimo morpho issus du transcodage du
-    * code Adicap passé en paramètre.
-    * @param code adicap qui sera transcodé
-    * @return Liste de code CimoMorpho
-    */
-   Set<CimoMorpho> getCimoMorphosManager(Adicap adicap);
+	@Override
+	public List<Adicap> findAllObjectsManager() {
+		return IterableUtils.toList(adicapDao.findAll());
+	}
 
-   /**
-    * Recherche les codes Cim topo issus du transcodage du
-    * code Adicap passé en paramètre.
-    * @param code adicap qui sera transcodé
-    * @return Liste de code CimMaster
-    */
-   Set<CimMaster> getCimMastersManager(Adicap adicap);
+	@Override
+	public List<Adicap> findByCodeLikeManager(String code, final boolean exactMatch) {
+		if (!exactMatch) {
+			code = "%" + code + "%";
+		}
+		log.debug("Recherche Adicap par code: " + code + " exactMatch " + String.valueOf(exactMatch));
+		return adicapDao.findByCodeLike(code);
+	}
 
-   /**
-    * Cree la liste de dossiers correspondants à la liste 
-    * de dictionnaires de l'ADICAP.
-    * @return liste de AdicapGroupe
-    */
-   List<AdicapGroupe> findDictionnairesManager();
+	@Override
+	public List<Adicap> findByLibelleLikeManager(String libelle, final boolean exactMatch) {
+		if (!exactMatch) {
+			libelle = "%" + libelle + "%";
+		}
+		log.info("Recherche Adicap par libelle: " + libelle + " exactMatch " + String.valueOf(exactMatch));
+		return adicapDao.findByLibelleLike(libelle);
+	}
 
-   /**
-    * Renvoie les groupes enfants d'un groupe de codes Adicap.
-    * @param groupe parent
-    * @return liste de AdicapGroupe
-    */
-   List<AdicapGroupe> getAdicapGroupesManager(AdicapGroupe groupe);
+	/**
+	 * Recherche les codes Adicap dont le groupe est passé en paramètre.
+	 * 
+	 * @param groupe Adicap pour lequel on recherche des codes Adicap.
+	 * @return une liste de codes Adicap.
+	 */
+	public List<Adicap> findByAdicapGroupeManager(AdicapGroupe groupe) {
 
-   /**
-    * Renvoie les codes ADICAP contenu dans l'arborescence dont la 
-    * racine est le code ou le groupe passé en paramètre. Les codes sont 
-    * filtrés par le critère stringOrLibelle ('%' supprime ce filtre).
-    * @param code ADICAP
-    * @param groupe ADICAP
-    * @param stringOrLibelle
-    * @return liste codes 'enfants'.
-    */
-   List<Adicap> findChildrenCodesManager(Adicap code, AdicapGroupe groupe, String codeOrLibelle);
+		// si dictionnaire = 8 ou 6, equivalent 3
+		if (groupe != null && (groupe.getNom().equals("D8") || groupe.getNom().equals("D6"))) {
+			groupe = adicapGroupeDao.findById(3).orElse(null);
+		}
 
-   /**
-    * Recherche les codes ADICAP dans un dictionnaire par son code 
-    * ou son libellé LIKE.
-    * @param grp Dico ADICAP
-    * @param codeOrLibelle
-    * @param true si recherche exact match
-    * @return liste de codes Adicap
-    */
-   List<Adicap> findByDicoAndCodeOrLibelleManager(AdicapGroupe grp, String codeOrLibelle, boolean exactMatch);
+		return adicapDao.findByAdicapGroupeNullParent(groupe);
+	}
+
+	/**
+	 * Recherche les codes Adicap dont la morpho est passée en paramètre.
+	 * 
+	 * @param isMorpho Vrai ou faux.
+	 * @return une liste de codes Adicap.
+	 */
+	public List<Adicap> findByMorphoManager(final Boolean isMorpho) {
+		return adicapDao.findByMorpho(isMorpho);
+	}
+
+	/**
+	 * Recherche les enfants du code Adicap passé en paramètre.
+	 * 
+	 * @param code Adicap topo pour lequel on recherche les enfants.
+	 * @param si   recherche parent en mode topographie (dico8)
+	 * @return une liste de codes Adicap.
+	 */
+	public List<Adicap> findByAdicapParentManager(final Adicap parent, final Boolean isTopo) {
+
+		final List<Adicap> ads = adicapDao.findByAdicapParentAndCodeOrLibelle(parent, "%");
+
+		if (isTopo != null) {
+			// affiche les codes topo epurés des codes lesionnels
+			if (isTopo) {
+				for (int i = 0; i < ads.size(); i++) {
+					if (ads.get(i).getAdicapGroupe().getNom().equals("D6")) {
+						ads.remove(ads.get(i));
+						i--;
+					}
+				}
+			} else {
+				// affiche les codes lesionnels dans l'aroborescence des
+				// codes topos.
+				for (int i = 0; i < ads.size(); i++) {
+					if (ads.get(i).getAdicapGroupe().getNom().equals("D8")
+							|| (ads.get(i).getAdicapGroupe().getNom().equals("D3")
+									&& findByAdicapParentManager(ads.get(i), false).isEmpty())) {
+						ads.remove(ads.get(i));
+						i--;
+					}
+				}
+			}
+		}
+
+		return ads;
+	}
+
+	/**
+	 * Recherche les codes Cimo morpho issus du transcodage du code Adicap passé en
+	 * paramètre.
+	 * 
+	 * @param code adicap qui sera transcodé
+	 * @return Liste de code CimoMorpho
+	 */
+	public Set<CimoMorpho> getCimoMorphosManager(final Adicap adicap) {
+		Set<CimoMorpho> cims = new HashSet<>();
+		final Adicap aM = adicapDao.save(adicap);
+		cims = aM.getCimoMorphos();
+		cims.isEmpty(); // operation empechant LazyInitialisationException
+		return cims;
+	}
+
+	/**
+	 * Recherche les codes Cim topo issus du transcodage du code Adicap passé en
+	 * paramètre.
+	 * 
+	 * @param code adicap qui sera transcodé
+	 * @return Liste de code CimMaster
+	 */
+	public Set<CimMaster> getCimMastersManager(final Adicap adicap) {
+		Set<CimMaster> cims = new HashSet<>();
+		final Adicap aM = adicapDao.save(adicap);
+		cims = aM.getCimMasters();
+		cims.size(); // operation empechant LazyInitialisationException
+		return cims;
+	}
+
+	/**
+	 * Cree la liste de dossiers correspondants à la liste de dictionnaires de
+	 * l'ADICAP.
+	 * 
+	 * @return liste de AdicapGroupe
+	 */
+	public List<AdicapGroupe> findDictionnairesManager() {
+		return adicapGroupeDao.findDictionnaires();
+	}
+
+	/**
+	 * Renvoie les groupes enfants d'un groupe de codes Adicap.
+	 * 
+	 * @param groupe parent
+	 * @return liste de AdicapGroupe
+	 */
+	public List<AdicapGroupe> getAdicapGroupesManager(final AdicapGroupe groupe) {
+		final List<AdicapGroupe> groupes = new ArrayList<>();
+		final AdicapGroupe aG = adicapGroupeDao.save(groupe);
+		groupes.addAll(aG.getAdicapGroupes());
+		groupes.isEmpty(); // operation empechant LazyInitialisationException
+		return groupes;
+	}
+
+	/**
+	 * Renvoie les codes ADICAP contenu dans l'arborescence dont la racine est le
+	 * code ou le groupe passé en paramètre. Les codes sont filtrés par le critère
+	 * stringOrLibelle ('%' supprime ce filtre).
+	 * 
+	 * @param code            ADICAP
+	 * @param groupe          ADICAP
+	 * @param stringOrLibelle
+	 * @return liste codes 'enfants'.
+	 */
+	public List<Adicap> findChildrenCodesManager(final Adicap code, final AdicapGroupe groupe,
+			final String codeOrLibelle) {
+		final List<Adicap> codes = new ArrayList<>();
+		if (code != null) {
+			codes.add(code);
+			findRecursiveChildren(code, codes, codeOrLibelle);
+		} else if (groupe != null) {
+			final List<AdicapGroupe> grps = new ArrayList<>();
+			grps.add(groupe);
+			findRecursiveGroup(groupe, grps);
+			List<Adicap> grpCodes;
+			for (int i = 0; i < grps.size(); i++) {
+				grpCodes = adicapDao.findByAdicapGroupeAndCodeOrLibelle(grps.get(i), codeOrLibelle);
+				for (int j = 0; j < grpCodes.size(); j++) {
+					codes.add(grpCodes.get(j));
+					findRecursiveChildren(grpCodes.get(j), codes, codeOrLibelle);
+				}
+
+			}
+		}
+		return codes;
+	}
+
+	private void findRecursiveChildren(final Adicap parent, final List<Adicap> codes, final String codeOrLibelle) {
+		final List<Adicap> children = adicapDao.findByAdicapParentAndCodeOrLibelle(parent, codeOrLibelle);
+		codes.addAll(children);
+		for (int i = 0; i < children.size(); i++) {
+			findRecursiveChildren(children.get(i), codes, codeOrLibelle);
+		}
+	}
+
+	private void findRecursiveGroup(final AdicapGroupe groupe, final List<AdicapGroupe> grps) {
+		final List<AdicapGroupe> groups = getAdicapGroupesManager(groupe);
+		grps.addAll(groups);
+		for (int i = 0; i < groups.size(); i++) {
+			findRecursiveGroup(groups.get(i), grps);
+		}
+	}
+
+	/**
+	 * Recherche les codes ADICAP dans un dictionnaire par son code ou son libellé
+	 * LIKE.
+	 * 
+	 * @param grp           Dico ADICAP
+	 * @param codeOrLibelle
+	 * @param true          si recherche exact match
+	 * @return liste de codes Adicap
+	 */
+	public List<Adicap> findByDicoAndCodeOrLibelleManager(final AdicapGroupe grp, String codeOrLibelle,
+			final boolean exactMatch) {
+		// Set<Adicap> res = new HashSet<Adicap>();
+		if (!exactMatch) {
+			// codeOrLibelle = ".*" + codeOrLibelle + ".*";
+			codeOrLibelle = "%" + codeOrLibelle + "%";
+		}
+		// Iterator<Adicap> aIt =
+		return findChildrenCodesManager(null, grp, codeOrLibelle);
+		// .iterator();
+		// Adicap next;
+		// while (aIt.hasNext()) {
+		// next = aIt.next();
+		// if (next.getCode().matches(codeOrLibelle)
+		// || (next.getLibelle() != null
+		// && next.getLibelle().matches(codeOrLibelle))) {
+		// res.add(next);
+		// }
+		// }
+		// return new ArrayList<Adicap>(res);
+	}
 }

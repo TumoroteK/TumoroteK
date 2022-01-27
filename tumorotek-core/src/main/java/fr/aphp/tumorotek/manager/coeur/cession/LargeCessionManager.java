@@ -39,7 +39,7 @@ import java.util.Date;
 import java.util.List;
 
 import fr.aphp.tumorotek.manager.validation.coeur.cession.LargeCessionHelper;
-import fr.aphp.tumorotek.model.cession.Cession;
+import fr.aphp.tumorotek.model.coeur.cession.Cession;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 

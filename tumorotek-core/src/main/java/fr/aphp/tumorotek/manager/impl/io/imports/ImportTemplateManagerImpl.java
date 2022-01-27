@@ -101,7 +101,7 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
    @Override
    public List<ImportTemplate> findAllObjectsManager(){
       log.debug("Recherche de tous les ImportTemplates.");
-      return importTemplateDao.findAll();
+      return IterableUtils.toList(importTemplateDao.findAll());
    }
 
    @Override
@@ -117,7 +117,7 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
    @Override
    public Set<Entite> getEntiteManager(ImportTemplate importTemplate){
       if(importTemplate != null && importTemplate.getImportTemplateId() != null){
-         importTemplate = importTemplateDao.mergeObject(importTemplate);
+         importTemplate = importTemplateDao.save(importTemplate);
          final Set<Entite> entites = importTemplate.getEntites();
          entites.size();
          return entites;
@@ -130,7 +130,7 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
    public Boolean findDoublonManager(final ImportTemplate importTemplate){
       if(importTemplate != null){
          if(importTemplate.getImportTemplateId() == null){
-            return importTemplateDao.findAll().contains(importTemplate);
+            return IterableUtils.toList(importTemplateDao.findAll()).contains(importTemplate);
          }else{
             return importTemplateDao.findByExcludedId(importTemplate.getImportTemplateId()).contains(importTemplate);
          }
@@ -140,11 +140,11 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
    }
 
    @Override
-   public void createObjectManager(final ImportTemplate importTemplate, final Banque banque, final List<Entite> entites,
+   public void saveManager(final ImportTemplate importTemplate, final Banque banque, final List<Entite> entites,
       final List<ImportColonne> colonnesToCreate){
       // banque required
       if(banque != null){
-         importTemplate.setBanque(banqueDao.mergeObject(banque));
+         importTemplate.setBanque(banqueDao.save(banque));
       }else{
          log.warn("Objet obligatoire Banque manquant" + " lors de la création d'un ImportTemplate");
          throw new RequiredObjectIsNullException("ImportTemplate", "creation", "Banque");
@@ -169,7 +169,7 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
          // validation due l'utilisateur
          BeanValidator.validateObject(importTemplate, new Validator[] {importTemplateValidator});
 
-         importTemplateDao.createObject(importTemplate);
+         importTemplateDao.save(importTemplate);
 
          updateAssociations(importTemplate, entites, colonnesToCreate, null);
 
@@ -182,11 +182,11 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
    }
 
    @Override
-   public void updateObjectManager(final ImportTemplate importTemplate, final Banque banque, final List<Entite> entites,
+   public void saveManager(final ImportTemplate importTemplate, final Banque banque, final List<Entite> entites,
       final List<ImportColonne> colonnesToCreate, final List<ImportColonne> colonnesToremove){
       // banque required
       if(banque != null){
-         importTemplate.setBanque(banqueDao.mergeObject(banque));
+         importTemplate.setBanque(banqueDao.save(banque));
       }else{
          log.warn("Objet obligatoire Banque manquant" + " lors de la modification d'un ImportTemplate");
          throw new RequiredObjectIsNullException("ImportTemplate", "modification", "Banque");
@@ -211,7 +211,7 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
          // validation due l'utilisateur
          BeanValidator.validateObject(importTemplate, new Validator[] {importTemplateValidator});
 
-         importTemplateDao.updateObject(importTemplate);
+         importTemplateDao.save(importTemplate);
 
          updateAssociations(importTemplate, entites, colonnesToCreate, colonnesToremove);
 
@@ -224,22 +224,22 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
    }
 
    @Override
-   public void removeObjectManager(ImportTemplate importTemplate){
+   public void deleteByIdManager(ImportTemplate importTemplate){
       if(importTemplate != null){
          // suppression des colonnes
          final List<ImportColonne> colonnes = importColonneManager.findByImportTemplateManager(importTemplate);
          for(int i = 0; i < colonnes.size(); i++){
-            importColonneManager.removeObjectManager(colonnes.get(i));
+            importColonneManager.deleteByIdManager(colonnes.get(i));
          }
 
-         importTemplate = importTemplateDao.mergeObject(importTemplate);
+         importTemplate = importTemplateDao.save(importTemplate);
          final Iterator<Entite> it = importTemplate.getEntites().iterator();
          while(it.hasNext()){
-            final Entite tmp = entiteDao.mergeObject(it.next());
+            final Entite tmp = entiteDao.save(it.next());
             tmp.getImportTemplates().remove(importTemplate);
          }
 
-         importTemplateDao.removeObject(importTemplate.getImportTemplateId());
+         importTemplateDao.deleteById(importTemplate.getImportTemplateId());
          log.info("Suppression de l'objet ImportTemplate : " + importTemplate.toString());
       }else{
          log.warn("Suppression d'un ImportTemplate null");
@@ -259,13 +259,13 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
     */
    public void updateAssociations(final ImportTemplate template, final List<Entite> entites,
       final List<ImportColonne> colonnesToCreate, final List<ImportColonne> colonnesToRemove){
-      final ImportTemplate temp = importTemplateDao.mergeObject(template);
+      final ImportTemplate temp = importTemplateDao.save(template);
 
       // gestion des colonnes
       if(colonnesToRemove != null){
          // suppression des colonnes
          for(int i = 0; i < colonnesToRemove.size(); i++){
-            importColonneManager.removeObjectManager(colonnesToRemove.get(i));
+            importColonneManager.deleteByIdManager(colonnesToRemove.get(i));
          }
       }
 
@@ -273,9 +273,9 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
          // ajout ou modif des colonnes
          for(int i = 0; i < colonnesToCreate.size(); i++){
             if(colonnesToCreate.get(i).getImportColonneId() == null){
-               importColonneManager.createObjectManager(colonnesToCreate.get(i), temp, colonnesToCreate.get(i).getChamp());
+               importColonneManager.saveManager(colonnesToCreate.get(i), temp, colonnesToCreate.get(i).getChamp());
             }else{
-               importColonneManager.updateObjectManager(colonnesToCreate.get(i), temp, colonnesToCreate.get(i).getChamp());
+               importColonneManager.saveManager(colonnesToCreate.get(i), temp, colonnesToCreate.get(i).getChamp());
             }
          }
       }
@@ -297,7 +297,7 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
          // on parcourt la liste des Entites à retirer de
          // l'association
          for(int i = 0; i < entitesToRemove.size(); i++){
-            final Entite e = entiteDao.mergeObject(entitesToRemove.get(i));
+            final Entite e = entiteDao.save(entitesToRemove.get(i));
             // on retire l'entité de chaque coté de l'association
             temp.getEntites().remove(e);
             e.getImportTemplates().remove(temp);
@@ -311,8 +311,8 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
             // si une entité n'était pas associée
             if(!temp.getEntites().contains(entites.get(i))){
                // on ajoute la Banque des deux cotés de l'association
-               temp.getEntites().add(entiteDao.mergeObject(entites.get(i)));
-               entiteDao.mergeObject(entites.get(i)).getImportTemplates().add(temp);
+               temp.getEntites().add(entiteDao.save(entites.get(i)));
+               entiteDao.save(entites.get(i)).getImportTemplates().add(temp);
 
                log.debug("Ajout de l'association entre l'" + "ImportTemplate : " + temp.toString() + " et l'entité : "
                   + entites.get(i).toString());

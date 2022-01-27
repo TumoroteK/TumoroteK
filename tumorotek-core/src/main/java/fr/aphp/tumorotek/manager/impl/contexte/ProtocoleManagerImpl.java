@@ -86,7 +86,7 @@ public class ProtocoleManagerImpl implements ProtocoleManager
    }
 
    @Override
-   public void createObjectManager(final Protocole obj){
+   public void saveManager(final Protocole obj){
 
       final Protocole pt = obj;
 
@@ -96,11 +96,11 @@ public class ProtocoleManagerImpl implements ProtocoleManager
          log.warn("Objet obligatoire Plateforme " + "manquant lors de la creation " + "d'un objet Protocole");
          throw new RequiredObjectIsNullException("Protocole", "creation", "Plateforme");
       }
-      pt.setPlateforme(plateformeDao.mergeObject(pt.getPlateforme()));
+      pt.setPlateforme(plateformeDao.save(pt.getPlateforme()));
 
       BeanValidator.validateObject(pt, new Validator[] {protocoleValidator});
       if(!findDoublonManager(pt)){
-         protocoleDao.createObject(pt);
+         protocoleDao.save(pt);
          log.info("Enregistrement objet Protocole " + pt.toString());
       }else{
          log.warn("Doublon lors creation objet Protocole " + pt.toString());
@@ -109,10 +109,10 @@ public class ProtocoleManagerImpl implements ProtocoleManager
    }
 
    @Override
-   public void updateObjectManager(final Protocole obj){
+   public void saveManager(final Protocole obj){
       BeanValidator.validateObject(obj, new Validator[] {protocoleValidator});
       if(!findDoublonManager(obj)){
-         protocoleDao.updateObject(obj);
+         protocoleDao.save(obj);
          log.info("Modification objet Protocole " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet Protocole " + obj.toString());
@@ -122,13 +122,13 @@ public class ProtocoleManagerImpl implements ProtocoleManager
 
    @Override
    public List<Protocole> findAllObjectsManager(){
-      return protocoleDao.findAll();
+      return IterableUtils.toList(protocoleDao.findAll());
    }
 
    @Override
-   public void removeObjectManager(final Protocole obj){
+   public void deleteByIdManager(final Protocole obj){
       if(obj != null){
-         protocoleDao.removeObject(obj.getId());
+         protocoleDao.deleteById(obj.getId());
          log.info("Suppression objet Protocole " + obj.toString());
       }else{
          log.warn("Suppression d'un Protocole null");
@@ -140,7 +140,7 @@ public class ProtocoleManagerImpl implements ProtocoleManager
       if(o != null){
          final Protocole pt = o;
          if(pt.getId() == null){
-            return protocoleDao.findAll().contains(pt);
+            return IterableUtils.toList(protocoleDao.findAll()).contains(pt);
          }
          return protocoleDao.findByExcludedId(pt.getId()).contains(pt);
       }
@@ -149,7 +149,7 @@ public class ProtocoleManagerImpl implements ProtocoleManager
 
    @Override
    public boolean isUsedObjectManager(final Protocole o){
-      final Protocole pt = protocoleDao.mergeObject(o);
+      final Protocole pt = protocoleDao.save(o);
       return pt.getPrelevements().size() > 0;
    }
 

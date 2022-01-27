@@ -47,7 +47,7 @@ import fr.aphp.tumorotek.manager.coeur.cession.RetourManager;
 import fr.aphp.tumorotek.manager.coeur.echantillon.EchantillonValidator;
 import fr.aphp.tumorotek.manager.validation.CoherenceDateManager;
 import fr.aphp.tumorotek.manager.validation.ValidationUtilities;
-import fr.aphp.tumorotek.model.cession.Retour;
+import fr.aphp.tumorotek.model.coeur.cession.Retour;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.prelevement.LaboInter;
 

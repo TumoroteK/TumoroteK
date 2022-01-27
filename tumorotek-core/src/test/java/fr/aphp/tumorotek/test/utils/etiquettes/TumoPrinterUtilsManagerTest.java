@@ -46,11 +46,11 @@ import fr.aphp.tumorotek.manager.coeur.echantillon.EchantillonManager;
 import fr.aphp.tumorotek.manager.coeur.prodderive.ProdDeriveManager;
 import fr.aphp.tumorotek.manager.etiquettes.TumoPrinterUtilsManager;
 import fr.aphp.tumorotek.manager.imprimante.ModeleManager;
-import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.imprimante.LigneEtiquette;
 import fr.aphp.tumorotek.model.imprimante.Modele;
+import fr.aphp.tumorotek.test.manager.AbstractManagerTest4;
 
 public class TumoPrinterUtilsManagerTest extends AbstractManagerTest4
 {

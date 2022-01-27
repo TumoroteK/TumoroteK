@@ -69,7 +69,7 @@ public class ContexteManagerImpl implements ContexteManager
    public Set<Catalogue> getCataloguesManager(final Contexte c){
       Set<Catalogue> catas = new HashSet<>();
       if(c != null){
-         final Contexte cont = contexteDao.mergeObject(c);
+         final Contexte cont = contexteDao.save(c);
          catas = cont.getCatalogues();
          catas.isEmpty(); // operation empechant LazyInitialisationException
       }

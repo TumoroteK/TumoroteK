@@ -137,7 +137,7 @@ public class ProdTypeManagerImpl implements ProdTypeManager
       final ProdType type = obj;
       if(type != null){
          if(type.getId() == null){
-            return prodTypeDao.findAll().contains(type);
+            return IterableUtils.toList(prodTypeDao.findAll()).contains(type);
          }
          return prodTypeDao.findByExcludedId(type.getId()).contains(type);
       }
@@ -154,44 +154,44 @@ public class ProdTypeManagerImpl implements ProdTypeManager
    }
 
    @Override
-   public void createObjectManager(final ProdType obj){
+   public void saveManager(final ProdType obj){
       final ProdType type = obj;
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(type.getPlateforme() == null){
          throw new RequiredObjectIsNullException("ProdType", "creation", "Plateforme");
       }
-      type.setPlateforme(plateformeDao.mergeObject(type.getPlateforme()));
+      type.setPlateforme(plateformeDao.save(type.getPlateforme()));
 
       if(findDoublonManager(type)){
          log.warn("Doublon lors de la creation de l'objet ProdType : " + type.toString());
          throw new DoublonFoundException("ProdType", "creation");
       }
       BeanValidator.validateObject(type, new Validator[] {prodTypeValidator});
-      prodTypeDao.createObject(type);
+      prodTypeDao.save(type);
       log.info("Enregistrement de l'objet ProdType : " + type.toString());
    }
 
    @Override
-   public void updateObjectManager(final ProdType obj){
+   public void saveManager(final ProdType obj){
       final ProdType type = obj;
       if(findDoublonManager(type)){
          log.warn("Doublon lors de la modification de l'objet ProdType : " + type.toString());
          throw new DoublonFoundException("ProdType", "modification");
       }
       BeanValidator.validateObject(type, new Validator[] {prodTypeValidator});
-      prodTypeDao.updateObject(type);
+      prodTypeDao.save(type);
       log.info("Modification de l'objet ProdType : " + type.toString());
    }
 
    @Override
-   public void removeObjectManager(final ProdType obj){
+   public void deleteByIdManager(final ProdType obj){
       final ProdType type = obj;
       if(isUsedObjectManager(type)){
          log.warn("Objet utilisé lors de la suppression de l'objet " + "ProdType : " + type.toString());
          throw new ObjectUsedException("ProdType", "suppression");
       }
-         prodTypeDao.removeObject(type.getId());
+         prodTypeDao.deleteById(type.getId());
          log.info("Suppression de l'objet ProdType : " + type.toString());
    }
 

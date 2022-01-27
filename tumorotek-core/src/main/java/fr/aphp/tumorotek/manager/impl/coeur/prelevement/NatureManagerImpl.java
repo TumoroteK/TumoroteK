@@ -87,18 +87,18 @@ public class NatureManagerImpl implements NatureManager
    }
 
    @Override
-   public void createObjectManager(final Nature obj){
+   public void saveManager(final Nature obj){
 
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(obj.getPlateforme() == null){
          throw new RequiredObjectIsNullException("Nature", "creation", "Plateforme");
       }
-      obj.setPlateforme(plateformeDao.mergeObject(obj.getPlateforme()));
+      obj.setPlateforme(plateformeDao.save(obj.getPlateforme()));
 
       BeanValidator.validateObject(obj, new Validator[] {natureValidator});
       if(!findDoublonManager(obj)){
-         natureDao.createObject(obj);
+         natureDao.save(obj);
          log.info("Enregistrement objet Nature " + obj.toString());
       }else{
          log.warn("Doublon lors creation objet Nature " + obj.toString());
@@ -107,10 +107,10 @@ public class NatureManagerImpl implements NatureManager
    }
 
    @Override
-   public void updateObjectManager(final Nature obj){
+   public void saveManager(final Nature obj){
       BeanValidator.validateObject(obj, new Validator[] {natureValidator});
       if(!findDoublonManager(obj)){
-         natureDao.updateObject(obj);
+         natureDao.save(obj);
          log.info("Modification objet Nature " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet Nature " + obj.toString());
@@ -128,10 +128,10 @@ public class NatureManagerImpl implements NatureManager
    }
 
    @Override
-   public void removeObjectManager(final Nature obj){
+   public void deleteByIdManager(final Nature obj){
       if(obj != null){
          if(!isUsedObjectManager(obj)){
-            natureDao.removeObject(obj.getId());
+            natureDao.deleteById(obj.getId());
             log.info("Suppression objet Nature " + obj.toString());
          }else{
             log.warn("Suppression objet Nature " + obj.toString() + " impossible car est reference (par Prelevement)");
@@ -144,7 +144,7 @@ public class NatureManagerImpl implements NatureManager
 
    @Override
    public boolean isUsedObjectManager(final Nature o){
-      final Nature nature = natureDao.mergeObject(o);
+      final Nature nature = natureDao.save(o);
       return nature.getPrelevements().size() > 0;
    }
 
@@ -153,7 +153,7 @@ public class NatureManagerImpl implements NatureManager
       if(o != null){
          final Nature nature = o;
          if(nature.getId() == null){
-            return natureDao.findAll().contains(nature);
+            return IterableUtils.toList(natureDao.findAll()).contains(nature);
          }
          return natureDao.findByExcludedId(nature.getId()).contains(nature);
       }

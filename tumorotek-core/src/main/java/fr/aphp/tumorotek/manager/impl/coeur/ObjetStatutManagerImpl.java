@@ -50,8 +50,8 @@ import fr.aphp.tumorotek.manager.exception.ObjectUsedException;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.ObjetStatutValidator;
 import fr.aphp.tumorotek.model.TKStockableObject;
-import fr.aphp.tumorotek.model.cession.Cession;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
+import fr.aphp.tumorotek.model.coeur.cession.Cession;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 
 /**
@@ -132,7 +132,7 @@ public class ObjetStatutManagerImpl implements ObjetStatutManager
     */
    @Override
    public Boolean findDoublonManager(final ObjetStatut statut){
-      return objetStatutDao.findAll().contains(statut);
+      return IterableUtils.toList(objetStatutDao.findAll()).contains(statut);
    }
 
    /**
@@ -144,7 +144,7 @@ public class ObjetStatutManagerImpl implements ObjetStatutManager
    @Override
    public Boolean isUsedObjectManager(ObjetStatut statut){
       Integer nb = 0;
-      statut = objetStatutDao.mergeObject(statut);
+      statut = objetStatutDao.save(statut);
 
       nb = nb + statut.getEchantillons().size();
       nb = nb + statut.getProdDerives().size();
@@ -159,13 +159,13 @@ public class ObjetStatutManagerImpl implements ObjetStatutManager
     * l'objet à créer se trouve déjà dans la base.
     */
    @Override
-   public void createObjectManager(final ObjetStatut statut){
+   public void saveManager(final ObjetStatut statut){
       if(findDoublonManager(statut)){
          log.warn("Doublon lors de la creation de l'objet ObjetStatut : " + statut.toString());
          throw new DoublonFoundException("ObjetStatut", "creation");
       }else{
          BeanValidator.validateObject(statut, new Validator[] {objetStatutValidator});
-         objetStatutDao.createObject(statut);
+         objetStatutDao.save(statut);
          log.debug("Enregistrement de l'objet ObjetStatut : " + statut.toString());
       }
    }
@@ -177,13 +177,13 @@ public class ObjetStatutManagerImpl implements ObjetStatutManager
     * l'objet à créer se trouve déjà dans la base.
     */
    @Override
-   public void updateObjectManager(final ObjetStatut statut){
+   public void saveManager(final ObjetStatut statut){
       if(findDoublonManager(statut)){
          log.warn("Doublon lors de la modif de l'objet ObjetStatut : " + statut.toString());
          throw new DoublonFoundException("ObjetStatut", "modification");
       }else{
          BeanValidator.validateObject(statut, new Validator[] {objetStatutValidator});
-         objetStatutDao.updateObject(statut);
+         objetStatutDao.save(statut);
          log.debug("Modification de l'objet ObjetStatut : " + statut.toString());
       }
    }
@@ -195,12 +195,12 @@ public class ObjetStatutManagerImpl implements ObjetStatutManager
     * est utilisé par des échantillons.
     */
    @Override
-   public void removeObjectManager(final ObjetStatut statut){
+   public void deleteByIdManager(final ObjetStatut statut){
       if(isUsedObjectManager(statut)){
          log.warn("Objet utilisé lors de la supperssion de l'objet " + "ObjetStatut : " + statut.toString());
          throw new ObjectUsedException("ObjetStatut", "suppression");
       }else{
-         objetStatutDao.removeObject(statut.getObjetStatutId());
+         objetStatutDao.deleteById(statut.getObjetStatutId());
          log.debug("Suppression de l'objet ObjetStatut : " + statut.toString());
       }
    }

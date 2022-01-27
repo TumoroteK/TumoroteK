@@ -86,18 +86,18 @@ public class ConditMilieuManagerImpl implements ConditMilieuManager
    }
 
    @Override
-   public void createObjectManager(final ConditMilieu obj){
+   public void saveManager(final ConditMilieu obj){
 
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(obj.getPlateforme() == null){
          throw new RequiredObjectIsNullException("ConditMilieu", "creation", "Plateforme");
       }
-      obj.setPlateforme(plateformeDao.mergeObject(obj.getPlateforme()));
+      obj.setPlateforme(plateformeDao.save(obj.getPlateforme()));
 
       BeanValidator.validateObject(obj, new Validator[] {conditMilieuValidator});
       if(!findDoublonManager(obj)){
-         conditMilieuDao.createObject(obj);
+         conditMilieuDao.save(obj);
          log.info("Enregistrement objet ConditMilieu " + obj.toString());
       }else{
          log.warn("Doublon lors creation objet ConditMilieu " + obj.toString());
@@ -106,10 +106,10 @@ public class ConditMilieuManagerImpl implements ConditMilieuManager
    }
 
    @Override
-   public void updateObjectManager(final ConditMilieu obj){
+   public void saveManager(final ConditMilieu obj){
       BeanValidator.validateObject(obj, new Validator[] {conditMilieuValidator});
       if(!findDoublonManager(obj)){
-         conditMilieuDao.updateObject(obj);
+         conditMilieuDao.save(obj);
          log.info("Modification objet ConditMilieu " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet ConditMilieu " + obj.toString());
@@ -133,9 +133,9 @@ public class ConditMilieuManagerImpl implements ConditMilieuManager
    }
 
    @Override
-   public void removeObjectManager(final ConditMilieu obj){
+   public void deleteByIdManager(final ConditMilieu obj){
       if(obj != null){
-         conditMilieuDao.removeObject(obj.getId());
+         conditMilieuDao.deleteById(obj.getId());
          log.info("Suppression objet ConditMilieu " + obj.toString());
       }else{
          log.warn("Suppression d'un ConditMilieu null");
@@ -147,7 +147,7 @@ public class ConditMilieuManagerImpl implements ConditMilieuManager
       if(o != null){
          final ConditMilieu milieu = o;
          if(milieu.getId() == null){
-            return conditMilieuDao.findAll().contains(milieu);
+            return IterableUtils.toList(conditMilieuDao.findAll()).contains(milieu);
          }
          return conditMilieuDao.findByExcludedId(milieu.getId()).contains(milieu);
       }
@@ -156,7 +156,7 @@ public class ConditMilieuManagerImpl implements ConditMilieuManager
 
    @Override
    public boolean isUsedObjectManager(final ConditMilieu o){
-      final ConditMilieu conditMilieu = conditMilieuDao.mergeObject(o);
+      final ConditMilieu conditMilieu = conditMilieuDao.save(o);
       return conditMilieu.getPrelevements().size() > 0;
    }
 

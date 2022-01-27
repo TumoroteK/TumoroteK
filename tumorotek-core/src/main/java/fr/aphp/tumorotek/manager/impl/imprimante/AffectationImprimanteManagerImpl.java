@@ -108,7 +108,7 @@ public class AffectationImprimanteManagerImpl implements AffectationImprimanteMa
    @Override
    public List<AffectationImprimante> findAllObjectsManager(){
       log.debug("Recherche de toutes les AffectationImprimantes");
-      return affectationImprimanteDao.findAll();
+      return IterableUtils.toList(affectationImprimanteDao.findAll());
    }
 
    @Override
@@ -124,7 +124,7 @@ public class AffectationImprimanteManagerImpl implements AffectationImprimanteMa
       if(pk != null){
          return affectationImprimanteDao.findByExcludedPK(pk);
       }
-         return affectationImprimanteDao.findAll();
+         return IterableUtils.toList(affectationImprimanteDao.findAll());
       }
 
    @Override
@@ -159,16 +159,16 @@ public class AffectationImprimanteManagerImpl implements AffectationImprimanteMa
    }
 
    @Override
-   public void createObjectManager(final AffectationImprimante affectationImprimante, final Utilisateur utilisateur,
+   public void saveManager(final AffectationImprimante affectationImprimante, final Utilisateur utilisateur,
       final Banque banque, final Imprimante imprimante, final Modele modele){
       // validation de l'objet à créer
       validateObjectManager(utilisateur, banque, imprimante);
 
-      affectationImprimante.setUtilisateur(utilisateurDao.mergeObject(utilisateur));
-      affectationImprimante.setBanque(banqueDao.mergeObject(banque));
-      affectationImprimante.setImprimante(imprimanteDao.mergeObject(imprimante));
+      affectationImprimante.setUtilisateur(utilisateurDao.save(utilisateur));
+      affectationImprimante.setBanque(banqueDao.save(banque));
+      affectationImprimante.setImprimante(imprimanteDao.save(imprimante));
       if(modele != null){
-         affectationImprimante.setModele(modeleDao.mergeObject(modele));
+         affectationImprimante.setModele(modeleDao.save(modele));
       }else{
          affectationImprimante.setModele(null);
       }
@@ -176,21 +176,21 @@ public class AffectationImprimanteManagerImpl implements AffectationImprimanteMa
       // si pas de doublon,création de l'objet sinon update
       if(!findDoublonManager(utilisateur, banque, imprimante)){
          // création
-         affectationImprimanteDao.createObject(affectationImprimante);
+         affectationImprimanteDao.save(affectationImprimante);
 
          log.info("Enregistrement objet AffectationImprimante " + affectationImprimante.toString());
       }else{
          // update
-         affectationImprimanteDao.updateObject(affectationImprimante);
+         affectationImprimanteDao.save(affectationImprimante);
 
          log.info("Enregistrement objet AffectationImprimante " + affectationImprimante.toString());
       }
    }
 
    @Override
-   public void removeObjectManager(final AffectationImprimante affectationImprimante){
+   public void deleteByIdManager(final AffectationImprimante affectationImprimante){
       if(affectationImprimante != null){
-         affectationImprimanteDao.removeObject(affectationImprimante.getPk());
+         affectationImprimanteDao.deleteById(affectationImprimante.getPk());
          log.info("Suppression de l'objet AffectationImprimante : " + affectationImprimante.toString());
       }else{
          log.warn("Suppression d'un AffectationImprimante null");

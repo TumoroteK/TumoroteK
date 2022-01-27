@@ -285,7 +285,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
    @Override
    public List<ChampAnnotation> findAllObjectsManager(){
       log.debug("Recherche totalite des ChampAnnotation");
-      return champAnnotationDao.findAll();
+      return IterableUtils.toList(champAnnotationDao.findAll());
    }
 
    @Override
@@ -312,7 +312,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
    @Override
    public boolean findDoublonManager(final ChampAnnotation champ){
       if(champ.getId() == null){
-         return champAnnotationDao.findAll().contains(champ);
+         return IterableUtils.toList(champAnnotationDao.findAll()).contains(champ);
       }
       return champAnnotationDao.findByExcludedId(champ.getId()).contains(champ);
    }
@@ -321,7 +321,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
    public Set<AnnotationDefaut> getAnnotationDefautsManager(final ChampAnnotation chp){
       Set<AnnotationDefaut> defauts = new HashSet<>();
       if(chp.getId() != null){
-         final ChampAnnotation champ = champAnnotationDao.mergeObject(chp);
+         final ChampAnnotation champ = champAnnotationDao.save(chp);
          defauts = champ.getAnnotationDefauts();
          // operation empechant LazyInitialisationException
          defauts.isEmpty();
@@ -333,7 +333,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
    public Set<AnnotationValeur> getAnnotationValeursManager(final ChampAnnotation chp){
       Set<AnnotationValeur> valeurs = new HashSet<>();
       if(chp.getId() != null){
-         final ChampAnnotation champ = champAnnotationDao.mergeObject(chp);
+         final ChampAnnotation champ = champAnnotationDao.save(chp);
          valeurs = champ.getAnnotationValeurs();
          // operation empechant LazyInitialisationException
          valeurs.isEmpty();
@@ -345,7 +345,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
    public Set<Item> getItemsManager(final ChampAnnotation chp, final Banque bank){
       Set<Item> items = new HashSet<>();
       if(chp.getId() != null){
-         final ChampAnnotation champ = champAnnotationDao.mergeObject(chp);
+         final ChampAnnotation champ = champAnnotationDao.save(chp);
 
          if(champ.getTableAnnotation().getCatalogue() == null){
             items = champ.getItems();
@@ -362,7 +362,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
    public ChampCalcule getChampCalculeManager(final ChampAnnotation chpAnno){
       ChampCalcule champCalcule = null;
       if(chpAnno.getId() != null){
-         final ChampAnnotation champAnnotation = champAnnotationDao.mergeObject(chpAnno);
+         final ChampAnnotation champAnnotation = champAnnotationDao.save(chpAnno);
          champCalcule = champCalculeManager.findByChampAnnotationManager(champAnnotation);
       }
       return champCalcule;
@@ -430,13 +430,13 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
             chp.setOrdre(newOrdre);
          }
       }
-      champAnnotationDao.mergeObject(chp);
-      champAnnotationDao.mergeObject(chpPrev);
-      champAnnotationDao.mergeObject(chpNext);
+      champAnnotationDao.save(chp);
+      champAnnotationDao.save(chpPrev);
+      champAnnotationDao.save(chpNext);
    }
 
    @Override
-   public void removeObjectManager(final ChampAnnotation champAnnotation, final String comments, final Utilisateur user,
+   public void deleteByIdManager(final ChampAnnotation champAnnotation, final String comments, final Utilisateur user,
       final String baseDir){
       if(champAnnotation != null){
          // supprime le dossier si annotation fichier
@@ -445,10 +445,10 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
          }
 
          if(null != champAnnotation.getChampCalcule()){
-            champCalculeManager.removeObjectManager(champAnnotation.getChampCalcule());
+            champCalculeManager.deleteByIdManager(champAnnotation.getChampCalcule());
          }
 
-         champAnnotationDao.removeObject(champAnnotation.getId());
+         champAnnotationDao.deleteById(champAnnotation.getId());
          log.info("Suppression objet ChampAnnotation " + champAnnotation.toString());
 
          //Supprime operations associes
@@ -475,7 +475,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
       //table required
       if(table != null){
          // merge dataType object
-         champ.setTableAnnotation(tableAnnotationDao.mergeObject(table));
+         champ.setTableAnnotation(tableAnnotationDao.save(table));
       }else if(champ.getTableAnnotation() == null){
          log.warn("Objet obligatoire TableAnnotation manquant" + " lors de la " + operation + " de champ");
          throw new RequiredObjectIsNullException("ChampAnnotation", operation, "TableAnnotation");
@@ -484,7 +484,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
       //DataType required
       if(dataType != null){
          // merge dataType object
-         champ.setDataType(dataTypeDao.mergeObject(dataType));
+         champ.setDataType(dataTypeDao.save(dataType));
       }else if(champ.getDataType() == null){
          log.warn("Objet obligatoire DataType manquant" + " lors de la " + operation + " de champ");
          throw new RequiredObjectIsNullException("ChampAnnotation", operation, "DataType");
@@ -517,7 +517,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
     */
    private void updateItems(final ChampAnnotation champAnno, final List<Item> items, final Banque bank){
 
-      final ChampAnnotation champ = champAnnotationDao.mergeObject(champAnno);
+      final ChampAnnotation champ = champAnnotationDao.save(champAnno);
 
       final Set<Item> chpIts = getItemsManager(champAnno, bank);
 
@@ -538,10 +538,10 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
       // on parcourt la liste la liste des items à retirer de
       // l'association
       for(int i = 0; i < itemsToRemove.size(); i++){
-         final Item item = itemDao.mergeObject(itemsToRemove.get(i));
+         final Item item = itemDao.save(itemsToRemove.get(i));
          // on retire l'item de l'association et on le supprime
          champ.getItems().remove(item);
-         itemDao.removeObject(item.getItemId());
+         itemDao.deleteById(item.getItemId());
 
          log.debug("Suppression de l'association entre le champ : " + champ.toString() + " et l'item " + item.toString());
       }
@@ -556,7 +556,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
             log.debug("Merge/Update de l'item " + items.get(i).toString() + " pour le champ " + champ.toString());
          }
          // on ajoute l'item dans l'association
-         its.add(itemDao.mergeObject(items.get(i)));
+         its.add(itemDao.save(items.get(i)));
       }
       champAnno.setItems(its);
    }
@@ -569,7 +569,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
     */
    private void updateDefauts(final ChampAnnotation champAnno, final List<AnnotationDefaut> defauts){
 
-      final ChampAnnotation champ = champAnnotationDao.mergeObject(champAnno);
+      final ChampAnnotation champ = champAnnotationDao.save(champAnno);
 
       final Iterator<AnnotationDefaut> it = getAnnotationDefautsManager(champAnno).iterator();
 
@@ -589,10 +589,10 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
       // l'association
       for(int i = 0; i < defautsToRemove.size(); i++){
          // AnnotationDefaut defaut = annotationDefautDao
-         //							.mergeObject(defautsToRemove.get(i));
+         //							.save(defautsToRemove.get(i));
          // on retire l'item de l'association et on le supprime
          champ.getAnnotationDefauts().remove(defautsToRemove.get(i));
-         annotationDefautDao.removeObject(defautsToRemove.get(i).getAnnotationDefautId());
+         annotationDefautDao.deleteById(defautsToRemove.get(i).getAnnotationDefautId());
 
          log.debug("Suppression de l'association entre le champ : " + champ.toString() + " et la valeur par defaut "
             + defautsToRemove.get(i).toString());
@@ -620,7 +620,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
          }else{
             log.debug("Modification de la valeur par defaut : " + defauts.get(i).toString());
          }
-         defs.add(annotationDefautDao.mergeObject(defauts.get(i)));
+         defs.add(annotationDefautDao.save(defauts.get(i)));
       }
       champAnno.setAnnotationDefauts(defs);
    }
@@ -634,13 +634,13 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
       final ChampCalcule oldChampCalcule = getChampCalculeManager(champAnno);
       if(null != oldChampCalcule){
          if(oldChampCalcule.getChampCalculeId() != champCalcule.getChampCalculeId()){
-            champCalculeManager.removeObjectManager(oldChampCalcule);
-            champCalculeManager.createObjectManager(champCalcule);
+            champCalculeManager.deleteByIdManager(oldChampCalcule);
+            champCalculeManager.saveManager(champCalcule);
          }else{
-            champCalculeManager.updateObjectManager(champCalcule);
+            champCalculeManager.saveManager(champCalcule);
          }
       }else{
-         champCalculeManager.createObjectManager(champCalcule);
+         champCalculeManager.saveManager(champCalcule);
       }
    }
 
@@ -677,7 +677,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
    }
 
    @Override
-   public void createOrUpdateObjectManager(final ChampAnnotation champ, final TableAnnotation table, final DataType dataType,
+   public void createOrsaveManager(final ChampAnnotation champ, final TableAnnotation table, final DataType dataType,
       final List<Item> items, final List<AnnotationDefaut> defauts, final Utilisateur utilisateur, final Banque banque,
       final String operation, final String baseDir){
 
@@ -693,7 +693,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
          if((operation.equals("creation") || operation.equals("modification"))){
             try{
                if(operation.equals("creation")){
-                  champAnnotationDao.createObject(champ);
+                  champAnnotationDao.save(champ);
                   log.info("Enregistrement objet ChampAnnotation " + champ.toString());
                   // cree l'arborescence si annotation fichier
                   if(champ.getDataType().getType().equals("fichier")){
@@ -702,7 +702,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
                   CreateOrUpdateUtilities.createAssociateOperation(champ, operationManager,
                      operationTypeDao.findByNom("Creation").get(0), utilisateur);
                }else{
-                  champAnnotationDao.updateObject(champ);
+                  champAnnotationDao.save(champ);
                   log.info("Modification objet ChampAnnotation " + champ.toString());
                   CreateOrUpdateUtilities.createAssociateOperation(champ, operationManager,
                      operationTypeDao.findByNom("Modification").get(0), utilisateur);
@@ -738,10 +738,10 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
    }
 
    @Override
-   public void createOrUpdateObjectManager(final ChampAnnotation champ, final TableAnnotation table, final DataType dataType,
+   public void createOrsaveManager(final ChampAnnotation champ, final TableAnnotation table, final DataType dataType,
       final List<Item> items, final List<AnnotationDefaut> defauts, final ChampCalcule champCalcule,
       final Utilisateur utilisateur, final Banque banque, final String operation, final String baseDir){
-      createOrUpdateObjectManager(champ, table, dataType, items, defauts, utilisateur, banque, operation, baseDir);
+      createOrsaveManager(champ, table, dataType, items, defauts, utilisateur, banque, operation, baseDir);
 
       if(champCalcule != null){
          updateChampCalcule(champ, champCalcule);
@@ -753,7 +753,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
       Set<ChampAnnotation> champs = new HashSet<>();
       final TableAnnotation tab = chp.getTableAnnotation();
       if(tab != null && tab.getTableAnnotationId() != null){
-         final TableAnnotation table = tableAnnotationDao.mergeObject(tab);
+         final TableAnnotation table = tableAnnotationDao.save(tab);
          champs = table.getChampAnnotations();
          champs.isEmpty(); // operation empechant LazyInitialisationException
       }

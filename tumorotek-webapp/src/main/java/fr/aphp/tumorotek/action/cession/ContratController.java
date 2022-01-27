@@ -44,7 +44,7 @@ import fr.aphp.tumorotek.action.controller.AbstractFicheModifMultiController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheStaticController;
 import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
 import fr.aphp.tumorotek.model.TKdataObject;
-import fr.aphp.tumorotek.model.cession.Contrat;
+import fr.aphp.tumorotek.model.coeur.cession.Contrat;
 
 public class ContratController extends AbstractObjectTabController
 {

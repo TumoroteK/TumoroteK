@@ -41,7 +41,7 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.manager.validation.ValidationUtilities;
-import fr.aphp.tumorotek.model.cession.Contrat;
+import fr.aphp.tumorotek.model.coeur.cession.Contrat;
 
 /**
  * Validator pour le bean domaine Contrat.<br>

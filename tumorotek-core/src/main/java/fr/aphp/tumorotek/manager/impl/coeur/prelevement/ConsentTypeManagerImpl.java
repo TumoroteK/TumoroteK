@@ -87,18 +87,18 @@ public class ConsentTypeManagerImpl implements ConsentTypeManager
    }
 
    @Override
-   public void createObjectManager(final ConsentType obj){
+   public void saveManager(final ConsentType obj){
 
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(obj.getPlateforme() == null){
          throw new RequiredObjectIsNullException("ConsentType", "creation", "Plateforme");
       }
-      obj.setPlateforme(plateformeDao.mergeObject(obj.getPlateforme()));
+      obj.setPlateforme(plateformeDao.save(obj.getPlateforme()));
 
       BeanValidator.validateObject(obj, new Validator[] {consentTypeValidator});
       if(!findDoublonManager(obj)){
-         consentTypeDao.createObject(obj);
+         consentTypeDao.save(obj);
          log.info("Enregistrement objet ConsentType " + obj.toString());
       }else{
          log.warn("Doublon lors creation objet ConsentType " + obj.toString());
@@ -107,10 +107,10 @@ public class ConsentTypeManagerImpl implements ConsentTypeManager
    }
 
    @Override
-   public void updateObjectManager(final ConsentType obj){
+   public void saveManager(final ConsentType obj){
       BeanValidator.validateObject(obj, new Validator[] {consentTypeValidator});
       if(!findDoublonManager(obj)){
-         consentTypeDao.updateObject(obj);
+         consentTypeDao.save(obj);
          log.info("Modification objet ConsentType " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet ConsentType " + obj.toString());
@@ -128,10 +128,10 @@ public class ConsentTypeManagerImpl implements ConsentTypeManager
    }
 
    @Override
-   public void removeObjectManager(final ConsentType obj){
+   public void deleteByIdManager(final ConsentType obj){
       if(obj != null){
          if(!isUsedObjectManager(obj)){
-            consentTypeDao.removeObject(obj.getId());
+            consentTypeDao.deleteById(obj.getId());
             log.info("Suppression objet ConsentType " + obj.toString());
          }else{
             log.warn("Suppression objet ConsentType " + obj.toString() + " impossible car est reference (par Prelevement)");
@@ -147,7 +147,7 @@ public class ConsentTypeManagerImpl implements ConsentTypeManager
       if(o != null){
          final ConsentType type = o;
          if(type.getId() == null){
-            return consentTypeDao.findAll().contains(type);
+            return IterableUtils.toList(consentTypeDao.findAll()).contains(type);
          }
          return consentTypeDao.findByExcludedId(type.getId()).contains(type);
       }
@@ -156,7 +156,7 @@ public class ConsentTypeManagerImpl implements ConsentTypeManager
 
    @Override
    public boolean isUsedObjectManager(final ConsentType o){
-      final ConsentType consentType = consentTypeDao.mergeObject(o);
+      final ConsentType consentType = consentTypeDao.save(o);
       return consentType.getPrelevements().size() > 0;
    }
 

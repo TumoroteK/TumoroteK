@@ -102,7 +102,7 @@ public interface TemplateManager
     * @param champs Liste de ChampImprime.
     * @param annotations Liste de TableAnnotation.
     */
-   void createObjectManager(Template template, Banque banque, Entite entite, List<BlocImpressionTemplate> blocs,
+   void saveManager(Template template, Banque banque, Entite entite, List<BlocImpressionTemplate> blocs,
       List<ChampImprime> champs, List<TableAnnotationTemplate> annotations);
 
    /**
@@ -117,7 +117,7 @@ public interface TemplateManager
     * 
     * @since 2.2.0
     */
-   void createObjectManager(Template template, Banque banque, Entite entite, List<BlocImpressionTemplate> blocs,
+   void saveManager(Template template, Banque banque, Entite entite, List<BlocImpressionTemplate> blocs,
       List<ChampImprime> champs, List<TableAnnotationTemplate> annotations, List<CleImpression> cles);
 
    /**
@@ -132,7 +132,7 @@ public interface TemplateManager
     * @param annotations Liste de TableAnnotation.
     * @param annotationsToCreate Liste de TableAnnotation à créer.
     */
-   void updateObjectManager(Template template, Banque banque, Entite entite, List<BlocImpressionTemplate> blocs,
+   void saveManager(Template template, Banque banque, Entite entite, List<BlocImpressionTemplate> blocs,
       List<BlocImpressionTemplate> blocsToCreate, List<ChampImprime> champs, List<ChampImprime> champsToCreate,
       List<TableAnnotationTemplate> annotations, List<TableAnnotationTemplate> annotationsToCreate);
 
@@ -151,7 +151,7 @@ public interface TemplateManager
    * 
    * @since 2.2.0
    */
-   void updateObjectManager(Template template, Banque banque, Entite entite, List<BlocImpressionTemplate> blocs,
+   void saveManager(Template template, Banque banque, Entite entite, List<BlocImpressionTemplate> blocs,
       List<BlocImpressionTemplate> blocsToCreate, List<ChampImprime> champs, List<ChampImprime> champsToCreate,
       List<TableAnnotationTemplate> annotations, List<TableAnnotationTemplate> annotationsToCreate, List<CleImpression> cles);
 
@@ -159,6 +159,6 @@ public interface TemplateManager
     * Supprime un Template de la base de données.
     * @param template Template à supprimer de la base de données.
     */
-   void removeObjectManager(Template template);
+   void deleteByIdManager(Template template);
 
 }

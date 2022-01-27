@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -126,7 +127,7 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
 
    @Override
    public List<CodeAssigne> findAllObjectsManager(){
-      return codeAssigneDao.findAll();
+      return IterableUtils.toList(codeAssigneDao.findAll());
    }
 
    @Override
@@ -175,7 +176,7 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
 
       // table codage non required mais implique codeRefId
       if(table != null){
-         code.setTableCodage(tableCodageDao.mergeObject(table));
+         code.setTableCodage(tableCodageDao.save(table));
       }
 
       //Validation
@@ -186,7 +187,7 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
          if((operation.equals("creation") || operation.equals("modification"))){
 
             if(operation.equals("creation")){
-               codeAssigneDao.createObject(code);
+               codeAssigneDao.save(code);
                log.info("Enregistrement objet CodeAssigne " + code.toString());
 
                CreateOrUpdateUtilities.createAssociateOperation(code, operationManager,
@@ -194,13 +195,13 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
             }else{
                // enregistre une modification si code ou libelle 
                // a changé
-               final CodeAssigne inBase = codeAssigneDao.findById(code.getCodeAssigneId());
+               final CodeAssigne inBase = codeAssigneDao.findById(code.getCodeAssigneId()).orElse(null);
 
                final boolean doRecordModif = (!inBase.getCode().equals(code.getCode()))
                   || ((inBase.getLibelle() != null && !inBase.getLibelle().equals(code.getLibelle()))
                      || (inBase.getLibelle() == null && code.getLibelle() != null));
 
-               codeAssigneDao.updateObject(code);
+               codeAssigneDao.save(code);
                log.info("Modification objet CodeAssigne " + code.toString());
                if(doRecordModif){
                   CreateOrUpdateUtilities.createAssociateOperation(code, operationManager,
@@ -227,7 +228,7 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
       //Echantillon required
       if(echantillon != null){
          // merge echantillon object
-         code.setEchantillon(echantillonDao.mergeObject(echantillon));
+         code.setEchantillon(echantillonDao.save(echantillon));
       }else if(code.getEchantillon() == null){
          log.warn("Objet obligatoire Echantillon manquant" + " lors de la " + operation + " du code assigne");
          throw new RequiredObjectIsNullException("CodeAssigne", operation, "Echantillon");
@@ -238,7 +239,7 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
    }
 
    @Override
-   public void removeObjectManager(final CodeAssigne code){
+   public void deleteByIdManager(final CodeAssigne code){
       if(code != null){
          // nullify oneToOne relationship
          //			if (code.getEchanExpOrg() != null
@@ -247,7 +248,7 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
          //					&& code.getEchanExpOrg()
          //						.getCodeOrganeExport().equals(code)) {
          //				code.getEchanExpOrg().setCodeOrganeExport(null);
-         ////				echantillonDao.mergeObject(code.getEchanExpOrg());
+         ////				echantillonDao.save(code.getEchanExpOrg());
          //			}
          //			if (code.getEchanExpLes() != null 
          //					&& code.getEchanExpLes()
@@ -255,9 +256,9 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
          //					&& code.getEchanExpLes()
          //					.getCodeLesExport().equals(code)) {
          //				code.getEchanExpLes().setCodeLesExport(null);
-         ////				echantillonDao.mergeObject(code.getEchanExpLes());
+         ////				echantillonDao.save(code.getEchanExpLes());
          //			}
-         codeAssigneDao.removeObject(code.getCodeAssigneId());
+         codeAssigneDao.deleteById(code.getCodeAssigneId());
          log.info("Suppression objet CodeAssigne " + code.toString());
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(code, operationManager);
@@ -347,7 +348,7 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
             bc.setPk(pk);
             // ajoute a la liste pour eviter requete à chaque fois
             if(!btcs.contains(bc)){
-               tmp = banqueTableCodageDao.findById(pk);
+               tmp = banqueTableCodageDao.findById(pk).orElse(null);
                if(tmp != null){
                   btcs.add(tmp);
                }

@@ -64,13 +64,13 @@ public interface ScanTerminaleManager
     * @param sT scanTerminale scan de la boite
     * @param sD scanDEvice scanner
     */
-   void createObjectManager(ScanTerminale sT, ScanDevice sD);
+   void saveManager(ScanTerminale sT, ScanDevice sD);
 
    /**
     * Supprime les informations relatives à un scan de boites 
     * @param sT scanTerminale scan de la boite
     */
-   void removeObjectManager(ScanTerminale sT);
+   void deleteByIdManager(ScanTerminale sT);
 
    /**
     * Renvoie toutes les instances ScanTerminale

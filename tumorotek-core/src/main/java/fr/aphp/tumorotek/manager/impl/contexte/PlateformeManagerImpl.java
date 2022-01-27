@@ -149,7 +149,7 @@ public class PlateformeManagerImpl implements PlateformeManager
 	 */
 	@Override
 	public Set<Banque> getBanquesManager(Plateforme plateforme){
-		plateforme = plateformeDao.mergeObject(plateforme);
+		plateforme = plateformeDao.save(plateforme);
 		final Set<Banque> banques = plateforme.getBanques();
 		banques.size();
 
@@ -158,7 +158,7 @@ public class PlateformeManagerImpl implements PlateformeManager
 
 	@Override
 	public Set<Utilisateur> getUtilisateursManager(Plateforme plateforme){
-		plateforme = plateformeDao.mergeObject(plateforme);
+		plateforme = plateformeDao.save(plateforme);
 		final Set<Utilisateur> utilisateurs = plateforme.getUtilisateurs();
 		utilisateurs.size();
 
@@ -169,7 +169,7 @@ public class PlateformeManagerImpl implements PlateformeManager
 	public Boolean findDoublonManager(final Plateforme plateforme){
 		if(plateforme != null){
 			if(plateforme.getPlateformeId() == null){
-				return plateformeDao.findAll().contains(plateforme);
+				return IterableUtils.toList(plateformeDao.findAll()).contains(plateforme);
 			}else{
 				return plateformeDao.findByExcludedId(plateforme.getPlateformeId()).contains(plateforme);
 			}
@@ -179,7 +179,7 @@ public class PlateformeManagerImpl implements PlateformeManager
 	}
 
 	@Override
-	public Plateforme createObjectManager(Plateforme plateforme, final Collaborateur collaborateur,
+	public Plateforme saveManager(Plateforme plateforme, final Collaborateur collaborateur,
 			final List<Utilisateur> utilisateurs, final Utilisateur admin, 
 			final String baseDir){
 
@@ -192,7 +192,7 @@ public class PlateformeManagerImpl implements PlateformeManager
 				// validation due la pf
 				BeanValidator.validateObject(plateforme, new Validator[] {plateformeValidator});
 
-				// cette methode appelle mergeObject(plateforme)
+				// cette methode appelle save(plateforme)
 				plateforme = updateAdministrateurs(plateforme, utilisateurs);
 				log.info("Enregistrement objet Plateforme " + plateforme.toString());
 
@@ -216,7 +216,7 @@ public class PlateformeManagerImpl implements PlateformeManager
 							.filter(u -> u.equals(admin)).findFirst().orElse(admin);
 				}
 				
-				operationManager.createObjectManager(creationOp, currAdmin, operationTypeDao.findByNom("Creation").get(0), plateforme);
+				operationManager.saveManager(creationOp, currAdmin, operationTypeDao.findByNom("Creation").get(0), plateforme);
 
 			}else{
 				log.warn("Doublon lors modification objet Plateforme " + plateforme.toString());
@@ -228,22 +228,22 @@ public class PlateformeManagerImpl implements PlateformeManager
 	}
 
 	@Override
-	public Plateforme updateObjectManager(Plateforme plateforme, final Collaborateur collaborateur,
+	public Plateforme saveManager(Plateforme plateforme, final Collaborateur collaborateur,
 			final List<Utilisateur> utilisateurs, final List<Conteneur> conteneurs, final Utilisateur admin){
 		//Doublon
 		if(!findDoublonManager(plateforme)){
-			plateforme.setCollaborateur(collaborateurDao.mergeObject(collaborateur));
+			plateforme.setCollaborateur(collaborateurDao.save(collaborateur));
 
 			// validation due la pf
 			BeanValidator.validateObject(plateforme, new Validator[] {plateformeValidator});
 
-			plateforme = plateformeDao.mergeObject(plateforme);
+			plateforme = plateformeDao.save(plateforme);
 			log.info("Enregistrement objet Plateforme " + plateforme.toString());
 
 			//Enregistrement de l'operation associee
 			final Operation creationOp = new Operation();
 			creationOp.setDate(Utils.getCurrentSystemCalendar());
-			operationManager.createObjectManager(creationOp, admin, operationTypeDao.findByNom("Modification").get(0), plateforme);
+			operationManager.saveManager(creationOp, admin, operationTypeDao.findByNom("Modification").get(0), plateforme);
 
 			// enregistrements des admins
 			updateAdministrateurs(plateforme, utilisateurs);
@@ -269,7 +269,7 @@ public class PlateformeManagerImpl implements PlateformeManager
 	 * l'utilisateur.
 	 */
 	public Plateforme updateAdministrateurs(final Plateforme plateforme, final List<Utilisateur> utilisateurs){
-		final Plateforme pf = plateformeDao.mergeObject(plateforme);
+		final Plateforme pf = plateformeDao.save(plateforme);
 
 		if(utilisateurs != null){
 			final Iterator<Utilisateur> it = pf.getUtilisateurs().iterator();
@@ -288,7 +288,7 @@ public class PlateformeManagerImpl implements PlateformeManager
 			// on parcourt la liste des Utilisateurs à retirer de
 			// l'association
 			for(int i = 0; i < utilsToRemove.size(); i++){
-				final Utilisateur u = utilisateurDao.mergeObject(utilsToRemove.get(i));
+				final Utilisateur u = utilisateurDao.save(utilsToRemove.get(i));
 				// on retire l'utilisateur de chaque coté de l'association
 				pf.getUtilisateurs().remove(u);
 				u.getPlateformes().remove(pf);
@@ -302,8 +302,8 @@ public class PlateformeManagerImpl implements PlateformeManager
 				// si un utilisateur n'était pas associé a la pf
 				if(!pf.getUtilisateurs().contains(utilisateurs.get(i))){
 					// on ajoute l'utilisateur des deux cotés de l'association
-					pf.getUtilisateurs().add(utilisateurDao.mergeObject(utilisateurs.get(i)));
-					utilisateurDao.mergeObject(utilisateurs.get(i)).getPlateformes().add(pf);
+					pf.getUtilisateurs().add(utilisateurDao.save(utilisateurs.get(i)));
+					utilisateurDao.save(utilisateurs.get(i)).getPlateformes().add(pf);
 
 					log.debug("Ajout de l'association entre " + "l'utilisateur : " + utilisateurs.get(i).toString()
 							+ " et la plateforme : " + pf.toString());
@@ -324,7 +324,7 @@ public class PlateformeManagerImpl implements PlateformeManager
 	private void updateConteneurs(final Plateforme plateforme, final List<Conteneur> conteneurs){
 
 		if(conteneurs != null){
-			final Plateforme pf = plateformeDao.mergeObject(plateforme);
+			final Plateforme pf = plateformeDao.save(plateforme);
 
 			final Iterator<ConteneurPlateforme> it = pf.getConteneurPlateformes().iterator();
 			final List<ConteneurPlateforme> contsToRemove = new ArrayList<>();
@@ -343,7 +343,7 @@ public class PlateformeManagerImpl implements PlateformeManager
 			// l'association
 			for(int i = 0; i < contsToRemove.size(); i++){
 				contsToRemove.get(i).setPartage(false);
-				conteneurPlateformeDao.mergeObject(contsToRemove.get(i));
+				conteneurPlateformeDao.save(contsToRemove.get(i));
 			}
 
 			// on parcourt la nouvelle liste de conteneurs
@@ -355,21 +355,21 @@ public class PlateformeManagerImpl implements PlateformeManager
 				// si un conteneur n'était pas associé à la plateforme
 				if(!pf.getConteneurPlateformes().contains(cp)){
 					// on ajoute le conteneur dans l'association
-					pf.getConteneurPlateformes().add(conteneurPlateformeDao.mergeObject(cp));
+					pf.getConteneurPlateformes().add(conteneurPlateformeDao.save(cp));
 
 					log.debug("Ajout de l'association entre la plateforme : " + pf.toString() + " et le conteneur : "
 							+ conteneurs.get(i).toString());
 				}else{ // sinon on passe le partage a true
 					cp = conteneurPlateformeDao.findById(pk);
 					cp.setPartage(true);
-					conteneurPlateformeDao.mergeObject(cp);
+					conteneurPlateformeDao.save(cp);
 				}
 			}
 		}
 	}
 
 	@Override
-	public void removeObjectManager(Plateforme pf, final String comments, final Utilisateur user, 
+	public void deleteByIdManager(Plateforme pf, final String comments, final Utilisateur user, 
 			final String basedir){
 		if(pf != null){
 			if(!isReferencedObjectManager(pf)) {
@@ -379,7 +379,7 @@ public class PlateformeManagerImpl implements PlateformeManager
 	
 				updateAdministrateurs(pf, new ArrayList<Utilisateur>());
 				
-				plateformeDao.removeObject(pf.getPlateformeId());
+				plateformeDao.deleteById(pf.getPlateformeId());
 				log.info("Suppression objet Plateforme " + pf.toString());
 	
 				// delete file system
@@ -393,7 +393,7 @@ public class PlateformeManagerImpl implements PlateformeManager
 
 	@Override
 	public boolean isReferencedObjectManager(final Plateforme pf){
-		final Plateforme plateforme = plateformeDao.mergeObject(pf);
+		final Plateforme plateforme = plateformeDao.save(pf);
 
 		return !plateforme.getBanques().isEmpty() || !plateforme.getConteneurPlateformes().isEmpty();
 

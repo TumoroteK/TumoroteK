@@ -94,7 +94,7 @@ public class TerminaleTypeManagerImpl implements TerminaleTypeManager
       if(o != null){
          final TerminaleType type = o;
          if(type.getTerminaleTypeId() == null){
-            return terminaleTypeDao.findAll().contains(type);
+            return IterableUtils.toList(terminaleTypeDao.findAll()).contains(type);
          }
          return terminaleTypeDao.findByExcludedId(type.getTerminaleTypeId()).contains(type);
       }
@@ -103,15 +103,15 @@ public class TerminaleTypeManagerImpl implements TerminaleTypeManager
 
    @Override
    public boolean isUsedObjectManager(final TerminaleType obj){
-      final TerminaleType type = terminaleTypeDao.mergeObject(obj);
+      final TerminaleType type = terminaleTypeDao.save(obj);
       return type.getTerminales().size() > 0;
    }
 
    @Override
-   public void createObjectManager(final TerminaleType obj){
+   public void saveManager(final TerminaleType obj){
       BeanValidator.validateObject(obj, new Validator[] {terminaleTypeValidator});
       if(!findDoublonManager(obj)){
-         terminaleTypeDao.createObject(obj);
+         terminaleTypeDao.save(obj);
          log.info("Enregistrement objet TerminaleType " + obj.toString());
       }else{
          log.warn("Doublon lors creation objet TerminaleType " + obj.toString());
@@ -120,10 +120,10 @@ public class TerminaleTypeManagerImpl implements TerminaleTypeManager
    }
 
    @Override
-   public void updateObjectManager(final TerminaleType obj){
+   public void saveManager(final TerminaleType obj){
       BeanValidator.validateObject(obj, new Validator[] {terminaleTypeValidator});
       if(!findDoublonManager(obj)){
-         terminaleTypeDao.updateObject(obj);
+         terminaleTypeDao.save(obj);
          log.info("Modification objet TerminaleType " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet TerminaleType " + obj.toString());
@@ -132,10 +132,10 @@ public class TerminaleTypeManagerImpl implements TerminaleTypeManager
    }
 
    @Override
-   public void removeObjectManager(final TerminaleType obj){
+   public void deleteByIdManager(final TerminaleType obj){
       if(obj != null){
          if(!isUsedObjectManager(obj)){
-            terminaleTypeDao.removeObject(obj.getTerminaleTypeId());
+            terminaleTypeDao.deleteById(obj.getTerminaleTypeId());
             log.info("Suppression objet TerminaleType " + obj.toString());
          }else{
             log.warn("Suppression objet TerminaleType " + obj.toString() + " impossible car est reference (par Terminale)");

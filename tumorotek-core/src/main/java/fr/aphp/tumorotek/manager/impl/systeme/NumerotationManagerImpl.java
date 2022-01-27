@@ -91,7 +91,7 @@ public class NumerotationManagerImpl implements NumerotationManager
 
    @Override
    public List<Numerotation> findAllObjectsManager(){
-      return numerotationDao.findAll();
+      return IterableUtils.toList(numerotationDao.findAll());
    }
 
    @Override
@@ -125,7 +125,7 @@ public class NumerotationManagerImpl implements NumerotationManager
    public Boolean findDoublonManager(final Numerotation numerotation){
       if(numerotation != null){
          if(numerotation.getNumerotationId() == null){
-            return numerotationDao.findAll().contains(numerotation);
+            return IterableUtils.toList(numerotationDao.findAll()).contains(numerotation);
          }else{
             return numerotationDao.findByExcludedId(numerotation.getNumerotationId()).contains(numerotation);
          }
@@ -176,10 +176,10 @@ public class NumerotationManagerImpl implements NumerotationManager
    }
 
    @Override
-   public void createObjectManager(final Numerotation numerotation, final Banque banque, final Entite entite){
+   public void saveManager(final Numerotation numerotation, final Banque banque, final Entite entite){
       //Banque required
       if(banque != null){
-         numerotation.setBanque(banqueDao.mergeObject(banque));
+         numerotation.setBanque(banqueDao.save(banque));
       }else{
          log.warn("Objet obligatoire Banque manquant" + " lors de la création d'une Numerotation");
          throw new RequiredObjectIsNullException("Numerotation", "creation", "Banque");
@@ -187,7 +187,7 @@ public class NumerotationManagerImpl implements NumerotationManager
 
       //Entite required
       if(entite != null){
-         numerotation.setEntite(entiteDao.mergeObject(entite));
+         numerotation.setEntite(entiteDao.save(entite));
       }else{
          log.warn("Objet obligatoire Entite manquant" + " lors de la création d'une Numerotation");
          throw new RequiredObjectIsNullException("Numerotation", "creation", "Entite");
@@ -199,17 +199,17 @@ public class NumerotationManagerImpl implements NumerotationManager
          throw new DoublonFoundException("Numerotation", "creation");
       }else{
 
-         numerotationDao.createObject(numerotation);
+         numerotationDao.save(numerotation);
 
          log.info("Enregistrement de l'objet Numerotation : " + numerotation.toString());
       }
    }
 
    @Override
-   public void updateObjectManager(final Numerotation numerotation, final Banque banque, final Entite entite){
+   public void saveManager(final Numerotation numerotation, final Banque banque, final Entite entite){
       //Banque required
       if(banque != null){
-         numerotation.setBanque(banqueDao.mergeObject(banque));
+         numerotation.setBanque(banqueDao.save(banque));
       }else{
          log.warn("Objet obligatoire Banque manquant" + " lors de la modification d'une Numerotation");
          throw new RequiredObjectIsNullException("Numerotation", "modification", "Banque");
@@ -217,7 +217,7 @@ public class NumerotationManagerImpl implements NumerotationManager
 
       //Entite required
       if(entite != null){
-         numerotation.setEntite(entiteDao.mergeObject(entite));
+         numerotation.setEntite(entiteDao.save(entite));
       }else{
          log.warn("Objet obligatoire Entite manquant" + " lors de la modification d'une Numerotation");
          throw new RequiredObjectIsNullException("Numerotation", "modification", "Entite");
@@ -229,15 +229,15 @@ public class NumerotationManagerImpl implements NumerotationManager
          throw new DoublonFoundException("Numerotation", "modification");
       }else{
 
-         numerotationDao.updateObject(numerotation);
+         numerotationDao.save(numerotation);
 
          log.info("Enregistrement de l'objet Numerotation : " + numerotation.toString());
       }
    }
 
    @Override
-   public void removeObjectManager(final Numerotation numerotation){
-      numerotationDao.removeObject(numerotation.getNumerotationId());
+   public void deleteByIdManager(final Numerotation numerotation){
+      numerotationDao.deleteById(numerotation.getNumerotationId());
       log.info("Suppression de l'objet Numerotation : " + numerotation.toString());
    }
 }

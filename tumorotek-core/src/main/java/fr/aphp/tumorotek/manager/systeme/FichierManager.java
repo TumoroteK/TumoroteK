@@ -112,7 +112,7 @@ public interface FichierManager
     * @throws DoublonFoundException Lance une exception si un doublon de
     * l'objet à créer se trouve déjà dans la base.
     */
-   void createObjectManager(Fichier path, InputStream stream, List<File> filesCreated);
+   void saveManager(Fichier path, InputStream stream, List<File> filesCreated);
 
    /**
     * Sauvegarde les modifications apportées à un objet persistant.
@@ -125,7 +125,7 @@ public interface FichierManager
     * @throws DoublonFoundException Lance une exception si un doublon de
     * l'objet à créer se trouve déjà dans la base.
     */
-   Fichier updateObjectManager(Fichier path, InputStream stream, List<File> filesCreated, List<File> filesToDelete);
+   Fichier saveManager(Fichier path, InputStream stream, List<File> filesCreated, List<File> filesToDelete);
 
    /**
     * Supprime un Fichier de la base de données.
@@ -135,7 +135,7 @@ public interface FichierManager
     * @throws DoublonFoundException Lance une exception si l'objet
     * est utilisé par des échantillons.
     */
-   void removeObjectManager(Fichier path, List<File> filesToDelete);
+   void deleteByIdManager(Fichier path, List<File> filesToDelete);
 
    /**
     * Cree le fichier par l'utilisation de flux au path spécifié.

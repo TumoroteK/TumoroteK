@@ -38,7 +38,7 @@ package fr.aphp.tumorotek.manager.validation.coeur.cession;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 
-import fr.aphp.tumorotek.model.cession.CederObjet;
+import fr.aphp.tumorotek.model.coeur.cession.CederObjet;
 
 /**
  * Validator pour le bean domaine CederObjet.

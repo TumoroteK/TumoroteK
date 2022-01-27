@@ -81,7 +81,7 @@ public class IndicateurManagerImpl implements IndicateurManager
 
    @Override
    public List<Indicateur> findAllObjectsManager(){
-      return indicateurDao.findAll();
+      return IterableUtils.toList(indicateurDao.findAll());
    }
 
    @Override
@@ -107,7 +107,7 @@ public class IndicateurManagerImpl implements IndicateurManager
    public Boolean findDoublonManager(final Indicateur indic){
       if(indic != null){
          if(indic.getIndicateurId() == null){
-            return indicateurDao.findAll().contains(indic);
+            return IterableUtils.toList(indicateurDao.findAll()).contains(indic);
          }else{
             return indicateurDao.findByExcludedId(indic.getIndicateurId()).contains(indic);
          }
@@ -117,8 +117,8 @@ public class IndicateurManagerImpl implements IndicateurManager
    }
 
    @Override
-   public void createObjectManager(final Indicateur indic){
-      // stmt.setsModeleIndicateurs(sModeleDao.mergeObject(modele).getSModeleIndicateurs());
+   public void saveManager(final Indicateur indic){
+      // stmt.setsModeleIndicateurs(sModeleDao.save(modele).getSModeleIndicateurs());
       // Test s'il y a des doublons
       if(findDoublonManager(indic)){
          log.warn("Doublon lors de la creation de l'objet Indicateur : " + indic.getNom());
@@ -129,26 +129,26 @@ public class IndicateurManagerImpl implements IndicateurManager
       }
 
       // creation
-      indicateurDao.createObject(indic);
+      indicateurDao.save(indic);
       log.debug("Enregistrement objet Indicateur " + indic.toString());
    }
 
    @Override
-   public void updateObjectManager(final Indicateur indic){
+   public void saveManager(final Indicateur indic){
 
       // validation
       BeanValidator.validateObject(indic, new Validator[] {indicateurValidator});
 
-      // stmt.setsModeleIndicateurs(sModeleDao.mergeObject(modele).getSModeleIndicateurs());
+      // stmt.setsModeleIndicateurs(sModeleDao.save(modele).getSModeleIndicateurs());
 
-      indicateurDao.updateObject(indic);
+      indicateurDao.save(indic);
       log.debug("Mise à jour objet Statement " + indic.toString());
    }
 
    @Override
-   public void removeObjectManager(final Indicateur indic){
+   public void deleteByIdManager(final Indicateur indic){
       if(indic != null){
-         indicateurDao.removeObject(indic.getIndicateurId());
+         indicateurDao.deleteById(indic.getIndicateurId());
          log.debug("Suppression de l'objet Statement : " + indic.toString());
       }else{
          log.warn("Suppression d'un Statement null");

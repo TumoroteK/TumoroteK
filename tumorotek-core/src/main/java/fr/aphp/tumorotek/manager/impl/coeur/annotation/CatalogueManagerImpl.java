@@ -62,7 +62,7 @@ public class CatalogueManagerImpl implements CatalogueManager
 
    @Override
    public List<Catalogue> findAllObjectsManager(){
-      return catalogueDao.findAll();
+      return IterableUtils.toList(catalogueDao.findAll());
    }
 
    @Override

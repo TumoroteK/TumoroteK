@@ -94,10 +94,10 @@ import fr.aphp.tumorotek.manager.systeme.EntiteManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKStockableObject;
-import fr.aphp.tumorotek.model.cession.CederObjet;
-import fr.aphp.tumorotek.model.cession.Retour;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
+import fr.aphp.tumorotek.model.coeur.cession.CederObjet;
+import fr.aphp.tumorotek.model.coeur.cession.Retour;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
@@ -301,7 +301,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    @Override
    public List<ProdDerive> findAllObjectsManager(){
       log.debug("Recherche de tous les ProdDerives");
-      return prodDeriveDao.findAll();
+      return IterableUtils.toList(prodDeriveDao.findAll());
    }
 
    @Override
@@ -582,7 +582,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       final List<ProdDerive> derives = new ArrayList<>();
 
       for(int i = 0; i < list.size(); ++i){
-         final Transformation transfo = transformationDao.mergeObject(list.get(i));
+         final Transformation transfo = transformationDao.save(list.get(i));
          final Set<ProdDerive> tmp = transfo.getProdDerives();
          final Iterator<ProdDerive> it = tmp.iterator();
          while(it.hasNext()){
@@ -599,7 +599,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    @Override
    public Emplacement getEmplacementManager(ProdDerive prodDerive){
       if(prodDerive != null){
-         prodDerive = prodDeriveDao.mergeObject(prodDerive);
+         prodDerive = prodDeriveDao.save(prodDerive);
          final Emplacement empl = prodDerive.getEmplacement();
 
          if(empl != null){
@@ -613,7 +613,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    @Override
    public String getEmplacementAdrlManager(ProdDerive prodDerive){
       if(prodDerive != null){
-         prodDerive = prodDeriveDao.mergeObject(prodDerive);
+         prodDerive = prodDeriveDao.save(prodDerive);
 
          return emplacementManager.getAdrlManager(prodDerive.getEmplacement(), false);
 
@@ -888,7 +888,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    }
 
    @Override
-   public void createObjectManager(final ProdDerive prodDerive, final Banque banque, final ProdType type,
+   public void saveManager(final ProdDerive prodDerive, final Banque banque, final ProdType type,
       final ObjetStatut statut, final Collaborateur collab, final Emplacement emplacement, final Unite volumeUnite,
       final Unite concUnite, final Unite quantiteUnite, final ModePrepaDerive modePrepaDerive, final ProdQualite qualite,
       final Transformation transfo, final List<AnnotationValeur> listAnnoToCreateOrUpdate, final List<File> filesCreated,
@@ -902,7 +902,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          throw new RequiredObjectIsNullException("ProdDerive", "creation", "Banque");
       }
 
-      prodDerive.setBanque(banqueDao.mergeObject(banque));
+      prodDerive.setBanque(banqueDao.save(banque));
       // On vérifie que le type n'est pas null. Si c'est le cas on envoie
       // une exception
       if(type == null){
@@ -910,11 +910,11 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          throw new RequiredObjectIsNullException("ProdDerive", "creation", "ProdType");
       }
 
-      prodDerive.setProdType(prodTypeDao.mergeObject(type));
+      prodDerive.setProdType(prodTypeDao.save(type));
       // On vérifie que le statut n'est pas null. Si c'est le cas 
       // on envoie une exception
       if(statut != null){
-         prodDerive.setObjetStatut(objetStatutDao.mergeObject(statut));
+         prodDerive.setObjetStatut(objetStatutDao.save(statut));
       }else if(prodDerive.getObjetStatut() == null){
          log.warn("Objet obligatoire ObjetStatut manquant lors " + "de la creation " + "d'un objet ProdDerive");
          throw new RequiredObjectIsNullException("ProdDerive", "creation", "ObjetStatut");
@@ -923,7 +923,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       // On vérifie que le statut n'est pas null. Si c'est le cas 
       // on envoie une exception
       if(statut != null){
-         prodDerive.setObjetStatut(objetStatutDao.mergeObject(statut));
+         prodDerive.setObjetStatut(objetStatutDao.save(statut));
       }else if(prodDerive.getObjetStatut() == null){
          log.warn("Objet obligatoire ObjetStatut manquant lors " + "de la creation " + "d'un objet ProdDerive");
          throw new RequiredObjectIsNullException("ProdDerive", "creation", "ObjetStatut");
@@ -937,44 +937,44 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       try{
          // On vérifie que le collaborateur n'est pas null
          if(collab != null){
-            prodDerive.setCollaborateur(collaborateurDao.mergeObject(collab));
+            prodDerive.setCollaborateur(collaborateurDao.save(collab));
          }else{
             prodDerive.setCollaborateur(null);
          }
          // On vérifie que l'emplacement n'est pas null
          if(emplacement != null && checkEmplacementOccupied(emplacement, prodDerive)){
-            prodDerive.setEmplacement(emplacementDao.mergeObject(emplacement));
+            prodDerive.setEmplacement(emplacementDao.save(emplacement));
 
          }else{
             prodDerive.setEmplacement(null);
          }
          // On vérifie que l'unité de volume n'est pas null
          if(volumeUnite != null){
-            prodDerive.setVolumeUnite(uniteDao.mergeObject(volumeUnite));
+            prodDerive.setVolumeUnite(uniteDao.save(volumeUnite));
          }else{
             prodDerive.setVolumeUnite(null);
          }
          // On vérifie que l'unité de concentration n'est pas null
          if(concUnite != null){
-            prodDerive.setConcUnite(uniteDao.mergeObject(concUnite));
+            prodDerive.setConcUnite(uniteDao.save(concUnite));
          }else{
             prodDerive.setConcUnite(null);
          }
          // On vérifie que l'unité de quantité n'est pas null
          if(quantiteUnite != null){
-            prodDerive.setQuantiteUnite(uniteDao.mergeObject(quantiteUnite));
+            prodDerive.setQuantiteUnite(uniteDao.save(quantiteUnite));
          }else{
             prodDerive.setQuantiteUnite(null);
          }
          // On vérifie que la préparation n'est pas null
          if(modePrepaDerive != null){
-            prodDerive.setModePrepaDerive(modePrepaDeriveDao.mergeObject(modePrepaDerive));
+            prodDerive.setModePrepaDerive(modePrepaDeriveDao.save(modePrepaDerive));
          }else{
             prodDerive.setModePrepaDerive(null);
          }
          // On vérifie que la qualité n'est pas null
          if(qualite != null){
-            prodDerive.setProdQualite(prodQualiteDao.mergeObject(qualite));
+            prodDerive.setProdQualite(prodQualiteDao.save(qualite));
          }else{
             prodDerive.setProdQualite(null);
          }
@@ -985,20 +985,20 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          // On vérifie que la transformation n'est pas null
          if(transfo != null){
             if(transfo.getTransformationId() == null){
-               transformationManager.createObjectManager(transfo, transfo.getEntite(), transfo.getQuantiteUnite());
+               transformationManager.saveManager(transfo, transfo.getEntite(), transfo.getQuantiteUnite());
             }else{
-               transformationManager.updateObjectManager(transfo, transfo.getEntite(), transfo.getQuantiteUnite());
+               transformationManager.saveManager(transfo, transfo.getEntite(), transfo.getQuantiteUnite());
             }
-            prodDerive.setTransformation(transformationDao.mergeObject(transfo));
+            prodDerive.setTransformation(transformationDao.save(transfo));
          }else{
             prodDerive.setTransformation(null);
          }
-         prodDeriveDao.createObject(prodDerive);
+         prodDeriveDao.save(prodDerive);
          log.info("Enregistrement de l'objet ProdDerive : " + prodDerive.toString());
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), prodDerive);
+         operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), prodDerive);
 
          // cree les annotations, null operation pour
          // laisser la possibilité création/modification au sein 
@@ -1031,7 +1031,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    }
 
    @Override
-   public void createObjectWithNonConformitesManager(final ProdDerive prodDerive, final Banque banque, final ProdType type,
+   public void saveWithNonConformitesManager(final ProdDerive prodDerive, final Banque banque, final ProdType type,
       final ObjetStatut statut, final Collaborateur collab, final Emplacement emplacement, final Unite volumeUnite,
       final Unite concUnite, final Unite quantiteUnite, final ModePrepaDerive modePrepaDerive, final ProdQualite qualite,
       final Transformation transfo, final List<AnnotationValeur> listAnnoToCreateOrUpdate, 
@@ -1049,7 +1049,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
             prodDerive.setConformeCession(false);
          }
 
-         createObjectManager(prodDerive, banque, type, statut, collab, emplacement, volumeUnite, concUnite, quantiteUnite,
+         saveManager(prodDerive, banque, type, statut, collab, emplacement, volumeUnite, concUnite, quantiteUnite,
             modePrepaDerive, qualite, transfo, listAnnoToCreateOrUpdate, filesCreated, utilisateur, doValidation,
             baseDir, isImport);
 
@@ -1064,7 +1064,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    }
 
    @Override
-   public void updateObjectManager(final ProdDerive prodDerive, final Banque banque, final ProdType type,
+   public void saveManager(final ProdDerive prodDerive, final Banque banque, final ProdType type,
       final ObjetStatut statut, final Collaborateur collab, final Emplacement emplacement, final Unite volumeUnite,
       final Unite concUnite, final Unite quantiteUnite, final ModePrepaDerive modePrepaDerive, final ProdQualite qualite,
       final Transformation transfo, final List<AnnotationValeur> listAnnoToCreateOrUpdate,
@@ -1079,7 +1079,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          throw new RequiredObjectIsNullException("ProdDerive", "modification", "Banque");
       }
 
-      prodDerive.setBanque(banqueDao.mergeObject(banque));
+      prodDerive.setBanque(banqueDao.save(banque));
       // On vérifie que le type n'est pas null. Si c'est le cas on envoie
       // une exception
       if(type == null){
@@ -1087,11 +1087,11 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          throw new RequiredObjectIsNullException("ProdDerive", "modification", "ProdType");
       }
 
-      prodDerive.setProdType(prodTypeDao.mergeObject(type));
+      prodDerive.setProdType(prodTypeDao.save(type));
       // On vérifie que le statut n'est pas null. Si c'est le cas 
       // on envoie une exception
       if(statut != null){
-         prodDerive.setObjetStatut(objetStatutDao.mergeObject(statut));
+         prodDerive.setObjetStatut(objetStatutDao.save(statut));
       }else if(prodDerive.getObjetStatut() == null){
          log.warn("Objet obligatoire ObjetStatut manquant lors " + "de la creation " + "d'un objet ProdDerive");
          throw new RequiredObjectIsNullException("ProdDerive", "creation", "ObjetStatut");
@@ -1105,44 +1105,44 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       try{
          // On vérifie que le collaborateur n'est pas null
          if(collab != null){
-            prodDerive.setCollaborateur(collaborateurDao.mergeObject(collab));
+            prodDerive.setCollaborateur(collaborateurDao.save(collab));
          }else{
             prodDerive.setCollaborateur(null);
          }
          // On vérifie que l'emplacement n'est pas null
          if(emplacement != null && checkEmplacementOccupied(emplacement, prodDerive)){
-            prodDerive.setEmplacement(emplacementDao.mergeObject(emplacement));
+            prodDerive.setEmplacement(emplacementDao.save(emplacement));
 
          }else{
             prodDerive.setEmplacement(null);
          }
          // On vérifie que l'unité de volume n'est pas null
          if(volumeUnite != null){
-            prodDerive.setVolumeUnite(uniteDao.mergeObject(volumeUnite));
+            prodDerive.setVolumeUnite(uniteDao.save(volumeUnite));
          }else{
             prodDerive.setVolumeUnite(null);
          }
          // On vérifie que l'unité de concentration n'est pas null
          if(concUnite != null){
-            prodDerive.setConcUnite(uniteDao.mergeObject(concUnite));
+            prodDerive.setConcUnite(uniteDao.save(concUnite));
          }else{
             prodDerive.setConcUnite(null);
          }
          // On vérifie que l'unité de quantité n'est pas null
          if(quantiteUnite != null){
-            prodDerive.setQuantiteUnite(uniteDao.mergeObject(quantiteUnite));
+            prodDerive.setQuantiteUnite(uniteDao.save(quantiteUnite));
          }else{
             prodDerive.setQuantiteUnite(null);
          }
          // On vérifie que la préparation n'est pas null
          if(modePrepaDerive != null){
-            prodDerive.setModePrepaDerive(modePrepaDeriveDao.mergeObject(modePrepaDerive));
+            prodDerive.setModePrepaDerive(modePrepaDeriveDao.save(modePrepaDerive));
          }else{
             prodDerive.setModePrepaDerive(null);
          }
          // On vérifie que la qualité n'est pas null
          if(qualite != null){
-            prodDerive.setProdQualite(prodQualiteDao.mergeObject(qualite));
+            prodDerive.setProdQualite(prodQualiteDao.save(qualite));
          }else{
             prodDerive.setProdQualite(null);
          }
@@ -1154,22 +1154,22 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          // On vérifie que la transformation n'est pas null
          if(transfo != null){
             if(transfo.getTransformationId() == null){
-               transformationManager.createObjectManager(transfo, transfo.getEntite(), transfo.getQuantiteUnite());
+               transformationManager.saveManager(transfo, transfo.getEntite(), transfo.getQuantiteUnite());
             }else{
-               transformationManager.updateObjectManager(transfo, transfo.getEntite(), transfo.getQuantiteUnite());
+               transformationManager.saveManager(transfo, transfo.getEntite(), transfo.getQuantiteUnite());
             }
-            prodDerive.setTransformation(transformationDao.mergeObject(transfo));
+            prodDerive.setTransformation(transformationDao.save(transfo));
          }else{
             prodDerive.setTransformation(null);
          }
 
-         prodDeriveDao.updateObject(prodDerive);
+         prodDeriveDao.save(prodDerive);
          log.info("Modification de l'objet ProdDerive : " + prodDerive.toString());
 
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
+         operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
             prodDerive);
 
          if(operations != null){
@@ -1177,7 +1177,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
                //Enregistrement de l'operation associee
                final Operation dateOp = new Operation();
                dateOp.setDate(Utils.getCurrentSystemCalendar());
-               operationManager.createObjectManager(dateOp, utilisateur, operations.get(i), prodDerive);
+               operationManager.saveManager(dateOp, utilisateur, operations.get(i), prodDerive);
             }
          }
 
@@ -1235,7 +1235,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       for(int i = 0; i < prodDerives.size(); i++){
          final ProdDerive derive = prodDerives.get(i);
          try{
-            updateObjectManager(derive, derive.getBanque(), derive.getProdType(), derive.getObjetStatut(),
+            saveManager(derive, derive.getBanque(), derive.getProdType(), derive.getObjetStatut(),
                derive.getCollaborateur(), derive.getEmplacement(), derive.getVolumeUnite(), derive.getConcUnite(),
                derive.getQuantiteUnite(), derive.getModePrepaDerive(), derive.getProdQualite(), derive.getTransformation(), null,
                null, filesCreated, filesToDelete, utilisateur, true, null, baseDir);
@@ -1302,7 +1302,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    }
 
    @Override
-   public void removeObjectCascadeManager(final Transformation transformation, final String comments, final Utilisateur user,
+   public void deleteByIdCascadeManager(final Transformation transformation, final String comments, final Utilisateur user,
       final List<File> filesToDelete){
       //		if (isUsedObjectManager(transformation)) {
       //			log.warn("Objet utilisé lors de la suppression de l'objet " 
@@ -1314,32 +1314,32 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       final Iterator<ProdDerive> derivesIt = findByTransformationManager(transformation).iterator();
 
       while(derivesIt.hasNext()){
-         removeObjectCascadeManager(derivesIt.next(), comments, user, filesToDelete);
+         deleteByIdCascadeManager(derivesIt.next(), comments, user, filesToDelete);
       }
 
-      transformationManager.removeObjectManager(transformation, comments, user);
+      transformationManager.deleteByIdManager(transformation, comments, user);
 
       log.info("Suppression de l'objet Transformation : " + transformation.toString());
    }
 
    @Override
-   public void removeObjectCascadeManager(final ProdDerive derive, final String comments, final Utilisateur user,
+   public void deleteByIdCascadeManager(final ProdDerive derive, final String comments, final Utilisateur user,
       final List<File> filesToDelete){
 
       if(!isCessedObjectManager(derive)){
          final Iterator<Transformation> transfIt = transformationManager.findByParentManager(derive).iterator();
          while(transfIt.hasNext()){
-            removeObjectCascadeManager(transfIt.next(), comments, user, filesToDelete);
+            deleteByIdCascadeManager(transfIt.next(), comments, user, filesToDelete);
          }
 
-         removeObjectManager(derive, comments, user, filesToDelete);
+         deleteByIdManager(derive, comments, user, filesToDelete);
       }else{
          throw new ObjectUsedException("derive.cascade.isCessed", false);
       }
    }
 
    @Override
-   public void removeObjectManager(final ProdDerive prodDerive, final String comments, final Utilisateur user,
+   public void deleteByIdManager(final ProdDerive prodDerive, final String comments, final Utilisateur user,
       final List<File> filesToDelete){
 
       if(prodDerive != null){
@@ -1347,13 +1347,13 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
 
             final Iterator<Retour> retoursIt = retourManager.getRetoursForObjectManager(prodDerive).iterator();
             while(retoursIt.hasNext()){
-               retourManager.removeObjectManager(retoursIt.next());
+               retourManager.deleteByIdManager(retoursIt.next());
             }
 
             // Supprime non conformites associees
             CreateOrUpdateUtilities.removeAssociateNonConformites(prodDerive, objetNonConformeManager);
 
-            prodDeriveDao.removeObject(prodDerive.getProdDeriveId());
+            prodDeriveDao.deleteById(prodDerive.getProdDeriveId());
             log.info("Suppression de l'objet ProdDerive : " + prodDerive.toString());
 
             //Supprime operations associees
@@ -1412,7 +1412,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
                newDerive.setConformeCession(cfCess);
             }
 
-            createObjectManager(newDerive, banque, newDerive.getProdType(), nonstocke, newDerive.getCollaborateur(), null,
+            saveManager(newDerive, banque, newDerive.getProdType(), nonstocke, newDerive.getCollaborateur(), null,
                newDerive.getVolumeUnite(), newDerive.getConcUnite(), newDerive.getQuantiteUnite(), newDerive.getModePrepaDerive(),
                newDerive.getProdQualite(), transfo, listAnnotations, filesCreated, utilisateur, true, baseDir, false);
 
@@ -1422,7 +1422,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       }catch(final RuntimeException e){
          //         if(filesCreated != null){
          for(final File f : filesCreated){
-            // fichierManager.removeObjectManager(fichier);
+            // fichierManager.deleteByIdManager(fichier);
             f.delete();
          }
          //         }
@@ -1527,19 +1527,19 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          if(findDoublonManager(derive)){
             throw new DoublonFoundException("ProdDerive", "switchBanque", derive.getCode(), null);
          }
-         derive = prodDeriveDao.mergeObject(derive);
+         derive = prodDeriveDao.save(derive);
 
          // annotations
          annotationValeurManager.switchBanqueManager(derive, bank, filesToDelete, filesToMove);
 
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.createObjectManager(creationOp, u, operationTypeDao.findByNom("ChangeCollection").get(0), derive);
+         operationManager.saveManager(creationOp, u, operationTypeDao.findByNom("ChangeCollection").get(0), derive);
       }
    }
 
    @Override
-   public void updateObjectWithNonConformitesManager(final ProdDerive prodDerive, final Banque banque, final ProdType type,
+   public void saveWithNonConformitesManager(final ProdDerive prodDerive, final Banque banque, final ProdType type,
       final ObjetStatut statut, final Collaborateur collab, final Emplacement emplacement, final Unite volumeUnite,
       final Unite concUnite, final Unite quantiteUnite, final ModePrepaDerive modePrepaDerive, final ProdQualite qualite,
       final Transformation transfo, final List<AnnotationValeur> listAnnoToCreateOrUpdate,
@@ -1559,7 +1559,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
             prodDerive.setConformeCession(false);
          }
 
-         updateObjectManager(prodDerive, banque, type, statut, collab, emplacement, volumeUnite, concUnite, quantiteUnite,
+         saveManager(prodDerive, banque, type, statut, collab, emplacement, volumeUnite, concUnite, quantiteUnite,
             modePrepaDerive, qualite, transfo, listAnnoToCreateOrUpdate, listAnnoToDelete, filesCreated, filesToDelete,
             utilisateur, doValidation, operations, baseDir);
 
@@ -1645,7 +1645,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    private boolean checkEmplacementOccupied(final Emplacement empl, final ProdDerive derive){
       Emplacement emplacement = empl;
       if(empl.getEmplacementId() != null){
-         emplacement = emplacementDao.mergeObject(empl);
+         emplacement = emplacementDao.save(empl);
       }
       boolean throwError = false;
       List<TKStockableObject> objs = emplacementManager.findObjByEmplacementManager(emplacement, "Echantillon");
@@ -1796,7 +1796,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
                ncfs.addAll(noconfsTrait.get(key));
                if(!ncfs.isEmpty()){
                   key.setConformeTraitement(false);
-                  prodDeriveDao.updateObject(key);
+                  prodDeriveDao.save(key);
                }
                objetNonConformeManager.createUpdateOrRemoveListObjectManager(key, ncfs, "Traitement");
                ncfs.clear();
@@ -1810,7 +1810,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
                ncfs.addAll(noconfsCess.get(key));
                if(!ncfs.isEmpty()){
                   key.setConformeCession(false);
-                  prodDeriveDao.updateObject(key);
+                  prodDeriveDao.save(key);
                }
                objetNonConformeManager.createUpdateOrRemoveListObjectManager(key, ncfs, "Cession");
                ncfs.clear();
@@ -1842,7 +1842,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
                derivesId.add(deriveToUpdate.getProdDeriveId());
                deriveToUpdate.setEmplacement(empls.get(deriveToUpdate));
                deriveToUpdate.setObjetStatut(stocke);
-               prodDeriveDao.updateObject(deriveToUpdate);
+               prodDeriveDao.save(deriveToUpdate);
             }
 
             // stockage operation
@@ -1858,7 +1858,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
                // à l'épuisement de l'échantillon
                // ((TKStockableObject) parent).setObjetStatut(objetStatutManager
                //			.findByStatutLikeManager("NON STOCKE", true).get(0));				
-               retourManager.createOrUpdateObjectManager(transfoRetour, (TKStockableObject) parent, oldEmplacement, null, null,
+               retourManager.createOrsaveManager(transfoRetour, (TKStockableObject) parent, oldEmplacement, null, null,
                   transfo, null, u, transfoRetour.getRetourId() != null ? "modification" : "creation");
                // re-assigne l'object statut avant update parent
                if(transfoRetour.getObjetStatut() != null){
@@ -1964,7 +1964,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
                empl.setVide(true);
                ((TKStockableObject) parent).setEmplacement(null);
 
-               emplacementManager.updateObjectManager(empl, empl.getTerminale(), null);
+               emplacementManager.saveManager(empl, empl.getTerminale(), null);
             }
 
             if(oldStatut.getStatut().equals("STOCKE")){
@@ -1973,17 +1973,17 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          }
 
          if(parent instanceof Echantillon){
-            echantillonDao.updateObject((Echantillon) parent);
+            echantillonDao.save((Echantillon) parent);
          }else{
-            prodDeriveDao.updateObject((ProdDerive) parent);
+            prodDeriveDao.save((ProdDerive) parent);
          }
          if(!ops.isEmpty()){ // destockage
             final Operation o = new Operation();
             o.setDate(Calendar.getInstance());
-            operationManager.createObjectManager(o, u, ops.get(0), parent);
+            operationManager.saveManager(o, u, ops.get(0), parent);
          }
       }else{ // Prelevement
-         prelevementDao.updateObject((Prelevement) parent);
+         prelevementDao.save((Prelevement) parent);
       }
    }
 
@@ -1995,7 +1995,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          for(final Integer id : ids){
             p = findByIdManager(id);
             if(p != null){
-               removeObjectCascadeManager(p, comment, u, filesToDelete);
+               deleteByIdCascadeManager(p, comment, u, filesToDelete);
             }
          }
 

@@ -77,5 +77,5 @@ public interface VersionManager
     */
    Version findByCurrentVersionManager();
 
-   void createObjectManager(Version version);
+   void saveManager(Version version);
 }

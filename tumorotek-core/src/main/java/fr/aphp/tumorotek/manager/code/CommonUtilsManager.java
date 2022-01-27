@@ -38,23 +38,24 @@ package fr.aphp.tumorotek.manager.code;
 import fr.aphp.tumorotek.model.code.CodeCommon;
 import fr.aphp.tumorotek.model.code.TableCodage;
 
-public interface CommonUtilsManager
-{
+public interface CommonUtilsManager {
 
-   /**
-    * Recherche un code partir de la table et du code de l'Id 
-    * spécifiés en paramètres.
-    * @param ID du code
-    * @param TableCodage
-    * @return le code
-    */
-   public abstract CodeCommon findCodeByTableCodageAndIdManager(Integer codeId, TableCodage table);
+	/**
+	 * Recherche un code partir de la table et du code de l'Id spécifiés en
+	 * paramètres.
+	 * 
+	 * @param ID          du code
+	 * @param TableCodage
+	 * @return le code
+	 */
+	public abstract CodeCommon findCodeByTableCodageAndIdManager(Integer codeId, TableCodage table);
 
-   /**
-    * Renvoie la table de codage associée au code common passé en paramètre.
-    * @param code
-    * @return table de codage.
-    */
-   public abstract TableCodage getTableCodageFromCodeCommonManager(CodeCommon code);
+	/**
+	 * Renvoie la table de codage associée au code common passé en paramètre.
+	 * 
+	 * @param code
+	 * @return table de codage.
+	 */
+	public abstract TableCodage getTableCodageFromCodeCommonManager(CodeCommon code);
 
 }

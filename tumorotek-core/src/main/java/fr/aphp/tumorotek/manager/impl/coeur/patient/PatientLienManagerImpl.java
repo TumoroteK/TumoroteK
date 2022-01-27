@@ -83,7 +83,7 @@ public class PatientLienManagerImpl implements PatientLienManager
    }
 
    @Override
-   public void createOrUpdateObjectManager(final PatientLien patientLien, final Patient patient1, final Patient patient2,
+   public void createOrsaveManager(final PatientLien patientLien, final Patient patient1, final Patient patient2,
       final LienFamilial lienFamilial, final String operation){
 
       if(operation == null){
@@ -97,10 +97,10 @@ public class PatientLienManagerImpl implements PatientLienManager
       if(!findDoublonManager(patientLien)){
          if(operation.equals("creation")){
             //if (operation.equals("creation")) {
-            patientLienDao.createObject(patientLien);
+            patientLienDao.save(patientLien);
             log.debug("Enregistrement objet PatientLien " + patientLien.toString());
             //				} else { //cree un nouvel objet car modification de la clef
-            //					patientLienDao.updateObject(patientLien);
+            //					patientLienDao.save(patientLien);
             //					log.info("Modification objet PatientLien "
             //													+ patientLien.toString());
             //				}
@@ -110,7 +110,7 @@ public class PatientLienManagerImpl implements PatientLienManager
       }else{ //gere le modification du seul lien familial
          if(operation.equals("modification")
             && !patientLien.getLienFamilial().equals(patientLienDao.findById(patientLien.getPk()).getLienFamilial())){
-            patientLienDao.updateObject(patientLien);
+            patientLienDao.save(patientLien);
             log.debug("Modification objet PatientLien " + patientLien.toString());
          }else{
             log.warn("Doublon lors " + operation + " objet PatientLien " + patientLien.toString());
@@ -120,9 +120,9 @@ public class PatientLienManagerImpl implements PatientLienManager
    }
 
    @Override
-   public void removeObjectManager(final PatientLien patientLien){
+   public void deleteByIdManager(final PatientLien patientLien){
       if(patientLien != null){
-         patientLienDao.removeObject(patientLien.getPk());
+         patientLienDao.deleteById(patientLien.getPk());
          log.debug("Suppression objet PatientLien " + patientLien.toString());
       }else{
          log.warn("Suppression d'un PatientLien null");
@@ -132,7 +132,7 @@ public class PatientLienManagerImpl implements PatientLienManager
    @Override
    public boolean findDoublonManager(final PatientLien patientLien){
       // l'utilisation de excludedId impossible a cause de la clef composite 
-      return patientLienDao.findAll().contains(patientLien);
+      return IterableUtils.toList(patientLienDao.findAll()).contains(patientLien);
    }
 
    /**
@@ -148,21 +148,21 @@ public class PatientLienManagerImpl implements PatientLienManager
       final LienFamilial lienFamilial, final String operation){
       //patient1 required
       if(patient1 != null){
-         patientLien.setPatient1(patientDao.mergeObject(patient1));
+         patientLien.setPatient1(patientDao.save(patient1));
       }else if(patientLien.getPatient1() == null){
          log.warn("Objet obligatoire Patient1 manquant" + " lors de la " + operation + " d'un PatientLien");
          throw new RequiredObjectIsNullException("PatientLien", operation, "Patient1");
       }
       //patient2 required
       if(patient2 != null){
-         patientLien.setPatient2(patientDao.mergeObject(patient2));
+         patientLien.setPatient2(patientDao.save(patient2));
       }else if(patientLien.getPatient2() == null){
          log.warn("Objet obligatoire Patient2 manquant" + " lors de la " + operation + " d'un PatientLien");
          throw new RequiredObjectIsNullException("PatientLien", operation, "Patient2");
       }
       //LienFamilial required
       if(lienFamilial != null){
-         patientLien.setLienFamilial(lienFamilialDao.mergeObject(lienFamilial));
+         patientLien.setLienFamilial(lienFamilialDao.save(lienFamilial));
       }else if(patientLien.getLienFamilial() == null){
          log.warn("Objet obligatoire LienFamilial  manquant" + " lors de la " + operation + " d'un PatientLien");
          throw new RequiredObjectIsNullException("PatientLien", operation, "LienFamilial");

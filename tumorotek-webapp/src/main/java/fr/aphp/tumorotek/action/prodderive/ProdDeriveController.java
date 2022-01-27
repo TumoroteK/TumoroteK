@@ -59,7 +59,7 @@ import fr.aphp.tumorotek.action.echantillon.EchantillonController;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
-import fr.aphp.tumorotek.model.cession.CederObjet;
+import fr.aphp.tumorotek.model.coeur.cession.CederObjet;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.interfacage.scan.ScanTerminale;
 import fr.aphp.tumorotek.model.systeme.Entite;

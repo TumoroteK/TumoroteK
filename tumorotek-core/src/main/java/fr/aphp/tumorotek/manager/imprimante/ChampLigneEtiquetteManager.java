@@ -99,7 +99,7 @@ public interface ChampLigneEtiquetteManager
     * @param entite Entite.
     * @param champ Champ.
     */
-   void createObjectManager(ChampLigneEtiquette champLigneEtiquette, LigneEtiquette ligneEtiquette, Entite entite, Champ champ);
+   void saveManager(ChampLigneEtiquette champLigneEtiquette, LigneEtiquette ligneEtiquette, Entite entite, Champ champ);
 
    /**
     * Persist une instance de ChampLigneEtiquette dans la base de données.
@@ -108,13 +108,13 @@ public interface ChampLigneEtiquetteManager
     * @param entite Entite.
     * @param champ Champ.
     */
-   void updateObjectManager(ChampLigneEtiquette champLigneEtiquette, LigneEtiquette ligneEtiquette, Entite entite, Champ champ);
+   void saveManager(ChampLigneEtiquette champLigneEtiquette, LigneEtiquette ligneEtiquette, Entite entite, Champ champ);
 
    /**
     * Supprime un ChampLigneEtiquette de la base de données.
     * @param champLigneEtiquette ChampLigneEtiquette à 
     * supprimer de la base de données.
     */
-   void removeObjectManager(ChampLigneEtiquette champLigneEtiquette);
+   void deleteByIdManager(ChampLigneEtiquette champLigneEtiquette);
 
 }

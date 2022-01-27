@@ -95,7 +95,7 @@ public class ConteneurTypeManagerImpl implements ConteneurTypeManager
       if(o != null){
          final ConteneurType type = o;
          if(type.getId() == null){
-            return conteneurTypeDao.findAll().contains(type);
+            return IterableUtils.toList(conteneurTypeDao.findAll()).contains(type);
          }
          return conteneurTypeDao.findByExcludedId(type.getId()).contains(type);
       }
@@ -104,21 +104,21 @@ public class ConteneurTypeManagerImpl implements ConteneurTypeManager
 
    @Override
    public boolean isUsedObjectManager(final ConteneurType obj){
-      final ConteneurType type = conteneurTypeDao.mergeObject(obj);
+      final ConteneurType type = conteneurTypeDao.save(obj);
       return type.getConteneurs().size() > 0;
    }
 
    @Override
-   public void createObjectManager(final ConteneurType obj){
+   public void saveManager(final ConteneurType obj){
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(obj.getPlateforme() == null){
          throw new RequiredObjectIsNullException("Nature", "creation", "Plateforme");
       }
-         obj.setPlateforme(plateformeDao.mergeObject(obj.getPlateforme()));
+         obj.setPlateforme(plateformeDao.save(obj.getPlateforme()));
       BeanValidator.validateObject(obj, new Validator[] {conteneurTypeValidator});
       if(!findDoublonManager(obj)){
-         conteneurTypeDao.createObject(obj);
+         conteneurTypeDao.save(obj);
          log.info("Enregistrement objet ConteneurType " + obj.toString());
       }else{
          log.warn("Doublon lors creation objet ConteneurType " + obj.toString());
@@ -127,10 +127,10 @@ public class ConteneurTypeManagerImpl implements ConteneurTypeManager
    }
 
    @Override
-   public void updateObjectManager(final ConteneurType obj){
+   public void saveManager(final ConteneurType obj){
       BeanValidator.validateObject(obj, new Validator[] {conteneurTypeValidator});
       if(!findDoublonManager(obj)){
-         conteneurTypeDao.updateObject(obj);
+         conteneurTypeDao.save(obj);
          log.info("Modification objet ConteneurType " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet ConteneurType " + obj.toString());
@@ -139,9 +139,9 @@ public class ConteneurTypeManagerImpl implements ConteneurTypeManager
    }
 
    @Override
-   public void removeObjectManager(final ConteneurType obj){
+   public void deleteByIdManager(final ConteneurType obj){
       if(obj != null){
-         conteneurTypeDao.removeObject(obj.getId());
+         conteneurTypeDao.deleteById(obj.getId());
          log.info("Suppression objet ConteneurType " + obj.toString());
       }else{
          log.warn("Suppression d'un ConteneurType null");

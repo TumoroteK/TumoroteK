@@ -1217,7 +1217,7 @@ public class ImportManagerImpl implements ImportManager
 				for(int i = 0; i < mals.size(); i++){
 					Maladie m = mals.get(i);
 					if(!m.getClass().getSimpleName().equals("Maladie")){
-						m = maladieDao.mergeObject(mals.get(i));
+						m = maladieDao.save(mals.get(i));
 					}
 					if(maladie.equals(m)){
 						maladie = m;
@@ -1390,7 +1390,7 @@ public class ImportManagerImpl implements ImportManager
 				for(int i = 0; i < liste.size(); i++){
 					Echantillon ech = liste.get(i);
 					if(!ech.getClass().getSimpleName().equals("Echantillon")){
-						ech = echantillonDao.mergeObject(liste.get(i));
+						ech = echantillonDao.save(liste.get(i));
 					}
 					if(echan.equals(ech)){
 						echan = ech;
@@ -1470,7 +1470,7 @@ public class ImportManagerImpl implements ImportManager
 				for(int i = 0; i < liste.size(); i++){
 					ProdDerive p = liste.get(i);
 					if(!p.getClass().getSimpleName().equals("ProdDerive")){
-						p = prodDeriveDao.mergeObject(liste.get(i));
+						p = prodDeriveDao.save(liste.get(i));
 					}
 					if(derive.equals(p)){
 						derive = p;
@@ -1532,7 +1532,7 @@ public class ImportManagerImpl implements ImportManager
 							imp.setEntite(patDuo.getEntite());
 							imp.setIsUpdate(pat.getPatientId() != null);
 
-							patientManager.createOrUpdateObjectManager(pat, null, null, null, !toUpdate.isEmpty() ? toUpdate : null,
+							patientManager.createOrsaveManager(pat, null, null, null, !toUpdate.isEmpty() ? toUpdate : null,
 									!toDelete.isEmpty() ? toDelete : null, null, null, utilisateur,
 											pat.getPatientId() == null ? "creation" : "modification", null, true);
 
@@ -1542,7 +1542,7 @@ public class ImportManagerImpl implements ImportManager
 					}else if(objects.get(i).getClass().getSimpleName().equals("Maladie")){
 						final Maladie mal = (Maladie) objects.get(i);
 						if(mal.getMaladieId() == null){
-							maladieManager.createOrUpdateObjectManager(mal, mal.getPatient(), null, utilisateur, "creation");
+							maladieManager.createOrsaveManager(mal, mal.getPatient(), null, utilisateur, "creation");
 						}
 
 					}else if(objects.get(i).getClass().getSimpleName().equals("TKAnnotableObjectDuo")
@@ -1581,7 +1581,7 @@ public class ImportManagerImpl implements ImportManager
 
 							// create
 							if(prlvt.getPrelevementId() == null){
-								prelevementManager.createObjectWithNonConformitesManager(prlvt, prlvt.getBanque(), prlvt.getNature(),
+								prelevementManager.saveWithNonConformitesManager(prlvt, prlvt.getBanque(), prlvt.getNature(),
 										prlvt.getMaladie(), prlvt.getConsentType(), prlvt.getPreleveur(), prlvt.getServicePreleveur(),
 										prlvt.getPrelevementType(), prlvt.getConditType(), prlvt.getConditMilieu(), prlvt.getTransporteur(),
 										prlvt.getOperateur(), prlvt.getQuantiteUnite(), null, !toUpdate.isEmpty() ? toUpdate : null,
@@ -1590,7 +1590,7 @@ public class ImportManagerImpl implements ImportManager
 
 								toDelete.addAll(prlvtDuo.getSecondAnnoVals());
 
-								prelevementManager.updateObjectWithNonConformitesManager(prlvt, prlvt.getBanque(), prlvt.getNature(),
+								prelevementManager.saveWithNonConformitesManager(prlvt, prlvt.getBanque(), prlvt.getNature(),
 										prlvt.getMaladie(), prlvt.getConsentType(), prlvt.getPreleveur(), prlvt.getServicePreleveur(),
 										prlvt.getPrelevementType(), prlvt.getConditType(), prlvt.getConditMilieu(), prlvt.getTransporteur(),
 										prlvt.getOperateur(), prlvt.getQuantiteUnite(), null, !toUpdate.isEmpty() ? toUpdate : null,
@@ -1627,7 +1627,7 @@ public class ImportManagerImpl implements ImportManager
 									}
 								}else{
 									// s'il n'existait pas on le crée
-									emplacementManager.createObjectManager(empl, empl.getTerminale(), null);
+									emplacementManager.saveManager(empl, empl.getTerminale(), null);
 								}
 							}
 							// si aucun statut n'a été donné, on met
@@ -1656,7 +1656,7 @@ public class ImportManagerImpl implements ImportManager
 							// bascule en jdbcInsert pour augmenter la rapidite
 							// d'insertions
 							if(jdbcSuite == null){
-								echantillonManager.createObjectWithNonConformitesManager(echan, echan.getBanque(), echan.getPrelevement(),
+								echantillonManager.saveWithNonConformitesManager(echan, echan.getBanque(), echan.getPrelevement(),
 										echan.getCollaborateur(), echan.getObjetStatut(), empl, echan.getEchantillonType(), codes,
 										echan.getQuantiteUnite(), echan.getEchanQualite(), echan.getModePrepa(), null, null,
 										!toUpdate.isEmpty() ? toUpdate : null, utilisateur, true, null, true,
@@ -1666,7 +1666,7 @@ public class ImportManagerImpl implements ImportManager
 								if(empl != null){
 									empl.setObjetId(echan.getEchantillonId());
 									// empl.setVide(false);
-									emplacementManager.updateObjectManager(empl, empl.getTerminale(), eEchan);
+									emplacementManager.saveManager(empl, empl.getTerminale(), eEchan);
 								}
 							}else{
 
@@ -2109,7 +2109,7 @@ public class ImportManagerImpl implements ImportManager
 				historique.setImportTemplate(importTemplate);
 				historique.setUtilisateur(utilisateur);
 				historique.setDate(Calendar.getInstance());
-				importHistoriqueManager.createObjectManager(historique, importTemplate, utilisateur, importations);
+				importHistoriqueManager.saveManager(historique, importTemplate, utilisateur, importations);
 			}
 		}catch(final BadFileFormatException bdfe){
 			final ImportError error = new ImportError();
@@ -2298,7 +2298,7 @@ public class ImportManagerImpl implements ImportManager
 				historique.setImportTemplate(importTemplate);
 				historique.setUtilisateur(utilisateur);
 				historique.setDate(Calendar.getInstance());
-				importHistoriqueManager.createObjectManager(historique, importTemplate, utilisateur, importations);
+				importHistoriqueManager.saveManager(historique, importTemplate, utilisateur, importations);
 			}
 		}catch(final BadFileFormatException bdfe){
 			final ImportError error = new ImportError();

@@ -52,7 +52,7 @@ import org.zkoss.zul.Vbox;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.decorator.TKSelectObjectRenderer;
-import fr.aphp.tumorotek.model.cession.Cession;
+import fr.aphp.tumorotek.model.coeur.cession.Cession;
 
 /**
  * ProdDeriveRenderer affiche dans le Row

@@ -98,7 +98,7 @@ public class CommonUtilsManagerImpl implements CommonUtilsManager
             nomTable = "CimoMorpho";
             nomAttribut = "cimoMorphoId";
          }else if(table.getNom().equals("UTILISATEUR")){
-            results.add(codeUtilisateurDao.findById(codeId));
+            results.add(codeUtilisateurDao.findById(codeId).orElse(null));
          }
 
          if(nomAttribut != null){

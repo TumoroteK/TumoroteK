@@ -164,7 +164,7 @@ public class ConteneurManagerImpl implements ConteneurManager
 
    @Override
    public List<Conteneur> findAllObjectsManager(){
-      return conteneurDao.findAll();
+      return IterableUtils.toList(conteneurDao.findAll());
    }
 
    @Override
@@ -218,7 +218,7 @@ public class ConteneurManagerImpl implements ConteneurManager
    public Set<Banque> getBanquesManager(Conteneur conteneur){
       if(conteneur != null && conteneur.getConteneurId() != null){
          log.debug("Recherche de toutes les banques d'un conteneur");
-         conteneur = conteneurDao.mergeObject(conteneur);
+         conteneur = conteneurDao.save(conteneur);
          final Set<Banque> banques = conteneur.getBanques();
          banques.size();
 
@@ -255,7 +255,7 @@ public class ConteneurManagerImpl implements ConteneurManager
    public Set<Incident> getIncidentsManager(Conteneur conteneur){
       if(conteneur != null && conteneur.getConteneurId() != null){
          log.debug("Recherche de tous les incidents d'un conteneur");
-         conteneur = conteneurDao.mergeObject(conteneur);
+         conteneur = conteneurDao.save(conteneur);
          final Set<Incident> incidents = conteneur.getIncidents();
          incidents.size();
 
@@ -267,7 +267,7 @@ public class ConteneurManagerImpl implements ConteneurManager
    @Override
    public Set<ConteneurPlateforme> getConteneurPlateformesManager(Conteneur conteneur){
       if(conteneur != null && conteneur.getConteneurId() != null){
-         conteneur = conteneurDao.mergeObject(conteneur);
+         conteneur = conteneurDao.save(conteneur);
          final Set<ConteneurPlateforme> plateformes = conteneur.getConteneurPlateformes();
          plateformes.size();
 
@@ -312,12 +312,12 @@ public class ConteneurManagerImpl implements ConteneurManager
    }
 
    @Override
-   public void createObjectManager(final Conteneur conteneur, final ConteneurType conteneurType, final Service service,
+   public void saveManager(final Conteneur conteneur, final ConteneurType conteneurType, final Service service,
       final List<Banque> banques, final List<Plateforme> plateformes, final Utilisateur utilisateur, final Plateforme pfOrig){
 
       // Service required
       if(service != null){
-         conteneur.setService(serviceDao.mergeObject(service));
+         conteneur.setService(serviceDao.save(service));
       }else{
          log.warn("Objet obligatoire Service manquant" + " lors de la création d'un Conteneur");
          throw new RequiredObjectIsNullException("Conteneur", "creation", "Service");
@@ -331,7 +331,7 @@ public class ConteneurManagerImpl implements ConteneurManager
          throw new RequiredObjectIsNullException("Conteneur", "creation", "Plateforme");
       }
 
-      conteneur.setConteneurType(conteneurTypeDao.mergeObject(conteneurType));
+      conteneur.setConteneurType(conteneurTypeDao.save(conteneurType));
 
       // Test s'il y a des doublons
       if(findDoublonManager(conteneur, banques)){
@@ -343,7 +343,7 @@ public class ConteneurManagerImpl implements ConteneurManager
       BeanValidator.validateObject(conteneur, new Validator[] {conteneurValidator});
 
       conteneur.setArchive(false);
-      conteneurDao.createObject(conteneur);
+      conteneurDao.save(conteneur);
 
       updateBanquesAndPlateformes(conteneur, banques, plateformes);
 
@@ -352,23 +352,23 @@ public class ConteneurManagerImpl implements ConteneurManager
       //Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
       creationOp.setDate(Utils.getCurrentSystemCalendar());
-      operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), conteneur);
+      operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), conteneur);
    }
 
    @Override
-   public void updateObjectManager(final Conteneur conteneur, final ConteneurType conteneurType, final Service service,
+   public void saveManager(final Conteneur conteneur, final ConteneurType conteneurType, final Service service,
       final List<Banque> banques, final List<Plateforme> plateformes, final List<Incident> incidents,
       final Utilisateur utilisateur){
 
       // Service required
       if(service != null){
-         conteneur.setService(serviceDao.mergeObject(service));
+         conteneur.setService(serviceDao.save(service));
       }else{
          log.warn("Objet obligatoire Service manquant" + " lors de la modification d'un Conteneur");
          throw new RequiredObjectIsNullException("Conteneur", "modification", "Service");
       }
 
-      conteneur.setConteneurType(conteneurTypeDao.mergeObject(conteneurType));
+      conteneur.setConteneurType(conteneurTypeDao.save(conteneurType));
 
       if(incidents != null){
          // maj des incidents
@@ -386,9 +386,9 @@ public class ConteneurManagerImpl implements ConteneurManager
             // si nouvel incident => creation
             // sinon => update
             if(incident.getIncidentId() == null){
-               incidentManager.createObjectManager(incident, conteneur, null, null);
+               incidentManager.saveManager(incident, conteneur, null, null);
             }else{
-               incidentManager.updateObjectManager(incident, conteneur, null, null);
+               incidentManager.saveManager(incident, conteneur, null, null);
             }
          }
       }
@@ -401,7 +401,7 @@ public class ConteneurManagerImpl implements ConteneurManager
       // validation du Contrat
       BeanValidator.validateObject(conteneur, new Validator[] {conteneurValidator});
 
-      conteneurDao.updateObject(conteneur);
+      conteneurDao.save(conteneur);
 
       updateBanquesAndPlateformes(conteneur, banques, plateformes);
 
@@ -410,11 +410,11 @@ public class ConteneurManagerImpl implements ConteneurManager
       //Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
       creationOp.setDate(Utils.getCurrentSystemCalendar());
-      operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0), conteneur);
+      operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0), conteneur);
    }
 
    @Override
-   public void removeObjectManager(final Conteneur conteneur, final String comments, final Utilisateur user){
+   public void deleteByIdManager(final Conteneur conteneur, final String comments, final Utilisateur user){
       if(conteneur != null){
          if(isUsedObjectManager(conteneur)){
             log.warn("Objet utilisé lors de la suppression de l'objet " + "Conteneur : " + conteneur.toString());
@@ -424,19 +424,19 @@ public class ConteneurManagerImpl implements ConteneurManager
          final Iterator<Banque> it = getBanquesManager(conteneur).iterator();
          Banque bank;
          while(it.hasNext()){
-            bank = banqueDao.mergeObject(it.next());
+            bank = banqueDao.save(it.next());
             bank.getConteneurs().remove(conteneur);
          }
 
          final Iterator<Enceinte> itE = getEnceintesManager(conteneur).iterator();
          while(itE.hasNext()){
             final Enceinte tmp = itE.next();
-            enceinteManager.removeObjectManager(tmp, comments, user);
+            enceinteManager.deleteByIdManager(tmp, comments, user);
          }
 
          // suppression conteneur vide ssi évènements de stockage
          if(!hasRetoursManager(conteneur)){
-            conteneurDao.removeObject(conteneur.getConteneurId());
+            conteneurDao.deleteById(conteneur.getConteneurId());
 
             //Supprime operations associes
             CreateOrUpdateUtilities.removeAssociateOperations(conteneur, operationManager, comments, user);
@@ -444,7 +444,7 @@ public class ConteneurManagerImpl implements ConteneurManager
             log.info("Suppression de l'objet Conteneur : " + conteneur.toString());
          }else{// archivage sinon
             conteneur.setArchive(true);
-            conteneurDao.mergeObject(conteneur);
+            conteneurDao.save(conteneur);
             log.info("Archivage automatique de l'objet Conteneur : " + conteneur.toString());
          }
       }else{
@@ -455,7 +455,7 @@ public class ConteneurManagerImpl implements ConteneurManager
    @Override
    public boolean hasRetoursManager(Conteneur conteneur){
       if(conteneur != null && conteneur.getConteneurId() != null){
-         conteneur = conteneurDao.mergeObject(conteneur);
+         conteneur = conteneurDao.save(conteneur);
          return !conteneur.getRetours().isEmpty();
       }
       return false;
@@ -473,7 +473,7 @@ public class ConteneurManagerImpl implements ConteneurManager
     */
    public void updateBanquesAndPlateformes(final Conteneur conteneur, final List<Banque> banques,
       final List<Plateforme> plateformes){
-      final Conteneur cont = conteneurDao.mergeObject(conteneur);
+      final Conteneur cont = conteneurDao.save(conteneur);
 
       if(banques != null){
          final Iterator<Banque> it = cont.getBanques().iterator();
@@ -492,7 +492,7 @@ public class ConteneurManagerImpl implements ConteneurManager
          // on parcourt la liste des Banques à retirer de
          // l'association
          for(int i = 0; i < banquesToRemove.size(); i++){
-            final Banque bank = banqueDao.mergeObject(banquesToRemove.get(i));
+            final Banque bank = banqueDao.save(banquesToRemove.get(i));
             // on retire la Banque de chaque coté de l'association
             cont.getBanques().remove(bank);
             bank.getConteneurs().remove(cont);
@@ -506,8 +506,8 @@ public class ConteneurManagerImpl implements ConteneurManager
             // si une banque n'était pas associée au conteneur
             if(!cont.getBanques().contains(banques.get(i))){
                // on ajoute la Banque des deux cotés de l'association
-               cont.getBanques().add(banqueDao.mergeObject(banques.get(i)));
-               banqueDao.mergeObject(banques.get(i)).getConteneurs().add(cont);
+               cont.getBanques().add(banqueDao.save(banques.get(i)));
+               banqueDao.save(banques.get(i)).getConteneurs().add(cont);
 
                log.debug("Ajout de l'association entre le " + "Conteneur : " + cont.toString() + " et la banque : "
                   + banques.get(i).toString());
@@ -533,10 +533,10 @@ public class ConteneurManagerImpl implements ConteneurManager
          // l'association
          ConteneurPlateforme cpf;
          for(int i = 0; i < pfsToRemove.size(); i++){
-            cpf = conteneurPlateformeDao.mergeObject(pfsToRemove.get(i));
+            cpf = conteneurPlateformeDao.save(pfsToRemove.get(i));
             // on retire la pf de chaque coté de l'association
             cont.getConteneurPlateformes().remove(cpf);
-            conteneurPlateformeDao.removeObject(cpf.getPk());
+            conteneurPlateformeDao.deleteById(cpf.getPk());
 
             log.debug("Suppression de l'association entre le " + "conteneur : " + cont.toString() + " et la plateforme : "
                + cpf.getPlateforme().toString());
@@ -549,7 +549,7 @@ public class ConteneurManagerImpl implements ConteneurManager
             cp.setPk(pk);
             // si une plateforme n'était pas associé au conteneur
             if(!cont.getConteneurPlateformes().contains(cp)){
-               cont.getConteneurPlateformes().add(conteneurPlateformeDao.mergeObject(cp));
+               cont.getConteneurPlateformes().add(conteneurPlateformeDao.save(cp));
 
                log.debug("Ajout de l'association entre le " + "conteneur : " + cont.toString() + " et la plateforme : "
                   + plateformes.get(i).toString());
@@ -566,7 +566,7 @@ public class ConteneurManagerImpl implements ConteneurManager
       if(conteneur != null && enceintes != null && terminale != null && firstPositions != null
          && firstPositions.size() == enceintes.size() + 1){
          // création du conteneur
-         createObjectManager(conteneur, conteneur.getConteneurType(), conteneur.getService(), banques, plateformes, utilisateur,
+         saveManager(conteneur, conteneur.getConteneurType(), conteneur.getService(), banques, plateformes, utilisateur,
             pfOrig);
 
          // création des enceintes
@@ -657,7 +657,7 @@ public class ConteneurManagerImpl implements ConteneurManager
 
    @Override
    public void removeBanqueFromContAndEncManager(final Conteneur conteneur, final Banque banque){
-      final Banque bank = banqueDao.mergeObject(banque);
+      final Banque bank = banqueDao.save(banque);
       bank.getConteneurs().remove(conteneur);
       getBanquesManager(conteneur).remove(bank);
 
@@ -697,7 +697,7 @@ public class ConteneurManagerImpl implements ConteneurManager
    }
    
 	@Override
-	public void updateObjectWithConteneurPlateformesManager(Conteneur conteneur,
+	public void saveWithConteneurPlateformesManager(Conteneur conteneur,
 			ConteneurType conteneurType, Service service, List<Banque> banques,
 			List<ConteneurPlateforme> conteneurPlateformes,
 			List<Incident> incidents, Utilisateur utilisateur) {
@@ -710,12 +710,12 @@ public class ConteneurManagerImpl implements ConteneurManager
 			}
 		}
 		
-		updateObjectManager(conteneur, conteneurType, service, banques, plateformes, incidents, utilisateur);
+		saveManager(conteneur, conteneurType, service, banques, plateformes, incidents, utilisateur);
 		
 		// met à jour les informations spécifiques au conteneurPlateforme (ex: restrictStock)
 		if (conteneurPlateformes != null) {
 			for (ConteneurPlateforme cp : conteneurPlateformes) {
-				conteneurPlateformeDao.mergeObject(cp);
+				conteneurPlateformeDao.save(cp);
 			}
 		}
 	}

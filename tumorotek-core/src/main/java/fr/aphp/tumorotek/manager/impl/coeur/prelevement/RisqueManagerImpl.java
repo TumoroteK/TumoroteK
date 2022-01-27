@@ -97,7 +97,7 @@ public class RisqueManagerImpl implements RisqueManager
    }
 
    @Override
-   public void createObjectManager(final Risque obj){
+   public void saveManager(final Risque obj){
 
       final Risque rs = obj;
 
@@ -107,11 +107,11 @@ public class RisqueManagerImpl implements RisqueManager
          log.warn("Objet obligatoire Plateforme " + "manquant lors de la creation " + "d'un objet Risque");
          throw new RequiredObjectIsNullException("Risque", "creation", "Plateforme");
       }
-      rs.setPlateforme(plateformeDao.mergeObject(rs.getPlateforme()));
+      rs.setPlateforme(plateformeDao.save(rs.getPlateforme()));
 
       BeanValidator.validateObject(rs, new Validator[] {risqueValidator});
       if(!findDoublonManager(rs)){
-         risqueDao.createObject(rs);
+         risqueDao.save(rs);
          log.info("Enregistrement objet Risque " + rs.toString());
       }else{
          log.warn("Doublon lors creation objet Risque " + rs.toString());
@@ -120,10 +120,10 @@ public class RisqueManagerImpl implements RisqueManager
    }
 
    @Override
-   public void updateObjectManager(final Risque obj){
+   public void saveManager(final Risque obj){
       BeanValidator.validateObject(obj, new Validator[] {risqueValidator});
       if(!findDoublonManager(obj)){
-         risqueDao.updateObject(obj);
+         risqueDao.save(obj);
          log.info("Modification objet Risque " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet Risque " + obj.toString());
@@ -134,7 +134,7 @@ public class RisqueManagerImpl implements RisqueManager
    @Override
    public List<Risque> findAllObjectsManager(){
       log.debug("Recherche totalite des Risque");
-      return risqueDao.findAll();
+      return IterableUtils.toList(risqueDao.findAll());
    }
 
    @Override
@@ -153,9 +153,9 @@ public class RisqueManagerImpl implements RisqueManager
    }
 
    @Override
-   public void removeObjectManager(final Risque obj){
+   public void deleteByIdManager(final Risque obj){
       if(obj != null){
-         risqueDao.removeObject(obj.getId());
+         risqueDao.deleteById(obj.getId());
          log.info("Suppression objet Risque " + obj.toString());
       }else{
          log.warn("Suppression d'un Risque null");
@@ -167,7 +167,7 @@ public class RisqueManagerImpl implements RisqueManager
       if(o != null){
          final Risque risque = o;
          if(risque.getId() == null){
-            return risqueDao.findAll().contains(risque);
+            return IterableUtils.toList(risqueDao.findAll()).contains(risque);
          }
          return risqueDao.findByExcludedId(risque.getId()).contains(risque);
       }
@@ -176,7 +176,7 @@ public class RisqueManagerImpl implements RisqueManager
 
    @Override
    public boolean isUsedObjectManager(final Risque o){
-      final Risque risque = risqueDao.mergeObject(o);
+      final Risque risque = risqueDao.save(o);
       return risque.getPrelevements().size() > 0;
    }
 

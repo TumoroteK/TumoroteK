@@ -91,7 +91,7 @@ public interface EchanQualiteManager extends PfDependantTKThesaurusManager<Echan
    //	 * @throws DoublonFoundException Lance une exception si un doublon de
    //	 * l'objet à créer se trouve déjà dans la base.
    //	 */
-   //	void createObjectManager(EchanQualite qualite);
+   //	void saveManager(EchanQualite qualite);
    //	
    //	/**
    //	 * Sauvegarde les modifications apportées à un objet persistant.
@@ -99,7 +99,7 @@ public interface EchanQualiteManager extends PfDependantTKThesaurusManager<Echan
    //	 * @throws DoublonFoundException Lance une exception si un doublon de
    //	 * l'objet à créer se trouve déjà dans la base.
    //	 */
-   //	void updateObjectManager(EchanQualite qualite);
+   //	void saveManager(EchanQualite qualite);
    //	
    //	/**
    //	 * Supprime une EchanQualite de la base de données.
@@ -107,6 +107,6 @@ public interface EchanQualiteManager extends PfDependantTKThesaurusManager<Echan
    //	 * @throws DoublonFoundException Lance une exception si l'objet
    //	 * est utilisé par des échantillons.
    //	 */
-   //	void removeObjectManager(EchanQualite qualite);
+   //	void deleteByIdManager(EchanQualite qualite);
 
 }

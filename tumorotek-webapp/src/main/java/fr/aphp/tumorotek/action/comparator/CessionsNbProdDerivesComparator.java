@@ -38,7 +38,7 @@ package fr.aphp.tumorotek.action.comparator;
 import java.util.Comparator;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
-import fr.aphp.tumorotek.model.cession.Cession;
+import fr.aphp.tumorotek.model.coeur.cession.Cession;
 
 /**
  * Classe implémentant un comparator sur le nb de dérivés

@@ -49,6 +49,6 @@ import fr.aphp.tumorotek.model.stockage.ConteneurPlateforme;
 public interface ConteneurPlateformeManager
 {
 
-   void removeObjectManager(ConteneurPlateforme cp);
+   void deleteByIdManager(ConteneurPlateforme cp);
 
 }

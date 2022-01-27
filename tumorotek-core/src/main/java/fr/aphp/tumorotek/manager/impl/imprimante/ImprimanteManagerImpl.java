@@ -101,7 +101,7 @@ public class ImprimanteManagerImpl implements ImprimanteManager
    @Override
    public List<Imprimante> findAllObjectsManager(){
       log.debug("Recherche de toutes les Imprimantes");
-      return imprimanteDao.findAll();
+      return IterableUtils.toList(imprimanteDao.findAll());
    }
 
    @Override
@@ -137,7 +137,7 @@ public class ImprimanteManagerImpl implements ImprimanteManager
    public Boolean findDoublonManager(final Imprimante imprimante){
       if(imprimante != null){
          if(imprimante.getImprimanteId() == null){
-            return imprimanteDao.findAll().contains(imprimante);
+            return IterableUtils.toList(imprimanteDao.findAll()).contains(imprimante);
          }else{
             return imprimanteDao.findByExcludedId(imprimante.getImprimanteId()).contains(imprimante);
          }
@@ -149,7 +149,7 @@ public class ImprimanteManagerImpl implements ImprimanteManager
    @Override
    public Boolean isUsedObjectManager(Imprimante imprimante){
       if(imprimante != null && imprimante.getImprimanteId() != null){
-         imprimante = imprimanteDao.mergeObject(imprimante);
+         imprimante = imprimanteDao.save(imprimante);
          return (imprimante.getAffectationImprimantes().size() > 0);
       }else{
          return false;
@@ -157,10 +157,10 @@ public class ImprimanteManagerImpl implements ImprimanteManager
    }
 
    @Override
-   public void createObjectManager(final Imprimante imprimante, final Plateforme plateforme, final ImprimanteApi imprimanteApi){
+   public void saveManager(final Imprimante imprimante, final Plateforme plateforme, final ImprimanteApi imprimanteApi){
       // plateforme required
       if(plateforme != null){
-         imprimante.setPlateforme(plateformeDao.mergeObject(plateforme));
+         imprimante.setPlateforme(plateformeDao.save(plateforme));
       }else{
          log.warn("Objet obligatoire Plateforme manquant" + " lors de la création d'une Imprimante");
          throw new RequiredObjectIsNullException("Imprimante", "creation", "Plateforme");
@@ -168,7 +168,7 @@ public class ImprimanteManagerImpl implements ImprimanteManager
 
       // imprimanteApi required
       if(imprimanteApi != null){
-         imprimante.setImprimanteApi(imprimanteApiDao.mergeObject(imprimanteApi));
+         imprimante.setImprimanteApi(imprimanteApiDao.save(imprimanteApi));
       }else{
          log.warn("Objet obligatoire ImprimanteApi manquant" + " lors de la création d'une Imprimante");
          throw new RequiredObjectIsNullException("Imprimante", "creation", "ImprimanteApi");
@@ -183,17 +183,17 @@ public class ImprimanteManagerImpl implements ImprimanteManager
          // validation du Contrat
          BeanValidator.validateObject(imprimante, new Validator[] {imprimanteValidator});
 
-         imprimanteDao.createObject(imprimante);
+         imprimanteDao.save(imprimante);
 
          log.info("Enregistrement de l'objet Imprimante : " + imprimante.toString());
       }
    }
 
    @Override
-   public void updateObjectManager(final Imprimante imprimante, final Plateforme plateforme, final ImprimanteApi imprimanteApi){
+   public void saveManager(final Imprimante imprimante, final Plateforme plateforme, final ImprimanteApi imprimanteApi){
       // plateforme required
       if(plateforme != null){
-         imprimante.setPlateforme(plateformeDao.mergeObject(plateforme));
+         imprimante.setPlateforme(plateformeDao.save(plateforme));
       }else{
          log.warn("Objet obligatoire Plateforme manquant" + " lors de la modification d'une Imprimante");
          throw new RequiredObjectIsNullException("Imprimante", "modification", "Plateforme");
@@ -201,7 +201,7 @@ public class ImprimanteManagerImpl implements ImprimanteManager
 
       // imprimanteApi required
       if(imprimanteApi != null){
-         imprimante.setImprimanteApi(imprimanteApiDao.mergeObject(imprimanteApi));
+         imprimante.setImprimanteApi(imprimanteApiDao.save(imprimanteApi));
       }else{
          log.warn("Objet obligatoire ImprimanteApi manquant" + " lors de la modification d'une Imprimante");
          throw new RequiredObjectIsNullException("Imprimante", "modification", "ImprimanteApi");
@@ -216,16 +216,16 @@ public class ImprimanteManagerImpl implements ImprimanteManager
          // validation du Contrat
          BeanValidator.validateObject(imprimante, new Validator[] {imprimanteValidator});
 
-         imprimanteDao.updateObject(imprimante);
+         imprimanteDao.save(imprimante);
 
          log.info("Enregistrement de l'objet Imprimante : " + imprimante.toString());
       }
    }
 
    @Override
-   public void removeObjectManager(final Imprimante imprimante){
+   public void deleteByIdManager(final Imprimante imprimante){
       if(imprimante != null){
-         imprimanteDao.removeObject(imprimante.getImprimanteId());
+         imprimanteDao.deleteById(imprimante.getImprimanteId());
          log.info("Suppression de l'objet Imprimante : " + imprimante.toString());
       }else{
          log.warn("Suppression d'un Imprimante null");

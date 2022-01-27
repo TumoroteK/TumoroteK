@@ -109,7 +109,7 @@ public class NonConformiteManagerImpl implements NonConformiteManager
    @Override
    public List<NonConformite> findAllObjectsManager(){
       log.debug("Recherche de tous les NonConformites");
-      return nonConformiteDao.findAll();
+      return IterableUtils.toList(nonConformiteDao.findAll());
    }
 
    @Override
@@ -143,7 +143,7 @@ public class NonConformiteManagerImpl implements NonConformiteManager
       
       if(nonConformite != null){
          if(nonConformite.getId() == null){
-            return nonConformiteDao.findAll().contains(nonConformite);
+            return IterableUtils.toList(nonConformiteDao.findAll()).contains(nonConformite);
          }else{
             return nonConformiteDao.findByExcludedId(nonConformite.getId()).contains(nonConformite);
          }
@@ -161,14 +161,14 @@ public class NonConformiteManagerImpl implements NonConformiteManager
    }
 
    @Override
-   public void createObjectManager(final NonConformite nonConformite){
+   public void saveManager(final NonConformite nonConformite){
       
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(nonConformite.getPlateforme() == null){
          throw new RequiredObjectIsNullException("NonConformite", "creation", "Plateforme");
       }else{
-         nonConformite.setPlateforme(plateformeDao.mergeObject(nonConformite.getPlateforme()));
+         nonConformite.setPlateforme(plateformeDao.save(nonConformite.getPlateforme()));
       }
 
       // On vérifie que le type n'est pas null. Si c'est le cas on envoie
@@ -176,7 +176,7 @@ public class NonConformiteManagerImpl implements NonConformiteManager
       if(nonConformite.getConformiteType() == null){
          throw new RequiredObjectIsNullException("NonConformite", "creation", "ConformiteType");
       }else{
-         nonConformite.setConformiteType(conformiteTypeDao.mergeObject(nonConformite.getConformiteType()));
+         nonConformite.setConformiteType(conformiteTypeDao.save(nonConformite.getConformiteType()));
       }
 
       if(findDoublonManager(nonConformite)){
@@ -184,20 +184,20 @@ public class NonConformiteManagerImpl implements NonConformiteManager
          throw new DoublonFoundException("NonConformite", "creation");
       }else{
          BeanValidator.validateObject(nonConformite, new Validator[] {nonConformiteValidator});
-         nonConformiteDao.createObject(nonConformite);
+         nonConformiteDao.save(nonConformite);
          log.info("Enregistrement de l'objet NonConformite : " + nonConformite.toString());
       }
    }
 
    @Override
-   public void updateObjectManager(final NonConformite nonConformite){
+   public void saveManager(final NonConformite nonConformite){
       
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(nonConformite.getPlateforme() == null){
          throw new RequiredObjectIsNullException("NonConformite", "modification", "Plateforme");
       }else{
-         nonConformite.setPlateforme(plateformeDao.mergeObject(nonConformite.getPlateforme()));
+         nonConformite.setPlateforme(plateformeDao.save(nonConformite.getPlateforme()));
       }
 
       // On vérifie que le type n'est pas null. Si c'est le cas on envoie
@@ -205,7 +205,7 @@ public class NonConformiteManagerImpl implements NonConformiteManager
       if(nonConformite.getConformiteType() == null){
          throw new RequiredObjectIsNullException("NonConformite", "modification", "ConformiteType");
       }else{
-         nonConformite.setConformiteType(conformiteTypeDao.mergeObject(nonConformite.getConformiteType()));
+         nonConformite.setConformiteType(conformiteTypeDao.save(nonConformite.getConformiteType()));
       }
 
       if(findDoublonManager(nonConformite)){
@@ -213,22 +213,22 @@ public class NonConformiteManagerImpl implements NonConformiteManager
          throw new DoublonFoundException("NonConformite", "modification");
       }else{
          BeanValidator.validateObject(nonConformite, new Validator[] {nonConformiteValidator});
-         nonConformiteDao.updateObject(nonConformite);
+         nonConformiteDao.save(nonConformite);
          log.info("Modification de l'objet NonConformite : " + nonConformite.toString());
       }
    }
 
    @Override
-   public void removeObjectManager(final NonConformite nonConformite){
+   public void deleteByIdManager(final NonConformite nonConformite){
       
       if(nonConformite != null){
          // suppression des objets non conforme
          final List<ObjetNonConforme> objs = objetNonConformeDao.findByNonConformite(nonConformite);
          for(int i = 0; i < objs.size(); i++){
-            objetNonConformeManager.removeObjectManager(objs.get(i));
+            objetNonConformeManager.deleteByIdManager(objs.get(i));
          }
 
-         nonConformiteDao.removeObject(nonConformite.getId());
+         nonConformiteDao.deleteById(nonConformite.getId());
          log.info("Suppression de l'objet NonConformite : " + nonConformite.toString());
       }
    }

@@ -45,7 +45,6 @@ import fr.aphp.tumorotek.interfacage.sender.SenderFactory;
 import fr.aphp.tumorotek.interfacage.sgl.view.ViewHandlerFactory;
 import fr.aphp.tumorotek.manager.TKThesaurusManager;
 import fr.aphp.tumorotek.manager.code.AdicapManager;
-import fr.aphp.tumorotek.manager.code.CimMasterManager;
 import fr.aphp.tumorotek.manager.code.CimoMorphoManager;
 import fr.aphp.tumorotek.manager.code.CodeAssigneManager;
 import fr.aphp.tumorotek.manager.code.CodeDossierManager;
@@ -186,12 +185,9 @@ import fr.aphp.tumorotek.manager.utilisateur.UtilisateurManager;
 import fr.aphp.tumorotek.manager.validation.coeur.cession.retour.RetourValidator;
 import fr.aphp.tumorotek.manager.xml.XmlUtils;
 import fr.aphp.tumorotek.model.TKThesaurusObject;
-import fr.aphp.tumorotek.model.bundles.ResourceBundleMbio;
-import fr.aphp.tumorotek.model.bundles.ResourceBundleSip;
-import fr.aphp.tumorotek.model.bundles.ResourceBundleTumo;
-import fr.aphp.tumorotek.model.cession.CessionExamen;
-import fr.aphp.tumorotek.model.cession.DestructionMotif;
-import fr.aphp.tumorotek.model.cession.ProtocoleType;
+import fr.aphp.tumorotek.model.coeur.cession.CessionExamen;
+import fr.aphp.tumorotek.model.coeur.cession.DestructionMotif;
+import fr.aphp.tumorotek.model.coeur.cession.ProtocoleType;
 import fr.aphp.tumorotek.model.coeur.echantillon.EchanQualite;
 import fr.aphp.tumorotek.model.coeur.echantillon.EchantillonType;
 import fr.aphp.tumorotek.model.coeur.echantillon.ModePrepa;
@@ -211,6 +207,9 @@ import fr.aphp.tumorotek.model.contexte.Specialite;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
 import fr.aphp.tumorotek.model.stockage.ConteneurType;
 import fr.aphp.tumorotek.model.stockage.EnceinteType;
+import fr.aphp.tumorotek.unused.model.bundles.ResourceBundleMbio;
+import fr.aphp.tumorotek.unused.model.bundles.ResourceBundleSip;
+import fr.aphp.tumorotek.unused.model.bundles.ResourceBundleTumo;
 
 /**
  * @version 2.2.1
@@ -668,8 +667,8 @@ public final class ManagerLocator
       return (AdicapManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("adicapManager");
    }
 
-   public static CimMasterManager getCimMasterManager(){
-      return (CimMasterManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("cimMasterManager");
+   public static Object getCimMasterManager(){
+      return (Object) (ContextLoader.getCurrentWebApplicationContext()).getBean("cimMasterManager");
    }
 
    public static CimoMorphoManager getCimoMorphoManager(){

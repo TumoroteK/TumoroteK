@@ -88,7 +88,7 @@ public class LigneEtiquetteManagerImpl implements LigneEtiquetteManager
    @Override
    public List<LigneEtiquette> findAllObjectsManager(){
       log.debug("Recherche de toutes les LigneEtiquettes.");
-      return ligneEtiquetteDao.findAll();
+      return IterableUtils.toList(ligneEtiquetteDao.findAll());
    }
 
    @Override
@@ -122,14 +122,14 @@ public class LigneEtiquetteManagerImpl implements LigneEtiquetteManager
    }
 
    @Override
-   public void createObjectManager(final LigneEtiquette ligneEtiquette, final Modele modele,
+   public void saveManager(final LigneEtiquette ligneEtiquette, final Modele modele,
       final List<ChampLigneEtiquette> champLigneEtiquettes){
       // validation de l'objet
       validateObjectManager(ligneEtiquette, modele, champLigneEtiquettes, "creation");
 
-      ligneEtiquette.setModele(modeleDao.mergeObject(modele));
+      ligneEtiquette.setModele(modeleDao.save(modele));
 
-      ligneEtiquetteDao.createObject(ligneEtiquette);
+      ligneEtiquetteDao.save(ligneEtiquette);
 
       updateAssociations(ligneEtiquette, champLigneEtiquettes, null);
 
@@ -137,14 +137,14 @@ public class LigneEtiquetteManagerImpl implements LigneEtiquetteManager
    }
 
    @Override
-   public void updateObjectManager(final LigneEtiquette ligneEtiquette, final Modele modele,
+   public void saveManager(final LigneEtiquette ligneEtiquette, final Modele modele,
       final List<ChampLigneEtiquette> champLigneEtiquettesToCreate, final List<ChampLigneEtiquette> champLigneEtiquettesToremove){
       // validation de l'objet
       validateObjectManager(ligneEtiquette, modele, champLigneEtiquettesToCreate, "modification");
 
-      ligneEtiquette.setModele(modeleDao.mergeObject(modele));
+      ligneEtiquette.setModele(modeleDao.save(modele));
 
-      ligneEtiquetteDao.updateObject(ligneEtiquette);
+      ligneEtiquetteDao.save(ligneEtiquette);
 
       updateAssociations(ligneEtiquette, champLigneEtiquettesToCreate, champLigneEtiquettesToremove);
 
@@ -152,15 +152,15 @@ public class LigneEtiquetteManagerImpl implements LigneEtiquetteManager
    }
 
    @Override
-   public void removeObjectManager(final LigneEtiquette ligneEtiquette){
+   public void deleteByIdManager(final LigneEtiquette ligneEtiquette){
       if(ligneEtiquette != null){
          // suppression des champs
          final List<ChampLigneEtiquette> champs = champLigneEtiquetteManager.findByLigneEtiquetteManager(ligneEtiquette);
          for(int i = 0; i < champs.size(); i++){
-            champLigneEtiquetteManager.removeObjectManager(champs.get(i));
+            champLigneEtiquetteManager.deleteByIdManager(champs.get(i));
          }
 
-         ligneEtiquetteDao.removeObject(ligneEtiquette.getLigneEtiquetteId());
+         ligneEtiquetteDao.deleteById(ligneEtiquette.getLigneEtiquetteId());
          log.info("Suppression de l'objet LigneEtiquette : " + ligneEtiquette.toString());
       }else{
          log.warn("Suppression d'une LigneEtiquette null");
@@ -181,7 +181,7 @@ public class LigneEtiquetteManagerImpl implements LigneEtiquetteManager
       if(champLigneEtiquettesToremove != null){
          // suppression des colonnes
          for(int i = 0; i < champLigneEtiquettesToremove.size(); i++){
-            champLigneEtiquetteManager.removeObjectManager(champLigneEtiquettesToremove.get(i));
+            champLigneEtiquetteManager.deleteByIdManager(champLigneEtiquettesToremove.get(i));
          }
       }
 
@@ -189,10 +189,10 @@ public class LigneEtiquetteManagerImpl implements LigneEtiquetteManager
          // ajout ou modif des champs
          for(int i = 0; i < champLigneEtiquettesToCreate.size(); i++){
             if(champLigneEtiquettesToCreate.get(i).getChampLigneEtiquetteId() == null){
-               champLigneEtiquetteManager.createObjectManager(champLigneEtiquettesToCreate.get(i), ligneEtiquette,
+               champLigneEtiquetteManager.saveManager(champLigneEtiquettesToCreate.get(i), ligneEtiquette,
                   champLigneEtiquettesToCreate.get(i).getEntite(), champLigneEtiquettesToCreate.get(i).getChamp());
             }else{
-               champLigneEtiquetteManager.updateObjectManager(champLigneEtiquettesToCreate.get(i), ligneEtiquette,
+               champLigneEtiquetteManager.saveManager(champLigneEtiquettesToCreate.get(i), ligneEtiquette,
                   champLigneEtiquettesToCreate.get(i).getEntite(), champLigneEtiquettesToCreate.get(i).getChamp());
             }
          }

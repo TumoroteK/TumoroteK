@@ -37,10 +37,10 @@ package fr.aphp.tumorotek.manager.coeur.cession;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.model.cession.CederObjet;
-import fr.aphp.tumorotek.model.cession.CederObjetPK;
-import fr.aphp.tumorotek.model.cession.Cession;
-import fr.aphp.tumorotek.model.cession.ECederObjetStatut;
+import fr.aphp.tumorotek.model.coeur.cession.CederObjet;
+import fr.aphp.tumorotek.model.coeur.cession.CederObjetPK;
+import fr.aphp.tumorotek.model.coeur.cession.Cession;
+import fr.aphp.tumorotek.model.coeur.cession.ECederObjetStatut;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.systeme.Unite;
 
@@ -175,7 +175,7 @@ public interface CederObjetManager
     * @param entite Entite de l'objet à céder.
     * @param quantiteUnite Unite de quantité du CederObjet.
     */
-   void createObjectManager(CederObjet cederObjet, Cession cession, Entite entite, Unite quantiteUnite);
+   void saveManager(CederObjet cederObjet, Cession cession, Entite entite, Unite quantiteUnite);
 
    /**
     * Sauvegarde les modifications apportées à un objet persistant.
@@ -184,13 +184,13 @@ public interface CederObjetManager
     * @param entite Entite de l'objet à céder.
     * @param quantiteUnite Unite de quantité du CederObjet.
     */
-   void updateObjectManager(CederObjet cederObjet, Cession cession, Entite entite, Unite quantiteUnite);
+   void saveManager(CederObjet cederObjet, Cession cession, Entite entite, Unite quantiteUnite);
 
    /**
     * Supprime un CederObjet de la base de données.
     * @param cederObjet CederObjet à supprimer de la base de données.
     */
-   void removeObjectManager(CederObjet cederObjet);
+   void deleteByIdManager(CederObjet cederObjet);
 
    /**
     * Compte les echantillons ou dérivés impliqués dans la session.

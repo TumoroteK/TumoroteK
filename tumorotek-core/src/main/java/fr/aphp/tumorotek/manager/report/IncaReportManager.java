@@ -39,8 +39,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import fr.aphp.tumorotek.model.cession.CessionType;
 import fr.aphp.tumorotek.model.code.CimMaster;
+import fr.aphp.tumorotek.model.coeur.cession.CessionType;
 import fr.aphp.tumorotek.model.coeur.echantillon.EchantillonType;
 import fr.aphp.tumorotek.model.coeur.prelevement.ConsentType;
 import fr.aphp.tumorotek.model.coeur.prelevement.Nature;

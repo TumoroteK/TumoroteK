@@ -190,7 +190,7 @@ public class RechercheManagerImpl implements RechercheManager
     */
    @Override
    public List<Recherche> findAllObjectsManager(){
-      return rechercheDao.findAll();
+      return IterableUtils.toList(rechercheDao.findAll());
    }
 
    /**
@@ -219,7 +219,7 @@ public class RechercheManagerImpl implements RechercheManager
          throw new DoublonFoundException("Recherche", "modification");
       }
       BeanValidator.validateObject(recherche, new Validator[] {rechercheValidator});
-      rechercheDao.updateObject(recherche);
+      rechercheDao.save(recherche);
    }
 
    /**
@@ -284,7 +284,7 @@ public class RechercheManagerImpl implements RechercheManager
    //				requete, recherche.getBanques(), copieur);
    //		BeanValidator.validateObject(r, new Validator[] { rechercheValidator });
    //		// enregistrement de la recherche en BDD
-   //		rechercheDao.createObject(r);
+   //		rechercheDao.save(r);
    //
    //		updateBanques(r, r.getBanques());
    //
@@ -303,7 +303,7 @@ public class RechercheManagerImpl implements RechercheManager
     *            Utilisateur qui créé la Recherche.
     */
    @Override
-   public void createObjectManager(final Recherche recherche, Affichage affichage, Requete requete, final List<Banque> banques,
+   public void saveManager(final Recherche recherche, Affichage affichage, Requete requete, final List<Banque> banques,
       final Utilisateur createur, final Banque banque){
       // On vérifie que la recherche n'est pas nulle
       if(recherche == null){
@@ -326,16 +326,16 @@ public class RechercheManagerImpl implements RechercheManager
          throw new RequiredObjectIsNullException("Recherche", "création", "Utilisateur");
       }
       if(affichage.getAffichageId() != null){
-         affichage = affichageDao.mergeObject(affichage);
+         affichage = affichageDao.save(affichage);
       }else{
-         affichageManager.createObjectManager(affichage, affichage.getResultats(), createur, banque);
+         affichageManager.saveManager(affichage, affichage.getResultats(), createur, banque);
       }
       recherche.setAffichage(affichage);
 
       if(requete.getRequeteId() != null){
-         requete = requeteDao.mergeObject(requete);
+         requete = requeteDao.save(requete);
       }else{
-         requeteManager.createObjectManager(requete, requete.getGroupementRacine(), createur, banque);
+         requeteManager.saveManager(requete, requete.getGroupementRacine(), createur, banque);
       }
       recherche.setRequete(requete);
 
@@ -343,7 +343,7 @@ public class RechercheManagerImpl implements RechercheManager
       recherche.setCreateur(createur);
       BeanValidator.validateObject(recherche, new Validator[] {rechercheValidator});
       // On enregistre la recherche
-      rechercheDao.createObject(recherche);
+      rechercheDao.save(recherche);
 
       if(banques != null){
          updateBanques(recherche, banques);
@@ -362,7 +362,7 @@ public class RechercheManagerImpl implements RechercheManager
     *            Utilisateur qui met à jour la Recherche.
     */
    @Override
-   public void updateObjectManager(final Recherche recherche, Affichage affichage, Requete requete, final List<Banque> banques,
+   public void saveManager(final Recherche recherche, Affichage affichage, Requete requete, final List<Banque> banques,
       final Utilisateur createur, final Banque banque){
       // On vérifie que la recherche n'est pas nulle
       if(recherche == null){
@@ -385,16 +385,16 @@ public class RechercheManagerImpl implements RechercheManager
          throw new RequiredObjectIsNullException("Recherche", "modification", "Utilisateur");
       }
       if(affichage.getAffichageId() != null){
-         affichage = affichageDao.mergeObject(affichage);
+         affichage = affichageDao.save(affichage);
       }else{
-         affichageManager.createObjectManager(affichage, affichage.getResultats(), createur, banque);
+         affichageManager.saveManager(affichage, affichage.getResultats(), createur, banque);
       }
       recherche.setAffichage(affichage);
 
       if(requete.getRequeteId() != null){
-         requete = requeteDao.mergeObject(requete);
+         requete = requeteDao.save(requete);
       }else{
-         requeteManager.createObjectManager(requete, requete.getGroupementRacine(), createur, banque);
+         requeteManager.saveManager(requete, requete.getGroupementRacine(), createur, banque);
       }
       recherche.setRequete(requete);
 
@@ -403,7 +403,7 @@ public class RechercheManagerImpl implements RechercheManager
       // On vérifie que le bean est valide
       BeanValidator.validateObject(recherche, new Validator[] {rechercheValidator});
       // On met à jour la recherche
-      rechercheDao.updateObject(recherche);
+      rechercheDao.save(recherche);
 
       if(banques != null){
          updateBanques(recherche, banques);
@@ -420,7 +420,7 @@ public class RechercheManagerImpl implements RechercheManager
     *            Recherche à supprimer
     */
    @Override
-   public void removeObjectManager(final Recherche recherche){
+   public void deleteByIdManager(final Recherche recherche){
       // On vérifie que la recherche n'est pas nulle
       if(recherche == null){
          throw new RequiredObjectIsNullException("Recherche", "suppression", "Recherche");
@@ -440,7 +440,7 @@ public class RechercheManagerImpl implements RechercheManager
       }
 
       // On supprime la recherche
-      rechercheDao.removeObject(recherche.getRechercheId());
+      rechercheDao.deleteById(recherche.getRechercheId());
    }
 
    /**
@@ -525,7 +525,7 @@ public class RechercheManagerImpl implements RechercheManager
    @Override
    public List<Banque> findBanquesManager(Recherche recherche){
       if(recherche != null){
-         recherche = rechercheDao.mergeObject(recherche);
+         recherche = rechercheDao.save(recherche);
          final List<Banque> banques = recherche.getBanques();
          banques.size();
          return banques;
@@ -548,7 +548,7 @@ public class RechercheManagerImpl implements RechercheManager
          throw new RequiredObjectIsNullException("Recherche", "recherche de doublon", "Recherche");
       }
       if(recherche.getRechercheId() == null){
-         return rechercheDao.findAll().contains(recherche);
+         return IterableUtils.toList(rechercheDao.findAll()).contains(recherche);
       }
       return rechercheDao.findByExcludedId(recherche.getRechercheId()).contains(recherche);
    }
@@ -615,7 +615,7 @@ public class RechercheManagerImpl implements RechercheManager
     */
    private void updateBanques(final Recherche recherche, final List<Banque> banques){
 
-      final Recherche rec = rechercheDao.mergeObject(recherche);
+      final Recherche rec = rechercheDao.save(recherche);
 
       if(rec.getBanques() == null){
          rec.setBanques(new ArrayList<Banque>());
@@ -636,7 +636,7 @@ public class RechercheManagerImpl implements RechercheManager
       // on parcourt la liste la liste des banques à retirer de
       // l'association
       for(int i = 0; i < banquesToRemove.size(); i++){
-         final Banque bank = banqueDao.mergeObject(banquesToRemove.get(i));
+         final Banque bank = banqueDao.save(banquesToRemove.get(i));
          // on retire la banque de chaque coté de l'association
          rec.getBanques().remove(bank);
          bank.getRecherches().remove(rec);
@@ -649,8 +649,8 @@ public class RechercheManagerImpl implements RechercheManager
          // si une banque n'était pas associée à la recherche
          if(!rec.getBanques().contains(banques.get(i))){
             // on ajoute la banque des deux cotés de l'association
-            rec.getBanques().add(banqueDao.mergeObject(banques.get(i)));
-            banqueDao.mergeObject(banques.get(i)).getRecherches().add(rec);
+            rec.getBanques().add(banqueDao.save(banques.get(i)));
+            banqueDao.save(banques.get(i)).getRecherches().add(rec);
 
             log.debug(
                "Ajout de l'association entre la recherche : " + rec.toString() + " et la banque : " + banques.get(i).toString());

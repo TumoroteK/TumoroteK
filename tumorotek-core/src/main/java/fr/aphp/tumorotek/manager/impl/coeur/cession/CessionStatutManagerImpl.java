@@ -41,9 +41,9 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import fr.aphp.tumorotek.dao.cession.CessionStatutDao;
+import fr.aphp.tumorotek.dao.coeur.cession.CessionStatutDao;
 import fr.aphp.tumorotek.manager.coeur.cession.CessionStatutManager;
-import fr.aphp.tumorotek.model.cession.CessionStatut;
+import fr.aphp.tumorotek.model.coeur.cession.CessionStatut;
 
 /**
  *

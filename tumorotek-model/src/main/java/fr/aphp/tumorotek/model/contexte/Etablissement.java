@@ -54,7 +54,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import fr.aphp.tumorotek.model.TKFantomableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
-import fr.aphp.tumorotek.model.cession.Contrat;
+import fr.aphp.tumorotek.model.coeur.cession.Contrat;
 
 /**
  * Objet persistant mappant la table ETABLISSEMENT.

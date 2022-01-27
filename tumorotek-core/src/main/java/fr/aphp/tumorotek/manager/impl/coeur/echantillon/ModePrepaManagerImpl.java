@@ -145,7 +145,7 @@ public class ModePrepaManagerImpl implements ModePrepaManager
       final ModePrepa mode = obj;
       if(mode != null){
          if(mode.getId() == null){
-            return modePrepaDao.findAll().contains(mode);
+            return IterableUtils.toList(modePrepaDao.findAll()).contains(mode);
          }
          return modePrepaDao.findByExcludedId(mode.getId()).contains(mode);
       }
@@ -161,7 +161,7 @@ public class ModePrepaManagerImpl implements ModePrepaManager
    }
 
    @Override
-   public void createObjectManager(final ModePrepa obj){
+   public void saveManager(final ModePrepa obj){
 
       final ModePrepa mode = obj;
 
@@ -170,19 +170,19 @@ public class ModePrepaManagerImpl implements ModePrepaManager
       if(mode.getPlateforme() == null){
          throw new RequiredObjectIsNullException("ModePrepa", "creation", "Plateforme");
       }
-         mode.setPlateforme(plateformeDao.mergeObject(mode.getPlateforme()));
+         mode.setPlateforme(plateformeDao.save(mode.getPlateforme()));
 
       if(findDoublonManager(mode)){
          log.warn("Doublon lors de la creation de l'objet ModePrepa : " + mode.toString());
          throw new DoublonFoundException("ModePrepa", "creation");
       }
          BeanValidator.validateObject(mode, new Validator[] {modePrepaValidator});
-         modePrepaDao.createObject(mode);
+         modePrepaDao.save(mode);
          log.info("Enregistrement de l'objet ModePrepa : " + mode.toString());
    }
 
    @Override
-   public void updateObjectManager(final ModePrepa obj){
+   public void saveManager(final ModePrepa obj){
 
       final ModePrepa mode = obj;
 
@@ -191,15 +191,15 @@ public class ModePrepaManagerImpl implements ModePrepaManager
          throw new DoublonFoundException("ModePrepa", "modification");
       }
          BeanValidator.validateObject(mode, new Validator[] {modePrepaValidator});
-         modePrepaDao.updateObject(mode);
+         modePrepaDao.save(mode);
          log.info("Modification de l'objet ModePrepa : " + mode.toString());
    }
 
    @Override
-   public void removeObjectManager(final ModePrepa obj){
+   public void deleteByIdManager(final ModePrepa obj){
 
       final ModePrepa mode = obj;
-      modePrepaDao.removeObject(mode.getId());
+      modePrepaDao.deleteById(mode.getId());
    }
 
    @Override

@@ -90,18 +90,18 @@ public interface ModePrepaDeriveManager extends PfDependantTKThesaurusManager<Mo
    //	 * Persist une instance de ModePrepaDerive dans la base de données.
    //	 * @param mode Nouvelle instance de l'objet à créer.
    //	 */
-   //	void createObjectManager(ModePrepaDerive mode);
+   //	void saveManager(ModePrepaDerive mode);
    //	
    //	/**
    //	 * Sauvegarde les modifications apportées à un objet persistant.
    //	 * @param mode Objet à mettre à jour dans la base.
    //	 */
-   //	void updateObjectManager(ModePrepaDerive mode);
+   //	void saveManager(ModePrepaDerive mode);
    //	
    //	/**
    //	 * Supprime un ModePrepaDerive de la base de données.
    //	 * @param mode ModePrepaDerive à supprimer de la base de données.
    //	 */
-   //	void removeObjectManager(ModePrepaDerive mode);
+   //	void deleteByIdManager(ModePrepaDerive mode);
 
 }

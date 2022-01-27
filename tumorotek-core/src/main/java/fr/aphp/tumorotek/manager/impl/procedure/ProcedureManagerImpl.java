@@ -166,7 +166,7 @@ public class ProcedureManagerImpl implements ProcedureManager
          }
 
          // mise a jour du Patient actif
-         patientManager.createOrUpdateObjectManager(patient, null, medsA, liensA, valeursAConserver, null, null, null, u,
+         patientManager.createOrsaveManager(patient, null, medsA, liensA, valeursAConserver, null, null, null, u,
             "fusion", null, false);
 
          // recuperation des maladies
@@ -191,7 +191,7 @@ public class ProcedureManagerImpl implements ProcedureManager
                   while(prelsIt.hasNext()){
                      prel = prelsIt.next();
                      prel.setMaladie(malA.get(0));
-                     prelevementDao.updateObject(prel);
+                     prelevementDao.save(prel);
                   }
                   maladie.getPrelevements().clear();
                   malsToRemove.add(maladie);
@@ -203,19 +203,19 @@ public class ProcedureManagerImpl implements ProcedureManager
                   malA.get(0).setDateDebut(maladie.getDateDebut());
                   malA.get(0).setDateDiagnostic(maladie.getDateDiagnostic());
 
-                  maladieDao.updateObject(malA.get(0));
+                  maladieDao.save(malA.get(0));
 
                   // suppression maladie passive
                   maladie.setPatient(passif); //recupere son patient
                   while(prelsIt.hasNext()){
                      prel = prelsIt.next();
                      prel.setMaladie(malA.get(0));
-                     prelevementDao.updateObject(prel);
+                     prelevementDao.save(prel);
                   }
                   maladie.getPrelevements().clear();
                   malsToRemove.add(maladie);
                }else{
-                  maladieDao.updateObject(maladie);
+                  maladieDao.save(maladie);
                }
 
             }else{ // ajoute prelevements a la maladie existante
@@ -224,7 +224,7 @@ public class ProcedureManagerImpl implements ProcedureManager
                while(prelsIt.hasNext()){
                   prel = prelsIt.next();
                   prel.setMaladie(malA.get(index));
-                  prelevementDao.updateObject(prel);
+                  prelevementDao.save(prel);
                }
                maladie.getPrelevements().clear();
                malsToRemove.add(maladie);
@@ -233,12 +233,12 @@ public class ProcedureManagerImpl implements ProcedureManager
 
          // fantomization (oh le beau mot) du passif
          for(int i = 0; i < malsToRemove.size(); i++){
-            maladieManager.removeObjectManager(malsToRemove.get(i), comments, u);
+            maladieManager.deleteByIdManager(malsToRemove.get(i), comments, u);
             //passif.getMaladies().remove(malsToRemove.get(i));
          }
 
          // remove patient et objets associes
-         patientDao.removeObject(passif.getPatientId());
+         patientDao.deleteById(passif.getPatientId());
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(passif, operationManager, comments, u);
 

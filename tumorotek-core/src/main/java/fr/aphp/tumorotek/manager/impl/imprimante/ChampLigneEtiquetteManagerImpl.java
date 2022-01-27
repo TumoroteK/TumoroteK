@@ -87,7 +87,7 @@ public class ChampLigneEtiquetteManagerImpl implements ChampLigneEtiquetteManage
    @Override
    public List<ChampLigneEtiquette> findAllObjectsManager(){
       log.debug("Recherche de tous les ChampLigneEtiquettes.");
-      return champLigneEtiquetteDao.findAll();
+      return IterableUtils.toList(champLigneEtiquetteDao.findAll());
    }
 
    @Override
@@ -138,52 +138,52 @@ public class ChampLigneEtiquetteManagerImpl implements ChampLigneEtiquetteManage
    }
 
    @Override
-   public void createObjectManager(final ChampLigneEtiquette champLigneEtiquette, final LigneEtiquette ligneEtiquette,
+   public void saveManager(final ChampLigneEtiquette champLigneEtiquette, final LigneEtiquette ligneEtiquette,
       final Entite entite, final Champ champ){
       // validation de l'objet
       validateObjectManager(champLigneEtiquette, ligneEtiquette, entite, champ, "creation");
 
-      champLigneEtiquette.setLigneEtiquette(ligneEtiquetteDao.mergeObject(ligneEtiquette));
-      champLigneEtiquette.setEntite(entiteDao.mergeObject(entite));
+      champLigneEtiquette.setLigneEtiquette(ligneEtiquetteDao.save(ligneEtiquette));
+      champLigneEtiquette.setEntite(entiteDao.save(entite));
 
-      champManager.createObjectManager(champ, null);
+      champManager.saveManager(champ, null);
       champLigneEtiquette.setChamp(champ);
 
-      champLigneEtiquetteDao.createObject(champLigneEtiquette);
+      champLigneEtiquetteDao.save(champLigneEtiquette);
 
       log.info("Enregistrement objet ChampLigneEtiquette " + champLigneEtiquette.toString());
    }
 
    @Override
-   public void updateObjectManager(final ChampLigneEtiquette champLigneEtiquette, final LigneEtiquette ligneEtiquette,
+   public void saveManager(final ChampLigneEtiquette champLigneEtiquette, final LigneEtiquette ligneEtiquette,
       final Entite entite, final Champ champ){
       // validation de l'objet
       validateObjectManager(champLigneEtiquette, ligneEtiquette, entite, champ, "modification");
 
-      champLigneEtiquette.setLigneEtiquette(ligneEtiquetteDao.mergeObject(ligneEtiquette));
-      champLigneEtiquette.setEntite(entiteDao.mergeObject(entite));
+      champLigneEtiquette.setLigneEtiquette(ligneEtiquetteDao.save(ligneEtiquette));
+      champLigneEtiquette.setEntite(entiteDao.save(entite));
 
       // si le champ n'existe pas, on le crée
       if(champ.getChampId() == null){
-         champManager.createObjectManager(champ, null);
+         champManager.saveManager(champ, null);
       }else{
-         champManager.updateObjectManager(champ, null);
+         champManager.saveManager(champ, null);
       }
       champLigneEtiquette.setChamp(champ);
 
-      champLigneEtiquetteDao.updateObject(champLigneEtiquette);
+      champLigneEtiquetteDao.save(champLigneEtiquette);
 
       log.info("Enregistrement objet ChampLigneEtiquette " + champLigneEtiquette.toString());
    }
 
    @Override
-   public void removeObjectManager(final ChampLigneEtiquette champLigneEtiquette){
+   public void deleteByIdManager(final ChampLigneEtiquette champLigneEtiquette){
       if(champLigneEtiquette != null){
          final Champ chp = champLigneEtiquette.getChamp();
-         champLigneEtiquetteDao.removeObject(champLigneEtiquette.getChampLigneEtiquetteId());
+         champLigneEtiquetteDao.deleteById(champLigneEtiquette.getChampLigneEtiquetteId());
          log.info("Suppression de l'objet ChampLigneEtiquette : " + champLigneEtiquette.toString());
 
-         champManager.removeObjectManager(chp);
+         champManager.deleteByIdManager(chp);
       }else{
          log.warn("Suppression d'un ChampLigneEtiquette null");
       }

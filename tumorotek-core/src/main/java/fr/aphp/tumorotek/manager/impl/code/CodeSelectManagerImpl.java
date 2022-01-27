@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -111,7 +112,7 @@ public class CodeSelectManagerImpl implements CodeSelectManager
 
    @Override
    public List<CodeSelect> findAllObjectsManager(){
-      return codeSelectDao.findAll();
+      return IterableUtils.toList(codeSelectDao.findAll());
    }
 
    @Override
@@ -143,7 +144,7 @@ public class CodeSelectManagerImpl implements CodeSelectManager
    @Override
    public boolean findDoublonManager(final CodeSelect code){
       if(code.getCodeSelectId() == null){
-         return codeSelectDao.findAll().contains(code);
+         return IterableUtils.toList(codeSelectDao.findAll()).contains(code);
       }
       return codeSelectDao.findByExcludedId(code.getCodeSelectId()).contains(code);
    }
@@ -160,19 +161,19 @@ public class CodeSelectManagerImpl implements CodeSelectManager
 
       // merge non required
       if(dos != null){
-         code.setCodeDossier(codeDossierDao.mergeObject(dos));
+         code.setCodeDossier(codeDossierDao.save(dos));
       }
 
       //Doublon
       if(!findDoublonManager(code)){
          if((operation.equals("creation") || operation.equals("modification"))){
             if(operation.equals("creation")){
-               codeSelectDao.createObject(code);
+               codeSelectDao.save(code);
                log.info("Enregistrement objet CodeSelect " + code.toString());
                CreateOrUpdateUtilities.createAssociateOperation(code, operationManager,
                   operationTypeDao.findByNom("Creation").get(0), code.getUtilisateur());
             }else{
-               codeSelectDao.updateObject(code);
+               codeSelectDao.save(code);
                log.info("Modification objet CodeSelect " + code.toString());
                CreateOrUpdateUtilities.createAssociateOperation(code, operationManager,
                   operationTypeDao.findByNom("Modification").get(0), code.getUtilisateur());
@@ -199,7 +200,7 @@ public class CodeSelectManagerImpl implements CodeSelectManager
       //Banque required
       if(bank != null){
          // merge banque object
-         code.setBanque(banqueDao.mergeObject(bank));
+         code.setBanque(banqueDao.save(bank));
       }else if(code.getBanque() == null){
          log.warn("Objet obligatoire Banque manquant" + " lors de la " + operation + " du code favori");
          throw new RequiredObjectIsNullException("CodeSelect", operation, "Banque");
@@ -208,7 +209,7 @@ public class CodeSelectManagerImpl implements CodeSelectManager
       //Utilisateur required
       if(utilisateur != null){
          // merge utilisateur object
-         code.setUtilisateur(utilisateurDao.mergeObject(utilisateur));
+         code.setUtilisateur(utilisateurDao.save(utilisateur));
       }else if(code.getUtilisateur() == null){
          log.warn("Objet obligatoire Utilisateur manquant" + " lors de la " + operation + " du code favori");
          throw new RequiredObjectIsNullException("CodeSelect", operation, "Utilisateur");
@@ -216,9 +217,9 @@ public class CodeSelectManagerImpl implements CodeSelectManager
    }
 
    @Override
-   public void removeObjectManager(final CodeSelect code){
+   public void deleteByIdManager(final CodeSelect code){
       if(code != null){
-         codeSelectDao.removeObject(code.getCodeSelectId());
+         codeSelectDao.deleteById(code.getCodeSelectId());
          log.info("Suppression objet CodeSelect " + code.toString());
          //Supprime operations associes
          CreateOrUpdateUtilities.removeAssociateOperations(code, operationManager);

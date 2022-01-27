@@ -73,7 +73,7 @@ public class VersionManagerImpl implements VersionManager
    @Override
    public List<Version> findAllObjectsManager(){
       log.debug("Recherche de toutes les Versions.");
-      return versionDao.findAll();
+      return IterableUtils.toList(versionDao.findAll());
    }
 
    @Override
@@ -95,7 +95,7 @@ public class VersionManagerImpl implements VersionManager
    }
 
    @Override
-   public void createObjectManager(final Version version){
-      versionDao.createObject(version);
+   public void saveManager(final Version version){
+      versionDao.save(version);
    }
 }

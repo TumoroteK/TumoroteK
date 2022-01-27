@@ -99,7 +99,7 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
 
    @Override
    public List<CouleurEntiteType> findAllObjectsManager(){
-      return couleurEntiteTypeDao.findAll();
+      return IterableUtils.toList(couleurEntiteTypeDao.findAll());
    }
 
    @Override
@@ -130,7 +130,7 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
    public Boolean findDoublonManager(final CouleurEntiteType couleurEntiteType){
       if(couleurEntiteType != null){
          if(couleurEntiteType.getCouleurEntiteTypeId() == null){
-            return couleurEntiteTypeDao.findAll().contains(couleurEntiteType);
+            return IterableUtils.toList(couleurEntiteTypeDao.findAll()).contains(couleurEntiteType);
          }
          return couleurEntiteTypeDao.findByExcludedId(couleurEntiteType.getCouleurEntiteTypeId()).contains(couleurEntiteType);
       }
@@ -138,12 +138,12 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
    }
 
    @Override
-   public void createObjectManager(final CouleurEntiteType couleurEntiteType, final Couleur couleur, final Banque banque,
+   public void saveManager(final CouleurEntiteType couleurEntiteType, final Couleur couleur, final Banque banque,
       final EchantillonType echantillonType, final ProdType prodType){
 
       //Banque required
       if(banque != null){
-         couleurEntiteType.setBanque(banqueDao.mergeObject(banque));
+         couleurEntiteType.setBanque(banqueDao.save(banque));
       }else{
          log.warn("Objet obligatoire Banque manquant" + " lors de la création d'une" + " CouleurEntiteType");
          throw new RequiredObjectIsNullException("CouleurEntiteType", "creation", "Banque");
@@ -151,7 +151,7 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
 
       //Couleur required
       if(couleur != null){
-         couleurEntiteType.setCouleur(couleurDao.mergeObject(couleur));
+         couleurEntiteType.setCouleur(couleurDao.save(couleur));
       }else{
          log.warn("Objet obligatoire Couleur manquant" + " lors de la création d'une" + " CouleurEntiteType");
          throw new RequiredObjectIsNullException("CouleurEntiteType", "creation", "Couleur");
@@ -166,8 +166,8 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
          throw new InvalidMultipleAssociationException("CouleurEntiteType", "creation", true);
       }
 
-      couleurEntiteType.setEchantillonType(echantillonTypeDao.mergeObject(echantillonType));
-      couleurEntiteType.setProdType(prodTypeDao.mergeObject(prodType));
+      couleurEntiteType.setEchantillonType(echantillonTypeDao.save(echantillonType));
+      couleurEntiteType.setProdType(prodTypeDao.save(prodType));
 
       // Test s'il y a des doublons
       if(findDoublonManager(couleurEntiteType)){
@@ -175,17 +175,17 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
          throw new DoublonFoundException("CouleurEntiteType", "creation");
       }
 
-      couleurEntiteTypeDao.createObject(couleurEntiteType);
+      couleurEntiteTypeDao.save(couleurEntiteType);
 
       log.info("Enregistrement de l'objet CouleurEntiteType : " + couleurEntiteType.toString());
    }
 
    @Override
-   public void updateObjectManager(final CouleurEntiteType couleurEntiteType, final Couleur couleur, final Banque banque,
+   public void saveManager(final CouleurEntiteType couleurEntiteType, final Couleur couleur, final Banque banque,
       final EchantillonType echantillonType, final ProdType prodType){
       //Banque required
       if(banque != null){
-         couleurEntiteType.setBanque(banqueDao.mergeObject(banque));
+         couleurEntiteType.setBanque(banqueDao.save(banque));
       }else{
          log.warn("Objet obligatoire Banque manquant" + " lors de la modification d'une" + " CouleurEntiteType");
          throw new RequiredObjectIsNullException("CouleurEntiteType", "modification", "Banque");
@@ -193,7 +193,7 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
 
       //Couleur required
       if(couleur != null){
-         couleurEntiteType.setCouleur(couleurDao.mergeObject(couleur));
+         couleurEntiteType.setCouleur(couleurDao.save(couleur));
       }else{
          log.warn("Objet obligatoire Couleur manquant" + " lors de la modification d'une" + " CouleurEntiteType");
          throw new RequiredObjectIsNullException("CouleurEntiteType", "modification", "Couleur");
@@ -208,8 +208,8 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
          throw new InvalidMultipleAssociationException("CouleurEntiteType", "modification", true);
       }
 
-      couleurEntiteType.setEchantillonType(echantillonTypeDao.mergeObject(echantillonType));
-      couleurEntiteType.setProdType(prodTypeDao.mergeObject(prodType));
+      couleurEntiteType.setEchantillonType(echantillonTypeDao.save(echantillonType));
+      couleurEntiteType.setProdType(prodTypeDao.save(prodType));
 
       // Test s'il y a des doublons
       if(findDoublonManager(couleurEntiteType)){
@@ -217,15 +217,15 @@ public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
          throw new DoublonFoundException("CouleurEntiteType", "modification");
       }
 
-      couleurEntiteTypeDao.updateObject(couleurEntiteType);
+      couleurEntiteTypeDao.save(couleurEntiteType);
 
       log.info("Enregistrement de l'objet CouleurEntiteType : " + couleurEntiteType.toString());
    }
 
    @Override
-   public void removeObjectManager(final CouleurEntiteType couleurEntiteType){
+   public void deleteByIdManager(final CouleurEntiteType couleurEntiteType){
       if(couleurEntiteType != null){
-         couleurEntiteTypeDao.removeObject(couleurEntiteType.getCouleurEntiteTypeId());
+         couleurEntiteTypeDao.deleteById(couleurEntiteType.getCouleurEntiteTypeId());
          log.info("Suppression de l'objet CouleurEntiteType : " + couleurEntiteType.toString());
       }else{
          log.warn("Suppression d'une CouleurEntiteType null");

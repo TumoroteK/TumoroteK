@@ -101,7 +101,7 @@ public class DroitObjetManagerImpl implements DroitObjetManager
    @Override
    public List<DroitObjet> findAllObjectsManager(){
       log.debug("Recherche de tous les DroitObjets");
-      return droitObjetDao.findAll();
+      return IterableUtils.toList(droitObjetDao.findAll());
    }
 
    @Override
@@ -109,7 +109,7 @@ public class DroitObjetManagerImpl implements DroitObjetManager
       if(pk != null){
          return droitObjetDao.findByExcludedPK(pk);
       }
-      return droitObjetDao.findAll();
+      return IterableUtils.toList(droitObjetDao.findAll());
    }
 
    @Override
@@ -209,27 +209,27 @@ public class DroitObjetManagerImpl implements DroitObjetManager
    }
 
    @Override
-   public void createObjectManager(final DroitObjet droitObjet, final Profil profil, final Entite entite,
+   public void saveManager(final DroitObjet droitObjet, final Profil profil, final Entite entite,
       final OperationType type){
 
       // validation de l'objet à créer
       validateObjectManager(profil, entite, type);
 
-      droitObjet.setProfil(profilDao.mergeObject(profil));
-      droitObjet.setEntite(entiteDao.mergeObject(entite));
-      droitObjet.setOperationType(operationTypeDao.mergeObject(type));
+      droitObjet.setProfil(profilDao.save(profil));
+      droitObjet.setEntite(entiteDao.save(entite));
+      droitObjet.setOperationType(operationTypeDao.save(type));
 
       // création
-      droitObjetDao.createObject(droitObjet);
+      droitObjetDao.save(droitObjet);
 
       log.info("Enregistrement objet DroitObjet " + droitObjet.toString());
 
    }
 
    @Override
-   public void removeObjectManager(final DroitObjet droitObjet){
+   public void deleteByIdManager(final DroitObjet droitObjet){
       if(droitObjet != null){
-         droitObjetDao.removeObject(droitObjet.getPk());
+         droitObjetDao.deleteById(droitObjet.getPk());
          log.info("Suppression de l'objet DroitObjet : " + droitObjet.toString());
       }else{
          log.warn("Suppression d'un DroitObjet null");

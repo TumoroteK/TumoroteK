@@ -75,7 +75,7 @@ public class BlocImpressionManagerImpl implements BlocImpressionManager
    @Override
    public List<BlocImpression> findAllObjectsManager(){
       log.debug("Recherche de tous les blocs d'impression.");
-      return blocImpressionDao.findAll();
+      return IterableUtils.toList(blocImpressionDao.findAll());
    }
 
    @Override

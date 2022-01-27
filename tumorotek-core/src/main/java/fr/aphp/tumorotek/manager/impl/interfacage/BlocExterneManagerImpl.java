@@ -100,7 +100,7 @@ public class BlocExterneManagerImpl implements BlocExterneManager
    @Override
    public List<BlocExterne> findAllObjectsManager(){
       log.debug("Recherche de tous les BlocExternes");
-      return blocExterneDao.findAll();
+      return IterableUtils.toList(blocExterneDao.findAll());
    }
 
    @Override
@@ -166,39 +166,39 @@ public class BlocExterneManagerImpl implements BlocExterneManager
    }
 
    @Override
-   public void createObjectManager(final BlocExterne blocExterne, final DossierExterne dossierExterne,
+   public void saveManager(final BlocExterne blocExterne, final DossierExterne dossierExterne,
       final List<ValeurExterne> valeurExternes){
       // Validation du bloc
       validateBlocExterneManager(blocExterne, dossierExterne);
 
-      blocExterne.setDossierExterne(dossierExterneDao.mergeObject(dossierExterne));
+      blocExterne.setDossierExterne(dossierExterneDao.save(dossierExterne));
 
       if(findDoublonManager(blocExterne)){
-         removeObjectManager(blocExterneDao.findByDossierExterne(dossierExterne)
+         deleteByIdManager(blocExterneDao.findByDossierExterne(dossierExterne)
             .get(blocExterneDao.findByDossierExterne(dossierExterne).indexOf(blocExterne)));
       }
-      blocExterneDao.createObject(blocExterne);
+      blocExterneDao.save(blocExterne);
       log.info("Enregistrement de l'objet BlocExterne : " + blocExterne.toString());
 
       // création des valeurs
       if(valeurExternes != null){
          for(int i = 0; i < valeurExternes.size(); i++){
-            valeurExterneManager.createObjectManager(valeurExternes.get(i), blocExterne);
+            valeurExterneManager.saveManager(valeurExternes.get(i), blocExterne);
          }
       }
    }
 
    @Override
-   public void removeObjectManager(final BlocExterne blocExterne){
+   public void deleteByIdManager(final BlocExterne blocExterne){
       if(blocExterne != null && blocExterne.getBlocExterneId() != null){
 
          // suppression des valeurs
          final List<ValeurExterne> valeurs = valeurExterneManager.findByBlocExterneManager(blocExterne);
          for(int i = 0; i < valeurs.size(); i++){
-            valeurExterneManager.removeObjectManager(valeurs.get(i));
+            valeurExterneManager.deleteByIdManager(valeurs.get(i));
          }
 
-         blocExterneDao.removeObject(blocExterne.getBlocExterneId());
+         blocExterneDao.deleteById(blocExterne.getBlocExterneId());
          log.info("Suppression de l'objet BlocExterne : " + blocExterne.toString());
       }else{
          log.warn("Suppression d'une BlocExterne null");

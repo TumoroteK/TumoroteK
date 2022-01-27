@@ -17,7 +17,7 @@ public class SubdivisionManagerImpl implements SubdivisionManager
 
    @Override
    public List<Subdivision> findAllObjectsManager(){
-      return subdivisionDao.findAll();
+      return IterableUtils.toList(subdivisionDao.findAll());
    }
 
 }

@@ -106,7 +106,7 @@ public interface SModeleManager
     * @param liste des indicateurs associes
     * @param liste des banques sur lesquels appliquer les indicateurs
     */
-   void createObjectManager(SModele modele, Plateforme plateforme, List<Indicateur> indicateurs, List<Banque> banques);
+   void saveManager(SModele modele, Plateforme plateforme, List<Indicateur> indicateurs, List<Banque> banques);
 
    /**
     * Sauvegarde les modifications apportées à un objet persistant.
@@ -117,13 +117,13 @@ public interface SModeleManager
     * @return SModele modifié
     * @version 2.1
     */
-   SModele updateObjectManager(SModele modele, Plateforme plateforme, List<Indicateur> indicateurs, List<Banque> banques);
+   SModele saveManager(SModele modele, Plateforme plateforme, List<Indicateur> indicateurs, List<Banque> banques);
 
    /**
     * Supprime un IndicateurModele de la base de données.
     * @param modele IndicateurModele à supprimer de la base de données.
     */
-   void removeObjectManager(SModele modele);
+   void deleteByIdManager(SModele modele);
 
    /**
     * Getter method pour eviter LazyInitialize exception

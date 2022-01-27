@@ -146,7 +146,7 @@ public class RequeteManagerImpl implements RequeteManager
     */
    @Override
    public List<Requete> findAllObjectsManager(){
-      return requeteDao.findAll();
+      return IterableUtils.toList(requeteDao.findAll());
    }
 
    /**
@@ -172,7 +172,7 @@ public class RequeteManagerImpl implements RequeteManager
             throw new DoublonFoundException("Requete", "modification");
          }else{
             BeanValidator.validateObject(requete, new Validator[] {requeteValidator});
-            requeteDao.updateObject(requete);
+            requeteDao.save(requete);
          }
       }
    }
@@ -207,7 +207,7 @@ public class RequeteManagerImpl implements RequeteManager
       r.setBanque(banque);
       BeanValidator.validateObject(r, new Validator[] {requeteValidator});
       //enregistrement de la requete en BDD
-      requeteDao.createObject(r);
+      requeteDao.save(r);
       //ajout de la requete copiee dans la liste
       requetes.add(r);
 
@@ -220,7 +220,7 @@ public class RequeteManagerImpl implements RequeteManager
     * @param createur Utilisateur qui créé la Requête.
     */
    @Override
-   public void createObjectManager(final Requete requete, Groupement groupement, final Utilisateur createur, final Banque banque){
+   public void saveManager(final Requete requete, Groupement groupement, final Utilisateur createur, final Banque banque){
       //On vérifie que la requête n'est pas nulle
       if(requete == null){
          log.warn("Objet obligatoire Requete manquant lors " + "de la création d'un objet Requete");
@@ -243,9 +243,9 @@ public class RequeteManagerImpl implements RequeteManager
       }
       requete.setBanque(banque);
       if(groupement.getGroupementId() != null){
-         groupement = groupementDao.mergeObject(groupement);
+         groupement = groupementDao.save(groupement);
       }else{
-         groupementManager.createObjectManager(groupement, groupement.getCritere1(), groupement.getCritere2(),
+         groupementManager.saveManager(groupement, groupement.getCritere1(), groupement.getCritere2(),
             groupement.getOperateur(), groupement.getParent());
       }
       requete.setGroupementRacine(groupement);
@@ -253,7 +253,7 @@ public class RequeteManagerImpl implements RequeteManager
       requete.setCreateur(createur);
       BeanValidator.validateObject(requete, new Validator[] {requeteValidator});
       // On enregistre la requete
-      requeteDao.createObject(requete);
+      requeteDao.save(requete);
       // ajout de la requete dans la liste
       requetes.add(requete);
    }
@@ -264,7 +264,7 @@ public class RequeteManagerImpl implements RequeteManager
     * @param createur Utilisateur qui met à jour la Requête.
     */
    @Override
-   public void updateObjectManager(final Requete requete, Groupement groupement, final Utilisateur createur){
+   public void saveManager(final Requete requete, Groupement groupement, final Utilisateur createur){
       //On vérifie que la requête n'est pas nulle
       if(requete == null){
          log.warn("Objet obligatoire Requete manquant lors " + "de la modification d'un objet Requete");
@@ -282,9 +282,9 @@ public class RequeteManagerImpl implements RequeteManager
       }
       final Groupement oldGroupement = requete.getGroupementRacine();
       if(groupement.getGroupementId() != null){
-         groupement = groupementDao.mergeObject(groupement);
+         groupement = groupementDao.save(groupement);
       }else{
-         groupementManager.createObjectManager(groupement, groupement.getCritere1(), groupement.getCritere2(),
+         groupementManager.saveManager(groupement, groupement.getCritere1(), groupement.getCritere2(),
             groupement.getOperateur(), groupement.getParent());
       }
       requete.setGroupementRacine(groupement);
@@ -293,13 +293,13 @@ public class RequeteManagerImpl implements RequeteManager
       // On vérifie que le bean est valide
       BeanValidator.validateObject(requete, new Validator[] {requeteValidator});
       // On met à jour la requete
-      requeteDao.updateObject(requete);
+      requeteDao.save(requete);
       // mise a jour de la liste des requetes
       requetes = findAllObjectsManager();
 
       //On supprime l'ancien groupement racine.
       if(oldGroupement != null){
-         groupementManager.removeObjectManager(oldGroupement);
+         groupementManager.deleteByIdManager(oldGroupement);
       }
    }
 
@@ -308,7 +308,7 @@ public class RequeteManagerImpl implements RequeteManager
     * @param requete Requête à supprimer
     */
    @Override
-   public void removeObjectManager(final Requete requete){
+   public void deleteByIdManager(final Requete requete){
       //On vérifie que la requête n'est pas nulle
       if(requete == null){
          throw new RequiredObjectIsNullException("Requete", "suppression", "Requete");
@@ -332,10 +332,10 @@ public class RequeteManagerImpl implements RequeteManager
             }
 
             // On supprime le groupement racine
-            groupementManager.removeObjectManager(requete.getGroupementRacine());
+            groupementManager.deleteByIdManager(requete.getGroupementRacine());
 
             // On supprime la requête
-            requeteDao.removeObject(requete.getRequeteId());
+            requeteDao.deleteById(requete.getRequeteId());
          }
       }
    }
@@ -393,7 +393,7 @@ public class RequeteManagerImpl implements RequeteManager
          throw new RequiredObjectIsNullException("Requete", "recherche de doublon", "Requete");
       }
       if(requete.getRequeteId() == null){
-         return requeteDao.findAll().contains(requete);
+         return IterableUtils.toList(requeteDao.findAll()).contains(requete);
       }else{
          return requeteDao.findByExcludedId(requete.getRequeteId()).contains(requete);
       }

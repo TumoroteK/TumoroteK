@@ -467,7 +467,8 @@ public interface PrelevementDao extends CrudRepository<Prelevement, Integer> {
 	 * @return liste de prélèvements
 	 * @since 2.0.10
 	 */
-	@Query("SELECT DISTINCT e FROM Prelevement e WHERE e.servicePreleveur.etablissement.nom like ?1 "
+	@Query("SELECT DISTINCT e FROM Prelevement e WHERE (e.servicePreleveur.etablissement.nom like ?1 "
+			+ "OR e.preleveur.etablissement.nom like ?1) "
 			+ "AND e.banque in (?2)")
 	List<Prelevement> findByEtablissementNom(String nom, List<Banque> banks);
 

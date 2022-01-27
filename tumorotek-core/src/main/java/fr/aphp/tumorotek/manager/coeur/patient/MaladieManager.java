@@ -72,7 +72,7 @@ public interface MaladieManager
     * @param utilisateur Utilisateur realisant la creation
     * @param operation String creation / modification
     */
-   void createOrUpdateObjectManager(Maladie maladie, Patient patient, List<Collaborateur> medecins, Utilisateur utilisateur,
+   void createOrsaveManager(Maladie maladie, Patient patient, List<Collaborateur> medecins, Utilisateur utilisateur,
       String operation);
 
    /**
@@ -100,7 +100,7 @@ public interface MaladieManager
     * @param comments commentaires liés à la suppression
     * @param Utilisateur réalisant la suppression.
     */
-   void removeObjectManager(Maladie maladie, String comments, Utilisateur user);
+   void deleteByIdManager(Maladie maladie, String comments, Utilisateur user);
 
    /**
     * Recherche les prelevements liés à la maladie passée en paramètre.

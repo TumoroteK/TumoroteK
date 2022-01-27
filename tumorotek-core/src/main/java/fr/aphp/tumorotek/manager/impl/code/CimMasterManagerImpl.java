@@ -45,6 +45,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -55,119 +56,111 @@ import fr.aphp.tumorotek.model.code.CimMaster;
 
 /**
  *
- * Implémentation du manager du bean de domaine CimMaster.
- * Date: 20/05/2010.
+ * Implémentation du manager du bean de domaine CimMaster. Date: 20/05/2010.
  *
  * @author Mathieu BARTHELEMY
  * @version 2.0
  *
  */
-public class CimMasterManagerImpl implements CimMasterManager
-{
+public class CimMasterManagerImpl implements CimMasterManager {
 
-   private final Log log = LogFactory.getLog(CimMasterManager.class);
+	private final Log log = LogFactory.getLog(CimMasterManager.class);
 
-   private CimMasterDao cimMasterDao;
-   private EntityManagerFactory entityManagerFactory;
+	private CimMasterDao cimMasterDao;
+	private EntityManagerFactory entityManagerFactory;
 
-   public void setCimMasterDao(final CimMasterDao cDao){
-      this.cimMasterDao = cDao;
-   }
+	public void setCimMasterDao(final CimMasterDao cDao) {
+		this.cimMasterDao = cDao;
+	}
 
-   public void setEntityManagerFactory(final EntityManagerFactory emFactory){
-      this.entityManagerFactory = emFactory;
-   }
+	public void setEntityManagerFactory(final EntityManagerFactory emFactory) {
+		this.entityManagerFactory = emFactory;
+	}
 
-   @Override
-   public List<CimMaster> findAllObjectsManager(){
-      return cimMasterDao.findAll();
-   }
+	@Override
+	public List<CimMaster> findAllObjectsManager() {
+		return IterableUtils.toList(cimMasterDao.findAll());
+	}
 
-   @Override
-   public List<CimMaster> findByCodeLikeManager(String code, final boolean exactMatch){
-      if(!exactMatch){
-         code = "%" + code + "%";
-      }
-      log.debug("Recherche Cim par code: " + code + " exactMatch " + String.valueOf(exactMatch));
-      return cimMasterDao.findByCodeLike(code);
-   }
+	@Override
+	public List<CimMaster> findByCodeLikeManager(String code, final boolean exactMatch) {
+		if (!exactMatch) {
+			code = "%" + code + "%";
+		}
+		log.debug("Recherche Cim par code: " + code + " exactMatch " + String.valueOf(exactMatch));
+		return cimMasterDao.findByCodeLike(code);
+	}
 
-   @Override
-   public List<CimMaster> findByLibelleLikeManager(String libelle, final boolean exactMatch){
-      if(!exactMatch){
-         libelle = "%" + libelle + "%";
-      }
-      log.debug("Recherche Cim par libelle: " + libelle + " exactMatch " + String.valueOf(exactMatch));
-      // List<CimMaster> cims = new ArrayList<CimMaster>();
-      // List<CimLibelle> libs = cimLibelleDao.findByLibelleLike(libelle);
-      // for (int i = 0; i < libs.size(); i++) {
-      //	cims.add(libs.get(i).getCimMaster());
-      //}		
-      return cimMasterDao.findByLibelleLike(libelle);
-   }
+	@Override
+	public List<CimMaster> findByLibelleLikeManager(String libelle, final boolean exactMatch) {
+		if (!exactMatch) {
+			libelle = "%" + libelle + "%";
+		}
+		log.debug("Recherche Cim par libelle: " + libelle + " exactMatch " + String.valueOf(exactMatch));
+		return cimMasterDao.findByLibelleLike(libelle);
+	}
 
-   
-   @Override
-   public List<CimMaster> findByCimParentManager(final CimMaster parent){
-      List<CimMaster> cims = new ArrayList<>();
-      if(parent != null){
-         if(parent.getLevel() < 7){ // ->| id7 ds codif
-            try{
-               final String idColname = "id" + parent.getLevel();
-               Integer levelId;
+	@Override
+	public List<CimMaster> findByCimParentManager(final CimMaster parent) {
+		List<CimMaster> cims = new ArrayList<>();
+		if (parent != null) {
+			if (parent.getLevel() < 7) { // ->| id7 ds codif
+				try {
+					final String idColname = "id" + parent.getLevel();
+					Integer levelId;
 
-               levelId = (Integer) PropertyUtils.getSimpleProperty(parent, idColname);
-               final StringBuffer sb = new StringBuffer();
-               sb.append("SELECT c FROM CimMaster c WHERE c.");
-               sb.append(idColname);
-               sb.append(" = ");
-               sb.append(levelId);
-               sb.append(" AND c.level = ");
-               sb.append(parent.getLevel() + 1);
+					levelId = (Integer) PropertyUtils.getSimpleProperty(parent, idColname);
+					final StringBuffer sb = new StringBuffer();
+					sb.append("SELECT c FROM CimMaster c WHERE c.");
+					sb.append(idColname);
+					sb.append(" = ");
+					sb.append(levelId);
+					sb.append(" AND c.level = ");
+					sb.append(parent.getLevel() + 1);
 
-               final EntityManager em = entityManagerFactory.createEntityManager();
-               final TypedQuery<CimMaster> query = em.createQuery(sb.toString(), CimMaster.class);
-               cims = query.getResultList();
-            }catch(final Exception e){
-               log.error("level cimMaster introuvable par PropertyUtils");
-            }
-         }
-      }else{ // renvoie les codes de niveau 1
-         cims = cimMasterDao.findByLevel(1);
-      }
+					final EntityManager em = entityManagerFactory.createEntityManager();
+					final TypedQuery<CimMaster> query = em.createQuery(sb.toString(), CimMaster.class);
+					cims = query.getResultList();
+				} catch (final Exception e) {
+					log.error("level cimMaster introuvable par PropertyUtils");
+				}
+			}
+		} else { // renvoie les codes de niveau 1
+			cims = cimMasterDao.findByLevel(1);
+		}
 
-      return cims;
-   }
+		return cims;
+	}
 
-   @Override
-   public Set<Adicap> getAdicapsManager(final CimMaster cim){
-      Set<Adicap> adicaps = new HashSet<>();
-      final CimMaster cimM = cimMasterDao.mergeObject(cim);
-      adicaps = cimM.getAdicaps();
-      adicaps.size(); // operation empechant LazyInitialisationException
-      return adicaps;
-   }
+	@Override
+	public Set<Adicap> getAdicapsManager(final CimMaster cim) {
+		Set<Adicap> adicaps = new HashSet<>();
+		final CimMaster cimM = cimMasterDao.save(cim);
+		adicaps = cimM.getAdicaps();
+		adicaps.size(); // operation empechant LazyInitialisationException
+		return adicaps;
+	}
 
-   @Override
-   public List<CimMaster> findChildrenCodesManager(final CimMaster code){
-      final List<CimMaster> codes = new ArrayList<>();
-      if(code != null){
-         codes.add(code);
-         findRecursiveChildren(code, codes);
-      }
-      return codes;
-   }
+	@Override
+	public List<CimMaster> findChildrenCodesManager(final CimMaster code) {
+		final List<CimMaster> codes = new ArrayList<>();
+		if (code != null) {
+			codes.add(code);
+			findRecursiveChildren(code, codes);
+		}
+		return codes;
+	}
 
-   private void findRecursiveChildren(final CimMaster parent, final List<CimMaster> codes){
-      final List<CimMaster> children = findByCimParentManager(parent);
-      codes.addAll(children);
-      for(int i = 0; i < children.size(); i++){
-         findRecursiveChildren(children.get(i), codes);
-      }
-   }
+	private void findRecursiveChildren(final CimMaster parent, final List<CimMaster> codes) {
+		final List<CimMaster> children = findByCimParentManager(parent);
+		codes.addAll(children);
+		for (int i = 0; i < children.size(); i++) {
+			findRecursiveChildren(children.get(i), codes);
+		}
+	}
 
-   @Override
-   public CimMaster findByIdManager(final Integer codeId){
-      return cimMasterDao.findById(codeId);
-   }
+	@Override
+	public CimMaster findByIdManager(final Integer codeId) {
+		return cimMasterDao.findById(codeId).get();
+	}
 }

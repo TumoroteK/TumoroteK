@@ -92,7 +92,7 @@ public interface RechercheManager
     * @param banques Liste de Banque à associer.
     * @param createur Utilisateur qui créé la Recherche.
     */
-   void createObjectManager(Recherche recherche, Affichage affichage, Requete requete, List<Banque> banques, Utilisateur createur,
+   void saveManager(Recherche recherche, Affichage affichage, Requete requete, List<Banque> banques, Utilisateur createur,
       Banque banque);
 
    /**
@@ -103,14 +103,14 @@ public interface RechercheManager
     * @param banques Liste de Banque à associer.
     * @param createur Utilisateur qui met à jour la Recherche.
     */
-   void updateObjectManager(Recherche recherche, Affichage affichage, Requete requete, List<Banque> banques, Utilisateur createur,
+   void saveManager(Recherche recherche, Affichage affichage, Requete requete, List<Banque> banques, Utilisateur createur,
       Banque banque);
 
    /**
     * Supprime une Recherche en BDD.
     * @param recherche Recherche à supprimer
     */
-   void removeObjectManager(Recherche recherche);
+   void deleteByIdManager(Recherche recherche);
 
    /**
     * Recherche les Recherches dont l'utilisateur créateur est passé en

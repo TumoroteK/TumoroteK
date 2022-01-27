@@ -65,7 +65,7 @@ public class OperationTypeManagerImpl implements OperationTypeManager
    @Override
    public List<OperationType> findAllObjectsManager(){
       log.debug("Recherche de toutes les OperationType");
-      return operationTypeDao.findAll();
+      return IterableUtils.toList(operationTypeDao.findAll());
    }
 
    @Override

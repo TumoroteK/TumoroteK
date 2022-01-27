@@ -43,8 +43,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Validator;
 
-import fr.aphp.tumorotek.dao.cession.CessionDao;
 import fr.aphp.tumorotek.dao.coeur.ObjetStatutDao;
+import fr.aphp.tumorotek.dao.coeur.cession.CessionDao;
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonDao;
 import fr.aphp.tumorotek.dao.coeur.patient.PatientDao;
 import fr.aphp.tumorotek.dao.coeur.prelevement.PrelevementDao;
@@ -58,8 +58,8 @@ import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.ObjetStatutValidator;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKStockableObject;
-import fr.aphp.tumorotek.model.cession.Cession;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
+import fr.aphp.tumorotek.model.coeur.cession.Cession;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 
 /**

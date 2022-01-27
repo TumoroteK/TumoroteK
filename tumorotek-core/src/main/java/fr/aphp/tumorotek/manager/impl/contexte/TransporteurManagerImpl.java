@@ -146,7 +146,7 @@ public class TransporteurManagerImpl implements TransporteurManager
    public Boolean findDoublonManager(final Transporteur transporteur){
       if(transporteur != null){
          if(transporteur.getTransporteurId() == null){
-            return transporteurDao.findAll().contains(transporteur);
+            return IterableUtils.toList(transporteurDao.findAll()).contains(transporteur);
          }else{
             return transporteurDao.findByExcludedId(transporteur.getTransporteurId()).contains(transporteur);
          }
@@ -156,7 +156,7 @@ public class TransporteurManagerImpl implements TransporteurManager
    }
 
    @Override
-   public void createObjectManager(final Transporteur transporteur, final Coordonnee coordonnee, final Utilisateur utilisateur){
+   public void saveManager(final Transporteur transporteur, final Coordonnee coordonnee, final Utilisateur utilisateur){
       if(findDoublonManager(transporteur)){
          log.warn("Doublon lors de la creation de l'objet Transporteur : " + transporteur.toString());
          throw new DoublonFoundException("Transporteur", "creation");
@@ -167,29 +167,29 @@ public class TransporteurManagerImpl implements TransporteurManager
          if(coordonnee != null){
             BeanValidator.validateObject(coordonnee, new Validator[] {coordonneeValidator});
             if(coordonnee.getCoordonneeId() == null){
-               coordonneeManager.createObjectManager(coordonnee, null);
+               coordonneeManager.saveManager(coordonnee, null);
             }else{
-               coordonneeManager.updateObjectManager(coordonnee, null, true);
+               coordonneeManager.saveManager(coordonnee, null, true);
             }
          }else{
             transporteur.setCoordonnee(null);
          }
 
-         transporteur.setCoordonnee(coordonneeDao.mergeObject(coordonnee));
+         transporteur.setCoordonnee(coordonneeDao.save(coordonnee));
 
-         transporteurDao.createObject(transporteur);
+         transporteurDao.save(transporteur);
          log.info("Enregistrement de l'objet Transporteur : " + transporteur.toString());
 
          // Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0),
+         operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0),
             transporteur);
       }
    }
 
    @Override
-   public void updateObjectManager(final Transporteur transporteur, final Coordonnee coordonnee, final Utilisateur utilisateur){
+   public void saveManager(final Transporteur transporteur, final Coordonnee coordonnee, final Utilisateur utilisateur){
       if(findDoublonManager(transporteur)){
          log.warn("Doublon lors de la modif de l'objet Transporteur : " + transporteur.toString());
          throw new DoublonFoundException("Transporteur", "modification");
@@ -200,35 +200,35 @@ public class TransporteurManagerImpl implements TransporteurManager
          if(coordonnee != null){
             BeanValidator.validateObject(coordonnee, new Validator[] {coordonneeValidator});
             if(coordonnee.getCoordonneeId() == null){
-               coordonneeManager.createObjectManager(coordonnee, null);
+               coordonneeManager.saveManager(coordonnee, null);
             }else{
-               coordonneeManager.updateObjectManager(coordonnee, null, true);
+               coordonneeManager.saveManager(coordonnee, null, true);
             }
          }else{
             transporteur.setCoordonnee(null);
          }
 
-         transporteur.setCoordonnee(coordonneeDao.mergeObject(coordonnee));
+         transporteur.setCoordonnee(coordonneeDao.save(coordonnee));
 
-         transporteurDao.updateObject(transporteur);
+         transporteurDao.save(transporteur);
          log.info("Enregistrement de l'objet Transporteur : " + transporteur.toString());
 
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
+         operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
             transporteur);
       }
    }
 
    @Override
-   public void removeObjectManager(final Transporteur transporteur, final String comments, final Utilisateur user){
+   public void deleteByIdManager(final Transporteur transporteur, final String comments, final Utilisateur user){
       if(transporteur != null){
          if(!isReferencedObjectManager(transporteur)){
             //Supprime operations associes
             CreateOrUpdateUtilities.removeAssociateOperations(transporteur, operationManager, comments, user);
 
-            transporteurDao.removeObject(transporteur.getTransporteurId());
+            transporteurDao.deleteById(transporteur.getTransporteurId());
             log.info("Suppression de l'objet Transporteur : " + transporteur.toString());
          }else{
             log.warn("Objet référencé lors de la suppression " + "de l'objet Transporteur : " + transporteur.toString());
@@ -239,7 +239,7 @@ public class TransporteurManagerImpl implements TransporteurManager
 
    @Override
    public boolean isReferencedObjectManager(final Transporteur tr){
-      final Transporteur transp = transporteurDao.mergeObject(tr);
+      final Transporteur transp = transporteurDao.save(tr);
       return !transp.getPrelevements().isEmpty() || !transp.getLaboInters().isEmpty() || !transp.getCessions().isEmpty();
    }
 }

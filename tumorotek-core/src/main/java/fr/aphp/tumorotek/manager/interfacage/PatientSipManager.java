@@ -115,7 +115,7 @@ public interface PatientSipManager
     * La suppression engendre la creation d'un fantome de cet objet.
     * @param patient PatientSip à supprimer de la base de données.
     */
-   void removeObjectManager(PatientSip patient);
+   void deleteByIdManager(PatientSip patient);
 
    /**
     * Recherche toutes les instances de Patient venant du SIP 

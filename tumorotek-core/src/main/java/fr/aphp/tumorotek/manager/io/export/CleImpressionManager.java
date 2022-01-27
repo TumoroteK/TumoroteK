@@ -83,18 +83,18 @@ public interface CleImpressionManager
     * Créé une CleImpression en BDD.
     * @param cleImpression cleImpression à créer.
     */
-   void createObjectManager(CleImpression cleImpression);
+   void saveManager(CleImpression cleImpression);
 
    /**
     * Met à jour un Champ en BDD.
     * @param cleImpression cleImpression à mettre à jour.
     */
-   void updateObjectManager(CleImpression cleImpression);
+   void saveManager(CleImpression cleImpression);
 
    /**
     * Supprime un cleImpression.
     * @param cleImpression cleImpression à supprimer.
     */
-   void removeObjectManager(CleImpression cleImpression);
+   void deleteByIdManager(CleImpression cleImpression);
 
 }

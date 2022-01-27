@@ -42,14 +42,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
 
-import fr.aphp.tumorotek.dao.cession.ProtocoleTypeDao;
+import fr.aphp.tumorotek.dao.coeur.cession.ProtocoleTypeDao;
 import fr.aphp.tumorotek.dao.contexte.PlateformeDao;
 import fr.aphp.tumorotek.manager.coeur.cession.ProtocoleTypeManager;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.cession.ProtocoleTypeValidator;
-import fr.aphp.tumorotek.model.cession.ProtocoleType;
+import fr.aphp.tumorotek.model.coeur.cession.ProtocoleType;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 
 /**
@@ -123,7 +123,7 @@ public class ProtocoleTypeManagerImpl implements ProtocoleTypeManager
       if(o != null){
          final ProtocoleType type = o;
          if(type.getId() == null){
-            return protocoleTypeDao.findAll().contains(type);
+            return IterableUtils.toList(protocoleTypeDao.findAll()).contains(type);
          }
          return protocoleTypeDao.findByExcludedId(type.getId()).contains(type);
       }
@@ -132,21 +132,21 @@ public class ProtocoleTypeManagerImpl implements ProtocoleTypeManager
 
    @Override
    public boolean isUsedObjectManager(final ProtocoleType obj){
-      final ProtocoleType type = protocoleTypeDao.mergeObject(obj);
+      final ProtocoleType type = protocoleTypeDao.save(obj);
       return type.getContrats().size() > 0;
    }
 
    @Override
-   public void createObjectManager(final ProtocoleType obj){
+   public void saveManager(final ProtocoleType obj){
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(obj.getPlateforme() == null){
          throw new RequiredObjectIsNullException("ProtocoleType", "creation", "Plateforme");
       }
-      obj.setPlateforme(plateformeDao.mergeObject(obj.getPlateforme()));
+      obj.setPlateforme(plateformeDao.save(obj.getPlateforme()));
       BeanValidator.validateObject(obj, new Validator[] {protocoleTypeValidator});
       if(!findDoublonManager(obj)){
-         protocoleTypeDao.createObject(obj);
+         protocoleTypeDao.save(obj);
          log.info("Enregistrement objet ProtocoleType " + obj.toString());
       }else{
          log.warn("Doublon lors creation objet ProtocoleType " + obj.toString());
@@ -155,10 +155,10 @@ public class ProtocoleTypeManagerImpl implements ProtocoleTypeManager
    }
 
    @Override
-   public void updateObjectManager(final ProtocoleType obj){
+   public void saveManager(final ProtocoleType obj){
       BeanValidator.validateObject(obj, new Validator[] {protocoleTypeValidator});
       if(!findDoublonManager(obj)){
-         protocoleTypeDao.updateObject(obj);
+         protocoleTypeDao.save(obj);
          log.info("Modification objet ProtocoleType " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet ProtocoleType " + obj.toString());
@@ -167,9 +167,9 @@ public class ProtocoleTypeManagerImpl implements ProtocoleTypeManager
    }
 
    @Override
-   public void removeObjectManager(final ProtocoleType obj){
+   public void deleteByIdManager(final ProtocoleType obj){
       if(obj != null){
-         protocoleTypeDao.removeObject(obj.getId());
+         protocoleTypeDao.deleteById(obj.getId());
          log.info("Suppression objet ProtocoleType " + obj.toString());
       }else{
          log.warn("Suppression d'un ProtocoleType null");

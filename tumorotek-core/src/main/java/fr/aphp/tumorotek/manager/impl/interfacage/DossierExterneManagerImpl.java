@@ -104,7 +104,7 @@ public class DossierExterneManagerImpl implements DossierExterneManager
 	@Override
 	public List<DossierExterne> findAllObjectsManager(){
 		log.debug("Recherche de tous les BlocExternes");
-		return dossierExterneDao.findAll();
+		return IterableUtils.toList(dossierExterneDao.findAll());
 	}
 
 	@Override
@@ -184,19 +184,19 @@ public class DossierExterneManagerImpl implements DossierExterneManager
 	}
 
 	@Override
-	public void createObjectManager(final DossierExterne dossierExterne, final Emetteur emetteur,
+	public void saveManager(final DossierExterne dossierExterne, final Emetteur emetteur,
 			final List<BlocExterne> blocExternes, final Hashtable<BlocExterne, List<ValeurExterne>> valeurExternes, final int max){
 		// Validation du dossier
 		validateDossierExterneManager(dossierExterne, emetteur, blocExternes, valeurExternes);
 
-		dossierExterne.setEmetteur(emetteurDao.mergeObject(emetteur));
+		dossierExterne.setEmetteur(emetteurDao.save(emetteur));
 
 		if(findDoublonManager(dossierExterne)){
-			removeObjectManager(
+			deleteByIdManager(
 					dossierExterneDao.findByEmetteur(emetteur).get(dossierExterneDao.findByEmetteur(emetteur).indexOf(dossierExterne)));
 		}
 
-		dossierExterneDao.createObject(dossierExterne);
+		dossierExterneDao.save(dossierExterne);
 		log.info("Enregistrement de l'objet DossierExterne : " + dossierExterne.toString());
 
 		// création des blocs et des valeurs
@@ -207,14 +207,14 @@ public class DossierExterneManagerImpl implements DossierExterneManager
 				if(valeurExternes != null && valeurExternes.containsKey(blocExternes.get(i))){
 					valeurs = valeurExternes.get(blocExternes.get(i));
 				}
-				blocExterneManager.createObjectManager(blocExternes.get(i), dossierExterne, valeurs);
+				blocExterneManager.saveManager(blocExternes.get(i), dossierExterne, valeurs);
 			}
 		}
 
 		if(dossierExterneDao.findCountAll().get(0) > max){
 			final List<DossierExterne> dos = dossierExterneDao.findFirst();
 			if(!dos.isEmpty()){
-				removeObjectManager(dos.get(0));
+				deleteByIdManager(dos.get(0));
 				log.debug("Suppression FIRST IN " + dos.get(0).getIdentificationDossier() + " pour maintenir la taille "
 						+ " de la table temporaire à " + max);
 			}
@@ -222,16 +222,16 @@ public class DossierExterneManagerImpl implements DossierExterneManager
 	}
 
 	@Override
-	public void removeObjectManager(final DossierExterne dossierExterne){
+	public void deleteByIdManager(final DossierExterne dossierExterne){
 		if(dossierExterne != null && dossierExterne.getDossierExterneId() != null){
 
 			// suppression des blocs
 			final List<BlocExterne> blocs = blocExterneManager.findByDossierExterneManager(dossierExterne);
 			for(int i = 0; i < blocs.size(); i++){
-				blocExterneManager.removeObjectManager(blocs.get(i));
+				blocExterneManager.deleteByIdManager(blocs.get(i));
 			}
 
-			dossierExterneDao.removeObject(dossierExterne.getDossierExterneId());
+			dossierExterneDao.deleteById(dossierExterne.getDossierExterneId());
 			log.info("Suppression de l'objet DossierExterne : " + dossierExterne.toString());
 		}else{
 			log.warn("Suppression d'une DossierExterne null");

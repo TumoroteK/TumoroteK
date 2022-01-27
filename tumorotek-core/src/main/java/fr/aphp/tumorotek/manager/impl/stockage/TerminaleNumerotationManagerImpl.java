@@ -71,7 +71,7 @@ public class TerminaleNumerotationManagerImpl implements TerminaleNumerotationMa
 
    @Override
    public List<TerminaleNumerotation> findAllObjectsManager(){
-      return terminaleNumerotationDao.findAll();
+      return IterableUtils.toList(terminaleNumerotationDao.findAll());
    }
 
 }

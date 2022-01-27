@@ -91,7 +91,7 @@ public class PatientMedecinManagerImpl implements PatientMedecinManager
    }
 
    @Override
-   public void createOrUpdateObjectManager(final PatientMedecin medecin, final Patient patient, final Collaborateur collaborateur,
+   public void createOrsaveManager(final PatientMedecin medecin, final Patient patient, final Collaborateur collaborateur,
       final String operation){
 
       if(operation == null){
@@ -105,10 +105,10 @@ public class PatientMedecinManagerImpl implements PatientMedecinManager
       if(!findDoublonManager(medecin)){
          if(operation.equals("creation")){
             //if (operation.equals("creation")) {
-            patientMedecinDao.createObject(medecin);
+            patientMedecinDao.save(medecin);
             log.debug("Enregistrement objet PatientMedecin " + medecin.toString());
             //				} else { //cree un nouvel objet car modification de la clef
-            //					PatientMedecinDao.updateObject(PatientMedecin);
+            //					PatientMedecinDao.save(PatientMedecin);
             //					log.info("Modification objet PatientMedecin "
             //												+ PatientMedecin.toString());
             //				}
@@ -118,7 +118,7 @@ public class PatientMedecinManagerImpl implements PatientMedecinManager
       }else{ //gere le modification du seul lien ordre
          if(operation.equals("modification")
             && !medecin.getOrdre().equals(patientMedecinDao.findById(medecin.getPk()).getOrdre())){
-            patientMedecinDao.updateObject(medecin);
+            patientMedecinDao.save(medecin);
             log.debug("Modification objet PatientMedecin " + medecin.toString());
          }else{
             log.warn("Doublon lors " + operation + " objet PatientMedecin " + medecin.toString());
@@ -128,9 +128,9 @@ public class PatientMedecinManagerImpl implements PatientMedecinManager
    }
 
    @Override
-   public void removeObjectManager(final PatientMedecin medecin){
+   public void deleteByIdManager(final PatientMedecin medecin){
       if(medecin != null){
-         patientMedecinDao.removeObject(medecin.getPk());
+         patientMedecinDao.deleteById(medecin.getPk());
          log.debug("Suppression objet PatientMedecin " + medecin.toString());
       }else{
          log.warn("Suppression d'un PatientMedecin null");
@@ -140,7 +140,7 @@ public class PatientMedecinManagerImpl implements PatientMedecinManager
    @Override
    public boolean findDoublonManager(final PatientMedecin medecin){
       // l'utilisation de excludedId impossible a cause de la clef composite 
-      return patientMedecinDao.findAll().contains(medecin);
+      return IterableUtils.toList(patientMedecinDao.findAll()).contains(medecin);
    }
 
    /**
@@ -156,14 +156,14 @@ public class PatientMedecinManagerImpl implements PatientMedecinManager
       final Collaborateur collaborateur, final String operation){
       //patient required
       if(patient != null){
-         medecin.setPatient(patientDao.mergeObject(patient));
+         medecin.setPatient(patientDao.save(patient));
       }else if(medecin.getPatient() == null){
          log.warn("Objet obligatoire Patient manquant" + " lors de la " + operation + " d'un PatientMedecin");
          throw new RequiredObjectIsNullException("PatientMedecin", operation, "Patient");
       }
       //Collaborateur required
       if(collaborateur != null){
-         medecin.setCollaborateur(collaborateurDao.mergeObject(collaborateur));
+         medecin.setCollaborateur(collaborateurDao.save(collaborateur));
       }else if(medecin.getCollaborateur() == null){
          log.warn("Objet obligatoire Collaborateur  manquant" + " lors de la " + operation + " d'un PatientMedecin");
          throw new RequiredObjectIsNullException("PatientMedecin", operation, "Collaborateur");

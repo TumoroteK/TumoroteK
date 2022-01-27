@@ -39,7 +39,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import fr.aphp.tumorotek.dao.cession.CederObjetDao;
+import fr.aphp.tumorotek.dao.coeur.cession.CederObjetDao;
 import fr.aphp.tumorotek.dao.coeur.prodderive.ProdDeriveDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
 import fr.aphp.tumorotek.dto.EchantillonDTO;

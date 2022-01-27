@@ -114,7 +114,7 @@ public interface NumerotationManager
     * @param banque Banque.
     * @param entite Entite.
     */
-   void createObjectManager(Numerotation numerotation, Banque banque, Entite entite);
+   void saveManager(Numerotation numerotation, Banque banque, Entite entite);
 
    /**
     * Sauvegarde les modifications apportées à un objet persistant.
@@ -122,12 +122,12 @@ public interface NumerotationManager
     * @param banque Banque.
     * @param entite Entite.
     */
-   void updateObjectManager(Numerotation numerotation, Banque banque, Entite entite);
+   void saveManager(Numerotation numerotation, Banque banque, Entite entite);
 
    /**
     * Supprime une Numerotation de la base de données.
     * @param numerotation Numerotation à supprimer de la base de données.
     */
-   void removeObjectManager(Numerotation numerotation);
+   void deleteByIdManager(Numerotation numerotation);
 
 }

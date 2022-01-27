@@ -107,26 +107,26 @@ public class LaboInterManagerImpl implements LaboInterManager
    }
 
    @Override
-   public void createObjectManager(final LaboInter obj, final Prelevement prelevement, final Service service,
+   public void saveManager(final LaboInter obj, final Prelevement prelevement, final Service service,
       final Collaborateur collaborateur, final Transporteur transporteur, final boolean doValidation){
       //Prelevement required
       if(prelevement == null){
          log.warn("Objet obligatoire Prelevement manquant" + " lors de la creation d'un LaboInter");
          throw new RequiredObjectIsNullException("LaboInter", "creation", "Prelevement");
       }
-      obj.setPrelevement(prelevementDao.mergeObject(prelevement));
+      obj.setPrelevement(prelevementDao.save(prelevement));
       if(doValidation){ //Validation
          BeanValidator.validateObject(obj, new Validator[] {laboInterValidator});
       }
       //Doublon
       if(!findDoublonManager(obj)){
-         obj.setService(serviceDao.mergeObject(service));
-         obj.setCollaborateur(collaborateurDao.mergeObject(collaborateur));
-         obj.setTransporteur(transporteurDao.mergeObject(transporteur));
-         laboInterDao.createObject(obj);
+         obj.setService(serviceDao.save(service));
+         obj.setCollaborateur(collaborateurDao.save(collaborateur));
+         obj.setTransporteur(transporteurDao.save(transporteur));
+         laboInterDao.save(obj);
          log.info("Enregistrement objet LaboInter " + obj.toString());
 
-         prelevementDao.mergeObject(prelevement).getLaboInters().add(obj);
+         prelevementDao.save(prelevement).getLaboInters().add(obj);
 
       }else{
          log.warn("Doublon lors creation objet LaboInter " + obj.toString());
@@ -135,21 +135,21 @@ public class LaboInterManagerImpl implements LaboInterManager
    }
 
    @Override
-   public void updateObjectManager(final LaboInter obj, final Prelevement prelevement, final Service service,
+   public void saveManager(final LaboInter obj, final Prelevement prelevement, final Service service,
       final Collaborateur collaborateur, final Transporteur transporteur, final boolean doValidation){
       //Prelevement required
       if(prelevement == null){
          log.warn("Objet obligatoire Prelevement manquant lors" + " de la modification d'un LaboInter " + obj.toString());
          throw new RequiredObjectIsNullException("LaboInter", "modification", "Prelevement");
       }
-      obj.setPrelevement(prelevementDao.mergeObject(prelevement));
+      obj.setPrelevement(prelevementDao.save(prelevement));
       if(doValidation){
          //Validation
          BeanValidator.validateObject(obj, new Validator[] {laboInterValidator});
       }
       //Doublon
       if(!findDoublonManager(obj)){
-         laboInterDao.updateObject(obj);
+         laboInterDao.save(obj);
          log.info("Modification objet LaboInter " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet LaboInter " + obj.toString());
@@ -160,7 +160,7 @@ public class LaboInterManagerImpl implements LaboInterManager
    @Override
    public List<LaboInter> findAllObjectsManager(){
       log.debug("Recherche totalite des LaboInter");
-      return laboInterDao.findAll();
+      return IterableUtils.toList(laboInterDao.findAll());
    }
 
    @Override
@@ -188,9 +188,9 @@ public class LaboInterManagerImpl implements LaboInterManager
    }
 
    @Override
-   public void removeObjectManager(final LaboInter obj){
+   public void deleteByIdManager(final LaboInter obj){
       if(obj != null){
-         laboInterDao.removeObject(obj.getLaboInterId());
+         laboInterDao.deleteById(obj.getLaboInterId());
          log.info("Suppression objet LaboInter " + obj.toString());
       }else{
          log.warn("Suppression d'un LaboInter null");

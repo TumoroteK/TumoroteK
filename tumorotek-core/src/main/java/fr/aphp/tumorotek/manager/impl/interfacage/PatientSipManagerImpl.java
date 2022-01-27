@@ -93,7 +93,7 @@ public class PatientSipManagerImpl implements PatientSipManager
    @Override
    public List<PatientSip> findAllObjectsManager(){
       log.debug("Recherche totalite des Patients Sip");
-      return patientSipDao.findAll();
+      return IterableUtils.toList(patientSipDao.findAll());
    }
 
    @Override
@@ -181,9 +181,9 @@ public class PatientSipManagerImpl implements PatientSipManager
    }
 
    @Override
-   public void removeObjectManager(final PatientSip patient){
+   public void deleteByIdManager(final PatientSip patient){
       if(patient != null){
-         patientSipDao.removeObject(patient.getPatientSipId());
+         patientSipDao.deleteById(patient.getPatientSipId());
          log.info("Suppression objet Patient " + patient.toString());
       }else{
          log.warn("Suppression d'un Patient null");
@@ -223,13 +223,13 @@ public class PatientSipManagerImpl implements PatientSipManager
                sipPatient.setDateCreation(Utils.getCurrentSystemCalendar());
             }
 
-            patientSipDao.createObject(sipPatient);
+            patientSipDao.save(sipPatient);
             log.info("Ajout du patient " + sipPatient.getNip() + " a la base temporaire");
 
             if(patientSipDao.findCountAll().get(0) > max){
                final List<PatientSip> sips = patientSipDao.findFirst();
                if(!sips.isEmpty()){
-                  patientSipDao.removeObject(sips.get(0).getPatientSipId());
+                  patientSipDao.deleteById(sips.get(0).getPatientSipId());
                   log.debug("Suppression FIRST IN " + sips.get(0).getNip() + " pour maintenir la taille "
                      + " de la table temporaire à " + max);
                }
@@ -278,7 +278,7 @@ public class PatientSipManagerImpl implements PatientSipManager
          local.setDateModification(Utils.getCurrentSystemCalendar());
 
          // update
-         patientSipDao.updateObject(local);
+         patientSipDao.save(local);
 
       }catch(final IllegalAccessException e){
          log.error(e.getMessage());
@@ -309,7 +309,7 @@ public class PatientSipManagerImpl implements PatientSipManager
             }
 
             // update
-            patientManager.createOrUpdateObjectManager(pat, null, null, null, null, null, null, null, null, "synchronisation",
+            patientManager.createOrsaveManager(pat, null, null, null, null, null, null, null, null, "synchronisation",
                null, false);
 
             log.info("Synchronisation du patient " + sipPatient.getNip() + " pour les champs: " + fieldsNames);

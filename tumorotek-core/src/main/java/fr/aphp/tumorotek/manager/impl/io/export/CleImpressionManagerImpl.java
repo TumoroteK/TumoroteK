@@ -91,7 +91,7 @@ public class CleImpressionManagerImpl implements CleImpressionManager
    }
 
    @Override
-   public void createObjectManager(final CleImpression cleImpression){
+   public void saveManager(final CleImpression cleImpression){
       // On vérifie que la clé n'est pas nulle
       if(cleImpression == null){
          log.warn("Objet obligatoire Cle manquant lors " + "de la création d'un objet Cle");
@@ -99,13 +99,13 @@ public class CleImpressionManagerImpl implements CleImpressionManager
       }
       // On enregsitre d'abord les Champs
       if(null != cleImpression.getChamp()){
-         champManager.createObjectManager(cleImpression.getChamp(), cleImpression.getChamp().getChampParent());
+         champManager.saveManager(cleImpression.getChamp(), cleImpression.getChamp().getChampParent());
       }
-      cleImpressionDao.createObject(cleImpression);
+      cleImpressionDao.save(cleImpression);
    }
 
    @Override
-   public void updateObjectManager(final CleImpression cleImpression){
+   public void saveManager(final CleImpression cleImpression){
       //On vérifie que la clé n'est pas nulle
       if(cleImpression == null){
          log.warn("Objet obligatoire Champ manquant lors " + "de la modification d'un objet Champ");
@@ -115,21 +115,21 @@ public class CleImpressionManagerImpl implements CleImpressionManager
       final Champ oldChamp = cleImpressionDao.findById(cleImpression.getCleId()).getChamp();
 
       if(null == cleImpression.getChamp() && null != oldChamp){ // Suppression du champ
-         champManager.removeObjectManager(oldChamp);
+         champManager.deleteByIdManager(oldChamp);
       }else if(null != cleImpression.getChamp() && null == cleImpression.getChamp().getChampId()){ // Nouveau champ
-         champManager.createObjectManager(cleImpression.getChamp(), cleImpression.getChamp().getChampParent());
+         champManager.saveManager(cleImpression.getChamp(), cleImpression.getChamp().getChampParent());
          if(null != oldChamp){
-            champManager.removeObjectManager(oldChamp);
+            champManager.deleteByIdManager(oldChamp);
          }
       }else if(null != cleImpression.getChamp() && null != oldChamp){ // Mise à jour Champ
-         champManager.updateObjectManager(cleImpression.getChamp(), cleImpression.getChamp().getChampParent());
+         champManager.saveManager(cleImpression.getChamp(), cleImpression.getChamp().getChampParent());
       }
 
-      cleImpressionDao.updateObject(cleImpression);
+      cleImpressionDao.save(cleImpression);
    }
 
    @Override
-   public void removeObjectManager(final CleImpression cleImpression){
+   public void deleteByIdManager(final CleImpression cleImpression){
       
       // On vérifie que la clé n'est pas nulle
       if(cleImpression == null){
@@ -142,10 +142,10 @@ public class CleImpressionManagerImpl implements CleImpressionManager
       }
       // On supprime d'abord les champs
       if(null != cleImpression.getChamp()){
-         champManager.removeObjectManager(cleImpression.getChamp());
+         champManager.deleteByIdManager(cleImpression.getChamp());
       }
       // On supprime la clé
-      cleImpressionDao.removeObject(cleImpression.getCleId());
+      cleImpressionDao.deleteById(cleImpression.getCleId());
    }
 
    @Override
@@ -181,7 +181,7 @@ public class CleImpressionManagerImpl implements CleImpressionManager
 
    @Override
    public List<CleImpression> findAllObjectsManager(){
-      return cleImpressionDao.findAll();
+      return IterableUtils.toList(cleImpressionDao.findAll());
    }
 
 //   @Override

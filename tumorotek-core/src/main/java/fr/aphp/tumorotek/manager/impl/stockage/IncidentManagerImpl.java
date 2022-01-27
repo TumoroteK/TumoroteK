@@ -114,7 +114,7 @@ public class IncidentManagerImpl implements IncidentManager
 
    @Override
    public List<Incident> findAllObjectsManager(){
-      return incidentDao.findAll();
+      return IterableUtils.toList(incidentDao.findAll());
    }
 
    @Override
@@ -188,16 +188,16 @@ public class IncidentManagerImpl implements IncidentManager
    }
 
    @Override
-   public void createObjectManager(final Incident incident, final Conteneur conteneur, final Enceinte enceinte,
+   public void saveManager(final Incident incident, final Conteneur conteneur, final Enceinte enceinte,
       final Terminale terminale){
 
       //contenant required
       if(conteneur != null){
-         incident.setConteneur(conteneurDao.mergeObject(conteneur));
+         incident.setConteneur(conteneurDao.save(conteneur));
       }else if(enceinte != null){
-         incident.setEnceinte(enceinteDao.mergeObject(enceinte));
+         incident.setEnceinte(enceinteDao.save(enceinte));
       }else if(terminale != null){
-         incident.setTerminale(terminaleDao.mergeObject(terminale));
+         incident.setTerminale(terminaleDao.save(terminale));
       }else{
          log.warn("Objet obligatoire Conteneur/Enceinte/Terminale manquant" + " lors de la création d'un Incident");
          throw new RequiredObjectIsNullException("Incident", "creation", "Conteneur/Enceinte/Terminale");
@@ -212,29 +212,29 @@ public class IncidentManagerImpl implements IncidentManager
          // validation du Contrat
          BeanValidator.validateObject(incident, new Validator[] {incidentValidator});
 
-         incidentDao.createObject(incident);
+         incidentDao.save(incident);
 
          log.info("Enregistrement de l'objet Incident : " + incident.toString());
       }
    }
 
    @Override
-   public void updateObjectManager(final Incident incident, final Conteneur conteneur, final Enceinte enceinte,
+   public void saveManager(final Incident incident, final Conteneur conteneur, final Enceinte enceinte,
       final Terminale terminale){
 
       //contenant required
       if(conteneur != null){
-         incident.setConteneur(conteneurDao.mergeObject(conteneur));
+         incident.setConteneur(conteneurDao.save(conteneur));
          incident.setEnceinte(null);
          incident.setTerminale(null);
       }else if(enceinte != null){
-         incident.setEnceinte(enceinteDao.mergeObject(enceinte));
+         incident.setEnceinte(enceinteDao.save(enceinte));
          incident.setConteneur(null);
          incident.setTerminale(null);
       }else if(terminale != null){
          incident.setConteneur(null);
          incident.setEnceinte(null);
-         incident.setTerminale(terminaleDao.mergeObject(terminale));
+         incident.setTerminale(terminaleDao.save(terminale));
       }else{
          log.warn("Objet obligatoire Conteneur/Enceinte/Terminale manquant" + " lors de la modification d'un Incident");
          throw new RequiredObjectIsNullException("Incident", "modification", "Conteneur/Enceinte/Terminale");
@@ -249,16 +249,16 @@ public class IncidentManagerImpl implements IncidentManager
          // validation du Contrat
          BeanValidator.validateObject(incident, new Validator[] {incidentValidator});
 
-         incidentDao.updateObject(incident);
+         incidentDao.save(incident);
 
          log.info("Modification de l'objet Incident : " + incident.toString());
       }
    }
 
    @Override
-   public void removeObjectManager(final Incident incident){
+   public void deleteByIdManager(final Incident incident){
       if(incident != null){
-         incidentDao.removeObject(incident.getIncidentId());
+         incidentDao.deleteById(incident.getIncidentId());
          log.info("Suppression de l'objet Incident : " + incident.toString());
       }else{
          log.warn("Suppression d'un Incident null");

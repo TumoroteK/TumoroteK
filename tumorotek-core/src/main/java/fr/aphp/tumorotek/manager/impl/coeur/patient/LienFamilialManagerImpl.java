@@ -81,12 +81,12 @@ public class LienFamilialManagerImpl implements LienFamilialManager
    }
 
    @Override
-   public void createObjectManager(final LienFamilial obj){
+   public void saveManager(final LienFamilial obj){
       BeanValidator.validateObject(obj, new Validator[] {lienFamilialValidator});
       if(!findDoublonManager(obj)){
          final LienFamilial reciproque = new LienFamilial();
          createReciprocity(obj, reciproque, true);
-         lienFamilialDao.createObject(obj);
+         lienFamilialDao.save(obj);
          log.info("Enregistrement objet LienFamilial " + obj.toString() + " et son reciproque " + reciproque.toString());
 
       }else{
@@ -96,12 +96,12 @@ public class LienFamilialManagerImpl implements LienFamilialManager
    }
 
    @Override
-   public void updateObjectManager(final LienFamilial obj){
+   public void saveManager(final LienFamilial obj){
       BeanValidator.validateObject(obj, new Validator[] {lienFamilialValidator});
       if(!findDoublonManager(obj)){
          final LienFamilial reciproque = obj.getReciproque();
          createReciprocity(obj, reciproque, false);
-         lienFamilialDao.updateObject(obj);
+         lienFamilialDao.save(obj);
          log.info("Modification objet LienFamilial " + obj.toString() + " et son reciproque " + reciproque.toString());
       }else{
          log.warn("Doublon lors modification objet LienFamilial " + obj.toString());
@@ -112,7 +112,7 @@ public class LienFamilialManagerImpl implements LienFamilialManager
    @Override
    public List<LienFamilial> findAllObjectsManager(){
       log.debug("Recherche totalite des LienFamilial");
-      return lienFamilialDao.findAll();
+      return IterableUtils.toList(lienFamilialDao.findAll());
    }
 
    @Override
@@ -125,10 +125,10 @@ public class LienFamilialManagerImpl implements LienFamilialManager
    }
 
    @Override
-   public void removeObjectManager(final LienFamilial obj){
+   public void deleteByIdManager(final LienFamilial obj){
       if(obj != null){
          if(!isUsedObjectManager(obj)){
-            lienFamilialDao.removeObject(obj.getLienFamilialId());
+            lienFamilialDao.deleteById(obj.getLienFamilialId());
             log.debug("Suppression objet LienFamilial " + obj.toString() + " et son reciproque en cascade");
          }else{
             log.warn("Suppression objet LienFamilial " + obj.toString() + " impossible car est reference (par PatientLien)");
@@ -142,14 +142,14 @@ public class LienFamilialManagerImpl implements LienFamilialManager
    @Override
    public boolean findDoublonManager(final LienFamilial o){
       if(o.getLienFamilialId() == null){
-         return lienFamilialDao.findAll().contains(o);
+         return IterableUtils.toList(lienFamilialDao.findAll()).contains(o);
       }
       return lienFamilialDao.findByExcludedId(o.getLienFamilialId()).contains(o);
    }
 
    @Override
    public boolean isUsedObjectManager(final LienFamilial o){
-      final LienFamilial lienFamilial = lienFamilialDao.mergeObject(o);
+      final LienFamilial lienFamilial = lienFamilialDao.save(o);
       return ((lienFamilial.getPatientLiens().size() > 0) || (lienFamilial.getReciproque().getPatientLiens().size() > 0));
    }
 

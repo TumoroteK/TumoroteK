@@ -112,12 +112,12 @@ public interface BlocExterneManager
     * @param entite Entité du bloc.
     * @param valeurExternes Valeurs de ce bloc.
     */
-   void createObjectManager(BlocExterne blocExterne, DossierExterne dossierExterne, List<ValeurExterne> valeurExternes);
+   void saveManager(BlocExterne blocExterne, DossierExterne dossierExterne, List<ValeurExterne> valeurExternes);
 
    /**
     * Supprime un blocExterne.
     * @param blocExterne Bloc Externe à supprimer.
     */
-   void removeObjectManager(BlocExterne blocExterne);
+   void deleteByIdManager(BlocExterne blocExterne);
 
 }

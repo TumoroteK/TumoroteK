@@ -144,7 +144,7 @@ public class ResultatManagerImpl implements ResultatManager
     */
    @Override
    public List<Resultat> findAllObjectsManager(){
-      return resultatDao.findAll();
+      return IterableUtils.toList(resultatDao.findAll());
    }
 
    /**
@@ -172,7 +172,7 @@ public class ResultatManagerImpl implements ResultatManager
       final Resultat temp = new Resultat(resultat.getNomColonne(), champ, resultat.getTri(), resultat.getOrdreTri(),
          resultat.getPosition(), resultat.getFormat(), affichage);
       BeanValidator.validateObject(resultat, new Validator[] {resultatValidator});
-      createObjectManager(temp, temp.getAffichage(), temp.getChamp());
+      saveManager(temp, temp.getAffichage(), temp.getChamp());
       return temp;
    }
 
@@ -183,7 +183,7 @@ public class ResultatManagerImpl implements ResultatManager
     * @param champ Champ du Résultat.
     */
    @Override
-   public void createObjectManager(final Resultat resultat, Affichage affichage, Champ champ){
+   public void saveManager(final Resultat resultat, Affichage affichage, Champ champ){
       //On vérifie que le résultat n'est pas nul
       if(resultat == null){
          log.warn("Objet obligatoire Resultat manquant lors " + "de la création d'un objet Resultat");
@@ -200,17 +200,17 @@ public class ResultatManagerImpl implements ResultatManager
          throw new RequiredObjectIsNullException("Resultat", "création", "Champ");
       }
       if(champ.getChampId() != null){
-         champ = champDao.mergeObject(champ);
+         champ = champDao.save(champ);
       }else{
-         champManager.createObjectManager(champ, champ.getChampParent());
+         champManager.saveManager(champ, champ.getChampParent());
       }
       resultat.setChamp(champ);
       if(affichage.getAffichageId() != null){
-         affichage = affichageDao.mergeObject(affichage);
+         affichage = affichageDao.save(affichage);
       }
       resultat.setAffichage(affichage);
       BeanValidator.validateObject(resultat, new Validator[] {resultatValidator});
-      resultatDao.createObject(resultat);
+      resultatDao.save(resultat);
    }
 
    /**
@@ -220,7 +220,7 @@ public class ResultatManagerImpl implements ResultatManager
     * @param champ Champ du Résultat.
     */
    @Override
-   public void updateObjectManager(final Resultat resultat, Affichage affichage, Champ champ){
+   public void saveManager(final Resultat resultat, Affichage affichage, Champ champ){
       //On vérifie que le résultat n'est pas nul
       if(resultat == null){
          log.warn("Objet obligatoire Resultat manquant lors " + "de la modification d'un objet Resultat");
@@ -238,23 +238,23 @@ public class ResultatManagerImpl implements ResultatManager
       }
       final Champ oldChamp = resultat.getChamp();
       if(champ.getChampId() != null){
-         champ = champDao.mergeObject(champ);
+         champ = champDao.save(champ);
       }else{
-         champManager.createObjectManager(champ, champ.getChampParent());
+         champManager.saveManager(champ, champ.getChampParent());
       }
       resultat.setChamp(champ);
       if(affichage.getAffichageId() != null){
-         affichage = affichageDao.mergeObject(affichage);
+         affichage = affichageDao.save(affichage);
       }else{
-         affichageDao.createObject(affichage);
+         affichageDao.save(affichage);
       }
       resultat.setAffichage(affichage);
       BeanValidator.validateObject(resultat, new Validator[] {resultatValidator});
-      resultatDao.updateObject(resultat);
+      resultatDao.save(resultat);
 
       // On supprime l'ancien champ
       if(oldChamp != null && oldChamp.getChampId() != null && !oldChamp.equals(resultat.getChamp())){
-         champManager.removeObjectManager(oldChamp);
+         champManager.deleteByIdManager(oldChamp);
       }
    }
 
@@ -263,7 +263,7 @@ public class ResultatManagerImpl implements ResultatManager
     * @param groupement Résultat à supprimer.
     */
    @Override
-   public void removeObjectManager(final Resultat resultat){
+   public void deleteByIdManager(final Resultat resultat){
       //On vérifie que le resultat n'est pas nul
       if(resultat == null){
          throw new RequiredObjectIsNullException("Resultat", "suppression", "Resultat");
@@ -274,11 +274,11 @@ public class ResultatManagerImpl implements ResultatManager
       }
       final Champ oldChamp = resultat.getChamp();
 
-      resultatDao.removeObject(resultat.getResultatId());
+      resultatDao.deleteById(resultat.getResultatId());
 
       //On supprime le champ
       if(oldChamp != null){
-         champManager.removeObjectManager(oldChamp);
+         champManager.deleteByIdManager(oldChamp);
       }
    }
 

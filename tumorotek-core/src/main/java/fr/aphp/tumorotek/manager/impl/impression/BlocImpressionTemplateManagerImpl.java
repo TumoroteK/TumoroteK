@@ -84,7 +84,7 @@ public class BlocImpressionTemplateManagerImpl implements BlocImpressionTemplate
    @Override
    public List<BlocImpressionTemplate> findAllObjectsManager(){
       log.debug("Recherche de tous les BlocImpressionTemplates");
-      return blocImpressionTemplateDao.findAll();
+      return IterableUtils.toList(blocImpressionTemplateDao.findAll());
    }
 
    @Override
@@ -92,7 +92,7 @@ public class BlocImpressionTemplateManagerImpl implements BlocImpressionTemplate
       if(pk != null){
          return blocImpressionTemplateDao.findByExcludedPK(pk);
       }
-      return blocImpressionTemplateDao.findAll();
+      return IterableUtils.toList(blocImpressionTemplateDao.findAll());
    }
 
    @Override
@@ -137,24 +137,24 @@ public class BlocImpressionTemplateManagerImpl implements BlocImpressionTemplate
    }
 
    @Override
-   public void createObjectManager(final BlocImpressionTemplate blocImpressionTemplate, final Template template,
+   public void saveManager(final BlocImpressionTemplate blocImpressionTemplate, final Template template,
       final BlocImpression blocImpression){
 
       // validation de l'objet à créer
       validateObjectManager(template, blocImpression);
 
-      blocImpressionTemplate.setTemplate(templateDao.mergeObject(template));
-      blocImpressionTemplate.setBlocImpression(blocImpressionDao.mergeObject(blocImpression));
+      blocImpressionTemplate.setTemplate(templateDao.save(template));
+      blocImpressionTemplate.setBlocImpression(blocImpressionDao.save(blocImpression));
 
       // création
-      blocImpressionTemplateDao.createObject(blocImpressionTemplate);
+      blocImpressionTemplateDao.save(blocImpressionTemplate);
 
       log.info("Enregistrement objet BlocImpressionTemplate " + blocImpressionTemplate.toString());
 
    }
 
    @Override
-   public void updateObjectManager(final BlocImpressionTemplate blocImpressionTemplate, final Template template,
+   public void saveManager(final BlocImpressionTemplate blocImpressionTemplate, final Template template,
       final BlocImpression blocImpression){
 
       //template required
@@ -162,25 +162,25 @@ public class BlocImpressionTemplateManagerImpl implements BlocImpressionTemplate
          log.warn("Objet obligatoire Template manquant" + " lors de la validation d'un BlocImpressionTemplate");
          throw new RequiredObjectIsNullException("BlocImpressionTemplate", "modification", "Template");
       }
-      blocImpressionTemplate.setTemplate(templateDao.mergeObject(template));
+      blocImpressionTemplate.setTemplate(templateDao.save(template));
 
       //blocImpression required
       if(blocImpression == null){
          log.warn("Objet obligatoire BlocImpression manquant" + " lors de la validation d'un BlocImpressionTemplate");
          throw new RequiredObjectIsNullException("BlocImpressionTemplate", "modification", "BlocImpression");
       }
-      blocImpressionTemplate.setBlocImpression(blocImpressionDao.mergeObject(blocImpression));
+      blocImpressionTemplate.setBlocImpression(blocImpressionDao.save(blocImpression));
 
       // création
-      blocImpressionTemplateDao.updateObject(blocImpressionTemplate);
+      blocImpressionTemplateDao.save(blocImpressionTemplate);
 
       log.info("Enregistrement objet BlocImpressionTemplate " + blocImpressionTemplate.toString());
    }
 
    @Override
-   public void removeObjectManager(final BlocImpressionTemplate blocImpressionTemplate){
+   public void deleteByIdManager(final BlocImpressionTemplate blocImpressionTemplate){
       if(blocImpressionTemplate != null){
-         blocImpressionTemplateDao.removeObject(blocImpressionTemplate.getPk());
+         blocImpressionTemplateDao.deleteById(blocImpressionTemplate.getPk());
          log.info("Suppression de l'objet BlocImpressionTemplate : " + blocImpressionTemplate.toString());
       }else{
          log.warn("Suppression d'un BlocImpressionTemplate null");

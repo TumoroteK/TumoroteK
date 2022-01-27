@@ -72,14 +72,14 @@ public class TemperatureManagerImpl implements TemperatureManager
    @Override
    public List<Temperature> findAllObjectsManager(){
       log.debug("Recherche de toutes les Températures");
-      return temperatureDao.findAll();
+      return IterableUtils.toList(temperatureDao.findAll());
    }
 
    @Override
    public Boolean findDoublonManager(final Temperature temperature){
       if(temperature != null){
          if(temperature.getTemperatureId() == null){
-            return temperatureDao.findAll().contains(temperature);
+            return IterableUtils.toList(temperatureDao.findAll()).contains(temperature);
          }else{
             return temperatureDao.findByExcludedId(temperature.getTemperatureId()).contains(temperature);
          }
@@ -89,7 +89,7 @@ public class TemperatureManagerImpl implements TemperatureManager
    }
 
    @Override
-   public void createObjectManager(final Temperature temperature){
+   public void saveManager(final Temperature temperature){
       // Test s'il y a des doublons
       if(findDoublonManager(temperature)){
          log.warn("Doublon lors de la creation de l'objet Temperature : " + temperature.toString());
@@ -99,14 +99,14 @@ public class TemperatureManagerImpl implements TemperatureManager
          // validation du Contrat
          BeanValidator.validateObject(temperature, new Validator[] {temperatureValidator});
 
-         temperatureDao.createObject(temperature);
+         temperatureDao.save(temperature);
 
          log.info("Enregistrement de l'objet Temperature : " + temperature.toString());
       }
    }
 
    @Override
-   public void updateObjectManager(final Temperature temperature){
+   public void saveManager(final Temperature temperature){
       // Test s'il y a des doublons
       if(findDoublonManager(temperature)){
          log.warn("Doublon lors de la modification de " + "l'objet Temperature : " + temperature.toString());
@@ -116,16 +116,16 @@ public class TemperatureManagerImpl implements TemperatureManager
          // validation du Contrat
          BeanValidator.validateObject(temperature, new Validator[] {temperatureValidator});
 
-         temperatureDao.updateObject(temperature);
+         temperatureDao.save(temperature);
 
          log.info("Enregistrement de l'objet Temperature : " + temperature.toString());
       }
    }
 
    @Override
-   public void removeObjectManager(final Temperature temperature){
+   public void deleteByIdManager(final Temperature temperature){
       if(temperature != null){
-         temperatureDao.removeObject(temperature.getTemperatureId());
+         temperatureDao.deleteById(temperature.getTemperatureId());
          log.info("Suppression de l'objet Temperature : " + temperature.toString());
       }else{
          log.warn("Suppression d'une Temperature null");

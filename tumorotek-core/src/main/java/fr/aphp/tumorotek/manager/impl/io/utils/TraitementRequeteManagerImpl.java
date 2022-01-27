@@ -48,7 +48,7 @@ import fr.aphp.tumorotek.manager.io.export.GroupementManager;
 import fr.aphp.tumorotek.manager.io.utils.CorrespondanceManager;
 import fr.aphp.tumorotek.manager.io.utils.TraitementQueryManager;
 import fr.aphp.tumorotek.manager.io.utils.TraitementRequeteManager;
-import fr.aphp.tumorotek.model.cession.Cession;
+import fr.aphp.tumorotek.model.coeur.cession.Cession;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;

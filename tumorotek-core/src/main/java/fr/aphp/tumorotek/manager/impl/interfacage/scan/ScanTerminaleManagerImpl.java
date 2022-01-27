@@ -107,26 +107,26 @@ public class ScanTerminaleManagerImpl implements ScanTerminaleManager
    }
 
    @Override
-   public void createObjectManager(final ScanTerminale sT, ScanDevice sD){
+   public void saveManager(final ScanTerminale sT, ScanDevice sD){
       if(sT != null){
          // test only
          sD = scanDeviceDao.findById(1);
          sT.setScanDevice(sD);
-         scanTerminaleDao.createObject(sT);
+         scanTerminaleDao.save(sT);
          log.debug("ScanTerminale creation: " + sT.getName());
       }
    }
 
    @Override
-   public void removeObjectManager(final ScanTerminale sT){
+   public void deleteByIdManager(final ScanTerminale sT){
       if(sT != null){
-         scanTerminaleDao.removeObject(sT.getScanTerminaleId());
+         scanTerminaleDao.deleteById(sT.getScanTerminaleId());
       }
    }
 
    @Override
    public List<ScanTerminale> findAllManager(){
-      return scanTerminaleDao.findAll();
+      return IterableUtils.toList(scanTerminaleDao.findAll());
    }
 
    @Override

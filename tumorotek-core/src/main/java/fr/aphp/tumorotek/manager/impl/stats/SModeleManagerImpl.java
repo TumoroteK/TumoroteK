@@ -117,7 +117,7 @@ public class SModeleManagerImpl implements SModeleManager
 
    @Override
    public List<SModele> findAllObjectsManager(){
-      return sModeleDao.findAll();
+      return IterableUtils.toList(sModeleDao.findAll());
    }
 
    @Override
@@ -132,7 +132,7 @@ public class SModeleManagerImpl implements SModeleManager
    public Set<Banque> getBanquesManager(SModele im){
       if(im != null && im.getSmodeleId() != null){
          log.debug("Recherche de toutes les banques d'un conteneur");
-         im = sModeleDao.mergeObject(im);
+         im = sModeleDao.save(im);
          final Set<Banque> banques = im.getBanques();
          banques.isEmpty();
          return banques;
@@ -144,7 +144,7 @@ public class SModeleManagerImpl implements SModeleManager
    public Boolean findDoublonManager(final SModele modele){
       if(modele != null){
          if(modele.getSmodeleId() == null){
-            return sModeleDao.findAll().contains(modele);
+            return IterableUtils.toList(sModeleDao.findAll()).contains(modele);
          }
          return sModeleDao.findByExcludedId(modele.getSmodeleId()).contains(modele);
       }
@@ -157,11 +157,11 @@ public class SModeleManagerImpl implements SModeleManager
    }
 
    @Override
-   public void createObjectManager(final SModele modele, final Plateforme plateforme, final List<Indicateur> indicateurs,
+   public void saveManager(final SModele modele, final Plateforme plateforme, final List<Indicateur> indicateurs,
       final List<Banque> banques){
       // plateforme required
       if(plateforme != null){
-         modele.setPlateforme(plateformeDao.mergeObject(plateforme));
+         modele.setPlateforme(plateformeDao.save(plateforme));
       }else{
          log.warn("Objet obligatoire Plateforme manquant" + " lors de la création d'un Indicateur Modele");
          throw new RequiredObjectIsNullException("IndicateurModele", "creation", "Plateforme");
@@ -179,7 +179,7 @@ public class SModeleManagerImpl implements SModeleManager
          modele.getBanques().addAll(banques);
       }
 
-      sModeleDao.createObject(modele);
+      sModeleDao.save(modele);
 
       updateAssociations(modele, indicateurs);
 
@@ -189,11 +189,11 @@ public class SModeleManagerImpl implements SModeleManager
    }
 
    @Override
-   public SModele updateObjectManager(SModele modele, final Plateforme plateforme, final List<Indicateur> indicateurs,
+   public SModele saveManager(SModele modele, final Plateforme plateforme, final List<Indicateur> indicateurs,
       final List<Banque> banques){
       // plateforme required
       if(plateforme != null){
-         modele.setPlateforme(plateformeDao.mergeObject(plateforme));
+         modele.setPlateforme(plateformeDao.save(plateforme));
       }else{
          log.warn("Objet obligatoire Plateforme manquant" + " lors de la modification d'un IndicateurModele");
          throw new RequiredObjectIsNullException("IndicateurModele", "modification", "Plateforme");
@@ -208,11 +208,11 @@ public class SModeleManagerImpl implements SModeleManager
       // validation
       BeanValidator.validateObject(modele, new Validator[] {sModeleValidator});
 
-      sModeleDao.updateObject(modele);
+      sModeleDao.save(modele);
 
       //		if (banques != null) {
       //			modele.getBanques().addAll(banques);
-      //			sModeleDao.mergeObject(modele);
+      //			sModeleDao.save(modele);
       //		}
       modele = updateBanquesAssociation(banques, modele);
 
@@ -224,9 +224,9 @@ public class SModeleManagerImpl implements SModeleManager
    }
 
    @Override
-   public void removeObjectManager(final SModele modele){
+   public void deleteByIdManager(final SModele modele){
       if(modele != null){
-         sModeleDao.removeObject(modele.getSmodeleId());
+         sModeleDao.deleteById(modele.getSmodeleId());
          log.info("Suppression de l'objet IndicateurModele : " + modele.toString());
       }else{
          log.warn("Suppression d'un IndicateurModele null");
@@ -247,7 +247,7 @@ public class SModeleManagerImpl implements SModeleManager
 
       if(indicateurs != null){
 
-         sModele = sModeleDao.mergeObject(sModele);
+         sModele = sModeleDao.save(sModele);
 
          final Iterator<SModeleIndicateur> it = sModele.getSModeleIndicateurs().iterator();
          final List<SModeleIndicateur> smToRemove = new ArrayList<>();
@@ -259,9 +259,9 @@ public class SModeleManagerImpl implements SModeleManager
          }
 
          for(int i = 0; i < smToRemove.size(); i++){
-            final SModeleIndicateur sm = sModeleIndicateurDao.mergeObject(smToRemove.get(i));
+            final SModeleIndicateur sm = sModeleIndicateurDao.save(smToRemove.get(i));
             sModele.getSModeleIndicateurs().remove(sm);
-            sModeleIndicateurDao.removeObject(sm.getPk());
+            sModeleIndicateurDao.deleteById(sm.getPk());
 
             log.debug("Suppression de l'association entre le sModele : " + sModele.toString() + " et l'indicateur : "
                + sm.getIndicateur().toString());
@@ -273,14 +273,14 @@ public class SModeleManagerImpl implements SModeleManager
             sm.setPk(pk);
             sm.setOrdre(i + 1);
             if(!sModele.getSModeleIndicateurs().contains(sm)){
-               sModele.getSModeleIndicateurs().add(sModeleIndicateurDao.mergeObject(sm));
+               sModele.getSModeleIndicateurs().add(sModeleIndicateurDao.save(sm));
 
                log.debug("Ajout de l'association entre le sModele : " + sModele.toString() + " et l'indicateur : "
                   + indicateurs.get(i).toString());
             }else{ // on modifie l'ordre du medecin present avec la liste
                sm = sModeleIndicateurDao.findById(pk);
                sm.setOrdre(i + 1);
-               sModeleIndicateurDao.mergeObject(sm);
+               sModeleIndicateurDao.save(sm);
             }
          }
       }
@@ -291,7 +291,7 @@ public class SModeleManagerImpl implements SModeleManager
 
    public SModele updateBanquesAssociation(final List<Banque> banques, SModele model){
       if(banques != null){
-         model = sModeleDao.mergeObject(model);
+         model = sModeleDao.save(model);
          final Iterator<Banque> it = model.getBanques().iterator();
          final List<Banque> banquesToRemove = new ArrayList<>();
          // on parcourt les Banques qui sont actuellement associés
@@ -308,7 +308,7 @@ public class SModeleManagerImpl implements SModeleManager
          // on parcourt la liste des Banques à retirer de
          // l'association
          for(int i = 0; i < banquesToRemove.size(); i++){
-            final Banque bank = banqueDao.mergeObject(banquesToRemove.get(i));
+            final Banque bank = banqueDao.save(banquesToRemove.get(i));
             // on retire la Banque de chaque coté de l'association
             model.getBanques().remove(bank);
             bank.getSModeles().remove(model);
@@ -322,8 +322,8 @@ public class SModeleManagerImpl implements SModeleManager
             // si une banque n'était pas associée au modele
             if(!model.getBanques().contains(b)){
                // on ajoute la Banque des deux cotés de l'association
-               model.getBanques().add(banqueDao.mergeObject(b));
-               banqueDao.mergeObject(b).getSModeles().add(model);
+               model.getBanques().add(banqueDao.save(b));
+               banqueDao.save(b).getSModeles().add(model);
 
                log.debug("Ajout de l'association entre le " + "Modele : " + model.toString() + " et la banque : " + b.toString());
             }
@@ -334,7 +334,7 @@ public class SModeleManagerImpl implements SModeleManager
 
    @Override
    public Set<SModeleIndicateur> getSModeleIndicateursManager(SModele sM){
-      sM = sModeleDao.mergeObject(sM);
+      sM = sModeleDao.save(sM);
       final Set<SModeleIndicateur> indics = sM.getSModeleIndicateurs();
       indics.isEmpty(); // operation empechant LazyInitialisationException
       return indics;
@@ -344,7 +344,7 @@ public class SModeleManagerImpl implements SModeleManager
    public List<Indicateur> getIndicateursManager(final SModele sM){
       final List<Indicateur> indics = new ArrayList<>();
       if(sM != null){
-         final SModele sModele = sModeleDao.mergeObject(sM);
+         final SModele sModele = sModeleDao.save(sM);
          final LinkedHashSet<SModeleIndicateur> sms = new LinkedHashSet<>(sModele.getSModeleIndicateurs());
          final Iterator<SModeleIndicateur> it = sms.iterator();
          while(it.hasNext()){

@@ -96,7 +96,7 @@ public class ChampManagerImpl implements ChampManager
     *            Champ parent du champ à créer.
     */
    @Override
-   public void createObjectManager(final Champ champ, Champ parent){
+   public void saveManager(final Champ champ, Champ parent){
       // On vérifie que le groupement n'est pas nul
       if(champ == null){
          log.warn("Objet obligatoire Champ manquant lors " + "de la création d'un objet Champ");
@@ -104,11 +104,11 @@ public class ChampManagerImpl implements ChampManager
       }
       // On enregsitre d'abord son parent
       if(null != parent){
-         createObjectManager(parent);
+         saveManager(parent);
       }
 
       champ.setChampParent(parent);
-      champDao.createObject(champ);
+      champDao.save(champ);
    }
 
    /**
@@ -117,7 +117,7 @@ public class ChampManagerImpl implements ChampManager
     * @param champ Champ à créer.
     */
    @Override
-   public void createObjectManager(final Champ champ){
+   public void saveManager(final Champ champ){
       // On vérifie que le groupement n'est pas nul
       if(champ == null){
          log.warn("Objet obligatoire Champ manquant lors " + "de la création d'un objet Champ");
@@ -125,10 +125,10 @@ public class ChampManagerImpl implements ChampManager
       }
       // On enregsitre d'abord son parent
       if(null != champ.getChampParent()){
-         createObjectManager(champ.getChampParent());
+         saveManager(champ.getChampParent());
       }
 
-      champDao.createObject(champ);
+      champDao.save(champ);
    }
 
 
@@ -141,7 +141,7 @@ public class ChampManagerImpl implements ChampManager
     *            Champ parent du champ à mettre à jour.
     */
    @Override
-   public void updateObjectManager(final Champ champ, Champ parent){
+   public void saveManager(final Champ champ, Champ parent){
       //On vérifie que le groupement n'est pas nul
       if(champ == null){
          log.warn("Objet obligatoire Champ manquant lors " + "de la modification d'un objet Champ");
@@ -152,7 +152,7 @@ public class ChampManagerImpl implements ChampManager
       updateParent(parent, oldChampParent);
 
       champ.setChampParent(parent);
-      champDao.updateObject(champ);
+      champDao.save(champ);
    }
 
    /**
@@ -161,7 +161,7 @@ public class ChampManagerImpl implements ChampManager
     * @param champ Champ à mettre à jour.
     */
    @Override
-   public void updateObjectManager(final Champ champ){
+   public void saveManager(final Champ champ){
       //On vérifie que le groupement n'est pas nul
       if(champ == null){
          log.warn("Objet obligatoire Champ manquant lors " + "de la modification d'un objet Champ");
@@ -171,7 +171,7 @@ public class ChampManagerImpl implements ChampManager
       Champ oldChampParent = champDao.findById(champ.getChampId()).getChampParent();
       updateParent(champ.getChampParent(), oldChampParent);
 
-      champDao.updateObject(champ);
+      champDao.save(champ);
    }
 
    /**
@@ -181,12 +181,12 @@ public class ChampManagerImpl implements ChampManager
     */
    private void updateParent(Champ newChampParent, Champ oldChampParent){
       if(null == newChampParent && null != oldChampParent){ // Suppression du champ
-         removeObjectManager(oldChampParent);
+         deleteByIdManager(oldChampParent);
       }else if(null != newChampParent && null == oldChampParent){ // Nouveau champ
-         createObjectManager(newChampParent, newChampParent.getChampParent());
+         saveManager(newChampParent, newChampParent.getChampParent());
       }else if(null != newChampParent && null != oldChampParent){ // Mise à jour Champ
          newChampParent.setChampId(oldChampParent.getChampId());
-         updateObjectManager(newChampParent, newChampParent.getChampParent());
+         saveManager(newChampParent, newChampParent.getChampParent());
       }
    }
 
@@ -197,7 +197,7 @@ public class ChampManagerImpl implements ChampManager
     *            Champ à supprimer.
     */
    @Override
-   public void removeObjectManager(final Champ champ){
+   public void deleteByIdManager(final Champ champ){
       // On vérifie que le champ n'est pas nul
       if(champ == null){
          log.warn("Objet obligatoire Champ manquant lors " + "de la suppression d'un objet Champ");
@@ -209,11 +209,11 @@ public class ChampManagerImpl implements ChampManager
       }
       // On supprime d'abord son parent
       if(null != champ.getChampParent()){
-         removeObjectManager(champ.getChampParent());
+         deleteByIdManager(champ.getChampParent());
       }
 
       // On supprime le champ
-      champDao.removeObject(champ.getChampId());
+      champDao.deleteById(champ.getChampId());
    }
 
    /**
@@ -234,13 +234,13 @@ public class ChampManagerImpl implements ChampManager
       Champ parent = copy.getChampParent();
       if(parent != null){
          if(parent.getChampId() != null){
-            parent = champDao.mergeObject(parent);
+            parent = champDao.save(parent);
          }else{
             parent = copyChampManager(parent);
          }
       }
       copy.setChampParent(parent);
-      champDao.createObject(copy);
+      champDao.save(copy);
 
       return copy;
    }
@@ -286,7 +286,7 @@ public class ChampManagerImpl implements ChampManager
     */
    @Override
    public List<Champ> findAllObjectsManager(){
-      return champDao.findAll();
+      return IterableUtils.toList(champDao.findAll());
    }
 
    @Override

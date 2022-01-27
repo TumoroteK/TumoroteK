@@ -185,9 +185,9 @@ public class Affichage implements TKdataObject, Comparable<Affichage>
       this.resultats.add(resultat);
    }
 
-   public void supprimerResultatByIndex(final Integer index){
-      this.resultats.remove(index);
-   }
+//   public void supprimerResultatByIndex(final Integer _i){
+//      this.resultats.remove(_i);
+//   }
 
    public void deplacerResultat(final Resultat resultat, final Integer nouvellePosition){
       final Integer pivot = resultat.getPosition();

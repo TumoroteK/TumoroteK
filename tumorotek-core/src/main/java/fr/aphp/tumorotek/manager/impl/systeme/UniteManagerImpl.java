@@ -150,7 +150,7 @@ public class UniteManagerImpl implements UniteManager
     */
    @Override
    public Boolean findDoublonManager(final Unite unite){
-      return uniteDao.findAll().contains(unite);
+      return IterableUtils.toList(uniteDao.findAll()).contains(unite);
    }
 
    /**
@@ -161,7 +161,7 @@ public class UniteManagerImpl implements UniteManager
    @Override
    public Boolean isUsedObjectManager(Unite unite){
       int nb = 0;
-      unite = uniteDao.mergeObject(unite);
+      unite = uniteDao.save(unite);
 
       nb = nb + unite.getEchantillonQuantites().size();
       nb = nb + unite.getPrelevementQuantites().size();
@@ -181,13 +181,13 @@ public class UniteManagerImpl implements UniteManager
     * l'objet à créer se trouve déjà dans la base.
     */
    @Override
-   public void createObjectManager(final Unite unite){
+   public void saveManager(final Unite unite){
       if(findDoublonManager(unite)){
          log.warn("Doublon lors de la creation de l'objet Unite : " + unite.toString());
          throw new DoublonFoundException("Unite", "creation");
       }else{
          BeanValidator.validateObject(unite, new Validator[] {uniteValidator});
-         uniteDao.createObject(unite);
+         uniteDao.save(unite);
          log.info("Enregistrement de l'objet Unite : " + unite.toString());
       }
    }
@@ -199,13 +199,13 @@ public class UniteManagerImpl implements UniteManager
     * l'objet à créer se trouve déjà dans la base.
     */
    @Override
-   public void updateObjectManager(final Unite unite){
+   public void saveManager(final Unite unite){
       if(findDoublonManager(unite)){
          log.warn("Doublon lors de la modif de l'objet Unite : " + unite.toString());
          throw new DoublonFoundException("Unite", "modification");
       }else{
          BeanValidator.validateObject(unite, new Validator[] {uniteValidator});
-         uniteDao.updateObject(unite);
+         uniteDao.save(unite);
          log.info("Modification de l'objet Unite : " + unite.toString());
       }
    }
@@ -217,12 +217,12 @@ public class UniteManagerImpl implements UniteManager
     * est utilisé par des échantillons.
     */
    @Override
-   public void removeObjectManager(final Unite unite){
+   public void deleteByIdManager(final Unite unite){
       if(isUsedObjectManager(unite)){
          log.warn("Objet utilisé lors de la suppression de l'objet Unite : " + unite.toString());
          throw new ObjectUsedException("Unite", "suppression");
       }else{
-         uniteDao.removeObject(unite.getUniteId());
+         uniteDao.deleteById(unite.getUniteId());
          log.info("Suppression de l'objet Unite : " + unite.toString());
       }
    }

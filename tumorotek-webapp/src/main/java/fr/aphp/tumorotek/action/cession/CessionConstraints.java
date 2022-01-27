@@ -49,7 +49,7 @@ import fr.aphp.tumorotek.action.constraints.ConstDateLimit;
 import fr.aphp.tumorotek.action.constraints.ConstText;
 import fr.aphp.tumorotek.action.constraints.ConstWord;
 import fr.aphp.tumorotek.manager.coeur.cession.CessionManager;
-import fr.aphp.tumorotek.model.cession.Cession;
+import fr.aphp.tumorotek.model.coeur.cession.Cession;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 

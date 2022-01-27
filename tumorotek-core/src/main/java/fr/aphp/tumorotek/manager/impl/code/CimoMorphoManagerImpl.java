@@ -40,6 +40,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -70,7 +71,7 @@ public class CimoMorphoManagerImpl implements CimoMorphoManager
 
    @Override
    public List<CimoMorpho> findAllObjectsManager(){
-      return cimoMorphoDao.findAll();
+      return IterableUtils.toList(cimoMorphoDao.findAll());
    }
 
    @Override
@@ -101,7 +102,7 @@ public class CimoMorphoManagerImpl implements CimoMorphoManager
    @Override
    public Set<Adicap> getAdicapsManager(final CimoMorpho cimo){
       Set<Adicap> adicaps = new HashSet<>();
-      final CimoMorpho cimoM = cimoMorphoDao.mergeObject(cimo);
+      final CimoMorpho cimoM = cimoMorphoDao.save(cimo);
       adicaps = cimoM.getAdicaps();
       adicaps.size(); // operation empechant LazyInitialisationException
       return adicaps;

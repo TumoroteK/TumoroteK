@@ -40,7 +40,7 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.manager.validation.ValidationUtilities;
-import fr.aphp.tumorotek.model.cession.DestructionMotif;
+import fr.aphp.tumorotek.model.coeur.cession.DestructionMotif;
 
 /**
  * Validator pour le bean domaine DestructionMotif (de cession).<br>

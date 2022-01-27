@@ -87,7 +87,7 @@ public class DiagnosticManagerImpl implements DiagnosticManager
    }
 
    @Override
-   public void createObjectManager(final Diagnostic obj){
+   public void saveManager(final Diagnostic obj){
 
       final Diagnostic pt = obj;
 
@@ -97,11 +97,11 @@ public class DiagnosticManagerImpl implements DiagnosticManager
          log.warn("Objet obligatoire Plateforme " + "manquant lors de la creation " + "d'un objet Diagnostic");
          throw new RequiredObjectIsNullException("Diagnostic", "creation", "Plateforme");
       }
-      pt.setPlateforme(plateformeDao.mergeObject(pt.getPlateforme()));
+      pt.setPlateforme(plateformeDao.save(pt.getPlateforme()));
 
       BeanValidator.validateObject(pt, new Validator[] {diagnosticValidator});
       if(!findDoublonManager(pt)){
-         diagnosticDao.createObject(pt);
+         diagnosticDao.save(pt);
          log.info("Enregistrement objet Diagnostic " + pt.toString());
       }else{
          log.warn("Doublon lors creation objet Diagnostic " + pt.toString());
@@ -110,10 +110,10 @@ public class DiagnosticManagerImpl implements DiagnosticManager
    }
 
    @Override
-   public void updateObjectManager(final Diagnostic obj){
+   public void saveManager(final Diagnostic obj){
       BeanValidator.validateObject(obj, new Validator[] {diagnosticValidator});
       if(!findDoublonManager(obj)){
-         diagnosticDao.updateObject(obj);
+         diagnosticDao.save(obj);
          log.info("Modification objet Diagnostic " + obj.toString());
       }else{
          log.warn("Doublon lors modification objet Diagnostic " + obj.toString());
@@ -123,13 +123,13 @@ public class DiagnosticManagerImpl implements DiagnosticManager
 
    @Override
    public List<Diagnostic> findAllObjectsManager(){
-      return diagnosticDao.findAll();
+      return IterableUtils.toList(diagnosticDao.findAll());
    }
 
    @Override
-   public void removeObjectManager(final Diagnostic obj){
+   public void deleteByIdManager(final Diagnostic obj){
       if(obj != null){
-         diagnosticDao.removeObject(obj.getId());
+         diagnosticDao.deleteById(obj.getId());
          log.info("Suppression objet Diagnostic " + obj.toString());
       }else{
          log.warn("Suppression d'un Diagnostic null");
@@ -141,7 +141,7 @@ public class DiagnosticManagerImpl implements DiagnosticManager
       if(o != null){
          final Diagnostic pt = o;
          if(pt.getId() == null){
-            return diagnosticDao.findAll().contains(pt);
+            return IterableUtils.toList(diagnosticDao.findAll()).contains(pt);
          }
          return diagnosticDao.findByExcludedId(pt.getId()).contains(pt);
       }
@@ -150,7 +150,7 @@ public class DiagnosticManagerImpl implements DiagnosticManager
 
    @Override
    public boolean isUsedObjectManager(final Diagnostic o){
-      final Diagnostic pt = diagnosticDao.mergeObject(o);
+      final Diagnostic pt = diagnosticDao.save(o);
       return pt.getMaladies().size() > 0;
    }
 

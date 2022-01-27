@@ -145,7 +145,7 @@ public class ProdQualiteManagerImpl implements ProdQualiteManager
       final ProdQualite qualite = obj;
       if(qualite != null){
          if(qualite.getId() == null){
-            return prodQualiteDao.findAll().contains(qualite);
+            return IterableUtils.toList(prodQualiteDao.findAll()).contains(qualite);
          }
          return prodQualiteDao.findByExcludedId(qualite.getId()).contains(qualite);
       }
@@ -162,40 +162,40 @@ public class ProdQualiteManagerImpl implements ProdQualiteManager
    }
 
    @Override
-   public void createObjectManager(final ProdQualite obj){
+   public void saveManager(final ProdQualite obj){
       final ProdQualite qualite = obj;
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(qualite.getPlateforme() == null){
          throw new RequiredObjectIsNullException("ProdQualite", "creation", "Plateforme");
       }
-      qualite.setPlateforme(plateformeDao.mergeObject(qualite.getPlateforme()));
+      qualite.setPlateforme(plateformeDao.save(qualite.getPlateforme()));
 
       if(findDoublonManager(qualite)){
          log.warn("Doublon lors de la creation de l'objet ProdQualite : " + qualite.toString());
          throw new DoublonFoundException("ProdQualite", "creation");
       }
       BeanValidator.validateObject(qualite, new Validator[] {prodQualiteValidator});
-      prodQualiteDao.createObject(qualite);
+      prodQualiteDao.save(qualite);
       log.info("Enregistrement de l'objet ProdQualite : " + qualite.toString());
    }
 
    @Override
-   public void updateObjectManager(final ProdQualite obj){
+   public void saveManager(final ProdQualite obj){
       final ProdQualite qualite = obj;
       if(findDoublonManager(qualite)){
          log.warn("Doublon lors de la modification de l'objet " + "ProdQualite : " + qualite.toString());
          throw new DoublonFoundException("ProdQualite", "modification");
       }
          BeanValidator.validateObject(qualite, new Validator[] {prodQualiteValidator});
-         prodQualiteDao.updateObject(qualite);
+         prodQualiteDao.save(qualite);
          log.info("Modification de l'objet ProdQualite : " + qualite.toString());
    }
 
    @Override
-   public void removeObjectManager(final ProdQualite obj){
+   public void deleteByIdManager(final ProdQualite obj){
       final ProdQualite qualite = obj;
-      prodQualiteDao.removeObject(qualite.getId());
+      prodQualiteDao.deleteById(qualite.getId());
       log.info("Suppression de l'objet ProdQualite : " + qualite.toString());
    }
 

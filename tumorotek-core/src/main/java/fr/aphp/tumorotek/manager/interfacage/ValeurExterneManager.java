@@ -111,13 +111,13 @@ public interface ValeurExterneManager
     * @param valeurExterne Valeur Externe à créer.
     * @param blocExterne bloc de la valeur externe.
     */
-   void createObjectManager(ValeurExterne valeurExterne, BlocExterne blocExterne);
+   void saveManager(ValeurExterne valeurExterne, BlocExterne blocExterne);
 
    /**
     * Supprime une valeur externe.
     * @param valeurExterne Valeur Externe à supprimer.
     */
-   void removeObjectManager(ValeurExterne valeurExterne);
+   void deleteByIdManager(ValeurExterne valeurExterne);
 
    /**
     * Recherche les valeurs externes d'un dossier pour un bloc dont l'entite id est 

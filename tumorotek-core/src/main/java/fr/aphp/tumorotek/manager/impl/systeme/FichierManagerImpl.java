@@ -158,7 +158,7 @@ public class FichierManagerImpl implements FichierManager
    }
 
    @Override
-   public void createObjectManager(final Fichier fichier, final InputStream stream, final List<File> filesCreated){
+   public void saveManager(final Fichier fichier, final InputStream stream, final List<File> filesCreated){
       if(findDoublonManager(fichier)){
          log.warn("Doublon lors de la creation de l'objet Fichier : " + fichier.toString());
          throw new DoublonFoundException("Fichier", "creation");
@@ -175,22 +175,22 @@ public class FichierManagerImpl implements FichierManager
          if(fichier.getMimeType() == null){ // defaut
             fichier.setMimeType("application/octet-stream");
          }
-         fichierDao.createObject(fichier);
+         fichierDao.save(fichier);
          if(stream != null){
             log.info("Enregistrement de l'objet Fichier : " + fichier.toString());
             fichier.setPath(fichier.getPath() + "_" + fichier.getFichierId());
-            fichierDao.updateObject(fichier);
+            fichierDao.save(fichier);
             storeFile(stream, fichier.getPath(), filesCreated);
 
          }else if(!fichier.getPath().matches(".*_[0-9]+")){
             fichier.setFichierId(null);
             throw new RuntimeException("fichier.path.illegal");
          }
-         //			fichierDao.createObject(fichier);
+         //			fichierDao.save(fichier);
       }
 
    @Override
-   public Fichier updateObjectManager(final Fichier fichier, final InputStream stream, final List<File> filesCreated,
+   public Fichier saveManager(final Fichier fichier, final InputStream stream, final List<File> filesCreated,
       final List<File> filesToDelete){
       if(findDoublonManager(fichier)){
          log.warn("Doublon lors de la modification de l'objet Fichier : " + fichier.toString());
@@ -200,14 +200,14 @@ public class FichierManagerImpl implements FichierManager
          BeanValidator.validateObject(fichier, new Validator[] {fichierValidator});
       
          if(stream != null){
-            //				fichierDao.updateObject(fichier);
+            //				fichierDao.save(fichier);
             // suppr ref, recree une autre ref			
-            removeObjectManager(fichier, filesToDelete);
+            deleteByIdManager(fichier, filesToDelete);
             final Fichier clone = fichier.clone();
             clone.setFichierId(null);
             fichier.setMimeType(getMimeType(stream));
             clone.setPath(clone.getPath().substring(0, clone.getPath().lastIndexOf("_")));
-            createObjectManager(clone, stream, filesCreated);
+            saveManager(clone, stream, filesCreated);
             //				// ecrase path ssi pas partage
             //				if (!isPathSharedManager(fichier)) {
             //					storeFile(stream, fichier.getPath() 
@@ -219,13 +219,13 @@ public class FichierManagerImpl implements FichierManager
       }
       
             // path doit être inchangé
-            fichierDao.updateObject(fichier);
+            fichierDao.save(fichier);
          log.info("Modification de l'objet Fichier : " + fichier.toString());
       return fichier;
    }
 
    @Override
-   public void removeObjectManager(final Fichier path, final List<File> filesToDelete){
+   public void deleteByIdManager(final Fichier path, final List<File> filesToDelete){
       if(path != null){
          // if (!isUsedObjectManager(path)) {
          // if (remove) {
@@ -237,7 +237,7 @@ public class FichierManagerImpl implements FichierManager
                filesToDelete.add(new File(path.getPath()));
             }
          }
-         fichierDao.removeObject(path.getFichierId());
+         fichierDao.deleteById(path.getFichierId());
          log.debug("Suppression de la reference vers l'objet Fichier : " + path.toString());
          //			} else {
          //				log.info("Référence vers fichier non supprimée");
@@ -312,12 +312,12 @@ public class FichierManagerImpl implements FichierManager
             if(fileRef.getPath() == null){
                fileRef.setPath(pathBase);
             }
-            createObjectManager(fileRef, stream, filesCreated);
+            saveManager(fileRef, stream, filesCreated);
          }else{
-            fileRef = updateObjectManager(fileRef, stream, filesCreated, filesToDelete);
+            fileRef = saveManager(fileRef, stream, filesCreated, filesToDelete);
          }
       }else if(obj.getFile() != null){
-         removeObjectManager(obj.getFile(), filesToDelete);
+         deleteByIdManager(obj.getFile(), filesToDelete);
       }
       obj.setFile(fileRef);
    }
@@ -335,7 +335,7 @@ public class FichierManagerImpl implements FichierManager
 
 		   // mise à jour du chemin
 		   file.setPath(destPathStr);
-		   fichierDao.updateObject(file);
+		   fichierDao.save(file);
 	   }
    }
 }

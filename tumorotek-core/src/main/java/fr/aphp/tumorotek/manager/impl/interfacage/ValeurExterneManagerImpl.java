@@ -111,7 +111,7 @@ public class ValeurExterneManagerImpl implements ValeurExterneManager
    @Override
    public List<ValeurExterne> findAllObjectsManager(){
       log.debug("Recherche de toutes les ValeurExternes");
-      return valeurExterneDao.findAll();
+      return IterableUtils.toList(valeurExterneDao.findAll());
    }
 
    @Override
@@ -196,11 +196,11 @@ public class ValeurExterneManagerImpl implements ValeurExterneManager
    }
 
    @Override
-   public void createObjectManager(final ValeurExterne valeurExterne, final BlocExterne blocExterne){
+   public void saveManager(final ValeurExterne valeurExterne, final BlocExterne blocExterne){
       // Validation de la valeur
       validateValeurExterneManager(valeurExterne, blocExterne);
 
-      valeurExterne.setBlocExterne(blocExterneDao.mergeObject(blocExterne));
+      valeurExterne.setBlocExterne(blocExterneDao.save(blocExterne));
 
       if(findDoublonManager(valeurExterne)){
          final ValeurExterne oldValeur = valeurExterneDao.findByBlocExterne(blocExterne)
@@ -220,17 +220,17 @@ public class ValeurExterneManagerImpl implements ValeurExterneManager
             }
          }
 
-         removeObjectManager(oldValeur);
+         deleteByIdManager(oldValeur);
       }
-      valeurExterneDao.createObject(valeurExterne);
+      valeurExterneDao.save(valeurExterne);
 
       log.info("Enregistrement de l'objet ValeurExterne : " + valeurExterne.toString());
    }
 
    @Override
-   public void removeObjectManager(final ValeurExterne valeurExterne){
+   public void deleteByIdManager(final ValeurExterne valeurExterne){
       if(valeurExterne != null && valeurExterne.getValeurExterneId() != null){
-         valeurExterneDao.removeObject(valeurExterne.getValeurExterneId());
+         valeurExterneDao.deleteById(valeurExterne.getValeurExterneId());
          log.info("Suppression de l'objet ValeurExterne : " + valeurExterne.toString());
       }else{
          log.warn("Suppression d'une ValeurExterne null");

@@ -43,8 +43,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import fr.aphp.tumorotek.model.cession.CessionType;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
+import fr.aphp.tumorotek.model.coeur.cession.CessionType;
 import fr.aphp.tumorotek.model.coeur.echantillon.EchanQualite;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.echantillon.EchantillonType;

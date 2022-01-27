@@ -91,7 +91,7 @@ public interface ModePrepaManager extends PfDependantTKThesaurusManager<ModePrep
    //	 * @throws DoublonFoundException Lance une exception si un doublon de
    //	 * l'objet à créer se trouve déjà dans la base.
    //	 */
-   //	void createObjectManager(ModePrepa mode);
+   //	void saveManager(ModePrepa mode);
    //	
    //	/**
    //	 * Sauvegarde les modifications apportées à un objet persistant.
@@ -99,7 +99,7 @@ public interface ModePrepaManager extends PfDependantTKThesaurusManager<ModePrep
    //	 * @throws DoublonFoundException Lance une exception si un doublon de
    //	 * l'objet à créer se trouve déjà dans la base.
    //	 */
-   //	void updateObjectManager(ModePrepa mode);
+   //	void saveManager(ModePrepa mode);
    //	
    //	/**
    //	 * Supprime un EchantillonType de la base de données.
@@ -107,6 +107,6 @@ public interface ModePrepaManager extends PfDependantTKThesaurusManager<ModePrep
    //	 * @throws DoublonFoundException Lance une exception si l'objet
    //	 * est utilisé par des échantillons.
    //	 */
-   //	void removeObjectManager(ModePrepa mode);
+   //	void deleteByIdManager(ModePrepa mode);
 
 }

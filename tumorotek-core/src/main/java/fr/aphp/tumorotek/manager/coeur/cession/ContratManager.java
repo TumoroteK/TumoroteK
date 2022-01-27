@@ -37,9 +37,9 @@ package fr.aphp.tumorotek.manager.coeur.cession;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.model.cession.Cession;
-import fr.aphp.tumorotek.model.cession.Contrat;
-import fr.aphp.tumorotek.model.cession.ProtocoleType;
+import fr.aphp.tumorotek.model.coeur.cession.Cession;
+import fr.aphp.tumorotek.model.coeur.cession.Contrat;
+import fr.aphp.tumorotek.model.coeur.cession.ProtocoleType;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Etablissement;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
@@ -118,7 +118,7 @@ public interface ContratManager
     * @param protocoleType ProtocoleType du contrat.
     * @param plateforme Plateforme du contrat.
     */
-   void createObjectManager(Contrat contrat, Collaborateur collaborateur, Service service, Etablissement etablissement,
+   void saveManager(Contrat contrat, Collaborateur collaborateur, Service service, Etablissement etablissement,
       ProtocoleType protocoleType, Plateforme plateforme, Utilisateur utilisateur);
 
    /**
@@ -129,7 +129,7 @@ public interface ContratManager
     * @param protocoleType ProtocoleType du contrat.
     * @param plateforme Plateforme du contrat.
     */
-   void updateObjectManager(Contrat contrat, Collaborateur collaborateur, Service service, Etablissement etablissement,
+   void saveManager(Contrat contrat, Collaborateur collaborateur, Service service, Etablissement etablissement,
       ProtocoleType protocoleType, Plateforme plateforme, Utilisateur utilisateur);
 
    /**
@@ -138,6 +138,6 @@ public interface ContratManager
     * @param comments commentaires liés à la suppression
     * @param Utilisateur réalisant la suppression.
     */
-   void removeObjectManager(Contrat contrat, String comments, Utilisateur usr);
+   void deleteByIdManager(Contrat contrat, String comments, Utilisateur usr);
 
 }

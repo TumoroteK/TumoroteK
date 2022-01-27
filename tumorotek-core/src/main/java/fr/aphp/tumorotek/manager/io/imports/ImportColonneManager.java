@@ -145,7 +145,7 @@ public interface ImportColonneManager
     * @param template ImportTemplate.
     * @param champ Champ.
     */
-   void createObjectManager(ImportColonne importColonne, ImportTemplate template, Champ champ);
+   void saveManager(ImportColonne importColonne, ImportTemplate template, Champ champ);
 
    /**
     * Persist une instance d'ImportColonne dans la base de données.
@@ -153,12 +153,12 @@ public interface ImportColonneManager
     * @param template ImportTemplate.
     * @param champ Champ.
     */
-   void updateObjectManager(ImportColonne importColonne, ImportTemplate template, Champ champ);
+   void saveManager(ImportColonne importColonne, ImportTemplate template, Champ champ);
 
    /**
     * Supprime un ImportColonne de la base de données.
     * @param importColonne ImportColonne à supprimer de la base de données.
     */
-   void removeObjectManager(ImportColonne importColonne);
+   void deleteByIdManager(ImportColonne importColonne);
 
 }

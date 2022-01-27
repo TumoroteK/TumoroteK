@@ -65,7 +65,7 @@ public interface CombinaisonManager
     * @param champ1 Premier champ de la Combinaison.
     * @param champ2 Deuxième champ de la Combinaison.
     */
-   void createObjectManager(Combinaison combinaison, Champ champ1, Champ champ2);
+   void saveManager(Combinaison combinaison, Champ champ1, Champ champ2);
 
    /**
     * Met à jour une Combinaison en BDD.
@@ -73,13 +73,13 @@ public interface CombinaisonManager
     * @param champ1 Premier champ de la Combinaison.
     * @param champ2 Deuxième champ de la Combinaison.
     */
-   void updateObjectManager(Combinaison combinaison, Champ champ1, Champ champ2);
+   void saveManager(Combinaison combinaison, Champ champ1, Champ champ2);
 
    /**
     * Supprime une Combinaison en BDD.
     * @param combinaison Combinaison à supprimer.
     */
-   void removeObjectManager(Combinaison combinaison);
+   void deleteByIdManager(Combinaison combinaison);
 
    /**
     * Recherche une Combinaison dont l'identifiant est passé en paramètre.

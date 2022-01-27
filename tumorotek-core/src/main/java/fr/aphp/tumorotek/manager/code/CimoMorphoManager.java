@@ -35,28 +35,82 @@
  **/
 package fr.aphp.tumorotek.manager.code;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Service;
+
+import fr.aphp.tumorotek.dao.code.CimoMorphoDao;
 import fr.aphp.tumorotek.model.code.Adicap;
 import fr.aphp.tumorotek.model.code.CimoMorpho;
 
 /**
  *
- * Interface pour le Manager du bean de domaine CimoMorpho.
- * Interface créée le 21/05/10.
+ * Interface pour le Manager du bean de domaine CimoMorpho. Interface créée le
+ * 21/05/10.
  *
  * @author Mathieu BARTHELEMY
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface CimoMorphoManager extends CodeCommonManager<CimoMorpho>
-{
+@Service
+public class CimoMorphoManager implements CodeCommonManager<CimoMorpho> {
 
-   /**
-    * Recherche les codes ADICAP topo issus du transcodage du
-    * code Cimo passé en paramètre.
-    * @param code cimo qui sera transcodé
-    * @return Liste de codes Adicap
-    */
-   Set<Adicap> getAdicapsManager(CimoMorpho cim);
+	private final Log log = LogFactory.getLog(CimoMorphoManager.class);
+
+	private CimoMorphoDao cimoMorphoDao;
+
+	public void setCimoMorphoDao(final CimoMorphoDao cDao) {
+		this.cimoMorphoDao = cDao;
+	}
+
+	@Override
+	public List<CimoMorpho> findAllObjectsManager() {
+		return IterableUtils.toList(cimoMorphoDao.findAll());
+	}
+
+	/**
+	 * Parcours egalement le champ CIM_REF qui represente l'equivalent en code
+	 * CIM_MASTER.
+	 */
+	@Override
+	public List<CimoMorpho> findByCodeLikeManager(String code, final boolean exactMatch) {
+		if (!exactMatch) {
+			code = "%" + code + "%";
+		}
+		log.debug("Recherche Cimo par code: " + code + " exactMatch " + String.valueOf(exactMatch));
+		final Set<CimoMorpho> cimos = new HashSet<>();
+		cimos.addAll(cimoMorphoDao.findByCodeLike(code));
+		cimos.addAll(cimoMorphoDao.findByCimRefLike(code));
+		return new ArrayList<>(cimos);
+	}
+
+	@Override
+	public List<CimoMorpho> findByLibelleLikeManager(String libelle, final boolean exactMatch) {
+		if (!exactMatch) {
+			libelle = "%" + libelle + "%";
+		}
+		log.debug("Recherche Cimo par libelle: " + libelle + " exactMatch " + String.valueOf(exactMatch));
+		return cimoMorphoDao.findByLibelleLike(libelle);
+	}
+
+	/**
+	 * Recherche les codes ADICAP topo issus du transcodage du code Cimo passé en
+	 * paramètre.
+	 * 
+	 * @param code cimo qui sera transcodé
+	 * @return Liste de codes Adicap
+	 */
+	public Set<Adicap> getAdicapsManager(final CimoMorpho cimo) {
+		Set<Adicap> adicaps = new HashSet<>();
+		final CimoMorpho cimoM = cimoMorphoDao.save(cimo);
+		adicaps = cimoM.getAdicaps();
+		adicaps.size(); // operation empechant LazyInitialisationException
+		return adicaps;
+	}
 }

@@ -48,12 +48,11 @@ import org.apache.commons.logging.LogFactory;
 
 import fr.aphp.tumorotek.manager.impl.interfacage.ConfigurationParsing;
 import fr.aphp.tumorotek.manager.interfacage.InterfacageParsingUtils;
-import fr.aphp.tumorotek.model.bundles.ResourceBundleTumo;
 import fr.aphp.tumorotek.model.interfacage.DossierExterne;
 import fr.aphp.tumorotek.model.interfacage.Emetteur;
 import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.param.TumorotekProperties;
-
+import fr.aphp.tumorotek.unused.model.bundles.ResourceBundleTumo;
 import ca.uhn.hl7v2.HL7Exception;
 import ca.uhn.hl7v2.model.Message;
 import ca.uhn.hl7v2.model.v25.message.ORU_R01;

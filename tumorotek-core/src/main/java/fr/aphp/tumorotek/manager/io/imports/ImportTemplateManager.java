@@ -97,7 +97,7 @@ public interface ImportTemplateManager
     * @param entites Entites du template.
     * @param colonnes Liste d'ImportColonnes.
     */
-   void createObjectManager(ImportTemplate importTemplate, Banque banque, List<Entite> entites,
+   void saveManager(ImportTemplate importTemplate, Banque banque, List<Entite> entites,
       List<ImportColonne> colonnesToCreate);
 
    /**
@@ -107,13 +107,13 @@ public interface ImportTemplateManager
     * @param entites Entites du template.
     * @param colonnes Liste d'ImportColonnes.
     */
-   void updateObjectManager(ImportTemplate importTemplate, Banque banque, List<Entite> entites,
+   void saveManager(ImportTemplate importTemplate, Banque banque, List<Entite> entites,
       List<ImportColonne> colonnesToCreate, List<ImportColonne> colonnesToremove);
 
    /**
     * Supprime un ImportTemplate de la base de données.
     * @param importTemplate Template à supprimer de la base de données.
     */
-   void removeObjectManager(ImportTemplate importTemplate);
+   void deleteByIdManager(ImportTemplate importTemplate);
 
 }

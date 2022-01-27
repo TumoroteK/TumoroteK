@@ -180,7 +180,7 @@ public class EmplacementManagerImpl implements EmplacementManager
     */
    @Override
    public List<Emplacement> findAllObjectsManager(){
-      return emplacementDao.findAll();
+      return IterableUtils.toList(emplacementDao.findAll());
    }
 
    @Override
@@ -332,7 +332,7 @@ public class EmplacementManagerImpl implements EmplacementManager
    public Boolean isUsedObjectManager(Emplacement emplacement){
 
       if(emplacement != null){
-         emplacement = emplacementDao.mergeObject(emplacement);
+         emplacement = emplacementDao.save(emplacement);
 
          return !(emplacement.getEchantillons().size() == 0 && emplacement.getProdDerives().size() == 0);
 
@@ -803,17 +803,17 @@ public class EmplacementManagerImpl implements EmplacementManager
    }
 
    @Override
-   public void createObjectManager(final Emplacement emplacement, final Terminale terminale, final Entite entite){
+   public void saveManager(final Emplacement emplacement, final Terminale terminale, final Entite entite){
 
       //Terminale required
       if(terminale != null){
-         emplacement.setTerminale(terminaleDao.mergeObject(terminale));
+         emplacement.setTerminale(terminaleDao.save(terminale));
       }else{
          log.warn("Objet obligatoire Terminale manquant" + " lors de la création d'un Emplacement");
          throw new RequiredObjectIsNullException("Emplacement", "creation", "Terminale");
       }
 
-      emplacement.setEntite(entiteDao.mergeObject(entite));
+      emplacement.setEntite(entiteDao.save(entite));
 
       // Test de la position
       if(!checkEmplacementInTerminale(emplacement)){
@@ -845,23 +845,23 @@ public class EmplacementManagerImpl implements EmplacementManager
 
       emplacement.setVide(emplacement.getObjetId() == null);
 
-      emplacementDao.createObject(emplacement);
+      emplacementDao.save(emplacement);
 
       log.info("Enregistrement de l'objet Emplacement : " + emplacement.toString());
    }
 
    @Override
-   public void updateObjectManager(final Emplacement emplacement, final Terminale terminale, final Entite entite){
+   public void saveManager(final Emplacement emplacement, final Terminale terminale, final Entite entite){
 
       //Terminale required
       if(terminale != null){
-         emplacement.setTerminale(terminaleDao.mergeObject(terminale));
+         emplacement.setTerminale(terminaleDao.save(terminale));
       }else{
          log.warn("Objet obligatoire Terminale manquant" + " lors de la modification d'un Emplacement");
          throw new RequiredObjectIsNullException("Emplacement", "modification", "Terminale");
       }
 
-      emplacement.setEntite(entiteDao.mergeObject(entite));
+      emplacement.setEntite(entiteDao.save(entite));
 
       // Test de la position
       if(!checkEmplacementInTerminale(emplacement)){
@@ -893,19 +893,19 @@ public class EmplacementManagerImpl implements EmplacementManager
 
       emplacement.setVide(emplacement.getObjetId() == null);
 
-      emplacementDao.updateObject(emplacement);
+      emplacementDao.save(emplacement);
 
       log.info("Modification de l'objet Emplacement : " + emplacement.toString());
    }
 
    @Override
-   public void removeObjectManager(final Emplacement emplacement){
+   public void deleteByIdManager(final Emplacement emplacement){
       if(emplacement != null){
          if(isUsedObjectManager(emplacement)){
             log.warn("Objet utilisé lors de la suppression de l'objet " + "Emplacement : " + emplacement.toString());
             throw new ObjectUsedException("Emplacement", "suppression");
          }
-         emplacementDao.removeObject(emplacement.getEmplacementId());
+         emplacementDao.deleteById(emplacement.getEmplacementId());
          log.info("Suppression de l'objet Emplacement : " + emplacement.toString());
       }else{
          log.warn("Suppression d'un Emplacement null");
@@ -941,7 +941,7 @@ public class EmplacementManagerImpl implements EmplacementManager
                sb.append(empl.getPosition());
                empl.setAdrl(sb.toString());
 
-               createObjectManager(empl, terminale, null);
+               saveManager(empl, terminale, null);
 
                emplacements.add(empl);
             }
@@ -979,7 +979,7 @@ public class EmplacementManagerImpl implements EmplacementManager
                //					BeanValidator.validateObject(
                //							emplacement, new Validator[]{emplacementValidator});
 
-               emplacementDao.updateObject(emplacement);
+               emplacementDao.save(emplacement);
 
                log.info("Modification de l'objet Emplacement : " + emplacement.toString());
 
@@ -991,7 +991,7 @@ public class EmplacementManagerImpl implements EmplacementManager
                   if(obj != null){
                      final Operation op = new Operation();
                      op.setDate(Utils.getCurrentSystemCalendar());
-                     operationManager.createObjectManager(op, utilisateur, opType, obj);
+                     operationManager.saveManager(op, utilisateur, opType, obj);
                   }
                }
             }
@@ -1078,17 +1078,17 @@ public class EmplacementManagerImpl implements EmplacementManager
 
             if(empl != null){
                final Terminale term = empl.getTerminale();
-               empl.setTerminale(terminaleDao.mergeObject(term));
+               empl.setTerminale(terminaleDao.save(term));
 
-               final Entite ent = entiteDao.mergeObject(empl.getEntite());
+               final Entite ent = entiteDao.save(empl.getEntite());
                empl.setEntite(ent);
 
                empl.setVide(empl.getObjetId() == null);
 
                if(empl.getEmplacementId() != null){
-                  emplacementDao.updateObject(empl);
+                  emplacementDao.save(empl);
                }else{
-                  emplacementDao.createObject(empl);
+                  emplacementDao.save(empl);
                }
             }
          }

@@ -147,7 +147,7 @@ public class EchanQualiteManagerImpl implements EchanQualiteManager
 
       if(qualite != null){
          if(qualite.getId() == null){
-            return echanQualiteDao.findAll().contains(qualite);
+            return IterableUtils.toList(echanQualiteDao.findAll()).contains(qualite);
          }
          return echanQualiteDao.findByExcludedId(qualite.getId()).contains(qualite);
       }
@@ -164,40 +164,40 @@ public class EchanQualiteManagerImpl implements EchanQualiteManager
    }
 
    @Override
-   public void createObjectManager(final EchanQualite obj){
+   public void saveManager(final EchanQualite obj){
       final EchanQualite qualite = obj;
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(qualite.getPlateforme() == null){
          throw new RequiredObjectIsNullException("EchanQualite", "creation", "Plateforme");
       }
-      qualite.setPlateforme(plateformeDao.mergeObject(qualite.getPlateforme()));
+      qualite.setPlateforme(plateformeDao.save(qualite.getPlateforme()));
 
       if(findDoublonManager(qualite)){
          log.warn("Doublon lors de la creation de l'objet EchanQualite : " + qualite.toString());
          throw new DoublonFoundException("EchanQualite", "creation");
       }
       BeanValidator.validateObject(qualite, new Validator[] {echanQualiteValidator});
-      echanQualiteDao.createObject(qualite);
+      echanQualiteDao.save(qualite);
       log.info("Enregistrement de l'objet EchanQualite : " + qualite.toString());
    }
 
    @Override
-   public void updateObjectManager(final EchanQualite obj){
+   public void saveManager(final EchanQualite obj){
       final EchanQualite qualite = obj;
       if(findDoublonManager(qualite)){
          log.warn("Doublon lors de la modification de l'objet " + "EchanQualite : " + qualite.toString());
          throw new DoublonFoundException("EchanQualite", "modification");
       }
       BeanValidator.validateObject(qualite, new Validator[] {echanQualiteValidator});
-      echanQualiteDao.updateObject(qualite);
+      echanQualiteDao.save(qualite);
       log.info("Modification de l'objet EchanQualite : " + qualite.toString());
    }
 
    @Override
-   public void removeObjectManager(final EchanQualite obj){
+   public void deleteByIdManager(final EchanQualite obj){
       final EchanQualite qualite = obj;
-      echanQualiteDao.removeObject(qualite.getId());
+      echanQualiteDao.deleteById(qualite.getId());
    }
 
    @Override

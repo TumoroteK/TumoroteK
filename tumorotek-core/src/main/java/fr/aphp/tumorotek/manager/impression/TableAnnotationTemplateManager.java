@@ -106,7 +106,7 @@ public interface TableAnnotationTemplateManager
     * @param template Template  du TableAnnotationTemplate.
     * @param tableAnnotation TableAnnotation du TableAnnotationTemplate.
     */
-   void createObjectManager(TableAnnotationTemplate tableAnnotationTemplate, Template template, TableAnnotation tableAnnotation);
+   void saveManager(TableAnnotationTemplate tableAnnotationTemplate, Template template, TableAnnotation tableAnnotation);
 
    /**
     * Maj une instance de TableAnnotationTemplate dans la base de données.
@@ -114,12 +114,12 @@ public interface TableAnnotationTemplateManager
     * @param template Template  du TableAnnotationTemplate.
     * @param tableAnnotation TableAnnotation du TableAnnotationTemplate.
     */
-   void updateObjectManager(TableAnnotationTemplate tableAnnotationTemplate, Template template, TableAnnotation tableAnnotation);
+   void saveManager(TableAnnotationTemplate tableAnnotationTemplate, Template template, TableAnnotation tableAnnotation);
 
    /**
     * Supprime une instance de TableAnnotationTemplate de la base.
     * @param tableAnnotationTemplate Objet à supprimer.
     */
-   void removeObjectManager(TableAnnotationTemplate tableAnnotationTemplate);
+   void deleteByIdManager(TableAnnotationTemplate tableAnnotationTemplate);
 
 }

@@ -107,7 +107,7 @@ public interface EchantillonTypeManager extends PfDependantTKThesaurusManager<Ec
    //	 * @throws DoublonFoundException Lance une exception si un doublon de
    //	 * l'objet à créer se trouve déjà dans la base.
    //	 */
-   //	void createObjectManager(EchantillonType type);
+   //	void saveManager(EchantillonType type);
    //	
    //	/**
    //	 * Sauvegarde les modifications apportées à un objet persistant.
@@ -115,7 +115,7 @@ public interface EchantillonTypeManager extends PfDependantTKThesaurusManager<Ec
    //	 * @throws DoublonFoundException Lance une exception si un doublon de
    //	 * l'objet à créer se trouve déjà dans la base.
    //	 */
-   //	void updateObjectManager(EchantillonType type);
+   //	void saveManager(EchantillonType type);
    //	
    //	/**
    //	 * Supprime un EchantillonType de la base de données.
@@ -123,6 +123,6 @@ public interface EchantillonTypeManager extends PfDependantTKThesaurusManager<Ec
    //	 * @throws DoublonFoundException Lance une exception si l'objet
    //	 * est utilisé par des échantillons.
    //	 */
-   //	void removeObjectManager(EchantillonType type);
+   //	void deleteByIdManager(EchantillonType type);
 
 }

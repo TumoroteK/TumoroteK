@@ -42,8 +42,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
 
-import fr.aphp.tumorotek.dao.cession.CederObjetDao;
-import fr.aphp.tumorotek.dao.cession.CessionDao;
+import fr.aphp.tumorotek.dao.coeur.cession.CederObjetDao;
+import fr.aphp.tumorotek.dao.coeur.cession.CessionDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
 import fr.aphp.tumorotek.dao.systeme.UniteDao;
 import fr.aphp.tumorotek.manager.coeur.cession.CederObjetManager;
@@ -54,10 +54,10 @@ import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.systeme.EntiteManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.cession.CederObjetValidator;
-import fr.aphp.tumorotek.model.cession.CederObjet;
-import fr.aphp.tumorotek.model.cession.CederObjetPK;
-import fr.aphp.tumorotek.model.cession.Cession;
-import fr.aphp.tumorotek.model.cession.ECederObjetStatut;
+import fr.aphp.tumorotek.model.coeur.cession.CederObjet;
+import fr.aphp.tumorotek.model.coeur.cession.CederObjetPK;
+import fr.aphp.tumorotek.model.coeur.cession.Cession;
+import fr.aphp.tumorotek.model.coeur.cession.ECederObjetStatut;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.systeme.Entite;
@@ -155,7 +155,7 @@ public class CederObjetManagerImpl implements CederObjetManager
    @Override
    public List<CederObjet> findAllObjectsManager(){
       log.debug("Recherche de tous les CederObjets");
-      return cederObjetDao.findAll();
+      return IterableUtils.toList(cederObjetDao.findAll());
    }
 
    /**
@@ -169,7 +169,7 @@ public class CederObjetManagerImpl implements CederObjetManager
       if(pk != null){
          return cederObjetDao.findByExcludedPK(pk);
       }
-      return cederObjetDao.findAll();
+      return IterableUtils.toList(cederObjetDao.findAll());
    }
 
    /**
@@ -397,7 +397,7 @@ public class CederObjetManagerImpl implements CederObjetManager
          log.warn("Objet obligatoire Entite manquant" + " lors de la validation d'un CederObjet");
          throw new RequiredObjectIsNullException("CederObjet", operation, "Entite");
       }
-      cederObjet.setEntite(entiteDao.mergeObject(entite));
+      cederObjet.setEntite(entiteDao.save(entite));
 
       //Validation
       BeanValidator.validateObject(cederObjet, new Validator[] {cederObjetValidator});
@@ -426,7 +426,7 @@ public class CederObjetManagerImpl implements CederObjetManager
     * @param quantiteUnite Unite de quantité du CederObjet.
     */
    @Override
-   public void createObjectManager(final CederObjet cederObjet, final Cession cession, final Entite entite,
+   public void saveManager(final CederObjet cederObjet, final Cession cession, final Entite entite,
       final Unite quantiteUnite){
 
       //Cession required
@@ -434,14 +434,14 @@ public class CederObjetManagerImpl implements CederObjetManager
          log.warn("Objet obligatoire Cession manquant" + " lors de la creation d'un CederObjet");
          throw new RequiredObjectIsNullException("CederObjet", "creation", "Cession");
       }
-      cederObjet.setCession(cessionDao.mergeObject(cession));
+      cederObjet.setCession(cessionDao.save(cession));
 
       //Entite required
       if(entite == null){
          log.warn("Objet obligatoire Entite manquant" + " lors de la creation d'un CederObjet");
          throw new RequiredObjectIsNullException("CederObjet", "creation", "Entite");
       }
-      cederObjet.setEntite(entiteDao.mergeObject(entite));
+      cederObjet.setEntite(entiteDao.save(entite));
 
       //Validation
       BeanValidator.validateObject(cederObjet, new Validator[] {cederObjetValidator});
@@ -449,9 +449,9 @@ public class CederObjetManagerImpl implements CederObjetManager
       if(isValidPK(cederObjet)){
          //Doublon
          if(!findDoublonManager(cederObjet)){
-            cederObjet.setQuantiteUnite(uniteDao.mergeObject(quantiteUnite));
+            cederObjet.setQuantiteUnite(uniteDao.save(quantiteUnite));
 
-            cederObjetDao.createObject(cederObjet);
+            cederObjetDao.save(cederObjet);
 
             log.debug("Enregistrement objet CederObjet " + cederObjet.toString());
 
@@ -474,7 +474,7 @@ public class CederObjetManagerImpl implements CederObjetManager
     * @param quantiteUnite Unite de quantité du CederObjet.
     */
    @Override
-   public void updateObjectManager(final CederObjet cederObjet, final Cession cession, final Entite entite,
+   public void saveManager(final CederObjet cederObjet, final Cession cession, final Entite entite,
       final Unite quantiteUnite){
 
       //Cession required
@@ -482,14 +482,14 @@ public class CederObjetManagerImpl implements CederObjetManager
          log.warn("Objet obligatoire Cession manquant" + " lors de la modification d'un CederObjet");
          throw new RequiredObjectIsNullException("CederObjet", "modification", "Cession");
       }
-      cederObjet.setCession(cessionDao.mergeObject(cession));
+      cederObjet.setCession(cessionDao.save(cession));
 
       //Entite required
       if(entite == null){
          log.warn("Objet obligatoire Entite manquant" + " lors de la modification d'un CederObjet");
          throw new RequiredObjectIsNullException("CederObjet", "modification", "Entite");
       }
-      cederObjet.setEntite(entiteDao.mergeObject(entite));
+      cederObjet.setEntite(entiteDao.save(entite));
 
       //Validation
       BeanValidator.validateObject(cederObjet, new Validator[] {cederObjetValidator});
@@ -497,9 +497,9 @@ public class CederObjetManagerImpl implements CederObjetManager
       if(isValidPK(cederObjet)){
          //Doublon
          if(findDoublonManager(cederObjet)){
-            cederObjet.setQuantiteUnite(uniteDao.mergeObject(quantiteUnite));
+            cederObjet.setQuantiteUnite(uniteDao.save(quantiteUnite));
 
-            cederObjetDao.updateObject(cederObjet);
+            cederObjetDao.save(cederObjet);
 
             log.debug("Modification objet CederObjet " + cederObjet.toString());
 
@@ -519,9 +519,9 @@ public class CederObjetManagerImpl implements CederObjetManager
     * @param protocoleExt ProtocoleExt à supprimer de la base de données.
     */
    @Override
-   public void removeObjectManager(final CederObjet cederObjet){
+   public void deleteByIdManager(final CederObjet cederObjet){
       if(cederObjet != null){
-         cederObjetDao.removeObject(cederObjet.getPk());
+         cederObjetDao.deleteById(cederObjet.getPk());
          log.debug("Suppression de l'objet CederObjet : " + cederObjet.toString());
       }else{
          log.warn("Suppression d'un cederObjet null");

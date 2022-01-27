@@ -75,18 +75,18 @@ public interface TemperatureManager
     * Persist une instance de Temperature dans la base de données.
     * @param temperature Nouvelle instance de l'objet à créer.
     */
-   void createObjectManager(Temperature temperature);
+   void saveManager(Temperature temperature);
 
    /**
     * Sauvegarde les modifications apportées à un objet persistant.
     * @param temperature Objet à mettre à jour dans la base.
     */
-   void updateObjectManager(Temperature temperature);
+   void saveManager(Temperature temperature);
 
    /**
     * Supprime une Temperature de la base de données.
     * @param temperature Temperature à supprimer de la base de données.
     */
-   void removeObjectManager(Temperature temperature);
+   void deleteByIdManager(Temperature temperature);
 
 }

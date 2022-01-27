@@ -55,7 +55,7 @@ import fr.aphp.tumorotek.manager.coeur.cession.LargeCessionManager;
 import fr.aphp.tumorotek.manager.coeur.echantillon.EchantillonManager;
 import fr.aphp.tumorotek.manager.coeur.prodderive.ProdDeriveManager;
 import fr.aphp.tumorotek.manager.validation.coeur.cession.LargeCessionHelper;
-import fr.aphp.tumorotek.model.cession.Cession;
+import fr.aphp.tumorotek.model.coeur.cession.Cession;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.utils.Utils;
