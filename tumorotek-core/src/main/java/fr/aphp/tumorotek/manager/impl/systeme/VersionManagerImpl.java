@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.manager.impl.systeme;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -46,56 +47,55 @@ import fr.aphp.tumorotek.model.systeme.Version;
 
 /**
  *
- * Implémentation du manager du bean de domaine Version.
- * Interface créée le 26/05/2011.
+ * Implémentation du manager du bean de domaine Version. Interface créée le
+ * 26/05/2011.
  *
  * @author Pierre Ventadour
  * @version 2.0
  *
  */
-public class VersionManagerImpl implements VersionManager
-{
+public class VersionManagerImpl implements VersionManager {
 
-   private final Log log = LogFactory.getLog(VersionManager.class);
+	private final Log log = LogFactory.getLog(VersionManager.class);
 
-   /** Bean Dao VersionDao. */
-   private VersionDao versionDao;
+	/** Bean Dao VersionDao. */
+	private VersionDao versionDao;
 
-   public void setVersionDao(final VersionDao vDao){
-      this.versionDao = vDao;
-   }
+	public void setVersionDao(final VersionDao vDao) {
+		this.versionDao = vDao;
+	}
 
-   @Override
-   public Version findByIdManager(final Integer versionId){
-      return versionDao.findById(versionId);
-   }
+	@Override
+	public Version findByIdManager(final Integer versionId) {
+		return versionDao.findById(versionId).orElse(null);
+	}
 
-   @Override
-   public List<Version> findAllObjectsManager(){
-      log.debug("Recherche de toutes les Versions.");
-      return IterableUtils.toList(versionDao.findAll());
-   }
+	@Override
+	public List<Version> findAllObjectsManager() {
+		log.debug("Recherche de toutes les Versions.");
+		return IterableUtils.toList(versionDao.findAll());
+	}
 
-   @Override
-   public List<Version> findByDateChronologiqueManager(){
-      log.debug("Recherche de toutes les Versions par " + "ordre chronologique.");
-      return versionDao.findByDateChronologique();
-   }
+	@Override
+	public List<Version> findByDateChronologiqueManager() {
+		log.debug("Recherche de toutes les Versions par " + "ordre chronologique.");
+		return versionDao.findByDateChronologique();
+	}
 
-   @Override
-   public Version findByCurrentVersionManager(){
-      log.debug("Recherche de la version courante");
-      final List<Version> versions = versionDao.findByDateAntiChronologique();
+	@Override
+	public Version findByCurrentVersionManager() {
+		log.debug("Recherche de la version courante");
+		final List<Version> versions = versionDao.findByDateAntiChronologique();
 
-      if(versions.size() > 0){
-         return versions.get(0);
-      }else{
-         return null;
-      }
-   }
+		if (versions.size() > 0) {
+			return versions.get(0);
+		} else {
+			return null;
+		}
+	}
 
-   @Override
-   public void saveManager(final Version version){
-      versionDao.save(version);
-   }
+	@Override
+	public void createObjectManager(final Version version) {
+		versionDao.save(version);
+	}
 }

@@ -163,7 +163,7 @@ public class ProfilManagerTest extends AbstractManagerTest4
    public void testCrud() throws ParseException{
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    private void saveManagerTest() throws ParseException{
@@ -314,8 +314,8 @@ public class ProfilManagerTest extends AbstractManagerTest4
       assertTrue(droitObjetManager.findByProfilManager(pTest2).size() == 2);
 
       // suppression des profils et des droits
-      profilManager.deleteByIdManager(pTest);
-      profilManager.deleteByIdManager(pTest2);
+      profilManager.removeObjectManager(pTest);
+      profilManager.removeObjectManager(pTest2);
       assertTrue(profilManager.findAllObjectsManager().size() == 5);
       assertTrue(droitObjetManager.findAllObjectsManager().size() == 9);
       assertTrue(operationManager.findByObjectManager(pTest).size() == 0);
@@ -474,7 +474,7 @@ public class ProfilManagerTest extends AbstractManagerTest4
       assertTrue(droitObjetManager.findByProfilManager(pTest2).size() == 0);
 
       // suppression
-      profilManager.deleteByIdManager(pTest3);
+      profilManager.removeObjectManager(pTest3);
       assertTrue(profilManager.findAllObjectsManager().size() == 5);
       assertTrue(droitObjetManager.findAllObjectsManager().size() == 9);
       assertTrue(operationManager.findByObjectManager(pTest3).size() == 0);
@@ -482,10 +482,10 @@ public class ProfilManagerTest extends AbstractManagerTest4
       assertTrue(profilManager.findByPlateformeAndArchiveManager(pf2, true).size() == 0);
    }
 
-   private void deleteByIdManagerTest(){
+   private void removeObjectManagerTest(){
       final Utilisateur admin = utilisateurDao.findById(1);
       // test de la suppression d'un objet null
-      profilManager.deleteByIdManager(null);
+      profilManager.removeObjectManager(null);
       assertTrue(profilManager.findAllObjectsManager().size() == 5);
 
       // test de la suppression d'un objet non utilisé
@@ -498,7 +498,7 @@ public class ProfilManagerTest extends AbstractManagerTest4
       final Integer id = p.getProfilId();
 
       final Profil pTest = profilManager.findByIdManager(id);
-      profilManager.deleteByIdManager(pTest);
+      profilManager.removeObjectManager(pTest);
       assertTrue(profilManager.findAllObjectsManager().size() == 5);
       assertTrue(operationManager.findByObjectManager(pTest).size() == 0);
 
@@ -506,7 +506,7 @@ public class ProfilManagerTest extends AbstractManagerTest4
       final Profil p4 = profilManager.findByIdManager(4);
       boolean catched = false;
       try{
-         profilManager.deleteByIdManager(p4);
+         profilManager.removeObjectManager(p4);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ObjectUsedException")){
             catched = true;

@@ -276,7 +276,7 @@ public class BanqueManagerImpl implements BanqueManager
     */
    @Override
    public Banque findByIdManager(final Integer banqueId){
-      return banqueDao.findById(banqueId);
+      return banqueDao.findById(banqueId).orElse(null);
    }
 
    /**
@@ -441,7 +441,7 @@ public class BanqueManagerImpl implements BanqueManager
    }
 
    @Override
-   public void createOrsaveManager(final Banque banque, final Plateforme pf, final Contexte contexte,
+   public void createOrUpdateObjectManager(final Banque banque, final Plateforme pf, final Contexte contexte,
       final Service service, final Collaborateur responsable, final Collaborateur contact, final List<Conteneur> conteneurs,
       final List<BanqueTableCodage> codifications, final List<TableAnnotation> tablesPatient,
       final List<TableAnnotation> tablesPrlvt, final List<TableAnnotation> tablesEchan, final List<TableAnnotation> tablesDerive,
@@ -567,7 +567,7 @@ public class BanqueManagerImpl implements BanqueManager
                      List<ProfilUtilisateur> newProfils = new ArrayList<>(userToUpdate.getProfilUtilisateurs());
                      userToUpdate.setProfilUtilisateurs(new HashSet<>());
                      
-                     utilisateurManager.saveManager(userToUpdate, userToUpdate.getCollaborateur(),
+                     utilisateurManager.updateObjectManager(userToUpdate, userToUpdate.getCollaborateur(),
                         newProfils, new ArrayList<>(userToUpdate.getPlateformes()),
                         utilisateur, oType);
                      
@@ -719,7 +719,7 @@ public class BanqueManagerImpl implements BanqueManager
          // si une table n'est pas dans la nouvelle liste, on
          // la conserve afin de la retirer par la suite
          if(!tables.contains(tmp)){
-            tabsToRemove.add(tableAnnotationBanqueDao.findById(new TableAnnotationBanquePK(bank, tmp)));
+            tabsToRemove.add(tableAnnotationBanqueDao.findById(new TableAnnotationBanquePK(bank, tmp)).orElse(null));
          }
       }
 
@@ -758,7 +758,7 @@ public class BanqueManagerImpl implements BanqueManager
             log.debug(
                "Ajout de l'association entre la banque : " + bank.toString() + " et la table : " + tables.get(i).toString());
          }else{ // on modifie l'ordre de la table present avec la liste
-            tAb = tableAnnotationBanqueDao.findById(pk);
+            tAb = tableAnnotationBanqueDao.findById(pk).orElse(null);
             tAb.setOrdre(i + 1);
             tableAnnotationBanqueDao.save(tAb);
          }
@@ -819,7 +819,7 @@ public class BanqueManagerImpl implements BanqueManager
    }
 
    @Override
-   public void deleteByIdManager(Banque banque, final String comments, final Utilisateur user, final String basedir,
+   public void removeObjectManager(Banque banque, final String comments, final Utilisateur user, final String basedir,
       final boolean force){
       if(banque != null){
          if(!isReferencedObjectManager(banque) || force){
@@ -831,12 +831,12 @@ public class BanqueManagerImpl implements BanqueManager
             //remove cascade codes
             final Iterator<CodeSelect> codeSelIt = banque.getCodeSelects().iterator();
             while(codeSelIt.hasNext()){
-               codeSelectManager.deleteByIdManager(codeSelIt.next());
+               codeSelectManager.removeObjectManager(codeSelIt.next());
             }
             final Iterator<CodeUtilisateur> codeUIt = codeUtilisateurManager.findByRootDossierManager(banque).iterator();
 
             while(codeUIt.hasNext()){
-               codeUtilisateurManager.deleteByIdManager(codeUIt.next());
+               codeUtilisateurManager.removeObjectManager(codeUIt.next());
             }
             final List<CodeDossier> dossiers = new ArrayList<>();
             dossiers.addAll(codeDossierManager.findByRootDossierBanqueManager(banque, true));
@@ -844,31 +844,31 @@ public class BanqueManagerImpl implements BanqueManager
 
             final Iterator<CodeDossier> dosIt = dossiers.iterator();
             while(dosIt.hasNext()){
-               codeDossierManager.deleteByIdManager(dosIt.next());
+               codeDossierManager.removeObjectManager(dosIt.next());
             }
 
             final Iterator<ImportTemplate> impIt = banque.getImportTemplate().iterator();
             while(impIt.hasNext()){
-               importTemplateManager.deleteByIdManager(impIt.next());
+               importTemplateManager.removeObjectManager(impIt.next());
             }
 
             final Iterator<Template> tempIt = banque.getTemplates().iterator();
             while(tempIt.hasNext()){
-               templateManager.deleteByIdManager(tempIt.next());
+               templateManager.removeObjectManager(tempIt.next());
             }
 
             // suppression totale de la banque et son contenu
             if(force){
                final Iterator<Cession> cesIt = banque.getCessions().iterator();
                while(cesIt.hasNext()){
-                  cessionManager.deleteByIdManager(cesIt.next(), "Cascade depuis suppression banque " + banque.getNom(), user,
+                  cessionManager.removeObjectManager(cesIt.next(), "Cascade depuis suppression banque " + banque.getNom(), user,
                      filesToDelete);
                }
                banque.getCessions().clear();
 
                final Iterator<ProdDerive> derIt = banque.getProdDerives().iterator();
                while(derIt.hasNext()){
-                  prodDeriveManager.deleteByIdCascadeManager(derIt.next(),
+                  prodDeriveManager.removeObjectCascadeManager(derIt.next(),
                      "Cascade depuis suppression banque " + banque.getNom(), user, filesToDelete);
                }
                banque.getProdDerives().clear();
@@ -876,14 +876,14 @@ public class BanqueManagerImpl implements BanqueManager
                final Iterator<Echantillon> echanIt = banque.getEchantillons().iterator();
 
                while(echanIt.hasNext()){
-                  echantillonManager.deleteByIdCascadeManager(echanIt.next(),
+                  echantillonManager.removeObjectCascadeManager(echanIt.next(),
                      "Cascade depuis suppression banque " + banque.getNom(), user, filesToDelete);
                }
                banque.getEchantillons().clear();
 
                final Iterator<Prelevement> prelIt = banque.getPrelevements().iterator();
                while(prelIt.hasNext()){
-                  prelevementManager.deleteByIdCascadeManager(prelIt.next(),
+                  prelevementManager.removeObjectCascadeManager(prelIt.next(),
                      "Cascade depuis suppression banque " + banque.getNom(), user, filesToDelete);
                }
                banque.getPrelevements().clear();

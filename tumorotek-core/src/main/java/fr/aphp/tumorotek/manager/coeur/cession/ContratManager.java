@@ -118,7 +118,7 @@ public interface ContratManager
     * @param protocoleType ProtocoleType du contrat.
     * @param plateforme Plateforme du contrat.
     */
-   void saveManager(Contrat contrat, Collaborateur collaborateur, Service service, Etablissement etablissement,
+   void createObjectManager(Contrat contrat, Collaborateur collaborateur, Service service, Etablissement etablissement,
       ProtocoleType protocoleType, Plateforme plateforme, Utilisateur utilisateur);
 
    /**
@@ -129,7 +129,7 @@ public interface ContratManager
     * @param protocoleType ProtocoleType du contrat.
     * @param plateforme Plateforme du contrat.
     */
-   void saveManager(Contrat contrat, Collaborateur collaborateur, Service service, Etablissement etablissement,
+   void updateObjectManager(Contrat contrat, Collaborateur collaborateur, Service service, Etablissement etablissement,
       ProtocoleType protocoleType, Plateforme plateforme, Utilisateur utilisateur);
 
    /**
@@ -138,6 +138,6 @@ public interface ContratManager
     * @param comments commentaires liés à la suppression
     * @param Utilisateur réalisant la suppression.
     */
-   void deleteByIdManager(Contrat contrat, String comments, Utilisateur usr);
+   void removeObjectManager(Contrat contrat, String comments, Utilisateur usr);
 
 }

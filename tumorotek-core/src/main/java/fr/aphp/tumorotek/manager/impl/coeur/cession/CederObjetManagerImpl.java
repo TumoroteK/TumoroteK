@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.coeur.cession;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -145,7 +146,7 @@ public class CederObjetManagerImpl implements CederObjetManager
     */
    @Override
    public CederObjet findByIdManager(final CederObjetPK cederObjetPK){
-      return cederObjetDao.findById(cederObjetPK);
+      return cederObjetDao.findById(cederObjetPK).orElse(null);
    }
 
    /**
@@ -426,7 +427,7 @@ public class CederObjetManagerImpl implements CederObjetManager
     * @param quantiteUnite Unite de quantité du CederObjet.
     */
    @Override
-   public void saveManager(final CederObjet cederObjet, final Cession cession, final Entite entite,
+   public void createObjectManager(final CederObjet cederObjet, final Cession cession, final Entite entite,
       final Unite quantiteUnite){
 
       //Cession required
@@ -474,7 +475,7 @@ public class CederObjetManagerImpl implements CederObjetManager
     * @param quantiteUnite Unite de quantité du CederObjet.
     */
    @Override
-   public void saveManager(final CederObjet cederObjet, final Cession cession, final Entite entite,
+   public void updateObjectManager(final CederObjet cederObjet, final Cession cession, final Entite entite,
       final Unite quantiteUnite){
 
       //Cession required
@@ -519,7 +520,7 @@ public class CederObjetManagerImpl implements CederObjetManager
     * @param protocoleExt ProtocoleExt à supprimer de la base de données.
     */
    @Override
-   public void deleteByIdManager(final CederObjet cederObjet){
+   public void removeObjectManager(final CederObjet cederObjet){
       if(cederObjet != null){
          cederObjetDao.deleteById(cederObjet.getPk());
          log.debug("Suppression de l'objet CederObjet : " + cederObjet.toString());

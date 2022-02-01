@@ -66,7 +66,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
  * @version 2.0
  *
  */
-public class TableCodageManagerImpl // implements TableCodageManager
+public class TableCodageManagerImpl implements TableCodageManager
 {
 
    private TableCodageDao tableCodageDao;

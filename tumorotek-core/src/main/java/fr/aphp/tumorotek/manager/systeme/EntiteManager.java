@@ -42,62 +42,68 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 
 /**
  *
- * Interface pour le manager du bean de domaine Entite.
- * Interface créée le 30/09/09.
+ * Interface pour le manager du bean de domaine Entite. Interface créée le
+ * 30/09/09.
  *
  * @author Pierre Ventadour
  * @version 2.0
  *
  */
-public interface EntiteManager
-{
+public interface EntiteManager {
 
-   /**
-    * Recherche une entité dont l'identifiant est passé en paramètre.
-    * @param entiteId Identifiant du type que l'on recherche.
-    * @return Une Entite.
-    */
-   Entite findByIdManager(Integer entiteId);
+	/**
+	 * Recherche une entité dont l'identifiant est passé en paramètre.
+	 * 
+	 * @param entiteId Identifiant du type que l'on recherche.
+	 * @return Une Entite.
+	 */
+	Entite findByIdManager(Integer entiteId);
 
-   /**
-    * Recherche toutes les entités présentes dans la base.
-    * @return Liste de Entite.
-    */
-   List<Entite> findAllObjectsManager();
+	/**
+	 * Recherche toutes les entités présentes dans la base.
+	 * 
+	 * @return Liste de Entite.
+	 */
+	List<Entite> findAllObjectsManager();
 
-   /**
-    * Recherche toutes les entités dont le nom est passée en paramètre.
-    * @param nom Nom de l'entité que l'on recherche.
-    * @return Liste de Entite.
-    */
-   List<Entite> findByNomManager(String nom);
+	/**
+	 * Recherche toutes les entités dont le nom est passée en paramètre.
+	 * 
+	 * @param nom Nom de l'entité que l'on recherche.
+	 * @return Liste de Entite.
+	 */
+	List<Entite> findByNomManager(String nom);
 
-   /**
-    * Recherche toutes les entités annotables.
-    * @return Liste de Entite.
-    */
-   List<Entite> findAnnotablesManager();
+	/**
+	 * Recherche toutes les entités annotables.
+	 * 
+	 * @return Liste de Entite.
+	 */
+	List<Entite> findAnnotablesManager();
 
-   /**
-    * Manager qui renvoie l'objet correspondant à l'entité et
-    * à l'objectId passés en paramètres.
-    * @param entite Classe de l'objet que l'on recherche.
-    * @param objectId Identifiant de l'objet que l'on recherche.
-    * @return Une instance de la classe dont le nom correspond à l'entité
-    * passée en paramètre.
-    */
-   Object findObjectByEntiteAndIdManager(Entite entite, Integer objectId);
+	/**
+	 * Manager qui renvoie l'objet correspondant à l'entité et à l'objectId passés
+	 * en paramètres.
+	 * 
+	 * @param entite   Classe de l'objet que l'on recherche.
+	 * @param objectId Identifiant de l'objet que l'on recherche.
+	 * @return Une instance de la classe dont le nom correspond à l'entité passée en
+	 *         paramètre.
+	 */
+	Object findObjectByEntiteAndIdManager(Entite entite, Integer objectId);
 
-   /**
-    * Manager qui renvoie les ids des objets après filtrage par les banques.
-    * Filtre sur les banques si paramètre non null et non vide.
-    * @param entite Classe de l'objet que l'on recherche.
-    * @param liste objectId Identifiant les objet que l'on recherche.
-    * @param filtre sur les banques 
-    * @return Une instance de la classe dont le nom correspond à l'entité
-    * passée en paramètre.
-    * @since 2.0.10
-    */
-   List<Integer> findIdsByEntiteAndIdAfterBanqueFiltreManager(Entite entite, List<Integer> objectId, List<Banque> banks);
+	/**
+	 * Manager qui renvoie les ids des objets après filtrage par les banques. Filtre
+	 * sur les banques si paramètre non null et non vide.
+	 * 
+	 * @param entite Classe de l'objet que l'on recherche.
+	 * @param liste  objectId Identifiant les objet que l'on recherche.
+	 * @param filtre sur les banques
+	 * @return Une instance de la classe dont le nom correspond à l'entité passée en
+	 *         paramètre.
+	 * @since 2.0.10
+	 */
+	List<Integer> findIdsByEntiteAndIdAfterBanqueFiltreManager(Entite entite, List<Integer> objectId,
+			List<Banque> banks);
 
 }

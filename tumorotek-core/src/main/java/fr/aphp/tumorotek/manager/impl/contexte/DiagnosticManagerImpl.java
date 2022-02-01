@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.manager.impl.contexte;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -87,7 +88,7 @@ public class DiagnosticManagerImpl implements DiagnosticManager
    }
 
    @Override
-   public void saveManager(final Diagnostic obj){
+   public void createObjectManager(final Diagnostic obj){
 
       final Diagnostic pt = obj;
 
@@ -110,7 +111,7 @@ public class DiagnosticManagerImpl implements DiagnosticManager
    }
 
    @Override
-   public void saveManager(final Diagnostic obj){
+   public void updateObjectManager(final Diagnostic obj){
       BeanValidator.validateObject(obj, new Validator[] {diagnosticValidator});
       if(!findDoublonManager(obj)){
          diagnosticDao.save(obj);
@@ -127,7 +128,7 @@ public class DiagnosticManagerImpl implements DiagnosticManager
    }
 
    @Override
-   public void deleteByIdManager(final Diagnostic obj){
+   public void removeObjectManager(final Diagnostic obj){
       if(obj != null){
          diagnosticDao.deleteById(obj.getId());
          log.info("Suppression objet Diagnostic " + obj.toString());

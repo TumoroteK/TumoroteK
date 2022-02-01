@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.coeur.cession;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -95,7 +96,7 @@ public class DestructionMotifManagerImpl implements DestructionMotifManager
     */
    @Override
    public DestructionMotif findByIdManager(final Integer destructionMotifId){
-      return destructionMotifDao.findById(destructionMotifId);
+      return destructionMotifDao.findById(destructionMotifId).orElse(null);
    }
 
    //	/**
@@ -147,7 +148,7 @@ public class DestructionMotifManagerImpl implements DestructionMotifManager
    }
 
    @Override
-   public void saveManager(final DestructionMotif obj){
+   public void createObjectManager(final DestructionMotif obj){
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(obj.getPlateforme() == null){
@@ -165,7 +166,7 @@ public class DestructionMotifManagerImpl implements DestructionMotifManager
    }
 
    @Override
-   public void saveManager(final DestructionMotif obj){
+   public void updateObjectManager(final DestructionMotif obj){
       BeanValidator.validateObject(obj, new Validator[] {destructionMotifValidator});
       if(!findDoublonManager(obj)){
          destructionMotifDao.save(obj);
@@ -177,7 +178,7 @@ public class DestructionMotifManagerImpl implements DestructionMotifManager
    }
 
    @Override
-   public void deleteByIdManager(final DestructionMotif obj){
+   public void removeObjectManager(final DestructionMotif obj){
       if(obj != null){
          destructionMotifDao.deleteById(obj.getId());
          log.info("Suppression objet DestructionMotif " + obj.toString());

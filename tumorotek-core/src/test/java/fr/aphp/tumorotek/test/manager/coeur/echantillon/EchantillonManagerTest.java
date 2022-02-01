@@ -1107,9 +1107,9 @@ public class EchantillonManagerTest extends AbstractManagerTest4
 
       // Suppression
       final Echantillon echan3 = echantillonManager.findByCodeLikeManager("PTRA.3", true).get(0);
-      echantillonManager.deleteByIdManager(echan3, null, utilisateur, null);
+      echantillonManager.removeObjectManager(echan3, null, utilisateur, null);
       final Echantillon echan4 = echantillonManager.findByCodeLikeManager("PTRA.4", true).get(0);
-      echantillonManager.deleteByIdManager(echan4, null, utilisateur, null);
+      echantillonManager.removeObjectManager(echan4, null, utilisateur, null);
       assertTrue(getOperationManager().findByObjectManager(echan1).size() == 0);
       assertTrue(getOperationManager().findByObjectManager(echan2).size() == 0);
 
@@ -1236,7 +1236,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
 
       final Echantillon echan14 = echantillonManager.findByCodeLikeManager("PTRA.6", true).get(0);
       // Emplacement empl14 = echan14.getEmplacement();
-      echantillonManager.deleteByIdManager(echan14, null, utilisateur, null);
+      echantillonManager.removeObjectManager(echan14, null, utilisateur, null);
       assertNull(echantillonManager.findByIdManager(7));
       assertTrue(getOperationManager().findByObjectManager(echan14).size() == 0);
       assertTrue(emplacementManager.findAllObjectsManager().size() == 7);
@@ -1822,13 +1822,13 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       final List<CodeAssigne> les = new ArrayList<>();
       les.addAll(codeAssigneManager.findCodesMorphoByEchantillonManager(testUpdate));
       for(int j = 0; j < les.size(); j++){
-         codeAssigneManager.deleteByIdManager(les.get(j));
+         codeAssigneManager.removeObjectManager(les.get(j));
       }
       assertTrue(codeAssigneManager.findCodesMorphoByEchantillonManager(testUpdate).isEmpty());
 
       // clean up
-      echantillonManager.deleteByIdManager(testUpdate, null, utilisateur, null);
-      echantillonManager.deleteByIdManager(echan2, null, utilisateur, null);
+      echantillonManager.removeObjectManager(testUpdate, null, utilisateur, null);
+      echantillonManager.removeObjectManager(echan2, null, utilisateur, null);
       testFindAll();
       assertTrue(codeAssigneManager.findAllObjectsManager().size() == 5);
 
@@ -1908,21 +1908,21 @@ public class EchantillonManagerTest extends AbstractManagerTest4
    //		cOrg1 = codeAssigneManager
    //					.findCodesOrganeByEchantillonManager(testInsert).get(0);
    //		codeAssigneManager
-   //			.deleteByIdManager(codeAssigneManager
+   //			.removeObjectManager(codeAssigneManager
    //				.findCodesOrganeByEchantillonManager(testInsert).get(0));
    //		codeAssigneManager
-   //			.deleteByIdManager(codeAssigneManager
+   //			.removeObjectManager(codeAssigneManager
    //				.findCodesOrganeByEchantillonManager(testInsert).get(0));
    //		cM2 = codeAssigneManager
    //					.findCodesMorphoByEchantillonManager(testInsert).get(1);
-   //		codeAssigneManager.deleteByIdManager(cM2);
+   //		codeAssigneManager.removeObjectManager(cM2);
    //		
    //		assertTrue(codeAssigneManager
    //				.findCodesOrganeByEchantillonManager(testInsert).size() == 0);
    //		assertTrue(testInsert.getCodeOrganeExport() == null);
    //	
    //		// clean up
-   //		echantillonManager.deleteByIdManager(testInsert, "suppr", 
+   //		echantillonManager.removeObjectManager(testInsert, "suppr", 
    //															utilisateur);
    //		testFindAll();
    //		assertTrue(codeAssigneManager.findAllObjectsManager().size() == 5);
@@ -2023,7 +2023,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       assertTrue(getOperationManager().findByObjectManager(echan).get(5).getOperationType().getNom().equals("Annotation"));
 
       // Nettoyage
-      echantillonManager.deleteByIdManager(echan, null, utilisateur, null);
+      echantillonManager.removeObjectManager(echan, null, utilisateur, null);
 
       assertTrue(getOperationManager().findByObjectManager(echan).size() == 0);
       assertTrue(annotationValeurManager.findAllObjectsManager().size() == 12);
@@ -2212,7 +2212,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       assertTrue(new File(echan.getCrAnapath().getPath()).length() == 8);
 
       // Nettoyage
-      echantillonManager.deleteByIdManager(echan, null, utilisateur, null);
+      echantillonManager.removeObjectManager(echan, null, utilisateur, null);
 
       assertTrue(getOperationManager().findByObjectManager(echan).size() == 0);
       assertTrue(fichierManager.findAllObjectsManager().size() == totFichiers);
@@ -2385,7 +2385,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       assertTrue(filesToDelete.size() == 0); // fichier encore reference donc non suppr.
 
       // suppression e5
-      echantillonManager.deleteByIdManager(e5, null, utilisateur, filesToDelete);
+      echantillonManager.removeObjectManager(e5, null, utilisateur, filesToDelete);
       assertTrue(fichierManager.findAllObjectsManager().size() == totFichier + 3);
       assertTrue(new File(e2.getCrAnapath().getPath()).length() == 26);
       assertTrue(new File("/tmp/pt_1/coll_1/cr_anapath").listFiles().length == 2);
@@ -2404,15 +2404,15 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       filesToDelete.clear();
 
       // Nettoyage
-      echantillonManager.deleteByIdManager(e1, null, utilisateur, filesToDelete);
+      echantillonManager.removeObjectManager(e1, null, utilisateur, filesToDelete);
       assertTrue(new File("/tmp/pt_1/coll_1/cr_anapath").listFiles().length == 1);
       // suppression du dernier fichier faisant reference
-      echantillonManager.deleteByIdManager(e2, null, utilisateur, null);
+      echantillonManager.removeObjectManager(e2, null, utilisateur, null);
       assertTrue(new File("/tmp/pt_1/coll_1/cr_anapath").listFiles().length == 0);
       assertTrue(filesCreated.size() == 0);
       assertTrue(filesToDelete.size() == 0);
-      echantillonManager.deleteByIdManager(e3, null, utilisateur, filesToDelete);
-      echantillonManager.deleteByIdManager(e4, null, utilisateur, filesToDelete);
+      echantillonManager.removeObjectManager(e3, null, utilisateur, filesToDelete);
+      echantillonManager.removeObjectManager(e4, null, utilisateur, filesToDelete);
 
       assertTrue(fichierManager.findAllObjectsManager().size() == totFichier);
       testFindAll();
@@ -2468,7 +2468,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       final Utilisateur u = utilisateurDao.findById(1);
       final Echantillon e4 = echantillonManager.findByIdManager(4);
       try{
-         echantillonManager.deleteByIdManager(e4, null, u, null);
+         echantillonManager.removeObjectManager(e4, null, u, null);
       }catch(final ObjectUsedException oe){
          assertTrue(oe.getKey().equals("echantillon.deletion.isUsedCascade"));
          assertTrue(oe.isCascadable());
@@ -2479,7 +2479,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
 
       final Echantillon e3 = echantillonManager.findByIdManager(3);
       try{
-         echantillonManager.deleteByIdManager(e3, null, u, null);
+         echantillonManager.removeObjectManager(e3, null, u, null);
       }catch(final ObjectUsedException oe){
          assertTrue(oe.getKey().equals("echantillon.deletion.isUsedNonCascade"));
          assertFalse(oe.isCascadable());
@@ -2490,7 +2490,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
 
       final Echantillon e1 = echantillonManager.findByIdManager(1);
       try{
-         echantillonManager.deleteByIdManager(e1, null, u, null);
+         echantillonManager.removeObjectManager(e1, null, u, null);
       }catch(final ObjectUsedException oe){
          assertTrue(oe.getKey().equals("echantillon.deletion.isUsedNonCascade"));
          assertFalse(oe.isCascadable());
@@ -2561,7 +2561,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
 
       boolean catched = false;
       try{
-         echantillonManager.deleteByIdCascadeManager(e, null, u, null);
+         echantillonManager.removeObjectCascadeManager(e, null, u, null);
       }catch(final ObjectUsedException oe){
          assertTrue(oe.getKey().equals("derive.cascade.isCessed"));
          assertFalse(oe.isCascadable());
@@ -2572,8 +2572,8 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       assertTrue(transformationManager.findAllDeriveFromParentManager(e).size() == 3);
 
       // suppr ceder objet pour pouvoir cascader
-      cederObjetManager.deleteByIdManager(ced2);
-      echantillonManager.deleteByIdCascadeManager(e, "cascade!!!", u, null);
+      cederObjetManager.removeObjectManager(ced2);
+      echantillonManager.removeObjectCascadeManager(e, "cascade!!!", u, null);
 
       testFindAll();
       assertTrue(transformationManager.findAllObjectsManager().size() == 5);
@@ -2694,7 +2694,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       assertTrue(getOperationManager().findByObjectManager(e).size() == 4);
       assertTrue(banqueManager.getProdDerivesManager(b3).size() == 1);
 
-      cederObjetManager.deleteByIdManager(ced1);
+      cederObjetManager.removeObjectManager(ced1);
       final CederObjet ced2 = new CederObjet();
       ced2.setObjetId(derive.getProdDeriveId());
       cederObjetManager.saveManager(ced2, cession, entiteDao.findById(8), null);
@@ -2710,7 +2710,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       assertTrue(getOperationManager().findByObjectManager(e).size() == 4);
       assertTrue(banqueManager.getProdDerivesManager(b3).size() == 1);
 
-      cederObjetManager.deleteByIdManager(ced2);
+      cederObjetManager.removeObjectManager(ced2);
       assertTrue(cederObjetManager.findAllObjectsManager().size() == 6);
       catched = false;
 
@@ -2851,17 +2851,17 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       while(encIt.hasNext()){
          terminales.addAll(terminaleManager.findByEnceinteWithOrderManager(encIt.next()));
       }
-      cederObjetManager.deleteByIdManager(ced1);
-      cederObjetManager.deleteByIdManager(ced2);
+      cederObjetManager.removeObjectManager(ced1);
+      cederObjetManager.removeObjectManager(ced2);
 
-      //prodDeriveManager.deleteByIdManager(derive, null, u);
-      echantillonManager.deleteByIdCascadeManager(e, null, u, null);
-      echantillonManager.deleteByIdCascadeManager(ebis, null, u, null);
+      //prodDeriveManager.removeObjectManager(derive, null, u);
+      echantillonManager.removeObjectCascadeManager(e, null, u, null);
+      echantillonManager.removeObjectCascadeManager(ebis, null, u, null);
       emp.setEntite(null);
       emp.setObjetId(null);
       emp.setVide(true);
-      emplacementManager.deleteByIdManager(emp);
-      conteneurManager.deleteByIdManager(conteneurManager.findByIdManager(c.getConteneurId()), null, u);
+      emplacementManager.removeObjectManager(emp);
+      conteneurManager.removeObjectManager(conteneurManager.findByIdManager(c.getConteneurId()), null, u);
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.add(e);
       fs.add(ebis);
@@ -3374,7 +3374,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       // Suppression
       for(int i = 0; i < list.size(); i++){
          //cleanup cascade vers echantillons
-         echantillonManager.deleteByIdCascadeManager(list.get(i), null, u, null);
+         echantillonManager.removeObjectCascadeManager(list.get(i), null, u, null);
       }
       // verification de l'etat de la base
       testFindAll();
@@ -3502,7 +3502,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       // Suppression
       final List<TKFantomableObject> fs = new ArrayList<>();
       for(int i = 0; i < res.size(); i++){
-         echantillonManager.deleteByIdManager(res.get(i), null, utilisateur, null);
+         echantillonManager.removeObjectManager(res.get(i), null, utilisateur, null);
          fs.add(res.get(i));
       }
       cleanUpFantomes(fs);
@@ -3591,7 +3591,7 @@ public class EchantillonManagerTest extends AbstractManagerTest4
 
       // Suppression
       final List<TKFantomableObject> fs = new ArrayList<>();
-      echantillonManager.deleteByIdManager(eTest3, null, utilisateur, null);
+      echantillonManager.removeObjectManager(eTest3, null, utilisateur, null);
       fs.add(eTest3);
       cleanUpFantomes(fs);
       assertTrue(getOperationManager().findAllObjectsManager().size() == 19);
@@ -3814,9 +3814,9 @@ public class EchantillonManagerTest extends AbstractManagerTest4
       assertFalse(e1.getConformeTraitement());
       assertFalse(e1.getConformeCession());
 
-      echantillonManager.deleteByIdManager(e1, null, u, null);
-      echantillonManager.deleteByIdManager(e2, null, u, null);
-      echantillonManager.deleteByIdManager(e0, null, u, null);
+      echantillonManager.removeObjectManager(e1, null, u, null);
+      echantillonManager.removeObjectManager(e2, null, u, null);
+      echantillonManager.removeObjectManager(e0, null, u, null);
 
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.add(e1);
@@ -4212,9 +4212,9 @@ public class EchantillonManagerTest extends AbstractManagerTest4
 
          // Suppression
          final Echantillon echan3 = echantillonManager.findByCodeLikeManager("PTRA.3", true).get(0);
-         echantillonManager.deleteByIdManager(echan3, null, utilisateur, null);
+         echantillonManager.removeObjectManager(echan3, null, utilisateur, null);
          final Echantillon echan4 = echantillonManager.findByCodeLikeManager("PTRA.4", true).get(0);
-         echantillonManager.deleteByIdManager(echan4, null, utilisateur, null);
+         echantillonManager.removeObjectManager(echan4, null, utilisateur, null);
          assertTrue(getOperationManager().findByObjectManager(echan1).size() == 0);
          assertTrue(getOperationManager().findByObjectManager(echan2).size() == 0);
 

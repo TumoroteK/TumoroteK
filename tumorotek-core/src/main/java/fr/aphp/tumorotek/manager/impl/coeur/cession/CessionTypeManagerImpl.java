@@ -77,7 +77,7 @@ public class CessionTypeManagerImpl implements CessionTypeManager
     */
    @Override
    public CessionType findByIdManager(final Integer cessionTypeId){
-      return cessionTypeDao.findById(cessionTypeId);
+      return cessionTypeDao.findById(cessionTypeId).orElse(null);
    }
 
    /**

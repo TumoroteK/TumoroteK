@@ -217,7 +217,7 @@ public class CodeSelectManagerImpl implements CodeSelectManager
    }
 
    @Override
-   public void deleteByIdManager(final CodeSelect code){
+   public void removeObjectManager(final CodeSelect code){
       if(code != null){
          codeSelectDao.deleteById(code.getCodeSelectId());
          log.info("Suppression objet CodeSelect " + code.toString());

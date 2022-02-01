@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.qualite;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -59,7 +60,7 @@ public class OperationTypeManagerImpl implements OperationTypeManager
 
    @Override
    public OperationType findByIdManager(final Integer operationTypeId){
-      return operationTypeDao.findById(operationTypeId);
+      return operationTypeDao.findById(operationTypeId).orElse(null);
    }
 
    @Override

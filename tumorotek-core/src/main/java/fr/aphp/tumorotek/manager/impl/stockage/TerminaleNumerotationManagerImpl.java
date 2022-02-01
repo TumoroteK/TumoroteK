@@ -37,6 +37,8 @@ package fr.aphp.tumorotek.manager.impl.stockage;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
+
 import fr.aphp.tumorotek.dao.stockage.TerminaleNumerotationDao;
 import fr.aphp.tumorotek.manager.stockage.TerminaleNumerotationManager;
 import fr.aphp.tumorotek.model.stockage.TerminaleNumerotation;
@@ -66,12 +68,11 @@ public class TerminaleNumerotationManagerImpl implements TerminaleNumerotationMa
 
    @Override
    public TerminaleNumerotation findByIdManager(final Integer terminaleNumerotationId){
-      return terminaleNumerotationDao.findById(terminaleNumerotationId);
+      return terminaleNumerotationDao.findById(terminaleNumerotationId).orElse(null);
    }
 
    @Override
    public List<TerminaleNumerotation> findAllObjectsManager(){
       return IterableUtils.toList(terminaleNumerotationDao.findAll());
    }
-
 }

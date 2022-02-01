@@ -159,15 +159,15 @@ public class RechercheManagerTest extends AbstractManagerTest4
    //		int idRequete = copie2.getRequete().getRequeteId();
    //		
    //		//On supprime les éléments créés
-   //		manager.deleteByIdManager(copie2);
+   //		manager.removeObjectManager(copie2);
    //		
    //		//On supprime l'affichage
    //		Affichage affichage = affichageManager.findByIdManager(idAffichage);
-   //		affichageManager.deleteByIdManager(affichage);
+   //		affichageManager.removeObjectManager(affichage);
    //		
    //		//On supprime la requete
    //		Requete requete = requeteManager.findByIdManager(idRequete);
-   //		requeteManager.deleteByIdManager(requete);
+   //		requeteManager.removeObjectManager(requete);
    //	}
    //	
    @Test
@@ -349,7 +349,7 @@ public class RechercheManagerTest extends AbstractManagerTest4
       final int id = rechTest.getRechercheId();
 
       //On le supprime
-      manager.deleteByIdManager(rechTest);
+      manager.removeObjectManager(rechTest);
       assertTrue(manager.findAllObjectsManager().size() == 4);
       //On essaye de le récupérer via l'identifiant
       recherche2 = manager.findByIdManager(id);
@@ -357,10 +357,10 @@ public class RechercheManagerTest extends AbstractManagerTest4
       assertNull(recherche2);
 
       //On supprime l'affichage
-      affichageManager.deleteByIdManager(oldAffichage);
+      affichageManager.removeObjectManager(oldAffichage);
 
       //On supprime la requete
-      requeteManager.deleteByIdManager(oldRequete);
+      requeteManager.removeObjectManager(oldRequete);
    }
 
    @Test

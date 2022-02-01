@@ -130,7 +130,7 @@ public class LienFamilialManagerTest extends AbstractManagerTest4
    public void testCRUD(){
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    @Test
@@ -206,16 +206,16 @@ public class LienFamilialManagerTest extends AbstractManagerTest4
    }
 
    @Test
-   public void deleteByIdManagerTest(){
+   public void removeObjectManagerTest(){
       //Suppression de l'enregistrement precedemment insere
       final LienFamilial lf1 = (lienFamilialManager.findByNomLikeManager("Kilo-Jaffar", true)).get(0);
-      lienFamilialManager.deleteByIdManager(lf1);
+      lienFamilialManager.removeObjectManager(lf1);
       assertTrue((lienFamilialManager.findByNomLikeManager("%Jaffar", false)).size() == 0);
       //Suppression engrendrant une exception
       Boolean catched = false;
       try{
          final LienFamilial lf2 = (lienFamilialManager.findByNomLikeManager("Fille-Pere", true)).get(0);
-         lienFamilialManager.deleteByIdManager(lf2);
+         lienFamilialManager.removeObjectManager(lf2);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ObjectUsedException")){
             catched = true;
@@ -224,7 +224,7 @@ public class LienFamilialManagerTest extends AbstractManagerTest4
       assertTrue(catched);
       assertTrue((lienFamilialManager.findByNomLikeManager("Fille-Pere", true)).size() > 0);
       //null remove
-      lienFamilialManager.deleteByIdManager(null);
+      lienFamilialManager.removeObjectManager(null);
       testFindAllObjectsManager();
    }
 }

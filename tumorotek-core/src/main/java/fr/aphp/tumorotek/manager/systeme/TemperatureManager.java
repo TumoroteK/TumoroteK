@@ -41,52 +41,57 @@ import fr.aphp.tumorotek.model.systeme.Temperature;
 
 /**
  *
- * Interface pour le manager du bean de domaine Temperature.
- * Interface créée le 07/07/2010.
+ * Interface pour le manager du bean de domaine Temperature. Interface créée le
+ * 07/07/2010.
  *
  * @author Pierre Ventadour
  * @version 2.0
  *
  */
-public interface TemperatureManager
-{
+public interface TemperatureManager {
 
-   /**
-    * Recherche une Temperature dont l'identifiant est passé en paramètre.
-    * @param temperatureId Identifiant de la Temperature que l'on recherche.
-    * @return Une Temperature.
-    */
-   Temperature findByIdManager(Integer temperatureId);
+	/**
+	 * Recherche une Temperature dont l'identifiant est passé en paramètre.
+	 * 
+	 * @param temperatureId Identifiant de la Temperature que l'on recherche.
+	 * @return Une Temperature.
+	 */
+	Temperature findByIdManager(Integer temperatureId);
 
-   /**
-    * Recherche toutes les Temperatures présentes dans la base.
-    * @return Liste de Temperatures.
-    */
-   List<Temperature> findAllObjectsManager();
+	/**
+	 * Recherche toutes les Temperatures présentes dans la base.
+	 * 
+	 * @return Liste de Temperatures.
+	 */
+	List<Temperature> findAllObjectsManager();
 
-   /**
-    * Recherche les doublons de la Temperature passée en paramètre.
-    * @param temperature Temperature pour laquelle on cherche des doublons.
-    * @return True s'il existe des doublons.
-    */
-   Boolean findDoublonManager(Temperature temperature);
+	/**
+	 * Recherche les doublons de la Temperature passée en paramètre.
+	 * 
+	 * @param temperature Temperature pour laquelle on cherche des doublons.
+	 * @return True s'il existe des doublons.
+	 */
+	Boolean findDoublonManager(Temperature temperature);
 
-   /**
-    * Persist une instance de Temperature dans la base de données.
-    * @param temperature Nouvelle instance de l'objet à créer.
-    */
-   void saveManager(Temperature temperature);
+	/**
+	 * Persist une instance de Temperature dans la base de données.
+	 * 
+	 * @param temperature Nouvelle instance de l'objet à créer.
+	 */
+	void createObjectManager(Temperature temperature);
 
-   /**
-    * Sauvegarde les modifications apportées à un objet persistant.
-    * @param temperature Objet à mettre à jour dans la base.
-    */
-   void saveManager(Temperature temperature);
+	/**
+	 * Sauvegarde les modifications apportées à un objet persistant.
+	 * 
+	 * @param temperature Objet à mettre à jour dans la base.
+	 */
+	void updateObjectManager(Temperature temperature);
 
-   /**
-    * Supprime une Temperature de la base de données.
-    * @param temperature Temperature à supprimer de la base de données.
-    */
-   void deleteByIdManager(Temperature temperature);
+	/**
+	 * Supprime une Temperature de la base de données.
+	 * 
+	 * @param temperature Temperature à supprimer de la base de données.
+	 */
+	void removeObjectManager(Temperature temperature);
 
 }

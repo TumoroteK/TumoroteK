@@ -487,13 +487,13 @@ public class ServiceManagerTest extends AbstractManagerTest4
 
       // Suppression
       final Service serv3 = serviceManager.findByIdManager(idS1);
-      serviceManager.deleteByIdManager(serv3, null, u);
+      serviceManager.removeObjectManager(serv3, null, u);
       assertTrue(getOperationManager().findByObjectManager(serv3).size() == 0);
       final Service serv4 = serviceManager.findByIdManager(idS2);
-      serviceManager.deleteByIdCascadeManager(serv4, null, u);
+      serviceManager.removeObjectCascadeManager(serv4, null, u);
       assertTrue(getOperationManager().findByObjectManager(serv4).size() == 0);
       final Service serv4b = serviceManager.findByIdManager(idS3);
-      serviceManager.deleteByIdCascadeManager(serv4b, null, u);
+      serviceManager.removeObjectCascadeManager(serv4b, null, u);
       assertTrue(getOperationManager().findByObjectManager(serv4b).size() == 0);
       assertNull(coordonneeManager.findByIdManager(id));
       assertNull(coordonneeManager.findByIdManager(id2));
@@ -616,7 +616,7 @@ public class ServiceManagerTest extends AbstractManagerTest4
       }
 
       final Service serv11 = serviceManager.findByIdManager(idS4);
-      serviceManager.deleteByIdCascadeManager(serv11, null, u);
+      serviceManager.removeObjectCascadeManager(serv11, null, u);
       assertNull(serviceManager.findByIdManager(idS4));
       assertNull(coordonneeManager.findByIdManager(id));
       assertTrue(getOperationManager().findByObjectManager(serv11).size() == 0);
@@ -769,12 +769,12 @@ public class ServiceManagerTest extends AbstractManagerTest4
       c2 = collaborateurManager.findByIdManager(idColl2);
       assertFalse(c2.getArchive());
 
-      serviceManager.deleteByIdCascadeManager(sTest2, null, u);
+      serviceManager.removeObjectCascadeManager(sTest2, null, u);
       c1 = collaborateurManager.findByIdManager(idColl1);
       c2 = collaborateurManager.findByIdManager(idColl2);
-      collaborateurManager.deleteByIdManager(c2, null, u);
-      collaborateurManager.deleteByIdManager(c1, null, u);
-      coordonneeManager.deleteByIdManager(coord);
+      collaborateurManager.removeObjectManager(c2, null, u);
+      collaborateurManager.removeObjectManager(c1, null, u);
+      coordonneeManager.removeObjectManager(coord);
 
       assertTrue(collaborateurManager.findAllObjectsManager().size() == 6);
       assertTrue(serviceManager.findAllObjectsManager().size() == 4);
@@ -792,7 +792,7 @@ public class ServiceManagerTest extends AbstractManagerTest4
       final Utilisateur u = utilisateurDao.findById(1);
       boolean catched = false;
       try{
-         serviceManager.deleteByIdManager(s, null, u);
+         serviceManager.removeObjectManager(s, null, u);
       }catch(final ObjectReferencedException ore){
          catched = true;
          assertTrue(ore.getKey().equals("service.deletion.isReferencedCascade"));
@@ -802,7 +802,7 @@ public class ServiceManagerTest extends AbstractManagerTest4
       catched = false;
       s = serviceManager.findByIdManager(2);
       try{
-         serviceManager.deleteByIdManager(s, null, u);
+         serviceManager.removeObjectManager(s, null, u);
       }catch(final ObjectReferencedException ore){
          catched = true;
          assertTrue(ore.getKey().equals("service.deletion.isReferencedCascade"));
@@ -812,7 +812,7 @@ public class ServiceManagerTest extends AbstractManagerTest4
       catched = false;
       s = serviceManager.findByIdManager(3);
       try{
-         serviceManager.deleteByIdManager(s, null, u);
+         serviceManager.removeObjectManager(s, null, u);
       }catch(final ObjectReferencedException ore){
          catched = true;
          assertTrue(ore.getKey().equals("service.deletion.isReferencedCascade"));
@@ -822,7 +822,7 @@ public class ServiceManagerTest extends AbstractManagerTest4
       catched = false;
       s = serviceManager.findByIdManager(4);
       try{
-         serviceManager.deleteByIdManager(s, null, u);
+         serviceManager.removeObjectManager(s, null, u);
       }catch(final ObjectReferencedException ore){
          catched = true;
          assertTrue(ore.getKey().equals("service.deletion.isReferencedCascade"));
@@ -879,7 +879,7 @@ public class ServiceManagerTest extends AbstractManagerTest4
 
       boolean catched = false;
       try{
-         serviceManager.deleteByIdCascadeManager(sTest1, null, u);
+         serviceManager.removeObjectCascadeManager(sTest1, null, u);
       }catch(final ObjectReferencedException ore){
          catched = true;
          assertTrue(ore.getKey().equals("collaborateur.deletion.isReferencedCascade"));
@@ -889,12 +889,12 @@ public class ServiceManagerTest extends AbstractManagerTest4
       prelevementManager.saveManager(p, p.getBanque(), p.getNature(), null, p.getConsentType(), null, null, null, null,
          null, null, null, null, null, null, null, null, null, u, null, false, "/tmp/", false);
 
-      serviceManager.deleteByIdCascadeManager(sTest1, null, u);
+      serviceManager.removeObjectCascadeManager(sTest1, null, u);
 
       assertTrue(collaborateurManager.findAllObjectsManager().size() == 6);
       assertTrue(serviceManager.findAllObjectsManager().size() == 4);
 
-      prelevementManager.deleteByIdManager(p, null, u, null);
+      prelevementManager.removeObjectManager(p, null, u, null);
       assertTrue(prelevementManager.findAllObjectsManager().size() == 5);
 
       final List<TKFantomableObject> fs = new ArrayList<>();
@@ -920,7 +920,7 @@ public class ServiceManagerTest extends AbstractManagerTest4
 
    private void cleanAfterFusion(final List<TKFantomableObject> fs){
       final Service actif = serviceManager.findByNomLikeManager("ACTIF", true).get(0);
-      serviceManager.deleteByIdManager(actif, null, utilisateurDao.findById(1));
+      serviceManager.removeObjectManager(actif, null, utilisateurDao.findById(1));
       fs.add(actif);
       cleanUpFantomes(fs);
       testFindAll();
@@ -1013,9 +1013,9 @@ public class ServiceManagerTest extends AbstractManagerTest4
       assertTrue(banqueDao.findByProprietaire(actif).get(0).getNom().equals("BANK"));
       assertTrue(banqueDao.findByProprietaire(actif).get(1).getNom().equals("BANK2"));
 
-      banqueManager.deleteByIdManager(banqueDao.findByNom("BANK").get(0), null, u1, "/tmp/", true);
+      banqueManager.removeObjectManager(banqueDao.findByNom("BANK").get(0), null, u1, "/tmp/", true);
       assertTrue(banqueDao.findByNom("BANK").isEmpty());
-      banqueManager.deleteByIdManager(banqueDao.findByNom("BANK2").get(0), null, u1, "/tmp/", true);
+      banqueManager.removeObjectManager(banqueDao.findByNom("BANK2").get(0), null, u1, "/tmp/", true);
       assertTrue(banqueDao.findByNom("BANK2").isEmpty());
 
       final List<TKFantomableObject> fs = new ArrayList<>();
@@ -1059,10 +1059,10 @@ public class ServiceManagerTest extends AbstractManagerTest4
 
       // clean up
       contrat = contratDao.findByNumero("CONTRAT").get(0);
-      contratManager.deleteByIdManager(contrat, "removeTest", u1);
+      contratManager.removeObjectManager(contrat, "removeTest", u1);
       assertTrue(contratDao.findByNumero("CONTRAT").isEmpty());
       contrat2 = contratDao.findByNumero("CONTRAT2").get(0);
-      contratManager.deleteByIdManager(contrat2, "removeTest", u1);
+      contratManager.removeObjectManager(contrat2, "removeTest", u1);
       assertTrue(contratDao.findByNumero("CONTRAT2").isEmpty());
 
       final List<TKFantomableObject> fs = new ArrayList<>();
@@ -1135,10 +1135,10 @@ public class ServiceManagerTest extends AbstractManagerTest4
 
       // clean up
       prelevement = prelevementManager.findByCodeLikeManager("PRELEVEMENTEST", true).get(0);
-      prelevementManager.deleteByIdCascadeManager(prelevement, "remove prel Preleveur fusion", u1, null);
+      prelevementManager.removeObjectCascadeManager(prelevement, "remove prel Preleveur fusion", u1, null);
       assertTrue(prelevementDao.findByCode("PRELEVEMENTEST").isEmpty());
       prelevement2 = prelevementManager.findByCodeLikeManager("PRELEVEMENTEST2", true).get(0);
-      prelevementManager.deleteByIdCascadeManager(prelevement2, "remove prel Preleveur fusion", u1, null);
+      prelevementManager.removeObjectCascadeManager(prelevement2, "remove prel Preleveur fusion", u1, null);
       assertTrue(prelevementDao.findByCode("PRELEVEMENTEST2").isEmpty());
 
       final List<TKFantomableObject> fs = new ArrayList<>();
@@ -1189,9 +1189,9 @@ public class ServiceManagerTest extends AbstractManagerTest4
       assertTrue(cessionDao.findByServiceDest(actif).contains(cess));
       assertTrue(cessionDao.findByServiceDest(actif).contains(cess2));
 
-      cessionManager.deleteByIdManager(cess, "remove fusion", u1, null);
+      cessionManager.removeObjectManager(cess, "remove fusion", u1, null);
       assertTrue(cessionManager.findByNumeroLikeManager("100", true).isEmpty());
-      cessionManager.deleteByIdManager(cess2, "remove fusion", u1, null);
+      cessionManager.removeObjectManager(cess2, "remove fusion", u1, null);
       assertTrue(cessionManager.findByNumeroLikeManager("1002", true).isEmpty());
 
       final List<TKFantomableObject> fs = new ArrayList<>();
@@ -1244,9 +1244,9 @@ public class ServiceManagerTest extends AbstractManagerTest4
       conteneur = conteneurDao.findByService(actif).get(0);
       conteneur2 = conteneurDao.findByService(actif).get(1);
 
-      conteneurManager.deleteByIdManager(conteneur, null, u1);
+      conteneurManager.removeObjectManager(conteneur, null, u1);
       assertTrue(conteneurDao.findById(conteneur.getConteneurId()) == null);
-      conteneurManager.deleteByIdManager(conteneur2, null, u1);
+      conteneurManager.removeObjectManager(conteneur2, null, u1);
       assertTrue(conteneurDao.findById(conteneur2.getConteneurId()) == null);
 
       final List<TKFantomableObject> fs = new ArrayList<>();
@@ -1308,8 +1308,8 @@ public class ServiceManagerTest extends AbstractManagerTest4
       assertTrue(collaborateurManager.getServicesManager(collCommun).contains(actif));
 
       // clean up
-      collaborateurManager.deleteByIdManager(collaborateurDao.findByNom("COLLFUSIONACTIF").get(0), null, u1);
-      collaborateurManager.deleteByIdManager(collaborateurDao.findByNom("COLLFUSIONPASSIF").get(0), null, u1);
+      collaborateurManager.removeObjectManager(collaborateurDao.findByNom("COLLFUSIONACTIF").get(0), null, u1);
+      collaborateurManager.removeObjectManager(collaborateurDao.findByNom("COLLFUSIONPASSIF").get(0), null, u1);
 
       servicesX2Set.remove(actif);
       servicesX2Set.remove(passif);
@@ -1319,9 +1319,9 @@ public class ServiceManagerTest extends AbstractManagerTest4
          new ArrayList<>(collaborateurManager.getCoordonneesManager(collCommun)), u1, false);
       assertTrue(collaborateurManager.getServicesManager(collCommun).size() == 2);
 
-      getOperationManager().deleteByIdManager(operationDao
+      getOperationManager().removeObjectManager(operationDao
          .findByObjetIdAndEntite(collCommun.getCollaborateurId(), entiteDao.findByNom("Collaborateur").get(0)).get(0));
-      getOperationManager().deleteByIdManager(operationDao
+      getOperationManager().removeObjectManager(operationDao
          .findByObjetIdAndEntite(collCommun.getCollaborateurId(), entiteDao.findByNom("Collaborateur").get(0)).get(0));
 
       final List<TKFantomableObject> fs = new ArrayList<>();

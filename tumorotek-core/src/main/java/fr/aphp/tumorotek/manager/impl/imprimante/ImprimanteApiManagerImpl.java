@@ -67,7 +67,7 @@ public class ImprimanteApiManagerImpl implements ImprimanteApiManager
 
    @Override
    public ImprimanteApi findByIdManager(final Integer imprimanteApiId){
-      return imprimanteApiDao.findById(imprimanteApiId);
+      return imprimanteApiDao.findById(imprimanteApiId).orElse(null);
    }
 
    @Override

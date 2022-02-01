@@ -70,7 +70,7 @@ public interface TransporteurManager
     * @param transporteur Nouvelle instance de l'objet à créer.
     * @param coordonnee Coord associée au Transporteur.
     */
-   void saveManager(Transporteur transporteur, Coordonnee coordonnee, Utilisateur utilisateur);
+   void createObjectManager(Transporteur transporteur, Coordonnee coordonnee, Utilisateur utilisateur);
 
    /**
     * Sauvegarde les modifications apportées à un objet persistant.
@@ -78,7 +78,7 @@ public interface TransporteurManager
     * @param coordonnee Coord associée au Transporteur.
     * @throws javax.xml.bind.ValidationException 
     */
-   void saveManager(Transporteur transporteur, Coordonnee coordonnee, Utilisateur utilisateur);
+   void updateObjectManager(Transporteur transporteur, Coordonnee coordonnee, Utilisateur utilisateur);
 
    /**
     * Supprime un Transporteur de la base de données.
@@ -88,7 +88,7 @@ public interface TransporteurManager
     * @throws ObjectReferencedException si transporteur est référencé par des
     * objets.
     */
-   void deleteByIdManager(Transporteur transporteur, String comments, Utilisateur user);
+   void removeObjectManager(Transporteur transporteur, String comments, Utilisateur user);
 
    /**
     * Verifie si le transporteur est référencé par d'autres objets du système

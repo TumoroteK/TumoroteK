@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.coeur.cession;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -94,7 +95,7 @@ public class ProtocoleTypeManagerImpl implements ProtocoleTypeManager
     */
    @Override
    public ProtocoleType findByIdManager(final Integer protocoleTypeId){
-      return protocoleTypeDao.findById(protocoleTypeId);
+      return protocoleTypeDao.findById(protocoleTypeId).orElse(null);
    }
 
    /**
@@ -137,7 +138,7 @@ public class ProtocoleTypeManagerImpl implements ProtocoleTypeManager
    }
 
    @Override
-   public void saveManager(final ProtocoleType obj){
+   public void createObjectManager(final ProtocoleType obj){
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(obj.getPlateforme() == null){
@@ -155,7 +156,7 @@ public class ProtocoleTypeManagerImpl implements ProtocoleTypeManager
    }
 
    @Override
-   public void saveManager(final ProtocoleType obj){
+   public void updateObjectManager(final ProtocoleType obj){
       BeanValidator.validateObject(obj, new Validator[] {protocoleTypeValidator});
       if(!findDoublonManager(obj)){
          protocoleTypeDao.save(obj);
@@ -167,7 +168,7 @@ public class ProtocoleTypeManagerImpl implements ProtocoleTypeManager
    }
 
    @Override
-   public void deleteByIdManager(final ProtocoleType obj){
+   public void removeObjectManager(final ProtocoleType obj){
       if(obj != null){
          protocoleTypeDao.deleteById(obj.getId());
          log.info("Suppression objet ProtocoleType " + obj.toString());

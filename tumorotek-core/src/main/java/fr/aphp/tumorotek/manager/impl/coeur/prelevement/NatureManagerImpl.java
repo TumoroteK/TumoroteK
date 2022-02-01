@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.manager.impl.coeur.prelevement;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -87,7 +88,7 @@ public class NatureManagerImpl implements NatureManager
    }
 
    @Override
-   public void saveManager(final Nature obj){
+   public void createObjectManager(final Nature obj){
 
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
@@ -107,7 +108,7 @@ public class NatureManagerImpl implements NatureManager
    }
 
    @Override
-   public void saveManager(final Nature obj){
+   public void updateObjectManager(final Nature obj){
       BeanValidator.validateObject(obj, new Validator[] {natureValidator});
       if(!findDoublonManager(obj)){
          natureDao.save(obj);
@@ -128,7 +129,7 @@ public class NatureManagerImpl implements NatureManager
    }
 
    @Override
-   public void deleteByIdManager(final Nature obj){
+   public void removeObjectManager(final Nature obj){
       if(obj != null){
          if(!isUsedObjectManager(obj)){
             natureDao.deleteById(obj.getId());
@@ -167,7 +168,7 @@ public class NatureManagerImpl implements NatureManager
 
    @Override
    public Nature findByIdManager(final Integer id){
-      return natureDao.findById(id);
+      return natureDao.findById(id).orElse(null);
    }
 
    @Override

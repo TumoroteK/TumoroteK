@@ -310,14 +310,14 @@ public class PlateformeManagerTest extends AbstractManagerTest4
 		assertTrue(conteneurManager.findByPartageManager(pf5, false).contains(ct4));
 
 		// clean up 
-		conteneurPlateformeManager.deleteByIdManager(conteneurPlateformeDao.findById(new ConteneurPlateformePK(ct2, pf5)));
-		conteneurPlateformeManager.deleteByIdManager(conteneurPlateformeDao.findById(new ConteneurPlateformePK(ct3, pf5)));
+		conteneurPlateformeManager.removeObjectManager(conteneurPlateformeDao.findById(new ConteneurPlateformePK(ct2, pf5)));
+		conteneurPlateformeManager.removeObjectManager(conteneurPlateformeDao.findById(new ConteneurPlateformePK(ct3, pf5)));
 		assertTrue(IterableUtils.toList(conteneurPlateformeDao.findAll()).size() == 5);
 
 		// suppression des opérations créées pendant le test
 		final List<Operation> ops = operationManager.findByObjectManager(pf5);
 		for(int i = 0; i < ops.size(); i++){
-			operationManager.deleteByIdManager(ops.get(i));
+			operationManager.removeObjectManager(ops.get(i));
 		}
 		assertTrue(operationManager.findAllObjectsManager().size() == 19);
 	}
@@ -462,7 +462,7 @@ public class PlateformeManagerTest extends AbstractManagerTest4
 		assertNull(plateformeManager.saveManager(null, null, null, u1, baseDirFolder.getAbsolutePath()));
 
 		// clean
-		plateformeManager.deleteByIdManager(pf, null, u1, baseDirFolder.getAbsolutePath());
+		plateformeManager.removeObjectManager(pf, null, u1, baseDirFolder.getAbsolutePath());
 		
 		testFindAll();
 		assertFalse(new File(baseDirFolder.getAbsolutePath().concat("/pt_").concat(pfId.toString())).exists());
@@ -477,7 +477,7 @@ public class PlateformeManagerTest extends AbstractManagerTest4
 	 * @since 2.2.1
 	 */
 	@Test
-	public void testIsReferencedAnddeleteByIdManager() throws IOException {
+	public void testIsReferencedAndremoveObjectManager() throws IOException {
 		
 		File baseDirFolder = folder.newFolder("tkDir");
 		
@@ -510,8 +510,8 @@ public class PlateformeManagerTest extends AbstractManagerTest4
 		assertTrue(plateformeManager.isReferencedObjectManager(pf));
 		
 		conteneurs.clear();
-		conteneurPlateformeManager.deleteByIdManager(conteneurPlateformeDao.findById(new ConteneurPlateformePK(ct1, pf)));
-		conteneurPlateformeManager.deleteByIdManager(conteneurPlateformeDao.findById(new ConteneurPlateformePK(ct2, pf)));	
+		conteneurPlateformeManager.removeObjectManager(conteneurPlateformeDao.findById(new ConteneurPlateformePK(ct1, pf)));
+		conteneurPlateformeManager.removeObjectManager(conteneurPlateformeDao.findById(new ConteneurPlateformePK(ct2, pf)));	
 		assertFalse(plateformeManager.isReferencedObjectManager(pf));
 		
 		// ajout banques
@@ -525,16 +525,16 @@ public class PlateformeManagerTest extends AbstractManagerTest4
 
 		b = banqueManager.findByPlateformeAndArchiveManager(pf, false).get(0);
 		
-		banqueManager.deleteByIdManager(b, null, u1, baseDirFolder.getAbsolutePath().toString(), true);
+		banqueManager.removeObjectManager(b, null, u1, baseDirFolder.getAbsolutePath().toString(), true);
 		assertFalse(plateformeManager.isReferencedObjectManager(pf));
 
 		// clean
-		plateformeManager.deleteByIdManager(pf, null, u1, baseDirFolder.getAbsolutePath());
+		plateformeManager.removeObjectManager(pf, null, u1, baseDirFolder.getAbsolutePath());
 		
 		testFindAll();
 		
 		// null remove 
-		plateformeManager.deleteByIdManager(null, null, u1, baseDirFolder.getAbsolutePath());
+		plateformeManager.removeObjectManager(null, null, u1, baseDirFolder.getAbsolutePath());
 		
 		final List<TKFantomableObject> fs = new ArrayList<>();
 	    fs.add(pf);
@@ -543,7 +543,7 @@ public class PlateformeManagerTest extends AbstractManagerTest4
 	}
 	
 	@Test(expected = ObjectReferencedException.class)
-	public void testdeleteByIdManagerThrowsIsReferencedException() throws IOException {
+	public void testremoveObjectManagerThrowsIsReferencedException() throws IOException {
 		
 		File baseDirFolder = folder.newFolder("tkDir");
 		
@@ -553,7 +553,7 @@ public class PlateformeManagerTest extends AbstractManagerTest4
 		Plateforme pf1 = plateformeManager.findByIdManager(1);
 		assertTrue(plateformeManager.isReferencedObjectManager(pf1));
 
-		plateformeManager.deleteByIdManager(pf1, null, u1, baseDirFolder.getAbsolutePath());		
+		plateformeManager.removeObjectManager(pf1, null, u1, baseDirFolder.getAbsolutePath());		
 	}
 
 	/**
@@ -589,7 +589,7 @@ public class PlateformeManagerTest extends AbstractManagerTest4
 		u1 = plateformeManager.getUtilisateursManager(pf).iterator().next();
 		
 		// clean
-		plateformeManager.deleteByIdManager(pf, null, u1, baseDirFolder.getAbsolutePath());
+		plateformeManager.removeObjectManager(pf, null, u1, baseDirFolder.getAbsolutePath());
 		
 		testFindAll();
 		

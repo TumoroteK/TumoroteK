@@ -41,6 +41,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -119,7 +120,7 @@ public class MaladieManagerImpl implements MaladieManager
    }
 
    @Override
-   public void createOrsaveManager(Maladie maladie, final Patient patient, final List<Collaborateur> medecins,
+   public void createOrUpdateObjectManager(Maladie maladie, final Patient patient, final List<Collaborateur> medecins,
       final Utilisateur utilisateur, final String operation){
 
       if(operation == null){
@@ -212,7 +213,7 @@ public class MaladieManagerImpl implements MaladieManager
    }
 
    @Override
-   public void deleteByIdManager(final Maladie maladie, final String comments, final Utilisateur user){
+   public void removeObjectManager(final Maladie maladie, final String comments, final Utilisateur user){
       if(maladie != null){
          if(!isUsedObjectManager(maladie)){
             //Supprime operations associes

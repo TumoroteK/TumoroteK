@@ -839,7 +839,7 @@ public class InterfacageParsingUtilsTest extends AbstractManagerTest4
 			}
 
 			// suppression
-			dossierExterneManager.deleteByIdManager(dossier);
+			dossierExterneManager.removeObjectManager(dossier);
 			assertTrue(dossierExterneManager.findAllObjectsManager().size() == nbD);
 			assertTrue(blocExterneManager.findAllObjectsManager().size() == nbB);
 			assertTrue(valeurExterneManager.findAllObjectsManager().size() == nbV);
@@ -867,7 +867,7 @@ public class InterfacageParsingUtilsTest extends AbstractManagerTest4
 			assertTrue(vals.get(vals.indexOf(valToAssert)).getValeur().equals("12"));
 
 			// suppression
-			dossierExterneManager.deleteByIdManager(dossier);
+			dossierExterneManager.removeObjectManager(dossier);
 			assertTrue(dossierExterneManager.findAllObjectsManager().size() == nbD);
 			assertTrue(blocExterneManager.findAllObjectsManager().size() == nbB);
 			assertTrue(valeurExterneManager.findAllObjectsManager().size() == nbV);
@@ -1099,8 +1099,8 @@ public class InterfacageParsingUtilsTest extends AbstractManagerTest4
 			}
 			// clean up
 			if (!dossiers.isEmpty()) {
-				dossierExterneManager.deleteByIdManager(dossiers.get(0));
-				dossierExterneManager.deleteByIdManager(dossiers.get(1));
+				dossierExterneManager.removeObjectManager(dossiers.get(0));
+				dossierExterneManager.removeObjectManager(dossiers.get(1));
 			}
 			assertTrue(dossierExterneManager.findAllObjectsManager().size() == nbD);
 			assertTrue(blocExterneManager.findAllObjectsManager().size() == nbB);

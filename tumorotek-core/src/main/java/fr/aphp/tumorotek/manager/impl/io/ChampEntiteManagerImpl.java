@@ -43,6 +43,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -96,7 +97,7 @@ public class ChampEntiteManagerImpl implements ChampEntiteManager
          log.warn("Objet obligatoire identifiant manquant lors de la " + "recherche par l'identifiant d'un objet ChampEntite");
          throw new RequiredObjectIsNullException("ChampEntite", "recherche par identifiant", "identifiant");
       }
-      return champEntiteDao.findById(id);
+      return champEntiteDao.findById(id).orElse(null);
    }
 
    /**

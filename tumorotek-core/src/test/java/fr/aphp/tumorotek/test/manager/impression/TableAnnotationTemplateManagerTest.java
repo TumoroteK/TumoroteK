@@ -302,15 +302,15 @@ public class TableAnnotationTemplateManagerTest extends AbstractManagerTest4
       assertTrue(tatTest2.getOrdre() == 10);
 
       // suppression du profilUtilisateur ajouté
-      tableAnnotationTemplateManager.deleteByIdManager(tatTest);
+      tableAnnotationTemplateManager.removeObjectManager(tatTest);
       assertTrue(tableAnnotationTemplateManager.findAllObjectsManager().size() == 1);
 
       // suppression d'un profilUtilisateur null
-      tableAnnotationTemplateManager.deleteByIdManager(null);
+      tableAnnotationTemplateManager.removeObjectManager(null);
       assertTrue(tableAnnotationTemplateManager.findAllObjectsManager().size() == 1);
 
       // suppression d'un profilUtilisateur inexistant
-      tableAnnotationTemplateManager.deleteByIdManager(tatTest);
+      tableAnnotationTemplateManager.removeObjectManager(tatTest);
       assertTrue(tableAnnotationTemplateManager.findAllObjectsManager().size() == 1);
    }
 

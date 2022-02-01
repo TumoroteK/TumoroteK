@@ -128,7 +128,7 @@ public class ConditMilieuManagerTest extends AbstractManagerTest4
    public void testCRUD(){
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    private void saveManagerTest(){
@@ -209,17 +209,17 @@ public class ConditMilieuManagerTest extends AbstractManagerTest4
       }
    }
 
-   private void deleteByIdManagerTest(){
+   private void removeObjectManagerTest(){
       //Suppression de l'enregistrement precedemment insere
       final ConditMilieu cm1 = (conditMilieuManager.findByMilieuLikeManager("Triz.zol +", true)).get(0);
-      conditMilieuManager.deleteByIdManager(cm1);
+      conditMilieuManager.removeObjectManager(cm1);
       assertTrue((conditMilieuManager.findByMilieuLikeManager("Triz.zol +", true)).size() == 0);
       //Suppression engrendrant une exception
       //		Boolean catched = false;
       //		try {
       //			ConditMilieu cm2 = (conditMilieuManager
       //					.findByMilieuLikeManager("SEC", true)).get(0);
-      //			conditMilieuManager.deleteByIdManager(cm2);
+      //			conditMilieuManager.removeObjectManager(cm2);
       //		} catch (Exception e) {
       //			if (e.getClass().getSimpleName().equals(
       //					"ObjectUsedException")) {
@@ -229,7 +229,7 @@ public class ConditMilieuManagerTest extends AbstractManagerTest4
       //		assertTrue(catched);
       assertTrue((conditMilieuManager.findByMilieuLikeManager("SEC", true)).size() > 0);
       //null remove
-      conditMilieuManager.deleteByIdManager(null);
+      conditMilieuManager.removeObjectManager(null);
       assertTrue(conditMilieuManager.findByOrderManager(cm1.getPlateforme()).size() == 1);
    }
 

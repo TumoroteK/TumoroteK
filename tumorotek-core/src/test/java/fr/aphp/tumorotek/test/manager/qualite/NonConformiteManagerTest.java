@@ -330,7 +330,7 @@ public class NonConformiteManagerTest extends AbstractManagerTest4
       assertTrue(n3.getPlateforme().equals(plateformeDao.findById(2)));
 
       // Suppression
-      nonConformiteManager.deleteByIdManager(n3);
+      nonConformiteManager.removeObjectManager(n3);
       assertTrue(nonConformiteManager.findAllObjectsManager().size() == tot);
    }
 

@@ -152,7 +152,7 @@ public class RisqueManagerTest extends AbstractManagerTest4
    public void testCRUD(){
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    private void saveManagerTest(){
@@ -249,17 +249,17 @@ public class RisqueManagerTest extends AbstractManagerTest4
       }
    }
 
-   private void deleteByIdManagerTest(){
+   private void removeObjectManagerTest(){
       //Suppression de l'enregistrement precedemment insere
       final Risque r1 = (risqueManager.findByNomLikeManager("L'uôpuç+", true)).get(0);
-      risqueManager.deleteByIdManager(r1);
+      risqueManager.removeObjectManager(r1);
       assertTrue((risqueManager.findByNomLikeManager("L'uôpuç+", true)).size() == 0);
       //Suppression engrendrant une exception
       //		Boolean catched = false;
       //		try {
       //			Risque r2 = (risqueManager
       //					.findByNomLikeManager("HIV", true)).get(0);
-      //			risqueManager.deleteByIdManager(r2);
+      //			risqueManager.removeObjectManager(r2);
       //		} catch (Exception e) {
       //			if (e.getClass().getSimpleName().equals(
       //					"ObjectUsedException")) {
@@ -269,7 +269,7 @@ public class RisqueManagerTest extends AbstractManagerTest4
       //		assertTrue(catched);
       assertTrue((risqueManager.findByNomLikeManager("HIV", true)).size() > 0);
       //null remove
-      risqueManager.deleteByIdManager(null);
+      risqueManager.removeObjectManager(null);
       testFindAllObjectsManager();
    }
 

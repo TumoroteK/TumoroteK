@@ -108,7 +108,7 @@ public interface TransformationManager
     * @throws DoublonFoundException Lance une exception si un doublon de
     * l'objet à créer se trouve déjà dans la base.
     */
-   void saveManager(Transformation transformation, Entite entite, Unite quantiteUnite);
+   void createObjectManager(Transformation transformation, Entite entite, Unite quantiteUnite);
 
    /**
     * Sauvegarde les modifications apportées à un objet persistant.
@@ -118,7 +118,7 @@ public interface TransformationManager
     * @throws DoublonFoundException Lance une exception si un doublon de
     * l'objet à créer se trouve déjà dans la base.
     */
-   void saveManager(Transformation transformation, Entite entite, Unite quantiteUnite);
+   void updateObjectManager(Transformation transformation, Entite entite, Unite quantiteUnite);
 
    /**
     * Supprime une Transformation de la base de données. Cascade 
@@ -128,7 +128,7 @@ public interface TransformationManager
     * @param comments commentaires liés à la suppression
     * @param Utilisateur réalisant la suppression.
     */
-   void deleteByIdManager(Transformation transformation, String comments, Utilisateur user);
+   void removeObjectManager(Transformation transformation, String comments, Utilisateur user);
 
    /**
     * Recherche tous les derives, issus de une ou plusieurs

@@ -9,11 +9,6 @@
 			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
 	 <import resource="applicationContextAOP-codes.xml" />
- 	
-<!-- 	<bean id="adicapManager" class="fr.aphp.tumorotek.manager.impl.code.AdicapManagerImpl">-->
-<!--		<property name="adicapDao" ref="adicapDao" />-->
-<!--		<property name="adicapGroupeDao" ref="adicapGroupeDao" />-->
-<!--	</bean>-->
 	
 	<bean id="adicapManager" parent="txProxyTemplateCodes">
   		<property name="target">
@@ -41,4 +36,5 @@
 			</bean>
 		</property>
 	</bean>
+	
 </beans>

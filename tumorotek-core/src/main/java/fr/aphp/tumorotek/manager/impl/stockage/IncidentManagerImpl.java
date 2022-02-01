@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.stockage;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -109,7 +110,7 @@ public class IncidentManagerImpl implements IncidentManager
 
    @Override
    public Incident findByIdManager(final Integer incidentId){
-      return incidentDao.findById(incidentId);
+      return incidentDao.findById(incidentId).orElse(null);
    }
 
    @Override
@@ -188,7 +189,7 @@ public class IncidentManagerImpl implements IncidentManager
    }
 
    @Override
-   public void saveManager(final Incident incident, final Conteneur conteneur, final Enceinte enceinte,
+   public void createObjectManager(final Incident incident, final Conteneur conteneur, final Enceinte enceinte,
       final Terminale terminale){
 
       //contenant required
@@ -219,7 +220,7 @@ public class IncidentManagerImpl implements IncidentManager
    }
 
    @Override
-   public void saveManager(final Incident incident, final Conteneur conteneur, final Enceinte enceinte,
+   public void updateObjectManager(final Incident incident, final Conteneur conteneur, final Enceinte enceinte,
       final Terminale terminale){
 
       //contenant required
@@ -256,7 +257,7 @@ public class IncidentManagerImpl implements IncidentManager
    }
 
    @Override
-   public void deleteByIdManager(final Incident incident){
+   public void removeObjectManager(final Incident incident){
       if(incident != null){
          incidentDao.deleteById(incident.getIncidentId());
          log.info("Suppression de l'objet Incident : " + incident.toString());

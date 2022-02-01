@@ -140,7 +140,7 @@ public class ConsultationIntfManagerTest extends AbstractManagerTest4
       assertTrue(consult.getIdentification().equals("NEW_DOS_ID"));
 
       // deletion uniquement pour clean tests
-      consultationIntfManager.deleteByIdManager(consult);
+      consultationIntfManager.removeObjectManager(consult);
 
       assertTrue(consultationIntfManager.findByUtilisateurOrEmetteurInDatesManager(null, null, null, null).size() == totSize);
    }

@@ -72,7 +72,7 @@ public class UiRequeteManagerImpl implements UiRequeteManager
 
    @Override
    public UiRequete findByIdManager(final Integer id){
-      return uiRequeteDao.findById(id);
+      return uiRequeteDao.findById(id).orElse(null);
    }
 
    @Override
@@ -97,14 +97,14 @@ public class UiRequeteManagerImpl implements UiRequeteManager
    }
 
    @Override
-   public void saveManager(final String nom, final Utilisateur ut, final Entite et, final Integer ordre,
+   public void createObjectManager(final String nom, final Utilisateur ut, final Entite et, final Integer ordre,
       final List<UiCompValue> vals){
       final UiRequete requete = new UiRequete(null, ut, et, nom, ordre);
-      saveManager(requete, vals);
+      mergeObjectManager(requete, vals);
    }
 
    @Override
-   public void saveManager(final UiRequete requete, final List<UiCompValue> vals){
+   public void mergeObjectManager(final UiRequete requete, final List<UiCompValue> vals){
       if(requete != null){
          if(requete.getUtilisateur() == null){
             throw new RequiredObjectIsNullException("Utilisateur", "creation", "UiRequete");
@@ -136,7 +136,7 @@ public class UiRequeteManagerImpl implements UiRequeteManager
    }
 
    @Override
-   public void deleteByIdManager(final UiRequete requete){
+   public void removeObjectManager(final UiRequete requete){
       if(requete != null){
          uiRequeteDao.deleteById(requete.getUiRequeteId());
       }

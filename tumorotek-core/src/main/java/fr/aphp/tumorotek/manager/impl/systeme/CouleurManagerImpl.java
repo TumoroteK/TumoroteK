@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.systeme;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -47,50 +48,48 @@ import fr.aphp.tumorotek.model.systeme.Couleur;
 
 /**
  *
- * Implémentation du manager du bean de domaine Couleur.
- * Interface créée le 30/04/2010.
+ * Implémentation du manager du bean de domaine Couleur. Interface créée le
+ * 30/04/2010.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public class CouleurManagerImpl implements CouleurManager
-{
+public class CouleurManagerImpl implements CouleurManager {
 
-   private final Log log = LogFactory.getLog(CouleurManager.class);
+	private final Log log = LogFactory.getLog(CouleurManager.class);
 
-   /** Bean Dao CouleurDao. */
-   private CouleurDao couleurDao;
+	private CouleurDao couleurDao;
 
-   public void setCouleurDao(final CouleurDao cDao){
-      this.couleurDao = cDao;
-   }
+	public void setCouleurDao(final CouleurDao cDao) {
+		this.couleurDao = cDao;
+	}
 
-   @Override
-   public List<Couleur> findAllObjectsManager(){
-      return IterableUtils.toList(couleurDao.findAll());
-   }
+	@Override
+	public List<Couleur> findAllObjectsManager() {
+		return IterableUtils.toList(couleurDao.findAll());
+	}
 
-   @Override
-   public List<Couleur> findByCouleurLikeManager(String couleur, final boolean exactMatch){
-      log.debug("Recherche Couleur par " + couleur + " exactMatch " + String.valueOf(exactMatch));
-      if(couleur != null){
-         if(!exactMatch){
-            couleur = couleur + "%";
-         }
-         return couleurDao.findByCouleur(couleur);
-      }
-      return new ArrayList<>();
-   }
+	@Override
+	public List<Couleur> findByCouleurLikeManager(String couleur, final boolean exactMatch) {
+		log.debug("Recherche Couleur par " + couleur + " exactMatch " + String.valueOf(exactMatch));
+		if (couleur != null) {
+			if (!exactMatch) {
+				couleur = couleur + "%";
+			}
+			return couleurDao.findByCouleur(couleur);
+		}
+		return new ArrayList<>();
+	}
 
-   @Override
-   public Couleur findByIdManager(final Integer couleurId){
-      return couleurDao.findById(couleurId);
-   }
+	@Override
+	public Couleur findByIdManager(final Integer couleurId) {
+		return couleurDao.findById(couleurId).orElse(null);
+	}
 
-   @Override
-   public List<Couleur> findByOrdreVisotubeManager(){
-      return couleurDao.findByVisotube();
-   }
+	@Override
+	public List<Couleur> findByOrdreVisotubeManager() {
+		return couleurDao.findByVisotube();
+	}
 
 }

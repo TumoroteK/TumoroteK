@@ -228,13 +228,13 @@ public class EchanQualiteManagerTest extends AbstractManagerTest4
 
       // Test de la suppression
       final EchanQualite qualite4 = echanQualiteManager.findByIdManager(4);
-      echanQualiteManager.deleteByIdManager(qualite4);
+      echanQualiteManager.removeObjectManager(qualite4);
       assertNull(echanQualiteManager.findByIdManager(4));
       // On test la suppression d'un objet utilisé
       //		EchanQualite qualite5 = echanQualiteManager.findByIdManager(1);
       //		Boolean catchedDelete = false;
       //		try {
-      //			echanQualiteManager.deleteByIdManager(qualite5);
+      //			echanQualiteManager.removeObjectManager(qualite5);
       //		} catch (Exception e) {
       //			if (e.getClass().getSimpleName().equals(
       //					"ObjectUsedException")) {

@@ -77,7 +77,7 @@ public class TitreManagerImpl implements TitreManager
     */
    @Override
    public Titre findByIdManager(final Integer titreId){
-      return titreDao.findById(titreId);
+      return titreDao.findById(titreId).orElse(null);
    }
 
    /**

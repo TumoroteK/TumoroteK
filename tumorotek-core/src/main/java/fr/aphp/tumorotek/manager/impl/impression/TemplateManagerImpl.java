@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.impression;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -129,7 +130,7 @@ public class TemplateManagerImpl implements TemplateManager
 
    @Override
    public Template findByIdManager(final Integer templateId){
-      return templateDao.findById(templateId);
+      return templateDao.findById(templateId).orElse(null);
    }
 
    @Override
@@ -168,7 +169,7 @@ public class TemplateManagerImpl implements TemplateManager
    }
 
    @Override
-   public void saveManager(final Template template, final Banque banque, final Entite entite,
+   public void createObjectManager(final Template template, final Banque banque, final Entite entite,
       final List<BlocImpressionTemplate> blocs, final List<ChampImprime> champs, final List<TableAnnotationTemplate> annotations){
 
       // banque required
@@ -233,7 +234,7 @@ public class TemplateManagerImpl implements TemplateManager
    }
 
    @Override
-   public void saveManager(final Template template, final Banque banque, final Entite entite,
+   public void createObjectManager(final Template template, final Banque banque, final Entite entite,
       final List<BlocImpressionTemplate> blocs, final List<ChampImprime> champs, final List<TableAnnotationTemplate> annotations,
       final List<CleImpression> cles){
 
@@ -303,7 +304,7 @@ public class TemplateManagerImpl implements TemplateManager
    }
 
    @Override
-   public void saveManager(final Template template, final Banque banque, final Entite entite,
+   public void updateObjectManager(final Template template, final Banque banque, final Entite entite,
       final List<BlocImpressionTemplate> blocs, final List<BlocImpressionTemplate> blocsToCreate, final List<ChampImprime> champs,
       final List<ChampImprime> champsToCreate, final List<TableAnnotationTemplate> annotations,
       final List<TableAnnotationTemplate> annotationsToCreate){
@@ -371,7 +372,7 @@ public class TemplateManagerImpl implements TemplateManager
    }
 
    @Override
-   public void saveManager(final Template template, final Banque banque, final Entite entite,
+   public void updateObjectManager(final Template template, final Banque banque, final Entite entite,
       final List<BlocImpressionTemplate> blocs, final List<BlocImpressionTemplate> blocsToCreate, final List<ChampImprime> champs,
       final List<ChampImprime> champsToCreate, final List<TableAnnotationTemplate> annotations,
       final List<TableAnnotationTemplate> annotationsToCreate, final List<CleImpression> cles){
@@ -444,30 +445,30 @@ public class TemplateManagerImpl implements TemplateManager
    }
 
    @Override
-   public void deleteByIdManager(final Template template){
+   public void removeObjectManager(final Template template){
       if(template != null){
          // suppression des BlocImpressionTemplates
          final List<BlocImpressionTemplate> blocs = blocImpressionTemplateManager.findByTemplateManager(template);
          for(int i = 0; i < blocs.size(); i++){
-            blocImpressionTemplateManager.deleteByIdManager(blocs.get(i));
+            blocImpressionTemplateManager.removeObjectManager(blocs.get(i));
          }
 
          // suppression des ChampImprimes
          final List<ChampImprime> champs = champImprimeManager.findByTemplateManager(template);
          for(int i = 0; i < champs.size(); i++){
-            champImprimeManager.deleteByIdManager(champs.get(i));
+            champImprimeManager.removeObjectManager(champs.get(i));
          }
 
          // suppression des TableAnnotationTemplate
          final List<TableAnnotationTemplate> tables = tableAnnotationTemplateManager.findByTemplateManager(template);
          for(int i = 0; i < tables.size(); i++){
-            tableAnnotationTemplateManager.deleteByIdManager(tables.get(i));
+            tableAnnotationTemplateManager.removeObjectManager(tables.get(i));
          }
 
          //         // suppression des CleImpression
          //         final List<CleImpression> clesImpression = cleManager.findByTemplateManager(template);
          //         for(int i = 0; i < clesImpression.size(); i++){
-         //            cleManager.deleteByIdManager(clesImpression.get(i));
+         //            cleManager.removeObjectManager(clesImpression.get(i));
          //         }
 
          templateDao.deleteById(template.getTemplateId());
@@ -495,26 +496,26 @@ public class TemplateManagerImpl implements TemplateManager
          }
 
          for(int i = 0; i < blocsToRemove.size(); i++){
-            blocImpressionTemplateManager.deleteByIdManager(blocsToRemove.get(i));
+            blocImpressionTemplateManager.removeObjectManager(blocsToRemove.get(i));
          }
 
          if(blocsToCreate != null){
             // enregistrements
             for(int i = 0; i < blocsToCreate.size(); i++){
                final BlocImpressionTemplate obj = blocsToCreate.get(i);
-               blocImpressionTemplateManager.saveManager(obj, template, obj.getBlocImpression());
+               blocImpressionTemplateManager.createObjectManager(obj, template, obj.getBlocImpression());
             }
 
             // update
             for(int i = 0; i < blocs.size(); i++){
                if(!blocsToCreate.contains(blocs.get(i))){
-                  blocImpressionTemplateManager.saveManager(blocs.get(i), template, blocs.get(i).getBlocImpression());
+                  blocImpressionTemplateManager.updateObjectManager(blocs.get(i), template, blocs.get(i).getBlocImpression());
                }
             }
          }else{
             // update
             for(int i = 0; i < blocs.size(); i++){
-               blocImpressionTemplateManager.saveManager(blocs.get(i), template, blocs.get(i).getBlocImpression());
+               blocImpressionTemplateManager.updateObjectManager(blocs.get(i), template, blocs.get(i).getBlocImpression());
             }
          }
       }
@@ -531,27 +532,27 @@ public class TemplateManagerImpl implements TemplateManager
          }
 
          for(int i = 0; i < champsToRemove.size(); i++){
-            champImprimeManager.deleteByIdManager(champsToRemove.get(i));
+            champImprimeManager.removeObjectManager(champsToRemove.get(i));
          }
 
          if(champsToCreate != null){
             // enregistrements
             for(int i = 0; i < champsToCreate.size(); i++){
                final ChampImprime obj = champsToCreate.get(i);
-               champImprimeManager.saveManager(obj, template, obj.getChampEntite(), obj.getBlocImpression());
+               champImprimeManager.createObjectManager(obj, template, obj.getChampEntite(), obj.getBlocImpression());
             }
 
             // update
             for(int i = 0; i < champsImprime.size(); i++){
                if(!champsToCreate.contains(champsImprime.get(i))){
-                  champImprimeManager.saveManager(champsImprime.get(i), template, champsImprime.get(i).getChampEntite(),
+                  champImprimeManager.updateObjectManager(champsImprime.get(i), template, champsImprime.get(i).getChampEntite(),
                      champsImprime.get(i).getBlocImpression());
                }
             }
          }else{
             // update
             for(int i = 0; i < champsImprime.size(); i++){
-               champImprimeManager.saveManager(champsImprime.get(i), template, champsImprime.get(i).getChampEntite(),
+               champImprimeManager.updateObjectManager(champsImprime.get(i), template, champsImprime.get(i).getChampEntite(),
                   champsImprime.get(i).getBlocImpression());
             }
          }
@@ -570,26 +571,26 @@ public class TemplateManagerImpl implements TemplateManager
          }
 
          for(int i = 0; i < tablesToRemove.size(); i++){
-            tableAnnotationTemplateManager.deleteByIdManager(tablesToRemove.get(i));
+            tableAnnotationTemplateManager.removeObjectManager(tablesToRemove.get(i));
          }
 
          if(annoToCreate != null){
             // enregistrements
             for(int i = 0; i < annoToCreate.size(); i++){
                final TableAnnotationTemplate obj = annoToCreate.get(i);
-               tableAnnotationTemplateManager.saveManager(obj, template, obj.getTableAnnotation());
+               tableAnnotationTemplateManager.createObjectManager(obj, template, obj.getTableAnnotation());
             }
             // update
             for(int i = 0; i < annotations.size(); i++){
                if(!annoToCreate.contains(annotations.get(i))){
-                  tableAnnotationTemplateManager.saveManager(annotations.get(i), template,
+                  tableAnnotationTemplateManager.updateObjectManager(annotations.get(i), template,
                      annotations.get(i).getTableAnnotation());
                }
             }
          }else{
             // update
             for(int i = 0; i < annotations.size(); i++){
-               tableAnnotationTemplateManager.saveManager(annotations.get(i), template,
+               tableAnnotationTemplateManager.updateObjectManager(annotations.get(i), template,
                   annotations.get(i).getTableAnnotation());
             }
          }
@@ -603,9 +604,9 @@ public class TemplateManagerImpl implements TemplateManager
          // enregistrements
          for(CleImpression cle : cles){
             if(null != cle.getCleId()){
-               cleImpressionManager.saveManager(cle);
+               cleImpressionManager.updateObjectManager(cle);
             }else{
-               cleImpressionManager.saveManager(cle);
+               cleImpressionManager.createObjectManager(cle);
             }
          }
       }

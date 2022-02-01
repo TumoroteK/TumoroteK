@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.manager.impl.coeur.prelevement;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -107,7 +108,7 @@ public class LaboInterManagerImpl implements LaboInterManager
    }
 
    @Override
-   public void saveManager(final LaboInter obj, final Prelevement prelevement, final Service service,
+   public void createObjectManager(final LaboInter obj, final Prelevement prelevement, final Service service,
       final Collaborateur collaborateur, final Transporteur transporteur, final boolean doValidation){
       //Prelevement required
       if(prelevement == null){
@@ -135,7 +136,7 @@ public class LaboInterManagerImpl implements LaboInterManager
    }
 
    @Override
-   public void saveManager(final LaboInter obj, final Prelevement prelevement, final Service service,
+   public void updateObjectManager(final LaboInter obj, final Prelevement prelevement, final Service service,
       final Collaborateur collaborateur, final Transporteur transporteur, final boolean doValidation){
       //Prelevement required
       if(prelevement == null){
@@ -188,7 +189,7 @@ public class LaboInterManagerImpl implements LaboInterManager
    }
 
    @Override
-   public void deleteByIdManager(final LaboInter obj){
+   public void removeObjectManager(final LaboInter obj){
       if(obj != null){
          laboInterDao.deleteById(obj.getLaboInterId());
          log.info("Suppression objet LaboInter " + obj.toString());

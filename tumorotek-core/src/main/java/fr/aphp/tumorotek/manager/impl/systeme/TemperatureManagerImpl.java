@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.manager.impl.systeme;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -48,87 +49,86 @@ import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.systeme.TemperatureValidator;
 import fr.aphp.tumorotek.model.systeme.Temperature;
 
-public class TemperatureManagerImpl implements TemperatureManager
-{
+public class TemperatureManagerImpl implements TemperatureManager {
 
-   private final Log log = LogFactory.getLog(TemperatureManager.class);
+	private final Log log = LogFactory.getLog(TemperatureManager.class);
 
-   private TemperatureDao temperatureDao;
-   private TemperatureValidator temperatureValidator;
+	private TemperatureDao temperatureDao;
+	private TemperatureValidator temperatureValidator;
 
-   public void setTemperatureDao(final TemperatureDao tDao){
-      this.temperatureDao = tDao;
-   }
+	public void setTemperatureDao(final TemperatureDao tDao) {
+		this.temperatureDao = tDao;
+	}
 
-   public void setTemperatureValidator(final TemperatureValidator tValidator){
-      this.temperatureValidator = tValidator;
-   }
+	public void setTemperatureValidator(final TemperatureValidator tValidator) {
+		this.temperatureValidator = tValidator;
+	}
 
-   @Override
-   public Temperature findByIdManager(final Integer temperatureId){
-      return temperatureDao.findById(temperatureId);
-   }
+	@Override
+	public Temperature findByIdManager(final Integer temperatureId) {
+		return temperatureDao.findById(temperatureId).orElse(null);
+	}
 
-   @Override
-   public List<Temperature> findAllObjectsManager(){
-      log.debug("Recherche de toutes les Températures");
-      return IterableUtils.toList(temperatureDao.findAll());
-   }
+	@Override
+	public List<Temperature> findAllObjectsManager() {
+		log.debug("Recherche de toutes les Températures");
+		return IterableUtils.toList(temperatureDao.findAll());
+	}
 
-   @Override
-   public Boolean findDoublonManager(final Temperature temperature){
-      if(temperature != null){
-         if(temperature.getTemperatureId() == null){
-            return IterableUtils.toList(temperatureDao.findAll()).contains(temperature);
-         }else{
-            return temperatureDao.findByExcludedId(temperature.getTemperatureId()).contains(temperature);
-         }
-      }else{
-         return false;
-      }
-   }
+	@Override
+	public Boolean findDoublonManager(final Temperature temperature) {
+		if (temperature != null) {
+			if (temperature.getTemperatureId() == null) {
+				return IterableUtils.toList(temperatureDao.findAll()).contains(temperature);
+			} else {
+				return temperatureDao.findByExcludedId(temperature.getTemperatureId()).contains(temperature);
+			}
+		} else {
+			return false;
+		}
+	}
 
-   @Override
-   public void saveManager(final Temperature temperature){
-      // Test s'il y a des doublons
-      if(findDoublonManager(temperature)){
-         log.warn("Doublon lors de la creation de l'objet Temperature : " + temperature.toString());
-         throw new DoublonFoundException("Temperature", "creation");
-      }else{
+	@Override
+	public void createObjectManager(final Temperature temperature) {
+		// Test s'il y a des doublons
+		if (findDoublonManager(temperature)) {
+			log.warn("Doublon lors de la creation de l'objet Temperature : " + temperature.toString());
+			throw new DoublonFoundException("Temperature", "creation");
+		} else {
 
-         // validation du Contrat
-         BeanValidator.validateObject(temperature, new Validator[] {temperatureValidator});
+			// validation du Contrat
+			BeanValidator.validateObject(temperature, new Validator[] { temperatureValidator });
 
-         temperatureDao.save(temperature);
+			temperatureDao.save(temperature);
 
-         log.info("Enregistrement de l'objet Temperature : " + temperature.toString());
-      }
-   }
+			log.info("Enregistrement de l'objet Temperature : " + temperature.toString());
+		}
+	}
 
-   @Override
-   public void saveManager(final Temperature temperature){
-      // Test s'il y a des doublons
-      if(findDoublonManager(temperature)){
-         log.warn("Doublon lors de la modification de " + "l'objet Temperature : " + temperature.toString());
-         throw new DoublonFoundException("Temperature", "modification");
-      }else{
+	@Override
+	public void updateObjectManager(final Temperature temperature) {
+		// Test s'il y a des doublons
+		if (findDoublonManager(temperature)) {
+			log.warn("Doublon lors de la modification de " + "l'objet Temperature : " + temperature.toString());
+			throw new DoublonFoundException("Temperature", "modification");
+		} else {
 
-         // validation du Contrat
-         BeanValidator.validateObject(temperature, new Validator[] {temperatureValidator});
+			// validation du Contrat
+			BeanValidator.validateObject(temperature, new Validator[] { temperatureValidator });
 
-         temperatureDao.save(temperature);
+			temperatureDao.save(temperature);
 
-         log.info("Enregistrement de l'objet Temperature : " + temperature.toString());
-      }
-   }
+			log.info("Enregistrement de l'objet Temperature : " + temperature.toString());
+		}
+	}
 
-   @Override
-   public void deleteByIdManager(final Temperature temperature){
-      if(temperature != null){
-         temperatureDao.deleteById(temperature.getTemperatureId());
-         log.info("Suppression de l'objet Temperature : " + temperature.toString());
-      }else{
-         log.warn("Suppression d'une Temperature null");
-      }
-   }
+	@Override
+	public void removeObjectManager(final Temperature temperature) {
+		if (temperature != null) {
+			temperatureDao.deleteById(temperature.getTemperatureId());
+			log.info("Suppression de l'objet Temperature : " + temperature.toString());
+		} else {
+			log.warn("Suppression d'une Temperature null");
+		}
+	}
 }

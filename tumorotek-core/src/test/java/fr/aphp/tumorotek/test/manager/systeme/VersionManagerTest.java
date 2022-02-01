@@ -51,7 +51,7 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 
 import fr.aphp.tumorotek.manager.systeme.VersionManager;
 import fr.aphp.tumorotek.model.systeme.Version;
-import fr.aphp.tumorotek.test.manager.AbstractManagerTest4;
+import fr.aphp.tumorotek.test.manager.Config;
 
 /**
  *
@@ -63,12 +63,9 @@ import fr.aphp.tumorotek.test.manager.AbstractManagerTest4;
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(
-		locations = {"classpath:applicationContextInterceptor.xml", 
-					"classpath:applicationContextDao-test-mysql.xml", 
-					"classpath:applicationContextManager.xml"})
+@ContextConfiguration(classes = { Config.class })
 @TestExecutionListeners({DependencyInjectionTestExecutionListener.class})
-public class VersionManagerTest // extends AbstractManagerTest4
+public class VersionManagerTest 
 {
 
    @Autowired

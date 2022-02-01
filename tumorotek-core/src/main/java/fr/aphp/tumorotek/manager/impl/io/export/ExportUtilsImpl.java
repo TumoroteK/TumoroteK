@@ -420,7 +420,7 @@ public class ExportUtilsImpl implements ExportUtils
       if(user != null){
          final Operation exportOp = new Operation();
          exportOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.saveManager(exportOp, user, operationTypeDao.findByNom("Export").get(0), maladie.getPatient());
+         operationManager.createObjectManager(exportOp, user, operationTypeDao.findByNom("Export").get(0), maladie.getPatient());
       }
    }
 
@@ -645,7 +645,7 @@ public class ExportUtilsImpl implements ExportUtils
       if(user != null){
          final Operation exportOp = new Operation();
          exportOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.saveManager(exportOp, user, operationTypeDao.findByNom("Export").get(0), prelevement);
+         operationManager.createObjectManager(exportOp, user, operationTypeDao.findByNom("Export").get(0), prelevement);
       }
    }
 
@@ -804,7 +804,7 @@ public class ExportUtilsImpl implements ExportUtils
       if(user != null){
          final Operation exportOp = new Operation();
          exportOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.saveManager(exportOp, user, operationTypeDao.findByNom("Export").get(0), echantillon);
+         operationManager.createObjectManager(exportOp, user, operationTypeDao.findByNom("Export").get(0), echantillon);
       }
    }
 
@@ -970,7 +970,7 @@ public class ExportUtilsImpl implements ExportUtils
       if(user != null){
          final Operation exportOp = new Operation();
          exportOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.saveManager(exportOp, user, operationTypeDao.findByNom("Export").get(0), derive);
+         operationManager.createObjectManager(exportOp, user, operationTypeDao.findByNom("Export").get(0), derive);
       }
    }
 
@@ -1114,7 +1114,7 @@ public class ExportUtilsImpl implements ExportUtils
       if(user != null){
          final Operation exportOp = new Operation();
          exportOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.saveManager(exportOp, user, operationTypeDao.findByNom("Export").get(0), cession);
+         operationManager.createObjectManager(exportOp, user, operationTypeDao.findByNom("Export").get(0), cession);
       }
    }
 

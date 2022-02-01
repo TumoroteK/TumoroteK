@@ -148,7 +148,7 @@ public class ProtocoleTypeManagerTest extends AbstractManagerTest4
    public void testCRUD(){
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    @Test
@@ -237,20 +237,20 @@ public class ProtocoleTypeManagerTest extends AbstractManagerTest4
    }
 
    /**
-    * Teste la methode deleteByIdManager. 
+    * Teste la methode removeObjectManager. 
     */
    @Test
-   public void deleteByIdManagerTest(){
+   public void removeObjectManagerTest(){
       //Suppression de l'enregistrement precedemment insere
       final ProtocoleType p1 = (protocoleTypeManager.findByTypeLikeManager("TEST2", true)).get(0);
-      protocoleTypeManager.deleteByIdManager(p1);
+      protocoleTypeManager.removeObjectManager(p1);
       assertTrue((protocoleTypeManager.findByTypeLikeManager("TEST2", true)).size() == 0);
       //Suppression engrendrant une exception
       //		Boolean catched = false;
       //		try {
       //			ProtocoleType p2 = (protocoleTypeManager
       //				.findByTypeLikeManager("RECHERCHE", true)).get(0);
-      //			protocoleTypeManager.deleteByIdManager(p2);
+      //			protocoleTypeManager.removeObjectManager(p2);
       //		} catch (Exception e) {
       //			if (e.getClass().getSimpleName().equals(
       //					"ObjectUsedException")) {
@@ -260,7 +260,7 @@ public class ProtocoleTypeManagerTest extends AbstractManagerTest4
       //		assertTrue(catched);
       assertTrue((protocoleTypeManager.findByTypeLikeManager("RECHERCHE", true)).size() > 0);
       //null remove
-      protocoleTypeManager.deleteByIdManager(null);
+      protocoleTypeManager.removeObjectManager(null);
       assertTrue(protocoleTypeManager.findByOrderManager(p1.getPlateforme()).size() == 2);
    }
 

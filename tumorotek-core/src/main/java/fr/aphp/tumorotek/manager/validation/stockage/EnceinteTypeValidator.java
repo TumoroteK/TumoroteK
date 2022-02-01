@@ -68,11 +68,11 @@ public class EnceinteTypeValidator implements Validator
 
       final EnceinteType type = (EnceinteType) obj;
       //type valide
-      if(type.getType() != null){
-         if(!type.getType().matches(ValidationUtilities.MOTREGEXP)){
+      if(type.getNom() != null){
+         if(!type.getNom().matches(ValidationUtilities.MOTREGEXP)){
             errs.rejectValue("type", "enceinteType.type.illegal");
          }
-         if(type.getType().length() > 200){
+         if(type.getNom().length() > 200){
             errs.rejectValue("type", "enceinteType.type.tooLong");
          }
       }

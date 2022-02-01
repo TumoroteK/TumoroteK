@@ -35,6 +35,7 @@
  **/
 package fr.aphp.tumorotek.manager.impl.coeur.patient;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -91,7 +92,7 @@ public class PatientMedecinManagerImpl implements PatientMedecinManager
    }
 
    @Override
-   public void createOrsaveManager(final PatientMedecin medecin, final Patient patient, final Collaborateur collaborateur,
+   public void createOrUpdateObjectManager(final PatientMedecin medecin, final Patient patient, final Collaborateur collaborateur,
       final String operation){
 
       if(operation == null){
@@ -117,7 +118,7 @@ public class PatientMedecinManagerImpl implements PatientMedecinManager
          }
       }else{ //gere le modification du seul lien ordre
          if(operation.equals("modification")
-            && !medecin.getOrdre().equals(patientMedecinDao.findById(medecin.getPk()).getOrdre())){
+            && !medecin.getOrdre().equals(patientMedecinDao.findById(medecin.getPk()).orElse(new PatientMedecin()).getOrdre())){
             patientMedecinDao.save(medecin);
             log.debug("Modification objet PatientMedecin " + medecin.toString());
          }else{
@@ -128,7 +129,7 @@ public class PatientMedecinManagerImpl implements PatientMedecinManager
    }
 
    @Override
-   public void deleteByIdManager(final PatientMedecin medecin){
+   public void removeObjectManager(final PatientMedecin medecin){
       if(medecin != null){
          patientMedecinDao.deleteById(medecin.getPk());
          log.debug("Suppression objet PatientMedecin " + medecin.toString());

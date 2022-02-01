@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.manager.impl.contexte;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -86,7 +87,7 @@ public class ProtocoleManagerImpl implements ProtocoleManager
    }
 
    @Override
-   public void saveManager(final Protocole obj){
+   public void createObjectManager(final Protocole obj){
 
       final Protocole pt = obj;
 
@@ -109,7 +110,7 @@ public class ProtocoleManagerImpl implements ProtocoleManager
    }
 
    @Override
-   public void saveManager(final Protocole obj){
+   public void updateObjectManager(final Protocole obj){
       BeanValidator.validateObject(obj, new Validator[] {protocoleValidator});
       if(!findDoublonManager(obj)){
          protocoleDao.save(obj);
@@ -126,7 +127,7 @@ public class ProtocoleManagerImpl implements ProtocoleManager
    }
 
    @Override
-   public void deleteByIdManager(final Protocole obj){
+   public void removeObjectManager(final Protocole obj){
       if(obj != null){
          protocoleDao.deleteById(obj.getId());
          log.info("Suppression objet Protocole " + obj.toString());
@@ -160,7 +161,7 @@ public class ProtocoleManagerImpl implements ProtocoleManager
 
    @Override
    public Protocole findByIdManager(final Integer id){
-      return protocoleDao.findById(id);
+      return protocoleDao.findById(id).orElse(null);
    }
 
    @Override

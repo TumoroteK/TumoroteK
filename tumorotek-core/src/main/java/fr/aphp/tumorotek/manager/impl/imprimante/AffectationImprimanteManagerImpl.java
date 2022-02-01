@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.imprimante;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -102,7 +103,7 @@ public class AffectationImprimanteManagerImpl implements AffectationImprimanteMa
 
    @Override
    public AffectationImprimante findByIdManager(final AffectationImprimantePK pk){
-      return affectationImprimanteDao.findById(pk);
+      return affectationImprimanteDao.findById(pk).orElse(null);
    }
 
    @Override
@@ -159,7 +160,7 @@ public class AffectationImprimanteManagerImpl implements AffectationImprimanteMa
    }
 
    @Override
-   public void saveManager(final AffectationImprimante affectationImprimante, final Utilisateur utilisateur,
+   public void createObjectManager(final AffectationImprimante affectationImprimante, final Utilisateur utilisateur,
       final Banque banque, final Imprimante imprimante, final Modele modele){
       // validation de l'objet à créer
       validateObjectManager(utilisateur, banque, imprimante);
@@ -188,7 +189,7 @@ public class AffectationImprimanteManagerImpl implements AffectationImprimanteMa
    }
 
    @Override
-   public void deleteByIdManager(final AffectationImprimante affectationImprimante){
+   public void removeObjectManager(final AffectationImprimante affectationImprimante){
       if(affectationImprimante != null){
          affectationImprimanteDao.deleteById(affectationImprimante.getPk());
          log.info("Suppression de l'objet AffectationImprimante : " + affectationImprimante.toString());

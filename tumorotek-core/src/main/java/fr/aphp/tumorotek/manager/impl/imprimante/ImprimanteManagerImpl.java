@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.imprimante;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -95,7 +96,7 @@ public class ImprimanteManagerImpl implements ImprimanteManager
 
    @Override
    public Imprimante findByIdManager(final Integer imprimanteId){
-      return imprimanteDao.findById(imprimanteId);
+      return imprimanteDao.findById(imprimanteId).orElse(null);
    }
 
    @Override
@@ -157,7 +158,7 @@ public class ImprimanteManagerImpl implements ImprimanteManager
    }
 
    @Override
-   public void saveManager(final Imprimante imprimante, final Plateforme plateforme, final ImprimanteApi imprimanteApi){
+   public void createObjectManager(final Imprimante imprimante, final Plateforme plateforme, final ImprimanteApi imprimanteApi){
       // plateforme required
       if(plateforme != null){
          imprimante.setPlateforme(plateformeDao.save(plateforme));
@@ -190,7 +191,7 @@ public class ImprimanteManagerImpl implements ImprimanteManager
    }
 
    @Override
-   public void saveManager(final Imprimante imprimante, final Plateforme plateforme, final ImprimanteApi imprimanteApi){
+   public void updateObjectManager(final Imprimante imprimante, final Plateforme plateforme, final ImprimanteApi imprimanteApi){
       // plateforme required
       if(plateforme != null){
          imprimante.setPlateforme(plateformeDao.save(plateforme));
@@ -223,7 +224,7 @@ public class ImprimanteManagerImpl implements ImprimanteManager
    }
 
    @Override
-   public void deleteByIdManager(final Imprimante imprimante){
+   public void removeObjectManager(final Imprimante imprimante){
       if(imprimante != null){
          imprimanteDao.deleteById(imprimante.getImprimanteId());
          log.info("Suppression de l'objet Imprimante : " + imprimante.toString());

@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -56,188 +57,187 @@ import fr.aphp.tumorotek.model.systeme.Numerotation;
 
 /**
  *
- * Implémentation du manager du bean de domaine Numerotation.
- * Interface créée le 18/01/2011.
+ * Implémentation du manager du bean de domaine Numerotation. Interface créée le
+ * 18/01/2011.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public class NumerotationManagerImpl implements NumerotationManager
-{
+public class NumerotationManagerImpl implements NumerotationManager {
 
-   private final Log log = LogFactory.getLog(NumerotationManager.class);
-   /** Bean Dao. */
-   private NumerotationDao numerotationDao;
-   private BanqueDao banqueDao;
-   private EntiteDao entiteDao;
+	private final Log log = LogFactory.getLog(NumerotationManager.class);
 
-   public void setNumerotationDao(final NumerotationDao nDao){
-      this.numerotationDao = nDao;
-   }
+	private NumerotationDao numerotationDao;
+	private BanqueDao banqueDao;
+	private EntiteDao entiteDao;
 
-   public void setBanqueDao(final BanqueDao bDao){
-      this.banqueDao = bDao;
-   }
+	public void setNumerotationDao(final NumerotationDao nDao) {
+		this.numerotationDao = nDao;
+	}
 
-   public void setEntiteDao(final EntiteDao eDao){
-      this.entiteDao = eDao;
-   }
+	public void setBanqueDao(final BanqueDao bDao) {
+		this.banqueDao = bDao;
+	}
 
-   @Override
-   public Numerotation findByIdManager(final Integer numerotationId){
-      return numerotationDao.findById(numerotationId);
-   }
+	public void setEntiteDao(final EntiteDao eDao) {
+		this.entiteDao = eDao;
+	}
 
-   @Override
-   public List<Numerotation> findAllObjectsManager(){
-      return IterableUtils.toList(numerotationDao.findAll());
-   }
+	@Override
+	public Numerotation findByIdManager(final Integer numerotationId) {
+		return numerotationDao.findById(numerotationId).orElse(null);
+	}
 
-   @Override
-   public List<Numerotation> findByBanqueAndEntiteManager(final Banque banque, final Entite entite){
-      if(banque != null && entite != null){
-         return numerotationDao.findByBanqueAndEntite(banque, entite);
-      }else{
-         return new ArrayList<>();
-      }
-   }
+	@Override
+	public List<Numerotation> findAllObjectsManager() {
+		return IterableUtils.toList(numerotationDao.findAll());
+	}
 
-   @Override
-   public List<Entite> findByBanqueSelectEntiteManager(final Banque banque){
-      if(banque != null){
-         return numerotationDao.findByBanqueSelectEntite(banque);
-      }else{
-         return new ArrayList<>();
-      }
-   }
+	@Override
+	public List<Numerotation> findByBanqueAndEntiteManager(final Banque banque, final Entite entite) {
+		if (banque != null && entite != null) {
+			return numerotationDao.findByBanqueAndEntite(banque, entite);
+		} else {
+			return new ArrayList<>();
+		}
+	}
 
-   @Override
-   public List<Numerotation> findByBanquesManager(final List<Banque> banques){
-      if(banques != null && banques.size() > 0){
-         return numerotationDao.findByBanques(banques);
-      }else{
-         return new ArrayList<>();
-      }
-   }
+	@Override
+	public List<Entite> findByBanqueSelectEntiteManager(final Banque banque) {
+		if (banque != null) {
+			return numerotationDao.findByBanqueSelectEntite(banque);
+		} else {
+			return new ArrayList<>();
+		}
+	}
 
-   @Override
-   public Boolean findDoublonManager(final Numerotation numerotation){
-      if(numerotation != null){
-         if(numerotation.getNumerotationId() == null){
-            return IterableUtils.toList(numerotationDao.findAll()).contains(numerotation);
-         }else{
-            return numerotationDao.findByExcludedId(numerotation.getNumerotationId()).contains(numerotation);
-         }
-      }else{
-         return false;
-      }
-   }
+	@Override
+	public List<Numerotation> findByBanquesManager(final List<Banque> banques) {
+		if (banques != null && banques.size() > 0) {
+			return numerotationDao.findByBanques(banques);
+		} else {
+			return new ArrayList<>();
+		}
+	}
 
-   @Override
-   public String getGeneratedCodeManager(final Numerotation numerotation){
-      
-      String generatedCode = null;
-      
-      if(numerotation != null && numerotation.getCodeFormula() != null){
-         
-         final Integer currentIncrement = numerotation.getCurrentIncrement();
-         
-         if(currentIncrement != null){
+	@Override
+	public Boolean findDoublonManager(final Numerotation numerotation) {
+		if (numerotation != null) {
+			if (numerotation.getNumerotationId() == null) {
+				return IterableUtils.toList(numerotationDao.findAll()).contains(numerotation);
+			} else {
+				return numerotationDao.findByExcludedId(numerotation.getNumerotationId()).contains(numerotation);
+			}
+		} else {
+			return false;
+		}
+	}
 
-            final boolean zeroFill = Optional.ofNullable(numerotation.getZeroFill()).orElse(false);
-            
-            String format = "%d";
-            
-            if(zeroFill) {
-               format = "%0" + Optional.ofNullable(numerotation.getNbChiffres()).orElse(1) + "d";
-            }
-            
-            final String num = String.format(format, currentIncrement);
-            
-            generatedCode = numerotation.getCodeFormula().replace("[]", num);
-         }else{
-            generatedCode = numerotation.getCodeFormula();
-         }
-         
-         if(numerotation.getCodeFormula().contains(DATE_PLACEHOLDER)) {
-            
-            final String dateFormat = numerotation.getDateFormat().getFormat();
-            final String date = LocalDate.now().format(DateTimeFormatter.ofPattern(dateFormat));
-            
-            generatedCode = generatedCode.replace(DATE_PLACEHOLDER, date);
-            
-         }
-         
-      }
-      
-      return generatedCode;
-      
-   }
+	@Override
+	public String getGeneratedCodeManager(final Numerotation numerotation) {
 
-   @Override
-   public void saveManager(final Numerotation numerotation, final Banque banque, final Entite entite){
-      //Banque required
-      if(banque != null){
-         numerotation.setBanque(banqueDao.save(banque));
-      }else{
-         log.warn("Objet obligatoire Banque manquant" + " lors de la création d'une Numerotation");
-         throw new RequiredObjectIsNullException("Numerotation", "creation", "Banque");
-      }
+		String generatedCode = null;
 
-      //Entite required
-      if(entite != null){
-         numerotation.setEntite(entiteDao.save(entite));
-      }else{
-         log.warn("Objet obligatoire Entite manquant" + " lors de la création d'une Numerotation");
-         throw new RequiredObjectIsNullException("Numerotation", "creation", "Entite");
-      }
+		if (numerotation != null && numerotation.getCodeFormula() != null) {
 
-      // Test s'il y a des doublons
-      if(findDoublonManager(numerotation)){
-         log.warn("Doublon lors de la creation de l'objet Numerotation : " + numerotation.toString());
-         throw new DoublonFoundException("Numerotation", "creation");
-      }else{
+			final Integer currentIncrement = numerotation.getCurrentIncrement();
 
-         numerotationDao.save(numerotation);
+			if (currentIncrement != null) {
 
-         log.info("Enregistrement de l'objet Numerotation : " + numerotation.toString());
-      }
-   }
+				final boolean zeroFill = Optional.ofNullable(numerotation.getZeroFill()).orElse(false);
 
-   @Override
-   public void saveManager(final Numerotation numerotation, final Banque banque, final Entite entite){
-      //Banque required
-      if(banque != null){
-         numerotation.setBanque(banqueDao.save(banque));
-      }else{
-         log.warn("Objet obligatoire Banque manquant" + " lors de la modification d'une Numerotation");
-         throw new RequiredObjectIsNullException("Numerotation", "modification", "Banque");
-      }
+				String format = "%d";
 
-      //Entite required
-      if(entite != null){
-         numerotation.setEntite(entiteDao.save(entite));
-      }else{
-         log.warn("Objet obligatoire Entite manquant" + " lors de la modification d'une Numerotation");
-         throw new RequiredObjectIsNullException("Numerotation", "modification", "Entite");
-      }
+				if (zeroFill) {
+					format = "%0" + Optional.ofNullable(numerotation.getNbChiffres()).orElse(1) + "d";
+				}
 
-      // Test s'il y a des doublons
-      if(findDoublonManager(numerotation)){
-         log.warn("Doublon lors de la modification de " + "l'objet Numerotation : " + numerotation.toString());
-         throw new DoublonFoundException("Numerotation", "modification");
-      }else{
+				final String num = String.format(format, currentIncrement);
 
-         numerotationDao.save(numerotation);
+				generatedCode = numerotation.getCodeFormula().replace("[]", num);
+			} else {
+				generatedCode = numerotation.getCodeFormula();
+			}
 
-         log.info("Enregistrement de l'objet Numerotation : " + numerotation.toString());
-      }
-   }
+			if (numerotation.getCodeFormula().contains(DATE_PLACEHOLDER)) {
 
-   @Override
-   public void deleteByIdManager(final Numerotation numerotation){
-      numerotationDao.deleteById(numerotation.getNumerotationId());
-      log.info("Suppression de l'objet Numerotation : " + numerotation.toString());
-   }
+				final String dateFormat = numerotation.getDateFormat().getFormat();
+				final String date = LocalDate.now().format(DateTimeFormatter.ofPattern(dateFormat));
+
+				generatedCode = generatedCode.replace(DATE_PLACEHOLDER, date);
+
+			}
+
+		}
+
+		return generatedCode;
+
+	}
+
+	@Override
+	public void createObjectManager(final Numerotation numerotation, final Banque banque, final Entite entite) {
+		// Banque required
+		if (banque != null) {
+			numerotation.setBanque(banqueDao.save(banque));
+		} else {
+			log.warn("Objet obligatoire Banque manquant" + " lors de la création d'une Numerotation");
+			throw new RequiredObjectIsNullException("Numerotation", "creation", "Banque");
+		}
+
+		// Entite required
+		if (entite != null) {
+			numerotation.setEntite(entiteDao.save(entite));
+		} else {
+			log.warn("Objet obligatoire Entite manquant" + " lors de la création d'une Numerotation");
+			throw new RequiredObjectIsNullException("Numerotation", "creation", "Entite");
+		}
+
+		// Test s'il y a des doublons
+		if (findDoublonManager(numerotation)) {
+			log.warn("Doublon lors de la creation de l'objet Numerotation : " + numerotation.toString());
+			throw new DoublonFoundException("Numerotation", "creation");
+		} else {
+
+			numerotationDao.save(numerotation);
+
+			log.info("Enregistrement de l'objet Numerotation : " + numerotation.toString());
+		}
+	}
+
+	@Override
+	public void updateObjectManager(final Numerotation numerotation, final Banque banque, final Entite entite) {
+		// Banque required
+		if (banque != null) {
+			numerotation.setBanque(banqueDao.save(banque));
+		} else {
+			log.warn("Objet obligatoire Banque manquant" + " lors de la modification d'une Numerotation");
+			throw new RequiredObjectIsNullException("Numerotation", "modification", "Banque");
+		}
+
+		// Entite required
+		if (entite != null) {
+			numerotation.setEntite(entiteDao.save(entite));
+		} else {
+			log.warn("Objet obligatoire Entite manquant" + " lors de la modification d'une Numerotation");
+			throw new RequiredObjectIsNullException("Numerotation", "modification", "Entite");
+		}
+
+		// Test s'il y a des doublons
+		if (findDoublonManager(numerotation)) {
+			log.warn("Doublon lors de la modification de " + "l'objet Numerotation : " + numerotation.toString());
+			throw new DoublonFoundException("Numerotation", "modification");
+		} else {
+
+			numerotationDao.save(numerotation);
+
+			log.info("Enregistrement de l'objet Numerotation : " + numerotation.toString());
+		}
+	}
+
+	@Override
+	public void removeObjectManager(final Numerotation numerotation) {
+		numerotationDao.deleteById(numerotation.getNumerotationId());
+		log.info("Suppression de l'objet Numerotation : " + numerotation.toString());
+	}
 }

@@ -41,6 +41,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -88,7 +89,7 @@ public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
 
    @Override
    public ObjetNonConforme findByIdManager(final Integer objetNonConformeId){
-      return objetNonConformeDao.findById(objetNonConformeId);
+      return objetNonConformeDao.findById(objetNonConformeId).orElse(null);
    }
 
    @Override
@@ -153,7 +154,7 @@ public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
    }
 
    @Override
-   public void createUpdateOrdeleteByIdManager(final Object obj, final NonConformite nonConformite, final String type){
+   public void createUpdateOrremoveObjectManager(final Object obj, final NonConformite nonConformite, final String type){
       if(obj != null && type != null){
          // on va tester si une non conformité est déjà
          // définie pour cet objet
@@ -224,7 +225,7 @@ public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
             //			} else {
             //				// suppression de tous les objs non conformes
             //				for (int i = 0; i < list.size(); i++) {
-            //					deleteByIdManager(list.get(i));
+            //					removeObjectManager(list.get(i));
             //				}
          }
       }
@@ -286,7 +287,7 @@ public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
                   jdbcSuite.getPstmtNc().setInt(1, jdbcSuite.getMaxObjetNonConformeId());
                   jdbcSuite.getPstmtNc().setInt(2, objId);
                   jdbcSuite.getPstmtNc().setInt(3, entiteId);
-                  jdbcSuite.getPstmtNc().setInt(4, nc.getNonConformiteId());
+                  jdbcSuite.getPstmtNc().setInt(4, nc.getId());
                   jdbcSuite.getPstmtNc().addBatch();
                }
                // pstmtNc.executeBatch();
@@ -336,7 +337,7 @@ public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
                // suppression
                for(int i = 0; i < list.size(); i++){
                   if(!ncfs.contains(list.get(i).getNonConformite())){
-                     deleteByIdManager(list.get(i));
+                     removeObjectManager(list.get(i));
                   }else{
                      ncfs.remove(list.get(i).getNonConformite());
                   }
@@ -345,19 +346,19 @@ public class ObjetNonConformeManagerImpl implements ObjetNonConformeManager
             }
             // création des nouvelles non conformités
             for(final NonConformite nc : ncfs){
-               createUpdateOrdeleteByIdManager(obj, nc, type);
+               createUpdateOrremoveObjectManager(obj, nc, type);
             }
          }else{
             // suppression de tous les objs non conformes
             for(int i = 0; i < list.size(); i++){
-               deleteByIdManager(list.get(i));
+               removeObjectManager(list.get(i));
             }
          }
       }
    }
 
    @Override
-   public void deleteByIdManager(final ObjetNonConforme objetNonConforme){
+   public void removeObjectManager(final ObjetNonConforme objetNonConforme){
       if(objetNonConforme != null){
          objetNonConformeDao.deleteById(objetNonConforme.getObjetNonConformeId());
          log.info("Suppression de l'objet ObjetNonConforme : " + objetNonConforme.toString());

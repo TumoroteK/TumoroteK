@@ -381,15 +381,15 @@ public class ChampImprimeManagerTest extends AbstractManagerTest4
       assertTrue(ciTest2.getOrdre() == 10);
 
       // suppression du profilUtilisateur ajouté
-      champImprimeManager.deleteByIdManager(ciTest);
+      champImprimeManager.removeObjectManager(ciTest);
       assertTrue(champImprimeManager.findAllObjectsManager().size() == 4);
 
       // suppression d'un profilUtilisateur null
-      champImprimeManager.deleteByIdManager(null);
+      champImprimeManager.removeObjectManager(null);
       assertTrue(champImprimeManager.findAllObjectsManager().size() == 4);
 
       // suppression d'un profilUtilisateur inexistant
-      champImprimeManager.deleteByIdManager(ciTest);
+      champImprimeManager.removeObjectManager(ciTest);
       assertTrue(champImprimeManager.findAllObjectsManager().size() == 4);
    }
 

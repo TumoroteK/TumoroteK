@@ -146,23 +146,23 @@
         </class>
 		<class>fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur
         </class>
-		<class>fr.aphp.tumorotek.model.cession.CederObjet
+		<class>fr.aphp.tumorotek.model.coeur.cession.CederObjet
         </class>
-		<class>fr.aphp.tumorotek.model.cession.Cession
+		<class>fr.aphp.tumorotek.model.coeur.cession.Cession
         </class>
-		<class>fr.aphp.tumorotek.model.cession.CessionExamen
+		<class>fr.aphp.tumorotek.model.coeur.cession.CessionExamen
         </class>
-		<class>fr.aphp.tumorotek.model.cession.CessionStatut
+		<class>fr.aphp.tumorotek.model.coeur.cession.CessionStatut
         </class>
-		<class>fr.aphp.tumorotek.model.cession.CessionType
+		<class>fr.aphp.tumorotek.model.coeur.cession.CessionType
         </class>
-		<class>fr.aphp.tumorotek.model.cession.DestructionMotif
+		<class>fr.aphp.tumorotek.model.coeur.cession.DestructionMotif
         </class>
-		<class>fr.aphp.tumorotek.model.cession.Contrat
+		<class>fr.aphp.tumorotek.model.coeur.cession.Contrat
         </class>
-		<class>fr.aphp.tumorotek.model.cession.ProtocoleType
+		<class>fr.aphp.tumorotek.model.coeur.cession.ProtocoleType
         </class>
-		<class>fr.aphp.tumorotek.model.cession.Retour
+		<class>fr.aphp.tumorotek.model.coeur.cession.Retour
         </class>
 		<class>fr.aphp.tumorotek.model.stockage.Conteneur
         </class>
@@ -258,7 +258,7 @@
 		<!-- <class>fr.aphp.tumorotek.model.ui.UiCompValue</class> -->
 		<class>fr.aphp.tumorotek.model.coeur.echantillon.delegate.AbstractEchantillonDelegate</class>
 		<class>fr.aphp.tumorotek.model.coeur.prodderive.delegate.AbstractProdDeriveDelegate</class>
-		<class>fr.aphp.tumorotek.model.cession.delegate.AbstractCessionDelegate</class>
+		<class>fr.aphp.tumorotek.model.coeur.cession.delegate.AbstractCessionDelegate</class>
 		<class>fr.aphp.tumorotek.model.coeur.patient.delegate.AbstractPatientDelegate</class>
 		<class>fr.aphp.tumorotek.model.io.export.ChampDelegue</class>
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>

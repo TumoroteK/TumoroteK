@@ -154,7 +154,7 @@ public class SpecialiteManagerTest extends AbstractManagerTest4
    public void testCRUD(){
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    private void saveManagerTest(){
@@ -225,16 +225,16 @@ public class SpecialiteManagerTest extends AbstractManagerTest4
       }
    }
 
-   private void deleteByIdManagerTest(){
+   private void removeObjectManagerTest(){
       //Suppression de l'enregistrement precedemment insere
       final Specialite s1 = specialiteManager.findByIdManager(6);
-      specialiteManager.deleteByIdManager(s1);
+      specialiteManager.removeObjectManager(s1);
       assertTrue(specialiteManager.findAllObjectsManager().size() == 5);
       //Suppression engrendrant une exception
       //		Boolean catched = false;
       //		try {
       //			Specialite s2 = specialiteManager.findByIdManager(1);
-      //			specialiteManager.deleteByIdManager(s2);
+      //			specialiteManager.removeObjectManager(s2);
       //		} catch (Exception e) {
       //			if (e.getClass().getSimpleName().equals(
       //					"ObjectUsedException")) {
@@ -244,7 +244,7 @@ public class SpecialiteManagerTest extends AbstractManagerTest4
       //		assertTrue(catched);
       assertTrue(specialiteManager.findAllObjectsManager().size() == 5);
       //null remove
-      specialiteManager.deleteByIdManager(null);
+      specialiteManager.removeObjectManager(null);
       assertTrue(specialiteManager.findAllObjectsManager().size() == 5);
    }
 

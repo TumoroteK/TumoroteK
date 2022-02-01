@@ -97,7 +97,7 @@ public interface CoordonneeManager
     * @param collaborateurs Liste de collaborateurs associés à la
     * coordonnée.
     */
-   void saveManager(Coordonnee coordonnee, List<Collaborateur> collaborateurs);
+   void createObjectManager(Coordonnee coordonnee, List<Collaborateur> collaborateurs);
 
    /**
     * Sauvegarde les modifications apportées à un objet persistant.
@@ -107,13 +107,13 @@ public interface CoordonneeManager
     * @param doValidation Si true, exécute la validation de la
     * coordonnée.
     */
-   void saveManager(Coordonnee coordonnee, List<Collaborateur> collaborateurs, boolean doValidation);
+   void updateObjectManager(Coordonnee coordonnee, List<Collaborateur> collaborateurs, boolean doValidation);
 
    /**
     * Supprime une Coordonnee de la base de données.
     * @param coordonnee Coordonnee à supprimer de la base de données.
     */
-   void deleteByIdManager(Coordonnee coordonnee);
+   void removeObjectManager(Coordonnee coordonnee);
 
    /**
     * Test si la coordonnée est utilisée par d'autres objets que le

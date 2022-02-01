@@ -295,11 +295,11 @@ public class TransformationManagerTest extends AbstractManagerTest4
       // Suppression
       final Utilisateur u = utilisateurDao.findById(1);
       final Transformation transfo5 = transformationManager.findByIdManager(id);
-      transformationManager.deleteByIdManager(transfo5, null, u);
+      transformationManager.removeObjectManager(transfo5, null, u);
       assertNull(transformationManager.findByIdManager(id));
       final Transformation transfo6 = transformationManager.findByIdManager(1);
       try{
-         prodDeriveManager.deleteByIdCascadeManager(transfo6, null, u, null);
+         prodDeriveManager.removeObjectCascadeManager(transfo6, null, u, null);
       }catch(final ObjectUsedException oe){
          assertTrue(oe.getKey().equals("derive.cascade.isCessed"));
          assertFalse(oe.isCascadable());

@@ -1,0 +1,197 @@
+/**
+ * Copyright ou © ou Copr. Ministère de la santé, FRANCE (01/01/2011)
+ * dsi-projet.tk@aphp.fr
+ *
+ * Ce logiciel est un programme informatique servant à la gestion de
+ * l'activité de biobanques.
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le
+ * CNRS et l'INRIA sur le site "http://www.cecill.info".
+ * En contrepartie de l'accessibilité au code source et des droits de
+ * copie, de modification et de redistribution accordés par cette
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée.
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les
+ * risques associés au chargement,  à l'utilisation,  à la modification
+ * et/ou au  développement et à la reproduction du logiciel par
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut
+ * le rendre complexe à manipuler et qui le réserve donc à des
+ * développeurs et des professionnels  avertis possédant  des
+ * connaissances  informatiques approfondies.  Les utilisateurs sont
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser
+ * et l'exploiter dans les mêmes conditions de sécurité.
+ *
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous
+ * avez pris connaissance de la licence CeCILL, et que vous en avez
+ * accepté les termes.
+ **/
+package fr.aphp.tumorotek.manager.code;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
+
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import fr.aphp.tumorotek.dao.code.CimMasterDao;
+import fr.aphp.tumorotek.model.code.Adicap;
+import fr.aphp.tumorotek.model.code.CimMaster;
+
+/**
+ *
+ * Interface pour le Manager du bean de domaine CimMaster. Interface créée le
+ * 19/05/10.
+ *
+ * @author Mathieu BARTHELEMY
+ * @version 2.0
+ *
+ */
+@Service
+public class CimMasterManager2 implements CodeCommonManager<CimMaster> {
+
+	private final Log log = LogFactory.getLog(CimMasterManager2.class);
+
+	@Autowired
+	private CimMasterDao cimMasterDao;
+
+	@Autowired
+	private EntityManagerFactory entityManagerFactory;
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<CimMaster> findAllObjectsManager() {
+		return IterableUtils.toList(cimMasterDao.findAll());
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<CimMaster> findByCodeLikeManager(String code, final boolean exactMatch) {
+		if (!exactMatch) {
+			code = "%" + code + "%";
+		}
+		log.debug("Recherche Cim par code: " + code + " exactMatch " + String.valueOf(exactMatch));
+		return cimMasterDao.findByCodeLike(code);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<CimMaster> findByLibelleLikeManager(String libelle, final boolean exactMatch) {
+		if (!exactMatch) {
+			libelle = "%" + libelle + "%";
+		}
+		log.debug("Recherche Cim par libelle: " + libelle + " exactMatch " + String.valueOf(exactMatch));
+		return cimMasterDao.findByLibelleLike(libelle);
+	}
+
+	/**
+	 * Recherche les enfants du code Cim passé en paramètre. Utilise le membre
+	 * 'level' pour attaquer le bon membre 'id' et récupérer les codes de level sup
+	 * + 1. Si parent = null, renvoie les codes de niveau 1.
+	 * 
+	 * @param code Cim pour lequel on recherche les enfants.
+	 * @return une liste de codes CimMaster.
+	 */
+	@Transactional(readOnly = true)
+	public List<CimMaster> findByCimParentManager(final CimMaster parent) {
+				
+		List<CimMaster> cims = new ArrayList<>();
+		if (parent != null) {
+			if (parent.getLevel() < 7) { // ->| id7 ds codif
+				try {
+					final String idColname = "id" + parent.getLevel();
+					Integer levelId;
+
+					levelId = (Integer) PropertyUtils.getSimpleProperty(parent, idColname);
+					final StringBuffer sb = new StringBuffer();
+					sb.append("SELECT c FROM CimMaster c WHERE c.");
+					sb.append(idColname);
+					sb.append(" = ");
+					sb.append(levelId);
+					sb.append(" AND c.level = ");
+					sb.append(parent.getLevel() + 1);
+
+					final EntityManager em = entityManagerFactory.createEntityManager();
+					final TypedQuery<CimMaster> query = em.createQuery(sb.toString(), CimMaster.class);
+					cims = query.getResultList();
+				} catch (final Exception e) {
+					log.error("level cimMaster introuvable par PropertyUtils");
+				}
+			}
+		} else { // renvoie les codes de niveau 1
+			cims = cimMasterDao.findByLevel(1);
+		}
+
+		return cims;
+	}
+
+	/**
+	 * Recherche les codes ADICAP topo issus du transcodage du code Cim passé en
+	 * paramètre.
+	 * 
+	 * @param code cim qui sera transcodé
+	 * @return Liste de codes Adicap
+	 */
+	@Transactional(readOnly = true)
+	public Set<Adicap> getAdicapsManager(final CimMaster cim) {
+		Set<Adicap> adicaps = new HashSet<>();
+		final CimMaster cimM = cimMasterDao.save(cim);
+		adicaps = cimM.getAdicaps();
+		adicaps.size(); // operation empechant LazyInitialisationException
+		return adicaps;
+	}
+
+	/**
+	 * Renvoie les codes CIM contenu dans l'arborescence dont la racine est le code
+	 * passé en paramètre.
+	 * 
+	 * @param code CIM
+	 * @return liste codes 'enfants'.
+	 */
+	@Transactional(readOnly = true)
+	public List<CimMaster> findChildrenCodesManager(final CimMaster code) {
+		final List<CimMaster> codes = new ArrayList<>();
+		if (code != null) {
+			codes.add(code);
+			findRecursiveChildren(code, codes);
+		}
+		return codes;
+	}
+
+	private void findRecursiveChildren(final CimMaster parent, final List<CimMaster> codes) {
+		final List<CimMaster> children = findByCimParentManager(parent);
+		codes.addAll(children);
+		for (int i = 0; i < children.size(); i++) {
+			findRecursiveChildren(children.get(i), codes);
+		}
+	}
+
+	/**
+	 * Renvoie le code CIM correspondant à l'ID passé en paramètre.
+	 * 
+	 * @param codeId
+	 * @return code CIM
+	 */
+	@Transactional(readOnly = true)
+	public CimMaster findByIdManager(final Integer codeId) {
+		return cimMasterDao.findById(codeId).orElse(null);
+	}
+}

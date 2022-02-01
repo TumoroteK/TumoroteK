@@ -35,22 +35,8 @@
  **/
 package fr.aphp.tumorotek.manager.code;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
-
-import org.apache.commons.collections4.IterableUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import fr.aphp.tumorotek.dao.code.TableCodageDao;
-import fr.aphp.tumorotek.model.code.Adicap;
-import fr.aphp.tumorotek.model.code.CimMaster;
-import fr.aphp.tumorotek.model.code.CimoMorpho;
 import fr.aphp.tumorotek.model.code.CodeCommon;
-import fr.aphp.tumorotek.model.code.CodeUtilisateur;
 import fr.aphp.tumorotek.model.code.TableCodage;
 import fr.aphp.tumorotek.model.contexte.Banque;
 
@@ -63,31 +49,14 @@ import fr.aphp.tumorotek.model.contexte.Banque;
  * @version 2.3
  *
  */
-@Service
-public class TableCodageManager {
-	@Autowired
-	private TableCodageDao tableCodageDao;
-
-	@Autowired
-	private AdicapManager adicapManager;
-
-	@Autowired
-	private CimMasterManager cimMasterManager;
-
-	@Autowired
-	private CimoMorphoManager cimoMorphoManager;
-
-	@Autowired
-	private CodeUtilisateurManager codeUtilisateurManager;
-
+public interface TableCodageManager {
+	
 	/**
 	 * Recherche toutes les instances de TableCodage.
 	 * 
 	 * @return List contenant les tables de codage.
 	 */
-	public List<TableCodage> findAllObjectsManager() {
-		return IterableUtils.toList(tableCodageDao.findAll());
-	}
+	public List<TableCodage> findAllObjectsManager();
 
 	/**
 	 * Recherche la table de codage dont le nom est like celui passé en paramètre.
@@ -95,9 +64,7 @@ public class TableCodageManager {
 	 * @param nom Nom pour lequel on recherche une table.
 	 * @return List contenant les tables de codage.
 	 */
-	public List<TableCodage> findByNomManager(final String nom) {
-		return tableCodageDao.findByNom(nom);
-	}
+	public List<TableCodage> findByNomManager(final String nom);
 
 	/**
 	 * Trouve tous les codes au travers des tables de transcodage pour le code et sa
@@ -109,46 +76,7 @@ public class TableCodageManager {
 	 * @return
 	 */
 	public List<CodeCommon> transcodeManager(final CodeCommon code, final List<TableCodage> tables,
-			final List<Banque> banks) {
-		final List<CodeCommon> resTrans = new ArrayList<>();
-		if (code != null && tables != null) {
-
-			final boolean containsAdicap = tables.contains(tableCodageDao.findByNom("ADICAP").get(0));
-			final boolean containsCim = tables.contains(tableCodageDao.findByNom("CIM_MASTER").get(0));
-			final boolean containsCimo = tables.contains(tableCodageDao.findByNom("CIMO_MORPHO").get(0));
-			final boolean containsUser = tables.contains(tableCodageDao.findByNom("UTILISATEUR").get(0));
-
-			if (code instanceof Adicap) {
-				if (containsCim) {
-					resTrans.addAll(adicapManager.getCimMastersManager((Adicap) code));
-				}
-				if (containsCimo) {
-					resTrans.addAll(adicapManager.getCimoMorphosManager((Adicap) code));
-				}
-				if (containsUser) {
-					resTrans.addAll(codeUtilisateurManager.findByTranscodageManager(code, banks));
-				}
-			} else if (code instanceof CimMaster) {
-				if (containsAdicap) {
-					resTrans.addAll(cimMasterManager.getAdicapsManager((CimMaster) code));
-				}
-				if (containsUser) {
-					resTrans.addAll(codeUtilisateurManager.findByTranscodageManager(code, banks));
-				}
-			} else if (code instanceof CimoMorpho) {
-				if (containsAdicap) {
-					resTrans.addAll(cimoMorphoManager.getAdicapsManager((CimoMorpho) code));
-				}
-				if (containsUser) {
-					resTrans.addAll(codeUtilisateurManager.findByTranscodageManager(code, banks));
-				}
-			} else if (code instanceof CodeUtilisateur) {
-				resTrans.addAll(codeUtilisateurManager.getTranscodesManager((CodeUtilisateur) code, tables));
-			}
-		}
-		return resTrans;
-	}
-
+			final List<Banque> banks);
 	/**
 	 * Trouve tous les codes au travers des tables de transcodage pour la chaine de
 	 * caractere passées en paramètres. Trouve pour chaque table le code dont le
@@ -162,47 +90,7 @@ public class TableCodageManager {
 	 * @return
 	 */
 	public List<CodeCommon> findCodesAndTranscodesFromStringManager(final String codeorLib,
-			final List<TableCodage> tables, final List<Banque> banks, final boolean exactMatch) {
-
-		final Set<CodeCommon> codes = new LinkedHashSet<>();
-
-		final List<CodeCommon> res = new ArrayList<>();
-		final List<CodeCommon> trans = new ArrayList<>();
-		if (tables != null) {
-			for (int i = 0; i < tables.size(); i++) {
-
-				res.clear();
-				trans.clear();
-
-				if ("ADICAP".equals(tables.get(i).getNom())) {
-					res.addAll(adicapManager.findByCodeLikeManager(codeorLib, exactMatch));
-					res.addAll(adicapManager.findByLibelleLikeManager(codeorLib, exactMatch));
-				} else if ("CIM_MASTER".equals(tables.get(i).getNom())) {
-					res.addAll(cimMasterManager.findByCodeLikeManager(codeorLib, exactMatch));
-					res.addAll(cimMasterManager.findByLibelleLikeManager(codeorLib, exactMatch));
-				} else if ("CIMO_MORPHO".equals(tables.get(i).getNom())) {
-					res.addAll(cimoMorphoManager.findByCodeLikeManager(codeorLib, exactMatch));
-					res.addAll(cimoMorphoManager.findByLibelleLikeManager(codeorLib, exactMatch));
-				} else if ("UTILISATEUR".equals(tables.get(i).getNom())) {
-					res.addAll(codeUtilisateurManager.findByCodeLikeManager(codeorLib, exactMatch, banks));
-					res.addAll(codeUtilisateurManager.findByLibelleLikeManager(codeorLib, exactMatch, banks));
-				}
-
-				// cherche transcodes dans autre tables
-				final Iterator<CodeCommon> resIt = res.iterator();
-				CodeCommon next;
-				while (resIt.hasNext()) {
-					next = resIt.next();
-					trans.addAll(transcodeManager(next, tables, banks));
-				}
-
-				codes.addAll(res);
-				codes.addAll(trans);
-			}
-		}
-
-		return new ArrayList<>(codes);
-	}
+			final List<TableCodage> tables, final List<Banque> banks, final boolean exactMatch);
 
 	/**
 	 * Transforme une liste de CodeCommon en la liste de codes équivalente.
@@ -210,33 +98,12 @@ public class TableCodageManager {
 	 * @param codes
 	 * @return liste de codes String
 	 */
-	public List<String> getListCodesFromCodeCommon(final List<CodeCommon> codes) {
-		final List<String> codesStr = new ArrayList<>();
-		if (codes != null) {
-			for (int i = 0; i < codes.size(); i++) {
-				if (codes.get(i).getCode() != null) {
-					codesStr.add(codes.get(i).getCode());
-				}
-			}
-		}
-		return codesStr;
-	}
-
+	public List<String> getListCodesFromCodeCommon(final List<CodeCommon> codes);
 	/**
 	 * Transforme une liste de CodeCommon en la liste de libelles équivalente.
 	 * 
 	 * @param codes
 	 * @return liste de libelles String
 	 */
-	public List<String> getListLibellesFromCodeCommon(final List<CodeCommon> codes) {
-		final List<String> libellesStr = new ArrayList<>();
-		if (codes != null) {
-			for (int i = 0; i < codes.size(); i++) {
-				if (codes.get(i).getLibelle() != null) {
-					libellesStr.add(codes.get(i).getLibelle());
-				}
-			}
-		}
-		return libellesStr;
-	}
+	public List<String> getListLibellesFromCodeCommon(final List<CodeCommon> codes);
 }

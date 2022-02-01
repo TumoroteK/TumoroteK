@@ -147,7 +147,7 @@ public interface ServiceManager
     * @param collaborateurs Collaborateurs associés au service.
     * @param cascadeArchive Si true, cascade l'archivage sur les collabs.
     */
-   void saveManager(Service service, Coordonnee coordonnee, Etablissement etablissement,
+   void createObjectManager(Service service, Coordonnee coordonnee, Etablissement etablissement,
       List<Collaborateur> collaborateurs, Utilisateur utilisateur, boolean cascadeArchive);
 
    /**
@@ -160,7 +160,7 @@ public interface ServiceManager
     * @param doValidation Si false, ne fait pas la validation des
     * champs du collaborateur.
     */
-   void saveManager(Service service, Coordonnee coordonnee, Etablissement etablissement,
+   void updateObjectManager(Service service, Coordonnee coordonnee, Etablissement etablissement,
       List<Collaborateur> collaborateurs, Utilisateur utilisateur, boolean cascadeArchive, boolean doValidation);
 
    /**
@@ -190,7 +190,7 @@ public interface ServiceManager
     * @throws ObjectReferencedException si service est référencé par des
     * objets.
     */
-   void deleteByIdManager(Service service, String comments, Utilisateur user);
+   void removeObjectManager(Service service, String comments, Utilisateur user);
 
    /**
     * Supprime un objet de la base de données et en cascade tous les objets 
@@ -200,7 +200,7 @@ public interface ServiceManager
     * @param comments commentaires liés à la suppression
     * @param Utilisateur réalisant la suppression.
     */
-   void deleteByIdCascadeManager(Service srv, String comments, Utilisateur user);
+   void removeObjectCascadeManager(Service srv, String comments, Utilisateur user);
 
    /**
     * Fusionne deux Services enregistrés dans le système.

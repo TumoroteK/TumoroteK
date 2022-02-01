@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.coeur.prodderive;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -108,7 +109,7 @@ public class ProdQualiteManagerImpl implements ProdQualiteManager
     */
    @Override
    public ProdQualite findByIdManager(final Integer prodQualiteId){
-      return prodQualiteDao.findById(prodQualiteId);
+      return prodQualiteDao.findById(prodQualiteId).orElse(null);
    }
 
    //	/**
@@ -162,7 +163,7 @@ public class ProdQualiteManagerImpl implements ProdQualiteManager
    }
 
    @Override
-   public void saveManager(final ProdQualite obj){
+   public void createObjectManager(final ProdQualite obj){
       final ProdQualite qualite = obj;
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
@@ -181,7 +182,7 @@ public class ProdQualiteManagerImpl implements ProdQualiteManager
    }
 
    @Override
-   public void saveManager(final ProdQualite obj){
+   public void updateObjectManager(final ProdQualite obj){
       final ProdQualite qualite = obj;
       if(findDoublonManager(qualite)){
          log.warn("Doublon lors de la modification de l'objet " + "ProdQualite : " + qualite.toString());
@@ -193,7 +194,7 @@ public class ProdQualiteManagerImpl implements ProdQualiteManager
    }
 
    @Override
-   public void deleteByIdManager(final ProdQualite obj){
+   public void removeObjectManager(final ProdQualite obj){
       final ProdQualite qualite = obj;
       prodQualiteDao.deleteById(qualite.getId());
       log.info("Suppression de l'objet ProdQualite : " + qualite.toString());

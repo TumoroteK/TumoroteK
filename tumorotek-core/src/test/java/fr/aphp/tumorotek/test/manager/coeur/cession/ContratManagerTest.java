@@ -244,7 +244,7 @@ public class ContratManagerTest extends AbstractManagerTest4
    public void testCrud() throws ParseException{
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    /**
@@ -346,8 +346,8 @@ public class ContratManagerTest extends AbstractManagerTest4
 
       // Suppression
       final Contrat cToRemove = contratManager.findByIdManager(id);
-      contratManager.deleteByIdManager(cToRemove, null, u);
-      contratManager.deleteByIdManager(contratTest, null, u);
+      contratManager.removeObjectManager(cToRemove, null, u);
+      contratManager.removeObjectManager(contratTest, null, u);
       assertTrue(contratManager.findAllObjectsManager().size() == 4);
       assertTrue(getOperationManager().findByObjectManager(cToRemove).size() == 0);
       assertTrue(getOperationManager().findByObjectManager(contratTest).size() == 0);
@@ -460,7 +460,7 @@ public class ContratManagerTest extends AbstractManagerTest4
       assertTrue(contratTest.getMontant().equals(montant));
 
       // Suppression
-      contratManager.deleteByIdManager(contratTest, null, u);
+      contratManager.removeObjectManager(contratTest, null, u);
       assertTrue(contratManager.findAllObjectsManager().size() == 4);
       assertTrue(getOperationManager().findByObjectManager(contratTest).size() == 0);
 
@@ -470,19 +470,19 @@ public class ContratManagerTest extends AbstractManagerTest4
    }
 
    /**
-    * Teste la methode deleteByIdManager. 
+    * Teste la methode removeObjectManager. 
     */
-   private void deleteByIdManagerTest(){
+   private void removeObjectManagerTest(){
       final Utilisateur u = utilisateurDao.findById(1);
       // test de la suppression d'un objet null
-      contratManager.deleteByIdManager(null, null, null);
+      contratManager.removeObjectManager(null, null, null);
       assertTrue(contratManager.findAllObjectsManager().size() == 4);
 
       // test de la suppression d'un objet utilisé
       final Contrat contrat = contratManager.findByIdManager(1);
       boolean catched = false;
       try{
-         contratManager.deleteByIdManager(contrat, null, u);
+         contratManager.removeObjectManager(contrat, null, u);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ObjectUsedException")){
             catched = true;

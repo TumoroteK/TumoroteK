@@ -38,6 +38,8 @@ package fr.aphp.tumorotek.manager.impl.interfacage;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
+
 import fr.aphp.tumorotek.dao.interfacage.RecepteurDao;
 import fr.aphp.tumorotek.manager.interfacage.RecepteurManager;
 import fr.aphp.tumorotek.model.interfacage.Recepteur;
@@ -62,7 +64,7 @@ public class RecepteurManagerImpl implements RecepteurManager
 
    @Override
    public Recepteur findByIdManager(final Integer rId){
-      return recepteurDao.findById(rId);
+      return recepteurDao.findById(rId).orElse(null);
    }
 
    @Override

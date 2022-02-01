@@ -204,26 +204,26 @@ public class CodeDossierManagerImpl implements CodeDossierManager
    }
 
    @Override
-   public void deleteByIdManager(final CodeDossier dos){
+   public void removeObjectManager(final CodeDossier dos){
       if(dos != null){
 
          // supprime les codes
          if(!dos.getCodeSelect()){
             final Iterator<CodeUtilisateur> it = codeUtilisateurManager.findByCodeDossierManager(dos).iterator();
             while(it.hasNext()){
-               codeUtilisateurManager.deleteByIdManager(it.next());
+               codeUtilisateurManager.removeObjectManager(it.next());
             }
          }else{
             final Iterator<CodeSelect> it = codeSelectManager.findByCodeDossierManager(dos).iterator();
             while(it.hasNext()){
-               codeSelectManager.deleteByIdManager(it.next());
+               codeSelectManager.removeObjectManager(it.next());
             }
          }
 
          // supprime les sous-dossiers
          final Iterator<CodeDossier> itDos = findByCodeDossierParentManager(dos).iterator();
          while(itDos.hasNext()){
-            deleteByIdManager(itDos.next());
+            removeObjectManager(itDos.next());
          }
 
          codeDossierDao.deleteById(dos.getCodeDossierId());

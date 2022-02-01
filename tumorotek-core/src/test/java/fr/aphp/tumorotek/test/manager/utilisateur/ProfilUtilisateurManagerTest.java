@@ -478,15 +478,15 @@ public class ProfilUtilisateurManagerTest extends AbstractManagerTest4
 		assertTrue(puTest.getBanque().equals(b1));
 
 		// suppression du profilUtilisateur ajouté
-		profilUtilisateurManager.deleteByIdManager(puTest);
+		profilUtilisateurManager.removeObjectManager(puTest);
 		assertTrue(profilUtilisateurManager.findAllObjectsManager().size() == 8);
 
 		// suppression d'un profilUtilisateur null
-		profilUtilisateurManager.deleteByIdManager(null);
+		profilUtilisateurManager.removeObjectManager(null);
 		assertTrue(profilUtilisateurManager.findAllObjectsManager().size() == 8);
 
 		// suppression d'un profilUtilisateur inexistant
-		profilUtilisateurManager.deleteByIdManager(puTest);
+		profilUtilisateurManager.removeObjectManager(puTest);
 		assertTrue(profilUtilisateurManager.findAllObjectsManager().size() == 8);
 	}
 

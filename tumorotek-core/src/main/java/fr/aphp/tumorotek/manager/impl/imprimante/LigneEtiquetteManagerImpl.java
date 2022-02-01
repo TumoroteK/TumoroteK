@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.imprimante;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -82,7 +83,7 @@ public class LigneEtiquetteManagerImpl implements LigneEtiquetteManager
 
    @Override
    public LigneEtiquette findByIdManager(final Integer ligneEtiquetteId){
-      return ligneEtiquetteDao.findById(ligneEtiquetteId);
+      return ligneEtiquetteDao.findById(ligneEtiquetteId).orElse(null);
    }
 
    @Override
@@ -122,7 +123,7 @@ public class LigneEtiquetteManagerImpl implements LigneEtiquetteManager
    }
 
    @Override
-   public void saveManager(final LigneEtiquette ligneEtiquette, final Modele modele,
+   public void createObjectManager(final LigneEtiquette ligneEtiquette, final Modele modele,
       final List<ChampLigneEtiquette> champLigneEtiquettes){
       // validation de l'objet
       validateObjectManager(ligneEtiquette, modele, champLigneEtiquettes, "creation");
@@ -137,7 +138,7 @@ public class LigneEtiquetteManagerImpl implements LigneEtiquetteManager
    }
 
    @Override
-   public void saveManager(final LigneEtiquette ligneEtiquette, final Modele modele,
+   public void updateObjectManager(final LigneEtiquette ligneEtiquette, final Modele modele,
       final List<ChampLigneEtiquette> champLigneEtiquettesToCreate, final List<ChampLigneEtiquette> champLigneEtiquettesToremove){
       // validation de l'objet
       validateObjectManager(ligneEtiquette, modele, champLigneEtiquettesToCreate, "modification");
@@ -152,12 +153,12 @@ public class LigneEtiquetteManagerImpl implements LigneEtiquetteManager
    }
 
    @Override
-   public void deleteByIdManager(final LigneEtiquette ligneEtiquette){
+   public void removeObjectManager(final LigneEtiquette ligneEtiquette){
       if(ligneEtiquette != null){
          // suppression des champs
          final List<ChampLigneEtiquette> champs = champLigneEtiquetteManager.findByLigneEtiquetteManager(ligneEtiquette);
          for(int i = 0; i < champs.size(); i++){
-            champLigneEtiquetteManager.deleteByIdManager(champs.get(i));
+            champLigneEtiquetteManager.removeObjectManager(champs.get(i));
          }
 
          ligneEtiquetteDao.deleteById(ligneEtiquette.getLigneEtiquetteId());
@@ -181,7 +182,7 @@ public class LigneEtiquetteManagerImpl implements LigneEtiquetteManager
       if(champLigneEtiquettesToremove != null){
          // suppression des colonnes
          for(int i = 0; i < champLigneEtiquettesToremove.size(); i++){
-            champLigneEtiquetteManager.deleteByIdManager(champLigneEtiquettesToremove.get(i));
+            champLigneEtiquetteManager.removeObjectManager(champLigneEtiquettesToremove.get(i));
          }
       }
 
@@ -189,10 +190,10 @@ public class LigneEtiquetteManagerImpl implements LigneEtiquetteManager
          // ajout ou modif des champs
          for(int i = 0; i < champLigneEtiquettesToCreate.size(); i++){
             if(champLigneEtiquettesToCreate.get(i).getChampLigneEtiquetteId() == null){
-               champLigneEtiquetteManager.saveManager(champLigneEtiquettesToCreate.get(i), ligneEtiquette,
+               champLigneEtiquetteManager.createObjectManager(champLigneEtiquettesToCreate.get(i), ligneEtiquette,
                   champLigneEtiquettesToCreate.get(i).getEntite(), champLigneEtiquettesToCreate.get(i).getChamp());
             }else{
-               champLigneEtiquetteManager.saveManager(champLigneEtiquettesToCreate.get(i), ligneEtiquette,
+               champLigneEtiquetteManager.updateObjectManager(champLigneEtiquettesToCreate.get(i), ligneEtiquette,
                   champLigneEtiquettesToCreate.get(i).getEntite(), champLigneEtiquettesToCreate.get(i).getChamp());
             }
          }

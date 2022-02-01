@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -152,11 +153,11 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
 
    @Override
    public TableAnnotation findByIdManager(final Integer id){
-      return tableAnnotationDao.findById(id);
+      return tableAnnotationDao.findById(id).orElse(null);
    }
 
    @Override
-   public void createOrsaveManager(final TableAnnotation table, final Entite entite, final Catalogue catalogue,
+   public void createOrUpdateObjectManager(final TableAnnotation table, final Entite entite, final Catalogue catalogue,
       final List<ChampAnnotation> champs, final List<Banque> banques, final Banque current, final Utilisateur utilisateur,
       final String operation, final String baseDir, final Plateforme pf){
 
@@ -298,12 +299,12 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
    }
 
    @Override
-   public void deleteByIdManager(final TableAnnotation table, final String comments, final Utilisateur usr,
+   public void removeObjectManager(final TableAnnotation table, final String comments, final Utilisateur usr,
       final String baseDir){
       if(table != null){
          final Iterator<ChampAnnotation> it = getChampAnnotationsManager(table).iterator();
          while(it.hasNext()){
-            champAnnotationManager.deleteByIdManager(it.next(), comments, usr, baseDir);
+            champAnnotationManager.removeObjectManager(it.next(), comments, usr, baseDir);
          }
          table.setChampAnnotations(new HashSet<ChampAnnotation>());
 
@@ -375,7 +376,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
             newOnes.add(banques.get(i));
 
          }else{ // on modifie l'ordre de la table present avec la liste
-            newtab = tableAnnotationBanqueDao.findById(pk);
+            newtab = tableAnnotationBanqueDao.findById(pk).orElse(null);
             // newtab.setOrdre(i + 1);
             tableAnnotationBanqueDao.save(newtab);
          }
@@ -402,7 +403,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
       final List<File> filesToDelete = new ArrayList<>();
 
       for(int i = 0; i < valeurs.size(); i++){
-         annotationValeurManager.deleteByIdManager(valeurs.get(i), filesToDelete);
+         annotationValeurManager.removeObjectManager(valeurs.get(i), filesToDelete);
       }
       log.info("Suppression des valeurs d'annotation pour l'association" + " table " + tab.getTableAnnotation() + " et banque "
          + tab.getBanque());
@@ -480,7 +481,7 @@ public class TableAnnotationManagerImpl implements TableAnnotationManager
                champs.get(i).setChampCalcule(null);
             }
 
-            champAnnotationManager.createOrsaveManager(champs.get(i), table, null, its, defs, cc, usr, current, operation,
+            champAnnotationManager.createOrUpdateObjectManager(champs.get(i), table, null, its, defs, cc, usr, current, operation,
                baseDir);
 
             if(operation.equals("creation")){

@@ -116,7 +116,7 @@ public class ProtocoleManagerTest extends AbstractManagerTest4
    public void testCRUD(){
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    /**
@@ -209,20 +209,20 @@ public class ProtocoleManagerTest extends AbstractManagerTest4
    }
 
    /**
-    * Teste la methode deleteByIdManager. 
+    * Teste la methode removeObjectManager. 
     */
-   private void deleteByIdManagerTest(){
+   private void removeObjectManagerTest(){
       //Suppression de l'enregistrement precedemment insere
       final Plateforme pf1 = plateformeDao.findById(1);
       final Protocole p1 = protocoleManager.findByOrderManager(pf1).get(0);
-      protocoleManager.deleteByIdManager(p1);
+      protocoleManager.removeObjectManager(p1);
       assertTrue(protocoleManager.findAllObjectsManager().size() == 3);
       //Suppression engrendrant une exception
       //		Boolean catched = false;
       //		try {
       //			Protocole r2 = (Protocole) protocoleManager
       //		.findByOrderManager(pf1).get(0);
-      //			protocoleManager.deleteByIdManager(r2);
+      //			protocoleManager.removeObjectManager(r2);
       //		} catch (Exception e) {
       //			if (e.getClass().getSimpleName().equals(
       //					"ObjectUsedException")) {
@@ -233,7 +233,7 @@ public class ProtocoleManagerTest extends AbstractManagerTest4
       //		assertTrue((protocoleManager
       //			.findByOrderManager(pf1)).size() == 2);
       //null remove
-      protocoleManager.deleteByIdManager(null);
+      protocoleManager.removeObjectManager(null);
       testFindAllObjectsManager();
    }
 

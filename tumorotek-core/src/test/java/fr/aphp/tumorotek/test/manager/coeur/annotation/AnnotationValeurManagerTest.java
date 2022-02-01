@@ -228,7 +228,7 @@ public class AnnotationValeurManagerTest extends AbstractManagerTest4
    public void testCRUD(){
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    public void saveManagerTest(){
@@ -331,17 +331,17 @@ public class AnnotationValeurManagerTest extends AbstractManagerTest4
    }
 
    /**
-    * Teste la methode deleteByIdManager. 
+    * Teste la methode removeObjectManager. 
     */
-   public void deleteByIdManagerTest(){
+   public void removeObjectManagerTest(){
       final List<File> filesToDelete = new ArrayList<>();
       final Prelevement prel = prelevementDao.findById(1);
       final ChampAnnotation c = champAnnotationDao.findById(2);
       final AnnotationValeur valeur = annotationValeurManager.findByChampAndObjetManager(c, prel).get(0);
-      annotationValeurManager.deleteByIdManager(valeur, filesToDelete);
+      annotationValeurManager.removeObjectManager(valeur, filesToDelete);
       assertTrue(annotationValeurManager.findByChampAndObjetManager(c, prel).size() == 0);
       assertTrue(getOperationManager().findByObjectManager(valeur).size() == 0);
-      annotationValeurManager.deleteByIdManager(null, filesToDelete);
+      annotationValeurManager.removeObjectManager(null, filesToDelete);
       //verifie que l'etat des tables modifies est revenu identique
       assertEquals(19, getOperationManager().findAllObjectsManager().size());
       testFindAllObjectsManager();
@@ -584,7 +584,7 @@ public class AnnotationValeurManagerTest extends AbstractManagerTest4
       assertTrue(baseDir.listFiles().length == 1);
 
       // nettoyage
-      annotationValeurManager.deleteByIdManager(valeur, null);
+      annotationValeurManager.removeObjectManager(valeur, null);
       testFindAllObjectsManager();
       assertTrue(IterableUtils.toList(fichierDao.findAll()).size() == totFichier);
       assertFalse(new File(Utils.writeAnnoFilePath("/tmp/", b, c, f)).exists());
@@ -679,7 +679,7 @@ public class AnnotationValeurManagerTest extends AbstractManagerTest4
       final List<Operation> ops = getOperationManager().findByObjectManager(obj);
       for(int i = 0; i < ops.size(); i++){
          if(ops.get(i).getOperationType().getNom().equals("Annotation")){
-            getOperationManager().deleteByIdManager(ops.get(i));
+            getOperationManager().removeObjectManager(ops.get(i));
          }
       }
    }
@@ -866,7 +866,7 @@ public class AnnotationValeurManagerTest extends AbstractManagerTest4
          final List<Operation> ops = getOperationManager().findByObjectManager(obj);
          for(int i = 0; i < ops.size(); i++){
             if(ops.get(i).getOperationType().getNom().equals("Annotation")){
-               getOperationManager().deleteByIdManager(ops.get(i));
+               getOperationManager().removeObjectManager(ops.get(i));
             }
          }
 
@@ -973,21 +973,21 @@ public class AnnotationValeurManagerTest extends AbstractManagerTest4
 
       // nettoyage
       annotationValeurManager
-         .deleteByIdManager(annotationValeurManager.findByChampAndObjetManager(c, patientDao.findById(1)).get(0), null);
+         .removeObjectManager(annotationValeurManager.findByChampAndObjetManager(c, patientDao.findById(1)).get(0), null);
       assertTrue(IterableUtils.toList(fichierDao.findAll()).size() == totFichier + 2);
       assertTrue(IterableUtils.toList(annotationValeurDao.findAll()).size() == totValeurs + 2);
       assertTrue(baseDir.listFiles().length == 1);
       assertTrue(new File(f1.getPath()).exists());
 
       annotationValeurManager
-         .deleteByIdManager(annotationValeurManager.findByChampAndObjetManager(c, patientDao.findById(2)).get(0), null);
+         .removeObjectManager(annotationValeurManager.findByChampAndObjetManager(c, patientDao.findById(2)).get(0), null);
       assertTrue(IterableUtils.toList(fichierDao.findAll()).size() == totFichier + 1);
       assertTrue(IterableUtils.toList(annotationValeurDao.findAll()).size() == totValeurs + 1);
       assertTrue(baseDir.listFiles().length == 1);
       assertTrue(new File(f2.getPath()).exists());
 
       annotationValeurManager
-         .deleteByIdManager(annotationValeurManager.findByChampAndObjetManager(c, patientDao.findById(3)).get(0), null);
+         .removeObjectManager(annotationValeurManager.findByChampAndObjetManager(c, patientDao.findById(3)).get(0), null);
       assertTrue(IterableUtils.toList(fichierDao.findAll()).size() == totFichier);
       assertTrue(IterableUtils.toList(annotationValeurDao.findAll()).size() == totValeurs);
       assertTrue(baseDir.listFiles().length == 0);

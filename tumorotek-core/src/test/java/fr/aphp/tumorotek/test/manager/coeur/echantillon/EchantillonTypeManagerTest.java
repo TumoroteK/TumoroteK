@@ -288,11 +288,11 @@ public class EchantillonTypeManagerTest extends AbstractManagerTest4
 
       // Suppression
       final EchantillonType type5 = echantillonTypeManager.findByIdManager(5);
-      echantillonTypeManager.deleteByIdManager(type5);
+      echantillonTypeManager.removeObjectManager(type5);
       assertNull(echantillonTypeManager.findByIdManager(5));
       final EchantillonType type6 = echantillonTypeManager.findByIdManager(1);
       try{
-         echantillonTypeManager.deleteByIdManager(type6);
+         echantillonTypeManager.removeObjectManager(type6);
       }catch(final Exception e){
          assertTrue(e.getClass().getSimpleName().equals("ObjectUsedException"));
       }

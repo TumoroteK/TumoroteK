@@ -259,9 +259,9 @@ public class CoordonneeManagerTest extends AbstractManagerTest4
 
       // Suppression
       final Coordonnee coord3 = coordonneeManager.findByIdManager(id1);
-      coordonneeManager.deleteByIdManager(coord3);
+      coordonneeManager.removeObjectManager(coord3);
       final Coordonnee coord4 = coordonneeManager.findByIdManager(id2);
-      coordonneeManager.deleteByIdManager(coord4);
+      coordonneeManager.removeObjectManager(coord4);
 
       // Update
       final Coordonnee coord5 = new Coordonnee();
@@ -330,7 +330,7 @@ public class CoordonneeManagerTest extends AbstractManagerTest4
       }
 
       final Coordonnee coord11 = coordonneeManager.findByIdManager(id);
-      coordonneeManager.deleteByIdManager(coord11);
+      coordonneeManager.removeObjectManager(coord11);
       assertNull(coordonneeManager.findByIdManager(id));
    }
 

@@ -166,7 +166,7 @@ public class ProcedureManagerImpl implements ProcedureManager
          }
 
          // mise a jour du Patient actif
-         patientManager.createOrsaveManager(patient, null, medsA, liensA, valeursAConserver, null, null, null, u,
+         patientManager.createOrUpdateObjectManager(patient, null, medsA, liensA, valeursAConserver, null, null, null, u,
             "fusion", null, false);
 
          // recuperation des maladies
@@ -233,7 +233,7 @@ public class ProcedureManagerImpl implements ProcedureManager
 
          // fantomization (oh le beau mot) du passif
          for(int i = 0; i < malsToRemove.size(); i++){
-            maladieManager.deleteByIdManager(malsToRemove.get(i), comments, u);
+            maladieManager.removeObjectManager(malsToRemove.get(i), comments, u);
             //passif.getMaladies().remove(malsToRemove.get(i));
          }
 

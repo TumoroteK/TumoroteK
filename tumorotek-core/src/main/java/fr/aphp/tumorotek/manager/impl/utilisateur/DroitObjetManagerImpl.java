@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.utilisateur;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -95,7 +96,7 @@ public class DroitObjetManagerImpl implements DroitObjetManager
 
    @Override
    public DroitObjet findByIdManager(final DroitObjetPK droitObjetPK){
-      return droitObjetDao.findById(droitObjetPK);
+      return droitObjetDao.findById(droitObjetPK).orElse(null);
    }
 
    @Override
@@ -209,7 +210,7 @@ public class DroitObjetManagerImpl implements DroitObjetManager
    }
 
    @Override
-   public void saveManager(final DroitObjet droitObjet, final Profil profil, final Entite entite,
+   public void createObjectManager(final DroitObjet droitObjet, final Profil profil, final Entite entite,
       final OperationType type){
 
       // validation de l'objet à créer
@@ -227,7 +228,7 @@ public class DroitObjetManagerImpl implements DroitObjetManager
    }
 
    @Override
-   public void deleteByIdManager(final DroitObjet droitObjet){
+   public void removeObjectManager(final DroitObjet droitObjet){
       if(droitObjet != null){
          droitObjetDao.deleteById(droitObjet.getPk());
          log.info("Suppression de l'objet DroitObjet : " + droitObjet.toString());

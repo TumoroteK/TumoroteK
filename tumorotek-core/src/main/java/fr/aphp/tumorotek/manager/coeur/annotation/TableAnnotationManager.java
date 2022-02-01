@@ -81,7 +81,7 @@ public interface TableAnnotationManager
     * @param operation String creation / modification
     * @param base directory pour créer dossier sytème associé.
     */
-   void createOrsaveManager(TableAnnotation table, Entite entite, Catalogue catalogue, List<ChampAnnotation> champs,
+   void createOrUpdateObjectManager(TableAnnotation table, Entite entite, Catalogue catalogue, List<ChampAnnotation> champs,
       List<Banque> banques, Banque current, Utilisateur utilisateur, String operation, String baseDir, Plateforme pf);
 
    /**
@@ -108,7 +108,7 @@ public interface TableAnnotationManager
     * @param Utilisateur réalisant la suppression.
     * @param base directory pour effacer dossier sytème associé.
     */
-   void deleteByIdManager(TableAnnotation table, String comments, Utilisateur usr, String baseDir);
+   void removeObjectManager(TableAnnotation table, String comments, Utilisateur usr, String baseDir);
 
    /**
     * Recherche les champs liés à la table passée en paramètres.

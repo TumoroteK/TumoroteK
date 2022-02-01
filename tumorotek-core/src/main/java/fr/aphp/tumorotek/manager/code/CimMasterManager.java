@@ -35,23 +35,9 @@
  **/
 package fr.aphp.tumorotek.manager.code;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.TypedQuery;
-
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.collections4.IterableUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import fr.aphp.tumorotek.dao.code.CimMasterDao;
 import fr.aphp.tumorotek.model.code.Adicap;
 import fr.aphp.tumorotek.model.code.CimMaster;
 
@@ -64,39 +50,16 @@ import fr.aphp.tumorotek.model.code.CimMaster;
  * @version 2.0
  *
  */
-@Service
-public class CimMasterManager implements CodeCommonManager<CimMaster> {
-
-	private final Log log = LogFactory.getLog(CimMasterManager.class);
-
-	@Autowired
-	private CimMasterDao cimMasterDao;
-
-	@Autowired
-	private EntityManagerFactory entityManagerFactory;
+public interface CimMasterManager extends CodeCommonManager<CimMaster> {
 
 	@Override
-	public List<CimMaster> findAllObjectsManager() {
-		return IterableUtils.toList(cimMasterDao.findAll());
-	}
+	public List<CimMaster> findAllObjectsManager();
 
 	@Override
-	public List<CimMaster> findByCodeLikeManager(String code, final boolean exactMatch) {
-		if (!exactMatch) {
-			code = "%" + code + "%";
-		}
-		log.debug("Recherche Cim par code: " + code + " exactMatch " + String.valueOf(exactMatch));
-		return cimMasterDao.findByCodeLike(code);
-	}
+	public List<CimMaster> findByCodeLikeManager(String code, final boolean exactMatch);
 
 	@Override
-	public List<CimMaster> findByLibelleLikeManager(String libelle, final boolean exactMatch) {
-		if (!exactMatch) {
-			libelle = "%" + libelle + "%";
-		}
-		log.debug("Recherche Cim par libelle: " + libelle + " exactMatch " + String.valueOf(exactMatch));
-		return cimMasterDao.findByLibelleLike(libelle);
-	}
+	public List<CimMaster> findByLibelleLikeManager(String libelle, final boolean exactMatch);
 
 	/**
 	 * Recherche les enfants du code Cim passé en paramètre. Utilise le membre
@@ -106,36 +69,7 @@ public class CimMasterManager implements CodeCommonManager<CimMaster> {
 	 * @param code Cim pour lequel on recherche les enfants.
 	 * @return une liste de codes CimMaster.
 	 */
-	public List<CimMaster> findByCimParentManager(final CimMaster parent) {
-		List<CimMaster> cims = new ArrayList<>();
-		if (parent != null) {
-			if (parent.getLevel() < 7) { // ->| id7 ds codif
-				try {
-					final String idColname = "id" + parent.getLevel();
-					Integer levelId;
-
-					levelId = (Integer) PropertyUtils.getSimpleProperty(parent, idColname);
-					final StringBuffer sb = new StringBuffer();
-					sb.append("SELECT c FROM CimMaster c WHERE c.");
-					sb.append(idColname);
-					sb.append(" = ");
-					sb.append(levelId);
-					sb.append(" AND c.level = ");
-					sb.append(parent.getLevel() + 1);
-
-					final EntityManager em = entityManagerFactory.createEntityManager();
-					final TypedQuery<CimMaster> query = em.createQuery(sb.toString(), CimMaster.class);
-					cims = query.getResultList();
-				} catch (final Exception e) {
-					log.error("level cimMaster introuvable par PropertyUtils");
-				}
-			}
-		} else { // renvoie les codes de niveau 1
-			cims = cimMasterDao.findByLevel(1);
-		}
-
-		return cims;
-	}
+	public List<CimMaster> findByCimParentManager(final CimMaster parent);
 
 	/**
 	 * Recherche les codes ADICAP topo issus du transcodage du code Cim passé en
@@ -144,13 +78,7 @@ public class CimMasterManager implements CodeCommonManager<CimMaster> {
 	 * @param code cim qui sera transcodé
 	 * @return Liste de codes Adicap
 	 */
-	public Set<Adicap> getAdicapsManager(final CimMaster cim) {
-		Set<Adicap> adicaps = new HashSet<>();
-		final CimMaster cimM = cimMasterDao.save(cim);
-		adicaps = cimM.getAdicaps();
-		adicaps.size(); // operation empechant LazyInitialisationException
-		return adicaps;
-	}
+	public Set<Adicap> getAdicapsManager(final CimMaster cim);
 
 	/**
 	 * Renvoie les codes CIM contenu dans l'arborescence dont la racine est le code
@@ -159,22 +87,7 @@ public class CimMasterManager implements CodeCommonManager<CimMaster> {
 	 * @param code CIM
 	 * @return liste codes 'enfants'.
 	 */
-	public List<CimMaster> findChildrenCodesManager(final CimMaster code) {
-		final List<CimMaster> codes = new ArrayList<>();
-		if (code != null) {
-			codes.add(code);
-			findRecursiveChildren(code, codes);
-		}
-		return codes;
-	}
-
-	private void findRecursiveChildren(final CimMaster parent, final List<CimMaster> codes) {
-		final List<CimMaster> children = findByCimParentManager(parent);
-		codes.addAll(children);
-		for (int i = 0; i < children.size(); i++) {
-			findRecursiveChildren(children.get(i), codes);
-		}
-	}
+	public List<CimMaster> findChildrenCodesManager(final CimMaster code);
 
 	/**
 	 * Renvoie le code CIM correspondant à l'ID passé en paramètre.
@@ -182,7 +95,5 @@ public class CimMasterManager implements CodeCommonManager<CimMaster> {
 	 * @param codeId
 	 * @return code CIM
 	 */
-	public CimMaster findByIdManager(final Integer codeId) {
-		return cimMasterDao.findById(codeId).get();
-	}
+	public CimMaster findByIdManager(final Integer codeId);
 }

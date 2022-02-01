@@ -1749,21 +1749,21 @@ public class ImportManagerTest extends AbstractManagerTest4
 			empl4.setObjetId(null);
 			empl4.setVide(true);
 			emplacementManager.saveManager(empl4, empl4.getTerminale(), null);
-			prodDeriveManager.deleteByIdCascadeManager(derive, null, u, null);
+			prodDeriveManager.removeObjectCascadeManager(derive, null, u, null);
 			echan.setEmplacement(null);
 			echan.setObjetStatut(objetStatutDao.findById(4)); // non stocke
 			echantillonManager.saveManager(echan, properties.getBanque(), prlvt, null, null, null,
 					echan.getEchantillonType(), null, null, null, null, null, null, null, null, null, u, true, null, null);
-			echantillonManager.deleteByIdCascadeManager(echan, null, u, null);
-			prelevementManager.deleteByIdManager(prlvt, null, u, null);
-			maladieManager.deleteByIdManager(mal, null, u);
-			patientManager.deleteByIdManager(pat, null, u, null);
-			prodDeriveManager.deleteByIdCascadeManager(derive3, null, u, null);
-			echantillonManager.deleteByIdCascadeManager(echan3, null, u, null);
-			prelevementManager.deleteByIdManager(prlvt3, null, u, null);
-			prelevementManager.deleteByIdManager(prlvt2, null, u, null);
-			maladieManager.deleteByIdManager(mal3, null, u);
-			patientManager.deleteByIdManager(pat3, null, u, null);
+			echantillonManager.removeObjectCascadeManager(echan, null, u, null);
+			prelevementManager.removeObjectManager(prlvt, null, u, null);
+			maladieManager.removeObjectManager(mal, null, u);
+			patientManager.removeObjectManager(pat, null, u, null);
+			prodDeriveManager.removeObjectCascadeManager(derive3, null, u, null);
+			echantillonManager.removeObjectCascadeManager(echan3, null, u, null);
+			prelevementManager.removeObjectManager(prlvt3, null, u, null);
+			prelevementManager.removeObjectManager(prlvt2, null, u, null);
+			maladieManager.removeObjectManager(mal3, null, u);
+			patientManager.removeObjectManager(pat3, null, u, null);
 
 			assertTrue(patientManager.findAllObjectsManager().size() == 5);
 			assertTrue(maladieManager.findAllObjectsManager().size() == 6);
@@ -1855,7 +1855,7 @@ public class ImportManagerTest extends AbstractManagerTest4
 		assertNull(ih2);
 
 		// Removes
-		importHistoriqueManager.deleteByIdManager(ih);
+		importHistoriqueManager.removeObjectManager(ih);
 		assertTrue(importHistoriqueManager.findAllObjectsManager().size() == 3);
 		final ProdDerive derive1 = prodDeriveManager.findByCodeLikeManager("PRLVT456.1.1", true).get(0);
 		final Emplacement empl1 = prodDeriveManager.getEmplacementManager(derive1);
@@ -1863,16 +1863,16 @@ public class ImportManagerTest extends AbstractManagerTest4
 		empl1.setObjetId(null);
 		empl1.setVide(true);
 		emplacementManager.saveManager(empl1, empl1.getTerminale(), null);
-		prodDeriveManager.deleteByIdCascadeManager(derive1, null, u, null);
+		prodDeriveManager.removeObjectCascadeManager(derive1, null, u, null);
 		final ProdDerive derive2 = prodDeriveManager.findByCodeLikeManager("PRLVT5612.1.2", true).get(0);
 		final Emplacement empl2 = prodDeriveManager.getEmplacementManager(derive2);
 		empl2.setEntite(null);
 		empl2.setObjetId(null);
 		empl2.setVide(true);
 		emplacementManager.saveManager(empl2, empl1.getTerminale(), null);
-		prodDeriveManager.deleteByIdCascadeManager(derive2, null, u, null);
+		prodDeriveManager.removeObjectCascadeManager(derive2, null, u, null);
 		final ProdDerive derive3 = prodDeriveManager.findByCodeLikeManager("PRLVT98.5.1", true).get(0);
-		prodDeriveManager.deleteByIdCascadeManager(derive3, null, u, null);
+		prodDeriveManager.removeObjectCascadeManager(derive3, null, u, null);
 		final Echantillon echan1 = echantillonManager.findByCodeLikeManager("PRLVT456.1", true).get(0);
 		final Emplacement empl3 = echantillonManager.getEmplacementManager(echan1);
 		empl3.setEntite(null);
@@ -1883,36 +1883,36 @@ public class ImportManagerTest extends AbstractManagerTest4
 		echan1.setObjetStatut(objetStatutDao.findById(4)); // non stocke
 		echantillonManager.saveManager(echan1, echan1.getBanque(), echan1.getPrelevement(), null, null, null,
 				echan1.getEchantillonType(), null, null, null, null, null, null, null, null, null, u, true, null, null);
-		echantillonManager.deleteByIdCascadeManager(echan1, null, u, null);
+		echantillonManager.removeObjectCascadeManager(echan1, null, u, null);
 		final Echantillon echan2 = echantillonManager.findByCodeLikeManager("PRLVT5612.1", true).get(0);
 		final Emplacement empl4 = echantillonManager.getEmplacementManager(echan2);
 		empl4.setEntite(null);
 		empl4.setObjetId(null);
 		empl4.setVide(true);
 		emplacementManager.saveManager(empl4, empl1.getTerminale(), null);
-		echantillonManager.deleteByIdCascadeManager(echan2, null, u, null);
+		echantillonManager.removeObjectCascadeManager(echan2, null, u, null);
 		final Echantillon echan3 = echantillonManager.findByCodeLikeManager("PRLVT98.5", true).get(0);
-		echantillonManager.deleteByIdCascadeManager(echan3, null, u, null);
+		echantillonManager.removeObjectCascadeManager(echan3, null, u, null);
 		final Prelevement prlvt1 = prelevementManager.findByCodeLikeManager("PRLVT456", true).get(0);
-		prelevementManager.deleteByIdManager(prlvt1, null, u, null);
+		prelevementManager.removeObjectManager(prlvt1, null, u, null);
 		final Prelevement prlvt2 = prelevementManager.findByCodeLikeManager("PRLVT5612", true).get(0);
-		prelevementManager.deleteByIdManager(prlvt2, null, u, null);
+		prelevementManager.removeObjectManager(prlvt2, null, u, null);
 		final Prelevement prlvt3 = prelevementManager.findByCodeLikeManager("PRLVT98", true).get(0);
-		prelevementManager.deleteByIdManager(prlvt3, null, u, null);
+		prelevementManager.removeObjectManager(prlvt3, null, u, null);
 		final Prelevement prlvt4 = prelevementManager.findByCodeLikeManager("PRLVT4", true).get(0);
-		prelevementManager.deleteByIdManager(prlvt4, null, u, null);
+		prelevementManager.removeObjectManager(prlvt4, null, u, null);
 		final Maladie mal1 = maladieManager.findByLibelleLikeManager("TUMEUR", true).get(0);
-		maladieManager.deleteByIdManager(mal1, null, u);
+		maladieManager.removeObjectManager(mal1, null, u);
 		final Maladie mal2 = maladieManager.findByLibelleLikeManager("CANCER", true).get(0);
-		maladieManager.deleteByIdManager(mal2, null, u);
+		maladieManager.removeObjectManager(mal2, null, u);
 		final Maladie mal3 = maladieManager.findByLibelleLikeManager("VIEILLESSE", true).get(0);
-		maladieManager.deleteByIdManager(mal3, null, u);
+		maladieManager.removeObjectManager(mal3, null, u);
 		final Patient pat1 = patientManager.findByNomLikeManager("MEUNIER", true).get(0);
-		patientManager.deleteByIdManager(pat1, null, u, null);
+		patientManager.removeObjectManager(pat1, null, u, null);
 		final Patient pat2 = patientManager.findByNomLikeManager("MULLER", true).get(0);
-		patientManager.deleteByIdManager(pat2, null, u, null);
+		patientManager.removeObjectManager(pat2, null, u, null);
 		final Patient pat3 = patientManager.findByNomLikeManager("NONO", true).get(0);
-		patientManager.deleteByIdManager(pat3, null, u, null);
+		patientManager.removeObjectManager(pat3, null, u, null);
 
 		assertTrue(patientManager.findAllObjectsManager().size() == 5);
 		assertTrue(maladieManager.findAllObjectsManager().size() == 6);
@@ -1973,7 +1973,7 @@ public class ImportManagerTest extends AbstractManagerTest4
 		assertEquals(13, importHistoriqueManager.findImportationsByHistoriqueManager(ih).size());
 
 		// Removes
-		importHistoriqueManager.deleteByIdManager(ih);
+		importHistoriqueManager.removeObjectManager(ih);
 		assertTrue(importHistoriqueManager.findAllObjectsManager().size() == 3);
 		final ProdDerive derive1 = prodDeriveManager.findByCodeLikeManager("PRLVT456.1.1", true).get(0);
 		final Emplacement empl1 = prodDeriveManager.getEmplacementManager(derive1);
@@ -1981,16 +1981,16 @@ public class ImportManagerTest extends AbstractManagerTest4
 		empl1.setObjetId(null);
 		empl1.setVide(true);
 		emplacementManager.saveManager(empl1, empl1.getTerminale(), null);
-		prodDeriveManager.deleteByIdCascadeManager(derive1, null, u, null);
+		prodDeriveManager.removeObjectCascadeManager(derive1, null, u, null);
 		final ProdDerive derive2 = prodDeriveManager.findByCodeLikeManager("PRLVT5612.1.2", true).get(0);
 		final Emplacement empl2 = prodDeriveManager.getEmplacementManager(derive2);
 		empl2.setEntite(null);
 		empl2.setObjetId(null);
 		empl2.setVide(true);
 		emplacementManager.saveManager(empl2, empl1.getTerminale(), null);
-		prodDeriveManager.deleteByIdCascadeManager(derive2, null, u, null);
+		prodDeriveManager.removeObjectCascadeManager(derive2, null, u, null);
 		final ProdDerive derive3 = prodDeriveManager.findByCodeLikeManager("PRLVT98.5.1", true).get(0);
-		prodDeriveManager.deleteByIdCascadeManager(derive3, null, u, null);
+		prodDeriveManager.removeObjectCascadeManager(derive3, null, u, null);
 		final Echantillon echan1 = echantillonManager.findByCodeLikeManager("PRLVT456.1", true).get(0);
 		final Emplacement empl3 = echantillonManager.getEmplacementManager(echan1);
 		empl3.setEntite(null);
@@ -2001,36 +2001,36 @@ public class ImportManagerTest extends AbstractManagerTest4
 		echan1.setObjetStatut(objetStatutDao.findById(4)); // non stocke
 		echantillonManager.saveManager(echan1, echan1.getBanque(), echan1.getPrelevement(), null, null, null,
 				echan1.getEchantillonType(), null, null, null, null, null, null, null, null, null, u, true, null, null);
-		echantillonManager.deleteByIdCascadeManager(echan1, null, u, null);
+		echantillonManager.removeObjectCascadeManager(echan1, null, u, null);
 		final Echantillon echan2 = echantillonManager.findByCodeLikeManager("PRLVT5612.1", true).get(0);
 		final Emplacement empl4 = echantillonManager.getEmplacementManager(echan2);
 		empl4.setEntite(null);
 		empl4.setObjetId(null);
 		empl4.setVide(true);
 		emplacementManager.saveManager(empl4, empl1.getTerminale(), null);
-		echantillonManager.deleteByIdCascadeManager(echan2, null, u, null);
+		echantillonManager.removeObjectCascadeManager(echan2, null, u, null);
 		final Echantillon echan3 = echantillonManager.findByCodeLikeManager("PRLVT98.5", true).get(0);
-		echantillonManager.deleteByIdCascadeManager(echan3, null, u, null);
+		echantillonManager.removeObjectCascadeManager(echan3, null, u, null);
 		final Prelevement prlvt1 = prelevementManager.findByCodeLikeManager("PRLVT456", true).get(0);
-		prelevementManager.deleteByIdManager(prlvt1, null, u, null);
+		prelevementManager.removeObjectManager(prlvt1, null, u, null);
 		final Prelevement prlvt2 = prelevementManager.findByCodeLikeManager("PRLVT5612", true).get(0);
-		prelevementManager.deleteByIdManager(prlvt2, null, u, null);
+		prelevementManager.removeObjectManager(prlvt2, null, u, null);
 		final Prelevement prlvt3 = prelevementManager.findByCodeLikeManager("PRLVT98", true).get(0);
-		prelevementManager.deleteByIdManager(prlvt3, null, u, null);
+		prelevementManager.removeObjectManager(prlvt3, null, u, null);
 		final Prelevement prlvt4 = prelevementManager.findByCodeLikeManager("PRLVT4", true).get(0);
-		prelevementManager.deleteByIdManager(prlvt4, null, u, null);
+		prelevementManager.removeObjectManager(prlvt4, null, u, null);
 		final Maladie mal1 = maladieManager.findByLibelleLikeManager("TUMEUR", true).get(0);
-		maladieManager.deleteByIdManager(mal1, null, u);
+		maladieManager.removeObjectManager(mal1, null, u);
 		final Maladie mal2 = maladieManager.findByLibelleLikeManager("CANCER", true).get(0);
-		maladieManager.deleteByIdManager(mal2, null, u);
+		maladieManager.removeObjectManager(mal2, null, u);
 		final Maladie mal3 = maladieManager.findByLibelleLikeManager("VIEILLESSE", true).get(0);
-		maladieManager.deleteByIdManager(mal3, null, u);
+		maladieManager.removeObjectManager(mal3, null, u);
 		final Patient pat1 = patientManager.findByNomLikeManager("MEUNIER", true).get(0);
-		patientManager.deleteByIdManager(pat1, null, u, null);
+		patientManager.removeObjectManager(pat1, null, u, null);
 		final Patient pat2 = patientManager.findByNomLikeManager("MULLER", true).get(0);
-		patientManager.deleteByIdManager(pat2, null, u, null);
+		patientManager.removeObjectManager(pat2, null, u, null);
 		final Patient pat3 = patientManager.findByNomLikeManager("NONO", true).get(0);
-		patientManager.deleteByIdManager(pat3, null, u, null);
+		patientManager.removeObjectManager(pat3, null, u, null);
 
 		assertTrue(patientManager.findAllObjectsManager().size() == 5);
 		assertTrue(maladieManager.findAllObjectsManager().size() == 6);
@@ -2441,8 +2441,8 @@ public class ImportManagerTest extends AbstractManagerTest4
 			echantillonManager.saveManager(echan1, properties.getBanque(), null, null, null, null,
 					echan1.getEchantillonType(), null, null, null, null, null, null, null, null, null, u, false, null, null);
 
-			echantillonManager.deleteByIdCascadeManager(echan1, null, u, null);
-			echantillonManager.deleteByIdCascadeManager(echan3b, null, u, null);
+			echantillonManager.removeObjectCascadeManager(echan1, null, u, null);
+			echantillonManager.removeObjectCascadeManager(echan3b, null, u, null);
 
 			assertTrue(patientManager.findAllObjectsManager().size() == 5);
 			assertTrue(maladieManager.findAllObjectsManager().size() == 6);
@@ -2726,8 +2726,8 @@ public class ImportManagerTest extends AbstractManagerTest4
 		assertTrue(echantillonManager.findByPrelevementManager(prelImp4).size() == 1);
 
 		// Removes
-		importHistoriqueManager.deleteByIdManager(ih);
-		importHistoriqueManager.deleteByIdManager(ih2);
+		importHistoriqueManager.removeObjectManager(ih);
+		importHistoriqueManager.removeObjectManager(ih2);
 		assertTrue(importHistoriqueManager.findAllObjectsManager().size() == 3);
 		final ProdDerive derive1 = prodDeriveManager.findByCodeLikeManager("PRLVT456.1.1", true).get(0);
 		final Emplacement empl1 = prodDeriveManager.getEmplacementManager(derive1);
@@ -2735,16 +2735,16 @@ public class ImportManagerTest extends AbstractManagerTest4
 		empl1.setObjetId(null);
 		empl1.setVide(true);
 		emplacementManager.saveManager(empl1, empl1.getTerminale(), null);
-		prodDeriveManager.deleteByIdCascadeManager(derive1, null, u, null);
+		prodDeriveManager.removeObjectCascadeManager(derive1, null, u, null);
 		final ProdDerive derive2 = prodDeriveManager.findByCodeLikeManager("PRLVT5612.1.2", true).get(0);
 		final Emplacement empl2 = prodDeriveManager.getEmplacementManager(derive2);
 		empl2.setEntite(null);
 		empl2.setObjetId(null);
 		empl2.setVide(true);
 		emplacementManager.saveManager(empl2, empl1.getTerminale(), null);
-		prodDeriveManager.deleteByIdCascadeManager(derive2, null, u, null);
+		prodDeriveManager.removeObjectCascadeManager(derive2, null, u, null);
 		final ProdDerive derive3 = prodDeriveManager.findByCodeLikeManager("PRLVT98.5.1", true).get(0);
-		prodDeriveManager.deleteByIdCascadeManager(derive3, null, u, null);
+		prodDeriveManager.removeObjectCascadeManager(derive3, null, u, null);
 		final Echantillon echan1 = echantillonManager.findByCodeLikeManager("PRLVT456.1", true).get(0);
 		final Emplacement empl3 = echantillonManager.getEmplacementManager(echan1);
 		empl3.setEntite(null);
@@ -2755,36 +2755,36 @@ public class ImportManagerTest extends AbstractManagerTest4
 		echan1.setObjetStatut(objetStatutDao.findById(4)); // non stocke
 		echantillonManager.saveManager(echan1, echan1.getBanque(), echan1.getPrelevement(), null, null, null,
 				echan1.getEchantillonType(), null, null, null, null, null, null, null, null, null, u, true, null, null);
-		echantillonManager.deleteByIdCascadeManager(echan1, null, u, null);
+		echantillonManager.removeObjectCascadeManager(echan1, null, u, null);
 		final Echantillon echan2 = echantillonManager.findByCodeLikeManager("PRLVT5612.1", true).get(0);
 		final Emplacement empl4 = echantillonManager.getEmplacementManager(echan2);
 		empl4.setEntite(null);
 		empl4.setObjetId(null);
 		empl4.setVide(true);
 		emplacementManager.saveManager(empl4, empl1.getTerminale(), null);
-		echantillonManager.deleteByIdCascadeManager(echan2, null, u, null);
+		echantillonManager.removeObjectCascadeManager(echan2, null, u, null);
 		final Echantillon echan3 = echantillonManager.findByCodeLikeManager("PRLVT98.5", true).get(0);
-		echantillonManager.deleteByIdCascadeManager(echan3, null, u, null);
+		echantillonManager.removeObjectCascadeManager(echan3, null, u, null);
 		final Prelevement prlvt1 = prelevementManager.findByCodeLikeManager("PRLVT456", true).get(0);
-		prelevementManager.deleteByIdManager(prlvt1, null, u, null);
+		prelevementManager.removeObjectManager(prlvt1, null, u, null);
 		final Prelevement prlvt2 = prelevementManager.findByCodeLikeManager("PRLVT5612", true).get(0);
-		prelevementManager.deleteByIdManager(prlvt2, null, u, null);
+		prelevementManager.removeObjectManager(prlvt2, null, u, null);
 		final Prelevement prlvt3 = prelevementManager.findByCodeLikeManager("PRLVT98", true).get(0);
-		prelevementManager.deleteByIdManager(prlvt3, null, u, null);
+		prelevementManager.removeObjectManager(prlvt3, null, u, null);
 		final Prelevement prlvt4 = prelevementManager.findByCodeLikeManager("PRLVT4", true).get(0);
-		prelevementManager.deleteByIdManager(prlvt4, null, u, null);
+		prelevementManager.removeObjectManager(prlvt4, null, u, null);
 		final Maladie mal1 = maladieManager.findByLibelleLikeManager("TUMEUR", true).get(0);
-		maladieManager.deleteByIdManager(mal1, null, u);
+		maladieManager.removeObjectManager(mal1, null, u);
 		final Maladie mal2 = maladieManager.findByLibelleLikeManager("CANCER", true).get(0);
-		maladieManager.deleteByIdManager(mal2, null, u);
+		maladieManager.removeObjectManager(mal2, null, u);
 		final Maladie mal3 = maladieManager.findByLibelleLikeManager("VIEILLESSE", true).get(0);
-		maladieManager.deleteByIdManager(mal3, null, u);
+		maladieManager.removeObjectManager(mal3, null, u);
 		final Patient pat1 = patientManager.findByNomLikeManager("MEUNIER", true).get(0);
-		patientManager.deleteByIdManager(pat1, null, u, null);
+		patientManager.removeObjectManager(pat1, null, u, null);
 		final Patient pat2 = patientManager.findByNomLikeManager("MULLER", true).get(0);
-		patientManager.deleteByIdManager(pat2, null, u, null);
+		patientManager.removeObjectManager(pat2, null, u, null);
 		final Patient pat3 = patientManager.findByNomLikeManager("NONO", true).get(0);
-		patientManager.deleteByIdManager(pat3, null, u, null);
+		patientManager.removeObjectManager(pat3, null, u, null);
 
 		assertTrue(patientManager.findAllObjectsManager().size() == 5);
 		assertTrue(maladieManager.findAllObjectsManager().size() == 6);

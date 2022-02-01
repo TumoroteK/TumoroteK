@@ -49,6 +49,7 @@ import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.jdbc.datasource.DataSourceUtils;
@@ -207,7 +208,7 @@ public class TerminaleManagerImpl implements TerminaleManager
 
 @Override
    public Terminale findByIdManager(final Integer terminaleId){
-      return terminaleDao.findById(terminaleId);
+      return terminaleDao.findById(terminaleId).orElse(null);
    }
 
    @Override
@@ -463,7 +464,7 @@ public class TerminaleManagerImpl implements TerminaleManager
    }
 
    @Override
-   public void saveManager(final Terminale terminale, final Enceinte enceinte, final TerminaleType terminaleType,
+   public void createObjectManager(final Terminale terminale, final Enceinte enceinte, final TerminaleType terminaleType,
       final Banque banque, final Entite entite, final TerminaleNumerotation terminaleNumerotation, final Couleur couleur,
       final Utilisateur utilisateur){
 
@@ -524,12 +525,12 @@ public class TerminaleManagerImpl implements TerminaleManager
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), terminale);
+         operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), terminale);
       }
    }
 
    @Override
-   public void saveManager(final Terminale terminale, final Enceinte enceinte, final TerminaleType terminaleType,
+   public void updateObjectManager(final Terminale terminale, final Enceinte enceinte, final TerminaleType terminaleType,
       final Banque banque, final Entite entite, final TerminaleNumerotation terminaleNumerotation, final Couleur couleur,
       final List<Incident> incidents, final Utilisateur utilisateur, final List<OperationType> operations){
 
@@ -590,9 +591,9 @@ public class TerminaleManagerImpl implements TerminaleManager
                // si nouvel incident => creation
                // sinon => update
                if(incident.getIncidentId() == null){
-                  incidentManager.saveManager(incident, null, null, terminale);
+                  incidentManager.createObjectManager(incident, null, null, terminale);
                }else{
-                  incidentManager.saveManager(incident, null, null, terminale);
+                  incidentManager.updateObjectManager(incident, null, null, terminale);
                }
             }
          }
@@ -614,7 +615,7 @@ public class TerminaleManagerImpl implements TerminaleManager
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
+         operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
             terminale);
 
          if(operations != null){
@@ -622,14 +623,14 @@ public class TerminaleManagerImpl implements TerminaleManager
                //Enregistrement de l'operation associee
                final Operation dateOp = new Operation();
                dateOp.setDate(Utils.getCurrentSystemCalendar());
-               operationManager.saveManager(dateOp, utilisateur, operations.get(i), terminale);
+               operationManager.createObjectManager(dateOp, utilisateur, operations.get(i), terminale);
             }
          }
       }
    }
 
    @Override
-   public void deleteByIdManager(final Terminale terminale, final String comments, final Utilisateur user){
+   public void removeObjectManager(final Terminale terminale, final String comments, final Utilisateur user){
       if(terminale != null){
          if(isUsedObjectManager(terminale)){
             log.warn("Objet utilisé lors de la suppression de l'objet " + "Terminale : " + terminale.toString());
@@ -680,7 +681,7 @@ public class TerminaleManagerImpl implements TerminaleManager
                   }
                   term.setArchive(false);
 
-                  saveManager(term, enceinte, terminale.getTerminaleType(), terminale.getBanque(), terminale.getEntite(),
+                  createObjectManager(term, enceinte, terminale.getTerminaleType(), terminale.getBanque(), terminale.getEntite(),
                      terminale.getTerminaleNumerotation(), null, utilisateur);
 
                   terminales.add(term);
@@ -723,10 +724,10 @@ public class TerminaleManagerImpl implements TerminaleManager
             //Enregistrement des operations associees
             final Operation op1 = new Operation();
             op1.setDate(Utils.getCurrentSystemCalendar());
-            operationManager.saveManager(op1, utilisateur, operationTypeDao.findByNom("Deplacement").get(0), terminale1);
+            operationManager.createObjectManager(op1, utilisateur, operationTypeDao.findByNom("Deplacement").get(0), terminale1);
             final Operation op2 = new Operation();
             op2.setDate(Utils.getCurrentSystemCalendar());
-            operationManager.saveManager(op2, utilisateur, operationTypeDao.findByNom("Deplacement").get(0), terminale2);
+            operationManager.createObjectManager(op2, utilisateur, operationTypeDao.findByNom("Deplacement").get(0), terminale2);
          }
       }
    }
@@ -737,7 +738,7 @@ public class TerminaleManagerImpl implements TerminaleManager
       if(terminales != null && terminales.size() > 0 && numrotation != null && utilisateur != null){
          // update de chaque terminale
          for(int i = 0; i < terminales.size(); i++){
-            saveManager(terminales.get(i), terminales.get(i).getEnceinte(), terminales.get(i).getTerminaleType(),
+            updateObjectManager(terminales.get(i), terminales.get(i).getEnceinte(), terminales.get(i).getTerminaleType(),
                terminales.get(i).getBanque(), terminales.get(i).getEntite(), numrotation, null, null, utilisateur, null);
          }
       }
@@ -813,7 +814,7 @@ public class TerminaleManagerImpl implements TerminaleManager
                      }
                   }
 
-                  saveManager(term, enceinte, type, terminale.getBanque(), terminale.getEntite(),
+                  createObjectManager(term, enceinte, type, terminale.getBanque(), terminale.getEntite(),
                      terminale.getTerminaleNumerotation(), couleur, utilisateur);
 
                   terminales.add(term);

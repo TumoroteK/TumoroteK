@@ -69,7 +69,7 @@ public class EmetteurManagerImpl implements EmetteurManager
 
    @Override
    public Emetteur findByIdManager(final Integer emetteurId){
-      return emetteurDao.findById(emetteurId);
+      return emetteurDao.findById(emetteurId).orElse(null);
    }
 
    @Override

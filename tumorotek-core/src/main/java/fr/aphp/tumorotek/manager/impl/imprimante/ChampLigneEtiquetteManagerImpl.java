@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.imprimante;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -81,7 +82,7 @@ public class ChampLigneEtiquetteManagerImpl implements ChampLigneEtiquetteManage
 
    @Override
    public ChampLigneEtiquette findByIdManager(final Integer champLigneEtiquetteId){
-      return champLigneEtiquetteDao.findById(champLigneEtiquetteId);
+      return champLigneEtiquetteDao.findById(champLigneEtiquetteId).orElse(null);
    }
 
    @Override
@@ -138,7 +139,7 @@ public class ChampLigneEtiquetteManagerImpl implements ChampLigneEtiquetteManage
    }
 
    @Override
-   public void saveManager(final ChampLigneEtiquette champLigneEtiquette, final LigneEtiquette ligneEtiquette,
+   public void createObjectManager(final ChampLigneEtiquette champLigneEtiquette, final LigneEtiquette ligneEtiquette,
       final Entite entite, final Champ champ){
       // validation de l'objet
       validateObjectManager(champLigneEtiquette, ligneEtiquette, entite, champ, "creation");
@@ -146,7 +147,7 @@ public class ChampLigneEtiquetteManagerImpl implements ChampLigneEtiquetteManage
       champLigneEtiquette.setLigneEtiquette(ligneEtiquetteDao.save(ligneEtiquette));
       champLigneEtiquette.setEntite(entiteDao.save(entite));
 
-      champManager.saveManager(champ, null);
+      champManager.createObjectManager(champ, null);
       champLigneEtiquette.setChamp(champ);
 
       champLigneEtiquetteDao.save(champLigneEtiquette);
@@ -155,7 +156,7 @@ public class ChampLigneEtiquetteManagerImpl implements ChampLigneEtiquetteManage
    }
 
    @Override
-   public void saveManager(final ChampLigneEtiquette champLigneEtiquette, final LigneEtiquette ligneEtiquette,
+   public void updateObjectManager(final ChampLigneEtiquette champLigneEtiquette, final LigneEtiquette ligneEtiquette,
       final Entite entite, final Champ champ){
       // validation de l'objet
       validateObjectManager(champLigneEtiquette, ligneEtiquette, entite, champ, "modification");
@@ -165,9 +166,9 @@ public class ChampLigneEtiquetteManagerImpl implements ChampLigneEtiquetteManage
 
       // si le champ n'existe pas, on le crée
       if(champ.getChampId() == null){
-         champManager.saveManager(champ, null);
+         champManager.createObjectManager(champ, null);
       }else{
-         champManager.saveManager(champ, null);
+         champManager.updateObjectManager(champ, null);
       }
       champLigneEtiquette.setChamp(champ);
 
@@ -177,13 +178,13 @@ public class ChampLigneEtiquetteManagerImpl implements ChampLigneEtiquetteManage
    }
 
    @Override
-   public void deleteByIdManager(final ChampLigneEtiquette champLigneEtiquette){
+   public void removeObjectManager(final ChampLigneEtiquette champLigneEtiquette){
       if(champLigneEtiquette != null){
          final Champ chp = champLigneEtiquette.getChamp();
          champLigneEtiquetteDao.deleteById(champLigneEtiquette.getChampLigneEtiquetteId());
          log.info("Suppression de l'objet ChampLigneEtiquette : " + champLigneEtiquette.toString());
 
-         champManager.deleteByIdManager(chp);
+         champManager.removeObjectManager(chp);
       }else{
          log.warn("Suppression d'un ChampLigneEtiquette null");
       }

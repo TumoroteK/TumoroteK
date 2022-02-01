@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.manager.impl.io.export;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -137,7 +138,7 @@ public class CombinaisonManagerImpl implements CombinaisonManager
          champ2 = champManager.copyChampManager(combinaison.getChamp2());
       }
       temp = new Combinaison(champ1, combinaison.getOperateur(), champ2);
-      saveManager(temp, temp.getChamp1(), temp.getChamp2());
+      createObjectManager(temp, temp.getChamp1(), temp.getChamp2());
       return temp;
    }
 
@@ -150,7 +151,7 @@ public class CombinaisonManagerImpl implements CombinaisonManager
     * être null.
     */
    @Override
-   public void saveManager(final Combinaison combinaison, Champ champ1, Champ champ2){
+   public void createObjectManager(final Combinaison combinaison, Champ champ1, Champ champ2){
       //On vérifie que la combinaison n'est pas nulle
       if(combinaison == null){
          log.warn("Objet obligatoire Combinaison manquant lors " + "de la création d'un objet Combinaison");
@@ -169,13 +170,13 @@ public class CombinaisonManagerImpl implements CombinaisonManager
       if(champ1.getChampId() != null){
          champ1 = champDao.save(champ1);
       }else{
-         champManager.saveManager(champ1, champ1.getChampParent());
+         champManager.createObjectManager(champ1, champ1.getChampParent());
       }
       combinaison.setChamp1(champ1);
       if(champ2.getChampId() != null){
          champ2 = champDao.save(champ2);
       }else{
-         champManager.saveManager(champ2, champ2.getChampParent());
+         champManager.createObjectManager(champ2, champ2.getChampParent());
       }
       combinaison.setChamp2(champ2);
       BeanValidator.validateObject(combinaison, new Validator[] {combinaisonValidator});
@@ -191,7 +192,7 @@ public class CombinaisonManagerImpl implements CombinaisonManager
     * être null.
     */
    @Override
-   public void saveManager(final Combinaison combinaison, Champ champ1, Champ champ2){
+   public void updateObjectManager(final Combinaison combinaison, Champ champ1, Champ champ2){
       //On vérifie que la combinaison n'est pas nulle
       if(combinaison == null){
          log.warn("Objet obligatoire Combinaison manquant lors " + "de la modification d'un objet Combinaison");
@@ -210,24 +211,24 @@ public class CombinaisonManagerImpl implements CombinaisonManager
       /*if (combinaison.getChamp1() != null && champ1 != null
       		&& !combinaison.getChamp1().getChampId().equals(
       				champ1.getChampId())) {
-      	champManager.deleteByIdManager(combinaison.getChamp1());
+      	champManager.removeObjectManager(combinaison.getChamp1());
       }*/
       if(champ1.getChampId() != null){
          champ1 = champDao.save(champ1);
       }else{
-         champManager.saveManager(champ1, champ1.getChampParent());
+         champManager.createObjectManager(champ1, champ1.getChampParent());
       }
       final Champ oldChamp1 = combinaison.getChamp1();
       combinaison.setChamp1(champ1);
       /*if (combinaison.getChamp2() != null && champ2 != null
       		&& !combinaison.getChamp2().getChampId().equals(
       				champ2.getChampId())) {
-      	champManager.deleteByIdManager(combinaison.getChamp2());
+      	champManager.removeObjectManager(combinaison.getChamp2());
       }*/
       if(champ2.getChampId() != null){
          champ2 = champDao.save(champ2);
       }else{
-         champManager.saveManager(champ2, champ2.getChampParent());
+         champManager.createObjectManager(champ2, champ2.getChampParent());
       }
       final Champ oldChamp2 = combinaison.getChamp2();
       combinaison.setChamp2(champ2);
@@ -235,10 +236,10 @@ public class CombinaisonManagerImpl implements CombinaisonManager
       combinaisonDao.save(combinaison);
 
       if(oldChamp1 != null && oldChamp1.getChampId() != null && !oldChamp1.equals(combinaison.getChamp1())){
-         champManager.deleteByIdManager(oldChamp1);
+         champManager.removeObjectManager(oldChamp1);
       }
       if(oldChamp2 != null && oldChamp2.getChampId() != null && !oldChamp2.equals(combinaison.getChamp2())){
-         champManager.deleteByIdManager(oldChamp2);
+         champManager.removeObjectManager(oldChamp2);
       }
 
    }
@@ -250,7 +251,7 @@ public class CombinaisonManagerImpl implements CombinaisonManager
     * ne doit pas être null.
     */
    @Override
-   public void deleteByIdManager(final Combinaison combinaison){
+   public void removeObjectManager(final Combinaison combinaison){
       //On vérifie que la combinaison n'est pas nulle
       if(combinaison == null){
          log.warn("Objet obligatoire Combinaison manquant lors " + "de la suppression d'un objet Combinaison");
@@ -277,7 +278,7 @@ public class CombinaisonManagerImpl implements CombinaisonManager
          log.warn("Objet obligatoire identifiant manquant lors de la " + "recherche par l'identifiant d'un objet Combinaison");
          throw new RequiredObjectIsNullException("Combinaison", "recherche par identifiant", "identifiant");
       }
-      return combinaisonDao.findById(idCombinaison);
+      return combinaisonDao.findById(idCombinaison).orElse(null);
    }
 
    /**

@@ -377,13 +377,13 @@ public class ValeurExterneManagerTest extends AbstractManagerTest4
       assertTrue(vTest3.getValeur().equals("VALEUR BIS"));
 
       // Suppression
-      valeurExterneManager.deleteByIdManager(vTest);
-      valeurExterneManager.deleteByIdManager(vTest3);
+      valeurExterneManager.removeObjectManager(vTest);
+      valeurExterneManager.removeObjectManager(vTest3);
       assertTrue(valeurExterneManager.findAllObjectsManager().size() == nb);
 
       // Suppressions invalides
-      valeurExterneManager.deleteByIdManager(null);
-      valeurExterneManager.deleteByIdManager(new ValeurExterne());
+      valeurExterneManager.removeObjectManager(null);
+      valeurExterneManager.removeObjectManager(new ValeurExterne());
    }
 
 }

@@ -219,13 +219,13 @@ public class ObjetStatutManagerTest extends AbstractManagerTest4
 
       // Test de la suppression
       final ObjetStatut objet4 = objetStatutManager.findByIdManager(7);
-      objetStatutManager.deleteByIdManager(objet4);
+      objetStatutManager.removeObjectManager(objet4);
       assertNull(objetStatutManager.findByIdManager(7));
       // On test la suppression d'un objet utilisé
       final ObjetStatut objet5 = objetStatutManager.findByIdManager(1);
       Boolean catchedDelete = false;
       try{
-         objetStatutManager.deleteByIdManager(objet5);
+         objetStatutManager.removeObjectManager(objet5);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ObjectUsedException")){
             catchedDelete = true;

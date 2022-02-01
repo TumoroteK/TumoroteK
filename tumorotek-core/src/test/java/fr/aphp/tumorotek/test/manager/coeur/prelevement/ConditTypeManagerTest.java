@@ -128,7 +128,7 @@ public class ConditTypeManagerTest extends AbstractManagerTest4
    public void testCRUD(){
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    private void saveManagerTest(){
@@ -209,17 +209,17 @@ public class ConditTypeManagerTest extends AbstractManagerTest4
       }
    }
 
-   private void deleteByIdManagerTest(){
+   private void removeObjectManagerTest(){
       //Suppression de l'enregistrement precedemment insere
       final ConditType ct1 = (conditTypeManager.findByTypeLikeManager("EPPEN-DORF", true)).get(0);
-      conditTypeManager.deleteByIdManager(ct1);
+      conditTypeManager.removeObjectManager(ct1);
       assertTrue((conditTypeManager.findByTypeLikeManager("EPPEN-DORF", true)).size() == 0);
       //Suppression engrendrant une exception
       //		Boolean catched = false;
       //		try {
       //			ConditType ct2 = (conditTypeManager
       //					.findByTypeLikeManager("TUBE", true)).get(0);
-      //			conditTypeManager.deleteByIdManager(ct2);
+      //			conditTypeManager.removeObjectManager(ct2);
       //		} catch (Exception e) {
       //			if (e.getClass().getSimpleName().equals(
       //					"ObjectUsedException")) {
@@ -229,7 +229,7 @@ public class ConditTypeManagerTest extends AbstractManagerTest4
       //		assertTrue(catched);
       assertTrue((conditTypeManager.findByTypeLikeManager("TUBE", true)).size() > 0);
       //null remove
-      conditTypeManager.deleteByIdManager(null);
+      conditTypeManager.removeObjectManager(null);
       assertTrue(conditTypeManager.findByOrderManager(ct1.getPlateforme()).size() == 1);
    }
 

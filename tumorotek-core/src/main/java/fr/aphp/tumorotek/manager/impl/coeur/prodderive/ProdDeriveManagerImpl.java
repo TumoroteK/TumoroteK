@@ -51,6 +51,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -291,7 +292,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
     */
    @Override
    public ProdDerive findByIdManager(final Integer prodDeriveId){
-      return prodDeriveDao.findById(prodDeriveId);
+      return prodDeriveDao.findById(prodDeriveId).orElse(null);
    }
 
    /**
@@ -888,7 +889,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    }
 
    @Override
-   public void saveManager(final ProdDerive prodDerive, final Banque banque, final ProdType type,
+   public void createObjectManager(final ProdDerive prodDerive, final Banque banque, final ProdType type,
       final ObjetStatut statut, final Collaborateur collab, final Emplacement emplacement, final Unite volumeUnite,
       final Unite concUnite, final Unite quantiteUnite, final ModePrepaDerive modePrepaDerive, final ProdQualite qualite,
       final Transformation transfo, final List<AnnotationValeur> listAnnoToCreateOrUpdate, final List<File> filesCreated,
@@ -985,9 +986,9 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          // On vérifie que la transformation n'est pas null
          if(transfo != null){
             if(transfo.getTransformationId() == null){
-               transformationManager.saveManager(transfo, transfo.getEntite(), transfo.getQuantiteUnite());
+               transformationManager.createObjectManager(transfo, transfo.getEntite(), transfo.getQuantiteUnite());
             }else{
-               transformationManager.saveManager(transfo, transfo.getEntite(), transfo.getQuantiteUnite());
+               transformationManager.updateObjectManager(transfo, transfo.getEntite(), transfo.getQuantiteUnite());
             }
             prodDerive.setTransformation(transformationDao.save(transfo));
          }else{
@@ -998,7 +999,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), prodDerive);
+         operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), prodDerive);
 
          // cree les annotations, null operation pour
          // laisser la possibilité création/modification au sein 
@@ -1031,7 +1032,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    }
 
    @Override
-   public void saveWithNonConformitesManager(final ProdDerive prodDerive, final Banque banque, final ProdType type,
+   public void createObjectWithNonConformitesManager(final ProdDerive prodDerive, final Banque banque, final ProdType type,
       final ObjetStatut statut, final Collaborateur collab, final Emplacement emplacement, final Unite volumeUnite,
       final Unite concUnite, final Unite quantiteUnite, final ModePrepaDerive modePrepaDerive, final ProdQualite qualite,
       final Transformation transfo, final List<AnnotationValeur> listAnnoToCreateOrUpdate, 
@@ -1049,7 +1050,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
             prodDerive.setConformeCession(false);
          }
 
-         saveManager(prodDerive, banque, type, statut, collab, emplacement, volumeUnite, concUnite, quantiteUnite,
+         createObjectManager(prodDerive, banque, type, statut, collab, emplacement, volumeUnite, concUnite, quantiteUnite,
             modePrepaDerive, qualite, transfo, listAnnoToCreateOrUpdate, filesCreated, utilisateur, doValidation,
             baseDir, isImport);
 
@@ -1064,7 +1065,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    }
 
    @Override
-   public void saveManager(final ProdDerive prodDerive, final Banque banque, final ProdType type,
+   public void updateObjectManager(final ProdDerive prodDerive, final Banque banque, final ProdType type,
       final ObjetStatut statut, final Collaborateur collab, final Emplacement emplacement, final Unite volumeUnite,
       final Unite concUnite, final Unite quantiteUnite, final ModePrepaDerive modePrepaDerive, final ProdQualite qualite,
       final Transformation transfo, final List<AnnotationValeur> listAnnoToCreateOrUpdate,
@@ -1154,9 +1155,9 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          // On vérifie que la transformation n'est pas null
          if(transfo != null){
             if(transfo.getTransformationId() == null){
-               transformationManager.saveManager(transfo, transfo.getEntite(), transfo.getQuantiteUnite());
+               transformationManager.createObjectManager(transfo, transfo.getEntite(), transfo.getQuantiteUnite());
             }else{
-               transformationManager.saveManager(transfo, transfo.getEntite(), transfo.getQuantiteUnite());
+               transformationManager.updateObjectManager(transfo, transfo.getEntite(), transfo.getQuantiteUnite());
             }
             prodDerive.setTransformation(transformationDao.save(transfo));
          }else{
@@ -1169,7 +1170,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
+         operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
             prodDerive);
 
          if(operations != null){
@@ -1177,7 +1178,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
                //Enregistrement de l'operation associee
                final Operation dateOp = new Operation();
                dateOp.setDate(Utils.getCurrentSystemCalendar());
-               operationManager.saveManager(dateOp, utilisateur, operations.get(i), prodDerive);
+               operationManager.createObjectManager(dateOp, utilisateur, operations.get(i), prodDerive);
             }
          }
 
@@ -1235,7 +1236,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       for(int i = 0; i < prodDerives.size(); i++){
          final ProdDerive derive = prodDerives.get(i);
          try{
-            saveManager(derive, derive.getBanque(), derive.getProdType(), derive.getObjetStatut(),
+            updateObjectManager(derive, derive.getBanque(), derive.getProdType(), derive.getObjetStatut(),
                derive.getCollaborateur(), derive.getEmplacement(), derive.getVolumeUnite(), derive.getConcUnite(),
                derive.getQuantiteUnite(), derive.getModePrepaDerive(), derive.getProdQualite(), derive.getTransformation(), null,
                null, filesCreated, filesToDelete, utilisateur, true, null, baseDir);
@@ -1302,7 +1303,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
    }
 
    @Override
-   public void deleteByIdCascadeManager(final Transformation transformation, final String comments, final Utilisateur user,
+   public void removeObjectCascadeManager(final Transformation transformation, final String comments, final Utilisateur user,
       final List<File> filesToDelete){
       //		if (isUsedObjectManager(transformation)) {
       //			log.warn("Objet utilisé lors de la suppression de l'objet " 
@@ -1314,32 +1315,32 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       final Iterator<ProdDerive> derivesIt = findByTransformationManager(transformation).iterator();
 
       while(derivesIt.hasNext()){
-         deleteByIdCascadeManager(derivesIt.next(), comments, user, filesToDelete);
+         removeObjectCascadeManager(derivesIt.next(), comments, user, filesToDelete);
       }
 
-      transformationManager.deleteByIdManager(transformation, comments, user);
+      transformationManager.removeObjectManager(transformation, comments, user);
 
       log.info("Suppression de l'objet Transformation : " + transformation.toString());
    }
 
    @Override
-   public void deleteByIdCascadeManager(final ProdDerive derive, final String comments, final Utilisateur user,
+   public void removeObjectCascadeManager(final ProdDerive derive, final String comments, final Utilisateur user,
       final List<File> filesToDelete){
 
       if(!isCessedObjectManager(derive)){
          final Iterator<Transformation> transfIt = transformationManager.findByParentManager(derive).iterator();
          while(transfIt.hasNext()){
-            deleteByIdCascadeManager(transfIt.next(), comments, user, filesToDelete);
+            removeObjectCascadeManager(transfIt.next(), comments, user, filesToDelete);
          }
 
-         deleteByIdManager(derive, comments, user, filesToDelete);
+         removeObjectManager(derive, comments, user, filesToDelete);
       }else{
          throw new ObjectUsedException("derive.cascade.isCessed", false);
       }
    }
 
    @Override
-   public void deleteByIdManager(final ProdDerive prodDerive, final String comments, final Utilisateur user,
+   public void removeObjectManager(final ProdDerive prodDerive, final String comments, final Utilisateur user,
       final List<File> filesToDelete){
 
       if(prodDerive != null){
@@ -1347,7 +1348,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
 
             final Iterator<Retour> retoursIt = retourManager.getRetoursForObjectManager(prodDerive).iterator();
             while(retoursIt.hasNext()){
-               retourManager.deleteByIdManager(retoursIt.next());
+               retourManager.removeObjectManager(retoursIt.next());
             }
 
             // Supprime non conformites associees
@@ -1412,7 +1413,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
                newDerive.setConformeCession(cfCess);
             }
 
-            saveManager(newDerive, banque, newDerive.getProdType(), nonstocke, newDerive.getCollaborateur(), null,
+            createObjectManager(newDerive, banque, newDerive.getProdType(), nonstocke, newDerive.getCollaborateur(), null,
                newDerive.getVolumeUnite(), newDerive.getConcUnite(), newDerive.getQuantiteUnite(), newDerive.getModePrepaDerive(),
                newDerive.getProdQualite(), transfo, listAnnotations, filesCreated, utilisateur, true, baseDir, false);
 
@@ -1422,7 +1423,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
       }catch(final RuntimeException e){
          //         if(filesCreated != null){
          for(final File f : filesCreated){
-            // fichierManager.deleteByIdManager(fichier);
+            // fichierManager.removeObjectManager(fichier);
             f.delete();
          }
          //         }
@@ -1534,12 +1535,12 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
 
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.saveManager(creationOp, u, operationTypeDao.findByNom("ChangeCollection").get(0), derive);
+         operationManager.createObjectManager(creationOp, u, operationTypeDao.findByNom("ChangeCollection").get(0), derive);
       }
    }
 
    @Override
-   public void saveWithNonConformitesManager(final ProdDerive prodDerive, final Banque banque, final ProdType type,
+   public void updateObjectWithNonConformitesManager(final ProdDerive prodDerive, final Banque banque, final ProdType type,
       final ObjetStatut statut, final Collaborateur collab, final Emplacement emplacement, final Unite volumeUnite,
       final Unite concUnite, final Unite quantiteUnite, final ModePrepaDerive modePrepaDerive, final ProdQualite qualite,
       final Transformation transfo, final List<AnnotationValeur> listAnnoToCreateOrUpdate,
@@ -1559,7 +1560,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
             prodDerive.setConformeCession(false);
          }
 
-         saveManager(prodDerive, banque, type, statut, collab, emplacement, volumeUnite, concUnite, quantiteUnite,
+         updateObjectManager(prodDerive, banque, type, statut, collab, emplacement, volumeUnite, concUnite, quantiteUnite,
             modePrepaDerive, qualite, transfo, listAnnoToCreateOrUpdate, listAnnoToDelete, filesCreated, filesToDelete,
             utilisateur, doValidation, operations, baseDir);
 
@@ -1858,7 +1859,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
                // à l'épuisement de l'échantillon
                // ((TKStockableObject) parent).setObjetStatut(objetStatutManager
                //			.findByStatutLikeManager("NON STOCKE", true).get(0));				
-               retourManager.createOrsaveManager(transfoRetour, (TKStockableObject) parent, oldEmplacement, null, null,
+               retourManager.createOrUpdateObjectManager(transfoRetour, (TKStockableObject) parent, oldEmplacement, null, null,
                   transfo, null, u, transfoRetour.getRetourId() != null ? "modification" : "creation");
                // re-assigne l'object statut avant update parent
                if(transfoRetour.getObjetStatut() != null){
@@ -1964,7 +1965,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
                empl.setVide(true);
                ((TKStockableObject) parent).setEmplacement(null);
 
-               emplacementManager.saveManager(empl, empl.getTerminale(), null);
+               emplacementManager.updateObjectManager(empl, empl.getTerminale(), null);
             }
 
             if(oldStatut.getStatut().equals("STOCKE")){
@@ -1980,7 +1981,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          if(!ops.isEmpty()){ // destockage
             final Operation o = new Operation();
             o.setDate(Calendar.getInstance());
-            operationManager.saveManager(o, u, ops.get(0), parent);
+            operationManager.createObjectManager(o, u, ops.get(0), parent);
          }
       }else{ // Prelevement
          prelevementDao.save((Prelevement) parent);
@@ -1995,7 +1996,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          for(final Integer id : ids){
             p = findByIdManager(id);
             if(p != null){
-               deleteByIdCascadeManager(p, comment, u, filesToDelete);
+               removeObjectCascadeManager(p, comment, u, filesToDelete);
             }
          }
 

@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.coeur;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -91,7 +92,7 @@ public class ObjetStatutManagerImpl implements ObjetStatutManager
     */
    @Override
    public ObjetStatut findByIdManager(final Integer objetStatutId){
-      return objetStatutDao.findById(objetStatutId);
+      return objetStatutDao.findById(objetStatutId).orElse(null);
    }
 
    /**
@@ -159,7 +160,7 @@ public class ObjetStatutManagerImpl implements ObjetStatutManager
     * l'objet à créer se trouve déjà dans la base.
     */
    @Override
-   public void saveManager(final ObjetStatut statut){
+   public void createObjectManager(final ObjetStatut statut){
       if(findDoublonManager(statut)){
          log.warn("Doublon lors de la creation de l'objet ObjetStatut : " + statut.toString());
          throw new DoublonFoundException("ObjetStatut", "creation");
@@ -177,7 +178,7 @@ public class ObjetStatutManagerImpl implements ObjetStatutManager
     * l'objet à créer se trouve déjà dans la base.
     */
    @Override
-   public void saveManager(final ObjetStatut statut){
+   public void updateObjectManager(final ObjetStatut statut){
       if(findDoublonManager(statut)){
          log.warn("Doublon lors de la modif de l'objet ObjetStatut : " + statut.toString());
          throw new DoublonFoundException("ObjetStatut", "modification");
@@ -195,7 +196,7 @@ public class ObjetStatutManagerImpl implements ObjetStatutManager
     * est utilisé par des échantillons.
     */
    @Override
-   public void deleteByIdManager(final ObjetStatut statut){
+   public void removeObjectManager(final ObjetStatut statut){
       if(isUsedObjectManager(statut)){
          log.warn("Objet utilisé lors de la supperssion de l'objet " + "ObjetStatut : " + statut.toString());
          throw new ObjectUsedException("ObjetStatut", "suppression");

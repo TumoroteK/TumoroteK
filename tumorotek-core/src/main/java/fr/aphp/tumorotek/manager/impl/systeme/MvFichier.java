@@ -40,37 +40,37 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * Enregistre les informations nécessaires au déplacement d'un fichier 
- * dans le filesystem adossé à TK.
- * Correctif bug TK-155
+ * Enregistre les informations nécessaires au déplacement d'un fichier dans le
+ * filesystem adossé à TK. Correctif bug TK-155
  * 
  * @author Mathieu BARTHELEMY
  * @version 2.2.0
  */
 public class MvFichier {
-	
+
 	private Path fromPath;
 	private Path toPath;
 	private boolean moved = false;
-	
+
 	public MvFichier(Path _a, Path _d) {
 		this.fromPath = _a;
 		this.toPath = _d;
 	}
-	
+
 	/**
-	 * Déplace le fichier.
-	 * Flag moved=true si le movement s'est bien passé.
+	 * Déplace le fichier. Flag moved=true si le movement s'est bien passé.
+	 * 
 	 * @throws IOException
 	 */
 	public void move() throws IOException {
 		Files.move(fromPath, toPath);
 		moved = true;
 	}
-	
+
 	/**
-	 * Replace le fichier, sil il a  été déplacé (rollback)
-	 * Flag moved=false si le movement s'est bien passé.
+	 * Replace le fichier, sil il a été déplacé (rollback) Flag moved=false si le
+	 * movement s'est bien passé.
+	 * 
 	 * @throws IOException
 	 */
 	public void revert() throws IOException {
@@ -79,23 +79,23 @@ public class MvFichier {
 			moved = false;
 		}
 	}
-	
+
 	public Path getFromPath() {
 		return fromPath;
 	}
-	
+
 	public void setFromPath(Path _a) {
 		this.fromPath = _a;
 	}
-	
+
 	public Path getToPath() {
 		return toPath;
 	}
-	
+
 	public void setToPath(Path _d) {
 		this.toPath = _d;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -105,39 +105,33 @@ public class MvFichier {
 			return false;
 		}
 		MvFichier test = (MvFichier) obj;
-		return (((this.fromPath != null 
-				&& this.fromPath.equals(test.fromPath))
-					|| this.fromPath == test.fromPath)
-				&& (this.toPath == test.toPath 
-					|| (this.toPath != null 
-					&& this.toPath.equals(test.toPath))) 
-				);
+		return (((this.fromPath != null && this.fromPath.equals(test.fromPath)) || this.fromPath == test.fromPath)
+				&& (this.toPath == test.toPath || (this.toPath != null && this.toPath.equals(test.toPath))));
 	}
-	
+
 	@Override
 	public int hashCode() {
-		
+
 		int hash = 7;
 		int hashFromPath = 0;
 		int hashToPath = 0;
-		
+
 		if (this.fromPath != null) {
 			hashFromPath = this.fromPath.hashCode();
 		}
 		if (this.toPath != null) {
 			hashToPath = this.toPath.hashCode();
 		}
-		
+
 		hash = 31 * hash + hashFromPath;
 		hash = 31 * hash + hashToPath;
-		
-		return hash;	
+
+		return hash;
 	}
-	
+
 	@Override
 	public String toString() {
 		return fromPath.toString() + " -> " + toPath.toString();
 	}
-	
-}
 
+}

@@ -142,7 +142,7 @@ public abstract class AbstractManagerTest4
 
 		if(objs != null){
 			for(int i = 0; i < objs.size(); i++){
-				operationManager.deleteByIdManager(
+				operationManager.removeObjectManager(
 						operationManager.findByObjectManager(fantomeDao.findByNom(objs.get(i).getPhantomData()).get(0)).get(0));
 			}
 		}

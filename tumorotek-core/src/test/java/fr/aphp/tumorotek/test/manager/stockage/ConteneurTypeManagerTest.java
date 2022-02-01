@@ -128,7 +128,7 @@ public class ConteneurTypeManagerTest extends AbstractManagerTest4
    public void testCRUD(){
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    private void saveManagerTest(){
@@ -211,16 +211,16 @@ public class ConteneurTypeManagerTest extends AbstractManagerTest4
       }
    }
 
-   private void deleteByIdManagerTest(){
+   private void removeObjectManagerTest(){
       //Suppression de l'enregistrement precedemment insere
       final ConteneurType c1 = conteneurTypeManager.findByIdManager(4);
-      conteneurTypeManager.deleteByIdManager(c1);
+      conteneurTypeManager.removeObjectManager(c1);
       assertTrue(conteneurTypeManager.findByOrderManager(c1.getPlateforme()).size() == 3);
       //Suppression engrendrant une exception
       //		Boolean catched = false;
       //		try {
       //			ConteneurType c2 = conteneurTypeManager.findByIdManager(1);
-      //			conteneurTypeManager.deleteByIdManager(c2);
+      //			conteneurTypeManager.removeObjectManager(c2);
       //		} catch (Exception e) {
       //			if (e.getClass().getSimpleName().equals(
       //					"ObjectUsedException")) {
@@ -229,7 +229,7 @@ public class ConteneurTypeManagerTest extends AbstractManagerTest4
       //		}
       //		assertTrue(catched);
       //null remove
-      conteneurTypeManager.deleteByIdManager(null);
+      conteneurTypeManager.removeObjectManager(null);
       assertTrue(conteneurTypeManager.findByOrderManager(c1.getPlateforme()).size() == 3);
    }
 

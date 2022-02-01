@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -133,7 +134,7 @@ public class AffichageManagerImpl implements AffichageManager
          log.warn("Objet obligatoire identifiant manquant lors de la " + "recherche par l'identifiant d'un objet Affichage");
          throw new RequiredObjectIsNullException("Affichage", "recherche par identifiant", "identifiant");
       }
-      return affichageDao.findById(id);
+      return affichageDao.findById(id).orElse(null);
    }
 
    /**
@@ -214,7 +215,7 @@ public class AffichageManagerImpl implements AffichageManager
       }
       a.setResultats(resultats);
 
-      saveManager(a, a.getResultats(), a.getCreateur(), a.getBanque());
+      createObjectManager(a, a.getResultats(), a.getCreateur(), a.getBanque());
       // ajout de la requete dans la liste
       affichages.add(a);
       log.info("Enregistrement de l'objet Affichage : " + a.toString());
@@ -228,7 +229,7 @@ public class AffichageManagerImpl implements AffichageManager
     * @param createur Utilisateur qui créé l'Affichage.
     */
    @Override
-   public void saveManager(final Affichage affichage, final List<Resultat> resultats, final Utilisateur createur,
+   public void createObjectManager(final Affichage affichage, final List<Resultat> resultats, final Utilisateur createur,
       final Banque banque){
       //On vérifie que l'affichage n'est pas nul
       if(affichage == null){
@@ -272,7 +273,7 @@ public class AffichageManagerImpl implements AffichageManager
     * @param affichage Affichage à mettre à jour.
     */
    @Override
-   public void saveManager(final Affichage affichage, final List<Resultat> resultats,
+   public void updateObjectManager(final Affichage affichage, final List<Resultat> resultats,
       final List<Resultat> resultatsToRemove){
       //On vérifie que l'affichage n'est pas nul
       if(affichage == null){
@@ -318,7 +319,7 @@ public class AffichageManagerImpl implements AffichageManager
    			if (temp.getResultatId() != null) {
    				resultatsAff.add(resultatDao.save(temp));
    			} else {
-   				resultatManager.saveManager(temp, affichage, 
+   				resultatManager.createObjectManager(temp, affichage, 
    						temp.getChamp());
    				resultatsAff.add(temp);
    			}
@@ -329,7 +330,7 @@ public class AffichageManagerImpl implements AffichageManager
    		Resultat temp = resultatsAff.get(i);
    		if (!resultats.contains(temp)) {
    			resultatsAff.remove(temp);
-   			resultatManager.deleteByIdManager(temp);
+   			resultatManager.removeObjectManager(temp);
    		}
    	}
    	
@@ -341,7 +342,7 @@ public class AffichageManagerImpl implements AffichageManager
     * @param affichage Affichage à supprimer.
     */
    @Override
-   public void deleteByIdManager(final Affichage affichage){
+   public void removeObjectManager(final Affichage affichage){
       //On vérifie que l'affichage n'est pas nul
       if(affichage == null){
          throw new RequiredObjectIsNullException("Affichage", "suppression", "Affichage");
@@ -364,10 +365,10 @@ public class AffichageManagerImpl implements AffichageManager
          }
       }
       //suppression de l'affichage en BDD
-      //saveManager(affichage, new ArrayList<Resultat>());
+      //updateObjectManager(affichage, new ArrayList<Resultat>());
       final List<Resultat> res = resultatManager.findByAffichageManager(affichage);
       for(int i = 0; i < res.size(); i++){
-         resultatManager.deleteByIdManager(res.get(i));
+         resultatManager.removeObjectManager(res.get(i));
       }
       affichageDao.deleteById(affichage.getAffichageId());
    }
@@ -386,7 +387,7 @@ public class AffichageManagerImpl implements AffichageManager
          throw new RequiredObjectIsNullException("Affichage", "modification", "Résultat");
       }else{
          // On enregistre le résultat
-         resultatManager.saveManager(resultat, affichage, resultat.getChamp());
+         resultatManager.createObjectManager(resultat, affichage, resultat.getChamp());
       }
    }
 
@@ -419,7 +420,7 @@ public class AffichageManagerImpl implements AffichageManager
                modified = true;
             }
             if(modified){
-               resultatManager.saveManager(temp, temp.getAffichage(), temp.getChamp());
+               resultatManager.updateObjectManager(temp, temp.getAffichage(), temp.getChamp());
             }
          }
 
@@ -434,7 +435,7 @@ public class AffichageManagerImpl implements AffichageManager
          }
 
          // On supprime le résultat
-         resultatManager.deleteByIdManager(resultat);
+         resultatManager.removeObjectManager(resultat);
       }
    }
 
@@ -498,7 +499,7 @@ public class AffichageManagerImpl implements AffichageManager
          if(resultat != null){
             //On met à jour le résultat en BDD
             affichage.deplacerResultat(res, nouvellePosition);
-            saveManager(affichage, affichage.getResultats(), null);
+            updateObjectManager(affichage, affichage.getResultats(), null);
          }
       }
    }
@@ -597,7 +598,7 @@ public class AffichageManagerImpl implements AffichageManager
          affichage.getResultats().remove(resultat);
          log.debug("Suppression de l'association entre le resultat : " + resultat.toString() + " et l'affichage : "
             + affichage.toString());
-         resultatManager.deleteByIdManager(resToRemove.get(i));
+         resultatManager.removeObjectManager(resToRemove.get(i));
       }
 
       // on parcourt la nouvelle liste de resultats
@@ -614,7 +615,7 @@ public class AffichageManagerImpl implements AffichageManager
             // on ajoute le resultat des deux cotés de l'association
             if(resultats.get(i).getResultatId() == null){
                resultats.get(i).setAffichage(affichage);
-               resultatManager.saveManager(resultats.get(i), affichage, resultats.get(i).getChamp());
+               resultatManager.createObjectManager(resultats.get(i), affichage, resultats.get(i).getChamp());
                affichage.getResultats().add(resultatDao.save(resultats.get(i)));
             }else{
                resultats.get(i).setAffichage(affichage);
@@ -627,7 +628,7 @@ public class AffichageManagerImpl implements AffichageManager
             final Resultat r = resultats.get(i);
             final Resultat rdb = resultatManager.findByIdManager(r.getResultatId());
             if(r.getPosition() != rdb.getPosition() || r.getOrdreTri() != rdb.getOrdreTri()){
-               resultatManager.saveManager(r, r.getAffichage(), r.getChamp());
+               resultatManager.updateObjectManager(r, r.getAffichage(), r.getChamp());
             }
          }
       }
@@ -639,7 +640,7 @@ public class AffichageManagerImpl implements AffichageManager
       // suppression des résultats
       if(resultatsToRemove != null){
          for(int i = 0; i < resultatsToRemove.size(); i++){
-            resultatManager.deleteByIdManager(resultatsToRemove.get(i));
+            resultatManager.removeObjectManager(resultatsToRemove.get(i));
          }
       }
 
@@ -648,9 +649,9 @@ public class AffichageManagerImpl implements AffichageManager
          for(int i = 0; i < resultats.size(); i++){
             resultats.get(i).setAffichage(affichage);
             if(resultats.get(i).getResultatId() == null){
-               resultatManager.saveManager(resultats.get(i), affichage, resultats.get(i).getChamp());
+               resultatManager.createObjectManager(resultats.get(i), affichage, resultats.get(i).getChamp());
             }else{
-               resultatManager.saveManager(resultats.get(i), affichage, resultats.get(i).getChamp());
+               resultatManager.updateObjectManager(resultats.get(i), affichage, resultats.get(i).getChamp());
             }
          }
       }

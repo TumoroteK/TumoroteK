@@ -276,11 +276,11 @@ public class CodeUtilisateurManagerImpl implements CodeUtilisateurManager
    }
 
    @Override
-   public void deleteByIdManager(final CodeUtilisateur code){
+   public void removeObjectManager(final CodeUtilisateur code){
       if(code != null){
          final Iterator<CodeUtilisateur> it = getCodesUtilisateurManager(code).iterator();
          while(it.hasNext()){
-            deleteByIdManager(it.next());
+        	 removeObjectManager(it.next());
          }
 
          codeUtilisateurDao.deleteById(code.getCodeUtilisateurId());

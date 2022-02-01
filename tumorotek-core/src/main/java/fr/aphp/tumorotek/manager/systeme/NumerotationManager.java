@@ -43,91 +43,96 @@ import fr.aphp.tumorotek.model.systeme.Numerotation;
 
 /**
  *
- * Interface pour le manager du bean de domaine Numerotation.
- * Interface créée le 18/01/2011.
+ * Interface pour le manager du bean de domaine Numerotation. Interface créée le
+ * 18/01/2011.
  *
  * @author Pierre Ventadour
  * @version 2.0
  *
  */
-public interface NumerotationManager
-{
+public interface NumerotationManager {
 
-   public static String DATE_PLACEHOLDER = "[DATE]";
-   
-   /**
-    * Recherche une Numerotation dont l'identifiant est passé en 
-    * paramètre.
-    * @param numerotationId Identifiant de la Numerotation
-    * que l'on recherche.
-    * @return Une Numerotation.
-    */
-   Numerotation findByIdManager(Integer numerotationId);
+	public static String DATE_PLACEHOLDER = "[DATE]";
 
-   /**
-    * Recherche toutes les Numerotations présentss dans la base.
-    * @return Liste de Numerotations.
-    */
-   List<Numerotation> findAllObjectsManager();
+	/**
+	 * Recherche une Numerotation dont l'identifiant est passé en paramètre.
+	 * 
+	 * @param numerotationId Identifiant de la Numerotation que l'on recherche.
+	 * @return Une Numerotation.
+	 */
+	Numerotation findByIdManager(Integer numerotationId);
 
-   /**
-    * Recherche les Numérotation des banques.
-    * @param banques Liste de banques.
-    * @return Liste de Numerotations.
-    */
-   List<Numerotation> findByBanquesManager(List<Banque> banques);
+	/**
+	 * Recherche toutes les Numerotations présentss dans la base.
+	 * 
+	 * @return Liste de Numerotations.
+	 */
+	List<Numerotation> findAllObjectsManager();
 
-   /**
-    * Recherche toutes les Numerotations de la banque et de l'entité.
-    * @param banque Banque.
-    * @param entite Entite.
-    * @return Liste de Numerotations.
-    */
-   List<Numerotation> findByBanqueAndEntiteManager(Banque banque, Entite entite);
+	/**
+	 * Recherche les Numérotation des banques.
+	 * 
+	 * @param banques Liste de banques.
+	 * @return Liste de Numerotations.
+	 */
+	List<Numerotation> findByBanquesManager(List<Banque> banques);
 
-   /**
-    * Recherche toutes les Entités ayant des numérotations pour
-    * la banque.
-    * @param banque Banque.
-    * @return Liste d'Entites.
-    */
-   List<Entite> findByBanqueSelectEntiteManager(Banque banque);
+	/**
+	 * Recherche toutes les Numerotations de la banque et de l'entité.
+	 * 
+	 * @param banque Banque.
+	 * @param entite Entite.
+	 * @return Liste de Numerotations.
+	 */
+	List<Numerotation> findByBanqueAndEntiteManager(Banque banque, Entite entite);
 
-   /**
-    * Recherche les doublons de la Numerotation passée en paramètre.
-    * @param numerotation Numerotation pour laquelle on cherche 
-    * des doublons.
-    * @return True s'il existe des doublons.
-    */
-   Boolean findDoublonManager(Numerotation numerotation);
+	/**
+	 * Recherche toutes les Entités ayant des numérotations pour la banque.
+	 * 
+	 * @param banque Banque.
+	 * @return Liste d'Entites.
+	 */
+	List<Entite> findByBanqueSelectEntiteManager(Banque banque);
 
-   /**
-    * Génère le code courant pour la numérotation.
-    * @param numerotation Numerotation.
-    * @return Code courant.
-    */
-   String getGeneratedCodeManager(Numerotation numerotation);
+	/**
+	 * Recherche les doublons de la Numerotation passée en paramètre.
+	 * 
+	 * @param numerotation Numerotation pour laquelle on cherche des doublons.
+	 * @return True s'il existe des doublons.
+	 */
+	Boolean findDoublonManager(Numerotation numerotation);
 
-   /**
-    * Persist une instance de Numerotation dans la base de données.
-    * @param numerotation Nouvelle instance de l'objet à créer.
-    * @param banque Banque.
-    * @param entite Entite.
-    */
-   void saveManager(Numerotation numerotation, Banque banque, Entite entite);
+	/**
+	 * Génère le code courant pour la numérotation.
+	 * 
+	 * @param numerotation Numerotation.
+	 * @return Code courant.
+	 */
+	String getGeneratedCodeManager(Numerotation numerotation);
 
-   /**
-    * Sauvegarde les modifications apportées à un objet persistant.
-    * @param numerotation Objet à persister.
-    * @param banque Banque.
-    * @param entite Entite.
-    */
-   void saveManager(Numerotation numerotation, Banque banque, Entite entite);
+	/**
+	 * Persist une instance de Numerotation dans la base de données.
+	 * 
+	 * @param numerotation Nouvelle instance de l'objet à créer.
+	 * @param banque       Banque.
+	 * @param entite       Entite.
+	 */
+	void createObjectManager(Numerotation numerotation, Banque banque, Entite entite);
 
-   /**
-    * Supprime une Numerotation de la base de données.
-    * @param numerotation Numerotation à supprimer de la base de données.
-    */
-   void deleteByIdManager(Numerotation numerotation);
+	/**
+	 * Sauvegarde les modifications apportées à un objet persistant.
+	 * 
+	 * @param numerotation Objet à persister.
+	 * @param banque       Banque.
+	 * @param entite       Entite.
+	 */
+	void updateObjectManager(Numerotation numerotation, Banque banque, Entite entite);
+
+	/**
+	 * Supprime une Numerotation de la base de données.
+	 * 
+	 * @param numerotation Numerotation à supprimer de la base de données.
+	 */
+	void removeObjectManager(Numerotation numerotation);
 
 }

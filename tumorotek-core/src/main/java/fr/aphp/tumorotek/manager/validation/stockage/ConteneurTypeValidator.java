@@ -68,11 +68,11 @@ public class ConteneurTypeValidator implements Validator
 
       final ConteneurType type = (ConteneurType) obj;
       //nom valide
-      if(type.getType() != null){
-         if(!type.getType().matches(ValidationUtilities.MOTREGEXP)){
+      if(type.getNom() != null){
+         if(!type.getNom().matches(ValidationUtilities.MOTREGEXP)){
             errs.rejectValue("type", "conteneurType.type.illegal");
          }
-         if(type.getType().length() > 200){
+         if(type.getNom().length() > 200){
             errs.rejectValue("type", "conteneurType.type.tooLong");
          }
       }

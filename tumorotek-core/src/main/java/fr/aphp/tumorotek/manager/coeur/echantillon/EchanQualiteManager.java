@@ -70,43 +70,4 @@ public interface EchanQualiteManager extends PfDependantTKThesaurusManager<Echan
     * @return Liste de EchanQualite.
     */
    List<EchanQualite> findByQualiteLikeManager(String qualite, boolean exactMatch);
-
-   //	/**
-   //	 * Recherche les doublons de l'EchanQualite passée en paramètre.
-   //	 * @param qualite Une EchanQualite pour laquelle on cherche des doublons.
-   //	 * @return True s'il existe des doublons.
-   //	 */
-   //	Boolean findDoublonManager(EchanQualite qualite);
-   //	
-   //	/**
-   //	 * Test si une qualité d'échantillons est liée à des échantillons.
-   //	 * @param qualite EchanQualite que l'on souhaite tester.
-   //	 * @return Vrai si la qualité est utilisée.
-   //	 */
-   //	Boolean isUsedObjectManager(EchanQualite qualite);
-   //	
-   //	/**
-   //	 * Persist une instance d'EchanQualite dans la base de données.
-   //	 * @param qualite Nouvelle instance de l'objet à créer.
-   //	 * @throws DoublonFoundException Lance une exception si un doublon de
-   //	 * l'objet à créer se trouve déjà dans la base.
-   //	 */
-   //	void saveManager(EchanQualite qualite);
-   //	
-   //	/**
-   //	 * Sauvegarde les modifications apportées à un objet persistant.
-   //	 * @param qualite Objet à mettre à jour dans la base.
-   //	 * @throws DoublonFoundException Lance une exception si un doublon de
-   //	 * l'objet à créer se trouve déjà dans la base.
-   //	 */
-   //	void saveManager(EchanQualite qualite);
-   //	
-   //	/**
-   //	 * Supprime une EchanQualite de la base de données.
-   //	 * @param qualite EchanQualite à supprimer de la base de données.
-   //	 * @throws DoublonFoundException Lance une exception si l'objet
-   //	 * est utilisé par des échantillons.
-   //	 */
-   //	void deleteByIdManager(EchanQualite qualite);
-
 }

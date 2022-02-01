@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.stockage;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -90,7 +91,7 @@ public class EnceinteTypeManagerImpl implements EnceinteTypeManager
 
    @Override
    public EnceinteType findByIdManager(final Integer enceinteTypeId){
-      return enceinteTypeDao.findById(enceinteTypeId);
+      return enceinteTypeDao.findById(enceinteTypeId).orElse(null);
    }
 
    //	@Override
@@ -122,7 +123,7 @@ public class EnceinteTypeManagerImpl implements EnceinteTypeManager
    }
 
    @Override
-   public void saveManager(final EnceinteType obj){
+   public void createObjectManager(final EnceinteType obj){
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(obj.getPlateforme() == null){
@@ -140,7 +141,7 @@ public class EnceinteTypeManagerImpl implements EnceinteTypeManager
    }
 
    @Override
-   public void saveManager(final EnceinteType obj){
+   public void updateObjectManager(final EnceinteType obj){
       BeanValidator.validateObject(obj, new Validator[] {enceinteTypeValidator});
       if(!findDoublonManager(obj)){
          enceinteTypeDao.save(obj);
@@ -152,7 +153,7 @@ public class EnceinteTypeManagerImpl implements EnceinteTypeManager
    }
 
    @Override
-   public void deleteByIdManager(final EnceinteType obj){
+   public void removeObjectManager(final EnceinteType obj){
       if(obj != null){
          if(!isUsedObjectManager(obj)){
             enceinteTypeDao.deleteById(obj.getId());

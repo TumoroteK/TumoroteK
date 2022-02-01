@@ -41,43 +41,46 @@ import fr.aphp.tumorotek.model.systeme.Couleur;
 
 /**
  *
- * Interface pour le manager du bean de domaine Couleur.
- * Interface créée le 30/04/2010.
+ * Interface pour le manager du bean de domaine Couleur. Interface créée le
+ * 30/04/2010.
  *
  * @author Pierre Ventadour
  * @version 2.0
  *
  */
-public interface CouleurManager
-{
+public interface CouleurManager {
 
-   /**
-    * Recherche une Couleur dont l'identifiant est passé en paramètre.
-    * @param couleurId Identifiant de la Couleur que l'on recherche.
-    * @return Une Couleur.
-    */
-   Couleur findByIdManager(Integer couleurId);
+	/**
+	 * Recherche une Couleur dont l'identifiant est passé en paramètre.
+	 * 
+	 * @param couleurId Identifiant de la Couleur que l'on recherche.
+	 * @return Une Couleur.
+	 */
+	Couleur findByIdManager(Integer couleurId);
 
-   /**
-    * Recherche toutes les Couleurs présentes dans la base.
-    * @return Liste de Couleurs.
-    */
-   List<Couleur> findAllObjectsManager();
+	/**
+	 * Recherche toutes les Couleurs présentes dans la base.
+	 * 
+	 * @return Liste de Couleurs.
+	 */
+	List<Couleur> findAllObjectsManager();
 
-   /**
-    * Recherche toutes les Couleur dont le nom commence
-    * comme celui passé en paramètre.
-    * @param couleur Couleur que l'on recherche.
-    * @param exactMatch True si l'on souhaite seulement récuéprer les matchs
-    * exactes.
-    * @return Liste de Couleurs.
-    */
-   List<Couleur> findByCouleurLikeManager(String couleur, boolean exactMatch);
+	/**
+	 * Recherche toutes les Couleur dont le nom commence comme celui passé en
+	 * paramètre.
+	 * 
+	 * @param couleur    Couleur que l'on recherche.
+	 * @param exactMatch True si l'on souhaite seulement récuéprer les matchs
+	 *                   exactes.
+	 * @return Liste de Couleurs.
+	 */
+	List<Couleur> findByCouleurLikeManager(String couleur, boolean exactMatch);
 
-   /**
-    * Recherche toutes les Couleurs utilisables pour les visotubes.
-    * @return Liste de Couleurs.
-    */
-   List<Couleur> findByOrdreVisotubeManager();
+	/**
+	 * Recherche toutes les Couleurs utilisables pour les visotubes.
+	 * 
+	 * @return Liste de Couleurs.
+	 */
+	List<Couleur> findByOrdreVisotubeManager();
 
 }

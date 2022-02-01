@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.systeme;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -56,179 +57,180 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.systeme.Couleur;
 import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
 
-public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager
-{
+/**
+ * 
+ * @version 2.3
+ *
+ */
+public class CouleurEntiteTypeManagerImpl implements CouleurEntiteTypeManager {
 
-   private final Log log = LogFactory.getLog(CouleurEntiteTypeManager.class);
+	private final Log log = LogFactory.getLog(CouleurEntiteTypeManager.class);
 
-   /** Bean Dao. */
-   private CouleurEntiteTypeDao couleurEntiteTypeDao;
-   /** Bean Dao. */
-   private CouleurDao couleurDao;
-   /** Bean Dao. */
-   private BanqueDao banqueDao;
-   /** Bean Dao. */
-   private EchantillonTypeDao echantillonTypeDao;
-   /** Bean Dao. */
-   private ProdTypeDao prodTypeDao;
+	private CouleurEntiteTypeDao couleurEntiteTypeDao;
+	private CouleurDao couleurDao;
+	private BanqueDao banqueDao;
+	private EchantillonTypeDao echantillonTypeDao;
+	private ProdTypeDao prodTypeDao;
 
-   public void setCouleurEntiteTypeDao(final CouleurEntiteTypeDao cDao){
-      this.couleurEntiteTypeDao = cDao;
-   }
+	public void setCouleurEntiteTypeDao(final CouleurEntiteTypeDao cDao) {
+		this.couleurEntiteTypeDao = cDao;
+	}
 
-   public void setCouleurDao(final CouleurDao cDao){
-      this.couleurDao = cDao;
-   }
+	public void setCouleurDao(final CouleurDao cDao) {
+		this.couleurDao = cDao;
+	}
 
-   public void setBanqueDao(final BanqueDao bDao){
-      this.banqueDao = bDao;
-   }
+	public void setBanqueDao(final BanqueDao bDao) {
+		this.banqueDao = bDao;
+	}
 
-   public void setEchantillonTypeDao(final EchantillonTypeDao eDao){
-      this.echantillonTypeDao = eDao;
-   }
+	public void setEchantillonTypeDao(final EchantillonTypeDao eDao) {
+		this.echantillonTypeDao = eDao;
+	}
 
-   public void setProdTypeDao(final ProdTypeDao pDao){
-      this.prodTypeDao = pDao;
-   }
+	public void setProdTypeDao(final ProdTypeDao pDao) {
+		this.prodTypeDao = pDao;
+	}
 
-   @Override
-   public CouleurEntiteType findByIdManager(final Integer couleurEntiteTypeId){
-      return couleurEntiteTypeDao.findById(couleurEntiteTypeId);
-   }
+	@Override
+	public CouleurEntiteType findByIdManager(final Integer couleurEntiteTypeId) {
+		return couleurEntiteTypeDao.findById(couleurEntiteTypeId).orElse(null);
+	}
 
-   @Override
-   public List<CouleurEntiteType> findAllObjectsManager(){
-      return IterableUtils.toList(couleurEntiteTypeDao.findAll());
-   }
+	@Override
+	public List<CouleurEntiteType> findAllObjectsManager() {
+		return IterableUtils.toList(couleurEntiteTypeDao.findAll());
+	}
 
-   @Override
-   public List<CouleurEntiteType> findAllObjectsByBanqueManager(final Banque banque){
-      if(banque != null && banque.getBanqueId() != null){
-         return couleurEntiteTypeDao.findByBanque(banque);
-      }
-      return new ArrayList<>();
-   }
+	@Override
+	public List<CouleurEntiteType> findAllObjectsByBanqueManager(final Banque banque) {
+		if (banque != null && banque.getBanqueId() != null) {
+			return couleurEntiteTypeDao.findByBanque(banque);
+		}
+		return new ArrayList<>();
+	}
 
-   @Override
-   public List<CouleurEntiteType> findAllCouleursForEchanTypeByBanqueManager(final Banque banque){
-      if(banque != null && banque.getBanqueId() != null){
-         return couleurEntiteTypeDao.findByBanqueAllEchanType(banque);
-      }
-      return new ArrayList<>();
-   }
+	@Override
+	public List<CouleurEntiteType> findAllCouleursForEchanTypeByBanqueManager(final Banque banque) {
+		if (banque != null && banque.getBanqueId() != null) {
+			return couleurEntiteTypeDao.findByBanqueAllEchanType(banque);
+		}
+		return new ArrayList<>();
+	}
 
-   @Override
-   public List<CouleurEntiteType> findAllCouleursForProdTypeByBanqueManager(final Banque banque){
-      if(banque != null && banque.getBanqueId() != null){
-         return couleurEntiteTypeDao.findByBanqueAllProdType(banque);
-      }
-      return new ArrayList<>();
-   }
+	@Override
+	public List<CouleurEntiteType> findAllCouleursForProdTypeByBanqueManager(final Banque banque) {
+		if (banque != null && banque.getBanqueId() != null) {
+			return couleurEntiteTypeDao.findByBanqueAllProdType(banque);
+		}
+		return new ArrayList<>();
+	}
 
-   @Override
-   public Boolean findDoublonManager(final CouleurEntiteType couleurEntiteType){
-      if(couleurEntiteType != null){
-         if(couleurEntiteType.getCouleurEntiteTypeId() == null){
-            return IterableUtils.toList(couleurEntiteTypeDao.findAll()).contains(couleurEntiteType);
-         }
-         return couleurEntiteTypeDao.findByExcludedId(couleurEntiteType.getCouleurEntiteTypeId()).contains(couleurEntiteType);
-      }
-      return false;
-   }
+	@Override
+	public Boolean findDoublonManager(final CouleurEntiteType couleurEntiteType) {
+		if (couleurEntiteType != null) {
+			if (couleurEntiteType.getCouleurEntiteTypeId() == null) {
+				return IterableUtils.toList(couleurEntiteTypeDao.findAll()).contains(couleurEntiteType);
+			}
+			return couleurEntiteTypeDao.findByExcludedId(couleurEntiteType.getCouleurEntiteTypeId())
+					.contains(couleurEntiteType);
+		}
+		return false;
+	}
 
-   @Override
-   public void saveManager(final CouleurEntiteType couleurEntiteType, final Couleur couleur, final Banque banque,
-      final EchantillonType echantillonType, final ProdType prodType){
+	@Override
+	public void createObjectManager(final CouleurEntiteType couleurEntiteType, final Couleur couleur,
+			final Banque banque, final EchantillonType echantillonType, final ProdType prodType) {
 
-      //Banque required
-      if(banque != null){
-         couleurEntiteType.setBanque(banqueDao.save(banque));
-      }else{
-         log.warn("Objet obligatoire Banque manquant" + " lors de la création d'une" + " CouleurEntiteType");
-         throw new RequiredObjectIsNullException("CouleurEntiteType", "creation", "Banque");
-      }
+		// Banque required
+		if (banque != null) {
+			couleurEntiteType.setBanque(banqueDao.save(banque));
+		} else {
+			log.warn("Objet obligatoire Banque manquant" + " lors de la création d'une" + " CouleurEntiteType");
+			throw new RequiredObjectIsNullException("CouleurEntiteType", "creation", "Banque");
+		}
 
-      //Couleur required
-      if(couleur != null){
-         couleurEntiteType.setCouleur(couleurDao.save(couleur));
-      }else{
-         log.warn("Objet obligatoire Couleur manquant" + " lors de la création d'une" + " CouleurEntiteType");
-         throw new RequiredObjectIsNullException("CouleurEntiteType", "creation", "Couleur");
-      }
+		// Couleur required
+		if (couleur != null) {
+			couleurEntiteType.setCouleur(couleurDao.save(couleur));
+		} else {
+			log.warn("Objet obligatoire Couleur manquant" + " lors de la création d'une" + " CouleurEntiteType");
+			throw new RequiredObjectIsNullException("CouleurEntiteType", "creation", "Couleur");
+		}
 
-      // il faut qu'un seul type soit défini pour cette relation
-      if(echantillonType != null && prodType != null){
-         log.warn("Deux types sont définis" + " lors de la création d'une CouleurEntiteType");
-         throw new InvalidMultipleAssociationException("CouleurEntiteType", "creation", false);
-      }else if(echantillonType == null && prodType == null){
-         log.warn("Aucun type n'est défini" + " lors de la création d'une CouleurEntiteType");
-         throw new InvalidMultipleAssociationException("CouleurEntiteType", "creation", true);
-      }
+		// il faut qu'un seul type soit défini pour cette relation
+		if (echantillonType != null && prodType != null) {
+			log.warn("Deux types sont définis" + " lors de la création d'une CouleurEntiteType");
+			throw new InvalidMultipleAssociationException("CouleurEntiteType", "creation", false);
+		} else if (echantillonType == null && prodType == null) {
+			log.warn("Aucun type n'est défini" + " lors de la création d'une CouleurEntiteType");
+			throw new InvalidMultipleAssociationException("CouleurEntiteType", "creation", true);
+		}
 
-      couleurEntiteType.setEchantillonType(echantillonTypeDao.save(echantillonType));
-      couleurEntiteType.setProdType(prodTypeDao.save(prodType));
+		couleurEntiteType.setEchantillonType(echantillonTypeDao.save(echantillonType));
+		couleurEntiteType.setProdType(prodTypeDao.save(prodType));
 
-      // Test s'il y a des doublons
-      if(findDoublonManager(couleurEntiteType)){
-         log.warn("Doublon lors de la creation de l'objet " + "CouleurEntiteType : " + couleurEntiteType.toString());
-         throw new DoublonFoundException("CouleurEntiteType", "creation");
-      }
+		// Test s'il y a des doublons
+		if (findDoublonManager(couleurEntiteType)) {
+			log.warn("Doublon lors de la creation de l'objet " + "CouleurEntiteType : " + couleurEntiteType.toString());
+			throw new DoublonFoundException("CouleurEntiteType", "creation");
+		}
 
-      couleurEntiteTypeDao.save(couleurEntiteType);
+		couleurEntiteTypeDao.save(couleurEntiteType);
 
-      log.info("Enregistrement de l'objet CouleurEntiteType : " + couleurEntiteType.toString());
-   }
+		log.info("Enregistrement de l'objet CouleurEntiteType : " + couleurEntiteType.toString());
+	}
 
-   @Override
-   public void saveManager(final CouleurEntiteType couleurEntiteType, final Couleur couleur, final Banque banque,
-      final EchantillonType echantillonType, final ProdType prodType){
-      //Banque required
-      if(banque != null){
-         couleurEntiteType.setBanque(banqueDao.save(banque));
-      }else{
-         log.warn("Objet obligatoire Banque manquant" + " lors de la modification d'une" + " CouleurEntiteType");
-         throw new RequiredObjectIsNullException("CouleurEntiteType", "modification", "Banque");
-      }
+	@Override
+	public void updateObjectManager(final CouleurEntiteType couleurEntiteType, final Couleur couleur,
+			final Banque banque, final EchantillonType echantillonType, final ProdType prodType) {
+		// Banque required
+		if (banque != null) {
+			couleurEntiteType.setBanque(banqueDao.save(banque));
+		} else {
+			log.warn("Objet obligatoire Banque manquant" + " lors de la modification d'une" + " CouleurEntiteType");
+			throw new RequiredObjectIsNullException("CouleurEntiteType", "modification", "Banque");
+		}
 
-      //Couleur required
-      if(couleur != null){
-         couleurEntiteType.setCouleur(couleurDao.save(couleur));
-      }else{
-         log.warn("Objet obligatoire Couleur manquant" + " lors de la modification d'une" + " CouleurEntiteType");
-         throw new RequiredObjectIsNullException("CouleurEntiteType", "modification", "Couleur");
-      }
+		// Couleur required
+		if (couleur != null) {
+			couleurEntiteType.setCouleur(couleurDao.save(couleur));
+		} else {
+			log.warn("Objet obligatoire Couleur manquant" + " lors de la modification d'une" + " CouleurEntiteType");
+			throw new RequiredObjectIsNullException("CouleurEntiteType", "modification", "Couleur");
+		}
 
-      // il faut qu'un seul type soit défini pour cette relation
-      if(echantillonType != null && prodType != null){
-         log.warn("Deux types sont définis" + " lors de la modification d'une CouleurEntiteType");
-         throw new InvalidMultipleAssociationException("CouleurEntiteType", "modification", false);
-      }else if(echantillonType == null && prodType == null){
-         log.warn("Aucun type n'est défini" + " lors de la modification d'une CouleurEntiteType");
-         throw new InvalidMultipleAssociationException("CouleurEntiteType", "modification", true);
-      }
+		// il faut qu'un seul type soit défini pour cette relation
+		if (echantillonType != null && prodType != null) {
+			log.warn("Deux types sont définis" + " lors de la modification d'une CouleurEntiteType");
+			throw new InvalidMultipleAssociationException("CouleurEntiteType", "modification", false);
+		} else if (echantillonType == null && prodType == null) {
+			log.warn("Aucun type n'est défini" + " lors de la modification d'une CouleurEntiteType");
+			throw new InvalidMultipleAssociationException("CouleurEntiteType", "modification", true);
+		}
 
-      couleurEntiteType.setEchantillonType(echantillonTypeDao.save(echantillonType));
-      couleurEntiteType.setProdType(prodTypeDao.save(prodType));
+		couleurEntiteType.setEchantillonType(echantillonTypeDao.save(echantillonType));
+		couleurEntiteType.setProdType(prodTypeDao.save(prodType));
 
-      // Test s'il y a des doublons
-      if(findDoublonManager(couleurEntiteType)){
-         log.warn("Doublon lors de la modification de l'objet " + "CouleurEntiteType : " + couleurEntiteType.toString());
-         throw new DoublonFoundException("CouleurEntiteType", "modification");
-      }
+		// Test s'il y a des doublons
+		if (findDoublonManager(couleurEntiteType)) {
+			log.warn("Doublon lors de la modification de l'objet " + "CouleurEntiteType : "
+					+ couleurEntiteType.toString());
+			throw new DoublonFoundException("CouleurEntiteType", "modification");
+		}
 
-      couleurEntiteTypeDao.save(couleurEntiteType);
+		couleurEntiteTypeDao.save(couleurEntiteType);
 
-      log.info("Enregistrement de l'objet CouleurEntiteType : " + couleurEntiteType.toString());
-   }
+		log.info("Enregistrement de l'objet CouleurEntiteType : " + couleurEntiteType.toString());
+	}
 
-   @Override
-   public void deleteByIdManager(final CouleurEntiteType couleurEntiteType){
-      if(couleurEntiteType != null){
-         couleurEntiteTypeDao.deleteById(couleurEntiteType.getCouleurEntiteTypeId());
-         log.info("Suppression de l'objet CouleurEntiteType : " + couleurEntiteType.toString());
-      }else{
-         log.warn("Suppression d'une CouleurEntiteType null");
-      }
-   }
+	@Override
+	public void removeObjectManager(final CouleurEntiteType couleurEntiteType) {
+		if (couleurEntiteType != null) {
+			couleurEntiteTypeDao.deleteById(couleurEntiteType.getCouleurEntiteTypeId());
+			log.info("Suppression de l'objet CouleurEntiteType : " + couleurEntiteType.toString());
+		} else {
+			log.warn("Suppression d'une CouleurEntiteType null");
+		}
+	}
 }

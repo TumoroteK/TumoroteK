@@ -70,44 +70,4 @@ public interface ProdTypeManager extends PfDependantTKThesaurusManager<ProdType>
     * @return Liste de ProdType.
     */
    List<ProdType> findByTypeLikeManager(String type, boolean exactMatch);
-
-   //	/**
-   //	 * Recherche les doublons du ProdType passé en paramètre.
-   //	 * @param type ProdType pour lequel on cherche des doublons.
-   //	 * @return True s'il existe des doublons.
-   //	 */
-   //	Boolean findDoublonManager(ProdType type);
-   //	
-   //	/**
-   //	 * Test si un type de produit dérivé est lié à des 
-   //	 * produits dérivés.
-   //	 * @param type ProdType que l'on souhaite tester.
-   //	 * @return Vrai si la qualité est utilisée.
-   //	 */
-   //	Boolean isUsedObjectManager(ProdType type);
-   //	
-   //	/**
-   //	 * Persist une instance de ProdType dans la base de données.
-   //	 * @param type Nouvelle instance de l'objet à créer.
-   //	 * @throws DoublonFoundException Lance une exception si un doublon de
-   //	 * l'objet à créer se trouve déjà dans la base.
-   //	 */
-   //	void saveManager(ProdType type);
-   //	
-   //	/**
-   //	 * Sauvegarde les modifications apportées à un objet persistant.
-   //	 * @param type Objet à mettre à jour dans la base.
-   //	 * @throws DoublonFoundException Lance une exception si un doublon de
-   //	 * l'objet à créer se trouve déjà dans la base.
-   //	 */
-   //	void saveManager(ProdType type);
-   //	
-   //	/**
-   //	 * Supprime un ProdType de la base de données.
-   //	 * @param type EchanQualite à supprimer de la base de données.
-   //	 * @throws DoublonFoundException Lance une exception si l'objet
-   //	 * est utilisé par des échantillons.
-   //	 */
-   //	void deleteByIdManager(ProdType type);
-
 }

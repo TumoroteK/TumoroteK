@@ -153,7 +153,7 @@ public class CessionExamenManagerTest extends AbstractManagerTest4
    public void testCRUD(){
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    @Test
@@ -240,20 +240,20 @@ public class CessionExamenManagerTest extends AbstractManagerTest4
    }
 
    /**
-    * Teste la methode deleteByIdManager. 
+    * Teste la methode removeObjectManager. 
     */
    @Test
-   public void deleteByIdManagerTest(){
+   public void removeObjectManagerTest(){
       //Suppression de l'enregistrement precedemment insere
       final CessionExamen c1 = (cessionExamenManager.findByExamenLikeManager("TEST", true)).get(0);
-      cessionExamenManager.deleteByIdManager(c1);
+      cessionExamenManager.removeObjectManager(c1);
       assertTrue((cessionExamenManager.findByExamenLikeManager("TEST", true)).size() == 0);
       //Suppression engrendrant une exception
       //		Boolean catched = false;
       //		try {
       //			CessionExamen c2 = (cessionExamenManager
       //					.findByExamenLikeManager("EXAMEN 1", true)).get(0);
-      //			cessionExamenManager.deleteByIdManager(c2);
+      //			cessionExamenManager.removeObjectManager(c2);
       //		} catch (Exception e) {
       //			if (e.getClass().getSimpleName().equals(
       //					"ObjectUsedException")) {
@@ -263,7 +263,7 @@ public class CessionExamenManagerTest extends AbstractManagerTest4
       //		assertTrue(catched);
       assertTrue((cessionExamenManager.findByExamenLikeManager("EXAMEN 1", true)).size() > 0);
       //null remove
-      cessionExamenManager.deleteByIdManager(null);
+      cessionExamenManager.removeObjectManager(null);
       assertTrue(cessionExamenManager.findByOrderManager(c1.getPlateforme()).size() == 3);
    }
 

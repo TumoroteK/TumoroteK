@@ -169,7 +169,7 @@ public class EnceinteTypeManagerTest extends AbstractManagerTest4
    public void testCRUD(){
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    private void saveManagerTest(){
@@ -267,16 +267,16 @@ public class EnceinteTypeManagerTest extends AbstractManagerTest4
       }
    }
 
-   private void deleteByIdManagerTest(){
+   private void removeObjectManagerTest(){
       //Suppression de l'enregistrement precedemment insere
       final EnceinteType e1 = enceinteTypeManager.findByIdManager(10);
-      enceinteTypeManager.deleteByIdManager(e1);
+      enceinteTypeManager.removeObjectManager(e1);
       assertTrue(enceinteTypeManager.findByOrderManager(e1.getPlateforme()).size() == 8);
       //Suppression engrendrant une exception
       Boolean catched = false;
       try{
          final EnceinteType e2 = enceinteTypeManager.findByIdManager(2);
-         enceinteTypeManager.deleteByIdManager(e2);
+         enceinteTypeManager.removeObjectManager(e2);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ObjectUsedException")){
             catched = true;
@@ -285,7 +285,7 @@ public class EnceinteTypeManagerTest extends AbstractManagerTest4
       assertTrue(catched);
       assertTrue(enceinteTypeManager.findByOrderManager(e1.getPlateforme()).size() == 8);
       //null remove
-      enceinteTypeManager.deleteByIdManager(null);
+      enceinteTypeManager.removeObjectManager(null);
       assertTrue(enceinteTypeManager.findByOrderManager(e1.getPlateforme()).size() == 8);
    }
 

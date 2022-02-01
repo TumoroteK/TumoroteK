@@ -215,7 +215,7 @@ public class IndicateurManagerTest extends AbstractManagerTest4
       assertTrue(itest.getDescription().equals("descr2"));
       assertTrue(indicateurManager.findAllObjectsManager().size() == totCounts + 1);
 
-      indicateurManager.deleteByIdManager(itest);
+      indicateurManager.removeObjectManager(itest);
       assertTrue(indicateurManager.findAllObjectsManager().size() == totCounts);
 
    }

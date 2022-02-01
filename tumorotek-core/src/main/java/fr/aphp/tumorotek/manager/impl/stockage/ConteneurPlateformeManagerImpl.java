@@ -49,7 +49,7 @@ public class ConteneurPlateformeManagerImpl implements ConteneurPlateformeManage
    }
 
    @Override
-   public void deleteByIdManager(final ConteneurPlateforme cp){
+   public void removeObjectManager(final ConteneurPlateforme cp){
       conteneurPlateformeDao.deleteById(cp.getPk());
    }
 

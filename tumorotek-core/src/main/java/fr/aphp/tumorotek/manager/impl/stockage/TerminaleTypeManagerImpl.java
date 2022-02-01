@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.stockage;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -81,7 +82,7 @@ public class TerminaleTypeManagerImpl implements TerminaleTypeManager
 
    @Override
    public TerminaleType findByIdManager(final Integer terminaleTypeId){
-      return terminaleTypeDao.findById(terminaleTypeId);
+      return terminaleTypeDao.findById(terminaleTypeId).orElse(null);
    }
 
    @Override
@@ -108,7 +109,7 @@ public class TerminaleTypeManagerImpl implements TerminaleTypeManager
    }
 
    @Override
-   public void saveManager(final TerminaleType obj){
+   public void createObjectManager(final TerminaleType obj){
       BeanValidator.validateObject(obj, new Validator[] {terminaleTypeValidator});
       if(!findDoublonManager(obj)){
          terminaleTypeDao.save(obj);
@@ -120,7 +121,7 @@ public class TerminaleTypeManagerImpl implements TerminaleTypeManager
    }
 
    @Override
-   public void saveManager(final TerminaleType obj){
+   public void updateObjectManager(final TerminaleType obj){
       BeanValidator.validateObject(obj, new Validator[] {terminaleTypeValidator});
       if(!findDoublonManager(obj)){
          terminaleTypeDao.save(obj);
@@ -132,7 +133,7 @@ public class TerminaleTypeManagerImpl implements TerminaleTypeManager
    }
 
    @Override
-   public void deleteByIdManager(final TerminaleType obj){
+   public void removeObjectManager(final TerminaleType obj){
       if(obj != null){
          if(!isUsedObjectManager(obj)){
             terminaleTypeDao.deleteById(obj.getTerminaleTypeId());

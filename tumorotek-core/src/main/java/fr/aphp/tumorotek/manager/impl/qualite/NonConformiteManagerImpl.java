@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -103,7 +104,7 @@ public class NonConformiteManagerImpl implements NonConformiteManager
 
    @Override
    public NonConformite findByIdManager(final Integer nonConformiteId){
-      return nonConformiteDao.findById(nonConformiteId);
+      return nonConformiteDao.findById(nonConformiteId).orElse(null);
    }
 
    @Override
@@ -161,7 +162,7 @@ public class NonConformiteManagerImpl implements NonConformiteManager
    }
 
    @Override
-   public void saveManager(final NonConformite nonConformite){
+   public void createObjectManager(final NonConformite nonConformite){
       
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
@@ -190,7 +191,7 @@ public class NonConformiteManagerImpl implements NonConformiteManager
    }
 
    @Override
-   public void saveManager(final NonConformite nonConformite){
+   public void updateObjectManager(final NonConformite nonConformite){
       
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
@@ -219,13 +220,13 @@ public class NonConformiteManagerImpl implements NonConformiteManager
    }
 
    @Override
-   public void deleteByIdManager(final NonConformite nonConformite){
+   public void removeObjectManager(final NonConformite nonConformite){
       
       if(nonConformite != null){
          // suppression des objets non conforme
          final List<ObjetNonConforme> objs = objetNonConformeDao.findByNonConformite(nonConformite);
          for(int i = 0; i < objs.size(); i++){
-            objetNonConformeManager.deleteByIdManager(objs.get(i));
+            objetNonConformeManager.removeObjectManager(objs.get(i));
          }
 
          nonConformiteDao.deleteById(nonConformite.getId());

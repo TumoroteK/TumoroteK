@@ -444,11 +444,11 @@ public class DossierExterneManagerTest extends AbstractManagerTest4
 		assertTrue(valeurExterneManager.findByBlocExterneManager(bTest2).contains(ve3));
 
 		// suppressions
-		dossierExterneManager.deleteByIdManager(dTest1);
-		dossierExterneManager.deleteByIdManager(dTest2);
-		dossierExterneManager.deleteByIdManager(dTest4);
-		dossierExterneManager.deleteByIdManager(null);
-		dossierExterneManager.deleteByIdManager(new DossierExterne());
+		dossierExterneManager.removeObjectManager(dTest1);
+		dossierExterneManager.removeObjectManager(dTest2);
+		dossierExterneManager.removeObjectManager(dTest4);
+		dossierExterneManager.removeObjectManager(null);
+		dossierExterneManager.removeObjectManager(new DossierExterne());
 		assertTrue(dossierExterneManager.findAllObjectsManager().size() == nb);
 		assertTrue(blocExterneManager.findAllObjectsManager().size() == nbB);
 		assertTrue(valeurExterneManager.findAllObjectsManager().size() == nbV);
@@ -512,7 +512,7 @@ public class DossierExterneManagerTest extends AbstractManagerTest4
 		assertTrue(dossierExterneManager.findByIdentificationManager("ID3").isEmpty());
 
 		// clean up
-		dossierExterneManager.deleteByIdManager(dossierExterneManager.findByIdentificationManager("ID").get(0));
+		dossierExterneManager.removeObjectManager(dossierExterneManager.findByIdentificationManager("ID").get(0));
 
 		testFindAll();
 	}
@@ -583,7 +583,7 @@ public class DossierExterneManagerTest extends AbstractManagerTest4
 		assertTrue(dos.isEmpty());
 		
 		// clean up
-		dossierExterneManager.deleteByIdManager(der4);
+		dossierExterneManager.removeObjectManager(der4);
 	}
 	
 	/**

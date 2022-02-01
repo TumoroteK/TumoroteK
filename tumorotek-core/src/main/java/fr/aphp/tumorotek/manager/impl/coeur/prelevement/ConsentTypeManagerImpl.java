@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.manager.impl.coeur.prelevement;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -87,7 +88,7 @@ public class ConsentTypeManagerImpl implements ConsentTypeManager
    }
 
    @Override
-   public void saveManager(final ConsentType obj){
+   public void createObjectManager(final ConsentType obj){
 
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
@@ -107,7 +108,7 @@ public class ConsentTypeManagerImpl implements ConsentTypeManager
    }
 
    @Override
-   public void saveManager(final ConsentType obj){
+   public void updateObjectManager(final ConsentType obj){
       BeanValidator.validateObject(obj, new Validator[] {consentTypeValidator});
       if(!findDoublonManager(obj)){
          consentTypeDao.save(obj);
@@ -128,7 +129,7 @@ public class ConsentTypeManagerImpl implements ConsentTypeManager
    }
 
    @Override
-   public void deleteByIdManager(final ConsentType obj){
+   public void removeObjectManager(final ConsentType obj){
       if(obj != null){
          if(!isUsedObjectManager(obj)){
             consentTypeDao.deleteById(obj.getId());
@@ -167,7 +168,7 @@ public class ConsentTypeManagerImpl implements ConsentTypeManager
 
    @Override
    public ConsentType findByIdManager(final Integer id){
-      return consentTypeDao.findById(id);
+      return consentTypeDao.findById(id).orElse(null);
    }
 
    @Override

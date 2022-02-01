@@ -92,7 +92,7 @@ public interface UiRequeteManager
     * @throws validationException si nom illegal
     * @throws RequiredObjectIsNullException si ut, et ou ordre sont nulls
     */
-   void saveManager(String nom, Utilisateur ut, Entite et, Integer ordre, List<UiCompValue> vals);
+   void createObjectManager(String nom, Utilisateur ut, Entite et, Integer ordre, List<UiCompValue> vals);
 
    /**
     * Sauvegarde les modifications apportées à un objet persistant.
@@ -102,11 +102,11 @@ public interface UiRequeteManager
     * @throws DoublonFoundException Lance une exception si un doublon de
     * l'objet à créer se trouve déjà dans la base.
     */
-   void saveManager(UiRequete requete, List<UiCompValue> vals);
+   void mergeObjectManager(UiRequete requete, List<UiCompValue> vals);
 
    /**
     * Supprime une UiRequete de la base de données.
     * @param requete à supprimer de la base de données.
     */
-   void deleteByIdManager(UiRequete requete);
+   void removeObjectManager(UiRequete requete);
 }

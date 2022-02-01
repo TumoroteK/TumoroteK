@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.manager.impl.io.export;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -135,7 +136,7 @@ public class ResultatManagerImpl implements ResultatManager
          log.warn("Objet obligatoire identifiant manquant lors de la " + "recherche par l'identifiant d'un objet Resultat");
          throw new RequiredObjectIsNullException("Resultat", "recherche par identifiant", "identifiant");
       }
-      return resultatDao.findById(idResultat);
+      return resultatDao.findById(idResultat).orElse(null);
    }
 
    /**
@@ -172,7 +173,7 @@ public class ResultatManagerImpl implements ResultatManager
       final Resultat temp = new Resultat(resultat.getNomColonne(), champ, resultat.getTri(), resultat.getOrdreTri(),
          resultat.getPosition(), resultat.getFormat(), affichage);
       BeanValidator.validateObject(resultat, new Validator[] {resultatValidator});
-      saveManager(temp, temp.getAffichage(), temp.getChamp());
+      createObjectManager(temp, temp.getAffichage(), temp.getChamp());
       return temp;
    }
 
@@ -183,7 +184,7 @@ public class ResultatManagerImpl implements ResultatManager
     * @param champ Champ du Résultat.
     */
    @Override
-   public void saveManager(final Resultat resultat, Affichage affichage, Champ champ){
+   public void createObjectManager(final Resultat resultat, Affichage affichage, Champ champ){
       //On vérifie que le résultat n'est pas nul
       if(resultat == null){
          log.warn("Objet obligatoire Resultat manquant lors " + "de la création d'un objet Resultat");
@@ -202,7 +203,7 @@ public class ResultatManagerImpl implements ResultatManager
       if(champ.getChampId() != null){
          champ = champDao.save(champ);
       }else{
-         champManager.saveManager(champ, champ.getChampParent());
+         champManager.createObjectManager(champ, champ.getChampParent());
       }
       resultat.setChamp(champ);
       if(affichage.getAffichageId() != null){
@@ -220,7 +221,7 @@ public class ResultatManagerImpl implements ResultatManager
     * @param champ Champ du Résultat.
     */
    @Override
-   public void saveManager(final Resultat resultat, Affichage affichage, Champ champ){
+   public void updateObjectManager(final Resultat resultat, Affichage affichage, Champ champ){
       //On vérifie que le résultat n'est pas nul
       if(resultat == null){
          log.warn("Objet obligatoire Resultat manquant lors " + "de la modification d'un objet Resultat");
@@ -240,7 +241,7 @@ public class ResultatManagerImpl implements ResultatManager
       if(champ.getChampId() != null){
          champ = champDao.save(champ);
       }else{
-         champManager.saveManager(champ, champ.getChampParent());
+         champManager.createObjectManager(champ, champ.getChampParent());
       }
       resultat.setChamp(champ);
       if(affichage.getAffichageId() != null){
@@ -254,7 +255,7 @@ public class ResultatManagerImpl implements ResultatManager
 
       // On supprime l'ancien champ
       if(oldChamp != null && oldChamp.getChampId() != null && !oldChamp.equals(resultat.getChamp())){
-         champManager.deleteByIdManager(oldChamp);
+         champManager.removeObjectManager(oldChamp);
       }
    }
 
@@ -263,7 +264,7 @@ public class ResultatManagerImpl implements ResultatManager
     * @param groupement Résultat à supprimer.
     */
    @Override
-   public void deleteByIdManager(final Resultat resultat){
+   public void removeObjectManager(final Resultat resultat){
       //On vérifie que le resultat n'est pas nul
       if(resultat == null){
          throw new RequiredObjectIsNullException("Resultat", "suppression", "Resultat");
@@ -278,7 +279,7 @@ public class ResultatManagerImpl implements ResultatManager
 
       //On supprime le champ
       if(oldChamp != null){
-         champManager.deleteByIdManager(oldChamp);
+         champManager.removeObjectManager(oldChamp);
       }
    }
 

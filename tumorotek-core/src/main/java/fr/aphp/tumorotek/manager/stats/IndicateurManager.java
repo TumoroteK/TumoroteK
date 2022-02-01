@@ -144,7 +144,7 @@ public interface IndicateurManager
     * @param modele
     *            Modele.
     */
-   void saveManager(Indicateur stmt);
+   void createObjectManager(Indicateur stmt);
 
    /**
     * Persist une instance de Indicateur dans la base de données.
@@ -152,7 +152,7 @@ public interface IndicateurManager
     * @param Indicateur
     *            Instance de l'objet à maj.
     */
-   void saveManager(Indicateur stmt);
+   void updateObjectManager(Indicateur stmt);
 
    /**
     * Supprime une Indicateur de la base de données.
@@ -160,6 +160,6 @@ public interface IndicateurManager
     * @param Indicateur
     *            requete à supprimer de la base de données.
     */
-   void deleteByIdManager(Indicateur indic);
+   void removeObjectManager(Indicateur indic);
 
 }

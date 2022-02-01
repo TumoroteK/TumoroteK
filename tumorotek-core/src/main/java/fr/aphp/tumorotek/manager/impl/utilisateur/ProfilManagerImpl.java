@@ -109,7 +109,7 @@ public class ProfilManagerImpl implements ProfilManager
 
    @Override
    public Profil findByIdManager(final Integer profilId){
-      return profilDao.findById(profilId);
+      return profilDao.findById(profilId).orElse(null);
    }
 
    @Override
@@ -139,7 +139,7 @@ public class ProfilManagerImpl implements ProfilManager
    }
 
    @Override
-   public void saveManager(final Profil profil, final List<DroitObjet> droitObjets, final Utilisateur admin,
+   public void createObjectManager(final Profil profil, final List<DroitObjet> droitObjets, final Utilisateur admin,
       final Plateforme pf){
 
       if(pf != null){
@@ -170,13 +170,13 @@ public class ProfilManagerImpl implements ProfilManager
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.saveManager(creationOp, admin, operationTypeDao.findByNom("Creation").get(0), profil);
+         operationManager.createObjectManager(creationOp, admin, operationTypeDao.findByNom("Creation").get(0), profil);
 
          // enregistrements des droitsobjets
          if(droitObjets != null){
             for(int i = 0; i < droitObjets.size(); i++){
                final DroitObjet obj = droitObjets.get(i);
-               droitObjetManager.saveManager(obj, profil, obj.getEntite(), obj.getOperationType());
+               droitObjetManager.createObjectManager(obj, profil, obj.getEntite(), obj.getOperationType());
             }
          }
 
@@ -187,7 +187,7 @@ public class ProfilManagerImpl implements ProfilManager
    }
 
    @Override
-   public void saveManager(final Profil profil, final List<DroitObjet> droitObjets, final Utilisateur admin){
+   public void updateObjectManager(final Profil profil, final List<DroitObjet> droitObjets, final Utilisateur admin){
       final List<DroitObjet> droitsToCreate = new ArrayList<>();
       final List<DroitObjet> droitsToRemove = new ArrayList<>();
       List<DroitObjet> oldDroits = new ArrayList<>();
@@ -214,7 +214,7 @@ public class ProfilManagerImpl implements ProfilManager
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.saveManager(creationOp, admin, operationTypeDao.findByNom("Modification").get(0), profil);
+         operationManager.createObjectManager(creationOp, admin, operationTypeDao.findByNom("Modification").get(0), profil);
 
          if(droitObjets != null){
             oldDroits = droitObjetManager.findByProfilManager(profil);
@@ -225,13 +225,13 @@ public class ProfilManagerImpl implements ProfilManager
             }
 
             for(int i = 0; i < droitsToRemove.size(); i++){
-               droitObjetManager.deleteByIdManager(droitsToRemove.get(i));
+               droitObjetManager.removeObjectManager(droitsToRemove.get(i));
             }
 
             // enregistrements des droitsobjets
             for(int i = 0; i < droitsToCreate.size(); i++){
                final DroitObjet obj = droitsToCreate.get(i);
-               droitObjetManager.saveManager(obj, profil, obj.getEntite(), obj.getOperationType());
+               droitObjetManager.createObjectManager(obj, profil, obj.getEntite(), obj.getOperationType());
             }
          }
 
@@ -242,7 +242,7 @@ public class ProfilManagerImpl implements ProfilManager
    }
 
    @Override
-   public void deleteByIdManager(final Profil profil){
+   public void removeObjectManager(final Profil profil){
       if(profil != null){
          if(isUsedObjectManager(profil)){
             log.warn("Objet utilisé lors de la suppression de l'objet " + "Profil : " + profil.toString());
@@ -251,12 +251,12 @@ public class ProfilManagerImpl implements ProfilManager
          // suppression des DroitsObjets
          final List<DroitObjet> objets = droitObjetManager.findByProfilManager(profil);
          for(int i = 0; i < objets.size(); i++){
-            droitObjetManager.deleteByIdManager(objets.get(i));
+            droitObjetManager.removeObjectManager(objets.get(i));
          }
 
          final List<ProfilUtilisateur> profils = profilUtilisateurManager.findByProfilManager(profil, null);
          for(int i = 0; i < profils.size(); i++){
-            profilUtilisateurManager.deleteByIdManager(profils.get(i));
+            profilUtilisateurManager.removeObjectManager(profils.get(i));
          }
 
          profilDao.deleteById(profil.getProfilId());
@@ -265,7 +265,7 @@ public class ProfilManagerImpl implements ProfilManager
          //Supprime operations associes
          final List<Operation> ops = operationManager.findByObjectManager(profil);
          for(int i = 0; i < ops.size(); i++){
-            operationManager.deleteByIdManager(ops.get(i));
+            operationManager.removeObjectManager(ops.get(i));
          }
       }else{
          log.warn("Suppression d'une Profil null");

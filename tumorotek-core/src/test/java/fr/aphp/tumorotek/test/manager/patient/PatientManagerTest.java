@@ -464,7 +464,7 @@ public class PatientManagerTest extends AbstractManagerTest4
 	public void testCRUD() throws ParseException{
 		saveManagerTest();
 		saveManagerTest();
-		deleteByIdManagerTest();
+		removeObjectManagerTest();
 	}
 
 	private void saveManagerTest() throws ParseException{
@@ -751,13 +751,13 @@ public class PatientManagerTest extends AbstractManagerTest4
 	}
 
 	/**
-	 * Teste la methode deleteByIdManager. 
+	 * Teste la methode removeObjectManager. 
 	 */
-	private void deleteByIdManagerTest(){
+	private void removeObjectManagerTest(){
 		final Utilisateur u = utilisateurDao.findById(1);
 		//Suppression de l'enregistrement precedemment insere
 		final Patient p1 = patientManager.findByNomLikeManager("2 MAKOUN", true).get(0);
-		patientManager.deleteByIdManager(p1, "suppr", u, null);
+		patientManager.removeObjectManager(p1, "suppr", u, null);
 		assertTrue(patientManager.findByNomLikeManager("2 MAKOUN", true).size() == 0);
 		assertTrue(getOperationManager().findByObjectManager(p1).size() == 0);
 		//verification de la suppression cascade des associations
@@ -768,7 +768,7 @@ public class PatientManagerTest extends AbstractManagerTest4
 		// isUsedObject
 		boolean catched = false;
 		try{
-			patientManager.deleteByIdManager(patientManager.findByNomLikeManager("DELPHINO", true).get(0), null, u, null);
+			patientManager.removeObjectManager(patientManager.findByNomLikeManager("DELPHINO", true).get(0), null, u, null);
 		}catch(final ObjectUsedException oe){
 			catched = true;
 			assertTrue(oe.getKey().equals("patient.deletion.isUsed"));
@@ -776,7 +776,7 @@ public class PatientManagerTest extends AbstractManagerTest4
 		}
 		assertTrue(catched);
 
-		patientManager.deleteByIdManager(null, "suppr22", u, null);
+		patientManager.removeObjectManager(null, "suppr22", u, null);
 
 		// fantome verification et suppression
 		assertTrue(getOperationManager().findAllObjectsManager().size() == 22);
@@ -784,14 +784,14 @@ public class PatientManagerTest extends AbstractManagerTest4
 		assertTrue(fs.size() == 1);
 		assertTrue(fs.get(0).getEntite().getNom().equals("Patient"));
 		assertTrue(fs.get(0).getCommentaires().equals("suppr"));
-		getOperationManager().deleteByIdManager(getOperationManager().findByObjectManager(fs.get(0)).get(0));
+		getOperationManager().removeObjectManager(getOperationManager().findByObjectManager(fs.get(0)).get(0));
 
 		fs.clear();
 		fs.add(getFantomeDao().findByNom(p1.getPhantomData() + ": maladie2").get(0));
 		fs.add(getFantomeDao().findByNom(p1.getPhantomData() + ": maladie3").get(0));
 
 		for(int i = 0; i < fs.size(); i++){
-			getOperationManager().deleteByIdManager(getOperationManager().findByObjectManager(fs.get(i)).get(0));
+			getOperationManager().removeObjectManager(getOperationManager().findByObjectManager(fs.get(i)).get(0));
 		}
 
 		//verifie que l'etat des tables modifies est revenu identique
@@ -1085,7 +1085,7 @@ public class PatientManagerTest extends AbstractManagerTest4
 
 		// Suppression
 		for(int i = 0; i < list.size(); i++){
-			patientManager.deleteByIdManager(list.get(i), null, utilisateur, null);
+			patientManager.removeObjectManager(list.get(i), null, utilisateur, null);
 		}
 		// verification de l'etat de la base
 		testFindAllObjectsManager();
@@ -1186,7 +1186,7 @@ public class PatientManagerTest extends AbstractManagerTest4
 				"modification", "/tmp/", false);
 
 		// Nettoyage
-		patientManager.deleteByIdManager(pat, null, utilisateur, null);
+		patientManager.removeObjectManager(pat, null, utilisateur, null);
 		final List<TKFantomableObject> fs = new ArrayList<>();
 		fs.add(pat);
 		cleanUpFantomes(fs);
@@ -1477,9 +1477,9 @@ public class PatientManagerTest extends AbstractManagerTest4
 		mals.add(m2);
 		final List<Prelevement> prels = prelevementManager.findByPatientManager(fus);
 		for(int i = 0; i < prels.size(); i++){
-			prelevementManager.deleteByIdManager(prels.get(i), null, u, null);
+			prelevementManager.removeObjectManager(prels.get(i), null, u, null);
 		}
-		patientManager.deleteByIdManager(fus, null, u, null);
+		patientManager.removeObjectManager(fus, null, u, null);
 
 		final List<TKFantomableObject> fs = new ArrayList<>();
 		fs.add(fus);

@@ -41,6 +41,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.orm.jpa.SharedEntityManagerCreator;
@@ -97,7 +98,7 @@ public class RisqueManagerImpl implements RisqueManager
    }
 
    @Override
-   public void saveManager(final Risque obj){
+   public void createObjectManager(final Risque obj){
 
       final Risque rs = obj;
 
@@ -120,7 +121,7 @@ public class RisqueManagerImpl implements RisqueManager
    }
 
    @Override
-   public void saveManager(final Risque obj){
+   public void updateObjectManager(final Risque obj){
       BeanValidator.validateObject(obj, new Validator[] {risqueValidator});
       if(!findDoublonManager(obj)){
          risqueDao.save(obj);
@@ -153,7 +154,7 @@ public class RisqueManagerImpl implements RisqueManager
    }
 
    @Override
-   public void deleteByIdManager(final Risque obj){
+   public void removeObjectManager(final Risque obj){
       if(obj != null){
          risqueDao.deleteById(obj.getId());
          log.info("Suppression objet Risque " + obj.toString());
@@ -210,7 +211,7 @@ public class RisqueManagerImpl implements RisqueManager
 
    @Override
    public Risque findByIdManager(final Integer id){
-      return risqueDao.findById(id);
+      return risqueDao.findById(id).orElse(null);
    }
 
    @Override

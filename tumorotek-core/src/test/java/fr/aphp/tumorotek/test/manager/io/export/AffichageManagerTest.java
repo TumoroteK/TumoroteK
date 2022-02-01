@@ -185,7 +185,7 @@ public class AffichageManagerTest extends AbstractManagerTest4
       assertNotNull(copie2);
 
       //On supprime les éléments créés
-      manager.deleteByIdManager(copie);
+      manager.removeObjectManager(copie);
    }
 
    @Test
@@ -405,7 +405,7 @@ public class AffichageManagerTest extends AbstractManagerTest4
       //On récupère un affichage
       final int id = affichage.getAffichageId();
       //On le supprime
-      manager.deleteByIdManager(affichage);
+      manager.removeObjectManager(affichage);
       //On essaye de le récupérer via l'identifiant
       affichage2 = manager.findByIdManager(id);
       //On vérifie qu'il n'existe pas dans la liste du manager
@@ -415,7 +415,7 @@ public class AffichageManagerTest extends AbstractManagerTest4
       final Affichage a1 = manager.findByIdManager(1);
       boolean catched = false;
       try{
-         manager.deleteByIdManager(a1);
+         manager.removeObjectManager(a1);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ObjectUsedException")){
             catched = true;

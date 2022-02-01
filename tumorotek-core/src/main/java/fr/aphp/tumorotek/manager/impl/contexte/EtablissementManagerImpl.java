@@ -41,6 +41,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -170,7 +171,7 @@ public class EtablissementManagerImpl implements EtablissementManager
     */
    @Override
    public Etablissement findByIdManager(final Integer etablissementId){
-      return etablissementDao.findById(etablissementId);
+      return etablissementDao.findById(etablissementId).orElse(null);
    }
 
    /**
@@ -390,7 +391,7 @@ public class EtablissementManagerImpl implements EtablissementManager
     *            Categorie associée.
     */
    @Override
-   public void saveManager(final Etablissement etablissement, final Coordonnee coordonnee, final Categorie categorie,
+   public void createObjectManager(final Etablissement etablissement, final Coordonnee coordonnee, final Categorie categorie,
       final Utilisateur utilisateur){
 
       if(findDoublonManager(etablissement)){
@@ -403,9 +404,9 @@ public class EtablissementManagerImpl implements EtablissementManager
       if(coordonnee != null){
          BeanValidator.validateObject(coordonnee, new Validator[] {coordonneeValidator});
          if(coordonnee.getCoordonneeId() == null){
-            coordonneeManager.saveManager(coordonnee, null);
+            coordonneeManager.createObjectManager(coordonnee, null);
          }else{
-            coordonneeManager.saveManager(coordonnee, null, true);
+            coordonneeManager.updateObjectManager(coordonnee, null, true);
          }
       }
       // else {
@@ -421,7 +422,7 @@ public class EtablissementManagerImpl implements EtablissementManager
       // Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
       creationOp.setDate(Utils.getCurrentSystemCalendar());
-      operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), etablissement);
+      operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), etablissement);
 
    }
 
@@ -436,7 +437,7 @@ public class EtablissementManagerImpl implements EtablissementManager
     *            Categorie associée.
     */
    @Override
-   public void saveManager(final Etablissement etablissement, final Coordonnee coordonnee, final Categorie categorie,
+   public void updateObjectManager(final Etablissement etablissement, final Coordonnee coordonnee, final Categorie categorie,
       final Utilisateur utilisateur, final boolean cascadeArchive){
 
       if(findDoublonManager(etablissement)){
@@ -449,9 +450,9 @@ public class EtablissementManagerImpl implements EtablissementManager
       if(coordonnee != null){
          BeanValidator.validateObject(coordonnee, new Validator[] {coordonneeValidator});
          if(coordonnee.getCoordonneeId() == null){
-            coordonneeManager.saveManager(coordonnee, null);
+            coordonneeManager.createObjectManager(coordonnee, null);
          }else{
-            coordonneeManager.saveManager(coordonnee, null, true);
+            coordonneeManager.updateObjectManager(coordonnee, null, true);
          }
       }
 
@@ -470,7 +471,7 @@ public class EtablissementManagerImpl implements EtablissementManager
       // Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
       creationOp.setDate(Utils.getCurrentSystemCalendar());
-      operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
+      operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
          etablissement);
 
    }
@@ -515,7 +516,7 @@ public class EtablissementManagerImpl implements EtablissementManager
     *            Etablissement à supprimer de la base de données.
     */
    @Override
-   public void deleteByIdManager(final Etablissement etablissement, final String comments, final Utilisateur user){
+   public void removeObjectManager(final Etablissement etablissement, final String comments, final Utilisateur user){
 
       if(etablissement != null){
          if(!isUsedObjectManager(etablissement) && !isReferencedObjectManager(etablissement)){
@@ -538,7 +539,7 @@ public class EtablissementManagerImpl implements EtablissementManager
    }
 
    @Override
-   public void deleteByIdCascadeManager(Etablissement etablissement, final String comments, final Utilisateur user){
+   public void removeObjectCascadeManager(Etablissement etablissement, final String comments, final Utilisateur user){
 
       if(etablissement != null){
          log.info("Suppression en cascade depuis objet Etablissement " + etablissement.toString());
@@ -551,7 +552,7 @@ public class EtablissementManagerImpl implements EtablissementManager
          final Iterator<Service> servsIt = servs.iterator();
 
          while(servsIt.hasNext()){
-            serviceManager.deleteByIdCascadeManager(servsIt.next(), comments, user);
+            serviceManager.removeObjectCascadeManager(servsIt.next(), comments, user);
          }
 
          // Supprime les collaborateurs
@@ -560,14 +561,14 @@ public class EtablissementManagerImpl implements EtablissementManager
          final Iterator<Collaborateur> collabsIt = collabs.iterator();
 
          while(collabsIt.hasNext()){
-            collaborateurManager.deleteByIdCascadeManager(collabsIt.next(), null, comments, user);
+            collaborateurManager.removeObjectCascadeManager(collabsIt.next(), null, comments, user);
          }
          collabs.clear();
 
          etablissement.setServices(new HashSet<Service>());
          etablissement.setCollaborateurs(new HashSet<>(collabs));
 
-         deleteByIdManager(etablissement, comments, user);
+         removeObjectManager(etablissement, comments, user);
       }
    }
 
@@ -592,7 +593,7 @@ public class EtablissementManagerImpl implements EtablissementManager
                   final List<Collaborateur> collabs = serviceManager.getCollaborateursWithOrderManager(serv);
                   // MAJ du collab
                   serv.setArchive(true);
-                  serviceManager.saveManager(serv, serv.getCoordonnee(), etablissement, collabs, utilisateur, true,
+                  serviceManager.updateObjectManager(serv, serv.getCoordonnee(), etablissement, collabs, utilisateur, true,
                      false);
                }
             }else{
@@ -603,7 +604,7 @@ public class EtablissementManagerImpl implements EtablissementManager
 
                   // MAJ du collab
                   serv.setArchive(false);
-                  serviceManager.saveManager(serv, serv.getCoordonnee(), etablissement, collabs, utilisateur, true,
+                  serviceManager.updateObjectManager(serv, serv.getCoordonnee(), etablissement, collabs, utilisateur, true,
                      false);
                }
             }
@@ -628,7 +629,7 @@ public class EtablissementManagerImpl implements EtablissementManager
                   }
                   // MAJ du collab
                   collab.setArchive(true);
-                  collaborateurManager.saveManager(collab, collab.getTitre(), collab.getEtablissement(),
+                  collaborateurManager.updateObjectManager(collab, collab.getTitre(), collab.getEtablissement(),
                      collab.getSpecialite(), null, coords, utilisateur, false);
                }
             }else{
@@ -642,7 +643,7 @@ public class EtablissementManagerImpl implements EtablissementManager
                   }
                   // MAJ du collab
                   collab.setArchive(false);
-                  collaborateurManager.saveManager(collab, collab.getTitre(), collab.getEtablissement(),
+                  collaborateurManager.updateObjectManager(collab, collab.getTitre(), collab.getEtablissement(),
                      collab.getSpecialite(), null, coords, utilisateur, false);
                }
             }
@@ -653,8 +654,8 @@ public class EtablissementManagerImpl implements EtablissementManager
    @Override
    public void fusionEtablissementManager(final int idActif, final int idPassif, final String comments, final Utilisateur user){
 
-      final Etablissement etabliPassif = etablissementDao.findById(idPassif);
-      final Etablissement etabliActif = etablissementDao.findById(idActif);
+      final Etablissement etabliPassif = etablissementDao.findById(idPassif).orElse(null);
+      final Etablissement etabliActif = etablissementDao.findById(idActif).orElse(null);
 
       if(etabliActif != null && etabliPassif != null && etabliPassif != etabliActif){
 
@@ -697,10 +698,10 @@ public class EtablissementManagerImpl implements EtablissementManager
          // Operation FUSION attribuée à l'utilisateur actif
          final Operation fusionOp = new Operation();
          fusionOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.saveManager(fusionOp, user, operationTypeDao.findByNom("Fusion").get(0), etabliActif);
+         operationManager.createObjectManager(fusionOp, user, operationTypeDao.findByNom("Fusion").get(0), etabliActif);
 
          //etape finale, suppression de l'etablissement passif
-         deleteByIdManager(etabliPassif, "fusion id: " + idActif + " ." + comments, user);
+         removeObjectManager(etabliPassif, "fusion id: " + idActif + " ." + comments, user);
 
       }
    }

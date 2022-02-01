@@ -40,14 +40,22 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 
 import fr.aphp.tumorotek.dao.code.AdicapGroupeDao;
 import fr.aphp.tumorotek.manager.code.AdicapManager;
 import fr.aphp.tumorotek.model.code.Adicap;
 import fr.aphp.tumorotek.model.code.AdicapGroupe;
-import fr.aphp.tumorotek.test.manager.AbstractManagerTest4;
+import fr.aphp.tumorotek.test.manager.ConfigCodes;
 
 /**
  *
@@ -58,9 +66,16 @@ import fr.aphp.tumorotek.test.manager.AbstractManagerTest4;
  * @version 2.0
  *
  */
-public class AdicapManagerTest extends AbstractManagerTest4
-{
-   @Autowired
+/**
+ * @version 2.3
+ *
+ */
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = { ConfigCodes.class, AdicapManager.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class, TransactionalTestExecutionListener.class })
+public class AdicapManagerTest {
+
+	@Autowired
    private AdicapManager adicapManager;
    
    @Autowired
@@ -157,6 +172,7 @@ public class AdicapManagerTest extends AbstractManagerTest4
    }
 
    @Test
+   @Transactional
    public void testGetCimoMorphosManager(){
       Adicap a = adicapManager.findByCodeLikeManager("5311", true).get(0);
       assertTrue(adicapManager.getCimoMorphosManager(a).size() == 1);
@@ -165,6 +181,7 @@ public class AdicapManagerTest extends AbstractManagerTest4
    }
 
    @Test
+   @Transactional
    public void testGetCimMastersManager(){
       Adicap a = adicapManager.findByCodeLikeManager("BV", true).get(0);
       assertTrue(adicapManager.getCimMastersManager(a).size() == 1);
@@ -173,6 +190,7 @@ public class AdicapManagerTest extends AbstractManagerTest4
    }
 
    @Test
+   @Transactional
    public void testGetAdicapGroupesManager(){
       final AdicapGroupe g = adicapManager.findDictionnairesManager().get(6);
       assertTrue(adicapManager.getAdicapGroupesManager(g).size() == 19);
@@ -181,6 +199,7 @@ public class AdicapManagerTest extends AbstractManagerTest4
    }
 
    @Test
+   @Transactional
    public void testFindChildrenCodesManager(){
       Adicap a = adicapManager.findByCodeLikeManager("EZ", true).get(0);
       List<Adicap> codes = adicapManager.findChildrenCodesManager(a, null, "%");
@@ -223,6 +242,7 @@ public class AdicapManagerTest extends AbstractManagerTest4
    }
 
    @Test
+   @Transactional
    public void testFindByDicoAndCodeOrLibelleManager(){
       AdicapGroupe g = adicapGroupeDao.findById(6).get();
       List<Adicap> adicaps = adicapManager.findByDicoAndCodeOrLibelleManager(g, "BD0", false);

@@ -72,11 +72,11 @@ public class UniteValidator implements Validator
 
       final Unite unite = (Unite) obj;
       // type valide
-      if(unite.getUnite() != null){
-         if(!unite.getUnite().matches(ValidationUtilities.MOTREGEXP)){
+      if(unite.getNom() != null){
+         if(!unite.getNom().matches(ValidationUtilities.MOTREGEXP)){
             errs.rejectValue("unite", "unite.unite.illegal");
          }
-         if(unite.getUnite().length() > 30){
+         if(unite.getNom().length() > 30){
             errs.rejectValue("unite", "unite.unite.tooLong");
          }
       }

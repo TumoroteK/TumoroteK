@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.contexte;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -86,7 +87,7 @@ public class SpecialiteManagerImpl implements SpecialiteManager
     */
    @Override
    public Specialite findByIdManager(final Integer specialiteId){
-      return specialiteDao.findById(specialiteId);
+      return specialiteDao.findById(specialiteId).orElse(null);
    }
 
    /**
@@ -137,7 +138,7 @@ public class SpecialiteManagerImpl implements SpecialiteManager
    }
 
    @Override
-   public void saveManager(final Specialite obj){
+   public void createObjectManager(final Specialite obj){
       BeanValidator.validateObject(obj, new Validator[] {specialiteValidator});
       if(!findDoublonManager(obj)){
          specialiteDao.save(obj);
@@ -149,7 +150,7 @@ public class SpecialiteManagerImpl implements SpecialiteManager
    }
 
    @Override
-   public void saveManager(final Specialite obj){
+   public void updateObjectManager(final Specialite obj){
       BeanValidator.validateObject(obj, new Validator[] {specialiteValidator});
       if(!findDoublonManager(obj)){
          specialiteDao.save(obj);
@@ -161,7 +162,7 @@ public class SpecialiteManagerImpl implements SpecialiteManager
    }
 
    @Override
-   public void deleteByIdManager(final Specialite obj){
+   public void removeObjectManager(final Specialite obj){
       if(obj != null){
          specialiteDao.deleteById(obj.getId());
          log.info("Suppression objet Specialite " + obj.toString());

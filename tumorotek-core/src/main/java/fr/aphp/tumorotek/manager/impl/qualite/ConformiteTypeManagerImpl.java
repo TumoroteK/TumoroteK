@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.qualite;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -69,7 +70,7 @@ public class ConformiteTypeManagerImpl implements ConformiteTypeManager
 
    @Override
    public ConformiteType findByIdManager(final Integer conformiteTypeId){
-      return conformiteTypeDao.findById(conformiteTypeId);
+      return conformiteTypeDao.findById(conformiteTypeId).orElse(null);
    }
 
    @Override

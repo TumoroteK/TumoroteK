@@ -151,7 +151,7 @@ public class CategorieManagerTest extends AbstractManagerTest4
    public void testCRUD(){
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    private void saveManagerTest(){
@@ -226,18 +226,18 @@ public class CategorieManagerTest extends AbstractManagerTest4
    }
 
    /**
-    * Teste la methode deleteByIdManager. 
+    * Teste la methode removeObjectManager. 
     */
-   private void deleteByIdManagerTest(){
+   private void removeObjectManagerTest(){
       //Suppression de l'enregistrement precedemment insere
       final Categorie c1 = categorieManager.findByIdManager(3);
-      categorieManager.deleteByIdManager(c1);
+      categorieManager.removeObjectManager(c1);
       assertTrue(categorieManager.findAllObjectsManager().size() == 2);
       //Suppression engrendrant une exception
       //		Boolean catched = false;
       //		try {
       //			Categorie c2 = categorieManager.findByIdManager(1);
-      //			categorieManager.deleteByIdManager(c2);
+      //			categorieManager.removeObjectManager(c2);
       //		} catch (Exception e) {
       //			if (e.getClass().getSimpleName().equals(
       //					"ObjectUsedException")) {
@@ -247,7 +247,7 @@ public class CategorieManagerTest extends AbstractManagerTest4
       //		assertTrue(catched);
       assertTrue(categorieManager.findAllObjectsManager().size() == 2);
       //null remove
-      categorieManager.deleteByIdManager(null);
+      categorieManager.removeObjectManager(null);
       assertTrue(categorieManager.findAllObjectsManager().size() == 2);
    }
 }

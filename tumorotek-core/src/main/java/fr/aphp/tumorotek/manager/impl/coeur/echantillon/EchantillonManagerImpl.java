@@ -55,6 +55,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -277,7 +278,7 @@ public class EchantillonManagerImpl implements EchantillonManager
 
    @Override
    public Echantillon findByIdManager(final Integer echantillonId){
-      final Echantillon e = echantillonDao.findById(echantillonId);
+      final Echantillon e = echantillonDao.findById(echantillonId).orElse(null);
       return e;
    }
 
@@ -710,7 +711,7 @@ public class EchantillonManagerImpl implements EchantillonManager
    }
 
    @Override
-   public void saveManager(final Echantillon echantillon, final Banque banque, final Prelevement prelevement,
+   public void createObjectManager(final Echantillon echantillon, final Banque banque, final Prelevement prelevement,
       final Collaborateur collaborateur, final ObjetStatut statut, final Emplacement emplacement, final EchantillonType type,
       final List<CodeAssigne> codes, final Unite quantite, final EchanQualite qualite, final ModePrepa preparation,
       final List<AnnotationValeur> listAnnoToCreateOrUpdate, final List<File> filesCreated,
@@ -790,7 +791,7 @@ public class EchantillonManagerImpl implements EchantillonManager
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0),
+         operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0),
             echantillon);
 
          // ajout/update association vers codes assignes
@@ -835,7 +836,7 @@ public class EchantillonManagerImpl implements EchantillonManager
    }
 
    @Override
-   public void saveWithCrAnapathManager(final Echantillon echantillon, final Banque banque, final Prelevement prelevement,
+   public void createObjectWithCrAnapathManager(final Echantillon echantillon, final Banque banque, final Prelevement prelevement,
       final Collaborateur collaborateur, final ObjetStatut statut, final Emplacement emplacement, final EchantillonType type,
       final List<CodeAssigne> codes, final Unite quantite, final EchanQualite qualite, final ModePrepa preparation,
       Fichier anapath, final InputStream anapathStream, final List<File> filesCreated,
@@ -843,7 +844,7 @@ public class EchantillonManagerImpl implements EchantillonManager
       final String baseDir, final boolean isImport){
 
       try{
-         saveManager(echantillon, banque, prelevement, collaborateur, statut, emplacement, type, codes, quantite, qualite,
+         createObjectManager(echantillon, banque, prelevement, collaborateur, statut, emplacement, type, codes, quantite, qualite,
             preparation, listAnnoToCreateOrUpdate, filesCreated, utilisateur, doValidation, baseDir, isImport);
 
          if(baseDir != null){
@@ -966,7 +967,7 @@ public class EchantillonManagerImpl implements EchantillonManager
 
             if(echantillon.getEmplacement() != null){
                echantillon.getEmplacement().setObjetId(jdbcSuite.getMaxEchantillonId());
-               echantillon.getEmplacement().setEntite(entiteDao.findById(3));
+               echantillon.getEmplacement().setEntite(entiteDao.findById(3).orElse(null));
                echantillon.getEmplacement().setVide(false);
                emplacementDao.save(echantillon.getEmplacement());
                empId = echantillon.getEmplacement().getEmplacementId();
@@ -1104,7 +1105,7 @@ public class EchantillonManagerImpl implements EchantillonManager
    }
 
    @Override
-   public void saveWithNonConformitesManager(final Echantillon echantillon, final Banque banque,
+   public void createObjectWithNonConformitesManager(final Echantillon echantillon, final Banque banque,
       final Prelevement prelevement, final Collaborateur collaborateur, final ObjetStatut statut, final Emplacement emplacement,
       final EchantillonType type, final List<CodeAssigne> codes, final Unite quantite, final EchanQualite qualite,
       final ModePrepa preparation, final Fichier anapath, final InputStream anapathStream,
@@ -1122,7 +1123,7 @@ public class EchantillonManagerImpl implements EchantillonManager
             echantillon.setConformeCession(false);
          }
 
-         saveWithCrAnapathManager(echantillon, banque, prelevement, collaborateur, statut, emplacement, type, codes,
+         createObjectWithCrAnapathManager(echantillon, banque, prelevement, collaborateur, statut, emplacement, type, codes,
             quantite, qualite, preparation, anapath, anapathStream, filesCreated, listAnnoToCreateOrUpdate, utilisateur,
             doValidation, baseDir, isImport);
 
@@ -1137,7 +1138,7 @@ public class EchantillonManagerImpl implements EchantillonManager
    }
 
    @Override
-   public void saveManager(final Echantillon echantillon, final Banque banque, final Prelevement prelevement,
+   public void updateObjectManager(final Echantillon echantillon, final Banque banque, final Prelevement prelevement,
       final Collaborateur collaborateur, final ObjetStatut statut, final Emplacement emplacement, final EchantillonType type,
       final List<CodeAssigne> codes, final List<CodeAssigne> codesToDelete, final Unite quantite, final EchanQualite qualite,
       final ModePrepa preparation, final List<AnnotationValeur> listAnnoToCreateOrUpdate,
@@ -1220,7 +1221,7 @@ public class EchantillonManagerImpl implements EchantillonManager
             //Enregistrement de l'operation associee
             final Operation creationOp = new Operation();
             creationOp.setDate(Utils.getCurrentSystemCalendar());
-            operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
+            operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
                echantillon);
          }
 
@@ -1229,14 +1230,14 @@ public class EchantillonManagerImpl implements EchantillonManager
                //Enregistrement de l'operation associee
                final Operation dateOp = new Operation();
                dateOp.setDate(Utils.getCurrentSystemCalendar());
-               operationManager.saveManager(dateOp, utilisateur, operations.get(i), echantillon);
+               operationManager.createObjectManager(dateOp, utilisateur, operations.get(i), echantillon);
             }
          }
 
          // délétion des champs à supprimer
          if(codesToDelete != null){
             for(int i = 0; i < codesToDelete.size(); i++){
-               codeAssigneManager.deleteByIdManager(codesToDelete.get(i));
+               codeAssigneManager.removeObjectManager(codesToDelete.get(i));
             }
          }
 
@@ -1292,7 +1293,7 @@ public class EchantillonManagerImpl implements EchantillonManager
    }
 
    @Override
-   public void saveWithCrAnapathManager(final Echantillon echantillon, final Banque banque, final Prelevement prelevement,
+   public void updateObjectWithCrAnapathManager(final Echantillon echantillon, final Banque banque, final Prelevement prelevement,
       final Collaborateur collaborateur, final ObjetStatut statut, final Emplacement emplacement, final EchantillonType type,
       final List<CodeAssigne> codes, final List<CodeAssigne> codesToDelete, final Unite quantite, final EchanQualite qualite,
       final ModePrepa preparation, Fichier anapath, final InputStream anapathStream, final List<File> filesCreated,
@@ -1301,7 +1302,7 @@ public class EchantillonManagerImpl implements EchantillonManager
       final List<OperationType> operations, final String baseDir){
 
       try{
-         saveManager(echantillon, banque, prelevement, collaborateur, statut, emplacement, type, codes, codesToDelete,
+         updateObjectManager(echantillon, banque, prelevement, collaborateur, statut, emplacement, type, codes, codesToDelete,
             quantite, qualite, preparation, listAnnoToCreateOrUpdate, listAnnoToDelete, filesCreated, filesToDelete,
             utilisateur, doValidation, operations, baseDir);
 
@@ -1348,23 +1349,23 @@ public class EchantillonManagerImpl implements EchantillonManager
    }
 
    @Override
-   public void deleteByIdManager(final Echantillon echantillon, final String comments, final Utilisateur user,
+   public void removeObjectManager(final Echantillon echantillon, final String comments, final Utilisateur user,
       final List<File> filesToDelete){
       if(echantillon != null){
 
          if(!isUsedObjectManager(echantillon) && !isCessedObjectManager(echantillon)){
             Iterator<CodeAssigne> it = codeAssigneManager.findCodesMorphoByEchantillonManager(echantillon).iterator();
             while(it.hasNext()){
-               codeAssigneManager.deleteByIdManager(it.next());
+               codeAssigneManager.removeObjectManager(it.next());
             }
             it = codeAssigneManager.findCodesOrganeByEchantillonManager(echantillon).iterator();
             while(it.hasNext()){
-               codeAssigneManager.deleteByIdManager(it.next());
+               codeAssigneManager.removeObjectManager(it.next());
             }
 
             final Iterator<Retour> retoursIt = retourManager.getRetoursForObjectManager(echantillon).iterator();
             while(retoursIt.hasNext()){
-               retourManager.deleteByIdManager(retoursIt.next());
+               retourManager.removeObjectManager(retoursIt.next());
             }
 
             // Supprime non conformites associees
@@ -1385,7 +1386,7 @@ public class EchantillonManagerImpl implements EchantillonManager
 
             // suppression du fichier associé base et systeme
             if(echantillon.getCrAnapath() != null){
-               fichierManager.deleteByIdManager(echantillon.getCrAnapath(), filesToDelete);
+               fichierManager.removeObjectManager(echantillon.getCrAnapath(), filesToDelete);
             }
 
          }else{
@@ -1400,16 +1401,16 @@ public class EchantillonManagerImpl implements EchantillonManager
    }
 
    @Override
-   public void deleteByIdCascadeManager(final Echantillon echantillon, final String comments, final Utilisateur user,
+   public void removeObjectCascadeManager(final Echantillon echantillon, final String comments, final Utilisateur user,
       final List<File> filesToDelete){
       if(!isCessedObjectManager(echantillon)){
          // suppression des dérivés en mode cascade
          final Iterator<Transformation> transfIt = transformationManager.findByParentManager(echantillon).iterator();
          while(transfIt.hasNext()){
-            prodDeriveManager.deleteByIdCascadeManager(transfIt.next(), comments, user, filesToDelete);
+            prodDeriveManager.removeObjectCascadeManager(transfIt.next(), comments, user, filesToDelete);
          }
 
-         deleteByIdManager(echantillon, comments, user, filesToDelete);
+         removeObjectManager(echantillon, comments, user, filesToDelete);
       }else{
          throw new ObjectUsedException("echantillon.cascade.isCessed", false);
       }
@@ -1597,7 +1598,7 @@ public class EchantillonManagerImpl implements EchantillonManager
 
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.saveManager(creationOp, u, operationTypeDao.findByNom("ChangeCollection").get(0), echan);
+         operationManager.createObjectManager(creationOp, u, operationTypeDao.findByNom("ChangeCollection").get(0), echan);
       }
    }
 
@@ -1614,7 +1615,7 @@ public class EchantillonManagerImpl implements EchantillonManager
 
       if(codesToDelete != null){
          for(int j = 0; j < codesToDelete.size(); j++){
-            codeAssigneManager.deleteByIdManager(codesToDelete.get(j));
+            codeAssigneManager.removeObjectManager(codesToDelete.get(j));
          }
       }
 
@@ -1642,7 +1643,7 @@ public class EchantillonManagerImpl implements EchantillonManager
                }
             }
 
-            saveManager(echan, echan.getBanque(), echan.getPrelevement(), echan.getCollaborateur(),
+            updateObjectManager(echan, echan.getBanque(), echan.getPrelevement(), echan.getCollaborateur(),
                echan.getObjetStatut(), echan.getEmplacement(), echan.getEchantillonType(), codes, null, echan.getQuantiteUnite(),
                echan.getEchanQualite(), echan.getModePrepa(), null, null, filesCreated, filesToDelete,
                utilisateur, true, operations, baseDir);
@@ -1654,7 +1655,7 @@ public class EchantillonManagerImpl implements EchantillonManager
             if(crAnapath != null || deleteAnapath != null){
                if(cloneFile != null || (deleteAnapath != null && deleteAnapath)){
                   // nettoie fichier existant
-                  fichierManager.deleteByIdManager(echan.getCrAnapath(), filesToDelete);
+                  fichierManager.removeObjectManager(echan.getCrAnapath(), filesToDelete);
                   echan.setCrAnapath(null);
                }
 
@@ -1747,7 +1748,7 @@ public class EchantillonManagerImpl implements EchantillonManager
                echan = echantillonDao.save(echan);
                final Operation creationOp = new Operation();
                creationOp.setDate(Utils.getCurrentSystemCalendar());
-               operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
+               operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
                   echan);
             }
             results.add(echan);
@@ -1788,7 +1789,7 @@ public class EchantillonManagerImpl implements EchantillonManager
                //Enregistrement de l'operation associee
                final Operation dateOp = new Operation();
                dateOp.setDate(Utils.getCurrentSystemCalendar());
-               operationManager.saveManager(dateOp, utilisateur, operations.get(i), echantillon);
+               operationManager.createObjectManager(dateOp, utilisateur, operations.get(i), echantillon);
             }
          }
       }
@@ -1872,7 +1873,7 @@ public class EchantillonManagerImpl implements EchantillonManager
    }
 
    @Override
-   public void saveWithNonConformitesManager(final Echantillon echantillon, final Banque banque,
+   public void updateObjectWithNonConformitesManager(final Echantillon echantillon, final Banque banque,
       final Prelevement prelevement, final Collaborateur collaborateur, final ObjetStatut statut, final Emplacement emplacement,
       final EchantillonType type, final List<CodeAssigne> codes, final List<CodeAssigne> codesToDelete, final Unite quantite,
       final EchanQualite qualite, final ModePrepa preparation, final Fichier anapath, final InputStream anapathStream,
@@ -1893,7 +1894,7 @@ public class EchantillonManagerImpl implements EchantillonManager
       final List<File> filesToDelete = new ArrayList<>();
 
       try{
-         saveWithCrAnapathManager(echantillon, banque, prelevement, collaborateur, statut, emplacement, type, codes,
+         updateObjectWithCrAnapathManager(echantillon, banque, prelevement, collaborateur, statut, emplacement, type, codes,
             codesToDelete, quantite, qualite, preparation, anapath, anapathStream, filesCreated, filesToDelete,
             listAnnoToCreateOrUpdate, listAnnoToDelete, utilisateur, doValidation, operations, baseDir);
 
@@ -1953,7 +1954,7 @@ public class EchantillonManagerImpl implements EchantillonManager
          for(final Integer id : ids){
             e = findByIdManager(id);
             if(e != null){
-               deleteByIdCascadeManager(e, comment, u, filesToDelete);
+               removeObjectCascadeManager(e, comment, u, filesToDelete);
             }
          }
          for(final File f : filesToDelete){

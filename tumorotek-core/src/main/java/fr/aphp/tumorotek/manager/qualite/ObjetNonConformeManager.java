@@ -91,7 +91,7 @@ public interface ObjetNonConformeManager
     * @param obj Objet non conforme.
     * @param nonConformite Non conformité.
     */
-   void createUpdateOrdeleteByIdManager(Object obj, NonConformite nonConformite, String type);
+   void createUpdateOrremoveObjectManager(Object obj, NonConformite nonConformite, String type);
 
    /**
     * Crée ou update les non conformités de l'objet passé en
@@ -105,7 +105,7 @@ public interface ObjetNonConformeManager
     * Supprime un objet de la base de données.
     * @param objetNonConforme Objet à supprimer de la base de données.
     */
-   void deleteByIdManager(ObjetNonConforme objetNonConforme);
+   void removeObjectManager(ObjetNonConforme objetNonConforme);
 
    /**
     * Renvoie tous les ids objets qui référencent au moins une des 

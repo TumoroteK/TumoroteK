@@ -194,7 +194,7 @@ public interface BanqueManager
     * @param operation creation/modification
     * @param base directory pour créer dossiers sytèmes associés.
     */
-   void createOrsaveManager(Banque banque, Plateforme pf, Contexte contexte, Service service, Collaborateur responsable,
+   void createOrUpdateObjectManager(Banque banque, Plateforme pf, Contexte contexte, Service service, Collaborateur responsable,
       Collaborateur contact, List<Conteneur> conteneurs, List<BanqueTableCodage> codifications,
       List<TableAnnotation> tablesPatient, List<TableAnnotation> tablesPrlvt, List<TableAnnotation> tablesEchan,
       List<TableAnnotation> tablesDerive, List<TableAnnotation> tablesCess, List<CouleurEntiteType> coulTypes,
@@ -214,7 +214,7 @@ public interface BanqueManager
     * @param base directory pour effacer dossiers sytèmes associés.
     * @param boolean force true pour forcer la suppression de la banque.
     */
-   void deleteByIdManager(Banque banque, String comments, Utilisateur user, String basedir, boolean force);
+   void removeObjectManager(Banque banque, String comments, Utilisateur user, String basedir, boolean force);
 
    //	/**
    //	 * Recherche les codifications liées à la banque passée en paramètre.

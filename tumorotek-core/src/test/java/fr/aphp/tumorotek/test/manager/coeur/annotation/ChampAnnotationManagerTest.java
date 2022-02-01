@@ -203,7 +203,7 @@ public class ChampAnnotationManagerTest extends AbstractManagerTest4
       saveManagerTest();
       updateDefautsObjectManagerTest();
       updateItemsObjectManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    /**
@@ -453,17 +453,17 @@ public class ChampAnnotationManagerTest extends AbstractManagerTest4
       assertTrue(new ArrayList<>(champAnnotationManager.getItemsManager(c, null)).get(0).getLabel().equals("i2"));
    }
 
-   private void deleteByIdManagerTest(){
+   private void removeObjectManagerTest(){
       final ChampAnnotation c = champAnnotationManager.findByNomLikeManager("NEWCHAMP", true).get(0);
-      champAnnotationManager.deleteByIdManager(c, null, utilisateurDao.findById(1), null);
+      champAnnotationManager.removeObjectManager(c, null, utilisateurDao.findById(1), null);
       assertTrue(champAnnotationManager.findByNomLikeManager("NEWCHAMP", true).size() == 0);
       assertTrue(getOperationManager().findByObjectManager(c).size() == 0);
 
       // suppr champ alpha
       final ChampAnnotation c2 = champAnnotationManager.findByNomLikeManager("ALPHANUM_TEST", true).get(0);
-      champAnnotationManager.deleteByIdManager(c2, null, utilisateurDao.findById(1), null);
+      champAnnotationManager.removeObjectManager(c2, null, utilisateurDao.findById(1), null);
 
-      champAnnotationManager.deleteByIdManager(null, null, null, null);
+      champAnnotationManager.removeObjectManager(null, null, null, null);
       //verifie que l'etat des tables modifies est revenu identique
       testFindAllObjectsManager();
       //verification de la suppression cascade des associations
@@ -699,7 +699,7 @@ public class ChampAnnotationManagerTest extends AbstractManagerTest4
 
       final ChampAnnotation cTest = champAnnotationManager.findByNomLikeManager("CHAMP_TEST", true).get(0);
 
-      champAnnotationManager.deleteByIdManager(cTest, null, u, "/tmp/");
+      champAnnotationManager.removeObjectManager(cTest, null, u, "/tmp/");
       assertTrue(champAnnotationManager.findByNomLikeManager("CHAMP_TEST", true).size() == 0);
       assertFalse(new File("/tmp/pt_1/coll_1/anno/chp_" + chp.getId()).exists());
 

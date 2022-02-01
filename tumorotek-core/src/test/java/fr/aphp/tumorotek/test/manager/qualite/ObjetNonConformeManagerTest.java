@@ -178,14 +178,14 @@ public class ObjetNonConformeManagerTest extends AbstractManagerTest4
    @Test
    public void testCrud(){
       // on test avec des valeurs null
-      objetNonConformeManager.createUpdateOrdeleteByIdManager(prelevementDao.findById(1), nonConformiteDao.findById(1), null);
+      objetNonConformeManager.createUpdateOrremoveObjectManager(prelevementDao.findById(1), nonConformiteDao.findById(1), null);
       assertEquals(6, objetNonConformeManager.findAllObjectsManager().size());
 
-      objetNonConformeManager.createUpdateOrdeleteByIdManager(null, nonConformiteDao.findById(1), "Arrivee");
+      objetNonConformeManager.createUpdateOrremoveObjectManager(null, nonConformiteDao.findById(1), "Arrivee");
       assertTrue(objetNonConformeManager.findAllObjectsManager().size() == 6);
 
       // création valide pour un prlvt
-      objetNonConformeManager.createUpdateOrdeleteByIdManager(prelevementDao.findById(1), nonConformiteDao.findById(1),
+      objetNonConformeManager.createUpdateOrremoveObjectManager(prelevementDao.findById(1), nonConformiteDao.findById(1),
          "Arrivee");
       assertTrue(objetNonConformeManager.findAllObjectsManager().size() == 7);
       final ObjetNonConforme o1 = objetNonConformeManager.findByObjetAndTypeManager(prelevementDao.findById(1), "Arrivee").get(0);
@@ -194,7 +194,7 @@ public class ObjetNonConformeManagerTest extends AbstractManagerTest4
       assertTrue(o1.getNonConformite().equals(nonConformiteDao.findById(1)));
 
       // création valide pour un échantillon
-      objetNonConformeManager.createUpdateOrdeleteByIdManager(echantillonDao.findById(1), nonConformiteDao.findById(4),
+      objetNonConformeManager.createUpdateOrremoveObjectManager(echantillonDao.findById(1), nonConformiteDao.findById(4),
          "Traitement");
       assertTrue(objetNonConformeManager.findAllObjectsManager().size() == 8);
       final ObjetNonConforme o2 =
@@ -204,7 +204,7 @@ public class ObjetNonConformeManagerTest extends AbstractManagerTest4
       assertTrue(o2.getNonConformite().equals(nonConformiteDao.findById(4)));
 
       // création valide pour un dérivé
-      objetNonConformeManager.createUpdateOrdeleteByIdManager(prodDeriveDao.findById(1), nonConformiteDao.findById(8),
+      objetNonConformeManager.createUpdateOrremoveObjectManager(prodDeriveDao.findById(1), nonConformiteDao.findById(8),
          "Traitement");
       assertTrue(objetNonConformeManager.findAllObjectsManager().size() == 9);
       final ObjetNonConforme o2Bis =
@@ -214,7 +214,7 @@ public class ObjetNonConformeManagerTest extends AbstractManagerTest4
       assertTrue(o2Bis.getNonConformite().equals(nonConformiteDao.findById(8)));
 
       // update valide pour un prlvt
-      //		objetNonConformeManager.createUpdateOrdeleteByIdManager(
+      //		objetNonConformeManager.createUpdateOrremoveObjectManager(
       //				prelevementDao.findById(1), 
       //				nonConformiteDao.findById(2), 
       //				"Arrivee");
@@ -226,7 +226,7 @@ public class ObjetNonConformeManagerTest extends AbstractManagerTest4
       //		assertTrue(o3.getNonConformite().equals(nonConformiteDao.findById(2)));
 
       // update valide pour un échantillon
-      //		objetNonConformeManager.createUpdateOrdeleteByIdManager(
+      //		objetNonConformeManager.createUpdateOrremoveObjectManager(
       //				echantillonDao.findById(1), 
       //				nonConformiteDao.findById(5), 
       //				"Traitement");
@@ -238,7 +238,7 @@ public class ObjetNonConformeManagerTest extends AbstractManagerTest4
       //		assertTrue(o4.getNonConformite().equals(nonConformiteDao.findById(5)));
 
       // update valide pour un dérivé
-      //		objetNonConformeManager.createUpdateOrdeleteByIdManager(
+      //		objetNonConformeManager.createUpdateOrremoveObjectManager(
       //				prodDeriveDao.findById(1), 
       //				nonConformiteDao.findById(9), 
       //				"Traitement");
@@ -253,7 +253,7 @@ public class ObjetNonConformeManagerTest extends AbstractManagerTest4
       //		
 
       // update sans chgt pour un prlvt
-      //		objetNonConformeManager.createUpdateOrdeleteByIdManager(
+      //		objetNonConformeManager.createUpdateOrremoveObjectManager(
       //				prelevementDao.findById(1), 
       //				nonConformiteDao.findById(2), 
       //				"Arrivee");
@@ -265,7 +265,7 @@ public class ObjetNonConformeManagerTest extends AbstractManagerTest4
       //		assertTrue(o5.getNonConformite().equals(nonConformiteDao.findById(2)));
 
       // update sans chgt pour un échantillon
-      //		objetNonConformeManager.createUpdateOrdeleteByIdManager(
+      //		objetNonConformeManager.createUpdateOrremoveObjectManager(
       //				echantillonDao.findById(1), 
       //				nonConformiteDao.findById(5), 
       //				"Traitement");
@@ -277,7 +277,7 @@ public class ObjetNonConformeManagerTest extends AbstractManagerTest4
       //		assertTrue(o6.getNonConformite().equals(nonConformiteDao.findById(5)));
       //		
       //		// update sans chgt pour un dérivé
-      //		objetNonConformeManager.createUpdateOrdeleteByIdManager(
+      //		objetNonConformeManager.createUpdateOrremoveObjectManager(
       //				prodDeriveDao.findById(1), 
       //				nonConformiteDao.findById(5), 
       //				"Traitement");
@@ -291,48 +291,48 @@ public class ObjetNonConformeManagerTest extends AbstractManagerTest4
       //				nonConformiteDao.findById(5)));
 
       // Suppression pour un prlvt
-      //		objetNonConformeManager.createUpdateOrdeleteByIdManager(
+      //		objetNonConformeManager.createUpdateOrremoveObjectManager(
       //				prelevementDao.findById(1), 
       //				null, 
       //				"Arrivee");
-      objetNonConformeManager.deleteByIdManager(o1);
+      objetNonConformeManager.removeObjectManager(o1);
       assertTrue(objetNonConformeManager.findAllObjectsManager().size() == 8);
       assertTrue(objetNonConformeManager.findByObjetAndTypeManager(prelevementDao.findById(1), "Arrivee").size() == 0);
 
       // suppression pour un échantillon
-      //		objetNonConformeManager.createUpdateOrdeleteByIdManager(
+      //		objetNonConformeManager.createUpdateOrremoveObjectManager(
       //				echantillonDao.findById(1), 
       //				null, 
       //				"Traitement");
-      objetNonConformeManager.deleteByIdManager(o2);
+      objetNonConformeManager.removeObjectManager(o2);
       assertTrue(objetNonConformeManager.findAllObjectsManager().size() == 7);
       assertTrue(objetNonConformeManager.findByObjetAndTypeManager(echantillonDao.findById(1), "Traitement").size() == 0);
 
       // suppression pour un dérivé
-      //		objetNonConformeManager.createUpdateOrdeleteByIdManager(
+      //		objetNonConformeManager.createUpdateOrremoveObjectManager(
       //				prodDeriveDao.findById(1), 
       //				null, 
       //				"Traitement");
-      objetNonConformeManager.deleteByIdManager(o2Bis);
+      objetNonConformeManager.removeObjectManager(o2Bis);
       assertTrue(objetNonConformeManager.findAllObjectsManager().size() == 6);
       assertTrue(objetNonConformeManager.findByObjetAndTypeManager(prodDeriveDao.findById(1), "Traitement").size() == 0);
 
       // Suppression pour un prlvt sans non conformité
-      objetNonConformeManager.createUpdateOrdeleteByIdManager(prelevementDao.findById(1), null, "Arrivee");
+      objetNonConformeManager.createUpdateOrremoveObjectManager(prelevementDao.findById(1), null, "Arrivee");
       assertTrue(objetNonConformeManager.findAllObjectsManager().size() == 6);
 
       // suppression pour un échantillon sans non conformité
-      objetNonConformeManager.createUpdateOrdeleteByIdManager(echantillonDao.findById(1), null, "Traitement");
+      objetNonConformeManager.createUpdateOrremoveObjectManager(echantillonDao.findById(1), null, "Traitement");
       assertTrue(objetNonConformeManager.findAllObjectsManager().size() == 6);
 
       // suppression pour un dérivé sans non conformité
-      objetNonConformeManager.createUpdateOrdeleteByIdManager(prodDeriveDao.findById(1), null, "Traitement");
+      objetNonConformeManager.createUpdateOrremoveObjectManager(prodDeriveDao.findById(1), null, "Traitement");
       assertTrue(objetNonConformeManager.findAllObjectsManager().size() == 6);
 
       // entite type non conformité incompatible
       boolean catched = false;
       try{
-         objetNonConformeManager.createUpdateOrdeleteByIdManager(prodDeriveDao.findById(1), nonConformiteDao.findById(4),
+         objetNonConformeManager.createUpdateOrremoveObjectManager(prodDeriveDao.findById(1), nonConformiteDao.findById(4),
             "Traitement");
       }catch(final RuntimeException re){
          catched = true;

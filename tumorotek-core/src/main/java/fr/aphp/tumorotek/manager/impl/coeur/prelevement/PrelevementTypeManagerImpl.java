@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.manager.impl.coeur.prelevement;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -86,7 +87,7 @@ public class PrelevementTypeManagerImpl implements PrelevementTypeManager
    }
 
    @Override
-   public void saveManager(final PrelevementType obj){
+   public void createObjectManager(final PrelevementType obj){
 
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
@@ -106,7 +107,7 @@ public class PrelevementTypeManagerImpl implements PrelevementTypeManager
    }
 
    @Override
-   public void saveManager(final PrelevementType obj){
+   public void updateObjectManager(final PrelevementType obj){
       BeanValidator.validateObject(obj, new Validator[] {prelevementTypeValidator});
       if(!findDoublonManager(obj)){
          prelevementTypeDao.save(obj);
@@ -127,7 +128,7 @@ public class PrelevementTypeManagerImpl implements PrelevementTypeManager
    }
 
    @Override
-   public void deleteByIdManager(final PrelevementType obj){
+   public void removeObjectManager(final PrelevementType obj){
       if(obj != null){
          prelevementTypeDao.deleteById(obj.getId());
          log.info("Suppression objet PrelevementType " + obj.toString());
@@ -167,7 +168,7 @@ public class PrelevementTypeManagerImpl implements PrelevementTypeManager
 
    @Override
    public PrelevementType findByIdManager(final Integer id){
-      return prelevementTypeDao.findById(id);
+      return prelevementTypeDao.findById(id).orElse(null);
    }
 
    @Override

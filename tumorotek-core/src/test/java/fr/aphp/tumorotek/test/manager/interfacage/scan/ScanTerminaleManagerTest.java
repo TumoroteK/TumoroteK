@@ -126,7 +126,7 @@ public class ScanTerminaleManagerTest extends AbstractManagerTest4
       assertTrue(codes.contains("PTRA.1.2"));
       assertTrue(codes.contains("PTRA.2"));
 
-      scanTerminaleManager.deleteByIdManager(sT);
+      scanTerminaleManager.removeObjectManager(sT);
 
       assertTrue(scanTerminaleManager.findAllManager().isEmpty());
    }

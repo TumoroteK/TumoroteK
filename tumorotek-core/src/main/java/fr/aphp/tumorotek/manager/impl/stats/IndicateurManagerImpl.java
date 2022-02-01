@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.stats;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -76,7 +77,7 @@ public class IndicateurManagerImpl implements IndicateurManager
 
    @Override
    public Indicateur findByIdManager(final Integer statementId){
-      return indicateurDao.findById(statementId);
+      return indicateurDao.findById(statementId).orElse(null);
    }
 
    @Override
@@ -117,7 +118,7 @@ public class IndicateurManagerImpl implements IndicateurManager
    }
 
    @Override
-   public void saveManager(final Indicateur indic){
+   public void createObjectManager(final Indicateur indic){
       // stmt.setsModeleIndicateurs(sModeleDao.save(modele).getSModeleIndicateurs());
       // Test s'il y a des doublons
       if(findDoublonManager(indic)){
@@ -134,7 +135,7 @@ public class IndicateurManagerImpl implements IndicateurManager
    }
 
    @Override
-   public void saveManager(final Indicateur indic){
+   public void updateObjectManager(final Indicateur indic){
 
       // validation
       BeanValidator.validateObject(indic, new Validator[] {indicateurValidator});
@@ -146,7 +147,7 @@ public class IndicateurManagerImpl implements IndicateurManager
    }
 
    @Override
-   public void deleteByIdManager(final Indicateur indic){
+   public void removeObjectManager(final Indicateur indic){
       if(indic != null){
          indicateurDao.deleteById(indic.getIndicateurId());
          log.debug("Suppression de l'objet Statement : " + indic.toString());

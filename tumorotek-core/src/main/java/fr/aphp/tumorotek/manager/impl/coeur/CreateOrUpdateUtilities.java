@@ -67,7 +67,7 @@ public final class CreateOrUpdateUtilities
       //Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
       creationOp.setDate(Utils.getCurrentSystemCalendar());
-      manager.saveManager(creationOp, utilisateur, oType, obj);
+      manager.createObjectManager(creationOp, utilisateur, oType, obj);
    }
 
    /**
@@ -80,7 +80,7 @@ public final class CreateOrUpdateUtilities
 
       final List<Operation> ops = manager.findByObjectManager(obj);
       for(int i = 0; i < ops.size(); i++){
-         manager.deleteByIdManager(ops.get(i));
+         manager.removeObjectManager(ops.get(i));
       }
 
       if(obj instanceof TKFantomableObject){
@@ -96,7 +96,7 @@ public final class CreateOrUpdateUtilities
    public static void removeAssociateOperations(final Object obj, final OperationManager manager){
       final List<Operation> ops = manager.findByObjectManager(obj);
       for(int i = 0; i < ops.size(); i++){
-         manager.deleteByIdManager(ops.get(i));
+         manager.removeObjectManager(ops.get(i));
       }
    }
 
@@ -122,7 +122,7 @@ public final class CreateOrUpdateUtilities
 
       final List<ObjetNonConforme> ncfs = manager.findByObjetManager(obj);
       for(int i = 0; i < ncfs.size(); i++){
-         manager.deleteByIdManager(ncfs.get(i));
+         manager.removeObjectManager(ncfs.get(i));
       }
    }
 }

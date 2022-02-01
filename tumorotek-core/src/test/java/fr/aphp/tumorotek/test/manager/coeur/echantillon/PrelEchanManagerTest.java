@@ -660,18 +660,18 @@ public class PrelEchanManagerTest extends AbstractManagerTest4
 
       // cleanUp// Nettoyage
       if(prel.getPrelevementId() != null){
-         prelevementManager.deleteByIdCascadeManager(prel, null, utilisateurDao.findById(1), null);
+         prelevementManager.removeObjectCascadeManager(prel, null, utilisateurDao.findById(1), null);
          fs.add(prel);
          fs.addAll(echans);
       }
 
       if(mal != null && mal.getMaladieId() != null){
-         maladieManager.deleteByIdManager(mal, null, utilisateurDao.findById(1));
+         maladieManager.removeObjectManager(mal, null, utilisateurDao.findById(1));
          fs.add(mal);
       }
 
       if(pat != null && pat.getPatientId() != null){
-         patientManager.deleteByIdManager(pat, null, utilisateurDao.findById(1), null);
+         patientManager.removeObjectManager(pat, null, utilisateurDao.findById(1), null);
          fs.add(pat);
       }
 

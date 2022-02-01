@@ -250,7 +250,7 @@ public class SModeleManagerTest extends AbstractManagerTest4
       assertTrue(sModeleManager.getBanquesManager(sM1).isEmpty());
 
       // suppression
-      sModeleManager.deleteByIdManager(sM1);
+      sModeleManager.removeObjectManager(sM1);
 
       assertTrue(sModeleManager.findAllObjectsManager().size() == sModeleTotCount);
       assertTrue(IterableUtils.toList(sModeleIndicateurDao.findAll()).size() == sMIndicTotCount);
@@ -365,7 +365,7 @@ public class SModeleManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
 
-      sModeleManager.deleteByIdManager(sM2);
+      sModeleManager.removeObjectManager(sM2);
       assertTrue(sModeleManager.findAllObjectsManager().size() == sModeleTotCount);
       assertTrue(IterableUtils.toList(sModeleIndicateurDao.findAll()).size() == sMIndicTotCount);
       assertTrue(indicateurManager.findAllObjectsManager().size() == indicTotCount);

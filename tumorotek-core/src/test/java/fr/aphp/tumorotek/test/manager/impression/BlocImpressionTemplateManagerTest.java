@@ -300,15 +300,15 @@ public class BlocImpressionTemplateManagerTest extends AbstractManagerTest4
       assertTrue(bitTest2.getOrdre() == 10);
 
       // suppression du BlocImpressionTemplate ajouté
-      blocImpressionTemplateManager.deleteByIdManager(bitTest);
+      blocImpressionTemplateManager.removeObjectManager(bitTest);
       assertTrue(blocImpressionTemplateManager.findAllObjectsManager().size() == 4);
 
       // suppression d'un BlocImpressionTemplate null
-      blocImpressionTemplateManager.deleteByIdManager(null);
+      blocImpressionTemplateManager.removeObjectManager(null);
       assertTrue(blocImpressionTemplateManager.findAllObjectsManager().size() == 4);
 
       // suppression d'un BlocImpressionTemplate inexistant
-      blocImpressionTemplateManager.deleteByIdManager(bitTest);
+      blocImpressionTemplateManager.removeObjectManager(bitTest);
       assertTrue(blocImpressionTemplateManager.findAllObjectsManager().size() == 4);
    }
 }

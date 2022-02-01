@@ -837,7 +837,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
    public void testCrud() throws ParseException{
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    /**
@@ -1056,8 +1056,8 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       assertEquals(2, enceinteManager.getBanquesManager(eTest2).size());
 
       // Suppression
-      enceinteManager.deleteByIdManager(eTest, null, u);
-      enceinteManager.deleteByIdManager(eTest2, null, u);
+      enceinteManager.removeObjectManager(eTest, null, u);
+      enceinteManager.removeObjectManager(eTest2, null, u);
       assertEquals(0, getOperationManager().findByObjectManager(eTest).size());
       assertEquals(0, getOperationManager().findByObjectManager(eTest2).size());
       assertEquals(7, enceinteManager.findAllObjectsManager().size());
@@ -1332,7 +1332,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       assertEquals("incident pour enceinte update", inc1.getDescription());
 
       // Suppression
-      enceinteManager.deleteByIdManager(eTest2, null, u);
+      enceinteManager.removeObjectManager(eTest2, null, u);
       assertEquals(0, getOperationManager().findByObjectManager(eTest2).size());
       assertEquals(7, enceinteManager.findAllObjectsManager().size());
       assertEquals(5, incidentManager.findAllObjectsManager().size());
@@ -1343,19 +1343,19 @@ public class EnceinteManagerTest extends AbstractManagerTest4
    }
 
    /**
-    * Teste la methode deleteByIdManager. 
+    * Teste la methode removeObjectManager. 
     */
-   private void deleteByIdManagerTest(){
+   private void removeObjectManagerTest(){
       final Utilisateur u = utilisateurDao.findById(1);
       // test de la suppression d'un objet null
-      enceinteManager.deleteByIdManager(null, null, null);
+      enceinteManager.removeObjectManager(null, null, null);
       assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
       // test de la suppression d'un objet utilisé
       final Enceinte e1 = enceinteManager.findByIdManager(1);
       boolean catched = false;
       try{
-         enceinteManager.deleteByIdManager(e1, null, u);
+         enceinteManager.removeObjectManager(e1, null, u);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ObjectUsedException")){
             assertEquals("enceinte.deletion.isUsed", ((ObjectUsedException) e).getKey());
@@ -1408,7 +1408,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
          terms.addAll(terminaleManager.findByEnceinteWithOrderManager(enceintes.get(i)));
       }
 
-      enceinteManager.deleteByIdManager(supE, null, u);
+      enceinteManager.removeObjectManager(supE, null, u);
       assertEquals(7, enceinteManager.findAllObjectsManager().size());
       assertEquals(6, terminaleManager.findAllObjectsManager().size());
 
@@ -1692,7 +1692,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       assertEquals("R126", list.get(1).getNom());
 
       for(int i = 0; i < list.size(); i++){
-         enceinteManager.deleteByIdManager(list.get(i), null, u);
+         enceinteManager.removeObjectManager(list.get(i), null, u);
       }
       assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
@@ -1714,7 +1714,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       assertEquals("R2", list2.get(1).getNom());
 
       for(int i = 0; i < list2.size(); i++){
-         enceinteManager.deleteByIdManager(list2.get(i), null, u);
+         enceinteManager.removeObjectManager(list2.get(i), null, u);
       }
       assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
@@ -1817,7 +1817,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       assertEquals("T62", list.get(4).getNom());
 
       for(int i = 0; i < list.size(); i++){
-         enceinteManager.deleteByIdManager(list.get(i), null, u);
+         enceinteManager.removeObjectManager(list.get(i), null, u);
       }
       assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
@@ -1839,7 +1839,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
       assertEquals("T5", list2.get(4).getNom());
 
       for(int i = 0; i < list2.size(); i++){
-         enceinteManager.deleteByIdManager(list2.get(i), null, u);
+         enceinteManager.removeObjectManager(list2.get(i), null, u);
       }
       assertEquals(7, enceinteManager.findAllObjectsManager().size());
 
@@ -2005,15 +2005,15 @@ public class EnceinteManagerTest extends AbstractManagerTest4
 
       List<Operation> ops = getOperationManager().findByObjectManager(eTest3);
       for(int i = 0; i < ops.size(); i++){
-         getOperationManager().deleteByIdManager(ops.get(i));
+         getOperationManager().removeObjectManager(ops.get(i));
       }
       ops = getOperationManager().findByObjectManager(eTest6);
       for(int i = 0; i < ops.size(); i++){
-         getOperationManager().deleteByIdManager(ops.get(i));
+         getOperationManager().removeObjectManager(ops.get(i));
       }
       ops = getOperationManager().findByObjectManager(eTest4);
       for(int i = 0; i < ops.size(); i++){
-         getOperationManager().deleteByIdManager(ops.get(i));
+         getOperationManager().removeObjectManager(ops.get(i));
       }
       assertEquals(19, getOperationManager().findAllObjectsManager().size());
    }
@@ -2119,7 +2119,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
 
       final List<Terminale> terms = terminaleManager.findByEnceinteWithOrderManager(e1);
 
-      enceinteManager.deleteByIdManager(e1, null, u);
+      enceinteManager.removeObjectManager(e1, null, u);
       assertEquals(4, conteneurManager.findAllObjectsManager().size());
       assertEquals(7, enceinteManager.findAllObjectsManager().size());
       assertEquals(6, terminaleManager.findAllObjectsManager().size());
@@ -2285,7 +2285,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
          terms.addAll(terminaleManager.findByEnceinteWithOrderManager(encs.get(i)));
       }
 
-      enceinteManager.deleteByIdManager(e1, null, u);
+      enceinteManager.removeObjectManager(e1, null, u);
       assertEquals(4, conteneurManager.findAllObjectsManager().size());
       assertEquals(7, enceinteManager.findAllObjectsManager().size());
       assertEquals(6, terminaleManager.findAllObjectsManager().size());
@@ -2456,7 +2456,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
          terms.addAll(terminaleManager.findByEnceinteWithOrderManager(encs.get(i)));
       }
 
-      enceinteManager.deleteByIdManager(eUp, null, u);
+      enceinteManager.removeObjectManager(eUp, null, u);
       assertEquals(4, conteneurManager.findAllObjectsManager().size());
       assertEquals(7, enceinteManager.findAllObjectsManager().size());
       assertEquals(6, terminaleManager.findAllObjectsManager().size());
@@ -2733,7 +2733,7 @@ public class EnceinteManagerTest extends AbstractManagerTest4
 
       // Suppression
 
-      enceinteManager.deleteByIdManager(eTest2, null, u);
+      enceinteManager.removeObjectManager(eTest2, null, u);
 
       assertEquals(0, getOperationManager().findByObjectManager(eTest2).size());
       assertEquals(7, enceinteManager.findAllObjectsManager().size());

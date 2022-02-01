@@ -660,7 +660,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
    public void testCRUD() throws ParseException{
       Banque b = saveManagerTest();
       b = saveManagerTest(b);
-      deleteByIdManagerTest(b);
+      removeObjectManagerTest(b);
    }
 
    private Banque saveManagerTest(){
@@ -820,14 +820,14 @@ public class BanqueManagerTest extends AbstractManagerTest4
       return b2;
    }
 
-   private void deleteByIdManagerTest(final Banque bank){
+   private void removeObjectManagerTest(final Banque bank){
       final Utilisateur u = utilisateurDao.findById(1);
       final Banque b = banqueManager.findByIdManager(bank.getBanqueId());
-      banqueManager.deleteByIdManager(b, null, u, "/tmp/", false);
+      banqueManager.removeObjectManager(b, null, u, "/tmp/", false);
       assertTrue(banqueManager.findAllObjectsManager().size() == 4);
       assertTrue(getOperationManager().findByObjectManager(b).size() == 0);
 
-      banqueManager.deleteByIdManager(null, null, null, null, true);
+      banqueManager.removeObjectManager(null, null, null, null, true);
       //verifie que l'etat des tables modifies est revenu identique
       testFindAll();
 
@@ -910,17 +910,17 @@ public class BanqueManagerTest extends AbstractManagerTest4
       assertTrue(enceinteManager.getBanquesManager(ec3).size() == 1);
 
       // suppression et verification de la cascade
-      banqueManager.deleteByIdManager(b, null, u, "/tmp/", true);
+      banqueManager.removeObjectManager(b, null, u, "/tmp/", true);
       testFindAll();
       final Enceinte e = enceinteManager.findByIdManager(ec3.getEnceinteId());
       assertTrue(enceinteManager.getBanquesManager(e).size() == 0);
       final List<Operation> ops = getOperationManager().findByObjectManager(e6);
       for(int i = 0; i < ops.size(); i++){
-         getOperationManager().deleteByIdManager(ops.get(i));
+         getOperationManager().removeObjectManager(ops.get(i));
       }
 
       // clean up
-      enceinteManager.deleteByIdManager(e, null, u);
+      enceinteManager.removeObjectManager(e, null, u);
       assertTrue(conteneurManager.getEnceintesManager(c3).size() == 0);
       assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
 
@@ -987,7 +987,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       //assertTrue(tableCodageManager.getBanquesManager(t3).size()  == 2);
 
       // suppression et verification de la cascade
-      banqueManager.deleteByIdManager(b, null, u, "/tmp/", true);
+      banqueManager.removeObjectManager(b, null, u, "/tmp/", true);
       testFindAll();
       //assertTrue(tableCodageManager.getBanquesManager(t3).size()  == 1);
       final List<TKFantomableObject> fs = new ArrayList<>();
@@ -1060,7 +1060,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       assertTrue(tableAnnotationManager.findByEntiteAndBanqueManager(entiteDao.findByNom("ProdDerive").get(0), b).contains(t6));
 
       // suppression et verification de la cascade
-      banqueManager.deleteByIdManager(b, null, u, "/tmp/", true);
+      banqueManager.removeObjectManager(b, null, u, "/tmp/", true);
       testFindAll();
       assertTrue(tableAnnotationManager.findByEntiteAndBanqueManager(entiteDao.findByNom("Patient").get(0), b2).size() == 0);
       assertTrue(tableAnnotationManager.findByEntiteAndBanqueManager(entiteDao.findByNom("Prelevement").get(0), b2).size() == 0);
@@ -1145,7 +1145,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       assertTrue(couleurEntiteTypeManager.findAllCouleursForProdTypeByBanqueManager(b2).get(0).getCouleur().equals(coul4));
 
       // suppression et verification de la cascade
-      banqueManager.deleteByIdManager(b2, null, u, "/tmp/", true);
+      banqueManager.removeObjectManager(b2, null, u, "/tmp/", true);
       testFindAll();
       assertTrue(couleurEntiteTypeManager.findAllObjectsByBanqueManager(b2).size() == 0);
 
@@ -1242,9 +1242,9 @@ public class BanqueManagerTest extends AbstractManagerTest4
       assertTrue(listPuForBanque.containsAll(Arrays.asList(profilUtilisateur2, profilUtilisateur3)));
 
       //Suppression de la banque et des utilisateurs créées
-      utilisateurManager.deleteByIdManager(user1);
-      utilisateurManager.deleteByIdManager(user2);
-      banqueManager.deleteByIdManager(banque, null, admin, "/tmp/", true);
+      utilisateurManager.removeObjectManager(user1);
+      utilisateurManager.removeObjectManager(user2);
+      banqueManager.removeObjectManager(banque, null, admin, "/tmp/", true);
       cleanUpFantomes(Arrays.asList(banque));
       
    }
@@ -1355,7 +1355,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
 
       boolean catched = false;
       try{
-         banqueManager.deleteByIdManager(b, null, u, "/tmp/", false);
+         banqueManager.removeObjectManager(b, null, u, "/tmp/", false);
       }catch(final ObjectReferencedException ore){
          catched = true;
          assertTrue(ore.getKey().equals("banque.deletion.isReferenced"));
@@ -1363,7 +1363,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
 
-      prelevementManager.deleteByIdManager(p, null, u, null);
+      prelevementManager.removeObjectManager(p, null, u, null);
       assertFalse(banqueManager.isReferencedObjectManager(b));
 
       // reference rendant cascade impossible
@@ -1375,7 +1375,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
 
       catched = false;
       try{
-         banqueManager.deleteByIdManager(b, null, u, null, false);
+         banqueManager.removeObjectManager(b, null, u, null, false);
       }catch(final ObjectReferencedException ore){
          catched = true;
          assertTrue(ore.getKey().equals("banque.deletion.isReferenced"));
@@ -1383,7 +1383,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
 
-      echantillonManager.deleteByIdManager(e, null, u, null);
+      echantillonManager.removeObjectManager(e, null, u, null);
       assertFalse(banqueManager.isReferencedObjectManager(b));
 
       // reference rendant cascade impossible
@@ -1395,7 +1395,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
 
       catched = false;
       try{
-         banqueManager.deleteByIdManager(b, null, u, "/tmp/", false);
+         banqueManager.removeObjectManager(b, null, u, "/tmp/", false);
       }catch(final ObjectReferencedException ore){
          catched = true;
          assertTrue(ore.getKey().equals("banque.deletion.isReferenced"));
@@ -1403,7 +1403,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
 
-      prodDeriveManager.deleteByIdManager(d, null, u, null);
+      prodDeriveManager.removeObjectManager(d, null, u, null);
       assertFalse(banqueManager.isReferencedObjectManager(b));
 
       // reference rendant cascade impossible
@@ -1415,7 +1415,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
 
       catched = false;
       try{
-         banqueManager.deleteByIdManager(b, null, u, "/tmp/", false);
+         banqueManager.removeObjectManager(b, null, u, "/tmp/", false);
       }catch(final ObjectReferencedException ore){
          catched = true;
          assertTrue(ore.getKey().equals("banque.deletion.isReferenced"));
@@ -1423,10 +1423,10 @@ public class BanqueManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
 
-      cessionManager.deleteByIdManager(c, null, u, null);
+      cessionManager.removeObjectManager(c, null, u, null);
 
       // suppression et verification de la cascade
-      banqueManager.deleteByIdManager(b, null, u, "/tmp/", false);
+      banqueManager.removeObjectManager(b, null, u, "/tmp/", false);
       testFindAll();
       assertTrue(codeSelectManager.findAllObjectsManager().size() == 5);
       assertTrue(codeUtilisateurManager.findAllObjectsManager().size() == 6);
@@ -1470,7 +1470,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
 
       new File(Utils.writeAnnoFilePath("/tmp/", b, null, null) + "/cr_anapath/test2").createNewFile();
 
-      banqueManager.deleteByIdManager(b, null, u, "/tmp/", false);
+      banqueManager.removeObjectManager(b, null, u, "/tmp/", false);
       assertFalse(new File(Utils.writeAnnoFilePath("/tmp/", b, null, null)).exists());
       assertFalse(new File(Utils.writeAnnoFilePath("/tmp/", b, null, null) + "/anno").exists());
       assertFalse(new File(Utils.writeAnnoFilePath("/tmp/", b, null, null) + "/cr_anapath").exists());
@@ -1565,7 +1565,7 @@ public class BanqueManagerTest extends AbstractManagerTest4
       // clean up operations
       final List<Operation> ops = getOperationManager().findByObjectManager(b2);
       for(final Operation operation : ops){
-         getOperationManager().deleteByIdManager(operation);
+         getOperationManager().removeObjectManager(operation);
       }
 
       cleanUpFantomes(null);

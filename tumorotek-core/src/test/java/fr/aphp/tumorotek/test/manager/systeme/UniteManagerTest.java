@@ -266,13 +266,13 @@ public class UniteManagerTest extends AbstractManagerTest4
 
       // Test de la suppression
       final Unite unite4 = uniteManager.findByIdManager(15);
-      uniteManager.deleteByIdManager(unite4);
+      uniteManager.removeObjectManager(unite4);
       assertNull(uniteManager.findByIdManager(15));
       // On test la suppression d'un objet utilisé
       final Unite unite5 = uniteManager.findByIdManager(1);
       Boolean catchedDelete = false;
       try{
-         uniteManager.deleteByIdManager(unite5);
+         uniteManager.removeObjectManager(unite5);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ObjectUsedException")){
             catchedDelete = true;

@@ -206,8 +206,8 @@ public class PatientSipManagerTest extends AbstractManagerTest4
       assertTrue(p.getPrenom().equals("YOuch"));
 
       // clean up
-      patientSipManager.deleteByIdManager(p);
-      patientSipManager.deleteByIdManager(null);
+      patientSipManager.removeObjectManager(p);
+      patientSipManager.removeObjectManager(null);
 
       testFindAllObjectsManager();
    }
@@ -265,8 +265,8 @@ public class PatientSipManagerTest extends AbstractManagerTest4
       assertTrue(patientSipManager.findByNipLikeManager("68", false).get(0).getDateModification().equals(modif));
 
       // clean up
-      patientSipManager.deleteByIdManager(p);
-      patientSipManager.deleteByIdManager(null);
+      patientSipManager.removeObjectManager(p);
+      patientSipManager.removeObjectManager(null);
 
       testFindAllObjectsManager();
    }
@@ -357,7 +357,7 @@ public class PatientSipManagerTest extends AbstractManagerTest4
       assertTrue(patientSipManager.isSynchronizedPatientManager(null).isEmpty());
 
       // clean up
-      patientSipManager.deleteByIdManager(p);
+      patientSipManager.removeObjectManager(p);
       testFindAllObjectsManager();
    }
 
@@ -437,7 +437,7 @@ public class PatientSipManagerTest extends AbstractManagerTest4
       assertTrue(getOperationManager().findByObjectManager(p).size() == 2);
 
       // cleanUp
-      patientManager.deleteByIdManager(p, null, u, null);
+      patientManager.removeObjectManager(p, null, u, null);
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.add(p);
       cleanUpFantomes(fs);
@@ -478,7 +478,7 @@ public class PatientSipManagerTest extends AbstractManagerTest4
       assertTrue(patientSipManager.findAllObjectsManager().size() == 4);
 
       // clean up
-      patientSipManager.deleteByIdManager(patientSipManager.findByNomLikeManager("Last", true).get(0));
+      patientSipManager.removeObjectManager(patientSipManager.findByNomLikeManager("Last", true).get(0));
 
       testFindAllObjectsManager();
 

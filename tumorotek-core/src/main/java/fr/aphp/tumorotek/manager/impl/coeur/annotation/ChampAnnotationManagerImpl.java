@@ -49,6 +49,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -196,7 +197,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
 
    @Override
    public ChampAnnotation findByIdManager(final Integer champAnnotationId){
-      return champAnnotationDao.findById(champAnnotationId);
+      return champAnnotationDao.findById(champAnnotationId).orElse(null);
    }
 
    @Override
@@ -436,7 +437,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
    }
 
    @Override
-   public void deleteByIdManager(final ChampAnnotation champAnnotation, final String comments, final Utilisateur user,
+   public void removeObjectManager(final ChampAnnotation champAnnotation, final String comments, final Utilisateur user,
       final String baseDir){
       if(champAnnotation != null){
          // supprime le dossier si annotation fichier
@@ -445,7 +446,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
          }
 
          if(null != champAnnotation.getChampCalcule()){
-            champCalculeManager.deleteByIdManager(champAnnotation.getChampCalcule());
+            champCalculeManager.removeObjectManager(champAnnotation.getChampCalcule());
          }
 
          champAnnotationDao.deleteById(champAnnotation.getId());
@@ -634,13 +635,13 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
       final ChampCalcule oldChampCalcule = getChampCalculeManager(champAnno);
       if(null != oldChampCalcule){
          if(oldChampCalcule.getChampCalculeId() != champCalcule.getChampCalculeId()){
-            champCalculeManager.deleteByIdManager(oldChampCalcule);
-            champCalculeManager.saveManager(champCalcule);
+            champCalculeManager.removeObjectManager(oldChampCalcule);
+            champCalculeManager.createObjectManager(champCalcule);
          }else{
-            champCalculeManager.saveManager(champCalcule);
+            champCalculeManager.updateObjectManager(champCalcule);
          }
       }else{
-         champCalculeManager.saveManager(champCalcule);
+         champCalculeManager.createObjectManager(champCalcule);
       }
    }
 
@@ -677,7 +678,7 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
    }
 
    @Override
-   public void createOrsaveManager(final ChampAnnotation champ, final TableAnnotation table, final DataType dataType,
+   public void createOrUpdateObjectManager(final ChampAnnotation champ, final TableAnnotation table, final DataType dataType,
       final List<Item> items, final List<AnnotationDefaut> defauts, final Utilisateur utilisateur, final Banque banque,
       final String operation, final String baseDir){
 
@@ -738,10 +739,10 @@ public class ChampAnnotationManagerImpl implements ChampAnnotationManager
    }
 
    @Override
-   public void createOrsaveManager(final ChampAnnotation champ, final TableAnnotation table, final DataType dataType,
+   public void createOrUpdateObjectManager(final ChampAnnotation champ, final TableAnnotation table, final DataType dataType,
       final List<Item> items, final List<AnnotationDefaut> defauts, final ChampCalcule champCalcule,
       final Utilisateur utilisateur, final Banque banque, final String operation, final String baseDir){
-      createOrsaveManager(champ, table, dataType, items, defauts, utilisateur, banque, operation, baseDir);
+      createOrUpdateObjectManager(champ, table, dataType, items, defauts, utilisateur, banque, operation, baseDir);
 
       if(champCalcule != null){
          updateChampCalcule(champ, champCalcule);

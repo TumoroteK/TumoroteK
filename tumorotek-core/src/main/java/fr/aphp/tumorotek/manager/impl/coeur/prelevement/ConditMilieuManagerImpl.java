@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.manager.impl.coeur.prelevement;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -86,7 +87,7 @@ public class ConditMilieuManagerImpl implements ConditMilieuManager
    }
 
    @Override
-   public void saveManager(final ConditMilieu obj){
+   public void createObjectManager(final ConditMilieu obj){
 
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
@@ -106,7 +107,7 @@ public class ConditMilieuManagerImpl implements ConditMilieuManager
    }
 
    @Override
-   public void saveManager(final ConditMilieu obj){
+   public void updateObjectManager(final ConditMilieu obj){
       BeanValidator.validateObject(obj, new Validator[] {conditMilieuValidator});
       if(!findDoublonManager(obj)){
          conditMilieuDao.save(obj);
@@ -133,7 +134,7 @@ public class ConditMilieuManagerImpl implements ConditMilieuManager
    }
 
    @Override
-   public void deleteByIdManager(final ConditMilieu obj){
+   public void removeObjectManager(final ConditMilieu obj){
       if(obj != null){
          conditMilieuDao.deleteById(obj.getId());
          log.info("Suppression objet ConditMilieu " + obj.toString());
@@ -167,7 +168,7 @@ public class ConditMilieuManagerImpl implements ConditMilieuManager
 
    @Override
    public ConditMilieu findByIdManager(final Integer id){
-      return conditMilieuDao.findById(id);
+      return conditMilieuDao.findById(id).orElse(null);
    }
 
    @Override

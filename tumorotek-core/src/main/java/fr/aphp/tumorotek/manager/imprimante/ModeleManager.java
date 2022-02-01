@@ -110,7 +110,7 @@ public interface ModeleManager
     * @param champLigneEtiquettes hashtable contenant les champs
     * pour chaque ligne.
     */
-   void saveManager(Modele modele, Plateforme plateforme, ModeleType modeleType, List<LigneEtiquette> ligneEtiquettes,
+   void createObjectManager(Modele modele, Plateforme plateforme, ModeleType modeleType, List<LigneEtiquette> ligneEtiquettes,
       Hashtable<LigneEtiquette, List<ChampLigneEtiquette>> champLigneEtiquettes);
 
    /**
@@ -119,7 +119,7 @@ public interface ModeleManager
     * @param plateforme Plateforme du modèle.
     * @param modeleType ModeleType du modèle.
     */
-   void saveManager(Modele modele, Plateforme plateforme, ModeleType modeleType,
+   void updateObjectManager(Modele modele, Plateforme plateforme, ModeleType modeleType,
       List<LigneEtiquette> ligneEtiquettesToCreate, List<LigneEtiquette> ligneEtiquettesToremove,
       Hashtable<LigneEtiquette, List<ChampLigneEtiquette>> champLigneEtiquettesToCreate,
       Hashtable<LigneEtiquette, List<ChampLigneEtiquette>> champLigneEtiquettesToRemove);
@@ -128,6 +128,6 @@ public interface ModeleManager
     * Supprime un Modele de la base de données.
     * @param modele Modele à supprimer de la base de données.
     */
-   void deleteByIdManager(Modele modele);
+   void removeObjectManager(Modele modele);
 
 }

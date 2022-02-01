@@ -239,7 +239,7 @@ public class CodeAssigneManagerImpl implements CodeAssigneManager
    }
 
    @Override
-   public void deleteByIdManager(final CodeAssigne code){
+   public void removeObjectManager(final CodeAssigne code){
       if(code != null){
          // nullify oneToOne relationship
          //			if (code.getEchanExpOrg() != null

@@ -78,20 +78,20 @@ public interface ChampCalculeManager
     * @param champ Champ à créer.
     * @param parent Champ parent de la reqûete.
     */
-   void saveManager(ChampCalcule champ);
+   void createObjectManager(ChampCalcule champ);
 
    /**
     * Met à jour un Champ en BDD.
     * @param champ Champ à mettre à jour.
     * @param parent Champ parent du Champ à mettre à jour.
     */
-   void saveManager(ChampCalcule champ);
+   void updateObjectManager(ChampCalcule champ);
 
    /**
     * Supprime un Champ et son parent d'abord.
     * @param champ Champ à supprimer.
     */
-   void deleteByIdManager(ChampCalcule champ);
+   void removeObjectManager(ChampCalcule champ);
 
 
    /**

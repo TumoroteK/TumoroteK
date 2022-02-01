@@ -52,6 +52,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -175,7 +176,7 @@ public class PatientManagerImpl implements PatientManager
    }
 
    @Override
-   public void createOrsaveManager(final Patient patient, final List<Maladie> maladies,
+   public void createOrUpdateObjectManager(final Patient patient, final List<Maladie> maladies,
       final List<Collaborateur> medecins, final List<PatientLien> patientLiens,
       final List<AnnotationValeur> listAnnoToCreateOrUpdate, final List<AnnotationValeur> listAnnoToDelete,
       final List<File> filesCreated, final List<File> filesToDelete, final Utilisateur utilisateur, final String operation,
@@ -290,7 +291,7 @@ public class PatientManagerImpl implements PatientManager
 
    @Override
    public Patient findByIdManager(final Integer id){
-      final Patient a = patientDao.findById(id);
+      final Patient a = patientDao.findById(id).orElse(null);
       return a;
    }
 
@@ -488,7 +489,7 @@ public class PatientManagerImpl implements PatientManager
    }
 
    @Override
-   public void deleteByIdManager(final Patient patient, final String comments, final Utilisateur user,
+   public void removeObjectManager(final Patient patient, final String comments, final Utilisateur user,
       final List<File> filesToDelete){
       if(patient != null){
          if(!isUsedObjectManager(patient)){
@@ -496,7 +497,7 @@ public class PatientManagerImpl implements PatientManager
             // Supprime les maladies associées
             final Iterator<Maladie> malsIt = maladieManager.findByPatientManager(patient).iterator();
             while(malsIt.hasNext()){
-               maladieManager.deleteByIdManager(malsIt.next(), comments, user);
+               maladieManager.removeObjectManager(malsIt.next(), comments, user);
             }
 
             patientDao.deleteById(patient.getPatientId());
@@ -655,7 +656,7 @@ public class PatientManagerImpl implements PatientManager
             log.debug("Ajout de l'association entre le patient : " + pat.toString() + " et le medecin : "
                + collaborateurs.get(i).toString());
          }else{ // on modifie l'ordre du medecin present avec la liste
-            pm = patientMedecinDao.findById(pk);
+            pm = patientMedecinDao.findById(pk).orElse(null);
             pm.setOrdre(i + 1);
             patientMedecinDao.save(pm);
          }
@@ -845,7 +846,7 @@ public class PatientManagerImpl implements PatientManager
       for(int i = 0; i < patients.size(); i++){
          final Patient pat = patients.get(i);
          try{
-            createOrsaveManager(pat, null, null, null, null, null, null, null, utilisateur, "modifMulti", baseDir, false);
+            createOrUpdateObjectManager(pat, null, null, null, null, null, null, null, utilisateur, "modifMulti", baseDir, false);
          }catch(final RuntimeException e){
             if(e instanceof TKException){
                ((TKException) e).setEntiteObjetException("Patient");
@@ -1001,7 +1002,7 @@ public class PatientManagerImpl implements PatientManager
          }
 
          // mise a jour du Patient actif
-         createOrsaveManager(patient, null, medsA, liensA, valeursAConserver, null, null, null, u, "fusion", null, false);
+         createOrUpdateObjectManager(patient, null, medsA, liensA, valeursAConserver, null, null, null, u, "fusion", null, false);
 
          // recuperation des maladies
          final Set<Maladie> malP = maladieManager.getMaladiesManager(passif);
@@ -1033,7 +1034,7 @@ public class PatientManagerImpl implements PatientManager
 
          // fantomization (oh le beau mot) du passif
          for(int i = 0; i < malsToRemove.size(); i++){
-            maladieManager.deleteByIdManager(malsToRemove.get(i), comments, u);
+            maladieManager.removeObjectManager(malsToRemove.get(i), comments, u);
          }
 
          // remove patient et objets associes
@@ -1085,7 +1086,7 @@ public class PatientManagerImpl implements PatientManager
          for(final Integer id : ids){
             p = findByIdManager(id);
             if(p != null){
-               deleteByIdManager(p, comment, u, filesToDelete);
+               removeObjectManager(p, comment, u, filesToDelete);
             }
          }
          for(final File f : filesToDelete){

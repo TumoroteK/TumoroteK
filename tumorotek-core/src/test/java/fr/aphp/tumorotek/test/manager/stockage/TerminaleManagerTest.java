@@ -651,7 +651,7 @@ public class TerminaleManagerTest extends AbstractManagerTest4
    public void testCrud() throws ParseException{
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    private void saveManagerTest() throws ParseException{
@@ -797,8 +797,8 @@ public class TerminaleManagerTest extends AbstractManagerTest4
       assertTrue(tTest2.getAlias().equals("ALIAS4"));
 
       // Suppression
-      terminaleManager.deleteByIdManager(tTest, null, u);
-      terminaleManager.deleteByIdManager(tTest2, null, u);
+      terminaleManager.removeObjectManager(tTest, null, u);
+      terminaleManager.removeObjectManager(tTest2, null, u);
       assertTrue(getOperationManager().findByObjectManager(tTest).size() == 0);
       assertTrue(getOperationManager().findByObjectManager(tTest2).size() == 0);
       assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
@@ -993,7 +993,7 @@ public class TerminaleManagerTest extends AbstractManagerTest4
       assertTrue(inc1.getDescription().equals("incident pour enceinte update"));
 
       // Suppression
-      terminaleManager.deleteByIdManager(tTest2, null, u);
+      terminaleManager.removeObjectManager(tTest2, null, u);
       assertTrue(getOperationManager().findByObjectManager(tTest2).size() == 0);
       assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
       assertTrue(incidentManager.findAllObjectsManager().size() == 5);
@@ -1003,17 +1003,17 @@ public class TerminaleManagerTest extends AbstractManagerTest4
       cleanUpFantomes(fs);
    }
 
-   private void deleteByIdManagerTest(){
+   private void removeObjectManagerTest(){
       final Utilisateur u = utilisateurDao.findById(1);
       // test de la suppression d'un objet null
-      terminaleManager.deleteByIdManager(null, null, null);
+      terminaleManager.removeObjectManager(null, null, null);
       assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
 
       // test de la suppression d'un objet utilisé
       final Terminale t1 = terminaleManager.findByIdManager(1);
       boolean catched = false;
       try{
-         terminaleManager.deleteByIdManager(t1, null, u);
+         terminaleManager.removeObjectManager(t1, null, u);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ObjectUsedException")){
             catched = true;
@@ -1037,7 +1037,7 @@ public class TerminaleManagerTest extends AbstractManagerTest4
       emplacementManager.createMultiObjetcsManager(tToRemove, 10);
       assertTrue(emplacementManager.findAllObjectsManager().size() == 17);
 
-      terminaleManager.deleteByIdManager(tToRemove, null, u);
+      terminaleManager.removeObjectManager(tToRemove, null, u);
       assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
       assertTrue(emplacementManager.findAllObjectsManager().size() == 7);
 
@@ -1142,7 +1142,7 @@ public class TerminaleManagerTest extends AbstractManagerTest4
       assertTrue(list.get(4).getNom().equals("BT54"));
 
       for(int i = 0; i < list.size(); i++){
-         terminaleManager.deleteByIdManager(list.get(i), null, u);
+         terminaleManager.removeObjectManager(list.get(i), null, u);
       }
       assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
 
@@ -1157,7 +1157,7 @@ public class TerminaleManagerTest extends AbstractManagerTest4
       assertTrue(list2.get(4).getNom().equals("BT5"));
 
       for(int i = 0; i < list2.size(); i++){
-         terminaleManager.deleteByIdManager(list2.get(i), null, u);
+         terminaleManager.removeObjectManager(list2.get(i), null, u);
       }
       assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
 
@@ -1446,15 +1446,15 @@ public class TerminaleManagerTest extends AbstractManagerTest4
 
       List<Operation> ops = getOperationManager().findByObjectManager(tTest2);
       for(int i = 0; i < ops.size(); i++){
-         getOperationManager().deleteByIdManager(ops.get(i));
+         getOperationManager().removeObjectManager(ops.get(i));
       }
       ops = getOperationManager().findByObjectManager(tTest1);
       for(int i = 0; i < ops.size(); i++){
-         getOperationManager().deleteByIdManager(ops.get(i));
+         getOperationManager().removeObjectManager(ops.get(i));
       }
       ops = getOperationManager().findByObjectManager(tTest4);
       for(int i = 0; i < ops.size(); i++){
-         getOperationManager().deleteByIdManager(ops.get(i));
+         getOperationManager().removeObjectManager(ops.get(i));
       }
       assertTrue(getOperationManager().findAllObjectsManager().size() == 19);
    }
@@ -1567,7 +1567,7 @@ public class TerminaleManagerTest extends AbstractManagerTest4
       }
       assertTrue(terminales.size() == 90);
 
-      conteneurManager.deleteByIdManager(cTest, null, u);
+      conteneurManager.removeObjectManager(cTest, null, u);
 
       assertTrue(conteneurManager.findAllObjectsManager().size() == 4);
       assertTrue(enceinteManager.findAllObjectsManager().size() == 7);
@@ -1707,7 +1707,7 @@ public class TerminaleManagerTest extends AbstractManagerTest4
       assertTrue(list.get(3).getCouleur().getCouleur().equals("ROUGE"));
 
       for(int i = 0; i < list.size(); i++){
-         terminaleManager.deleteByIdManager(list.get(i), null, u);
+         terminaleManager.removeObjectManager(list.get(i), null, u);
       }
       assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
 
@@ -1722,7 +1722,7 @@ public class TerminaleManagerTest extends AbstractManagerTest4
       assertTrue(list2.get(4).getNom().equals("VERT5"));
 
       for(int i = 0; i < list2.size(); i++){
-         terminaleManager.deleteByIdManager(list2.get(i), null, u);
+         terminaleManager.removeObjectManager(list2.get(i), null, u);
       }
       assertTrue(terminaleManager.findAllObjectsManager().size() == 6);
 

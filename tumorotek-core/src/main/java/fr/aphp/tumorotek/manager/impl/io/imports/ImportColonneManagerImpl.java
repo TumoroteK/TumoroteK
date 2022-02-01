@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.io.imports;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -91,7 +92,7 @@ public class ImportColonneManagerImpl implements ImportColonneManager
 
    @Override
    public ImportColonne findByIdManager(final Integer importColonneId){
-      return importColonneDao.findById(importColonneId);
+      return importColonneDao.findById(importColonneId).orElse(null);
    }
 
    @Override
@@ -223,14 +224,14 @@ public class ImportColonneManagerImpl implements ImportColonneManager
    }
 
    @Override
-   public void saveManager(final ImportColonne importColonne, final ImportTemplate template, final Champ champ){
+   public void createObjectManager(final ImportColonne importColonne, final ImportTemplate template, final Champ champ){
 
       // validation de l'objet
       validateObjectManager(importColonne, template, champ, "creation");
 
       importColonne.setImportTemplate(importTemplateDao.save(template));
 
-      champManager.saveManager(champ, null);
+      champManager.createObjectManager(champ, null);
       importColonne.setChamp(champ);
 
       importColonneDao.save(importColonne);
@@ -240,7 +241,7 @@ public class ImportColonneManagerImpl implements ImportColonneManager
    }
 
    @Override
-   public void saveManager(final ImportColonne importColonne, final ImportTemplate template, final Champ champ){
+   public void updateObjectManager(final ImportColonne importColonne, final ImportTemplate template, final Champ champ){
 
       // validation de l'objet
       validateObjectManager(importColonne, template, champ, "modification");
@@ -249,9 +250,9 @@ public class ImportColonneManagerImpl implements ImportColonneManager
 
       // si le champ n'existe pas, on le crée
       if(champ.getChampId() == null){
-         champManager.saveManager(champ, null);
+         champManager.createObjectManager(champ, null);
       }else{
-         champManager.saveManager(champ, null);
+         champManager.updateObjectManager(champ, null);
       }
       importColonne.setChamp(champ);
 
@@ -262,13 +263,13 @@ public class ImportColonneManagerImpl implements ImportColonneManager
    }
 
    @Override
-   public void deleteByIdManager(final ImportColonne importColonne){
+   public void removeObjectManager(final ImportColonne importColonne){
       if(importColonne != null){
          final Champ chp = importColonne.getChamp();
          importColonneDao.deleteById(importColonne.getImportColonneId());
          log.info("Suppression de l'objet ImportColonne : " + importColonne.toString());
 
-         champManager.deleteByIdManager(chp);
+         champManager.removeObjectManager(chp);
       }else{
          log.warn("Suppression d'un ImportColonne null");
       }

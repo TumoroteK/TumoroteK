@@ -189,7 +189,7 @@ public class GroupementManagerTest extends AbstractManagerTest4
       assertNotNull(copie2);
 
       //On supprime les éléments créés
-      manager.deleteByIdManager(copie);
+      manager.removeObjectManager(copie);
    }
 
    /*
@@ -225,12 +225,12 @@ public class GroupementManagerTest extends AbstractManagerTest4
       }
       /** On teste une suppression invalide. */
       try{
-         manager.deleteByIdManager(null);
+         manager.removeObjectManager(null);
       }catch(final RequiredObjectIsNullException e){
          assertEquals("RequiredObjectIsNullException", e.getClass().getSimpleName());
       }
       try{
-         manager.deleteByIdManager(new Groupement());
+         manager.removeObjectManager(new Groupement());
       }catch(final RequiredObjectIsNullException e){
          assertEquals("RequiredObjectIsNullException", e.getClass().getSimpleName());
       }
@@ -295,14 +295,14 @@ public class GroupementManagerTest extends AbstractManagerTest4
       /** Remove. */
       final int id = groupement.getGroupementId();
       //On le supprime
-      manager.deleteByIdManager(groupement);
+      manager.removeObjectManager(groupement);
       //On essaye de le récupérer via l'identifiant
       groupement2 = manager.findByIdManager(id);
       //On verifie qu'il n'existe pas dans la liste du manager
       assertNull(groupement2);
 
       //On supprime les éléments créés
-      critereManager.deleteByIdManager(oldCritere1);
+      critereManager.removeObjectManager(oldCritere1);
    }
 
    private List<Critere> findCriteres(final Groupement groupement){

@@ -50,6 +50,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.collection.internal.PersistentSet;
@@ -302,7 +303,7 @@ public class PrelevementManagerImpl implements PrelevementManager
    }
 
    @Override
-   public void saveManager(final Prelevement prelevement, final Banque banque, final Nature nature, final Maladie maladie,
+   public void createObjectManager(final Prelevement prelevement, final Banque banque, final Nature nature, final Maladie maladie,
       final ConsentType consentType, final Collaborateur preleveur, final Service servicePreleveur,
       final PrelevementType prelevementType, final ConditType conditType, final ConditMilieu conditMilieu,
       final Transporteur transporteur, final Collaborateur operateur, final Unite quantiteUnite, final List<LaboInter> laboInters,
@@ -335,7 +336,7 @@ public class PrelevementManagerImpl implements PrelevementManager
             // Enregistrement de l'operation associee
             final Operation creationOp = new Operation();
             creationOp.setDate(Utils.getCurrentSystemCalendar());
-            operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0),
+            operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0),
                prelevement);
 
             updateLaboInters(laboInters, prelevement);
@@ -396,10 +397,10 @@ public class PrelevementManagerImpl implements PrelevementManager
          for(int i = 0; i < laboInters.size(); i++){
             labo = laboInters.get(i);
             if(labo.getLaboInterId() == null){
-               laboInterManager.saveManager(labo, prelevement, labo.getService(), labo.getCollaborateur(),
+               laboInterManager.createObjectManager(labo, prelevement, labo.getService(), labo.getCollaborateur(),
                   labo.getTransporteur(), false);
             }else{
-               laboInterManager.saveManager(labo, prelevement, labo.getService(), labo.getCollaborateur(),
+               laboInterManager.updateObjectManager(labo, prelevement, labo.getService(), labo.getCollaborateur(),
                   labo.getTransporteur(), false);
             }
          }
@@ -408,7 +409,7 @@ public class PrelevementManagerImpl implements PrelevementManager
    }
 
    @Override
-   public void saveManager(final Prelevement prelevement, final Banque banque, final Nature nature, final Maladie maladie,
+   public void updateObjectManager(final Prelevement prelevement, final Banque banque, final Nature nature, final Maladie maladie,
       final ConsentType consentType, final Collaborateur preleveur, final Service servicePreleveur,
       final PrelevementType prelevementType, final ConditType conditType, final ConditMilieu conditMilieu,
       final Transporteur transporteur, final Collaborateur operateur, final Unite quantiteUnite, final List<LaboInter> laboInters,
@@ -446,10 +447,10 @@ public class PrelevementManagerImpl implements PrelevementManager
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
          if(!multiple){
-            operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
+            operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
                prelevement);
          }else{
-            operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("ModifMultiple").get(0),
+            operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("ModifMultiple").get(0),
                prelevement);
          }
 
@@ -594,7 +595,7 @@ public class PrelevementManagerImpl implements PrelevementManager
     */
    @Override
    public Prelevement findByIdManager(final Integer prelevementId){
-      final Prelevement p = prelevementDao.findById(prelevementId);
+      final Prelevement p = prelevementDao.findById(prelevementId).orElse(null);
       return p;
    }
 
@@ -752,7 +753,7 @@ public class PrelevementManagerImpl implements PrelevementManager
       prelevement = prelevementDao.save(prelevement);
       Maladie parent = null;
       if(prelevement != null && prelevement.getMaladie() != null){
-         parent = maladieDao.findById(prelevement.getMaladie().getMaladieId());
+         parent = maladieDao.findById(prelevement.getMaladie().getMaladieId()).orElse(null);
          parent = maladieDao.save(parent);
       }
 
@@ -947,7 +948,7 @@ public class PrelevementManagerImpl implements PrelevementManager
 //   }
 
    @Override
-   public void deleteByIdManager(final Prelevement prelevement, final String comments, final Utilisateur u,
+   public void removeObjectManager(final Prelevement prelevement, final String comments, final Utilisateur u,
       final List<File> filesToDelete){
       if(prelevement != null){
          if(!isUsedObjectManager(prelevement)){
@@ -977,7 +978,7 @@ public class PrelevementManagerImpl implements PrelevementManager
    }
 
    @Override
-   public void deleteByIdCascadeManager(final Prelevement prelevement, final String comments, final Utilisateur user,
+   public void removeObjectCascadeManager(final Prelevement prelevement, final String comments, final Utilisateur user,
       final List<File> filesToDelete){
       if(prelevement != null){
          log.info("Suppression en cascade depuis objet Prelevement " + prelevement.toString());
@@ -986,17 +987,17 @@ public class PrelevementManagerImpl implements PrelevementManager
          final Iterator<Echantillon> echansIt = getEchantillonsManager(prelevement).iterator();
 
          while(echansIt.hasNext()){
-            echantillonManager.deleteByIdCascadeManager(echansIt.next(), comments, user, filesToDelete);
+            echantillonManager.removeObjectCascadeManager(echansIt.next(), comments, user, filesToDelete);
          }
          prelevement.setEchantillons(new HashSet<Echantillon>());
 
          // suppression des dérivés en mode cascade
          final Iterator<Transformation> transfIt = transformationManager.findByParentManager(prelevement).iterator();
          while(transfIt.hasNext()){
-            prodDeriveManager.deleteByIdCascadeManager(transfIt.next(), comments, user, filesToDelete);
+            prodDeriveManager.removeObjectCascadeManager(transfIt.next(), comments, user, filesToDelete);
          }
 
-         deleteByIdManager(prelevement, comments, user, filesToDelete);
+         removeObjectManager(prelevement, comments, user, filesToDelete);
       }
    }
 
@@ -1053,10 +1054,10 @@ public class PrelevementManagerImpl implements PrelevementManager
       if(maladie != null){
          if(maladie.getMaladieId() == null){ // creation conjointe
             if(maladie.getPatient().getPatientId() == null){
-               patientManager.createOrsaveManager(maladie.getPatient(), null, null, null, null, null, null, null,
+               patientManager.createOrUpdateObjectManager(maladie.getPatient(), null, null, null, null, null, null, null,
                   utilisateur, "creation", baseDir, false);
             }
-            maladieManager.createOrsaveManager(maladie, null, null, utilisateur, "creation");
+            maladieManager.createOrUpdateObjectManager(maladie, null, null, utilisateur, "creation");
 
             maladieManager.getMaladiesManager(maladie.getPatient()).add(maladie);
 
@@ -1253,7 +1254,7 @@ public class PrelevementManagerImpl implements PrelevementManager
       final List<File> filesCreated = new ArrayList<>();
 
       // enregistrement du prelevement
-      saveManager(prelevement, banque, prelevement.getNature(), prelevement.getMaladie(), prelevement.getConsentType(),
+      createObjectManager(prelevement, banque, prelevement.getNature(), prelevement.getMaladie(), prelevement.getConsentType(),
          prelevement.getPreleveur(), prelevement.getServicePreleveur(), prelevement.getPrelevementType(),
          prelevement.getConditType(), prelevement.getConditMilieu(), prelevement.getTransporteur(), prelevement.getOperateur(),
          prelevement.getQuantiteUnite(), new ArrayList<>(prelevement.getLaboInters()), annosPrel, filesCreated, user,
@@ -1266,7 +1267,7 @@ public class PrelevementManagerImpl implements PrelevementManager
             final Echantillon newEchan = echantillons.get(i);
 
             // création de l'objet
-            echantillonManager.saveWithCrAnapathManager(newEchan, banque, prelevement, newEchan.getCollaborateur(),
+            echantillonManager.createObjectWithCrAnapathManager(newEchan, banque, prelevement, newEchan.getCollaborateur(),
                newEchan.getObjetStatut(), newEchan.getEmplacement(), newEchan.getEchantillonType(), null,
                newEchan.getQuantiteUnite(), newEchan.getEchanQualite(), newEchan.getModePrepa(), newEchan.getCrAnapath(),
                newEchan.getAnapathStream(), filesCreated, annosEchan, user, doValidation, baseDir,
@@ -1438,7 +1439,7 @@ public class PrelevementManagerImpl implements PrelevementManager
 
 		   final Operation creationOp = new Operation();
 		   creationOp.setDate(Utils.getCurrentSystemCalendar());
-		   operationManager.saveManager(creationOp, u, operationTypeDao.findByNom("ChangeCollection").get(0), prel);
+		   operationManager.createObjectManager(creationOp, u, operationTypeDao.findByNom("ChangeCollection").get(0), prel);
 	   }
    }
 
@@ -1484,7 +1485,7 @@ public class PrelevementManagerImpl implements PrelevementManager
       for(int i = 0; i < prelevements.size(); i++){
          final Prelevement prel = prelevements.get(i);
          try{
-            saveManager(prel, null, null, null, null, prel.getPreleveur(), prel.getServicePreleveur(),
+            updateObjectManager(prel, null, null, null, null, prel.getPreleveur(), prel.getServicePreleveur(),
                prel.getPrelevementType(), prel.getConditType(), prel.getConditMilieu(), prel.getTransporteur(),
                prel.getOperateur(), prel.getQuantiteUnite(), null, null, null, filesCreated, filesToDelete, utilisateur,
                nosterile, true, baseDir, true);
@@ -1549,7 +1550,7 @@ public class PrelevementManagerImpl implements PrelevementManager
 
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.saveManager(creationOp, usr, operationTypeDao.findByNom("Modification").get(0), prel);
+         operationManager.createObjectManager(creationOp, usr, operationTypeDao.findByNom("Modification").get(0), prel);
       }
    }
 
@@ -1578,7 +1579,7 @@ public class PrelevementManagerImpl implements PrelevementManager
    }
 
    @Override
-   public void saveWithNonConformitesManager(final Prelevement prelevement, final Banque banque, final Nature nature,
+   public void createObjectWithNonConformitesManager(final Prelevement prelevement, final Banque banque, final Nature nature,
       final Maladie maladie, final ConsentType consentType, final Collaborateur preleveur, final Service servicePreleveur,
       final PrelevementType prelevementType, final ConditType conditType, final ConditMilieu conditMilieu,
       final Transporteur transporteur, final Collaborateur operateur, final Unite quantiteUnite, final List<LaboInter> laboInters,
@@ -1592,7 +1593,7 @@ public class PrelevementManagerImpl implements PrelevementManager
       final List<File> filesCreated = new ArrayList<>();
 
       try{
-         saveManager(prelevement, banque, nature, maladie, consentType, preleveur, servicePreleveur, prelevementType,
+         createObjectManager(prelevement, banque, nature, maladie, consentType, preleveur, servicePreleveur, prelevementType,
             conditType, conditMilieu, transporteur, operateur, quantiteUnite, laboInters, listAnnoToCreateOrUpdate, filesCreated,
             utilisateur, doValidation, baseDir, isImport);
 
@@ -1606,7 +1607,7 @@ public class PrelevementManagerImpl implements PrelevementManager
    }
 
    @Override
-   public void saveWithNonConformitesManager(final Prelevement prelevement, final Banque banque, final Nature nature,
+   public void updateObjectWithNonConformitesManager(final Prelevement prelevement, final Banque banque, final Nature nature,
       final Maladie maladie, final ConsentType consentType, final Collaborateur preleveur, final Service servicePreleveur,
       final PrelevementType prelevementType, final ConditType conditType, final ConditMilieu conditMilieu,
       final Transporteur transporteur, final Collaborateur operateur, final Unite quantiteUnite, final List<LaboInter> laboInters,
@@ -1622,7 +1623,7 @@ public class PrelevementManagerImpl implements PrelevementManager
       final List<File> filesToDelete = new ArrayList<>();
 
       try{
-         saveManager(prelevement, banque, nature, maladie, consentType, preleveur, servicePreleveur, prelevementType,
+         updateObjectManager(prelevement, banque, nature, maladie, consentType, preleveur, servicePreleveur, prelevementType,
             conditType, conditMilieu, transporteur, operateur, quantiteUnite, laboInters, listAnnoToCreateOrUpdate,
             listAnnoToDelete, filesCreated, filesToDelete, utilisateur, cascadeNonSterile, doValidation, baseDir, multiple);
 
@@ -1649,7 +1650,7 @@ public class PrelevementManagerImpl implements PrelevementManager
          for(final Integer id : ids){
             p = findByIdManager(id);
             if(p != null){
-               deleteByIdCascadeManager(p, comment, u, filesToDelete);
+               removeObjectCascadeManager(p, comment, u, filesToDelete);
             }
          }
          //         if(filesToDelete != null){

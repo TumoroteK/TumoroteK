@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.interfacage.scan;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -107,10 +108,10 @@ public class ScanTerminaleManagerImpl implements ScanTerminaleManager
    }
 
    @Override
-   public void saveManager(final ScanTerminale sT, ScanDevice sD){
+   public void createObjectManager(final ScanTerminale sT, ScanDevice sD){
       if(sT != null){
          // test only
-         sD = scanDeviceDao.findById(1);
+         sD = scanDeviceDao.findById(1).orElse(null);
          sT.setScanDevice(sD);
          scanTerminaleDao.save(sT);
          log.debug("ScanTerminale creation: " + sT.getName());
@@ -118,7 +119,7 @@ public class ScanTerminaleManagerImpl implements ScanTerminaleManager
    }
 
    @Override
-   public void deleteByIdManager(final ScanTerminale sT){
+   public void removeObjectManager(final ScanTerminale sT){
       if(sT != null){
          scanTerminaleDao.deleteById(sT.getScanTerminaleId());
       }
@@ -133,7 +134,7 @@ public class ScanTerminaleManagerImpl implements ScanTerminaleManager
    public List<ScanTerminale> findByDeviceManager(ScanDevice sD){
       if(sD == null){
          // test only
-         sD = scanDeviceDao.findById(1);
+         sD = scanDeviceDao.findById(1).orElse(null);
       }
       return scanTerminaleDao.findByScanDevice(sD);
    }

@@ -427,7 +427,7 @@ public class ConteneurManagerTest extends AbstractManagerTest4
    public void testCrud() throws ParseException{
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    /**
@@ -549,8 +549,8 @@ public class ConteneurManagerTest extends AbstractManagerTest4
       assertEquals(2, conteneurManager.getConteneurPlateformesManager(cTest2).size());
 
       // Suppression
-      conteneurManager.deleteByIdManager(cTest, null, u);
-      conteneurManager.deleteByIdManager(cTest2, null, u);
+      conteneurManager.removeObjectManager(cTest, null, u);
+      conteneurManager.removeObjectManager(cTest2, null, u);
       assertEquals(0, getOperationManager().findByObjectManager(cTest).size());
       assertEquals(0, getOperationManager().findByObjectManager(cTest2).size());
       assertEquals(4, conteneurManager.findAllObjectsManager().size());
@@ -698,7 +698,7 @@ public class ConteneurManagerTest extends AbstractManagerTest4
       assertEquals("BANQUE3", it.next().getNom());
 
       // Suppression
-      conteneurManager.deleteByIdManager(cTest2, null, u);
+      conteneurManager.removeObjectManager(cTest2, null, u);
       assertEquals(0, getOperationManager().findByObjectManager(cTest2).size());
       assertEquals(4, conteneurManager.findAllObjectsManager().size());
       assertEquals(5, incidentManager.findAllObjectsManager().size());
@@ -709,20 +709,20 @@ public class ConteneurManagerTest extends AbstractManagerTest4
    }
 
    /**
-    * Teste la methode deleteByIdManager. 
+    * Teste la methode removeObjectManager. 
     */
    @Test
-   public void deleteByIdManagerTest(){
+   public void removeObjectManagerTest(){
       final Utilisateur u = utilisateurDao.findById(1);
       // test de la suppression d'un objet null
-      conteneurManager.deleteByIdManager(null, null, null);
+      conteneurManager.removeObjectManager(null, null, null);
       assertEquals(4, conteneurManager.findAllObjectsManager().size());
 
       // test de la suppression d'un objet utilisé
       final Conteneur c1 = conteneurManager.findByIdManager(1);
       boolean catched = false;
       try{
-         conteneurManager.deleteByIdManager(c1, null, u);
+         conteneurManager.removeObjectManager(c1, null, u);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ObjectUsedException")){
             catched = true;
@@ -807,7 +807,7 @@ public class ConteneurManagerTest extends AbstractManagerTest4
 
       // suppression du conteneur
       final Conteneur cTest = conteneurManager.findByIdManager(c.getConteneurId());
-      conteneurManager.deleteByIdManager(cTest, null, u);
+      conteneurManager.removeObjectManager(cTest, null, u);
       assertEquals(4, conteneurManager.findAllObjectsManager().size());
       assertEquals(7, enceinteManager.findAllObjectsManager().size());
       assertEquals(6, terminaleManager.findAllObjectsManager().size());
@@ -1206,7 +1206,7 @@ public class ConteneurManagerTest extends AbstractManagerTest4
 
       catched = false;
       try{
-         conteneurManager.deleteByIdManager(cTest, null, u);
+         conteneurManager.removeObjectManager(cTest, null, u);
       }catch(final ObjectUsedException oe){
          catched = true;
          assertEquals("conteneur.deletion.isUsed", oe.getKey());
@@ -1239,7 +1239,7 @@ public class ConteneurManagerTest extends AbstractManagerTest4
 
       assertEquals(1, retourManager.getRetoursForObjectManager(ec2).size());
 
-      conteneurManager.deleteByIdManager(cTest, null, u);
+      conteneurManager.removeObjectManager(cTest, null, u);
       // vérifie archivage du seul conteneur
       assertEquals(5, conteneurManager.findAllObjectsManager().size());
       cTest = conteneurManager.findByIdManager(c.getConteneurId());
@@ -1248,10 +1248,10 @@ public class ConteneurManagerTest extends AbstractManagerTest4
       assertTrue(conteneurManager.getAllTerminalesInArborescenceManager(cTest).isEmpty());
 
       //suppr retour pour permettre cascade
-      retourManager.deleteByIdManager(retourManager.getRetoursForObjectManager(ec2).get(0));
+      retourManager.removeObjectManager(retourManager.getRetoursForObjectManager(ec2).get(0));
       assertTrue(retourManager.getRetoursForObjectManager(ec2).isEmpty());
 
-      conteneurManager.deleteByIdManager(cTest, null, u);
+      conteneurManager.removeObjectManager(cTest, null, u);
 
       assertEquals(4, conteneurManager.findAllObjectsManager().size());
       assertEquals(7, enceinteManager.findAllObjectsManager().size());
@@ -1370,7 +1370,7 @@ public class ConteneurManagerTest extends AbstractManagerTest4
       }
       assertEquals(90, terminales.size());
 
-      conteneurManager.deleteByIdManager(cTest, null, u);
+      conteneurManager.removeObjectManager(cTest, null, u);
 
       assertEquals(4, conteneurManager.findAllObjectsManager().size());
       assertEquals(7, enceinteManager.findAllObjectsManager().size());
@@ -1426,15 +1426,15 @@ public class ConteneurManagerTest extends AbstractManagerTest4
       assertEquals(1, enceinteManager.getBanquesManager(e7).size());
       List<Operation> ops = getOperationManager().findByObjectManager(c);
       for(Operation op2 : ops){
-         getOperationManager().deleteByIdManager(op2);
+         getOperationManager().removeObjectManager(op2);
       }
       ops = getOperationManager().findByObjectManager(e5);
       for(Operation op1 : ops){
-         getOperationManager().deleteByIdManager(op1);
+         getOperationManager().removeObjectManager(op1);
       }
       ops = getOperationManager().findByObjectManager(e7);
       for(Operation op : ops){
-         getOperationManager().deleteByIdManager(op);
+         getOperationManager().removeObjectManager(op);
       }
       assertEquals(19, getOperationManager().findAllObjectsManager().size());
    }

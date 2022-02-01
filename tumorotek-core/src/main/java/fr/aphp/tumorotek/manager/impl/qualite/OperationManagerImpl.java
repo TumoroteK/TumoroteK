@@ -50,6 +50,7 @@ import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
@@ -134,7 +135,7 @@ public class OperationManagerImpl implements OperationManager
    }
 
    @Override
-   public void saveManager(final Operation operation, final Utilisateur utilisateur, final OperationType operationType,
+   public void createObjectManager(final Operation operation, final Utilisateur utilisateur, final OperationType operationType,
       final Object obj){
       operation.setUtilisateur(utilisateurDao.save(utilisateur));
       //OperationType required
@@ -263,7 +264,7 @@ public class OperationManagerImpl implements OperationManager
    }
 
    @Override
-   public void deleteByIdManager(final Operation operation){
+   public void removeObjectManager(final Operation operation){
       if(operation != null){
          // suppression fantome en cascade
          if(operation.getOperationType().getNom().equals("Suppression")){
@@ -384,7 +385,7 @@ public class OperationManagerImpl implements OperationManager
       final Operation suppr = new Operation();
       suppr.setDate(Utils.getCurrentSystemCalendar());
 
-      saveManager(suppr, user, operationTypeDao.findByNom("Suppression").get(0), f);
+      createObjectManager(suppr, user, operationTypeDao.findByNom("Suppression").get(0), f);
    }
 
    @Override
@@ -392,7 +393,7 @@ public class OperationManagerImpl implements OperationManager
 
       //		List<Operation> ops = findByObjectManager(obj);
       //		for (int i = 0; i < ops.size(); i++) {
-      //			deleteByIdManager(ops.get(i));
+      //			removeObjectManager(ops.get(i));
       //		}
 
       if(obj instanceof TKFantomableObject){

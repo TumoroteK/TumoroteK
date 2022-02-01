@@ -47,6 +47,7 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.jdbc.CannotGetJdbcConnectionException;
@@ -185,7 +186,7 @@ public class RetourManagerImpl implements RetourManager
    }
 
    @Override
-   public void createOrsaveManager(final Retour retour, TKStockableObject objet, Emplacement emp,
+   public void createOrUpdateObjectManager(final Retour retour, TKStockableObject objet, Emplacement emp,
       final Collaborateur collaborateur, final Cession cession, final Transformation transformation, final Incident incident,
       final Utilisateur utilisateur, final String operation){
 
@@ -314,7 +315,7 @@ public class RetourManagerImpl implements RetourManager
    }
 
    @Override
-   public void deleteByIdManager(final Retour retour){
+   public void removeObjectManager(final Retour retour){
       if(retour != null){
          if(retour.getObjetStatut() != null){
             final TKStockableObject obj = getObjetFromRetourManager(retour);
@@ -372,7 +373,7 @@ public class RetourManagerImpl implements RetourManager
               emp = oldEmpAdrls.get(oldEmpAdrls.indexOf(new OldEmplTrace(objects.get(i), null, null, null))).getCurrent();
             }
 
-            createOrsaveManager(newRet, objects.get(i), emp, collaborateur, cession, transformation, incident,
+            createOrUpdateObjectManager(newRet, objects.get(i), emp, collaborateur, cession, transformation, incident,
                utilisateur, "creation");
          }
       }
@@ -669,9 +670,9 @@ public class RetourManagerImpl implements RetourManager
    public TKStockableObject getObjetFromRetourManager(final Retour retour){
       if(retour.getEntite() != null){
          if(retour.getEntite().getNom().equals("Echantillon")){
-            return echantillonDao.findById(retour.getObjetId());
+            return echantillonDao.findById(retour.getObjetId()).orElse(null);
          }else{
-            return prodDeriveDao.findById(retour.getObjetId());
+            return prodDeriveDao.findById(retour.getObjetId()).orElse(null);
          }
       }
       return null;
@@ -706,7 +707,7 @@ public class RetourManagerImpl implements RetourManager
          try{
             while(rIt.hasNext()){
                retour = rIt.next();
-               createOrsaveManager(retour, null, null, collaborateur != null ? collaborateur : retour.getCollaborateur(),
+               createOrUpdateObjectManager(retour, null, null, collaborateur != null ? collaborateur : retour.getCollaborateur(),
                   cession != null ? cession : retour.getCession(),
                   transformation != null ? transformation : retour.getTransformation(),
                   incident != null ? incident : retour.getIncident(), utilisateur, "modification");

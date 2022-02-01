@@ -50,7 +50,7 @@ import fr.aphp.tumorotek.model.imprimante.Imprimante;
 public class TumoBarcodePrinter
 {
 
-   private final Banque banqueDb;
+ //  private final Banque banqueDb;
    private final Imprimante imprimante;
    private final String texte;
 
@@ -59,7 +59,7 @@ public class TumoBarcodePrinter
     * @param _banqueDb
     */
    public TumoBarcodePrinter(final Banque bDb, final Imprimante ieBean, final String txt){
-      banqueDb = bDb;
+      // banqueDb = bDb;
       imprimante = ieBean;
       texte = txt;
    }

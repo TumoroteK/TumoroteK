@@ -128,7 +128,7 @@ public class ConsentTypeManagerTest extends AbstractManagerTest4
    public void testCRUD(){
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    /**
@@ -211,16 +211,16 @@ public class ConsentTypeManagerTest extends AbstractManagerTest4
       }
    }
 
-   private void deleteByIdManagerTest(){
+   private void removeObjectManagerTest(){
       //Suppression de l'enregistrement precedemment insere
       final ConsentType ct1 = (consentTypeManager.findByTypeLikeManager("ADN -", true)).get(0);
-      consentTypeManager.deleteByIdManager(ct1);
+      consentTypeManager.removeObjectManager(ct1);
       assertTrue((consentTypeManager.findByTypeLikeManager("ADN -", true)).size() == 0);
       //Suppression engrendrant une exception
       Boolean catched = false;
       try{
          final ConsentType ct2 = (consentTypeManager.findByTypeLikeManager("EN ATTENTE", true)).get(0);
-         consentTypeManager.deleteByIdManager(ct2);
+         consentTypeManager.removeObjectManager(ct2);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ObjectUsedException")){
             catched = true;
@@ -229,7 +229,7 @@ public class ConsentTypeManagerTest extends AbstractManagerTest4
       assertTrue(catched);
       assertTrue((consentTypeManager.findByTypeLikeManager("EN ATTENTE", true)).size() > 0);
       //null remove
-      consentTypeManager.deleteByIdManager(null);
+      consentTypeManager.removeObjectManager(null);
       assertTrue(consentTypeManager.findByOrderManager(ct1.getPlateforme()).size() == 2);
    }
 

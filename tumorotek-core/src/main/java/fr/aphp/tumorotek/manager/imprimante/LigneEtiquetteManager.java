@@ -89,7 +89,7 @@ public interface LigneEtiquetteManager
     * @param modele Modele.
     * @param champLigneEtiquettes ChampLigneEtiquettes.
     */
-   void saveManager(LigneEtiquette ligneEtiquette, Modele modele, List<ChampLigneEtiquette> champLigneEtiquettes);
+   void createObjectManager(LigneEtiquette ligneEtiquette, Modele modele, List<ChampLigneEtiquette> champLigneEtiquettes);
 
    /**
     * Persist une instance de LigneEtiquette dans la base de données.
@@ -100,13 +100,13 @@ public interface LigneEtiquetteManager
     * @param champLigneEtiquettesToremove ChampLigneEtiquettes 
     * à supprimer.
     */
-   void saveManager(LigneEtiquette ligneEtiquette, Modele modele, List<ChampLigneEtiquette> champLigneEtiquettesToCreate,
+   void updateObjectManager(LigneEtiquette ligneEtiquette, Modele modele, List<ChampLigneEtiquette> champLigneEtiquettesToCreate,
       List<ChampLigneEtiquette> champLigneEtiquettesToremove);
 
    /**
     * Supprime une LigneEtiquette de la base de données.
     * @param ligneEtiquette Ligne à supprimer de la base de données.
     */
-   void deleteByIdManager(LigneEtiquette ligneEtiquette);
+   void removeObjectManager(LigneEtiquette ligneEtiquette);
 
 }

@@ -949,7 +949,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
    public void testCRUD() throws ParseException{
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    private void saveManagerTest() throws ParseException{
@@ -1102,18 +1102,18 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       assertTrue(prelevementManager.findByCodeLikeManager("PRLVT1", true).size() == 1);
    }
 
-   private void deleteByIdManagerTest(){
+   private void removeObjectManagerTest(){
       final Utilisateur u = utilisateurDao.findById(1);
       // Suppression de l'enregistrement precedemment insere
       final Prelevement p1 = prelevementManager.findByCodeLikeManager("Dupl_-RER", true).get(0);
-      prelevementManager.deleteByIdManager(p1, "supprP1", u, null);
+      prelevementManager.removeObjectManager(p1, "supprP1", u, null);
       assertTrue(prelevementManager.findByCodeLikeManager("Èré+", true).size() == 0);
       assertTrue(IterableUtils.toList(laboInterDao.findAll()).size() == 3);
       // Suppression engrendrant une exception
       Boolean catched = false;
       try{
          final Prelevement p2 = prelevementManager.findByCodeLikeManager("PRLVT1", true).get(0);
-         prelevementManager.deleteByIdManager(p2, null, u, null);
+         prelevementManager.removeObjectManager(p2, null, u, null);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ObjectUsedException")){
             assertTrue(((ObjectUsedException) e).getKey().equals("prelevement.deletion.isUsedCascade"));
@@ -1124,7 +1124,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       assertTrue(catched);
       assertTrue(prelevementManager.findByCodeLikeManager("PRLVT1", true).size() > 0);
       // null remove
-      prelevementManager.deleteByIdManager(null, null, null, null);
+      prelevementManager.removeObjectManager(null, null, null, null);
       testFindAllObjectsManager();
 
       final List<TKFantomableObject> fs = new ArrayList<>();
@@ -1319,9 +1319,9 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       assertTrue(maladieManager.getMaladiesManager(pat).size() == 3);
 
       // clean up
-      prelevementManager.deleteByIdManager(
+      prelevementManager.removeObjectManager(
          prelevementManager.findByCodeOrNumLaboLikeWithBanqueManager("AvecMaladie", b, true).get(0), "suppr", u, null);
-      maladieManager.deleteByIdManager(maladieManager.findByLibelleLikeManager("Obésité", true).get(0), null, u);
+      maladieManager.removeObjectManager(maladieManager.findByLibelleLikeManager("Obésité", true).get(0), null, u);
 
       testFindAllObjectsManager();
       assertTrue(maladieManager.findAllObjectsManager().size() == 6);
@@ -1394,10 +1394,10 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       assertTrue((patientManager.findByNomLikeManager("Albarn", true)).size() == 1);
       assertTrue(maladieManager.getMaladiesManager(pat).size() == 1);
       // clean up
-      prelevementManager.deleteByIdManager(
+      prelevementManager.removeObjectManager(
          prelevementManager.findByCodeOrNumLaboLikeWithBanqueManager("AvecMaladie", b, true).get(0), null, u, null);
-      maladieManager.deleteByIdManager(maladieManager.findByLibelleLikeManager("SmallPox", true).get(0), null, u);
-      patientManager.deleteByIdManager(patientManager.findByNomLikeManager("Albarn", true).get(0), null, u, null);
+      maladieManager.removeObjectManager(maladieManager.findByLibelleLikeManager("SmallPox", true).get(0), null, u);
+      patientManager.removeObjectManager(patientManager.findByNomLikeManager("Albarn", true).get(0), null, u, null);
 
       testFindAllObjectsManager();
       assertTrue(maladieManager.findAllObjectsManager().size() == 6);
@@ -1832,7 +1832,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       // em.close();
 
       // cleanup cascade vers Echantillon
-      prelevementManager.deleteByIdCascadeManager(prel, "cascade", u, null);
+      prelevementManager.removeObjectCascadeManager(prel, "cascade", u, null);
 
       // verification de l'etat de la base
       testFindAllObjectsManager();
@@ -2020,7 +2020,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       assertTrue(getOperationManager().findByObjectManager(prel).get(5).getOperationType().getNom().equals("Annotation"));
 
       // Nettoyage
-      prelevementManager.deleteByIdManager(prel, null, utilisateur, null);
+      prelevementManager.removeObjectManager(prel, null, utilisateur, null);
 
       assertTrue(getOperationManager().findByObjectManager(prel).size() == 0);
       assertTrue(annotationValeurManager.findAllObjectsManager().size() == 12);
@@ -2162,7 +2162,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       assertTrue(annotationValeurManager.findAllObjectsManager().size() == 16);
 
       // cleanup cascade vers echantillons
-      prelevementManager.deleteByIdCascadeManager(prel, null, u, null);
+      prelevementManager.removeObjectCascadeManager(prel, null, u, null);
 
       // verification de l'etat de la base
       testFindAllObjectsManager();
@@ -2278,8 +2278,8 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       assertTrue(annotationValeurManager.findAllObjectsManager().size() == 16);
 
       // cleanup cascade sur echantillons
-      prelevementManager.deleteByIdCascadeManager(prel, null, u, null);
-      maladieManager.deleteByIdManager(m, null, u);
+      prelevementManager.removeObjectCascadeManager(prel, null, u, null);
+      maladieManager.removeObjectManager(m, null, u);
 
       // verification de l'etat de la base
       testFindAllObjectsManager();
@@ -2407,9 +2407,9 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       assertTrue(annotationValeurManager.findAllObjectsManager().size() == 16);
 
       // cleanup cascade vers echantillons
-      prelevementManager.deleteByIdCascadeManager(prel, null, u, null);
-      maladieManager.deleteByIdManager(m, null, u);
-      patientManager.deleteByIdManager(pat, null, u, null);
+      prelevementManager.removeObjectCascadeManager(prel, null, u, null);
+      maladieManager.removeObjectManager(m, null, u);
+      patientManager.removeObjectManager(pat, null, u, null);
 
       // verification de l'etat de la base
       testFindAllObjectsManager();
@@ -2436,7 +2436,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       // Cascade depuis prelevement -> echantillon cede
       final Prelevement p1 = prelevementManager.findByIdManager(1);
       try{
-         prelevementManager.deleteByIdCascadeManager(p1, null, u, null);
+         prelevementManager.removeObjectCascadeManager(p1, null, u, null);
       }catch(final ObjectUsedException oe){
          assertTrue(oe.getKey().equals("echantillon.cascade.isCessed"));
          assertFalse(oe.isCascadable());
@@ -2505,7 +2505,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
 
       boolean catched = false;
       try{
-         prelevementManager.deleteByIdCascadeManager(p, null, u, null);
+         prelevementManager.removeObjectCascadeManager(p, null, u, null);
       }catch(final ObjectUsedException oe){
          assertTrue(oe.getKey().equals("echantillon.cascade.isCessed"));
          assertFalse(oe.isCascadable());
@@ -2514,7 +2514,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       assertTrue(catched);
 
       // suppr ceder objet pour pouvoir cascader
-      cederObjetManager.deleteByIdManager(ced3);
+      cederObjetManager.removeObjectManager(ced3);
 
       final Transformation transfo1 = new Transformation();
       final Entite entite = entiteDao.findById(2);
@@ -2556,7 +2556,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
 
       catched = false;
       try{
-         prelevementManager.deleteByIdCascadeManager(p, null, u, null);
+         prelevementManager.removeObjectCascadeManager(p, null, u, null);
       }catch(final ObjectUsedException oe){
          assertTrue(oe.getKey().equals("derive.cascade.isCessed"));
          assertFalse(oe.isCascadable());
@@ -2567,8 +2567,8 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       assertTrue(echantillonDao.findByPrelevement(p).size() == 3);
 
       // suppr ceder objet pour pouvoir cascader
-      cederObjetManager.deleteByIdManager(ced2);
-      prelevementManager.deleteByIdCascadeManager(p, "cascade!!!", u, null);
+      cederObjetManager.removeObjectManager(ced2);
+      prelevementManager.removeObjectCascadeManager(p, "cascade!!!", u, null);
 
       testFindAllObjectsManager();
       assertTrue(transformationManager.findAllObjectsManager().size() == 5);
@@ -2683,7 +2683,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       assertTrue(getOperationManager().findByObjectManager(p).size() == 3);
 
       // cession de echantillon -> erreur
-      cederObjetManager.deleteByIdManager(ced1);
+      cederObjetManager.removeObjectManager(ced1);
       final CederObjet ced2 = new CederObjet();
       ced2.setObjetId(e.getEchantillonId());
       cederObjetManager.saveManager(ced2, cession, entiteDao.findById(3), null);
@@ -2701,7 +2701,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       assertTrue(banqueManager.getPrelevementsManager(b3).size() == 2);
       assertTrue(getOperationManager().findByObjectManager(p).size() == 3);
 
-      cederObjetManager.deleteByIdManager(ced2);
+      cederObjetManager.removeObjectManager(ced2);
       assertTrue(cederObjetManager.findAllObjectsManager().size() == 6);
       catched = false;
 
@@ -2877,14 +2877,14 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       while(encIt.hasNext()){
          terminales.addAll(terminaleManager.findByEnceinteWithOrderManager(encIt.next()));
       }
-      // prelevementManager.deleteByIdCascadeManager(p2, null, u);
-      // patientManager.deleteByIdManager(pat, null, u);
-      prelevementManager.deleteByIdCascadeManager(p, null, u, null);
+      // prelevementManager.removeObjectCascadeManager(p2, null, u);
+      // patientManager.removeObjectManager(pat, null, u);
+      prelevementManager.removeObjectCascadeManager(p, null, u, null);
       emp.setEntite(null);
       emp.setObjetId(null);
       emp.setVide(true);
-      emplacementManager.deleteByIdManager(emp);
-      conteneurManager.deleteByIdManager(conteneurManager.findByIdManager(c.getConteneurId()), null, u);
+      emplacementManager.removeObjectManager(emp);
+      conteneurManager.removeObjectManager(conteneurManager.findByIdManager(c.getConteneurId()), null, u);
       final List<TKFantomableObject> fs = new ArrayList<>();
       // fs.add(pat);
       // fs.add(m);
@@ -2964,9 +2964,9 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       assertTrue(prelevementManager.findByBanquesManager(banks).size() == 3);
 
       // clean up
-      prelevementManager.deleteByIdCascadeManager(p1, null, u, null);
-      prelevementManager.deleteByIdCascadeManager(p2, null, u, null);
-      prelevementManager.deleteByIdCascadeManager(p1bis, null, u, null);
+      prelevementManager.removeObjectCascadeManager(p1, null, u, null);
+      prelevementManager.removeObjectCascadeManager(p2, null, u, null);
+      prelevementManager.removeObjectCascadeManager(p1bis, null, u, null);
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.add(p1);
       fs.add(p2);
@@ -3310,7 +3310,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       // Suppression
       for(int i = 0; i < list.size(); i++){
          // cleanup cascade vers echantillons
-         prelevementManager.deleteByIdCascadeManager(list.get(i), null, u, null);
+         prelevementManager.removeObjectCascadeManager(list.get(i), null, u, null);
       }
       // verification de l'etat de la base
       testFindAllObjectsManager();
@@ -3445,7 +3445,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       assertTrue(prelevementManager.getRisquesManager(p3).size() == 1);
       assertTrue(prelevementManager.getLaboIntersManager(p3).size() == 2);
 
-      prelevementManager.deleteByIdCascadeManager(p3, null, u, null);
+      prelevementManager.removeObjectCascadeManager(p3, null, u, null);
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.add(p3);
       cleanUpFantomes(fs);
@@ -3494,7 +3494,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       assertFalse((objetNonConformeDao.findByObjetAndEntite(prel1.getPrelevementId(), entiteDao.findById(2))).get(0)
          .equals((objetNonConformeDao.findByObjetAndEntite(prel1.getPrelevementId(), entiteDao.findById(2))).get(1)));
 
-      prelevementManager.deleteByIdManager(prel1, null, u, null);
+      prelevementManager.removeObjectManager(prel1, null, u, null);
 
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.add(prel1);

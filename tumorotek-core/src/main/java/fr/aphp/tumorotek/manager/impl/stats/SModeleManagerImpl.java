@@ -42,6 +42,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -112,7 +113,7 @@ public class SModeleManagerImpl implements SModeleManager
    @Override
    public SModele findByIdManager(final Integer modeleId){
       log.debug("Recherche de tous les Indicateurs Modeles");
-      return sModeleDao.findById(modeleId);
+      return sModeleDao.findById(modeleId).orElse(null);
    }
 
    @Override
@@ -157,7 +158,7 @@ public class SModeleManagerImpl implements SModeleManager
    }
 
    @Override
-   public void saveManager(final SModele modele, final Plateforme plateforme, final List<Indicateur> indicateurs,
+   public void createObjectManager(final SModele modele, final Plateforme plateforme, final List<Indicateur> indicateurs,
       final List<Banque> banques){
       // plateforme required
       if(plateforme != null){
@@ -189,7 +190,7 @@ public class SModeleManagerImpl implements SModeleManager
    }
 
    @Override
-   public SModele saveManager(SModele modele, final Plateforme plateforme, final List<Indicateur> indicateurs,
+   public SModele updateObjectManager(SModele modele, final Plateforme plateforme, final List<Indicateur> indicateurs,
       final List<Banque> banques){
       // plateforme required
       if(plateforme != null){
@@ -224,7 +225,7 @@ public class SModeleManagerImpl implements SModeleManager
    }
 
    @Override
-   public void deleteByIdManager(final SModele modele){
+   public void removeObjectManager(final SModele modele){
       if(modele != null){
          sModeleDao.deleteById(modele.getSmodeleId());
          log.info("Suppression de l'objet IndicateurModele : " + modele.toString());
@@ -278,7 +279,7 @@ public class SModeleManagerImpl implements SModeleManager
                log.debug("Ajout de l'association entre le sModele : " + sModele.toString() + " et l'indicateur : "
                   + indicateurs.get(i).toString());
             }else{ // on modifie l'ordre du medecin present avec la liste
-               sm = sModeleIndicateurDao.findById(pk);
+               sm = sModeleIndicateurDao.findById(pk).orElse(null);
                sm.setOrdre(i + 1);
                sModeleIndicateurDao.save(sm);
             }

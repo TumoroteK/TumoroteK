@@ -1013,7 +1013,7 @@ public class TraitementRequeteManagerTest extends AbstractManagerTest4
    //		}
    //		
    //		/* On supprime les éléments créés. */
-   //		groupementManager.deleteByIdManager(racine);
+   //		groupementManager.removeObjectManager(racine);
    //		
    //		/* TEST 3 : Requête uni critère. */
    //		System.out.println("TEST 3 : Requête uni critère.");
@@ -1050,7 +1050,7 @@ public class TraitementRequeteManagerTest extends AbstractManagerTest4
    //		}
    //		
    //		/* On supprime les éléments créés. */
-   //		groupementManager.deleteByIdManager(groupement3);
+   //		groupementManager.removeObjectManager(groupement3);
    //		
    //		
    //		/* TEST 4 : Requête dérivés. */
@@ -1114,7 +1114,7 @@ public class TraitementRequeteManagerTest extends AbstractManagerTest4
    //		}
    //		
    //		/* On supprime les éléments créés. */
-   //		groupementManager.deleteByIdManager(groupement4);
+   //		groupementManager.removeObjectManager(groupement4);
    //
    //		/* TEST 5 : Requête avec date. */
    //		System.out.println("TEST 5 : Requête avec date.");
@@ -1161,7 +1161,7 @@ public class TraitementRequeteManagerTest extends AbstractManagerTest4
    //		}
    //
    //		/* On supprime les éléments créés. */
-   //		groupementManager.deleteByIdManager(groupement5);
+   //		groupementManager.removeObjectManager(groupement5);
    //		
    //		if (testLyon) {
    //			/* TEST 6 : Champ annotation. */
@@ -1203,7 +1203,7 @@ public class TraitementRequeteManagerTest extends AbstractManagerTest4
    //			}
    //			
    //			/* On supprime les éléments créés. */
-   //			groupementManager.deleteByIdManager(groupement7);
+   //			groupementManager.removeObjectManager(groupement7);
    //		}
    //	}
 

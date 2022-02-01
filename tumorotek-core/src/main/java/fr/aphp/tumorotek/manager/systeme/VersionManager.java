@@ -41,41 +41,44 @@ import fr.aphp.tumorotek.model.systeme.Version;
 
 /**
  *
- * Interface pour le manager du bean de domaine Version.
- * Interface créée le 26/05/2011.
+ * Interface pour le manager du bean de domaine Version. Interface créée le
+ * 26/05/2011.
  *
  * @author Pierre Ventadour
  * @version 2.0
  *
  */
-public interface VersionManager
-{
+public interface VersionManager {
 
-   /**
-    * Recherche une Version dont l'identifiant est passé en paramètre.
-    * @param versionId Identifiant de la Version que l'on recherche.
-    * @return Une Version.
-    */
-   Version findByIdManager(Integer versionId);
+	/**
+	 * Recherche une Version dont l'identifiant est passé en paramètre.
+	 * 
+	 * @param versionId Identifiant de la Version que l'on recherche.
+	 * @return Une Version.
+	 */
+	Version findByIdManager(Integer versionId);
 
-   /**
-    * Recherche toutes les Versions présentes dans la base.
-    * @return Liste de Versions.
-    */
-   List<Version> findAllObjectsManager();
+	/**
+	 * Recherche toutes les Versions présentes dans la base.
+	 * 
+	 * @return Liste de Versions.
+	 */
+	List<Version> findAllObjectsManager();
 
-   /**
-    * Recherche toutes les Versions présentes dans la base, 
-    * ordonnées de manière chronologique.
-    * @return Liste de Versions.
-    */
-   List<Version> findByDateChronologiqueManager();
+	/**
+	 * Recherche toutes les Versions présentes dans la base, ordonnées de manière
+	 * chronologique.
+	 * 
+	 * @return Liste de Versions.
+	 */
+	List<Version> findByDateChronologiqueManager();
 
-   /**
-    * Recherche la version courante de l'application.
-    * @return Version courante.
-    */
-   Version findByCurrentVersionManager();
+	/**
+	 * Recherche la version courante de l'application.
+	 * 
+	 * @return Version courante.
+	 */
+	Version findByCurrentVersionManager();
 
-   void saveManager(Version version);
+   void createObjectManager(Version version);
 }

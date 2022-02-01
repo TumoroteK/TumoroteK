@@ -299,7 +299,7 @@ public class NumerotationManagerTest extends AbstractManagerTest4
       assertTrue(nTest.getZeroFill());
 
       // Suppression
-      numerotationManager.deleteByIdManager(nTest);
+      numerotationManager.removeObjectManager(nTest);
       assertTrue(numerotationManager.findAllObjectsManager().size() == 3);
    }
 
@@ -374,7 +374,7 @@ public class NumerotationManagerTest extends AbstractManagerTest4
       assertTrue(nTest.getZeroFill());
 
       // Suppression
-      numerotationManager.deleteByIdManager(nTest);
+      numerotationManager.removeObjectManager(nTest);
       assertTrue(numerotationManager.findAllObjectsManager().size() == 3);
    }
 }

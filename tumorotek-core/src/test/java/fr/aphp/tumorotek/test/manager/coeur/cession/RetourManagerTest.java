@@ -163,7 +163,7 @@ public class RetourManagerTest extends AbstractManagerTest4
    public void testCRUD() throws ParseException{
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    private void saveManagerTest() throws ParseException{
@@ -270,14 +270,14 @@ public class RetourManagerTest extends AbstractManagerTest4
       assertNull(retourManager.getRetoursForObjectManager(e2).get(0).getObjetStatut());
    }
 
-   private void deleteByIdManagerTest(){
+   private void removeObjectManagerTest(){
       //Suppression de l'enregistrement precedemment insere
       final Echantillon e2 = echantillonDao.findById(2);
       final Retour r = retourManager.getRetoursForObjectManager(e2).get(0);
 
-      retourManager.deleteByIdManager(r);
+      retourManager.removeObjectManager(r);
       //null remove
-      retourManager.deleteByIdManager(null);
+      retourManager.removeObjectManager(null);
 
       //verifie que l'etat des tables modifies est revenu identique
       testFindAllObjectsManager();
@@ -417,7 +417,7 @@ public class RetourManagerTest extends AbstractManagerTest4
       List<Retour> rets = retourManager.findAllObjectsManager();
       for(int i = 0; i < rets.size(); i++){
          if(rets.get(i).getRetourId() > 8){
-            retourManager.deleteByIdManager(rets.get(i));
+            retourManager.removeObjectManager(rets.get(i));
          }
       }
       testFindAllObjectsManager();
@@ -441,7 +441,7 @@ public class RetourManagerTest extends AbstractManagerTest4
       rets = retourManager.findAllObjectsManager();
       for(int i = 0; i < rets.size(); i++){
          if(rets.get(i).getRetourId() > 8){
-            retourManager.deleteByIdManager(rets.get(i));
+            retourManager.removeObjectManager(rets.get(i));
          }
       }
       testFindAllObjectsManager();
@@ -596,7 +596,7 @@ public class RetourManagerTest extends AbstractManagerTest4
       List<Retour> rets = retourManager.findAllObjectsManager();
       for(int i = 0; i < rets.size(); i++){
          if(rets.get(i).getRetourId() > 8){
-            retourManager.deleteByIdManager(rets.get(i));
+            retourManager.removeObjectManager(rets.get(i));
          }
       }
       testFindAllObjectsManager();
@@ -649,7 +649,7 @@ public class RetourManagerTest extends AbstractManagerTest4
       rets = retourManager.findAllObjectsManager();
       for(int i = 0; i < rets.size(); i++){
          if(rets.get(i).getRetourId() > 8){
-            retourManager.deleteByIdManager(rets.get(i));
+            retourManager.removeObjectManager(rets.get(i));
          }
       }
 
@@ -729,8 +729,8 @@ public class RetourManagerTest extends AbstractManagerTest4
 
       rp = retourManager.getRetoursForObjectManager(p1).get(0);
       r2 = retourManager.getRetoursForObjectManager(e2).get(0);
-      retourManager.deleteByIdManager(r2);
-      retourManager.deleteByIdManager(rp);
+      retourManager.removeObjectManager(r2);
+      retourManager.removeObjectManager(rp);
 
       // re attribution des statuts
       assertTrue(prodDeriveDao.findById(1).getObjetStatut().getStatut().equals("STOCKE"));
@@ -956,8 +956,8 @@ public class RetourManagerTest extends AbstractManagerTest4
       incomps = retourManager.findByObjectDateRetourEmptyManager(objsIds, entiteDao.findById(3));
       assertTrue(incomps.size() == 2);
 
-      retourManager.deleteByIdManager(r1);
-      retourManager.deleteByIdManager(r2);
+      retourManager.removeObjectManager(r1);
+      retourManager.removeObjectManager(r2);
 
       //verifie que l'etat des tables modifies est revenu identique
       testFindAllObjectsManager();
@@ -1054,9 +1054,9 @@ public class RetourManagerTest extends AbstractManagerTest4
       assertNotNull(r2.getTransformation());
 
       // clean up
-      retourManager.deleteByIdManager(r1);
-      retourManager.deleteByIdManager(r2);
-      retourManager.deleteByIdManager(r3);
+      retourManager.removeObjectManager(r1);
+      retourManager.removeObjectManager(r2);
+      retourManager.removeObjectManager(r3);
 
       //verifie que l'etat des tables modifies est revenu identique
       testFindAllObjectsManager();

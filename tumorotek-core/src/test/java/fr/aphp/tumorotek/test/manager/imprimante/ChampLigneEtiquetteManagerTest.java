@@ -256,7 +256,7 @@ public class ChampLigneEtiquetteManagerTest extends AbstractManagerTest4
       assertTrue(cle2.getExpReg().equals("EXP"));
       assertTrue(cle2.getOrdre() == 2);
 
-      champLigneEtiquetteManager.deleteByIdManager(cle2);
+      champLigneEtiquetteManager.removeObjectManager(cle2);
       assertTrue(champLigneEtiquetteManager.findAllObjectsManager().size() == 10);
       assertTrue(champManager.findAllObjectsManager().size() == cTots);
    }
@@ -325,9 +325,9 @@ public class ChampLigneEtiquetteManagerTest extends AbstractManagerTest4
       assertTrue(cleTest2.getChamp().equals(c2));
       assertTrue(cleTest2.getChamp().getChampEntite().equals(ce4));
 
-      champLigneEtiquetteManager.deleteByIdManager(cleTest2);
+      champLigneEtiquetteManager.removeObjectManager(cleTest2);
       assertTrue(champLigneEtiquetteManager.findAllObjectsManager().size() == 10);
-      champManager.deleteByIdManager(c1);
+      champManager.removeObjectManager(c1);
       assertTrue(champManager.findAllObjectsManager().size() == cTots);
    }
 }

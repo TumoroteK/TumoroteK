@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.coeur.echantillon;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -108,7 +109,7 @@ public class ModePrepaManagerImpl implements ModePrepaManager
     */
    @Override
    public ModePrepa findByIdManager(final Integer modePrepaId){
-      return modePrepaDao.findById(modePrepaId);
+      return modePrepaDao.findById(modePrepaId).orElse(null);
    }
 
    //	/**
@@ -161,7 +162,7 @@ public class ModePrepaManagerImpl implements ModePrepaManager
    }
 
    @Override
-   public void saveManager(final ModePrepa obj){
+   public void createObjectManager(final ModePrepa obj){
 
       final ModePrepa mode = obj;
 
@@ -182,7 +183,7 @@ public class ModePrepaManagerImpl implements ModePrepaManager
    }
 
    @Override
-   public void saveManager(final ModePrepa obj){
+   public void updateObjectManager(final ModePrepa obj){
 
       final ModePrepa mode = obj;
 
@@ -196,7 +197,7 @@ public class ModePrepaManagerImpl implements ModePrepaManager
    }
 
    @Override
-   public void deleteByIdManager(final ModePrepa obj){
+   public void removeObjectManager(final ModePrepa obj){
 
       final ModePrepa mode = obj;
       modePrepaDao.deleteById(mode.getId());

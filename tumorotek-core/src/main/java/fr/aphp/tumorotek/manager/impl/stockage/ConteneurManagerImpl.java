@@ -41,6 +41,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -159,7 +160,7 @@ public class ConteneurManagerImpl implements ConteneurManager
 
    @Override
    public Conteneur findByIdManager(final Integer conteneurId){
-      return conteneurDao.findById(conteneurId);
+      return conteneurDao.findById(conteneurId).orElse(null);
    }
 
    @Override
@@ -312,7 +313,7 @@ public class ConteneurManagerImpl implements ConteneurManager
    }
 
    @Override
-   public void saveManager(final Conteneur conteneur, final ConteneurType conteneurType, final Service service,
+   public void createObjectManager(final Conteneur conteneur, final ConteneurType conteneurType, final Service service,
       final List<Banque> banques, final List<Plateforme> plateformes, final Utilisateur utilisateur, final Plateforme pfOrig){
 
       // Service required
@@ -352,11 +353,11 @@ public class ConteneurManagerImpl implements ConteneurManager
       //Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
       creationOp.setDate(Utils.getCurrentSystemCalendar());
-      operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), conteneur);
+      operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), conteneur);
    }
 
    @Override
-   public void saveManager(final Conteneur conteneur, final ConteneurType conteneurType, final Service service,
+   public void updateObjectManager(final Conteneur conteneur, final ConteneurType conteneurType, final Service service,
       final List<Banque> banques, final List<Plateforme> plateformes, final List<Incident> incidents,
       final Utilisateur utilisateur){
 
@@ -386,9 +387,9 @@ public class ConteneurManagerImpl implements ConteneurManager
             // si nouvel incident => creation
             // sinon => update
             if(incident.getIncidentId() == null){
-               incidentManager.saveManager(incident, conteneur, null, null);
+               incidentManager.createObjectManager(incident, conteneur, null, null);
             }else{
-               incidentManager.saveManager(incident, conteneur, null, null);
+               incidentManager.updateObjectManager(incident, conteneur, null, null);
             }
          }
       }
@@ -410,11 +411,11 @@ public class ConteneurManagerImpl implements ConteneurManager
       //Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
       creationOp.setDate(Utils.getCurrentSystemCalendar());
-      operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0), conteneur);
+      operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0), conteneur);
    }
 
    @Override
-   public void deleteByIdManager(final Conteneur conteneur, final String comments, final Utilisateur user){
+   public void removeObjectManager(final Conteneur conteneur, final String comments, final Utilisateur user){
       if(conteneur != null){
          if(isUsedObjectManager(conteneur)){
             log.warn("Objet utilisé lors de la suppression de l'objet " + "Conteneur : " + conteneur.toString());
@@ -431,7 +432,7 @@ public class ConteneurManagerImpl implements ConteneurManager
          final Iterator<Enceinte> itE = getEnceintesManager(conteneur).iterator();
          while(itE.hasNext()){
             final Enceinte tmp = itE.next();
-            enceinteManager.deleteByIdManager(tmp, comments, user);
+            enceinteManager.removeObjectManager(tmp, comments, user);
          }
 
          // suppression conteneur vide ssi évènements de stockage
@@ -566,7 +567,7 @@ public class ConteneurManagerImpl implements ConteneurManager
       if(conteneur != null && enceintes != null && terminale != null && firstPositions != null
          && firstPositions.size() == enceintes.size() + 1){
          // création du conteneur
-         saveManager(conteneur, conteneur.getConteneurType(), conteneur.getService(), banques, plateformes, utilisateur,
+         createObjectManager(conteneur, conteneur.getConteneurType(), conteneur.getService(), banques, plateformes, utilisateur,
             pfOrig);
 
          // création des enceintes
@@ -697,7 +698,7 @@ public class ConteneurManagerImpl implements ConteneurManager
    }
    
 	@Override
-	public void saveWithConteneurPlateformesManager(Conteneur conteneur,
+	public void updateObjectWithConteneurPlateformesManager(Conteneur conteneur,
 			ConteneurType conteneurType, Service service, List<Banque> banques,
 			List<ConteneurPlateforme> conteneurPlateformes,
 			List<Incident> incidents, Utilisateur utilisateur) {
@@ -710,7 +711,7 @@ public class ConteneurManagerImpl implements ConteneurManager
 			}
 		}
 		
-		saveManager(conteneur, conteneurType, service, banques, plateformes, incidents, utilisateur);
+		updateObjectManager(conteneur, conteneurType, service, banques, plateformes, incidents, utilisateur);
 		
 		// met à jour les informations spécifiques au conteneurPlateforme (ex: restrictStock)
 		if (conteneurPlateformes != null) {

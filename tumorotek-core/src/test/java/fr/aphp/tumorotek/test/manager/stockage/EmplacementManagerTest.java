@@ -302,7 +302,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       // clean up
       final Conteneur cTest2 = conteneurManager.findByIdManager(c2.getConteneurId());
       assertNotNull(cTest2);
-      conteneurManager.deleteByIdManager(cTest2, null, utilisateurDao.findById(1));
+      conteneurManager.removeObjectManager(cTest2, null, utilisateurDao.findById(1));
       assertEquals(4, conteneurManager.findAllObjectsManager().size());
 
       final List<TKFantomableObject> fs = new ArrayList<>();
@@ -932,7 +932,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
    public void testCrud() throws ParseException{
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    private void saveManagerTest() throws ParseException{
@@ -1048,8 +1048,8 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       assertEquals("ADRL", eTest2.getAdrl());
 
       // Suppression
-      emplacementManager.deleteByIdManager(eTest);
-      emplacementManager.deleteByIdManager(eTest2);
+      emplacementManager.removeObjectManager(eTest);
+      emplacementManager.removeObjectManager(eTest2);
       assertEquals(7, emplacementManager.findAllObjectsManager().size());
    }
 
@@ -1164,20 +1164,20 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       assertEquals("ADRL", eTest2.getAdrl());
 
       // Suppression
-      emplacementManager.deleteByIdManager(eTest);
+      emplacementManager.removeObjectManager(eTest);
       assertEquals(7, emplacementManager.findAllObjectsManager().size());
    }
 
-   private void deleteByIdManagerTest(){
+   private void removeObjectManagerTest(){
       // test de la suppression d'un objet null
-      emplacementManager.deleteByIdManager(null);
+      emplacementManager.removeObjectManager(null);
       assertEquals(7, emplacementManager.findAllObjectsManager().size());
 
       // test de la suppression d'un objet utilisé
       final Emplacement emp1 = emplacementManager.findByIdManager(1);
       boolean catched = false;
       try{
-         emplacementManager.deleteByIdManager(emp1);
+         emplacementManager.removeObjectManager(emp1);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ObjectUsedException")){
             catched = true;
@@ -1262,7 +1262,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       assertNull(list.get(0).getAdrp());
 
       for(int i = 0; i < list.size(); i++){
-         emplacementManager.deleteByIdManager(list.get(i));
+         emplacementManager.removeObjectManager(list.get(i));
       }
       assertEquals(7, emplacementManager.findAllObjectsManager().size());
    }
@@ -1447,7 +1447,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       // supression des opérations créées
       final List<Operation> ops = getOperationManager().findByUtilisateurManager(u);
       for(int i = 0; i < ops.size(); i++){
-         getOperationManager().deleteByIdManager(ops.get(i));
+         getOperationManager().removeObjectManager(ops.get(i));
       }
       assertEquals(19, getOperationManager().findAllObjectsManager().size());
    }
@@ -1672,7 +1672,7 @@ public class EmplacementManagerTest extends AbstractManagerTest4
       eTest4 = emplacementManager.findByIdManager(4);
       assertEquals(10, (int) eTest4.getPosition());
 
-      emplacementManager.deleteByIdManager(eTestNew);
+      emplacementManager.removeObjectManager(eTestNew);
       assertEquals(7, emplacementManager.findAllObjectsManager().size());
    }
    

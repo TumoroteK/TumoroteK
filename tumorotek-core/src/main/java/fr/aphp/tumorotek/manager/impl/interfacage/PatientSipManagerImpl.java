@@ -45,6 +45,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -181,7 +182,7 @@ public class PatientSipManagerImpl implements PatientSipManager
    }
 
    @Override
-   public void deleteByIdManager(final PatientSip patient){
+   public void removeObjectManager(final PatientSip patient){
       if(patient != null){
          patientSipDao.deleteById(patient.getPatientSipId());
          log.info("Suppression objet Patient " + patient.toString());
@@ -309,7 +310,7 @@ public class PatientSipManagerImpl implements PatientSipManager
             }
 
             // update
-            patientManager.createOrsaveManager(pat, null, null, null, null, null, null, null, null, "synchronisation",
+            patientManager.createOrUpdateObjectManager(pat, null, null, null, null, null, null, null, null, "synchronisation",
                null, false);
 
             log.info("Synchronisation du patient " + sipPatient.getNip() + " pour les champs: " + fieldsNames);

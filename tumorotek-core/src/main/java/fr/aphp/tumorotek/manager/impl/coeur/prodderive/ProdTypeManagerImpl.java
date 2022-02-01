@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.coeur.prodderive;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -109,7 +110,7 @@ public class ProdTypeManagerImpl implements ProdTypeManager
     */
    @Override
    public ProdType findByIdManager(final Integer prodTypeId){
-      return prodTypeDao.findById(prodTypeId);
+      return prodTypeDao.findById(prodTypeId).orElse(null);
    }
 
    /**
@@ -154,7 +155,7 @@ public class ProdTypeManagerImpl implements ProdTypeManager
    }
 
    @Override
-   public void saveManager(final ProdType obj){
+   public void createObjectManager(final ProdType obj){
       final ProdType type = obj;
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
@@ -173,7 +174,7 @@ public class ProdTypeManagerImpl implements ProdTypeManager
    }
 
    @Override
-   public void saveManager(final ProdType obj){
+   public void updateObjectManager(final ProdType obj){
       final ProdType type = obj;
       if(findDoublonManager(type)){
          log.warn("Doublon lors de la modification de l'objet ProdType : " + type.toString());
@@ -185,7 +186,7 @@ public class ProdTypeManagerImpl implements ProdTypeManager
    }
 
    @Override
-   public void deleteByIdManager(final ProdType obj){
+   public void removeObjectManager(final ProdType obj){
       final ProdType type = obj;
       if(isUsedObjectManager(type)){
          log.warn("Objet utilisé lors de la suppression de l'objet " + "ProdType : " + type.toString());

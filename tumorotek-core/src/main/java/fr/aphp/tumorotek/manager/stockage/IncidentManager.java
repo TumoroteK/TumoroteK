@@ -96,7 +96,7 @@ public interface IncidentManager
     * @param conteneur Terminale de l'incident.
     * @version 2.0.10
     */
-   void saveManager(Incident incident, Conteneur conteneur, Enceinte enceinte, Terminale terminale);
+   void createObjectManager(Incident incident, Conteneur conteneur, Enceinte enceinte, Terminale terminale);
 
    /**
     * Sauvegarde les modifications apportées à un objet persistant.
@@ -106,13 +106,13 @@ public interface IncidentManager
     * @param conteneur Terminale de l'incident.
     * @version 2.0.10
     */
-   void saveManager(Incident incident, Conteneur conteneur, Enceinte enceinte, Terminale terminale);
+   void updateObjectManager(Incident incident, Conteneur conteneur, Enceinte enceinte, Terminale terminale);
 
    /**
     * Supprime un Incident de la base de données.
     * @param incident Incident à supprimer de la base de données.
     */
-   void deleteByIdManager(Incident incident);
+   void removeObjectManager(Incident incident);
 
    /**
     * Recherche tous les Incidents (ordonnés par date) d'une enceinte.

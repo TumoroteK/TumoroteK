@@ -140,7 +140,7 @@ public class TerminaleTypeManagerTest extends AbstractManagerTest4
    public void testCRUD(){
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    private void saveManagerTest(){
@@ -206,16 +206,16 @@ public class TerminaleTypeManagerTest extends AbstractManagerTest4
       }
    }
 
-   private void deleteByIdManagerTest(){
+   private void removeObjectManagerTest(){
       //Suppression de l'enregistrement precedemment insere
       final TerminaleType t1 = terminaleTypeManager.findByIdManager(7);
-      terminaleTypeManager.deleteByIdManager(t1);
+      terminaleTypeManager.removeObjectManager(t1);
       assertTrue(terminaleTypeManager.findAllObjectsManager().size() == 6);
       //Suppression engrendrant une exception
       Boolean catched = false;
       try{
          final TerminaleType t2 = terminaleTypeManager.findByIdManager(1);
-         terminaleTypeManager.deleteByIdManager(t2);
+         terminaleTypeManager.removeObjectManager(t2);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ObjectUsedException")){
             catched = true;
@@ -224,7 +224,7 @@ public class TerminaleTypeManagerTest extends AbstractManagerTest4
       assertTrue(catched);
       assertTrue(terminaleTypeManager.findAllObjectsManager().size() == 6);
       //null remove
-      terminaleTypeManager.deleteByIdManager(null);
+      terminaleTypeManager.removeObjectManager(null);
       assertTrue(terminaleTypeManager.findAllObjectsManager().size() == 6);
    }
 

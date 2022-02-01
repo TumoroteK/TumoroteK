@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.coeur.prodderive;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -94,7 +95,7 @@ public class ModePrepaDeriveManagerImpl implements ModePrepaDeriveManager
 
    @Override
    public ModePrepaDerive findByIdManager(final Integer modePrepaDeriveId){
-      return modePrepaDeriveDao.findById(modePrepaDeriveId);
+      return modePrepaDeriveDao.findById(modePrepaDeriveId).orElse(null);
    }
 
    @Override
@@ -130,7 +131,7 @@ public class ModePrepaDeriveManagerImpl implements ModePrepaDeriveManager
    }
 
    @Override
-   public void saveManager(final ModePrepaDerive obj){
+   public void createObjectManager(final ModePrepaDerive obj){
       final ModePrepaDerive mode = obj;
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
@@ -149,7 +150,7 @@ public class ModePrepaDeriveManagerImpl implements ModePrepaDeriveManager
    }
 
    @Override
-   public void saveManager(final ModePrepaDerive obj){
+   public void updateObjectManager(final ModePrepaDerive obj){
       final ModePrepaDerive mode = obj;
       if(findDoublonManager(mode)){
          log.warn("Doublon lors de la modification de l'objet " + "ModePrepaDerive : " + mode.toString());
@@ -161,7 +162,7 @@ public class ModePrepaDeriveManagerImpl implements ModePrepaDeriveManager
    }
 
    @Override
-   public void deleteByIdManager(final ModePrepaDerive obj){
+   public void removeObjectManager(final ModePrepaDerive obj){
       final ModePrepaDerive mode = obj;
       modePrepaDeriveDao.deleteById(mode.getId());
       log.info("Suppression de l'objet ModePrepaDerive : " + mode.toString());

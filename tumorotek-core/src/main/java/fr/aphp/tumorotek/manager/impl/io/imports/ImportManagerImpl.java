@@ -1532,7 +1532,7 @@ public class ImportManagerImpl implements ImportManager
 							imp.setEntite(patDuo.getEntite());
 							imp.setIsUpdate(pat.getPatientId() != null);
 
-							patientManager.createOrsaveManager(pat, null, null, null, !toUpdate.isEmpty() ? toUpdate : null,
+							patientManager.createOrUpdateObjectManager(pat, null, null, null, !toUpdate.isEmpty() ? toUpdate : null,
 									!toDelete.isEmpty() ? toDelete : null, null, null, utilisateur,
 											pat.getPatientId() == null ? "creation" : "modification", null, true);
 
@@ -1542,7 +1542,7 @@ public class ImportManagerImpl implements ImportManager
 					}else if(objects.get(i).getClass().getSimpleName().equals("Maladie")){
 						final Maladie mal = (Maladie) objects.get(i);
 						if(mal.getMaladieId() == null){
-							maladieManager.createOrsaveManager(mal, mal.getPatient(), null, utilisateur, "creation");
+							maladieManager.createOrUpdateObjectManager(mal, mal.getPatient(), null, utilisateur, "creation");
 						}
 
 					}else if(objects.get(i).getClass().getSimpleName().equals("TKAnnotableObjectDuo")
@@ -1581,7 +1581,7 @@ public class ImportManagerImpl implements ImportManager
 
 							// create
 							if(prlvt.getPrelevementId() == null){
-								prelevementManager.saveWithNonConformitesManager(prlvt, prlvt.getBanque(), prlvt.getNature(),
+								prelevementManager.createObjectWithNonConformitesManager(prlvt, prlvt.getBanque(), prlvt.getNature(),
 										prlvt.getMaladie(), prlvt.getConsentType(), prlvt.getPreleveur(), prlvt.getServicePreleveur(),
 										prlvt.getPrelevementType(), prlvt.getConditType(), prlvt.getConditMilieu(), prlvt.getTransporteur(),
 										prlvt.getOperateur(), prlvt.getQuantiteUnite(), null, !toUpdate.isEmpty() ? toUpdate : null,
@@ -1590,7 +1590,7 @@ public class ImportManagerImpl implements ImportManager
 
 								toDelete.addAll(prlvtDuo.getSecondAnnoVals());
 
-								prelevementManager.saveWithNonConformitesManager(prlvt, prlvt.getBanque(), prlvt.getNature(),
+								prelevementManager.updateObjectWithNonConformitesManager(prlvt, prlvt.getBanque(), prlvt.getNature(),
 										prlvt.getMaladie(), prlvt.getConsentType(), prlvt.getPreleveur(), prlvt.getServicePreleveur(),
 										prlvt.getPrelevementType(), prlvt.getConditType(), prlvt.getConditMilieu(), prlvt.getTransporteur(),
 										prlvt.getOperateur(), prlvt.getQuantiteUnite(), null, !toUpdate.isEmpty() ? toUpdate : null,
@@ -1627,7 +1627,7 @@ public class ImportManagerImpl implements ImportManager
 									}
 								}else{
 									// s'il n'existait pas on le crée
-									emplacementManager.saveManager(empl, empl.getTerminale(), null);
+									emplacementManager.createObjectManager(empl, empl.getTerminale(), null);
 								}
 							}
 							// si aucun statut n'a été donné, on met
@@ -1656,7 +1656,7 @@ public class ImportManagerImpl implements ImportManager
 							// bascule en jdbcInsert pour augmenter la rapidite
 							// d'insertions
 							if(jdbcSuite == null){
-								echantillonManager.saveWithNonConformitesManager(echan, echan.getBanque(), echan.getPrelevement(),
+								echantillonManager.createObjectWithNonConformitesManager(echan, echan.getBanque(), echan.getPrelevement(),
 										echan.getCollaborateur(), echan.getObjetStatut(), empl, echan.getEchantillonType(), codes,
 										echan.getQuantiteUnite(), echan.getEchanQualite(), echan.getModePrepa(), null, null,
 										!toUpdate.isEmpty() ? toUpdate : null, utilisateur, true, null, true,
@@ -1666,7 +1666,7 @@ public class ImportManagerImpl implements ImportManager
 								if(empl != null){
 									empl.setObjetId(echan.getEchantillonId());
 									// empl.setVide(false);
-									emplacementManager.saveManager(empl, empl.getTerminale(), eEchan);
+									emplacementManager.updateObjectManager(empl, empl.getTerminale(), eEchan);
 								}
 							}else{
 
@@ -2109,7 +2109,7 @@ public class ImportManagerImpl implements ImportManager
 				historique.setImportTemplate(importTemplate);
 				historique.setUtilisateur(utilisateur);
 				historique.setDate(Calendar.getInstance());
-				importHistoriqueManager.saveManager(historique, importTemplate, utilisateur, importations);
+				importHistoriqueManager.createObjectManager(historique, importTemplate, utilisateur, importations);
 			}
 		}catch(final BadFileFormatException bdfe){
 			final ImportError error = new ImportError();
@@ -2203,7 +2203,7 @@ public class ImportManagerImpl implements ImportManager
 			final ImportColonne icTrQte = new ImportColonne();
 			icTrQte.setNom("qte.transf");
 			icTrQte.setOrdre(0);
-			icTrQte.setChamp(new Champ(champEntiteDao.findById(239)));
+			icTrQte.setChamp(new Champ(champEntiteDao.findById(239).orElse(null)));
 			icTrQte.setImportTemplate(importTemplate);
 			properties.getSubDerivesCols().add(icTrQte);
 			final ImportColonne icDs = new ImportColonne();
@@ -2298,7 +2298,7 @@ public class ImportManagerImpl implements ImportManager
 				historique.setImportTemplate(importTemplate);
 				historique.setUtilisateur(utilisateur);
 				historique.setDate(Calendar.getInstance());
-				importHistoriqueManager.saveManager(historique, importTemplate, utilisateur, importations);
+				importHistoriqueManager.createObjectManager(historique, importTemplate, utilisateur, importations);
 			}
 		}catch(final BadFileFormatException bdfe){
 			final ImportError error = new ImportError();

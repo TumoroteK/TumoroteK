@@ -221,9 +221,9 @@ public class TransporteurManagerTest extends AbstractManagerTest4
 
       // Suppression
       final Transporteur t3 = transporteurManager.findByIdManager(idT1);
-      transporteurManager.deleteByIdManager(t3, null, u);
+      transporteurManager.removeObjectManager(t3, null, u);
       final Transporteur t4 = transporteurManager.findByIdManager(idT2);
-      transporteurManager.deleteByIdManager(t4, null, u);
+      transporteurManager.removeObjectManager(t4, null, u);
       assertNull(coordonneeManager.findByIdManager(id));
       assertTrue(coordonneeManager.findAllObjectsManager().size() == 5);
       assertTrue(transporteurManager.findAllObjectsManager().size() == 3);
@@ -331,7 +331,7 @@ public class TransporteurManagerTest extends AbstractManagerTest4
 
       // Suppression
       final Transporteur t3 = transporteurManager.findByIdManager(idT);
-      transporteurManager.deleteByIdManager(t3, null, u);
+      transporteurManager.removeObjectManager(t3, null, u);
       assertNull(coordonneeManager.findByIdManager(id));
       assertTrue(coordonneeManager.findAllObjectsManager().size() == 5);
       assertTrue(transporteurManager.findAllObjectsManager().size() == 3);
@@ -476,7 +476,7 @@ public class TransporteurManagerTest extends AbstractManagerTest4
       final Utilisateur u = utilisateurDao.findById(1);
       boolean catched = false;
       try{
-         transporteurManager.deleteByIdManager(t, null, u);
+         transporteurManager.removeObjectManager(t, null, u);
       }catch(final ObjectReferencedException ore){
          catched = true;
          assertTrue(ore.getKey().equals("transporteur.deletion.isReferenced"));
@@ -486,7 +486,7 @@ public class TransporteurManagerTest extends AbstractManagerTest4
       catched = false;
       t = transporteurManager.findByIdManager(2);
       try{
-         transporteurManager.deleteByIdManager(t, null, u);
+         transporteurManager.removeObjectManager(t, null, u);
       }catch(final ObjectReferencedException ore){
          catched = true;
          assertTrue(ore.getKey().equals("transporteur.deletion.isReferenced"));
@@ -496,7 +496,7 @@ public class TransporteurManagerTest extends AbstractManagerTest4
       catched = false;
       t = transporteurManager.findByIdManager(3);
       try{
-         transporteurManager.deleteByIdManager(t, null, u);
+         transporteurManager.removeObjectManager(t, null, u);
       }catch(final ObjectReferencedException ore){
          catched = true;
          assertTrue(ore.getKey().equals("transporteur.deletion.isReferenced"));

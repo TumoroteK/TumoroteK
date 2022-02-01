@@ -64,7 +64,7 @@ public interface PatientLienManager
     * @param lienFamilial lien familial associé (non null)	 
     * @param operation String creation / modification
     */
-   void createOrsaveManager(PatientLien patientLien, Patient patient1, Patient patient2, LienFamilial lienFamilial,
+   void createOrUpdateObjectManager(PatientLien patientLien, Patient patient1, Patient patient2, LienFamilial lienFamilial,
       String operation);
 
    /**
@@ -79,5 +79,5 @@ public interface PatientLienManager
     * Supprime un objet de la base de données.
     * @param patientLien PatientLien à supprimer de la base de données.
     */
-   void deleteByIdManager(PatientLien patientLien);
+   void removeObjectManager(PatientLien patientLien);
 }

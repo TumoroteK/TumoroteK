@@ -45,6 +45,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -171,7 +172,7 @@ public class EmplacementManagerImpl implements EmplacementManager
     */
    @Override
    public Emplacement findByIdManager(final Integer emplacementId){
-      return emplacementDao.findById(emplacementId);
+      return emplacementDao.findById(emplacementId).orElse(null);
    }
 
    /**
@@ -803,7 +804,7 @@ public class EmplacementManagerImpl implements EmplacementManager
    }
 
    @Override
-   public void saveManager(final Emplacement emplacement, final Terminale terminale, final Entite entite){
+   public void createObjectManager(final Emplacement emplacement, final Terminale terminale, final Entite entite){
 
       //Terminale required
       if(terminale != null){
@@ -851,7 +852,7 @@ public class EmplacementManagerImpl implements EmplacementManager
    }
 
    @Override
-   public void saveManager(final Emplacement emplacement, final Terminale terminale, final Entite entite){
+   public void updateObjectManager(final Emplacement emplacement, final Terminale terminale, final Entite entite){
 
       //Terminale required
       if(terminale != null){
@@ -899,7 +900,7 @@ public class EmplacementManagerImpl implements EmplacementManager
    }
 
    @Override
-   public void deleteByIdManager(final Emplacement emplacement){
+   public void removeObjectManager(final Emplacement emplacement){
       if(emplacement != null){
          if(isUsedObjectManager(emplacement)){
             log.warn("Objet utilisé lors de la suppression de l'objet " + "Emplacement : " + emplacement.toString());
@@ -941,7 +942,7 @@ public class EmplacementManagerImpl implements EmplacementManager
                sb.append(empl.getPosition());
                empl.setAdrl(sb.toString());
 
-               saveManager(empl, terminale, null);
+               createObjectManager(empl, terminale, null);
 
                emplacements.add(empl);
             }
@@ -991,7 +992,7 @@ public class EmplacementManagerImpl implements EmplacementManager
                   if(obj != null){
                      final Operation op = new Operation();
                      op.setDate(Utils.getCurrentSystemCalendar());
-                     operationManager.saveManager(op, utilisateur, opType, obj);
+                     operationManager.createObjectManager(op, utilisateur, opType, obj);
                   }
                }
             }
@@ -1151,7 +1152,7 @@ public class EmplacementManagerImpl implements EmplacementManager
 	               rSet = findCall.getResultSet();
 	               while(rSet.next()){
 	                  // if(rSet.getInt(1) != null){
-	            	   empl = emplacementDao.findById(rSet.getInt(1));
+	            	   empl = emplacementDao.findById(rSet.getInt(1)).orElse(null);
 	                  //}
 	           		}
 	           }

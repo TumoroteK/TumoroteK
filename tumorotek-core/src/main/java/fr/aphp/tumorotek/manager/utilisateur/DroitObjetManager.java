@@ -135,13 +135,13 @@ public interface DroitObjetManager
     * @param entite Entité  du DroitObjet.
     * @param type OperationType du DroitObjet.
     */
-   void saveManager(DroitObjet droitObjet, Profil profil, Entite entite, OperationType type);
+   void createObjectManager(DroitObjet droitObjet, Profil profil, Entite entite, OperationType type);
 
    /**
     * Supprime un DroitObjet de la base de données.
     * @param droitObjet DroitObjet à supprimer de la base de données.
     */
-   void deleteByIdManager(DroitObjet droitObjet);
+   void removeObjectManager(DroitObjet droitObjet);
 
    /**
     * Vérifie si un profil à le droit sur l'opération spécifiée sur toutes 

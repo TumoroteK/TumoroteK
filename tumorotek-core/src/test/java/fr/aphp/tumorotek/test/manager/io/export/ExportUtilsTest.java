@@ -181,7 +181,7 @@ public class ExportUtilsTest extends AbstractManagerTest4
 
       assertTrue(operationManager.findAllObjectsManager().size() == 20);
       final List<Operation> ops = operationManager.findByObjectManager(m1.getPatient());
-      operationManager.deleteByIdManager(ops.get(ops.size() - 1));
+      operationManager.removeObjectManager(ops.get(ops.size() - 1));
       assertTrue(operationManager.findAllObjectsManager().size() == 19);
    }
 
@@ -261,7 +261,7 @@ public class ExportUtilsTest extends AbstractManagerTest4
 
       assertTrue(operationManager.findAllObjectsManager().size() == 20);
       final List<Operation> ops = operationManager.findByObjectManager(p1);
-      operationManager.deleteByIdManager(ops.get(ops.size() - 1));
+      operationManager.removeObjectManager(ops.get(ops.size() - 1));
       assertTrue(operationManager.findAllObjectsManager().size() == 19);
    }
 
@@ -341,7 +341,7 @@ public class ExportUtilsTest extends AbstractManagerTest4
 
       assertTrue(operationManager.findAllObjectsManager().size() == 20);
       final List<Operation> ops = operationManager.findByObjectManager(e1);
-      operationManager.deleteByIdManager(ops.get(ops.size() - 1));
+      operationManager.removeObjectManager(ops.get(ops.size() - 1));
       assertTrue(operationManager.findAllObjectsManager().size() == 19);
    }
 
@@ -412,7 +412,7 @@ public class ExportUtilsTest extends AbstractManagerTest4
 
       assertTrue(operationManager.findAllObjectsManager().size() == 20);
       final List<Operation> ops = operationManager.findByObjectManager(d1);
-      operationManager.deleteByIdManager(ops.get(ops.size() - 1));
+      operationManager.removeObjectManager(ops.get(ops.size() - 1));
       assertTrue(operationManager.findAllObjectsManager().size() == 19);
    }
 
@@ -479,7 +479,7 @@ public class ExportUtilsTest extends AbstractManagerTest4
 
       assertTrue(operationManager.findAllObjectsManager().size() == 20);
       final List<Operation> ops = operationManager.findByObjectManager(c1);
-      operationManager.deleteByIdManager(ops.get(ops.size() - 1));
+      operationManager.removeObjectManager(ops.get(ops.size() - 1));
       assertTrue(operationManager.findAllObjectsManager().size() == 19);
    }
 

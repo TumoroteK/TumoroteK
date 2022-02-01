@@ -43,6 +43,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -129,7 +130,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 
 	@Override
 	public Utilisateur findByIdManager(final Integer utilisateurId){
-		return utilisateurDao.findById(utilisateurId);
+		return utilisateurDao.findById(utilisateurId).orElse(null);
 	}
 
 	@Override
@@ -220,7 +221,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 	}
 
 	@Override
-	public void saveManager(final Utilisateur utilisateur, final Collaborateur collaborateur,
+	public void createObjectManager(final Utilisateur utilisateur, final Collaborateur collaborateur,
 			final List<ProfilUtilisateur> profils, final List<Plateforme> plateformes, final Utilisateur admin,
 			final Plateforme origine){
 
@@ -247,7 +248,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 			//Enregistrement de l'operation associee
 			final Operation creationOp = new Operation();
 			creationOp.setDate(Utils.getCurrentSystemCalendar());
-			operationManager.saveManager(creationOp, admin, operationTypeDao.findByNom("Creation").get(0), utilisateur);
+			operationManager.createObjectManager(creationOp, admin, operationTypeDao.findByNom("Creation").get(0), utilisateur);
 
 			// enregistrements des profils
 			updateProfilsAndPlateformes(utilisateur, profils, profils, plateformes);
@@ -260,7 +261,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 	}
 
 	@Override
-	public void saveManager(final Utilisateur utilisateur, final Collaborateur collaborateur,
+	public void updateObjectManager(final Utilisateur utilisateur, final Collaborateur collaborateur,
 			final List<ProfilUtilisateur> profils, final List<Plateforme> plateformes, final Utilisateur admin,
 			final OperationType oType){
 
@@ -290,7 +291,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 			//Enregistrement de l'operation associee
 			final Operation creationOp = new Operation();
 			creationOp.setDate(Utils.getCurrentSystemCalendar());
-			operationManager.saveManager(creationOp, admin, oType, utilisateur);
+			operationManager.createObjectManager(creationOp, admin, oType, utilisateur);
 
 			// enregistrements des profils
 			updateProfilsAndPlateformes(utilisateur, profils, profilsToCreate, plateformes);
@@ -327,14 +328,14 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 			}
 
 			for(int i = 0; i < profilsToRemove.size(); i++){
-				profilUtilisateurManager.deleteByIdManager(profilsToRemove.get(i));
+				profilUtilisateurManager.removeObjectManager(profilsToRemove.get(i));
 			}
 
 			if(profilsToCreate != null){
 				// enregistrements des profilsutilisateurs
 				for(int i = 0; i < profilsToCreate.size(); i++){
 					final ProfilUtilisateur obj = profilsToCreate.get(i);
-					profilUtilisateurManager.saveManager(obj, utilisateur, obj.getBanque(), obj.getProfil());
+					profilUtilisateurManager.createObjectManager(obj, utilisateur, obj.getBanque(), obj.getProfil());
 				}
 			}
 		}
@@ -404,7 +405,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 			}
 			final Operation creationOp = new Operation();
 			creationOp.setDate(Utils.getCurrentSystemCalendar());
-			operationManager.saveManager(creationOp, admin, operationTypeDao.findByNom("Modification").get(0), utilisateur);
+			operationManager.createObjectManager(creationOp, admin, operationTypeDao.findByNom("Modification").get(0), utilisateur);
 		}
 
 		return utilisateur;
@@ -418,12 +419,12 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 
 			final Operation creationOp = new Operation();
 			creationOp.setDate(Utils.getCurrentSystemCalendar());
-			operationManager.saveManager(creationOp, admin, operationTypeDao.findByNom("Archivage").get(0), utilisateur);
+			operationManager.createObjectManager(creationOp, admin, operationTypeDao.findByNom("Archivage").get(0), utilisateur);
 		}
 	}
 
 	@Override
-	public void deleteByIdManager(final Utilisateur utilisateur){
+	public void removeObjectManager(final Utilisateur utilisateur){
 		if(utilisateur != null){
 			if(isUsedObjectManager(utilisateur)){
 				log.warn("Objet utilisé lors de la suppression de l'objet " + "Utilisateur : " + utilisateur.toString());
@@ -433,18 +434,18 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 				// suppression des ProfilsUtilisateur
 				final List<ProfilUtilisateur> objets = profilUtilisateurManager.findByUtilisateurManager(utilisateur, null);
 				for(int i = 0; i < objets.size(); i++){
-					profilUtilisateurManager.deleteByIdManager(objets.get(i));
+					profilUtilisateurManager.removeObjectManager(objets.get(i));
 				}
 				//remove cascade codes
 				//				Iterator<CodeSelect> codeSelIt =
 				//									utilisateur.getCodeSelects().iterator();
 				//				while (codeSelIt.hasNext()) {
-				//					codeSelectManager.deleteByIdManager(codeSelIt.next());
+				//					codeSelectManager.removeObjectManager(codeSelIt.next());
 				//				}
 				//				Iterator<CodeUtilisateur> codeUIt =
 				//								utilisateur.getCodeUtilisateurs().iterator();
 				//				while (codeUIt.hasNext()) {
-				//					codeUtilisateurManager.deleteByIdManager(codeUIt.next());
+				//					codeUtilisateurManager.removeObjectManager(codeUIt.next());
 				//				}
 
 				utilisateurDao.deleteById(utilisateur.getUtilisateurId());
@@ -453,7 +454,7 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 				//Supprime operations associes
 				final List<Operation> ops = operationManager.findByObjectManager(utilisateur);
 				for(int i = 0; i < ops.size(); i++){
-					operationManager.deleteByIdManager(ops.get(i));
+					operationManager.removeObjectManager(ops.get(i));
 				}
 			}
 		}else{

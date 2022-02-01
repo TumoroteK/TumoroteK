@@ -216,7 +216,7 @@ public class MaladieManagerTest extends AbstractManagerTest4
 	public void testCRUD() throws ParseException{
 		saveManagerTest();
 		saveManagerTest();
-		deleteByIdManagerTest();
+		removeObjectManagerTest();
 	}
 
 	public void saveManagerTest() throws ParseException{
@@ -370,20 +370,20 @@ public class MaladieManagerTest extends AbstractManagerTest4
 	}
 
 	/**
-	 * Teste la methode deleteByIdManager. 
+	 * Teste la methode removeObjectManager. 
 	 */
-	public void deleteByIdManagerTest(){
+	public void removeObjectManagerTest(){
 		final Utilisateur u = utilisateurDao.findById(1);
 		//Suppression de l'enregistrement precedemment insere
 		final Maladie m1 = maladieManager.findByLibelleLikeManager("Maladie grave", true).get(0);
-		maladieManager.deleteByIdManager(m1, "Soignée par Gérard", u);
+		maladieManager.removeObjectManager(m1, "Soignée par Gérard", u);
 		assertTrue(maladieManager.findByCodeLikeManager("Maladie grave", true).size() == 0);
 		assertTrue(getOperationManager().findByObjectManager(m1).size() == 0);
 		//Suppression engrendrant une exception
 		Boolean catched = false;
 		try{
 			final Maladie m2 = maladieManager.findByLibelleLikeManager("Addiction medocs", true).get(0);
-			maladieManager.deleteByIdManager(m2, null, u);
+			maladieManager.removeObjectManager(m2, null, u);
 		}catch(final Exception e){
 			if(e.getClass().getSimpleName().equals("ObjectUsedException")){
 				catched = true;
@@ -392,7 +392,7 @@ public class MaladieManagerTest extends AbstractManagerTest4
 		assertTrue(catched);
 		assertTrue(maladieManager.findByLibelleLikeManager("Addiction medocs", true).size() > 0);
 		//null remove
-		maladieManager.deleteByIdManager(null, null, null);
+		maladieManager.removeObjectManager(null, null, null);
 
 		// fantome verification et suppression
 		assertTrue(getOperationManager().findAllObjectsManager().size() == 20);
@@ -421,8 +421,8 @@ public class MaladieManagerTest extends AbstractManagerTest4
 		assertTrue((maladieManager.findByLibelleLikeManager("Deshydratation", true)).size() == 1);
 		assertTrue((patientDao.findByNom("Snoop")).size() == 1);
 		// clean up
-		maladieManager.deleteByIdManager(m, null, u);
-		patientManager.deleteByIdManager(patientDao.findByNom("Snoop").get(0), null, u, null);
+		maladieManager.removeObjectManager(m, null, u);
+		patientManager.removeObjectManager(patientDao.findByNom("Snoop").get(0), null, u, null);
 
 		final List<TKFantomableObject> fs = new ArrayList<>();
 		fs.add(p);
@@ -498,7 +498,7 @@ public class MaladieManagerTest extends AbstractManagerTest4
 		assertTrue(m.getDelegate() != null);
 		assertTrue(((MaladieSero) m.getDelegate()).getDiagnostic().equals(diagnosticDao.findById(1)));
 
-		maladieManager.deleteByIdManager(m, null, u);
+		maladieManager.removeObjectManager(m, null, u);
 
 		//verifie que l'etat des tables modifies est revenu identique
 		testFindAllObjectsManager();

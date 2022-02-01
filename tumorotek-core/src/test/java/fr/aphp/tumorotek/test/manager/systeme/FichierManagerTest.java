@@ -352,7 +352,7 @@ public class FichierManagerTest extends AbstractManagerTest4
       // Test de la suppression reference en base
       fId = path2.getFichierId();
       final Fichier path4 = fichierManager.findByIdManager(path2.getFichierId());
-      fichierManager.deleteByIdManager(path4, filesToDelete);
+      fichierManager.removeObjectManager(path4, filesToDelete);
       assertNull(fichierManager.findByIdManager(fId));
       assertTrue(filesCreated.size() == 2);
       assertTrue(filesToDelete.size() == 1);
@@ -391,11 +391,11 @@ public class FichierManagerTest extends AbstractManagerTest4
       assertTrue(filesToDelete.size() == 0);
 
       // suprr la ref seulement
-      fichierManager.deleteByIdManager(path6, filesToDelete);
+      fichierManager.removeObjectManager(path6, filesToDelete);
       assertTrue(new File(path6.getPath()).exists());
       assertTrue(filesToDelete.size() == 0);
       // suppr ref + fichier
-      fichierManager.deleteByIdManager(path5, filesToDelete);
+      fichierManager.removeObjectManager(path5, filesToDelete);
       assertTrue(filesToDelete.size() == 1);
       assertTrue(new File(path5.getPath()).exists());
       assertTrue(new File(path6.getPath()).exists());
@@ -405,7 +405,7 @@ public class FichierManagerTest extends AbstractManagerTest4
 
       testFindAll();
 
-      fichierManager.deleteByIdManager(null, filesToDelete);
+      fichierManager.removeObjectManager(null, filesToDelete);
 
       testFindAll();
    }
@@ -476,7 +476,7 @@ public class FichierManagerTest extends AbstractManagerTest4
 			// clean up
 			// List<File> filesToDelete = new ArrayList<File>();
 			f.setPath("/home/TK/pt_1/coll_77/anno/chp_12/fileToMove.pdf_" + id);
-			fichierManager.deleteByIdManager(f, null);
+			fichierManager.removeObjectManager(f, null);
 			assertFalse(new File("/home/TK/pt_1/coll_77/anno/chp_12/fileToMove.pdf_" + id).exists());
 			
 			testFindAll();

@@ -86,43 +86,4 @@ public interface EchantillonTypeManager extends PfDependantTKThesaurusManager<Ec
     * @return Liste de EchantillonType.
     */
    List<EchantillonType> findByTypeLikeManager(String type, boolean exactMatch);
-
-   //	/**
-   //	 * Recherche les doublons de l'EchantillonType passé en paramètre.
-   //	 * @param type Un EchantillonType pour lequel on cherche des doublons.
-   //	 * @return True s'il existe des doublons.
-   //	 */
-   //	Boolean findDoublonManager(EchantillonType type);
-   //	
-   //	/**
-   //	 * Test si un type d'échantillons est lié à des échantillons.
-   //	 * @param type EchantillonType que l'on souhaite tester.
-   //	 * @return Vrai si le type est utilisé.
-   //	 */
-   //	Boolean isUsedObjectManager(EchantillonType type);
-   //	
-   //	/**
-   //	 * Persist une instance d'EchantillonType dans la base de données.
-   //	 * @param type Nouvelle instance de l'objet à créer.
-   //	 * @throws DoublonFoundException Lance une exception si un doublon de
-   //	 * l'objet à créer se trouve déjà dans la base.
-   //	 */
-   //	void saveManager(EchantillonType type);
-   //	
-   //	/**
-   //	 * Sauvegarde les modifications apportées à un objet persistant.
-   //	 * @param type Objet à mettre à jour dans la base.
-   //	 * @throws DoublonFoundException Lance une exception si un doublon de
-   //	 * l'objet à créer se trouve déjà dans la base.
-   //	 */
-   //	void saveManager(EchantillonType type);
-   //	
-   //	/**
-   //	 * Supprime un EchantillonType de la base de données.
-   //	 * @param type EchantillonType à supprimer de la base de données.
-   //	 * @throws DoublonFoundException Lance une exception si l'objet
-   //	 * est utilisé par des échantillons.
-   //	 */
-   //	void deleteByIdManager(EchantillonType type);
-
 }

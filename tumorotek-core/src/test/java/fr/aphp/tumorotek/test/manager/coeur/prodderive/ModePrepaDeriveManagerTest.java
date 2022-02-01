@@ -236,13 +236,13 @@ public class ModePrepaDeriveManagerTest extends AbstractManagerTest4
 
       // Test de la suppression
       final ModePrepaDerive mode4 = modePrepaDeriveManager.findByIdManager(5);
-      modePrepaDeriveManager.deleteByIdManager(mode4);
+      modePrepaDeriveManager.removeObjectManager(mode4);
       assertNull(modePrepaDeriveManager.findByIdManager(5));
       // On test la suppression d'un objet utilisé
       //		ModePrepaDerive mode5 = modePrepaDeriveManager.findByIdManager(1);
       //		Boolean catchedDelete = false;
       //		try {
-      //			modePrepaDeriveManager.deleteByIdManager(mode5);
+      //			modePrepaDeriveManager.removeObjectManager(mode5);
       //		} catch (Exception e) {
       //			if (e.getClass().getSimpleName().equals(
       //					"ObjectUsedException")) {

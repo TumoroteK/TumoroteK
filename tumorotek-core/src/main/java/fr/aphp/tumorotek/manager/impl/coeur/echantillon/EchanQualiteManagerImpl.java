@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.coeur.echantillon;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -108,7 +109,7 @@ public class EchanQualiteManagerImpl implements EchanQualiteManager
     */
    @Override
    public EchanQualite findByIdManager(final Integer echanQualiteId){
-      return echanQualiteDao.findById(echanQualiteId);
+      return echanQualiteDao.findById(echanQualiteId).orElse(null);
    }
 
    //	/**
@@ -164,7 +165,7 @@ public class EchanQualiteManagerImpl implements EchanQualiteManager
    }
 
    @Override
-   public void saveManager(final EchanQualite obj){
+   public void createObjectManager(final EchanQualite obj){
       final EchanQualite qualite = obj;
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
@@ -183,7 +184,7 @@ public class EchanQualiteManagerImpl implements EchanQualiteManager
    }
 
    @Override
-   public void saveManager(final EchanQualite obj){
+   public void updateObjectManager(final EchanQualite obj){
       final EchanQualite qualite = obj;
       if(findDoublonManager(qualite)){
          log.warn("Doublon lors de la modification de l'objet " + "EchanQualite : " + qualite.toString());
@@ -195,7 +196,7 @@ public class EchanQualiteManagerImpl implements EchanQualiteManager
    }
 
    @Override
-   public void deleteByIdManager(final EchanQualite obj){
+   public void removeObjectManager(final EchanQualite obj){
       final EchanQualite qualite = obj;
       echanQualiteDao.deleteById(qualite.getId());
    }

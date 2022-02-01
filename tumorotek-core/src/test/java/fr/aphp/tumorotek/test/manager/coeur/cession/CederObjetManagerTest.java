@@ -440,7 +440,7 @@ public class CederObjetManagerTest extends AbstractManagerTest4
    public void testCrud(){
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    /**
@@ -541,8 +541,8 @@ public class CederObjetManagerTest extends AbstractManagerTest4
       // Suppression
       final CederObjet cedToRemove1 = cederObjetManager.findByIdManager(pk1);
       final CederObjet cedToRemove2 = cederObjetManager.findByIdManager(pk2);
-      cederObjetManager.deleteByIdManager(cedToRemove1);
-      cederObjetManager.deleteByIdManager(cedToRemove2);
+      cederObjetManager.removeObjectManager(cedToRemove1);
+      cederObjetManager.removeObjectManager(cedToRemove2);
       assertTrue(cederObjetManager.findAllObjectsManager().size() == 6);
 
    }
@@ -635,17 +635,17 @@ public class CederObjetManagerTest extends AbstractManagerTest4
 
       // Suppression
       final CederObjet cedToRemove = cederObjetManager.findByIdManager(pk);
-      cederObjetManager.deleteByIdManager(cedToRemove);
+      cederObjetManager.removeObjectManager(cedToRemove);
       assertTrue(cederObjetManager.findAllObjectsManager().size() == 6);
    }
 
    /**
-    * Teste la methode deleteByIdManager. 
+    * Teste la methode removeObjectManager. 
     */
    @Test
-   public void deleteByIdManagerTest(){
+   public void removeObjectManagerTest(){
       // test de la suppression d'un objet null
-      cederObjetManager.deleteByIdManager(null);
+      cederObjetManager.removeObjectManager(null);
       assertTrue(cederObjetManager.findAllObjectsManager().size() == 6);
 
       // test de la suppression d'un objet non présent dans la base
@@ -654,14 +654,14 @@ public class CederObjetManagerTest extends AbstractManagerTest4
       final CederObjetPK pk1 = new CederObjetPK(c1, e1, 4);
       final CederObjet ced = new CederObjet();
       ced.setPk(pk1);
-      cederObjetManager.deleteByIdManager(ced);
+      cederObjetManager.removeObjectManager(ced);
       assertTrue(cederObjetManager.findAllObjectsManager().size() == 6);
 
       // test de la suppression avec PK invalide
       final CederObjetPK pk2 = new CederObjetPK(c1, null, 4);
       final CederObjet ced2 = new CederObjet();
       ced.setPk(pk2);
-      cederObjetManager.deleteByIdManager(ced2);
+      cederObjetManager.removeObjectManager(ced2);
       assertTrue(cederObjetManager.findAllObjectsManager().size() == 6);
    }
 

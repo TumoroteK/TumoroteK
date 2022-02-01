@@ -126,7 +126,7 @@ public class NatureManagerTest extends AbstractManagerTest4
    public void testCRUD(){
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    private void saveManagerTest(){
@@ -210,16 +210,16 @@ public class NatureManagerTest extends AbstractManagerTest4
       }
    }
 
-   private void deleteByIdManagerTest(){
+   private void removeObjectManagerTest(){
       //Suppression de l'enregistrement precedemment insere
       final Nature n1 = (natureManager.findByNatureLikeManager("UR. INES", true)).get(0);
-      natureManager.deleteByIdManager(n1);
+      natureManager.removeObjectManager(n1);
       assertTrue((natureManager.findByNatureLikeManager("UR. INES", true)).size() == 0);
       //Suppression engrendrant une exception
       Boolean catched = false;
       try{
          final Nature n2 = (natureManager.findByNatureLikeManager("SANG", true)).get(0);
-         natureManager.deleteByIdManager(n2);
+         natureManager.removeObjectManager(n2);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ObjectUsedException")){
             catched = true;
@@ -228,7 +228,7 @@ public class NatureManagerTest extends AbstractManagerTest4
       assertTrue(catched);
       assertTrue((natureManager.findByNatureLikeManager("SANG", true)).size() > 0);
       //null remove
-      natureManager.deleteByIdManager(null);
+      natureManager.removeObjectManager(null);
       assertTrue(natureManager.findByOrderManager(n1.getPlateforme()).size() == 3);
    }
 

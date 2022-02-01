@@ -86,7 +86,7 @@ public interface RetourManager
     * @param utilisateur Utilisateur realisant la creation
     * @param operation String creation / modification
     */
-   void createOrsaveManager(Retour retour, TKStockableObject objet, Emplacement emplacement, Collaborateur collborateur,
+   void createOrUpdateObjectManager(Retour retour, TKStockableObject objet, Emplacement emplacement, Collaborateur collborateur,
       Cession cession, Transformation transformation, Incident incident, Utilisateur utilisateur, String operation);
 
    /**
@@ -108,7 +108,7 @@ public interface RetourManager
     * Supprime un objet Retour de la base de données.
     * @param retour Retour à supprimer de la base de données.
     */
-   void deleteByIdManager(Retour retour);
+   void removeObjectManager(Retour retour);
 
    /**
     * Recherche tous les Retour enregistrés pour un objet Echantillon

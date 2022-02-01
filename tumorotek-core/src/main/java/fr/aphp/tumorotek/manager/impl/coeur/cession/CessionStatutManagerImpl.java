@@ -77,7 +77,7 @@ public class CessionStatutManagerImpl implements CessionStatutManager
     */
    @Override
    public CessionStatut findByIdManager(final Integer cessionStatutId){
-      return cessionStatutDao.findById(cessionStatutId);
+      return cessionStatutDao.findById(cessionStatutId).orElse(null);
    }
 
    /**

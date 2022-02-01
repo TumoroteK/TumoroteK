@@ -216,13 +216,13 @@ public class ProdTypeManagerTest extends AbstractManagerTest4
 
       // Test de la suppression
       final ProdType type4 = prodTypeManager.findByIdManager(4);
-      prodTypeManager.deleteByIdManager(type4);
+      prodTypeManager.removeObjectManager(type4);
       assertNull(prodTypeManager.findByIdManager(4));
       // On test la suppression d'un objet utilisé
       final ProdType type5 = prodTypeManager.findByIdManager(1);
       Boolean catchedDelete = false;
       try{
-         prodTypeManager.deleteByIdManager(type5);
+         prodTypeManager.removeObjectManager(type5);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ObjectUsedException")){
             catchedDelete = true;

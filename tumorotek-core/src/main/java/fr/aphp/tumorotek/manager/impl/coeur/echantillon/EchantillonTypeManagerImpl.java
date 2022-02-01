@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -110,7 +111,7 @@ public class EchantillonTypeManagerImpl implements EchantillonTypeManager
     */
    @Override
    public EchantillonType findByIdManager(final Integer echantillonTypeId){
-      return echantillonTypeDao.findById(echantillonTypeId);
+      return echantillonTypeDao.findById(echantillonTypeId).orElse(null);
    }
 
    //	/**
@@ -190,7 +191,7 @@ public class EchantillonTypeManagerImpl implements EchantillonTypeManager
    }
 
    @Override
-   public void saveManager(final EchantillonType obj){
+   public void createObjectManager(final EchantillonType obj){
 
       final EchantillonType type = obj;
 
@@ -211,7 +212,7 @@ public class EchantillonTypeManagerImpl implements EchantillonTypeManager
    }
 
    @Override
-   public void saveManager(final EchantillonType obj){
+   public void updateObjectManager(final EchantillonType obj){
 
       final EchantillonType type = obj;
 
@@ -225,7 +226,7 @@ public class EchantillonTypeManagerImpl implements EchantillonTypeManager
    }
 
    @Override
-   public void deleteByIdManager(final EchantillonType obj){
+   public void removeObjectManager(final EchantillonType obj){
       final EchantillonType type = obj;
       if(isUsedObjectManager(type)){
          log.warn("Objet utilisé lors de la suppression de l'objet " + "EchantillonType : " + type.toString());

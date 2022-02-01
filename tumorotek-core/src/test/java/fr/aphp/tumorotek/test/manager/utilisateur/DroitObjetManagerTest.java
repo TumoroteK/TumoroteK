@@ -355,15 +355,15 @@ public class DroitObjetManagerTest extends AbstractManagerTest4
       assertTrue(doTest.getOperationType().equals(o1));
 
       // suppression du DroitObjet créé
-      droitObjetManager.deleteByIdManager(doTest);
+      droitObjetManager.removeObjectManager(doTest);
       assertTrue(droitObjetManager.findAllObjectsManager().size() == 9);
 
       // suppression d'un droitobjet null
-      droitObjetManager.deleteByIdManager(null);
+      droitObjetManager.removeObjectManager(null);
       assertTrue(droitObjetManager.findAllObjectsManager().size() == 9);
 
       // Suppression d'un droitobjet qui n'est pas dans la base
-      droitObjetManager.deleteByIdManager(doTest);
+      droitObjetManager.removeObjectManager(doTest);
       assertTrue(droitObjetManager.findAllObjectsManager().size() == 9);
    }
 

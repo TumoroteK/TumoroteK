@@ -106,7 +106,7 @@ public interface BlocImpressionTemplateManager
     * @param template Template  du BlocImpressionTemplate.
     * @param blocImpression BlocImpression du BlocImpressionTemplate.
     */
-   void saveManager(BlocImpressionTemplate blocImpressionTemplate, Template template, BlocImpression blocImpression);
+   void createObjectManager(BlocImpressionTemplate blocImpressionTemplate, Template template, BlocImpression blocImpression);
 
    /**
     * Maj une instance de BlocImpressionTemplate dans la base de données.
@@ -114,11 +114,11 @@ public interface BlocImpressionTemplateManager
     * @param template Template  du BlocImpressionTemplate.
     * @param blocImpression BlocImpression du BlocImpressionTemplate.
     */
-   void saveManager(BlocImpressionTemplate blocImpressionTemplate, Template template, BlocImpression blocImpression);
+   void updateObjectManager(BlocImpressionTemplate blocImpressionTemplate, Template template, BlocImpression blocImpression);
 
    /**
     * Supprime une instance de BlocImpressionTemplate de la base.
     * @param blocImpressionTemplate Objet à supprimer.
     */
-   void deleteByIdManager(BlocImpressionTemplate blocImpressionTemplate);
+   void removeObjectManager(BlocImpressionTemplate blocImpressionTemplate);
 }

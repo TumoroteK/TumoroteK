@@ -138,7 +138,7 @@ public class PrelevementTypeManagerTest extends AbstractManagerTest4
    public void testCRUD(){
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    private void saveManagerTest(){
@@ -235,17 +235,17 @@ public class PrelevementTypeManagerTest extends AbstractManagerTest4
       }
    }
 
-   private void deleteByIdManagerTest(){
+   private void removeObjectManagerTest(){
       //Suppression de l'enregistrement precedemment insere
       final PrelevementType pt1 = (prelevementTypeManager.findByTypeLikeManager("Èré+", true)).get(0);
-      prelevementTypeManager.deleteByIdManager(pt1);
+      prelevementTypeManager.removeObjectManager(pt1);
       assertTrue((prelevementTypeManager.findByTypeLikeManager("Èré+", true)).size() == 0);
       //Suppression engrendrant une exception
       //		Boolean catched = false;
       //		try {
       //			PrelevementType pt2 = (prelevementTypeManager
       //					.findByTypeLikeManager("BIOPSIE", true)).get(0);
-      //			prelevementTypeManager.deleteByIdManager(pt2);
+      //			prelevementTypeManager.removeObjectManager(pt2);
       //		} catch (Exception e) {
       //			if (e.getClass().getSimpleName().equals(
       //					"ObjectUsedException")) {
@@ -255,7 +255,7 @@ public class PrelevementTypeManagerTest extends AbstractManagerTest4
       //		assertTrue(catched);
       assertTrue((prelevementTypeManager.findByTypeLikeManager("BIOPSIE", true)).size() > 0);
       //null remove
-      prelevementTypeManager.deleteByIdManager(null);
+      prelevementTypeManager.removeObjectManager(null);
       assertTrue(prelevementTypeManager.findByOrderManager(pt1.getPlateforme()).size() == 3);
    }
 

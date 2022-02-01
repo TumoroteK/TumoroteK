@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.impression;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -69,7 +70,7 @@ public class BlocImpressionManagerImpl implements BlocImpressionManager
 
    @Override
    public BlocImpression findByIdManager(final Integer blocImpressionId){
-      return blocImpressionDao.findById(blocImpressionId);
+      return blocImpressionDao.findById(blocImpressionId).orElse(null);
    }
 
    @Override

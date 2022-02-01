@@ -383,7 +383,7 @@ public interface EchantillonManager
     * dans le file system
     * @param doValidation True : la validation sera faite.
     */
-   void saveManager(Echantillon echantillon, Banque banque, Prelevement prelevement, Collaborateur collaborateur,
+   void createObjectManager(Echantillon echantillon, Banque banque, Prelevement prelevement, Collaborateur collaborateur,
       ObjetStatut statut, Emplacement emplacement, EchantillonType type, List<CodeAssigne> codesAssigne, Unite quantite,
       EchanQualite qualite, ModePrepa preparation, List<AnnotationValeur> listAnnoToCreateOrUpdate,
       List<File> filesCreated, Utilisateur utilisateur, boolean doValidation, String baseDir, boolean isImport);
@@ -412,7 +412,7 @@ public interface EchantillonManager
     * dans le file system
     * @since 2.0.11
     */
-   void saveWithCrAnapathManager(Echantillon echantillon, Banque banque, Prelevement prelevement,
+   void createObjectWithCrAnapathManager(Echantillon echantillon, Banque banque, Prelevement prelevement,
       Collaborateur collaborateur, ObjetStatut statut, Emplacement emplacement, EchantillonType type,
       List<CodeAssigne> codesAssigne, Unite quantite, EchanQualite qualite, ModePrepa preparation, Fichier anapath,
       InputStream anapathStream, List<File> filesCreated, List<AnnotationValeur> listAnnoToCreateOrUpdate,
@@ -445,7 +445,7 @@ public interface EchantillonManager
     * @param base directory pour enregistrer un fichier associé 
     * dans le file system
     */
-   void saveManager(Echantillon echantillon, Banque banque, Prelevement prelevement, Collaborateur collaborateur,
+   void updateObjectManager(Echantillon echantillon, Banque banque, Prelevement prelevement, Collaborateur collaborateur,
       ObjetStatut statut, Emplacement emplacement, EchantillonType type, List<CodeAssigne> codesAssigne,
       List<CodeAssigne> codesToDelete, Unite quantite, EchanQualite qualite, ModePrepa preparation,
       List<AnnotationValeur> listAnnoToCreateOrUpdate, List<AnnotationValeur> listAnnoToDelete, List<File> filesCreated,
@@ -480,7 +480,7 @@ public interface EchantillonManager
     * @param base directory pour enregistrer un fichier associé 
     * dans le file system
     */
-   public void saveWithCrAnapathManager(Echantillon echantillon, Banque banque, Prelevement prelevement,
+   public void updateObjectWithCrAnapathManager(Echantillon echantillon, Banque banque, Prelevement prelevement,
       Collaborateur collaborateur, ObjetStatut statut, Emplacement emplacement, EchantillonType type, List<CodeAssigne> codes,
       List<CodeAssigne> codesToDelete, Unite quantite, EchanQualite qualite, ModePrepa preparation, Fichier anapath,
       InputStream anapathStream, List<File> filesCreated, List<File> filesToDelete,
@@ -497,7 +497,7 @@ public interface EchantillonManager
     * @throws ObjectUsedException si echantillon reference des derives
     * ou est référencé par des cessions.
     */
-   void deleteByIdManager(Echantillon echantillon, String comments, Utilisateur user, List<File> filesToDelete);
+   void removeObjectManager(Echantillon echantillon, String comments, Utilisateur user, List<File> filesToDelete);
 
    /**
     * Cette méthode met à jour les associations entre un échantillon et
@@ -536,7 +536,7 @@ public interface EchantillonManager
     * @param Utilisateur réalisant la suppression.
     * @param liste des fichiers à supprimer après transaction
     */
-   void deleteByIdCascadeManager(Echantillon echantillon, String comments, Utilisateur user, List<File> filesToDelete);
+   void removeObjectCascadeManager(Echantillon echantillon, String comments, Utilisateur user, List<File> filesToDelete);
 
    /**
     * Recupere les echantillons pour un prelevement passé en paramètre.
@@ -656,7 +656,7 @@ public interface EchantillonManager
    Long findCountCreatedByCollaborateurManager(Collaborateur colla);
 
    /**
-    * Surcharge du manager save pour lui ajouter les non 
+    * Surcharge du manager updateObject pour lui ajouter les non 
     * conformites.
     * @param echantillon
     * @param banque
@@ -681,7 +681,7 @@ public interface EchantillonManager
     * @param noconfsTraitement
     * @param noconfsCession
     */
-   void saveWithNonConformitesManager(Echantillon echantillon, Banque banque, Prelevement prelevement,
+   void updateObjectWithNonConformitesManager(Echantillon echantillon, Banque banque, Prelevement prelevement,
       Collaborateur collaborateur, ObjetStatut statut, Emplacement emplacement, EchantillonType type, List<CodeAssigne> codes,
       List<CodeAssigne> codesToDelete, Unite quantite, EchanQualite qualite, ModePrepa preparation, Fichier anapath,
       InputStream anapathStream, List<AnnotationValeur> listAnnoToCreateOrUpdate,
@@ -713,7 +713,7 @@ public interface EchantillonManager
     * @param noconfsCess
     * @since 2.0.10
     */
-   void saveWithNonConformitesManager(Echantillon echantillon, Banque banque, Prelevement prelevement,
+   void createObjectWithNonConformitesManager(Echantillon echantillon, Banque banque, Prelevement prelevement,
       Collaborateur collaborateur, ObjetStatut statut, Emplacement emplacement, EchantillonType type, List<CodeAssigne> codes,
       Unite quantite, EchanQualite qualite, ModePrepa preparation, Fichier anapath, InputStream anapathStream, 
       List<AnnotationValeur> listAnnoToCreateOrUpdate, Utilisateur utilisateur, boolean doValidation, String baseDir,

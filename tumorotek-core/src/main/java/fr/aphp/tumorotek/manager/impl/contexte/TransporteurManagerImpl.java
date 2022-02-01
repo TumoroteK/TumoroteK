@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.manager.impl.contexte;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -125,7 +126,7 @@ public class TransporteurManagerImpl implements TransporteurManager
     */
    @Override
    public Transporteur findByIdManager(final Integer transporteurId){
-      return transporteurDao.findById(transporteurId);
+      return transporteurDao.findById(transporteurId).orElse(null);
    }
 
    /**
@@ -156,7 +157,7 @@ public class TransporteurManagerImpl implements TransporteurManager
    }
 
    @Override
-   public void saveManager(final Transporteur transporteur, final Coordonnee coordonnee, final Utilisateur utilisateur){
+   public void createObjectManager(final Transporteur transporteur, final Coordonnee coordonnee, final Utilisateur utilisateur){
       if(findDoublonManager(transporteur)){
          log.warn("Doublon lors de la creation de l'objet Transporteur : " + transporteur.toString());
          throw new DoublonFoundException("Transporteur", "creation");
@@ -167,9 +168,9 @@ public class TransporteurManagerImpl implements TransporteurManager
          if(coordonnee != null){
             BeanValidator.validateObject(coordonnee, new Validator[] {coordonneeValidator});
             if(coordonnee.getCoordonneeId() == null){
-               coordonneeManager.saveManager(coordonnee, null);
+               coordonneeManager.createObjectManager(coordonnee, null);
             }else{
-               coordonneeManager.saveManager(coordonnee, null, true);
+               coordonneeManager.updateObjectManager(coordonnee, null, true);
             }
          }else{
             transporteur.setCoordonnee(null);
@@ -183,13 +184,13 @@ public class TransporteurManagerImpl implements TransporteurManager
          // Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0),
+         operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0),
             transporteur);
       }
    }
 
    @Override
-   public void saveManager(final Transporteur transporteur, final Coordonnee coordonnee, final Utilisateur utilisateur){
+   public void updateObjectManager(final Transporteur transporteur, final Coordonnee coordonnee, final Utilisateur utilisateur){
       if(findDoublonManager(transporteur)){
          log.warn("Doublon lors de la modif de l'objet Transporteur : " + transporteur.toString());
          throw new DoublonFoundException("Transporteur", "modification");
@@ -200,9 +201,9 @@ public class TransporteurManagerImpl implements TransporteurManager
          if(coordonnee != null){
             BeanValidator.validateObject(coordonnee, new Validator[] {coordonneeValidator});
             if(coordonnee.getCoordonneeId() == null){
-               coordonneeManager.saveManager(coordonnee, null);
+               coordonneeManager.createObjectManager(coordonnee, null);
             }else{
-               coordonneeManager.saveManager(coordonnee, null, true);
+               coordonneeManager.updateObjectManager(coordonnee, null, true);
             }
          }else{
             transporteur.setCoordonnee(null);
@@ -216,13 +217,13 @@ public class TransporteurManagerImpl implements TransporteurManager
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
+         operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
             transporteur);
       }
    }
 
    @Override
-   public void deleteByIdManager(final Transporteur transporteur, final String comments, final Utilisateur user){
+   public void removeObjectManager(final Transporteur transporteur, final String comments, final Utilisateur user){
       if(transporteur != null){
          if(!isReferencedObjectManager(transporteur)){
             //Supprime operations associes

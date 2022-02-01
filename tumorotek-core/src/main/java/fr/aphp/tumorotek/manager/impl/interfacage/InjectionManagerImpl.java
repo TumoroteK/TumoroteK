@@ -505,7 +505,7 @@ public class InjectionManagerImpl implements InjectionManager
 		if(obj != null && banque != null && valeurExterne != null){
 			// si la valeur concerne un champentite
 			if(valeurExterne.getChampEntiteId() != null){
-				final ChampEntite champ = champEntiteDao.findById(valeurExterne.getChampEntiteId());
+				final ChampEntite champ = champEntiteDao.findById(valeurExterne.getChampEntiteId()).orElse(null);
 				if(champ != null){
 					// on va extraire le type de l'attibut à remplir
 					String nomChamp = champ.getNom().replaceFirst(".", (champ.getNom().charAt(0) + "").toLowerCase());
@@ -539,7 +539,7 @@ public class InjectionManagerImpl implements InjectionManager
 				}
 			}else if(valeurExterne.getChampAnnotationId() != null){
 				// si la valeur concerne une annotation
-				final ChampAnnotation champ = champAnnotationDao.findById(valeurExterne.getChampAnnotationId());
+				final ChampAnnotation champ = champAnnotationDao.findById(valeurExterne.getChampAnnotationId()).orElse(null);
 				if(champ != null){
 					Object value = null;
 					if(valeurExterne.getValeur() != null && !valeurExterne.getValeur().equals("")){
@@ -620,7 +620,7 @@ public class InjectionManagerImpl implements InjectionManager
 					: dossier.getBlocExternes());
 
 			for(int i = 0; i < blocs.size(); i++){
-				final Entite entite = entiteDao.findById(blocs.get(i).getEntiteId());
+				final Entite entite = entiteDao.findById(blocs.get(i).getEntiteId()).orElse(null);
 				if(entite != null){
 					if(entite.getNom().equals("Patient")){
 						injectBlocExterneInObject(patient, banque, blocs.get(i), annosPatient);
@@ -650,7 +650,7 @@ public class InjectionManagerImpl implements InjectionManager
 									isCode = false;
 									isCR = false;
 									if(val.getChampEntiteId() != null){
-										ce = champEntiteDao.findById(val.getChampEntiteId());
+										ce = champEntiteDao.findById(val.getChampEntiteId()).orElse(null);
 
 										if(ce.getNom().equals("CodeOrganes") || ce.getNom().equals("CodeMorphos")){
 											isCode = true;
@@ -840,7 +840,7 @@ public class InjectionManagerImpl implements InjectionManager
 				newPrel.getMaladie().getPatient().setPatientEtat("V");
 			}
 			
-			prelevementManager.saveWithNonConformitesManager(newPrel, banque, newPrel.getNature(), 
+			prelevementManager.createObjectWithNonConformitesManager(newPrel, banque, newPrel.getNature(), 
 				newPrel.getMaladie(), newPrel.getConsentType(), newPrel.getPreleveur(), newPrel.getServicePreleveur(), 
 				newPrel.getPrelevementType(), newPrel.getConditType(), newPrel.getConditMilieu(), newPrel.getTransporteur(), 
 				newPrel.getOperateur(), newPrel.getQuantiteUnite(), null, // labo inter forcément nulls par transmission !?
@@ -856,9 +856,9 @@ public class InjectionManagerImpl implements InjectionManager
 			// si tout s'est bien passé = suppression
 			// car ces transactions ne seront pas rollbackées 
 			// si une erreur survient (car pas le même entityManager)
-			dossierExterneManager.deleteByIdManager(dossier);
+			dossierExterneManager.removeObjectManager(dossier);
 			for (DossierExterne dE : derivesDos) {		
-				dossierExterneManager.deleteByIdManager(dE);
+				dossierExterneManager.removeObjectManager(dE);
 			}
 		}
 	}
@@ -871,7 +871,7 @@ public class InjectionManagerImpl implements InjectionManager
 			Transformation transfo = new Transformation();
 			// transfo.setQuantite(qteTransfo);
 			// transfo.setQuantiteUnite(uniteTransfo); // est-ce transmissible par interfacage ?
-			transfo.setEntite(entiteDao.findById(2)); // prelevement
+			transfo.setEntite(entiteDao.findById(2).orElse(null)); // prelevement
 			transfo.setObjetId(prel.getPrelevementId());
 			ResultatInjection resDer;
 			for (DossierExterne dE: derivesDos) {
@@ -883,7 +883,7 @@ public class InjectionManagerImpl implements InjectionManager
 						ObjetStatut statut = resDer.getProdDerive().getEmplacement() != null ? 
 							objetStatutDao.findByStatut("STOCKE").get(0) : objetStatutDao.findByStatut("NON STOCKE").get(0);
 		
-						prodDeriveManager.saveWithNonConformitesManager(resDer.getProdDerive(), banque, 
+						prodDeriveManager.createObjectWithNonConformitesManager(resDer.getProdDerive(), banque, 
 							resDer.getProdDerive().getProdType(), statut, resDer.getProdDerive().getCollaborateur(), 
 							resDer.getProdDerive().getEmplacement(), resDer.getProdDerive().getVolumeUnite(), 
 							resDer.getProdDerive().getConcUnite(), resDer.getProdDerive().getQuantiteUnite(), 
@@ -1033,7 +1033,7 @@ public class InjectionManagerImpl implements InjectionManager
 				Transformation transfo = new Transformation();
 				// transfo.setQuantite(qteTransfo);
 				// transfo.setQuantiteUnite(uniteTransfo); // est-ce transmissible par interfacage ?
-				transfo.setEntite(entiteDao.findById(2)); // prelevement
+				transfo.setEntite(entiteDao.findById(2).orElse(null)); // prelevement
 				transfo.setObjetId(prel.getPrelevementId());
 				for (DossierExterne dos : dosToAddToParent.get(prel)) {
 					ResultatInjection resDer = injectDossierDeriveManager(dos, prel.getBanque()); // synchro banque prel
@@ -1043,7 +1043,7 @@ public class InjectionManagerImpl implements InjectionManager
 						ObjetStatut statut = resDer.getProdDerive().getEmplacement() != null ? 
 							objetStatutDao.findByStatut("STOCKE").get(0) : objetStatutDao.findByStatut("NON STOCKE").get(0);
 		
-						prodDeriveManager.saveWithNonConformitesManager(resDer.getProdDerive(), prel.getBanque(), 
+						prodDeriveManager.createObjectWithNonConformitesManager(resDer.getProdDerive(), prel.getBanque(), 
 							resDer.getProdDerive().getProdType(), statut, resDer.getProdDerive().getCollaborateur(), 
 							resDer.getProdDerive().getEmplacement(), resDer.getProdDerive().getVolumeUnite(), 
 							resDer.getProdDerive().getConcUnite(), resDer.getProdDerive().getQuantiteUnite(), 
@@ -1062,7 +1062,7 @@ public class InjectionManagerImpl implements InjectionManager
 			
 			// si tout s'est bien passé = suppression
 			for (DossierExterne dos : childrenDossierToSync) {
-				dossierExterneManager.deleteByIdManager(dos);
+				dossierExterneManager.removeObjectManager(dos);
 			}
 		}
 		return isAnyParentPrelSynced;

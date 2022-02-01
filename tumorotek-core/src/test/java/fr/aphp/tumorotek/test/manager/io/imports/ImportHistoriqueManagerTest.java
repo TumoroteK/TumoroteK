@@ -353,13 +353,13 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest4
       importHistoriqueManager
          .removeImportationManager(importHistoriqueManager.findImportationsByHistoriqueManager(ihTest2).get(0));
       assertTrue(IterableUtils.toList(importationDao.findAll()).size() == 3);
-      importHistoriqueManager.deleteByIdManager(ihTest);
-      importHistoriqueManager.deleteByIdManager(ihTest2);
+      importHistoriqueManager.removeObjectManager(ihTest);
+      importHistoriqueManager.removeObjectManager(ihTest2);
       assertTrue(importHistoriqueManager.findAllObjectsManager().size() == 3);
       assertTrue(IterableUtils.toList(importationDao.findAll()).size() == 2);
 
       importHistoriqueManager.removeImportationManager(null);
-      importHistoriqueManager.deleteByIdManager(null);
+      importHistoriqueManager.removeObjectManager(null);
       assertTrue(importHistoriqueManager.findAllObjectsManager().size() == 3);
       assertTrue(IterableUtils.toList(importationDao.findAll()).size() == 2);
    }
@@ -449,10 +449,10 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest4
       assertEquals(6, IterableUtils.toList(importationDao.findAll()).size());
 
       // Suppression
-      patientManager.deleteByIdManager(pat, null, u, null);
-      prelevementManager.deleteByIdManager(prlvt, null, u, null);
-      echantillonManager.deleteByIdManager(echan, null, u, null);
-      prodDeriveManager.deleteByIdManager(derive, null, u, null);
+      patientManager.removeObjectManager(pat, null, u, null);
+      prelevementManager.removeObjectManager(prlvt, null, u, null);
+      echantillonManager.removeObjectManager(echan, null, u, null);
+      prodDeriveManager.removeObjectManager(derive, null, u, null);
 
       assertEquals(5, patientManager.findAllObjectsManager().size());
       assertEquals(5, prelevementManager.findAllObjectsManager().size());
@@ -467,7 +467,7 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest4
       fs.add(derive);
       cleanUpFantomes(fs);
 
-      importHistoriqueManager.deleteByIdManager(ih1);
+      importHistoriqueManager.removeObjectManager(ih1);
       assertEquals(3, importHistoriqueManager.findAllObjectsManager().size());
    }
 

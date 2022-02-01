@@ -243,7 +243,7 @@ public class OperationManagerTest extends AbstractManagerTest4
 	@Test
 	public void testCRUD() throws ParseException{
 		saveManagerTest();
-		deleteByIdManagerTest();
+		removeObjectManagerTest();
 	}
 
 	private void saveManagerTest() throws ParseException{
@@ -256,7 +256,7 @@ public class OperationManagerTest extends AbstractManagerTest4
 		final Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		o1.setDate(cal);
-		operationManager.saveManager(o1, u, oType, e);
+		operationManager.createObjectManager(o1, u, oType, e);
 		assertTrue(operationManager.findByObjectManager(e).size() == 1);
 
 		//validation test Type
@@ -275,7 +275,7 @@ public class OperationManagerTest extends AbstractManagerTest4
 							if(i != 1
 									// && j != 1
 									&& k != 1 && l != 2){ //car creation valide
-								operationManager.saveManager(o2, utilisateurValues[j], oTypeValues[k], objectValues[l]);
+								operationManager.createObjectManager(o2, utilisateurValues[j], oTypeValues[k], objectValues[l]);
 							}
 						}catch(final Exception ex){
 							if(j == 0 || k == 0 || l == 0){
@@ -293,14 +293,14 @@ public class OperationManagerTest extends AbstractManagerTest4
 		}
 	}
 
-	private void deleteByIdManagerTest(){
+	private void removeObjectManagerTest(){
 		//Suppression de l'enregistrement precedemment insere
 		final Utilisateur u = utilisateurDao.findById(3);
 		final Operation o1 = operationManager.findByUtilisateurManager(u).get(0);
-		operationManager.deleteByIdManager(o1);
+		operationManager.removeObjectManager(o1);
 		assertTrue(operationManager.findByUtilisateurManager(u).size() == 0);
 		//null remove
-		operationManager.deleteByIdManager(null);
+		operationManager.removeObjectManager(null);
 		testFindAllObjectsManager();
 	}
 
@@ -552,7 +552,7 @@ public class OperationManagerTest extends AbstractManagerTest4
 			assertTrue(op.getEntite().equals(e));
 			assertTrue(op.getUtilisateur().equals(u));
 			assertTrue(op.getOperationType().equals(oT));
-			operationManager.deleteByIdManager(op);
+			operationManager.removeObjectManager(op);
 		}
 
 		// teste JPA auto_increment refresh
@@ -560,7 +560,7 @@ public class OperationManagerTest extends AbstractManagerTest4
 		//		ope.setDate(cal);
 		//		ope.setEntite(entiteDao.findById(1));
 		//		ope.setObjetId(2);
-		//		operationManager.saveManager(ope, u, oT, prelevementDao.findById(1));
+		//		operationManager.createObjectManager(ope, u, oT, prelevementDao.findById(1));
 
 		boolean catched = false;
 		try{

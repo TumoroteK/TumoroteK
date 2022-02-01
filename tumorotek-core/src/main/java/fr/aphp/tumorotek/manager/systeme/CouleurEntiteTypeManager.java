@@ -45,77 +45,84 @@ import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
 
 /**
  *
- * Interface pour le manager du bean de domaine CouleurEntiteType.
- * Interface créée le 30/04/10.
+ * Interface pour le manager du bean de domaine CouleurEntiteType. Interface
+ * créée le 30/04/10.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public interface CouleurEntiteTypeManager
-{
+public interface CouleurEntiteTypeManager {
 
-   /**
-    * Recherche une CouleurEntiteType dont l'identifiant 
-    * est passé en paramètre.
-    * @param couleurEntiteTypeId Identifiant de la 
-    * CouleurEntiteType que l'on recherche.
-    * @return Une CouleurEntiteType.
-    */
-   CouleurEntiteType findByIdManager(Integer couleurEntiteTypeId);
+	/**
+	 * Recherche une CouleurEntiteType dont l'identifiant est passé en paramètre.
+	 * 
+	 * @param couleurEntiteTypeId Identifiant de la CouleurEntiteType que l'on
+	 *                            recherche.
+	 * @return Une CouleurEntiteType.
+	 */
+	CouleurEntiteType findByIdManager(Integer couleurEntiteTypeId);
 
-   /**
-    * Recherche toutes les CouleurEntiteTypes présentes dans la base.
-    * @return Liste de CouleurEntiteTypes.
-    */
-   List<CouleurEntiteType> findAllObjectsManager();
+	/**
+	 * Recherche toutes les CouleurEntiteTypes présentes dans la base.
+	 * 
+	 * @return Liste de CouleurEntiteTypes.
+	 */
+	List<CouleurEntiteType> findAllObjectsManager();
 
-   /**
-    * Recherche les couleurs définies pour une banque.
-    * @param banque Banque pour laquelle on cherche des couleurs.
-    * @return Liste de CouleurEntiteType.
-    */
-   List<CouleurEntiteType> findAllObjectsByBanqueManager(Banque banque);
+	/**
+	 * Recherche les couleurs définies pour une banque.
+	 * 
+	 * @param banque Banque pour laquelle on cherche des couleurs.
+	 * @return Liste de CouleurEntiteType.
+	 */
+	List<CouleurEntiteType> findAllObjectsByBanqueManager(Banque banque);
 
-   /**
-    * Recherche les couleurs pour les EchantillonType d'une banque.
-    * @param banque Banque pour laquelle on cherche des couleurs.
-    * @return Liste de CouleurEntiteType.
-    */
-   List<CouleurEntiteType> findAllCouleursForEchanTypeByBanqueManager(Banque banque);
+	/**
+	 * Recherche les couleurs pour les EchantillonType d'une banque.
+	 * 
+	 * @param banque Banque pour laquelle on cherche des couleurs.
+	 * @return Liste de CouleurEntiteType.
+	 */
+	List<CouleurEntiteType> findAllCouleursForEchanTypeByBanqueManager(Banque banque);
 
-   /**
-    * Recherche les couleurs pour les ProdType d'une banque.
-    * @param banque Banque pour laquelle on cherche des couleurs.
-    * @return Liste de CouleurEntiteType.
-    */
-   List<CouleurEntiteType> findAllCouleursForProdTypeByBanqueManager(Banque banque);
+	/**
+	 * Recherche les couleurs pour les ProdType d'une banque.
+	 * 
+	 * @param banque Banque pour laquelle on cherche des couleurs.
+	 * @return Liste de CouleurEntiteType.
+	 */
+	List<CouleurEntiteType> findAllCouleursForProdTypeByBanqueManager(Banque banque);
 
-   /**
-    * Recherche les doublons de l'Incident passé en paramètre.
-    * @param incident Incident pour lequel on cherche des doublons.
-    * @return True s'il existe des doublons.
-    */
-   Boolean findDoublonManager(CouleurEntiteType couleurEntiteType);
+	/**
+	 * Recherche les doublons de l'Incident passé en paramètre.
+	 * 
+	 * @param incident Incident pour lequel on cherche des doublons.
+	 * @return True s'il existe des doublons.
+	 */
+	Boolean findDoublonManager(CouleurEntiteType couleurEntiteType);
 
-   /**
-    * Persist une instance de CouleurEntiteType dans la base de données.
-    * @param couleurEntiteType Nouvelle instance de l'objet à créer.
-    */
-   void saveManager(CouleurEntiteType couleurEntiteType, Couleur couleur, Banque banque, EchantillonType echantillonType,
-      ProdType prodType);
+	/**
+	 * Persist une instance de CouleurEntiteType dans la base de données.
+	 * 
+	 * @param couleurEntiteType Nouvelle instance de l'objet à créer.
+	 */
+	void createObjectManager(CouleurEntiteType couleurEntiteType, Couleur couleur, Banque banque,
+			EchantillonType echantillonType, ProdType prodType);
 
-   /**
-    * Sauvegarde les modifications apportées à un objet persistant.
-    * @param couleurEntiteType Objet à persister.
-    */
-   void saveManager(CouleurEntiteType couleurEntiteType, Couleur couleur, Banque banque, EchantillonType echantillonType,
-      ProdType prodType);
+	/**
+	 * Sauvegarde les modifications apportées à un objet persistant.
+	 * 
+	 * @param couleurEntiteType Objet à persister.
+	 */
+	void updateObjectManager(CouleurEntiteType couleurEntiteType, Couleur couleur, Banque banque,
+			EchantillonType echantillonType, ProdType prodType);
 
-   /**
-    * Supprime un Incident de la base de données.
-    * @param incident Incident à supprimer de la base de données.
-    */
-   void deleteByIdManager(CouleurEntiteType couleurEntiteType);
+	/**
+	 * Supprime un Incident de la base de données.
+	 * 
+	 * @param incident Incident à supprimer de la base de données.
+	 */
+	void removeObjectManager(CouleurEntiteType couleurEntiteType);
 
 }

@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.impression;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -70,7 +71,7 @@ public class ChampEntiteBlocManagerImpl implements ChampEntiteBlocManager
 
    @Override
    public ChampEntiteBloc findByIdManager(final ChampEntiteBlocPK pk){
-      return champEntiteBlocDao.findById(pk);
+      return champEntiteBlocDao.findById(pk).orElse(null);
    }
 
    @Override

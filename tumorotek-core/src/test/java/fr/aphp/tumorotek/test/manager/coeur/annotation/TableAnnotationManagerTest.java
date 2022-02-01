@@ -255,7 +255,7 @@ public class TableAnnotationManagerTest extends AbstractManagerTest4
       //	moveTableOrderDownManager();
       //	moveTableOrderUpTopManager();
       //	moveTableOrderDownBottomManager();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    /**
@@ -635,17 +635,17 @@ public class TableAnnotationManagerTest extends AbstractManagerTest4
    //	}
 
    /**
-    * Teste la methode deleteByIdManager. 
+    * Teste la methode removeObjectManager. 
     */
-   private void deleteByIdManagerTest(){
+   private void removeObjectManagerTest(){
       final TableAnnotation t = tableAnnotationManager.findByNomLikeManager("NEWTABLE", true).get(0);
       final Set<ChampAnnotation> chps = tableAnnotationManager.getChampAnnotationsManager(t);
-      tableAnnotationManager.deleteByIdManager(t, null, utilisateurDao.findById(1), "/tmp/");
+      tableAnnotationManager.removeObjectManager(t, null, utilisateurDao.findById(1), "/tmp/");
       assertTrue(tableAnnotationManager.findByNomLikeManager("NEWTABLE", true).size() == 0);
       assertTrue(getOperationManager().findByObjectManager(t).size() == 0);
       //verification de la suppression cascade des associations
       assertNull(tableAnnotationBanqueDao.findById(new TableAnnotationBanquePK(banqueDao.findById(1), t)));
-      tableAnnotationManager.deleteByIdManager(null, null, null, null);
+      tableAnnotationManager.removeObjectManager(null, null, null, null);
       //verifie que l'etat des tables modifies est revenu identique
       assertTrue(IterableUtils.toList(champAnnotationDao.findAll()).size() == 48);
       assertTrue(IterableUtils.toList(annotationDefautDao.findAll()).size() == 11);
@@ -758,7 +758,7 @@ public class TableAnnotationManagerTest extends AbstractManagerTest4
       assertTrue(champsOrdered.get(3).equals(c2));
 
       // clean up
-      tableAnnotationManager.deleteByIdManager(t3, null, u, "/tmp/");
+      tableAnnotationManager.removeObjectManager(t3, null, u, "/tmp/");
       //verifie que l'etat des tables modifies est revenu identique
       assertTrue(champAnnotationManager.findAllObjectsManager().size() == 48);
       testFindAllObjectsManager();
@@ -903,11 +903,11 @@ public class TableAnnotationManagerTest extends AbstractManagerTest4
       // clean up operations
       Iterator<Operation> opsIt = getOperationManager().findByObjectManager(t).iterator();
       while(opsIt.hasNext()){
-         getOperationManager().deleteByIdManager(opsIt.next());
+         getOperationManager().removeObjectManager(opsIt.next());
       }
       opsIt = getOperationManager().findByObjectManager(c).iterator();
       while(opsIt.hasNext()){
-         getOperationManager().deleteByIdManager(opsIt.next());
+         getOperationManager().removeObjectManager(opsIt.next());
       }
       assertTrue(getOperationManager().findAllObjectsManager().size() == 19);
    }
@@ -980,7 +980,7 @@ public class TableAnnotationManagerTest extends AbstractManagerTest4
       final Iterator<Operation> ops = getOperationManager().findByObjectManager(t).iterator();
 
       while(ops.hasNext()){
-         getOperationManager().deleteByIdManager(ops.next());
+         getOperationManager().removeObjectManager(ops.next());
       }
       assertTrue(getOperationManager().findAllObjectsManager().size() == 19);
    }

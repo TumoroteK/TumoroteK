@@ -191,7 +191,7 @@ public class LaboInterManagerTest extends AbstractManagerTest4
    public void testCRUD(){
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    private void saveManagerTest(){
@@ -312,14 +312,14 @@ public class LaboInterManagerTest extends AbstractManagerTest4
       }
    }
 
-   private void deleteByIdManagerTest(){
+   private void removeObjectManagerTest(){
       //Suppression de l'enregistrement precedemment insere
       final Transporteur t1 = transporteurDao.findById(2);
       final LaboInter l1 = (laboInterManager.findByTransporteurManager(t1)).get(0);
-      laboInterManager.deleteByIdManager(l1);
+      laboInterManager.removeObjectManager(l1);
       assertTrue((laboInterManager.findByTransporteurManager(t1)).size() == 0);
       //null remove
-      laboInterManager.deleteByIdManager(null);
+      laboInterManager.removeObjectManager(null);
       testFindAllObjectsManager();
    }
 

@@ -79,7 +79,7 @@ public interface CritereManager
     * @param champ Champ du Critère.
     * @param combinaison Combinaison du Critère.
     */
-   void saveManager(Critere critere, Champ champ, Combinaison combinaison);
+   void createObjectManager(Critere critere, Champ champ, Combinaison combinaison);
 
    /**
     * Met à jour un Critère en BDD.
@@ -87,11 +87,11 @@ public interface CritereManager
     * @param champ Champ du Critère.
     * @param combinaison Combinaison du Critère.
     */
-   void saveManager(Critere critere, Champ champ, Combinaison combinaison);
+   void updateObjectManager(Critere critere, Champ champ, Combinaison combinaison);
 
    /**
     * Supprime un Critère en BDD.
     * @param critere Critère à supprimer.
     */
-   void deleteByIdManager(Critere critere);
+   void removeObjectManager(Critere critere);
 }

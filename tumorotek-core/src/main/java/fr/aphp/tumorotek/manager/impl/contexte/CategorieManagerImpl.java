@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.contexte;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -86,7 +87,7 @@ public class CategorieManagerImpl implements CategorieManager
     */
    @Override
    public Categorie findByIdManager(final Integer categorieId){
-      return categorieDao.findById(categorieId);
+      return categorieDao.findById(categorieId).orElse(null);
    }
 
    /**
@@ -138,7 +139,7 @@ public class CategorieManagerImpl implements CategorieManager
    }
 
    @Override
-   public void saveManager(final Categorie obj){
+   public void createObjectManager(final Categorie obj){
       BeanValidator.validateObject(obj, new Validator[] {categorieValidator});
       if(!findDoublonManager(obj)){
          categorieDao.save(obj);
@@ -150,7 +151,7 @@ public class CategorieManagerImpl implements CategorieManager
    }
 
    @Override
-   public void saveManager(final Categorie obj){
+   public void updateObjectManager(final Categorie obj){
       BeanValidator.validateObject(obj, new Validator[] {categorieValidator});
       if(!findDoublonManager(obj)){
          categorieDao.save(obj);
@@ -162,7 +163,7 @@ public class CategorieManagerImpl implements CategorieManager
    }
 
    @Override
-   public void deleteByIdManager(final Categorie obj){
+   public void removeObjectManager(final Categorie obj){
       if(obj != null){
          categorieDao.deleteById(obj.getId());
          log.info("Suppression objet Categorie " + obj.toString());

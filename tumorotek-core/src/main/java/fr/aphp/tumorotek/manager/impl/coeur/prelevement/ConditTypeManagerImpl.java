@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.manager.impl.coeur.prelevement;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -86,7 +87,7 @@ public class ConditTypeManagerImpl implements ConditTypeManager
    }
 
    @Override
-   public void saveManager(final ConditType obj){
+   public void createObjectManager(final ConditType obj){
 
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
@@ -106,7 +107,7 @@ public class ConditTypeManagerImpl implements ConditTypeManager
    }
 
    @Override
-   public void saveManager(final ConditType obj){
+   public void updateObjectManager(final ConditType obj){
       BeanValidator.validateObject(obj, new Validator[] {conditTypeValidator});
       if(!findDoublonManager(obj)){
          conditTypeDao.save(obj);
@@ -127,7 +128,7 @@ public class ConditTypeManagerImpl implements ConditTypeManager
    }
 
    @Override
-   public void deleteByIdManager(final ConditType obj){
+   public void removeObjectManager(final ConditType obj){
       if(obj != null){
          conditTypeDao.deleteById(obj.getId());
          log.info("Suppression objet ConditType " + obj.toString());
@@ -161,7 +162,7 @@ public class ConditTypeManagerImpl implements ConditTypeManager
 
    @Override
    public ConditType findByIdManager(final Integer id){
-      return conditTypeDao.findById(id);
+      return conditTypeDao.findById(id).orElse(null);
    }
 
    @Override

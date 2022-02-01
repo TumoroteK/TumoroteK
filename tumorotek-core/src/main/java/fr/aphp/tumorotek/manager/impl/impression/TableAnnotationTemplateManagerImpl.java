@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.impression;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -78,7 +79,7 @@ public class TableAnnotationTemplateManagerImpl implements TableAnnotationTempla
 
    @Override
    public TableAnnotationTemplate findByIdManager(final TableAnnotationTemplatePK pk){
-      return tableAnnotationTemplateDao.findById(pk);
+      return tableAnnotationTemplateDao.findById(pk).orElse(null);
    }
 
    @Override
@@ -140,7 +141,7 @@ public class TableAnnotationTemplateManagerImpl implements TableAnnotationTempla
    }
 
    @Override
-   public void saveManager(final TableAnnotationTemplate tableAnnotationTemplate, final Template template,
+   public void createObjectManager(final TableAnnotationTemplate tableAnnotationTemplate, final Template template,
       final TableAnnotation tableAnnotation){
 
       // validation de l'objet à créer
@@ -156,7 +157,7 @@ public class TableAnnotationTemplateManagerImpl implements TableAnnotationTempla
    }
 
    @Override
-   public void saveManager(final TableAnnotationTemplate tableAnnotationTemplate, final Template template,
+   public void updateObjectManager(final TableAnnotationTemplate tableAnnotationTemplate, final Template template,
       final TableAnnotation tableAnnotation){
       //template required
       if(template == null){
@@ -181,7 +182,7 @@ public class TableAnnotationTemplateManagerImpl implements TableAnnotationTempla
    }
 
    @Override
-   public void deleteByIdManager(final TableAnnotationTemplate tableAnnotationTemplate){
+   public void removeObjectManager(final TableAnnotationTemplate tableAnnotationTemplate){
       if(tableAnnotationTemplate != null){
          tableAnnotationTemplateDao.deleteById(tableAnnotationTemplate.getPk());
          log.info("Suppression de l'objet TableAnnotationTemplate : " + tableAnnotationTemplate.toString());

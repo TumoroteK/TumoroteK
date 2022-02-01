@@ -80,7 +80,7 @@ public interface GroupementManager
     * @param operateur Opérateur du Groupement.
     * @param parent Groupement parent de la reqûete.
     */
-   void saveManager(Groupement groupement, Critere critere1, Critere critere2, String operateur, Groupement parent);
+   void createObjectManager(Groupement groupement, Critere critere1, Critere critere2, String operateur, Groupement parent);
 
    /**
     * Met à jour un Groupement en BDD.
@@ -90,13 +90,13 @@ public interface GroupementManager
     * @param operateur Opérateur du Groupement.
     * @param parent Groupement parent de la reqûete.
     */
-   void saveManager(Groupement groupement, Critere critere1, Critere critere2, String operateur, Groupement parent);
+   void updateObjectManager(Groupement groupement, Critere critere1, Critere critere2, String operateur, Groupement parent);
 
    /**
     * Supprime un Groupement et ses enfants d'abord.
     * @param groupement Groupement à supprimer.
     */
-   void deleteByIdManager(Groupement groupement);
+   void removeObjectManager(Groupement groupement);
 
    /**
     * Chercher les Groupements enfants du Groupement passé en paramètre.

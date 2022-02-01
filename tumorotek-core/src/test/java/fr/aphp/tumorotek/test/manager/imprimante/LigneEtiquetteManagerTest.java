@@ -290,8 +290,8 @@ public class LigneEtiquetteManagerTest extends AbstractManagerTest4
       assertTrue(chps.get(0).getChamp().equals(ch1));
       assertTrue(chps.get(0).getOrdre() == 1);
 
-      ligneEtiquetteManager.deleteByIdManager(leTest);
-      ligneEtiquetteManager.deleteByIdManager(leTest2);
+      ligneEtiquetteManager.removeObjectManager(leTest);
+      ligneEtiquetteManager.removeObjectManager(leTest2);
       assertTrue(ligneEtiquetteManager.findAllObjectsManager().size() == 7);
       assertTrue(champLigneEtiquetteManager.findAllObjectsManager().size() == 10);
       assertTrue(champManager.findAllObjectsManager().size() == cTots);
@@ -409,7 +409,7 @@ public class LigneEtiquetteManagerTest extends AbstractManagerTest4
       assertTrue(chps.get(0).getChamp().equals(ch1));
       assertTrue(chps.get(1).getChamp().equals(ch3));
 
-      ligneEtiquetteManager.deleteByIdManager(leTest3);
+      ligneEtiquetteManager.removeObjectManager(leTest3);
       assertTrue(ligneEtiquetteManager.findAllObjectsManager().size() == 7);
       assertTrue(champLigneEtiquetteManager.findAllObjectsManager().size() == 10);
       assertTrue(champManager.findAllObjectsManager().size() == cTots);

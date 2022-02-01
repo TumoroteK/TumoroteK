@@ -433,7 +433,7 @@ public class ImportColonneManagerTest extends AbstractManagerTest4
 		assertTrue(icTest2.getNom().equals("AUTRE"));
 		assertTrue(icTest2.getOrdre() == 12);
 
-		importColonneManager.deleteByIdManager(icTest2);
+		importColonneManager.removeObjectManager(icTest2);
 		assertTrue(importColonneManager.findAllObjectsManager().size() == tots);
 		assertTrue(champManager.findAllObjectsManager().size() == cTots);
 	}
@@ -503,9 +503,9 @@ public class ImportColonneManagerTest extends AbstractManagerTest4
 		assertTrue(icTest2.getNom().equals("AUTRE"));
 		assertTrue(icTest2.getOrdre() == 12);
 
-		importColonneManager.deleteByIdManager(icTest2);
+		importColonneManager.removeObjectManager(icTest2);
 		assertTrue(importColonneManager.findAllObjectsManager().size() == tots);
-		champManager.deleteByIdManager(c1);
+		champManager.removeObjectManager(c1);
 		assertTrue(champManager.findAllObjectsManager().size() == cTots);
 	}
 

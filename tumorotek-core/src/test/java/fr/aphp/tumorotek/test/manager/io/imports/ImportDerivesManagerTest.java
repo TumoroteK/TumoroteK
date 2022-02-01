@@ -205,7 +205,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       importTemplateManager.saveManager(template, template.getBanque(), null, null, null);
 
       // Removes
-      importHistoriqueManager.deleteByIdManager(ih);
+      importHistoriqueManager.removeObjectManager(ih);
       assertTrue(importHistoriqueManager.findAllObjectsManager().size() == 3);
 
       // clean up
@@ -214,10 +214,10 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       final List<ProdDerive> derives = prodDeriveManager.findByCodeLikeManager("BATCH", false);
       fs.addAll(derives);
       for(final ProdDerive prodDerive : derives){
-         prodDeriveManager.deleteByIdManager(prodDerive, null, u, null);
+         prodDeriveManager.removeObjectManager(prodDerive, null, u, null);
       }
 
-      transformationManager.deleteByIdManager(t2, null, u);
+      transformationManager.removeObjectManager(t2, null, u);
 
       final Emplacement e10 = echantillonManager.getEmplacementManager(ech);
       assertTrue(e10 != null);
@@ -227,16 +227,16 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       //	emplacementManager.saveManager(e10, e10.getTerminale(), null);
       //	echantillonManager.saveManager(ech, ech.getBanque(), ech.getPrelevement(), 
       //			null, ech.getObjetStatut(), null, ech.getEchantillonType(), null, null, null, qualite, preparation, reserv, listAnnoToCreateOrUpdate, listAnnoToDelete, filesCreated, filesToDelete, utilisateur, doValidation, operations, baseDir)
-      echantillonManager.deleteByIdCascadeManager(ech, null, u, null);
+      echantillonManager.removeObjectCascadeManager(ech, null, u, null);
       fs.add(ech);
 
-      prelevementManager.deleteByIdCascadeManager(prel, null, u, null);
+      prelevementManager.removeObjectCascadeManager(prel, null, u, null);
       fs.add(prel);
-      maladieManager.deleteByIdManager(mal, null, u);
+      maladieManager.removeObjectManager(mal, null, u);
       fs.add(mal);
 
       fs.add(pat);
-      patientManager.deleteByIdManager(pat, null, u, null);
+      patientManager.removeObjectManager(pat, null, u, null);
 
       assertTrue(patientManager.findAllObjectsManager().size() == 5);
       assertTrue(maladieManager.findAllObjectsManager().size() == 6);
@@ -478,14 +478,14 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
 
       final List<Operation> ops = getOperationManager().findByObjetIdEntiteAndOpeTypeManager(p3, operationTypeDao.findById(5));
       assertTrue(ops.size() == 1);
-      getOperationManager().deleteByIdManager(ops.get(0));
+      getOperationManager().removeObjectManager(ops.get(0));
 
-      prelevementManager.deleteByIdCascadeManager(newPrel, null, u, null);
-      prodDeriveManager.deleteByIdCascadeManager(t1, null, u, null);
-      prodDeriveManager.deleteByIdCascadeManager(t2, null, u, null);
-      prodDeriveManager.deleteByIdCascadeManager(t3, null, u, null);
+      prelevementManager.removeObjectCascadeManager(newPrel, null, u, null);
+      prodDeriveManager.removeObjectCascadeManager(t1, null, u, null);
+      prodDeriveManager.removeObjectCascadeManager(t2, null, u, null);
+      prodDeriveManager.removeObjectCascadeManager(t3, null, u, null);
 
-      importTemplateManager.deleteByIdManager(itTest2);
+      importTemplateManager.removeObjectManager(itTest2);
 
       cleanUpFantomes(fs);
 
@@ -614,9 +614,9 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       assertTrue(
          ((ValidationException) e.getException()).getErrors().get(0).getFieldError().getCode().equals("anno.alphanum.illegal"));
 
-      importTemplateManager.deleteByIdManager(itTest2);
+      importTemplateManager.removeObjectManager(itTest2);
 
-      prelevementManager.deleteByIdCascadeManager(newPrel, null, u, null);
+      prelevementManager.removeObjectCascadeManager(newPrel, null, u, null);
 
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.add(newPrel);
@@ -878,17 +878,17 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
          null, null, null, null, u, false, null, null);
       final List<Operation> ops = getOperationManager().findByObjetIdEntiteAndOpeTypeManager(e2, operationTypeDao.findById(5));
       assertTrue(ops.size() == 1);
-      getOperationManager().deleteByIdManager(ops.get(0));
+      getOperationManager().removeObjectManager(ops.get(0));
 
-      retourManager.deleteByIdManager(complete1);
+      retourManager.removeObjectManager(complete1);
 
       fs.add(newEch);
-      echantillonManager.deleteByIdCascadeManager(newEch, null, u, null);
-      prodDeriveManager.deleteByIdCascadeManager(t1, null, u, null);
-      prodDeriveManager.deleteByIdCascadeManager(t3, null, u, null);
-      prodDeriveManager.deleteByIdCascadeManager(t4, null, u, null);
+      echantillonManager.removeObjectCascadeManager(newEch, null, u, null);
+      prodDeriveManager.removeObjectCascadeManager(t1, null, u, null);
+      prodDeriveManager.removeObjectCascadeManager(t3, null, u, null);
+      prodDeriveManager.removeObjectCascadeManager(t4, null, u, null);
 
-      importTemplateManager.deleteByIdManager(itTest2);
+      importTemplateManager.removeObjectManager(itTest2);
 
       cleanUpFantomes(fs);
 
@@ -1037,7 +1037,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       assertTrue(((TransformationQuantiteOverDemandException) e.getException()).getQteRestante().equals(new Float(1)));
 
       // clean up
-      retourManager.deleteByIdManager(complete1);
+      retourManager.removeObjectManager(complete1);
       e2 = echantillonManager.findByIdManager(2);
       assertTrue(e2.getObjetStatut().getStatut().equals("STOCKE"));
 
@@ -1050,9 +1050,9 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
          null, newEch.getEchantillonType(), null, null, null, null, null, null, null, null, null, u, false, null, null);
 
       fs.add(newEch);
-      echantillonManager.deleteByIdCascadeManager(newEch, null, u, null);
+      echantillonManager.removeObjectCascadeManager(newEch, null, u, null);
 
-      importTemplateManager.deleteByIdManager(itTest2);
+      importTemplateManager.removeObjectManager(itTest2);
 
       cleanUpFantomes(fs);
 
@@ -1310,14 +1310,14 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       // clean up
       assertTrue(p2.getQuantite() == null);
 
-      retourManager.deleteByIdManager(complete1);
+      retourManager.removeObjectManager(complete1);
 
       fs.add(newDerive);
-      prodDeriveManager.deleteByIdCascadeManager(newDerive, null, u, null);
-      prodDeriveManager.deleteByIdCascadeManager(t1, null, u, null);
-      prodDeriveManager.deleteByIdCascadeManager(t3, null, u, null);
+      prodDeriveManager.removeObjectCascadeManager(newDerive, null, u, null);
+      prodDeriveManager.removeObjectCascadeManager(t1, null, u, null);
+      prodDeriveManager.removeObjectCascadeManager(t3, null, u, null);
 
-      importTemplateManager.deleteByIdManager(itTest2);
+      importTemplateManager.removeObjectManager(itTest2);
 
       cleanUpFantomes(fs);
 
@@ -1473,7 +1473,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       assertTrue(((TransformationQuantiteOverDemandException) e.getException()).getQteRestante().equals(new Float(65)));
 
       // clean up
-      retourManager.deleteByIdManager(complete1);
+      retourManager.removeObjectManager(complete1);
       p2 = prodDeriveManager.findByIdManager(2);
       assertTrue(p2.getObjetStatut().getStatut().equals("STOCKE"));
 
@@ -1486,9 +1486,9 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
          null, null, null, null, null, null, null, null, null, null, null, null, u, false, null, null);
 
       fs.add(newDerive);
-      prodDeriveManager.deleteByIdCascadeManager(newDerive, null, u, null);
+      prodDeriveManager.removeObjectCascadeManager(newDerive, null, u, null);
 
-      importTemplateManager.deleteByIdManager(itTest2);
+      importTemplateManager.removeObjectManager(itTest2);
 
       cleanUpFantomes(fs);
 
@@ -1581,7 +1581,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
                break;
             }
          }
-         importTemplateManager.deleteByIdManager(toDelete);
+         importTemplateManager.removeObjectManager(toDelete);
       }
 
       importTemplateManager.saveManager(itDerive, b, entites, colonnes);

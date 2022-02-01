@@ -305,16 +305,16 @@ public class AffectationImprimanteManagerTest extends AbstractManagerTest4
       assertNotNull(aiTest1.getModele());
 
       // suppression du profilUtilisateur ajouté
-      affectationImprimanteManager.deleteByIdManager(aiTest);
-      affectationImprimanteManager.deleteByIdManager(aiTest2);
+      affectationImprimanteManager.removeObjectManager(aiTest);
+      affectationImprimanteManager.removeObjectManager(aiTest2);
       assertTrue(affectationImprimanteManager.findAllObjectsManager().size() == 4);
 
       // suppression d'un profilUtilisateur null
-      affectationImprimanteManager.deleteByIdManager(null);
+      affectationImprimanteManager.removeObjectManager(null);
       assertTrue(affectationImprimanteManager.findAllObjectsManager().size() == 4);
 
       // suppression d'un profilUtilisateur inexistant
-      affectationImprimanteManager.deleteByIdManager(aiTest);
+      affectationImprimanteManager.removeObjectManager(aiTest);
       assertTrue(affectationImprimanteManager.findAllObjectsManager().size() == 4);
    }
 

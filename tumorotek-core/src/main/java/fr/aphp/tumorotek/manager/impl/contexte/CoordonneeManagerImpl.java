@@ -40,6 +40,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -105,7 +106,7 @@ public class CoordonneeManagerImpl implements CoordonneeManager
     */
    @Override
    public Coordonnee findByIdManager(final Integer coordonneeId){
-      return coordonneeDao.findById(coordonneeId);
+      return coordonneeDao.findById(coordonneeId).orElse(null);
    }
 
    /**
@@ -208,7 +209,7 @@ public class CoordonneeManagerImpl implements CoordonneeManager
     * coordonnée.
     */
    @Override
-   public void saveManager(final Coordonnee coordonnee, final List<Collaborateur> collaborateurs){
+   public void createObjectManager(final Coordonnee coordonnee, final List<Collaborateur> collaborateurs){
 
       BeanValidator.validateObject(coordonnee, new Validator[] {coordonneeValidator});
 
@@ -235,7 +236,7 @@ public class CoordonneeManagerImpl implements CoordonneeManager
     * coordonnée.
     */
    @Override
-   public void saveManager(Coordonnee coordonnee, final List<Collaborateur> collaborateurs, final boolean doValidation){
+   public void updateObjectManager(Coordonnee coordonnee, final List<Collaborateur> collaborateurs, final boolean doValidation){
 
       coordonnee = coordonneeDao.save(coordonnee);
       if(doValidation){
@@ -263,7 +264,7 @@ public class CoordonneeManagerImpl implements CoordonneeManager
     * @param coordonnee Coordonnee à supprimer de la base de données.
     */
    @Override
-   public void deleteByIdManager(Coordonnee coordonnee){
+   public void removeObjectManager(Coordonnee coordonnee){
 
       coordonnee = coordonneeDao.save(coordonnee);
       if(coordonnee.getCollaborateurs() != null){

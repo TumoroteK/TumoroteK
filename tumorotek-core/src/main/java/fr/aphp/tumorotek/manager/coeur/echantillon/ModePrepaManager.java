@@ -70,43 +70,4 @@ public interface ModePrepaManager extends PfDependantTKThesaurusManager<ModePrep
     * @return Liste de ModePrepa.
     */
    List<ModePrepa> findByModePrepaLikeManager(String mode, boolean exactMatch);
-
-   //	/**
-   //	 * Recherche les doublons du ModePrepa passé en paramètre.
-   //	 * @param mode Un ModePrepa pour lequel on cherche des doublons.
-   //	 * @return True s'il existe des doublons.
-   //	 */
-   //	Boolean findDoublonManager(ModePrepa mode);
-
-   //	/**
-   //	 * Test si un mode de préparation est lié à des échantillons.
-   //	 * @param mode ModePrepa que l'on souhaite tester.
-   //	 * @return Vrai si le mode est utilisé.
-   //	 */
-   //	Boolean isUsedObjectManager(ModePrepa mode);
-   //	
-   //	/**
-   //	 * Persist une instance de ModePrepa dans la base de données.
-   //	 * @param mode Nouvelle instance de l'objet à créer.
-   //	 * @throws DoublonFoundException Lance une exception si un doublon de
-   //	 * l'objet à créer se trouve déjà dans la base.
-   //	 */
-   //	void saveManager(ModePrepa mode);
-   //	
-   //	/**
-   //	 * Sauvegarde les modifications apportées à un objet persistant.
-   //	 * @param mode Objet à mettre à jour dans la base.
-   //	 * @throws DoublonFoundException Lance une exception si un doublon de
-   //	 * l'objet à créer se trouve déjà dans la base.
-   //	 */
-   //	void saveManager(ModePrepa mode);
-   //	
-   //	/**
-   //	 * Supprime un EchantillonType de la base de données.
-   //	 * @param mode EchantillonType à supprimer de la base de données.
-   //	 * @throws DoublonFoundException Lance une exception si l'objet
-   //	 * est utilisé par des échantillons.
-   //	 */
-   //	void deleteByIdManager(ModePrepa mode);
-
 }

@@ -38,6 +38,8 @@ package fr.aphp.tumorotek.manager.impl.utilisateur;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -92,7 +94,7 @@ public class ProfilUtilisateurManagerImpl implements ProfilUtilisateurManager
 
 	@Override
 	public ProfilUtilisateur findByIdManager(final ProfilUtilisateurPK pk){
-		return profilUtilisateurDao.findById(pk);
+		return profilUtilisateurDao.findById(pk).orElse(null);
 	}
 
 	@Override
@@ -207,7 +209,7 @@ public class ProfilUtilisateurManagerImpl implements ProfilUtilisateurManager
 	}
 
 	@Override
-	public void saveManager(final ProfilUtilisateur profilUtilisateur, final Utilisateur utilisateur, final Banque banque,
+	public void createObjectManager(final ProfilUtilisateur profilUtilisateur, final Utilisateur utilisateur, final Banque banque,
 			final Profil profil){
 
 		// validation de l'objet à créer
@@ -225,7 +227,7 @@ public class ProfilUtilisateurManagerImpl implements ProfilUtilisateurManager
 	}
 
 	@Override
-	public void deleteByIdManager(final ProfilUtilisateur profilUtilisateur){
+	public void removeObjectManager(final ProfilUtilisateur profilUtilisateur){
 		if(profilUtilisateur != null){
 			profilUtilisateurDao.deleteById(profilUtilisateur.getPk());
 			log.info("Suppression de l'objet ProfilUtilisateur : " + profilUtilisateur.toString());

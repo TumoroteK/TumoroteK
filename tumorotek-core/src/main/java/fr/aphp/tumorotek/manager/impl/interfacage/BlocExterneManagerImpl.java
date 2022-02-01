@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.interfacage;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -94,7 +95,7 @@ public class BlocExterneManagerImpl implements BlocExterneManager
 
    @Override
    public BlocExterne findByIdManager(final Integer blocExterneId){
-      return blocExterneDao.findById(blocExterneId);
+      return blocExterneDao.findById(blocExterneId).orElse(null);
    }
 
    @Override
@@ -124,7 +125,7 @@ public class BlocExterneManagerImpl implements BlocExterneManager
    @Override
    public Entite getEntiteManager(final BlocExterne blocExterne){
       if(blocExterne != null && blocExterne.getEntiteId() != null){
-         return entiteDao.findById(blocExterne.getEntiteId());
+         return entiteDao.findById(blocExterne.getEntiteId()).orElse(null);
       }
       return null;
    }
@@ -166,7 +167,7 @@ public class BlocExterneManagerImpl implements BlocExterneManager
    }
 
    @Override
-   public void saveManager(final BlocExterne blocExterne, final DossierExterne dossierExterne,
+   public void createObjectManager(final BlocExterne blocExterne, final DossierExterne dossierExterne,
       final List<ValeurExterne> valeurExternes){
       // Validation du bloc
       validateBlocExterneManager(blocExterne, dossierExterne);
@@ -174,7 +175,7 @@ public class BlocExterneManagerImpl implements BlocExterneManager
       blocExterne.setDossierExterne(dossierExterneDao.save(dossierExterne));
 
       if(findDoublonManager(blocExterne)){
-         deleteByIdManager(blocExterneDao.findByDossierExterne(dossierExterne)
+         removeObjectManager(blocExterneDao.findByDossierExterne(dossierExterne)
             .get(blocExterneDao.findByDossierExterne(dossierExterne).indexOf(blocExterne)));
       }
       blocExterneDao.save(blocExterne);
@@ -183,19 +184,19 @@ public class BlocExterneManagerImpl implements BlocExterneManager
       // création des valeurs
       if(valeurExternes != null){
          for(int i = 0; i < valeurExternes.size(); i++){
-            valeurExterneManager.saveManager(valeurExternes.get(i), blocExterne);
+            valeurExterneManager.createObjectManager(valeurExternes.get(i), blocExterne);
          }
       }
    }
 
    @Override
-   public void deleteByIdManager(final BlocExterne blocExterne){
+   public void removeObjectManager(final BlocExterne blocExterne){
       if(blocExterne != null && blocExterne.getBlocExterneId() != null){
 
          // suppression des valeurs
          final List<ValeurExterne> valeurs = valeurExterneManager.findByBlocExterneManager(blocExterne);
          for(int i = 0; i < valeurs.size(); i++){
-            valeurExterneManager.deleteByIdManager(valeurs.get(i));
+            valeurExterneManager.removeObjectManager(valeurs.get(i));
          }
 
          blocExterneDao.deleteById(blocExterne.getBlocExterneId());

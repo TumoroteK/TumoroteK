@@ -120,7 +120,7 @@ public class PrelEchansManagerImpl implements PrelEchansManager
 //            }
 //
 //            //enregistrement du prelevement
-//            prelevementManager.saveManager(pClone, banque, pClone.getNature(), mClone, pClone.getConsentType(),
+//            prelevementManager.createObjectManager(pClone, banque, pClone.getNature(), mClone, pClone.getConsentType(),
 //               pClone.getPreleveur(), pClone.getServicePreleveur(), pClone.getPrelevementType(), pClone.getConditType(),
 //               pClone.getConditMilieu(), pClone.getTransporteur(), pClone.getOperateur(), pClone.getQuantiteUnite(),
 //               new ArrayList<>(pClone.getLaboInters()), null, filesCreated, utilisateur, true, baseDir, false);

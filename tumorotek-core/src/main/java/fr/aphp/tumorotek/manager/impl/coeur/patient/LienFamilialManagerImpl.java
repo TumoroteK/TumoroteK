@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -81,7 +82,7 @@ public class LienFamilialManagerImpl implements LienFamilialManager
    }
 
    @Override
-   public void saveManager(final LienFamilial obj){
+   public void createObjectManager(final LienFamilial obj){
       BeanValidator.validateObject(obj, new Validator[] {lienFamilialValidator});
       if(!findDoublonManager(obj)){
          final LienFamilial reciproque = new LienFamilial();
@@ -96,7 +97,7 @@ public class LienFamilialManagerImpl implements LienFamilialManager
    }
 
    @Override
-   public void saveManager(final LienFamilial obj){
+   public void updateObjectManager(final LienFamilial obj){
       BeanValidator.validateObject(obj, new Validator[] {lienFamilialValidator});
       if(!findDoublonManager(obj)){
          final LienFamilial reciproque = obj.getReciproque();
@@ -125,7 +126,7 @@ public class LienFamilialManagerImpl implements LienFamilialManager
    }
 
    @Override
-   public void deleteByIdManager(final LienFamilial obj){
+   public void removeObjectManager(final LienFamilial obj){
       if(obj != null){
          if(!isUsedObjectManager(obj)){
             lienFamilialDao.deleteById(obj.getLienFamilialId());

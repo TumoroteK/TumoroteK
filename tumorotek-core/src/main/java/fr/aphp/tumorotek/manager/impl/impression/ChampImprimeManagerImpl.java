@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.impression;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -95,7 +96,7 @@ public class ChampImprimeManagerImpl implements ChampImprimeManager
 
    @Override
    public ChampImprime findByIdManager(final ChampImprimePK pk){
-      return champImprimeDao.findById(pk);
+      return champImprimeDao.findById(pk).orElse(null);
    }
 
    @Override
@@ -168,7 +169,7 @@ public class ChampImprimeManagerImpl implements ChampImprimeManager
    }
 
    @Override
-   public void saveManager(final ChampImprime champImprime, final Template template, final ChampEntite champEntite,
+   public void createObjectManager(final ChampImprime champImprime, final Template template, final ChampEntite champEntite,
       final BlocImpression bloc){
       // validation de l'objet à créer
       validateObjectManager(template, champEntite, bloc);
@@ -184,7 +185,7 @@ public class ChampImprimeManagerImpl implements ChampImprimeManager
    }
 
    @Override
-   public void saveManager(final ChampImprime champImprime, final Template template, final ChampEntite champEntite,
+   public void updateObjectManager(final ChampImprime champImprime, final Template template, final ChampEntite champEntite,
       final BlocImpression bloc){
 
       //template required
@@ -216,7 +217,7 @@ public class ChampImprimeManagerImpl implements ChampImprimeManager
    }
 
    @Override
-   public void deleteByIdManager(final ChampImprime champImprime){
+   public void removeObjectManager(final ChampImprime champImprime){
       if(champImprime != null){
          champImprimeDao.deleteById(champImprime.getPk());
          log.info("Suppression de l'objet ChampImprime : " + champImprime.toString());

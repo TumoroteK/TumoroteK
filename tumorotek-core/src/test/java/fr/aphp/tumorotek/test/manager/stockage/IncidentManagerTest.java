@@ -258,7 +258,7 @@ public class IncidentManagerTest extends AbstractManagerTest4
    public void testCrud() throws ParseException{
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    private void saveManagerTest() throws ParseException{
@@ -324,7 +324,7 @@ public class IncidentManagerTest extends AbstractManagerTest4
       assertTrue(iTest.getDate().equals(date));
 
       // Suppression
-      incidentManager.deleteByIdManager(iTest);
+      incidentManager.removeObjectManager(iTest);
       assertTrue(incidentManager.findAllObjectsManager().size() == 5);
    }
 
@@ -398,13 +398,13 @@ public class IncidentManagerTest extends AbstractManagerTest4
       assertTrue(iUpTest.getDate().equals(dateUp));
 
       // Suppression
-      incidentManager.deleteByIdManager(iUpTest);
+      incidentManager.removeObjectManager(iUpTest);
       assertTrue(incidentManager.findAllObjectsManager().size() == 5);
    }
 
-   private void deleteByIdManagerTest(){
+   private void removeObjectManagerTest(){
       // test de la suppression d'un objet null
-      incidentManager.deleteByIdManager(null);
+      incidentManager.removeObjectManager(null);
       assertTrue(incidentManager.findAllObjectsManager().size() == 5);
    }
 

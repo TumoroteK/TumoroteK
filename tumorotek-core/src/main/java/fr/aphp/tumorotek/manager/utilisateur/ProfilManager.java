@@ -89,7 +89,7 @@ public interface ProfilManager
     * @param pf Plateforme
     * @version 2.1
     */
-   void saveManager(Profil profil, List<DroitObjet> droitObjets, Utilisateur admin, Plateforme pf);
+   void createObjectManager(Profil profil, List<DroitObjet> droitObjets, Utilisateur admin, Plateforme pf);
 
    /**
     * Sauvegarde les modifications apportées à un objet persistant.
@@ -97,14 +97,14 @@ public interface ProfilManager
     * @param droitObjets Liste de DroitObjet.
     * @param admin Utilisateur créant le profil.
     */
-   void saveManager(Profil profil, List<DroitObjet> droitObjets, Utilisateur admin);
+   void updateObjectManager(Profil profil, List<DroitObjet> droitObjets, Utilisateur admin);
 
    /**
     * Supprime un Profil de la base de données.
     * @param profil Profil à supprimer de la base de données.
     * @param admin Utilisateur modifiant le profil.
     */
-   void deleteByIdManager(Profil profil);
+   void removeObjectManager(Profil profil);
 
    /**
     * Recherche les profils pour une plateforme donnée 

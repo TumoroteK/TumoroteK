@@ -37,6 +37,8 @@ package fr.aphp.tumorotek.manager.impl.coeur.annotation;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
+
 import fr.aphp.tumorotek.dao.annotation.CatalogueDao;
 import fr.aphp.tumorotek.manager.coeur.annotation.CatalogueManager;
 import fr.aphp.tumorotek.model.coeur.annotation.Catalogue;

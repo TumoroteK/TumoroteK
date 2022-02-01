@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.impression;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -78,7 +79,7 @@ public class BlocImpressionTemplateManagerImpl implements BlocImpressionTemplate
 
    @Override
    public BlocImpressionTemplate findByIdManager(final BlocImpressionTemplatePK pk){
-      return blocImpressionTemplateDao.findById(pk);
+      return blocImpressionTemplateDao.findById(pk).orElse(null);
    }
 
    @Override
@@ -137,7 +138,7 @@ public class BlocImpressionTemplateManagerImpl implements BlocImpressionTemplate
    }
 
    @Override
-   public void saveManager(final BlocImpressionTemplate blocImpressionTemplate, final Template template,
+   public void createObjectManager(final BlocImpressionTemplate blocImpressionTemplate, final Template template,
       final BlocImpression blocImpression){
 
       // validation de l'objet à créer
@@ -154,7 +155,7 @@ public class BlocImpressionTemplateManagerImpl implements BlocImpressionTemplate
    }
 
    @Override
-   public void saveManager(final BlocImpressionTemplate blocImpressionTemplate, final Template template,
+   public void updateObjectManager(final BlocImpressionTemplate blocImpressionTemplate, final Template template,
       final BlocImpression blocImpression){
 
       //template required
@@ -178,7 +179,7 @@ public class BlocImpressionTemplateManagerImpl implements BlocImpressionTemplate
    }
 
    @Override
-   public void deleteByIdManager(final BlocImpressionTemplate blocImpressionTemplate){
+   public void removeObjectManager(final BlocImpressionTemplate blocImpressionTemplate){
       if(blocImpressionTemplate != null){
          blocImpressionTemplateDao.deleteById(blocImpressionTemplate.getPk());
          log.info("Suppression de l'objet BlocImpressionTemplate : " + blocImpressionTemplate.toString());

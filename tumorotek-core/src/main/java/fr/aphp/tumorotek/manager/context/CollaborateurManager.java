@@ -200,7 +200,7 @@ public interface CollaborateurManager
     * @param services Liste des services associés au collaborateur.
     * @param coordonnees Liste de coord associées au collaborateur.
     */
-   void saveManager(Collaborateur collaborateur, Titre titre, Etablissement etablissement, Specialite specialite,
+   void createObjectManager(Collaborateur collaborateur, Titre titre, Etablissement etablissement, Specialite specialite,
       List<Service> services, List<Coordonnee> coordonnees, Utilisateur utilisateur);
 
    /**
@@ -215,7 +215,7 @@ public interface CollaborateurManager
     * champs du collaborateur.
     * @throws javax.xml.bind.ValidationException 
     */
-   void saveManager(Collaborateur collaborateur, Titre titre, Etablissement etablissement, Specialite specialite,
+   void updateObjectManager(Collaborateur collaborateur, Titre titre, Etablissement etablissement, Specialite specialite,
       List<Service> services, List<Coordonnee> coordonnees, Utilisateur utilisateur, boolean doValidation);
 
    /**
@@ -226,7 +226,7 @@ public interface CollaborateurManager
     * @throws ObjectReferencedException si collaborateur est référencé par des
     * objets.
     */
-   void deleteByIdManager(Collaborateur collab, String comments, Utilisateur user);
+   void removeObjectManager(Collaborateur collab, String comments, Utilisateur user);
 
    /**
     * Verifie si le collaborateur est référencé par d'autres objets du système
@@ -248,7 +248,7 @@ public interface CollaborateurManager
     * @param comments commentaires liés à la suppression
     * @param Utilisateur réalisant la suppression.
     */
-   void deleteByIdCascadeManager(Collaborateur collab, Service service, String comments, Utilisateur user);
+   void removeObjectCascadeManager(Collaborateur collab, Service service, String comments, Utilisateur user);
 
    /**
     * Recherche tous les collaborateurs présents dans la base qui

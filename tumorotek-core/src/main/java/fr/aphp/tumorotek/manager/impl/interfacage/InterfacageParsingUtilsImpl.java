@@ -1321,7 +1321,7 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
 				}
 
 				// enregistrement du dossier externe
-				dossierExterneManager.saveManager(dossierExterne, emetteur, blocExternes, valeurExternes, max);
+				dossierExterneManager.createObjectManager(dossierExterne, emetteur, blocExternes, valeurExternes, max);
 
 				dossiers.add(dossierExterne);
 

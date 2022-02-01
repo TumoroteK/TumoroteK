@@ -41,6 +41,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -95,7 +96,7 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
 
    @Override
    public ImportTemplate findByIdManager(final Integer importTemplateId){
-      return importTemplateDao.findById(importTemplateId);
+      return importTemplateDao.findById(importTemplateId).orElse(null);
    }
 
    @Override
@@ -140,7 +141,7 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
    }
 
    @Override
-   public void saveManager(final ImportTemplate importTemplate, final Banque banque, final List<Entite> entites,
+   public void createObjectManager(final ImportTemplate importTemplate, final Banque banque, final List<Entite> entites,
       final List<ImportColonne> colonnesToCreate){
       // banque required
       if(banque != null){
@@ -182,7 +183,7 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
    }
 
    @Override
-   public void saveManager(final ImportTemplate importTemplate, final Banque banque, final List<Entite> entites,
+   public void updateObjectManager(final ImportTemplate importTemplate, final Banque banque, final List<Entite> entites,
       final List<ImportColonne> colonnesToCreate, final List<ImportColonne> colonnesToremove){
       // banque required
       if(banque != null){
@@ -224,12 +225,12 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
    }
 
    @Override
-   public void deleteByIdManager(ImportTemplate importTemplate){
+   public void removeObjectManager(ImportTemplate importTemplate){
       if(importTemplate != null){
          // suppression des colonnes
          final List<ImportColonne> colonnes = importColonneManager.findByImportTemplateManager(importTemplate);
          for(int i = 0; i < colonnes.size(); i++){
-            importColonneManager.deleteByIdManager(colonnes.get(i));
+            importColonneManager.removeObjectManager(colonnes.get(i));
          }
 
          importTemplate = importTemplateDao.save(importTemplate);
@@ -265,7 +266,7 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
       if(colonnesToRemove != null){
          // suppression des colonnes
          for(int i = 0; i < colonnesToRemove.size(); i++){
-            importColonneManager.deleteByIdManager(colonnesToRemove.get(i));
+            importColonneManager.removeObjectManager(colonnesToRemove.get(i));
          }
       }
 
@@ -273,9 +274,9 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
          // ajout ou modif des colonnes
          for(int i = 0; i < colonnesToCreate.size(); i++){
             if(colonnesToCreate.get(i).getImportColonneId() == null){
-               importColonneManager.saveManager(colonnesToCreate.get(i), temp, colonnesToCreate.get(i).getChamp());
+               importColonneManager.createObjectManager(colonnesToCreate.get(i), temp, colonnesToCreate.get(i).getChamp());
             }else{
-               importColonneManager.saveManager(colonnesToCreate.get(i), temp, colonnesToCreate.get(i).getChamp());
+               importColonneManager.updateObjectManager(colonnesToCreate.get(i), temp, colonnesToCreate.get(i).getChamp());
             }
          }
       }

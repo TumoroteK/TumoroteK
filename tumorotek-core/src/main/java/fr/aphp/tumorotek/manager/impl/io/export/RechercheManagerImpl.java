@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -180,7 +181,7 @@ public class RechercheManagerImpl implements RechercheManager
          log.warn("Objet obligatoire identifiant manquant lors de la " + "recherche par l'identifiant d'un objet Recherche");
          throw new RequiredObjectIsNullException("Recherche", "recherche par identifiant", "identifiant");
       }
-      return rechercheDao.findById(id);
+      return rechercheDao.findById(id).orElse(null);
    }
 
    /**
@@ -303,7 +304,7 @@ public class RechercheManagerImpl implements RechercheManager
     *            Utilisateur qui créé la Recherche.
     */
    @Override
-   public void saveManager(final Recherche recherche, Affichage affichage, Requete requete, final List<Banque> banques,
+   public void createObjectManager(final Recherche recherche, Affichage affichage, Requete requete, final List<Banque> banques,
       final Utilisateur createur, final Banque banque){
       // On vérifie que la recherche n'est pas nulle
       if(recherche == null){
@@ -328,14 +329,14 @@ public class RechercheManagerImpl implements RechercheManager
       if(affichage.getAffichageId() != null){
          affichage = affichageDao.save(affichage);
       }else{
-         affichageManager.saveManager(affichage, affichage.getResultats(), createur, banque);
+         affichageManager.createObjectManager(affichage, affichage.getResultats(), createur, banque);
       }
       recherche.setAffichage(affichage);
 
       if(requete.getRequeteId() != null){
          requete = requeteDao.save(requete);
       }else{
-         requeteManager.saveManager(requete, requete.getGroupementRacine(), createur, banque);
+         requeteManager.createObjectManager(requete, requete.getGroupementRacine(), createur, banque);
       }
       recherche.setRequete(requete);
 
@@ -362,7 +363,7 @@ public class RechercheManagerImpl implements RechercheManager
     *            Utilisateur qui met à jour la Recherche.
     */
    @Override
-   public void saveManager(final Recherche recherche, Affichage affichage, Requete requete, final List<Banque> banques,
+   public void updateObjectManager(final Recherche recherche, Affichage affichage, Requete requete, final List<Banque> banques,
       final Utilisateur createur, final Banque banque){
       // On vérifie que la recherche n'est pas nulle
       if(recherche == null){
@@ -387,14 +388,14 @@ public class RechercheManagerImpl implements RechercheManager
       if(affichage.getAffichageId() != null){
          affichage = affichageDao.save(affichage);
       }else{
-         affichageManager.saveManager(affichage, affichage.getResultats(), createur, banque);
+         affichageManager.createObjectManager(affichage, affichage.getResultats(), createur, banque);
       }
       recherche.setAffichage(affichage);
 
       if(requete.getRequeteId() != null){
          requete = requeteDao.save(requete);
       }else{
-         requeteManager.saveManager(requete, requete.getGroupementRacine(), createur, banque);
+         requeteManager.createObjectManager(requete, requete.getGroupementRacine(), createur, banque);
       }
       recherche.setRequete(requete);
 
@@ -420,7 +421,7 @@ public class RechercheManagerImpl implements RechercheManager
     *            Recherche à supprimer
     */
    @Override
-   public void deleteByIdManager(final Recherche recherche){
+   public void removeObjectManager(final Recherche recherche){
       // On vérifie que la recherche n'est pas nulle
       if(recherche == null){
          throw new RequiredObjectIsNullException("Recherche", "suppression", "Recherche");

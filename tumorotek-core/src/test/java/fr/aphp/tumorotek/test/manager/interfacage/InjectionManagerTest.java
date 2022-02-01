@@ -951,8 +951,8 @@ public class InjectionManagerTest extends AbstractManagerTest4
 		assertTrue(IterableUtils.toList(valeurExterneDao.findAll()).size() == nbV);
 
 		// clean up
-		prelevementManager.deleteByIdCascadeManager(newPrel, null, u1, null);
-		patientManager.deleteByIdManager(newPat, null, u1, null);
+		prelevementManager.removeObjectCascadeManager(newPrel, null, u1, null);
+		patientManager.removeObjectManager(newPat, null, u1, null);
 		
 		assertTrue(prelevementManager.findByCodeLikeManager("NEW_PREL_PARENT_001", true).isEmpty());
 
@@ -999,7 +999,7 @@ public class InjectionManagerTest extends AbstractManagerTest4
 		assertTrue(dos.isEmpty());
 		
 		// clean up
-		dossierExterneManager.deleteByIdManager(newDos2);
+		dossierExterneManager.removeObjectManager(newDos2);
 	}
 	
 	@Test
@@ -1064,7 +1064,7 @@ public class InjectionManagerTest extends AbstractManagerTest4
 		assertTrue(dos.isEmpty());
 		
 		// clean up
-		dossierExterneManager.deleteByIdManager(der2);
+		dossierExterneManager.removeObjectManager(der2);
 	}
 	
 	@Test
@@ -1095,7 +1095,7 @@ public class InjectionManagerTest extends AbstractManagerTest4
 		assertTrue(dos.isEmpty());
 		
 		// clean up
-		dossierExterneManager.deleteByIdManager(der2);
+		dossierExterneManager.removeObjectManager(der2);
 	}
 	
 	@Test
@@ -1357,17 +1357,17 @@ public class InjectionManagerTest extends AbstractManagerTest4
 		assertFalse(injectionManager.synchronizeDeriveChildrenManager(e2, pf1, u1, null));
 		
 		// clean up
-		dossierExterneManager.deleteByIdManager(parent);
-		dossierExterneManager.deleteByIdManager(der3);
-		prodDeriveManager.deleteByIdManager(derive1, null, u1, null);
-		prodDeriveManager.deleteByIdManager(derive2, null, u1, null); 
-		prodDeriveManager.deleteByIdManager(derive4, null, u1, null); 
-		transformationManager.deleteByIdManager(derive2.getTransformation(), null, u1);    
-		transformationManager.deleteByIdManager(derive1.getTransformation(), null, u1);
-		getOperationManager().deleteByIdManager(getOperationManager()
+		dossierExterneManager.removeObjectManager(parent);
+		dossierExterneManager.removeObjectManager(der3);
+		prodDeriveManager.removeObjectManager(derive1, null, u1, null);
+		prodDeriveManager.removeObjectManager(derive2, null, u1, null); 
+		prodDeriveManager.removeObjectManager(derive4, null, u1, null); 
+		transformationManager.removeObjectManager(derive2.getTransformation(), null, u1);    
+		transformationManager.removeObjectManager(derive1.getTransformation(), null, u1);
+		getOperationManager().removeObjectManager(getOperationManager()
 			.findByObjetIdEntiteAndOpeTypeManager(prelevementManager.findByIdManager(1), 
 					operationTypeDao.findById(19)).get(0)); // sync
-		getOperationManager().deleteByIdManager(getOperationManager()
+		getOperationManager().removeObjectManager(getOperationManager()
 			.findByObjetIdEntiteAndOpeTypeManager(prelevementManager.findByIdManager(2), 
 					operationTypeDao.findById(19)).get(0)); // sync
 		

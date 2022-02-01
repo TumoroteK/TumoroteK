@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -104,7 +105,7 @@ public class ModeleManagerImpl implements ModeleManager
 
    @Override
    public Modele findByIdManager(final Integer modeleId){
-      return modeleDao.findById(modeleId);
+      return modeleDao.findById(modeleId).orElse(null);
    }
 
    @Override
@@ -156,7 +157,7 @@ public class ModeleManagerImpl implements ModeleManager
    }
 
    @Override
-   public void saveManager(final Modele modele, final Plateforme plateforme, final ModeleType modeleType,
+   public void createObjectManager(final Modele modele, final Plateforme plateforme, final ModeleType modeleType,
       final List<LigneEtiquette> ligneEtiquettes,
       final Hashtable<LigneEtiquette, List<ChampLigneEtiquette>> champLigneEtiquettes){
       // plateforme required
@@ -205,7 +206,7 @@ public class ModeleManagerImpl implements ModeleManager
    }
 
    @Override
-   public void saveManager(final Modele modele, final Plateforme plateforme, final ModeleType modeleType,
+   public void updateObjectManager(final Modele modele, final Plateforme plateforme, final ModeleType modeleType,
       final List<LigneEtiquette> ligneEtiquettesToCreate, final List<LigneEtiquette> ligneEtiquettesToremove,
       final Hashtable<LigneEtiquette, List<ChampLigneEtiquette>> champLigneEtiquettesToCreate,
       final Hashtable<LigneEtiquette, List<ChampLigneEtiquette>> champLigneEtiquettesToRemove){
@@ -256,12 +257,12 @@ public class ModeleManagerImpl implements ModeleManager
    }
 
    @Override
-   public void deleteByIdManager(final Modele modele){
+   public void removeObjectManager(final Modele modele){
       if(modele != null){
          // suppression des lignes
          final List<LigneEtiquette> lignes = ligneEtiquetteManager.findByModeleManager(modele);
          for(int i = 0; i < lignes.size(); i++){
-            ligneEtiquetteManager.deleteByIdManager(lignes.get(i));
+            ligneEtiquetteManager.removeObjectManager(lignes.get(i));
          }
 
          modeleDao.deleteById(modele.getModeleId());
@@ -287,7 +288,7 @@ public class ModeleManagerImpl implements ModeleManager
       if(ligneEtiquettesToremove != null){
          // suppression des lignes
          for(int i = 0; i < ligneEtiquettesToremove.size(); i++){
-            ligneEtiquetteManager.deleteByIdManager(ligneEtiquettesToremove.get(i));
+            ligneEtiquetteManager.removeObjectManager(ligneEtiquettesToremove.get(i));
          }
       }
 
@@ -304,7 +305,7 @@ public class ModeleManagerImpl implements ModeleManager
 
             // création d'une nouvelle ligne
             if(ligneEtiquettesToCreate.get(i).getLigneEtiquetteId() == null){
-               ligneEtiquetteManager.saveManager(ligneEtiquettesToCreate.get(i), modele, champs);
+               ligneEtiquetteManager.createObjectManager(ligneEtiquettesToCreate.get(i), modele, champs);
             }else{ //update de la ligne
                // on récup les champs à supprimer
                List<ChampLigneEtiquette> champsToRmv = new ArrayList<>();
@@ -314,7 +315,7 @@ public class ModeleManagerImpl implements ModeleManager
                   champsToRmv = null;
                }
                // update
-               ligneEtiquetteManager.saveManager(ligneEtiquettesToCreate.get(i), modele, champs, champsToRmv);
+               ligneEtiquetteManager.updateObjectManager(ligneEtiquettesToCreate.get(i), modele, champs, champsToRmv);
             }
          }
       }

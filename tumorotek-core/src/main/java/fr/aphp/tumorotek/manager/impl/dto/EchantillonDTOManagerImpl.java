@@ -96,8 +96,10 @@ public class EchantillonDTOManagerImpl implements EchantillonDTOManager
 
          if(e.getEchantillonId() != null){
 
-            dto.setNbDerives(prodDeriveDao.findCountByParent(e.getEchantillonId(), entiteDao.findById(3)).get(0).intValue());
-            dto.setNbCessions(cederObjetDao.findCountObjCession(e.getEchantillonId(), entiteDao.findById(3)).get(0).intValue());
+            dto.setNbDerives(prodDeriveDao.findCountByParent(e.getEchantillonId(), 
+            		entiteDao.findById(3).orElse(null)).get(0).intValue());
+            dto.setNbCessions(cederObjetDao.findCountObjCession(e.getEchantillonId(), 
+            		entiteDao.findById(3).orElse(null)).get(0).intValue());
             dto.setDateCreation(operationManager.findDateCreationManager(e));
             dto.setEmplacementAdrl(echantillonManager.getEmplacementAdrlManager(e));
             dto.setTempStock(conteneurManager.findTempForEmplacementManager(e.getEmplacement()));

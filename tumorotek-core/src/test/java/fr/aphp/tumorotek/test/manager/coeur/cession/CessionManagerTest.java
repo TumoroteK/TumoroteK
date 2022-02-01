@@ -599,7 +599,7 @@ public class CessionManagerTest extends AbstractManagerTest4
    public void testCrud() throws ParseException{
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    /**
@@ -794,9 +794,9 @@ public class CessionManagerTest extends AbstractManagerTest4
       assertTrue(cederTest.getQuantiteUnite().equals(qteU));
 
       final Cession cessToRemove1 = cessionManager.findByIdManager(idCess1);
-      cessionManager.deleteByIdManager(cessToRemove1, null, utilisateur, null);
+      cessionManager.removeObjectManager(cessToRemove1, null, utilisateur, null);
       final Cession cessToRemove2 = cessionManager.findByIdManager(idCess2);
-      cessionManager.deleteByIdManager(cessToRemove2, null, utilisateur, null);
+      cessionManager.removeObjectManager(cessToRemove2, null, utilisateur, null);
 
       assertTrue(getOperationManager().findByObjectManager(cessToRemove1).size() == 0);
       assertTrue(getOperationManager().findByObjectManager(cessToRemove2).size() == 0);
@@ -1069,7 +1069,7 @@ public class CessionManagerTest extends AbstractManagerTest4
       assertTrue(cederObjetManager.findAllObjectsManager().size() == 7);
 
       final Cession cessToRemove = cessionManager.findByIdManager(idCess);
-      cessionManager.deleteByIdManager(cessToRemove, null, utilisateur, null);
+      cessionManager.removeObjectManager(cessToRemove, null, utilisateur, null);
 
       assertTrue(getOperationManager().findByObjectManager(cessToRemove).size() == 0);
 
@@ -1084,10 +1084,10 @@ public class CessionManagerTest extends AbstractManagerTest4
    }
 
    /**
-    * Teste la methode deleteByIdManager. 
+    * Teste la methode removeObjectManager. 
     */
-   private void deleteByIdManagerTest(){
-      cessionManager.deleteByIdManager(null, null, null, null);
+   private void removeObjectManagerTest(){
+      cessionManager.removeObjectManager(null, null, null, null);
       assertTrue(cessionManager.findAllObjectsManager().size() == 4);
    }
 
@@ -1651,9 +1651,9 @@ public class CessionManagerTest extends AbstractManagerTest4
          null, listAnnots, listDelete, null, null, utilisateur, null, "/tmp/");
 
       // Nettoyage
-      cessionManager.deleteByIdManager(cession, null, utilisateur, null);
+      cessionManager.removeObjectManager(cession, null, utilisateur, null);
       final Set<ChampAnnotation> chps = tableAnnotationManager.getChampAnnotationsManager(table);
-      tableAnnotationManager.deleteByIdManager(table, null, utilisateur, null);
+      tableAnnotationManager.removeObjectManager(table, null, utilisateur, null);
       assertTrue(getOperationManager().findByObjectManager(cession).size() == 0);
       assertTrue(annotationValeurManager.findAllObjectsManager().size() == 12);
       assertEquals(48, IterableUtils.toList(champAnnotationDao.findAll()).size());
@@ -1784,12 +1784,12 @@ public class CessionManagerTest extends AbstractManagerTest4
    //		
    //		// clean up
    //		e1.setEmplacement(null);
-   //		echantillonManager.deleteByIdManager(e1, null, utilisateurManager.findByIdManager(1), null);
+   //		echantillonManager.removeObjectManager(e1, null, utilisateurManager.findByIdManager(1), null);
    //		e2.setEmplacement(null);
-   //		echantillonManager.deleteByIdManager(e2, null, utilisateurManager.findByIdManager(1), null);
-   //		echantillonManager.deleteByIdManager(e3, null, utilisateurManager.findByIdManager(1), null);
+   //		echantillonManager.removeObjectManager(e2, null, utilisateurManager.findByIdManager(1), null);
+   //		echantillonManager.removeObjectManager(e3, null, utilisateurManager.findByIdManager(1), null);
    //		e4.setEmplacement(null);
-   //		echantillonManager.deleteByIdManager(e4, null, utilisateurManager.findByIdManager(1), null);
+   //		echantillonManager.removeObjectManager(e4, null, utilisateurManager.findByIdManager(1), null);
    //		
    //		// emplacement id = 6 doit être vide!
    //		

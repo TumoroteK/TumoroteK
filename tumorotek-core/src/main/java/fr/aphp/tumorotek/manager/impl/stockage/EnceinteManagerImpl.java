@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -176,7 +177,7 @@ public class EnceinteManagerImpl implements EnceinteManager
 
    @Override
    public Enceinte findByIdManager(final Integer enceinteId){
-      return enceinteDao.findById(enceinteId);
+      return enceinteDao.findById(enceinteId).orElse(null);
    }
 
    @Override
@@ -521,7 +522,7 @@ public class EnceinteManagerImpl implements EnceinteManager
    }
 
    @Override
-   public void saveManager(final Enceinte enceinte, final EnceinteType enceinteType, final Conteneur conteneur,
+   public void createObjectManager(final Enceinte enceinte, final EnceinteType enceinteType, final Conteneur conteneur,
       final Enceinte enceintePere, final Entite entite, final List<Banque> banques, final Couleur couleur,
       final Utilisateur utilisateur){
 
@@ -604,7 +605,7 @@ public class EnceinteManagerImpl implements EnceinteManager
       //Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
       creationOp.setDate(Utils.getCurrentSystemCalendar());
-      operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), enceinte);
+      operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), enceinte);
    }
 
    @Override
@@ -640,7 +641,7 @@ public class EnceinteManagerImpl implements EnceinteManager
                   enc.setNbPlaces(enceinte.getNbPlaces());
                   enc.setArchive(false);
 
-                  saveManager(enc, enceinte.getEnceinteType(), conteneur, null, enceinte.getEntite(), null, null,
+                  createObjectManager(enc, enceinte.getEnceinteType(), conteneur, null, enceinte.getEntite(), null, null,
                      utilisateur);
 
                   enceintes.add(enc);
@@ -689,7 +690,7 @@ public class EnceinteManagerImpl implements EnceinteManager
                   enc.setNbPlaces(enceinte.getNbPlaces());
                   enc.setArchive(false);
 
-                  saveManager(enc, enceinte.getEnceinteType(), null, enceintePere, enceinte.getEntite(), null, null,
+                  createObjectManager(enc, enceinte.getEnceinteType(), null, enceintePere, enceinte.getEntite(), null, null,
                      utilisateur);
 
                   enceintes.add(enc);
@@ -706,7 +707,7 @@ public class EnceinteManagerImpl implements EnceinteManager
    }
 
    @Override
-   public void saveManager(final Enceinte enceinte, final EnceinteType enceinteType, final Conteneur conteneur,
+   public void updateObjectManager(final Enceinte enceinte, final EnceinteType enceinteType, final Conteneur conteneur,
       final Enceinte enceintePere, final Entite entite, final List<Banque> banques, final Couleur couleur,
       final List<Incident> incidents, final Utilisateur utilisateur, final List<OperationType> operations){
 
@@ -778,9 +779,9 @@ public class EnceinteManagerImpl implements EnceinteManager
             // si nouvel incident => creation
             // sinon => update
             if(incident.getIncidentId() == null){
-               incidentManager.saveManager(incident, null, enceinte, null);
+               incidentManager.createObjectManager(incident, null, enceinte, null);
             }else{
-               incidentManager.saveManager(incident, null, enceinte, null);
+               incidentManager.updateObjectManager(incident, null, enceinte, null);
             }
          }
       }
@@ -811,20 +812,20 @@ public class EnceinteManagerImpl implements EnceinteManager
       //Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
       creationOp.setDate(Utils.getCurrentSystemCalendar());
-      operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0), enceinte);
+      operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0), enceinte);
 
       if(operations != null){
          for(int i = 0; i < operations.size(); i++){
             //Enregistrement de l'operation associee
             final Operation dateOp = new Operation();
             dateOp.setDate(Utils.getCurrentSystemCalendar());
-            operationManager.saveManager(dateOp, utilisateur, operations.get(i), enceinte);
+            operationManager.createObjectManager(dateOp, utilisateur, operations.get(i), enceinte);
          }
       }
    }
 
    @Override
-   public void deleteByIdManager(final Enceinte enceinte, final String comments, final Utilisateur user){
+   public void removeObjectManager(final Enceinte enceinte, final String comments, final Utilisateur user){
       if(enceinte != null){
          if(isUsedObjectManager(enceinte)){
             log.warn("Objet utilisé lors de la suppression de l'objet " + "Enceinte : " + enceinte.toString());
@@ -834,12 +835,12 @@ public class EnceinteManagerImpl implements EnceinteManager
          final List<Terminale> terms = terminaleDao.findByEnceinteWithOrder(enceinte);
          if(terms.size() > 0){
             for(int i = 0; i < terms.size(); i++){
-               terminaleManager.deleteByIdManager(terms.get(i), comments, user);
+               terminaleManager.removeObjectManager(terms.get(i), comments, user);
             }
          }else{
             final List<Enceinte> encs = findByEnceintePereWithOrderManager(enceinte);
             for(int i = 0; i < encs.size(); i++){
-               deleteByIdManager(encs.get(i), comments, user);
+               removeObjectManager(encs.get(i), comments, user);
             }
          }
 
@@ -927,10 +928,10 @@ public class EnceinteManagerImpl implements EnceinteManager
             //Enregistrement des operations associees
             final Operation op1 = new Operation();
             op1.setDate(Utils.getCurrentSystemCalendar());
-            operationManager.saveManager(op1, utilisateur, operationTypeDao.findByNom("Deplacement").get(0), enceinte1);
+            operationManager.createObjectManager(op1, utilisateur, operationTypeDao.findByNom("Deplacement").get(0), enceinte1);
             final Operation op2 = new Operation();
             op2.setDate(Utils.getCurrentSystemCalendar());
-            operationManager.saveManager(op2, utilisateur, operationTypeDao.findByNom("Deplacement").get(0), enceinte2);
+            operationManager.createObjectManager(op2, utilisateur, operationTypeDao.findByNom("Deplacement").get(0), enceinte2);
          }
       }
    }
@@ -1278,7 +1279,7 @@ public class EnceinteManagerImpl implements EnceinteManager
       if(enceinte != null && enceintes != null && terminale != null && firstPositions != null
          && firstPositions.size() == enceintes.size() + 1){
          // création de la premiere enceinte
-         saveManager(enceinte, enceinte.getEnceinteType(), enceinte.getConteneur(), enceinte.getEnceintePere(),
+         createObjectManager(enceinte, enceinte.getEnceinteType(), enceinte.getConteneur(), enceinte.getEnceintePere(),
             enceinte.getEntite(), banques, enceinte.getCouleur(), utilisateur);
          // création des enceintes
          List<Enceinte> enceintesCrees = new ArrayList<>();
@@ -1328,7 +1329,7 @@ public class EnceinteManagerImpl implements EnceinteManager
       if(enceinte != null && enceintes != null && terminale != null && firstPositions != null
          && firstPositions.size() == enceintes.size() + 1){
          // création de la premiere enceinte
-         saveManager(enceinte, enceinte.getEnceinteType(), enceinte.getConteneur(), enceinte.getEnceintePere(),
+         updateObjectManager(enceinte, enceinte.getEnceinteType(), enceinte.getConteneur(), enceinte.getEnceintePere(),
             enceinte.getEntite(), banques, enceinte.getCouleur(), null, utilisateur, null);
          // création des enceintes
          List<Enceinte> enceintesCrees = new ArrayList<>();
@@ -1461,7 +1462,7 @@ public class EnceinteManagerImpl implements EnceinteManager
 
          final Operation updateOp = new Operation();
          updateOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.saveManager(updateOp, utilisateur, operationTypeDao.findByNom("Modification").get(0), enceinte);
+         operationManager.createObjectManager(updateOp, utilisateur, operationTypeDao.findByNom("Modification").get(0), enceinte);
       }
 
       return enceinte;

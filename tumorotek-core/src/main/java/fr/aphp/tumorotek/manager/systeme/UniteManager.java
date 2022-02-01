@@ -42,85 +42,93 @@ import fr.aphp.tumorotek.model.systeme.Unite;
 
 /**
  *
- * Interface pour le manager du bean de domaine Unite.
- * Interface créée le 01/10/09.
+ * Interface pour le manager du bean de domaine Unite. Interface créée le
+ * 01/10/09.
  *
  * @author Pierre Ventadour
  * @version 2.0
  *
  */
-public interface UniteManager
-{
+public interface UniteManager {
 
-   /**
-    * Recherche une unité dont l'identifiant est passé en paramètre.
-    * @param uniteId Identifiant de l'unité que l'on recherche.
-    * @return Une Unite.
-    */
-   Unite findByIdManager(Integer uniteId);
+	/**
+	 * Recherche une unité dont l'identifiant est passé en paramètre.
+	 * 
+	 * @param uniteId Identifiant de l'unité que l'on recherche.
+	 * @return Une Unite.
+	 */
+	Unite findByIdManager(Integer uniteId);
 
-   /**
-    * Recherche toutes les unités présentes dans la base.
-    * @return Liste d'Unite.
-    */
-   List<Unite> findAllObjectsManager();
+	/**
+	 * Recherche toutes les unités présentes dans la base.
+	 * 
+	 * @return Liste d'Unite.
+	 */
+	List<Unite> findAllObjectsManager();
 
-   /**
-    * Recherche toutes les unités dont l'unite commence comme celle 
-    * passée en paramètre.
-    * @param unite Unite que l'on recherche.
-    * @param exactMatch True si l'on souhaite seulement récuéprer les matchs
-    * exactes.
-    * @return Liste d'Unite
-    */
-   List<Unite> findByUniteLikeManager(String unite, boolean exactMatch);
+	/**
+	 * Recherche toutes les unités dont l'unite commence comme celle passée en
+	 * paramètre.
+	 * 
+	 * @param unite      Unite que l'on recherche.
+	 * @param exactMatch True si l'on souhaite seulement récuéprer les matchs
+	 *                   exactes.
+	 * @return Liste d'Unite
+	 */
+	List<Unite> findByUniteLikeManager(String unite, boolean exactMatch);
 
-   /**
-    * Recherche toutes les unités dont le type commence comme celui 
-    * passé en paramètre.
-    * @param type Type que l'on recherche.
-    * @param exactMatch True si l'on souhaite seulement récuéprer les matchs
-    * exactes.
-    * @return Liste d'Unite
-    */
-   List<Unite> findByTypeLikeManager(String type, boolean exactMatch);
+	/**
+	 * Recherche toutes les unités dont le type commence comme celui passé en
+	 * paramètre.
+	 * 
+	 * @param type       Type que l'on recherche.
+	 * @param exactMatch True si l'on souhaite seulement récuéprer les matchs
+	 *                   exactes.
+	 * @return Liste d'Unite
+	 */
+	List<Unite> findByTypeLikeManager(String type, boolean exactMatch);
 
-   /**
-    * Recherche les doublons de l'Unite passé en paramètre.
-    * @param unite Unite pour laquelle on cherche des doublons.
-    * @return True s'il existe des doublons.
-    */
-   Boolean findDoublonManager(Unite unite);
+	/**
+	 * Recherche les doublons de l'Unite passé en paramètre.
+	 * 
+	 * @param unite Unite pour laquelle on cherche des doublons.
+	 * @return True s'il existe des doublons.
+	 */
+	Boolean findDoublonManager(Unite unite);
 
-   /**
-    * Test si une unité est liée à des objets de la base.
-    * @param unite Unite que l'on souhaite tester.
-    * @return Vrai si l'Unite est utilisée.
-    */
-   Boolean isUsedObjectManager(Unite unite);
+	/**
+	 * Test si une unité est liée à des objets de la base.
+	 * 
+	 * @param unite Unite que l'on souhaite tester.
+	 * @return Vrai si l'Unite est utilisée.
+	 */
+	Boolean isUsedObjectManager(Unite unite);
 
-   /**
-    * Persist une instance d'Unite dans la base de données.
-    * @param unite Nouvelle instance de l'objet à créer.
-    * @throws DoublonFoundException Lance une exception si un doublon de
-    * l'objet à créer se trouve déjà dans la base.
-    */
-   void saveManager(Unite unite);
+	/**
+	 * Persist une instance d'Unite dans la base de données.
+	 * 
+	 * @param unite Nouvelle instance de l'objet à créer.
+	 * @throws DoublonFoundException Lance une exception si un doublon de l'objet à
+	 *                               créer se trouve déjà dans la base.
+	 */
+	void createObjectManager(Unite unite);
 
-   /**
-    * Sauvegarde les modifications apportées à un objet persistant.
-    * @param unite Objet à mettre à jour dans la base.
-    * @throws DoublonFoundException Lance une exception si un doublon de
-    * l'objet à créer se trouve déjà dans la base.
-    */
-   void saveManager(Unite unite);
+	/**
+	 * Sauvegarde les modifications apportées à un objet persistant.
+	 * 
+	 * @param unite Objet à mettre à jour dans la base.
+	 * @throws DoublonFoundException Lance une exception si un doublon de l'objet à
+	 *                               créer se trouve déjà dans la base.
+	 */
+	void updateObjectManager(Unite unite);
 
-   /**
-    * Supprime une Unite de la base de données.
-    * @param unite Unite à supprimer de la base de données.
-    * @throws DoublonFoundException Lance une exception si l'objet
-    * est utilisé par des échantillons.
-    */
-   void deleteByIdManager(Unite unite);
+	/**
+	 * Supprime une Unite de la base de données.
+	 * 
+	 * @param unite Unite à supprimer de la base de données.
+	 * @throws DoublonFoundException Lance une exception si l'objet est utilisé par
+	 *                               des échantillons.
+	 */
+	void removeObjectManager(Unite unite);
 
 }

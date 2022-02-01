@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.coeur.prodderive;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -120,7 +121,7 @@ public class TransformationManagerImpl implements TransformationManager
     */
    @Override
    public Transformation findByIdManager(final Integer transformationId){
-      return transformationDao.findById(transformationId);
+      return transformationDao.findById(transformationId).orElse(null);
    }
 
    /**
@@ -224,7 +225,7 @@ public class TransformationManagerImpl implements TransformationManager
     * l'objet à créer se trouve déjà dans la base.
     */
    @Override
-   public void saveManager(final Transformation transformation, final Entite entite, final Unite quantiteUnite){
+   public void createObjectManager(final Transformation transformation, final Entite entite, final Unite quantiteUnite){
       // On vérifie que l'entité n'est pas null. Si c'est le cas on envoie
       // une exception
       if(entite == null){
@@ -268,7 +269,7 @@ public class TransformationManagerImpl implements TransformationManager
     * l'objet à créer se trouve déjà dans la base.
     */
    @Override
-   public void saveManager(final Transformation transformation, final Entite entite, final Unite quantiteUnite){
+   public void updateObjectManager(final Transformation transformation, final Entite entite, final Unite quantiteUnite){
 
       // On vérifie que l'entité n'est pas null. Si c'est le cas on envoie
       // une exception
@@ -304,7 +305,7 @@ public class TransformationManagerImpl implements TransformationManager
    }
 
    @Override
-   public void deleteByIdManager(final Transformation transformation, final String comments, final Utilisateur user){
+   public void removeObjectManager(final Transformation transformation, final String comments, final Utilisateur user){
       //		if (isUsedObjectManager(transformation)) {
       //			log.warn("Objet utilisé lors de la suppression de l'objet " 
       //					+ "Transformation : " + transformation.toString());

@@ -324,10 +324,10 @@ public class BlocExterneManagerTest extends AbstractManagerTest4
       assertTrue(valeurs.get(1).getValeur().equals("ANNO"));
 
       // suppression des blocs et des valeurs
-      blocExterneManager.deleteByIdManager(bTest2);
-      blocExterneManager.deleteByIdManager(bTest3);
-      blocExterneManager.deleteByIdManager(new BlocExterne());
-      blocExterneManager.deleteByIdManager(null);
+      blocExterneManager.removeObjectManager(bTest2);
+      blocExterneManager.removeObjectManager(bTest3);
+      blocExterneManager.removeObjectManager(new BlocExterne());
+      blocExterneManager.removeObjectManager(null);
       assertTrue(blocExterneManager.findAllObjectsManager().size() == nb);
       assertTrue(valeurExterneManager.findAllObjectsManager().size() == nbV);
    }

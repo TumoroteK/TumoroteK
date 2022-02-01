@@ -131,7 +131,7 @@ public class ResultatManagerTest extends AbstractManagerTest4
       assertTrue(copie.equals(manager.findByIdManager(copie.getResultatId())));
 
       //On supprime les éléments créés
-      manager.deleteByIdManager(copie);
+      manager.removeObjectManager(copie);
    }
 
    @Test
@@ -168,12 +168,12 @@ public class ResultatManagerTest extends AbstractManagerTest4
       }
       /** On teste une suppression invalide. */
       try{
-         manager.deleteByIdManager(null);
+         manager.removeObjectManager(null);
       }catch(final RequiredObjectIsNullException e){
          assertEquals("RequiredObjectIsNullException", e.getClass().getSimpleName());
       }
       try{
-         manager.deleteByIdManager(new Resultat());
+         manager.removeObjectManager(new Resultat());
       }catch(final RequiredObjectIsNullException e){
          assertEquals("RequiredObjectIsNullException", e.getClass().getSimpleName());
       }
@@ -201,7 +201,7 @@ public class ResultatManagerTest extends AbstractManagerTest4
       assertTrue(manager.findByIdManager(resultat.getResultatId()).getChamp().getChampEntite().getId().equals(58));
       /** Remove. */
       final int id = resultat.getResultatId();
-      manager.deleteByIdManager(resultat);
+      manager.removeObjectManager(resultat);
       resultat = manager.findByIdManager(id);
       assertNull(resultat);
    }

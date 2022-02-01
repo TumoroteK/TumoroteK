@@ -120,7 +120,7 @@ public class TemperatureManagerTest extends AbstractManagerTest4
    public void testCrud() throws ParseException{
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    private void saveManagerTest() throws ParseException{
@@ -168,7 +168,7 @@ public class TemperatureManagerTest extends AbstractManagerTest4
       assertTrue(tempTest.getTemperature().equals(temp));
 
       // Suppression
-      temperatureManager.deleteByIdManager(tempTest);
+      temperatureManager.removeObjectManager(tempTest);
       assertTrue(temperatureManager.findAllObjectsManager().size() == 5);
    }
 
@@ -222,13 +222,13 @@ public class TemperatureManagerTest extends AbstractManagerTest4
       assertTrue(tempTest.getTemperature().equals(temp2));
 
       // Suppression
-      temperatureManager.deleteByIdManager(tempTest);
+      temperatureManager.removeObjectManager(tempTest);
       assertTrue(temperatureManager.findAllObjectsManager().size() == 5);
    }
 
-   private void deleteByIdManagerTest(){
+   private void removeObjectManagerTest(){
       // test de la suppression d'un objet null
-      temperatureManager.deleteByIdManager(null);
+      temperatureManager.removeObjectManager(null);
       assertTrue(temperatureManager.findAllObjectsManager().size() == 5);
    }
 }

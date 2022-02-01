@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -137,7 +138,7 @@ public class RequeteManagerImpl implements RequeteManager
          log.warn("Objet obligatoire identifiant manquant lors de la " + "recherche par l'identifiant d'un objet Requete");
          throw new RequiredObjectIsNullException("Requete", "recherche par identifiant", "identifiant");
       }
-      return requeteDao.findById(id);
+      return requeteDao.findById(id).orElse(null);
    }
 
    /**
@@ -220,7 +221,7 @@ public class RequeteManagerImpl implements RequeteManager
     * @param createur Utilisateur qui créé la Requête.
     */
    @Override
-   public void saveManager(final Requete requete, Groupement groupement, final Utilisateur createur, final Banque banque){
+   public void createObjectManager(final Requete requete, Groupement groupement, final Utilisateur createur, final Banque banque){
       //On vérifie que la requête n'est pas nulle
       if(requete == null){
          log.warn("Objet obligatoire Requete manquant lors " + "de la création d'un objet Requete");
@@ -245,7 +246,7 @@ public class RequeteManagerImpl implements RequeteManager
       if(groupement.getGroupementId() != null){
          groupement = groupementDao.save(groupement);
       }else{
-         groupementManager.saveManager(groupement, groupement.getCritere1(), groupement.getCritere2(),
+         groupementManager.createObjectManager(groupement, groupement.getCritere1(), groupement.getCritere2(),
             groupement.getOperateur(), groupement.getParent());
       }
       requete.setGroupementRacine(groupement);
@@ -264,7 +265,7 @@ public class RequeteManagerImpl implements RequeteManager
     * @param createur Utilisateur qui met à jour la Requête.
     */
    @Override
-   public void saveManager(final Requete requete, Groupement groupement, final Utilisateur createur){
+   public void updateObjectManager(final Requete requete, Groupement groupement, final Utilisateur createur){
       //On vérifie que la requête n'est pas nulle
       if(requete == null){
          log.warn("Objet obligatoire Requete manquant lors " + "de la modification d'un objet Requete");
@@ -284,7 +285,7 @@ public class RequeteManagerImpl implements RequeteManager
       if(groupement.getGroupementId() != null){
          groupement = groupementDao.save(groupement);
       }else{
-         groupementManager.saveManager(groupement, groupement.getCritere1(), groupement.getCritere2(),
+         groupementManager.createObjectManager(groupement, groupement.getCritere1(), groupement.getCritere2(),
             groupement.getOperateur(), groupement.getParent());
       }
       requete.setGroupementRacine(groupement);
@@ -299,7 +300,7 @@ public class RequeteManagerImpl implements RequeteManager
 
       //On supprime l'ancien groupement racine.
       if(oldGroupement != null){
-         groupementManager.deleteByIdManager(oldGroupement);
+         groupementManager.removeObjectManager(oldGroupement);
       }
    }
 
@@ -308,7 +309,7 @@ public class RequeteManagerImpl implements RequeteManager
     * @param requete Requête à supprimer
     */
    @Override
-   public void deleteByIdManager(final Requete requete){
+   public void removeObjectManager(final Requete requete){
       //On vérifie que la requête n'est pas nulle
       if(requete == null){
          throw new RequiredObjectIsNullException("Requete", "suppression", "Requete");
@@ -332,7 +333,7 @@ public class RequeteManagerImpl implements RequeteManager
             }
 
             // On supprime le groupement racine
-            groupementManager.deleteByIdManager(requete.getGroupementRacine());
+            groupementManager.removeObjectManager(requete.getGroupementRacine());
 
             // On supprime la requête
             requeteDao.deleteById(requete.getRequeteId());

@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -144,17 +145,17 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
    }
 
    @Override
-   public void save(AnnotationValeur annoVal){
+   public void createObject(AnnotationValeur annoVal){
       annotationValeurDao.save(annoVal);
    }
 
    @Override
-   public void save(AnnotationValeur annoVal){
+   public void updateObject(AnnotationValeur annoVal){
       annotationValeurDao.save(annoVal);
    }
 
    @Override
-   public void createOrsaveManager(final AnnotationValeur valeur, final ChampAnnotation champ,
+   public void createOrUpdateObjectManager(final AnnotationValeur valeur, final ChampAnnotation champ,
       final TKAnnotableObject obj, final Banque banque, final Fichier fichier, final Utilisateur utilisateur,
       final String operation, final String baseDir, final List<File> filesCreated, final List<File> filesToDelete){
 
@@ -242,7 +243,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
             // et rollback transaction... 
             // attention, de fait l'objet 
             // dans l'interface conserve id = null
-            createOrsaveManager(clone, null, obj, null, clone.getFichier(), utilisateur, annotOperation, baseDir,
+            createOrUpdateObjectManager(clone, null, obj, null, clone.getFichier(), utilisateur, annotOperation, baseDir,
                filesCreated, filesToDelete);
             valeursCreatedUpdated.add(clone);
          }
@@ -441,7 +442,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
    }
 
    @Override
-   public void deleteByIdManager(final AnnotationValeur valeur, final List<File> filesToDelete){
+   public void removeObjectManager(final AnnotationValeur valeur, final List<File> filesToDelete){
       if(valeur != null){
          annotationValeurDao.deleteById(valeur.getAnnotationValeurId());
          log.info("Suppression objet AnnotationValeur " + valeur.toString());
@@ -450,7 +451,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
 
          // suppression du fichier associé base et systeme
          if(valeur.getFichier() != null){
-            fichierManager.deleteByIdManager(valeur.getFichier(), filesToDelete);
+            fichierManager.removeObjectManager(valeur.getFichier(), filesToDelete);
          }
 
       }else{
@@ -462,7 +463,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
    public void removeAnnotationValeurListManager(final List<AnnotationValeur> valeurs, final List<File> filesToDelete){
       if(valeurs != null){
          for(AnnotationValeur valeur : valeurs){
-            deleteByIdManager(valeur, filesToDelete);
+            removeObjectManager(valeur, filesToDelete);
          }
       }
    }
@@ -514,7 +515,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
 
    @Override
    public AnnotationValeur findByIdManager(final Integer annotationValeurId){
-      return annotationValeurDao.findById(annotationValeurId);
+      return annotationValeurDao.findById(annotationValeurId).orElse(null);
    }
 
    @Override
@@ -539,7 +540,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
                }
                
             }else{
-               deleteByIdManager(annos.get(i), filesToDelete);
+               removeObjectManager(annos.get(i), filesToDelete);
             }
          }
       }
@@ -569,7 +570,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
                valeur.setStream(null);
             }
 
-            createOrsaveManager(valeur, champ, objs.get(i), banque, annoFile, u, "creation", baseDir, filesCreated, null);
+            createOrUpdateObjectManager(valeur, champ, objs.get(i), banque, annoFile, u, "creation", baseDir, filesCreated, null);
 
             // recuperation dataType & path premier enregistrement
             if(i == 0){

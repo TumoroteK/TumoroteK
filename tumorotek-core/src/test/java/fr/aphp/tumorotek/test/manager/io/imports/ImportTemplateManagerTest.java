@@ -329,8 +329,8 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
 		assertTrue(cols.get(0).getNom().equals("COL"));
 		assertTrue(cols.get(0).getChamp().equals(ch1));
 
-		importTemplateManager.deleteByIdManager(itTest);
-		importTemplateManager.deleteByIdManager(itTest2);
+		importTemplateManager.removeObjectManager(itTest);
+		importTemplateManager.removeObjectManager(itTest2);
 		assertTrue(importTemplateManager.findAllObjectsManager().size() == tots);
 		assertTrue(importColonneManager.findAllObjectsManager().size() == cTots);
 		assertTrue(champManager.findAllObjectsManager().size() == aTots);
@@ -527,7 +527,7 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
 		assertTrue(cols.get(2).getNom().equals("COL4"));
 		assertTrue(cols.get(2).getChamp().equals(ch5));
 
-		importTemplateManager.deleteByIdManager(itTest3);
+		importTemplateManager.removeObjectManager(itTest3);
 		assertTrue(importTemplateManager.findAllObjectsManager().size() == tots);
 		assertTrue(importColonneManager.findAllObjectsManager().size() == cTots);
 		assertTrue(champManager.findAllObjectsManager().size() == aTots);

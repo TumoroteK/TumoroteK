@@ -219,7 +219,7 @@ public class ImprimanteManagerTest extends AbstractManagerTest4
    public void testCrud() throws ParseException{
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    private void saveManagerTest() throws ParseException{
@@ -298,7 +298,7 @@ public class ImprimanteManagerTest extends AbstractManagerTest4
       assertTrue(mTest.getPort() == 9100);
 
       // suppression des profils et des droits
-      imprimanteManager.deleteByIdManager(mTest);
+      imprimanteManager.removeObjectManager(mTest);
       assertTrue(imprimanteManager.findAllObjectsManager().size() == 2);
    }
 
@@ -391,11 +391,11 @@ public class ImprimanteManagerTest extends AbstractManagerTest4
       assertTrue(mTest.getPort() == 9200);
 
       // suppression des profils et des droits
-      imprimanteManager.deleteByIdManager(mTest);
+      imprimanteManager.removeObjectManager(mTest);
       assertTrue(imprimanteManager.findAllObjectsManager().size() == 2);
    }
 
-   private void deleteByIdManagerTest() throws ParseException{
+   private void removeObjectManagerTest() throws ParseException{
       // creation d'une imprimante
       final Plateforme pf1 = plateformeManager.findByIdManager(1);
       final ImprimanteApi ia1 = imprimanteApiManager.findByIdManager(1);
@@ -418,11 +418,11 @@ public class ImprimanteManagerTest extends AbstractManagerTest4
       assertTrue(affectationImprimanteManager.findAllObjectsManager().size() == 5);
 
       // on vérifie que tous les objets sont supprimés
-      imprimanteManager.deleteByIdManager(im);
+      imprimanteManager.removeObjectManager(im);
       assertTrue(imprimanteManager.findAllObjectsManager().size() == 2);
       assertTrue(affectationImprimanteManager.findAllObjectsManager().size() == 4);
 
-      imprimanteManager.deleteByIdManager(null);
+      imprimanteManager.removeObjectManager(null);
       assertTrue(imprimanteManager.findAllObjectsManager().size() == 2);
    }
 

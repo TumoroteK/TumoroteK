@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.manager.impl.io.export;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -154,12 +155,12 @@ public class CritereManagerImpl implements CritereManager
          /*if (critere.getChamp().getChampAnnotation() != null) {
          	champ = new Champ(critere.getChamp()
          			.getChampAnnotation());
-         	champManager.saveManager(champ, champ
+         	champManager.createObjectManager(champ, champ
          		.getChampParent());
          } else {
          	champ = new Champ(critere.getChamp()
          			.getChampEntite());
-         	champManager.saveManager(champ, champ
+         	champManager.createObjectManager(champ, champ
          		.getChampParent());
          }*/
          temp = new Critere(champ, critere.getOperateur(), critere.getValeur());
@@ -179,7 +180,7 @@ public class CritereManagerImpl implements CritereManager
     * @param combinaison Combinaison du Critère.
     */
    @Override
-   public void saveManager(final Critere critere, Champ champ, Combinaison combinaison){
+   public void createObjectManager(final Critere critere, Champ champ, Combinaison combinaison){
       //On vérifie que le critère n'est pas nul
       if(critere == null){
          log.warn("Objet obligatoire Critere manquant lors " + "de la création d'un objet Critere");
@@ -189,7 +190,7 @@ public class CritereManagerImpl implements CritereManager
          if(champ.getChampId() != null){
             champ = champDao.save(champ);
          }else{
-            champManager.saveManager(champ, champ.getChampParent());
+            champManager.createObjectManager(champ, champ.getChampParent());
          }
       }
       critere.setChamp(champ);
@@ -212,7 +213,7 @@ public class CritereManagerImpl implements CritereManager
     * @param combinaison Combinaison du Critère.
     */
    @Override
-   public void saveManager(final Critere critere, Champ champ, Combinaison combinaison){
+   public void updateObjectManager(final Critere critere, Champ champ, Combinaison combinaison){
       //On vérifie que le critère n'est pas nul
       if(critere == null){
          log.warn("Objet obligatoire Critere manquant lors " + "de la modification d'un objet Critere");
@@ -223,7 +224,7 @@ public class CritereManagerImpl implements CritereManager
          if(champ.getChampId() != null){
             champ = champDao.save(champ);
          }else{
-            champManager.saveManager(champ, champ.getChampParent());
+            champManager.createObjectManager(champ, champ.getChampParent());
          }
       }
       critere.setChamp(champ);
@@ -240,7 +241,7 @@ public class CritereManagerImpl implements CritereManager
 
       // On supprime l'ancien champ
       if(oldChamp != null && oldChamp.getChampId() != null && !oldChamp.equals(critere.getChamp())){
-         champManager.deleteByIdManager(oldChamp);
+         champManager.removeObjectManager(oldChamp);
       }
    }
 
@@ -249,7 +250,7 @@ public class CritereManagerImpl implements CritereManager
     * @param critere Critère à supprimer.
     */
    @Override
-   public void deleteByIdManager(final Critere critere){
+   public void removeObjectManager(final Critere critere){
       //On vérifie que le critère n'est pas nul
       if(critere == null){
          log.warn("Objet obligatoire Critere manquant lors " + "de la suppression d'un objet Critere");
@@ -264,7 +265,7 @@ public class CritereManagerImpl implements CritereManager
 
       //On supprime le champ
       if(oldChamp != null){
-         champManager.deleteByIdManager(oldChamp);
+         champManager.removeObjectManager(oldChamp);
       }
    }
 
@@ -280,7 +281,7 @@ public class CritereManagerImpl implements CritereManager
          log.warn("Objet obligatoire identifiant manquant lors de la " + "recherche par l'identifiant d'un objet Critere");
          throw new RequiredObjectIsNullException("Critere", "recherche par identifiant", "identifiant");
       }
-      return critereDao.findById(idCritere);
+      return critereDao.findById(idCritere).orElse(null);
    }
 
    /**

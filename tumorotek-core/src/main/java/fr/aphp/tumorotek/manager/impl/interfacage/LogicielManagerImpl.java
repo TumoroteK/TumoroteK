@@ -67,7 +67,7 @@ public class LogicielManagerImpl implements LogicielManager
 
    @Override
    public Logiciel findByIdManager(final Integer logicielId){
-      return logicielDao.findById(logicielId);
+      return logicielDao.findById(logicielId).orElse(null);
    }
 
    @Override

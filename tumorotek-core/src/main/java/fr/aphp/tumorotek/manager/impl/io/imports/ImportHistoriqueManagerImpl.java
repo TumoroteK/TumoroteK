@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -92,7 +93,7 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
 
    @Override
    public ImportHistorique findByIdManager(final Integer importHistoriqueId){
-      return importHistoriqueDao.findById(importHistoriqueId);
+      return importHistoriqueDao.findById(importHistoriqueId).orElse(null);
    }
 
    @Override
@@ -167,7 +168,7 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
    }
 
    @Override
-   public void saveManager(final ImportHistorique importHistorique, final ImportTemplate importTemplate,
+   public void createObjectManager(final ImportHistorique importHistorique, final ImportTemplate importTemplate,
       final Utilisateur utilisateur, final List<Importation> importations){
       // importTemplate required
       if(importTemplate != null){
@@ -200,7 +201,7 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
    }
 
    @Override
-   public void deleteByIdManager(final ImportHistorique importHistorique){
+   public void removeObjectManager(final ImportHistorique importHistorique){
       if(importHistorique != null){
          importHistoriqueDao.deleteById(importHistorique.getImportHistoriqueId());
          log.info("Suppression de l'objet ImportHistorique : " + importHistorique.toString());

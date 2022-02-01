@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -148,7 +149,7 @@ public class GroupementManagerImpl implements GroupementManager
     *            Groupement parent de la reqûete.
     */
    @Override
-   public void saveManager(final Groupement groupement, Critere critere1, Critere critere2, final String operateur,
+   public void createObjectManager(final Groupement groupement, Critere critere1, Critere critere2, final String operateur,
       Groupement parent){
       // On vérifie que le groupement n'est pas nul
       if(groupement == null){
@@ -168,7 +169,7 @@ public class GroupementManagerImpl implements GroupementManager
          if(parent.getGroupementId() != null){
             parent = groupementDao.save(parent);
          }else{
-            saveManager(parent, parent.getCritere1(), parent.getCritere2(), parent.getOperateur(), parent.getParent());
+        	 createObjectManager(parent, parent.getCritere1(), parent.getCritere2(), parent.getOperateur(), parent.getParent());
          }
       }
       groupement.setParent(parent);
@@ -176,7 +177,7 @@ public class GroupementManagerImpl implements GroupementManager
          if(critere1.getCritereId() != null){
             critere1 = critereDao.save(critere1);
          }else{
-            critereManager.saveManager(critere1, critere1.getChamp(), critere1.getCombinaison());
+            critereManager.createObjectManager(critere1, critere1.getChamp(), critere1.getCombinaison());
          }
       }
       groupement.setCritere1(critere1);
@@ -184,7 +185,7 @@ public class GroupementManagerImpl implements GroupementManager
          if(critere2.getCritereId() != null){
             critere2 = critereDao.save(critere2);
          }else{
-            critereManager.saveManager(critere2, critere2.getChamp(), critere2.getCombinaison());
+            critereManager.createObjectManager(critere2, critere2.getChamp(), critere2.getCombinaison());
          }
       }
       groupement.setCritere2(critere2);
@@ -208,7 +209,7 @@ public class GroupementManagerImpl implements GroupementManager
     *            Groupement parent de la reqûete.
     */
    @Override
-   public void saveManager(final Groupement groupement, Critere critere1, Critere critere2, final String operateur,
+   public void updateObjectManager(final Groupement groupement, Critere critere1, Critere critere2, final String operateur,
       Groupement parent){
       //On vérifie que le groupement n'est pas nul
       if(groupement == null){
@@ -220,7 +221,7 @@ public class GroupementManagerImpl implements GroupementManager
          if(parent.getGroupementId() != null){
             parent = groupementDao.save(parent);
          }else{
-            saveManager(parent, parent.getCritere1(), parent.getCritere2(), parent.getOperateur(), parent.getParent());
+            createObjectManager(parent, parent.getCritere1(), parent.getCritere2(), parent.getOperateur(), parent.getParent());
          }
       }
       groupement.setParent(parent);
@@ -232,7 +233,7 @@ public class GroupementManagerImpl implements GroupementManager
          if(critere1.getCritereId() != null){
             critere1 = critereDao.save(critere1);
          }else{
-            critereManager.saveManager(critere1, critere1.getChamp(), critere1.getCombinaison());
+            critereManager.createObjectManager(critere1, critere1.getChamp(), critere1.getCombinaison());
          }
       }
       groupement.setCritere1(critere1);
@@ -244,7 +245,7 @@ public class GroupementManagerImpl implements GroupementManager
          if(critere2.getCritereId() != null){
             critere2 = critereDao.save(critere2);
          }else{
-            critereManager.saveManager(critere2, critere2.getChamp(), critere2.getCombinaison());
+            critereManager.createObjectManager(critere2, critere2.getChamp(), critere2.getCombinaison());
          }
       }
       groupement.setCritere2(critere2);
@@ -260,7 +261,7 @@ public class GroupementManagerImpl implements GroupementManager
     *            Groupement à supprimer.
     */
    @Override
-   public void deleteByIdManager(final Groupement groupement){
+   public void removeObjectManager(final Groupement groupement){
       // On vérifie que le groupement n'est pas nul
       if(groupement == null){
          log.warn("Objet obligatoire Groupement manquant lors " + "de la suppression d'un objet Groupement");
@@ -275,7 +276,7 @@ public class GroupementManagerImpl implements GroupementManager
       final Iterator<Groupement> it = enfants.iterator();
       while(it.hasNext()){
          final Groupement temp = it.next();
-         deleteByIdManager(temp);
+         removeObjectManager(temp);
       }
 
       // On supprime les criteres
@@ -286,10 +287,10 @@ public class GroupementManagerImpl implements GroupementManager
 
       // On supprime les criteres
       if(oldCritere1 != null){
-         critereManager.deleteByIdManager(oldCritere1);
+         critereManager.removeObjectManager(oldCritere1);
       }
       if(oldCritere2 != null){
-         critereManager.deleteByIdManager(oldCritere2);
+         critereManager.removeObjectManager(oldCritere2);
       }
    }
 
@@ -359,7 +360,7 @@ public class GroupementManagerImpl implements GroupementManager
          log.warn("Objet obligatoire identifiant manquant lors de la " + "recherche par l'identifiant d'un objet Groupement");
          throw new RequiredObjectIsNullException("Groupement", "recherche par identifiant", "identifiant");
       }
-      return groupementDao.findById(id);
+      return groupementDao.findById(id).orElse(null);
    }
 
    /**

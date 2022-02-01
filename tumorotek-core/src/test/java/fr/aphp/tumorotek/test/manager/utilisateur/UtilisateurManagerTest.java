@@ -361,7 +361,7 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
    public void testCrud() throws ParseException{
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    private void saveManagerTest() throws ParseException{
@@ -464,8 +464,8 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
       assertTrue(utilisateurManager.getPlateformesManager(uTest2).size() == 2);
 
       // suppression des utilisateurs
-      utilisateurManager.deleteByIdManager(uTest);
-      utilisateurManager.deleteByIdManager(uTest2);
+      utilisateurManager.removeObjectManager(uTest);
+      utilisateurManager.removeObjectManager(uTest2);
       assertTrue(utilisateurManager.findAllObjectsManager().size() == 4);
       assertTrue(profilUtilisateurManager.findAllObjectsManager().size() == 8);
       assertTrue(operationManager.findByObjectManager(uTest).size() == 0);
@@ -586,7 +586,7 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
       assertTrue(utilisateurManager.getPlateformesManager(uTest2).size() == 0);
 
       // suppression des utilisateurs
-      utilisateurManager.deleteByIdManager(uTest2);
+      utilisateurManager.removeObjectManager(uTest2);
       assertTrue(utilisateurManager.findAllObjectsManager().size() == 4);
       assertTrue(profilUtilisateurManager.findAllObjectsManager().size() == 8);
       assertTrue(operationManager.findByObjectManager(uTest2).size() == 0);
@@ -688,7 +688,7 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
       assertNull(uTest6.getTimeOut());
 
       // suppression de l'utilisateur
-      utilisateurManager.deleteByIdManager(uTest2);
+      utilisateurManager.removeObjectManager(uTest2);
       assertTrue(utilisateurManager.findAllObjectsManager().size() == 4);
       assertTrue(profilUtilisateurManager.findAllObjectsManager().size() == 8);
       assertTrue(operationManager.findByObjectManager(uTest2).size() == 0);
@@ -762,7 +762,7 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
       assertTrue(operationManager.findByObjectManager(uTest4).get(1).getOperationType().getNom().equals("Archivage"));
 
       // suppression de l'utilisateur
-      utilisateurManager.deleteByIdManager(uTest4);
+      utilisateurManager.removeObjectManager(uTest4);
       assertTrue(utilisateurManager.findAllObjectsManager().size() == 4);
       assertTrue(profilUtilisateurManager.findAllObjectsManager().size() == 8);
       assertTrue(operationManager.findByObjectManager(uTest4).size() == 0);
@@ -903,10 +903,10 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
       							errs.getFieldError().getCode());*/
    }
 
-   private void deleteByIdManagerTest(){
+   private void removeObjectManagerTest(){
       final Utilisateur admin = utilisateurManager.findByIdManager(1);
       // test de la suppression d'un objet null
-      utilisateurManager.deleteByIdManager(null);
+      utilisateurManager.removeObjectManager(null);
       assertTrue(utilisateurManager.findAllObjectsManager().size() == 4);
 
       // test de la suppression d'un objet non utilisé
@@ -935,7 +935,7 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
       //		assertTrue(codeUtilisateurManager.findAllObjectsManager().size() == 7);
 
       final Utilisateur uTest = utilisateurManager.findByIdManager(id);
-      utilisateurManager.deleteByIdManager(uTest);
+      utilisateurManager.removeObjectManager(uTest);
       assertTrue(utilisateurManager.findAllObjectsManager().size() == 4);
       assertTrue(operationManager.findByObjectManager(uTest).size() == 0);
 
@@ -945,7 +945,7 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
       // test de la non suppression d'un profil utilisé
       boolean catched = false;
       try{
-         utilisateurManager.deleteByIdManager(admin);
+         utilisateurManager.removeObjectManager(admin);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ObjectUsedException")){
             catched = true;
@@ -1084,21 +1084,21 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
       utilisateurManager.saveManager(u2, u2.getCollaborateur(), null, null, admin, operationTypeDao.findById(5));
       // suppr 2 dernieres ops
       operationManager
-         .deleteByIdManager(operationManager.findByObjectManager(u2).get(operationManager.findByObjectManager(u2).size() - 1));
+         .removeObjectManager(operationManager.findByObjectManager(u2).get(operationManager.findByObjectManager(u2).size() - 1));
       operationManager
-         .deleteByIdManager(operationManager.findByObjectManager(u2).get(operationManager.findByObjectManager(u2).size() - 1));
+         .removeObjectManager(operationManager.findByObjectManager(u2).get(operationManager.findByObjectManager(u2).size() - 1));
       final Utilisateur u4 = utilisateurDao.findById(4);
       u4.setArchive(false);
       utilisateurManager.saveManager(u4, u4.getCollaborateur(), null, null, admin, operationTypeDao.findById(5));
       // suppr 2 derniere ops
       operationManager
-         .deleteByIdManager(operationManager.findByObjectManager(u4).get(operationManager.findByObjectManager(u4).size() - 1));
+         .removeObjectManager(operationManager.findByObjectManager(u4).get(operationManager.findByObjectManager(u4).size() - 1));
       operationManager
-         .deleteByIdManager(operationManager.findByObjectManager(u4).get(operationManager.findByObjectManager(u4).size() - 1));
+         .removeObjectManager(operationManager.findByObjectManager(u4).get(operationManager.findByObjectManager(u4).size() - 1));
 
       // clean up
-      utilisateurManager.deleteByIdManager(uNew1);
-      utilisateurManager.deleteByIdManager(uNew2);
+      utilisateurManager.removeObjectManager(uNew1);
+      utilisateurManager.removeObjectManager(uNew2);
 
       cleanUpFantomes(null);
    }

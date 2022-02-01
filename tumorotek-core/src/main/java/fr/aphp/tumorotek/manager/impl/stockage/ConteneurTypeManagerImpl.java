@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.manager.impl.stockage;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -87,7 +88,7 @@ public class ConteneurTypeManagerImpl implements ConteneurTypeManager
 
    @Override
    public ConteneurType findByIdManager(final Integer conteneurTypeId){
-      return conteneurTypeDao.findById(conteneurTypeId);
+      return conteneurTypeDao.findById(conteneurTypeId).orElse(null);
    }
 
    @Override
@@ -109,7 +110,7 @@ public class ConteneurTypeManagerImpl implements ConteneurTypeManager
    }
 
    @Override
-   public void saveManager(final ConteneurType obj){
+   public void createObjectManager(final ConteneurType obj){
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(obj.getPlateforme() == null){
@@ -127,7 +128,7 @@ public class ConteneurTypeManagerImpl implements ConteneurTypeManager
    }
 
    @Override
-   public void saveManager(final ConteneurType obj){
+   public void updateObjectManager(final ConteneurType obj){
       BeanValidator.validateObject(obj, new Validator[] {conteneurTypeValidator});
       if(!findDoublonManager(obj)){
          conteneurTypeDao.save(obj);
@@ -139,7 +140,7 @@ public class ConteneurTypeManagerImpl implements ConteneurTypeManager
    }
 
    @Override
-   public void deleteByIdManager(final ConteneurType obj){
+   public void removeObjectManager(final ConteneurType obj){
       if(obj != null){
          conteneurTypeDao.deleteById(obj.getId());
          log.info("Suppression objet ConteneurType " + obj.toString());

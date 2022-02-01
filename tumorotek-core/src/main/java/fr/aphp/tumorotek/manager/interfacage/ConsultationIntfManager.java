@@ -70,11 +70,11 @@ public interface ConsultationIntfManager
     * @param _e identification de l'emetteur
     * @param u utilisateur
     */
-   void saveManager(String _i, Calendar _c, String _e, Utilisateur u);
+   void createObjectManager(String _i, Calendar _c, String _e, Utilisateur u);
 
    /**
     * Utilisée uniquement dans les tests automatisées pour nettoyer la base
     * @param c
     */
-   void deleteByIdManager(ConsultationIntf c);
+   void removeObjectManager(ConsultationIntf c);
 }

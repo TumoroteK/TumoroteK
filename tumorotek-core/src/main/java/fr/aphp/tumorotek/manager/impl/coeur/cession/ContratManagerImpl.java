@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.coeur.cession;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -164,7 +165,7 @@ public class ContratManagerImpl implements ContratManager
     */
    @Override
    public Contrat findByIdManager(final Integer mtaId){
-      return contratDao.findById(mtaId);
+      return contratDao.findById(mtaId).orElse(null);
    }
 
    /**
@@ -263,7 +264,7 @@ public class ContratManagerImpl implements ContratManager
     * @param protocoleType ProtocoleType du contrat.
     */
    @Override
-   public void saveManager(final Contrat contrat, final Collaborateur collaborateur, final Service service,
+   public void createObjectManager(final Contrat contrat, final Collaborateur collaborateur, final Service service,
       final Etablissement etablissement, final ProtocoleType protocoleType, final Plateforme plateforme,
       final Utilisateur utilisateur){
 
@@ -296,7 +297,7 @@ public class ContratManagerImpl implements ContratManager
       //Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
       creationOp.setDate(Utils.getCurrentSystemCalendar());
-      operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), contrat);
+      operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), contrat);
    }
 
    /**
@@ -307,7 +308,7 @@ public class ContratManagerImpl implements ContratManager
     * @param protocoleType ProtocoleType du contrat.
     */
    @Override
-   public void saveManager(final Contrat contrat, final Collaborateur collaborateur, final Service service,
+   public void updateObjectManager(final Contrat contrat, final Collaborateur collaborateur, final Service service,
       final Etablissement etablissement, final ProtocoleType protocoleType, final Plateforme plateforme,
       final Utilisateur utilisateur){
 
@@ -339,11 +340,11 @@ public class ContratManagerImpl implements ContratManager
       //Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
       creationOp.setDate(Utils.getCurrentSystemCalendar());
-      operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0), contrat);
+      operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0), contrat);
    }
 
    @Override
-   public void deleteByIdManager(final Contrat contrat, final String comments, final Utilisateur u){
+   public void removeObjectManager(final Contrat contrat, final String comments, final Utilisateur u){
       if(contrat != null){
          if(isUsedObjectManager(contrat)){
             log.warn("Objet utilisé lors de la suppression de l'objet " + "Contrat : " + contrat.toString());

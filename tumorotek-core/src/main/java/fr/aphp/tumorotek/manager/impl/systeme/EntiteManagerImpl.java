@@ -42,6 +42,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.orm.jpa.SharedEntityManagerCreator;
@@ -53,145 +54,138 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 
 /**
  *
- * Implémentation du manager du bean de domaine Entite.
- * Classe créée le 30/09/09.
+ * Implémentation du manager du bean de domaine Entite. Classe créée le
+ * 30/09/09.
  *
  * @author Pierre Ventadour
- * @version 2.0
+ * @version 2.3
  *
  */
-public class EntiteManagerImpl implements EntiteManager
-{
+public class EntiteManagerImpl implements EntiteManager {
 
-   private final Log log = LogFactory.getLog(EntiteManager.class);
+	private final Log log = LogFactory.getLog(EntiteManager.class);
 
-   /** Bean Dao EntiteDao. */
-   private EntiteDao entiteDao;
-   /** Bean Dao EntityManagerFactory. */
-   private EntityManagerFactory entityManagerFactory;
+	private EntiteDao entiteDao;
+	private EntityManagerFactory entityManagerFactory;
 
-   /**
-    * Setter du bean EntiteDao.
-    * @param eDao est le bean Dao.
-    */
-   public void setEntiteDao(final EntiteDao eDao){
-      this.entiteDao = eDao;
-   }
+	public void setEntiteDao(final EntiteDao eDao) {
+		this.entiteDao = eDao;
+	}
 
-   /**
-    * Setter du bean EntityManagerFactory.
-    * @param eDao est le bean Dao.
-    */
-   public void setEntityManagerFactory(final EntityManagerFactory eFactory){
-      this.entityManagerFactory = eFactory;
-   }
+	public void setEntityManagerFactory(final EntityManagerFactory eFactory) {
+		this.entityManagerFactory = eFactory;
+	}
 
-   /**
-    * Recherche une entité dont l'identifiant est passé en paramètre.
-    * @param entiteId Identifiant du type que l'on recherche.
-    * @return Une Entite.
-    */
-   @Override
-   public Entite findByIdManager(final Integer entiteId){
-      return entiteDao.findById(entiteId);
-   }
+	/**
+	 * Recherche une entité dont l'identifiant est passé en paramètre.
+	 * 
+	 * @param entiteId Identifiant du type que l'on recherche.
+	 * @return Une Entite.
+	 */
+	@Override
+	public Entite findByIdManager(final Integer entiteId) {
+		return entiteDao.findById(entiteId).orElse(null);
+	}
 
-   /**
-    * Recherche toutes les entités présentes dans la base.
-    * @return Liste de Entite.
-    */
-   @Override
-   public List<Entite> findAllObjectsManager(){
-      log.debug("Recherche de toutes les Entites");
-      return IterableUtils.toList(entiteDao.findAll());
-   }
+	/**
+	 * Recherche toutes les entités présentes dans la base.
+	 * 
+	 * @return Liste de Entite.
+	 */
+	@Override
+	public List<Entite> findAllObjectsManager() {
+		log.debug("Recherche de toutes les Entites");
+		return IterableUtils.toList(entiteDao.findAll());
+	}
 
-   @Override
-   public List<Entite> findByNomManager(final String nom){
-      log.debug("Recherche Entite par " + nom);
-      if(nom != null){
-         return entiteDao.findByNom(nom);
-      }
-      return new ArrayList<>();
-   }
+	@Override
+	public List<Entite> findByNomManager(final String nom) {
+		log.debug("Recherche Entite par " + nom);
+		if (nom != null) {
+			return entiteDao.findByNom(nom);
+		}
+		return new ArrayList<>();
+	}
 
-   @Override
-   public List<Entite> findAnnotablesManager(){
-      log.debug("Recherche Entite annotables");
-      return entiteDao.findAnnotables();
-   }
+	@Override
+	public List<Entite> findAnnotablesManager() {
+		log.debug("Recherche Entite annotables");
+		return entiteDao.findAnnotables();
+	}
 
-   @Override
-   public Object findObjectByEntiteAndIdManager(final Entite entite, final Integer objectId){
+	@Override
+	public Object findObjectByEntiteAndIdManager(final Entite entite, final Integer objectId) {
 
-      if(objectId != null && entite != null){
-         log.debug("Recherche l'objet correspondant au couple Entite : " + entite.toString() + " - ObjetId : " + objectId);
-         final String nomTable = entite.getNom();
-         
-         String nomAttribut = "id";
-         
-         if (!entite.getNom().matches("ChampAnnotation|ChampDelegue|ChampEntite")) { 
-	         final String first = nomTable.substring(0, 1);
-	         final String end = nomTable.substring(1);
-	         nomAttribut = first.toLowerCase().concat(end);
-	         nomAttribut = nomAttribut.concat("Id");
-         }
+		if (objectId != null && entite != null) {
+			log.debug("Recherche l'objet correspondant au couple Entite : " + entite.toString() + " - ObjetId : "
+					+ objectId);
+			final String nomTable = entite.getNom();
 
-         final StringBuffer sb = new StringBuffer();
-         sb.append("SELECT e FROM ");
-         sb.append(nomTable);
-         sb.append(" e WHERE e.");
-         sb.append(nomAttribut);
-         sb.append(" = ");
-         sb.append(objectId);
+			String nomAttribut = "id";
 
-         //EntityManager em = entityManagerFactory.createEntityManager();
-         final EntityManager em = SharedEntityManagerCreator.createSharedEntityManager(entityManagerFactory);
-         final TypedQuery<Object> query = em.createQuery(sb.toString(), Object.class);
+			if (!entite.getNom().matches("ChampAnnotation|ChampDelegue|ChampEntite")) {
+				final String first = nomTable.substring(0, 1);
+				final String end = nomTable.substring(1);
+				nomAttribut = first.toLowerCase().concat(end);
+				nomAttribut = nomAttribut.concat("Id");
+			}
 
-         final List<Object> results = query.getResultList();
-         if(results.size() > 0){
-            results.get(0).getClass();
-            return results.get(0);
-         }
-      }
-      return null;
-   }
+			final StringBuffer sb = new StringBuffer();
+			sb.append("SELECT e FROM ");
+			sb.append(nomTable);
+			sb.append(" e WHERE e.");
+			sb.append(nomAttribut);
+			sb.append(" = ");
+			sb.append(objectId);
 
-   @Override
-   public List<Integer> findIdsByEntiteAndIdAfterBanqueFiltreManager(final Entite entite, final List<Integer> objectIds,
-      final List<Banque> banks){
-      List<Integer> ids = new ArrayList<>();
+			// EntityManager em = entityManagerFactory.createEntityManager();
+			final EntityManager em = SharedEntityManagerCreator.createSharedEntityManager(entityManagerFactory);
+			final TypedQuery<Object> query = em.createQuery(sb.toString(), Object.class);
 
-      if(objectIds != null && !objectIds.isEmpty()){
-         final String nomTable = entite.getNom();
-         final String first = nomTable.substring(0, 1);
-         final String end = nomTable.substring(1);
-         String nomAttribut = first.toLowerCase().concat(end);
-         nomAttribut = nomAttribut.concat("Id");
+			final List<Object> results = query.getResultList();
+			if (results.size() > 0) {
+				results.get(0).getClass();
+				return results.get(0);
+			}
+		}
+		return null;
+	}
 
-         final StringBuffer sb = new StringBuffer();
-         sb.append("SELECT e." + nomAttribut + " FROM ");
-         sb.append(nomTable);
-         sb.append(" e WHERE e.");
-         sb.append(nomAttribut);
-         sb.append(" in (:ids) ");
+	@Override
+	public List<Integer> findIdsByEntiteAndIdAfterBanqueFiltreManager(final Entite entite,
+			final List<Integer> objectIds, final List<Banque> banks) {
+		List<Integer> ids = new ArrayList<>();
 
-         if(banks != null && !banks.isEmpty() && (entite.getNom().equals("Prelevement") || entite.getNom().equals("Echantillon")
-            || entite.getNom().equals("ProdDerive") || entite.getNom().equals("Cession"))){
-            sb.append(" AND e.banque in (:banques)");
-         }
+		if (objectIds != null && !objectIds.isEmpty()) {
+			final String nomTable = entite.getNom();
+			final String first = nomTable.substring(0, 1);
+			final String end = nomTable.substring(1);
+			String nomAttribut = first.toLowerCase().concat(end);
+			nomAttribut = nomAttribut.concat("Id");
 
-         final EntityManager em = SharedEntityManagerCreator.createSharedEntityManager(entityManagerFactory);
-         final TypedQuery<Integer> query = em.createQuery(sb.toString(), Integer.class);
-         query.setParameter("ids", objectIds);
-         if(query.getParameters().size() == 2){
-            query.setParameter("banques", banks);
-         }
-         ids = query.getResultList();
+			final StringBuffer sb = new StringBuffer();
+			sb.append("SELECT e." + nomAttribut + " FROM ");
+			sb.append(nomTable);
+			sb.append(" e WHERE e.");
+			sb.append(nomAttribut);
+			sb.append(" in (:ids) ");
 
-      }
-      return ids;
-   }
+			if (banks != null && !banks.isEmpty()
+					&& (entite.getNom().equals("Prelevement") || entite.getNom().equals("Echantillon")
+							|| entite.getNom().equals("ProdDerive") || entite.getNom().equals("Cession"))) {
+				sb.append(" AND e.banque in (:banques)");
+			}
+
+			final EntityManager em = SharedEntityManagerCreator.createSharedEntityManager(entityManagerFactory);
+			final TypedQuery<Integer> query = em.createQuery(sb.toString(), Integer.class);
+			query.setParameter("ids", objectIds);
+			if (query.getParameters().size() == 2) {
+				query.setParameter("banques", banks);
+			}
+			ids = query.getResultList();
+
+		}
+		return ids;
+	}
 
 }

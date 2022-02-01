@@ -211,7 +211,7 @@ public interface CessionManager
     * @param base directory pour enregistrer un fichier associé 
     * dans le file system
     */
-   void saveManager(Cession cession, Banque banque, CessionType cessionType, CessionExamen cessionExamen, Contrat mta,
+   void createObjectManager(Cession cession, Banque banque, CessionType cessionType, CessionExamen cessionExamen, Contrat mta,
       Collaborateur destinataire, Service servDest, Collaborateur demandeur, CessionStatut cessionStatut, Collaborateur executant,
       Transporteur transporteur, DestructionMotif destructionMotif, List<AnnotationValeur> listAnnoToCreateOrUpdate,
       List<File> filesCreated, Utilisateur utilisateur, List<CederObjet> cederObjets, String baseDir);
@@ -239,7 +239,7 @@ public interface CessionManager
     * @param base directory pour enregistrer un fichier associé 
     * dans le file system
     */
-   void saveManager(Cession cession, Banque banque, CessionType cessionType, CessionExamen cessionExamen, Contrat mta,
+   void updateObjectManager(Cession cession, Banque banque, CessionType cessionType, CessionExamen cessionExamen, Contrat mta,
       Collaborateur destinataire, Service servDest, Collaborateur demandeur, CessionStatut cessionStatut, Collaborateur executant,
       Transporteur transporteur, DestructionMotif destructionMotif, List<AnnotationValeur> listAnnoToCreateOrUpdate,
       List<AnnotationValeur> listAnnoToDelete, List<File> filesCreated, List<File> filesToDelete, Utilisateur utilisateur,
@@ -252,7 +252,7 @@ public interface CessionManager
     * @param Utilisateur réalisant la suppression.
     * @param filesToDelete liste de fichier à supprimer
     */
-   void deleteByIdManager(Cession cession, String comments, Utilisateur usr, List<File> filesToDelete);
+   void removeObjectManager(Cession cession, String comments, Utilisateur usr, List<File> filesToDelete);
 
    /**
     * Recherche les cessions dont l'id se trouve dans la liste.

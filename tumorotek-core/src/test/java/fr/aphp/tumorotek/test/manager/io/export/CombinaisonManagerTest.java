@@ -143,7 +143,7 @@ public class CombinaisonManagerTest extends AbstractManagerTest4
       assertTrue(copie.equals(manager.findByIdManager(copie.getCombinaisonId())));
 
       //On supprime les éléments créés
-      manager.deleteByIdManager(copie);
+      manager.removeObjectManager(copie);
    }
 
    @Test
@@ -186,12 +186,12 @@ public class CombinaisonManagerTest extends AbstractManagerTest4
       }
       /** On teste une suppression invalide. */
       try{
-         manager.deleteByIdManager(null);
+         manager.removeObjectManager(null);
       }catch(final RequiredObjectIsNullException e){
          assertEquals("RequiredObjectIsNullException", e.getClass().getSimpleName());
       }
       try{
-         manager.deleteByIdManager(new Combinaison());
+         manager.removeObjectManager(new Combinaison());
       }catch(final RequiredObjectIsNullException e){
          assertEquals("RequiredObjectIsNullException", e.getClass().getSimpleName());
       }
@@ -230,7 +230,7 @@ public class CombinaisonManagerTest extends AbstractManagerTest4
       //On récupère une combinaison
       final int id = combinaison.getCombinaisonId();
       //On le supprime
-      manager.deleteByIdManager(combinaison);
+      manager.removeObjectManager(combinaison);
       //On essaye de la récupérer via l'identifiant
       combinaison2 = manager.findByIdManager(id);
       //On vérifie qu'elle n'existe pas dans la liste du manager

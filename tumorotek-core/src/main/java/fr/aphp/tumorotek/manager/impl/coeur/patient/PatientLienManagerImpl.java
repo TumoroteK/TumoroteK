@@ -35,6 +35,7 @@
  **/
 package fr.aphp.tumorotek.manager.impl.coeur.patient;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -83,7 +84,7 @@ public class PatientLienManagerImpl implements PatientLienManager
    }
 
    @Override
-   public void createOrsaveManager(final PatientLien patientLien, final Patient patient1, final Patient patient2,
+   public void createOrUpdateObjectManager(final PatientLien patientLien, final Patient patient1, final Patient patient2,
       final LienFamilial lienFamilial, final String operation){
 
       if(operation == null){
@@ -109,7 +110,7 @@ public class PatientLienManagerImpl implements PatientLienManager
          }
       }else{ //gere le modification du seul lien familial
          if(operation.equals("modification")
-            && !patientLien.getLienFamilial().equals(patientLienDao.findById(patientLien.getPk()).getLienFamilial())){
+            && !patientLien.getLienFamilial().equals(patientLienDao.findById(patientLien.getPk()).orElse(new PatientLien()).getLienFamilial())){
             patientLienDao.save(patientLien);
             log.debug("Modification objet PatientLien " + patientLien.toString());
          }else{
@@ -120,7 +121,7 @@ public class PatientLienManagerImpl implements PatientLienManager
    }
 
    @Override
-   public void deleteByIdManager(final PatientLien patientLien){
+   public void removeObjectManager(final PatientLien patientLien){
       if(patientLien != null){
          patientLienDao.deleteById(patientLien.getPk());
          log.debug("Suppression objet PatientLien " + patientLien.toString());

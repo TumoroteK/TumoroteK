@@ -37,6 +37,8 @@ package fr.aphp.tumorotek.manager.impl.coeur.annotation;
 
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
+
 import fr.aphp.tumorotek.dao.annotation.DataTypeDao;
 import fr.aphp.tumorotek.manager.coeur.annotation.DataTypeManager;
 import fr.aphp.tumorotek.manager.exception.TKException;

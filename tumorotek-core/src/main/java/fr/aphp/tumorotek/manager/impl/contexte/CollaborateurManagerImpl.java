@@ -41,6 +41,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -166,7 +167,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
     */
    @Override
    public Collaborateur findByIdManager(final Integer collaborateurId){
-      return collaborateurDao.findById(collaborateurId);
+      return collaborateurDao.findById(collaborateurId).orElse(null);
    }
 
    /**
@@ -372,7 +373,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
     * @param specialite Specialite du collaborateur.
     */
    @Override
-   public void saveManager(final Collaborateur collaborateur, final Titre titre, final Etablissement etablissement,
+   public void createObjectManager(final Collaborateur collaborateur, final Titre titre, final Etablissement etablissement,
       final Specialite specialite, final List<Service> services, final List<Coordonnee> coordonnees,
       final Utilisateur utilisateur){
 
@@ -418,9 +419,9 @@ public class CollaborateurManagerImpl implements CollaborateurManager
             // si nouvelle coord => creation
             // sinon => update
             if(coordonnee.getCoordonneeId() == null){
-               coordonneeManager.saveManager(coordonnee, collabs);
+               coordonneeManager.createObjectManager(coordonnee, collabs);
             }else{
-               coordonneeManager.saveManager(coordonnee, collabs, true);
+               coordonneeManager.updateObjectManager(coordonnee, collabs, true);
             }
 
          }
@@ -434,7 +435,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
       //Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
       creationOp.setDate(Utils.getCurrentSystemCalendar());
-      operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), collaborateur);
+      operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), collaborateur);
    }
 
    /**
@@ -445,7 +446,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
     * @param specialite Specialite du collaborateur.
     */
    @Override
-   public void saveManager(final Collaborateur collaborateur, final Titre titre, final Etablissement etablissement,
+   public void updateObjectManager(final Collaborateur collaborateur, final Titre titre, final Etablissement etablissement,
       final Specialite specialite, final List<Service> services, final List<Coordonnee> coordonnees,
       final Utilisateur utilisateur, final boolean doValidation){
 
@@ -496,9 +497,9 @@ public class CollaborateurManagerImpl implements CollaborateurManager
             // si nouvelle coord => creation
             // sinon => update
             if(coordonnee.getCoordonneeId() == null){
-               coordonneeManager.saveManager(coordonnee, collabs);
+               coordonneeManager.createObjectManager(coordonnee, collabs);
             }else{
-               coordonneeManager.saveManager(coordonnee, collabs, doValidation);
+               coordonneeManager.updateObjectManager(coordonnee, collabs, doValidation);
             }
          }
       }
@@ -512,7 +513,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
       //Enregistrement de l'operation associee
       final Operation creationOp = new Operation();
       creationOp.setDate(Utils.getCurrentSystemCalendar());
-      operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
+      operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
          collaborateur);
    }
 
@@ -528,7 +529,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
    }
 
    @Override
-   public void deleteByIdManager(Collaborateur collaborateur, final String comments, final Utilisateur user){
+   public void removeObjectManager(Collaborateur collaborateur, final String comments, final Utilisateur user){
       if(collaborateur != null){
          if(!isReferencedObjectManager(collaborateur)){
             collaborateur = collaborateurDao.save(collaborateur);
@@ -708,7 +709,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
    }
 
    @Override
-   public void deleteByIdCascadeManager(Collaborateur collab, final Service service, final String comments,
+   public void removeObjectCascadeManager(Collaborateur collab, final Service service, final String comments,
       final Utilisateur user){
 
       if(collab != null){
@@ -728,7 +729,7 @@ public class CollaborateurManagerImpl implements CollaborateurManager
          // supprime le collab en cascade si aucun service ne 
          // le référence
          if(collab.getServices().isEmpty()){
-            deleteByIdManager(collab, comments, user);
+            removeObjectManager(collab, comments, user);
          }else{
             // passe en reference l'etablissement du premier 
             // service restant
@@ -765,8 +766,8 @@ public class CollaborateurManagerImpl implements CollaborateurManager
    @Override
    public void fusionCollaborateurManager(final int idActif, final int idPassif, final String comments, final Utilisateur user){
 
-      final Collaborateur cActif = collaborateurDao.findById(idActif);
-      final Collaborateur cPassif = collaborateurDao.findById(idPassif);
+      final Collaborateur cActif = collaborateurDao.findById(idActif).orElse(null);
+      final Collaborateur cPassif = collaborateurDao.findById(idPassif).orElse(null);
 
       if(cActif != null && cPassif != null && idActif != idPassif){
 
@@ -954,9 +955,9 @@ public class CollaborateurManagerImpl implements CollaborateurManager
          // Operation FUSION attribuée à l'utilisateur actif
          final Operation fusionOp = new Operation();
          fusionOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.saveManager(fusionOp, user, operationTypeDao.findByNom("Fusion").get(0), cActif);
+         operationManager.createObjectManager(fusionOp, user, operationTypeDao.findByNom("Fusion").get(0), cActif);
 
-         deleteByIdManager(cPassif, "fusion id: " + idActif + " ." + comments, user);
+         removeObjectManager(cPassif, "fusion id: " + idActif + " ." + comments, user);
       }
    }
 }

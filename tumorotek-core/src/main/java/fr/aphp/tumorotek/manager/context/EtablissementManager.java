@@ -183,7 +183,7 @@ public interface EtablissementManager
     * @param coordonnee Coordonnee associée à l'Etablissement.
     * @param categorie Categorie associée.
     */
-   void saveManager(Etablissement etablissement, Coordonnee coordonnee, Categorie categorie, Utilisateur utilisateur);
+   void createObjectManager(Etablissement etablissement, Coordonnee coordonnee, Categorie categorie, Utilisateur utilisateur);
 
    /**
     * Sauvegarde les modifications apportées à un objet persistant.
@@ -192,7 +192,7 @@ public interface EtablissementManager
     * @param categorie Categorie associée.
     * @param cascadeArchive Si true, cascade l'archivage sur les services.
     */
-   void saveManager(Etablissement etablissement, Coordonnee coordonnee, Categorie categorie, Utilisateur utilisateur,
+   void updateObjectManager(Etablissement etablissement, Coordonnee coordonnee, Categorie categorie, Utilisateur utilisateur,
       boolean cascadeArchive);
 
    /**
@@ -205,7 +205,7 @@ public interface EtablissementManager
     * @throws ObjectReferencedException si etablissement est référencé par des
     * contrats.
     */
-   void deleteByIdManager(Etablissement etablissement, String comments, Utilisateur user);
+   void removeObjectManager(Etablissement etablissement, String comments, Utilisateur user);
 
    /**
     * Verifie si l'etablissement contient des services ou des 
@@ -233,7 +233,7 @@ public interface EtablissementManager
     * @param comments commentaires liés à la suppression
     * @param Utilisateur réalisant la suppression.
     */
-   void deleteByIdCascadeManager(Etablissement etablissement, String comments, Utilisateur user);
+   void removeObjectCascadeManager(Etablissement etablissement, String comments, Utilisateur user);
 
    /**
     * Fusionne deux Etablissements enregistrés dans le système.

@@ -635,11 +635,11 @@ public class CollaborateurManagerTest extends AbstractManagerTest4
 
       // Suppression
       final Collaborateur collab3 = collaborateurManager.findByIdManager(idC1);
-      collaborateurManager.deleteByIdManager(collab3, null, u);
+      collaborateurManager.removeObjectManager(collab3, null, u);
       final Collaborateur collab4 = collaborateurManager.findByIdManager(idC2);
-      collaborateurManager.deleteByIdManager(collab4, null, u);
-      coordonneeManager.deleteByIdManager(newCoord);
-      coordonneeManager.deleteByIdManager(newCoord2);
+      collaborateurManager.removeObjectManager(collab4, null, u);
+      coordonneeManager.removeObjectManager(newCoord);
+      coordonneeManager.removeObjectManager(newCoord2);
       assertTrue(getOperationManager().findByObjectManager(collab3).size() == 0);
       assertTrue(getOperationManager().findByObjectManager(collab4).size() == 0);
 
@@ -755,10 +755,10 @@ public class CollaborateurManagerTest extends AbstractManagerTest4
       assertTrue(coordsTest.size() == 0);
 
       final Collaborateur collab11 = collaborateurManager.findByIdManager(idC3);
-      collaborateurManager.deleteByIdManager(collab11, null, u);
+      collaborateurManager.removeObjectManager(collab11, null, u);
       assertNull(collaborateurManager.findByIdManager(idC3));
-      coordonneeManager.deleteByIdManager(newCoordUp);
-      coordonneeManager.deleteByIdManager(newCoordUp2);
+      coordonneeManager.removeObjectManager(newCoordUp);
+      coordonneeManager.removeObjectManager(newCoordUp2);
 
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.add(collab3);
@@ -835,7 +835,7 @@ public class CollaborateurManagerTest extends AbstractManagerTest4
       final Utilisateur u = utilisateurDao.findById(1);
       boolean catched = false;
       try{
-         collaborateurManager.deleteByIdManager(c, null, u);
+         collaborateurManager.removeObjectManager(c, null, u);
       }catch(final ObjectReferencedException ore){
          catched = true;
          assertTrue(ore.getKey().equals("collaborateur.deletion.isReferencedCascade"));
@@ -845,7 +845,7 @@ public class CollaborateurManagerTest extends AbstractManagerTest4
       catched = false;
       c = collaborateurManager.findByIdManager(2);
       try{
-         collaborateurManager.deleteByIdManager(c, null, u);
+         collaborateurManager.removeObjectManager(c, null, u);
       }catch(final ObjectReferencedException ore){
          catched = true;
          assertTrue(ore.getKey().equals("collaborateur.deletion.isReferencedCascade"));
@@ -855,7 +855,7 @@ public class CollaborateurManagerTest extends AbstractManagerTest4
       catched = false;
       c = collaborateurManager.findByIdManager(3);
       try{
-         collaborateurManager.deleteByIdManager(c, null, u);
+         collaborateurManager.removeObjectManager(c, null, u);
       }catch(final ObjectReferencedException ore){
          catched = true;
          assertTrue(ore.getKey().equals("collaborateur.deletion.isReferencedCascade"));
@@ -865,7 +865,7 @@ public class CollaborateurManagerTest extends AbstractManagerTest4
       catched = false;
       c = collaborateurManager.findByIdManager(4);
       try{
-         collaborateurManager.deleteByIdManager(c, null, u);
+         collaborateurManager.removeObjectManager(c, null, u);
       }catch(final ObjectReferencedException ore){
          catched = true;
          assertTrue(ore.getKey().equals("collaborateur.deletion.isReferencedCascade"));
@@ -875,7 +875,7 @@ public class CollaborateurManagerTest extends AbstractManagerTest4
       catched = false;
       c = collaborateurManager.findByIdManager(5);
       try{
-         collaborateurManager.deleteByIdManager(c, null, u);
+         collaborateurManager.removeObjectManager(c, null, u);
       }catch(final ObjectReferencedException ore){
          catched = true;
          assertTrue(ore.getKey().equals("collaborateur.deletion.isReferencedCascade"));
@@ -904,7 +904,7 @@ public class CollaborateurManagerTest extends AbstractManagerTest4
 
    private void cleanAfterFusion(final List<TKFantomableObject> fs){
       final Collaborateur actif = collaborateurManager.findByNomLikeManager("ACTIF", true).get(0);
-      collaborateurManager.deleteByIdManager(actif, null, utilisateurDao.findById(1));
+      collaborateurManager.removeObjectManager(actif, null, utilisateurDao.findById(1));
       fs.add(actif);
       cleanUpFantomes(fs);
       assertTrue(collaborateurManager.findAllObjectsManager().size() == 6);
@@ -1001,9 +1001,9 @@ public class CollaborateurManagerTest extends AbstractManagerTest4
       assertTrue(banqueDao.findByCollaborateur(actif).get(0).getContact().equals(actif));
       assertTrue(banqueDao.findByCollaborateur(actif).get(1).getContact().equals(actif));
 
-      banqueManager.deleteByIdManager(banqueDao.findByNom("BANK").get(0), null, u1, "/tmp/", true);
+      banqueManager.removeObjectManager(banqueDao.findByNom("BANK").get(0), null, u1, "/tmp/", true);
       assertTrue(banqueDao.findByNom("BANK").isEmpty());
-      banqueManager.deleteByIdManager(banqueDao.findByNom("BANK2").get(0), null, u1, "/tmp/", true);
+      banqueManager.removeObjectManager(banqueDao.findByNom("BANK2").get(0), null, u1, "/tmp/", true);
       assertTrue(banqueDao.findByNom("BANK2").isEmpty());
 
       final List<TKFantomableObject> fs = new ArrayList<>();
@@ -1044,10 +1044,10 @@ public class CollaborateurManagerTest extends AbstractManagerTest4
 
       // clean up
       contrat = contratDao.findByNumero("CONTRAT").get(0);
-      contratManager.deleteByIdManager(contrat, "removeTest", u1);
+      contratManager.removeObjectManager(contrat, "removeTest", u1);
       assertTrue(contratDao.findByNumero("CONTRAT").isEmpty());
       contrat2 = contratDao.findByNumero("CONTRAT2").get(0);
-      contratManager.deleteByIdManager(contrat2, "removeTest", u1);
+      contratManager.removeObjectManager(contrat2, "removeTest", u1);
       assertTrue(contratDao.findByNumero("CONTRAT2").isEmpty());
 
       final List<TKFantomableObject> fs = new ArrayList<>();
@@ -1175,9 +1175,9 @@ public class CollaborateurManagerTest extends AbstractManagerTest4
       serviceManager.saveManager(s3, null, etablissementManager.findByIdManager(1), new ArrayList<Collaborateur>(), u1,
          false, false);
 
-      serviceManager.deleteByIdCascadeManager(s1, null, u1);
-      serviceManager.deleteByIdCascadeManager(s2, null, u1);
-      serviceManager.deleteByIdCascadeManager(s3, null, u1);
+      serviceManager.removeObjectCascadeManager(s1, null, u1);
+      serviceManager.removeObjectCascadeManager(s2, null, u1);
+      serviceManager.removeObjectCascadeManager(s3, null, u1);
 
       assertTrue(serviceDao.findByEtablissement(etablissementManager.findByIdManager(1)).size() == 3);
 
@@ -1349,17 +1349,17 @@ public class CollaborateurManagerTest extends AbstractManagerTest4
       prelevement = prelevementManager.findByCodeLikeManager("PRELEVEMENTEST", true).get(0);
       echantillon = echantillonDao.findByCode("ECHANTILLONTEST").get(0);
       echantillon2 = echantillonDao.findByCode("ECHANTILLONTEST2").get(0);
-      prelevementManager.deleteByIdCascadeManager(prelevement, "remove prel Preleveur fusion", u1, null);
+      prelevementManager.removeObjectCascadeManager(prelevement, "remove prel Preleveur fusion", u1, null);
       assertTrue(prelevementDao.findByCode("PRELEVEMENTEST").isEmpty());
       assertTrue(echantillonDao.findByCode("ECHANTILLONTEST").isEmpty());
       assertTrue(echantillonDao.findByCode("ECHANTILLONTEST2").isEmpty());
       prodDerive = prodDeriveDao.findByCode("PRODUITDERIVETEST").get(0);
-      produitDeriveManager.deleteByIdManager(prodDerive, null, u1, null);
+      produitDeriveManager.removeObjectManager(prodDerive, null, u1, null);
       assertTrue(prodDeriveDao.findByCode("PRODUITDERIVETEST").isEmpty());
       prelevement2 = prelevementManager.findByCodeLikeManager("PRELEVEMENTEST2", true).get(0);
-      prelevementManager.deleteByIdCascadeManager(prelevement2, "remove prel Preleveur fusion", u1, null);
+      prelevementManager.removeObjectCascadeManager(prelevement2, "remove prel Preleveur fusion", u1, null);
       prodDerive2 = prodDeriveDao.findByCode("PRODUITDERIVETEST2").get(0);
-      produitDeriveManager.deleteByIdManager(prodDerive2, null, u1, null);
+      produitDeriveManager.removeObjectManager(prodDerive2, null, u1, null);
       assertTrue(prodDeriveDao.findByCode("PRODUITDERIVETEST2").isEmpty());
 
       final List<TKFantomableObject> fs = new ArrayList<>();
@@ -1423,9 +1423,9 @@ public class CollaborateurManagerTest extends AbstractManagerTest4
       assertTrue(cess2.getDemandeur().equals(actif));
       assertTrue(cess2.getExecutant().equals(actif));
 
-      cessionManager.deleteByIdManager(cess, "remove fusion", u1, null);
+      cessionManager.removeObjectManager(cess, "remove fusion", u1, null);
       assertTrue(cessionManager.findByNumeroLikeManager("100", true).isEmpty());
-      cessionManager.deleteByIdManager(cess2, "remove fusion", u1, null);
+      cessionManager.removeObjectManager(cess2, "remove fusion", u1, null);
       assertTrue(cessionManager.findByNumeroLikeManager("1002", true).isEmpty());
 
       final List<TKFantomableObject> fs = new ArrayList<>();
@@ -1485,10 +1485,10 @@ public class CollaborateurManagerTest extends AbstractManagerTest4
       assertTrue(utilisateurDao.findByCollaborateur(actif).contains(utilisateur2));
 
       utilisateur = utilisateurDao.findByLogin("USER6").get(0);
-      utilisateurManager.deleteByIdManager(utilisateur);
+      utilisateurManager.removeObjectManager(utilisateur);
       assertTrue(utilisateurDao.findByLogin("USER6").isEmpty());
       utilisateur2 = utilisateurDao.findByLogin("USER62").get(0);
-      utilisateurManager.deleteByIdManager(utilisateur2);
+      utilisateurManager.removeObjectManager(utilisateur2);
       assertTrue(utilisateurDao.findByLogin("USER62").isEmpty());
 
       // plateF = plateformeDao.findByCollaborateur(actif).get(0);
@@ -1498,10 +1498,10 @@ public class CollaborateurManagerTest extends AbstractManagerTest4
       plateformeManager.saveManager(plateF2, collaborateurDao.findById(4), null, null, u1);
 
       for(final Operation op : getOperationManager().findByObjectManager(plateF)){
-         getOperationManager().deleteByIdManager(op);
+         getOperationManager().removeObjectManager(op);
       }
       for(final Operation op : getOperationManager().findByObjectManager(plateF2)){
-         getOperationManager().deleteByIdManager(op);
+         getOperationManager().removeObjectManager(op);
       }
 
       final List<TKFantomableObject> fs = new ArrayList<>();
@@ -1611,11 +1611,11 @@ public class CollaborateurManagerTest extends AbstractManagerTest4
       //clean up
       patient = patientDao.findByNom("PATTEST").get(0);
       maladie = maladieDao.findByCollaborateurId(actif.getCollaborateurId()).get(0);
-      patientManager.deleteByIdManager(patient, "remove fusion", u1, null);
+      patientManager.removeObjectManager(patient, "remove fusion", u1, null);
       patient2 = patientDao.findByNom("PATTEST2").get(0);
-      patientManager.deleteByIdManager(patient2, "remove fusion", u1, null);
+      patientManager.removeObjectManager(patient2, "remove fusion", u1, null);
 
-      collaborateurManager.deleteByIdManager(newCol, null, u1);
+      collaborateurManager.removeObjectManager(newCol, null, u1);
 
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.add(passif);

@@ -199,7 +199,7 @@ public class RequeteManagerTest extends AbstractManagerTest4
       assertNotNull(copie2);
 
       //On supprime les éléments créés
-      manager.deleteByIdManager(copie2);
+      manager.removeObjectManager(copie2);
    }
 
    @Test
@@ -236,12 +236,12 @@ public class RequeteManagerTest extends AbstractManagerTest4
       }
       /** On teste une suppression invalide. */
       try{
-         manager.deleteByIdManager(null);
+         manager.removeObjectManager(null);
       }catch(final RequiredObjectIsNullException e){
          assertEquals("RequiredObjectIsNullException", e.getClass().getSimpleName());
       }
       try{
-         manager.deleteByIdManager(new Requete());
+         manager.removeObjectManager(new Requete());
       }catch(final RequiredObjectIsNullException e){
          assertEquals("RequiredObjectIsNullException", e.getClass().getSimpleName());
       }
@@ -281,7 +281,7 @@ public class RequeteManagerTest extends AbstractManagerTest4
       //On récupère une requete
       final int id = requete.getRequeteId();
       //On la supprime
-      manager.deleteByIdManager(requete2);
+      manager.removeObjectManager(requete2);
       //On essaye de la récupèrer via l'identifiant
       requete2 = manager.findByIdManager(id);
       //On verifie qu'elle n'existe pas dans la liste du manager
@@ -291,7 +291,7 @@ public class RequeteManagerTest extends AbstractManagerTest4
       final Requete r3 = manager.findByIdManager(3);
       boolean catched = false;
       try{
-         manager.deleteByIdManager(r3);
+         manager.removeObjectManager(r3);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("ObjectUsedException")){
             catched = true;

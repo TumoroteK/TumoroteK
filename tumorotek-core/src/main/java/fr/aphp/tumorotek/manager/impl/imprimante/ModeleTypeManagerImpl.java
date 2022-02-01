@@ -67,7 +67,7 @@ public class ModeleTypeManagerImpl implements ModeleTypeManager
 
    @Override
    public ModeleType findByIdManager(final Integer modeleTypeId){
-      return modeleTypeDao.findById(modeleTypeId);
+      return modeleTypeDao.findById(modeleTypeId).orElse(null);
    }
 
    @Override

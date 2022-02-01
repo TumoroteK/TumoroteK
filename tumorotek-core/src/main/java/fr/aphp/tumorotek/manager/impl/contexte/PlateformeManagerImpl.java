@@ -41,6 +41,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -129,7 +130,7 @@ public class PlateformeManagerImpl implements PlateformeManager
 	 */
 	@Override
 	public Plateforme findByIdManager(final Integer plateformeId){
-		return plateformeDao.findById(plateformeId);
+		return plateformeDao.findById(plateformeId).orElse(null);
 	}
 
 	/**
@@ -179,7 +180,7 @@ public class PlateformeManagerImpl implements PlateformeManager
 	}
 
 	@Override
-	public Plateforme saveManager(Plateforme plateforme, final Collaborateur collaborateur,
+	public Plateforme createObjectManager(Plateforme plateforme, final Collaborateur collaborateur,
 			final List<Utilisateur> utilisateurs, final Utilisateur admin, 
 			final String baseDir){
 
@@ -216,7 +217,7 @@ public class PlateformeManagerImpl implements PlateformeManager
 							.filter(u -> u.equals(admin)).findFirst().orElse(admin);
 				}
 				
-				operationManager.saveManager(creationOp, currAdmin, operationTypeDao.findByNom("Creation").get(0), plateforme);
+				operationManager.createObjectManager(creationOp, currAdmin, operationTypeDao.findByNom("Creation").get(0), plateforme);
 
 			}else{
 				log.warn("Doublon lors modification objet Plateforme " + plateforme.toString());
@@ -228,7 +229,7 @@ public class PlateformeManagerImpl implements PlateformeManager
 	}
 
 	@Override
-	public Plateforme saveManager(Plateforme plateforme, final Collaborateur collaborateur,
+	public Plateforme updateObjectManager(Plateforme plateforme, final Collaborateur collaborateur,
 			final List<Utilisateur> utilisateurs, final List<Conteneur> conteneurs, final Utilisateur admin){
 		//Doublon
 		if(!findDoublonManager(plateforme)){
@@ -243,7 +244,7 @@ public class PlateformeManagerImpl implements PlateformeManager
 			//Enregistrement de l'operation associee
 			final Operation creationOp = new Operation();
 			creationOp.setDate(Utils.getCurrentSystemCalendar());
-			operationManager.saveManager(creationOp, admin, operationTypeDao.findByNom("Modification").get(0), plateforme);
+			operationManager.createObjectManager(creationOp, admin, operationTypeDao.findByNom("Modification").get(0), plateforme);
 
 			// enregistrements des admins
 			updateAdministrateurs(plateforme, utilisateurs);
@@ -334,7 +335,7 @@ public class PlateformeManagerImpl implements PlateformeManager
 				final ConteneurPlateforme tmp = it.next();
 				// si un conteneur n'est pas dans la nouvelle liste, on
 				// le conserve afin de le retirer par la suite
-				if(!conteneurs.contains(tmp)){
+				if(!conteneurs.contains(tmp.getConteneur())){
 					contsToRemove.add(tmp);
 				}
 			}
@@ -360,7 +361,7 @@ public class PlateformeManagerImpl implements PlateformeManager
 					log.debug("Ajout de l'association entre la plateforme : " + pf.toString() + " et le conteneur : "
 							+ conteneurs.get(i).toString());
 				}else{ // sinon on passe le partage a true
-					cp = conteneurPlateformeDao.findById(pk);
+					cp = conteneurPlateformeDao.findById(pk).orElse(null);
 					cp.setPartage(true);
 					conteneurPlateformeDao.save(cp);
 				}
@@ -369,7 +370,7 @@ public class PlateformeManagerImpl implements PlateformeManager
 	}
 
 	@Override
-	public void deleteByIdManager(Plateforme pf, final String comments, final Utilisateur user, 
+	public void removeObjectManager(Plateforme pf, final String comments, final Utilisateur user, 
 			final String basedir){
 		if(pf != null){
 			if(!isReferencedObjectManager(pf)) {

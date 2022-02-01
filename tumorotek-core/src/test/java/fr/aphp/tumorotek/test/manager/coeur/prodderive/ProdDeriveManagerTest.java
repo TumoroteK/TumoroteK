@@ -1070,10 +1070,10 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
 
       // Suppression
       final ProdDerive derive3 = prodDeriveManager.findByIdManager(id1);
-      prodDeriveManager.deleteByIdManager(derive3, null, utilisateur, null);
+      prodDeriveManager.removeObjectManager(derive3, null, utilisateur, null);
       final ProdDerive derive4 = prodDeriveManager.findByIdManager(id2);
-      prodDeriveManager.deleteByIdManager(derive4, null, utilisateur, null);
-      prodDeriveManager.deleteByIdCascadeManager(upT, null, null, null);
+      prodDeriveManager.removeObjectManager(derive4, null, utilisateur, null);
+      prodDeriveManager.removeObjectCascadeManager(upT, null, null, null);
       assertTrue(getOperationManager().findByObjectManager(derive1).size() == 0);
       assertTrue(getOperationManager().findByObjectManager(derive2).size() == 0);
       assertTrue(transformationManager.findAllObjectsManager().size() == 5);
@@ -1246,12 +1246,12 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
 
       final ProdDerive derive13 = prodDeriveManager.findByIdManager(id3);
       // Emplacement empl13 = derive13.getEmplacement();
-      prodDeriveManager.deleteByIdManager(derive13, null, utilisateur, null);
-      transformationManager.deleteByIdManager(upT2, null, null);
+      prodDeriveManager.removeObjectManager(derive13, null, utilisateur, null);
+      transformationManager.removeObjectManager(upT2, null, null);
       assertNull(prodDeriveManager.findByIdManager(id3));
       assertTrue(getOperationManager().findByObjectManager(derive13).size() == 0);
       assertTrue(transformationManager.findAllObjectsManager().size() == 5);
-      // emplacementManager.deleteByIdManager(empl13);
+      // emplacementManager.removeObjectManager(empl13);
       assertTrue(emplacementManager.findAllObjectsManager().size() == 7);
 
       final List<TKFantomableObject> fs = new ArrayList<>();
@@ -1967,7 +1967,7 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
 
       // Suppression en cascade
       final Transformation t = transformationManager.findByIdManager(idNewT);
-      prodDeriveManager.deleteByIdCascadeManager(t, null, utilisateur, null);
+      prodDeriveManager.removeObjectCascadeManager(t, null, utilisateur, null);
       assertTrue(getOperationManager().findByObjectManager(deriveTest7).size() == 0);
       assertTrue(getOperationManager().findByObjectManager(deriveTest8).size() == 0);
       assertTrue(transformationManager.findAllObjectsManager().size() == 5);
@@ -2216,7 +2216,7 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
 
       // clean up
       for(int i = 0; i < derives.size(); i++){
-         prodDeriveManager.deleteByIdManager(derives.get(i), null, utilisateur, null);
+         prodDeriveManager.removeObjectManager(derives.get(i), null, utilisateur, null);
       }
 
       testFindAll();
@@ -2233,7 +2233,7 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       final Utilisateur u = utilisateurDao.findById(1);
       final ProdDerive p1 = prodDeriveManager.findByIdManager(1);
       try{
-         prodDeriveManager.deleteByIdManager(p1, null, u, null);
+         prodDeriveManager.removeObjectManager(p1, null, u, null);
       }catch(final ObjectUsedException oe){
          assertTrue(oe.getKey().equals("derive.deletion.isUsedNonCascade"));
          assertFalse(oe.isCascadable());
@@ -2244,7 +2244,7 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
 
       final ProdDerive p3 = prodDeriveManager.findByIdManager(3);
       try{
-         prodDeriveManager.deleteByIdManager(p3, null, u, null);
+         prodDeriveManager.removeObjectManager(p3, null, u, null);
       }catch(final ObjectUsedException oe){
          assertTrue(oe.getKey().equals("derive.deletion.isUsedNonCascade"));
          assertFalse(oe.isCascadable());
@@ -2310,7 +2310,7 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       // delete derive impossible car used -> cascadable
       boolean catched = false;
       try{
-         prodDeriveManager.deleteByIdManager(p, null, u, null);
+         prodDeriveManager.removeObjectManager(p, null, u, null);
       }catch(final ObjectUsedException oe){
          assertTrue(oe.getKey().equals("derive.deletion.isUsedCascade"));
          assertTrue(oe.isCascadable());
@@ -2328,7 +2328,7 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
 
       catched = false;
       try{
-         prodDeriveManager.deleteByIdCascadeManager(p, null, u, null);
+         prodDeriveManager.removeObjectCascadeManager(p, null, u, null);
       }catch(final ObjectUsedException oe){
          assertTrue(oe.getKey().equals("derive.cascade.isCessed"));
          assertFalse(oe.isCascadable());
@@ -2337,8 +2337,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       assertTrue(catched);
 
       // suppr ceder objet pour pouvoir cascader
-      cederObjetManager.deleteByIdManager(ced2);
-      prodDeriveManager.deleteByIdCascadeManager(p, "cascade!!!", u, null);
+      cederObjetManager.removeObjectManager(ced2);
+      prodDeriveManager.removeObjectCascadeManager(p, "cascade!!!", u, null);
 
       testFindAll();
       assertTrue(transformationManager.findAllObjectsManager().size() == 5);
@@ -2462,7 +2462,7 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
          .findByObjetIdEntiteAndOpeTypeManager(derive, operationTypeDao.findByNom("Annotation").get(0)).size() == 3);
 
       // Nettoyage
-      prodDeriveManager.deleteByIdManager(derive, null, utilisateur, null);
+      prodDeriveManager.removeObjectManager(derive, null, utilisateur, null);
 
       assertTrue(getOperationManager().findByObjectManager(derive).size() == 0);
       assertTrue(annotationValeurManager.findAllObjectsManager().size() == 12);
@@ -2561,7 +2561,7 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       assertTrue(banqueManager.getProdDerivesManager(b3).size() == 2);
       assertTrue(getOperationManager().findByObjectManager(p).size() == 4);
 
-      cederObjetManager.deleteByIdManager(ced1);
+      cederObjetManager.removeObjectManager(ced1);
       final CederObjet ced2 = new CederObjet();
       ced2.setObjetId(derive.getProdDeriveId());
       cederObjetManager.saveManager(ced2, cession, entite, null);
@@ -2576,7 +2576,7 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       assertTrue(banqueManager.getProdDerivesManager(b3).size() == 2);
       assertTrue(getOperationManager().findByObjectManager(p).size() == 4);
 
-      cederObjetManager.deleteByIdManager(ced2);
+      cederObjetManager.removeObjectManager(ced2);
       assertTrue(cederObjetManager.findAllObjectsManager().size() == 6);
       catched = false;
 
@@ -2711,17 +2711,17 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       while(encIt.hasNext()){
          terminales.addAll(terminaleManager.findByEnceinteWithOrderManager(encIt.next()));
       }
-      cederObjetManager.deleteByIdManager(ced1);
-      cederObjetManager.deleteByIdManager(ced2);
+      cederObjetManager.removeObjectManager(ced1);
+      cederObjetManager.removeObjectManager(ced2);
 
-      //prodDeriveManager.deleteByIdManager(derive, null, u);
-      prodDeriveManager.deleteByIdCascadeManager(p, null, u, null);
-      prodDeriveManager.deleteByIdCascadeManager(pbis, null, u, null);
+      //prodDeriveManager.removeObjectManager(derive, null, u);
+      prodDeriveManager.removeObjectCascadeManager(p, null, u, null);
+      prodDeriveManager.removeObjectCascadeManager(pbis, null, u, null);
       emp.setEntite(null);
       emp.setObjetId(null);
       emp.setVide(true);
-      emplacementManager.deleteByIdManager(emp);
-      conteneurManager.deleteByIdManager(conteneurManager.findByIdManager(c.getConteneurId()), null, u);
+      emplacementManager.removeObjectManager(emp);
+      conteneurManager.removeObjectManager(conteneurManager.findByIdManager(c.getConteneurId()), null, u);
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.add(p);
       fs.add(pbis);
@@ -2927,9 +2927,9 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
          .findByObjetEntiteAndType(p1.getProdDeriveId(), entiteManager.findByIdManager(8), conformiteTypeDao.findById(5))
          .size() == 1);
 
-      prodDeriveManager.deleteByIdManager(p1, null, u, null);
-      prodDeriveManager.deleteByIdManager(p2, null, u, null);
-      prodDeriveManager.deleteByIdManager(p0, null, u, null);
+      prodDeriveManager.removeObjectManager(p1, null, u, null);
+      prodDeriveManager.removeObjectManager(p2, null, u, null);
+      prodDeriveManager.removeObjectManager(p0, null, u, null);
 
       final List<TKFantomableObject> fs = new ArrayList<>();
       fs.add(p1);
@@ -3021,8 +3021,8 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       pd3.setObjetStatut(nonstocke);
       prodDeriveManager.updateMultipleObjectsManager(derives, derives, null, null, null, null, u2, "/tmp/");
 
-      emplacementManager.deleteByIdManager(emps.get(2));
-      // emplacementManager.deleteByIdManager(emps.get(3));
+      emplacementManager.removeObjectManager(emps.get(2));
+      // emplacementManager.removeObjectManager(emps.get(3));
 
       final List<Integer> ids = new ArrayList<>();
       ids.add(pd1.getProdDeriveId());
@@ -3462,9 +3462,9 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       assertNotNull(epuisement.getDateSortie());
       assertNull(epuisement.getDateRetour());
 
-      echantillonManager.deleteByIdCascadeManager(ech, null, u2, null);
-      echantillonManager.deleteByIdCascadeManager(ech2, null, u2, null);
-      emplacementManager.deleteByIdManager(new2);
+      echantillonManager.removeObjectCascadeManager(ech, null, u2, null);
+      echantillonManager.removeObjectCascadeManager(ech2, null, u2, null);
+      emplacementManager.removeObjectManager(new2);
 
       //		List<Integer> ids = new ArrayList<Integer>();
       //		ids.add(ech.getPrelevementId());
@@ -3717,7 +3717,7 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       ids.add(der3.getProdDeriveId());
       prodDeriveManager.removeListFromIdsManager(ids, null, u2);
 
-      emplacementManager.deleteByIdManager(new2);
+      emplacementManager.removeObjectManager(new2);
 
       fs.addAll(derives);
       fs.add(der1);
@@ -3954,9 +3954,9 @@ public class ProdDeriveManagerTest extends AbstractManagerTest4
       assertTrue(incomp.getObservations().equals("EPUIS"));
       assertNull(incomp.getDateRetour());
 
-      echantillonManager.deleteByIdCascadeManager(ech, null, u2, null);
+      echantillonManager.removeObjectCascadeManager(ech, null, u2, null);
 
-      emplacementManager.deleteByIdManager(new2);
+      emplacementManager.removeObjectManager(new2);
 
       fs.addAll(derives);
       fs.add(ech);

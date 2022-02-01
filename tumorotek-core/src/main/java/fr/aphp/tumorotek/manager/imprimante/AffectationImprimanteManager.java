@@ -112,7 +112,7 @@ public interface AffectationImprimanteManager
     * @param imprimante Imprimante de la AffectationImprimante.
     * @param modele Modele de la AffectationImprimante.
     */
-   void saveManager(AffectationImprimante affectationImprimante, Utilisateur utilisateur, Banque banque,
+   void createObjectManager(AffectationImprimante affectationImprimante, Utilisateur utilisateur, Banque banque,
       Imprimante imprimante, Modele modele);
 
    /**
@@ -120,6 +120,6 @@ public interface AffectationImprimanteManager
     * @param affectationImprimante AffectationImprimante à supprimer 
     * de la base de données.
     */
-   void deleteByIdManager(AffectationImprimante affectationImprimante);
+   void removeObjectManager(AffectationImprimante affectationImprimante);
 
 }

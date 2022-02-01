@@ -70,7 +70,7 @@ public interface OperationManager
     * @param operationType OperationType associee (non null)
     * @param entite Entite associee (non null)
     */
-   void saveManager(Operation operation, Utilisateur utilisateur, OperationType operationType, Object obj);
+   void createObjectManager(Operation operation, Utilisateur utilisateur, OperationType operationType, Object obj);
 
    /**
     * Recherche toutes les instances de Operation présentes dans la base.
@@ -90,7 +90,7 @@ public interface OperationManager
     * Supprime un objet de la base de données.
     * @param objet Operation à supprimer de la base de données.
     */
-   void deleteByIdManager(Operation operation);
+   void removeObjectManager(Operation operation);
 
    /**
     * Recherche tous les Operations associes a un utilisateur

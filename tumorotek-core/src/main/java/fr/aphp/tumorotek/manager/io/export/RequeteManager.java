@@ -87,20 +87,20 @@ public interface RequeteManager
     * @param requete Requête à créer.
     * @param createur Utilisateur qui créé la Requête.
     */
-   void saveManager(Requete requete, Groupement groupement, Utilisateur createur, Banque banque);
+   void createObjectManager(Requete requete, Groupement groupement, Utilisateur createur, Banque banque);
 
    /**
     * Met à jour une Requête en BDD.
     * @param requete Requête à mettre à jour.
     * @param createur Utilisateur qui met à jour la Requête.
     */
-   void saveManager(Requete requete, Groupement groupement, Utilisateur createur);
+   void updateObjectManager(Requete requete, Groupement groupement, Utilisateur createur);
 
    /**
     * Supprime une Requête en BDD.
     * @param requete Requête à supprimer
     */
-   void deleteByIdManager(Requete requete);
+   void removeObjectManager(Requete requete);
 
    /**
     * Recherche les Requêtes dont l'utilisateur créateur est passé en

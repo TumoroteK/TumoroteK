@@ -132,7 +132,7 @@ public interface ChampAnnotationManager
     * @param base directory pour créer le dossier sytème associé.
     * @apram banque Banque courante (pour les items de champs de catalogue)
     */
-   void createOrsaveManager(ChampAnnotation champ, TableAnnotation table, DataType dataType, List<Item> items,
+   void createOrUpdateObjectManager(ChampAnnotation champ, TableAnnotation table, DataType dataType, List<Item> items,
       List<AnnotationDefaut> defauts, Utilisateur utilisateur, Banque banque, String operation, String baseDir);
 
    /**
@@ -147,7 +147,7 @@ public interface ChampAnnotationManager
     * @param operation String creation / modification
     * @param base directory pour créer le dossier sytème associé.
     */
-   void createOrsaveManager(ChampAnnotation champ, TableAnnotation table, DataType dataType, List<Item> items,
+   void createOrUpdateObjectManager(ChampAnnotation champ, TableAnnotation table, DataType dataType, List<Item> items,
       List<AnnotationDefaut> defauts, ChampCalcule champCalcule, Utilisateur utilisateur, Banque banque, String operation,
       String baseDir);
 
@@ -167,7 +167,7 @@ public interface ChampAnnotationManager
     * @param Utilisateur réalisant la suppression.
     * @param base directory pour effacer le dossier sytème associé.
     */
-   void deleteByIdManager(ChampAnnotation champ, String comments, Utilisateur usr, String baseDir);
+   void removeObjectManager(ChampAnnotation champ, String comments, Utilisateur usr, String baseDir);
 
    /**
     * Recherche les valeurs liées au champ passé en paramètres.

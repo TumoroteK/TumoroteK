@@ -216,13 +216,13 @@ public class ProdQualiteManagerTest extends AbstractManagerTest4
 
       // Test de la suppression
       final ProdQualite qualite4 = prodQualiteManager.findByIdManager(4);
-      prodQualiteManager.deleteByIdManager(qualite4);
+      prodQualiteManager.removeObjectManager(qualite4);
       assertNull(prodQualiteManager.findByIdManager(4));
       // On test la suppression d'un objet utilisé
       //		ProdQualite qualite5 = prodQualiteManager.findByIdManager(1);
       //		Boolean catchedDelete = false;
       //		try {
-      //			prodQualiteManager.deleteByIdManager(qualite5);
+      //			prodQualiteManager.removeObjectManager(qualite5);
       //		} catch (Exception e) {
       //			if (e.getClass().getSimpleName().equals(
       //					"ObjectUsedException")) {

@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.coeur.cession;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -94,7 +95,7 @@ public class CessionExamenManagerImpl implements CessionExamenManager
     */
    @Override
    public CessionExamen findByIdManager(final Integer cessionExamenId){
-      return cessionExamenDao.findById(cessionExamenId);
+      return cessionExamenDao.findById(cessionExamenId).orElse(null);
    }
 
    /**
@@ -137,7 +138,7 @@ public class CessionExamenManagerImpl implements CessionExamenManager
    }
 
    @Override
-   public void saveManager(final CessionExamen obj){
+   public void createObjectManager(final CessionExamen obj){
       // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
       // une exception
       if(obj.getPlateforme() == null){
@@ -155,7 +156,7 @@ public class CessionExamenManagerImpl implements CessionExamenManager
    }
 
    @Override
-   public void saveManager(final CessionExamen obj){
+   public void updateObjectManager(final CessionExamen obj){
       BeanValidator.validateObject(obj, new Validator[] {cessionExamenValidator});
       if(!findDoublonManager(obj)){
          cessionExamenDao.save(obj);
@@ -167,7 +168,7 @@ public class CessionExamenManagerImpl implements CessionExamenManager
    }
 
    @Override
-   public void deleteByIdManager(final CessionExamen obj){
+   public void removeObjectManager(final CessionExamen obj){
       if(obj != null){
          cessionExamenDao.deleteById(obj.getId());
          log.debug("Suppression objet CessionExamen " + obj.toString());

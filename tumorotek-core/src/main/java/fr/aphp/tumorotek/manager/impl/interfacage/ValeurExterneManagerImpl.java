@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.impl.interfacage;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -105,7 +106,7 @@ public class ValeurExterneManagerImpl implements ValeurExterneManager
 
    @Override
    public ValeurExterne findByIdManager(final Integer valeurExterneId){
-      return valeurExterneDao.findById(valeurExterneId);
+      return valeurExterneDao.findById(valeurExterneId).orElse(null);
    }
 
    @Override
@@ -134,7 +135,7 @@ public class ValeurExterneManagerImpl implements ValeurExterneManager
    @Override
    public ChampEntite getChampEntiteManager(final ValeurExterne valeurExterne){
       if(valeurExterne != null && valeurExterne.getChampEntiteId() != null){
-         return champEntiteDao.findById(valeurExterne.getChampEntiteId());
+         return champEntiteDao.findById(valeurExterne.getChampEntiteId()).orElse(null);
       }else{
          return null;
       }
@@ -143,7 +144,7 @@ public class ValeurExterneManagerImpl implements ValeurExterneManager
    @Override
    public ChampAnnotation getChampAnnotationManager(final ValeurExterne valeurExterne){
       if(valeurExterne != null && valeurExterne.getChampAnnotationId() != null){
-         return champAnnotationDao.findById(valeurExterne.getChampAnnotationId());
+         return champAnnotationDao.findById(valeurExterne.getChampAnnotationId()).orElse(null);
       }else{
          return null;
       }
@@ -196,7 +197,7 @@ public class ValeurExterneManagerImpl implements ValeurExterneManager
    }
 
    @Override
-   public void saveManager(final ValeurExterne valeurExterne, final BlocExterne blocExterne){
+   public void createObjectManager(final ValeurExterne valeurExterne, final BlocExterne blocExterne){
       // Validation de la valeur
       validateValeurExterneManager(valeurExterne, blocExterne);
 
@@ -209,7 +210,7 @@ public class ValeurExterneManagerImpl implements ValeurExterneManager
          // dans de codes organes ou lésionnels, on va fusoinner
          // les valeurs pour obtenir une liste de codes
          if(valeurExterne.getChampEntiteId() != null){
-            final ChampEntite ce = champEntiteDao.findById(valeurExterne.getChampEntiteId());
+            final ChampEntite ce = champEntiteDao.findById(valeurExterne.getChampEntiteId()).orElse(null);
             if(ce.getNom().equals("CodeOrganes") || ce.getNom().equals("CodeMorphos")){
                final StringBuffer sb = new StringBuffer(oldValeur.getValeur());
                if(valeurExterne.getValeur() != null && !valeurExterne.getValeur().equals("")){
@@ -220,7 +221,7 @@ public class ValeurExterneManagerImpl implements ValeurExterneManager
             }
          }
 
-         deleteByIdManager(oldValeur);
+         removeObjectManager(oldValeur);
       }
       valeurExterneDao.save(valeurExterne);
 
@@ -228,7 +229,7 @@ public class ValeurExterneManagerImpl implements ValeurExterneManager
    }
 
    @Override
-   public void deleteByIdManager(final ValeurExterne valeurExterne){
+   public void removeObjectManager(final ValeurExterne valeurExterne){
       if(valeurExterne != null && valeurExterne.getValeurExterneId() != null){
          valeurExterneDao.deleteById(valeurExterne.getValeurExterneId());
          log.info("Suppression de l'objet ValeurExterne : " + valeurExterne.toString());

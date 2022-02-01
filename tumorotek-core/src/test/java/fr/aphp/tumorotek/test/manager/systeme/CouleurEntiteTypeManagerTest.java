@@ -44,7 +44,12 @@ import java.text.ParseException;
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 import fr.aphp.tumorotek.manager.coeur.echantillon.EchantillonTypeManager;
 import fr.aphp.tumorotek.manager.coeur.prodderive.ProdTypeManager;
@@ -57,6 +62,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.systeme.Couleur;
 import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
 import fr.aphp.tumorotek.test.manager.AbstractManagerTest4;
+import fr.aphp.tumorotek.test.manager.Config;
 
 /**
  *
@@ -67,17 +73,24 @@ import fr.aphp.tumorotek.test.manager.AbstractManagerTest4;
  * @version 2.0
  *
  */
-public class CouleurEntiteTypeManagerTest extends AbstractManagerTest4
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = Config.class)
+@TestExecutionListeners({DependencyInjectionTestExecutionListener.class})
+public class CouleurEntiteTypeManagerTest // extends AbstractManagerTest4
 {
 
    @Autowired
    private CouleurEntiteTypeManager couleurEntiteTypeManager;
+   
    @Autowired
    private CouleurManager couleurManager;
+   
    @Autowired
    private BanqueManager banqueManager;
+   
    @Autowired
    private EchantillonTypeManager echantillonTypeManager;
+   
    @Autowired
    private ProdTypeManager prodTypeManager;
 
@@ -202,12 +215,12 @@ public class CouleurEntiteTypeManagerTest extends AbstractManagerTest4
     */
    @Test
    public void testCrud() throws ParseException{
-      saveManagerTest();
-      saveManagerTest();
-      deleteByIdManagerTest();
+	  createObjectManagerTest();
+	  updateObjectManagerTest();
+	  removeObjectManagerTest();
    }
 
-   private void saveManagerTest() throws ParseException{
+   private void createObjectManagerTest() throws ParseException{
 
       final Banque b1 = banqueManager.findByIdManager(1);
       final Couleur couleur = couleurManager.findByIdManager(1);
@@ -220,7 +233,7 @@ public class CouleurEntiteTypeManagerTest extends AbstractManagerTest4
       Boolean catched = false;
       // on test l'insertion avec la banque nulle
       try{
-         couleurEntiteTypeManager.saveManager(cet1, couleur, null, eType, null);
+         couleurEntiteTypeManager.createObjectManager(cet1, couleur, null, eType, null);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
             catched = true;
@@ -232,7 +245,7 @@ public class CouleurEntiteTypeManagerTest extends AbstractManagerTest4
 
       // on test l'insertion avec la couleur nulle
       try{
-         couleurEntiteTypeManager.saveManager(cet1, null, b1, eType, null);
+         couleurEntiteTypeManager.createObjectManager(cet1, null, b1, eType, null);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
             catched = true;
@@ -244,7 +257,7 @@ public class CouleurEntiteTypeManagerTest extends AbstractManagerTest4
 
       // on teste l'insertion avec aucun type
       try{
-         couleurEntiteTypeManager.saveManager(cet1, couleur, b1, null, null);
+         couleurEntiteTypeManager.createObjectManager(cet1, couleur, b1, null, null);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("InvalidMultipleAssociationException")){
             catched = true;
@@ -256,7 +269,7 @@ public class CouleurEntiteTypeManagerTest extends AbstractManagerTest4
 
       // on teste l'insertion avec les 2 types
       try{
-         couleurEntiteTypeManager.saveManager(cet1, couleur, b1, eType, pType);
+         couleurEntiteTypeManager.createObjectManager(cet1, couleur, b1, eType, pType);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("InvalidMultipleAssociationException")){
             catched = true;
@@ -268,7 +281,7 @@ public class CouleurEntiteTypeManagerTest extends AbstractManagerTest4
 
       // on test l'insertion d'un doublon
       try{
-         couleurEntiteTypeManager.saveManager(cet1, couleur, b1, eTypeDoublon, null);
+         couleurEntiteTypeManager.createObjectManager(cet1, couleur, b1, eTypeDoublon, null);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("DoublonFoundException")){
             catched = true;
@@ -279,7 +292,7 @@ public class CouleurEntiteTypeManagerTest extends AbstractManagerTest4
       assertTrue(couleurEntiteTypeManager.findAllObjectsManager().size() == 3);
 
       // On test une insertion valide avec le type d'échantillon
-      couleurEntiteTypeManager.saveManager(cet1, couleur, b1, eType, null);
+      couleurEntiteTypeManager.createObjectManager(cet1, couleur, b1, eType, null);
       assertTrue(couleurEntiteTypeManager.findAllObjectsManager().size() == 4);
       final int id = cet1.getCouleurEntiteTypeId();
 
@@ -293,7 +306,7 @@ public class CouleurEntiteTypeManagerTest extends AbstractManagerTest4
 
       // On test une insertion valide avec le type de dérivés
       final CouleurEntiteType cet2 = new CouleurEntiteType();
-      couleurEntiteTypeManager.saveManager(cet2, couleur, b1, null, pType);
+      couleurEntiteTypeManager.createObjectManager(cet2, couleur, b1, null, pType);
       assertTrue(couleurEntiteTypeManager.findAllObjectsManager().size() == 5);
       final int id2 = cet2.getCouleurEntiteTypeId();
 
@@ -306,12 +319,12 @@ public class CouleurEntiteTypeManagerTest extends AbstractManagerTest4
       assertNotNull(cetTest2.getProdType());
 
       // Suppression
-      couleurEntiteTypeManager.deleteByIdManager(cetTest1);
-      couleurEntiteTypeManager.deleteByIdManager(cetTest2);
+      couleurEntiteTypeManager.removeObjectManager(cetTest1);
+      couleurEntiteTypeManager.removeObjectManager(cetTest2);
       assertTrue(couleurEntiteTypeManager.findAllObjectsManager().size() == 3);
    }
 
-   private void saveManagerTest() throws ParseException{
+   private void updateObjectManagerTest() throws ParseException{
 
       final Banque b1 = banqueManager.findByIdManager(1);
       final Couleur couleur = couleurManager.findByIdManager(1);
@@ -321,7 +334,7 @@ public class CouleurEntiteTypeManagerTest extends AbstractManagerTest4
       final ProdType pType = prodTypeManager.findByIdManager(1);
 
       final CouleurEntiteType cet = new CouleurEntiteType();
-      couleurEntiteTypeManager.saveManager(cet, couleur, b1, eType, null);
+      couleurEntiteTypeManager.updateObjectManager(cet, couleur, b1, eType, null);
       assertTrue(couleurEntiteTypeManager.findAllObjectsManager().size() == 4);
       final int id = cet.getCouleurEntiteTypeId();
 
@@ -329,7 +342,7 @@ public class CouleurEntiteTypeManagerTest extends AbstractManagerTest4
       Boolean catched = false;
       // on test l'update avec la banque nulle
       try{
-         couleurEntiteTypeManager.saveManager(cetUp1, couleur, null, eType, null);
+         couleurEntiteTypeManager.updateObjectManager(cetUp1, couleur, null, eType, null);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
             catched = true;
@@ -341,7 +354,7 @@ public class CouleurEntiteTypeManagerTest extends AbstractManagerTest4
 
       // on test l'update avec la couleur nulle
       try{
-         couleurEntiteTypeManager.saveManager(cetUp1, null, b1, eType, null);
+         couleurEntiteTypeManager.updateObjectManager(cetUp1, null, b1, eType, null);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("RequiredObjectIsNullException")){
             catched = true;
@@ -353,7 +366,7 @@ public class CouleurEntiteTypeManagerTest extends AbstractManagerTest4
 
       // on teste l'update avec aucun type
       try{
-         couleurEntiteTypeManager.saveManager(cetUp1, couleur, b1, null, null);
+         couleurEntiteTypeManager.updateObjectManager(cetUp1, couleur, b1, null, null);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("InvalidMultipleAssociationException")){
             catched = true;
@@ -365,7 +378,7 @@ public class CouleurEntiteTypeManagerTest extends AbstractManagerTest4
 
       // on teste l'update avec les 2 types
       try{
-         couleurEntiteTypeManager.saveManager(cetUp1, couleur, b1, eType, pType);
+         couleurEntiteTypeManager.updateObjectManager(cetUp1, couleur, b1, eType, pType);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("InvalidMultipleAssociationException")){
             catched = true;
@@ -377,7 +390,7 @@ public class CouleurEntiteTypeManagerTest extends AbstractManagerTest4
 
       // on test l'update d'un doublon
       try{
-         couleurEntiteTypeManager.saveManager(cetUp1, couleur, b1, eTypeDoublon, null);
+         couleurEntiteTypeManager.updateObjectManager(cetUp1, couleur, b1, eTypeDoublon, null);
       }catch(final Exception e){
          if(e.getClass().getSimpleName().equals("DoublonFoundException")){
             catched = true;
@@ -388,7 +401,7 @@ public class CouleurEntiteTypeManagerTest extends AbstractManagerTest4
       assertTrue(couleurEntiteTypeManager.findAllObjectsManager().size() == 4);
 
       // On test un update valide avec le type d'échantillon
-      couleurEntiteTypeManager.saveManager(cetUp1, couleur, b1, eType2, null);
+      couleurEntiteTypeManager.updateObjectManager(cetUp1, couleur, b1, eType2, null);
       assertTrue(couleurEntiteTypeManager.findAllObjectsManager().size() == 4);
 
       // Vérification
@@ -401,7 +414,7 @@ public class CouleurEntiteTypeManagerTest extends AbstractManagerTest4
 
       // On test un update valide avec le type de dérivés
       final CouleurEntiteType cetUp2 = couleurEntiteTypeManager.findByIdManager(id);
-      couleurEntiteTypeManager.saveManager(cetUp2, couleur, b1, null, pType);
+      couleurEntiteTypeManager.updateObjectManager(cetUp2, couleur, b1, null, pType);
       assertTrue(couleurEntiteTypeManager.findAllObjectsManager().size() == 4);
 
       // Vérification
@@ -413,13 +426,13 @@ public class CouleurEntiteTypeManagerTest extends AbstractManagerTest4
       assertNotNull(cetTest2.getProdType());
 
       // Suppression
-      couleurEntiteTypeManager.deleteByIdManager(cetTest1);
+      couleurEntiteTypeManager.removeObjectManager(cetTest1);
       assertTrue(couleurEntiteTypeManager.findAllObjectsManager().size() == 3);
    }
 
-   private void deleteByIdManagerTest(){
+   private void removeObjectManagerTest(){
       // test de la suppression d'un objet null
-      couleurEntiteTypeManager.deleteByIdManager(null);
+      couleurEntiteTypeManager.removeObjectManager(null);
       assertTrue(couleurEntiteTypeManager.findAllObjectsManager().size() == 3);
    }
 

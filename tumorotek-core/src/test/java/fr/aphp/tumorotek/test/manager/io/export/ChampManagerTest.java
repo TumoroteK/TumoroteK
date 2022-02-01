@@ -144,7 +144,7 @@ public class ChampManagerTest extends AbstractManagerTest4
       assertTrue(copie.equals(manager.findByIdManager(copie.getChampId())));
 
       //On supprime les éléments créés
-      manager.deleteByIdManager(copie);
+      manager.removeObjectManager(copie);
    }
 
    @Test
@@ -152,12 +152,12 @@ public class ChampManagerTest extends AbstractManagerTest4
 
       /** On teste une suppression invalide. */
       try{
-         manager.deleteByIdManager(null);
+         manager.removeObjectManager(null);
       }catch(final RequiredObjectIsNullException e){
          assertEquals("RequiredObjectIsNullException", e.getClass().getSimpleName());
       }
       try{
-         manager.deleteByIdManager(new Champ());
+         manager.removeObjectManager(new Champ());
       }catch(final RequiredObjectIsNullException e){
          assertEquals("RequiredObjectIsNullException", e.getClass().getSimpleName());
       }
@@ -180,7 +180,7 @@ public class ChampManagerTest extends AbstractManagerTest4
       /** Remove. */
       final int id = champ.getChampId();
       //On le supprime
-      manager.deleteByIdManager(champ);
+      manager.removeObjectManager(champ);
       //On essaye de le récupérer via l'identifiant
       final Champ champDeleted = manager.findByIdManager(id);
       //On verifie qu'il n'existe pas dans la liste du manager

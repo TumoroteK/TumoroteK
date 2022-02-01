@@ -416,8 +416,8 @@ public class TemplateManagerTest extends AbstractManagerTest4
       assertTrue(champImprimeManager.findByTemplateManager(tTest2).size() == 2);
       assertTrue(tableAnnotationTemplateManager.findByTemplateManager(tTest2).size() == 2);
 
-      templateManager.deleteByIdManager(tTest);
-      templateManager.deleteByIdManager(tTest2);
+      templateManager.removeObjectManager(tTest);
+      templateManager.removeObjectManager(tTest2);
       assertTrue(templateManager.findAllObjectsManager().size() == 3);
       assertTrue(blocImpressionTemplateManager.findAllObjectsManager().size() == 4);
       assertTrue(champImprimeManager.findAllObjectsManager().size() == 4);
@@ -640,7 +640,7 @@ public class TemplateManagerTest extends AbstractManagerTest4
       assertTrue(champImprimeManager.findAllObjectsManager().size() == 6);
       assertTrue(blocImpressionTemplateManager.findAllObjectsManager().size() == 6);
 
-      templateManager.deleteByIdManager(tUp2);
+      templateManager.removeObjectManager(tUp2);
       assertTrue(templateManager.findAllObjectsManager().size() == 3);
       assertTrue(blocImpressionTemplateManager.findAllObjectsManager().size() == 4);
       assertTrue(champImprimeManager.findAllObjectsManager().size() == 4);

@@ -151,7 +151,7 @@ public class DestructionMotifManagerTest extends AbstractManagerTest4
    public void testCRUD(){
       saveManagerTest();
       saveManagerTest();
-      deleteByIdManagerTest();
+      removeObjectManagerTest();
    }
 
    @Test
@@ -240,13 +240,13 @@ public class DestructionMotifManagerTest extends AbstractManagerTest4
    }
 
    /**
-    * Teste la methode deleteByIdManager. 
+    * Teste la methode removeObjectManager. 
     */
    @Test
-   public void deleteByIdManagerTest(){
+   public void removeObjectManagerTest(){
       //Suppression de l'enregistrement precedemment insere
       final DestructionMotif d1 = (destructionMotifManager.findByMotifLikeManager("NON", true)).get(0);
-      destructionMotifManager.deleteByIdManager(d1);
+      destructionMotifManager.removeObjectManager(d1);
       assertTrue((destructionMotifManager.findByMotifLikeManager("NON", true)).size() == 0);
       //Suppression engrendrant une exception
       //		Boolean catched = false;
@@ -254,7 +254,7 @@ public class DestructionMotifManagerTest extends AbstractManagerTest4
       //			DestructionMotif d2 = (destructionMotifManager
       //					.findByMotifLikeManager("TUBE ILLISIBLE", true))
       //					.get(0);
-      //			destructionMotifManager.deleteByIdManager(d2);
+      //			destructionMotifManager.removeObjectManager(d2);
       //		} catch (Exception e) {
       //			if (e.getClass().getSimpleName().equals(
       //					"ObjectUsedException")) {
@@ -264,7 +264,7 @@ public class DestructionMotifManagerTest extends AbstractManagerTest4
       //		assertTrue(catched);
       assertTrue((destructionMotifManager.findByMotifLikeManager("TUBE ILLISIBLE", true)).size() > 0);
       //null remove
-      destructionMotifManager.deleteByIdManager(null);
+      destructionMotifManager.removeObjectManager(null);
       assertTrue(destructionMotifManager.findByOrderManager(d1.getPlateforme()).size() == 2);
    }
 

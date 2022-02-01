@@ -119,7 +119,7 @@ public interface ChampImprimeManager
     * @param champEntite ChampEntite du ChampImprime.
     * @param bloc BlocImpression du ChampImprime.
     */
-   void saveManager(ChampImprime champImprime, Template template, ChampEntite champEntite, BlocImpression bloc);
+   void createObjectManager(ChampImprime champImprime, Template template, ChampEntite champEntite, BlocImpression bloc);
 
    /**
     * Maj une instance de ChampImprime dans la base de données.
@@ -128,12 +128,12 @@ public interface ChampImprimeManager
     * @param champEntite ChampEntite du ChampImprime.
     * @param bloc BlocImpression du ChampImprime.
     */
-   void saveManager(ChampImprime champImprime, Template template, ChampEntite champEntite, BlocImpression bloc);
+   void updateObjectManager(ChampImprime champImprime, Template template, ChampEntite champEntite, BlocImpression bloc);
 
    /**
     * Supprime une instance de ChampImprime de la base.
     * @param champImprime Objet à supprimer.
     */
-   void deleteByIdManager(ChampImprime champImprime);
+   void removeObjectManager(ChampImprime champImprime);
 
 }

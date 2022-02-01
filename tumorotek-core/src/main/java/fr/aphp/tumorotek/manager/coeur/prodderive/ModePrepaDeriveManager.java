@@ -71,37 +71,4 @@ public interface ModePrepaDeriveManager extends PfDependantTKThesaurusManager<Mo
     * @return Liste de ModePrepaDerives.
     */
    List<ModePrepaDerive> findByModePrepaDeriveLikeManager(String mode, boolean exactMatch);
-
-   //	/**
-   //	 * Recherche les doublons du ModePrepaDerive passé en paramètre.
-   //	 * @param mode Un ModePrepaDerive pour lequel on cherche des doublons.
-   //	 * @return True s'il existe des doublons.
-   //	 */
-   //	Boolean findDoublonManager(ModePrepaDerive mode);
-   //	
-   //	/**
-   //	 * Test si un mode de préparation est lié à des dérivés.
-   //	 * @param mode ModePrepaDerive que l'on souhaite tester.
-   //	 * @return Vrai si le mode est utilisé.
-   //	 */
-   //	Boolean isUsedObjectManager(ModePrepaDerive mode);
-   //	
-   //	/**
-   //	 * Persist une instance de ModePrepaDerive dans la base de données.
-   //	 * @param mode Nouvelle instance de l'objet à créer.
-   //	 */
-   //	void saveManager(ModePrepaDerive mode);
-   //	
-   //	/**
-   //	 * Sauvegarde les modifications apportées à un objet persistant.
-   //	 * @param mode Objet à mettre à jour dans la base.
-   //	 */
-   //	void saveManager(ModePrepaDerive mode);
-   //	
-   //	/**
-   //	 * Supprime un ModePrepaDerive de la base de données.
-   //	 * @param mode ModePrepaDerive à supprimer de la base de données.
-   //	 */
-   //	void deleteByIdManager(ModePrepaDerive mode);
-
 }

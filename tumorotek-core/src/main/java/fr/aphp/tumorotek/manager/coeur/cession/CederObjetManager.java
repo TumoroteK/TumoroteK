@@ -175,7 +175,7 @@ public interface CederObjetManager
     * @param entite Entite de l'objet à céder.
     * @param quantiteUnite Unite de quantité du CederObjet.
     */
-   void saveManager(CederObjet cederObjet, Cession cession, Entite entite, Unite quantiteUnite);
+   void createObjectManager(CederObjet cederObjet, Cession cession, Entite entite, Unite quantiteUnite);
 
    /**
     * Sauvegarde les modifications apportées à un objet persistant.
@@ -184,13 +184,13 @@ public interface CederObjetManager
     * @param entite Entite de l'objet à céder.
     * @param quantiteUnite Unite de quantité du CederObjet.
     */
-   void saveManager(CederObjet cederObjet, Cession cession, Entite entite, Unite quantiteUnite);
+   void updateObjectManager(CederObjet cederObjet, Cession cession, Entite entite, Unite quantiteUnite);
 
    /**
     * Supprime un CederObjet de la base de données.
     * @param cederObjet CederObjet à supprimer de la base de données.
     */
-   void deleteByIdManager(CederObjet cederObjet);
+   void removeObjectManager(CederObjet cederObjet);
 
    /**
     * Compte les echantillons ou dérivés impliqués dans la session.

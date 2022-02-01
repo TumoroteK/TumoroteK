@@ -81,7 +81,7 @@ public class PatientLienManagerTest extends AbstractManagerTest4
 	public void testCRUD() throws ParseException{
 		saveManagerTest();
 		saveManagerTest();
-		deleteByIdManagerTest();
+		removeObjectManagerTest();
 	}
 
 	private void saveManagerTest() throws ParseException{
@@ -181,14 +181,14 @@ public class PatientLienManagerTest extends AbstractManagerTest4
 		//test validation inutile car teste dans le create
 	}
 
-	private void deleteByIdManagerTest(){
+	private void removeObjectManagerTest(){
 		final PatientLienPK pk = new PatientLienPK(patientDao.findById(1), patientDao.findById(2));
 		//Suppression de l'enregistrement precedemment insere
 		final PatientLien pl1 = patientLienDao.findById(pk);
-		patientLienManager.deleteByIdManager(pl1);
+		patientLienManager.removeObjectManager(pl1);
 		assertNull(patientLienDao.findById(pk));
 
-		patientLienManager.deleteByIdManager(null);
+		patientLienManager.removeObjectManager(null);
 		assertTrue(IterableUtils.toList(patientLienDao.findAll()).size() == 2);
 	}
 }

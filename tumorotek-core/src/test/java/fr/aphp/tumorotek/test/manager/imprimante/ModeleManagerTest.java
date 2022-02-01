@@ -223,7 +223,7 @@ public class ModeleManagerTest extends AbstractManagerTest4
    public void testCrud() throws ParseException{
       //saveManagerTest();
       saveManagerTest();
-      //deleteByIdManagerTest();
+      //removeObjectManagerTest();
    }
 
    //	private void saveManagerTest() throws ParseException {
@@ -429,8 +429,8 @@ public class ModeleManagerTest extends AbstractManagerTest4
    //			.findByLigneEtiquetteManager(lis.get(1)).size() == 0);
    //				
    //		// suppression des profils et des droits
-   //		modeleManager.deleteByIdManager(mTest);
-   //		modeleManager.deleteByIdManager(mTest2);
+   //		modeleManager.removeObjectManager(mTest);
+   //		modeleManager.removeObjectManager(mTest2);
    //		assertTrue(modeleManager.findAllObjectsManager().size() == 3);
    //		assertTrue(ligneEtiquetteManager.findAllObjectsManager().size() == 7);
    //		assertTrue(champLigneEtiquetteManager
@@ -682,14 +682,14 @@ public class ModeleManagerTest extends AbstractManagerTest4
       assertTrue(tmp.get(0).getChamp().equals(ch4));
 
       // suppression des profils et des droits
-      modeleManager.deleteByIdManager(mTest3);
+      modeleManager.removeObjectManager(mTest3);
       assertTrue(modeleManager.findAllObjectsManager().size() == 3);
       assertTrue(ligneEtiquetteManager.findAllObjectsManager().size() == 7);
       assertTrue(champLigneEtiquetteManager.findAllObjectsManager().size() == 10);
       assertTrue(champManager.findAllObjectsManager().size() == cTots);
    }
 
-   //	private void deleteByIdManagerTest() throws ParseException {
+   //	private void removeObjectManagerTest() throws ParseException {
    //		// creation d'un modele
    //		Plateforme pf1 = plateformeManager.findByIdManager(1);
    //		ModeleType mt1 = modeleTypeManager.findByIdManager(1);
@@ -710,12 +710,12 @@ public class ModeleManagerTest extends AbstractManagerTest4
    //					.findAllObjectsManager().size() == 5);
    //		
    //		// on vérifie que tous les objets sont supprimés
-   //		modeleManager.deleteByIdManager(m);
+   //		modeleManager.removeObjectManager(m);
    //		assertTrue(modeleManager.findAllObjectsManager().size() == 3);
    //		assertTrue(affectationImprimanteManager
    //				.findAllObjectsManager().size() == 4);
    //		
-   //		modeleManager.deleteByIdManager(null);
+   //		modeleManager.removeObjectManager(null);
    //		assertTrue(modeleManager.findAllObjectsManager().size() == 3);
    //	}
 }

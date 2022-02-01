@@ -51,6 +51,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Validator;
@@ -206,7 +207,7 @@ public class CessionManagerImpl implements CessionManager
     */
    @Override
    public Cession findByIdManager(final Integer cessionId){
-      return cessionDao.findById(cessionId);
+      return cessionDao.findById(cessionId).orElse(null);
    }
 
    /**
@@ -616,7 +617,7 @@ public class CessionManagerImpl implements CessionManager
    }
 
    @Override
-   public void saveManager(final Cession cession, final Banque banque, final CessionType cessionType,
+   public void createObjectManager(final Cession cession, final Banque banque, final CessionType cessionType,
       final CessionExamen cessionExamen, final Contrat contrat, final Collaborateur destinataire, final Service servDest,
       final Collaborateur demandeur, final CessionStatut cessionStatut, final Collaborateur executant,
       final Transporteur transporteur, final DestructionMotif destructionMotif,
@@ -651,13 +652,13 @@ public class CessionManagerImpl implements CessionManager
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), cession);
+         operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Creation").get(0), cession);
 
          // enregistrements des cederobjets
          if(cederObjets != null){
             for(int i = 0; i < cederObjets.size(); i++){
                final CederObjet obj = cederObjets.get(i);
-               cederObjetManager.saveManager(obj, cession, obj.getEntite(), obj.getQuantiteUnite());
+               cederObjetManager.createObjectManager(obj, cession, obj.getEntite(), obj.getQuantiteUnite());
             }
          }
 
@@ -688,7 +689,7 @@ public class CessionManagerImpl implements CessionManager
    }
 
    @Override
-   public void saveManager(final Cession cession, final Banque banque, final CessionType cessionType,
+   public void updateObjectManager(final Cession cession, final Banque banque, final CessionType cessionType,
       final CessionExamen cessionExamen, final Contrat contrat, final Collaborateur destinataire, final Service servDest,
       final Collaborateur demandeur, final CessionStatut cessionStatut, final Collaborateur executant,
       final Transporteur transporteur, final DestructionMotif destructionMotif,
@@ -723,16 +724,16 @@ public class CessionManagerImpl implements CessionManager
          //Enregistrement de l'operation associee
          final Operation creationOp = new Operation();
          creationOp.setDate(Utils.getCurrentSystemCalendar());
-         operationManager.saveManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
+         operationManager.createObjectManager(creationOp, utilisateur, operationTypeDao.findByNom("Modification").get(0),
             cession);
 
          // enregistrements des cederobjets
          if(cederObjets != null){
             for(final CederObjet obj : cederObjets){
                if(cederObjetManager.findByIdManager(obj.getPk()) == null){
-                  cederObjetManager.saveManager(obj, cession, obj.getEntite(), obj.getQuantiteUnite());
+                  cederObjetManager.createObjectManager(obj, cession, obj.getEntite(), obj.getQuantiteUnite());
                }else{
-                  cederObjetManager.saveManager(obj, cession, obj.getEntite(), obj.getQuantiteUnite());
+                  cederObjetManager.updateObjectManager(obj, cession, obj.getEntite(), obj.getQuantiteUnite());
                }
             }
 
@@ -741,7 +742,7 @@ public class CessionManagerImpl implements CessionManager
             final Set<CederObjet> oldCedes = getCederObjetsManager(cession);
             for(CederObjet tmp : oldCedes){
                if(!cederObjets.contains(tmp)){
-                  cederObjetManager.deleteByIdManager(tmp);
+                  cederObjetManager.removeObjectManager(tmp);
                }
             }
          }else{
@@ -749,7 +750,7 @@ public class CessionManagerImpl implements CessionManager
             // plus
             final Set<CederObjet> oldCedes = getCederObjetsManager(cession);
             for(CederObjet tmp : oldCedes){
-               cederObjetManager.deleteByIdManager(tmp);
+               cederObjetManager.removeObjectManager(tmp);
             }
          }
          // Annotations
@@ -793,7 +794,7 @@ public class CessionManagerImpl implements CessionManager
    }
 
    @Override
-   public void deleteByIdManager(final Cession cession, final String comments, final Utilisateur usr,
+   public void removeObjectManager(final Cession cession, final String comments, final Utilisateur usr,
       final List<File> filesToDelete){
       if(cession != null){
          // suppression des CederObjets
@@ -801,7 +802,7 @@ public class CessionManagerImpl implements CessionManager
          if(cederObjets != null){
             final Iterator<CederObjet> it = cederObjets.iterator();
             while(it.hasNext()){
-               cederObjetManager.deleteByIdManager(it.next());
+               cederObjetManager.removeObjectManager(it.next());
             }
          }
 
@@ -900,7 +901,7 @@ public class CessionManagerImpl implements CessionManager
          for(final Integer id : ids){
             c = findByIdManager(id);
             if(c != null){
-               deleteByIdManager(c, comment, u, filesToDelete);
+               removeObjectManager(c, comment, u, filesToDelete);
             }
          }
          //         if(filesToDelete != null){

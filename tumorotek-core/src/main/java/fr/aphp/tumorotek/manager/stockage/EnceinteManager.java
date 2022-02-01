@@ -221,7 +221,7 @@ public interface EnceinteManager
     * @param entite Entite de l'Enceinte.
     * @param banques Banques de l'Enceinte.
     */
-   void saveManager(Enceinte enceinte, EnceinteType enceinteType, Conteneur conteneur, Enceinte enceintePere,
+   void createObjectManager(Enceinte enceinte, EnceinteType enceinteType, Conteneur conteneur, Enceinte enceintePere,
       Entite entite, List<Banque> banques, Couleur couleur, Utilisateur utilisateur);
 
    /**
@@ -272,7 +272,7 @@ public interface EnceinteManager
     * @param operations
     * @version 2.0.10
     */
-   void saveManager(Enceinte enceinte, EnceinteType enceinteType, Conteneur conteneur, Enceinte enceintePere,
+   void updateObjectManager(Enceinte enceinte, EnceinteType enceinteType, Conteneur conteneur, Enceinte enceintePere,
       Entite entite, List<Banque> banques, Couleur couleur, List<Incident> incidents, Utilisateur utilisateur,
       List<OperationType> operations);
 
@@ -296,7 +296,7 @@ public interface EnceinteManager
     * @param comments commentaires liés à la suppression
     * @param Utilisateur réalisant la suppression.
     */
-   void deleteByIdManager(Enceinte enceinte, String comments, Utilisateur user);
+   void removeObjectManager(Enceinte enceinte, String comments, Utilisateur user);
 
    /**
     * Compte le nombre d'emplacements libres dans l'enceinte en

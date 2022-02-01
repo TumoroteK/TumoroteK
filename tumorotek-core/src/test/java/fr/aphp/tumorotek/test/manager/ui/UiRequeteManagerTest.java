@@ -189,10 +189,10 @@ public class UiRequeteManagerTest extends AbstractManagerTest4
 	//		assertTrue(r1.getUiCompValues().isEmpty());
 	//
 	//		// Test de la délétion
-	//		uiRequeteManager.deleteByIdManager(r1);
+	//		uiRequeteManager.removeObjectManager(r1);
 	//		assertTrue(uiRequeteManager.findByUtilisateurAndEntiteManager(utilisateurDao.findById(2), entiteDao.findById(1)).isEmpty());
 	//		// null remove
-	//		uiRequeteManager.deleteByIdManager(null);
+	//		uiRequeteManager.removeObjectManager(null);
 	//	}
 	//
 	//	public void testUiRequeteValidation(){
