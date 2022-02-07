@@ -40,18 +40,27 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 import fr.aphp.tumorotek.manager.coeur.echantillon.EchantillonManager;
 import fr.aphp.tumorotek.manager.coeur.prodderive.ProdDeriveManager;
 import fr.aphp.tumorotek.manager.etiquettes.TumoPrinterUtilsManager;
 import fr.aphp.tumorotek.manager.imprimante.ModeleManager;
+import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
+import fr.aphp.tumorotek.manager.test.Config;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.imprimante.LigneEtiquette;
 import fr.aphp.tumorotek.model.imprimante.Modele;
-import fr.aphp.tumorotek.test.manager.AbstractManagerTest4;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { Config.class })
+@TestExecutionListeners({ DependencyInjectionTestExecutionListener.class })
 public class TumoPrinterUtilsManagerTest extends AbstractManagerTest4
 {
 

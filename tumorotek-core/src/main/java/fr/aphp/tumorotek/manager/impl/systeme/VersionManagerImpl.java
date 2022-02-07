@@ -60,7 +60,7 @@ public class VersionManagerImpl implements VersionManager {
 
 	/** Bean Dao VersionDao. */
 	private VersionDao versionDao;
-
+	
 	public void setVersionDao(final VersionDao vDao) {
 		this.versionDao = vDao;
 	}

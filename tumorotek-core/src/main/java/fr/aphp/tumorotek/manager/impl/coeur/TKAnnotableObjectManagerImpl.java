@@ -56,19 +56,19 @@ import fr.aphp.tumorotek.model.TKAnnotableObject;
 public class TKAnnotableObjectManagerImpl implements TKAnnotableObjectManager
 {
 
-   @Autowired
+//   @Autowired
    private PatientDao patientDao;
    
-   @Autowired
+//   @Autowired
    private PrelevementDao prelevementDao;
    
-   @Autowired
+//   @Autowired
    private EchantillonDao echantillonDao;
    
-   @Autowired
+//   @Autowired
    private ProdDeriveDao prodDeriveDao;
    
-   @Autowired
+//   @Autowired
    private CessionDao cessionDao;
    
    @Override

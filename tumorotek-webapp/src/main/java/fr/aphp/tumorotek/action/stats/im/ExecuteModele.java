@@ -188,10 +188,9 @@ public class ExecuteModele
                if(rSet.wasNull()){
                   f = null;
                }
-
-               dataMap.get(st).add(new ValueToExport(rSet.getInt(1), f,
-
-                  rSet.getInt(3), rSet.getInt(4)));
+               
+               dataMap.get(st).add(new ValueToExport(rSet.getInt(1), f, 
+            		   rSet.getInt(3), rSet.getInt(4)));
             }
          }catch(final SQLException e){
             log.error(e);

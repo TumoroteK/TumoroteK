@@ -10,10 +10,10 @@
     http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
 
 	<import resource="spring-jpa-test-mysql.xml" />
-	<import resource="applicationContextDao.xml" />
+	<!-- <import resource="applicationContextDao.xml" /> -->
 	<import resource="spring-jpa-codes-test-mysql.xml" />
-	<import resource="applicationContextDao-codes.xml" />
+	<!-- <import resource="applicationContextDao-codes.xml" /> -->
 	<import resource="spring-jpa-interfacages-test-mysql.xml" />
-	<import resource="applicationContextDao-interfacages.xml" />
+	<!-- <import resource="applicationContextDao-interfacages.xml" /> -->
 
 </beans>

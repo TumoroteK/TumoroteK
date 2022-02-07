@@ -91,7 +91,7 @@ public class MaladieManagerImpl implements MaladieManager
    public MaladieManagerImpl(){}
 
    /* Properties setters */
-   public void setMaladieDao(final MaladieDao mDao){
+   public void setMaladieDao(MaladieDao mDao){
       this.maladieDao = mDao;
    }
 

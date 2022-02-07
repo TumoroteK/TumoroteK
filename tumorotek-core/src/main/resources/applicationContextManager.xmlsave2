@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<import resource="applicationContextAOP.xml" />
+
+	<!-- Package qualite -->
+	<bean id="operationValidator"
+		class="fr.aphp.tumorotek.manager.validation.qualite.OperationValidator" />
+
+	<bean id="operationManager" parent="txProxyTemplate">
+		<property name="target">
+			<bean
+				class="fr.aphp.tumorotek.manager.impl.qualite.OperationManagerImpl">
+				<property name="operationDao" ref="operationDao" />
+				<property name="utilisateurDao" ref="utilisateurDao" />
+				<property name="entiteDao" ref="entiteDao" />
+				<property name="operationTypeDao" ref="operationTypeDao" />
+				<property name="operationValidator"
+					ref="operationValidator" />
+				<property name="fantomeDao" ref="fantomeDao" />
+				<property name="entityManagerFactory"
+					ref="entityManagerFactory" />
+				<property name="dataSource" ref="dataSource" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="operationTypeManager" parent="txProxyTemplate">
+		<property name="target">
+			<bean
+				class="fr.aphp.tumorotek.manager.impl.qualite.OperationTypeManagerImpl">
+				<property name="operationTypeDao" ref="operationTypeDao" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="conformiteTypeManager" parent="txProxyTemplate">
+		<property name="target">
+			<bean
+				class="fr.aphp.tumorotek.manager.impl.qualite.ConformiteTypeManagerImpl">
+				<property name="conformiteTypeDao" ref="conformiteTypeDao" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="nonConformiteValidator"
+		class="fr.aphp.tumorotek.manager.validation.qualite.NonConformiteValidator" />
+
+	<bean id="nonConformiteManager" parent="txProxyTemplate">
+		<property name="target">
+			<bean
+				class="fr.aphp.tumorotek.manager.impl.qualite.NonConformiteManagerImpl">
+				<property name="conformiteTypeDao" ref="conformiteTypeDao" />
+				<property name="nonConformiteDao" ref="nonConformiteDao" />
+				<property name="objetNonConformeDao"
+					ref="objetNonConformeDao" />
+				<property name="plateformeDao" ref="plateformeDao" />
+				<property name="objetNonConformeManager"
+					ref="objetNonConformeManager" />
+				<property name="nonConformiteValidator"
+					ref="nonConformiteValidator" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="objetNonConformeManager" parent="txProxyTemplate">
+		<property name="target">
+			<bean
+				class="fr.aphp.tumorotek.manager.impl.qualite.ObjetNonConformeManagerImpl">
+				<property name="objetNonConformeDao"
+					ref="objetNonConformeDao" />
+				<property name="entiteDao" ref="entiteDao" />
+				<property name="conformiteTypeDao" ref="conformiteTypeDao" />
+				<property name="nonConformiteDao" ref="nonConformiteDao" />
+			</bean>
+		</property>
+	</bean>
+
+</beans>
