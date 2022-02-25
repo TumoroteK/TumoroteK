@@ -9,6 +9,7 @@ DROP PROCEDURE IF EXISTS stats_TER_&&
 CREATE PROCEDURE stats_TER_(IN name_Proc varchar(50), IN date_debut DATE, IN date_fin DATE, IN sModeleId INT)
   BEGIN
     TRUNCATE TABLE counts;
+   
     CASE
       WHEN name_Proc = "count_prel_tot"
       then CALL stats_count_prel_tot(date_debut, date_fin, sModeleId);
@@ -84,38 +85,6 @@ CREATE PROCEDURE  stats_count_prel_create(IN date_debut DATE, IN date_fin DATE, 
     SET @sql = CONCAT(@sql, ' AND op.OPERATION_TYPE_ID = 3');
     SET @sql = CONCAT(@sql, ' GROUP BY p.banque_id) zz ');
     SET @sql = CONCAT(@sql, ' ON b.banque_id = zz.banque_id');
-
-    SET @sql = COMPOSE_PRELSQL(@sql, date_debut, date_fin, null, sModeleId);
-
-
-	SELECT @sql;
-
-    PREPARE stmt FROM @sql;
-    EXECUTE stmt;
-    DEALLOCATE PREPARE stmt;
-  END&&
-
-DELIMITER &&
-DROP PROCEDURE IF EXISTS stats_count_prel_create&&
-CREATE PROCEDURE stats_count_prel_create(IN date_debut DATE, IN date_fin DATE, IN sModeleId INT)
-  BEGIN
-    TRUNCATE TABLE counts;
-
-    SET @sql = COMPOSE_POURCENTAGESQL(null);
-
-    SET @sql = CONCAT(@sql, ' (SELECT banque_id, count(prelevement_id) as cc FROM PRELEVEMENT p
-		JOIN OPERATION op ON p.PRELEVEMENT_ID = op.OBJET_ID AND op.entite_id = 2');
-    SET @sql = CONCAT(@sql, ' WHERE op.DATE_ BETWEEN ''', date_debut, ''' AND ''', date_fin, '''');
-    SET @sql = CONCAT(@sql, ' AND op.OPERATION_TYPE_ID = 3');
-    SET @sql = CONCAT(@sql, ' GROUP BY p.banque_id) zz ');
-    SET @sql = CONCAT(@sql, ' ON b.banque_id = zz.banque_id');
-
-    SET @sql = CONCAT(@sql, ' LEFT JOIN (SELECT banque_id, count(prelevement_id) as cc FROM PRELEVEMENT p
-		JOIN OPERATION op ON p.PRELEVEMENT_ID = op.OBJET_ID AND op.entite_id = 2');
-    SET @sql = CONCAT(@sql, ' WHERE op.DATE_ BETWEEN ''', date_debut, ''' AND ''', date_fin, '''');
-    SET @sql = CONCAT(@sql, ' AND op.OPERATION_TYPE_ID = 3');
-    SET @sql = CONCAT(@sql, ' GROUP BY p.banque_id) tt');
-    SET @sql = CONCAT(@sql, ' on b.banque_id = tt.banque_id');
 
     SET @sql = COMPOSE_PRELSQL(@sql, date_debut, date_fin, null, sModeleId);
 
